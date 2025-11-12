@@ -1,0 +1,6 @@
+{:id :musn/session
+ :type "session"
+ :required [:rev :type :payload]
+ :payload {:required [:sid :events :topic]
+           :optional [:prov]
+           :constraints {:max-events 100}}}

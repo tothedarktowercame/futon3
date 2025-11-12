@@ -1,0 +1,4 @@
+{:id :musn/pattern
+ :required [:pattern/id :pattern/name :pattern/slots]
+ :slots {:each {:required [:slot/id :slot/type]
+                :optional [:slot/required? :slot/provenance]}}}

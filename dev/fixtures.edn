@@ -1,0 +1,3 @@
+{:events [{:id "E-001" :t "2024-01-15T10:00:00Z" :actor "alice" :verb "learns" :object "pattern-mapping" :prov {:file "fixtures" :line 1}}
+          {:id "E-002" :t "2024-01-15T10:05:00Z" :actor "bob" :verb "shares" :object "practice-recipe" :prov {:file "fixtures" :line 2}}]
+ :sessions [{:sid "S-hero" :events ["E-001" "E-002"] :topic "Hero's Journey"}]}

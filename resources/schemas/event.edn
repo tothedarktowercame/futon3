@@ -1,0 +1,6 @@
+{:id :musn/event
+ :type "event"
+ :required [:rev :type :payload]
+ :payload {:required [:t :actor :verb :object]
+           :optional [:id :prov]
+           :prov {:required [:file :line]}}}

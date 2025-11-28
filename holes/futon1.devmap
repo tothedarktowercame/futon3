@@ -1,0 +1,98 @@
+@multiarg futon1/devmap
+@title FUTON1 Development Map
+@audience futon-devs, infra-agents, future-you
+@tone formal-analytic
+@style roadmap
+@allow-new-claims true
+@length any
+
+! instantiated-by: Prototype 0 — Baseline Stack Snapshot [🗂️/上 💾/工]
+  + context: futon1 is a collection of deterministic chat demos built on a tiered NLP stack, in-memory graph-memory, and XTDB persistence, surfaced via `apps/basic-chat-demo`, `apps/nlp-interface`, `apps/graph-memory`, and `apps/open-world-ingest`.
+  + if: You want a clear picture of what already works before you add new affordances.
+  + however: The current documentation is spread across multiple READMEs and doesn’t yet tell a single “stack story” from CLI to XTDB.
+  + then: Freeze the current behaviour with tags, record a concise architecture note (pipeline → graph → XT), and capture representative CLI transcripts for v1–v5.
+  + because: This establishes a stable reference snapshot and makes regressions and future extensions legible.
+
+! instantiated-by: Prototype 1 — basic-chat/v5 Hardening (Focus Header Path) [💬/口 💾/工]
+  + context: `basic-chat-demo` v5 runs the deterministic pipeline, mirrors entities/relations into XTDB, and emits focus headers for agent prompts.
+  + if: You want futon1 to be a rock-solid source of focus headers for higher-layer agents.
+  + however: Edge cases around hydration, RocksDB locks, and legacy protocol interaction still rely on ad-hoc testing.
+  + then: Expand golden tests for v5 (including `--fh` / `--fh-only`), add scripts that exercise focus-days, allow-works, and context caps, and document known failure modes.
+  + because: A hardened v5 path makes futon1 a trustworthy “memory oracle” for futon3/futon4.
+
+! instantiated-by: Prototype 2 — NLP Interface Consolidation [🧠/己 🧪/义]
+  + context: `apps/nlp-interface` provides the deterministic NER/POS and intent layers shared across protocols, including v4 gazetteer and pattern recogniser hooks.
+  + if: You want a single, testable entry point for the NLP stack that can evolve independently of the chat CLI.
+  + however: The nlp-interface README is still boilerplate and doesn’t advertise the actual pipeline or RID-style intent dictionary.
+  + then: Refactor nlp-interface into explicit stages (tokenise → tag → chunk → intent), add unit tests for each, and write a focused README for these APIs.
+  + because: A consolidated NLP module makes it easier to swap or extend components without destabilising the demos.
+
+! instantiated-by: Prototype 3 — Graph-Memory API & Seed Graph [🕸️/井 📚/门]
+  + context: `graph-memory` defines the Datascript schema, salience metadata, and helpers (`init-db`, `neighbors`, `ensure-entity!`, etc.) that back all demos.
+  + if: You want futon1 to expose a clean programmatic interface for entity/relation operations beyond the CLI.
+  + however: Today, helpers are tuned for internal use and REPL ergonomics rather than a documented public API.
+  + then: Stabilise a small API surface (init, upsert, link, neighbors, export), publish examples, and expand the regression suite around the seed graph.
+  + because: A clear graph-memory API is the hinge between deterministic demos and future LLM/agent clients.
+
+! instantiated-by: Prototype 4 — XTDB Operations & REPL Stories [💽/工 📖/门]
+  + context: The stack mirrors all graph mutations into XTDB and provides notes for running a REPL against the same datastore.
+  + if: You want developers to comfortably inspect, query, and repair the persistent store.
+  + however: Common workflows (inspection, counting, ego traversal, cleanup) still require reading raw XT queries and ad-hoc snippets.
+  + then: Package REPL recipes as reusable fns (`list-entities`, `entity-relations`, `counts`), add a small “XT stories” doc with copy-paste examples, and script a salience-survives-restart demo.
+  + because: Lowering XT friction makes the persistent layer feel like a first-class part of futon1 rather than a hidden backend.
+
+! instantiated-by: Prototype 5 — Open-World Ingest Workflows [🌍/入 🧾/口]
+  + context: The open-world ingest tool streams arbitrary text through CoreNLP, generating deterministic entity IDs and OpenIE relations in XTDB.
+  + if: You want futon1 to support offline bulk ingestion as well as interactive chat.
+  + however: Ingest currently lives as a standalone CLI with minimal guidance on how its data joins the basic-chat focus-header world.
+  + then: Define standard data-dir layouts for shared XTDB, write small pipelines that ingest corpora then query them from `basic-chat-demo`, and add golden tests for ingest semantics (ID stability, negation flags, co-occurrence).
+  + because: Robust ingest workflows let futon1 accumulate long-term background knowledge, not just per-session memories.
+
+! instantiated-by: Prototype 6 — Intent Dictionary & Thematic Clusters [🧠/己 🎯/历]
+  + context: The deterministic intent classifier already maps utterances onto conversational and RID-inspired thematic intents (e.g. voyage, primary need orality).
+  + if: You want intents to influence focus-headers, graph salience, and downstream agent prompts.
+  + however: Intent usage is currently limited to printed labels; it doesn’t yet shape neighbour selection or pattern triggers.
+  + then: Add intent-to-policy hooks in the focus-header builder (e.g. boost “voyage” entities when voyage intent fires), document the intent taxonomy, and extend tests to assert intent-sensitive headers.
+  + because: Tying intents into the graph makes futon1 a richer, more psychologically-informed context engine.
+
+! instantiated-by: Prototype 7 — CLI Ergonomics & Multi-Instance Isolation [💻/工 🧳/川]
+  + context: The CLI already exposes bang commands, context flags, and environment variables for data-dir and XT config overrides.
+  + if: You want futon1 to run multiple isolated demos (tests, experiments, production-like runs) on the same host.
+  + however: Best practices for `BASIC_CHAT_DATA_DIR`, XT config selection, and `--reset/--compact/--export` are scattered and easy to misuse.
+  + then: Ship a “profiles” doc (dev/test/prod) with recommended flags and env vars, add smoke tests that spin up multiple instances with different data-dirs, and provide a `/status` helper to show active config.
+  + because: Good ergonomics and isolation make futon1 safer to embed in other tools and workflows.
+
+! instantiated-by: Prototype 8 — Golden Scripts & Performance Benchmarks [📜/凡 ⏱️/日]
+  + context: Scripted EDN conversations and golden outputs already exercise the focus-header flow and older basic-chat protocols.
+  + if: You want confidence that future changes don’t break determinism, latency thresholds, or header quality.
+  + however: Golden coverage is still patchy and doesn’t include dedicated performance baselines or large-script runs.
+  + then: Curate a small suite of canonical scripts (short-chat, long-history, ingest+chat), time them under CI, and treat both outputs and runtime ranges as golden.
+  + because: Benchmarks turn futon1 into a measurable platform rather than an anecdotal demo.
+
+! instantiated-by: Prototype 9 — External Client & Agent Bridge [🔌/口 🤝/女]
+  + context: The focus header and EDN payloads are already suitable for consumption by LLM-based agents or external UIs.
+  + if: You want futon1 to act as a generic “memory and salience service” behind tools like chatgpt-shell, Codex, or futon4 agents.
+  + however: There is no standard JSON/HTTP or RPC interface yet beyond the CLI stdout contract.
+  + then: Define a minimal protocol (stdin utterance → stdout focus header JSON) and/or a small HTTP wrapper, plus example client code in Clojure and one other language.
+  + because: A clear client bridge lets you swap or layer agents on top of futon1 without touching the core stack.
+
+! instantiated-by: Prototype 10 — Futon4 / Arxana Export Hooks [🔄/入 💾/工]
+  + context: futon4 will want to ingest focus headers, EDN snapshots, and XTDB slices as graph inputs for Arxana and higher-level pattern work.
+  + if: You want futon1 to be the canonical source of “world state” for the year-long prototype cycle.
+  + however: There is no named export profile tailored for Arxana or datascript/XT interop beyond generic `--export edn`.
+  + then: Add an “arxana-export” mode that emits a compressed, schema-tagged snapshot of entities, relations, and salience suitable for futon4 import.
+  + because: Tight, named integration turns futon1 into the lower memory layer of the FUTON stack rather than a sibling demo.
+
+! instantiated-by: Prototype 11 — AI Scientist Pilot Scenarios [🧪/义 🎓/子]
+  + context: The AI Scientist vision requires stable memories, salience, and open-world ingestion to support mathematical and research dialogues.
+  + if: You want evidence that futon1 is fit to serve as the deterministic memory substrate for such agents.
+  + however: Current demos focus on generic conversation rather than domain-specific research workflows.
+  + then: Design a small set of “research micro-scenarios” (e.g. tracking hypotheses, experiments, papers) and script them as futon1 conversations plus ingest runs, verifying that focus headers and neighbour graphs behave as expected.
+  + because: Concrete pilots de-risk the leap from generic chat demo to research-grade infrastructure.
+
+! instantiated-by: Prototype 12 — Year-End Refactor & Packaging [📦/门 📚/上]
+  + context: By the end of the cycle you will have hardened v5, clarified modules, added exports, and integrated ingest, intents, and clients.
+  + if: You want futon1 to be easy to install, run, and extend by others.
+  + however: Accumulated tweaks across apps may fragment conventions (flags, env vars, logging, error reporting).
+  + then: Do a pass to unify naming and configuration across apps, streamline build and test tasks, and publish a top-level futon1 README that explains the whole story in one place.
+  + because: A coherent, well-packaged futon1 becomes the dependable base layer for FUTON2+ and for collaborators who were not present at inception.

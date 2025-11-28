@@ -1,0 +1,305 @@
+#+TITLE: Infrastructure for Developing Collective Intelligence
+#+OPTIONS: toc:nil num:0
+
+* Executive Summary
+
+#+begin_src clojure
+{:id "t4r/exec-summary-tree"
+ :title "talk4real – Infrastructure for Developing Collective Intelligence"
+ :audience ["research funders" "doctoral-training consortia" "university R&I leads"]
+ :tone :analytic-visionary
+ :length [200 250]
+ :keywords [:collective-intelligence :doctoral-training :reflexivity :infrastructure]
+
+ :argument
+ {:id :c0
+  :role :conclusion
+  :text "talk4real reimagines doctoral training as a shared experimental learning infrastructure that continually refines itself through reflexive, collective practice."
+
+  :supports
+  [;; Block 1: the problem
+   {:id :p1
+    :role :premise
+    :relation-to-parent :because
+    :text "Most doctoral programmes operate within disciplinary or thematic silos."
+    :supports
+    [{:id :p1b
+      :role :premise
+      :relation-to-parent :therefore
+      :text "These silos engage minimally with learning beyond their boundaries and contribute little to improving practice at system level."}]}
+
+   ;; Block 2: the mechanism
+   {:id :p2
+    :role :premise
+    :relation-to-parent :because
+    :text "Collective-intelligence frameworks can capture feedback between researchers, institutions, and communities."
+    :supports
+    [{:id :p2b
+      :role :premise
+      :relation-to-parent :therefore
+      :text "Embedding these feedback loops allows research systems to learn from their own activity."}
+     {:id :p3
+      :role :premise
+      :relation-to-parent :instantiated-by
+      :text "talk4real applies a REPL-style cycle—read, evaluate, print, loop—to social and epistemic processes."
+      :supports
+      [{:id :p3b
+        :role :premise
+        :relation-to-parent :clarifies
+        :text "This cycle links ethnography, computational analysis, design, and collective reflection."}]}]
+    :illustrates
+    [{:id :p2-known-examples
+      :role :example
+      :relation-to-parent :illustrates
+      :text "Related precedents include initiatives such as realtalk@MIT, PlanetMath.org, and Peeragogy."}
+     {:id :p2-further-research
+      :role :hole
+      :kind :example
+      :relation-to-parent :illustrates
+      :prompt "Insert 1–2 current, funder-recognisable exemplars of collective-intelligence infrastructure."
+      :required? false}]}
+
+   ;; Block 3: the deployment
+   {:id :p4
+    :role :premise
+    :relation-to-parent :therefore
+    :text "We will run coordinated doctoral projects that instantiate the same learning architecture in distinct domains."
+    :supports
+    [{:id :p4b
+      :role :premise
+      :relation-to-parent :therefore
+      :text "Each doctoral scholar becomes both a researcher and an agent of collective intelligence."}]}
+
+   ;; Block 4: the design principles
+   {:id :p5
+    :role :premise
+    :relation-to-parent :underpinned-by
+    :text "The model is structured by three design principles."
+    :supports
+    [{:id :p5a
+      :role :premise
+      :relation-to-parent :specifies
+      :text "Ethical reflexivity: participants co-author their representation."}
+     {:id :p5b
+      :role :premise
+      :relation-to-parent :specifies
+      :text "Lightweight infrastructure: the method is portable and not locked to heavy platforms."}
+     {:id :p5c
+      :role :premise
+      :relation-to-parent :specifies
+      :text "Polyphonic governance: multiple voices are synthesised, not averaged away."}]}]}
+
+ :constraints
+ {:style "Clear, concrete, funding-application English"
+  :coverage [:all-supports-of :c0]
+  :word-limit 250}
+
+ :actions
+ [{:type :generate :target :summary}
+  {:type :validate :mode :tree-walk}]}
+#+end_src
+
+talk4real proposes a new model of doctoral training and research infrastructure built around one simple idea: research systems should learn from themselves. Instead of adding another themed centre or technical toolset, the programme creates a reproducible framework for collective intelligence—a way for universities, researchers, and communities to understand and redesign how knowledge is produced.
+
+The approach was prototyped in the attached SUPPLEMENT, which simulated a full talk4real cycle: dialogic reflection, multi-voice annotation, consent governance, thematic tagging, and iterative synthesis. This exercise demonstrated that the method already works at small scale. It generated practical artefacts—a consent ledger, multilingual tag schema, and “mirror template” for ethical reflection—that together form the first version of the talk4real protocol.
+
+At its core, talk4real functions as a social-psychological REPL:
+
+Read through ethnography and lived experience;
+
+Evaluate via computational and narrative pattern analysis;
+
+Print through design and prototyping;
+
+Loop back through collective reflection.
+
+Ten doctoral projects—ranging from talk4maths and talk4health to talk4justice—will test this shared architecture in diverse domains. Each scholar becomes both a researcher and an agent of collective intelligence, producing open, interoperable prototypes rather than isolated theses.
+
+The SUPPLEMENT confirmed three core design principles that shape the final bid:
+
+Ethical reflexivity—research participants co-author their representation.
+
+Lightweight infrastructure—the method travels faster than the technology.
+
+Polyphonic governance—multiple voices synthesised, not averaged.
+
+Together, these elements make talk4real a functioning prototype for the next generation of doctoral training: empirical, open, and reflexive by design.
+
+* 1 Rationale for the choice of research subject area (≈ 250 words)
+
+#+BEGIN_SRC clojure
+  [{:id "t4r/rationale"
+    :title "1 Rationale for the choice of research subject area"
+    :argument
+    {:id :sec1-c
+     :role :conclusion
+     :text "talk4real is justified as an infrastructure for collective intelligence because it converts accumulative,
+  non-reflective research systems into learning systems that can redesign themselves."
+     :supports
+     [{:id :sec1-p1 :role :premise :relation-to-parent :because
+       :text "Research policies, tools, and incentives currently pile up without coherent mechanisms for
+  reflection."}
+      {:id :sec1-p2 :role :premise :relation-to-parent :because
+       :text "Institutions generate knowledge faster than they can interpret, while prevailing audits and surveys
+  prioritise compliance over learning."}
+      {:id :sec1-p3 :role :premise :relation-to-parent :illustrates
+       :text "The Supplement’s simulated dialogue, participatory annotation, and iterative synthesis show the
+  research system studying itself in real time."}
+      {:id :sec1-p4 :role :premise :relation-to-parent :therefore
+       :text "Formalising a social-psychological REPL—Read, Evaluate, Print, Loop—makes reflexive learning habitual
+  from doctoral study to institutional governance."}]}}
+
+   {:id "t4r/dtp-fit"
+    :title "2 Relationship to existing doctoral training"
+    :argument
+    {:id :sec2-c
+     :role :conclusion
+     :text "talk4real augments existing doctoral training by embedding meta-learning infrastructure that lets
+  scholars observe, model, and re-engineer the systems they inhabit."
+     :supports
+     [{:id :sec2-p1 :role :premise :relation-to-parent :because
+       :text "Most doctoral programmes teach disciplinary technique but rarely teach how disciplines learn from one
+  another."}
+      {:id :sec2-p2 :role :premise :relation-to-parent :because
+       :text "talk4real combines ethnography, computer science, and design so scholars can treat conversation,
+  computation, and intervention as one method."}
+      {:id :sec2-p3 :role :premise :relation-to-parent :instantiated-by
+       :text "The Supplement pilot treats conversation as data and prototype as publication, keeping every scholar
+  inside a continuous REPL loop."}
+      {:id :sec2-p4 :role :premise :relation-to-parent :therefore
+       :text "The programme operates as a portable connective tissue for other DTPs, enabling cross-cohort self-
+  correction without adding extra training burden."}]}}
+
+   {:id "t4r/value"
+    :title "3 Added value to the field and the universities"
+    :argument
+    {:id :sec3-c
+     :role :conclusion
+     :text "talk4real delivers added value by supplying replicable infrastructural DNA that universities and
+  disciplines can use to build a federated commons for adaptive governance."
+     :supports
+     [{:id :sec3-p1 :role :premise :relation-to-parent :because
+       :text "Ten linked doctoral projects—talk4maths, talk4health, talk4policy, talk4arts, etc.—test the same REPL
+  architecture in different domains."}
+      {:id :sec3-p2 :role :premise :relation-to-parent :therefore
+       :text "Each project contributes stories, datasets, and tools to an evolving commons that lets institutions
+  reflect collectively."}
+      {:id :sec3-p3 :role :premise :relation-to-parent :illustrates
+       :text "The Supplement has already demonstrated cross-voice dialogue, thematic tagging, consent protocols, and
+  reflective synthesis working as a live prototype."}
+      {:id :sec3-p4 :role :premise :relation-to-parent :therefore
+       :text "Universities gain a practical method for adaptive governance, and the wider field gains a way to study
+  and iteratively improve epistemic systems."}]}}
+
+   {:id "t4r/training"
+    :title "4 Supervision, training, and cohort-building"
+    :argument
+    {:id :sec4-c
+     :role :conclusion
+     :text "talk4real’s supervisory and training model turns the cohort into a distributed research operating system
+  that learns how learning itself can be designed."
+     :supports
+     [{:id :sec4-p1 :role :premise :relation-to-parent :because
+       :text "Supervision is collaborative and polyphonic, pairing disciplinary mentors with methodological
+  companions in ethnography, data science, and design."}
+      {:id :sec4-p2 :role :premise :relation-to-parent :because
+       :text "Training follows the shared REPL rhythm demonstrated in the Supplement, grounding every project in a
+  common protocol."}
+      {:id :sec4-p3 :role :premise :relation-to-parent :instantiated-by
+       :text "Cohort practices—listening clinics and signal-boost workshops—share data, analyse overlaps, and co-
+  design interventions."}
+      {:id :sec4-p4 :role :premise :relation-to-parent :therefore
+       :text "Portfolio assessment with open datasets, code notebooks, and design artefacts plus open peer review
+  makes each scholar a co-investigator refining the collective infrastructure."}]}}
+
+   {:id "t4r/legacy"
+    :title "5 Legacy and sustainability"
+    :argument
+    {:id :sec5-c
+     :role :conclusion
+     :text "talk4real leaves a durable legacy by coupling open, modular infrastructure with graduates who act as
+  agents of collective intelligence."
+     :supports
+     [{:id :sec5-p1 :role :premise :relation-to-parent :because
+       :text "The programme yields software components, data schemas, and design templates alongside researchers
+  fluent in listening, analysis, and redesign."}
+      {:id :sec5-p2 :role :premise :relation-to-parent :because
+       :text "Each doctoral project produces a self-contained yet interoperable prototype, so sustainability never
+  depends on a single host institution."}
+      {:id :sec5-p3 :role :premise :relation-to-parent :illustrates
+       :text "The Supplement embodies this ethos as a collaboratively authored artefact that is simultaneously
+  document, dataset, and performance."}
+      {:id :sec5-p4 :role :premise :relation-to-parent :therefore
+       :text "Graduates seed the method elsewhere while the open infrastructure supports new nodes that link
+  universities, civic bodies, and cultural institutions into an evolving ecosystem."}]}}
+
+   {:id "t4r/support"
+    :title "6 Additional financial or other support resources"
+    :argument
+    {:id :sec6-c
+     :role :conclusion
+     :text "talk4real can deliver scalable, ethical, self-renewing collective research development with modest
+  resources by leveraging lightweight assets and distributed partnerships."
+     :supports
+     [{:id :sec6-p1 :role :premise :relation-to-parent :because
+       :text "Its main assets are conversation, computation, and coordination already present in partner
+  institutions, so core costs focus on stipends, workshops, and hosting."}
+      {:id :sec6-p2 :role :premise :relation-to-parent :because
+       :text "Partners such as the UK Reproducibility Network, PathOS, and the Oxford Schwartzman Centre plus allied
+  studios and labs contribute mentoring and in-kind expertise."}
+      {:id :sec6-p3 :role :premise :relation-to-parent :because
+       :text "Open-source software, shared cloud infrastructure, and cross-university collaboration keep financial
+  overhead low while broadening reach."}
+      {:id :sec6-p4 :role :premise :relation-to-parent :therefore
+       :text "Outputs—data, documentation, prototypes—remain freely available, ensuring continuing value beyond the
+  funding window."}]}}
+]
+
+#+END_SRC
+
+Research systems evolve through accumulation rather than design. Policies, tools, and incentives pile up without coherent mechanisms for reflection. talk4real responds by creating an infrastructure for developing collective intelligence — a framework that helps research cultures understand and redesign themselves through structured conversation, computation, and care.
+
+The challenge is that institutions often produce knowledge faster than they can interpret their own behaviour. Standard audits and surveys measure compliance, not learning. The LDTS Supplement demonstrates a different approach: simulated dialogue, participatory annotation, and iterative synthesis — the research system studying itself in real time.
+
+talk4real formalises this process as a social-psychological REPL: Read (anthropology → observation), Evaluate (computation → pattern-finding), Print (design → intervention), and Loop (reflection → adaptation). The aim is not to make openness another metric but to make learning habitual at every scale, from doctoral study to institutional governance. In this sense, talk4real transforms research from a collection of outputs into a living, listening infrastructure for shared understanding.
+
+* 2 Relationship to existing doctoral training (≈ 250 words)
+
+Most doctoral programmes teach disciplinary technique; few teach how disciplines learn from one another. talk4real positions that meta-learning as a core doctoral method. Drawing equally on ethnography, computer science, and design, it enables doctoral scholars to observe, model, and re-engineer the systems they inhabit.
+
+Where an AI-for-Mathematics programme might focus on proof automation, talk4real builds the social-technical environment in which such programmes can self-evaluate and improve. Its method—already piloted in the Supplement—treats conversation as data and prototype as publication. Each scholar participates in a continuous REPL loop, transforming reflection into experiment.
+
+This makes talk4real a connective tissue for existing DTPs: a portable layer that can plug into health, policy, or humanities cohorts, giving them tools to study their own collective intelligence. The result is not an extra training burden but an enabling structure for self-correction and cross-fertilisation between disciplines.
+
+* 3 Added value to the field and the universities (≈ 250 words)
+
+The value of talk4real lies in its replicable DNA. Instead of one theme, it enables ten linked doctoral projects—talk4maths, talk4health, talk4policy, talk4arts, and others—each testing the same REPL infrastructure within a different field. This produces exponential impact: multiple prototypes, one shared language of design.
+
+Each project contributes to an evolving commons of stories, datasets, and tools. Together they form a federated system for institutional reflection. The Supplement has already demonstrated the feasibility of this model: cross-voice dialogue, thematic tagging, consent protocols, and reflective synthesis functioning as a living prototype.
+
+For universities, the gain is a working method for adaptive governance—an infrastructure that transforms tacit culture into actionable insight. For research as a field, it offers a methodological advance: the ability to study epistemic systems empirically and improve them iteratively. talk4real turns collective intelligence from a metaphor into a maintainable toolset.
+
+* 4 Supervision, training, and cohort-building activities (≈ 250 words)
+
+Supervision in talk4real is collaborative and polyphonic. Each scholar has both disciplinary mentors and methodological companions from ethnography, data science, and design. Training follows the REPL rhythm—Read, Evaluate, Print, Loop—anchored by the shared talk4real protocol demonstrated in the Supplement.
+
+Cohort activities revolve around “listening clinics” and “signal-boost” workshops where individual projects share data, analyse overlaps, and co-design joint interventions. The Supplement’s simulated conversation becomes the model for these sessions: dialogic, analytic, generative.
+
+Assessment is portfolio-based, combining thesis chapters with open datasets, code notebooks, and design artefacts. Peer review happens in the open, with scholars acting as co-investigators on one another’s loops. Over time, the cohort functions as a distributed research operating system—each student a node contributing to the refinement of the collective infrastructure. The supervisory emphasis shifts from transmission to transformation: learning how learning itself can be designed.
+
+* 5 Legacy and sustainability (≈ 250 words)
+
+talk4real leaves behind both durable tools and skilled people. Technically, it yields an open, modular infrastructure for reflexive research—software components, data schemas, and design templates. Culturally, it produces agents of collective intelligence: researchers fluent in the languages of listening, analysis, and redesign.
+
+Each doctoral project delivers a self-contained but interoperable prototype, ensuring that sustainability does not depend on a single host institution. The Supplement illustrates this ethos: a collaboratively authored artifact that is at once document, dataset, and performance. These same qualities—openness, portability, generativity—define the programme’s long-term legacy.
+
+Graduates will seed the method in their future workplaces, while the infrastructure itself remains open for adaptation. Over time, a distributed network of talk4real nodes can link universities, civic organisations, and cultural institutions into an evolving ecosystem of collective intelligence. The ambition is modest in means but transformative in effect: to make reflexive design a standard feature of research life.
+
+* 6 Additional financial or other support resources (≈ 250 words)
+
+The talk4real model is intentionally lightweight. Its most important assets are conversation, computation, and coordination—resources already abundant in partner institutions. Core costs relate to doctoral stipends, workshops, and digital hosting; the intellectual capital comes from the network.
+
+Partners include the UK Reproducibility Network (methodology), PathOS (cultural analytics), and the Oxford Schwartzman Centre for Humanities & Technology (bridging humanities and computation in the spirit of Liz Coleman’s “New Liberal Arts”). Additional allies—design studios, ethnography labs, open-source developers—will provide mentoring and in-kind expertise.
+
+By using open-source software, shared cloud infrastructure, and cross-university collaboration, talk4real keeps financial overhead minimal while maximising reach. Each project’s deliverables—data, documentation, prototypes—remain freely available, ensuring that the programme’s outputs continue to generate value after the funding cycle. The result is a model of collective research development that is scalable, ethical, and self-renewing.
+

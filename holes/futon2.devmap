@@ -1,0 +1,98 @@
+@multiarg futon2/devmap
+@title FUTON2 Development Map
+@audience futon-devs, simulation-agents, future-you
+@tone formal-analytic
+@style roadmap
+@allow-new-claims true
+@length any
+
+! instantiated-by: Prototype 0 — AIF Stack Baseline (observe → perceive → affect → core) [🧠/己 ⚙️/工]
+  + context: FUTON2 runs a full Active Inference loop in the ant war-game, wiring `ants.aif.observe`, `ants.aif.perceive`, `ants.aif.affect`, and `ants.aif.core` into one tick-by-tick pipeline.
+  + if: You want a stable story that shows how observation, prediction errors, precision, and actions integrate per tick.
+  + however: Modules are individually solid but no single document freezes hunger/tau semantics or traces the whole stack.
+  + then: Capture a top-level architecture note from sensory keys through world updates, lock current hunger and predictive micro-step parameters, and add four golden AIF microtraces.
+  + because: A documented baseline prevents accidental drift before you optimise policy, analyzers, or mechanics.
+
+! instantiated-by: Prototype 1 — Observation Layer Hardening [👁️/日 📊/义]
+  + context: `g-observe` normalises sensory evidence (food, pheromones, proximity, novelty, reserves) into the vectors passed downstream.
+  + if: You want deterministic observations across seeds and a nailed-down vector ABI for later ML.
+  + however: Normalisation bounds and neighbour logic assumptions are scattered across helpers.
+  + then: Write property tests that enforce 0–1 ranges, document the `sense->vector` ordering, and add edge-case tests for grid borders, max-distance tweaks, and degenerate pheromone fields.
+  + because: Reliable observations keep perception and policy stable no matter the world configuration.
+
+! instantiated-by: Prototype 2 — Predictive Coding Microcycle Clarity [🧠/己 📈/义]
+  + context: Perception performs multi-step updates of mu, tau, Pi-o, goals, and weighted errors with annealing.
+  + if: You want inspectors (or future Arxana bridges) to understand belief updates.
+  + however: Hunger updates, sensory prediction, and error accumulation are interwoven without a canonical trace.
+  + then: Publish a single-tick perception trace with plots of hunger, tau, and error per micro-step, and formalise an interface for extracting a mu/precision snapshot.
+  + because: Clear cycles make later integrations with futon4 symbolic memory far easier.
+
+! instantiated-by: Prototype 3 — Hunger & Precision Dynamics Goldens [🍽️/口 🎯/义]
+  + context: Functions such as `tick-hunger`, `update-hunger`, `update-tau`, and `modulate-precisions` control the most sensitive dynamics.
+  + if: You want reproducible affective behaviour that survives refactors.
+  + however: There are no golden tests for tau evolution, hunger saturation, or reserve-driven adjustments.
+  + then: Record six golden sequences (normal, starvation, overstimulation, heavy-cargo, high-risk, high-ingest) and lock expected tau floors/caps for each.
+  + because: Once goldens exist, small tune-ups stop breaking entire colony behaviour.
+
+! instantiated-by: Prototype 4 — Policy Layer Surfacing [🎮/工 🎯/历]
+  + context: `ants.aif.policy` selects actions using EFE metrics while `attach-policy-diagnostics` emits traces.
+  + if: You want reproducible policy choices under controlled sensory inputs.
+  + however: There is no standalone harness that feeds synthetic mu/observation pairs.
+  + then: Build `(eval-policy mu prec obs config)` as a harness and add golden action rankings for ten canonical scenarios (e.g. rich food, enemy close, starvation risk).
+  + because: Stabilised policies are mandatory before benchmarking or bridging into futon1 salience services.
+
+! instantiated-by: Prototype 5 — World Mechanics Contract (war.clj) [🌍/土 ⚙️/工]
+  + context: The simulator handles evaporation, movement, gather/deposit, pheromone dynamics, hunger propagation, reserves, and termination.
+  + if: You want FUTON2 to be a reliable agent-environment backend.
+  + however: Movement heuristics, gather thresholds, and white-streak rules are powerful yet lightly documented.
+  + then: Document all invariants (pheromone caps, grid bounds, gather limits), seed movement decisions for determinism, and split movement modes into testable units.
+  + because: A clear contract keeps the world trustworthy when other prototypes depend on it for episodes.
+
+! instantiated-by: Prototype 6 — Live Analyzer & Pivot Stream Stabilisation [📈/义 🧾/口]
+  + context: The live analyzer consumes pivot events, computes EWMA metrics, detects starvation spirals, and prints mode transitions.
+  + if: You want analyzer outputs to feed futon3 evaluations or futon4 reflexive agents.
+  + however: Pivot schemas are implicit and analyzer assumptions are undocumented.
+  + then: Freeze a versioned pivot-row schema, add tests for required keys (:act, :mode, :cargo, :ing, etc.), and ship an example analyzer plugin for futon4.
+  + because: Pivot streams are FUTON2’s event bus and must behave like a stable ABI.
+
+! instantiated-by: Prototype 7 — Classic vs AIF Benchmark Suite [📊/义 ⏱️/日]
+  + context: Benchmark scripts compare classic ants to AIF runs across scores, durations, and G-ema.
+  + if: You want formal behavioural comparisons rather than anecdotes.
+  + however: Only three preset scenarios exist and there is no variance analysis.
+  + then: Add parametrised benchmarks spanning grid sizes, pheromone decay, hunger burn, and tau floors; capture plots and golden CSVs.
+  + because: FUTON2 should function as a scientific system with reproducible metrics.
+
+! instantiated-by: Prototype 8 — External Control & Episode Export [🔄/入 🧾/口]
+  + context: `simulate` drives the war sim but offers no external stepping API.
+  + if: You want futon3 or futon4 to request “give me N steps with this config.”
+  + however: Stepping remains tied to the CLI and HUD.
+  + then: Expose `(futon2.step world n {:emit-pivot? true})`, add EDN exports of full episodes, and keep pivot batches consistent.
+  + because: Exported episodes are critical for agent training, memory, and pattern extraction.
+
+! instantiated-by: Prototype 9 — futon1 ↔ futon2 Alignment Layer [🔗/工 🤝/女]
+  + context: FUTON1 supplies deterministic NLP/graph headers while FUTON2 emits deterministic agent events.
+  + if: You want a vertical link between natural-language agents and embodied ants.
+  + however: No mapping connects FUTON1 entities or intents to FUTON2 percepts, modes, or actions.
+  + then: Define a crosswalk dictionary and produce an export that summarises colony/mode state as entity relations consumable by futon1.
+  + because: This becomes the first shared interface across the stack.
+
+! instantiated-by: Prototype 10 — Curriculum Scenarios & AIF Behaviour Cards [🃏/子 📚/门]
+  + context: The current war scenario is rich but single-purpose.
+  + if: You want FUTON2 to double as a pedagogical engine for Active Inference.
+  + however: There is no named curriculum.
+  + then: Create behaviour cards (home-return, starvation spiral, over-exploration, defensive lattice, greedy gatherer collapse), simulate each with fixed seeds, and export the episodes.
+  + because: These cards seed pattern extraction and future training systems.
+
+! instantiated-by: Prototype 11 — AIF Agent Debugger & Mu/Precision Visualiser [🖥️/工 📈/义]
+  + context: Pivot logs are textual and require manual parsing.
+  + if: You want interactive introspection of mu vectors, tau evolution, and weighted errors.
+  + however: No visualiser or “follow Alice” mode exists.
+  + then: Build a Clerk notebook (or similar) that plots tau, hunger, errors, and pivot timelines, plus a mode that traces one agent’s full mu timeline.
+  + because: Visual insight accelerates iteration and debugging.
+
+! instantiated-by: Prototype 12 — Year-End Packaging & Story [📦/门 📑/口]
+  + context: FUTON2 must read as a coherent simulation layer to partners and future prototypes.
+  + if: You want it to be adoptable as a research simulator.
+  + however: The codebase is powerful but intimidating without a unifying story.
+  + then: Package the release with a top-level README, whitepaper, stepping API, goldens, and versioned pivot schema.
+  + because: Strong packaging turns FUTON2 into a reusable, inspectable module inside the full FUTON stack.

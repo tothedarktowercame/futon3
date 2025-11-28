@@ -1,4 +1,4 @@
-{:paths ["src" "resources"]
+{:paths ["src" "resources" "scripts" "."]
  :mvn/local-repo ".m2"
  :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/"}
              "clojars" {:url "https://repo.clojars.org/"}}
@@ -14,4 +14,6 @@
  :aliases {:dev {:main-opts ["-m" "f2.musn"]}
            :test {:extra-paths ["test"]
                   :main-opts ["-m" "test-runner"]}
-           :demo {:main-opts ["-m" "f2.musn" "demo"]}}}
+           :demo {:main-opts ["-m" "f2.musn" "demo"]}
+           :sigils {:extra-paths ["scripts"]
+                    :main-opts ["-m" "scripts.build_sigil_matrices"]}}}

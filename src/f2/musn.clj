@@ -3,8 +3,7 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [f2.transport :as transport]
-            [f2.ui :as ui]
-            [repl.http :as drawbridge]))
+            [f2.ui :as ui]))
 
 (defonce runtime (atom nil))
 
@@ -27,14 +26,24 @@
 
 (defn- start-drawbridge! [{:keys [drawbridge]}]
   (when (:enabled? drawbridge)
-    (let [token (or (:token drawbridge) (System/getenv "ADMIN_TOKEN"))]
-      (if (seq token)
-        (drawbridge/start! (-> drawbridge
-                               (dissoc :enabled?)
-                               (assoc :token token)))
-        (do
-          (println "Drawbridge enabled but ADMIN_TOKEN (or :token) not provided; skipping.")
-          nil)))))
+    (try
+      (require 'repl.http)
+      (let [start-fn (resolve 'repl.http/start!)]
+        (if start-fn
+          (let [token (or (:token drawbridge) (System/getenv "ADMIN_TOKEN"))]
+            (if (seq token)
+              (start-fn (-> drawbridge
+                            (dissoc :enabled?)
+                            (assoc :token token)))
+              (do
+                (println "Drawbridge enabled but ADMIN_TOKEN (or :token) not provided; skipping.")
+                nil)))
+          (do
+            (println "Drawbridge namespace loaded but start! missing; skipping.")
+            nil)))
+    (catch Throwable ex
+      (println "Drawbridge requested but unavailable:" (.getMessage ex))
+      nil))))
 
 (defn start!
   ([] (start! {}))
@@ -54,7 +63,8 @@
   (when-let [{:keys [transport ui drawbridge]} @runtime]
     (transport/stop! transport)
     (ui/stop! ui)
-    (when drawbridge (drawbridge/stop!))
+    (when drawbridge (drawbridge))
+    (futon3.tatami-store/reset-events!)
     (reset! runtime nil)))
 
 (defn ingest-demo! [state]

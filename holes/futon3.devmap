@@ -6,70 +6,70 @@
 @allow-new-claims true
 @length any
 
-! instantiated-by: Prototype 0 — MUSN Sandbox Baseline [🕸️/工 🎈/子]
+! instantiated-by: Prototype 0 — MUSN Sandbox Baseline [🌀/工 🎑/子]
   + context: FUTON3 currently runs a MUSN-style transport with WS+HTTP bus, optional SAFE/ADMIN REPL, NDJSON ingest, demo events, and placeholder semantics.
   + if: You want FUTON3 to serve as the canonical multi-user Agent Sandbox for experiments.
   + however: Topology, port assignments, frame envelopes, and default configs are implied by code and README rather than frozen as a contract.
   + then: Capture a top-level architecture note (ports, routes, frame types, config keys), lock the current hello/eval/ingest flows as golden transcripts, and version the “sandbox” profile.
   + because: A documented baseline prevents accidental API drift before agents, scripts, or other futons depend on FUTON3 for play.
 
-! instantiated-by: Prototype 1 — SAFE REPL & musn.api Joyful DSL [💬/口 🧪/子]
+! instantiated-by: Prototype 1 — SAFE REPL & musn.api Joyful DSL [💬/口 🍯/子]
   + context: SAFE (SCI) REPL exposes a tiny `musn.api/*` surface (clients, history, links, now) while ADMIN mode is token-gated for local power use.
   + if: You want a safe, joyful play surface where humans and simple agents can poke the sandbox without escaping the box.
   + however: The musn.api surface is not versioned, safety limits (code size, CPU, result caps) are only sketched, and example interactions are scattered between README and tests.
   + then: Define a versioned musn.api spec, centralise REPL config (modes, limits, allowlisted namespaces), and ship a small gallery of example REPL sessions (allowed vs rejected requests) as tests and docs.
   + because: A stable, well-scoped DSL keeps FUTON3 fun to script against while avoiding accidental promotion to “root shell for the whole stack.”
 
-! instantiated-by: Prototype 2 — Wisdom-Foraging Ants Port [🐜/子 🎓/义]
+! instantiated-by: Prototype 2 — Wisdom-Foraging Ants Port [🐜/子 🎎/义]
   + context: Earlier AIF ants exist as war-game agents; FUTON3 is now designated as the pīti sandbox where agents forage for wisdom instead of sugar.
   + if: You want a minimal species of agents that roam MUSN events, notice interesting structure, and emit “wisdom” back into the system.
   + however: Existing ants are bound to grid mechanics, hunger semantics, and non-MUSN worlds, with no notion of rooms, clients, or conversations.
   + then: Implement a `f3.ants` namespace where ants subscribe to MUSN streams, traverse rooms/pages, and emit `:ant/wisdom` events (e.g. repeated motifs, anomalies, promising links) tagged with trail IDs.
   + because: FUTON3 needs a concrete, joyful agent population that demonstrates “foraging for wisdom, not sugar” in a multi-user setting.
 
-! instantiated-by: Prototype 3 — Wisdom Trail Semantics [🧵/路 🧠/义]
+! instantiated-by: Prototype 3 — Wisdom Trail Semantics [〰️/门 👨/义]
   + context: Both humans and ants move through MUSN; their visits, edits, and reactions implicitly define trails of attention and discovery.
   + if: You want FUTON3 to preserve re-usable “wisdom trails” that futon1 and futon2 can later mine and stabilise.
   + however: Trails exist only as low-level logs; nothing distinguishes random churn from coherent explorations, and there is no explicit trail object.
   + then: Define a `:trail` schema (origin, waypoints, annotations, confidence, rating) and a consolidation job that rolls raw events into named trails, storing them back into futon1 under stable IDs.
   + because: Explicit trails support replay, comparison, and pattern extraction across agents, sessions, and future prototypes.
 
-! instantiated-by: Prototype 4 — C2+MUD Interaction Layer [🏰/门 🎮/工]
+! instantiated-by: Prototype 4 — C2+MUD Interaction Layer [🗻/门 🎋/工]
   + context: FUTON3 aspires to feel like a synthesis of the C2 wiki and a MUD: pages as rooms, links as exits, edits and talk as in-world actions.
   + if: You want multi-user presence and narrative texture without overcommitting to any specific frontend.
   + however: Current endpoints are JSON-only with no first-class notion of rooms, occupants, or in-room chat/commands.
   + then: Introduce a `room` abstraction keyed to futon1 pages, track presence per client, and implement core commands (`look`, `say`, `move`, `edit`, `trail!`) over WebSockets, plus a minimal HTML view that renders room description, links, occupants, and recent activity.
   + because: A C2+MUD interaction layer embodies pīti as joyful exploration of a shared semantic world, giving ants and humans a common stage.
 
-! instantiated-by: Prototype 5 — Joy & Friction Metrics [🎈/心 📊/义]
+! instantiated-by: Prototype 5 — Joy & Friction Metrics [🎑/心 📎/义]
   + context: FUTON3’s Factor of Awakening is pīti (rapture/joy), which should manifest as light, low-friction play in practice.
   + if: You want to know whether the sandbox actually feels inviting, discoverable, and fun to use.
   + however: Only transport-level stats exist; there are no metrics for time-to-first-success, session stickiness, or frustration signals.
   + then: Define soft metrics (e.g. time-to-first-`look`, successful-edit ratio, dead-link encounters, trail depth, rage-quit heuristics) and log them per session, then add a small reporting job that summarises joy/friction over time.
   + because: Making pīti observable lets you tune FUTON3 as a real Agent Sandbox instead of guessing based on server health alone.
 
-! instantiated-by: Prototype 6 — futon3 ↔ futon2 Hook Points [🔗/工 🐜/女]
+! instantiated-by: Prototype 6 — futon3 ↔ futon2 Hook Points [➰/工 🐜/女]
   + context: FUTON2 governs patterns, obligations, and upful contracts; FUTON3 generates candidate insights via trails and `:ant/wisdom` events.
   + if: You want upful ants and sandbox play to feed into pattern governance without overcoupling the layers.
   + however: There is no stable flow from FUTON3 outputs into FUTON2 flexiarg/DPL pipelines; any linkage would currently be ad hoc.
   + then: Define a narrow export (`/musn/export/upful-candidates`) that aggregates selected trails and wisdom events into candidate pattern seeds or Tactic States with a versioned schema designed for futon2 ingestion.
   + because: Clear hook points let FUTON2 evolve its checking and governance while still drawing on FUTON3’s exploratory discoveries.
 
-! instantiated-by: Prototype 7 — futon3 ↔ futon1 Snapshot Protocol [📦/门 🧭/日]
+! instantiated-by: Prototype 7 — futon3 ↔ futon1 Snapshot Protocol [📥/门 👉/日]
   + context: FUTON1 is canonical storage; FUTON3 produces rich, ephemeral sessions that may deserve long-term preservation.
   + if: You want to replay, study, and mine specific sandbox episodes and trails later.
   + however: The existing `/musn/export` snapshot is dev-focused and not guaranteed to round-trip or remain stable.
   + then: Standardise a snapshot format for sessions and trails (including room states, chat, ant activity, and key metrics), add opt-in capture controls, and build a harness that can replay a snapshot deterministically in FUTON3.
   + because: Reproducible episodes are essential raw material for futon1 graphs, futon2 pattern extraction, and futon4 narrative tooling.
 
-! instantiated-by: Prototype 8 — SAFE Scripting for Agents & Power Users [📜/工 🧪/子]
+! instantiated-by: Prototype 8 — SAFE Scripting for Agents & Power Users [📎/工 🍯/子]
   + context: musn.api provides a small REPL DSL; agents and advanced users will want to script behaviours and tools that live “inside” the sandbox.
   + if: You want joyful hacking and emergent experiments without compromising safety or flooding storage.
   + however: The boundary between safe, pure queries and effectful operations is not yet clearly defined for user-authored scripts.
   + then: Specify a constrained scripting model (pure reads over MUSN state plus explicit `emit!` of events and trails), enforce CPU/memory/time caps and per-client quotas, and publish a handful of example scripts (room greeter, trail summariser, ant buddy, joy-meter probe).
   + because: Scripting multiplies FUTON3’s creative potential while honouring its role as a non-governing, safety-conscious playground.
 
-! instantiated-by: Prototype 9 — Story & Packaging: “Agent Sandbox” [📖/口 📦/门]
+! instantiated-by: Prototype 9 — Story & Packaging: “Agent Sandbox” [📎/口 📥/门]
   + context: FUTON3 will be encountered by future-you and collaborators primarily through its repo and README.
   + if: You want it to be recognised as the pīti / Agent Sandbox chamber of the FUTON stack.
   + however: The current README focuses on transport and REPL details without foregrounding wisdom-foraging, C2+MUD interactions, or the Factor-of-Awakening mapping.

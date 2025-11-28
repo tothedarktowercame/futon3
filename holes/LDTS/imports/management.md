@@ -10,7 +10,7 @@ I’ll give you directly-pastable elisp-style forms.
 
 ---
 
-## 1. 🍌 Indicators → pattern + indicators
+## 1. 🍍 Indicators → pattern + indicators
 
 Top-level idea = a **pattern** about cybernetic indicators.
 Bullets = **indicator** nodes referenced by that pattern.

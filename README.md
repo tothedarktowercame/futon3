@@ -118,6 +118,18 @@ Keep the listener bound to `127.0.0.1` (default) and tunnel when working remotel
 - `GET /musn/clients` – connected clients, remote addr, current REPL mode, last activity
 - `GET /musn/sessions` – recent history grouped by client (including SAFE eval outputs)
 - `GET /musn/practices` – reasoning stubs (link suggestions + pattern instances)
+- `GET /musn/tatami/status` – 24h summary of tatami sessions (emoji/fruit counts)
+
+## Sigil adjacency builder (emoji / hanzi)
+
+A fake embedding is useful when Futon3 needs to “snap” a devmap clause onto the closest pattern in the standard library. Run the helper script to scan all devmaps/LDTS files and emit adjacency matrices for the emoji + hanzi sigils:
+
+```bash
+clojure -M:sigils
+# writes resources/sigils/emoji-adjacency.csv, hanzi-adjacency.csv, and index.edn
+```
+
+The matrices are cheap to recompute, so rerun the script whenever you add new flexiargs or LDTS fragments with fresh sigils.
 - `POST /musn/export` – writes `dev/scenario.edn` snapshot to disk
 
 ## Running Tests

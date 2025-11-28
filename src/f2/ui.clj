@@ -3,6 +3,8 @@
   (:require [cheshire.core :as json]
             [clojure.java.io :as io]
             [f0.clock :as clock]
+            [futon3.pattern-hints :as hints]
+            [futon3.tatami :as tatami]
             [f2.semantics :as semantics]
             [f2.transport :as transport]
             [org.httpkit.server :as http]))
@@ -11,6 +13,18 @@
   {:status status
    :headers {"content-type" "application/json"}
    :body (json/encode body)})
+
+(defn- read-json [request]
+  (when-let [body (:body request)]
+    (try
+      (json/parse-string (slurp body) true)
+      (catch Exception _ {}))))
+
+(defn- safe-handler [f]
+  (try
+    (f)
+    (catch Exception ex
+      (json-response 400 {:ok false :error (.getMessage ex)}))))
 
 (defn- sessions-view [state]
   (let [history (transport/history-view state)]
@@ -46,13 +60,25 @@
      :body (pr-str {:ok true :path export-path})}))
 
 (defn handler [state request]
-  (case [(:request-method request) (:uri request)]
-    [:get "/musn/clients"] (json-response 200 {:clients (transport/clients-view state)})
-    [:get "/musn/sessions"] (json-response 200 {:sessions (sessions-view state)})
-    [:get "/musn/practices"] (json-response 200 (practices-view state))
-    [:post "/musn/export"] (export-scenario! state)
-    [:get "/healthz"] {:status 200 :headers {"content-type" "text/plain"} :body "ok"}
-    {:status 404 :headers {"content-type" "text/plain"} :body "not-found"}))
+  (let [payload (delay (read-json request))]
+    (case [(:request-method request) (:uri request)]
+      [:get "/musn/clients"] (json-response 200 {:clients (transport/clients-view state)})
+      [:get "/musn/sessions"] (json-response 200 {:sessions (sessions-view state)})
+      [:get "/musn/practices"] (json-response 200 (practices-view state))
+      [:get "/musn/tatami/status"] (json-response 200 (tatami/status {:quiet? true}))
+      [:post "/musn/tatami/select"]
+      (safe-handler (fn [] (json-response 200 (tatami/select-target! @payload))))
+      [:post "/musn/tatami/start"]
+      (safe-handler (fn [] (json-response 200 (tatami/start-session @payload))))
+      [:post "/musn/tatami/log"]
+      (safe-handler (fn [] (json-response 200 (tatami/log-event @payload))))
+      [:post "/musn/tatami/close"]
+      (safe-handler (fn [] (json-response 200 (tatami/close-session @payload))))
+      [:post "/musn/hints"]
+      (safe-handler (fn [] (json-response 200 (hints/hints @payload))))
+      [:post "/musn/export"] (export-scenario! state)
+      [:get "/healthz"] {:status 200 :headers {"content-type" "text/plain"} :body "ok"}
+      {:status 404 :headers {"content-type" "text/plain"} :body "not-found"})))
 
 (defn start!
   ([state] (start! state {}))

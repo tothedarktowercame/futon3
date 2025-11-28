@@ -6,70 +6,70 @@
 @allow-new-claims true
 @length any
 
-! instantiated-by: Prototype 0 — War Machine Frame [🛡️/己 🧠/义]
+! instantiated-by: Prototype 0 — War Machine Frame [🐲/己 👨/义]
   + context: FUTON6 names the “war machine” layer—non-state, nomadic intelligence that lets humans (and agents) reason with mathematical structure as fluently as with language.
   + if: You want a coherent place in the stack where argument, pattern, and mathematics are treated as one inhabitable medium.
   + however: “Math on a computer” currently appears as scattered notes, flexiargs, and Clojure prototypes rather than a unified cognitive dojo.
   + then: Define FUTON6 explicitly as the argumentarium layer plus the Hyperreal Dictionary of Mathematics; document its remit (structured reasoning, proof landscapes, pattern-aware argument, math fluency); and link it to FUTON4 (Arxana) and FUTON5 (pattern libraries) as its immediate neighbours.
   + because: Without a named and scoped F6, downstream work on reasoning and civilisation remains hand-wavy instead of anchored in a concrete development path.
 
-! instantiated-by: Prototype 1 — Flexiarg Canonicalisation [📝/己 📐/工]
+! instantiated-by: Prototype 1 — Flexiarg Canonicalisation [💬/己 📐/工]
   + context: Flexiarg already acts as a pidgin for IF/HOWEVER/THEN/BECAUSE reasoning across projects.
   + if: You want FUTON6 to serve as the canonical interface for structured arguments and notate/lemma-style reasoning.
   + however: Existing flexiargs vary in style, metadata, and granularity; they don’t yet form a cohesive argument stock.
   + then: Establish a minimal flexiarg standard for F6 (required fields, IDs, links to sources, optional paramita/fruits annotations), refactor a small set of core devmaps and pattern arguments into this standard, and store them in the graph as first-class F6 nodes.
   + because: A stable argument format is the prerequisite for turning scattered reasoning into an actual argumentarium.
 
-! instantiated-by: Prototype 2 — Fruits & Orbs as Typed Argument Annotations [🍌/己 🟣/己]
+! instantiated-by: Prototype 2 — Fruits & Orbs as Typed Argument Annotations [🍍/己 🌚/己]
   + context: Karmic fruits and paramita orbs already exist as glyphs for professional, karmic, and somatic readings.
   + if: You want FUTON6 to exploit these as a lightweight type system over arguments and proofs.
   + however: Fruits/orbs are currently used in journaling and planning, not as systematic annotations on reasoning objects.
-  + then: Define a simple mapping from fruits/orbs to argument metadata (e.g., 🍐 = obligation-bearing argument, 🍌 = indicator / empirical claim, 🗝️ = rationale / axiom, 🚀/🔔 = ambition/stretch-level conjectures), and start tagging key flexiargs in the F6 store accordingly.
+  + then: Define a simple mapping from fruits/orbs to argument metadata (e.g., 🍐 = obligation-bearing argument, 🍍 = indicator / empirical claim, 🗝️ = rationale / axiom, 🚀/🔔 = ambition/stretch-level conjectures), and start tagging key flexiargs in the F6 store accordingly.
   + because: This lets agents and future-you see not just *what* an argument says but *what kind* of karmic and practical weight it carries.
 
-! instantiated-by: Prototype 3 — Hyperreal Dictionary Seedbed [📚/门 📐/十]
+! instantiated-by: Prototype 3 — Hyperreal Dictionary Seedbed [📤/门 📐/十]
   + context: The Hyperreal Dictionary of Mathematics is the dream project: inhabitable mathematics across natural language, flexiarg, and symbolic forms.
   + if: You want a concrete starting point that is small enough to build but rich enough to prove the concept.
   + however: No curated subset of concepts has yet been selected or encoded; everything is still in the realm of “someday we’ll put math in the graph.”
   + then: Choose a compact seed set of topics (e.g., Dirichlet distributions, Abelian groups, category-theoretic arrows, simple game-theoretic notions) and define for each: a natural-language gloss, a flexiarg-style definition, example arguments, and links to any existing formalisation or code.
   + because: A small but fully worked dictionary slice demonstrates what “thinking in mathematics” could feel like and guides further expansion.
 
-! instantiated-by: Prototype 4 — Scholium & Proof-Landscape Mode [📚/门 🧭/己]
+! instantiated-by: Prototype 4 — Scholium & Proof-Landscape Mode [📤/门 👉/己]
   + context: You already sketched “Scholium Mode” in FUTON4 as a Spinoza-inspired structure for linked arguments.
   + if: You want FUTON6 to offer navigable proof/argument landscapes rather than isolated lemmas.
   + however: Current flexiarg blocks don’t encode “this is a theorem/lemma/proof commentary” relationships in a way that Arxana and agents can traverse.
   + then: Add minimal scholium metadata (e.g., :kind theorem/lemma/commentary, :depends-on [IDs], :refuted-by [IDs]) and implement a “view scholium tree” affordance that renders local proof neighbourhoods from the F6 store.
   + because: Seeing the surrounding landscape of an argument is what turns mathematics from a sequence of tricks into a navigable terrain.
 
-! instantiated-by: Prototype 5 — Language ⇄ Mathematics Co-Reasoning [🧠/己 🔄/入]
+! instantiated-by: Prototype 5 — Language ⇄ Mathematics Co-Reasoning [👨/己 🔃/入]
   + context: FUTON6 is meant to support “thinking in mathematics” with similar fluency to thinking in natural language.
   + if: You want bidirectional transformations: from informal description → structured argument → semi-formal math object, and back.
   + however: Current practice mostly stays at the natural-language flexiarg level; there’s no systematic bridge into symbolic/math representations.
   + then: Define a small set of translation patterns (e.g., “whenever we say ‘for all ε > 0’ in flexiarg, we can generate a corresponding quantifier structure”), and test this on the Hyperreal Dictionary seed entries with simple Clojure/LaTeX or data-structure encodings.
   + because: Even partial, pattern-based translation enables agents and future-you to treat math text and code as two views of the same underlying reasoning.
 
-! instantiated-by: Prototype 6 — Agent Training Regime (Pattern- & Math-Aware) [🤖/工 🧪/义]
+! instantiated-by: Prototype 6 — Agent Training Regime (Pattern- & Math-Aware) [👹/工 🍯/义]
   + context: GPT-style agents can already follow patterns and respond in flexiarg, but they lack durable memory and explicit math fluency.
   + if: You want FUTON6 to house agents that can propose, critique, and refine arguments using the Hyperreal Dictionary and scholium trees.
   + however: There is no training protocol or API contract that tells agents how to interact with F6 memory, fruit/orb annotations, or proof landscapes.
   + then: Specify a simple “F6 Agent Protocol” (query interface, expected response formats, usage of fruits/orbs as hints, error-handling when gaps are found), and pilot one or two agents that assist with refactoring old notes into F6-compliant arguments.
   + because: Agents that can inhabit FUTON6 coherently are key allies in scaling the war machine beyond what one human can hold.
 
-! instantiated-by: Prototype 7 — State Interface & Non-Capture Guardrails [🏛️/口 🛡️/己]
+! instantiated-by: Prototype 7 — State Interface & Non-Capture Guardrails [🏡/口 🐲/己]
   + context: F6 as war machine is explicitly non-state; Oxford Brookes, funders, and clients are state-like apparatuses.
   + if: You want to use FUTON6’s power in institutional contexts without letting those contexts capture or distort its purpose.
   + however: Without explicit guardrails, there is a risk that argumentarium and Hyperreal work get reframed as merely “institutional KPIs” or consultancy deliverables.
   + then: Write a short F6 “Non-Capture Charter” clarifying what can be exported (e.g., insights, tools, partial argument sets) and what remains core internal infrastructure, and use karmic fruits (🍈, 🍐, 👻) to explicitly mark arguments that are entangled with institutional obligations.
   + because: Keeping a clear boundary between war machine and state use preserves F6’s integrity while still allowing pragmatic collaborations.
 
-! instantiated-by: Prototype 8 — F6–F7 Handshake (Post-State Civilisation Scenarios) [🏕️/女 🌍/义]
+! instantiated-by: Prototype 8 — F6–F7 Handshake (Post-State Civilisation Scenarios) [🌄/女 🌏/义]
   + context: F7 represents the martial application of the stack: post-state nomadic civilisation as Plato-resistant response.
   + if: You want FUTON6 to actively feed into long-arc world-building rather than remain as pure theory.
   + however: There is no explicit pipeline from F6 arguments and definitions into scenario work, story-worlds, or institutional experiments.
   + then: Choose one or two concrete F7 scenarios (e.g., “post-state research college”, “nomadic math-sangha”) and develop small F6 argument bundles that support them (governance patterns, resource flows, epistemic norms), tagged with appropriate fruits and paramitas.
   + because: Testing F6’s outputs against imagined F7 worlds keeps the war machine pointed at civilisation-level transformation rather than self-referential cleverness.
 
-! instantiated-by: Prototype 9 — Yearly Argumentarium Review & Refactor [🔄/入 🧹/工]
+! instantiated-by: Prototype 9 — Yearly Argumentarium Review & Refactor [🔃/入 🌂/工]
   + context: Over time, FUTON6 will accumulate arguments, definitions, scholia, and agent traces.
   + if: You want the war machine to stay lean, legible, and usable rather than becoming another unread archive.
   + however: Without a scheduled refactor, cruft, duplications, and outdated frames will quietly pile up.

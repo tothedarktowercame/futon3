@@ -28,16 +28,16 @@ We can represent the same concept with multiple alphabets:
 | Concept                     | Emoji | Hanzi | Toki Pona | Notes |
 |-----------------------------|-------|-------|-----------|-------|
 | Sleep baseline              | 💤     | 已    | lape      | Prototype 0 indicator |
-| Tai chi / embodied practice | 🧘     | 弓    | musi?     | |
+| Tai chi / embodied practice | 🙌     | 弓    | musi?     | |
 | Exercise guard              | 🏃     | 卫    | sijelo    | |
-| Penmaster recordings        | 🎙️     | 子    | kalama?   | |
-| Work-session logs           | 🗒️     | 工    | lipu      | |
-| Org–FUTON data pipeline     | 🗂️     | 上    | lipu lawa | |
-| Dashboard review            | 📊     | 云    | musi ilo  | backups |
-| Job-search trajectory       | 🎯     | 历    | lawa pi pali | |
+| Penmaster recordings        | 🎶     | 子    | kalama?   | |
+| Work-session logs           | 📎     | 工    | lipu      | |
+| Org–FUTON data pipeline     | 📁     | 上    | lipu lawa | |
+| Dashboard review            | 📎     | 云    | musi ilo  | backups |
+| Job-search trajectory       | 🔺     | 历    | lawa pi pali | |
 | PARamita reflection         | 🌀     | 己    | pilin     | |
 | Coaching / relational care  | 💟     | 女    | olin      | |
-| Consulting comms            | 💬     | 言?   | toki      | etc. |
+| Consulting comms            | 💬     | 口    | toki      | etc. |
 
 Feel free to extend the table as we add clauses.
 
@@ -70,8 +70,8 @@ Feel free to extend the table as we add clauses.
 
 ## Example (FUTON0 ↔ PARAMITA1)
 
-- Prototype 0 (Indicators): `🧘` missing (no tai chi), `🏃` low (exercise 1),
-  `💤` strong (sleep 4), `🎙️` absent, `🗒️` implicit (tool-testing). → mark
+- Prototype 0 (Indicators): `🙌` missing (no tai chi), `🏃` low (exercise 1),
+  `💤` strong (sleep 4), `🎶` absent, `📎` implicit (tool-testing). → mark
   sleep satisfied, exercise & recordings outstanding.
 - Prototype 6 (Mojo Rhythm): `🌀` strong (life garden reflection), `💟`
   partial, `📇` absent. → reflection satisfied; schedule coaching evidence.
@@ -91,7 +91,7 @@ Keep the mapping tables up to date as new devmaps and obligations appear.
 ## Standard Library & HAMMER
 
 - Every flexiarg `! conclusion` now carries emoji/hanzi sigils. Treat these
-  as the “HAMMER rack”: when a tactic state lights up a symbol (e.g., `[🤝/女]`),
+  as the “HAMMER rack”: when a tactic state lights up a symbol (e.g., `[👫/女]`),
   scan the library for clauses with matching or nearby sigils to pull in the
   relevant technique.
 - We can build a 256×256 association matrix using the original 8-bit encodings

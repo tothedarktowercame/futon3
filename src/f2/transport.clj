@@ -4,6 +4,7 @@
             [clojure.core.async :as async]
             [clojure.string :as str]
             [f0.clock :as clock]
+            [futon3.tatami :as tatami]
             [f2.repl :as repl]
             [f2.semantics :as semantics]
             [org.httpkit.server :as http])
@@ -59,7 +60,12 @@
   {'now (fn [] (clock/->iso-string))
    'clients (fn [] (clients-view state))
    'history (fn [] (history-view state))
-   'links (fn [] (semantics/suggest-links (history-view state)))})
+   'links (fn [] (semantics/suggest-links (history-view state)))
+   'tatami-start tatami/start
+   'tatami-log tatami/log
+   'tatami-convolve tatami/convolve
+   'tatami-close tatami/close
+   'tatami-status tatami/status})
 
 (defn- lookup-client-by-name [state target]
   (->> @(:clients state)

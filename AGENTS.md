@@ -1,3 +1,11 @@
+## Maintaining devmap + pattern coherence
+
+- Keep each futon devmap in sync with reality: when a clause is finished, cite the evidence (README section, test, tag); when it is blocked, note the dependency. Use the stack-coherence patterns (e.g. `stack-blocker-detection`) to spot empty dirs or missing artifacts and record `blocked-by[...]` until the prerequisite is done.
+- Watch for repeated sigil pairs in devmaps. The pattern library (e.g. `pattern-differentiation-alarms`) treats duplicates as alarms: either split/merge the underlying patterns, add a more specific devmap-coherence flexiarg, or retire stale clauses. After adjustments, rerun the TF–IDF embedding + sigil matrices so the fake embedding stays meaningful.
+- Contribute new stack-coherence patterns whenever the project needs cross-futon checks (e.g. comparing READMEs vs git logs). These global patterns should inspect hotspots—git history, README timestamps, file trees—to classify each devmap item as “done / blocked / drifting” and help the informal proof engine keep the whole stack honest.
+
+## MUSN stuff
+
 F2 (MUSN) — One-Page Build Brief
 
 Scope (thin waist): Transport + routing only. F1 (graph/memory) and F3 (ants) are external via adapters.
@@ -65,6 +73,8 @@ export {sid} returns a path; F2 does not touch the file.
 run → job-id; status eventually done with metrics.
 
 Killing a client doesn’t affect others; server logs a clean drop.
+
+
 
 Repo layout (tiny)
 /docs/protocol.md

@@ -21,7 +21,7 @@
 (def ^:private paramita-data (delay (read-edn "resources/sigils/paramitas.edn")))
 
 (def ^:private clause-re
-  (re-pattern "!\\s+(?:conclusion|claim):\\s*(.*?)\\s*\\[(.*?)\\]"))
+  (re-pattern "!\\s+(?:conclusion|claim|instantiated-by):\\s*(.*?)\\s*\\[(.*?)\\]"))
 
 (defn- split-sigils [block]
   (->> (str/split block #"\s+")
@@ -42,10 +42,20 @@
 (defn- read-file [file]
   (slurp (io/file file)))
 
-(defn- scan-ldts []
-  (for [file (file-seq (io/file "holes/LDTS"))
+(def ^:private pattern-roots [(io/file "holes/LDTS")
+                              (io/file "library")])
+
+(defn- flexiarg-file? [file]
+  (let [name (.getName file)]
+    (or (str/ends-with? name ".flexiarg")
+        (str/ends-with? name ".multiarg"))))
+
+(defn- scan-library []
+  (for [root pattern-roots
+        :when (.exists root)
+        file (file-seq root)
         :when (and (.isFile file)
-                   (str/ends-with? (.getName file) ".flexiarg"))
+                   (flexiarg-file? file))
         :let [text (slurp file)
               title (extract-meta text "title")
               arg (extract-meta text "arg")]
@@ -55,7 +65,7 @@
      :summary (str/trim (second match))
      :sigils (split-sigils (nth match 2))}))
 
-(def ^:private ldts-patterns (delay (vec (scan-ldts))))
+(def ^:private ldts-patterns (delay (vec (scan-library))))
 
 (defn- futon-number [name]
   (some->> (re-find #"futon(\d+)" name)

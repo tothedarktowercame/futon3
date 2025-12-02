@@ -3,7 +3,7 @@
   (:require [cheshire.core :as json]
             [clojure.java.io :as io]
             [f0.clock :as clock]
-            [futon3.pattern-hints :as hints]
+            [futon3.learn-or-act :as learn-act]
             [futon3.tatami :as tatami]
             [f2.semantics :as semantics]
             [f2.transport :as transport]
@@ -75,7 +75,7 @@
       [:post "/musn/tatami/close"]
       (safe-handler (fn [] (json-response 200 (tatami/close-session @payload))))
       [:post "/musn/hints"]
-      (safe-handler (fn [] (json-response 200 (hints/hints @payload))))
+      (safe-handler (fn [] (json-response 200 (learn-act/decide @payload))))
       [:post "/musn/export"] (export-scenario! state)
       [:get "/healthz"] {:status 200 :headers {"content-type" "text/plain"} :body "ok"}
       {:status 404 :headers {"content-type" "text/plain"} :body "not-found"})))

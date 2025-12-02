@@ -2,6 +2,7 @@
   "Entry point wiring together transport + ui runtimes."
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
+            [f2.adapters.mock :as mock]
             [f2.transport :as transport]
             [f2.ui :as ui]))
 
@@ -22,7 +23,9 @@
 (defn- build-state [config]
   {:config (atom config)
    :clients (atom {})
-   :history (atom [])})
+   :history (atom [])
+   :adapters (atom (mock/adapters))
+   :router (atom nil)})
 
 (defn- start-drawbridge! [{:keys [drawbridge]}]
   (when (:enabled? drawbridge)

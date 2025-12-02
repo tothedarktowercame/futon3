@@ -1,8 +1,9 @@
 (ns test-runner
   (:require [clojure.test :as t]
-            [graph-test]
-            [semantics-test]
-            [transport-test])
+           [graph-test]
+           [learn-or-act-test]
+           [semantics-test]
+           [transport-test])
   (:gen-class))
 
 (defn -main [& _]

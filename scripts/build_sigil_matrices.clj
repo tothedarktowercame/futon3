@@ -1,10 +1,14 @@
 (ns scripts.build_sigil_matrices
-  "Scan devmaps/LDTS for sigil pairs and emit fake adjacency matrices."
+  "Scan devmaps/library flexiargs for sigil pairs and emit fake adjacency matrices."
   (:require [clojure.java.io :as io]
             [clojure.string :as str])
   (:import (java.io PushbackReader)))
 
-(def search-root ["holes" "LDTS"])
+(def search-root ["holes" "library"])
+(def ^:private repo-root (.toPath (io/file ".")))
+
+(defn- rel-path [file]
+  (str (.relativize repo-root (.toPath file))))
 
 (def file-pattern #"\.(devmap|flexiarg|md|org)$")
 
@@ -42,14 +46,17 @@
 
 (defn gather-sigils []
   (reduce (fn [acc file]
-            (let [content (slurp file)]
+            (let [content (slurp file)
+                  location (rel-path file)]
               (reduce (fn [acc {:keys [emoji hanzi]}]
-                        (-> acc
-                            (update :emoji conj emoji)
-                            (update :hanzi conj hanzi)))
+                        (let [pair (str emoji "/" hanzi)]
+                          (-> acc
+                              (update :emoji conj emoji)
+                              (update :hanzi conj hanzi)
+                              (update-in [:pair-sources pair] (fnil conj #{}) location))))
                       acc
                       (extract-sigils content))))
-          {:emoji #{} :hanzi #{}}
+          {:emoji #{} :hanzi #{} :pair-sources {}}
           (candidate-files)))
 
 (defn- read-truth-table-order []
@@ -106,6 +113,21 @@
         (vec (concat base extras))
         extras))))
 
+(defn load-pattern-index []
+  (let [file (io/file "resources/sigils/patterns-index.tsv")]
+    (when (.exists file)
+      (->> (str/split-lines (slurp file))
+           (remove #(str/blank? %))
+           (remove #(str/starts-with? % "#"))
+           (map #(str/split % #"\t"))
+           (keep (fn [[pattern tokipona truth rationale hotwords]]
+                   (when (and tokipona truth)
+                     {:pattern pattern
+                      :tokipona tokipona
+                      :truth truth
+                      :rationale rationale
+                      :hotwords hotwords})))))))
+
 (defn adjacency [items]
   (let [order (if (seq items) items ["∅"])
         positions (zipmap order (range))
@@ -135,13 +157,17 @@
         (pr-str {:emoji emoji :hanzi hanzi})))
 
 (defn -main [& _]
-  (let [{:keys [emoji hanzi]} (gather-sigils)
+  (let [{:keys [emoji hanzi pair-sources]} (gather-sigils)
         emoji-base (or (read-tokipona-order) [])
-        hanzi-base (or (read-truth-table-order) [])
-        emoji-order emoji-base
-        hanzi-order hanzi-base
-        emoji-missing (seq (remove (set emoji-base) emoji))
-        hanzi-missing (seq (remove (set hanzi-base) hanzi))]
+        hanzi-base (vec (concat (or (read-truth-table-order) []) ["卯"]))
+        emoji-order (ordered-vec emoji-base emoji)
+        hanzi-order (ordered-vec hanzi-base hanzi)
+        emoji-missing (seq (remove (set emoji-order) emoji))
+        hanzi-missing (seq (remove (set hanzi-order) hanzi))
+        collisions (->> pair-sources
+                        (map (fn [[pair files]] [pair (sort files)]))
+                        (filter (fn [[_ files]] (> (count files) 1)))
+                        (sort-by (fn [[_ files]] (- (count files)))))]
     (ensure-dir "resources/sigils")
     (write-index emoji-order hanzi-order)
     (write-csv (adjacency emoji-order) "resources/sigils/emoji-adjacency.csv")
@@ -150,4 +176,16 @@
       (println "Unrecognized emoji sigils (not in baseline):" emoji-missing))
     (when hanzi-missing
       (println "Unrecognized hanzi sigils (not in baseline):" hanzi-missing))
+    (if (seq collisions)
+      (do
+        (println (format "Sigil collisions detected (%d pairs with repeated sigils):" (count collisions)))
+        (doseq [[pair files] collisions]
+          (let [count-files (count files)
+                alarm? (>= count-files 7)]
+            (println (format " - %s (%d)%s ← %s"
+                             pair
+                             count-files
+                             (if alarm? " ⚠" "")
+                             (str/join ", " files))))))
+      (println "No repeated sigil pairs detected."))
     (println (format "Wrote %d emoji and %d hanzi entries." (count emoji-order) (count hanzi-order)))))

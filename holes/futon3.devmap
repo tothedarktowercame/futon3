@@ -5,73 +5,84 @@
 @style roadmap
 @allow-new-claims true
 @length any
+@factor Joy / Rapture (pīti)
+@IFR: FUTON3 is the flexiformal pīti chamber where design patterns live as checkable claims, embeddings surface near fits, and daily actions are certified against devmap obligations with joyful (Spinozan) empowered action.
+@state MUSN transport/REPL/sigil tooling are live, while the canonical pattern store, check DSL, proof adapters, and workday instrumentation remain underway.
+@next Stand up the pattern canon + `check!` API, wire proof→graph/energy exports, and land the workday instrumentation loop before expanding training-ground efforts.
 
-! instantiated-by: Prototype 0 — MUSN Sandbox Baseline [🌀/工 🎑/子]
-  + context: FUTON3 currently runs a MUSN-style transport with WS+HTTP bus, optional SAFE/ADMIN REPL, NDJSON ingest, demo events, and placeholder semantics.
-  + if: You want FUTON3 to serve as the canonical multi-user Agent Sandbox for experiments.
-  + however: Topology, port assignments, frame envelopes, and default configs are implied by code and README rather than frozen as a contract.
-  + then: Capture a top-level architecture note (ports, routes, frame types, config keys), lock the current hello/eval/ingest flows as golden transcripts, and version the “sandbox” profile.
-  + because: A documented baseline prevents accidental API drift before agents, scripts, or other futons depend on FUTON3 for play.
+! instantiated-by: Prototype 0 — Flexiformal Transport Baseline [💤/已]
+  + context: FUTON3 still rides the MUSN transport (WS+HTTP bus, SAFE/ADMIN REPL, NDJSON ingest), but its primary job is to host pattern checks and informal proof states, not free-roaming agents.
+  + if: You want an execution substrate where pattern obligations can be posed, evaluated, and recorded with deterministic transcripts.
+  + however: The baseline hello/event/session flows are documented as “sandbox trivia” instead of “proofwork IO contracts.”
+  + then: Freeze the transport contract from the perspective of check jobs (pattern-apply, gap-report, trail-capture), provide golden transcripts for each, and version the `sandbox` profile as the canonical proofwork runtime.
+  + because: Flexiformal checking needs a stable log format before any higher-layer reasoning can rely on it.
 
-! instantiated-by: Prototype 1 — SAFE REPL & musn.api Joyful DSL [💬/口 🍯/子]
-  + context: SAFE (SCI) REPL exposes a tiny `musn.api/*` surface (clients, history, links, now) while ADMIN mode is token-gated for local power use.
-  + if: You want a safe, joyful play surface where humans and simple agents can poke the sandbox without escaping the box.
-  + however: The musn.api surface is not versioned, safety limits (code size, CPU, result caps) are only sketched, and example interactions are scattered between README and tests.
-  + then: Define a versioned musn.api spec, centralise REPL config (modes, limits, allowlisted namespaces), and ship a small gallery of example REPL sessions (allowed vs rejected requests) as tests and docs.
-  + because: A stable, well-scoped DSL keeps FUTON3 fun to script against while avoiding accidental promotion to “root shell for the whole stack.”
+! instantiated-by: Prototype 1 — Pattern Canon & Standard Library [💖/本 🙅/在]
+  + context: A small flexiarg/pattern library already exists (Nonstarter, Proto/Allow-Works, etc.) but is scattered between files.
+  + if: You want FUTON3 to be the place where patterns are curated with metadata, linking obligations, and proof status.
+  + however: There is no canonical store or schema for “pattern definitions + applicability notes + links to Futon devmaps.”
+  + then: Stand up a `f3.patterns` store (ID, clauses, references, pāramitā tags, fruits/orbs weights) populated with the current standard library and backfilled with source links.
+  + because: Without a canonical pattern store, the checker has nothing trustworthy to compare against.
+  + evidence: `resources/pattern_store.edn`, `src/futon3/pattern_store.clj`, and `test/pattern_store_test.clj` keep the catalog synced with live tests + README references.
 
-! instantiated-by: Prototype 2 — Wisdom-Foraging Ants Port [🐜/子 🎎/义]
-  + context: Earlier AIF ants exist as war-game agents; FUTON3 is now designated as the pīti sandbox where agents forage for wisdom instead of sugar.
-  + if: You want a minimal species of agents that roam MUSN events, notice interesting structure, and emit “wisdom” back into the system.
-  + however: Existing ants are bound to grid mechanics, hunger semantics, and non-MUSN worlds, with no notion of rooms, clients, or conversations.
-  + then: Implement a `f3.ants` namespace where ants subscribe to MUSN streams, traverse rooms/pages, and emit `:ant/wisdom` events (e.g. repeated motifs, anomalies, promising links) tagged with trail IDs.
-  + because: FUTON3 needs a concrete, joyful agent population that demonstrates “foraging for wisdom, not sugar” in a multi-user setting.
+! instantiated-by: Prototype 2 — Similarity Field & Fake Embedding [💤/习]
+  + context: We already use a “fake embedding” (sigil adjacency) to find nearby patterns.
+  + if: You want reproducible neighbourhood queries for pattern suggestions.
+  + however: The embedding lives in ad-hoc CSVs and isn’t wired into FUTON3’s APIs.
+  + then: Integrate the sigil-distance matrix into FUTON3 as a first-class service (pattern search API, `nearest-patterns` command, CLI/UI views) and publish tests proving deterministic neighbourhoods.
+  + because: Pattern suggestion quality underpins the flexiformal workflow and must be inspectable.
 
-! instantiated-by: Prototype 3 — Wisdom Trail Semantics [〰️/门 👨/义]
-  + context: Both humans and ants move through MUSN; their visits, edits, and reactions implicitly define trails of attention and discovery.
-  + if: You want FUTON3 to preserve re-usable “wisdom trails” that futon1 and futon2 can later mine and stabilise.
-  + however: Trails exist only as low-level logs; nothing distinguishes random churn from coherent explorations, and there is no explicit trail object.
-  + then: Define a `:trail` schema (origin, waypoints, annotations, confidence, rating) and a consolidation job that rolls raw events into named trails, storing them back into futon1 under stable IDs.
-  + because: Explicit trails support replay, comparison, and pattern extraction across agents, sessions, and future prototypes.
+! instantiated-by: Prototype 3 — Applicability Engine & Check DSL [👐/么 💖/什么]
+  + context: We want FUTON3 to answer “can this pattern apply?” and “what new obligations arise?”
+  + if: You want a declarative DSL (possibly REPL-safe) for posing check contexts and receiving structured verdicts (applies / blocked / missing evidence).
+  + however: Checks today are conversational heuristics in aob-chatgpt or handwritten flexiargs.
+  + then: Define a `check!` API (inputs: pattern ID, context EDN, evidence refs; outputs: status, missing fields, derived tasks), enforce schema validation, and log every check as a proof state record.
+  + because: Turning patterns into executable checks is what makes FUTON3 “flexiformal” rather than just narrative.
+  + next: Ship the Futon1/Futon2 adapters so `futon3/logs/checks.edn` entries replicate into graph + viriya stores instead of living only in local logs, and expose `/musn/check` over HTTP once the transport contract is frozen.
+  + evidence: `src/futon3/checks.clj`, `src/f2/router.clj`, and `test/transport_test.clj` (check route cases) exercise the DSL end-to-end.
 
-! instantiated-by: Prototype 4 — C2+MUD Interaction Layer [🗻/门 🎋/工]
-  + context: FUTON3 aspires to feel like a synthesis of the C2 wiki and a MUD: pages as rooms, links as exits, edits and talk as in-world actions.
-  + if: You want multi-user presence and narrative texture without overcommitting to any specific frontend.
-  + however: Current endpoints are JSON-only with no first-class notion of rooms, occupants, or in-room chat/commands.
-  + then: Introduce a `room` abstraction keyed to futon1 pages, track presence per client, and implement core commands (`look`, `say`, `move`, `edit`, `trail!`) over WebSockets, plus a minimal HTML view that renders room description, links, occupants, and recent activity.
-  + because: A C2+MUD interaction layer embodies pīti as joyful exploration of a shared semantic world, giving ants and humans a common stage.
+! instantiated-by: Prototype 4 — Trail & Proof-State Journal [💖/几 💖/弓]
+  + context: Wisdom trails already exist for tracing exploration, but now they must document proof obligations and how work sessions discharged them.
+  + if: You want every check, dismissal, and new pattern idea to leave an auditable trail.
+  + however: Trails are still general-purpose exploration logs, not proof-state journals.
+  + then: Extend the trail schema with `:pattern/id`, `:obligation/id`, `:action/tags`, and `:delta/joy`, add rollups that show which devmap clauses advanced per day, and expose a `/musn/trails/proof` export for futon4 archives.
+  + because: The whole point is to measure how daily practice advances the devmaps.
 
-! instantiated-by: Prototype 5 — Joy & Friction Metrics [🎑/心 📎/义]
-  + context: FUTON3’s Factor of Awakening is pīti (rapture/joy), which should manifest as light, low-friction play in practice.
-  + if: You want to know whether the sandbox actually feels inviting, discoverable, and fun to use.
-  + however: Only transport-level stats exist; there are no metrics for time-to-first-success, session stickiness, or frustration signals.
-  + then: Define soft metrics (e.g. time-to-first-`look`, successful-edit ratio, dead-link encounters, trail depth, rage-quit heuristics) and log them per session, then add a small reporting job that summarises joy/friction over time.
-  + because: Making pīti observable lets you tune FUTON3 as a real Agent Sandbox instead of guessing based on server health alone.
+! instantiated-by: Prototype 5 — Workday Instrumentation & aob-chatgpt Bridge [💖/弓 👯/几]
+  + context: Within `aob-chatgpt` we already experiment with reflecting on daily actions against devmap obligations.
+  + if: You want FUTON3 to serve as the backend for those reflections.
+  + however: There is no official API for submitting “workday claims,” mapping them to patterns, or receiving verification feedback; roles of “workday participants” and “instrumentation stewards” are undefined.
+  + then: Publish a `workday/submit` endpoint (inputs: timestamp, activity, evidence links), run it through the check DSL + embedding, respond with pattern hits/misses plus follow-up obligations, and name the actors explicitly (participants supply evidence; instrumentation stewards curate dashboards); integrate the same flow into the ChatGPT tooling.
+  + because: This is how empowered action (“joy”) becomes measurable proof progress and how role responsibilities stay legible.
+  + next: Replace the temporary `futon3/logs/workday.edn` queue with a Futon1 persistence call (`workday->graph`) and add HTTP affordances + dashboards so instrumentation stewards can audit submissions without tailing logs.
+  + evidence: Workday intake lives in `src/futon3/workday.clj` with coverage in `test/transport_test.clj` (workday submission) and README sections describing the API.
 
-! instantiated-by: Prototype 6 — futon3 ↔ futon2 Hook Points [➰/工 🐜/女]
-  + context: FUTON2 governs patterns, obligations, and upful contracts; FUTON3 generates candidate insights via trails and `:ant/wisdom` events.
-  + if: You want upful ants and sandbox play to feed into pattern governance without overcoupling the layers.
-  + however: There is no stable flow from FUTON3 outputs into FUTON2 flexiarg/DPL pipelines; any linkage would currently be ad hoc.
-  + then: Define a narrow export (`/musn/export/upful-candidates`) that aggregates selected trails and wisdom events into candidate pattern seeds or Tactic States with a versioned schema designed for futon2 ingestion.
-  + because: Clear hook points let FUTON2 evolve its checking and governance while still drawing on FUTON3’s exploratory discoveries.
+! instantiated-by: Prototype 6 — Pattern Creation Workbench [📁/当 🚴/手]
+  + context: New patterns emerge from trails and devmap edits, but the capture is currently manual in futon4.
+  + if: You want FUTON3 to draft candidate patterns/flexiargs from accumulated proof states.
+  + however: Manual backlog in FUTON4 creates tension; there is no readiness window for when drafts are “hand-off ready.”
+  + then: Build a summariser that clusters trails, extracts hooks, and emits draft flexiarg blocks (IF/HOWEVER/THEN/BECAUSE) tagged with suggested pāramitā, ready for futon4 editors, and declare readiness criteria (e.g., at least N supporting checks + steward review) so handoffs are predictable.
+  + because: FUTON3 should not just consume the library; it should propose expansions grounded in lived work while signalling when drafts can be trusted.
 
-! instantiated-by: Prototype 7 — futon3 ↔ futon1 Snapshot Protocol [📥/门 👉/日]
-  + context: FUTON1 is canonical storage; FUTON3 produces rich, ephemeral sessions that may deserve long-term preservation.
-  + if: You want to replay, study, and mine specific sandbox episodes and trails later.
-  + however: The existing `/musn/export` snapshot is dev-focused and not guaranteed to round-trip or remain stable.
-  + then: Standardise a snapshot format for sessions and trails (including room states, chat, ant activity, and key metrics), add opt-in capture controls, and build a harness that can replay a snapshot deterministically in FUTON3.
-  + because: Reproducible episodes are essential raw material for futon1 graphs, futon2 pattern extraction, and futon4 narrative tooling.
+! instantiated-by: Prototype 7 — Joy-as-Empowered-Action Metrics [💖/弓 🚴/力]
+  + context: Joy here = Spinozan increase in power to act, evidenced by commitments you can now keep.
+  + if: You want metrics that show whether checks are empowering or draining.
+  + however: Current “joy metrics” counted UI friction; they did not measure proofs discharged or obligations unblocked.
+  + then: Track `time-to-proof`, `obligations-cleared`, `follow-on commitments`, and `viriya linkages` per session, and visualise them alongside subjective notes.
+  + because: Empowered action is the KPI for this futon.
 
-! instantiated-by: Prototype 8 — SAFE Scripting for Agents & Power Users [📎/工 🍯/子]
-  + context: musn.api provides a small REPL DSL; agents and advanced users will want to script behaviours and tools that live “inside” the sandbox.
-  + if: You want joyful hacking and emergent experiments without compromising safety or flooding storage.
-  + however: The boundary between safe, pure queries and effectful operations is not yet clearly defined for user-authored scripts.
-  + then: Specify a constrained scripting model (pure reads over MUSN state plus explicit `emit!` of events and trails), enforce CPU/memory/time caps and per-client quotas, and publish a handful of example scripts (room greeter, trail summariser, ant buddy, joy-meter probe).
-  + because: Scripting multiplies FUTON3’s creative potential while honouring its role as a non-governing, safety-conscious playground.
+! instantiated-by: Prototype 8 — futon2/futon1 Proof Hooks [👕/当 💤/已]
+  + context: FUTON3 already generates proof states; FUTON1 (graph) and FUTON2 (energy) need those proofs as fuel.
+  + if: You want every accepted check to become a graph relation and a viriya delta without manual glue.
+  + however: today the exports are bespoke Clerk notebooks or one-off scripts.
+  + then: standardise two adapters—`proof->graph` (materialise relations with provenance) and `proof->energy` (emit activation deltas for futon2 dashboards)—and lock them with fixtures + schemas.
+  + because: proofs only matter when other futons can act on them automatically.
+  + next: Wire the Tatami event log into FUTON1 (per `futon3/tatami_store.clj` TODO) so session events flow into graph-memory before we expose the adapters.
 
-! instantiated-by: Prototype 9 — Story & Packaging: “Agent Sandbox” [📎/口 📥/门]
-  + context: FUTON3 will be encountered by future-you and collaborators primarily through its repo and README.
-  + if: You want it to be recognised as the pīti / Agent Sandbox chamber of the FUTON stack.
-  + however: The current README focuses on transport and REPL details without foregrounding wisdom-foraging, C2+MUD interactions, or the Factor-of-Awakening mapping.
-  + then: Update the README to present FUTON3 as “Agent Sandbox,” document its pīti association, describe ants-for-wisdom, C2+MUD behaviour, joy metrics, and export hooks to futon1/futon2, and tag an initial sandbox release.
-  + because: Strong narrative packaging turns FUTON3 into a coherent chamber in the larger system rather than a stray MUSN experiment.
+! instantiated-by: Prototype 9 — Proof Training Ground (“Flexiformal Agent Sandbox”) [📁/义 💗/门]
+  + context: FUTON3 needs a reproducible training ground where humans and agents can practice flexiformal checks before contributing to FUTON6.
+  + if: You want collaborators (including FUTON6 math stewards) to experience the proof workflow hands-on.
+  + however: README/docs still emphasise ants and MUD metaphors and do not ship a simulator/tutorial bundle; roles (training facilitators vs. FUTON6 learners) and release readiness are not declared.
+  + then: Package a “Flexiformal Training Ground” release: updated README, tutorials referencing `t4r/` training patterns, sample check sessions, and a minimal simulator that feeds FUTON6’s Hyperreal entries; name facilitators (FUTON3 maintainers) and consumers (FUTON6 trainees), and publish readiness criteria (tutorials complete, simulator recorded, onboarding docs updated) before tagging the release.
+  + because: Storytelling plus an explicit training ground turns FUTON3 into a reproducible service that upstream layers (FUTON6, FUTON7) can consume and steward.
+  + next: Aggregate Tatami session proof events into `proof-chain.edn` (per `tatami_store.clj` TODO) so the training ground exports persistent transcripts.

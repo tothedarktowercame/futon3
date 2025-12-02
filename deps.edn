@@ -9,11 +9,14 @@
         cheshire/cheshire {:mvn/version "5.11.0"}
         org.babashka/sci {:mvn/version "0.10.49"}
         nrepl/nrepl {:mvn/version "1.1.0"}
-        com.cemerick/drawbridge {:mvn/version "0.0.7"}}
+        com.cemerick/drawbridge {:mvn/version "0.0.7"}
+        metosin/malli {:mvn/version "0.16.3"}}
 
  :aliases {:dev {:main-opts ["-m" "f2.musn"]}
            :test {:extra-paths ["test"]
                   :main-opts ["-m" "test-runner"]}
            :demo {:main-opts ["-m" "f2.musn" "demo"]}
            :sigils {:extra-paths ["scripts"]
-                    :main-opts ["-m" "scripts.build_sigil_matrices"]}}}
+                    :main-opts ["-m" "scripts.build_sigil_matrices"]}
+            :sigils-density {:extra-paths ["scripts"]
+                              :main-opts ["-m" "scripts.build-sigils-density"]}}}

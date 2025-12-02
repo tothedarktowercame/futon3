@@ -7,7 +7,7 @@
 
 ;;; Data loading
 
-(def specs-path (or (System/getenv "FLEXIARG_SPECS") "example/specs.edn"))
+(def specs-path (or (System/getenv "FLEXIARG_SPECS") "library/t4r/specs.edn"))
 
 (defn load-specs [path]
   (try

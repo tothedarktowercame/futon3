@@ -1,0 +1,452 @@
+This is LuaHBTeX, Version 1.22.0 (TeX Live 2025)  (format=lualatex 2025.10.31)  1 DEC 2025 23:33
+ restricted system commands enabled.
+**/home/joe/code/futon3/holes/artifacts/devmaps.tex
+(/home/joe/code/futon3/holes/artifacts/devmaps.tex
+LaTeX2e <2025-06-01> patch level 1
+L3 programming layer <2025-10-24>
+Lua module: luaotfload 2024-12-03 v3.29 Lua based OpenType font support
+Lua module: lualibs 2023-07-13 v2.76 ConTeXt Lua standard libraries.
+Lua module: lualibs-extended 2023-07-13 v2.76 ConTeXt Lua libraries -- extended 
+collection.
+luaotfload | conf : Root cache directory is "./luatex-cache/generic/names".
+luaotfload | init : Loading fontloader "fontloader-2023-12-28.lua" from kpse-res
+olved path "/usr/local/texlive/2025/texmf-dist/tex/luatex/luaotfload/fontloader-
+2023-12-28.lua".
+Lua-only attribute luaotfload@noligature = 1
+luaotfload | init : Context OpenType loader version 3.134
+Inserting `luaotfload.node_processor' in `pre_linebreak_filter'.
+Inserting `luaotfload.node_processor' in `hpack_filter'.
+Inserting `luaotfload.glyph_stream' in `glyph_stream_provider'.
+Inserting `luaotfload.define_font' in `define_font'.
+Lua-only attribute luaotfload_color_attribute = 2
+luaotfload | conf : Root cache directory is "./luatex-cache/generic/names".
+Inserting `luaotfload.harf.strip_prefix' in `find_opentype_file'.
+Inserting `luaotfload.harf.strip_prefix' in `find_truetype_file'.
+Removing  `luaotfload.glyph_stream' from `glyph_stream_provider'.
+Inserting `luaotfload.harf.glyphstream' in `glyph_stream_provider'.
+Inserting `luaotfload.harf.finalize_vlist' in `post_linebreak_filter'.
+Inserting `luaotfload.harf.finalize_hlist' in `hpack_filter'.
+Inserting `luaotfload.cleanup_files' in `wrapup_run'.
+Inserting `luaotfload.harf.finalize_unicode' in `finish_pdffile'.
+Inserting `luaotfload.glyphinfo' in `glyph_info'.
+Lua-only attribute luaotfload.letterspace_done = 3
+Inserting `luaotfload.aux.set_sscale_dimens' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.set_font_index' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.patch_cambria_domh' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.fixup_fontdata' in `luaotfload.patch_font_unsafe'.
+Inserting `luaotfload.aux.set_capheight' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.set_xheight' in `luaotfload.patch_font'.
+Inserting `luaotfload.rewrite_fontname' in `luaotfload.patch_font'.
+Inserting `tracingstacklevels' in `input_level_string'. (/usr/local/texlive/202
+5/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/usr/local/texlive/2025/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
+luaotfload | db : Font names database loaded from ./luatex-cache/generic/names/l
+uaotfload-names.luc.gz)
+\c@part=\count273
+\c@section=\count274
+\c@subsection=\count275
+\c@subsubsection=\count276
+\c@paragraph=\count277
+\c@subparagraph=\count278
+\c@figure=\count279
+\c@table=\count280
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen147
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2024/12/12 v1.0g TeX engine tests
+))
+\Gm@cnth=\count281
+\Gm@cntv=\count282
+\c@Gm@tempcnt=\count283
+\Gm@bindingoffset=\dimen148
+\Gm@wd@mp=\dimen149
+\Gm@odd@mp=\dimen150
+\Gm@even@mp=\dimen151
+\Gm@layoutwidth=\dimen152
+\Gm@layoutheight=\dimen153
+\Gm@layouthoffset=\dimen154
+\Gm@layoutvoffset=\dimen155
+\Gm@dimlist=\toks18
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/fontspec/fontspec.sty
+(/usr/local/texlive/2025/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
+(/usr/local/texlive/2025/texmf-dist/tex/latex/l3kernel/expl3.sty
+Package: expl3 2025-10-24 L3 programming layer (loader) 
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-luatex.def
+File: l3backend-luatex.def 2025-10-09 L3 backend support: PDF output (LuaTeX)
+\l__color_backend_stack_int=\count284
+Inserting `l3color' in `luaotfload.parse_color'.))
+Package: xparse 2025-10-09 L3 Experimental document command parser
+)
+Package: fontspec 2025/09/29 v2.9g Font selection for XeLaTeX and LuaLaTeX
+Lua module: fontspec 2025/09/29 v2.9g Font selection for XeLaTeX and LuaLaTeX (/usr/local/texlive/2025/texmf-dist/tex/latex/fontspec/fontspec-luatex.sty
+Package: fontspec-luatex 2025/09/29 v2.9g Font selection for XeLaTeX and LuaLaT
+eX
+\l__fontspec_script_int=\count285
+\l__fontspec_language_int=\count286
+\l__fontspec_strnum_int=\count287
+\l__fontspec_tmp_int=\count288
+\l__fontspec_tmpa_int=\count289
+\l__fontspec_tmpb_int=\count290
+\l__fontspec_tmpc_int=\count291
+\l__fontspec_em_int=\count292
+\l__fontspec_emdef_int=\count293
+\l__fontspec_strong_int=\count294
+\l__fontspec_strongdef_int=\count295
+\l__fontspec_tmpa_dim=\dimen156
+\l__fontspec_tmpb_dim=\dimen157
+\l__fontspec_tmpc_dim=\dimen158
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2024/12/21 v2.1c Standard LaTeX package
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/fontspec/fontspec.cfg)))
+(/usr/local/texlive/2025/texmf-dist/tex/latex/newunicodechar/newunicodechar.sty
+Package: newunicodechar 2018/04/08 v1.2 Defining Unicode characters
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/paracol/paracol.sty
+Package: paracol 2025/07/14 1.37 typeset columns in parallel
+\pcol@currcol=\count296
+\pcol@nextcol=\count297
+\pcol@ncol=\count298
+\pcol@ncolleft=\count299
+\pcol@page=\count300
+\pcol@basepage=\count301
+\pcol@toppage=\count302
+\pcol@footnotebase=\count303
+\pcol@nfootnotes=\count304
+\pcol@mcid=\count305
+\pcol@prevdepth=\dimen159
+\pcol@colht=\dimen160
+\pcol@textfloatsep=\dimen161
+\pcol@lrmargin=\dimen162
+\pagerim=\dimen163
+\pcol@topskip=\skip51
+\belowfootnoteskip=\skip52
+\pcol@topfnotes=\box53
+\pcol@prespan=\box54
+\pcol@rightpage=\box55
+\pcol@colorstack@saved=\box56
+\pcol@tempboxa=\box57
+\pcol@tempboxb=\box58
+\pcol@colorins=\insert252
+\pcol@everyvbox=\toks19
+)
+luaotfload | cache : Lookup cache loaded from ./luatex-cache/generic/names/luaot
+fload-lookup-cache.luc.
+
+Package fontspec Info: 
+(fontspec)             Noto Sans Mono CJK SC scale = 0.7937346499485756.
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Noto Sans Mono CJK SC/BI" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Noto Sans Mono CJK SC/I" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Noto Sans Mono CJK SC scale = 0.7937346499485756.
+
+
+Package fontspec Info: 
+(fontspec)             Noto Sans Mono CJK SC/B scale = 0.7937346499485756.
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'NotoSansMonoCJKSC(0)' created for font
+(fontspec)             'Noto Sans Mono CJK SC' with options
+(fontspec)             [Ligatures=TeX,Scale=MatchLowercase,Ligatures=TeX].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->s*[0.7937346499485756]"name:Noto Sans Mono CJK
+(fontspec)             SC:mode=node;script=latn;language=dflt;+tlig;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->s*[0.7937346499485756]"name:Noto Sans Mono CJK
+(fontspec)             SC/B:mode=node;script=latn;language=dflt;+tlig;"
+
+LaTeX Font Info:    Font shape `TU/NotoSansMonoCJKSC(0)/m/n' will be
+(Font)              scaled to size 7.93732pt on input line 8.
+
+Package fontspec Info: 
+(fontspec)             Noto Sans Mono CJK SC scale = 0.7937290297924476.
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Noto Sans Mono CJK SC/BI" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Noto Sans Mono CJK SC/I" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Noto Sans Mono CJK SC scale = 0.7937290297924476.
+
+
+Package fontspec Info: 
+(fontspec)             Noto Sans Mono CJK SC/B scale = 0.7937290297924476.
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'NotoSansMonoCJKSC(1)' created for font
+(fontspec)             'Noto Sans Mono CJK SC' with options
+(fontspec)             [Ligatures=TeX,Scale=MatchLowercase,WordSpace={1,0,0},Hy
+phenChar=None,PunctuationSpace=WordSpace].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->s*[0.7937290297924476]"name:Noto Sans Mono CJK
+(fontspec)             SC:mode=node;script=latn;language=dflt;+tlig;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->s*[0.7937290297924476]"name:Noto Sans Mono CJK
+(fontspec)             SC/B:mode=node;script=latn;language=dflt;+tlig;"
+
+
+Package fontspec Info: 
+(fontspec)             Noto Color Emoji scale = 0.9291351015292714.
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Noto Color Emoji/BI" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Noto Color Emoji/B" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Noto Color Emoji/I" (it
+(fontspec)             probably doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Noto Color Emoji scale = 0.9291351015292714.
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'NotoColorEmoji(0)' created for font 'Noto
+(fontspec)             Color Emoji' with options
+(fontspec)             [Ligatures=TeX,Scale=MatchLowercase,Renderer=Harfbuzz].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->s*[0.9291351015292714]"name:Noto Color
+(fontspec)             Emoji:mode=harf;script=DFLT;language=dflt;+tlig;"
+
+
+(/home/joe/code/futon3/holes/artifacts/devmaps.aux)
+\openout1 = devmaps.aux
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: luatex
+*geometry* verbose mode - [ preamble ] result:
+* driver: luatex
+* paper: a3paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: landscape 
+* h-part:(L,W,R)=(28.45274pt, 1138.11026pt, 28.45274pt)
+* v-part:(T,H,B)=(28.45274pt, 788.14136pt, 28.45274pt)
+* \paperwidth=1195.01575pt
+* \paperheight=845.04684pt
+* \textwidth=1138.11026pt
+* \textheight=788.14136pt
+* \oddsidemargin=-43.81725pt
+* \evensidemargin=-43.81725pt
+* \topmargin=-80.81725pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=144.0pt
+* \marginparsep=11.0pt
+* \columnsep=17.07182pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+
+Package fontspec Info: 
+(fontspec)             Adjusting the maths setup (use [no-math] to avoid
+(fontspec)             this).
+
+\symlegacymaths=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
+(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 70.
+LaTeX Font Info:    Redeclaring math accent \acute on input line 70.
+LaTeX Font Info:    Redeclaring math accent \grave on input line 70.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 70.
+LaTeX Font Info:    Redeclaring math accent \tilde on input line 70.
+LaTeX Font Info:    Redeclaring math accent \bar on input line 70.
+LaTeX Font Info:    Redeclaring math accent \breve on input line 70.
+LaTeX Font Info:    Redeclaring math accent \check on input line 70.
+LaTeX Font Info:    Redeclaring math accent \hat on input line 70.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 70.
+LaTeX Font Info:    Redeclaring math accent \mathring on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \colon on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 70.
+LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 70.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 70.
+LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
+(Font)              `operators' in the math version `normal' on input line 70.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> TU/NotoSansMonoCJKSC(0)/m/n on input li
+ne 70.
+LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
+(Font)              `operators' in the math version `bold' on input line 70.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> TU/NotoSansMonoCJKSC(0)/m/n on input l
+ine 70.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  TU/NotoSansMonoCJKSC(0)/m/n --> TU/NotoSansMonoCJKSC(0)
+/m/n on input line 70.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> TU/NotoSansMonoCJKSC(0)/m/it on input 
+line 70.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> TU/NotoSansMonoCJKSC(0)/b/n on input l
+ine 70.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 70.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> TU/NotoSansMonoCJKSC(1)/m/n on input l
+ine 70.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  TU/NotoSansMonoCJKSC(0)/m/n --> TU/NotoSansMonoCJKSC(0)
+/b/n on input line 70.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> TU/NotoSansMonoCJKSC(0)/b/it on input
+ line 70.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 70.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> TU/NotoSansMonoCJKSC(1)/b/n on input l
+ine 70.
+LaTeX Font Info:    Font shape `TU/NotoSansMonoCJKSC(0)/m/n' will be
+(Font)              scaled to size 5.55612pt on input line 71.
+LaTeX Font Info:    Font shape `TU/NotoSansMonoCJKSC(1)/m/n' will be
+(Font)              scaled to size 5.55612pt on input line 71.
+LaTeX Font Info:    Font shape `TU/NotoSansMonoCJKSC(1)/b/n' will be
+(Font)              scaled to size 5.55612pt on input line 75.
+
+LaTeX Font Warning: Font shape `TU/NotoColorEmoji(0)/b/n' undefined
+(Font)              using `TU/NotoColorEmoji(0)/m/n' instead on input line 90.
+
+LaTeX Font Info:    Font shape `TU/NotoColorEmoji(0)/m/n' will be
+(Font)              scaled to size 6.50397pt on input line 90.
+LaTeX Font Info:    Font shape `TU/NotoColorEmoji(0)/b/n' will be
+(Font)              scaled to size 6.50397pt on input line 90.
+[1
+
+{/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map}<./luatex.
+DS5cjr/1.png><./luatex.DS5cjr/2.png><./luatex.DS5cjr/3.png><./luatex.DS5cjr/4.pn
+g><./luatex.DS5cjr/5.png><./luatex.DS5cjr/6.png><./luatex.DS5cjr/19.png><./luate
+x.DS5cjr/10.png><./luatex.DS5cjr/20.png><./luatex.DS5cjr/15.png><./luatex.DS5cjr
+/21.png><./luatex.DS5cjr/22.png><./luatex.DS5cjr/23.png><./luatex.DS5cjr/11.png>
+<./luatex.DS5cjr/36.png><./luatex.DS5cjr/37.png><./luatex.DS5cjr/38.png><./luate
+x.DS5cjr/9.png><./luatex.DS5cjr/39.png><./luatex.DS5cjr/42.png><./luatex.DS5cjr/
+43.png><./luatex.DS5cjr/44.png><./luatex.DS5cjr/45.png><./luatex.DS5cjr/31.png><
+./luatex.DS5cjr/47.png><./luatex.DS5cjr/48.png><./luatex.DS5cjr/49.png><./luatex
+.DS5cjr/50.png>] [2<./luatex.DS5cjr/7.png><./luatex.DS5cjr/8.png><./luatex.DS5cj
+r/12.png><./luatex.DS5cjr/13.png><./luatex.DS5cjr/14.png><./luatex.DS5cjr/24.png
+><./luatex.DS5cjr/25.png><./luatex.DS5cjr/26.png><./luatex.DS5cjr/27.png><./luat
+ex.DS5cjr/28.png><./luatex.DS5cjr/18.png><./luatex.DS5cjr/29.png><./luatex.DS5cj
+r/34.png><./luatex.DS5cjr/35.png><./luatex.DS5cjr/40.png><./luatex.DS5cjr/41.png
+><./luatex.DS5cjr/17.png><./luatex.DS5cjr/46.png><./luatex.DS5cjr/30.png><./luat
+ex.DS5cjr/51.png><./luatex.DS5cjr/52.png><./luatex.DS5cjr/33.png>]
+
+[3<./luatex.DS5cjr/16.png><./luatex.DS5cjr/32.png><./luatex.DS5cjr/53.png>]
+(/home/joe/code/futon3/holes/artifacts/devmaps.aux)
+ ***********
+LaTeX2e <2025-06-01> patch level 1
+L3 programming layer <2025-10-24>
+ ***********
+
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+)
+
+Here is how much of LuaTeX's memory you used:
+ 4275 strings out of 476290
+ 745229,662416 words of node,token memory allocated
+ 554 words of node memory still in use:
+   3 hlist, 7 vlist, 1 rule, 2 glue, 3 kern, 1 glyph, 10 attribute, 62 glue_spec
+, 10 attribute_list, 1 write nodes
+   avail lists: 1:1,2:3166,3:2231,4:14,5:144,6:925,7:94734,9:3208,10:12,11:655
+ 26531 multiletter control sequences out of 65536+600000
+ 29 fonts using 99478007 bytes
+ 73i,6n,116p,485b,481s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc></usr/share/fonts/openty
+pe/noto/NotoSansCJK-Regular.ttc></usr/share/fonts/opentype/noto/NotoSansCJK-Bold
+.ttc></usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc>
+Output written on devmaps.pdf (3 pages, 277699 bytes).
+
+PDF statistics: 138 PDF objects out of 1000 (max. 8388607)
+ 16 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 131072)
+ 1 words of extra memory for PDF output out of 10000 (max. 100000000)
+

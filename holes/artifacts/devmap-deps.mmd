@@ -1,0 +1,31 @@
+graph LR
+  f0["Futon 0 — Futon0"]
+  f1["Futon 1 — FUTON1 Development Map"]
+  f2["Futon 2 — FUTON2 Development Map"]
+  f3["Futon 3 — FUTON3 Development Map"]
+  f4["Futon 4 — FUTON4 Development Map"]
+  f5["Futon 5 — FUTON5 Development Map — Concentration, Nonstarter, Patterns of Improvisation"]
+  f6["Futon 6 — FUTON6 Development Map — Hyperreal Dictionary & Mathematical Habitat"]
+  f7["Futon 7 — FUTON7 Development Map — Nomadic Civilisation & Civic Equanimity"]
+  f1 -->|P12| f2
+  f1 -->|P11,P3,P6| f3
+  f1 -->|P10,P9| f4
+  f1 -->|P3| f7
+  f2 -->|P13,P4,P9,…| f1
+  f2 -->|P14,P15,P16,…| f3
+  f2 -->|P2,P6,P8| f4
+  f2 -->|P14| f7
+  f3 -->|P3,P5,P8| f1
+  f3 -->|P3,P8| f2
+  f3 -->|P4,P6| f4
+  f3 -->|P9| f6
+  f3 -->|P9| f7
+  f4 -->|P4| f3
+  f4 -->|P12| f5
+  f5 -->|P0| f4
+  f5 -->|P0,P3| f6
+  f6 -->|context| f1
+  f6 -->|P9,context| f3
+  f6 -->|P12,context| f7
+  f7 -->|P4| f0
+  f7 -->|P1| f1

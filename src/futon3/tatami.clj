@@ -31,6 +31,21 @@
 (defn- current-session-id []
   (some-> @!session :session-id))
 
+(defn- normalize-session-id [value]
+  (cond
+    (instance? UUID value) value
+    (string? value) (let [trim (str/trim value)]
+                      (when (seq trim)
+                        (try
+                          (UUID/fromString trim)
+                          (catch IllegalArgumentException _ nil))))
+    :else nil))
+
+(defn- require-session-id [value]
+  (when value
+    (or (normalize-session-id value)
+        (throw (ex-info "invalid-session-id" {:session-id value})))))
+
 (defn- parse-prototypes [text]
   (->> (str/split (or text "") #",+")
        (map str/trim)
@@ -88,7 +103,7 @@
                           (:prototypes selection)
                           (throw (ex-info "prototypes-required" opts)))
         chosen-intent (or intent (:intent selection) "session")
-        sid (or session-id (UUID/randomUUID))
+        sid (or (require-session-id session-id) (UUID/randomUUID))
         event (schema/new-event :session-start {:session-id sid
                                                 :prototypes chosen-protos
                                                 :intent chosen-intent})]
@@ -112,10 +127,12 @@
      event)))
 
 (defn- session-or-default [session-id]
-  (cond
-    (nil? session-id) (ensure-session!)
-    (= session-id (current-session-id)) @!session
-    :else (throw (ex-info "unknown-session" {:session-id session-id}))))
+  (let [normalized (normalize-session-id session-id)
+        current (current-session-id)]
+    (cond
+      (nil? session-id) (ensure-session!)
+      (and normalized current (= normalized current)) @!session
+      :else (throw (ex-info "unknown-session" {:session-id session-id})))))
 
 (defn log-event
   "Programmatic logging helper. Requires :session-id (or active session)."

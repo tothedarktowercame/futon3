@@ -21,7 +21,7 @@
 
 (deftest hello-updates-client
   (let [state (make-state)
-        resp (transport/apply-envelope! state "C-1" {:type "hello" :client "alice" :caps ["eval"]})]
+        resp (transport/apply-envelope! state "C-1" {:type "hello" :rev 1 :client "alice" :caps ["eval"]})]
     (is (= true (get-in resp [:reply :ok])))
     (is (= "alice" (get-in @(:clients state) ["C-1" :name])))))
 

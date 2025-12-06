@@ -91,3 +91,8 @@ Make targets
 make dev    # start with mock adapters
 make demo   # hello → events → session-close → export → run → status
 make test   # unit + replay tests
+
+### Emacs HUD tests
+`scripts/test-elisp.sh` drives the chatgpt-shell HUD tests. Keep them gentle by supplying
+`ERT_SELECTOR` (e.g., `ERT_SELECTOR='futon3-prototype-*'`) and, when running everything, consider
+`ulimit -v 2097152` to avoid GUI Emacs OOMs.

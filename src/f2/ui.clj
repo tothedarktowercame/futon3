@@ -1,8 +1,11 @@
 (ns f2.ui
   "Minimal HTTP UI exposing MUSN status + export endpoint."
   (:require [cheshire.core :as json]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
             [f0.clock :as clock]
+            [futon3.cue-embedding :as cue]
+            [futon3.trail-bridge :as trail-bridge]
             [futon3.learn-or-act :as learn-act]
             [futon3.tatami :as tatami]
             [f2.semantics :as semantics]
@@ -25,6 +28,22 @@
     (f)
     (catch Exception ex
       (json-response 400 {:ok false :error (.getMessage ex)}))))
+
+(defn- normalize-entry [entry]
+  (cond
+    (map? entry) entry
+    (vector? entry) (normalize-entry (first entry))
+    (sequential? entry) (apply hash-map entry)
+    :else {}))
+
+(defn- parse-cue-entry [payload]
+  (let [raw (or (:entry payload)
+                (:entry-edn payload))]
+    (cond
+      (map? raw) (normalize-entry raw)
+      (string? raw) (normalize-entry (edn/read-string raw))
+      (sequential? raw) (normalize-entry raw)
+      :else nil)))
 
 (defn- sessions-view [state]
   (let [history (transport/history-view state)]
@@ -76,6 +95,22 @@
       (safe-handler (fn [] (json-response 200 (tatami/close-session @payload))))
       [:post "/musn/hints"]
       (safe-handler (fn [] (json-response 200 (learn-act/decide @payload))))
+      [:post "/musn/cues"]
+      (safe-handler
+       (fn []
+         (let [entry (parse-cue-entry @payload)]
+           (if entry
+             (let [intent-cues (cue/entry-intent-cues entry)
+                   embedding (when-let [tatami (:tatami entry)]
+                               (cue/embed-cues tatami))]
+                (trail-bridge/publish! (get @(:config state) :futon1)
+                                       entry intent-cues embedding)
+                (json-response 200 {:ok true
+                                    :fruits (:fruits intent-cues)
+                                    :paramitas (:paramitas intent-cues)
+                                   :intent intent-cues
+                                   :embedding embedding}))
+             (json-response 400 {:ok false :error "missing-entry"})))))
       [:post "/musn/export"] (export-scenario! state)
       [:get "/healthz"] {:status 200 :headers {"content-type" "text/plain"} :body "ok"}
       {:status 404 :headers {"content-type" "text/plain"} :body "not-found"})))

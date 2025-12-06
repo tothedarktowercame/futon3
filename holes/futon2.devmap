@@ -123,6 +123,24 @@
   + then: Define a bidirectional “presence bus” (rooms → observation cues, agent actions → MUSN events), add authentication so only designated colonies bridge, and ship a demo where ants report discoveries into a FUTON3 trail.
   + because: This proves that AIF agents can show up wherever proofwork happens, not just inside a war grid.
 
+! instantiated-by: Prototype 16 — Lobby Bus & MUSN Intake [🌀/内 📬/门]
+  + context: FUTON3 runs with MUSN as a shared graph and chatgpt-shell as a HUD, but ChatGPT-API currently has only conversational access and no principled way to commit events back into MUSN.
+  + if: You want ChatGPT-API to propose or make *persistent* updates (breach logs, paramitā orbs, devmap notes, pattern instantiations) without giving it full god-mode over the stack.
+  + however: There is no explicit one-room “Lobby” where HUD traffic is normalised into MUSN events, no single-writer policy, and no clear schema for what counts as an escalated, storable event versus transient chatter.
+  + then: Create a dedicated Lobby room in MUSN with a minimal intake schema (`:musn/events` envelopes on an escalated bus), grant exactly one writer identity (the chatgpt-shell / FUTON3 service account), and implement a Clojure bridge that (a) parses HUD EDN, (b) validates and timestamps Lobby events, and (c) transacts them into the MUSN graph as append-only nodes that downstream agents can subscribe to.
+  + because: This proves that a single HUD-bound agent can safely “step into” MUSN through a constrained door—acting as a semi-privileged clerk rather than an all-powerful daemon—and sets the pattern for later extending the presence bus (Prototype 15) to multiple rooms and multiple authenticated agent writers.
+  + example: To assist the user with time management, ChatGPT-API offered: “Do you want breaches auto-logged if you’re still active at 22:10?”  At present there’s no way for ChatGPT to *actually* log such breaches anywhere. Rather than assuming all escalated events must be elicited in the same way at all times, allow `set-user-system-prompt` in futon3’s `aob-chatgpt.el` to switch between modes (e.g. `:normal`, `:breach-logging`) under external control (cron, or a MUSN agent). ChatGPT-API can then *propose* mode shifts or breach events via the Lobby, while the MUSN side decides which proposals to enact.
+  + example2: While reviewing a day’s evidence, ChatGPT-API proposes a structured “paramitā reflection” event via the Lobby:
+    {:musn/events
+      [{:event/type     :paramita/reflection
+        :event/paramita :equanimity
+        :event/notes    "User can apply 9 of Cups to understand the source of a workplace frustration."
+        :event/request  :musn.store!}]}
+  This safely introduces reflective practice artefacts into MUSN without conflating them with actual
+  mode changes or breach logging. It demonstrates that the Lobby is not only
+  for operational concerns (like curfew rules) but also for epistemic/ritual
+  artefacts that support the broader FUTON practice space.  The HUD then renders a subtle, clickable banner: Reflection exercise suggested ▸
+
 ! instantiated-by: Prototype 16 — Wisdom Trail Harvest & Pattern Seeding [💖/去 👶/所]
   + context: FUTON3 trails now record which patterns were checked or advanced during human work sessions.
   + if: You want FUTON2 analyzers to ingest those trails, compare them to colony behaviour, and commission new agent goals.

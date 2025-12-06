@@ -46,6 +46,8 @@
   + however: Common workflows (inspection, counting, ego traversal, cleanup) still require reading raw XT queries and ad-hoc snippets.
   + then: Package REPL recipes as reusable fns (`list-entities`, `entity-relations`, `counts`), add a small “XT stories” doc with copy-paste examples, and script a salience-survives-restart demo.
   + because: Lowering XT friction makes the persistent layer feel like a first-class part of futon1 rather than a hidden backend.
+  + evidence: ✅ README-storage.md plus the :storage/inspect entry point document/automate the inspection workflow
+  + next: surface the same schema view in Emacs so futon3 can browse XT contents without guessing paths.
 
 ! instantiated-by: Prototype 5 — Open-World Ingest Workflows [🔦/世界 🍲/开]
   + context: The open-world ingest tool streams arbitrary text through CoreNLP, generating deterministic entity IDs and OpenIE relations in XTDB.

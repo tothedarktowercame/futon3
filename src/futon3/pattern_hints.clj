@@ -50,22 +50,60 @@
     (or (str/ends-with? name ".flexiarg")
         (str/ends-with? name ".multiarg"))))
 
+(defn- split-arg-blocks [text]
+  (let [lines (str/split-lines text)]
+    (loop [remaining lines
+           current []
+           has-arg? false
+           blocks []]
+      (if-let [line (first remaining)]
+        (let [rest-lines (rest remaining)
+              starts-arg? (str/starts-with? line "@arg ")]
+          (cond
+            (and starts-arg? has-arg?)
+            (recur rest-lines
+                   [line]
+                   true
+                   (conj blocks (str/join "\n" current)))
+
+            starts-arg?
+            (recur rest-lines
+                   (conj current line)
+                   true
+                   blocks)
+
+            :else
+            (recur rest-lines
+                   (conj current line)
+                   has-arg?
+                   blocks)))
+        (if has-arg?
+          (conj blocks (str/join "\n" current))
+          [text])))))
+
 (defn- scan-library []
   (for [root pattern-roots
         :when (.exists root)
         file (file-seq root)
         :when (and (.isFile file)
                    (flexiarg-file? file))
-        :let [text (slurp file)
-              title (extract-meta text "title")
-              arg (extract-meta text "arg")]
-        match (re-seq clause-re text)]
+        :let [text (slurp file)]
+        block (split-arg-blocks text)
+        :let [title (extract-meta block "title")
+              arg (extract-meta block "arg")]
+        match (re-seq clause-re block)]
     {:id (or arg (.getName file))
      :title title
      :summary (str/trim (second match))
      :sigils (split-sigils (nth match 2))}))
 
 (def ^:private ldts-patterns (delay (vec (scan-library))))
+
+(defn all-patterns
+  "Return the catalog of flexiarg/devmap patterns with sigils.
+  Used by higher-level components that need raw entries (e.g. intent seeding)."
+  []
+  @ldts-patterns)
 
 (defn- futon-number [name]
   (some->> (re-find #"futon(\d+)" name)
@@ -91,16 +129,20 @@
 (def ^:private prototype->sigils (delay (scan-devmaps)))
 
 (defn- emoji-distance [a b]
-  (let [pa (get @emoji-pos a)
-        pb (get @emoji-pos b)]
-    (when (and pa pb)
-      (/ (Math/abs ^long (- pa pb)) (double @emoji-norm)))))
+  (if (= a b)
+    0.0
+    (let [pa (get @emoji-pos a)
+          pb (get @emoji-pos b)]
+      (when (and pa pb)
+        (/ (Math/abs ^long (- pa pb)) (double @emoji-norm))))))
 
 (defn- hanzi-distance [a b]
-  (let [pa (get @hanzi-pos a)
-        pb (get @hanzi-pos b)]
-    (when (and pa pb)
-      (/ (Math/abs ^long (- pa pb)) (double @hanzi-norm)))))
+  (if (= a b)
+    0.0
+    (let [pa (get @hanzi-pos a)
+          pb (get @hanzi-pos b)]
+      (when (and pa pb)
+        (/ (Math/abs ^long (- pa pb)) (double @hanzi-norm))))))
 
 (defn- pair-distance [target clause]
   (when-let [ed (emoji-distance (:emoji target) (:emoji clause))]
@@ -176,3 +218,27 @@
      :paramitas (if (seq targets)
                   (nearest-paramitas targets paramita-limit)
                   [])}))
+
+(defn fruits-for-sigils
+  "Return the nearest fruit entries for the supplied SIGILS vector."
+  [sigils {:keys [limit] :or {limit 2}}]
+  (if (seq sigils)
+    (nearest-fruits sigils limit)
+    []))
+
+(defn paramitas-for-sigils
+  "Return the nearest pāramitā entries for the supplied SIGILS vector."
+  [sigils {:keys [limit] :or {limit 2}}]
+  (if (seq sigils)
+    (nearest-paramitas sigils limit)
+    []))
+
+(defn fruit-definitions
+  "Return the cached fruit definition vector (see resources/sigils/fruits.edn)."
+  []
+  @fruits-data)
+
+(defn paramita-definitions
+  "Return the cached paramita definition vector (see resources/sigils/paramitas.edn)."
+  []
+  @paramita-data)

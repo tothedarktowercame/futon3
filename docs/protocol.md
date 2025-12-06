@@ -10,7 +10,7 @@ The transport layer exposes JSON-lines over WebSocket (preferred) with HTTP `POS
 
 ## Message Formats
 - `hello`: `{"rev":1,"type":"hello","client":"NAME","caps":[...]} `.
-- `ack`: `{"ok":true,"id":"E-000123","rev":1}` (id echoes persisted event/session id).
+- `ack`: `{"ok":true,"type":"ack","eid":"E-000123","run-id":"RUN-1a2b3c","rev":1}` (events echo `eid`; session/export/run acks swap in `sid`/`scenario-path`/`job-id`).
 - `event`: contains ISO-8601 timestamp `t`, `actor`, `verb`, `object`, and `prov` block (file + line). Optional `id`. Size limit 8 KiB.
 - `session`: includes `sid`, ordered `events`, and `topic`. Max 100 events reference.
 - `eval` (optional): `{"rev":1,"type":"eval","payload":{"code":"(+ 1 2)","mode":"safe","token":"…"}}`.
@@ -24,6 +24,7 @@ The transport layer exposes JSON-lines over WebSocket (preferred) with HTTP `POS
 - **Ordering**: Messages processed in arrival order per client; different clients isolated via distinct async channels.
 - **Idempotency**: Caller-provided `id`/`sid` combined with SHA of payload; duplicates short-circuit with same `ack` id.
 - **Timeouts**: 200 ms for ingest commands; 100 ms CPU budget for SAFE `eval`. Timeouts surface as `{"ok":false,"err":"timeout"}` (ingest) or `{"ok":false,"type":"eval","err":"eval-timeout"}` without dropping the socket.
+- **Execution caps**: `status` calls time out after 200 ms, while `run` submissions enforce a 5 s limit before returning `{ok:false,err:"timeout"}`.
 - **Validation**: Schemas in `/resources/schemas/*.edn` drive structural validation before graph ingestion.
 
 ## Error Codes

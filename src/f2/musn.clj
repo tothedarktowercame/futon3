@@ -8,6 +8,14 @@
 
 (defonce runtime (atom nil))
 
+(defn- env-trim [k]
+  (when-let [raw (System/getenv k)]
+    (let [trimmed (str/trim raw)]
+      (when (seq trimmed) trimmed))))
+
+(def ^:private futon1-api-base (env-trim "FUTON1_API_BASE"))
+(def ^:private futon1-profile (env-trim "FUTON1_PROFILE"))
+
 (def default-config
   {:transport-port 5050
    :ui-port 6060
@@ -18,7 +26,11 @@
                 :bind "127.0.0.1"
                 :port 6767
                 :allow ["127.0.0.1" "::1"]
-                :token nil}})
+                :token nil}
+   :futon1 {:enabled? (boolean futon1-api-base)
+            :api-base futon1-api-base
+            :profile (or futon1-profile "default")
+            :timeout-ms 2000}})
 
 (defn- build-state [config]
   {:config (atom config)

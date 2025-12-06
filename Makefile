@@ -7,6 +7,7 @@ dev:
 
 test:
 	$(CLOJURE) -M:test
+	./scripts/test-elisp.sh
 
 demo:
 	$(CLOJURE) -M:demo

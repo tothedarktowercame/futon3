@@ -243,17 +243,28 @@
                :err (:err result)
                :details (:details result)}})))
 
+(defn- route-via-router [state client-id type envelope]
+  (let [client (ensure-client! state client-id)]
+    (if-not client
+      {:reply {:ok false :err "unknown-client"}}
+      (router/dispatch (ensure-router! state) type client envelope))))
+
 (defn- dispatch-message [state client-id envelope]
   (let [type (keyword (or (:type envelope) "unknown"))]
     (case type
-      :hello (do
-               (update-client! state client-id
-                               (fn [client]
-                                 (assoc client
-                                        :name (or (:client envelope) "anonymous")
-                                        :caps (set (:caps envelope))
-                                        :last-stamp (now-stamp))))
-               {:reply {:type "hello" :ok true :client client-id}})
+      :hello (let [client (ensure-client! state client-id)
+                   hello (or (:payload envelope) envelope)]
+               (if-not client
+                 {:reply {:ok false :type "ack" :err "unknown-client"}}
+                 (let [response (router/dispatch (ensure-router! state) :hello client envelope)]
+                   (when (get-in response [:reply :ok])
+                     (update-client! state client-id
+                                     (fn [c]
+                                       (assoc c
+                                               :name (or (:client hello) "anonymous")
+                                               :caps (set (or (:caps hello) []))
+                                               :last-stamp (now-stamp)))))
+                   response)))
       :eval (let [client (ensure-client! state client-id)]
               (if-not client
                 {:reply {:ok false :type "eval" :err "unknown-client"}}
@@ -267,11 +278,11 @@
              (update-client! state client-id #(assoc % :connected? false :last-stamp (now-stamp)))
              {:reply {:ok true :type "bye"}
               :close? true})
-      (:event :session :session-close :export :run :status)
-      (let [client (ensure-client! state client-id)]
-        (if-not client
-          {:reply {:ok false :err "unknown-client"}}
-          (router/dispatch (ensure-router! state) type client envelope)))
+      :event (route-via-router state client-id type envelope)
+      :session-close (route-via-router state client-id type envelope)
+      :export (route-via-router state client-id type envelope)
+      :run (route-via-router state client-id type envelope)
+      :status (route-via-router state client-id type envelope)
       :workday (let [client (ensure-client! state client-id)]
                  (if-not client
                    {:reply {:ok false :type "workday" :err "unknown-client"}}
@@ -319,7 +330,11 @@
           result (dispatch-message state client-id envelope)]
       result)
     (catch Exception ex
-      {:reply {:ok false :err (.getMessage ex)}})))
+      (let [data (ex-data ex)
+            err (or (:err data) (.getMessage ex))
+            details (:details data)]
+        {:reply (cond-> {:ok false :err err}
+                  details (assoc :details details))}))))
 
 (defn ingest-string!
   "Process a raw JSON line as if it were sent via HTTP fallback."

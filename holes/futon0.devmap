@@ -5,66 +5,449 @@
 @style roadmap
 @allow-new-claims true
 @length any
+@factor Mindful apprehension (sati + sampajañña)
+@IFR: FUTON0 is the mindfulness and futon-perception layer: the lived,
+experiential basis through which real-but-virtual futures (futons) become
+intelligible via symbolic mediation. It stabilises vitality, rhythm, clarity,
+and the conditions for “wondrous apprehension”. FUTON0 provides a
+bio-mechanical interface to the extended cognitive architecture—the cybernetic
+floor from which the whole FUTON stack perceives, adapts, and co-evolves with
+its future.
+
+@state Vitality indicators exist but are not yet integrated; reflective and
+symbolic channels exist but are only loosely coupled; futonic insights arise in
+narrative but are not yet expressed in computational terms. FUTON3 is still
+awaiting improved devmaps for several layers, which currently blocks clear
+narratives about the futons it will eventually describe.
+
+@next Maintain and develop minimal models of vitality signals; cultivate
+periodic wondrous apprehension; and continue light futon-prototyping efforts
+with steady awareness, so that both clear devmaps and concrete implementations
+can emerge naturally.
 
 ! instantiated-by: Prototype 0 — System Vitality Indicators [💤/系统]
-  + context: FUTON0 anchors the embodied/creative signals (tai chi, sleep, exercise, recording cadence, work-session logs) that keep the rest of the FUTON stack honest.
-  + if: You want early warnings when health or expressive practice drifts out of balance.
-  + however: Indicators exist as ad-hoc notes (tai chi reminders, Penmaster goals, FUTON1 tags) rather than a cohesive commitment.
-  + then: Fix a weekly tai-chi slot (1–2x), log exercise/energy/sleep through the FUTON0 clock, capture ~170 short Penmaster recordings before end of August (≈1 every other day), and close every work session with a FUTON1 log/tag plus a monthly pattern review.
-  + because: A repeatable indicator loop keeps system vitality visible and surfaces imbalance before it spreads into later prototypes.
+
++ context:
+  FUTON0 provides the minimal embodied/creative signals required for early
+  detection of imbalance, while avoiding expansion of lifelogging overhead.
+
++ if:
+  You want dependable early warning of drift in health, energy, or expressive rhythm.
+
++ however:
+  Existing signals are scattered (notes, reminders, implicit habits) and
+  therefore unreliable as a coherent early-warning interface.
+
++ then:
+  Use only *existing traceable activity* as indicators: Tatami sessions,
+  git commits, filesystem timestamps, and micro-recording cadence. Add one
+  lightweight prompt-based behaviour: a weekly tai-chi intention check surfaced
+  automatically by the FUTON3 HUD. No manual lifelogging is introduced.
+
++ because:
+  Indicators remain sustainable only when they create no friction. A minimal
+  interface built from pre-existing behavioural traces provides consistent,
+  low-noise signals that prevent hidden imbalance from migrating up-stack.
+
++ evidence:
+  - The FUTON0 clock already exists: Tatami/API chat sessions automatically
+    emit timestamped events, providing a ground truth for daily activity.
+  - Git commits, recording timestamps, and filesystem modification times supply
+    ambient movement/engagement signals with zero added logging.
+  - FUTON1 work-session tags already show >90% end-of-session coverage.
+
++ next:
+  Build the cron-based vitality scanner; implement the weekly tai-chi HUD prompt;
+  run a 30–45 day pilot to stabilise thresholds; and refine the vitality
+  interface only after reviewing correlations with mood, focus, and WIP drift.
+
+  + next-evidence:
+    - Extend the cron scanner to generate a daily summary of filesystem
+      activity, recording cadence, and Tatami timestamps.
+    - Capture tai-chi intention Y/N responses in FUTON3, creating a new sparse
+      evidentiary channel without manual logging.
+    - Implement a lightweight inference pass (FUTON3 or FUTON4) to interpret
+      these signals for trend detection and early-warning triggers.
 
 ! instantiated-by: Prototype 1 — Epistemic Rhythm & Salients [💖/弓]
-  + context: FUTON0 frames the “programme” mindset—weekly reviews, Org as source of truth, and transparent tracking across institutional/personal projects.
-  + if: You want to program yourself the way you program systems, keeping salients legible across spheres.
-  + however: Without a normalised protocol, weekly rhythm slips, data fragments outside Org, and WIP quietly exceeds the cap.
-  + then: Schedule a standing weekly AOB/Ambitions sync, enforce Org as the canonical plan/export store, mirror deliverables across institutional/personal trackers, review balance across the five spheres (Institutional, Consulting, Technical, Reflective, Infrastructure), and audit WIP (>3 focus tracks triggers a pause) during monthly/quarterly reviews.
-  + because: Treating the salients as a programme ensures epistemic equilibrium that later FUTON layers can trust.
+
++ context:
+  FUTON0 stabilises your epistemic rhythm: a weekly/multi-weekly cycle of
+  review, planning, and salience-tracking that keeps work across all spheres
+  coherent while avoiding data fragmentation or over-tracking.
+
++ if:
+  You want to programme yourself the way you programme systems—maintaining
+  legible salients across institutional, consulting, technical, reflective,
+  and infrastructural spheres with minimal friction.
+
++ however:
+  Without a normalised rhythm, weekly reviews slip; projects drift outside
+  the canonical Org structure; and WIP silently grows past safe limits.
+
++ then:
+  Hold a weekly AOB/Ambitions sync; treat Org as the canonical plan/export
+  store; mirror all active projects into a minimal FUTON1 substrate; review
+  sphere balance weekly; and enforce the WIP cap (>3 active tracks requires
+  pausing one). Cron/HUD integration surfaces upcoming reviews (“Weekly review
+  in 3 days,” “Monthly audit approaching”) without additional lifelogging.
+
++ because:
+  A stable epistemic rhythm prevents unbounded cognitive load *and makes life
+  feel lighter, more joyful, and more tractable*. When salients reappear on
+  schedule and WIP remains bounded, drift does not accumulate and affect settles.
+
++ evidence:
+  - Org already represents the canonical project hierarchy (AOB, Ambitions).
+  - Weekly AOB/Ambitions sessions are timestamped (Tatami/API or calendar).
+  - FUTON1 tags provide >90% work-session closure coverage.
+  - Sphere balance and WIP creep can already be inferred from Org + FUTON1.
+
++ next:
+  Consolidate the weekly sync into a fixed time; prune stale Org headings
+  monthly; ensure every active project has an Org headline and FUTON1 tag;
+  integrate HUD reminders for weekly/monthly cadence; and refine the WIP
+  audit to produce actionable “pause/don’t-start” prompts.
+
+  + next-evidence:
+    - Cron job generates weekly/mid-week/monthly reminders surfaced in the HUD.
+    - FUTON3 salience panel merges Org + FUTON1 metadata into a weekly
+      salients snapshot with diff from prior weeks.
+    - Quarterly rhythm analysis correlates stable cadence with subjective
+      affect measures (energy, focus, lightness) to test the experiential claim.
 
 ! instantiated-by: Prototype 2 — Core Obligations Contract [👕/业 💤/没有]
-  + context: FUTON0 must respect existential constraints: current job performance, pathway to an aligned role by Aug 2026, and non-negotiable health basics.
-  + if: You want the stack to exist inside the economy and human limits.
-  + however: Obligations can fade into background noise when attention locks onto higher-level prototypes.
-  + then: Maintain strong performance in the present role, keep a live job-search cadence that secures a new role before Aug 2026, and defend minimum exercise/sleep baselines (daily movement + adequate rest tracked in the clock).
-  + because: Honouring obligations is what keeps FUTON0—and every prototype above it—feasible.
+@multiarg futon0/prototype2
+@title Core Obligations Contract
+@audience futon-devs, reflective-agents
+@tone analytic-concise
+@style flexiarg
+
++ context:
+  FUTON0 must uphold the fundamental constraints that keep the entire stack
+  viable: sustained alignment with your current role, movement toward a more
+  suitably aligned next role, and protection of basic health baselines. This
+  layer also ensures that Prototype 1’s analytics loop remains genuinely useful
+  rather than self-perpetuating.
+
++ if:
+  You want your working life to remain healthy and coherent while moving toward
+  a better-aligned future role, without sacrificing present obligations or
+  drifting into avoidant behaviour.
+
++ however:
+  When attention shifts to higher layers, core obligations can slide into the
+  background; health erosion becomes invisible; and epistemic-review routines
+  can quietly expand beyond their real value.
+
++ then:
+  Maintain consistently and measurably strong alignment with the current role
+  while increasing alignment with a future role; keep health baselines intact;
+  and periodically check whether Prototype 1’s analytics loop is delivering
+  practical benefit.
+
++ because:
+  Upholding alignment and constraints at the base prevents the entire FUTON
+  stack from drifting into incoherence or overload. When obligations, health,
+  and review practices stay grounded, forward movement becomes stable and real.
+
++ evidence:
+  - Health baselines visible through Prototype 0 (movement/sleep Y/N).
+  - Current-role performance inferred from deliverables, responsiveness,
+    and deadline stability.
+  - FUTON1 tags showing adequate work-session closure coverage.
+
++ next:
+  Make alignment in the current role more explicit (quick weekly pulse-check);
+  establish a small, low-friction trajectory toward the next aligned role;
+  and add a brief weekly check on the usefulness of Prototype 1.
+
+  + next-evidence:
+    - Cron-backed extraction of role-search traces (calendar items, files,
+      emails) to show gentle forward movement.
+    - A FUTON3 prompt asking “Did this week’s review help maintain alignment?”
+      as a simple measure of analytics-loop value.
+    - Correlations between Prototype 0 vitality signals and stable current-role
+      performance to validate the alignment hypothesis.
+
 
 ! instantiated-by: Prototype 3 — Ambition 0 Meta-Managed Infrastructure [🙇/叉 🌅/每]
-  + context: Ambition 0 demands clean data pipelines between Org, FUTON, and storage plus dashboards that stay simple, accurate, and current.
-  + if: You want the meta-layer to reflect lived priorities rather than bureaucracy.
-  + however: Pipelines and dashboards drift unless they are reviewed and reconciled against actual practice.
-  + then: Keep Org↔FUTON↔external backups in sync, prune dashboards so they highlight only current salients, and run a monthly cross-project meta-workflow review to confirm it matches the present rhythm.
-  + because: An aligned infrastructure lets every other ambition rely on trustworthy status signals.
+
+@multiarg futon0/prototype3
+@title Ambition 0 — Meta-Managed Infrastructure
+@audience futon-devs, reflective-agents
+@tone analytic-concise
+@style flexiarg
+
++ context:
+  FUTON0 needs an infrastructure layer that not only keeps reality and
+  representation aligned, but also increases the system’s capacity for
+  alignment over time (Ashby-style requisite variety).
+
++ if:
+  You want your tools to help you notice, raise, and refine signals that
+  support increasing alignment in work, health, and direction.
+
++ however:
+  Interfaces drift, signals blur, and representational structures lose fidelity.
+  When this happens, the system cannot increase alignment because it cannot
+  perceive what is changing or what needs attention.
+
++ then:
+  Treat FUTON1 as the source of truth; use Org as a lightweight interface to
+  it; prune dashboards to highlight only rising or fading salients; and run a
+  brief reconciliation loop that raises proto-pattern signals for review.
+
++ because:
+  This layer provides the Markov blanket through which alignment can improve.
+  Prototype 3 acts as the experience-design prototype of FUTON3: it raises
+  signals, surfaces proto-patterns, and increases representational variety,
+  while FUTON3 will later formalise this as proof-theoretic salience
+  certification.
+
++ evidence:
+  - Org and FUTON1 currently reflect overlapping state that allows detection
+    of divergence.
+  - Dashboards already reveal what is becoming noisy or inert.
+  - Backups and timestamps show which elements are live or stale.
+
++ next:
+  Migrate remaining project state into FUTON1; reduce Org to a thin interface;
+  and introduce a weekly “rising/fading signals” pane in FUTON3 to surface
+  proto-patterns for reflection.
+
+  + next-evidence:
+    - Divergence checks that quantify where representation is lagging reality.
+    - Signal-rise/signal-fade detectors for dashboards and headings.
+    - FUTON3-generated proto-pattern stubs based on behavioural traces.
 
 ! instantiated-by: Prototype 4 — Ambition 1 Hyperreal Enterprises Practice [👴/工作 👎/两]
-  + context: Hyperreal needs consulting work to operationalise research and bring income while staying modular and documented.
-  + if: You want each engagement to double as R&D for sustainable independent practice.
-  + however: Without deliberate structure, communication slips, deliverables become bespoke one-offs, and insights fail to loop back.
-  + then: Maintain transparent client comms, package deliverables as reusable modules with docs, and capture consulting lessons as research notes feeding the practice backlog.
-  + because: Treating consulting as structured R&D keeps Hyperreal both solvent and evolutionary.
+@multiarg futon0/prototype4
+@title Ambition 1 — Hyperreal Enterprises Practice
+@audience futon-devs, reflective-agents
+@tone analytic-concise
+@style flexiarg
+
++ context:
+  Hyperreal requires a consulting practice that increases alignment between
+  your research, your livelihood, and your long-term direction while generating
+  reusable structure rather than bespoke one-offs.
+
++ if:
+  You want each engagement to contribute both to financial stability and to
+  the evolution of a sustainable, research-informed independent practice.
+
++ however:
+  Without intentional structure, communication slips; deliverables fragment
+  into bespoke artefacts; and the insights generated fail to loop back into
+  the system that needs them.
+
++ then:
+  Keep client communication transparent; produce deliverables as reusable,
+  documented modules; and extract consulting insights as proto-patterns that
+  flow into the Hyperreal backlog and FUTON3’s salience pipeline.
+
++ because:
+  This turns consulting into an alignment engine: work generates reusable
+  structure, structure generates higher variety, and higher variety increases
+  your future alignment opportunities. Hyperreal becomes evolutionary rather
+  than transactional.
+
++ evidence:
+  - Existing consulting deliverables already include modular components.
+  - Client communication typically happens through channels that are easily
+    timestamped and reviewable.
+  - Notes from past engagements show extractable conceptual structure.
+  - The VSATLAS work demonstrates a clean example: a reusable flexiarg design
+    that extends the client’s system while revealing future service-provision
+    revenue streams.
+
++ next:
+  Introduce a lightweight “module template” for new deliverables; add a brief
+  reflection step at the end of each engagement; and feed extracted insights
+  into FUTON3 for proto-pattern surfacing.
+
+  + next-evidence:
+    - Detection of repeated module reuse across engagements.
+    - FUTON3-generated proto-patterns based on recurring consulting moves.
+    - Evidence of alignment gain: smoother scoping, clearer pricing,
+      better-fit clients, and reduced bespoke overhead.
 
 ! instantiated-by: Prototype 5 — Ambition 2 FUTON–Arxana Stack Stewardship [💖/用 🚴/书]
-  + context: FUTON1 daily use, live architecture notes, and gradual collaboration are the salients for developing the toolchain.
-  + if: You want FUTON–Arxana to mature into a dependable environment for thought and collaboration.
-  + however: Skipped daily practice or undocumented decisions create drift; premature collaboration risks scope creep.
-  + then: Run FUTON1 daily as the testbed, document architecture reflections in real time, and fold in collaborators incrementally (Rob, peers) with clear guardrails.
-  + because: Continuous usage plus disciplined documentation produce the resilient infrastructure the ambition promises.
 
-! instantiated-by: Prototype 6 — Ambition 3 Mojo + Reflective Rhythm [💖/弓 🌅/当]
-  + context: Weekly PARamita cycles, coaching/mentoring, card-based journaling, and balanced relational/creative practices define this ambition.
-  + if: You want inner development to stay linked with systemic insight.
-  + however: Rhythm breaks when sessions slip or when journaling scaffolds are neglected.
-  + then: Protect the weekly PARamita review, keep coaching/mentoring appointments active, balance relational/creative time blocks, and use card/pattern frameworks to maintain journaling continuity.
-  + because: A coherent reflective rhythm fuels both wisdom work and external delivery.
++ context:
+  FUTON0 needs a reliable, steadily improving environment for thought. Daily use
+  and clear architectural notes keep the FUTON–Arxana stack coherent and usable.
+
++ if:
+  You want FUTON–Arxana to become a dependable workspace for reasoning,
+  development, and collaboration.
+
++ however:
+  Skipped daily use weakens the system; undocumented decisions cause drift;
+  and premature collaboration introduces scope creep.
+
++ then:
+  Use FUTON1 daily as the live testbed; record architecture reflections as they
+  arise; and add collaborators gradually with guardrails that protect scope and
+  focus.
+
++ because:
+  Frequent contact and lightweight documentation prevent drift and make the
+  system stronger over time. This keeps FUTON–Arxana evolving into a stable,
+  coherent environment rather than an abandoned prototype.
+
++ evidence:
+  - FUTON1 already supports daily usage with minimal friction.
+  - Architecture notes demonstrate where documentation has prevented drift.
+  - Early collaborative experiments (e.g., with Rob) show the value of guardrails.
+
++ next:
+  Stabilise daily usage with light scaffolding; formalise a minimal architecture
+  note-taking protocol; and extend Arxana gradually as stable components emerge.
+
+  + next-evidence:
+    - Daily FUTON1 usage detectable via timestamps.
+    - Architecture notes showing reduced drift or clearer decision points.
+    - Arxana prototypes yielding stable nodes or literate fragments.
+
+! instantiated-by: Prototype 6 — Ambition 3 Mojo, Evolving Variety, + Reflective Rhythm [💖/弓 🌅/当]
+
++ context:
+  FUTON0 needs a source of evolving, meaningful variety. Moments of “wondrous
+  apprehension”—small encounters with insight, novelty, or strangeness—keep the
+  internal model flexible and alive.
+
++ if:
+  You want learning, creativity, and self-understanding to deepen through
+  controlled contact with the unknown rather than through routine or ritual.
+
++ however:
+  When these encounters vanish or are postponed indefinitely, patterns ossify,
+  curiosity shrinks, and alignment stops increasing.
+
++ then:
+  Invite small, natural opportunities for wondrous apprehension—through ideas,
+  conversations, creative acts, or symbolic cues—and metabolise them lightly,
+  without turning them into obligations or scheduled rituals.
+
++ because:
+  These brief encounters act as evolutionary impulses: they expand perspective,
+  refresh the generative model, and increase adaptive variety. This introduces
+  just enough uncertainty to stimulate growth without destabilising the system.
+
++ evidence:
+  - Rhythm experiments such as PAR sessions, RAP sessions, Mojo prompts, and
+    card draws have reliably triggered moments of insight without becoming rigid.
+  - Creative or relational encounters have historically produced generative
+    perspective shifts.
+  - Minimal reflection has been sufficient to integrate these signals.
+
++ next:
+  Keep the system open to small shocks of insight; capture only what feels
+  naturally significant; and allow FUTON1 or FUTON3 to mark these moments
+  lightly when they matter.
+
+  + next-evidence:
+    - Occasional tags noting spontaneous insight or perspective shift.
+    - Detectable reductions in stagnation or pattern ossification.
+    - FUTON3 identification of proto-patterns emerging from these encounters.
 
 ! instantiated-by: Prototype 7 — Ambition 4 Role Transition Trajectory [🔦/口 💑/资料]
-  + context: Achieving a £50K+ aligned role by Aug 2026 is the economic backbone for the next phase.
-  + if: You want FUTON0 to guarantee a viable livelihood without compromising alignment.
-  + however: Without explicit tracking, the search cadence and preparation for recommendations/interviews can lag.
-  + then: Track role targets quarterly, maintain active outreach/interview prep, and align recommendation materials so the offer window remains open heading into Aug 2026.
-  + because: Deliberate trajectory work keeps the transition on schedule and supports every other ambition.
+@multiarg futon0/prototype7
+@title Ambition 4 — Applied Futon Theory: Co-Evolution With Future Environments
+@audience futon-devs, reflective-agents
+@tone analytic-concise
+@style flexiarg
+
++ context:
+  FUTON0 must support your co-evolution with future environments—roles,
+  collaborators, and communities that do not yet fully exist but already exert
+  directional influence as futons (real-but-virtual futures).
+
++ if:
+  You want your future working life to emerge through mutual shaping rather
+  than reactive job-seeking or inherited scripts.
+
++ however:
+  When futures are treated as fixed targets or when symbols are mistaken for
+  the futons they mediate, misalignment grows and trajectories become brittle.
+
++ then:
+  Attend to symbolic signals that reveal possible future environments; explore
+  lightly; cultivate relationships that show reciprocal responsiveness; and let
+  alignment emerge through ongoing co-evolution rather than forced planning.
+
++ because:
+  Futons influence the present something like photons. The co-evolution of
+  present and future echoes Gotama’s dependent causality—agent and future
+  conditions arise together in a logical chain—and Alan Moore’s insight that
+  all times are immediately accessible in certain states of consciousness. In
+  applied futon theory, alignment grows through co-evolution with virtual
+  states, not through selection or prediction.
+
++ evidence:
+  - Prior trajectories (Hyperreal, VSATLAS, ORP, band work) emerged through
+    reciprocal adaptation, not explicit search.
+  - Symbolic cues—patterns, conversations, prototypes—have repeatedly revealed
+    access to futures not yet actual.
+  - Misaligned contexts typically show low responsiveness early, acting as
+    non-resonant futons.
+
++ next:
+  Track signals of futonic resonance or dissonance; maintain light exploratory
+  contact with promising environments; and let the trajectory refine itself
+  through reciprocal influence rather than pressure.
+
+  + next-evidence:
+    - FUTON1 tags capturing futonic moments (resonance, responsiveness,
+      momentum).
+    - Notes marking when symbolic cues open or close access to future
+      attractors.
+    - Increasing clarity, lightness, and alignment as co-evolution proceeds.
+
 
 ! instantiated-by: Prototype 8 — Stack Coverage Check [👐/广 💤/卜]
-  + context: FUTON0 is responsible for ensuring every FUTON prototype has an up-to-date devmap clause so obligations can be monitored.
-  + if: You want the checker to see gaps (e.g., missing FUTON3/5/6/7 maps) before they hurt planning.
-  + however: Missing devmaps currently produce silence rather than alarms.
-  + then: Audit the futon1–futon7 devmap files weekly; if a devmap is missing or stale, log an explicit TODO and prioritize authoring/refreshing it.
-  + because: A complete standard library of devmaps is the prerequisite for meaningful stack-wide proofs.
+
++ context:
+  Devmaps belong to FUTON3: they are symbolic membranes through which FUTON3
+  perceives futons and maintains structural coherence across the stack.
+  FUTON0’s role is to support the mindful conditions that allow these symbolic
+  structures to appear, evolve, and be refreshed.
+
++ if:
+  You want FUTON3 to notice where the system’s symbolic interfaces to future
+  environments are missing, stale, or drifting, before the whole system loses
+  alignment.
+
++ however:
+  When narrative, reflection, and wondrous apprehension are weakened, futons
+  become harder to perceive; devmaps stagnate; and FUTON3 loses access to
+  future-relevant structure.
+
++ then:
+  Maintain a light narrative awareness of the system’s evolving futures; allow
+  futons to be apprehended through conversation, reflection, and symbolic
+  cues; and let FUTON3 formalise these perceptions into updated devmaps when
+  needed.
+
++ because:
+  FUTON0 provides the experiential ground—a mindful openness to futons—
+  while FUTON3 handles representational coherence. Without the former, FUTON3
+  cannot see; without the latter, FUTON0’s perceptions cannot stabilise.
+  Together, they keep the stack aligned across time.
+
++ evidence:
+  - Narrative reflection in this conversation has repeatedly revealed futons
+    that were not yet encoded in devmaps.
+  - FUTON3 updates gain clarity when experiential insight precedes them.
+  - Wondrous apprehension consistently precedes formalisation.
+
++ next:
+  Support FUTON3 by staying attuned to emerging futons; mark futon moments
+  lightly when they arise; and trust FUTON3 to handle structural consolidation.
+
+  + next-evidence:
+    - FUTON1 entries capturing futon moments.
+    - FUTON3 updates that align with experiential insight.
+    - Clearer, more resonant devmaps appearing naturally over time.

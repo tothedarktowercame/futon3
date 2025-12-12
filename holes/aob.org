@@ -143,19 +143,19 @@ CLOSED: [2025-10-27 Mon 15:40] SCHEDULED: <2025-11-05>
 Should link to example chat where this is demonstrated
 *** Goal C 🍓 Stabilise data and backup pipeline (Linode, GitHub, local)
 **** TODO Audit drives + linodes to see what's there                   :data:
-SCHEDULED: <2025-12-01>
+SCHEDULED: <2025-12-20 Sat>
 :PROPERTIES:
 :ID: A0Q4T4
 :EFFORT: 1d
 :END:
-**** FOCUS Consolidate existing data from my old backup disk drives    :data:
-SCHEDULED: <2025-12-01>
+**** TODO Consolidate existing data from my old backup disk drives     :data:
+SCHEDULED: <2025-12-20 Sat>
 :PROPERTIES:
 :ID: A0Q4T5
 :EFFORT: 1d
 :END:
 **** TODO Develop a regular backup routine :data:
-SCHEDULED: <2025-12-06>
+SCHEDULED: <2025-12-20 Sat>
 :PROPERTIES:
 :ID: A0Q4T6
 :EFFORT: 1d
@@ -192,8 +192,8 @@ CLOSED: [2025-11-12 Wed 11:43] SCHEDULED: <2025-11-12>
 - Add one bullet of current status + next contact action.
 - Optional: schedule follow-ups via Org-agenda timestamps.
 
-**** FOCUS Tracking system checkpoint commit
-SCHEDULED: <2025-12-01>
+**** DONE Tracking system checkpoint commit
+CLOSED: [2025-12-11 Thu 12:30] SCHEDULED: <2025-12-01>
 :PROPERTIES:
 :ID: A0Q4T7D
 :EFFORT: 1d
@@ -334,11 +334,16 @@ Assuming this means shipping my =chatgpt-shell-before-command-functions-hook=, I
 *** Goal B 🍓 Stabilise FUTON1 core modules (Clock, Tatami, Graph Memory); fully refactor basic-chat-demo
 *** Goal C 🍓 Log all utterances for further analysis and improve nlp-ingest routines with ChatGPT
 **** SHIP Release Prototype 1 :futon:
-SCHEDULED: <2025-12-10>
+SCHEDULED: <2025-12-13>
 :PROPERTIES:
 :ID:       A2Q4T2
 :EFFORT: 1d
-:END:   
+:END:
+- I have been uploading the code for futon0-futon4 on Github, other
+  aspects are not ready yet but there should be enough done that I
+  could release a “Prototype 1a” that gives some partial treatment of
+  the stack as a whole.  I’ve also thought it would be useful to put
+  together a whitepaper. that explains how things can be used.
 *** Goal D 🍊 Develop Futon23 plan
 **** DONE Define and run Ants Day 2 experiment (precision-weighted policy) 
 SCHEDULED: <2025-10-30 Thu>

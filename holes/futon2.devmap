@@ -106,8 +106,8 @@
   + context: FUTON1 now offers a documented graph-memory API; FUTON2 needs to speak it to graduate beyond the sandbox.
   + if: You want ants to be the first drop-in “AIF agent” that reads fact graphs and writes back its beliefs.
   + however: percepts/actions remain locked to grid coordinates, so nothing maps to FUTON1 entity IDs or relation semantics.
-  + then: design a bidirectional adapter (percepts → graph facts, graph cues → priors), version the ABI, and replay a colony run that exports beliefs into FUTON1 salience tables.
-  + because: once the adapter exists, future AIF agents inherit a proven contract instead of bespoke glue.
+  + then: design a bidirectional adapter (percepts → graph facts, graph cues → priors), version the ABI, and replay a colony run that exports beliefs into FUTON1 salience tables. Treat FUTON3 proof trails as “human pheromone lines”: export the canonical trail EDN (pattern IDs, fruits/orbs, joy deltas) into FUTON1, expose them via the adapter so analyzers ingest them as missions, and log agent runs as trail-style payloads (mission, outcome, energy delta) back into MUSN so FUTON3 records “agent proofs.”
+  + because: once the adapter honours shared trail/pheromone energy, human proofwork and AIF runs guide each other through the same mission record instead of bespoke glue.
 
 ! instantiated-by: Prototype 14 — Viriya Field & Social Activation Metrics [👕/卯 ⚡️/介]
   + context: FUTON2 carries the Factor of Awakening “energy/viriya”: vigor, commitment, and kinetic practice.

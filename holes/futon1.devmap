@@ -6,101 +6,704 @@
 @allow-new-claims true
 @length any
 @factor Keen investigation (dhammavicaya)
-@IFR: FUTON1 is the dhammavicaya layer: a deterministic, well-documented stack where chat demos, NLP, graph memory, and XTDB stay locked in sync so every focus header, ingest script, and CLI transcript has a reproducible twin for higher futons—turning the act of building the fact graph into keen investigation.
-@state Operational stack shipping focus-header demos; documentation/tests drift around NLP interface and XT instrumentation still unresolved.
-@next Refresh focus-header scripts, consolidate nlp-interface documentation/tests, and publish the XT operations stories promised by Prototype 4.
+@IFR:
+FUTON1 provides a deterministic, storage-oriented substrate that maintains a
+coherent graph of facts across sessions. It keeps Datascript (fast) and XTDB
+(persistent) in reproducible alignment so that the same world state appears
+reliably across restarts and environments. It exposes a minimal CLI and HTTP
+surface for ingesting text, inspecting entities and relations, and emitting
+stable summaries—such as focus headers—that downstream code can depend on
+without embedding persistence or orchestration logic.
+
+FUTON1 supports keen investigation by making the fact graph inspectable and
+faithful to stored state. Its role is limited to storage, hydration, and
+deterministic summarisation: it does not prescribe inference or policy. When
+this layer operates cleanly, other futons inherit a durable and predictable
+world model on which more complex behaviours can be built.
+
+@state
+The deterministic demo/client workflow, Datascript↔XTDB mirroring, and
+open-world ingest pipeline are operational and well-documented, with hydration
+and persistence behaving as expected. The NLP interface, graph-memory module,
+and configuration surfaces are functional but unevenly documented, and their
+tests do not yet cover all intended entry points. The HTTP API provides a
+stable interaction surface, though endpoint contracts and data shapes remain
+scattered across READMEs.
+
+Naming, configuration conventions, and module boundaries show mild drift as a
+result of past iterations. The storage model is inspectable but not yet
+consolidated into a single reference. These gaps do not block use, but they
+reduce the clarity, reproducibility, and ease of integration that FUTON1 is
+intended to provide.
+@next
+Consolidate the documentation and contracts that define how text becomes graph state; stabilise the naming and configuration surfaces shared across CLI, API, and ingest workflows; and refine test coverage so the deterministic substrate remains reliable as modules evolve. Maintain FUTON1’s minimal scope—storage, hydration, and inspection—while ensuring that higher futons can depend on its interfaces without ambiguity.
+
+! instantiated-by: Prototype 0 — Baseline Deterministic Substrate [💤/已 ⛲️/布]
+
++ context:
+  FUTON1 provides a deterministic storage substrate built from the demo/client
+  workflow, the NLP interface, graph-memory, and XTDB persistence. These
+  components together define the minimal end-to-end path by which text becomes
+  durable graph state and can be inspected through the CLI or HTTP API.
+
++ if:
+  You want a stable understanding of what FUTON1 currently guarantees—its
+  ingest pipeline, hydration behaviour, and contract surfaces—before extending
+  or modifying any part of the stack.
+
++ however:
+  Documentation and examples are distributed across several READMEs; the
+  overall “stack story” from ingest to XTDB is implicit rather than expressed
+  as a single reference artifact, and the exact boundaries of the deterministic
+  substrate are easy to lose track of during development.
+
++ then:
+  Capture a baseline snapshot of the current system: record a concise
+  architecture note describing the pipeline (ingest → NLP → graph-memory →
+  XTDB), freeze representative transcripts from the demo/client workflow, and
+  tag a reference point that reflects the present deterministic behaviour.
+
++ because:
+  A clear baseline makes the substrate’s guarantees explicit, helps detect
+  regressions in hydration or pipeline flow, and provides a stable reference
+  against which future refinements or extensions can be evaluated.
+
++ evidence:
+  - README documents deterministic demo/client behaviour, NLP interface,
+    graph-memory schema, and XTDB hydration.
+  - `apps/demo`, `apps/client`, `apps/nlp-interface`, `apps/graph-memory`, and
+    `apps/open-world-ingest` form the operational substrate.
+  - XTDB inspection and hydration behaviour are reproducible through existing
+    scripts and aliases.
+
++ next:
+  Compile the architecture note; select and store a minimal set of canonical
+  transcripts; and publish them alongside a tagged release that marks the
+  baseline behaviour.
+  - Add a lightweight `/api/alpha/entities/latest?type=...` endpoint (or
+    equivalent) so downstream tools can fetch only the most recent
+    `:clock-out/summary` (or other entity type) instead of paging the entire
+    history when verifying persistence.
+
++ next-evidence:
+  - A dated, versioned snapshot containing architecture notes and
+    representative transcripts.
+  - CI or local reproducibility checks demonstrating identical XTDB and
+    focus-header outputs under the baseline tag.
+  - A single README-level reference pointing to the baseline for future
+    comparison.
 
 
-! instantiated-by: Prototype 0 — Baseline Stack Snapshot [💤/已 ⛲️/布]
-  + context: futon1 is a collection of deterministic chat demos built on a tiered NLP stack, in-memory graph-memory, and XTDB persistence, surfaced via `apps/basic-chat-demo`, `apps/nlp-interface`, `apps/graph-memory`, and `apps/open-world-ingest`.
-  + if: You want a clear picture of what already works before you add new affordances.
-  + however: The current documentation is spread across multiple READMEs and doesn’t yet tell a single “stack story” from CLI to XTDB.
-  + then: Freeze the current behaviour with tags, record a concise architecture note (pipeline → graph → XT), and capture representative CLI transcripts for v1–v5.
-  + because: This establishes a stable reference snapshot and makes regressions and future extensions legible.
+! instantiated-by: Prototype 1 — Demo/Client Determinism & Focus-Header Instrumentation [💤/每 🚞/已]
 
-! instantiated-by: Prototype 1 — basic-chat/v5 Hardening (Focus Header Path) [💤/每 🚞/已]
-  + context: the `demo` app is the canonical way to interrogate the stack; it emits focus headers, records hydration, and demonstrates how NLP, graph-memory, and XTDB cohere in practice.
-  + if: You want the CLI to behave like calibrated instrumentation instead of a friendly-but-shaky demo.
-  + however: our current smoke tests hit only the happy path, leaving hydration races, RocksDB locks, and legacy protocol quirks to intuition.
-  + then: design an automated focus-header lab: scripted sessions that flip every flag, replay historical transcripts, simulate flaky transports, and publish the resulting traces alongside expected XTDB states.
-  + because: treating `basic-chat` as calibrated instrumentation (not a toy) keeps every downstream agent honest about what the transport and memory layers actually guarantee.
++ context:
+  The `apps/demo` and `apps/client` workflow is the canonical entry point for
+  interrogating the stack. It emits deterministic focus headers, hydrates from
+  XTDB on startup, and exercises the NLP interface and graph-memory module
+  together, exposing how ingest, mutation, and inspection behave in practice.
+
++ if:
+  You want the CLI and client workflow to act as reliable instrumentation for
+  investigating hydration, salience updates, and focus-header formation—
+  producing traces that can be compared across runs and environments.
+
++ however:
+  Existing smoke tests cover only narrow paths, and the behaviour of hydration,
+  persistence, and focus-header emission under varied configurations is not yet
+  exercised systematically. Legacy assumptions from earlier protocols still
+  colour expectations about determinism.
+
++ then:
+  Establish a minimal determinism suite for the demo/client workflow: select a
+  small set of representative sessions, fix their configuration, and record the
+  expected XTDB and focus-header outputs. Treat these as canonical fixtures
+  checked under CI so that changes in hydration, pipeline flow, or header
+  structure become immediately visible.
+
++ because:
+  Treating the demo/client workflow as calibrated instrumentation—rather than
+  an informal demo—provides a stable, reproducible surface for higher futons,
+  lets developers detect drift in persistence or header logic, and clarifies
+  exactly what guarantees FUTON1 provides.
+
++ evidence:
+  - README documents deterministic demo/client behaviour, focus-header output,
+    and XTDB hydration.
+  - Golden fixtures already exist for graph-memory and NLP layers.
+  - XT inspection paths (`-M:storage/inspect`) demonstrate reproducible
+    hydration and salience persistence.
+
++ next:
+  Curate a minimal determinism suite; freeze representative focus-header and
+  XTDB outputs; and integrate these checks into CI as regression indicators.
+
++ next-evidence:
+  - A small directory of canonical demo/client transcripts with corresponding
+    expected XTDB states.
+  - CI reports confirming stability of determinism across tagged commits.
+  - Clear README references linking these fixtures to FUTON1’s guarantees.
 
 ! instantiated-by: Prototype 2 — NLP Interface Consolidation [👴/申 📁/这些]
-  + context: `apps/nlp-interface` provides the deterministic NER/POS and intent layers shared across protocols, including v4 gazetteer and pattern recogniser hooks.
-  + if: You want a single, testable entry point for the NLP stack that can evolve independently of the chat CLI.
-  + however: The nlp-interface README is still boilerplate and doesn’t advertise the actual pipeline or RID-style intent dictionary.
-  + then: Refactor nlp-interface into explicit stages (tokenise → tag → chunk → intent), add unit tests for each, and write a focused README for these APIs.
-  + because: A consolidated NLP module makes it easier to swap or extend components without destabilising the demos.
+
++ context:
+  `apps/nlp-interface` provides deterministic NER/POS tagging and a small set of
+  pattern-recognition hooks used across ingest and demo/client workflows. It is
+  the shared entry point for turning raw text into structured tokens that the
+  rest of FUTON1 can rely on without ambiguity.
+
++ if:
+  You want a single, well-defined NLP module whose behaviour is testable,
+  documented, and independent of the surrounding CLI or transport logic.
+
++ however:
+  The current README gives only a minimal overview of the pipeline, and the
+  boundaries between tokenisation, tagging, chunking, and downstream pattern
+  recognition remain implicit in code rather than expressed as a clear API.
+  Tests cover specific fixtures but not the full staged behaviour.
+
++ then:
+  Make the pipeline stages explicit: document and expose the tokenise → tag →
+  chunk → recognise flow, write unit tests for each stage, and provide a brief,
+  focused README describing the module’s public API, expected inputs and
+  outputs, and how upstream components should depend on it.
+
++ because:
+  A consolidated and documented NLP interface provides a stable grounding for
+  ingest and demo/client workflows, reduces accidental coupling, and makes it
+  easier to extend or revise individual stages without destabilising the rest
+  of FUTON1.
+
++ evidence:
+  - README describes deterministic NER/POS behaviour and shared pipeline usage.
+  - Test runners exist for NLP fixtures (`apps/nlp-interface/test`).
+  - Pattern-recognition hooks are already used in ingest and CLI flows.
+
++ next:
+  Clarify the staged pipeline, expand tests to cover each stage, and produce a
+  concise README that reflects the actual API and expected data shapes.
+
++ next-evidence:
+  - Stage-by-stage unit tests passing under CI.
+  - Updated README documenting pipeline flow and public functions.
+  - Agreement across ingest and demo/client modules on API usage.
 
 ! instantiated-by: Prototype 3 — Graph-Memory API & Seed Graph [💤/已 👐/么]
-  + context: `graph-memory` already encodes the Datascript schema, salience metadata, and helper fns that everything else relies on—but only insiders know how to call it.
-  + if: You want futon1 to expose a principled contract so other futons (and external agents) can trust the graph.
-  + however: helper fns are tuned for REPL spelunking, naming is inconsistent, and there is no formal description of what gets mirrored into XTDB.
-  + then: promote `graph-memory` to a documented API: name the seed graph, publish init/upsert/link/export specs, generate API docs straight from tests, and treat breaking changes like migrations.
-  + because: a graph-memory contract—rather than comfy REPL folklore—is what lets FUTON3 proofs and FUTON7 civic tooling depend on the same facts.
-  + next steps: DONE?: check the that release candidate matches this spec (futon1/apps/graph-memory/README.md:1-160); DOCS: do an *audit* of currently generated content to check the workflow
 
-! instantiated-by: Prototype 4 — XTDB Operations & REPL Stories [🐜/分 🐺/甲]
-  + context: The stack mirrors all graph mutations into XTDB and provides notes for running a REPL against the same datastore.
-  + if: You want developers to comfortably inspect, query, and repair the persistent store.
-  + however: Common workflows (inspection, counting, ego traversal, cleanup) still require reading raw XT queries and ad-hoc snippets.
-  + then: Package REPL recipes as reusable fns (`list-entities`, `entity-relations`, `counts`), add a small “XT stories” doc with copy-paste examples, and script a salience-survives-restart demo.
-  + because: Lowering XT friction makes the persistent layer feel like a first-class part of futon1 rather than a hidden backend.
-  + evidence: ✅ README-storage.md plus the :storage/inspect entry point document/automate the inspection workflow
-  + next: surface the same schema view in Emacs so futon3 can browse XT contents without guessing paths.
++ context:
+  `apps/graph-memory` defines the Datascript schema, salience metadata, and
+  store management functions that underpin FUTON1’s fact graph. It coordinates
+  in-memory state with XTDB persistence and is the central place where entity
+  and relation documents are shaped before being written or read.
+
++ if:
+  You want FUTON1 to expose a clear, documented contract for how entities,
+  relations, and salience fields are represented and mirrored between
+  Datascript and XTDB, so that other futons and external tools can rely on the
+  same facts without depending on internal implementation details.
+
++ however:
+  The existing README and tests describe schema and storage behaviour but do
+  not yet present a concise API-level view of graph operations. Helper
+  functions are still oriented toward REPL use, naming conventions vary, and
+  there is no single description of what is considered part of the persistent
+  “seed graph” or which documents are guaranteed to be mirrored into XTDB.
+
++ then:
+  Promote `graph-memory` to a documented API: define the core entity and
+  relation operations (init, upsert, link, query), state explicitly which
+  fields and document types are mirrored into XTDB, and describe any default
+  seed graph that is expected to exist in a fresh store. Align naming and
+  function boundaries with this contract and treat incompatible changes as
+  migrations rather than ad-hoc edits.
+
++ because:
+  A clear graph-memory contract turns FUTON1’s internal schema and store logic
+  into a reliable interface. This allows higher futons and external tools to
+  depend on the same graph representation, reduces ambiguity about what is
+  persisted, and makes changes to the underlying storage behaviour visible and
+  deliberate.
+
++ evidence:
+  - README documents the Datascript schema, XTDB touchpoints, and hydration
+    behaviour used by FUTON1.
+  - Test suites for graph-memory exercise persistence and salience fields.
+  - XT inspection paths demonstrate how entity and relation documents are
+    stored and reloaded.
+
++ next:
+  Extract and name the core graph-memory operations as a public API, document
+  which document types and fields are mirrored into XTDB, and describe any
+  expected seed graph in the module README.
+
++ next-evidence:
+  - An updated `apps/graph-memory` README that presents the API, mirroring
+    rules, and seed-graph expectations in one place.
+  - Tests that target the documented API functions rather than only internal
+    helpers.
+  - A short migration note for any changes that affect stored documents or
+    XTDB layout.
+
+
+! instantiated-by: Prototype 4 — XTDB Operations & REPL Workflows [🐜/分 🐺/甲]
+
++ context:
+  FUTON1 mirrors all graph mutations into XTDB and provides a stable hydration
+  path so that entity and relation documents, salience fields, and type data
+  persist across restarts. The repository already includes REPL notes,
+  inspection snippets, and a dedicated `-M:storage/inspect` entry point for
+  examining the store directly.
+
++ if:
+  You want developers to inspect, query, and verify the persistent store using
+  a small set of predictable entry points, without relying on ad-hoc XTDB
+  queries or bespoke REPL sessions.
+
++ however:
+  Common inspection tasks—listing entities, examining relations, checking
+  salience fields, or understanding schema layout—still require manual XTDB
+  queries or scanning several snippets across READMEs and test files. These
+  workflows are reliable but not yet consolidated into a minimal operational
+  interface.
+
++ then:
+  Package the existing XTDB inspection workflows into a small set of reusable
+  functions (e.g., list-entities, list-relations, inspect-entity, counts),
+  present them in one place with brief examples, and highlight the
+  salience-survives-restart demonstration as a canonical illustration of the
+  hydration contract. Treat these recipes as the reference interface for
+  inspecting and understanding FUTON1’s persistent state.
+
++ because:
+  Consolidating XTDB operations into clear, reusable workflows reduces
+  friction, makes store inspection more consistent, and strengthens FUTON1’s
+  role as a deterministic storage substrate rather than an opaque backend.
+  Developers gain a predictable way to understand how mutations appear in XTDB
+  and how hydration restores them.
+
++ evidence:
+  - `README-storage.md` documents XTDB inspection behaviour and usage.
+  - The `-M:storage/inspect` alias provides automated examples of querying the
+    store.
+  - Hydration and salience persistence are demonstrated through existing
+    scripts and XT touchpoints.
+
++ next:
+  Surface the same XTDB schema and inspection workflows in Emacs so FUTON3 can
+  browse persistent store contents without relying on filesystem paths or
+  ad-hoc REPL interaction.
+
++ next-evidence:
+  - A simple Emacs view that displays XT entities, relations, and salience
+    metadata using the documented inspection functions.
+  - Consistent behaviour between the Emacs view and the REPL inspection entry
+    points.
 
 ! instantiated-by: Prototype 5 — Open-World Ingest Workflows [🔦/世界 🍲/开]
-  + context: The open-world ingest tool streams arbitrary text through CoreNLP, generating deterministic entity IDs and OpenIE relations in XTDB.
-  + if: You want futon1 to support offline bulk ingestion as well as interactive chat.
-  + however: Ingest currently lives as a standalone CLI with minimal guidance on how its data joins the basic-chat focus-header world.
-  + then: Define standard data-dir layouts for shared XTDB, write small pipelines that ingest corpora then query them from `basic-chat-demo`, and add golden tests for ingest semantics (ID stability, negation flags, co-occurrence).
-  + because: Robust ingest workflows let futon1 accumulate long-term background knowledge, not just per-session memories.
 
-! instantiated-by: Prototype 6 — Intent Dictionary & Thematic Clusters [🙅/无 💤/上]
-  + context: The deterministic intent classifier already maps utterances onto conversational and RID-inspired clusters, but today those labels peak inside the logs.
-  + if: You want intent to act as policy—steering focus headers, salience boosts, and downstream pattern choices.
-  + however: there is no canonical intent taxonomy, no hooks from classifier output into the CLI/graph, and no regression suites proving these effects.
-  + then: publish the intent dictionary as a living document, wire intents into the focus-header builder (boost/suppress entities, tag trails), and add fixtures showing how each theme alters XTDB mirrors and futon3 checks.
-  + because: intent only matters if it shapes behaviour; otherwise the classifier is cosplay rather than dhammavicaya.
++ context:
+  `apps/open-world-ingest` streams arbitrary text through a deterministic
+  CoreNLP pipeline and writes entities, mentions, and relations into XTDB.
+  These documents become part of the same persistent store that the
+  demo/client workflow hydrates on startup, allowing background knowledge to
+  accumulate outside interactive sessions.
+
++ if:
+  You want FUTON1 to support both offline corpus ingestion and interactive
+  exploration, with both surfaces reading from and writing to the same XTDB
+  state in a predictable way.
+
++ however:
+  Ingest currently operates as a standalone CLI with limited guidance on how
+  its outputs integrate with the demo/client view of the world. Directory
+  conventions, expected data-root layouts, and test coverage for ingest
+  semantics (ID stability, relation structure, negation handling) are not yet
+  consolidated.
+
++ then:
+  Define a standard data-root layout for ingest and demo/client workflows,
+  document how ingest-produced XTDB documents appear in the hydrated store,
+  and provide small example workflows that ingest a text sample and then query
+  the resulting state through the demo/client or API surfaces. Add a minimal
+  set of golden tests covering entity-ID stability and relation formation.
+
++ because:
+  When ingest and interactive exploration share a clear, documented storage
+  path, FUTON1 can accumulate durable background knowledge in a controlled
+  way. This makes the persistent world state coherent across offline and
+  online workflows and maintains determinism across restarts.
+
++ evidence:
+  - README confirms deterministic ingest via CoreNLP and XTDB mirroring.
+  - Demo/client workflows hydrate from XTDB on startup and therefore can read
+    ingest-produced documents.
+  - Existing golden fixtures demonstrate deterministic behaviour in other
+    pipeline components.
+
++ next:
+  Document shared data-root conventions; provide an ingest→query example in
+  the README; and implement golden tests for ingest ID stability and relation
+  structure.
+
++ next-evidence:
+  - A worked example showing ingest followed by demo/client queries against
+    the same XTDB store.
+  - Golden tests verifying stable entity IDs and relation outputs for a fixed
+    input.
+  - README updates linking ingest workflows to the persistent world model.
+
+! instantiated-by: Prototype 6 — Thematic Clusters & Intent Metadata [🙅/无 💤/上]
+
++ context:
+  FUTON1 can attach lightweight thematic tags to utterances or text spans
+  during ingest or interactive use. These tags—derived from deterministic NLP
+  features or simple pattern-recognition hooks—provide a minimal layer of
+  “intent metadata” that downstream futons may use for analysis or policy.
+
++ if:
+  You want FUTON1 to expose a small, deterministic set of thematic categories
+  that describe common conversational moves or content types, without relying
+  on probabilistic classifiers or embedding higher-level inference in this
+  layer.
+
++ however:
+  There is no consolidated thematic taxonomy, the tags used in logs are not
+  documented as part of the public contract, and no examples show how these
+  tags appear in the stored XTDB documents or hydrated in-memory state.
+  Integration points within demo/client or ingest workflows remain implicit.
+
++ then:
+  Define a minimal set of thematic clusters supported by deterministic NLP
+  features, document them as part of FUTON1’s public contract, and ensure that
+  produced tags (when enabled) appear predictably in both in-memory and XTDB
+  representations. Provide a small set of example workflows illustrating how
+  these tags are attached during ingest or interaction and how they can be
+  queried or inspected.
+
++ because:
+  Lightweight thematic metadata strengthens FUTON1’s role as an inspectable
+  storage substrate. By keeping the taxonomy small and deterministic, FUTON1
+  avoids embedding inference or policy while still providing structured signals
+  that higher futons may use for reasoning or pattern-based behaviour.
+
++ evidence:
+  - README confirms deterministic NLP and pattern-recognition hooks.
+  - Logs produced by demo/client workflows already contain descriptive
+    metadata for some utterances.
+  - XTDB persistence and hydration ensure that any added metadata can be made
+    durable and inspectable.
+
++ next:
+  Specify a small, deterministic thematic taxonomy; document how tags appear in
+  FUTON1 outputs; and add examples showing ingestion or interaction annotated
+  with these clusters.
+
++ next-evidence:
+  - Updated README describing thematic clusters and their data shapes.
+  - Deterministic tests verifying tag presence and structure.
+  - Example ingest→query or demo/client transcripts showing how tags persist.
 
 ! instantiated-by: Prototype 7 — CLI Ergonomics & Multi-Instance Isolation [🎏/资料 🍒/示]
-  + context: The CLI already exposes bang commands, context flags, and environment variables for data-dir and XT config overrides.
-  + if: You want futon1 to run multiple isolated demos (tests, experiments, production-like runs) on the same host.
-  + however: Best practices for `BASIC_CHAT_DATA_DIR`, XT config selection, and `--reset/--compact/--export` are scattered and easy to misuse.
-  + then: Ship a “profiles” doc (dev/test/prod) with recommended flags and env vars, add smoke tests that spin up multiple instances with different data-dirs, and provide a `/status` helper to show active config.
-  + because: Good ergonomics and isolation make futon1 safer to embed in other tools and workflows.
 
-! instantiated-by: Prototype 8 — Golden Scripts & Performance Benchmarks [🐜/不要 🌱/久]
-  + context: Scripted EDN conversations and golden outputs already exercise the focus-header flow and older basic-chat protocols.
-  + if: You want confidence that future changes don’t break determinism, latency thresholds, or header quality.
-  + however: Golden coverage is still patchy and doesn’t include dedicated performance baselines or large-script runs.
-  + then: Curate a small suite of canonical scripts (short-chat, long-history, ingest+chat), time them under CI, and treat both outputs and runtime ranges as golden.
-  + because: Benchmarks turn futon1 into a measurable platform rather than an anecdotal demo.
++ context:
+  The demo/client workflow exposes bang commands, flags, and environment
+  variables for selecting data directories, overriding XTDB configuration, and
+  controlling persistence behaviour. These surfaces already allow multiple
+  instances of FUTON1 to run side-by-side on the same machine.
 
-! instantiated-by: Prototype 9 — External Client & Agent Bridge [📁/无 🙅/已]
-  + context: Focus-header EDN is already consumable by chatgpt-shell, Codex, or futon4, but every integration has been bespoke.
-  + if: You want futon1 to expose a purposeful bridge so external agents see the same contract as the CLI.
-  + however: there is no signed JSON schema, no HTTP shim, and no reference client showing how to stream utterances and receive headers deterministically.
-  + then: publish a tiny `/focus` API, wrap the CLI in a documented RPC, and ship sample clients (Clojure + at least one other language) that replay real transcripts against it.
-  + because: when the bridge is first-class, you can swap or stack agents freely without forking the core or relying on brittle stdout scraping.
++ if:
+  You want developers and tools to run isolated demo/client or API sessions
+  for testing, experimentation, or production-like scenarios without
+  interfering with each other’s storage or configuration.
 
-! instantiated-by: Prototype 10 — Futon4 / Arxana Export Hooks [💖/已 💤/本]
-  + context: futon4 will want to ingest focus headers, EDN snapshots, and XTDB slices as graph inputs for Arxana and higher-level pattern work.
-  + if: You want futon1 to be the canonical source of “world state” for the year-long prototype cycle.
-  + however: There is no named export profile tailored for Arxana or datascript/XT interop beyond generic `--export edn`.
-  + then: Add an “arxana-export” mode that emits a compressed, schema-tagged snapshot of entities, relations, and salience suitable for futon4 import.
-  + because: Tight, named integration turns futon1 into the lower memory layer of the FUTON stack rather than a sibling demo.
++ however:
+  Best practices for using `BASIC_CHAT_DATA_DIR`, XTDB resource overrides,
+  `config.edn`, and reset/compact/export options are spread across READMEs and
+  command-line examples. It is easy to misconfigure data roots or XTDB paths,
+  and no single reference describes the recommended conventions for running
+  multiple instances safely.
 
-! instantiated-by: Prototype 11 — AI Scientist Pilot Scenarios [👭/才]
-  + context: The AI Scientist pilots exercised futon1/futon3 side-by-side—joyful reasoning loops that leaned on focus headers, ingest, and proof logging.
-  + if: You want those pilots to serve as canonical fixtures anyone can replay or extend.
-  + however: the transcripts, CLI flags, and seed graphs live in private folders, so nobody can cite or re-run them with confidence.
-  + then: package each pilot as a runnable fixture (configs, transcripts, seed graph, expected headers) and wire futon3 checks so they reference those fixtures directly.
-  + because: pilots only teach if they are reproducible; otherwise “joy-as-empowered-action” is just lore.
++ then:
+  Document a small set of configuration patterns (e.g., dev/test/prod data
+  roots), clarify how env vars and config.edn interact, and provide brief
+  examples of running multiple isolated instances. Add smoke tests that launch
+  separate demo/client or API sessions with distinct data roots. Include a
+  simple `/status` helper or equivalent CLI flag that reports the active
+  configuration.
 
-! instantiated-by: Prototype 12 — Year-End Refactor & Packaging [🌽/末 🙇/申]
-  + context: By the end of the cycle you will have hardened v5, clarified modules, added exports, and integrated ingest, intents, and clients.
-  + if: You want futon1 to be easy to install, run, and extend by others.
-  + however: Accumulated tweaks across apps may fragment conventions (flags, env vars, logging, error reporting).
-  + then: Do a pass to unify naming and configuration across apps, streamline build and test tasks, and publish a top-level futon1 README that explains the whole story in one place.
-  + because: A coherent, well-packaged futon1 becomes the dependable base layer for FUTON2+ and for collaborators who were not present at inception.
++ because:
+  Clear ergonomics and isolation practices make FUTON1 safer to embed in
+  tooling and CI workflows, reduce accidental data mixing, and strengthen the
+  determinism and reproducibility guarantees laid out in FUTON1’s IFR.
+
++ evidence:
+  - README documents environment overrides, config.edn usage, and the
+    structure of XTDB data directories.
+  - Demo/client and API workflows can already be run with separate data roots.
+  - XTDB instances behave independently when configured with distinct paths.
+
++ next:
+  Provide documented configuration patterns, add isolation-oriented smoke
+  tests, and implement a `/status` helper that surfaces the active config.
+
++ next-evidence:
+  - A README section showing dev/test/prod data-root conventions.
+  - Automated smoke tests confirming independent operation of concurrent
+    instances.
+  - A `/status` output (CLI or API) showing current data-root and XTDB config.
+
+! instantiated-by: Prototype 8 — Golden Scripts & Determinism Checks [🐜/不要 🌱/久]
+
++ context:
+  FUTON1 already uses scripted EDN conversations and golden outputs to verify
+  deterministic behaviour in the demo/client workflow, the NLP interface, and
+  graph-memory operations. These fixtures ensure that focus-header formation,
+  XTDB hydration, and pipeline flow remain stable across revisions.
+
++ if:
+  You want confidence that changes to FUTON1 do not introduce regressions in
+  determinism, header structure, or end-to-end behaviour, and that core
+  workflows continue to perform within reasonable runtime bounds.
+
++ however:
+  Golden coverage remains incomplete. Existing fixtures focus on specific
+  modules rather than end-to-end flows, and there is no consolidated suite
+  capturing short conversational runs, longer histories, or ingest-driven
+  scenarios. Runtime behaviour is observable but not yet checked in a
+  structured way.
+
++ then:
+  Curate a small suite of canonical golden scripts that exercise representative
+  workflows: a short demo/client session, a longer session with history, and a
+  minimal ingest→query example. Record their expected outputs and basic runtime
+  characteristics, and run them under CI so deviations in XTDB state,
+  focus-header structure, or runtime ranges are immediately visible.
+
++ because:
+  A compact, well-chosen golden suite makes FUTON1’s determinism guarantees
+  explicit, stabilises expectations about performance, and turns the substrate
+  into a measurable layer rather than an informal demonstration.
+
++ evidence:
+  - README documents deterministic behaviour, hydration patterns, and golden
+    fixtures already present in module tests.
+  - NLP and graph-memory test runners use scripted inputs and expected outputs.
+  - XTDB inspection tooling (`-M:storage/inspect`) demonstrates reproducible
+    state across runs.
+
++ next:
+  Assemble the canonical golden suite, add runtime checks under CI, and link
+  the suite from the top-level README as FUTON1’s determinism reference.
+
++ next-evidence:
+  - A small directory containing canonical scripts and their expected outputs.
+  - CI jobs reporting on determinism and basic runtime stability.
+  - README references explaining how to run and interpret the golden suite.
+
+
+! instantiated-by: Prototype 9 — External Client & API Contract Clarification [📁/无 🙅/已]
+
++ context:
+  FUTON1 already exposes an HTTP API (`apps/api`) that lets external tools
+  query and update the persistent store through the same command-service logic
+  used by the demo/client workflow. This provides a minimal surface for
+  submitting utterances, inspecting state, and retrieving deterministic
+  summaries such as focus headers.
+
++ if:
+  You want external clients to interact with FUTON1 without scraping CLI
+  output or depending on internal modules, and to rely on a stable,
+  documented interface for obtaining focus-header data and querying the
+  underlying graph.
+
++ however:
+  The available endpoints and their expected inputs and outputs are documented
+  across several READMEs rather than in a single reference, and there are no
+  minimal example clients showing how to issue requests and interpret the
+  deterministic responses. The boundary between FUTON1’s API and higher-level
+  agent behaviour remains implicit.
+
++ then:
+  Consolidate FUTON1’s HTTP API contract: document the endpoints, describe
+  the structure of request and response bodies (including focus headers), and
+  provide one or two minimal example clients that demonstrate how to submit
+  an utterance and inspect the resulting state. Keep the API minimal and
+  deterministic, leaving policy or agent behaviour to higher futons.
+
++ because:
+  A clear, documented API surface allows external tools to rely on FUTON1’s
+  deterministic storage and summarisation behaviour without embedding
+  orchestration logic. This strengthens FUTON1’s role as a stable substrate
+  while avoiding scope creep into agent design or protocol negotiation.
+
++ evidence:
+  - README documents the existence of the HTTP API and describes how to start
+    it and configure its datastore.
+  - Focus headers and entity summaries are already emitted by the same
+    command-service used by the API.
+  - XTDB-backed state is stable and consistent across CLI and API surfaces.
+
++ next:
+  Produce a concise API contract, document the shape of focus-header
+  responses, and include minimal example clients demonstrating deterministic
+  interaction.
+
++ next-evidence:
+  - A single API reference file enumerating endpoints and data shapes.
+  - Sample clients (Clojure and one other language) communicating with the API.
+  - CI tests confirming that responses remain stable across versions.
+  - **Clients that omit profile configuration correctly resolve to the
+    documented default profile, and the `/status` surface shows the resolved
+    datastore path.**
+
+! instantiated-by: Prototype 10 — World-State Access & Storage Model Documentation [💖/已 💤/本]
+
++ context:
+  FUTON1 maintains the canonical world state for the stack through its combined
+  Datascript and XTDB representation. Downstream tools—whether FUTON4, Arxana,
+  Emacs interfaces, or ad-hoc scripts—need a clear understanding of how this
+  state is structured and how to retrieve entities, relations, salience fields,
+  and other stored documents without relying on internal assumptions.
+
++ if:
+  You want any external consumer to be able to inspect FUTON1’s world state
+  deterministically, using documented queries and data shapes rather than
+  reverse-engineering internal code paths or storage conventions.
+
++ however:
+  Although the README describes persistence and hydration behaviour, there is
+  no consolidated description of the storage model: which document types exist,
+  how entities and relations are shaped in XTDB, how salience metadata is
+  encoded, or which example queries reliably retrieve these structures. Export
+  options exist, but no single reference explains their intended use.
+
++ then:
+  Publish a concise storage-model reference that defines FUTON1’s persisted
+  document types, key fields, and their relationships. Provide example XTDB and
+  Datascript queries for retrieving entities, relations, salience metadata, and
+  type information. Illustrate how downstream tools can consume this world
+  state without depending on internal module boundaries.
+
++ because:
+  A clear storage-model contract makes FUTON1 a dependable foundation for the
+  rest of the FUTON stack. It allows external tools to read and reason over the
+  same durable world state without special-case integrations or export modes,
+  preserving determinism and reducing the risk of accidental divergence.
+
++ evidence:
+  - README documents XTDB hydration, document structure, and the relationship
+    between XT persistence and Datascript caching.
+  - XT inspection workflows (`-M:storage/inspect`) already expose entity and
+    relation documents.
+  - Demo/client workflows and ingest pipelines both write into the same store.
+
++ next:
+  Produce a dedicated storage-model reference; add example XTDB and Datascript
+  queries; and clarify how exported snapshots or raw XTDB directories may be
+  consumed by external tools.
+
++ next-evidence:
+  - A single document outlining document types, field semantics, and example
+    queries.
+  - Tests confirming that example queries return stable shapes across versions.
+  - README or doc links showing how external tools can load and inspect the
+    world state.
+
+! instantiated-by: Prototype 11 — Reproducible Pilot Workflows [👭/才]
+
++ context:
+  Users may wish to construct small pilot workflows—combining ingest,
+  demo/client interaction, and the persistent world state—to explore ideas,
+  test downstream reasoning layers, or run controlled experiments. FUTON1 does
+  not run these pilots itself, but provides the deterministic substrate they
+  depend on.
+
++ if:
+  You want FUTON1 to support reproducible, user-defined pilot scenarios for
+  experimental, investigative, or research-oriented purposes, without
+  embedding pilot logic or inference in this layer.
+
++ however:
+  There is no standard way to package a pilot’s configuration, transcripts,
+  and expected XTDB state. Any existing examples are informal or private, and
+  users who attempt to replay scenarios must reconstruct them manually from
+  multiple surfaces.
+
++ then:
+  Document how to assemble a minimal reproducible pilot using FUTON1’s
+  existing tools: define a data-root, record transcripts, capture expected
+  outputs, and describe how to reload and inspect the resulting world state
+  using the CLI, API, and XTDB inspection functions. Provide a small example
+  illustrating this workflow.
+
++ because:
+  Experimental and reasoning-oriented futons (e.g., FUTON2, FUTON4, FUTON5)
+  require a stable, deterministic backend for storing and replaying world
+  state. By documenting how pilots can rely on FUTON1’s storage and hydration
+  guarantees, FUTON1 supports reproducible experimentation without expanding
+  its own scope.
+
++ evidence:
+  - FUTON1 already supports deterministic transcripts and XTDB-backed
+    persistence across sessions.
+  - CLI and API surfaces can drive scripted workflows without modification.
+  - XTDB inspection paths allow deterministic verification of stored state.
+
++ next:
+  Produce a short guide for assembling and replaying a reproducible pilot using
+  FUTON1; include a small worked example.
+
++ next-evidence:
+  - A minimal pilot example containing configuration, transcripts, and
+    expected XTDB state.
+  - README references describing how external futons can use such pilots as
+    test fixtures or experimental scaffolds.
+
+! instantiated-by: Prototype 12 — Consolidation & Packaging Pass [🌽/末 🙇/申]
+
++ context:
+  As FUTON1 evolves, its modules, configuration surfaces, and documentation
+  accumulate incremental changes. Over time this can introduce small
+  inconsistencies across apps, flags, environment variables, or test and build
+  workflows. A periodic consolidation pass helps restore coherence without
+  changing FUTON1’s scope.
+
++ if:
+  You want FUTON1 to remain easy to install, run, understand, and extend by
+  others—including tools and futons that depend on it—without requiring
+  context from its development history.
+
++ however:
+  Naming and configuration conventions have drifted across modules, some flags
+  and env vars are documented in multiple places, and not all apps follow the
+  same patterns for logging, error handling, or test invocation. These
+  divergences do not break functionality but reduce predictability.
+
++ then:
+  Perform a consolidation pass: unify naming and configuration across
+  modules; align build and test tasks; and produce a top-level README or guide
+  that gives a single, coherent account of FUTON1’s structure, installation
+  prerequisites, and usage patterns.
+
++ because:
+  A coherent packaging of FUTON1 strengthens its role as the dependable base
+  layer for higher futons and for collaborators who rely on deterministic
+  behaviour but may not know the internal architecture. Clear organisation
+  reduces friction, supports reproducibility, and makes FUTON1 easier to
+  maintain as a stable substrate.
+
++ evidence:
+  - Existing READMEs document modules and workflows but vary in depth and
+    structure.
+  - Test and build commands differ across `apps/`.
+  - Environment-variable usage appears in multiple places with minor
+    variations.
+
++ next:
+  Align naming and configuration; streamline build and test tasks; and publish
+  a unified top-level reference document.
+
++ next-evidence:
+  - Consistent flag and env-var naming across modules.
+  - A shared build/test pattern verified by CI.
+  - A single top-level README describing installation, configuration, and
+    usage without cross-referencing scattered documents.

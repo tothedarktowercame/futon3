@@ -30,4 +30,6 @@
            :sigils-density {:extra-paths ["scripts"]
                             :main-opts ["-m" "scripts.build-sigils-density"]}
            :tatami-cues {:extra-paths ["scripts"]
-                         :main-opts ["-m" "scripts.cue-embedding"]}}}
+                         :main-opts ["-m" "scripts.cue-embedding"]}
+           :vitality/git-summary {:extra-paths ["scripts"]
+                                  :main-opts ["-m" "scripts.git-activity-summary"]}}}

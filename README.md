@@ -141,6 +141,22 @@ Keep the listener bound to `127.0.0.1` (default) and tunnel when working remotel
 - `GET /musn/practices` – reasoning stubs (link suggestions + pattern instances)
 - `GET /musn/tatami/status` – 24h summary of tatami sessions (emoji/fruit counts)
 
+## Vitality feeds (git activity)
+
+FUTON0 collects raw git stats via `scripts/git_activity.py` (run it from the `futon0`
+repo with `python3 scripts/git_activity.py --days 60 --output ../futon3/resources/vitality/git_activity.json`).
+Futon3 then converts that JSON into a HUD-friendly EDN snapshot:
+
+```bash
+clojure -M:vitality/git-summary
+# writes resources/vitality/git_summary.edn
+```
+
+Load the summary in code via `futon3.vitality.git` – it exposes helpers such as
+`load-summary`, `daily-grid`, `streak`, and `dominant-sphere` so Tatami HUD panels
+can render semantic grids (“which sphere dominated today?”, “how long since the last
+commit?”) without touching git directly.
+
 ## Sigil adjacency builder (emoji / hanzi)
 
 A fake embedding is useful when Futon3 needs to “snap” a devmap clause onto the closest pattern in the standard library.
@@ -157,6 +173,8 @@ clojure -M:sigils
 The matrices are cheap to recompute, so rerun the script whenever you add or edit flexiargs/devmaps with fresh sigils.
 
 4. When the same `[emoji/hanzi]` pair shows up repeatedly across devmaps, treat it as an alarm bell: inspect the overlapping clauses, decide whether to split/merge/refine the underlying patterns, and add/retire entries accordingly (see `library/library-coherence/pattern-differentiation-alarms`).
+   The current collision list lives in `docs/sigil-collisions.md` so you can see
+   which clauses are competing for the same pair before refreshing the HUD.
 
 ## Flexiformal Proofwork Deliverables
 
@@ -175,9 +193,12 @@ The matrices are cheap to recompute, so rerun the script whenever you add or edi
 - The vocabulary that feeds those traces lives in `resources/type_vocab.txt` and `resources/sigils/compressions.edn`, ensuring we tag trail actions with the same ontology as the pattern canon.
 
 ### Workday instrumentation & ChatGPT/Tatami bridge
-- Prototype 5 in `holes/futon3.devmap` calls for a `workday/submit` endpoint plus bridges into tooling. The Emacs integration that already exercises this flow now lives in this repo as `contrib/aob-chatgpt.el` (mirrors the futon1 version) so FUTON3 can claim and evolve it alongside the transport. The helper ingests prompts, spins up Tatami (`tatami.el`), and streams the pattern/type vocab coming from `resources/sigils/patterns-index.tsv` + `resources/type_vocab.txt` into classical embedding heuristics.
+- Prototype 5 in `holes/futon3.devmap` calls for a `workday/submit` endpoint plus bridges into tooling. The Emacs integration that already exercises this flow now lives in this repo as `contrib/aob-chatgpt.el` (mirrors the futon1 version) so FUTON3 can claim and evolve it alongside the transport. Prompt text files such as `contrib/futon0-clock-out.prompt` now sit beside the helper (override `my-futon-prompt-directory` if you keep prompts elsewhere). The helper ingests prompts, spins up Tatami (`tatami.el`), and streams the pattern/type vocab coming from `resources/sigils/patterns-index.tsv` + `resources/type_vocab.txt` into classical embedding heuristics.
 - These assets, together with Tatami shell scripts under `../futon1/contrib/` (referenced in the file), prove that the workday bridge is operational: ChatGPT/Tatami sessions emit NDJSON trails, get scored via the fake embedding, and will become first-class API calls once the `workday/submit` surface in transport lands.
-- Known UX gap: the Emacs HUD currently displays every prototype in the Tatami selection (e.g., `f0/p0` + `f3/p0`). Until we add a per-session “clock out” flow, toggle the active list via `M-x my-futon3-set-tatami-target` to keep the HUD focused on a single devmap.
+- Clocking out now runs automatically when you close a Futon chat buffer: the helper inserts `contrib/futon0-clock-out.prompt`, captures the EDN summary, and (when FOCUS headings are present in your Org agenda) surfaces a small “d = mark done, s = skip” mini-game so you can confirm AI-suggested completions before they propagate into FUTON1/FUTON3. Reopen the review via `M-x my-chatgpt-shell-open-last-focus-review` if you dismiss it; each run is also logged into FUTON1 as a `:clock-out/summary` entity with an efficacy score derived from your mini-game responses.
+- Boundary scans now track the “negative space” around every futon layer: run `scripts/devmap_readiness.py` to lint `holes/futon*.devmap` files and write `resources/boundary.edn` with last-touch timestamps, TODO counts, and evidence gaps for F0–F7. This snapshot, together with the git vitality summary and Futon0’s scanner output, now feeds the Stack HUD block inside the Tatami context so readiness drift (e.g., “f4 missing evidence for 13 prototypes”) appears alongside the Tai Chi/curfew reminders.
+- Load `scripts/boundary_hud.el` in Emacs and run `M-x futon-boundary-hud` to see a Magit-style table for F0–F7: each row shows the 🟢/🔴/🟣 orb (based on missing evidence ratio), last devmap touch, and outstanding TODOs. The buffer reads `resources/boundary.edn`, so rerun `scripts/devmap_readiness.py` to refresh the data whenever you update a devmap.
+- Need a copy/paste briefing for agents? Run `python3 scripts/futon_summary.py futon0` (or any `fX`) to print the devmap’s `@state` block plus the latest boundary entry from `resources/boundary.edn`. That gives downstream tools a concise “state + derivative” snapshot.
 - Tatami cues / pāramitā readouts inside the Emacs HUD now come from the same embedding path we use during batch processing. Each FROM-CHATGPT entry (tatami intent + pattern list) is posted to `/musn/cues`, which runs `futon3.cue-embedding/entry-intent-cues` server-side and returns the fruit × orb projection plus the structured `:cue/intent` metadata. When Tatami doesn’t emit any patterns, the service falls back to the descriptive corpus built by `scripts/build_fruit_orb_corpus.clj` (see `resources/sigils/fruit-orb-corpus.edn`), so plain English like “Boundless friendliness toward all beings” still lands on the expected pāramitā. Emacs renders those values in place of the old static prototype defaults, so the HUD mirrors the exact reasoning on every turn. See `docs/cues-and-orbs.md` for the scoring pipeline and `docs/hud-pipeline.md` for the end-to-end HUD flow.
 
 #### Tatami HUD quick reference

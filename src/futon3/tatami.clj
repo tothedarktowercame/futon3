@@ -1,6 +1,7 @@
 (ns futon3.tatami
   "Tatami-side CLI helpers and future MUSN REPL bindings."
   (:require [clojure.string :as str]
+            [futon3.stack.status :as stack-status]
             [futon3.tatami-schema :as schema]
             [futon3.tatami-store :as store])
   (:import (java.time Instant Duration)
@@ -249,11 +250,11 @@
        (println "  Fruits:" fruit-counts)
        (println "  Activities:" activity-counts)
        (println "  Proof summaries today?" (if proofs-today? "yes" "no")))
-     (assoc summary :selection (-> (current-selection)
-                                   (update :prototypes
-                                           (fn [prot]
-                                             (when prot
-                                               (mapv name prot)))))))))
-
-;; TODO: Emacs / sidebuffer integration — display tatami status HUD.
+     (let [selection (-> (current-selection)
+                         (update :prototypes
+                                 (fn [prot]
+                                   (when prot (mapv name prot)))))
+           stack (stack-status/stack-status)]
+       (cond-> (assoc summary :selection selection)
+         stack (assoc :stack stack))))))
 ;; TODO: Proof chain — aggregate session-proof events into proof-chain.edn.

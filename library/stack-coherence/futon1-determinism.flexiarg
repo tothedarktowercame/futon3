@@ -1,0 +1,9 @@
+@flexiarg stack-coherence/futon1-determinism
+@title Futon1 Determinism Gate
+@sigils [🧪/律]
+@factor Keen investigation (dhammavicaya)
+
+IF: FUTON1’s Prototype 0–1 guarantees hinge on `apps/client` emitting the canonical Willie/Jane focus-header + XTDB mirrors
+HOWEVER: that promise drifts unless we check the determinism suite whenever the stack changes
+THEN: rely on the `Futon1 Deterministic Stack` GitHub Action (`futon1/.github/workflows/futon1-stack-tests.yml`) or run the suites manually (`cd futon1/apps/client && clojure -M:test`, `cd apps/graph-memory && clojure -M:test -m cognitect.test-runner`, `cd apps/nlp-interface && clojure -M:test`). When any leg fails, regenerate `resources/baseline/demo_session.edn` via `clojure -M:baseline/snapshot --write ...` or fix the regression before advancing futons that depend on storage/NLP determinism
+BECAUSE: dhammavicaya keeps the substrate honest—the focus-header fixture, graph-memory schema tests, and NLP pipeline fixtures are the shared proof artifacts, so stack-coherence loops must treat a red CI badge (or failing local run) as a blocking condition for Prototype 1 duties

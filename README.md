@@ -31,6 +31,16 @@ A modern Clojure rewrite of the vintage Monster Mountain / MUSN server. The tran
    # streams dev/demo_events.ndjson via the ingest path
    ```
 
+## Elisp Package Tests
+Use the package runner to target individual Elisp test files:
+```bash
+./scripts/test-elisp-packages.sh embedding
+./scripts/test-elisp-packages.sh hud sessions
+PACKAGE=bridge ./scripts/test-elisp-packages.sh
+```
+Supported packages: `embedding`, `hud`, `sessions`, `arxana`, `bridge`, `aob`, `all`.
+Use `ERT_SELECTOR` to narrow tests, e.g. `ERT_SELECTOR='futon3-hud-*'`.
+
 ## Devmap PDF (A3)
 We keep the seven futon devmaps in `artifacts/devmaps.tex`. To regenerate the emoji-rich A3 PDF (`artifacts/devmaps.pdf`):
 
@@ -99,6 +109,29 @@ curl -X POST http://localhost:5050/musn/ingest \
   --data '{"type":"event","payload":{"t":"2024-03-20T14:01:00Z","actor":"nora","verb":"observes","object":"practice:pairing","prov":{"file":"demo","line":1}}}'
 ```
 Each line receives an `ack`/`err` JSON line in response.
+
+### MUSN Transport Acceptance Tests
+`clojure -M:test` exercises the Prototype 0 brief end-to-end:
+- `test/f2/router_test.clj` replays 100 identical `event` frames (same `msg-id`) to ensure idempotent `eid`/`run-id` acks, asserts `export` never touches the scenario path on disk, and validates `run` → `status` transitions return a `:done` state with completion metrics via the mock F3 adapter.
+- `test/transport_test.clj` drives the websocket control path so killing one client leaves peers untouched while the shared history logs a `:disconnect`, proving the per-client supervision rule in the MUSN spec.
+
+### Groundhog Day demo (in progress)
+- The deterministic transcript captured in `../futon5/resources/demos/groundhog_day_raw.json` (via `futon5.llm.relay`) is the canonical story we replay through MUSN. After the Futon3→Futon1 adapter lands we will ship a `make groundhog` target that turns this JSON into hello/event/workday/check frames, streams them through `/musn/ingest`, and verifies Futon1 receives matching proof/workday entities.
+- `scripts/groundhog_day_ingest.clj` converts the JSON transcript into `dev/groundhog_day.ndjson` plus a clock-out snippet. Run it whenever you refresh the Futon5 capture.
+- `scripts/run_groundhog_day.sh` posts the resulting NDJSON to `/musn/ingest` so you can replay the loop without opening Emacs.
+- `scripts/groundhog_day_push_futon1.clj` posts the same NDJSON into a Futon1 API profile (default `testing`). Set `FUTON1_API_BASE`/`FUTON1_PROFILE` as needed so the demo appears under the right profile.
+
+Non-interactive run:
+```bash
+cd futon3
+./scripts/groundhog_day_ingest.clj
+./scripts/run_groundhog_day.sh
+FUTON1_API_BASE=http://localhost:8080/api/alpha \
+FUTON1_PROFILE=testing \
+  ./scripts/groundhog_day_push_futon1.clj
+```
+This reproduces the hello→event→workday→check→bye flow and mirrors the
+proof/workday entities into Futon1 without touching the HUD.
 
 ## Drawbridge (nREPL over HTTP)
 You can expose a full nREPL endpoint over HTTP using Cemerick Drawbridge. It is disabled by default—add `{:drawbridge {:enabled? true ...}}` when calling `musn/start!`, or use the helper make target.
@@ -188,6 +221,12 @@ The matrices are cheap to recompute, so rerun the script whenever you add or edi
 - Prototype 3 in `holes/futon3.devmap` + the `ifr-f3-piti.flexiarg` clause spell out the `check!` interface (pattern id, context EDN, evidence refs → proof state + follow-on obligations). `library/devmap-coherence/*.flexiarg` and the shared `library/library-coherence/*.flexiarg` meta patterns are the actual DSL-ready specs, not hypotheticals.
 - `holes/AGENTS.md` turns that intent into a concrete plan: obligation extraction from the devmaps, sigil-driven candidate narrowing, `check!` evaluation, and proof exports back into FUTON1/FUTON2. This document is the evidence that the check DSL is wired into the daily “devmap coherence” cadence.
 
+### CYOA devmap refinement (prototype workflow)
+- A CYOA runner now drives per-pattern interviews, Evidence Engineer prompts, and deterministic patching for `holes/futon*.devmap` entries (see `scripts/cyoa_room.clj` and logs under `holes/logs/cyoa`).
+- Skip rules in `resources/cyoa/skip_rules.edn` prevent re-running evidence generation when a block already has `+ next-evidence:`.
+- Pattern Critic runs as a separate turn, emits inline `@question:` prompts for ambiguous clauses, and can apply them directly to the devmap (`--apply-critic`).
+- Flexiarg mode highlights `@question:` lines with warning face to keep clarifications visible during edits.
+
 ### Trail instrumentation & proof-state journal
 - Prototype 4 in `holes/futon3.devmap` plus the IFR patterns (e.g., `library/devmap-coherence/ifr-f5-samadhi.flexiarg`) demand that proof trails record `:pattern/id`, `:obligation/id`, tags, and joy deltas. These instructions are backed by the live Tatami capture under `resources/tatami-events.edn`, which shows current session-trail fixtures used by Tatami/Tatami-monitor, and `resources/tatami-context.edn`, a rolling log of every `FROM-CHATGPT-EDN` HUD payload that the Emacs integration collects.
 - The vocabulary that feeds those traces lives in `resources/type_vocab.txt` and `resources/sigils/compressions.edn`, ensuring we tag trail actions with the same ontology as the pattern canon.
@@ -205,6 +244,8 @@ The matrices are cheap to recompute, so rerun the script whenever you add or edi
 - `M-x my-chatgpt-shell-toggle-context` opens the HUD beside the active `chatgpt-shell` buffer. Each refresh calls `my-futon3-fetch-hints`, so the cue percentages update only when Tatami has received a fresh `/musn/hints` response.
 - The raw HUD payloads are appended to `resources/tatami-context.edn` every turn (see `my-chatgpt-shell-persist-edn`). Inspecting that log shows the exact `:fruits` / `:paramitas` objects (IDs, scores, summaries) plus the `:cue/intent` metadata (tokens, matched patterns, fallback hits) that produced the on-screen percentages, so you can confirm the porcelain matches the plumbing created by `futon3.cue-embedding`.
 - If the numbers look stale, run `M-x my-chatgpt-shell--refresh-context-buffer` (or submit a new message) to force another `/musn/hints` fetch; the HUD is stateless beyond the captured EDN.
+- `C-c C-a` updates the “clocked” pattern slug for the current prototype, letting you keep the HUD focused on the clause you are actively editing. `C-c C-e` opens that pattern via Futon4’s `arxana-patterns-open` so you can edit it in place and then pop back to the chat buffer.
+- Saving the pattern inside the Futon4 buffer (`C-c C-s`) automatically records a `prototype → pattern` link in Futon1 for the currently clocked session, so future audits know which clause you were editing.
 - The “Tatami cues” (fruits) and “Pāramitās” lines inside the HUD come straight from the Tatami hints API. Every Tatami response includes structured fruit/paramitā entries (`:fruit/id`, `:emoji`, `:summary`, `:score`). `contrib/aob-chatgpt.el` sorts them by score and renders a short description (“🍒 doable (20%) — Simple, low-friction…”, “🟣 truth (12%) — Purity, directness…”), so the cues you see are exactly the ones Tatami reported for the current session.
 - Run `clojure -M:tatami-cues` to materialise the cue embeddings captured so far; the script reads `resources/tatami-context.edn`, computes fruit/paramitā vectors via `futon3.cue-embedding`, and writes the annotated timeline to `resources/tatami-cues.edn` for downstream analysis.
 - Use `M-x my-chatgpt-shell-replay-last-turn` to reapply the most recent FROM-TATAMI/FROM-CHATGPT EDNs locally (no network calls). This lets you iterate on HUD rendering or salients offline by re-running the last turn’s snapshots.
@@ -245,6 +286,7 @@ the reply arrives. If the second refresh never happens, check `*Messages*` for
 - `type:"workday"` envelopes (WS or `POST /musn/ingest`) accept `{activity, evidence?, sigils?, prototypes?}` payloads, normalize them, and append to `futon3/logs/workday.edn`. Replies include `run-id`, `workday/id`, and `blocked-by [:f1.persistence]` to keep the dependency on Futon1 explicit until the adapter lands. The helper also exposes `futon3.workday/set-log-path!` for tests.
 - `type:"check"` envelopes call the new `futon3.checks/check!` DSL. It loads `resources/sigils/patterns-index.tsv`, matches hotwords against the supplied `context` + `evidence`, logs proof states under `futon3/logs/checks.edn`, and returns `{status, missing, derived/tasks, proof}` so downstream futons can route the result. `check!` is also exposed to the SAFE REPL via `musn.api` bindings.
 - Workday submissions can embed `{:check {:pattern/id ...}}` (or just `:pattern/id`), and the router will automatically run `check!` with the submitted activity/evidence before replying. This ties Prototype 3 + Prototype 5 together: instrumentation yields immediate applicability verdicts and proof trail lines even before FUTON1 persistence is wired in.
+- Set `FUTON1_API_BASE` (e.g. `http://localhost:8080/api/alpha`) and `FUTON1_PROFILE` (e.g. `testing`) before `make dev` if you want Futon3 to mirror every workday/check result into Futon1 automatically. When these env vars are present the transport posts each workday/check to Futon1 so demo runs appear under that profile without extra scripts.
 
 ## Learn-or-Act Retrieval Loop
 

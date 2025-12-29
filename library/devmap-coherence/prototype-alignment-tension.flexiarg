@@ -1,0 +1,20 @@
+@flexiarg devmap-coherence/prototype-alignment-tension
+@title Prototype Alignment — Tension & Readiness Check
+@sigils [⚡️/义 ⌛️/工]
+@references [p4ng/tension-detection p4ng/readiness-windows]
+
+! conclusion:
+  inspect the context/if/however clauses for at least one named tension and a readiness window (criteria or timing); emit follow-up obligations when those markers are missing
+
+  + context: Identify and articulate any named tensions and readiness criteria in your prototypes to ensure they remain testable.
+  + IF:
+    a prototype names risks, frictions, or unknowns in its context
+
+  + HOWEVER:
+    many devmap entries fail to mark the tension explicitly or to state when the prototype will be “ready” for handoff
+
+  + THEN:
+    inspect the context/if/however clauses for at least one named tension and a readiness window (criteria or timing); emit follow-up obligations when those markers are missing
+
+  + BECAUSE:
+    Surfacing tensions (per p4ng) and defining readiness windows keep prototypes testable and prevent surprise failures downstream

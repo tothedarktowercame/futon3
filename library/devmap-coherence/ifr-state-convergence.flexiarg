@@ -1,0 +1,37 @@
+@flexiarg devmap-coherence/ifr-state-convergence
+@title IFR–State Convergence Check
+@sigils [🧘/判 ⚖️/义]
+@audience futon stewards
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [devmap-coherence/ifr-f1-dhammavicaya stack-coherence/ready-blocked-triage stack-coherence/evidence-ledger]
+
+! conclusion:
+  compare each IFR against README truths, prototypes, and evidence. If the
+  gaps are cosmetic, close the clause; if they are structural, flag blockers so
+  stack triage can route the work or consciously pause it.
+
+  + context: You must compare IFRs with existing evidence to identify structural gaps and prevent stalled progress.
+  + IF:
+    every futon carries an Ideal Final Result plus a current-state description.
+
+  + HOWEVER:
+    mature layers can sound “done” even when structural gaps remain, while
+    truly complete layers linger as open obligations.
+
+  + THEN:
+    compare each IFR against README truths, prototypes, and evidence. If the
+    gaps are cosmetic, close the clause; if they are structural, flag blockers so
+    stack triage can route the work or consciously pause it.
+
+  + BECAUSE:
+    dhammavicaya requires evidence for keeping a layer active.
+
+  + STATUS:
+    status[blocked] blocked-by[devmap-coherence/ifr-audit]
+
+  + EVIDENCE:
+    evidence[library/devmap-coherence/ifr-f1-dhammavicaya.flexiarg:1]
+
+  + NEXT:
+    next[Run this convergence check before merging FUTON1 updates; repeat quarterly for other futons.]

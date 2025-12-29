@@ -1,0 +1,34 @@
+@flexiarg vsatlas/minimal-linking-pilot
+@title Minimal Feature and Pilots
+@sigils [🧩/用 🚦/试]
+@audience VSAT collaborators
+@tone plain-analytic
+@allow-new-claims false
+@references [vsatlas/proof-of-concept-scope vsatlas/value-flow-constellation]
+
+! conclusion:
+  Build only the minimal linking feature and test it with one or two tightly
+  scoped pilots.
+
+  + context: You are defining a tightly scoped build-and-test phase that focuses only on core linking actions, so pilots can answer whether collective sense-making improves with these features.
+  + IF:
+    Budget is small and the linking concept is unproven with real groups.
+
+  + HOWEVER:
+    Shipping broader features before testing risks consuming funds without
+    answering the central question.
+
+  + THEN:
+    Implement only propose/confirm/view links and run short pilots with carefully
+    chosen partners (e.g., ACMi, a university class).
+
+  + BECAUSE:
+    Concentrating on the linking loop lets partners judge whether collective
+    sense-making improves.
+
+  + STATUS:
+    status[blocked]
+    blocked-by[vsatlas/pilot-partner-selection]
+
+  + NEXT:
+    next[Pick 1–2 partners and co-design a lightweight pilot plan documenting observations.]

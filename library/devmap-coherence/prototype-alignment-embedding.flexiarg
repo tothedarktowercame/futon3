@@ -1,0 +1,20 @@
+@flexiarg devmap-coherence/prototype-alignment-embedding
+@title Prototype Alignment — Semantic Embedding Discipline
+@sigils [📐/工 🧭/档]
+@references [p4ng/pattern-activation p4ng/identifier-garden]
+
+! conclusion:
+  maintain a canonical `patterns-index` (Tokipona section, truth-table Hanzi, rationale) and a compression log (`resources/sigils/compressions.edn`); any new pattern addition or mapping change must append to the log and update the index before regenerating CSVs
+
+  + context: Maintain an up-to-date patterns-index and compression log to ensure reproducible and reliable semantic embeddings.
+  + IF:
+    FUTON3 relies on a “fake embedding” (sigil distances + Tokipona/Hanzi mappings) to suggest patterns
+
+  + HOWEVER:
+    without an index + rationale log, embeddings drift from actual semantics and become irreproducible
+
+  + THEN:
+    maintain a canonical `patterns-index` (Tokipona section, truth-table Hanzi, rationale) and a compression log (`resources/sigils/compressions.edn`); any new pattern addition or mapping change must append to the log and update the index before regenerating CSVs
+
+  + BECAUSE:
+    embedding discipline lets pattern-capable agents trust similarity queries and keeps the system replicable

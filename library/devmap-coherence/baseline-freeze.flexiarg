@@ -1,0 +1,20 @@
+@flexiarg devmap-coherence/baseline-freeze
+@title Baseline Freeze & Audit Hooks
+@sigils [🧊/证]
+@factor Keen investigation (dhammavicaya)
+
+! conclusion:
+  declare a baseline freeze window, capture canonical transcripts/configs/seed graphs, and wire audit hooks (`check!`, graph exports, viriya deltas) so every new change proves it still matches the frozen reference
+
+  + context: You should implement a baseline freeze to maintain integrity by capturing key configurations and setting up audit hooks.
+  + IF:
+    a futon layer claims to offer a "known-good" transport or memory baseline that downstream futons rely on
+
+  + HOWEVER:
+    baselines tend to rot—golden transcripts drift, flags diverge, and the story of "what already works" fractures across READMEs
+
+  + THEN:
+    declare a baseline freeze window, capture canonical transcripts/configs/seed graphs, and wire audit hooks (`check!`, graph exports, viriya deltas) so every new change proves it still matches the frozen reference
+
+  + BECAUSE:
+    dhammavicaya is about investigating what *already* exists; without explicit freezes and audit hooks, every promise of determinism becomes oral history

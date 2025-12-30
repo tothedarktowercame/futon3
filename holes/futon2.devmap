@@ -7,8 +7,8 @@
 @length any
 @factor Energy (viriya)
 @IFR: FUTON2 is the viriya (energy) chamber: a narratable Active Inference engine whose ants are first demonstrators for AIF agent species that will eventually crawl FUTON1 graph memory, export state to higher futons, and turn insight into kinetic practice across the network.
-@state Ant sim + AIF loop run end-to-end with analyzer hooks, but architecture docs, observation property tests, and hunger/tau goldens remain incomplete.
-@next Capture the baseline architecture note, lock observation/property tests, and record hunger/precision goldens before layering new agent species.
+@state Ant sim + AIF loop run end-to-end with analyzer hooks. Architecture baseline documented in stack-baseline.md. Observation property tests strong (440+ iterations). Hunger/tau goldens recorded (6 scenarios). Policy goldens recorded (5 scenarios). Gaps: formal semantics docs, README outdated (13 vs 14 obs keys), white-space tests missing.
+@next Formalize micro-step semantics in doc/trace-semantics.md, update README observation vector, add white-space property tests, expand policy goldens to 10 scenarios.
 
 
 ! instantiated-by: Prototype 0 — AIF Stack Baseline (observe → perceive → affect → core) [👕/卯 💤/已]
@@ -17,6 +17,22 @@
   + however: Modules are individually solid but no single document freezes hunger/tau semantics or traces the whole stack.
   + then: Capture a top-level architecture note from sensory keys through world updates, lock current hunger and predictive micro-step parameters, and add four golden AIF microtraces.
   + because: A documented baseline prevents accidental drift before you optimise policy, analyzers, or mechanics.
+  + evidence:
+    - `doc/stack-baseline.md` (76 lines): Documents 5-stage pipeline (observe→perceive→affect→policy→act),
+      locks baseline parameters (max-steps=4, alpha=0.45, beta=0.28), lists observation vector ABI.
+    - `src/ants/aif/core.clj` (209 lines): `aif-step()` orchestrates full tick, `default-aif-config` defines
+      all nested config (preferences, precision, actions, efe, modes).
+    - `src/ants/aif/observe.clj` (185 lines): `g-observe()` normalizes 14 channels to [0,1].
+    - `src/ants/aif/perceive.clj` (165 lines): Multi-step predictive coding with trace output.
+    - `src/ants/aif/affect.clj` (240 lines): `tick-hunger()`, `hunger->tau()`, `modulate-precisions()`, `update-tau()`.
+    - `src/ants/aif/policy.clj` (841 lines): EFE-based action selection with mode-conditioned biases.
+    - `doc/trace/single_tick.edn` + `doc/trace/single_tick.svg`: Deterministic trace artifact + plot.
+    - `test/resources/goldens/microtraces.edn`: 4 golden perception traces (baseline, hungry-near-enemy,
+      sated-on-trail, homebound-low-pher).
+  + next-evidence:
+    - `doc/trace-semantics.md` explaining micro-step semantics and why errors are 0.0 in goldens.
+    - `doc/hunger-tau-coupling.md` documenting when update-tau fires vs perceive-internal hunger updates.
+    - 4 complete tick traces with commentary (forage, return, explore, defend scenarios).
 
 ! instantiated-by: Prototype 1 — Observation Layer Hardening [🍲/则 👎/下]
   + context: `g-observe` normalises sensory evidence (food, pheromones, proximity, novelty, reserves) into the vectors passed downstream.
@@ -24,6 +40,20 @@
   + however: Normalisation bounds and neighbour logic assumptions are scattered across helpers.
   + then: Write property tests that enforce 0–1 ranges, document the `sense->vector` ordering, and add edge-case tests for grid borders, max-distance tweaks, and degenerate pheromone fields.
   + because: Reliable observations keep perception and policy stable no matter the world configuration.
+  + evidence:
+    - `test/ants/aif/observe_test.clj` (207 lines): Property tests + unit tests.
+      - `g-observe-values-clamped`: 200 random worlds, all 16 keys verified ∈ [0,1].
+      - `g-observe-border-neighbor-means`: 120 iterations testing edge/corner calculations.
+      - `degenerate-field-normalizes-to-zero`: Handles max-food=0 gracefully.
+      - `sense-vector-ordering`: Locks 14-element vector ABI.
+    - `src/ants/aif/observe.clj`: `clamp01()`, `normalize()` enforce bounds; all channels
+      pass through normalization before return (lines 161-177).
+    - `doc/stack-baseline.md` (lines 7-9): Lists observation ABI ordering.
+    - `README.md` (lines 88-93): Documents sense→vector keys (needs update: lists 13, actual is 14).
+  + next-evidence:
+    - `doc/observation-spec.md` listing all normalization bounds (max-food, max-pher, max-dist, max-reserve).
+    - White-space detection property tests (`:white?` field currently untested).
+    - Documentation of 8-neighborhood offset logic.
 
 ! instantiated-by: Prototype 2 — Predictive Coding Microcycle Clarity [💖/刊]
   + context: Perception performs multi-step updates of mu, tau, Pi-o, goals, and weighted errors with annealing.
@@ -31,6 +61,20 @@
   + however: Hunger updates, sensory prediction, and error accumulation are interwoven without a canonical trace.
   + then: Publish a single-tick perception trace with plots of hunger, tau, and error per micro-step, and formalise an interface for extracting a mu/precision snapshot.
   + because: Clear cycles make later integrations with futon4 symbolic memory far easier.
+  + evidence:
+    - `test/resources/goldens/microtraces.edn` (24 lines): 4 golden scenarios with per-step traces.
+      - `:baseline`: h 0.66→0.79, tau 1.47→0.81 over 4 steps.
+      - `:hungry-near-enemy`: h jumps to 1.0, tau floors.
+      - `:sated-on-trail`: h stays low 0.22→0.33, tau peaks 2.06→1.5.
+      - `:homebound-low-pher`: h 0.55→1.0, tau drops 1.76→0.33.
+    - `test/ants/aif/microtrace_regression_test.clj` (80 lines): Runs 4 scenarios through `aif-step`,
+      compares `:perception :trace` to golden, locks baseline parameters.
+    - `tools/trace_tick.clj` (151 lines): Generates `doc/trace/single_tick.edn` + SVG plot.
+    - `doc/trace/single_tick.svg`: Renders tau (red), h (blue), error (purple) with legend.
+    - `src/ants/aif/perceive.clj` (lines 133-164): Loop outputs `{:tau, :h, :error}` per micro-step.
+  + next-evidence:
+    - `doc/trace-semantics.md` formalizing micro-step semantics (why errors are 0.0, annealing formula).
+    - Goal-bias mechanism documented and tested (blending toward home/enemy based on cargo).
 
 ! instantiated-by: Prototype 3 — Hunger & Precision Dynamics Goldens [🌲/高 💫/六]
   + context: Functions such as `tick-hunger`, `update-hunger`, `update-tau`, and `modulate-precisions` control the most sensitive dynamics.
@@ -38,6 +82,23 @@
   + however: There are no golden tests for tau evolution, hunger saturation, or reserve-driven adjustments.
   + then: Record six golden sequences (normal, starvation, overstimulation, heavy-cargo, high-risk, high-ingest) and lock expected tau floors/caps for each.
   + because: Once goldens exist, small tune-ups stop breaking entire colony behaviour.
+  + evidence:
+    - `test/resources/goldens/hunger_tau.edn` (163 lines): 6 golden sequences as specified.
+      - `:normal`: h=0.42→0.427→0.233, tau=2.076 (strong feeding effect).
+      - `:starvation`: h=0.88→0.896→0.887, tau FLOORS at 0.605 (exploitation mode).
+      - `:overstimulation`: h=0.50→0.506→0.262, tau PEAKS at 2.011 (exploration mode).
+      - `:heavy-cargo`: cargo=0.95, h=0.58→0.961, tau FLOORS at 0.597 (load stress).
+      - `:high-risk`: h=0.60→0.671→0.649, tau=1.14 (moderate modulation).
+      - `:high-ingest`: h=0.70→0.67→0.185, tau PEAKS at 2.18 (strong relief).
+    - `test/ants/aif/hunger_regression_test.clj` (29 lines): Loads 6 scenarios, evaluates
+      tick-hunger → update-hunger → hunger->tau → modulate-precisions, compares to golden.
+    - `tools/hunger_goldens.clj` (75 lines): Generator script for golden file.
+    - `README.md` (lines 117-129): Documents hunger config parameters and defaults.
+  + next-evidence:
+    - `doc/hunger-goldens-guide.md` explaining behavioral regime each scenario represents.
+    - SVG plots for hunger_tau trajectories (like trace_tick.clj does for microtraces).
+    - Tau-floor/tau-cap assertions added to regression test (currently equality-only).
+    - Boundary saturation tests (e.g., h=0.99 + 0.1 delta → clamps to 1.0).
 
 ! instantiated-by: Prototype 4 — Policy Layer Surfacing [🍲/十 😻/以]
   + context: `ants.aif.policy` selects actions using EFE metrics while `attach-policy-diagnostics` emits traces.
@@ -45,6 +106,23 @@
   + however: There is no standalone harness that feeds synthetic mu/observation pairs.
   + then: Build `(eval-policy mu prec obs config)` as a harness and add golden action rankings for ten canonical scenarios (e.g. rich food, enemy close, starvation risk).
   + because: Stabilised policies are mandatory before benchmarking or bridging into futon1 salience services.
+  + evidence:
+    - `test/resources/goldens/policy_harness.edn`: 5 golden scenarios with action rankings.
+      - `:forage-normal`: Empty-handed, good food signal → forage preferred.
+      - `:loaded-homebound`: High cargo, near home → return preferred.
+      - `:white-space-scout`: No signals, exploring → pheromone preferred.
+      - `:deficit-colony`: Low reserves, high hunger → return prioritized.
+      - `:maintain-pheromone`: Good trail, near home → pheromone preferred.
+      Each includes: p (probability), G (free energy), risk, ambiguity, info, colony, survival, action-cost.
+    - `tools/policy_harness.clj` (128 lines): Generator for 5 canonical scenarios.
+    - `test/ants/aif/policy_harness_test.clj` (20 lines): Loads scenarios, runs `eval-policy`,
+      compares rankings to golden.
+    - `test/ants/aif/policy_test.clj` (187 lines): Comprehensive behavioral tests
+      (shape, preference coupling, starvation tau clamping, nest action filtering).
+    - `src/ants/aif/policy.clj`: `eval-policy()` function exists (deterministic ranking harness).
+  + next-evidence:
+    - Expand to 10 canonical scenarios as specified in devmap (currently 5).
+    - Document EFE component formulas (risk, ambiguity, info, colony, survival) in `doc/policy-spec.md`.
 
 ! instantiated-by: Prototype 5 — World Mechanics Contract (war.clj) [🎑/世界 🌝/但]
   + context: The simulator handles evaporation, movement, gather/deposit, pheromone dynamics, hunger propagation, reserves, and termination.

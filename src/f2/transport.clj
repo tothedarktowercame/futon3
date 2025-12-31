@@ -7,11 +7,13 @@
             [futon3.checks :as checks]
             [futon3.tatami :as tatami]
             [futon3.workday :as workday]
+            [futon3.futon1-bridge :as f1-bridge]
             [f2.repl :as repl]
             [f2.semantics :as semantics]
             [f2.router :as router]
             [org.httpkit.server :as http])
-  (:import (java.util UUID)))
+  (:import (java.time Clock Instant)
+           (java.util UUID)))
 
 (def max-frame-bytes (* 8 1024))
 (def inbox-size 64)
@@ -28,8 +30,55 @@
 (defn- random-run-id []
   (random-id "RUN"))
 
-(defn- now-stamp []
-  (clock/stamp))
+(defn- config! [state]
+  @(:config state))
+
+(defn- fixed-instant [config]
+  (when-let [value (or (get-in config [:clock :fixed])
+                       (:clock-fixed config))]
+    (Instant/parse value)))
+
+(defn- clock-instant [state]
+  (let [config (config! state)
+        fixed (fixed-instant config)
+        cfg-clock (or (:clock config) (get-in config [:clock :clock]))]
+    (cond
+      fixed fixed
+      (instance? Clock cfg-clock) (clock/now cfg-clock)
+      :else (clock/now))))
+
+(defn- now-iso [state]
+  (clock/->iso-string (clock-instant state)))
+
+(defn- now-stamp [state]
+  (clock/stamp (clock-instant state)))
+
+(defn- ensure-run-id-counter! [state]
+  (let [config-atom (:config state)
+        config @config-atom]
+    (or (:run-id-counter config)
+        (let [counter (atom 0)]
+          (swap! config-atom assoc :run-id-counter counter)
+          counter))))
+
+(defn- run-id-fn [state]
+  (let [config (config! state)]
+    (or (:run-id-fn config)
+        (get-in config [:transport :run-id-fn])
+        (when-let [seed (or (:run-id-seed config)
+                            (get-in config [:transport :run-id-seed]))]
+          (let [counter (ensure-run-id-counter! state)]
+            (fn []
+              (format "%s-%04d" seed (swap! counter inc)))))
+        random-run-id)))
+
+(defn- proof-id-fn [state]
+  (let [config (config! state)]
+    (or (:proof-id-fn config)
+        (get-in config [:transport :proof-id-fn])
+        (when (or (:run-id-seed config)
+                  (get-in config [:transport :run-id-seed]))
+          (fn [run-id] (str "PROOF-" run-id))))))
 
 (defn- append-history! [state entry]
   (swap! (:history state)
@@ -41,14 +90,14 @@
 
 (defn- router-log-fn [state]
   (fn [entry]
-    (append-history! state (merge {:stamp (now-stamp)} entry))))
+    (append-history! state (merge {:stamp (now-stamp state)} entry))))
 
 (defn- ensure-router! [state]
   (when-not @(:router state)
     (reset! (:router state)
             (router/create {:adapters @(:adapters state)
                             :log! (router-log-fn state)
-                            :run-id-fn random-run-id})))
+                            :run-id-fn (run-id-fn state)})))
   @(:router state))
 
 (defn clients-view [state]
@@ -69,10 +118,10 @@
   @(:history state))
 
 (defn- repl-config [state]
-  (get @(:config state) :repl {:mode :off}))
+  (get (config! state) :repl {:mode :off}))
 
 (defn- dsl-bindings [state]
-  {'now (fn [] (clock/->iso-string))
+  {'now (fn [] (now-iso state))
    'clients (fn [] (clients-view state))
    'history (fn [] (history-view state))
    'links (fn [] (semantics/suggest-links (history-view state)))
@@ -104,7 +153,7 @@
         note {:type "message"
               :from sender-name
               :body body
-              :stamp (now-stamp)}]
+              :stamp (now-stamp state)}]
     (doseq [client targets]
       (send-json! client note))
     {:reply {:ok true
@@ -144,7 +193,7 @@
                  :remote-addr (:remote-addr client)}
         outcome (with-timeout repl-timeout-ms #(repl/execute config request))
         base {:type "eval"}
-        run-id (random-run-id)
+        run-id ((run-id-fn state))
         mode-name (fn [result]
                     (name (or (:mode result)
                               (:mode config)
@@ -165,7 +214,7 @@
           (do
             (append-history! state {:client (:id client)
                                     :type :eval
-                                    :stamp (now-stamp)
+                                    :stamp (now-stamp state)
                                     :mode (:mode result)
                                     :code (:code payload)
                                     :run-id run-id
@@ -180,7 +229,7 @@
 
 (defn- handle-workday [state client envelope]
   (let [payload (:payload envelope)
-        run-id (random-run-id)
+        run-id ((run-id-fn state))
         submission (workday/submit! {:payload payload
                                      :client client
                                      :msg-id (:msg-id envelope)
@@ -190,12 +239,16 @@
       (let [entry (:entry submission)
             check-request (workday/check-request payload entry)
             check-outcome (when check-request (checks/check! check-request))
+            futon1-config (get @(:config state) :futon1)
             _ (record-history! state {:client (:id client)
                                       :type :workday
-                                      :stamp (now-stamp)
+                                      :stamp (now-stamp state)
                                       :run-id run-id
                                       :workday/id (:workday/id entry)
                                       :activity (:workday/activity entry)})
+            _ (f1-bridge/record-workday! futon1-config entry)
+            _ (when check-outcome
+                (f1-bridge/record-check! futon1-config check-outcome))
             base {:ok true
                   :type "workday"
                   :run-id run-id
@@ -210,26 +263,34 @@
                :err (:err submission)
                :details (:details submission)}})))
 
-(defn- prepare-check-request [client envelope]
-  (-> (:payload envelope)
-      (assoc :run-id (random-run-id))
-      (update :origin #(merge {:source :ws
-                               :client-id (:id client)
-                               :msg-id (:msg-id envelope)}
-                              %))))
+(defn- prepare-check-request [state client envelope]
+  (let [origin-base (cond-> {:source :ws
+                             :client-id (:id client)}
+                      (:msg-id envelope) (assoc :msg-id (:msg-id envelope)))
+        run-id ((run-id-fn state))
+        proof-id (when-let [id-fn (proof-id-fn state)]
+                   (id-fn run-id))]
+    (-> (:payload envelope)
+        (assoc :run-id run-id
+               :proof/recorded (now-iso state))
+        (cond-> proof-id
+          (assoc :proof/id proof-id))
+        (update :origin #(merge origin-base %)))))
 
 (defn- handle-check [state client envelope]
-  (let [request (prepare-check-request client envelope)
+  (let [request (prepare-check-request state client envelope)
         result (checks/check! request)
-        run-id (:run-id request)]
+        run-id (:run-id request)
+        futon1-config (get @(:config state) :futon1)]
     (if (:ok result)
       (let [proof (:proof result)]
         (record-history! state {:client (:id client)
                                 :type :check
-                                :stamp (now-stamp)
+                                :stamp (now-stamp state)
                                 :run-id run-id
                                 :pattern (:pattern/id proof)
                                 :status (:status result)})
+        (f1-bridge/record-check! futon1-config result)
         {:reply {:ok true
                  :type "check"
                  :run-id run-id
@@ -263,7 +324,7 @@
                                        (assoc c
                                                :name (or (:client hello) "anonymous")
                                                :caps (set (or (:caps hello) []))
-                                               :last-stamp (now-stamp)))))
+                                               :last-stamp (now-stamp state)))))
                    response)))
       :eval (let [client (ensure-client! state client-id)]
               (if-not client
@@ -275,7 +336,7 @@
                    {:reply {:ok false :err "unknown-client"}}
                    (deliver-message! state client (:payload envelope))))
       :bye (do
-             (update-client! state client-id #(assoc % :connected? false :last-stamp (now-stamp)))
+             (update-client! state client-id #(assoc % :connected? false :last-stamp (now-stamp state)))
              {:reply {:ok true :type "bye"}
               :close? true})
       :event (route-via-router state client-id type envelope)
@@ -298,13 +359,13 @@
   [state client-id envelope]
   (dispatch-message state client-id envelope))
 
-(defn- make-client [channel {:keys [remote-addr]}]
+(defn- make-client [state channel {:keys [remote-addr]}]
   {:id (random-client-id)
    :channel channel
    :name "anonymous"
    :caps #{"eval" "message"}
    :connected? true
-   :last-stamp (now-stamp)
+   :last-stamp (now-stamp state)
    :remote-addr remote-addr
    :inbox (async/chan inbox-size)})
 
@@ -314,9 +375,10 @@
 
 (defn- unregister-client! [state client-id]
   (when-let [client (get @(:clients state) client-id)]
-    (async/close! (:inbox client))
+    (when-let [inbox (:inbox client)]
+      (async/close! inbox))
     (swap! (:clients state) dissoc client-id)
-    (append-history! state {:client client-id :type :disconnect :stamp (now-stamp)})
+    (append-history! state {:client client-id :type :disconnect :stamp (now-stamp state)})
     client))
 
 (defn- parse-json [raw]
@@ -359,7 +421,7 @@
 (defn- websocket-handler [state request]
   (http/with-channel request channel
     (let [remote (some-> (:remote-addr request) str)
-          client (register-client! state (make-client channel {:remote-addr (or remote "unknown")}))]
+          client (register-client! state (make-client state channel {:remote-addr (or remote "unknown")}))]
       (start-client-loop! state client)
       (http/on-close channel (fn [_]
                               (unregister-client! state (:id client))))

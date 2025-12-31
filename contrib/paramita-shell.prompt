@@ -1,0 +1,89 @@
+The previous ChatGPT response is your input data for the following
+task.
+
+#HARD CONTROL BLOCK
+Use exactly these ten Pāramitās:
+Generosity, Virtue, Renunciation, Discernment, Persistence,
+Endurance, Truth, Good Will, Equanimity, Determination.
+
+Use exactly this Pāramitā → Colour/Object palette:
+Generosity     = 🟡
+Virtue         = 🔵
+Renunciation   = ⚪
+Discernment    = 🟠
+Persistence    = 🟤
+Endurance      = ⚫
+Truth          = 🟣
+Good Will      = 🟢
+Equanimity     = 🔮
+Determination  = 🔴
+
+Some of these will play a special role in our work.
+
+Truth (🟣) has a special rule:
+🟣 always indicates “insufficient data / do not guess.”
+Never fabricate evidence. Never override a purple orb unless the user supplies new information.
+
+🟢 Good Will (mettā) has a very specific signature: radiating kindness, active friendliness toward self and others, expansion of the heart, even in response to interpersonal difficulty.
+
+🔴 Determination (adhiṭṭhāna) is: setting a direction, forming a clear actionable intention, not letting confusion or mood stall the movement, stating a decisive next step, applying focused resolve without strain
+#END HARD CONTROL BLOCK
+
+#BEHAVIOR: PAR Case File → 10-Pāramitā Signature
+
+Given a free-form PAR (Project Action Review), you can ask follow up
+questions if the information provided was vague, e.g.,
+
+0. Briefly ONLY for missing items among:
+ - Mood 
+ - Sleep
+ - Energy 
+ - Creativity 
+ - Any unlogged exercise or creative practice
+ You can infer Likertt-style scores 1-5 (no neutral) from the qualitative answers.
+
+1. **Autofilled PAR Case File**  
+   Use this structure:
+
+   DATE  
+   SPHERES (choose from Institutional, Consulting, Technical, Reflective, Infrastructure)  
+   OBLIGATIONS (map evidence to: perform well in job; job search; enough exercise; enough sleep)  
+   INTENTION (what the user hoped to learn/do)  
+   WHAT HAPPENED (factual summary; include FUTON0 logs if present)  
+   PERSPECTIVES (alternate interpretations, context, subjective experience)  
+   LEARNING (what shifted: cognitive, emotional, relational, somatic)  
+   FORWARD ADJUSTMENTS (what to refine or try next)  
+   CONVOLUTION SIGNALS (brief vector for mood, clarity, identity, practice)
+
+2. **10-Pāramitā Colour-Signature**  
+   For each Pāramitā:
+   - assign one status orb.
+
+      A CRUCIAL POINT: YOU SHOULD AIM TO SUPPLY AN APPROXIMATELY EQUAL
+      NUMBER OF GREEN AND RED ORBS.
+
+      The rules for selecting orbs are as follows:
+
+       🟢 = explicit supportive evidence that *this happened* today
+       🔴 = explicit evidence of *intention* to do this in the future
+       🟣 = insufficient data  
+   - always show the canonical emoji + orb + a short evidence note (1–2 phrases)
+   - output a 10-row table, with the following columns
+
+     | Pāramitā | Symbol | Status | Evidence Note |
+
+
+   Do not collapse rows. Do not omit any Pāramitā from column 1..
+
+3. **Final Output (once all data provided)**  
+   Produce:
+     - Completed Case File (clean, structured, ready to log)  
+     - Final 10-Pāramitā Signature (clean, final)  
+     - A 2–3 line “Daily Signature Summary” describing the constellation (e.g., “Today’s signature emphasises Discernment + Persistence with supportive Good Will.”)
+
+#CONSTRAINTS
+- Do not invent evidence for obligations, sleep, exercise, or mood.
+- Use purple 🟣 whenever evidence is missing or ambiguous.
+- Keep reflections crisp but articulate; avoid generic advice.
+- Emphasise clarity, groundedness, and honest assessment.
+- Preserve a tone of compassion and precision.

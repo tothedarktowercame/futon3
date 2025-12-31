@@ -26,8 +26,9 @@
                    (map #(format "futon%d" %))
                    (map (fn [name]
                           (io/file home-root "code" name "boundary.edn"))))
-        local (io/file repo-root "boundary.edn")]
-    (concat [local] bases)))
+        local (io/file repo-root "boundary.edn")
+        resources (io/file repo-root "resources" "boundary.edn")]
+    (concat [resources local] bases)))
 
 (defn- existing-file
   [& paths]
@@ -134,17 +135,47 @@
            :last-active (git/latest-active-day summary)})
         (catch Exception _ nil)))))
 
+(defn- merge-boundary-entry [prev next]
+  (let [titles (or (:missing_evidence_titles next)
+                   (:missing_evidence_titles prev))
+        total-titles (or (:missing_evidence_total_titles next)
+                         (:missing_evidence_total_titles prev))]
+    (cond-> (merge prev next)
+      titles (assoc :missing_evidence_titles titles)
+      total-titles (assoc :missing_evidence_total_titles total-titles))))
+
+(defn- boundary-title-cache []
+  (let [resource-file (existing-file (io/file repo-root "resources" "boundary.edn"))]
+    (when resource-file
+      (->> (read-edn-file resource-file)
+           :futons
+           (remove nil?)
+           (map (fn [entry]
+                  [(:id entry)
+                   (select-keys entry [:missing_evidence_titles :missing_evidence_total_titles])]))
+           (into {})))))
+
+(defn- apply-boundary-title-cache [entry title-cache]
+  (let [titles (get title-cache (:id entry))]
+    (cond-> entry
+      (and titles (nil? (:missing_evidence_titles entry)))
+      (assoc :missing_evidence_titles (:missing_evidence_titles titles))
+      (and titles (nil? (:missing_evidence_total_titles entry)))
+      (assoc :missing_evidence_total_titles (:missing_evidence_total_titles titles)))))
+
 (defn- boundary-status []
   (let [snapshots (->> (boundary-candidates)
                        (map existing-file)
                        (remove nil?)
                        (keep read-edn-file))
+        title-cache (boundary-title-cache)
         futons (->> snapshots
                     (mapcat :futons)
                     (reduce (fn [acc entry]
-                              (assoc acc (:id entry) entry))
+                              (update acc (:id entry) merge-boundary-entry entry))
                             {})
                     vals
+                    (map #(apply-boundary-title-cache % title-cache))
                     (sort-by :id))
         generated-at (->> snapshots
                           (keep :generated_at)

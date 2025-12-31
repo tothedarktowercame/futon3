@@ -9,6 +9,18 @@
 (require 'org-id nil t)
 (require 'org-element)
 (require 'tabulated-list)
+(add-to-list 'load-path "~/code/futon3/contrib/")
+(require 'futon3-bridge)
+(require 'futon3-embedding)
+(require 'futon3-hud)
+(require 'futon3-arxana-compat)
+(require 'futon3-sessions)
+(let ((futon-hot "/home/joe/code/futon0/contrib/futon-hot.el")
+      (futon-config "/home/joe/code/futon0/contrib/futon-config.el"))
+  (when (file-readable-p futon-hot)
+    (load-file futon-hot))
+  (when (file-readable-p futon-config)
+    (load-file futon-config)))
 
 (defvar my-futon-prompt-directory
   (let* ((base (or load-file-name (buffer-file-name) default-directory))
@@ -66,44 +78,10 @@ If TEMPORARY is non-nil, skip Tatami ingestion for the next turn."
     (message "Inserted %s prompt" name)))
 
 
-;;; Set up tatami — my custom integration layer between local futon stack and ChatGPT
-
-(require 'url)
-(load-file "~/code/futon1/contrib/tatami.el")
-(require 'tatami)
-
-(setq tatami-profile "default")
-(setq tatami-data-directory "/home/joe/code/futon1/data/")
-(setq tatami-start-directory "/home/joe/code/futon1/")
-(setq tatami-base-url "http://localhost:8080")
-(defvar my-tatami--clojure (or (executable-find "clojure") "clojure"))
-(unless (and my-tatami--clojure (file-executable-p my-tatami--clojure))
-  (message "Warning: could not locate a runnable clojure executable; tatami auto-start may fail."))
-(setq tatami-verbose nil)
-(setq tatami-start-command (list my-tatami--clojure "-M:server"))
-(setq tatami-startup-wait 20)
 
 ;;; Classical embedding support ---------------------------------------------
 
-(defconst my-futon3--repo-root
-  (let* ((base (or load-file-name
-                   (buffer-file-name)
-                   default-directory)))
-    (expand-file-name ".." (file-name-directory base)))
-  "Filesystem root of the futon3 checkout used by aob-chatgpt.el.")
 
-(defvar my-futon3-pattern-index-file
-  (expand-file-name "resources/sigils/patterns-index.tsv" my-futon3--repo-root)
-  "Tab-separated index mapping patterns to Tokipona/TruthTable tags plus rationales.")
-
-(defvar my-futon3-type-vocab-file
-    (expand-file-name "resources/type_vocab.txt" my-futon3--repo-root)
-    "Plain-text vocabulary of English trigger words used for classical embedding.")
-
-(defvar my-futon3--tokipona-emoji-map nil)
-(defvar my-futon3--tokipona-emoji-mtime nil)
-(defconst my-futon3--tokipona-ignore-words '("la" "pi" "li" "e" "anu" "en")
-  "Particles that should not seed emoji lookups when embedding intent text.")
 
 (defgroup futon0-clock-out nil
   "Clock-out automation and focus review settings."
@@ -131,225 +109,12 @@ When nil, fall back to `org-agenda-files`."
   :type 'boolean
   :group 'futon0-clock-out)
 
-(defvar my-futon3--cached-pattern-index nil)
-(defvar my-futon3--cached-pattern-index-mtime nil)
-(defvar my-futon3--cached-type-vocab nil)
-(defvar my-futon3--cached-type-vocab-mtime nil)
 (defvar my-chatgpt-shell-intent-sigil-limit 1
   "Maximum number of intent sigil pairs to retain/display in the HUD.")
 
-(defun my-futon3--read-file-lines (file)
-  (when (file-readable-p file)
-    (with-temp-buffer
-      (insert-file-contents file)
-      (split-string (buffer-string) "\n" t "[ \t]+"))))
-
-(defun my-futon3--type-vocab ()
-  (let* ((file my-futon3-type-vocab-file)
-         (mtime (and (file-exists-p file)
-                     (float-time (file-attribute-modification-time (file-attributes file))))))
-    (when (and mtime
-               (or (null my-futon3--cached-type-vocab-mtime)
-                   (> mtime my-futon3--cached-type-vocab-mtime)))
-      (setq my-futon3--cached-type-vocab
-            (let ((table (make-hash-table :test 'equal)))
-              (dolist (line (my-futon3--read-file-lines file))
-                (let ((token (string-trim (downcase line))))
-                  (unless (or (string-empty-p token)
-                              (string-prefix-p "#" token))
-                    (puthash token t table))))
-              table))
-      (setq my-futon3--cached-type-vocab-mtime mtime))
-    my-futon3--cached-type-vocab))
-
-(defun my-futon3--parse-hotwords (field)
-  (when (and field (not (string-empty-p field)))
-    (mapcar #'string-trim
-            (split-string (downcase field) "[,;]" t "[ \t]+"))))
-
-(defun my-futon3--pattern-index ()
-  (let* ((file my-futon3-pattern-index-file)
-         (mtime (and (file-exists-p file)
-                     (float-time (file-attribute-modification-time (file-attributes file))))))
-    (when (and mtime
-               (or (null my-futon3--cached-pattern-index-mtime)
-                   (> mtime my-futon3--cached-pattern-index-mtime)))
-      (setq my-futon3--cached-pattern-index
-            (let (entries)
-              (when (file-readable-p file)
-                (with-temp-buffer
-                  (insert-file-contents file)
-                  (goto-char (point-min))
-                  (while (not (eobp))
-                    (let ((line (buffer-substring-no-properties (line-beginning-position)
-                                                                (line-end-position))))
-                      (unless (or (string-empty-p line)
-                                  (string-prefix-p "#" line))
-                        (let* ((cols (split-string line "\t"))
-                               (pattern (nth 0 cols))
-                               (tokipona (nth 1 cols))
-                               (truth (nth 2 cols))
-                               (rationale (nth 3 cols))
-                               (hotwords (nth 4 cols)))
-                          (push (list :pattern pattern
-                                      :tokipona tokipona
-                                      :truth truth
-                                      :rationale rationale
-                                      :hotwords (my-futon3--parse-hotwords hotwords))
-                                entries))))
-                    (forward-line 1))))
-              (nreverse entries)))
-      (setq my-futon3--cached-pattern-index-mtime mtime))
-    my-futon3--cached-pattern-index))
-
-(defun my-futon3--section->emoji (section)
-  (let ((map (my-futon3--tokipona-emoji-map)))
-    (when (and map section)
-      (let* ((lower (downcase (string-trim section)))
-             (base (car (split-string lower "(" t)))
-             (tokens (seq-filter (lambda (token)
-                                   (and (> (length token) 0)
-                                        (not (member token my-futon3--tokipona-ignore-words))))
-                                 (split-string (or base "") "[^[:alpha:]]+" t))))
-        (seq-some (lambda (token)
-                    (gethash token map))
-                  tokens)))))
-
-(defun my-futon3--truth->hanzi (text)
-  (when (and text (not (string-empty-p text)))
-    (let ((trim (string-trim text)))
-      (when (string-match "\\`\\([^[:space:](]+\\)" trim)
-        (match-string 1 trim)))))
-
-(defun my-futon3--embed-sigils-from-text (text &optional limit)
-  (let ((clean (and text (string-trim text)))
-        (limit (or limit 4)))
-    (when (and clean (> (length clean) 0))
-      (cl-destructuring-bind (sections hanzi) (my-futon3--embed-scan clean)
-        (let* ((emoji-values (cl-loop with acc = nil
-                                      with taken = 0
-                                      for (label . _) in sections
-                                      for emoji = (my-futon3--section->emoji label)
-                                      when emoji do (push emoji acc)
-                                                   (setq taken (1+ taken))
-                                      when (>= taken limit)
-                                      return (nreverse acc)
-                                      finally return (nreverse acc)))
-               (hanzi-values (cl-loop with acc = nil
-                                      with taken = 0
-                                      for (label . _) in hanzi
-                                      for ch = (my-futon3--truth->hanzi label)
-                                      when ch do (push ch acc)
-                                                 (setq taken (1+ taken))
-                                      when (>= taken limit)
-                                      return (nreverse acc)
-                                      finally return (nreverse acc)))
-               (pairs (cl-loop for emoji in emoji-values
-                               for han in hanzi-values
-                               while (and emoji han)
-                               collect (list :emoji emoji :hanzi han))))
-          (when pairs
-            (my-chatgpt-shell--dedupe-sigils pairs)))))))
-
-(defun my-futon3--tokipona-emoji-map ()
-  (let* ((file (expand-file-name "holes/tokipona.org" my-futon3--repo-root))
-         (attrs (and (file-exists-p file) (file-attributes file)))
-         (mtime (and attrs (float-time (file-attribute-modification-time attrs)))))
-    (when (and mtime
-               (or (null my-futon3--tokipona-emoji-mtime)
-                   (> mtime my-futon3--tokipona-emoji-mtime)))
-      (let ((table (make-hash-table :test 'equal)))
-        (when (file-readable-p file)
-          (with-temp-buffer
-            (insert-file-contents file)
-            (goto-char (point-min))
-            (while (not (eobp))
-              (let ((line (buffer-substring-no-properties (line-beginning-position)
-                                                          (line-end-position))))
-                (when (and (string-prefix-p "|" line)
-                           (not (string-match-p "^|[-+]" line)))
-                  (let* ((parts (mapcar #'string-trim (split-string line "|" t)))
-                         (emoji (car parts))
-                         (word (and (cadr parts)
-                                    (downcase (cadr parts)))))
-                    (when (and emoji word
-                               (not (string-match-p "toki pona" word)))
-                      (puthash word emoji table)))))
-              (forward-line 1))))
-        (setq my-futon3--tokipona-emoji-map table
-              my-futon3--tokipona-emoji-mtime mtime)))
-    my-futon3--tokipona-emoji-map))
-
-(defun my-futon3--embed-scan (text)
-  "Return alists of section/hanzi scores given TEXT."
-  (let* ((lower (downcase text))
-         (index (my-futon3--pattern-index))
-         (type-vocab (my-futon3--type-vocab))
-         (section-score (make-hash-table :test 'equal))
-         (hanzi-score (make-hash-table :test 'equal)))
-    (dolist (entry index)
-      (let ((section (plist-get entry :tokipona))
-            (hanzi (plist-get entry :truth))
-            (hotwords (plist-get entry :hotwords)))
-        (dolist (hw hotwords)
-          (when (and (not (string-empty-p hw))
-                     (or (null type-vocab) (gethash hw type-vocab))
-                     (string-match-p (regexp-quote hw) lower))
-            (cl-incf (gethash section section-score 0))
-            (cl-incf (gethash hanzi hanzi-score 0))))))
-    (list (sort (mapcar (lambda (key)
-                          (cons key (gethash key section-score)))
-                        (hash-table-keys section-score))
-                (lambda (a b) (> (cdr a) (cdr b))))
-          (sort (mapcar (lambda (key)
-                          (cons key (gethash key hanzi-score)))
-                        (hash-table-keys hanzi-score))
-                (lambda (a b) (> (cdr a) (cdr b)))))))
-
-(defun my-futon3-embed-english (text)
-  "Embed TEXT into the Tokipona/Truth-table space using classical hotwords."
-  (interactive "sText to embed: ")
-  (cl-destructuring-bind (sections hanzi) (my-futon3--embed-scan text)
-    (if (and (null sections) (null hanzi))
-        (message "No hotword matches")
-      (with-current-buffer (get-buffer-create "*F3-Embedding*")
-        (erase-buffer)
-        (insert (format "Input: %s\n\n" text))
-        (insert "Sections (Tokipona):\n")
-        (dolist (entry sections)
-          (insert (format "  %s -> %s\n" (car entry) (cdr entry))))
-        (insert "\nTruth-table tags:\n")
-        (dolist (entry hanzi)
-          (insert (format "  %s -> %s\n" (car entry) (cdr entry))))
-        (display-buffer (current-buffer))))))
-
-(defun my-futon3-embed-region (start end)
-  "Embed the region between START and END."
-  (interactive "r")
-  (my-futon3-embed-english (buffer-substring-no-properties start end)))
-
 ;;; Futon3 (MUSN) orchestration ------------------------------------------------
 
-(defvar my-futon3-start-directory (file-name-as-directory my-futon3--repo-root)
-  "Where to launch the Futon3 MUSN sandbox from.")
 
-(defvar my-futon3-start-command (list my-tatami--clojure "-M:dev")
-  "Command vector used to start Futon3.")
-
-(defvar my-futon3-server-buffer "*Futon3*"
-  "Buffer used to collect Futon3 stdout/stderr.")
-
-(defvar my-futon3-process nil)
-(defvar my-futon3-ui-base-url "http://localhost:6060")
-(defvar my-futon3-transport-port 5050
-  "TCP port Futon3 transport listens on when launched via `my-futon3-start'.")
-(defvar my-futon3-last-status nil)
-(defvar my-futon3-tatami-session-id nil)
-(defvar my-futon3-tatami-default-prototypes '("f0/p0" "f3/p0"))
-(defvar my-futon3-tatami-default-intent "chatgpt-shell block")
-(defvar my-futon3-tatami-active-session nil
-  "Metadata for the currently clocked Tatami target {:futons [] :prototypes [] :started ts}.")
-(defvar my-futon3-devmap-directory (expand-file-name "holes" my-futon3--repo-root))
 (defvar my-chatgpt-shell--last-hints-error nil
   "Most recent `/musn/hints` failure message, or nil when the call succeeded.")
 (defvar my-chatgpt-shell--last-cues-error nil
@@ -365,470 +130,17 @@ When nil, fall back to `org-agenda-files`."
 (defvar my-chatgpt-shell--last-replay-tatami-edn nil
   "Copy of the most recent FROM-TATAMI-EDN payload for replay.")
 
-(defun my-futon3-running-p ()
-  (and my-futon3-process (process-live-p my-futon3-process)))
-
-(defun my-futon3-start (&optional interactive)
-  "Start Futon3 (MUSN sandbox) if needed."
-  (interactive "p")
-  (if (my-futon3-running-p)
-      (when interactive (message "Futon3 already running."))
-    (let ((default-directory my-futon3-start-directory))
-      (setq my-futon3-process
-            (apply #'start-process "futon3-server" my-futon3-server-buffer my-futon3-start-command))
-      (set-process-query-on-exit-flag my-futon3-process nil)
-      (set-process-sentinel my-futon3-process
-                            (lambda (_proc event)
-                              (when interactive
-                                (message "Futon3 server event: %s" (string-trim event)))))
-      (my-futon3-sync-selection)
-      (when interactive
-        (message "Starting Futon3 (ui=%s)" my-futon3-ui-base-url))))
-  my-futon3-process)
-
-(defun my-futon3-stop ()
-  "Stop the Futon3 sandbox if it is running."
-  (interactive)
-  (when (my-futon3-running-p)
-    (kill-process my-futon3-process))
-  (setq my-futon3-process nil)
-  (message "Stopped Futon3."))
-
-(defun my-futon3-ensure-running ()
-  (unless (my-futon3-running-p)
-    (my-futon3-start)))
-
-(defun my-futon3--request-json (path)
-  (let ((url-request-method "GET")
-        (url-request-extra-headers nil)
-        (url (concat (string-remove-suffix "/" my-futon3-ui-base-url) path)))
-    (condition-case err
-        (let ((buffer (url-retrieve-synchronously url t t 1.5)))
-          (unless buffer (error "No response"))
-          (unwind-protect
-              (with-current-buffer buffer
-                (goto-char (point-min))
-                (if (re-search-forward "\n\n" nil t)
-                    (let ((body (buffer-substring-no-properties (point) (point-max))))
-                      (json-parse-string body :object-type 'plist :array-type 'list))
-                  (error "Malformed response")))
-            (when (buffer-live-p buffer)
-              (kill-buffer buffer))))
-      (error
-       (setq my-futon3-last-status (list :error (error-message-string err)))
-       nil))))
-
-(defun my-futon3-refresh-status ()
-  "Fetch the latest tatami status from Futon3."
-  (setq my-futon3-last-status (my-futon3--request-json "/musn/tatami/status")))
-
-(defun my-futon3--tatami-url (path)
-  (concat (string-remove-suffix "/" my-futon3-ui-base-url) path))
-
-(defun my-futon3--tatami-request (method path payload)
-  (my-futon3-ensure-running)
-  (let* ((url-request-method method)
-         (url-request-extra-headers '(("Content-Type" . "application/json")))
-         (url-request-data (and payload
-                                (encode-coding-string (json-encode payload) 'utf-8)))
-         (coding-system-for-read 'utf-8)
-         (coding-system-for-write 'utf-8)
-         (buffer (url-retrieve-synchronously (my-futon3--tatami-url path) t t 2)))
-    (unless buffer
-      (error "No response from Futon3"))
-    (unwind-protect
-        (with-current-buffer buffer
-          (goto-char (point-min))
-          (let ((status (or url-http-response-status 0)))
-            (search-forward "\n\n" nil 'move)
-            (let ((body (buffer-substring-no-properties (point) (point-max))))
-              (if (/= status 200)
-                  (error "Futon3 %s failed (%s): %s" path status body)
-                (when (and body (not (string-empty-p (string-trim body))))
-                  (json-parse-string body :object-type 'plist :array-type 'list))))))
-      (when (buffer-live-p buffer)
-        (kill-buffer buffer)))))
-
-(defun my-futon3--encode-prototypes ()
-  (mapcar (lambda (sym)
-            (cond
-             ((symbolp sym) (symbol-name sym))
-             ((and (stringp sym)
-                   (> (length sym) 0)
-                   (char-equal (aref sym 0) ?:)) (substring sym 1))
-             (t (format "%s" sym))))
-          my-futon3-tatami-default-prototypes))
-
-(defun my-futon3--read-devmap-prototypes ()
-  (let* ((entries (cl-copy-list (my-futon3--prototype-metadata)))
-         (sorted (sort entries (lambda (a b)
-                                 (let ((fa (plist-get a :futon))
-                                       (fb (plist-get b :futon))
-                                       (pa (plist-get a :proto))
-                                       (pb (plist-get b :proto)))
-                                   (if (= fa fb)
-                                       (< pa pb)
-                                     (< fa fb)))))))
-    (mapcar (lambda (entry)
-              (cons (plist-get entry :display)
-                    (plist-get entry :id)))
-            sorted)))
-
-(defun my-futon3--parse-prototype-string (text)
-  (let ((parts (split-string (or text "") "[, ]" t)))
-    (or (mapcar (lambda (tok)
-                  (let* ((trim (string-trim tok))
-                         (clean (if (and (> (length trim) 0)
-                                         (char-equal (aref trim 0) ?:))
-                                    (substring trim 1)
-                                  trim)))
-                    clean))
-                parts)
-        my-futon3-tatami-default-prototypes)))
-
-(defun my-futon3--prototype-list (value)
-  (cond
-   ((null value) nil)
-   ((vectorp value) (append value nil))
-   ((listp value) value)
-   (t (list value))))
-
-(defun my-futon3--prototype-string (proto)
-  (cond
-   ((null proto) nil)
-   ((symbolp proto)
-    (let ((name (symbol-name proto)))
-      (if (and (> (length name) 0)
-               (char-equal (aref name 0) ?:))
-          (substring name 1)
-        name)))
-   ((stringp proto)
-   (if (and (> (length proto) 0)
-            (char-equal (aref proto 0) ?:))
-        (substring proto 1)
-      proto))
-   (t (format "%s" proto))))
-
-(defun my-futon3--prototype-sigil-map ()
-  (let ((latest (my-futon3--prototype-devmap-mtime)))
-    (when (or (null my-futon3--cached-prototype-sigils)
-              (not (equal latest my-futon3--cached-prototype-sigils-mtime)))
-      (let ((table (make-hash-table :test 'equal)))
-        (dolist (entry (my-futon3--prototype-metadata))
-          (when-let (sigils (plist-get entry :sigils))
-            (puthash (plist-get entry :id) sigils table)))
-        (setq my-futon3--cached-prototype-sigils table
-              my-futon3--cached-prototype-sigils-mtime latest)))
-    my-futon3--cached-prototype-sigils))
-
-(defvar my-futon3--cached-prototype-display nil)
-(defvar my-futon3--cached-prototype-display-mtime nil)
-(defvar my-futon3--cached-prototype-sigils nil)
-(defvar my-futon3--cached-prototype-sigils-mtime nil)
-(defvar my-futon3--cached-prototype-metadata nil)
-(defvar my-futon3--cached-prototype-metadata-mtime nil)
-
-(defun my-futon3--parse-sigil-token (token)
-  (let ((trim (string-trim (or token ""))))
-    (when (and (> (length trim) 0)
-               (string-match "^\\([^/\\s]+\\)/\\([^/\\s]+\\)$" trim))
-      (list :emoji (match-string 1 trim)
-            :hanzi (match-string 2 trim)))))
-
-(defun my-futon3--extract-sigils-from-label (label)
-  (let ((start 0)
-        acc)
-    (while (and label (< start (length label))
-                (string-match "\\[\\([^]]+\\)\\]" label start))
-      (let* ((match-end-pos (match-end 0))
-             (inside (match-string 1 label))
-             (tokens (split-string inside "[[:space:]]+" t)))
-        (dolist (tok tokens)
-          (when-let (sigil (my-futon3--parse-sigil-token tok))
-            (push sigil acc)))
-        (setq start match-end-pos)))
-    (nreverse acc)))
-
-(defun my-futon3--collect-prototype-metadata ()
-  (let (entries)
-    (when (file-directory-p my-futon3-devmap-directory)
-      (dolist (name (directory-files my-futon3-devmap-directory nil "^futon[0-9]+\\.devmap$"))
-        (let* ((file (expand-file-name name my-futon3-devmap-directory))
-               (futon-num (and (string-match "futon\\([0-9]+\\)" name)
-                               (string-to-number (match-string 1 name)))))
-          (with-temp-buffer
-            (insert-file-contents file)
-            (goto-char (point-min))
-            (let ((title (and (re-search-forward "^@title \\(.*\\)$" nil t)
-                               (match-string 1)))
-                  (start (point)))
-              (when title (goto-char start))
-              (while (re-search-forward "^! instantiated-by: Prototype \\([0-9]+\\) — \\(.*\\)$" nil t)
-                (let* ((proto-num (string-to-number (match-string 1)))
-                       (label (match-string 2))
-                       (proto-id (format "f%s/p%s" futon-num proto-num))
-                       (display (format "FUTON%s — Prototype %s — %s"
-                                        futon-num proto-num
-                                        (or label (or title (format "Futon %d" futon-num)))))
-                       (sigils (my-futon3--extract-sigils-from-label label)))
-                  (push (list :id proto-id
-                              :display display
-                              :sigils sigils
-                              :futon futon-num
-                              :proto proto-num)
-                        entries)))))))
-    entries)))
-
-(defun my-futon3--prototype-metadata ()
-  (let ((latest (my-futon3--prototype-devmap-mtime)))
-    (when (or (null my-futon3--cached-prototype-metadata)
-              (not (equal latest my-futon3--cached-prototype-metadata-mtime)))
-      (setq my-futon3--cached-prototype-metadata (my-futon3--collect-prototype-metadata))
-      (setq my-futon3--cached-prototype-metadata-mtime latest))
-    my-futon3--cached-prototype-metadata))
-
-(defun my-futon3--prototype-devmap-mtime ()
-  (let ((dir my-futon3-devmap-directory)
-        (latest 0))
-    (when (file-directory-p dir)
-      (dolist (name (directory-files dir nil "^futon[0-9]+\\.devmap$"))
-        (let* ((file (expand-file-name name dir))
-               (attrs (ignore-errors (file-attributes file))))
-          (when attrs
-            (let ((mtime (float-time (file-attribute-modification-time attrs))))
-              (when (> mtime latest)
-                (setq latest mtime)))))))
-    latest))
-
-(defun my-futon3--prototype-display-map ()
-  (let ((latest (my-futon3--prototype-devmap-mtime)))
-    (when (or (null my-futon3--cached-prototype-display)
-              (not (equal latest my-futon3--cached-prototype-display-mtime)))
-      (let ((table (make-hash-table :test 'equal)))
-        (dolist (entry (my-futon3--prototype-metadata))
-          (puthash (plist-get entry :id)
-                   (plist-get entry :display)
-                   table))
-        (setq my-futon3--cached-prototype-display table
-              my-futon3--cached-prototype-display-mtime latest)))
-    my-futon3--cached-prototype-display))
-
-(defun my-futon3--prototype-sigils (value)
-  (let* ((map (my-futon3--prototype-sigil-map))
-         (ids (delq nil (mapcar #'my-futon3--prototype-string
-                                (my-futon3--prototype-list value))))
-         acc)
-    (dolist (id ids)
-      (when-let (sigils (and map (gethash id map)))
-        (setq acc (nconc acc (cl-copy-list sigils)))))
-    (when acc
-      (my-chatgpt-shell--dedupe-sigils acc))))
-
-(defun my-futon3--prototype-detail-lines (value)
-  (let* ((map (my-futon3--prototype-display-map))
-         (raw (seq-uniq (my-futon3--prototype-list value) #'equal)))
-    (delq nil
-          (mapcar (lambda (proto)
-                    (let* ((id (and proto (my-futon3--prototype-string proto)))
-                           (display (and map id (gethash id map)))
-                           (detail (cond
-                                     ((and display id)
-                                      (format "%s (%s)" display id))
-                                     ((and id (not (string-match-p "/" id)) map)
-                                      (let ((matches nil)
-                                            (needle (concat "/" id)))
-                                        (maphash (lambda (key value)
-                                                   (when (and (stringp key)
-                                                              (string-suffix-p needle key))
-                                                     (push value matches)))
-                                                 map)
-                                        (when matches
-                                          (format "Prototype %s → %s"
-                                                  id
-                                                  (string-join (nreverse matches) ", ")))))
-                                     (id id)
-                                     (t nil))))
-                      (when (and detail
-                                 (not (string-empty-p (string-trim detail))))
-                        detail)))
-                  raw))))
-
-(defun my-futon3--display-prototypes (value)
-  (let* ((raw (my-futon3--prototype-list value))
-         (strings (delq nil (mapcar #'my-futon3--prototype-string raw))))
-    (cond
-     ((and strings
-           (seq-some (lambda (s) (string-match-p "/" s)) strings)) strings)
-     (my-futon3-tatami-default-prototypes my-futon3-tatami-default-prototypes)
-     (t strings))))
-
-(defun my-futon3-sync-selection ()
-  (condition-case err
-      (my-futon3--tatami-request
-       "POST" "/musn/tatami/select"
-       `(("prototypes" . ,(my-futon3--encode-prototypes))
-         ("intent" . ,my-futon3-tatami-default-intent)))
-    (error
-     (message "Futon3 select failed: %s" (error-message-string err))
-     nil)))
-
-(defun my-futon3-ensure-tatami-session ()
-  (unless my-futon3-tatami-session-id
-    (let ((resp (my-futon3--tatami-request
-                 "POST" "/musn/tatami/start"
-                 `(("prototypes" . ,(my-futon3--encode-prototypes))
-                   ("intent" . ,my-futon3-tatami-default-intent)))))
-      (setq my-futon3-tatami-session-id (plist-get resp :session-id)))))
-
-(defun my-futon3-reset-tatami-session ()
-  "Drop the cached Tatami session and reapply the current selection."
-  (setq my-futon3-tatami-session-id nil)
-  (my-futon3-sync-selection))
-
-(defun my-futon3--truncate (text max-len)
-  (let ((trimmed (string-trim (or text ""))))
-    (if (<= (length trimmed) max-len)
-        trimmed
-      (concat (substring trimmed 0 max-len) "…"))))
-
-(defun my-futon3-set-tatami-target (prototypes intent)
-  "Interactive helper to change Futon3 tatami target defaults."
-  (interactive
-   (let* ((candidates (or (my-futon3--read-devmap-prototypes)
-                          '(("FUTON0 — Prototype 0" . :f0/p0))))
-          (names (mapcar #'car candidates))
-          (table (lambda (string pred action)
-                   (if (eq action 'metadata)
-                       '(metadata
-                         (display-sort-function . identity)
-                         (cycle-sort-function . identity))
-                     (complete-with-action action names string pred))))
-          (display (let ((completion-ignore-case t))
-                     (completing-read "Tatami target: " table nil t nil nil nil)))
-          (proto (cdr (assoc display candidates)))
-          (proto-token (cond
-                        ((null proto) display)
-                        ((symbolp proto) (symbol-name proto))
-                        ((stringp proto) proto)
-                        (t (format "%s" proto))))
-          (intent-default (or (my-futon3--suggest-intent-text proto-token)
-                              my-futon3-tatami-default-intent))
-          (intent-input (read-string "Tatami intent: " intent-default)))
-     (list proto-token intent-input)))
-  (let* ((parsed (my-futon3--parse-prototype-string prototypes))
-         (clean-intent (string-trim (or intent ""))))
-    (when (string-empty-p clean-intent)
-      (setq clean-intent (or (my-futon3--suggest-intent-text parsed)
-                             my-futon3-tatami-default-intent)))
-    (setq my-futon3-tatami-default-prototypes parsed
-          my-futon3-tatami-default-intent clean-intent)
-    (setq my-futon3-tatami-active-session (list :futons (my-chatgpt-shell--current-futons)
-                                               :prototypes (my-chatgpt-shell--prototype-keywords)
-                                               :intent clean-intent
-                                               :started (float-time))))
-  (my-chatgpt-shell--reset-context-state)
-  (my-futon3-sync-selection)
-  (my-chatgpt-shell--refresh-context-all)
-  (message "Set Futon3 tatami target to %s (intent %s)"
-           my-futon3-tatami-default-prototypes my-futon3-tatami-default-intent))
-
-(defun my-futon3-log-chatgpt-turn (text)
-  (when (and text (my-futon3-running-p))
-    (let ((attempt 0)
-          (max-attempts 3)
-          (done nil)
-          (last-error nil))
-      (while (and (< attempt max-attempts) (not done))
-        (setq attempt (1+ attempt))
-        (condition-case err
-            (progn
-              (my-futon3-ensure-tatami-session)
-              (my-futon3--tatami-request
-               "POST" "/musn/tatami/log"
-               `(("session-id" . ,my-futon3-tatami-session-id)
-                 ("activity" . "agent-work")
-                 ("performed?" . t)
-                 ("felt-state" . "ok")
-                 ("notes" . ,(my-futon3--truncate text 800))))
-              (setq done t))
-          (error
-           (let ((msg (error-message-string err)))
-             (setq last-error msg)
-             (if (string-match-p "unknown-session" msg)
-                 (progn
-                   (my-futon3-reset-tatami-session)
-                   (message "Futon3 tatami session expired; establishing a new session (attempt %d/%d)."
-                            attempt max-attempts))
-               (setq attempt max-attempts))))))
-      (unless done
-        (message "Futon3 tatami log failed after %d attempt(s): %s"
-                 attempt (or last-error "unknown error"))))))
-
-(defun my-futon3-close-tatami-session (&optional summary)
-  (when my-futon3-tatami-session-id
-    (ignore-errors
-      (my-futon3--tatami-request
-       "POST" "/musn/tatami/close"
-       `(("session-id" . ,my-futon3-tatami-session-id)
-         ("summary" . ,(or summary "chatgpt-shell session")))))
-    (setq my-futon3-tatami-session-id nil)))
-
-(defun my-futon3--format-counts (data)
-  (let ((fruit-map
-         '(("indicator" . "🍌")
-             ("obligation" . "🍐")
-             ("joy" . "🍒")
-             ("insight" . "🍓")
-             ("sleep" . "💤")
-             ("stretch" . "🍊")
-             ("baseline" . "🍈")
-             ("rocket" . "🚀")
-             ("bell" . "🔔")
-             ("ghost" . "👻"))))
-    (cond
-     ((and (listp data) (keywordp (car data)))
-      (let (parts p)
-        (setq p data)
-        (while (and p (cdr p))
-          (let ((key (pop p))
-                (val (pop p)))
-            (let* ((name (if (keywordp key) (substring (symbol-name key) 1) key))
-                   (icon (or (cdr (assoc name fruit-map)) name)))
-              (push (format "%s=%s" icon val) parts))))
-        (string-join (nreverse parts) ", ")))
-     ((and (listp data) (consp (car data)))
-      (let (parts)
-        (dolist (pair data)
-          (let ((key (car pair))
-                (val (cdr pair)))
-                                     (let* ((name (if (keywordp key) (substring (symbol-name key) 1) key))
-                                            (icon (or (cdr (assoc name fruit-map)) name)))
-              (push (format "%s=%s" icon val) parts))))
-        (string-join (nreverse parts) ", "))))))
-
-(defun my-futon3--suggest-intent-text (prototypes)
-  (let* ((ids (delq nil (mapcar #'my-futon3--prototype-string
-                                (my-futon3--prototype-list prototypes))))
-         (map (my-futon3--prototype-display-map))
-         (labels (delq nil (mapcar (lambda (id)
-                                     (or (and map id (gethash id map))
-                                         id))
-                                   ids))))
-    (cond
-     ((null labels) nil)
-     ((= (length labels) 1) (car labels))
-     (t (string-join labels " + ")))))
-
-(defun my-futon3-open-dashboard ()
-  "Open the Futon3 sessions dashboard in a browser."
-  (interactive)
-  (browse-url (concat (string-remove-suffix "/" my-futon3-ui-base-url) "/musn/sessions")))
 
 ;;; Set up chatgpt-shell
 
 (require 'chatgpt-shell)
 (require 'subr-x)
 (require 'pp)
+(require 'json)
+(require 'futon-hud-windows)
+(require 'stack-hud)
+(require 'stack-doc)
+(require 'stack-render)
 
 (setq chatgpt-shell-model-version "gpt-5.2-chat-latest")
 (setq chatgpt-shell-streaming t)
@@ -858,50 +170,8 @@ When nil, fall back to `org-agenda-files`."
 (defvar-local my-chatgpt-shell--tatami-disabled nil
   "When non-nil, skip Tatami ingestion for the next message only.")
 (defconst my-chatgpt-shell-context-buffer-name "*Tatami Context*")
-(defconst my-chatgpt-shell-stack-buffer-name "*Stack Context*")
 (defvar my-chatgpt-shell-context-font-scale 0.5
   "Relative font scale for the Tatami Context HUD (e.g., 0.5 = 50% size).")
-(defvar my-chatgpt-shell--context-window nil
-  "Live window showing the Tatami Context HUD (side window). Only one exists.")
-(defvar my-chatgpt-shell--stack-window nil
-  "Live window showing the Stack Context HUD next to the main Tatami HUD.")
-(defcustom my-chatgpt-shell-stack-window-side 'left
-  "Preferred side for the Stack Context window.
-The value is passed to `display-buffer-in-side-window'."
-  :type '(choice (const left) (const right) (const top) (const bottom))
-  :group 'tatami-integration)
-(defcustom my-chatgpt-shell-hot-reload-files '("contrib/aob-chatgpt.el")
-  "Files that auto-revert and re-evaluate when Stack hot reload is enabled.
-Each entry can be absolute or relative to `my-futon3--repo-root'."
-  :type '(repeat file)
-  :group 'tatami-integration)
-(defcustom my-chatgpt-shell-voice-command "/home/joe/opt/voice-typing-linux/voice --layout dvorak"
-  "Command used to start the Futon voice typing interface.
-Value can be a string (executed via the user shell) or a list of program
-and arguments passed directly to `start-process'."
-  :type '(choice string (repeat string))
-  :group 'tatami-integration)
-(defcustom my-chatgpt-shell-voice-buffer-name "*Stack Voice Typing*"
-  "Buffer used to capture stdout/stderr from the voice typing process."
-  :type 'string
-  :group 'tatami-integration)
-(defcustom my-chatgpt-shell-voice-socket-path
-  (format "/run/user/%d/ydotoold/socket" (user-uid))
-  "Socket path shared with ydotool/ydotoold."
-  :type 'string
-  :group 'tatami-integration)
-(defcustom my-chatgpt-shell-ydotoold-command '("/home/joe/.local/bin/ydotoold")
-  "Command used to launch ydotoold when Stack voice typing starts.
-Value can be a string (shell command) or a list passed to `start-process'."
-  :type '(choice string (repeat string))
-  :group 'tatami-integration)
-(defvar my-chatgpt-shell--hot-reload-enabled nil)
-(defvar my-chatgpt-shell--hot-reload-watches nil)
-(defvar my-chatgpt-shell--hot-reload-pending nil)
-(defvar my-chatgpt-shell--hot-reload-timer nil)
-(defvar my-chatgpt-shell--last-hot-reload nil)
-(defvar my-chatgpt-shell--voice-process nil)
-(defvar my-chatgpt-shell--ydotoold-process nil)
 (defvar my-chatgpt-shell--hi-from-codex t)
 (defconst my-chatgpt-shell-tatami-in-marker "FROM-TATAMI-EDN")
 (defconst my-chatgpt-shell-tatami-out-marker "FROM-CHATGPT-EDN")
@@ -1019,220 +289,6 @@ Set to nil to disable persistence entirely.")
                         result)))
                   seq))))
 
-;;; Stack hot reload ---------------------------------------------------------
-
-(defun my-chatgpt-shell--hot-reload-feature-available-p ()
-  (require 'filenotify nil t))
-
-(defun my-chatgpt-shell--hot-reload-expand-path (path)
-  (let ((expanded (if (file-name-absolute-p path)
-                      path
-                    (expand-file-name path my-futon3--repo-root))))
-    (when expanded
-      (file-truename expanded))))
-
-(defun my-chatgpt-shell--hot-reload-target-files ()
-  (delq nil
-        (mapcar (lambda (path)
-                  (let ((abs (my-chatgpt-shell--hot-reload-expand-path path)))
-                    (cond
-                     ((and abs (file-exists-p abs)) abs)
-                     (abs
-                      (message "Stack hot reload: %s not found; skipping watcher."
-                               (file-relative-name abs my-futon3--repo-root))
-                      nil)
-                     (t nil))))
-                my-chatgpt-shell-hot-reload-files)))
-
-(defun my-chatgpt-shell--hot-reload-remove-watch (descriptor)
-  (setq my-chatgpt-shell--hot-reload-watches
-        (assq-delete-all descriptor my-chatgpt-shell--hot-reload-watches)))
-
-(defun my-chatgpt-shell--hot-reload-watch (file)
-  (when (and file (my-chatgpt-shell--hot-reload-feature-available-p))
-    (condition-case err
-        (let ((desc (file-notify-add-watch file '(change attribute-change)
-                                           #'my-chatgpt-shell--hot-reload-dispatch)))
-          (push (cons desc file) my-chatgpt-shell--hot-reload-watches)
-          desc)
-      (error
-       (message "Stack hot reload: could not watch %s (%s)"
-                (file-name-nondirectory file)
-                (error-message-string err))
-       nil))))
-
-(defun my-chatgpt-shell--hot-reload-schedule (file)
-  (let ((abs (and file (file-truename file))))
-    (when abs
-      (push abs my-chatgpt-shell--hot-reload-pending)
-      (unless my-chatgpt-shell--hot-reload-timer
-        (setq my-chatgpt-shell--hot-reload-timer
-              (run-with-idle-timer 0.5 nil #'my-chatgpt-shell--hot-reload-process))))))
-
-(defun my-chatgpt-shell--hot-reload-process ()
-  (let ((files (seq-uniq my-chatgpt-shell--hot-reload-pending #'string=)))
-    (setq my-chatgpt-shell--hot-reload-pending nil)
-    (setq my-chatgpt-shell--hot-reload-timer nil)
-    (dolist (file files)
-      (my-chatgpt-shell--hot-reload-apply file))))
-
-(defun my-chatgpt-shell--hot-reload-apply (file)
-  (when (file-readable-p file)
-    (let ((buffer (or (find-buffer-visiting file)
-                      (find-file-noselect file t))))
-      (when buffer
-        (with-current-buffer buffer
-          (if (buffer-modified-p)
-              (message "Stack hot reload: skipped %s (buffer has unsaved edits)."
-                       (file-name-nondirectory file))
-            (revert-buffer :ignore-auto :noconfirm)
-            (if (derived-mode-p 'emacs-lisp-mode)
-                (progn
-                  (eval-buffer)
-                  (setq my-chatgpt-shell--last-hot-reload (current-time))
-                  (message "Stack hot reload: evaluated %s"
-                           (file-name-nondirectory file)))
-              (message "Stack hot reload: %s is not an Emacs Lisp buffer."
-                       (file-name-nondirectory file)))))))))
-
-(defun my-chatgpt-shell--hot-reload-dispatch (event)
-  (pcase event
-    (`(,descriptor ,action ,file . ,_)
-     (cond
-      ((eq action 'stopped)
-       (my-chatgpt-shell--hot-reload-remove-watch descriptor))
-      ((and (memq action '(change attribute-change changed))
-            my-chatgpt-shell--hot-reload-enabled)
-       (let ((target (or file (cdr (assoc descriptor my-chatgpt-shell--hot-reload-watches)))))
-         (my-chatgpt-shell--hot-reload-schedule target)))))))
-
-(defun my-chatgpt-shell-hot-reload-enable ()
-  "Enable Stack hot reload watchers."
-  (interactive)
-  (unless (my-chatgpt-shell--hot-reload-feature-available-p)
-    (user-error "File notification support is unavailable in this Emacs."))
-  (unless my-chatgpt-shell--hot-reload-enabled
-    (setq my-chatgpt-shell--hot-reload-watches nil)
-    (let ((files (my-chatgpt-shell--hot-reload-target-files)))
-      (if (null files)
-          (message "Stack hot reload: no readable targets configured.")
-        (dolist (file files)
-          (my-chatgpt-shell--hot-reload-watch file))
-        (if (null my-chatgpt-shell--hot-reload-watches)
-            (message "Stack hot reload: failed to activate any watchers.")
-          (setq my-chatgpt-shell--hot-reload-enabled t)
-          (message "Stack hot reload enabled (watching %d file%s)."
-                   (length my-chatgpt-shell--hot-reload-watches)
-                   (if (= (length my-chatgpt-shell--hot-reload-watches) 1) "" "s"))))))
-  my-chatgpt-shell--hot-reload-enabled)
-
-(defun my-chatgpt-shell-hot-reload-disable ()
-  "Disable Stack hot reload watchers."
-  (interactive)
-  (dolist (entry my-chatgpt-shell--hot-reload-watches)
-    (ignore-errors (file-notify-rm-watch (car entry))))
-  (setq my-chatgpt-shell--hot-reload-watches nil)
-  (setq my-chatgpt-shell--hot-reload-enabled nil)
-  (when my-chatgpt-shell--hot-reload-timer
-    (cancel-timer my-chatgpt-shell--hot-reload-timer)
-    (setq my-chatgpt-shell--hot-reload-timer nil))
-  (setq my-chatgpt-shell--hot-reload-pending nil)
-  (message "Stack hot reload disabled."))
-
-(defun my-chatgpt-shell-hot-reload-toggle (&optional arg)
-  "Toggle Stack hot reload.
-With prefix ARG enable when positive, disable otherwise."
-  (interactive "P")
-  (let ((enable (if arg
-                    (> (prefix-numeric-value arg) 0)
-                  (not my-chatgpt-shell--hot-reload-enabled))))
-    (if enable
-        (my-chatgpt-shell-hot-reload-enable)
-      (my-chatgpt-shell-hot-reload-disable)))
-  my-chatgpt-shell--hot-reload-enabled)
-
-(defun my-chatgpt-shell--hot-reload-status-string ()
-  (cond
-   ((not (my-chatgpt-shell--hot-reload-feature-available-p))
-    "unsupported")
-   (my-chatgpt-shell--hot-reload-enabled "on")
-   (t "off")))
-
-(defun my-chatgpt-shell--hot-reload-last-delta-hours ()
-  (when my-chatgpt-shell--last-hot-reload
-    (/ (float-time (time-subtract (current-time) my-chatgpt-shell--last-hot-reload))
-       3600.0)))
-
-(defun my-chatgpt-shell--hot-reload-watching-count ()
-  (length my-chatgpt-shell--hot-reload-watches))
-
-;;; Voice typing control -----------------------------------------------------
-
-(defun my-chatgpt-shell--voice-command-list ()
-  (let ((cmd my-chatgpt-shell-voice-command))
-    (cond
-     ((and (stringp cmd) (not (string-empty-p cmd)))
-      (list shell-file-name shell-command-switch cmd))
-     ((and (consp cmd) (stringp (car cmd)))
-      cmd)
-     (t
-      (user-error "Stack voice typing command is not configured.")))))
-
-(defun my-chatgpt-shell--voice-command-configured-p ()
-  (ignore-errors
-    (let ((cmd (my-chatgpt-shell--voice-command-list)))
-      (and (consp cmd) (stringp (car cmd))))))
-
-(defun my-chatgpt-shell-voice-running-p ()
-  (and my-chatgpt-shell--voice-process
-       (process-live-p my-chatgpt-shell--voice-process)))
-
-(defun my-chatgpt-shell--voice-sentinel (proc event)
-  (when (eq proc my-chatgpt-shell--voice-process)
-    (setq my-chatgpt-shell--voice-process nil)
-    (message "Stack voice typing stopped (%s)" (string-trim event))
-    (my-chatgpt-shell--maybe-render-context)))
-
-(defun my-chatgpt-shell-voice-start ()
-  "Start the Futon voice typing process."
-  (interactive)
-  (if (my-chatgpt-shell-voice-running-p)
-      (message "Stack voice typing already running.")
-    (my-chatgpt-shell--voice-ensure-ydotoold)
-    (let* ((cmd (my-chatgpt-shell--voice-command-list))
-           (program (car cmd))
-           (args (cdr cmd))
-           (buffer (get-buffer-create my-chatgpt-shell-voice-buffer-name))
-           (process-environment
-            (cons (format "YDOTOOL_SOCKET_PATH=%s" my-chatgpt-shell-voice-socket-path)
-                  process-environment))
-           (proc (apply #'start-process "stack-voice"
-                        buffer program args)))
-      (set-process-query-on-exit-flag proc nil)
-      (set-process-sentinel proc #'my-chatgpt-shell--voice-sentinel)
-      (setq my-chatgpt-shell--voice-process proc)
-      (message "Stack voice typing started (buffer %s)."
-               my-chatgpt-shell-voice-buffer-name)
-      (my-chatgpt-shell--maybe-render-context)
-      proc)))
-
-(defun my-chatgpt-shell-voice-stop ()
-  "Stop the Futon voice typing process."
-  (interactive)
-  (if (my-chatgpt-shell-voice-running-p)
-      (progn
-        (kill-process my-chatgpt-shell--voice-process)
-        (message "Stopping Stack voice typing...")
-        (my-chatgpt-shell--voice-stop-ydotoold))
-    (message "Stack voice typing is not running.")))
-
-(defun my-chatgpt-shell-voice-toggle ()
-  "Toggle the Futon voice typing process."
-  (interactive)
-  (if (my-chatgpt-shell-voice-running-p)
-      (my-chatgpt-shell-voice-stop)
-    (my-chatgpt-shell-voice-start)))
-
 (defun my-chatgpt-shell--manifest-patterns (patterns)
   (let ((seq (my-chatgpt-shell--coerce-seq patterns)))
     (delq nil
@@ -1292,14 +348,14 @@ With prefix ARG enable when positive, disable otherwise."
                             (let ((fruit (pop fruit-queue)))
                               (when fruit
                                 (setq copy (plist-put copy :fruit/id (plist-get fruit :fruit/id)))
-                                (when-let (emoji (plist-get fruit :emoji))
+                                (when-let* ((emoji (plist-get fruit :emoji)))
                                   (setq copy (plist-put copy :emoji emoji)))))))
                          (:paramita
                           (unless (plist-get copy :paramita/id)
                             (let ((orb (pop param-queue)))
                               (when orb
                                 (setq copy (plist-put copy :paramita/id (plist-get orb :paramita/id)))
-                                (when-let (emoji (plist-get orb :emoji))
+                                (when-let* ((emoji (plist-get orb :emoji)))
                                   (setq copy (plist-put copy :emoji emoji))))))))
                        copy)
                    event))
@@ -1318,24 +374,24 @@ With prefix ARG enable when positive, disable otherwise."
                                (not (my-chatgpt-shell--json-null-p event)))
                       (let ((entry (list :pattern (plist-get event :pattern)
                                          :kind (plist-get event :kind))))
-                        (when-let (notes (my-chatgpt-shell--string-or-nil (plist-get event :notes)))
+                        (when-let* ((notes (my-chatgpt-shell--string-or-nil (plist-get event :notes))))
                           (setq entry (plist-put entry :notes notes)))
                         (cond
                          ((plist-get event :fruit/id)
                           (setq entry (plist-put entry :fruit/id (plist-get event :fruit/id)))
-                          (when-let (emoji (plist-get event :emoji))
+                          (when-let* ((emoji (plist-get event :emoji)))
                             (setq entry (plist-put entry :emoji emoji))))
                          ((plist-get event :paramita/id)
                           (setq entry (plist-put entry :paramita/id (plist-get event :paramita/id)))
-                          (when-let (emoji (plist-get event :emoji))
+                          (when-let* ((emoji (plist-get event :emoji)))
                             (setq entry (plist-put entry :emoji emoji))))
                          (t
-                          (when-let (qual (my-chatgpt-shell--event-qualifier event fruits paramitas))
-                            (when-let (fid (plist-get qual :fruit/id))
+                          (when-let* ((qual (my-chatgpt-shell--event-qualifier event fruits paramitas)))
+                            (when-let* ((fid (plist-get qual :fruit/id)))
                               (setq entry (plist-put entry :fruit/id fid)))
-                            (when-let (pid (plist-get qual :paramita/id))
+                            (when-let* ((pid (plist-get qual :paramita/id)))
                               (setq entry (plist-put entry :paramita/id pid)))
-                            (when-let (emoji (plist-get qual :emoji))
+                            (when-let* ((emoji (plist-get qual :emoji)))
                               (setq entry (plist-put entry :emoji emoji))))))
                         entry)))
                   seq))))
@@ -1395,7 +451,7 @@ With prefix ARG enable when positive, disable otherwise."
       (my-chatgpt-shell--debug "[HUD] syncing manifest to Futon1 (%s)" intent)
       (my-chatgpt-shell--futon1-post "/entity" entity)
       (dolist (pattern patterns)
-        (when-let (pid (my-chatgpt-shell--string-or-nil (plist-get pattern :id)))
+        (when-let* ((pid (my-chatgpt-shell--string-or-nil (plist-get pattern :id))))
           (my-chatgpt-shell--futon1-post "/entity"
                                          (list :name pid
                                                :type :pattern/library
@@ -1413,7 +469,7 @@ With prefix ARG enable when positive, disable otherwise."
                                                :src pid
                                                :dst (plist-get entity :name))))))
       (dolist (fruit fruits)
-        (when-let (fid (plist-get fruit :fruit/id))
+        (when-let* ((fid (plist-get fruit :fruit/id)))
           (my-chatgpt-shell--futon1-post "/relation"
                                          (list :type ":hud/fruit"
                                                :src (plist-get entity :name)
@@ -1423,7 +479,7 @@ With prefix ARG enable when positive, disable otherwise."
                                                :src fid
                                                :dst (plist-get fruit :score)))))
       (dolist (orb paramitas)
-        (when-let (pid (plist-get orb :paramita/id))
+        (when-let* ((pid (plist-get orb :paramita/id)))
           (my-chatgpt-shell--futon1-post "/relation"
                                          (list :type ":hud/paramita"
                                                :src (plist-get entity :name)
@@ -1445,7 +501,7 @@ With prefix ARG enable when positive, disable otherwise."
                               :src (plist-get entity :name))))
           (when dst
             (setq payload (plist-put payload :dst dst)))
-          (when-let (notes (my-chatgpt-shell--string-or-nil (plist-get event :notes)))
+          (when-let* ((notes (my-chatgpt-shell--string-or-nil (plist-get event :notes))))
             (setq payload (plist-put payload :notes notes)))
           (my-chatgpt-shell--futon1-post "/relation" payload)))))
 
@@ -1963,88 +1019,6 @@ With prefix ARG enable when positive, disable otherwise."
       (my-chatgpt-shell--show-focus-review-buffer (copy-tree prepared t)))
     prepared))
 
-(defun my-chatgpt-shell--stack-window-owned-p (&optional win)
-  (let ((candidate (or win my-chatgpt-shell--stack-window)))
-    (and (window-live-p candidate)
-         (window-parameter candidate 'tatami-stack-owner))))
-
-(defun my-chatgpt-shell--delete-tatami-window ()
-  (dolist (win (get-buffer-window-list my-chatgpt-shell-context-buffer-name nil t))
-    (when (window-live-p win)
-      (set-window-parameter win 'tatami-context-owner nil)
-      (delete-window win)))
-  (setq my-chatgpt-shell--context-window nil))
-
-(defun my-chatgpt-shell--delete-stack-window ()
-  (when (my-chatgpt-shell--stack-window-owned-p)
-    (set-window-parameter my-chatgpt-shell--stack-window 'tatami-context-owner nil)
-    (set-window-parameter my-chatgpt-shell--stack-window 'tatami-stack-owner nil)
-    (delete-window my-chatgpt-shell--stack-window))
-  (setq my-chatgpt-shell--stack-window nil))
-
-(defun my-chatgpt-shell--delete-context-windows ()
-  "Close every live Tatami/Stack HUD window and reset state."
-  (my-chatgpt-shell--delete-tatami-window)
-  (my-chatgpt-shell--delete-stack-window))
-
-(defun my-chatgpt-shell--prepare-context-buffer (buf)
-  (with-current-buffer buf
-    (unless my-chatgpt-shell--context-face-cookie
-      (setq my-chatgpt-shell--context-face-cookie
-            (face-remap-add-relative 'default `(:height ,my-chatgpt-shell-context-font-scale))))
-    (visual-line-mode 1)
-    (setq-local truncate-lines nil)))
-
-(defun my-chatgpt-shell--ensure-context-window (buf)
-  "Display BUF in the dedicated Tatami HUD side window near the active frame."
-  (my-chatgpt-shell--prepare-context-buffer buf)
-  (if (and (window-live-p my-chatgpt-shell--context-window)
-           (eq (window-buffer my-chatgpt-shell--context-window) buf))
-      my-chatgpt-shell--context-window
-    (let ((frame (window-frame (selected-window))))
-      (my-chatgpt-shell--delete-tatami-window)
-      (let ((win (with-selected-frame frame
-                   (display-buffer-in-side-window buf '((side . right)
-                                                        (slot . 0)
-                                                        (window-width . 0.4))))))
-        (when (window-live-p win)
-          (set-window-dedicated-p win t)
-          (set-window-parameter win 'tatami-context-owner (current-buffer))
-          (setq my-chatgpt-shell--context-window win))))))
-
-(defun my-chatgpt-shell--ensure-stack-window (buf)
-  "Display BUF in the dedicated Stack HUD side window."
-  (my-chatgpt-shell--prepare-context-buffer buf)
-  (let ((existing (cond
-                   ((and (window-live-p my-chatgpt-shell--stack-window)
-                         (eq (window-buffer my-chatgpt-shell--stack-window) buf))
-                    my-chatgpt-shell--stack-window)
-                   ((get-buffer-window buf t)))))
-    (if existing
-        (progn
-          (setq my-chatgpt-shell--stack-window existing)
-          existing)
-      (let ((frame (window-frame (selected-window)))
-            (side my-chatgpt-shell-stack-window-side))
-        (when (my-chatgpt-shell--stack-window-owned-p)
-          (set-window-parameter my-chatgpt-shell--stack-window 'tatami-context-owner nil)
-          (set-window-parameter my-chatgpt-shell--stack-window 'tatami-stack-owner nil)
-          (delete-window my-chatgpt-shell--stack-window))
-        (let* ((params (if (memq side '(left right))
-                           `((side . ,side)
-                             (slot . 0)
-                             (window-width . 0.4))
-                         `((side . ,side)
-                           (slot . 0)
-                           (window-height . 0.3))))
-               (win (with-selected-frame frame
-                      (display-buffer-in-side-window buf params))))
-          (when (window-live-p win)
-            (set-window-dedicated-p win t)
-            (set-window-parameter win 'tatami-context-owner (current-buffer))
-            (set-window-parameter win 'tatami-stack-owner t)
-            (setq my-chatgpt-shell--stack-window win)))))))
-
 (defun my-chatgpt-shell--close-futon3-on-kill ()
   (when (or (and (window-live-p my-chatgpt-shell--context-window)
                  (eq (window-parameter my-chatgpt-shell--context-window 'tatami-context-owner)
@@ -2053,6 +1027,10 @@ With prefix ARG enable when positive, disable otherwise."
                  (eq (window-parameter my-chatgpt-shell--stack-window 'tatami-context-owner)
                      (current-buffer))))
     (my-chatgpt-shell--delete-context-windows))
+  (when (and my-chatgpt-shell-stack-frame-close-on-exit
+             (frame-live-p my-chatgpt-shell--stack-frame))
+    (delete-frame my-chatgpt-shell--stack-frame)
+    (setq my-chatgpt-shell--stack-frame nil))
   (my-futon3-close-tatami-session
    (format "chatgpt-shell %s closed" (buffer-name))))
 
@@ -2602,7 +1580,7 @@ r a live process in the *headless-api-server* buffer."
     (when (seq-some formatter sorted)
       (insert (propertize title 'face 'bold) "\n")
       (dolist (entry sorted)
-        (when-let (line (funcall formatter entry))
+        (when-let* ((line (funcall formatter entry)))
           (insert "  • " line "\n")))
       (insert "\n"))))
 
@@ -2895,7 +1873,7 @@ r a live process in the *headless-api-server* buffer."
                              (plist-get edn :intent))
                         my-futon3-tatami-default-intent
                         "unspecified")))
-    (when-let ((pattern-line (my-chatgpt-shell--pattern-outcome-line 200)))
+    (when-let* ((pattern-line (my-chatgpt-shell--pattern-outcome-line 200)))
       (insert pattern-line "\n\n"))
     (if patterns
         (progn
@@ -2964,9 +1942,9 @@ r a live process in the *headless-api-server* buffer."
     (with-current-buffer buffer
       (when (and (boundp 'my-chatgpt-shell-profile)
                  (member my-chatgpt-shell-profile '("General" "clock-out")))
-        (when-let ((raw (my-chatgpt-shell--buffer-edn-string)))
+        (when-let* ((raw (my-chatgpt-shell--buffer-edn-string)))
           (my-chatgpt-shell--remove-edn-from-buffer)
-          (when-let ((edn (my-chatgpt-shell--parse-edn-string raw)))
+          (when-let* ((edn (my-chatgpt-shell--parse-edn-string raw)))
             (my-chatgpt-shell--debug "Captured FROM-CHATGPT-EDN: %s" (prin1-to-string edn))
             (my-chatgpt-shell--apply-chatgpt-edn edn)))))))
 
@@ -3262,19 +2240,6 @@ LABEL is a human-friendly tag describing the captured scenario."
         (print-length nil))
     (prin1-to-string entry)))
 
-(defun my-futon3-fetch-intent-cues (entry)
-  (when entry
-    (condition-case err
-        (prog1
-            (my-futon3--tatami-request
-             "POST" "/musn/cues"
-             `(("entry-edn" . ,(my-chatgpt-shell--encode-entry-edn entry))))
-          (setq my-chatgpt-shell--last-cues-error nil))
-      (error
-       (setq my-chatgpt-shell--last-cues-error (error-message-string err))
-       (message "Futon3 cues failed: %s" (error-message-string err))
-       nil))))
-
 (defun my-chatgpt-shell--enrich-with-cues (edn)
   (let ((resp (my-futon3-fetch-intent-cues edn))
         (copy (and edn (cl-copy-list edn))))
@@ -3290,36 +2255,10 @@ LABEL is a human-friendly tag describing the captured scenario."
               (setq copy (plist-put copy :paramitas paramitas))
               (unless (seq-empty-p paramitas)
                 (my-chatgpt-shell--debug "[HUD] /musn/cues paramitas=%S" paramitas))))
-          (when-let (intent (plist-get resp :intent))
+          (when-let* ((intent (plist-get resp :intent)))
             (setq copy (plist-put copy :cue/intent intent)))
           copy)
       edn)))
-
-(defun my-futon3-fetch-hints (&optional arg)
-  "Fetch nearest LDTS/fruit/paramita hints from Futon3.
-
-ARG may be a legacy SIGILS vector or a plist (:sigils ... :intent ...)."
-  (condition-case err
-      (let* ((payload nil)
-             (encoded (my-chatgpt-shell--encoded-prototypes))
-             (sigils (cond
-                      ((and (listp arg) (keywordp (car arg)))
-                       (plist-get arg :sigils))
-                      (t arg)))
-             (intent (when (and (listp arg) (keywordp (car arg)))
-                       (plist-get arg :intent))))
-        (when encoded
-          (push (cons "prototypes" (my-chatgpt-shell--vector encoded)) payload))
-        (when sigils
-          (push (cons "sigils" (my-chatgpt-shell--encode-sigils sigils)) payload))
-        (when (and intent (stringp intent) (> (length (string-trim intent)) 0))
-          (push (cons "intent" intent) payload))
-        (prog1 (my-futon3--tatami-request "POST" "/musn/hints" payload)
-          (setq my-chatgpt-shell--last-hints-error nil)))
-    (error
-     (setq my-chatgpt-shell--last-hints-error (error-message-string err))
-     (message "Futon3 hints failed: %s" (error-message-string err))
-     nil)))
 
 (defun my-chatgpt-shell--refresh-context-hints (&optional intent)
   "Refresh Tatami HUD hints in-place, optionally forcing INTENT."
@@ -3586,210 +2525,6 @@ Always sets the system prompt. Tatami ingestion now occurs via
         (setq-local truncate-lines nil)))
     buf))
 
-(defun my-chatgpt-shell--stack-buffer (&optional ensure)
-  (let ((buf (if ensure
-                 (get-buffer-create my-chatgpt-shell-stack-buffer-name)
-               (get-buffer my-chatgpt-shell-stack-buffer-name))))
-    (when (and ensure buf)
-      (with-current-buffer buf
-        (unless my-chatgpt-shell--context-face-cookie
-          (setq my-chatgpt-shell--context-face-cookie
-                (face-remap-add-relative 'default
-                                         `(:height ,my-chatgpt-shell-context-font-scale))))
-        (visual-line-mode 1)
-        (setq-local truncate-lines nil)))
-    buf))
-
-(defun my-chatgpt-shell--stack-status-symbol (value)
-  (cond
-   ((symbolp value) value)
-   ((stringp value) (intern (downcase value)))
-   (t value)))
-
-(defun my-chatgpt-shell--stack-format-hours (hours)
-  (cond
-   ((not (numberp hours)) "n/a")
-   ((>= hours 48)
-    (let* ((days (floor (/ hours 24)))
-           (rem (- hours (* days 24)))
-           (hrs (floor rem)))
-      (format "%dd %dh" days hrs)))
-   ((>= hours 1) (format "%.1fh" hours))
-   (t (format "%.0fm" (* hours 60)))))
-
-(defun my-chatgpt-shell--stack-top-children (children)
-  (when (and (listp children) children)
-    (let ((items (seq-take children 3)))
-      (string-join
-       (delq nil
-             (mapcar (lambda (child)
-                       (let ((name (plist-get child :name))
-                             (count (plist-get child :recent)))
-                         (when (and name count)
-                           (format "%s×%s" name count))))
-                     items))
-       ", "))))
-
-(defun my-chatgpt-shell--insert-stack-vitality (vitality)
-  (let ((filesystem (plist-get vitality :filesystem))
-        (tatami (plist-get vitality :tatami)))
-    (when (or filesystem tatami)
-      (insert "  Vitality:\n")
-      (dolist (entry filesystem)
-        (let* ((label (or (plist-get entry :label) "?"))
-               (recent (or (plist-get entry :recent-files) 0))
-               (top (my-chatgpt-shell--stack-top-children (plist-get entry :top-children)))
-               (imports (plist-get entry :imports))
-               (import-total (and imports (plist-get imports :total)))
-               (import-text (if (and import-total (> import-total 0))
-                               (format " | %s imported" import-total)
-                             "")))
-          (insert (format "    %s: %d files%s%s\n"
-                          label
-                          recent
-                          (if top (format " (%s)" top) "")
-                          import-text))
-          (when-let ((recent-imports (and imports (plist-get imports :recent))))
-            (dolist (item (seq-take recent-imports 3))
-              (let ((title (or (plist-get item :title) "untitled"))
-                    (recorded (plist-get item :recorded_date)))
-                (insert (format "      • %s%s\n"
-                                title
-                                (if recorded (format " (%s)" recorded) "")))))))
-      (when tatami
-        (if (plist-get tatami :exists)
-            (insert (format "    Tatami: last %s (%s)%s\n"
-                            (or (plist-get tatami :last-event) "n/a")
-                            (my-chatgpt-shell--stack-format-hours
-                             (plist-get tatami :hours-since))
-                            (if (plist-get tatami :gap-warning) " ⚠️" "")))
-          (insert "    Tatami: log missing\n")))
-      (insert "\n")))))
-
-(defun my-chatgpt-shell--insert-stack-git (git)
-  (when git
-    (insert "  Git:\n")
-    (when-let ((sphere (plist-get git :dominant-sphere)))
-      (insert (format "    Dominant sphere: %s\n" sphere)))
-    (when-let ((streak (plist-get git :streak)))
-      (insert (format "    Streak: current %s / longest %s\n"
-                      (or (plist-get streak :current) 0)
-                      (or (plist-get streak :longest) 0))))
-    (when-let ((quiet (plist-get git :quiet-days)))
-      (insert (format "    Quiet: %s days\n" quiet)))
-    (when-let ((last-active (plist-get git :last-active)))
-      (insert (format "    Last commit: %s (%s commits)\n"
-                      (or (plist-get last-active :date) "n/a")
-                      (or (plist-get last-active :total) 0))))
-    (insert "\n")))
-
-(defun my-chatgpt-shell--insert-stack-boundary (boundary)
-  (let ((critical (plist-get boundary :critical)))
-    (unless (seq-empty-p critical)
-      (insert "  Boundary gaps:\n")
-      (dolist (entry (seq-take critical 4))
-        (insert (format "    %s missing %s (last %s)\n"
-                        (or (plist-get entry :id) "f?")
-                        (or (plist-get entry :missing_evidence) 0)
-                        (or (plist-get entry :last_modified) "n/a"))))
-      (insert "\n"))))
-
-(defun my-chatgpt-shell--insert-stack-reminders (reminders)
-  (unless (seq-empty-p reminders)
-    (insert "  Reminders:\n")
-    (dolist (rem (seq-take reminders 5))
-      (let* ((label (or (plist-get rem :label) "unnamed"))
-             (display (or (plist-get rem :display) "?"))
-             (hours (plist-get rem :hours))
-             (status (my-chatgpt-shell--stack-status-symbol (plist-get rem :status))))
-        (insert (format "    %s – %s (%s, %s)\n"
-                        display
-                        label
-                        (pcase status
-                          ('now "now")
-                          ('imminent "<6h")
-                          ('soon "<24h")
-                          ('upcoming "<3d")
-                          ('scheduled "scheduled")
-                          ('overdue "overdue")
-                          (_ (format "%s" status)))
-                        (my-chatgpt-shell--stack-format-hours hours)))))
-    (insert "\n")))
-
-(defun my-chatgpt-shell--insert-stack-hot-reload ()
-  (insert "  Hot reload: ")
-  (cond
-   ((not (my-chatgpt-shell--hot-reload-feature-available-p))
-    (insert "unsupported on this Emacs build.\n\n"))
-   (t
-    (let* ((enabled my-chatgpt-shell--hot-reload-enabled)
-           (count (my-chatgpt-shell--hot-reload-watching-count))
-           (delta (my-chatgpt-shell--hot-reload-last-delta-hours))
-           (status (if enabled "ON" "OFF")))
-      (insert (format "%s (watching %d) " status count))
-      (insert-text-button (if enabled "Disable" "Enable")
-                          'help-echo "Toggle Stack hot reload watchers"
-                          'action (lambda (_event)
-                                    (my-chatgpt-shell-hot-reload-toggle)
-                                    (my-chatgpt-shell--maybe-render-context))
-                          'follow-link t)
-      (when delta
-        (insert (format " | last reload %s"
-                        (my-chatgpt-shell--stack-format-hours delta))))
-      (insert "\n\n")))))
-
-(defun my-chatgpt-shell--insert-stack-voice ()
-  (insert "  Voice typing: ")
-  (cond
-   ((not (my-chatgpt-shell--voice-command-configured-p))
-    (insert "unconfigured (set `my-chatgpt-shell-voice-command`).\n\n"))
-   (t
-    (let ((running (my-chatgpt-shell-voice-running-p))
-          (proc my-chatgpt-shell--voice-process))
-      (insert (if running "ON " "OFF "))
-      (insert-text-button (if running "Stop" "Start")
-                          'help-echo "Toggle the Futon voice typing process"
-                          'action (lambda (_event)
-                                    (my-chatgpt-shell-voice-toggle))
-                          'follow-link t)
-      (when (and running (process-live-p proc))
-        (insert (format " | pid %s" (process-id proc))))
-      (insert "\n\n")))))
-
-(defun my-chatgpt-shell--insert-stack-hud (stack)
-  (let ((vitality (plist-get stack :vitality))
-        (git (plist-get stack :git))
-        (boundary (plist-get stack :boundary))
-        (reminders (plist-get stack :reminders))
-        (warnings (plist-get stack :warnings)))
-    (insert (propertize "Stack HUD" 'face 'bold) "\n")
-    (unless (seq-empty-p warnings)
-      (dolist (msg warnings)
-        (insert (format "  ⚠️ %s\n" msg)))
-      (insert "\n"))
-    (my-chatgpt-shell--insert-stack-hot-reload)
-    (my-chatgpt-shell--insert-stack-voice)
-    (my-chatgpt-shell--insert-stack-vitality vitality)
-    (my-chatgpt-shell--insert-stack-git git)
-    (my-chatgpt-shell--insert-stack-boundary boundary)
-    (my-chatgpt-shell--insert-stack-reminders reminders)))
-
-(defun my-chatgpt-shell--render-stack-context (stack)
-  (if stack
-      (let ((buf (my-chatgpt-shell--stack-buffer t)))
-        (with-current-buffer buf
-          (let ((inhibit-read-only t))
-            (erase-buffer)
-            (unless (derived-mode-p 'special-mode)
-              (special-mode))
-            (setq-local truncate-lines nil)
-            (my-chatgpt-shell--insert-stack-hud stack)
-            (unless (bolp)
-              (insert "\n"))
-            (goto-char (point-min))))
-        (my-chatgpt-shell--ensure-stack-window buf))
-    (my-chatgpt-shell--delete-stack-window)))
-
 (defun my-chatgpt-shell--render-context (&optional ensure)
   (let* ((state-buffer (or (and (derived-mode-p 'chatgpt-shell-mode)
                                 (setq my-chatgpt-shell--context-source (current-buffer)))
@@ -3807,7 +2542,7 @@ Always sets the system prompt. Tatami ingestion now occurs via
                            (my-chatgpt-shell--events-seq (plist-get last-edn :events)))))
     ;; Layout order: selection/intent summary, focus header, pattern verdict,
     ;; Tatami hint digest, :me snapshot, and latest FROM-CHATGPT turn.
-    (when-let ((buf (my-chatgpt-shell--context-buffer ensure)))
+    (when-let* ((buf (my-chatgpt-shell--context-buffer ensure)))
       (with-current-buffer buf
         (let ((inhibit-read-only t))
           (erase-buffer)
@@ -3832,6 +2567,8 @@ Always sets the system prompt. Tatami ingestion now occurs via
                  (sel-intent (or (and selection (plist-get selection :intent))
                                  my-futon3-tatami-default-intent
                                  "unspecified"))
+                 (pattern-slug (or my-futon3-active-pattern
+                                    (and selection (plist-get selection :pattern))))
                  (cached-sigils (my-chatgpt-shell--context-sigils (or inbound last-edn)))
                  (intent-sigils (or (and cached-sigils
                                          (plist-get cached-sigils :sigils))
@@ -3847,15 +2584,22 @@ Always sets the system prompt. Tatami ingestion now occurs via
                     (list :sigils (plist-get cached-sigils :sigils)
                           :status (or (plist-get cached-sigils :origin) :cached)
                           :origin (plist-get cached-sigils :origin))))
-            (insert (propertize "Tatami / Futon3 status (24h)" 'face 'bold) "\n")
-            (when sel-protos
-              (insert (format "Active: %s | Intent: %s%s\n"
-                              (string-join sel-protos ", ")
-                              sel-intent
-                              (if intent-sigil-text
-                                  (format " %s" intent-sigil-text)
-                                ""))))
-            (when-let ((salients (my-chatgpt-shell--salient-tags)))
+            (insert (propertize "Clocked session" 'face 'bold) "\n")
+            (insert (format "Prototype: %s\n"
+                            (if sel-protos
+                                (string-join sel-protos ", ")
+                              "(none selected)")))
+            (insert (format "Pattern: %s%s\n"
+                            (or pattern-slug "(unset; C-c C-a to choose)")
+                            (if pattern-slug
+                                " (C-c C-e to edit)"
+                              "")))
+            (insert (format "Intent: %s%s\n"
+                            sel-intent
+                            (if intent-sigil-text
+                                (format " %s" intent-sigil-text)
+                              "")))
+            (when-let* ((salients (my-chatgpt-shell--salient-tags)))
               (insert (format "Salients: %s\n" (string-join salients ", "))))
             (cond
              (sel-details
@@ -3865,7 +2609,7 @@ Always sets the system prompt. Tatami ingestion now occurs via
               (insert "    • Prototype metadata unavailable; check devmaps for details.\n")))
             (when (or sel-protos sel-details active-protos)
               (insert "\n"))
-            (my-chatgpt-shell--render-stack-context stack)
+            (stack-hud--render-context stack)
             (when (and status (plist-get status :events))
               (insert (format "Events: %s\nProof summaries today: %s\n\n"
                               (plist-get status :events)
@@ -3887,12 +2631,12 @@ Always sets the system prompt. Tatami ingestion now occurs via
                ((and cue-edn (eq cue-status :inbound))
                 (my-chatgpt-shell--insert-inbound-summary cue-edn))
                ((and cue-edn (eq cue-status :chatgpt))
-                (when-let ((msg (my-chatgpt-shell--cue-guidance cue-status
+                (when-let* ((msg (my-chatgpt-shell--cue-guidance cue-status
                                                                (plist-get cue-source :reason))))
                   (insert msg "\n\n"))
                 (my-chatgpt-shell--insert-inbound-summary cue-edn))
                ((eq cue-status :empty)
-                (when-let ((msg (my-chatgpt-shell--cue-guidance cue-status
+                (when-let* ((msg (my-chatgpt-shell--cue-guidance cue-status
                                                                (plist-get cue-source :reason))))
                   (insert msg "\n\n")))))
             (when summary
@@ -3980,13 +2724,13 @@ use the active region if present, otherwise prompt for the sample string."
   "Toggle display of the Tatami context HUD at the bottom of the frame."
   (interactive)
   (let ((buf (my-chatgpt-shell--context-buffer t)))
-    (if-let ((win (get-buffer-window buf)))
+    (if-let* ((win (get-buffer-window buf)))
         (progn
           (my-chatgpt-shell--delete-context-windows)
           (setq my-chatgpt-shell--context-window nil))
       (unless (or my-chatgpt-shell-last-summary
                   my-chatgpt-shell-last-focus)
-        (when-let ((sum (tatami-me-summary-safe)))
+        (when-let* ((sum (tatami-me-summary-safe)))
           (setq my-chatgpt-shell-last-summary
                 (my-chatgpt-shell--format-summary sum))
           (my-chatgpt-shell--render-context t)))
@@ -4009,7 +2753,7 @@ use the active region if present, otherwise prompt for the sample string."
     (if (tatami--server-running-p)
         (condition-case err
             (let ((tatami-startup-wait 20))
-              (when-let ((fh (tatami-send-sentences text)))
+              (when-let* ((fh (tatami-send-sentences text)))
                 (my-chatgpt-shell--format-focus fh)))
           (error
            (message "Tatami ingestion skipped: %s (%s)"
@@ -4093,6 +2837,8 @@ Used both for selecting the system prompt and for the mode-line lighter.")
 (add-hook 'chatgpt-shell-mode-hook #'futon-profile-mode)
 
 (define-key chatgpt-shell-mode-map (kbd "C-c C-t") #'my-chatgpt-shell-toggle-context)
+(define-key chatgpt-shell-mode-map (kbd "C-c C-a") #'my-futon3-set-active-pattern)
+(define-key chatgpt-shell-mode-map (kbd "C-c C-e") #'my-futon3-open-active-pattern)
 (define-key chatgpt-shell-mode-map (kbd "C-c C-o") #'futon0-insert-clock-out-prompt)
 (define-key chatgpt-shell-mode-map (kbd "C-c C-p") #'par-case-insert-prompt)
 (define-key chatgpt-shell-mode-map (kbd "C-c C-m") #'paramita-insert-prompt)
@@ -4129,7 +2875,7 @@ Used both for selecting the system prompt and for the mode-line lighter.")
     (setq enriched (my-chatgpt-shell--decorate-support-events enriched my-chatgpt-shell-last-inbound-edn))
     (setq my-chatgpt-shell--last-replay-chatgpt-edn (and enriched (cl-copy-list enriched)))
     (setq my-chatgpt-shell-last-edn enriched)
-    (when-let ((sigils (plist-get enriched :intent-sigils)))
+    (when-let* ((sigils (plist-get enriched :intent-sigils)))
       (let ((origin (or (plist-get enriched :intent-sigils-source) :chatgpt))
             (intent (or (plist-get enriched :intent-sigils-intent)
                         (plist-get enriched :intent))))
@@ -4220,40 +2966,3 @@ Used both for selecting the system prompt and for the mode-line lighter.")
                     (note-text (format " — %s" note-text))
                     (t ""))))
           status)))
-(defun my-chatgpt-shell--voice-ydotoold-command-list ()
-  (let ((cmd my-chatgpt-shell-ydotoold-command))
-    (cond
-     ((and (stringp cmd) (not (string-empty-p cmd)))
-      (list shell-file-name shell-command-switch cmd))
-     ((and (consp cmd) (stringp (car cmd)))
-      cmd)
-     (t
-      (user-error "Stack ydotoold command not configured.")))))
-
-(defun my-chatgpt-shell--voice-ensure-ydotoold ()
-  (if (and my-chatgpt-shell--ydotoold-process
-           (process-live-p my-chatgpt-shell--ydotoold-process))
-      my-chatgpt-shell--ydotoold-process
-    (let* ((cmd (my-chatgpt-shell--voice-ydotoold-command-list))
-           (program (car cmd))
-           (args (append (cdr cmd)
-                         (list "--socket-path" my-chatgpt-shell-voice-socket-path))))
-      (make-directory (file-name-directory my-chatgpt-shell-voice-socket-path) t)
-      (let ((proc (apply #'start-process "stack-ydotoold" nil program args)))
-        (set-process-query-on-exit-flag proc nil)
-        (set-process-sentinel proc (lambda (_proc event)
-                                     (when (string-match-p "finished" event)
-                                       (message "Stack ydotoold stopped (%s)" (string-trim event)))
-                                     (setq my-chatgpt-shell--ydotoold-process nil)
-                                     (my-chatgpt-shell--maybe-render-context)))
-        (setq my-chatgpt-shell--ydotoold-process proc)
-        (message "Stack ydotoold started (socket %s)." my-chatgpt-shell-voice-socket-path)
-        (my-chatgpt-shell--maybe-render-context)
-        proc))))
-
-(defun my-chatgpt-shell--voice-stop-ydotoold ()
-  (when (and my-chatgpt-shell--ydotoold-process
-             (process-live-p my-chatgpt-shell--ydotoold-process))
-    (kill-process my-chatgpt-shell--ydotoold-process)
-    (setq my-chatgpt-shell--ydotoold-process nil)
-    (message "Stack ydotoold stopping...")))

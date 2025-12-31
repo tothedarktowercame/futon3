@@ -1,0 +1,30 @@
+{:hello [:map {:closed true}
+         [:rev [:int {:min 1}]]
+         [:client [:string {:min 1}]]
+         [:caps [:vector {:max 8} :string]]]
+ :event [:map {:closed true}
+         [:msg-id [:string {:min 1}]]
+         [:t [:string {:min 1}]]
+         [:actor [:string {:min 1}]]
+         [:verb [:string {:min 1}]]
+         [:object [:string {:min 1}]]
+         [:prov [:map {:optional true :closed true}
+                 [:file [:string {:min 1}]]
+                 [:line pos-int?]]]]
+ :session-close [:map {:closed true}
+                [:msg-id [:string {:min 1}]]
+                [:sid [:string {:min 1}]]]
+ :export [:map {:closed true}
+          [:msg-id [:string {:min 1}]]
+          [:sid [:string {:min 1}]]]
+ :run [:map {:closed true}
+       [:msg-id [:string {:min 1}]]
+       [:policy [:map {:closed true}
+                 [:mode keyword?]
+                 [:options [:map-of keyword? any?]]]]
+       [:sid {:optional true} [:string {:min 1}]]
+       [:scenario-path {:optional true} [:string {:min 1}]]]
+ :status [:map {:closed true}
+          [:msg-id [:string {:min 1}]]
+          [:job-id [:string {:min 1}]]]
+ :bye [:map {:closed true}]}

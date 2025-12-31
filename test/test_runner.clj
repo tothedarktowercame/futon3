@@ -4,8 +4,10 @@
             [graph-test]
             [learn-or-act-test]
             [pattern-hints-test]
+            [futon3.pattern-store-xtdb-test]
             [semantics-test]
-            [transport-test])
+            [transport-test]
+            [f2.transport-golden-test])
   (:gen-class))
 
 (defn -main [& _]

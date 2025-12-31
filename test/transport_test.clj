@@ -3,7 +3,8 @@
             [f2.adapters.mock :as mock]
             [f2.transport :as transport]
             [futon3.checks :as checks]
-            [futon3.workday :as workday]))
+            [futon3.workday :as workday]
+            [futon3.futon1-bridge :as f1-bridge]))
 
 (defn make-state
   ([] (make-state {}))
@@ -68,6 +69,22 @@
       (finally
         (workday/set-log-path! original)))))
 
+(deftest workday-forwarded-to-futon1-bridge
+  (let [state (make-state)]
+    (swap! (:config state) assoc :futon1 {:enabled? true :api-base "http://localhost:8080/api/alpha"})
+    (let [workday-called (atom nil)
+          check-called (atom nil)
+          payload {:type "workday"
+                   :payload {:msg-id "wd-bridge"
+                             :activity "Groundhog demo"
+                             :check {:pattern/id "library/devmap-coherence/ifr-f3-piti"
+                                     :context "demo"}}}]
+      (with-redefs [f1-bridge/record-workday! (fn [_ entry] (reset! workday-called entry))
+                    f1-bridge/record-check! (fn [_ result] (reset! check-called result))]
+        (transport/apply-envelope! state "C-1" payload)
+        (is (some? @workday-called))
+        (is (some? @check-called))))))
+
 (deftest check-route-evaluates-pattern
   (let [state (make-state)
         tmp (doto (java.io.File/createTempFile "checks" ".edn")
@@ -89,6 +106,24 @@
       (finally
         (checks/set-log-path! original)))))
 
+(deftest check-route-forwards-to-futon1
+  (let [state (make-state)
+        tmp (doto (java.io.File/createTempFile "checks" ".edn") (.delete) (.deleteOnExit))
+        original (checks/current-log-path)]
+    (swap! (:config state) assoc :futon1 {:enabled? true :api-base "http://localhost:8080/api/alpha"})
+    (let [called (atom nil)]
+      (try
+        (checks/set-log-path! (.getAbsolutePath tmp))
+        (with-redefs [f1-bridge/record-check! (fn [_ result] (reset! called result))]
+          (transport/apply-envelope! state "C-1"
+                                     {:type "check"
+                                      :payload {:pattern/id "library/devmap-coherence/ifr-f3-piti"
+                                                :context "loop"
+                                                :evidence ["ok"]}})
+          (is (some? @called)))
+        (finally
+          (checks/set-log-path! original))))))
+
 (deftest routes-event-through-router
   (let [state (make-state)
         payload {:type "event"
@@ -101,3 +136,19 @@
         resp (transport/apply-envelope! state "C-1" payload)]
     (is (= "ack" (get-in resp [:reply :type])))
     (is (= "msg-1" (-> @(:router state) :msg-cache deref keys first)))))
+
+(deftest disconnecting-client-keeps-peers-alive-and-logs-history
+  (let [state (make-state)]
+    (swap! (:clients state) assoc "C-2" {:id "C-2"
+                                         :name "bob"
+                                         :caps #{"eval"}
+                                         :connected? true
+                                         :remote-addr "10.0.0.1"})
+    (let [resp (transport/apply-envelope! state "C-1" {:type "bye"})]
+      (is (= true (get-in resp [:reply :ok])))
+      (is (= "bye" (get-in resp [:reply :type]))))
+    (#'transport/unregister-client! state "C-1")
+    (is (contains? @(:clients state) "C-2"))
+    (is (not (contains? @(:clients state) "C-1")))
+    (is (= :disconnect (-> @(:history state) last :type)))
+    (is (= "C-1" (-> @(:history state) last :client)))))

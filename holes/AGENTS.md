@@ -33,3 +33,4 @@ Run routine flexiformal checks that show how the current standard library of pat
 1. Script the obligation extractor + check runner (likely under `scripts/`).
 2. Populate the pattern store with the existing library and tag each pattern with the bojjhaṅga(s) it supports.
 3. Define the first set of “devmap coherence” patterns (one per futon IFR) so missing coverage is explicit rather than implicit.
+4. Keep the Tatami HUD tooling warning-free: `contrib/aob-chatgpt.el` now uses Emacs 31.1’s `when-let*`/`if-let*` macros instead of the obsolete forms that spammed ERT runs. Mirror the same style change in Futon1’s `contrib/tatami.el` when that repo is in scope so Prototype 5 bridges stay aligned.

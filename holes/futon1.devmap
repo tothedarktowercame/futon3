@@ -75,6 +75,11 @@ Consolidate the documentation and contracts that define how text becomes graph s
     `apps/open-world-ingest` form the operational substrate.
   - XTDB inspection and hydration behaviour are reproducible through existing
     scripts and aliases.
+  - `/api/alpha/meta/model/registry` exposes live model descriptors for
+    patterns, docbook, open-world ingest, and the meta-model, with
+    `/api/alpha/meta/model/queue` reporting pending coverage.
+  - Open-world invariants pass end-to-end, including stub detection and
+    relation type registration.
 
 + next:
   Compile the architecture note; select and store a minimal set of canonical
@@ -350,6 +355,45 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - Golden tests verifying stable entity IDs and relation outputs for a fixed
     input.
   - README updates linking ingest workflows to the persistent world model.
+
+! pending: Prototype 4 — NLP Experiments & Traceable Knowledge Graphs [🌱/起 🧪/筹]
+
++ context:
+  The new CLI tracer (`scripts/demo_trace.clj`) and API tap listener (`api.analytics/start!`) produce
+  structured focus-header and profile payloads for every turn. These traces make NLP regressions
+  visible and allow us to reconstruct session-specific ER graphs outside XTDB.
+
++ if:
+  You want to compare alternative recognisers or mathematical-text pipelines against the deterministic
+  substrate, or you want to convert Tatami/demo sessions into inspectable knowledge graphs without
+  mutating production storage.
+
++ however:
+  Tatami tracing is still manual, and there is no tooling yet to turn the tap payloads into graph
+  artifacts. Ideas for richer NLP experiments are not yet captured in this devmap.
+
++ then:
+  Extend the headless API/tatami flow with the same tap logging as the demo tracer, document the
+  planned NLP experiments here, and build a small exporter that reads trace EDNs + tap events and
+  emits a consolidated entity/relation snapshot per session.
+
++ because:
+  Consistent traces across CLI and API let FUTON1 evaluate NLP changes deterministically and produce
+  reusable “knowledge graph” snapshots per session. Recording these plans keeps the work visible
+  without derailing core storage duties.
+
++ next:
+  - Add an opt-in tap sink to the API/Tatami pipeline so live sessions populate `~/code/storage/futon1-
+    traces/<session>/` just like the demo tracer.
+  - Write an ER graph exporter that ingests those traces and produces a summary artifact (EDN/Graphviz)
+    for analysis.
+  - Catalogue candidate NLP experiments (alternate recognisers, mathematical text ingestion, scoring
+    heuristics) and their evaluation criteria in this devmap.
+
++ next-evidence:
+  - Trace directories containing both CLI and Tatami sessions.
+  - ER graph export script plus sample output checked into `resources/` or `docs/`.
+  - devmap entries describing the queued NLP experiments and how their results will be judged.
 
 ! instantiated-by: Prototype 6 — Thematic Clusters & Intent Metadata [🙅/无 💤/上]
 

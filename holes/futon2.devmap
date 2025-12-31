@@ -18,16 +18,16 @@
   + then: Capture a top-level architecture note from sensory keys through world updates, lock current hunger and predictive micro-step parameters, and add four golden AIF microtraces.
   + because: A documented baseline prevents accidental drift before you optimise policy, analyzers, or mechanics.
   + evidence:
-    - `doc/stack-baseline.md` (76 lines): Documents 5-stage pipeline (observe→perceive→affect→policy→act),
+    - `futon2/doc/stack-baseline.md` (76 lines): Documents 5-stage pipeline (observe→perceive→affect→policy→act),
       locks baseline parameters (max-steps=4, alpha=0.45, beta=0.28), lists observation vector ABI.
-    - `src/ants/aif/core.clj` (209 lines): `aif-step()` orchestrates full tick, `default-aif-config` defines
+    - `futon2/src/ants/aif/core.clj` (209 lines): `aif-step()` orchestrates full tick, `default-aif-config` defines
       all nested config (preferences, precision, actions, efe, modes).
-    - `src/ants/aif/observe.clj` (185 lines): `g-observe()` normalizes 14 channels to [0,1].
-    - `src/ants/aif/perceive.clj` (165 lines): Multi-step predictive coding with trace output.
-    - `src/ants/aif/affect.clj` (240 lines): `tick-hunger()`, `hunger->tau()`, `modulate-precisions()`, `update-tau()`.
-    - `src/ants/aif/policy.clj` (841 lines): EFE-based action selection with mode-conditioned biases.
-    - `doc/trace/single_tick.edn` + `doc/trace/single_tick.svg`: Deterministic trace artifact + plot.
-    - `test/resources/goldens/microtraces.edn`: 4 golden perception traces (baseline, hungry-near-enemy,
+    - `futon2/src/ants/aif/observe.clj` (185 lines): `g-observe()` normalizes 14 channels to [0,1].
+    - `futon2/src/ants/aif/perceive.clj` (165 lines): Multi-step predictive coding with trace output.
+    - `futon2/src/ants/aif/affect.clj` (240 lines): `tick-hunger()`, `hunger->tau()`, `modulate-precisions()`, `update-tau()`.
+    - `futon2/src/ants/aif/policy.clj` (841 lines): EFE-based action selection with mode-conditioned biases.
+    - `futon2/doc/trace/single_tick.edn` + `futon2/doc/trace/single_tick.svg`: Deterministic trace artifact + plot.
+    - `futon2/test/resources/goldens/microtraces.edn`: 4 golden perception traces (baseline, hungry-near-enemy,
       sated-on-trail, homebound-low-pher).
   + next-evidence:
     - `doc/trace-semantics.md` explaining micro-step semantics and why errors are 0.0 in goldens.
@@ -41,15 +41,15 @@
   + then: Write property tests that enforce 0–1 ranges, document the `sense->vector` ordering, and add edge-case tests for grid borders, max-distance tweaks, and degenerate pheromone fields.
   + because: Reliable observations keep perception and policy stable no matter the world configuration.
   + evidence:
-    - `test/ants/aif/observe_test.clj` (207 lines): Property tests + unit tests.
+    - `futon2/test/ants/aif/observe_test.clj` (207 lines): Property tests + unit tests.
       - `g-observe-values-clamped`: 200 random worlds, all 16 keys verified ∈ [0,1].
       - `g-observe-border-neighbor-means`: 120 iterations testing edge/corner calculations.
       - `degenerate-field-normalizes-to-zero`: Handles max-food=0 gracefully.
       - `sense-vector-ordering`: Locks 14-element vector ABI.
-    - `src/ants/aif/observe.clj`: `clamp01()`, `normalize()` enforce bounds; all channels
+    - `futon2/src/ants/aif/observe.clj`: `clamp01()`, `normalize()` enforce bounds; all channels
       pass through normalization before return (lines 161-177).
-    - `doc/stack-baseline.md` (lines 7-9): Lists observation ABI ordering.
-    - `README.md` (lines 88-93): Documents sense→vector keys (needs update: lists 13, actual is 14).
+    - `futon2/doc/stack-baseline.md` (lines 7-9): Lists observation ABI ordering.
+    - `futon2/README.md` (lines 88-93): Documents sense→vector keys (needs update: lists 13, actual is 14).
   + next-evidence:
     - `doc/observation-spec.md` listing all normalization bounds (max-food, max-pher, max-dist, max-reserve).
     - White-space detection property tests (`:white?` field currently untested).

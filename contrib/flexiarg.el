@@ -56,20 +56,64 @@
 
 (require 'cl-lib)
 (require 'subr-x)
+(require 'seq nil t)
+(unless (fboundp 'seq)
+  (defun seq (sequence)
+    "Fallback for older Emacs; return SEQUENCE as a list or nil if empty."
+    (cond
+     ((null sequence) nil)
+     ((listp sequence) sequence)
+     ((and (vectorp sequence) (= 0 (length sequence))) nil)
+     (t (append sequence nil)))))
 
 (defgroup flexiarg nil
   "Flexiformal argument DSL."
   :group 'tools
   :prefix "flexiarg-")
 
+(defface flexiarg-highlight-facet-name-face
+  '((t :inherit font-lock-keyword-face :underline t))
+  "Face used to highlight facet names."
+  :group 'flexiarg)
+(defvar flexiarg-highlight-facet-name-face 'flexiarg-highlight-facet-name-face
+  "Face symbol used to highlight facet names.")
+
+(defface flexiarg-highlight-facet-content-face
+  '((t :inherit font-lock-constant-face :weight bold))
+  "Face used to highlight facet contents."
+  :group 'flexiarg)
+(defvar flexiarg-highlight-facet-content-face 'flexiarg-highlight-facet-content-face
+  "Face symbol used to highlight facet contents.")
+
 (defvar flexiarg-mode-map (make-sparse-keymap)
   "Keymap for `flexiarg-mode'.")
+
+(defun flexiarg--ensure-keymap ()
+  "Ensure `flexiarg-mode-map' is a valid keymap."
+  (unless (keymapp flexiarg-mode-map)
+    (setq flexiarg-mode-map (make-sparse-keymap))))
+
+(flexiarg--ensure-keymap)
 
 ;; ------------------------------
 ;; Syntax highlighting
 ;; ------------------------------
 
-(defconst flexiarg-font-lock-keywords
+(defcustom flexiarg-highlight-facets nil
+  "List of facet names to highlight (strings).
+
+Example: '(\"context\" \"next-steps\")"
+  :type '(repeat string)
+  :group 'flexiarg)
+
+(defcustom flexiarg-highlight-facet-targets '(name content)
+  "Which parts of a facet to highlight."
+  :type '(set (const name) (const content))
+  :group 'flexiarg)
+
+(defvar-local flexiarg--facet-font-lock-keywords nil
+  "Buffer-local font-lock keywords for facet highlighting.")
+(defvar flexiarg--base-font-lock-keywords
   (let* (
          ;; Highlight questions as warnings.
          (question-re "^\\s-*@question:.*$")
@@ -84,8 +128,88 @@
       (,marker-re
        (1 font-lock-builtin-face)         ;; ! + ?
        (2 font-lock-keyword-face))        ;; relation / role
-      ))
-  "Font-lock rules for `flexiarg-mode'.")
+      )))
+
+(defun flexiarg--facet-regexp ()
+  (when (and flexiarg-highlight-facets
+             (not (equal flexiarg-highlight-facets '())))
+    (format "^\\s-*\\+\\s-*\\(%s\\)\\s-*:\\s-*\\(.+\\)$"
+            (regexp-opt flexiarg-highlight-facets))))
+
+(defun flexiarg--build-facet-keywords ()
+  (when-let ((re (flexiarg--facet-regexp)))
+    (let ((name? (memq 'name flexiarg-highlight-facet-targets))
+          (content? (memq 'content flexiarg-highlight-facet-targets)))
+      (cond
+       ((and name? content?)
+        (list (list re (list 1 flexiarg-highlight-facet-name-face 'prepend))
+              (list #'flexiarg--facet-content-match
+                    0
+                    flexiarg-highlight-facet-content-face
+                    'prepend)))
+       (name?
+        (list (list re (list 1 flexiarg-highlight-facet-name-face 'prepend))))
+       (content?
+        (list (list #'flexiarg--facet-content-match
+                    0
+                    flexiarg-highlight-facet-content-face
+                    'prepend)))
+       (t nil)))))
+
+(defun flexiarg--facet-content-match (limit)
+  "Search for facet content up to LIMIT and set match data to its contents."
+  (let ((re (flexiarg--facet-regexp)))
+    (when re
+      (catch 'found
+        (while (re-search-forward re limit t)
+          (let ((start (match-beginning 2))
+                (end (match-end 2)))
+            (when (and start end (< start end))
+              (set-match-data (list start end))
+              (throw 'found t))))))))
+
+(defun flexiarg--apply-facet-highlights ()
+  "Apply facet highlighting directly over the current buffer."
+  (let ((re (flexiarg--facet-regexp))
+        (name? (memq 'name flexiarg-highlight-facet-targets))
+        (content? (memq 'content flexiarg-highlight-facet-targets)))
+    (when re
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward re nil t)
+          (when name?
+            (add-face-text-property (match-beginning 1)
+                                    (match-end 1)
+                                    flexiarg-highlight-facet-name-face))
+          (when content?
+            (add-face-text-property (match-beginning 2)
+                                    (match-end 2)
+                                    flexiarg-highlight-facet-content-face)))))))
+
+(defun flexiarg--parse-facets (raw)
+  (let* ((parts (split-string (or raw "") "[,]" t "[ \t\n]+"))
+         (trimmed (mapcar #'string-trim parts)))
+    (cl-remove-if #'string-empty-p trimmed)))
+
+(defun flexiarg-set-highlight-facets (facets)
+  "Set `flexiarg-highlight-facets' and refresh highlighting.
+
+FACETS can be a list of strings or a comma-separated string."
+  (interactive (list (read-string "Highlight facets (comma-separated, empty to clear): ")))
+  (setq flexiarg-highlight-facets
+        (cond
+         ((listp facets) facets)
+         ((stringp facets) (flexiarg--parse-facets facets))
+         (t nil)))
+  (when (derived-mode-p 'flexiarg-mode)
+    (setq flexiarg--facet-font-lock-keywords (flexiarg--build-facet-keywords))
+    (setq-local font-lock-defaults
+                (list (append flexiarg--base-font-lock-keywords
+                              flexiarg--facet-font-lock-keywords)))
+    (font-lock-refresh-defaults)
+    (font-lock-flush)
+    (font-lock-ensure)
+    (flexiarg--apply-facet-highlights)))
 
 ;; ------------------------------
 ;; Utility helpers
@@ -420,10 +544,17 @@ Syntax:
 Indentation defines the tree: child lines are indented more than their parent.
 
 Use \\[flexiarg-show-edn] to see compiled EDN-style structure."
+  (flexiarg--ensure-keymap)
   (setq-local comment-start ";; ")
   (setq-local comment-start-skip ";;+\\s-*")
-  (setq font-lock-defaults '(flexiarg-font-lock-keywords)))
+  (setq flexiarg--facet-font-lock-keywords (flexiarg--build-facet-keywords))
+  (setq-local font-lock-defaults
+              (list (append flexiarg--base-font-lock-keywords
+                            flexiarg--facet-font-lock-keywords)))
+  (font-lock-refresh-defaults)
+  (flexiarg--apply-facet-highlights))
 
+(provide 'flexiarg)
 (provide 'flexiarg-mode)
 
 ;;; flexiarg-mode.el ends here

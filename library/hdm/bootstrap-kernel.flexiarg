@@ -1,0 +1,31 @@
+@flexiarg hdm/bootstrap-kernel
+@title HDM - Bootstrap Kernel
+@sigils [🌱/序]
+
+! conclusion:
+    Design FUTON6+FUTON3 as a bootstrapping kernel: pick a coherent seed domain, define import contracts,
+    pattern-matching rules, and scholium conventions, and add new entries incrementally. Accept that the
+    kernel evolves and retrofits earlier content as it gains power.
+
+  + context: You are defining a minimal HDM kernel that can grow without collapsing under its own scope.
+  + IF:
+      Extant mathematics is vast; we cannot formalise or parse it all at once, yet a tiny static prototype
+      that cannot ingest new material fails to count as HDM.
+
+  + HOWEVER:
+      Ad hoc ingestion without a kernel produces inconsistent entries and unmaintainable conventions.
+
+  + THEN:
+      Design FUTON6+FUTON3 as a bootstrapping kernel: pick a coherent seed domain, define import contracts,
+      pattern-matching rules, and scholium conventions, and add new entries incrementally. Accept that the
+      kernel evolves and retrofits earlier content as it gains power.
+      Build a minimal kernel: a functioning subset of patterns, data structures, and procedures that interpret
+      transparent text, produce flexiarg skeletons, and integrate new entries with human help.
+
+  + BECAUSE:
+      HDM cannot wait for full automation; the viable strategy is an evolving kernel that becomes "just good
+      enough" to strengthen itself. Bootstrapping is a permanent mode, not a temporary phase.
+  + NEXT-STEPS:
+    next[Select and freeze a first seed slice (e.g. a compact MSC26 subset) and deliver end-to-end ingestion.]
+    next[Treat every kernel upgrade as a trigger to re-run transformation passes on older entries.]
+    next[Capture failures, ambiguities, and partial ingests as scholia owned by the kernel.]

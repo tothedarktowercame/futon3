@@ -1,0 +1,23 @@
+@flexiarg library-coherence/library-staleness-scan
+@title Canon Staleness Scan
+@sigils [🧭/在 ⏱️/义]
+@references [stack-coherence/staleness-scan stack-coherence/ready-blocked-triage]
+
+! conclusion:
+  schedule a staleness scan over every library source: compare file mtimes vs. last ledger update, diff sigils across devmaps, and record drift as `:status :drifting` until someone reruns `clojure -M:sigils` + the check DSL; surface the scan results in CI and refuse to publish embeddings when drift persists
+
+  + context: You are preventing stale sigils and proofs from silently drifting in the canon.
+  + IF:
+    flexiarg directories constantly evolve (devmap-coherence, stack-coherence, repository-transition, etc.) and feed the shared pattern store
+
+  + HOWEVER:
+    once a pattern lands in the canon we rarely revisit it; sigils, embeddings, and check fixtures go stale, so later runs cannot tell if a “blocked” clause is drifting or simply unmaintained
+
+  + THEN:
+    schedule a staleness scan over every library source: compare file mtimes vs. last ledger update, diff sigils across devmaps, and record drift as `:status :drifting` until someone reruns `clojure -M:sigils` + the check DSL; surface the scan results in CI and refuse to publish embeddings when drift persists
+
+  + BECAUSE:
+    library coherence depends on time—not just content—staying aligned; a regular staleness scan keeps the canon trustworthy for downstream futons
+
+  + NEXT-STEPS:
+    next[Define the staleness criteria and log the first scan run in the ledger.]

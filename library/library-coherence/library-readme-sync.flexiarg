@@ -1,0 +1,23 @@
+@flexiarg library-coherence/library-readme-sync
+@title Canon ↔ README Sync Ritual
+@sigils [📙/义 🔃/习]
+@references [stack-coherence/readme-devmap-sync devmap-coherence/baseline-freeze]
+
+! conclusion:
+  run the same sync ritual used on devmaps: diff the pattern store against README anchors, refuse to mark a pattern “ready” until the corresponding section exists (line references + timestamps), and capture the sync status inside the `library-coherence` ledger; when drift is detected, emit follow-up tasks and freeze the affected prototype until docs ship
+
+  + context: You are keeping README narratives aligned with the pattern canon.
+  + IF:
+    the README, devmaps, and pattern canon are supposed to tell the same story about what FUTON3 (and neighbours) actually ship
+
+  + HOWEVER:
+    README sections routinely lag behind the pattern store—new handlers or adapters show up in code/tests but never get cited as evidence, so prototypes appear “done” without a published description
+
+  + THEN:
+    run the same sync ritual used on devmaps: diff the pattern store against README anchors, refuse to mark a pattern “ready” until the corresponding section exists (line references + timestamps), and capture the sync status inside the `library-coherence` ledger; when drift is detected, emit follow-up tasks and freeze the affected prototype until docs ship
+
+  + BECAUSE:
+    the canon exists to keep the public story honest—without README coverage, pattern maturity is impossible to audit
+
+  + NEXT-STEPS:
+    next[Add a README-sync checklist entry for the next pattern marked ready.]

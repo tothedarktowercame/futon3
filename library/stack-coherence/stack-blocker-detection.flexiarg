@@ -1,0 +1,20 @@
+@flexiarg stack-coherence/stack-blocker-detection
+@title Stack Blocker Detection
+@sigils [🚧/阻]
+@factor Keen investigation (dhammavicaya)
+
+! conclusion:
+  scan devmaps for declared dependencies, inspect referenced dirs/tests/commits, and emit a blocker report for each clause: `blocked-by[...]`, `evidence[...]`, `status[ready/not-ready]`
+
+  + context: You want to be able to track unmet dependencies between projects, prototypes and components by inspecting downstream artifacts, so lack of progress is clearly attributed to specific blockers.
+  + IF:
+    a futon layer or prototype declares prerequisites (“requires futon3 prototype 8”, “needs graph-memory adapter”), yet the downstream directory/README is still empty
+
+  + HOWEVER:
+    without explicit blocker reports, emptiness reads as “nobody cares” instead of “waiting on X/Y”
+
+  + THEN:
+    scan devmaps for declared dependencies, inspect referenced dirs/tests/commits, and emit a blocker report for each clause: `blocked-by[...]`, `evidence[...]`, `status[ready/not-ready]`
+
+  + BECAUSE:
+    dhammavicaya means naming what already exists—and what is still blocking it—so we don’t conflate “not started” with “stalled”

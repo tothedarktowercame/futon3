@@ -1,0 +1,20 @@
+@flexiarg stack-coherence/evidence-ledger
+@title Stack Evidence Ledger
+@sigils [🗃️/证]
+@factor Keen investigation (dhammavicaya)
+
+! conclusion:
+  scan READMEs, git logs, and test artifacts for references to that clause; if none exist, mark the clause `unsupported` and emit a TODO to capture the evidence; otherwise record `evidence[link]`
+
+  + context: You need to ensure that any planned work that is claimed to be done is sufficiently evidenced by concrete artifacts, or revered to a non-done state if they can't be found.
+  + IF:
+    a devmap clause (any futon) claims a prototype is “done” or “stable”
+
+  + HOWEVER:
+    there is no pointer to concrete evidence (README section, tag, test fixture, commit) proving it
+
+  + THEN:
+    scan READMEs, git logs, and test artifacts for references to that clause; if none exist, mark the clause `unsupported` and emit a TODO to capture the evidence; otherwise record `evidence[link]`
+
+  + BECAUSE:
+    dhammavicaya isn’t vibes—claims must cite reproducible proofs or they drift into fiction

@@ -1,0 +1,36 @@
+@flexiarg meta/sigil-differentiation
+@title Sigil Differentiation Protocol
+@sigils [🪞/义 🧭/整]
+@audience library stewards, pattern authors
+@tone reflective-analytic
+@allow-new-claims false
+@references [library-coherence/pattern-differentiation-alarms stack-coherence/stack-blocker-detection meta/scaffolding-emergent-clarity]
+
+! conclusion:
+  Treat repeated sigil pairs as design questions: either reassign the pair or
+  refine the overlapping patterns so their scopes stop colliding.
+
+  + context: You are maintaining sigil uniqueness so similarity search stays meaningful.
+  + IF:
+    `clojure -M:sigils` reports duplicated pairs (e.g., 🔃/入 across four patterns).
+
+  + HOWEVER:
+    Without a protocol, collisions linger and the fake embedding loses meaning.
+
+  + THEN:
+    For each collision, decide whether to (a) retag one pattern, (b) refine the
+    overlapping patterns so their scope edges are explicit, or (c) introduce a
+    new pattern that captures the differentiating concept while linking back to
+    the originals. Record the relationship and decision in futon3 before rerun-
+    ning the sigil job.
+
+  + BECAUSE:
+    Sigils are coordinates; when they overlap, dhammavicaya can’t distinguish
+    patterns, so we must either move the coordinate or reshape the terrain.
+
+  + STATUS:
+    status[ready]
+    evidence[resources/sigils/emoji-adjacency.csv]
+
+  + NEXT-STEPS:
+    next[Create a rolling “sigil collision queue” entry in futon3 and tick off pairs as we reassign or refine them.]

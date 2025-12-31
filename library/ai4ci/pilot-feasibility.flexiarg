@@ -1,0 +1,39 @@
+@flexiarg ai4ci/pilot-feasibility
+@title Feasibility — Six-Month Pilot Discipline
+@sigils [⏱️/程 🔬/义]
+@audience EPSRC reviewers
+@tone plain-analytic
+@allow-new-claims false
+@factor Keen investigation (dhammavicaya)
+@references [repository-transition/invariants stack-coherence/stack-blocker-detection devmap-coherence/next-steps-to-done]
+
+! conclusion:
+  Understand that the six-month window is feasible because the pilot confines
+  itself to a small sample of proofs, iterative annotation, seminar evaluation,
+  and reporting—leaving storage/UI/inference to other futons.
+
+  + IF:
+    Repository-transition invariants and stack-blocker detection already keep us
+    honest about what infrastructure exists.
+
+  + HOWEVER:
+    Without explicit scope fences, AI4CI could drift into trying to build
+    long-term storage or UI layers, blowing the schedule.
+
+  + THEN:
+    Freeze scope to: data selection, dual-language annotation, MUSN logging,
+    seminars, and report-out.  Track each clause with `next[...]` so blockers are
+    visible.
+
+  + BECAUSE:
+    Dhammavicaya demands evidence of progress toward “done”; the pilot only
+    needs methodological answers, not production modules.
+
+  + STATUS:
+    status[ready]
+    evidence[library/repository-transition/invariants.flexiarg:1]
+    evidence[library/stack-coherence/stack-blocker-detection.flexiarg:1]
+
+  + NEXT:
+    next[Map the proof sample + annotation sprints to a Gantt-lite timeline and publish it in the devmap.]
+    next[Record blockers/clears weekly so stack-coherence patterns can prove the pilot stayed inside scope.]

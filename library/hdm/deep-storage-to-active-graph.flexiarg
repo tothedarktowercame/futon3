@@ -1,0 +1,28 @@
+@flexiarg hdm/deep-storage-to-active-graph
+@title HDM - Deep Storage -> Active Graph
+@sigils [🪢/络]
+
+! conclusion:
+    Use HDM/FUTON6 as an aggregation + activation layer: ingest key fragments from deep storage into a coherent graph, annotate
+    them with patterns, proof skeletons, and cross-links, and maintain mappings back to origin sites for provenance.
+
+  + context: You are unifying deep-storage sources into a navigable, provenance-preserving graph.
+  + IF:
+      Open mathematical repositories ("deep storage") already exist-PlanetMath, arXiv, nLab, wikis, code archives-holding
+      enormous value but lacking uniform structure and computational affordances.
+
+  + HOWEVER:
+      Treating each repository as its own universe squanders synergies and makes it hard for humans or agents to form a unified
+      mental map of mathematics.
+
+  + THEN:
+      Use HDM/FUTON6 as an aggregation + activation layer: ingest key fragments from deep storage into a coherent graph, annotate
+      them with patterns, proof skeletons, and cross-links, and maintain mappings back to origin sites for provenance.
+
+  + BECAUSE:
+      A unified, pattern-indexed graph enables reasoning/learning across boundaries while respecting each project's autonomy and
+      identity.
+  + NEXT-STEPS:
+    next[Prototype a deep-storage import pipeline (e.g. PlanetMath MSC26 subset) into FUTON6.]
+    next[Record origin metadata and round-trip links for every imported node.]
+    next[Apply HDM.L2 motifs (simulation, transparency, outline-first) as design constraints on the pipeline.]

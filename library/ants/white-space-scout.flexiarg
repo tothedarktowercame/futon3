@@ -1,0 +1,39 @@
+@flexiarg ants/white-space-scout
+@title White-Space Scout Pattern
+@sigils [🕳️/路 🧭/觅]
+@audience futon5 improvisers, futon2 telemetry readers
+@tone investigative
+@style pattern
+@allow-new-claims true
+@references [futon2/doc/trace/single_tick.edn futon2/src/ants/aif/policy.clj futon2/test/resources/goldens/policy_harness.edn]
+
+! conclusion:
+  Cyber-ants inherit the “white space” doctrine: when food + pheromones slump
+  below the epsilon bands and novelty is high, anneal tau upward, penalise
+  foraging, and gently bias toward pheromone laying or scouting returns.
+
+  + context: You are declaring the white-space heuristic so cyber-ants can mirror Futon2 behavior.
+  + IF:
+    Observations satisfy the Futon2 `white?` detector — food trace, pheromone
+    trace, and recent gather are all low, and the ant is off-nest.
+
+  + HOWEVER:
+    Without this guard the agents burn ticks circling barren cells, starving the
+    colony even when hunger pressure says “exploit elsewhere.”
+
+  + THEN:
+    Encode the heuristics currently embedded in `policy/choose-action` as a
+    pattern operator: raise G-adjustments for :forage, lower them for :return and
+    :pheromone, and stretch tau when the scout sits on empty nest tiles.
+
+  + BECAUSE:
+    Futon5 needs the declarative rule (“white space implies scout stance”) so it
+    can flash cyber-ants or future agents with the same homing instinct.
+
+  + STATUS:
+    status[ready]
+    evidence[futon2/src/ants/aif/policy.clj#L640]
+
+  + NEXT-STEPS:
+    next[Link this pattern to the cyber-ant operator so Futon5 emits the
+         matching `:white-space` action deltas and tau clamps.]

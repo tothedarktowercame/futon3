@@ -1,0 +1,45 @@
+@flexiarg ai4ci/collective-intelligence-evaluation
+@title Collective Intelligence — Evaluative Lens
+@sigils [🎙️/群 🧪/察]
+@audience EPSRC reviewers
+@tone plain-analytic
+@allow-new-claims false
+@factor Keen investigation (dhammavicaya)
+@references [vsatlas/value-flow-constellation vsatlas/festival-model stack-coherence/ready-blocked-triage stack-coherence/stack-blocker-detection]
+
+! conclusion:
+  Recognise that the project’s evaluation hinges on whether dual-layer proofs
+  raise collective understanding across cohorts, not just on AI metrics,
+  because the end goal is reusable teaching practice as well as evidence.
+
+  + IF:
+    Value-flow and festival patterns show that gatherings only unlock collective
+    sense-making when each participant can connect their understanding to the
+    shared artefact.
+
+  + HOWEVER:
+    LLM accuracy reports or per-step correctness do not reveal whether
+    undergraduates, graduate students, and professionals can actually use MUSN
+    scaffolds to reason together.
+
+  + THEN:
+    Run tiered seminars where identical annotated proofs are reviewed by each
+    cohort, explicitly compare the transcripts to see whether cues generalise or
+    demand cohort-specific tailoring, log guided discussions (released with
+    reproducibility metadata), and treat clarity/confusion reports as the
+    primary evaluation signal.  Feed those logs back into ready/blocked triage
+    so blockers are explicit.
+
+  + BECAUSE:
+    Collective intelligence is evidenced when diverse readers reach clarity
+    together; only structured discussions reveal that outcome.
+
+  + STATUS:
+    status[blocked]
+    evidence[library/vsatlas/value-flow-constellation.flexiarg:1]
+    evidence[library/vsatlas/festival-model.flexiarg:1]
+    blocked-by[ai4ci/seminar-schedule]
+
+  + NEXT:
+    next[Schedule undergraduate, graduate, and professional seminar sessions with identical MUSN artefacts and capture transcripts.]
+    next[Pipe transcript-coded blockers into stack-coherence/ready-blocked-triage so transport + pedagogy stay linked.]

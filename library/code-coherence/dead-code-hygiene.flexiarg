@@ -1,0 +1,38 @@
+@flexiarg code-coherence/dead-code-hygiene
+@title Dead Code Hygiene
+@sigils [🧹/码 🧼/义]
+@audience maintainers, transport stewards
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [repository-transition/diagnostics repository-transition/strawman stack-coherence/staleness-scan stack-coherence/evidence-ledger]
+
+! conclusion:
+  Keep MUSN behaviour legible by pruning experiments, deprecated flows, and
+  orphaned namespaces before they are mistaken for supported features.
+
+  + context: You are aligning the codebase with the devmap so only supported paths remain visible.
+  + IF:
+    Repository-transition diagnostics already insist on tracking code paths to
+    explicit obligations.
+
+  + HOWEVER:
+    RID-era handlers and paused experiments still live in the tree with no
+    devmap references, confusing refactors and reviewers.
+
+  + THEN:
+    Schedule periodic dead-code sweeps: identify unreferenced namespaces,
+    obsolete protocol handlers, and one-off experiments; delete or archive them;
+    and ensure devmaps point only at active code paths.
+
+  + BECAUSE:
+    Dhammavicaya requires that “what the system does” and “what the devmap
+    claims” match; dead code collapses that link.
+
+  + STATUS:
+    status[blocked]
+    evidence[library/repository-transition/diagnostics.flexiarg:1]
+    blocked-by[code-coherence/dead-code-audit]
+
+  + NEXT-STEPS:
+    next[Run `clojure -M:test` with namespace coverage and flag modules unused outside tests.]
+    next[Archive RID protocol handlers once MUSN adapters replace them, citing commits in the evidence ledger.]

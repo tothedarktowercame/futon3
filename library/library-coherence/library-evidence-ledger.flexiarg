@@ -1,0 +1,23 @@
+@flexiarg library-coherence/library-evidence-ledger
+@title Canon Evidence Ledger
+@sigils [📑/证 📚/档]
+@references [stack-coherence/evidence-ledger]
+
+! conclusion:
+  mirror the stack-coherence evidence-ledger practice inside the library: require each pattern entry to list concrete namespaces/docs/tests, add CI checks that fail when fields are blank, and update the ledger whenever new proofs land; store the citations next to the pattern IDs so the `check!` DSL can surface them
+
+  + context: You are ensuring every pattern claim has auditable, concrete evidence.
+  + IF:
+    the pattern store (`resources/pattern_store.edn`) declares which devmap clauses are blocked, in-progress, or done
+
+  + HOWEVER:
+    those records drift unless every clause cites verifiable evidence (README sections, namespaces, and tests) that anyone can inspect
+
+  + THEN:
+    mirror the stack-coherence evidence-ledger practice inside the library: require each pattern entry to list concrete namespaces/docs/tests, add CI checks that fail when fields are blank, and update the ledger whenever new proofs land; store the citations next to the pattern IDs so the `check!` DSL can surface them
+
+  + BECAUSE:
+    a canon without an evidence ledger collapses into lore—dhammavicaya demands that every “ready” claim is backed by published artifacts
+
+  + NEXT-STEPS:
+    next[Backfill missing evidence citations for the highest-priority patterns.]

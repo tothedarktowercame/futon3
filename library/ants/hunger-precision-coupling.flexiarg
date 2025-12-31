@@ -1,0 +1,41 @@
+@flexiarg ants/hunger-precision-coupling
+@title Hunger ↔ Precision Coupling Pattern
+@sigils [🔥/餓 🎯/準]
+@audience futon5 operator authors, futon2 affect engineers
+@tone formal-analytic
+@style pattern
+@allow-new-claims true
+@references [futon2/test/resources/goldens/hunger_tau.edn futon2/src/ants/aif/affect.clj futon2/src/ants/aif/core.clj]
+
+! conclusion:
+  Hunger drives precision: cyber-ants honour Futon2’s goldens so that `tick-hunger`
+  + `update-hunger` + `hunger->tau` feed into `modulate-precisions` and
+  `update-tau`, including reserve pressure and depot/risk contributions.
+
+  + context: You are exporting hunger-to-tau coupling so Futon5 can flash faithful agents.
+  + IF:
+    The affect layer reports hunger trends (`dhdt`), ingest shortfalls, and
+    colony reserves matching the six golden scenarios (normal, starvation,
+    overstimulation, heavy-cargo, high-risk, high-ingest).
+
+  + HOWEVER:
+    Without explicit coupling rules the Futon5 operator cannot guarantee that a
+    flashed agent reproduces the tau annealing Futon2 already verifies.
+
+  + THEN:
+    Reference the hunger/tau goldens and declare the response curve: hungrier
+    ants lower tau, home safety lifts tau, deficit reserves subtract from tau,
+    and clamp logic cuts exploitation during high-risk cargo returns.
+
+  + BECAUSE:
+    Futon5 needs those declarative mappings to export a faithful cyber-ant
+    affect config; otherwise the new agents would drift away from the proven
+    hunger dynamics.
+
+  + STATUS:
+    status[ready]
+    evidence[futon2/test/resources/goldens/hunger_tau.edn]
+
+  + NEXT-STEPS:
+    next[Expose this coupling as metadata in the cyber-ant operator so Futon2
+         can attach the generated config per species.]

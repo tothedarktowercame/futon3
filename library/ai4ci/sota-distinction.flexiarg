@@ -1,0 +1,36 @@
+@flexiarg ai4ci/sota-distinction
+@title Distinguishing This Pilot from Mathematical AI SOTA
+@sigils [🚫/术 🧠/辨]
+@audience EPSRC reviewers
+@tone plain-analytic
+@allow-new-claims false
+
+! conclusion:
+  Emphasise that the project studies explanatory capability, not raw
+  problem-solving, because current math AI already produces many correct answers
+  on textbook exercises yet fails to show the reasoning people need to learn or
+  teach effectively.
+
+  + IF:
+    Modern large models and specialist solvers can produce credible answers to
+    many textbook problems.
+
+  + HOWEVER:
+    They cannot check their own reasoning reliably, rarely justify tactic
+    choices, and provide no stable mapping between informal language and the
+    steps it references.
+
+  + THEN:
+    Position AI in this project as a diagnostic assistant: it proposes candidate
+    links between informal cues and formal steps, and humans accept or reject
+    each one so the resulting dataset remains trustworthy.
+
+  + BECAUSE:
+    Treating AI outputs as hypotheses, not finished work, turns the pilot into a
+    boundary map for what current systems can and cannot recognise in human
+    reasoning—evidence future researchers can build on.
+
+  + NEXT STEPS:
+    Log every suggestion + human judgement, publish the acceptance statistics,
+    and highlight where explanatory capability breaks down even when answers are
+    correct.

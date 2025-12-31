@@ -1,0 +1,23 @@
+@flexiarg library-coherence/library-template-discipline
+@title Canon Template Discipline
+@sigils [📄/本 📏/义]
+@references [devmap-coherence/prototype-alignment-embedding stack-coherence/readme-devmap-sync]
+
+! conclusion:
+  enforce a canonical template across every `library/**.flexiarg`: lint for required metadata, forbid renaming the clause markers, and add CI that refuses commits lacking `@sigils`, `@references`, or the standard clause order; every pattern added to `resources/pattern_store.edn` must cite the lint status
+
+  + context: You are standardising flexiarg structure so tooling can ingest and validate the canon.
+  + IF:
+    devmaps and flexiarg libraries already follow a template (meta tags, IF/HOWEVER/THEN/BECAUSE, sigils)
+
+  + HOWEVER:
+    new patterns often copy-paste partial headers, omit `@sigils`, or rename clauses, so the store can’t ingest them uniformly
+
+  + THEN:
+    enforce a canonical template across every `library/**.flexiarg`: lint for required metadata, forbid renaming the clause markers, and add CI that refuses commits lacking `@sigils`, `@references`, or the standard clause order; every pattern added to `resources/pattern_store.edn` must cite the lint status
+
+  + BECAUSE:
+    the canon only works when patterns stay machine-readable—template drift makes the check DSL brittle and the README evidence unverifiable
+
+  + NEXT-STEPS:
+    next[Add a lint check that fails when required metadata or clause order is missing.]

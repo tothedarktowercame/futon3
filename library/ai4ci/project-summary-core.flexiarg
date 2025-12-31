@@ -1,0 +1,64 @@
+@flexiarg ai4ci/project-summary-core
+@title AI4CI — MUSN Transport & Routing Pilot
+@sigils [🧮/索 📡/径]
+@audience EPSRC reviewers
+@tone plain-analytic
+@allow-new-claims false
+@factor Keen investigation (dhammavicaya)
+@references [hdm/outline-first-detail-later hdm/human-machine-dialogue devmap-coherence/prototype-alignment-bridge stack-coherence/evidence-ledger stack-coherence/ready-blocked-triage stack-coherence/stack-blocker-detection devmap-coherence/next-steps-to-done ai4ci/umbrella ai4ci/proof-pattern-hierarchy ai4ci/sota-distinction]
+
+! conclusion:
+  Recognise that the project tests—rather than presumes—whether dual-layer
+  mathematical proofs (formal steps plus validated informal cues) reveal
+  reusable proof-pattern fragments that help humans recreate arguments, not just
+  verify results.
+
+  + IF:
+    Published proofs omit the exploratory hints (“try this substitution”, “argue by symmetry”) that real mathematicians
+    rely on, yet those hints, together with expository phrases, suggest—but do
+    not prove—the existence of reusable local tactics (reduce to a simpler case,
+    argue by symmetry, exploit a known classification).
+
+  + HOWEVER:
+    These informal layers live in the textual wraparound of worked solutions and oral scholia; extracting them demands
+    transport guarantees (idempotent ingest, per-client supervision, 200 ms status caps, 5 s run limits) plus schema
+    validation so that outline-level reasoning can flow into adapters instead of collapsing into vibes.  Moreover, no one
+    has shown whether the cues remain stable across problem families or are merely textbook-specific flourishes.  The HDM
+    canon already insists on outline-first captures and dialogue-mediated clarification, so F2 must not re-litigate those
+    doctrines but feed them evidence.
+
+  + THEN:
+    Deliver a controlled pilot that (a) mines open encyclopedias to capture the
+    formal register (symbols, named entities, standard relations), (b) mines
+    textbooks and solution manuals to extend the informal vocabulary and catch
+    any missing formal terms, then (c) captures transport-safe traces of a
+    twenty-proof subset where annotators layer progressively detailed
+    explanations and validate them through structured seminars across three
+    cohorts.  The annotations explicitly record whether each cue appears
+    book-specific or generalisable, and the seminar protocol cross-compares
+    cohorts so drift is visible.  This three-phase workflow balances breadth
+    (via corpus mining) and depth (via human-facing experiments) within six
+    months, and every derived dataset, log, and transcript ships with
+    reproducibility notes (data provenance, software versions, release
+    metadata).
+    Router and transport tests (`test/f2/router_test.clj:13`, `test/transport_test.clj:22`) and adapters at
+    `src/f2/adapters/mock.clj:1` supply the reliable ingest channel; the new annotation workflow sits on top, grounded in
+    `docs/protocol.md:1`.
+
+  + BECAUSE:
+    Only by pairing process cues with exposition and validating them through collective review can we tell whether a
+    stable mid-level reasoning layer—or proof-pattern fragment—actually exists. If it does, future AI can support human
+    learning and help AI solvers check their own work (and let humans audit it);
+    if not, the pilot documents the limits with transport-grade evidence.
+
+  + STATUS:
+    status[ready]
+    evidence[docs/protocol.md:1]
+    evidence[test/f2/router_test.clj:13]
+    evidence[test/transport_test.clj:22]
+
+  + NEXT:
+    next[Assemble a cleared mini-corpus of graduate-level exam solutions with both symbolic steps and informal phrasing; coordinate with data stewards for release notes.]
+    next[Extend the dual-language parser so each ingest event carries paired symbolic + informal spans before calling F1 adapters.]
+    next[Instrument per-client supervision metrics (through the transport history log) to prove overload alarms and dropped-client handling work under 1k events/min stress.]
+    next[Document the pilot outcomes (what surfaced, what failed) in MUSN proof trails so F3 agents can replay the exact scenarios.]

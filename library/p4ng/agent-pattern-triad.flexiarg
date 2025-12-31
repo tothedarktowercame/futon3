@@ -1,0 +1,21 @@
+@flexiarg p4ng/agent-pattern-triad
+@title Agent Pattern Triad — Intent to Execution
+@audience futon developers, CS students, pattern agents
+@tone analytic
+@style design-pattern
+@sigils [🧲/环 🧭/仁]
+
+! conclusion:
+  Make the pipeline explicit: intent parsing emits Commands, a SchedulingStrategy selects the next move, and decorators (logging, timing, synchronisation, permission checks, orb tracking) wrap each command before worker threads call `execute!`. Document this flow with diagrams and a toy agent lab so newcomers can trace how intent, policy, and meta-behaviour interact.
+
+  + IF:
+    Students and maintainers often encounter Command, Strategy, and Decorator as isolated textbook animals, so multi-agent architectures feel like a zoo with no wiring diagram.
+
+  + HOWEVER:
+    FUTON stacks already rely on commands to carry work, strategies to choose policies, and decorators to enforce cross-cutting rules; failing to name the triad keeps the system opaque.
+
+  + THEN:
+    Make the pipeline explicit: intent parsing emits Commands, a SchedulingStrategy selects the next move, and decorators (logging, timing, synchronisation, permission checks, orb tracking) wrap each command before worker threads call `execute!`. Document this flow with diagrams and a toy agent lab so newcomers can trace how intent, policy, and meta-behaviour interact.
+
+  + BECAUSE:
+    The Command/Strategy/Decorator triad turns “random agent code” into an explainable circuit—what gets done, how choices are made, and which protections wrap the work—so experimentation stays safe, reasoning stays legible, and multi-threaded agents behave predictably.

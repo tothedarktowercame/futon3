@@ -1,0 +1,28 @@
+@flexiarg hdm/outline-first-detail-later
+@title HDM - Outline First, Detail Later
+@sigils [🧭/纲]
+
+! conclusion:
+  capture outline structure before full detail so arguments stay navigable and checkable.
+
+  + context: You are capturing mathematical structure at multiple resolutions without forcing full formal detail.
+  + IF:
+      Mathematical arguments admit multiple resolutions-high-level strategy, mid-level structure, low-level
+      derivations-and both humans and LLMs often grasp the outline long before the full detail.
+
+  + HOWEVER:
+      Many formal systems force lowest-level work from the start (expensive, discouraging) while purely informal
+      treatments hide the skeleton and make consistency checks difficult.
+
+  + THEN:
+    Make the outline layer primary in HDM: capture argument shape (claims, premises, patterns, key moves) in
+    flexiarg first, then attach more detailed derivations as needed. Support multi-resolution views so users and
+    agents can zoom between outline and detail.
+
+  + BECAUSE:
+      Capturing strategy and pattern is often enough to index an argument, relate it to others, and detect gross
+      inconsistencies; detail can be filled in on demand but the skeleton must stay visible.
+  + NEXT-STEPS:
+    next[Encourage F3 checkers to accept outline-level flexiarg and report graded confidence.]
+    next[Give FUTON6 viewers an easy toggle between outline-only and expanded proof.]
+    next[When importing legacy proofs, extract strategy first, then build detail.]

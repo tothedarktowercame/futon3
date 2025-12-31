@@ -1,0 +1,31 @@
+@flexiarg contributing/stack-scan-logging-protocol
+@title Stack Coherence Scan Logging Protocol
+@sigils [🗒️/义]
+@factor Keen investigation (dhammavicaya)
+
+! conclusion:
+  follow this protocol for every scan session
+    1. Declare scope (futons/patterns) and timestamp in the log (Tatami trail, repo note, or AGENTS entry).
+    2. Record the stack-coherence patterns applied (e.g. `stack-coherence/readme-devmap-sync`, `stack-coherence/evidence-ledger`, `stack-coherence/stack-blocker-detection`) and capture raw findings alongside file references.
+    3. Note the diffs or fixes made during the scan (commits, README updates, new patterns) and whether they resolved the flagged obligations.
+    4. Append a short `next-scan` note: outstanding issues to revisit plus the evidence path (log file, commit hash, Tatami trail).
+
+  + context: You are running a stack-coherence scan and need a durable log that future reviewers can trust.
+  + IF:
+    we run stack-coherence scans (patterns, devmap reviews, sigil checks) to keep the futons honest
+
+  + HOWEVER:
+    without a repeatable logging protocol we cannot compare progress between scans or prove that obligations moved forward
+
+  + THEN:
+    follow this protocol for every scan session
+      1. Declare scope (futons/patterns) and timestamp in the log (Tatami trail, repo note, or AGENTS entry).
+      2. Record the stack-coherence patterns applied (e.g. `stack-coherence/readme-devmap-sync`, `stack-coherence/evidence-ledger`, `stack-coherence/stack-blocker-detection`) and capture raw findings alongside file references.
+      3. Note the diffs or fixes made during the scan (commits, README updates, new patterns) and whether they resolved the flagged obligations.
+      4. Append a short `next-scan` note: outstanding issues to revisit plus the evidence path (log file, commit hash, Tatami trail).
+
+  + BECAUSE:
+    dhammavicaya demands observable progress; consistent scan logs let us compare runs, tighten feedback loops, and hand future contributors the exact history of what was checked and why.
+
+  + NEXT-STEPS:
+    next[Log the next scan using this protocol in a futon3 trail or repo note so the audit history starts cleanly.]

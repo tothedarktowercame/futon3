@@ -1,0 +1,21 @@
+@flexiarg stack-coherence/ready-blocked-triage
+@title Ready/Blocked/Triage Classifier
+@sigils [⚖️/态]
+@factor Keen investigation (dhammavicaya)
+
+! conclusion:
+  for each clause, inspect evidence (README links, commits, tests) and blockers; emit a status report `status[done|ready|blocked|drift] blocked-by[...] evidence[...]`
+
+  + context: You want a uniform classification of each devmap clause (done, ready, blocked, drift) to be derivable from logged evidence and blockers, so that implicit progress states are explicit and comparable.
+  
+  + IF:
+    every devmap clause should be either ready, blocked, drifting, or done
+
+  + HOWEVER:
+    we rarely log that status explicitly
+
+  + THEN:
+    for each clause, inspect evidence (README links, commits, tests) and blockers; emit a status report `status[done|ready|blocked|drift] blocked-by[...] evidence[...]`
+
+  + BECAUSE:
+    knowing the state of each obligation is the core of informal proofkeeping

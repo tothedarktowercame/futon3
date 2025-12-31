@@ -1,0 +1,495 @@
+[{:constraints
+  {:style "Clear, concrete, funding-application English",
+   :coverage [:all-supports-of :c0],
+   :word-limit 250,
+   :max-iterations 3,
+   :banned-phrases
+   ["cutting-edge"
+    "state-of-the-art"
+    "leveraging synergies"
+    "paradigm shift"
+    "game-changing"
+    "innovative solutions"
+    "world-leading"
+    "at scale"
+    "stakeholder engagement"],
+   :allow-new-claims? false},
+  :actions
+  [{:type :generate, :target :summary}
+   {:type :validate, :mode :tree-walk}],
+  :keywords
+  [:collective-intelligence
+   :doctoral-training
+   :reflexivity
+   :infrastructure],
+  :up "t4r/main-case",
+  :title "Executive Summary",
+  :tone :analytic-visionary,
+  :argument
+  {:id :c0,
+   :role :conclusion,
+   :text
+   "talk4real reimagines doctoral training as a shared experimental learning infrastructure that continually refines itself through reflexive, collective practice.",
+   :supports
+   [{:id :p1,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Most doctoral programmes operate within disciplinary or thematic silos.",
+     :supports
+     [{:id :p1b,
+       :role :premise,
+       :relation-to-parent :therefore,
+       :text
+       "These silos engage minimally with learning beyond their boundaries and contribute little to improving practice at system level."}]}
+    {:id :p2,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Collective-intelligence frameworks can capture feedback between researchers, institutions, and communities.",
+     :supports
+     [{:id :p2b,
+       :role :premise,
+       :relation-to-parent :therefore,
+       :text
+       "Embedding these feedback loops allows research systems to learn from their own activity."}
+      {:id :p3,
+       :role :premise,
+       :relation-to-parent :instantiated-by,
+       :text
+       "talk4real applies a REPL-style cycle—read, evaluate, print, loop—to social and epistemic processes.",
+       :supports
+       [{:id :p3b,
+         :role :premise,
+         :relation-to-parent :clarifies,
+         :text
+         "This cycle links ethnography, computational analysis, design, and collective reflection."}]}],
+     :illustrates
+     [{:id :p2-known-examples,
+       :role :example,
+       :relation-to-parent :illustrates,
+       :text
+       "Related precedents include initiatives such as realtalk@MIT, PlanetMath.org, and Peeragogy."}
+      {:id :p2-further-research,
+       :role :hole,
+       :kind :example,
+       :relation-to-parent :illustrates,
+       :prompt
+       "Insert 1–2 current, funder-recognisable exemplars of collective-intelligence infrastructure.",
+       :required? false}]}
+    {:id :p4,
+     :role :premise,
+     :relation-to-parent :therefore,
+     :text
+     "We will run coordinated doctoral projects that instantiate the same learning architecture in distinct domains.",
+     :supports
+     [{:id :p4b,
+       :role :premise,
+       :relation-to-parent :therefore,
+       :text
+       "Each doctoral scholar becomes both a researcher and an agent of collective intelligence."}]}
+    {:id :p5,
+     :role :premise,
+     :relation-to-parent :underpinned-by,
+     :text "The model is structured by three design principles.",
+     :supports
+     [{:id :p5a,
+       :role :premise,
+       :relation-to-parent :specifies,
+       :text
+       "Ethical reflexivity: participants co-author their representation."}
+      {:id :p5b,
+       :role :premise,
+       :relation-to-parent :specifies,
+       :text
+       "Lightweight infrastructure: the method is portable and not locked to heavy platforms."}
+      {:id :p5c,
+       :role :premise,
+       :relation-to-parent :specifies,
+       :text
+       "Polyphonic governance: multiple voices are synthesised, not averaged away."}]}]},
+  :next "t4r/rationale",
+  :id "t4r/exec-summary-tree",
+  :audience
+  ["research funders"
+   "doctoral-training consortia"
+   "university R&I leads"],
+  :length [200 250]}
+ {:constraints
+  {:style "Clear, concrete funding-case prose",
+   :word-limit 250,
+   :max-iterations 3,
+   :banned-phrases
+   ["cutting-edge"
+    "state-of-the-art"
+    "leveraging synergies"
+    "paradigm shift"
+    "game-changing"
+    "innovative solutions"
+    "world-leading"
+    "at scale"
+    "stakeholder engagement"],
+   :allow-new-claims? false},
+  :actions
+  [{:type :generate, :target :section}
+   {:type :validate, :mode :tree-walk}],
+  :up "t4r/main-case",
+  :title "1 Rationale for the choice of research subject area",
+  :tone :formal-analytic,
+  :argument
+  {:id :sec1-c,
+   :role :conclusion,
+   :text
+   "talk4real is justified as an infrastructure for collective intelligence because it converts accumulative, non-reflective research systems into learning systems that can redesign themselves.",
+   :supports
+   [{:id :sec1-p1,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Research policies, tools, and incentives currently pile up without coherent mechanisms for reflection."}
+    {:id :sec1-p2,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Institutions generate knowledge faster than they can interpret, while prevailing audits and surveys prioritise compliance over learning."}
+    {:id :sec1-p3,
+     :role :premise,
+     :relation-to-parent :illustrates,
+     :text
+     "The Supplement’s simulated dialogue, participatory annotation, and iterative synthesis show the research system studying itself in real time."}
+    {:id :sec1-p4,
+     :role :premise,
+     :relation-to-parent :therefore,
+     :text
+     "Formalising a social-psychological REPL makes reflexive learning habitual from doctoral study to institutional governance."}]},
+  :next "t4r/dtp-fit",
+  :id "t4r/rationale",
+  :audience
+  ["research funders"
+   "doctoral-training consortia"
+   "university R&I leads"],
+  :length [230 270]}
+ {:constraints
+  {:style "Clear, concrete funding-case prose",
+   :word-limit 250,
+   :max-iterations 3,
+   :banned-phrases
+   ["cutting-edge"
+    "state-of-the-art"
+    "leveraging synergies"
+    "paradigm shift"
+    "game-changing"
+    "innovative solutions"
+    "world-leading"
+    "at scale"
+    "stakeholder engagement"],
+   :allow-new-claims? false},
+  :actions
+  [{:type :generate, :target :section}
+   {:type :validate, :mode :tree-walk}],
+  :up "t4r/main-case",
+  :title "2 Relationship to existing doctoral training",
+  :tone :formal-analytic,
+  :argument
+  {:id :sec2-c,
+   :role :conclusion,
+   :text
+   "talk4real augments existing doctoral training by embedding meta-learning infrastructure that lets scholars observe, model, and re-engineer the systems they inhabit.",
+   :supports
+   [{:id :sec2-p1,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Most doctoral programmes teach disciplinary technique but rarely teach how disciplines learn from one another."}
+    {:id :sec2-p2,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "talk4real combines ethnography, computer science, and design so scholars can treat conversation, computation, and intervention as one method."}
+    {:id :sec2-p3,
+     :role :premise,
+     :relation-to-parent :instantiated-by,
+     :text
+     "The Supplement pilot treats conversation as data and prototype as publication, keeping every scholar inside a continuous REPL loop."}
+    {:id :sec2-p4,
+     :role :premise,
+     :relation-to-parent :therefore,
+     :text
+     "The programme operates as a portable connective tissue for other DTPs, enabling cross-cohort self-correction without extra training burden."}]},
+  :next "t4r/value",
+  :id "t4r/dtp-fit",
+  :audience
+  ["research funders"
+   "doctoral-training consortia"
+   "university R&I leads"],
+  :length [230 270]}
+ {:constraints
+  {:style "Clear, concrete funding-case prose",
+   :word-limit 250,
+   :max-iterations 3,
+   :banned-phrases
+   ["cutting-edge"
+    "state-of-the-art"
+    "leveraging synergies"
+    "paradigm shift"
+    "game-changing"
+    "innovative solutions"
+    "world-leading"
+    "at scale"
+    "stakeholder engagement"],
+   :allow-new-claims? false},
+  :actions
+  [{:type :generate, :target :section}
+   {:type :validate, :mode :tree-walk}],
+  :up "t4r/main-case",
+  :title "3 Added value to the field and the universities",
+  :tone :formal-analytic,
+  :argument
+  {:id :sec3-c,
+   :role :conclusion,
+   :text
+   "talk4real delivers added value by supplying replicable infrastructural DNA that universities and disciplines can use to build a federated commons for adaptive governance.",
+   :supports
+   [{:id :sec3-p1,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Ten linked doctoral projects test the same REPL architecture in different domains."}
+    {:id :sec3-p2,
+     :role :premise,
+     :relation-to-parent :therefore,
+     :text
+     "Each project contributes stories, datasets, and tools to an evolving commons that lets institutions reflect collectively."}
+    {:id :sec3-p3,
+     :role :premise,
+     :relation-to-parent :illustrates,
+     :text
+     "The Supplement already demonstrates cross-voice dialogue, thematic tagging, consent protocols, and reflective synthesis working as a live prototype."}
+    {:id :sec3-p4,
+     :role :premise,
+     :relation-to-parent :therefore,
+     :text
+     "Universities gain a practical method for adaptive governance, and the wider field gains a way to study and iteratively improve epistemic systems."}]},
+  :next "t4r/training",
+  :id "t4r/value",
+  :audience
+  ["research funders"
+   "doctoral-training consortia"
+   "university R&I leads"],
+  :length [230 270]}
+ {:constraints
+  {:style "Clear, concrete funding-case prose",
+   :word-limit 250,
+   :max-iterations 3,
+   :banned-phrases
+   ["cutting-edge"
+    "state-of-the-art"
+    "leveraging synergies"
+    "paradigm shift"
+    "game-changing"
+    "innovative solutions"
+    "world-leading"
+    "at scale"
+    "stakeholder engagement"],
+   :allow-new-claims? false},
+  :actions
+  [{:type :generate, :target :section}
+   {:type :validate, :mode :tree-walk}],
+  :up "t4r/main-case",
+  :title "4 Supervision, training, and cohort-building activities",
+  :tone :formal-analytic,
+  :argument
+  {:id :sec4-c,
+   :role :conclusion,
+   :text
+   "talk4real’s supervisory and training model turns the cohort into a distributed research operating system that learns how learning itself can be designed.",
+   :supports
+   [{:id :sec4-p1,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Supervision is collaborative and polyphonic, pairing disciplinary mentors with methodological companions."}
+    {:id :sec4-p2,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Training follows the shared REPL rhythm demonstrated in the Supplement, grounding every project in a common protocol."}
+    {:id :sec4-p3,
+     :role :premise,
+     :relation-to-parent :instantiated-by,
+     :text
+     "Cohort practices—listening clinics and signal-boost workshops—share data, analyse overlaps, and co-design interventions."}
+    {:id :sec4-p4,
+     :role :premise,
+     :relation-to-parent :therefore,
+     :text
+     "Portfolio assessment with open datasets, code notebooks, and design artefacts plus open peer review makes each scholar a co-investigator refining the infrastructure."}]},
+  :next "t4r/legacy",
+  :id "t4r/training",
+  :audience
+  ["research funders"
+   "doctoral-training consortia"
+   "university R&I leads"],
+  :length [230 270]}
+ {:constraints
+  {:style "Clear, concrete funding-case prose",
+   :word-limit 250,
+   :max-iterations 3,
+   :banned-phrases
+   ["cutting-edge"
+    "state-of-the-art"
+    "leveraging synergies"
+    "paradigm shift"
+    "game-changing"
+    "innovative solutions"
+    "world-leading"
+    "at scale"
+    "stakeholder engagement"],
+   :allow-new-claims? false},
+  :actions
+  [{:type :generate, :target :section}
+   {:type :validate, :mode :tree-walk}],
+  :up "t4r/main-case",
+  :title "5 Legacy and sustainability",
+  :tone :formal-analytic,
+  :argument
+  {:id :sec5-c,
+   :role :conclusion,
+   :text
+   "talk4real leaves a durable legacy by coupling open, modular infrastructure with graduates who act as agents of collective intelligence.",
+   :supports
+   [{:id :sec5-p1,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "The programme yields software components, data schemas, and design templates alongside researchers skilled in listening, analysis, and redesign."}
+    {:id :sec5-p2,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Each doctoral project produces a self-contained yet interoperable prototype, so sustainability never depends on a single host institution."}
+    {:id :sec5-p3,
+     :role :premise,
+     :relation-to-parent :illustrates,
+     :text
+     "The Supplement embodies this ethos as a collaboratively authored artefact that is simultaneously document, dataset, and performance."}
+    {:id :sec5-p4,
+     :role :premise,
+     :relation-to-parent :therefore,
+     :text
+     "Graduates seed the method elsewhere while the open infrastructure supports new nodes linking universities, civic bodies, and cultural institutions."}]},
+  :next "t4r/support",
+  :id "t4r/legacy",
+  :audience
+  ["research funders"
+   "doctoral-training consortia"
+   "university R&I leads"],
+  :length [230 270]}
+ {:constraints
+  {:style "Clear, concrete funding-case prose",
+   :word-limit 250,
+   :max-iterations 3,
+   :banned-phrases
+   ["cutting-edge"
+    "state-of-the-art"
+    "leveraging synergies"
+    "paradigm shift"
+    "game-changing"
+    "innovative solutions"
+    "world-leading"
+    "at scale"
+    "stakeholder engagement"],
+   :allow-new-claims? false},
+  :actions
+  [{:type :generate, :target :section}
+   {:type :validate, :mode :tree-walk}],
+  :up "t4r/main-case",
+  :title "6 Additional financial or other support resources",
+  :tone :formal-analytic,
+  :argument
+  {:id :sec6-c,
+   :role :conclusion,
+   :text
+   "talk4real can deliver scalable, ethical, self-renewing collective research development with modest resources by leveraging lightweight assets and distributed partnerships.",
+   :supports
+   [{:id :sec6-p1,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Its main assets are conversation, computation, and coordination already present in partner institutions, so core costs focus on stipends, workshops, and hosting."}
+    {:id :sec6-p2,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Partners such as the UK Reproducibility Network, PathOS, and the Oxford Schwartzman Centre plus allied studios and labs contribute mentoring and in-kind expertise."}
+    {:id :sec6-p3,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Open-source software, shared cloud infrastructure, and cross-university collaboration keep financial overhead low while broadening reach."}
+    {:id :sec6-p4,
+     :role :premise,
+     :relation-to-parent :therefore,
+     :text
+     "Outputs—data, documentation, prototypes—remain freely available, ensuring continuing value beyond the funding window."}]},
+  :next "t4r/supplement",
+  :id "t4r/support",
+  :audience
+  ["research funders"
+   "doctoral-training consortia"
+   "university R&I leads"],
+  :length [230 270]}
+ {:constraints
+  {:style "Clear, concrete funding-case prose",
+   :word-limit 250,
+   :max-iterations 3,
+   :banned-phrases
+   ["cutting-edge"
+    "state-of-the-art"
+    "leveraging synergies"
+    "paradigm shift"
+    "game-changing"
+    "innovative solutions"
+    "world-leading"
+    "at scale"
+    "stakeholder engagement"],
+   :allow-new-claims? false},
+  :actions
+  [{:type :generate, :target :section}
+   {:type :validate, :mode :tree-walk}],
+  :up "t4r/main-case",
+  :title "Supplement workshop transcript",
+  :tone :formal-analytic,
+  :argument
+  {:id :supp-c,
+   :role :conclusion,
+   :text
+   "The Supplement operationalises talk4real’s REPL by staging a multi-agent workshop that prototypes listening infrastructure, governance, and design tensions in real time.",
+   :supports
+   [{:id :supp-p1,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Facilitators run five segments mapped to Read, Evaluate, Print, Loop with defined roles—facilitator, recorder, reporter, persona agents—to interrogate the brief."}
+    {:id :supp-p2,
+     :role :premise,
+     :relation-to-parent :because,
+     :text
+     "Persona statements from researchers, doctoral scholars, developer-scholars, supervisors, administrators, and the talk4real team surface strengths, blind spots, and initial stances."}
+    {:id :supp-p3,
+     :role :premise,
+     :relation-to-parent :instantiated-by,
+     :text
+     "Participants co-design minimal listening captures, consent protocols, tagging vocabularies, and assessment artefacts that treat stories as analyzable yet textured data."}
+    {:id :supp-p4,
+     :role :premise,
+     :relation-to-parent :therefore,
+     :text
+     "Live debate over anonymisation, governance boards, licensing, and preserving dissent keeps the Print phase accountable to what Read reveals, demonstrating the reflexive loop in action."}]},
+  :next nil,
+  :id "t4r/supplement",
+  :audience
+  ["research funders"
+   "doctoral-training consortia"
+   "university R&I leads"],
+  :length [280 320]}]

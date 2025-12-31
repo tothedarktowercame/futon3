@@ -1,0 +1,21 @@
+@flexiarg p4ng/agent-strategy-pattern
+@title Agent Strategy Pattern
+@audience futon developers, CS students, pattern agents
+@tone analytic
+@style design-pattern
+@sigils [🚞/义]
+
+! conclusion:
+  Declare small Strategy protocols (`SummarisationStrategy/summarise`, `SchedulingStrategy/next-command`, `BackoffStrategy/next-delay`) and let the agent inject or swap concrete implementations at runtime. Configuration, prompts, or telemetry choose which strategy runs, and tests exercise strategies in isolation before the agent consumes them.
+
+  + IF:
+    An agent repeatedly faces the same class of decision—summarise, schedule, pick a timeout, select a solver—yet the codebase is littered with `if`/`case` branches or feature flags that mutate behaviour in opaque ways.
+
+  + HOWEVER:
+    Experimenting with new policies or tailoring behaviour per user, prototype, or futon becomes brittle when the “how” is fused to the agent core.
+
+  + THEN:
+    Declare small Strategy protocols (`SummarisationStrategy/summarise`, `SchedulingStrategy/next-command`, `BackoffStrategy/next-delay`) and let the agent inject or swap concrete implementations at runtime. Configuration, prompts, or telemetry choose which strategy runs, and tests exercise strategies in isolation before the agent consumes them.
+
+  + BECAUSE:
+    Strategies separate intent (“summarise this log”) from method (“fast heuristic vs deep reasoning”), enabling safe experiments, per-context policy bundles, and cleaner reasoning about which solver is responsible for each outcome.

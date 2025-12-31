@@ -1,0 +1,397 @@
+@arg p4ng/license-laddering
+@title License Laddering
+@audience open-research practitioners, infrastructure stewards, policy designers
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/license-as-story
+
+! instantiated-by: License Laddering
+  + context: In Open Research projects, licensing choices often stall progress and collaboration.
+    + if: You want maximal remixability while preserving dignity and attribution.
+    + but: Legal anxiety and moral caution create paralysis.
+    + then: Begin from a permissive default and establish a clear sequence of license “steps” that can be tightened later as needed.
+    + because: Progressive licensing reduces fear-driven restriction and allows flexibility as the project matures.
+
+
+@arg p4ng/license-as-story
+@title License-as-Story
+@audience open-research practitioners, metadata architects, educators
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/platform-choreography
+
+! instantiated-by: License-as-Story
+  + context: Standard boilerplate licenses fail to communicate intent or social meaning.
+    + if: You want reciprocity and lineage rather than mere compliance.
+    + but: Legal phrasing alienates non-specialists.
+    + then: Pair each formal licence with a short human-readable narrative explaining purpose, values, and intended reuse.
+    + because: Narrative notes increase understanding and encourage constructive, informed reuse.
+
+
+@arg p4ng/platform-choreography
+@title Platform Choreography
+@audience infrastructure designers, repository teams, workflow architects
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/friction-as-feature
+
+! instantiated-by: Platform Choreography
+  + context: Multiple systems and platforms coexist within an open-research ecosystem.
+    + if: Users need smooth traversal across platforms.
+    + but: Fragmented workflows create bottlenecks and inconsistent expectations.
+    + then: Map the handoffs explicitly; define how each platform signals readiness, completion, or needs for follow-up.
+    + because: Clear choreography reduces confusion and creates predictable user journeys.
+
+
+@arg p4ng/friction-as-feature
+@title Friction-as-Feature
+@audience open-research practitioners, UX designers, metadata stewards
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/bridge-before-portal
+
+! instantiated-by: Friction-as-Feature
+  + context: Removing all friction from research workflows can obscure important decision points.
+    + if: You seek smoothness and automation.
+    + but: Critical judgments (ethics, consent, quality control) require deliberation.
+    + then: Introduce intentional micro-frictions to prompt reflection where it is necessary.
+    + because: Well-placed friction protects integrity and prevents premature or careless decisions.
+
+
+@arg p4ng/bridge-before-portal
+@title Bridge-Before-Portal
+@audience repository developers, open-infrastructure teams
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/snapshot-with-story
+
+! instantiated-by: Bridge-Before-Portal
+  + context: Researchers often encounter new systems without preparation.
+    + if: You want newcomers to engage meaningfully.
+    + but: They arrive without context or confidence.
+    + then: Provide a low-stakes bridge (orientation, sandbox, sample objects) before requiring formal deposit or registration.
+    + because: Early, low-pressure exposure increases willingness to adopt and reduces confusion.
+
+
+@arg p4ng/snapshot-with-story
+@title Snapshot-with-Story DOI
+@audience repository developers, metadata architects, research-communication teams
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/identifier-garden
+
+! instantiated-by: Snapshot-with-Story DOI
+  + context: DOIs capture snapshots but lack contextual meaning.
+    + if: You want persistent identifiers to convey purpose.
+    + but: A DOI alone does not express narrative or reasoning.
+    + then: Pair each snapshot with a short contextual note explaining what changed and why.
+    + because: Story-linked snapshots make updates intelligible and increase meaningful reuse.
+
+
+@arg p4ng/identifier-garden
+@title Identifier Garden
+@audience metadata architects, open-research stewards
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/two-stage-fidelity
+
+! instantiated-by: Identifier Garden
+  + context: Identifiers (DOI, ORCID, ROR) accumulate unevenly across projects.
+    + if: You want transparent provenance.
+    + but: Identifier management decays without stewardship.
+    + then: Maintain a curated “garden” of identifiers with assigned stewards and regular review.
+    + because: Stewarded identifiers increase traceability and reduce metadata drift.
+
+
+@arg p4ng/two-stage-fidelity
+@title Two-Stage Fidelity (Registered Rhythm)
+@audience evaluation designers, research-training leads
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/method-documentary-split
+
+! instantiated-by: Two-Stage Fidelity (Registered Rhythm)
+  + context: Evaluating open research processes requires evidence of both intention and execution.
+    + if: You want training programmes to be accountable.
+    + but: Single-stage assessment hides drift between plans and actions.
+    + then: Use a two-stage rhythm: registration of intentions followed by verification of delivery.
+    + because: Separating intent from execution provides clearer evaluation and reduces ambiguity.
+
+
+@arg p4ng/method-documentary-split
+@title Method / Documentary Split
+@audience research trainers, workflow designers, documentation teams
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/attribution-forward
+
+! instantiated-by: Method / Documentary Split
+  + context: Methods often become entangled with their documentation.
+    + if: You want clarity in training and auditability.
+    + but: Combined method-documents obscure both practice and record.
+    + then: Split the operative method from the accompanying documentary trace.
+    + because: Clean separation increases legibility and supports better updating.
+
+
+@arg p4ng/attribution-forward
+@title Attribution-Forward Review
+@audience peer-review designers, evaluation bodies, open-research committees
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/overlay-bridges
+
+! instantiated-by: Attribution-Forward Review
+  + context: Traditional peer review obscures contributions beyond final authors.
+    + if: You want credit to reflect actual labour.
+    + but: Conventional processes exclude hidden contributors.
+    + then: Introduce contribution-specific review steps that foreground attribution.
+    + because: Transparent credit increases fairness and visibility of diverse labour.
+
+
+@arg p4ng/overlay-bridges
+@title Overlay Bridges
+@audience funders, open-infrastructure teams, research project designers
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/peripheral-to-core
+
+! instantiated-by: Overlay Bridges
+  + context: Early-stage projects often need support before formal grant cycles.
+    + if: You want iterative development.
+    + but: Funding portals impose high thresholds.
+    + then: Create low-friction overlay mechanisms that support emergent proposals before portal submission.
+    + because: Pre-portal bridges strengthen proposals and increase quality at entry.
+
+
+@arg p4ng/peripheral-to-core
+@title Peripheral-to-Core Pathways
+@audience community managers, research-programme designers
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/quality-by-design
+
+! instantiated-by: Peripheral-to-Core Pathways
+  + context: Valuable contributors often begin at the periphery.
+    + if: You want inclusive talent development.
+    + but: No pathways lead from peripheral engagement to core roles.
+    + then: Establish structured entry ramps that convert peripheral participation into core responsibilities.
+    + because: Clear pathways increase retention and distribute expertise.
+
+
+@arg p4ng/quality-by-design
+@title Quality-by-Design Crowd
+@audience quality stewards, research communities, platform designers
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/citizen-colearning
+
+! instantiated-by: Quality-by-Design Crowd
+  + context: Quality assurance is often treated as an afterthought.
+    + if: You want distributed quality practice.
+    + but: Single-point checks miss errors and opportunities.
+    + then: Embed quality checks into everyday community practice, distributed across contributors.
+    + because: Shared responsibility increases robustness and reduces bottlenecks.
+
+
+@arg p4ng/citizen-colearning
+@title Citizen Co-Learning Track
+@audience public engagement leads, education designers
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/five-p-rhythm
+
+! instantiated-by: Citizen Co-Learning Track
+  + context: Research communities and the public learn at different rhythms.
+    + if: You want meaningful public participation.
+    + but: Expertise gaps prevent shared learning.
+    + then: Run co-learning tracks where citizens and researchers acquire skills together.
+    + because: Shared learning increases understanding, trust, and participation.
+
+
+@arg p4ng/five-p-rhythm
+@title Five-P Rhythm for Impact
+@audience impact evaluators, project leads
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/fit-for-use
+
+! instantiated-by: Five-P Rhythm for Impact
+  + context: Impact planning lacks structured pacing.
+    + if: You want credible impact development.
+    + but: Ad-hoc timelines obscure progress.
+    + then: Use a five-stage rhythm (problem, people, process, product, proof) to organise work.
+    + because: Rhythmic structure supports sustained action and clearer evaluation.
+
+
+@arg p4ng/fit-for-use
+@title Fit-for-Use Stars
+@audience repository teams, metadata stewards
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/readiness-windows
+
+! instantiated-by: Fit-for-Use Stars
+  + context: Deposits vary widely in quality and usability.
+    + if: You want consistent, reusable objects.
+    + but: Binary accept/reject decisions are too coarse.
+    + then: Introduce multi-point “fit-for-use” ratings that capture practical readiness.
+    + because: Nuanced quality indicators support improvement and clearer communication.
+
+
+@arg p4ng/readiness-windows
+@title Readiness Windows
+@audience practitioners, workflow designers, teaching teams
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/tune-audits
+
+! instantiated-by: Readiness Windows
+  + context: Projects mature unevenly across dimensions.
+    + if: You want to coordinate timing of releases or reviews.
+    + but: Static schedules misalign with variable readiness.
+    + then: Introduce readiness windows that define when components are prepared for review or integration.
+    + because: Time-sensitive alignment increases project coherence and reduces bottlenecks.
+
+
+@arg p4ng/tune-audits
+@title Tune Audits (Quarterly)
+@audience QA teams, project governance groups
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/dream-audit
+
+! instantiated-by: Tune Audits (Quarterly)
+  + context: Quality drifts without periodic review.
+    + if: You want consistent improvement.
+    + but: Continuous auditing is overwhelming.
+    + then: Conduct light-touch quarterly reviews to detect drift and adjust course.
+    + because: Regular low-friction audits maintain momentum without burden.
+
+
+@arg p4ng/dream-audit
+@title DREAM Audit (Per Release)
+@audience values researchers, design teams, governance leads
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/maintainer-care
+
+! instantiated-by: DREAM Audit (Per Release)
+  + context: Projects embed values that shift over time.
+    + if: You want clarity about value alignment in each release.
+    + but: Values drift unnoticed in day-to-day work.
+    + then: Perform a structured DREAM audit to articulate changes in Desire, Relationality, Embodiment, Autonomy, Multiplicity.
+    + because: Explicit value review makes alignment and drift visible.
+
+
+@arg p4ng/maintainer-care
+@title Maintainer Care
+@audience open-source maintainers, research-software teams
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/retirement-shelf
+
+! instantiated-by: Maintainer Care
+  + context: Maintainers often burn out in unacknowledged ways.
+    + if: You want healthy, sustainable stewardship.
+    + but: Invisible labour and emotional load accumulate.
+    + then: Make maintainer well-being explicit through role rotation, boundaries, and care practices.
+    + because: Supporting maintainers increases longevity and project quality.
+
+
+@arg p4ng/retirement-shelf
+@title Retirement Shelf
+@audience repository designers, programme managers, stewardship teams
+@tone formal-analytic
+@style design-pattern
+@length 120-200
+@allow-new-claims false
+@max-iterations 1
+@up p4ng/orpatterns
+@next p4ng/END
+
+! instantiated-by: Retirement Shelf
+  + context: Not all projects should run indefinitely.
+    + if: You want responsible long-term stewardship.
+    + but: Sunsetting is rarely planned.
+    + then: Create a defined “retirement shelf” where inactive or completed projects are preserved but no longer actively maintained.
+    + because: Responsible retirement protects history while reducing unnecessary maintenance load.

@@ -1,0 +1,23 @@
+@flexiarg library-coherence/library-embedding-refresh
+@title Sigil Embedding Refresh Ritual
+@sigils [♻️/距 🎛️/在]
+@references [devmap-coherence/prototype-alignment-embedding]
+
+! conclusion:
+  bake the refresh into the library workflow: every pattern PR that touches sigils must include regenerated matrices, we track the last refresh timestamp in `pattern_store.edn`, and CI fails when a pattern lacks embeddings; document the ritual in README + scripts
+
+  + context: You are keeping sigil embeddings in lockstep with the canon.
+  + IF:
+    the fake embedding couples every pattern/devmap clause via sigils, giving `check!` its nearest-neighbour hints
+
+  + HOWEVER:
+    when new patterns land (or sigils change) we often forget to rerun `clojure -M:sigils`, so `resources/sigils/{index,emoji-adjacency,hanzi-adjacency}` drift from the canon and hints become meaningless
+
+  + THEN:
+    bake the refresh into the library workflow: every pattern PR that touches sigils must include regenerated matrices, we track the last refresh timestamp in `pattern_store.edn`, and CI fails when a pattern lacks embeddings; document the ritual in README + scripts
+
+  + BECAUSE:
+    similarity results only earn trust when the embedding reflects the latest canon—otherwise Prototype 2 devolves into hand-waving
+
+  + NEXT-STEPS:
+    next[Record the last embedding refresh timestamp and enforce it in CI.]

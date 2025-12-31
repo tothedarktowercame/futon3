@@ -1,0 +1,40 @@
+@flexiarg ants/cargo-return-discipline
+@title Cargo Return Discipline Pattern
+@sigils [载/归]
+@audience futon5 uplift authors, futon2 logisticians, futon3 librarians
+@tone investigative
+@style pattern
+@allow-new-claims true
+@references [futon2/src/ants/aif/policy.clj futon2/doc/trace/single_tick.edn futon2/test/resources/goldens/policy_harness.edn]
+
+! conclusion:
+  When an AIF agent carries significant cargo yet keeps returning without
+  depositing, clamp tau, penalise reuse of :return, and prioritise deposit
+  completion. The pattern generalises to any delivery/return loop.
+
+  + context: You are preventing cargo return thrash in cyber-ant policy.
+  + IF:
+    The agent has cargo ≥ 0.05, repeatedly chooses :return while `:dep` = 0,
+    or stalls near the nest.
+
+  + HOWEVER:
+    Without explicit clamps the agent “thrashes”: it walks home, refuses to
+    deposit, and never re-enters outbound mode, starving the colony or the task.
+
+  + THEN:
+    Detect cargo-stall streaks, apply negative G adjustments to :return until a
+    deposit event fires, slightly boost :hold when resting on the nest, and cap
+    tau around 0.65 so the agent exploits the completion action. Emit telemetry
+    for stalled runs so analyzers can intervene.
+
+  + BECAUSE:
+    The same logic applies to graph walkers (deliver package, reward commit) or
+    any pattern that alternates gather/deliver phases.
+
+  + STATUS:
+    status[ready]
+    evidence[futon2/test/resources/goldens/policy_harness.edn]
+
+  + NEXT-STEPS:
+    next[Bind this pattern to Futon5’s uplift so cyber-ants (and future courier
+         agents) inherit the stall detector and tau clamp.]

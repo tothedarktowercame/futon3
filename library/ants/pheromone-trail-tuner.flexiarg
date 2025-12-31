@@ -1,0 +1,39 @@
+@flexiarg ants/pheromone-trail-tuner
+@title Adaptive Trail Tuner Pattern
+@sigils [迹/调]
+@audience futon5 improvisers, futon2 trail engineers, futon3 librarians
+@tone investigative
+@style pattern
+@allow-new-claims true
+@references [futon2/src/ants/aif/policy.clj futon2/doc/trace/single_tick.edn]
+
+! conclusion:
+  Regulate pheromone laying by coupling trail gradients to hunger, novelty, and
+  reserve pressure so trails serve as communicative signals rather than noise.
+
+  + context: You are tuning pheromone output so trails carry useful signal.
+  + IF:
+    The local pheromone signal is weak, novelty high, or reserves deficit, while
+    the agent is outbound or maintaining a corridor.
+
+  + HOWEVER:
+    Without adaptive scaling, ants either flood the board with trails (entropy)
+    or fail to leave breadcrumbs when scouts discover food deserts.
+
+  + THEN:
+    Bias :pheromone G downward when novelty is high and cargo low, but penalise
+    it near the nest or during reserve crises; anneal tau upward to encourage
+    exploration pulses. Use the Futon2 analyzer’s `:pher` metrics to adjust the
+    laying rate.
+
+  + BECAUSE:
+    The same principle applies to graph walkers emitting hints or proofs: you
+    want signaling to adapt to novelty and resource pressure.
+
+  + STATUS:
+    status[ready]
+    evidence[futon2/src/ants/aif/policy.clj]
+
+  + NEXT-STEPS:
+    next[Expose the trail-tuner knobs via Futon5 so cyber-ants (and future graph
+         agents) can publish adjustable signal intensity.]

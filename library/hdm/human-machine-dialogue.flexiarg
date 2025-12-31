@@ -1,0 +1,28 @@
+@flexiarg hdm/human-machine-dialogue
+@title HDM - Human<->Machine Dialogue
+@sigils [💬/口]
+
+! conclusion:
+  make human-machine dialogue a core HDM workflow so ambiguous material can be clarified and formalised reliably.
+
+  + context: You are embedding clarification dialogues as part of HDM ingestion and retrieval.
+  + IF:
+    Automated parsing/formalisation of mathematical text is brittle: ambiguous notation, implicit steps,
+    and missing context routinely break fully automatic tooling.
+
+  + HOWEVER:
+    Purely manual curation does not scale, and purely automated parsing loses critical nuance.
+
+  + THEN:
+    Make interactive dialogue part of the HDM kernel: let the system ask humans for help, record exchanges as scholia,
+    and treat resolved clarifications as reusable knowledge. Likewise, let humans query HDM entries and have agents respond
+    via the same pattern base.
+    Use human/LLM conversation to disambiguate notation and refine structure until it can be formalised.
+
+  + BECAUSE:
+      Dialogue is already how humans learn/teach mathematics; embedding it in HDM aligns with practice and leverages LLM
+      strengths instead of fighting them.
+  + NEXT-STEPS:
+    next[Store clarification dialogues alongside affected entries.]
+    next[Build dialogue agents that turn conversations into updated flexiarg or metadata.]
+    next[Assume some imports require dialogue and design ingestion workflows accordingly.]

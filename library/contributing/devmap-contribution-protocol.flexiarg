@@ -1,0 +1,29 @@
+@flexiarg contributing/devmap-contribution-protocol
+@title Devmap Contribution Protocol
+@sigils [📘/工]
+@factor Keen investigation (dhammavicaya)
+
+! conclusion:
+  follow the devmap contribution protocol
+    1. Clock in on one futon + prototype before writing code: update the clause’s `+ next[...]` with `doing[...] owner[...] evidence[...]` (or `blocked-by[...]`), and ensure the futon-level `@state/@next` reflect reality.
+    2. Build the evidence: run the futon3 helper stack from this repo (`clojure -M:sigils`, `scripts/check_devmap_next.clj` once it lands, Tatami trails) so sigils, next-tags, and proof trails stay coherent.
+    3. Clock out: replace the clause’s `+ next[...]` with `done[...] evidence[...]` (or `start` for untouched designs), note any new blockers, regenerate `holes/artifacts/devmaps.pdf`, and mention the futon/prototype in the commit or work log.
+
+  + context: You are touching devmaps or prototypes and need the devmap state to stay auditable.
+  + IF:
+    contributors touch devmaps, prototypes, or interface tooling
+
+  + HOWEVER:
+    without an explicit “clock-in” ritual the `@state` tags and `+ next[...]` hooks drift, leaving future runs unable to tell what moved or who touched a clause
+
+  + THEN:
+    follow the devmap contribution protocol
+      1. Clock in on one futon + prototype before writing code: update the clause’s `+ next[...]` with `doing[...] owner[...] evidence[...]` (or `blocked-by[...]`), and ensure the futon-level `@state/@next` reflect reality.
+      2. Build the evidence: run the futon3 helper stack from this repo (`clojure -M:sigils`, `scripts/check_devmap_next.clj` once it lands, Tatami trails) so sigils, next-tags, and proof trails stay coherent.
+      3. Clock out: replace the clause’s `+ next[...]` with `done[...] evidence[...]` (or `start` for untouched designs), note any new blockers, regenerate `holes/artifacts/devmaps.pdf`, and mention the futon/prototype in the commit or work log.
+
+  + BECAUSE:
+    keeping `next[...]` hooks and futon-level state current is how humans and FUTON3’s coherence checks agree on what changed and what to do next.
+
+  + NEXT-STEPS:
+    next[Pick one active devmap clause and walk it through the clock-in and clock-out ritual to validate the protocol.]

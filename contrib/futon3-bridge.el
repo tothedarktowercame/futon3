@@ -59,7 +59,8 @@
                             (lambda (_proc event)
                               (when interactive
                                 (message "Futon3 server event: %s" (string-trim event)))))
-      (my-futon3-sync-selection)
+      (when (fboundp 'my-futon3-sync-selection)
+        (my-futon3-sync-selection))
       (when interactive
         (message "Starting Futon3 (ui=%s)" my-futon3-ui-base-url))))
   my-futon3-process)

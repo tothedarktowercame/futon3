@@ -151,6 +151,17 @@
           (json-response 200 session)
           (json-response 404 {:ok false :error "session-not-found"})))
 
+      (and (= method :get) (str/starts-with? uri "/claude/events/"))
+      (let [path-and-query (extract-path-param uri "/claude/events/")
+            [session-id query] (str/split path-and-query #"\?" 2)
+            offset (when query
+                     (some->> (re-find #"offset=(\d+)" query)
+                              second
+                              parse-long))]
+        (if-let [events (claude/get-events session-id {:offset (or offset 0)})]
+          (json-response 200 events)
+          (json-response 404 {:ok false :error "session-not-found"})))
+
       (and (= method :get) (str/starts-with? uri "/claude/stream/"))
       (let [session-id (extract-path-param uri "/claude/stream/")]
         (stream-claude-events! request session-id))

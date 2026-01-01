@@ -78,7 +78,7 @@
 ;; --- Subprocess management ---
 
 (defn- build-claude-command [{:keys [prompt dangerously-skip-permissions?]}]
-  (let [base (cond-> ["claude" "--print" "--output-format" "json"]
+  (let [base (cond-> ["claude" "--print" "--output-format" "stream-json" "--verbose"]
                dangerously-skip-permissions? (conj "--dangerously-skip-permissions")
                prompt (conj "-p" prompt))]
     ;; Join into a single string for script -c
@@ -125,6 +125,7 @@
                  :status :starting
                  :opts opts
                  :events-ch events-ch
+                 :events-log (atom [])  ;; For polling-based retrieval
                  :subscribers (atom #{})
                  :pending-approvals (atom {})
                  :process (atom nil)
@@ -134,20 +135,41 @@
 
 (defn- emit-event! [session event]
   (let [subscribers @(:subscribers session)]
+    ;; Store in events log for polling
+    (swap! (:events-log session) conj event)
     ;; Put on events channel for persistence
     (async/put! (:events-ch session) event)
     ;; Notify all subscribers
     (doseq [sub-ch subscribers]
       (async/offer! sub-ch event))))
 
+(defn- extract-assistant-text
+  "Extract text content from stream-json assistant message format.
+   Format: {:message {:content [{:type \"text\" :text \"...\"}]}}"
+  [parsed]
+  (let [content (or (get-in parsed [:message :content])
+                    (:content parsed))]
+    (if (sequential? content)
+      (->> content
+           (filter #(= (:type %) "text"))
+           (map :text)
+           (str/join ""))
+      content)))
+
 (defn- process-output-line! [session line]
   (when-not (str/blank? line)
     (if-let [parsed (read-json-line line)]
-      ;; Structured JSON output from --output-format json
+      ;; Structured JSON output from --output-format stream-json
       (let [msg-type (:type parsed)]
         (case msg-type
+          "system"
+          (emit-event! session (make-event (:id session) :system/init
+                                           {:system/tools (:tools parsed)
+                                            :system/model (:model parsed)}))
+
           "assistant"
-          (emit-event! session (assistant-delta-event (:id session) (:content parsed)))
+          (when-let [text (extract-assistant-text parsed)]
+            (emit-event! session (assistant-message-event (:id session) text)))
 
           "tool_use"
           (let [call-id (or (:id parsed) (str (UUID/randomUUID)))]
@@ -164,13 +186,20 @@
                                                    {:stdout (:content parsed)
                                                     :exit 0}))
 
+          "result"
+          (emit-event! session (make-event (:id session) :session/result
+                                           {:result/text (:result parsed)
+                                            :result/cost-usd (:total_cost_usd parsed)
+                                            :result/duration-ms (:duration_ms parsed)}))
+
           "error"
           (emit-event! session (error-event (:id session) (:message parsed)))
 
-          ;; Default: emit as raw
+          ;; Default: emit as raw for debugging
           (emit-event! session (make-event (:id session) :raw {:line line :parsed parsed}))))
-      ;; Plain text output
-      (emit-event! session (assistant-delta-event (:id session) line)))))
+      ;; Plain text output (e.g., script noise)
+      (when-not (str/starts-with? line "[?")  ;; Filter ANSI control sequences
+        (emit-event! session (assistant-delta-event (:id session) line))))))
 
 (defn- run-session-loop! [session]
   (async/thread
@@ -288,6 +317,16 @@
      :started-at (:started-at session)
      :opts (dissoc (:opts session) :prompt) ;; Don't leak full prompt
      :pending-approvals (keys @(:pending-approvals session))}))
+
+(defn get-events
+  "Get events for a session, optionally starting from an offset."
+  [session-id & [{:keys [offset] :or {offset 0}}]]
+  (when-let [session (get @!sessions session-id)]
+    (let [events @(:events-log session)]
+      {:session-id session-id
+       :offset offset
+       :count (count events)
+       :events (vec (drop offset events))})))
 
 (defn list-sessions
   "List all sessions."

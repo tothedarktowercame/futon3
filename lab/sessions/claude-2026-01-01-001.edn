@@ -1,0 +1,187 @@
+;; FuLab Session: claude-2026-01-01-001
+;; Agent: Claude (fuclaude)
+;; Pattern: fulab/clock-in → futon3/prototype-4 (Phase 2: Clock-In Protocol)
+
+{:session/id "claude-2026-01-01-001"
+ :session/agent :claude
+ :session/ancestor-id nil
+
+ :clock-in
+ {:clock-in/pattern-id "futon3/prototype-4"
+  :clock-in/intent "Implement Phase 2 clock-in protocol: add clock-in/clock-out lifecycle to f2/claude.clj and f2/codex.clj, with pattern tracking"
+  :clock-in/session-id "claude-2026-01-01-001"
+  :clock-in/timestamp #inst "2026-01-01T15:00:00Z"
+  :clock-in/context {:phase 2
+                     :buildout-ref ["2.1" "2.2" "2.3" "2.4"]
+                     :devmap-xref "futon3.devmap/prototype-4"}}
+
+ :pattern-deps
+ [{:pattern/parent "futon3/prototype-4"
+   :pattern/dep "fulab/clock-in"
+   :pattern/reason "Using clock-in evidence shape from fulab-patterns.flexiarg"
+   :used-at #inst "2026-01-01T15:05:00Z"}
+  {:pattern/parent "futon3/prototype-4"
+   :pattern/dep "fulab/clock-out"
+   :pattern/reason "Using clock-out evidence shape for session completion"
+   :used-at #inst "2026-01-01T15:05:00Z"}
+  {:pattern/parent "futon3/prototype-4"
+   :pattern/dep "fulab/pattern-dep"
+   :pattern/reason "Implementing pattern dependency tracking per spec"
+   :used-at #inst "2026-01-01T15:05:00Z"}]
+
+ :events
+ [;; --- claude.clj changes ---
+  {:event/type :code/edit
+   :file "src/f2/claude.clj"
+   :fn "clock-in-event"
+   :action :added
+   :description "Added clock-in-event constructor (lines 80-85)"
+   :at #inst "2026-01-01T15:10:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/claude.clj"
+   :fn "pattern-used-event"
+   :action :added
+   :description "Added pattern-used-event constructor (lines 87-90)"
+   :at #inst "2026-01-01T15:10:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/claude.clj"
+   :fn "clock-out-event"
+   :action :added
+   :description "Added clock-out-event constructor (lines 92-98)"
+   :at #inst "2026-01-01T15:10:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/claude.clj"
+   :fn "create-session!"
+   :action :modified
+   :description "Added :patterns-used and :artifacts atoms to session state"
+   :at #inst "2026-01-01T15:12:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/claude.clj"
+   :fn "start-session!"
+   :action :modified
+   :description "Added pattern-id/intent params, emit clock-in event"
+   :at #inst "2026-01-01T15:14:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/claude.clj"
+   :fn "run-session-loop!"
+   :action :modified
+   :description "Emit clock-out event on session finish (success or error)"
+   :at #inst "2026-01-01T15:16:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/claude.clj"
+   :fn "record-pattern-use!"
+   :action :added
+   :description "New public API for recording pattern dependencies mid-session"
+   :at #inst "2026-01-01T15:18:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/claude.clj"
+   :fn "record-artifact!"
+   :action :added
+   :description "New public API for recording produced artifacts"
+   :at #inst "2026-01-01T15:18:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/claude.clj"
+   :fn "get-session"
+   :action :modified
+   :description "Include pattern-id, patterns-used, artifacts in response"
+   :at #inst "2026-01-01T15:19:00Z"}
+
+  ;; --- codex.clj changes (mirrored from claude.clj) ---
+  {:event/type :code/edit
+   :file "src/f2/codex.clj"
+   :fn "clock-in-event"
+   :action :added
+   :description "Added clock-in-event constructor (lines 80-85)"
+   :at #inst "2026-01-01T15:25:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/codex.clj"
+   :fn "pattern-used-event"
+   :action :added
+   :description "Added pattern-used-event constructor (lines 87-90)"
+   :at #inst "2026-01-01T15:25:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/codex.clj"
+   :fn "clock-out-event"
+   :action :added
+   :description "Added clock-out-event constructor (lines 92-98)"
+   :at #inst "2026-01-01T15:25:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/codex.clj"
+   :fn "create-session!"
+   :action :modified
+   :description "Added :patterns-used and :artifacts atoms to session state"
+   :at #inst "2026-01-01T15:26:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/codex.clj"
+   :fn "start-session!"
+   :action :modified
+   :description "Added pattern-id/intent params, emit clock-in event"
+   :at #inst "2026-01-01T15:27:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/codex.clj"
+   :fn "run-session-loop!"
+   :action :modified
+   :description "Emit clock-out event on session finish (success or error)"
+   :at #inst "2026-01-01T15:28:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/codex.clj"
+   :fn "record-pattern-use!"
+   :action :added
+   :description "New public API for recording pattern dependencies mid-session"
+   :at #inst "2026-01-01T15:29:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/codex.clj"
+   :fn "record-artifact!"
+   :action :added
+   :description "New public API for recording produced artifacts"
+   :at #inst "2026-01-01T15:29:00Z"}
+  {:event/type :code/edit
+   :file "src/f2/codex.clj"
+   :fn "get-session"
+   :action :modified
+   :description "Include pattern-id, patterns-used, artifacts in response"
+   :at #inst "2026-01-01T15:30:00Z"}
+
+  ;; --- Elisp client updates ---
+  {:event/type :code/edit
+   :file "contrib/futon3-claude.el"
+   :fn "my-futon3-claude-run"
+   :action :modified
+   :description "Added pattern-id and intent params, default-pattern var"
+   :at #inst "2026-01-01T15:40:00Z"}
+  {:event/type :code/edit
+   :file "contrib/futon3-claude.el"
+   :fn "my-futon3-claude-run-with-pattern"
+   :action :added
+   :description "Convenience function for explicit clock-in"
+   :at #inst "2026-01-01T15:40:00Z"}
+  {:event/type :code/edit
+   :file "contrib/futon3-codex.el"
+   :fn "my-futon3-codex-run"
+   :action :modified
+   :description "Added pattern-id and intent params, default-pattern var"
+   :at #inst "2026-01-01T15:42:00Z"}
+  {:event/type :code/edit
+   :file "contrib/futon3-codex.el"
+   :fn "my-futon3-codex-run-with-pattern"
+   :action :added
+   :description "Convenience function for explicit clock-in"
+   :at #inst "2026-01-01T15:42:00Z"}]
+
+ :artifacts
+ ["src/f2/claude.clj"
+  "src/f2/codex.clj"
+  "contrib/futon3-claude.el"
+  "contrib/futon3-codex.el"
+  "lab/sessions/claude-2026-01-01-001.edn"]
+
+ :clock-out
+ {:session/id "claude-2026-01-01-001"
+  :pattern/primary "futon3/prototype-4"
+  :pattern/trail [{:pattern/id "fulab/clock-in" :reason "evidence shape"}
+                  {:pattern/id "fulab/clock-out" :reason "evidence shape"}
+                  {:pattern/id "fulab/pattern-dep" :reason "tracking spec"}]
+  :session/status :success
+  :artifacts ["src/f2/claude.clj" "src/f2/codex.clj" "contrib/futon3-claude.el" "contrib/futon3-codex.el" "lab/sessions/claude-2026-01-01-001.edn"]
+  :clock-out/timestamp #inst "2026-01-01T15:45:00Z"
+  :summary "Implemented Phase 2 clock-in protocol. Clojure: clock-in/pattern-used/clock-out event constructors, patterns-used/artifacts atoms, clock-in in start-session!, clock-out in run-session-loop!, record-pattern-use!/record-artifact! APIs. Elisp: pattern-id/intent params on run functions, default-pattern vars, run-with-pattern convenience functions."}}

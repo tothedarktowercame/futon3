@@ -136,6 +136,7 @@ Decide whether to surface =event_msg/agent_reasoning= or =response_item/reasonin
 - Switched Codex CLI invocation to =codex exec --json= (removes unsupported =--print= flags).
 - Added =--skip-git-repo-check= to Codex CLI invocation for simpler runs outside repos.
 - Smoke-tested Codex run + resume via emacsclient with the new CLI invocation.
+- Committed fucodex parity changes (commit =52ed25f=).
 
 ** Artifacts
 - =src/f2/codex.clj=

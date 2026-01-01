@@ -1,11 +1,18 @@
 (ns futon3.pattern-hints
   "Structured pattern / fruit / paramita hints for ChatGPT integration."
-  (:require [clojure.edn :as edn]
+  (:require [cheshire.core :as json]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]))
 
 (defn- read-edn [path]
   (-> path io/file slurp edn/read-string))
+
+(defn- read-json [path]
+  (try
+    (with-open [reader (io/reader (io/file path))]
+      (json/parse-stream reader keyword))
+    (catch Exception _ nil)))
 
 (def ^:private sigil-index
   (delay (read-edn "resources/sigils/index.edn")))
@@ -19,6 +26,16 @@
 
 (def ^:private fruits-data (delay (read-edn "resources/sigils/fruits.edn")))
 (def ^:private paramita-data (delay (read-edn "resources/sigils/paramitas.edn")))
+
+(def ^:private glove-patterns-data
+  (delay (or (read-json "data/sigils/glove_pattern_neighbors.json") [])))
+
+(def ^:private glove-patterns-by-id
+  (delay (into {}
+               (keep (fn [entry]
+                       (when-let [id (:id entry)]
+                         [id entry])))
+               @glove-patterns-data)))
 
 (def ^:private clause-re
   (re-pattern "!\\s+(?:conclusion|claim|instantiated-by):\\s*(.*?)\\s*\\[(.*?)\\]"))
@@ -128,6 +145,11 @@
 
 (def ^:private prototype->sigils (delay (scan-devmaps)))
 
+(def ^:private patterns-by-id
+  (delay (into {}
+               (map (juxt :id identity))
+               @ldts-patterns)))
+
 (defn- emoji-distance [a b]
   (if (= a b)
     0.0
@@ -167,6 +189,44 @@
        (take limit)
        vec))
 
+(defn- score->distance [score]
+  (when (number? score)
+    (-> 1.0 (- (min 1.0 (double score))) (max 0.0))))
+
+(defn- glove-neighbors
+  [seed-ids limit]
+  (if (seq seed-ids)
+    (let [seed-set (set seed-ids)]
+      (->> seed-ids
+           (keep #(get @glove-patterns-by-id %))
+           (mapcat :neighbors)
+           (remove #(contains? seed-set (:id %)))
+           (keep (fn [entry]
+                   (when-let [score (:score entry)]
+                     (assoc entry
+                            :score/similarity (double score)
+                            :score (score->distance score)))))
+           (group-by :id)
+           (map (fn [[_ entries]]
+                  (apply max-key :score/similarity entries)))
+           (sort-by :score)
+           (take limit)
+           vec))
+    []))
+
+(defn- merge-patterns [sigil-patterns glove-patterns limit]
+  (let [glove-enriched (->> glove-patterns
+                            (map (fn [entry]
+                                   (merge (get @patterns-by-id (:id entry)) entry))))
+        deduped (->> (concat sigil-patterns glove-enriched)
+                     (group-by :id)
+                     (map (fn [[_ entries]]
+                            (apply min-key :score entries)))
+                     (sort-by :score))]
+    (if limit
+      (vec (take limit deduped))
+      (vec deduped))))
+
 (defn- nearest-fruits [targets limit]
   (let [primary (first targets)]
     (if-let [emoji (:emoji primary)]
@@ -204,14 +264,25 @@
              first)
     :else nil))
 
-(defn hints [{:keys [sigils prototypes limit pattern-limit fruit-limit paramita-limit]
+(defn hints [{:keys [sigils prototypes pattern-limit fruit-limit paramita-limit glove-pattern-limit]
               :or {pattern-limit 4
                    fruit-limit 2
                    paramita-limit 2}}]
-  (let [targets (resolve-target-sigils {:sigils sigils :prototypes prototypes})]
-    {:patterns (if (seq targets)
-                 (nearest targets @ldts-patterns pattern-limit)
-                 [])
+  (let [targets (resolve-target-sigils {:sigils sigils :prototypes prototypes})
+        patterns (if (seq targets)
+                   (nearest targets @ldts-patterns pattern-limit)
+                   [])
+        glove-limit (or glove-pattern-limit pattern-limit)
+        seed-ids (cond
+                   (seq patterns) (map :id patterns)
+                   (seq prototypes) prototypes
+                   :else nil)
+        glove-patterns (if (seq seed-ids)
+                         (glove-neighbors seed-ids glove-limit)
+                         [])
+        merged-patterns (merge-patterns patterns glove-patterns pattern-limit)]
+    {:patterns merged-patterns
+     :glove-patterns glove-patterns
      :fruits (if (seq targets)
                (nearest-fruits targets fruit-limit)
                [])

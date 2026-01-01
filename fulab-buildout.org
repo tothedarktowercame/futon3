@@ -1,0 +1,424 @@
+#+TITLE: FuLab Build-Out Plan
+#+AUTHOR: Claude (fuclaude agent)
+#+DATE: 2026-01-01
+#+STARTUP: overview
+#+PROPERTY: header-args :eval never
+
+* Overview
+
+This document provides implementation-level guidance for building the fuclaude/fucodex
+integration with FUTON3's pattern-based control flow. It is more fine-grained than the
+devmaps and intended as a working spec for future Claude agents.
+
+Cross-references:
+- [[file:holes/futon3.devmap][futon3.devmap]] — Prototype 4 (Trail & Proof-State Journal), Prototype 5 (Workday Instrumentation)
+- [[file:holes/futon4.devmap][futon4.devmap]] — Lab notebook architecture (fuclaude, fucodex, lab-export)
+- [[file:../futon4/][futon4/]] — Reference implementation of fuclaude wrapper and lab-export-claude.clj
+
+* Phase 1: Session Management Foundation
+
+** 1.1 Capture Claude CLI Session ID
+:PROPERTIES:
+:effort: small
+:files: src/f2/claude.clj
+:pattern-ref: Prototype 4
+:END:
+
+The =stream-json= output includes a =session_id= field in the =result= event.
+Capture this and store it on the session record.
+
+#+begin_src clojure
+;; In process-output-line!, handle "result" type:
+"result"
+(let [cli-session-id (:session_id parsed)]
+  (swap! !sessions assoc-in [(:id session) :claude-cli-session-id] cli-session-id)
+  (emit-event! session (make-event (:id session) :session/result
+                                   {:result/text (:result parsed)
+                                    :result/cost-usd (:total_cost_usd parsed)
+                                    :result/duration-ms (:duration_ms parsed)
+                                    :result/claude-session-id cli-session-id})))
+#+end_src
+
+** 1.2 Implement resume-session!
+:PROPERTIES:
+:effort: medium
+:files: src/f2/claude.clj
+:pattern-ref: Prototype 4
+:END:
+
+Add a function to resume an existing Claude CLI session.
+
+#+begin_src clojure
+(defn- build-resume-command [{:keys [claude-cli-session-id prompt]}]
+  (let [base ["claude" "--print" "--output-format" "stream-json" "--verbose"
+              "--resume" claude-cli-session-id]]
+    (if prompt
+      (conj base "-p" prompt)
+      base)))
+
+(defn resume-session!
+  "Resume an existing Claude CLI session with a follow-up prompt."
+  [{:keys [claude-cli-session-id prompt cwd] :as opts}]
+  (try
+    (let [session (create-session! (assoc opts :resumed? true))
+          cmd (build-resume-command opts)
+          ;; ... same process setup as start-session!
+          ]
+      ;; ...
+      )
+    (catch Exception e
+      {:ok false :error (.getMessage e)})))
+#+end_src
+
+** 1.3 Add resume endpoint
+:PROPERTIES:
+:effort: small
+:files: src/f2/ui.clj
+:END:
+
+#+begin_src clojure
+;; POST /claude/resume
+;; Body: {"claude-cli-session-id": "...", "prompt": "follow-up", "cwd": "..."}
+(and (= method :post) (= uri "/claude/resume"))
+(safe-handler #(handle-claude-resume @payload))
+#+end_src
+
+** 1.4 Update Elisp for resume
+:PROPERTIES:
+:effort: medium
+:files: contrib/futon3-claude.el
+:END:
+
+#+begin_src elisp
+(defvar my-futon3-claude-session-registry nil
+  "Alist mapping futon3 session IDs to Claude CLI session IDs.")
+
+(defun my-futon3-claude-continue (prompt)
+  "Continue the most recent Claude session with PROMPT."
+  (interactive "sFollow-up: ")
+  (let* ((last-session (car my-futon3-claude-session-registry))
+         (cli-session-id (cdr last-session)))
+    (if cli-session-id
+        (my-futon3-claude--resume cli-session-id prompt)
+      (error "No previous session to continue"))))
+
+(defun my-futon3-claude-resume (cli-session-id prompt)
+  "Resume Claude CLI session CLI-SESSION-ID with PROMPT."
+  (interactive "sSession ID: \nsPrompt: ")
+  (let* ((result (my-futon3-claude--request
+                  "POST" "/claude/resume"
+                  `(("claude-cli-session-id" . ,cli-session-id)
+                    ("prompt" . ,prompt)
+                    ("cwd" . ,default-directory)))))
+    ;; ... same flow as my-futon3-claude-run
+    ))
+#+end_src
+
+* Phase 2: Pattern Clock-In Protocol
+
+** 2.1 Define clock-in schema
+:PROPERTIES:
+:effort: small
+:files: resources/schemas/clock-in.edn
+:pattern-ref: Prototype 4, Prototype 5
+:END:
+
+#+begin_src clojure
+{:clock-in/pattern-id :string        ;; e.g. "futon3/prototype-4"
+ :clock-in/intent :string            ;; natural language intent
+ :clock-in/session-id :string        ;; futon3 session ID
+ :clock-in/timestamp :inst
+ :clock-in/context :map}             ;; optional EDN context
+#+end_src
+
+** 2.2 Add clock-in to session lifecycle
+:PROPERTIES:
+:effort: medium
+:files: src/f2/claude.clj
+:pattern-ref: Prototype 4
+:END:
+
+Extend =start-session!= and =resume-session!= to accept pattern clock-in:
+
+#+begin_src clojure
+(defn start-session!
+  [{:keys [prompt cwd pattern-id intent] :as opts}]
+  (let [session (create-session! opts)]
+    (when pattern-id
+      (emit-event! session (make-event (:id session) :clock-in/start
+                                       {:pattern/id pattern-id
+                                        :clock-in/intent intent
+                                        :clock-in/timestamp (java.util.Date.)})))
+    ;; ... rest of session start
+    ))
+#+end_src
+
+** 2.3 Track pattern dependencies during session
+:PROPERTIES:
+:effort: medium
+:files: src/f2/claude.clj
+:pattern-ref: Prototype 4
+:END:
+
+Add a =:patterns-used= atom to session state. Provide an API for agents to
+declare pattern dependencies mid-session:
+
+#+begin_src clojure
+(defn record-pattern-use!
+  "Record that session used a pattern during its work."
+  [session-id pattern-id & [{:keys [reason]}]]
+  (when-let [session (get @!sessions session-id)]
+    (swap! (:patterns-used session) conj
+           {:pattern/id pattern-id
+            :used-at (now-ms)
+            :reason reason})
+    (emit-event! session (make-event session-id :pattern/used
+                                     {:pattern/id pattern-id
+                                      :pattern/reason reason}))))
+#+end_src
+
+** 2.4 Clock-out with pattern trail
+:PROPERTIES:
+:effort: medium
+:files: src/f2/claude.clj
+:pattern-ref: Prototype 4
+:END:
+
+When session finishes, emit a clock-out event with the full pattern trail:
+
+#+begin_src clojure
+;; In run-session-loop!, when process finishes:
+(let [patterns-trail @(:patterns-used session)
+      clock-in-pattern (get-in session [:opts :pattern-id])]
+  (emit-event! session (make-event session-id :clock-out/complete
+                                   {:pattern/primary clock-in-pattern
+                                    :pattern/trail patterns-trail
+                                    :clock-out/timestamp (java.util.Date.)
+                                    :session/status status})))
+#+end_src
+
+* Phase 3: Proof Trail to XTDB
+
+** 3.1 Define proof-state event schema
+:PROPERTIES:
+:effort: small
+:files: resources/schemas/proof-state.edn
+:pattern-ref: Prototype 4
+:END:
+
+#+begin_src clojure
+{:proof/id :uuid
+ :proof/session-id :string
+ :proof/timestamp :inst
+ :proof/pattern-id :string           ;; which pattern this proves progress on
+ :proof/obligation-id :string        ;; specific obligation within pattern
+ :proof/action-tags [:keyword]       ;; e.g. [:edit :test :commit]
+ :proof/delta-joy :double            ;; empowerment metric (-1 to 1)
+ :proof/evidence-refs [:string]      ;; links to artifacts
+ :proof/fruit-id :keyword            ;; operator class (e.g. :banana)
+ :proof/orb-id :keyword}             ;; meta-property (e.g. :blue)
+#+end_src
+
+** 3.2 Wire session events to futon1
+:PROPERTIES:
+:effort: large
+:files: src/f2/claude.clj, src/futon3/futon1_bridge.clj
+:pattern-ref: Prototype 4, Prototype 8
+:END:
+
+Use the existing futon1 bridge to persist proof-state events:
+
+#+begin_src clojure
+(require '[futon3.futon1-bridge :as f1])
+
+(defn- persist-proof-event! [event]
+  (when (#{:clock-in/start :pattern/used :clock-out/complete} (:event/type event))
+    (f1/transact! [{:xt/id (:event/id event)
+                    :proof/type (:event/type event)
+                    :proof/session (:event/session event)
+                    :proof/timestamp (:event/ts event)
+                    :proof/data (dissoc event :event/id :event/type :event/ts :event/session)}])))
+
+;; Call from emit-event!:
+(defn- emit-event! [session event]
+  (persist-proof-event! event)  ;; <-- add this
+  ;; ... rest of emit-event!
+  )
+#+end_src
+
+** 3.3 Add /musn/trails/proof endpoint
+:PROPERTIES:
+:effort: medium
+:files: src/f2/ui.clj
+:pattern-ref: Prototype 4
+:END:
+
+Export proof-state events for futon4 archives:
+
+#+begin_src clojure
+;; GET /musn/trails/proof?since=<timestamp>&pattern=<id>
+(and (= method :get) (= uri "/musn/trails/proof"))
+(let [since (some-> (get-in request [:query-params "since"]) parse-long)
+      pattern-id (get-in request [:query-params "pattern"])]
+  (json-response 200 (f1/query-proof-trail {:since since :pattern-id pattern-id})))
+#+end_src
+
+* Phase 4: MUSN Enforcement Gate
+
+** 4.1 Define commit-with-proof! API
+:PROPERTIES:
+:effort: large
+:files: src/f2/musn.clj (new file)
+:pattern-ref: Prototype 3, Prototype 4
+:END:
+
+The key enforcement point: commits must reference pattern trail.
+
+#+begin_src clojure
+(ns f2.musn
+  "MUSN enforcement: pattern-justified transactions."
+  (:require [futon3.checks :as checks]
+            [futon3.futon1-bridge :as f1]))
+
+(defn commit-with-proof!
+  "Commit changes with required pattern justification.
+   Returns {:ok true} or {:ok false :error ... :missing-patterns ...}"
+  [{:keys [changes pattern-trail session-id]}]
+  (let [validation (checks/validate-trail pattern-trail)]
+    (if (:valid? validation)
+      (do
+        (f1/transact! (concat changes
+                              [{:xt/id (random-uuid)
+                                :commit/session-id session-id
+                                :commit/pattern-trail pattern-trail
+                                :commit/timestamp (java.util.Date.)}]))
+        {:ok true :commit-id (:xt/id (last changes))})
+      {:ok false
+       :error "Pattern trail validation failed"
+       :missing-patterns (:missing validation)
+       :invalid-steps (:invalid-steps validation)})))
+#+end_src
+
+** 4.2 Integrate with check DSL
+:PROPERTIES:
+:effort: medium
+:files: src/futon3/checks.clj
+:pattern-ref: Prototype 3
+:END:
+
+Validate that each step in the pattern trail satisfies its pattern's obligations:
+
+#+begin_src clojure
+(defn validate-trail
+  "Validate a pattern trail for commit eligibility."
+  [trail]
+  (let [results (for [step trail]
+                  (check! (:pattern/id step)
+                          {:context (:context step)
+                           :evidence (:evidence-refs step)}))]
+    {:valid? (every? #(= :applies (:status %)) results)
+     :steps results
+     :missing (keep #(when (= :missing (:status %)) (:pattern/id %)) results)
+     :invalid-steps (remove #(= :applies (:status %)) results)}))
+#+end_src
+
+* Phase 5: Agent Pattern Authoring
+
+** 5.1 Pattern proposal schema
+:PROPERTIES:
+:effort: small
+:files: resources/schemas/pattern-proposal.edn
+:pattern-ref: Prototype 6
+:END:
+
+#+begin_src clojure
+{:proposal/id :uuid
+ :proposal/session-id :string        ;; which session proposed this
+ :proposal/pattern-draft :map        ;; IF/HOWEVER/THEN/BECAUSE structure
+ :proposal/supporting-trail [:uuid]  ;; proof events that motivate this
+ :proposal/status :keyword           ;; :draft :review :accepted :rejected
+ :proposal/reviewer :string          ;; who reviewed
+ :proposal/review-notes :string}
+#+end_src
+
+** 5.2 Add pattern proposal API
+:PROPERTIES:
+:effort: medium
+:files: src/f2/claude.clj
+:pattern-ref: Prototype 6
+:END:
+
+#+begin_src clojure
+(defn propose-pattern!
+  "Agent proposes a new pattern based on session work."
+  [session-id {:keys [name if however then because evidence-refs]}]
+  (let [proposal-id (random-uuid)
+        session (get @!sessions session-id)
+        trail @(:patterns-used session)]
+    (emit-event! session (make-event session-id :pattern/proposed
+                                     {:proposal/id proposal-id
+                                      :pattern/name name
+                                      :pattern/if if
+                                      :pattern/however however
+                                      :pattern/then then
+                                      :pattern/because because
+                                      :proposal/supporting-trail (map :event/id trail)}))
+    {:ok true :proposal-id proposal-id}))
+#+end_src
+
+* Implementation Order
+
+Recommended sequence (each phase unlocks the next):
+
+1. *Phase 1* (Session Management) — foundation, enables multi-turn agent work
+2. *Phase 2* (Clock-In Protocol) — agents can declare intent, captures pattern trail
+3. *Phase 3* (XTDB Persistence) — trails become durable, queryable
+4. *Phase 4* (MUSN Enforcement) — commits require pattern justification
+5. *Phase 5* (Pattern Authoring) — agents can propose new patterns
+
+* Testing Strategy
+
+** Unit tests for each phase
+- Phase 1: Session resume round-trip, CLI session ID capture
+- Phase 2: Clock-in/out events, pattern-use tracking
+- Phase 3: XTDB persistence, proof trail queries
+- Phase 4: Commit validation, rejection on missing patterns
+- Phase 5: Proposal creation, status transitions
+
+** Integration tests
+- Full flow: clock-in → work → pattern-use → clock-out → commit-with-proof
+- Rejection flow: attempt commit without valid trail
+- Resume flow: multi-turn conversation with pattern continuity
+
+** Golden tests (per devmap)
+- Proof trail export matches expected format for futon4
+- Pattern validation matches check DSL semantics
+
+* Notes for Future Agents
+
+** How to continue this work
+1. Read this file and [[file:fulab-changelog.org][fulab-changelog.org]]
+2. Check current state: =curl http://localhost:6060/claude/sessions=
+3. Clock in on the relevant prototype (likely still Prototype 4)
+4. Update changelog as you work
+5. Cross-reference devmap when completing prototype milestones
+
+** Key files to understand
+- =src/f2/claude.clj= — session management, event streaming
+- =src/f2/ui.clj= — HTTP endpoints
+- =contrib/futon3-claude.el= — Emacs integration
+- =src/futon3/checks.clj= — check DSL (for Phase 4)
+- =src/futon3/futon1_bridge.clj= — XTDB integration (for Phase 3)
+
+** Architectural principles
+- Sessions are data structures, not just logs
+- Events stream in real-time (not post-hoc capture)
+- Pattern trails are proof objects, not documentation
+- MUSN enforces pattern justification at commit time
+- Agents can propose patterns but humans review
+
+** The big picture
+This system turns AI agent work into auditable, pattern-justified contributions.
+Every change references a proof trail. The trail references agreed patterns.
+Patterns encode IF/HOWEVER/THEN/BECAUSE reasoning. This makes agent work
+legible, verifiable, and compositional.

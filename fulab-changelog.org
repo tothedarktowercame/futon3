@@ -1,0 +1,111 @@
+#+TITLE: FuLab Changelog
+#+AUTHOR: Claude (fuclaude agent)
+#+DATE: 2026-01-01
+#+STARTUP: overview
+
+* Overview
+
+This changelog tracks work on the fuclaude/fucodex integration with FUTON3's
+pattern-based control flow system. The goal is to build a live computational
+notebook model where Claude agents clock in on patterns, document their
+reasoning, and produce auditable proof trails.
+
+** Clocked-in Pattern
+
+Currently working under: *Prototype 4 — Trail & Proof-State Journal*
+
+#+begin_quote
++ if: You want every check, dismissal, and new pattern idea to leave an auditable trail.
++ however: Trails are still general-purpose exploration logs, not proof-state journals.
++ then: Extend the trail schema with =:pattern/id=, =:obligation/id=, =:action/tags=,
+  and =:delta/joy=, add rollups that show which devmap clauses advanced per day,
+  and expose a =/musn/trails/proof= export for futon4 archives.
++ because: The whole point is to measure how daily practice advances the devmaps.
+#+end_quote
+
+* 2026-01-01 — Initial Session: futon3-claude Integration
+
+** Context
+Joe wanted to test the futon3-claude capability from Emacs. We debugged and
+extended the integration to get it working.
+
+** What We Built
+
+*** Fixed futon3-claude.el bootstrap issues
+- =my-tatami--clojure= was undefined; set to ="clojure"= (not ="clj"= to avoid rlwrap)
+- Loaded =futon3-bridge.el= and =futon3-claude.el= after setting the variable
+
+*** Fixed streaming output format (f2/claude.clj)
+- Changed =--output-format json= to =--output-format stream-json --verbose=
+- Updated =process-output-line!= to handle stream-json event types:
+  - =system= (init), =assistant= (message), =result=, =error=
+- Added =extract-assistant-text= helper for nested message format
+
+*** Added event polling infrastructure
+- Added =:events-log= atom to session state for buffered event retrieval
+- Added =get-events= function with offset support
+- Added =/claude/events/:session-id?offset=N= endpoint in ui.clj
+- Updated Elisp polling to fetch events incrementally, not all-from-zero
+
+*** Cleaned up duplicate output
+- Suppressed =session/started= (header already printed)
+- Suppressed =session/result= (=assistant/message= already shows response)
+
+** Files Changed
+- =src/f2/claude.clj= — stream-json format, event logging, get-events
+- =src/f2/ui.clj= — events endpoint with offset parsing
+- =contrib/futon3-claude.el= — event polling, insert-event handlers
+
+** Design Discussion: Session Management Architecture
+
+*** Current State
+Each =my-futon3-claude-run= spawns a fresh =claude --print= process. Single
+prompt/response exchange, then exit.
+
+*** Future Direction
+- Use =--resume= for multi-turn conversations
+- Session registry mapping futon3 session IDs to Claude CLI session IDs
+- =my-futon3-claude-continue= command for follow-ups
+
+*** Key Insight
+Instead of post-hoc capture (fuclaude → lab-export-claude.clj), run Claude as
+"Clojure agents" for real-time streaming stats and immediate XTDB writes.
+This makes fu-lab more like live computational notebooks — cell-by-cell
+execution = documentation.
+
+** Design Discussion: Pattern-Based Control Flow
+
+*** The Vision
+Agents (fuclaude) "clock in" on patterns, document pattern dependencies as they
+work, and at commit time reference a proof trail of agreed patterns that
+scaffold their inference steps.
+
+*** MUSN Enforcement
+Transactions against the database must be signed off against design patterns.
+Agents can work freely, even invent new patterns, but commits require
+pattern-justified proof trails.
+
+*** Integration Points
+- Prototype 4: Trail & Proof-State Journal (foundation)
+- Prototype 5: Workday Instrumentation (=workday/submit= endpoint)
+- Prototype 6: Pattern Creation Workbench (agents propose new patterns)
+
+** Next Steps
+1. Build session resume capability (=--resume=, session registry)
+2. Design "clock in" protocol — how agents declare pattern intent
+3. Wire proof trail export to XTDB (=:pattern/id=, =:obligation/id= on trail events)
+4. Expose =/musn/trails/proof= for futon4 archives
+
+* Backlog
+
+** TODO Implement =--resume= support in f2/claude.clj
+Capture Claude CLI session_id from result event, add =resume-session!= function.
+
+** TODO Design clock-in protocol
+What does it look like for an agent to declare pattern intent at session start?
+
+** TODO Wire events to XTDB
+Trail events should flow to futon1 with pattern/obligation metadata.
+
+** TODO Expose =/musn/trails/proof= endpoint
+Export proof-state journal for futon4 archives.

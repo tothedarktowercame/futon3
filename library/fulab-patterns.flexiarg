@@ -1,0 +1,82 @@
+@multiarg fulab/patterns
+@title FuLab Design Patterns
+@audience futon-agents, futon-devs
+@tone formal-analytic
+@style pattern-library
+@allow-new-claims true
+
+! pattern: Agent Clock-In [fulab/clock-in]
+  + context: An agent is about to begin work on a task that will produce changes to the codebase or knowledge base.
+  + if: You want the agent's work to be traceable, auditable, and connected to the design vocabulary.
+  + however: Without explicit declaration, the connection between agent actions and design patterns is implicit and unverifiable.
+  + then: Before beginning substantive work, the agent declares which pattern(s) it is working under by emitting a clock-in event with pattern ID, intent description, and session context.
+  + because: Clock-in creates the anchor point for the proof trail; all subsequent actions can be evaluated relative to the declared intent.
+  + evidence-shape: {:clock-in/pattern-id :string, :clock-in/intent :string, :clock-in/session-id :string, :clock-in/timestamp :inst}
+
+! pattern: Pattern Dependency Declaration [fulab/pattern-dep]
+  + context: While working under a clocked-in pattern, the agent discovers it needs to invoke reasoning from another pattern.
+  + if: You want the proof trail to capture the compositional structure of the agent's reasoning.
+  + however: Pattern dependencies are often implicit in the agent's chain-of-thought but not recorded.
+  + then: When the agent uses reasoning from pattern P2 while clocked into pattern P1, it emits a pattern-use event recording P2 as a dependency with a brief reason.
+  + because: The pattern trail becomes a DAG of reasoning steps, not just a flat log; this enables verification that each step is grounded.
+  + evidence-shape: {:pattern/id :string, :pattern/reason :string, :used-at :inst}
+
+! pattern: Agent Clock-Out [fulab/clock-out]
+  + context: The agent has completed a unit of work and is ready to summarize what was accomplished.
+  + if: You want to close the proof trail with a summary that can be verified against the declared intent.
+  + however: Sessions often end without explicit closure, leaving the trail incomplete.
+  + then: Before ending the session, the agent emits a clock-out event containing the primary pattern, the full dependency trail, completion status, and any artifacts produced.
+  + because: Clock-out seals the proof trail and provides the data needed for rollups and devmap advancement tracking.
+  + evidence-shape: {:pattern/primary :string, :pattern/trail [:map], :clock-out/timestamp :inst, :session/status :keyword, :artifacts [:string]}
+
+! pattern: Proof-Justified Commit [fulab/proof-commit]
+  + context: An agent (or human) wants to commit changes that were produced during a clocked-in session.
+  + if: You want commits to be traceable to the reasoning that produced them.
+  + however: Standard commits only capture what changed, not why or under what design authority.
+  + then: The commit includes a reference to the proof trail (session ID + pattern trail), and MUSN validates that the trail satisfies the patterns' obligations before accepting the commit.
+  + because: This is the enforcement point that ensures all changes are pattern-justified; no "YOLO commits" bypass the design vocabulary.
+  + evidence-shape: {:commit/changes :any, :commit/session-id :string, :commit/pattern-trail [:map], :commit/validation :map}
+  + blocked-by: [fulab/clock-in, fulab/clock-out]
+
+! pattern: Live Notebook Cell [fulab/notebook-cell]
+  + context: The agent runtime produces events in real-time as Claude processes prompts and generates responses.
+  + if: You want the lab notebook to grow as work happens, not be reconstructed post-hoc.
+  + however: Traditional session capture (e.g., fuclaude wrapper) operates after the session completes.
+  + then: Each prompt/response exchange is treated as a notebook cell with input, output, metadata (timing, cost, model), and side effects (files touched, tools invoked). Cells are persisted to XTDB as they complete.
+  + because: Real-time capture enables streaming stats, live dashboards, and immediate integration with the proof trail.
+  + evidence-shape: {:cell/input :string, :cell/output :string, :cell/metadata :map, :cell/side-effects [:map], :cell/timestamp :inst}
+
+! pattern: Session Resume [fulab/session-resume]
+  + context: An agent needs to continue a previous conversation with additional context or follow-up questions.
+  + if: You want multi-turn agent work with preserved conversation history.
+  + however: Each invocation of the agent runtime is stateless by default.
+  + then: The agent runtime maintains a registry mapping session IDs to Claude CLI session IDs. Resume requests pass the CLI session ID with --resume flag, continuing the conversation.
+  + because: Multi-turn conversations enable iterative refinement, follow-up questions, and complex tasks that span multiple exchanges.
+  + evidence-shape: {:session/futon-id :string, :session/claude-cli-id :string, :resume/prompt :string, :resume/timestamp :inst}
+  + enables: [fulab/clock-in]
+
+! pattern: Agent Pattern Proposal [fulab/pattern-propose]
+  + context: During work, an agent discovers a recurring reasoning structure that isn't captured by existing patterns.
+  + if: You want the pattern library to evolve based on lived practice, not just top-down design.
+  + however: Agents cannot unilaterally add patterns to the canonical library.
+  + then: The agent emits a pattern-proposal event with a draft IF/HOWEVER/THEN/BECAUSE structure, supporting evidence from the current trail, and a :draft status. Human stewards review proposals and promote to :accepted.
+  + because: This closes the loop: patterns guide agent work, and agent work refines patterns. The library is a living document.
+  + evidence-shape: {:proposal/id :uuid, :pattern/draft :map, :proposal/supporting-trail [:uuid], :proposal/status :keyword}
+  + blocked-by: [fulab/clock-out]
+
+! pattern: Changelog-as-Trail [fulab/changelog-trail]
+  + context: Before the full proof trail infrastructure exists, we need a way to simulate pattern-based work.
+  + if: You want to dogfood the pattern architecture while building it.
+  + however: XTDB persistence, MUSN enforcement, and check DSL aren't implemented yet.
+  + then: Maintain a changelog file (e.g., fulab-changelog.org) where each entry explicitly records: clocked-in pattern, pattern dependencies used, artifacts produced, and clock-out summary. This serves as a human-readable proof trail.
+  + because: The changelog simulates the architecture and provides a migration path—entries can be backfilled into XTDB once the infrastructure exists.
+  + evidence-shape: {:changelog/file :string, :entry/date :string, :entry/pattern-id :string, :entry/deps [:string], :entry/artifacts [:string], :entry/summary :string}
+  + enables: [fulab/clock-in, fulab/clock-out, fulab/proof-commit]
+
+! pattern: Devmap Cross-Reference [fulab/devmap-xref]
+  + context: FuLab patterns are implementation-level; devmap prototypes are design-level.
+  + if: You want to track how implementation work advances the higher-level devmap.
+  + however: The connection between fulab patterns and devmap prototypes is implicit.
+  + then: Each fulab pattern declares which devmap prototype(s) it supports via a :pattern-ref field. Clock-in events that reference a fulab pattern transitively reference the devmap. Rollups can show "Prototype 4 advanced by 3 fulab/clock-out events today."
+  + because: This creates a traceable ladder from daily work → fulab patterns → devmap prototypes → IFR.
+  + evidence-shape: {:fulab-pattern :string, :devmap-prototype :string, :devmap-file :string}

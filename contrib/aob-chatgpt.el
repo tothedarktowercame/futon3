@@ -3166,8 +3166,7 @@ Used both for selecting the system prompt and for the mode-line lighter.")
           (insert (format " — %s – %s" status note-text))
         (insert (format " — %s" status))))
      (note-text (insert (format " — %s" note-text))))
-    (insert "
-")))
+    (insert "\n")))
 
 (provide 'aob-chatgpt)
 

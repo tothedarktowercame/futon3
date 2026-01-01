@@ -75,6 +75,42 @@
               {:error/message (str error)
                :error/type (type error)}))
 
+;; --- Clock-in/out protocol (fulab) ---
+
+(defn- clock-in-event [session-id {:keys [pattern-id intent context]}]
+  (make-event session-id :clock-in/start
+              {:clock-in/pattern-id pattern-id
+               :clock-in/intent intent
+               :clock-in/timestamp (java.util.Date.)
+               :clock-in/context (or context {})}))
+
+(defn- pattern-used-event [session-id pattern-id reason]
+  (make-event session-id :pattern/used
+              {:pattern/id pattern-id
+               :pattern/reason reason}))
+
+(defn- doc-written-event [session-id doc]
+  (make-event session-id :doc/written
+              {:doc/path (:path doc)
+               :doc/inline (:inline doc)
+               :doc/type (:type doc)
+               :doc/topic (:topic doc)
+               :doc/anchors (:anchors doc)
+               :doc/pattern-refs (:pattern-refs doc)
+               :doc/summary (:summary doc)
+               :doc/visibility (or (:visibility doc) :public)}))
+
+(defn- clock-out-event [session-id {:keys [pattern-id patterns-trail status artifacts docs stats society-paper]}]
+  (make-event session-id :clock-out/complete
+              {:pattern/primary pattern-id
+               :pattern/trail (or patterns-trail [])
+               :session/status status
+               :artifacts (or artifacts [])
+               :docs-written (or docs [])
+               :stats (or stats {})
+               :society-paper society-paper
+               :clock-out/timestamp (java.util.Date.)}))
+
 ;; --- Subprocess management ---
 
 (defn- build-claude-command [{:keys [prompt dangerously-skip-permissions?]}]
@@ -118,6 +154,20 @@
 
 ;; --- Session lifecycle ---
 
+(defn- initial-stats []
+  {:events 0
+   :tool-calls 0
+   :tool-approvals 0
+   :tool-denials 0
+   :assistant-messages 0
+   :patterns-used 0
+   :artifacts 0
+   :docs-written 0
+   :cost-usd 0.0
+   :duration-ms 0
+   :first-event-at nil
+   :last-event-at nil})
+
 (defn- create-session! [opts]
   (let [session-id (random-session-id)
         events-ch (async/chan 256)
@@ -128,13 +178,56 @@
                  :events-log (atom [])  ;; For polling-based retrieval
                  :subscribers (atom #{})
                  :pending-approvals (atom {})
+                 :patterns-used (atom [])  ;; fulab: pattern dependencies
+                 :artifacts (atom [])       ;; fulab: files/artifacts produced
+                 :docs-written (atom [])    ;; fulab: documentation trail
+                 :society-paper (atom nil)  ;; fulab: session retrospective
+                 :stats (atom (initial-stats))  ;; fulab: realtime stats
                  :process (atom nil)
                  :started-at (now-ms)}]
     (swap! !sessions assoc session-id session)
     session))
 
+(defn- update-stats!
+  "Update session stats based on event type."
+  [session event]
+  (let [now (now-ms)
+        event-type (:event/type event)]
+    (swap! (:stats session)
+           (fn [s]
+             (-> s
+                 (update :events inc)
+                 (assoc :last-event-at now)
+                 (cond->
+                   (nil? (:first-event-at s))
+                   (assoc :first-event-at now)
+
+                   (= event-type :tool/call)
+                   (update :tool-calls inc)
+
+                   (= event-type :tool/approved)
+                   (update :tool-approvals inc)
+
+                   (= event-type :tool/denied)
+                   (update :tool-denials inc)
+
+                   (= event-type :assistant/message)
+                   (update :assistant-messages inc)
+
+                   (= event-type :pattern/used)
+                   (update :patterns-used inc)
+
+                   (= event-type :doc/written)
+                   (update :docs-written inc)
+
+                   (= event-type :session/result)
+                   (-> (assoc :cost-usd (or (:result/cost-usd event) 0))
+                       (assoc :duration-ms (or (:result/duration-ms event) 0)))))))))
+
 (defn- emit-event! [session event]
   (let [subscribers @(:subscribers session)]
+    ;; Update realtime stats
+    (update-stats! session event)
     ;; Store in events log for polling
     (swap! (:events-log session) conj event)
     ;; Put on events channel for persistence
@@ -210,25 +303,53 @@
         (doseq [line (line-seq reader)]
           (process-output-line! session line))
         ;; Process finished
-        (let [exit-code (.waitFor process)]
-          (emit-event! session (session-finished-event (:id session)
-                                                        (if (zero? exit-code) :success :failed)))
+        (let [exit-code (.waitFor process)
+              status (if (zero? exit-code) :success :failed)
+              pattern-id (get-in session [:opts :pattern-id])]
+          (emit-event! session (session-finished-event (:id session) status))
+          ;; fulab: emit clock-out if we clocked in
+          (when pattern-id
+            (emit-event! session (clock-out-event (:id session)
+                                                  {:pattern-id pattern-id
+                                                   :patterns-trail @(:patterns-used session)
+                                                   :status status
+                                                   :artifacts @(:artifacts session)
+                                                   :docs @(:docs-written session)
+                                                   :stats @(:stats session)
+                                                   :society-paper @(:society-paper session)})))
           (swap! !sessions assoc-in [(:id session) :status] :finished)))
       (catch Exception e
         (emit-event! session (error-event (:id session) e))
+        ;; fulab: emit clock-out on error too
+        (when-let [pattern-id (get-in session [:opts :pattern-id])]
+          (emit-event! session (clock-out-event (:id session)
+                                                {:pattern-id pattern-id
+                                                 :patterns-trail @(:patterns-used session)
+                                                 :status :error
+                                                 :artifacts @(:artifacts session)
+                                                 :docs @(:docs-written session)
+                                                 :stats @(:stats session)
+                                                 :society-paper @(:society-paper session)})))
         (swap! !sessions assoc-in [(:id session) :status] :error)))))
 
 ;; --- Public API ---
 
 (defn start-session!
   "Start a new Claude session with the given prompt.
+   Accepts optional :pattern-id and :intent for fulab clock-in.
    Returns {:ok true :session-id ...} or {:ok false :error ...}"
-  [{:keys [prompt cwd model] :as opts}]
+  [{:keys [prompt cwd model pattern-id intent] :as opts}]
   (try
     (let [session (create-session! opts)
           process (start-process! opts)]
       (reset! (:process session) process)
       (emit-event! session (session-started-event (:id session) opts))
+      ;; fulab: emit clock-in if pattern-id provided
+      (when pattern-id
+        (emit-event! session (clock-in-event (:id session)
+                                             {:pattern-id pattern-id
+                                              :intent intent
+                                              :context (select-keys opts [:cwd :model])})))
       (run-session-loop! session)
       {:ok true
        :session-id (:id session)
@@ -308,15 +429,74 @@
       {:ok false :error "no-process"})
     {:ok false :error "session-not-found"}))
 
+;; --- fulab: Pattern tracking API ---
+
+(defn record-pattern-use!
+  "Record that a session used a pattern as a dependency.
+   Emits :pattern/used event and adds to session's pattern trail."
+  [session-id pattern-id & [{:keys [reason]}]]
+  (if-let [session (get @!sessions session-id)]
+    (let [usage {:pattern/id pattern-id
+                 :used-at (now-ms)
+                 :reason reason}]
+      (swap! (:patterns-used session) conj usage)
+      (emit-event! session (pattern-used-event session-id pattern-id reason))
+      {:ok true :session-id session-id :pattern-id pattern-id})
+    {:ok false :error "session-not-found"}))
+
+(defn record-artifact!
+  "Record that a session produced or modified an artifact (file, resource, etc.)."
+  [session-id artifact-path & [{:keys [action]}]]
+  (if-let [session (get @!sessions session-id)]
+    (let [artifact {:path artifact-path
+                    :action (or action :modified)
+                    :at (now-ms)}]
+      (swap! (:artifacts session) conj artifact)
+      (swap! (:stats session) update :artifacts inc)
+      {:ok true :session-id session-id :artifact artifact-path})
+    {:ok false :error "session-not-found"}))
+
+(defn record-doc!
+  "Record documentation written during a session.
+   Doc types: :explanation, :rationale, :howto, :decision, :trail
+   Anchors link to code (fn names, file:line). Pattern-refs link to patterns."
+  [session-id doc]
+  (if-let [session (get @!sessions session-id)]
+    (let [doc-record (merge {:at (now-ms)} doc)]
+      (swap! (:docs-written session) conj doc-record)
+      (emit-event! session (doc-written-event session-id doc-record))
+      {:ok true :session-id session-id :doc doc-record})
+    {:ok false :error "session-not-found"}))
+
+(defn set-society-paper!
+  "Set the session's retrospective summary (society paper).
+   This is typically written at session end to summarize what was accomplished,
+   decisions made, and context for future agents."
+  [session-id summary]
+  (if-let [session (get @!sessions session-id)]
+    (do
+      (reset! (:society-paper session) summary)
+      {:ok true :session-id session-id})
+    {:ok false :error "session-not-found"}))
+
 (defn get-session
-  "Get session info."
+  "Get session info including realtime stats."
   [session-id]
   (when-let [session (get @!sessions session-id)]
     {:id (:id session)
      :status (:status session)
      :started-at (:started-at session)
      :opts (dissoc (:opts session) :prompt) ;; Don't leak full prompt
-     :pending-approvals (keys @(:pending-approvals session))}))
+     :pending-approvals (keys @(:pending-approvals session))
+     ;; fulab: pattern tracking
+     :pattern-id (get-in session [:opts :pattern-id])
+     :patterns-used @(:patterns-used session)
+     :artifacts @(:artifacts session)
+     ;; fulab: documentation trail
+     :docs-written @(:docs-written session)
+     :society-paper @(:society-paper session)
+     ;; fulab: realtime stats
+     :stats @(:stats session)}))
 
 (defn get-events
   "Get events for a session, optionally starting from an offset."

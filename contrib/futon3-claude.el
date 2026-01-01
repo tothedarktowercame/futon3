@@ -49,23 +49,40 @@
 
 ;; --- Session management ---
 
-(defun my-futon3-claude-run (prompt &optional cwd)
+(defvar my-futon3-claude-default-pattern nil
+  "Default pattern-id for clock-in. Set per-project via .dir-locals.el.")
+
+(defun my-futon3-claude-run (prompt &optional cwd pattern-id intent)
   "Start a Claude session with PROMPT.
-CWD defaults to `default-directory'."
+CWD defaults to `default-directory'.
+PATTERN-ID and INTENT enable fulab clock-in for the session."
   (interactive "sPrompt: ")
   (let* ((cwd (or cwd default-directory))
-         (result (my-futon3-claude--request
-                  "POST" "/claude/run"
-                  `(("prompt" . ,prompt)
-                    ("cwd" . ,cwd)))))
+         (pattern-id (or pattern-id my-futon3-claude-default-pattern))
+         (payload `(("prompt" . ,prompt)
+                    ("cwd" . ,cwd)))
+         ;; Add fulab clock-in params if provided
+         (payload (if pattern-id
+                      (append payload `(("pattern-id" . ,pattern-id)
+                                        ("intent" . ,(or intent prompt))))
+                    payload))
+         (result (my-futon3-claude--request "POST" "/claude/run" payload)))
     (if (plist-get result :ok)
         (let ((session-id (plist-get result :session-id)))
           (setq my-futon3-claude-current-session session-id)
           (setq my-futon3-claude-pending-calls nil)
-          (message "Claude session started: %s" session-id)
+          (message "Claude session started: %s%s"
+                   session-id
+                   (if pattern-id (format " [%s]" pattern-id) ""))
           (my-futon3-claude--start-streaming session-id)
           session-id)
       (error "Failed to start Claude session: %s" (plist-get result :error)))))
+
+(defun my-futon3-claude-run-with-pattern (pattern-id intent prompt &optional cwd)
+  "Start a Claude session clocked in on PATTERN-ID with INTENT.
+PROMPT is the initial prompt, CWD defaults to `default-directory'."
+  (interactive "sPattern: \nsIntent: \nsPrompt: ")
+  (my-futon3-claude-run prompt cwd pattern-id intent))
 
 (defun my-futon3-claude-cancel ()
   "Cancel the current Claude session."
@@ -128,12 +145,40 @@ CWD defaults to `default-directory'."
 (defvar-local my-futon3-claude--events-offset 0
   "Offset for polling events from current session.")
 
+(defvar-local my-futon3-claude--stats-marker nil
+  "Marker for updating stats line in place.")
+
+(defun my-futon3-claude--format-stats (stats)
+  "Format STATS plist as a summary string."
+  (let ((events (or (plist-get stats :events) 0))
+        (tool-calls (or (plist-get stats :tool-calls) 0))
+        (messages (or (plist-get stats :assistant-messages) 0))
+        (cost (or (plist-get stats :cost-usd) 0))
+        (duration (or (plist-get stats :duration-ms) 0)))
+    (format "[events:%d tools:%d msgs:%d cost:$%.4f time:%dms]"
+            events tool-calls messages cost duration)))
+
+(defun my-futon3-claude--update-stats (stats)
+  "Update the stats line in the Claude buffer."
+  (when (and stats my-futon3-claude--stats-marker)
+    (let ((buf (get-buffer my-futon3-claude-buffer)))
+      (when (buffer-live-p buf)
+        (with-current-buffer buf
+          (save-excursion
+            (goto-char my-futon3-claude--stats-marker)
+            (let ((inhibit-read-only t))
+              (delete-region (point) (line-end-position))
+              (insert (my-futon3-claude--format-stats stats)))))))))
+
 (defun my-futon3-claude--start-streaming (session-id)
   "Start streaming events from SESSION-ID into the Claude buffer."
   (let ((buf (get-buffer-create my-futon3-claude-buffer)))
     (with-current-buffer buf
       (goto-char (point-max))
       (insert (format "\n--- Session: %s ---\n" session-id))
+      (insert "Stats: ")
+      (setq-local my-futon3-claude--stats-marker (point-marker))
+      (insert "[starting...]\n")
       (setq-local my-futon3-claude--events-offset 0))
     (display-buffer buf)
     ;; Poll for events
@@ -158,10 +203,12 @@ CWD defaults to `default-directory'."
                 (with-current-buffer (get-buffer-create my-futon3-claude-buffer)
                   (setq-local my-futon3-claude--events-offset
                               (plist-get events-data :count))))))
-          ;; Check session status
+          ;; Check session status and update stats
           (let ((session (my-futon3-claude--request
                           "GET" (format "/claude/session/%s" session-id))))
             (when session
+              ;; Update live stats display
+              (my-futon3-claude--update-stats (plist-get session :stats))
               (let ((status (plist-get session :status)))
                 (cond
                  ((member status '("running" "starting"))

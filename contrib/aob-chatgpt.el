@@ -145,12 +145,13 @@ When nil, fall back to `org-agenda-files`."
 (setq chatgpt-shell-model-version "gpt-5.2-chat-latest")
 (setq chatgpt-shell-streaming t)
 
-(unless (getenv "OPENAI_API_KEY")
-  (setenv "OPENAI_API_KEY"
-          (string-trim
-           (with-temp-buffer
-             (insert-file-contents "~/.openai-key")
-             (buffer-string)))))
+(defun my-chatgpt-shell--read-openai-key ()
+  (let ((path (expand-file-name "~/.openai-key")))
+    (when (file-readable-p path)
+      (string-trim
+       (with-temp-buffer
+         (insert-file-contents path)
+         (buffer-string))))))
 
 (unless (getenv "GEMINI_API_KEY")
   (setenv "GEMINI_API_KEY"
@@ -159,7 +160,7 @@ When nil, fall back to `org-agenda-files`."
              (insert-file-contents "~/.gemini-key")
              (buffer-string)))))
 
-(setq chatgpt-shell-openai-key (lambda () (getenv "OPENAI_API_KEY")))
+(setq chatgpt-shell-openai-key #'my-chatgpt-shell--read-openai-key)
 
 (defvar-local my-chatgpt-shell--seeded-context nil
   "Non-nil after this chatgpt-shell buffer has sent the initial summary.")

@@ -12,15 +12,17 @@
   evaluation set: humans grade every suggestion against clarity, with MUSN
   logging where it succeeds, fails, or goes undefined.
 
-  + IF:
+  + context: You are describing how AI contributes within the evaluation workflow.
+
+  + if:
     The HDM canon accepts outline-level reasoning before detail, but only when
     human stewards can interrogate the proposal.
 
-  + HOWEVER:
+  + however:
     Without explicit logging of where AI suggestions were kept, edited, or
     discarded, we cannot tell whether the workflow learns anything.
 
-  + THEN:
+  + then:
     Use existing checkpoints (math-tuned transformer NER/taggers and
     lightly-adapted rhetorical classifiers) for first-pass segmentation and
     paraphrase, with no autonomous mining beyond the curated proof set.  Route
@@ -28,17 +30,17 @@
     (`status[applies|blocked|drift]`) that is released with reproducibility
     notes, and treat staleness scans as alarms when drafts linger unreviewed.
 
-  + BECAUSE:
+  + because:
     Methodological validity depends on showing that human judgement governs each
     explanation, not just aggregate scores, and on documenting the limits of the
     checkpoints we rely on.
 
-  + STATUS:
+  + status:
     status[blocked]
     evidence[library/hdm/outline-first-detail-later.flexiarg:1]
     evidence[library/hdm/human-machine-dialogue.flexiarg:1]
     blocked-by[ai4ci/reviewer-roster]
 
-  + NEXT:
+  + next-steps:
     next[Publish reviewer rota + decision rubric so every AI-assisted explanation is triaged within 48h.]
     next[Wire review outcomes into stack-coherence/staleness-scan so unattended drafts raise alarms.]

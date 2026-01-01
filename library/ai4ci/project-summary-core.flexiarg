@@ -13,13 +13,15 @@
   reusable proof-pattern fragments that help humans recreate arguments, not just
   verify results.
 
-  + IF:
+  + context: You are summarising the project’s core hypothesis and scope for reviewers.
+
+  + if:
     Published proofs omit the exploratory hints (“try this substitution”, “argue by symmetry”) that real mathematicians
     rely on, yet those hints, together with expository phrases, suggest—but do
     not prove—the existence of reusable local tactics (reduce to a simpler case,
     argue by symmetry, exploit a known classification).
 
-  + HOWEVER:
+  + however:
     These informal layers live in the textual wraparound of worked solutions and oral scholia; extracting them demands
     transport guarantees (idempotent ingest, per-client supervision, 200 ms status caps, 5 s run limits) plus schema
     validation so that outline-level reasoning can flow into adapters instead of collapsing into vibes.  Moreover, no one
@@ -27,7 +29,7 @@
     canon already insists on outline-first captures and dialogue-mediated clarification, so F2 must not re-litigate those
     doctrines but feed them evidence.
 
-  + THEN:
+  + then:
     Deliver a controlled pilot that (a) mines open encyclopedias to capture the
     formal register (symbols, named entities, standard relations), (b) mines
     textbooks and solution manuals to extend the informal vocabulary and catch
@@ -45,19 +47,19 @@
     `src/f2/adapters/mock.clj:1` supply the reliable ingest channel; the new annotation workflow sits on top, grounded in
     `docs/protocol.md:1`.
 
-  + BECAUSE:
+  + because:
     Only by pairing process cues with exposition and validating them through collective review can we tell whether a
     stable mid-level reasoning layer—or proof-pattern fragment—actually exists. If it does, future AI can support human
     learning and help AI solvers check their own work (and let humans audit it);
     if not, the pilot documents the limits with transport-grade evidence.
 
-  + STATUS:
+  + status:
     status[ready]
     evidence[docs/protocol.md:1]
     evidence[test/f2/router_test.clj:13]
     evidence[test/transport_test.clj:22]
 
-  + NEXT:
+  + next-steps:
     next[Assemble a cleared mini-corpus of graduate-level exam solutions with both symbolic steps and informal phrasing; coordinate with data stewards for release notes.]
     next[Extend the dual-language parser so each ingest event carries paired symbolic + informal spans before calling F1 adapters.]
     next[Instrument per-client supervision metrics (through the transport history log) to prove overload alarms and dropped-client handling work under 1k events/min stress.]

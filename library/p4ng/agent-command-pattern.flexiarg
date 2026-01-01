@@ -8,14 +8,19 @@
 ! conclusion:
   Encapsulate every such operation as a Command value that carries `:id`, parameters, provenance, capability tags, and optional `undo!`, and run it only through an execution pipeline (local worker, remote service, or threaded pool). Commands can be persisted, reordered, decorated, and routed to specialised executors such as a git agent or math agent.
 
-  + IF:
+  + context: You are defining a reliable execution pipeline for agent actions.
+
+  + if:
     Agents perform repo scans, graph updates, and external API calls by invoking ad hoc functions with no shared interface, so actions cannot be queued, audited, or retried safely.
 
-  + HOWEVER:
+  + however:
     Higher-layer orchestration needs side-effectful work to travel through queues, logs, schedulers, and undo ledgers without each caller reinventing a protocol.
 
-  + THEN:
+  + then:
     Encapsulate every such operation as a Command value that carries `:id`, parameters, provenance, capability tags, and optional `undo!`, and run it only through an execution pipeline (local worker, remote service, or threaded pool). Commands can be persisted, reordered, decorated, and routed to specialised executors such as a git agent or math agent.
 
-  + BECAUSE:
+  + because:
     A uniform command abstraction gives the stack a shared action language: histories become replayable, undo/redo is tractable, thread pools can execute arbitrary work safely, and schedulers can move labour across machines without touching implementation internals.
+
+  + next-steps:
+    next[Log one concrete instance of this pattern in the futon3 ledger.]

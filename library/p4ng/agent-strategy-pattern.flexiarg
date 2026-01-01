@@ -8,14 +8,19 @@
 ! conclusion:
   Declare small Strategy protocols (`SummarisationStrategy/summarise`, `SchedulingStrategy/next-command`, `BackoffStrategy/next-delay`) and let the agent inject or swap concrete implementations at runtime. Configuration, prompts, or telemetry choose which strategy runs, and tests exercise strategies in isolation before the agent consumes them.
 
-  + IF:
+  + context: You are defining how an agent selects policies or moves.
+
+  + if:
     An agent repeatedly faces the same class of decision—summarise, schedule, pick a timeout, select a solver—yet the codebase is littered with `if`/`case` branches or feature flags that mutate behaviour in opaque ways.
 
-  + HOWEVER:
+  + however:
     Experimenting with new policies or tailoring behaviour per user, prototype, or futon becomes brittle when the “how” is fused to the agent core.
 
-  + THEN:
+  + then:
     Declare small Strategy protocols (`SummarisationStrategy/summarise`, `SchedulingStrategy/next-command`, `BackoffStrategy/next-delay`) and let the agent inject or swap concrete implementations at runtime. Configuration, prompts, or telemetry choose which strategy runs, and tests exercise strategies in isolation before the agent consumes them.
 
-  + BECAUSE:
+  + because:
     Strategies separate intent (“summarise this log”) from method (“fast heuristic vs deep reasoning”), enabling safe experiments, per-context policy bundles, and cleaner reasoning about which solver is responsible for each outcome.
+
+  + next-steps:
+    next[Log one concrete instance of this pattern in the futon3 ledger.]

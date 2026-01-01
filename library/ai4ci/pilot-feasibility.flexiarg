@@ -12,28 +12,30 @@
   itself to a small sample of proofs, iterative annotation, seminar evaluation,
   and reporting—leaving storage/UI/inference to other futons.
 
-  + IF:
+  + context: You are showing the pilot timeline and resourcing are feasible.
+
+  + if:
     Repository-transition invariants and stack-blocker detection already keep us
     honest about what infrastructure exists.
 
-  + HOWEVER:
+  + however:
     Without explicit scope fences, AI4CI could drift into trying to build
     long-term storage or UI layers, blowing the schedule.
 
-  + THEN:
+  + then:
     Freeze scope to: data selection, dual-language annotation, MUSN logging,
     seminars, and report-out.  Track each clause with `next[...]` so blockers are
     visible.
 
-  + BECAUSE:
+  + because:
     Dhammavicaya demands evidence of progress toward “done”; the pilot only
     needs methodological answers, not production modules.
 
-  + STATUS:
+  + status:
     status[ready]
     evidence[library/repository-transition/invariants.flexiarg:1]
     evidence[library/stack-coherence/stack-blocker-detection.flexiarg:1]
 
-  + NEXT:
+  + next-steps:
     next[Map the proof sample + annotation sprints to a Gantt-lite timeline and publish it in the devmap.]
     next[Record blockers/clears weekly so stack-coherence patterns can prove the pilot stayed inside scope.]

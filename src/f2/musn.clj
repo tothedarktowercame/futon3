@@ -79,7 +79,6 @@
     (transport/stop! transport)
     (ui/stop! ui)
     (when drawbridge (drawbridge))
-    (futon3.tatami-store/reset-events!)
     (reset! runtime nil)))
 
 (defn ingest-demo! [state]

@@ -92,6 +92,19 @@
   (cond-> {"content-type" "application/json"}
     (seq (profile opts)) (assoc "x-profile" (profile opts))))
 
+(defn- clean-text [value]
+  (when (string? value)
+    (let [trimmed (str/trim value)
+          lowered (str/lower-case trimmed)]
+      (when (and (seq trimmed)
+                 (not= lowered "external"))
+        trimmed))))
+
+(defn- maybe-source [payload]
+  (if-let [src (clean-text (:source payload))]
+    (assoc payload :source src)
+    (dissoc payload :source)))
+
 (defn- encode-segment [value]
   (URLEncoder/encode (str value) "UTF-8"))
 
@@ -531,18 +544,18 @@
                                :provenance (merge {:note relation-label} props)})))))
 
 (defn- ensure-tag! [opts language-name language-id relation target-name target-type]
-  (let [resp (ensure-entity! opts {:name target-name
-                                   :type target-type
-                                   :source (str relation " classification")
-                                   :external-id target-name})
+  (let [resp (ensure-entity! opts (maybe-source {:name target-name
+                                                 :type target-type
+                                                 :source (str relation " classification")
+                                                 :external-id target-name}))
         target-id (or (get-in resp [:entity :id]) (get-in resp [:entity :entity/id]))]
     (when target-id
       (ensure-relation! opts language-name language-id relation target-id target-name {}))))
 
 (defn- ensure-catalog-link! [opts language-name language-id]
-  (let [resp (ensure-entity! opts {:name language-catalog-name
-                                   :type "pattern/language-catalog"
-                                   :source "Pattern languages"})
+  (let [resp (ensure-entity! opts (maybe-source {:name language-catalog-name
+                                                 :type "pattern/language-catalog"
+                                                 :source "Pattern languages"}))
         catalog-id (or (get-in resp [:entity :id]) (get-in resp [:entity :entity/id]))]
     (when catalog-id
       (ensure-relation! opts language-catalog-name catalog-id
@@ -550,10 +563,10 @@
 
 (defn- ensure-pattern! [opts pattern]
   (let [{:keys [name title summary components]} pattern
-        resp (ensure-entity! opts {:name name
-                                   :type "pattern/library"
-                                   :source summary
-                                   :external-id title})
+        resp (ensure-entity! opts (maybe-source {:name name
+                                                 :type "pattern/library"
+                                                 :source summary
+                                                 :external-id title}))
         pattern-id (or (get-in resp [:entity :id]) (get-in resp [:entity :entity/id]))
         includes-existing (when name (existing-target-ids opts name ":pattern/includes"))]
     (when-not (:libraries-only? opts)
@@ -562,10 +575,10 @@
               label (:label component)
               slug (:slug component)
               comp-name (format "%s/%02d-%s" name order slug)
-              comp-resp (ensure-entity! opts {:name comp-name
-                                              :type "pattern/component"
-                                              :source (:text component)
-                                              :external-id label})
+              comp-resp (ensure-entity! opts (maybe-source {:name comp-name
+                                                            :type "pattern/component"
+                                                            :source (:text component)
+                                                            :external-id label}))
               comp-id (or (get-in comp-resp [:entity :id])
                           (get-in comp-resp [:entity :entity/id]))]
           (when (and pattern-id comp-id)
@@ -585,10 +598,10 @@
         {:keys [name title]} (collection-language dir)
         language-status (language-status-name root dir nil)
         language-source (language-source-name root dir)
-        language-resp (ensure-entity! opts {:name name
-                                            :type "pattern/language"
-                                            :source (format "Imported from %s" (.getPath dir))
-                                            :external-id title})
+        language-resp (ensure-entity! opts (maybe-source {:name name
+                                                          :type "pattern/language"
+                                                          :source (format "Imported from %s" (.getPath dir))
+                                                          :external-id title}))
         language-id (or (get-in language-resp [:entity :id])
                         (get-in language-resp [:entity :entity/id]))
         existing (when name (existing-target-ids opts name language-relation))]

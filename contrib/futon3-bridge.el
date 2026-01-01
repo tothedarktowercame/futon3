@@ -112,6 +112,38 @@
 (defun my-futon3--tatami-url (path)
   (concat (string-remove-suffix "/" my-futon3-ui-base-url) path))
 
+(defun my-futon3--json-alist-p (value)
+  (when (listp value)
+    (let ((ok t)
+          (cursor value))
+      (while (and ok (consp cursor))
+        (let* ((elem (car cursor))
+               (key (and (consp elem) (car elem))))
+          (setq ok (and (consp elem)
+                        (not (consp key))
+                        (or (stringp key) (symbolp key) (keywordp key)))))
+        (setq cursor (cdr cursor)))
+      ok)))
+
+(defun my-futon3--json-keywordize (value)
+  (cond
+   ((null value) nil)
+   ((my-futon3--json-alist-p value)
+    (let (plist)
+      (dolist (pair value)
+        (let* ((raw-key (car pair))
+               (key (cond
+                     ((keywordp raw-key) raw-key)
+                     ((symbolp raw-key) (intern (concat ":" (symbol-name raw-key))))
+                     ((stringp raw-key) (intern (concat ":" raw-key)))
+                     (t raw-key)))
+               (val (my-futon3--json-keywordize (cdr pair))))
+          (setq plist (plist-put plist key val))))
+      plist))
+   ((listp value)
+    (mapcar #'my-futon3--json-keywordize value))
+   (t value)))
+
 (defun my-futon3--tatami-request (method path payload)
   (my-futon3-ensure-running)
   (let* ((url-request-method method)
@@ -132,11 +164,13 @@
               (if (/= status 200)
                   (error "Futon3 %s failed (%s): %s" path status body)
                 (when (and body (not (string-empty-p (string-trim body))))
-                  (json-parse-string body :object-type 'plist :array-type 'list
-                                     :null-object nil
-                                     :false-object nil)))))))
+                  (my-futon3--json-keywordize
+                   (json-parse-string body :object-type 'alist
+                                      :array-type 'list
+                                      :null-object nil
+                                      :false-object nil)))))))
       (when (buffer-live-p buffer)
-        (kill-buffer buffer))))
+        (kill-buffer buffer)))))
 
 (defun my-futon3-fetch-intent-cues (entry)
   (when entry

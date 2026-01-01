@@ -8,14 +8,19 @@
 ! conclusion:
   Wrap commands or strategies with Decorators—`LoggedCommand`, `TimedCommand`, `SynchronizedCommand`, `RetryingStrategy`, `PermissionCheckingDecorator`—that add behaviour before/after delegation while preserving the base interface. Apply decorators where work enters a queue or worker so meta-behaviour lives at the edge, not deep inside each action.
 
-  + IF:
+  + context: You are standardizing cross-cutting behaviors around agent actions.
+
+  + if:
     Commands and strategies already exist but every implementation hand-sprinkles logging, timing, locks, retries, permission checks, or paramitā/orb updates across the codebase.
 
-  + HOWEVER:
+  + however:
     Cross-cutting concerns duplicated across dozens of commands quickly drift, complicate reviews, and break under concurrency.
 
-  + THEN:
+  + then:
     Wrap commands or strategies with Decorators—`LoggedCommand`, `TimedCommand`, `SynchronizedCommand`, `RetryingStrategy`, `PermissionCheckingDecorator`—that add behaviour before/after delegation while preserving the base interface. Apply decorators where work enters a queue or worker so meta-behaviour lives at the edge, not deep inside each action.
 
-  + BECAUSE:
+  + because:
     Decorators let the agent stack layer observability, safety, and stewardship concerns without touching the business logic, so logging can be switched on globally, permission checks stay consistent, and concurrency guards become reusable armour around any command.
+
+  + next-steps:
+    next[Log one concrete instance of this pattern in the futon3 ledger.]

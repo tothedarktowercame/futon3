@@ -12,29 +12,31 @@
   (schema-validated ingest, adapter bridges) and pushes one incremental step:
   linking informal phraseology to structured reasoning hypotheses.
 
-  + IF:
+  + context: You are grounding the pilot in existing technical infrastructure and transport capability.
+
+  + if:
     `docs/protocol.md` and `src/f2/router.clj` already enforce msg-id
     idempotency, timeout bounds, and schema validation for hello/event/export/
     run/status.
 
-  + HOWEVER:
+  + however:
     Named-entity / relation extraction only tells us which objects appear, not
     how informal cues describe tactics or mid-level strategy.
 
-  + THEN:
+  + then:
     Treat NER/RE outputs as anchors, cluster recurring informal phrases around
     them, and test whether MUSN can label tactic hypotheses that survive human
     review—all while keeping transport logs untouched.
 
-  + BECAUSE:
+  + because:
     This isolates the research question (informal → structure) from baseline
     engineering, giving reviewers a falsifiable claim.
 
-  + STATUS:
+  + status:
     status[ready]
     evidence[docs/protocol.md:1]
     evidence[src/f2/router.clj:1]
 
-  + NEXT:
+  + next-steps:
     next[Prototype the phrase→tactic linker on a 10-proof sample and record success/failure per hypothesis.]
     next[Document how rejected hypotheses flowed through MUSN so adapters stay schema-compatible.]

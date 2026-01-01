@@ -11,26 +11,28 @@
   on textbook exercises yet fails to show the reasoning people need to learn or
   teach effectively.
 
-  + IF:
+  + context: You are distinguishing the project from state-of-the-art performance claims.
+
+  + if:
     Modern large models and specialist solvers can produce credible answers to
     many textbook problems.
 
-  + HOWEVER:
+  + however:
     They cannot check their own reasoning reliably, rarely justify tactic
     choices, and provide no stable mapping between informal language and the
     steps it references.
 
-  + THEN:
+  + then:
     Position AI in this project as a diagnostic assistant: it proposes candidate
     links between informal cues and formal steps, and humans accept or reject
     each one so the resulting dataset remains trustworthy.
 
-  + BECAUSE:
+  + because:
     Treating AI outputs as hypotheses, not finished work, turns the pilot into a
     boundary map for what current systems can and cannot recognise in human
     reasoning—evidence future researchers can build on.
 
-  + NEXT STEPS:
+  + next-steps:
     Log every suggestion + human judgement, publish the acceptance statistics,
     and highlight where explanatory capability breaks down even when answers are
     correct.

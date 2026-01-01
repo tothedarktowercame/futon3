@@ -11,6 +11,7 @@
 (declare-function arxana-patterns-open "arxana" (slug))
 (declare-function my-chatgpt-shell--debug "aob-chatgpt" (fmt &rest args))
 (declare-function my-chatgpt-shell--futon1-post "aob-chatgpt" (path payload))
+(declare-function my-chatgpt-shell--log-pattern-save "aob-chatgpt" (pattern-id &optional notes))
 (declare-function my-chatgpt-shell--now-iso "aob-chatgpt" ())
 (declare-function my-futon3--clock-context "futon3-hud" ())
 
@@ -30,7 +31,10 @@
   (when-let* ((ctx (my-futon3--clock-context))
               (protos (plist-get ctx :prototypes))
               (intent (plist-get ctx :intent))
-              (timestamp (my-chatgpt-shell--now-iso)))
+              (timestamp (my-chatgpt-shell--now-iso))
+              (note (format "intent=%s prototypes=%s"
+                            intent
+                            (mapconcat (lambda (p) (format "%s" p)) protos ", "))))
     (dolist (proto protos)
       (my-chatgpt-shell--futon1-post "/relation"
                                      (list :type ":clock/pattern-edit"
@@ -38,7 +42,9 @@
                                                  :type :devmap/prototype}
                                            :dst pattern
                                            :props {:intent intent
-                                                   :timestamp timestamp}))))
+                                                   :timestamp timestamp})))
+    (when (fboundp 'my-chatgpt-shell--log-pattern-save)
+      (my-chatgpt-shell--log-pattern-save pattern note)))
   (my-chatgpt-shell--debug "[HUD] logged pattern edit for %s" pattern))
 
 (defun my-futon3--after-arxana-save (&rest _)

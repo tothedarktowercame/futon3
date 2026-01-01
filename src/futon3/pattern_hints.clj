@@ -10,8 +10,9 @@
 
 (defn- read-json [path]
   (try
-    (with-open [reader (io/reader (io/file path))]
-      (json/parse-stream reader keyword))
+    (let [raw (slurp (io/file path))]
+      (when (and raw (not (str/blank? raw)))
+        (json/parse-string raw keyword)))
     (catch Exception _ nil)))
 
 (def ^:private sigil-index

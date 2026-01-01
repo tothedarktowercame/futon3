@@ -5,6 +5,7 @@
 (require 'subr-x)
 (require 'json)
 (require 'url)
+(require 'button)
 (require 'org)
 (require 'org-id nil t)
 (require 'org-element)
@@ -174,6 +175,14 @@ When nil, fall back to `org-agenda-files`."
 (defvar my-chatgpt-shell-context-font-scale 0.5
   "Relative font scale for the Tatami Context HUD (e.g., 0.5 = 50% size).")
 (defvar my-chatgpt-shell--hi-from-codex t)
+(defvar my-chatgpt-shell-pattern-link-face 'default
+  "Face used for pattern links in the Tatami Context HUD.")
+(defvar my-chatgpt-shell-pattern-link-underline t
+  "When non-nil, underline pattern links in the Tatami Context HUD.")
+(defvar my-chatgpt-shell-pattern-anchor-face 'link
+  "Face used for pattern id anchors in the Tatami Context HUD.")
+(defvar my-chatgpt-shell-pattern-anchor-underline t
+  "When non-nil, underline pattern id anchors in the Tatami Context HUD.")
 (defconst my-chatgpt-shell-tatami-in-marker "FROM-TATAMI-EDN")
 (defconst my-chatgpt-shell-tatami-out-marker "FROM-CHATGPT-EDN")
 (defvar-local my-chatgpt-shell-last-inbound-edn nil
@@ -194,6 +203,8 @@ When nil, fall back to `org-agenda-files`."
   "When non-nil, append each HUD manifest to `my-futon3-server-buffer'.")
 (defvar my-chatgpt-shell-sync-futon1-manifest nil
   "When non-nil, POST HUD manifests to the Futon1 API.")
+(defvar my-chatgpt-shell--last-context-click nil
+  "Most recent Tatami Context click as a plist (pattern/turn/when).")
 (defvar my-chatgpt-shell-futon1-endpoint "http://localhost:8080/api/alpha"
   "Base URL for Futon1 API endpoints consumed by the HUD sync.")
 (defvar my-chatgpt-shell-request-timeout 5
@@ -435,6 +446,96 @@ Set to nil to disable persistence entirely.")
        (my-chatgpt-shell--debug "[HUD] Futon1 sync failed (%s): %s"
                                 path (error-message-string err))
        nil))))
+
+(defun my-chatgpt-shell--now-ms ()
+  (floor (* 1000 (float-time (current-time)))))
+
+(defun my-chatgpt-shell--current-turn-id ()
+  (or (my-chatgpt-shell--string-or-nil (plist-get my-chatgpt-shell-last-inbound-edn :clock))
+      (my-chatgpt-shell--string-or-nil (plist-get my-chatgpt-shell-last-edn :clock))
+      (my-chatgpt-shell--string-or-nil (plist-get my-chatgpt-shell-last-inbound-edn :turn-id))
+      (my-chatgpt-shell--string-or-nil (plist-get my-chatgpt-shell-last-edn :turn-id))
+      (my-chatgpt-shell--now-iso)))
+
+(defun my-chatgpt-shell--hud-turn-entity-id (turn-id)
+  (format "hud/turn/%s" turn-id))
+
+(defun my-chatgpt-shell--scholium-entity-id (turn-id pattern-id kind)
+  (let ((seed (format "%s|%s|%s|%s"
+                      (or turn-id "")
+                      (or pattern-id "")
+                      (or kind "")
+                      (my-chatgpt-shell--now-iso))))
+    (format "hud/scholium/%s" (secure-hash 'sha1 seed))))
+
+(defun my-chatgpt-shell--ensure-hud-entity (payload)
+  (when payload
+    (my-chatgpt-shell--futon1-post "/entity" payload)))
+
+(defun my-chatgpt-shell--log-turn-scholium (kind pattern-id &optional notes)
+  "Record a turn-level scholium in Futon1 for PATTERN-ID."
+  (when (and my-chatgpt-shell-sync-futon1-manifest
+             (my-chatgpt-shell--string-or-nil pattern-id))
+    (let* ((turn-id (my-chatgpt-shell--current-turn-id))
+           (turn-entity-id (my-chatgpt-shell--hud-turn-entity-id turn-id))
+           (scholium-id (my-chatgpt-shell--scholium-entity-id turn-id pattern-id kind))
+           (stamp (my-chatgpt-shell--now-ms))
+           (note-text (string-trim (format "%s%s"
+                                           kind
+                                           (if notes (format " - %s" notes) "")))))
+      (my-chatgpt-shell--ensure-hud-entity
+       (list :id turn-entity-id
+             :name turn-entity-id
+             :type :hud/turn
+             :external-id turn-id))
+      (my-chatgpt-shell--ensure-hud-entity
+       (list :name pattern-id
+             :type :pattern/library
+             :external-id pattern-id))
+      (my-chatgpt-shell--ensure-hud-entity
+       (list :id scholium-id
+             :name scholium-id
+             :type :hud/scholium
+             :source note-text
+             :external-id (format "%s/%s" kind stamp)))
+      (my-chatgpt-shell--futon1-post "/relation"
+                                     (list :type ":hud/turn-scholium"
+                                           :src turn-entity-id
+                                           :dst scholium-id
+                                           :last-seen stamp))
+      (my-chatgpt-shell--futon1-post "/relation"
+                                     (list :type ":hud/scholium-pattern"
+                                           :src scholium-id
+                                           :dst pattern-id
+                                           :last-seen stamp))
+      (my-chatgpt-shell--futon1-post "/relation"
+                                     (list :type ":hud/turn-pattern"
+                                           :src turn-entity-id
+                                           :dst pattern-id
+                                           :last-seen stamp)))))
+
+(defun my-chatgpt-shell--log-pattern-click (pattern-id &optional source)
+  (let* ((turn-id (my-chatgpt-shell--current-turn-id))
+         (timestamp (my-chatgpt-shell--now-iso))
+         (note (string-trim (format "clickthrough%s"
+                                    (if source (format " (%s)" source) "")))))
+    (setq my-chatgpt-shell--last-context-click
+          (list :pattern-id pattern-id
+                :turn-id turn-id
+                :timestamp timestamp
+                :source source))
+    (my-chatgpt-shell--log-turn-scholium "context-click" pattern-id note)))
+
+(defun my-chatgpt-shell--log-pattern-save (pattern-id &optional notes)
+  (let* ((last my-chatgpt-shell--last-context-click)
+         (last-pattern (plist-get last :pattern-id))
+         (note (if (and last-pattern (string= last-pattern pattern-id))
+                   (string-trim (format "%s%s"
+                                        (or notes "")
+                                        (format " (clicked %s)"
+                                                (or (plist-get last :timestamp) "recently"))))
+                 notes)))
+    (my-chatgpt-shell--log-turn-scholium "pattern-save" pattern-id note)))
 
 (defun my-chatgpt-shell--sync-futon1-manifest (manifest)
   "Mirror MANIFEST into Futon1 via existing API endpoints."
@@ -1428,13 +1529,34 @@ r a live process in the *headless-api-server* buffer."
                             pattern
                           "Clause matched.")
                         (if (and notes (> (length notes) 0))
-                            (format " — %s" notes)
+                            (format " - %s" notes)
                           "")))
         (:none  (concat "Patterns apply?: 🔴"
                         (if (and notes (> (length notes) 0))
-                            (format " — %s" notes)
+                            (format " - %s" notes)
                           "")))
         (_ nil)))))
+
+(defun my-chatgpt-shell--insert-pattern-outcome (outcome &optional notes-limit)
+  (when outcome
+    (let* ((status (plist-get outcome :status))
+           (pattern (plist-get outcome :pattern))
+           (notes (plist-get outcome :notes)))
+      (when (and notes notes-limit)
+        (setq notes (my-chatgpt-shell--truncate notes notes-limit)))
+      (insert "Patterns apply?: ")
+      (pcase status
+        (:match
+         (insert "🟢 ")
+         (if (and pattern (> (length pattern) 0))
+             (my-chatgpt-shell--insert-pattern-button pattern pattern)
+           (insert "Clause matched.")))
+        (:none
+         (insert "🔴"))
+        (_ (insert "(no verdict captured)")))
+      (when (and notes (> (length notes) 0))
+        (insert (format " - %s" notes)))
+      (insert "\n\n"))))
 
 (defun my-chatgpt-shell--pattern-outcome-line (&optional notes-limit)
   (my-chatgpt-shell--format-pattern-outcome
@@ -1517,6 +1639,55 @@ r a live process in the *headless-api-server* buffer."
             (if (numberp score)
                 (format " [d=%.2f]" score)
               ""))))
+
+(defun my-chatgpt-shell--open-pattern (pattern-id)
+  (when (and (stringp pattern-id)
+             (fboundp 'my-futon3-set-active-pattern))
+    (my-futon3-set-active-pattern pattern-id))
+  (my-chatgpt-shell--log-pattern-click pattern-id "tatami-context")
+  (cond
+   ((fboundp 'arxana-patterns-open) (arxana-patterns-open pattern-id))
+   (t (message "Pattern browser not available; load Futon4/arxana."))))
+
+(defun my-chatgpt-shell--insert-pattern-button (label pattern-id)
+  (if (and (stringp pattern-id) (> (length pattern-id) 0))
+      (insert-text-button label
+                          'face (if my-chatgpt-shell-pattern-anchor-underline
+                                    (list my-chatgpt-shell-pattern-anchor-face 'underline)
+                                  my-chatgpt-shell-pattern-anchor-face)
+                          'mouse-face 'highlight
+                          'follow-link t
+                          'help-echo "Open pattern in Arxana"
+                          'action (lambda (_btn)
+                                    (my-chatgpt-shell--open-pattern pattern-id)))
+    (insert label)))
+
+(defun my-chatgpt-shell--insert-pattern-anchor (title id)
+  (let ((title (my-chatgpt-shell--string-or-nil title))
+        (id (my-chatgpt-shell--string-or-nil id)))
+    (cond
+     ((and title id (not (string= title id)))
+      (insert title " (")
+      (my-chatgpt-shell--insert-pattern-button id id)
+      (insert ")"))
+     (id
+      (my-chatgpt-shell--insert-pattern-button id id))
+     (title
+      (insert title))
+     (t
+      (insert "(unknown pattern)")))))
+
+(defun my-chatgpt-shell--insert-pattern-line (pattern)
+  (let* ((id (my-chatgpt-shell--pattern-id pattern))
+         (title (my-chatgpt-shell--string-or-nil (plist-get pattern :title)))
+         (summary (my-chatgpt-shell--string-or-nil (plist-get pattern :summary)))
+         (score (plist-get pattern :score)))
+    (insert "• ")
+    (my-chatgpt-shell--insert-pattern-anchor title id)
+    (when summary
+      (insert (format " – %s" (my-chatgpt-shell--truncate summary 140))))
+    (when (numberp score)
+      (insert (format " [d=%.2f]" score)))))
 
 (defun my-chatgpt-shell--support-score (entry)
   (let ((score (plist-get entry :score)))
@@ -1672,7 +1843,7 @@ r a live process in the *headless-api-server* buffer."
 (defun my-chatgpt-shell--pattern-headline (pattern)
   (string-trim-left (my-chatgpt-shell--format-pattern-line pattern) "• "))
 
-(defun my-chatgpt-shell--nearest-pattern-line (patterns)
+(defun my-chatgpt-shell--nearest-pattern (patterns)
   (let* ((seq (my-chatgpt-shell--coerce-seq patterns))
          (best (car seq))
          (best-score (and best (plist-get best :score))))
@@ -1683,14 +1854,18 @@ r a live process in the *headless-api-server* buffer."
                        (> score best-score)))
           (setq best pattern
                 best-score score))))
-    (when best
-      (let ((headline (my-chatgpt-shell--pattern-headline best))
-            (score (plist-get best :score)))
-        (format "Nearest pattern: %s%s"
-                headline
-                (if (numberp score)
-                    (format " (score %.2f)" score)
-                  ""))))))
+    best))
+
+(defun my-chatgpt-shell--insert-nearest-pattern-line (pattern)
+  (when pattern
+    (let* ((id (my-chatgpt-shell--pattern-id pattern))
+           (title (my-chatgpt-shell--string-or-nil (plist-get pattern :title)))
+           (score (plist-get pattern :score)))
+      (insert "Nearest pattern: ")
+      (my-chatgpt-shell--insert-pattern-anchor title id)
+      (when (numberp score)
+        (insert (format " (score %.2f)" score)))
+      (insert "\n"))))
 
 (defun my-chatgpt-shell--insert-fruit-summary (entries)
   (my-chatgpt-shell--insert-support-list "Tatami cues" entries
@@ -1795,7 +1970,7 @@ r a live process in the *headless-api-server* buffer."
           (my-chatgpt-shell--insert-paramita-summary paramitas))
       (insert "No Tatami cues available.\n\n"))))
 
-(defun my-chatgpt-shell--insert-pattern-verdict (verdict events inbound-patterns intent)
+(defun my-chatgpt-shell--insert-pattern-verdict (outcome events inbound-patterns intent)
   (let* ((recent (my-chatgpt-shell--events-seq events))
          (reason-lines-raw (and recent
                                 (mapcar (lambda (event)
@@ -1803,10 +1978,12 @@ r a live process in the *headless-api-server* buffer."
                                         recent)))
          (patterns (my-chatgpt-shell--sanitize-entry-list inbound-patterns))
          (pattern-limit 3)
-         (nearest (my-chatgpt-shell--nearest-pattern-line patterns)))
+         (nearest (my-chatgpt-shell--nearest-pattern patterns)))
     (let ((reason-lines (or reason-lines-raw '())))
       (insert (propertize "Pattern reasoning & Tatami hints" 'face 'bold) "\n")
-      (insert (or verdict "Patterns apply?: (no verdict captured)") "\n\n")
+      (if outcome
+          (my-chatgpt-shell--insert-pattern-outcome outcome 160)
+        (insert "Patterns apply?: (no verdict captured)\n\n"))
       (unless patterns
         (if reason-lines
             (dolist (pair reason-lines)
@@ -1814,8 +1991,7 @@ r a live process in the *headless-api-server* buffer."
           (insert "No reasoning events recorded yet.\n")))
       (when patterns
         (insert "\n")
-        (when nearest
-          (insert nearest "\n"))
+        (my-chatgpt-shell--insert-nearest-pattern-line nearest)
         (insert (if (> (length patterns) pattern-limit)
                     (format "Top %d candidate clauses:\n" pattern-limit)
                   "Candidate clauses:\n"))
@@ -1824,8 +2000,7 @@ r a live process in the *headless-api-server* buffer."
                    for idx from 0
                    while (< idx pattern-limit)
                    for event = (my-chatgpt-shell--find-event-for-pattern pattern events)
-                   for formatted = (my-chatgpt-shell--format-pattern-candidate pattern event)
-                   do (insert (car formatted) "\n")
+                   do (my-chatgpt-shell--insert-pattern-candidate pattern event)
                    when event do (push event matched-events))
           (let* ((unique (delq nil matched-events))
                  (extras (seq-remove (lambda (pair)
@@ -1874,8 +2049,8 @@ r a live process in the *headless-api-server* buffer."
                              (plist-get edn :intent))
                         my-futon3-tatami-default-intent
                         "unspecified")))
-    (when-let* ((pattern-line (my-chatgpt-shell--pattern-outcome-line 200)))
-      (insert pattern-line "\n\n"))
+    (when my-chatgpt-shell-last-pattern-outcome
+      (my-chatgpt-shell--insert-pattern-outcome my-chatgpt-shell-last-pattern-outcome 200))
     (if patterns
         (progn
           (insert (propertize "Candidate clauses" 'face 'bold)
@@ -1886,7 +2061,9 @@ r a live process in the *headless-api-server* buffer."
           (cl-loop for pattern in patterns
                    for idx from 0
                    while (< idx pattern-limit)
-                   do (insert (my-chatgpt-shell--format-pattern-line pattern) "\n"))
+                   do (progn
+                        (my-chatgpt-shell--insert-pattern-line pattern)
+                        (insert "\n")))
           (insert "\n"))
       (insert "No candidate clauses available.\n\n"))
     (my-chatgpt-shell--insert-fruit-summary fruits)
@@ -2537,8 +2714,7 @@ Always sets the system prompt. Tatami ingestion now occurs via
          (inbound (buffer-local-value 'my-chatgpt-shell-last-inbound-edn state-buffer))
          (last-edn (buffer-local-value 'my-chatgpt-shell-last-edn state-buffer))
          (state-pattern (buffer-local-value 'my-chatgpt-shell-last-pattern-outcome state-buffer))
-         (pattern-line (let ((my-chatgpt-shell-last-pattern-outcome state-pattern))
-                         (my-chatgpt-shell--pattern-outcome-line 160)))
+         (pattern-outcome state-pattern)
          (last-events (and last-edn
                            (my-chatgpt-shell--events-seq (plist-get last-edn :events)))))
     ;; Layout order: selection/intent summary, focus header, pattern verdict,
@@ -2590,11 +2766,13 @@ Always sets the system prompt. Tatami ingestion now occurs via
                             (if sel-protos
                                 (string-join sel-protos ", ")
                               "(none selected)")))
-            (insert (format "Pattern: %s%s\n"
-                            (or pattern-slug "(unset; C-c C-a to choose)")
-                            (if pattern-slug
-                                " (C-c C-e to edit)"
-                              "")))
+            (insert "Pattern: ")
+            (if pattern-slug
+                (progn
+                  (my-chatgpt-shell--insert-pattern-button pattern-slug pattern-slug)
+                  (insert " (C-c C-e to edit)"))
+              (insert "(unset; C-c C-a to choose)"))
+            (insert "\n")
             (insert (format "Intent: %s%s\n"
                             sel-intent
                             (if intent-sigil-text
@@ -2619,10 +2797,10 @@ Always sets the system prompt. Tatami ingestion now occurs via
             (if focus
                 (insert focus "\n\n")
               (insert "No Tatami focus header captured yet." "\n\n"))
-            (when (or pattern-line last-events inbound)
+            (when (or pattern-outcome last-events inbound)
               (let ((intent-text (or (and last-edn (plist-get last-edn :intent))
                                      sel-intent)))
-                 (my-chatgpt-shell--insert-pattern-verdict pattern-line last-events
+                 (my-chatgpt-shell--insert-pattern-verdict pattern-outcome last-events
                                                           (and inbound (plist-get inbound :patterns))
                                                           intent-text)))
             (let* ((cue-source (my-chatgpt-shell--cue-source inbound last-edn))
@@ -2967,3 +3145,30 @@ Used both for selecting the system prompt and for the mode-line lighter.")
                     (note-text (format " — %s" note-text))
                     (t ""))))
           status)))
+
+(defun my-chatgpt-shell--insert-pattern-candidate (pattern event)
+  (let* ((id (my-chatgpt-shell--pattern-id pattern))
+         (title (my-chatgpt-shell--string-or-nil (plist-get pattern :title)))
+         (score (plist-get pattern :score))
+         (status (and event (my-chatgpt-shell--format-pattern-status event)))
+         (notes (and event (plist-get event :notes)))
+         (score-text (if (numberp score)
+                         (format " [d=%.2f]" score)
+                       ""))
+         (note-text (when (and notes (> (length notes) 0))
+                      (my-chatgpt-shell--truncate notes 140))))
+    (insert "  • ")
+    (my-chatgpt-shell--insert-pattern-anchor title id)
+    (insert score-text)
+    (cond
+     (status
+      (if note-text
+          (insert (format " — %s – %s" status note-text))
+        (insert (format " — %s" status))))
+     (note-text (insert (format " — %s" note-text))))
+    (insert "
+")))
+
+(provide 'aob-chatgpt)
+
+;;; aob-chatgpt.el ends here

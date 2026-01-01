@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# fulab-export: Export Claude sessions to lab/ (idempotent)
+# Usage:
+#   fulab-export                    # export most recent session
+#   fulab-export --list             # list available sessions
+#   fulab-export <session-file>     # export specific session
+#   fulab-export --all              # export all sessions
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
+CLAUDE_DIR="$HOME/.claude/projects"
+
+usage() {
+  echo "Usage: fulab-export [OPTIONS] [SESSION_FILE]"
+  echo ""
+  echo "Export Claude Code sessions to lab/ directory (idempotent - safe to re-run)"
+  echo ""
+  echo "Options:"
+  echo "  --list       List available sessions"
+  echo "  --all        Export all sessions"
+  echo "  --recent N   Export N most recent sessions (default: 1)"
+  echo "  --dry-run    Show what would be exported without writing"
+  echo "  --help       Show this help"
+  echo ""
+  echo "Examples:"
+  echo "  fulab-export                     # export most recent session"
+  echo "  fulab-export --list              # see available sessions"
+  echo "  fulab-export --recent 3          # export 3 most recent"
+  echo "  fulab-export ~/.claude/projects/-home-joe/abc123.jsonl"
+}
+
+list_sessions() {
+  echo "Available Claude sessions:"
+  echo ""
+  find "$CLAUDE_DIR" -name "*.jsonl" ! -name "agent-*" -type f 2>/dev/null | while read -r f; do
+    size=$(du -h "$f" | cut -f1)
+    mod=$(stat -c %y "$f" 2>/dev/null | cut -d. -f1 || stat -f %Sm "$f" 2>/dev/null)
+    name=$(basename "$f")
+    dir=$(basename "$(dirname "$f")")
+    echo "  $mod  $size  $dir/$name"
+  done | sort -r
+}
+
+export_session() {
+  local session_file="$1"
+  local dry_run="${2:-false}"
+
+  if [[ ! -f "$session_file" ]]; then
+    echo "[fulab-export] File not found: $session_file" >&2
+    return 1
+  fi
+
+  local session_id
+  session_id=$(basename "$session_file" .jsonl)
+
+  # Check if already exported (for informational purposes)
+  local existing_raw="$ROOT/lab/raw/${session_id}.json"
+  if [[ -f "$existing_raw" ]]; then
+    echo "[fulab-export] Re-exporting (idempotent): $session_id"
+  else
+    echo "[fulab-export] Exporting: $session_id"
+  fi
+
+  local dry_run_flag=""
+  if [[ "$dry_run" == "true" ]]; then
+    dry_run_flag="--dry-run"
+  fi
+
+  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export-claude.clj" \
+    --session-file "$session_file" \
+    --repo-root "$(pwd)" \
+    --lab-root "$ROOT/lab" \
+    $dry_run_flag
+}
+
+get_recent_sessions() {
+  local count="${1:-1}"
+  find "$CLAUDE_DIR" -name "*.jsonl" ! -name "agent-*" -type f -printf '%T@ %p\n' 2>/dev/null \
+    | sort -rn \
+    | head -n "$count" \
+    | cut -d' ' -f2-
+}
+
+# Parse arguments
+DRY_RUN=false
+RECENT_COUNT=1
+ACTION="recent"
+SESSION_FILE=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --list|-l)
+      ACTION="list"
+      shift
+      ;;
+    --all|-a)
+      ACTION="all"
+      shift
+      ;;
+    --recent|-r)
+      ACTION="recent"
+      RECENT_COUNT="${2:-1}"
+      shift 2
+      ;;
+    --dry-run|-n)
+      DRY_RUN=true
+      shift
+      ;;
+    *)
+      if [[ -f "$1" ]]; then
+        ACTION="single"
+        SESSION_FILE="$1"
+      else
+        echo "[fulab-export] Unknown option or file not found: $1" >&2
+        usage
+        exit 1
+      fi
+      shift
+      ;;
+  esac
+done
+
+# Execute
+case "$ACTION" in
+  list)
+    list_sessions
+    ;;
+  single)
+    export_session "$SESSION_FILE" "$DRY_RUN"
+    ;;
+  all)
+    while IFS= read -r f; do
+      export_session "$f" "$DRY_RUN"
+      echo ""
+    done < <(find "$CLAUDE_DIR" -name "*.jsonl" ! -name "agent-*" -type f 2>/dev/null)
+    ;;
+  recent)
+    while IFS= read -r f; do
+      [[ -n "$f" ]] && export_session "$f" "$DRY_RUN"
+    done < <(get_recent_sessions "$RECENT_COUNT")
+    ;;
+esac

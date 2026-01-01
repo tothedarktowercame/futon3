@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# fulab-narrative: Generate AI-powered narrative summaries of sessions
+# Like a society paper abstract - substantive and engaging
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
+LAB_ROOT="$ROOT/lab"
+
+usage() {
+  echo "Usage: fulab-narrative [OPTIONS] [SESSION_ID]"
+  echo ""
+  echo "Generate an AI-powered narrative summary of a completed session."
+  echo ""
+  echo "Options:"
+  echo "  --words N      Target word count (default: 150)"
+  echo "  --style S      Style: digest (default), technical, casual"
+  echo "  --prompt-only  Just output the prompt (for use with other AI)"
+  echo "  --save         Save to lab/narratives/"
+  echo "  --help         Show this help"
+  echo ""
+  echo "Styles:"
+  echo "  digest     - Society paper abstract style (substantive, precise, engaging)"
+  echo "  technical  - Focus on architecture and engineering decisions"
+  echo "  casual     - Conversational recap"
+  echo ""
+  echo "Examples:"
+  echo "  fulab-narrative                          # summarize most recent"
+  echo "  fulab-narrative --words 250 --style technical"
+  echo "  fulab-narrative --prompt-only | pbcopy   # copy prompt for ChatGPT"
+}
+
+get_most_recent_session() {
+  ls -t "$LAB_ROOT/raw"/*.json 2>/dev/null | head -1 | xargs -r basename | sed 's/\.json$//'
+}
+
+# Parse arguments
+WORDS=150
+STYLE="digest"
+PROMPT_ONLY=""
+SAVE=false
+SESSION_ID=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --words|-w)
+      WORDS="${2:-150}"
+      shift 2
+      ;;
+    --style|-s)
+      STYLE="${2:-digest}"
+      shift 2
+      ;;
+    --prompt-only|-p)
+      PROMPT_ONLY="--prompt-only"
+      shift
+      ;;
+    --save)
+      SAVE=true
+      shift
+      ;;
+    -*)
+      echo "[fulab-narrative] Unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+    *)
+      SESSION_ID="$1"
+      shift
+      ;;
+  esac
+done
+
+# Get session ID
+if [[ -z "$SESSION_ID" ]]; then
+  SESSION_ID=$(get_most_recent_session)
+  if [[ -z "$SESSION_ID" ]]; then
+    echo "[fulab-narrative] No exported sessions found. Run fulab-export first." >&2
+    exit 1
+  fi
+fi
+
+# Check session exists
+if [[ ! -f "$LAB_ROOT/raw/${SESSION_ID}.json" ]]; then
+  echo "[fulab-narrative] Session not exported: $SESSION_ID" >&2
+  echo "[fulab-narrative] Run: fulab-export first" >&2
+  exit 1
+fi
+
+# Generate narrative
+if [[ "$SAVE" == "true" && -z "$PROMPT_ONLY" ]]; then
+  mkdir -p "$LAB_ROOT/narratives"
+  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-narrative.clj" \
+    --session-id "$SESSION_ID" \
+    --lab-root "$LAB_ROOT" \
+    --words "$WORDS" \
+    --style "$STYLE" \
+    $PROMPT_ONLY | tee "$LAB_ROOT/narratives/${SESSION_ID}.txt"
+  echo ""
+  echo "[fulab-narrative] Saved to: $LAB_ROOT/narratives/${SESSION_ID}.txt"
+else
+  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-narrative.clj" \
+    --session-id "$SESSION_ID" \
+    --lab-root "$LAB_ROOT" \
+    --words "$WORDS" \
+    --style "$STYLE" \
+    $PROMPT_ONLY
+fi

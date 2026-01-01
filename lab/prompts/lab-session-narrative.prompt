@@ -1,0 +1,27 @@
+You are generating a narrative summary of a lab session from a Codex session export.
+
+Input: a JSON object with keys like:
+- lab/session-id
+- lab/repo-root
+- lab/timestamp-start
+- lab/timestamp-end
+- lab/user-messages (array of {id, timestamp, text})
+- lab/assistant-messages (array of {id, timestamp, text})
+- lab/trace-path (repo-relative org file with msg:<id> anchors)
+- lab/files-touched
+- lab/commands (optional)
+- lab/errors (optional)
+
+Goal:
+- Produce a concise, flowing narrative in the style of a learned society paper abstract.
+- Be substantive, precise, and engaging without being dry or sensational.
+- Describe what was attempted, what was achieved, and why it matters.
+- Mention key artifacts or files when relevant, but avoid bullet lists.
+
+Constraints:
+- Do not output Org headings or bullet points.
+- Avoid generic recap language.
+- If you cite a key message, include its msg anchor in parentheses, e.g. (lab/trace/xyz.org#msg:abc).
+
+Output:
+- 1-3 short paragraphs of prose (no headings, no bullets).

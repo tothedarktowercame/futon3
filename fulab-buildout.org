@@ -13,7 +13,8 @@ devmaps and intended as a working spec for future Claude agents.
 Cross-references:
 - [[file:holes/futon3.devmap][futon3.devmap]] — Prototype 4 (Trail & Proof-State Journal), Prototype 5 (Workday Instrumentation)
 - [[file:holes/futon4.devmap][futon4.devmap]] — Lab notebook architecture (fuclaude, fucodex, lab-export)
-- [[file:../futon4/][futon4/]] — Reference implementation of fuclaude wrapper and lab-export-claude.clj
+- [[file:src/f2/claude.clj][src/f2/claude.clj]] — fuclaude wrapper (session management + streaming)
+- [[file:dev/lab-export-claude.clj][dev/lab-export-claude.clj]] — lab export reference script
 
 * Phase 1: Session Management Foundation
 

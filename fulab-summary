@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# fulab-summary: Generate summaries of completed Claude sessions
+# Usage:
+#   fulab-summary                     # summarize most recent exported session
+#   fulab-summary --list              # list exported sessions
+#   fulab-summary <session-id>        # summarize specific session
+#   fulab-summary --save              # save summary to lab/summaries/
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
+LAB_ROOT="$ROOT/lab"
+
+usage() {
+  echo "Usage: fulab-summary [OPTIONS] [SESSION_ID]"
+  echo ""
+  echo "Generate summaries of completed Claude sessions (requires prior export)"
+  echo ""
+  echo "Options:"
+  echo "  --list       List exported sessions available for summary"
+  echo "  --save       Save summary to lab/summaries/ (default: print to stdout)"
+  echo "  --format F   Output format: org (default), json, text"
+  echo "  --help       Show this help"
+  echo ""
+  echo "Examples:"
+  echo "  fulab-summary                        # summarize most recent"
+  echo "  fulab-summary --list                 # see exported sessions"
+  echo "  fulab-summary abc123-def456          # summarize by ID"
+  echo "  fulab-summary --save --format json   # save as JSON"
+}
+
+list_sessions() {
+  echo "Exported sessions available for summary:"
+  echo ""
+  if [[ ! -d "$LAB_ROOT/raw" ]]; then
+    echo "  (none - run fulab-export first)"
+    return
+  fi
+  for f in "$LAB_ROOT/raw"/*.json; do
+    [[ -f "$f" ]] || continue
+    size=$(du -h "$f" | cut -f1)
+    mod=$(stat -c %y "$f" 2>/dev/null | cut -d. -f1 || stat -f %Sm "$f" 2>/dev/null)
+    name=$(basename "$f" .json)
+    # Check if summary exists
+    if [[ -f "$LAB_ROOT/summaries/${name}.org" ]]; then
+      status="[summarized]"
+    else
+      status=""
+    fi
+    echo "  $mod  $size  $name $status"
+  done | sort -r
+}
+
+get_most_recent_session() {
+  ls -t "$LAB_ROOT/raw"/*.json 2>/dev/null | head -1 | xargs -r basename | sed 's/\.json$//'
+}
+
+summarize_session() {
+  local session_id="$1"
+  local format="$2"
+  local save="$3"
+
+  local raw_file="$LAB_ROOT/raw/${session_id}.json"
+  if [[ ! -f "$raw_file" ]]; then
+    echo "[fulab-summary] Session not exported: $session_id" >&2
+    echo "[fulab-summary] Run: fulab-export <session-file>" >&2
+    return 1
+  fi
+
+  local output_flag=""
+  if [[ "$save" == "true" ]]; then
+    mkdir -p "$LAB_ROOT/summaries"
+    output_flag="--output $LAB_ROOT/summaries/${session_id}.${format}"
+  fi
+
+  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-summary.clj" \
+    --session-id "$session_id" \
+    --lab-root "$LAB_ROOT" \
+    --format "$format" \
+    $output_flag
+}
+
+# Parse arguments
+FORMAT="org"
+SAVE=false
+ACTION="recent"
+SESSION_ID=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --list|-l)
+      ACTION="list"
+      shift
+      ;;
+    --save|-s)
+      SAVE=true
+      shift
+      ;;
+    --format|-f)
+      FORMAT="${2:-org}"
+      shift 2
+      ;;
+    -*)
+      echo "[fulab-summary] Unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+    *)
+      ACTION="specific"
+      SESSION_ID="$1"
+      shift
+      ;;
+  esac
+done
+
+# Execute
+case "$ACTION" in
+  list)
+    list_sessions
+    ;;
+  specific)
+    summarize_session "$SESSION_ID" "$FORMAT" "$SAVE"
+    ;;
+  recent)
+    SESSION_ID=$(get_most_recent_session)
+    if [[ -z "$SESSION_ID" ]]; then
+      echo "[fulab-summary] No exported sessions found. Run fulab-export first." >&2
+      exit 1
+    fi
+    summarize_session "$SESSION_ID" "$FORMAT" "$SAVE"
+    ;;
+esac

@@ -11,7 +11,7 @@
 @next Deliver the pending inclusion UX, document modern import/export/migration shims, and grow the QA + contributor guide so a “revived” release can be tagged.
 
 
-! instantiated-by: Prototype 0 (Running Since 29 July 2025) [💗/从 🌏/甲]
+! instantiated-by: Prototype 0 (Running Since 29 July 2025) [🙅/久 🌝/用]
   + context: Prototype 0 establishes the symbolic foundations, artefact inventory, and DREAM logic.
   + if: You want a coherent first cycle of a year-long 12-prototype run.
   + however: Symbolic activation does not yet translate into memory operations or agent affordances.
@@ -25,7 +25,7 @@
     - `test/arxana-bootstrap-test.el` — Baseline harness validation (3 tests).
     - `arxana-tangled.el` — Generated single-source output (3752 lines) proving round-trip.
 
-! instantiated-by: Prototype 1 — Arxana Reboot (Week-long target) [👎/新 🎋/长]
+! instantiated-by: Prototype 1 — Arxana Reboot (Week-long target) [🙅/久 💖/用]
   + context: Legacy literate-programming structure exists but is dormant.
   + if: You want stable parsing, node navigation, and save-back-to-LaTeX working.
   + however: Legacy Emacs-Lisp and refactored Clojure schemas diverge.
@@ -62,35 +62,35 @@
     - `.github/workflows/test.yml` or equivalent CI configuration.
     - Git tag marking the "revived" Prototype 1 release.
 
-! instantiated-by: Prototype 2 — Graph Memory (Datascript) [💖/已 💤/生活]
+! instantiated-by: Prototype 2 — Graph Memory (Datascript) [🙅/久 💤/无]
   + context: The hyperedge schema for Arxana exists on paper but not in running code.
   + if: You want argument fragments to become addressable nodes with provenance.
   + however: there is no minimal memory manager wiring Arxana buffers to Datascript.
   + then: implement `add-node`, `activate-node`, and `link-node`; persist them via Datascript; replay a session to prove round-trips.
   + because: without a living graph memory, Arxana never escapes editor cosplay.
 
-! instantiated-by: Prototype 3 — Flexiarg ⇄ Arxana Integration [💖/双]
+! instantiated-by: Prototype 3 — Flexiarg ⇄ Arxana Integration [🙅/双 💬/卡]
   + context: Flexiarg is acting as a pidgin for arguments and patterns.
   + if: You want arguments to compile into graph nodes and be editable via Arxana.
   + however: No translation layer exists between pidgin text and structured memory entries.
   + then: Define schema mapping: argument-block → rule node (Q/A pair).
   + because: This yields bidirectional editing: human-readable ↔ machine-structured.
 
-! instantiated-by: Prototype 4 — Agent Layer Bridge (FUTON3) [📁/不能 👐/但]
+! instantiated-by: Prototype 4 — Agent Layer Bridge (FUTON3) [👐/么 🙅/无]
   + context: Agents can “speak” flexiarg but cannot yet access memory graphs.
   + if: You want pattern-aware agents who can detect tension, link motifs, and apply PIDGIN→PROSE.
   + however: No API exists to let a GPT-based agent query the graph.
   + then: Create REPL-level bridge (datascript queries + JSON-rpc + Emacs functions).
   + because: This is what upgrades GPT into a pattern-capable agent.
 
-! instantiated-by: Prototype 5 — Multi-user Memory (MUSN revival) [🔦/在 🏡/但]
+! instantiated-by: Prototype 5 — Multi-user Memory (MUSN revival) [🔦/门 🙅/互]
   + context: MUSN existed as a concept for multi-user semantic memory.
   + if: You want collaborators (Serena, Rob, Harvinder, etc.) to share a semantic space.
   + however: No multi-user or sync layer exists yet.
   + then: Use Datascript local + XTDB remote as stepping stones.
   + because: This will open the door to multi-agent co-reasoning and shared prototyping.
 
-! instantiated-by: Prototype 6 — Argumentarium / Scholium Mode [🌲/木 🌳/但]
+! instantiated-by: Prototype 6 — Argumentarium / Scholium Mode [🐲/久 🙅/用]
   + context: You want something like Spinoza's *Ethics* but with imports, hypergraphs, and links.
   + if: You want a library of arguments with provenance, alternative proofs, counterproofs.
   + however: Current flexiargs do not yet link into a live scholium tree.
@@ -117,42 +117,42 @@
     - `docs/inclusion-ui.md` documenting visual affordances and toggle commands.
     - Integration test verifying main buffer + display buffer side-by-side.
 
-! instantiated-by: Prototype 7 — XTDB Integration [⌛️/久 💖/长]
+! instantiated-by: Prototype 7 — XTDB Integration [⌛️/久 🐜/分]
   + context: Bi-temporal, multi-user storage needed for long-term evolution.
   + if: You want durability, branching histories, provenance queries.
   + however: XTDB idioms differ from Datascript; schema migration needed.
   + then: Rekey schema, add transaction logs, implement time-travel queries.
   + because: This turns Arxana into a serious memory engine.
 
-! instantiated-by: Prototype 8 — Pattern Library Activation [💤/但 💖/却]
+! instantiated-by: Prototype 8 — Pattern Library Activation [🐺/已 💬/本]
   + context: You have dozens of patterns (Mojo, ORP, Paramita, Flexiarg, etc.).
   + if: You want agents to recommend patterns or detect pattern-relevant situations.
   + however: Patterns are not yet encoded in memory or linked to triggers.
   + then: Import patterns as graph rules; map IF/HOWEVER/THEN/BECAUSE into triggers & actions.
   + because: This yields genuine pattern-aware intelligence.
 
-! instantiated-by: Prototype 9 — StackExchange Import [💖/叉 🙅/无]
+! instantiated-by: Prototype 9 — StackExchange Import [🙅/叉 💤/去]
   + context: StackExchange holds thousands of argued Q/A pairs that fit Arxana’s schema.
   + if: You want to harvest them as production rules with provenance.
   + however: there is no importer aligning their Markdown into our graph schema.
   + then: build a parser, map Q/A + comments into rule nodes, annotate tags, and cross-index them with existing flexiargs.
   + because: seeding the memory with curated Q/A pairs gives Arxana instant argumentative density.
 
-! instantiated-by: Prototype 10 — Corpus Mathematics Layer [👯/但 🐺/却]
+! instantiated-by: Prototype 10 — Corpus Mathematics Layer [👯/未 🙅/以]
   + context: You want to bridge natural/formal logic (Strand 1B).
   + if: You want Dirichlet distributions and Abelian groups to live in the same memory model.
   + however: No symbolic math integration exists yet.
   + then: Build math namespace + flexiarg-lemma type + REPL test harness.
   + because: This is how FUTON becomes an “AI Scientist.”
 
-! instantiated-by: Prototype 11 — Literary Interface (Penmaster) [💖/好]
+! instantiated-by: Prototype 11 — Literary Interface (Penmaster) [🙅/也 📎/久]
   + context: You want Arxana to also serve as a book-editing and generative-literary tool.
   + if: You want to edit Penmaster or draft your book via Arxana blocks.
   + however: No good UI for long-form text yet.
   + then: Add “manuscript mode” + chunking + cross-reference map.
   + because: FUTON becomes the writing environment.
 
-! instantiated-by: Prototype 12 — Year-End Synthesis [💗/末 🌽/年]
+! instantiated-by: Prototype 12 — Year-End Synthesis [🌽/末 🌅/以]
   + context: The prototype cycle ends; reflection and forward-planning needed.
   + if: You want long-term stability, and upgraded beta-schema.
   + however: Accumulated divergence between prototypes must be unified.

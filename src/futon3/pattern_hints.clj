@@ -150,6 +150,19 @@
                (map (juxt :id identity))
                @ldts-patterns)))
 
+(def ^:private max-missing-target-warnings 5)
+(defonce ^:private !missing-target-warnings (atom 0))
+
+(defn- warn-missing-targets [sigils prototypes]
+  (let [count (swap! !missing-target-warnings inc)
+        label (if (seq prototypes)
+                "no sigils resolved from prototypes"
+                "no sigils/prototypes supplied")]
+    (when (<= count max-missing-target-warnings)
+      (println (str "[pattern-hints] " label)
+               {:sigils (boolean (seq sigils))
+                :prototypes (boolean (seq prototypes))}))))
+
 (defn- emoji-distance [a b]
   (if (= a b)
     0.0
@@ -281,6 +294,8 @@
                          (glove-neighbors seed-ids glove-limit)
                          [])
         merged-patterns (merge-patterns patterns glove-patterns pattern-limit)]
+    (when-not (seq targets)
+      (warn-missing-targets sigils prototypes))
     {:patterns merged-patterns
      :glove-patterns glove-patterns
      :fruits (if (seq targets)

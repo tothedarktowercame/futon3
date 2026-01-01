@@ -109,3 +109,39 @@ Trail events should flow to futon1 with pattern/obligation metadata.
 
 ** TODO Expose =/musn/trails/proof= endpoint
 Export proof-state journal for futon4 archives.
+
+** TODO Codex stream refinements
+Decide whether to surface =event_msg/agent_reasoning= or =response_item/reasoning= entries in the Codex UI/logs.
+
+* 2026-01-01 — Fucodex Parity Scaffolding
+
+** Clocked-in Pattern
+- fulab/clock-in (intent: establish fucodex parity with f2/claude session handling)
+
+** Pattern Dependencies
+- fulab/pattern-dep (reused claude session flow as the dependency source)
+
+** Work
+- Created =src/f2/codex.clj= by mirroring the claude subprocess manager, switching defaults to codex.
+- Added codex endpoints to =src/f2/ui.clj= for run/sessions/events/stream/cancel/approve/deny/input.
+- Added codex resume support and session-id capture for parity with claude.
+- Hardened codex stream-json parsing to accept likely variant keys/types.
+- Added =contrib/futon3-codex.el= with session resume helpers and CLI session registry.
+- Updated codex parsing to accept line-delimited JSON with =session_id= + =text= fields (no =type=).
+- Extended codex parsing to accept =event_msg/agent_message= and =response_item/message= payloads with output_text.
+- Added handling for =response_item/custom_tool_call_output= to emit tool result events.
+- Added handling for =response_item/custom_tool_call= to emit tool call events.
+- Added handling for =response_item/function_call= and =response_item/function_call_output= to emit tool call/result events.
+- Added handling for Codex exec JSONL events (=thread.started=, =item.completed= agent_message).
+- Switched Codex CLI invocation to =codex exec --json= (removes unsupported =--print= flags).
+- Added =--skip-git-repo-check= to Codex CLI invocation for simpler runs outside repos.
+- Smoke-tested Codex run + resume via emacsclient with the new CLI invocation.
+
+** Artifacts
+- =src/f2/codex.clj=
+- =src/f2/ui.clj=
+- =contrib/futon3-codex.el=
+
+** Clock-Out Summary
+- status: partial (Codex exec JSONL works; tool event types beyond custom_tool_call/function_call still unverified)
+- next: decide whether to pass =--skip-git-repo-check= or require repo cwd in the client.

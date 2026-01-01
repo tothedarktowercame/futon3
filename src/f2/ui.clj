@@ -7,6 +7,7 @@
             [clojure.string :as str]
             [f0.clock :as clock]
             [f2.claude :as claude]
+            [f2.codex :as codex]
             [futon3.cue-embedding :as cue]
             [futon3.trail-bridge :as trail-bridge]
             [futon3.learn-or-act :as learn-act]
@@ -69,6 +70,57 @@
      :consistency (semantics/check-consistency history)}))
 
 (def export-path "dev/scenario.edn")
+
+;; --- Codex session streaming ---
+
+(defn- stream-codex-events!
+  "Stream events from a Codex session over WebSocket."
+  [request session-id]
+  (http/with-channel request channel
+    (if-let [sub-ch (codex/subscribe! session-id)]
+      (do
+        (http/send! channel (json/encode {:ok true :subscribed session-id}))
+        (async/go-loop []
+          (if-let [event (async/<! sub-ch)]
+            (do
+              (http/send! channel (json/encode event))
+              (if (#{:session/finished :session/error} (:event/type event))
+                (do
+                  (codex/unsubscribe! session-id sub-ch)
+                  (http/close channel))
+                (recur)))
+            (http/close channel)))
+        (http/on-close channel
+                       (fn [_] (codex/unsubscribe! session-id sub-ch))))
+      (do
+        (http/send! channel (json/encode {:ok false :error "session-not-found"}))
+        (http/close channel)))))
+
+(defn- handle-codex-run [payload]
+  (let [result (codex/start-session! payload)]
+    (if (:ok result)
+      (json-response 201 result)
+      (json-response 400 result))))
+
+(defn- handle-codex-resume [payload]
+  (let [result (codex/resume-session! payload)]
+    (if (:ok result)
+      (json-response 201 result)
+      (json-response 400 result))))
+
+(defn- handle-codex-cancel [session-id]
+  (if-let [result (codex/cancel-session! session-id)]
+    (json-response 200 result)
+    (json-response 404 {:ok false :error "session-not-found"})))
+
+(defn- handle-codex-approve [session-id call-id]
+  (json-response 200 (codex/approve-tool-call! session-id call-id)))
+
+(defn- handle-codex-deny [session-id call-id reason]
+  (json-response 200 (codex/deny-tool-call! session-id call-id reason)))
+
+(defn- handle-codex-input [session-id input]
+  (json-response 200 (codex/send-input! session-id input)))
 
 ;; --- Claude session streaming ---
 
@@ -183,6 +235,55 @@
       (and (= method :post) (str/starts-with? uri "/claude/input/"))
       (let [session-id (extract-path-param uri "/claude/input/")]
         (handle-claude-input session-id (:input @payload)))
+
+      ;; Codex session management
+      (and (= method :post) (= uri "/codex/run"))
+      (safe-handler #(handle-codex-run @payload))
+
+      (and (= method :post) (= uri "/codex/resume"))
+      (safe-handler #(handle-codex-resume @payload))
+
+      (and (= method :get) (= uri "/codex/sessions"))
+      (json-response 200 {:sessions (codex/list-sessions)})
+
+      (and (= method :get) (str/starts-with? uri "/codex/session/"))
+      (let [session-id (extract-path-param uri "/codex/session/")]
+        (if-let [session (codex/get-session session-id)]
+          (json-response 200 session)
+          (json-response 404 {:ok false :error "session-not-found"})))
+
+      (and (= method :get) (str/starts-with? uri "/codex/events/"))
+      (let [path-and-query (extract-path-param uri "/codex/events/")
+            [session-id query] (str/split path-and-query #"\?" 2)
+            offset (when query
+                     (some->> (re-find #"offset=(\d+)" query)
+                              second
+                              parse-long))]
+        (if-let [events (codex/get-events session-id {:offset (or offset 0)})]
+          (json-response 200 events)
+          (json-response 404 {:ok false :error "session-not-found"})))
+
+      (and (= method :get) (str/starts-with? uri "/codex/stream/"))
+      (let [session-id (extract-path-param uri "/codex/stream/")]
+        (stream-codex-events! request session-id))
+
+      (and (= method :post) (str/starts-with? uri "/codex/cancel/"))
+      (let [session-id (extract-path-param uri "/codex/cancel/")]
+        (handle-codex-cancel session-id))
+
+      (and (= method :post) (str/starts-with? uri "/codex/approve/"))
+      (let [path (extract-path-param uri "/codex/approve/")
+            [session-id call-id] (str/split path #"/" 2)]
+        (handle-codex-approve session-id call-id))
+
+      (and (= method :post) (str/starts-with? uri "/codex/deny/"))
+      (let [path (extract-path-param uri "/codex/deny/")
+            [session-id call-id] (str/split path #"/" 2)]
+        (handle-codex-deny session-id call-id (:reason @payload)))
+
+      (and (= method :post) (str/starts-with? uri "/codex/input/"))
+      (let [session-id (extract-path-param uri "/codex/input/")]
+        (handle-codex-input session-id (:input @payload)))
 
       ;; Existing MUSN endpoints
       :else

@@ -1,0 +1,13 @@
+[{:event/type :fubar/mission-abort
+  :event/ts #inst "2026-01-02T00:40:13.000Z"
+  :summary "Partial fubar mission: wired aob/Arxana hooks and fubar session latch; mission aborted due to aob/Arxana instability."
+  :evidence/path "resources/fubar-events.edn"
+ :evidence/note "Contains partial trace (clock-in + pattern clicks)."}
+ {:event/type :fucodex/contribution
+  :event/ts #inst "2026-01-02T00:40:13.000Z"
+  :summary "Implemented fubar.el client: fulab-style event logging from Emacs with HTTP ingest + EDN fallback, session latch, and fubar trial mission scaffolding."
+  :evidence/path "contrib/fubar.el"}
+ {:event/type :fucodex/contribution
+  :event/ts #inst "2026-01-02T00:40:13.000Z"
+  :summary "Documented Fulab WIP endpoints and fubar logging status in Futon4 docbook working docs."
+  :evidence/path "/home/joe/code/futon4/docs/docbook-working/futon3/futon3-f056d8a81559.org"}]

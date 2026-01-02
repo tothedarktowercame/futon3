@@ -1,0 +1,37 @@
+#+TITLE: Fubar Trial Mission (Side Quest)
+
+Goal: exercise the fubar trail end-to-end (aob + Arxana) and inspect the log.
+This uses the local EDN log `resources/fubar-events.edn`.
+
+* Setup
+
+1. Ensure fubar is loaded (load `contrib/fubar.el`).
+2. Confirm endpoint is off so we log locally:
+   - `M-: (setq my-fubar-fulab-endpoint nil)`
+3. Optional: clear the log for a clean run:
+   - `M-: (with-temp-file my-fubar-edn-log-file (insert \"[]\\n\"))`
+
+* Mission (3 steps)
+
+** Step 1: Clock in (aob-chatgpt)
+- In a chatgpt-shell buffer, run: `M-x my-fubar-clock-in`
+- Use a pattern id + intent you care about.
+- This binds the fubar session id to the current turn (via aob).
+
+** Step 2: Pattern trail (aob + Arxana)
+- Click a pattern in the HUD (aob); this should log `:pattern/used`.
+- Open the pattern in Arxana and make a tiny edit, then save.
+  - Save should log `:doc/written` + `:artifact` for the pattern file.
+
+** Step 3: Society paper + clock out (AI-assisted)
+- Use ChatGPT-API (futon5.llm) to draft a short summary.
+- Paste the summary into: `M-x my-fubar-society-paper`
+- Finish with: `M-x my-fubar-clock-out`
+
+* Verification
+
+- Open `resources/fubar-events.edn` and confirm:
+  - `:clock-in/start` event with your pattern id
+  - `:pattern/used` events for HUD and Arxana open
+  - `:doc/written` + artifact entry for the Arxana save
+  - `:clock-out/complete` includes `:society-paper`

@@ -203,8 +203,8 @@ When nil, fall back to `org-agenda-files`."
   "When non-nil, append each HUD manifest to `my-futon3-server-buffer'.")
 (defvar my-chatgpt-shell-sync-futon1-manifest nil
   "When non-nil, POST HUD manifests to the Futon1 API.")
-(defvar my-chatgpt-shell--last-context-click nil
-  "Most recent Tatami Context click as a plist (pattern/turn/when).")
+(defvar my-chatgpt-shell-log-pattern-clicks nil
+  "When non-nil, log pattern clicks into Futon1 as scholia.")
 (defvar my-chatgpt-shell-futon1-endpoint "http://localhost:8080/api/alpha"
   "Base URL for Futon1 API endpoints consumed by the HUD sync.")
 (defvar my-chatgpt-shell-request-timeout 5
@@ -457,6 +457,12 @@ Set to nil to disable persistence entirely.")
       (my-chatgpt-shell--string-or-nil (plist-get my-chatgpt-shell-last-edn :turn-id))
       (my-chatgpt-shell--now-iso)))
 
+(defun my-chatgpt-shell--fubar-session-id ()
+  (format "fubar/%s" (my-chatgpt-shell--current-turn-id)))
+
+(with-eval-after-load 'fubar
+  (setq my-fubar-session-id-fn #'my-chatgpt-shell--fubar-session-id))
+
 (defun my-chatgpt-shell--hud-turn-entity-id (turn-id)
   (format "hud/turn/%s" turn-id))
 
@@ -514,28 +520,8 @@ Set to nil to disable persistence entirely.")
                                            :dst pattern-id
                                            :last-seen stamp)))))
 
-(defun my-chatgpt-shell--log-pattern-click (pattern-id &optional source)
-  (let* ((turn-id (my-chatgpt-shell--current-turn-id))
-         (timestamp (my-chatgpt-shell--now-iso))
-         (note (string-trim (format "clickthrough%s"
-                                    (if source (format " (%s)" source) "")))))
-    (setq my-chatgpt-shell--last-context-click
-          (list :pattern-id pattern-id
-                :turn-id turn-id
-                :timestamp timestamp
-                :source source))
-    (my-chatgpt-shell--log-turn-scholium "context-click" pattern-id note)))
-
 (defun my-chatgpt-shell--log-pattern-save (pattern-id &optional notes)
-  (let* ((last my-chatgpt-shell--last-context-click)
-         (last-pattern (plist-get last :pattern-id))
-         (note (if (and last-pattern (string= last-pattern pattern-id))
-                   (string-trim (format "%s%s"
-                                        (or notes "")
-                                        (format " (clicked %s)"
-                                                (or (plist-get last :timestamp) "recently"))))
-                 notes)))
-    (my-chatgpt-shell--log-turn-scholium "pattern-save" pattern-id note)))
+  (my-chatgpt-shell--log-turn-scholium "pattern-save" pattern-id notes))
 
 (defun my-chatgpt-shell--sync-futon1-manifest (manifest)
   "Mirror MANIFEST into Futon1 via existing API endpoints."
@@ -1640,13 +1626,30 @@ r a live process in the *headless-api-server* buffer."
                 (format " [d=%.2f]" score)
               ""))))
 
+(declare-function arxana-browser-patterns--ensure-frame "arxana-browser-patterns")
+(declare-function my-fubar-log-pattern-used "fubar" (session-id pattern-id &optional reason))
+(declare-function my-fubar-session-id "fubar" ())
+
 (defun my-chatgpt-shell--open-pattern (pattern-id)
   (when (and (stringp pattern-id)
              (fboundp 'my-futon3-set-active-pattern))
     (my-futon3-set-active-pattern pattern-id))
-  (my-chatgpt-shell--log-pattern-click pattern-id "tatami-context")
+  (when (fboundp 'my-futon3--capture-pattern-provenance)
+    (my-futon3--capture-pattern-provenance pattern-id "tatami-context"))
+  (when my-chatgpt-shell-log-pattern-clicks
+    (my-chatgpt-shell--log-turn-scholium "context-click" pattern-id "clickthrough"))
+  (when (fboundp 'my-fubar-session-id)
+    (my-fubar-log-pattern-used (my-fubar-session-id) pattern-id "tatami-context"))
   (cond
-   ((fboundp 'arxana-patterns-open) (arxana-patterns-open pattern-id))
+   ((fboundp 'arxana-patterns-open)
+    (let ((frame (when (fboundp 'arxana-browser-patterns--ensure-frame)
+                   (arxana-browser-patterns--ensure-frame))))
+      (when (frame-live-p frame)
+        (select-frame-set-input-focus frame))
+      (arxana-patterns-open pattern-id)
+      (when (frame-live-p frame)
+        (with-selected-frame frame
+          (delete-other-windows)))))
    (t (message "Pattern browser not available; load Futon4/arxana."))))
 
 (defun my-chatgpt-shell--insert-pattern-button (label pattern-id)
@@ -2695,6 +2698,8 @@ Always sets the system prompt. Tatami ingestion now occurs via
                (get-buffer my-chatgpt-shell-context-buffer-name))))
     (when (and ensure buf)
       (with-current-buffer buf
+        (set-buffer-multibyte t)
+        (setq-local buffer-file-coding-system 'utf-8-unix)
         (unless my-chatgpt-shell--context-face-cookie
           (setq my-chatgpt-shell--context-face-cookie
                 (face-remap-add-relative 'default

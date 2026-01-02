@@ -13,12 +13,21 @@
 (def ^:private lock (Object.))
 (def ^:private catalog (atom nil))
 
+(def ^:private aif-evidence-schema
+  [:map
+   [:g-mean :double]
+   [:tau-range [:tuple :double :double]]
+   [:action-counts [:map-of :keyword :int]]
+   [:constraint-violations {:optional true} [:vector :string]]])
+
 (def ^:private request-schema
   [:map {:closed true}
    [:pattern/id [:string {:min 1}]]
    [:context [:string {:min 1}]]
    [:evidence {:optional true}
     [:maybe [:sequential any?]]]
+   [:aif-trace {:optional true}
+    [:maybe aif-evidence-schema]]
    [:sigils {:optional true}
     [:maybe [:sequential [:string {:min 1}]]]]
    [:prototypes {:optional true}
@@ -144,7 +153,7 @@
 (defn check!
   "Evaluate REQUEST {:pattern/id .. :context .. :evidence [...]}.
    Returns {:ok bool :status kw :proof map ...}."
-  [{:keys [context evidence sigils prototypes origin run-id]
+  [{:keys [context evidence sigils prototypes origin run-id aif-trace]
     :proof/keys [id recorded]
     :as request
     pattern-id :pattern/id}]
@@ -165,22 +174,23 @@
           (let [text (normalized-text context evidence)
                 hits (hit-set (:pattern/hotwords pattern) text)
                 status (determine-status {:hits hits :evidence (seq evidence)})
-                proof {:proof/id (or id (random-proof-id))
-                       :proof/run-id (or run-id (random-proof-id))
-                       :proof/recorded (or recorded (clock/->iso-string))
-                       :pattern/id pattern-id
-                       :pattern/title (:pattern/title pattern)
-                       :pattern/rationale (:pattern/rationale pattern)
-                       :pattern/hotwords (:pattern/hotwords pattern)
-                       :pattern/hanzi (:pattern/hanzi pattern)
-                       :check/context context
-                       :check/evidence (vec evidence)
-                       :check/sigils (vec sigils)
-                       :check/prototypes (vec prototypes)
-                       :check/origin origin
-                       :proof/status status
-                       :proof/hits (vec (sort hits))
-                       :proof/similarity (similarity hits (count (:pattern/hotwords pattern)))}
+                proof (cond-> {:proof/id (or id (random-proof-id))
+                               :proof/run-id (or run-id (random-proof-id))
+                               :proof/recorded (or recorded (clock/->iso-string))
+                               :pattern/id pattern-id
+                               :pattern/title (:pattern/title pattern)
+                               :pattern/rationale (:pattern/rationale pattern)
+                               :pattern/hotwords (:pattern/hotwords pattern)
+                               :pattern/hanzi (:pattern/hanzi pattern)
+                               :check/context context
+                               :check/evidence (vec evidence)
+                               :check/sigils (vec sigils)
+                               :check/prototypes (vec prototypes)
+                               :check/origin origin
+                               :proof/status status
+                               :proof/hits (vec (sort hits))
+                               :proof/similarity (similarity hits (count (:pattern/hotwords pattern)))}
+                        aif-trace (assoc :check/aif-trace aif-trace))
                 missing (cond-> []
                           (= status :needs-evidence) (conj :evidence)
                           (= status :needs-context) (conj :context))

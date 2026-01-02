@@ -64,6 +64,7 @@
      :workday/actor actor
      :workday/activity activity
      :workday/evidence evidence
+     :workday/aif-trace (:aif-trace payload)
      :workday/t timestamp
      :workday/received now
      :workday/source (or source :ws)
@@ -110,6 +111,9 @@
                     (:workday/activity entry))
        :evidence (or (:evidence check)
                      (:workday/evidence entry))
+       :aif-trace (or (:aif-trace check)
+                      (:aif-trace payload)
+                      (:workday/aif-trace entry))
        :sigils (or (:sigils check) (:workday/sigils entry))
        :prototypes (or (:prototypes check) (:workday/prototypes entry))
        :origin {:source :workday

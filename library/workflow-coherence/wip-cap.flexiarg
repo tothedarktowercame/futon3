@@ -1,0 +1,25 @@
+@flexiarg workflow-coherence/wip-cap
+@title WIP Cap Enforcement
+@sigils [🥨/限 🚦/停]
+@factor Concentration (samadhi)
+@source aob.org salient migration
+
+! conclusion:
+  regularly review WIP balance; more than 3 active focus areas requires pausing one before starting new work
+
+  + context: Cognitive load grows nonlinearly with active threads; beyond a threshold, progress on all threads degrades.
+
+  + IF:
+    more than 3 focus areas are marked active simultaneously
+
+  + HOWEVER:
+    new work feels urgent and pausing feels like loss, so WIP creeps upward without deliberate enforcement
+
+  + THEN:
+    block new work initiation until one active thread is paused or completed; surface the constraint in Stack HUD
+
+  + BECAUSE:
+    bounded WIP protects depth of focus and prevents the affect collapse that accompanies overload
+
+  + CHECK:
+    count of items with status=active in futon1 or Org <= 3

@@ -1,0 +1,25 @@
+@flexiarg workflow-coherence/weekly-rhythm
+@title Weekly Rhythm Check
+@sigils [🥨/律 🗓️/週]
+@factor Mindful apprehension (sati)
+@source aob.org salient migration
+
+! conclusion:
+  verify that AOB check-in and Ambitions sync occurred within the past 7 days
+
+  + context: Epistemic rhythm depends on regular review cycles; skipped weeks accumulate drift and allow salients to decay unnoticed.
+
+  + IF:
+    more than 7 days have passed since the last AOB or Ambitions sync event
+
+  + HOWEVER:
+    without automated detection, missed weeks go unnoticed until cognitive load spikes or commitments slip
+
+  + THEN:
+    flag the gap in Stack HUD; prompt review before new work starts
+
+  + BECAUSE:
+    weekly rhythm prevents unbounded WIP, keeps salients fresh, and makes life feel lighter and more tractable
+
+  + CHECK:
+    timestamp of last sync event in futon1 or Tatami logs < 7 days ago

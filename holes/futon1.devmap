@@ -38,7 +38,7 @@ intended to provide.
 @next
 Consolidate the documentation and contracts that define how text becomes graph state; stabilise the naming and configuration surfaces shared across CLI, API, and ingest workflows; and refine test coverage so the deterministic substrate remains reliable as modules evolve. Maintain FUTON1’s minimal scope—storage, hydration, and inspection—while ensuring that higher futons can depend on its interfaces without ambiguity.
 
-! instantiated-by: Prototype 0 — Baseline Deterministic Substrate [🌝/四 🏃/世]
+! instantiated-by: Prototype 0 — Baseline Deterministic Substrate [🌝/四 🐜/基]
 
 + context:
   FUTON1 provides a deterministic storage substrate built from the demo/client
@@ -99,7 +99,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     comparison.
 
 
-! instantiated-by: Prototype 1 — Demo/Client Determinism & Focus-Header Instrumentation [💤/每 👴/不要]
+! instantiated-by: Prototype 1 — Demo/Client Determinism & Focus-Header Instrumentation [💤/每 👴/律]
 
 + context:
   The `apps/demo` and `apps/client` workflow is the canonical entry point for
@@ -150,7 +150,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - CI reports confirming stability of determinism across tagged commits.
   - Clear README references linking these fixtures to FUTON1’s guarantees.
 
-! instantiated-by: Prototype 2 — NLP Interface Consolidation [👴/申 🌀/也]
+! instantiated-by: Prototype 2 — NLP Interface Consolidation [👴/申 🌀/内]
 
 + context:
   `apps/nlp-interface` provides deterministic NER/POS tagging and a small set of
@@ -194,7 +194,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - Updated README documenting pipeline flow and public functions.
   - Agreement across ingest and demo/client modules on API usage.
 
-! instantiated-by: Prototype 3 — Graph-Memory API & Seed Graph [💤/已 🙅/乃]
+! instantiated-by: Prototype 3 — Graph-Memory API & Seed Graph [💤/已 🙅/络]
 
 + context:
   `apps/graph-memory` defines the Datascript schema, salience metadata, and
@@ -251,7 +251,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     XTDB layout.
 
 
-! instantiated-by: Prototype 4 — XTDB Operations & REPL Workflows [🐜/分 🔺/今]
+! instantiated-by: Prototype 4 — XTDB Operations & REPL Workflows [🐜/分 👭/今]
 
 + context:
   FUTON1 mirrors all graph mutations into XTDB and provides a stable hydration
@@ -305,7 +305,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - Consistent behaviour between the Emacs view and the REPL inspection entry
     points.
 
-! instantiated-by: Prototype 5 — Open-World Ingest Workflows [🔦/开 🎑/门]
+! instantiated-by: Prototype 5 — Open-World Ingest Workflows [🔦/开 👭/书]
 
 + context:
   `apps/open-world-ingest` streams arbitrary text through a deterministic
@@ -397,7 +397,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - ER graph export script plus sample output checked into `resources/` or `docs/`.
   - devmap entries describing the queued NLP experiments and how their results will be judged.
 
-! instantiated-by: Prototype 6 — Thematic Clusters & Intent Metadata [🙅/无 🐊/田]
+! instantiated-by: Prototype 6 — Thematic Clusters & Intent Metadata [🙅/无 🚞/劲]
 
 + context:
   FUTON1 can attach lightweight thematic tags to utterances or text spans
@@ -448,7 +448,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - Deterministic tests verifying tag presence and structure.
   - Example ingest→query or demo/client transcripts showing how tags persist.
 
-! instantiated-by: Prototype 7 — CLI Ergonomics & Multi-Instance Isolation [🎏/资料 🔦/门]
+! instantiated-by: Prototype 7 — CLI Ergonomics & Multi-Instance Isolation [🎏/资料 🔦/互]
 
 + context:
   The demo/client workflow exposes bang commands, flags, and environment
@@ -497,7 +497,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     instances.
   - A `/status` output (CLI or API) showing current data-root and XTDB config.
 
-! instantiated-by: Prototype 8 — Golden Scripts & Determinism Checks [🐜/不要 🌽/每]
+! instantiated-by: Prototype 8 — Golden Scripts & Determinism Checks [🐜/不要 🌽/律]
 
 + context:
   FUTON1 already uses scripted EDN conversations and golden outputs to verify
@@ -601,7 +601,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     documented default profile, and the `/status` surface shows the resolved
     datastore path.**
 
-! instantiated-by: Prototype 10 — World-State Access & Storage Model Documentation [💖/已 🎑/书]
+! instantiated-by: Prototype 10 — World-State Access & Storage Model Documentation [💖/已 👭/態]
 
 + context:
   FUTON1 maintains the canonical world state for the stack through its combined
@@ -654,7 +654,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - README or doc links showing how external tools can load and inspect the
     world state.
 
-! instantiated-by: Prototype 11 — Reproducible Pilot Workflows [👭/才 🐜/分]
+! instantiated-by: Prototype 11 — Reproducible Pilot Workflows [👭/才]
 
 + context:
   Users may wish to construct small pilot workflows—combining ingest,

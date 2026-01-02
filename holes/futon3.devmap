@@ -13,7 +13,7 @@ It collects what happens, checks it against a library of shared patterns, and pr
 
 @next Stand up the completed pattern canon + `check!` API, standardise proof→graph/energy exports, and land the workday instrumentation + trail rollups as first-class MUSN services before expanding the flexiformal training ground.
 
-! instantiated-by: Prototype 0 — Flexiformal Transport Baseline [🏃/无 🚴/乃]
+! instantiated-by: Prototype 0 — Flexiformal Transport Baseline [🏃/索 🎑/无]
   + context: FUTON3 still rides the MUSN transport (WS+HTTP bus, SAFE/ADMIN REPL, NDJSON ingest), but its primary job is to host pattern checks and informal proof states, not free-roaming agents.
   + if: You want an execution substrate where pattern obligations can be posed, evaluated, and recorded with deterministic transcripts.
   + however: The baseline hello/event/session flows are documented as “non-essential documentation” instead of “proofwork IO contracts.”
@@ -25,7 +25,7 @@ It collects what happens, checks it against a library of shared patterns, and pr
     - {:type :Spec :id "golden-transcripts-check-jobs" :description "Specify canonical golden transcripts for pattern-apply, gap-report, and trail-capture runs that deterministically exercise the frozen transport contract." :acceptance-criteria ["Each transcript is reproducible from the sandbox profile and matches byte-for-byte expected NDJSON output." "Fails if there is no reliable A->B association between proposal and evidence collection; must be machine-checkable now and upgradeable for stronger logics later."] :suggested-location "docs/protocol/golden-transcripts.md" :timebox "2026-01-05"}
     - {:type :Spec :id "sandbox-profile-proofwork-runtime" :description "Document the sandbox profile as the canonical proofwork runtime and explain how to execute check jobs from the Clojure runner." :acceptance-criteria ["Spec explains sandbox configuration, versioning rules, and step-by-step runner commands tied to transcript generation." "Fails if there is no reliable A->B association between proposal and evidence collection (i.e., we need a clear and deterministic correspondence between anticedents A and measurable evidence B); must be machine-checkable now and upgradeable for stronger logics later."] :suggested-location "docs/sandbox/README.md" :timebox "2026-01-05"}
 
-! instantiated-by: Prototype 1 — Pattern Canon & Standard Library [🗿/本 🐺/世]
+! instantiated-by: Prototype 1 — Pattern Canon & Standard Library [🗿/本]
   + context: A small flexiarg/pattern library already exists (Nonstarter, Proto/Allow-Works, etc.) but is scattered between files.
   + if: You want FUTON3 to be the place where patterns are curated with metadata, linking obligations, and proof status.
   + however: There is no standardized repository or schema for “pattern definitions + applicability notes + links to Futon devmaps.”
@@ -37,14 +37,14 @@ It collects what happens, checks it against a library of shared patterns, and pr
     - {:type :Golden :id "pattern-metadata-and-links-complete" :description "A golden test asserts that each canonical pattern includes required metadata fields and valid source or devmap links." :acceptance-criteria ["Every pattern entry exposes ID, clauses, references, pāramitā tags, fruits/orbs weights, and at least one resolvable source link." "Fails if the canonical store only exists on disk and is not accessible to the stack."] :suggested-location "test/futon3/pattern_metadata_golden_test.clj" :timebox "2026-01-06"}
     - {:type :Golden :id "pattern-store-matches-standard-library" :description "A golden test verifies that all patterns from the existing standard library are present in f3.patterns with no omissions." :acceptance-criteria ["The set of patterns in f3.patterns exactly matches the known Nonstarter and Proto/Allow-Works library with no missing or extra entries." "Fails if the canonical store only exists on disk and is not accessible to the stack."] :suggested-location "test/futon3/pattern_library_sync_golden_test.clj" :timebox "2026-01-06"}
 
-! instantiated-by: Prototype 2 — Similarity Field & Fake Embedding [🌂/甲 🌲/归]
+! instantiated-by: Prototype 2 — Similarity Field & Fake Embedding [🌂/甲 👂/距]
   + context: We already use a “fake embedding” (sigil adjacency) to find nearby patterns.
   + if: You want reproducible neighbourhood queries for pattern suggestions.
   + however: The embedding lives in ad-hoc CSVs and isn’t wired into FUTON3’s APIs.
   + then: Integrate the sigil-distance matrix into FUTON3 as a first-class service (pattern search API, `nearest-patterns` command, CLI/UI views) and publish tests proving deterministic neighbourhoods.
   + because: Pattern suggestion quality underpins the flexiformal workflow and must be inspectable.
 
-! instantiated-by: Prototype 3 — Applicability Engine & Check DSL [🌽/末 👐/已]
+! instantiated-by: Prototype 3 — Applicability Engine & Check DSL [🌽/末 🎑/判]
   + context: We want FUTON3 to answer “can this pattern apply?” and “what new obligations arise?”
   + if: You want a declarative DSL (possibly REPL-safe) for posing check contexts and receiving structured verdicts (applies / blocked / missing evidence).
   + however: Checks today are conversational heuristics in aob-chatgpt or handwritten flexiargs.
@@ -56,7 +56,7 @@ It collects what happens, checks it against a library of shared patterns, and pr
     `test/transport_test.clj` (workday/check forwarding cases) exercise the DSL
     end-to-end.
 
-! instantiated-by: Prototype 4 — Trail & Proof-State Journal [🚴/乃 🙅/氏]
+! instantiated-by: Prototype 4 — Trail & Proof-State Journal [➰/氏]
   + context: Wisdom trails already exist for tracing exploration, but now they must document proof obligations and how work sessions discharged them.
   + if: You want every check, dismissal, and new pattern idea to leave an auditable trail.
   + however: Trails are still general-purpose exploration logs, not proof-state journals.
@@ -67,7 +67,7 @@ It collects what happens, checks it against a library of shared patterns, and pr
   + blocked-by [:trail/persistence :cue-validation]
   + next: (1) persist cue annotations into the trail export so Prototype 4 records which fruits/orbs were actually computed, and (2) add proof artifacts (HUD screenshots or `/musn/cues` transcripts) that demonstrate the cues signal real changes instead of static defaults before declaring the prototype stable.
 
-! instantiated-by: Prototype 4b — Intent Embedding & Salience Map [🚴/乃 🍍/无]
+! instantiated-by: Prototype 4b — Intent Embedding & Salience Map [🍍/乃]
   + context: Prototype 4 turns trails into proof-state journals, but it still treats fruits/orbs as cosmetic tags instead of Kolmogorov-style proof types for each constructive step.
   + if: You want the HUD to say not just “something happened here” but “this was an indicator check, and it was (or wasn’t) aligned with your values” — i.e. to classify `intent → pattern reasoning` as typed proof steps like 🍌→🔵 rather than anonymous log lines.
   + however: The current trail schema records `:pattern/id` and `:obligation/id` but has no machinery to interpret `intent → pattern reasoning` as a constructive proof step, embed it in fruit/orb space, and ask “what kind of operator was this?” (fruit) and “what meta-property did it exhibit?” (orb) — e.g. “🍌: indicator construction, 🔵: virtue-aligned”.
@@ -77,7 +77,7 @@ It collects what happens, checks it against a library of shared patterns, and pr
   + evidence: Early Cue Embedding tests (`test/futon3/cue_embedding_test.clj`) already show that keyword payloads round-trip through the embedding; hand-labelled fruit/orb assignments in `resources/paramita-grid.edn` provide a gold set for checking whether `vec->fruit+orb` recovers the expected operator/meta-property types on known patterns, including basic Komolgorov relations like “indicator-construction steps that should land in the 🔵 virtue band”.
   + next: (1) Generalise the existing cue embedding to operate on `:trail/intent` + `:pattern/reasoning` tuples and return (fruit, orb) as proof step types, (2) run a calibration pass over a small set of manually typed patterns to tune the fruit/orb basis and salience weights, ensuring that canonical relations like 🍌→🔵 (“value-aligned indicator checks”) land in the intended region, and (3) wire the enriched trail export into Prototype 4’s rollups so devmap progress can be inspected as “which constructive proof-types actually fired today, how salient they were, and whether the checks that claimed to align with your values really did so in the embedding.”
 
-! instantiated-by: Prototype 5 — Workday Instrumentation & aob-chatgpt Bridge [🚴/氏 💤/每]
+! instantiated-by: Prototype 5 — Workday Instrumentation & aob-chatgpt Bridge [💤/每]
   + context: Within `aob-chatgpt` we already experiment with reflecting on daily actions against devmap obligations.
   + if: You want FUTON3 to serve as the backend for those reflections.
   + however: There is no official API for submitting “workday claims,” mapping them to patterns, or receiving verification feedback; roles of “workday participants” and “instrumentation stewards” are undefined.
@@ -86,21 +86,21 @@ It collects what happens, checks it against a library of shared patterns, and pr
   + next: Replace the temporary `futon3/logs/workday.edn` queue with a Futon1 persistence call (`workday->graph`) and add HTTP affordances + dashboards so instrumentation stewards can audit submissions without tailing logs.
   + evidence: Workday intake lives in `src/futon3/workday.clj` with coverage in `test/transport_test.clj` (workday submission) and README sections describing the API.
 
-! instantiated-by: Prototype 6 — Pattern Creation Workbench [👍/已 🌲/以]
+! instantiated-by: Prototype 6 — Pattern Creation Workbench [👍/已]
   + context: New patterns emerge from trails and devmap edits, but the capture is currently manual in futon4.
   + if: You want FUTON3 to draft candidate patterns/flexiargs from accumulated proof states.
   + however: Manual backlog in FUTON4 creates tension; there is no readiness window for when drafts are “hand-off ready.”
   + then: Build a summariser that clusters trails, extracts hooks, and emits draft flexiarg blocks (IF/HOWEVER/THEN/BECAUSE) tagged with suggested pāramitā, ready for futon4 editors, and declare readiness criteria (e.g., at least N supporting checks + steward review) so handoffs are predictable.
   + because: FUTON3 should not just consume the library; it should propose expansions grounded in lived work while signalling when drafts can be trusted.
 
-! instantiated-by: Prototype 7 — Joy-as-Empowered-Action Metrics [⌛️/力 🚴/氏]
+! instantiated-by: Prototype 7 — Joy-as-Empowered-Action Metrics [⌛️/力 ⚡️/氏]
   + context: Joy here = Spinozan increase in power to act, evidenced by commitments you can now keep.
   + if: You want metrics that show whether checks are empowering or draining.
   + however: Current “joy metrics” counted UI friction; they did not measure proofs discharged or obligations unblocked.
   + then: Track `time-to-proof`, `obligations-cleared`, `follow-on commitments`, and `viriya linkages` per session, and visualise them alongside subjective notes.
   + because: Empowered action is the KPI for this futon.
 
-! instantiated-by: Prototype 8 — futon2/futon1 Proof Hooks [⚡️/二 💤/已]
+! instantiated-by: Prototype 8 — futon2/futon1 Proof Hooks [⚡️/二 👎/已]
   + context: FUTON3 already generates proof states; FUTON1 (graph) and FUTON2 (energy) need those proofs as fuel.
   + if: You want every accepted check to become a graph relation and a viriya delta without manual glue.
   + however: today the exports are bespoke Clerk notebooks or one-off scripts.
@@ -108,7 +108,7 @@ It collects what happens, checks it against a library of shared patterns, and pr
   + because: proofs only matter when other futons can act on them automatically.
   + next: Wire the Tatami event log into FUTON1 (per `futon3/tatami_store.clj` TODO) so session events flow into graph-memory before we expose the adapters.
 
-! instantiated-by: Prototype 9 — Proof Training Ground (“Flexiformal Agent Sandbox”) [🚢/氏 ➰/未]
+! instantiated-by: Prototype 9 — Proof Training Ground (“Flexiformal Agent Sandbox”) [🚢/氏 🏃/未]
   + context: FUTON3 needs a reproducible training ground where humans and agents can practice flexiformal checks before contributing to FUTON6.
   + if: You want collaborators (including FUTON6 math stewards) to experience the proof workflow hands-on.
   + however: README/docs still emphasise ants and MUD metaphors and do not ship a simulator/tutorial bundle; roles (training facilitators vs. FUTON6 learners) and release readiness are not declared.

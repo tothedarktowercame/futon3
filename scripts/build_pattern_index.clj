@@ -204,10 +204,10 @@
 
 (defn- flexiarg-files []
   (let [ext-of (fn [^java.io.File file]
-                 (some->> (.getName file)
-                          (re-find #"(\\.[^.]+)$")
-                          second
-                          str/lower-case))]
+                 (let [name (.getName file)
+                       match (re-find #"\.[^.]+$" name)]
+                   (when match
+                     (str/lower-case match))))]
     (->> ["library" "holes"]
          (map io/file)
          (filter #(.exists %))

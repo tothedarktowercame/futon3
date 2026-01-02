@@ -81,7 +81,7 @@
 @arg fulab/pattern-propose
 @title Agent Pattern Proposal
 @sigils [➰/了]
-! conclusion: 讓模式庫能以實作為依據持續擴展。
+! conclusion: 以實作為依據持續擴展模式庫。
   + context: During work, an agent discovers a recurring reasoning structure that isn't captured by existing patterns.
   + if: You want the pattern library to evolve based on lived practice, not just top-down design.
   + however: Agents cannot unilaterally add patterns to the canonical library.
@@ -95,7 +95,7 @@
 @arg fulab/changelog-trail
 @title Changelog-as-Trail
 @sigils [🙇/以]
-! conclusion: 用人工記錄臨時扮演 proof trail，等待基礎設施到位。
+! conclusion: 以人工記錄暫代 proof trail，等待基礎設施到位。
   + context: Before the full proof trail infrastructure exists, we need a way to simulate pattern-based work.
   + if: You want to dogfood the pattern architecture while building it.
   + however: XTDB persistence, MUSN enforcement, and check DSL aren't implemented yet.
@@ -118,3 +118,29 @@
   + next-steps:
     - Require every fulab pattern to include a :pattern-ref and validate that referenced devmap files/clauses exist.
     - evidence-shape: {:fulab-pattern :string, :devmap-prototype :string, :devmap-file :string}
+
+@arg fulab/blast-radius
+@title Blast Radius Control
+@sigils [🧯/限]
+! conclusion: 明確界定失敗影響範圍並提供快速回復的最小計畫。
+  + context: A change or tool action could impact multiple subsystems or teams.
+  + if: You want failures to remain localized and diagnosable without full rollback.
+  + however: Without a declared blast radius, incident response defaults to broad freezes or guesswork.
+  + then: Emit a blast-radius event before risky actions, naming affected surfaces, rollback scope, and detection signals; record the outcome on clock-out.
+  + because: Declared boundaries shorten diagnosis time and reduce collateral damage.
+  + next-steps:
+    - Require blast-radius events for cross-futon changes; audit that the rollback scope matches actual artifacts.
+    - evidence-shape: {:session/id :string, :blast/surfaces [:string], :blast/rollback [:string], :blast/detectors [:string], :blast/risk :keyword}
+
+@arg fulab/tradeoff-record
+@title Trade-off Record
+@sigils [⚖️/衡]
+! conclusion: 以明確假設與取捨提升決策品質並減少反覆。
+  + context: A decision requires trading off speed, correctness, scope, or risk.
+  + if: You want later reviewers to understand the decision without re-deriving it.
+  + however: Hidden trade-offs cause churn when requirements change or audits occur.
+  + then: Emit a tradeoff-record event listing options considered, assumptions, chosen rationale, and reversal triggers.
+  + because: Explicit trade-offs improve reviewability and guide future reversals.
+  + next-steps:
+    - Require at least one tradeoff-record when a scope or risk change is accepted.
+    - evidence-shape: {:session/id :string, :decision/id :string, :decision/options [:string], :decision/assumptions [:string], :decision/rationale :string, :decision/reversal-triggers [:string]}

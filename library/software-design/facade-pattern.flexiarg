@@ -1,0 +1,12 @@
+@arg software-design/facade-pattern
+@title Facade Pattern
+@sigils [🏛️/面]
+! conclusion: 用單一門面對複雜子系統提供穩定入口。
+  + context: A subsystem exposes many low-level calls that are hard to orchestrate.
+  + if: You want a simple, stable entry point without exposing internal complexity.
+  + however: Letting callers assemble the sequence leads to duplicated orchestration and fragile workflows.
+  + then: Create a facade that bundles the common orchestration into one high-level interface.
+  + because: A stable facade shields callers from churn in underlying components.
+  + next-steps:
+    - Define a minimal surface and keep the facade free of business policy; push policy to a dedicated layer.
+    - evidence-shape: {:facade/name :string, :facade/entrypoints [:string], :facade/deps [:string]}

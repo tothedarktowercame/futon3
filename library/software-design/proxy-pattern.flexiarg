@@ -1,0 +1,12 @@
+@arg software-design/proxy-pattern
+@title Proxy Pattern
+@sigils [🪞/代]
+! conclusion: 以代理物件在不改動本體的情況下控制存取或行為。
+  + context: A target object requires access control, caching, or remote indirection.
+  + if: You need the same interface but want to add cross-cutting behavior.
+  + however: Modifying the target mixes concerns and complicates testing.
+  + then: Introduce a proxy that implements the same interface and delegates to the target while applying the extra behavior.
+  + because: The proxy isolates policy while preserving substitutability.
+  + next-steps:
+    - Verify proxy and target are interface-compatible; test both cache hits and pass-through paths.
+    - evidence-shape: {:proxy/name :string, :proxy/target :string, :proxy/policy [:string]}

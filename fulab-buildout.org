@@ -16,6 +16,17 @@ Cross-references:
 - [[file:src/f2/claude.clj][src/f2/claude.clj]] — fuclaude wrapper (session management + streaming)
 - [[file:dev/lab-export-claude.clj][dev/lab-export-claude.clj]] — lab export reference script
 
+* Governance Hooks (Concrete Pairings)
+
+When you apply a classic software design pattern, add a lightweight fulab
+governance hook so the decision is traceable and auditable later. Pairings
+are not dependencies; they are reminders to emit the right evidence.
+
+- Adapter -> Trade-off record (why translate instead of refactor).
+- Observer -> Blast radius (who gets notified, rollback scope).
+- Facade -> Blast radius + Doc written (public contract and impact boundary).
+- State -> Trade-off record (assumptions + invalid transitions).
+
 * Phase 1: Session Management Foundation
 
 ** 1.1 Capture Claude CLI Session ID

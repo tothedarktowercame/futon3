@@ -1,0 +1,12 @@
+@arg software-design/observer-pattern
+@title Observer Pattern
+@sigils [📣/觀]
+! conclusion: 以訂閱機制解耦事件發布與處理。
+  + context: Multiple components need to react to state changes in a subject.
+  + if: You want to avoid tight coupling or hard-coded call chains.
+  + however: Direct calls lock in dependencies and make extensions expensive.
+  + then: Introduce a subject that publishes events to observers registered for specific signals.
+  + because: The publisher remains stable while observers evolve independently.
+  + next-steps:
+    - Track observer lifetimes to avoid leaks; test that events fire once per change.
+    - evidence-shape: {:observer/subject :string, :observer/events [:string], :observer/subscribers [:string]}

@@ -3,57 +3,62 @@
 @sigils [🌏/更]
 
 ! conclusion: VSAT grounds stories in linked 360° scenes so contributors can express lived spaces without advanced tooling.
-IF: Contributors need an accessible medium for immersive narratives.
-HOWEVER: Linear video or text either demand expertise or constrain exploration.
-THEN: Provide a navigable 360° scene graph where each node is an image and links form the backbone of the story.
-BECAUSE: Spatial anchors keep attention steady and let audiences traverse at their pace.
-STATUS: status[ready]
-NEXT: next[Capture 2–3 exemplar stories plus screenshots for the futon3 ledger.]
+  + context: You are helping contributors share immersive narratives without requiring specialized tooling.
+  + IF: Contributors need an accessible medium for immersive narratives.
+  + HOWEVER: Linear video or text either demand expertise or constrain exploration.
+  + THEN: Provide a navigable 360° scene graph where each node is an image and links form the backbone of the story.
+  + BECAUSE: Spatial anchors keep attention steady and let audiences traverse at their pace.
+  + STATUS: status[ready]
+  + NEXT-STEPS: next[Capture 2–3 exemplar stories plus screenshots for the futon3 ledger.]
 
 @arg vsat/embedded-annotation
 @title Embedded Hypertext Annotations
 @sigils [👓/如]
 ! conclusion: VSAT lets authors place small hypertext notes directly inside scenes so context stays local.
-IF: Contributors need to explain details without breaking immersion.
-HOWEVER: Big external text blocks overwhelm viewers.
-THEN: Allow concise, clickable annotations tied to scene coordinates.
-BECAUSE: Tethered text helps viewers follow meaning and emotional cues.
-STATUS: status[ready]
-NEXT: next[Record viewer feedback showing how annotations improved clarity.]
+  + context: You are keeping context local so viewers do not lose the scene.
+  + IF: Contributors need to explain details without breaking immersion.
+  + HOWEVER: Big external text blocks overwhelm viewers.
+  + THEN: Allow concise, clickable annotations tied to scene coordinates.
+  + BECAUSE: Tethered text helps viewers follow meaning and emotional cues.
+  + STATUS: status[ready]
+  + NEXT-STEPS: next[Record viewer feedback showing how annotations improved clarity.]
 
 @arg vsat/reflective-container
 @title Structured Reflective Container
 @sigils [📐/种]
 ! conclusion: VSAT’s scene + annotation structure doubles as a reflective container that nudges contributors toward meaning-making.
-IF: Workshops want participants to articulate significance, not just events.
-HOWEVER: Unstructured tools yield diffuse, shallow narratives.
-THEN: Use VSAT’s scaffolds to sequence key moments and their interpretations.
-BECAUSE: Reflection improves coherence and depth.
-STATUS: status[blocked]
-blocked-by[vsat/reflection-evidence]
-NEXT: next[Collect workshop notes showing reflection gains and log them in futon3.]
+  + context: You are supporting reflective practice in workshop settings.
+  + IF: Workshops want participants to articulate significance, not just events.
+  + HOWEVER: Unstructured tools yield diffuse, shallow narratives.
+  + THEN: Use VSAT’s scaffolds to sequence key moments and their interpretations.
+  + BECAUSE: Reflection improves coherence and depth.
+  + STATUS: status[blocked]
+    blocked-by[vsat/reflection-evidence]
+  + NEXT-STEPS: next[Collect workshop notes showing reflection gains and log them in futon3.]
 
 @arg vsat/media-narrative-skills
 @title Media & Narrative Skill Development
 @sigils [📎/技术]
 ! conclusion: Authoring in VSAT teaches basic media literacy and narrative pacing inside a constrained sandbox.
-IF: Programmes aim to build confidence with storytelling tools.
-HOWEVER: Learners often lack prior experience and feel intimidated.
-THEN: Offer a bounded authoring space where they practice arcs, pacing, and composition by doing.
-BECAUSE: Structured play reduces cognitive load while transmitting narrative principles.
-STATUS: status[ready]
-NEXT: next[Document before/after learner reflections to evidence the skill gains.]
+  + context: You are building confidence with narrative tools through practice.
+  + IF: Programmes aim to build confidence with storytelling tools.
+  + HOWEVER: Learners often lack prior experience and feel intimidated.
+  + THEN: Offer a bounded authoring space where they practice arcs, pacing, and composition by doing.
+  + BECAUSE: Structured play reduces cognitive load while transmitting narrative principles.
+  + STATUS: status[ready]
+  + NEXT-STEPS: next[Document before/after learner reflections to evidence the skill gains.]
 
 @arg vsat/community-engagement
 @title Community Engagement Platform
 @sigils [🚴/特别]
 ! conclusion: VSAT supplies community orgs with a lightweight way to convene and publish participant stories.
-IF: Organisations want participatory media but lack capacity.
-HOWEVER: Traditional production demands equipment and staff.
-THEN: Use VSAT as a ready-made engagement surface where contributors build immersive stories with minimal setup.
-BECAUSE: Lowering the barrier increases representation and involvement.
-STATUS: status[ready]
-NEXT: next[Log participation stats from ACMi or similar partners.]
+  + context: You are enabling lightweight participatory media for community orgs.
+  + IF: Organisations want participatory media but lack capacity.
+  + HOWEVER: Traditional production demands equipment and staff.
+  + THEN: Use VSAT as a ready-made engagement surface where contributors build immersive stories with minimal setup.
+  + BECAUSE: Lowering the barrier increases representation and involvement.
+  + STATUS: status[ready]
+  + NEXT-STEPS: next[Log participation stats from ACMi or similar partners.]
 
 @arg vsat-next/ai-assisted-professional-storycrafting
 @title AI-Assisted Professional Storycrafting

@@ -1,0 +1,146 @@
+@arg fulab/clock-in
+@title Agent Clock-In
+@sigils [📎/把]
+! conclusion: 先行打卡，確立本次會話的設計授權錨點。
+  + context: 代理即將開始執行一項任務，該任務將對程式碼庫或知識庫產生變更。
+  + if: 您希望代理程式的工作可追溯、可審計，並能與設計詞彙表建立明確關聯。
+  + however: 若未先明示，代理操作與設計模式之間的關聯將停留在隱式層面，事後難以驗證。
+  + then: 在開始實質工作之前，代理會發出 clock-in 事件，包含主要模式 ID、意圖描述與會話上下文，聲明本次會話的設計授權來源。
+  + because: clock-in 事件為證明路徑建立不可省略的錨點，使後續操作可相對於已聲明意圖被評估。
+  + next-steps:
+    - 檢查所有造成副作用的事件是否都可追溯到一個先前的 clock-in；對缺少 clock-in 的副作用事件視為違規。
+    - evidence-shape: {:clock-in/pattern-id :string, :clock-in/intent :string, :clock-in/session-id :string, :clock-in/timestamp :inst, :clock-in/context :map}
+
+@arg fulab/pattern-dep
+@title Pattern Dependency Declaration
+@sigils [🔺/呢]
+! conclusion: 將推理依賴顯式化，讓證明路徑成為可驗證的結構。
+  + context: 智能體在已啟用模式 P1 的情況下工作，過程中需要呼叫另一個模式 P2 的推理結構來完成當前步驟。
+  + if: 您希望證明路徑能捕捉推理的組合結構，而不只是一串扁平事件。
+  + however: 若依賴關係只存在於內部思路鏈而未記錄，將無法重建「為何這一步合理」的結構性依據。
+  + then: 當智能體在 P1 會話中使用 P2 的推理時，發出 pattern-dep 事件，明示 P1 → P2 的依賴邊並附上簡要理由。
+  + because: 明示依賴可將證明路徑建模為有向無環圖，使每一步的依據可被結構化驗證。
+  + next-steps:
+    - 對同一 session 的依賴圖進行 DAG 檢查（禁止環）；並抽樣檢查每條依賴邊的 reason 是否可在 cell/trace 中找到對應證據。
+    - evidence-shape: {:session/id :string, :pattern/parent :string, :pattern/dep :string, :pattern/reason :string, :used-at :inst}
+
+@arg fulab/clock-out
+@title Agent Clock-Out
+@sigils [🌽/才]
+! conclusion: 以明確的結束事件封存證明路徑與產物。
+  + context: 代理程式完成一個工作單元，準備結束會話並提供可核對的總結。
+  + if: 您希望會話以可與原始意圖驗證的形式結束，形成可封存的證明路徑。
+  + however: 若會話無明確結束，常導致路徑不完整（缺少狀態、產物、依賴匯總），使審計與回放困難。
+  + then: 代理在結束會話前發出 clock-out 事件，包含主要模式、完整依賴路徑摘要、完成狀態、以及產生或修改的工件清單。
+  + because: clock-out 事件封存證明路徑，提供審計、回放與進度追蹤所需的最小完備資料。
+  + next-steps:
+    - 驗證 clock-out 的 pattern trail 是否可由 session 的 clock-in + pattern-dep 事件重建；並核對 artifacts 是否與實際變更集一致。
+    - evidence-shape: {:session/id :string, :pattern/primary :string, :pattern/trail [:map], :session/status :keyword, :artifacts [:string], :clock-out/timestamp :inst}
+
+@arg fulab/proof-commit
+@title Proof-Conformant Commit
+@sigils [🏃/把]
+! conclusion: 以證明路徑約束提交，阻止未授權變更進入主幹。
+  + context: 代理程式（或使用者）希望提交在已打卡會話期間產生的變更到程式庫或知識庫。
+  + if: 您希望每次提交都能追溯到產生它們的設計授權與證明路徑。
+  + however: 標準提交通常只記錄「改了什麼」，而不記錄「為什麼這樣改被允許」。
+  + then: 提交必須引用 proof path（session-id + pattern trail）；MUSN 在接受提交前驗證該路徑是否滿足模式約束與完整性條件（例如 clock-in/clock-out 存在、DAG 無環、必要證據齊備）。
+  + because: 提交檢查是強制執行點，可阻止繞過設計詞彙表的未授權變更進入主幹。
+  + next-steps:
+    - 建立最小驗證規則集（存在性、結構性、對應性）；並記錄每次拒絕的失敗類型以校準模式約束是否過嚴或過鬆。
+    - evidence-shape: {:commit/changes :any, :commit/session-id :string, :commit/pattern-trail [:map], :commit/validation {:ok? :boolean, :errors [:map]}}
+  + blocked-by: [fulab/clock-in, fulab/clock-out]
+
+@arg fulab/notebook-cell
+@title Live Notebook Cell
+@sigils [📁/资料]
+! conclusion: 以 cell 為單位即時持久化提示/回應與副作用。
+  + context: 代理程式在執行期間持續與模型交換提示/回應，且這些交換會導致工具呼叫或檔案副作用。
+  + if: 您希望實驗筆記本能隨工作即時擴展，而不是事後重建。
+  + however: 若僅在會話結束後才擷取記錄，會遺失串流統計、部分失敗狀態與「中途改意圖」等關鍵時序資訊。
+  + then: 每次提示/回應交換都持久化為一個 notebook cell，包含輸入、輸出、時間/成本/模型等元資料，以及副作用（檔案讀寫、工具呼叫、外部 API 痕跡）；cell 以 session-id 連結到證明路徑。
+  + because: 即時擷取能保留細粒度時序與副作用證據，並支持與證據鏈的即時整合。
+  + next-steps:
+    - 抽樣比對 cell 的 side-effects 與實際系統層事件（檔案變更、命令執行記錄）；並測試以 cell 重建簡化 proof path 的可行性。
+    - evidence-shape: {:session/id :string, :cell/id :string, :cell/input :string, :cell/output :string, :cell/metadata {:model :string, :cost :map, :latency-ms :long}, :cell/side-effects [:map], :cell/timestamp :inst}
+
+@arg fulab/session-resume
+@title Session Resume
+@sigils [🔦/就]
+! conclusion: 以明確映射與祖先鏈維持多輪對話的審計連續性。
+  + context: 代理需要在後續時間點繼續先前對話，並在既有上下文上追加工作或追問。
+  + if: 您希望代理能進行多輪對話並保留可追溯的對話連續性。
+  + however: 若每次呼叫都被視為無狀態，代理將無法可靠地承接先前約束、證據與意圖變更。
+  + then: 執行時維護一個註冊表，將 futon session-id 對應到外部 fucodex CLI 會話識別；恢復請求使用該識別（例如 `--resume`）以續接對話，並建立新的 session-id 同時引用 ancestor session 以保持審計連續性。
+  + because: 以顯式映射與祖先引用處理恢復，可同時保留對話連續性與審計邊界清晰度。
+  + next-steps:
+    - 制定「恢復」是否允許跨模式主鍵切換的規則；並測試在多次恢復後，proof path 的祖先鏈是否仍可被一致地重建。
+    - evidence-shape: {:session/id :string, :session/ancestor-id :string, :session/fucodex-cli-id :string, :resume/prompt :string, :resume/at :inst, :resume/count :long}
+  + enables: [fulab/clock-in]
+
+@arg fulab/pattern-propose
+@title Agent Pattern Proposal
+@sigils [➰/了]
+! conclusion: 以實作為依據持續擴展模式庫。
+  + context: During work, an agent discovers a recurring reasoning structure that isn't captured by existing patterns.
+  + if: You want the pattern library to evolve based on lived practice, not just top-down design.
+  + however: Agents cannot unilaterally add patterns to the canonical library.
+  + then: The agent emits a pattern-proposal event with a draft IF/HOWEVER/THEN/BECAUSE structure, supporting evidence from the current trail, and a :draft status. Human stewards review proposals and promote to :accepted.
+  + because: This closes the loop: patterns guide agent work, and agent work refines patterns. The library is a living document.
+  + next-steps:
+    - Require proposals to cite at least one supporting trail event and record reviewer notes on accept/reject outcomes.
+    - evidence-shape: {:proposal/id :uuid, :pattern/draft :map, :proposal/supporting-trail [:uuid], :proposal/status :keyword}
+  + blocked-by: [fulab/clock-out]
+
+@arg fulab/changelog-trail
+@title Changelog-as-Trail
+@sigils [🙇/以]
+! conclusion: 以人工記錄暫代 proof trail，等待基礎設施到位。
+  + context: Before the full proof trail infrastructure exists, we need a way to simulate pattern-based work.
+  + if: You want to dogfood the pattern architecture while building it.
+  + however: XTDB persistence, MUSN enforcement, and check DSL aren't implemented yet.
+  + then: Maintain a changelog file (e.g., fulab-changelog.org) where each entry explicitly records: clocked-in pattern, pattern dependencies used, artifacts produced, and clock-out summary. This serves as a human-readable proof trail.
+  + because: The changelog simulates the architecture and provides a migration path—entries can be backfilled into XTDB once the infrastructure exists.
+  + next-steps:
+    - Add a fixed template per entry (clock-in, deps, artifacts, clock-out) and schedule a periodic backfill into XTDB once proof events land.
+    - evidence-shape: {:changelog/file :string, :entry/date :string, :entry/pattern-id :string, :entry/deps [:string], :entry/artifacts [:string], :entry/summary :string}
+  + enables: [fulab/clock-in, fulab/clock-out, fulab/proof-commit]
+
+@arg fulab/devmap-xref
+@title Devmap Cross-Reference
+@sigils [🔸/了]
+! conclusion: 將實作模式與 devmap 原型建立可追溯對映。
+  + context: FuLab patterns are implementation-level; devmap prototypes are design-level.
+  + if: You want to track how implementation work advances the higher-level devmap.
+  + however: The connection between fulab patterns and devmap prototypes is implicit.
+  + then: Each fulab pattern declares which devmap prototype(s) it supports via a :pattern-ref field. Clock-in events that reference a fulab pattern transitively reference the devmap. Rollups can show "Prototype 4 advanced by 3 fulab/clock-out events today."
+  + because: This creates a traceable ladder from daily work → fulab patterns → devmap prototypes → IFR.
+  + next-steps:
+    - Require every fulab pattern to include a :pattern-ref and validate that referenced devmap files/clauses exist.
+    - evidence-shape: {:fulab-pattern :string, :devmap-prototype :string, :devmap-file :string}
+
+@arg fulab/blast-radius
+@title Blast Radius Control
+@sigils [🧯/限]
+! conclusion: 明確界定失敗影響範圍並提供快速回復的最小計畫。
+  + context: A change or tool action could impact multiple subsystems or teams.
+  + if: You want failures to remain localized and diagnosable without full rollback.
+  + however: Without a declared blast radius, incident response defaults to broad freezes or guesswork.
+  + then: Emit a blast-radius event before risky actions, naming affected surfaces, rollback scope, and detection signals; record the outcome on clock-out.
+  + because: Declared boundaries shorten diagnosis time and reduce collateral damage.
+  + next-steps:
+    - Require blast-radius events for cross-futon changes; audit that the rollback scope matches actual artifacts.
+    - evidence-shape: {:session/id :string, :blast/surfaces [:string], :blast/rollback [:string], :blast/detectors [:string], :blast/risk :keyword}
+
+@arg fulab/tradeoff-record
+@title Trade-off Record
+@sigils [⚖️/衡]
+! conclusion: 以明確假設與取捨提升決策品質並減少反覆。
+  + context: A decision requires trading off speed, correctness, scope, or risk.
+  + if: You want later reviewers to understand the decision without re-deriving it.
+  + however: Hidden trade-offs cause churn when requirements change or audits occur.
+  + then: Emit a tradeoff-record event listing options considered, assumptions, chosen rationale, and reversal triggers.
+  + because: Explicit trade-offs improve reviewability and guide future reversals.
+  + next-steps:
+    - Require at least one tradeoff-record when a scope or risk change is accepted.
+    - evidence-shape: {:session/id :string, :decision/id :string, :decision/options [:string], :decision/assumptions [:string], :decision/rationale :string, :decision/reversal-triggers [:string]}

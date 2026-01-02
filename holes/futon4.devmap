@@ -17,6 +17,7 @@
   + however: Symbolic activation does not yet translate into memory operations or agent affordances.
   + then: Establish baseline artefacts (README-manifesto, clock interface, Arxana reboot outline).
   + because: This creates an anchor for all subsequent prototypes.
+  + status[ready]
   + evidence:
     - `spine.org` — Master orchestration file with tangling machinery (lines 19–103).
     - `dev/bootstrap.el` — Repeatable build harness for interactive + batch builds.
@@ -31,6 +32,7 @@
   + however: Legacy Emacs-Lisp and refactored Clojure schemas diverge.
   + then: Reboot spine parser, restore node browsing, define new nema-based schema, test round-trip edits.
   + because: A functioning editor is the precondition for all downstream memory work.
+  + status[ready-pending-final-checks]
   + evidence:
     - Spine parser rebooted: `spine.org` lines 50–103 define `arxana-tangle-spine-concat`.
     - Node browsing restored: `dev/arxana-relations.el` (ego, cooccur, tail commands),
@@ -45,20 +47,22 @@
     - Scholia authoring: `dev/arxana-scholium.el` (compose, region capture, authoring mode).
     - Derivation previews: `dev/arxana-derivation.el` (collapsible previews, color overlays,
       toggle commands for inclusion/transclusion/identification highlights).
+    - Inclusion/transclusion guards: `dev/arxana-inclusion.el` + tests
+      (`test/arxana-inclusion-test.el`, `test/arxana-inclusion-batch-test.el`).
     - Import/export shims: `dev/arxana-import.el` (Org file/directory import),
       `dev/arxana-export.el` (Org export with MANIFEST generation).
+    - QA/docs bundle: `README.md` (testing + verification), `docs/contributor-guide.md`,
+      `docs/docbook/futon4/futon4.org` (compat/test support + contributor guide).
   + next (workflow plumbing):
     - Create import/export shims for modern doc formats. [DONE — see evidence above]
     - Produce migration notes for historical datasets. [PENDING — M5 item 4/4]
   + next (QA & release prep):
     - Grow the ERT suite (unit, integration, CLI smoke). [DONE — 15 files, ~80 tests]
-    - Document test instructions and CI hooks. [PENDING — no standalone doc or CI config]
-    - Provide contributor guide (coding style, tangling, testing). [PENDING — no CONTRIBUTING.md]
+    - Document test instructions and CI hooks. [PARTIAL — README + docbook docs cover tests; no CI config]
+    - Provide contributor guide (coding style, tangling, testing). [DONE — `docs/contributor-guide.md`]
     - Tag a "revived" release with reproducible steps. [PENDING]
   + next-evidence:
     - `docs/migration-guide.org` documenting import paths for historical .epub/.tex formats.
-    - `docs/testing.md` or README section with batch test commands and CI examples.
-    - `CONTRIBUTING.md` covering coding style, module structure, tangling workflow.
     - `.github/workflows/test.yml` or equivalent CI configuration.
     - Git tag marking the "revived" Prototype 1 release.
 

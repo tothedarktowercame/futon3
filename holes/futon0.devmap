@@ -102,6 +102,17 @@ can emerge naturally.
   - Weekly AOB/Ambitions sessions are timestamped (Tatami/API or calendar).
   - FUTON1 tags provide >90% work-session closure coverage.
   - Sphere balance and WIP creep can already be inferred from Org + FUTON1.
+  - status[ready-pending-final-decisions-and-testing]
+  - `futon0/futon0_rhythm.md` (cadence, envelope logging, buildout plan).
+  - `futon0/futon0_protocol.md` (open decisions + affect sourcing).
+  - `futon0/data/backup_cadence.json`, `futon0/data/backup_report_example.json`,
+    `futon0/data/backup_experiments.json`, `futon0/data/affect_markers.json`.
+  - `futon0/scripts/futon0/backup/snapshot.clj`,
+    `futon0/scripts/futon0/rhythm/envelope.clj`,
+    `futon0/scripts/futon0/rhythm/salients.clj`,
+    `futon0/scripts/futon0/rhythm/experiments.clj`,
+    `futon0/scripts/futon0/rhythm/quarterly.clj`,
+    `futon0/scripts/futon0/rhythm/dry_run.clj`.
 
 + next:
   Consolidate the weekly sync into a fixed time; prune stale Org headings

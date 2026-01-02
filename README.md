@@ -285,6 +285,9 @@ ring 1: gamma(0.991)
 
 ## Flexiformal Proofwork Deliverables
 
+The full prototype roadmap lives in `holes/futon3.devmap` (it continues beyond
+Prototype 5); the sections below highlight the evidence already landed.
+
 ### Transport contract & golden transcripts
 - Prototype 0 in `holes/futon3.devmap` now has a frozen check-job transport contract plus a sandbox profile for deterministic replays. The specs in `docs/protocol/transport-contract-v1.md`, `docs/protocol/golden-transcripts.md`, and `docs/sandbox/README.md` explain what MUSN check jobs expect on the wire, how the NDJSON transcripts prove request -> reply behavior, and how to run the sandboxed Clojure runner so those transcripts stay byte-for-byte reproducible.
 

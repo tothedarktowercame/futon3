@@ -16,9 +16,9 @@ except ImportError as exc:  # pragma: no cover - handled by caller
     raise SystemExit("numpy is required for patterns CLI") from exc
 
 
-DEFAULT_EMBEDDINGS = Path("data/sigils/glove_pattern_embeddings.json")
-DEFAULT_CLUSTER_OUT = Path("data/sigils/pattern_clusters.json")
-DEFAULT_TREE_OUT = Path("data/sigils/pattern_tree.json")
+DEFAULT_EMBEDDINGS = Path("futon3/data/glove_pattern_embeddings.json")
+DEFAULT_CLUSTER_OUT = Path("futon3/data/pattern_clusters.json")
+DEFAULT_TREE_OUT = Path("futon3/data/pattern_tree.json")
 
 
 def _die(message: str) -> None:
@@ -154,8 +154,10 @@ def _cluster_labels(matrix: np.ndarray, method: str, k: int, linkage: str,
             import hdbscan  # type: ignore
         except ImportError as exc:  # pragma: no cover - environment dependent
             _die("hdbscan is required for hdbscan clustering")
+        # HDBSCAN relies on sklearn neighbors; use euclidean on unit vectors,
+        # which preserves cosine distance ordering.
         clusterer = hdbscan.HDBSCAN(
-            metric="cosine",
+            metric="euclidean",
             min_cluster_size=min_cluster_size,
             min_samples=min_samples,
         )

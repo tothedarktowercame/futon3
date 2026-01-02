@@ -211,12 +211,20 @@ The matrices are cheap to recompute, so rerun the script whenever you add or edi
 
 ## Pattern embeddings CLI (clusters, shells, tree)
 
-The repo currently ships `data/sigils/glove_pattern_neighbors.json` (GloVe neighbor report) but not a raw pattern vector map. The CLI expects a file that maps `pattern-id -> [floats]`; point it at your embeddings with `--embeddings`. A tiny fixture lives at `dev/fixtures/pattern_embeddings.json`.
+The repo currently ships `data/sigils/glove_pattern_neighbors.json` (GloVe neighbor report) but not a raw pattern vector map. The CLI expects a file that maps `pattern-id -> [floats]`; point it at your embeddings with `--embeddings`. Generated embeddings live under `futon3/data/` (see the export script below). A tiny fixture lives at `dev/fixtures/pattern_embeddings.json`.
 
 Dependencies: `numpy` for vector math, `scikit-learn` for agglomerative clustering (`hclust`). `hdbscan` is optional and only required if you pass `--method hdbscan`.
 
 ```bash
 python -m pip install -r scripts/requirements-patterns.txt
+```
+
+Generate a GloVe embedding map for all patterns/devmaps:
+
+```bash
+python scripts/export_pattern_embeddings_glove.py \
+  --glove data/glove/glove.6B.50d.txt \
+  --out futon3/data/glove_pattern_embeddings.json
 ```
 
 ```bash

@@ -88,7 +88,8 @@
               (with-current-buffer buffer
                 (goto-char (point-min))
                 (if (re-search-forward "\n\n" nil t)
-                    (let ((body (buffer-substring-no-properties (point) (point-max))))
+                    (let ((body (my-futon3--normalize-json-body
+                                 (buffer-substring-no-properties (point) (point-max)))))
                       (json-parse-string body :object-type 'plist :array-type 'list
                                          :null-object nil
                                          :false-object nil))
@@ -144,6 +145,22 @@
     (mapcar #'my-futon3--json-keywordize value))
    (t value)))
 
+(defun my-futon3--normalize-json-body (body)
+  "Ensure BODY is UTF-8 decoded so emoji/sigils are not mojibake."
+  (when body
+    (let ((has-non-latin1 nil)
+          (idx 0)
+          (len (length body)))
+      (while (and (< idx len) (not has-non-latin1))
+        (when (> (aref body idx) 255)
+          (setq has-non-latin1 t))
+        (setq idx (1+ idx)))
+      (if has-non-latin1
+          body
+        (condition-case _err
+            (decode-coding-string (encode-coding-string body 'latin-1) 'utf-8)
+          (error body))))))
+
 (defun my-futon3--tatami-request (method path payload)
   (my-futon3-ensure-running)
   (let* ((url-request-method method)
@@ -160,7 +177,8 @@
           (goto-char (point-min))
           (let ((status (or url-http-response-status 0)))
             (search-forward "\n\n" nil 'move)
-            (let ((body (buffer-substring-no-properties (point) (point-max))))
+            (let ((body (my-futon3--normalize-json-body
+                         (buffer-substring-no-properties (point) (point-max)))))
               (if (/= status 200)
                   (error "Futon3 %s failed (%s): %s" path status body)
                 (when (and body (not (string-empty-p (string-trim body))))

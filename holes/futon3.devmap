@@ -13,7 +13,7 @@ It collects what happens, checks it against a library of shared patterns, and pr
 
 @next Stand up the completed pattern canon + `check!` API, standardise proof→graph/energy exports, and land the workday instrumentation + trail rollups as first-class MUSN services before expanding the flexiformal training ground.
 
-! instantiated-by: Prototype 0 — Flexiformal Transport Baseline [🏃/索 🎑/无]
+! instantiated-by: Prototype 0 — Flexiformal Transport Baseline [🏃/索 ➰/氏]
   + context: FUTON3 still rides the MUSN transport (WS+HTTP bus, SAFE/ADMIN REPL, NDJSON ingest), but its primary job is to host pattern checks and informal proof states, not free-roaming agents.
   + if: You want an execution substrate where pattern obligations can be posed, evaluated, and recorded with deterministic transcripts.
   + however: The baseline hello/event/session flows are documented as “non-essential documentation” instead of “proofwork IO contracts.”
@@ -56,7 +56,7 @@ It collects what happens, checks it against a library of shared patterns, and pr
     `test/transport_test.clj` (workday/check forwarding cases) exercise the DSL
     end-to-end.
 
-! instantiated-by: Prototype 4 — Trail & Proof-State Journal [➰/氏]
+! instantiated-by: Prototype 4 — Trail & Proof-State Journal [➰/双]
   + context: Wisdom trails already exist for tracing exploration, but now they must document proof obligations and how work sessions discharged them.
   + if: You want every check, dismissal, and new pattern idea to leave an auditable trail.
   + however: Trails are still general-purpose exploration logs, not proof-state journals.
@@ -67,7 +67,7 @@ It collects what happens, checks it against a library of shared patterns, and pr
   + blocked-by [:trail/persistence :cue-validation]
   + next: (1) persist cue annotations into the trail export so Prototype 4 records which fruits/orbs were actually computed, and (2) add proof artifacts (HUD screenshots or `/musn/cues` transcripts) that demonstrate the cues signal real changes instead of static defaults before declaring the prototype stable.
 
-! instantiated-by: Prototype 4b — Intent Embedding & Salience Map [🍍/乃]
+! instantiated-by: Prototype 4b — Intent Embedding & Salience Map [➰/氏 🍍/办]
   + context: Prototype 4 turns trails into proof-state journals, but it still treats fruits/orbs as cosmetic tags instead of Kolmogorov-style proof types for each constructive step.
   + if: You want the HUD to say not just “something happened here” but “this was an indicator check, and it was (or wasn’t) aligned with your values” — i.e. to classify `intent → pattern reasoning` as typed proof steps like 🍌→🔵 rather than anonymous log lines.
   + however: The current trail schema records `:pattern/id` and `:obligation/id` but has no machinery to interpret `intent → pattern reasoning` as a constructive proof step, embed it in fruit/orb space, and ask “what kind of operator was this?” (fruit) and “what meta-property did it exhibit?” (orb) — e.g. “🍌: indicator construction, 🔵: virtue-aligned”.
@@ -93,7 +93,7 @@ It collects what happens, checks it against a library of shared patterns, and pr
   + then: Build a summariser that clusters trails, extracts hooks, and emits draft flexiarg blocks (IF/HOWEVER/THEN/BECAUSE) tagged with suggested pāramitā, ready for futon4 editors, and declare readiness criteria (e.g., at least N supporting checks + steward review) so handoffs are predictable.
   + because: FUTON3 should not just consume the library; it should propose expansions grounded in lived work while signalling when drafts can be trusted.
 
-! instantiated-by: Prototype 7 — Joy-as-Empowered-Action Metrics [⌛️/力 ⚡️/氏]
+! instantiated-by: Prototype 7 — Joy-as-Empowered-Action Metrics [⌛️/力 ⚡️/每]
   + context: Joy here = Spinozan increase in power to act, evidenced by commitments you can now keep.
   + if: You want metrics that show whether checks are empowering or draining.
   + however: Current “joy metrics” counted UI friction; they did not measure proofs discharged or obligations unblocked.

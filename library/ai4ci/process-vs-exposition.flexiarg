@@ -1,0 +1,40 @@
+@arg ai4ci/process-vs-exposition
+@title Process and Exposition as Complementary Evidence
+@sigils [🧩/析 📝/释]
+@audience EPSRC reviewers
+@tone plain-analytic
+@allow-new-claims false
+
+! conclusion:
+  Recognise that the project studies two complementary sources of reasoning
+  information in mathematical texts: the exploratory process signals that hint
+  at how a proof was found, and the expository signals intentionally placed in
+  published work to help readers reconstruct the logic.
+
+  + IF:
+    Human understanding of mathematics relies on both the implicit heuristics
+    behind a proof ("try this", "by analogy") and the explicit narrative cues
+    authors include in published solutions ("note that", "it is natural to
+    consider").
+
+  + HOWEVER:
+    Process cues are often partial or suppressed, while expository cues are
+    fragmentary and uneven across texts; neither source alone provides a stable
+    representation of the reasoning structure that learners reconstruct.
+
+  + THEN:
+    Analyse both kinds of cues: use baseline entity and relation extraction to
+    anchor formal steps, and annotate how each informal phrase—whether exploratory
+    or expository—links to specific objects, steps, or subgoals in the proof.
+
+  + BECAUSE:
+    Process cues reveal the reasoning that originally generated the proof, while
+    expository cues reveal how experts communicate that reasoning to others; the
+    combination provides the richest available evidence for reconstructing
+    mid-level structure without requiring access to the original scratch work.
+
+  + NEXT STEPS:
+    Distinguish and label exploratory vs. expository cues in the annotated
+    dataset; test with seminar participants how each type supports understanding;
+    and report which signals, taken together, form reliable scaffolds for
+    mathematical explanation.

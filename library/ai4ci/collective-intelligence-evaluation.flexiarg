@@ -8,40 +8,39 @@
 @references [vsatlas/value-flow-constellation vsatlas/festival-model stack-coherence/ready-blocked-triage stack-coherence/stack-blocker-detection]
 
 ! conclusion:
-  Recognise that the project’s evaluation hinges on whether dual-layer proofs
-  raise collective understanding across cohorts, not just on AI metrics,
-  because the end goal is reusable teaching practice as well as evidence.
+  The usefulness of extracted reasoning cues must be tested through
+  collective understanding rather than model accuracy, because the target
+  outcome is shared clarity among diverse learners.
 
-  + context: You are specifying how the project will be evaluated for collective-intelligence gains.
+  + IF:
+    Value-flow and festival patterns show that gatherings enable collective
+    sense-making only when participants can relate their own understanding
+    to a visible shared artefact.
 
-  + if:
-    Value-flow and festival patterns show that gatherings only unlock collective
-    sense-making when each participant can connect their understanding to the
-    shared artefact.
+  + HOWEVER:
+    Standard AI metrics (e.g. step-wise correctness) say little about
+    whether undergraduates, postgraduates, and professionals can actually
+    use the annotated proofs to reason together; they hide where explanations
+    help, where they confuse, and where they leave gaps.
 
-  + however:
-    LLM accuracy reports or per-step correctness do not reveal whether
-    undergraduates, graduate students, and professionals can actually use MUSN
-    scaffolds to reason together.
+  + THEN:
+    Run tiered seminars in which identical annotated proofs are reviewed by
+    different cohorts, log guided discussions using consistent prompts, and
+    treat clarity/confusion reports as primary evaluation signals, feeding
+    them back into ready/blocked-style triage so blockers are explicit.
 
-  + then:
-    Run tiered seminars where identical annotated proofs are reviewed by each
-    cohort, explicitly compare the transcripts to see whether cues generalise or
-    demand cohort-specific tailoring, log guided discussions (released with
-    reproducibility metadata), and treat clarity/confusion reports as the
-    primary evaluation signal.  Feed those logs back into ready/blocked triage
-    so blockers are explicit.
+  + BECAUSE:
+    Collective intelligence is evidenced when diverse readers reach a
+    workable shared understanding of the argument; only structured
+    discussion around common artefacts can reveal whether the extracted
+    reasoning cues support this outcome.
 
-  + because:
-    Collective intelligence is evidenced when diverse readers reach clarity
-    together; only structured discussions reveal that outcome.
-
-  + status:
+  + STATUS:
     status[blocked]
     evidence[library/vsatlas/value-flow-constellation.flexiarg:1]
     evidence[library/vsatlas/festival-model.flexiarg:1]
     blocked-by[ai4ci/seminar-schedule]
 
-  + next-steps:
-    next[Schedule undergraduate, graduate, and professional seminar sessions with identical MUSN artefacts and capture transcripts.]
-    next[Pipe transcript-coded blockers into stack-coherence/ready-blocked-triage so transport + pedagogy stay linked.]
+  + NEXT:
+    next[Schedule undergraduate, graduate, and professional seminar sessions using the same annotated proofs and capture transcripts for comparison.]
+    next[Pipe transcript-coded blockers into stack-coherence/ready-blocked-triage so explanatory weaknesses are visible to the whole project.]

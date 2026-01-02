@@ -55,7 +55,7 @@
     - White-space detection property tests (`:white?` field currently untested).
     - Documentation of 8-neighborhood offset logic.
 
-! instantiated-by: Prototype 2 — Predictive Coding Microcycle Clarity [🙇/乡 😻/由]
+! instantiated-by: Prototype 2 — Predictive Coding Microcycle Clarity [🙇/乡 😻/叉]
   + context: Perception performs multi-step updates of mu, tau, Pi-o, goals, and weighted errors with annealing.
   + if: You want inspectors (or future Arxana bridges) to understand belief updates.
   + however: Hunger updates, sensory prediction, and error accumulation are interwoven without a canonical trace.
@@ -173,14 +173,14 @@
   + then: Build a Clerk notebook (or similar) that plots tau, hunger, errors, and pivot timelines, plus a mode that traces one agent’s full mu timeline.
   + because: Visual insight accelerates iteration and debugging.
 
-! instantiated-by: Prototype 12 — Year-End Packaging & Story [🌽/末 🚢/刊]
+! instantiated-by: Prototype 12 — Year-End Packaging & Story [🌽/末]
   + context: FUTON2 must read as a coherent simulation layer to partners and future prototypes.
   + if: You want it to be adoptable as a research simulator.
   + however: The codebase is powerful but intimidating without a unifying story.
   + then: Package the release with a top-level README, whitepaper, stepping API, goldens, and versioned pivot schema.
   + because: Strong packaging turns FUTON2 into a reusable, inspectable module inside the full FUTON stack.
 
-! instantiated-by: Prototype 13 — Graph Memory Adapter & Agent ABI [👎/乃]
+! instantiated-by: Prototype 13 — Graph Memory Adapter & Agent ABI [👎/乃 ➰/调]
   + context: FUTON1 now offers a documented graph-memory API; FUTON2 needs to speak it to graduate beyond the sandbox.
   + if: You want ants to be the first drop-in “AIF agent” that reads fact graphs and writes back its beliefs.
   + however: percepts/actions remain locked to grid coordinates, so nothing maps to FUTON1 entity IDs or relation semantics.
@@ -201,7 +201,7 @@
   + then: Define a bidirectional “presence bus” (rooms → observation cues, agent actions → MUSN events), add authentication so only designated colonies bridge, and ship a demo where ants report discoveries into a FUTON3 trail.
   + because: This proves that AIF agents can show up wherever proofwork happens, not just inside a war grid.
 
-! instantiated-by: Prototype 16 — Lobby Bus & MUSN Intake [🙅/无 🔦/索]
+! instantiated-by: Prototype 16 — Lobby Bus & MUSN Intake [🙅/无 💤/已]
   + context: FUTON3 runs with MUSN as a shared graph and chatgpt-shell as a HUD, but ChatGPT-API currently has only conversational access and no principled way to commit events back into MUSN.
   + if: You want ChatGPT-API to propose or make *persistent* updates (breach logs, paramitā orbs, devmap notes, pattern instantiations) without giving it full god-mode over the stack.
   + however: There is no explicit one-room “Lobby” where HUD traffic is normalised into MUSN events, no single-writer policy, and no clear schema for what counts as an escalated, storable event versus transient chatter.
@@ -219,7 +219,7 @@
   for operational concerns (like curfew rules) but also for epistemic/ritual
   artefacts that support the broader FUTON practice space.  The HUD then renders a subtle, clickable banner: Reflection exercise suggested ▸
 
-! instantiated-by: Prototype 16 — Wisdom Trail Harvest & Pattern Seeding [➰/去 👎/乃]
+! instantiated-by: Prototype 16 — Wisdom Trail Harvest & Pattern Seeding [➰/去 👎/氏]
   + context: FUTON3 trails now record which patterns were checked or advanced during human work sessions.
   + if: You want FUTON2 analyzers to ingest those trails, compare them to colony behaviour, and commission new agent goals.
   + however: There is no ingestion path for trail EDN, nor a feedback loop that says “agents, go gather evidence for Pattern X.”

@@ -5,43 +5,44 @@
 @tone plain-analytic
 @allow-new-claims false
 @factor Keen investigation (dhammavicaya)
-@references [hdm/outline-first-detail-later hdm/human-machine-dialogue stack-coherence/evidence-ledger library/ai4ci/project-summary-core ai4ci/proof-pattern-hierarchy ai4ci/sota-distinction]
+@references [hdm/outline-first-detail-later hdm/human-machine-dialogue stack-coherence/evidence-ledger library/ai4ci/project-summary-core]
 
 ! conclusion:
-  Understand that AI is deployed to surface dual-layer proof structures—formal
-  steps plus validated informal cues and candidate pattern fragments—not to mint
-  new proofs.
+  AI is most useful in this project as a probe for surfacing candidate
+  mid-level reasoning cues already present in mathematical exposition, not
+  as a generator of new proofs.
 
-  + context: You are defining the core role of AI in surfacing dual-layer proof structures.
+  + IF:
+    Worked mathematical solutions already mix formal derivations with
+    explanatory phrases that gesture toward motivations, subgoals, and
+    tactical decisions, and prior HDM patterns show that capturing such
+    outline-level structures keeps reasoning legible to humans and systems.
 
-  + if:
-    HDM patterns already prove that outline-first capture plus dialogue keeps
-    mathematical reasoning legible to humans and agents.
+  + HOWEVER:
+    These informal cues are not systematically linked to specific steps or
+    objects; without assistance, annotators must rediscover every linkage by
+    hand, and without structure, downstream tools receive only cleaned
+    events with little reusable explanation.
 
-  + however:
-    Transport layers currently record only cleaned events; without AI-assisted
-    extraction of informal phrases tied to symbolic steps, downstream systems
-    receive nothing new to learn from.
+  + THEN:
+    Use existing AI models strictly to propose candidate cue–step links and
+    outline-plus-informal alignments, attach provenance to each proposal,
+    and pass them to human reviewers for acceptance, editing, or rejection
+    before anything is treated as explanatory structure.
 
-  + then:
-    Use AI to propose drafts that align outline nodes with informal cues and
-    hypothesised proof-pattern descriptors, seeding entity/definition lists from
-    open mathematical corpora (e.g., PlanetMath) so proposals start with
-    meaningful vocabulary; attach MUSN provenance, and hand the drafts to human
-    reviewers for acceptance or rejection before ledgering.
+  + BECAUSE:
+    This deployment keeps AI in the role of suggestion engine while ensuring
+    that every retained explanation has a traceable record and a human
+    steward, turning dispersed expository text into candidate reasoning
+    scaffolds that future training-oriented AI could build on.
 
-  + because:
-    This keeps the project grounded in evidence: every retained explanation or
-    pattern fragment has a traceable transport record, satisfying the ledger
-    discipline and producing data future systems can trust.
-
-  + status:
+  + STATUS:
     status[blocked]
     evidence[library/hdm/outline-first-detail-later.flexiarg:1]
     evidence[library/hdm/human-machine-dialogue.flexiarg:1]
     evidence[library/ai4ci/project-summary-core.flexiarg:1]
     blocked-by[ai4ci/annotation-pilot]
 
-  + next-steps:
-    next[Stand up the human-in-the-loop annotation pilot that tags MUSN events with outline/informal pairs and records reviewer decisions.]
-    next[Publish the acceptance log to the evidence ledger so other futons can audit when AI outputs were trusted.]
+  + NEXT:
+    next[Stand up the human-in-the-loop annotation pilot that uses AI to propose cue–step links and records reviewer decisions as structured provenance.]
+    next[Publish the acceptance/rejection log into the evidence ledger so other layers can see which AI proposals were trusted and why.]

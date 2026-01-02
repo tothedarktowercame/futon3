@@ -8,35 +8,38 @@
 @references [docs/protocol.md src/f2/router.clj library/ai4ci/project-summary-core]
 
 ! conclusion:
-  Understand that the MUSN pilot stands on existing transport guarantees
-  (schema-validated ingest, adapter bridges) and pushes one incremental step:
-  linking informal phraseology to structured reasoning hypotheses.
+  Existing math-aware NLP tools can anchor the extraction of reasoning cues
+  by identifying objects and relations, but they cannot determine which
+  informal phrases convey tactic or motivation without human judgement.
 
-  + context: You are grounding the pilot in existing technical infrastructure and transport capability.
+  + IF:
+    Baseline tools can already parse mathematical text, tag entities and
+    relations, and suggest step boundaries that point to where explanations
+    might attach.
 
-  + if:
-    `docs/protocol.md` and `src/f2/router.clj` already enforce msg-id
-    idempotency, timeout bounds, and schema validation for hello/event/export/
-    run/status.
+  + HOWEVER:
+    These tools only indicate where symbols occur and how they relate; they
+    do not by themselves distinguish between phrases that encode genuine
+    reasoning moves and those that merely narrate, summarise, or smooth the
+    exposition.
 
-  + however:
-    Named-entity / relation extraction only tells us which objects appear, not
-    how informal cues describe tactics or mid-level strategy.
+  + THEN:
+    Treat NER/RE outputs and step boundaries as anchors, cluster recurring
+    informal phrases around them, and subject resulting “reasoning cue”
+    hypotheses to human review rather than accepting model guesses as
+    structure.
 
-  + then:
-    Treat NER/RE outputs as anchors, cluster recurring informal phrases around
-    them, and test whether MUSN can label tactic hypotheses that survive human
-    review—all while keeping transport logs untouched.
+  + BECAUSE:
+    This isolates the real research question—whether human-recognisable
+    reasoning structure can be recovered from exposition—from the underlying
+    engineering, avoiding overclaim about what current NLP can deliver on its
+    own.
 
-  + because:
-    This isolates the research question (informal → structure) from baseline
-    engineering, giving reviewers a falsifiable claim.
-
-  + status:
+  + STATUS:
     status[ready]
     evidence[docs/protocol.md:1]
     evidence[src/f2/router.clj:1]
 
-  + next-steps:
-    next[Prototype the phrase→tactic linker on a 10-proof sample and record success/failure per hypothesis.]
-    next[Document how rejected hypotheses flowed through MUSN so adapters stay schema-compatible.]
+  + NEXT:
+    next[Prototype the anchor-plus-cue method on a small proof sample and record success/failure for each hypothesised reasoning cue.]
+    next[Document how rejected cues were generated and reviewed so future work can refine both the NLP components and the human protocol without changing the underlying infrastructure.]

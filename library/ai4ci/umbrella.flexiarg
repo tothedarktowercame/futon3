@@ -1,42 +1,37 @@
 @flexiarg ai4ci/umbrella
 @title AI4CI — Human-Centred Future of AI
-@sigils [🌐/义 ⚡️/能]
+@sigils [🌐/义 ⚡/能]
 @audience EPSRC reviewers
 @tone plain-analytic
 @allow-new-claims false
 
 ! conclusion:
-  Future AI that truly helps people learn demanding skills—not just solve tasks
-  for them—requires a structured account of the mid-level reasoning cues humans
-  already use; this project treats the existence of a stable reasoning layer as
-  an open hypothesis and tests whether today’s traces are recoverable enough to
-  support dual-layer mathematics.
+  Future AI can and should be built that can train humans in cognitively
+  intense skills, which requires an explicit, structured account of the
+  mid-level reasoning cues humans already use to understand complex work.
 
-  + context: You are framing the umbrella vision for AI4CI and the kind of learning it unlocks.
+  + IF:
+    Contemporary AI systems can solve many formal problems in domains like
+    mathematics, but they typically learn from polished outcomes rather than
+    from the reasoning processes that human learners depend on.
 
-  + if:
-    Contemporary AI can already produce many correct answers on textbook-style
-    problems but typically trains
-    on polished outcomes, not on the reasoning processes that human learners rely
-    on.
+  + HOWEVER:
+    These processes do not appear as full interaction logs; they survive
+    mainly in the expository layer as informal hints, motivations, and
+    tactic-describing phrases. We do not yet know whether these traces can
+    be systematically identified, linked to precise steps, and represented
+    as a stable structure that generalises across problems and cohorts.
 
-  + however:
-    Those processes do not appear as full interaction logs; they survive mainly
-    in published exposition as hints, motivations, and tactic-describing phrases,
-    and the project does not presume that these fragments already form a stable
-    layer.  Stability, transferability, and utility remain empirical questions.
+  + THEN:
+    Treat expository traces as candidates for an underlying reasoning layer
+    and design a principled way to surface, examine, and test them, combining
+    AI proposals, human validation, and collective evaluation.
 
-  + then:
-    Treat expository traces as candidate signals, design a workflow that
-    surfaces, validates, and evaluates them, and make the pass/fail criteria
-    explicit: either we find a coherent mid-level layer or we publish the limits
-    discovered by combining AI proposals, human review, and collective
-    discussions.
+  + BECAUSE:
+    Only by making this tacit reasoning layer explicit can we both deepen our
+    scientific understanding of how humans communicate complex thinking and
+    provide the process-level structures that future AI will need in order to
+    help people build expertise rather than merely reproduce correct answers.
 
-  + because:
-    Only by making this tacit reasoning layer explicit can we provide the process
-    structures future AI will need to train humans, build transparent teaching
-    tools, and keep learners in the loop instead of simply emitting answers.
-
-  + next-steps:
-    next[Run the controlled mathematics pilot (dual-layer proofs + seminars) and report whether a recoverable reasoning layer exists that AI could train on.]
+  + NEXT:
+    next[Develop and test a constrained workflow in mathematics that extracts, validates, and evaluates mid-level reasoning cues, and use the results to state clearly whether a recoverable “reasoning layer” exists that AI could train on.]

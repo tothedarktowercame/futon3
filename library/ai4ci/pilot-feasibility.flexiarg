@@ -8,34 +8,36 @@
 @references [repository-transition/invariants stack-coherence/stack-blocker-detection devmap-coherence/next-steps-to-done]
 
 ! conclusion:
-  Understand that the six-month window is feasible because the pilot confines
-  itself to a small sample of proofs, iterative annotation, seminar evaluation,
-  and reporting—leaving storage/UI/inference to other futons.
+  A six-month evaluation is feasible because the project is deliberately
+  scoped to test whether mid-level reasoning cues can be extracted and
+  validated, not to build new AI systems or long-term infrastructure.
 
-  + context: You are showing the pilot timeline and resourcing are feasible.
+  + IF:
+    Repository-transition invariants and stack-blocker detection already
+    describe what infrastructure exists and how to keep scope aligned with
+    available capacity.
 
-  + if:
-    Repository-transition invariants and stack-blocker detection already keep us
-    honest about what infrastructure exists.
+  + HOWEVER:
+    Without explicit scope fences, a project framed around “AI and
+    explanation” can drift into trying to develop storage, user interfaces,
+    or new models, making the schedule unrealistic.
 
-  + however:
-    Without explicit scope fences, AI4CI could drift into trying to build
-    long-term storage or UI layers, blowing the schedule.
+  + THEN:
+    Freeze scope to: proof selection, dual-layer annotation (AI proposals
+    plus human review), seminar-based evaluation, and reporting; track each
+    clause with explicit next-steps so diverging work is visible as scope
+    creep.
 
-  + then:
-    Freeze scope to: data selection, dual-language annotation, MUSN logging,
-    seminars, and report-out.  Track each clause with `next[...]` so blockers are
-    visible.
+  + BECAUSE:
+    Dhammavicaya (keen investigation) in this context demands evidence that
+    the pilot answers a clear methodological question—whether a recoverable
+    reasoning layer exists—rather than attempting production-grade systems.
 
-  + because:
-    Dhammavicaya demands evidence of progress toward “done”; the pilot only
-    needs methodological answers, not production modules.
-
-  + status:
+  + STATUS:
     status[ready]
     evidence[library/repository-transition/invariants.flexiarg:1]
     evidence[library/stack-coherence/stack-blocker-detection.flexiarg:1]
 
-  + next-steps:
-    next[Map the proof sample + annotation sprints to a Gantt-lite timeline and publish it in the devmap.]
-    next[Record blockers/clears weekly so stack-coherence patterns can prove the pilot stayed inside scope.]
+  + NEXT:
+    next[Map the proof sample, annotation sprints, and seminars onto a simple timeline and publish it in the devmap.]
+    next[Record blockers and clears weekly so stack-coherence patterns can demonstrate that the pilot stayed within its declared scope.]

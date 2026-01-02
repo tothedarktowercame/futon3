@@ -1,38 +1,40 @@
-@flexiarg ai4ci/sota-distinction
-@title Distinguishing This Pilot from Mathematical AI SOTA
+@arg ai4ci/sota-distinction
+@title Distinguishing This Project from Current Mathematical AI SOTA
 @sigils [🚫/术 🧠/辨]
 @audience EPSRC reviewers
 @tone plain-analytic
 @allow-new-claims false
 
 ! conclusion:
-  Emphasise that the project studies explanatory capability, not raw
-  problem-solving, because current math AI already produces many correct answers
-  on textbook exercises yet fails to show the reasoning people need to learn or
-  teach effectively.
+  Understand that the project addresses a gap untouched by current mathematical
+  AI systems: not solving problems, but exposing the reasoning cues—both
+  exploratory and expository—that humans rely on to understand mathematical work.
 
-  + context: You are distinguishing the project from state-of-the-art performance claims.
+  + IF:
+    State-of-the-art models such as ChatGPT or AlphaGeometry can often produce
+    plausible solutions to textbook or competition-style problems, showing strong
+    pattern-matching and symbolic fluency on polished inputs.
 
-  + if:
-    Modern large models and specialist solvers can produce credible answers to
-    many textbook problems.
+  + HOWEVER:
+    These systems do not reliably check their own work, cannot explain their
+    reasoning at the level needed for teaching, and fail to produce stable links
+    between informal phrases and the specific steps or objects they reference.
+    Their outputs also lack insight into how humans reconstruct proofs from
+    published exposition.
 
-  + however:
-    They cannot check their own reasoning reliably, rarely justify tactic
-    choices, and provide no stable mapping between informal language and the
-    steps it references.
+  + THEN:
+    Treat problem-solving capability as separate from explanatory capability, and
+    focus the project on analysing how existing proofs communicate reasoning:
+    what exploratory traces remain, what expository cues guide the reader, and
+    whether these signals can be structurally annotated.
 
-  + then:
-    Position AI in this project as a diagnostic assistant: it proposes candidate
-    links between informal cues and formal steps, and humans accept or reject
-    each one so the resulting dataset remains trustworthy.
+  + BECAUSE:
+    Explanation and understanding depend on reconstructing intermediate
+    motivations and relationships, not on producing correct final answers.
+    Current SOTA models offer limited guidance here, leaving a gap that this
+    pilot is uniquely positioned to explore.
 
-  + because:
-    Treating AI outputs as hypotheses, not finished work, turns the pilot into a
-    boundary map for what current systems can and cannot recognise in human
-    reasoning—evidence future researchers can build on.
-
-  + next-steps:
-    Log every suggestion + human judgement, publish the acceptance statistics,
-    and highlight where explanatory capability breaks down even when answers are
-    correct.
+  + NEXT STEPS:
+    Use AI only as a draft annotator for linking informal cues to symbolic steps;
+    contrast human vs. model judgement; and report where explanatory capability
+    breaks down even when problem-solving performance appears strong.

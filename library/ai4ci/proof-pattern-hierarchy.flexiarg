@@ -1,37 +1,42 @@
-@flexiarg ai4ci/proof-pattern-hierarchy
-@title Proof Patterns as Hypothesised Mid-Level Hierarchy
-@sigils [🧩/义 🧭/层]
+@arg ai4ci/proof-pattern-hierarchy
+@title Proof Patterns as a Hypothesised Mid-Level Hierarchy
+@sigils [🧠/纹 🧱/阶]
 @audience EPSRC reviewers
 @tone plain-analytic
 @allow-new-claims false
 
 ! conclusion:
-  Treat the project as a gain-of-function probe into an uncharted layer of
-  mathematical explanation: proof patterns that sit between informal hints and
-  fully formal derivations.
+  Recognise that the project treats proof patterns as a hypothesised mid-level
+  hierarchy, analogous to the hierarchy of mathematical concepts, and uses a
+  small, controlled study to see whether local fragments of this hierarchy can
+  be made visible.
 
-  + context: You are explaining the proof-pattern hierarchy the project intends to test.
+  + IF:
+    Mathematicians rely on recurring tactics—"reduce to a simpler case", "apply
+    a standard theorem", "argue by symmetry"—that function like proof patterns:
+    reusable structures sitting between informal heuristics and fully formal
+    derivations.
 
-  + if:
-    Mathematicians rely on recurring tactics—reduce to a simpler case, argue by
-    symmetry, apply a standard lemma—that function like local proof patterns.
+  + HOWEVER:
+    This implicit hierarchy of proof patterns has never been systematically
+    mapped, and a six-month pilot cannot construct it in full. Existing texts
+    only show traces of these patterns, mixed with both exploratory and
+    expository language.
 
-  + however:
-    Published texts only contain fragments of those tactics, mixed with
-    exploratory and expository language; no systematic hierarchy exists, and a
-    short pilot cannot derive one from scratch.
+  + THEN:
+    Use a gain-of-function style approach: focus on a small, curated set of
+    worked proofs, amplify the strongest informal and expository cues, and see
+    whether any stable, recognisable pattern fragments can be annotated
+    consistently across examples.
 
-  + then:
-    Focus on a small, curated corpus, amplify the strongest informal and
-    expository cues through annotation, and test whether any stable pattern
-    fragments can be identified consistently across examples.
+  + BECAUSE:
+    If such fragments can be identified and linked to specific objects and
+    steps, they provide the first empirical foothold on an underlying proof-
+    pattern hierarchy, even if only at a local scale. If they cannot, this
+    reveals real limits on what present methods can recover.
 
-  + because:
-    If such fragments can be linked to specific steps and objects, they provide
-    the first empirical foothold on an underlying proof-pattern hierarchy. If
-    they cannot, that result documents real limits on current methods.
-
-  + next-steps:
-    Tag recurring tactic descriptors that survive seminar scrutiny as candidate
-    pattern atoms, report their frequencies and failure modes, and feed those
-    findings into future, larger-scale work.
+  + NEXT STEPS:
+    Treat any recurring tactic descriptors that survive annotation and seminar
+    scrutiny as candidate proof-pattern atoms, report how often they appear and
+    where they fail, and use these findings to guide future, larger-scale work
+    on proof-pattern structure.

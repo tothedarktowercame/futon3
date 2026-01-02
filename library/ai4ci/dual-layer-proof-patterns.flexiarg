@@ -1,0 +1,40 @@
+@arg ai4ci/dual-layer-proof-patterns
+@title Dual-Layer Proof Patterns as a Feasibility Question
+@sigils [🧵/双 🧪/验]
+@audience EPSRC reviewers
+@tone plain-analytic
+@allow-new-claims false
+
+! conclusion:
+  Dual-layer proof patterns are a feasibility question: can formal steps and
+  informal cues be captured consistently enough to matter?
+
+  + context: Mathematical proofs contain both formal steps and informal cues
+    (exploratory and expository), but only the former typically survive into
+    print. Contemporary AI tools can identify symbols yet struggle to recover
+    motivations.
+
+  + IF:
+    We collect a modest corpus of worked graduate-level solutions and examine
+    both their formal expressions and the informal commentary surrounding each
+    step.
+
+  + HOWEVER:
+    Off-the-shelf models misidentify or omit exploratory cues, confuse motivation
+    with justification, and cannot reliably map informal language to the exact
+    mathematical objects or subgoals referenced; without human oversight, outputs
+    drift or hallucinate.
+
+  + THEN:
+    Use AI only as a draft assistant whose every suggestion is logged, accepted,
+    edited, or rejected by a human annotator; link cues to specific steps and
+    objects; and run structured seminars across learner cohorts to test whether
+    these annotated proofs genuinely support understanding.
+
+  + BECAUSE:
+    Human-validated cue logs and coded seminar transcripts provide evidence—not
+    speculation—about which pattern fragments are stable, which are fragile, and
+    what methodological constraints govern scalability.
+
+  + NEXT-STEPS:
+    next[Characterise which cue types are consistently recognisable; evaluate where learner groups converge or diverge in what helps them reconstruct a proof; define measurable failure modes; and specify what infrastructural or methodological changes would be required for a full-scale study.]

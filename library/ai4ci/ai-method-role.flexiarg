@@ -8,39 +8,40 @@
 @references [hdm/outline-first-detail-later hdm/human-machine-dialogue stack-coherence/ready-blocked-triage stack-coherence/staleness-scan]
 
 ! conclusion:
-  Recognise that AI is treated as a hypothesis generator acting on a curated
-  evaluation set: humans grade every suggestion against clarity, with MUSN
-  logging where it succeeds, fails, or goes undefined.
+  Human validation of AI-proposed reasoning cues is required to identify
+  genuine structure and avoid false signals; the project treats AI as an
+  experiment whose outputs are graded and logged, not as an automatic
+  source of truth.
 
-  + context: You are describing how AI contributes within the evaluation workflow.
+  + IF:
+    The HDM canon already assumes that outline-level proposals are only
+    trustworthy when human stewards can interrogate them and decide what
+    stands, what changes, and what is discarded.
 
-  + if:
-    The HDM canon accepts outline-level reasoning before detail, but only when
-    human stewards can interrogate the proposal.
+  + HOWEVER:
+    If AI-generated segmentations and glosses are used without explicit
+    records of where they were kept, edited, or rejected, the workflow
+    cannot demonstrate that it is learning anything about the boundary
+    between helpful and misleading explanations.
 
-  + however:
-    Without explicit logging of where AI suggestions were kept, edited, or
-    discarded, we cannot tell whether the workflow learns anything.
+  + THEN:
+    Use AI for first-pass segmentation and paraphrase, route each proposal
+    through a ready/blocked-style decision record (accepted, revised,
+    discarded), and treat staleness scans as alarms when drafts linger
+    without review.
 
-  + then:
-    Use existing checkpoints (math-tuned transformer NER/taggers and
-    lightly-adapted rhetorical classifiers) for first-pass segmentation and
-    paraphrase, with no autonomous mining beyond the curated proof set.  Route
-    each AI suggestion through a ready/blocked ledger entry
-    (`status[applies|blocked|drift]`) that is released with reproducibility
-    notes, and treat staleness scans as alarms when drafts linger unreviewed.
+  + BECAUSE:
+    Methodological validity in this setting depends on showing that human
+    judgement governs every explanation and that the resulting log reveals
+    which explanation types AI handles reliably and which remain beyond its
+    current competence.
 
-  + because:
-    Methodological validity depends on showing that human judgement governs each
-    explanation, not just aggregate scores, and on documenting the limits of the
-    checkpoints we rely on.
-
-  + status:
+  + STATUS:
     status[blocked]
     evidence[library/hdm/outline-first-detail-later.flexiarg:1]
     evidence[library/hdm/human-machine-dialogue.flexiarg:1]
     blocked-by[ai4ci/reviewer-roster]
 
-  + next-steps:
-    next[Publish reviewer rota + decision rubric so every AI-assisted explanation is triaged within 48h.]
-    next[Wire review outcomes into stack-coherence/staleness-scan so unattended drafts raise alarms.]
+  + NEXT:
+    next[Publish a reviewer rota and decision rubric so every AI-assisted explanation is triaged within a fixed window (e.g. 48 hours).]
+    next[Wire review outcomes into stack-coherence/staleness-scan so unattended drafts raise visible alarms and cannot silently accumulate.]

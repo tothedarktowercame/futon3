@@ -234,6 +234,30 @@ python scripts/patterns.py shell --cluster 0 --embeddings dev/fixtures/pattern_e
 python scripts/patterns.py tree --k 2 --max-depth 2 --embeddings dev/fixtures/pattern_embeddings.json --out dev/fixtures/pattern_tree.json
 ```
 
+Reproduce the full library/devmap run (GloVe, ~231 patterns):
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r scripts/requirements-patterns.txt
+
+python scripts/export_pattern_embeddings_glove.py \
+  --glove data/glove/glove.6B.50d.txt \
+  --out futon3/data/glove_pattern_embeddings.json
+
+python scripts/patterns.py dry-run --embeddings futon3/data/glove_pattern_embeddings.json
+python scripts/patterns.py cluster --k 32 --linkage complete \
+  --embeddings futon3/data/glove_pattern_embeddings.json \
+  --out futon3/data/pattern_clusters.json --include-scores
+python scripts/patterns.py shell --cluster 6 \
+  --embeddings futon3/data/glove_pattern_embeddings.json \
+  --clusters futon3/data/pattern_clusters.json \
+  --ring-size 6 --max-rings 2 --with-scores
+python scripts/patterns.py tree --k 4 --max-depth 3 --min-size 6 \
+  --embeddings futon3/data/glove_pattern_embeddings.json \
+  --out futon3/data/pattern_tree.json
+```
+
 Example cluster output (structure; cluster ids may differ by dataset):
 
 ```json

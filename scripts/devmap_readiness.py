@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Dict, List, Any
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_OUTPUT = ROOT / "boundary.edn"
+DEFAULT_OUTPUT = ROOT / "resources" / "boundary.edn"
 DEV_DIR = ROOT / "holes"
 FUTON_IDS = [f"f{i}" for i in range(8)]
 PROTOTYPE_RE = re.compile(r"^!\s")

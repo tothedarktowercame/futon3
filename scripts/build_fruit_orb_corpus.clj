@@ -5,7 +5,7 @@
             [clojure.edn :as edn]))
 
 
-(def orbs-md (io/file "orbs.txt"))
+(def orbs-md (io/file "resources/orbs.txt"))
 (def output-path (io/file "resources/sigils/fruit-orb-corpus.edn"))
 
 (defn- fruit-descriptions []

@@ -1,0 +1,66 @@
+{
+  "id": "root",
+  "center": "gamma",
+  "members": [
+    "gamma",
+    "beta",
+    "alpha",
+    "epsilon",
+    "delta",
+    "zeta"
+  ],
+  "children": [
+    {
+      "id": "root.1",
+      "center": "beta",
+      "members": [
+        "beta",
+        "alpha",
+        "gamma"
+      ],
+      "children": [
+        {
+          "id": "root.1.0",
+          "center": "alpha",
+          "members": [
+            "alpha",
+            "beta"
+          ]
+        },
+        {
+          "id": "root.1.1",
+          "center": "gamma",
+          "members": [
+            "gamma"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "root.0",
+      "center": "delta",
+      "members": [
+        "delta",
+        "epsilon",
+        "zeta"
+      ],
+      "children": [
+        {
+          "id": "root.0.0",
+          "center": "delta",
+          "members": [
+            "delta",
+            "epsilon"
+          ]
+        },
+        {
+          "id": "root.0.1",
+          "center": "zeta",
+          "members": [
+            "zeta"
+          ]
+        }
+      ]
+    }
+  ]
+}

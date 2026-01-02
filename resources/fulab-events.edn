@@ -30,4 +30,12 @@
   :event/ts #inst "2026-01-02T07:30:00.000Z"
   :summary "Implemented proof-commit validation script: structural/correspondence/shape checks against fubar trail, generates PR summary with pattern THEN clauses and evidence."
   :evidence/path "scripts/proof_commit.clj"
-  :patterns-used ["fulab/proof-commit"]}]
+  :patterns-used ["fulab/proof-commit"]}
+ {:event/type :fucodex/contribution
+  :event/ts #inst "2026-01-02T17:22:44.000Z"
+  :summary "Added mojo/west to the pattern index and updated the AIF bridge to attach :aif-trace summaries to check proofs (including constraint-violation capture)."
+  :evidence/path "resources/sigils/patterns-index.tsv"}
+ {:event/type :fucodex/contribution
+  :event/ts #inst "2026-01-02T17:22:44.000Z"
+  :summary "Ran the fucodex AIF trial mission with a 3-tick mojo/west episode and logged the proof output in the analysis file; refreshed the runbook + setup README."
+  :evidence/path "docs/fucodex-trial-mission-analysis.org"}]

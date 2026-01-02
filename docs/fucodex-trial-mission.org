@@ -1,0 +1,58 @@
+#+TITLE: Fucodex Trial Mission (AIF Trace Runbook)
+
+Goal: run a tiny AIF episode and pass its summary into Futon3 checks so the
+proof output includes `:check/aif-trace`. This is a runbook for fucodex to
+execute; the analysis lives in `docs/fucodex-trial-mission-analysis.org`.
+
+* Setup
+
+1. Start a REPL in this repo (any standard Clojure REPL works).
+2. Require the AIF bridge:
+   - `(require '[futon3.aif-bridge :as aif])`
+
+* Mission (3 steps)
+
+** Step 1: Build a miniature episode trace
+Use a small vector of step maps. These emulate Futon2 AIF outputs.
+
+#+BEGIN_SRC clojure
+(def episode-trace
+  [{:G 0.9
+    :action :observe
+    :perception {:prec {:tau 0.2}}
+    :pattern-trace {:id "mojo/west" :constraint-ok? true}}
+   {:G 0.7
+    :action :act
+    :perception {:prec {:tau 0.4}}
+    :pattern-trace {:id "mojo/west" :constraint-ok? false}}
+   {:G 0.8
+    :action :tune
+    :perception {:prec {:tau 0.5}}
+    :pattern-trace {:id "mojo/west" :constraint-ok? true}}])
+#+END_SRC
+
+** Step 2: Generate a proof check from the trace
+The bridge uses the episode trace to build a check request and returns a proof.
+
+#+BEGIN_SRC clojure
+(aif/validate-aif-proof episode-trace "mojo/west")
+#+END_SRC
+
+** Step 3: Record the result
+Capture the returned proof map (or at least the `:check/aif-trace` block) and
+store it in `docs/fucodex-trial-mission-analysis.org` under "Run evidence."
+
+* Verification
+
+The returned proof map should include a block similar to:
+
+#+BEGIN_SRC clojure
+{:check/aif-trace
+ {:g-mean 0.8
+  :tau-range [0.2 0.5]
+  :action-counts {:observe 1 :act 1 :tune 1}
+  :constraint-violations ["pattern-constraint-failed@:act"]}}
+#+END_SRC
+
+If the AIF evidence appears here, the Futon2 -> Futon3 bridge is functioning
+for summary evidence.

@@ -209,6 +209,48 @@ The matrices are cheap to recompute, so rerun the script whenever you add or edi
    The current collision list lives in `docs/sigil-collisions.md` so you can see
    which clauses are competing for the same pair before refreshing the HUD.
 
+## Pattern embeddings CLI (clusters, shells, tree)
+
+The repo currently ships `data/sigils/glove_pattern_neighbors.json` (GloVe neighbor report) but not a raw pattern vector map. The CLI expects a file that maps `pattern-id -> [floats]`; point it at your embeddings with `--embeddings`. A tiny fixture lives at `dev/fixtures/pattern_embeddings.json`.
+
+Dependencies: `numpy` for vector math, `scikit-learn` for agglomerative clustering (`hclust`). `hdbscan` is optional and only required if you pass `--method hdbscan`.
+
+```bash
+python -m pip install -r scripts/requirements-patterns.txt
+```
+
+```bash
+python scripts/patterns.py dry-run --embeddings dev/fixtures/pattern_embeddings.json
+python scripts/patterns.py cluster --k 2 --embeddings dev/fixtures/pattern_embeddings.json --out dev/fixtures/pattern_clusters.json --include-scores
+python scripts/patterns.py shell --cluster 0 --embeddings dev/fixtures/pattern_embeddings.json --clusters dev/fixtures/pattern_clusters.json --ring-size 2 --with-scores
+python scripts/patterns.py tree --k 2 --max-depth 2 --embeddings dev/fixtures/pattern_embeddings.json --out dev/fixtures/pattern_tree.json
+```
+
+Example cluster output (structure; cluster ids may differ by dataset):
+
+```json
+{
+  "0": {
+    "center": "beta",
+    "members": ["beta", "alpha", "gamma"],
+    "scores": [1.0, 0.994, 0.991]
+  },
+  "1": {
+    "center": "delta",
+    "members": ["delta", "epsilon", "zeta"],
+    "scores": [1.0, 0.994, 0.97]
+  }
+}
+```
+
+Example shell output:
+
+```text
+cluster 0 center beta
+ring 0: beta(1.000) alpha(0.994)
+ring 1: gamma(0.991)
+```
+
 ## Flexiformal Proofwork Deliverables
 
 ### Transport contract & golden transcripts

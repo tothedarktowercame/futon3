@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+import importlib.util
 
 ROOT = Path(__file__).resolve().parents[1]
 EMBEDDINGS = ROOT / "dev" / "fixtures" / "pattern_embeddings.json"
@@ -28,7 +29,7 @@ class PatternsCliTests(unittest.TestCase):
         self.assertIn("dim=3", result.stdout)
 
     @unittest.skipUnless(
-        (lambda: __import__("importlib").util.find_spec("sklearn") is not None)(),
+        importlib.util.find_spec("sklearn") is not None,
         "scikit-learn not installed",
     )
     def test_cluster_smoke(self):
@@ -46,7 +47,7 @@ class PatternsCliTests(unittest.TestCase):
             self.assertEqual(set(members), {"alpha", "beta", "gamma", "delta", "epsilon", "zeta"})
 
     @unittest.skipUnless(
-        (lambda: __import__("importlib").util.find_spec("sklearn") is not None)(),
+        importlib.util.find_spec("sklearn") is not None,
         "scikit-learn not installed",
     )
     def test_shell_smoke(self):
@@ -78,7 +79,7 @@ class PatternsCliTests(unittest.TestCase):
             self.assertIn("ring 0", result.stdout)
 
     @unittest.skipUnless(
-        (lambda: __import__("importlib").util.find_spec("sklearn") is not None)(),
+        importlib.util.find_spec("sklearn") is not None,
         "scikit-learn not installed",
     )
     def test_tree_smoke(self):

@@ -307,6 +307,8 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     cluster = subparsers.add_parser("cluster", help="Cluster embeddings.")
+    cluster.add_argument("--embeddings", default=argparse.SUPPRESS,
+                         help="Path to embeddings file (JSON/CSV/TSV/EDN).")
     cluster.add_argument("--k", type=int, required=True, help="Number of clusters.")
     cluster.add_argument("--method", choices=["hclust", "hdbscan"], default="hclust")
     cluster.add_argument("--linkage", choices=["average", "complete"], default="average")
@@ -319,6 +321,8 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
                          help="HDBSCAN min samples.")
 
     shell = subparsers.add_parser("shell", help="Print cluster shells.")
+    shell.add_argument("--embeddings", default=argparse.SUPPRESS,
+                       help="Path to embeddings file (JSON/CSV/TSV/EDN).")
     shell.add_argument("--cluster", required=True, help="Cluster ID.")
     shell.add_argument("--clusters", default=str(DEFAULT_CLUSTER_OUT),
                        help="Path to cluster JSON output.")
@@ -327,6 +331,8 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     shell.add_argument("--with-scores", action="store_true", help="Include similarity scores.")
 
     tree = subparsers.add_parser("tree", help="Build recursive cluster tree.")
+    tree.add_argument("--embeddings", default=argparse.SUPPRESS,
+                      help="Path to embeddings file (JSON/CSV/TSV/EDN).")
     tree.add_argument("--k", type=int, required=True, help="Number of clusters per level.")
     tree.add_argument("--max-depth", type=int, required=True)
     tree.add_argument("--min-size", type=int, default=2)
@@ -335,7 +341,8 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     tree.add_argument("--out", default=str(DEFAULT_TREE_OUT), help="Output JSON path.")
 
     dry = subparsers.add_parser("dry-run", help="Validate embeddings and print stats.")
-    _ = dry
+    dry.add_argument("--embeddings", default=argparse.SUPPRESS,
+                     help="Path to embeddings file (JSON/CSV/TSV/EDN).")
 
     return parser.parse_args(argv)
 

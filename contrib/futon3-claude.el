@@ -10,6 +10,7 @@
 (require 'json)
 (require 'url)
 (require 'futon3-bridge)
+(require 'fubar)
 
 (defvar my-futon3-claude-buffer "*Claude*"
   "Buffer for displaying Claude session output.")
@@ -71,6 +72,9 @@ PATTERN-ID and INTENT enable fulab clock-in for the session."
         (let ((session-id (plist-get result :session-id)))
           (setq my-futon3-claude-current-session session-id)
           (setq my-futon3-claude-pending-calls nil)
+          ;; Log fubar clock-in when pattern-id is provided
+          (when pattern-id
+            (my-fubar-log-clock-in session-id pattern-id intent))
           (message "Claude session started: %s%s"
                    session-id
                    (if pattern-id (format " [%s]" pattern-id) ""))
@@ -88,10 +92,13 @@ PROMPT is the initial prompt, CWD defaults to `default-directory'."
   "Cancel the current Claude session."
   (interactive)
   (when my-futon3-claude-current-session
-    (my-futon3-claude--request
-     "POST" (format "/claude/cancel/%s" my-futon3-claude-current-session))
-    (message "Cancelled session: %s" my-futon3-claude-current-session)
-    (setq my-futon3-claude-current-session nil)))
+    (let ((session-id my-futon3-claude-current-session))
+      (my-futon3-claude--request
+       "POST" (format "/claude/cancel/%s" session-id))
+      ;; Log fubar clock-out before clearing session
+      (my-fubar-log-clock-out session-id (list :session/status :cancelled))
+      (message "Cancelled session: %s" session-id)
+      (setq my-futon3-claude-current-session nil))))
 
 (defun my-futon3-claude-sessions ()
   "List all Claude sessions."
@@ -100,6 +107,42 @@ PROMPT is the initial prompt, CWD defaults to `default-directory'."
     (if (called-interactively-p 'any)
         (message "Sessions: %S" (plist-get result :sessions))
       (plist-get result :sessions))))
+
+;; --- Fubar event helpers ---
+
+(defun my-futon3-claude-log-pattern-used (pattern-id &optional reason)
+  "Log a pattern dependency for the current Claude session.
+PATTERN-ID is the pattern being used, REASON explains why."
+  (when my-futon3-claude-current-session
+    (my-fubar-log-pattern-used my-futon3-claude-current-session
+                               pattern-id
+                               (or reason "claude-context"))))
+
+(defun my-futon3-claude-record-artifact (path &optional action)
+  "Record an artifact modification for the current Claude session.
+PATH is the file path, ACTION is :created, :modified, or :deleted."
+  (when my-futon3-claude-current-session
+    (my-fubar-record-artifact my-futon3-claude-current-session
+                              path
+                              (or action :modified))))
+
+(defvar my-futon3-claude--file-tools '("Edit" "Write" "Read" "NotebookEdit")
+  "Tool names that operate on files and should track artifacts.")
+
+(defun my-futon3-claude--maybe-record-artifact (event)
+  "Extract file path from EVENT and record as artifact if applicable."
+  (when my-futon3-claude-current-session
+    (let* ((tool (plist-get event :tool/name))
+           (params (plist-get event :tool/params))
+           (path (or (plist-get params :file_path)
+                     (plist-get params :path)
+                     (plist-get params :notebook_path))))
+      (when (and tool path (member tool my-futon3-claude--file-tools))
+        (let ((action (cond
+                       ((string= tool "Write") :created)
+                       ((string= tool "Read") :read)
+                       (t :modified))))
+          (my-futon3-claude-record-artifact path action))))))
 
 ;; --- Approval flow ---
 
@@ -224,6 +267,10 @@ PROMPT is the initial prompt, CWD defaults to `default-directory'."
                                       my-futon3-claude--events-offset)))
                         (dolist (event (seq-drop (plist-get final-events :events) offset))
                           (my-futon3-claude--insert-event event)))))
+                  ;; Log fubar clock-out with session status
+                  (my-fubar-log-clock-out session-id
+                                          (list :session/status
+                                                (intern (concat ":" status))))
                   (my-futon3-claude--insert-event
                    `(:event/type "session/finished" :session/status ,status))
                   (setq my-futon3-claude-current-session nil)))))))
@@ -255,7 +302,9 @@ PROMPT is the initial prompt, CWD defaults to `default-directory'."
               (unless my-futon3-claude-auto-approve
                 (message "Tool call pending: %s %s (approve/deny)" tool call-id))))
            ((string= type "tool/approved")
-            (insert (format "[APPROVED: %s]\n" (plist-get event :tool/call-id))))
+            (insert (format "[APPROVED: %s]\n" (plist-get event :tool/call-id)))
+            ;; Track artifacts for file-modifying tools
+            (my-futon3-claude--maybe-record-artifact event))
            ((string= type "tool/denied")
             (insert (format "[DENIED: %s]\n" (plist-get event :tool/call-id))))
            ((string= type "session/finished")

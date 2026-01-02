@@ -6,6 +6,13 @@
 @style pattern
 @allow-new-claims true
 @references [futon2/doc/trace/single_tick.edn futon2/src/ants/aif/policy.clj futon2/test/resources/goldens/policy_harness.edn]
+@aif-delta {
+  :precision {:food-scale 1.8      ;; heightened food detection in sparse areas
+              :novelty-scale 1.4   ;; value unexplored territory
+              :tau-floor 0.12}     ;; allow more exploration in white space
+  :efe {:lambda {:info 0.6         ;; stronger exploration drive
+                 :ambiguity 0.4}}  ;; tolerate uncertainty
+}
 
 ! conclusion:
   Cyber-ants inherit the “white space” doctrine: when food + pheromones slump

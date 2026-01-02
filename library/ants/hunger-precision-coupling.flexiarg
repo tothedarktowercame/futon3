@@ -6,6 +6,12 @@
 @style pattern
 @allow-new-claims true
 @references [futon2/test/resources/goldens/hunger_tau.edn futon2/src/ants/aif/affect.clj futon2/src/ants/aif/core.clj]
+@aif-delta {
+  :precision {:need-gain 0.7      ;; stronger hunger->precision coupling
+              :dhdt-gain 0.9      ;; faster tau response to hunger trend
+              :tau-survival-gain 0.6}
+  :efe {:lambda {:survival 1.4}}  ;; amplify survival cost when hungry
+}
 
 ! conclusion:
   Hunger drives precision: cyber-ants honour Futon2’s goldens so that `tick-hunger`

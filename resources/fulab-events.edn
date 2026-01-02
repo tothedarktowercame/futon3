@@ -10,4 +10,24 @@
  {:event/type :fucodex/contribution
   :event/ts #inst "2026-01-02T00:40:13.000Z"
   :summary "Documented Fulab WIP endpoints and fubar logging status in Futon4 docbook working docs."
-  :evidence/path "/home/joe/code/futon4/docs/docbook-working/futon3/futon3-f056d8a81559.org"}]
+  :evidence/path "/home/joe/code/futon4/docs/docbook-working/futon3/futon3-f056d8a81559.org"}
+ {:event/type :fucodex/contribution
+  :event/ts #inst "2026-01-02T06:30:00.000Z"
+  :summary "Wired futon3-claude.el to fubar.el for session lifecycle: clock-in on pattern-aware session start, clock-out on finish/cancel/error."
+  :evidence/path "contrib/futon3-claude.el"
+  :patterns-used ["fulab/clock-in" "fulab/clock-out"]}
+ {:event/type :fucodex/contribution
+  :event/ts #inst "2026-01-02T06:45:00.000Z"
+  :summary "Added pattern-dep emission: HUD target/pattern selection now logs :pattern/used events when Claude session is active."
+  :evidence/path "contrib/futon3-hud.el"
+  :patterns-used ["fulab/pattern-dep"]}
+ {:event/type :fucodex/contribution
+  :event/ts #inst "2026-01-02T07:00:00.000Z"
+  :summary "Added artifact tracking: file-modifying tool approvals (Edit, Write, NotebookEdit) now record artifacts to fubar session."
+  :evidence/path "contrib/futon3-claude.el"
+  :patterns-used ["fulab/clock-out"]}
+ {:event/type :fucodex/contribution
+  :event/ts #inst "2026-01-02T07:30:00.000Z"
+  :summary "Implemented proof-commit validation script: structural/correspondence/shape checks against fubar trail, generates PR summary with pattern THEN clauses and evidence."
+  :evidence/path "scripts/proof_commit.clj"
+  :patterns-used ["fulab/proof-commit"]}]

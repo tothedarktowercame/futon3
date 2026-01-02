@@ -6,6 +6,12 @@
 @style pattern
 @allow-new-claims true
 @references [futon2/src/ants/aif/policy.clj futon2/doc/trace/single_tick.edn futon2/test/resources/goldens/policy_harness.edn]
+@aif-delta {
+  :modes {:cargo-high 0.55}       ;; lower threshold to trigger homebound
+  :precision {:tau-cap 1.2}       ;; clamp tau to prevent return thrashing
+  :actions {:return {:cargo-thresh 0.1   ;; penalize empty returns
+                     :empty-home-pen 1.1}}
+}
 
 ! conclusion:
   When an AIF agent carries significant cargo yet keeps returning without

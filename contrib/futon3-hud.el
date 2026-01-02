@@ -10,6 +10,9 @@
 (require 'seq)
 (require 'subr-x)
 
+(declare-function my-futon3-claude-log-pattern-used "futon3-claude" (pattern-id &optional reason))
+(defvar my-futon3-claude-current-session)
+
 (declare-function my-chatgpt-shell--current-futons "aob-chatgpt" ())
 (declare-function my-chatgpt-shell--dedupe-sigils "aob-chatgpt" (sigils))
 (declare-function my-chatgpt-shell--prototype-keywords "aob-chatgpt" ())
@@ -338,7 +341,12 @@
                                                :started (float-time)))
     (if my-futon3-active-pattern
         (my-futon3--update-session :pattern my-futon3-active-pattern)
-      (setq my-futon3-tatami-active-session (plist-put my-futon3-tatami-active-session :pattern nil))))
+      (setq my-futon3-tatami-active-session (plist-put my-futon3-tatami-active-session :pattern nil)))
+    ;; Log pattern-dep if Claude session is active
+    (when (and (boundp 'my-futon3-claude-current-session)
+               my-futon3-claude-current-session)
+      (dolist (proto parsed)
+        (my-futon3-claude-log-pattern-used proto "tatami-target"))))
   (my-chatgpt-shell--reset-context-state)
   (my-futon3-sync-selection)
   (my-chatgpt-shell--refresh-context-all)
@@ -353,7 +361,12 @@
   (let ((normalized (my-futon3--normalize-pattern pattern)))
     (setq my-futon3-active-pattern normalized)
     (if normalized
-        (my-futon3--update-session :pattern normalized)
+        (progn
+          (my-futon3--update-session :pattern normalized)
+          ;; Log pattern-dep if Claude session is active
+          (when (and (boundp 'my-futon3-claude-current-session)
+                     my-futon3-claude-current-session)
+            (my-futon3-claude-log-pattern-used normalized "pattern-select")))
       (when my-futon3-tatami-active-session
         (setq my-futon3-tatami-active-session
               (plist-put my-futon3-tatami-active-session :pattern nil))))

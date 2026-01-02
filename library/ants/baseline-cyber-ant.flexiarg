@@ -6,6 +6,10 @@
 @style pattern
 @allow-new-claims true
 @references [futon2/doc/stack-baseline.md futon2/doc/trace/single_tick.edn futon2/test/resources/goldens/policy_harness.edn]
+@aif-delta {
+  ;; Baseline uses Futon2 core defaults - no overrides
+  ;; This pattern produces identical behavior to :aif species
+}
 
 ! conclusion:
   Treat the baseline cyber-ant as a narratable instance of the Futon2 AIF loop:

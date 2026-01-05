@@ -82,7 +82,7 @@
       (is (= [:truth]
              (map :paramita/id (:paramitas result))))
       (is (= :demo/pattern (-> result :cue/intent :matches first :pattern/id)))
-      (is (seq (:tokens (:cue/intent result))))))
+      (is (seq (:tokens (:cue/intent result)))))))
 
 (deftest intent-seeding-adds-query-sigils
   (let [captured (atom nil)

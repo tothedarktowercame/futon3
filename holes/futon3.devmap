@@ -108,10 +108,17 @@ It collects what happens, checks it against a library of shared patterns, and pr
   + because: proofs only matter when other futons can act on them automatically.
   + next: Wire the Tatami event log into FUTON1 (per `futon3/tatami_store.clj` TODO) so session events flow into graph-memory before we expose the adapters.
 
-! instantiated-by: Prototype 9 — Proof Training Ground (“Flexiformal Agent Sandbox”) [🚢/氏 🏃/未]
+! instantiated-by: Prototype 9 — Proof Training Ground ("Flexiformal Agent Sandbox") [🚢/氏 🏃/未]
   + context: FUTON3 needs a reproducible training ground where humans and agents can practice flexiformal checks before contributing to FUTON6.
   + if: You want collaborators (including FUTON6 math stewards) to experience the proof workflow hands-on.
   + however: README/docs still emphasise ants and MUD metaphors and do not ship a simulator/tutorial bundle; roles (training facilitators vs. FUTON6 learners) and release readiness are not declared.
-  + then: Package a “Flexiformal Training Ground” release: updated README, tutorials referencing `t4r/` training patterns, sample check sessions, and a minimal simulator that feeds FUTON6’s Hyperreal entries; name facilitators (FUTON3 maintainers) and consumers (FUTON6 trainees), and publish readiness criteria (tutorials complete, simulator recorded, onboarding docs updated) before tagging the release.
+  + then: Package a "Flexiformal Training Ground" release: updated README, tutorials referencing `t4r/` training patterns, sample check sessions, and a minimal simulator that feeds FUTON6's Hyperreal entries; name facilitators (FUTON3 maintainers) and consumers (FUTON6 trainees), and publish readiness criteria (tutorials complete, simulator recorded, onboarding docs updated) before tagging the release.
   + because: Storytelling plus an explicit training ground turns FUTON3 into a reproducible service that upstream layers (FUTON6, FUTON7) can consume and steward.
   + next: Aggregate Tatami session proof events into `proof-chain.edn` (per `tatami_store.clj` TODO) so the training ground exports persistent transcripts.
+
+! instantiated-by: Prototype 10 — System Self-Description & Machine-Readable Manifest [🔃/本 📋/系统]
+  + context: The stack currently has documentation and APIs at various layers—Futon1's storage API with checked invariants, Emacs Lisp functions callable via emacsclient, HTTP/WebSocket endpoints in Futon3. But these exist as separate artifacts: code, docs, and schemas that humans must correlate.
+  + if: You want the system to describe itself in a way that agents can query, and for that description to stay synchronized with implementation.
+  + however: No machine-readable manifest exists where components are first-class entities in the hypergraph. Patterns describe design structures but not system capabilities.
+  + then: Unify documentation and APIs into a machine-readable manifest where stack components are first-class entities in Futon1. Patterns describe not just design structures but system capabilities—what the message bus can do, what functions the Emacs interface exposes, what invariants each layer enforces. Enable agents to query the system about its own capabilities, and self-verify that the running system matches its declared structure.
+  + because: This closes the reflexivity loop: a semantic network that includes a model of itself. FUTON3's pattern checker already validates its own devmap; extending this to describe the full stack enables ongoing self-documentation as the system extends. The machinery from F5 (patterns → schema → code) applies reflexively: the stack itself becomes a domain.

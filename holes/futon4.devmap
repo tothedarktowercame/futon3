@@ -7,7 +7,10 @@
 @length any
 @factor Tranquility (passaddhi)
 @IFR: FUTON4 becomes the passaddhi (tranquility) memory atelier where Arxana, graph memory, flexiarg, and agents interoperate, letting symbolic artefacts be edited, linked, and narrated in one continuous workspace that settles and integrates the energetic work beneath it.
-@state Arxana reanimation through M4 is working (storage bridge, browsing, relations) while inclusion/transclusion UX, modern import/export shims, and QA/release prep remain open.
+@state Arxana reanimation through M4 is working (storage bridge, browsing,
+relations) and the system is now in QA. Inclusion/transclusion UX is WIP.
+Export to standard formats works, but import for modern doc formats does not
+yet; release prep and tagging remain open.
 @next Deliver the pending inclusion UX, document modern import/export/migration shims, and grow the QA + contributor guide so a “revived” release can be tagged.
 
 
@@ -120,6 +123,7 @@
     - Main article buffer overlays wired to `mark-things-up` hook.
     - `docs/inclusion-ui.md` documenting visual affordances and toggle commands.
     - Integration test verifying main buffer + display buffer side-by-side.
+    - Optional: CRDT-backed multi-user transclusion sessions (when collaboration is needed).
 
 ! instantiated-by: Prototype 7 — XTDB Integration [⌛️/久 🙅/分]
   + context: Bi-temporal, multi-user storage needed for long-term evolution.

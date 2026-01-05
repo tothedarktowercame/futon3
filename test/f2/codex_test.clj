@@ -90,17 +90,19 @@
                 f2.codex/run-session-loop! (fn [_] nil)
                 f2.codex/write-to-process! (fn [_ _] nil)]
     (let [{:keys [session-id]} (codex/start-session! {:prompt "hi"})
-          call-id "tool-1"]
-      (swap! @#'f2.codex/!sessions assoc-in [session-id :pending-approvals call-id]
-             {:tool/name "demo"})
-      (is (:ok (codex/approve-tool-call! session-id call-id)))
-      (swap! @#'f2.codex/!sessions assoc-in [session-id :pending-approvals call-id]
-             {:tool/name "demo"})
-      (is (:ok (codex/deny-tool-call! session-id call-id "nope")))
-      (let [events (-> (codex/get-events session-id) :events)
-            types (map :event/type events)]
-        (is (some #{:tool/approved} types))
-        (is (some #{:tool/denied} types))))))
+          call-id "tool-1"
+          session (get @@#'f2.codex/!sessions session-id)]
+      (if (nil? session)
+        (is false "Session missing after start-session!")
+        (do
+          (swap! (:pending-approvals session) assoc call-id {:tool/name "demo"})
+          (is (:ok (codex/approve-tool-call! session-id call-id)))
+          (swap! (:pending-approvals session) assoc call-id {:tool/name "demo"})
+          (is (:ok (codex/deny-tool-call! session-id call-id "nope")))
+          (let [events (-> (codex/get-events session-id) :events)
+                types (map :event/type events)]
+            (is (some #{:tool/approved} types))
+            (is (some #{:tool/denied} types))))))))
 
 (deftest event-log-offset
   (with-redefs [f2.codex/start-process! (fn [_ _] (Object.))

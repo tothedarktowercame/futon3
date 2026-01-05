@@ -68,3 +68,4 @@ Full transcript capture is opt-in and stored separately if enabled.
 
 - `POST /api/alpha/lab/session` with `lab/*` keys ingests a session into XTDB.
 - `GET /api/alpha/lab/session/:id` fetches a stored lab session by id.
+- `GET /api/alpha/lab/sessions?limit=N` lists recent lab sessions.

@@ -7,10 +7,14 @@ set -euo pipefail
 #   fulab-export --list             # list available sessions
 #   fulab-export <session-file>     # export specific session
 #   fulab-export --all              # export all sessions
+#   fulab-export --ingest           # export + POST to Futon1
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
 CLAUDE_DIR="$HOME/.claude/projects"
+API_BASE="http://localhost:8080/api/alpha"
+PROFILE=""
+INGEST=false
 
 usage() {
   echo "Usage: fulab-export [OPTIONS] [SESSION_FILE]"
@@ -23,6 +27,9 @@ usage() {
   echo "  --recent N   Export N most recent sessions (default: 1)"
   echo "  --dry-run    Show what would be exported without writing"
   echo "  --help       Show this help"
+  echo "  --ingest     POST exported lab/raw JSON to Futon1"
+  echo "  --api-base   Futon1 API base (default: $API_BASE)"
+  echo "  --profile    X-Profile header for ingest"
   echo ""
   echo "Examples:"
   echo "  fulab-export                     # export most recent session"
@@ -73,6 +80,19 @@ export_session() {
     --repo-root "$(pwd)" \
     --lab-root "$ROOT/lab" \
     $dry_run_flag
+
+  if [[ "$dry_run" != "true" && "$INGEST" == "true" ]]; then
+    local raw_path="$ROOT/lab/raw/${session_id}.json"
+    local header_args=()
+    if [[ -n "$PROFILE" ]]; then
+      header_args+=(-H "X-Profile: $PROFILE")
+    fi
+    echo "[fulab-export] ingesting: $session_id"
+    curl -sS -H "Content-Type: application/json" "${header_args[@]}" \
+      --data-binary @"$raw_path" \
+      "$API_BASE/lab/session"
+    echo ""
+  fi
 }
 
 get_recent_sessions() {
@@ -111,6 +131,18 @@ while [[ $# -gt 0 ]]; do
     --dry-run|-n)
       DRY_RUN=true
       shift
+      ;;
+    --ingest)
+      INGEST=true
+      shift
+      ;;
+    --api-base)
+      API_BASE="${2:-$API_BASE}"
+      shift 2
+      ;;
+    --profile)
+      PROFILE="${2:-}"
+      shift 2
       ;;
     *)
       if [[ -f "$1" ]]; then

@@ -1,0 +1,13 @@
+#+TITLE: Fulab Plumbing
+
+* Summary (2026-01-05)
+- Validated fucodex session plumbing (resume, clock-out, approvals, event log access) via tests.
+- Mirrored fubar surface tests for clock-in + doc-written.
+- Added Futon1 lab ingest + fetch endpoints, plus a list endpoint for recent sessions.
+- Added lab ingest helper script and `fulab-export --ingest` option.
+- Documented lab API endpoints in lab-notebook-contract.
+
+* Tickets
+- Add test coverage for `GET /api/alpha/lab/sessions` (list endpoint).
+- Investigate/suppress `[fubar] Log unreadable: End of file during parsing` warnings in ERT runs.
+- Wire real-time lab updates from Futon3 event streams into Futon1 lab ingest (batch or session-end).

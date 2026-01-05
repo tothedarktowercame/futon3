@@ -1,0 +1,157 @@
+#+TITLE: Codex Tickets — Fulab Infrastructure
+#+STARTUP: overview
+
+Tickets for Claude Code (Codex) to work on. Each ticket references relevant
+fulab patterns and includes acceptance criteria.
+
+* Backend: Include tool params in event stream
+:PROPERTIES:
+:STATUS: open
+:PRIORITY: high
+:PATTERNS: fulab/clock-out
+:END:
+
+The Emacs-side artifact tracking (~my-futon3-claude--maybe-record-artifact~)
+expects ~:tool/params~ in ~tool/approved~ events from the backend. Currently
+this may not be sent.
+
+** Acceptance Criteria
+- [ ] ~tool/approved~ events include ~:tool/params~ with file paths
+- [ ] Artifact tracking in futon3-claude.el captures real file paths
+- [ ] Verify with a test session that artifacts appear in clock-out
+
+** Evidence path
+- Backend: ~/claude/events~ endpoint
+- Client: ~contrib/futon3-claude.el:132-145~
+
+* Tests for futon3-claude / fubar integration
+:PROPERTIES:
+:STATUS: open
+:PRIORITY: medium
+:PATTERNS: fulab/clock-in, fulab/clock-out, fulab/pattern-dep
+:END:
+
+fubar.el has ERT tests but the new integration code in futon3-claude.el does not.
+
+** Acceptance Criteria
+- [ ] Test clock-in is called when pattern-aware session starts
+- [ ] Test clock-out is called on session finish/cancel/error
+- [ ] Test pattern-dep emission from HUD selection
+- [ ] Tests use mocked HTTP to avoid requiring live backend
+
+** Evidence path
+- Existing tests: ~test/elisp/fubar-test.el~
+- Code under test: ~contrib/futon3-claude.el~, ~contrib/futon3-hud.el~
+
+* fulab/session-resume implementation
+:PROPERTIES:
+:STATUS: open
+:PRIORITY: high
+:PATTERNS: fulab/session-resume
+:END:
+
+Enable multi-turn continuity by mapping futon session-ids to Claude CLI
+~--resume~ identifiers. Track ancestor chain for audit.
+
+** Acceptance Criteria
+- [ ] Registry mapping futon session-id to fucodex CLI session
+- [ ] Resume request creates new session-id with ~:session/ancestor-id~
+- [ ] Proof trail reconstructable across resumed sessions
+- [ ] ~my-futon3-claude-resume~ command in Emacs
+
+** Evidence shape (from pattern)
+#+begin_src clojure
+{:session/id :string
+ :session/ancestor-id :string
+ :session/fucodex-cli-id :string
+ :resume/prompt :string
+ :resume/at :inst
+ :resume/count :long}
+#+end_src
+
+* fulab/notebook-cell: Live cell persistence
+:PROPERTIES:
+:STATUS: open
+:PRIORITY: medium
+:PATTERNS: fulab/notebook-cell
+:END:
+
+Persist each prompt/response exchange as a notebook cell with metadata
+(model, cost, latency, side-effects). Enables full session replay.
+
+** Acceptance Criteria
+- [ ] Each turn persisted as cell with input/output/metadata
+- [ ] Side-effects (file reads/writes, tool calls) captured per cell
+- [ ] Cells linked to session-id for proof trail integration
+- [ ] Query: reconstruct session from cells
+
+** Evidence shape (from pattern)
+#+begin_src clojure
+{:session/id :string
+ :cell/id :string
+ :cell/input :string
+ :cell/output :string
+ :cell/metadata {:model :string :cost :map :latency-ms :long}
+ :cell/side-effects [:map]
+ :cell/timestamp :inst}
+#+end_src
+
+* Git hook wrapper for proof-commit
+:PROPERTIES:
+:STATUS: open
+:PRIORITY: low
+:PATTERNS: fulab/proof-commit
+:END:
+
+Wrap ~scripts/proof_commit.clj~ as a git pre-commit hook.
+
+** Acceptance Criteria
+- [ ] ~.git/hooks/pre-commit~ invokes proof-commit validation
+- [ ] Configurable: require session-id in commit message or env var
+- [ ] Soft mode (warn) vs hard mode (reject)
+- [ ] Bypass flag for emergency commits
+
+** Evidence path
+- Script: ~scripts/proof_commit.clj~
+
+* fulab/devmap-xref: Pattern to prototype mapping
+:PROPERTIES:
+:STATUS: open
+:PRIORITY: low
+:PATTERNS: fulab/devmap-xref
+:END:
+
+Add ~:pattern-ref~ to fulab patterns linking to devmap prototypes.
+Enable rollup views like "Prototype 4 advanced by 3 clock-outs today."
+
+** Acceptance Criteria
+- [ ] Each fulab pattern declares ~:pattern-ref~ to devmap prototype
+- [ ] Validation: referenced devmap files/clauses exist
+- [ ] Rollup query: group clock-outs by prototype
+- [ ] Display in HUD or summary report
+
+** Evidence shape (from pattern)
+#+begin_src clojure
+{:fulab-pattern :string
+ :devmap-prototype :string
+ :devmap-file :string}
+#+end_src
+
+* fubar -> XTDB backfill
+:PROPERTIES:
+:STATUS: open
+:PRIORITY: low
+:PATTERNS: fulab/changelog-trail
+:END:
+
+Once XTDB persistence lands, migrate historical events from
+~resources/fubar-events.edn~ into the graph store.
+
+** Acceptance Criteria
+- [ ] Migration script reads EDN, writes to XTDB
+- [ ] Idempotent (can re-run without duplicates)
+- [ ] Preserves all event fields and timestamps
+- [ ] Verification query: count matches
+
+** Blocked by
+- XTDB persistence infrastructure

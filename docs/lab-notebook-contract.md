@@ -63,3 +63,8 @@ in the `doc/*` namespace and `doc/status` set to `draft`.
 
 Default capture is summary-focused (user + assistant messages + file touches).
 Full transcript capture is opt-in and stored separately if enabled.
+
+## API endpoints (Futon1)
+
+- `POST /api/alpha/lab/session` with `lab/*` keys ingests a session into XTDB.
+- `GET /api/alpha/lab/session/:id` fetches a stored lab session by id.

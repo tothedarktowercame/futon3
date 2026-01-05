@@ -2,7 +2,8 @@
 
 This grid tracks which lab features are implemented and validated for fucodex,
 fuclaude, and fubar. "Validated" means there is a test or fixture that asserts
-the behavior.
+the behavior. Current focus is fucodex (primary) with fubar mirrored for the
+same surface.
 
 Legend:
 - Y = implemented
@@ -14,14 +15,27 @@ Legend:
 |--------------------------+---------+----------+-------+-------------------------------------------------------------------|
 | Session start + events   | Y/V     | Y/V      | NA    | test/f2/codex_test.clj, test/f2/claude_test.clj                   |
 | Stream events over WS    | Y/N     | Y/N      | NA    | src/f2/ui.clj                                                     |
-| Resume session           | Y/N     | N/N      | NA    | src/f2/codex.clj, fulab-buildout.org                              |
-| Clock-in start event     | Y/V     | Y/V      | Y/N   | test/f2/codex_test.clj, test/f2/claude_test.clj, contrib/fubar.el |
-| Clock-out complete event | Y/N     | Y/N      | Y/V   | src/f2/codex.clj, src/f2/claude.clj, test/elisp/fubar-test.el     |
-| Pattern used event       | Y/V     | Y/V      | Y/N   | test/f2/codex_test.clj, test/f2/claude_test.clj, contrib/fubar.el |
+| Resume session           | Y/V     | N/N      | NA    | src/f2/codex.clj, test/f2/codex_test.clj                          |
+| Clock-in start event     | Y/V     | Y/V      | Y/V   | test/f2/codex_test.clj, test/f2/claude_test.clj, test/elisp/fubar-test.el |
+| Clock-out complete event | Y/V     | Y/N      | Y/V   | src/f2/codex.clj, test/f2/codex_test.clj, test/elisp/fubar-test.el |
+| Pattern used event       | Y/V     | Y/V      | Y/V   | test/f2/codex_test.clj, test/f2/claude_test.clj, test/elisp/fubar-test.el |
 | Artifact recorded        | Y/V     | Y/V      | N/N   | test/f2/codex_test.clj, test/f2/claude_test.clj                   |
-| Doc written event        | Y/V     | Y/V      | Y/N   | test/f2/codex_test.clj, test/f2/claude_test.clj, contrib/fubar.el |
+| Doc written event        | Y/V     | Y/V      | Y/V   | test/f2/codex_test.clj, test/f2/claude_test.clj, test/elisp/fubar-test.el |
 | Society paper            | Y/N     | Y/N      | N/N   | src/f2/codex.clj, src/f2/claude.clj                               |
 | Stats updates            | Y/V     | Y/V      | N/N   | test/f2/codex_test.clj, test/f2/claude_test.clj                   |
-| Tool approvals/denials   | Y/N     | Y/N      | NA    | src/f2/codex.clj, src/f2/claude.clj                               |
-| Event log access         | Y/N     | Y/N      | Y/V   | src/f2/codex.clj, src/f2/claude.clj, test/elisp/fubar-test.el     |
+| Tool approvals/denials   | Y/V     | Y/N      | NA    | src/f2/codex.clj, test/f2/codex_test.clj                          |
+| Event log access         | Y/V     | Y/N      | Y/V   | src/f2/codex.clj, test/f2/codex_test.clj, test/elisp/fubar-test.el |
 | HTTP ingest              | Y/N     | Y/N      | Y/V   | src/f2/ui.clj, test/elisp/fubar-test.el                           |
+
+* Next validation targets (post-release)
+
+** Fucodex (primary)
+- Resume session → add fixture/test to move Y/N → Y/V.
+- Clock-out complete event → add test to move Y/N → Y/V.
+- Event log access → add test to move Y/N → Y/V.
+- Tool approvals/denials → add test to move Y/N → Y/V.
+
+** Fubar (mirror)
+- Clock-in start event → add test to move Y/N → Y/V.
+- Pattern used event → add test to move Y/N → Y/V.
+- Doc written event → add test to move Y/N → Y/V.

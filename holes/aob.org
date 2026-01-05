@@ -89,6 +89,9 @@
 #+END:
 
 * Indicators 🍍 (System-wide Cybernetics)
+:PROPERTIES:
+:ID:       652f6486-7ee3-4fa5-998f-6a0dd20328a6
+:END:
 🗝️ Philosophical rationale: regular embodied and creative practice maintains system vitality and provides early signals of imbalance.
 - Attend tai chi class 1–2× per week and learn as much of “Tai Chi 28” as possible.
 - Track exercise, energy, and sleep patterns using the FUTON0 Clock.
@@ -97,6 +100,9 @@
 - During monthly and quarterly reviews, assess whether there are patterns and whether they support (or hinder) other ambitions.
 
 * 🥨 Salients (System-wide Epistemology)
+:PROPERTIES:
+:ID:       1ccb22f8-f202-4775-976f-fd9fad6312d5
+:END:
 🗝️ Philosophical rationale: I am developing a "programme" for myself and should use programming theory to check it
 - Maintain weekly rhythm of review and reflection (AOB check-in, Ambitions sync).
 - Keep Org-based data as single source of truth for planning and export.
@@ -105,6 +111,9 @@
 - Regularly review WIP balance to avoid overload (>3 active focus areas).
 
 * 🍐 Obligations (System-wide Ontology)
+:PROPERTIES:
+:ID:       5fac56d4-1c60-462a-b012-07a87de566be
+:END:
 🗝️ Philosophical rationale: I need to exist within the economy and the limits of human health
 - Perform well in my job
 - Get a new job before the end of August 2026
@@ -112,15 +121,27 @@
 - Get enough sleep
 
 * Ambition 0 🚀 Build and maintain a meta-managed infrastructure for coherent living and working
+:PROPERTIES:
+:ID:       5e0840ca-056e-40ac-9b71-4c4b1e14eed9
+:END:
 🗝️ Philosophical rationale: meta-reflection enables coherence; infrastructure must serve awareness, not bureaucracy.
 
 ** Salients 🥨
+:PROPERTIES:
+:ID:       c5479aa3-0b59-45ee-8197-1f134fb020fa
+:END:
 - Maintain clean data pipeline between Org, FUTON, and external storage.
 - Keep dashboard views simple, accurate, and current.
 - Review cross-project meta-workflow monthly to ensure it reflects lived priorities.
 
 ** 25Q4 
+:PROPERTIES:
+:ID:       47f1e04f-cad5-466d-ba3d-d548c30801d3
+:END:
 *** Goal A ⚪ Unify Ambition and AOB trackers into one dashboard
+:PROPERTIES:
+:ID:       05179faf-8df0-4626-80fb-c5ccec008520
+:END:
 **** DONE I've created two task trackers and integrated them using Org Agenda
 CLOSED: [2025-10-27 Mon 15:39] SCHEDULED: <2025-10-25>
 :PROPERTIES:
@@ -134,6 +155,9 @@ CLOSED: [2025-10-31 Fri 14:45] SCHEDULED: <2025-10-29>
 :EFFORT: 1d
 :END:   
 *** Goal B ⚪ Automate basic lint and export functions (Org → XLSX Gantt)
+:PROPERTIES:
+:ID:       4a5b3109-91e9-45fe-8564-2c503fdc3706
+:END:
 **** DONE Org-to-Gantt lint and export can be done using ChatGPT
 CLOSED: [2025-10-27 Mon 15:40] SCHEDULED: <2025-11-05>
 :PROPERTIES:
@@ -142,25 +166,34 @@ CLOSED: [2025-10-27 Mon 15:40] SCHEDULED: <2025-11-05>
 :END:
 Should link to example chat where this is demonstrated
 *** Goal C 🍓 Stabilise data and backup pipeline (Linode, GitHub, local)
-**** TODO Audit drives + linodes to see what's there                   :data:
-SCHEDULED: <2025-12-20 Sat>
+:PROPERTIES:
+:ID:       9e88dd46-5643-4a96-ae62-62ca2d678100
+:END:
+**** TODO Audit drives + linodes to see what's there                   :data:leftover:
+SCHEDULED: <2026-01-07 Wed>
 :PROPERTIES:
 :ID: A0Q4T4
 :EFFORT: 1d
+:PATTERN: stack-coherence/staleness-scan
 :END:
-**** TODO Consolidate existing data from my old backup disk drives     :data:
-SCHEDULED: <2025-12-20 Sat>
+**** TODO Consolidate existing data from my old backup disk drives     :data:leftover:
+SCHEDULED: <2026-01-12 Mon>
 :PROPERTIES:
 :ID: A0Q4T5
 :EFFORT: 1d
+:PATTERN: hdm/deep-storage-to-active-graph
 :END:
-**** TODO Develop a regular backup routine :data:
-SCHEDULED: <2025-12-20 Sat>
+**** TODO Develop a regular backup routine :data:leftover:
+SCHEDULED: <2026-01-15 Thu>
 :PROPERTIES:
 :ID: A0Q4T6
 :EFFORT: 1d
+:PATTERN: workflow-coherence/weekly-rhythm
 :END:
 *** Goal D 🍒 Workflow tune-up
+:PROPERTIES:
+:ID:       2514df15-c823-482e-b339-45fdfe99d495
+:END:
 **** DONE Make sure I know where my elisp helpers are
 CLOSED: [2025-11-12 Wed 10:37] SCHEDULED: <2025-11-12>
 :PROPERTIES:
@@ -203,7 +236,13 @@ CLOSED: [2025-12-11 Thu 12:30] SCHEDULED: <2025-12-01>
 - Victory condition: `magit` shows a clean working tree.
 
 ** 26Q1 
+:PROPERTIES:
+:ID:       0e090a4f-6a30-46a3-97e4-f39a3060779b
+:END:
 *** Goal A 🍊 Implement AOB highlight and summary views in Agenda
+:PROPERTIES:
+:ID:       a32c7545-f3c3-4e7a-8ed6-f8d1d439f79e
+:END:
 **** TODO Develop new views of the Agenda that are facetized by Ambition :aob:
 SCHEDULED: <2026-01-15>
 :PROPERTIES:
@@ -211,7 +250,13 @@ SCHEDULED: <2026-01-15>
 :EFFORT: 1d
 :END:
 ** 26Q2 
+:PROPERTIES:
+:ID:       ab690b53-d005-4c83-957b-49d8add379b4
+:END:
 *** Goal A 🍎 Integrate Meta-Management with Peeragogy planning
+:PROPERTIES:
+:ID:       9a9c75d9-2c75-4a75-bd4c-b8884d66f53b
+:END:
 **** TODO Once I know this is working, share it with others (possibly via MUSN and/or Peeragogy Handbook v4) :aob:
 SCHEDULED: <2026-04-15>
 :PROPERTIES:
@@ -225,6 +270,9 @@ SCHEDULED: <2026-05-15>
 :EFFORT: 1d
 :END:   
 ** 26Q3 
+:PROPERTIES:
+:ID:       324b650c-854a-41df-ba65-96966f1c5876
+:END:
 *** Goal A 🍓 Refactor my “Meta-Management Patterns” into white paper or brown-bag lunch for new employer
 SCHEDULED: <2026-07-15>
 :PROPERTIES:
@@ -232,6 +280,9 @@ SCHEDULED: <2026-07-15>
 :EFFORT: 2.0d
 :END:   
 ** Future
+:PROPERTIES:
+:ID:       d8081068-201c-4466-9cc7-7aba001f8e9e
+:END:
 *** Goal A 🍒 Develop cross-file and cross-medium analytics (e.g., improved FUTON stats + Org logs integration)
 SCHEDULED: <2026-09-10>
 :PROPERTIES:
@@ -240,15 +291,27 @@ SCHEDULED: <2026-09-10>
 :END:
         
 * Ambition 1 🚀 Grow Hyperreal Enterprises Ltd into a business practice that turns research into income
+:PROPERTIES:
+:ID:       62df8036-ba39-4a37-a765-595712273cca
+:END:
 🗝️ Philosophical rationale: consulting practice operationalises research ideals through real-world delivery and feedback.
 
 ** Salients 🥨
+:PROPERTIES:
+:ID:       2207af52-74aa-4ee8-a979-64c6c5516889
+:END:
 - Maintain professional and transparent communication with clients.
 - Keep deliverables modular and documented for reuse.
 - Treat consulting as R&D for sustainable independent practice.
         
 ** 25Q4 
+:PROPERTIES:
+:ID:       b5f4a03b-4884-4966-9315-d980b5ffe867
+:END:
 *** Goal A 🍒 Submit first invoice and complete initial deliverables
+:PROPERTIES:
+:ID:       843c4882-c42d-43e9-a23e-4eaecb066fe9
+:END:
 **** DONE Prepare VSAT Invoice #1 and send to Eric                     :vsat:
 CLOSED: [2025-10-27 Mon 15:40] SCHEDULED: <2025-10-25>
 :PROPERTIES:
@@ -269,6 +332,9 @@ CLOSED: [2025-10-28 Tue 10:12] SCHEDULED: <2025-10-28>
 :EFFORT: 1d
 :END:   
 *** Goal B ⚪ Document Boston trip and outreach outcomes 
+:PROPERTIES:
+:ID:       cc767d30-3b7a-4724-a361-c3a67b4c033b
+:END:
 **** DONE Write up Boston trip in a format that could be used in a future OR Bulletin :vsat:
 CLOSED: [2025-10-27 Mon 15:35] SCHEDULED: <2025-10-25>
 :PROPERTIES:
@@ -276,6 +342,9 @@ CLOSED: [2025-10-27 Mon 15:35] SCHEDULED: <2025-10-25>
 :EFFORT: 1d
 :END:
 *** Goal C ⚪ Consolidate benefits of Boston trip 
+:PROPERTIES:
+:ID:       a0014881-fd36-4177-a9fe-3f138c718a7c
+:END:
 **** DONE Outreach to Jeff Munro of ACMi                               :vsat:
 CLOSED: [2025-10-27 Mon 15:35] SCHEDULED: <2025-10-25>
 :PROPERTIES:
@@ -290,6 +359,9 @@ CLOSED: [2025-10-30 Thu 17:37] SCHEDULED: <2025-10-29 Wed>
 :END:
 
 *** Goal D 🍊 Develop second consulting project (e.g., one of the AI4CI grants)
+:PROPERTIES:
+:ID:       d4df2841-7c11-446a-bd94-90fe77fc7eea
+:END:
 **** DONE Write back to Paul (in Manchester) about NLP for math       :ai4ci:
 CLOSED: [2025-11-05 Wed 12:26] SCHEDULED: <2025-12-01>
 :PROPERTIES:
@@ -307,22 +379,52 @@ CLOSED: [2025-11-11 Tue 20:08] SCHEDULED: <2025-11-10 Mon>
 Notes: Produce a 1–2 page scoping brief (vision, partners, themes, training model, alignment to DTP/RIKE, indicative budget/timeline); identify potential funders and internal sponsors; propose next-step meeting with Head of Research Degrees Team.
 
 ** 26Q1 
+:PROPERTIES:
+:ID:       4ffafba1-7928-4027-9b33-492547b7245d
+:END:
 *** Goal A 🍓 Formalise Hyperreal Enterprises operations process (invoicing, CRM)
+:PROPERTIES:
+:ID:       43284e63-128d-429e-8cf3-9017618dbd6d
+:END:
 *** Goal B 🍎 Re-launch AI+ as a consulting offering or funding bid
+:PROPERTIES:
+:ID:       093d02c2-06a2-49be-971f-72e63da362af
+:END:
 ** 26Q2 
+:PROPERTIES:
+:ID:       e4962b68-5860-44d4-8bc0-c3fa1fcb3daa
+:END:
 *** Goal A 🍈 Publish case study on VSAT as evidence of impact and scalability of HEL workflow
+:PROPERTIES:
+:ID:       8dd951a5-e406-4ea2-9c87-4d67e82c1274
+:END:
 ** 26Q3 
+:PROPERTIES:
+:ID:       77892389-02a0-432c-82b9-a8036e317c24
+:END:
 
 * Ambition 2 🚀 Develop the FUTON–Arxana toolchain into a mature, extensible environment for thought and collaboration
+:PROPERTIES:
+:ID:       9ce0dcf7-11a1-4123-a228-223f1abd1533
+:END:
 🗝️ Philosophical rationale: robust personal infrastructure underpins creative and analytical independence.
 
 ** Salients 🥨
+:PROPERTIES:
+:ID:       78378132-fcaf-4f61-afc4-464afdce689d
+:END:
 - Keep daily use of FUTON 1 as testbed for refinement.
 - Document architecture decisions and reflections in real time.
 - Integrate collaboration gradually (Rob, peers) without scope creep.
 
 ** 25Q4 
+:PROPERTIES:
+:ID:       41af522a-86de-47e9-9b26-54940fe72bff
+:END:
 *** Goal A 🍎 Get FUTON0 included in chatgpt-shell as a usage example
+:PROPERTIES:
+:ID:       73357247-9f69-471c-b288-2b052dd47f6c
+:END:
 **** DONE Release Prototype 0                                         :futon:
 CLOSED: [2025-11-26 Wed 07:29] SCHEDULED: <2025-10-27>
 :PROPERTIES:
@@ -332,12 +434,19 @@ CLOSED: [2025-11-26 Wed 07:29] SCHEDULED: <2025-10-27>
 Assuming this means shipping my =chatgpt-shell-before-command-functions-hook=, I’ve done that now.
 - [[https://github.com/xenodium/chatgpt-shell/pull/411][#411 on chatgpt-shell]]
 *** Goal B 🍓 Stabilise FUTON1 core modules (Clock, Tatami, Graph Memory); fully refactor basic-chat-demo
+:PROPERTIES:
+:ID:       5137f33c-413b-49cb-8696-a12549a01620
+:END:
 *** Goal C 🍓 Log all utterances for further analysis and improve nlp-ingest routines with ChatGPT
-**** SHIP Release Prototype 1 :futon:
-SCHEDULED: <2025-12-13>
+:PROPERTIES:
+:ID:       0f8e04c7-06af-467e-b8c1-a2cce4e4e844
+:END:
+**** SHIP Release Prototype 1 :futon:leftover:
+SCHEDULED: <2026-01-14 Wed>
 :PROPERTIES:
 :ID:       A2Q4T2
 :EFFORT: 1d
+:PATTERN: transition/prototype1a-workbench
 :END:
 - I have been uploading the code for futon0-futon4 on Github, other
   aspects are not ready yet but there should be enough done that I
@@ -345,16 +454,40 @@ SCHEDULED: <2025-12-13>
   the stack as a whole.  I’ve also thought it would be useful to put
   together a whitepaper. that explains how things can be used.
 *** Goal D 🍊 Develop Futon23 plan
+:PROPERTIES:
+:ID:       e97881b0-adb9-4118-ac31-d96747f3cd21
+:END:
 **** DONE Define and run Ants Day 2 experiment (precision-weighted policy) 
 SCHEDULED: <2025-10-30 Thu>
+:PROPERTIES:
+:ID:       96a0e997-2cbe-48e8-bfff-11696a83e75d
+:END:
 :EFFORT: 1d
 
 ** 26Q1 
+:PROPERTIES:
+:ID:       a9b78e05-6d6c-4427-b73c-1191144ce47e
+:END:
 *** Goal A 🍓 Design MUSN revival archicture spec
+:PROPERTIES:
+:ID:       0a42aa49-c2b2-4528-915b-f2b7027efc84
+:END:
 *** Goal B 🍊 Design Arxana revival architecture spec
+:PROPERTIES:
+:ID:       89a78618-37bc-4b7e-943f-bd62b2bd71d3
+:END:
 *** Goal C 🍒 Integrate Tatami and Arxana workflows
+:PROPERTIES:
+:ID:       19199abd-d27c-428c-ac9b-fc9f4520fe46
+:END:
 *** Goal D 🍒 Develop a quarterly review cycle
+:PROPERTIES:
+:ID:       b5430300-9141-41d4-aa3b-beb54cad6624
+:END:
 *** Goal E 🍓 Continue monthly development cycle
+:PROPERTIES:
+:ID:       dab5435b-c1df-4007-b8a3-79ac23eb63d0
+:END:
 **** SHIP Release Prototype 2                                         :futon:
 SCHEDULED: <2026-02-10>
 :PROPERTIES:
@@ -368,22 +501,49 @@ SCHEDULED: <2026-03-10>
 :EFFORT: 1d
 :END:   
 ** 26Q2 
+:PROPERTIES:
+:ID:       f9e33351-86c6-4349-80c5-725372d69f21
+:END:
 *** Goal A 🍎 Collaborative testing with Rob or other peers
+:PROPERTIES:
+:ID:       64616690-bf85-4892-9ada-3f3b3a09384a
+:END:
 *** Goal B 🍓 Showcase working demo of FUTON–Arxana integration (e.g., in a followup to Gravpad 2010)
+:PROPERTIES:
+:ID:       c6be2409-d4be-4d71-b88f-9c78ac0e83e5
+:END:
 ** 26Q3 
+:PROPERTIES:
+:ID:       5f8fb63c-b8de-4689-b51c-e4a543b5a230
+:END:
 *** Goal A 🍓 Prepare research paper or funding proposal based on stack outcomes
+:PROPERTIES:
+:ID:       1079a65d-e8ac-4cb0-a373-3b9cde25af6b
+:END:
         
 * Ambition 3 🚀 Integrate Mojo and reflective practice into a coherent rhythm of wisdom, creativity, and relationship
+:PROPERTIES:
+:ID:       11d0ea29-5723-45af-8eeb-f60f24dc69c3
+:END:
 🗝️ Philosophical rationale: sustained reflective rhythm links inner development with systemic insight.
 
 ** Salients 🥨
+:PROPERTIES:
+:ID:       069acd56-fb57-4c18-af2f-5abb562180d0
+:END:
 - Maintain weekly PARamita reflection cycle.
 - Continue coaching and mentoring sessions.
 - Keep relational and creative practices in balanced rhythm.
 - Use card-based and pattern frameworks for journaling continuity.
         
 ** 25Q4 
+:PROPERTIES:
+:ID:       c08cebcb-2242-4f71-a4b2-e0bc9d596195
+:END:
 *** Goal A 🍓 Develop Mojo Handbook v3
+:PROPERTIES:
+:ID:       3cad7670-6f61-41d8-81b8-443f6d3e2dcd
+:END:
 **** DONE Need to understand relationship betwen aob.org and Mojo Handbook v2 :mojo:
 CLOSED: [2025-11-26 Wed 17:06] SCHEDULED: <2025-11-08>
 :PROPERTIES:
@@ -392,22 +552,61 @@ CLOSED: [2025-11-26 Wed 17:06] SCHEDULED: <2025-11-08>
 :END:   
 This is coming into play through the devmaps in flexiarg
 ** 26Q1 
+:PROPERTIES:
+:ID:       e10ddac7-07ac-4810-aaf4-337c48488054
+:END:
 *** Goal A 🍊 Integrate PARamitā, Mojo frameworks, and other scaffolds
+:PROPERTIES:
+:ID:       e4c4dd73-0cb0-438c-a416-4552c867a37c
+:END:
 ** 26Q2 
+:PROPERTIES:
+:ID:       54335bd7-9dcb-4ff4-9454-99edc1d8d28a
+:END:
 *** Goal A 🍎 Prepare publishable Mojo v3 pattern paper or blog post series
+:PROPERTIES:
+:ID:       c2d0ab4a-c5ef-4707-b639-02395ffec04a
+:END:
 ** 26Q3 
+:PROPERTIES:
+:ID:       ae7e910b-87d8-44c0-a841-49a602227357
+:END:
 *** Goal A 🍎 "Farewell" or "Hello again!" concert with X’ed Roads
+:PROPERTIES:
+:ID:       c256a269-829b-43f7-8197-759244316fd5
+:END:
 *** Goal B 🍊 Penmaster's Apprentice album launch (≈10LP boxed set?)
+:PROPERTIES:
+:ID:       96d3a60d-cc6c-4a9b-a1d8-09646fab72d5
+:END:
 ** Future
+:PROPERTIES:
+:ID:       0c89a9c8-4743-4e29-b945-449e3a8afc34
+:END:
 *** Goal F 🍓 Develop mentoring curriculum or retreat format
+:PROPERTIES:
+:ID:       608bd1ee-5dda-475c-81d4-af4422b86405
+:END:
 
 * Ambition 4 🚀 Achieve a well-aligned role earning £50K or more by August 2026
+:PROPERTIES:
+:ID:       33599f75-dc81-42c8-9dea-0576dee0df27
+:END:
 🗝️ Rationale: secure a well-aligned role to sustain the next phase of work.
         
 ** 25Q4 
+:PROPERTIES:
+:ID:       f1713b42-dae1-4b30-937a-ffc8f7708c01
+:END:
 *** Goal A 🍒 Apply for Research & Infrastructure Lead role at OBU
+:PROPERTIES:
+:ID:       b7ac358b-fa6f-43ea-b223-8e75ddb928a8
+:END:
 **** DONE Complete outline of application for Research & Infrastructure Lead 
 CLOSED: [2025-10-30 Thu 17:37] DEADLINE: <2025-10-30 Thu>
+:PROPERTIES:
+:ID:       dc934134-1dc5-456d-8058-a8fee3f2e21b
+:END:
 :EFFORT: 1d
 **** DONE Speak with Julie about Research & Infrastructure Lead         :job:
 CLOSED: [2025-10-31 Fri 21:59] SCHEDULED: <2025-11-04>
@@ -422,18 +621,53 @@ CLOSED: [2025-11-05 Wed 12:24] SCHEDULED: <2025-10-31>
 :EFFORT: 1d
 :END:
 *** Goal B 🍎 Engage OBU Careers Service
+:PROPERTIES:
+:ID:       9e8e0bf5-b7b3-41c4-8e73-edf949d7bb45
+:END:
 *** Goal C 🍎 Engage OBU Coaching Service
+:PROPERTIES:
+:ID:       8ea30a57-85bf-4033-b395-fce8bbf4cfc2
+:END:
 *** Goal D ⚪ Continue to work my UKRN network 
+:PROPERTIES:
+:ID:       4a7e60e9-d09f-4440-9a93-c97e28143a55
+:END:
 **** DONE Draft quick note to Neil re: Bristol interest and constraints
 CLOSED: [2025-10-30 Thu 17:37] SCHEDULED: <2025-10-30 Thu>
+:PROPERTIES:
+:ID:       220240df-0ca1-4660-82a8-90558f7abf35
+:END:
 :EFFORT: 1d
 
 ** 26Q1 
+:PROPERTIES:
+:ID:       61cc69f5-41d6-48fe-8830-570c242763ad
+:END:
 *** Goal B Apply for at least one well-aligned role per fortnight
+:PROPERTIES:
+:ID:       ec2f5ff9-8c11-4462-9f40-3a76aa379eff
+:END:
 ** 26Q2 (Apr–Jun 2026)
+:PROPERTIES:
+:ID:       af18bd5e-53bc-437e-ac62-c543112e0065
+:END:
 *** Goal 🍈 Receive at least one formal interview invitation
+:PROPERTIES:
+:ID:       cff0fb68-c2a3-4458-b40c-4d5c13d4644e
+:END:
 *** Goal 🍎 Collaborate with referees on recommendation materials
+:PROPERTIES:
+:ID:       fbdc9965-0bcc-4bb7-b463-bb1f4593e7f7
+:END:
 ** 26Q3 (Jul–Aug 2026)
+:PROPERTIES:
+:ID:       c92ca890-f731-42de-9d72-1a162c751eea
+:END:
 *** Goal 🍈 Receive offer and negotiate terms
+:PROPERTIES:
+:ID:       8f41c432-94cb-4166-a8fb-022e9cf82424
+:END:
 *** Goal 🍒 Accept offer and plan transition
-
+:PROPERTIES:
+:ID:       174fb6ab-80c7-4db5-a0db-481171c739d3
+:END:

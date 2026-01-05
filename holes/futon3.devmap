@@ -9,7 +9,14 @@
 @IFR: FUTON3 is the place where the system turns messy activity into organised knowledge.
 It collects what happens, checks it against a library of shared patterns, and produces clear, trustworthy records that other futons can use to learn, improve, and act.  FUTON3 makes everyday work auditable, meaningful, and easier to build on.
 
-@state Transport runs reliably, events are logged, patterns can be checked, and Tatami sessions already feed structured evidence into the system. We have an early pattern catalog, working embeddings, and a first version of the workday pipeline. What remains is strengthening these links — tying checks into storage, producing clearer histories, and building the stable interfaces that other futons can depend on for coordinated reasoning.
+@state Transport runs reliably, events are logged, and patterns can be checked.
+Tatami sessions already feed structured evidence downstream, but that evidence
+does not yet flow back into pattern updates or storage-backed history. We have
+an early pattern catalog, working embeddings, and a first version of the
+workday pipeline. What remains is tightening those links — coupling Tatami
+evidence into pattern updates, tying checks into storage, producing clearer
+histories, and building the stable interfaces that other futons can depend on
+for coordinated reasoning.
 
 @next Stand up the completed pattern canon + `check!` API, standardise proof→graph/energy exports, and land the workday instrumentation + trail rollups as first-class MUSN services before expanding the flexiformal training ground.
 
@@ -36,6 +43,17 @@ It collects what happens, checks it against a library of shared patterns, and pr
     - {:type :Golden :id "pattern-store-loads-and-enumerates" :description "A golden test proves the f3.patterns store can be loaded at runtime and enumerates all canonical pattern IDs." :acceptance-criteria ["Loading the pattern store via the public Futon3 API returns a non-empty, stable set of pattern IDs matching the standard library inventory." "Fails if the canonical store only exists on disk and is not accessible to the stack."] :suggested-location "test/futon3/pattern_store_golden_test.clj" :timebox "2026-01-06"}
     - {:type :Golden :id "pattern-metadata-and-links-complete" :description "A golden test asserts that each canonical pattern includes required metadata fields and valid source or devmap links." :acceptance-criteria ["Every pattern entry exposes ID, clauses, references, pāramitā tags, fruits/orbs weights, and at least one resolvable source link." "Fails if the canonical store only exists on disk and is not accessible to the stack."] :suggested-location "test/futon3/pattern_metadata_golden_test.clj" :timebox "2026-01-06"}
     - {:type :Golden :id "pattern-store-matches-standard-library" :description "A golden test verifies that all patterns from the existing standard library are present in f3.patterns with no omissions." :acceptance-criteria ["The set of patterns in f3.patterns exactly matches the known Nonstarter and Proto/Allow-Works library with no missing or extra entries." "Fails if the canonical store only exists on disk and is not accessible to the stack."] :suggested-location "test/futon3/pattern_library_sync_golden_test.clj" :timebox "2026-01-06"}
+
+! instantiated-by: Prototype 1b — Live REPL Surface Validation (Drawbridge) [🪢/桥 🧪/验]
+  + context: Futon3 already exposes an optional Drawbridge REPL over HTTP, but we have not documented or exercised a live-in-server workflow the way Emacs users rely on emacsclient.
+  + if: You want to use Codex (or a human operator) to connect to a running Futon3 instance and safely poke at the live system state for inspection and debugging.
+  + however: The REPL is off by default, and there is no canonical checklist proving that a Drawbridge session can connect, query MUSN state, and execute a minimal set of safe operations.
+  + then: Validate the Drawbridge workflow against a running Futon3 server: enable Drawbridge, connect via a REPL client, and execute a small script that queries `musn.api/*` functions (clients/history/links/now), verifies read-only access, and records a short transcript in the logs/docs.
+  + because: A proven live REPL workflow is the smallest step toward unified Clojure-stack introspection and gives Codex a reliable surface for in-server exploration.
+  + evidence:
+    - `README.md` (Drawbridge section) documents enabling the HTTP REPL and connecting from Emacs/CIDER.
+  + next-evidence:
+    - {:type :Checklist :id "drawbridge-repl-live-session" :description "Checklist proving Drawbridge can connect to a running Futon3 instance and execute a minimal safe query script." :acceptance-criteria ["Drawbridge enabled with a local-only token; CIDER connects over HTTP and evaluates `(musn.api/clients)` / `(musn.api/history)` without errors." "Transcript saved in `docs/` or `logs/` with timestamp and server config used."] :suggested-location "docs/repl/drawbridge-session.md" :timebox "2026-01-12"}
 
 ! instantiated-by: Prototype 2 — Similarity Field & Fake Embedding [🌂/甲 👂/距]
   + context: We already use a “fake embedding” (sigil adjacency) to find nearby patterns.
@@ -122,3 +140,7 @@ It collects what happens, checks it against a library of shared patterns, and pr
   + however: No machine-readable manifest exists where components are first-class entities in the hypergraph. Patterns describe design structures but not system capabilities.
   + then: Unify documentation and APIs into a machine-readable manifest where stack components are first-class entities in Futon1. Patterns describe not just design structures but system capabilities—what the message bus can do, what functions the Emacs interface exposes, what invariants each layer enforces. Enable agents to query the system about its own capabilities, and self-verify that the running system matches its declared structure.
   + because: This closes the reflexivity loop: a semantic network that includes a model of itself. FUTON3's pattern checker already validates its own devmap; extending this to describe the full stack enables ongoing self-documentation as the system extends. The machinery from F5 (patterns → schema → code) applies reflexively: the stack itself becomes a domain.
+  + evidence:
+    - `futon4/docs/evidence/rc-1.1-evidence.edn` seeds a machine-readable claim map for Futon0–Futon4.
+  + next:
+    - Expand the evidence map into a manifest schema (components, interfaces, invariants) and ingest it into Futon1 for queryable self-description.

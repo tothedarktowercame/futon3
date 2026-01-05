@@ -13,5 +13,5 @@ demo:
 	$(CLOJURE) -M:demo
 
 repl:
-	@ADMIN_TOKEN=$${ADMIN_TOKEN:-$$([ -f .admintoken ] && cat .admintoken || echo change-me)}; \
+	@ADMIN_TOKEN=$${ADMIN_TOKEN:-$$([ -f .admintoken ] && tr -d '\n' < .admintoken || echo change-me)}; \
 	$(CLOJURE) -M -e "(require,'repl.http) (repl.http/start! {:port 6767 :bind \"127.0.0.1\" :token \"$$ADMIN_TOKEN\"})" -r

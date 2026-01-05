@@ -22,19 +22,15 @@ this layer operates cleanly, other futons inherit a durable and predictable
 world model on which more complex behaviours can be built.
 
 @state
-The deterministic demo/client workflow, Datascript↔XTDB mirroring, and
-open-world ingest pipeline are operational and well-documented, with hydration
-and persistence behaving as expected. The NLP interface, graph-memory module,
-and configuration surfaces are functional but unevenly documented, and their
-tests do not yet cover all intended entry points. The HTTP API provides a
-stable interaction surface, though endpoint contracts and data shapes remain
-scattered across READMEs.
+The deterministic demo/client workflow and Datascript↔XTDB mirroring are
+operational, with sessions hydrating from XT on boot and falling back to the
+legacy log + snapshot when XTDB is disabled. Futon1 remains storage- and
+durability-focused: `apps/demo` is the interactive entry point and the HTTP
+API module (`clojure -M:api` / `apps/api`) is the external client surface.
 
-Naming, configuration conventions, and module boundaries show mild drift as a
-result of past iterations. The storage model is inspectable but not yet
-consolidated into a single reference. These gaps do not block use, but they
-reduce the clarity, reproducibility, and ease of integration that FUTON1 is
-intended to provide.
+Operational caveats: multiple Futon processes against the same
+`BASIC_CHAT_DATA_DIR` can trigger RocksDB lock errors, and open-world ingest
+treats questions as assertions (there is no question→Datalog mapping yet).
 @next
 Consolidate the documentation and contracts that define how text becomes graph state; stabilise the naming and configuration surfaces shared across CLI, API, and ingest workflows; and refine test coverage so the deterministic substrate remains reliable as modules evolve. Maintain FUTON1’s minimal scope—storage, hydration, and inspection—while ensuring that higher futons can depend on its interfaces without ambiguity.
 

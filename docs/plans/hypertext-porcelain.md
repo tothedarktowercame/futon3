@@ -269,6 +269,132 @@ Emacs buffer (or CLI) showing candidates:
 
 ---
 
+## Phase 6: Pattern Validation (LLM-in-the-loop)
+
+This is the semantic core — how do we know a suggested link is valid?
+
+### What Needs Validation
+
+1. **Link suggestions**: Does "function A uses function B" actually hold?
+2. **Pattern applications**: Does this workday entry actually follow the claimed pattern?
+3. **Anchor accuracy**: Does the selector still find the right text after edits?
+4. **Type appropriateness**: Is `:uses` the right relation, or should it be `:refines`?
+
+### Validation Approaches
+
+**Structural (rule-based, no LLM):**
+- Anchor selector still matches (regex/xpath against current file)
+- Link target exists (artifact/anchor IDs resolve)
+- Link type in allowlist
+- No duplicate links (same from→to→type)
+
+**Semantic (LLM-in-the-loop):**
+- Given source context + target context, confirm the relation holds
+- Suggest better relation type if proposed one is wrong
+- Flag ambiguous cases for human review
+
+### Validation Interface
+
+```clojure
+(ns futon3.hx.validate
+  (:require [futon3.hx.store :as store]
+            [futon3.llm :as llm]))  ;; or whatever the LLM interface is
+
+(defn validate-link
+  "Returns {:valid? bool :confidence float :issues [...] :suggested-type kw}"
+  [{:keys [from to type rationale]}]
+  (let [structural (validate-structural from to type)
+        semantic   (when (:valid? structural)
+                     (validate-semantic from to type rationale))]
+    (merge structural semantic)))
+
+(defn validate-structural [from to type]
+  ;; Check: artifacts exist, anchors resolve, type in allowlist
+  ...)
+
+(defn validate-semantic [from to type rationale]
+  ;; LLM prompt: "Given these two code snippets and the claim that
+  ;; A ':uses' B, rate confidence 0-1 and explain."
+  (let [from-context (fetch-context from)  ;; artifact text around anchor
+        to-context   (fetch-context to)
+        prompt       (format-validation-prompt from-context to-context type rationale)]
+    (llm/validate prompt)))
+```
+
+### LLM Prompt Template
+
+```
+You are validating a hypertext link in a codebase.
+
+SOURCE:
+File: %s
+Anchor: %s
+Context:
+```
+%s
+```
+
+TARGET:
+File: %s
+Anchor: %s
+Context:
+```
+%s
+```
+
+CLAIMED RELATION: %s
+RATIONALE: %s
+
+Questions:
+1. Does this relation accurately describe the connection? (yes/no/partially)
+2. Confidence (0.0-1.0)?
+3. If not accurate, what relation would be better?
+4. Any issues or ambiguities?
+
+Respond as EDN: {:valid? bool :confidence float :suggested-type kw :issues [...]}
+```
+
+### Validation Workflow
+
+```
+suggest-link!
+  → validate-structural (immediate, sync)
+  → if structural passes:
+      → validate-semantic (LLM call, may be async)
+      → store with :status :suggested, :validation {:structural ... :semantic ...}
+  → if structural fails:
+      → reject immediately with :issues
+
+accept-link!
+  → re-validate-structural (in case file changed)
+  → if still valid: :status :accepted
+  → if stale: flag for re-review
+
+periodic-revalidation
+  → for accepted links, check anchors still resolve
+  → flag stale links for review
+```
+
+### Integration with Existing LLM Infrastructure
+
+Futon3 already has:
+- `aob-chatgpt.el` for ChatGPT integration
+- Codex/Claude wrappers in `f2/codex.clj`
+- Tatami sessions that feed patterns to LLMs
+
+Validation can use the same infrastructure:
+- Sync validation via direct API call
+- Async validation queued through existing agent wrappers
+- Results logged to proof trail (same as `checks.clj`)
+
+### File Checklist Update
+
+| File | Purpose | Status |
+|------|---------|--------|
+| `src/futon3/hx/validate.clj` | Structural + semantic validation | [ ] |
+
+---
+
 ## Integration Notes
 
 ### With Codex's fulab plumbing

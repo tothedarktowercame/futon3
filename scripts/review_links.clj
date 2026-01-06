@@ -7,13 +7,15 @@
 
 (def default-report-path "futon3/logs/hx-review-report.edn")
 
-(defn- anchor-exists? [state {:keys [artifact/id anchor/id]}]
-  (if (and artifact/id anchor/id)
-    (some #(= anchor/id (:anchor/id %)) (get-in state [:anchors artifact/id]))
-    true))
+(defn- anchor-exists? [state ref]
+  (let [artifact-id (:artifact/id ref)
+        anchor-id (:anchor/id ref)]
+    (if (and artifact-id anchor-id)
+      (some #(= anchor-id (:anchor/id %)) (get-in state [:anchors artifact-id]))
+      true)))
 
-(defn- artifact-exists? [state {:keys [artifact/id]}]
-  (contains? (get-in state [:artifacts]) artifact/id))
+(defn- artifact-exists? [state ref]
+  (contains? (get-in state [:artifacts]) (:artifact/id ref)))
 
 (defn- structural-issues [state link]
   (let [from (:link/from link)

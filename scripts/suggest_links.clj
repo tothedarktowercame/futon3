@@ -15,7 +15,7 @@
 (def elisp-dirs ["/home/joe/code/futon3/contrib"
                  "/home/joe/code/futon3/scripts"
                  "/home/joe/code/futon3/holes"])
-(def docbook-books [\"futon0\" \"futon1\" \"futon2\" \"futon3\" \"futon4\"])
+(def docbook-books ["futon0" "futon1" "futon2" "futon3" "futon4"])
 (def org-files ["/home/joe/code/futon3/holes/orpm.org"
                 "/home/joe/code/futon3/holes/aob.org"])
 
@@ -52,7 +52,7 @@
        (filter #(str/ends-with? (str %) ".devmap"))))
 
 (defn- docbook-target-from-path [path]
-  (when-let [m (re-find #\"/futon4/docs/docbook/(futon[0-9]+)/([^/]+)\\.org$\" path)]
+  (when-let [m (re-find #"/futon4/docs/docbook/(futon[0-9]+)/([^/]+)\\.org$" path)]
     {:book (nth m 1)
      :doc-id (nth m 2)}))
 
@@ -106,7 +106,7 @@
 
 (defn- fetch-docbook-toc [book]
   (try
-    (let [url (str futon1-api-base \"/docs/\" book \"/toc\")
+    (let [url (str futon1-api-base "/docs/" book "/toc")
           body (slurp url)
           data (json/parse-string body true)]
       (:headings data))
@@ -141,7 +141,7 @@
     {:artifact/id artifact-id}))
 
 (defn- ensure-docbook-artifact! [book doc-id]
-  (let [artifact-id (str \"futon1/docbook/\" book \"/\" doc-id)]
+  (let [artifact-id (str "futon1/docbook/" book "/" doc-id)]
     (hx/register-artifact! {:artifact/id artifact-id
                             :artifact/type :docbook
                             :artifact/title doc-id
@@ -227,11 +227,14 @@
       (walk form)
       (distinct @ids))))
 
-(defn- pattern-targets [pattern-index pattern-id]
-  (when pattern-index
-    (let [matches (get-in pattern-index [:by-external pattern-id])]
-      (for [pattern matches]
-        (ensure-pattern-artifact! pattern)))))
+(defn- resolve-pattern-targets [pattern-index pattern-id]
+  (if-not pattern-index
+    []
+    (let [by-external (get-in pattern-index [:by-external pattern-id])
+          by-name (get-in pattern-index [:by-name (str/lower-case pattern-id)])
+          matches (or by-external by-name)]
+      (vec (for [pattern matches]
+             (ensure-pattern-artifact! pattern))))))
 
 (defn- normalize-pattern-id [value]
   (cond
@@ -242,7 +245,7 @@
 (defn- pattern-ids-from-org [lines]
   (->> lines
        (mapcat (fn [line]
-                 (when-let [m (re-find #":PATTERN:\\s*([^\\s]+)" line)]
+                 (when-let [m (re-find #":PATTERN:\s*([^\s]+)" line)]
                    [(second m)])))
        (map normalize-pattern-id)
        (remove nil?)
@@ -305,7 +308,9 @@
                     path (str file)
                     _ (ensure-artifact! path)
                     ids (pattern-ids-from-org lines)
-                    targets (distinct (mapcat #(pattern-targets pattern-index %) ids))
+                    resolved (map (fn [pid] [pid (resolve-pattern-targets pattern-index pid)]) ids)
+                    targets (distinct (mapcat second resolved))
+                    missing-ids (map first (filter (fn [[_ targets]] (empty? targets)) resolved))
                     link-results (for [target targets
                                        :let [link {:link/from {:artifact/id path}
                                                    :link/to target
@@ -313,7 +318,11 @@
                                                    :link/agent :org-ingest
                                                    :link/rationale "org :PATTERN: property"}]]
                                    (hx/suggest-link! link))]]
-          {:file path :links (count link-results)})
+          {:file path
+           :links (count link-results)
+           :pattern-ids (count ids)
+           :missing (count missing-ids)
+           :missing-ids (vec missing-ids)})
         code-files (concat (clj-files) (elisp-files))
         code-results
         (for [file code-files
@@ -326,7 +335,9 @@
                     cars (distinct (mapcat collect-cars forms))
                     targets (distinct (mapcat #(get anchor-index % []) cars))
                     pattern-ids (distinct (mapcat collect-pattern-ids forms))
-                    pattern-targets (distinct (mapcat #(pattern-targets pattern-index %) pattern-ids))
+                    resolved-patterns (map (fn [pid] [pid (resolve-pattern-targets pattern-index pid)]) pattern-ids)
+                    pattern-targets (distinct (mapcat second resolved-patterns))
+                    missing-patterns (count (filter (fn [[_ targets]] (empty? targets)) resolved-patterns))
                     uses-results (for [target targets
                                        :when (not= path (:artifact/id target))
                                        :let [link {:link/from {:artifact/id path}
@@ -343,7 +354,11 @@
                                                       :link/rationale "pattern/id reference"}]]
                                       (hx/suggest-link! link))
                     link-count (+ (count uses-results) (count applies-results))]]
-          {:file path :links link-count})]
+          {:file path
+           :links link-count
+           :pattern-ids (count pattern-ids)
+           :pattern-links (count applies-results)
+           :pattern-missing missing-patterns})]
     (println (pr-str {:devmaps (count devmap-results)
                       :org-files (count org-results)
                       :code-files (count code-results)

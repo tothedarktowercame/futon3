@@ -17,6 +17,10 @@
       (str/replace #"[^a-z0-9]+" "-")
       (str/replace #"(^-|-$)" "")))
 
+(defn- next-count! [seen key]
+  (let [m (swap! seen update key (fnil inc 0))]
+    (get m key)))
+
 (defn- anchors-for-clj [file]
   (let [lines (line-seq (io/reader file))
         base (str file)
@@ -29,7 +33,7 @@
                    (re-find #"^\(ns\s+([^\s\)]+)" text)
                    (let [name (second (re-find #"^\(ns\s+([^\s\)]+)" text))
                          slug (slugify (str "ns-" name))
-                         n (swap! seen update slug (fnil inc 0))
+                         n (next-count! seen slug)
                          anchor-id (if (> n 1)
                                      (str slug "-" n)
                                      slug)]
@@ -44,7 +48,7 @@
                    (re-find #"^\(defn-?\s+([^\s\)]+)" text)
                    (let [name (second (re-find #"^\(defn-?\s+([^\s\)]+)" text))
                          slug (slugify name)
-                         n (swap! seen update slug (fnil inc 0))
+                         n (next-count! seen slug)
                          anchor-id (if (> n 1)
                                      (str slug "-" n)
                                      slug)]
@@ -59,7 +63,7 @@
                    (re-find #"^\(defmulti\s+([^\s\)]+)" text)
                    (let [name (second (re-find #"^\(defmulti\s+([^\s\)]+)" text))
                          slug (slugify name)
-                         n (swap! seen update slug (fnil inc 0))
+                         n (next-count! seen slug)
                          anchor-id (if (> n 1)
                                      (str slug "-" n)
                                      slug)]
@@ -82,10 +86,10 @@
          (map-indexed (fn [idx line]
                         {:line (inc idx) :text line}))
          (keep (fn [{:keys [line text]}]
-                 (when-let [m (re-find #"^\\s*\\(defun\\s+([^\\s\\)]+)" text)]
+                 (when-let [m (re-find #"^\s*\(defun\s+([^\s\)]+)" text)]
                    (let [name (second m)
                          slug (slugify name)
-                         n (swap! seen update slug (fnil inc 0))
+                         n (next-count! seen slug)
                          anchor-id (if (> n 1)
                                      (str slug "-" n)
                                      slug)]

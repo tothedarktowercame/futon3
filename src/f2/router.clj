@@ -2,6 +2,7 @@
   "Decode + validate frames and dispatch to adapters."
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [futon3.hx.api :as hx]
             [malli.core :as m]
             [malli.error :as me]))
 
@@ -186,6 +187,103 @@
                   :job-id job-id})
     {:reply (remember! router msg-id reply)}))
 
+(defn handle-hx-artifact-register [router client envelope]
+  (let [{:keys [payload]} envelope
+        {:keys [msg-id artifact]} (validate! :hx/artifact-register payload)
+        run-id (new-run-id router)
+        result (hx/register-artifact! artifact)
+        reply (assoc result :type "hx/artifact-register" :run-id run-id)]
+    (log! router {:client (:id client)
+                  :type :hx/artifact-register
+                  :run-id run-id})
+    {:reply (remember! router msg-id reply)}))
+
+(defn handle-hx-anchors-upsert [router client envelope]
+  (let [{:keys [payload]} envelope
+        {:keys [msg-id anchors] :as valid} (validate! :hx/anchors-upsert payload)
+        artifact-id (:artifact/id valid)
+        run-id (new-run-id router)
+        result (hx/upsert-anchors! artifact-id anchors)
+        reply (assoc result :type "hx/anchors-upsert" :run-id run-id)]
+    (log! router {:client (:id client)
+                  :type :hx/anchors-upsert
+                  :run-id run-id})
+    {:reply (remember! router msg-id reply)}))
+
+(defn handle-hx-link-suggest [router client envelope]
+  (let [{:keys [payload]} envelope
+        {:keys [msg-id link]} (validate! :hx/link-suggest payload)
+        run-id (new-run-id router)
+        result (hx/suggest-link! link)
+        reply (assoc result :type "hx/link-suggest" :run-id run-id)]
+    (log! router {:client (:id client)
+                  :type :hx/link-suggest
+                  :run-id run-id})
+    {:reply (remember! router msg-id reply)}))
+
+(defn handle-hx-link-accept [router client envelope]
+  (let [{:keys [payload]} envelope
+        {:keys [msg-id decided-by validation] :as valid} (validate! :hx/link-accept payload)
+        link-id (:link/id valid)
+        run-id (new-run-id router)
+        result (hx/accept-link! link-id decided-by validation)
+        reply (assoc result :type "hx/link-accept" :run-id run-id)]
+    (log! router {:client (:id client)
+                  :type :hx/link-accept
+                  :run-id run-id})
+    {:reply (remember! router msg-id reply)}))
+
+(defn handle-hx-link-reject [router client envelope]
+  (let [{:keys [payload]} envelope
+        {:keys [msg-id decided-by reason validation] :as valid} (validate! :hx/link-reject payload)
+        link-id (:link/id valid)
+        run-id (new-run-id router)
+        result (hx/reject-link! link-id decided-by reason validation)
+        reply (assoc result :type "hx/link-reject" :run-id run-id)]
+    (log! router {:client (:id client)
+                  :type :hx/link-reject
+                  :run-id run-id})
+    {:reply (remember! router msg-id reply)}))
+
+(defn handle-hx-list-artifacts [router client envelope]
+  (let [{:keys [payload]} envelope
+        {:keys [msg-id]} (validate! :hx/list-artifacts payload)
+        run-id (new-run-id router)
+        reply {:ok true
+               :type "hx/list-artifacts"
+               :run-id run-id
+               :artifacts (hx/list-artifacts)}]
+    (log! router {:client (:id client)
+                  :type :hx/list-artifacts
+                  :run-id run-id})
+    {:reply (remember! router msg-id reply)}))
+
+(defn handle-hx-list-links [router client envelope]
+  (let [{:keys [payload]} envelope
+        {:keys [msg-id status artifact-id]} (validate! :hx/list-links payload)
+        run-id (new-run-id router)
+        reply {:ok true
+               :type "hx/list-links"
+               :run-id run-id
+               :links (hx/list-links {:status status :artifact-id artifact-id})}]
+    (log! router {:client (:id client)
+                  :type :hx/list-links
+                  :run-id run-id})
+    {:reply (remember! router msg-id reply)}))
+
+(defn handle-hx-candidates [router client envelope]
+  (let [{:keys [payload]} envelope
+        {:keys [msg-id]} (validate! :hx/candidates payload)
+        run-id (new-run-id router)
+        reply {:ok true
+               :type "hx/candidates"
+               :run-id run-id
+               :links (hx/candidates)}]
+    (log! router {:client (:id client)
+                  :type :hx/candidates
+                  :run-id run-id})
+    {:reply (remember! router msg-id reply)}))
+
 (defn dispatch [router type client envelope]
   (case type
     :hello (handle-hello router client envelope)
@@ -194,4 +292,12 @@
     :export (handle-export router client envelope)
     :run (handle-run router client envelope)
     :status (handle-status router client envelope)
+    :hx/artifact-register (handle-hx-artifact-register router client envelope)
+    :hx/anchors-upsert (handle-hx-anchors-upsert router client envelope)
+    :hx/link-suggest (handle-hx-link-suggest router client envelope)
+    :hx/link-accept (handle-hx-link-accept router client envelope)
+    :hx/link-reject (handle-hx-link-reject router client envelope)
+    :hx/list-artifacts (handle-hx-list-artifacts router client envelope)
+    :hx/list-links (handle-hx-list-links router client envelope)
+    :hx/candidates (handle-hx-candidates router client envelope)
     {:reply {:ok false :err "unsupported-type"}}))

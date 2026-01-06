@@ -27,4 +27,39 @@
  :status [:map {:closed true}
           [:msg-id [:string {:min 1}]]
           [:job-id [:string {:min 1}]]]
+ :hx/artifact-register [:map {:closed true}
+                        [:msg-id [:string {:min 1}]]
+                        [:artifact [:map {:closed false}
+                                    [:artifact/id [:string {:min 1}]]]]]
+ :hx/anchors-upsert [:map {:closed true}
+                     [:msg-id [:string {:min 1}]]
+                     [:artifact/id [:string {:min 1}]]
+                     [:anchors [:vector [:map {:closed false}]]]]
+ :hx/link-suggest [:map {:closed true}
+                   [:msg-id [:string {:min 1}]]
+                   [:link [:map {:closed false}
+                          [:link/from [:map {:closed false}
+                                       [:artifact/id [:string {:min 1}]]]]
+                          [:link/to [:map {:closed false}
+                                     [:artifact/id [:string {:min 1}]]]]
+                          [:link/type keyword?]]]]
+ :hx/link-accept [:map {:closed true}
+                  [:msg-id [:string {:min 1}]]
+                  [:link/id [:string {:min 1}]]
+                  [:decided-by keyword?]
+                  [:validation {:optional true} [:map {:closed false}]]]
+ :hx/link-reject [:map {:closed true}
+                  [:msg-id [:string {:min 1}]]
+                  [:link/id [:string {:min 1}]]
+                  [:decided-by keyword?]
+                  [:reason {:optional true} :string]
+                  [:validation {:optional true} [:map {:closed false}]]]
+ :hx/list-artifacts [:map {:closed true}
+                     [:msg-id [:string {:min 1}]]]
+ :hx/list-links [:map {:closed true}
+                 [:msg-id [:string {:min 1}]]
+                 [:status {:optional true} keyword?]
+                 [:artifact-id {:optional true} [:string {:min 1}]]]
+ :hx/candidates [:map {:closed true}
+                 [:msg-id [:string {:min 1}]]]
  :bye [:map {:closed true}]}

@@ -27,6 +27,14 @@ Enable agents (Codex, Claude, human) to:
 
 Demo target: Self-describe the FUTON stack codebase (reflexivity proof-of-concept).
 
+## Decisions (2026-01-05)
+
+- **Source of truth during validation**: Futon3 (MUSN) owns the live validation
+  workflow. Accepted links are staged there and **committed to Futon1 only at
+  the end** of a validated chain. Futon1 remains the long-term store.
+- **Futon1 as reference**: Futon3 may query Futon1 for canonical link types and
+  historical context, but does not write back until chain completion.
+
 ---
 
 ## Phase 1: Entity Store
@@ -148,6 +156,27 @@ Mirrors the pattern from `gap_store.clj`: atoms + append-only EDN log.
 
 ---
 
+## Validation Schema (initial guess)
+
+Use a structured validation payload attached to each link decision. This is
+refinable but should stay stable enough to audit.
+
+```clojure
+{:validation/status     :accepted|:rejected|:needs-review
+ :validation/structural {:ok? true
+                         :errors []}
+ :validation/semantic   {:ok? true
+                         :model "gpt-5"
+                         :confidence 0.72
+                         :rationale "..." }
+ :validation/agent      :codex|:claude|:joe
+ :validation/timestamp  "2026-01-05T...Z"}
+```
+
+Attach this to the link record when it moves from :suggested → :accepted/:rejected.
+
+---
+
 ## Phase 3: Router Integration
 
 **File**: Extend `src/f2/router.clj`
@@ -164,6 +193,9 @@ Add new message types to dispatch:
 :hx/list-links         -> hx.api/list-links
 :hx/candidates         -> hx.api/candidates
 ```
+
+**Note**: These endpoints assume a simple registry. We may later add proof-language
+transactions or additional routes as the validation story evolves.
 
 **File**: Extend `src/f2/ui.clj`
 
@@ -184,7 +216,8 @@ POST /musn/hx/links/:id/reject    ;; body: {:decided-by :joe :reason "..."}
 
 ## Phase 4: Link Type Vocabulary
 
-**Approach**: Query futon1 for canonical link types on startup; cache locally.
+**Approach**: Maintain a local allowlist, but prefer futon1 canonical link types
+when available. Treat futon1 as the source of truth and cache locally.
 
 For MVP, hardcode a minimal set that matches futon1/futon4:
 
@@ -202,6 +235,17 @@ For MVP, hardcode a minimal set that matches futon1/futon4:
 Validator rejects unknown types; agents can propose new types but they go to a review queue.
 
 ### Status: [ ] Not started
+
+---
+
+## Phase 4b: Futon1 Interfaces (reference + commit)
+
+**Reference endpoints** (read-only):
+- `GET /api/alpha/link-types` → canonical link type definitions
+
+**Commit endpoint** (write-once per validated chain):
+- `POST /api/alpha/hx/links/commit` → store a validated chain of links +
+  validation payloads in XTDB
 
 ---
 
@@ -253,18 +297,29 @@ Emacs buffer (or CLI) showing candidates:
 
 ---
 
+## Anchor Policy (incremental validation)
+
+Anchors are treated as **session-turn artifacts** during chain construction.
+We only require revalidation within the active chain (not historical). This
+keeps anchor drift manageable: the validated chain is committed to Futon1 as a
+single coherent artifact and does not need retroactive revalidation.
+Devmap pattern anchors are sourced from Futon1's registry rather than re-created
+in Futon3 to avoid drift.
+
 ## File Checklist
 
 | File | Purpose | Status |
 |------|---------|--------|
-| `src/futon3/hx/store.clj` | Entity storage + persistence | [ ] |
-| `src/futon3/hx/api.clj` | CRUD operations | [ ] |
-| `src/f2/router.clj` | Add :hx/* dispatch | [ ] |
-| `src/f2/ui.clj` | Add /musn/hx/* endpoints | [ ] |
-| `resources/schemas/hypertext.edn` | Link type allowlist | [ ] |
-| `scripts/register_stack.clj` | Demo: register artifacts | [ ] |
-| `scripts/extract_anchors.clj` | Demo: extract anchors | [ ] |
-| `scripts/suggest_links.clj` | Demo: LLM link suggestions | [ ] |
+| `src/futon3/hx/store.clj` | Entity storage + persistence | [x] |
+| `src/futon3/hx/api.clj` | CRUD operations | [x] |
+| `src/f2/router.clj` | Add :hx/* dispatch | [x] |
+| `src/f2/ui.clj` | Add /musn/hx/* endpoints | [x] |
+| `resources/schemas/hypertext.edn` | Validation payload schema | [x] |
+| `resources/schemas/hypertext-link-types.edn` | Link type allowlist | [x] |
+| `scripts/register_stack.clj` | Demo: register artifacts | [x] |
+| `scripts/extract_anchors.clj` | Demo: extract anchors | [x] |
+| `scripts/suggest_links.clj` | Demo: suggest links (devmaps/docbooks/code) | [x] |
+| `scripts/review_links.clj` | QA demo: batch review suggested links | [x] |
 | `logs/hypertext.edn` | Append-only event log | (created at runtime) |
 
 ---
@@ -272,6 +327,7 @@ Emacs buffer (or CLI) showing candidates:
 ## Phase 6: Pattern Validation (LLM-in-the-loop)
 
 This is the semantic core — how do we know a suggested link is valid?
+MVP uses agent self-validation (including fubar via Emacs), with a later LLM loop.
 
 ### What Needs Validation
 
@@ -287,6 +343,11 @@ This is the semantic core — how do we know a suggested link is valid?
 - Link target exists (artifact/anchor IDs resolve)
 - Link type in allowlist
 - No duplicate links (same from→to→type)
+
+**Self-validation (MVP):**
+- Agent supplies validation status and rationale.
+- Structural checks are recorded alongside the agent verdict.
+ - Optional peer sign-off can be attached (e.g., fucodex -> fubar).
 
 **Semantic (LLM-in-the-loop):**
 - Given source context + target context, confirm the relation holds
@@ -421,12 +482,9 @@ Integration point: agents use the `:hx/*` message types to register findings and
 
 ## Next Actions
 
-1. [ ] Create `src/futon3/hx/store.clj` with entity atoms + append-log
-2. [ ] Create `src/futon3/hx/api.clj` with CRUD functions
-3. [ ] Add `:hx/*` dispatch to router
-4. [ ] Add `/musn/hx/*` HTTP endpoints
-5. [ ] Write `scripts/register_stack.clj` to bootstrap demo
-6. [ ] Test end-to-end: register artifact → add anchors → suggest link → accept
+1. [ ] Run the Phase 5 demo scripts and review the report (QA pass).
+2. [ ] Implement `hx/validate.clj` with structural checks and wire into accept/reject.
+3. [ ] Define the machine-mirrored validation policy (PR-style criteria).
 
 ---
 

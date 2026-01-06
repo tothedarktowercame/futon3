@@ -344,6 +344,14 @@
       :export (route-via-router state client-id type envelope)
       :run (route-via-router state client-id type envelope)
       :status (route-via-router state client-id type envelope)
+      :hx/artifact-register (route-via-router state client-id type envelope)
+      :hx/anchors-upsert (route-via-router state client-id type envelope)
+      :hx/link-suggest (route-via-router state client-id type envelope)
+      :hx/link-accept (route-via-router state client-id type envelope)
+      :hx/link-reject (route-via-router state client-id type envelope)
+      :hx/list-artifacts (route-via-router state client-id type envelope)
+      :hx/list-links (route-via-router state client-id type envelope)
+      :hx/candidates (route-via-router state client-id type envelope)
       :workday (let [client (ensure-client! state client-id)]
                  (if-not client
                    {:reply {:ok false :type "workday" :err "unknown-client"}}

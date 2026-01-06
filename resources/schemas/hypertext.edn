@@ -1,0 +1,10 @@
+{:id :hx/link-validation
+ :type "validation"
+ :required [:validation/status
+            :validation/agent
+            :validation/timestamp]
+ :optional [:validation/structural
+            :validation/semantic]
+ :validation/status {:enum [:accepted :rejected :needs-review]}
+ :validation/structural {:required [:ok? :errors]}
+ :validation/semantic {:required [:ok? :model :confidence :rationale]}}

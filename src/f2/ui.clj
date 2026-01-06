@@ -14,6 +14,7 @@
             [futon3.tatami :as tatami]
             [f2.semantics :as semantics]
             [f2.transport :as transport]
+            [futon3.hx.api :as hx]
             [org.httpkit.server :as http]))
 
 (defn- json-response [status body]
@@ -184,6 +185,26 @@
   (when (str/starts-with? uri prefix)
     (subs uri (count prefix))))
 
+(defn- decode-param [value]
+  (when value
+    (java.net.URLDecoder/decode value "UTF-8")))
+
+(defn- parse-query-params [query]
+  (when (seq query)
+    (->> (str/split query #"&")
+         (keep (fn [pair]
+                 (let [[k v] (str/split pair #"=" 2)]
+                   (when (seq k)
+                     [(keyword (decode-param k))
+                      (decode-param v)]))))
+         (into {}))))
+
+(defn- kw-or-nil [value]
+  (cond
+    (keyword? value) value
+    (string? value) (keyword value)
+    :else nil))
+
 (defn handler [state request]
   (let [payload (delay (read-json request))
         uri (:uri request)
@@ -285,9 +306,45 @@
       (let [session-id (extract-path-param uri "/codex/input/")]
         (handle-codex-input session-id (:input @payload)))
 
+      ;; Hypertext endpoints with path params
+      (and (= method :get) (str/starts-with? uri "/musn/hx/artifacts/"))
+      (let [artifact-id (decode-param (extract-path-param uri "/musn/hx/artifacts/"))
+            artifact (hx/get-artifact artifact-id)]
+        (if artifact
+          (json-response 200 {:ok true
+                              :artifact artifact
+                              :anchors (hx/get-anchors artifact-id)})
+          (json-response 404 {:ok false :error "artifact-not-found"})))
+
+      (and (= method :post) (str/starts-with? uri "/musn/hx/links/") (str/ends-with? uri "/accept"))
+      (let [path (extract-path-param uri "/musn/hx/links/")
+            link-id (decode-param (subs path 0 (- (count path) (count "/accept"))))
+            decided-by (kw-or-nil (:decided-by @payload))
+            validation (:validation @payload)
+            result (hx/accept-link! link-id decided-by validation)]
+        (json-response (if (:ok result) 200 400) result))
+
+      (and (= method :post) (str/starts-with? uri "/musn/hx/links/") (str/ends-with? uri "/reject"))
+      (let [path (extract-path-param uri "/musn/hx/links/")
+            link-id (decode-param (subs path 0 (- (count path) (count "/reject"))))
+            decided-by (kw-or-nil (:decided-by @payload))
+            reason (:reason @payload)
+            validation (:validation @payload)
+            result (hx/reject-link! link-id decided-by reason validation)]
+        (json-response (if (:ok result) 200 400) result))
+
       ;; Existing MUSN endpoints
       :else
       (case [method uri]
+        [:get "/musn/hx/artifacts"]
+        (json-response 200 {:ok true :artifacts (hx/list-artifacts)})
+        [:get "/musn/hx/links"]
+        (let [params (parse-query-params (:query-string request))
+              status (kw-or-nil (:status params))
+              artifact-id (:artifact params)]
+          (json-response 200 {:ok true :links (hx/list-links {:status status :artifact-id artifact-id})}))
+        [:get "/musn/hx/candidates"]
+        (json-response 200 {:ok true :links (hx/candidates)})
         [:get "/musn/clients"] (json-response 200 {:clients (transport/clients-view state)})
         [:get "/musn/sessions"] (json-response 200 {:sessions (sessions-view state)})
         [:get "/musn/practices"] (json-response 200 (practices-view state))

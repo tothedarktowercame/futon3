@@ -2986,24 +2986,33 @@ use the active region if present, otherwise prompt for the sample string."
               (when (tatami--launch-server t)
                 (run-at-time 0.2 nil #'my-tatami--notify-ready))))
 
+(defvar my-tatami--notify-timer nil)
+(defvar my-tatami--notify-start nil)
+
 (defun my-tatami--notify-ready ()
   "Emit a message when the headless server becomes reachable."
-  (let ((start (float-time))
-        (initial-delay 0.5)
-        timer)
-    (setq timer
-          (run-with-timer
-           initial-delay 0.5
-           (lambda ()
-             (if (tatami--server-running-p)
-                 (progn
-                   (cancel-timer timer)
-                   (message "Headless server available after %.1fs"
-                            (- (float-time) start)))
-               (when (> (- (float-time) start) 10)
-                 (cancel-timer timer)
-                 (message "Headless server still unavailable after %.1fs"
-                          (- (float-time) start)))))))))
+  (setq my-tatami--notify-start (float-time))
+  (when (timerp my-tatami--notify-timer)
+    (cancel-timer my-tatami--notify-timer))
+  (setq my-tatami--notify-timer
+        (run-with-timer 0.5 0.5 #'my-tatami--notify-ready-tick)))
+
+(defun my-tatami--notify-ready-tick ()
+  (let ((start (or my-tatami--notify-start (float-time)))
+        (timer my-tatami--notify-timer))
+    (if (tatami--server-running-p)
+        (progn
+          (when (timerp timer)
+            (cancel-timer timer))
+          (setq my-tatami--notify-timer nil)
+          (message "Headless server available after %.1fs"
+                   (- (float-time) start)))
+      (when (> (- (float-time) start) 10)
+        (when (timerp timer)
+          (cancel-timer timer))
+        (setq my-tatami--notify-timer nil)
+        (message "Headless server still unavailable after %.1fs"
+                 (- (float-time) start)))))))
 
 (add-hook 'chatgpt-shell-before-command-functions #'my-chatgpt-shell-before-command)
 (add-hook 'chatgpt-shell-after-command-functions #'my-chatgpt-shell-after-command)

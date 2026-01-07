@@ -129,6 +129,81 @@
                        :facts facts}
              :obligations obligations}}))
 
+(def ^:private pur-fields
+  [:context :if :however :then :because :next-steps])
+
+(def ^:private horizon-values
+  #{:immediate :short :medium :long})
+
+(defn- anchor? [value]
+  (and (map? value)
+       (keyword? (:anchor/type value))
+       (map? (:anchor/ref value))))
+
+(defn- anchor-match-value [event key]
+  (if (vector? key)
+    (get-in event key)
+    (get event key)))
+
+(defn- anchor-ref-matches? [event ref]
+  (let [ref-keys (remove #{:lines} (keys ref))]
+    (every? (fn [k]
+              (= (anchor-match-value event k)
+                 (get ref k)))
+            ref-keys)))
+
+(defn- anchor-resolves? [anchor session-events extra-anchors]
+  (and (anchor? anchor)
+       (or (some #(= anchor %) extra-anchors)
+           (some #(anchor-ref-matches? % (:anchor/ref anchor)) session-events))))
+
+(defn- locus-resolves? [locus session-events extra-anchors]
+  (cond
+    (anchor? locus)
+    (anchor-resolves? locus session-events extra-anchors)
+
+    (and (map? locus)
+         (contains? locus :locus/type)
+         (#{:stream :log} (:locus/type locus))
+         (or (:stream/id locus) (:stream/name locus) (:stream/path locus)))
+    true
+
+    :else false))
+
+(defn- pattern-known? [pattern-id pattern-ids]
+  (and (string? pattern-id)
+       (contains? pattern-ids pattern-id)))
+
+(defn- fields-valid? [fields]
+  (and (map? fields)
+       (= (set pur-fields) (set (keys fields)))
+       (every? (fn [[_ v]]
+                 (or (string? v) (anchor? v)))
+               fields)))
+
+(defn- validator-result [validator status reasons]
+  {:validator validator
+   :status status
+   :reasons reasons})
+
+(defn- validators->result [rule facts errors validators]
+  (let [statuses (set (map :status validators))
+        ok? (= statuses #{:pass})
+        obligations (vec (for [{:keys [validator status reasons]} validators
+                               :when (not= status :pass)]
+                           {:obligation :validator-failed
+                            :validator validator
+                            :status status
+                            :reasons reasons}))]
+    {:ok? ok?
+     :errors errors
+     :logic {:kernel :hx.logic/v1
+             :judgement (if ok? :admissible :inadmissible)
+             :witness {:rule rule
+                       :facts facts}
+             :checks validators
+             :obligations obligations}}))
+
 (defn- check-artifact-register [db step policies]
   (let [payload (:hx.step/payload step)
         artifact (or (:artifact payload) payload)
@@ -260,6 +335,228 @@
                              :allowed allowed-statuses}))]
     (finalize-result rule facts obligations errors)))
 
+(defn- check-pattern-use-claimed [step opts]
+  (let [payload (:hx.step/payload step)
+        pur (or (:pur payload) payload)
+        session (:session opts)
+        session-events (or (:events session) (:session-events opts) [])
+        pattern-ids (or (:pattern-ids opts) #{})
+        outcome-tags (or (:outcome-tags opts) #{})
+        extra-anchors (or (:extra-anchors opts) [])
+        required-keys [:pur/id :session/id :pattern/id :instance/id :fields :anchors]
+        missing-keys (filter #(not (contains? pur %)) required-keys)
+        fields (:fields pur)
+        anchors (:anchors pur)
+        v1-reasons (cond-> []
+                     (seq missing-keys)
+                     (conj {:issue :missing-keys :keys (vec missing-keys)})
+                     (not (pattern-known? (:pattern/id pur) pattern-ids))
+                     (conj {:issue :unknown-pattern :pattern-id (:pattern/id pur)})
+                     (not (fields-valid? fields))
+                     (conj {:issue :invalid-fields}))
+        v1 (validator-result :pur/traceability
+                             (if (empty? v1-reasons) :pass :fail)
+                             v1-reasons)
+        resolved-anchors (filter #(anchor-resolves? % session-events extra-anchors) anchors)
+        v2-status (cond
+                    (empty? anchors) :fail
+                    (empty? resolved-anchors) :fail
+                    (= (count resolved-anchors) (count anchors)) :pass
+                    :else :partial)
+        v2-reasons (cond-> []
+                     (empty? anchors) (conj {:issue :missing-anchors})
+                     (and (seq anchors) (empty? resolved-anchors))
+                     (conj {:issue :anchors-unresolved})
+                     (and (seq anchors) (not= (count resolved-anchors) (count anchors)))
+                     (conj {:issue :anchors-partial
+                            :resolved (count resolved-anchors)
+                            :total (count anchors)}))
+        v2 (validator-result :pur/anchors v2-status v2-reasons)
+        v3 (if (seq (:outcome/tags pur))
+             (let [unknown (->> (:outcome/tags pur)
+                                (remove outcome-tags)
+                                vec)]
+               (validator-result :pur/outcome-tags
+                                 (if (empty? unknown) :pass :fail)
+                                 (when (seq unknown)
+                                   [{:issue :unknown-tags :tags unknown}])))
+             (validator-result :pur/outcome-tags :pass []))
+        v4 (if-let [delta (:delta pur)]
+             (let [before (:before delta)
+                   after (:after delta)
+                   before-ok (anchor-resolves? before session-events extra-anchors)
+                   after-ok (anchor-resolves? after session-events extra-anchors)
+                   identical? (= before after)
+                   status (cond
+                            (and before-ok after-ok (not identical?)) :pass
+                            (or (nil? before) (nil? after)) :fail
+                            :else :fail)
+                   reasons (cond-> []
+                             (nil? before) (conj {:issue :missing-before})
+                             (nil? after) (conj {:issue :missing-after})
+                             (and before (not before-ok)) (conj {:issue :before-unresolved})
+                             (and after (not after-ok)) (conj {:issue :after-unresolved})
+                             identical? (conj {:issue :anchors-identical}))]
+               (validator-result :pur/delta status reasons))
+             (validator-result :pur/delta :pass []))
+        v5 (if-let [tension (:unresolved-tension pur)]
+             (let [status (cond
+                            (string? tension) :pass
+                            (and (map? tension)
+                                 (#{:if :however} (:ref tension))
+                                 (string? (:note tension))) :pass
+                            :else :fail)
+                   reasons (when (= status :fail)
+                             [{:issue :invalid-tension}])]
+               (validator-result :pur/tension status reasons))
+             (validator-result :pur/tension :pass []))
+        v6 (if-let [counterevidence (:counterevidence pur)]
+             (let [loci (keep :locus counterevidence)
+                   resolved (filter #(locus-resolves? % session-events extra-anchors) loci)
+                   status (cond
+                            (empty? loci) :fail
+                            (seq resolved) :pass
+                            :else :fail)
+                   reasons (cond-> []
+                             (empty? loci) (conj {:issue :missing-locus})
+                             (and (seq loci) (empty? resolved))
+                             (conj {:issue :locus-unresolved}))]
+               (validator-result :pur/counterevidence status reasons))
+             (validator-result :pur/counterevidence :pass []))
+        v7 (if-let [proposal (:revision-proposal pur)]
+             (let [field (:field proposal)
+                   edit (:edit proposal)
+                   support (:support proposal)
+                   support-resolved (filter #(anchor-resolves? % session-events extra-anchors) support)
+                   status (cond
+                            (and (contains? (set pur-fields) field)
+                                 (string? edit)
+                                 (seq support)
+                                 (= (count support) (count support-resolved))) :pass
+                            (and (contains? (set pur-fields) field)
+                                 (string? edit)
+                                 (seq support)
+                                 (seq support-resolved)) :partial
+                            :else :fail)
+                   reasons (cond-> []
+                             (not (contains? (set pur-fields) field))
+                             (conj {:issue :invalid-field})
+                             (not (string? edit))
+                             (conj {:issue :missing-edit})
+                             (empty? support)
+                             (conj {:issue :missing-support})
+                             (and (seq support) (not= (count support) (count support-resolved)))
+                             (conj {:issue :support-unresolved
+                                    :resolved (count support-resolved)
+                                    :total (count support)}))]
+               (validator-result :pur/revision status reasons))
+             (validator-result :pur/revision :pass []))
+        validators [v1 v2 v3 v4 v5 v6 v7]]
+    (validators->result :hx.pattern/use-claimed [] [] validators)))
+
+(defn- check-pattern-selection-claimed [step opts]
+  (let [payload (:hx.step/payload step)
+        psr (or (:psr payload) payload)
+        session (:session opts)
+        session-events (or (:events session) (:session-events opts) [])
+        pattern-ids (or (:pattern-ids opts) #{})
+        extra-anchors (or (:extra-anchors opts) [])
+        required-keys [:psr/id :session/id :decision/id :candidates :chosen :context/anchors
+                       :forecast :rejections :horizon]
+        missing-keys (filter #(not (contains? psr %)) required-keys)
+        candidates (:candidates psr)
+        chosen (:chosen psr)
+        forecast (:forecast psr)
+        rejections (:rejections psr)
+        v1-reasons (cond-> []
+                     (seq missing-keys)
+                     (conj {:issue :missing-keys :keys (vec missing-keys)})
+                     (not (and (coll? candidates) (some #{chosen} candidates)))
+                     (conj {:issue :chosen-not-in-candidates})
+                     (and (coll? candidates)
+                          (seq candidates)
+                          (not (every? #(pattern-known? % pattern-ids) candidates)))
+                     (conj {:issue :unknown-patterns
+                            :patterns (vec (remove #(pattern-known? % pattern-ids) candidates))})
+                     (not (horizon-values (:horizon psr)))
+                     (conj {:issue :invalid-horizon}))
+        v1-status (cond
+                    (seq missing-keys) :fail
+                    (some #{:chosen-not-in-candidates} (map :issue v1-reasons)) :fail
+                    (some #{:unknown-patterns :invalid-horizon} (map :issue v1-reasons)) :partial
+                    :else :pass)
+        v1 (validator-result :psr/candidates v1-status v1-reasons)
+        override? (:override/solo? psr)
+        override-note (:override/note psr)
+        v2-status (cond
+                    override?
+                    (if (string? override-note) :pass :fail)
+                    (and (coll? candidates) (>= (count candidates) 2)) :pass
+                    :else :fail)
+        v2-reasons (cond-> []
+                     (and override? (not (string? override-note)))
+                     (conj {:issue :missing-override-note})
+                     (and (not override?) (or (nil? candidates) (< (count candidates) 2)))
+                     (conj {:issue :insufficient-candidates
+                            :count (count candidates)}))
+        v2 (validator-result :psr/two-alternative v2-status v2-reasons)
+        context-anchors (:context/anchors psr)
+        resolved-context (filter #(anchor-resolves? % session-events extra-anchors) context-anchors)
+        v3-status (cond
+                    (empty? context-anchors) :fail
+                    (empty? resolved-context) :fail
+                    (= (count resolved-context) (count context-anchors)) :pass
+                    :else :partial)
+        v3-reasons (cond-> []
+                     (empty? context-anchors) (conj {:issue :missing-anchors})
+                     (and (seq context-anchors) (empty? resolved-context))
+                     (conj {:issue :anchors-unresolved})
+                     (and (seq context-anchors)
+                          (not= (count resolved-context) (count context-anchors)))
+                     (conj {:issue :anchors-partial
+                            :resolved (count resolved-context)
+                            :total (count context-anchors)}))
+        v3 (validator-result :psr/anchors v3-status v3-reasons)
+        forecast-keys [:benefits :risks :success :failure]
+        forecast-missing (filter #(not (contains? forecast %)) forecast-keys)
+        forecast-entries (mapcat #(get forecast % []) forecast-keys)
+        forecast-resolved (filter #(locus-resolves? (:locus %) session-events extra-anchors)
+                                  forecast-entries)
+        v4-status (cond
+                    (seq forecast-missing) :fail
+                    (empty? forecast-entries) :partial
+                    (= (count forecast-entries) (count forecast-resolved)) :pass
+                    (seq forecast-resolved) :partial
+                    :else :fail)
+        v4-reasons (cond-> []
+                     (seq forecast-missing) (conj {:issue :missing-forecast
+                                                   :keys (vec forecast-missing)})
+                     (empty? forecast-entries) (conj {:issue :empty-forecast})
+                     (and (seq forecast-entries)
+                          (not= (count forecast-entries) (count forecast-resolved)))
+                     (conj {:issue :forecast-unresolved
+                            :resolved (count forecast-resolved)
+                            :total (count forecast-entries)}))
+        v4 (validator-result :psr/forecast v4-status v4-reasons)
+        expected-rejections (set (remove #{chosen} candidates))
+        rejection-codes (fn [m]
+                          (let [codes (:codes m)]
+                            (and (coll? codes) (seq codes))))
+        missing-rejections (filter #(not (contains? rejections %)) expected-rejections)
+        empty-rejections (filter #(not (rejection-codes (get rejections %))) expected-rejections)
+        v5-status (cond
+                    (seq missing-rejections) :fail
+                    (seq empty-rejections) :fail
+                    :else :pass)
+        v5-reasons (cond-> []
+                     (seq missing-rejections) (conj {:issue :missing-rejections
+                                                     :patterns (vec missing-rejections)})
+                     (seq empty-rejections) (conj {:issue :missing-rejection-codes
+                                                   :patterns (vec empty-rejections)}))
+        v5 (validator-result :psr/rejections v5-status v5-reasons)
+        validators [v1 v2 v3 v4 v5]]
+    (validators->result :hx.pattern/selection-claimed [] [] validators)))
+
 (defn check-step
   "Validate a canonical hx step and return structural admissibility with witness."
   ([step] (check-step step {}))
@@ -283,6 +580,18 @@
 
        :hx/link-reject
        (check-link-decision db step :hx.link/reject-admissible [:suggested :needs-review])
+
+       :hx/pattern-use-claimed
+       (check-pattern-use-claimed step opts)
+
+       :hx/pattern-use-verified
+       (check-pattern-use-claimed step opts)
+
+       :hx/pattern-selection-claimed
+       (check-pattern-selection-claimed step opts)
+
+       :hx/pattern-selection-verified
+       (check-pattern-selection-claimed step opts)
 
        (finalize-result :hx.step/unknown [] [] [{:issue :unknown-step :kind kind}])))))
 

@@ -1,0 +1,174 @@
+(ns futon3.fulab.pattern-competence
+  "Helpers for Pattern Use/Selection records (PUR/PSR) in lab sessions."
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.pprint :as pprint]
+            [clojure.string :as str]
+            [futon3.hx.logic :as logic]))
+
+(def pur-fields
+  [:context :if :however :then :because :next-steps])
+
+(def forecast-fields
+  [:benefits :risks :success :failure])
+
+(defn now-inst []
+  (java.util.Date.))
+
+(defn read-session-file [path]
+  (let [content (slurp path)]
+    (edn/read-string {:readers *data-readers*} content)))
+
+(defn write-session-file! [path session]
+  (with-open [w (io/writer path)]
+    (binding [*print-namespace-maps* false]
+      (pprint/pprint session w))))
+
+(defn append-event [session event]
+  (update session :events (fnil conj []) event))
+
+(defn build-event [event-type payload]
+  {:event/type event-type
+   :at (now-inst)
+   :payload payload})
+
+(defn outcome-tags-path [repo-root]
+  (str (io/file repo-root "resources" "fulab-outcome-tags.edn")))
+
+(defn read-outcome-tags [repo-root]
+  (let [path (outcome-tags-path repo-root)]
+    (if (.exists (io/file path))
+      (set (edn/read-string (slurp path)))
+      #{})))
+
+(defn pattern-index-path [repo-root]
+  (str (io/file repo-root "resources" "sigils" "patterns-index.tsv")))
+
+(defn read-pattern-ids [repo-root]
+  (let [path (pattern-index-path repo-root)]
+    (if (.exists (io/file path))
+      (with-open [r (io/reader path)]
+        (->> (line-seq r)
+             (map #(str/split % #"\t"))
+             (map first)
+             (remove str/blank?)
+             set))
+      #{})))
+
+(defn anchor [type ref]
+  {:anchor/type type
+   :anchor/ref ref})
+
+(defn pur-template [session-id]
+  {:pur/id (str (java.util.UUID/randomUUID))
+   :session/id session-id
+   :pattern/id ""
+   :instance/id ""
+   :fields {:context ""
+            :if ""
+            :however ""
+            :then ""
+            :because ""
+            :next-steps ""}
+   :anchors [(anchor :code/edit {:event/type :code/edit
+                                 :file ""
+                                 :fn ""})]})
+
+(defn psr-template [session-id decision-id]
+  {:psr/id (str (java.util.UUID/randomUUID))
+   :session/id session-id
+   :decision/id decision-id
+   :candidates ["" ""]
+   :chosen ""
+   :context/anchors [(anchor :code/edit {:event/type :code/edit
+                                         :file ""
+                                         :fn ""})]
+   :forecast {:benefits [{:tag :benefit/unknown
+                          :locus (anchor :code/edit {:event/type :code/edit
+                                                     :file ""
+                                                     :fn ""})
+                          :note ""}]
+              :risks []
+              :success []
+              :failure []}
+   :rejections {}
+   :horizon :short})
+
+(defn wrap-claim-event [record]
+  (cond
+    (:pur/id record)
+    (build-event :pattern/use-claimed {:pur record})
+
+    (:psr/id record)
+    (build-event :pattern/selection-claimed {:psr record})
+
+    :else
+    (build-event :pattern/record-claimed {:record record})))
+
+(defn claim->verify-event [claim-event result]
+  (let [payload (:payload claim-event)
+        pur (:pur payload)
+        psr (:psr payload)
+        base {:check/result result
+              :check/status (if (:ok? result) :pass :fail)}]
+    (cond
+      pur {:event/type :pattern/use-verified
+           :at (now-inst)
+           :payload (assoc base :pur/id (:pur/id pur))}
+
+      psr {:event/type :pattern/selection-verified
+           :at (now-inst)
+           :payload (assoc base :psr/id (:psr/id psr))}
+
+      :else {:event/type :pattern/record-verified
+             :at (now-inst)
+             :payload base})))
+
+(defn pur-claim-events [session]
+  (->> (:events session)
+       (filter #(= :pattern/use-claimed (:event/type %)))))
+
+(defn psr-claim-events [session]
+  (->> (:events session)
+       (filter #(= :pattern/selection-claimed (:event/type %)))))
+
+(defn check-pur [pur session pattern-ids outcome-tags]
+  (logic/check-step {:hx.step/kind :hx/pattern-use-claimed
+                     :hx.step/payload {:pur pur}}
+                    {:session session
+                     :pattern-ids pattern-ids
+                     :outcome-tags outcome-tags}))
+
+(defn check-psr [psr session pattern-ids]
+  (logic/check-step {:hx.step/kind :hx/pattern-selection-claimed
+                     :hx.step/payload {:psr psr}}
+                    {:session session
+                     :pattern-ids pattern-ids}))
+
+(defn expected-vs-resolved [entries resolver]
+  (let [resolved (filter resolver entries)]
+    {:expected (count entries)
+     :resolved (count resolved)}))
+
+(defn anchor-resolver [session]
+  (fn [anchor]
+    (let [result (logic/check-step {:hx.step/kind :hx/pattern-use-claimed
+                                    :hx.step/payload {:pur {:pur/id "_"
+                                                             :session/id (:session/id session)
+                                                             :pattern/id "_"
+                                                             :instance/id "_"
+                                                             :fields {:context "" :if "" :however "" :then "" :because "" :next-steps ""}
+                                                             :anchors [anchor]}}}
+                                   {:session session
+                                    :pattern-ids #{"_"}})]
+      (:ok? result))))
+
+(defn forecast-summary [forecast session]
+  (let [entries (mapcat #(get forecast % []) forecast-fields)
+        resolver (fn [entry]
+                   (let [locus (:locus entry)
+                         anchor-res (anchor-resolver session)]
+                     (if (and (map? locus) (:anchor/type locus))
+                       (anchor-res locus)
+                       false)))]
+    (expected-vs-resolved entries resolver)))

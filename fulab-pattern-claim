@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# fulab-pattern-claim: Write PUR/PSR claim events into lab sessions
+# Usage:
+#   fulab-pattern-claim --session-id ID --kind pur|psr
+#   fulab-pattern-claim --session-id ID --kind psr --decision-id DECISION
+#   fulab-pattern-claim --session-id ID --stdin < record.edn
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LAB_DEPS='{}'
+
+usage() {
+  echo "Usage: fulab-pattern-claim --session-id ID --kind pur|psr [--decision-id ID] [--stdin] [--print-only]"
+  echo "Writes a PUR/PSR claim event into lab/sessions/<id>.edn (append-only)."
+}
+
+SESSION_ID=""
+SESSION_FILE=""
+LAB_ROOT="$ROOT/lab"
+KIND=""
+DECISION_ID=""
+STDIN=false
+PRINT_ONLY=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --session-id)
+      SESSION_ID="$2"; shift 2;;
+    --session-file)
+      SESSION_FILE="$2"; shift 2;;
+    --lab-root)
+      LAB_ROOT="$2"; shift 2;;
+    --kind)
+      KIND="$2"; shift 2;;
+    --decision-id)
+      DECISION_ID="$2"; shift 2;;
+    --stdin)
+      STDIN=true; shift;;
+    --print-only)
+      PRINT_ONLY=true; shift;;
+    --help|-h)
+      usage; exit 0;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage; exit 1;;
+  esac
+done
+
+clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-pattern-claim.clj" \
+  ${SESSION_ID:+--session-id "$SESSION_ID"} \
+  ${SESSION_FILE:+--session-file "$SESSION_FILE"} \
+  --lab-root "$LAB_ROOT" \
+  ${KIND:+--kind "$KIND"} \
+  ${DECISION_ID:+--decision-id "$DECISION_ID"} \
+  $(if $STDIN; then echo --stdin; fi) \
+  $(if $PRINT_ONLY; then echo --print-only; fi)

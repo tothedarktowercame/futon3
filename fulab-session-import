@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# fulab-session-import: Import Claude Code JSONL transcript to session EDN
+# Usage:
+#   fulab-session-import --jsonl PATH --session-id ID [--pattern-id PID] [--intent TEXT]
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+usage() {
+  echo "Usage: fulab-session-import --jsonl PATH --session-id ID [OPTIONS]"
+  echo ""
+  echo "Imports a Claude Code JSONL transcript into lab/sessions/ as EDN"
+  echo "for PUR/PSR validation."
+  echo ""
+  echo "Options:"
+  echo "  --jsonl PATH        Path to Claude Code JSONL transcript (required)"
+  echo "  --session-id ID     Session ID for output file (required)"
+  echo "  --pattern-id PID    Pattern ID for clock-in (optional)"
+  echo "  --intent TEXT       Intent description for clock-in (optional)"
+  echo "  --lab-root PATH     Lab directory (default: ./lab)"
+  echo "  --dry-run           Print output instead of writing file"
+  echo "  --help              Show this help"
+}
+
+JSONL=""
+SESSION_ID=""
+PATTERN_ID=""
+INTENT=""
+LAB_ROOT="$ROOT/lab"
+DRY_RUN=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --jsonl)
+      JSONL="$2"; shift 2;;
+    --session-id)
+      SESSION_ID="$2"; shift 2;;
+    --pattern-id)
+      PATTERN_ID="$2"; shift 2;;
+    --intent)
+      INTENT="$2"; shift 2;;
+    --lab-root)
+      LAB_ROOT="$2"; shift 2;;
+    --dry-run)
+      DRY_RUN=true; shift;;
+    --help|-h)
+      usage; exit 0;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage; exit 1;;
+  esac
+done
+
+if [[ -z "$JSONL" ]]; then
+  echo "Error: --jsonl is required" >&2
+  usage
+  exit 1
+fi
+
+if [[ -z "$SESSION_ID" ]]; then
+  echo "Error: --session-id is required" >&2
+  usage
+  exit 1
+fi
+
+# Build args array
+ARGS=(--jsonl "$JSONL" --session-id "$SESSION_ID" --lab-root "$LAB_ROOT")
+[[ -n "$PATTERN_ID" ]] && ARGS+=(--pattern-id "$PATTERN_ID")
+[[ -n "$INTENT" ]] && ARGS+=(--intent "$INTENT")
+$DRY_RUN && ARGS+=(--dry-run)
+
+# Run script directly (shebang handles clojure invocation)
+"$ROOT/dev/lab-import-session.clj" "${ARGS[@]}"

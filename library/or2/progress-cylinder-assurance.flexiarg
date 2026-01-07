@@ -1,0 +1,19 @@
+@flexiarg or2/progress-cylinder-assurance
+@title Progress Cylinder Assurance
+@audience OR Programme Manager, project leads, stewards
+@tone formal-analytic
+@style design-pattern
+@sigils [🧪/进]
+
+! conclusion: Progress Cylinder Assurance
+  + context: You want proof of movement well before a deadline rather than a last-minute scramble.
+  + IF:
+    a task has an explicit SCHEDULED or DEADLINE date and an EFFORT estimate of 1h or more.
+  + HOWEVER:
+    work tends to bunch after the date, producing false signals of progress and unreliable delivery.
+  + THEN:
+    require an early effort marker: log at least one work session totaling ≥ 1/3 of EFFORT no later than 3 days before the scheduled/deadline date; if that marker is missing, reschedule or split the task.
+  + BECAUSE:
+    cylinder-set guarantees are about partial evidence within a bounded prefix; early effort is a compact proof that work is moving through the pipe.
+  + NEXT-STEPS:
+    next[Add a check in the agenda view that flags tasks with EFFORT but no early effort marker.]

@@ -12,10 +12,18 @@
                   :artifact/type :org
                   :artifact/title "Fulab plumbing"
                   :artifact/path "docs/fulab-plumbing.org"}
+        target-artifact {:artifact/id "futon3/docs/plans/hypertext-porcelain.md"
+                         :artifact/type :markdown
+                         :artifact/title "Hypertext porcelain plan"
+                         :artifact/path "docs/plans/hypertext-porcelain.md"}
         anchor {:anchor/id "summary"
                 :anchor/artifact "futon3/docs/fulab-plumbing.org"
                 :anchor/kind :heading
                 :anchor/selector {:kind :regex :pattern "^\\* Summary"}}
+        target-anchor {:anchor/id "goal"
+                       :anchor/artifact "futon3/docs/plans/hypertext-porcelain.md"
+                       :anchor/kind :heading
+                       :anchor/selector {:kind :regex :pattern "^## Goal"}}
         link {:link/from {:artifact/id "futon3/docs/fulab-plumbing.org" :anchor/id "summary"}
               :link/to {:artifact/id "futon3/docs/plans/hypertext-porcelain.md" :anchor/id "goal"}
               :link/type :documents
@@ -36,9 +44,15 @@
       (let [reg (api/register-artifact! artifact)]
         (is (= true (:ok reg)))
         (is (some? (:artifact/registered (:artifact reg)))))
+      (let [reg (api/register-artifact! target-artifact)]
+        (is (= true (:ok reg)))
+        (is (some? (:artifact/registered (:artifact reg)))))
       (let [resp (api/upsert-anchors! "futon3/docs/fulab-plumbing.org" [anchor])]
         (is (= true (:ok resp)))
         (is (= [anchor] (api/get-anchors "futon3/docs/fulab-plumbing.org"))))
+      (let [resp (api/upsert-anchors! "futon3/docs/plans/hypertext-porcelain.md" [target-anchor])]
+        (is (= true (:ok resp)))
+        (is (= [target-anchor] (api/get-anchors "futon3/docs/plans/hypertext-porcelain.md"))))
       (let [resp (api/suggest-link! link)
             link-id (:link/id (:link resp))]
         (is (= true (:ok resp)))

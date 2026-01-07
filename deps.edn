@@ -13,7 +13,8 @@
         org.clojure/tools.nrepl {:mvn/version "0.2.13"}
         com.cemerick/drawbridge {:mvn/version "0.0.7"}
         ring/ring-core {:mvn/version "1.11.0"}
-        metosin/malli {:mvn/version "0.16.3"}}
+        metosin/malli {:mvn/version "0.16.3"}
+        org.clojure/core.logic {:mvn/version "1.0.1"}}
 
  :aliases {:dev {:main-opts ["-m" "f2.musn"]}
            :test

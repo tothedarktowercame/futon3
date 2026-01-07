@@ -480,6 +480,72 @@ Integration point: agents use the `:hx/*` message types to register findings and
 
 ---
 
+## Phase 7: core.logic Constraint Kernel (Flexiformal Steps)
+
+**Goal**: Add a futon3-internal relational validator that produces replayable
+structural witnesses and explicit obligations. This complements (not replaces)
+Malli shape checks.
+
+### Scope
+
+Treat the following as proof-like steps:
+
+- `:hx/artifact-register`
+- `:hx/anchors-upsert`
+- `:hx/link-suggest`
+- `:hx/link-accept`
+- `:hx/link-reject`
+
+### Canonical Step Shape
+
+```clojure
+{:hx.step/kind :hx/link-suggest
+ :hx.step/txid "uuid"
+ :hx.step/by :codex
+ :hx.step/at "2026-01-06T..."
+ :hx.step/payload {:link {...}}
+ :hx.step/policy {:require-docs? false
+                  :require-patterns? false
+                  :reject-duplicates? true}}
+```
+
+### Structural Witness (stable + replayable)
+
+```clojure
+:validation/structural
+{:ok? true
+ :errors []
+ :logic {:kernel :hx.logic/v1
+         :judgement :admissible
+         :witness {:rule :hx.link/suggest-admissible
+                   :facts [{:fact :artifact/exists :id "..."}
+                           {:fact :anchor/exists :artifact/id "..." :anchor/id "..."}
+                           {:fact :link-type/allowed :type :uses}]}
+         :obligations []}}
+```
+
+### Sample Rules (policy-gated)
+
+These are optional structural policies, toggled via `:hx.step/policy`:
+
+- **Interactive functions must be documented**: if `:artifact/interactive` and
+  `:require-docs?` is true, the step is inadmissible until documentation is
+  attached (e.g., `:artifact/documents`, `:artifact/docbook-id`).
+- **Work must be checked against design patterns**: if `:require-patterns?`
+  is true, the step is inadmissible until pattern references are present
+  (e.g., `:artifact/pattern-ids`).
+
+These stay deterministic; they do not require proof search.
+
+### File Checklist Update
+
+| File | Purpose | Status |
+|------|---------|--------|
+| `src/futon3/hx/logic.clj` | core.logic kernel + witness | [ ] |
+| `test/hx_logic_test.clj` | deterministic admissibility tests | [ ] |
+
+---
+
 ## Next Actions
 
 1. [ ] Run the Phase 5 demo scripts and review the report (QA pass).

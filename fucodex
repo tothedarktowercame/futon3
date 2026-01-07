@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
+START_ISO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+RUN_CWD="$(pwd)"
+
+codex "$@"
+status=$?
+
+mapfile -t matches < <(clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-select-session.clj" --since "$START_ISO" --cwd "$RUN_CWD")
+
+if [[ ${#matches[@]} -eq 0 ]]; then
+  echo "[lab] no Codex sessions found for $RUN_CWD since $START_ISO" >&2
+  exit $status
+fi
+
+if [[ ${#matches[@]} -gt 1 ]]; then
+  echo "[lab] multiple sessions found:" >&2
+  i=1
+  for line in "${matches[@]}"; do
+    echo "  $i) $line" >&2
+    i=$((i + 1))
+  done
+  read -r -p "Select session number: " choice
+  if [[ -z "${choice}" || "${choice}" -lt 1 || "${choice}" -gt ${#matches[@]} ]]; then
+    echo "[lab] invalid selection" >&2
+    exit $status
+  fi
+  selected="${matches[$((choice - 1))]}"
+else
+  selected="${matches[0]}"
+fi
+
+session_id="${selected%%$'\t'*}"
+session_file="${selected#*$'\t'}"
+
+if [[ -z "${session_id}" || -z "${session_file}" ]]; then
+  echo "[lab] failed to parse selected session" >&2
+  exit $status
+fi
+
+clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export.clj" \
+  --session-file "$session_file" \
+  --repo-root "$RUN_CWD" \
+  --lab-root "$ROOT/lab"
+
+clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-summarize.clj" \
+  --raw "$ROOT/lab/raw/${session_id}.json"
+
+exit $status

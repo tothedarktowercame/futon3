@@ -3,7 +3,17 @@
 (require '[clojure.data.json :as json])
 (require '[clojure.java.io :as io])
 (require '[clojure.string :as str])
-(require '[futon5.llm.relay :as relay])
+(def ^:private relay-ns 'futon5.llm.relay)
+
+(defn- ensure-relay []
+  (try
+    (require relay-ns)
+    true
+    (catch Throwable _ false)))
+
+(defn- relay-fn [sym]
+  (when (ensure-relay)
+    (ns-resolve relay-ns sym)))
 
 (defn usage []
   (println "Usage: dev/lab-summarize.clj --raw PATH [--stub PATH] [--prompt PATH] [--model MODEL] [--docbook-book BOOK] [--docbook-map PATH] [--no-docbook] [--dry-run]")
@@ -186,11 +196,20 @@
             prompt-path (or prompt (str (io/file "lab" "prompts" "lab-session-summary.prompt")))
             system (slurp prompt-path)
             user (slurp raw-path)
-            payload (relay/chat-request {:model (or model "gpt-5.2-chat-latest")
-                                         :system system
-                                         :user user})
-            resp (relay/call-openai! payload)
-            summary (response->text resp)
+            relay-chat (relay-fn 'chat-request)
+            relay-call (relay-fn 'call-openai!)
+            summary (if (and relay-chat relay-call)
+                      (let [payload (relay-chat {:model (or model "gpt-5.2-chat-latest")
+                                                 :system system
+                                                 :user user})
+                            resp (relay-call payload)]
+                        (response->text resp))
+                      (str "* Context\n"
+                           "- Summary generation skipped (futon5 relay unavailable).\n\n"
+                           "* Delta\n"
+                           "- (unverified)\n\n"
+                           "* Verification\n"
+                           "- (unverified)\n"))
             header (header-block raw-data)
             summary-body (extract-org summary)
             output (str header summary-body "\n")
@@ -214,49 +233,53 @@
             (when docbook
               (let* [book (or docbook-book "futon4")
                      map-path (or docbook-map (str (io/file "dev" "logs" "books" book "entry-map.edn")))
-                     toc-path (str (io/file "dev" "logs" "books" book "toc.json"))
-                     entry-map (load-entry-map map-path)
-                     toc-map (toc-doc-map toc-path)
-                     parsed (parse-summary-sections summary-body)
-                     files->changes (:files parsed)
-                     timestamp (or (lab-key raw-data "lab/timestamp-end")
-                                   (lab-key raw-data "lab/timestamp-start"))
-                     version (or (lab-key raw-data "lab/version") "lab-draft")
-                     session-id (lab-key raw-data "lab/session-id")
-                     base-dir (io/file "dev" "logs" "books" book)
-                     raw-dir (ensure-dir (str (io/file base-dir "raw")))
-                     stub-dir (ensure-dir (str (io/file base-dir "stubs")))]
-                    (doseq [[file changes] files->changes]
-                      (let [outline (or (match-outline-path entry-map file)
-                                        ["Recent changes (futon4, pilot)"])
-                            path-str (str/join " / " outline)
-                            heading (get toc-map path-str)
-                            doc-id (or (:doc-id heading) (str "futon4-" (hash path-str)))
-                            run-id (str session-id "-" (str/replace doc-id "/" "_"))
-                            delta (bullet-text (map #(str file " — " %) changes))
-                            context (bullet-text [(str "Lab session " session-id)])
-                            verification (bullet-text ["(unverified)"])
-                            entry (docbook-entry {:book book
-                                                  :doc-id doc-id
-                                                  :outline-path outline
-                                                  :run-id run-id
-                                                  :timestamp timestamp
-                                                  :version version
-                                                  :files [file]
-                                                  :context context
-                                                  :delta delta
-                                                  :verification verification})
-                            stub (docbook-stub {:doc-id doc-id
-                                                :version version
-                                                :title (str (last outline) " — " session-id)
-                                                :context context
-                                                :delta delta
-                                                :verification verification})
-                            raw-path (io/file raw-dir (str run-id ".json"))
-                            stub-path (io/file stub-dir (str run-id ".org"))]
-                        (spit raw-path (json/write-str entry {:pretty true}))
-                        (spit stub-path stub)))
-                    (println (format "[lab-summarize] docbook=%s entries=%d"
-                                     book (count files->changes)))))))))))
+                     toc-path (str (io/file "dev" "logs" "books" book "toc.json"))]
+                    (if (and (.exists (io/file map-path))
+                             (.exists (io/file toc-path)))
+                      (let [entry-map (load-entry-map map-path)
+                            toc-map (toc-doc-map toc-path)
+                            parsed (parse-summary-sections summary-body)
+                            files->changes (:files parsed)
+                            timestamp (or (lab-key raw-data "lab/timestamp-end")
+                                          (lab-key raw-data "lab/timestamp-start"))
+                            version (or (lab-key raw-data "lab/version") "lab-draft")
+                            session-id (lab-key raw-data "lab/session-id")
+                            base-dir (io/file "dev" "logs" "books" book)
+                            raw-dir (ensure-dir (str (io/file base-dir "raw")))
+                            stub-dir (ensure-dir (str (io/file base-dir "stubs")))]
+                        (doseq [[file changes] files->changes]
+                          (let [outline (or (match-outline-path entry-map file)
+                                            ["Recent changes (futon4, pilot)"])
+                                path-str (str/join " / " outline)
+                                heading (get toc-map path-str)
+                                doc-id (or (:doc-id heading) (str "futon4-" (hash path-str)))
+                                run-id (str session-id "-" (str/replace doc-id "/" "_"))
+                                delta (bullet-text (map #(str file " — " %) changes))
+                                context (bullet-text [(str "Lab session " session-id)])
+                                verification (bullet-text ["(unverified)"])
+                                entry (docbook-entry {:book book
+                                                      :doc-id doc-id
+                                                      :outline-path outline
+                                                      :run-id run-id
+                                                      :timestamp timestamp
+                                                      :version version
+                                                      :files [file]
+                                                      :context context
+                                                      :delta delta
+                                                      :verification verification})
+                                stub (docbook-stub {:doc-id doc-id
+                                                    :version version
+                                                    :title (str (last outline) " — " session-id)
+                                                    :context context
+                                                    :delta delta
+                                                    :verification verification})
+                                raw-path (io/file raw-dir (str run-id ".json"))
+                                stub-path (io/file stub-dir (str run-id ".org"))]
+                            (spit raw-path (json/write-str entry {:pretty true}))
+                            (spit stub-path stub)))
+                        (println (format "[lab-summarize] docbook=%s entries=%d"
+                                         book (count files->changes))))
+                      (println (format "[lab-summarize] docbook skipped (missing %s or %s)"
+                                       map-path toc-path)))))))))))
 
 (apply -main *command-line-args*)

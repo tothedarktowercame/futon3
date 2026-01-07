@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
+START_ISO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+RUN_CWD="$(pwd)"
+
+# Create marker file for timing comparison (before claude runs)
+touch -d "$START_ISO" /tmp/fuclaude-marker-$$
+
+# Run claude with all arguments
+claude "$@"
+status=$?
+
+# Find Claude session files modified since we started
+CLAUDE_DIR="$HOME/.claude/projects"
+if [[ ! -d "$CLAUDE_DIR" ]]; then
+  echo "[fuclaude] Claude projects directory not found: $CLAUDE_DIR" >&2
+  exit $status
+fi
+
+# Map cwd to Claude's project directory naming (replace / with -)
+PROJECT_NAME=$(echo "$RUN_CWD" | sed 's|^/||; s|/|-|g')
+PROJECT_DIR="$CLAUDE_DIR/-$PROJECT_NAME"
+
+if [[ ! -d "$PROJECT_DIR" ]]; then
+  echo "[fuclaude] No Claude project directory for $RUN_CWD" >&2
+  exit $status
+fi
+
+# Find session files modified since start (excluding agent- files)
+mapfile -t matches < <(find "$PROJECT_DIR" -maxdepth 1 -name "*.jsonl" ! -name "agent-*" -newer /tmp/fuclaude-marker-$$ 2>/dev/null || true)
+
+# Fallback: just get the most recently modified main session file
+if [[ ${#matches[@]} -eq 0 ]]; then
+  latest=$(ls -t "$PROJECT_DIR"/*.jsonl 2>/dev/null | grep -v "agent-" | head -1 || true)
+  if [[ -n "$latest" ]]; then
+    matches=("$latest")
+  fi
+fi
+
+if [[ ${#matches[@]} -eq 0 ]]; then
+  echo "[fuclaude] No Claude sessions found for $RUN_CWD since $START_ISO" >&2
+  rm -f /tmp/fuclaude-marker-$$ 2>/dev/null || true
+  exit $status
+fi
+
+# Select session if multiple
+if [[ ${#matches[@]} -gt 1 ]]; then
+  echo "[fuclaude] Multiple sessions found:" >&2
+  i=1
+  for f in "${matches[@]}"; do
+    echo "  $i) $(basename "$f")" >&2
+    i=$((i + 1))
+  done
+  read -r -p "Select session number: " choice
+  if [[ -z "${choice}" || "${choice}" -lt 1 || "${choice}" -gt ${#matches[@]} ]]; then
+    echo "[fuclaude] Invalid selection" >&2
+    rm -f /tmp/fuclaude-marker-$$ 2>/dev/null || true
+    exit $status
+  fi
+  selected="${matches[$((choice - 1))]}"
+else
+  selected="${matches[0]}"
+fi
+
+echo "[fuclaude] Exporting session: $(basename "$selected")" >&2
+
+# Export using the Claude-specific exporter
+clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export-claude.clj" \
+  --session-file "$selected" \
+  --repo-root "$RUN_CWD" \
+  --lab-root "$ROOT/lab"
+
+# Clean up marker
+rm -f /tmp/fuclaude-marker-$$ 2>/dev/null || true
+
+exit $status

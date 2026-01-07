@@ -13,6 +13,7 @@
   experiment whose outputs are graded and logged, not as an automatic
   source of truth.
 
+  + context: You are defining the methodological guardrails that keep AI proposals subject to human validation and traceable review.
   + IF:
     The HDM canon already assumes that outline-level proposals are only
     trustworthy when human stewards can interrogate them and decide what
@@ -42,6 +43,6 @@
     evidence[library/hdm/human-machine-dialogue.flexiarg:1]
     blocked-by[ai4ci/reviewer-roster]
 
-  + NEXT:
+  + NEXT-STEPS:
     next[Publish a reviewer rota and decision rubric so every AI-assisted explanation is triaged within a fixed window (e.g. 48 hours).]
     next[Wire review outcomes into stack-coherence/staleness-scan so unattended drafts raise visible alarms and cannot silently accumulate.]

@@ -12,6 +12,7 @@
   by identifying objects and relations, but they cannot determine which
   informal phrases convey tactic or motivation without human judgement.
 
+  + context: You are grounding the pipeline in existing NER/RE outputs while clarifying what still requires human review.
   + IF:
     Baseline tools can already parse mathematical text, tag entities and
     relations, and suggest step boundaries that point to where explanations
@@ -40,6 +41,6 @@
     evidence[docs/protocol.md:1]
     evidence[src/f2/router.clj:1]
 
-  + NEXT:
+  + NEXT-STEPS:
     next[Prototype the anchor-plus-cue method on a small proof sample and record success/failure for each hypothesised reasoning cue.]
     next[Document how rejected cues were generated and reviewed so future work can refine both the NLP components and the human protocol without changing the underlying infrastructure.]

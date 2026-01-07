@@ -18,3 +18,7 @@
 
   + BECAUSE:
     dhammavicaya is about investigating what *already* exists; without explicit freezes and audit hooks, every promise of determinism becomes oral history
+
+  + NEXT-STEPS:
+    next[Name a freeze window, then snapshot the canonical transcripts/configs/seed graphs into a fixed location.]
+    next[Add a `check!` or export hook that compares current state to the freeze baseline on each release.]

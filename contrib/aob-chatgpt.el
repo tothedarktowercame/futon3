@@ -1885,16 +1885,29 @@ r a live process in the *headless-api-server* buffer."
       (or fruits paramitas))))
 
 (defun my-chatgpt-shell--cue-gap-reason (primary fallback)
-  (cond
-   ((null primary)
-    "Tatami hasn't pushed /musn/hints into this buffer yet.")
-   ((and primary (not (my-chatgpt-shell--support-present-p primary)))
-    (if (my-chatgpt-shell--events-seq (plist-get primary :events))
-        "Tatami ingested the turn but /musn/cues returned no fruits/pāramitās; inspect *Futon3* or rerun the cues pipeline."
-      "Tatami hints snapshot missing events; capture a fresh turn and rerun `M-x my-chatgpt-shell--refresh-context-hints`."))
-   ((and fallback (not (my-chatgpt-shell--support-present-p fallback)))
-    "Even the cached ChatGPT payload lacks Tatami cues; remind the LLM to log {:kind :note ...} events.")
-   (t nil)))
+  (let* ((health-check-enabled (or (and (boundp 'tatami-status-url) tatami-status-url)
+                                   (and (boundp 'tatami-health-path) tatami-health-path)
+                                   (and (boundp 'tatami-base-url) tatami-base-url)))
+         (health-ok (and health-check-enabled
+                         (fboundp 'my-tatami--server-running-p)
+                         (ignore-errors (my-tatami--server-running-p))))
+         (health-error (and (boundp 'tatami--last-error) tatami--last-error)))
+    (cond
+     ((not (my-futon3-running-p))
+      "Futon3 isn't running, so Tatami hints/cues can't load; start it with `make dev` or `M-x my-futon3-start`.")
+     ((and health-check-enabled (not health-ok))
+      (if (and health-error (not (string-empty-p health-error)))
+          (format "Tatami health check failed: %s" health-error)
+        "Tatami health check failed; no HTTP 200 response from the configured endpoint."))
+     ((null primary)
+      "Tatami hasn't pushed /musn/hints into this buffer yet.")
+     ((and primary (not (my-chatgpt-shell--support-present-p primary)))
+      (if (my-chatgpt-shell--events-seq (plist-get primary :events))
+          "Tatami ingested the turn but /musn/cues returned no fruits/pāramitās; inspect *Futon3* or rerun the cues pipeline."
+        "Tatami hints snapshot missing events; capture a fresh turn and rerun `M-x my-chatgpt-shell--refresh-context-hints`."))
+     ((and fallback (not (my-chatgpt-shell--support-present-p fallback)))
+      "Even the cached ChatGPT payload lacks Tatami cues; remind the LLM to log {:kind :note ...} events.")
+     (t nil))))
 
 (defun my-chatgpt-shell--futon3-ui-port ()
   (when (stringp my-futon3-ui-base-url)

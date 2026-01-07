@@ -77,7 +77,7 @@
           payload {:type "workday"
                    :payload {:msg-id "wd-bridge"
                              :activity "Groundhog demo"
-                             :check {:pattern/id "library/devmap-coherence/ifr-f3-piti"
+                             :check {:pattern/id "devmap-coherence/ifr-f3-piti"
                                      :context "demo"}}}]
       (with-redefs [f1-bridge/record-workday! (fn [_ entry] (reset! workday-called entry))
                     f1-bridge/record-check! (fn [_ result] (reset! check-called result))]
@@ -95,13 +95,13 @@
       (checks/set-log-path! (.getAbsolutePath tmp))
       (let [resp (transport/apply-envelope! state "C-1"
                                             {:type "check"
-                                             :payload {:pattern/id "library/devmap-coherence/ifr-f3-piti"
+                                             :payload {:pattern/id "devmap-coherence/ifr-f3-piti"
                                                        :context "workday submit proves proof trail"
                                                        :evidence ["workday submit"]}})]
         (is (= true (get-in resp [:reply :ok])))
         (is (= "check" (get-in resp [:reply :type])))
         (is (= :applies (get-in resp [:reply :status])))
-        (is (= "library/devmap-coherence/ifr-f3-piti"
+        (is (= "devmap-coherence/ifr-f3-piti"
                (get-in resp [:reply :proof :pattern/id]))))
       (finally
         (checks/set-log-path! original)))))
@@ -117,7 +117,7 @@
         (with-redefs [f1-bridge/record-check! (fn [_ result] (reset! called result))]
           (transport/apply-envelope! state "C-1"
                                      {:type "check"
-                                      :payload {:pattern/id "library/devmap-coherence/ifr-f3-piti"
+                                      :payload {:pattern/id "devmap-coherence/ifr-f3-piti"
                                                 :context "loop"
                                                 :evidence ["ok"]}})
           (is (some? @called)))

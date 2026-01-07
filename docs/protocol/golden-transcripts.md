@@ -19,13 +19,13 @@ fixed.
 Request (`check-request.ndjson`):
 
 {"rev":1,"type":"hello","client":"golden","caps":["check"]}
-{"rev":1,"type":"check","msg-id":"golden-check-001","payload":{"pattern/id":"library/devmap-coherence/ifr-f3-piti","context":"golden: workday submit proves proof trail and empowered action","evidence":["workday submit","proof trail","empowered action"]}}
+{"rev":1,"type":"check","msg-id":"golden-check-001","payload":{"pattern/id":"devmap-coherence/ifr-f3-piti","context":"golden: workday submit proves proof trail and empowered action","evidence":["workday submit","proof trail","empowered action"]}}
 {"rev":1,"type":"bye"}
 
 Reply (`check-reply.ndjson`):
 
 {"ok":true,"type":"ack","rev":1,"run-id":"RUN-GOLDEN-0001","client":"C-1"}
-{"ok":true,"type":"check","run-id":"RUN-GOLDEN-0002","status":"applies","missing":[],"derived":[],"proof":{"proof/id":"PROOF-RUN-GOLDEN-0002","proof/run-id":"RUN-GOLDEN-0002","proof/recorded":"2026-01-01T00:00:00.000Z","pattern/id":"library/devmap-coherence/ifr-f3-piti","pattern/title":"musi (joy/empowered action)","pattern/rationale":"Joy-as-action: pattern checks prove obligations advance","pattern/hotwords":["workday submit","empowered action","proof trail"],"pattern/hanzi":"弓 (type-3 playful diligence)","check/context":"golden: workday submit proves proof trail and empowered action","check/evidence":["workday submit","proof trail","empowered action"],"check/sigils":[],"check/prototypes":[],"check/origin":{"source":"ws","client-id":"C-1","msg-id":"golden-check-001"},"proof/status":"applies","proof/hits":["empowered action","proof trail","workday submit"],"proof/similarity":1.0}}
+{"ok":true,"type":"check","run-id":"RUN-GOLDEN-0002","status":"applies","missing":[],"derived":[],"proof":{"proof/id":"PROOF-RUN-GOLDEN-0002","proof/run-id":"RUN-GOLDEN-0002","proof/recorded":"2026-01-01T00:00:00.000Z","pattern/id":"devmap-coherence/ifr-f3-piti","pattern/title":"alasa","pattern/rationale":"IFR — FUTON3 Flexiformal Proofwork (pīti) -> alasa/心: pīti is the pleasure of effective action; FUTON3 must constantly show that pattern checks move real obligations forward","pattern/hotwords":["ifr","futon3","flexiformal","proofwork","p","ti","devmap","coherence","f3","piti"],"pattern/hanzi":"心","check/context":"golden: workday submit proves proof trail and empowered action","check/evidence":["workday submit","proof trail","empowered action"],"check/sigils":[],"check/prototypes":[],"check/origin":{"source":"ws","client-id":"C-1","msg-id":"golden-check-001"},"proof/status":"applies","proof/hits":["p","ti"],"proof/similarity":0.2}}
 {"ok":true,"type":"bye"}
 
 ## Transcript 2: gap-report (reserved)

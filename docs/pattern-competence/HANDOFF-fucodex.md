@@ -22,7 +22,7 @@ Produce a complete, checkable lab session that:
 
 ### 1) Build an importer for Fubar events
 
-**File:** `futon3/dev/lab-import-fucodex.clj`
+**File:** `futon3/dev/lab-import-fubar.clj`
 
 **Input:** `futon3/resources/fubar-events.edn`
 
@@ -50,7 +50,7 @@ anchors can resolve against those events.
 
 ### 2) Create a CLI wrapper
 
-**File:** `futon3/fulab-session-import-fucodex`
+**File:** `futon3/fulab-session-import-fubar`
 
 ```bash
 #!/usr/bin/env bash
@@ -59,7 +59,7 @@ anchors can resolve against those events.
 
 Implementation should run:
 ```
-clojure -M futon3/dev/lab-import-fucodex.clj --session-id ID --lab-root futon3/lab
+clojure -M futon3/dev/lab-import-fubar.clj --session-id ID --lab-root futon3/lab
 ```
 
 ### 3) Validate a PUR anchor against imported events

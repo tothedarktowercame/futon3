@@ -29,8 +29,10 @@
 
 (defn- ensure-activity [activity]
   (let [kw (->keyword activity)]
-    (when (and kw (contains? default-activities kw))
-      kw)))
+    (cond
+      (and kw (contains? default-activities kw)) kw
+      kw :other
+      :else nil)))
 
 (defn- ensure-felt-state [felt]
   (let [kw (->keyword felt)]

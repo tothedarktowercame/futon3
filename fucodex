@@ -19,6 +19,12 @@ FORCED_SESSION_ID=""
 AIF_CONFIG=""
 AIF_EXPLAIN=false
 AIF_EXPLAIN_PATH=""
+EXPLORE=false
+EXPLORE_CATALOG=""
+EXPLORE_HOTWORDS=""
+EXPLORE_NAMESPACES=""
+EXPLORE_LIMIT="4"
+EXPLORE_PROMPT_FILE="docs/codex-exploratory-mission.md"
 
 show_help() {
   cat <<'EOF'
@@ -33,6 +39,12 @@ Options:
   --session-id ID      Force a session id for stream/export/summary (skips selection).
   --aif-config PATH    EDN config file to tune AIF scoring parameters.
   --aif-explain [PATH] Explain AIF config with a worked example and exit.
+  explore              Run the exploratory mission prompt (manual heuristic).
+  --explore-catalog     Pattern catalog path (default: resources/sigils/patterns-index.tsv)
+  --explore-hotwords    CSV list of hotwords to bias candidate selection.
+  --explore-namespaces  CSV list of namespaces to consider.
+  --explore-limit       Max candidates to select (default: 4).
+  --explore-prompt      Prompt file to use (default: docs/codex-exploratory-mission.md).
 
 Examples:
   fucodex --live exec --prompt "Draft the summary"
@@ -41,6 +53,7 @@ Examples:
   fucodex --live resume --last "Continue work"
   fucodex --aif-explain docs/aif/fulab-config.edn
   fucodex --aif-explain
+  fucodex explore --explore-hotwords "aif,session,trace"
   fucodex exec --prompt "Non-live run"
 EOF
 }
@@ -76,6 +89,18 @@ while [[ $# -gt 0 ]]; do
       else
         shift
       fi;;
+    explore)
+      EXPLORE=true; shift;;
+    --explore-catalog)
+      EXPLORE_CATALOG="$2"; shift 2;;
+    --explore-hotwords)
+      EXPLORE_HOTWORDS="$2"; shift 2;;
+    --explore-namespaces)
+      EXPLORE_NAMESPACES="$2"; shift 2;;
+    --explore-limit)
+      EXPLORE_LIMIT="$2"; shift 2;;
+    --explore-prompt)
+      EXPLORE_PROMPT_FILE="$2"; shift 2;;
     *)
       args+=("$1"); shift;;
   esac
@@ -92,6 +117,41 @@ if $AIF_EXPLAIN; then
     clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-explain.clj"
   fi
   exit 0
+fi
+
+if $EXPLORE; then
+  LIVE=true
+  if [[ -z "$EXPLORE_CATALOG" ]]; then
+    EXPLORE_CATALOG="resources/sigils/patterns-index.tsv"
+  fi
+  if [[ -z "$EXPLORE_NAMESPACES" ]]; then
+    EXPLORE_NAMESPACES="ants,code-coherence,stack-coherence,devmap-coherence,contributing"
+  fi
+  if [[ -z "$PATTERNS" || -z "$CHOSEN" ]]; then
+    read -r explore_chosen explore_candidates < <(clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-explore-candidates.clj" \
+      --catalog "$EXPLORE_CATALOG" \
+      --limit "$EXPLORE_LIMIT" \
+      ${EXPLORE_HOTWORDS:+--hotwords "$EXPLORE_HOTWORDS"} \
+      ${EXPLORE_NAMESPACES:+--namespaces "$EXPLORE_NAMESPACES"})
+    if [[ -z "$PATTERNS" ]]; then
+      PATTERNS="$explore_candidates"
+    fi
+    if [[ -z "$CHOSEN" ]]; then
+      CHOSEN="$explore_chosen"
+    fi
+  fi
+  if [[ ${#args[@]} -eq 0 ]]; then
+    if [[ ! -f "$ROOT/$EXPLORE_PROMPT_FILE" ]]; then
+      echo "[lab] explore prompt file not found: $EXPLORE_PROMPT_FILE" >&2
+      exit 2
+    fi
+    prompt=$(awk 'BEGIN{in=0} /^```/{if(in){exit} else {in=1; next}} in{print}' "$ROOT/$EXPLORE_PROMPT_FILE")
+    if [[ -z "$prompt" ]]; then
+      echo "[lab] explore prompt missing fenced block in $EXPLORE_PROMPT_FILE" >&2
+      exit 2
+    fi
+    args=("$prompt")
+  fi
 fi
 
 if [[ -n "$CHOSEN" && -n "$CLOCK_IN" ]]; then

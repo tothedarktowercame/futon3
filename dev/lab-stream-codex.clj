@@ -8,7 +8,7 @@
             [futon3.fulab.pattern-competence :as pc]))
 
 (defn usage []
-  (println "Usage: dev/lab-stream-codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select]")
+  (println "Usage: dev/lab-stream-codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook]")
   (println "Reads codex --json stream from stdin and appends session + AIF events.")
   (println "Clock-in entries are consumed in order, one per turn (override --chosen for that turn)."))
 
@@ -25,6 +25,7 @@
         "--session-id" (recur (assoc opts :session-id (second remaining)) (nnext remaining))
         "--aif-config" (recur (assoc opts :aif-config (second remaining)) (nnext remaining))
         "--aif-select" (recur (assoc opts :aif-select true) (rest remaining))
+        "--proposal-hook" (recur (assoc opts :proposal-hook true) (rest remaining))
         "--help" (recur (assoc opts :help true) (rest remaining))
         (recur (update opts :unknown (fnil conj []) (first remaining)) (rest remaining))))))
 
@@ -46,6 +47,19 @@
 
 (defn write-session! [lab-root session-id session]
   (pc/write-session-file! (str (io/file lab-root "sessions" (str session-id ".edn"))) session))
+
+(defn tau-cache-path [lab-root]
+  (str (io/file lab-root "aif" "tau-cache.edn")))
+
+(defn read-tau-cache [lab-root]
+  (let [path (tau-cache-path lab-root)]
+    (when (.exists (io/file path))
+      (read-string (slurp path)))))
+
+(defn write-tau-cache! [lab-root cache]
+  (let [path (tau-cache-path lab-root)]
+    (io/make-parents path)
+    (spit path (pr-str cache))))
 
 (defn append-event! [state event]
   (let [session (pc/append-event (:session @state) event)]
@@ -158,6 +172,18 @@
            ").")
       :else nil)))
 
+(defn proposal-draft [session-id turn candidates]
+  {:event/type :pattern/proposal-draft
+   :at (now-inst)
+   :payload {:session/id session-id
+             :turn turn
+             :proposal/reason "Insufficient pattern candidates; consider proposing a new pattern."
+             :proposal/candidates candidates}})
+
+(defn tau->uncertainty [tau-scale tau]
+  (when (and tau-scale (number? tau) (pos? tau))
+    (max 1.0 (/ (double tau-scale) (double tau)))))
+
 (defn read-aif-config [path]
   (when path
     (try
@@ -175,7 +201,7 @@
     (vec candidates)))
 
 (defn -main [& args]
-  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config aif-select]} (parse-args args)
+  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config aif-select proposal-hook]} (parse-args args)
         repo-root (System/getProperty "user.dir")
         lab-root (or lab-root (str (io/file repo-root "lab")))
         clock-ins (parse-csv clock-in)
@@ -195,7 +221,9 @@
                      :clock-in-current nil
                      :aif-config aif-config
                      :aif-config-logged? false
-                     :aif-select? (boolean aif-select)})
+                     :aif-select? (boolean aif-select)
+                     :proposal-hook? (boolean proposal-hook)
+                     :tau-cache (or (read-tau-cache lab-root) {})})
         tap-listener (fn [event]
                        (when (= :aif/fulab (:type event))
                          (append-event! state {:event/type :aif/tap
@@ -239,11 +267,14 @@
                     decision-id (str session-id ":turn-" turn)
                     anchors [(turn-anchor turn)]
                     forecast (build-forecast turn)
+                    cached-tau (get (:tau-cache @state) explicit-chosen)
+                    uncertainty (tau->uncertainty (:tau/scale aif-config) cached-tau)
                     selection-context (cond-> {:decision/id decision-id
                                                :session/id session-id
                                                :candidates candidates
                                                :anchors anchors
                                                :forecast forecast}
+                                        uncertainty (assoc :uncertainty uncertainty)
                                         (not use-aif) (assoc :chosen explicit-chosen))
                     selection (engine/select-pattern engine selection-context)
                     chosen-final (if use-aif (:chosen selection) explicit-chosen)
@@ -273,7 +304,13 @@
                 (append-event! state {:event/type :pattern/use-claimed
                                       :at (now-inst)
                                       :payload {:pur pur}})
+                (when (and (:proposal-hook? @state) (< (count candidates) 2))
+                  (append-event! state (proposal-draft session-id turn candidates)))
                 (append-event! state (summary-event session-id :psr selection))
-                (append-event! state (summary-event session-id :pur update))))))
+                (append-event! state (summary-event session-id :pur update))
+                (when-let [tau-updated (get-in update [:aif :tau-updated])]
+                  (let [next-cache (assoc (:tau-cache @state) chosen-final tau-updated)]
+                    (swap! state assoc :tau-cache next-cache)
+                    (write-tau-cache! lab-root next-cache)))))))
         (remove-tap tap-listener)))))
 (apply -main *command-line-args*)

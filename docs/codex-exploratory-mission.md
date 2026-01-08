@@ -51,3 +51,6 @@ Candidate patterns are selected by a simple heuristic:
 - Avoid repeating a pattern already used in the same session unless necessary.
 
 Pattern choice is then delegated to AIF scoring once candidates are selected.
+
+Exploration runs also emit a proposal draft when fewer than two candidates are
+available, to prompt a gap review.

@@ -42,6 +42,10 @@ The bridge uses the episode trace to build a check request and returns a proof.
 Capture the returned proof map (or at least the `:check/aif-trace` block) and
 store it in `docs/fucodex-trial-mission-analysis.org` under "Run evidence."
 
+White-space scout guard: if the proof is missing `:check/aif-trace`, do one
+scout pass (reprint `episode-trace`, rerun the call once), then log the gap as
+"white-space" evidence and stop rather than looping.
+
 * Verification
 
 The returned proof map should include a block similar to:

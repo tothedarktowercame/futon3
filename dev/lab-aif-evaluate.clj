@@ -24,6 +24,7 @@
 
 (defn psr-context [psr]
   {:decision/id (:decision/id psr)
+   :session/id (:session/id psr)
    :candidates (:candidates psr)
    :chosen (:chosen psr)
    :anchors (:context/anchors psr)
@@ -31,6 +32,7 @@
 
 (defn pur-observation [pur]
   {:decision/id (:decision/id pur)
+   :session/id (:session/id pur)
    :outcome (:outcome/tags pur)
    :status :observed})
 

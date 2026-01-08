@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# fulab-session-e2e: Run deterministic end-to-end workflow for a session
+# Usage:
+#   fulab-session-e2e --session-id ID --file PATH [--desc "..."] [--decision-id ID] [--pattern-id ID] [--alt-pattern-id ID]
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
+LAB_ROOT="$ROOT/lab"
+SESSION_ID=""
+FILE_PATH=""
+DESCRIPTION=""
+DECISION_ID="decision-1"
+PATTERN_ID=""
+ALT_PATTERN_ID=""
+
+usage() {
+  echo "Usage: fulab-session-e2e --session-id ID --file PATH [--desc \"...\"] [--decision-id ID]"
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --session-id)
+      SESSION_ID="$2"; shift 2;;
+    --file)
+      FILE_PATH="$2"; shift 2;;
+    --desc)
+      DESCRIPTION="$2"; shift 2;;
+    --decision-id)
+      DECISION_ID="$2"; shift 2;;
+    --pattern-id)
+      PATTERN_ID="$2"; shift 2;;
+    --alt-pattern-id)
+      ALT_PATTERN_ID="$2"; shift 2;;
+    --help|-h)
+      usage; exit 0;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage; exit 1;;
+  esac
+done
+
+if [[ -z "$SESSION_ID" || -z "$FILE_PATH" ]]; then
+  usage
+  exit 1
+fi
+
+SESSION_EDN="$LAB_ROOT/sessions/${SESSION_ID}.edn"
+
+cat > "$SESSION_EDN" <<EOF_SESSION
+{:session/id "${SESSION_ID}"
+ :session/agent :fucodex
+ :events [{:event/type :code/edit
+           :file "${FILE_PATH}"
+           :fn nil
+           :action :modified
+           :description "${DESCRIPTION:-Auto-generated edit event}"
+           :at #inst "$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")"}]}
+EOF_SESSION
+
+"$ROOT/fulab-pattern-demo" --session-id "$SESSION_ID" --decision-id "$DECISION_ID" \
+  ${PATTERN_ID:+--pattern-id "$PATTERN_ID"} \
+  ${ALT_PATTERN_ID:+--alt-pattern-id "$ALT_PATTERN_ID"}
+
+perl -pi -e "s/:file \"\"/:file \"$FILE_PATH\"/g; s/:fn \"\"/:fn nil/g" \
+  "$LAB_ROOT/pattern-drafts/${SESSION_ID}-psr.edn" \
+  "$LAB_ROOT/pattern-drafts/${SESSION_ID}-pur.edn"
+
+perl -pi -e 's/psr-demo-1/psr-demo-2/g; s/pur-demo-1/pur-demo-2/g; s/pur-demo-1-a/pur-demo-2-a/g' \
+  "$LAB_ROOT/pattern-drafts/${SESSION_ID}-psr.edn" \
+  "$LAB_ROOT/pattern-drafts/${SESSION_ID}-pur.edn"
+
+"$ROOT/fulab-pattern-claim" --session-id "$SESSION_ID" --stdin < "$LAB_ROOT/pattern-drafts/${SESSION_ID}-pur.edn"
+"$ROOT/fulab-pattern-claim" --session-id "$SESSION_ID" --stdin < "$LAB_ROOT/pattern-drafts/${SESSION_ID}-psr.edn"
+
+"$ROOT/fulab-pattern-check" --session-id "$SESSION_ID"
+
+clojure -Sdeps '{:deps {futon2/futon2 {:local/root "../futon2"}}}' -M "$ROOT/dev/lab-aif-evaluate.clj" --session-id "$SESSION_ID"
+
+"$ROOT/fulab-session-report" --session-id "$SESSION_ID"

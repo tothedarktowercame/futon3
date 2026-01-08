@@ -67,6 +67,16 @@
              (when tau (str "tau-updated: " tau))
              (when status (str "status: " status))])))
 
+(defn- session-claims [events]
+  {:psr (->> events
+             (filter #(= :pattern/selection-claimed (:event/type %)))
+             (map #(get-in % [:payload :psr]))
+             first)
+   :pur (->> events
+             (filter #(= :pattern/use-claimed (:event/type %)))
+             (map #(get-in % [:payload :pur]))
+             first)})
+
 (defn render-pattern [psr pur]
   (let [psr-line (when psr
                    (str "PSR " (:psr/id psr) " chosen=" (:chosen psr)
@@ -143,10 +153,14 @@
       (nil? session-id) (do (println "--session-id is required") (usage) (System/exit 1))
       :else
       (let [raw (read-json (lab-path lab-root "raw" (str session-id ".json")))
-            psr (read-edn (lab-path lab-root "pattern-drafts" (str session-id "-psr.edn")))
-            pur (read-edn (lab-path lab-root "pattern-drafts" (str session-id "-pur.edn")))
             aif (read-edn (lab-path lab-root "aif" (str session-id ".edn")))
-            events (:events (read-edn (lab-path lab-root "sessions" (str session-id ".edn"))))]
+            session (read-edn (lab-path lab-root "sessions" (str session-id ".edn")))
+            events (:events session)
+            claims (session-claims events)
+            psr (or (:psr claims)
+                    (read-edn (lab-path lab-root "pattern-drafts" (str session-id "-psr.edn"))))
+            pur (or (:pur claims)
+                    (read-edn (lab-path lab-root "pattern-drafts" (str session-id "-pur.edn"))))]
         (when-not raw
           (println "Missing lab raw file for session" session-id)
           (System/exit 1))

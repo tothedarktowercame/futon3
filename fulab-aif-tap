@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# fulab-aif-tap: Run a tap listener for AIF events
+# Usage:
+#   fulab-aif-tap --session-id ID [--duration-ms N] [--lab-root PATH]
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
+LAB_DEPS='{}'
+
+usage() {
+  echo "Usage: fulab-aif-tap --session-id ID [--duration-ms N] [--lab-root PATH]"
+}
+
+SESSION_ID=""
+DURATION_MS="60000"
+LAB_ROOT="$ROOT/lab"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --session-id)
+      SESSION_ID="$2"; shift 2;;
+    --duration-ms)
+      DURATION_MS="$2"; shift 2;;
+    --lab-root)
+      LAB_ROOT="$2"; shift 2;;
+    --help|-h)
+      usage; exit 0;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage; exit 1;;
+  esac
+done
+
+clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-tap.clj" \
+  --session-id "$SESSION_ID" \
+  --duration-ms "$DURATION_MS" \
+  --lab-root "$LAB_ROOT"

@@ -1,14 +1,135 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ -z "${BASH_VERSION-}" ]]; then
+  exec bash "$0" "$@"
+fi
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}
                   futon2/futon2 {:local/root "../futon2"}}}'
 START_ISO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 RUN_CWD="$(pwd)"
 
-codex "$@"
-status=$?
+LIVE=false
+PATTERNS=""
+CHOSEN=""
+CLOCK_IN=""
+FORCED_SESSION_ID=""
+AIF_CONFIG=""
+AIF_EXPLAIN=false
+AIF_EXPLAIN_PATH=""
+
+show_help() {
+  cat <<'EOF'
+Usage: fucodex [--live] [--patterns CSV] [--chosen PATTERN] [--clock-in PATTERN] [--session-id ID] [--aif-config PATH] [--aif-explain [PATH]]... [args...]
+
+Options:
+  -h, --help           Show this help.
+  --live               Run Codex in live mode with lab streaming.
+  --patterns CSV       Comma-separated patterns for the run manifest.
+  --chosen PATTERN     Set chosen pattern (ignored when --clock-in is provided).
+  --clock-in PATTERN   Add a clock-in pattern (repeatable or comma-separated; overrides --chosen).
+  --session-id ID      Force a session id for stream/export/summary (skips selection).
+  --aif-config PATH    EDN config file to tune AIF scoring parameters.
+  --aif-explain [PATH] Explain AIF config with a worked example and exit.
+
+Examples:
+  fucodex --live exec --prompt "Draft the summary"
+  fucodex --live --patterns "ants/white-space-scout" --chosen ants/white-space-scout exec --prompt "Explain"
+  fucodex --live --clock-in ants/white-space-scout --clock-in ants/pheromone-trail-tuner exec --prompt "Review"
+  fucodex --live resume --last "Continue work"
+  fucodex --aif-explain docs/aif/fulab-config.edn
+  fucodex --aif-explain
+  fucodex exec --prompt "Non-live run"
+EOF
+}
+
+args=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      show_help
+      exit 0;;
+    --live)
+      LIVE=true; shift;;
+    --patterns)
+      PATTERNS="$2"; shift 2;;
+    --chosen)
+      CHOSEN="$2"; shift 2;;
+    --clock-in)
+      if [[ -n "$CLOCK_IN" ]]; then
+        CLOCK_IN="${CLOCK_IN},$2"
+      else
+        CLOCK_IN="$2"
+      fi
+      shift 2;;
+    --session-id)
+      FORCED_SESSION_ID="$2"; shift 2;;
+    --aif-config)
+      AIF_CONFIG="$2"; shift 2;;
+    --aif-explain)
+      AIF_EXPLAIN=true
+      if [[ -n "${2-}" && "${2-}" != --* ]]; then
+        AIF_EXPLAIN_PATH="$2"
+        shift 2
+      else
+        shift
+      fi;;
+    *)
+      args+=("$1"); shift;;
+  esac
+done
+
+if $AIF_EXPLAIN; then
+  explain_path="$AIF_EXPLAIN_PATH"
+  if [[ -z "$explain_path" && -n "$AIF_CONFIG" ]]; then
+    explain_path="$AIF_CONFIG"
+  fi
+  if [[ -n "$explain_path" ]]; then
+    clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-explain.clj" --config "$explain_path"
+  else
+    clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-explain.clj"
+  fi
+  exit 0
+fi
+
+if [[ -n "$CHOSEN" && -n "$CLOCK_IN" ]]; then
+  echo "[lab] warning: --chosen is ignored when --clock-in is provided" >&2
+fi
+
+if $LIVE; then
+  if [[ ${#args[@]} -eq 0 ]]; then
+    echo "[lab] --live requires a codex command (use 'exec \"...\"' or a subcommand)" >&2
+    show_help
+    exit 2
+  fi
+  if [[ "${args[0]-}" == "exec" ]]; then
+    args=("${args[@]:1}")
+  fi
+  set -o pipefail
+  clj_args=(--lab-root "$ROOT/lab")
+  if [[ -n "$PATTERNS" ]]; then
+    clj_args+=(--patterns "$PATTERNS")
+  fi
+  if [[ -n "$CHOSEN" ]]; then
+    clj_args+=(--chosen "$CHOSEN")
+  fi
+  if [[ -n "$CLOCK_IN" ]]; then
+    clj_args+=(--clock-in "$CLOCK_IN")
+  fi
+  if [[ -n "$FORCED_SESSION_ID" ]]; then
+    clj_args+=(--session-id "$FORCED_SESSION_ID")
+  fi
+  if [[ -n "$AIF_CONFIG" ]]; then
+    clj_args+=(--aif-config "$AIF_CONFIG")
+  fi
+  codex exec --json "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-codex.clj" "${clj_args[@]}"
+  status=${PIPESTATUS[0]}
+else
+  codex "${args[@]}"
+  status=$?
+fi
 
 mapfile -t matches < <(clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-select-session.clj" --since "$START_ISO" --cwd "$RUN_CWD")
 
@@ -17,19 +138,46 @@ if [[ ${#matches[@]} -eq 0 ]]; then
   exit $status
 fi
 
-if [[ ${#matches[@]} -gt 1 ]]; then
-  echo "[lab] multiple sessions found:" >&2
-  i=1
-  for line in "${matches[@]}"; do
-    echo "  $i) $line" >&2
-    i=$((i + 1))
-  done
-  read -r -p "Select session number: " choice
-  if [[ -z "${choice}" || "${choice}" -lt 1 || "${choice}" -gt ${#matches[@]} ]]; then
-    echo "[lab] invalid selection" >&2
-    exit $status
+if [[ -n "$FORCED_SESSION_ID" ]]; then
+  forced_session_file="$ROOT/lab/sessions/${FORCED_SESSION_ID}.edn"
+  if [[ -f "$forced_session_file" ]]; then
+    selected="${FORCED_SESSION_ID}"$'\t'"${forced_session_file}"
+  else
+    for line in "${matches[@]}"; do
+      if [[ "${line%%$'\t'*}" == "$FORCED_SESSION_ID" ]]; then
+        selected="$line"
+        break
+      fi
+    done
+    if [[ -z "${selected-}" ]]; then
+      echo "[lab] session id not found: $FORCED_SESSION_ID" >&2
+      if [[ ${#matches[@]} -gt 0 ]]; then
+        echo "[lab] available session ids from recent matches:" >&2
+        for line in "${matches[@]}"; do
+          echo "  ${line%%$'\t'*}" >&2
+        done
+      fi
+      exit $status
+    fi
   fi
-  selected="${matches[$((choice - 1))]}"
+elif [[ ${#matches[@]} -gt 1 ]]; then
+  if [[ ! -t 0 ]]; then
+    echo "[lab] warning: stdin is not a TTY; selecting first session (${matches[0]%%$'\t'*})" >&2
+    selected="${matches[0]}"
+  else
+    echo "[lab] multiple sessions found:" >&2
+    i=1
+    for line in "${matches[@]}"; do
+      echo "  $i) $line" >&2
+      i=$((i + 1))
+    done
+    read -r -p "Select session number: " choice
+    if [[ -z "${choice}" || "${choice}" -lt 1 || "${choice}" -gt ${#matches[@]} ]]; then
+      echo "[lab] invalid selection" >&2
+      exit $status
+    fi
+    selected="${matches[$((choice - 1))]}"
+  fi
 else
   selected="${matches[0]}"
 fi

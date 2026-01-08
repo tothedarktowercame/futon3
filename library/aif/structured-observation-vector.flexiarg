@@ -16,5 +16,7 @@
   + BECAUSE:
     A stable observation vector is the prerequisite for meaningful precision control and policy scoring.
   + NEXT-STEPS:
-    - Define a minimal schema for (o) (keys, ranges, extraction rules) and log it alongside each decision.
-    - Track whether policy changes correlate with shifts in (o), not just narrative explanations.
+    - Define :aif/observation-vector schema in tatami_schema.clj with keys [:test-status :compile-status :diff-size :failing-spec-count :user-constraints :time-since-anchor :contradiction-flags].
+    - Add (extract-observation-vector session-state) to aif_bridge.clj that normalizes tool output into the typed map.
+    - Include observation vector in :aif/tick events; require it for PSR context/anchors validation.
+    - Add (observation-delta o1 o2) and log deltas alongside policy changes in learn_or_act/decide.

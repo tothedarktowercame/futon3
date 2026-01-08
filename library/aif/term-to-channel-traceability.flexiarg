@@ -16,5 +16,7 @@
   + BECAUSE:
     Explicit term-to-channel linkage prevents semantic drift in scoring terms and makes policy behavior mechanically inspectable.
   + NEXT-STEPS:
-    - Log term provenance for the top-K candidate actions per step.
-    - Review whether the same observation channels dominate a term, which can indicate mis-specified precision rather than genuine signal.
+    - Define :aif/term-provenance schema in tatami_schema.clj with keys [:term-id :observation-keys :precision-channels :intermediate-values :final-contribution].
+    - Extend PSR :aif/g-terms to include provenance map for each term; validate in hx/logic check-psr.
+    - Add (dominant-channels psr) analysis that flags when a single channel accounts for >60% of a term's value.
+    - Include term provenance in fulab-pattern-check CLI output for top-3 candidates.

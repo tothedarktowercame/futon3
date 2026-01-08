@@ -16,5 +16,7 @@
   + BECAUSE:
     A decomposed G makes disagreements concrete (which term dominated) and enables targeted adjustment.
   + NEXT-STEPS:
-    - Persist the top candidates with term breakdowns so you can replay decisions.
-    - Track which term changes would have flipped the choice.
+    - Define :aif/g-breakdown schema in tatami_schema.clj with term keys [:risk :ambiguity :info-gain :constraint-violation :cost :coordination-pressure].
+    - Extend aif_bridge/extract-evidence to decompose G into named terms instead of scalar g-mean.
+    - Store term breakdowns in PSR :forecast section; add :aif/g-terms key to psr-template in pattern_competence.clj.
+    - Add (flip-analysis psr) that computes which term delta would have changed the chosen pattern.

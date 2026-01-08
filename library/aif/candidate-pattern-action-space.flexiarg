@@ -16,5 +16,7 @@
   + BECAUSE:
     Constraining the action space makes downstream scoring meaningful rather than performative.
   + NEXT-STEPS:
-    - Track coverage stats: how often each pattern enters the candidate set versus how often it is chosen.
-    - Use those stats to distinguish retrieval bias from policy bias.
+    - Add :aif/candidate-entry and :aif/candidate-chosen event types to tatami_schema.clj.
+    - In learn_or_act/expand-hints, emit :aif/candidate-entry for each pattern in :search/candidates.
+    - In learn_or_act/decide success path, emit :aif/candidate-chosen with pattern-id and runner stats.
+    - Create aif_coverage.clj with (coverage-report session-id) that computes entered-vs-chosen ratios per pattern.

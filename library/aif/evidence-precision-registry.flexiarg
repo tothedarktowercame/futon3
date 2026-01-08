@@ -16,5 +16,7 @@
   + BECAUSE:
     Making precision explicit turns trust into a tunable control surface rather than an undocumented bias.
   + NEXT-STEPS:
-    - Start with a small set of channels (for example: :tests, :typecheck, :static-analysis, :tool-output, :user-constraints, :model-inference).
-    - Record precision adjustments as first-class events so audits can reconstruct why confidence shifted.
+    - Define :aif/precision-registry schema in tatami_schema.clj with channel keys [:tests :typecheck :static-analysis :tool-output :user-constraints :model-inference].
+    - Add default-precision-registry to pattern_competence.clj with initial weights (e.g., :tests 0.9, :model-inference 0.5).
+    - Emit :aif/precision-adjusted events when check-pur or check-psr modifies channel weights based on anchor resolution failures.
+    - Expose (precision-for channel session) helper for G-term computation in aif_bridge.clj.

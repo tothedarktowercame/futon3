@@ -16,5 +16,6 @@
   + BECAUSE:
     A compact belief state makes predict -> observe -> update implementable and testable.
   + NEXT-STEPS:
-    - Require each action to declare the slice of (mu) it intends to change.
-    - Log pre/post (mu) diffs to verify that updates are doing real work.
+    - Define :aif/belief-state schema in tatami_schema.clj with keys [:goal :subgoals :current-hypothesis :blockers :pattern-fit :expected-next-observation :uncertainty].
+    - Extend aif_bridge/aif-step->event to validate mu against the schema before emitting :aif/tick events.
+    - Add (mu-diff prev-mu next-mu) helper and log diffs as :aif/belief-delta events in pattern_competence.clj.

@@ -74,23 +74,3 @@ This summary is not a replacement for deep analysis, only a bridge between the
 AIF world and proof checks. If you need richer comparisons (e.g., distribution
 drift across many runs), keep the detailed trace data in Futon2 and treat this
 summary as the "headline" evidence for Futon3.
-
-* Implementation notes (current)
-
-- AIF instrumentation in fucodex is attached to PSR/PUR events at
-  `:turn/completed` boundaries in the session trace.
-- The AIF adapter is deterministic and now configurable via EDN to tune the
-  weights (`:g/weights`) and `:tau` bounds. The config can be explained using
-  `fucodex --aif-explain` for a worked example of how G/tau are computed.
-- AIF summaries are emitted as `:aif/summary` events, with raw adapter tap
-  events recorded as `:aif/tap`. The tap stream can be logged separately for
-  live inspection.
-
-* Current limitations
-
-- The AIF scoring is a minimal heuristic (text length + counts) and is intended
-  as an audit scaffold, not a scientific model.
-- The bridge only checks session event anchors; it does not yet validate against
-  source code or external artifacts.
-- `--live` resume support relies on Codex emitting new turns; if a resume does
-  not produce `turn.completed`, no new PSR/PUR/AIF events are appended.

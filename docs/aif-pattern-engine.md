@@ -281,6 +281,26 @@ PUR/PSR validators ensure:
 - Anchors resolve to actual session events
 - Forecasts have checkable loci
 
+## Implementation Notes (Current)
+
+- AIF instrumentation in fucodex is attached to PSR/PUR events at
+  `:turn/completed` boundaries in the session trace.
+- The fulab AIF adapter is deterministic and configurable via EDN to tune
+  weights (`:g/weights`) and `:tau` bounds. Use `fucodex --aif-explain` for a
+  worked example of how G/tau are computed.
+- AIF summaries are emitted as `:aif/summary` events, with raw adapter tap
+  events recorded as `:aif/tap`. The tap stream can be logged separately for
+  live inspection.
+
+## Current Limitations
+
+- The AIF scoring is a minimal heuristic (text length + counts) and is intended
+  as an audit scaffold, not a scientific model.
+- The bridge only checks session event anchors; it does not yet validate against
+  source code or external artifacts.
+- `--live` resume support relies on Codex emitting new turns; if a resume does
+  not produce `turn.completed`, no new PSR/PUR/AIF events are appended.
+
 ## Open Questions
 
 1. **Granularity**: Is pattern selection per-task, per-file, or per-action?

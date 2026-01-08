@@ -146,7 +146,7 @@ if $EXPLORE; then
     if [[ -z "$PATTERNS" ]]; then
       PATTERNS="$explore_candidates"
     fi
-    if [[ -z "$CHOSEN" ]]; then
+    if [[ -z "$CHOSEN" && "$AIF_SELECT" != true ]]; then
       CHOSEN="$explore_chosen"
     fi
   fi
@@ -155,7 +155,7 @@ if $EXPLORE; then
       echo "[lab] explore prompt file not found: $EXPLORE_PROMPT_FILE" >&2
       exit 2
     fi
-    prompt=$(awk 'BEGIN{in=0} /^```/{if(in){exit} else {in=1; next}} in{print}' "$ROOT/$EXPLORE_PROMPT_FILE")
+    prompt=$(awk 'BEGIN{inside=0} /^```/{if(inside){exit} else {inside=1; next}} inside{print}' "$ROOT/$EXPLORE_PROMPT_FILE")
     if [[ -z "$prompt" ]]; then
       echo "[lab] explore prompt missing fenced block in $EXPLORE_PROMPT_FILE" >&2
       exit 2

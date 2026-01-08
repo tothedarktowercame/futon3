@@ -99,12 +99,13 @@
   (count (filter #(= :clock-in/start (:event/type %)) (:events session))))
 
 (defn last-turn [session]
-  (or (->> (:events session)
-           (filter #(= :turn/completed (:event/type %)))
-           (map :turn)
-           (remove nil?)
-           (apply max))
-      0))
+  (let [turns (->> (:events session)
+                   (filter #(= :turn/completed (:event/type %)))
+                   (map :turn)
+                   (remove nil?))]
+    (if (seq turns)
+      (apply max turns)
+      0)))
 
 (defn build-psr [thread-id turn candidates chosen]
   {:psr/id (str "psr-" turn)

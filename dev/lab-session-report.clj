@@ -220,32 +220,35 @@
         (when-not raw
           (println "Missing lab raw file for session" session-id)
           (System/exit 1))
-        (case format
-          "md"
-          (let [aif-stats (aif-stats aif events)]
-            (println (str "# Session Report: " session-id))
-            (println "")
-            (println "| Repo changes | Pattern trace | Engine | Adapter | PSR G | PSR G(min) | PSR G(max) | PSR tau | PUR error | PUR tau | PUR status |")
-            (println "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |")
-            (println (clojure.core/format "| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |"
-                                          (render-repo raw)
-                                          (render-pattern psr pur)
-                                          (or (:engine aif-stats) "-")
-                                          (or (:adapter aif-stats) "-")
-                                          (or (:psr-g aif-stats) "-")
-                                          (or (:psr-g-rej-min aif-stats) "-")
-                                          (or (:psr-g-rej-max aif-stats) "-")
-                                          (or (:psr-tau aif-stats) "-")
-                                          (or (:pur-error aif-stats) "-")
-                                          (or (:pur-tau aif-stats) "-")
-                                          (or (:pur-status aif-stats) "-")))
-            (println "")
-            (println "## Session Loop Evidence")
-            (doseq [line (loop-summary-lines events raw psr pur)]
-              (println line))))
-          (do
-            (println "Unknown format" format)
-            (usage)
-            (System/exit 1)))))))
+        (let [aif-stats (aif-stats aif events)]
+          (case format
+            "md"
+            (do
+              (println (str "# Session Report: " session-id))
+              (println "")
+              (println "| Repo changes | Pattern trace | Engine | Adapter | PSR G | PSR G(min) | PSR G(max) | PSR tau | PUR error | PUR tau | PUR status |")
+              (println "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |")
+              (println (clojure.core/format "| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |"
+                                            (render-repo raw)
+                                            (render-pattern psr pur)
+                                            (or (:engine aif-stats) "-")
+                                            (or (:adapter aif-stats) "-")
+                                            (or (:psr-g aif-stats) "-")
+                                            (or (:psr-g-rej-min aif-stats) "-")
+                                            (or (:psr-g-rej-max aif-stats) "-")
+                                            (or (:psr-tau aif-stats) "-")
+                                            (or (:pur-error aif-stats) "-")
+                                            (or (:pur-tau aif-stats) "-")
+                                            (or (:pur-status aif-stats) "-")))
+              (println "")
+              (println "## Session Loop Evidence")
+              (doseq [line (loop-summary-lines events raw psr pur)]
+                (println line))
+              (System/exit 0))
+            (do
+              (println "Unknown format" format)
+              (usage)
+              (System/exit 1))))))
+    ))
 
 (apply -main *command-line-args*)

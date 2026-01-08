@@ -1,0 +1,28 @@
+% TikZ diagram: AIF engine components
+% Requires: \usepackage{tikz}
+% Optional: \usetikzlibrary{arrows.meta,positioning}
+\begin{tikzpicture}[>=Latex, font=\small]
+  \tikzset{
+    frame/.style={draw, rounded corners, minimum width=100mm, minimum height=40mm},
+    box/.style={draw, rounded corners, align=center, minimum width=26mm, minimum height=10mm},
+    arrow/.style={-Latex}
+  }
+
+  \node[frame] (outer) {};
+  \node[anchor=north, font=\small\bfseries] at (outer.north) {AIF Engine};
+
+  \node[box] (gen) at ($(outer.center)+(-32mm,0mm)$) {Generative\\Model\\\footnotesize (Patterns)};
+  \node[box] (act) at ($(outer.center)+(0mm,0mm)$) {Action\\Selection\\\footnotesize (PSR)};
+  \node[box] (upd) at ($(outer.center)+(32mm,0mm)$) {Belief\\Update\\\footnotesize (PUR)};
+
+  \draw[arrow] (gen.east) -- (act.west);
+  \draw[arrow] (act.east) -- (upd.west);
+
+  \node[below=10mm of gen, font=\footnotesize] (cap-gen) {Pattern lib as priors};
+  \node[below=10mm of act, font=\footnotesize] (cap-act) {Which pattern now?};
+  \node[below=10mm of upd, font=\footnotesize] (cap-upd) {Did it work?};
+
+  \draw[arrow] (gen) -- (cap-gen);
+  \draw[arrow] (act) -- (cap-act);
+  \draw[arrow] (upd) -- (cap-upd);
+\end{tikzpicture}

@@ -96,6 +96,59 @@
        (filter #(= :aif/summary (:event/type %)))
        (map :payload)))
 
+(defn- checklist-line [status label detail]
+  (let [mark (case status
+               :ok "[x]"
+               :partial "[~]"
+               "[ ]")]
+    (str mark " " label (when detail (str " — " detail)))))
+
+(defn- loop-summary-lines [events raw psr pur]
+  (let [summaries (aif-summaries events)
+        psr-summary (first (filter #(= :psr (:aif/kind %)) summaries))
+        pur-summary (first (filter #(= :pur (:aif/kind %)) summaries))
+        psr-aif (:aif (:aif/result psr-summary))
+        pur-aif (:aif (:aif/result pur-summary))
+        start (get raw "lab/timestamp-start")
+        files (get raw "lab/files-touched")
+        turns (count (filter #(= :turn/completed (:event/type %)) events))
+        candidates (seq (:candidates psr))
+        forecast (get psr :forecast)
+        forecast-count (when (map? forecast) (reduce + (map count (vals forecast))))
+        g-chosen (:G-chosen psr-aif)
+        pur-error (:prediction-error pur-aif)
+        pur-tau (:tau-updated pur-aif)]
+    [(checklist-line (if start :ok :missing) "Session start" (when start (str "start=" start)))
+     (checklist-line (if psr :ok :missing) "AIF Pattern Selector" (when psr (str "psr=" (:psr/id psr))))
+     (checklist-line (if candidates :partial :missing) "Current beliefs (μ)"
+                     (when candidates (str "candidates=" (count candidates))))
+     (checklist-line (if candidates :ok :missing) "Pattern priors"
+                     (when candidates (str (str/join ", " candidates))))
+     (checklist-line (if forecast-count :ok :missing) "Expected outcomes"
+                     (when forecast-count (str "forecast=" forecast-count)))
+     (checklist-line (cond
+                       g-chosen :ok
+                       psr :partial
+                       :else :missing)
+                     "Select pattern with lowest G (logged as PSR)"
+                     (when g-chosen (str "G=" (fmt-num g-chosen))))
+     (checklist-line (if (seq files) :ok :partial) "Pattern application"
+                     (when (seq files) (str "files=" (count files))))
+     (checklist-line :partial "Pattern constraints / action generation / tool calls"
+                     "tool calls not yet captured")
+     (checklist-line (if pur :ok :missing) "Observe outcome"
+                     (when pur (str "pur=" (:pur/id pur))))
+     (checklist-line (cond
+                       (and pur-error pur-tau) :ok
+                       pur :partial
+                       :else :missing)
+                     "Belief update"
+                     (when pur-error (str "error=" (fmt-num pur-error) " tau=" (fmt-num pur-tau))))
+     (checklist-line (if pur :ok :missing) "Log PUR"
+                     (when pur (str "decision=" (:decision/id pur))))
+     (checklist-line (if (> turns 1) :ok :partial) "Next tick..."
+                     (str "turns=" turns))]))
+
 (defn render-aif [aif events]
   (let [engine (:aif/engine-id aif)
         adapter (:aif/adapter aif)
@@ -182,7 +235,11 @@
                                           (or (:psr-tau aif-stats) "-")
                                           (or (:pur-error aif-stats) "-")
                                           (or (:pur-tau aif-stats) "-")
-                                          (or (:pur-status aif-stats) "-"))))
+                                          (or (:pur-status aif-stats) "-")))
+            (println "")
+            (println "## Session Loop Evidence")
+            (doseq [line (loop-summary-lines events raw psr pur)]
+              (println line))))
           (do
             (println "Unknown format" format)
             (usage)

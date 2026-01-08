@@ -1,0 +1,28 @@
+% TikZ diagram: Session loop with PSR/PUR
+% Requires: \usepackage{tikz}
+% Optional: \usetikzlibrary{arrows.meta,positioning}
+\begin{tikzpicture}[>=Latex, font=\small]
+  \tikzset{
+    box/.style={draw, rounded corners, align=left, minimum width=70mm, minimum height=12mm},
+    arrow/.style={-Latex},
+    label/.style={font=\footnotesize, align=center}
+  }
+
+  \node[label] (start) {Session Start};
+
+  \node[box, below=6mm of start] (selector) {AIF Pattern Selector\\\footnotesize - Current beliefs ($\mu$)\\\footnotesize - Pattern priors\\\footnotesize - Expected outcomes};
+  \node[label, below=2mm of selector] (psr) {Select pattern with lowest G\\(logged as PSR)};
+
+  \node[box, below=6mm of psr] (apply) {Pattern Application\\\footnotesize - Pattern constraints\\\footnotesize - Action generation\\\footnotesize - Tool calls};
+  \node[label, below=2mm of apply] (observe) {Observe outcome};
+
+  \node[box, below=6mm of observe] (update) {Belief Update\\\footnotesize - Did pattern fit?\\\footnotesize - Update precision ($\tau$)\\\footnotesize - Log PUR};
+  \node[label, below=6mm of update] (next) {Next tick...};
+
+  \draw[arrow] (start) -- (selector);
+  \draw[arrow] (selector) -- (psr);
+  \draw[arrow] (psr) -- (apply);
+  \draw[arrow] (apply) -- (observe);
+  \draw[arrow] (observe) -- (update);
+  \draw[arrow] (update) -- (next);
+\end{tikzpicture}

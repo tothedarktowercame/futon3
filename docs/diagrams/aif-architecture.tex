@@ -1,0 +1,25 @@
+% TikZ diagram: fuclaude/fucodex architecture loop
+% Requires: \usepackage{tikz}
+% Optional: \usetikzlibrary{arrows.meta,positioning}
+\begin{tikzpicture}[>=Latex, font=\small]
+  \tikzset{
+    frame/.style={draw, rounded corners, minimum width=120mm, minimum height=52mm},
+    box/.style={draw, rounded corners, align=center, minimum width=28mm, minimum height=12mm},
+    arrow/.style={-Latex}
+  }
+
+  \node[frame] (outer) {};
+  \node[anchor=north, font=\small\bfseries] at (outer.north) {fuclaude / fucodex};
+
+  \node[box] (beliefs) at ($(outer.west)+(28mm,0mm)$) {Beliefs\\($\mu$)\\\footnotesize task / progress / context};
+  \node[box] (selector) at ($(outer.center)+(0mm,0mm)$) {Pattern\\Selector\\\footnotesize (min G)};
+  \node[box] (observe) at ($(outer.east)+(-28mm,0mm)$) {Observation\\Model\\\footnotesize tool results};
+
+  \draw[arrow] (beliefs) -- (selector);
+  \draw[arrow] (selector) -- (observe);
+
+  \draw[arrow] (observe.south) .. controls +(0mm,-10mm) and +(0mm,-10mm) .. (beliefs.south);
+  \node[below=8mm of selector, align=center, font=\footnotesize] {Belief update};
+
+  \node[below=3mm of outer.south, font=\footnotesize] {PSR = which pattern now \qquad PUR = what happened};
+\end{tikzpicture}

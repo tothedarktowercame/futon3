@@ -1,0 +1,27 @@
+% TikZ diagram: AIF as evidence vs AIF as engine
+% Requires: \usepackage{tikz}
+% Optional: \usetikzlibrary{arrows.meta,positioning}
+\begin{tikzpicture}[>=Latex, node distance=14mm, font=\small]
+  \tikzset{
+    box/.style={draw, rounded corners, align=center, minimum width=28mm, minimum height=8mm},
+    arrow/.style={-Latex}
+  }
+
+  % Row 1: AIF as evidence
+  \node[box] (agent1) {Agent runs};
+  \node[box, right=of agent1] (trace) {AIF trace};
+  \node[box, right=of trace] (proof) {Attach to proof\\as evidence};
+  \draw[arrow] (agent1) -- (trace);
+  \draw[arrow] (trace) -- (proof);
+  \node[below=6mm of trace, align=center, font=\small\itshape] {AIF as evidence};
+
+  % Row 2: AIF as engine
+  \node[box, below=18mm of agent1] (engine) {AIF engine};
+  \node[box, right=of engine] (select) {Select patterns};
+  \node[box, right=of select] (guide) {Guide actions};
+  \node[box, right=of guide] (update) {Update beliefs};
+  \draw[arrow] (engine) -- (select);
+  \draw[arrow] (select) -- (guide);
+  \draw[arrow] (guide) -- (update);
+  \node[below=6mm of select, align=center, font=\small\itshape] {AIF as engine};
+\end{tikzpicture}

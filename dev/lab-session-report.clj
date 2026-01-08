@@ -84,12 +84,15 @@
         pur-line (when pur
                    (str "PUR " (:pur/id pur) " pattern=" (:pattern/id pur)
                         " decision=" (:decision/id pur)))
+        explainer (when-let [text (:aif/explainer psr)]
+                    (str "aif: " text))
         anchors (->> (concat (get psr :context/anchors)
                              (get pur :anchors))
                      (keep #(get-in % [:anchor/ref :file]))
                      distinct)]
-    (bullets (remove nil? [psr-line pur-line (when (seq anchors)
-                                              (str "anchors: " (str/join ", " anchors)))]))))
+    (bullets (remove nil? [psr-line pur-line explainer
+                           (when (seq anchors)
+                             (str "anchors: " (str/join ", " anchors)))]))))
 
 (defn- aif-summaries [events]
   (->> events

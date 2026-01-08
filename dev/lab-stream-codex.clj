@@ -8,7 +8,7 @@
             [futon3.fulab.pattern-competence :as pc]))
 
 (defn usage []
-  (println "Usage: dev/lab-stream-codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH]")
+  (println "Usage: dev/lab-stream-codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select]")
   (println "Reads codex --json stream from stdin and appends session + AIF events.")
   (println "Clock-in entries are consumed in order, one per turn (override --chosen for that turn)."))
 
@@ -24,6 +24,7 @@
         "--clock-in" (recur (assoc opts :clock-in (second remaining)) (nnext remaining))
         "--session-id" (recur (assoc opts :session-id (second remaining)) (nnext remaining))
         "--aif-config" (recur (assoc opts :aif-config (second remaining)) (nnext remaining))
+        "--aif-select" (recur (assoc opts :aif-select true) (rest remaining))
         "--help" (recur (assoc opts :help true) (rest remaining))
         (recur (update opts :unknown (fnil conj []) (first remaining)) (rest remaining))))))
 
@@ -66,6 +67,20 @@
    :anchor/ref {:event/type :turn/completed
                 :turn turn}})
 
+(defn build-forecast [turn]
+  {:benefits [{:tag :benefit/traceable-choice
+               :locus (turn-anchor turn)
+               :note "Decision captured at turn boundary."}]
+   :risks [{:tag :risk/mismatch
+            :locus (turn-anchor turn)
+            :note "Pattern may not match actual change."}]
+   :success [{:tag :success/traceable-outcome
+              :locus (turn-anchor turn)
+              :note "Outcome tied to decision."}]
+   :failure [{:tag :failure/unresolved
+              :locus (turn-anchor turn)
+              :note "Decision does not explain outcome."}]})
+
 (defn count-clock-ins [session]
   (count (filter #(= :clock-in/start (:event/type %)) (:events session))))
 
@@ -84,18 +99,7 @@
    :candidates candidates
    :chosen chosen
    :context/anchors [(turn-anchor turn)]
-   :forecast {:benefits [{:tag :benefit/traceable-choice
-                          :locus (turn-anchor turn)
-                          :note "Decision captured at turn boundary."}]
-              :risks [{:tag :risk/mismatch
-                       :locus (turn-anchor turn)
-                       :note "Pattern may not match actual change."}]
-              :success [{:tag :success/traceable-outcome
-                         :locus (turn-anchor turn)
-                         :note "Outcome tied to decision."}]
-              :failure [{:tag :failure/unresolved
-                         :locus (turn-anchor turn)
-                         :note "Decision does not explain outcome."}]}
+   :forecast (build-forecast turn)
    :rejections (into {}
                      (for [p candidates :when (not= p chosen)]
                        [p {:codes [:reject/fit]
@@ -128,6 +132,38 @@
   (when (and value (not (str/blank? value)))
     (vec (remove str/blank? (str/split value #",")))))
 
+(defn fmt-num [value]
+  (when (number? value)
+    (format "%.3f" (double value))))
+
+(defn selection-explainer [selection explicit-chosen used-aif]
+  (let [aif (:aif selection)
+        chosen (:chosen selection)
+        g-chosen (fmt-num (:G-chosen aif))
+        tau (fmt-num (:tau aif))
+        rejected (:G-rejected aif)
+        rejected-vals (when (map? rejected) (vals rejected))
+        rej-min (fmt-num (when (seq rejected-vals) (apply min rejected-vals)))]
+    (cond
+      used-aif
+      (str "AIF selected " chosen
+           (when g-chosen (str " (G=" g-chosen))
+           (when rej-min (str ", next-best=" rej-min))
+           (when tau (str ", tau=" tau))
+           ").")
+      explicit-chosen
+      (str "Explicit choice " explicit-chosen
+           (when g-chosen (str " (G=" g-chosen))
+           (when tau (str ", tau=" tau))
+           ").")
+      :else nil)))
+
+(defn read-aif-config [path]
+  (when path
+    (try
+      (edn/read-string (slurp path))
+      (catch Throwable _ nil))))
+
 (defn ensure-candidates [candidates clock-ins]
   (if (seq clock-ins)
     (reduce (fn [acc pid]
@@ -139,7 +175,7 @@
     (vec candidates)))
 
 (defn -main [& args]
-  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config]} (parse-args args)
+  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config aif-select]} (parse-args args)
         repo-root (System/getProperty "user.dir")
         lab-root (or lab-root (str (io/file repo-root "lab")))
         clock-ins (parse-csv clock-in)
@@ -158,7 +194,8 @@
                      :clock-in-queue clock-ins
                      :clock-in-current nil
                      :aif-config aif-config
-                     :aif-config-logged? false})
+                     :aif-config-logged? false
+                     :aif-select? (boolean aif-select)})
         tap-listener (fn [event]
                        (when (= :aif/fulab (:type event))
                          (append-event! state {:event/type :aif/tap
@@ -197,15 +234,23 @@
               (let [turn (inc (:turn @state))
                     session-id (:session-id @state)
                     current (first (:clock-in-queue @state))
-                    chosen (or current chosen (first candidates))
-                    psr (build-psr session-id turn candidates chosen)
-                    pur (build-pur session-id turn chosen)
-                    selection (engine/select-pattern engine {:decision/id (:decision/id psr)
-                                                             :session/id session-id
-                                                             :candidates (:candidates psr)
-                                                             :chosen (:chosen psr)
-                                                             :anchors (:context/anchors psr)
-                                                             :forecast (:forecast psr)})
+                    explicit-chosen (or current chosen)
+                    use-aif (and (:aif-select? @state) (nil? explicit-chosen))
+                    decision-id (str session-id ":turn-" turn)
+                    anchors [(turn-anchor turn)]
+                    forecast (build-forecast turn)
+                    selection-context (cond-> {:decision/id decision-id
+                                               :session/id session-id
+                                               :candidates candidates
+                                               :anchors anchors
+                                               :forecast forecast}
+                                        (not use-aif) (assoc :chosen explicit-chosen))
+                    selection (engine/select-pattern engine selection-context)
+                    chosen-final (if use-aif (:chosen selection) explicit-chosen)
+                    explainer (selection-explainer selection explicit-chosen use-aif)
+                    psr (cond-> (build-psr session-id turn candidates chosen-final)
+                          explainer (assoc :aif/explainer explainer))
+                    pur (build-pur session-id turn chosen-final)
                     update (engine/update-beliefs engine {:decision/id (:decision/id pur)
                                                           :session/id session-id
                                                           :outcome (:outcome/tags pur)
@@ -232,8 +277,3 @@
                 (append-event! state (summary-event session-id :pur update))))))
         (remove-tap tap-listener)))))
 (apply -main *command-line-args*)
-(defn read-aif-config [path]
-  (when path
-    (try
-      (edn/read-string (slurp path))
-      (catch Throwable _ nil))))

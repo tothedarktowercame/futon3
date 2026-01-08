@@ -45,10 +45,9 @@ Constraints:
 
 ## Current heuristic (manual)
 
-Until AIF-driven selection is implemented, candidate patterns should be chosen
-by a simple heuristic:
+Candidate patterns are selected by a simple heuristic:
 - Prefer patterns whose hotwords match the task or files touched.
 - Prefer patterns in the relevant namespace (ants/* for AIF behavior, code-coherence/* for hygiene, etc.).
 - Avoid repeating a pattern already used in the same session unless necessary.
 
-Plan: replace this manual heuristic with AIF-tuned selection once Item 3 lands.
+Pattern choice is then delegated to AIF scoring once candidates are selected.

@@ -19,6 +19,7 @@ FORCED_SESSION_ID=""
 AIF_CONFIG=""
 AIF_EXPLAIN=false
 AIF_EXPLAIN_PATH=""
+AIF_SELECT=false
 EXPLORE=false
 EXPLORE_CATALOG=""
 EXPLORE_HOTWORDS=""
@@ -45,6 +46,7 @@ Options:
   --explore-namespaces  CSV list of namespaces to consider.
   --explore-limit       Max candidates to select (default: 4).
   --explore-prompt      Prompt file to use (default: docs/codex-exploratory-mission.md).
+  --aif-select          Let AIF choose the pattern (used in explore).
 
 Examples:
   fucodex --live exec --prompt "Draft the summary"
@@ -101,6 +103,8 @@ while [[ $# -gt 0 ]]; do
       EXPLORE_LIMIT="$2"; shift 2;;
     --explore-prompt)
       EXPLORE_PROMPT_FILE="$2"; shift 2;;
+    --aif-select)
+      AIF_SELECT=true; shift;;
     *)
       args+=("$1"); shift;;
   esac
@@ -121,6 +125,7 @@ fi
 
 if $EXPLORE; then
   LIVE=true
+  AIF_SELECT=true
   if [[ -z "$EXPLORE_CATALOG" ]]; then
     EXPLORE_CATALOG="resources/sigils/patterns-index.tsv"
   fi
@@ -183,6 +188,9 @@ if $LIVE; then
   fi
   if [[ -n "$AIF_CONFIG" ]]; then
     clj_args+=(--aif-config "$AIF_CONFIG")
+  fi
+  if $AIF_SELECT; then
+    clj_args+=(--aif-select)
   fi
   codex exec --json "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-codex.clj" "${clj_args[@]}"
   status=${PIPESTATUS[0]}

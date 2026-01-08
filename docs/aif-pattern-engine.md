@@ -295,3 +295,14 @@ PUR/PSR validators ensure:
 3. Wire into fuclaude session loop as pattern advisor
 4. Capture PSR/PUR with AIF metadata
 5. Evaluate: does AIF selection improve session outcomes?
+
+## Implementation Plan (near-term)
+
+We will focus first on Futon2 as the shared AIF engine, keeping the core
+belief/update loop domain-agnostic and exposing adapters for ants, Fulab agents,
+and Futon5 meta-cellular automata search. Fulab (fucodex/fuclaude) will "equip"
+this engine at session start via a local library call (not HTTP), then record the
+engine's selection/output summaries in PSR/PUR while Futon3 remains a logging and
+validation layer only. Once the Futon2 engine and adapter boundaries are stable,
+we will extend the Futon3 technote feature to consume these AIF summaries without
+duplicating engine logic.

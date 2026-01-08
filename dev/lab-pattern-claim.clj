@@ -67,3 +67,5 @@
           (let [updated (pc/append-event session event)]
             (pc/write-session-file! path updated)
             (println (format "[lab-pattern-claim] wrote %s" (:event/type event)))))))))
+
+(apply -main *command-line-args*)

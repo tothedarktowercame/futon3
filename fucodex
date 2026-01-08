@@ -2,7 +2,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
+LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}
+                  futon2/futon2 {:local/root "../futon2"}}}'
 START_ISO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 RUN_CWD="$(pwd)"
 
@@ -44,6 +45,11 @@ fi
 clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export.clj" \
   --session-file "$session_file" \
   --repo-root "$RUN_CWD" \
+  --lab-root "$ROOT/lab"
+
+clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-equip.clj" \
+  --session-id "$session_id" \
+  --adapter fulab \
   --lab-root "$ROOT/lab"
 
 clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-summarize.clj" \

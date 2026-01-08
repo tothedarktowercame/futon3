@@ -102,3 +102,5 @@
           (doseq [pur purs]
             (println (format "- %s" (format-pur pur session)))))
         (println (format "Repo root: %s" repo-root))))))
+
+(apply -main *command-line-args*)

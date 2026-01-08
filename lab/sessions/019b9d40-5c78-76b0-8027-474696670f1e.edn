@@ -1,0 +1,148 @@
+{:session/id "019b9d40-5c78-76b0-8027-474696670f1e",
+ :session/agent :fucodex,
+ :events
+ [{:event/type :code/edit,
+   :file "src/f2/router.clj",
+   :fn "handle-hello",
+   :action :modified,
+   :description "Added run-id to unsupported-rev ack",
+   :at #inst "2026-01-08T10:57:00.000-00:00"}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-08T11:06:29.299-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-demo-1",
+     :session/id "019b9d40-5c78-76b0-8027-474696670f1e",
+     :pattern/id "fulab/blast-radius",
+     :instance/id "pur-demo-1-a",
+     :decision/id "decision-1",
+     :fields
+     {:context "Chose a small change during the session.",
+      :if "Potential side-effects existed.",
+      :however "Scope and rollback were unclear pre-change.",
+      :then "Declared blast surfaces + rollback before editing.",
+      :because "Needed traceable risk boundaries for the change.",
+      :next-steps
+      "Compare declared blast radius with actual effects."},
+     :anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref
+       {:event/type :code/edit,
+        :file "src/f2/router.clj",
+        :fn "handle-hello"}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-08T11:06:46.181-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-demo-1",
+     :candidates ["fulab/blast-radius" "fulab/tradeoff-record"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/risk-clarity,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit, :file "src/f2/router.clj"}},
+        :note "Explicitly record blast surfaces + rollback scope."}],
+      :risks
+      [{:tag :risk/overhead,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit, :file "src/f2/router.clj"}},
+        :note "Adds a logging step during small changes."}],
+      :success
+      [{:tag :success/traceable,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit, :file "src/f2/router.clj"}},
+        :note
+        "Change remains traceable to the declared blast radius."}],
+      :failure
+      [{:tag :failure/under-scoped,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit, :file "src/f2/router.clj"}},
+        :note "Unexpected side-effect outside declared scope."}]},
+     :horizon :immediate,
+     :context/anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref
+       {:event/type :code/edit,
+        :file "src/f2/router.clj",
+        :fn "handle-hello"}}],
+     :decision/id "decision-1",
+     :rejections
+     {"fulab/tradeoff-record"
+      {:codes [:reject/fit],
+       :note "Need blast boundary more than tradeoff detail."}},
+     :session/id "019b9d40-5c78-76b0-8027-474696670f1e",
+     :chosen "fulab/blast-radius"}}}
+  {:event/type :pattern/use-verified,
+   :at #inst "2026-01-08T11:06:58.295-00:00",
+   :payload
+   {:check/result
+    {:ok? true,
+     :errors [],
+     :logic
+     {:kernel :hx.logic/v1,
+      :judgement :admissible,
+      :witness {:rule :hx.pattern/use-claimed, :facts []},
+      :checks
+      [{:validator :pur/traceability, :status :pass, :reasons []}
+       {:validator :pur/anchors, :status :pass, :reasons []}
+       {:validator :pur/outcome-tags, :status :pass, :reasons nil}
+       {:validator :pur/delta, :status :pass, :reasons []}
+       {:validator :pur/tension, :status :pass, :reasons []}
+       {:validator :pur/counterevidence, :status :pass, :reasons []}
+       {:validator :pur/revision, :status :pass, :reasons []}],
+      :obligations []}},
+    :check/status :pass,
+    :pur/id "pur-demo-1"}}
+  {:event/type :pattern/selection-verified,
+   :at #inst "2026-01-08T11:06:58.296-00:00",
+   :payload
+   {:check/result
+    {:ok? true,
+     :errors [],
+     :logic
+     {:kernel :hx.logic/v1,
+      :judgement :admissible,
+      :witness {:rule :hx.pattern/selection-claimed, :facts []},
+      :checks
+      [{:validator :psr/candidates, :status :pass, :reasons []}
+       {:validator :psr/two-alternative, :status :pass, :reasons []}
+       {:validator :psr/anchors, :status :pass, :reasons []}
+       {:validator :psr/forecast, :status :pass, :reasons []}
+       {:validator :psr/rejections, :status :pass, :reasons []}],
+      :obligations []}},
+    :check/status :pass,
+    :psr/id "psr-demo-1"}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:11:36.512-00:00",
+   :payload
+   {:session/id "019b9d40-5c78-76b0-8027-474696670f1e",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "decision-1",
+     :candidates ["fulab/blast-radius" "fulab/tradeoff-record"],
+     :chosen "fulab/blast-radius",
+     :aif
+     {:G-chosen 1.2300000000000002,
+      :G-rejected {"fulab/tradeoff-record" 1.2300000000000002},
+      :tau 1.0,
+      :belief-id "decision-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:11:36.512-00:00",
+   :payload
+   {:session/id "019b9d40-5c78-76b0-8027-474696670f1e",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta {:decision/id "decision-1", :status :observed}}}}}]}

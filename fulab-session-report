@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# fulab-session-report: Generate three-column session report (repo | pattern | AIF)
+# Usage:
+#   fulab-session-report --session-id ID [--lab-root PATH]
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
+LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
+
+usage() {
+  echo "Usage: fulab-session-report --session-id ID [--lab-root PATH]"
+}
+
+SESSION_ID=""
+LAB_ROOT="$ROOT/lab"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --session-id)
+      SESSION_ID="$2"; shift 2;;
+    --lab-root)
+      LAB_ROOT="$2"; shift 2;;
+    --help|-h)
+      usage; exit 0;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage; exit 1;;
+  esac
+done
+
+clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-session-report.clj" \
+  --session-id "$SESSION_ID" \
+  --lab-root "$LAB_ROOT"

@@ -75,3 +75,5 @@
         (when-not dry-run
           (pc/write-session-file! path updated)
           (println (format "[lab-pattern-check] appended %d verification events" (count new-events))))))))
+
+(apply -main *command-line-args*)

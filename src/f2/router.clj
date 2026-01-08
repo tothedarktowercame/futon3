@@ -108,7 +108,8 @@
                :type "ack"
                :err "unsupported-rev"
                :expected protocol-revision
-               :rev rev}})))
+               :rev rev
+               :run-id run-id}})))
 
 (defn handle-event [router client envelope]
   (let [{:keys [payload]} envelope

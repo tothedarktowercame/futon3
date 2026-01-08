@@ -1,0 +1,20 @@
+@flexiarg aif/expected-free-energy-scorecard
+@title Expected Free Energy as Multi-Term Scorecard
+@sigils [📈/衡]
+@audience fulab agents, aif implementers
+@tone technical
+@style pattern
+
+! conclusion: Compute expected free energy as named terms with persisted breakdowns, not a single opaque scalar.
+  + context: The agent needs a single scalar (G) per candidate pattern, derived from separable considerations.
+  + IF:
+    You want pattern selection to balance delivery risk, ambiguity, information value, and cost in a way you can tune and audit.
+  + HOWEVER:
+    A single opaque score encourages post-hoc rationalization and makes tuning indistinguishable from storytelling.
+  + THEN:
+    Compute G(a) as a weighted sum of named terms (risk, ambiguity, information gain, constraint violation, cost, coordination pressure), and store the term breakdown for each candidate.
+  + BECAUSE:
+    A decomposed G makes disagreements concrete (which term dominated) and enables targeted adjustment.
+  + NEXT-STEPS:
+    - Persist the top candidates with term breakdowns so you can replay decisions.
+    - Track which term changes would have flipped the choice.

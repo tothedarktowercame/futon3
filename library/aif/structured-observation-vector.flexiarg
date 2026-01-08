@@ -1,0 +1,20 @@
+@flexiarg aif/structured-observation-vector
+@title Structured Observation Vector
+@sigils [📊/证]
+@audience fulab agents, aif implementers
+@tone technical
+@style pattern
+
+! conclusion: Treat each step as a typed observation vector so scoring and learning can be compared across time.
+  + context: A pattern-guided agent must decide based on tool output, trace events, and user feedback.
+  + IF:
+    You want the agent's observation to be comparable across steps so scoring and learning do not collapse into prose interpretation.
+  + HOWEVER:
+    Tool output and user feedback arrive as heterogeneous artifacts (json, logs, diffs, snippets, natural language) that are hard to compare or weight consistently.
+  + THEN:
+    Maintain an explicit (o) as a typed, normalized feature map derived from session state (for example: test status, compile status, diff size, failing spec count, user-stated constraints, time since last anchor, contradiction flags).
+  + BECAUSE:
+    A stable observation vector is the prerequisite for meaningful precision control and policy scoring.
+  + NEXT-STEPS:
+    - Define a minimal schema for (o) (keys, ranges, extraction rules) and log it alongside each decision.
+    - Track whether policy changes correlate with shifts in (o), not just narrative explanations.

@@ -1,0 +1,114 @@
+{:session/id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae",
+ :session/agent :fucodex,
+ :events
+ [{:event/type :clock-in/start,
+   :turn 1,
+   :at #inst "2026-01-08T12:27:40.242-00:00",
+   :clock-in/pattern-id "ants/white-space-scout",
+   :clock-in/intent "fucodex live run"}
+  {:event/type :turn/completed,
+   :turn 1,
+   :at #inst "2026-01-08T12:27:40.297-00:00"}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-08T12:27:40.315-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :update,
+    :session/id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae",
+    :aif/state {:belief-updated true},
+    :aif
+    {:prediction-error 0.0,
+     :tau-updated 1.0,
+     :belief-delta
+     {:decision/id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae:turn-1",
+      :status :observed}}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-08T12:27:40.317-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-1",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceable-choice,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision captured at turn boundary."}],
+      :risks
+      [{:tag :risk/mismatch,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Pattern may not match actual change."}],
+      :success
+      [{:tag :success/traceable-outcome,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Outcome tied to decision."}],
+      :failure
+      [{:tag :failure/unresolved,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision does not explain outcome."}]},
+     :horizon :immediate,
+     :context/anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :decision/id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae:turn-1",
+     :rejections
+     {"ants/pheromone-trail-tuner"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."}},
+     :session/id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae",
+     :chosen "ants/white-space-scout"}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-08T12:27:40.364-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-1",
+     :session/id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae",
+     :pattern/id "ants/white-space-scout",
+     :instance/id "pur-1-a",
+     :decision/id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae:turn-1",
+     :fields
+     {:context "Captured at turn completion.",
+      :if "A decision was needed.",
+      :however "Fit only known after the turn.",
+      :then "Recorded the observed outcome.",
+      :because "Need traceability for decisions.",
+      :next-steps "Compare decision vs outcome."},
+     :anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T12:27:40.412-00:00",
+   :payload
+   {:session/id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae:turn-1",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :chosen "ants/white-space-scout",
+     :aif
+     {:G-chosen 1.2300000000000002,
+      :G-rejected {"ants/pheromone-trail-tuner" 1.2300000000000002},
+      :tau 1.0,
+      :belief-id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae:turn-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T12:27:40.449-00:00",
+   :payload
+   {:session/id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta
+      {:decision/id "019b9d93-5dbd-75f2-8ab6-cdd3982065ae:turn-1",
+       :status :observed}}}}}]}

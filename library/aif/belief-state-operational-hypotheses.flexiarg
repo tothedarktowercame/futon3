@@ -1,0 +1,20 @@
+@flexiarg aif/belief-state-operational-hypotheses
+@title Belief State as Operational Hypotheses
+@sigils [🧠/思]
+@audience fulab agents, aif implementers
+@tone technical
+@style pattern
+
+! conclusion: Maintain a compact belief map of operational hypotheses that is updated each step.
+  + context: The agent needs an internal state about what it is doing and why, beyond the raw trace.
+  + IF:
+    You want decisions to depend on tractable hypotheses (progress, blockers, pattern fit, uncertainty) rather than raw conversation history.
+  + HOWEVER:
+    If the belief state is just the conversation, the agent cannot cleanly update, compare, or falsify its own assumptions.
+  + THEN:
+    Represent (mu) as a belief map of operational hypotheses (for example: :goal, :subgoals, :current-hypothesis, :blockers, :pattern-fit, :expected-next-observation, :uncertainty), updated at each step using observation and outcomes.
+  + BECAUSE:
+    A compact belief state makes predict -> observe -> update implementable and testable.
+  + NEXT-STEPS:
+    - Require each action to declare the slice of (mu) it intends to change.
+    - Log pre/post (mu) diffs to verify that updates are doing real work.

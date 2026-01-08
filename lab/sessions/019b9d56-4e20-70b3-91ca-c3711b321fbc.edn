@@ -1,0 +1,586 @@
+{:session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+ :session/agent :fucodex,
+ :events
+ [{:event/type :code/edit,
+   :file "docs/fucodex-trial-mission.org",
+   :fn nil,
+   :action :modified,
+   :description "Added white-space scout guard to trial mission",
+   :at #inst "2026-01-08T11:20:00.000-00:00"}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-08T11:24:12.381-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-demo-1",
+     :session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+     :pattern/id "fulab/blast-radius",
+     :instance/id "pur-demo-1-a",
+     :decision/id "decision-1",
+     :fields
+     {:context "Chose a small change during the session.",
+      :if "Potential side-effects existed.",
+      :however "Scope and rollback were unclear pre-change.",
+      :then "Declared blast surfaces + rollback before editing.",
+      :because "Needed traceable risk boundaries for the change.",
+      :next-steps
+      "Compare declared blast radius with actual effects."},
+     :anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref
+       {:event/type :code/edit,
+        :file "docs/fucodex-trial-mission.org",
+        :fn ""}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-08T11:24:19.661-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-demo-1",
+     :candidates ["fulab/blast-radius" "fulab/tradeoff-record"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/risk-clarity,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Explicitly record blast surfaces + rollback scope."}],
+      :risks
+      [{:tag :risk/overhead,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Adds a logging step during small changes."}],
+      :success
+      [{:tag :success/traceable,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note
+        "Change remains traceable to the declared blast radius."}],
+      :failure
+      [{:tag :failure/under-scoped,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Unexpected side-effect outside declared scope."}]},
+     :horizon :immediate,
+     :context/anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref
+       {:event/type :code/edit,
+        :file "docs/fucodex-trial-mission.org",
+        :fn ""}}],
+     :decision/id "decision-1",
+     :rejections
+     {"fulab/tradeoff-record"
+      {:codes [:reject/fit],
+       :note "Need blast boundary more than tradeoff detail."}},
+     :session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+     :chosen "fulab/blast-radius"}}}
+  {:event/type :pattern/use-verified,
+   :at #inst "2026-01-08T11:24:28.905-00:00",
+   :payload
+   {:check/result
+    {:ok? false,
+     :errors [],
+     :logic
+     {:kernel :hx.logic/v1,
+      :judgement :inadmissible,
+      :witness {:rule :hx.pattern/use-claimed, :facts []},
+      :checks
+      [{:validator :pur/traceability, :status :pass, :reasons []}
+       {:validator :pur/anchors,
+        :status :fail,
+        :reasons
+        [{:issue :anchors-unresolved}
+         {:issue :anchors-partial, :resolved 0, :total 1}]}
+       {:validator :pur/outcome-tags, :status :pass, :reasons nil}
+       {:validator :pur/delta, :status :pass, :reasons []}
+       {:validator :pur/tension, :status :pass, :reasons []}
+       {:validator :pur/counterevidence, :status :pass, :reasons []}
+       {:validator :pur/revision, :status :pass, :reasons []}],
+      :obligations
+      [{:obligation :validator-failed,
+        :validator :pur/anchors,
+        :status :fail,
+        :reasons
+        [{:issue :anchors-unresolved}
+         {:issue :anchors-partial, :resolved 0, :total 1}]}]}},
+    :check/status :fail,
+    :pur/id "pur-demo-1"}}
+  {:event/type :pattern/selection-verified,
+   :at #inst "2026-01-08T11:24:28.906-00:00",
+   :payload
+   {:check/result
+    {:ok? false,
+     :errors [],
+     :logic
+     {:kernel :hx.logic/v1,
+      :judgement :inadmissible,
+      :witness {:rule :hx.pattern/selection-claimed, :facts []},
+      :checks
+      [{:validator :psr/candidates, :status :pass, :reasons []}
+       {:validator :psr/two-alternative, :status :pass, :reasons []}
+       {:validator :psr/anchors,
+        :status :fail,
+        :reasons
+        [{:issue :anchors-unresolved}
+         {:issue :anchors-partial, :resolved 0, :total 1}]}
+       {:validator :psr/forecast, :status :pass, :reasons []}
+       {:validator :psr/rejections, :status :pass, :reasons []}],
+      :obligations
+      [{:obligation :validator-failed,
+        :validator :psr/anchors,
+        :status :fail,
+        :reasons
+        [{:issue :anchors-unresolved}
+         {:issue :anchors-partial, :resolved 0, :total 1}]}]}},
+    :check/status :fail,
+    :psr/id "psr-demo-1"}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:24:39.576-00:00",
+   :payload
+   {:session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "decision-1",
+     :candidates ["fulab/blast-radius" "fulab/tradeoff-record"],
+     :chosen "fulab/blast-radius",
+     :aif
+     {:G-chosen 1.2300000000000002,
+      :G-rejected {"fulab/tradeoff-record" 1.2300000000000002},
+      :tau 1.0,
+      :belief-id "decision-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:24:39.576-00:00",
+   :payload
+   {:session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta {:decision/id "decision-1", :status :observed}}}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-08T11:25:30.034-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-demo-1",
+     :session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+     :pattern/id "fulab/blast-radius",
+     :instance/id "pur-demo-1-a",
+     :decision/id "decision-1",
+     :fields
+     {:context "Chose a small change during the session.",
+      :if "Potential side-effects existed.",
+      :however "Scope and rollback were unclear pre-change.",
+      :then "Declared blast surfaces + rollback before editing.",
+      :because "Needed traceable risk boundaries for the change.",
+      :next-steps
+      "Compare declared blast radius with actual effects."},
+     :anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref
+       {:event/type :code/edit,
+        :file "docs/fucodex-trial-mission.org",
+        :fn nil}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-08T11:25:38.790-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-demo-1",
+     :candidates ["fulab/blast-radius" "fulab/tradeoff-record"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/risk-clarity,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Explicitly record blast surfaces + rollback scope."}],
+      :risks
+      [{:tag :risk/overhead,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Adds a logging step during small changes."}],
+      :success
+      [{:tag :success/traceable,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note
+        "Change remains traceable to the declared blast radius."}],
+      :failure
+      [{:tag :failure/under-scoped,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Unexpected side-effect outside declared scope."}]},
+     :horizon :immediate,
+     :context/anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref
+       {:event/type :code/edit,
+        :file "docs/fucodex-trial-mission.org",
+        :fn nil}}],
+     :decision/id "decision-1",
+     :rejections
+     {"fulab/tradeoff-record"
+      {:codes [:reject/fit],
+       :note "Need blast boundary more than tradeoff detail."}},
+     :session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+     :chosen "fulab/blast-radius"}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-08T11:26:10.207-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-demo-2",
+     :session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+     :pattern/id "fulab/blast-radius",
+     :instance/id "pur-demo-2-a",
+     :decision/id "decision-1",
+     :fields
+     {:context "Chose a small change during the session.",
+      :if "Potential side-effects existed.",
+      :however "Scope and rollback were unclear pre-change.",
+      :then "Declared blast surfaces + rollback before editing.",
+      :because "Needed traceable risk boundaries for the change.",
+      :next-steps
+      "Compare declared blast radius with actual effects."},
+     :anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref
+       {:event/type :code/edit,
+        :file "docs/fucodex-trial-mission.org",
+        :fn nil}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-08T11:26:22.498-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-demo-2",
+     :candidates ["fulab/blast-radius" "fulab/tradeoff-record"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/risk-clarity,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Explicitly record blast surfaces + rollback scope."}],
+      :risks
+      [{:tag :risk/overhead,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Adds a logging step during small changes."}],
+      :success
+      [{:tag :success/traceable,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note
+        "Change remains traceable to the declared blast radius."}],
+      :failure
+      [{:tag :failure/under-scoped,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Unexpected side-effect outside declared scope."}]},
+     :horizon :immediate,
+     :context/anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref
+       {:event/type :code/edit,
+        :file "docs/fucodex-trial-mission.org",
+        :fn nil}}],
+     :decision/id "decision-1",
+     :rejections
+     {"fulab/tradeoff-record"
+      {:codes [:reject/fit],
+       :note "Need blast boundary more than tradeoff detail."}},
+     :session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+     :chosen "fulab/blast-radius"}}}
+  {:event/type :pattern/use-verified,
+   :at #inst "2026-01-08T11:26:30.973-00:00",
+   :payload
+   {:check/result
+    {:ok? true,
+     :errors [],
+     :logic
+     {:kernel :hx.logic/v1,
+      :judgement :admissible,
+      :witness {:rule :hx.pattern/use-claimed, :facts []},
+      :checks
+      [{:validator :pur/traceability, :status :pass, :reasons []}
+       {:validator :pur/anchors, :status :pass, :reasons []}
+       {:validator :pur/outcome-tags, :status :pass, :reasons nil}
+       {:validator :pur/delta, :status :pass, :reasons []}
+       {:validator :pur/tension, :status :pass, :reasons []}
+       {:validator :pur/counterevidence, :status :pass, :reasons []}
+       {:validator :pur/revision, :status :pass, :reasons []}],
+      :obligations []}},
+    :check/status :pass,
+    :pur/id "pur-demo-2"}}
+  {:event/type :pattern/selection-verified,
+   :at #inst "2026-01-08T11:26:30.974-00:00",
+   :payload
+   {:check/result
+    {:ok? true,
+     :errors [],
+     :logic
+     {:kernel :hx.logic/v1,
+      :judgement :admissible,
+      :witness {:rule :hx.pattern/selection-claimed, :facts []},
+      :checks
+      [{:validator :psr/candidates, :status :pass, :reasons []}
+       {:validator :psr/two-alternative, :status :pass, :reasons []}
+       {:validator :psr/anchors, :status :pass, :reasons []}
+       {:validator :psr/forecast, :status :pass, :reasons []}
+       {:validator :psr/rejections, :status :pass, :reasons []}],
+      :obligations []}},
+    :check/status :pass,
+    :psr/id "psr-demo-2"}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-08T11:32:19.623-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-demo-3",
+     :session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+     :pattern/id "ants/white-space-scout",
+     :instance/id "pur-demo-3-a",
+     :decision/id "decision-1",
+     :fields
+     {:context "Chose a small change during the session.",
+      :if "A pattern was selected to guide the change.",
+      :however "Fit could only be confirmed after the change.",
+      :then "Applied the selected pattern and logged outcomes.",
+      :because "We need traceable decisions for small changes.",
+      :next-steps "Compare the chosen pattern with observed effects."},
+     :anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref
+       {:event/type :code/edit,
+        :file "docs/fucodex-trial-mission.org",
+        :fn nil}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-08T11:32:27.585-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-demo-3",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceable-choice,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Record why this pattern was selected."}],
+      :risks
+      [{:tag :risk/mismatch,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Pattern may not fit the actual change."}],
+      :success
+      [{:tag :success/traceable-outcome,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Outcome stays traceable to the choice."}],
+      :failure
+      [{:tag :failure/unresolved,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref
+         {:event/type :code/edit,
+          :file "docs/fucodex-trial-mission.org"}},
+        :note "Decision rationale doesn't match effects."}]},
+     :horizon :immediate,
+     :context/anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref
+       {:event/type :code/edit,
+        :file "docs/fucodex-trial-mission.org",
+        :fn nil}}],
+     :decision/id "decision-1",
+     :rejections
+     {"ants/pheromone-trail-tuner"
+      {:codes [:reject/fit],
+       :note "Alternate pattern not selected for this change."}},
+     :session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+     :chosen "ants/white-space-scout"}}}
+  {:event/type :pattern/use-verified,
+   :at #inst "2026-01-08T11:32:34.680-00:00",
+   :payload
+   {:check/result
+    {:ok? true,
+     :errors [],
+     :logic
+     {:kernel :hx.logic/v1,
+      :judgement :admissible,
+      :witness {:rule :hx.pattern/use-claimed, :facts []},
+      :checks
+      [{:validator :pur/traceability, :status :pass, :reasons []}
+       {:validator :pur/anchors, :status :pass, :reasons []}
+       {:validator :pur/outcome-tags, :status :pass, :reasons nil}
+       {:validator :pur/delta, :status :pass, :reasons []}
+       {:validator :pur/tension, :status :pass, :reasons []}
+       {:validator :pur/counterevidence, :status :pass, :reasons []}
+       {:validator :pur/revision, :status :pass, :reasons []}],
+      :obligations []}},
+    :check/status :pass,
+    :pur/id "pur-demo-3"}}
+  {:event/type :pattern/selection-verified,
+   :at #inst "2026-01-08T11:32:34.681-00:00",
+   :payload
+   {:check/result
+    {:ok? true,
+     :errors [],
+     :logic
+     {:kernel :hx.logic/v1,
+      :judgement :admissible,
+      :witness {:rule :hx.pattern/selection-claimed, :facts []},
+      :checks
+      [{:validator :psr/candidates, :status :pass, :reasons []}
+       {:validator :psr/two-alternative, :status :pass, :reasons []}
+       {:validator :psr/anchors, :status :pass, :reasons []}
+       {:validator :psr/forecast, :status :pass, :reasons []}
+       {:validator :psr/rejections, :status :pass, :reasons []}],
+      :obligations []}},
+    :check/status :pass,
+    :psr/id "psr-demo-3"}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:32:48.471-00:00",
+   :payload
+   {:session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "decision-1",
+     :candidates ["fulab/blast-radius" "fulab/tradeoff-record"],
+     :chosen "fulab/blast-radius",
+     :aif
+     {:G-chosen 1.2300000000000002,
+      :G-rejected {"fulab/tradeoff-record" 1.2300000000000002},
+      :tau 1.0,
+      :belief-id "decision-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:32:48.471-00:00",
+   :payload
+   {:session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "decision-1",
+     :candidates ["fulab/blast-radius" "fulab/tradeoff-record"],
+     :chosen "fulab/blast-radius",
+     :aif
+     {:G-chosen 1.2300000000000002,
+      :G-rejected {"fulab/tradeoff-record" 1.2300000000000002},
+      :tau 1.0,
+      :belief-id "decision-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:32:48.471-00:00",
+   :payload
+   {:session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "decision-1",
+     :candidates ["fulab/blast-radius" "fulab/tradeoff-record"],
+     :chosen "fulab/blast-radius",
+     :aif
+     {:G-chosen 1.2300000000000002,
+      :G-rejected {"fulab/tradeoff-record" 1.2300000000000002},
+      :tau 1.0,
+      :belief-id "decision-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:32:48.471-00:00",
+   :payload
+   {:session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "decision-1",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :chosen "ants/white-space-scout",
+     :aif
+     {:G-chosen 1.2300000000000002,
+      :G-rejected {"ants/pheromone-trail-tuner" 1.2300000000000002},
+      :tau 1.0,
+      :belief-id "decision-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:32:48.472-00:00",
+   :payload
+   {:session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta {:decision/id "decision-1", :status :observed}}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:32:48.472-00:00",
+   :payload
+   {:session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta {:decision/id "decision-1", :status :observed}}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:32:48.472-00:00",
+   :payload
+   {:session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta {:decision/id "decision-1", :status :observed}}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T11:32:48.472-00:00",
+   :payload
+   {:session/id "019b9d56-4e20-70b3-91ca-c3711b321fbc",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta {:decision/id "decision-1", :status :observed}}}}}]}

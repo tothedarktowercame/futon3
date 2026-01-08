@@ -213,6 +213,21 @@ The matrices are cheap to recompute, so rerun the script whenever you add or edi
 
 The repo currently ships `data/sigils/glove_pattern_neighbors.json` (GloVe neighbor report) but not a raw pattern vector map. The CLI expects a file that maps `pattern-id -> [floats]`; point it at your embeddings with `--embeddings`. Generated embeddings live under `futon3/data/` (see the export script below). A tiny fixture lives at `dev/fixtures/pattern_embeddings.json`.
 
+## Ingesting new patterns into Futon1
+When you add or update flexiargs in `library/`, rebuild the sigil index and ingest into Futon1:
+
+```bash
+clojure -M -m scripts.build-pattern-index
+clojure -M -m scripts.build_sigil_matrices
+
+# Ingest into Futon1 (API must be running).
+FUTON1_API=http://localhost:8080 ./scripts/ingest_patterns.sh
+```
+
+Notes:
+- `scripts/ingest_patterns.sh` writes an EDN hash cache at `data/pattern-ingest-cache.edn` to skip unchanged rows on subsequent runs.
+- Set `PATTERN_INGEST_CACHE` to override the cache path.
+
 Dependencies: `numpy` for vector math, `scikit-learn` for agglomerative clustering (`hclust`). `hdbscan` is optional and only required if you pass `--method hdbscan`.
 
 ```bash

@@ -1,0 +1,20 @@
+@flexiarg aif/candidate-pattern-action-space
+@title Candidate Pattern Action Space
+@sigils [🧭/路]
+@audience fulab agents, aif implementers
+@tone technical
+@style pattern
+
+! conclusion: Treat action selection as choosing from a bounded candidate set of pattern IDs.
+  + context: Action selection in fulab often means selecting (and committing to) a pattern to apply next.
+  + IF:
+    You want pattern choice to be legible and comparable, and you want to avoid collapse into one habitual pattern.
+  + HOWEVER:
+    If the action space is any pattern at any time, evaluation becomes unstructured and selection becomes arbitrary or dominated by recency.
+  + THEN:
+    Define (a) as a constructed candidate set of pattern IDs produced by retrieval plus gating rules, with bounded size and explicit reasons for inclusion and exclusion.
+  + BECAUSE:
+    Constraining the action space makes downstream scoring meaningful rather than performative.
+  + NEXT-STEPS:
+    - Track coverage stats: how often each pattern enters the candidate set versus how often it is chosen.
+    - Use those stats to distinguish retrieval bias from policy bias.

@@ -1,0 +1,20 @@
+@flexiarg aif/evidence-precision-registry
+@title Evidence Precision Registry
+@sigils [🧪/衡]
+@audience fulab agents, aif implementers
+@tone technical
+@style pattern
+
+! conclusion: Make evidence weighting explicit by logging a precision registry per observation channel.
+  + context: The agent must treat some inputs as more reliable than others (tests vs narrative claims, trace anchors vs inferred intent).
+  + IF:
+    You want the agent to discount low-trust evidence without discarding it, and to become stricter when outcomes are volatile.
+  + HOWEVER:
+    Without an explicit precision layer, evidence weighting becomes implicit prompt rhetoric and cannot be audited.
+  + THEN:
+    Represent (Pi_o) as a per-channel precision registry keyed to observation features (and/or evidence sources), and apply it wherever prediction error, scoring, or gating occurs.
+  + BECAUSE:
+    Making precision explicit turns trust into a tunable control surface rather than an undocumented bias.
+  + NEXT-STEPS:
+    - Start with a small set of channels (for example: :tests, :typecheck, :static-analysis, :tool-output, :user-constraints, :model-inference).
+    - Record precision adjustments as first-class events so audits can reconstruct why confidence shifted.

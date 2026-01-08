@@ -1,0 +1,20 @@
+@flexiarg aif/term-to-channel-traceability
+@title Term-to-Channel Traceability
+@sigils [🔗/索]
+@audience fulab agents, aif implementers
+@tone technical
+@style pattern
+
+! conclusion: Require each score term to declare the observation channels and precision settings it consumed.
+  + context: A pattern-guided agent evaluates candidates with a multi-term expected free energy score built from heterogeneous evidence.
+  + IF:
+    You want tuning decisions and failures to be diagnosable at the level of which evidence actually drove each score term.
+  + HOWEVER:
+    Without explicit traceability, terms like risk or ambiguity silently absorb whatever signals are available, making post-hoc explanations indistinguishable from rationalization.
+  + THEN:
+    Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score.
+  + BECAUSE:
+    Explicit term-to-channel linkage prevents semantic drift in scoring terms and makes policy behavior mechanically inspectable.
+  + NEXT-STEPS:
+    - Log term provenance for the top-K candidate actions per step.
+    - Review whether the same observation channels dominate a term, which can indicate mis-specified precision rather than genuine signal.

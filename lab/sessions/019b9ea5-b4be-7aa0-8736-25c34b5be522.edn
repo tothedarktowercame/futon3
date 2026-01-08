@@ -1,0 +1,145 @@
+{:session/id "019b9ea5-b4be-7aa0-8736-25c34b5be522",
+ :session/agent :fucodex,
+ :events
+ [{:event/type :aif/tap,
+   :at #inst "2026-01-08T17:28:48.442-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :select,
+    :session/id "019b9ea5-b4be-7aa0-8736-25c34b5be522",
+    :decision/id "019b9ea5-b4be-7aa0-8736-25c34b5be522:turn-1",
+    :candidates
+    ["ants/baseline-cyber-ant"
+     "ants/cargo-return-discipline"
+     "ants/hunger-precision-coupling"
+     "ants/pheromone-trail-tuner"],
+    :chosen "ants/baseline-cyber-ant",
+    :aif
+    {:G-chosen 0.23000000000000004,
+     :G-rejected
+     {"ants/cargo-return-discipline" 0.23000000000000004,
+      "ants/hunger-precision-coupling" 0.23000000000000004,
+      "ants/pheromone-trail-tuner" 0.23000000000000004},
+     :tau 1.0,
+     :belief-id "019b9ea5-b4be-7aa0-8736-25c34b5be522:turn-1"}}}
+  {:event/type :turn/completed,
+   :turn 1,
+   :at #inst "2026-01-08T17:28:48.443-00:00"}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-08T17:28:48.559-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :update,
+    :session/id "019b9ea5-b4be-7aa0-8736-25c34b5be522",
+    :aif/state {:belief-updated true},
+    :aif
+    {:prediction-error 0.0,
+     :tau-updated 1.0,
+     :belief-delta
+     {:decision/id "019b9ea5-b4be-7aa0-8736-25c34b5be522:turn-1",
+      :status :observed}}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-08T17:28:48.572-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-1",
+     :candidates
+     ["ants/baseline-cyber-ant"
+      "ants/cargo-return-discipline"
+      "ants/hunger-precision-coupling"
+      "ants/pheromone-trail-tuner"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceable-choice,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision captured at turn boundary."}],
+      :risks
+      [{:tag :risk/mismatch,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Pattern may not match actual change."}],
+      :success
+      [{:tag :success/traceable-outcome,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Outcome tied to decision."}],
+      :failure
+      [{:tag :failure/unresolved,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision does not explain outcome."}]},
+     :horizon :immediate,
+     :aif/explainer
+     "AIF selected ants/baseline-cyber-ant (G=0.230, next-best=0.230, tau=1.000).",
+     :context/anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :decision/id "019b9ea5-b4be-7aa0-8736-25c34b5be522:turn-1",
+     :rejections
+     {"ants/cargo-return-discipline"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."},
+      "ants/hunger-precision-coupling"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."},
+      "ants/pheromone-trail-tuner"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."}},
+     :session/id "019b9ea5-b4be-7aa0-8736-25c34b5be522",
+     :chosen "ants/baseline-cyber-ant"}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-08T17:28:48.703-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-1",
+     :session/id "019b9ea5-b4be-7aa0-8736-25c34b5be522",
+     :pattern/id "ants/baseline-cyber-ant",
+     :instance/id "pur-1-a",
+     :decision/id "019b9ea5-b4be-7aa0-8736-25c34b5be522:turn-1",
+     :fields
+     {:context "Captured at turn completion.",
+      :if "A decision was needed.",
+      :however "Fit only known after the turn.",
+      :then "Recorded the observed outcome.",
+      :because "Need traceability for decisions.",
+      :next-steps "Compare decision vs outcome."},
+     :anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T17:28:48.805-00:00",
+   :payload
+   {:session/id "019b9ea5-b4be-7aa0-8736-25c34b5be522",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "019b9ea5-b4be-7aa0-8736-25c34b5be522:turn-1",
+     :candidates
+     ["ants/baseline-cyber-ant"
+      "ants/cargo-return-discipline"
+      "ants/hunger-precision-coupling"
+      "ants/pheromone-trail-tuner"],
+     :chosen "ants/baseline-cyber-ant",
+     :aif
+     {:G-chosen 0.23000000000000004,
+      :G-rejected
+      {"ants/cargo-return-discipline" 0.23000000000000004,
+       "ants/hunger-precision-coupling" 0.23000000000000004,
+       "ants/pheromone-trail-tuner" 0.23000000000000004},
+      :tau 1.0,
+      :belief-id "019b9ea5-b4be-7aa0-8736-25c34b5be522:turn-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T17:28:48.919-00:00",
+   :payload
+   {:session/id "019b9ea5-b4be-7aa0-8736-25c34b5be522",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta
+      {:decision/id "019b9ea5-b4be-7aa0-8736-25c34b5be522:turn-1",
+       :status :observed}}}}}]}

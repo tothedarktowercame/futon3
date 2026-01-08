@@ -1,0 +1,145 @@
+{:session/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef",
+ :session/agent :fucodex,
+ :events
+ [{:event/type :aif/tap,
+   :at #inst "2026-01-08T16:59:30.621-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :select,
+    :session/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef",
+    :decision/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef:turn-1",
+    :candidates
+    ["fulab/pattern-dep"
+     "fulab/session-resume"
+     "ants/baseline-cyber-ant"
+     "ants/cargo-return-discipline"],
+    :chosen "fulab/pattern-dep",
+    :aif
+    {:G-chosen 0.23000000000000004,
+     :G-rejected
+     {"fulab/session-resume" 0.23000000000000004,
+      "ants/baseline-cyber-ant" 0.23000000000000004,
+      "ants/cargo-return-discipline" 0.23000000000000004},
+     :tau 1.0,
+     :belief-id "019b9e8a-d369-7d43-ad96-9d62f346a1ef:turn-1"}}}
+  {:event/type :turn/completed,
+   :turn 1,
+   :at #inst "2026-01-08T16:59:30.622-00:00"}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-08T16:59:30.731-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :update,
+    :session/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef",
+    :aif/state {:belief-updated true},
+    :aif
+    {:prediction-error 0.0,
+     :tau-updated 1.0,
+     :belief-delta
+     {:decision/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef:turn-1",
+      :status :observed}}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-08T16:59:30.741-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-1",
+     :candidates
+     ["fulab/pattern-dep"
+      "fulab/session-resume"
+      "ants/baseline-cyber-ant"
+      "ants/cargo-return-discipline"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceable-choice,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision captured at turn boundary."}],
+      :risks
+      [{:tag :risk/mismatch,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Pattern may not match actual change."}],
+      :success
+      [{:tag :success/traceable-outcome,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Outcome tied to decision."}],
+      :failure
+      [{:tag :failure/unresolved,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision does not explain outcome."}]},
+     :horizon :immediate,
+     :aif/explainer
+     "Explicit choice fulab/pattern-dep (G=0.230, tau=1.000).",
+     :context/anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :decision/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef:turn-1",
+     :rejections
+     {"fulab/session-resume"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."},
+      "ants/baseline-cyber-ant"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."},
+      "ants/cargo-return-discipline"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."}},
+     :session/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef",
+     :chosen "fulab/pattern-dep"}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-08T16:59:30.843-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-1",
+     :session/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef",
+     :pattern/id "fulab/pattern-dep",
+     :instance/id "pur-1-a",
+     :decision/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef:turn-1",
+     :fields
+     {:context "Captured at turn completion.",
+      :if "A decision was needed.",
+      :however "Fit only known after the turn.",
+      :then "Recorded the observed outcome.",
+      :because "Need traceability for decisions.",
+      :next-steps "Compare decision vs outcome."},
+     :anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T16:59:30.929-00:00",
+   :payload
+   {:session/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef:turn-1",
+     :candidates
+     ["fulab/pattern-dep"
+      "fulab/session-resume"
+      "ants/baseline-cyber-ant"
+      "ants/cargo-return-discipline"],
+     :chosen "fulab/pattern-dep",
+     :aif
+     {:G-chosen 0.23000000000000004,
+      :G-rejected
+      {"fulab/session-resume" 0.23000000000000004,
+       "ants/baseline-cyber-ant" 0.23000000000000004,
+       "ants/cargo-return-discipline" 0.23000000000000004},
+      :tau 1.0,
+      :belief-id "019b9e8a-d369-7d43-ad96-9d62f346a1ef:turn-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-08T16:59:30.986-00:00",
+   :payload
+   {:session/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta
+      {:decision/id "019b9e8a-d369-7d43-ad96-9d62f346a1ef:turn-1",
+       :status :observed}}}}}]}

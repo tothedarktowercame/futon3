@@ -1,18 +1,225 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ -z "${BASH_VERSION-}" ]]; then
+  exec bash "$0" "$@"
+fi
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}
                   futon2/futon2 {:local/root "../futon2"}}}'
 START_ISO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 RUN_CWD="$(pwd)"
 
+LIVE=false
+PATTERNS=""
+CHOSEN=""
+CLOCK_IN=""
+FORCED_SESSION_ID=""
+AIF_CONFIG=""
+AIF_EXPLAIN=false
+AIF_EXPLAIN_PATH=""
+AIF_SELECT=false
+PROPOSAL_HOOK=false
+EXPLORE=false
+EXPLORE_CATALOG=""
+EXPLORE_HOTWORDS=""
+EXPLORE_NAMESPACES=""
+EXPLORE_LIMIT="4"
+EXPLORE_PROMPT_FILE="docs/claude-exploratory-mission.md"
+PRINT_MODE=false
+
+show_help() {
+  cat <<'EOF'
+Usage: fuclaude [--live] [--patterns CSV] [--chosen PATTERN] [--clock-in PATTERN] [--session-id ID] [--aif-config PATH] [--aif-explain [PATH]]... [args...]
+
+Options:
+  -h, --help           Show this help.
+  --live               Run Claude in live mode with lab streaming (requires -p prompt).
+  --print              Alias for --live (non-interactive mode).
+  --patterns CSV       Comma-separated patterns for the run manifest.
+  --chosen PATTERN     Set chosen pattern (ignored when --clock-in is provided).
+  --clock-in PATTERN   Add a clock-in pattern (repeatable or comma-separated; overrides --chosen).
+  --session-id ID      Force a session id for stream/export/summary (skips selection).
+  --aif-config PATH    EDN config file to tune AIF scoring parameters.
+  --aif-explain [PATH] Explain AIF config with a worked example and exit.
+  explore              Run the exploratory mission prompt (manual heuristic).
+  --explore-catalog     Pattern catalog path (default: resources/sigils/patterns-index.tsv)
+  --explore-hotwords    CSV list of hotwords to bias candidate selection.
+  --explore-namespaces  CSV list of namespaces to consider.
+  --explore-limit       Max candidates to select (default: 4).
+  --explore-prompt      Prompt file to use (default: docs/claude-exploratory-mission.md).
+  --aif-select          Let AIF choose the pattern (used in explore).
+  --proposal-hook       Emit proposal draft when candidates are insufficient.
+
+Examples:
+  fuclaude --live -p "Draft the summary"
+  fuclaude --live --patterns "ants/white-space-scout" --chosen ants/white-space-scout -p "Explain"
+  fuclaude --live --clock-in ants/white-space-scout --clock-in ants/pheromone-trail-tuner -p "Review"
+  fuclaude --aif-explain docs/aif/fulab-config.edn
+  fuclaude --aif-explain
+  fuclaude explore --explore-hotwords "aif,session,trace"
+  fuclaude -p "Non-live run"
+  fuclaude   # Interactive mode (no streaming)
+EOF
+}
+
+args=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      show_help
+      exit 0;;
+    --live|--print)
+      LIVE=true; shift;;
+    --patterns)
+      PATTERNS="$2"; shift 2;;
+    --chosen)
+      CHOSEN="$2"; shift 2;;
+    --clock-in)
+      if [[ -n "$CLOCK_IN" ]]; then
+        CLOCK_IN="${CLOCK_IN},$2"
+      else
+        CLOCK_IN="$2"
+      fi
+      shift 2;;
+    --session-id)
+      FORCED_SESSION_ID="$2"; shift 2;;
+    --aif-config)
+      AIF_CONFIG="$2"; shift 2;;
+    --aif-explain)
+      AIF_EXPLAIN=true
+      if [[ -n "${2-}" && "${2-}" != --* ]]; then
+        AIF_EXPLAIN_PATH="$2"
+        shift 2
+      else
+        shift
+      fi;;
+    explore)
+      EXPLORE=true; shift;;
+    --explore-catalog)
+      EXPLORE_CATALOG="$2"; shift 2;;
+    --explore-hotwords)
+      EXPLORE_HOTWORDS="$2"; shift 2;;
+    --explore-namespaces)
+      EXPLORE_NAMESPACES="$2"; shift 2;;
+    --explore-limit)
+      EXPLORE_LIMIT="$2"; shift 2;;
+    --explore-prompt)
+      EXPLORE_PROMPT_FILE="$2"; shift 2;;
+    --aif-select)
+      AIF_SELECT=true; shift;;
+    --proposal-hook)
+      PROPOSAL_HOOK=true; shift;;
+    -p)
+      PRINT_MODE=true
+      args+=("-p" "$2"); shift 2;;
+    *)
+      args+=("$1"); shift;;
+  esac
+done
+
+if $AIF_EXPLAIN; then
+  explain_path="$AIF_EXPLAIN_PATH"
+  if [[ -z "$explain_path" && -n "$AIF_CONFIG" ]]; then
+    explain_path="$AIF_CONFIG"
+  fi
+  if [[ -n "$explain_path" ]]; then
+    clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-explain.clj" --config "$explain_path"
+  else
+    clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-explain.clj"
+  fi
+  exit 0
+fi
+
+if $EXPLORE; then
+  LIVE=true
+  AIF_SELECT=true
+  PROPOSAL_HOOK=true
+  if [[ -z "$EXPLORE_CATALOG" ]]; then
+    EXPLORE_CATALOG="resources/sigils/patterns-index.tsv"
+  fi
+  if [[ -z "$EXPLORE_NAMESPACES" ]]; then
+    EXPLORE_NAMESPACES="ants,code-coherence,stack-coherence,devmap-coherence,contributing"
+  fi
+  if [[ -z "$PATTERNS" || -z "$CHOSEN" ]]; then
+    read -r explore_chosen explore_candidates < <(clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-explore-candidates.clj" \
+      --catalog "$EXPLORE_CATALOG" \
+      --limit "$EXPLORE_LIMIT" \
+      ${EXPLORE_HOTWORDS:+--hotwords "$EXPLORE_HOTWORDS"} \
+      ${EXPLORE_NAMESPACES:+--namespaces "$EXPLORE_NAMESPACES"})
+    if [[ -z "$PATTERNS" ]]; then
+      PATTERNS="$explore_candidates"
+    fi
+    if [[ -z "$CHOSEN" && "$AIF_SELECT" != true ]]; then
+      CHOSEN="$explore_chosen"
+    fi
+  fi
+  if [[ ${#args[@]} -eq 0 ]]; then
+    if [[ ! -f "$ROOT/$EXPLORE_PROMPT_FILE" ]]; then
+      # Fall back to codex prompt file if claude-specific doesn't exist
+      if [[ -f "$ROOT/docs/codex-exploratory-mission.md" ]]; then
+        EXPLORE_PROMPT_FILE="docs/codex-exploratory-mission.md"
+      else
+        echo "[fuclaude] explore prompt file not found: $EXPLORE_PROMPT_FILE" >&2
+        exit 2
+      fi
+    fi
+    prompt=$(awk 'BEGIN{inside=0} /^```/{if(inside){exit} else {inside=1; next}} inside{print}' "$ROOT/$EXPLORE_PROMPT_FILE")
+    if [[ -z "$prompt" ]]; then
+      echo "[fuclaude] explore prompt missing fenced block in $EXPLORE_PROMPT_FILE" >&2
+      exit 2
+    fi
+    PRINT_MODE=true
+    args=("-p" "$prompt")
+  fi
+fi
+
+if [[ -n "$CHOSEN" && -n "$CLOCK_IN" ]]; then
+  echo "[fuclaude] warning: --chosen is ignored when --clock-in is provided" >&2
+fi
+
 # Create marker file for timing comparison (before claude runs)
 touch -d "$START_ISO" /tmp/fuclaude-marker-$$
+trap 'rm -f /tmp/fuclaude-marker-$$ 2>/dev/null || true' EXIT
 
-# Run claude with all arguments
-claude "$@"
-status=$?
+if $LIVE; then
+  if ! $PRINT_MODE; then
+    echo "[fuclaude] --live requires -p prompt (non-interactive mode)" >&2
+    show_help
+    exit 2
+  fi
+  set -o pipefail
+  clj_args=(--lab-root "$ROOT/lab")
+  if [[ -n "$PATTERNS" ]]; then
+    clj_args+=(--patterns "$PATTERNS")
+  fi
+  if [[ -n "$CHOSEN" ]]; then
+    clj_args+=(--chosen "$CHOSEN")
+  fi
+  if [[ -n "$CLOCK_IN" ]]; then
+    clj_args+=(--clock-in "$CLOCK_IN")
+  fi
+  if [[ -n "$FORCED_SESSION_ID" ]]; then
+    clj_args+=(--session-id "$FORCED_SESSION_ID")
+  fi
+  if [[ -n "$AIF_CONFIG" ]]; then
+    clj_args+=(--aif-config "$AIF_CONFIG")
+  fi
+  if $AIF_SELECT; then
+    clj_args+=(--aif-select)
+  fi
+  if $PROPOSAL_HOOK; then
+    clj_args+=(--proposal-hook)
+  fi
+  # Claude uses --print --output-format stream-json for streaming
+  claude --print --output-format stream-json "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-claude.clj" "${clj_args[@]}"
+  status=${PIPESTATUS[0]}
+else
+  # Non-live mode: run claude normally
+  claude "${args[@]}"
+  status=$?
+fi
 
 # Find Claude session files modified since we started
 CLAUDE_DIR="$HOME/.claude/projects"
@@ -43,30 +250,45 @@ fi
 
 if [[ ${#matches[@]} -eq 0 ]]; then
   echo "[fuclaude] No Claude sessions found for $RUN_CWD since $START_ISO" >&2
-  rm -f /tmp/fuclaude-marker-$$ 2>/dev/null || true
   exit $status
 fi
 
-# Select session if multiple
-if [[ ${#matches[@]} -gt 1 ]]; then
-  echo "[fuclaude] Multiple sessions found:" >&2
-  i=1
+# Session selection with TTY detection
+if [[ -n "$FORCED_SESSION_ID" ]]; then
   for f in "${matches[@]}"; do
-    echo "  $i) $(basename "$f")" >&2
-    i=$((i + 1))
+    if [[ "$(basename "$f" .jsonl)" == "$FORCED_SESSION_ID" ]]; then
+      selected="$f"
+      break
+    fi
   done
-  read -r -p "Select session number: " choice
-  if [[ -z "${choice}" || "${choice}" -lt 1 || "${choice}" -gt ${#matches[@]} ]]; then
-    echo "[fuclaude] Invalid selection" >&2
-    rm -f /tmp/fuclaude-marker-$$ 2>/dev/null || true
+  if [[ -z "${selected-}" ]]; then
+    echo "[fuclaude] session id not found: $FORCED_SESSION_ID" >&2
     exit $status
   fi
-  selected="${matches[$((choice - 1))]}"
+elif [[ ${#matches[@]} -gt 1 ]]; then
+  if [[ ! -t 0 ]]; then
+    echo "[fuclaude] warning: stdin is not a TTY; selecting first session ($(basename "${matches[0]}" .jsonl))" >&2
+    selected="${matches[0]}"
+  else
+    echo "[fuclaude] Multiple sessions found:" >&2
+    i=1
+    for f in "${matches[@]}"; do
+      echo "  $i) $(basename "$f")" >&2
+      i=$((i + 1))
+    done
+    read -r -p "Select session number: " choice
+    if [[ -z "${choice}" || "${choice}" -lt 1 || "${choice}" -gt ${#matches[@]} ]]; then
+      echo "[fuclaude] Invalid selection" >&2
+      exit $status
+    fi
+    selected="${matches[$((choice - 1))]}"
+  fi
 else
   selected="${matches[0]}"
 fi
 
-echo "[fuclaude] Exporting session: $(basename "$selected")" >&2
+session_id="$(basename "$selected" .jsonl)"
+echo "[fuclaude] Exporting session: $session_id" >&2
 
 # Export using the Claude-specific exporter
 clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export-claude.clj" \
@@ -75,11 +297,14 @@ clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export-claude.clj" \
   --lab-root "$ROOT/lab"
 
 clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-equip.clj" \
-  --session-id "$(basename "$selected" .jsonl)" \
+  --session-id "$session_id" \
   --adapter fulab \
   --lab-root "$ROOT/lab"
 
-# Clean up marker
-rm -f /tmp/fuclaude-marker-$$ 2>/dev/null || true
+# Generate summary
+if [[ -f "$ROOT/lab/raw/${session_id}.json" ]]; then
+  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-summarize.clj" \
+    --raw "$ROOT/lab/raw/${session_id}.json"
+fi
 
 exit $status

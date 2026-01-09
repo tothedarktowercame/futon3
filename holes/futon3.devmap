@@ -132,6 +132,7 @@ for coordinated reasoning.
   + however: README/docs still emphasise ants and MUD metaphors and do not ship a simulator/tutorial bundle; roles (training facilitators vs. FUTON6 learners) and release readiness are not declared.
   + then: Package a "Flexiformal Training Ground" release: updated README, tutorials referencing `t4r/` training patterns, sample check sessions, and a minimal simulator that feeds FUTON6's Hyperreal entries; name facilitators (FUTON3 maintainers) and consumers (FUTON6 trainees), and publish readiness criteria (tutorials complete, simulator recorded, onboarding docs updated) before tagging the release.
   + because: Storytelling plus an explicit training ground turns FUTON3 into a reproducible service that upstream layers (FUTON6, FUTON7) can consume and steward.
+  + pattern: Adopt `t4r/supplement` so the training ground demos mirror the Supplement workshop pattern—multi-agent listening infrastructure, governance rehearsal, and design-tension prototyping—anchoring the release narrative in the same staging choreography.
   + next: Aggregate Tatami session proof events into `proof-chain.edn` (per `tatami_store.clj` TODO) so the training ground exports persistent transcripts.
 
 ! instantiated-by: Prototype 10 — System Self-Description & Machine-Readable Manifest [🔃/本 📋/系统]

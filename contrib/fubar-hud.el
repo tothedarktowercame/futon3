@@ -20,6 +20,9 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'json)
+(require 'url)
+(require 'url-http)
 
 (defgroup fubar-hud nil
   "HUD display for fulab pattern-aware sessions."
@@ -37,9 +40,20 @@
   :type 'directory
   :group 'fubar-hud)
 
+(defcustom fubar-hud-server-url
+  "http://localhost:5050"
+  "Base URL for the futon3 server HUD endpoint."
+  :type 'string
+  :group 'fubar-hud)
+
+(defcustom fubar-hud-certify-commit t
+  "When non-nil, request git commit certificates for HUD output."
+  :type 'boolean
+  :group 'fubar-hud)
+
 (defcustom fubar-hud-clojure-deps
   "{:deps {org.clojure/data.json {:mvn/version \"2.5.0\"} futon2/futon2 {:local/root \"../futon2\"}}}"
-  "Clojure deps for running HUD commands."
+  "Clojure deps for running HUD commands (fallback when server unavailable)."
   :type 'string
   :group 'fubar-hud)
 
@@ -53,16 +67,48 @@
   :type 'function
   :group 'fubar-hud)
 
+(defcustom fubar-hud-stream-buffer-name "*FuLab Raw Stream*"
+  "Name of the buffer showing the live fucodex stream."
+  :type 'string
+  :group 'fubar-hud)
+
+(defcustom fubar-hud-staging-file "/tmp/fulab-next.txt"
+  "Path for storing the staged next-move text."
+  :type 'file
+  :group 'fubar-hud)
+
+(defcustom fubar-hud-pause-flag-file "/tmp/fulab-stream-paused"
+  "Path for the pause flag file used by the stream formatter."
+  :type 'file
+  :group 'fubar-hud)
+
+(defcustom fubar-hud-auto-refresh-seconds 2
+  "Seconds between HUD auto-refreshes when the HUD buffer is visible."
+  :type 'number
+  :group 'fubar-hud)
+
 ;;; State
 
 (defvar-local fubar-hud--current-hud nil
   "Current HUD state as plist.")
+
+(defvar-local fubar-hud--prompt-block nil
+  "Cached HUD prompt block.")
 
 (defvar-local fubar-hud--intent nil
   "Current intent string.")
 
 (defvar-local fubar-hud--session-id nil
   "Current session ID.")
+
+(defvar fubar-hud--stream-paused nil
+  "Non-nil when the stream process is paused.")
+
+(defvar fubar-hud--staged-next nil
+  "Staged next-move text, if any.")
+
+(defvar fubar-hud--auto-refresh-timer nil
+  "Timer used to auto-refresh the HUD.")
 
 ;;; Faces
 
@@ -101,7 +147,46 @@
   "Face for tau (confidence) value."
   :group 'fubar-hud)
 
-;;; HUD Building (calls Clojure)
+;;; HUD Building (server-first)
+
+(defun fubar-hud--parse-json (text)
+  (let ((json-object-type 'plist)
+        (json-array-type 'list)
+        (json-key-type 'keyword))
+    (json-read-from-string text)))
+
+(defun fubar-hud--http-post-json (url payload)
+  (let* ((url-request-method "POST")
+         (url-request-extra-headers '(("content-type" . "application/json")))
+         (url-request-data (json-encode payload))
+         (buf (url-retrieve-synchronously url t t 5.0)))
+    (when buf
+      (with-current-buffer buf
+        (unwind-protect
+            (when (boundp 'url-http-end-of-headers)
+              (goto-char url-http-end-of-headers)
+              (let ((body (buffer-substring-no-properties (point) (point-max))))
+                (fubar-hud--parse-json body)))
+          (kill-buffer buf))))))
+
+(defun fubar-hud--build-hud-server (intent &optional patterns)
+  "Build HUD via futon3 server."
+  (let* ((prototypes (when (and patterns (not (string-empty-p patterns)))
+                       (split-string patterns "," t "[[:space:]]+")))
+         (payload `(("intent" . ,(or intent "unspecified"))
+                    ("prototypes" . ,prototypes)
+                    ("pattern-limit" . 4)
+                    ("certify-commit" . ,(and fubar-hud-certify-commit t))
+                    ("repo-root" . ,fubar-hud-futon3-root)))
+         (url (concat (replace-regexp-in-string "/$" "" fubar-hud-server-url)
+                      "/fulab/hud/format"))
+         (result (ignore-errors (fubar-hud--http-post-json url payload))))
+    (when (and result (plist-get result :ok))
+      (let ((hud (plist-get result :hud))
+            (prompt (plist-get result :prompt)))
+        (when prompt
+          (setq fubar-hud--prompt-block prompt))
+        hud))))
 
 (defun fubar-hud--run-clj (command &rest args)
   "Run lab-hud.clj COMMAND with ARGS, return output."
@@ -114,33 +199,42 @@
 
 (defun fubar-hud--build-hud (intent &optional patterns)
   "Build HUD for INTENT, optionally seeding PATTERNS."
-  (let* ((args (list "--intent" (or intent "unspecified")))
-         (args (if patterns
-                   (append args (list "--prototypes" patterns))
-                 args))
-         (output (apply #'fubar-hud--run-clj "build" args)))
-    (condition-case nil
-        (car (read-from-string output))
-      (error nil))))
+  (or (fubar-hud--build-hud-server intent patterns)
+      (let* ((args (list "--intent" (or intent "unspecified")))
+             (args (if patterns
+                       (append args (list "--prototypes" patterns))
+                     args))
+             (output (apply #'fubar-hud--run-clj "build" args)))
+        (condition-case nil
+            (car (read-from-string output))
+          (error nil)))))
 
 (defun fubar-hud--format-hud (hud)
   "Get formatted prompt block for HUD."
-  (let ((temp-file (make-temp-file "fubar-hud-" nil ".edn")))
-    (unwind-protect
-        (progn
-          (with-temp-file temp-file
-            (prin1 hud (current-buffer)))
-          (fubar-hud--run-clj "format" "--hud-file" temp-file))
-      (delete-file temp-file))))
+  (or fubar-hud--prompt-block
+      (let ((temp-file (make-temp-file "fubar-hud-" nil ".edn")))
+        (unwind-protect
+            (progn
+              (with-temp-file temp-file
+                (prin1 hud (current-buffer)))
+              (fubar-hud--run-clj "format" "--hud-file" temp-file))
+          (delete-file temp-file)))))
 
 ;;; Rendering
+
+(defun fubar-hud--normalize-sigil-text (value)
+  "Normalize sigil VALUE to a displayable string."
+  (cond
+   ((stringp value) (decode-coding-string value 'utf-8 t))
+   (value (format "%s" value))
+   (t "")))
 
 (defun fubar-hud--render-sigils (sigils)
   "Render SIGILS as formatted string."
   (if (and sigils (> (length sigils) 0))
       (mapconcat (lambda (s)
-                   (let ((emoji (plist-get s :emoji))
-                         (hanzi (plist-get s :hanzi)))
+                   (let ((emoji (fubar-hud--normalize-sigil-text (plist-get s :emoji)))
+                         (hanzi (fubar-hud--normalize-sigil-text (plist-get s :hanzi))))
                      (propertize (format "%s/%s" emoji hanzi)
                                  'face 'fubar-hud-sigil-face)))
                  sigils " ")
@@ -220,6 +314,11 @@
     (erase-buffer)
     (insert (propertize "━━━ FuLab HUD ━━━\n\n" 'face 'fubar-hud-header-face))
 
+    ;; Session
+    (when fubar-hud--session-id
+      (insert (propertize "Session\n" 'face 'fubar-hud-header-face))
+      (insert "  " (propertize fubar-hud--session-id 'face 'font-lock-constant-face) "\n\n"))
+
     ;; Intent
     (insert (propertize "Intent\n" 'face 'fubar-hud-header-face))
     (insert "  " (propertize (or (plist-get hud :intent) "unspecified")
@@ -243,6 +342,11 @@
     ;; AIF
     (insert (fubar-hud--render-aif (plist-get hud :aif)))
     (insert "\n")
+
+    ;; Staged Next Move
+    (when fubar-hud--staged-next
+      (insert (propertize "Staged Next\n" 'face 'fubar-hud-header-face))
+      (insert "  " (propertize fubar-hud--staged-next 'face 'font-lock-string-face) "\n\n"))
 
     ;; Agent Report (if present)
     (when (plist-get hud :agent-report)
@@ -288,11 +392,19 @@
   (setq fubar-hud--intent intent)
   (fubar-hud-refresh))
 
+(defun fubar-hud-set-session-id (session-id)
+  "Set SESSION-ID and rebuild HUD."
+  (interactive "sSession ID: ")
+  (setq fubar-hud--session-id session-id)
+  (fubar-hud-refresh))
+
 (defun fubar-hud-refresh ()
   "Refresh HUD with current intent."
   (interactive)
   (let ((buf (get-buffer-create fubar-hud-buffer-name)))
     (with-current-buffer buf
+      (setq fubar-hud--prompt-block nil)
+      (setq fubar-hud--staged-next (fubar-hud--read-staging-file))
       (let ((hud (fubar-hud--build-hud fubar-hud--intent)))
         (when hud
           (setq fubar-hud--current-hud hud)
@@ -310,13 +422,34 @@
      buf
      `((side . right)
        (window-width . ,fubar-hud-window-width)
-       (slot . 0)))))
+       (slot . 0))))
+  (fubar-hud--maybe-start-auto-refresh))
 
 (defun fubar-hud-hide ()
   "Hide HUD window."
   (interactive)
   (when-let ((win (get-buffer-window fubar-hud-buffer-name)))
-    (delete-window win)))
+    (delete-window win))
+  (unless (get-buffer-window fubar-hud-buffer-name)
+    (fubar-hud--stop-auto-refresh)))
+
+(defun fubar-hud--maybe-start-auto-refresh ()
+  "Start auto-refresh timer when HUD buffer is visible."
+  (when (and (get-buffer-window fubar-hud-buffer-name)
+             (null fubar-hud--auto-refresh-timer)
+             (numberp fubar-hud-auto-refresh-seconds))
+    (setq fubar-hud--auto-refresh-timer
+          (run-at-time 0 fubar-hud-auto-refresh-seconds
+                       (lambda ()
+                         (when (get-buffer-window fubar-hud-buffer-name)
+                           (with-current-buffer fubar-hud-buffer-name
+                             (fubar-hud-refresh))))))))
+
+(defun fubar-hud--stop-auto-refresh ()
+  "Stop HUD auto-refresh timer."
+  (when fubar-hud--auto-refresh-timer
+    (cancel-timer fubar-hud--auto-refresh-timer)
+    (setq fubar-hud--auto-refresh-timer nil)))
 
 (defun fubar-hud-toggle ()
   "Toggle HUD visibility."
@@ -337,6 +470,55 @@
     (message "No HUD loaded. Use fubar-hud-set-intent first.")
     nil))
 
+(defun fubar-hud--stream-process ()
+  "Return the process for the stream buffer, or nil."
+  (when-let ((buf (get-buffer fubar-hud-stream-buffer-name)))
+    (get-buffer-process buf)))
+
+(defun fubar-hud-toggle-stream-pause ()
+  "Pause or resume the stream process."
+  (interactive)
+  (let ((proc (fubar-hud--stream-process)))
+    (if (not (process-live-p proc))
+        (message "No live stream process for %s" fubar-hud-stream-buffer-name)
+      (if fubar-hud--stream-paused
+          (progn
+            (process-send-signal 'SIGCONT proc)
+            (setq fubar-hud--stream-paused nil)
+            (when (file-exists-p fubar-hud-pause-flag-file)
+              (delete-file fubar-hud-pause-flag-file))
+            (message "Stream resumed"))
+        (process-send-signal 'SIGSTOP proc)
+        (setq fubar-hud--stream-paused t)
+        (with-temp-file fubar-hud-pause-flag-file
+          (insert "paused\n"))
+        (message "Stream paused")))))
+
+(defun fubar-hud--read-staging-file ()
+  "Return the staged next-move text if present."
+  (when (file-exists-p fubar-hud-staging-file)
+    (let ((text (string-trim (with-temp-buffer
+                               (insert-file-contents fubar-hud-staging-file)
+                               (buffer-string)))))
+      (unless (string-empty-p text)
+        text))))
+
+(defun fubar-hud-accept-staged ()
+  "Run fucodex with the staged next-move text."
+  (interactive)
+  (if-let ((text (or fubar-hud--staged-next (fubar-hud--read-staging-file))))
+      (let* ((default-directory fubar-hud-futon3-root)
+             (resume-args (if fubar-hud--session-id
+                            (list "--live" "resume" fubar-hud--session-id text)
+                            (list "--live" "resume" "--last" text))))
+        (apply #'start-process
+               "fucodex-resume"
+               "*FuLab Resume*"
+               "/home/joe/code/futon3/fucodex"
+               resume-args)
+        (message "Sent staged next-move to fucodex."))
+    (message "No staged next-move found.")))
+
 ;;; Mode Definition
 
 (defvar fubar-hud-mode-map
@@ -345,7 +527,9 @@
     (define-key map "i" #'fubar-hud-set-intent)
     (define-key map "q" #'fubar-hud-hide)
     (define-key map "w" #'fubar-hud-copy-pattern-id)
-    (define-key map "p" #'fubar-hud-get-prompt-block)
+    (define-key map "p" #'fubar-hud-toggle-stream-pause)
+    (define-key map "a" #'fubar-hud-accept-staged)
+    (define-key map "y" #'fubar-hud-get-prompt-block)
     map)
   "Keymap for `fubar-hud-mode'.")
 

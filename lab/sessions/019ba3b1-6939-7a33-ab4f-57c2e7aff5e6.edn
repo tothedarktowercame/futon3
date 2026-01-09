@@ -1,0 +1,323 @@
+{:session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+ :session/agent :fucodex,
+ :events
+ [{:event/type :hud/initialized,
+   :hud/id "hud-6a99ff1a-4ea7-49e6-934d-183bca8996a4",
+   :at #inst "2026-01-09T16:57:54.868-00:00",
+   :payload
+   {:agent-report nil,
+    :candidates
+    [{:id "t4r/supplement",
+      :score 0.0,
+      :summary
+      "The Supplement operationalises talk4real’s REPL by staging a multi-agent workshop that prototypes listening infrastructure, governance, and design tensions in real time.",
+      :sigils [{:emoji "👄", :hanzi "口"} {:emoji "🔁", :hanzi "衡"}]}
+     {:id "stack-coherence/futon1-determinism",
+      :score 0.0,
+      :summary
+      "rely on the `Futon1 Deterministic Stack` GitHub Action (`futon1/.github/workflows/futon1-stack-tests.yml`) or run the suites manually (`cd futon1/apps/client && clojure -M:test`, `cd apps/graph-memory && clojure -M:test -m cognitect.test-runner`, `cd apps/nlp-interface && clojure -M:test`). When any leg fails, regenerate `resources/baseline/demo_session.edn` via `clojure -M:baseline/snapshot --write ...` or fix the regression before advancing futons that depend on storage/NLP determinism",
+      :sigils [{:emoji "🧪", :hanzi "律"}]}
+     {:id "software-design/observer-pattern",
+      :score 0.006147787197116348,
+      :summary "以訂閱機制解耦事件發布與處理。",
+      :sigils [{:emoji "📣", :hanzi "觀"}]}
+     {:id "transition/persistence-conditions",
+      :score 0.007042253521126761,
+      :summary "Persistence Requires Infrastructure",
+      :sigils [{:emoji "🧱", :hanzi "稳"} {:emoji "🔁", :hanzi "续"}]}],
+    :sigils
+    [{:emoji "👄", :hanzi "口"}
+     {:emoji "🔁", :hanzi "衡"}
+     {:emoji "🧪", :hanzi "律"}],
+    :paramitas
+    [{:zh "久", :score 0.02535211267605634}
+     {:zh "力", :score 0.05070422535211268}],
+    :aif
+    {:suggested "t4r/supplement",
+     :G-scores
+     {:t4r/supplement -0.1,
+      :stack-coherence/futon1-determinism -0.1,
+      :software-design/observer-pattern 0.006147787197116348,
+      :transition/persistence-conditions -0.09295774647887324},
+     :tau 0.7,
+     :rationale "Lowest G score among 4 candidates"},
+    :certificates
+    [{:certificate/type "git/commit",
+      :certificate/ref "e5a8054215f5ff04429f848d60718eaaff493df1",
+      :certificate/repo "/home/joe/code/futon3"}],
+    :hud/timestamp "2026-01-09T16:57:51Z",
+    :prototypes [],
+    :intent "Staging demo",
+    :hud/id "hud-6a99ff1a-4ea7-49e6-934d-183bca8996a4",
+    :fruits
+    [{:emoji "🍊", :score 0.11374407582938388}
+     {:emoji "🥨", :score 0.3459715639810427}],
+    :session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6"}}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-09T16:57:57.079-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :select,
+    :session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+    :decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-1",
+    :candidates
+    ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+    :chosen "ants/white-space-scout",
+    :aif
+    {:G-chosen 0.23000000000000004,
+     :G-rejected {"ants/pheromone-trail-tuner" 0.23000000000000004},
+     :tau 1.0,
+     :belief-id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-1"}}}
+  {:event/type :turn/completed,
+   :turn 1,
+   :at #inst "2026-01-09T16:57:57.080-00:00"}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-09T16:57:57.194-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :update,
+    :session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+    :aif/state {:belief-updated true},
+    :aif
+    {:prediction-error 0.0,
+     :tau-updated 1.0,
+     :belief-delta
+     {:decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-1",
+      :status :observed}}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-09T16:57:57.213-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-1",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceable-choice,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision captured at turn boundary."}],
+      :risks
+      [{:tag :risk/mismatch,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Pattern may not match actual change."}],
+      :success
+      [{:tag :success/traceable-outcome,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Outcome tied to decision."}],
+      :failure
+      [{:tag :failure/unresolved,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision does not explain outcome."}]},
+     :horizon :immediate,
+     :context/anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-1",
+     :rejections
+     {"ants/white-space-scout"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."},
+      "ants/pheromone-trail-tuner"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."}},
+     :session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+     :chosen nil}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-09T16:57:57.343-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-1",
+     :session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+     :pattern/id nil,
+     :instance/id "pur-1-a",
+     :decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-1",
+     :fields
+     {:context "Captured at turn completion.",
+      :if "A decision was needed.",
+      :however "Fit only known after the turn.",
+      :then "Recorded the observed outcome.",
+      :because "Need traceability for decisions.",
+      :next-steps "Compare decision vs outcome."},
+     :anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :hud/agent-reported,
+   :hud/id "hud-6a99ff1a-4ea7-49e6-934d-183bca8996a4",
+   :at #inst "2026-01-09T16:57:57.472-00:00",
+   :payload
+   {:hud/id "hud-6a99ff1a-4ea7-49e6-934d-183bca8996a4",
+    :session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+    :turn 1,
+    :report
+    {:applied "t4r/supplement",
+     :notes
+     "Staging demo aligns with a real-time, multi-agent workshop-style prototype check."}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-09T16:57:57.547-00:00",
+   :payload
+   {:session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-1",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :chosen "ants/white-space-scout",
+     :aif
+     {:G-chosen 0.23000000000000004,
+      :G-rejected {"ants/pheromone-trail-tuner" 0.23000000000000004},
+      :tau 1.0,
+      :belief-id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-09T16:57:57.616-00:00",
+   :payload
+   {:session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta
+      {:decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-1",
+       :status :observed}}}}}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-09T17:01:39.186-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :select,
+    :session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+    :decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-2",
+    :candidates
+    ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+    :chosen "ants/white-space-scout",
+    :aif
+    {:G-chosen 0.23000000000000004,
+     :G-rejected {"ants/pheromone-trail-tuner" 0.23000000000000004},
+     :tau 1.0,
+     :belief-id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-2"}}}
+  {:event/type :turn/completed,
+   :turn 2,
+   :at #inst "2026-01-09T17:01:39.187-00:00"}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-09T17:01:39.453-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :update,
+    :session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+    :aif/state {:belief-updated true},
+    :aif
+    {:prediction-error 0.0,
+     :tau-updated 1.0,
+     :belief-delta
+     {:decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-2",
+      :status :observed}}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-09T17:01:39.464-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-2",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceable-choice,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 2}},
+        :note "Decision captured at turn boundary."}],
+      :risks
+      [{:tag :risk/mismatch,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 2}},
+        :note "Pattern may not match actual change."}],
+      :success
+      [{:tag :success/traceable-outcome,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 2}},
+        :note "Outcome tied to decision."}],
+      :failure
+      [{:tag :failure/unresolved,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 2}},
+        :note "Decision does not explain outcome."}]},
+     :horizon :immediate,
+     :context/anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 2}}],
+     :decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-2",
+     :rejections
+     {"ants/white-space-scout"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."},
+      "ants/pheromone-trail-tuner"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."}},
+     :session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+     :chosen nil}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-09T17:01:39.662-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-2",
+     :session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+     :pattern/id nil,
+     :instance/id "pur-2-a",
+     :decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-2",
+     :fields
+     {:context "Captured at turn completion.",
+      :if "A decision was needed.",
+      :however "Fit only known after the turn.",
+      :then "Recorded the observed outcome.",
+      :because "Need traceability for decisions.",
+      :next-steps "Compare decision vs outcome."},
+     :anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 2}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :hud/agent-reported,
+   :hud/id nil,
+   :at #inst "2026-01-09T17:01:39.818-00:00",
+   :payload
+   {:hud/id nil,
+    :session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+    :turn 2,
+    :report
+    {:applied "t4r/supplement",
+     :notes
+     "Attempted to exercise the full staging script as part of the live workshop-style verification, but the network restriction blocked the run."}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-09T17:01:39.995-00:00",
+   :payload
+   {:session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-2",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :chosen "ants/white-space-scout",
+     :aif
+     {:G-chosen 0.23000000000000004,
+      :G-rejected {"ants/pheromone-trail-tuner" 0.23000000000000004},
+      :tau 1.0,
+      :belief-id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-2"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-09T17:01:40.164-00:00",
+   :payload
+   {:session/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta
+      {:decision/id "019ba3b1-6939-7a33-ab4f-57c2e7aff5e6:turn-2",
+       :status :observed}}}}}]}

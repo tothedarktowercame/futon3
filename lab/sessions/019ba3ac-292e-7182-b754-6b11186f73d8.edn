@@ -1,0 +1,189 @@
+{:session/id "019ba3ac-292e-7182-b754-6b11186f73d8",
+ :session/agent :fucodex,
+ :events
+ [{:event/type :hud/initialized,
+   :hud/id "hud-3c0bdf09-14c0-416d-85da-de3456ed44e2",
+   :at #inst "2026-01-09T16:52:10.905-00:00",
+   :payload
+   {:agent-report nil,
+    :candidates
+    [{:id "t4r/supplement",
+      :score 0.0,
+      :summary
+      "The Supplement operationalises talk4real’s REPL by staging a multi-agent workshop that prototypes listening infrastructure, governance, and design tensions in real time.",
+      :sigils [{:emoji "👄", :hanzi "口"} {:emoji "🔁", :hanzi "衡"}]}
+     {:id "stack-coherence/futon1-determinism",
+      :score 0.0,
+      :summary
+      "rely on the `Futon1 Deterministic Stack` GitHub Action (`futon1/.github/workflows/futon1-stack-tests.yml`) or run the suites manually (`cd futon1/apps/client && clojure -M:test`, `cd apps/graph-memory && clojure -M:test -m cognitect.test-runner`, `cd apps/nlp-interface && clojure -M:test`). When any leg fails, regenerate `resources/baseline/demo_session.edn` via `clojure -M:baseline/snapshot --write ...` or fix the regression before advancing futons that depend on storage/NLP determinism",
+      :sigils [{:emoji "🧪", :hanzi "律"}]}
+     {:id "software-design/observer-pattern",
+      :score 0.006147787197116348,
+      :summary "以訂閱機制解耦事件發布與處理。",
+      :sigils [{:emoji "📣", :hanzi "觀"}]}
+     {:id "transition/persistence-conditions",
+      :score 0.007042253521126761,
+      :summary "Persistence Requires Infrastructure",
+      :sigils [{:emoji "🧱", :hanzi "稳"} {:emoji "🔁", :hanzi "续"}]}],
+    :sigils
+    [{:emoji "👄", :hanzi "口"}
+     {:emoji "🔁", :hanzi "衡"}
+     {:emoji "🧪", :hanzi "律"}],
+    :paramitas
+    [{:zh "久", :score 0.02535211267605634}
+     {:zh "力", :score 0.05070422535211268}],
+    :aif
+    {:suggested "t4r/supplement",
+     :G-scores
+     {:t4r/supplement -0.1,
+      :stack-coherence/futon1-determinism -0.1,
+      :software-design/observer-pattern 0.006147787197116348,
+      :transition/persistence-conditions -0.09295774647887324},
+     :tau 0.7,
+     :rationale "Lowest G score among 4 candidates"},
+    :certificates
+    [{:certificate/type "git/commit",
+      :certificate/ref "e5a8054215f5ff04429f848d60718eaaff493df1",
+      :certificate/repo "/home/joe/code/futon3"}],
+    :hud/timestamp "2026-01-09T16:52:07Z",
+    :prototypes [],
+    :intent "Staging demo",
+    :hud/id "hud-3c0bdf09-14c0-416d-85da-de3456ed44e2",
+    :fruits
+    [{:emoji "🍊", :score 0.11374407582938388}
+     {:emoji "🥨", :score 0.3459715639810427}],
+    :session/id "019ba3ac-292e-7182-b754-6b11186f73d8"}}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-09T16:52:11.866-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :select,
+    :session/id "019ba3ac-292e-7182-b754-6b11186f73d8",
+    :decision/id "019ba3ac-292e-7182-b754-6b11186f73d8:turn-1",
+    :candidates
+    ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+    :chosen "ants/white-space-scout",
+    :aif
+    {:G-chosen 0.23000000000000004,
+     :G-rejected {"ants/pheromone-trail-tuner" 0.23000000000000004},
+     :tau 1.0,
+     :belief-id "019ba3ac-292e-7182-b754-6b11186f73d8:turn-1"}}}
+  {:event/type :turn/completed,
+   :turn 1,
+   :at #inst "2026-01-09T16:52:11.867-00:00"}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-09T16:52:11.985-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-1",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceable-choice,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision captured at turn boundary."}],
+      :risks
+      [{:tag :risk/mismatch,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Pattern may not match actual change."}],
+      :success
+      [{:tag :success/traceable-outcome,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Outcome tied to decision."}],
+      :failure
+      [{:tag :failure/unresolved,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision does not explain outcome."}]},
+     :horizon :immediate,
+     :context/anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :decision/id "019ba3ac-292e-7182-b754-6b11186f73d8:turn-1",
+     :rejections
+     {"ants/white-space-scout"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."},
+      "ants/pheromone-trail-tuner"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."}},
+     :session/id "019ba3ac-292e-7182-b754-6b11186f73d8",
+     :chosen nil}}}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-09T16:52:11.994-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :update,
+    :session/id "019ba3ac-292e-7182-b754-6b11186f73d8",
+    :aif/state {:belief-updated true},
+    :aif
+    {:prediction-error 0.0,
+     :tau-updated 1.0,
+     :belief-delta
+     {:decision/id "019ba3ac-292e-7182-b754-6b11186f73d8:turn-1",
+      :status :observed}}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-09T16:52:12.110-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-1",
+     :session/id "019ba3ac-292e-7182-b754-6b11186f73d8",
+     :pattern/id nil,
+     :instance/id "pur-1-a",
+     :decision/id "019ba3ac-292e-7182-b754-6b11186f73d8:turn-1",
+     :fields
+     {:context "Captured at turn completion.",
+      :if "A decision was needed.",
+      :however "Fit only known after the turn.",
+      :then "Recorded the observed outcome.",
+      :because "Need traceability for decisions.",
+      :next-steps "Compare decision vs outcome."},
+     :anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :hud/agent-reported,
+   :hud/id "hud-3c0bdf09-14c0-416d-85da-de3456ed44e2",
+   :at #inst "2026-01-09T16:52:12.190-00:00",
+   :payload
+   {:hud/id "hud-3c0bdf09-14c0-416d-85da-de3456ed44e2",
+    :session/id "019ba3ac-292e-7182-b754-6b11186f73d8",
+    :turn 1,
+    :report
+    {:applied "t4r/supplement",
+     :notes
+     "Staging demo focus aligns with a concrete next action that operationalizes the protocol outline."}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-09T16:52:12.251-00:00",
+   :payload
+   {:session/id "019ba3ac-292e-7182-b754-6b11186f73d8",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "019ba3ac-292e-7182-b754-6b11186f73d8:turn-1",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :chosen "ants/white-space-scout",
+     :aif
+     {:G-chosen 0.23000000000000004,
+      :G-rejected {"ants/pheromone-trail-tuner" 0.23000000000000004},
+      :tau 1.0,
+      :belief-id "019ba3ac-292e-7182-b754-6b11186f73d8:turn-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-09T16:52:12.321-00:00",
+   :payload
+   {:session/id "019ba3ac-292e-7182-b754-6b11186f73d8",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta
+      {:decision/id "019ba3ac-292e-7182-b754-6b11186f73d8:turn-1",
+       :status :observed}}}}}]}

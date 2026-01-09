@@ -192,6 +192,7 @@ fi
 
 # HUD mode: inject pattern context into prompt
 HUD_FILE=""
+HUD_JSON_FILE=""
 if $HUD_MODE; then
   HUD_ENDPOINT="${HUD_SERVER%/}/fulab/hud/format"
   HUD_PAYLOAD=$(HUD_INTENT="$HUD_INTENT" PATTERNS="$PATTERNS" EXPLORE_LIMIT="$EXPLORE_LIMIT" RUN_CWD="$RUN_CWD" python3 - <<'PY'
@@ -225,6 +226,9 @@ PY
     echo "[fucodex] HUD server not reachable at $HUD_ENDPOINT" >&2
     exit 2
   }
+  HUD_JSON_FILE="$(mktemp -t fucodex-hud-XXXXXX.json)"
+  trap '[[ -n "${HUD_JSON_FILE-}" ]] && rm -f "$HUD_JSON_FILE"' EXIT
+  printf "%s" "$HUD_RESPONSE" > "$HUD_JSON_FILE"
 
   HUD_BLOCK=$(HUD_RESPONSE="$HUD_RESPONSE" python3 - <<'PY'
 import json, os, sys
@@ -322,6 +326,9 @@ if $LIVE; then
   fi
   if [[ -n "$AIF_CONFIG" ]]; then
     clj_args+=(--aif-config "$AIF_CONFIG")
+  fi
+  if [[ -n "$HUD_JSON_FILE" ]]; then
+    clj_args+=(--hud-json "$HUD_JSON_FILE")
   fi
   if $AIF_SELECT; then
     clj_args+=(--aif-select)

@@ -5,10 +5,11 @@
             [clojure.string :as str]
             [futon2.aif.engine :as engine]
             [futon2.aif.adapters.fulab :as fulab]
+            [futon3.fulab.hud :as hud]
             [futon3.fulab.pattern-competence :as pc]))
 
 (defn usage []
-  (println "Usage: dev/lab-stream-codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook]")
+  (println "Usage: dev/lab-stream-codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook] [--hud-json PATH]")
   (println "Reads codex --json stream from stdin and appends session + AIF events.")
   (println "Clock-in entries are consumed in order, one per turn (override --chosen for that turn)."))
 
@@ -26,6 +27,7 @@
         "--aif-config" (recur (assoc opts :aif-config (second remaining)) (nnext remaining))
         "--aif-select" (recur (assoc opts :aif-select true) (rest remaining))
         "--proposal-hook" (recur (assoc opts :proposal-hook true) (rest remaining))
+        "--hud-json" (recur (assoc opts :hud-json (second remaining)) (nnext remaining))
         "--help" (recur (assoc opts :help true) (rest remaining))
         (recur (update opts :unknown (fnil conj []) (first remaining)) (rest remaining))))))
 
@@ -33,6 +35,12 @@
   (try
     (json/read-str line :key-fn keyword)
     (catch Throwable _ nil)))
+
+(defn read-hud-json [path]
+  (when (and path (.exists (io/file path)))
+    (try
+      (json/read-str (slurp path) :key-fn keyword)
+      (catch Throwable _ nil))))
 
 (defn start-heartbeat! []
   (let [state (atom {:seen? false :ticks 0})
@@ -220,7 +228,7 @@
     (vec candidates)))
 
 (defn -main [& args]
-  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config aif-select proposal-hook]} (parse-args args)
+  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config aif-select proposal-hook hud-json]} (parse-args args)
         repo-root (System/getProperty "user.dir")
         lab-root (or lab-root (str (io/file repo-root "lab")))
         clock-ins (parse-csv clock-in)
@@ -230,6 +238,8 @@
         candidates (ensure-candidates base-candidates clock-ins)
         aif-config (read-aif-config aif-config)
         engine (engine/new-engine (fulab/new-adapter aif-config) {:beliefs {}})
+        hud-response (read-hud-json hud-json)
+        hud-state (:hud hud-response)
         state (atom {:lab-root lab-root
                      :thread-id nil
                      :session-id session-id
@@ -240,6 +250,9 @@
                      :clock-in-current nil
                      :aif-config aif-config
                      :aif-config-logged? false
+                     :hud hud-state
+                     :hud-logged? false
+                     :last-agent-report nil
                      :aif-select? (boolean aif-select)
                      :proposal-hook? (boolean proposal-hook)
                      :tau-cache (or (read-tau-cache lab-root) {})})
@@ -272,6 +285,14 @@
                                          :turn (last-turn session)
                                          :clock-in-queue remaining)
                         (ensure-raw-writer state)
+                        (when (and (:hud @state) (not (:hud-logged? @state)))
+                          (let [hud-id (get-in @state [:hud :hud/id])]
+                            (append-event! state {:event/type :hud/initialized
+                                                  :hud/id hud-id
+                                                  :at (now-inst)
+                                                  :payload (assoc (:hud @state)
+                                                                  :session/id session-id)}))
+                          (swap! state assoc :hud-logged? true))
                         (when (and (:aif-config @state) (not (:aif-config-logged? @state)))
                           (append-event! state {:event/type :aif/config
                                                 :at (now-inst)
@@ -280,6 +301,13 @@
                           (swap! state assoc :aif-config-logged? true)))))
                   (when (:thread-id @state)
                     (write-raw-line! state line))
+                  (when (and (= (:type event) "item.completed")
+                             (= (get-in event [:item :type]) "agent_message"))
+                    (let [text (get-in event [:item :text])
+                          report (when (string? text)
+                                   (hud/parse-agent-report text))]
+                      (when report
+                        (swap! state assoc :last-agent-report report))))
                   (when (= (:type event) "turn.completed")
                     (let [turn (inc (:turn @state))
                           session-id (:session-id @state)
@@ -326,6 +354,16 @@
                       (append-event! state {:event/type :pattern/use-claimed
                                             :at (now-inst)
                                             :payload {:pur pur}})
+                      (when-let [report (:last-agent-report @state)]
+                        (let [hud-id (get-in @state [:hud :hud/id])]
+                          (append-event! state {:event/type :hud/agent-reported
+                                                :hud/id hud-id
+                                                :at (now-inst)
+                                                :payload {:hud/id hud-id
+                                                          :session/id session-id
+                                                          :turn turn
+                                                          :report report}}))
+                        (swap! state assoc :last-agent-report nil))
                       (when (and (:proposal-hook? @state) (< (count candidates) 2))
                         (append-event! state (proposal-draft session-id turn candidates)))
                       (append-event! state (summary-event session-id :psr selection))

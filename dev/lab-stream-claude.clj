@@ -6,10 +6,11 @@
             [clojure.string :as str]
             [futon2.aif.engine :as engine]
             [futon2.aif.adapters.fulab :as fulab]
+            [futon3.fulab.hud :as hud]
             [futon3.fulab.pattern-competence :as pc]))
 
 (defn usage []
-  (println "Usage: dev/lab-stream-claude.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook]")
+  (println "Usage: dev/lab-stream-claude.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook] [--hud-json PATH]")
   (println "Reads Claude --print --output-format stream-json from stdin and appends session + AIF events.")
   (println "Clock-in entries are consumed in order, one per turn (override --chosen for that turn)."))
 
@@ -27,6 +28,7 @@
         "--aif-config" (recur (assoc opts :aif-config (second remaining)) (nnext remaining))
         "--aif-select" (recur (assoc opts :aif-select true) (rest remaining))
         "--proposal-hook" (recur (assoc opts :proposal-hook true) (rest remaining))
+        "--hud-json" (recur (assoc opts :hud-json (second remaining)) (nnext remaining))
         "--help" (recur (assoc opts :help true) (rest remaining))
         (recur (update opts :unknown (fnil conj []) (first remaining)) (rest remaining))))))
 
@@ -34,6 +36,12 @@
   (try
     (json/read-str line :key-fn keyword)
     (catch Throwable _ nil)))
+
+(defn read-hud-json [path]
+  (when (and path (.exists (io/file path)))
+    (try
+      (json/read-str (slurp path) :key-fn keyword)
+      (catch Throwable _ nil))))
 
 (defn now-inst []
   (java.util.Date.))
@@ -282,7 +290,7 @@
         (write-tau-cache! (:lab-root @state) next-cache)))))
 
 (defn -main [& args]
-  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config aif-select proposal-hook]} (parse-args args)
+  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config aif-select proposal-hook hud-json]} (parse-args args)
         repo-root (System/getProperty "user.dir")
         lab-root (or lab-root (str (io/file repo-root "lab")))
         clock-ins (parse-csv clock-in)
@@ -293,6 +301,8 @@
         aif-cfg (read-aif-config aif-config)
         engine (engine/new-engine (fulab/new-adapter aif-cfg) {:beliefs {}})
         generated-session-id (or session-id (str (java.util.UUID/randomUUID)))
+        hud-response (read-hud-json hud-json)
+        hud-state (:hud hud-response)
         state (atom {:lab-root lab-root
                      :session-id generated-session-id
                      :session nil
@@ -302,6 +312,9 @@
                      :clock-in-current nil
                      :aif-config aif-cfg
                      :aif-config-logged? false
+                     :hud hud-state
+                     :hud-logged? false
+                     :last-agent-report nil
                      :aif-select? (boolean aif-select)
                      :proposal-hook? (boolean proposal-hook)
                      :tau-cache (or (read-tau-cache lab-root) {})
@@ -336,6 +349,14 @@
                                      :clock-in-queue remaining
                                      :initialized? true)
                     (ensure-raw-writer state)
+                    (when (and (:hud @state) (not (:hud-logged? @state)))
+                      (let [hud-id (get-in @state [:hud :hud/id])]
+                        (append-event! state {:event/type :hud/initialized
+                                              :hud/id hud-id
+                                              :at (now-inst)
+                                              :payload (assoc (:hud @state)
+                                                              :session/id session-id)}))
+                      (swap! state assoc :hud-logged? true))
                     (when (and aif-cfg (not (:aif-config-logged? @state)))
                       (append-event! state {:event/type :aif/config
                                             :at (now-inst)
@@ -345,9 +366,36 @@
               ;; Write raw line if initialized
               (when (:initialized? @state)
                 (write-raw-line! state line))
+              ;; Capture text content for agent report parsing
+              (when (and (= "content_block_delta" (:type event))
+                         (= "text_delta" (get-in event [:delta :type])))
+                (let [text (get-in event [:delta :text])]
+                  (when (string? text)
+                    (swap! state update :accumulated-text (fnil str "") text))))
+              ;; Parse agent report on message stop
+              (when (= "message_stop" (:type event))
+                (let [text (:accumulated-text @state)
+                      report (when (string? text)
+                               (hud/parse-agent-report text))]
+                  (when report
+                    (swap! state assoc :last-agent-report report))
+                  (swap! state dissoc :accumulated-text)))
               ;; Handle turn completion
               (when (and (:initialized? @state) (is-turn-complete? event))
-                (process-turn-complete! state candidates chosen aif-cfg engine)))))
+                (process-turn-complete! state candidates chosen aif-cfg engine)
+                ;; Log agent report if present
+                (when-let [report (:last-agent-report @state)]
+                  (let [hud-id (get-in @state [:hud :hud/id])
+                        session-id (:session-id @state)
+                        turn (:turn @state)]
+                    (append-event! state {:event/type :hud/agent-reported
+                                          :hud/id hud-id
+                                          :at (now-inst)
+                                          :payload {:hud/id hud-id
+                                                    :session/id session-id
+                                                    :turn turn
+                                                    :report report}}))
+                  (swap! state assoc :last-agent-report nil))))))
         (remove-tap tap-listener)))))
 
 (apply -main *command-line-args*)

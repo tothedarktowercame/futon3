@@ -29,6 +29,19 @@ The AIF evidence map is optional. When present, it must match the schema in
 {:g-mean 0.842
  :tau-range [0.12 0.88]
  :action-counts {:observe 12 :act 4}
+ :observation-vector {:test-status :pass
+                      :diff-size 42}
+ :observation-coverage {:observed 8
+                        :total 12
+                        :coverage 0.6666666667}
+ :precision-registry {:tests 0.9
+                      :tool-output 0.6}
+ :g-terms {:risk 0.31 :info-gain 0.12} ; optional
+ :g-term-channels {:risk {:observation-keys [:test-status]
+                          :precision-channels [:tests]}} ; optional
+ :g-term-traceability {:terms [:risk :info-gain]
+                       :with-provenance [:risk]
+                       :missing-provenance [:info-gain]} ; optional
  :constraint-violations ["pattern-constraint-failed@act"]} ; optional
 ```
 
@@ -36,6 +49,12 @@ Fields:
 - `:g-mean` - average of the per-step `:G` values in the episode.
 - `:tau-range` - `[min max]` of per-step precision `:tau`.
 - `:action-counts` - frequency map of `:action` values.
+- `:observation-vector` - optional typed snapshot of the latest observation features.
+- `:observation-coverage` - optional summary of how many steps reported observation vectors.
+- `:precision-registry` - optional per-channel precision weights for evidence sources.
+- `:g-terms` - optional mean value per G term when per-step breakdowns are present.
+- `:g-term-channels` - optional term-to-channel summary derived from provenance.
+- `:g-term-traceability` - optional coverage of which terms include provenance.
 - `:constraint-violations` - optional list of failed constraints (if any).
 
 Unknown fields are rejected by validation.
@@ -46,6 +65,12 @@ The extraction logic lives in `src/futon3/aif_bridge.clj`:
 - `:g-mean` is computed from `:G` across all steps.
 - `:tau-range` is computed from `[:perception :prec :tau]` (or `[:prec :tau]`).
 - `:action-counts` is computed from per-step `:action` values.
+- `:observation-vector` is the most recent non-empty normalized observation map.
+- `:observation-coverage` counts steps with non-empty observation vectors.
+- `:precision-registry` is the most recent non-empty precision registry map.
+- `:g-terms` averages the per-step G term breakdown when provided by the engine.
+- `:g-term-channels` summarizes observation keys + precision channels seen in term provenance.
+- `:g-term-traceability` flags terms missing provenance.
 - `:constraint-violations` is derived from `[:pattern-trace :constraint-ok?]`
   when false.
 
@@ -77,7 +102,14 @@ action-counts show whether a policy is shifting in behavior.
  :context "AIF episode with 40 ticks"
  :aif-trace {:g-mean 0.842
              :tau-range [0.12 0.88]
-             :action-counts {:observe 12 :act 4}}}
+ :action-counts {:observe 12 :act 4}
+ :observation-vector {:test-status :pass
+                      :diff-size 42}
+ :observation-coverage {:observed 8
+                        :total 12
+                        :coverage 0.6666666667}
+ :precision-registry {:tests 0.9
+                      :tool-output 0.6}}}
 ```
 
 Proof excerpt:
@@ -87,7 +119,14 @@ Proof excerpt:
  :pattern/id "mojo/west"
  :check/aif-trace {:g-mean 0.842
                    :tau-range [0.12 0.88]
-                   :action-counts {:observe 12 :act 4}}
+ :action-counts {:observe 12 :act 4}
+ :observation-vector {:test-status :pass
+                      :diff-size 42}
+ :observation-coverage {:observed 8
+                        :total 12
+                        :coverage 0.6666666667}
+ :precision-registry {:tests 0.9
+                      :tool-output 0.6}}
  :proof/status :ready}
 ```
 

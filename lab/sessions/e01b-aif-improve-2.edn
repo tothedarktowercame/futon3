@@ -1,0 +1,153 @@
+{:session/id "e01b-aif-improve-2",
+ :session/agent :fucodex,
+ :events
+ [{:event/type :aif/config,
+   :at #inst "2026-01-09T11:23:27.698-00:00",
+   :payload
+   {:session/id "e01b-aif-improve-2",
+    :config
+    {:g/weights {:base 0.1, :anchors 0.05, :forecast 0.02},
+     :tau/scale 1.0,
+     :tau/min 0.1,
+     :tau/max 2.0}}}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-09T11:28:07.833-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :select,
+    :session/id "e01b-aif-improve-2",
+    :decision/id "e01b-aif-improve-2:turn-1",
+    :candidates
+    ["aif/belief-state-operational-hypotheses"
+     "aif/structured-observation-vector"
+     "aif/evidence-precision-registry"
+     "aif/term-to-channel-traceability"],
+    :chosen "aif/belief-state-operational-hypotheses",
+    :aif
+    {:G-chosen 0.23000000000000004,
+     :G-rejected
+     {"aif/structured-observation-vector" 0.23000000000000004,
+      "aif/evidence-precision-registry" 0.23000000000000004,
+      "aif/term-to-channel-traceability" 0.23000000000000004},
+     :tau 1.0,
+     :belief-id "e01b-aif-improve-2:turn-1"}}}
+  {:event/type :turn/completed,
+   :turn 1,
+   :at #inst "2026-01-09T11:28:07.834-00:00"}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-09T11:28:07.881-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-1",
+     :candidates
+     ["aif/belief-state-operational-hypotheses"
+      "aif/structured-observation-vector"
+      "aif/evidence-precision-registry"
+      "aif/term-to-channel-traceability"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceable-choice,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision captured at turn boundary."}],
+      :risks
+      [{:tag :risk/mismatch,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Pattern may not match actual change."}],
+      :success
+      [{:tag :success/traceable-outcome,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Outcome tied to decision."}],
+      :failure
+      [{:tag :failure/unresolved,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision does not explain outcome."}]},
+     :horizon :immediate,
+     :aif/explainer
+     "AIF selected aif/belief-state-operational-hypotheses (G=0.230, next-best=0.230, tau=1.000).",
+     :context/anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :decision/id "e01b-aif-improve-2:turn-1",
+     :rejections
+     {"aif/structured-observation-vector"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."},
+      "aif/evidence-precision-registry"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."},
+      "aif/term-to-channel-traceability"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."}},
+     :session/id "e01b-aif-improve-2",
+     :chosen "aif/belief-state-operational-hypotheses"}}}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-09T11:28:07.890-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :update,
+    :session/id "e01b-aif-improve-2",
+    :aif/state {:belief-updated true},
+    :aif
+    {:prediction-error 0.0,
+     :tau-updated 1.0,
+     :belief-delta
+     {:decision/id "e01b-aif-improve-2:turn-1", :status :observed}}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-09T11:28:07.971-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-1",
+     :session/id "e01b-aif-improve-2",
+     :pattern/id "aif/belief-state-operational-hypotheses",
+     :instance/id "pur-1-a",
+     :decision/id "e01b-aif-improve-2:turn-1",
+     :fields
+     {:context "Captured at turn completion.",
+      :if "A decision was needed.",
+      :however "Fit only known after the turn.",
+      :then "Recorded the observed outcome.",
+      :because "Need traceability for decisions.",
+      :next-steps "Compare decision vs outcome."},
+     :anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-09T11:28:08.040-00:00",
+   :payload
+   {:session/id "e01b-aif-improve-2",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "e01b-aif-improve-2:turn-1",
+     :candidates
+     ["aif/belief-state-operational-hypotheses"
+      "aif/structured-observation-vector"
+      "aif/evidence-precision-registry"
+      "aif/term-to-channel-traceability"],
+     :chosen "aif/belief-state-operational-hypotheses",
+     :aif
+     {:G-chosen 0.23000000000000004,
+      :G-rejected
+      {"aif/structured-observation-vector" 0.23000000000000004,
+       "aif/evidence-precision-registry" 0.23000000000000004,
+       "aif/term-to-channel-traceability" 0.23000000000000004},
+      :tau 1.0,
+      :belief-id "e01b-aif-improve-2:turn-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-09T11:28:08.102-00:00",
+   :payload
+   {:session/id "e01b-aif-improve-2",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta
+      {:decision/id "e01b-aif-improve-2:turn-1",
+       :status :observed}}}}}]}

@@ -13,11 +13,53 @@
 (def ^:private lock (Object.))
 (def ^:private catalog (atom nil))
 
+(def ^:private aif-observation-vector-schema
+  [:map {:closed true}
+   [:test-status {:optional true} [:or :string :keyword]]
+   [:compile-status {:optional true} [:or :string :keyword]]
+   [:diff-size {:optional true} :int]
+   [:failing-spec-count {:optional true} :int]
+   [:user-constraints {:optional true} [:vector :string]]
+   [:time-since-anchor {:optional true} :double]
+   [:contradiction-flags {:optional true} [:vector [:or :string :keyword]]]])
+
+(def ^:private aif-precision-registry-schema
+  [:map {:closed true}
+   [:tests {:optional true} :double]
+   [:typecheck {:optional true} :double]
+   [:static-analysis {:optional true} :double]
+   [:tool-output {:optional true} :double]
+   [:user-constraints {:optional true} :double]
+   [:model-inference {:optional true} :double]])
+
+(def ^:private aif-term-channel-schema
+  [:map {:closed true}
+   [:observation-keys [:vector [:or :keyword :string]]]
+   [:precision-channels [:vector [:or :keyword :string]]]])
+
+(def ^:private aif-observation-coverage-schema
+  [:map {:closed true}
+   [:observed :int]
+   [:total :int]
+   [:coverage :double]])
+
+(def ^:private aif-term-traceability-schema
+  [:map {:closed true}
+   [:terms [:vector [:or :keyword :string]]]
+   [:with-provenance [:vector [:or :keyword :string]]]
+   [:missing-provenance [:vector [:or :keyword :string]]]])
+
 (def ^:private aif-evidence-schema
-  [:map
+  [:map {:closed true}
    [:g-mean :double]
    [:tau-range [:tuple :double :double]]
    [:action-counts [:map-of :keyword :int]]
+   [:observation-vector {:optional true} aif-observation-vector-schema]
+   [:observation-coverage {:optional true} aif-observation-coverage-schema]
+   [:precision-registry {:optional true} aif-precision-registry-schema]
+   [:g-terms {:optional true} [:map-of :keyword :double]]
+   [:g-term-channels {:optional true} [:map-of :keyword aif-term-channel-schema]]
+   [:g-term-traceability {:optional true} aif-term-traceability-schema]
    [:constraint-violations {:optional true} [:vector :string]]])
 
 (def ^:private request-schema

@@ -1,0 +1,199 @@
+{:session/id "aif-layer-2026-02-10-003",
+ :session/ancestor-id "aif-layer-2026-02-10-002",
+ :session/agent :codex,
+ :session/cwd "/home/joe/code/futon3",
+ :events
+ [{:event/type :clock-in/start,
+   :clock-in/pattern-id "aif/structured-observation-vector",
+   :clock-in/intent "Add observation coverage details to AIF evidence summaries.",
+   :at #inst "2026-02-10T12:10:00.000-00:00"}
+  {:event/type :clock-in/start,
+   :clock-in/pattern-id "aif/term-to-channel-traceability",
+   :clock-in/intent "Expose term provenance coverage in AIF evidence summaries.",
+   :at #inst "2026-02-10T12:11:00.000-00:00"}
+  {:event/type :code/edit,
+   :file "src/futon3/aif_bridge.clj",
+   :fn "extract-evidence",
+   :action :modified,
+   :description "Add observation coverage and term traceability summaries to AIF evidence.",
+   :at #inst "2026-02-10T12:13:00.000-00:00"}
+  {:event/type :code/edit,
+   :file "src/futon3/checks.clj",
+   :fn "aif-evidence-schema",
+   :action :modified,
+   :description "Accept observation coverage and term traceability in AIF evidence schema.",
+   :at #inst "2026-02-10T12:14:00.000-00:00"}
+  {:event/type :code/edit,
+   :file "docs/aif-trace.md",
+   :fn "Shape",
+   :action :modified,
+   :description "Document observation coverage and term traceability fields.",
+   :at #inst "2026-02-10T12:15:00.000-00:00"}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-02-10T12:17:00.000-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-aif-obs-1",
+     :session/id "aif-layer-2026-02-10-003",
+     :decision/id "aif-layer-2026-02-10-003:decision-1",
+     :candidates
+     ["aif/structured-observation-vector"
+      "aif/term-to-channel-traceability"],
+     :chosen "aif/structured-observation-vector",
+     :context/anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "src/futon3/aif_bridge.clj",
+                    :fn "extract-evidence"}}],
+     :forecast
+     {:benefits
+      [{:tag :benefit/coverage-signal,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/aif_bridge.clj",
+                      :fn "extract-evidence"}},
+        :note "Surface how often structured observations are present."}],
+      :risks
+      [{:tag :risk/schema-drift,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/checks.clj",
+                      :fn "aif-evidence-schema"}},
+        :note "Evidence schema must accept the new coverage fields."}],
+      :success
+      [{:tag :success/documented,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "docs/aif-trace.md",
+                      :fn "Shape"}},
+        :note "Docs align with the extended observation evidence."}],
+      :failure
+      [{:tag :failure/unused,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/aif_bridge.clj",
+                      :fn "extract-evidence"}},
+        :note "Coverage stays zero if upstream never emits observations."}]},
+     :rejections
+     {"aif/term-to-channel-traceability"
+      {:codes [:reject/sequence],
+       :note "Apply observation coverage first, then traceability."}},
+     :horizon :short}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-02-10T12:18:00.000-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-aif-obs-1",
+     :session/id "aif-layer-2026-02-10-003",
+     :pattern/id "aif/structured-observation-vector",
+     :instance/id "pur-aif-obs-1-a",
+     :decision/id "aif-layer-2026-02-10-003:decision-1",
+     :fields
+     {:context "AIF summaries need to show how often structured observations arrive.",
+      :if "Observation vectors are normalized per tick.",
+      :however "Summaries did not show coverage across the episode.",
+      :then "Added observation coverage totals to the evidence summary and schema.",
+      :because "Coverage makes structured observation drift auditable.",
+      :next-steps "Confirm upstream traces populate observation vectors consistently."},
+     :anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "src/futon3/aif_bridge.clj",
+                    :fn "extract-evidence"}}
+      {:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "src/futon3/checks.clj",
+                    :fn "aif-evidence-schema"}}
+      {:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "docs/aif-trace.md",
+                    :fn "Shape"}}],
+     :outcome/tags [:outcome/complete]}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-02-10T12:20:00.000-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-aif-trace-1",
+     :session/id "aif-layer-2026-02-10-003",
+     :decision/id "aif-layer-2026-02-10-003:decision-2",
+     :candidates
+     ["aif/term-to-channel-traceability"
+      "aif/structured-observation-vector"],
+     :chosen "aif/term-to-channel-traceability",
+     :context/anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "src/futon3/aif_bridge.clj",
+                    :fn "extract-evidence"}}],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceability-coverage,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/aif_bridge.clj",
+                      :fn "extract-evidence"}},
+        :note "Summarize which terms are missing provenance."}],
+      :risks
+      [{:tag :risk/schema-gap,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/checks.clj",
+                      :fn "aif-evidence-schema"}},
+        :note "Term traceability data may be rejected if schema is stale."}],
+      :success
+      [{:tag :success/traceability-docs,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "docs/aif-trace.md",
+                      :fn "Shape"}},
+        :note "Traceability coverage documented for audit."}],
+      :failure
+      [{:tag :failure/empty-provenance,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/aif_bridge.clj",
+                      :fn "extract-evidence"}},
+        :note "Missing provenance remains unreported without coverage summary."}]},
+     :rejections
+     {"aif/structured-observation-vector"
+      {:codes [:reject/sequence],
+       :note "Observation coverage already applied in prior step."}},
+     :horizon :short}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-02-10T12:21:00.000-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-aif-trace-1",
+     :session/id "aif-layer-2026-02-10-003",
+     :pattern/id "aif/term-to-channel-traceability",
+     :instance/id "pur-aif-trace-1-a",
+     :decision/id "aif-layer-2026-02-10-003:decision-2",
+     :fields
+     {:context "G-term provenance needs clear coverage reporting.",
+      :if "Provenance entries list observation keys and precision channels.",
+      :however "Summaries did not show which terms lacked provenance.",
+      :then "Added term traceability coverage to the AIF evidence summary and schema.",
+      :because "Coverage highlights scoring terms missing traceability links.",
+      :next-steps "Confirm upstream term provenance is emitted for all G terms."},
+     :anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "src/futon3/aif_bridge.clj",
+                    :fn "extract-evidence"}}
+      {:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "src/futon3/checks.clj",
+                    :fn "aif-evidence-schema"}}
+      {:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "docs/aif-trace.md",
+                    :fn "Shape"}}],
+     :outcome/tags [:outcome/complete]}}}]}

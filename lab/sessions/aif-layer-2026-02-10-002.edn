@@ -1,0 +1,103 @@
+{:session/id "aif-layer-2026-02-10-002",
+ :session/ancestor-id "aif-layer-2026-02-10-001",
+ :session/fucodex-cli-id "codex-cli-aif-layer-2026-02-10",
+ :resume/prompt "Continue AIF layer improvements with precision registry support.",
+ :resume/at #inst "2026-02-10T11:05:00.000-00:00",
+ :resume/count 1,
+ :session/agent :codex,
+ :session/cwd "/home/joe/code/futon3",
+ :events
+ [{:event/type :clock-in/start,
+   :clock-in/pattern-id "aif/evidence-precision-registry",
+   :clock-in/intent "Expose precision registry in AIF summaries and validation.",
+   :at #inst "2026-02-10T11:07:00.000-00:00"}
+  {:event/type :code/edit,
+   :file "src/futon3/aif_bridge.clj",
+   :fn "aif-step->event",
+   :action :modified,
+   :description "Emit precision registry in tick events and summaries.",
+   :at #inst "2026-02-10T11:14:00.000-00:00"}
+  {:event/type :code/edit,
+   :file "src/futon3/checks.clj",
+   :fn "aif-evidence-schema",
+   :action :modified,
+   :description "Accept precision registry in AIF evidence schema.",
+   :at #inst "2026-02-10T11:20:00.000-00:00"}
+  {:event/type :code/edit,
+   :file "docs/aif-trace.md",
+   :fn "Shape",
+   :action :modified,
+   :description "Document observation vectors and precision registry in AIF trace evidence.",
+   :at #inst "2026-02-10T11:26:00.000-00:00"}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-02-10T11:28:00.000-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-aif-prec-1",
+     :session/id "aif-layer-2026-02-10-002",
+     :decision/id "aif-layer-2026-02-10-002:decision-1",
+     :candidates
+     ["aif/evidence-precision-registry"
+      "aif/structured-observation-vector"],
+     :chosen "aif/evidence-precision-registry",
+     :context/anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "src/futon3/aif_bridge.clj",
+                    :fn "aif-step->event"}}],
+     :forecast
+     {:benefits
+      [{:tag :benefit/explicit-weights,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/aif_bridge.clj"}},
+        :note "Expose per-channel precision weights for audits."}],
+      :risks
+      [{:tag :risk/missing-weights,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/checks.clj"}},
+        :note "Registry absent if upstream does not supply it."}],
+      :success
+      [{:tag :success/traceable-precision,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "docs/aif-trace.md"}},
+        :note "Docs and schema align on precision registry usage."}],
+      :failure
+      [{:tag :failure/schema-drift,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/checks.clj"}},
+        :note "Schema rejects precision registry updates."}]},
+     :rejections
+     {"aif/structured-observation-vector"
+      {:codes [:reject/sequence],
+       :note "Observation vector work already completed."}},
+     :horizon :short}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-02-10T11:31:00.000-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-aif-prec-1",
+     :session/id "aif-layer-2026-02-10-002",
+     :pattern/id "aif/evidence-precision-registry",
+     :instance/id "pur-aif-prec-1-a",
+     :decision/id "aif-layer-2026-02-10-002:decision-1",
+     :fields
+     {:context "Evidence weighting needed explicit precision channels.",
+      :if "AIF summaries did not surface channel weights.",
+      :however "Precision values arrive from the adapter and may be absent.",
+      :then "Included precision registry in tick events and evidence summary.",
+      :because "Explicit weights make evidence trust auditable.",
+      :next-steps "Verify upstream adapters populate precision values."},
+     :anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "src/futon3/aif_bridge.clj",
+                    :fn "aif-step->event"}}],
+     :outcome/tags [:outcome/partial]}}}]}

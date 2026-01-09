@@ -29,6 +29,7 @@ EXPLORE_LIMIT="4"
 EXPLORE_PROMPT_FILE="docs/codex-exploratory-mission.md"
 HUD_MODE=false
 HUD_INTENT=""
+SKIP_GIT_CHECK=false
 
 show_help() {
   cat <<'EOF'
@@ -122,6 +123,10 @@ while [[ $# -gt 0 ]]; do
       args+=("$1"); shift;;
   esac
 done
+
+if [[ "${CODEX_SKIP_GIT_REPO_CHECK-}" == "1" || "${CODEX_SKIP_GIT_REPO_CHECK-}" == "true" ]]; then
+  SKIP_GIT_CHECK=true
+fi
 
 if $AIF_EXPLAIN; then
   explain_path="$AIF_EXPLAIN_PATH"
@@ -255,7 +260,11 @@ if $LIVE; then
   if $PROPOSAL_HOOK; then
     clj_args+=(--proposal-hook)
   fi
-  codex exec --json "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-codex.clj" "${clj_args[@]}"
+  codex_flags=(--json)
+  if $SKIP_GIT_CHECK; then
+    codex_flags+=(--skip-git-repo-check)
+  fi
+  codex exec "${codex_flags[@]}" "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-codex.clj" "${clj_args[@]}"
   status=${PIPESTATUS[0]}
 else
   codex "${args[@]}"

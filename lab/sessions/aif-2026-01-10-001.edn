@@ -1,0 +1,82 @@
+{:session/id "aif-2026-01-10-001",
+ :session/agent :fucodex,
+ :events
+ [{:event/type :clock-in/start,
+   :turn 1,
+   :at #inst "2026-01-10T09:00:00.000-00:00",
+   :clock-in/pattern-id "aif/belief-state-operational-hypotheses",
+   :clock-in/intent "Normalize + validate AIF belief-state before emitting tick events."}
+  {:event/type :turn/completed,
+   :turn 1,
+   :at #inst "2026-01-10T09:00:12.000-00:00"}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-10T09:00:12.100-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-1",
+     :session/id "aif-2026-01-10-001",
+     :decision/id "aif-2026-01-10-001:turn-1",
+     :candidates
+     ["aif/belief-state-operational-hypotheses"
+      "aif/structured-observation-vector"],
+     :chosen "aif/belief-state-operational-hypotheses",
+     :context/anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit
+                    :file "src/futon3/aif_bridge.clj"
+                    :fn "normalize-belief-state"}}],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceable-choice,
+        :locus {:anchor/type :code/edit,
+                :anchor/ref {:event/type :code/edit
+                             :file "src/futon3/tatami_schema.clj"
+                             :fn "aif-belief-state-schema"}},
+        :note "Belief state schema makes mu validation explicit."}],
+      :risks
+      [{:tag :risk/mismatch,
+        :locus {:anchor/type :code/edit,
+                :anchor/ref {:event/type :code/edit
+                             :file "src/futon3/aif_bridge.clj"
+                             :fn "aif-step->event"}},
+        :note "Stricter belief fields may need upstream normalization."}],
+      :success
+      [{:tag :success/traceable-outcome,
+        :locus {:anchor/type :code/edit,
+                :anchor/ref {:event/type :code/edit
+                             :file "src/futon3/aif_bridge.clj"
+                             :fn "aif-step->event"}},
+        :note "Tick events capture belief validation alongside mu."}],
+      :failure
+      [{:tag :failure/unresolved,
+        :locus {:anchor/type :code/edit,
+                :anchor/ref {:event/type :code/edit
+                             :file "src/futon3/aif_bridge.clj"
+                             :fn "aif-step->event"}},
+        :note "Missing mu remains unflagged in tick events."}]},
+     :rejections
+     {"aif/structured-observation-vector"
+      {:codes [:reject/fit], :note "Observation work follows after belief schema."}},
+     :horizon :short}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-10T09:00:12.240-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-1",
+     :session/id "aif-2026-01-10-001",
+     :pattern/id "aif/belief-state-operational-hypotheses",
+     :instance/id "pur-1-a",
+     :decision/id "aif-2026-01-10-001:turn-1",
+     :fields
+     {:context "AIF ticks need a compact, validated belief map.",
+      :if "Belief state informs selection and update steps.",
+      :however "Mu can be noisy or misshapen without normalization.",
+      :then "Normalize + validate mu before emitting :aif/tick.",
+      :because "Explicit schemas make belief updates comparable.",
+      :next-steps "Consider logging belief deltas when prev-mu is available."},
+     :anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit
+                    :file "src/futon3/aif_bridge.clj"
+                    :fn "aif-step->event"}}],
+     :outcome/tags [:outcome/partial]}}}]}

@@ -1,0 +1,124 @@
+{:session/id "e01b-aif-test",
+ :session/agent :fucodex,
+ :events
+ [{:event/type :aif/tap,
+   :at #inst "2026-01-09T11:13:09.807-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :select,
+    :session/id "e01b-aif-test",
+    :decision/id "e01b-aif-test:turn-1",
+    :candidates
+    ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+    :chosen "ants/white-space-scout",
+    :aif
+    {:G-chosen 0.23000000000000004,
+     :G-rejected {"ants/pheromone-trail-tuner" 0.23000000000000004},
+     :tau 1.0,
+     :belief-id "e01b-aif-test:turn-1"}}}
+  {:event/type :turn/completed,
+   :turn 1,
+   :at #inst "2026-01-09T11:13:09.811-00:00"}
+  {:event/type :aif/tap,
+   :at #inst "2026-01-09T11:13:09.893-00:00",
+   :payload
+   {:type :aif/fulab,
+    :event :update,
+    :session/id "e01b-aif-test",
+    :aif/state {:belief-updated true},
+    :aif
+    {:prediction-error 0.0,
+     :tau-updated 1.0,
+     :belief-delta
+     {:decision/id "e01b-aif-test:turn-1", :status :observed}}}}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-09T11:13:09.903-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-1",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceable-choice,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision captured at turn boundary."}],
+      :risks
+      [{:tag :risk/mismatch,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Pattern may not match actual change."}],
+      :success
+      [{:tag :success/traceable-outcome,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Outcome tied to decision."}],
+      :failure
+      [{:tag :failure/unresolved,
+        :locus
+        {:anchor/type :turn/completed,
+         :anchor/ref {:event/type :turn/completed, :turn 1}},
+        :note "Decision does not explain outcome."}]},
+     :horizon :immediate,
+     :context/anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :decision/id "e01b-aif-test:turn-1",
+     :rejections
+     {"ants/white-space-scout"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."},
+      "ants/pheromone-trail-tuner"
+      {:codes [:reject/fit], :note "Alternate pattern not selected."}},
+     :session/id "e01b-aif-test",
+     :chosen nil}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-09T11:13:09.994-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-1",
+     :session/id "e01b-aif-test",
+     :pattern/id nil,
+     :instance/id "pur-1-a",
+     :decision/id "e01b-aif-test:turn-1",
+     :fields
+     {:context "Captured at turn completion.",
+      :if "A decision was needed.",
+      :however "Fit only known after the turn.",
+      :then "Recorded the observed outcome.",
+      :because "Need traceability for decisions.",
+      :next-steps "Compare decision vs outcome."},
+     :anchors
+     [{:anchor/type :turn/completed,
+       :anchor/ref {:event/type :turn/completed, :turn 1}}],
+     :outcome/tags [:outcome/partial]}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-09T11:13:10.057-00:00",
+   :payload
+   {:session/id "e01b-aif-test",
+    :aif/kind :psr,
+    :aif/result
+    {:decision/id "e01b-aif-test:turn-1",
+     :candidates
+     ["ants/white-space-scout" "ants/pheromone-trail-tuner"],
+     :chosen "ants/white-space-scout",
+     :aif
+     {:G-chosen 0.23000000000000004,
+      :G-rejected {"ants/pheromone-trail-tuner" 0.23000000000000004},
+      :tau 1.0,
+      :belief-id "e01b-aif-test:turn-1"}}}}
+  {:event/type :aif/summary,
+   :at #inst "2026-01-09T11:13:10.142-00:00",
+   :payload
+   {:session/id "e01b-aif-test",
+    :aif/kind :pur,
+    :aif/result
+    {:aif/state {:belief-updated true},
+     :aif
+     {:prediction-error 0.0,
+      :tau-updated 1.0,
+      :belief-delta
+      {:decision/id "e01b-aif-test:turn-1", :status :observed}}}}}]}

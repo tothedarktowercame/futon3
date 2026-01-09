@@ -1,0 +1,86 @@
+{:session/id "aif-layer-2026-02-10-001",
+ :session/agent :codex,
+ :session/cwd "/home/joe/code/futon3",
+ :events
+ [{:event/type :clock-in/start,
+   :clock-in/pattern-id "aif/structured-observation-vector",
+   :clock-in/intent "Surface observation vectors in AIF summaries.",
+   :at #inst "2026-02-10T10:15:00.000-00:00"}
+  {:event/type :code/edit,
+   :file "src/futon3/aif_bridge.clj",
+   :fn "extract-evidence",
+   :action :modified,
+   :description "Attach the latest observation vector to the AIF trace summary.",
+   :at #inst "2026-02-10T10:24:00.000-00:00"}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-02-10T10:28:00.000-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-aif-obs-1",
+     :session/id "aif-layer-2026-02-10-001",
+     :decision/id "aif-layer-2026-02-10-001:decision-1",
+     :candidates
+     ["aif/structured-observation-vector"
+      "aif/evidence-precision-registry"],
+     :chosen "aif/structured-observation-vector",
+     :context/anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "src/futon3/aif_bridge.clj",
+                    :fn "extract-evidence"}}],
+     :forecast
+     {:benefits
+      [{:tag :benefit/comparable-observations,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/aif_bridge.clj"}},
+        :note "Expose observation vectors for cross-episode comparisons."}],
+      :risks
+      [{:tag :risk/overfitting,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/aif_bridge.clj"}},
+        :note "Summary may overweight a single step's observation."}],
+      :success
+      [{:tag :success/traceable-observation,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/aif_bridge.clj"}},
+        :note "Observation features show up in proof summaries."}],
+      :failure
+      [{:tag :failure/missing-observation,
+        :locus
+        {:anchor/type :code/edit,
+         :anchor/ref {:event/type :code/edit,
+                      :file "src/futon3/aif_bridge.clj"}},
+        :note "No observation vector recorded in AIF evidence."}]},
+     :rejections
+     {"aif/evidence-precision-registry"
+      {:codes [:reject/scope],
+       :note "Defer precision registry to resumed session."}},
+     :horizon :short}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-02-10T10:31:00.000-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-aif-obs-1",
+     :session/id "aif-layer-2026-02-10-001",
+     :pattern/id "aif/structured-observation-vector",
+     :instance/id "pur-aif-obs-1-a",
+     :decision/id "aif-layer-2026-02-10-001:decision-1",
+     :fields
+     {:context "Observation vectors needed to compare AIF runs in proofs.",
+      :if "AIF evidence summaries lacked typed observation features.",
+      :however "Per-step observations are noisy without a stable snapshot.",
+      :then "Recorded the latest non-empty observation vector in summaries.",
+      :because "Comparable vectors enable scoring and audits across episodes.",
+      :next-steps "Confirm precision registry also lands in AIF evidence."},
+     :anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit,
+                    :file "src/futon3/aif_bridge.clj",
+                    :fn "extract-evidence"}}],
+     :outcome/tags [:outcome/partial]}}}]}

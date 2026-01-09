@@ -1,0 +1,93 @@
+{:session/id "aif-2026-01-10-002",
+ :session/agent :fucodex,
+ :session/ancestor-id "aif-2026-01-10-001",
+ :session/fucodex-cli-id "codex-cli-aif-001",
+ :events
+ [{:event/type :session/resume,
+   :at #inst "2026-01-10T09:12:00.000-00:00",
+   :payload
+   {:session/id "aif-2026-01-10-002",
+    :session/ancestor-id "aif-2026-01-10-001",
+    :session/fucodex-cli-id "codex-cli-aif-001",
+    :resume/prompt "Continue AIF layer updates with observation vector work.",
+    :resume/at #inst "2026-01-10T09:12:00.000-00:00",
+    :resume/count 1}}
+  {:event/type :clock-in/start,
+   :turn 2,
+   :at #inst "2026-01-10T09:12:05.000-00:00",
+   :clock-in/pattern-id "aif/structured-observation-vector",
+   :clock-in/intent "Normalize observation vectors and include them on AIF ticks."}
+  {:event/type :turn/completed,
+   :turn 2,
+   :at #inst "2026-01-10T09:12:20.000-00:00"}
+  {:event/type :pattern/selection-claimed,
+   :at #inst "2026-01-10T09:12:20.120-00:00",
+   :payload
+   {:psr
+    {:psr/id "psr-2",
+     :session/id "aif-2026-01-10-002",
+     :decision/id "aif-2026-01-10-002:turn-2",
+     :candidates
+     ["aif/belief-state-operational-hypotheses"
+      "aif/structured-observation-vector"],
+     :chosen "aif/structured-observation-vector",
+     :context/anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit
+                    :file "src/futon3/aif_bridge.clj"
+                    :fn "extract-observation-vector"}}],
+     :forecast
+     {:benefits
+      [{:tag :benefit/traceable-choice,
+        :locus {:anchor/type :code/edit,
+                :anchor/ref {:event/type :code/edit
+                             :file "src/futon3/tatami_schema.clj"
+                             :fn "aif-observation-vector-schema"}},
+        :note "Observation schema makes inputs comparable across ticks."}],
+      :risks
+      [{:tag :risk/mismatch,
+        :locus {:anchor/type :code/edit,
+                :anchor/ref {:event/type :code/edit
+                             :file "src/futon3/aif_bridge.clj"
+                             :fn "normalize-observation-vector"}},
+        :note "Upstream observation keys may not map cleanly."}],
+      :success
+      [{:tag :success/traceable-outcome,
+        :locus {:anchor/type :code/edit,
+                :anchor/ref {:event/type :code/edit
+                             :file "src/futon3/aif_bridge.clj"
+                             :fn "aif-step->event"}},
+        :note "AIF ticks carry normalized observation vectors."}],
+      :failure
+      [{:tag :failure/unresolved,
+        :locus {:anchor/type :code/edit,
+                :anchor/ref {:event/type :code/edit
+                             :file "src/futon3/aif_bridge.clj"
+                             :fn "aif-step->event"}},
+        :note "Observation deltas are absent when prev values are missing."}]},
+     :rejections
+     {"aif/belief-state-operational-hypotheses"
+      {:codes [:reject/fit], :note "Belief-state work already captured."}},
+     :horizon :short}}}
+  {:event/type :pattern/use-claimed,
+   :at #inst "2026-01-10T09:12:20.260-00:00",
+   :payload
+   {:pur
+    {:pur/id "pur-2",
+     :session/id "aif-2026-01-10-002",
+     :pattern/id "aif/structured-observation-vector",
+     :instance/id "pur-2-a",
+     :decision/id "aif-2026-01-10-002:turn-2",
+     :fields
+     {:context "AIF ticks need structured observations for scoring.",
+      :if "Observations arrive as heterogeneous artifacts.",
+      :however "Raw observation maps are inconsistent across steps.",
+      :then "Normalize observation vectors and validate them on emission.",
+      :because "Stable vectors enable comparable policy signals.",
+      :next-steps "Add richer observation sources once tool outputs are standardized."},
+     :anchors
+     [{:anchor/type :code/edit,
+       :anchor/ref {:event/type :code/edit
+                    :file "src/futon3/aif_bridge.clj"
+                    :fn "extract-observation-vector"}}],
+     :outcome/tags [:outcome/partial]}}}]}

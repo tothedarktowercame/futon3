@@ -28,6 +28,8 @@ EXPLORE_NAMESPACES=""
 EXPLORE_LIMIT="4"
 EXPLORE_PROMPT_FILE="docs/claude-exploratory-mission.md"
 PRINT_MODE=false
+HUD_MODE=false
+HUD_INTENT=""
 
 show_help() {
   cat <<'EOF'
@@ -51,6 +53,8 @@ Options:
   --explore-prompt      Prompt file to use (default: docs/claude-exploratory-mission.md).
   --aif-select          Let AIF choose the pattern (used in explore).
   --proposal-hook       Emit proposal draft when candidates are insufficient.
+  --hud                 Enable HUD mode: seed patterns into prompt, parse response.
+  --intent TEXT         Intent/goal for HUD pattern selection.
 
 Examples:
   fuclaude --live -p "Draft the summary"
@@ -60,6 +64,7 @@ Examples:
   fuclaude --aif-explain
   fuclaude explore --explore-hotwords "aif,session,trace"
   fuclaude -p "Non-live run"
+  fuclaude --hud --intent "implement schema" -p "Add belief-state schema"
   fuclaude   # Interactive mode (no streaming)
 EOF
 }
@@ -111,6 +116,10 @@ while [[ $# -gt 0 ]]; do
       AIF_SELECT=true; shift;;
     --proposal-hook)
       PROPOSAL_HOOK=true; shift;;
+    --hud)
+      HUD_MODE=true; shift;;
+    --intent)
+      HUD_INTENT="$2"; shift 2;;
     -p)
       PRINT_MODE=true
       args+=("-p" "$2"); shift 2;;
@@ -179,9 +188,45 @@ if [[ -n "$CHOSEN" && -n "$CLOCK_IN" ]]; then
   echo "[fuclaude] warning: --chosen is ignored when --clock-in is provided" >&2
 fi
 
+# HUD mode: inject pattern context into prompt
+HUD_FILE=""
+if $HUD_MODE && $PRINT_MODE; then
+  # Build HUD and get prompt block
+  HUD_FILE="/tmp/fuclaude-hud-$$.edn"
+  hud_args=(--intent "${HUD_INTENT:-unspecified}")
+  if [[ -n "$PATTERNS" ]]; then
+    hud_args+=(--prototypes "$PATTERNS")
+  fi
+
+  # Build HUD and save to file
+  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-hud.clj" build "${hud_args[@]}" > "$HUD_FILE" 2>/dev/null
+
+  # Get formatted HUD block
+  HUD_BLOCK=$(clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-hud.clj" format --hud-file "$HUD_FILE" 2>/dev/null)
+
+  if [[ -n "$HUD_BLOCK" ]]; then
+    # Rebuild args with HUD prepended to prompt
+    new_args=()
+    for ((i=0; i<${#args[@]}; i++)); do
+      if [[ "${args[$i]}" == "-p" && $((i+1)) -lt ${#args[@]} ]]; then
+        original_prompt="${args[$((i+1))]}"
+        combined_prompt="${HUD_BLOCK}
+
+User task: ${original_prompt}"
+        new_args+=("-p" "$combined_prompt")
+        ((i++))  # Skip the next element since we handled it
+      else
+        new_args+=("${args[$i]}")
+      fi
+    done
+    args=("${new_args[@]}")
+    echo "[fuclaude] HUD injected with ${HUD_INTENT:-unspecified} intent" >&2
+  fi
+fi
+
 # Create marker file for timing comparison (before claude runs)
 touch -d "$START_ISO" /tmp/fuclaude-marker-$$
-trap 'rm -f /tmp/fuclaude-marker-$$ 2>/dev/null || true' EXIT
+trap 'rm -f /tmp/fuclaude-marker-$$ /tmp/fuclaude-hud-$$.edn 2>/dev/null || true' EXIT
 
 if $LIVE; then
   if ! $PRINT_MODE; then

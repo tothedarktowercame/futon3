@@ -77,8 +77,9 @@
    - :prototypes - vector of prototype IDs for sigil resolution
    - :sigils - explicit sigils (overrides derivation)
    - :pattern-limit - max patterns to fetch (default 4)
-   - :aif-config - AIF configuration map"
-  [{:keys [intent prototypes sigils pattern-limit aif-config]
+   - :aif-config - AIF configuration map
+   - :certificates - optional certificate vector for PSR/PUR"
+  [{:keys [intent prototypes sigils pattern-limit aif-config certificates]
     :or {pattern-limit 4}}]
   (let [all-patterns (hints/all-patterns)
         ;; Resolve sigils from intent or prototypes
@@ -106,6 +107,7 @@
      :candidates candidates
      :fruits (mapv #(select-keys % [:id :emoji :name :score]) (:fruits hint-result))
      :paramitas (mapv #(select-keys % [:id :zh :en :score]) (:paramitas hint-result))
+     :certificates (vec (or certificates []))
      ;; AIF state
      :aif aif-result
      ;; Agent response (filled after turn)
@@ -180,7 +182,7 @@
         {:applied nil
          :notes block})
     ;; Fallback: look for pattern mentions in text
-    (let [pattern-mention (re-find #"(?:applied|used|following)\s+(?:the\s+)?[`\"]?([a-z-]+/[a-z-]+)[`\"]?"
+    (let [pattern-mention (re-find #"(?:applied|used|following)\s+(?:the\s+)?[`\"]?([a-z0-9_-]+/[a-z0-9_-]+)[`\"]?"
                                    (str/lower-case (or response-text "")))]
       (when pattern-mention
         {:applied (second pattern-mention)
@@ -194,12 +196,14 @@
 (defn hud->session-events
   "Convert HUD state to session events for archival."
   [hud]
-  (let [base-event {:at (:hud/timestamp hud)}]
-    (cond-> [{:event/type :hud/initialized
-              :at (:hud/timestamp hud)
-              :payload (dissoc hud :agent-report)}]
+  (let [base-event {:hud/id (:hud/id hud)
+                    :at (:hud/timestamp hud)}]
+    (cond-> [(assoc base-event
+                    :event/type :hud/initialized
+                    :payload (dissoc hud :agent-report))]
       (:agent-report hud)
       (conj {:event/type :hud/agent-reported
+             :hud/id (:hud/id hud)
              :at (now-inst)
              :payload {:hud/id (:hud/id hud)
                        :report (:agent-report hud)}}))))
@@ -210,14 +214,17 @@
   (let [aif (:aif hud)
         candidates (mapv :id (:candidates hud))
         chosen (or (get-in hud [:agent-report :applied])
-                   (:suggested aif))]
+                   (:suggested aif)
+                   (first candidates))]
     {:psr/id (str "psr-hud-" turn)
      :session/id session-id
      :decision/id (str session-id ":hud-" turn)
      :candidates candidates
      :chosen chosen
+     :certificates (vec (or (:certificates hud) []))
      :context/anchors [{:anchor/type :hud/state
-                        :anchor/ref {:hud/id (:hud/id hud)}}]
+                        :anchor/ref {:event/type :hud/initialized
+                                     :hud/id (:hud/id hud)}}]
      :hud/source (:hud/id hud)
      :aif {:G-chosen (get (:G-scores aif) chosen)
            :G-rejected (dissoc (:G-scores aif) chosen)
@@ -228,13 +235,16 @@
   "Generate a PUR from HUD state (for compatibility with existing pipeline)."
   [hud session-id turn]
   (let [report (:agent-report hud)
+        candidates (mapv :id (:candidates hud))
         applied (or (:applied report)
-                    (get-in hud [:aif :suggested]))]
+                    (get-in hud [:aif :suggested])
+                    (first candidates))]
     {:pur/id (str "pur-hud-" turn)
      :session/id session-id
      :pattern/id applied
      :instance/id (str "pur-hud-" turn "-a")
      :decision/id (str session-id ":hud-" turn)
+     :certificates (vec (or (:certificates hud) []))
      :fields {:context (:intent hud)
               :if "HUD presented pattern candidates"
               :however "Agent selected based on task fit"
@@ -242,7 +252,8 @@
               :because "Pattern matched intent and context"
               :next-steps "Verify outcome matches pattern rationale"}
      :anchors [{:anchor/type :hud/state
-                :anchor/ref {:hud/id (:hud/id hud)}}]
+                :anchor/ref {:event/type :hud/initialized
+                             :hud/id (:hud/id hud)}}]
      :hud/source (:hud/id hud)
      :outcome/tags (if report [:outcome/reported] [:outcome/inferred])}))
 

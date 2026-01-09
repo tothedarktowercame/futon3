@@ -41,11 +41,16 @@
 (def ^:private clause-re
   (re-pattern "!\\s+(?:conclusion|claim|instantiated-by):\\s*(.*?)\\s*\\[(.*?)\\]"))
 
+(def ^:private conclusion-re
+  (re-pattern "(?m)!\\s+(?:conclusion|claim|instantiated-by):\\s*(.*)$"))
+
 (defn- split-sigils [block]
   (->> (str/split block #"\s+")
        (keep (fn [token]
                (when (str/includes? token "/")
-                 (let [[emoji hanzi] (str/split token #"/" 2)]
+                 (let [[emoji hanzi] (str/split token #"/" 2)
+                       emoji (str/replace emoji #"^\[+|\]+$" "")
+                       hanzi (str/replace hanzi #"^\[+|\]+$" "")]
                    {:emoji (str/trim emoji)
                     :hanzi (str/trim hanzi)}))))))
 
@@ -108,12 +113,20 @@
         :let [text (slurp file)]
         block (split-arg-blocks text)
         :let [title (extract-meta block "title")
-              arg (extract-meta block "arg")]
-        match (re-seq clause-re block)]
+              arg (or (extract-meta block "flexiarg")
+                      (extract-meta block "arg"))
+              meta-sigils (some-> (extract-meta block "sigils") split-sigils)
+              clause-match (re-find clause-re block)
+              summary (or (some-> clause-match second)
+                          (some-> (re-find conclusion-re block) second))
+              sigils (or (when clause-match
+                           (split-sigils (nth clause-match 2)))
+                         meta-sigils)]
+        :when summary]
     {:id (or arg (.getName file))
      :title title
-     :summary (str/trim (second match))
-     :sigils (split-sigils (nth match 2))}))
+     :summary (str/trim summary)
+     :sigils sigils}))
 
 (def ^:private ldts-patterns (delay (vec (scan-library))))
 

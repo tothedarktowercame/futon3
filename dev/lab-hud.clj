@@ -3,6 +3,7 @@
 
 (require '[clojure.edn :as edn]
          '[clojure.java.io :as io]
+         '[clojure.java.shell :as shell]
          '[clojure.string :as str]
          '[futon3.fulab.hud :as hud])
 
@@ -20,7 +21,9 @@
   (println "  --sigils CSV         Comma-separated sigil pairs (emoji/hanzi)")
   (println "  --limit N            Max pattern candidates (default 4)")
   (println "  --hud-file PATH      HUD EDN file (for format/parse)")
-  (println "  --response-file PATH Response text file (for parse)"))
+  (println "  --response-file PATH Response text file (for parse)")
+  (println "  --certify-commit     Attach git HEAD certificate to HUD")
+  (println "  --repo-root PATH     Repo root for git commit lookup"))
 
 (defn parse-args [args]
   (loop [opts {:command nil}
@@ -33,6 +36,8 @@
         "--limit" (recur (assoc opts :limit (Integer/parseInt (second remaining))) (nnext remaining))
         "--hud-file" (recur (assoc opts :hud-file (second remaining)) (nnext remaining))
         "--response-file" (recur (assoc opts :response-file (second remaining)) (nnext remaining))
+        "--certify-commit" (recur (assoc opts :certify-commit true) (rest remaining))
+        "--repo-root" (recur (assoc opts :repo-root (second remaining)) (nnext remaining))
         "--help" (recur (assoc opts :help true) (rest remaining))
         (if (nil? (:command opts))
           (recur (assoc opts :command arg) (rest remaining))
@@ -53,21 +58,38 @@
                      {:emoji (str/trim emoji) :hanzi (str/trim hanzi)}))))
          vec)))
 
-(defn cmd-build [{:keys [intent prototypes sigils limit]}]
+(defn git-head [repo-root]
+  (let [{:keys [exit out err]} (shell/sh "git" "-C" repo-root "rev-parse" "HEAD")]
+    (when-not (zero? exit)
+      (println "Error: failed to read git commit:" (str/trim err))
+      (System/exit 1))
+    (str/trim out)))
+
+(defn build-certificates [{:keys [certify-commit repo-root]}]
+  (when certify-commit
+    (let [repo-root (or repo-root (System/getProperty "user.dir"))
+          commit (git-head repo-root)]
+      [{:certificate/type :git/commit
+        :certificate/ref commit
+        :certificate/repo repo-root}])))
+
+(defn cmd-build [{:keys [intent prototypes sigils limit] :as opts}]
   (let [hud (hud/build-hud {:intent intent
                             :prototypes (parse-csv prototypes)
                             :sigils (parse-sigils sigils)
-                            :pattern-limit (or limit 4)})]
+                            :pattern-limit (or limit 4)
+                            :certificates (build-certificates opts)})]
     (prn hud)
     hud))
 
-(defn cmd-format [{:keys [hud-file intent prototypes sigils limit]}]
+(defn cmd-format [{:keys [hud-file intent prototypes sigils limit] :as opts}]
   (let [hud (if hud-file
               (edn/read-string (slurp hud-file))
               (hud/build-hud {:intent intent
                               :prototypes (parse-csv prototypes)
                               :sigils (parse-sigils sigils)
-                              :pattern-limit (or limit 4)}))]
+                              :pattern-limit (or limit 4)
+                              :certificates (build-certificates opts)}))]
     (println (hud/hud->prompt-block hud))))
 
 (defn cmd-parse [{:keys [response-file]}]

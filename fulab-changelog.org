@@ -138,6 +138,36 @@ Decide whether to surface =event_msg/agent_reasoning= or =response_item/reasonin
 - Smoke-tested Codex run + resume via emacsclient with the new CLI invocation.
 - Committed fucodex parity changes (commit =52ed25f=).
 
+* 2026-01-09 — Fucodex HUD Server + AIF Trace Review Run
+
+** Context
+Hud generation was too slow when fucodex spawned Clojure per run, and HUD prompts
+were missing pattern candidates. We moved HUD formatting into the running
+transport server and repaired the pattern hint indexer so AIF patterns show up.
+
+** What We Built
+- Added =/fulab/hud/format= on the transport server (port 5050) to return HUD prompt + data.
+- Updated =fucodex= to call the server for HUD formatting and print the HUD block.
+- Fixed =pattern_hints= indexing: parse =@flexiarg= IDs, =@sigils=, and multiline conclusions.
+- HUD now resolves intent sigils and returns AIF/ants candidates for trace summaries.
+- Completed a live fucodex review run with HUD and captured session artifacts.
+
+** Files Changed
+- =src/f2/transport.clj= — added =/fulab/hud/format= endpoint.
+- =src/futon3/fulab/hud.clj= — anchor resolution + certificates for HUD PSR/PUR.
+- =dev/lab-hud.clj= — optional git certificate stamping for HUD builds.
+- =src/futon3/pattern_hints.clj= — repaired scanning of flexiarg patterns.
+- =fucodex= — HUD server path + =--hud-print= and =--prompt= normalization.
+
+** Evidence
+- Session: =lab/sessions/019ba374-30b3-7841-a828-bbb6101bf076.edn=
+- Trace: =lab/trace/019ba374-30b3-7841-a828-bbb6101bf076.org=
+
+** Next Steps
+1. Mirror HUD server integration in =fuclaude= (same endpoint, same HUD block).
+2. Auto-select the newest session in =fucodex= when stdin is non-interactive.
+3. Add a HUD-specific PSR/PUR adapter to log agent reports with certificates.
+
 ** Artifacts
 - =src/f2/codex.clj=
 - =src/f2/ui.clj=

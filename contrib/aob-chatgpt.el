@@ -3012,7 +3012,7 @@ use the active region if present, otherwise prompt for the sample string."
           (cancel-timer timer))
         (setq my-tatami--notify-timer nil)
         (message "Headless server still unavailable after %.1fs"
-                 (- (float-time) start)))))))
+                 (- (float-time) start))))))
 
 (add-hook 'chatgpt-shell-before-command-functions #'my-chatgpt-shell-before-command)
 (add-hook 'chatgpt-shell-after-command-functions #'my-chatgpt-shell-after-command)

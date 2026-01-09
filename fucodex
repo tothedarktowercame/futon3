@@ -30,6 +30,8 @@ EXPLORE_PROMPT_FILE="docs/codex-exploratory-mission.md"
 HUD_MODE=false
 HUD_INTENT=""
 SKIP_GIT_CHECK=false
+HUD_PRINT=false
+HUD_SERVER="${HUD_SERVER:-http://localhost:5050}"
 
 show_help() {
   cat <<'EOF'
@@ -54,6 +56,8 @@ Options:
   --proposal-hook       Emit proposal draft when candidates are insufficient.
   --hud                 Enable HUD mode: seed patterns into prompt, parse response.
   --intent TEXT         Intent/goal for HUD pattern selection.
+  --hud-print           Print HUD block before running codex.
+  --hud-server URL      HUD server base URL (default: http://localhost:5050).
 
 Examples:
   fucodex --live exec --prompt "Draft the summary"
@@ -119,6 +123,10 @@ while [[ $# -gt 0 ]]; do
       HUD_MODE=true; shift;;
     --intent)
       HUD_INTENT="$2"; shift 2;;
+    --hud-print)
+      HUD_PRINT=true; shift;;
+    --hud-server)
+      HUD_SERVER="$2"; shift 2;;
     *)
       args+=("$1"); shift;;
   esac
@@ -185,48 +193,109 @@ fi
 # HUD mode: inject pattern context into prompt
 HUD_FILE=""
 if $HUD_MODE; then
-  # Build HUD and get prompt block
-  HUD_FILE="/tmp/fucodex-hud-$$.edn"
-  hud_args=(--intent "${HUD_INTENT:-unspecified}")
-  if [[ -n "$PATTERNS" ]]; then
-    hud_args+=(--prototypes "$PATTERNS")
+  HUD_ENDPOINT="${HUD_SERVER%/}/fulab/hud/format"
+  HUD_PAYLOAD=$(HUD_INTENT="$HUD_INTENT" PATTERNS="$PATTERNS" EXPLORE_LIMIT="$EXPLORE_LIMIT" RUN_CWD="$RUN_CWD" python3 - <<'PY'
+import json, os
+
+intent = os.environ.get("HUD_INTENT", "")
+patterns = os.environ.get("PATTERNS", "")
+limit = os.environ.get("EXPLORE_LIMIT", "4")
+try:
+    limit = int(limit)
+except ValueError:
+    limit = 4
+
+prototypes = [p for p in patterns.split(",") if p.strip()] if patterns else []
+
+payload = {
+    "intent": intent,
+    "prototypes": prototypes,
+    "pattern-limit": limit,
+    "certify-commit": True,
+    "repo-root": os.environ.get("RUN_CWD", os.getcwd()),
+}
+
+print(json.dumps(payload))
+PY
+)
+
+  HUD_RESPONSE=$(curl -sS -X POST "$HUD_ENDPOINT" \
+    -H "content-type: application/json" \
+    -d "$HUD_PAYLOAD") || {
+    echo "[fucodex] HUD server not reachable at $HUD_ENDPOINT" >&2
+    exit 2
+  }
+
+  HUD_BLOCK=$(HUD_RESPONSE="$HUD_RESPONSE" python3 - <<'PY'
+import json, os, sys
+
+raw = os.environ.get("HUD_RESPONSE", "")
+if not raw:
+    sys.exit(1)
+try:
+    data = json.loads(raw)
+except Exception:
+    sys.exit(1)
+if not data.get("ok"):
+    sys.exit(2)
+prompt = data.get("prompt", "")
+if prompt:
+    sys.stdout.write(prompt)
+PY
+)
+
+  if [[ -z "$HUD_BLOCK" ]]; then
+    echo "[fucodex] HUD server returned no prompt" >&2
+    exit 2
   fi
 
-  # Build HUD and save to file
-  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-hud.clj" build "${hud_args[@]}" > "$HUD_FILE" 2>/dev/null
-
-  # Get formatted HUD block
-  HUD_BLOCK=$(clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-hud.clj" format --hud-file "$HUD_FILE" 2>/dev/null)
-
-  if [[ -n "$HUD_BLOCK" ]]; then
-    # Rebuild args with HUD prepended to prompt
-    # For codex, the prompt is typically the last arg or after --prompt
-    new_args=()
-    for ((i=0; i<${#args[@]}; i++)); do
-      if [[ "${args[$i]}" == "--prompt" && $((i+1)) -lt ${#args[@]} ]]; then
-        original_prompt="${args[$((i+1))]}"
-        combined_prompt="${HUD_BLOCK}
+  if $HUD_PRINT; then
+    echo "$HUD_BLOCK"
+  fi
+  # Rebuild args with HUD prepended to prompt
+  # For codex, the prompt is typically the last arg or after --prompt
+  new_args=()
+  for ((i=0; i<${#args[@]}; i++)); do
+    if [[ "${args[$i]}" == "--prompt" && $((i+1)) -lt ${#args[@]} ]]; then
+      original_prompt="${args[$((i+1))]}"
+      combined_prompt="${HUD_BLOCK}
 
 User task: ${original_prompt}"
-        new_args+=("--prompt" "$combined_prompt")
-        ((i++))  # Skip the next element since we handled it
-      elif [[ $i -eq $((${#args[@]}-1)) && "${args[$i]}" != --* && "${new_args[*]}" != *"--prompt"* ]]; then
-        # Last arg without --prompt flag (bare prompt)
-        combined_prompt="${HUD_BLOCK}
+      new_args+=("--prompt" "$combined_prompt")
+      ((i++))  # Skip the next element since we handled it
+    elif [[ $i -eq $((${#args[@]}-1)) && "${args[$i]}" != --* && "${new_args[*]}" != *"--prompt"* ]]; then
+      # Last arg without --prompt flag (bare prompt)
+      combined_prompt="${HUD_BLOCK}
 
 User task: ${args[$i]}"
-        new_args+=("$combined_prompt")
-      else
-        new_args+=("${args[$i]}")
-      fi
-    done
-    args=("${new_args[@]}")
-    echo "[fucodex] HUD injected with ${HUD_INTENT:-unspecified} intent" >&2
-  fi
+      new_args+=("$combined_prompt")
+    else
+      new_args+=("${args[$i]}")
+    fi
+  done
+  args=("${new_args[@]}")
+  echo "[fucodex] HUD injected with ${HUD_INTENT:-unspecified} intent" >&2
 fi
 
-# Clean up HUD temp file on exit
-trap 'rm -f "$HUD_FILE" 2>/dev/null || true' EXIT
+# Normalize --prompt usage for codex exec --json (expects bare prompt string).
+if [[ ${#args[@]} -gt 0 ]]; then
+  prompt_arg=""
+  remaining_args=()
+  for ((i=0; i<${#args[@]}; i++)); do
+    if [[ "${args[$i]}" == "--prompt" && $((i+1)) -lt ${#args[@]} ]]; then
+      prompt_arg="${args[$((i+1))]}"
+      ((i++))
+    else
+      remaining_args+=("${args[$i]}")
+    fi
+  done
+  if [[ -n "$prompt_arg" ]]; then
+    if [[ ${#remaining_args[@]} -gt 0 ]]; then
+      echo "[lab] warning: --prompt used; ignoring extra args for codex exec" >&2
+    fi
+    args=("$prompt_arg")
+  fi
+fi
 
 if $LIVE; then
   if [[ ${#args[@]} -eq 0 ]]; then
@@ -263,6 +332,9 @@ if $LIVE; then
   codex_flags=(--json)
   if $SKIP_GIT_CHECK; then
     codex_flags+=(--skip-git-repo-check)
+  fi
+  if [[ ${#args[@]} -gt 0 && "${args[0]}" == -* ]]; then
+    codex_flags+=(--)
   fi
   codex exec "${codex_flags[@]}" "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-codex.clj" "${clj_args[@]}"
   status=${PIPESTATUS[0]}

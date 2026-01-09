@@ -2,9 +2,11 @@
   "HTTP/WebSocket transport exposing a multi-user, capability-aware REPL."
   (:require [cheshire.core :as json]
             [clojure.core.async :as async]
+            [clojure.java.shell :as shell]
             [clojure.string :as str]
             [f0.clock :as clock]
             [futon3.checks :as checks]
+            [futon3.fulab.hud :as hud]
             [futon3.tatami :as tatami]
             [futon3.workday :as workday]
             [futon3.futon1-bridge :as f1-bridge]
@@ -456,10 +458,58 @@
    :headers {"content-type" "text/plain"}
    :body body})
 
+(defn- json-response [status body]
+  {:status status
+   :headers {"content-type" "application/json"}
+   :body (json/encode body)})
+
+(defn- parse-json-body [request]
+  (let [body (slurp (:body request))]
+    (when-not (str/blank? body)
+      (json/parse-string body true))))
+
+(defn- git-head [repo-root]
+  (let [{:keys [exit out err]} (shell/sh "git" "-C" repo-root "rev-parse" "HEAD")]
+    (when-not (zero? exit)
+      (throw (ex-info "git-head-failed" {:error (str/trim err)})))
+    (str/trim out)))
+
+(defn- hud-certificates [state {:keys [certify-commit repo-root]}]
+  (when certify-commit
+    (let [repo-root (or repo-root (get-in @(:config state) [:repo :root]) (System/getProperty "user.dir"))
+          commit (git-head repo-root)]
+      [{:certificate/type :git/commit
+        :certificate/ref commit
+        :certificate/repo repo-root}])))
+
+(defn- handle-hud-format [state request]
+  (try
+    (let [payload (or (parse-json-body request) {})
+          intent (:intent payload)
+          prototypes (:prototypes payload)
+          sigils (:sigils payload)
+          limit (or (:pattern-limit payload) (:limit payload) 4)
+          certs (hud-certificates state payload)
+          hud (hud/build-hud {:intent intent
+                              :prototypes prototypes
+                              :sigils sigils
+                              :pattern-limit limit
+                              :certificates certs})
+          prompt (hud/hud->prompt-block hud)]
+      (json-response 200 {:ok true
+                          :hud hud
+                          :prompt prompt}))
+    (catch Exception e
+      (json-response 500 {:ok false
+                          :error "hud-format-failed"
+                          :detail (.getMessage e)}))))
+
 (defn handler [state request]
   (cond
     (= [:get "/healthz"] [(:request-method request) (:uri request)])
     (plaintext-response 200 "ok")
+    (and (= (:uri request) "/fulab/hud/format") (= (:request-method request) :post))
+    (handle-hud-format state request)
     (and (= (:uri request) "/musn/ws") (= (:request-method request) :get))
     (websocket-handler state request)
     (and (= (:uri request) "/musn/ingest") (= (:request-method request) :post))

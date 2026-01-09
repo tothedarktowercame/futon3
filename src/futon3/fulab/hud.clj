@@ -125,7 +125,7 @@
                          (->> (:candidates hud)
                               (map-indexed
                                (fn [i c]
-                                 (format "%d. %s (score: %.2f)\n   \"%s\""
+                                 (format "%d. %s (score: %.2f)\n   %s"
                                          (inc i)
                                          (:id c)
                                          (double (:score c))
@@ -139,7 +139,7 @@
                           (double (get (:G-scores aif) (:suggested aif) 0))
                           (double (:tau aif)))
                   "AIF: no suggestion")]
-    (str "---FULAB-HUD---\n"
+    (str "[FULAB-HUD]\n"
          "Intent: " (:intent hud) "\n"
          "Sigils: " sigil-str "\n"
          "\n"
@@ -149,17 +149,19 @@
          aif-str "\n"
          "\n"
          "After completing the task, report which pattern(s) you applied:\n"
-         "---FULAB-REPORT---\n"
+         "[FULAB-REPORT]\n"
          ":applied \"pattern-id-here\"\n"
          ":notes \"why this pattern fit\"\n"
-         "---END-FULAB-REPORT---\n"
-         "---END-FULAB-HUD---")))
+         "[/FULAB-REPORT]\n"
+         "[/FULAB-HUD]")))
 
 (defn- extract-report-block
   "Extract FULAB-REPORT block from response text."
   [text]
   (when text
-    (when-let [match (re-find #"(?s)---FULAB-REPORT---(.*?)---END-FULAB-REPORT---" text)]
+    ;; Match both old (---) and new ([]) formats
+    (when-let [match (or (re-find #"(?s)\[FULAB-REPORT\](.*?)\[/FULAB-REPORT\]" text)
+                         (re-find #"(?s)---FULAB-REPORT---(.*?)---END-FULAB-REPORT---" text))]
       (str/trim (second match)))))
 
 (defn- parse-report-edn

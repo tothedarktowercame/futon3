@@ -6,12 +6,13 @@ set -euo pipefail
 #   fulab-pattern-claim --session-id ID --kind pur|psr
 #   fulab-pattern-claim --session-id ID --kind psr --decision-id DECISION
 #   fulab-pattern-claim --session-id ID --stdin < record.edn
+#   fulab-pattern-claim --session-id ID --kind pur --certify-commit --repo-root "$PWD"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LAB_DEPS='{}'
 
 usage() {
-  echo "Usage: fulab-pattern-claim --session-id ID --kind pur|psr [--decision-id ID] [--stdin] [--print-only]"
+  echo "Usage: fulab-pattern-claim --session-id ID --kind pur|psr [--decision-id ID] [--stdin] [--print-only] [--certify-commit] [--repo-root PATH]"
   echo "Writes a PUR/PSR claim event into lab/sessions/<id>.edn (append-only)."
 }
 
@@ -22,6 +23,8 @@ KIND=""
 DECISION_ID=""
 STDIN=false
 PRINT_ONLY=false
+CERTIFY_COMMIT=false
+REPO_ROOT=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -39,6 +42,10 @@ while [[ $# -gt 0 ]]; do
       STDIN=true; shift;;
     --print-only)
       PRINT_ONLY=true; shift;;
+    --certify-commit)
+      CERTIFY_COMMIT=true; shift;;
+    --repo-root)
+      REPO_ROOT="$2"; shift 2;;
     --help|-h)
       usage; exit 0;;
     *)
@@ -54,4 +61,6 @@ clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-pattern-claim.clj" \
   ${KIND:+--kind "$KIND"} \
   ${DECISION_ID:+--decision-id "$DECISION_ID"} \
   $(if $STDIN; then echo --stdin; fi) \
-  $(if $PRINT_ONLY; then echo --print-only; fi)
+  $(if $PRINT_ONLY; then echo --print-only; fi) \
+  $(if $CERTIFY_COMMIT; then echo --certify-commit; fi) \
+  ${REPO_ROOT:+--repo-root "$REPO_ROOT"}

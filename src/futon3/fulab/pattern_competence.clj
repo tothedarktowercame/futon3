@@ -64,6 +64,9 @@
    :session/id session-id
    :pattern/id ""
    :instance/id ""
+   :certificates [{:certificate/type :git/commit
+                   :certificate/ref ""
+                   :certificate/repo ""}]
    :fields {:context ""
             :if ""
             :however ""
@@ -80,6 +83,9 @@
    :decision/id decision-id
    :candidates ["" ""]
    :chosen ""
+   :certificates [{:certificate/type :git/commit
+                   :certificate/ref ""
+                   :certificate/repo ""}]
    :context/anchors [(anchor :code/edit {:event/type :code/edit
                                          :file ""
                                          :fn ""})]

@@ -20,6 +20,17 @@ verified via `futon3.hx.logic` step kinds.
 
 Anchors must resolve to at least one session `:events` entry.
 
+### Certificate
+
+```edn
+{:certificate/type :git/commit
+ :certificate/ref "59ecb34"
+ :certificate/repo "/home/joe/code/futon3"}
+```
+
+Certificates are required for PUR/PSR validation. Commit hashes are validated by
+shape (7-40 hex chars).
+
 ### Pattern Use Record (PUR)
 
 ```edn
@@ -27,6 +38,9 @@ Anchors must resolve to at least one session `:events` entry.
  :session/id "claude-2026-01-01-001"
  :pattern/id "fulab/clock-in"
  :instance/id "pur-1-a"
+ :certificates [{:certificate/type :git/commit
+                 :certificate/ref "59ecb34"
+                 :certificate/repo "/home/joe/code/futon3"}]
  :fields {:context "..."
           :if "..."
           :however "..."
@@ -55,6 +69,9 @@ Optional fields:
  :decision/id "decision-1"
  :candidates ["fulab/clock-in" "fulab/clock-out"]
  :chosen "fulab/clock-in"
+ :certificates [{:certificate/type :git/commit
+                 :certificate/ref "59ecb34"
+                 :certificate/repo "/home/joe/code/futon3"}]
  :context/anchors [<anchor>]
  :forecast {:benefits [{:tag :benefit/test :locus <anchor> :note "..."}]
             :risks []
@@ -70,12 +87,20 @@ Optional:
 
 ## Claim, Check, Report
 
+These helper CLIs act like a small RPC surface for fulab agents: they are the
+expected interface for creating and validating PUR/PSR events so fucodex and
+fuclaude do not need to guess file formats.
+
 ```bash
 # Write a PUR template
 futon3/fulab-pattern-claim --session-id claude-2026-01-01-001 --kind pur
 
 # Write a PSR template
 futon3/fulab-pattern-claim --session-id claude-2026-01-01-001 --kind psr --decision-id decision-1
+
+# Write a PUR template with a git commit certificate
+futon3/fulab-pattern-claim --session-id claude-2026-01-01-001 --kind pur \
+  --certify-commit --repo-root /home/joe/code/futon3
 
 # Validate claims and append verification events
 futon3/fulab-pattern-check --session-id claude-2026-01-01-001
@@ -108,6 +133,7 @@ PUR validators:
 - V5 Tension accounting (valid references)
 - V6 Counterevidence (at least one resolvable locus)
 - V7 Revision proposal (valid field + support anchors)
+- V8 Certificates (required git commit refs)
 
 PSR validators:
 - W1 Candidate integrity (chosen in candidates; patterns resolve)
@@ -115,6 +141,7 @@ PSR validators:
 - W3 Fit anchors resolve
 - W4 Forecast checkability (each entry has resolvable locus)
 - W5 Rejection structure (rejected candidates have codes)
+- W6 Certificates (required git commit refs)
 
 ## Linking PUR to PSR
 

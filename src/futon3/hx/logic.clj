@@ -181,6 +181,27 @@
                  (or (string? v) (anchor? v)))
                fields)))
 
+(def ^:private certificate-types
+  #{:git/commit})
+
+(defn- git-commit-ref? [value]
+  (and (string? value)
+       (re-matches #"(?i)[0-9a-f]{7,40}" value)))
+
+(defn- certificate-valid? [cert]
+  (and (map? cert)
+       (contains? certificate-types (:certificate/type cert))
+       (git-commit-ref? (:certificate/ref cert))
+       (or (blankish? (:certificate/repo cert))
+           (string? (:certificate/repo cert)))))
+
+(defn- invalid-certificates [certs]
+  (->> certs
+       (keep-indexed (fn [idx cert]
+                       (when-not (certificate-valid? cert)
+                         {:index idx :certificate cert})))
+       vec))
+
 (defn- validator-result [validator status reasons]
   {:validator validator
    :status status
@@ -343,10 +364,11 @@
         pattern-ids (or (:pattern-ids opts) #{})
         outcome-tags (or (:outcome-tags opts) #{})
         extra-anchors (or (:extra-anchors opts) [])
-        required-keys [:pur/id :session/id :pattern/id :instance/id :fields :anchors]
+        required-keys [:pur/id :session/id :pattern/id :instance/id :fields :anchors :certificates]
         missing-keys (filter #(not (contains? pur %)) required-keys)
         fields (:fields pur)
         anchors (:anchors pur)
+        certificates (:certificates pur)
         v1-reasons (cond-> []
                      (seq missing-keys)
                      (conj {:issue :missing-keys :keys (vec missing-keys)})
@@ -451,7 +473,20 @@
                                     :total (count support)}))]
                (validator-result :pur/revision status reasons))
              (validator-result :pur/revision :pass []))
-        validators [v1 v2 v3 v4 v5 v6 v7]]
+        invalid-certs (when (coll? certificates)
+                        (invalid-certificates certificates))
+        v8-status (cond
+                    (not (coll? certificates)) :fail
+                    (empty? certificates) :fail
+                    (seq invalid-certs) :fail
+                    :else :pass)
+        v8-reasons (cond-> []
+                     (not (coll? certificates)) (conj {:issue :invalid-certificates})
+                     (empty? certificates) (conj {:issue :missing-certificates})
+                     (seq invalid-certs) (conj {:issue :invalid-certificates
+                                                :certificates invalid-certs}))
+        v8 (validator-result :pur/certificates v8-status v8-reasons)
+        validators [v1 v2 v3 v4 v5 v6 v7 v8]]
     (validators->result :hx.pattern/use-claimed [] [] validators)))
 
 (defn- check-pattern-selection-claimed [step opts]
@@ -462,12 +497,13 @@
         pattern-ids (or (:pattern-ids opts) #{})
         extra-anchors (or (:extra-anchors opts) [])
         required-keys [:psr/id :session/id :decision/id :candidates :chosen :context/anchors
-                       :forecast :rejections :horizon]
+                       :forecast :rejections :horizon :certificates]
         missing-keys (filter #(not (contains? psr %)) required-keys)
         candidates (:candidates psr)
         chosen (:chosen psr)
         forecast (:forecast psr)
         rejections (:rejections psr)
+        certificates (:certificates psr)
         v1-reasons (cond-> []
                      (seq missing-keys)
                      (conj {:issue :missing-keys :keys (vec missing-keys)})
@@ -554,7 +590,20 @@
                      (seq empty-rejections) (conj {:issue :missing-rejection-codes
                                                    :patterns (vec empty-rejections)}))
         v5 (validator-result :psr/rejections v5-status v5-reasons)
-        validators [v1 v2 v3 v4 v5]]
+        invalid-certs (when (coll? certificates)
+                        (invalid-certificates certificates))
+        v6-status (cond
+                    (not (coll? certificates)) :fail
+                    (empty? certificates) :fail
+                    (seq invalid-certs) :fail
+                    :else :pass)
+        v6-reasons (cond-> []
+                     (not (coll? certificates)) (conj {:issue :invalid-certificates})
+                     (empty? certificates) (conj {:issue :missing-certificates})
+                     (seq invalid-certs) (conj {:issue :invalid-certificates
+                                                :certificates invalid-certs}))
+        v6 (validator-result :psr/certificates v6-status v6-reasons)
+        validators [v1 v2 v3 v4 v5 v6]]
     (validators->result :hx.pattern/selection-claimed [] [] validators)))
 
 (defn check-step

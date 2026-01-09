@@ -25,6 +25,9 @@
    :session/id "test-session-1"
    :pattern/id "p1"
    :instance/id "pur-1-a"
+   :certificates [{:certificate/type :git/commit
+                   :certificate/ref "59ecb34"
+                   :certificate/repo "/home/joe/code/futon3"}]
    :fields {:context "context"
             :if "if"
             :however "however"
@@ -39,6 +42,9 @@
    :decision/id "decision-1"
    :candidates ["p1" "p2"]
    :chosen "p1"
+   :certificates [{:certificate/type :git/commit
+                   :certificate/ref "59ecb34"
+                   :certificate/repo "/home/joe/code/futon3"}]
    :context/anchors [anchor]
    :forecast {:benefits [{:tag :benefit/test
                           :locus anchor
@@ -80,3 +86,12 @@
         failures (logic/explain-failure step {:session base-session
                                               :pattern-ids #{"p1" "p2"}})]
     (is (some #(= :psr/candidates (:validator %)) failures))))
+
+(deftest pur-failing-certificate
+  (let [bad-pur (assoc pur :certificates [{:certificate/type :git/commit
+                                           :certificate/ref "not-a-commit"}])
+        step {:hx.step/kind :hx/pattern-use-claimed
+              :hx.step/payload {:pur bad-pur}}
+        failures (logic/explain-failure step {:session base-session
+                                              :pattern-ids #{"p1"}})]
+    (is (some #(= :pur/certificates (:validator %)) failures))))

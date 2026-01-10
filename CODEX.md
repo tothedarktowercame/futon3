@@ -40,6 +40,14 @@ Now matches both `[FULAB-REPORT]` and `---FULAB-REPORT---` formats.
 
 Already uses new format: `\\[FULAB-REPORT\\]...[/FULAB-REPORT]`. No action needed.
 
+### fuclaude: Agent write permissions (FIXED)
+
+**File:** `fuclaude:67-68, 144-147, 342-346, 359-363`
+
+Added `--allow-edits` and `--yolo` flags to enable agent write permissions:
+- `--allow-edits` sets permission-mode to `acceptEdits` (file edits without prompting)
+- `--yolo` sets permission-mode to `bypassPermissions` (sandboxed environments only)
+
 ## Coherence Tasks
 
 - After fixing delimiters, run `scripts/test-elisp.sh` to verify HUD tests still pass
@@ -69,6 +77,7 @@ Already uses new format: `\\[FULAB-REPORT\\]...[/FULAB-REPORT]`. No action neede
 - Resume works: `./fuclaude --resume <session-id> -p "..."`
 - Continue works: `./fuclaude --continue -p "..."`
 - Session traces exported to `lab/trace/<session-id>.org`
+- Agent write permissions: `./fuclaude --allow-edits -p "..."` or `./fuclaude --yolo -p "..."`
 
 ## References
 

@@ -34,6 +34,7 @@ HUD_PRINT=false
 HUD_SERVER="${HUD_SERVER:-http://localhost:5050}"
 RESUME_SESSION=""
 CONTINUE_LAST=false
+PERMISSION_MODE=""
 
 show_help() {
   cat <<'EOF'
@@ -63,6 +64,8 @@ Options:
   --hud-server URL      HUD server base URL (default: http://localhost:5050).
   --resume ID           Resume a previous session by ID.
   --continue            Continue the most recent session.
+  --allow-edits         Allow file edits without prompting (permission-mode: acceptEdits).
+  --yolo                Bypass all permission checks (use in sandboxed environments only).
 
 Examples:
   fuclaude --live -p "Draft the summary"
@@ -138,6 +141,10 @@ while [[ $# -gt 0 ]]; do
       RESUME_SESSION="$2"; shift 2;;
     --continue)
       CONTINUE_LAST=true; shift;;
+    --allow-edits)
+      PERMISSION_MODE="acceptEdits"; shift;;
+    --yolo)
+      PERMISSION_MODE="bypassPermissions"; shift;;
     -p)
       PRINT_MODE=true
       args+=("-p" "$2"); shift 2;;
@@ -332,8 +339,13 @@ if $LIVE; then
   elif $CONTINUE_LAST; then
     resume_args+=(--continue)
   fi
+  # Build permission flags for claude
+  permission_args=()
+  if [[ -n "$PERMISSION_MODE" ]]; then
+    permission_args+=(--permission-mode "$PERMISSION_MODE")
+  fi
   # Claude uses --print --output-format stream-json --verbose for streaming
-  claude --print --output-format stream-json --verbose "${resume_args[@]}" "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-claude.clj" "${clj_args[@]}"
+  claude --print --output-format stream-json --verbose "${permission_args[@]}" "${resume_args[@]}" "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-claude.clj" "${clj_args[@]}"
   status=${PIPESTATUS[0]}
 else
   # Non-live mode: run claude normally
@@ -344,7 +356,12 @@ else
   elif $CONTINUE_LAST; then
     resume_args+=(--continue)
   fi
-  claude "${resume_args[@]}" "${args[@]}"
+  # Build permission flags for claude
+  permission_args=()
+  if [[ -n "$PERMISSION_MODE" ]]; then
+    permission_args+=(--permission-mode "$PERMISSION_MODE")
+  fi
+  claude "${permission_args[@]}" "${resume_args[@]}" "${args[@]}"
   status=$?
 fi
 

@@ -42,6 +42,31 @@ Already uses new format: `\\[FULAB-REPORT\\]...[/FULAB-REPORT]`. No action neede
 - After fixing delimiters, run `scripts/test-elisp.sh` to verify HUD tests still pass
 - Ensure all three parsing locations (hud.clj, fubar-hud.el, fulab-operator.el) use consistent regex patterns
 
+## Efficient FuLab Usage
+
+### Token Cost Considerations
+
+1. **Non-live mode (`./fuclaude --hud -p "..."`)** is cheaper than `--live` mode
+   - Live mode streams JSON through Clojure processor, adding overhead
+   - Use non-live for quick experiments; live mode for session archival
+
+2. **Dead code detection** already identified in `pattern_hints.clj`:
+   - `read-lines` (line 57) - unused
+   - `read-file` (line 65) - unused
+   - These should be removed (don't re-discover via expensive experiments)
+
+3. **Before running expensive HUD experiments:**
+   - Ensure HUD server is running: `clojure -M:dev` (port 5050)
+   - Test with simple prompt first: `./fuclaude --hud -p "Say hello"`
+   - Check CODEX.md for already-identified issues
+
+### What Works
+
+- `./fuclaude --hud --intent "..." -p "..."` correctly injects HUD context
+- Resume works: `./fuclaude --resume <session-id> -p "..."`
+- Continue works: `./fuclaude --continue -p "..."`
+- Session traces exported to `lab/trace/<session-id>.org`
+
 ## References
 
 - Pattern scoring uses combined sigil/glove weights (0.6/0.4) - see `pattern_hints.clj:249-251`

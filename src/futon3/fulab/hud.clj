@@ -30,11 +30,27 @@
            distinct
            vec))))
 
+(defn- score-source
+  "Best-effort attribution for the candidate score."
+  [entry]
+  (cond
+    (number? (:score/similarity entry)) :glove-embedding
+    (number? (:score/glove-distance entry)) :glove-embedding
+    (number? (:score/sigil-distance entry)) :sigil-distance
+    :else :unknown))
+
 (defn- format-candidate
   "Format a pattern entry for HUD display."
   [entry]
   {:id (:id entry)
-   :score (or (:score entry) 1.0)
+   :score (when (number? (:score entry)) (double (:score entry)))
+   :score-source (or (:score-source entry) (score-source entry))
+   :score-sigil (when (number? (:score/sigil-distance entry))
+                  (double (:score/sigil-distance entry)))
+   :score-glove (when (number? (:score/glove-distance entry))
+                  (double (:score/glove-distance entry)))
+   :score-similarity (when (number? (:score/similarity entry))
+                       (double (:score/similarity entry)))
    :summary (or (:summary entry) (:title entry) "")
    :sigils (:sigils entry)})
 
@@ -45,11 +61,12 @@
   (if (empty? candidates)
     {:suggested nil
      :G-scores {}
+     :G-components {}
      :tau 0.5
      :rationale "No candidates available"}
     (let [;; Simple scoring: use existing score (distance-based, lower is better)
           scored (map (fn [c]
-                        (let [base-score (or (:score c) 0.5)
+                        (let [base-score (double (or (:score c) 0.5))
                               ;; Prefer patterns whose sigils match intent sigils
                               sigil-bonus (if (and (seq sigils) (seq (:sigils c)))
                                             (let [c-sigils (set (map :emoji (:sigils c)))
@@ -59,15 +76,23 @@
                                                 0.0))
                                             0.0)
                               G (+ base-score sigil-bonus)]
-                          {:id (:id c) :G G}))
+                          {:id (:id c)
+                           :G G
+                           :components {:base base-score
+                                        :sigil-bonus sigil-bonus
+                                        :source (:score-source c)
+                                        :missing-score (nil? (:score c))}}))
                       candidates)
           sorted (sort-by :G scored)
           best (first sorted)
-          G-map (into {} (map (juxt :id :G) scored))]
+          G-map (into {} (map (juxt :id :G) scored))
+          G-components (into {} (map (juxt :id :components) scored))]
       {:suggested (:id best)
        :G-scores G-map
+       :G-components G-components
        :tau 0.7  ;; Default confidence
-       :rationale (str "Lowest G score among " (count candidates) " candidates")})))
+       :rationale (str "G = base score (distance from sigils/embedding) + sigil bonus; "
+                       "lowest G among " (count candidates) " candidates")})))
 
 (defn build-hud
   "Create HUD state from intent and optional context.
@@ -93,6 +118,7 @@
                                   :prototypes prototypes
                                   :pattern-limit pattern-limit})
         candidates (mapv format-candidate (:patterns hint-result))
+        glove-candidates (mapv format-candidate (:glove-patterns hint-result))
         ;; Score with AIF
         aif-result (score-candidates-with-aif candidates
                                                {:intent intent
@@ -105,6 +131,7 @@
      :sigils (vec (or resolved-sigils []))
      ;; Pattern candidates
      :candidates candidates
+     :glove-candidates glove-candidates
      :fruits (mapv #(select-keys % [:id :emoji :name :score]) (:fruits hint-result))
      :paramitas (mapv #(select-keys % [:id :zh :en :score]) (:paramitas hint-result))
      :certificates (vec (or certificates []))
@@ -125,11 +152,16 @@
                          (->> (:candidates hud)
                               (map-indexed
                                (fn [i c]
-                                 (format "%d. %s (score: %.2f)\n   %s"
-                                         (inc i)
-                                         (:id c)
-                                         (double (:score c))
-                                         (or (:summary c) ""))))
+                                 (let [score (:score c)
+                                       score-label (if (number? score)
+                                                     (format "dist %.3f (0..1)" (double score))
+                                                     "n/a")]
+                                   (format "%d. %s (score: %s, source: %s)\n   %s"
+                                           (inc i)
+                                           (:id c)
+                                           score-label
+                                           (or (some-> (:score-source c) name) "unknown")
+                                           (or (:summary c) "")))))
                               (str/join "\n"))
                          "No candidates found.")
         aif (:aif hud)

@@ -19,6 +19,8 @@ STOPWORDS = {
 SIGIL_BLOCK_RE = re.compile(r"\[[^\]]*[^ \[\]]+/[^ \[\]]+[^\]]*\]")
 SIGIL_TOKEN_RE = re.compile(r"[^ \[\]]+/[^ \[\]]+")
 ARG_RE = re.compile(r"^@arg\s+(\S+)\s*$")
+FLEXIARG_RE = re.compile(r"^@flexiarg\s+(\S+)\s*$")
+MULTIARG_RE = re.compile(r"^@multiarg\s+(\S+)\s*$")
 SIGILS_RE = re.compile(r"^@sigils\s+\[(.*)\]\s*$")
 TITLE_RE = re.compile(r"^@title\s+(.*)\s*$")
 CLAUSE_RE = re.compile(r"^\s*[+!]\s+([^:]+):\s*(.*)$")
@@ -102,6 +104,12 @@ def parse_flexiargs() -> List[Dict[str, str]]:
                     m = ARG_RE.match(line)
                     if m:
                         arg = m.group(1)
+                    mf = FLEXIARG_RE.match(line)
+                    if mf and not arg:
+                        arg = mf.group(1)
+                    mm = MULTIARG_RE.match(line)
+                    if mm and not arg:
+                        arg = mm.group(1)
                     mt = TITLE_RE.match(line)
                     if mt:
                         title = mt.group(1).strip()

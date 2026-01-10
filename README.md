@@ -211,7 +211,7 @@ The matrices are cheap to recompute, so rerun the script whenever you add or edi
 
 ## Pattern embeddings CLI (clusters, shells, tree)
 
-The repo currently ships `data/sigils/glove_pattern_neighbors.json` (GloVe neighbor report) but not a raw pattern vector map. The CLI expects a file that maps `pattern-id -> [floats]`; point it at your embeddings with `--embeddings`. Generated embeddings live under `futon3/data/` (see the export script below). A tiny fixture lives at `dev/fixtures/pattern_embeddings.json`.
+The repo currently ships `resources/embeddings/glove_pattern_neighbors.json` (GloVe neighbor report) but not a raw pattern vector map. The CLI expects a file that maps `pattern-id -> [floats]`; point it at your embeddings with `--embeddings`. Generated embeddings live under `futon3/data/` (see the export script below). A tiny fixture lives at `dev/fixtures/pattern_embeddings.json`.
 
 ## Ingesting new patterns into Futon1
 When you add or update flexiargs in `library/`, rebuild the sigil index and ingest into Futon1:

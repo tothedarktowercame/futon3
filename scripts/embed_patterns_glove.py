@@ -17,6 +17,8 @@ STOPWORDS = {
 }
 
 ARG_RE = re.compile(r"^@arg\s+(\S+)\s*$")
+FLEXIARG_RE = re.compile(r"^@flexiarg\s+(\S+)\s*$")
+MULTIARG_RE = re.compile(r"^@multiarg\s+(\S+)\s*$")
 TITLE_RE = re.compile(r"^@title\s+(.*)\s*$")
 CLAUSE_RE = re.compile(r"^\s*[+!]\s+([^:]+):\s*(.*)$")
 DEV_HEADER_RE = re.compile(r"^!\s+instantiated-by:\s+Prototype\s+(\d+)\s+—\s+(.*)\s+\[(.*)\]\s*$")
@@ -68,6 +70,12 @@ def parse_flexiargs() -> List[Dict[str, str]]:
                     m = ARG_RE.match(line)
                     if m:
                         arg = m.group(1)
+                    mf = FLEXIARG_RE.match(line)
+                    if mf and not arg:
+                        arg = mf.group(1)
+                    mm = MULTIARG_RE.match(line)
+                    if mm and not arg:
+                        arg = mm.group(1)
                     mt = TITLE_RE.match(line)
                     if mt:
                         title = mt.group(1).strip()
@@ -161,7 +169,7 @@ def cosine(a: List[float], b: List[float]) -> float:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Embed patterns with GloVe and compute neighbors.")
     parser.add_argument("--glove", required=True, help="Path to GloVe vectors (e.g. glove.6B.50d.txt)")
-    parser.add_argument("--report", default="data/sigils/glove_pattern_neighbors.json",
+    parser.add_argument("--report", default="resources/embeddings/glove_pattern_neighbors.json",
                         help="Output report path (JSON).")
     parser.add_argument("--top", type=int, default=6, help="Number of neighbors per pattern.")
     args = parser.parse_args()

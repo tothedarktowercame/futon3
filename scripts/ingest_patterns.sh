@@ -5,9 +5,23 @@ set -euo pipefail
 API_URL="${FUTON1_API:-http://localhost:8080}"
 TSV_FILE="${1:-resources/sigils/patterns-index.tsv}"
 CACHE_FILE="${PATTERN_INGEST_CACHE:-data/pattern-ingest-cache.edn}"
+GLOVE_NEIGHBORS_FILE="${GLOVE_NEIGHBORS_FILE:-resources/embeddings/glove_pattern_neighbors.json}"
 
 echo "Ingesting patterns from $TSV_FILE into $API_URL"
 echo "Using ingest cache: $CACHE_FILE"
+if command -v stat >/dev/null 2>&1; then
+  if [[ -f "$GLOVE_NEIGHBORS_FILE" && -f "$TSV_FILE" ]]; then
+    tsv_mtime=$(stat -c %Y "$TSV_FILE" 2>/dev/null || echo 0)
+    glove_mtime=$(stat -c %Y "$GLOVE_NEIGHBORS_FILE" 2>/dev/null || echo 0)
+    if [[ "$tsv_mtime" -gt "$glove_mtime" ]]; then
+      echo "[lab] warning: GloVe neighbor index older than patterns TSV."
+      echo "[lab]          regenerate: scripts/embed_patterns_glove.py --glove <path-to-glove.txt>"
+    fi
+  else
+    echo "[lab] warning: GloVe neighbor index not found at $GLOVE_NEIGHBORS_FILE"
+    echo "[lab]          generate: scripts/embed_patterns_glove.py --glove <path-to-glove.txt>"
+  fi
+fi
 
 declare -A cache
 tmp_cache=$(mktemp)

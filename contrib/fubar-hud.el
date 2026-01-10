@@ -88,6 +88,11 @@
   :type 'number
   :group 'fubar-hud)
 
+(defcustom fubar-hud-pause-when-selected t
+  "When non-nil, pause auto-refresh while the HUD window is selected."
+  :type 'boolean
+  :group 'fubar-hud)
+
 ;;; State
 
 (defvar-local fubar-hud--current-hud nil
@@ -98,6 +103,10 @@
 
 (defvar-local fubar-hud--intent nil
   "Current intent string.")
+
+
+(defvar-local fubar-hud--operator-status nil
+  "Operator status line for HUD display.")
 
 (defvar-local fubar-hud--session-id nil
   "Current session ID.")
@@ -110,6 +119,9 @@
 
 (defvar fubar-hud--auto-refresh-timer nil
   "Timer used to auto-refresh the HUD.")
+
+(defvar fubar-hud--auto-refresh-paused nil
+  "Non-nil when auto-refresh is paused because the HUD window is selected.")
 
 ;;; Faces
 
@@ -230,6 +242,24 @@
    (value (format "%s" value))
    (t "")))
 
+(defun fubar-hud--map-get (data key)
+  "Fetch KEY from DATA that may be plist or alist."
+  (cond
+   ((null data) nil)
+   ((plist-member data key) (plist-get data key))
+   ((listp data) (cdr (assoc key data)))
+   (t nil)))
+
+(defun fubar-hud--score-source-label (source)
+  "Normalize score SOURCE label for display."
+  (let ((label (format "%s" source)))
+    (cond
+     ((string= label ":glove-embedding") "glove-embedding")
+     ((string= label ":sigil-distance") "sigil-distance")
+     ((string= label ":combined") "combined")
+     ((string= label ":unknown") "unknown")
+     (t label))))
+
 (defun fubar-hud--render-sigils (sigils)
   "Render SIGILS as formatted string."
   (if (and sigils (> (length sigils) 0))
@@ -254,17 +284,43 @@
                 'keymap map
                 'help-echo (format "Click to view %s" pattern-id))))
 
-(defun fubar-hud--render-candidate (candidate index)
-  "Render CANDIDATE at INDEX."
+(defun fubar-hud--render-candidate (candidate index &optional g-score)
+  "Render CANDIDATE at INDEX, optionally with G-SCORE."
   (let* ((id (plist-get candidate :id))
          (score (plist-get candidate :score))
-         (summary (plist-get candidate :summary)))
+         (source (plist-get candidate :score-source))
+         (similarity (plist-get candidate :score-similarity))
+         (sigil-dist (plist-get candidate :score-sigil))
+         (glove-dist (plist-get candidate :score-glove))
+         (summary (plist-get candidate :summary))
+         (aif-line (when (numberp g-score)
+                     (format "   AIF G: %.3f\n" g-score)))
+         (source-line (when source
+                        (format "   Source: %s\n"
+                                (fubar-hud--score-source-label source))))
+         (similarity-line (when (numberp similarity)
+                            (format "   Similarity: %.3f\n" similarity)))
+         (sigil-line (when (numberp sigil-dist)
+                       (format "   Sigil dist: %.3f\n" sigil-dist)))
+         (glove-line (when (numberp glove-dist)
+                       (format "   GloVe dist: %.3f\n" glove-dist)))
+         (score-note-line (when (and (numberp score) (zerop score))
+                            "   Note: 0.000 means exact/rounded match\n")))
     (concat
      (format "%d. " (1+ index))
      (fubar-hud--make-pattern-button id)
      " "
-     (propertize (format "(%.2f)" score) 'face 'fubar-hud-score-face)
+     (propertize (if (numberp score)
+                     (format "(dist %.3f)" score)
+                   "(score unavailable)")
+                 'face 'fubar-hud-score-face)
      "\n"
+     (or aif-line "")
+     (or source-line "")
+     (or sigil-line "")
+     (or glove-line "")
+     (or similarity-line "")
+     (or score-note-line "")
      (when (and summary (not (string-empty-p summary)))
        (concat "   " (propertize (truncate-string-to-width summary 40 nil nil "...")
                                  'face 'font-lock-doc-face)
@@ -276,6 +332,7 @@
       (let ((suggested (plist-get aif :suggested))
             (tau (plist-get aif :tau))
             (g-scores (plist-get aif :G-scores))
+            (g-components (plist-get aif :G-components))
             (rationale (plist-get aif :rationale)))
         (concat
          (propertize "AIF Suggestion\n" 'face 'fubar-hud-header-face)
@@ -289,10 +346,54 @@
                         (propertize (format "%.2f" tau) 'face 'fubar-hud-tau-face)))
               (when-let ((g (and g-scores (cdr (assoc suggested g-scores)))))
                 (format "  Expected FE (G): %.3f\n" g))
+              (let ((components (and g-components (fubar-hud--map-get g-components suggested))))
+                (when components
+                  (let ((base (fubar-hud--map-get components :base))
+                        (sigil (fubar-hud--map-get components :sigil-bonus))
+                        (source (fubar-hud--map-get components :source)))
+                    (format "  G components: base %.3f, sigil %.3f, source %s\n"
+                            (or base 0.0)
+                            (or sigil 0.0)
+                            (fubar-hud--score-source-label source)))))
               (when rationale
                 (format "  Rationale: %s\n" rationale)))
-           "  No suggestion\n")))
+           "  No suggestion\n")
+         "  (tau: precision of the selector; higher is more confident)\n"
+         "  (see docs/aif-pattern-engine.md for computation details)\n"))
     ""))
+
+(defun fubar-hud--render-score-sources (hud)
+  "Render score attribution notes."
+  (let ((aif (plist-get hud :aif)))
+    (concat
+     (propertize "Score Sources\n" 'face 'fubar-hud-header-face)
+     "  Candidate scores: combined distance (0..1); lower is closer\n"
+     "  Sigil dist: sigil-embedding distance (0..1)\n"
+     "  GloVe dist: glove-embedding distance (0..1)\n"
+     "  Similarity: glove similarity (0..1)\n"
+     "  Score missing: no sigil/embedding score; AIF defaults base to 0.5\n"
+     "  Score 0.000 can mean exact match or rounding; check source/similarity\n"
+     (if aif
+         "  AIF scores: G = base score + sigil bonus (lower is better)\n"
+       "  AIF scores: unavailable (no adapter output)\n"))))
+
+(defun fubar-hud--render-glove-candidates (candidates)
+  "Render GloVe neighbor candidates."
+  (when (and candidates (> (length candidates) 0))
+    (concat
+     (propertize "GloVe Neighbors\n" 'face 'fubar-hud-header-face)
+     (mapconcat
+      (lambda (c)
+        (let ((id (plist-get c :id))
+              (dist (plist-get c :score-glove))
+              (sim (plist-get c :score-similarity)))
+          (format "  %s (dist %.3f, sim %.3f)\n"
+                  id
+                  (or dist 0.0)
+                  (or sim 0.0))))
+      candidates
+      "")
+     "\n")))
 
 (defun fubar-hud--render-agent-report (report)
   "Render agent REPORT section."
@@ -315,6 +416,11 @@
     (erase-buffer)
     (insert (propertize "━━━ FuLab HUD ━━━\n\n" 'face 'fubar-hud-header-face))
 
+    ;; Operator status
+    (when fubar-hud--operator-status
+      (insert (propertize "Operator Status\n" 'face 'fubar-hud-header-face))
+      (insert "  " fubar-hud--operator-status "\n\n"))
+
     ;; Session
     (when fubar-hud--session-id
       (insert (propertize "Session\n" 'face 'fubar-hud-header-face))
@@ -332,21 +438,37 @@
 
     ;; Candidates
     (insert (propertize "Pattern Candidates\n" 'face 'fubar-hud-header-face))
-    (let ((candidates (plist-get hud :candidates)))
+    (let* ((candidates (plist-get hud :candidates))
+           (g-scores (plist-get (plist-get hud :aif) :G-scores)))
       (if (and candidates (> (length candidates) 0))
           (cl-loop for c in candidates
                    for i from 0
-                   do (insert (fubar-hud--render-candidate c i)))
+                   do (insert (fubar-hud--render-candidate
+                               c
+                               i
+                               (when g-scores
+                                 (cdr (assoc (plist-get c :id) g-scores))))))
         (insert "  " (propertize "No candidates found" 'face 'font-lock-comment-face) "\n")))
     (insert "\n")
+
+    ;; GloVe neighbors
+    (when-let ((glove-candidates (plist-get hud :glove-candidates)))
+      (insert (fubar-hud--render-glove-candidates glove-candidates)))
 
     ;; AIF
     (insert (fubar-hud--render-aif (plist-get hud :aif)))
     (insert "\n")
 
+    (insert (fubar-hud--render-score-sources hud))
+    (insert "\n")
+
     ;; Staged Next Move
     (when fubar-hud--staged-next
-      (insert (propertize "Staged Next\n" 'face 'fubar-hud-header-face))
+      (let ((label (if (and fubar-hud--last-agent-report
+                            (string= (plist-get fubar-hud--last-agent-report :applied) "none"))
+                       "Staged (Non-op)\n"
+                     "Staged Next\n")))
+        (insert (propertize label 'face 'fubar-hud-header-face)))
       (insert "  " (propertize fubar-hud--staged-next 'face 'font-lock-string-face) "\n\n"))
 
     ;; Agent Report (from HUD or last session)
@@ -358,6 +480,9 @@
     (insert "\n" (propertize "━━━━━━━━━━━━━━━━━━\n" 'face 'font-lock-comment-face))
     (insert (propertize (format-time-string "Updated: %H:%M:%S")
                         'face 'font-lock-comment-face))
+    (when fubar-hud--auto-refresh-paused
+      (insert (propertize "  Auto-refresh: paused"
+                          'face 'font-lock-comment-face)))
 
     (goto-char (point-min))))
 
@@ -457,8 +582,13 @@
           (run-at-time 0 fubar-hud-auto-refresh-seconds
                        (lambda ()
                          (when (get-buffer-window fubar-hud-buffer-name)
-                           (with-current-buffer fubar-hud-buffer-name
-                             (fubar-hud-refresh))))))))
+                           (let* ((hud-buf (get-buffer fubar-hud-buffer-name))
+                                  (pause? (and fubar-hud-pause-when-selected
+                                               (eq (window-buffer (selected-window)) hud-buf))))
+                             (setq fubar-hud--auto-refresh-paused pause?)
+                             (unless pause?
+                               (with-current-buffer fubar-hud-buffer-name
+                                 (fubar-hud-refresh))))))))))
 
 (defun fubar-hud--stop-auto-refresh ()
   "Stop HUD auto-refresh timer."
@@ -628,18 +758,23 @@ Output goes to *FuLab Raw Stream* buffer."
                   (when (get-buffer fubar-hud-buffer-name)
                     (buffer-local-value 'fubar-hud--session-id
                                         (get-buffer fubar-hud-buffer-name)))))
+         (sid (and sid (not (string-empty-p sid)) sid))
          (buf (get-buffer-create fubar-hud-stream-buffer-name))
          (escaped-prompt (shell-quote-argument prompt))
+         (escaped-sid (and sid (shell-quote-argument sid)))
+         (sid-label (if (and sid (>= (length sid) 8))
+                        (substring sid 0 8)
+                      (or sid "last")))
          (cmd (if sid
                   (format "HUD_SERVER=http://localhost:5050 %s/fuclaude --resume %s -p %s 2>&1"
-                          fubar-hud-futon3-root sid escaped-prompt)
+                          fubar-hud-futon3-root escaped-sid escaped-prompt)
                 (format "HUD_SERVER=http://localhost:5050 %s/fuclaude --continue -p %s 2>&1"
                         fubar-hud-futon3-root escaped-prompt)))
          proc)
     (with-current-buffer buf
       (goto-char (point-max))
       (insert (format "\n━━━ resume %s: %s ━━━\n"
-                      (if sid (substring sid 0 8) "last")
+                      sid-label
                       (substring prompt 0 (min 50 (length prompt))))))
     (display-buffer buf)
     (setq proc (start-process-shell-command "fuclaude-resume" buf cmd))

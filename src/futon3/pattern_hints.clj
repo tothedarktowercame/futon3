@@ -29,7 +29,7 @@
 (def ^:private paramita-data (delay (read-edn "resources/sigils/paramitas.edn")))
 
 (def ^:private glove-patterns-data
-  (delay (or (read-json "data/sigils/glove_pattern_neighbors.json") [])))
+  (delay (or (read-json "resources/embeddings/glove_pattern_neighbors.json") [])))
 
 (def ^:private glove-patterns-by-id
   (delay (into {}
@@ -211,7 +211,10 @@
   (->> entries
        (keep (fn [entry]
                (when-let [d (entry-distance targets entry)]
-                 (assoc entry :score d))))
+                 (assoc entry
+                        :score/sigil-distance d
+                        :score d
+                        :score-source :sigil-distance))))
        (sort-by :score)
        (take limit)
        vec))
@@ -232,7 +235,9 @@
                    (when-let [score (:score entry)]
                      (assoc entry
                             :score/similarity (double score)
-                            :score (score->distance score)))))
+                            :score/glove-distance (score->distance score)
+                            :score (score->distance score)
+                            :score-source :glove-embedding))))
            (group-by :id)
            (map (fn [[_ entries]]
                   (apply max-key :score/similarity entries)))
@@ -241,6 +246,17 @@
            vec))
     []))
 
+(def ^:private score-weight-sigil 0.6)
+(def ^:private score-weight-glove 0.4)
+
+(defn- combine-scores [sigil glove]
+  (cond
+    (and (number? sigil) (number? glove))
+    (+ (* score-weight-sigil sigil) (* score-weight-glove glove))
+    (number? sigil) sigil
+    (number? glove) glove
+    :else nil))
+
 (defn- merge-patterns [sigil-patterns glove-patterns limit]
   (let [glove-enriched (->> glove-patterns
                             (map (fn [entry]
@@ -248,11 +264,38 @@
         deduped (->> (concat sigil-patterns glove-enriched)
                      (group-by :id)
                      (map (fn [[_ entries]]
-                            (apply min-key :score entries)))
+                            (let [sigil-score (some :score/sigil-distance entries)
+                                  glove-score (some :score/glove-distance entries)
+                                  similarity (some :score/similarity entries)
+                                  combined (combine-scores sigil-score glove-score)
+                                  source (cond
+                                           (and (number? sigil-score) (number? glove-score)) :combined
+                                           (number? sigil-score) :sigil-distance
+                                           (number? glove-score) :glove-embedding
+                                           :else :unknown)
+                                  merged (apply merge entries)]
+                              (assoc merged
+                                     :score/sigil-distance sigil-score
+                                     :score/glove-distance glove-score
+                                     :score/similarity similarity
+                                     :score combined
+                                     :score-source source))))
                      (sort-by :score))]
     (if limit
       (vec (take limit deduped))
       (vec deduped))))
+
+(defn- glove-proximity [pattern-id seed-set]
+  (when-let [entry (get @glove-patterns-by-id pattern-id)]
+    (let [best (->> (:neighbors entry)
+                    (remove #(= pattern-id (:id %)))
+                    (filter #(contains? seed-set (:id %)))
+                    (sort-by :score >)
+                    first)]
+      (when-let [score (:score best)]
+        {:score/glove-distance (score->distance score)
+         :score/similarity (double score)
+         :score-source :glove-embedding}))))
 
 (defn- nearest-fruits [targets limit]
   (let [primary (first targets)]
@@ -299,6 +342,13 @@
         patterns (if (seq targets)
                    (nearest targets @ldts-patterns pattern-limit)
                    [])
+        seed-ids (map :id patterns)
+        seed-set (set seed-ids)
+        patterns (mapv (fn [entry]
+                         (if-let [prox (glove-proximity (:id entry) seed-set)]
+                           (merge entry prox)
+                           entry))
+                       patterns)
         glove-limit (or glove-pattern-limit pattern-limit)
         seed-ids (cond
                    (seq patterns) (map :id patterns)

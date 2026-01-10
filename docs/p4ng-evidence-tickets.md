@@ -5,18 +5,18 @@ Lab work cutoff: Mon Jan 12
 
 ## Ticket Overview
 
-| ID | Assignee | Summary | Est |
-|----|----------|---------|-----|
-| E01 | fucodex | Pattern-guided refactor of aif_bridge.clj | 1h |
-| E02 | fucodex | Implement one AIF pattern next-step | 2h |
-| E03 | fuclaude | Analyze E01/E02 sessions, extract vignette | 1h |
-| E04 | fuclaude | Validate PUR claims from E01/E02 | 30m |
-| E05 | fubar.el+Joe | Live pattern-guided editing session | 1h |
-| E06 | Joe | Review vignettes, select best for paper | 30m |
-| E07 | fuclaude | Draft Section III-A (Interactional) from vignette | 1h |
-| E08 | fucodex | Generate session reports for all evidence sessions | 30m |
-| E09 | Joe | Final integration into main.tex | 1h |
-| E10 | fuclaude | Verify paper claims against evidence trail | 30m |
+| ID  | Assignee     | Summary                                            | Est |
+|-----|--------------|----------------------------------------------------|-----|
+| E01 | fucodex      | Pattern-guided refactor of aif_bridge.clj          | 1h  |
+| E02 | fucodex      | Implement one AIF pattern next-step                | 2h  |
+| E03 | fuclaude     | Analyze E01/E02 sessions, extract vignette         | 1h  |
+| E04 | fuclaude     | Validate PUR claims from E01/E02                   | 30m |
+| E05 | fubar.el+Joe | Live pattern-guided editing session                | 1h  |
+| E06 | Joe          | Review vignettes, select best for paper            | 30m |
+| E07 | fuclaude     | Draft Section III-A (Interactional) from vignette  | 1h  |
+| E08 | fucodex      | Generate session reports for all evidence sessions | 30m |
+| E09 | Joe          | Final integration into main.tex                    | 1h  |
+| E10 | fuclaude     | Verify paper claims against evidence trail         | 30m |
 
 ---
 

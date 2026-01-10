@@ -12,7 +12,21 @@ Claude CLI requires `--verbose` when using `--print --output-format stream-json`
 
 ## Outstanding Issues
 
-(none currently)
+### fulab/clock-in and fulab/clock-out patterns missing implementation
+
+**Patterns:** `fulab/clock-in`, `fulab/clock-out` in `resources/sigils/patterns-index.tsv`
+
+The pattern index defines clock-in (把) and clock-out (才) events for anchoring proof paths, but neither `hud.clj` nor `pattern_competence.clj` implements these. `build-hud` generates timestamps but no clock-in event; session end has no clock-out emission.
+
+**Fix:** Add `clock-in!` and `clock-out!` functions to `pattern_competence.clj` that emit `:session/clock-in` and `:session/clock-out` events.
+
+### fulab/session-resume pattern not wired to HUD
+
+**Pattern:** `fulab/session-resume` in `resources/sigils/patterns-index.tsv`
+
+The pattern specifies explicit ancestor references for resumed sessions. Currently `build-hud` (`hud.clj:97-141`) has no `:resume-from` option and generates fresh HUD IDs without linking to prior sessions.
+
+**Fix:** Add `:resume-from` parameter to `build-hud` that sets `:hud/ancestor` and carries forward context.
 
 ### fulab-operator.el: Delimiter regex (FIXED)
 

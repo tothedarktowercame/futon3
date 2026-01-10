@@ -12,24 +12,13 @@ Claude CLI requires `--verbose` when using `--print --output-format stream-json`
 
 ## Outstanding Issues
 
-### fulab-operator.el: Inconsistent FULAB-REPORT delimiter regex
+(none currently)
 
-**File:** `contrib/fulab-operator.el:152`
+### fulab-operator.el: Delimiter regex (FIXED)
 
-The `fulab-operator--parse-fulab-report` function only matches the old delimiter format:
+**File:** `contrib/fulab-operator.el:150-154`
 
-```elisp
-(string-match "---FULAB-REPORT---\\([\\s\\S]*?\\)---END-FULAB-REPORT---" text)
-```
-
-However, `hud.clj:195-196` now supports both old and new formats:
-
-```clojure
-(or (re-find #"(?s)\[FULAB-REPORT\](.*?)\[/FULAB-REPORT\]" text)
-    (re-find #"(?s)---FULAB-REPORT---(.*?)---END-FULAB-REPORT---" text))
-```
-
-**Fix:** Update `fulab-operator--parse-fulab-report` to also match `[FULAB-REPORT]...[/FULAB-REPORT]` format, similar to the Clojure implementation.
+Now matches both `[FULAB-REPORT]` and `---FULAB-REPORT---` formats.
 
 ### fubar-hud.el: Already fixed
 

@@ -148,8 +148,10 @@
               (message "Fulab session captured: %s" session-id))))))))
 
 (defun fulab-operator--parse-fulab-report (text)
-  "Return plist for FULAB report in TEXT, or nil."
-  (when (and text (string-match "---FULAB-REPORT---\\([\\s\\S]*?\\)---END-FULAB-REPORT---" text))
+  "Return plist for FULAB report in TEXT, or nil.
+Matches both [FULAB-REPORT] and ---FULAB-REPORT--- delimiters."
+  (when (and text (or (string-match "\\[FULAB-REPORT\\]\\([^[]*\\)\\[/FULAB-REPORT\\]" text)
+                      (string-match "---FULAB-REPORT---\\([\\s\\S]*?\\)---END-FULAB-REPORT---" text)))
     (let* ((report-text (match-string 1 text))
            (applied (when (string-match ":applied \"\\([^\"]+\\)\"" report-text)
                       (match-string 1 report-text)))

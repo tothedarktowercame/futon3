@@ -270,7 +270,7 @@ PY
 
 User task: ${original_prompt}"
       new_args+=("-p" "$combined_prompt")
-      ((i++))  # Skip the next element since we handled it
+      ((++i))  # Skip the next element since we handled it
     else
       new_args+=("${args[$i]}")
     fi

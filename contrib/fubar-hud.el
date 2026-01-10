@@ -20,6 +20,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'comint)
 (require 'json)
 (require 'url)
 (require 'url-http)
@@ -519,6 +520,25 @@
         (message "Sent staged next-move to fucodex."))
     (message "No staged next-move found.")))
 
+(defun fubar-hud-run-fuclaude (prompt)
+  "Run fuclaude with PROMPT and current HUD intent.
+Output goes to *FuLab Raw Stream* comint buffer."
+  (interactive "sPrompt: ")
+  (let* ((default-directory fubar-hud-futon3-root)
+         (intent (or fubar-hud--intent "coding task"))
+         (buf (get-buffer-create fubar-hud-stream-buffer-name))
+         ;; Escape prompt for shell
+         (escaped-prompt (shell-quote-argument prompt))
+         (escaped-intent (shell-quote-argument intent))
+         (cmd (format "HUD_SERVER=http://localhost:5050 %s/fuclaude --hud --intent %s -p %s 2>&1"
+                      fubar-hud-futon3-root escaped-intent escaped-prompt)))
+    (with-current-buffer buf
+      (goto-char (point-max))
+      (insert (format "\n--- fuclaude: %s ---\n" (substring prompt 0 (min 50 (length prompt))))))
+    (display-buffer buf)
+    (start-process-shell-command "fuclaude" buf cmd)
+    (message "Started fuclaude with intent: %s" intent)))
+
 ;;; Mode Definition
 
 (defvar fubar-hud-mode-map
@@ -530,6 +550,7 @@
     (define-key map "p" #'fubar-hud-toggle-stream-pause)
     (define-key map "a" #'fubar-hud-accept-staged)
     (define-key map "y" #'fubar-hud-get-prompt-block)
+    (define-key map "r" #'fubar-hud-run-fuclaude)
     map)
   "Keymap for `fubar-hud-mode'.")
 

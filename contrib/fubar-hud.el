@@ -349,9 +349,10 @@
       (insert (propertize "Staged Next\n" 'face 'fubar-hud-header-face))
       (insert "  " (propertize fubar-hud--staged-next 'face 'font-lock-string-face) "\n\n"))
 
-    ;; Agent Report (if present)
-    (when (plist-get hud :agent-report)
-      (insert (fubar-hud--render-agent-report (plist-get hud :agent-report))))
+    ;; Agent Report (from HUD or last session)
+    (when-let ((report (or (plist-get hud :agent-report)
+                           fubar-hud--last-agent-report)))
+      (insert (fubar-hud--render-agent-report report)))
 
     ;; Footer
     (insert "\n" (propertize "━━━━━━━━━━━━━━━━━━\n" 'face 'font-lock-comment-face))
@@ -387,17 +388,28 @@
 
 ;;; Interactive Commands
 
+(defun fubar-hud--ensure-mode ()
+  "Ensure HUD buffer is in fubar-hud-mode without killing locals."
+  (unless (derived-mode-p 'fubar-hud-mode)
+    (fubar-hud-mode)))
+
 (defun fubar-hud-set-intent (intent)
   "Set INTENT and rebuild HUD."
   (interactive "sIntent: ")
-  (setq fubar-hud--intent intent)
-  (fubar-hud-refresh))
+  (let ((buf (get-buffer-create fubar-hud-buffer-name)))
+    (with-current-buffer buf
+      (fubar-hud--ensure-mode)
+      (setq fubar-hud--intent intent)
+      (fubar-hud-refresh))))
 
 (defun fubar-hud-set-session-id (session-id)
   "Set SESSION-ID and rebuild HUD."
   (interactive "sSession ID: ")
-  (setq fubar-hud--session-id session-id)
-  (fubar-hud-refresh))
+  (let ((buf (get-buffer-create fubar-hud-buffer-name)))
+    (with-current-buffer buf
+      (fubar-hud--ensure-mode)
+      (setq fubar-hud--session-id session-id)
+      (fubar-hud-refresh))))
 
 (defun fubar-hud-refresh ()
   "Refresh HUD with current intent."
@@ -416,7 +428,9 @@
   (interactive)
   (let ((buf (get-buffer-create fubar-hud-buffer-name)))
     (with-current-buffer buf
-      (fubar-hud-mode)
+      ;; Only set mode if not already set (mode change kills buffer-locals)
+      (unless (derived-mode-p 'fubar-hud-mode)
+        (fubar-hud-mode))
       (unless fubar-hud--current-hud
         (fubar-hud-refresh)))
     (display-buffer-in-side-window
@@ -520,23 +534,79 @@
         (message "Sent staged next-move to fucodex."))
     (message "No staged next-move found.")))
 
+(defvar-local fubar-hud--output-accumulator ""
+  "Accumulator for fuclaude output to parse reports.")
+
+(defun fubar-hud--parse-session-output (output)
+  "Parse OUTPUT for session ID and FULAB-REPORT.
+Returns plist with :session-id and :agent-report."
+  (let (session-id agent-report)
+    ;; Parse session ID from export message
+    (when (string-match "\\[fuclaude\\] Exporting session: \\([a-f0-9-]+\\)" output)
+      (setq session-id (match-string 1 output)))
+    ;; Parse FULAB-REPORT block
+    (when (string-match "\\[FULAB-REPORT\\]\\([^[]*\\)\\[/FULAB-REPORT\\]" output)
+      (let ((report-text (match-string 1 output)))
+        (setq agent-report
+              (list :applied (when (string-match ":applied \"\\([^\"]+\\)\"" report-text)
+                               (match-string 1 report-text))
+                    :notes (when (string-match ":notes \"\\([^\"]+\\)\"" report-text)
+                             (match-string 1 report-text))))))
+    (list :session-id session-id :agent-report agent-report)))
+
+(defun fubar-hud--process-sentinel (proc event)
+  "Handle fuclaude PROC completion EVENT."
+  (when (string-match-p "finished\\|exited" event)
+    (let* ((buf (process-buffer proc))
+           (output (when buf
+                     (with-current-buffer buf
+                       (buffer-substring-no-properties (point-min) (point-max)))))
+           (parsed (fubar-hud--parse-session-output (or output "")))
+           (session-id (plist-get parsed :session-id))
+           (agent-report (plist-get parsed :agent-report))
+           (hud-buf (get-buffer fubar-hud-buffer-name)))
+      ;; Update state in HUD buffer context
+      (when hud-buf
+        (with-current-buffer hud-buf
+          (when session-id
+            (setq fubar-hud--session-id session-id))
+          (when agent-report
+            (setq fubar-hud--last-agent-report agent-report))))
+      ;; Also set globally for non-buffer-local access
+      (when agent-report
+        (setq fubar-hud--last-agent-report agent-report))
+      (fubar-hud-refresh)
+      (message "fuclaude %s%s"
+               (string-trim event)
+               (if session-id (format " [%s]" (substring session-id 0 8)) "")))))
+
+(defvar fubar-hud--last-agent-report nil
+  "Last agent report from fuclaude session.")
+
 (defun fubar-hud-run-fuclaude (prompt)
   "Run fuclaude with PROMPT and current HUD intent.
-Output goes to *FuLab Raw Stream* comint buffer."
+Output goes to *FuLab Raw Stream* buffer. On completion, parses
+session ID and FULAB-REPORT to update the HUD."
   (interactive "sPrompt: ")
   (let* ((default-directory fubar-hud-futon3-root)
-         (intent (or fubar-hud--intent "coding task"))
+         (hud-buf (get-buffer fubar-hud-buffer-name))
+         (intent (or (when hud-buf
+                       (buffer-local-value 'fubar-hud--intent hud-buf))
+                     "coding task"))
          (buf (get-buffer-create fubar-hud-stream-buffer-name))
          ;; Escape prompt for shell
          (escaped-prompt (shell-quote-argument prompt))
          (escaped-intent (shell-quote-argument intent))
          (cmd (format "HUD_SERVER=http://localhost:5050 %s/fuclaude --hud --intent %s -p %s 2>&1"
-                      fubar-hud-futon3-root escaped-intent escaped-prompt)))
+                      fubar-hud-futon3-root escaped-intent escaped-prompt))
+         proc)
     (with-current-buffer buf
       (goto-char (point-max))
-      (insert (format "\n--- fuclaude: %s ---\n" (substring prompt 0 (min 50 (length prompt))))))
+      (insert (format "\n━━━ fuclaude: %s ━━━\n"
+                      (substring prompt 0 (min 60 (length prompt))))))
     (display-buffer buf)
-    (start-process-shell-command "fuclaude" buf cmd)
+    (setq proc (start-process-shell-command "fuclaude" buf cmd))
+    (set-process-sentinel proc #'fubar-hud--process-sentinel)
     (message "Started fuclaude with intent: %s" intent)))
 
 ;;; Mode Definition

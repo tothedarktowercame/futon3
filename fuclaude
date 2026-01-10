@@ -332,8 +332,8 @@ if $LIVE; then
   elif $CONTINUE_LAST; then
     resume_args+=(--continue)
   fi
-  # Claude uses --print --output-format stream-json for streaming
-  claude --print --output-format stream-json "${resume_args[@]}" "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-claude.clj" "${clj_args[@]}"
+  # Claude uses --print --output-format stream-json --verbose for streaming
+  claude --print --output-format stream-json --verbose "${resume_args[@]}" "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-claude.clj" "${clj_args[@]}"
   status=${PIPESTATUS[0]}
 else
   # Non-live mode: run claude normally

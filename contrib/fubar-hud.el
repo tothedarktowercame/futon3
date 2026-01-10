@@ -609,6 +609,43 @@ session ID and FULAB-REPORT to update the HUD."
     (set-process-sentinel proc #'fubar-hud--process-sentinel)
     (message "Started fuclaude with intent: %s" intent)))
 
+(defun fubar-hud-resume-session (prompt &optional session-id)
+  "Resume SESSION-ID (or current session) with PROMPT.
+Output goes to *FuLab Raw Stream* buffer."
+  (interactive
+   (let* ((default-id (when (get-buffer fubar-hud-buffer-name)
+                        (buffer-local-value 'fubar-hud--session-id
+                                            (get-buffer fubar-hud-buffer-name))))
+          (id (read-string (format "Session ID%s: "
+                                   (if default-id
+                                       (format " [%s]" (substring default-id 0 8))
+                                     ""))
+                           nil nil default-id))
+          (prompt (read-string "Prompt: ")))
+     (list prompt id)))
+  (let* ((default-directory fubar-hud-futon3-root)
+         (sid (or session-id
+                  (when (get-buffer fubar-hud-buffer-name)
+                    (buffer-local-value 'fubar-hud--session-id
+                                        (get-buffer fubar-hud-buffer-name)))))
+         (buf (get-buffer-create fubar-hud-stream-buffer-name))
+         (escaped-prompt (shell-quote-argument prompt))
+         (cmd (if sid
+                  (format "HUD_SERVER=http://localhost:5050 %s/fuclaude --resume %s -p %s 2>&1"
+                          fubar-hud-futon3-root sid escaped-prompt)
+                (format "HUD_SERVER=http://localhost:5050 %s/fuclaude --continue -p %s 2>&1"
+                        fubar-hud-futon3-root escaped-prompt)))
+         proc)
+    (with-current-buffer buf
+      (goto-char (point-max))
+      (insert (format "\n━━━ resume %s: %s ━━━\n"
+                      (if sid (substring sid 0 8) "last")
+                      (substring prompt 0 (min 50 (length prompt))))))
+    (display-buffer buf)
+    (setq proc (start-process-shell-command "fuclaude-resume" buf cmd))
+    (set-process-sentinel proc #'fubar-hud--process-sentinel)
+    (message "Resuming session: %s" (or sid "last"))))
+
 ;;; Mode Definition
 
 (defvar fubar-hud-mode-map
@@ -621,6 +658,7 @@ session ID and FULAB-REPORT to update the HUD."
     (define-key map "a" #'fubar-hud-accept-staged)
     (define-key map "y" #'fubar-hud-get-prompt-block)
     (define-key map "r" #'fubar-hud-run-fuclaude)
+    (define-key map "R" #'fubar-hud-resume-session)
     map)
   "Keymap for `fubar-hud-mode'.")
 

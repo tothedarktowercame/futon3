@@ -19,7 +19,7 @@ It keeps the original plan intact while documenting corrections, risks, and prac
 ## Evidence Capture Notes
 
 - Live fucodex runs emit PSR/PUR records on every `turn.completed` event when
-  using `dev/lab-stream-codex.clj`. That means a run can produce multiple PSR/PUR
+  using `dev/lab_stream_codex.clj`. That means a run can produce multiple PSR/PUR
   pairs even if the prompt looks like a single task.
 - `--clock-in` sets the chosen pattern for that turn, but `--aif-select` will
   still compute an AIF selection when no explicit `--chosen`/`--clock-in` is in force.

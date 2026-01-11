@@ -24,8 +24,10 @@
    :ratio 0.5
    :action "off-trail"})
 
+(declare log-pattern-action! handle-pattern-action!)
+
 (defn usage []
-  (println "Usage: dev/lab-stream-codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook] [--hud-json PATH]")
+  (println "Usage: dev/lab_stream_codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook] [--hud-json PATH]")
   (println "Reads codex --json stream from stdin and appends session + AIF events.")
   (println "Clock-in entries are consumed in order, one per turn (override --chosen for that turn)."))
 
@@ -356,7 +358,7 @@
           (let [{:keys [off on limit]} (trail-limit state)
                 off-action (get-in @state [:off-trail :action] "off-trail")
                 note (format "off-trail count=%d on-trail=%d limit=%.1f"
-                             off on limit))]
+                             off on limit)]
             (log-pattern-action! state engine off-action pattern-id note)))))))
 
 (defn- record-pattern-action-rpc! [state action pattern-id note]
@@ -535,10 +537,10 @@
                             consumed (count-clock-ins session)
                             remaining (vec (drop consumed (:clock-in-queue @state)))]
                         (swap! state assoc :thread-id thread-id
-                                         :session-id session-id
-                                         :session session
-                                         :turn (last-turn session)
-                                         :clock-in-queue remaining)
+                               :session-id session-id
+                               :session session
+                               :turn (last-turn session)
+                               :clock-in-queue remaining)
                         (ensure-raw-writer state)
                         (when (and (:hud @state) (not (:hud-logged? @state)))
                           (let [hud-id (get-in @state [:hud :hud/id])]
@@ -575,8 +577,8 @@
                           pattern-ids (seq (distinct (concat output-patterns
                                                              command-patterns
                                                              path-patterns)))]
-                        (doseq [payload (parse-pattern-action-lines output)]
-                          (handle-pattern-action! state engine payload))
+                      (doseq [payload (parse-pattern-action-lines output)]
+                        (handle-pattern-action! state engine payload))
                       (when (and (seq pattern-ids) (or (seq command-paths) (seq output-patterns)))
                         (doseq [pattern-id pattern-ids]
                           (log-pattern-action! state
@@ -634,7 +636,7 @@
                                               :clock-in/pattern-id current
                                               :clock-in/intent "fucodex live run"})
                         (swap! state assoc :clock-in-queue (vec (rest (:clock-in-queue @state)))
-                                     :clock-in-current current))
+                               :clock-in-current current))
                       (append-event! state {:event/type :turn/completed
                                             :turn turn
                                             :at (now-inst)})

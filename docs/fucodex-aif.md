@@ -4,7 +4,7 @@ This note explains how AIF scoring is attached to fucodex pattern runs and how t
 
 ## How it connects
 
-- fucodex live mode (`fucodex --live ...`) streams Codex JSON into `dev/lab-stream-codex.clj`.
+- fucodex live mode (`fucodex --live ...`) streams Codex JSON into `dev/lab_stream_codex.clj`.
 - On each `turn.completed`, the stream runner emits:
   - `:pattern/selection-claimed` (PSR) and `:pattern/use-claimed` (PUR) events.
   - `:aif/summary` events for the PSR (selection) and PUR (update).

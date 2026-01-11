@@ -372,7 +372,7 @@ if $LIVE; then
   if [[ ${#args[@]} -gt 0 && "${args[0]}" == -* ]]; then
     codex_flags+=(--)
   fi
-  codex exec "${codex_flags[@]}" "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-codex.clj" "${clj_args[@]}"
+  codex exec "${codex_flags[@]}" "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab_stream_codex.clj" "${clj_args[@]}"
   status=${PIPESTATUS[0]}
 else
   codex "${args[@]}"

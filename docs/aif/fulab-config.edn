@@ -1,6 +1,15 @@
 {:g/weights {:base 0.1
              :anchors 0.05
              :forecast 0.02}
+ :evidence/weights {:read -0.02
+                    :implement -0.08
+                    :update -0.05
+                    :off-trail 0.12}
+ :evidence/min -0.3
+ :evidence/max 0.3
+ :off-trail {:free 3
+             :ratio 0.5
+             :action "off-trail"}
  :tau/scale 1.0
  :tau/min 0.1
  :tau/max 2.0}

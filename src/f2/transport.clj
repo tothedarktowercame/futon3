@@ -511,14 +511,33 @@
      :note (:pattern/note payload)
      :at (:at event)}))
 
+(defn- summarize-pattern-selection [event]
+  (let [psr (get-in event [:payload :psr])]
+    {:psr-id (:psr/id psr)
+     :chosen (:chosen psr)
+     :candidates (:candidates psr)
+     :decision-id (:decision/id psr)
+     :at (:at event)}))
+
+(defn- summarize-pattern-use [event]
+  (let [pur (get-in event [:payload :pur])]
+    {:pur-id (:pur/id pur)
+     :pattern-id (:pattern/id pur)
+     :decision-id (:decision/id pur)
+     :at (:at event)}))
+
 (defn- aif-live [session]
   (let [events (or (:events session) [])
         last-summary (last (filter #(= :aif/summary (:event/type %)) events))
-        last-action (last (filter #(= :pattern/action (:event/type %)) events))]
-    (when (or last-summary last-action)
+        last-action (last (filter #(= :pattern/action (:event/type %)) events))
+        last-selection (last (filter #(= :pattern/selection-claimed (:event/type %)) events))
+        last-use (last (filter #(= :pattern/use-claimed (:event/type %)) events))]
+    (when (or last-summary last-action last-selection last-use)
       {:session-id (:session/id session)
        :summary (when last-summary (summarize-aif-event last-summary))
-       :last-action (when last-action (summarize-pattern-action last-action))})))
+       :last-action (when last-action (summarize-pattern-action last-action))
+       :last-selection (when last-selection (summarize-pattern-selection last-selection))
+       :last-use (when last-use (summarize-pattern-use last-use))})))
 
 (defn- handle-hud-format [state request]
   (try

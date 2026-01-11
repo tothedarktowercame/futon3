@@ -471,6 +471,8 @@
   (when aif-live
     (let* ((summary (fubar-hud--map-get aif-live :summary))
            (last-action (fubar-hud--map-get aif-live :last-action))
+           (last-selection (fubar-hud--map-get aif-live :last-selection))
+           (last-use (fubar-hud--map-get aif-live :last-use))
            (kind (and summary (fubar-hud--map-get summary :kind)))
            (chosen (and summary (fubar-hud--map-get summary :chosen)))
            (tau (and summary (fubar-hud--map-get summary :tau)))
@@ -478,7 +480,10 @@
            (prediction-error (and summary (fubar-hud--map-get summary :prediction-error)))
            (action (and last-action (fubar-hud--map-get last-action :action)))
            (pattern-id (and last-action (fubar-hud--map-get last-action :pattern-id)))
-           (note (and last-action (fubar-hud--map-get last-action :note))))
+           (note (and last-action (fubar-hud--map-get last-action :note)))
+           (sel-chosen (and last-selection (fubar-hud--map-get last-selection :chosen)))
+           (sel-candidates (and last-selection (fubar-hud--map-get last-selection :candidates)))
+           (use-pattern (and last-use (fubar-hud--map-get last-use :pattern-id))))
       (concat
        (propertize "Live AIF\n" 'face 'fubar-hud-header-face)
        (when summary
@@ -489,6 +494,14 @@
                  (if (numberp g-chosen) (format " G=%.3f" g-chosen) "")))
        (when (numberp prediction-error)
          (format "  Prediction error: %.3f\n" prediction-error))
+       (when last-selection
+         (format "  Last selection: %s%s\n"
+                 (or sel-chosen "unknown")
+                 (if (and sel-candidates (sequencep sel-candidates))
+                     (format " (candidates %d)" (length sel-candidates))
+                   "")))
+       (when last-use
+         (format "  Last use: %s\n" (or use-pattern "unknown")))
        (when last-action
          (format "  Last action: %s %s%s\n"
                  (or action "action")

@@ -6,6 +6,7 @@
 
 (defn usage []
   (println "Usage: dev/lab-export.clj --session-file PATH [--repo-root PATH] [--lab-root PATH]")
+  (println "                              [--session-id ID]")
   (println "                              [--include-commands] [--include-errors] [--write-stub]")
   (println "                              [--write-trace] [--dry-run]")
   (println)
@@ -23,6 +24,7 @@
         "--session-file" (recur (assoc opts :session-file (second remaining)) (nnext remaining))
         "--repo-root" (recur (assoc opts :repo-root (second remaining)) (nnext remaining))
         "--lab-root" (recur (assoc opts :lab-root (second remaining)) (nnext remaining))
+        "--session-id" (recur (assoc opts :session-id (second remaining)) (nnext remaining))
         "--include-commands" (recur (assoc opts :include-commands true) (rest remaining))
         "--include-errors" (recur (assoc opts :include-errors true) (rest remaining))
         "--no-stub" (recur (assoc opts :write-stub false) (rest remaining))
@@ -149,8 +151,9 @@
         records (with-open [r (io/reader session-file)]
                   (doall (keep read-json-line (line-seq r))))
         session-meta (some #(when (= "session_meta" (:type %)) %) records)
-        session-id (or (get-in session-meta [:payload :id])
-                       (some-> session-file io/file .getName (str/replace #".jsonl$" "")))
+        source-session-id (or (get-in session-meta [:payload :id])
+                              (some-> session-file io/file .getName (str/replace #".jsonl$" "")))
+        session-id (or (:session-id opts) source-session-id)
         records (attach-session-id records session-id)
         timestamps (keep :timestamp records)
         timestamp-start (or (get-in session-meta [:payload :timestamp]) (first timestamps))

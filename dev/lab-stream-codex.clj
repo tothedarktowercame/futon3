@@ -8,15 +8,21 @@
             [futon3.fulab.hud :as hud]
             [futon3.fulab.pattern-competence :as pc]))
 
-(def ^:private pattern-file-re
-  #"(?:^|\\s|['\"])library/fulab/[^\\s\"']+\\.flexiarg")
+(def ^:private pattern-file-path-re
+  #"[A-Za-z0-9_./-]+\.(?:flexiarg|multiarg)")
 (def ^:private fulab-id-re
   #"(fulab/[a-z0-9_-]+)")
+(def ^:private ignore-pattern-ids
+  #{"fulab/fulab-patterns"})
 (def ^:private pattern-arg-re
-  #"(?:^|\\s)@arg\\s+([a-z0-9_-]+/[a-z0-9_-]+)")
+  #"(?:^|\s)@(?:flexiarg|arg)\s+([a-z0-9_-]+/[a-z0-9_-]+)")
 (def ^:private write-command-re
-  #"(apply_patch|\\bsed\\b\\s+-i|perl\\s+-pi|\\btee\\b|\\bmv\\b|\\bcp\\b|\\btruncate\\b)")
+  #"(apply_patch|\bsed\b\s+-i|perl\s+-pi|\btee\b|\bmv\b|\bcp\b|\btruncate\b)")
 (def ^:private pattern-action-window-ms 30000)
+(def ^:private off-trail-defaults
+  {:free 3
+   :ratio 0.5
+   :action "off-trail"})
 
 (defn usage []
   (println "Usage: dev/lab-stream-codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook] [--hud-json PATH]")
@@ -60,8 +66,14 @@
                              (str/join ""))
     :else nil))
 
-(defn- command-touches-pattern? [command]
-  (boolean (re-find pattern-file-re (or command ""))))
+(defn- pattern-paths-from-command [command]
+  (->> (re-seq pattern-file-path-re (or command ""))
+       (map (fn [match]
+              (if (vector? match)
+                (second match)
+                match)))
+       distinct
+       vec))
 
 (defn- command-write? [command]
   (boolean (re-find write-command-re (or command ""))))
@@ -78,8 +90,78 @@
 (defn- patterns-from-command [command]
   (->> (re-seq fulab-id-re (or command ""))
        (map second)
+       (remove ignore-pattern-ids)
        distinct
        vec))
+
+(defn- normalize-path [repo-root path]
+  (let [file (io/file path)]
+    (str (if (.isAbsolute file)
+           file
+           (io/file repo-root path)))))
+
+(defn- pattern-file? [path]
+  (boolean (re-find pattern-file-path-re (or path ""))))
+
+(defn- patterns-from-file [repo-root path]
+  (let [full (normalize-path repo-root path)
+        file (io/file full)]
+    (when (.exists file)
+      (patterns-from-output (slurp file)))))
+
+(defn- patterns-from-change-paths [repo-root changes]
+  (->> changes
+       (keep :path)
+       (filter pattern-file?)
+       (mapcat #(patterns-from-file repo-root %))
+       distinct
+       vec))
+
+(defn- normalize-off-trail-config [config]
+  (let [base off-trail-defaults
+        nested (when (map? (:off-trail config)) (:off-trail config))]
+    (merge base
+           nested
+           (when (contains? config :off-trail/free) {:free (:off-trail/free config)})
+           (when (contains? config :off-trail/ratio) {:ratio (:off-trail/ratio config)})
+           (when (contains? config :off-trail/action) {:action (:off-trail/action config)}))))
+
+(defn- off-trail-action? [state action]
+  (let [label (get-in @state [:off-trail :action] "off-trail")]
+    (or (= action label)
+        (= action (keyword label)))))
+
+(defn- allowed-patterns [state]
+  (let [{:keys [candidates clock-in-queue clock-in-current explicit-chosen trail-picked]} @state]
+    (->> (concat candidates
+                 clock-in-queue
+                 trail-picked
+                 (when clock-in-current [clock-in-current])
+                 (when explicit-chosen [explicit-chosen]))
+         (remove nil?)
+         set)))
+
+(defn- on-trail? [state pattern-id]
+  (contains? (allowed-patterns state) pattern-id))
+
+(defn- bump-trail-stats! [state on-trail?]
+  (swap! state update :trail-stats
+         (fn [stats]
+           (let [{:keys [on off]} (or stats {:on 0 :off 0})]
+             (if on-trail?
+               {:on (inc on) :off off}
+               {:on on :off (inc off)})))))
+
+(defn- trail-limit [state]
+  (let [{:keys [on off]} (or (:trail-stats @state) {:on 0 :off 0})
+        {:keys [free ratio]} (or (:off-trail @state) off-trail-defaults)]
+    {:on on
+     :off off
+     :limit (+ (double free) (* (double ratio) (double on)))}))
+
+(defn- off-trail-excess? [state]
+  (let [{:keys [off limit]} (trail-limit state)]
+    (> (double off) (double limit))))
 
 (defn- parse-pattern-action-lines [text]
   (->> (str/split-lines (or text ""))
@@ -266,7 +348,16 @@
                                                   :status :observed})]
         (append-event! state event)
         (append-event! state (summary-event session-id :pattern-action update))
-        (mark-pattern-action! state action pattern-id)))))
+        (mark-pattern-action! state action pattern-id)))
+    (when (and pattern-id action (not (off-trail-action? state action)))
+      (let [on-trail (on-trail? state pattern-id)]
+        (bump-trail-stats! state on-trail)
+        (when (and (not on-trail) (off-trail-excess? state))
+          (let [{:keys [off on limit]} (trail-limit state)
+                off-action (get-in @state [:off-trail :action] "off-trail")
+                note (format "off-trail count=%d on-trail=%d limit=%.1f"
+                             off on limit))]
+            (log-pattern-action! state engine off-action pattern-id note)))))))
 
 (defn- record-pattern-action-rpc! [state action pattern-id note]
   (let [session-id (:session-id @state)
@@ -280,6 +371,26 @@
                 :action action}
          (and note (not (str/blank? note)))
          (assoc :note note))))))
+
+(defn- record-pattern-selection-rpc! [state psr]
+  (let [session-id (:session-id @state)
+        server-url (or (System/getenv "FUTON3_CODEX_SERVER_URL")
+                       (System/getenv "HUD_SERVER")
+                       "http://localhost:5050")]
+    (when (and session-id psr)
+      (post-json!
+       (str (str/replace server-url #"/$" "") "/codex/pattern-selection/" session-id)
+       {:psr psr}))))
+
+(defn- record-pattern-use-rpc! [state pur]
+  (let [session-id (:session-id @state)
+        server-url (or (System/getenv "FUTON3_CODEX_SERVER_URL")
+                       (System/getenv "HUD_SERVER")
+                       "http://localhost:5050")]
+    (when (and session-id pur)
+      (post-json!
+       (str (str/replace server-url #"/$" "") "/codex/pattern-use/" session-id)
+       {:pur pur}))))
 
 (defn- log-pattern-action! [state engine action pattern-id note]
   (when-not (recently-seen? state action pattern-id)
@@ -375,6 +486,7 @@
                           :else ["ants/white-space-scout" "ants/pheromone-trail-tuner"])
         candidates (ensure-candidates base-candidates clock-ins)
         aif-config (read-aif-config aif-config)
+        off-trail-config (normalize-off-trail-config (or aif-config {}))
         engine (engine/new-engine (fulab/new-adapter aif-config) {:beliefs {}})
         state (atom {:lab-root lab-root
                      :thread-id nil
@@ -384,6 +496,11 @@
                      :raw-path nil
                      :clock-in-queue clock-ins
                      :clock-in-current nil
+                     :candidates candidates
+                     :explicit-chosen chosen
+                     :trail-picked #{}
+                     :trail-stats {:on 0 :off 0}
+                     :off-trail off-trail-config
                      :aif-config aif-config
                      :aif-config-logged? false
                      :hud hud-state
@@ -453,16 +570,30 @@
                           action (command->action command)
                           output-patterns (patterns-from-output output)
                           command-patterns (patterns-from-command command)
-                          pattern-ids (or (seq output-patterns) (seq command-patterns))]
-                      (doseq [payload (parse-pattern-action-lines output)]
-                        (handle-pattern-action! state engine payload))
-                      (when (and (command-touches-pattern? command) pattern-ids)
+                          command-paths (pattern-paths-from-command command)
+                          path-patterns (mapcat #(patterns-from-file repo-root %) command-paths)
+                          pattern-ids (seq (distinct (concat output-patterns
+                                                             command-patterns
+                                                             path-patterns)))]
+                        (doseq [payload (parse-pattern-action-lines output)]
+                          (handle-pattern-action! state engine payload))
+                      (when (and (seq pattern-ids) (or (seq command-paths) (seq output-patterns)))
                         (doseq [pattern-id pattern-ids]
                           (log-pattern-action! state
                                                engine
                                                action
                                                pattern-id
                                                "auto-detected from command")))))
+                  (when (and (= (:type event) "item.completed")
+                             (= (get-in event [:item :type]) "file_change"))
+                    (let [changes (get-in event [:item :changes])
+                          pattern-ids (seq (patterns-from-change-paths repo-root changes))]
+                      (doseq [pattern-id pattern-ids]
+                        (log-pattern-action! state
+                                             engine
+                                             "update"
+                                             pattern-id
+                                             "auto-detected from file_change"))))
                   (when (= (:type event) "turn.completed")
                     (let [turn (inc (:turn @state))
                           session-id (:session-id @state)
@@ -494,6 +625,8 @@
                                                                 :outcome (:outcome/tags pur)
                                                                 :status :observed})]
                       (swap! state assoc :turn turn)
+                      (when chosen-final
+                        (swap! state update :trail-picked (fnil conj #{}) chosen-final))
                       (when current
                         (append-event! state {:event/type :clock-in/start
                                               :turn turn
@@ -511,6 +644,13 @@
                       (append-event! state {:event/type :pattern/use-claimed
                                             :at (now-inst)
                                             :payload {:pur pur}})
+                      (record-pattern-selection-rpc! state psr)
+                      (println (format "[pattern-selection] chosen=%s candidates=%d"
+                                       chosen-final
+                                       (count candidates)))
+                      (record-pattern-use-rpc! state pur)
+                      (println (format "[pattern-use] %s" chosen-final))
+                      (flush)
                       (when-let [report (:last-agent-report @state)]
                         (let [hud-id (get-in @state [:hud :hud/id])]
                           (append-event! state {:event/type :hud/agent-reported

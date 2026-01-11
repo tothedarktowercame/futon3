@@ -128,6 +128,14 @@
         opts (when note {:note note})]
     (json-response 200 (codex/record-pattern-action! session-id pattern-id action opts))))
 
+(defn- handle-codex-pattern-selection [session-id payload]
+  (let [psr (:psr payload)]
+    (json-response 200 (codex/record-pattern-selection! session-id psr))))
+
+(defn- handle-codex-pattern-use [session-id payload]
+  (let [pur (:pur payload)]
+    (json-response 200 (codex/record-pattern-use-claimed! session-id pur))))
+
 ;; --- Claude session streaming ---
 
 (defn- stream-claude-events!
@@ -314,6 +322,14 @@
       (and (= method :post) (str/starts-with? uri "/codex/pattern-action/"))
       (let [session-id (extract-path-param uri "/codex/pattern-action/")]
         (handle-codex-pattern-action session-id @payload))
+
+      (and (= method :post) (str/starts-with? uri "/codex/pattern-selection/"))
+      (let [session-id (extract-path-param uri "/codex/pattern-selection/")]
+        (handle-codex-pattern-selection session-id @payload))
+
+      (and (= method :post) (str/starts-with? uri "/codex/pattern-use/"))
+      (let [session-id (extract-path-param uri "/codex/pattern-use/")]
+        (handle-codex-pattern-use session-id @payload))
 
       ;; Hypertext endpoints with path params
       (and (= method :get) (str/starts-with? uri "/musn/hx/artifacts/"))

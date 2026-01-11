@@ -37,6 +37,40 @@
     (json/read-str line :key-fn keyword)
     (catch Throwable _ nil)))
 
+(defn- post-json! [url payload]
+  (try
+    (let [conn ^java.net.HttpURLConnection (.openConnection (java.net.URL. url))
+          data (.getBytes (json/write-str payload) "UTF-8")]
+      (.setRequestMethod conn "POST")
+      (.setDoOutput conn true)
+      (.setRequestProperty conn "Content-Type" "application/json")
+      (with-open [out (.getOutputStream conn)]
+        (.write out data))
+      (try
+        (.getResponseCode conn)
+        (catch Exception _ nil)))
+    (catch Exception _ nil)))
+
+(defn- record-pattern-selection-rpc! [state psr]
+  (let [session-id (:session-id @state)
+        server-url (or (System/getenv "FUTON3_CODEX_SERVER_URL")
+                       (System/getenv "HUD_SERVER")
+                       "http://localhost:5050")]
+    (when (and session-id psr)
+      (post-json!
+       (str (str/replace server-url #"/$" "") "/codex/pattern-selection/" session-id)
+       {:psr psr}))))
+
+(defn- record-pattern-use-rpc! [state pur]
+  (let [session-id (:session-id @state)
+        server-url (or (System/getenv "FUTON3_CODEX_SERVER_URL")
+                       (System/getenv "HUD_SERVER")
+                       "http://localhost:5050")]
+    (when (and session-id pur)
+      (post-json!
+       (str (str/replace server-url #"/$" "") "/codex/pattern-use/" session-id)
+       {:pur pur}))))
+
 (defn read-hud-json [path]
   (when (and path (.exists (io/file path)))
     (try
@@ -280,6 +314,13 @@
     (append-event! state {:event/type :pattern/use-claimed
                           :at (now-inst)
                           :payload {:pur pur}})
+    (record-pattern-selection-rpc! state psr)
+    (println (format "[pattern-selection] chosen=%s candidates=%d"
+                     chosen-final
+                     (count candidates)))
+    (record-pattern-use-rpc! state pur)
+    (println (format "[pattern-use] %s" chosen-final))
+    (flush)
     (when (and (:proposal-hook? @state) (< (count candidates) 2))
       (append-event! state (proposal-draft session-id turn candidates)))
     (append-event! state (summary-event session-id :psr selection))

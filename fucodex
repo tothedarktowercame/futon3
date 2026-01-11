@@ -386,29 +386,7 @@ if [[ ${#matches[@]} -eq 0 ]]; then
   exit $status
 fi
 
-if [[ -n "$FORCED_SESSION_ID" ]]; then
-  forced_session_file="$ROOT/lab/sessions/${FORCED_SESSION_ID}.edn"
-  if [[ -f "$forced_session_file" ]]; then
-    selected="${FORCED_SESSION_ID}"$'\t'"${forced_session_file}"
-  else
-    for line in "${matches[@]}"; do
-      if [[ "${line%%$'\t'*}" == "$FORCED_SESSION_ID" ]]; then
-        selected="$line"
-        break
-      fi
-    done
-    if [[ -z "${selected-}" ]]; then
-      echo "[lab] session id not found: $FORCED_SESSION_ID" >&2
-      if [[ ${#matches[@]} -gt 0 ]]; then
-        echo "[lab] available session ids from recent matches:" >&2
-        for line in "${matches[@]}"; do
-          echo "  ${line%%$'\t'*}" >&2
-        done
-      fi
-      exit $status
-    fi
-  fi
-elif [[ ${#matches[@]} -gt 1 ]]; then
+if [[ ${#matches[@]} -gt 1 ]]; then
   if [[ ! -t 0 ]]; then
     echo "[lab] warning: stdin is not a TTY; selecting first session (${matches[0]%%$'\t'*})" >&2
     selected="${matches[0]}"
@@ -432,23 +410,28 @@ fi
 
 session_id="${selected%%$'\t'*}"
 session_file="${selected#*$'\t'}"
+lab_session_id="$session_id"
+if [[ -n "$FORCED_SESSION_ID" ]]; then
+  lab_session_id="$FORCED_SESSION_ID"
+fi
 
 if [[ -z "${session_id}" || -z "${session_file}" ]]; then
   echo "[lab] failed to parse selected session" >&2
   exit $status
 fi
 
-clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export.clj" \
-  --session-file "$session_file" \
-  --repo-root "$RUN_CWD" \
-  --lab-root "$ROOT/lab"
+lab_export_args=(--session-file "$session_file" --repo-root "$RUN_CWD" --lab-root "$ROOT/lab")
+if [[ "$lab_session_id" != "$session_id" ]]; then
+  lab_export_args+=(--session-id "$lab_session_id")
+fi
+clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export.clj" "${lab_export_args[@]}"
 
 clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-equip.clj" \
-  --session-id "$session_id" \
+  --session-id "$lab_session_id" \
   --adapter fulab \
   --lab-root "$ROOT/lab"
 
 clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-summarize.clj" \
-  --raw "$ROOT/lab/raw/${session_id}.json"
+  --raw "$ROOT/lab/raw/${lab_session_id}.json"
 
 exit $status

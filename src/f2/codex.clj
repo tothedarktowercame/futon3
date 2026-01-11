@@ -146,6 +146,14 @@
                         :pattern/reason reason}
                  parent-id (assoc :pattern/parent parent-id)))))
 
+(defn- pattern-selection-event [session-id psr]
+  (make-event session-id :pattern/selection-claimed
+              {:psr psr}))
+
+(defn- pattern-use-claimed-event [session-id pur]
+  (make-event session-id :pattern/use-claimed
+              {:pur pur}))
+
 (defn- pattern-action-event [session-id pattern-id action note]
   (make-event session-id :pattern/action
               (cond-> {:pattern/id pattern-id
@@ -297,6 +305,8 @@
    :tool-denials 0
    :assistant-messages 0
    :patterns-used 0
+   :pattern-selections 0
+   :pattern-uses 0
    :pattern-actions 0
    :artifacts 0
    :docs-written 0
@@ -354,6 +364,12 @@
 
                    (= event-type :pattern/used)
                    (update :patterns-used inc)
+
+                   (= event-type :pattern/selection-claimed)
+                   (update :pattern-selections inc)
+
+                   (= event-type :pattern/use-claimed)
+                   (update :pattern-uses inc)
 
                    (= event-type :pattern/action)
                    (update :pattern-actions inc)
@@ -735,6 +751,24 @@
       (swap! (:patterns-used session) conj usage)
       (emit-event! session (pattern-used-event session-id pattern-id reason parent-id))
       {:ok true :session-id session-id :pattern-id pattern-id})
+    {:ok false :error "session-not-found"}))
+
+(defn record-pattern-selection!
+  "Record a Pattern Selection Record (PSR) for a session."
+  [session-id psr]
+  (if-let [session (get @!sessions session-id)]
+    (do
+      (emit-event! session (pattern-selection-event session-id psr))
+      {:ok true :session-id session-id})
+    {:ok false :error "session-not-found"}))
+
+(defn record-pattern-use-claimed!
+  "Record a Pattern Use Record (PUR) for a session."
+  [session-id pur]
+  (if-let [session (get @!sessions session-id)]
+    (do
+      (emit-event! session (pattern-use-claimed-event session-id pur))
+      {:ok true :session-id session-id})
     {:ok false :error "session-not-found"}))
 
 (defn record-artifact!

@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -lt 2 ]]; then
+  echo "usage: pattern-action <action> <pattern-id> [note]" >&2
+  exit 2
+fi
+
+action="$1"
+pattern_id="$2"
+shift 2
+note="${*:-}"
+
+session_id="${FUTON3_CODEX_SESSION_ID:-}"
+server_url="${FUTON3_CODEX_SERVER_URL:-http://localhost:5050}"
+rpc_enabled="${PATTERN_ACTION_RPC:-}"
+
+if [[ -z "$session_id" ]]; then
+  echo "pattern-action: missing FUTON3_CODEX_SESSION_ID" >&2
+  exit 2
+fi
+
+rpc_enabled="$(printf '%s' "$rpc_enabled" | tr '[:upper:]' '[:lower:]')"
+if [[ "$rpc_enabled" != "1" && "$rpc_enabled" != "true" ]]; then
+  PATTERN_ACTION="$action" \
+  PATTERN_ID="$pattern_id" \
+  PATTERN_NOTE="$note" \
+  python3 - <<'PY'
+import json
+import os
+
+action = os.environ.get("PATTERN_ACTION") or ""
+pattern_id = os.environ.get("PATTERN_ID") or ""
+note = os.environ.get("PATTERN_NOTE") or ""
+
+print(json.dumps({
+    "type": "pattern-action",
+    "action": action,
+    "pattern-id": pattern_id,
+    "note": note,
+    "ok": False,
+    "rpc": "skipped"
+}))
+PY
+  exit 0
+fi
+
+PATTERN_ACTION="$action" \
+PATTERN_ID="$pattern_id" \
+PATTERN_NOTE="$note" \
+PATTERN_SESSION_ID="$session_id" \
+PATTERN_SERVER_URL="$server_url" \
+python3 - <<'PY'
+import json
+import os
+import sys
+import urllib.request
+
+action = os.environ.get("PATTERN_ACTION", "")
+pattern_id = os.environ.get("PATTERN_ID", "")
+note = os.environ.get("PATTERN_NOTE", "")
+session_id = os.environ.get("PATTERN_SESSION_ID", "")
+server_url = os.environ.get("PATTERN_SERVER_URL", "")
+
+payload = {"pattern-id": pattern_id, "action": action}
+if note:
+    payload["note"] = note
+
+url = f"{server_url.rstrip('/')}/codex/pattern-action/{session_id}"
+data = json.dumps(payload).encode("utf-8")
+req = urllib.request.Request(url, data=data, method="POST")
+req.add_header("Content-Type", "application/json")
+
+with urllib.request.urlopen(req, timeout=2) as resp:
+    resp.read()
+
+print(json.dumps({
+    "type": "pattern-action",
+    "action": action,
+    "pattern-id": pattern_id,
+    "note": note,
+    "ok": True
+}))
+PY

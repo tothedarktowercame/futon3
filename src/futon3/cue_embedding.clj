@@ -221,10 +221,12 @@
                                 (map? pair) pair
                                 (sequential? pair) (apply hash-map pair)
                                 :else nil)
-                     emoji (:emoji pair-map)
-                     hanzi (:hanzi pair-map)]
-                 (when (or emoji hanzi)
-                   {:emoji emoji :hanzi hanzi}))))
+                    emoji (some-> (:emoji pair-map) str/trim)
+                    hanzi (some-> (:hanzi pair-map) str/trim)]
+                 (when (or (and emoji (not (str/blank? emoji)))
+                           (and hanzi (not (str/blank? hanzi))))
+                   {:emoji (when (and emoji (not (str/blank? emoji))) emoji)
+                    :hanzi (when (and hanzi (not (str/blank? hanzi))) hanzi)}))))
        vec))
 
 (defn- normalize-pattern [pattern]

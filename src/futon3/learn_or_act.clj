@@ -3,6 +3,7 @@
   (:require [clojure.string :as str]
             [futon3.cue-embedding :as cue]
             [futon3.gap-store :as gap-store]
+            [futon3.glove-intent :as glove]
             [futon3.pattern-hints :as hints])
   (:import (java.time Instant)
            (java.util Date UUID)))
@@ -59,7 +60,26 @@
                           :patterns (:patterns raw)}
                     fruit-limit (assoc :fruit-limit fruit-limit)
                     paramita-limit (assoc :paramita-limit paramita-limit))
-        cues (cue/intent-pattern-cues cue-opts)]
+        cues (cue/intent-pattern-cues cue-opts)
+        intent-weights (when cues
+                         (->> (:matches cues)
+                              (keep (fn [match]
+                                      (when-let [pid (:pattern/id match)]
+                                        [pid (:weight match)])))
+                              (into {})))
+        patterns-with-intent (if (and (seq intent-weights) (seq (:patterns raw)))
+                               (mapv (fn [pattern]
+                                       (if-let [weight (get intent-weights (:id pattern))]
+                                         (assoc pattern
+                                                :score/intent-weight weight
+                                                :score/intent-distance (/ 1.0 (double (inc weight))))
+                                         pattern))
+                                     (:patterns raw))
+                               (:patterns raw))
+        patterns-with-embed (if (and intent (seq patterns-with-intent))
+                              (glove/attach-intent-embed-distance intent patterns-with-intent)
+                              patterns-with-intent)
+        base (assoc base :patterns patterns-with-embed)]
     (if cues
       (assoc base
              :fruits (:fruits cues)

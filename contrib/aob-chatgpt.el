@@ -120,6 +120,16 @@ When nil, fall back to `org-agenda-files`."
   "Most recent `/musn/hints` failure message, or nil when the call succeeded.")
 (defvar my-chatgpt-shell--last-cues-error nil
   "Most recent `/musn/cues` failure message, or nil when the call succeeded.")
+(defcustom my-chatgpt-shell-hints-async t
+  "When non-nil, fetch Tatami hints asynchronously to avoid blocking the UI."
+  :type 'boolean
+  :group 'tatami-integration)
+(defcustom my-chatgpt-shell-hints-async-skip-intent nil
+  "When non-nil, omit intent from async hints (faster, less precise)."
+  :type 'boolean
+  :group 'tatami-integration)
+(defvar my-chatgpt-shell--hints-request-id 0)
+(defvar my-chatgpt-shell--hints-pending nil)
 (defvar my-chatgpt-shell--last-intent-sigil-origin nil
   "How the most recent intent sigils were produced (:embedded, :pattern, prototype, etc.).")
 (defvar my-chatgpt-shell--last-sigil-salient nil
@@ -1606,6 +1616,22 @@ r a live process in the *headless-api-server* buffer."
      ((or (<= len limit) (<= limit 0)) items)
      (t (nthcdr (- len limit) items)))))
 
+(defun my-chatgpt-shell--format-intent-distance (pattern &optional style)
+  (let* ((embed (plist-get pattern :score/intent-embed-distance))
+         (sigil (plist-get pattern :score/intent-distance))
+         (payload (cond
+                   ((and (numberp embed) (numberp sigil))
+                    (format "i=%.2f s=%.2f" embed sigil))
+                   ((numberp embed) (format "i=%.2f" embed))
+                   ((numberp sigil) (format "i=%.2f" sigil))
+                   (t nil))))
+    (if payload
+        (pcase style
+          (:paren (format " (%s)" payload))
+          (:none (format " %s" payload))
+          (_ (format " [%s]" payload)))
+      "")))
+
 (defun my-chatgpt-shell--format-pattern-line (pattern)
   (let* ((id (or (my-chatgpt-shell--pattern-id pattern)
                  "(unknown pattern)"))
@@ -1622,9 +1648,9 @@ r a live process in the *headless-api-server* buffer."
             (if summary
                 (format " – %s" (my-chatgpt-shell--truncate summary 140))
               "")
-            (if (numberp score)
-                (format " [d=%.2f]" score)
-              ""))))
+            (concat (when (numberp score)
+                      (format " [d=%.2f]" score))
+                    (my-chatgpt-shell--format-intent-distance pattern)))))
 
 (declare-function arxana-browser-patterns--ensure-frame "arxana-browser-patterns")
 (declare-function my-fubar-log-pattern-used "fubar" (session-id pattern-id &optional reason))
@@ -1690,7 +1716,8 @@ r a live process in the *headless-api-server* buffer."
     (when summary
       (insert (format " – %s" (my-chatgpt-shell--truncate summary 140))))
     (when (numberp score)
-      (insert (format " [d=%.2f]" score)))))
+      (insert (format " [d=%.2f]" score)))
+    (insert (my-chatgpt-shell--format-intent-distance pattern))))
 
 (defun my-chatgpt-shell--support-score (entry)
   (let ((score (plist-get entry :score)))
@@ -1787,6 +1814,38 @@ r a live process in the *headless-api-server* buffer."
                        "No notes supplied.")))
     (format "%s%s – %s" pattern-text kind-text notes-text)))
 
+(defun my-chatgpt-shell--insert-event-line (event)
+  (let* ((pattern (string-trim (format "%s" (or (plist-get event :pattern) ""))))
+         (pattern-valid (and (> (length pattern) 0)
+                             (not (string= pattern "none"))))
+         (kind (my-chatgpt-shell--pattern->string (plist-get event :kind)))
+         (notes (string-trim (format "%s" (or (plist-get event :notes) ""))))
+         (emoji (plist-get event :emoji))
+         (fruit-id (plist-get event :fruit/id))
+         (paramita-id (plist-get event :paramita/id))
+         (kind-text (cond
+                     (fruit-id
+                      (format " (%s%s)"
+                              (if emoji (concat emoji " ") "")
+                              fruit-id))
+                     (paramita-id
+                      (format " (%s%s)"
+                              (if emoji (concat emoji " ") "")
+                              paramita-id))
+                     ((> (length kind) 0)
+                      (format " (%s)" kind))
+                     (t "")))
+         (notes-text (if (> (length notes) 0)
+                         (my-chatgpt-shell--truncate notes 160)
+                       "No notes supplied.")))
+    (if pattern-valid
+        (progn
+          (insert "Pattern ")
+          (my-chatgpt-shell--insert-pattern-button pattern pattern))
+      (insert "No pattern"))
+    (insert kind-text " – " notes-text)))
+
+;; TODO: check this fn
 (defun my-chatgpt-shell--prompt-pattern-summary (edn)
   (let* ((intent (plist-get edn :intent))
          (patterns (my-chatgpt-shell--coerce-seq (plist-get edn :patterns)))
@@ -1803,12 +1862,12 @@ r a live process in the *headless-api-server* buffer."
                                           (plist-get pattern :title)
                                           "(unknown)")
                             for summary = (string-trim (or (plist-get pattern :summary)
-                                                          "No summary provided."))
+                                                           "No summary provided."))
                             for score = (plist-get pattern :score)
                             collect (concat pid " → " summary
-                                            (if (numberp score)
-                                                (format " [d=%.2f]" score)
-                                              "")))) )
+                                            (concat (when (numberp score)
+                                                      (format " [d=%.2f]" score))
+                                                    (my-chatgpt-shell--format-intent-distance pattern))))))
         (push (concat "Patterns: " (string-join lines " | ")) parts)))
     (when fruits
       (let ((tokens (cl-loop for fruit in fruits
@@ -1818,11 +1877,11 @@ r a live process in the *headless-api-server* buffer."
                                             "fruit")
                              for score = (plist-get fruit :score)
                              collect (string-trim (concat (or emoji "")
-                                                     (when (and emoji name) " ")
-                                                     name
-                                                     (if (numberp score)
-                                                         (format " [d=%.2f]" score)
-                                                       ""))))))
+                                                          (when (and emoji name) " ")
+                                                          name
+                                                          (if (numberp score)
+                                                              (format " [d=%.2f]" score)
+                                                            ""))))))
         (when tokens
           (push (concat "Fruits: " (string-join tokens ", ")) parts))))
     (when paramitas
@@ -1833,11 +1892,11 @@ r a live process in the *headless-api-server* buffer."
                                             "paramita")
                              for score = (plist-get paramita :score)
                              collect (string-trim (concat (or emoji "")
-                                                     (when (and emoji name) " ")
-                                                     name
-                                                     (if (numberp score)
-                                                         (format " [d=%.2f]" score)
-                                                       ""))))))
+                                                          (when (and emoji name) " ")
+                                                          name
+                                                          (if (numberp score)
+                                                              (format " [d=%.2f]" score)
+                                                            ""))))))
         (when tokens
           (push (concat "Pāramitās: " (string-join tokens ", ")) parts))))
     (when parts
@@ -1867,7 +1926,8 @@ r a live process in the *headless-api-server* buffer."
       (insert "Nearest pattern: ")
       (my-chatgpt-shell--insert-pattern-anchor title id)
       (when (numberp score)
-        (insert (format " (score %.2f)" score)))
+        (insert (format " (d=%.2f)" score)))
+      (insert (or (my-chatgpt-shell--format-intent-distance pattern :paren) ""))
       (insert "\n"))))
 
 (defun my-chatgpt-shell--insert-fruit-summary (entries)
@@ -1903,8 +1963,8 @@ r a live process in the *headless-api-server* buffer."
       "Tatami hasn't pushed /musn/hints into this buffer yet.")
      ((and primary (not (my-chatgpt-shell--support-present-p primary)))
       (if (my-chatgpt-shell--events-seq (plist-get primary :events))
-          "Tatami ingested the turn but /musn/cues returned no fruits/pāramitās; inspect *Futon3* or rerun the cues pipeline."
-        "Tatami hints snapshot missing events; capture a fresh turn and rerun `M-x my-chatgpt-shell--refresh-context-hints`."))
+          nil
+        "Tatami hints returned no fruits/pāramitās for this turn; capture a fresh turn and rerun `M-x my-chatgpt-shell-refresh-context-hints`."))
      ((and fallback (not (my-chatgpt-shell--support-present-p fallback)))
       "Even the cached ChatGPT payload lacks Tatami cues; remind the LLM to log {:kind :note ...} events.")
      (t nil))))
@@ -1914,7 +1974,7 @@ r a live process in the *headless-api-server* buffer."
     (when (string-match ":\\([0-9]+\\)\\(?:/\\|\\'\\)" my-futon3-ui-base-url)
       (match-string 1 my-futon3-ui-base-url))))
 
-(defun my-chatgpt-shell--futon3-status-line ()
+(defun my-chatgpt-shell--futon3-status-line (&optional terse)
   (let* ((ui-port (or (my-chatgpt-shell--futon3-ui-port) "6060"))
          (transport (or (plist-get my-futon3-last-status :transport-port)
                         my-futon3-transport-port
@@ -1922,8 +1982,11 @@ r a live process in the *headless-api-server* buffer."
     (if (my-futon3-running-p)
         (format "Futon3 running — transport %s, UI %s (see %s; C-c there to stop)."
                 transport ui-port my-futon3-server-buffer)
-      (format "Futon3 idle — transport %s, UI %s. Run `make dev` or `M-x my-futon3-start` to launch."
-              transport ui-port))))
+      (if terse
+          (format "Futon3 idle — transport %s, UI %s."
+                  transport ui-port)
+        (format "Futon3 idle — transport %s, UI %s. Run `make dev` or `M-x my-futon3-start` to launch."
+                transport ui-port)))))
 
 (defun my-chatgpt-shell--cue-source (primary fallback)
   (let* ((fallback-edn fallback)
@@ -1949,14 +2012,38 @@ r a live process in the *headless-api-server* buffer."
 (defun my-chatgpt-shell--cue-guidance (status &optional reason)
   (let* ((reason (or reason my-chatgpt-shell--last-hints-error))
          (details (when reason (format " (%s)" reason)))
-         (status-line (my-chatgpt-shell--futon3-status-line))
-         (action "Run `M-x my-chatgpt-shell--refresh-context-hints` after Futon3 is ready so cues repopulate."))
+         (start-needed (and (not (my-futon3-running-p))
+                            (fboundp 'my-futon3-start)))
+         (status-line (my-chatgpt-shell--futon3-status-line start-needed)))
+    (unless (or reason start-needed)
+      (setq status nil))
     (pcase status
-      (:chatgpt (format "Tatami cues fallback%s — HUD is showing cached ChatGPT cues only. %s %s"
-                        (or details "") status-line action))
-      (:empty (format "Tatami cues missing%s. %s %s Send a fresh turn once Tatami is ready so fruits/pāramitās log again."
-                      (or details "") status-line action))
+      (:chatgpt (list :text (format "Tatami cues fallback%s — HUD is showing cached ChatGPT cues only. %s"
+                                    (or details "") status-line)
+                      :start-needed start-needed))
+      (:empty (list :text (format "Tatami cues missing%s. %s"
+                                  (or details "") status-line)
+                    :start-needed start-needed
+                    :suffix "Send a fresh turn once Tatami is ready so fruits/pāramitās log again."))
       (_ nil))))
+
+(defun my-chatgpt-shell--insert-cue-guidance (guidance)
+  (when (and guidance (plist-get guidance :text))
+    (let ((start-needed (plist-get guidance :start-needed))
+          (suffix (plist-get guidance :suffix)))
+      (insert (plist-get guidance :text) " ")
+      (if start-needed
+          (progn
+            (insert-text-button "Start Futon3"
+                                'help-echo "Launch Futon3 (MUSN sandbox)"
+                                'action (lambda (_event)
+                                          (my-futon3-start t))
+                                'follow-link t)
+            (insert ", then run `M-x my-chatgpt-shell-refresh-context-hints` after Futon3 is ready so cues repopulate."))
+        (insert "Run `M-x my-chatgpt-shell-refresh-context-hints` after Futon3 is ready so cues repopulate."))
+      (when suffix
+        (insert " " suffix))
+      (insert "\n\n"))))
 
 (defun my-chatgpt-shell--salient-tags ()
   (let (tags)
@@ -2003,7 +2090,9 @@ r a live process in the *headless-api-server* buffer."
       (unless patterns
         (if reason-lines
             (dolist (pair reason-lines)
-              (insert "• " (cdr pair) "\n"))
+              (insert "• ")
+              (my-chatgpt-shell--insert-event-line (car pair))
+              (insert "\n"))
           (insert "No reasoning events recorded yet.\n")))
       (when patterns
         (insert "\n")
@@ -2028,7 +2117,9 @@ r a live process in the *headless-api-server* buffer."
             (when extras
               (insert "\nAdditional reasoning:\n")
               (dolist (pair extras)
-                (insert "  • " (cdr pair) "\n"))))))
+                (insert "  • ")
+                (my-chatgpt-shell--insert-event-line (car pair))
+                (insert "\n"))))))
         (insert "\n"))
       (insert "\n")))
 
@@ -2092,7 +2183,9 @@ r a live process in the *headless-api-server* buffer."
     (let ((recent (my-chatgpt-shell--take-last events event-limit)))
       (if recent
           (dolist (event recent)
-            (insert "• " (my-chatgpt-shell--format-event-line event) "\n"))
+            (insert "• ")
+            (my-chatgpt-shell--insert-event-line event)
+            (insert "\n"))
         (insert "No reasoning events recorded yet.\n")))
     (insert "\n")))
 
@@ -2454,6 +2547,38 @@ LABEL is a human-friendly tag describing the captured scenario."
           copy)
       edn)))
 
+(defun my-chatgpt-shell--apply-hints-response (hints payload target-intent context)
+  (when hints
+    (my-chatgpt-shell--log-hints-transaction payload hints))
+  (let* ((base (or (and my-chatgpt-shell-last-inbound-edn
+                        (cl-copy-list my-chatgpt-shell-last-inbound-edn))
+                   (and context (cl-copy-list context))
+                   nil))
+         (updated (or base (list :intent target-intent))))
+    (setq updated (plist-put updated :intent target-intent))
+    (setq updated (plist-put updated :prototypes (or (plist-get context :prototypes)
+                                                    (plist-get updated :prototypes)
+                                                    my-futon3-tatami-default-prototypes)))
+    (when hints
+      (setq updated (plist-put updated :patterns (or (plist-get hints :patterns) [])))
+      (setq updated (plist-put updated :fruits (or (plist-get hints :fruits) [])))
+      (setq updated (plist-put updated :paramitas (or (plist-get hints :paramitas) [])))
+      (let ((paramitas (plist-get updated :paramitas))
+            (fruits (plist-get updated :fruits)))
+        (when (and paramitas (not (seq-empty-p paramitas)))
+          (my-chatgpt-shell--debug "[HUD] /musn/hints paramitas=%S" paramitas))
+        (when (and fruits (not (seq-empty-p fruits)))
+          (my-chatgpt-shell--debug "[HUD] /musn/hints fruits=%S" fruits))))
+    (setq updated (my-chatgpt-shell--enrich-with-cues updated))
+    (setq my-chatgpt-shell-last-inbound-edn updated)
+    (setq my-chatgpt-shell--last-replay-tatami-edn (and updated (cl-copy-list updated)))
+    (setq my-chatgpt-shell-last-edn (or context my-chatgpt-shell-last-edn))
+    (my-chatgpt-shell--record-hud-state)
+    (my-chatgpt-shell--log-hud-manifest
+     (my-chatgpt-shell--build-hud-manifest updated context my-chatgpt-shell-last-pattern-outcome))
+    (my-chatgpt-shell--render-context t)
+      updated))
+
 (defun my-chatgpt-shell--refresh-context-hints (&optional intent)
   "Refresh Tatami HUD hints in-place, optionally forcing INTENT."
   (my-chatgpt-shell--with-state-buffer
@@ -2472,7 +2597,6 @@ LABEL is a human-friendly tag describing the captured scenario."
                           :prototypes (or (plist-get context :prototypes)
                                           my-futon3-tatami-default-prototypes)))
            (request (if sigils (plist-put request :sigils sigils) request))
-           (hints (my-futon3-fetch-hints request))
            (base (or (and my-chatgpt-shell-last-inbound-edn
                           (cl-copy-list my-chatgpt-shell-last-inbound-edn))
                      (and context (cl-copy-list context))
@@ -2491,17 +2615,6 @@ LABEL is a human-friendly tag describing the captured scenario."
       (setq updated (plist-put updated :prototypes (or (plist-get context :prototypes)
                                                       (plist-get updated :prototypes)
                                                       my-futon3-tatami-default-prototypes)))
-      (when hints
-        (my-chatgpt-shell--log-hints-transaction request hints)
-        (setq updated (plist-put updated :patterns (or (plist-get hints :patterns) [])))
-        (setq updated (plist-put updated :fruits (or (plist-get hints :fruits) [])))
-        (setq updated (plist-put updated :paramitas (or (plist-get hints :paramitas) [])))
-        (let ((paramitas (plist-get updated :paramitas))
-              (fruits (plist-get updated :fruits)))
-          (when (and paramitas (not (seq-empty-p paramitas)))
-            (my-chatgpt-shell--debug "[HUD] /musn/hints paramitas=%S" paramitas))
-          (when (and fruits (not (seq-empty-p fruits)))
-            (my-chatgpt-shell--debug "[HUD] /musn/hints fruits=%S" fruits))))
       (when (and sigils (not (seq-empty-p sigils)))
         (setq updated (plist-put updated :intent-sigils sigils))
         (setq updated (plist-put updated :intent-sigils-source sigil-origin))
@@ -2515,15 +2628,134 @@ LABEL is a human-friendly tag describing the captured scenario."
             (setq updated (plist-put updated :intent-sigils sigils))
             (setq updated (plist-put updated :intent-sigils-source sigil-origin))
             (setq updated (plist-put updated :intent-sigils-intent target-intent)))))
-      (setq updated (my-chatgpt-shell--enrich-with-cues updated))
       (setq my-chatgpt-shell-last-inbound-edn updated)
       (setq my-chatgpt-shell--last-replay-tatami-edn (and updated (cl-copy-list updated)))
       (setq my-chatgpt-shell-last-edn (or context my-chatgpt-shell-last-edn))
       (my-chatgpt-shell--record-hud-state)
       (my-chatgpt-shell--log-hud-manifest
        (my-chatgpt-shell--build-hud-manifest updated context my-chatgpt-shell-last-pattern-outcome))
-      (my-chatgpt-shell--render-context)
+      (setq my-chatgpt-shell--hints-pending t)
+      (my-chatgpt-shell--render-context t)
+      (cl-incf my-chatgpt-shell--hints-request-id)
+      (let* ((request-id my-chatgpt-shell--hints-request-id)
+             (payload (if my-chatgpt-shell-hints-async-skip-intent
+                          (let ((copy (cl-copy-list request)))
+                            (plist-put copy :intent nil))
+                        request)))
+        (if my-chatgpt-shell-hints-async
+            (my-futon3-fetch-hints-async
+             payload
+             (lambda (hints err)
+               (when (and (= request-id my-chatgpt-shell--hints-request-id)
+                          (buffer-live-p (my-chatgpt-shell--state-buffer)))
+                 (my-chatgpt-shell--with-state-buffer
+                   (setq my-chatgpt-shell--hints-pending nil)
+                   (when hints
+                     (my-chatgpt-shell--apply-hints-response hints payload target-intent context))))))
+          (let ((hints (my-futon3-fetch-hints request)))
+            (setq my-chatgpt-shell--hints-pending nil)
+            (when hints
+              (my-chatgpt-shell--apply-hints-response hints request target-intent context)))))
       updated)))
+
+(defun my-chatgpt-shell-refresh-context-hints (&optional intent)
+  "Interactively refresh Tatami HUD hints, optionally forcing INTENT."
+  (interactive
+   (list (when current-prefix-arg
+           (read-string "Intent (blank for current): "))))
+  (when (and (stringp intent) (string-empty-p intent))
+    (setq intent nil))
+  (my-chatgpt-shell--refresh-context-hints intent))
+
+(defun my-chatgpt-shell--hints-debug-report (&optional intent)
+  (let* ((context (or my-chatgpt-shell-last-inbound-edn
+                      my-chatgpt-shell-last-edn)))
+    (unless context
+      (user-error "No Tatami/ChatGPT context available yet"))
+    (let* ((target-intent (or intent
+                              (plist-get context :intent)
+                              my-futon3-tatami-default-intent
+                              "unspecified"))
+           (proto-source (or (plist-get context :prototypes)
+                             my-futon3-tatami-default-prototypes))
+           (sigil-source (my-chatgpt-shell--sigil-source target-intent proto-source context))
+           (sigils (plist-get sigil-source :sigils))
+           (request (list :intent target-intent
+                          :prototypes (or (plist-get context :prototypes)
+                                          my-futon3-tatami-default-prototypes)))
+           (request (if sigils (plist-put request :sigils sigils) request))
+           (hints (my-futon3-fetch-hints request))
+           (cues (my-futon3-fetch-intent-cues context)))
+      (when hints
+        (my-chatgpt-shell--log-hints-transaction request hints))
+      (with-temp-buffer
+        (insert "Tatami hints/cues debug\n\n")
+        (insert (format "Intent: %s\n" target-intent))
+        (let* ((raw-protos (my-chatgpt-shell--coerce-seq (plist-get request :prototypes)))
+               (protos (mapcar (lambda (proto)
+                                 (cond
+                                  ((keywordp proto) (substring (symbol-name proto) 1))
+                                  ((symbolp proto) (symbol-name proto))
+                                  ((stringp proto) proto)
+                                  (t (format "%s" proto))))
+                               raw-protos)))
+          (insert (format "Prototypes: %s\n"
+                          (if protos (string-join protos ", ") "(none)"))))
+        (insert (format "Sigils: %s\n\n" (or sigils "(none)")))
+        (insert (format "Hints error: %s\n" (or my-chatgpt-shell--last-hints-error "none")))
+        (insert (format "Cues error: %s\n\n" (or my-chatgpt-shell--last-cues-error "none")))
+        (let ((patterns (and hints (plist-get hints :patterns)))
+              (fruits (and hints (plist-get hints :fruits)))
+              (paramitas (and hints (plist-get hints :paramitas))))
+          (insert (format "Hints patterns: %s\n" (if patterns (length patterns) 0)))
+          (insert (format "Hints fruits: %s\n" (if fruits (length fruits) 0)))
+          (insert (format "Hints paramitas: %s\n\n" (if paramitas (length paramitas) 0))))
+        (let ((fruits (and cues (plist-get cues :fruits)))
+              (paramitas (and cues (plist-get cues :paramitas))))
+          (insert (format "Cues fruits: %s\n" (if fruits (length fruits) 0)))
+          (insert (format "Cues paramitas: %s\n" (if paramitas (length paramitas) 0)))
+          (insert "\n"))
+        (when hints
+          (insert "Hints payload:\n")
+          (pp hints (current-buffer))
+          (insert "\n"))
+        (when cues
+          (insert "Cues payload:\n")
+          (pp cues (current-buffer)))
+        (buffer-string)))))
+
+(defun my-chatgpt-shell-test-hints-and-cues (&optional intent)
+  "Fetch /musn/hints and /musn/cues for the latest turn and report counts."
+  (interactive
+   (list (when current-prefix-arg
+           (read-string "Intent (blank for current): "))))
+  (when (and (stringp intent) (string-empty-p intent))
+    (setq intent nil))
+  (let ((report (my-chatgpt-shell--hints-debug-report intent)))
+    (with-current-buffer (get-buffer-create "*Tatami Hints Debug*")
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (insert report)))
+    (display-buffer "*Tatami Hints Debug*")))
+
+(defcustom my-chatgpt-shell-hints-debug-file
+  (expand-file-name "resources/hints-debug.txt" my-futon3--repo-root)
+  "Path where hints/cues debug snapshots are written."
+  :type 'file
+  :group 'tatami-integration)
+
+(defun my-chatgpt-shell-replay-last-turn-debug-hints (&optional intent)
+  "Replay the last turn, refresh hints, and write a debug report to disk."
+  (interactive
+   (list (when current-prefix-arg
+           (read-string "Intent (blank for current): "))))
+  (my-chatgpt-shell-replay-last-turn)
+  (my-chatgpt-shell-refresh-context-hints intent)
+  (let ((report (my-chatgpt-shell--hints-debug-report intent)))
+    (make-directory (file-name-directory my-chatgpt-shell-hints-debug-file) t)
+    (with-temp-file my-chatgpt-shell-hints-debug-file
+      (insert report))
+    (message "Tatami hints debug written to %s" my-chatgpt-shell-hints-debug-file)))
 
 (defun my-chatgpt-shell--build-inbound-edn ()
   (my-futon3-ensure-tatami-session)
@@ -2745,7 +2977,8 @@ Always sets the system prompt. Tatami ingestion now occurs via
             (special-mode))
           (setq-local truncate-lines nil)
           (let* ((status (and (my-futon3-running-p)
-                              (or (my-futon3-refresh-status)
+                              (or (and (not my-chatgpt-shell--hints-pending)
+                                       (my-futon3-refresh-status))
                                   my-futon3-last-status)))
                  (stack (and status (plist-get status :stack)))
                  (selection (and status (plist-get status :selection)))
@@ -2830,18 +3063,18 @@ Always sets the system prompt. Tatami ingestion now occurs via
                ((and cue-edn (eq cue-status :chatgpt))
                 (when-let* ((msg (my-chatgpt-shell--cue-guidance cue-status
                                                                (plist-get cue-source :reason))))
-                  (insert msg "\n\n"))
+                  (my-chatgpt-shell--insert-cue-guidance msg))
                 (my-chatgpt-shell--insert-inbound-summary cue-edn))
                ((eq cue-status :empty)
                 (when-let* ((msg (my-chatgpt-shell--cue-guidance cue-status
                                                                (plist-get cue-source :reason))))
-                  (insert msg "\n\n")))))
+                  (my-chatgpt-shell--insert-cue-guidance msg))))))
             (when summary
               (insert (propertize "Latest :me summary" 'face 'bold) "\n"
                       summary "\n"))
             (when last-edn
               (my-chatgpt-shell--insert-edn-summary last-edn inbound))
-            (goto-char (point-min))))))))
+            (goto-char (point-min)))))))
 
 (defun my-chatgpt-shell--read-sample-text ()
   (if (use-region-p)
@@ -2998,8 +3231,12 @@ use the active region if present, otherwise prompt for the sample string."
         (run-with-timer 0.5 0.5 #'my-tatami--notify-ready-tick)))
 
 (defun my-tatami--notify-ready-tick ()
-  (let ((start (or my-tatami--notify-start (float-time)))
-        (timer my-tatami--notify-timer))
+  (let* ((start (if (numberp my-tatami--notify-start)
+                    my-tatami--notify-start
+                  (float-time)))
+         (timer my-tatami--notify-timer))
+    (unless (numberp my-tatami--notify-start)
+      (setq my-tatami--notify-start start))
     (if (tatami--server-running-p)
         (progn
           (when (timerp timer)
@@ -3157,9 +3394,9 @@ Used both for selecting the system prompt and for the mode-line lighter.")
          (score (plist-get pattern :score))
          (status (and event (my-chatgpt-shell--format-pattern-status event)))
          (notes (and event (plist-get event :notes)))
-         (score-text (if (numberp score)
-                         (format " [d=%.2f]" score)
-                       ""))
+         (score-text (concat (when (numberp score)
+                               (format " [d=%.2f]" score))
+                             (my-chatgpt-shell--format-intent-distance pattern)))
          (note-text (when (and notes (> (length notes) 0))
                       (my-chatgpt-shell--truncate notes 140))))
     (cons (string-trim
@@ -3179,9 +3416,9 @@ Used both for selecting the system prompt and for the mode-line lighter.")
          (score (plist-get pattern :score))
          (status (and event (my-chatgpt-shell--format-pattern-status event)))
          (notes (and event (plist-get event :notes)))
-         (score-text (if (numberp score)
-                         (format " [d=%.2f]" score)
-                       ""))
+         (score-text (concat (when (numberp score)
+                               (format " [d=%.2f]" score))
+                             (my-chatgpt-shell--format-intent-distance pattern)))
          (note-text (when (and notes (> (length notes) 0))
                       (my-chatgpt-shell--truncate notes 140))))
     (insert "  • ")

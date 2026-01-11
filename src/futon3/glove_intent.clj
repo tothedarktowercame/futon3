@@ -17,6 +17,10 @@
 (defn- glove-path []
   (or (System/getenv "FUTON3_GLOVE_PATH") default-glove-path))
 
+(defn- glove-intent-enabled? []
+  (let [flag (some-> (System/getenv "FUTON3_GLOVE_INTENT") str/lower-case)]
+    (and flag (not (str/blank? flag)) (not (#{"0" "false" "no"} flag)))))
+
 (defn- parse-glove-line [line]
   (let [parts (str/split line #" ")
         token (first parts)
@@ -98,7 +102,7 @@ Returns true if vectors were added, false otherwise."
   "Attach intent embedding distance/similarity to PATTERNS if GloVe vectors exist."
   [intent patterns]
   (let [intent-vec (text->vector intent)]
-    (if (and intent-vec (seq patterns))
+    (if (and (glove-intent-enabled?) intent-vec (seq patterns))
       (mapv (fn [pattern]
               (let [ptext (pattern-text pattern)
                     pvec (text->vector ptext)

@@ -20,7 +20,7 @@ The HUD is the **shared context surface** that:
  ;; Input context
  :intent "implement belief-state schema"
  :prototypes ["aif" "schema"]
- :sigils [{:emoji "🧠" :hanzi "思"} {:emoji "📊" :hanzi "证"}]
+ :sigils [{:emoji "🧠" :hanzi "mind"} {:emoji "📊" :hanzi "evidence"}]
 
  ;; Pattern candidates (from hints)
  :candidates [{:id "aif/belief-state-operational-hypotheses"
@@ -151,7 +151,7 @@ Could provide an adapter so aob-chatgpt.el uses the same underlying HUD module.
 ```
 ---FULAB-HUD---
 Intent: implement belief-state schema
-Sigils: 🧠/思 📊/证
+Sigils: 🧠/mind 📊/evidence
 
 Pattern candidates (reason about these):
 1. aif/belief-state-operational-hypotheses (score: 0.82)

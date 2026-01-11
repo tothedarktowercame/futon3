@@ -100,6 +100,75 @@
    :rejections {}
    :horizon :short})
 
+(defn pattern-proposal-template [session-id]
+  {:proposal/id (str (java.util.UUID/randomUUID))
+   :session/id session-id
+   :pattern/draft {:context ""
+                   :if ""
+                   :however ""
+                   :then ""
+                   :because ""
+                   :next-steps ""}
+   :proposal/supporting-trail []
+   :proposal/status :draft
+   :proposal/reviewer-notes []})
+
+(defn proof-commit-template [session-id]
+  {:commit/changes nil
+   :commit/session-id session-id
+   :commit/checked-at (now-inst)
+   :commit/pattern-trail []
+   :commit/validation {:ok? false :errors []}})
+
+(defn notebook-cell-template [session-id]
+  {:session/id session-id
+   :cell/id ""
+   :cell/sequence 0
+   :cell/input ""
+   :cell/output ""
+   :cell/metadata {:model ""
+                   :cost {}
+                   :latency-ms 0}
+   :cell/side-effects []
+   :cell/timestamp (now-inst)})
+
+(defn changelog-entry-template [pattern-id]
+  {:changelog/file ""
+   :entry/date ""
+   :entry/session-id ""
+   :entry/pattern-id pattern-id
+   :entry/deps []
+   :entry/artifacts []
+   :entry/summary ""})
+
+(defn devmap-xref-template [pattern-id]
+  {:fulab-pattern pattern-id
+   :devmap-prototype ""
+   :devmap-file ""
+   :devmap-clause ""})
+
+(defn blast-radius-template [session-id]
+  {:session/id session-id
+   :blast/surfaces []
+   :blast/rollback []
+   :blast/detectors []
+   :blast/risk :unknown
+   :blast/notes ""})
+
+(defn tradeoff-record-template [session-id]
+  {:session/id session-id
+   :decision/id ""
+   :decision/recorded-at (now-inst)
+   :decision/options []
+   :decision/assumptions []
+   :decision/rationale ""
+   :decision/reversal-triggers []})
+
+(defn proposal-claim-event [proposal]
+  (build-event :pattern/proposal-claimed
+               {:proposal proposal
+                :proposal/claimed-at (now-inst)}))
+
 (defn wrap-claim-event [record]
   (cond
     (:pur/id record)

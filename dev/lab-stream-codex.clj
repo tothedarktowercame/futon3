@@ -8,6 +8,16 @@
             [futon3.fulab.hud :as hud]
             [futon3.fulab.pattern-competence :as pc]))
 
+(def ^:private pattern-file-re
+  #"(?:^|\\s|['\"])library/fulab/[^\\s\"']+\\.flexiarg")
+(def ^:private fulab-id-re
+  #"(fulab/[a-z0-9_-]+)")
+(def ^:private pattern-arg-re
+  #"(?:^|\\s)@arg\\s+([a-z0-9_-]+/[a-z0-9_-]+)")
+(def ^:private write-command-re
+  #"(apply_patch|\\bsed\\b\\s+-i|perl\\s+-pi|\\btee\\b|\\bmv\\b|\\bcp\\b|\\btruncate\\b)")
+(def ^:private pattern-action-window-ms 30000)
+
 (defn usage []
   (println "Usage: dev/lab-stream-codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook] [--hud-json PATH]")
   (println "Reads codex --json stream from stdin and appends session + AIF events.")
@@ -36,6 +46,62 @@
     (json/read-str line :key-fn keyword)
     (catch Throwable _ nil)))
 
+(defn- coerce-output-text [value]
+  (cond
+    (string? value) value
+    (map? value) (or (coerce-output-text (:aggregated_output value))
+                     (coerce-output-text (:aggregated-output value))
+                     (coerce-output-text (:text value))
+                     (coerce-output-text (:output value))
+                     (coerce-output-text (:stdout value)))
+    (sequential? value) (->> value
+                             (map coerce-output-text)
+                             (remove nil?)
+                             (str/join ""))
+    :else nil))
+
+(defn- command-touches-pattern? [command]
+  (boolean (re-find pattern-file-re (or command ""))))
+
+(defn- command-write? [command]
+  (boolean (re-find write-command-re (or command ""))))
+
+(defn- command->action [command]
+  (if (command-write? command) "update" "read"))
+
+(defn- patterns-from-output [output]
+  (->> (re-seq pattern-arg-re (or output ""))
+       (map second)
+       distinct
+       vec))
+
+(defn- patterns-from-command [command]
+  (->> (re-seq fulab-id-re (or command ""))
+       (map second)
+       distinct
+       vec))
+
+(defn- parse-pattern-action-lines [text]
+  (->> (str/split-lines (or text ""))
+       (keep (fn [line]
+               (when-let [payload (parse-json (str/trim line))]
+                 (when (= "pattern-action" (:type payload))
+                   payload))))))
+
+(defn- post-json! [url payload]
+  (try
+    (let [conn ^java.net.HttpURLConnection (.openConnection (java.net.URL. url))
+          data (.getBytes (json/write-str payload) "UTF-8")]
+      (.setRequestMethod conn "POST")
+      (.setDoOutput conn true)
+      (.setRequestProperty conn "Content-Type" "application/json")
+      (with-open [out (.getOutputStream conn)]
+        (.write out data))
+      (try
+        (.getResponseCode conn)
+        (catch Exception _ nil)))
+    (catch Exception _ nil)))
+
 (defn read-hud-json [path]
   (when (and path (.exists (io/file path)))
     (try
@@ -62,6 +128,9 @@
 
 (defn now-inst []
   (java.util.Date.))
+
+(defn- now-ms []
+  (System/currentTimeMillis))
 
 (defn ensure-session [lab-root thread-id]
   (let [path (io/file lab-root "sessions" (str thread-id ".edn"))]
@@ -169,6 +238,63 @@
              :aif/kind kind
              :aif/result result}})
 
+(defn- mark-pattern-action! [state action pattern-id]
+  (swap! state assoc-in [:pattern-action-last [action pattern-id]] (now-ms)))
+
+(defn- recently-seen? [state action pattern-id]
+  (let [seen-at (get-in @state [:pattern-action-last [action pattern-id]])]
+    (and seen-at (< (- (now-ms) seen-at) pattern-action-window-ms))))
+
+(defn- handle-pattern-action! [state engine payload]
+  (let [session-id (:session-id @state)
+        pattern-id (:pattern-id payload)
+        action (:action payload)
+        note (:note payload)]
+    (when (and session-id pattern-id action)
+      (let [decision-id (str session-id ":action-" (java.util.UUID/randomUUID))
+            event {:event/type :pattern/action
+                   :at (now-inst)
+                   :payload {:session/id session-id
+                             :pattern/id pattern-id
+                             :pattern/action action
+                             :pattern/note note}}
+            update (engine/update-beliefs engine {:decision/id decision-id
+                                                  :session/id session-id
+                                                  :pattern/id pattern-id
+                                                  :pattern/action action
+                                                  :outcome (str "pattern-action " action " " pattern-id)
+                                                  :status :observed})]
+        (append-event! state event)
+        (append-event! state (summary-event session-id :pattern-action update))
+        (mark-pattern-action! state action pattern-id)))))
+
+(defn- record-pattern-action-rpc! [state action pattern-id note]
+  (let [session-id (:session-id @state)
+        server-url (or (System/getenv "FUTON3_CODEX_SERVER_URL")
+                       (System/getenv "HUD_SERVER")
+                       "http://localhost:5050")]
+    (when (and session-id pattern-id)
+      (post-json!
+       (str (str/replace server-url #"/$" "") "/codex/pattern-action/" session-id)
+       (cond-> {:pattern-id pattern-id
+                :action action}
+         (and note (not (str/blank? note)))
+         (assoc :note note))))))
+
+(defn- log-pattern-action! [state engine action pattern-id note]
+  (when-not (recently-seen? state action pattern-id)
+    (record-pattern-action-rpc! state action pattern-id note)
+    (handle-pattern-action! state engine {:pattern-id pattern-id
+                                          :action action
+                                          :note note})
+    (println (format "[pattern-action] %s %s%s"
+                     action
+                     pattern-id
+                     (if (and note (not (str/blank? note)))
+                       (str " - " note)
+                       "")))
+    (flush)))
+
 (defn parse-csv [value]
   (when (and value (not (str/blank? value)))
     (vec (remove str/blank? (str/split value #",")))))
@@ -232,14 +358,24 @@
         repo-root (System/getProperty "user.dir")
         lab-root (or lab-root (str (io/file repo-root "lab")))
         clock-ins (parse-csv clock-in)
-        base-candidates (if (and patterns (not (str/blank? patterns)))
+        hud-response (read-hud-json hud-json)
+        hud-state (:hud hud-response)
+        hud-candidates (when (seq (get hud-state :candidates))
+                         (mapv :id (get hud-state :candidates)))
+        hud-scores (when (seq (get hud-state :candidates))
+                     (into {}
+                           (keep (fn [entry]
+                                   (when (and (:id entry) (number? (:score entry)))
+                                     [(:id entry) (:score entry)])))
+                           (get hud-state :candidates)))
+        base-candidates (cond
+                          (and patterns (not (str/blank? patterns)))
                           (vec (remove str/blank? (str/split patterns #",")))
-                          ["ants/white-space-scout" "ants/pheromone-trail-tuner"])
+                          (seq hud-candidates) hud-candidates
+                          :else ["ants/white-space-scout" "ants/pheromone-trail-tuner"])
         candidates (ensure-candidates base-candidates clock-ins)
         aif-config (read-aif-config aif-config)
         engine (engine/new-engine (fulab/new-adapter aif-config) {:beliefs {}})
-        hud-response (read-hud-json hud-json)
-        hud-state (:hud hud-response)
         state (atom {:lab-root lab-root
                      :thread-id nil
                      :session-id session-id
@@ -251,11 +387,13 @@
                      :aif-config aif-config
                      :aif-config-logged? false
                      :hud hud-state
+                     :candidate-scores hud-scores
                      :hud-logged? false
                      :last-agent-report nil
                      :aif-select? (boolean aif-select)
                      :proposal-hook? (boolean proposal-hook)
-                     :tau-cache (or (read-tau-cache lab-root) {})})
+                     :tau-cache (or (read-tau-cache lab-root) {})
+                     :pattern-action-last {}})
         tap-listener (fn [event]
                        (when (= :aif/fulab (:type event))
                          (append-event! state {:event/type :aif/tap
@@ -308,6 +446,23 @@
                                    (hud/parse-agent-report text))]
                       (when report
                         (swap! state assoc :last-agent-report report))))
+                  (when (and (= (:type event) "item.completed")
+                             (= (get-in event [:item :type]) "command_execution"))
+                    (let [command (get-in event [:item :command])
+                          output (coerce-output-text (get-in event [:item]))
+                          action (command->action command)
+                          output-patterns (patterns-from-output output)
+                          command-patterns (patterns-from-command command)
+                          pattern-ids (or (seq output-patterns) (seq command-patterns))]
+                      (doseq [payload (parse-pattern-action-lines output)]
+                        (handle-pattern-action! state engine payload))
+                      (when (and (command-touches-pattern? command) pattern-ids)
+                        (doseq [pattern-id pattern-ids]
+                          (log-pattern-action! state
+                                               engine
+                                               action
+                                               pattern-id
+                                               "auto-detected from command")))))
                   (when (= (:type event) "turn.completed")
                     (let [turn (inc (:turn @state))
                           session-id (:session-id @state)
@@ -319,11 +474,13 @@
                           forecast (build-forecast turn)
                           cached-tau (get (:tau-cache @state) explicit-chosen)
                           uncertainty (tau->uncertainty (:tau/scale aif-config) cached-tau)
+                          candidate-scores (:candidate-scores @state)
                           selection-context (cond-> {:decision/id decision-id
                                                      :session/id session-id
                                                      :candidates candidates
                                                      :anchors anchors
                                                      :forecast forecast}
+                                              candidate-scores (assoc :candidate-scores candidate-scores)
                                               uncertainty (assoc :uncertainty uncertainty)
                                               (not use-aif) (assoc :chosen explicit-chosen))
                           selection (engine/select-pattern engine selection-context)

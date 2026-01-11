@@ -80,14 +80,20 @@
 (defn- clock-in-event [session-id {:keys [pattern-id intent context]}]
   (make-event session-id :clock-in/start
               {:clock-in/pattern-id pattern-id
+               :clock-in/session-id session-id
                :clock-in/intent intent
                :clock-in/timestamp (java.util.Date.)
                :clock-in/context (or context {})}))
 
-(defn- pattern-used-event [session-id pattern-id reason]
-  (make-event session-id :pattern/used
-              {:pattern/id pattern-id
-               :pattern/reason reason}))
+(defn- pattern-used-event
+  ([session-id pattern-id reason]
+   (pattern-used-event session-id pattern-id reason nil))
+  ([session-id pattern-id reason parent-id]
+   (make-event session-id :pattern/used
+               (cond-> {:pattern/id pattern-id
+                        :pattern/dep pattern-id
+                        :pattern/reason reason}
+                 parent-id (assoc :pattern/parent parent-id)))))
 
 (defn- doc-written-event [session-id doc]
   (make-event session-id :doc/written
@@ -103,6 +109,7 @@
 (defn- clock-out-event [session-id {:keys [pattern-id patterns-trail status artifacts docs stats society-paper]}]
   (make-event session-id :clock-out/complete
               {:pattern/primary pattern-id
+               :clock-out/session-id session-id
                :pattern/trail (or patterns-trail [])
                :session/status status
                :artifacts (or artifacts [])
@@ -434,13 +441,14 @@
 (defn record-pattern-use!
   "Record that a session used a pattern as a dependency.
    Emits :pattern/used event and adds to session's pattern trail."
-  [session-id pattern-id & [{:keys [reason]}]]
+  [session-id pattern-id & [{:keys [reason parent-id]}]]
   (if-let [session (get @!sessions session-id)]
-    (let [usage {:pattern/id pattern-id
-                 :used-at (now-ms)
-                 :reason reason}]
+    (let [usage (cond-> {:pattern/id pattern-id
+                         :used-at (now-ms)
+                         :reason reason}
+                  parent-id (assoc :pattern/parent parent-id))]
       (swap! (:patterns-used session) conj usage)
-      (emit-event! session (pattern-used-event session-id pattern-id reason))
+      (emit-event! session (pattern-used-event session-id pattern-id reason parent-id))
       {:ok true :session-id session-id :pattern-id pattern-id})
     {:ok false :error "session-not-found"}))
 

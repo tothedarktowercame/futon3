@@ -9,7 +9,8 @@
    - Gets archived with session traces"
   (:require [clojure.string :as str]
             [futon3.pattern-hints :as hints]
-            [futon3.cue-embedding :as cue]))
+            [futon3.cue-embedding :as cue]
+            [futon3.glove-intent :as glove]))
 
 (defn- now-inst []
   (java.util.Date.))
@@ -52,7 +53,54 @@
    :score-similarity (when (number? (:score/similarity entry))
                        (double (:score/similarity entry)))
    :summary (or (:summary entry) (:title entry) "")
-   :sigils (:sigils entry)})
+   :sigils (:sigils entry)
+   :pattern-ref (:pattern-ref entry)})
+
+(def ^:private aif-weight-sigil 0.5)
+(def ^:private aif-weight-intent 0.3)
+(def ^:private aif-weight-glove 0.2)
+
+(defn- normalize-weights [parts]
+  (let [total (reduce + (map :weight parts))]
+    (if (pos? total)
+      (mapv (fn [entry]
+              (update entry :weight #(/ (double %) total)))
+            parts)
+      parts)))
+
+(defn- weighted-base-score [entry]
+  (let [sigil (:score/sigil-distance entry)
+        glove (:score/glove-distance entry)
+        intent-dist (:score/intent-embed-distance entry)
+        parts (cond-> []
+                (number? sigil)
+                (conj {:key :sigil :distance sigil :weight aif-weight-sigil})
+                (number? intent-dist)
+                (conj {:key :intent :distance intent-dist :weight aif-weight-intent})
+                (number? glove)
+                (conj {:key :glove :distance glove :weight aif-weight-glove}))
+        parts (normalize-weights parts)
+        base (when (seq parts)
+               (reduce + (map (fn [{:keys [distance weight]}]
+                                (* (double distance) (double weight)))
+                              parts)))]
+    {:base base
+     :sigil sigil
+     :intent intent-dist
+     :glove glove
+     :weights (into {} (map (juxt :key :weight) parts))}))
+
+(defn- scores->tau [scores]
+  (let [scores (sort scores)]
+    (cond
+      (< (count scores) 2) 0.5
+      :else (let [best (first scores)
+                  second (second scores)
+                  worst (last scores)
+                  range (max 1.0e-6 (- (double worst) (double best)))
+                  spread (/ (- (double second) (double best)) range)
+                  scaled (+ 0.35 (* 0.6 (min 1.0 spread)))]
+              (-> scaled (max 0.35) (min 0.95) double)))))
 
 (defn- score-candidates-with-aif
   "Score candidates using simple heuristics (placeholder for full AIF integration).
@@ -66,7 +114,8 @@
      :rationale "No candidates available"}
     (let [;; Simple scoring: use existing score (distance-based, lower is better)
           scored (map (fn [c]
-                        (let [base-score (double (or (:score c) 0.5))
+                        (let [{:keys [base sigil glove intent weights]} (weighted-base-score c)
+                              base-score (double (or base (:score c) 0.5))
                               ;; Prefer patterns whose sigils match intent sigils
                               sigil-bonus (if (and (seq sigils) (seq (:sigils c)))
                                             (let [c-sigils (set (map :emoji (:sigils c)))
@@ -78,20 +127,27 @@
                               G (+ base-score sigil-bonus)]
                           {:id (:id c)
                            :G G
-                           :components {:base base-score
+                            :components {:base base-score
+                                        :sigil-distance sigil
+                                        :glove-distance glove
+                                        :intent-distance intent
+                                        :weights weights
                                         :sigil-bonus sigil-bonus
                                         :source (:score-source c)
-                                        :missing-score (nil? (:score c))}}))
+                                        :missing-score (and (nil? base)
+                                                            (nil? (:score c)))}}))
                       candidates)
           sorted (sort-by :G scored)
           best (first sorted)
           G-map (into {} (map (juxt :id :G) scored))
-          G-components (into {} (map (juxt :id :components) scored))]
+          G-components (into {} (map (juxt :id :components) scored))
+          tau (scores->tau (map :G scored))]
       {:suggested (:id best)
        :G-scores G-map
        :G-components G-components
-       :tau 0.7  ;; Default confidence
-       :rationale (str "G = base score (distance from sigils/embedding) + sigil bonus; "
+       :candidate-count (count candidates)
+       :tau tau
+       :rationale (str "G = weighted distance (sigil + intent-embed + glove) + sigil bonus; "
                        "lowest G among " (count candidates) " candidates")})))
 
 (defn build-hud
@@ -119,10 +175,19 @@
                                   :pattern-limit pattern-limit})
         candidates (mapv format-candidate (:patterns hint-result))
         glove-candidates (mapv format-candidate (:glove-patterns hint-result))
+        aif-candidates (hints/aif-candidates (:patterns hint-result)
+                                             (:glove-patterns hint-result))
+        aif-candidates (if (and intent (seq aif-candidates))
+                         (glove/attach-intent-embed-distance intent aif-candidates)
+                         aif-candidates)
         ;; Score with AIF
-        aif-result (score-candidates-with-aif candidates
+        aif-result (score-candidates-with-aif aif-candidates
                                                {:intent intent
-                                                :sigils resolved-sigils})]
+                                                :sigils resolved-sigils})
+        candidate-ids (set (map :id (:patterns hint-result)))
+        aif-result (assoc aif-result
+                          :suggested-in-candidates
+                          (contains? candidate-ids (:suggested aif-result)))]
     {:hud/id (generate-hud-id)
      :hud/timestamp (now-inst)
      ;; Input context
@@ -155,12 +220,15 @@
                                  (let [score (:score c)
                                        score-label (if (number? score)
                                                      (format "dist %.3f (0..1)" (double score))
-                                                     "n/a")]
-                                   (format "%d. %s (score: %s, source: %s)\n   %s"
+                                                     "n/a")
+                                       ref-label (when-let [pattern-ref (:pattern-ref c)]
+                                                   (str " ref " pattern-ref))]
+                                   (format "%d. %s (score: %s, source: %s%s)\n   %s"
                                            (inc i)
                                            (:id c)
                                            score-label
                                            (or (some-> (:score-source c) name) "unknown")
+                                           (or ref-label "")
                                            (or (:summary c) "")))))
                               (str/join "\n"))
                          "No candidates found.")
@@ -179,6 +247,10 @@
          candidates-str "\n"
          "\n"
          aif-str "\n"
+         "\n"
+         "Log pattern actions via RPC during the run:\n"
+         "Run: pattern-action <read|implement|update> <pattern-id> [note]\n"
+         "Do not use plain text tags; call the helper before/after touching a pattern.\n"
          "\n"
          "After completing the task, report which pattern(s) you applied:\n"
          "[FULAB-REPORT]\n"

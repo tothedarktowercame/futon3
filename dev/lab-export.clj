@@ -46,7 +46,9 @@
       (str/join "\n" trimmed))))
 
 (defn- attach-session-id [records session-id]
-  (mapv #(assoc % :session-id session-id) records))
+  (->> records
+       (filter map?)
+       (mapv #(assoc % :session-id session-id))))
 
 (defn- indexed-messages [records role prefix]
   (loop [idx 1

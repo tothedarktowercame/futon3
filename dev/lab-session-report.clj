@@ -199,6 +199,20 @@
                        (when end (str "end: " end))])]
     (bullets lines)))
 
+(defn fallback-raw [session]
+  (let [events (or (:events session) [])
+        files (->> events
+                   (keep :file)
+                   (remove str/blank?)
+                   distinct
+                   vec)
+        timestamps (->> events (keep :at) sort)
+        start (first timestamps)
+        end (last timestamps)]
+    {"lab/files-touched" files
+     "lab/timestamp-start" start
+     "lab/timestamp-end" end}))
+
 (defn -main [& args]
   (let [{:keys [help unknown session-id lab-root format]} (parse-args args)
         repo-root (System/getProperty "user.dir")
@@ -216,7 +230,8 @@
             psr (or (:psr claims)
                     (read-edn (lab-path lab-root "pattern-drafts" (str session-id "-psr.edn"))))
             pur (or (:pur claims)
-                    (read-edn (lab-path lab-root "pattern-drafts" (str session-id "-pur.edn"))))]
+                    (read-edn (lab-path lab-root "pattern-drafts" (str session-id "-pur.edn"))))
+            raw (or raw (when session (fallback-raw session)))]
         (when-not raw
           (println "Missing lab raw file for session" session-id)
           (System/exit 1))

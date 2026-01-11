@@ -2,11 +2,13 @@
   "HTTP/WebSocket transport exposing a multi-user, capability-aware REPL."
   (:require [cheshire.core :as json]
             [clojure.core.async :as async]
+            [clojure.java.io :as io]
             [clojure.java.shell :as shell]
             [clojure.string :as str]
             [f0.clock :as clock]
             [futon3.checks :as checks]
             [futon3.fulab.hud :as hud]
+            [futon3.fulab.pattern-competence :as pc]
             [futon3.tatami :as tatami]
             [futon3.workday :as workday]
             [futon3.futon1-bridge :as f1-bridge]
@@ -482,19 +484,65 @@
         :certificate/ref commit
         :certificate/repo repo-root}])))
 
+(defn- session-path [repo-root session-id]
+  (io/file repo-root "lab" "sessions" (str session-id ".edn")))
+
+(defn- read-session [repo-root session-id]
+  (let [path (session-path repo-root session-id)]
+    (when (.exists path)
+      (pc/read-session-file (str path)))))
+
+(defn- summarize-aif-event [event]
+  (let [payload (:payload event)
+        result (:aif/result payload)
+        aif (:aif result)]
+    {:kind (:aif/kind payload)
+     :at (:at event)
+     :chosen (:chosen result)
+     :tau (or (:tau aif) (:tau-updated aif))
+     :g-chosen (:G-chosen aif)
+     :prediction-error (:prediction-error aif)
+     :belief-delta (:belief-delta aif)}))
+
+(defn- summarize-pattern-action [event]
+  (let [payload (:payload event)]
+    {:pattern-id (:pattern/id payload)
+     :action (:pattern/action payload)
+     :note (:pattern/note payload)
+     :at (:at event)}))
+
+(defn- aif-live [session]
+  (let [events (or (:events session) [])
+        last-summary (last (filter #(= :aif/summary (:event/type %)) events))
+        last-action (last (filter #(= :pattern/action (:event/type %)) events))]
+    (when (or last-summary last-action)
+      {:session-id (:session/id session)
+       :summary (when last-summary (summarize-aif-event last-summary))
+       :last-action (when last-action (summarize-pattern-action last-action))})))
+
 (defn- handle-hud-format [state request]
   (try
     (let [payload (or (parse-json-body request) {})
           intent (:intent payload)
           prototypes (:prototypes payload)
           sigils (:sigils payload)
+          session-id (:session-id payload)
+          repo-root (or (:repo-root payload)
+                        (get-in @(:config state) [:repo :root])
+                        (System/getProperty "user.dir"))
           limit (or (:pattern-limit payload) (:limit payload) 4)
-          certs (hud-certificates state payload)
+          certs (hud-certificates state (assoc payload :repo-root repo-root))
+          live (when session-id
+                 (some-> (read-session repo-root session-id)
+                         aif-live))
           hud (hud/build-hud {:intent intent
                               :prototypes prototypes
                               :sigils sigils
                               :pattern-limit limit
                               :certificates certs})
+          hud (if live
+                (assoc hud :aif-live live)
+                hud)
           prompt (hud/hud->prompt-block hud)]
       (json-response 200 {:ok true
                           :hud hud

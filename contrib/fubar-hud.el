@@ -88,6 +88,41 @@
   :type 'number
   :group 'fubar-hud)
 
+(defcustom fubar-hud-show-score-sources t
+  "When non-nil, render the score source legend."
+  :type 'boolean
+  :group 'fubar-hud)
+
+(defcustom fubar-hud-show-glove-neighbors nil
+  "When non-nil, render the GloVe neighbors section."
+  :type 'boolean
+  :group 'fubar-hud)
+
+(defcustom fubar-hud-show-live-aif t
+  "When non-nil, render live AIF updates from the session log."
+  :type 'boolean
+  :group 'fubar-hud)
+
+(defcustom fubar-hud-async-refresh t
+  "When non-nil, refresh HUD via asynchronous HTTP calls."
+  :type 'boolean
+  :group 'fubar-hud)
+
+(defcustom fubar-hud-fucodex-aif-select t
+  "When non-nil, run fucodex with --aif-select."
+  :type 'boolean
+  :group 'fubar-hud)
+
+(defcustom fubar-hud-intent-from-prompt t
+  "When non-nil, use the prompt as the intent for new fucodex runs."
+  :type 'boolean
+  :group 'fubar-hud)
+
+(defcustom fubar-hud-auto-layout t
+  "When non-nil, show a two-up layout for live runs."
+  :type 'boolean
+  :group 'fubar-hud)
+
 (defcustom fubar-hud-pause-when-selected t
   "When non-nil, pause auto-refresh while the HUD window is selected."
   :type 'boolean
@@ -103,6 +138,9 @@
 
 (defvar-local fubar-hud--intent nil
   "Current intent string.")
+
+(defvar-local fubar-hud--refresh-in-flight nil
+  "Non-nil when an async HUD refresh is in progress.")
 
 
 (defvar-local fubar-hud--operator-status nil
@@ -168,6 +206,11 @@
         (json-key-type 'keyword))
     (json-read-from-string text)))
 
+(defun fubar-hud--decode-json-body (body)
+  "Decode BODY as UTF-8 if needed."
+  (when body
+    (decode-coding-string (string-make-unibyte body) 'utf-8)))
+
 (defun fubar-hud--http-post-json (url payload)
   (let* ((url-request-method "POST")
          (url-request-extra-headers '(("content-type" . "application/json")))
@@ -179,8 +222,27 @@
             (when (boundp 'url-http-end-of-headers)
               (goto-char url-http-end-of-headers)
               (let ((body (buffer-substring-no-properties (point) (point-max))))
-                (fubar-hud--parse-json body)))
+                (fubar-hud--parse-json (fubar-hud--decode-json-body body))))
           (kill-buffer buf))))))
+
+(defun fubar-hud--http-post-json-async (url payload callback)
+  "POST PAYLOAD to URL and call CALLBACK with parsed JSON or nil."
+  (let ((url-request-method "POST")
+        (url-request-extra-headers '(("content-type" . "application/json")))
+        (url-request-data (json-encode payload)))
+    (url-retrieve
+     url
+     (lambda (status)
+       (let (result)
+         (unwind-protect
+             (unless (plist-get status :error)
+               (when (boundp 'url-http-end-of-headers)
+                 (goto-char url-http-end-of-headers)
+                 (let ((body (buffer-substring-no-properties (point) (point-max))))
+                   (when (and body (not (string-empty-p (string-trim body))))
+                     (setq result (fubar-hud--parse-json (fubar-hud--decode-json-body body)))))))
+           (kill-buffer (current-buffer)))
+         (funcall callback result status))))))
 
 (defun fubar-hud--build-hud-server (intent &optional patterns)
   "Build HUD via futon3 server."
@@ -191,6 +253,9 @@
                     ("pattern-limit" . 4)
                     ("certify-commit" . ,(and fubar-hud-certify-commit t))
                     ("repo-root" . ,fubar-hud-futon3-root)))
+         (payload (if fubar-hud--session-id
+                      (append payload `(("session-id" . ,fubar-hud--session-id)))
+                    payload))
          (url (concat (replace-regexp-in-string "/$" "" fubar-hud-server-url)
                       "/fulab/hud/format"))
          (result (ignore-errors (fubar-hud--http-post-json url payload))))
@@ -200,6 +265,32 @@
         (when prompt
           (setq fubar-hud--prompt-block prompt))
         hud))))
+
+(defun fubar-hud--build-hud-server-async (intent patterns callback)
+  "Build HUD via futon3 server and invoke CALLBACK with the HUD map or nil."
+  (let* ((prototypes (when (and patterns (not (string-empty-p patterns)))
+                       (split-string patterns "," t "[[:space:]]+")))
+         (payload `(("intent" . ,(or intent "unspecified"))
+                    ("prototypes" . ,prototypes)
+                    ("pattern-limit" . 4)
+                    ("certify-commit" . ,(and fubar-hud-certify-commit t))
+                    ("repo-root" . ,fubar-hud-futon3-root)))
+         (payload (if fubar-hud--session-id
+                      (append payload `(("session-id" . ,fubar-hud--session-id)))
+                    payload))
+         (url (concat (replace-regexp-in-string "/$" "" fubar-hud-server-url)
+                      "/fulab/hud/format")))
+    (fubar-hud--http-post-json-async
+     url
+     payload
+     (lambda (result _status)
+       (if (and result (plist-get result :ok))
+           (let ((hud (plist-get result :hud))
+                 (prompt (plist-get result :prompt)))
+             (when prompt
+               (setq fubar-hud--prompt-block prompt))
+             (funcall callback hud))
+         (funcall callback nil))))))
 
 (defun fubar-hud--run-clj (command &rest args)
   "Run lab-hud.clj COMMAND with ARGS, return output."
@@ -260,6 +351,12 @@
      ((string= label ":unknown") "unknown")
      (t label))))
 
+(defun fubar-hud--format-metric (value)
+  "Format VALUE as a short metric string."
+  (if (numberp value)
+      (format "%.3f" value)
+    "n/a"))
+
 (defun fubar-hud--render-sigils (sigils)
   "Render SIGILS as formatted string."
   (if (and sigils (> (length sigils) 0))
@@ -303,9 +400,7 @@
          (sigil-line (when (numberp sigil-dist)
                        (format "   Sigil dist: %.3f\n" sigil-dist)))
          (glove-line (when (numberp glove-dist)
-                       (format "   GloVe dist: %.3f\n" glove-dist)))
-         (score-note-line (when (and (numberp score) (zerop score))
-                            "   Note: 0.000 means exact/rounded match\n")))
+                       (format "   GloVe dist: %.3f\n" glove-dist))))
     (concat
      (format "%d. " (1+ index))
      (fubar-hud--make-pattern-button id)
@@ -320,7 +415,6 @@
      (or sigil-line "")
      (or glove-line "")
      (or similarity-line "")
-     (or score-note-line "")
      (when (and summary (not (string-empty-p summary)))
        (concat "   " (propertize (truncate-string-to-width summary 40 nil nil "...")
                                  'face 'font-lock-doc-face)
@@ -333,6 +427,7 @@
             (tau (plist-get aif :tau))
             (g-scores (plist-get aif :G-scores))
             (g-components (plist-get aif :G-components))
+            (candidate-count (plist-get aif :candidate-count))
             (rationale (plist-get aif :rationale)))
         (concat
          (propertize "AIF Suggestion\n" 'face 'fubar-hud-header-face)
@@ -341,6 +436,8 @@
               "  Pattern: "
               (propertize suggested 'face 'fubar-hud-aif-suggestion-face)
               "\n"
+              (when candidate-count
+                (format "  Pool: %d candidates\n" candidate-count))
               (when tau
                 (format "  Confidence (τ): %s\n"
                         (propertize (format "%.2f" tau) 'face 'fubar-hud-tau-face)))
@@ -349,11 +446,18 @@
               (let ((components (and g-components (fubar-hud--map-get g-components suggested))))
                 (when components
                   (let ((base (fubar-hud--map-get components :base))
-                        (sigil (fubar-hud--map-get components :sigil-bonus))
+                        (sigil-bonus (fubar-hud--map-get components :sigil-bonus))
+                        (sigil-dist (fubar-hud--map-get components :sigil-distance))
+                        (intent-dist (fubar-hud--map-get components :intent-distance))
+                        (glove-dist (fubar-hud--map-get components :glove-distance))
                         (source (fubar-hud--map-get components :source)))
-                    (format "  G components: base %.3f, sigil %.3f, source %s\n"
-                            (or base 0.0)
-                            (or sigil 0.0)
+                    (format (concat "  G components: base %s, sigil %s, intent %s, glove %s, bonus %s\n"
+                                    "  Source: %s\n")
+                            (fubar-hud--format-metric base)
+                            (fubar-hud--format-metric sigil-dist)
+                            (fubar-hud--format-metric intent-dist)
+                            (fubar-hud--format-metric glove-dist)
+                            (fubar-hud--format-metric sigil-bonus)
                             (fubar-hud--score-source-label source)))))
               (when rationale
                 (format "  Rationale: %s\n" rationale)))
@@ -361,6 +465,38 @@
          "  (tau: precision of the selector; higher is more confident)\n"
          "  (see docs/aif-pattern-engine.md for computation details)\n"))
     ""))
+
+(defun fubar-hud--render-live-aif (aif-live)
+  "Render live AIF updates from session log."
+  (when aif-live
+    (let* ((summary (fubar-hud--map-get aif-live :summary))
+           (last-action (fubar-hud--map-get aif-live :last-action))
+           (kind (and summary (fubar-hud--map-get summary :kind)))
+           (chosen (and summary (fubar-hud--map-get summary :chosen)))
+           (tau (and summary (fubar-hud--map-get summary :tau)))
+           (g-chosen (and summary (fubar-hud--map-get summary :g-chosen)))
+           (prediction-error (and summary (fubar-hud--map-get summary :prediction-error)))
+           (action (and last-action (fubar-hud--map-get last-action :action)))
+           (pattern-id (and last-action (fubar-hud--map-get last-action :pattern-id)))
+           (note (and last-action (fubar-hud--map-get last-action :note))))
+      (concat
+       (propertize "Live AIF\n" 'face 'fubar-hud-header-face)
+       (when summary
+         (format "  Summary: %s%s%s%s\n"
+                 (or kind "unknown")
+                 (if chosen (format " → %s" chosen) "")
+                 (if (numberp tau) (format " (τ %.2f)" tau) "")
+                 (if (numberp g-chosen) (format " G=%.3f" g-chosen) "")))
+       (when (numberp prediction-error)
+         (format "  Prediction error: %.3f\n" prediction-error))
+       (when last-action
+         (format "  Last action: %s %s%s\n"
+                 (or action "action")
+                 (or pattern-id "unknown")
+                 (if (and note (not (string-empty-p note)))
+                     (format " - %s" note)
+                   "")))
+       "\n"))))
 
 (defun fubar-hud--render-score-sources (hud)
   "Render score attribution notes."
@@ -370,11 +506,12 @@
      "  Candidate scores: combined distance (0..1); lower is closer\n"
      "  Sigil dist: sigil-embedding distance (0..1)\n"
      "  GloVe dist: glove-embedding distance (0..1)\n"
+     "  Intent dist: intent-to-pattern embedding distance (0..1)\n"
      "  Similarity: glove similarity (0..1)\n"
      "  Score missing: no sigil/embedding score; AIF defaults base to 0.5\n"
      "  Score 0.000 can mean exact match or rounding; check source/similarity\n"
      (if aif
-         "  AIF scores: G = base score + sigil bonus (lower is better)\n"
+         "  AIF scores: G = weighted distance (sigil + intent + glove) + sigil bonus\n"
        "  AIF scores: unavailable (no adapter output)\n"))))
 
 (defun fubar-hud--render-glove-candidates (candidates)
@@ -452,15 +589,20 @@
     (insert "\n")
 
     ;; GloVe neighbors
-    (when-let ((glove-candidates (plist-get hud :glove-candidates)))
-      (insert (fubar-hud--render-glove-candidates glove-candidates)))
+    (when (and fubar-hud-show-glove-neighbors
+               (plist-get hud :glove-candidates))
+      (insert (fubar-hud--render-glove-candidates
+               (plist-get hud :glove-candidates))))
 
     ;; AIF
     (insert (fubar-hud--render-aif (plist-get hud :aif)))
+    (when (and fubar-hud-show-live-aif (plist-get hud :aif-live))
+      (insert (fubar-hud--render-live-aif (plist-get hud :aif-live))))
     (insert "\n")
 
-    (insert (fubar-hud--render-score-sources hud))
-    (insert "\n")
+    (when fubar-hud-show-score-sources
+      (insert (fubar-hud--render-score-sources hud))
+      (insert "\n"))
 
     ;; Staged Next Move
     (when fubar-hud--staged-next
@@ -518,6 +660,22 @@
   (unless (derived-mode-p 'fubar-hud-mode)
     (fubar-hud-mode)))
 
+(defun fubar-hud--show-run-layout (stream-buf)
+  "Show STREAM-BUF on the left and the HUD on the right."
+  (let ((hud-buf (get-buffer-create fubar-hud-buffer-name)))
+    (with-current-buffer hud-buf
+      (fubar-hud--ensure-mode)
+      (fubar-hud-refresh))
+    (let ((root (selected-window)))
+      (when (window-live-p root)
+        (delete-other-windows root)
+        (let ((hud-win (split-window root (- (max 30 fubar-hud-window-width)) 'right)))
+          (set-window-buffer root stream-buf)
+          (set-window-buffer hud-win hud-buf)
+          (set-window-dedicated-p hud-win t)
+          (select-window root))))
+    (fubar-hud--maybe-start-auto-refresh)))
+
 (defun fubar-hud-set-intent (intent)
   "Set INTENT and rebuild HUD."
   (interactive "sIntent: ")
@@ -543,10 +701,23 @@
     (with-current-buffer buf
       (setq fubar-hud--prompt-block nil)
       (setq fubar-hud--staged-next (fubar-hud--read-staging-file))
-      (let ((hud (fubar-hud--build-hud fubar-hud--intent)))
-        (when hud
-          (setq fubar-hud--current-hud hud)
-          (fubar-hud--render hud))))))
+      (if (and fubar-hud-async-refresh fubar-hud-server-url)
+          (unless fubar-hud--refresh-in-flight
+            (setq fubar-hud--refresh-in-flight t)
+            (fubar-hud--build-hud-server-async
+             fubar-hud--intent
+             nil
+             (lambda (hud)
+               (when (buffer-live-p buf)
+                 (with-current-buffer buf
+                   (setq fubar-hud--refresh-in-flight nil)
+                   (when hud
+                     (setq fubar-hud--current-hud hud)
+                     (fubar-hud--render hud)))))))
+        (let ((hud (fubar-hud--build-hud fubar-hud--intent)))
+          (when hud
+            (setq fubar-hud--current-hud hud)
+            (fubar-hud--render hud)))))))
 
 (defun fubar-hud-show ()
   "Show HUD in side window."
@@ -685,7 +856,7 @@ Returns plist with :session-id and :agent-report."
     (list :session-id session-id :agent-report agent-report)))
 
 (defun fubar-hud--process-sentinel (proc event)
-  "Handle fuclaude PROC completion EVENT."
+  "Handle process completion EVENT."
   (when (string-match-p "finished\\|exited" event)
     (let* ((buf (process-buffer proc))
            (output (when buf
@@ -694,7 +865,8 @@ Returns plist with :session-id and :agent-report."
            (parsed (fubar-hud--parse-session-output (or output "")))
            (session-id (plist-get parsed :session-id))
            (agent-report (plist-get parsed :agent-report))
-           (hud-buf (get-buffer fubar-hud-buffer-name)))
+           (hud-buf (get-buffer fubar-hud-buffer-name))
+           (label (or (process-get proc 'fubar-hud-label) "run")))
       ;; Update state in HUD buffer context
       (when hud-buf
         (with-current-buffer hud-buf
@@ -706,12 +878,18 @@ Returns plist with :session-id and :agent-report."
       (when agent-report
         (setq fubar-hud--last-agent-report agent-report))
       (fubar-hud-refresh)
-      (message "fuclaude %s%s"
+      (message "%s %s%s"
+               label
                (string-trim event)
                (if session-id (format " [%s]" (substring session-id 0 8)) "")))))
 
 (defvar fubar-hud--last-agent-report nil
   "Last agent report from fuclaude session.")
+
+(defun fubar-hud--generate-session-id ()
+  "Generate a session id for live runs."
+  (format "codex-%s"
+          (substring (md5 (format "%s-%s" (float-time) (random))) 0 8)))
 
 (defun fubar-hud-run-fuclaude (prompt)
   "Run fuclaude with PROMPT and current HUD intent.
@@ -736,8 +914,60 @@ session ID and FULAB-REPORT to update the HUD."
                       (substring prompt 0 (min 60 (length prompt))))))
     (display-buffer buf)
     (setq proc (start-process-shell-command "fuclaude" buf cmd))
+    (process-put proc 'fubar-hud-label "fuclaude")
     (set-process-sentinel proc #'fubar-hud--process-sentinel)
     (message "Started fuclaude with intent: %s" intent)))
+
+(defun fubar-hud-run-fucodex (prompt &optional intent)
+  "Run fucodex with PROMPT and current HUD intent.
+Starts a live run, binds a new session id, and streams output to
+*FuLab Raw Stream*."
+  (interactive
+   (let ((prompt (read-string "Prompt: ")))
+     (if current-prefix-arg
+         (list prompt (read-string "Intent (blank = prompt): "))
+       (list prompt nil))))
+  (let* ((default-directory fubar-hud-futon3-root)
+         (hud-buf (get-buffer-create fubar-hud-buffer-name))
+         (existing-intent (when hud-buf
+                            (buffer-local-value 'fubar-hud--intent hud-buf)))
+         (intent (let ((trimmed (and intent (string-trim intent))))
+                   (cond
+                    ((and trimmed (not (string-empty-p trimmed))) trimmed)
+                    ((and fubar-hud-intent-from-prompt prompt) prompt)
+                    ((and existing-intent (not (string-empty-p existing-intent))) existing-intent)
+                    :else "coding task")))
+         (session-id (fubar-hud--generate-session-id))
+         (buf (get-buffer-create fubar-hud-stream-buffer-name))
+         (args (append (list "--live" "--hud" "--intent" intent "--session-id" session-id)
+                       (when fubar-hud-fucodex-aif-select (list "--aif-select"))
+                       (list prompt)))
+         (process-environment (cons (format "HUD_SERVER=%s" fubar-hud-server-url)
+                                    process-environment))
+         proc)
+    (when hud-buf
+      (with-current-buffer hud-buf
+        (fubar-hud--ensure-mode)
+        (setq fubar-hud--intent intent)
+        (setq fubar-hud--session-id session-id)))
+    (with-current-buffer buf
+      (goto-char (point-max))
+      (insert (format "\n━━━ fucodex: %s ━━━\n"
+                      (substring prompt 0 (min 60 (length prompt))))))
+    (if fubar-hud-auto-layout
+        (fubar-hud--show-run-layout buf)
+      (progn
+        (display-buffer buf)
+        (fubar-hud-show)))
+    (setq proc (apply #'start-process
+                      "fucodex"
+                      buf
+                      "/home/joe/code/futon3/fucodex"
+                      args))
+    (process-put proc 'fubar-hud-label "fucodex")
+    (set-process-sentinel proc #'fubar-hud--process-sentinel)
+    (fubar-hud-refresh)
+    (message "Started fucodex [%s]." session-id)))
 
 (defun fubar-hud-resume-session (prompt &optional session-id)
   "Resume SESSION-ID (or current session) with PROMPT.
@@ -778,6 +1008,7 @@ Output goes to *FuLab Raw Stream* buffer."
                       (substring prompt 0 (min 50 (length prompt))))))
     (display-buffer buf)
     (setq proc (start-process-shell-command "fuclaude-resume" buf cmd))
+    (process-put proc 'fubar-hud-label "fuclaude-resume")
     (set-process-sentinel proc #'fubar-hud--process-sentinel)
     (message "Resuming session: %s" (or sid "last"))))
 
@@ -793,6 +1024,7 @@ Output goes to *FuLab Raw Stream* buffer."
     (define-key map "a" #'fubar-hud-accept-staged)
     (define-key map "y" #'fubar-hud-get-prompt-block)
     (define-key map "r" #'fubar-hud-run-fuclaude)
+    (define-key map "c" #'fubar-hud-run-fucodex)
     (define-key map "R" #'fubar-hud-resume-session)
     map)
   "Keymap for `fubar-hud-mode'.")

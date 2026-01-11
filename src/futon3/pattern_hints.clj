@@ -369,6 +369,11 @@
                   (nearest-paramitas targets paramita-limit)
                   [])}))
 
+(defn aif-candidates
+  "Merge sigil and GloVe candidates for AIF scoring."
+  [sigil-patterns glove-patterns]
+  (merge-patterns (or sigil-patterns []) (or glove-patterns []) nil))
+
 (defn fruits-for-sigils
   "Return the nearest fruit entries for the supplied SIGILS vector."
   [sigils {:keys [limit] :or {limit 2}}]

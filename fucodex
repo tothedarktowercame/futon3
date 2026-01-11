@@ -10,6 +10,7 @@ LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}
                   futon2/futon2 {:local/root "../futon2"}}}'
 START_ISO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 RUN_CWD="$(pwd)"
+export PATH="$ROOT/scripts:$PATH"
 
 LIVE=false
 PATTERNS=""
@@ -230,6 +231,27 @@ PY
   trap '[[ -n "${HUD_JSON_FILE-}" ]] && rm -f "$HUD_JSON_FILE"' EXIT
   printf "%s" "$HUD_RESPONSE" > "$HUD_JSON_FILE"
 
+  if [[ -z "$PATTERNS" ]]; then
+    HUD_PATTERNS=$(HUD_RESPONSE="$HUD_RESPONSE" python3 - <<'PY'
+import json, os
+
+raw = os.environ.get("HUD_RESPONSE", "")
+try:
+    data = json.loads(raw)
+except Exception:
+    data = {}
+
+hud = data.get("hud", {}) or {}
+candidates = hud.get("candidates", []) or []
+ids = [c.get("id") for c in candidates if isinstance(c, dict) and c.get("id")]
+print(",".join(ids))
+PY
+)
+    if [[ -n "$HUD_PATTERNS" ]]; then
+      PATTERNS="$HUD_PATTERNS"
+    fi
+  fi
+
   HUD_BLOCK=$(HUD_RESPONSE="$HUD_RESPONSE" python3 - <<'PY'
 import json, os, sys
 
@@ -299,6 +321,13 @@ if [[ ${#args[@]} -gt 0 ]]; then
     fi
     args=("$prompt_arg")
   fi
+fi
+
+if [[ -n "$FORCED_SESSION_ID" ]]; then
+  export FUTON3_CODEX_SESSION_ID="$FORCED_SESSION_ID"
+fi
+if [[ -n "$HUD_SERVER" ]]; then
+  export FUTON3_CODEX_SERVER_URL="$HUD_SERVER"
 fi
 
 if $LIVE; then

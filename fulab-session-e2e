@@ -62,7 +62,9 @@ EOF_SESSION
   ${PATTERN_ID:+--pattern-id "$PATTERN_ID"} \
   ${ALT_PATTERN_ID:+--alt-pattern-id "$ALT_PATTERN_ID"}
 
-perl -pi -e "s/:file \"\"/:file \"$FILE_PATH\"/g; s/:fn \"\"/:fn nil/g" \
+sed -i \
+  -e "s|:file \"\"|:file \"$FILE_PATH\"|g" \
+  -e "s|:fn \"\"|:fn nil|g" \
   "$LAB_ROOT/pattern-drafts/${SESSION_ID}-psr.edn" \
   "$LAB_ROOT/pattern-drafts/${SESSION_ID}-pur.edn"
 
@@ -70,8 +72,10 @@ perl -pi -e 's/psr-demo-1/psr-demo-2/g; s/pur-demo-1/pur-demo-2/g; s/pur-demo-1-
   "$LAB_ROOT/pattern-drafts/${SESSION_ID}-psr.edn" \
   "$LAB_ROOT/pattern-drafts/${SESSION_ID}-pur.edn"
 
-"$ROOT/fulab-pattern-claim" --session-id "$SESSION_ID" --stdin < "$LAB_ROOT/pattern-drafts/${SESSION_ID}-pur.edn"
-"$ROOT/fulab-pattern-claim" --session-id "$SESSION_ID" --stdin < "$LAB_ROOT/pattern-drafts/${SESSION_ID}-psr.edn"
+"$ROOT/fulab-pattern-claim" --session-id "$SESSION_ID" --certify-commit --repo-root "$ROOT" \
+  --stdin < "$LAB_ROOT/pattern-drafts/${SESSION_ID}-pur.edn"
+"$ROOT/fulab-pattern-claim" --session-id "$SESSION_ID" --certify-commit --repo-root "$ROOT" \
+  --stdin < "$LAB_ROOT/pattern-drafts/${SESSION_ID}-psr.edn"
 
 "$ROOT/fulab-pattern-check" --session-id "$SESSION_ID"
 

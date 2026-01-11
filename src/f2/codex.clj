@@ -19,12 +19,37 @@
 ;; --- Session state ---
 
 (defonce ^:private !sessions (atom {}))
+(defonce ^:private !cli-session-cwds (atom {}))
 
 (defn- random-session-id []
   (str "codex-" (.substring (str (UUID/randomUUID)) 0 8)))
 
 (defn- now-ms []
   (System/currentTimeMillis))
+
+(defn- session-env
+  "Build environment variables for the Codex subprocess."
+  [session]
+  (let [cwd (get-in session [:opts :cwd])
+        scripts-dir (when cwd (.getAbsolutePath (io/file cwd "scripts")))
+        base-path (or (System/getenv "PATH") "")
+        server-url (or (get-in session [:opts :server-url])
+                       (System/getenv "FUTON3_CODEX_SERVER_URL")
+                       "http://localhost:5050")
+        env {"FUTON3_CODEX_SESSION_ID" (:id session)
+             "FUTON3_CODEX_SERVER_URL" server-url}]
+    (if scripts-dir
+      (assoc env "PATH" (str scripts-dir ":" base-path))
+      env)))
+
+(defn- record-cli-session-cwd! [cli-session-id session]
+  (when-let [cwd (get-in session [:opts :cwd])]
+    (swap! !cli-session-cwds
+           assoc
+           (str cli-session-id)
+           {:cwd cwd
+            :session-id (:id session)
+            :updated-at (now-ms)})))
 
 ;; --- Event schema ---
 ;; These mirror the lab capture format so they can be ingested directly
@@ -38,16 +63,24 @@
 
 (defn- session-started-event [session-id opts]
   (make-event session-id :session/started
-              {:session/cwd (:cwd opts)
-               :session/model (:model opts "codex")
-               :session/prompt (:prompt opts)}))
+              (cond-> {:session/cwd (:cwd opts)
+                       :session/model (:model opts "codex")
+                       :session/prompt (:prompt opts)}
+                (:ancestor-id opts) (assoc :session/ancestor-id (:ancestor-id opts))
+                (:codex-cli-session-id opts) (assoc :session/fucodex-cli-id (:codex-cli-session-id opts))
+                (:resume/at opts) (assoc :resume/at (:resume/at opts)
+                                         :resume/prompt (:prompt opts))
+                (:resume/count opts) (assoc :resume/count (:resume/count opts)))))
 
-(defn- tool-call-event [session-id tool-name args call-id]
-  (make-event session-id :tool/call
-              {:tool/name tool-name
-               :tool/args args
-               :tool/call-id call-id
-               :tool/status :pending}))
+(defn- tool-call-event
+  ([session-id tool-name args call-id]
+   (tool-call-event session-id tool-name args call-id :pending))
+  ([session-id tool-name args call-id status]
+   (make-event session-id :tool/call
+               {:tool/name tool-name
+                :tool/args args
+                :tool/call-id call-id
+                :tool/status status})))
 
 (defn- tool-result-event [session-id call-id result]
   (make-event session-id :tool/result
@@ -65,6 +98,24 @@
   (make-event session-id :assistant/message
               {:assistant/text text}))
 
+(declare emit-event! pattern-action-event)
+
+(def ^:private pattern-action-re
+  (re-pattern
+   (str "^"
+        (java.util.regex.Pattern/quote "[PATTERN-ACTION]")
+        "\\s+(\\S+)\\s+(\\S+)(?:\\s+-\\s+(.+))?$")))
+
+(defn- emit-pattern-actions-from-text! [session text]
+  (doseq [line (str/split-lines (or text ""))]
+    (when-let [[_ action pattern-id note] (re-matches pattern-action-re (str/trim line))]
+      (emit-event! session (pattern-action-event (:id session) pattern-id action note)))))
+
+(defn- emit-assistant-message! [session text]
+  (when (and session (some? text))
+    (emit-event! session (assistant-message-event (:id session) text))
+    (emit-pattern-actions-from-text! session text)))
+
 (defn- session-finished-event [session-id status]
   (make-event session-id :session/finished
               {:session/status status
@@ -80,14 +131,26 @@
 (defn- clock-in-event [session-id {:keys [pattern-id intent context]}]
   (make-event session-id :clock-in/start
               {:clock-in/pattern-id pattern-id
+               :clock-in/session-id session-id
                :clock-in/intent intent
                :clock-in/timestamp (java.util.Date.)
                :clock-in/context (or context {})}))
 
-(defn- pattern-used-event [session-id pattern-id reason]
-  (make-event session-id :pattern/used
-              {:pattern/id pattern-id
-               :pattern/reason reason}))
+(defn- pattern-used-event
+  ([session-id pattern-id reason]
+   (pattern-used-event session-id pattern-id reason nil))
+  ([session-id pattern-id reason parent-id]
+   (make-event session-id :pattern/used
+               (cond-> {:pattern/id pattern-id
+                        :pattern/dep pattern-id
+                        :pattern/reason reason}
+                 parent-id (assoc :pattern/parent parent-id)))))
+
+(defn- pattern-action-event [session-id pattern-id action note]
+  (make-event session-id :pattern/action
+              (cond-> {:pattern/id pattern-id
+                       :pattern/action action}
+                note (assoc :pattern/note note))))
 
 (defn- doc-written-event [session-id doc]
   (make-event session-id :doc/written
@@ -103,6 +166,7 @@
 (defn- clock-out-event [session-id {:keys [pattern-id patterns-trail status artifacts docs stats society-paper]}]
   (make-event session-id :clock-out/complete
               {:pattern/primary pattern-id
+               :clock-out/session-id session-id
                :pattern/trail (or patterns-trail [])
                :session/status status
                :artifacts (or artifacts [])
@@ -113,28 +177,50 @@
 
 ;; --- Subprocess management ---
 
+(defn- shell-quote
+  "Return S as a single-quoted shell literal.
+   This prevents backticks/$-expansion inside prompts."
+  [s]
+  (let [s (str s)
+        escaped (str/replace s "'" "'\\''")]
+    (if (str/blank? s)
+      "''"
+      (str "'" escaped "'"))))
+
+(defn- base64-encode [value]
+  (when-not (nil? value)
+    (.encodeToString (java.util.Base64/getEncoder)
+                     (.getBytes (str value) "UTF-8"))))
+
+(defn- python-codex-command
+  "Build a python wrapper that invokes codex with a base64 prompt."
+  [{:keys [prompt dangerously-skip-permissions? resume-id]}]
+  (let [prompt-b64 (base64-encode prompt)
+        has-prompt (if prompt-b64 "1" "0")
+        args-base (cond-> "[\"codex\",\"exec\",\"--json\",\"--skip-git-repo-check\""
+                    dangerously-skip-permissions?
+                    (str ",\"--dangerously-bypass-approvals-and-sandbox\"")
+                    resume-id
+                    (str ",\"resume\",\"" resume-id "\""))
+        args-base (str args-base "]")
+        code (str "import base64,subprocess,sys;"
+                  "prompt=base64.b64decode(\"" (or prompt-b64 "") "\").decode()"
+                  " if \"" has-prompt "\" == \"1\" else None;"
+                  "args=" args-base ";"
+                  "args.append(prompt) if prompt else None;"
+                  "sys.exit(subprocess.call(args))")]
+    (str "python3 -c " (shell-quote code))))
+
 (defn- build-codex-command
   [{:keys [prompt dangerously-skip-permissions?]}]
-  (let [base (cond-> ["codex" "exec" "--json" "--skip-git-repo-check"]
-               dangerously-skip-permissions?
-               (conj "--dangerously-bypass-approvals-and-sandbox")
-               prompt (conj prompt))]
-    ;; Join into a single string for script -c
-    (str/join " " (map #(if (str/includes? % " ")
-                          (str "\"" (str/replace % "\"" "\\\"") "\"")
-                          %)
-                       base))))
+  (python-codex-command {:prompt prompt
+                         :dangerously-skip-permissions? dangerously-skip-permissions?}))
 
 (defn- build-resume-command
   [{:keys [codex-cli-session-id prompt dangerously-skip-permissions?]}]
-  (let [base (cond-> ["codex" "exec" "--json" "--skip-git-repo-check" "resume" codex-cli-session-id]
-               dangerously-skip-permissions?
-               (conj "--dangerously-bypass-approvals-and-sandbox")
-               prompt (conj prompt))]
-    (str/join " " (map #(if (str/includes? % " ")
-                          (str "\"" (str/replace % "\"" "\\\"") "\"")
-                          %)
-                       base))))
+  (python-codex-command {:prompt prompt
+                         :resume-id codex-cli-session-id
+                         :dangerously-skip-permissions? dangerously-skip-permissions?}))
 
 (defn- build-pty-command
   "Wrap codex command in `script` to get a real PTY.
@@ -142,13 +228,24 @@
   [command]
   ;; script -q /dev/null -c "command" gives us a PTY
   ;; -q = quiet (no 'Script started' message)
-  ["script" "-q" "/dev/null" "-c" command])
+  (let [script? (some (fn [dir]
+                        (let [candidate (io/file dir "script")]
+                          (and (.exists candidate) (.canExecute candidate))))
+                      (str/split (or (System/getenv "PATH") "") #":"))]
+    (if script?
+      ["script" "-q" "/dev/null" "-c" command]
+      ;; Fallback when script isn't available; no PTY/interactive approvals.
+      ["/bin/bash" "-lc" command])))
 
-(defn- start-process! [{:keys [cwd] :as opts} command]
+(defn- start-process! [{:keys [cwd env] :as opts} command]
   (let [cmd (build-pty-command command)
         pb (doto (ProcessBuilder. ^java.util.List cmd)
              (.directory (when cwd (io/file cwd)))
              (.redirectErrorStream true))]
+    (when (seq env)
+      (let [pb-env (.environment pb)]
+        (doseq [[k v] env]
+          (.put pb-env (str k) (str v)))))
     (.start pb)))
 
 (defn- write-to-process!
@@ -175,6 +272,22 @@
     (when-let [[_ code] (re-find #"Exit code:\\s+(\\d+)" value)]
       (Long/parseLong code))))
 
+(defn- coerce-output-text [value]
+  (cond
+    (string? value) value
+    (map? value) (or (coerce-output-text (:aggregated_output value))
+                     (coerce-output-text (:aggregated-output value))
+                     (coerce-output-text (:text value))
+                     (coerce-output-text (:output value))
+                     (coerce-output-text (:stdout value))
+                     (pr-str value))
+    (sequential? value) (->> value
+                             (map coerce-output-text)
+                             (remove nil?)
+                             (str/join ""))
+    (nil? value) nil
+    :else (pr-str value)))
+
 ;; --- Session lifecycle ---
 
 (defn- initial-stats []
@@ -184,6 +297,7 @@
    :tool-denials 0
    :assistant-messages 0
    :patterns-used 0
+   :pattern-actions 0
    :artifacts 0
    :docs-written 0
    :cost-usd 0.0
@@ -223,7 +337,7 @@
                  (update :events inc)
                  (assoc :last-event-at now)
                  (cond->
-                   (nil? (:first-event-at s))
+                  (nil? (:first-event-at s))
                    (assoc :first-event-at now)
 
                    (= event-type :tool/call)
@@ -240,6 +354,9 @@
 
                    (= event-type :pattern/used)
                    (update :patterns-used inc)
+
+                   (= event-type :pattern/action)
+                   (update :pattern-actions inc)
 
                    (= event-type :doc/written)
                    (update :docs-written inc)
@@ -297,35 +414,74 @@
                                (:sessionId payload)
                                (:session payload))]
         (when cli-session-id
-          (swap! !sessions assoc-in [(:id session) :codex-cli-session-id] cli-session-id))
+          (swap! !sessions assoc-in [(:id session) :codex-cli-session-id] cli-session-id)
+          (record-cli-session-cwd! cli-session-id session))
         (cond
           (and (nil? msg-type) (:text parsed))
-          (emit-event! session (assistant-message-event (:id session) (:text parsed)))
+          (emit-assistant-message! session (:text parsed))
 
           (= msg-type "thread.started")
           (let [thread-id (:thread_id parsed)]
             (when thread-id
               (swap! !sessions assoc-in [(:id session) :codex-cli-session-id] thread-id)))
 
-          (= msg-type "item.completed")
-          (let [item (:item parsed)
-                item-type (:type item)]
+          (contains? #{"item.started" "item.completed" "item.failed"} msg-type)
+          (let [item (or (:item parsed) (:item payload))
+                item-type (:type item)
+                item-id (or (:id item)
+                            (:item_id item)
+                            (:item-id item)
+                            (:id parsed)
+                            (str (UUID/randomUUID)))]
             (cond
-              (= item-type "agent_message")
+              (and (= item-type "agent_message")
+                   (= msg-type "item.completed"))
               (when-let [text (:text item)]
-                (emit-event! session (assistant-message-event (:id session) text)))
+                (emit-assistant-message! session text))
+
+              (and (= item-type "command_execution")
+                   (= msg-type "item.started"))
+              (let [cmd (or (:command item)
+                            (:cmd item)
+                            (:command_line item)
+                            (:command-line item))]
+                (emit-event! session (tool-call-event (:id session)
+                                                      "command_execution"
+                                                      (cond-> {} cmd (assoc :cmd cmd))
+                                                      item-id
+                                                      :observed)))
+
+              (and (= item-type "command_execution")
+                   (contains? #{"item.completed" "item.failed"} msg-type))
+              (let [stdout (coerce-output-text (or (:aggregated_output item)
+                                                   (:aggregated-output item)
+                                                   (:output item)
+                                                   (:stdout item)))
+                    stderr (coerce-output-text (:stderr item))
+                    exit (or (:exit_code item)
+                             (:exitCode item)
+                             (:exit-code item)
+                             (when (= msg-type "item.failed") 1)
+                             0)
+                    duration-ms (or (:duration_ms item) (:duration-ms item))]
+                (emit-event! session (tool-result-event (:id session)
+                                                        item-id
+                                                        {:stdout stdout
+                                                         :stderr stderr
+                                                         :exit exit
+                                                         :duration-ms duration-ms})))
               :else nil))
 
           (and (= msg-type "event_msg")
                (= "agent_message" (:type payload)))
           (when-let [text (or (:message payload) (:text payload))]
-            (emit-event! session (assistant-message-event (:id session) text)))
+            (emit-assistant-message! session text))
 
           (and (= msg-type "response_item")
                (= "message" (:type payload))
                (= "assistant" (:role payload)))
           (when-let [text (extract-assistant-text payload)]
-            (emit-event! session (assistant-message-event (:id session) text)))
+            (emit-assistant-message! session text))
 
           (and (= msg-type "response_item")
                (= "custom_tool_call_output" (:type payload)))
@@ -388,7 +544,7 @@
 
           (= msg-type "assistant")
           (when-let [text (extract-assistant-text parsed)]
-            (emit-event! session (assistant-message-event (:id session) text)))
+            (emit-assistant-message! session text))
 
           (contains? #{"tool_use" "tool_call"} msg-type)
           (let [call-id (or (:id parsed)
@@ -396,19 +552,19 @@
                             (:tool_call_id parsed)
                             (str (UUID/randomUUID)))]
             (emit-event! session (tool-call-event (:id session)
-                                                   (:name parsed)
-                                                   (:input parsed)
-                                                   call-id))
+                                                  (:name parsed)
+                                                  (:input parsed)
+                                                  call-id))
             ;; Store for approval flow
             (swap! (:pending-approvals session) assoc call-id parsed))
 
           (contains? #{"tool_result" "tool_output"} msg-type)
           (emit-event! session (tool-result-event (:id session)
-                                                   (or (:tool_use_id parsed)
-                                                       (:tool_call_id parsed)
-                                                       (:id parsed))
-                                                   {:stdout (:content parsed)
-                                                    :exit 0}))
+                                                  (or (:tool_use_id parsed)
+                                                      (:tool_call_id parsed)
+                                                      (:id parsed))
+                                                  {:stdout (:content parsed)
+                                                   :exit 0}))
 
           (= msg-type "result")
           (let [event-data {:result/text (:result parsed)
@@ -476,7 +632,8 @@
   [{:keys [prompt cwd model pattern-id intent] :as opts}]
   (try
     (let [session (create-session! opts)
-          process (start-process! opts (build-codex-command opts))]
+          process (start-process! (assoc opts :env (session-env session))
+                                  (build-codex-command opts))]
       (reset! (:process session) process)
       (emit-event! session (session-started-event (:id session) opts))
       ;; fulab: emit clock-in if pattern-id provided
@@ -529,8 +686,8 @@
         (emit-event! session (make-event session-id :tool/approved
                                          {:tool/call-id call-id}))
         {:ok true :session-id session-id :call-id call-id :action :approved}
-      (catch Exception e
-        {:ok false :error (.getMessage e)}))
+        (catch Exception e
+          {:ok false :error (.getMessage e)}))
       {:ok false :error "no-process"})
     {:ok false :error "session-not-found"}))
 
@@ -546,8 +703,8 @@
                                          {:tool/call-id call-id
                                           :tool/deny-reason reason}))
         {:ok true :session-id session-id :call-id call-id :action :denied}
-      (catch Exception e
-        {:ok false :error (.getMessage e)}))
+        (catch Exception e
+          {:ok false :error (.getMessage e)}))
       {:ok false :error "no-process"})
     {:ok false :error "session-not-found"}))
 
@@ -559,8 +716,8 @@
       (try
         (write-to-process! process input)
         {:ok true :session-id session-id :sent input}
-      (catch Exception e
-        {:ok false :error (.getMessage e)}))
+        (catch Exception e
+          {:ok false :error (.getMessage e)}))
       {:ok false :error "no-process"})
     {:ok false :error "session-not-found"}))
 
@@ -569,13 +726,14 @@
 (defn record-pattern-use!
   "Record that a session used a pattern as a dependency.
    Emits :pattern/used event and adds to session's pattern trail."
-  [session-id pattern-id & [{:keys [reason]}]]
+  [session-id pattern-id & [{:keys [reason parent-id]}]]
   (if-let [session (get @!sessions session-id)]
-    (let [usage {:pattern/id pattern-id
-                 :used-at (now-ms)
-                 :reason reason}]
+    (let [usage (cond-> {:pattern/id pattern-id
+                         :used-at (now-ms)
+                         :reason reason}
+                  parent-id (assoc :pattern/parent parent-id))]
       (swap! (:patterns-used session) conj usage)
-      (emit-event! session (pattern-used-event session-id pattern-id reason))
+      (emit-event! session (pattern-used-event session-id pattern-id reason parent-id))
       {:ok true :session-id session-id :pattern-id pattern-id})
     {:ok false :error "session-not-found"}))
 
@@ -601,6 +759,15 @@
       (swap! (:docs-written session) conj doc-record)
       (emit-event! session (doc-written-event session-id doc-record))
       {:ok true :session-id session-id :doc doc-record})
+    {:ok false :error "session-not-found"}))
+
+(defn record-pattern-action!
+  "Record a lightweight pattern action (read/implement/update)."
+  [session-id pattern-id action & [{:keys [note]}]]
+  (if-let [session (get @!sessions session-id)]
+    (do
+      (emit-event! session (pattern-action-event session-id pattern-id action note))
+      {:ok true :session-id session-id :pattern-id pattern-id :action action})
     {:ok false :error "session-not-found"}))
 
 (defn set-society-paper!
@@ -668,17 +835,37 @@
 (defn resume-session!
   "Resume an existing Codex session with a follow-up prompt.
    Returns {:ok true :session-id ...} or {:ok false :error ...}"
-  [{:keys [codex-cli-session-id] :as opts}]
+  [{:keys [codex-cli-session-id cwd] :as opts}]
   (try
     (if (str/blank? (str codex-cli-session-id))
       {:ok false :error "missing-codex-cli-session-id"}
-      (let [session (create-session! (assoc opts :resumed? true))
-            process (start-process! opts (build-resume-command opts))]
+      (let [stored (get @!cli-session-cwds (str codex-cli-session-id))
+            stored-cwd (:cwd stored)
+            ancestor-id (:session-id stored)
+            final-cwd (cond
+                        (and stored-cwd cwd (not= stored-cwd cwd)) stored-cwd
+                        stored-cwd stored-cwd
+                        :else cwd)
+            warning (when (and stored-cwd cwd (not= stored-cwd cwd))
+                      {:warning "resume-cwd-mismatch"
+                       :expected-cwd stored-cwd
+                       :requested-cwd cwd})
+            opts* (cond-> (assoc opts
+                                 :cwd final-cwd
+                                 :resumed? true
+                                 :resume/at (java.util.Date.)
+                                 :resume/count (inc (or (:resume/count opts) 0)))
+                    ancestor-id (assoc :ancestor-id ancestor-id))
+            session (create-session! opts*)
+            process (start-process! (assoc opts* :env (session-env session))
+                                    (build-resume-command opts*))]
         (reset! (:process session) process)
-        (emit-event! session (session-started-event (:id session) opts))
+        (record-cli-session-cwd! codex-cli-session-id session)
+        (emit-event! session (session-started-event (:id session) opts*))
         (run-session-loop! session)
-        {:ok true
-         :session-id (:id session)
-         :started-at (:started-at session)}))
+        (cond-> {:ok true
+                 :session-id (:id session)
+                 :started-at (:started-at session)}
+          warning (merge warning))))
     (catch Exception e
       {:ok false :error (.getMessage e)})))

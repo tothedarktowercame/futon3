@@ -31,6 +31,7 @@
     - evidence-shape: {:event/session :string, :pattern/id :string, :pattern/dep :string, :pattern/reason :string, :pattern/parent :string}
   + next-steps:
     - Run DAG checks on dependency graphs per session (no cycles); sample dependency edges to confirm the reason is supported in cell/trace evidence.
+    - Capture dependency reasons with channel tags (e.g., code/doc/test) so audits can map dependencies back to evidence inputs (align with aif/term-to-channel-traceability).
 
 @arg fulab/clock-out
 @title Agent Clock-Out

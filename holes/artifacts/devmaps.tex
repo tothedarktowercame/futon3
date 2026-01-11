@@ -4,6 +4,7 @@
 \usepackage{xcolor}
 \usepackage{microtype}
 \usepackage{newunicodechar}
+\usepackage{framed}
 \usepackage{paracol}
 \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
 \setmainfont{Noto Sans CJK SC}
@@ -22,20 +23,27 @@
 \microtypesetup{protrusion=true,expansion=true}
 \newcommand{\flexitag}[1]{\textcolor[gray]{0.35}{\textit{#1}}}
 \newcommand{\tightquotecomma}{\textquoteright\kern-0.08em,}
+\definecolor{devmapdonebg}{RGB}{232,246,232}
+\newenvironment{devmapdone}{%
+  \def\FrameCommand{\colorbox{devmapdonebg}}%
+  \setlength{\fboxsep}{2pt}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore}%
+}{\endMakeFramed}
 
 \newunicodechar{⌛}{\Emoji{⌛}}
 \newunicodechar{⚡}{\Emoji{⚡}}
-\newunicodechar{⛲}{\Emoji{⛲}}
+\newunicodechar{➰}{\Emoji{➰}}
 \newunicodechar{〰}{\Emoji{〰}}
 \newunicodechar{️}{}
-\newunicodechar{🈚}{\Emoji{🈚}}
 \newunicodechar{🌀}{\Emoji{🌀}}
+\newunicodechar{🌂}{\Emoji{🌂}}
 \newunicodechar{🌅}{\Emoji{🌅}}
+\newunicodechar{🌈}{\Emoji{🌈}}
 \newunicodechar{🌏}{\Emoji{🌏}}
 \newunicodechar{🌝}{\Emoji{🌝}}
+\newunicodechar{🌞}{\Emoji{🌞}}
 \newunicodechar{🌱}{\Emoji{🌱}}
 \newunicodechar{🌲}{\Emoji{🌲}}
-\newunicodechar{🌳}{\Emoji{🌳}}
 \newunicodechar{🌽}{\Emoji{🌽}}
 \newunicodechar{🍁}{\Emoji{🍁}}
 \newunicodechar{🍊}{\Emoji{🍊}}
@@ -43,41 +51,47 @@
 \newunicodechar{🍍}{\Emoji{🍍}}
 \newunicodechar{🍐}{\Emoji{🍐}}
 \newunicodechar{🍒}{\Emoji{🍒}}
+\newunicodechar{🍯}{\Emoji{🍯}}
 \newunicodechar{🍲}{\Emoji{🍲}}
-\newunicodechar{🎋}{\Emoji{🎋}}
 \newunicodechar{🎎}{\Emoji{🎎}}
 \newunicodechar{🎏}{\Emoji{🎏}}
 \newunicodechar{🎑}{\Emoji{🎑}}
 \newunicodechar{🎴}{\Emoji{🎴}}
-\newunicodechar{🏡}{\Emoji{🏡}}
+\newunicodechar{🎶}{\Emoji{🎶}}
+\newunicodechar{🏃}{\Emoji{🏃}}
 \newunicodechar{🐉}{\Emoji{🐉}}
 \newunicodechar{🐊}{\Emoji{🐊}}
 \newunicodechar{🐜}{\Emoji{🐜}}
+\newunicodechar{🐲}{\Emoji{🐲}}
+\newunicodechar{🐴}{\Emoji{🐴}}
 \newunicodechar{🐺}{\Emoji{🐺}}
-\newunicodechar{👈}{\Emoji{👈}}
+\newunicodechar{👂}{\Emoji{👂}}
+\newunicodechar{👉}{\Emoji{👉}}
+\newunicodechar{👍}{\Emoji{👍}}
 \newunicodechar{👎}{\Emoji{👎}}
 \newunicodechar{👐}{\Emoji{👐}}
 \newunicodechar{👕}{\Emoji{👕}}
+\newunicodechar{👘}{\Emoji{👘}}
+\newunicodechar{👥}{\Emoji{👥}}
 \newunicodechar{👭}{\Emoji{👭}}
 \newunicodechar{👯}{\Emoji{👯}}
 \newunicodechar{👴}{\Emoji{👴}}
-\newunicodechar{👶}{\Emoji{👶}}
-\newunicodechar{💑}{\Emoji{💑}}
 \newunicodechar{💖}{\Emoji{💖}}
-\newunicodechar{💗}{\Emoji{💗}}
-\newunicodechar{💡}{\Emoji{💡}}
 \newunicodechar{💤}{\Emoji{💤}}
 \newunicodechar{💫}{\Emoji{💫}}
 \newunicodechar{💬}{\Emoji{💬}}
-\newunicodechar{💰}{\Emoji{💰}}
 \newunicodechar{📁}{\Emoji{📁}}
+\newunicodechar{📋}{\Emoji{📋}}
 \newunicodechar{📤}{\Emoji{📤}}
-\newunicodechar{📬}{\Emoji{📬}}
 \newunicodechar{🔃}{\Emoji{🔃}}
+\newunicodechar{🔥}{\Emoji{🔥}}
 \newunicodechar{🔦}{\Emoji{🔦}}
 \newunicodechar{🔵}{\Emoji{🔵}}
+\newunicodechar{🔸}{\Emoji{🔸}}
+\newunicodechar{🔺}{\Emoji{🔺}}
 \newunicodechar{🗝}{\Emoji{🗝}}
 \newunicodechar{🗿}{\Emoji{🗿}}
+\newunicodechar{😄}{\Emoji{😄}}
 \newunicodechar{😻}{\Emoji{😻}}
 \newunicodechar{🙅}{\Emoji{🙅}}
 \newunicodechar{🙇}{\Emoji{🙇}}
@@ -85,6 +99,8 @@
 \newunicodechar{🚢}{\Emoji{🚢}}
 \newunicodechar{🚴}{\Emoji{🚴}}
 \newunicodechar{🟠}{\Emoji{🟠}}
+\newunicodechar{🧪}{\Emoji{🧪}}
+\newunicodechar{🪢}{\Emoji{🪢}}
 \newunicodechar{ }{\,}
 \newunicodechar{▸}{\ensuremath{\triangleright}}
 \begin{document}
@@ -110,23 +126,27 @@
 \textbf{floor from which the whole FUTON stack perceives, adapts, and co-evolves with}\\
 \textbf{its future.}\\
 \par
-@state Vitality indicators exist but are not yet integrated; reflective and\\
-symbolic channels exist but are only loosely coupled; futonic insights arise in\\
-narrative but are not yet expressed in computational terms. FUTON3 is still\\
-awaiting improved devmaps for several layers, which currently blocks clear\\
-narratives about the futons it will eventually describe.\\
+@state Vitality telemetry is operational: the scanner, git activity pipeline,\\
+and Zoom R4 ingest run end-to-end, and the Stack HUD is the Futon0 surface\\
+(dedicated frame + context buffer) for vitality rows, boundary gaps, reminders,\\
+and voice-typing controls. Stack HUD snapshots are logged over time (daily\\
+JSONL plus compacted summaries). The data stores are still periodic JSON\\
+snapshots wired via cron/systemd rather than a real-time shared state.\\
 \par
 @next Maintain and develop minimal models of vitality signals; cultivate\\
 periodic wondrous apprehension; and continue light futon-prototyping efforts\\
 with steady awareness, so that both clear devmaps and concrete implementations\\
 can emerge naturally.\\
 \par
-\textbf{! instantiated-by: Prototype 0 — System Vitality Indicators [💤/系统]}\\
+\begin{devmapdone}
+\textbf{! instantiated-by: Prototype 0 — System Vitality Indicators [💤/系统 🌏/市]}\\
 \flexitag{+context:} FUTON0 provides the minimal embodied/creative signals required for early detection of imbalance, while avoiding expansion of lifelogging overhead.\\
 \flexitag{+if:} You want dependable early warning of drift in health, energy, or expressive rhythm.\\
 \flexitag{+however:} Existing signals are scattered (notes, reminders, implicit habits) and therefore unreliable as a coherent early-warning interface.\\
 \flexitag{+then:} Use only *existing traceable activity* as indicators: Tatami sessions, git commits, filesystem timestamps, and micro-recording cadence. Add one lightweight prompt-based behaviour: a weekly tai-chi intention check surfaced automatically by the FUTON3 HUD. No manual lifelogging is introduced.\\
 \flexitag{+because:} Indicators remain sustainable only when they create no friction. A minimal interface built from pre-existing behavioural traces provides consistent, low-noise signals that prevent hidden imbalance from migrating up-stack.\\
+\par
++ status[done]\\
 \flexitag{+evidence:}\\
   - The FUTON0 clock already exists: Tatami/API chat sessions automatically\\
     emit timestamped events, providing a ground truth for daily activity.\\
@@ -142,7 +162,8 @@ can emerge naturally.\\
     - Implement a lightweight inference pass (FUTON3 or FUTON4) to interpret\\
       these signals for trend detection and early-warning triggers.\\
 \par
-\textbf{! instantiated-by: Prototype 1 — Epistemic Rhythm \& Salients [💖/弓]}\\
+\end{devmapdone}
+\textbf{! instantiated-by: Prototype 1 — Epistemic Rhythm \& Salients [💖/弓 ➰/桥]}\\
 \flexitag{+context:} FUTON0 stabilises your epistemic rhythm: a weekly/multi-weekly cycle of review, planning, and salience-tracking that keeps work across all spheres coherent while avoiding data fragmentation or over-tracking.\\
 \flexitag{+if:} You want to programme yourself the way you programme systems—maintaining legible salients across institutional, consulting, technical, reflective, and infrastructural spheres with minimal friction.\\
 \flexitag{+however:} Without a normalised rhythm, weekly reviews slip; projects drift outside the canonical Org structure; and WIP silently grows past safe limits.\\
@@ -153,6 +174,17 @@ can emerge naturally.\\
   - Weekly AOB/Ambitions sessions are timestamped (Tatami/API or calendar).\\
   - FUTON1 tags provide >90\% work-session closure coverage.\\
   - Sphere balance and WIP creep can already be inferred from Org + FUTON1.\\
+  - status[ready-pending-final-decisions-and-testing]\\
+  - ‘futon0/futon0\_rhythm.md’ (cadence, envelope logging, buildout plan).\\
+  - ‘futon0/futon0\_protocol.md’ (open decisions + affect sourcing).\\
+  - ‘futon0/data/backup\_cadence.json\tightquotecomma{} ‘futon0/data/backup\_report\_example.json\tightquotecomma{}\\
+    ‘futon0/data/backup\_experiments.json\tightquotecomma{} ‘futon0/data/affect\_markers.json’.\\
+  - ‘futon0/scripts/futon0/backup/snapshot.clj\tightquotecomma{}\\
+    ‘futon0/scripts/futon0/rhythm/envelope.clj\tightquotecomma{}\\
+    ‘futon0/scripts/futon0/rhythm/salients.clj\tightquotecomma{}\\
+    ‘futon0/scripts/futon0/rhythm/experiments.clj\tightquotecomma{}\\
+    ‘futon0/scripts/futon0/rhythm/quarterly.clj\tightquotecomma{}\\
+    ‘futon0/scripts/futon0/rhythm/dry\_run.clj’.\\
 \flexitag{+next:} Consolidate the weekly sync into a fixed time; prune stale Org headings monthly; ensure every active project has an Org headline and FUTON1 tag; integrate HUD reminders for weekly/monthly cadence; and refine the WIP audit to produce actionable “pause/don’t-start” prompts.\\
   \flexitag{+next-evidence:}\\
     - Cron job generates weekly/mid-week/monthly reminders surfaced in the HUD.\\
@@ -161,7 +193,7 @@ can emerge naturally.\\
     - Quarterly rhythm analysis correlates stable cadence with subjective\\
       affect measures (energy, focus, lightness) to test the experiential claim.\\
 \par
-\textbf{! instantiated-by: Prototype 2 — Core Obligations Contract [👕/业 💤/没有]}\\
+\textbf{! instantiated-by: Prototype 2 — Core Obligations Contract [👕/业 🎑/书]}\\
 @multiarg futon0/prototype2\\
 @title Core Obligations Contract\\
 @audience futon-devs, reflective-agents\\
@@ -187,7 +219,7 @@ can emerge naturally.\\
       performance to validate the alignment hypothesis.\\
 \par
 \par
-\textbf{! instantiated-by: Prototype 3 — Ambition 0 Meta-Managed Infrastructure [🙇/叉 🌅/每]}\\
+\textbf{! instantiated-by: Prototype 3 — Ambition 0 Meta-Managed Infrastructure [🙇/叉 💖/稳]}\\
 \par
 @multiarg futon0/prototype3\\
 @title Ambition 0 — Meta-Managed Infrastructure\\
@@ -210,7 +242,7 @@ can emerge naturally.\\
     - Signal-rise/signal-fade detectors for dashboards and headings.\\
     - FUTON3-generated proto-pattern stubs based on behavioural traces.\\
 \par
-\textbf{! instantiated-by: Prototype 4 — Ambition 1 Hyperreal Enterprises Practice [👴/工作 👎/两]}\\
+\textbf{! instantiated-by: Prototype 4 — Ambition 1 Hyperreal Enterprises Practice [👎/习 ⌛️/己]}\\
 @multiarg futon0/prototype4\\
 @title Ambition 1 — Hyperreal Enterprises Practice\\
 @audience futon-devs, reflective-agents\\
@@ -236,7 +268,7 @@ can emerge naturally.\\
     - Evidence of alignment gain: smoother scoping, clearer pricing,\\
       better-fit clients, and reduced bespoke overhead.\\
 \par
-\textbf{! instantiated-by: Prototype 5 — Ambition 2 FUTON–Arxana Stack Stewardship [💖/用 🚴/书]}\\
+\textbf{! instantiated-by: Prototype 5 — Ambition 2 FUTON–Arxana Stack Stewardship [💖/用 👥/久]}\\
 \flexitag{+context:} FUTON0 needs a reliable, steadily improving environment for thought. Daily use and clear architectural notes keep the FUTON–Arxana stack coherent and usable.\\
 \flexitag{+if:} You want FUTON–Arxana to become a dependable workspace for reasoning, development, and collaboration.\\
 \flexitag{+however:} Skipped daily use weakens the system; undocumented decisions cause drift; and premature collaboration introduces scope creep.\\
@@ -252,7 +284,7 @@ can emerge naturally.\\
     - Architecture notes showing reduced drift or clearer decision points.\\
     - Arxana prototypes yielding stable nodes or literate fragments.\\
 \par
-\textbf{! instantiated-by: Prototype 6 — Ambition 3 Mojo, Evolving Variety, + Reflective Rhythm [💖/弓 🌅/当]}\\
+\textbf{! instantiated-by: Prototype 6 — Ambition 3 Mojo, Evolving Variety, + Reflective Rhythm [💖/弓 👎/叉]}\\
 \flexitag{+context:} FUTON0 needs a source of evolving, meaningful variety. Moments of “wondrous apprehension”—small encounters with insight, novelty, or strangeness—keep the internal model flexible and alive.\\
 \flexitag{+if:} You want learning, creativity, and self-understanding to deepen through controlled contact with the unknown rather than through routine or ritual.\\
 \flexitag{+however:} When these encounters vanish or are postponed indefinitely, patterns ossify, curiosity shrinks, and alignment stops increasing.\\
@@ -270,7 +302,7 @@ can emerge naturally.\\
     - Detectable reductions in stagnation or pattern ossification.\\
     - FUTON3 identification of proto-patterns emerging from these encounters.\\
 \par
-\textbf{! instantiated-by: Prototype 7 — Ambition 4 Role Transition Trajectory [🔦/口 💑/资料]}\\
+\textbf{! instantiated-by: Prototype 7 — Ambition 4 Role Transition Trajectory [🔦/口 💖/用]}\\
 @multiarg futon0/prototype7\\
 @title Ambition 4 — Applied Futon Theory: Co-Evolution With Future Environments\\
 @audience futon-devs, reflective-agents\\
@@ -297,7 +329,7 @@ can emerge naturally.\\
     - Increasing clarity, lightness, and alignment as co-evolution proceeds.\\
 \par
 \par
-\textbf{! instantiated-by: Prototype 8 — Stack Coverage Check [👐/广 💤/卜]}\\
+\textbf{! instantiated-by: Prototype 8 — Stack Coverage Check [👐/广 👘/判]}\\
 \flexitag{+context:} Devmaps belong to FUTON3: they are symbolic membranes through which FUTON3 perceives futons and maintains structural coherence across the stack. FUTON0’s role is to support the mindful conditions that allow these symbolic structures to appear, evolve, and be refreshed.\\
 \flexitag{+if:} You want FUTON3 to notice where the system’s symbolic interfaces to future environments are missing, stale, or drifting, before the whole system loses alignment.\\
 \flexitag{+however:} When narrative, reflection, and wondrous apprehension are weakened, futons become harder to perceive; devmaps stagnate; and FUTON3 loses access to future-relevant structure.\\
@@ -341,23 +373,19 @@ this layer operates cleanly, other futons inherit a durable and predictable\\
 world model on which more complex behaviours can be built.\\
 \par
 @state\\
-The deterministic demo/client workflow, Datascript↔XTDB mirroring, and\\
-open-world ingest pipeline are operational and well-documented, with hydration\\
-and persistence behaving as expected. The NLP interface, graph-memory module,\\
-and configuration surfaces are functional but unevenly documented, and their\\
-tests do not yet cover all intended entry points. The HTTP API provides a\\
-stable interaction surface, though endpoint contracts and data shapes remain\\
-scattered across READMEs.\\
+The deterministic demo/client workflow and Datascript↔XTDB mirroring are\\
+operational, with sessions hydrating from XT on boot and falling back to the\\
+legacy log + snapshot when XTDB is disabled. Futon1 remains storage- and\\
+durability-focused: ‘apps/demo’ is the interactive entry point and the HTTP\\
+API module (‘clojure -M:api’ / ‘apps/api’) is the external client surface.\\
 \par
-Naming, configuration conventions, and module boundaries show mild drift as a\\
-result of past iterations. The storage model is inspectable but not yet\\
-consolidated into a single reference. These gaps do not block use, but they\\
-reduce the clarity, reproducibility, and ease of integration that FUTON1 is\\
-intended to provide.\\
+Operational caveats: multiple Futon processes against the same\\
+‘BASIC\_CHAT\_DATA\_DIR’ can trigger RocksDB lock errors, and open-world ingest\\
+treats questions as assertions (there is no question→Datalog mapping yet).\\
 @next\\
 Consolidate the documentation and contracts that define how text becomes graph state; stabilise the naming and configuration surfaces shared across CLI, API, and ingest workflows; and refine test coverage so the deterministic substrate remains reliable as modules evolve. Maintain FUTON1’s minimal scope—storage, hydration, and inspection—while ensuring that higher futons can depend on its interfaces without ambiguity.\\
 \par
-\textbf{! instantiated-by: Prototype 0 — Baseline Deterministic Substrate [💤/已 ⛲️/布]}\\
+\textbf{! instantiated-by: Prototype 0 — Baseline Deterministic Substrate [🌝/四 🐜/基]}\\
 \flexitag{+context:} FUTON1 provides a deterministic storage substrate built from the demo/client workflow, the NLP interface, graph-memory, and XTDB persistence. These components together define the minimal end-to-end path by which text becomes durable graph state and can be inspected through the CLI or HTTP API.\\
 \flexitag{+if:} You want a stable understanding of what FUTON1 currently guarantees—its ingest pipeline, hydration behaviour, and contract surfaces—before extending or modifying any part of the stack.\\
 \flexitag{+however:} Documentation and examples are distributed across several READMEs; the overall “stack story” from ingest to XTDB is implicit rather than expressed as a single reference artifact, and the exact boundaries of the deterministic substrate are easy to lose track of during development.\\
@@ -370,7 +398,16 @@ Consolidate the documentation and contracts that define how text becomes graph s
     ‘apps/open-world-ingest’ form the operational substrate.\\
   - XTDB inspection and hydration behaviour are reproducible through existing\\
     scripts and aliases.\\
+  - ‘/api/alpha/meta/model/registry’ exposes live model descriptors for\\
+    patterns, docbook, open-world ingest, and the meta-model, with\\
+    ‘/api/alpha/meta/model/queue’ reporting pending coverage.\\
+  - Open-world invariants pass end-to-end, including stub detection and\\
+    relation type registration.\\
 \flexitag{+next:} Compile the architecture note; select and store a minimal set of canonical transcripts; and publish them alongside a tagged release that marks the baseline behaviour.\\
+  - Add a lightweight ‘/api/alpha/entities/latest?type=...’ endpoint (or\\
+    equivalent) so downstream tools can fetch only the most recent\\
+    ‘:clock-out/summary’ (or other entity type) instead of paging the entire\\
+    history when verifying persistence.\\
 \flexitag{+next-evidence:}\\
   - A dated, versioned snapshot containing architecture notes and\\
     representative transcripts.\\
@@ -380,7 +417,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     comparison.\\
 \par
 \par
-\textbf{! instantiated-by: Prototype 1 — Demo/Client Determinism \& Focus-Header Instrumentation [💤/每 🚞/已]}\\
+\textbf{! instantiated-by: Prototype 1 — Demo/Client Determinism \& Focus-Header Instrumentation [💤/每 👴/律]}\\
 \flexitag{+context:} The ‘apps/demo’ and ‘apps/client’ workflow is the canonical entry point for interrogating the stack. It emits deterministic focus headers, hydrates from XTDB on startup, and exercises the NLP interface and graph-memory module together, exposing how ingest, mutation, and inspection behave in practice.\\
 \flexitag{+if:} You want the CLI and client workflow to act as reliable instrumentation for investigating hydration, salience updates, and focus-header formation— producing traces that can be compared across runs and environments.\\
 \flexitag{+however:} Existing smoke tests cover only narrow paths, and the behaviour of hydration, persistence, and focus-header emission under varied configurations is not yet exercised systematically. Legacy assumptions from earlier protocols still colour expectations about determinism.\\
@@ -392,6 +429,8 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - Golden fixtures already exist for graph-memory and NLP layers.\\
   - XT inspection paths (‘-M:storage/inspect’) demonstrate reproducible\\
     hydration and salience persistence.\\
+  - CI green on commit 7611ea2 for ‘Futon1 Deterministic Stack’ (apps/client,\\
+    apps/graph-memory, apps/nlp-interface).\\
 \flexitag{+next:} Curate a minimal determinism suite; freeze representative focus-header and XTDB outputs; and integrate these checks into CI as regression indicators.\\
 \flexitag{+next-evidence:}\\
   - A small directory of canonical demo/client transcripts with corresponding\\
@@ -399,7 +438,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - CI reports confirming stability of determinism across tagged commits.\\
   - Clear README references linking these fixtures to FUTON1’s guarantees.\\
 \par
-\textbf{! instantiated-by: Prototype 2 — NLP Interface Consolidation [👴/申 📁/这些]}\\
+\textbf{! instantiated-by: Prototype 2 — NLP Interface Consolidation [👴/申 🌀/内]}\\
 \flexitag{+context:} ‘apps/nlp-interface’ provides deterministic NER/POS tagging and a small set of pattern-recognition hooks used across ingest and demo/client workflows. It is the shared entry point for turning raw text into structured tokens that the rest of FUTON1 can rely on without ambiguity.\\
 \flexitag{+if:} You want a single, well-defined NLP module whose behaviour is testable, documented, and independent of the surrounding CLI or transport logic.\\
 \flexitag{+however:} The current README gives only a minimal overview of the pipeline, and the boundaries between tokenisation, tagging, chunking, and downstream pattern recognition remain implicit in code rather than expressed as a clear API. Tests cover specific fixtures but not the full staged behaviour.\\
@@ -415,7 +454,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - Updated README documenting pipeline flow and public functions.\\
   - Agreement across ingest and demo/client modules on API usage.\\
 \par
-\textbf{! instantiated-by: Prototype 3 — Graph-Memory API \& Seed Graph [💤/已 👐/么]}\\
+\textbf{! instantiated-by: Prototype 3 — Graph-Memory API \& Seed Graph [💤/络 🙅/已]}\\
 \flexitag{+context:} ‘apps/graph-memory’ defines the Datascript schema, salience metadata, and store management functions that underpin FUTON1’s fact graph. It coordinates in-memory state with XTDB persistence and is the central place where entity and relation documents are shaped before being written or read.\\
 \flexitag{+if:} You want FUTON1 to expose a clear, documented contract for how entities, relations, and salience fields are represented and mirrored between Datascript and XTDB, so that other futons and external tools can rely on the same facts without depending on internal implementation details.\\
 \flexitag{+however:} The existing README and tests describe schema and storage behaviour but do not yet present a concise API-level view of graph operations. Helper functions are still oriented toward REPL use, naming conventions vary, and there is no single description of what is considered part of the persistent “seed graph” or which documents are guaranteed to be mirrored into XTDB.\\
@@ -437,7 +476,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     XTDB layout.\\
 \par
 \par
-\textbf{! instantiated-by: Prototype 4 — XTDB Operations \& REPL Workflows [🐜/分 🐺/甲]}\\
+\textbf{! instantiated-by: Prototype 4 — XTDB Operations \& REPL Workflows [🐜/分 👭/今]}\\
 \flexitag{+context:} FUTON1 mirrors all graph mutations into XTDB and provides a stable hydration path so that entity and relation documents, salience fields, and type data persist across restarts. The repository already includes REPL notes, inspection snippets, and a dedicated ‘-M:storage/inspect’ entry point for examining the store directly.\\
 \flexitag{+if:} You want developers to inspect, query, and verify the persistent store using a small set of predictable entry points, without relying on ad-hoc XTDB queries or bespoke REPL sessions.\\
 \flexitag{+however:} Common inspection tasks—listing entities, examining relations, checking salience fields, or understanding schema layout—still require manual XTDB queries or scanning several snippets across READMEs and test files. These workflows are reliable but not yet consolidated into a minimal operational interface.\\
@@ -456,7 +495,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - Consistent behaviour between the Emacs view and the REPL inspection entry\\
     points.\\
 \par
-\textbf{! instantiated-by: Prototype 5 — Open-World Ingest Workflows [🔦/世界 🍲/开]}\\
+\textbf{! instantiated-by: Prototype 5 — Open-World Ingest Workflows [🔦/开 👭/书]}\\
 \flexitag{+context:} ‘apps/open-world-ingest’ streams arbitrary text through a deterministic CoreNLP pipeline and writes entities, mentions, and relations into XTDB. These documents become part of the same persistent store that the demo/client workflow hydrates on startup, allowing background knowledge to accumulate outside interactive sessions.\\
 \flexitag{+if:} You want FUTON1 to support both offline corpus ingestion and interactive exploration, with both surfaces reading from and writing to the same XTDB state in a predictable way.\\
 \flexitag{+however:} Ingest currently operates as a standalone CLI with limited guidance on how its outputs integrate with the demo/client view of the world. Directory conventions, expected data-root layouts, and test coverage for ingest semantics (ID stability, relation structure, negation handling) are not yet consolidated.\\
@@ -476,7 +515,25 @@ Consolidate the documentation and contracts that define how text becomes graph s
     input.\\
   - README updates linking ingest workflows to the persistent world model.\\
 \par
-\textbf{! instantiated-by: Prototype 6 — Thematic Clusters \& Intent Metadata [🙅/无 💤/上]}\\
+! pending: Prototype 4 — NLP Experiments \& Traceable Knowledge Graphs [🌱/起 🧪/筹]\\
+\flexitag{+context:} The new CLI tracer (‘scripts/demo\_trace.clj’) and API tap listener (‘api.analytics/start!’) produce structured focus-header and profile payloads for every turn. These traces make NLP regressions visible and allow us to reconstruct session-specific ER graphs outside XTDB.\\
+\flexitag{+if:} You want to compare alternative recognisers or mathematical-text pipelines against the deterministic substrate, or you want to convert Tatami/demo sessions into inspectable knowledge graphs without mutating production storage.\\
+\flexitag{+however:} Tatami tracing is still manual, and there is no tooling yet to turn the tap payloads into graph artifacts. Ideas for richer NLP experiments are not yet captured in this devmap.\\
+\flexitag{+then:} Extend the headless API/tatami flow with the same tap logging as the demo tracer, document the planned NLP experiments here, and build a small exporter that reads trace EDNs + tap events and emits a consolidated entity/relation snapshot per session.\\
+\flexitag{+because:} Consistent traces across CLI and API let FUTON1 evaluate NLP changes deterministically and produce reusable “knowledge graph” snapshots per session. Recording these plans keeps the work visible without derailing core storage duties.\\
+\flexitag{+next:}\\
+  - Add an opt-in tap sink to the API/Tatami pipeline so live sessions populate ‘\textasciitilde{}/code/storage/futon1-’\\
+    traces/<session>/‘ just like the demo tracer.’\\
+  - Write an ER graph exporter that ingests those traces and produces a summary artifact (EDN/Graphviz)\\
+    for analysis.\\
+  - Catalogue candidate NLP experiments (alternate recognisers, mathematical text ingestion, scoring\\
+    heuristics) and their evaluation criteria in this devmap.\\
+\flexitag{+next-evidence:}\\
+  - Trace directories containing both CLI and Tatami sessions.\\
+  - ER graph export script plus sample output checked into ‘resources/’ or ‘docs/’.\\
+  - devmap entries describing the queued NLP experiments and how their results will be judged.\\
+\par
+\textbf{! instantiated-by: Prototype 6 — Thematic Clusters \& Intent Metadata [🙅/无 🚞/劲]}\\
 \flexitag{+context:} FUTON1 can attach lightweight thematic tags to utterances or text spans during ingest or interactive use. These tags—derived from deterministic NLP features or simple pattern-recognition hooks—provide a minimal layer of “intent metadata” that downstream futons may use for analysis or policy.\\
 \flexitag{+if:} You want FUTON1 to expose a small, deterministic set of thematic categories that describe common conversational moves or content types, without relying on probabilistic classifiers or embedding higher-level inference in this layer.\\
 \flexitag{+however:} There is no consolidated thematic taxonomy, the tags used in logs are not documented as part of the public contract, and no examples show how these tags appear in the stored XTDB documents or hydrated in-memory state. Integration points within demo/client or ingest workflows remain implicit.\\
@@ -494,7 +551,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - Deterministic tests verifying tag presence and structure.\\
   - Example ingest→query or demo/client transcripts showing how tags persist.\\
 \par
-\textbf{! instantiated-by: Prototype 7 — CLI Ergonomics \& Multi-Instance Isolation [🎏/资料 🍒/示]}\\
+\textbf{! instantiated-by: Prototype 7 — CLI Ergonomics \& Multi-Instance Isolation [🎏/资料 🔦/互]}\\
 \flexitag{+context:} The demo/client workflow exposes bang commands, flags, and environment variables for selecting data directories, overriding XTDB configuration, and controlling persistence behaviour. These surfaces already allow multiple instances of FUTON1 to run side-by-side on the same machine.\\
 \flexitag{+if:} You want developers and tools to run isolated demo/client or API sessions for testing, experimentation, or production-like scenarios without interfering with each other’s storage or configuration.\\
 \flexitag{+however:} Best practices for using ‘BASIC\_CHAT\_DATA\_DIR\tightquotecomma{} XTDB resource overrides, ‘config.edn\tightquotecomma{} and reset/compact/export options are spread across READMEs and command-line examples. It is easy to misconfigure data roots or XTDB paths, and no single reference describes the recommended conventions for running multiple instances safely.\\
@@ -512,7 +569,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     instances.\\
   - A ‘/status’ output (CLI or API) showing current data-root and XTDB config.\\
 \par
-\textbf{! instantiated-by: Prototype 8 — Golden Scripts \& Determinism Checks [🐜/不要 🌱/久]}\\
+\textbf{! instantiated-by: Prototype 8 — Golden Scripts \& Determinism Checks [🐜/不要 🌽/律]}\\
 \flexitag{+context:} FUTON1 already uses scripted EDN conversations and golden outputs to verify deterministic behaviour in the demo/client workflow, the NLP interface, and graph-memory operations. These fixtures ensure that focus-header formation, XTDB hydration, and pipeline flow remain stable across revisions.\\
 \flexitag{+if:} You want confidence that changes to FUTON1 do not introduce regressions in determinism, header structure, or end-to-end behaviour, and that core workflows continue to perform within reasonable runtime bounds.\\
 \flexitag{+however:} Golden coverage remains incomplete. Existing fixtures focus on specific modules rather than end-to-end flows, and there is no consolidated suite capturing short conversational runs, longer histories, or ingest-driven scenarios. Runtime behaviour is observable but not yet checked in a structured way.\\
@@ -531,7 +588,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - README references explaining how to run and interpret the golden suite.\\
 \par
 \par
-\textbf{! instantiated-by: Prototype 9 — External Client \& API Contract Clarification [📁/无 🙅/已]}\\
+\textbf{! instantiated-by: Prototype 9 — External Client \& API Contract Clarification [📁/无 💤/书]}\\
 \flexitag{+context:} FUTON1 already exposes an HTTP API (‘apps/api’) that lets external tools query and update the persistent store through the same command-service logic used by the demo/client workflow. This provides a minimal surface for submitting utterances, inspecting state, and retrieving deterministic summaries such as focus headers.\\
 \flexitag{+if:} You want external clients to interact with FUTON1 without scraping CLI output or depending on internal modules, and to rely on a stable, documented interface for obtaining focus-header data and querying the underlying graph.\\
 \flexitag{+however:} The available endpoints and their expected inputs and outputs are documented across several READMEs rather than in a single reference, and there are no minimal example clients showing how to issue requests and interpret the deterministic responses. The boundary between FUTON1’s API and higher-level agent behaviour remains implicit.\\
@@ -552,7 +609,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     documented default profile, and the ‘/status’ surface shows the resolved\\
     datastore path.**\\
 \par
-\textbf{! instantiated-by: Prototype 10 — World-State Access \& Storage Model Documentation [💖/已 💤/本]}\\
+\textbf{! instantiated-by: Prototype 10 — World-State Access \& Storage Model Documentation [💖/已 👭/书]}\\
 \flexitag{+context:} FUTON1 maintains the canonical world state for the stack through its combined Datascript and XTDB representation. Downstream tools—whether FUTON4, Arxana, Emacs interfaces, or ad-hoc scripts—need a clear understanding of how this state is structured and how to retrieve entities, relations, salience fields, and other stored documents without relying on internal assumptions.\\
 \flexitag{+if:} You want any external consumer to be able to inspect FUTON1’s world state deterministically, using documented queries and data shapes rather than reverse-engineering internal code paths or storage conventions.\\
 \flexitag{+however:} Although the README describes persistence and hydration behaviour, there is no consolidated description of the storage model: which document types exist, how entities and relations are shaped in XTDB, how salience metadata is encoded, or which example queries reliably retrieve these structures. Export options exist, but no single reference explains their intended use.\\
@@ -572,7 +629,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - README or doc links showing how external tools can load and inspect the\\
     world state.\\
 \par
-\textbf{! instantiated-by: Prototype 11 — Reproducible Pilot Workflows [👭/才]}\\
+\textbf{! instantiated-by: Prototype 11 — Reproducible Pilot Workflows [👭/才 🐜/程]}\\
 \flexitag{+context:} Users may wish to construct small pilot workflows—combining ingest, demo/client interaction, and the persistent world state—to explore ideas, test downstream reasoning layers, or run controlled experiments. FUTON1 does not run these pilots itself, but provides the deterministic substrate they depend on.\\
 \flexitag{+if:} You want FUTON1 to support reproducible, user-defined pilot scenarios for experimental, investigative, or research-oriented purposes, without embedding pilot logic or inference in this layer.\\
 \flexitag{+however:} There is no standard way to package a pilot’s configuration, transcripts, and expected XTDB state. Any existing examples are informal or private, and users who attempt to replay scenarios must reconstruct them manually from multiple surfaces.\\
@@ -590,7 +647,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - README references describing how external futons can use such pilots as\\
     test fixtures or experimental scaffolds.\\
 \par
-\textbf{! instantiated-by: Prototype 12 — Consolidation \& Packaging Pass [🌽/末 🙇/申]}\\
+\textbf{! instantiated-by: Prototype 12 — Consolidation \& Packaging Pass [🌽/末 👴/申]}\\
 \flexitag{+context:} As FUTON1 evolves, its modules, configuration surfaces, and documentation accumulate incremental changes. Over time this can introduce small inconsistencies across apps, flags, environment variables, or test and build workflows. A periodic consolidation pass helps restore coherence without changing FUTON1’s scope.\\
 \flexitag{+if:} You want FUTON1 to remain easy to install, run, understand, and extend by others—including tools and futons that depend on it—without requiring context from its development history.\\
 \flexitag{+however:} Naming and configuration conventions have drifted across modules, some flags and env vars are documented in multiple places, and not all apps follow the same patterns for logging, error handling, or test invocation. These divergences do not break functionality but reduce predictability.\\
@@ -621,123 +678,206 @@ Consolidate the documentation and contracts that define how text becomes graph s
 @length any\\
 @factor Energy (viriya)\\
 \textbf{@IFR: FUTON2 is the viriya (energy) chamber: a narratable Active Inference engine whose ants are first demonstrators for AIF agent species that will eventually crawl FUTON1 graph memory, export state to higher futons, and turn insight into kinetic practice across the network.}\\
-\textbf{@state Ant sim + AIF loop run end-to-end with analyzer hooks, but architecture docs, observation property tests, and hunger/tau goldens remain incomplete.}\\
-\textbf{@next Capture the baseline architecture note, lock observation/property tests, and record hunger/precision goldens before layering new agent species.}\\
+\textbf{@state Ant sim + AIF loop run end-to-end with analyzer hooks, and cyber-ants can}\\
+\textbf{swap in for the classic faction via Futon3-derived patterns. Architecture}\\
+\textbf{baseline documented in stack-baseline.md. Observation property tests strong}\\
+\textbf{(440+ iterations). Hunger/tau goldens recorded (6 scenarios). Policy goldens}\\
+\textbf{recorded (5 scenarios). Gaps: formal semantics docs and white-space tests}\\
+\textbf{missing.}\\
+\textbf{@next Formalize micro-step semantics in doc/trace-semantics.md, update README observation vector, add white-space property tests, expand policy goldens to 10 scenarios.}\\
 \par
 \par
-\textbf{! instantiated-by: Prototype 0 — AIF Stack Baseline (observe → perceive → affect → core) [👕/卯 💤/已]}\\
+\textbf{! instantiated-by: Prototype 0 — AIF Stack Baseline (observe → perceive → affect → core) [🌝/四 🐜/基]}\\
   \flexitag{+context:}FUTON2 runs a full Active Inference loop in the ant war-game, wiring ‘ants.aif.observe\tightquotecomma{} ‘ants.aif.perceive\tightquotecomma{} ‘ants.aif.affect\tightquotecomma{} and ‘ants.aif.core’ into one tick-by-tick pipeline.\\
   \flexitag{+if:}You want a stable story that shows how observation, prediction errors, precision, and actions integrate per tick.\\
   \flexitag{+however:}Modules are individually solid but no single document freezes hunger/tau semantics or traces the whole stack.\\
   \flexitag{+then:}Capture a top-level architecture note from sensory keys through world updates, lock current hunger and predictive micro-step parameters, and add four golden AIF microtraces.\\
   \flexitag{+because:}A documented baseline prevents accidental drift before you optimise policy, analyzers, or mechanics.\\
+  \flexitag{+evidence:}\\
+    - ‘futon2/doc/stack-baseline.md’ (76 lines): Documents 5-stage pipeline (observe→perceive→affect→policy→act),\\
+      locks baseline parameters (max-steps=4, alpha=0.45, beta=0.28), lists observation vector ABI.\\
+    - ‘futon2/src/ants/aif/core.clj’ (209 lines): ‘aif-step()’ orchestrates full tick, ‘default-aif-config’ defines\\
+      all nested config (preferences, precision, actions, efe, modes).\\
+    - ‘futon2/src/ants/aif/observe.clj’ (185 lines): ‘g-observe()’ normalizes 14 channels to [0,1].\\
+    - ‘futon2/src/ants/aif/perceive.clj’ (165 lines): Multi-step predictive coding with trace output.\\
+    - ‘futon2/src/ants/aif/affect.clj’ (240 lines): ‘tick-hunger()\tightquotecomma{} ‘hunger->tau()\tightquotecomma{} ‘modulate-precisions()\tightquotecomma{} ‘update-tau()’.\\
+    - ‘futon2/src/ants/aif/policy.clj’ (841 lines): EFE-based action selection with mode-conditioned biases.\\
+    - ‘futon2/doc/trace/single\_tick.edn’ + ‘futon2/doc/trace/single\_tick.svg’: Deterministic trace artifact + plot.\\
+    - ‘futon2/test/resources/goldens/microtraces.edn’: 4 golden perception traces (baseline, hungry-near-enemy,\\
+      sated-on-trail, homebound-low-pher).\\
+  \flexitag{+next-evidence:}\\
+    - ‘doc/trace-semantics.md’ explaining micro-step semantics and why errors are 0.0 in goldens.\\
+    - ‘doc/hunger-tau-coupling.md’ documenting when update-tau fires vs perceive-internal hunger updates.\\
+    - 4 complete tick traces with commentary (forage, return, explore, defend scenarios).\\
 \par
-\textbf{! instantiated-by: Prototype 1 — Observation Layer Hardening [🍲/则 👎/下]}\\
+\textbf{! instantiated-by: Prototype 1 — Observation Layer Hardening [🍲/田 🌝/四]}\\
   \flexitag{+context:}‘g-observe’ normalises sensory evidence (food, pheromones, proximity, novelty, reserves) into the vectors passed downstream.\\
   \flexitag{+if:}You want deterministic observations across seeds and a nailed-down vector ABI for later ML.\\
   \flexitag{+however:}Normalisation bounds and neighbour logic assumptions are scattered across helpers.\\
   \flexitag{+then:}Write property tests that enforce 0–1 ranges, document the ‘sense->vector’ ordering, and add edge-case tests for grid borders, max-distance tweaks, and degenerate pheromone fields.\\
   \flexitag{+because:}Reliable observations keep perception and policy stable no matter the world configuration.\\
+  \flexitag{+evidence:}\\
+    - ‘futon2/test/ants/aif/observe\_test.clj’ (207 lines): Property tests + unit tests.\\
+      - ‘g-observe-values-clamped’: 200 random worlds, all 16 keys verified ∈ [0,1].\\
+      - ‘g-observe-border-neighbor-means’: 120 iterations testing edge/corner calculations.\\
+      - ‘degenerate-field-normalizes-to-zero’: Handles max-food=0 gracefully.\\
+      - ‘sense-vector-ordering’: Locks 14-element vector ABI.\\
+    - ‘futon2/src/ants/aif/observe.clj’: ‘clamp01()\tightquotecomma{} ‘normalize()’ enforce bounds; all channels\\
+      pass through normalization before return (lines 161-177).\\
+    - ‘futon2/doc/stack-baseline.md’ (lines 7-9): Lists observation ABI ordering.\\
+    - ‘futon2/README.md’ (lines 88-93): Documents sense→vector keys (needs update: lists 13, actual is 14).\\
+  \flexitag{+next-evidence:}\\
+    - ‘doc/observation-spec.md’ listing all normalization bounds (max-food, max-pher, max-dist, max-reserve).\\
+    - White-space detection property tests (‘:white?’ field currently untested).\\
+    - Documentation of 8-neighborhood offset logic.\\
 \par
-\textbf{! instantiated-by: Prototype 2 — Predictive Coding Microcycle Clarity [💖/刊]}\\
+\textbf{! instantiated-by: Prototype 2 — Predictive Coding Microcycle Clarity [🙇/乡 😻/叉]}\\
   \flexitag{+context:}Perception performs multi-step updates of mu, tau, Pi-o, goals, and weighted errors with annealing.\\
   \flexitag{+if:}You want inspectors (or future Arxana bridges) to understand belief updates.\\
   \flexitag{+however:}Hunger updates, sensory prediction, and error accumulation are interwoven without a canonical trace.\\
   \flexitag{+then:}Publish a single-tick perception trace with plots of hunger, tau, and error per micro-step, and formalise an interface for extracting a mu/precision snapshot.\\
   \flexitag{+because:}Clear cycles make later integrations with futon4 symbolic memory far easier.\\
+  \flexitag{+evidence:}\\
+    - ‘test/resources/goldens/microtraces.edn’ (24 lines): 4 golden scenarios with per-step traces.\\
+      - ‘:baseline’: h 0.66→0.79, tau 1.47→0.81 over 4 steps.\\
+      - ‘:hungry-near-enemy’: h jumps to 1.0, tau floors.\\
+      - ‘:sated-on-trail’: h stays low 0.22→0.33, tau peaks 2.06→1.5.\\
+      - ‘:homebound-low-pher’: h 0.55→1.0, tau drops 1.76→0.33.\\
+    - ‘test/ants/aif/microtrace\_regression\_test.clj’ (80 lines): Runs 4 scenarios through ‘aif-step\tightquotecomma{}\\
+      compares ‘:perception :trace’ to golden, locks baseline parameters.\\
+    - ‘tools/trace\_tick.clj’ (151 lines): Generates ‘doc/trace/single\_tick.edn’ + SVG plot.\\
+    - ‘doc/trace/single\_tick.svg’: Renders tau (red), h (blue), error (purple) with legend.\\
+    - ‘src/ants/aif/perceive.clj’ (lines 133-164): Loop outputs ‘\{:tau, :h, :error\}’ per micro-step.\\
+  \flexitag{+next-evidence:}\\
+    - ‘doc/trace-semantics.md’ formalizing micro-step semantics (why errors are 0.0, annealing formula).\\
+    - Goal-bias mechanism documented and tested (blending toward home/enemy based on cargo).\\
 \par
-\textbf{! instantiated-by: Prototype 3 — Hunger \& Precision Dynamics Goldens [🌲/高 💫/六]}\\
+\textbf{! instantiated-by: Prototype 3 — Hunger \& Precision Dynamics Goldens [💫/六 🔥/餓]}\\
   \flexitag{+context:}Functions such as ‘tick-hunger\tightquotecomma{} ‘update-hunger\tightquotecomma{} ‘update-tau\tightquotecomma{} and ‘modulate-precisions’ control the most sensitive dynamics.\\
   \flexitag{+if:}You want reproducible affective behaviour that survives refactors.\\
   \flexitag{+however:}There are no golden tests for tau evolution, hunger saturation, or reserve-driven adjustments.\\
   \flexitag{+then:}Record six golden sequences (normal, starvation, overstimulation, heavy-cargo, high-risk, high-ingest) and lock expected tau floors/caps for each.\\
   \flexitag{+because:}Once goldens exist, small tune-ups stop breaking entire colony behaviour.\\
+  \flexitag{+evidence:}\\
+    - ‘test/resources/goldens/hunger\_tau.edn’ (163 lines): 6 golden sequences as specified.\\
+      - ‘:normal’: h=0.42→0.427→0.233, tau=2.076 (strong feeding effect).\\
+      - ‘:starvation’: h=0.88→0.896→0.887, tau FLOORS at 0.605 (exploitation mode).\\
+      - ‘:overstimulation’: h=0.50→0.506→0.262, tau PEAKS at 2.011 (exploration mode).\\
+      - ‘:heavy-cargo’: cargo=0.95, h=0.58→0.961, tau FLOORS at 0.597 (load stress).\\
+      - ‘:high-risk’: h=0.60→0.671→0.649, tau=1.14 (moderate modulation).\\
+      - ‘:high-ingest’: h=0.70→0.67→0.185, tau PEAKS at 2.18 (strong relief).\\
+    - ‘test/ants/aif/hunger\_regression\_test.clj’ (29 lines): Loads 6 scenarios, evaluates\\
+      tick-hunger → update-hunger → hunger->tau → modulate-precisions, compares to golden.\\
+    - ‘tools/hunger\_goldens.clj’ (75 lines): Generator script for golden file.\\
+    - ‘README.md’ (lines 117-129): Documents hunger config parameters and defaults.\\
+  \flexitag{+next-evidence:}\\
+    - ‘doc/hunger-goldens-guide.md’ explaining behavioral regime each scenario represents.\\
+    - SVG plots for hunger\_tau trajectories (like trace\_tick.clj does for microtraces).\\
+    - Tau-floor/tau-cap assertions added to regression test (currently equality-only).\\
+    - Boundary saturation tests (e.g., h=0.99 + 0.1 delta → clamps to 1.0).\\
 \par
-\textbf{! instantiated-by: Prototype 4 — Policy Layer Surfacing [🍲/十 😻/以]}\\
+\textbf{! instantiated-by: Prototype 4 — Policy Layer Surfacing [🍲/乡 😻/代]}\\
   \flexitag{+context:}‘ants.aif.policy’ selects actions using EFE metrics while ‘attach-policy-diagnostics’ emits traces.\\
   \flexitag{+if:}You want reproducible policy choices under controlled sensory inputs.\\
   \flexitag{+however:}There is no standalone harness that feeds synthetic mu/observation pairs.\\
   \flexitag{+then:}Build ‘(eval-policy mu prec obs config)’ as a harness and add golden action rankings for ten canonical scenarios (e.g. rich food, enemy close, starvation risk).\\
   \flexitag{+because:}Stabilised policies are mandatory before benchmarking or bridging into futon1 salience services.\\
+  \flexitag{+evidence:}\\
+    - ‘test/resources/goldens/policy\_harness.edn’: 5 golden scenarios with action rankings.\\
+      - ‘:forage-normal’: Empty-handed, good food signal → forage preferred.\\
+      - ‘:loaded-homebound’: High cargo, near home → return preferred.\\
+      - ‘:white-space-scout’: No signals, exploring → pheromone preferred.\\
+      - ‘:deficit-colony’: Low reserves, high hunger → return prioritized.\\
+      - ‘:maintain-pheromone’: Good trail, near home → pheromone preferred.\\
+      Each includes: p (probability), G (free energy), risk, ambiguity, info, colony, survival, action-cost.\\
+    - ‘tools/policy\_harness.clj’ (128 lines): Generator for 5 canonical scenarios.\\
+    - ‘test/ants/aif/policy\_harness\_test.clj’ (20 lines): Loads scenarios, runs ‘eval-policy\tightquotecomma{}\\
+      compares rankings to golden.\\
+    - ‘test/ants/aif/policy\_test.clj’ (187 lines): Comprehensive behavioral tests\\
+      (shape, preference coupling, starvation tau clamping, nest action filtering).\\
+    - ‘src/ants/aif/policy.clj’: ‘eval-policy()’ function exists (deterministic ranking harness).\\
+  \flexitag{+next-evidence:}\\
+    - Expand to 10 canonical scenarios as specified in devmap (currently 5).\\
+    - Document EFE component formulas (risk, ambiguity, info, colony, survival) in ‘doc/policy-spec.md’.\\
 \par
-\textbf{! instantiated-by: Prototype 5 — World Mechanics Contract (war.clj) [🎑/世界 🌝/但]}\\
+\textbf{! instantiated-by: Prototype 5 — World Mechanics Contract (war.clj) [🎑/书 👕/已]}\\
   \flexitag{+context:}The simulator handles evaporation, movement, gather/deposit, pheromone dynamics, hunger propagation, reserves, and termination.\\
   \flexitag{+if:}You want FUTON2 to be a reliable agent-environment backend.\\
   \flexitag{+however:}Movement heuristics, gather thresholds, and white-streak rules are powerful yet lightly documented.\\
   \flexitag{+then:}Document all invariants (pheromone caps, grid bounds, gather limits), seed movement decisions for determinism, and split movement modes into testable units.\\
   \flexitag{+because:}A clear contract keeps the world trustworthy when other prototypes depend on it for episodes.\\
 \par
-\textbf{! instantiated-by: Prototype 6 — Live Analyzer \& Pivot Stream Stabilisation [🚢/在]}\\
+\textbf{! instantiated-by: Prototype 6 — Live Analyzer \& Pivot Stream Stabilisation [🚢/已 🐲/无]}\\
   \flexitag{+context:}The live analyzer consumes pivot events, computes EWMA metrics, detects starvation spirals, and prints mode transitions.\\
   \flexitag{+if:}You want analyzer outputs to feed futon3 evaluations or futon4 reflexive agents.\\
   \flexitag{+however:}Pivot schemas are implicit and analyzer assumptions are undocumented.\\
   \flexitag{+then:}Freeze a versioned pivot-row schema, add tests for required keys (:act, :mode, :cargo, :ing, etc.), and ship an example analyzer plugin for futon4.\\
   \flexitag{+because:}Pivot streams are FUTON2’s event bus and must behave like a stable ABI.\\
 \par
-\textbf{! instantiated-by: Prototype 7 — Classic vs AIF Benchmark Suite [🗿/系统]}\\
+\textbf{! instantiated-by: Prototype 7 — Classic vs AIF Benchmark Suite [🗿/三 🐜/不要]}\\
   \flexitag{+context:}Benchmark scripts compare classic ants to AIF runs across scores, durations, and G-ema.\\
   \flexitag{+if:}You want formal behavioural comparisons rather than anecdotes.\\
   \flexitag{+however:}Only three preset scenarios exist and there is no variance analysis.\\
   \flexitag{+then:}Add parametrised benchmarks spanning grid sizes, pheromone decay, hunger burn, and tau floors; capture plots and golden CSVs.\\
   \flexitag{+because:}FUTON2 should function as a scientific system with reproducible metrics.\\
 \par
-\textbf{! instantiated-by: Prototype 8 — External Control \& Episode Export [📤/予 🙇/给]}\\
+\textbf{! instantiated-by: Prototype 8 — External Control \& Episode Export [📤/予 🚢/已]}\\
   \flexitag{+context:}‘simulate’ drives the war sim but offers no external stepping API.\\
   \flexitag{+if:}You want futon3 or futon4 to request “give me N steps with this config.”\\
   \flexitag{+however:}Stepping remains tied to the CLI and HUD.\\
   \flexitag{+then:}Expose ‘(futon2.step world n \{:emit-pivot? true\})\tightquotecomma{} add EDN exports of full episodes, and keep pivot batches consistent.\\
   \flexitag{+because:}Exported episodes are critical for agent training, memory, and pattern extraction.\\
 \par
-\textbf{! instantiated-by: Prototype 9 — futon1 ↔ futon2 Alignment Layer [💤/已 👕/刊]}\\
+\textbf{! instantiated-by: Prototype 9 — futon1 ↔ futon2 Alignment Layer [👎/刊 👭/二]}\\
   \flexitag{+context:}FUTON1 emits focus headers and salience; FUTON2 emits percept/action streams.\\
   \flexitag{+if:}You want the ants to act as embodied readers + writers of futon1’s graph.\\
   \flexitag{+however:}there is no shared dictionary between entities/intents and colony modes, so exports are useless to FUTON1.\\
   \flexitag{+then:}define the crosswalk (entities ↔ colonies, intents ↔ behaviours), publish an export schema, and prove it by replaying one colony while FUTON1 ingests the stream and surfaces it back to users.\\
   \flexitag{+because:}a working bridge proves ants can reason over the same facts as the rest of the stack.\\
 \par
-\textbf{! instantiated-by: Prototype 10 — Curriculum Scenarios \& AIF Behaviour Cards [🎴/乡 🙅/归]}\\
+\textbf{! instantiated-by: Prototype 10 — Curriculum Scenarios \& AIF Behaviour Cards [🎴/乡 📤/予]}\\
   \flexitag{+context:}The current war scenario is rich but single-purpose.\\
   \flexitag{+if:}You want FUTON2 to double as a pedagogical engine for Active Inference.\\
   \flexitag{+however:}There is no named curriculum.\\
   \flexitag{+then:}Create behaviour cards (home-return, starvation spiral, over-exploration, defensive lattice, greedy gatherer collapse), simulate each with fixed seeds, and export the episodes.\\
   \flexitag{+because:}These cards seed pattern extraction and future training systems.\\
 \par
-\textbf{! instantiated-by: Prototype 11 — AIF Agent Debugger \& Mu/Precision Visualiser [😻/跟 🐺/一]}\\
+\textbf{! instantiated-by: Prototype 11 — AIF Agent Debugger \& Mu/Precision Visualiser [😻/由 🚢/一]}\\
   \flexitag{+context:}Pivot logs are textual and require manual parsing.\\
   \flexitag{+if:}You want interactive introspection of mu vectors, tau evolution, and weighted errors.\\
   \flexitag{+however:}No visualiser or “follow Alice” mode exists.\\
   \flexitag{+then:}Build a Clerk notebook (or similar) that plots tau, hunger, errors, and pivot timelines, plus a mode that traces one agent’s full mu timeline.\\
   \flexitag{+because:}Visual insight accelerates iteration and debugging.\\
 \par
-\textbf{! instantiated-by: Prototype 12 — Year-End Packaging \& Story [💑/末 🌀/年]}\\
+\textbf{! instantiated-by: Prototype 12 — Year-End Packaging \& Story [🌽/末]}\\
   \flexitag{+context:}FUTON2 must read as a coherent simulation layer to partners and future prototypes.\\
   \flexitag{+if:}You want it to be adoptable as a research simulator.\\
   \flexitag{+however:}The codebase is powerful but intimidating without a unifying story.\\
   \flexitag{+then:}Package the release with a top-level README, whitepaper, stepping API, goldens, and versioned pivot schema.\\
   \flexitag{+because:}Strong packaging turns FUTON2 into a reusable, inspectable module inside the full FUTON stack.\\
 \par
-\textbf{! instantiated-by: Prototype 13 — Graph Memory Adapter \& Agent ABI [💤/已 👎/甲]}\\
+\textbf{! instantiated-by: Prototype 13 — Graph Memory Adapter \& Agent ABI [👎/乃 ➰/调]}\\
   \flexitag{+context:}FUTON1 now offers a documented graph-memory API; FUTON2 needs to speak it to graduate beyond the sandbox.\\
   \flexitag{+if:}You want ants to be the first drop-in “AIF agent” that reads fact graphs and writes back its beliefs.\\
   \flexitag{+however:}percepts/actions remain locked to grid coordinates, so nothing maps to FUTON1 entity IDs or relation semantics.\\
-  \flexitag{+then:}design a bidirectional adapter (percepts → graph facts, graph cues → priors), version the ABI, and replay a colony run that exports beliefs into FUTON1 salience tables.\\
-  \flexitag{+because:}once the adapter exists, future AIF agents inherit a proven contract instead of bespoke glue.\\
+  \flexitag{+then:}design a bidirectional adapter (percepts → graph facts, graph cues → priors), version the ABI, and replay a colony run that exports beliefs into FUTON1 salience tables. Treat FUTON3 proof trails as “human pheromone lines”: export the canonical trail EDN (pattern IDs, fruits/orbs, joy deltas) into FUTON1, expose them via the adapter so analyzers ingest them as missions, and log agent runs as trail-style payloads (mission, outcome, energy delta) back into MUSN so FUTON3 records “agent proofs.”\\
+  \flexitag{+because:}once the adapter honours shared trail/pheromone energy, human proofwork and AIF runs guide each other through the same mission record instead of bespoke glue.\\
 \par
-\textbf{! instantiated-by: Prototype 14 — Viriya Field \& Social Activation Metrics [👕/卯 ⚡️/介]}\\
+\textbf{! instantiated-by: Prototype 14 — Viriya Field \& Social Activation Metrics [⚡️/习 🐜/劲]}\\
   \flexitag{+context:}FUTON2 carries the Factor of Awakening “energy/viriya”: vigor, commitment, and kinetic practice.\\
   \flexitag{+if:}You want simulations to reflect and inform real social activation—networked collaboration, shared commitments, and practice loops across humans + agents.\\
   \flexitag{+however:}Current metrics stop at hunger/tau; nothing measures vigor, pledge strength, or coordination throughput.\\
   \flexitag{+then:}Introduce viriya indicators (e.g., colony activation score, pledge adherence, transfer of trails into collaborative tasks), log them per episode, and export them so futon3/futon7 can read “energy health.”\\
   \flexitag{+because:}Tying the simulation to viriya turns FUTON2 into a practice accelerator instead of a curiosity.\\
 \par
-\textbf{! instantiated-by: Prototype 15 — Sandbox Bridge \& Presence Interface [🌀/内 👕/里]}\\
+\textbf{! instantiated-by: Prototype 15 — Sandbox Bridge \& Presence Interface [🌀/内 🙅/刊]}\\
   \flexitag{+context:}FUTON3 now emphasises flexiformal proofwork but still hosts multi-user rooms and SAFE REPL affordances.\\
   \flexitag{+if:}You want AIF agents (ants and successors) to inhabit those rooms, receive room/talk updates, and emit actions back into the simulation.\\
   \flexitag{+however:}No interface maps MUSN room events/presence into FUTON2 percepts, nor do ants announce themselves inside FUTON3.\\
   \flexitag{+then:}Define a bidirectional “presence bus” (rooms → observation cues, agent actions → MUSN events), add authentication so only designated colonies bridge, and ship a demo where ants report discoveries into a FUTON3 trail.\\
   \flexitag{+because:}This proves that AIF agents can show up wherever proofwork happens, not just inside a war grid.\\
 \par
-\textbf{! instantiated-by: Prototype 16 — Lobby Bus \& MUSN Intake [🌀/内 📬/门]}\\
+\textbf{! instantiated-by: Prototype 16 — Lobby Bus \& MUSN Intake [🙅/无 💤/已]}\\
   \flexitag{+context:}FUTON3 runs with MUSN as a shared graph and chatgpt-shell as a HUD, but ChatGPT-API currently has only conversational access and no principled way to commit events back into MUSN.\\
   \flexitag{+if:}You want ChatGPT-API to propose or make *persistent* updates (breach logs, paramitā orbs, devmap notes, pattern instantiations) without giving it full god-mode over the stack.\\
   \flexitag{+however:}There is no explicit one-room “Lobby” where HUD traffic is normalised into MUSN events, no single-writer policy, and no clear schema for what counts as an escalated, storable event versus transient chatter.\\
@@ -755,7 +895,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   for operational concerns (like curfew rules) but also for epistemic/ritual\\
   artefacts that support the broader FUTON practice space.  The HUD then renders a subtle, clickable banner: Reflection exercise suggested ▸\\
 \par
-\textbf{! instantiated-by: Prototype 16 — Wisdom Trail Harvest \& Pattern Seeding [💖/去 👶/所]}\\
+\textbf{! instantiated-by: Prototype 16 — Wisdom Trail Harvest \& Pattern Seeding [➰/去 👎/氏]}\\
   \flexitag{+context:}FUTON3 trails now record which patterns were checked or advanced during human work sessions.\\
   \flexitag{+if:}You want FUTON2 analyzers to ingest those trails, compare them to colony behaviour, and commission new agent goals.\\
   \flexitag{+however:}There is no ingestion path for trail EDN, nor a feedback loop that says “agents, go gather evidence for Pattern X.”\\
@@ -776,43 +916,72 @@ Consolidate the documentation and contracts that define how text becomes graph s
 \textbf{@IFR: FUTON3 is the place where the system turns messy activity into organised knowledge.}\\
 \textbf{It collects what happens, checks it against a library of shared patterns, and produces clear, trustworthy records that other futons can use to learn, improve, and act.  FUTON3 makes everyday work auditable, meaningful, and easier to build on.}\\
 \par
-@state Transport runs reliably, events are logged, patterns can be checked, and Tatami sessions already feed structured evidence into the system. We have an early pattern catalog, working embeddings, and a first version of the workday pipeline. What remains is strengthening these links — tying checks into storage, producing clearer histories, and building the stable interfaces that other futons can depend on for coordinated reasoning.\\
+@state Transport runs reliably, events are logged, and patterns can be checked.\\
+Tatami sessions already feed structured evidence downstream, but that evidence\\
+does not yet flow back into pattern updates or storage-backed history. We have\\
+an early pattern catalog, working embeddings, and a first version of the\\
+workday pipeline. What remains is tightening those links — coupling Tatami\\
+evidence into pattern updates, tying checks into storage, producing clearer\\
+histories, and building the stable interfaces that other futons can depend on\\
+for coordinated reasoning.\\
 \par
 @next Stand up the completed pattern canon + ‘check!’ API, standardise proof→graph/energy exports, and land the workday instrumentation + trail rollups as first-class MUSN services before expanding the flexiformal training ground.\\
 \par
-\textbf{! instantiated-by: Prototype 0 — Flexiformal Transport Baseline [💤/已]}\\
+\textbf{! instantiated-by: Prototype 0 — Flexiformal Transport Baseline [🏃/索 ➰/氏]}\\
   \flexitag{+context:}FUTON3 still rides the MUSN transport (WS+HTTP bus, SAFE/ADMIN REPL, NDJSON ingest), but its primary job is to host pattern checks and informal proof states, not free-roaming agents.\\
   \flexitag{+if:}You want an execution substrate where pattern obligations can be posed, evaluated, and recorded with deterministic transcripts.\\
-  \flexitag{+however:}The baseline hello/event/session flows are documented as “sandbox trivia” instead of “proofwork IO contracts.”\\
-  \flexitag{+then:}Freeze the transport contract from the perspective of check jobs (pattern-apply, gap-report, trail-capture), provide golden transcripts for each, and version the ‘sandbox’ profile as the canonical proofwork runtime.\\
+  \flexitag{+however:}The baseline hello/event/session flows are documented as “non-essential documentation” instead of “proofwork IO contracts.”\\
+  \flexitag{+then:}Freeze the transport contract from the perspective of check jobs (pattern-apply, gap-report, trail-capture), provide golden transcripts for each, and version the ‘sandbox’ profile (i.e., how to work with patterns via the safe MUSN transport) as the canonical proofwork runtime.\\
   \flexitag{+because:}Flexiformal checking needs a stable log format before any higher-layer reasoning can rely on it.\\
-  \flexitag{+evidence:}docs/protocol.md, src/f2/router.clj, test/f2/router\_test.clj.\\
+  \flexitag{+evidence:}docs/protocol.md, src/f2/router.clj, test/f2/router\_test.clj (100-event idempotency + export/run/status acceptance), and test/transport\_test.clj (per-client disconnect logging).\\
+  \flexitag{+next-evidence:}\\
+    - \{:type :Spec :id "transport-contract-check-jobs-v1" :description "Define a frozen transport contract for pattern-apply, gap-report, and trail-capture jobs including message shapes, sequencing, and log guarantees." :acceptance-criteria ["Spec enumerates request/response schemas, NDJSON log records, and required invariants for all three check jobs." "Fails if there is no reliable A->B association between proposal and evidence collection; must be machine-checkable now and upgradeable for stronger logics later."] :suggested-location "docs/protocol/transport-contract-v1.md" :timebox "2026-01-05"\}\\
+    - \{:type :Spec :id "golden-transcripts-check-jobs" :description "Specify canonical golden transcripts for pattern-apply, gap-report, and trail-capture runs that deterministically exercise the frozen transport contract." :acceptance-criteria ["Each transcript is reproducible from the sandbox profile and matches byte-for-byte expected NDJSON output." "Fails if there is no reliable A->B association between proposal and evidence collection; must be machine-checkable now and upgradeable for stronger logics later."] :suggested-location "docs/protocol/golden-transcripts.md" :timebox "2026-01-05"\}\\
+    - \{:type :Spec :id "sandbox-profile-proofwork-runtime" :description "Document the sandbox profile as the canonical proofwork runtime and explain how to execute check jobs from the Clojure runner." :acceptance-criteria ["Spec explains sandbox configuration, versioning rules, and step-by-step runner commands tied to transcript generation." "Fails if there is no reliable A->B association between proposal and evidence collection (i.e., we need a clear and deterministic correspondence between anticedents A and measurable evidence B); must be machine-checkable now and upgradeable for stronger logics later."] :suggested-location "docs/sandbox/README.md" :timebox "2026-01-05"\}\\
 \par
-\textbf{! instantiated-by: Prototype 1 — Pattern Canon \& Standard Library [💖/本 🙅/在]}\\
+\textbf{! instantiated-by: Prototype 1 — Pattern Canon \& Standard Library [🗿/本]}\\
   \flexitag{+context:}A small flexiarg/pattern library already exists (Nonstarter, Proto/Allow-Works, etc.) but is scattered between files.\\
   \flexitag{+if:}You want FUTON3 to be the place where patterns are curated with metadata, linking obligations, and proof status.\\
-  \flexitag{+however:}There is no canonical store or schema for “pattern definitions + applicability notes + links to Futon devmaps.”\\
-  \flexitag{+then:}Stand up a ‘f3.patterns’ store (ID, clauses, references, pāramitā tags, fruits/orbs weights) populated with the current standard library and backfilled with source links.\\
-  \flexitag{+because:}Without a canonical pattern store, the checker has nothing trustworthy to compare against.\\
-  \flexitag{+evidence:}‘resources/pattern\_store.edn\tightquotecomma{} ‘src/futon3/pattern\_store.clj\tightquotecomma{} and ‘test/pattern\_store\_test.clj’ keep the catalog synced with live tests + README references.\\
+  \flexitag{+however:}There is no standardized repository or schema for “pattern definitions + applicability notes + links to Futon devmaps.”\\
+  \flexitag{+then:}Stand up a ‘f3.patterns’ store (ID, clauses, references, pāramitā tags, fruits/orbs weights) populated with the current standard library and backfilled with source links.  The pattern store should be addressible/interactable from across the stack.  So, it should use futon1 storage, with contents feature comple with the filesystem devmaps and library, which provide a "checked out working copy"; the store needs to be easy to maintain relative to these checked out copies.  Patterns managed by the store should be inspectable, linkable, and editable with Arxana (futon4), and subject to ongoing improvement via aob-chatgpt (futon3).\\
+  \flexitag{+because:}Without a canonical pattern store, the checker has nothing trustworthy to compare against: our understanding of "inference" is based on associations between the "if/however → then" inside patterns: we need to be able to check any action that’s made relative to the codebase against these patterns to know if it counts as progress.\\
+  \flexitag{+evidence:}We have an a basic working version of the store in futon1, including ingest. ‘resources/pattern\_store.edn\tightquotecomma{} ‘src/futon3/pattern\_store.clj\tightquotecomma{} and ‘test/pattern\_store\_test.clj’ keep the catalog synced with live tests + README references.\\
+  \flexitag{+next-evidence:}\\
+    - \{:type :Golden :id "pattern-store-loads-and-enumerates" :description "A golden test proves the f3.patterns store can be loaded at runtime and enumerates all canonical pattern IDs." :acceptance-criteria ["Loading the pattern store via the public Futon3 API returns a non-empty, stable set of pattern IDs matching the standard library inventory." "Fails if the canonical store only exists on disk and is not accessible to the stack."] :suggested-location "test/futon3/pattern\_store\_golden\_test.clj" :timebox "2026-01-06"\}\\
+    - \{:type :Golden :id "pattern-metadata-and-links-complete" :description "A golden test asserts that each canonical pattern includes required metadata fields and valid source or devmap links." :acceptance-criteria ["Every pattern entry exposes ID, clauses, references, pāramitā tags, fruits/orbs weights, and at least one resolvable source link." "Fails if the canonical store only exists on disk and is not accessible to the stack."] :suggested-location "test/futon3/pattern\_metadata\_golden\_test.clj" :timebox "2026-01-06"\}\\
+    - \{:type :Golden :id "pattern-store-matches-standard-library" :description "A golden test verifies that all patterns from the existing standard library are present in f3.patterns with no omissions." :acceptance-criteria ["The set of patterns in f3.patterns exactly matches the known Nonstarter and Proto/Allow-Works library with no missing or extra entries." "Fails if the canonical store only exists on disk and is not accessible to the stack."] :suggested-location "test/futon3/pattern\_library\_sync\_golden\_test.clj" :timebox "2026-01-06"\}\\
 \par
-\textbf{! instantiated-by: Prototype 2 — Similarity Field \& Fake Embedding [💤/习]}\\
+\textbf{! instantiated-by: Prototype 1b — Live REPL Surface Validation (Drawbridge) [🪢/桥 🧪/验]}\\
+  \flexitag{+context:}Futon3 already exposes an optional Drawbridge REPL over HTTP, but we have not documented or exercised a live-in-server workflow the way Emacs users rely on emacsclient.\\
+  \flexitag{+if:}You want to use Codex (or a human operator) to connect to a running Futon3 instance and safely poke at the live system state for inspection and debugging.\\
+  \flexitag{+however:}The REPL is off by default, and there is no canonical checklist proving that a Drawbridge session can connect, query MUSN state, and execute a minimal set of safe operations.\\
+  \flexitag{+then:}Validate the Drawbridge workflow against a running Futon3 server: enable Drawbridge, connect via a REPL client, and execute a small script that queries ‘musn.api/*’ functions (clients/history/links/now), verifies read-only access, and records a short transcript in the logs/docs.\\
+  \flexitag{+because:}A proven live REPL workflow is the smallest step toward unified Clojure-stack introspection and gives Codex a reliable surface for in-server exploration.\\
+  \flexitag{+evidence:}\\
+    - ‘README.md’ (Drawbridge section) documents enabling the HTTP REPL and connecting from Emacs/CIDER.\\
+  \flexitag{+next-evidence:}\\
+    - \{:type :Checklist :id "drawbridge-repl-live-session" :description "Checklist proving Drawbridge can connect to a running Futon3 instance and execute a minimal safe query script." :acceptance-criteria ["Drawbridge enabled with a local-only token; CIDER connects over HTTP and evaluates ‘(musn.api/clients)’ / ‘(musn.api/history)’ without errors." "Transcript saved in ‘docs/’ or ‘logs/’ with timestamp and server config used."] :suggested-location "docs/repl/drawbridge-session.md" :timebox "2026-01-12"\}\\
+\par
+\textbf{! instantiated-by: Prototype 2 — Similarity Field \& Fake Embedding [🌂/甲 👂/距]}\\
   \flexitag{+context:}We already use a “fake embedding” (sigil adjacency) to find nearby patterns.\\
   \flexitag{+if:}You want reproducible neighbourhood queries for pattern suggestions.\\
   \flexitag{+however:}The embedding lives in ad-hoc CSVs and isn’t wired into FUTON3’s APIs.\\
   \flexitag{+then:}Integrate the sigil-distance matrix into FUTON3 as a first-class service (pattern search API, ‘nearest-patterns’ command, CLI/UI views) and publish tests proving deterministic neighbourhoods.\\
   \flexitag{+because:}Pattern suggestion quality underpins the flexiformal workflow and must be inspectable.\\
 \par
-\textbf{! instantiated-by: Prototype 3 — Applicability Engine \& Check DSL [👐/么 💖/什么]}\\
+\textbf{! instantiated-by: Prototype 3 — Applicability Engine \& Check DSL [🌽/末 🎑/判]}\\
   \flexitag{+context:}We want FUTON3 to answer “can this pattern apply?” and “what new obligations arise?”\\
   \flexitag{+if:}You want a declarative DSL (possibly REPL-safe) for posing check contexts and receiving structured verdicts (applies / blocked / missing evidence).\\
   \flexitag{+however:}Checks today are conversational heuristics in aob-chatgpt or handwritten flexiargs.\\
   \flexitag{+then:}Define a ‘check!’ API (inputs: pattern ID, context EDN, evidence refs; outputs: status, missing fields, derived tasks), enforce schema validation, and log every check as a proof state record.\\
   \flexitag{+because:}Turning patterns into executable checks is what makes FUTON3 “flexiformal” rather than just narrative.\\
   \flexitag{+next:}Ship the Futon1/Futon2 adapters so ‘futon3/logs/checks.edn’ entries replicate into graph + viriya stores instead of living only in local logs, and expose ‘/musn/check’ over HTTP once the transport contract is frozen.\\
-  \flexitag{+evidence:}‘src/futon3/checks.clj\tightquotecomma{} ‘src/f2/router.clj\tightquotecomma{} and ‘test/transport\_test.clj’ (check route cases) exercise the DSL end-to-end.\\
+  \flexitag{+evidence:}‘src/futon3/checks.clj\tightquotecomma{} ‘src/f2/router.clj\tightquotecomma{} ‘src/f2/transport.clj’\\
+    (Futon1 bridge wiring), ‘src/futon3/futon1\_bridge.clj\tightquotecomma{} and\\
+    ‘test/transport\_test.clj’ (workday/check forwarding cases) exercise the DSL\\
+    end-to-end.\\
 \par
-\textbf{! instantiated-by: Prototype 4 — Trail \& Proof-State Journal [💖/几 💖/弓]}\\
+\textbf{! instantiated-by: Prototype 4 — Trail \& Proof-State Journal [➰/双]}\\
   \flexitag{+context:}Wisdom trails already exist for tracing exploration, but now they must document proof obligations and how work sessions discharged them.\\
   \flexitag{+if:}You want every check, dismissal, and new pattern idea to leave an auditable trail.\\
   \flexitag{+however:}Trails are still general-purpose exploration logs, not proof-state journals.\\
@@ -823,7 +992,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   + blocked-by [:trail/persistence :cue-validation]\\
   \flexitag{+next:}(1) persist cue annotations into the trail export so Prototype 4 records which fruits/orbs were actually computed, and (2) add proof artifacts (HUD screenshots or ‘/musn/cues’ transcripts) that demonstrate the cues signal real changes instead of static defaults before declaring the prototype stable.\\
 \par
-\textbf{! instantiated-by: Prototype 4b — Intent Embedding \& Salience Map [💡/几 💡/弓]}\\
+\textbf{! instantiated-by: Prototype 4b — Intent Embedding \& Salience Map [➰/氏 🍍/办]}\\
   \flexitag{+context:}Prototype 4 turns trails into proof-state journals, but it still treats fruits/orbs as cosmetic tags instead of Kolmogorov-style proof types for each constructive step.\\
   \flexitag{+if:}You want the HUD to say not just “something happened here” but “this was an indicator check, and it was (or wasn’t) aligned with your values” — i.e. to classify ‘intent → pattern reasoning’ as typed proof steps like 🍌→🔵 rather than anonymous log lines.\\
   \flexitag{+however:}The current trail schema records ‘:pattern/id’ and ‘:obligation/id’ but has no machinery to interpret ‘intent → pattern reasoning’ as a constructive proof step, embed it in fruit/orb space, and ask “what kind of operator was this?” (fruit) and “what meta-property did it exhibit?” (orb) — e.g. “🍌: indicator construction, 🔵: virtue-aligned”.\\
@@ -833,7 +1002,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   \flexitag{+evidence:}Early Cue Embedding tests (‘test/futon3/cue\_embedding\_test.clj’) already show that keyword payloads round-trip through the embedding; hand-labelled fruit/orb assignments in ‘resources/paramita-grid.edn’ provide a gold set for checking whether ‘vec->fruit+orb’ recovers the expected operator/meta-property types on known patterns, including basic Komolgorov relations like “indicator-construction steps that should land in the 🔵 virtue band”.\\
   \flexitag{+next:}(1) Generalise the existing cue embedding to operate on ‘:trail/intent’ + ‘:pattern/reasoning’ tuples and return (fruit, orb) as proof step types, (2) run a calibration pass over a small set of manually typed patterns to tune the fruit/orb basis and salience weights, ensuring that canonical relations like 🍌→🔵 (“value-aligned indicator checks”) land in the intended region, and (3) wire the enriched trail export into Prototype 4’s rollups so devmap progress can be inspected as “which constructive proof-types actually fired today, how salient they were, and whether the checks that claimed to align with your values really did so in the embedding.”\\
 \par
-\textbf{! instantiated-by: Prototype 5 — Workday Instrumentation \& aob-chatgpt Bridge [💖/弓 👯/几]}\\
+\textbf{! instantiated-by: Prototype 5 — Workday Instrumentation \& aob-chatgpt Bridge [💤/每]}\\
   \flexitag{+context:}Within ‘aob-chatgpt’ we already experiment with reflecting on daily actions against devmap obligations.\\
   \flexitag{+if:}You want FUTON3 to serve as the backend for those reflections.\\
   \flexitag{+however:}There is no official API for submitting “workday claims,” mapping them to patterns, or receiving verification feedback; roles of “workday participants” and “instrumentation stewards” are undefined.\\
@@ -842,21 +1011,21 @@ Consolidate the documentation and contracts that define how text becomes graph s
   \flexitag{+next:}Replace the temporary ‘futon3/logs/workday.edn’ queue with a Futon1 persistence call (‘workday->graph’) and add HTTP affordances + dashboards so instrumentation stewards can audit submissions without tailing logs.\\
   \flexitag{+evidence:}Workday intake lives in ‘src/futon3/workday.clj’ with coverage in ‘test/transport\_test.clj’ (workday submission) and README sections describing the API.\\
 \par
-\textbf{! instantiated-by: Prototype 6 — Pattern Creation Workbench [📁/当 🚴/手]}\\
+\textbf{! instantiated-by: Prototype 6 — Pattern Creation Workbench [👍/已]}\\
   \flexitag{+context:}New patterns emerge from trails and devmap edits, but the capture is currently manual in futon4.\\
   \flexitag{+if:}You want FUTON3 to draft candidate patterns/flexiargs from accumulated proof states.\\
   \flexitag{+however:}Manual backlog in FUTON4 creates tension; there is no readiness window for when drafts are “hand-off ready.”\\
   \flexitag{+then:}Build a summariser that clusters trails, extracts hooks, and emits draft flexiarg blocks (IF/HOWEVER/THEN/BECAUSE) tagged with suggested pāramitā, ready for futon4 editors, and declare readiness criteria (e.g., at least N supporting checks + steward review) so handoffs are predictable.\\
   \flexitag{+because:}FUTON3 should not just consume the library; it should propose expansions grounded in lived work while signalling when drafts can be trusted.\\
 \par
-\textbf{! instantiated-by: Prototype 7 — Joy-as-Empowered-Action Metrics [💖/弓 🚴/力]}\\
+\textbf{! instantiated-by: Prototype 7 — Joy-as-Empowered-Action Metrics [⌛️/力 ⚡️/每]}\\
   \flexitag{+context:}Joy here = Spinozan increase in power to act, evidenced by commitments you can now keep.\\
   \flexitag{+if:}You want metrics that show whether checks are empowering or draining.\\
   \flexitag{+however:}Current “joy metrics” counted UI friction; they did not measure proofs discharged or obligations unblocked.\\
   \flexitag{+then:}Track ‘time-to-proof\tightquotecomma{} ‘obligations-cleared\tightquotecomma{} ‘follow-on commitments\tightquotecomma{} and ‘viriya linkages’ per session, and visualise them alongside subjective notes.\\
   \flexitag{+because:}Empowered action is the KPI for this futon.\\
 \par
-\textbf{! instantiated-by: Prototype 8 — futon2/futon1 Proof Hooks [👕/当 💤/已]}\\
+\textbf{! instantiated-by: Prototype 8 — futon2/futon1 Proof Hooks [⚡️/二 👎/已]}\\
   \flexitag{+context:}FUTON3 already generates proof states; FUTON1 (graph) and FUTON2 (energy) need those proofs as fuel.\\
   \flexitag{+if:}You want every accepted check to become a graph relation and a viriya delta without manual glue.\\
   \flexitag{+however:}today the exports are bespoke Clerk notebooks or one-off scripts.\\
@@ -864,13 +1033,25 @@ Consolidate the documentation and contracts that define how text becomes graph s
   \flexitag{+because:}proofs only matter when other futons can act on them automatically.\\
   \flexitag{+next:}Wire the Tatami event log into FUTON1 (per ‘futon3/tatami\_store.clj’ TODO) so session events flow into graph-memory before we expose the adapters.\\
 \par
-\textbf{! instantiated-by: Prototype 9 — Proof Training Ground (“Flexiformal Agent Sandbox”) [📁/义 💗/门]}\\
+\textbf{! instantiated-by: Prototype 9 — Proof Training Ground ("Flexiformal Agent Sandbox") [🚢/氏 🏃/未]}\\
   \flexitag{+context:}FUTON3 needs a reproducible training ground where humans and agents can practice flexiformal checks before contributing to FUTON6.\\
   \flexitag{+if:}You want collaborators (including FUTON6 math stewards) to experience the proof workflow hands-on.\\
   \flexitag{+however:}README/docs still emphasise ants and MUD metaphors and do not ship a simulator/tutorial bundle; roles (training facilitators vs. FUTON6 learners) and release readiness are not declared.\\
-  \flexitag{+then:}Package a “Flexiformal Training Ground” release: updated README, tutorials referencing ‘t4r/’ training patterns, sample check sessions, and a minimal simulator that feeds FUTON6’s Hyperreal entries; name facilitators (FUTON3 maintainers) and consumers (FUTON6 trainees), and publish readiness criteria (tutorials complete, simulator recorded, onboarding docs updated) before tagging the release.\\
+  \flexitag{+then:}Package a "Flexiformal Training Ground" release: updated README, tutorials referencing ‘t4r/’ training patterns, sample check sessions, and a minimal simulator that feeds FUTON6’s Hyperreal entries; name facilitators (FUTON3 maintainers) and consumers (FUTON6 trainees), and publish readiness criteria (tutorials complete, simulator recorded, onboarding docs updated) before tagging the release.\\
   \flexitag{+because:}Storytelling plus an explicit training ground turns FUTON3 into a reproducible service that upstream layers (FUTON6, FUTON7) can consume and steward.\\
+  + pattern: Adopt ‘t4r/supplement’ so the training ground demos mirror the Supplement workshop pattern—multi-agent listening infrastructure, governance rehearsal, and design-tension prototyping—anchoring the release narrative in the same staging choreography.\\
   \flexitag{+next:}Aggregate Tatami session proof events into ‘proof-chain.edn’ (per ‘tatami\_store.clj’ TODO) so the training ground exports persistent transcripts.\\
+\par
+\textbf{! instantiated-by: Prototype 10 — System Self-Description \& Machine-Readable Manifest [🔃/本 📋/系统]}\\
+  \flexitag{+context:}The stack currently has documentation and APIs at various layers—Futon1’s storage API with checked invariants, Emacs Lisp functions callable via emacsclient, HTTP/WebSocket endpoints in Futon3. But these exist as separate artifacts: code, docs, and schemas that humans must correlate.\\
+  \flexitag{+if:}You want the system to describe itself in a way that agents can query, and for that description to stay synchronized with implementation.\\
+  \flexitag{+however:}No machine-readable manifest exists where components are first-class entities in the hypergraph. Patterns describe design structures but not system capabilities.\\
+  \flexitag{+then:}Unify documentation and APIs into a machine-readable manifest where stack components are first-class entities in Futon1. Patterns describe not just design structures but system capabilities—what the message bus can do, what functions the Emacs interface exposes, what invariants each layer enforces. Enable agents to query the system about its own capabilities, and self-verify that the running system matches its declared structure.\\
+  \flexitag{+because:}This closes the reflexivity loop: a semantic network that includes a model of itself. FUTON3’s pattern checker already validates its own devmap; extending this to describe the full stack enables ongoing self-documentation as the system extends. The machinery from F5 (patterns → schema → code) applies reflexively: the stack itself becomes a domain.\\
+  \flexitag{+evidence:}\\
+    - ‘futon4/docs/evidence/rc-1.1-evidence.edn’ seeds a machine-readable claim map for Futon0–Futon4.\\
+  \flexitag{+next:}\\
+    - Expand the evidence map into a manifest schema (components, interfaces, invariants) and ingest it into Futon1 for queryable self-description.\\
 \switchcolumn
 % FUTON4
 \textbf{FUTON4}\par
@@ -884,107 +1065,160 @@ Consolidate the documentation and contracts that define how text becomes graph s
 @length any\\
 @factor Tranquility (passaddhi)\\
 \textbf{@IFR: FUTON4 becomes the passaddhi (tranquility) memory atelier where Arxana, graph memory, flexiarg, and agents interoperate, letting symbolic artefacts be edited, linked, and narrated in one continuous workspace that settles and integrates the energetic work beneath it.}\\
-\textbf{@state Arxana reanimation through M4 is working (storage bridge, browsing, relations) while inclusion/transclusion UX, modern import/export shims, and QA/release prep remain open.}\\
+\textbf{@state Arxana reanimation through M4 is working (storage bridge, browsing,}\\
+\textbf{relations) and the system is now in QA. Inclusion/transclusion UX is WIP.}\\
+\textbf{Export to standard formats works, but import for modern doc formats does not}\\
+\textbf{yet; release prep and tagging remain open.}\\
 \textbf{@next Deliver the pending inclusion UX, document modern import/export/migration shims, and grow the QA + contributor guide so a “revived” release can be tagged.}\\
 \par
 \par
-\textbf{! instantiated-by: Prototype 0 (Running Since 29 July 2025) [💗/从 🌏/甲]}\\
+\textbf{! instantiated-by: Prototype 0 (Running Since 29 July 2025) [🙅/久 🌝/序]}\\
   \flexitag{+context:}Prototype 0 establishes the symbolic foundations, artefact inventory, and DREAM logic.\\
   \flexitag{+if:}You want a coherent first cycle of a year-long 12-prototype run.\\
   \flexitag{+however:}Symbolic activation does not yet translate into memory operations or agent affordances.\\
   \flexitag{+then:}Establish baseline artefacts (README-manifesto, clock interface, Arxana reboot outline).\\
   \flexitag{+because:}This creates an anchor for all subsequent prototypes.\\
+  + status[ready]\\
+  \flexitag{+evidence:}\\
+    - ‘spine.org’ — Master orchestration file with tangling machinery (lines 19–103).\\
+    - ‘dev/bootstrap.el’ — Repeatable build harness for interactive + batch builds.\\
+    - ‘AGENTS.md’ — Development manifesto describing Phase 1/2 strategy.\\
+    - ‘docs/reanimation-plan.org’ — M0–M6 milestone tracker with checkbox progress.\\
+    - ‘test/arxana-bootstrap-test.el’ — Baseline harness validation (3 tests).\\
+    - ‘arxana-tangled.el’ — Generated single-source output (3752 lines) proving round-trip.\\
 \par
-\textbf{! instantiated-by: Prototype 1 — Arxana Reboot (Week-long target) [👎/新 🎋/长]}\\
+\textbf{! instantiated-by: Prototype 1 — Arxana Reboot (Week-long target) [🙅/久 💖/用]}\\
   \flexitag{+context:}Legacy literate-programming structure exists but is dormant.\\
   \flexitag{+if:}You want stable parsing, node navigation, and save-back-to-LaTeX working.\\
   \flexitag{+however:}Legacy Emacs-Lisp and refactored Clojure schemas diverge.\\
   \flexitag{+then:}Reboot spine parser, restore node browsing, define new nema-based schema, test round-trip edits.\\
   \flexitag{+because:}A functioning editor is the precondition for all downstream memory work.\\
+  + status[ready-pending-final-checks]\\
+  \flexitag{+evidence:}\\
+    - Spine parser rebooted: ‘spine.org’ lines 50–103 define ‘arxana-tangle-spine-concat’.\\
+    - Node browsing restored: ‘dev/arxana-relations.el’ (ego, cooccur, tail commands),\\
+      ‘dev/arxana-browse.el’ (catalog, labels, history navigation).\\
+    - Nema-based schema defined: ‘0-Reintroduction.org’ documents the EAV model\\
+      (nema, article, metadata scholium, event/hyperedge, plexus).\\
+    - Round-trip edits tested: 15 test files in ‘test/’ (\textasciitilde{}80 tests total) including\\
+      ‘arxana-adjacency-test.el\tightquotecomma{} ‘arxana-saving-test.el\tightquotecomma{} ‘arxana-store-test.el’.\\
+    - Storage bridge complete: ‘dev/arxana-store.el’ (350+ lines) with 12 Futon API helpers,\\
+      documented in ‘docs/storage-bridge.org’ with curl examples.\\
+    - Article lifecycle: ‘dev/arxana-article.el’ (metadata sync, deletion propagation).\\
+    - Scholia authoring: ‘dev/arxana-scholium.el’ (compose, region capture, authoring mode).\\
+    - Derivation previews: ‘dev/arxana-derivation.el’ (collapsible previews, color overlays,\\
+      toggle commands for inclusion/transclusion/identification highlights).\\
+    - Inclusion/transclusion guards: ‘dev/arxana-inclusion.el’ + tests\\
+      (‘test/arxana-inclusion-test.el\tightquotecomma{} ‘test/arxana-inclusion-batch-test.el’).\\
+    - Import/export shims: ‘dev/arxana-import.el’ (Org file/directory import),\\
+      ‘dev/arxana-export.el’ (Org export with MANIFEST generation).\\
+    - QA/docs bundle: ‘README.md’ (testing + verification), ‘docs/contributor-guide.md\tightquotecomma{}\\
+      ‘docs/docbook/futon4/futon4.org’ (compat/test support + contributor guide).\\
   + next (workflow plumbing):\\
-    - Create import/export shims for modern doc formats.\\
-    - Produce migration notes for historical datasets.\\
+    - Create import/export shims for modern doc formats. [DONE — see evidence above]\\
+    - Produce migration notes for historical datasets. [PENDING — M5 item 4/4]\\
   + next (QA \& release prep):\\
-    - Grow the ERT suite (unit, integration, CLI smoke).\\
-    - Document test instructions and CI hooks.\\
-    - Provide contributor guide (coding style, tangling, testing).\\
-    - Tag a “revived” release with reproducible steps.\\
+    - Grow the ERT suite (unit, integration, CLI smoke). [DONE — 15 files, \textasciitilde{}80 tests]\\
+    - Document test instructions and CI hooks. [PARTIAL — README + docbook docs cover tests; no CI config]\\
+    - Provide contributor guide (coding style, tangling, testing). [DONE — ‘docs/contributor-guide.md’]\\
+    - Tag a "revived" release with reproducible steps. [PENDING]\\
+  \flexitag{+next-evidence:}\\
+    - ‘docs/migration-guide.org’ documenting import paths for historical .epub/.tex formats.\\
+    - ‘.github/workflows/test.yml’ or equivalent CI configuration.\\
+    - Git tag marking the "revived" Prototype 1 release.\\
 \par
-\textbf{! instantiated-by: Prototype 2 — Graph Memory (Datascript) [💖/已 💤/生活]}\\
+\textbf{! instantiated-by: Prototype 2 — Graph Memory (Datascript) [🙅/久 💤/用]}\\
   \flexitag{+context:}The hyperedge schema for Arxana exists on paper but not in running code.\\
   \flexitag{+if:}You want argument fragments to become addressable nodes with provenance.\\
   \flexitag{+however:}there is no minimal memory manager wiring Arxana buffers to Datascript.\\
   \flexitag{+then:}implement ‘add-node\tightquotecomma{} ‘activate-node\tightquotecomma{} and ‘link-node’; persist them via Datascript; replay a session to prove round-trips.\\
   \flexitag{+because:}without a living graph memory, Arxana never escapes editor cosplay.\\
 \par
-\textbf{! instantiated-by: Prototype 3 — Flexiarg ⇄ Arxana Integration [💖/双]}\\
+\textbf{! instantiated-by: Prototype 3 — Flexiarg ⇄ Arxana Integration [🙅/双 💬/卡]}\\
   \flexitag{+context:}Flexiarg is acting as a pidgin for arguments and patterns.\\
   \flexitag{+if:}You want arguments to compile into graph nodes and be editable via Arxana.\\
   \flexitag{+however:}No translation layer exists between pidgin text and structured memory entries.\\
   \flexitag{+then:}Define schema mapping: argument-block → rule node (Q/A pair).\\
   \flexitag{+because:}This yields bidirectional editing: human-readable ↔ machine-structured.\\
 \par
-\textbf{! instantiated-by: Prototype 4 — Agent Layer Bridge (FUTON3) [📁/不能 👐/但]}\\
+\textbf{! instantiated-by: Prototype 4 — Agent Layer Bridge (FUTON3) [👐/么 👘/工]}\\
   \flexitag{+context:}Agents can “speak” flexiarg but cannot yet access memory graphs.\\
   \flexitag{+if:}You want pattern-aware agents who can detect tension, link motifs, and apply PIDGIN→PROSE.\\
   \flexitag{+however:}No API exists to let a GPT-based agent query the graph.\\
   \flexitag{+then:}Create REPL-level bridge (datascript queries + JSON-rpc + Emacs functions).\\
   \flexitag{+because:}This is what upgrades GPT into a pattern-capable agent.\\
 \par
-\textbf{! instantiated-by: Prototype 5 — Multi-user Memory (MUSN revival) [🔦/在 🏡/但]}\\
+\textbf{! instantiated-by: Prototype 5 — Multi-user Memory (MUSN revival) [🔦/门 👐/互]}\\
   \flexitag{+context:}MUSN existed as a concept for multi-user semantic memory.\\
   \flexitag{+if:}You want collaborators (Serena, Rob, Harvinder, etc.) to share a semantic space.\\
   \flexitag{+however:}No multi-user or sync layer exists yet.\\
   \flexitag{+then:}Use Datascript local + XTDB remote as stepping stones.\\
   \flexitag{+because:}This will open the door to multi-agent co-reasoning and shared prototyping.\\
 \par
-\textbf{! instantiated-by: Prototype 6 — Argumentarium / Scholium Mode [🌲/木 🌳/但]}\\
+\textbf{! instantiated-by: Prototype 6 — Argumentarium / Scholium Mode [🐲/久 🙅/用]}\\
   \flexitag{+context:}You want something like Spinoza’s *Ethics* but with imports, hypergraphs, and links.\\
   \flexitag{+if:}You want a library of arguments with provenance, alternative proofs, counterproofs.\\
   \flexitag{+however:}Current flexiargs do not yet link into a live scholium tree.\\
-  \flexitag{+then:}Add scholium metadata + “view scholium tree” mode in Arxana.\\
+  \flexitag{+then:}Add scholium metadata + "view scholium tree" mode in Arxana.\\
   \flexitag{+because:}This becomes the living mathematical-philosophical substrate.\\
   + next (inclusion/transclusion UX):\\
     - Visually differentiate included vs. transcluded regions in the main article buffer.\\
+      \verb|[PARTIAL — `dev/arxana-derivation.el` provides collapsible previews + color overlays|\\
+      in display buffer; main article buffer highlighting not yet wired]\\
     - Provide toggle commands to highlight each derivative type independently.\\
+      \verb|[DONE — `arxana-derivation-toggle-inclusion-highlights`,|\\
+      ‘arxana-derivation-toggle-transclusion-highlights\tightquotecomma{}\\
+      ‘arxana-derivation-toggle-identification-highlights’]\\
     - Document the visual affordances and add a regression test covering both styles.\\
+      \verb|[PARTIAL — `test/arxana-derivation-test.el` (5 tests) covers preview rendering;|\\
+      no formal UX doc yet]\\
+  + partial-evidence (inclusion/transclusion UX):\\
+    - ‘dev/arxana-derivation.el’ (290+ lines): preview blocks, face definitions\\
+      (‘arxana-derivation-inclusion-face\tightquotecomma{} ‘-transclusion-face\tightquotecomma{} ‘-identification-face’),\\
+      customization variables (‘arxana-derivation-preview-max-chars/lines’).\\
+    - ‘test/arxana-derivation-test.el’: 5 tests covering preview detection, rendering, toggle.\\
+  + next-evidence (inclusion/transclusion UX):\\
+    - Main article buffer overlays wired to ‘mark-things-up’ hook.\\
+    - ‘docs/inclusion-ui.md’ documenting visual affordances and toggle commands.\\
+    - Integration test verifying main buffer + display buffer side-by-side.\\
+    - Optional: CRDT-backed multi-user transclusion sessions (when collaboration is needed).\\
 \par
-\textbf{! instantiated-by: Prototype 7 — XTDB Integration [⌛️/久 💖/长]}\\
+\textbf{! instantiated-by: Prototype 7 — XTDB Integration [⌛️/久 🙅/分]}\\
   \flexitag{+context:}Bi-temporal, multi-user storage needed for long-term evolution.\\
   \flexitag{+if:}You want durability, branching histories, provenance queries.\\
   \flexitag{+however:}XTDB idioms differ from Datascript; schema migration needed.\\
   \flexitag{+then:}Rekey schema, add transaction logs, implement time-travel queries.\\
   \flexitag{+because:}This turns Arxana into a serious memory engine.\\
 \par
-\textbf{! instantiated-by: Prototype 8 — Pattern Library Activation [💤/但 💖/却]}\\
+\textbf{! instantiated-by: Prototype 8 — Pattern Library Activation [🐺/已 🗿/世]}\\
   \flexitag{+context:}You have dozens of patterns (Mojo, ORP, Paramita, Flexiarg, etc.).\\
   \flexitag{+if:}You want agents to recommend patterns or detect pattern-relevant situations.\\
   \flexitag{+however:}Patterns are not yet encoded in memory or linked to triggers.\\
   \flexitag{+then:}Import patterns as graph rules; map IF/HOWEVER/THEN/BECAUSE into triggers \& actions.\\
   \flexitag{+because:}This yields genuine pattern-aware intelligence.\\
 \par
-\textbf{! instantiated-by: Prototype 9 — StackExchange Import [💖/叉 🙅/无]}\\
+\textbf{! instantiated-by: Prototype 9 — StackExchange Import [🙅/叉 💤/久]}\\
   \flexitag{+context:}StackExchange holds thousands of argued Q/A pairs that fit Arxana’s schema.\\
   \flexitag{+if:}You want to harvest them as production rules with provenance.\\
   \flexitag{+however:}there is no importer aligning their Markdown into our graph schema.\\
   \flexitag{+then:}build a parser, map Q/A + comments into rule nodes, annotate tags, and cross-index them with existing flexiargs.\\
   \flexitag{+because:}seeding the memory with curated Q/A pairs gives Arxana instant argumentative density.\\
 \par
-\textbf{! instantiated-by: Prototype 10 — Corpus Mathematics Layer [👯/但 🐺/却]}\\
+\textbf{! instantiated-by: Prototype 10 — Corpus Mathematics Layer [👯/未 💬/归]}\\
   \flexitag{+context:}You want to bridge natural/formal logic (Strand 1B).\\
   \flexitag{+if:}You want Dirichlet distributions and Abelian groups to live in the same memory model.\\
   \flexitag{+however:}No symbolic math integration exists yet.\\
   \flexitag{+then:}Build math namespace + flexiarg-lemma type + REPL test harness.\\
   \flexitag{+because:}This is how FUTON becomes an “AI Scientist.”\\
 \par
-\textbf{! instantiated-by: Prototype 11 — Literary Interface (Penmaster) [💖/好]}\\
+\textbf{! instantiated-by: Prototype 11 — Literary Interface (Penmaster) [🙅/也 😄/久]}\\
   \flexitag{+context:}You want Arxana to also serve as a book-editing and generative-literary tool.\\
   \flexitag{+if:}You want to edit Penmaster or draft your book via Arxana blocks.\\
   \flexitag{+however:}No good UI for long-form text yet.\\
   \flexitag{+then:}Add “manuscript mode” + chunking + cross-reference map.\\
   \flexitag{+because:}FUTON becomes the writing environment.\\
 \par
-\textbf{! instantiated-by: Prototype 12 — Year-End Synthesis [💗/末 🌽/年]}\\
+\textbf{! instantiated-by: Prototype 12 — Year-End Synthesis [🌽/末 🌅/轮]}\\
   \flexitag{+context:}The prototype cycle ends; reflection and forward-planning needed.\\
   \flexitag{+if:}You want long-term stability, and upgraded beta-schema.\\
   \flexitag{+however:}Accumulated divergence between prototypes must be unified.\\
@@ -1007,26 +1241,26 @@ Consolidate the documentation and contracts that define how text becomes graph s
 \textbf{@next start}\\
 \par
 \par
-\textbf{! instantiated-by: Prototype 0 — Nonstarter Frame (Concentration without Teleology) [👴/乃 🍊/不能]}\\
+\textbf{! instantiated-by: Prototype 0 — Nonstarter Frame (Concentration without Teleology) [🎶/习 🔥/己]}\\
   \flexitag{+context:}FUTON5 is the samādhi layer: gathering energy around chosen patterns, sustaining focus, and refusing the teleology of success so value is created without capture and creativity concentrates without collapse.\\
   \flexitag{+if:}You want a layer that stabilises creative practice (music, coding, argument, CT diagrams) into repeatable, renewable flows.\\
   \flexitag{+however:}Current prototypes (MetaCA, flexiarg, musical studies, CT notes) sit in isolation and do not yet form a concentrated practice ecology.\\
   \flexitag{+then:}Define FUTON5 as the layer where prototypes from F4 are refined into systems—pattern libraries, CT riffs, musical grammars, improvisation logics, Nonstarter economics—so concentrated practice can run independent of outcome-chasing.\\
   \flexitag{+because:}Without a stable concentrator layer, FUTON4’s tranquility and FUTON6’s argument power cannot synergise.\\
 \par
-\textbf{! instantiated-by: Prototype 1 — Patterns of Improvisation (Music ⇄ Math ⇄ CT) [👈/归 🔃/世]}\\
-  \flexitag{+context:}Improvisation, category theory, MetaCA, and design patterns exhibit the same structural move: they generate new forms by transforming existing ones. FUTON5 requires not only descriptions of improvisation but *operators* that act on F4/F5 patterns.\\
-  \flexitag{+if:}You want FUTON5 to unify musical, mathematical, and symbolic improvisation into a coherent substrate of transformation rules.\\
-  \flexitag{+however:}Current improvisation notes, CT riffs, musical examples, and MetaCA sketches exist as fragments, not as typed operators that can act on pattern-graphs.\\
-  \flexitag{+then:}Create a small “Patterns of Improvisation” protobook with 8–12 core operators (e.g., Prototype → Production, Kleisli Turn, Return to I, Phase-Switch, Noise Budget, Concentration Spiral). For each operator:\\
-      • provide a riff (music),  \\
-      • a CT sketch (arrow diagram or endofunctor view),  \\
-      • a MetaCA local rule mapping,  \\
-      • and *crucially* define its action on F4/F5 pattern-graphs (input type, output type, invariants preserved, tensions altered).\\
-    Encode each operator as an F5 “meta-pattern node” consumable by F4 (memory) and F6 (argument).  \\
-  \flexitag{+because:}These meta-patterns form the initial FUTON5 “RNA pack”: a finite alphabet of transformations that can reshape patterns, concentrate practice, and generate new improvisational structure across domains.\\
+\textbf{! instantiated-by: Prototype 1 — Patterns of Improvisation \& Meta-Pattern Formalism [🌲/归 🔃/己]}\\
+  \flexitag{+context:}Improvisation, category theory, MetaCA, and design patterns exhibit the same structural move: they generate new forms by transforming existing ones. FUTON5 requires not only descriptions of improvisation but *operators* that act on F4/F5 patterns. The target is \textasciitilde{}256 core meta-patterns, grounded computationally in the 256 elementary cellular automata—each CA treated as a control feature at the meta level.\\
+  \flexitag{+if:}You want FUTON5 to unify musical, mathematical, and symbolic improvisation into a coherent substrate of transformation rules with a formal composition logic.\\
+  \flexitag{+however:}Current improvisation notes, CT riffs, musical examples, and MetaCA sketches exist as fragments, not as typed operators that can act on pattern-graphs. No formal pipeline exists from patterns to executable implementations.\\
+  \flexitag{+then:}Create a "Patterns of Improvisation" protobook with core operators (e.g., Prototype → Production, Kleisli Turn, Return to I, Phase-Switch, Noise Budget, Concentration Spiral). For each operator:\\
+      • provide a riff (music),\\
+      • a CT sketch (arrow diagram or endofunctor view),\\
+      • a MetaCA local rule mapping grounded in the 256 elementary CA,\\
+      • and define its action on F4/F5 pattern-graphs (input type, output type, invariants preserved, tensions altered).\\
+    Establish the formal pipeline: **patterns → category-theoretic schema → code generation** (via LLM or other methods). This enables executable documentation—the pattern composition *is* the specification that generates implementation.\\
+  \flexitag{+because:}These meta-patterns form the FUTON5 "RNA pack": a finite alphabet of transformations grounded in CA control features, with category theory providing the composition rules. The formalism applies reflexively: the stack itself becomes a domain, enabling ongoing self-documentation as the system extends.\\
 \par
-\textbf{! instantiated-by: Prototype 1b — Sigil–Operator Lexicon (RNA Bootloader) [🈚/初 🌀/符]}\\
+\textbf{! instantiated-by: Prototype 1b — Sigil–Operator Lexicon (RNA Bootloader) [🌲/归]}\\
   \flexitag{+context:}FUTON4 already uses a 256-sigil alphabet to index symbolic states and pattern traces. FUTON5 requires these sigils to index *meta-patterns*—operators that transform F4/F5 pattern-graphs.\\
   \flexitag{+if:}You want a finite, reusable, cross-domain alphabet of improvisational operators (an “RNA table”) that can be invoked by agents, humans, and musical systems.\\
   \flexitag{+however:}Sigils currently tag patterns descriptively but lack operational semantics; no mapping exists between a sigil and the transformation it performs on a pattern-graph.\\
@@ -1041,56 +1275,63 @@ Consolidate the documentation and contracts that define how text becomes graph s
   \flexitag{+because:}Without a sigil-indexed transformation alphabet, FUTON5 lacks executable concentration mechanics. With it, sigils become active operators—an RNA engine capable of transforming DNA-patterns from FUTON4 into living, improvisable forms.\\
 \par
 \par
-\textbf{! instantiated-by: Prototype 2 — Concentration Engine (Chops, Not Goals) [👴/工 💖/己]}\\
+\textbf{! instantiated-by: Prototype 2 — Concentration Engine (Chops, Not Goals) [🌲/习 ⚡️/己]}\\
   \flexitag{+context:}Concentration in F5 is about capacity, not outcomes: sustained work on craft (music, CT, code) without dangling the carrot of “success.”\\
   \flexitag{+if:}You want a system for renewable, non-self-punishing discipline.\\
   \flexitag{+however:}Current practice cycles depend heavily on mood, projects, or institutional demands.\\
   \flexitag{+then:}Establish a “Concentration Engine” protocol with 3–5 stable practice grooves (bass technique, CT reading, coding drills, MetaCA tinkering), ensure each groove has low activation energy and clear termination points, and track them in FUTON5 as patterns rather than habits.\\
   \flexitag{+because:}Concentration emerges from rhythm, not obligation.\\
 \par
-\textbf{! instantiated-by: Prototype 3 — Pattern Library (Post-Flexiarg) [💖/但是 💬/世]}\\
+\textbf{! instantiated-by: Prototype 3 — Pattern Library (Post-Flexiarg) [💬/世 🌲/归]}\\
   \flexitag{+context:}Flexiarg formalises arguments (F6) while FUTON5 formalises patterns.\\
   \flexitag{+if:}You want a domain-agnostic, cross-modal pattern language scaffold that sits between Arxana and the argumentarium.\\
   \flexitag{+however:}Existing patterns are scattered across papers (P4P, P4D, P4NG) and are not harmonised.\\
   \flexitag{+then:}Define a minimal F5 pattern schema (@pattern-id, IF/HOWEVER/THEN/BECAUSE where useful, examples across music/code/CT/life, invariants/failure modes, “improvisation affordances”) and refactor 6–12 core patterns into that schema.\\
   \flexitag{+because:}FUTON5 needs a pattern substrate that can plug directly into FUTON6’s argument logic.\\
 \par
-\textbf{! instantiated-by: Prototype 4 — MetaCA as Improvisation Physics [👴/己 🌀/我]}\\
+\textbf{! instantiated-by: Prototype 4 — MetaCA as Improvisation Physics [🔃/己 🔺/今]}\\
   \flexitag{+context:}MetaCA is your 2014 prototype of local-rule self-evolution and mirrors your 2025 simulation-based self-understanding.\\
   \flexitag{+if:}You want to reinterpret MetaCA as the “physics” of improvisation: everything evolves locally but is constrained globally by a deep rule (Dhamma / AIF).\\
   \flexitag{+however:}MetaCA code exists, yet its conceptual integration with FUTON5 is not explicit.\\
   \flexitag{+then:}Reframe MetaCA as an F5 conceptual engine where local rules equal riffs/CT arrows/pattern transforms, the global rule embodies AIF, edge-of-chaos represents productive creativity, collapse modes name burnout/ego/overcontrol, and capture this in one short essay inside the F5 devmap.\\
   \flexitag{+because:}This gives FUTON5 a mathematical “feel” that is embodied, generative, and non-institutional.\\
 \par
-\textbf{! instantiated-by: Prototype 5 — Nonstarter Social Physics [💰/无 👴/元]}\\
+\textbf{! instantiated-by: Prototype 5 — Nonstarter Social Physics [🎶/无 🔃/己]}\\
   \flexitag{+context:}Nonstarter = anti-teleology, refusal of capture, joy in giving, Patti Smith energy, LANDBACK aesthetics.\\
   \flexitag{+if:}You want FUTON5 not only to concentrate craft but to concentrate value without reproducing institutional extraction.\\
   \flexitag{+however:}There is no current model linking creative concentration with non-extractive flows.\\
   \flexitag{+then:}Define a simple Nonstarter Ledger inside F5 that tracks “value given” (hours, riffs, patterns released), “value received” (collaboration, uplift, resonance), enforces a “no-ask posture” protocol, encodes reciprocity loops based on pattern contribution rather than money, and distinguishes RESCUE requests from COLLABORATION requests.\\
   \flexitag{+because:}With a functional Nonstarter economy, FUTON5 becomes spiritually and materially sustainable.\\
 \par
-\textbf{! instantiated-by: Prototype 6 — Improvisation Metrics (Not KPIs) [👈/归 😻/叉]}\\
+\textbf{! instantiated-by: Prototype 6 — Improvisation Metrics (Not KPIs) [🚞/叉 🌲/归]}\\
   \flexitag{+context:}Metrics destroy creativity when tied to teleology.\\
   \flexitag{+if:}You want a way to sense concentration without collapsing into institutional logic.\\
   \flexitag{+however:}No metrics currently track musical, cognitive, or conceptual “chops.”\\
   \flexitag{+then:}Define a set of “Improvisation Indicators” (Noise Budget, Flow Duration, Surprise-to-Stability Ratio, Return-to-I Coherence, Cross-Domain Lift between music/writing/coding) and track them qualitatively in F5 without gamification.\\
   \flexitag{+because:}FUTON5 needs feedback, not surveillance.\\
 \par
-\textbf{! instantiated-by: Prototype 7 — F4⇄F5⇄F6 Conduction Pathways [👐/什么]}\\
+\textbf{! instantiated-by: Prototype 7 — F4⇄F5⇄F6 Conduction Pathways [👐/么 🔥/己]}\\
   \flexitag{+context:}F4 is tranquility, F6 is war machine, and F5 is the samādhi bridge.\\
   \flexitag{+if:}You want to flow smoothly between relaxed inscription (F4), concentrated craft (F5), and structured reasoning (F6).\\
   \flexitag{+however:}There is no explicit pathway linking the three.\\
   \flexitag{+then:}Define three conduction modes—F4→F5 (prototype → practice, what to work on today), F5→F6 (practice → argument, what becomes a formal insight), F6→F5 (argument → pattern, what needs to be embodied)—and document these flows as short “transmission patterns.”\\
   \flexitag{+because:}Without conduction, the stack fragments instead of concentrating.\\
 \par
-\textbf{! instantiated-by: Prototype 8 — 12-Prototype Year (Concentration Arc) [👴/年 💑/岁]}\\
+\textbf{! instantiated-by: Prototype 8 — Demonstrated Transfer Milestone [🔃/桥 🌲/归]}\\
+  \flexitag{+context:}The meta-pattern formalism claims that patterns developed in one domain can transfer to another. This claim must be validated, not just asserted.\\
+  \flexitag{+if:}You want confidence that FUTON5’s approach is real rather than just well-specified.\\
+  \flexitag{+however:}No concrete demonstration yet shows a pattern developed for (e.g.) ant simulation actually working when applied to cellular automata control, music, or another domain.\\
+  \flexitag{+then:}Select 2-3 patterns from the core set, develop them fully in one domain (e.g., ants or MetaCA), then apply them to a different domain (e.g., musical improvisation or crowdfunding) and document whether they work, fail, or require adaptation. Record the results as evidence for or against the transfer thesis.\\
+  \flexitag{+because:}A key milestone for FUTON5’s plausibility is demonstrating that patterns developed in one domain actually transfer to another—not just that they can be written, but that they work.\\
+\par
+\textbf{! instantiated-by: Prototype 9 — 12-Prototype Year (Concentration Arc) [🌽/末 🌲/归]}\\
   \flexitag{+context:}You are already running a 12-prototype year.\\
   \flexitag{+if:}You want FUTON5 to shape it into a concentration arc rather than a sequence of builds.\\
   \flexitag{+however:}There is no formal mapping of prototypes to F5 themes.\\
   \flexitag{+then:}Assign each prototype a concentration domain (MetaCA, Patterns of Improvisation, CT chops, Musical chops, Flexiarg → pattern transforms, Nonstarter ledger, Pattern economy, F5 system interfaces, Meta-Improvisation, AIF integration, Relational improvisation patterns, Year-end coherence synthesis) and keep the map current as the year unfolds.\\
   \flexitag{+because:}Concentration deepens through cyclical return.\\
 \par
-\textbf{! instantiated-by: Prototype 9 — Yearly F5 Review (Concentration Renewal) [👴/口 🌝/这样]}\\
+\textbf{! instantiated-by: Prototype 10 — Yearly F5 Review (Concentration Renewal) [🌅/已 🌲/归]}\\
   \flexitag{+context:}Concentration weakens if not refreshed.\\
   \flexitag{+if:}You want F5 to stay light, concentrated, and improvisational rather than dogmatic.\\
   \flexitag{+however:}Without review, patterns accrete into heaviness.\\
@@ -1116,17 +1357,18 @@ Consolidate the documentation and contracts that define how text becomes graph s
 \textbf{@state Design-only vision; no dedicated HDM code or imports exist yet beyond conceptual outlines.}\\
 \textbf{@next start}\\
 \par
-\textbf{! instantiated-by: Prototype 0 — FUTON6 Frame \& Charter [💗/义 💖/今]}\\
+\textbf{! instantiated-by: Prototype 0 — FUTON6 Frame \& Charter [👎/仍 💬/么]}\\
   \flexitag{+context:}F6 names the HDM layer: the place where mathematical content,\\
     scholia, and argument patterns live as shared habitat.\\
-  \flexitag{+if:}A crisp scope is needed so HDM does not dissolve into “general aspiration.”\\
+  \flexitag{+if:}A crisp scope is needed so HDM does not dissolve into "general aspiration."\\
   \flexitag{+however:}Current F6 references still blur its role with F3 execution and F4 editing.\\
-  \flexitag{+then:}Write the F6 charter: (1) remit, (2) neighbours (F3/F4/F5), \\
+  \flexitag{+then:}Write the F6 charter: (1) remit, (2) neighbours (F3/F4/F5),\\
     (3) responsibilities (stewardship of content, scholia, pattern indexing),\\
     (4) non-responsibilities (checking = F3; tooling = F4).\\
+    Note: Via Curry-Howard, the same machinery could in principle extend to programs (proofs = programs), but this is explicitly deferred to avoid swallowing everything prematurely. F6’s scope is mathematical knowledge; code-as-proof is a conceptually adjacent but separate concern.\\
   \flexitag{+because:}A charter stabilises FUTON’s cascade and prevents scope creep.\\
 \par
-\textbf{! instantiated-by: Prototype 1 — Pattern/Proof Bridge [💖/入 💗/义]}\\
+\textbf{! instantiated-by: Prototype 1 — Pattern/Proof Bridge [👎/已 💬/氏]}\\
   \flexitag{+context:}F3 handles flexiarg, proof trails, and pattern canonicalisation.\\
   \flexitag{+if:}F6 should receive arguments in a stable, machine-tractable form.\\
   \flexitag{+however:}F6 currently implies it must “perform” canonicalisation.\\
@@ -1134,7 +1376,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     arguments from F3 into the HDM, attaching math metadata but not re-checking.\\
   \flexitag{+because:}This respects the separation of powers (F3 = execution; F6 = habitat).\\
 \par
-\textbf{! instantiated-by: Prototype 2 — Fruits/Orbs as Math-Annotators [💗/办 🍍/系统]}\\
+\textbf{! instantiated-by: Prototype 2 — Fruits/Orbs as Math-Annotators [🍍/办 🔸/十]}\\
   \flexitag{+context:}F3 annotates flexiform arguments with fruits and pāramitā orbs.\\
   \flexitag{+if:}F6 wants to preserve narrative weight in math-native form.\\
   \flexitag{+however:}No mapping exists from fruit/orb → math-role (lemma, axiom, strategy).\\
@@ -1143,7 +1385,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     does not manage the fruit system itself.\\
   \flexitag{+because:}It preserves argumentative salience without overextending F6.\\
 \par
-\textbf{! instantiated-by: Prototype 3 — Hyperreal Dictionary Seedbed [💗/义]}\\
+\textbf{! instantiated-by: Prototype 3 — Hyperreal Dictionary Seedbed [🔸/小 💬/今]}\\
   \flexitag{+context:}HDM’s mission is to build inhabitable mathematics, not abstract criteria.\\
   \flexitag{+if:}F6 needs a concrete minimal slice to prove viability.\\
   \flexitag{+however:}No seed slice or exemplars have been frozen.\\
@@ -1152,7 +1394,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     entries: definitions, examples, small proofs, scholia, code.\\
   \flexitag{+because:}A tangible neighbourhood demonstrates HDM’s inhabitable promise.\\
 \par
-\textbf{! instantiated-by: Prototype 4 — Layer-3 Reasoning Patterns [⛲️/示]}\\
+\textbf{! instantiated-by: Prototype 4 — Layer-3 Reasoning Patterns [💬/乃 🔺/今]}\\
   \flexitag{+context:}HDM is the choreography of mathematical moves, not just a pile of entries.\\
   \flexitag{+if:}FUTON6 needs a vocabulary of cross-domain reasoning idioms (quotient tricks,\\
     local->global moves, dualisation, extremisation) so agents can navigate strategy.\\
@@ -1164,7 +1406,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   \flexitag{+because:}L3 patterns supply the “physics” of mathematical reasoning and make HDM\\
     truly traversable.\\
 \par
-\textbf{! instantiated-by: Prototype 5 — Layer-4 Domain Patterns [🌳/本]}\\
+\textbf{! instantiated-by: Prototype 5 — Layer-4 Domain Patterns [🔺/今 👉/乃]}\\
   \flexitag{+context:}Subject areas (MSC slices) have canonical machinery—ultrafilters,\\
     Yoneda, compact operators, Markov kernels—that sit between general motifs and\\
     specific entries.\\
@@ -1178,7 +1420,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   \flexitag{+because:}L4 patterns provide the local physics that make each mathematical\\
     neighbourhood habitable.\\
 \par
-\textbf{! instantiated-by: Prototype 6 — L3<->L4 Relation Map [〰️/互]}\\
+\textbf{! instantiated-by: Prototype 6 — L3<->L4 Relation Map [👉/田 🔺/今]}\\
   \flexitag{+context:}FUTON6 spans HDM motifs, L3 reasoning physics, L4 domain machinery,\\
     and concrete entries.\\
   \flexitag{+if:}Imports and viewers need an explicit handshake so layers do not blur.\\
@@ -1189,19 +1431,19 @@ Consolidate the documentation and contracts that define how text becomes graph s
     viewers showing the L3<->L4 wiring for any definition, proof, or example.\\
   \flexitag{+because:}A fractal, Alexanderian cascade keeps FUTON6 coherent as it scales.\\
 \par
-\textbf{! instantiated-by: Prototype 7 — HDM Dojo Mode [🎎/友]}\\
+\textbf{! instantiated-by: Prototype 7 — HDM Dojo Mode [🌀/习 🐴/无]}\\
   \flexitag{+context:}Mathematics becomes native when practiced like a dojo: progressive\\
-    disclosure, sparring partners, and navigable landscapes.\\
-  \flexitag{+if:}FUTON6 is to turn math into a habitable habitat for humans and agents.\\
+    disclosure, sparring partners, and navigable landscapes. The goal is not just formal validity but *teachable, understandable proofs*—capturing the pedagogical path, not just the logical structure.\\
+  \flexitag{+if:}FUTON6 is to turn math into a habitable habitat for humans and agents, with proofs that are self-documenting and constructing agents gain assurance of correctness.\\
   \flexitag{+however:}Current assets are static entries; they do not yet function as a training\\
-    ground that links moves, contexts, views, and guidance.\\
+    ground that links moves, contexts, views, and guidance. Proofs may be valid but not teachable.\\
   \flexitag{+then:}Blend L3/L4 tagging with scholium landscapes, progressive outline->detail\\
     modes, and agent sparring protocols so users can practice reasoning moves inside\\
-    HDM itself.\\
+    HDM itself. Ensure that proof structure captures both formal validity and informal scaffolding—the design patterns for how proofs are constructed, making them teachable and understandable.\\
   \flexitag{+because:}Mathematical fluency emerges from embodied practice, not passive\\
-    reading; the dojo keeps HDM alive.\\
+    reading. The dojo keeps HDM alive and ensures that proofs are not just correct but comprehensible—agents constructing proofs gain assurance not just of validity but of teachability.\\
 \par
-\textbf{! instantiated-by: Prototype 8 — Scholium \& Proof-Landscape Mode [💗/示 🙅/义]}\\
+\textbf{! instantiated-by: Prototype 8 — Scholium \& Proof-Landscape Mode [🙅/无 🐲/久]}\\
   \flexitag{+context:}F3 emits proof trails; F1 provides graph memory.\\
   \flexitag{+if:}F6 wants users/agents to traverse mathematics as connected terrain.\\
   \flexitag{+however:}No math-specific landscape viewer exists.\\
@@ -1210,7 +1452,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     arguments, patterns, counterexamples.\\
   \flexitag{+because:}Landscapes differentiate HDM from a static encyclopedia.\\
 \par
-\textbf{! instantiated-by: Prototype 9 — Language ⇄ Math Transformations [💬/文 💬/更]}\\
+\textbf{! instantiated-by: Prototype 9 — Language ⇄ Math Transformations [💬/匀 🍍/卡]}\\
   \flexitag{+context:}F6 aspires to maintain both NL-friendly and math-native views.\\
   \flexitag{+if:}You want consistent transformations across entries.\\
   \flexitag{+however:}NL ↔ math translations are currently ad hoc.\\
@@ -1219,7 +1461,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     with FUTON3’s flexigrammar.\\
   \flexitag{+because:}Even partial bilingualism greatly improves usability.\\
 \par
-\textbf{! instantiated-by: Prototype 10 — Math-Aware Agent Protocol [💗/义 🙅/分]}\\
+\textbf{! instantiated-by: Prototype 10 — Math-Aware Agent Protocol [🙅/无 🍍/工]}\\
   \flexitag{+context:}F6 will eventually host agents that annotate, refactor, or query entries.\\
   \flexitag{+if:}You want safe and productive agent behaviour.\\
   \flexitag{+however:}The current protocol is conflated with F3’s checking API.\\
@@ -1228,7 +1470,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     and guardrails (no overwriting canonical entries without review).\\
   \flexitag{+because:}Math-literate agents are central to HDM-as-habitat.\\
 \par
-\textbf{! instantiated-by: Prototype 11 — Non-Capture Guardrails [🐊/刊]}\\
+\textbf{! instantiated-by: Prototype 11 — Non-Capture Guardrails [🔦/开 🌞/公]}\\
   \flexitag{+context:}HDM inherits the “war machine” mandate: remain non-state, non-enclosed.\\
   \flexitag{+if:}F6 is to remain an open mathematical habitat.\\
   \flexitag{+however:}Capture risks (institutional, corporate, epistemic) are unarticulated.\\
@@ -1237,7 +1479,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     Mark entries whose sources impose constraints.\\
   \flexitag{+because:}Commons integrity is crucial for HDM’s long-term survival.\\
 \par
-\textbf{! instantiated-by: Prototype 12 — F6⇄F7 Scenarios [💗/化 🐜/支]}\\
+\textbf{! instantiated-by: Prototype 12 — F6⇄F7 Scenarios [🔸/小 🐊/引]}\\
   \flexitag{+context:}FUTON7 builds civic imaginaries and long-range scenarios.\\
   \flexitag{+if:}Math should inform F7, not remain siloed.\\
   \flexitag{+however:}There is no pipeline from HDM entries to F7 narratives.\\
@@ -1245,7 +1487,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     equilibrium models, scaling laws) as exportable F6→F7 kits.\\
   \flexitag{+because:}Mathematics should feed collective imagination, not remain inert.\\
 \par
-\textbf{! instantiated-by: Prototype 13 — FLEX Training Ground Link [💗/新]}\\
+\textbf{! instantiated-by: Prototype 13 — FLEX Training Ground Link [🚢/未 💬/氏]}\\
   \flexitag{+context:}F3 now ships the “Flexiformal Training Ground.”\\
   \flexitag{+if:}F6 wants stewards who know how to handle patterns and proofs.\\
   \flexitag{+however:}F6 does not yet reference this training layer.\\
@@ -1264,76 +1506,76 @@ Consolidate the documentation and contracts that define how text becomes graph s
 @style roadmap\\
 @allow-new-claims true\\
 @length any\\
-@factor Civic equanimity (upa-upekkhā)\\
-\textbf{@IFR: FUTON7 holds the civic field of wisdom, translating futons 1–6 into sphere architectures, Amazon-breaker heuristics, and Hyperreal-derived seed institutions that cultivate equanimous, post-state civic life—the upa-upekkhā of institutions.}\\
+@factor Civic equanimity (upa-upekkhā) + balanced composition (samāpatti)\\
+\textbf{@IFR: FUTON7 is the accountability and assurance layer: infrastructure for tracking costs, benefits, and relationships across supply chains, companies, and spheres of engagement. It makes visible what current systems obscure—environmental externalities, social costs, governance patterns—and provides genuine assurance that systems are optimized for delivery rather than extraction. Just as free software proved to have benefits its founders didn’t anticipate, transparent and accountable approaches to commerce and governance may prove beneficial in ways we can’t yet predict. F7 translates futons 1–6 into sphere architectures and seed institutions that cultivate equanimous civic life. It also provides assurance for F6’s technological work: verification that things are done well, not sloppily, and in the user’s interest.}\\
 \textbf{@state Design-only narratives outlining the civic field; no implemented prototypes or institutions yet beyond essays.}\\
 \textbf{@next start}\\
 \par
 \par
-\textbf{! instantiated-by: Prototype 0 — Naming the Layer (Civic Field of Wisdom) [👴/田]}\\
+\textbf{! instantiated-by: Prototype 0 — Naming the Layer (Civic Field of Wisdom) [🐊/田 🌈/广]}\\
   \flexitag{+context:}FUTON7 designates the highest layer of the stack: the “martial application” of all prior futons toward the shaping of a post-state nomadic civilisation.\\
   \flexitag{+if:}You want an explicit locus for work that concerns culture, governance, civic habits, collective intelligence, non-state coordination, and world-building.\\
   \flexitag{+however:}F7 has been described indirectly (Amazon-breaker, Hyperreal as seed crystal, Sloterdijk’s spheres) without a clear development remit.\\
   \flexitag{+then:}Define F7 as the civic field where equanimity (upa-upekkhā) is scaled from personal practice to institutional atmosphere; write its mandate: “Support distributed, non-state, resilient cultural formations with Hyperreal Enterprises as a seed instance.”\\
   \flexitag{+because:}Naming the layer clarifies direction: F7 = how the world changes when Futons 0–6 are applied *socially* rather than individually.\\
 \par
-\textbf{! instantiated-by: Prototype 1 — Sphere Architecture (Sloterdijk Integration) [👴/无 🔃/门]}\\
+\textbf{! instantiated-by: Prototype 1 — Sphere Architecture (Sloterdijk Integration) [🔦/习 👐/互]}\\
   \flexitag{+context:}Sloterdijk’s spheres theory provides the conceptual grammar for collective enclosures, atmospheres, and shared immunological structures.\\
   \flexitag{+if:}You want F7 to model and cultivate “atmospheres of practice”—shared civic containers where reasoning, creativity, and care become normal.\\
   \flexitag{+however:}No translation exists between spherology and the FUTON stack; F7 has no “sphere-operators” yet.\\
   \flexitag{+then:}Define three sphere types for F7: 1) micro-spheres (dojo, band, mentoring dyads), 2) meso-spheres (Hyperreal teams, open research cohorts), 3) macro-spheres (post-state civic networks). Document how FUTON1–6 contribute to each sphere.\\
   \flexitag{+because:}Civilsation-scale practice begins with sphere-scaping—the deliberate shaping of atmospheres that support distributed wisdom.\\
 \par
-\textbf{! instantiated-by: Prototype 2 — Hyperreal Enterprises as Seed Crystal [👴/己 💗/义]}\\
+\textbf{! instantiated-by: Prototype 2 — Hyperreal Enterprises as Seed Crystal [⌛️/己 💫/业]}\\
   \flexitag{+context:}Hyperreal Enterprises already functions as a micro-institution with values, narrative, economic flow, and client-based R\&D loops.\\
   \flexitag{+if:}You want a living prototype that tests post-state organisational design in real economic terrain.\\
   \flexitag{+however:}Hyperreal’s civic/institutional implications remain latent rather than formally articulated.\\
   \flexitag{+then:}Position Hyperreal explicitly as F7’s seed crystal: a minimal self-governing unit practicing equanimous decision-making, distributed documentation, pattern-based governance, and nomadic economic strategy (consulting as caravan model).\\
   \flexitag{+because:}A concrete seed institution anchors F7’s abstractions into lived practice and iterates the world-making in real time.\\
 \par
-\textbf{! instantiated-by: Prototype 3 — Amazon-Breaker Function [👴/引]}\\
-  \flexitag{+context:}“Amazon-breaker” describes technologies and social forms that prevent extractive centralisation, platform capture, and monoculture.\\
-  \flexitag{+if:}You want F7 to actively resist the gravitational pull toward state-like apparatuses and exploitative superstructures.\\
-  \flexitag{+however:}No operational definition of “Amazon-breaking” exists within the FUTON stack; it risks becoming a slogan rather than a design constraint.\\
-  \flexitag{+then:}Define Amazon-breaker heuristics (e.g. decentralised memory, pattern-encoded governance, nomadic modularity, multi-agent redundancy, civic equanimity, reverse-platformisation). Tag any F6/F5/F3 work that strengthens these heuristics.\\
-  \flexitag{+because:}Anti-monopoly structural feedback must be designed in from the start; otherwise F7 collapses back into the state form.\\
+\textbf{! instantiated-by: Prototype 3 — Accountability \& Traceability Infrastructure [👎/引 〰️/长]}\\
+  \flexitag{+context:}Current large-scale systems optimize for extraction rather than delivery. Marketing and UX create the appearance of customer benefit while the underlying optimization targets shareholder value. The issue isn’t that companies are large—it’s that costs, relationships, and externalities are structurally invisible.\\
+  \flexitag{+if:}You want F7 to provide genuine assurance that systems serve users’ actual interests, with verifiable accountability rather than marketing claims.\\
+  \flexitag{+however:}No infrastructure currently exists for tracking environmental externalities, social costs, and supply-chain relationships in ways that current commercial systems can’t recognize or talk about.\\
+  \flexitag{+then:}Define accountability heuristics (decentralised memory, pattern-encoded governance, nomadic modularity, transparent supply-chain annotation, civic equanimity) and build infrastructure—like Gravpad—that adds visibility to existing structures without requiring permission or replacement. Gravpad applies Arxana-style annotation to the open web, bending existing structures rather than breaking them.\\
+  \flexitag{+because:}Genuine assurance requires verifiable accountability. Following the precedent of free software, openness and transparency may prove beneficial in ways we can’t yet predict. The goal is infrastructure for accountability, not opposition to any particular actor.\\
 \par
-\textbf{! instantiated-by: Prototype 4 — Civic Equanimity Protocol (Upa-upekkhā at Scale) [💖/弓]}\\
+\textbf{! instantiated-by: Prototype 4 — Civic Equanimity Protocol (Upa-upekkhā at Scale) [🎎/匀 🌈/义]}\\
   \flexitag{+context:}You have identified F7 with the Pāramitā of Equanimity: balance-beyond-balance, the stability of clarity under pressure.\\
   \flexitag{+if:}You want this Pāramitā to inform collective, not just individual, behaviour.\\
   \flexitag{+however:}No mechanism yet translates individual reflective rhythm (Futon0, PARamita cycles) into group-level civic practice.\\
   \flexitag{+then:}Design a Civic Equanimity Protocol: shared PAR cycles, distributed pattern reviews, collective decision check-ins (fruits/orbs used as civic signals), and non-reactive governance rituals adapted from tai chi application.\\
   \flexitag{+because:}Institutions that act with even-minded care are the defining signature of a future civilisation that is neither authoritarian nor chaotic.\\
 \par
-\textbf{! instantiated-by: Prototype 5 — Multi-Sphere Learning Ecosystems [👴/女 💑/互]}\\
+\textbf{! instantiated-by: Prototype 5 — Multi-Sphere Learning Ecosystems [👐/互 🚴/习]}\\
   \flexitag{+context:}You have real data from ORP workshops, PLACARD, band rehearsals, strategic consulting, dojo practice, and peer mentoring.\\
   \flexitag{+if:}You want F7 to articulate what a mature, distributed learning ecosystem looks like.\\
   \flexitag{+however:}These practices are scattered across domains and not formalised into a unified civic-learning grammar.\\
   \flexitag{+then:}Identify recurring multi-sphere motifs (shared inquiry, pattern elicitation, improvisational coherence, mutual regulation); map them to F5 patterns and F6 reasoning operations; prototype a “Nomadic Learning Cell” drawing from Hyperreal + ORP + dojo + band.\\
   \flexitag{+because:}Nomadic civilisations endure by transmitting culture horizontally, not vertically; multi-sphere learning is their engine.\\
 \par
-\textbf{! instantiated-by: Prototype 6 — Economic Nomadism \& Post-State Viability [🐺/但]}\\
+\textbf{! instantiated-by: Prototype 6 — Economic Nomadism \& Post-State Viability [💫/业 🍯/义]}\\
   \flexitag{+context:}Future nomadic groups will require economic resilience untethered from state sponsorship, salary structures, and bureaucratic scaffolds.\\
   \flexitag{+if:}You want F7 to model a viable economic substrate that is anti-fragile, creative, and regenerative.\\
   \flexitag{+however:}Current income streams (job, consulting, side projects) are not yet framed as a prototype nomadic economy.\\
   \flexitag{+then:}Define a minimum viable nomadic economy: (1) consulting caravans (Hyperreal), (2) intellectual capital loops (F6 argumentarium + patterns), (3) low-cost, high-leverage creative production (band, book, prototypes), (4) geographic and institutional mobility.\\
   \flexitag{+because:}F7 must be economically real, not merely philosophically interesting.\\
 \par
-\textbf{! instantiated-by: Prototype 7 — Interoperability with State Forms without Capture [👶/长]}\\
+\textbf{! instantiated-by: Prototype 7 — Interoperability with State Forms without Capture [〰️/长 🔦/態]}\\
   \flexitag{+context:}Post-state formations will necessarily interoperate with existing state institutions (universities, funders, cultural organisations).\\
   \flexitag{+if:}You want to retain freedom while collaborating fruitfully.\\
   \flexitag{+however:}Nomadic groups risk being absorbed, bureaucratised, or instrumentalised by state forms if guardrails aren’t explicit.\\
   \flexitag{+then:}Establish an F7 “Porous Interface Charter” clarifying how Hyperreal and related projects interact with institutions: export patterns, consulting, co-reasoning, but preserve governance, culture, and memory internally.\\
   \flexitag{+because:}Being permeable without becoming captured is essential for long-term autonomy.\\
 \par
-\textbf{! instantiated-by: Prototype 8 — Civilisational Simulations (Nomadic Scenario Work) [👴/扎]}\\
+\textbf{! instantiated-by: Prototype 8 — Civilisational Simulations (Nomadic Scenario Work) [🚞/习 🔸/扎]}\\
   \flexitag{+context:}F7 needs a way to test future structures before implementing them.\\
   \flexitag{+if:}You want to prototype nomadic civic forms as thought-experiments and fictional/technical hybrids.\\
   \flexitag{+however:}No structured simulation practice exists across scenarios.\\
   \flexitag{+then:}Develop 2–3 scenario bundles (e.g. “Nomadic Math Sangha,” “Distributed Research College,” “Hyperreal Field Office in the Zone”) and tie each to relevant F6 argument bundles and F5 pattern clusters.\\
   \flexitag{+because:}Scenario practice turns abstract philosophy into actionable civic design.\\
 \par
-\textbf{! instantiated-by: Prototype 9 — Year-End Nomadic Governance Audit [👴/其 💗/要]}\\
+\textbf{! instantiated-by: Prototype 9 — Year-End Nomadic Governance Audit [🌅/广 🎎/习]}\\
   \flexitag{+context:}Cultures need periodic tuning to maintain coherence and avoid drift.\\
   \flexitag{+if:}You want F7 to stay aligned with equanimity, abundance, independence, and anti-capture heuristics.\\
   \flexitag{+however:}No cycle currently exists that evaluates Hyperreal, the prototypes, and the emerging civic sphere as a coherent F7 entity.\\

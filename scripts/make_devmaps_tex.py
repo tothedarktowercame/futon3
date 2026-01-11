@@ -19,6 +19,8 @@ FLEXI_TAGS = {
     "evidence",
 }
 FLEXI_RE = re.compile(r"^(?P<indent>\s*)\+\s*(?P<tag>[A-Za-z-]+):(?P<rest>.*)")
+DONE_STATUS_RE = re.compile(r"status\[(?i:done)\]")
+INSTANTIATED_RE = re.compile(r"^\s*!\s+instantiated-by:", re.IGNORECASE)
 
 
 SPECIALS = {
@@ -85,9 +87,29 @@ def escape_line(line: str) -> str:
     return "".join(result)
 
 
-def build_block(title: str, content: str, emoji_chars: set[str]) -> str:
+def split_sections(raw_lines: list[str]) -> list[tuple[str, list[str]]]:
+    sections: list[tuple[str, list[str]]] = []
+    current: list[str] = []
+    kind = "preamble"
+    for line in raw_lines:
+        if INSTANTIATED_RE.match(line):
+            if current:
+                sections.append((kind, current))
+            current = [line]
+            kind = "prototype"
+        else:
+            current.append(line)
+    if current:
+        sections.append((kind, current))
+    return sections
+
+
+def section_is_done(raw_lines: list[str]) -> bool:
+    return any(DONE_STATUS_RE.search(line) for line in raw_lines)
+
+
+def render_lines(raw_lines: list[str], emoji_chars: set[str]) -> list[str]:
     lines: list[str] = []
-    raw_lines = content.splitlines()
     in_ifr = False
     i = 0
     total = len(raw_lines)
@@ -177,10 +199,23 @@ def build_block(title: str, content: str, emoji_chars: set[str]) -> str:
         lines.append(f"{indent}{escaped}\\\\")
         i += 1
 
+    return lines
+
+
+def build_block(title: str, content: str, emoji_chars: set[str]) -> str:
+    raw_lines = content.splitlines()
+    sections = split_sections(raw_lines)
     block_lines = [f"% {title}"]
     block_lines.append(rf"\textbf{{{title}}}\par")
     block_lines.append("\\medskip")
-    block_lines.extend(lines)
+    for kind, section_lines in sections:
+        rendered = render_lines(section_lines, emoji_chars)
+        if kind == "prototype" and section_is_done(section_lines):
+            block_lines.append(r"\begin{devmapdone}")
+            block_lines.extend(rendered)
+            block_lines.append(r"\end{devmapdone}")
+        else:
+            block_lines.extend(rendered)
     return "\n".join(block_lines)
 
 
@@ -265,6 +300,7 @@ def main() -> None:
 \usepackage{xcolor}
 \usepackage{microtype}
 \usepackage{newunicodechar}
+\usepackage{framed}
 \usepackage{paracol}
 \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
 \setmainfont{Noto Sans CJK SC}
@@ -283,6 +319,12 @@ def main() -> None:
 \microtypesetup{protrusion=true,expansion=true}
 \newcommand{\flexitag}[1]{\textcolor[gray]{0.35}{\textit{#1}}}
 \newcommand{\tightquotecomma}{\textquoteright\kern-0.08em,}
+\definecolor{devmapdonebg}{RGB}{232,246,232}
+\newenvironment{devmapdone}{%
+  \def\FrameCommand{\colorbox{devmapdonebg}}%
+  \setlength{\fboxsep}{2pt}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore}%
+}{\endMakeFramed}
 """
 
     emoji_lines = []

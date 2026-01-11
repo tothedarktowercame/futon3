@@ -20,7 +20,7 @@ for coordinated reasoning.
 
 @next Stand up the completed pattern canon + `check!` API, standardise proof→graph/energy exports, and land the workday instrumentation + trail rollups as first-class MUSN services before expanding the flexiformal training ground.
 
-! instantiated-by: Prototype 0 — Flexiformal Transport Baseline [🏃/索 ➰/氏]
+! instantiated-by: Prototype 0 — Flexiformal Transport Baseline [🏃/索 ➰/双]
   + context: FUTON3 still rides the MUSN transport (WS+HTTP bus, SAFE/ADMIN REPL, NDJSON ingest), but its primary job is to host pattern checks and informal proof states, not free-roaming agents.
   + if: You want an execution substrate where pattern obligations can be posed, evaluated, and recorded with deterministic transcripts.
   + however: The baseline hello/event/session flows are documented as “non-essential documentation” instead of “proofwork IO contracts.”
@@ -32,7 +32,7 @@ for coordinated reasoning.
     - {:type :Spec :id "golden-transcripts-check-jobs" :description "Specify canonical golden transcripts for pattern-apply, gap-report, and trail-capture runs that deterministically exercise the frozen transport contract." :acceptance-criteria ["Each transcript is reproducible from the sandbox profile and matches byte-for-byte expected NDJSON output." "Fails if there is no reliable A->B association between proposal and evidence collection; must be machine-checkable now and upgradeable for stronger logics later."] :suggested-location "docs/protocol/golden-transcripts.md" :timebox "2026-01-05"}
     - {:type :Spec :id "sandbox-profile-proofwork-runtime" :description "Document the sandbox profile as the canonical proofwork runtime and explain how to execute check jobs from the Clojure runner." :acceptance-criteria ["Spec explains sandbox configuration, versioning rules, and step-by-step runner commands tied to transcript generation." "Fails if there is no reliable A->B association between proposal and evidence collection (i.e., we need a clear and deterministic correspondence between anticedents A and measurable evidence B); must be machine-checkable now and upgradeable for stronger logics later."] :suggested-location "docs/sandbox/README.md" :timebox "2026-01-05"}
 
-! instantiated-by: Prototype 1 — Pattern Canon & Standard Library [🗿/本]
+! instantiated-by: Prototype 1 — Pattern Canon & Standard Library [🐺/本 🗿/世]
   + context: A small flexiarg/pattern library already exists (Nonstarter, Proto/Allow-Works, etc.) but is scattered between files.
   + if: You want FUTON3 to be the place where patterns are curated with metadata, linking obligations, and proof status.
   + however: There is no standardized repository or schema for “pattern definitions + applicability notes + links to Futon devmaps.”
@@ -44,7 +44,7 @@ for coordinated reasoning.
     - {:type :Golden :id "pattern-metadata-and-links-complete" :description "A golden test asserts that each canonical pattern includes required metadata fields and valid source or devmap links." :acceptance-criteria ["Every pattern entry exposes ID, clauses, references, pāramitā tags, fruits/orbs weights, and at least one resolvable source link." "Fails if the canonical store only exists on disk and is not accessible to the stack."] :suggested-location "test/futon3/pattern_metadata_golden_test.clj" :timebox "2026-01-06"}
     - {:type :Golden :id "pattern-store-matches-standard-library" :description "A golden test verifies that all patterns from the existing standard library are present in f3.patterns with no omissions." :acceptance-criteria ["The set of patterns in f3.patterns exactly matches the known Nonstarter and Proto/Allow-Works library with no missing or extra entries." "Fails if the canonical store only exists on disk and is not accessible to the stack."] :suggested-location "test/futon3/pattern_library_sync_golden_test.clj" :timebox "2026-01-06"}
 
-! instantiated-by: Prototype 1b — Live REPL Surface Validation (Drawbridge) [🪢/桥 🧪/验]
+! instantiated-by: Prototype 1b — Live REPL Surface Validation (Drawbridge) [🗿/本 📁/史]
   + context: Futon3 already exposes an optional Drawbridge REPL over HTTP, but we have not documented or exercised a live-in-server workflow the way Emacs users rely on emacsclient.
   + if: You want to use Codex (or a human operator) to connect to a running Futon3 instance and safely poke at the live system state for inspection and debugging.
   + however: The REPL is off by default, and there is no canonical checklist proving that a Drawbridge session can connect, query MUSN state, and execute a minimal set of safe operations.
@@ -85,7 +85,7 @@ for coordinated reasoning.
   + blocked-by [:trail/persistence :cue-validation]
   + next: (1) persist cue annotations into the trail export so Prototype 4 records which fruits/orbs were actually computed, and (2) add proof artifacts (HUD screenshots or `/musn/cues` transcripts) that demonstrate the cues signal real changes instead of static defaults before declaring the prototype stable.
 
-! instantiated-by: Prototype 4b — Intent Embedding & Salience Map [➰/氏 🍍/办]
+! instantiated-by: Prototype 4b — Intent Embedding & Salience Map [➰/双 🍍/办]
   + context: Prototype 4 turns trails into proof-state journals, but it still treats fruits/orbs as cosmetic tags instead of Kolmogorov-style proof types for each constructive step.
   + if: You want the HUD to say not just “something happened here” but “this was an indicator check, and it was (or wasn’t) aligned with your values” — i.e. to classify `intent → pattern reasoning` as typed proof steps like 🍌→🔵 rather than anonymous log lines.
   + however: The current trail schema records `:pattern/id` and `:obligation/id` but has no machinery to interpret `intent → pattern reasoning` as a constructive proof step, embed it in fruit/orb space, and ask “what kind of operator was this?” (fruit) and “what meta-property did it exhibit?” (orb) — e.g. “🍌: indicator construction, 🔵: virtue-aligned”.
@@ -118,7 +118,7 @@ for coordinated reasoning.
   + then: Track `time-to-proof`, `obligations-cleared`, `follow-on commitments`, and `viriya linkages` per session, and visualise them alongside subjective notes.
   + because: Empowered action is the KPI for this futon.
 
-! instantiated-by: Prototype 8 — futon2/futon1 Proof Hooks [⚡️/二 👎/已]
+! instantiated-by: Prototype 8 — futon2/futon1 Proof Hooks [⚡️/二 🐜/络]
   + context: FUTON3 already generates proof states; FUTON1 (graph) and FUTON2 (energy) need those proofs as fuel.
   + if: You want every accepted check to become a graph relation and a viriya delta without manual glue.
   + however: today the exports are bespoke Clerk notebooks or one-off scripts.
@@ -126,7 +126,7 @@ for coordinated reasoning.
   + because: proofs only matter when other futons can act on them automatically.
   + next: Wire the Tatami event log into FUTON1 (per `futon3/tatami_store.clj` TODO) so session events flow into graph-memory before we expose the adapters.
 
-! instantiated-by: Prototype 9 — Proof Training Ground ("Flexiformal Agent Sandbox") [🚢/氏 🏃/未]
+! instantiated-by: Prototype 9 — Proof Training Ground ("Flexiformal Agent Sandbox") [🚢/氏 🚴/未]
   + context: FUTON3 needs a reproducible training ground where humans and agents can practice flexiformal checks before contributing to FUTON6.
   + if: You want collaborators (including FUTON6 math stewards) to experience the proof workflow hands-on.
   + however: README/docs still emphasise ants and MUD metaphors and do not ship a simulator/tutorial bundle; roles (training facilitators vs. FUTON6 learners) and release readiness are not declared.
@@ -135,7 +135,7 @@ for coordinated reasoning.
   + pattern: Adopt `t4r/supplement` so the training ground demos mirror the Supplement workshop pattern—multi-agent listening infrastructure, governance rehearsal, and design-tension prototyping—anchoring the release narrative in the same staging choreography.
   + next: Aggregate Tatami session proof events into `proof-chain.edn` (per `tatami_store.clj` TODO) so the training ground exports persistent transcripts.
 
-! instantiated-by: Prototype 10 — System Self-Description & Machine-Readable Manifest [🔃/本 📋/系统]
+! instantiated-by: Prototype 10 — System Self-Description & Machine-Readable Manifest [🔃/本]
   + context: The stack currently has documentation and APIs at various layers—Futon1's storage API with checked invariants, Emacs Lisp functions callable via emacsclient, HTTP/WebSocket endpoints in Futon3. But these exist as separate artifacts: code, docs, and schemas that humans must correlate.
   + if: You want the system to describe itself in a way that agents can query, and for that description to stay synchronized with implementation.
   + however: No machine-readable manifest exists where components are first-class entities in the hypergraph. Patterns describe design structures but not system capabilities.

@@ -3,9 +3,11 @@
 set -euo pipefail
 
 API_URL="${FUTON1_API:-http://localhost:8080}"
+VERIFY_URL="${API_URL}/api/alpha/meta/model/docbook/verify"
 DOCBOOK_ROOT="${1:-/home/joe/code/futon4/docs/docbook}"
 
 echo "Ingesting docbook entries from $DOCBOOK_ROOT into $API_URL"
+echo "Docbook invariants: ${VERIFY_URL}"
 
 count=0
 
@@ -65,6 +67,7 @@ for book in futon0 futon1 futon2 futon3 futon4; do
       echo "  [$count] Ingested: $doc_id ($title)"
     else
       echo "  WARN: Failed to ingest $doc_id: $result"
+      echo "        Check docbook invariants: ${VERIFY_URL}"
     fi
   done
 done

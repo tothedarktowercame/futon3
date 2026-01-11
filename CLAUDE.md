@@ -125,3 +125,7 @@ Response approach:
 - See `docs/aif-exploratory-mode.md` for the full exploration loop design
 - See `AGENTS.md` for Codex-specific instructions (devmap coherence, MUSN)
 - The `futon2/` repo contains the reference AIF implementation for ants
+
+## Tickets
+
+- Validate `fuclaude` CLI flags so `--resume` and `--continue` cannot be used together (warn or error).

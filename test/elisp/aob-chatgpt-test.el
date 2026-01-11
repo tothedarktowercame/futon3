@@ -14,6 +14,7 @@
   (defvar my-tatami--clojure "clj"))
 
 (load (expand-file-name "contrib/aob-chatgpt.el" futon3--test-root))
+(load (expand-file-name "contrib/fubar-hud.el" futon3--test-root))
 
 (defconst futon3-test-hud-fixture-file
   (expand-file-name "resources/hud-fixtures.edn" futon3--test-root)
@@ -217,6 +218,33 @@
             (should (string-match-p "metadata test handshake and echo" captured))
             (should (string-match-p "handshake metadata" captured))
             (should (eq my-chatgpt-shell--last-intent-sigil-origin :embedded))))))))
+
+(ert-deftest futon3-hud-resume-session-quotes-and-continues ()
+  "Resume should quote session IDs and fall back to --continue on blanks."
+  (let ((fubar-hud-futon3-root futon3--test-root)
+        (fubar-hud-buffer-name "*FuLab HUD Test*")
+        (fubar-hud-stream-buffer-name "*FuLab Raw Stream Test*")
+        (commands nil))
+    (with-temp-buffer
+      (rename-buffer fubar-hud-buffer-name)
+      (setq-local fubar-hud--session-id "sid with space")
+      (cl-letf (((symbol-function 'start-process-shell-command)
+                 (lambda (_name _buffer cmd)
+                   (push cmd commands)
+                   'fubar-hud-test-proc))
+                ((symbol-function 'set-process-sentinel)
+                 (lambda (&rest _) nil))
+                ((symbol-function 'display-buffer)
+                 (lambda (&rest _) nil)))
+        (fubar-hud-resume-session "Hello" "sid with space")
+        (let ((cmd (car commands)))
+          (should (string-match-p "--resume" cmd))
+          (should (string-match-p "--resume 'sid with space'" cmd)))
+        (setq commands nil)
+        (fubar-hud-resume-session "Hello" "")
+        (let ((cmd (car commands)))
+          (should (string-match-p "--continue" cmd))
+          (should-not (string-match-p "--resume" cmd)))))))
 
 (ert-deftest futon3-pattern-sigils-fallback-when-no-overlap ()
   "Patterns should still contribute sigils when no keywords overlap the intent."

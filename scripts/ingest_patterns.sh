@@ -3,12 +3,14 @@
 set -euo pipefail
 
 API_URL="${FUTON1_API:-http://localhost:8080}"
+VERIFY_URL="${API_URL}/api/alpha/meta/model/docbook/verify"
 TSV_FILE="${1:-resources/sigils/patterns-index.tsv}"
 CACHE_FILE="${PATTERN_INGEST_CACHE:-data/pattern-ingest-cache.edn}"
 GLOVE_NEIGHBORS_FILE="${GLOVE_NEIGHBORS_FILE:-resources/embeddings/glove_pattern_neighbors.json}"
 
 echo "Ingesting patterns from $TSV_FILE into $API_URL"
 echo "Using ingest cache: $CACHE_FILE"
+echo "Docbook invariants: ${VERIFY_URL}"
 if command -v stat >/dev/null 2>&1; then
   if [[ -f "$GLOVE_NEIGHBORS_FILE" && -f "$TSV_FILE" ]]; then
     tsv_mtime=$(stat -c %Y "$TSV_FILE" 2>/dev/null || echo 0)
@@ -103,6 +105,8 @@ while IFS=$'\t' read -r pattern_id okipona truth rationale hotwords; do
     echo "[$count] Ingested: $pattern_id"
   else
     echo "WARN: Failed to ingest $pattern_id: $result"
+    echo "      Check docbook invariants if this is unexpected:"
+    echo "      ${VERIFY_URL}"
   fi
 done < <(tail -n +2 "$TSV_FILE")
 

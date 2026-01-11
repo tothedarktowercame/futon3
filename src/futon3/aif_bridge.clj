@@ -2,8 +2,7 @@
   "Bridge between Futon2 AIF traces and FuLab proof system."
   (:require [clojure.set :as set]
             [clojure.string :as str]
-            [futon3.checks :as checks]
-            [futon3.tatami-schema :as schema]))
+            [futon3.checks :as checks]))
 
 (defn- normalize-text [value]
   (cond
@@ -68,24 +67,6 @@
          (map normalize-keyword)
          (remove nil?)
          vec)))
-
-(defn- normalize-belief-state [mu]
-  (when (map? mu)
-    (let [goal (normalize-text (:goal mu))
-          subgoals (normalize-texts (:subgoals mu))
-          current-hypothesis (normalize-text (:current-hypothesis mu))
-          blockers (normalize-texts (:blockers mu))
-          pattern-fit (->double (:pattern-fit mu))
-          expected-next-observation (normalize-text (:expected-next-observation mu))
-          uncertainty (->double (:uncertainty mu))]
-      (cond-> {}
-        goal (assoc :goal goal)
-        (seq subgoals) (assoc :subgoals subgoals)
-        current-hypothesis (assoc :current-hypothesis current-hypothesis)
-        (seq blockers) (assoc :blockers blockers)
-        (some? pattern-fit) (assoc :pattern-fit pattern-fit)
-        expected-next-observation (assoc :expected-next-observation expected-next-observation)
-        (some? uncertainty) (assoc :uncertainty uncertainty)))))
 
 (defn- normalize-observation-vector [observation]
   (let [test-status (normalize-status (:test-status observation))
@@ -213,105 +194,11 @@
        (get-in step-result [:prec :precision-registry])
        (get-in step-result [:prec :registry]))))
 
-(defn- diff-map [previous next]
-  (let [prev (or previous {})
-        nxt (or next {})
-        keys (set/union (set (keys prev)) (set (keys nxt)))]
-    (->> keys
-         (keep (fn [k]
-                 (let [before (get prev k ::missing)
-                       after (get nxt k ::missing)]
-                   (when (not= before after)
-                     [k {:from (when-not (= before ::missing) before)
-                         :to (when-not (= after ::missing) after)}]))))
-         (into {}))))
-
-(defn- mu-diff [previous next]
-  (diff-map previous next))
-
-(defn- observation-delta [previous next]
-  (diff-map previous next))
-
 (defn- sorted-terms [terms]
   (->> terms
        (remove nil?)
        (sort-by name)
        vec))
-
-(defn aif-step->event
-  "Convert an AIF step result to a FuLab event."
-  [step-result session-id]
-  (let [raw-mu (get-in step-result [:perception :mu])
-        mu (normalize-belief-state raw-mu)
-        prev-mu (normalize-belief-state
-                 (or (:mu-prev step-result)
-                     (:previous-mu step-result)
-                     (get-in step-result [:perception :mu-prev])
-                     (get-in step-result [:perception :previous-mu])))
-        belief-delta (when (and prev-mu mu)
-                       (mu-diff prev-mu mu))
-        observation (extract-observation-vector step-result)
-        prev-observation (normalize-observation-vector
-                          (or (:observation-prev step-result)
-                              (:previous-observation step-result)
-                              (get-in step-result [:perception :observation-prev])
-                              (get-in step-result [:perception :previous-observation])))
-        observation-change (when (and (seq prev-observation) (seq observation))
-                             (observation-delta prev-observation observation))
-        precision-registry (extract-precision-registry step-result)
-        mu-validation (schema/validate-aif-belief-state mu)
-        observation-validation (schema/validate-aif-observation-vector observation)
-        precision-validation (when precision-registry
-                               (schema/validate-aif-precision-registry precision-registry))
-        g-breakdown (extract-g-breakdown step-result)
-        g-breakdown-validation (when g-breakdown
-                                 (schema/validate-aif-g-breakdown g-breakdown))
-        term-provenance (extract-term-provenance step-result)
-        term-provenance-validation (when (seq term-provenance)
-                                     (schema/validate-aif-term-provenance term-provenance))
-        base {:session-id session-id
-              :mu mu
-              :mu/validation mu-validation
-              :tau (or (get-in step-result [:perception :prec :tau])
-                       (get-in step-result [:prec :tau]))
-              :action (:action step-result)
-              :G (:G step-result)
-              :pattern-id (get-in step-result [:pattern-trace :id])
-              :observation observation
-              :observation/validation observation-validation}]
-    (schema/new-event :aif/tick
-                      (cond-> base
-                        (seq belief-delta) (assoc :belief-delta belief-delta)
-                        (seq observation-change) (assoc :observation-delta observation-change)
-                        precision-registry (assoc :precision-registry precision-registry
-                                                  :precision/validation precision-validation)
-                        g-breakdown (assoc :g-breakdown g-breakdown
-                                           :g-breakdown/validation g-breakdown-validation)
-                        (seq term-provenance) (assoc :g-term-provenance term-provenance
-                                                     :g-term-provenance/validation
-                                                     term-provenance-validation)))))
-
-(defn clock-in-from-aif
-  "Generate a clock-in event from AIF ant spawn."
-  [ant pattern-id session-id]
-  (schema/new-event :clock-in/start
-                    {:session-id session-id
-                     :clock-in/pattern-id pattern-id
-                     :clock-in/mu (:mu ant)
-                     :clock-in/tau (get-in ant [:prec :tau])
-                     :clock-in/intent (str "AIF agent with " (name pattern-id))}))
-
-(defn clock-out-from-aif
-  "Generate a clock-out event from AIF episode end."
-  [episode-summary session-id]
-  (schema/new-event :clock-out/complete
-                    {:session-id session-id
-                     :session/status (if (:success? episode-summary) :done :blocked)
-                     :pattern/trail (:patterns-used episode-summary)
-                     :artifacts [{:type :aif-trace
-                                  :g-mean (:g-mean episode-summary)
-                                  :tau-range (:tau-range episode-summary)
-                                  :actions-taken (:action-counts episode-summary)}]}))
 
 (declare extract-evidence)
 

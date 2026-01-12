@@ -242,7 +242,7 @@
             (push (string-trim (nth idx lines)) intent-lines)
             (setq idx (1+ idx))))))
       (when intent-lines
-        (string-trim (string-join (nreverse intent-lines) " "))))))
+        (string-trim (string-join (nreverse intent-lines) " ")))))
 
 (defvar-local fubar-hud--stream-fragment ""
   "Partial stream fragment awaiting a newline.")
@@ -688,7 +688,14 @@
     (insert (propertize "Intent\n" 'face 'fubar-hud-header-face))
     (insert "  " (propertize (or (plist-get hud :intent) "unspecified")
                               'face 'fubar-hud-intent-face)
-            "\n\n")
+            "\n")
+    (when (plist-get hud :intent)
+      (insert "  ")
+      (insert-text-button "[Proceed]"
+                          'help-echo "Approve and resume the MUSN turn"
+                          'action (lambda (_event) (fubar-musn-approve "proceed"))
+                          'follow-link t)
+      (insert "\n\n"))
 
     ;; Approvals
     (insert (propertize "Approvals\n" 'face 'fubar-hud-header-face))
@@ -828,6 +835,29 @@
       (setq fubar-hud--session-id session-id)
       (fubar-hud-refresh))))
 
+(defun fubar-hud-apply-hud-state (hud-map)
+  "Apply HUD-MAP (from MUSN /session/state) to the HUD buffer.
+Copies intent, sigils, candidates, and any other known HUD fields, then refreshes."
+  (interactive)
+  (let ((buf (get-buffer-create fubar-hud-buffer-name)))
+    (with-current-buffer buf
+      (fubar-hud--ensure-mode)
+      (setq fubar-hud--current-hud hud-map)
+      (let* ((intent (plist-get hud-map :intent))
+             (sigils (plist-get hud-map :sigils))
+             (candidates (plist-get hud-map :candidates))
+             (aif (plist-get hud-map :aif))
+             (aif-live (plist-get hud-map :aif-live)))
+        (when intent (setq fubar-hud--intent intent))
+        (when sigils (setq fubar-hud--sigils sigils))
+        (when candidates (setq fubar-hud--candidates candidates))
+        (when aif (setq fubar-hud--aif aif))
+        (when aif-live (setq fubar-hud--aif-live aif-live)))
+      ;; Render immediately; skip server rebuild when we already have a full HUD payload.
+      (if fubar-hud-async-refresh
+          (fubar-hud--render hud-map)
+        (fubar-hud--render hud-map)))))
+
 (defun fubar-hud-refresh ()
   "Refresh HUD with current intent."
   (interactive)
@@ -835,7 +865,7 @@
     (with-current-buffer buf
       (setq fubar-hud--prompt-block nil)
       (setq fubar-hud--staged-next (fubar-hud--read-staging-file))
-      (if (and fubar-hud-async-refresh fubar-hud-server-url)
+      (if (and fubar-hud-async-refresh fubar-hud-server-url (not fubar-hud--current-hud))
           (when (not fubar-hud--refresh-in-flight)
             (setq fubar-hud--refresh-in-flight t)
             (fubar-hud--build-hud-server-async

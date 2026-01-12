@@ -8,6 +8,8 @@
             [malli.core :as m]
             [futon3.musn.schema :as schema]))
 
+(declare pause-payload)
+
 ;; ------------------------------------------------------------------------------
 ;; Utilities
 

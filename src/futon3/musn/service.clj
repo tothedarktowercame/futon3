@@ -29,69 +29,84 @@
       entry)))
 
 (defn create-session!
-  [{:keys [session/id policy]}]
-  (let [sid (or id (gen-session-id))
-        entry (ensure-session! sid policy)]
-    {:ok true :session/id sid :policy (:policy entry)}))
+  [req]
+  (let [sid (or (:session/id req) (gen-session-id))
+        entry (ensure-session! sid (:policy req))]
+    {:ok true
+     :session/id sid
+     :policy (:policy entry)}))
 
 (defn turn-start!
-  [{:keys [session/id turn hud]}]
-  (let [entry (ensure-session! id nil)]
-    (router/handle-turn-start! (:state entry) {:session/id id :turn turn :hud hud})))
+  [req]
+  (let [sid (:session/id req)
+        entry (ensure-session! sid nil)]
+    (router/handle-turn-start! (:state entry)
+                                {:session/id sid
+                                 :turn (:turn req)
+                                 :hud (:hud req)})))
 
 (defn turn-plan!
-  [{:keys [session/id turn plan]}]
-  (let [entry (ensure-session! id nil)]
-    (router/handle-turn-plan! (:state entry) {:session/id id :turn turn :plan plan})))
+  [req]
+  (let [sid (:session/id req)
+        entry (ensure-session! sid nil)]
+    (router/handle-turn-plan! (:state entry)
+                              {:session/id sid
+                               :turn (:turn req)
+                               :plan (:plan req)})))
 
 (defn turn-select!
-  [{:keys [session/id turn candidates chosen reason anchors]}]
-  (let [entry (ensure-session! id nil)]
+  [req]
+  (let [sid (:session/id req)
+        entry (ensure-session! sid nil)]
     (router/handle-turn-select! (:state entry)
-                                {:session/id id
-                                 :turn turn
-                                 :candidates candidates
-                                 :chosen chosen
-                                 :reason reason
-                                 :anchors anchors})))
+                                {:session/id sid
+                                 :turn (:turn req)
+                                 :candidates (:candidates req)
+                                 :chosen (:chosen req)
+                                 :reason (:reason req)
+                                 :anchors (:anchors req)})))
 
 (defn turn-action!
-  [{:keys [session/id turn pattern/id action note files source cost]}]
-  (let [entry (ensure-session! id nil)]
+  [req]
+  (let [sid (:session/id req)
+        entry (ensure-session! sid nil)]
     (router/handle-turn-action! (:state entry)
-                                {:session/id id
-                                 :turn turn
-                                 :pattern/id pattern/id
-                                 :action action
-                                 :note note
-                                 :files files
-                                 :source source
-                                 :cost cost})))
+                                {:session/id sid
+                                 :turn (:turn req)
+                                 :pattern/id (:pattern/id req)
+                                 :action (:action req)
+                                 :note (:note req)
+                                 :files (:files req)
+                                 :source (:source req)
+                                 :cost (:cost req)})))
 
 (defn turn-use!
-  [{:keys [session/id turn pattern/id anchors note inferred?]}]
-  (let [entry (ensure-session! id nil)]
+  [req]
+  (let [sid (:session/id req)
+        entry (ensure-session! sid nil)]
     (router/handle-turn-use! (:state entry)
-                             {:session/id id
-                              :turn turn
-                              :pattern/id pattern/id
-                              :anchors anchors
-                              :note note
-                              :inferred? inferred?})))
+                             {:session/id sid
+                              :turn (:turn req)
+                              :pattern/id (:pattern/id req)
+                              :anchors (:anchors req)
+                              :note (:note req)
+                              :inferred? (:inferred? req)})))
 
 (defn evidence-add!
-  [{:keys [session/id turn pattern/id files note]}]
-  (let [entry (ensure-session! id nil)]
+  [req]
+  (let [sid (:session/id req)
+        entry (ensure-session! sid nil)]
     (router/handle-evidence-add! (:state entry)
-                                 {:session/id id
-                                  :turn turn
-                                  :pattern/id pattern/id
-                                  :files files
-                                  :note note})))
+                                 {:session/id sid
+                                  :turn (:turn req)
+                                  :pattern/id (:pattern/id req)
+                                  :files (:files req)
+                                  :note (:note req)})))
 
 (defn turn-end!
-  [{:keys [session/id turn]}]
-  (let [entry (ensure-session! id nil)]
+  [req]
+  (let [sid (:session/id req)
+        entry (ensure-session! sid nil)]
     (router/handle-turn-end! (:state entry)
-                             {:session/id id
-                              :turn turn})))
+                             {:session/id sid
+                              :turn (:turn req)})))

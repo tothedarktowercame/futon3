@@ -2,11 +2,12 @@
   "Translate Codex --json stream into MUSN turn lifecycle calls.
    - turn.started/turn.completed -> MUSN turn/start, turn/end
    - plan lines -> MUSN turn/plan
-   - command/file events -> MUSN turn/action and evidence
+   - pattern-action / pattern-selection events -> MUSN turn/select, turn/action, turn/use, evidence/add
+   - command/file fallback for pattern detection
    - pause/halts are printed and exit with code 3 for resume.
 
-   This is intentionally minimal: assumes PATTERN_ACTION_RPC is on so pattern-ids
-   are detectable in commands/outputs. Uses FUTON3_MUSN_URL for the MUSN service."
+   Assumes PATTERN_ACTION_RPC is on so pattern-ids are detectable in events.
+   Uses FUTON3_MUSN_URL for the MUSN service."
   (:require [cheshire.core :as json]
             [clojure.string :as str]
             [clojure.java.io :as io]
@@ -45,12 +46,13 @@
                             :turn turn
                             :plan plan}))
 
-(defn musn-select [{:keys [session/id]} turn chosen reason]
+(defn musn-select [{:keys [session/id]} turn chosen reason reads]
   (post! "/musn/turn/select" {:session/id id
                               :turn turn
-                              :candidates [chosen]
+                              :candidates (if (seq reads) (vec (distinct (conj reads chosen))) [chosen])
                               :chosen chosen
-                              :reason reason}))
+                              :reason (cond-> reason
+                                        (seq reads) (assoc :reads reads))}))
 
 (defn musn-action [{:keys [session/id]} turn pattern-id action note files]
   (post! "/musn/turn/action" (cond-> {:session/id id
@@ -86,6 +88,20 @@
        distinct
        vec))
 
+(defn parse-pattern-action [payload]
+  (when (= "pattern-action" (:type payload))
+    {:pattern/id (:pattern-id payload)
+     :action (:action payload)
+     :note (:note payload)
+     :files (:files payload)}))
+
+(defn parse-pattern-selection [payload]
+  (when (= "pattern-selection" (:type payload))
+    {:chosen (:chosen payload)
+     :candidates (:candidates payload)
+     :mode (:mode payload)
+     :reads (some-> (:reads payload) (str/split #","))}))
+
 (defn files-from-change [changes]
   (->> changes (map :path) (remove nil?) vec))
 
@@ -97,12 +113,35 @@
 (defn handle-event! [state event musn-session]
   (let [{:keys [turn]} @state]
     (cond
-      ;; plan text
+      ;; pattern-selection / pattern-action parsed from text payloads (RPC)
       (and (= (:type event) "item.completed")
            (= (get-in event [:item :type]) "agent_message"))
       (let [text (get-in event [:item :text])]
         (when (plan-line? text)
-          (musn-plan musn-session turn text)))
+          (musn-plan musn-session turn text))
+        (doseq [line (str/split-lines (or text ""))]
+          (when-let [payload (parse-json line)]
+            (when-let [sel (parse-pattern-selection payload)]
+              (musn-select musn-session
+                           turn
+                           (:chosen sel)
+                           {:mode (or (:mode sel) :use)
+                            :note "auto-read from selection event"}
+                           (:reads sel))))
+            (when-let [pa (parse-pattern-action payload)]
+              (let [act (:action pa)
+                    pid (:pattern/id pa)
+                    files (:files pa)]
+                (musn-action musn-session turn pid act (:note pa) files)
+                (when (#{"implement" "update"} act)
+                  (musn-use musn-session turn pid)
+                  (when (seq files)
+                    (musn-evidence musn-session turn pid files "auto evidence from pattern-action"))))))))
+
+      ;; plan text
+      (and (= (:type event) "item.completed")
+           (= (get-in event [:item :type]) "agent_message"))
+      nil
 
       ;; command execution
       (and (= (:type event) "item.completed")

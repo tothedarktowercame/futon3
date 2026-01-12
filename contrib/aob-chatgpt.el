@@ -568,24 +568,38 @@ Set to nil to disable persistence entirely.")
                                                :dst (plist-get entity :name))))))
       (dolist (fruit fruits)
         (when-let* ((fid (plist-get fruit :fruit/id)))
+          (my-chatgpt-shell--ensure-hud-entity
+           (list :name fid
+                 :type :hud/fruit
+                 :external-id fid))
           (my-chatgpt-shell--futon1-post "/relation"
                                          (list :type ":hud/fruit"
                                                :src (plist-get entity :name)
                                                :dst fid))
-          (my-chatgpt-shell--futon1-post "/relation"
-                                         (list :type ":hud/fruit-salience"
-                                               :src fid
-                                               :dst (plist-get fruit :score)))))
+          (let ((score (plist-get fruit :score)))
+            (when (numberp score)
+              (my-chatgpt-shell--futon1-post "/relation"
+                                             (list :type ":hud/fruit-salience"
+                                                   :src (plist-get entity :name)
+                                                   :dst fid
+                                                   :confidence score))))))
       (dolist (orb paramitas)
         (when-let* ((pid (plist-get orb :paramita/id)))
+          (my-chatgpt-shell--ensure-hud-entity
+           (list :name pid
+                 :type :hud/paramita
+                 :external-id pid))
           (my-chatgpt-shell--futon1-post "/relation"
                                          (list :type ":hud/paramita"
                                                :src (plist-get entity :name)
                                                :dst pid))
-          (my-chatgpt-shell--futon1-post "/relation"
-                                         (list :type ":hud/paramita-salience"
-                                               :src pid
-                                               :dst (plist-get orb :score)))))
+          (let ((score (plist-get orb :score)))
+            (when (numberp score)
+              (my-chatgpt-shell--futon1-post "/relation"
+                                             (list :type ":hud/paramita-salience"
+                                                   :src (plist-get entity :name)
+                                                   :dst pid
+                                                   :confidence score))))))
       (dolist (event events)
         (let* ((kind (plist-get event :kind))
                (rel-type (pcase kind

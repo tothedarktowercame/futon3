@@ -14,6 +14,10 @@ This note explains how AIF scoring is attached to fucodex pattern runs and how t
 The AIF adapter sees the same decision ids and anchors as PSR/PUR, so the AIF summary can be joined to pattern claims by `:decision/id` and `:session/id`.
 The live `aif-live` view also carries evidence accounting (`:evidence-score`, `:evidence-delta`, `:evidence-counts`) derived from pattern-action logging.
 
+## Automatic pattern-action hooks
+
+When fucodex runs with HUD context, the stream runner auto-logs pattern-action reads for the AIF suggestion plus one alternate at turn start. At turn completion, if files changed and no explicit update/implement action was recorded for the chosen pattern, it logs an update action with the changed file paths. These hooks keep evidence fields populated in the AIF live summary without manual `pattern-action` RPC calls.
+
 ## Live PSR/PUR RPC
 
 During live runs, the stream wrapper also posts PSR/PUR over RPC so the Codex server can record

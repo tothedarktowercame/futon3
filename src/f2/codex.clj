@@ -337,26 +337,41 @@
    :first-event-at nil
    :last-event-at nil})
 
+(defn- build-session [session-id status opts]
+  (let [events-ch (async/chan 256)]
+    {:id session-id
+     :status status
+     :opts opts
+     :codex-cli-session-id nil
+     :events-ch events-ch
+     :events-log (atom [])  ;; For polling-based retrieval
+     :subscribers (atom #{})
+     :pending-approvals (atom {})
+     :patterns-used (atom [])  ;; fulab: pattern dependencies
+     :artifacts (atom [])       ;; fulab: files/artifacts produced
+     :docs-written (atom [])    ;; fulab: documentation trail
+     :society-paper (atom nil)  ;; fulab: session retrospective
+     :stats (atom (initial-stats))  ;; fulab: realtime stats
+     :process (atom nil)
+     :started-at (now-ms)}))
+
 (defn- create-session! [opts]
   (let [session-id (random-session-id)
-        events-ch (async/chan 256)
-        session {:id session-id
-                 :status :starting
-                 :opts opts
-                 :codex-cli-session-id nil
-                 :events-ch events-ch
-                 :events-log (atom [])  ;; For polling-based retrieval
-                 :subscribers (atom #{})
-                 :pending-approvals (atom {})
-                 :patterns-used (atom [])  ;; fulab: pattern dependencies
-                 :artifacts (atom [])       ;; fulab: files/artifacts produced
-                 :docs-written (atom [])    ;; fulab: documentation trail
-                 :society-paper (atom nil)  ;; fulab: session retrospective
-                 :stats (atom (initial-stats))  ;; fulab: realtime stats
-                 :process (atom nil)
-                 :started-at (now-ms)}]
+        session (build-session session-id :starting opts)]
     (swap! !sessions assoc session-id session)
     session))
+
+(defn- ensure-external-session! [session-id]
+  (if-let [session (get @!sessions session-id)]
+    session
+    (let [opts {:source :external
+                :model "external"
+                :cwd (System/getProperty "user.dir")
+                :prompt ""}
+          session (build-session session-id :external opts)]
+      (swap! !sessions assoc session-id session)
+      (emit-event! session (session-started-event session-id opts))
+      session)))
 
 (defn- update-stats!
   "Update session stats based on event type."
@@ -829,11 +844,9 @@
 (defn record-pattern-action!
   "Record a lightweight pattern action (read/implement/update)."
   [session-id pattern-id action & [{:keys [note]}]]
-  (if-let [session (get @!sessions session-id)]
-    (do
-      (emit-event! session (pattern-action-event session-id pattern-id action note))
-      {:ok true :session-id session-id :pattern-id pattern-id :action action})
-    {:ok false :error "session-not-found"}))
+  (let [session (ensure-external-session! session-id)]
+    (emit-event! session (pattern-action-event session-id pattern-id action note))
+    {:ok true :session-id session-id :pattern-id pattern-id :action action}))
 
 (defn set-society-paper!
   "Set the session's retrospective summary (society paper).

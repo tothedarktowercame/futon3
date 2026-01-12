@@ -202,3 +202,20 @@
                (select-keys (:summary live)
                             [:kind :chosen :tau :g-chosen
                              :evidence-score :evidence-delta :evidence-counts])))))))
+
+(deftest aif-live-summary-includes-evidence-fields
+  (let [summary-event {:event/type :aif/summary
+                       :at "2026-01-01T00:00:02Z"
+                       :payload {:aif/kind :turn-end
+                                 :aif/result {:chosen "evidence-choice"
+                                              :aif {:tau 0.2
+                                                    :G-chosen -0.4
+                                                    :evidence-score -0.15
+                                                    :evidence-delta -0.03
+                                                    :evidence-counts {:update 1}}}}}
+        session {:session/id "S-3"
+                 :events [summary-event]}
+        live (#'transport/aif-live session)]
+    (is (= -0.15 (get-in live [:summary :evidence-score])))
+    (is (= -0.03 (get-in live [:summary :evidence-delta])))
+    (is (= {:update 1} (get-in live [:summary :evidence-counts])))))

@@ -13,6 +13,10 @@
 (require 'autorevert)
 (require 'subr-x)
 
+(defgroup fubar-musn-viewer nil
+  "MUSN viewer UI settings."
+  :group 'fubar)
+
 (defvar fubar-musn-url (or (getenv "FUTON3_MUSN_URL") "http://localhost:6065")
   "Base URL for MUSN service.")
 
@@ -25,6 +29,55 @@
   "Poll interval (seconds) to refresh HUD intent/state from MUSN.")
 (defvar fubar-musn--state-timer nil)
 (defvar fubar-musn--session-scan-timer nil)
+(defvar fubar-musn-view-detail-buffer "*FuBar MUSN Detail*")
+(defvar-local fubar-musn--partial "")
+
+(defcustom fubar-musn-stream-folds '(:all)
+  "Categories to fold in the MUSN viewer."
+  :type '(repeat symbol)
+  :group 'fubar-musn-viewer)
+
+(defcustom fubar-musn-stream-unfold-types '(:aif)
+  "Categories to keep expanded even when folding is on."
+  :type '(repeat symbol)
+  :group 'fubar-musn-viewer)
+
+(defcustom fubar-musn-stream-summary-max 200
+  "Maximum characters to show in folded summaries."
+  :type 'integer
+  :group 'fubar-musn-viewer)
+
+(defcustom fubar-musn-stream-category-rules
+  '((:aif . "\\[aif\\]")
+    (:pattern . "\\[pattern-")
+    (:hud . "\\[hud-")
+    (:pause . "\\[MUSN-PAUSE\\]\\|\\[musn-pause\\]")
+    (:session . "\\[musn-session\\]")
+    (:musn . "\\[musn\\]")
+    (:error . "\\[musn-stream\\] ERROR\\|\\bERROR\\b"))
+  "Regex rules to map log lines into fold categories."
+  :type '(repeat (cons symbol regexp))
+  :group 'fubar-musn-viewer)
+
+(defvar fubar-musn-view-font-lock-keywords
+  '(("^\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}T[^ ]+\\)" . font-lock-comment-face)
+    ("\\[aif\\]" . font-lock-constant-face)
+    ("\\[pattern-[^]]+\\]" . font-lock-keyword-face)
+    ("\\[hud-[^]]+\\]" . font-lock-preprocessor-face)
+    ("\\[MUSN-PAUSE\\]\\|\\[musn-pause\\]" . font-lock-warning-face)
+    ("\\[musn-session\\]" . font-lock-builtin-face)))
+
+(defvar fubar-musn-view-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "RET") #'fubar-musn-view-detail)
+    (define-key map [mouse-1] #'fubar-musn-view-detail)
+    map))
+
+(define-derived-mode fubar-musn-view-mode special-mode "FuBar-MUSN"
+  "Major mode for MUSN stream viewing."
+  (setq-local font-lock-defaults '(fubar-musn-view-font-lock-keywords))
+  (setq-local truncate-lines t)
+  (setq-local fubar-musn--partial ""))
 
 (defun fubar-musn--extract-session-id (text)
   (when (and text (string-match "\\[musn-session\\]\\s-*\\(musn-[A-Za-z0-9]+\\)" text))
@@ -99,7 +152,9 @@
   (when (and line (not (string-empty-p line)))
     (with-current-buffer (get-buffer-create fubar-musn-view-buffer)
       (goto-char (point-max))
-      (insert line "\n"))))
+      (if (derived-mode-p 'fubar-musn-view-mode)
+          (fubar-musn--insert-line line)
+        (insert line "\n")))))
 
 (defun fubar-musn-display-pause (pause)
   (let* ((reason (plist-get pause :reason))
@@ -138,28 +193,83 @@
     (goto-char (point-max))
     (message "Following MUSN log: %s" log)))
 
+(defun fubar-musn--line-category (line)
+  (or (cl-loop for (cat . re) in fubar-musn-stream-category-rules
+               when (string-match-p re line)
+               return cat)
+      :other))
+
+(defun fubar-musn--fold-line-p (category)
+  (or (and (member :all fubar-musn-stream-folds)
+           (not (member category fubar-musn-stream-unfold-types)))
+      (member category fubar-musn-stream-folds)))
+
+(defun fubar-musn--summarize-line (line)
+  (let* ((single (replace-regexp-in-string "[\r\n\t]+" " " (or line "")))
+         (single (replace-regexp-in-string " +" " " (string-trim single)))
+         (max fubar-musn-stream-summary-max))
+    (if (and max (> (length single) max))
+        (concat (substring single 0 max) "...")
+      single)))
+
+(defun fubar-musn--insert-line (line)
+  (let* ((category (fubar-musn--line-category line))
+         (folded (fubar-musn--fold-line-p category))
+         (display (if folded (fubar-musn--summarize-line line) (string-trim-right line)))
+         (start (point)))
+    (insert display "\n")
+    (add-text-properties
+     start (max start (1- (point)))
+     `(fubar-musn-full ,line
+                       fubar-musn-category ,category
+                       fubar-musn-folded ,folded
+                       keymap ,fubar-musn-view-mode-map
+                       mouse-face highlight))))
+
+(defun fubar-musn-view-detail (&optional pos)
+  "Show the full log line at POS (or point) in a detail buffer."
+  (interactive)
+  (let* ((pos (or pos (point)))
+         (full (or (get-text-property pos 'fubar-musn-full)
+                   (thing-at-point 'line t))))
+    (unless (and full (not (string-empty-p (string-trim full))))
+      (user-error "No detail available"))
+    (with-current-buffer (get-buffer-create fubar-musn-view-detail-buffer)
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (insert (string-trim-right full))
+        (goto-char (point-min))
+        (view-mode 1))
+      (pop-to-buffer (current-buffer)))))
+
+(defun fubar-musn--unescape-text (txt)
+  (let* ((txt (replace-regexp-in-string "\\\\r\\\\n" "\n" txt))
+         (txt (replace-regexp-in-string "\\\\n" "\n" txt))
+         (txt (replace-regexp-in-string "\\\\t" "\t" txt)))
+    (replace-regexp-in-string "\\\\\"" "\"" txt)))
+
 (defun fubar-musn--stream-filter (proc chunk)
-  "Process filter for streaming MUSN log pretty-ish output."
+  "Process filter for streaming MUSN log output with folding."
   (when (buffer-live-p (process-buffer proc))
     (with-current-buffer (process-buffer proc)
-      (let* ((txt chunk)
-             ;; convert escaped \r\n and \n to real newlines for readability
-             (txt (replace-regexp-in-string "\\\\r\\\\n" "\n" txt))
-             (txt (replace-regexp-in-string "\\\\n" "\n" txt))
-             (txt (replace-regexp-in-string "\\\\t" "\t" txt))
-             ;; peel one layer of escaped quotes for readability in command output
-             (txt (replace-regexp-in-string "\\\\\"" "\"" txt)))
+      (let* ((txt (fubar-musn--unescape-text chunk))
+             (txt (concat fubar-musn--partial txt))
+             (lines (split-string txt "\n" nil))
+             (complete (butlast lines))
+             (remainder (car (last lines))))
+        (setq fubar-musn--partial remainder)
         (goto-char (point-max))
-        (insert txt)
-        ;; session id handshake
-        (when-let ((sid (fubar-musn--extract-session-id txt)))
-          (setq fubar-musn-session-id sid)
-          (fubar-musn--maybe-start-state-poll))
-        ;; detect HUD intent handshake lines: "[hud-intent] ..."
-        (when (string-match-p "\\[hud-intent\\]" txt)
-          (dolist (line (split-string txt "\n"))
-            (when-let ((intent (fubar-musn--extract-hud-intent line)))
-              (fubar-musn--apply-handshake nil intent))))))))
+        (dolist (line complete)
+          (when (and line (not (string-empty-p (string-trim line))))
+            ;; session id handshake
+            (when-let ((sid (fubar-musn--extract-session-id line)))
+              (setq fubar-musn-session-id sid)
+              (fubar-musn--maybe-start-state-poll))
+            ;; detect HUD intent handshake lines: "[hud-intent] ..."
+            (when (string-match-p "\\[hud-intent\\]" line)
+              (when-let ((intent (fubar-musn--extract-hud-intent line)))
+                (fubar-musn--apply-handshake nil intent)))
+            (fubar-musn--insert-line line)))))))
 
 (defun fubar-musn--maybe-start-state-poll ()
   "Start polling MUSN state if session id is known."
@@ -218,7 +328,7 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
       (delete-process fubar-musn--proc))
     (with-current-buffer buf
       (erase-buffer)
-      (setq-local truncate-lines nil))
+      (fubar-musn-view-mode))
     (setq fubar-musn--proc
           (start-process "fubar-musn-tail" buf "tail" "-f" "-n" "200" log))
     (set-process-filter fubar-musn--proc #'fubar-musn--stream-filter)
@@ -325,10 +435,6 @@ the agent can infer from the prompt."
         (setq default-directory fubar-hud-futon3-root)
         (erase-buffer)
         (start-process-shell-command "fubar-musn-launch" buf cmd))
-      ;; begin watching the raw stream for [musn-session] even before the log writes
-      (fubar-musn--stop-session-scan)
-      (setq fubar-musn--session-scan-timer
-            (run-at-time 0 1 #'fubar-musn--scan-raw-stream))
       (message "Launched MUSN run with intent: %s" intent))))
 
 (provide 'fubar-viewer)

@@ -160,6 +160,32 @@
   (when (number? value)
     (format "%.3f" (double value))))
 
+(defn log-aif-line! [label parts]
+  (when (seq parts)
+    (let [line (str "[aif]"
+                    (when label (str " " label))
+                    " "
+                    (str/join " " parts))]
+      (log! line)
+      (println line)
+      (flush))))
+
+(defn log-aif-selection! [aif]
+  (let [g (fmt-num (:G aif))
+        tau (fmt-num (:tau aif))]
+    (log-aif-line! "select"
+                   (remove nil?
+                           [(when g (str "G=" g))
+                            (when tau (str "tau=" tau))]))))
+
+(defn log-aif-update! [aif]
+  (let [err (fmt-num (:prediction-error aif))
+        tau (fmt-num (:tau-updated aif))]
+    (log-aif-line! "update"
+                   (remove nil?
+                           [(when err (str "err=" err))
+                            (when tau (str "tau=" tau))]))))
+
 (defn log-selection! [psr]
   (let [reason (:selection/reason psr)
         mode (:mode reason)
@@ -180,7 +206,9 @@
                        (str " reads=" (str/join "," reads))
                        "")
                      (or aif-label "")))
-    (flush)))
+    (flush)
+    (when (seq aif)
+      (log-aif-selection! aif))))
 
 (defn log-use! [pur aif]
   (let [pattern-id (:pattern/id pur)
@@ -199,7 +227,9 @@
                      pattern-id
                      (or tag-label "")
                      (or aif-label "")))
-    (flush)))
+    (flush))
+  (when (seq aif)
+    (log-aif-update! aif)))
 
 (defn print-pause [resp]
   (when-let [pause (:pause resp)]
@@ -282,7 +312,9 @@
           state (atom {:turn 0})]
       (log! "[musn] stream-loop start")
       (when-let [sid (:session/id session)]
-        (println (format "[musn-session] %s" sid))
+        (let [line (format "[musn-session] %s" sid)]
+          (log! line)
+          (println line))
         (flush))
       (doseq [line (line-seq (io/reader *in*))]
         (when-let [event (parse-json line)]
@@ -309,7 +341,9 @@
                                   (:sigils hud-map) (assoc :sigils (:sigils hud-map))
                                   (:namespaces hud-map) (assoc :namespaces (:namespaces hud-map))
                                   (:aif hud-map) (assoc :aif (:aif hud-map)))]
-                (musn-start session t hud-payload)
+                (let [start-resp (musn-start session t hud-payload)]
+                  (when-let [aif (:aif start-resp)]
+                    (log-aif-selection! aif)))
                 (if (seq candidates)
                   (println (format "[hud-candidates] %s" (str/join ", " candidates)))
                   (println "[hud-candidates] none"))

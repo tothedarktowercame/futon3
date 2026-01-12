@@ -15,6 +15,8 @@
     Maintain an explicit (o) as a typed, normalized feature map derived from session state (for example: test status, compile status, diff size, failing spec count, user-stated constraints, time since last anchor, contradiction flags).
   + BECAUSE:
     A stable observation vector is the prerequisite for meaningful precision control and policy scoring.
+    - evidence: src/futon3/aif_bridge.clj - extract-observation-vector selects and normalizes structured observation keys into :observation-vector.
+    - evidence: src/futon3/aif_bridge.clj - observation-normalizers defines typed normalizers for every observation-vector key.
   + NEXT-STEPS:
     - Define :aif/observation-vector schema in tatami_schema.clj with keys [:test-status :compile-status :diff-size :failing-spec-count :user-constraints :time-since-anchor :contradiction-flags].
     - Add (extract-observation-vector session-state) to aif_bridge.clj that normalizes tool output into the typed map.

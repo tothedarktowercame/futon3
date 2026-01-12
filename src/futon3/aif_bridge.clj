@@ -40,15 +40,13 @@
     :else nil))
 
 (defn- normalize-status [value]
-  (cond
-    (keyword? value) value
-    (string? value) (let [trimmed (str/trim value)]
-                      (when (seq trimmed)
-                        (keyword (str/lower-case trimmed))))
-    :else nil))
+  (normalize-keyword value))
 
 (def ^:private g-term-keys
   [:risk :ambiguity :info-gain :constraint-violation :cost :coordination-pressure])
+
+(def ^:private g-term-keyset
+  (set g-term-keys))
 
 (defn- normalize-keyword [value]
   (cond
@@ -68,25 +66,53 @@
          (remove nil?)
          vec)))
 
+(def ^:private observation-vector-keys
+  [:test-status
+   :compile-status
+   :diff-size
+   :failing-spec-count
+   :user-constraints
+   :time-since-anchor
+   :contradiction-flags])
+
+(def ^:private precision-registry-normalizers
+  {:tests ->double
+   :typecheck ->double
+   :static-analysis ->double
+   :tool-output ->double
+   :user-constraints ->double
+   :model-inference ->double})
+
+(defn- normalize-contradiction-flags [values]
+  (->> values
+       normalize-texts
+       (map #(keyword (str/lower-case %)))
+       vec))
+
+(def ^:private observation-normalizers
+  {:test-status normalize-status
+   :compile-status normalize-status
+   :diff-size ->int
+   :failing-spec-count ->int
+   :user-constraints normalize-texts
+   :time-since-anchor ->double
+   :contradiction-flags normalize-contradiction-flags})
+
+(defn- select-observation-keys [value]
+  (if (map? value)
+    (select-keys value observation-vector-keys)
+    {}))
+
 (defn- normalize-observation-vector [observation]
-  (let [test-status (normalize-status (:test-status observation))
-        compile-status (normalize-status (:compile-status observation))
-        diff-size (->int (:diff-size observation))
-        failing-spec-count (->int (:failing-spec-count observation))
-        user-constraints (normalize-texts (:user-constraints observation))
-        time-since-anchor (->double (:time-since-anchor observation))
-        contradiction-flags (->> (:contradiction-flags observation)
-                                 normalize-texts
-                                 (map #(keyword (str/lower-case %)))
-                                 vec)]
-    (cond-> {}
-      test-status (assoc :test-status test-status)
-      compile-status (assoc :compile-status compile-status)
-      (some? diff-size) (assoc :diff-size diff-size)
-      (some? failing-spec-count) (assoc :failing-spec-count failing-spec-count)
-      (seq user-constraints) (assoc :user-constraints user-constraints)
-      (some? time-since-anchor) (assoc :time-since-anchor time-since-anchor)
-      (seq contradiction-flags) (assoc :contradiction-flags contradiction-flags))))
+  (letfn [(assoc-if-present [acc key value]
+            (cond
+              (nil? value) acc
+              (and (sequential? value) (empty? value)) acc
+              :else (assoc acc key value)))]
+    (reduce-kv (fn [acc key normalizer]
+                 (assoc-if-present acc key (normalizer (get observation key))))
+               {}
+               observation-normalizers)))
 
 (defn- normalize-g-breakdown [breakdown]
   (when (map? breakdown)
@@ -94,7 +120,7 @@
                        (keep (fn [[k v]]
                                (let [term (normalize-keyword k)
                                      score (->double v)]
-                                 (when (and term (some #{term} g-term-keys) (some? score))
+                                 (when (and term (g-term-keyset term) (some? score))
                                    [term score]))))
                        (into {}))]
       (when (seq entries)
@@ -136,36 +162,25 @@
          vec)))
 
 (defn- normalize-precision-registry [registry]
-  (let [tests (->double (:tests registry))
-        typecheck (->double (:typecheck registry))
-        static-analysis (->double (:static-analysis registry))
-        tool-output (->double (:tool-output registry))
-        user-constraints (->double (:user-constraints registry))
-        model-inference (->double (:model-inference registry))
-        normalized (cond-> {}
-                     (some? tests) (assoc :tests tests)
-                     (some? typecheck) (assoc :typecheck typecheck)
-                     (some? static-analysis) (assoc :static-analysis static-analysis)
-                     (some? tool-output) (assoc :tool-output tool-output)
-                     (some? user-constraints) (assoc :user-constraints user-constraints)
-                     (some? model-inference) (assoc :model-inference model-inference))]
-    (when (seq normalized)
-      normalized)))
+  (when (map? registry)
+    (let [normalized (reduce-kv (fn [acc key normalizer]
+                                  (let [value (normalizer (get registry key))]
+                                    (if (some? value)
+                                      (assoc acc key value)
+                                      acc)))
+                                {}
+                                precision-registry-normalizers)]
+      (when (seq normalized)
+        normalized))))
 
 (defn- extract-observation-vector [step-result]
   (let [observation (or (:observation step-result)
                         (:observation-vector step-result)
                         (get-in step-result [:perception :observation])
+                        (get-in step-result [:perception :observation-vector])
                         {})
-        merged (merge observation
-                      (select-keys step-result
-                                   [:test-status
-                                    :compile-status
-                                    :diff-size
-                                    :failing-spec-count
-                                    :user-constraints
-                                    :time-since-anchor
-                                    :contradiction-flags]))]
+        merged (merge (select-observation-keys observation)
+                      (select-observation-keys step-result))]
     (normalize-observation-vector merged)))
 
 (defn- extract-g-breakdown [step-result]
@@ -225,7 +240,7 @@
                            frequencies
                            (into {} (map (fn [[k v]] [k (int v)]))))
         g-breakdowns (keep extract-g-breakdown episode-trace)
-        term-provenance (mapcat extract-term-provenance episode-trace)
+        term-provenance (vec (mapcat extract-term-provenance episode-trace))
         g-mean (if (seq g-values)
                  (/ (reduce + g-values) (double (count g-values)))
                  0.0)
@@ -271,8 +286,9 @@
                                    (keep (fn [step]
                                            (let [observation (extract-observation-vector step)]
                                              (when (seq observation)
-                                               observation)))))
-        observation-vector (first (reverse observation-snapshots))
+                                               observation))))
+                                   vec)
+        observation-vector (peek observation-snapshots)
         observation-coverage (when (seq episode-trace)
                                (let [observed (count observation-snapshots)
                                      total (count episode-trace)]
@@ -282,11 +298,11 @@
                                               (/ (double observed) total)
                                               0.0)}))
         precision-registry (some extract-precision-registry (reverse episode-trace))
-        g-term-keys (->> g-breakdowns (mapcat keys) set)
+        observed-g-terms (->> g-breakdowns (mapcat keys) set)
         provenance-keys (->> term-provenance (map :term-id) set)
-        missing-keys (set/difference g-term-keys provenance-keys)
-        g-term-traceability (when (seq g-term-keys)
-                              {:terms (sorted-terms g-term-keys)
+        missing-keys (set/difference observed-g-terms provenance-keys)
+        g-term-traceability (when (seq observed-g-terms)
+                              {:terms (sorted-terms observed-g-terms)
                                :with-provenance (sorted-terms provenance-keys)
                                :missing-provenance (sorted-terms missing-keys)})
         constraint-violations (->> episode-trace
@@ -300,6 +316,7 @@
                    observation-vector (assoc :observation-vector observation-vector)
                    observation-coverage (assoc :observation-coverage observation-coverage)
                    precision-registry (assoc :precision-registry precision-registry)
+                   (seq term-provenance) (assoc :term-provenance term-provenance)
                    (seq g-term-means) (assoc :g-terms g-term-means)
                    (seq g-term-channels) (assoc :g-term-channels g-term-channels)
                    g-term-traceability (assoc :g-term-traceability g-term-traceability))]

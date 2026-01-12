@@ -15,6 +15,8 @@
     Represent (Pi_o) as a per-channel precision registry keyed to observation features (and/or evidence sources), and apply it wherever prediction error, scoring, or gating occurs.
   + BECAUSE:
     Making precision explicit turns trust into a tunable control surface rather than an undocumented bias.
+    - evidence: src/futon3/aif_bridge.clj - extract-precision-registry normalizes per-channel precision into :precision-registry for evidence checks.
+    - evidence: src/futon3/aif_bridge.clj - precision-registry-normalizers enforces typed precision values per channel.
   + NEXT-STEPS:
     - Define :aif/precision-registry schema in tatami_schema.clj with channel keys [:tests :typecheck :static-analysis :tool-output :user-constraints :model-inference].
     - Add default-precision-registry to pattern_competence.clj with initial weights (e.g., :tests 0.9, :model-inference 0.5).

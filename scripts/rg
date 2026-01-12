@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+path_clean="${PATH#${script_dir}:}"
+rg_bin="$(PATH="$path_clean" command -v rg || true)"
+
+if [[ -z "$rg_bin" ]]; then
+  echo "rg: not found on PATH" >&2
+  exit 127
+fi
+
+allow_wide="${FUCODEX_ALLOW_WIDE_SCAN:-}"
+allow_wide="$(printf '%s' "$allow_wide" | tr '[:upper:]' '[:lower:]')"
+wide_mode="${FUCODEX_WIDE_SCAN_MODE:-warn}"
+wide_mode="$(printf '%s' "$wide_mode" | tr '[:upper:]' '[:lower:]')"
+
+has_files=false
+has_filter=false
+for arg in "$@"; do
+  case "$arg" in
+    --files)
+      has_files=true
+      ;;
+    -g|--glob|--iglob|--type|--type-add|-t)
+      has_filter=true
+      ;;
+    -g*|--glob=*|--iglob=*|--type=*|--type-add=*|-t*)
+      has_filter=true
+      ;;
+  esac
+done
+
+if $has_files && ! $has_filter && [[ "$allow_wide" != "1" && "$allow_wide" != "true" ]]; then
+  echo "fucodex guard: wide rg --files detected; add --glob/--type or ask for scope" >&2
+  printf '%s\n' "{\"type\":\"pattern-action\",\"action\":\"off-trail\",\"pattern-id\":\"ants/white-space-scout\",\"note\":\"wide rg --files; ask for scope or add --glob\"}"
+  if [[ "$wide_mode" == "ask" ]]; then
+    printf '%s\n' "{\"type\":\"pattern-action\",\"action\":\"question\",\"pattern-id\":\"ants/white-space-scout\",\"note\":\"Need scope for rg --files. Provide directories/globs or approve a wide scan.\",\"source\":\"report\"}"
+    exit 2
+  fi
+  if [[ "$wide_mode" == "block" ]]; then
+    exit 2
+  fi
+fi
+
+exec "$rg_bin" "$@"

@@ -113,7 +113,7 @@
   :type 'boolean
   :group 'fubar-hud)
 
-(defcustom fubar-hud-approval-policy "never"
+(defcustom fubar-hud-approval-policy "untrusted"
   "Approval policy to pass to fucodex runs."
   :type '(choice (const "never")
                  (const "untrusted")
@@ -222,10 +222,73 @@
   (when body
     (decode-coding-string (string-make-unibyte body) 'utf-8)))
 
+(defun fubar-hud--extract-intent-from-prompt (prompt)
+  "Extract an Intent block from PROMPT when present."
+  (when (and prompt (stringp prompt))
+    (let* ((lines (split-string prompt "\n"))
+           (start (cl-position-if (lambda (line)
+                                    (string-match-p "^\\s-*Intent\\s-*:" line))
+                                  lines))
+           (intent-lines nil))
+      (when start
+        (let ((line (nth start lines)))
+          (setq intent-lines
+                (list (string-trim (replace-regexp-in-string "^\\s-*Intent\\s-*:\\s*" "" line))))))
+      (when start
+        (let ((idx (1+ start)))
+          (while (and (< idx (length lines))
+                      (let ((line (nth idx lines)))
+                        (not (string-empty-p (string-trim line)))))
+            (push (string-trim (nth idx lines)) intent-lines)
+            (setq idx (1+ idx))))))
+      (when intent-lines
+        (string-trim (string-join (nreverse intent-lines) " "))))))
+
+(defvar-local fubar-hud--stream-fragment ""
+  "Partial stream fragment awaiting a newline.")
+
+(defun fubar-hud--maybe-update-intent-from-line (line)
+  "Update HUD intent from a LINE that declares intent."
+  (let ((case-fold-search t))
+    (when (string-match "^\\s-*\\(?:\\[intent\\]\\|intent:\\)\\s-*\\(.+\\)$" line)
+      (let ((intent (string-trim (match-string 1 line))))
+        (when (and intent (not (string-empty-p intent)))
+          (let ((hud-buf (get-buffer fubar-hud-buffer-name)))
+            (when hud-buf
+              (with-current-buffer hud-buf
+                (setq fubar-hud--intent intent)
+                (fubar-hud-refresh)))))))))
+
+(defun fubar-hud--stream-filter (proc chunk)
+  "Insert CHUNK into PROC buffer and parse intent lines."
+  (let ((buf (process-buffer proc)))
+    (when (buffer-live-p buf)
+      (with-current-buffer buf
+        (let ((moving (= (point) (process-mark proc))))
+          (save-excursion
+            (goto-char (process-mark proc))
+            (insert chunk)
+            (set-marker (process-mark proc) (point)))
+          (when moving
+            (goto-char (process-mark proc)))))
+      (with-current-buffer buf
+        (let* ((text (concat fubar-hud--stream-fragment chunk))
+               (lines (split-string text "\n"))
+               (complete (butlast lines))
+               (rest (car (last lines))))
+          (setq fubar-hud--stream-fragment rest)
+          (dolist (line complete)
+            (fubar-hud--maybe-update-intent-from-line line)))))))
+
+(defun fubar-hud--encode-json-request (payload)
+  "Encode PAYLOAD as UTF-8 unibyte JSON for url-request-data."
+  (string-make-unibyte (encode-coding-string (json-encode payload) 'utf-8)))
+
 (defun fubar-hud--http-post-json (url payload)
   (let* ((url-request-method "POST")
-         (url-request-extra-headers '(("content-type" . "application/json")))
-         (url-request-data (json-encode payload))
+         (url-request-extra-headers '(("content-type" . "application/json; charset=utf-8")))
+         (url-request-data (fubar-hud--encode-json-request payload))
+         (coding-system-for-write 'binary)
          (buf (url-retrieve-synchronously url t t 5.0)))
     (when buf
       (with-current-buffer buf
@@ -239,8 +302,9 @@
 (defun fubar-hud--http-post-json-async (url payload callback)
   "POST PAYLOAD to URL and call CALLBACK with parsed JSON or nil."
   (let ((url-request-method "POST")
-        (url-request-extra-headers '(("content-type" . "application/json")))
-        (url-request-data (json-encode payload)))
+        (url-request-extra-headers '(("content-type" . "application/json; charset=utf-8")))
+        (url-request-data (fubar-hud--encode-json-request payload))
+        (coding-system-for-write 'binary))
     (url-retrieve
      url
      (lambda (status)
@@ -590,7 +654,7 @@
   (let ((policy (or fubar-hud--approval-policy fubar-hud-approval-policy)))
     (if (and (stringp policy) (not (string-empty-p policy)))
         policy
-      "never")))
+      "untrusted")))
 
 (defun fubar-hud-toggle-approval-policy ()
   "Toggle approval policy between \"never\" and \"untrusted\"."
@@ -1012,7 +1076,8 @@ Starts a live run, binds a new session id, and streams output to
          (intent (let ((trimmed (and intent (string-trim intent))))
                    (cond
                     ((and trimmed (not (string-empty-p trimmed))) trimmed)
-                    ((and fubar-hud-intent-from-prompt prompt) prompt)
+                    ((and fubar-hud-intent-from-prompt prompt)
+                     (or (fubar-hud--extract-intent-from-prompt prompt) prompt))
                     ((and existing-intent (not (string-empty-p existing-intent))) existing-intent)
                     :else "coding task")))
          (session-id (fubar-hud--generate-session-id))
@@ -1044,6 +1109,7 @@ Starts a live run, binds a new session id, and streams output to
                       buf
                       "/home/joe/code/futon3/fucodex"
                       args))
+    (set-process-filter proc #'fubar-hud--stream-filter)
     (process-put proc 'fubar-hud-label "fucodex")
     (set-process-sentinel proc #'fubar-hud--process-sentinel)
     (fubar-hud-refresh)

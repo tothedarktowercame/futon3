@@ -57,6 +57,60 @@
 (defn- read-lines [text]
   (str/split text #"\n"))
 
+(defn- section-lines
+  "Return lines following START-RE until the next section marker."
+  [text start-re]
+  (loop [lines (str/split-lines text)
+         mode :search
+         acc []]
+    (if-let [line (first lines)]
+      (case mode
+        :search (if (re-find start-re line)
+                  (recur (rest lines) :collect acc)
+                  (recur (rest lines) :search acc))
+        :collect (if (or (re-find #"^\\s*\\+\\s+\\S" line)
+                         (re-find #"^\\s*@\\w" line))
+                   acc
+                   (recur (rest lines) :collect (conj acc line))))
+      acc)))
+
+(defn- evidence-line? [line]
+  (let [lc (str/lower-case line)]
+    (and (re-find #"^\\s*-\\s+evidence:" lc)
+         (not (str/includes? lc "evidence-shape")))))
+
+(defn- evidence-count [text]
+  (->> (str/split-lines text)
+       (filter evidence-line?)
+       count))
+
+(defn- next-steps-count [text]
+  (let [lines (section-lines text #"^\\s*\\+\\s+next-steps:")]
+    (->> lines
+         (filter #(re-find #"^\\s*-\\s+\\S" %))
+         count)))
+
+(defn- maturity-info [text]
+  (let [evidence (evidence-count text)
+        next-steps (next-steps-count text)
+        has-evidence (pos? evidence)
+        has-next-steps (pos? next-steps)
+        phase (cond
+                (and (not has-next-steps) has-evidence) :settled
+                (and (not has-next-steps) (not has-evidence)) :stub
+                (and has-next-steps has-evidence) :active
+                (and has-next-steps (not has-evidence)) :greenfield)
+        precision (case phase
+                    :settled 0.9
+                    :active 0.8
+                    :greenfield 0.4
+                    :stub 0.2
+                    0.5)]
+    {:evidence/count evidence
+     :next-steps/count next-steps
+     :maturity/phase phase
+     :precision/prior precision}))
+
 (defn- extract-meta [text key]
   (some->> (re-find (re-pattern (str "@" key "\\s+(.*)")) text)
            second
@@ -120,6 +174,7 @@
               clause-match (re-find clause-re block)
               summary (or (some-> clause-match second)
                           (some-> (re-find conclusion-re block) second))
+              maturity (maturity-info block)
               sigils (or (when clause-match
                            (split-sigils (nth clause-match 2)))
                          meta-sigils)]
@@ -129,7 +184,11 @@
      :summary (str/trim summary)
      :sigils sigils
      :pattern-ref (when-not (str/blank? pattern-ref)
-                    pattern-ref)}))
+                    pattern-ref)
+     :evidence/count (:evidence/count maturity)
+     :next-steps/count (:next-steps/count maturity)
+     :maturity/phase (:maturity/phase maturity)
+     :precision/prior (:precision/prior maturity)}))
 
 (def ^:private ldts-patterns (delay (vec (scan-library))))
 

@@ -54,13 +54,18 @@
                        (double (:score/similarity entry)))
    :summary (or (:summary entry) (:title entry) "")
    :sigils (:sigils entry)
-   :pattern-ref (:pattern-ref entry)})
+   :pattern-ref (:pattern-ref entry)
+   :maturity-phase (:maturity/phase entry)
+   :evidence-count (:evidence/count entry)
+   :next-steps-count (:next-steps/count entry)
+   :precision-prior (:precision/prior entry)})
 
 (def ^:private aif-weight-sigil 0.5)
 (def ^:private aif-weight-intent 0.3)
 (def ^:private aif-weight-glove 0.2)
 (def ^:private white-space-tau-bump 0.2)
 (def ^:private white-space-tau-min 0.7)
+(def ^:private precision-bonus-scale 0.08)
 
 (defn- candidate-signal?
   "Whether a candidate carries any usable scoring signal."
@@ -144,6 +149,9 @@
             scored (map (fn [c]
                           (let [{:keys [base sigil glove intent weights]} (weighted-base-score c)
                                 base-score (double (or base (:score c) 0.5))
+                                precision (double (or (:precision/prior c) 0.5))
+                                precision (-> precision (max 0.0) (min 1.0))
+                                precision-bonus (* precision-bonus-scale (- 0.5 precision))
                                 ;; Prefer patterns whose sigils match intent sigils
                                 sigil-bonus (if (and (seq sigils) (seq (:sigils c)))
                                               (let [c-sigils (set (map :emoji (:sigils c)))
@@ -152,13 +160,18 @@
                                                   -0.1
                                                   0.0))
                                               0.0)
-                                G (+ base-score sigil-bonus)]
+                                G (+ base-score sigil-bonus precision-bonus)]
                             {:id (:id c)
                              :G G
                              :components {:base base-score
                                           :sigil-distance sigil
                                           :glove-distance glove
                                           :intent-distance intent
+                                          :precision-prior precision
+                                          :precision-bonus precision-bonus
+                                          :maturity-phase (:maturity/phase c)
+                                          :evidence-count (:evidence/count c)
+                                          :next-steps-count (:next-steps/count c)
                                           :weights weights
                                           :sigil-bonus sigil-bonus
                                           :source (:score-source c)
@@ -177,7 +190,7 @@
          :candidate-count (count candidates)
          :white-space? white-space?
          :tau tau
-         :rationale (str "G = weighted distance (sigil + intent-embed + glove) + sigil bonus; "
+         :rationale (str "G = weighted distance (sigil + intent-embed + glove) + sigil bonus + maturity prior; "
                          "lowest G among " (count candidates) " candidates"
                          (when white-space?
                            " (white-space: tau boosted for exploration)"))}))))
@@ -254,13 +267,19 @@
                                                      (format "dist %.3f (0..1)" (double score))
                                                      "n/a")
                                        ref-label (when-let [pattern-ref (:pattern-ref c)]
-                                                   (str " ref " pattern-ref))]
-                                   (format "%d. %s (score: %s, source: %s%s)\n   %s"
+                                                   (str " ref " pattern-ref))
+                                       maturity-label (when-let [phase (:maturity-phase c)]
+                                                        (format ", maturity: %s (e:%s n:%s)"
+                                                                (name phase)
+                                                                (or (:evidence-count c) 0)
+                                                                (or (:next-steps-count c) 0)))]
+                                   (format "%d. %s (score: %s, source: %s%s%s)\n   %s"
                                            (inc i)
                                            (:id c)
                                            score-label
                                            (or (some-> (:score-source c) name) "unknown")
                                            (or ref-label "")
+                                           (or maturity-label "")
                                            (or (:summary c) "")))))
                               (str/join "\n"))
                          "No candidates found.")
@@ -283,7 +302,8 @@
          "\n"
          aif-str "\n"
          "\n"
-         "Before acting, read the AIF suggestion and at least one other candidate (if present).\n"
+         "Start your response with: Intent: <one-line restatement of the task>\n"
+         "Before acting, state a 1-2 line plan and read the AIF suggestion plus one other candidate (if present).\n"
          "If you go off-trail, keep it brief and log why.\n"
          "\n"
          "PSR/PUR are emitted each turn from the live stream; focus on real actions.\n"

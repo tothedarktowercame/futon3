@@ -34,6 +34,8 @@ APPROVAL_POLICY=""
 SKIP_GIT_CHECK=false
 HUD_PRINT=false
 HUD_SERVER="${HUD_SERVER:-http://localhost:5050}"
+PATTERN_RPC=true
+SCOPE_GUARDRAIL=$'Scope guardrail: avoid repo-wide `rg --files` or wide `rg` searches.\nBefore tool use, state a 1-2 line plan; if a wide scan is likely, either (a) announce it and proceed, or (b) stop and ask for scope; if asking, do not run the scan.\nTreat wide scans as expensive.'
 
 show_help() {
   cat <<'EOF'
@@ -59,6 +61,7 @@ Options:
   --hud                 Enable HUD mode: seed patterns into prompt, parse response.
   --intent TEXT         Intent/goal for HUD pattern selection.
   --approval-policy     Approval policy for codex exec (e.g., untrusted, never).
+  --pattern-rpc         Enable pattern-action RPC and enforce explicit reads (default: on).
   --hud-print           Print HUD block before running codex.
   --hud-server URL      HUD server base URL (default: http://localhost:5050).
 
@@ -128,6 +131,8 @@ while [[ $# -gt 0 ]]; do
       HUD_INTENT="$2"; shift 2;;
     --approval-policy)
       APPROVAL_POLICY="$2"; shift 2;;
+    --pattern-rpc)
+      PATTERN_RPC=true; shift;;
     --hud-print)
       HUD_PRINT=true; shift;;
     --hud-server)
@@ -193,6 +198,18 @@ fi
 
 if [[ -n "$CHOSEN" && -n "$CLOCK_IN" ]]; then
   echo "[lab] warning: --chosen is ignored when --clock-in is provided" >&2
+fi
+
+if $PATTERN_RPC && [[ -z "$FORCED_SESSION_ID" ]]; then
+  FORCED_SESSION_ID="$(python3 - <<'PY'
+import uuid
+print(f"codex-{uuid.uuid4().hex[:8]}")
+PY
+)"
+fi
+
+if [[ -z "$APPROVAL_POLICY" && "$PATTERN_RPC" == true ]]; then
+  APPROVAL_POLICY="untrusted"
 fi
 
 # HUD mode: inject pattern context into prompt
@@ -290,12 +307,16 @@ PY
       original_prompt="${args[$((i+1))]}"
       combined_prompt="${HUD_BLOCK}
 
+${SCOPE_GUARDRAIL}
+
 User task: ${original_prompt}"
       new_args+=("--prompt" "$combined_prompt")
       ((i++))  # Skip the next element since we handled it
     elif [[ $i -eq $((${#args[@]}-1)) && "${args[$i]}" != --* && "${new_args[*]}" != *"--prompt"* ]]; then
       # Last arg without --prompt flag (bare prompt)
       combined_prompt="${HUD_BLOCK}
+
+${SCOPE_GUARDRAIL}
 
 User task: ${args[$i]}"
       new_args+=("$combined_prompt")
@@ -332,6 +353,17 @@ if [[ -n "$FORCED_SESSION_ID" ]]; then
 fi
 if [[ -n "$HUD_SERVER" ]]; then
   export FUTON3_CODEX_SERVER_URL="$HUD_SERVER"
+fi
+if $PATTERN_RPC; then
+  export PATTERN_ACTION_RPC=1
+fi
+
+if $PATTERN_RPC && [[ ${#args[@]} -eq 1 ]]; then
+  if [[ "${args[0]}" != *"Scope guardrail:"* ]]; then
+    args=("${SCOPE_GUARDRAIL}
+
+User task: ${args[0]}")
+  fi
 fi
 
 if $LIVE; then
@@ -384,6 +416,33 @@ PY
   fi
   if $PROPOSAL_HOOK; then
     clj_args+=(--proposal-hook)
+  fi
+  if $PATTERN_RPC; then
+    clj_args+=(--enforce-pattern-actions)
+  fi
+  preflight_mode="${FUCODEX_PREFLIGHT:-auto}"
+  preflight_mode="$(printf '%s' "$preflight_mode" | tr '[:upper:]' '[:lower:]')"
+  if [[ "$preflight_mode" != "off" && "$preflight_mode" != "0" && "$preflight_mode" != "false" ]]; then
+    preflight_stamp="$ROOT/lab/.lab_stream_codex.preflight"
+    preflight_needed=true
+    if [[ "$preflight_mode" == "auto" ]]; then
+      current_hash="$(cksum "$ROOT/dev/lab_stream_codex.clj" | awk '{print $1 "-" $2}')"
+      if [[ -f "$preflight_stamp" ]]; then
+        read -r cached_hash < "$preflight_stamp"
+        if [[ "$cached_hash" == "$current_hash" ]]; then
+          preflight_needed=false
+        fi
+      fi
+    fi
+    if $preflight_needed; then
+      if ! clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab_stream_codex.clj" --help >/dev/null; then
+        echo "[lab] preflight failed: dev/lab_stream_codex.clj did not compile; aborting run" >&2
+        exit 2
+      fi
+      if [[ "$preflight_mode" == "auto" && -n "${current_hash-}" ]]; then
+        echo "$current_hash" > "$preflight_stamp"
+      fi
+    fi
   fi
   codex_flags=(--json)
   if $SKIP_GIT_CHECK; then

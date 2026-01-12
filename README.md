@@ -14,6 +14,39 @@ A modern Clojure rewrite of the vintage Monster Mountain / MUSN server. The tran
 - `src/f2/semantics.clj` – placeholder reasoning over transport history
 - `dev/demo_events.ndjson` – sample ingest for `make demo`
 
+## MUSN + HUD (fubar/fucodex) Quickstart
+To run a MUSN-guided fucodex session with live HUD in Emacs:
+
+1. Start MUSN HTTP (6065):
+   ```bash
+   clojure -M -m futon3.musn.http
+   # MUSN HTTP server on 6065
+   ```
+2. Start drawbridge + transport/UI (6767/5050/6060):
+   ```bash
+   ADMIN_TOKEN=$(cat .admintoken) FUTON3_DRAWBRIDGE=1 ./scripts/dev.sh
+   # Drawbridge on http://127.0.0.1:6767/repl …
+   # Transport on 5050, UI on 6060
+   ```
+3. In Emacs, run:
+   ```elisp
+   M-x fubar-musn-launch-and-view
+   ;; enter your prompt/intent when prompted
+   ```
+   This opens a 2-up view (raw stream + HUD). HUD stays in sync with MUSN intent/session/sigils and shows pattern candidates + AIF suggestion. Click “Proceed” in the HUD to continue the run.
+
+Hotloading fixes into the running server (optional):
+```bash
+ADMIN_TOKEN=$(cat .admintoken) clojure -M -e "
+(require 'cemerick.drawbridge.client)
+(require '[clojure.tools.nrepl :as nrepl])
+(let [conn (nrepl/url-connect (str \"http://127.0.0.1:6767/repl?token=\" (System/getenv \"ADMIN_TOKEN\")))
+      client (nrepl/client conn 2000)]
+  (doall (nrepl/message client {:op \"eval\" :code \"(load-file \\\"src/futon3/fulab/hud.clj\\\")\"})))
+"
+```
+See `README-drawbridge.md` for more details.
+
 ## Quick Start
 1. Install deps (first run populates `.m2/`):
    ```bash

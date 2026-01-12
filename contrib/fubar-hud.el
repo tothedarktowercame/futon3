@@ -861,31 +861,32 @@ Copies intent, sigils, candidates, and any other known HUD fields, then refreshe
 (defun fubar-hud-refresh ()
   "Refresh HUD with current intent."
   (interactive)
-  (let ((buf (get-buffer-create fubar-hud-buffer-name)))
-    (with-current-buffer buf
-      ;; If a MUSN HUD payload is present, render it and skip async rebuild.
-      (when (and fubar-hud--current-hud fubar-hud-async-refresh)
-        (fubar-hud--render fubar-hud--current-hud)
-        (cl-return-from fubar-hud-refresh))
-      (setq fubar-hud--prompt-block nil)
-      (setq fubar-hud--staged-next (fubar-hud--read-staging-file))
-      (if (and fubar-hud-async-refresh fubar-hud-server-url (not fubar-hud--current-hud))
-          (when (not fubar-hud--refresh-in-flight)
-            (setq fubar-hud--refresh-in-flight t)
-            (fubar-hud--build-hud-server-async
-             fubar-hud--intent
-             nil
-             (lambda (hud)
-               (when (buffer-live-p buf)
-                 (with-current-buffer buf
-                   (setq fubar-hud--refresh-in-flight nil)
-                   (when hud
-                     (setq fubar-hud--current-hud hud)
-                     (fubar-hud--render hud)))))))
-        (let ((hud (fubar-hud--build-hud fubar-hud--intent)))
-          (when hud
-            (setq fubar-hud--current-hud hud)
-            (fubar-hud--render hud)))))))
+  (cl-block fubar-hud-refresh
+    (let ((buf (get-buffer-create fubar-hud-buffer-name)))
+      (with-current-buffer buf
+        ;; If a MUSN HUD payload is present, render it and skip async rebuild.
+        (when (and fubar-hud--current-hud fubar-hud-async-refresh)
+          (fubar-hud--render fubar-hud--current-hud)
+          (cl-return-from fubar-hud-refresh nil))
+        (setq fubar-hud--prompt-block nil)
+        (setq fubar-hud--staged-next (fubar-hud--read-staging-file))
+        (if (and fubar-hud-async-refresh fubar-hud-server-url (not fubar-hud--current-hud))
+            (when (not fubar-hud--refresh-in-flight)
+              (setq fubar-hud--refresh-in-flight t)
+              (fubar-hud--build-hud-server-async
+               fubar-hud--intent
+               nil
+               (lambda (hud)
+                 (when (buffer-live-p buf)
+                   (with-current-buffer buf
+                     (setq fubar-hud--refresh-in-flight nil)
+                     (when hud
+                       (setq fubar-hud--current-hud hud)
+                       (fubar-hud--render hud)))))))
+          (let ((hud (fubar-hud--build-hud fubar-hud--intent)))
+            (when hud
+              (setq fubar-hud--current-hud hud)
+              (fubar-hud--render hud))))))))
 
 (defun fubar-hud-show ()
   "Show HUD in side window."

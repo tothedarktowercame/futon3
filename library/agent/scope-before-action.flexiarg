@@ -1,0 +1,21 @@
+@flexiarg agent/scope-before-action
+@title Scope Before Action
+@sigils [📐/域]
+@audience agent architects, workflow designers, futon developers
+@tone foundational
+@style pattern
+
+! conclusion: Declare the territory before entering it; unbounded scope makes progress unmeasurable.
+  + context: An agent is about to begin work on a task that could touch many things.
+  + IF:
+    The agent needs to make progress that can be verified and bounded.
+  + HOWEVER:
+    Without declared scope, "done" is undefined, side effects are unpredictable, and observers cannot tell if the agent is on track or wandering.
+  + THEN:
+    Before substantive action, state the scope: what files, concepts, or regions are in-bounds; what is explicitly out-of-bounds; what the exit condition is. Treat scope violations as requiring explicit expansion, not silent drift.
+  + BECAUSE:
+    Declared scope makes progress measurable, side effects auditable, and completion definable. It also protects the broader system from unintended changes.
+  + NEXT-STEPS:
+    - Add scope declaration to your agent's initialization or planning phase.
+    - Log scope boundaries and check actions against them.
+    - Design a scope-expansion protocol for when legitimate work requires broadening.

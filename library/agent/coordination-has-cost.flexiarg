@@ -1,0 +1,21 @@
+@flexiarg agent/coordination-has-cost
+@title Coordination Has Cost
+@sigils [💬/协]
+@audience agent architects, workflow designers, futon developers
+@tone foundational
+@style pattern
+
+! conclusion: Involving other agents or humans has overhead; factor it into decisions.
+  + context: An agent can work alone or involve others (other agents, human supervisors, external services).
+  + IF:
+    The agent wants to leverage external capabilities or get authoritative answers.
+  + HOWEVER:
+    Coordination is not free: it takes time, consumes attention, introduces latency, and may require context transfer. Treating it as free leads to over-reliance or spamming.
+  + THEN:
+    Model coordination as an action with explicit cost (latency, tokens, human attention units). Include this cost in decision-making: sometimes working with partial local knowledge is better than waiting for external input.
+  + BECAUSE:
+    Cost-aware coordination prevents both under-use (never asking for help when stuck) and over-use (constant interruption). It respects the resources of collaborators.
+  + NEXT-STEPS:
+    - Inventory coordination actions your agent can take (ask human, call service, delegate to agent).
+    - Assign cost estimates to each and include them in action selection.
+    - Track actual coordination costs and update estimates based on experience.

@@ -1,0 +1,21 @@
+@flexiarg agent/handoff-preserves-context
+@title Handoff Preserves Context
+@sigils [🤝/继]
+@audience agent architects, workflow designers, futon developers
+@tone foundational
+@style pattern
+
+! conclusion: When passing work to another agent or future self, transfer enough state that the receiver doesn't restart from scratch.
+  + context: An agent's work will be continued by another agent, a human, or the same agent in a future session.
+  + IF:
+    Continuity matters: the work is incremental, context is expensive to rebuild, or progress would be lost.
+  + HOWEVER:
+    Without explicit handoff, successors face cold starts: they repeat discoveries, miss constraints, or contradict prior decisions.
+  + THEN:
+    Define a handoff record that captures: current state hypothesis, decisions made and why, open questions, scope boundaries, trail summary. Emit it at session end or when transferring to another agent.
+  + BECAUSE:
+    Handoffs convert ephemeral session state into persistent project state. They enable distributed and asynchronous work without context collapse.
+  + NEXT-STEPS:
+    - Identify handoff points in your agent's lifecycle (session end, escalation, delegation).
+    - Define what context is essential vs. nice-to-have for each handoff type.
+    - Test handoffs by having a fresh agent resume and measuring ramp-up cost.

@@ -1,0 +1,21 @@
+@flexiarg agent/sense-deliberate-act
+@title Sense-Deliberate-Act Cycle
+@sigils [🔄/环]
+@audience agent architects, workflow designers, futon developers
+@tone foundational
+@style pattern
+
+! conclusion: Structure every agent cycle as three distinct phases: gather input, reason about options, commit to action.
+  + context: An agent operates in an environment where it must repeatedly choose what to do next.
+  + IF:
+    The agent needs to make progress on a goal while responding to a changing environment.
+  + HOWEVER:
+    Rushing to act without sensing leads to blind thrashing; sensing without acting leads to analysis paralysis; acting without deliberation leads to incoherent behavior.
+  + THEN:
+    Enforce a rhythm: first gather relevant observations, then weigh options against goals and constraints, then commit to a single action before the next cycle. Make each phase explicit and bounded.
+  + BECAUSE:
+    The three-phase structure prevents both impulsive drift and endless deliberation, and makes the agent's reasoning inspectable at phase boundaries.
+  + NEXT-STEPS:
+    - Identify where your agent conflates phases (e.g., acting while still gathering input).
+    - Add explicit phase markers to logs or traces so observers can see the rhythm.
+    - Tune phase durations based on task urgency and uncertainty.

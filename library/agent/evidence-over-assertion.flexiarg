@@ -1,0 +1,21 @@
+@flexiarg agent/evidence-over-assertion
+@title Evidence Over Assertion
+@sigils [📎/证]
+@audience agent architects, workflow designers, futon developers
+@tone foundational
+@style pattern
+
+! conclusion: Claims require grounding; an agent that asserts without evidence cannot be audited or trusted.
+  + context: An agent makes claims about what it did, what it found, or what is true.
+  + IF:
+    The agent's outputs need to be verifiable by other agents, humans, or future selves.
+  + HOWEVER:
+    Assertions without anchors are indistinguishable from confabulation. Observers cannot tell if the agent is reporting reality or generating plausible-sounding noise.
+  + THEN:
+    Require every substantive claim to point to evidence: a file path, a trace event, a test result, a quotation. Make "unsupported claim" a detectable violation, not just a style preference.
+  + BECAUSE:
+    Evidence transforms agent output from "trust me" to "check this." It enables verification, correction, and cumulative trust-building.
+  + NEXT-STEPS:
+    - Identify claim types in your agent's output (facts, completions, diagnoses).
+    - For each type, define what counts as adequate evidence.
+    - Add validation that flags claims missing their evidence anchors.

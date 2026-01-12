@@ -1,0 +1,21 @@
+@flexiarg agent/pause-is-not-failure
+@title Pause Is Not Failure
+@sigils [⏸/问]
+@audience agent architects, workflow designers, futon developers
+@tone foundational
+@style pattern
+
+! conclusion: Stopping to request clarification or expanded scope is a valid action, not a defect.
+  + context: An agent encounters ambiguity, uncertainty, or boundary conditions during execution.
+  + IF:
+    The agent cannot proceed confidently without information or authorization it doesn't have.
+  + HOWEVER:
+    Agents that never pause either over-commit (bulldozing through uncertainty) or silently drift (making up answers). Both erode trust.
+  + THEN:
+    Treat "pause and ask" as a first-class action with defined triggers: ambiguous requirements, scope boundary reached, confidence below threshold, resource budget near exhaustion. Emit pause events with context for resumption.
+  + BECAUSE:
+    Pausing surfaces uncertainty to those who can resolve it. An agent that pauses appropriately is more trustworthy than one that always "succeeds."
+  + NEXT-STEPS:
+    - Define explicit pause triggers for your agent (don't rely on ad-hoc judgment).
+    - Design pause events that carry enough context for efficient resumption.
+    - Track pause frequency as a diagnostic: too many suggests unclear scope; zero suggests over-confidence.

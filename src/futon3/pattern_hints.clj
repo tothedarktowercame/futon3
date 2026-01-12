@@ -308,6 +308,27 @@
            vec))
     []))
 
+(defn- glove-neighbors-all
+  "Fallback: return top GloVe neighbors across all patterns when no seeds provided."
+  [limit]
+  (->> @glove-patterns-data
+       (mapcat (fn [entry]
+                 (when-let [neighbors (:neighbors entry)]
+                   neighbors)))
+       (keep (fn [entry]
+               (when-let [score (:score entry)]
+                 (assoc entry
+                        :score/similarity (double score)
+                        :score/glove-distance (score->distance score)
+                        :score (score->distance score)
+                        :score-source :glove-embedding))))
+       (group-by :id)
+       (map (fn [[_ entries]]
+              (apply max-key :score/similarity entries)))
+       (sort-by :score)
+       (take limit)
+       vec))
+
 (def ^:private score-weight-sigil 0.6)
 (def ^:private score-weight-glove 0.4)
 
@@ -418,7 +439,8 @@
                    :else nil)
         glove-patterns (if (seq seed-ids)
                          (glove-neighbors seed-ids glove-limit)
-                         [])
+                         ;; fallback: surface best glove neighbors overall
+                         (glove-neighbors-all glove-limit))
         merged-patterns (merge-patterns patterns glove-patterns pattern-limit)]
     (when-not (seq targets)
       (warn-missing-targets sigils prototypes))

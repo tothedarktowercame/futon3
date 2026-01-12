@@ -23,6 +23,7 @@ STOPWORDS = {
     "they", "them", "into", "about", "can", "will", "may", "must", "should",
 }
 TRUTH_NORMALIZE = {"門": "门", "義": "义"}
+SIGIL_TOKEN_RE = re.compile(r"[^ \[\]]+/[^ \[\]]+")
 
 def tokenize(text: str):
     return [tok for tok in re.findall(r"[a-z0-9]+", text.lower()) if tok not in STOPWORDS]
@@ -113,12 +114,17 @@ def build_docs():
             if len(cols) < 5:
                 continue
             _, tok_label, truth, rationale, hotwords = cols[:5]
-            tok_clean = tok_label.split('(')[0].strip().lower()
-            truth_char = truth.split()[0]
+            tok_label = tok_label or ""
+            truth = truth or ""
             info = f"{rationale} {hotwords}"
-            tok_docs[tok_clean].append(info)
-            norm_truth = TRUTH_NORMALIZE.get(truth_char, truth_char)
-            hanzi_docs[norm_truth].append(info)
+            tok_clean = tok_label.split('(')[0].strip().lower()
+            if tok_clean:
+                tok_docs[tok_clean].append(info)
+            truth_parts = truth.split()
+            if truth_parts:
+                truth_char = truth_parts[0]
+                norm_truth = TRUTH_NORMALIZE.get(truth_char, truth_char)
+                hanzi_docs[norm_truth].append(info)
 
     tokipona_docs = {label: ' '.join(entries) if entries else build_tokipona_doc(label, tok_base, tok_gloss)
                      for label, entries in tok_docs.items()}
@@ -204,9 +210,39 @@ def load_emoji_map():
         mapping[word] = emoji
     return mapping
 
+
+def load_emoji_allowlist():
+    return set(load_emoji_map().values())
+
+
+def load_hanzi_allowlist():
+    if not HANZI_FILE.exists():
+        return set()
+    text = HANZI_FILE.read_text()
+    return set(match.group(1) for match in re.finditer(r'\("[01]{8}"\s+"([^"]+)"\s+"#[0-9a-fA-F]{6}"\)', text))
+
+
+def parse_sigils(text: str):
+    pairs = []
+    for token in SIGIL_TOKEN_RE.findall(text or ""):
+        if "/" not in token:
+            continue
+        emoji, hanzi = token.split("/", 1)
+        pairs.append((emoji.strip(), hanzi.strip()))
+    return pairs
+
+
+def sigils_valid(sigils: str, emoji_allow, hanzi_allow) -> bool:
+    pairs = parse_sigils(sigils)
+    if not pairs:
+        return False
+    return all(emoji in emoji_allow and hanzi in hanzi_allow for emoji, hanzi in pairs)
+
 def main():
     tok_docs, hanzi_docs = build_docs()
     dev_infos, dev_docs = load_devmap_blocks()
+    emoji_allow = load_emoji_allowlist()
+    hanzi_allow = load_hanzi_allowlist()
 
     all_docs = list(tok_docs.values()) + list(hanzi_docs.values()) + dev_docs
     vectors = vectorize(all_docs)
@@ -240,6 +276,11 @@ def main():
             continue
 
         line = info['lines'][info['line']]
+        current = re.search(r'\[([^\]]*)\]', line)
+        current_sigils = current.group(1) if current else ""
+        if sigils_valid(current_sigils, emoji_allow, hanzi_allow):
+            continue
+
         new_line = re.sub(r'\[[^\]]*\]', f"[{' '.join(pairs)}]", line, count=1)
         if new_line != line:
             info['lines'][info['line']] = new_line

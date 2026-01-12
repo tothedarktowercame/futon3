@@ -152,3 +152,53 @@
     (is (not (contains? @(:clients state) "C-1")))
     (is (= :disconnect (-> @(:history state) last :type)))
     (is (= "C-1" (-> @(:history state) last :client)))))
+
+(deftest aif-live-prefers-summary-and-falls-back-to-tap
+  (let [summary-event {:event/type :aif/summary
+                       :at "2026-01-01T00:00:00Z"
+                       :payload {:aif/kind :turn-start
+                                 :aif/result {:chosen "summary-choice"
+                                              :aif {:tau 0.4
+                                                    :G-chosen -0.1
+                                                    :evidence-score -0.2
+                                                    :evidence-delta -0.05
+                                                    :evidence-counts {:implement 1}}}}}
+        tap-event {:event/type :aif/tap
+                   :at "2026-01-01T00:00:01Z"
+                   :payload {:event :turn-start
+                             :chosen "tap-choice"
+                             :aif {:tau-updated 0.6
+                                   :G-chosen 0.3
+                                   :evidence-score 0.1
+                                   :evidence-delta 0.02
+                                   :evidence-counts {:read 2}}}}]
+    (testing "prefers summary when present"
+      (let [session {:session/id "S-1"
+                     :events [summary-event tap-event]}
+            live (#'transport/aif-live session)]
+        (is (= "S-1" (:session-id live)))
+        (is (= {:kind :turn-start
+                :chosen "summary-choice"
+                :tau 0.4
+                :g-chosen -0.1
+                :evidence-score -0.2
+                :evidence-delta -0.05
+                :evidence-counts {:implement 1}}
+               (select-keys (:summary live)
+                            [:kind :chosen :tau :g-chosen
+                             :evidence-score :evidence-delta :evidence-counts])))))
+    (testing "falls back to tap when summary is missing"
+      (let [session {:session/id "S-2"
+                     :events [tap-event]}
+            live (#'transport/aif-live session)]
+        (is (= "S-2" (:session-id live)))
+        (is (= {:kind :turn-start
+                :chosen "tap-choice"
+                :tau 0.6
+                :g-chosen 0.3
+                :evidence-score 0.1
+                :evidence-delta 0.02
+                :evidence-counts {:read 2}}
+               (select-keys (:summary live)
+                            [:kind :chosen :tau :g-chosen
+                             :evidence-score :evidence-delta :evidence-counts])))))))

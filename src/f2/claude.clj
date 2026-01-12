@@ -87,13 +87,14 @@
 
 (defn- pattern-used-event
   ([session-id pattern-id reason]
-   (pattern-used-event session-id pattern-id reason nil))
-  ([session-id pattern-id reason parent-id]
+   (pattern-used-event session-id pattern-id reason nil nil))
+  ([session-id pattern-id reason parent-id channels]
    (make-event session-id :pattern/used
                (cond-> {:pattern/id pattern-id
                         :pattern/dep pattern-id
                         :pattern/reason reason}
-                 parent-id (assoc :pattern/parent parent-id)))))
+                 parent-id (assoc :pattern/parent parent-id)
+                 (seq channels) (assoc :pattern/channels channels)))))
 
 (defn- doc-written-event [session-id doc]
   (make-event session-id :doc/written
@@ -158,6 +159,28 @@
     (json/parse-string line true)
     (catch Exception _
       nil)))
+
+(defn- parse-tool-params [value]
+  (if (string? value)
+    (try
+      (json/parse-string value true)
+      (catch Exception _ value))
+    value))
+
+(defn- tool-metadata-from-pending [pending]
+  (let [tool-name (or (:name pending)
+                      (:tool_name pending)
+                      (:tool-name pending)
+                      (:tool/name pending))
+        raw-params (or (:input pending)
+                       (:arguments pending)
+                       (:params pending)
+                       (:tool-params pending)
+                       (:tool_params pending))
+        params (parse-tool-params raw-params)]
+    (cond-> {}
+      tool-name (assoc :tool/name tool-name)
+      (some? params) (assoc :tool/params params))))
 
 ;; --- Session lifecycle ---
 
@@ -397,9 +420,12 @@
     (if-let [process @(:process session)]
       (try
         (write-to-process! process "y\n")
-        (swap! (:pending-approvals session) dissoc call-id)
-        (emit-event! session (make-event session-id :tool/approved
-                                         {:tool/call-id call-id}))
+        (let [pending (get @(:pending-approvals session) call-id)
+              tool-meta (tool-metadata-from-pending pending)]
+          (swap! (:pending-approvals session) dissoc call-id)
+          (emit-event! session (make-event session-id :tool/approved
+                                           (merge {:tool/call-id call-id}
+                                                  tool-meta))))
         {:ok true :session-id session-id :call-id call-id :action :approved}
       (catch Exception e
         {:ok false :error (.getMessage e)}))
@@ -441,14 +467,15 @@
 (defn record-pattern-use!
   "Record that a session used a pattern as a dependency.
    Emits :pattern/used event and adds to session's pattern trail."
-  [session-id pattern-id & [{:keys [reason parent-id]}]]
+  [session-id pattern-id & [{:keys [reason parent-id channels]}]]
   (if-let [session (get @!sessions session-id)]
     (let [usage (cond-> {:pattern/id pattern-id
                          :used-at (now-ms)
                          :reason reason}
-                  parent-id (assoc :pattern/parent parent-id))]
+                  parent-id (assoc :pattern/parent parent-id)
+                  (seq channels) (assoc :pattern/channels channels))]
       (swap! (:patterns-used session) conj usage)
-      (emit-event! session (pattern-used-event session-id pattern-id reason parent-id))
+      (emit-event! session (pattern-used-event session-id pattern-id reason parent-id channels))
       {:ok true :session-id session-id :pattern-id pattern-id})
     {:ok false :error "session-not-found"}))
 

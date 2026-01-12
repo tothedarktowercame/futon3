@@ -103,6 +103,10 @@ How tool results become observations:
 | Git status clean | `{:repo-status :clean}` |
 | User feedback | `{:user-signal :approve}` or `{:user-signal :reject}` |
 
+Read actions (opening files, pattern docs, or logs) count as evidence/energy in
+the AIF trace, affect evidence-score, and should be recorded as observations so
+belief updates reflect what was inspected.
+
 ## Pattern Selection via Expected Free Energy
 
 The agent selects patterns by minimizing expected free energy (G):

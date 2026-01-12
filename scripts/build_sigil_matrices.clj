@@ -1,8 +1,8 @@
 (ns scripts.build_sigil_matrices
   "Scan devmaps/library flexiargs for sigil pairs and emit fake adjacency matrices."
   (:require [clojure.java.io :as io]
-            [clojure.string :as str])
-  (:import (java.io PushbackReader)))
+            [clojure.string :as str]
+            [scripts.sigil-allowlist :as allow]))
 
 (def search-root ["holes" "library"])
 (def ^:private repo-root (.toPath (io/file ".")))
@@ -44,55 +44,23 @@
     {:emoji (sanitize emoji)
      :hanzi (sanitize hanzi)}))
 
-(defn gather-sigils []
+(defn gather-sigils [emoji-set hanzi-set]
   (reduce (fn [acc file]
             (let [content (slurp file)
                   location (rel-path file)]
               (reduce (fn [acc {:keys [emoji hanzi]}]
                         (let [pair (str emoji "/" hanzi)]
-                          (-> acc
-                              (update :emoji conj emoji)
-                              (update :hanzi conj hanzi)
-                              (update-in [:pair-sources pair] (fnil conj #{}) location))))
+                          (if (and (contains? emoji-set emoji)
+                                   (contains? hanzi-set hanzi))
+                            (-> acc
+                                (update :emoji conj emoji)
+                                (update :hanzi conj hanzi)
+                                (update-in [:pair-sources pair] (fnil conj #{}) location))
+                            (update-in acc [:invalid pair] (fnil conj #{}) location))))
                       acc
                       (extract-sigils content))))
-          {:emoji #{} :hanzi #{} :pair-sources {}}
+          {:emoji #{} :hanzi #{} :pair-sources {} :invalid {}}
           (candidate-files)))
-
-(defn- read-truth-table-order []
-  (let [file (io/file "holes/256ca.el")]
-    (when (.exists file)
-      (with-open [r (java.io.PushbackReader. (io/reader file))]
-        (loop []
-          (let [form (read r false ::eof)]
-            (cond
-              (= form ::eof) nil
-              (and (seq? form)
-                   (= 'defvar (first form))
-                   (= 'truth-table-8 (second form)))
-              (let [table (nth form 2)
-                    entries (if (and (seq? table) (= 'quote (first table)))
-                              (second table)
-                              table)]
-                (map second entries))
-              :else (recur))))))))
-
-(defn- read-tokipona-order []
-  (let [file (io/file "holes/tokipona.org")]
-    (when (.exists file)
-      (with-open [r (io/reader file)]
-        (let [lines (line-seq r)
-              emojis (keep (fn [line]
-                              (when (and (str/starts-with? line "|")
-                                         (not (str/starts-with? line "|---")))
-                                (let [cols (map str/trim (str/split line #"\|"))]
-                                  (when (>= (count cols) 2)
-                                    (let [emoji (nth cols 1)]
-                                      (when (and (seq emoji)
-                                                 (not= (str/lower-case emoji) "emoji"))
-                                        emoji))))))
-                            lines)]
-          (vec (distinct emojis)))))))
 
 (defn ordered-vec [baseline coll]
   (letfn [(normalize-items [xs]
@@ -156,26 +124,35 @@
   (spit "resources/sigils/index.edn"
         (pr-str {:emoji emoji :hanzi hanzi})))
 
-(defn -main [& _]
-  (let [{:keys [emoji hanzi pair-sources]} (gather-sigils)
-        emoji-base (or (read-tokipona-order) [])
-        hanzi-base (vec (concat (or (read-truth-table-order) []) ["卯"]))
+(defn- strict? [args]
+  (or (some #{"--strict"} args)
+      (seq (System/getenv "SIGIL_STRICT"))))
+
+(defn -main [& args]
+  (let [emoji-base (or (allow/tokipona-emoji-order) [])
+        hanzi-base (or (allow/truth-table-hanzi-order) [])
+        _ (allow/ensure-allowlist! emoji-base hanzi-base)
+        emoji-set (set emoji-base)
+        hanzi-set (set hanzi-base)
+        {:keys [emoji hanzi pair-sources invalid]} (gather-sigils emoji-set hanzi-set)
         emoji-order (ordered-vec emoji-base emoji)
         hanzi-order (ordered-vec hanzi-base hanzi)
-        emoji-missing (seq (remove (set emoji-order) emoji))
-        hanzi-missing (seq (remove (set hanzi-order) hanzi))
         collisions (->> pair-sources
                         (map (fn [[pair files]] [pair (sort files)]))
                         (filter (fn [[_ files]] (> (count files) 1)))
-                        (sort-by (fn [[_ files]] (- (count files)))))]
+                        (sort-by (fn [[_ files]] (- (count files)))))
+        strict (strict? args)]
     (ensure-dir "resources/sigils")
     (write-index emoji-order hanzi-order)
     (write-csv (adjacency emoji-order) "resources/sigils/emoji-adjacency.csv")
     (write-csv (adjacency hanzi-order) "resources/sigils/hanzi-adjacency.csv")
-    (when emoji-missing
-      (println "Unrecognized emoji sigils (not in baseline):" emoji-missing))
-    (when hanzi-missing
-      (println "Unrecognized hanzi sigils (not in baseline):" hanzi-missing))
+    (when (seq invalid)
+      (println (format "Ignored %d invalid sigil tokens (not in allowlist)." (count invalid)))
+      (doseq [[pair files] (take 20 (sort-by (comp - count val) invalid))]
+        (println (format " - %s ← %s" pair (str/join ", " (sort files)))))
+      (when strict
+        (throw (ex-info "invalid-sigils"
+                        {:count (count invalid)}))))
     (if (seq collisions)
       (do
         (println (format "Sigil collisions detected (%d pairs with repeated sigils):" (count collisions)))

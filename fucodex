@@ -30,6 +30,7 @@ EXPLORE_LIMIT="4"
 EXPLORE_PROMPT_FILE="docs/codex-exploratory-mission.md"
 HUD_MODE=false
 HUD_INTENT=""
+APPROVAL_POLICY=""
 SKIP_GIT_CHECK=false
 HUD_PRINT=false
 HUD_SERVER="${HUD_SERVER:-http://localhost:5050}"
@@ -57,6 +58,7 @@ Options:
   --proposal-hook       Emit proposal draft when candidates are insufficient.
   --hud                 Enable HUD mode: seed patterns into prompt, parse response.
   --intent TEXT         Intent/goal for HUD pattern selection.
+  --approval-policy     Approval policy for codex exec (e.g., untrusted, never).
   --hud-print           Print HUD block before running codex.
   --hud-server URL      HUD server base URL (default: http://localhost:5050).
 
@@ -124,6 +126,8 @@ while [[ $# -gt 0 ]]; do
       HUD_MODE=true; shift;;
     --intent)
       HUD_INTENT="$2"; shift 2;;
+    --approval-policy)
+      APPROVAL_POLICY="$2"; shift 2;;
     --hud-print)
       HUD_PRINT=true; shift;;
     --hud-server)
@@ -359,6 +363,22 @@ if $LIVE; then
   if [[ -n "$HUD_JSON_FILE" ]]; then
     clj_args+=(--hud-json "$HUD_JSON_FILE")
   fi
+  if [[ ${#args[@]} -gt 0 ]]; then
+    prompt_text=$(printf "%s " "${args[@]}")
+    trail_allow=$(python3 - <<'PY'
+import re
+import sys
+
+text = sys.stdin.read().strip().lower()
+namespaces = sorted(set(re.findall(r"library/([a-z0-9_-]+)", text)))
+if namespaces:
+    print(",".join(namespaces))
+PY
+<<<"$prompt_text")
+    if [[ -n "$trail_allow" ]]; then
+      clj_args+=(--trail-allow "$trail_allow")
+    fi
+  fi
   if $AIF_SELECT; then
     clj_args+=(--aif-select)
   fi
@@ -368,6 +388,9 @@ if $LIVE; then
   codex_flags=(--json)
   if $SKIP_GIT_CHECK; then
     codex_flags+=(--skip-git-repo-check)
+  fi
+  if [[ -n "$APPROVAL_POLICY" ]]; then
+    codex_flags+=(-c "approval_policy=\"$APPROVAL_POLICY\"")
   fi
   if [[ ${#args[@]} -gt 0 && "${args[0]}" == -* ]]; then
     codex_flags+=(--)

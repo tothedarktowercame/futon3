@@ -6,11 +6,15 @@
             [futon3.fulab.pattern-competence :as pc]))
 
 (defn usage []
-  (println "Usage: dev/lab-pattern-claim.clj --session-id ID --lab-root PATH --kind pur|psr [--decision-id ID] [--stdin] [--print-only] [--certify-commit] [--repo-root PATH]")
-  (println "Writes a PUR/PSR claim event into lab/sessions/<id>.edn (append-only)."))
+  (println "Usage: dev/lab-pattern-claim.clj --session-id ID --lab-root PATH --kind pur|psr|proposal [--decision-id ID] [--supporting-trail CSV] [--proposal-status STATUS] [--reviewer-notes CSV] [--stdin] [--print-only] [--certify-commit] [--repo-root PATH]")
+  (println "Writes a PUR/PSR/proposal claim event into lab/sessions/<id>.edn (append-only)."))
 
 (defn parse-args [args]
-  (loop [opts {:stdin false :print-only false}
+  (loop [opts {:stdin false
+               :print-only false
+               :supporting-trail nil
+               :proposal-status nil
+               :reviewer-notes nil}
          remaining args]
     (if (empty? remaining)
       opts
@@ -20,6 +24,9 @@
         "--lab-root" (recur (assoc opts :lab-root (second remaining)) (nnext remaining))
         "--kind" (recur (assoc opts :kind (second remaining)) (nnext remaining))
         "--decision-id" (recur (assoc opts :decision-id (second remaining)) (nnext remaining))
+        "--supporting-trail" (recur (assoc opts :supporting-trail (second remaining)) (nnext remaining))
+        "--proposal-status" (recur (assoc opts :proposal-status (second remaining)) (nnext remaining))
+        "--reviewer-notes" (recur (assoc opts :reviewer-notes (second remaining)) (nnext remaining))
         "--stdin" (recur (assoc opts :stdin true) (rest remaining))
         "--print-only" (recur (assoc opts :print-only true) (rest remaining))
         "--certify-commit" (recur (assoc opts :certify-commit true) (rest remaining))
@@ -37,6 +44,19 @@
   (let [content (slurp *in*)]
     (when-not (str/blank? content)
       (edn/read-string content))))
+
+(defn parse-csv [value]
+  (->> (str/split (or value "") #",")
+       (map str/trim)
+       (remove str/blank?)
+       vec))
+
+(defn parse-status [value]
+  (when value
+    (-> value
+        str/trim
+        (str/replace #"^:" "")
+        keyword)))
 
 (defn git-head [repo-root]
   (let [{:keys [exit out err]} (shell/sh "git" "-C" repo-root "rev-parse" "HEAD")]
@@ -89,9 +109,14 @@
     record))
 
 (defn -main [& args]
-  (let [{:keys [help unknown session-id lab-root kind decision-id stdin print-only certify-commit repo-root] :as opts}
+  (let [{:keys [help unknown session-id lab-root kind decision-id stdin print-only
+                certify-commit repo-root supporting-trail proposal-status reviewer-notes]
+         :as opts}
         (parse-args args)
         repo-root (or repo-root (System/getProperty "user.dir"))
+        supporting-trail (parse-csv supporting-trail)
+        reviewer-notes (parse-csv reviewer-notes)
+        proposal-status (or (parse-status proposal-status) :draft)
         path (session-path opts)]
     (cond
       help (do (usage) (System/exit 0))
@@ -100,6 +125,12 @@
       (not (.exists (io/file path))) (do (println "Session file not found:" path) (System/exit 1))
       (and (not stdin) (nil? kind)) (do (println "--kind is required unless --stdin is used") (usage) (System/exit 1))
       (and (= kind "psr") (nil? decision-id)) (do (println "--decision-id is required for psr templates") (usage) (System/exit 1))
+      (and (= kind "proposal") (empty? supporting-trail))
+      (do (println "--supporting-trail is required for proposal templates") (usage) (System/exit 1))
+      (and (= kind "proposal")
+           (#{:accepted :rejected} proposal-status)
+           (empty? reviewer-notes))
+      (do (println "--reviewer-notes required when proposal status is accepted/rejected") (usage) (System/exit 1))
       :else
       (let [session (pc/read-session-file path)
             session-id (or session-id (:session/id session))
@@ -107,6 +138,10 @@
                      stdin (read-stdin-edn)
                      (= kind "pur") (pc/pur-template session-id)
                      (= kind "psr") (pc/psr-template session-id decision-id)
+                     (= kind "proposal") (assoc (pc/pattern-proposal-template session-id)
+                                                :proposal/supporting-trail supporting-trail
+                                                :proposal/status proposal-status
+                                                :proposal/reviewer-notes reviewer-notes)
                      :else nil)
             record (if certify-commit
                      (let [commit (git-head repo-root)
@@ -118,6 +153,7 @@
             event (cond
                     (nil? record) nil
                     (:event/type record) record
+                    (= kind "proposal") (pc/proposal-claim-event record)
                     :else (pc/wrap-claim-event record))]
         (when (nil? event)
           (println "No record to write.")

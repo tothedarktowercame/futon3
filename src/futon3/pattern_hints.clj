@@ -116,6 +116,7 @@
               arg (or (extract-meta block "flexiarg")
                       (extract-meta block "arg"))
               meta-sigils (some-> (extract-meta block "sigils") split-sigils)
+              pattern-ref (extract-meta block "pattern-ref")
               clause-match (re-find clause-re block)
               summary (or (some-> clause-match second)
                           (some-> (re-find conclusion-re block) second))
@@ -126,7 +127,9 @@
     {:id (or arg (.getName file))
      :title title
      :summary (str/trim summary)
-     :sigils sigils}))
+     :sigils sigils
+     :pattern-ref (when-not (str/blank? pattern-ref)
+                    pattern-ref)}))
 
 (def ^:private ldts-patterns (delay (vec (scan-library))))
 

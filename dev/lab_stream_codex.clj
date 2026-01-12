@@ -24,10 +24,11 @@
    :ratio 0.5
    :action "off-trail"})
 
-(declare log-pattern-action! handle-pattern-action!)
+(declare log-pattern-action! handle-pattern-action! maybe-log-aif-event!)
+
 
 (defn usage []
-  (println "Usage: dev/lab_stream_codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook] [--hud-json PATH]")
+  (println "Usage: dev/lab_stream_codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook] [--hud-json PATH] [--trail-allow CSV]")
   (println "Reads codex --json stream from stdin and appends session + AIF events.")
   (println "Clock-in entries are consumed in order, one per turn (override --chosen for that turn)."))
 
@@ -46,6 +47,7 @@
         "--aif-select" (recur (assoc opts :aif-select true) (rest remaining))
         "--proposal-hook" (recur (assoc opts :proposal-hook true) (rest remaining))
         "--hud-json" (recur (assoc opts :hud-json (second remaining)) (nnext remaining))
+        "--trail-allow" (recur (assoc opts :trail-allow (second remaining)) (nnext remaining))
         "--help" (recur (assoc opts :help true) (rest remaining))
         (recur (update opts :unknown (fnil conj []) (first remaining)) (rest remaining))))))
 
@@ -53,6 +55,10 @@
   (try
     (json/read-str line :key-fn keyword)
     (catch Throwable _ nil)))
+
+(defn parse-csv [value]
+  (when (and value (not (str/blank? value)))
+    (vec (remove str/blank? (str/split value #",")))))
 
 (defn- coerce-output-text [value]
   (cond
@@ -128,6 +134,16 @@
            (when (contains? config :off-trail/ratio) {:ratio (:off-trail/ratio config)})
            (when (contains? config :off-trail/action) {:action (:off-trail/action config)}))))
 
+(defn- parse-trail-allow [value]
+  (let [entries (parse-csv value)]
+    (reduce (fn [acc entry]
+              (let [entry (str/lower-case (str entry))]
+                (if (str/includes? entry "/")
+                  (update acc :patterns conj entry)
+                  (update acc :namespaces conj entry))))
+            {:patterns #{} :namespaces #{}}
+            entries)))
+
 (defn- off-trail-action? [state action]
   (let [label (get-in @state [:off-trail :action] "off-trail")]
     (or (= action label)
@@ -144,7 +160,11 @@
          set)))
 
 (defn- on-trail? [state pattern-id]
-  (contains? (allowed-patterns state) pattern-id))
+  (let [trail-allow (:trail-allow @state)
+        namespace (some-> pattern-id (str/split #"/") first)]
+    (or (contains? (allowed-patterns state) pattern-id)
+        (contains? (:patterns trail-allow) pattern-id)
+        (and namespace (contains? (:namespaces trail-allow) namespace)))))
 
 (defn- bump-trail-stats! [state on-trail?]
   (swap! state update :trail-stats
@@ -185,6 +205,39 @@
         (.getResponseCode conn)
         (catch Exception _ nil)))
     (catch Exception _ nil)))
+
+(defn- record-pattern-action-rpc! [state action pattern-id note]
+  (let [session-id (:session-id @state)
+        server-url (or (System/getenv "FUTON3_CODEX_SERVER_URL")
+                       (System/getenv "HUD_SERVER")
+                       "http://localhost:5050")]
+    (when (and session-id pattern-id)
+      (post-json!
+       (str (str/replace server-url #"/$" "") "/codex/pattern-action/" session-id)
+       (cond-> {:pattern-id pattern-id
+                :action action}
+         (and note (not (str/blank? note)))
+         (assoc :note note))))))
+
+(defn- record-pattern-selection-rpc! [state psr]
+  (let [session-id (:session-id @state)
+        server-url (or (System/getenv "FUTON3_CODEX_SERVER_URL")
+                       (System/getenv "HUD_SERVER")
+                       "http://localhost:5050")]
+    (when (and session-id psr)
+      (post-json!
+       (str (str/replace server-url #"/$" "") "/codex/pattern-selection/" session-id)
+       {:psr psr}))))
+
+(defn- record-pattern-use-rpc! [state pur]
+  (let [session-id (:session-id @state)
+        server-url (or (System/getenv "FUTON3_CODEX_SERVER_URL")
+                       (System/getenv "HUD_SERVER")
+                       "http://localhost:5050")]
+    (when (and session-id pur)
+      (post-json!
+       (str (str/replace server-url #"/$" "") "/codex/pattern-use/" session-id)
+       {:pur pur}))))
 
 (defn read-hud-json [path]
   (when (and path (.exists (io/file path)))
@@ -243,7 +296,9 @@
 (defn append-event! [state event]
   (let [session (pc/append-event (:session @state) event)]
     (swap! state assoc :session session)
-    (write-session! (:lab-root @state) (:session-id @state) session)))
+    (write-session! (:lab-root @state) (:session-id @state) session)
+    (when (#{:aif/summary :aif/tap} (:event/type event))
+      (maybe-log-aif-event! event))))
 
 (defn ensure-raw-writer [state]
   (when-not (:raw-path @state)
@@ -301,10 +356,11 @@
    :horizon :immediate})
 
 (defn build-pur [thread-id turn pattern-id]
-  {:pur/id (str "pur-" turn)
+  (let [uid (str (java.util.UUID/randomUUID))]
+    {:pur/id (str "pur-" turn "-" uid)
    :session/id thread-id
    :pattern/id pattern-id
-   :instance/id (str "pur-" turn "-a")
+   :instance/id (str "pur-" turn "-" uid)
    :decision/id (str thread-id ":turn-" turn)
    :fields {:context "Captured at turn completion."
             :if "A decision was needed."
@@ -313,108 +369,38 @@
             :because "Need traceability for decisions."
             :next-steps "Compare decision vs outcome."}
    :anchors [(turn-anchor turn)]
-   :outcome/tags [:outcome/partial]})
-
-(defn summary-event [thread-id kind result]
-  {:event/type :aif/summary
-   :at (now-inst)
-   :payload {:session/id thread-id
-             :aif/kind kind
-             :aif/result result}})
-
-(defn- mark-pattern-action! [state action pattern-id]
-  (swap! state assoc-in [:pattern-action-last [action pattern-id]] (now-ms)))
-
-(defn- recently-seen? [state action pattern-id]
-  (let [seen-at (get-in @state [:pattern-action-last [action pattern-id]])]
-    (and seen-at (< (- (now-ms) seen-at) pattern-action-window-ms))))
-
-(defn- handle-pattern-action! [state engine payload]
-  (let [session-id (:session-id @state)
-        pattern-id (:pattern-id payload)
-        action (:action payload)
-        note (:note payload)]
-    (when (and session-id pattern-id action)
-      (let [decision-id (str session-id ":action-" (java.util.UUID/randomUUID))
-            event {:event/type :pattern/action
-                   :at (now-inst)
-                   :payload {:session/id session-id
-                             :pattern/id pattern-id
-                             :pattern/action action
-                             :pattern/note note}}
-            update (engine/update-beliefs engine {:decision/id decision-id
-                                                  :session/id session-id
-                                                  :pattern/id pattern-id
-                                                  :pattern/action action
-                                                  :outcome (str "pattern-action " action " " pattern-id)
-                                                  :status :observed})]
-        (append-event! state event)
-        (append-event! state (summary-event session-id :pattern-action update))
-        (mark-pattern-action! state action pattern-id)))
-    (when (and pattern-id action (not (off-trail-action? state action)))
-      (let [on-trail (on-trail? state pattern-id)]
-        (bump-trail-stats! state on-trail)
-        (when (and (not on-trail) (off-trail-excess? state))
-          (let [{:keys [off on limit]} (trail-limit state)
-                off-action (get-in @state [:off-trail :action] "off-trail")
-                note (format "off-trail count=%d on-trail=%d limit=%.1f"
-                             off on limit)]
-            (log-pattern-action! state engine off-action pattern-id note)))))))
-
-(defn- record-pattern-action-rpc! [state action pattern-id note]
-  (let [session-id (:session-id @state)
-        server-url (or (System/getenv "FUTON3_CODEX_SERVER_URL")
-                       (System/getenv "HUD_SERVER")
-                       "http://localhost:5050")]
-    (when (and session-id pattern-id)
-      (post-json!
-       (str (str/replace server-url #"/$" "") "/codex/pattern-action/" session-id)
-       (cond-> {:pattern-id pattern-id
-                :action action}
-         (and note (not (str/blank? note)))
-         (assoc :note note))))))
-
-(defn- record-pattern-selection-rpc! [state psr]
-  (let [session-id (:session-id @state)
-        server-url (or (System/getenv "FUTON3_CODEX_SERVER_URL")
-                       (System/getenv "HUD_SERVER")
-                       "http://localhost:5050")]
-    (when (and session-id psr)
-      (post-json!
-       (str (str/replace server-url #"/$" "") "/codex/pattern-selection/" session-id)
-       {:psr psr}))))
-
-(defn- record-pattern-use-rpc! [state pur]
-  (let [session-id (:session-id @state)
-        server-url (or (System/getenv "FUTON3_CODEX_SERVER_URL")
-                       (System/getenv "HUD_SERVER")
-                       "http://localhost:5050")]
-    (when (and session-id pur)
-      (post-json!
-       (str (str/replace server-url #"/$" "") "/codex/pattern-use/" session-id)
-       {:pur pur}))))
-
-(defn- log-pattern-action! [state engine action pattern-id note]
-  (when-not (recently-seen? state action pattern-id)
-    (record-pattern-action-rpc! state action pattern-id note)
-    (handle-pattern-action! state engine {:pattern-id pattern-id
-                                          :action action
-                                          :note note})
-    (println (format "[pattern-action] %s %s%s"
-                     action
-                     pattern-id
-                     (if (and note (not (str/blank? note)))
-                       (str " - " note)
-                       "")))
-    (flush)))
-
-(defn parse-csv [value]
-  (when (and value (not (str/blank? value)))
-    (vec (remove str/blank? (str/split value #",")))))
+   :outcome/tags [:outcome/partial]}))
 
 (defn fmt-num [value]
   (when (number? value)
     (format "%.3f" (double value))))
+
+(defn- aif-event-line [event]
+  (let [payload (:payload event)
+        kind (:aif/kind payload)
+        tap-event (:event payload)
+        result (:aif/result payload)
+        aif (or (:aif result) (:aif payload))
+        tau (or (:tau aif) (:tau-updated aif))
+        g-chosen (:G-chosen aif)
+        prediction-error (:prediction-error aif)
+        evidence-score (:evidence-score aif)
+        evidence-delta (:evidence-delta aif)
+        key (or kind tap-event)
+        parts (cond-> []
+                key (conj (str "k=" (name key)))
+                (number? tau) (conj (str "tau=" (fmt-num tau)))
+                (number? g-chosen) (conj (str "G=" (fmt-num g-chosen)))
+                (number? prediction-error) (conj (str "o=" (fmt-num prediction-error)))
+                (number? evidence-score) (conj (str "e=" (fmt-num evidence-score)))
+                (number? evidence-delta) (conj (str "dE=" (fmt-num evidence-delta))))]
+    (when (seq parts)
+      (str "[aif] " (str/join " " parts)))))
+
+(defn- maybe-log-aif-event! [event]
+  (when-let [line (aif-event-line event)]
+    (println line)
+    (flush)))
 
 (defn selection-explainer [selection explicit-chosen used-aif]
   (let [aif (:aif selection)
@@ -438,6 +424,93 @@
            ").")
       :else nil)))
 
+(defn- selection-metrics [selection]
+  (let [aif (:aif selection)
+        rejected (:G-rejected aif)]
+    (cond-> {}
+      (number? (:G-chosen aif)) (assoc :G-chosen (:G-chosen aif))
+      (number? (:tau aif)) (assoc :tau (:tau aif))
+      (and (map? rejected) (seq rejected)) (assoc :G-rejected rejected))))
+
+(defn- selection-anchors [actions]
+  (->> actions
+       (filter #(= "read" (:action %)))
+       (map (fn [action]
+              {:anchor/type :pattern/action
+               :anchor/ref {:event/type :pattern/action
+                            :pattern/id (:pattern-id action)
+                            :pattern/action "read"}}))
+       vec))
+
+(defn- selection-reason [selection explicit-chosen used-aif actions]
+  (let [read-actions (filter #(= "read" (:action %)) actions)
+        read-ids (vec (distinct (map :pattern-id read-actions)))
+        explainer (selection-explainer selection explicit-chosen used-aif)
+        mode (cond
+               used-aif :aif
+               explicit-chosen :explicit
+               :else :heuristic)
+        metrics (selection-metrics selection)]
+    (cond-> {:mode mode
+             :reads read-ids}
+      (seq metrics) (assoc :metrics metrics)
+      explainer (assoc :explainer explainer))))
+
+(defn- action-with-reason? [action note]
+  (and (#{"implement" "update"} action)
+       (not (str/blank? (or note "")))))
+
+(def ^:private report-actions
+  #{"read" "implement" "update"})
+
+(def ^:private report-implement-re
+  #"(?:^|/)(src|test|dev|scripts|apps)/|\\.(?:clj|cljs|cljc|edn|bb|sh)$")
+
+(def ^:private report-update-re
+  #"(?:^|/)(docs|library|resources)/|README|\\.md$")
+
+(defn- normalize-report-action [value]
+  (let [action (some-> value str str/lower-case str/trim)]
+    (when (contains? report-actions action)
+      action)))
+
+(defn- infer-report-action [paths]
+  (let [paths (map str (or paths []))]
+    (cond
+      (some #(re-find report-implement-re %) paths) "implement"
+      (some #(re-find report-update-re %) paths) "update"
+      (seq paths) "update"
+      :else "read")))
+
+(defn- report->pattern-action [report paths]
+  (let [action (or (normalize-report-action (:action report))
+                   (infer-report-action paths))
+        note (some-> (:notes report) str)]
+    {:pattern-id (:applied report)
+     :action action
+     :note note}))
+
+(defn- auto-update? [source action]
+  (and (= source :auto) (#{"implement" "update"} action)))
+
+(defn- record-warning! [state reason action pattern-id note source]
+  (swap! state update :use-warnings
+         (fn [warnings]
+           (conj (vec (or warnings []))
+                 {:reason reason
+                  :pattern-id pattern-id
+                  :action action
+                  :note note
+                  :source source
+                  :at (now-inst)}))))
+
+(defn- record-explicit-reason! [state pattern-id]
+  (swap! state assoc-in [:explicit-reasons pattern-id] (now-ms)))
+
+(defn- recent-explicit-reason? [state pattern-id]
+  (let [seen-at (get-in @state [:explicit-reasons pattern-id])]
+    (and seen-at (< (- (now-ms) seen-at) pattern-action-window-ms))))
+
 (defn proposal-draft [session-id turn candidates]
   {:event/type :pattern/proposal-draft
    :at (now-inst)
@@ -449,6 +522,369 @@
 (defn tau->uncertainty [tau-scale tau]
   (when (and tau-scale (number? tau) (pos? tau))
     (max 1.0 (/ (double tau-scale) (double tau)))))
+
+(defn summary-event [thread-id kind result]
+  {:event/type :aif/summary
+   :at (now-inst)
+   :payload {:session/id thread-id
+             :aif/kind kind
+             :aif/result result}})
+
+(defn- format-fulab-summary [state]
+  (let [{:keys [session-id turn last-psr last-pur pattern-action-counts trail-stats use-warnings]} @state]
+    {:session/id session-id
+     :turn turn
+     :psr/chosen (:chosen last-psr)
+     :pur/pattern (:pattern/id last-pur)
+     :actions (or pattern-action-counts {})
+     :trail (or trail-stats {:on 0 :off 0})
+     :warnings (count (or use-warnings []))}))
+
+(defn- emit-session-summary! [state]
+  (when-not (:summary-emitted? @state)
+    (let [summary (format-fulab-summary state)
+          applied (or (:pur/pattern summary) (:psr/chosen summary))
+          notes (format "turn=%s actions=%s trail=%s"
+                        (:turn summary)
+                        (:actions summary)
+                        (:trail summary))]
+      (println "[FULAB-SUMMARY]")
+      (println (str ":session/id \"" (or (:session/id summary) "") "\""))
+      (println (str ":turn " (or (:turn summary) 0)))
+      (println (str ":psr/chosen \"" (or (:psr/chosen summary) "") "\""))
+      (println (str ":pur/pattern \"" (or (:pur/pattern summary) "") "\""))
+      (println (str ":actions " (:actions summary)))
+      (println (str ":trail " (:trail summary)))
+      (println (str ":warnings " (:warnings summary)))
+      (println "[/FULAB-SUMMARY]")
+      (when (and applied (not (:agent-report-seen? @state)))
+        (println "[FULAB-REPORT]")
+        (println (str ":applied \"" applied "\""))
+        (println (str ":notes \"" notes "\""))
+        (println "[/FULAB-REPORT]"))
+      (flush)
+      (swap! state assoc :summary-emitted? true))))
+
+(defn- compute-turn-selection [state candidates chosen aif-config engine]
+  (let [turn (or (:turn-current @state) (inc (:turn @state)))
+        session-id (:session-id @state)
+        current (first (:clock-in-queue @state))
+        explicit-chosen (or current chosen)
+        use-aif (and (:aif-select? @state) (nil? explicit-chosen))
+        decision-id (str session-id ":turn-" turn)
+        anchors [(turn-anchor turn)]
+        forecast (build-forecast turn)
+        cached-tau (get (:tau-cache @state) explicit-chosen)
+        uncertainty (tau->uncertainty (:tau/scale aif-config) cached-tau)
+        candidate-scores (:candidate-scores @state)
+        selection-context (cond-> {:decision/id decision-id
+                                   :session/id session-id
+                                   :candidates candidates
+                                   :anchors anchors
+                                   :forecast forecast}
+                            candidate-scores (assoc :candidate-scores candidate-scores)
+                            uncertainty (assoc :uncertainty uncertainty)
+                            (not use-aif) (assoc :chosen explicit-chosen))
+        selection (engine/select-pattern engine selection-context)
+        chosen-final (if use-aif (:chosen selection) explicit-chosen)
+        explainer (selection-explainer selection explicit-chosen use-aif)
+        psr (cond-> (build-psr session-id turn candidates chosen-final)
+              explainer (assoc :aif/explainer explainer))]
+    {:turn turn
+     :current current
+     :selection selection
+     :chosen chosen-final
+     :explicit-chosen explicit-chosen
+     :used-aif use-aif
+     :psr psr}))
+
+(defn- ensure-turn-selection! [state candidates chosen aif-config engine]
+  (if-let [selection (:turn-selection @state)]
+    {:turn (:turn-current @state)
+     :current (:turn-clock-in @state)
+     :selection selection
+     :chosen (:turn-chosen @state)
+     :explicit-chosen (:turn-explicit @state)
+     :used-aif (:turn-used-aif @state)
+     :psr (:turn-psr @state)}
+    (let [{:keys [turn current selection chosen psr explicit-chosen used-aif] :as result}
+          (compute-turn-selection state candidates chosen aif-config engine)]
+      (swap! state assoc :turn-current turn
+                       :turn-clock-in current
+                       :turn-selection selection
+                       :turn-chosen chosen
+                       :turn-psr psr
+                       :turn-explicit explicit-chosen
+                       :turn-used-aif used-aif)
+      result)))
+
+(defn- emit-selection-summary! [state selection]
+  (when (and selection (not (:turn-selection-summary-emitted? @state)))
+    (append-event! state (summary-event (:session-id @state) :psr selection))
+    (swap! state assoc :turn-selection-summary-emitted? true)))
+
+(defn- emit-psr! [state psr selection chosen used?]
+  (when (and psr (not (:turn-psr-emitted? @state)))
+    (append-event! state {:event/type :pattern/selection-claimed
+                          :at (now-inst)
+                          :payload {:psr psr}})
+    (record-pattern-selection-rpc! state psr)
+    (let [reason (:selection/reason psr)
+          mode (:mode reason)
+          reads (seq (:reads reason))
+          use-label (if used? "use=recorded" "use=none")]
+      (println (format "[pattern-selection] chosen=%s candidates=%d mode=%s%s %s"
+                       chosen
+                       (count (:candidates psr))
+                       (or mode :unknown)
+                       (if reads
+                         (str " reads=" (str/join "," reads))
+                         "")
+                       use-label)))
+    (flush)
+    (swap! state assoc :turn-psr-emitted? true
+                     :turn-selection selection
+                     :turn-psr psr
+                     :turn-chosen chosen
+                     :last-psr psr)))
+
+(defn- pattern-actions-for-turn [actions pattern-id]
+  (->> actions
+       (filter #(= pattern-id (:pattern-id %)))
+       (map :action)
+       distinct
+       vec))
+
+(defn- pattern-files-for-turn [actions pattern-id]
+  (->> actions
+       (filter #(and (= pattern-id (:pattern-id %))
+                     (#{"implement" "update"} (:action %))))
+       (mapcat :files)
+       (remove nil?)
+       distinct
+       vec))
+
+(defn- emit-pur! [state pur]
+  (when pur
+    (append-event! state {:event/type :pattern/use-claimed
+                          :at (now-inst)
+                          :payload {:pur pur}})
+    (record-pattern-use-rpc! state pur)
+    (let [actions (pattern-actions-for-turn (:turn-actions @state) (:pattern/id pur))
+          turn-files (vec (distinct (or (:turn-files @state) [])))
+          files (let [pattern-files (pattern-files-for-turn (:turn-actions @state) (:pattern/id pur))]
+                  (if (seq pattern-files)
+                    pattern-files
+                    turn-files))
+          reason (:use/reason pur)
+          suffix (when (seq files)
+                   (str " \u2192 " (str/join ", " files)))
+          action-label (when (seq actions)
+                         (str " actions=" (str/join "," actions)))
+          reason-label (when (and reason (not (str/blank? reason)))
+                         (str " because=" reason))]
+      (println (format "[pattern-use] %s%s%s%s"
+                       (:pattern/id pur)
+                       (or suffix "")
+                       (or action-label "")
+                       (or reason-label ""))))
+    (flush)
+    (swap! state assoc :turn-pur-emitted? true
+                     :turn-pur-files-logged? (boolean (seq (pattern-files-for-turn (:turn-actions @state)
+                                                                                   (:pattern/id pur))))
+                     :turn-pur pur
+                     :last-pur pur)))
+
+(defn- clear-turn-state! [state]
+  (swap! state assoc :turn-open? false
+                   :turn-current nil
+                   :turn-clock-in nil
+                   :turn-selection nil
+                   :turn-psr nil
+                   :turn-psr-emitted? false
+                   :turn-selection-summary-emitted? false
+                   :turn-chosen nil
+                   :turn-explicit nil
+                   :turn-used-aif nil
+                   :turn-pur nil
+                   :turn-pur-emitted? false
+                   :turn-pur-files-logged? false
+                   :turn-actions []
+                   :turn-files []))
+
+(defn process-turn-complete! [state candidates chosen aif-config engine]
+  "Process a completed turn - emit PSR/PUR and AIF events."
+  (let [{:keys [turn current selection chosen psr explicit-chosen used-aif]}
+        (ensure-turn-selection! state candidates chosen aif-config engine)
+        session-id (:session-id @state)
+        pur (or (:turn-pur @state)
+                (build-pur session-id turn chosen))
+        actions (:turn-actions @state)
+        reason (selection-reason selection explicit-chosen used-aif actions)
+        anchors (selection-anchors actions)
+        psr (cond-> (assoc psr :selection/reason reason)
+              (seq anchors) (assoc :selection/anchors anchors))
+        belief-update (engine/update-beliefs engine {:decision/id (:decision/id pur)
+                                                    :session/id session-id
+                                                    :outcome (:outcome/tags pur)
+                                                    :status :observed})]
+    (swap! state assoc :turn turn)
+    (when chosen
+      (swap! state update :trail-picked (fnil conj #{}) chosen))
+    (when current
+      (append-event! state {:event/type :clock-in/start
+                            :turn turn
+                            :at (now-inst)
+                            :clock-in/pattern-id current
+                            :clock-in/intent "fucodex live run"})
+      (swap! state assoc :clock-in-queue (vec (rest (:clock-in-queue @state)))
+                   :clock-in-current current))
+    (append-event! state {:event/type :turn/completed
+                          :turn turn
+                          :at (now-inst)})
+    (emit-psr! state psr selection chosen (:turn-pur-emitted? @state))
+    (when (and (:turn-pur @state) (not (:turn-pur-files-logged? @state)))
+      (let [turn-files (vec (distinct (or (:turn-files @state) [])))
+            files (let [pattern-files (pattern-files-for-turn actions (:pattern/id (:turn-pur @state)))]
+                    (if (seq pattern-files)
+                      pattern-files
+                      turn-files))]
+        (when (seq files)
+          (println (format "[pattern-use] %s \u2192 %s"
+                           (:pattern/id (:turn-pur @state))
+                           (str/join ", " files)))
+          (flush)
+          (swap! state assoc :turn-pur-files-logged? true))))
+    (when-let [report (:last-agent-report @state)]
+      (let [turn-files (vec (distinct (or (:turn-files @state) [])))
+            {:keys [pattern-id action note]} (report->pattern-action report turn-files)]
+        (when (and pattern-id action)
+          (handle-pattern-action! state engine {:pattern-id pattern-id
+                                                :action action
+                                                :note note
+                                                :files (when (seq turn-files) turn-files)
+                                                :source :report})))
+      (let [hud-id (get-in @state [:hud :hud/id])]
+        (append-event! state {:event/type :hud/agent-reported
+                              :hud/id hud-id
+                              :at (now-inst)
+                              :payload {:hud/id hud-id
+                                        :session/id session-id
+                                        :turn turn
+                                        :report report}}))
+      (swap! state assoc :last-agent-report nil
+                   :agent-report-seen? true))
+    (when (and (:proposal-hook? @state) (< (count candidates) 2))
+      (append-event! state (proposal-draft session-id turn candidates)))
+    (append-event! state (summary-event session-id :psr selection))
+    (append-event! state (summary-event session-id :pur belief-update))
+    (when-let [tau-updated (get-in belief-update [:aif :tau-updated])]
+      (let [next-cache (assoc (:tau-cache @state) chosen tau-updated)]
+        (swap! state assoc :tau-cache next-cache)
+        (write-tau-cache! (:lab-root @state) next-cache)))
+    (clear-turn-state! state)))
+
+(defn- mark-pattern-action! [state action pattern-id]
+  (swap! state assoc-in [:pattern-action-last [action pattern-id]] (now-ms)))
+
+(defn- recently-seen? [state action pattern-id]
+  (let [seen-at (get-in @state [:pattern-action-last [action pattern-id]])]
+    (and seen-at (< (- (now-ms) seen-at) pattern-action-window-ms))))
+
+(defn- handle-pattern-action! [state engine payload]
+  (let [session-id (:session-id @state)
+        pattern-id (:pattern-id payload)
+        action (:action payload)
+        note (:note payload)
+        files (:files payload)
+        source (keyword (or (:source payload) "explicit"))
+        explicit? (contains? #{:explicit :report} source)
+        report? (= source :report)
+        has-reason (action-with-reason? action note)]
+    (when (and session-id pattern-id action)
+      (let [decision-id (str session-id ":action-" (java.util.UUID/randomUUID))
+            event {:event/type :pattern/action
+                   :at (now-inst)
+                   :payload {:session/id session-id
+                             :pattern/id pattern-id
+                             :pattern/action action
+                             :pattern/note note
+                             :pattern/files (when (seq files) files)
+                             :pattern/source source}}]
+        (swap! state update :pattern-action-counts
+               (fn [counts]
+                 (let [counts (or counts {})]
+                   (update counts action (fnil inc 0)))))
+        (append-event! state event)
+        (when (or explicit? (= action "read"))
+          (let [update (engine/update-beliefs engine {:decision/id decision-id
+                                                      :session/id session-id
+                                                      :pattern/id pattern-id
+                                                      :pattern/action action
+                                                      :outcome (str "pattern-action " action " " pattern-id)
+                                                      :status :observed})]
+            (append-event! state (summary-event session-id :pattern-action update))))
+        (when (and explicit? (or (false? (:ok payload)) (= "skipped" (:rpc payload))))
+          (record-pattern-action-rpc! state action pattern-id note))
+        (when report?
+          (record-pattern-action-rpc! state action pattern-id note))
+        (swap! state update :turn-actions
+               (fn [actions]
+                 (conj (vec (or actions []))
+                       {:pattern-id pattern-id
+                        :action action
+                        :note note
+                        :files files
+                        :source source
+                        :at (now-inst)})))
+        (when (and explicit? (#{"implement" "update"} action) (not has-reason))
+          (record-warning! state :missing-reason action pattern-id note source))
+        (when (and explicit? has-reason)
+          (record-explicit-reason! state pattern-id))
+        (when (and (auto-update? source action)
+                   (not (recent-explicit-reason? state pattern-id)))
+          (record-warning! state :auto-update action pattern-id note source))
+        (when (and explicit? has-reason)
+          (let [{:keys [turn chosen]}
+                (ensure-turn-selection! state
+                                        (:candidates @state)
+                                        (:explicit-chosen @state)
+                                        (:aif-config @state)
+                                        engine)
+                pur (-> (build-pur session-id turn pattern-id)
+                        (assoc :use/reason note)
+                        (assoc-in [:fields :because] note)
+                        (update :anchors conj {:anchor/type :pattern/action
+                                               :anchor/ref {:event/type :pattern/action
+                                                            :pattern/id pattern-id
+                                                            :pattern/action action}}))]
+            (emit-pur! state pur)
+            (swap! state assoc :turn-chosen (or chosen pattern-id))))
+        (mark-pattern-action! state action pattern-id)))
+    (when (and pattern-id action (not (off-trail-action? state action)))
+      (let [on-trail (on-trail? state pattern-id)]
+        (bump-trail-stats! state on-trail)
+        (when (and (not on-trail) (off-trail-excess? state))
+          (let [{:keys [off on limit]} (trail-limit state)
+                off-action (get-in @state [:off-trail :action] "off-trail")
+                note (format "off-trail count=%d on-trail=%d limit=%.1f"
+                             off on limit)]
+            (log-pattern-action! state engine off-action pattern-id note)))))))
+
+(defn- log-pattern-action! [state engine action pattern-id note & [files]]
+  (when-not (recently-seen? state action pattern-id)
+    (handle-pattern-action! state engine {:pattern-id pattern-id
+                                          :action action
+                                          :note note
+                                          :files files
+                                          :source :auto})
+    (println (format "[pattern-action] %s %s%s"
+                     action
+                     pattern-id
+                     (if (and note (not (str/blank? note)))
+                       (str " - " note)
+                       "")))
+    (flush)))
 
 (defn read-aif-config [path]
   (when path
@@ -467,7 +903,7 @@
     (vec candidates)))
 
 (defn -main [& args]
-  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config aif-select proposal-hook hud-json]} (parse-args args)
+  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config aif-select proposal-hook hud-json trail-allow]} (parse-args args)
         repo-root (System/getProperty "user.dir")
         lab-root (or lab-root (str (io/file repo-root "lab")))
         clock-ins (parse-csv clock-in)
@@ -489,6 +925,7 @@
         candidates (ensure-candidates base-candidates clock-ins)
         aif-config (read-aif-config aif-config)
         off-trail-config (normalize-off-trail-config (or aif-config {}))
+        trail-allow (parse-trail-allow trail-allow)
         engine (engine/new-engine (fulab/new-adapter aif-config) {:beliefs {}})
         state (atom {:lab-root lab-root
                      :thread-id nil
@@ -503,6 +940,10 @@
                      :trail-picked #{}
                      :trail-stats {:on 0 :off 0}
                      :off-trail off-trail-config
+                     :trail-allow trail-allow
+                     :turn-open? false
+                     :turn-actions []
+                     :turn-files []
                      :aif-config aif-config
                      :aif-config-logged? false
                      :hud hud-state
@@ -512,7 +953,18 @@
                      :aif-select? (boolean aif-select)
                      :proposal-hook? (boolean proposal-hook)
                      :tau-cache (or (read-tau-cache lab-root) {})
-                     :pattern-action-last {}})
+                     :pattern-action-last {}
+                     :pattern-action-counts {}
+                     :last-psr nil
+                     :last-pur nil
+                     :turn-explicit nil
+                     :turn-used-aif nil
+                     :turn-selection-summary-emitted? false
+                     :turn-pur-files-logged? false
+                     :agent-report-seen? false
+                     :summary-emitted? false
+                     :use-warnings []
+                     :explicit-reasons {}})
         tap-listener (fn [event]
                        (when (= :aif/fulab (:type event))
                          (append-event! state {:event/type :aif/tap
@@ -573,105 +1025,48 @@
                           output-patterns (patterns-from-output output)
                           command-patterns (patterns-from-command command)
                           command-paths (pattern-paths-from-command command)
-                          path-patterns (mapcat #(patterns-from-file repo-root %) command-paths)
-                          pattern-ids (seq (distinct (concat output-patterns
-                                                             command-patterns
-                                                             path-patterns)))]
+                          path-patterns (mapcat #(patterns-from-file repo-root %) command-paths)]
                       (doseq [payload (parse-pattern-action-lines output)]
                         (handle-pattern-action! state engine payload))
-                      (when (and (seq pattern-ids) (or (seq command-paths) (seq output-patterns)))
-                        (doseq [pattern-id pattern-ids]
-                          (log-pattern-action! state
-                                               engine
-                                               action
-                                               pattern-id
-                                               "auto-detected from command")))))
+                      (when (or (seq command-paths) (seq output-patterns))
+                        (when-let [pattern-ids (seq (distinct (concat output-patterns
+                                                                     command-patterns
+                                                                     path-patterns)))]
+                          (doseq [pattern-id pattern-ids]
+                            (log-pattern-action! state
+                                                 engine
+                                                 action
+                                                 pattern-id
+                                                 "auto-detected from command"
+                                                 command-paths))))))
                   (when (and (= (:type event) "item.completed")
                              (= (get-in event [:item :type]) "file_change"))
                     (let [changes (get-in event [:item :changes])
-                          pattern-ids (seq (patterns-from-change-paths repo-root changes))]
-                      (doseq [pattern-id pattern-ids]
-                        (log-pattern-action! state
-                                             engine
-                                             "update"
-                                             pattern-id
-                                             "auto-detected from file_change"))))
+                          paths (->> changes (map :path) (remove nil?) vec)]
+                      (when (seq paths)
+                        (swap! state update :turn-files
+                               (fn [existing]
+                                 (vec (distinct (concat (or existing []) paths))))))
+                      (when-let [pattern-ids (seq (patterns-from-change-paths repo-root changes))]
+                        (doseq [pattern-id pattern-ids]
+                          (log-pattern-action! state
+                                               engine
+                                               "update"
+                                               pattern-id
+                                               "auto-detected from file_change"
+                                               paths)))))
+                  (when (= (:type event) "turn.started")
+                    (swap! state assoc :turn-open? true)
+                    (let [{:keys [selection]} (ensure-turn-selection! state candidates chosen aif-config engine)]
+                      (emit-selection-summary! state selection)))
                   (when (= (:type event) "turn.completed")
-                    (let [turn (inc (:turn @state))
-                          session-id (:session-id @state)
-                          current (first (:clock-in-queue @state))
-                          explicit-chosen (or current chosen)
-                          use-aif (and (:aif-select? @state) (nil? explicit-chosen))
-                          decision-id (str session-id ":turn-" turn)
-                          anchors [(turn-anchor turn)]
-                          forecast (build-forecast turn)
-                          cached-tau (get (:tau-cache @state) explicit-chosen)
-                          uncertainty (tau->uncertainty (:tau/scale aif-config) cached-tau)
-                          candidate-scores (:candidate-scores @state)
-                          selection-context (cond-> {:decision/id decision-id
-                                                     :session/id session-id
-                                                     :candidates candidates
-                                                     :anchors anchors
-                                                     :forecast forecast}
-                                              candidate-scores (assoc :candidate-scores candidate-scores)
-                                              uncertainty (assoc :uncertainty uncertainty)
-                                              (not use-aif) (assoc :chosen explicit-chosen))
-                          selection (engine/select-pattern engine selection-context)
-                          chosen-final (if use-aif (:chosen selection) explicit-chosen)
-                          explainer (selection-explainer selection explicit-chosen use-aif)
-                          psr (cond-> (build-psr session-id turn candidates chosen-final)
-                                explainer (assoc :aif/explainer explainer))
-                          pur (build-pur session-id turn chosen-final)
-                          update (engine/update-beliefs engine {:decision/id (:decision/id pur)
-                                                                :session/id session-id
-                                                                :outcome (:outcome/tags pur)
-                                                                :status :observed})]
-                      (swap! state assoc :turn turn)
-                      (when chosen-final
-                        (swap! state update :trail-picked (fnil conj #{}) chosen-final))
-                      (when current
-                        (append-event! state {:event/type :clock-in/start
-                                              :turn turn
-                                              :at (now-inst)
-                                              :clock-in/pattern-id current
-                                              :clock-in/intent "fucodex live run"})
-                        (swap! state assoc :clock-in-queue (vec (rest (:clock-in-queue @state)))
-                               :clock-in-current current))
-                      (append-event! state {:event/type :turn/completed
-                                            :turn turn
-                                            :at (now-inst)})
-                      (append-event! state {:event/type :pattern/selection-claimed
-                                            :at (now-inst)
-                                            :payload {:psr psr}})
-                      (append-event! state {:event/type :pattern/use-claimed
-                                            :at (now-inst)
-                                            :payload {:pur pur}})
-                      (record-pattern-selection-rpc! state psr)
-                      (println (format "[pattern-selection] chosen=%s candidates=%d"
-                                       chosen-final
-                                       (count candidates)))
-                      (record-pattern-use-rpc! state pur)
-                      (println (format "[pattern-use] %s" chosen-final))
-                      (flush)
-                      (when-let [report (:last-agent-report @state)]
-                        (let [hud-id (get-in @state [:hud :hud/id])]
-                          (append-event! state {:event/type :hud/agent-reported
-                                                :hud/id hud-id
-                                                :at (now-inst)
-                                                :payload {:hud/id hud-id
-                                                          :session/id session-id
-                                                          :turn turn
-                                                          :report report}}))
-                        (swap! state assoc :last-agent-report nil))
-                      (when (and (:proposal-hook? @state) (< (count candidates) 2))
-                        (append-event! state (proposal-draft session-id turn candidates)))
-                      (append-event! state (summary-event session-id :psr selection))
-                      (append-event! state (summary-event session-id :pur update))
-                      (when-let [tau-updated (get-in update [:aif :tau-updated])]
-                        (let [next-cache (assoc (:tau-cache @state) chosen-final tau-updated)]
-                          (swap! state assoc :tau-cache next-cache)
-                          (write-tau-cache! lab-root next-cache))))))))
+                    (swap! state assoc :turn-open? false)
+                    (process-turn-complete! state candidates chosen aif-config engine)))))
+              (when (and (:turn-open? @state) (:session-id @state))
+                (swap! state assoc :turn-open? false)
+                (process-turn-complete! state candidates chosen aif-config engine))
             (finally
+              (emit-session-summary! state)
               (stop-heartbeat! heartbeat))))
         (remove-tap tap-listener)))))
 (apply -main *command-line-args*)

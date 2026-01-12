@@ -20,7 +20,7 @@ for coordinated reasoning.
 
 @next Stand up the completed pattern canon + `check!` API, standardise proof→graph/energy exports, and land the workday instrumentation + trail rollups as first-class MUSN services before expanding the flexiformal training ground.
 
-! instantiated-by: Prototype 0 — Flexiformal Transport Baseline [🏃/索 ➰/双]
+! instantiated-by: Prototype 0 — Flexiformal Transport Baseline [➰/双 🎑/了]
   + context: FUTON3 still rides the MUSN transport (WS+HTTP bus, SAFE/ADMIN REPL, NDJSON ingest), but its primary job is to host pattern checks and informal proof states, not free-roaming agents.
   + if: You want an execution substrate where pattern obligations can be posed, evaluated, and recorded with deterministic transcripts.
   + however: The baseline hello/event/session flows are documented as “non-essential documentation” instead of “proofwork IO contracts.”
@@ -55,14 +55,14 @@ for coordinated reasoning.
   + next-evidence:
     - {:type :Checklist :id "drawbridge-repl-live-session" :description "Checklist proving Drawbridge can connect to a running Futon3 instance and execute a minimal safe query script." :acceptance-criteria ["Drawbridge enabled with a local-only token; CIDER connects over HTTP and evaluates `(musn.api/clients)` / `(musn.api/history)` without errors." "Transcript saved in `docs/` or `logs/` with timestamp and server config used."] :suggested-location "docs/repl/drawbridge-session.md" :timebox "2026-01-12"}
 
-! instantiated-by: Prototype 2 — Similarity Field & Fake Embedding [🌂/甲 👂/距]
+! instantiated-by: Prototype 2 — Similarity Field & Fake Embedding [🌂/甲 👂/归]
   + context: We already use a “fake embedding” (sigil adjacency) to find nearby patterns.
   + if: You want reproducible neighbourhood queries for pattern suggestions.
   + however: The embedding lives in ad-hoc CSVs and isn’t wired into FUTON3’s APIs.
   + then: Integrate the sigil-distance matrix into FUTON3 as a first-class service (pattern search API, `nearest-patterns` command, CLI/UI views) and publish tests proving deterministic neighbourhoods.
   + because: Pattern suggestion quality underpins the flexiformal workflow and must be inspectable.
 
-! instantiated-by: Prototype 3 — Applicability Engine & Check DSL [🌽/末 🎑/判]
+! instantiated-by: Prototype 3 — Applicability Engine & Check DSL [🌽/末 ➰/广]
   + context: We want FUTON3 to answer “can this pattern apply?” and “what new obligations arise?”
   + if: You want a declarative DSL (possibly REPL-safe) for posing check contexts and receiving structured verdicts (applies / blocked / missing evidence).
   + however: Checks today are conversational heuristics in aob-chatgpt or handwritten flexiargs.
@@ -95,7 +95,7 @@ for coordinated reasoning.
   + evidence: Early Cue Embedding tests (`test/futon3/cue_embedding_test.clj`) already show that keyword payloads round-trip through the embedding; hand-labelled fruit/orb assignments in `resources/paramita-grid.edn` provide a gold set for checking whether `vec->fruit+orb` recovers the expected operator/meta-property types on known patterns, including basic Komolgorov relations like “indicator-construction steps that should land in the 🔵 virtue band”.
   + next: (1) Generalise the existing cue embedding to operate on `:trail/intent` + `:pattern/reasoning` tuples and return (fruit, orb) as proof step types, (2) run a calibration pass over a small set of manually typed patterns to tune the fruit/orb basis and salience weights, ensuring that canonical relations like 🍌→🔵 (“value-aligned indicator checks”) land in the intended region, and (3) wire the enriched trail export into Prototype 4’s rollups so devmap progress can be inspected as “which constructive proof-types actually fired today, how salient they were, and whether the checks that claimed to align with your values really did so in the embedding.”
 
-! instantiated-by: Prototype 5 — Workday Instrumentation & aob-chatgpt Bridge [💤/每]
+! instantiated-by: Prototype 5 — Workday Instrumentation & aob-chatgpt Bridge [➰/止 ⌛️/了]
   + context: Within `aob-chatgpt` we already experiment with reflecting on daily actions against devmap obligations.
   + if: You want FUTON3 to serve as the backend for those reflections.
   + however: There is no official API for submitting “workday claims,” mapping them to patterns, or receiving verification feedback; roles of “workday participants” and “instrumentation stewards” are undefined.
@@ -111,14 +111,14 @@ for coordinated reasoning.
   + then: Build a summariser that clusters trails, extracts hooks, and emits draft flexiarg blocks (IF/HOWEVER/THEN/BECAUSE) tagged with suggested pāramitā, ready for futon4 editors, and declare readiness criteria (e.g., at least N supporting checks + steward review) so handoffs are predictable.
   + because: FUTON3 should not just consume the library; it should propose expansions grounded in lived work while signalling when drafts can be trusted.
 
-! instantiated-by: Prototype 7 — Joy-as-Empowered-Action Metrics [⌛️/力 ⚡️/每]
+! instantiated-by: Prototype 7 — Joy-as-Empowered-Action Metrics [⌛️/力 ⚡️/二]
   + context: Joy here = Spinozan increase in power to act, evidenced by commitments you can now keep.
   + if: You want metrics that show whether checks are empowering or draining.
   + however: Current “joy metrics” counted UI friction; they did not measure proofs discharged or obligations unblocked.
   + then: Track `time-to-proof`, `obligations-cleared`, `follow-on commitments`, and `viriya linkages` per session, and visualise them alongside subjective notes.
   + because: Empowered action is the KPI for this futon.
 
-! instantiated-by: Prototype 8 — futon2/futon1 Proof Hooks [⚡️/二 🐜/络]
+! instantiated-by: Prototype 8 — futon2/futon1 Proof Hooks [⚡️/二 🙅/乃]
   + context: FUTON3 already generates proof states; FUTON1 (graph) and FUTON2 (energy) need those proofs as fuel.
   + if: You want every accepted check to become a graph relation and a viriya delta without manual glue.
   + however: today the exports are bespoke Clerk notebooks or one-off scripts.

@@ -138,13 +138,14 @@
 
 (defn- pattern-used-event
   ([session-id pattern-id reason]
-   (pattern-used-event session-id pattern-id reason nil))
-  ([session-id pattern-id reason parent-id]
+   (pattern-used-event session-id pattern-id reason nil nil))
+  ([session-id pattern-id reason parent-id channels]
    (make-event session-id :pattern/used
                (cond-> {:pattern/id pattern-id
                         :pattern/dep pattern-id
                         :pattern/reason reason}
-                 parent-id (assoc :pattern/parent parent-id)))))
+                 parent-id (assoc :pattern/parent parent-id)
+                 (seq channels) (assoc :pattern/channels channels)))))
 
 (defn- pattern-selection-event [session-id psr]
   (make-event session-id :pattern/selection-claimed
@@ -202,12 +203,14 @@
 
 (defn- python-codex-command
   "Build a python wrapper that invokes codex with a base64 prompt."
-  [{:keys [prompt dangerously-skip-permissions? resume-id]}]
+  [{:keys [prompt dangerously-skip-permissions? resume-id approval-policy]}]
   (let [prompt-b64 (base64-encode prompt)
         has-prompt (if prompt-b64 "1" "0")
         args-base (cond-> "[\"codex\",\"exec\",\"--json\",\"--skip-git-repo-check\""
                     dangerously-skip-permissions?
                     (str ",\"--dangerously-bypass-approvals-and-sandbox\"")
+                    approval-policy
+                    (str ",\"-c\",\"approval_policy=\\\"" approval-policy "\\\"\"")
                     resume-id
                     (str ",\"resume\",\"" resume-id "\""))
         args-base (str args-base "]")
@@ -220,15 +223,17 @@
     (str "python3 -c " (shell-quote code))))
 
 (defn- build-codex-command
-  [{:keys [prompt dangerously-skip-permissions?]}]
+  [{:keys [prompt dangerously-skip-permissions? approval-policy]}]
   (python-codex-command {:prompt prompt
-                         :dangerously-skip-permissions? dangerously-skip-permissions?}))
+                         :dangerously-skip-permissions? dangerously-skip-permissions?
+                         :approval-policy approval-policy}))
 
 (defn- build-resume-command
-  [{:keys [codex-cli-session-id prompt dangerously-skip-permissions?]}]
+  [{:keys [codex-cli-session-id prompt dangerously-skip-permissions? approval-policy]}]
   (python-codex-command {:prompt prompt
                          :resume-id codex-cli-session-id
-                         :dangerously-skip-permissions? dangerously-skip-permissions?}))
+                         :dangerously-skip-permissions? dangerously-skip-permissions?
+                         :approval-policy approval-policy}))
 
 (defn- build-pty-command
   "Wrap codex command in `script` to get a real PTY.
@@ -274,6 +279,23 @@
     (try
       (json/parse-string value true)
       (catch Exception _ nil))))
+
+(defn- tool-metadata-from-pending [pending]
+  (let [tool-name (or (:name pending)
+                      (:tool_name pending)
+                      (:tool-name pending)
+                      (:tool/name pending))
+        raw-params (or (:input pending)
+                       (:arguments pending)
+                       (:params pending)
+                       (:tool-params pending)
+                       (:tool_params pending))
+        params (cond
+                 (string? raw-params) (or (parse-output-json raw-params) raw-params)
+                 :else raw-params)]
+    (cond-> {}
+      tool-name (assoc :tool/name tool-name)
+      (some? params) (assoc :tool/params params))))
 
 (defn- parse-exit-code [value]
   (when (string? value)
@@ -465,7 +487,12 @@
                                                       "command_execution"
                                                       (cond-> {} cmd (assoc :cmd cmd))
                                                       item-id
-                                                      :observed)))
+                                                      :observed))
+                (swap! (:pending-approvals session)
+                       assoc
+                       item-id
+                       {:name "command_execution"
+                        :input (cond-> {} cmd (assoc :cmd cmd))}))
 
               (and (= item-type "command_execution")
                    (contains? #{"item.completed" "item.failed"} msg-type))
@@ -698,9 +725,12 @@
     (if-let [process @(:process session)]
       (try
         (write-to-process! process "y\n")
-        (swap! (:pending-approvals session) dissoc call-id)
-        (emit-event! session (make-event session-id :tool/approved
-                                         {:tool/call-id call-id}))
+        (let [pending (get @(:pending-approvals session) call-id)
+              tool-meta (tool-metadata-from-pending pending)]
+          (swap! (:pending-approvals session) dissoc call-id)
+          (emit-event! session (make-event session-id :tool/approved
+                                           (merge {:tool/call-id call-id}
+                                                  tool-meta))))
         {:ok true :session-id session-id :call-id call-id :action :approved}
         (catch Exception e
           {:ok false :error (.getMessage e)}))
@@ -742,14 +772,15 @@
 (defn record-pattern-use!
   "Record that a session used a pattern as a dependency.
    Emits :pattern/used event and adds to session's pattern trail."
-  [session-id pattern-id & [{:keys [reason parent-id]}]]
+  [session-id pattern-id & [{:keys [reason parent-id channels]}]]
   (if-let [session (get @!sessions session-id)]
     (let [usage (cond-> {:pattern/id pattern-id
                          :used-at (now-ms)
                          :reason reason}
-                  parent-id (assoc :pattern/parent parent-id))]
+                  parent-id (assoc :pattern/parent parent-id)
+                  (seq channels) (assoc :pattern/channels channels))]
       (swap! (:patterns-used session) conj usage)
-      (emit-event! session (pattern-used-event session-id pattern-id reason parent-id))
+      (emit-event! session (pattern-used-event session-id pattern-id reason parent-id channels))
       {:ok true :session-id session-id :pattern-id pattern-id})
     {:ok false :error "session-not-found"}))
 

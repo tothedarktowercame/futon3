@@ -29,13 +29,16 @@
   (with-redefs [f2.codex/start-process! (fn [_ _] (Object.))
                 f2.codex/run-session-loop! (fn [_] nil)]
     (let [{:keys [session-id]} (codex/start-session! {:prompt "hi"})]
-      (is (:ok (codex/record-pattern-use! session-id "pattern/x" {:reason "dep"})))
+      (is (:ok (codex/record-pattern-use! session-id "pattern/x"
+                                          {:reason "dep"
+                                           :channels [:code :doc]})))
       (is (:ok (codex/record-artifact! session-id "docs/demo.md" {:action :created})))
       (is (:ok (codex/record-doc! session-id {:path "docs/demo.md"
                                               :type :howto
                                               :summary "demo"})))
       (let [session (codex/get-session session-id)
             events (-> (codex/get-events session-id) :events)
+            pattern-used (first (filter #(= :pattern/used (:event/type %)) events))
             types (map :event/type events)]
         (is (= 1 (count (:patterns-used session))))
         (is (= 1 (count (:artifacts session))))
@@ -44,6 +47,7 @@
         (is (= 1 (get-in session [:stats :docs-written])))
         (is (= 1 (get-in session [:stats :artifacts])))
         (is (some #{:pattern/used} types))
+        (is (= [:code :doc] (:pattern/channels pattern-used)))
         (is (some #{:doc/written} types))))))
 
 (deftest resume-session-emits-start

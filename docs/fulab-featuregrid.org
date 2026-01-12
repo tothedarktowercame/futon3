@@ -17,7 +17,7 @@ Legend:
 | Stream events over WS    | Y/N     | Y/N      | NA    | src/f2/ui.clj                                                     |
 | Resume session           | Y/V     | N/N      | NA    | src/f2/codex.clj, test/f2/codex_test.clj                          |
 | Clock-in start event     | Y/V     | Y/V      | Y/V   | test/f2/codex_test.clj, test/f2/claude_test.clj, test/elisp/fubar-test.el |
-| Clock-out complete event | Y/V     | Y/N      | Y/V   | src/f2/codex.clj, test/f2/codex_test.clj, test/elisp/fubar-test.el |
+| Clock-out complete event | Y/V     | Y/V      | Y/V   | src/f2/codex.clj, test/f2/codex_test.clj, test/f2/claude_test.clj, test/elisp/fubar-test.el |
 | Pattern used event       | Y/V     | Y/V      | Y/V   | test/f2/codex_test.clj, test/f2/claude_test.clj, test/elisp/fubar-test.el |
 | Artifact recorded        | Y/V     | Y/V      | N/N   | test/f2/codex_test.clj, test/f2/claude_test.clj                   |
 | Doc written event        | Y/V     | Y/V      | Y/V   | test/f2/codex_test.clj, test/f2/claude_test.clj, test/elisp/fubar-test.el |

@@ -3,7 +3,7 @@
 @audience futon developers, CS students, pattern agents
 @tone analytic
 @style design-pattern
-@sigils [🧩/工 📥/井]
+@sigils [📥/井 👘/示]
 
 ! conclusion:
   Encapsulate every such operation as a Command value that carries `:id`, parameters, provenance, capability tags, and optional `undo!`, and run it only through an execution pipeline (local worker, remote service, or threaded pool). Commands can be persisted, reordered, decorated, and routed to specialised executors such as a git agent or math agent.

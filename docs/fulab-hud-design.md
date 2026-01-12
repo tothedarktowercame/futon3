@@ -164,6 +164,7 @@ AIF suggests: #1 (G=0.42, τ=0.7)
 After completing the task, report which pattern(s) you applied:
 ---FULAB-REPORT---
 :applied "pattern-id"
+:action "implement"
 :notes "why this pattern fit"
 ---END-FULAB-REPORT---
 ---END-FULAB-HUD---
@@ -187,6 +188,7 @@ Each session gets HUD events:
  :at #inst "..."
  :payload {:hud/id "..."
            :applied "pattern-id"
+           :action "implement"
            :notes "..."}}
 
 ;; Existing PSR/PUR still generated for compatibility

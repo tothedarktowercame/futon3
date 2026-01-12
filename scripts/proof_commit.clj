@@ -22,6 +22,19 @@
   (let [[prefix name] (str/split pattern-id #"/" 2)]
     (io/file root "library" prefix (str name ".flexiarg"))))
 
+(defn- proof-commit-log-path [root]
+  (io/file root "resources/fulab-proof-commits.edn"))
+
+;; --- Proof-commit logging ---
+
+(defn- append-proof-commit! [root envelope]
+  (let [path (proof-commit-log-path root)
+        existing (or (load-edn path) [])
+        updated (conj (vec existing) envelope)]
+    (io/make-parents path)
+    (spit path (pr-str updated))
+    path))
+
 ;; --- Session queries ---
 
 (defn- session-events [events session-id]
@@ -39,6 +52,20 @@
 (defn- session-artifacts [events]
   (let [clock-out (find-clock-out events)]
     (or (:artifacts clock-out) [])))
+
+(defn- pattern-trail [events]
+  (let [clock-in (find-clock-in events)
+        deps (find-pattern-deps events)
+        primary (when clock-in
+                  {:pattern/id (:clock-in/pattern-id clock-in)
+                   :pattern/role :primary
+                   :pattern/reason (:clock-in/intent clock-in)})
+        dep-trail (for [dep deps]
+                    (cond-> {:pattern/id (:pattern/id dep)
+                             :pattern/reason (:pattern/reason dep)}
+                      (:pattern/parent dep) (assoc :pattern/parent (:pattern/parent dep))
+                      (seq (:pattern/channels dep)) (assoc :pattern/channels (:pattern/channels dep))))]
+    (vec (remove nil? (concat [primary] dep-trail)))))
 
 ;; --- Git queries ---
 
@@ -92,7 +119,8 @@
 (defn correspondence-check
   "Level 2: Do session artifacts cover staged files?"
   [session-events staged root]
-  (let [artifacts (session-artifacts session-events)
+  (let [staged (or staged #{})
+        artifacts (session-artifacts session-events)
         artifact-paths (set (map #(or (:path %) %) artifacts))
         ;; Normalize to relative paths
         normalize (fn [p] (str/replace-first p (str root "/") ""))
@@ -124,15 +152,48 @@
      :pass? (every? :pass? results)
      :patterns results}))
 
+(defn- check-errors [result]
+  (when-not (:pass? result)
+    (case (:check result)
+      :structural
+      {:check :structural
+       :missing (cond-> []
+                  (not (:clock-in? result)) (conj :clock-in)
+                  (not (:clock-out? result)) (conj :clock-out))}
+      :correspondence
+      {:check :correspondence
+       :missing (:missing result)}
+      :shape
+      {:check :shape
+       :missing (mapv (fn [pattern-result]
+                        {:pattern (:pattern pattern-result)
+                         :missing (:missing pattern-result)})
+                      (remove :pass? (:patterns result)))}
+      {:check (:check result)})))
+
+(defn- proof-commit-envelope [session-id session-events staged root validation]
+  {:commit/changes {:staged-files (sort staged)
+                    :unstaged? (boolean (unstaged-changes? root))}
+   :commit/session-id session-id
+   :commit/checked-at (java.util.Date.)
+   :commit/pattern-trail (pattern-trail session-events)
+   :commit/validation validation})
+
 ;; --- PR Summary generation ---
 
 (defn- pattern-dep-summary [deps]
   (when (seq deps)
     (str "**Pattern dependencies:**\n"
-         (str/join "\n" (map #(format "- %s (%s)"
-                                      (:pattern/id %)
-                                      (or (:pattern/reason %) "unspecified"))
-                             deps)))))
+         (str/join "\n"
+                   (map (fn [dep]
+                          (let [channels (:pattern/channels dep)
+                                channel-note (when (seq channels)
+                                               (str "; channels: " (str/join ", " channels)))]
+                            (format "- %s (%s%s)"
+                                    (:pattern/id dep)
+                                    (or (:pattern/reason dep) "unspecified")
+                                    (or channel-note ""))))
+                        deps)))))
 
 (defn- artifact-summary [artifacts]
   (when (seq artifacts)
@@ -179,13 +240,22 @@
         clock-in (find-clock-in session-evts)
         pattern-ids (cons (:clock-in/pattern-id clock-in)
                           (map :pattern/id (find-pattern-deps session-evts)))
-        patterns (remove nil? (map #(load-pattern root %) pattern-ids))]
+        patterns (remove nil? (map #(load-pattern root %) pattern-ids))
+        structural (structural-check session-evts)
+        correspondence (correspondence-check session-evts staged root)
+        shape (shape-check session-evts patterns)
+        validation-errors (vec (remove nil? [(check-errors structural)
+                                             (check-errors correspondence)
+                                             (check-errors shape)]))
+        validation {:ok? (empty? validation-errors)
+                    :errors validation-errors}]
     (when (empty? session-evts)
       (throw (ex-info "No events found for session" {:session-id session-id})))
     {:session-id session-id
-     :structural (structural-check session-evts)
-     :correspondence (correspondence-check session-evts staged root)
-     :shape (shape-check session-evts patterns)
+     :structural structural
+     :correspondence correspondence
+     :shape shape
+     :proof-commit (proof-commit-envelope session-id session-evts staged root validation)
      :pr-summary (generate-pr-summary session-evts patterns root)}))
 
 (defn- print-check [{:keys [check pass?] :as result}]
@@ -217,15 +287,15 @@
       (System/exit (if (nil? session-id) 1 0)))
     (try
       (let [result (validate-session root session-id)
-            all-pass? (and (get-in result [:structural :pass?])
-                           (get-in result [:correspondence :pass?])
-                           (get-in result [:shape :pass?]))]
+            all-pass? (get-in result [:proof-commit :commit/validation :ok?])
+            log-path (append-proof-commit! root (:proof-commit result))]
         (println (format "\n=== Proof Commit Validation: %s ===\n" session-id))
         (print-check (:structural result))
         (print-check (:correspondence result))
         (print-check (:shape result))
         (println "\n--- PR Summary ---\n")
         (println (:pr-summary result))
+        (println (format "\n--- Proof Commit Log ---\nLogged envelope to %s" log-path))
         (System/exit (if all-pass? 0 1)))
       (catch Exception e
         (println (format "Error: %s" (.getMessage e)))

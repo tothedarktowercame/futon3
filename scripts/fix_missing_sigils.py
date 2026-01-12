@@ -4,12 +4,67 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set, Tuple
 
 SIGIL_BLOCK_RE = re.compile(r"\[[^\]]*[^ \[\]]+/[^ \[\]]+[^\]]*\]")
+SIGIL_TOKEN_RE = re.compile(r"[^ \[\]]+/[^ \[\]]+")
 ARG_RE = re.compile(r"^@arg\s+(\S+)\s*$")
 
 ROOTS = [Path("library"), Path("holes/LDTS")]
+TOKI_FILE = Path("holes/tokipona.org")
+HANZI_FILE = Path("holes/256ca.el")
+
+
+def load_tokipona_emojis() -> Set[str]:
+    emojis: Set[str] = set()
+    if not TOKI_FILE.exists():
+        return emojis
+    for line in TOKI_FILE.read_text().splitlines():
+        if not line.startswith("|") or line.startswith("|---"):
+            continue
+        cols = [col.strip() for col in line.split("|")]
+        if len(cols) < 3:
+            continue
+        emoji = cols[1]
+        if emoji and emoji.lower() != "emoji":
+            emojis.add(emoji)
+    return emojis
+
+
+def load_truth_table_hanzi() -> Set[str]:
+    hanzi: Set[str] = set()
+    if not HANZI_FILE.exists():
+        return hanzi
+    for line in HANZI_FILE.read_text().splitlines():
+        if ';' not in line:
+            continue
+        prefix = line.split(';', 1)[0]
+        matches = re.findall(r'"([^"]+)"', prefix)
+        if len(matches) < 2:
+            continue
+        hanzi.add(matches[1])
+    return hanzi
+
+
+EMOJI_ALLOWLIST = load_tokipona_emojis()
+HANZI_ALLOWLIST = load_truth_table_hanzi()
+
+
+def parse_sigil_block(block: str) -> List[Tuple[str, str]]:
+    pairs: List[Tuple[str, str]] = []
+    for token in SIGIL_TOKEN_RE.findall(block or ""):
+        emoji, hanzi = token.split("/", 1)
+        pairs.append((emoji.strip(), hanzi.strip()))
+    return pairs
+
+
+def sigils_valid(block: Optional[str]) -> bool:
+    if not block:
+        return False
+    pairs = parse_sigil_block(block)
+    if not pairs:
+        return False
+    return all(emoji in EMOJI_ALLOWLIST and hanzi in HANZI_ALLOWLIST for emoji, hanzi in pairs)
 
 
 def load_or_sigils() -> Dict[str, str]:
@@ -83,17 +138,23 @@ def find_inline_sigils(lines: List[str]) -> Optional[str]:
     for line in lines:
         match = SIGIL_BLOCK_RE.search(line)
         if match:
-            return match.group(0)
+            block = match.group(0)
+            if sigils_valid(block):
+                return block
     return None
 
 
 def infer_sigils(arg_id: str, block_lines: List[str]) -> Optional[str]:
     if arg_id in MANUAL_SIGILS:
-        return MANUAL_SIGILS[arg_id]
+        block = MANUAL_SIGILS[arg_id]
+        if sigils_valid(block):
+            return block
     if arg_id.startswith("p4ng/"):
         counterpart = "or/" + arg_id.split("/", 1)[1]
         if counterpart in OR_SIGILS:
-            return OR_SIGILS[counterpart]
+            block = OR_SIGILS[counterpart]
+            if sigils_valid(block):
+                return block
     return find_inline_sigils(block_lines)
 
 

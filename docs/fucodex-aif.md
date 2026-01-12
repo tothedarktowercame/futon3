@@ -12,6 +12,7 @@ This note explains how AIF scoring is attached to fucodex pattern runs and how t
 - When an AIF config is supplied, an `:aif/config` event is emitted once per session.
 
 The AIF adapter sees the same decision ids and anchors as PSR/PUR, so the AIF summary can be joined to pattern claims by `:decision/id` and `:session/id`.
+The live `aif-live` view also carries evidence accounting (`:evidence-score`, `:evidence-delta`, `:evidence-counts`) derived from pattern-action logging.
 
 ## Live PSR/PUR RPC
 

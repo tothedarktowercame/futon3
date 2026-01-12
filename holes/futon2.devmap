@@ -16,7 +16,7 @@ missing.
 @next Formalize micro-step semantics in doc/trace-semantics.md, update README observation vector, add white-space property tests, expand policy goldens to 10 scenarios.
 
 
-! instantiated-by: Prototype 0 — AIF Stack Baseline (observe → perceive → affect → core) [🌝/四 🐜/基]
+! instantiated-by: Prototype 0 — AIF Stack Baseline (observe → perceive → affect → core) [🌝/四 🗿/刊]
   + context: FUTON2 runs a full Active Inference loop in the ant war-game, wiring `ants.aif.observe`, `ants.aif.perceive`, `ants.aif.affect`, and `ants.aif.core` into one tick-by-tick pipeline.
   + if: You want a stable story that shows how observation, prediction errors, precision, and actions integrate per tick.
   + however: Modules are individually solid but no single document freezes hunger/tau semantics or traces the whole stack.
@@ -39,7 +39,7 @@ missing.
     - `doc/hunger-tau-coupling.md` documenting when update-tau fires vs perceive-internal hunger updates.
     - 4 complete tick traces with commentary (forage, return, explore, defend scenarios).
 
-! instantiated-by: Prototype 1 — Observation Layer Hardening [🍲/证 🌝/四]
+! instantiated-by: Prototype 1 — Observation Layer Hardening [🌝/四 👎/刊]
   + context: `g-observe` normalises sensory evidence (food, pheromones, proximity, novelty, reserves) into the vectors passed downstream.
   + if: You want deterministic observations across seeds and a nailed-down vector ABI for later ML.
   + however: Normalisation bounds and neighbour logic assumptions are scattered across helpers.
@@ -81,7 +81,7 @@ missing.
     - `doc/trace-semantics.md` formalizing micro-step semantics (why errors are 0.0, annealing formula).
     - Goal-bias mechanism documented and tested (blending toward home/enemy based on cargo).
 
-! instantiated-by: Prototype 3 — Hunger & Precision Dynamics Goldens [💫/六 🔥/餓]
+! instantiated-by: Prototype 3 — Hunger & Precision Dynamics Goldens [💫/六 🙇/叉]
   + context: Functions such as `tick-hunger`, `update-hunger`, `update-tau`, and `modulate-precisions` control the most sensitive dynamics.
   + if: You want reproducible affective behaviour that survives refactors.
   + however: There are no golden tests for tau evolution, hunger saturation, or reserve-driven adjustments.
@@ -143,7 +143,7 @@ missing.
   + then: Freeze a versioned pivot-row schema, add tests for required keys (:act, :mode, :cargo, :ing, etc.), and ship an example analyzer plugin for futon4.
   + because: Pivot streams are FUTON2’s event bus and must behave like a stable ABI.
 
-! instantiated-by: Prototype 7 — Classic vs AIF Benchmark Suite [🗿/三 🐜/不要]
+! instantiated-by: Prototype 7 — Classic vs AIF Benchmark Suite [🗿/三 ⚡️/内]
   + context: Benchmark scripts compare classic ants to AIF runs across scores, durations, and G-ema.
   + if: You want formal behavioural comparisons rather than anecdotes.
   + however: Only three preset scenarios exist and there is no variance analysis.
@@ -185,14 +185,14 @@ missing.
   + then: Package the release with a top-level README, whitepaper, stepping API, goldens, and versioned pivot schema.
   + because: Strong packaging turns FUTON2 into a reusable, inspectable module inside the full FUTON stack.
 
-! instantiated-by: Prototype 13 — Graph Memory Adapter & Agent ABI [👎/乃 ➰/络]
+! instantiated-by: Prototype 13 — Graph Memory Adapter & Agent ABI [👎/乃 🙅/去]
   + context: FUTON1 now offers a documented graph-memory API; FUTON2 needs to speak it to graduate beyond the sandbox.
   + if: You want ants to be the first drop-in “AIF agent” that reads fact graphs and writes back its beliefs.
   + however: percepts/actions remain locked to grid coordinates, so nothing maps to FUTON1 entity IDs or relation semantics.
   + then: design a bidirectional adapter (percepts → graph facts, graph cues → priors), version the ABI, and replay a colony run that exports beliefs into FUTON1 salience tables. Treat FUTON3 proof trails as “human pheromone lines”: export the canonical trail EDN (pattern IDs, fruits/orbs, joy deltas) into FUTON1, expose them via the adapter so analyzers ingest them as missions, and log agent runs as trail-style payloads (mission, outcome, energy delta) back into MUSN so FUTON3 records “agent proofs.”
   + because: once the adapter honours shared trail/pheromone energy, human proofwork and AIF runs guide each other through the same mission record instead of bespoke glue.
 
-! instantiated-by: Prototype 14 — Viriya Field & Social Activation Metrics [⚡️/习 🐜/劲]
+! instantiated-by: Prototype 14 — Viriya Field & Social Activation Metrics [⚡️/习 🐜/己]
   + context: FUTON2 carries the Factor of Awakening “energy/viriya”: vigor, commitment, and kinetic practice.
   + if: You want simulations to reflect and inform real social activation—networked collaboration, shared commitments, and practice loops across humans + agents.
   + however: Current metrics stop at hunger/tau; nothing measures vigor, pledge strength, or coordination throughput.
@@ -206,7 +206,7 @@ missing.
   + then: Define a bidirectional “presence bus” (rooms → observation cues, agent actions → MUSN events), add authentication so only designated colonies bridge, and ship a demo where ants report discoveries into a FUTON3 trail.
   + because: This proves that AIF agents can show up wherever proofwork happens, not just inside a war grid.
 
-! instantiated-by: Prototype 16 — Lobby Bus & MUSN Intake [🙅/无 💤/络]
+! instantiated-by: Prototype 16 — Lobby Bus & MUSN Intake [🙅/无 🔦/门]
   + context: FUTON3 runs with MUSN as a shared graph and chatgpt-shell as a HUD, but ChatGPT-API currently has only conversational access and no principled way to commit events back into MUSN.
   + if: You want ChatGPT-API to propose or make *persistent* updates (breach logs, paramitā orbs, devmap notes, pattern instantiations) without giving it full god-mode over the stack.
   + however: There is no explicit one-room “Lobby” where HUD traffic is normalised into MUSN events, no single-writer policy, and no clear schema for what counts as an escalated, storable event versus transient chatter.
@@ -224,7 +224,7 @@ missing.
   for operational concerns (like curfew rules) but also for epistemic/ritual
   artefacts that support the broader FUTON practice space.  The HUD then renders a subtle, clickable banner: Reflection exercise suggested ▸
 
-! instantiated-by: Prototype 16 — Wisdom Trail Harvest & Pattern Seeding [➰/去 👎/propose]
+! instantiated-by: Prototype 16 — Wisdom Trail Harvest & Pattern Seeding [➰/去 👎/了]
   + context: FUTON3 trails now record which patterns were checked or advanced during human work sessions.
   + if: You want FUTON2 analyzers to ingest those trails, compare them to colony behaviour, and commission new agent goals.
   + however: There is no ingestion path for trail EDN, nor a feedback loop that says “agents, go gather evidence for Pattern X.”

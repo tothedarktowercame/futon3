@@ -34,7 +34,7 @@ treats questions as assertions (there is no question→Datalog mapping yet).
 @next
 Consolidate the documentation and contracts that define how text becomes graph state; stabilise the naming and configuration surfaces shared across CLI, API, and ingest workflows; and refine test coverage so the deterministic substrate remains reliable as modules evolve. Maintain FUTON1’s minimal scope—storage, hydration, and inspection—while ensuring that higher futons can depend on its interfaces without ambiguity.
 
-! instantiated-by: Prototype 0 — Baseline Deterministic Substrate [🌝/四 🐜/基]
+! instantiated-by: Prototype 0 — Baseline Deterministic Substrate [🌝/四 🐲/世]
 
 + context:
   FUTON1 provides a deterministic storage substrate built from the demo/client
@@ -95,7 +95,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     comparison.
 
 
-! instantiated-by: Prototype 1 — Demo/Client Determinism & Focus-Header Instrumentation [💤/每 👴/律]
+! instantiated-by: Prototype 1 — Demo/Client Determinism & Focus-Header Instrumentation [👴/专 📁/申]
 
 + context:
   The `apps/demo` and `apps/client` workflow is the canonical entry point for
@@ -190,7 +190,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - Updated README documenting pipeline flow and public functions.
   - Agreement across ingest and demo/client modules on API usage.
 
-! instantiated-by: Prototype 3 — Graph-Memory API & Seed Graph [💤/络 🙅/乃]
+! instantiated-by: Prototype 3 — Graph-Memory API & Seed Graph [🙅/乃 👀/久]
 
 + context:
   `apps/graph-memory` defines the Datascript schema, salience metadata, and
@@ -354,7 +354,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     input.
   - README updates linking ingest workflows to the persistent world model.
 
-! pending: Prototype 4 — NLP Experiments & Traceable Knowledge Graphs [🌱/起 🧪/筹]
+! pending: Prototype 4 — NLP Experiments & Traceable Knowledge Graphs [🌱/开 💬/计]
 
 + context:
   The new CLI tracer (`scripts/demo_trace.clj`) and API tap listener (`api.analytics/start!`) produce
@@ -393,7 +393,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - ER graph export script plus sample output checked into `resources/` or `docs/`.
   - devmap entries describing the queued NLP experiments and how their results will be judged.
 
-! instantiated-by: Prototype 6 — Thematic Clusters & Intent Metadata [🙅/无 🚞/劲]
+! instantiated-by: Prototype 6 — Thematic Clusters & Intent Metadata [🙅/无 🚞/女]
 
 + context:
   FUTON1 can attach lightweight thematic tags to utterances or text spans
@@ -444,7 +444,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - Deterministic tests verifying tag presence and structure.
   - Example ingest→query or demo/client transcripts showing how tags persist.
 
-! instantiated-by: Prototype 7 — CLI Ergonomics & Multi-Instance Isolation [🎏/资料 🔦/互]
+! instantiated-by: Prototype 7 — CLI Ergonomics & Multi-Instance Isolation [🔦/互 👐/开]
 
 + context:
   The demo/client workflow exposes bang commands, flags, and environment
@@ -493,7 +493,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     instances.
   - A `/status` output (CLI or API) showing current data-root and XTDB config.
 
-! instantiated-by: Prototype 8 — Golden Scripts & Determinism Checks [🐜/不要 🏃/commit]
+! instantiated-by: Prototype 8 — Golden Scripts & Determinism Checks [👘/末 🎑/互]
 
 + context:
   FUTON1 already uses scripted EDN conversations and golden outputs to verify
@@ -597,7 +597,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
     documented default profile, and the `/status` surface shows the resolved
     datastore path.**
 
-! instantiated-by: Prototype 10 — World-State Access & Storage Model Documentation [💖/已 👭/態]
+! instantiated-by: Prototype 10 — World-State Access & Storage Model Documentation [💖/已 👋/书]
 
 + context:
   FUTON1 maintains the canonical world state for the stack through its combined
@@ -650,7 +650,7 @@ Consolidate the documentation and contracts that define how text becomes graph s
   - README or doc links showing how external tools can load and inspect the
     world state.
 
-! instantiated-by: Prototype 11 — Reproducible Pilot Workflows [👭/才 🐜/程]
+! instantiated-by: Prototype 11 — Reproducible Pilot Workflows [👭/才 🐜/分]
 
 + context:
   Users may wish to construct small pilot workflows—combining ingest,

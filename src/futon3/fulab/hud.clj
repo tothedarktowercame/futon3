@@ -59,6 +59,30 @@
 (def ^:private aif-weight-sigil 0.5)
 (def ^:private aif-weight-intent 0.3)
 (def ^:private aif-weight-glove 0.2)
+(def ^:private white-space-tau-bump 0.2)
+(def ^:private white-space-tau-min 0.7)
+
+(defn- candidate-signal?
+  "Whether a candidate carries any usable scoring signal."
+  [entry]
+  (some number?
+        [(:score entry)
+         (:score/sigil-distance entry)
+         (:score/glove-distance entry)
+         (:score/intent-embed-distance entry)]))
+
+(defn- white-space-candidates?
+  "Detect when candidate signals are missing (white space)."
+  [candidates]
+  (or (empty? candidates)
+      (not (some candidate-signal? candidates))))
+
+(defn- bump-white-space-tau [tau]
+  (let [boosted (+ (double tau) white-space-tau-bump)]
+    (-> boosted
+        (max white-space-tau-min)
+        (min 0.95)
+        double)))
 
 (defn- normalize-weights [parts]
   (let [total (reduce + (map :weight parts))]
@@ -106,49 +130,57 @@
   "Score candidates using simple heuristics (placeholder for full AIF integration).
    Lower G is better."
   [candidates {:keys [intent sigils]}]
-  (if (empty? candidates)
-    {:suggested nil
-     :G-scores {}
-     :G-components {}
-     :tau 0.5
-     :rationale "No candidates available"}
-    (let [;; Simple scoring: use existing score (distance-based, lower is better)
-          scored (map (fn [c]
-                        (let [{:keys [base sigil glove intent weights]} (weighted-base-score c)
-                              base-score (double (or base (:score c) 0.5))
-                              ;; Prefer patterns whose sigils match intent sigils
-                              sigil-bonus (if (and (seq sigils) (seq (:sigils c)))
-                                            (let [c-sigils (set (map :emoji (:sigils c)))
-                                                  i-sigils (set (map :emoji sigils))]
-                                              (if (seq (clojure.set/intersection c-sigils i-sigils))
-                                                -0.1
-                                                0.0))
-                                            0.0)
-                              G (+ base-score sigil-bonus)]
-                          {:id (:id c)
-                           :G G
-                            :components {:base base-score
-                                        :sigil-distance sigil
-                                        :glove-distance glove
-                                        :intent-distance intent
-                                        :weights weights
-                                        :sigil-bonus sigil-bonus
-                                        :source (:score-source c)
-                                        :missing-score (and (nil? base)
-                                                            (nil? (:score c)))}}))
-                      candidates)
-          sorted (sort-by :G scored)
-          best (first sorted)
-          G-map (into {} (map (juxt :id :G) scored))
-          G-components (into {} (map (juxt :id :components) scored))
-          tau (scores->tau (map :G scored))]
-      {:suggested (:id best)
-       :G-scores G-map
-       :G-components G-components
-       :candidate-count (count candidates)
-       :tau tau
-       :rationale (str "G = weighted distance (sigil + intent-embed + glove) + sigil bonus; "
-                       "lowest G among " (count candidates) " candidates")})))
+  (let [white-space? (white-space-candidates? candidates)]
+    (if (empty? candidates)
+      {:suggested nil
+       :G-scores {}
+       :G-components {}
+       :white-space? white-space?
+       :tau (if white-space? (bump-white-space-tau 0.5) 0.5)
+       :rationale (if white-space?
+                    "No candidates available (white-space: tau boosted for exploration)"
+                    "No candidates available")}
+      (let [;; Simple scoring: use existing score (distance-based, lower is better)
+            scored (map (fn [c]
+                          (let [{:keys [base sigil glove intent weights]} (weighted-base-score c)
+                                base-score (double (or base (:score c) 0.5))
+                                ;; Prefer patterns whose sigils match intent sigils
+                                sigil-bonus (if (and (seq sigils) (seq (:sigils c)))
+                                              (let [c-sigils (set (map :emoji (:sigils c)))
+                                                    i-sigils (set (map :emoji sigils))]
+                                                (if (seq (clojure.set/intersection c-sigils i-sigils))
+                                                  -0.1
+                                                  0.0))
+                                              0.0)
+                                G (+ base-score sigil-bonus)]
+                            {:id (:id c)
+                             :G G
+                             :components {:base base-score
+                                          :sigil-distance sigil
+                                          :glove-distance glove
+                                          :intent-distance intent
+                                          :weights weights
+                                          :sigil-bonus sigil-bonus
+                                          :source (:score-source c)
+                                          :missing-score (and (nil? base)
+                                                              (nil? (:score c)))}}))
+                        candidates)
+            sorted (sort-by :G scored)
+            best (first sorted)
+            G-map (into {} (map (juxt :id :G) scored))
+            G-components (into {} (map (juxt :id :components) scored))
+            tau (scores->tau (map :G scored))
+            tau (if white-space? (bump-white-space-tau tau) tau)]
+        {:suggested (:id best)
+         :G-scores G-map
+         :G-components G-components
+         :candidate-count (count candidates)
+         :white-space? white-space?
+         :tau tau
+         :rationale (str "G = weighted distance (sigil + intent-embed + glove) + sigil bonus; "
+                         "lowest G among " (count candidates) " candidates"
+                         (when white-space?
+                           " (white-space: tau boosted for exploration)"))}))))
 
 (defn build-hud
   "Create HUD state from intent and optional context.
@@ -233,12 +265,15 @@
                               (str/join "\n"))
                          "No candidates found.")
         aif (:aif hud)
+        white-space-label (when (:white-space? aif) "white-space tau boost")
         aif-str (if (:suggested aif)
-                  (format "AIF suggests: %s (G=%.2f, τ=%.1f)"
+                  (format "AIF suggests: %s (G=%.2f, τ=%.1f%s)"
                           (:suggested aif)
                           (double (get (:G-scores aif) (:suggested aif) 0))
-                          (double (:tau aif)))
-                  "AIF: no suggestion")]
+                          (double (:tau aif))
+                          (if white-space-label (str ", " white-space-label) ""))
+                  (str "AIF: no suggestion"
+                       (when white-space-label (str " (" white-space-label ")"))))]
     (str "[FULAB-HUD]\n"
          "Intent: " (:intent hud) "\n"
          "Sigils: " sigil-str "\n"
@@ -254,12 +289,15 @@
          "PSR/PUR are emitted each turn from the live stream; focus on real actions.\n"
          "\n"
          "Log pattern actions via RPC during the run:\n"
-         "Run: pattern-action <read|implement|update> <pattern-id> [note]\n"
-         "Do not use plain text tags; call the helper before/after touching a pattern.\n"
+         "Include :action \"read|implement|update\" and :notes in the FULAB-REPORT block; the stream runner emits the pattern-action event.\n"
+         "For implement/update, the note must state why the edit follows the pattern.\n"
+         "If the helper is needed, run: pattern-action <read|implement|update> <pattern-id> [note]\n"
+         "Do not edit without a justified pattern-action; unreasoned edits are warnings.\n"
          "\n"
          "After completing the task, report which pattern(s) you applied:\n"
          "[FULAB-REPORT]\n"
          ":applied \"pattern-id-here\"\n"
+         ":action \"implement\"\n"
          ":notes \"why this pattern fit\"\n"
          "[/FULAB-REPORT]\n"
          "[/FULAB-HUD]")))
@@ -278,9 +316,11 @@
   [block]
   (when block
     (let [applied (second (re-find #":applied\s+\"([^\"]+)\"" block))
+          action (second (re-find #":action\s+\"([^\"]+)\"" block))
           notes (second (re-find #":notes\s+\"([^\"]+)\"" block))]
-      (when (or applied notes)
+      (when (or applied action notes)
         {:applied applied
+         :action action
          :notes notes}))))
 
 (defn parse-agent-report

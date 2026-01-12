@@ -29,6 +29,18 @@
 (defvar my-futon3-codex-auto-approve nil
   "When non-nil, automatically approve all tool calls.")
 
+(defvar my-futon3-codex-inject-hud-on-input t
+  "When non-nil, prepend the FuLab HUD block to user input at checkpoints.")
+
+(defun my-futon3-codex--maybe-inject-hud (prompt)
+  "Return PROMPT with HUD context when available."
+  (if (and my-futon3-codex-inject-hud-on-input
+           (fboundp 'fubar-hud-inject-into-prompt))
+      (condition-case _err
+          (fubar-hud-inject-into-prompt prompt)
+        (error prompt))
+    prompt))
+
 (defvar my-futon3-codex-show-tool-trace nil
   "When non-nil, render non-approval tool trace events in the Codex buffer.")
 
@@ -135,6 +147,7 @@ PROMPT is the initial prompt, CWD defaults to `default-directory'."
   "Resume Codex CLI session CLI-SESSION-ID with PROMPT."
   (interactive "sSession ID: \nsPrompt: ")
   (let* ((cwd (or cwd default-directory))
+         (prompt (my-futon3-codex--maybe-inject-hud prompt))
          (result (my-futon3-codex--request
                   "POST" "/codex/resume"
                   `(("codex-cli-session-id" . ,cli-session-id)
@@ -199,9 +212,10 @@ PROMPT is the initial prompt, CWD defaults to `default-directory'."
   "Send arbitrary INPUT to the Codex session PTY."
   (interactive "sInput: ")
   (when my-futon3-codex-current-session
-    (my-futon3-codex--request
-     "POST" (format "/codex/input/%s" my-futon3-codex-current-session)
-     `(("input" . ,input)))))
+    (let ((input (my-futon3-codex--maybe-inject-hud input)))
+      (my-futon3-codex--request
+       "POST" (format "/codex/input/%s" my-futon3-codex-current-session)
+       `(("input" . ,input))))))
 
 (defun my-futon3-codex-pattern-action (action pattern-id &optional note)
   "Record a lightweight pattern ACTION for PATTERN-ID with optional NOTE."

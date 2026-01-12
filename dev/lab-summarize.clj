@@ -66,6 +66,74 @@
           (json/write-str (:body resp)))
       (json/write-str (:body resp)))))
 
+(defn- normalize-text [text]
+  (-> (or text "")
+      (str/replace #"\s+" " ")
+      (str/trim)))
+
+(defn- truncate-text [text max-len]
+  (let [text (normalize-text text)]
+    (if (> (count text) max-len)
+      (str (subs text 0 max-len) "...")
+      text)))
+
+(defn- extract-lines [raw key max-items max-len]
+  (->> (lab-key raw key)
+       (map #(lab-key % "text"))
+       (remove str/blank?)
+       (map #(truncate-text % max-len))
+       (take max-items)
+       vec))
+
+(defn- qa-warnings [raw summary-body used-fallback?]
+  (let [session-id (lab-key raw "lab/session-id")
+        ts-start (lab-key raw "lab/timestamp-start")
+        ts-end (lab-key raw "lab/timestamp-end")
+        user-msgs (or (lab-key raw "lab/user-messages") [])
+        assistant-msgs (or (lab-key raw "lab/assistant-messages") [])
+        files (or (lab-key raw "lab/files-touched") [])
+        warnings (cond-> []
+                   (str/blank? session-id)
+                   (conj "missing lab/session-id")
+                   (or (str/blank? ts-start) (str/blank? ts-end))
+                   (conj "missing timestamp-start or timestamp-end")
+                   (and (empty? user-msgs) (empty? assistant-msgs))
+                   (conj "no user or assistant messages captured")
+                   (empty? files)
+                   (conj "no files recorded for this session")
+                   used-fallback?
+                   (conj "relay unavailable; used fallback summary")
+                   (re-find #"TODO" (or summary-body ""))
+                   (conj "summary contains TODO placeholder"))]
+    warnings))
+
+(defn- emit-qa-warnings! [warnings]
+  (doseq [warning warnings]
+    (println (format "[lab-summarize] warning: %s" warning))))
+
+(defn- fallback-summary [raw]
+  (let [user-lines (extract-lines raw "lab/user-messages" 3 200)
+        assistant-lines (extract-lines raw "lab/assistant-messages" 1 200)
+        files (or (lab-key raw "lab/files-touched") [])
+        errors (or (lab-key raw "lab/errors") [])]
+    (str "* Context\n"
+         (if (seq (concat user-lines assistant-lines))
+           (str (apply str (map #(str "- Prompt: " % "\n") user-lines))
+                (apply str (map #(str "- Assistant: " % "\n") assistant-lines)))
+           "- (no messages captured)\n")
+         "\n* Delta\n"
+         (if (seq files)
+           (apply str
+                  (for [f files]
+                    (str "** " f "\n- (unverified)\n\n")))
+           "** (none)\n- (no files recorded)\n\n")
+         "* Verification\n"
+         (if (seq errors)
+           (apply str
+                  (for [err (take 3 errors)]
+                    (str "- Error: " (truncate-text err 200) "\n")))
+           "- (unverified)\n"))))
+
 (defn- extract-org [text]
   (if-let [[_ body] (re-find #"(?s)```org\\s*(.*?)```" text)]
     (str/trim body)
@@ -126,6 +194,17 @@
       (map? raw) (map (fn [[k v]] {:pattern k :outline-path v}) raw)
       (sequential? raw) raw
       :else [])))
+
+(defn- docbook-path-string [outline]
+  (str/join " / " outline))
+
+(defn- docbook-doc-id [book outline]
+  (str book "-" (hash (docbook-path-string outline))))
+
+(defn- toc-first-outline [path]
+  (when (.exists (io/file path))
+    (let [entries (read-json-keys path)]
+      (:outline_path (first entries)))))
 
 (defn- match-outline-path [entry-map file-path]
   (some (fn [{:keys [pattern outline-path path_string]}]
@@ -198,24 +277,21 @@
             user (slurp raw-path)
             relay-chat (relay-fn 'chat-request)
             relay-call (relay-fn 'call-openai!)
-            summary (if (and relay-chat relay-call)
+            relay-ok? (and relay-chat relay-call)
+            summary (if relay-ok?
                       (let [payload (relay-chat {:model (or model "gpt-5.2-chat-latest")
                                                  :system system
                                                  :user user})
                             resp (relay-call payload)]
                         (response->text resp))
-                      (str "* Context\n"
-                           "- Summary generation skipped (futon5 relay unavailable).\n\n"
-                           "* Delta\n"
-                           "- (unverified)\n\n"
-                           "* Verification\n"
-                           "- (unverified)\n"))
+                      (fallback-summary raw-data))
             header (header-block raw-data)
             summary-body (extract-org summary)
             output (str header summary-body "\n")
             stub-path (or stub
                           (str (io/file "lab" "stubs"
                                         (str (lab-key raw-data "lab/session-id") ".org"))))]
+        (emit-qa-warnings! (qa-warnings raw-data summary-body (not relay-ok?)))
         (if dry-run
           (do
             (println "Would write:" stub-path)
@@ -233,11 +309,36 @@
             (when docbook
               (let* [book (or docbook-book "futon4")
                      map-path (or docbook-map (str (io/file "dev" "logs" "books" book "entry-map.edn")))
-                     toc-path (str (io/file "dev" "logs" "books" book "toc.json"))]
-                    (if (and (.exists (io/file map-path))
-                             (.exists (io/file toc-path)))
-                      (let [entry-map (load-entry-map map-path)
-                            toc-map (toc-doc-map toc-path)
+                     toc-path (str (io/file "dev" "logs" "books" book "toc.json"))
+                     map-exists? (.exists (io/file map-path))
+                     toc-exists? (.exists (io/file toc-path))
+                     fallback-outline (or (toc-first-outline toc-path)
+                                          ["Recent changes (futon4, pilot)"])
+                     fallback-path (docbook-path-string fallback-outline)
+                     fallback-doc-id (docbook-doc-id book fallback-outline)
+                     fallback-entry-map [{:pattern ".*"
+                                          :outline-path fallback-outline}]
+                     fallback-toc [{:doc_id fallback-doc-id
+                                    :title (last fallback-outline)
+                                    :outline_path fallback-outline
+                                    :path_string fallback-path
+                                    :level (count fallback-outline)}]]
+                    (when-not map-exists?
+                      (io/make-parents map-path)
+                      (spit map-path (pr-str fallback-entry-map)))
+                    (when-not toc-exists?
+                      (io/make-parents toc-path)
+                      (spit toc-path (json/write-str fallback-toc {:pretty true})))
+                    (when (or (not map-exists?) (not toc-exists?))
+                      (println (format "[lab-summarize] docbook fallback map=%s toc=%s"
+                                       map-path toc-path)))
+                      (let [entry-map (if map-exists?
+                                        (load-entry-map map-path)
+                                        fallback-entry-map)
+                            toc-map (if toc-exists?
+                                      (toc-doc-map toc-path)
+                                      {fallback-path {:doc-id fallback-doc-id
+                                                      :outline-path fallback-outline}})
                             parsed (parse-summary-sections summary-body)
                             files->changes (:files parsed)
                             timestamp (or (lab-key raw-data "lab/timestamp-end")
@@ -252,7 +353,7 @@
                                             ["Recent changes (futon4, pilot)"])
                                 path-str (str/join " / " outline)
                                 heading (get toc-map path-str)
-                                doc-id (or (:doc-id heading) (str "futon4-" (hash path-str)))
+                                doc-id (or (:doc-id heading) (docbook-doc-id book outline))
                                 run-id (str session-id "-" (str/replace doc-id "/" "_"))
                                 delta (bullet-text (map #(str file " — " %) changes))
                                 context (bullet-text [(str "Lab session " session-id)])
@@ -278,8 +379,6 @@
                             (spit raw-path (json/write-str entry {:pretty true}))
                             (spit stub-path stub)))
                         (println (format "[lab-summarize] docbook=%s entries=%d"
-                                         book (count files->changes))))
-                      (println (format "[lab-summarize] docbook skipped (missing %s or %s)"
-                                       map-path toc-path)))))))))))
+                                         book (count files->changes))))))))))))
 
 (apply -main *command-line-args*)

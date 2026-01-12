@@ -501,6 +501,23 @@
      :chosen (:chosen result)
      :tau (or (:tau aif) (:tau-updated aif))
      :g-chosen (:G-chosen aif)
+     :evidence-score (:evidence-score aif)
+     :evidence-delta (:evidence-delta aif)
+     :evidence-counts (:evidence-counts aif)
+     :prediction-error (:prediction-error aif)
+     :belief-delta (:belief-delta aif)}))
+
+(defn- summarize-aif-tap [event]
+  (let [payload (:payload event)
+        aif (:aif payload)]
+    {:kind (or (:event payload) :tap)
+     :at (:at event)
+     :chosen (:chosen payload)
+     :tau (or (:tau aif) (:tau-updated aif))
+     :g-chosen (:G-chosen aif)
+     :evidence-score (:evidence-score aif)
+     :evidence-delta (:evidence-delta aif)
+     :evidence-counts (:evidence-counts aif)
      :prediction-error (:prediction-error aif)
      :belief-delta (:belief-delta aif)}))
 
@@ -529,12 +546,15 @@
 (defn- aif-live [session]
   (let [events (or (:events session) [])
         last-summary (last (filter #(= :aif/summary (:event/type %)) events))
+        last-tap (last (filter #(= :aif/tap (:event/type %)) events))
         last-action (last (filter #(= :pattern/action (:event/type %)) events))
         last-selection (last (filter #(= :pattern/selection-claimed (:event/type %)) events))
         last-use (last (filter #(= :pattern/use-claimed (:event/type %)) events))]
-    (when (or last-summary last-action last-selection last-use)
+    (when (or last-summary last-tap last-action last-selection last-use)
       {:session-id (:session/id session)
-       :summary (when last-summary (summarize-aif-event last-summary))
+       :summary (cond
+                  last-summary (summarize-aif-event last-summary)
+                  last-tap (summarize-aif-tap last-tap))
        :last-action (when last-action (summarize-pattern-action last-action))
        :last-selection (when last-selection (summarize-pattern-selection last-selection))
        :last-use (when last-use (summarize-pattern-use last-use))})))

@@ -3,7 +3,8 @@
   "Generate resources/sigils/patterns-index.tsv and rationale examples."
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [scripts.sigil-allowlist :as allow]))
 
 (def ^:private default-output "resources/sigils/patterns-index.tsv")
 (def ^:private default-examples "resources/sigils/rationale-examples.edn")
@@ -19,6 +20,17 @@
 
 (def ^:private sigil-block-re #"\[[^\]]+\]")
 (def ^:private sigil-token-re #"[^\s\[\]]+/[^\s\[\]]+")
+
+(def ^:private invalid-sigils (atom {}))
+
+(defn- emoji-like? [s]
+  (and (string? s)
+       (not (str/blank? s))
+       (some #(> (int %) 255) s)))
+
+(defn- note-invalid!
+  [source emoji hanzi]
+  (swap! invalid-sigils update (str emoji "/" hanzi) (fnil conj #{}) source))
 
 (defn- read-lines [file]
   (-> file io/file slurp str/split-lines))
@@ -58,23 +70,40 @@
        {}
        (read-lines file)))))
 
-(defn- parse-sigils [text]
+(defn- parse-sigils [text source emoji-set hanzi-set]
   (->> (re-seq sigil-block-re text)
        (mapcat #(re-seq sigil-token-re %))
        (keep (fn [token]
                (let [[emoji hanzi] (str/split token #"/" 2)]
                  (when (and emoji hanzi)
-                   {:emoji (str/trim emoji)
-                    :hanzi (str/trim hanzi)}))))
+                   (let [emoji (str/trim emoji)
+                         hanzi (str/trim hanzi)]
+                     (cond
+                       (not (emoji-like? emoji)) nil
+                       (and (contains? emoji-set emoji)
+                            (contains? hanzi-set hanzi))
+                       {:emoji emoji
+                        :hanzi hanzi}
+                       :else
+                       (do
+                         (note-invalid! source emoji hanzi)
+                         nil)))))))
        vec))
 
-(defn- parse-inline-sigils [text]
+(defn- parse-inline-sigils [text source emoji-set hanzi-set]
   (->> (re-seq sigil-token-re (or text ""))
        (keep (fn [token]
                (let [[emoji hanzi] (str/split token #"/" 2)]
                  (when (and emoji hanzi)
-                   {:emoji (str/trim emoji)
-                    :hanzi (str/trim hanzi)}))))
+                   (let [emoji (str/trim emoji)
+                         hanzi (str/trim hanzi)]
+                     (if (and (contains? emoji-set emoji)
+                              (contains? hanzi-set hanzi))
+                       {:emoji emoji
+                        :hanzi hanzi}
+                       (do
+                         (note-invalid! source emoji hanzi)
+                         nil)))))))
        vec))
 
 (defn- extract-meta [text key]
@@ -170,13 +199,15 @@
                    (or (str/blank? emoji) (str/blank? hanzi)))
                  sigils)))
 
-(defn- flexiarg-entry [tok-map file block]
+(defn- flexiarg-entry [tok-map emoji-set hanzi-set file block]
   (let [arg (or (extract-meta block "arg")
                 (extract-meta block "flexiarg")
                 (extract-meta block "multiarg"))
         title (extract-meta block "title")
-        sigils-meta (some-> (extract-meta block "sigils") parse-inline-sigils)
-        sigils-block (parse-sigils block)
+        source (str (.getPath (io/file file)) (when arg (str ":" arg)))
+        sigils-meta (some-> (extract-meta block "sigils")
+                            (parse-inline-sigils source emoji-set hanzi-set))
+        sigils-block (parse-sigils block source emoji-set hanzi-set)
         sigils (vec (distinct (concat sigils-meta sigils-block)))
         primary (choose-primary-sigil sigils)
         components (parse-components block)
@@ -187,15 +218,15 @@
                     (get by-label "because"))
         because (get by-label "because")
         tokipona (when primary (get tok-map (:emoji primary)))]
-    (when (and arg primary)
+    (when arg
       {:id arg
        :title (or title arg)
        :sigils sigils
        :tokipona tokipona
-       :hanzi (:hanzi primary)
+       :hanzi (when primary (:hanzi primary))
        :rationale (derive-rationale {:title (or title arg)
                                      :tokipona tokipona
-                                     :hanzi (:hanzi primary)
+                                     :hanzi (when primary (:hanzi primary))
                                      :because because})
        :hotwords (derive-hotwords {:title title
                                    :id arg
@@ -216,11 +247,12 @@
          (filter (fn [file]
                    (contains? flexiarg-exts (ext-of file)))))))
 
-(defn- scan-flexiargs [tok-map]
+(defn- scan-flexiargs [tok-map emoji-set hanzi-set]
   (->> (flexiarg-files)
        (mapcat (fn [file]
                  (let [text (slurp file)]
-                   (keep #(flexiarg-entry tok-map file %) (split-arg-blocks text)))))
+                   (keep #(flexiarg-entry tok-map emoji-set hanzi-set file %)
+                         (split-arg-blocks text)))))
        vec))
 
 (defn- futon-number [name]
@@ -250,8 +282,9 @@
                       (assoc current :body (str/join "\n" (:lines current))))]
           (cond-> blocks final (conj final)))))))
 
-(defn- devmap-entry [tok-map futon-id {:keys [proto title sigils body]}]
-  (let [sigil-list (parse-inline-sigils sigils)
+(defn- devmap-entry [tok-map emoji-set hanzi-set file futon-id {:keys [proto title sigils body]}]
+  (let [source (str (.getPath (io/file file)) ":p" proto)
+        sigil-list (parse-inline-sigils sigils source emoji-set hanzi-set)
         primary (choose-primary-sigil sigil-list)
         components (parse-components (str body))
         by-label (into {} (map (fn [{:keys [label text]}] [label text]) components))
@@ -261,22 +294,21 @@
                     (get by-label "if")
                     because)
         tokipona (when primary (get tok-map (:emoji primary)))]
-    (when primary
-      {:id (format "%s/p%s" futon-id proto)
-       :title title
-       :sigils sigil-list
-       :tokipona tokipona
-       :hanzi (:hanzi primary)
-       :rationale (derive-rationale {:title title
-                                     :tokipona tokipona
-                                     :hanzi (:hanzi primary)
-                                     :because because})
-       :hotwords (derive-hotwords {:title title
-                                   :id (format "%s/p%s" futon-id proto)
-                                   :rationale because
-                                   :summary summary})})))
+    {:id (format "%s/p%s" futon-id proto)
+     :title title
+     :sigils sigil-list
+     :tokipona tokipona
+     :hanzi (when primary (:hanzi primary))
+     :rationale (derive-rationale {:title title
+                                   :tokipona tokipona
+                                   :hanzi (when primary (:hanzi primary))
+                                   :because because})
+     :hotwords (derive-hotwords {:title title
+                                 :id (format "%s/p%s" futon-id proto)
+                                 :rationale because
+                                 :summary summary})}))
 
-(defn- scan-devmaps [tok-map]
+(defn- scan-devmaps [tok-map emoji-set hanzi-set]
   (->> (file-seq (io/file "holes"))
        (filter #(and (.isFile ^java.io.File %)
                      (str/ends-with? (.getName %) ".devmap")
@@ -284,7 +316,7 @@
        (mapcat (fn [file]
                  (let [futon-id (futon-number (.getName file))
                        text (slurp file)]
-                   (keep #(devmap-entry tok-map futon-id %)
+                   (keep #(devmap-entry tok-map emoji-set hanzi-set file futon-id %)
                          (parse-devmap-blocks text)))))
        vec))
 
@@ -327,7 +359,8 @@
   (loop [opts {:out default-output
                :examples default-examples
                :examples-count default-examples-count
-               :write-examples? true}
+               :write-examples? true
+               :strict? false}
          remaining args]
     (if-let [arg (first remaining)]
       (case arg
@@ -336,6 +369,7 @@
         "--examples-count" (recur (assoc opts :examples-count (Long/parseLong (second remaining)))
                                   (nnext remaining))
         "--no-examples" (recur (assoc opts :write-examples? false) (rest remaining))
+        "--strict" (recur (assoc opts :strict? true) (rest remaining))
         "--help" (recur (assoc opts :help? true) (rest remaining))
         "-h" (recur (assoc opts :help? true) (rest remaining))
         (throw (ex-info (str "Unknown argument " arg) {:arg arg})))
@@ -345,7 +379,7 @@
   (str/join
    "\n"
    ["Usage: clj -M -m scripts.build-pattern-index [--out PATH] [--examples PATH]"
-    "                                   [--examples-count N] [--no-examples]"
+    "                                   [--examples-count N] [--no-examples] [--strict]"
     ""
     "Defaults:"
     (format "  --out %s" default-output)
@@ -353,13 +387,20 @@
     (format "  --examples-count %d" default-examples-count)]))
 
 (defn -main [& args]
-  (let [{:keys [out examples examples-count write-examples? help?]} (parse-args args)]
+  (let [{:keys [out examples examples-count write-examples? help? strict?]} (parse-args args)
+        strict? (or strict? (seq (System/getenv "SIGIL_STRICT")))]
     (when help?
       (println (usage))
       (System/exit 0))
-    (let [tok-map (tokipona-emoji-map)
-          flexiargs (scan-flexiargs tok-map)
-          devmaps (scan-devmaps tok-map)
+    (reset! invalid-sigils {})
+    (let [emoji-order (or (allow/tokipona-emoji-order) [])
+          hanzi-order (or (allow/truth-table-hanzi-order) [])
+          _ (allow/ensure-allowlist! emoji-order hanzi-order)
+          emoji-set (set emoji-order)
+          hanzi-set (set hanzi-order)
+          tok-map (tokipona-emoji-map)
+          flexiargs (scan-flexiargs tok-map emoji-set hanzi-set)
+          devmaps (scan-devmaps tok-map emoji-set hanzi-set)
           entries (->> (concat flexiargs devmaps)
                        (remove nil?)
                        (sort-by :id)
@@ -369,4 +410,11 @@
         (write-examples examples entries examples-count))
       (println (format "Wrote %d entries to %s" (count entries) out))
       (when write-examples?
-        (println (format "Wrote %d examples to %s" examples-count examples))))))
+        (println (format "Wrote %d examples to %s" examples-count examples)))
+      (when (seq @invalid-sigils)
+        (println (format "Ignored %d invalid sigil tokens (not in allowlist)." (count @invalid-sigils)))
+        (doseq [[pair sources] (take 20 (sort-by (comp - count val) @invalid-sigils))]
+          (println (format " - %s ← %s" pair (str/join ", " (sort sources)))))
+        (when strict?
+          (throw (ex-info "invalid-sigils"
+                          {:count (count @invalid-sigils)})))))))

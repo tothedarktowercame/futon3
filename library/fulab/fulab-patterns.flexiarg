@@ -1,6 +1,6 @@
 @arg fulab/clock-in
 @title Agent Clock-In
-@sigils [📎/clock-in]
+@sigils [🌽/才]
 ! conclusion: Clock in first to establish the design-authorization anchor for this session.
   + context: An agent is about to start a task that will change a codebase or knowledge base.
   + if: You want the agent's work to be traceable, auditable, and explicitly linked to the design glossary.
@@ -15,7 +15,7 @@
 
 @arg fulab/pattern-dep
 @title Pattern Dependency Declaration
-@sigils [🔺/dep]
+@sigils [➰/才]
 ! conclusion: Make reasoning dependencies explicit so the proof path becomes a verifiable structure.
   + context: An agent is working under pattern P1 and needs to invoke reasoning from pattern P2 to complete the current step.
   + if: You want the proof path to capture compositional reasoning, not just a flat list of events.
@@ -28,14 +28,15 @@
     - evidence: src/f2/claude.clj - pattern-used-event emits :pattern/dep for dependency edges.
     - evidence: src/f2/codex.clj - record-pattern-use! accepts :parent-id and emits :pattern/parent.
     - evidence: src/f2/codex.clj - pattern-used-event emits :pattern/dep for dependency edges.
-    - evidence-shape: {:event/session :string, :pattern/id :string, :pattern/dep :string, :pattern/reason :string, :pattern/parent :string}
+    - evidence: scripts/proof_commit.clj - pattern-dep summary includes :pattern/channels for audit tagging.
+    - evidence-shape: {:event/session :string, :pattern/id :string, :pattern/dep :string, :pattern/reason :string, :pattern/parent :string, :pattern/channels [:string]}
   + next-steps:
     - Run DAG checks on dependency graphs per session (no cycles); sample dependency edges to confirm the reason is supported in cell/trace evidence.
     - Capture dependency reasons with channel tags (e.g., code/doc/test) so audits can map dependencies back to evidence inputs (align with aif/term-to-channel-traceability).
 
 @arg fulab/clock-out
 @title Agent Clock-Out
-@sigils [🌽/clock-out]
+@sigils [🌽/才]
 ! conclusion: Seal the proof path and outputs with an explicit end event.
   + context: An agent finishes a unit of work and is ready to end the session with a checkable summary.
   + if: You want the session to end in a way that can be validated against the original intent, producing a sealable proof path.
@@ -44,13 +45,15 @@
   + because: The clock-out event seals the proof path with the minimal complete data needed for audit, replay, and progress tracking.
     - evidence: src/f2/codex.clj - clock-out-event records :clock-out/session-id for closure linkage.
     - evidence: src/f2/claude.clj - clock-out-event records :clock-out/session-id for closure linkage.
+    - evidence: src/f2/codex.clj - tool/approved events include :tool/params from pending calls to drive artifact tracking.
+    - evidence: src/f2/claude.clj - tool/approved events include :tool/params from pending calls to drive artifact tracking.
     - evidence-shape: {:event/session :string, :pattern/primary :string, :clock-out/session-id :string, :pattern/trail [:map], :session/status :keyword, :artifacts [:string], :docs-written [:map], :stats :map, :society-paper :any, :clock-out/timestamp :inst}
   + next-steps:
     - Verify that the clock-out pattern trail can be reconstructed from the session's clock-in + pattern-dep events; confirm artifacts match the actual change set.
 
 @arg fulab/proof-commit
 @title Proof-Conformant Commit
-@sigils [🏃/commit]
+@sigils [➰/双]
 ! conclusion: Constrain commits by proof paths to prevent unauthorized changes from reaching main.
   + context: An agent (or user) wants to commit changes produced during a clocked-in session to the codebase or knowledge base.
   + if: You want every commit to trace back to the design authorization and proof path that produced it.
@@ -59,6 +62,7 @@
   + because: The template already captures the validation envelope and timestamps it, ready for later enforcement.
     - evidence: src/futon3/fulab/pattern_competence.clj - proof-commit-template captures validation envelope.
     - evidence: src/futon3/fulab/pattern_competence.clj - proof-commit-template stamps :commit/checked-at for validation timing.
+    - evidence: scripts/proof_commit.clj - proof-commit validation now writes envelope entries to resources/fulab-proof-commits.edn.
     - evidence-shape: {:commit/changes :any, :commit/session-id :string, :commit/checked-at :inst, :commit/pattern-trail [:map], :commit/validation {:ok? :boolean, :errors [:map]}}
   + next-steps:
     - Implement the MUSN commit gate that rejects commits without a verified proof path.
@@ -66,7 +70,7 @@
 
 @arg fulab/notebook-cell
 @title Live Notebook Cell
-@sigils [📁/cell]
+@sigils [〰️/亡]
 ! conclusion: Persist prompt/response exchanges and side effects in real time as cells.
   + context: During execution, an agent continuously exchanges prompts/responses with a model, and those exchanges trigger tool calls or file side effects.
   + if: You want the experiment notebook to grow in real time rather than be reconstructed afterward.
@@ -82,7 +86,7 @@
 
 @arg fulab/session-resume
 @title Session Resume
-@sigils [🔦/resume]
+@sigils [🌽/才]
 ! conclusion: Maintain audit continuity across multi-turn conversations with explicit mapping and ancestor chains.
   + context: An agent needs to resume a prior conversation later to extend work or ask follow-ups within existing context.
   + if: You want multi-turn conversations with traceable continuity.
@@ -102,7 +106,7 @@
 
 @arg fulab/pattern-propose
 @title Agent Pattern Proposal
-@sigils [➰/propose]
+@sigils [➰/了]
 ! conclusion: Expand the pattern library based on implementation evidence.
   + context: During work, an agent discovers a recurring reasoning structure that isn't captured by existing patterns.
   + if: You want the pattern library to evolve based on lived practice, not just top-down design.
@@ -113,13 +117,15 @@
     - evidence: src/futon3/fulab/pattern_competence.clj - proposal-claim-event emits proposal events.
     - evidence: src/futon3/fulab/pattern_competence.clj - proposal-claim-event stamps :proposal/claimed-at for review trace.
     - evidence: src/futon3/fulab/pattern_competence.clj - proposal template includes :proposal/reviewer-notes for review outcomes.
+    - evidence: dev/lab-pattern-claim.clj - proposal claim path enforces supporting trail and status notes.
+    - evidence: fulab-pattern-claim - proposal flags surface the claim flow for shell use.
     - evidence-shape: {:proposal/id :uuid, :pattern/draft :map, :proposal/supporting-trail [:uuid], :proposal/status :keyword, :proposal/claimed-at :inst}
   + next-steps:
     - Require proposals to cite at least one supporting trail event and record reviewer notes on accept/reject outcomes.
 
 @arg fulab/changelog-trail
 @title Changelog-as-Trail
-@sigils [🙇/trail]
+@sigils [🌽/才]
 ! conclusion: Use manual records as a temporary proof trail while infrastructure catches up.
   + context: Before the full proof trail infrastructure exists, we need a way to simulate pattern-based work.
   + if: You want to dogfood the pattern architecture while building it.
@@ -136,7 +142,7 @@
 
 @arg fulab/devmap-xref
 @title Devmap Cross-Reference
-@sigils [🔸/xref]
+@sigils [➰/本]
 ! conclusion: Create a traceable mapping between implementation patterns and devmap prototypes.
   + context: FuLab patterns are implementation-level; devmap prototypes are design-level.
   + if: You want to track how implementation work advances the higher-level devmap.
@@ -146,6 +152,7 @@
     - evidence: src/futon3/fulab/pattern_competence.clj - devmap-xref-template captures :pattern-ref targets.
     - evidence: src/futon3/fulab/pattern_competence.clj - devmap-xref-template adds :devmap-clause for clause linkage.
     - evidence: src/futon3/fulab/hud.clj - HUD candidates include :pattern-ref in prompt output.
+    - evidence: src/futon3/pattern_hints.clj - library scan extracts @pattern-ref metadata for HUD entries.
     - evidence-shape: {:fulab-pattern :string, :devmap-prototype :string, :devmap-file :string, :devmap-clause :string}
   + next-steps:
     - Require every fulab pattern to include a :pattern-ref and validate that referenced devmap files/clauses exist.
@@ -153,7 +160,7 @@
 
 @arg fulab/blast-radius
 @title Blast Radius Control
-@sigils [🧯/blast]
+@sigils [📎/化]
 ! conclusion: Define the failure impact boundary and the minimal rollback plan.
   + context: A change or tool action could impact multiple subsystems or teams.
   + if: You want failures to remain localized and diagnosable without full rollback.
@@ -168,7 +175,7 @@
 
 @arg fulab/tradeoff-record
 @title Trade-off Record
-@sigils [⚖️/trade]
+@sigils [🌏/化]
 ! conclusion: Use explicit assumptions and trade-offs to improve decision quality and reduce churn.
   + context: A decision requires trading off speed, correctness, scope, or risk.
   + if: You want later reviewers to understand the decision without re-deriving it.

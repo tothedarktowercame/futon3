@@ -15,6 +15,10 @@
 
 (def ^:private futon1-api-base (env-trim "FUTON1_API_BASE"))
 (def ^:private futon1-profile (env-trim "FUTON1_PROFILE"))
+(def ^:private drawbridge-enabled? (boolean (env-trim "FUTON3_DRAWBRIDGE")))
+(def ^:private drawbridge-port
+  (some-> (env-trim "FUTON3_DRAWBRIDGE_PORT") Long/parseLong))
+(def ^:private drawbridge-bind (env-trim "FUTON3_DRAWBRIDGE_BIND"))
 
 (def default-config
   {:transport-port 5050
@@ -23,8 +27,8 @@
           :admin-token nil
           :admin-allow #{"127.0.0.1" "::1"}}
    :drawbridge {:enabled? false
-                :bind "127.0.0.1"
-                :port 6767
+                :bind (or drawbridge-bind "127.0.0.1")
+                :port (or drawbridge-port 6767)
                 :allow ["127.0.0.1" "::1"]
                 :token nil}
    :futon1 {:enabled? (boolean futon1-api-base)
@@ -63,7 +67,10 @@
 (defn start!
   ([] (start! {}))
   ([opts]
-   (let [config (merge default-config opts)
+   (let [config (merge default-config
+                       (when drawbridge-enabled?
+                         {:drawbridge (assoc (:drawbridge default-config) :enabled? true)})
+                       opts)
          state (build-state config)
          transport-stop (transport/start! state {:port (:transport-port config)})
          ui-stop (ui/start! state {:port (:ui-port config)})

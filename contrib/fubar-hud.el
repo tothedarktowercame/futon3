@@ -113,6 +113,14 @@
   :type 'boolean
   :group 'fubar-hud)
 
+(defcustom fubar-hud-approval-policy "never"
+  "Approval policy to pass to fucodex runs."
+  :type '(choice (const "never")
+                 (const "untrusted")
+                 (const "on-request")
+                 (const "on-failure"))
+  :group 'fubar-hud)
+
 (defcustom fubar-hud-intent-from-prompt t
   "When non-nil, use the prompt as the intent for new fucodex runs."
   :type 'boolean
@@ -138,6 +146,9 @@
 
 (defvar-local fubar-hud--intent nil
   "Current intent string.")
+
+(defvar-local fubar-hud--approval-policy nil
+  "Approval policy override for this HUD buffer.")
 
 (defvar-local fubar-hud--refresh-in-flight nil
   "Non-nil when an async HUD refresh is in progress.")
@@ -477,6 +488,9 @@
            (chosen (and summary (fubar-hud--map-get summary :chosen)))
            (tau (and summary (fubar-hud--map-get summary :tau)))
            (g-chosen (and summary (fubar-hud--map-get summary :g-chosen)))
+           (evidence-score (and summary (fubar-hud--map-get summary :evidence-score)))
+           (evidence-delta (and summary (fubar-hud--map-get summary :evidence-delta)))
+           (evidence-counts (and summary (fubar-hud--map-get summary :evidence-counts)))
            (prediction-error (and summary (fubar-hud--map-get summary :prediction-error)))
            (action (and last-action (fubar-hud--map-get last-action :action)))
            (pattern-id (and last-action (fubar-hud--map-get last-action :pattern-id)))
@@ -494,6 +508,17 @@
                  (if (numberp g-chosen) (format " G=%.3f" g-chosen) "")))
        (when (numberp prediction-error)
          (format "  Prediction error: %.3f\n" prediction-error))
+       (when (or (numberp evidence-score) evidence-counts)
+         (format "  Evidence: %s%s%s\n"
+                 (if (numberp evidence-score)
+                     (format "%.3f" evidence-score)
+                   "n/a")
+                 (if (numberp evidence-delta)
+                     (format " (Δ %.3f)" evidence-delta)
+                   "")
+                 (if evidence-counts
+                     (format " %s" evidence-counts)
+                   "")))
        (when last-selection
          (format "  Last selection: %s%s\n"
                  (or sel-chosen "unknown")
@@ -560,6 +585,25 @@
          "  No pattern reported\n"))
     ""))
 
+(defun fubar-hud--current-approval-policy ()
+  "Return the active approval policy for this HUD buffer."
+  (let ((policy (or fubar-hud--approval-policy fubar-hud-approval-policy)))
+    (if (and (stringp policy) (not (string-empty-p policy)))
+        policy
+      "never")))
+
+(defun fubar-hud-toggle-approval-policy ()
+  "Toggle approval policy between \"never\" and \"untrusted\"."
+  (interactive)
+  (let ((buf (get-buffer-create fubar-hud-buffer-name)))
+    (with-current-buffer buf
+      (fubar-hud--ensure-mode)
+      (let* ((current (fubar-hud--current-approval-policy))
+             (next (if (string= current "never") "untrusted" "never")))
+        (setq fubar-hud--approval-policy next)
+        (fubar-hud-refresh)
+        (message "Approval policy: %s" next)))))
+
 (defun fubar-hud--render (hud)
   "Render HUD to current buffer."
   (let ((inhibit-read-only t))
@@ -581,6 +625,19 @@
     (insert "  " (propertize (or (plist-get hud :intent) "unspecified")
                               'face 'fubar-hud-intent-face)
             "\n\n")
+
+    ;; Approvals
+    (insert (propertize "Approvals\n" 'face 'fubar-hud-header-face))
+    (let* ((policy (fubar-hud--current-approval-policy))
+           (enabled (not (string= policy "never")))
+           (label (if enabled "Disable" "Enable")))
+      (insert (format "  Policy: %s " policy))
+      (insert-text-button label
+                          'help-echo "Toggle tool approval policy for fucodex runs"
+                          'action (lambda (_event)
+                                    (fubar-hud-toggle-approval-policy))
+                          'follow-link t)
+      (insert "\n\n"))
 
     ;; Sigils
     (insert (propertize "Sigils\n" 'face 'fubar-hud-header-face))
@@ -715,7 +772,7 @@
       (setq fubar-hud--prompt-block nil)
       (setq fubar-hud--staged-next (fubar-hud--read-staging-file))
       (if (and fubar-hud-async-refresh fubar-hud-server-url)
-          (unless fubar-hud--refresh-in-flight
+          (when (not fubar-hud--refresh-in-flight)
             (setq fubar-hud--refresh-in-flight t)
             (fubar-hud--build-hud-server-async
              fubar-hud--intent
@@ -765,14 +822,17 @@
     (setq fubar-hud--auto-refresh-timer
           (run-at-time 0 fubar-hud-auto-refresh-seconds
                        (lambda ()
-                         (when (get-buffer-window fubar-hud-buffer-name)
-                           (let* ((hud-buf (get-buffer fubar-hud-buffer-name))
-                                  (pause? (and fubar-hud-pause-when-selected
-                                               (eq (window-buffer (selected-window)) hud-buf))))
-                             (setq fubar-hud--auto-refresh-paused pause?)
-                             (unless pause?
-                               (with-current-buffer fubar-hud-buffer-name
-                                 (fubar-hud-refresh))))))))))
+                         (let ((hud-win (get-buffer-window fubar-hud-buffer-name)))
+                           (when hud-win
+                             (let* ((hud-buf (get-buffer fubar-hud-buffer-name))
+                                    (pause? (and fubar-hud-pause-when-selected
+                                                 (eq (window-buffer (selected-window)) hud-buf)
+                                                 (not (and hud-buf
+                                                           (buffer-local-value 'fubar-hud--session-id hud-buf))))))
+                               (setq fubar-hud--auto-refresh-paused pause?)
+                               (unless pause?
+                                 (with-current-buffer fubar-hud-buffer-name
+                                   (fubar-hud-refresh)))))))))))
 
 (defun fubar-hud--stop-auto-refresh ()
   "Stop HUD auto-refresh timer."
@@ -944,6 +1004,11 @@ Starts a live run, binds a new session id, and streams output to
          (hud-buf (get-buffer-create fubar-hud-buffer-name))
          (existing-intent (when hud-buf
                             (buffer-local-value 'fubar-hud--intent hud-buf)))
+         (approval-policy (when hud-buf
+                            (buffer-local-value 'fubar-hud--approval-policy hud-buf)))
+         (approval-policy (if (and approval-policy (not (string-empty-p approval-policy)))
+                              approval-policy
+                            fubar-hud-approval-policy))
          (intent (let ((trimmed (and intent (string-trim intent))))
                    (cond
                     ((and trimmed (not (string-empty-p trimmed))) trimmed)
@@ -953,6 +1018,8 @@ Starts a live run, binds a new session id, and streams output to
          (session-id (fubar-hud--generate-session-id))
          (buf (get-buffer-create fubar-hud-stream-buffer-name))
          (args (append (list "--live" "--hud" "--intent" intent "--session-id" session-id)
+                       (when (and approval-policy (not (string-empty-p approval-policy)))
+                         (list "--approval-policy" approval-policy))
                        (when fubar-hud-fucodex-aif-select (list "--aif-select"))
                        (list prompt)))
          (process-environment (cons (format "HUD_SERVER=%s" fubar-hud-server-url)

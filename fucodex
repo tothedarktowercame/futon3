@@ -36,6 +36,8 @@ HUD_PRINT=false
 HUD_SERVER="${HUD_SERVER:-http://localhost:5050}"
 PATTERN_RPC=true
 PAUSE_ON_NO_WRITE="${FUCODEX_PAUSE_ON_NO_WRITE:-auto}"
+MUSN_MODE=false
+MUSN_URL="${FUCODEX_MUSN_URL:-http://localhost:6065}"
 SCOPE_GUARDRAIL=$'Scope guardrail: avoid repo-wide `rg --files` or wide `rg` searches.\nBefore tool use, state a 1-2 line plan; if a wide scan is likely, either (a) announce it and proceed, or (b) stop and ask for scope; if asking, do not run the scan.\nTreat wide scans as expensive.'
 
 show_help() {
@@ -65,6 +67,8 @@ Options:
   --pattern-rpc         Enable pattern-action RPC and enforce explicit reads (default: on).
   --pause-on-no-write   Pause live runs when selection mode=use but no files change.
   --no-pause-on-no-write Disable pause-on-no-write (overrides env default).
+  --musn                Route through MUSN mode (enable MUSN preflight and exports).
+  --musn-url URL        MUSN service base URL (default: http://localhost:6065 or $FUCODEX_MUSN_URL).
   --hud-print           Print HUD block before running codex.
   --hud-server URL      HUD server base URL (default: http://localhost:5050).
 
@@ -140,6 +144,11 @@ while [[ $# -gt 0 ]]; do
       PAUSE_ON_NO_WRITE="true"; shift;;
     --no-pause-on-no-write)
       PAUSE_ON_NO_WRITE="false"; shift;;
+    --musn)
+      MUSN_MODE=true; shift;;
+    --musn-url)
+      MUSN_MODE=true
+      MUSN_URL="$2"; shift 2;;
     --hud-print)
       HUD_PRINT=true; shift;;
     --hud-server)
@@ -372,6 +381,9 @@ fi
 if $PATTERN_RPC; then
   export PATTERN_ACTION_RPC=1
 fi
+if $MUSN_MODE; then
+  export FUTON3_MUSN_URL="$MUSN_URL"
+fi
 
 if $PATTERN_RPC && [[ ${#args[@]} -eq 1 ]]; then
   if [[ "${args[0]}" != *"Scope guardrail:"* ]]; then
@@ -386,6 +398,12 @@ if $LIVE; then
     echo "[lab] --live requires a codex command (use 'exec \"...\"' or a subcommand)" >&2
     show_help
     exit 2
+  fi
+  if $MUSN_MODE; then
+    if ! MUSN_URL="$MUSN_URL" clojure -M -m scripts.musn_http_preflight >/dev/null; then
+      echo "[lab] MUSN HTTP preflight failed; aborting run" >&2
+      exit 2
+    fi
   fi
   if [[ "${args[0]-}" == "exec" ]]; then
     args=("${args[@]:1}")

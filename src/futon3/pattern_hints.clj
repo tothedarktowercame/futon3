@@ -260,12 +260,17 @@
     (when-let [hd (hanzi-distance (:hanzi target) (:hanzi clause))]
       (/ (+ ed hd) 2.0))))
 
+(defn- warn-missing-sigil [sigil]
+  (println (str "[sigil-warn] missing in index: " (:emoji sigil) "/" (:hanzi sigil))))
+
 (defn- entry-distance [targets entry]
   (some->> (for [t targets
-                 sig (:sigils entry)
-                 :let [d (pair-distance t sig)]
-                 :when d]
-             d)
+                 sig (:sigils entry)]
+             (let [d (pair-distance t sig)]
+               (when (nil? d)
+                 (warn-missing-sigil t))
+               d))
+           (remove nil?)
            seq
            (reduce min)))
 

@@ -5,6 +5,11 @@ if [[ -z "${BASH_VERSION-}" ]]; then
   exec bash "$0" "$@"
 fi
 
+# Debug: print invoked command and env when troubleshooting MUSN classpath
+if [[ "${FUCODEX_DEBUG-}" == "1" ]]; then
+  set -x
+fi
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Extra deps/paths layered on top of the project basis when running lab/musn streams.
 LAB_DEPS='{:paths ["scripts" "src" "resources" "dev" "."] :deps {org.clojure/data.json {:mvn/version "2.5.0"} cheshire/cheshire {:mvn/version "5.11.0"} clj-http/clj-http {:mvn/version "3.12.3"} futon2/futon2 {:local/root "/home/joe/code/futon2"}}}'

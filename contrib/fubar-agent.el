@@ -106,5 +106,14 @@
       (fubar-musn-display-pause (plist-get resp :pause)))
     (message "Turn %d summary: %s" fubar-musn-agent-turn (plist-get resp :summary))))
 
+(defun fubar-musn-launch-and-view (prompt)
+  "One-shot MUSN launch: start session, turn, plan with PROMPT, and show viewer."
+  (interactive "sPlan/prompt: ")
+  (let ((sid (fubar-musn-agent-start)))
+    (fubar-musn-agent-turn-start)
+    (fubar-musn-agent-plan prompt)
+    (fubar-musn-view-toggle)
+    (message "MUSN session %s turn %d started; viewer displayed." sid fubar-musn-agent-turn)))
+
 (provide 'fubar-agent)
 ;;; fubar-agent.el ends here

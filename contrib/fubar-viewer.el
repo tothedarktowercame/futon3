@@ -26,6 +26,60 @@
 (defvar fubar-musn--state-timer nil)
 (defvar fubar-musn--session-scan-timer nil)
 
+(defun fubar-musn--extract-session-id (text)
+  (when (and text (string-match "\\[musn-session\\]\\s-*\\(musn-[A-Za-z0-9]+\\)" text))
+    (match-string 1 text)))
+
+(defun fubar-musn--extract-hud-intent (text)
+  (when (and text (string-match "\\[hud-intent\\]\\s-*[*\"(]*\\(.*\\?*[^)\"]\\)" text))
+    (let ((intent (string-trim (match-string 1 text))))
+      (when (not (string-empty-p intent))
+        intent))))
+
+(defun fubar-musn--extract-handshake (text)
+  (let ((session-id nil)
+        (intent nil))
+    (dolist (line (split-string (or text "") "\n" t))
+      (let ((sid (fubar-musn--extract-session-id line)))
+        (when sid (setq session-id sid)))
+      (let ((found (fubar-musn--extract-hud-intent line)))
+        (when found (setq intent found))))
+    (list :session-id session-id :intent intent)))
+
+(defun fubar-musn--apply-handshake (session-id intent)
+  (when session-id
+    (setq fubar-musn-session-id session-id)
+    (when (fboundp 'fubar-hud-set-session-id)
+      (with-current-buffer (get-buffer-create "*FuLab HUD*")
+        (fubar-hud-set-session-id session-id)))
+    (fubar-musn--maybe-start-state-poll))
+  (when (and intent (fboundp 'fubar-hud-set-intent))
+    (with-current-buffer (get-buffer-create "*FuLab HUD*")
+      (fubar-hud-set-intent intent))))
+
+(defun fubar-musn--sync-handshake-from-text (text)
+  (let* ((handshake (fubar-musn--extract-handshake text))
+         (session-id (plist-get handshake :session-id))
+         (intent (plist-get handshake :intent)))
+    (when (or session-id intent)
+      (fubar-musn--apply-handshake session-id intent)
+      t)))
+
+(defun fubar-musn--sync-handshake-from-log (path)
+  "Replay the latest HUD intent/session handshake from PATH."
+  (when (and path (file-readable-p path))
+    (with-temp-buffer
+      (insert-file-contents path)
+      (fubar-musn--sync-handshake-from-text (buffer-string)))))
+
+(defun fubar-musn-replay-handshake (&optional path)
+  "Replay the latest HUD intent handshake from PATH (default log)."
+  (interactive)
+  (let ((log (or path fubar-musn--default-log)))
+    (if (fubar-musn--sync-handshake-from-log log)
+        (message "HUD handshake replayed from %s" log)
+      (message "No HUD handshake found in %s" log))))
+
 (defun fubar-musn--json-request (method path payload)
   (let* ((url-request-method method)
          (url-request-extra-headers '(("Content-Type" . "application/json")))
@@ -98,18 +152,14 @@
         (goto-char (point-max))
         (insert txt)
         ;; session id handshake
-        (when (string-match "\\[musn-session\\]\\s-*\\(musn-[a-z0-9]+\\)" txt)
-          (setq fubar-musn-session-id (match-string 1 txt))
+        (when-let ((sid (fubar-musn--extract-session-id txt)))
+          (setq fubar-musn-session-id sid)
           (fubar-musn--maybe-start-state-poll))
         ;; detect HUD intent handshake lines: "[hud-intent] ..."
-        (when (and (fboundp 'fubar-hud-set-intent)
-                   (string-match-p "\\[hud-intent\\]" txt))
+        (when (string-match-p "\\[hud-intent\\]" txt)
           (dolist (line (split-string txt "\n"))
-            (when (string-match "\\[hud-intent\\]\\s-*[*\"(]*\\(.*\\?*[^)\"]\\)" line)
-              (let ((intent (string-trim (match-string 1 line))))
-                (when (not (string-empty-p intent))
-                  (with-current-buffer (get-buffer-create "*FuLab HUD*")
-                    (fubar-hud-set-intent intent)))))))))))
+            (when-let ((intent (fubar-musn--extract-hud-intent line)))
+              (fubar-musn--apply-handshake nil intent))))))))
 
 (defun fubar-musn--maybe-start-state-poll ()
   "Start polling MUSN state if session id is known."
@@ -129,14 +179,11 @@
       (with-current-buffer buf
         (save-excursion
           (goto-char (point-min))
-          (when (re-search-forward "\\[musn-session\\]\\s-+\\(musn-[A-Za-z0-9]+\\)" nil t)
-            (setq fubar-musn-session-id (match-string 1))
-            (fubar-musn--stop-session-scan)
-            (when (fboundp 'fubar-hud-set-session-id)
-              (with-current-buffer (get-buffer-create "*FuLab HUD*")
-                (fubar-hud-set-session-id fubar-musn-session-id)))
-            (fubar-musn--fetch-state)
-            (fubar-musn--maybe-start-state-poll)))))))
+          (let ((text (buffer-string)))
+            (when (fubar-musn--sync-handshake-from-text text)
+              (fubar-musn--stop-session-scan)
+              (fubar-musn--fetch-state)
+              (fubar-musn--maybe-start-state-poll))))))))
 
 (defun fubar-musn-stop-state-poll ()
   "Stop polling MUSN state."
@@ -166,6 +213,7 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
   (let* ((log (or (and (stringp path) (not (string-empty-p path)) path)
                   fubar-musn--default-log))
          (buf (get-buffer-create fubar-musn-view-buffer)))
+    (fubar-musn--sync-handshake-from-log log)
     (when (process-live-p fubar-musn--proc)
       (delete-process fubar-musn--proc))
     (with-current-buffer buf

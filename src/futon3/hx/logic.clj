@@ -207,20 +207,46 @@
 
 (defn- term-id-valid? [term-id]
   (or (keyword? term-id)
-      (string? term-id)))
+      (and (string? term-id)
+           (not (str/blank? term-id)))))
 
 (defn- observation-key-valid? [observation-key]
   (or (keyword? observation-key)
-      (string? observation-key)
+      (and (string? observation-key)
+           (not (str/blank? observation-key)))
       (vector? observation-key)))
 
 (defn- observation-keys-valid? [observation-keys]
   (and (coll? observation-keys)
        (every? observation-key-valid? observation-keys)))
 
+(defn- precision-channel-entry->pair [entry]
+  (cond
+    (and (vector? entry) (= 2 (count entry)))
+    (let [[channel weight] entry]
+      (when (and channel (number? weight))
+        [channel (Math/abs (double weight))]))
+
+    (map? entry)
+    (let [channel (or (:channel/id entry) (:channel entry) (:id entry))
+          weight (or (:weight entry) (:value entry) (:contribution entry))]
+      (when (and channel (number? weight))
+        [channel (Math/abs (double weight))]))
+
+    :else nil))
+
+(defn- precision-channel-entry-valid? [entry]
+  (some? (precision-channel-entry->pair entry)))
+
 (defn- precision-channels-valid? [precision-channels]
-  (or (map? precision-channels)
-      (coll? precision-channels)))
+  (cond
+    (map? precision-channels)
+    (every? precision-channel-entry-valid? precision-channels)
+
+    (coll? precision-channels)
+    (every? precision-channel-entry-valid? precision-channels)
+
+    :else false))
 
 (defn- intermediate-values-valid? [intermediate-values]
   (or (map? intermediate-values)
@@ -280,26 +306,10 @@
 (defn- precision-channel-weights [precision-channels]
   (cond
     (map? precision-channels)
-    (keep (fn [[channel weight]]
-            (when (number? weight)
-              [channel (Math/abs (double weight))]))
-          precision-channels)
+    (keep precision-channel-entry->pair precision-channels)
 
     (coll? precision-channels)
-    (keep (fn [entry]
-            (cond
-              (and (vector? entry) (= 2 (count entry)))
-              (when (number? (second entry))
-                [(first entry) (Math/abs (double (second entry)))])
-
-              (map? entry)
-              (let [channel (or (:channel/id entry) (:channel entry) (:id entry))
-                    weight (or (:weight entry) (:value entry) (:contribution entry))]
-                (when (and channel (number? weight))
-                  [channel (Math/abs (double weight))]))
-
-              :else nil))
-          precision-channels)
+    (keep precision-channel-entry->pair precision-channels)
 
     :else nil))
 

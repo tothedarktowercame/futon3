@@ -106,12 +106,15 @@ PATTERN-ID and INTENT enable fulab clock-in for the session."
   (interactive "sPrompt: ")
   (let* ((cwd (or cwd default-directory))
          (pattern-id (or pattern-id my-futon3-codex-default-pattern))
+         (intent (and intent (string-trim intent)))
          (payload `(("prompt" . ,prompt)
                     ("cwd" . ,cwd)))
          ;; Add fulab clock-in params if provided
          (payload (if pattern-id
-                      (append payload `(("pattern-id" . ,pattern-id)
-                                        ("intent" . ,(or intent prompt))))
+                      (append payload
+                              `(("pattern-id" . ,pattern-id))
+                              (when (and intent (not (string-empty-p intent)))
+                                `(("intent" . ,intent))))
                     payload))
          (result (my-futon3-codex--request "POST" "/codex/run" payload)))
     (if (plist-get result :ok)

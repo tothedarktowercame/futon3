@@ -121,7 +121,7 @@
                  (const "on-failure"))
   :group 'fubar-hud)
 
-(defcustom fubar-hud-intent-from-prompt t
+(defcustom fubar-hud-intent-from-prompt nil
   "When non-nil, use the prompt as the intent for new fucodex runs."
   :type 'boolean
   :group 'fubar-hud)
@@ -1062,12 +1062,10 @@ Starts a live run, binds a new session id, and streams output to
   (interactive
    (let ((prompt (read-string "Prompt: ")))
      (if current-prefix-arg
-         (list prompt (read-string "Intent (blank = prompt): "))
+         (list prompt (read-string "Intent (blank = none): "))
        (list prompt nil))))
   (let* ((default-directory fubar-hud-futon3-root)
          (hud-buf (get-buffer-create fubar-hud-buffer-name))
-         (existing-intent (when hud-buf
-                            (buffer-local-value 'fubar-hud--intent hud-buf)))
          (approval-policy (when hud-buf
                             (buffer-local-value 'fubar-hud--approval-policy hud-buf)))
          (approval-policy (if (and approval-policy (not (string-empty-p approval-policy)))
@@ -1077,12 +1075,16 @@ Starts a live run, binds a new session id, and streams output to
                    (cond
                     ((and trimmed (not (string-empty-p trimmed))) trimmed)
                     ((and fubar-hud-intent-from-prompt prompt)
-                     (or (fubar-hud--extract-intent-from-prompt prompt) prompt))
-                    ((and existing-intent (not (string-empty-p existing-intent))) existing-intent)
-                    :else "coding task")))
+                     (let* ((extracted (fubar-hud--extract-intent-from-prompt prompt))
+                            (candidate (or extracted prompt)))
+                       (when (and candidate
+                                  (not (string-empty-p (string-trim candidate))))
+                         (string-trim candidate))))
+                    :else nil)))
          (session-id (fubar-hud--generate-session-id))
          (buf (get-buffer-create fubar-hud-stream-buffer-name))
-         (args (append (list "--live" "--hud" "--intent" intent "--session-id" session-id)
+         (args (append (list "--live" "--hud" "--session-id" session-id)
+                       (when intent (list "--intent" intent))
                        (when (and approval-policy (not (string-empty-p approval-policy)))
                          (list "--approval-policy" approval-policy))
                        (when fubar-hud-fucodex-aif-select (list "--aif-select"))

@@ -233,10 +233,16 @@
         aif-result (assoc aif-result
                           :suggested-in-candidates
                           (contains? candidate-ids (:suggested aif-result)))]
-    (let [display-candidates (cond
-                               (seq candidates) candidates
-                               (seq glove-candidates) glove-candidates
-                               :else [])]
+    (let [display-candidates (->> (concat candidates glove-candidates)
+                                  (reduce (fn [{:keys [seen out]} cand]
+                                            (let [cid (:id cand)]
+                                              (if (contains? seen cid)
+                                                {:seen seen :out out}
+                                                {:seen (conj seen cid)
+                                                 :out  (conj out cand)})))
+                                          {:seen #{} :out []})
+                                  :out
+                                  (take pattern-limit))]
       {:hud/id (generate-hud-id)
      :hud/timestamp (now-inst)
      ;; Input context

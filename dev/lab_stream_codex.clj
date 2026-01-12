@@ -785,7 +785,11 @@
     (let [reason (:selection/reason psr)
           mode (:mode reason)
           reads (seq (:reads reason))
-          use-label (if used? "use=recorded" "use=none")]
+          use-label (if used? "use=recorded" "use=none")
+          anchors (or (:selection/anchors psr) (:context/anchors psr) [])
+          forecast (:forecast psr)
+          forecast-labels (map (fn [k] (format "%s=%d" (name k) (count (get forecast k))))
+                               [:benefits :risks :success :failure])]
       (println (format "[pattern-selection] chosen=%s candidates=%d mode=%s%s %s"
                        chosen
                        (count (:candidates psr))
@@ -793,7 +797,12 @@
                        (if reads
                          (str " reads=" (str/join "," reads))
                          "")
-                       use-label)))
+                       use-label))
+      (println (format "[pattern-draft] psr decision=%s anchors=%d forecast=%s rejections=%d"
+                       (:decision/id psr)
+                       (count anchors)
+                       (str/join "," forecast-labels)
+                       (count (:rejections psr)))))
     (flush)
     (swap! state assoc :turn-psr-emitted? true
            :turn-selection selection
@@ -835,12 +844,24 @@
           action-label (when (seq actions)
                          (str " actions=" (str/join "," actions)))
           reason-label (when (and reason (not (str/blank? reason)))
-                         (str " because=" reason))]
+                         (str " because=" reason))
+          outcome-tags (seq (:outcome/tags pur))
+          outcome-label (when outcome-tags
+                          (str " outcome=" (str/join "," (map #(if (keyword? %)
+                                                                 (name %)
+                                                                 (str %))
+                                                              outcome-tags))))
+          anchors (or (:anchors pur) [])]
       (println (format "[pattern-use] %s%s%s%s"
                        (:pattern/id pur)
                        (or suffix "")
                        (or action-label "")
-                       (or reason-label ""))))
+                       (or reason-label "")))
+      (println (format "[pattern-draft] pur decision=%s anchors=%d fields=%d%s"
+                       (:decision/id pur)
+                       (count anchors)
+                       (count (:fields pur))
+                       (or outcome-label ""))))
     (flush)
     (swap! state assoc :turn-pur-emitted? true
            :turn-pur-files-logged? (boolean (seq (pattern-files-for-turn (:turn-actions @state)

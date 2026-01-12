@@ -863,6 +863,10 @@ Copies intent, sigils, candidates, and any other known HUD fields, then refreshe
   (interactive)
   (let ((buf (get-buffer-create fubar-hud-buffer-name)))
     (with-current-buffer buf
+      ;; If a MUSN HUD payload is present, render it and skip async rebuild.
+      (when (and fubar-hud--current-hud fubar-hud-async-refresh)
+        (fubar-hud--render fubar-hud--current-hud)
+        (cl-return-from fubar-hud-refresh))
       (setq fubar-hud--prompt-block nil)
       (setq fubar-hud--staged-next (fubar-hud--read-staging-file))
       (if (and fubar-hud-async-refresh fubar-hud-server-url (not fubar-hud--current-hud))

@@ -233,14 +233,18 @@
         aif-result (assoc aif-result
                           :suggested-in-candidates
                           (contains? candidate-ids (:suggested aif-result)))]
-    {:hud/id (generate-hud-id)
+    (let [display-candidates (cond
+                               (seq candidates) candidates
+                               (seq glove-candidates) glove-candidates
+                               :else [])]
+      {:hud/id (generate-hud-id)
      :hud/timestamp (now-inst)
      ;; Input context
      :intent (or intent "unspecified")
      :prototypes (vec (or prototypes []))
      :sigils (vec (or resolved-sigils []))
      ;; Pattern candidates
-     :candidates candidates
+     :candidates display-candidates
      :glove-candidates glove-candidates
      :fruits (mapv #(select-keys % [:id :emoji :name :score]) (:fruits hint-result))
      :paramitas (mapv #(select-keys % [:id :zh :en :score]) (:paramitas hint-result))
@@ -248,7 +252,7 @@
      ;; AIF state
      :aif aif-result
      ;; Agent response (filled after turn)
-     :agent-report nil}))
+     :agent-report nil})))
 
 (defn hud->prompt-block
   "Format HUD as text block for agent prompt injection."

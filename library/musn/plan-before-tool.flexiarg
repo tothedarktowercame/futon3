@@ -1,0 +1,20 @@
+@flexiarg musn/plan-before-tool
+@title Plan Before Tool Use
+@sigils [🧭/plan]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Require an explicit plan line before any tool or wide-scan action to keep the run on-map.
+  + context: Live runs drift when tools are invoked without a stated intent or scope.
+  + IF:
+    No plan has been recorded for the current turn.
+  + HOWEVER:
+    Tool use (including wide scans) consumes budget and can take the agent off-map.
+  + THEN:
+    Gate the first tool use on a plan line (`Plan: ...` or `[plan] ...`) recorded in turn/plan; warn or pause if missing.
+  + BECAUSE:
+    A brief plan keeps trail stats coherent and makes pauses debuggable.
+  + NEXT-STEPS:
+    - evidence: turn/plan event captured via musn/turn-plan endpoint.
+    - evidence-shape: {:session/id :string, :turn :int, :plan :string}

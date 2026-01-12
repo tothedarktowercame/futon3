@@ -1,0 +1,20 @@
+@flexiarg musn/selection-before-write
+@title Selection Before Implement/Update
+@sigils [🎯/psr]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: A pattern selection (PSR) must precede any implement/update action.
+  + context: Implement/update without a chosen pattern breaks auditability and PSR→PUR reasoning.
+  + IF:
+    An implement or update is attempted without a PSR in the current turn.
+  + HOWEVER:
+    Some edits might be exploratory or off-trail and should be gated.
+  + THEN:
+    Reject or pause implement/update until `turn/select` is recorded; log PSR with candidates, reason, anchors.
+  + BECAUSE:
+    PSR anchors edits to intent, enabling PUR validation and evidence linking.
+  + NEXT-STEPS:
+    - evidence: :pattern/selection-claimed + :pattern/selection summary; implement/update action accepted after PSR.
+    - evidence-shape: {:turn :int, :decision/id :string, :pattern/id :string, :candidates [:string], :selection/reason :map, :selection/anchors [:map]}

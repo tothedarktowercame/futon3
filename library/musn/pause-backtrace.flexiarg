@@ -1,0 +1,20 @@
+@flexiarg musn/pause-backtrace
+@title Pause with Backtrace
+@sigils [⏸/trace]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Every pause must include a concise backtrace of recent moves and a resume hint.
+  + context: Pauses are useless without “why” and “what next”.
+  + IF:
+    The server pauses (no-write, off-trail, missing plan, costly move).
+  + HOWEVER:
+    Users need actionable context to resume.
+  + THEN:
+    Emit :turn/pause with last moves (action, pattern, files, AIF deltas), trail stats, violated rule, and a resume command template.
+  + BECAUSE:
+    A pause is a debugger breakpoint; backtrace makes it debuggable.
+  + NEXT-STEPS:
+    - evidence: :turn/pause event with backtrace and :turn/resume note.
+    - evidence-shape: {:reason {:type :keyword, :note :string}, :moves [:map], :resume/hint :string}

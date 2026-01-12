@@ -1,0 +1,20 @@
+@flexiarg musn/aif-live-scores
+@title Live AIF Scores per Move
+@sigils [📈/aif]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Return AIF scores/penalties on every move so the agent adapts mid-run.
+  + context: Batch summaries hide drift; live feedback shapes behavior.
+  + IF:
+    Any turn action (read/implement/update/off-trail/wide-scan) is processed.
+  + HOWEVER:
+    Excess chatter is distracting; keep it terse.
+  + THEN:
+    Include {:aif {:G? :tau? :e? :dE? :o?}} in action responses; print succinctly in the raw stream.
+  + BECAUSE:
+    Live AIF signals let the agent trade off exploration vs. exploitation and avoid costly moves.
+  + NEXT-STEPS:
+    - evidence: action responses with AIF payload; turn summary with aggregated AIF.
+    - evidence-shape: {:aif {:G :double, :tau :double, :e :double, :dE :double}}

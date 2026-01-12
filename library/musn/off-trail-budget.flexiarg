@@ -1,0 +1,20 @@
+@flexiarg musn/off-trail-budget
+@title Off-Trail Budget
+@sigils [🧵/trail]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Track off-trail moves and pause when the budget is exceeded.
+  + context: Agents drift with repeated reads outside the allowed trail.
+  + IF:
+    Off-trail count exceeds limit (free + ratio * on-trail).
+  + HOWEVER:
+    Some exploration is necessary; total blocking hurts progress.
+  + THEN:
+    Warn as budget nears; pause when exceeded; require clarification or expanded scope to resume.
+  + BECAUSE:
+    Bounded exploration keeps runs aligned with candidate patterns and scope.
+  + NEXT-STEPS:
+    - evidence: trail stats per turn (:on, :off, :limit) and any :turn/pause with reason :off-trail.
+    - evidence-shape: {:trail {:on :int, :off :int, :limit :double}, :reason {:type :keyword, :note :string}}

@@ -1,0 +1,20 @@
+@flexiarg musn/expensive-move-consent
+@title Consent for Expensive Moves
+@sigils [💎/cost]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Wide scans and human-contact moves require explicit consent and cost accounting.
+  + context: Repo-wide `rg` and user-pings are costly and can derail runs.
+  + IF:
+    An action is marked :cost :expensive or :human-contact.
+  + HOWEVER:
+    Sometimes they are needed to make progress.
+  + THEN:
+    Require a plan + consent note before executing; warn first, pause on repeat without consent; log cost and AIF penalty.
+  + BECAUSE:
+    Costs must be visible to avoid invisible wander and user spam.
+  + NEXT-STEPS:
+    - evidence: :pattern/action with cost tag; consent note; optional pause event if violated.
+    - evidence-shape: {:action :string, :pattern/id :string, :cost :keyword, :note :string}

@@ -1,0 +1,20 @@
+@flexiarg musn/use-requires-evidence
+@title Use Requires Evidence
+@sigils [✅/pur]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: A use-mode selection must produce a PUR and at least one evidence record before turn end.
+  + context: Some runs select a pattern but end the turn with no writes, leaving no audit trail.
+  + IF:
+    The chosen pattern is in :use mode and no implement/update/evidence occurs.
+  + HOWEVER:
+    Silent no-ops waste budget and hide alignment failures.
+  + THEN:
+    On turn/end, enforce pause-or-reject if no writes/evidence; require a `turn/use` PUR and `evidence/add` with files.
+  + BECAUSE:
+    PSR→PUR→evidence is the backbone for logic checking and AIF scoring.
+  + NEXT-STEPS:
+    - evidence: :turn/no-write pause event with backtrace; subsequent `turn/use` + `evidence/add` resolving the pause.
+    - evidence-shape: {:turn :int, :pattern/id :string, :actions {:read :int, :implement :int, :update :int}, :files [:string]}

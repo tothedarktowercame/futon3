@@ -261,11 +261,13 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
                           (fubar-hud-set-session-id fubar-musn-session-id))
                         (cond
                          (hud
+                          ;; Apply full MUSN HUD payload and render immediately so it does not get overwritten.
                           (setq fubar-hud--current-hud hud)
                           (cond
                            ((fboundp 'fubar-hud-apply-hud-state)
                             (fubar-hud-apply-hud-state hud))
-                           (t (fubar-hud--render hud))))
+                           ((fboundp 'fubar-hud--render)
+                            (fubar-hud--render hud))))
                          ((and intent (fboundp 'fubar-hud-set-intent))
                           (setq fubar-hud--intent intent)
                           (fubar-hud-refresh))))))

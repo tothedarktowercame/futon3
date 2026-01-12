@@ -27,6 +27,7 @@
     "/musn/turn/use"      (svc/turn-use! body)
     "/musn/evidence/add"  (svc/evidence-add! body)
     "/musn/turn/end"      (svc/turn-end! body)
+    "/musn/turn/resume"   (svc/turn-resume! body)
     nil))
 
 (defn handler [req]

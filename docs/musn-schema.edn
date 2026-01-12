@@ -6,4 +6,5 @@
  :turn/use {:req [:session/id :turn :pattern/id] :opt [:anchors :note :inferred?] :description "Emit a PUR for the pattern used."}
  :evidence/add {:req [:session/id :turn :pattern/id :files :note] :description "Append evidence for a pattern."}
  :turn/end {:req [:session/id :turn] :description "Close the turn; server may pause/halt if constraints fail."}
+ :turn/resume {:req [:session/id :turn] :opt [:note] :description "Clear halt/pause and resume the turn with a note."}
  :pause/event {:req [:session/id :turn :reason] :description "Server-issued pause with backtrace when constraints or budgets fail."}}

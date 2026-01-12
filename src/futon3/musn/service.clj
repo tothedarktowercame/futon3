@@ -113,3 +113,12 @@
     (router/handle-turn-end! (:state entry)
                              {:session/id sid
                               :turn (:turn req)})))
+
+(defn turn-resume!
+  [req]
+  (let [sid (:session/id req)
+        entry (ensure-session! sid nil)]
+    (router/handle-turn-resume! (:state entry)
+                                (compact {:session/id sid
+                                          :turn (:turn req)
+                                          :note (:note req)}))))

@@ -221,3 +221,12 @@
      :halt? (boolean halt)
      :halt/reason halt
      :pause (pause-payload st)}))
+
+(defn handle-turn-resume! [state-atom req]
+  (validate schema/TurnResumeReq req)
+  (swap! state-atom assoc
+         :halt nil
+         :halt? false
+         :halt-reason nil
+         :resume-note (:note req))
+  {:ok true :turn (:turn req)})

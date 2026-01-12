@@ -140,6 +140,9 @@
    [:halt? boolean?]
    [:halt/reason {:optional true} map?]])
 
+(def TurnResumeReq [:map [:session/id string?] [:turn int?] [:note {:optional true} string?]])
+(def TurnResumeResp [:map [:ok boolean?] [:turn int?]])
+
 ;; Convenient registry for validation lookup.
 (def registry
   {:pattern/id PatternId
@@ -160,7 +163,9 @@
    :evidence/add-req EvidenceAddReq
    :evidence/add-resp EvidenceAddResp
    :turn/end-req TurnEndReq
-   :turn/end-resp TurnEndResp})
+   :turn/end-resp TurnEndResp
+   :turn/resume-req TurnResumeReq
+   :turn/resume-resp TurnResumeResp})
 
 (defn validator
   "Build a malli validator for the named schema keyword in registry."

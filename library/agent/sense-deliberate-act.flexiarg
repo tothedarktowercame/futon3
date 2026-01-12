@@ -1,6 +1,6 @@
 @flexiarg agent/sense-deliberate-act
 @title Sense-Deliberate-Act Cycle
-@sigils [🔄/环]
+@sigils [🔃/工]
 @audience agent architects, workflow designers, futon developers
 @tone foundational
 @style pattern
@@ -12,7 +12,7 @@
   + HOWEVER:
     Rushing to act without sensing leads to blind thrashing; sensing without acting leads to analysis paralysis; acting without deliberation leads to incoherent behavior.
   + THEN:
-    Enforce a rhythm: first gather relevant observations, then weigh options against goals and constraints, then commit to a single action before the next cycle. Make each phase explicit and bounded.
+    Enforce a rhythm: first gather relevant observations, then weigh options against goals and constraints, then commit to a single action before the next cycle. Make each phase explicit and bounded, and check scope, budget, and confidence gates at phase boundaries.
   + BECAUSE:
     The three-phase structure prevents both impulsive drift and endless deliberation, and makes the agent's reasoning inspectable at phase boundaries.
   + NEXT-STEPS:

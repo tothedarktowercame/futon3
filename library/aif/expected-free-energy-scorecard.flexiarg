@@ -18,5 +18,6 @@
   + NEXT-STEPS:
     - Define :aif/g-breakdown schema in tatami_schema.clj with term keys [:risk :ambiguity :info-gain :constraint-violation :cost :coordination-pressure].
     - Extend aif_bridge/extract-evidence to decompose G into named terms instead of scalar g-mean.
-    - Store term breakdowns in PSR :forecast section; add :aif/g-terms key to psr-template in pattern_competence.clj.
+    - DONE: Add :aif/g-terms key to psr-template in pattern_competence.clj. Evidence: src/futon3/fulab/pattern_competence.clj
+    - Store term breakdowns in PSR :forecast section.
     - Add (flip-analysis psr) that computes which term delta would have changed the chosen pattern.

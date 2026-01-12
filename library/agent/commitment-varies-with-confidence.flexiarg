@@ -1,6 +1,6 @@
 @flexiarg agent/commitment-varies-with-confidence
 @title Commitment Varies With Confidence
-@sigils [🎚/温]
+@sigils [👓/认]
 @audience agent architects, workflow designers, futon developers
 @tone foundational
 @style pattern
@@ -12,10 +12,10 @@
   + HOWEVER:
     Fixed commitment strength fails both ways: always committing hard misses better options; always hedging prevents progress.
   + THEN:
-    Maintain a commitment parameter (temperature, precision, confidence threshold) that modulates how decisively the agent acts. Couple it to uncertainty signals: lower confidence → more exploration or escalation; higher confidence → stronger commitment.
+    Maintain a commitment parameter (temperature, precision, confidence threshold) that modulates how decisively the agent acts. Couple it to uncertainty signals with explicit thresholds: low confidence -> explore or pause; medium confidence -> hedge or seek confirmation; high confidence -> commit and execute.
   + BECAUSE:
     Variable commitment adapts behavior to epistemic state. The agent exploits when it knows enough and explores (or asks) when it doesn't.
   + NEXT-STEPS:
     - Identify how your agent currently commits to choices (is it always the same strength?).
-    - Add uncertainty tracking that can modulate commitment.
+    - Add uncertainty tracking that can modulate commitment and log threshold crossings.
     - Tune the coupling: what uncertainty level triggers exploration vs. exploitation vs. pause?

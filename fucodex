@@ -396,6 +396,9 @@ if $PATTERN_RPC; then
 fi
 if $MUSN_MODE; then
   export FUTON3_MUSN_URL="$MUSN_URL"
+  if [[ -n "$AIF_CONFIG" ]]; then
+    export FUTON3_MUSN_AIF_CONFIG_PATH="$AIF_CONFIG"
+  fi
 fi
 
 if $PATTERN_RPC && [[ ${#args[@]} -eq 1 ]]; then

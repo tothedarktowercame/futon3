@@ -1,6 +1,6 @@
 @flexiarg agent/budget-bounds-exploration
 @title Budget Bounds Exploration
-@sigils [⏳/限]
+@sigils [💰/分]
 @audience agent architects, workflow designers, futon developers
 @tone foundational
 @style pattern
@@ -12,10 +12,10 @@
   + HOWEVER:
     Unbounded exploration leads to wander: the agent keeps looking without ever committing, exhausting resources without output.
   + THEN:
-    Assign explicit budgets (time, steps, tokens, reads) to exploratory phases. When budget nears exhaustion, force a decision: commit to best-so-far, escalate to a supervisor, or explicitly expand scope with justification.
+    Assign explicit budgets (time, steps, tokens, reads) to exploratory phases and define reset rules. When budget nears exhaustion, force a decision: commit to best-so-far, escalate to a supervisor, or explicitly expand scope with justification.
   + BECAUSE:
     Budgets convert open-ended search into bounded decisions, making progress measurable and preventing silent resource drain.
   + NEXT-STEPS:
     - Identify unbounded loops in your agent (e.g., "keep searching until found").
     - Add budget parameters with sensible defaults and observable countdowns.
-    - Design escalation paths for when budgets expire without resolution.
+    - Design escalation paths for when budgets expire without resolution and log the choice taken.

@@ -1,4 +1,4 @@
-(ns scripts.musn-http-preflight
+(ns scripts.musn_http_preflight
   "HTTP preflight against a running MUSN HTTP server. Fails fast on halts or bad responses."
   (:require [clj-http.client :as http]
             [cheshire.core :as json]))
@@ -27,7 +27,8 @@
 
 (defn -main [& _]
   (try
-    (let [{sid :session/id} (post! "/musn/session/create" {})]
+    (let [{sid :session/id} (post! "/musn/session/create"
+                                   {:client {:id "musn-http-preflight"}})]
       (println "[http-preflight] session" sid)
       (post! "/musn/turn/start" {:session/id sid :turn 1 :hud {:candidates [pattern-id]}})
       (post! "/musn/turn/plan" {:session/id sid :turn 1 :plan "http preflight"})

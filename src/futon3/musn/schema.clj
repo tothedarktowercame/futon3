@@ -25,7 +25,9 @@
   [:map
    [:client [:map [:id string?]
              [:caps {:optional true} [:vector keyword?]]]]
-   [:session/id {:optional true} string?]])
+   [:session/id {:optional true} string?]
+   [:policy {:optional true} map?]
+   [:lab/root {:optional true} string?]])
 
 (def SessionCreateResp
   [:map
@@ -114,7 +116,8 @@
    [:pur [:map
           [:pattern/id PatternId]
           [:use/reason {:optional true} string?]
-          [:outcome/tags {:optional true} [:vector keyword?]]]]])
+          [:outcome/tags {:optional true} [:vector keyword?]]]]
+   [:aif {:optional true} map?]])
 
 (def EvidenceAddReq
   [:map

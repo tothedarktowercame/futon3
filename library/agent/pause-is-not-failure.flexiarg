@@ -1,6 +1,6 @@
 @flexiarg agent/pause-is-not-failure
 @title Pause Is Not Failure
-@sigils [⏸/问]
+@sigils [💤/不]
 @audience agent architects, workflow designers, futon developers
 @tone foundational
 @style pattern
@@ -12,7 +12,7 @@
   + HOWEVER:
     Agents that never pause either over-commit (bulldozing through uncertainty) or silently drift (making up answers). Both erode trust.
   + THEN:
-    Treat "pause and ask" as a first-class action with defined triggers: ambiguous requirements, scope boundary reached, confidence below threshold, resource budget near exhaustion. Emit pause events with context for resumption.
+    Treat "pause and ask" as a first-class action with defined triggers: ambiguous requirements, scope boundary reached, confidence below threshold, resource budget near exhaustion. Emit pause events with context for resumption (reason, missing info, requested decision, scope impact, confidence/budget snapshot).
   + BECAUSE:
     Pausing surfaces uncertainty to those who can resolve it. An agent that pauses appropriately is more trustworthy than one that always "succeeds."
   + NEXT-STEPS:

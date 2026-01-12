@@ -12,6 +12,11 @@
 (def forecast-fields
   [:benefits :risks :success :failure])
 
+(def ^:private aif-term-provenance-keys
+  [:term-id :observation-keys :precision-channels :intermediate-values :final-contribution])
+
+(def ^:private dominant-channel-threshold 0.6)
+
 (defn now-inst []
   (java.util.Date.))
 
@@ -97,6 +102,7 @@
               :risks []
               :success []
               :failure []}
+   :aif/g-terms []
    :rejections {}
    :horizon :short})
 
@@ -225,6 +231,52 @@
     {:expected (count entries)
      :resolved (count resolved)}))
 
+(defn- g-terms->provenance [g-terms]
+  (cond
+    (map? g-terms)
+    (map (fn [[term-id term]]
+           (cond
+             (map? term) (assoc term :term-id (or (:term-id term) term-id))
+             :else {:term-id term-id
+                    :final-contribution term}))
+         g-terms)
+
+    (coll? g-terms)
+    g-terms
+
+    :else nil))
+
+(defn term-provenance-trace [psr]
+  (let [terms (g-terms->provenance (:aif/g-terms psr))]
+    (when (coll? terms)
+      (mapv (fn [term]
+              (if (map? term)
+                (let [missing (vec (remove #(contains? term %) aif-term-provenance-keys))
+                      trace (select-keys term aif-term-provenance-keys)]
+                  (cond-> trace
+                    (seq missing)
+                    (assoc :missing-keys missing)))
+                {:term term
+                 :missing-keys (vec aif-term-provenance-keys)}))
+            terms))))
+
+(defn term-provenance-summary [psr]
+  (let [g-terms (:aif/g-terms psr)]
+    (if (nil? g-terms)
+      {:present? false
+       :expected 0
+       :resolved 0
+       :missing []}
+      (let [trace (or (term-provenance-trace psr) [])
+            summary (expected-vs-resolved trace #(empty? (:missing-keys %)))
+            missing (->> trace
+                         (filter #(seq (:missing-keys %)))
+                         (map #(or (:term-id %) (:term %)))
+                         vec)]
+        (assoc summary
+               :present? true
+               :missing missing)))))
+
 (defn anchor-resolver [session]
   (fn [anchor]
     (let [result (logic/check-step {:hx.step/kind :hx/pattern-use-claimed
@@ -247,3 +299,56 @@
                        (anchor-res locus)
                        false)))]
     (expected-vs-resolved entries resolver)))
+
+(defn- precision-channel-weights [precision-channels]
+  (cond
+    (map? precision-channels)
+    (keep (fn [[channel weight]]
+            (when (number? weight)
+              [channel (Math/abs (double weight))]))
+          precision-channels)
+
+    (coll? precision-channels)
+    (keep (fn [entry]
+            (cond
+              (and (vector? entry) (= 2 (count entry)))
+              (when (number? (second entry))
+                [(first entry) (Math/abs (double (second entry)))])
+
+              (map? entry)
+              (let [channel (or (:channel/id entry) (:channel entry) (:id entry))
+                    weight (or (:weight entry) (:value entry) (:contribution entry))]
+                (when (and channel (number? weight))
+                  [channel (Math/abs (double weight))]))
+
+              :else nil))
+          precision-channels)
+
+    :else nil))
+
+(defn- dominant-channels [psr]
+  (let [terms (g-terms->provenance (:aif/g-terms psr))]
+    (when (coll? terms)
+      (->> terms
+           (keep (fn [term]
+                   (let [term-id (:term-id term)
+                         weights (precision-channel-weights (:precision-channels term))
+                         total (when (seq weights)
+                                 (reduce + (map second weights)))]
+                     (when (and term-id (number? total) (pos? total))
+                       (let [[channel share] (->> weights
+                                                  (map (fn [[ch weight]]
+                                                         [ch (/ weight total)]))
+                                                  (apply max-key second))]
+                         (when (> share dominant-channel-threshold)
+                           {:term-id term-id
+                            :channel channel
+                            :share share}))))))))))
+
+(defn dominant-channel-summary [psr]
+  (let [terms (g-terms->provenance (:aif/g-terms psr))]
+    (when (coll? terms)
+      (let [dominant (dominant-channels psr)]
+        {:total (count terms)
+         :dominant (count dominant)
+         :terms (vec dominant)}))))

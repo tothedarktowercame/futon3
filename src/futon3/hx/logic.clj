@@ -202,6 +202,127 @@
                          {:index idx :certificate cert})))
        vec))
 
+(def ^:private aif-term-provenance-keys
+  [:term-id :observation-keys :precision-channels :intermediate-values :final-contribution])
+
+(defn- term-id-valid? [term-id]
+  (or (keyword? term-id)
+      (string? term-id)))
+
+(defn- observation-key-valid? [observation-key]
+  (or (keyword? observation-key)
+      (string? observation-key)
+      (vector? observation-key)))
+
+(defn- observation-keys-valid? [observation-keys]
+  (and (coll? observation-keys)
+       (every? observation-key-valid? observation-keys)))
+
+(defn- precision-channels-valid? [precision-channels]
+  (or (map? precision-channels)
+      (coll? precision-channels)))
+
+(defn- intermediate-values-valid? [intermediate-values]
+  (or (map? intermediate-values)
+      (coll? intermediate-values)))
+
+(defn- g-terms->provenance [g-terms]
+  (cond
+    (map? g-terms)
+    (map (fn [[term-id term]]
+           (cond
+             (map? term) (assoc term :term-id (or (:term-id term) term-id))
+             :else {:term-id term-id
+                    :final-contribution term}))
+         g-terms)
+
+    (coll? g-terms)
+    g-terms
+
+    :else nil))
+
+(defn- term-provenance-issues [term]
+  (let [missing (remove #(contains? term %) aif-term-provenance-keys)]
+    (cond-> []
+      (seq missing)
+      (conj {:issue :missing-keys :keys (vec missing)})
+      (and (contains? term :term-id)
+           (not (term-id-valid? (:term-id term))))
+      (conj {:issue :invalid-term-id :term-id (:term-id term)})
+      (and (contains? term :observation-keys)
+           (not (observation-keys-valid? (:observation-keys term))))
+      (conj {:issue :invalid-observation-keys})
+      (and (contains? term :precision-channels)
+           (not (precision-channels-valid? (:precision-channels term))))
+      (conj {:issue :invalid-precision-channels})
+      (and (contains? term :intermediate-values)
+           (not (intermediate-values-valid? (:intermediate-values term))))
+      (conj {:issue :invalid-intermediate-values})
+      (and (contains? term :final-contribution)
+           (not (number? (:final-contribution term))))
+      (conj {:issue :invalid-final-contribution}))))
+
+(defn- invalid-term-provenance [terms]
+  (->> terms
+       (keep-indexed (fn [idx term]
+                       (let [issues (if (map? term)
+                                      (term-provenance-issues term)
+                                      [{:issue :invalid-term
+                                        :value term}])]
+                         (when (seq issues)
+                           {:index idx
+                            :term-id (:term-id term)
+                            :issues issues}))))
+       vec))
+
+(def ^:private dominant-channel-threshold 0.6)
+
+(defn- precision-channel-weights [precision-channels]
+  (cond
+    (map? precision-channels)
+    (keep (fn [[channel weight]]
+            (when (number? weight)
+              [channel (Math/abs (double weight))]))
+          precision-channels)
+
+    (coll? precision-channels)
+    (keep (fn [entry]
+            (cond
+              (and (vector? entry) (= 2 (count entry)))
+              (when (number? (second entry))
+                [(first entry) (Math/abs (double (second entry)))])
+
+              (map? entry)
+              (let [channel (or (:channel/id entry) (:channel entry) (:id entry))
+                    weight (or (:weight entry) (:value entry) (:contribution entry))]
+                (when (and channel (number? weight))
+                  [channel (Math/abs (double weight))]))
+
+              :else nil))
+          precision-channels)
+
+    :else nil))
+
+(defn- dominant-channels [psr]
+  (let [terms (g-terms->provenance (:aif/g-terms psr))]
+    (when (coll? terms)
+      (->> terms
+           (keep (fn [term]
+                   (let [term-id (:term-id term)
+                         weights (precision-channel-weights (:precision-channels term))
+                         total (when (seq weights)
+                                 (reduce + (map second weights)))]
+                     (when (and term-id (number? total) (pos? total))
+                       (let [[channel share] (->> weights
+                                                  (map (fn [[ch weight]]
+                                                         [ch (/ weight total)]))
+                                                  (apply max-key second))]
+                         (when (> share dominant-channel-threshold)
+                           {:term-id term-id
+                            :channel channel
+                            :share share}))))))
+           vec))))
+
 (defn- validator-result [validator status reasons]
   {:validator validator
    :status status
@@ -489,6 +610,35 @@
         validators [v1 v2 v3 v4 v5 v6 v7 v8]]
     (validators->result :hx.pattern/use-claimed [] [] validators)))
 
+(defn- check-psr [psr]
+  (let [g-terms (:aif/g-terms psr)
+        terms (g-terms->provenance g-terms)
+        invalid-terms (when (coll? terms)
+                        (invalid-term-provenance terms))
+        status (cond
+                 (nil? g-terms) :fail
+                 (not (coll? g-terms)) :fail
+                 (empty? terms) :fail
+                 (seq invalid-terms) :fail
+                 :else :pass)
+        reasons (cond-> []
+                  (nil? g-terms) (conj {:issue :missing-g-terms})
+                  (and (some? g-terms) (not (coll? g-terms)))
+                  (conj {:issue :invalid-g-terms})
+                  (and (coll? terms) (empty? terms))
+                  (conj {:issue :empty-g-terms})
+                  (seq invalid-terms)
+                  (conj {:issue :invalid-term-provenance
+                         :terms invalid-terms}))
+        dominant (when (coll? terms)
+                   (dominant-channels psr))
+        facts (cond-> []
+                (seq dominant)
+                (conj {:fact :psr/dominant-channels
+                       :terms dominant}))]
+    {:validators [(validator-result :psr/aif-g-terms status reasons)]
+     :facts facts}))
+
 (defn- check-pattern-selection-claimed [step opts]
   (let [payload (:hx.step/payload step)
         psr (or (:psr payload) payload)
@@ -603,8 +753,10 @@
                      (seq invalid-certs) (conj {:issue :invalid-certificates
                                                 :certificates invalid-certs}))
         v6 (validator-result :psr/certificates v6-status v6-reasons)
-        validators [v1 v2 v3 v4 v5 v6]]
-    (validators->result :hx.pattern/selection-claimed [] [] validators)))
+        psr-check (check-psr psr)
+        validators (into [v1 v2 v3 v4 v5 v6] (:validators psr-check))
+        facts (or (:facts psr-check) [])]
+    (validators->result :hx.pattern/selection-claimed facts [] validators)))
 
 (defn check-step
   "Validate a canonical hx step and return structural admissibility with witness."

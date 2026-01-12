@@ -45,13 +45,46 @@
         result (pc/expected-vs-resolved anchors resolver)]
     (format "%d/%d" (:resolved result) (:expected result))))
 
+(defn format-term-provenance [summary]
+  (when summary
+    (if-not (:present? summary)
+      "missing"
+      (let [base (format "%d/%d" (:resolved summary) (:expected summary))
+            missing (:missing summary)]
+        (if (seq missing)
+          (str base " missing=" (str/join ", " missing))
+          base)))))
+
+(defn format-dominant-channels [summary]
+  (when summary
+    (let [base (format "%d/%d" (:dominant summary) (:total summary))
+          entries (:terms summary)
+          labels (->> entries
+                      (map (fn [{:keys [term-id channel share]}]
+                             (let [term-label (or term-id "?")
+                                   channel-label (or channel "?")
+                                   share-label (if (number? share)
+                                                 (format "(%.2f)" (double share))
+                                                 "")]
+                               (str term-label ":" channel-label share-label))))
+                      (str/join ", "))]
+      (if (str/blank? labels)
+        base
+        (str base " " labels)))))
+
 (defn format-psr [psr session]
   (let [forecast (:forecast psr)
-        forecast-summary (pc/forecast-summary forecast session)]
+        forecast-summary (pc/forecast-summary forecast session)
+        term-summary (pc/term-provenance-summary psr)
+        dominant-summary (pc/dominant-channel-summary psr)
+        term-str (format-term-provenance term-summary)
+        dominant-str (format-dominant-channels dominant-summary)]
     (str "PSR " (:psr/id psr) " decision=" (:decision/id psr)
          " chosen=" (:chosen psr) " candidates=" (count (:candidates psr))
          " anchors=" (anchor-summary (:context/anchors psr) session)
-         " forecast-loci=" (:resolved forecast-summary) "/" (:expected forecast-summary))))
+         " forecast-loci=" (:resolved forecast-summary) "/" (:expected forecast-summary)
+         (when term-str (str " term-provenance=" term-str))
+         (when dominant-str (str " dominant-channels=" dominant-str)))))
 
 (defn format-pur [pur session]
   (str "PUR " (:pur/id pur) " pattern=" (:pattern/id pur)

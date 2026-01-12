@@ -1,4 +1,4 @@
-{:session/create {:req [:client] :opt [:session/id] :description "Register a MUSN session; returns policy and session-id."}
+{:session/create {:req [:client] :opt [:session/id :policy :lab/root] :description "Register a MUSN session; returns policy and session-id."}
  :turn/start {:req [:session/id :turn] :opt [:hud] :description "Open a turn; returns allowed patterns, AIF scores, trail limits."}
  :turn/plan {:req [:session/id :turn :plan] :description "Record plan text for the turn."}
  :turn/select {:req [:session/id :turn :candidates :chosen :reason] :opt [:anchors] :description "Select a pattern (PSR) with reason and optional anchors."}

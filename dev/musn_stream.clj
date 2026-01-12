@@ -9,11 +9,34 @@
    Assumes PATTERN_ACTION_RPC is on so pattern-ids are detectable in events.
    Uses FUTON3_MUSN_URL for the MUSN service."
   (:require [cheshire.core :as json]
+            [clojure.edn :as edn]
             [clojure.string :as str]
             [clojure.java.io :as io]
-            [clj-http.client :as http]))
+            [clj-http.client :as http]
+            [futon3.fulab.hud :as hud]))
+
+(def debug-log "/tmp/musn_stream.log")
+
+(defn log! [msg & more]
+  (when debug-log
+    (spit debug-log (str (java.time.Instant/now) " " msg
+                         (when (seq more) (str " " (pr-str more)))
+                         "\n")
+          :append true)))
 
 (def musn-url (or (System/getenv "FUTON3_MUSN_URL") "http://localhost:6065"))
+(def musn-intent (System/getenv "FUTON3_MUSN_INTENT"))
+(def require-approval? (not= "0" (or (System/getenv "FUTON3_MUSN_REQUIRE_APPROVAL") "1")))
+(def musn-client-id (or (System/getenv "FUTON3_MUSN_CLIENT_ID") "fucodex"))
+(def aif-config-path (System/getenv "FUTON3_MUSN_AIF_CONFIG_PATH"))
+
+(defn read-aif-config [path]
+  (when path
+    (try
+      (edn/read-string (slurp path))
+      (catch Throwable _ nil))))
+
+(def aif-config (read-aif-config aif-config-path))
 
 (defn parse-json [line]
   (try (json/parse-string line true)
@@ -34,12 +57,19 @@
                                          :payload payload})))))
 
 (defn musn-create-session []
-  (post! "/musn/session/create" {}))
+  (let [policy (cond-> {}
+                 aif-config (assoc :aif-config aif-config))
+        payload (cond-> {:client {:id musn-client-id}}
+                  (seq policy) (assoc :policy policy))
+        resp (post! "/musn/session/create" payload)]
+    (log! "[musn] session/create" resp)
+    resp))
 
 (defn musn-start [{:keys [session/id]} turn hud]
   (post! "/musn/turn/start" {:session/id id
                              :turn turn
-                             :hud hud}))
+                             :hud (cond-> (or hud {})
+                                    musn-intent (assoc :intent musn-intent))}))
 
 (defn musn-plan [{:keys [session/id]} turn plan]
   (post! "/musn/turn/plan" {:session/id id
@@ -77,6 +107,9 @@
 
 (defn musn-resume [{:keys [session/id]} turn note]
   (post! "/musn/turn/resume" {:session/id id :turn turn :note note}))
+
+(defn musn-state [{:keys [session/id]}]
+  (post! "/musn/session/state" {:session/id id}))
 
 (defn plan-line? [text]
   (and (string? text)
@@ -123,6 +156,51 @@
 (defn files-from-change [changes]
   (->> changes (map :path) (remove nil?) vec))
 
+(defn fmt-num [value]
+  (when (number? value)
+    (format "%.3f" (double value))))
+
+(defn log-selection! [psr]
+  (let [reason (:selection/reason psr)
+        mode (:mode reason)
+        reads (:reads reason)
+        aif (:aif reason)
+        g (fmt-num (:G aif))
+        tau (fmt-num (:tau aif))
+        aif-label (when (or g tau)
+                    (str " aif=" (str/join ","
+                                          (remove nil?
+                                                  [(when g (str "G=" g))
+                                                   (when tau (str "tau=" tau))]))))]
+    (println (format "[pattern-selection] chosen=%s candidates=%d mode=%s%s%s"
+                     (:chosen psr)
+                     (count (:candidates psr))
+                     (or mode :unknown)
+                     (if (seq reads)
+                       (str " reads=" (str/join "," reads))
+                       "")
+                     (or aif-label "")))
+    (flush)))
+
+(defn log-use! [pur aif]
+  (let [pattern-id (:pattern/id pur)
+        tags (:outcome/tags pur)
+        tau (fmt-num (:tau-updated aif))
+        err (fmt-num (:prediction-error aif))
+        aif-label (when (or tau err)
+                    (str " aif="
+                         (str/join ","
+                                   (remove nil?
+                                           [(when err (str "err=" err))
+                                            (when tau (str "tau=" tau))]))))
+        tag-label (when (seq tags)
+                    (str " outcome=" (str/join "," (map name tags))))]
+    (println (format "[pattern-use] %s%s%s"
+                     pattern-id
+                     (or tag-label "")
+                     (or aif-label "")))
+    (flush)))
+
 (defn print-pause [resp]
   (when-let [pause (:pause resp)]
     (println "[MUSN-PAUSE]" (json/generate-string pause))
@@ -141,35 +219,36 @@
           (if-let [payload (parse-json line)]
             (do
               (when-let [sel (parse-pattern-selection payload)]
-                (musn-select musn-session
-                             turn
-                             (:chosen sel)
-                             {:mode (or (:mode sel) :use)
-                              :note "auto-read from selection event"}
-                             (:reads sel))))
+                (let [resp (musn-select musn-session
+                                        turn
+                                        (:chosen sel)
+                                        {:mode (or (:mode sel) :use)
+                                         :note "auto-read from selection event"}
+                                        (:reads sel))]
+                  (when-let [psr (:psr resp)]
+                    (log-selection! psr))))
               (when-let [pa (parse-pattern-action payload)]
                 (let [act (:action pa)
                       pid (:pattern/id pa)
                       files (:files pa)]
                   (musn-action musn-session turn pid act (:note pa) files)
                   (when (#{"implement" "update"} act)
-                    (musn-use musn-session turn pid)
+                    (let [use-resp (musn-use musn-session turn pid)]
+                      (when-let [pur (:pur use-resp)]
+                        (log-use! pur (:aif use-resp))))
                     (when (seq files)
-                      (musn-evidence musn-session turn pid files "auto evidence from pattern-action")))))))
+                      (musn-evidence musn-session turn pid files "auto evidence from pattern-action"))))))
             (when-let [pa (parse-pattern-action-line line)]
               (let [act (:action pa)
                     pid (:pattern/id pa)
                     files (:files pa)]
                 (musn-action musn-session turn pid act (:note pa) files)
                 (when (#{"implement" "update"} act)
-                  (musn-use musn-session turn pid)
+                  (let [use-resp (musn-use musn-session turn pid)]
+                    (when-let [pur (:pur use-resp)]
+                      (log-use! pur (:aif use-resp))))
                   (when (seq files)
-                    (musn-evidence musn-session turn pid files "auto evidence from pattern-action"))))))))) 
-
-      ;; plan text
-      (and (= (:type event) "item.completed")
-           (= (get-in event [:item :type]) "agent_message"))
-      nil
+                    (musn-evidence musn-session turn pid files "auto evidence from pattern-action"))))))))
 
       ;; command execution
       (and (= (:type event) "item.completed")
@@ -193,28 +272,87 @@
         (doseq [p pats]
           (musn-action musn-session turn p "update" "auto file_change" files)
           (when (seq files)
-            (musn-evidence musn-session turn p files "auto evidence from change")))))
-    nil))
+            (musn-evidence musn-session turn p files "auto evidence from change"))))
+
+      :else nil)))
 
 (defn stream-loop []
-  (let [session (musn-create-session)
-        state (atom {:turn 0})]
-    (doseq [line (line-seq (io/reader *in*))]
-      (let [event (parse-json line)]
-        (when event
+  (try
+    (let [session (musn-create-session)
+          state (atom {:turn 0})]
+      (log! "[musn] stream-loop start")
+      (when-let [sid (:session/id session)]
+        (println (format "[musn-session] %s" sid))
+        (flush))
+      (doseq [line (line-seq (io/reader *in*))]
+        (when-let [event (parse-json line)]
+          (log! "[musn] event" event)
           (cond
             (= (:type event) "turn.started")
-            (do (swap! state assoc :turn (:turn event))
-                (musn-start session (:turn event) {:candidates []}))
+            (let [t (or (:turn event) (inc (:turn @state)) 1)]
+              (swap! state assoc :turn t)
+              (let [hud-map (try
+                              (when musn-intent
+                                (hud/build-hud {:intent musn-intent
+                                                :pattern-limit 8
+                                                :namespaces ["musn" "fulab" "aif" "agent"]}))
+                              (catch Throwable e
+                                (log! "[musn] hud-build error" (.getMessage e))
+                                (println (format "[hud-build-error] %s" (.getMessage e)))
+                                (flush)
+                                nil))
+                    candidates (vec (or (:prototypes hud-map)
+                                        (:candidates hud-map)
+                                        []))
+                    hud-payload (cond-> {:intent musn-intent
+                                         :candidates candidates}
+                                  (:sigils hud-map) (assoc :sigils (:sigils hud-map))
+                                  (:namespaces hud-map) (assoc :namespaces (:namespaces hud-map))
+                                  (:aif hud-map) (assoc :aif (:aif hud-map)))]
+                (musn-start session t hud-payload)
+                (if (seq candidates)
+                  (println (format "[hud-candidates] %s" (str/join ", " candidates)))
+                  (println "[hud-candidates] none"))
+                (when-let [sigils (:sigils hud-map)]
+                  (println (format "[hud-sigils] %s" sigils)))
+                (flush))
+              (when musn-intent
+                ;; announce intent into the stream so HUD can pick it up as handshake
+                (log! (format "[hud-intent] %s" musn-intent))
+                (println (format "[hud-intent] %s" musn-intent))
+                (flush)
+                (when require-approval?
+                  (println "[musn-pause] intent computed; waiting for approval to proceed")
+                  (flush)
+                  ;; Block until a resume note shows up in session state.
+                  (loop []
+                    (Thread/sleep 1000)
+                    (when-let [st (musn-state session)]
+                      (let [note (get-in st [:state :resume-note])]
+                        (when note
+                          (println (format "[musn-resume] note=%s" note))
+                          (flush)
+                          (swap! state assoc :resume-note note))
+                        (when-not note
+                          (recur)))))))))
 
             (= (:type event) "turn.completed")
             (let [resp (musn-end session (:turn @state))]
               (when (:halt? resp)
-                (print-pause resp)
-                (System/exit 3)))
+                (print-pause resp)))
 
             :else
-            (handle-event! state event session))))))
-  (System/exit 0))
+            (handle-event! state event session))))
+    (System/exit 0)
+    (catch Throwable t
+      (binding [*out* *err*]
+        (println "[musn-stream] ERROR" (.getMessage t))
+        (when-let [d (ex-data t)] (prn d)))
+      (log! "[musn-stream] ERROR" (.getMessage t) (ex-data t))
+      (System/exit 4))))
 
-(defn -main [& _] (stream-loop))
+(defn -main [& _]
+  (stream-loop))
+
+;; Invoke main when run as a script (clojure -M dev/musn_stream.clj)
+(apply -main *command-line-args*)

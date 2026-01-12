@@ -1,6 +1,6 @@
 @flexiarg agent/scope-before-action
 @title Scope Before Action
-@sigils [📐/域]
+@sigils [📐/内]
 @audience agent architects, workflow designers, futon developers
 @tone foundational
 @style pattern
@@ -12,7 +12,7 @@
   + HOWEVER:
     Without declared scope, "done" is undefined, side effects are unpredictable, and observers cannot tell if the agent is on track or wandering.
   + THEN:
-    Before substantive action, state the scope: what files, concepts, or regions are in-bounds; what is explicitly out-of-bounds; what the exit condition is. Treat scope violations as requiring explicit expansion, not silent drift.
+    Before substantive action, state the scope: what files, concepts, or regions are in-bounds; what is explicitly out-of-bounds; what the exit condition is. Treat scope violations as requiring explicit expansion, not silent drift. Scope defines the territory; budgets and pauses govern what happens inside it.
   + BECAUSE:
     Declared scope makes progress measurable, side effects auditable, and completion definable. It also protects the broader system from unintended changes.
   + NEXT-STEPS:

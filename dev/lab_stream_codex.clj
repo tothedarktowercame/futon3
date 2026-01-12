@@ -1,4 +1,5 @@
 (ns lab-stream-codex
+  ;; Deprecated: MUSN service now owns PSR/PUR + AIF emission for live runs.
   (:require [clojure.data.json :as json]
             [clojure.edn :as edn]
             [clojure.java.io :as io]

@@ -1,6 +1,6 @@
 @flexiarg agent/trail-enables-return
 @title Trail Enables Return
-@sigils [🧭/迹]
+@sigils [🚞/归]
 @audience agent architects, workflow designers, futon developers
 @tone foundational
 @style pattern
@@ -12,7 +12,7 @@
   + HOWEVER:
     Without a trail, the agent cannot distinguish "unexplored" from "explored and rejected," leading to repeated mistakes or inability to recover.
   + THEN:
-    Record a trail of moves, decisions, and state transitions. Make the trail queryable so the agent (or its successors) can backtrack, detect loops, and learn from history.
+    Record a trail of moves, decisions, and state transitions with minimal fields (time, state snapshot, decision, action, evidence, reversibility). Make the trail queryable so the agent (or its successors) can backtrack, detect loops, and learn from history.
   + BECAUSE:
     Trails convert ephemeral navigation into persistent structure. They enable learning, debugging, and graceful recovery.
   + NEXT-STEPS:

@@ -112,6 +112,7 @@
    :plan? false
    :selection nil
    :actions []
+   :hud nil
    :trail {:on 0 :off 0 :limit (get-in policy [:off-trail :free] 0.0)}
    :off-trail-policy {:free (get-in policy [:off-trail :free] 0.0)
                       :ratio (get-in policy [:off-trail :ratio] 0.5)}
@@ -128,6 +129,7 @@
                                  :plan? false
                                  :selection nil
                                  :actions []
+                                 :hud (:hud req)
                                  :warnings []
                                  :halt nil
                                  :write? false

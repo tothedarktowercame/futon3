@@ -322,8 +322,9 @@ the agent can infer from the prompt."
     (fubar-musn-view-2up nil intent)
     (let ((buf (get-buffer-create fubar-hud-stream-buffer-name)))
       (with-current-buffer buf
-        (erase-buffer))
-      (start-process-shell-command "fubar-musn-launch" buf cmd)
+        (setq default-directory fubar-hud-futon3-root)
+        (erase-buffer)
+        (start-process-shell-command "fubar-musn-launch" buf cmd))
       ;; begin watching the raw stream for [musn-session] even before the log writes
       (fubar-musn--stop-session-scan)
       (setq fubar-musn--session-scan-timer

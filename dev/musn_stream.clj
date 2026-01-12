@@ -95,6 +95,24 @@
      :note (:note payload)
      :files (:files payload)}))
 
+(defn parse-pattern-action-line [line]
+  ;; Fallback for plain text pattern-action lines: "[pattern-action] update fulab/clock-in - note files=path1,path2"
+  (when-let [m (re-find #"\[pattern-action\]\s+(\S+)\s+(\S+)(?:\s+-\s+([^\\f\\r\\n]+))?" line)]
+    (let [action (nth m 1 nil)
+          pid (nth m 2 nil)
+          note (nth m 3 nil)
+          files (when note
+                  (when-let [fm (re-find #"files=([A-Za-z0-9_./,-]+)" note)]
+                    (-> (second fm)
+                        (str/split #",")
+                        (map str/trim)
+                        (remove str/blank?)
+                        vec)))]
+      {:pattern/id pid
+       :action action
+       :note note
+       :files files})))
+
 (defn parse-pattern-selection [payload]
   (when (= "pattern-selection" (:type payload))
     {:chosen (:chosen payload)
@@ -120,15 +138,25 @@
         (when (plan-line? text)
           (musn-plan musn-session turn text))
         (doseq [line (str/split-lines (or text ""))]
-          (when-let [payload (parse-json line)]
-            (when-let [sel (parse-pattern-selection payload)]
-              (musn-select musn-session
-                           turn
-                           (:chosen sel)
-                           {:mode (or (:mode sel) :use)
-                            :note "auto-read from selection event"}
-                           (:reads sel))))
-            (when-let [pa (parse-pattern-action payload)]
+          (if-let [payload (parse-json line)]
+            (do
+              (when-let [sel (parse-pattern-selection payload)]
+                (musn-select musn-session
+                             turn
+                             (:chosen sel)
+                             {:mode (or (:mode sel) :use)
+                              :note "auto-read from selection event"}
+                             (:reads sel))))
+              (when-let [pa (parse-pattern-action payload)]
+                (let [act (:action pa)
+                      pid (:pattern/id pa)
+                      files (:files pa)]
+                  (musn-action musn-session turn pid act (:note pa) files)
+                  (when (#{"implement" "update"} act)
+                    (musn-use musn-session turn pid)
+                    (when (seq files)
+                      (musn-evidence musn-session turn pid files "auto evidence from pattern-action")))))))
+            (when-let [pa (parse-pattern-action-line line)]
               (let [act (:action pa)
                     pid (:pattern/id pa)
                     files (:files pa)]
@@ -136,7 +164,7 @@
                 (when (#{"implement" "update"} act)
                   (musn-use musn-session turn pid)
                   (when (seq files)
-                    (musn-evidence musn-session turn pid files "auto evidence from pattern-action")))))))) 
+                    (musn-evidence musn-session turn pid files "auto evidence from pattern-action"))))))))) 
 
       ;; plan text
       (and (= (:type event) "item.completed")

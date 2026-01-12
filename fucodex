@@ -6,8 +6,12 @@ if [[ -z "${BASH_VERSION-}" ]]; then
 fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}
-                  futon2/futon2 {:local/root "../futon2"}}}'
+# Extra deps/paths layered on top of the project basis when running lab/musn streams.
+LAB_DEPS='{:paths ["scripts" "src" "resources" "dev" "."]
+           :deps {org.clojure/data.json {:mvn/version "2.5.0"}
+                  cheshire/cheshire {:mvn/version "5.11.0"}
+                  clj-http/clj-http {:mvn/version "3.12.3"}
+                  futon2/futon2 {:local/root "/home/joe/code/futon2"}}}'
 START_ISO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 RUN_CWD="$(pwd)"
 export PATH="$ROOT/scripts:$PATH"
@@ -378,6 +382,14 @@ fi
 if [[ -n "$HUD_SERVER" ]]; then
   export FUTON3_CODEX_SERVER_URL="$HUD_SERVER"
 fi
+if $MUSN_MODE; then
+  # Handshake intent for MUSN/HUD; prefer explicit HUD_INTENT, else fall back to the prompt when single arg.
+  if [[ -n "$HUD_INTENT" ]]; then
+    export FUTON3_MUSN_INTENT="$HUD_INTENT"
+  elif [[ ${#args[@]} -eq 1 ]]; then
+    export FUTON3_MUSN_INTENT="${args[0]}"
+  fi
+fi
 if $PATTERN_RPC; then
   export PATTERN_ACTION_RPC=1
 fi
@@ -400,9 +412,13 @@ if $LIVE; then
     exit 2
   fi
   if $MUSN_MODE; then
-    if ! MUSN_URL="$MUSN_URL" clojure -M -m scripts.musn_http_preflight >/dev/null; then
-      echo "[lab] MUSN HTTP preflight failed; aborting run" >&2
-      exit 2
+    preflight_mode="${FUCODEX_PREFLIGHT:-auto}"
+    preflight_mode="$(printf '%s' "$preflight_mode" | tr '[:upper:]' '[:lower:]')"
+    if [[ "$preflight_mode" != "off" && "$preflight_mode" != "0" && "$preflight_mode" != "false" ]]; then
+      if ! MUSN_URL="$MUSN_URL" clojure -M -m scripts.musn_http_preflight >/dev/null; then
+        echo "[lab] MUSN HTTP preflight failed; aborting run" >&2
+        exit 2
+      fi
     fi
   fi
   if [[ "${args[0]-}" == "exec" ]]; then
@@ -480,7 +496,7 @@ PY
       fi
     fi
   fi
-  codex_flags=(--json)
+  codex_flags=(--json --skip-git-repo-check)
   if $SKIP_GIT_CHECK; then
     codex_flags+=(--skip-git-repo-check)
   fi
@@ -491,7 +507,13 @@ PY
     codex_flags+=(--)
   fi
   pause_exit=false
-  codex exec "${codex_flags[@]}" "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab_stream_codex.clj" "${clj_args[@]}"
+  if $MUSN_MODE; then
+    codex exec "${codex_flags[@]}" "${args[@]}" |
+      clojure -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/musn_stream.clj"
+  else
+    codex exec "${codex_flags[@]}" "${args[@]}" |
+      clojure -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/lab_stream_codex.clj"
+  fi
   pipe_status=("${PIPESTATUS[@]}")
   status=${pipe_status[0]}
   if [[ "${pipe_status[1]-}" == "3" ]]; then

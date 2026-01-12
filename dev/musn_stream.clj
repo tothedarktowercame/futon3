@@ -136,7 +136,7 @@
                 (when (#{"implement" "update"} act)
                   (musn-use musn-session turn pid)
                   (when (seq files)
-                    (musn-evidence musn-session turn pid files "auto evidence from pattern-action"))))))))
+                    (musn-evidence musn-session turn pid files "auto evidence from pattern-action")))))))) 
 
       ;; plan text
       (and (= (:type event) "item.completed")
@@ -164,7 +164,8 @@
                       vec)]
         (doseq [p pats]
           (musn-action musn-session turn p "update" "auto file_change" files)
-          (musn-evidence musn-session turn p files "auto evidence from change"))))
+          (when (seq files)
+            (musn-evidence musn-session turn p files "auto evidence from change")))))
     nil))
 
 (defn stream-loop []

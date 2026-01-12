@@ -27,7 +27,7 @@
 (declare log-pattern-action! handle-pattern-action! maybe-log-aif-event! fmt-num emit-pur!)
 
 (defn usage []
-  (println "Usage: dev/lab_stream_codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook] [--hud-json PATH] [--trail-allow CSV] [--enforce-pattern-actions]")
+  (println "Usage: dev/lab_stream_codex.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook] [--hud-json PATH] [--trail-allow CSV] [--enforce-pattern-actions] [--pause-on-no-write]")
   (println "Reads codex --json stream from stdin and appends session + AIF events.")
   (println "Clock-in entries are consumed in order, one per turn (override --chosen for that turn)."))
 
@@ -48,6 +48,7 @@
         "--hud-json" (recur (assoc opts :hud-json (second remaining)) (nnext remaining))
         "--trail-allow" (recur (assoc opts :trail-allow (second remaining)) (nnext remaining))
         "--enforce-pattern-actions" (recur (assoc opts :enforce-pattern-actions true) (rest remaining))
+        "--pause-on-no-write" (recur (assoc opts :pause-on-no-write true) (rest remaining))
         "--help" (recur (assoc opts :help true) (rest remaining))
         (recur (update opts :unknown (fnil conj []) (first remaining)) (rest remaining))))))
 
@@ -615,6 +616,23 @@
       (:turn @state)
       0))
 
+(defn- turn-has-write? [state]
+  (or (seq (:turn-files @state))
+      (some (fn [action]
+              (contains? #{"implement" "update"} (:action action)))
+            (or (:turn-actions @state) []))))
+
+(defn- request-turn-pause! [state session-id turn pattern-id psr]
+  (swap! state assoc :halt? true
+         :halt-reason {:type :no-write
+                       :session/id session-id
+                       :turn turn
+                       :pattern/id pattern-id
+                       :selection (:selection/reason psr)})
+  (println (format "[turn-pause] selection=%s reason=no-write; ask for clarification or expand scope" pattern-id))
+  (println (format "[turn-resume] fucodex --session-id %s resume --last \"Clarify scope: ...\"" session-id))
+  (flush))
+
 (defn- use-psr-candidates [state pattern-id]
   (vec (distinct (concat (or (:candidates @state) []) [pattern-id]))))
 
@@ -655,7 +673,14 @@
           session-id (:session-id @state)
           pur (-> (build-pur session-id turn pattern-id)
                   (assoc :use/reason note)
-                  (update :outcome/tags (fnil vec []) #(vec (distinct (concat % (when inferred? [:outcome/inferred]))))))]
+                  (update :outcome/tags
+                          (fnil (fn [tags]
+                                  (let [tags (vec tags)
+                                        tags (if inferred?
+                                               (conj tags :outcome/inferred)
+                                               tags)]
+                                    (vec (distinct tags))))
+                                [])))]
       (emit-pur! state pur)
       (swap! state assoc-in [:turn-pur-by-pattern pattern-id] pur))))
 
@@ -934,6 +959,26 @@
                           :turn turn
                           :at (now-inst)})
     (emit-psr! state psr selection chosen (:turn-pur-emitted? @state))
+    (when (and chosen
+               (= :use (get-in psr [:selection/reason :mode]))
+               (not (turn-has-write? state)))
+      (record-warning! state
+                       :no-write
+                       "use"
+                       chosen
+                       "no file changes after selection; ask for clarification"
+                       :system)
+      (append-event! state {:event/type :turn/no-write
+                            :turn turn
+                            :at (now-inst)
+                            :payload {:session/id session-id
+                                      :pattern/id chosen
+                                      :selection (:selection/reason psr)
+                                      :note "no file changes after selection; ask for clarification"}})
+      (println (format "[turn-warning] selection=%s mode=use but no file changes; ask for clarification or expand scope" chosen))
+      (flush)
+      (when (:pause-on-no-write? @state)
+        (request-turn-pause! state session-id turn chosen psr)))
     (when (and (:turn-pur @state) (not (:turn-pur-files-logged? @state)))
       (let [turn-files (vec (distinct (or (:turn-files @state) [])))
             files (let [pattern-files (pattern-files-for-turn actions (:pattern/id (:turn-pur @state)))]
@@ -1104,7 +1149,7 @@
     (vec candidates)))
 
 (defn -main [& args]
-  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config aif-select proposal-hook hud-json trail-allow enforce-pattern-actions]} (parse-args args)
+  (let [{:keys [help unknown lab-root patterns chosen clock-in session-id aif-config aif-select proposal-hook hud-json trail-allow enforce-pattern-actions pause-on-no-write]} (parse-args args)
         repo-root (System/getProperty "user.dir")
         lab-root (or lab-root (str (io/file repo-root "lab")))
         clock-ins (parse-csv clock-in)
@@ -1163,6 +1208,7 @@
                      :aif-select? (boolean aif-select)
                      :proposal-hook? (boolean proposal-hook)
                      :pattern-action-enforce? (boolean enforce-pattern-actions)
+                     :pause-on-no-write? (boolean pause-on-no-write)
                      :tau-cache (or (read-tau-cache lab-root) {})
                      :pattern-action-last {}
                      :pattern-action-counts {}
@@ -1175,7 +1221,10 @@
                      :agent-report-seen? false
                      :summary-emitted? false
                      :use-warnings []
-                     :explicit-reasons {}})
+                     :explicit-reasons {}
+                     :halt? false
+                     :halt-reason nil
+                     :halted? false})
         tap-listener (fn [event]
                        (when (= :aif/fulab (:type event))
                          (append-event! state {:event/type :aif/tap
@@ -1275,12 +1324,12 @@
                                 note (str "auto-detected from file_change"
                                           (when reason-note (str "; reason=" reason-note))
                                           (or file-label ""))]
-                          (log-pattern-action! state
-                                               engine
-                                               "update"
-                                               pattern-id
-                                               note
-                                               paths))))))
+                            (log-pattern-action! state
+                                                 engine
+                                                 "update"
+                                                 pattern-id
+                                                 note
+                                                 paths))))))
                   (when (= (:type event) "turn.started")
                     (swap! state assoc :turn-open? true)
                     (swap! state assoc :turn-plan? false
@@ -1292,12 +1341,25 @@
                         (swap! state assoc :turn-hud-reads? true))))
                   (when (= (:type event) "turn.completed")
                     (swap! state assoc :turn-open? false)
-                    (process-turn-complete! state candidates chosen aif-config engine)))))
+                    (process-turn-complete! state candidates chosen aif-config engine))
+                  (when (:halt? @state)
+                    (throw (ex-info "turn halted" {:type :halt}))))))
             (when (and (:turn-open? @state) (:session-id @state))
               (swap! state assoc :turn-open? false)
               (process-turn-complete! state candidates chosen aif-config engine))
+            (when (:halt? @state)
+              (throw (ex-info "turn halted" {:type :halt})))
+            (catch clojure.lang.ExceptionInfo ex
+              (let [data (ex-data ex)]
+                (if (= :halt (:type data))
+                  (swap! state assoc :halted? true)
+                  (throw ex))))
             (finally
               (emit-session-summary! state)
               (stop-heartbeat! heartbeat))))
-        (remove-tap tap-listener)))))
+        (remove-tap tap-listener)
+        (when (:halted? @state)
+          (System/exit 3))
+        (when (:halted? @state)
+          (System/exit 3))))))
 (apply -main *command-line-args*)

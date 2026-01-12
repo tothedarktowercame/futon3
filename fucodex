@@ -35,6 +35,7 @@ SKIP_GIT_CHECK=false
 HUD_PRINT=false
 HUD_SERVER="${HUD_SERVER:-http://localhost:5050}"
 PATTERN_RPC=true
+PAUSE_ON_NO_WRITE="${FUCODEX_PAUSE_ON_NO_WRITE:-auto}"
 SCOPE_GUARDRAIL=$'Scope guardrail: avoid repo-wide `rg --files` or wide `rg` searches.\nBefore tool use, state a 1-2 line plan; if a wide scan is likely, either (a) announce it and proceed, or (b) stop and ask for scope; if asking, do not run the scan.\nTreat wide scans as expensive.'
 
 show_help() {
@@ -62,6 +63,8 @@ Options:
   --intent TEXT         Intent/goal for HUD pattern selection.
   --approval-policy     Approval policy for codex exec (e.g., untrusted, never).
   --pattern-rpc         Enable pattern-action RPC and enforce explicit reads (default: on).
+  --pause-on-no-write   Pause live runs when selection mode=use but no files change.
+  --no-pause-on-no-write Disable pause-on-no-write (overrides env default).
   --hud-print           Print HUD block before running codex.
   --hud-server URL      HUD server base URL (default: http://localhost:5050).
 
@@ -133,6 +136,10 @@ while [[ $# -gt 0 ]]; do
       APPROVAL_POLICY="$2"; shift 2;;
     --pattern-rpc)
       PATTERN_RPC=true; shift;;
+    --pause-on-no-write)
+      PAUSE_ON_NO_WRITE="true"; shift;;
+    --no-pause-on-no-write)
+      PAUSE_ON_NO_WRITE="false"; shift;;
     --hud-print)
       HUD_PRINT=true; shift;;
     --hud-server)
@@ -210,6 +217,14 @@ fi
 
 if [[ -z "$APPROVAL_POLICY" && "$PATTERN_RPC" == true ]]; then
   APPROVAL_POLICY="untrusted"
+fi
+
+if [[ "$PAUSE_ON_NO_WRITE" == "auto" ]]; then
+  if $LIVE && $PATTERN_RPC; then
+    PAUSE_ON_NO_WRITE="true"
+  else
+    PAUSE_ON_NO_WRITE="false"
+  fi
 fi
 
 # HUD mode: inject pattern context into prompt
@@ -420,6 +435,9 @@ PY
   if $PATTERN_RPC; then
     clj_args+=(--enforce-pattern-actions)
   fi
+  if [[ "$PAUSE_ON_NO_WRITE" == "true" ]]; then
+    clj_args+=(--pause-on-no-write)
+  fi
   preflight_mode="${FUCODEX_PREFLIGHT:-auto}"
   preflight_mode="$(printf '%s' "$preflight_mode" | tr '[:upper:]' '[:lower:]')"
   if [[ "$preflight_mode" != "off" && "$preflight_mode" != "0" && "$preflight_mode" != "false" ]]; then
@@ -454,8 +472,14 @@ PY
   if [[ ${#args[@]} -gt 0 && "${args[0]}" == -* ]]; then
     codex_flags+=(--)
   fi
+  pause_exit=false
   codex exec "${codex_flags[@]}" "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab_stream_codex.clj" "${clj_args[@]}"
-  status=${PIPESTATUS[0]}
+  pipe_status=("${PIPESTATUS[@]}")
+  status=${pipe_status[0]}
+  if [[ "${pipe_status[1]-}" == "3" ]]; then
+    pause_exit=true
+    status=0
+  fi
 else
   codex "${args[@]}"
   status=$?
@@ -515,5 +539,10 @@ clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-equip.clj" \
 
 clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-summarize.clj" \
   --raw "$ROOT/lab/raw/${lab_session_id}.json"
+
+if $pause_exit; then
+  echo "[lab] paused for clarification; resume with:" >&2
+  echo "  fucodex --session-id ${lab_session_id} resume --last \"Clarify scope: ...\"" >&2
+fi
 
 exit $status

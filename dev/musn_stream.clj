@@ -292,13 +292,21 @@
   (when (number? value)
     (format "%.3f" (double value))))
 
+(def ^:private pattern-id-token-re
+  #"[a-z0-9._-]+/[a-z0-9._-]+")
+
+(defn- normalize-pattern-id [value]
+  (let [s (str/trim (str value))]
+    (when-not (str/blank? s)
+      (or (re-find pattern-id-token-re s) s))))
+
 (defn candidate-id [candidate]
   (cond
     (map? candidate) (recur (or (:id candidate) (:pattern/id candidate)))
     (keyword? candidate) (subs (str candidate) 1)
-    (string? candidate) candidate
+    (string? candidate) (normalize-pattern-id candidate)
     (nil? candidate) nil
-    :else (str candidate)))
+    :else (normalize-pattern-id candidate)))
 
 (defn candidate-ids [candidates]
   (->> candidates (map candidate-id) (remove nil?) vec))

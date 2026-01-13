@@ -20,7 +20,14 @@
                            [:G {:optional true} number?]
                            [:tau {:optional true} number?]
                            [:e {:optional true} number?]
-                           [:o {:optional true} number?]]]])
+                           [:o {:optional true} number?]
+                           [:G-rejected {:optional true} [:map-of PatternId number?]]]]]])
+
+(def AifSelectionSummary
+  [:map
+   [:G {:optional true} number?]
+   [:tau {:optional true} number?]
+   [:G-rejected {:optional true} [:map-of PatternId number?]]])
 
 (def SessionCreateReq
   [:map
@@ -85,7 +92,8 @@
           [:pattern/id PatternId]
           [:candidates [:vector PatternId]]
           [:selection/reason Reason]
-          [:selection/anchors {:optional true} [:vector Anchor]]]]])
+          [:selection/anchors {:optional true} [:vector Anchor]]]]
+   [:aif {:optional true} AifSelectionSummary]])
 
 (def TurnActionReq
   [:map
@@ -105,7 +113,8 @@
    [:aif {:optional true} [:map
                            [:e {:optional true} number?]
                            [:dE {:optional true} number?]]]
-   [:warning {:optional true} [:map [:type keyword?] [:msg string?]]]])
+   [:warning {:optional true} [:map [:type keyword?] [:msg string?]]]
+   [:logic {:optional true} map?]])
 
 (def TurnUseReq
   [:map
@@ -147,7 +156,8 @@
               [:pur {:optional true} PatternId]
               [:warnings int?]]]
    [:halt? boolean?]
-   [:halt/reason {:optional true} map?]])
+   [:halt/reason {:optional true} map?]
+   [:logic {:optional true} map?]])
 
 (def TurnResumeReq [:map [:session/id string?] [:turn int?] [:note {:optional true} string?]])
 (def TurnResumeResp [:map [:ok boolean?] [:turn int?]])

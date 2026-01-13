@@ -133,6 +133,18 @@
 (defn- candidate-ids [candidates]
   (->> candidates (map candidate-id) (remove nil?) vec))
 
+(defn- normalize-score-keys [scores]
+  (when (map? scores)
+    (into {}
+          (keep (fn [[k v]]
+                  (let [id (cond
+                             (string? k) k
+                             (keyword? k) (subs (str k) 1)
+                             (nil? k) nil
+                             :else (str k))]
+                    (when id [id v]))))
+          scores)))
+
 (defn- ensure-dir [f]
   (when f
     (.mkdirs (.getParentFile f))))
@@ -230,8 +242,12 @@
         entry (ensure-session! sid nil (:lab/root req) nil)
         candidates (get-in req [:hud :candidates])
         candidate-ids (candidate-ids candidates)
-        scores (get-in req [:hud :scores])
+        scores (normalize-score-keys (get-in req [:hud :scores]))
         turn (:turn req)
+        scores (when (seq candidate-ids)
+                 (if (map? scores)
+                   (select-keys scores candidate-ids)
+                   scores))
         selection (when (seq candidate-ids)
                     (aif-engine/select-pattern
                      (:aif-engine entry)
@@ -267,8 +283,8 @@
   (let [sid (:session/id req)
         entry (ensure-session! sid nil (:lab/root req) nil)
         turn (:turn req)
-        candidates (:candidates req)
-        chosen (:chosen req)
+        candidates (candidate-ids (:candidates req))
+        chosen (candidate-id (:chosen req))
         selection (aif-engine/select-pattern
                    (:aif-engine entry)
                    {:decision/id (str sid ":turn-" turn)
@@ -286,6 +302,7 @@
                                                    :chosen chosen
                                                    :reason reason
                                                    :anchors (:anchors req)}))
+        aif-summary (selection-metrics selection)
         psr (when (psr-eligible? candidates chosen)
               (fulab-musn/build-psr {:session-id sid
                                      :turn turn
@@ -305,7 +322,8 @@
       (append-lab-event! entry (fulab-musn/summary-event sid :psr selection)))
     (persist! entry :turn/select req resp)
     (cond-> resp
-      psr (assoc :psr psr))))
+      psr (assoc :psr psr)
+      (seq aif-summary) (assoc :aif aif-summary))))
 
 (defn turn-action!
   [req]

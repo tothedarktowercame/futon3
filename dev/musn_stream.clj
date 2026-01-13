@@ -97,32 +97,40 @@
                               :plan plan})))
 
 (defn musn-select [session turn chosen reason reads]
-  (let [sid (require-session-id session)]
+  (let [sid (require-session-id session)
+        chosen-id (candidate-id chosen)
+        read-ids (->> reads (map candidate-id) (remove nil?) vec)
+        candidates (if (seq read-ids)
+                     (vec (distinct (cond-> read-ids chosen-id (conj chosen-id))))
+                     (when chosen-id [chosen-id]))]
     (post! "/musn/turn/select" {:session/id sid
                                 :turn turn
-                                :candidates (if (seq reads) (vec (distinct (conj reads chosen))) [chosen])
-                                :chosen chosen
+                                :candidates candidates
+                                :chosen chosen-id
                                 :reason (cond-> reason
-                                          (seq reads) (assoc :reads reads))})))
+                                          (seq read-ids) (assoc :reads read-ids))})))
 
 (defn musn-action [session turn pattern-id action note files]
-  (let [sid (require-session-id session)]
+  (let [sid (require-session-id session)
+        pid (candidate-id pattern-id)]
     (post! "/musn/turn/action" (cond-> {:session/id sid
                                         :turn turn
-                                        :pattern/id pattern-id
+                                        :pattern/id pid
                                         :action action}
                                  note (assoc :note note)
                                  (seq files) (assoc :files files)))))
 
 (defn musn-use [session turn pattern-id]
-  (let [sid (require-session-id session)]
-    (post! "/musn/turn/use" {:session/id sid :turn turn :pattern/id pattern-id})))
+  (let [sid (require-session-id session)
+        pid (candidate-id pattern-id)]
+    (post! "/musn/turn/use" {:session/id sid :turn turn :pattern/id pid})))
 
 (defn musn-evidence [session turn pattern-id files note]
-  (let [sid (require-session-id session)]
+  (let [sid (require-session-id session)
+        pid (candidate-id pattern-id)]
     (post! "/musn/evidence/add" {:session/id sid
                                  :turn turn
-                                 :pattern/id pattern-id
+                                 :pattern/id pid
                                  :files files
                                  :note note})))
 
@@ -189,13 +197,22 @@
 
 (defn candidate-id [candidate]
   (cond
-    (map? candidate) (or (:id candidate) (:pattern/id candidate))
+    (map? candidate) (recur (or (:id candidate) (:pattern/id candidate)))
     (keyword? candidate) (subs (str candidate) 1)
     (string? candidate) candidate
-    :else nil))
+    (nil? candidate) nil
+    :else (str candidate)))
 
 (defn candidate-ids [candidates]
   (->> candidates (map candidate-id) (remove nil?) vec))
+
+(defn normalize-score-keys [scores]
+  (when (map? scores)
+    (into {}
+          (keep (fn [[k v]]
+                  (when-let [id (candidate-id k)]
+                    [id v])))
+          scores)))
 
 (defn log-aif-line! [label parts]
   (when (seq parts)
@@ -209,11 +226,15 @@
 
 (defn log-aif-selection! [aif]
   (let [g (fmt-num (:G aif))
-        tau (fmt-num (:tau aif))]
+        tau (fmt-num (:tau aif))
+        g-scores (when (map? (:G-scores aif)) (count (:G-scores aif)))
+        rejected (when (map? (:G-rejected aif)) (count (:G-rejected aif)))]
     (log-aif-line! "select"
                    (remove nil?
                            [(when g (str "G=" g))
-                            (when tau (str "tau=" tau))]))))
+                            (when tau (str "tau=" tau))
+                            (when g-scores (str "G-scores=" g-scores))
+                            (when rejected (str "G-rejected=" rejected))]))))
 
 (defn log-aif-update! [aif]
   (let [err (fmt-num (:prediction-error aif))
@@ -299,7 +320,9 @@
                                          :note "auto-read from selection event"}
                                         (:reads sel))]
                   (when-let [psr (:psr resp)]
-                    (log-selection! psr))))
+                    (log-selection! psr))
+                  (when-let [aif (:aif resp)]
+                    (log-aif-selection! aif))))
               (when-let [pa (parse-pattern-action payload)]
                 (let [act (:action pa)
                       pid (:pattern/id pa)
@@ -385,7 +408,10 @@
                                      (:prototypes hud-map))
                     seed-candidates (vec (or raw-candidates []))
                     candidate-ids (candidate-ids seed-candidates)
-                    scores (get-in hud-map [:aif :G-scores])
+                    raw-scores (get-in hud-map [:aif :G-scores])
+                    scores (normalize-score-keys raw-scores)
+                    scores (when (seq candidate-ids)
+                             (select-keys scores candidate-ids))
                     hud-payload (cond-> {:intent musn-intent
                                          :candidates candidate-ids}
                                   (map? scores) (assoc :scores scores)

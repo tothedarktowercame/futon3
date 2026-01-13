@@ -779,6 +779,7 @@
         (doseq [line (line-seq (io/reader *in*))]
           (when-let [event (parse-json line)]
             (process-event! state session event tap-listener)))
+        )
       (remove-tap tap-listener)
       (System/exit 0)
       (catch Throwable t

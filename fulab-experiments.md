@@ -32,3 +32,45 @@
   Update evidence in library/aif/term-to-channel-traceability.flexiarg.
   Keep scope to src/futon3/hx/logic.clj plus any small helper you need; no repo-wide search.
   ```
+
+### E02-D: MUSN lab export (format shift)
+- Branch: `e02-musn-lab-export`
+- Prompt:
+  ```
+  Implement a MUSN-to-lab exporter so futon4 Arxana can read MUSN sessions.
+
+  1) Add dev/lab-export-musn.clj: reads lab/musn/<session>.edn (or accepts --musn-file) and writes lab/raw/<session>.json using the same schema as dev/lab-export-claude.clj.
+     Required keys: lab/session-id, lab/repo-root, lab/timestamp-start, lab/timestamp-end,
+     lab/user-messages, lab/assistant-messages, lab/files-touched, lab/trace-path, lab/doc-draft-path.
+     Include lab/errors [].
+     Use earliest/latest event timestamps for start/end. Derive files-touched from pattern/action files.
+     Build minimal messages: user message should include intent/resume notes; assistant message should include PSR/PUR + AIF summary if present.
+
+  2) Also write lab/trace/<session>.org (simple org outline of event stream) and lab/doc-drafts/<session>.json (empty stub is OK).
+
+  3) Support --session-id, --lab-root, --dry-run.
+
+  Keep scope to dev/lab-export-musn.clj (+ small helper if needed). No repo-wide search.
+  ```
+
+### E02-E: MUSN lab export wrapper + quick list
+- Branch: `e02-musn-lab-wrapper`
+- Prompt:
+  ```
+  Add a simple wrapper script for MUSN lab export and make it discoverable.
+
+  1) Add a new script fulab-export-musn (bash) that wraps dev/lab-export-musn.clj.
+     Support:
+       --session-id ID
+       --musn-file PATH
+       --lab-root PATH
+       --repo-root PATH
+       --dry-run
+       --list (print available lab/musn/*.edn sessions, newest first)
+     Default lab-root should be ./lab.
+
+  2) Update README-reading-lab-notes.md to mention the wrapper and that Arxana can read
+     futon3/lab.
+
+  Keep scope to the new script + README-reading-lab-notes.md. No repo-wide search.
+  ```

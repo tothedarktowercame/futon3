@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# fulab-export-musn: Wrapper for dev/lab-export-musn.clj
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
+
+LAB_ROOT="./lab"
+REPO_ROOT="$(pwd)"
+SESSION_ID=""
+MUSN_FILE=""
+DRY_RUN=false
+ACTION="run"
+
+usage() {
+  echo "Usage: fulab-export-musn [OPTIONS]"
+  echo ""
+  echo "Options:"
+  echo "  --session-id ID    Export MUSN session by ID"
+  echo "  --musn-file PATH   Export a specific MUSN .edn file"
+  echo "  --lab-root PATH    Lab root (default: ./lab)"
+  echo "  --repo-root PATH   Repo root recorded in output (default: pwd)"
+  echo "  --dry-run          Show what would be written"
+  echo "  --list             List lab/musn/*.edn sessions, newest first"
+  echo "  --help             Show this help"
+}
+
+list_sessions() {
+  local musn_dir="$LAB_ROOT/musn"
+  if [[ ! -d "$musn_dir" ]]; then
+    echo "[fulab-export-musn] MUSN dir not found: $musn_dir" >&2
+    return 1
+  fi
+
+  shopt -s nullglob
+  local files=("$musn_dir"/*.edn)
+  shopt -u nullglob
+
+  if [[ ${#files[@]} -eq 0 ]]; then
+    echo "[fulab-export-musn] No MUSN sessions found in $musn_dir" >&2
+    return 1
+  fi
+
+  ls -t "${files[@]}"
+}
+
+require_value() {
+  local flag="$1"
+  local value="${2:-}"
+  if [[ -z "$value" ]]; then
+    echo "[fulab-export-musn] Missing value for $flag" >&2
+    usage
+    exit 1
+  fi
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --session-id)
+      require_value "$1" "${2:-}"
+      SESSION_ID="$2"
+      shift 2
+      ;;
+    --musn-file)
+      require_value "$1" "${2:-}"
+      MUSN_FILE="$2"
+      shift 2
+      ;;
+    --lab-root)
+      require_value "$1" "${2:-}"
+      LAB_ROOT="$2"
+      shift 2
+      ;;
+    --repo-root)
+      require_value "$1" "${2:-}"
+      REPO_ROOT="$2"
+      shift 2
+      ;;
+    --dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    --list)
+      ACTION="list"
+      shift
+      ;;
+    *)
+      echo "[fulab-export-musn] Unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+if [[ "$ACTION" == "list" ]]; then
+  list_sessions
+  exit 0
+fi
+
+if [[ -z "$SESSION_ID" && -z "$MUSN_FILE" ]]; then
+  echo "[fulab-export-musn] Provide --session-id or --musn-file" >&2
+  usage
+  exit 1
+fi
+
+args=()
+[[ -n "$SESSION_ID" ]] && args+=(--session-id "$SESSION_ID")
+[[ -n "$MUSN_FILE" ]] && args+=(--musn-file "$MUSN_FILE")
+args+=(--lab-root "$LAB_ROOT")
+args+=(--repo-root "$REPO_ROOT")
+[[ "$DRY_RUN" == "true" ]] && args+=(--dry-run)
+
+clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export-musn.clj" "${args[@]}"

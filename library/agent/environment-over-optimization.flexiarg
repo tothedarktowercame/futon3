@@ -15,8 +15,10 @@
     Focus on creating environments where viable behaviors can emerge, persist, and be selected: provide trails that enable learning, budgets that create selection pressure, evidence requirements that filter confabulation, and handoff mechanisms that let successful patterns propagate. Let agent quality emerge from environmental constraints rather than direct tuning.
   + BECAUSE:
     Viable environments enable open-ended evolution. Instead of one optimal agent, you get a population of approaches that can be compared, combined, and adapted. The environment becomes the product, not any single agent.
+    + evidence: Fulab exposes a shared pattern catalog plus selection environment (`resources/sigils/patterns-index.tsv`, `src/futon3/fulab/hud.clj`) and PUR/PSR templates (`src/futon3/fulab/pattern_competence.clj`).
   + NEXT-STEPS:
     - Audit whether your agent design is optimizing for metrics or creating conditions for viability.
     - Identify environmental features that create selection pressure (budgets, evidence requirements, scope bounds).
     - Design for variation: can different agents or approaches coexist and compete in your environment?
     - Track what emerges rather than what you planned; let the environment surface surprises.
+    - Persist pattern outcome metrics and feed them back into AIF priors to increase selection pressure over time.

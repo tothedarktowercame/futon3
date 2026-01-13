@@ -19,3 +19,4 @@
     - Define explicit pause triggers for your agent (don't rely on ad-hoc judgment).
     - Design pause events that carry enough context for efficient resumption.
     - Track pause frequency as a diagnostic: too many suggests unclear scope; zero suggests over-confidence.
+    - Add pause events to fulab sessions with reason/confidence/budget snapshots and a resume hook.

@@ -17,12 +17,34 @@
   {:off-trail {:free 3 :ratio 0.5 :action "off-trail"}
    :trail-allow {:patterns [] :namespaces []}
    :aif-config {}
+   :mana {:start 100
+          :action-cost 1
+          :restore 10}
    :certificates []})
 
 (def default-lab-root
   (or (System/getenv "MUSN_LAB_ROOT") "lab"))
 
 (defonce sessions (atom {}))
+(declare get-session append-lab-event!)
+(defonce aif-tap-installed? (atom false))
+
+(defn- tap->event [tap]
+  {:event/type :aif/tap
+   :at (fulab-musn/now-inst)
+   :payload tap})
+
+(defn- handle-aif-tap! [tap]
+  (when (= :aif/fulab (:type tap))
+    (when-let [sid (:session/id tap)]
+      (when-let [entry (get-session sid)]
+        (let [event (tap->event tap)]
+          (reset! (:aif-tap entry) event)
+          (append-lab-event! entry event))))))
+
+(defn- ensure-aif-tap-listener! []
+  (when (compare-and-set! aif-tap-installed? false true)
+    (add-tap #'handle-aif-tap!)))
 
 (defn- session-agent [client-id]
   (keyword (or (some-> client-id str str/trim) "musn")))
@@ -58,6 +80,54 @@
    :psr-emitted? false
    :pur-emitted? false
    :aif-config-logged? false})
+
+(defn- mana-config [policy]
+  (merge {:start 100 :action-cost 1 :restore 10}
+         (:mana policy)))
+
+(defn- new-mana-state [policy]
+  (let [{:keys [start]} (mana-config policy)
+        start (or start 100)]
+    {:budget start
+     :balance start
+     :earned 0
+     :spent 0
+     :turn nil
+     :restores {:psr->action #{}
+                :action->pur #{}}
+     :last-change nil}))
+
+(defn- reset-mana-turn! [entry turn]
+  (swap! (:mana entry)
+         (fn [mana]
+           (-> mana
+               (assoc :turn turn)
+               (assoc :restores {:psr->action #{}
+                                 :action->pur #{}})))))
+
+(defn- mana-view [mana]
+  (dissoc mana :restores))
+
+(defn- apply-mana! [entry delta reason meta]
+  (let [delta (double delta)
+        amount (Math/abs delta)]
+    (swap! (:mana entry)
+           (fn [mana]
+             (-> mana
+                 (update :balance + delta)
+                 (update (if (pos? delta) :earned :spent) + amount)
+                 (assoc :last-change (merge {:delta delta
+                                             :reason reason
+                                             :at (fulab-musn/now-inst)}
+                                            meta)))))))
+
+(defn- restored? [mana kind pattern-id]
+  (contains? (get-in mana [:restores kind] #{}) pattern-id))
+
+(defn- note-restore! [entry kind pattern-id]
+  (swap! (:mana entry)
+         (fn [mana]
+           (update-in mana [:restores kind] (fnil conj #{}) pattern-id))))
 
 (defn- reset-fulab-state! [entry turn candidates scores]
   (reset! (:fulab entry)
@@ -106,6 +176,20 @@
       (number? (:G-chosen aif)) (assoc :G (:G-chosen aif))
       (number? (:tau aif)) (assoc :tau (:tau aif))
       (and (map? rejected) (seq rejected)) (assoc :G-rejected rejected))))
+
+(defn- selection-g-terms [selection]
+  (let [aif (:aif selection)
+        g (if (number? (:G-chosen aif))
+            (double (:G-chosen aif))
+            0.0)
+        rejected (:G-rejected aif)
+        rejected-count (if (map? rejected) (count rejected) 0)]
+    [{:term-id :base
+      :observation-keys [:candidates :anchors :forecast]
+      :precision-channels [[:heuristic 1.0]]
+      :intermediate-values {:g-chosen g
+                            :g-rejected-count rejected-count}
+      :final-contribution g}]))
 
 (defn- enrich-reason [reason selection]
   (let [metrics (selection-metrics selection)]
@@ -202,11 +286,14 @@
                  :session-file session-file
                  :lab-session lab-session
                  :fulab (atom (new-fulab-state))
+                 :aif-tap (atom nil)
+                 :mana (atom (new-mana-state p))
                  :aif-engine engine
                  :aif-config (:aif-config p)
                  :certificates (:certificates p)
                  :client-id client-id}]
       (swap! sessions assoc sid entry)
+      (ensure-aif-tap-listener!)
       entry)))
 
 (defn- persist! [entry op req resp]
@@ -263,10 +350,13 @@
                                          :turn (:turn req)
                                          :hud (:hud req)})]
     (reset-fulab-state! entry turn candidate-ids scores)
+    (when (:mana entry)
+      (reset-mana-turn! entry turn))
     (append-lab-event! entry (turn-event :turn/started sid turn {:session/id sid}))
     (persist! entry :turn/start req resp)
     (cond-> resp
-      selection (assoc :aif (:aif selection)))))
+      selection (assoc :aif (:aif selection))
+      (:mana entry) (assoc :mana (mana-view @(:mana entry))))))
 
 (defn turn-plan!
   [req]
@@ -304,14 +394,16 @@
                                                    :reason reason
                                                    :anchors (:anchors req)}))
         aif-summary (selection-metrics selection)
+        g-terms (when selection (selection-g-terms selection))
         psr (when (psr-eligible? candidates chosen)
-              (fulab-musn/build-psr {:session-id sid
-                                     :turn turn
-                                     :candidates candidates
-                                     :chosen chosen
-                                     :reason reason
-                                     :anchors (:anchors req)
-                                     :certificates (:certificates entry)}))]
+              (cond-> (fulab-musn/build-psr {:session-id sid
+                                             :turn turn
+                                             :candidates candidates
+                                             :chosen chosen
+                                             :reason reason
+                                             :anchors (:anchors req)
+                                             :certificates (:certificates entry)})
+                (seq g-terms) (assoc :aif/g-terms g-terms)))]
     (when psr
       (append-lab-event! entry {:event/type :pattern/selection-claimed
                                 :at (fulab-musn/now-inst)
@@ -343,16 +435,37 @@
                   :action (:action req)
                   :note (:note req)
                   :files (:files req)
-                  :source (or (:source req) :explicit)}]
+                  :source (or (:source req) :explicit)}
+          belief-update (aif-engine/update-beliefs (:aif-engine entry)
+                                                   {:decision/id (str sid ":action-" (java.util.UUID/randomUUID))
+                                                    :session/id sid
+                                                    :pattern/id (:pattern/id req)
+                                                    :pattern/action (:action req)
+                                                    :status :observed})
+          aif (:aif belief-update)]
+      (when (:mana entry)
+        (let [{:keys [action-cost restore]} (mana-config (:policy entry))
+              cost (double (or action-cost 1))
+              restore (double (or restore 10))
+              pid (:pattern/id req)
+              selection-id (get-in @(:state entry) [:selection :pattern/id])
+              mana @(:mana entry)
+              restore? (and pid
+                            (= pid selection-id)
+                            (not (restored? mana :psr->action pid)))]
+          (apply-mana! entry (- cost) :action {:pattern/id pid
+                                               :action (:action req)
+                                               :turn (:turn req)})
+          (when restore?
+            (apply-mana! entry restore :psr->action {:pattern/id pid
+                                                     :action (:action req)
+                                                     :turn (:turn req)})
+            (note-restore! entry :psr->action pid))))
       (append-lab-event! entry (pattern-action-event sid (:turn req) action))
-      (aif-engine/update-beliefs (:aif-engine entry)
-                                 {:decision/id (str sid ":action-" (java.util.UUID/randomUUID))
-                                  :session/id sid
-                                  :pattern/id (:pattern/id req)
-                                  :pattern/action (:action req)
-                                  :status :observed}))
-    (persist! entry :turn/action req resp)
-    resp))
+      (persist! entry :turn/action req resp)
+      (cond-> resp
+        aif (assoc :aif aif)
+        (:mana entry) (assoc :mana (mana-view @(:mana entry)))))))
 
 (defn turn-use!
   [req]
@@ -381,6 +494,19 @@
                                                     :session/id sid
                                                     :outcome (:outcome/tags pur)
                                                     :status :observed})]
+      (when (:mana entry)
+        (let [{:keys [restore]} (mana-config (:policy entry))
+              restore (double (or restore 10))
+              pid (:pattern/id req)
+              mana @(:mana entry)
+              action? (some #(= pid (:pattern/id %)) actions)
+              restore? (and pid
+                            action?
+                            (not (restored? mana :action->pur pid)))]
+          (when restore?
+            (apply-mana! entry restore :action->pur {:pattern/id pid
+                                                     :turn turn})
+            (note-restore! entry :action->pur pid))))
       (append-lab-event! entry {:event/type :pattern/use-claimed
                                 :at (fulab-musn/now-inst)
                                 :payload {:pur pur}})
@@ -389,8 +515,9 @@
              :pur pur
              :pur-emitted? true)
       (persist! entry :turn/use req resp)
-      (assoc resp :pur pur
-             :aif (:aif belief-update)))))
+      (cond-> (assoc resp :pur pur
+                     :aif (:aif belief-update))
+        (:mana entry) (assoc :mana (mana-view @(:mana entry)))))))
 
 (defn evidence-add!
   [req]
@@ -437,6 +564,18 @@
                                                         :session/id sid
                                                         :outcome (:outcome/tags pur)
                                                         :status :observed})]
+          (when (:mana entry)
+            (let [{:keys [restore]} (mana-config (:policy entry))
+                  restore (double (or restore 10))
+                  mana @(:mana entry)
+                  action? (some #(= chosen (:pattern/id %)) actions)
+                  restore? (and action?
+                                (not (restored? mana :action->pur chosen)))]
+              (when restore?
+                (apply-mana! entry restore :action->pur {:pattern/id chosen
+                                                         :turn turn
+                                                         :inferred? true})
+                (note-restore! entry :action->pur chosen))))
           (append-lab-event! entry {:event/type :pattern/use-claimed
                                     :at (fulab-musn/now-inst)
                                     :payload {:pur pur}})
@@ -459,7 +598,8 @@
              :psr-emitted? false
              :pur-emitted? false))
     (persist! entry :turn/end req resp)
-    resp))
+    (cond-> resp
+      (:mana entry) (assoc :mana (mana-view @(:mana entry))))))
 
 (defn turn-resume!
   [req]
@@ -476,9 +616,14 @@
   "Return a snapshot of the current session state (no mutation)."
   [req]
   (let [sid (:session/id req)]
-    (if-let [st (current-state sid)]
-      {:ok true
-       :session/id sid
-       :state (select-keys st [:turn :hud :selection :actions :trail :warnings :halt :plan? :resume-note])
-       :logic/summary (logic-audit/summary-for sid)}
+    (if-let [entry (get-session sid)]
+      (let [st @(:state entry)]
+        {:ok true
+         :session/id sid
+         :state (select-keys st [:turn :hud :selection :actions :trail :warnings :halt :plan? :resume-note])
+         :logic/summary (logic-audit/summary-for sid)
+         :aif/tap (when-let [tap (:aif-tap entry)]
+                    @tap)
+         :mana (when (:mana entry)
+                 (mana-view @(:mana entry)))} )
       {:ok false :err "not-found"})))

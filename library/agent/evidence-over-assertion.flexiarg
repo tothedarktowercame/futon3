@@ -15,7 +15,9 @@
     Require every substantive claim to point to evidence: a file path, a trace event, a test result, a quotation. If evidence is unavailable, emit the claim as provisional with an expiry and a verification path. Make "unsupported claim" a detectable violation, not just a style preference.
   + BECAUSE:
     Evidence transforms agent output from "trust me" to "check this." It enables verification, correction, and cumulative trust-building.
+    + evidence: Fulab PUR/PSR templates require anchors/certificates (`src/futon3/fulab/pattern_competence.clj`), and claim verification is enforced via `fulab-pattern-claim` + `fulab-pattern-check`.
   + NEXT-STEPS:
     - Identify claim types in your agent's output (facts, completions, diagnoses).
     - For each type, define what counts as adequate evidence.
     - Add validation that flags claims missing their evidence anchors and records provisional claims separately.
+    - Auto-attach tool/file anchors from `lab/tool-uses` to PUR/PSR records and surface missing evidence in `fulab-session-report`.

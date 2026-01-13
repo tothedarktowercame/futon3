@@ -35,6 +35,12 @@ To run a MUSN-guided fucodex session with live HUD in Emacs:
    ```
    This opens a 2-up view (raw stream + HUD). HUD stays in sync with MUSN intent/session/sigils and shows pattern candidates + AIF suggestion. Click “Proceed” in the HUD to continue the run.
 
+Port map (defaults):
+- Drawbridge (nREPL over HTTP): 6767
+- Transport/HUD format: 5050 (`HUD_SERVER`)
+- UI + pattern-action RPC: 6060 (`FUTON3_CODEX_SERVER_URL`)
+- MUSN HTTP: 6065 (`FUTON3_MUSN_URL`)
+
 Hotloading fixes into the running server (optional):
 ```bash
 ADMIN_TOKEN=$(cat .admintoken) clojure -M -e "

@@ -44,15 +44,22 @@
 (def ^:private conclusion-re
   (re-pattern "(?m)!\\s+(?:conclusion|claim|instantiated-by):\\s*(.*)$"))
 
+(defn- normalize-sigil-part [value]
+  (some-> value
+          (str/replace #"[\uFE0E\uFE0F\u200D]" "")
+          str/trim))
+
 (defn- split-sigils [block]
   (->> (str/split block #"\s+")
        (keep (fn [token]
                (when (str/includes? token "/")
                  (let [[emoji hanzi] (str/split token #"/" 2)
                        emoji (str/replace emoji #"^\[+|\]+$" "")
-                       hanzi (str/replace hanzi #"^\[+|\]+$" "")]
-                   {:emoji (str/trim emoji)
-                    :hanzi (str/trim hanzi)}))))))
+                       hanzi (str/replace hanzi #"^\[+|\]+$" "")
+                       emoji (normalize-sigil-part emoji)
+                       hanzi (normalize-sigil-part hanzi)]
+                   {:emoji emoji
+                    :hanzi hanzi}))))))
 
 (defn- read-lines [text]
   (str/split text #"\n"))
@@ -261,7 +268,8 @@
       (/ (+ ed hd) 2.0))))
 
 (defn- warn-missing-sigil [sigil]
-  (println (str "[sigil-warn] missing in index: " (:emoji sigil) "/" (:hanzi sigil))))
+  (println (str "[sigil-warn] detected sigil not in index: "
+                (:emoji sigil) "/" (:hanzi sigil))))
 
 (defn- entry-distance [targets entry]
   (some->> (for [t targets

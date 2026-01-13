@@ -15,7 +15,9 @@
     Define a handoff record that captures: current state hypothesis, decisions made and why, open questions, scope boundaries, next actions, evidence/trail anchors, and any provisional-claim ledger. Emit it at session end or when transferring to another agent.
   + BECAUSE:
     Handoffs convert ephemeral session state into persistent project state. They enable distributed and asynchronous work without context collapse.
+    + evidence: Fulab exports session context to `lab/raw`, `lab/stubs`, and `lab/trace` (`dev/lab-export-claude.clj`), plus summaries via `fulab-summary` and `fulab-session-report`.
   + NEXT-STEPS:
     - Identify handoff points in your agent's lifecycle (session end, escalation, delegation).
     - Define what context is essential vs. nice-to-have for each handoff type.
     - Test handoffs by having a fresh agent resume and measuring ramp-up cost.
+    - Extend lab stubs/summaries to capture open questions, scope boundaries, and provisional claims for resumption.

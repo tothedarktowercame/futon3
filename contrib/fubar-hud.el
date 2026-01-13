@@ -168,6 +168,9 @@
 (defvar-local fubar-hud--musn-pause-seen nil
   "Non-nil when a MUSN pause event was observed in the stream.")
 
+(defvar-local fubar-hud--musn-pause-reason nil
+  "String describing why MUSN reported a pause/halting state.")
+
 (defvar fubar-hud--stream-paused nil
   "Non-nil when the stream process is paused.")
 
@@ -179,6 +182,9 @@
 
 (defvar fubar-hud--auto-refresh-paused nil
   "Non-nil when auto-refresh is paused because the HUD window is selected.")
+
+(defvar fubar-hud--window nil
+  "Live window showing the FuLab HUD.")
 
 ;;; Faces
 
@@ -271,10 +277,41 @@
   (let ((case-fold-search t))
     (and line (string-match-p "\\[musn-pause\\]" line))))
 
+(defun fubar-hud--stringify (value)
+  (cond
+   ((symbolp value) (symbol-name value))
+   ((stringp value) value)
+   ((null value) nil)
+   (t (format "%s" value))))
+
+(defun fubar-hud--format-pause-reason (reason)
+  (when reason
+    (let* ((rtype (fubar-hud--stringify (plist-get reason :type)))
+           (note (fubar-hud--stringify (plist-get reason :note)))
+           (note (and note (string-trim note))))
+      (cond
+       ((and rtype note) (format "%s: %s" rtype note))
+       (rtype rtype)
+       (note note)
+       (t nil)))))
+
+(defun fubar-hud--pause-reason-from-line (line)
+  (let ((case-fold-search t))
+    (when (and line (string-match "\\[musn-pause\\]\\s-+\\(.*\\)$" line))
+      (let* ((json-str (match-string 1 line))
+             (pause (ignore-errors
+                      (json-parse-string json-str
+                                         :object-type 'plist
+                                         :array-type 'list
+                                         :null-object nil
+                                         :false-object nil)))
+             (reason (and pause (plist-get pause :reason))))
+        (fubar-hud--format-pause-reason reason)))))
+
 (defun fubar-hud--maybe-note-pause-from-line (line)
   "Flag a pause indicator when LINE contains a pause event."
   (when (fubar-hud--pause-line-p line)
-    (fubar-hud-note-pause)))
+    (fubar-hud-note-pause (fubar-hud--pause-reason-from-line line))))
 
 (defun fubar-hud--stream-filter (proc chunk)
   "Insert CHUNK into PROC buffer and parse intent lines."
@@ -714,8 +751,15 @@
     (insert (propertize "━━━ FuLab HUD ━━━\n\n" 'face 'fubar-hud-header-face))
 
     (when (fubar-hud--paused-p)
-      (insert (propertize "MUSN Status\n" 'face 'fubar-hud-header-face))
-      (insert "  " (propertize "PAUSED" 'face 'font-lock-warning-face) "\n\n"))
+      (let ((status (if fubar-hud--musn-paused "HALTED" "PAUSE SEEN"))
+            (reason (and fubar-hud--musn-pause-reason
+                         (not (string-empty-p fubar-hud--musn-pause-reason))
+                         fubar-hud--musn-pause-reason)))
+        (insert (propertize "MUSN Status\n" 'face 'fubar-hud-header-face))
+        (insert "  " (propertize status 'face 'font-lock-warning-face))
+        (when reason
+          (insert " - " reason))
+        (insert "\n\n")))
 
     ;; Operator status
     (when fubar-hud--operator-status
@@ -844,6 +888,52 @@
   (unless (derived-mode-p 'fubar-hud-mode)
     (fubar-hud-mode)))
 
+(defun fubar-hud--retire-window (win)
+  (when (window-live-p win)
+    (set-window-parameter win 'fubar-hud-owner nil)
+    (set-window-dedicated-p win nil)
+    (let ((one-window (with-selected-frame (window-frame win)
+                        (one-window-p t)))
+          (root-window (not (window-parent win))))
+      (if (or one-window root-window)
+          (set-window-buffer win (get-buffer-create "*scratch*"))
+        (delete-window win)))))
+
+(defun fubar-hud--track-window (win)
+  (when (window-live-p win)
+    (set-window-dedicated-p win t)
+    (set-window-parameter win 'fubar-hud-owner t)
+    (setq fubar-hud--window win))
+  win)
+
+(defun fubar-hud--delete-hud-windows (&optional keep)
+  "Close every live FuLab HUD window, except KEEP."
+  (dolist (win (get-buffer-window-list fubar-hud-buffer-name nil t))
+    (unless (eq win keep)
+      (fubar-hud--retire-window win)))
+  (unless keep
+    (setq fubar-hud--window nil)))
+
+(defun fubar-hud--ensure-window (buf)
+  "Display BUF in the dedicated FuLab HUD side window near the active frame."
+  (let ((existing (get-buffer-window buf t)))
+    (if (window-live-p existing)
+        (progn
+          (fubar-hud--track-window existing)
+          (fubar-hud--delete-hud-windows existing)
+          existing)
+      (let ((frame (window-frame (selected-window))))
+        (fubar-hud--delete-hud-windows nil)
+        (let ((win (with-selected-frame frame
+                     (display-buffer-in-side-window
+                      buf
+                      `((side . right)
+                        (window-width . ,fubar-hud-window-width)
+                        (slot . 0))))))
+          (when (window-live-p win)
+            (fubar-hud--track-window win)
+            win))))))
+
 (defun fubar-hud--show-run-layout (stream-buf)
   "Show STREAM-BUF on the left and the HUD on the right."
   (let ((hud-buf (get-buffer-create fubar-hud-buffer-name)))
@@ -852,11 +942,12 @@
       (fubar-hud-refresh))
     (let ((root (selected-window)))
       (when (window-live-p root)
+        (fubar-hud--delete-hud-windows nil)
         (delete-other-windows root)
         (let ((hud-win (split-window root (- (max 30 fubar-hud-window-width)) 'right)))
           (set-window-buffer root stream-buf)
           (set-window-buffer hud-win hud-buf)
-          (set-window-dedicated-p hud-win t)
+          (fubar-hud--track-window hud-win)
           (select-window root))))
     (fubar-hud--maybe-start-auto-refresh)))
 
@@ -878,20 +969,27 @@
       (setq fubar-hud--session-id session-id)
       (fubar-hud-refresh))))
 
-(defun fubar-hud-set-musn-paused (paused)
+(defun fubar-hud-set-musn-paused (paused &optional reason)
   "Set MUSN paused state for the HUD."
   (let ((buf (get-buffer-create fubar-hud-buffer-name)))
     (with-current-buffer buf
       (fubar-hud--ensure-mode)
       (setq fubar-hud--musn-paused paused)
+      (if paused
+          (when reason
+            (setq fubar-hud--musn-pause-reason reason))
+        (setq fubar-hud--musn-pause-seen nil)
+        (setq fubar-hud--musn-pause-reason nil))
       (fubar-hud-refresh))))
 
-(defun fubar-hud-note-pause ()
+(defun fubar-hud-note-pause (&optional reason)
   "Mark that a MUSN pause event has been observed."
   (let ((buf (get-buffer-create fubar-hud-buffer-name)))
     (with-current-buffer buf
       (fubar-hud--ensure-mode)
       (setq fubar-hud--musn-pause-seen t)
+      (when reason
+        (setq fubar-hud--musn-pause-reason reason))
       (fubar-hud-refresh))))
 
 (defun fubar-hud-apply-hud-state (hud-map)
@@ -957,30 +1055,24 @@ Copies intent, sigils, candidates, and any other known HUD fields, then refreshe
         (fubar-hud-mode))
       (unless fubar-hud--current-hud
         (fubar-hud-refresh)))
-    (display-buffer-in-side-window
-     buf
-     `((side . right)
-       (window-width . ,fubar-hud-window-width)
-       (slot . 0))))
+    (fubar-hud--ensure-window buf))
   (fubar-hud--maybe-start-auto-refresh))
 
 (defun fubar-hud-hide ()
   "Hide HUD window."
   (interactive)
-  (when-let ((win (get-buffer-window fubar-hud-buffer-name)))
-    (delete-window win))
-  (unless (get-buffer-window fubar-hud-buffer-name)
-    (fubar-hud--stop-auto-refresh)))
+  (fubar-hud--delete-hud-windows nil)
+  (fubar-hud--stop-auto-refresh))
 
 (defun fubar-hud--maybe-start-auto-refresh ()
   "Start auto-refresh timer when HUD buffer is visible."
-  (when (and (get-buffer-window fubar-hud-buffer-name)
+  (when (and (get-buffer-window fubar-hud-buffer-name t)
              (null fubar-hud--auto-refresh-timer)
              (numberp fubar-hud-auto-refresh-seconds))
     (setq fubar-hud--auto-refresh-timer
           (run-at-time 0 fubar-hud-auto-refresh-seconds
                        (lambda ()
-                         (let ((hud-win (get-buffer-window fubar-hud-buffer-name)))
+                         (let ((hud-win (get-buffer-window fubar-hud-buffer-name t)))
                            (when hud-win
                              (let* ((hud-buf (get-buffer fubar-hud-buffer-name))
                                     (pause? (and fubar-hud-pause-when-selected
@@ -1001,9 +1093,9 @@ Copies intent, sigils, candidates, and any other known HUD fields, then refreshe
 (defun fubar-hud-toggle ()
   "Toggle HUD visibility."
   (interactive)
-  (if (get-buffer-window fubar-hud-buffer-name)
+  (if (get-buffer-window fubar-hud-buffer-name t)
       (fubar-hud-hide)
-      (fubar-hud-show)))
+    (fubar-hud-show)))
 
 (defun fubar-hud-get-prompt-block ()
   "Get current HUD as prompt block for injection."

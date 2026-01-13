@@ -184,13 +184,19 @@
 (def ^:private certificate-types
   #{:git/commit})
 
+(defn- normalize-certificate-type [value]
+  (cond
+    (keyword? value) value
+    (string? value) (keyword value)
+    :else nil))
+
 (defn- git-commit-ref? [value]
   (and (string? value)
        (re-matches #"(?i)[0-9a-f]{7,40}" value)))
 
 (defn- certificate-valid? [cert]
   (and (map? cert)
-       (contains? certificate-types (:certificate/type cert))
+       (contains? certificate-types (normalize-certificate-type (:certificate/type cert)))
        (git-commit-ref? (:certificate/ref cert))
        (or (blankish? (:certificate/repo cert))
            (string? (:certificate/repo cert)))))

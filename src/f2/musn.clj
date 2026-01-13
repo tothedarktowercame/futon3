@@ -40,6 +40,7 @@
   {:config (atom config)
    :clients (atom {})
    :history (atom [])
+   :hud-help (atom {:sessions #{}})
    :adapters (atom (mock/adapters))
    :router (atom nil)})
 

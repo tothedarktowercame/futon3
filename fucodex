@@ -33,17 +33,33 @@ EXPLORE_HOTWORDS=""
 EXPLORE_NAMESPACES=""
 EXPLORE_LIMIT="4"
 EXPLORE_PROMPT_FILE="docs/codex-exploratory-mission.md"
-HUD_MODE=false
+HUD_MODE=true
 HUD_INTENT=""
 APPROVAL_POLICY=""
 SKIP_GIT_CHECK=false
 HUD_PRINT=false
 HUD_SERVER="${HUD_SERVER:-http://localhost:5050}"
+FUTON3_CODEX_SERVER_URL="${FUTON3_CODEX_SERVER_URL:-http://localhost:6060}"
+export FUTON3_CODEX_SERVER_URL
 PATTERN_RPC=true
 PAUSE_ON_NO_WRITE="${FUCODEX_PAUSE_ON_NO_WRITE:-auto}"
 MUSN_MODE=false
 MUSN_URL="${FUCODEX_MUSN_URL:-http://localhost:6065}"
+UNSANDBOXED=false
 SCOPE_GUARDRAIL=$'Scope guardrail: avoid repo-wide `rg --files` or wide `rg` searches.\nBefore tool use, state a 1-2 line plan; if a wide scan is likely, either (a) announce it and proceed, or (b) stop and ask for scope; if asking, do not run the scan.\nTreat wide scans as expensive.'
+MANA_START="${FUTON3_MUSN_MANA_START:-100}"
+MANA_BALANCE="${FUTON3_MUSN_MANA_BALANCE:-$MANA_START}"
+MANA_EARNED="${FUTON3_MUSN_MANA_EARNED:-0}"
+MANA_SPENT="${FUTON3_MUSN_MANA_SPENT:-0}"
+MUSN_HELP="${FUCODEX_MUSN_HELP:-auto}"
+MUSN_SESSION_ID="${FUTON3_MUSN_SESSION_ID:-}"
+
+if [[ "${FUCODEX_HUD-}" == "0" || "${FUCODEX_HUD-}" == "false" ]]; then
+  HUD_MODE=false
+fi
+if [[ "${FUCODEX_UNSANDBOXED-}" == "1" || "${FUCODEX_UNSANDBOXED-}" == "true" ]]; then
+  UNSANDBOXED=true
+fi
 
 show_help() {
   cat <<'EOF'
@@ -66,9 +82,11 @@ Options:
   --explore-prompt      Prompt file to use (default: docs/codex-exploratory-mission.md).
   --aif-select          Let AIF choose the pattern (used in explore).
   --proposal-hook       Emit proposal draft when candidates are insufficient.
-  --hud                 Enable HUD mode: seed patterns into prompt, parse response.
+  --hud                 Enable HUD mode: seed patterns into prompt, parse response (default on).
+  --no-hud              Disable HUD mode even if default is on.
   --intent TEXT         Intent/goal for HUD pattern selection.
   --approval-policy     Approval policy for codex exec (e.g., untrusted, never).
+  --no-sandbox          Run codex exec with no sandbox or approvals (dangerous).
   --pattern-rpc         Enable pattern-action RPC and enforce explicit reads (default: on).
   --pause-on-no-write   Pause live runs when selection mode=use but no files change.
   --no-pause-on-no-write Disable pause-on-no-write (overrides env default).
@@ -139,10 +157,14 @@ while [[ $# -gt 0 ]]; do
       PROPOSAL_HOOK=true; shift;;
     --hud)
       HUD_MODE=true; shift;;
+    --no-hud)
+      HUD_MODE=false; shift;;
     --intent)
       HUD_INTENT="$2"; shift 2;;
     --approval-policy)
       APPROVAL_POLICY="$2"; shift 2;;
+    --no-sandbox|--unsandboxed)
+      UNSANDBOXED=true; shift;;
     --pattern-rpc)
       PATTERN_RPC=true; shift;;
     --pause-on-no-write)
@@ -241,21 +263,63 @@ if [[ "$PAUSE_ON_NO_WRITE" == "auto" ]]; then
   fi
 fi
 
+if $MUSN_MODE && [[ -z "$MUSN_SESSION_ID" ]]; then
+  if [[ -n "$FORCED_SESSION_ID" ]]; then
+    MUSN_SESSION_ID="$FORCED_SESSION_ID"
+  else
+    MUSN_SESSION_ID="musn-$(python3 - <<'PY'
+import uuid
+print(str(uuid.uuid4())[:8])
+PY
+)"
+  fi
+fi
+
 # HUD mode: inject pattern context into prompt
 HUD_FILE=""
 HUD_JSON_FILE=""
 if $HUD_MODE; then
   HUD_ENDPOINT="${HUD_SERVER%/}/fulab/hud/format"
-  HUD_PAYLOAD=$(HUD_INTENT="$HUD_INTENT" PATTERNS="$PATTERNS" EXPLORE_LIMIT="$EXPLORE_LIMIT" RUN_CWD="$RUN_CWD" python3 - <<'PY'
+  HUD_PAYLOAD=$(HUD_INTENT="$HUD_INTENT" PATTERNS="$PATTERNS" EXPLORE_LIMIT="$EXPLORE_LIMIT" RUN_CWD="$RUN_CWD" \
+    MANA_START="$MANA_START" MANA_BALANCE="$MANA_BALANCE" MANA_EARNED="$MANA_EARNED" MANA_SPENT="$MANA_SPENT" \
+    MUSN_MODE="$MUSN_MODE" MUSN_HELP="$MUSN_HELP" SESSION_ID="$MUSN_SESSION_ID" \
+    python3 - <<'PY'
 import json, os
 
 intent = os.environ.get("HUD_INTENT", "")
 patterns = os.environ.get("PATTERNS", "")
+session_id = (os.environ.get("SESSION_ID", "") or "").strip()
 limit = os.environ.get("EXPLORE_LIMIT", "4")
 try:
     limit = int(limit)
 except ValueError:
     limit = 4
+def parse_num(value, default):
+    try:
+        return float(value)
+    except Exception:
+        return default
+def parse_bool(value, default=False):
+    if value is None:
+        return default
+    raw = str(value).strip().lower()
+    if raw in ("1", "true", "yes", "y", "on"):
+        return True
+    if raw in ("0", "false", "no", "n", "off"):
+        return False
+    return default
+
+musn_mode = parse_bool(os.environ.get("MUSN_MODE"), False)
+raw_help = os.environ.get("MUSN_HELP", "").strip().lower()
+if not raw_help or raw_help == "auto":
+    musn_help = musn_mode
+else:
+    musn_help = parse_bool(raw_help, musn_mode)
+
+mana_start = parse_num(os.environ.get("MANA_START", "100"), 100.0)
+mana_balance = parse_num(os.environ.get("MANA_BALANCE", str(mana_start)), mana_start)
+mana_earned = parse_num(os.environ.get("MANA_EARNED", "0"), 0.0)
+mana_spent = parse_num(os.environ.get("MANA_SPENT", "0"), 0.0)
 
 prototypes = [p for p in patterns.split(",") if p.strip()] if patterns else []
 
@@ -266,6 +330,16 @@ payload = {
     "certify-commit": True,
     "repo-root": os.environ.get("RUN_CWD", os.getcwd()),
 }
+if session_id:
+    payload["session-id"] = session_id
+if musn_mode:
+    payload["mana"] = {
+        "budget": mana_start,
+        "balance": mana_balance,
+        "earned": mana_earned,
+        "spent": mana_spent,
+    }
+    payload["musn-help"] = musn_help
 
 print(json.dumps(payload))
 PY
@@ -380,7 +454,7 @@ fi
 if [[ -n "$FORCED_SESSION_ID" ]]; then
   export FUTON3_CODEX_SESSION_ID="$FORCED_SESSION_ID"
 fi
-if [[ -n "$HUD_SERVER" ]]; then
+if [[ -n "$HUD_SERVER" && -z "${FUTON3_CODEX_SERVER_URL-}" ]]; then
   export FUTON3_CODEX_SERVER_URL="$HUD_SERVER"
 fi
 if $MUSN_MODE; then
@@ -396,6 +470,9 @@ if $PATTERN_RPC; then
 fi
 if $MUSN_MODE; then
   export FUTON3_MUSN_URL="$MUSN_URL"
+  if [[ -n "$MUSN_SESSION_ID" ]]; then
+    export FUTON3_MUSN_SESSION_ID="$MUSN_SESSION_ID"
+  fi
   if [[ -n "$AIF_CONFIG" ]]; then
     export FUTON3_MUSN_AIF_CONFIG_PATH="$AIF_CONFIG"
   fi
@@ -506,6 +583,9 @@ PY
   fi
   if [[ -n "$APPROVAL_POLICY" ]]; then
     codex_flags+=(-c "approval_policy=\"$APPROVAL_POLICY\"")
+  fi
+  if $UNSANDBOXED; then
+    codex_flags+=(--dangerously-bypass-approvals-and-sandbox)
   fi
   if [[ ${#args[@]} -gt 0 && "${args[0]}" == -* ]]; then
     codex_flags+=(--)

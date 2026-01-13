@@ -15,7 +15,9 @@
     Enforce a rhythm: first gather relevant observations, then weigh options against goals and constraints, then commit to a single action before the next cycle. Make each phase explicit and bounded, and check scope, budget, and confidence gates at phase boundaries.
   + BECAUSE:
     The three-phase structure prevents both impulsive drift and endless deliberation, and makes the agent's reasoning inspectable at phase boundaries.
+    + evidence: Fulab HUD prompts force deliberate candidate review before acting (`src/futon3/fulab/hud.clj`), and the session report tracks selection and outcome phases (`dev/lab-session-report.clj`).
   + NEXT-STEPS:
     - Identify where your agent conflates phases (e.g., acting while still gathering input).
     - Add explicit phase markers to logs or traces so observers can see the rhythm.
     - Tune phase durations based on task urgency and uncertainty.
+    - Emit explicit sense/deliberate/act markers in fulab session events and surface them in reports.

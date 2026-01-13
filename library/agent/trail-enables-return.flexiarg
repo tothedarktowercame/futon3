@@ -15,7 +15,9 @@
     Record a trail of moves, decisions, and state transitions with minimal fields (time, state snapshot, decision, action, evidence, reversibility). Make the trail queryable so the agent (or its successors) can backtrack, detect loops, and learn from history.
   + BECAUSE:
     Trails convert ephemeral navigation into persistent structure. They enable learning, debugging, and graceful recovery.
+    + evidence: Fulab session exports write `lab/trace/<session-id>.org` and `lab/raw` (`dev/lab-export-claude.clj`), and `fuclaude` supports `--resume`/`--continue` runs.
   + NEXT-STEPS:
     - Decide what granularity of trail your agent needs (every step? key decisions only?).
     - Implement trail storage that survives across sessions if work spans multiple runs.
     - Add trail-query primitives: "have I been here?", "how did I get here?", "what failed last time?"
+    - Add fulab trail query helpers (CLI or HUD) to fetch prior decisions during resume flows.

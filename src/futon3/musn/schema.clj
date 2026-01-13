@@ -16,18 +16,28 @@
    [:reads {:optional true} [:vector PatternId]]
    [:note {:optional true} string?]
    [:source {:optional true} keyword?]              ;; :hud, :auto, :explicit
-   [:aif {:optional true} [:map
-                           [:G {:optional true} number?]
-                           [:tau {:optional true} number?]
-                           [:e {:optional true} number?]
-                           [:o {:optional true} number?]
-                           [:G-rejected {:optional true} [:map-of PatternId number?]]]]]])
+   [:aif {:optional true}
+    [:map
+     [:G {:optional true} number?]
+     [:tau {:optional true} number?]
+     [:e {:optional true} number?]
+     [:o {:optional true} number?]
+     [:G-rejected {:optional true} [:map-of PatternId number?]]]]])
 
 (def AifSelectionSummary
   [:map
    [:G {:optional true} number?]
    [:tau {:optional true} number?]
    [:G-rejected {:optional true} [:map-of PatternId number?]]])
+
+(def ManaState
+  [:map
+   [:budget number?]
+   [:balance number?]
+   [:earned number?]
+   [:spent number?]
+   [:turn {:optional true} int?]
+   [:last-change {:optional true} map?]])
 
 (def SessionCreateReq
   [:map
@@ -70,6 +80,7 @@
    [:aif {:optional true} [:map
                            [:tau number?]
                            [:G-scores {:optional true} [:map-of PatternId number?]]]]
+   [:mana {:optional true} ManaState]
    [:trail [:map [:on int?] [:off int?] [:limit number?]]]])
 
 (def TurnPlanReq [:map [:session/id string?] [:turn int?] [:plan string?]])
@@ -113,6 +124,7 @@
    [:aif {:optional true} [:map
                            [:e {:optional true} number?]
                            [:dE {:optional true} number?]]]
+   [:mana {:optional true} ManaState]
    [:warning {:optional true} [:map [:type keyword?] [:msg string?]]]
    [:logic {:optional true} map?]])
 
@@ -132,7 +144,8 @@
           [:pattern/id PatternId]
           [:use/reason {:optional true} string?]
           [:outcome/tags {:optional true} [:vector keyword?]]]]
-   [:aif {:optional true} map?]])
+   [:aif {:optional true} map?]
+   [:mana {:optional true} ManaState]])
 
 (def EvidenceAddReq
   [:map
@@ -157,7 +170,8 @@
               [:warnings int?]]]
    [:halt? boolean?]
    [:halt/reason {:optional true} map?]
-   [:logic {:optional true} map?]])
+   [:logic {:optional true} map?]
+   [:mana {:optional true} ManaState]])
 
 (def TurnResumeReq [:map [:session/id string?] [:turn int?] [:note {:optional true} string?]])
 (def TurnResumeResp [:map [:ok boolean?] [:turn int?]])

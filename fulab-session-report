@@ -3,17 +3,18 @@ set -euo pipefail
 
 # fulab-session-report: Generate three-column session report (repo | pattern | AIF)
 # Usage:
-#   fulab-session-report --session-id ID [--lab-root PATH]
+#   fulab-session-report --session-id ID [--lab-root PATH] [--format md] [--print]
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
 LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
 
 usage() {
-  echo "Usage: fulab-session-report --session-id ID [--lab-root PATH]"
+  echo "Usage: fulab-session-report --session-id ID [--lab-root PATH] [--format md] [--print]"
 }
 
 SESSION_ID=""
 LAB_ROOT="$ROOT/lab"
+FORMAT="md"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -21,6 +22,10 @@ while [[ $# -gt 0 ]]; do
       SESSION_ID="$2"; shift 2;;
     --lab-root)
       LAB_ROOT="$2"; shift 2;;
+    --format)
+      FORMAT="$2"; shift 2;;
+    --print)
+      shift;;
     --help|-h)
       usage; exit 0;;
     *)
@@ -29,6 +34,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+if [[ -z "$SESSION_ID" ]]; then
+  echo "Error: --session-id is required" >&2
+  usage
+  exit 1
+fi
+
 clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-session-report.clj" \
   --session-id "$SESSION_ID" \
-  --lab-root "$LAB_ROOT"
+  --lab-root "$LAB_ROOT" \
+  --format "$FORMAT"

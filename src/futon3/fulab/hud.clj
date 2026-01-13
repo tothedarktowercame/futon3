@@ -204,8 +204,10 @@
    - :sigils - explicit sigils (overrides derivation)
    - :pattern-limit - max patterns to fetch (default 4)
    - :aif-config - AIF configuration map
+   - :mana - optional mana state map for prompt display
+   - :musn-help - optional boolean to show MUSN help prompt
    - :certificates - optional certificate vector for PSR/PUR"
-  [{:keys [intent prototypes sigils pattern-limit aif-config certificates]
+  [{:keys [intent prototypes sigils pattern-limit aif-config certificates mana musn-help]
     :or {pattern-limit 4}}]
   (let [all-patterns (hints/all-patterns)
         ;; Resolve sigils from intent or prototypes
@@ -257,6 +259,10 @@
      :certificates (vec (or certificates []))
      ;; AIF state
      :aif aif-result
+     ;; Mana state
+     :mana mana
+     ;; MUSN help
+     :musn-help musn-help
      ;; Agent response (filled after turn)
      :agent-report nil})))
 
@@ -294,6 +300,48 @@
                               (str/join "\n"))
                          "No candidates found.")
         aif (:aif hud)
+        aif-live (:aif-live hud)
+        mana (:mana hud)
+        mana-num (fn [value]
+                   (when (number? value)
+                     (format "%.0f" (double value))))
+        live-num (fn [value]
+                   (when (number? value)
+                     (format "%.2f" (double value))))
+        mana-balance (or (:balance mana) (:budget mana) 100)
+        mana-line (if (map? mana)
+                    (let [balance (mana-num (:balance mana))
+                          budget (mana-num (:budget mana))
+                          earned (mana-num (:earned mana))
+                          spent (mana-num (:spent mana))
+                          main (format "Mana: %s/%s"
+                                       (or balance "?")
+                                       (or budget "?"))
+                          trail (remove nil?
+                                        [(when earned (str "earned " earned))
+                                         (when spent (str "spent " spent))])]
+                      (if (seq trail)
+                        (str main " (" (str/join ", " trail) ")")
+                        main))
+                    "Mana: n/a")
+        help-line (when (:musn-help hud)
+                    (format "[MUSN-HELP]\nYou have %s mana. Gain mana points by reading patterns and completing their next steps. Other actions cost mana.\n[/MUSN-HELP]\n"
+                            (mana-num mana-balance)))
+        live-summary (:summary aif-live)
+        live-line (when (map? live-summary)
+                    (let [kind (or (:kind live-summary) "tap")
+                          chosen (:chosen live-summary)
+                          tau (live-num (:tau live-summary))
+                          g (live-num (:g-chosen live-summary))
+                          err (live-num (:prediction-error live-summary))
+                          parts (remove nil?
+                                        [(when kind (str "kind=" kind))
+                                         (when chosen (str "chosen=" chosen))
+                                         (when g (str "G=" g))
+                                         (when tau (str "tau=" tau))
+                                         (when err (str "err=" err))])]
+                      (when (seq parts)
+                        (str "AIF live: " (str/join " " parts)))))
         white-space-label (when (:white-space? aif) "white-space tau boost")
         aif-str (if (:suggested aif)
                   (format "AIF suggests: %s (G=%.2f, τ=%.1f%s)"
@@ -311,6 +359,9 @@
          candidates-str "\n"
          "\n"
          aif-str "\n"
+         (when live-line (str live-line "\n"))
+         mana-line "\n"
+         (or help-line "")
          "\n"
          "Start your response with: Intent: <one-line restatement of the task>\n"
          "Before acting, state a 1-2 line plan and read the AIF suggestion plus one other candidate (if present).\n"

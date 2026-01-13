@@ -15,7 +15,9 @@
     Require a handshake that echoes intent, scope, constraints, and success criteria, and record an acknowledgment. Changes to intent or scope require an explicit renegotiation event before further actions.
   + BECAUSE:
     Binding intent makes the run auditable and prevents silent goal drift.
+    + evidence: Fulab HUD prompts require an intent restatement (`src/futon3/fulab/hud.clj`), and `fuclaude --intent` passes intent into the HUD.
   + NEXT-STEPS:
     - Add an intent-handshake event to the session start protocol.
     - Block tool actions until the handshake is logged.
     - Record intent changes as first-class events with rationale.
+    - Emit an explicit intent-handshake event in lab sessions and enforce it before tool calls.

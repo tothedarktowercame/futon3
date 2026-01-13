@@ -15,7 +15,9 @@
     Maintain a commitment parameter (temperature, precision, confidence threshold) that modulates how decisively the agent acts. Couple it to uncertainty signals with explicit thresholds: low confidence -> explore or pause; medium confidence -> hedge or seek confirmation; high confidence -> commit and execute.
   + BECAUSE:
     Variable commitment adapts behavior to epistemic state. The agent exploits when it knows enough and explores (or asks) when it doesn't.
+    + evidence: `src/futon3/fulab/hud.clj` computes `tau` from candidate spread and `precision/prior`, and `dev/lab-session-report.clj` logs tau/prediction-error updates.
   + NEXT-STEPS:
     - Identify how your agent currently commits to choices (is it always the same strength?).
     - Add uncertainty tracking that can modulate commitment and log threshold crossings.
     - Tune the coupling: what uncertainty level triggers exploration vs. exploitation vs. pause?
+    - Tie tau/confidence thresholds to explicit actions (ask/hedge/commit) and log crossings in lab sessions.

@@ -16,3 +16,23 @@ from the current file/buffer. If the lab data live elsewhere, set
 
 Arxana can read `futon3/lab` directly, keeping Futon3 as the owner of lab
 records while Futon4 owns the Arxana interface for reading them.
+
+## Export sanity check
+
+Use the local wrappers to validate exported lab artifacts quickly.
+
+`fulab-export-check` runs `dev/lab-export.clj` in `--dry-run` and verifies
+that raw/stub/trace outputs exist alongside AIF/PSR/PUR artifacts.
+
+Examples:
+
+```
+fulab-export-check --session-id 019b9d97-be98-7b41-b1b5-586457ca49a0
+fulab-export-check --session-file lab/raw-stream/019b9d97-be98-7b41-b1b5-586457ca49a0.jsonl
+```
+
+`fulab-session-report` prints a quick session report to stdout.
+
+```
+fulab-session-report --session-id 019b9d97-be98-7b41-b1b5-586457ca49a0 --format md --print
+```

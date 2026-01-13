@@ -1361,11 +1361,27 @@ Output goes to *FuLab Raw Stream* buffer."
          (sid-label (if (and sid (>= (length sid) 8))
                         (substring sid 0 8)
                       (or sid "last")))
-         (cmd (if sid
-                  (format "HUD_SERVER=http://localhost:5050 %s/fuclaude --resume %s -p %s 2>&1"
-                          fubar-hud-futon3-root escaped-sid escaped-prompt)
+         (fucodex-path (expand-file-name "fucodex" fubar-hud-futon3-root))
+         (use-fucodex (file-executable-p fucodex-path))
+         (cmd (cond
+               (use-fucodex
+                (if sid
+                  (format "FUTON3_MUSN_SESSION_ID=%s FUTON3_MUSN_URL=%s FUCODEX_PREFLIGHT=off %s --live --musn --session-id %s resume --last %s 2>&1"
+                          (shell-quote-argument sid)
+                          (shell-quote-argument fubar-musn-url)
+                          fucodex-path
+                          escaped-sid
+                          escaped-prompt)
+                  (format "FUTON3_MUSN_URL=%s FUCODEX_PREFLIGHT=off %s --live --musn resume --last %s 2>&1"
+                          (shell-quote-argument fubar-musn-url)
+                          fucodex-path
+                          escaped-prompt)))
+               (sid
+                (format "HUD_SERVER=http://localhost:5050 %s/fuclaude --resume %s -p %s 2>&1"
+                        fubar-hud-futon3-root escaped-sid escaped-prompt))
+               (t
                 (format "HUD_SERVER=http://localhost:5050 %s/fuclaude --continue -p %s 2>&1"
-                        fubar-hud-futon3-root escaped-prompt)))
+                        fubar-hud-futon3-root escaped-prompt))))
          proc)
     (with-current-buffer buf
       (goto-char (point-max))
@@ -1373,8 +1389,8 @@ Output goes to *FuLab Raw Stream* buffer."
                       sid-label
                       (substring prompt 0 (min 50 (length prompt))))))
     (display-buffer buf)
-    (setq proc (start-process-shell-command "fuclaude-resume" buf cmd))
-    (process-put proc 'fubar-hud-label "fuclaude-resume")
+    (setq proc (start-process-shell-command (if use-fucodex "fucodex-resume" "fuclaude-resume") buf cmd))
+    (process-put proc 'fubar-hud-label (if use-fucodex "fucodex-resume" "fuclaude-resume"))
     (set-process-sentinel proc #'fubar-hud--process-sentinel)
     (message "Resuming session: %s" (or sid "last"))))
 

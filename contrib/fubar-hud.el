@@ -1362,18 +1362,30 @@ Output goes to *FuLab Raw Stream* buffer."
                         (substring sid 0 8)
                       (or sid "last")))
          (fucodex-path (expand-file-name "fucodex" fubar-hud-futon3-root))
+         (hud-intent (when (get-buffer fubar-hud-buffer-name)
+                       (buffer-local-value 'fubar-hud--intent
+                                           (get-buffer fubar-hud-buffer-name))))
+         (hud-intent (and (stringp hud-intent)
+                          (not (string-empty-p hud-intent))
+                          hud-intent))
          (use-fucodex (file-executable-p fucodex-path))
          (cmd (cond
                (use-fucodex
                 (if sid
-                  (format "FUTON3_MUSN_SESSION_ID=%s FUTON3_MUSN_URL=%s FUCODEX_PREFLIGHT=off %s --live --musn --session-id %s resume --last %s 2>&1"
+                  (format "FUTON3_MUSN_SESSION_ID=%s FUTON3_MUSN_URL=%s%s FUCODEX_PREFLIGHT=off %s --live --musn --session-id %s resume --last %s 2>&1"
                           (shell-quote-argument sid)
                           (shell-quote-argument fubar-musn-url)
+                          (if hud-intent
+                              (concat " FUTON3_MUSN_INTENT=" (shell-quote-argument hud-intent))
+                            "")
                           fucodex-path
                           escaped-sid
                           escaped-prompt)
-                  (format "FUTON3_MUSN_URL=%s FUCODEX_PREFLIGHT=off %s --live --musn resume --last %s 2>&1"
+                  (format "FUTON3_MUSN_URL=%s%s FUCODEX_PREFLIGHT=off %s --live --musn resume --last %s 2>&1"
                           (shell-quote-argument fubar-musn-url)
+                          (if hud-intent
+                              (concat " FUTON3_MUSN_INTENT=" (shell-quote-argument hud-intent))
+                            "")
                           fucodex-path
                           escaped-prompt)))
                (sid

@@ -56,6 +56,10 @@
 
 (declare candidate-id)
 (declare log-warning!)
+(declare note-selected!)
+(declare log-selection!)
+(declare candidate-detail)
+(declare log-use!)
 
 (defn- repo-root []
   (or (some-> (System/getenv "FUTON3_REPO_ROOT") str/trim not-empty)

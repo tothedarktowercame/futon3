@@ -746,7 +746,7 @@
 
                 :else
                 (handle-event! state event session)))))
-            (when (= event-type "turn.completed")
+            (when (= (:type event) "turn.completed")
               (let [turn (:turn @state)]
                 (when-not (= turn (:turn-ended @state))
                   (swap! state assoc :turn-ended turn)

@@ -132,12 +132,20 @@
         candidates (if (seq read-ids)
                      (vec (distinct (cond-> read-ids chosen-id (conj chosen-id))))
                      (when chosen-id [chosen-id]))]
-    (post! "/musn/turn/select" {:session/id sid
-                                :turn turn
-                                :candidates candidates
-                                :chosen chosen-id
-                                :reason (cond-> reason
-                                          (seq read-ids) (assoc :reads read-ids))})))
+    (if (and chosen-id (seq candidates) (map? reason))
+      (post! "/musn/turn/select" {:session/id sid
+                                  :turn turn
+                                  :candidates candidates
+                                  :chosen chosen-id
+                                  :reason (cond-> reason
+                                            (seq read-ids) (assoc :reads read-ids))})
+      (do
+        (log-warning! "select-missing-chosen"
+                      {:turn turn
+                       :chosen chosen
+                       :candidates candidates
+                       :reason reason})
+        nil))))
 
 (defn musn-action [session turn pattern-id action note files]
   (let [sid (require-session-id session)

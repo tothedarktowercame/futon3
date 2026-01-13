@@ -1,0 +1,22 @@
+@flexiarg agent/environment-over-optimization
+@title Environment Over Optimization
+@sigils [🌱/境]
+@audience agent architects, workflow designers, futon developers
+@tone foundational
+@style pattern
+
+! conclusion: Build environments that select for viability, not agents that hit targets.
+  + context: You are designing how agents will operate, learn, and evolve over time.
+  + IF:
+    You want agents that can adapt to changing conditions and improve through experience rather than being brittle to novelty.
+  + HOWEVER:
+    Optimization toward fixed targets finds local maxima; agents become overfit to benchmarks and fail when conditions shift. The "best" agent for yesterday's metric may be the worst for tomorrow's reality.
+  + THEN:
+    Focus on creating environments where viable behaviors can emerge, persist, and be selected: provide trails that enable learning, budgets that create selection pressure, evidence requirements that filter confabulation, and handoff mechanisms that let successful patterns propagate. Let agent quality emerge from environmental constraints rather than direct tuning.
+  + BECAUSE:
+    Viable environments enable open-ended evolution. Instead of one optimal agent, you get a population of approaches that can be compared, combined, and adapted. The environment becomes the product, not any single agent.
+  + NEXT-STEPS:
+    - Audit whether your agent design is optimizing for metrics or creating conditions for viability.
+    - Identify environmental features that create selection pressure (budgets, evidence requirements, scope bounds).
+    - Design for variation: can different agents or approaches coexist and compete in your environment?
+    - Track what emerges rather than what you planned; let the environment surface surprises.

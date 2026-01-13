@@ -1,0 +1,21 @@
+@flexiarg agent/intent-handshake-is-binding
+@title Intent Handshake Is Binding
+@sigils [👥/令]
+@audience agent architects, workflow designers, futon developers
+@tone foundational
+@style pattern
+
+! conclusion: A run should not start until the agent has restated and bound the intent and scope.
+  + context: An agent is about to begin a session or new turn.
+  + IF:
+    The system needs a reliable record of what the agent believes it is doing.
+  + HOWEVER:
+    If intent only lives in the prompt or UI, it drifts: agents reinterpret mid-run without explicit renegotiation.
+  + THEN:
+    Require a handshake that echoes intent, scope, constraints, and success criteria, and record an acknowledgment. Changes to intent or scope require an explicit renegotiation event before further actions.
+  + BECAUSE:
+    Binding intent makes the run auditable and prevents silent goal drift.
+  + NEXT-STEPS:
+    - Add an intent-handshake event to the session start protocol.
+    - Block tool actions until the handshake is logged.
+    - Record intent changes as first-class events with rationale.

@@ -1,0 +1,21 @@
+@flexiarg agent/escalation-cost-vs-risk
+@title Escalation Cost vs Risk
+@sigils [⚡️/平]
+@audience agent architects, workflow designers, futon developers
+@tone foundational
+@style pattern
+
+! conclusion: Escalate when expected error cost exceeds coordination cost.
+  + context: An agent must choose between acting locally and involving others.
+  + IF:
+    A decision could carry material risk or irreversible impact.
+  + HOWEVER:
+    Coordination costs discourage escalation, while risk-blind escalation wastes time on low-stakes work.
+  + THEN:
+    Estimate risk cost (impact x likelihood) and compare it to coordination cost. Escalate when risk cost exceeds a defined threshold, and log the comparison basis.
+  + BECAUSE:
+    This preserves speed on low-stakes actions while protecting high-stakes decisions.
+  + NEXT-STEPS:
+    - Define risk categories and default impact scales for your domain.
+    - Calibrate escalation thresholds with real incidents.
+    - Log escalation decisions alongside their risk and cost estimates.

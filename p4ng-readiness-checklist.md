@@ -50,8 +50,8 @@ Evidence to look for:
 ### Prompt E: Multiarg disambiguation
 ```
 Pick a multiarg pattern file (e.g. library/or/or.flexiarg). Explicitly select
-one pattern id from inside it, then make a small edit in that pattern block and
-name the pattern/action used.
+one pattern id from inside it (pattern-select), then make a small edit in that
+pattern block and name the pattern/action used (pattern-use).
 ```
 Evidence to look for:
 - [ ] Pattern id used is the specific @arg entry (not the file basename).

@@ -198,14 +198,16 @@
                                           (remove nil?
                                                   [(when g (str "G=" g))
                                                    (when tau (str "tau=" tau))]))))]
-    (println (format "[pattern-selection] chosen=%s candidates=%d mode=%s%s%s"
-                     (:chosen psr)
-                     (count (:candidates psr))
-                     (or mode :unknown)
-                     (if (seq reads)
-                       (str " reads=" (str/join "," reads))
-                       "")
-                     (or aif-label "")))
+    (let [line (format "[pattern-selection] chosen=%s candidates=%d mode=%s%s%s"
+                       (:chosen psr)
+                       (count (:candidates psr))
+                       (or mode :unknown)
+                       (if (seq reads)
+                         (str " reads=" (str/join "," reads))
+                         "")
+                       (or aif-label ""))]
+      (log! line)
+      (println line))
     (flush)
     (when (seq aif)
       (log-aif-selection! aif))))
@@ -222,18 +224,22 @@
                                            [(when err (str "err=" err))
                                             (when tau (str "tau=" tau))]))))
         tag-label (when (seq tags)
-                    (str " outcome=" (str/join "," (map name tags))))]
-    (println (format "[pattern-use] %s%s%s"
+                    (str " outcome=" (str/join "," (map name tags))))
+        line (format "[pattern-use] %s%s%s"
                      pattern-id
                      (or tag-label "")
-                     (or aif-label "")))
+                     (or aif-label ""))]
+    (log! line)
+    (println line)
     (flush))
   (when (seq aif)
     (log-aif-update! aif)))
 
 (defn print-pause [resp]
   (when-let [pause (:pause resp)]
-    (println "[MUSN-PAUSE]" (json/generate-string pause))
+    (let [line (str "[MUSN-PAUSE] " (json/generate-string pause))]
+      (log! line)
+      (println line))
     (flush)))
 
 (defn handle-event! [state event musn-session]
@@ -345,28 +351,38 @@
                   (when-let [aif (:aif start-resp)]
                     (log-aif-selection! aif)))
                 (if (seq candidates)
-                  (println (format "[hud-candidates] %s" (str/join ", " candidates)))
-                  (println "[hud-candidates] none"))
+                  (let [line (format "[hud-candidates] %s" (str/join ", " candidates))]
+                    (log! line)
+                    (println line))
+                  (let [line "[hud-candidates] none"]
+                    (log! line)
+                    (println line)))
                 (when-let [sigils (:sigils hud-map)]
-                  (println (format "[hud-sigils] %s" sigils)))
+                  (let [line (format "[hud-sigils] %s" sigils)]
+                    (log! line)
+                    (println line)))
                 (flush))
-              (when musn-intent
-                ;; announce intent into the stream so HUD can pick it up as handshake
-                (log! (format "[hud-intent] %s" musn-intent))
-                (println (format "[hud-intent] %s" musn-intent))
-                (flush)
-                (when require-approval?
-                  (println "[musn-pause] intent computed; waiting for approval to proceed")
+                (when musn-intent
+                  ;; announce intent into the stream so HUD can pick it up as handshake
+                  (log! (format "[hud-intent] %s" musn-intent))
+                  (println (format "[hud-intent] %s" musn-intent))
                   (flush)
-                  ;; Block until a resume note shows up in session state.
-                  (loop []
-                    (Thread/sleep 1000)
-                    (when-let [st (musn-state session)]
-                      (let [note (get-in st [:state :resume-note])]
-                        (when note
-                          (println (format "[musn-resume] note=%s" note))
-                          (flush)
-                          (swap! state assoc :resume-note note))
+                  (when require-approval?
+                    (let [line "[musn-pause] intent computed; waiting for approval to proceed"]
+                      (log! line)
+                      (println line))
+                    (flush)
+                    ;; Block until a resume note shows up in session state.
+                    (loop []
+                      (Thread/sleep 1000)
+                      (when-let [st (musn-state session)]
+                        (let [note (get-in st [:state :resume-note])]
+                          (when note
+                            (let [line (format "[musn-resume] note=%s" note)]
+                              (log! line)
+                              (println line))
+                            (flush)
+                            (swap! state assoc :resume-note note))
                         (when-not note
                           (recur)))))))))
 

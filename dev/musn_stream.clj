@@ -742,7 +742,7 @@
                         (println line))
                       (flush)
                       ;; Block until a resume note shows up in session state.
-                      (wait-for-resume! state session)))))
+                      (wait-for-resume! state session))))
 
                 :else
                 (handle-event! state event session))
@@ -785,3 +785,4 @@
 
 ;; Invoke main when run as a script (clojure -M dev/musn_stream.clj)
 (apply -main *command-line-args*)
+)

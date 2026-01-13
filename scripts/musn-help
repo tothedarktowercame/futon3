@@ -9,16 +9,20 @@ case "$topic" in
 MUSN help: tools
 
 pattern-action (shell helper; logs reads/updates)
-  pattern-action read f2/p13 "why"
-  pattern-action update or/dream-audit-per-release "note"
+  pattern-action read library/patternname "why"
+  pattern-action update library/pattern "summary"
 
-plan (no tool needed; lines starting with Plan: or [plan])
-  Plan: scan library for MUSN warnings
-  musn-plan "Plan: scan library for MUSN warnings"
+plan (use a Plan: line or musn-plan helper)
+  Plan: outline your plan
+  musn-plan "Plan: outline your plan"
 
-rg (search)
-  rg -n "musn-warning" src
+search (rg)
+  rg -n "your search string" src
   rg --files -g "*.clj" src
+
+patch
+  apply_patch
+  perl -pi -e 's/old/new/' path
 
 edit files
   apply_patch (if available in your tool list)

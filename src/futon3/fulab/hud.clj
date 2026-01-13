@@ -329,10 +329,11 @@
                                  "You have %s mana. Gain mana points by reading patterns and completing their next steps. Other actions cost mana.\n"
                                  "Before acting, state a 1-2 line plan.\n"
                                  "Tool roster (shell helpers/commands):\n"
-                                 "- pattern-action read f2/p13 \"why\" | pattern-action update or/dream-audit-per-release \"note\"\n"
-                                 "- Plan lines are just text: start a line with \"Plan:\" or \"[plan]\" (or use musn-plan \"Plan: ...\").\n"
-                                 "- rg -n \"musn-warning\" src\n"
-                                 "- apply_patch (if available) or perl -pi -e 's/old/new/' path\n"
+                                 "- pattern-action read library/patternname <state why you want to read it>\n"
+                                 "- pattern-action update library/pattern <summary of revision>\n"
+                                 "- musn-plan: echo plan: <outline your plan>\n"
+                                 "- search: rg -n \"your search string\" src\n"
+                                 "- patch: apply_patch (if available) or perl -pi -e 's/old/new/' path\n"
                                  "If unsure, run: musn-help tools  (or musn-help pattern)\n"
                                  "[/MUSN-HELP]\n")
                             (mana-num mana-balance)))

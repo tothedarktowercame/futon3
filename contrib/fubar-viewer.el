@@ -34,6 +34,8 @@
 (defvar-local fubar-musn--log-path nil)
 (defvar-local fubar-musn--last-line-start nil)
 (defvar-local fubar-musn--last-line-end nil)
+(defvar-local fubar-musn--pause-seen nil)
+(defvar-local fubar-musn--last-pause-marker nil)
 
 (defcustom fubar-musn-stream-folding-enabled t
   "Whether folding is enabled in the MUSN viewer."
@@ -75,13 +77,19 @@
     ("\\[MUSN-PAUSE\\]\\|\\[musn-pause\\]" . font-lock-warning-face)
     ("\\[musn-session\\]" . font-lock-builtin-face)))
 
+(defface fubar-musn-pause-banner-face
+  '((t :inherit font-lock-warning-face :weight bold))
+  "Face for MUSN pause banner."
+  :group 'fubar-musn-viewer)
+
 (defvar fubar-musn-view-mode-map (make-sparse-keymap))
 
 (let ((map fubar-musn-view-mode-map))
   (define-key map (kbd "RET") #'fubar-musn-view-detail)
   (define-key map [mouse-1] #'fubar-musn-view-detail)
   (define-key map (kbd "g") #'fubar-musn-view-refresh)
-  (define-key map (kbd "f") #'fubar-musn-toggle-folding))
+  (define-key map (kbd "f") #'fubar-musn-toggle-folding)
+  (define-key map (kbd "p") #'fubar-musn-jump-to-latest-pause))
 
 (define-derived-mode fubar-musn-view-mode special-mode "FuBar-MUSN"
   "Major mode for MUSN stream viewing."
@@ -89,7 +97,45 @@
   (setq-local truncate-lines t)
   (setq-local fubar-musn--partial "")
   (setq-local fubar-musn--last-line-start nil)
-  (setq-local fubar-musn--last-line-end nil))
+  (setq-local fubar-musn--last-line-end nil)
+  (setq-local fubar-musn--pause-seen nil)
+  (setq-local fubar-musn--last-pause-marker nil)
+  (setq-local header-line-format nil))
+
+(defun fubar-musn--pause-line-p (line)
+  (let ((case-fold-search t))
+    (and line (string-match-p "\\[musn-pause\\]" line))))
+
+(defun fubar-musn--update-pause-banner ()
+  (setq header-line-format
+        (when fubar-musn--pause-seen
+          (propertize " MUSN PAUSED - press p to jump to last pause "
+                      'face 'fubar-musn-pause-banner-face))))
+
+(defun fubar-musn--note-pause (pos)
+  (setq fubar-musn--pause-seen t)
+  (fubar-musn--update-pause-banner)
+  (if (markerp fubar-musn--last-pause-marker)
+      (set-marker fubar-musn--last-pause-marker pos (current-buffer))
+    (setq fubar-musn--last-pause-marker (copy-marker pos)))
+  (when (fboundp 'fubar-hud-note-pause)
+    (fubar-hud-note-pause)))
+
+(defun fubar-musn-jump-to-latest-pause ()
+  "Jump to the latest MUSN pause line in the viewer."
+  (interactive)
+  (let ((buf (get-buffer fubar-musn-view-buffer)))
+    (unless buf
+      (user-error "MUSN viewer buffer not available"))
+    (pop-to-buffer buf)
+    (with-current-buffer buf
+      (unless (markerp fubar-musn--last-pause-marker)
+        (user-error "No MUSN pause event seen yet"))
+      (let ((pos (marker-position fubar-musn--last-pause-marker)))
+        (unless pos
+          (user-error "No MUSN pause event seen yet"))
+        (goto-char pos)
+        (recenter 2)))))
 
 (defun fubar-musn--extract-session-id (text)
   (when (and text (string-match "\\[musn-session\\]\\s-*\\(musn-[A-Za-z0-9]+\\)" text))
@@ -267,6 +313,8 @@
                        fubar-musn-folded ,folded
                        keymap ,fubar-musn-view-mode-map
                        mouse-face highlight))
+    (when (fubar-musn--pause-line-p line)
+      (fubar-musn--note-pause start))
     (setq fubar-musn--last-line-start start)
     (setq fubar-musn--last-line-end (max start (1- (point))))))
 
@@ -296,6 +344,8 @@
                              fubar-musn-folded ,folded
                              keymap ,fubar-musn-view-mode-map
                              mouse-face highlight))))
+      (when (fubar-musn--pause-line-p joined)
+        (fubar-musn--note-pause start))
       t)))
 
 (defun fubar-musn-view-detail (&optional pos)
@@ -455,6 +505,7 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
                          (ok (plist-get parsed :ok))
                          (state (plist-get parsed :state))
                          (turn (and state (plist-get state :turn)))
+                         (halted (and state (plist-get state :halt?)))
                          (hud (and state (plist-get state :hud)))
                          (intent (and hud (plist-get hud :intent))))
                     (when ok
@@ -462,6 +513,8 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
                         (setq fubar-musn-turn turn))
                       (with-current-buffer (get-buffer-create "*FuLab HUD*")
                         (fubar-hud--ensure-mode)
+                        (when (boundp 'fubar-hud--musn-paused)
+                          (setq fubar-hud--musn-paused halted))
                         (when (fboundp 'fubar-hud-set-session-id)
                           (fubar-hud-set-session-id fubar-musn-session-id))
                         (cond

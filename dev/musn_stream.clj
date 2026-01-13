@@ -65,51 +65,60 @@
     (log! "[musn] session/create" resp)
     resp))
 
-(defn musn-start [{:keys [session/id]} turn hud]
-  (post! "/musn/turn/start" {:session/id id
-                             :turn turn
-                             :hud (cond-> (or hud {})
-                                    musn-intent (assoc :intent musn-intent))}))
-
-(defn musn-plan [{:keys [session/id]} turn plan]
-  (post! "/musn/turn/plan" {:session/id id
-                            :turn turn
-                            :plan plan}))
-
-(defn musn-select [{:keys [session/id]} turn chosen reason reads]
-  (post! "/musn/turn/select" {:session/id id
-                              :turn turn
-                              :candidates (if (seq reads) (vec (distinct (conj reads chosen))) [chosen])
-                              :chosen chosen
-                              :reason (cond-> reason
-                                        (seq reads) (assoc :reads reads))}))
-
-(defn musn-action [{:keys [session/id]} turn pattern-id action note files]
-  (post! "/musn/turn/action" (cond-> {:session/id id
-                                      :turn turn
-                                      :pattern/id pattern-id
-                                      :action action}
-                               note (assoc :note note)
-                               (seq files) (assoc :files files))))
-
-(defn musn-use [{:keys [session/id]} turn pattern-id]
-  (post! "/musn/turn/use" {:session/id id :turn turn :pattern/id pattern-id}))
-
-(defn musn-evidence [{:keys [session/id]} turn pattern-id files note]
-  (post! "/musn/evidence/add" {:session/id id
+(defn musn-start [session turn hud]
+  (let [sid (:session/id session)]
+    (post! "/musn/turn/start" {:session/id sid
                                :turn turn
-                               :pattern/id pattern-id
-                               :files files
-                               :note note}))
+                               :hud (cond-> (or hud {})
+                                      musn-intent (assoc :intent musn-intent))})))
 
-(defn musn-end [{:keys [session/id]} turn]
-  (post! "/musn/turn/end" {:session/id id :turn turn}))
+(defn musn-plan [session turn plan]
+  (let [sid (:session/id session)]
+    (post! "/musn/turn/plan" {:session/id sid
+                              :turn turn
+                              :plan plan})))
 
-(defn musn-resume [{:keys [session/id]} turn note]
-  (post! "/musn/turn/resume" {:session/id id :turn turn :note note}))
+(defn musn-select [session turn chosen reason reads]
+  (let [sid (:session/id session)]
+    (post! "/musn/turn/select" {:session/id sid
+                                :turn turn
+                                :candidates (if (seq reads) (vec (distinct (conj reads chosen))) [chosen])
+                                :chosen chosen
+                                :reason (cond-> reason
+                                          (seq reads) (assoc :reads reads))})))
 
-(defn musn-state [{:keys [session/id]}]
-  (post! "/musn/session/state" {:session/id id}))
+(defn musn-action [session turn pattern-id action note files]
+  (let [sid (:session/id session)]
+    (post! "/musn/turn/action" (cond-> {:session/id sid
+                                        :turn turn
+                                        :pattern/id pattern-id
+                                        :action action}
+                                 note (assoc :note note)
+                                 (seq files) (assoc :files files)))))
+
+(defn musn-use [session turn pattern-id]
+  (let [sid (:session/id session)]
+    (post! "/musn/turn/use" {:session/id sid :turn turn :pattern/id pattern-id})))
+
+(defn musn-evidence [session turn pattern-id files note]
+  (let [sid (:session/id session)]
+    (post! "/musn/evidence/add" {:session/id sid
+                                 :turn turn
+                                 :pattern/id pattern-id
+                                 :files files
+                                 :note note})))
+
+(defn musn-end [session turn]
+  (let [sid (:session/id session)]
+    (post! "/musn/turn/end" {:session/id sid :turn turn})))
+
+(defn musn-resume [session turn note]
+  (let [sid (:session/id session)]
+    (post! "/musn/turn/resume" {:session/id sid :turn turn :note note})))
+
+(defn musn-state [session]
+  (let [sid (:session/id session)]
+    (post! "/musn/session/state" {:session/id sid})))
 
 (defn plan-line? [text]
   (and (string? text)
@@ -159,6 +168,16 @@
 (defn fmt-num [value]
   (when (number? value)
     (format "%.3f" (double value))))
+
+(defn candidate-id [candidate]
+  (cond
+    (map? candidate) (or (:id candidate) (:pattern/id candidate))
+    (keyword? candidate) (subs (str candidate) 1)
+    (string? candidate) candidate
+    :else nil))
+
+(defn candidate-ids [candidates]
+  (->> candidates (map candidate-id) (remove nil?) vec))
 
 (defn log-aif-line! [label parts]
   (when (seq parts)
@@ -315,7 +334,8 @@
 (defn stream-loop []
   (try
     (let [session (musn-create-session)
-          state (atom {:turn 0})]
+          state (atom {:turn 0
+                       :paused? false})]
       (log! "[musn] stream-loop start")
       (when-let [sid (:session/id session)]
         (let [line (format "[musn-session] %s" sid)]
@@ -339,19 +359,24 @@
                                 (println (format "[hud-build-error] %s" (.getMessage e)))
                                 (flush)
                                 nil))
-                    candidates (vec (or (:prototypes hud-map)
-                                        (:candidates hud-map)
-                                        []))
+                    full-candidates (vec (or (seq (:candidates hud-map)) []))
+                    seed-candidates (or (seq full-candidates)
+                                        (seq (:prototypes hud-map))
+                                        [])
+                    candidate-ids (candidate-ids seed-candidates)
+                    scores (get-in hud-map [:aif :G-scores])
                     hud-payload (cond-> {:intent musn-intent
-                                         :candidates candidates}
+                                         :candidates candidate-ids}
+                                  (map? scores) (assoc :scores scores)
+                                  (seq full-candidates) (assoc :candidate-details full-candidates)
                                   (:sigils hud-map) (assoc :sigils (:sigils hud-map))
                                   (:namespaces hud-map) (assoc :namespaces (:namespaces hud-map))
                                   (:aif hud-map) (assoc :aif (:aif hud-map)))]
                 (let [start-resp (musn-start session t hud-payload)]
                   (when-let [aif (:aif start-resp)]
                     (log-aif-selection! aif)))
-                (if (seq candidates)
-                  (let [line (format "[hud-candidates] %s" (str/join ", " candidates))]
+                (if (seq candidate-ids)
+                  (let [line (format "[hud-candidates] %s" (str/join ", " candidate-ids))]
                     (log! line)
                     (println line))
                   (let [line "[hud-candidates] none"]
@@ -382,14 +407,19 @@
                               (log! line)
                               (println line))
                             (flush)
-                            (swap! state assoc :resume-note note))
+                            (swap! state assoc :resume-note note :paused? false))
                         (when-not note
                           (recur)))))))))
 
             (= (:type event) "turn.completed")
-            (let [resp (musn-end session (:turn @state))]
-              (when (:halt? resp)
-                (print-pause resp)))
+            (let [resp (musn-end session (:turn @state))
+                  paused? (:halt? resp)]
+              (when paused?
+                (when-not (:paused? @state)
+                  (swap! state assoc :paused? true)
+                  (print-pause resp)))
+              (when (and (not paused?) (:paused? @state))
+                (swap! state assoc :paused? false)))
 
             :else
             (handle-event! state event session))))

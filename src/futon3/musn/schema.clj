@@ -44,9 +44,14 @@
   [:map
    [:session/id string?]
    [:turn int?]
-   [:hud {:optional true} [:map
+   [:hud {:optional true} [:map {:closed false}
                            [:candidates {:optional true} [:vector PatternId]]
-                           [:scores {:optional true} [:map-of PatternId number?]]]]])
+                           [:scores {:optional true} [:map-of PatternId number?]]
+                           [:candidate-details {:optional true} [:vector map?]]
+                           [:intent {:optional true} string?]
+                           [:sigils {:optional true} [:vector map?]]
+                           [:namespaces {:optional true} [:vector string?]]
+                           [:aif {:optional true} map?]]]])
 
 (def TurnStartResp
   [:map

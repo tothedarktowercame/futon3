@@ -162,6 +162,12 @@
 (defvar-local fubar-hud--session-id nil
   "Current session ID.")
 
+(defvar-local fubar-hud--musn-paused nil
+  "Non-nil when MUSN reports a paused/halting state.")
+
+(defvar-local fubar-hud--musn-pause-seen nil
+  "Non-nil when a MUSN pause event was observed in the stream.")
+
 (defvar fubar-hud--stream-paused nil
   "Non-nil when the stream process is paused.")
 
@@ -261,6 +267,15 @@
                 (setq fubar-hud--intent intent)
                 (fubar-hud-refresh)))))))))
 
+(defun fubar-hud--pause-line-p (line)
+  (let ((case-fold-search t))
+    (and line (string-match-p "\\[musn-pause\\]" line))))
+
+(defun fubar-hud--maybe-note-pause-from-line (line)
+  "Flag a pause indicator when LINE contains a pause event."
+  (when (fubar-hud--pause-line-p line)
+    (fubar-hud-note-pause)))
+
 (defun fubar-hud--stream-filter (proc chunk)
   "Insert CHUNK into PROC buffer and parse intent lines."
   (let ((buf (process-buffer proc)))
@@ -280,7 +295,8 @@
                (rest (car (last lines))))
           (setq fubar-hud--stream-fragment rest)
           (dolist (line complete)
-            (fubar-hud--maybe-update-intent-from-line line)))))))
+            (fubar-hud--maybe-update-intent-from-line line)
+            (fubar-hud--maybe-note-pause-from-line line)))))))
 
 (defun fubar-hud--encode-json-request (payload)
   "Encode PAYLOAD as UTF-8 unibyte JSON for url-request-data."
@@ -444,6 +460,23 @@
                                  'face 'fubar-hud-sigil-face)))
                  sigils " ")
     (propertize "none" 'face 'font-lock-comment-face)))
+
+(defun fubar-hud--normalize-candidates (candidates)
+  "Coerce CANDIDATES into a list of candidate plists."
+  (let ((items (cond
+                ((vectorp candidates) (append candidates nil))
+                (t candidates))))
+    (cond
+     ((null items) nil)
+     ((and (listp items) (stringp (car items)))
+      (mapcar (lambda (cid) (list :id cid :summary "")) items))
+     (t items))))
+
+(defun fubar-hud--hud-candidates (hud)
+  "Return normalized candidate entries from HUD."
+  (fubar-hud--normalize-candidates
+   (or (plist-get hud :candidate-details)
+       (plist-get hud :candidates))))
 
 (defun fubar-hud--make-pattern-button (pattern-id)
   "Create clickable button for PATTERN-ID."
@@ -670,11 +703,19 @@
         (fubar-hud-refresh)
         (message "Approval policy: %s" next)))))
 
+(defun fubar-hud--paused-p ()
+  "Return non-nil when MUSN is paused."
+  (or fubar-hud--musn-paused fubar-hud--musn-pause-seen))
+
 (defun fubar-hud--render (hud)
   "Render HUD to current buffer."
   (let ((inhibit-read-only t))
     (erase-buffer)
     (insert (propertize "━━━ FuLab HUD ━━━\n\n" 'face 'fubar-hud-header-face))
+
+    (when (fubar-hud--paused-p)
+      (insert (propertize "MUSN Status\n" 'face 'fubar-hud-header-face))
+      (insert "  " (propertize "PAUSED" 'face 'font-lock-warning-face) "\n\n"))
 
     ;; Operator status
     (when fubar-hud--operator-status
@@ -718,7 +759,7 @@
 
     ;; Candidates
     (insert (propertize "Pattern Candidates\n" 'face 'fubar-hud-header-face))
-    (let* ((candidates (plist-get hud :candidates))
+    (let* ((candidates (fubar-hud--hud-candidates hud))
            (g-scores (plist-get (plist-get hud :aif) :G-scores)))
       (if (and candidates (> (length candidates) 0))
           (cl-loop for c in candidates
@@ -835,6 +876,22 @@
     (with-current-buffer buf
       (fubar-hud--ensure-mode)
       (setq fubar-hud--session-id session-id)
+      (fubar-hud-refresh))))
+
+(defun fubar-hud-set-musn-paused (paused)
+  "Set MUSN paused state for the HUD."
+  (let ((buf (get-buffer-create fubar-hud-buffer-name)))
+    (with-current-buffer buf
+      (fubar-hud--ensure-mode)
+      (setq fubar-hud--musn-paused paused)
+      (fubar-hud-refresh))))
+
+(defun fubar-hud-note-pause ()
+  "Mark that a MUSN pause event has been observed."
+  (let ((buf (get-buffer-create fubar-hud-buffer-name)))
+    (with-current-buffer buf
+      (fubar-hud--ensure-mode)
+      (setq fubar-hud--musn-pause-seen t)
       (fubar-hud-refresh))))
 
 (defun fubar-hud-apply-hud-state (hud-map)

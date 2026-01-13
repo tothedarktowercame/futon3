@@ -199,11 +199,10 @@
           note (nth m 3 nil)
           files (when note
                   (when-let [fm (re-find #"files=([A-Za-z0-9_./,-]+)" note)]
-                    (-> (second fm)
-                        (str/split #",")
-                        (map str/trim)
-                        (remove str/blank?)
-                        vec)))]
+                    (->> (str/split (second fm) #",")
+                         (map str/trim)
+                         (remove str/blank?)
+                         vec)))]
       {:pattern/id pid
        :action action
        :note note
@@ -649,7 +648,7 @@
             (when (seq files)
               (musn-evidence musn-session turn p files "auto evidence from change"))))
 
-      :else nil))))
+      :else nil)))
 
 (defn- handle-turn-start!
   [state session event]
@@ -807,4 +806,3 @@
 
 ;; Invoke main when run as a script (clojure -M dev/musn_stream.clj)
 (apply -main *command-line-args*)
-)

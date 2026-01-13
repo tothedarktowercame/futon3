@@ -834,10 +834,11 @@
 
     ;; Staged Next Move
     (when fubar-hud--staged-next
-      (let ((label (if (and fubar-hud--last-agent-report
-                            (string= (plist-get fubar-hud--last-agent-report :applied) "none"))
-                       "Staged (Non-op)\n"
-                     "Staged Next\n")))
+      (let* ((applied (and fubar-hud--last-agent-report
+                           (plist-get fubar-hud--last-agent-report :applied)))
+             (label (if (and (stringp applied) (string= applied "none"))
+                        "Staged (Non-op)\n"
+                      "Staged Next\n")))
         (insert (propertize label 'face 'fubar-hud-header-face)))
       (insert "  " (propertize fubar-hud--staged-next 'face 'font-lock-string-face) "\n\n"))
 

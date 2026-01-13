@@ -64,7 +64,7 @@
                                                :artifacts @(:artifacts session)
                                                :docs @(:docs-written session)
                                                :stats @(:stats session)
-                                               :society-paper @(:society-paper session)})))))]
+                                               :society-paper @(:society-paper session)}))))]
     (let [{:keys [session-id]}
           (claude/start-session! {:prompt "hi"
                                   :pattern-id "pattern/clock-out"

@@ -12,6 +12,10 @@ pattern-action (shell helper; logs reads/updates)
   pattern-action read f2/p13 "why"
   pattern-action update or/dream-audit-per-release "note"
 
+plan (no tool needed; lines starting with Plan: or [plan])
+  Plan: scan library for MUSN warnings
+  musn-plan "Plan: scan library for MUSN warnings"
+
 rg (search)
   rg -n "musn-warning" src
   rg --files -g "*.clj" src

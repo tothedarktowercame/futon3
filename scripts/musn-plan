@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -lt 1 ]]; then
+  echo "usage: musn-plan <plan line>" >&2
+  exit 2
+fi
+
+plan="$*"
+sid="${FUTON3_MUSN_SESSION_ID:-}"
+url="${FUTON3_MUSN_URL:-http://localhost:6065}"
+
+if [[ -z "$sid" ]]; then
+  echo "musn-plan: missing FUTON3_MUSN_SESSION_ID" >&2
+  exit 2
+fi
+
+SID="$sid" URL="$url" PLAN="$plan" python3 - <<'PY'
+import json
+import os
+import sys
+import urllib.request
+
+sid = os.environ.get("SID", "")
+url = os.environ.get("URL", "").rstrip("/")
+plan = os.environ.get("PLAN", "")
+
+def post(path, payload):
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(url + path, data=data, method="POST")
+    req.add_header("Content-Type", "application/json")
+    with urllib.request.urlopen(req, timeout=2) as resp:
+        raw = resp.read().decode("utf-8") or "{}"
+        return json.loads(raw)
+
+state = post("/musn/session/state", {"session/id": sid})
+turn = (state.get("state") or {}).get("turn")
+if not turn:
+    print("musn-plan: missing turn in session state", file=sys.stderr)
+    sys.exit(2)
+
+post("/musn/turn/plan", {"session/id": sid, "turn": int(turn), "plan": plan})
+print(json.dumps({"ok": True, "turn": int(turn)}))
+PY

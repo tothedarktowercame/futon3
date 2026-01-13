@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -lt 1 ]]; then
+  echo "usage: pattern-use <pattern-id> [note]" >&2
+  exit 2
+fi
+
+pattern_raw="$1"
+shift
+note="${*:-}"
+
+sid="${FUTON3_MUSN_SESSION_ID:-}"
+url="${FUTON3_MUSN_URL:-http://localhost:6065}"
+
+if [[ -z "$sid" ]]; then
+  echo "pattern-use: missing FUTON3_MUSN_SESSION_ID" >&2
+  exit 2
+fi
+
+PATTERN_RAW="$pattern_raw" NOTE="$note" SID="$sid" URL="$url" python3 - <<'PY'
+import json
+import os
+import re
+import sys
+import urllib.request
+
+pattern = os.environ.get("PATTERN_RAW", "")
+if pattern.startswith("library/"):
+    pattern = pattern[len("library/"):]
+
+if not re.match(r"^[a-z0-9._-]+/[a-z0-9._-]+$", pattern or ""):
+    print(f"pattern-use: invalid pattern id '{pattern}'", file=sys.stderr)
+    sys.exit(2)
+
+note = os.environ.get("NOTE", "")
+sid = os.environ.get("SID", "")
+url = os.environ.get("URL", "").rstrip("/")
+
+def post(path, payload):
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(url + path, data=data, method="POST")
+    req.add_header("Content-Type", "application/json")
+    with urllib.request.urlopen(req, timeout=2) as resp:
+        raw = resp.read().decode("utf-8") or "{}"
+        return json.loads(raw)
+
+state = post("/musn/session/state", {"session/id": sid})
+turn = (state.get("state") or {}).get("turn")
+if not turn:
+    print("pattern-use: missing turn in session state", file=sys.stderr)
+    sys.exit(2)
+
+payload = {
+    "session/id": sid,
+    "turn": int(turn),
+    "pattern/id": pattern,
+}
+if note:
+    payload["note"] = note
+
+resp = post("/musn/turn/use", payload)
+if not resp.get("ok", True):
+    print(f"pattern-use: musn error {resp}", file=sys.stderr)
+    sys.exit(2)
+
+print(json.dumps({"ok": True, "turn": int(turn), "pattern/id": pattern}))
+PY

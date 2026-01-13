@@ -8,24 +8,11 @@ case "$topic" in
     cat <<'EOF'
 MUSN help: tools
 
-pattern signals (emit these in your response or via helper commands)
-  pattern-select library/patternname "why you want to read it"
-  pattern-use    library/pattern "where you will apply it"
-
-plan
-  musn-plan "Plan: outline your plan"
-
-search
-  rg -n "your search string" src
-  rg --files -g "*.clj" src
-
-patch
-  apply_patch
-  perl -pi -e 's/old/new/' path
-
-edit files
-  apply_patch (if available in your tool list)
-  perl -pi -e 's/old/new/' path
+Tool roster (emit these signals when you do the corresponding action):
+- pattern-select library/<pattern> "why you want to read it"
+- pattern-use    library/<pattern> "where you will apply it"
+- musn-plan      "outline your plan"
+- wide-search    "your search string" (alias for rg)
 EOF
     ;;
   pattern|patterns|/pattern)
@@ -33,8 +20,8 @@ EOF
 MUSN help: pattern selection
 
 - Select a pattern before implement/update.
+- Pattern ids look like namespace/name (example: f2/p13).
 - In multiarg files, use the @arg pattern id (not the file basename).
-- Log actions via pattern-action or a FULAB-REPORT block.
 EOF
     ;;
   *)

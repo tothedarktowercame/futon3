@@ -329,10 +329,10 @@
                                  "You have %s mana. Gain mana points by reading patterns and completing their next steps. Other actions cost mana.\n"
                                  "Before acting, state a 1-2 line plan.\n"
                                  "Tool roster (you should emit these signals when you do the corresponding action):\n"
-                                 "- pattern-select library/patternname <state why you want to read it>\n"
-                                 "- pattern-use    library/pattern    <state where you will apply it>\n"
+                                 "- pattern-select library/<pattern> <state why you want to read it>\n"
+                                 "- pattern-use    library/<pattern> <state where you will apply it>\n"
                                  "- musn-plan      <outline your plan>\n"
-                                 "- search         rg -n <your search string> src\n"
+                                 "- wide-search    ; an alias for rg\n"
                                  "If unsure, run: musn-help tools  (or musn-help pattern)\n"
                                  "[/MUSN-HELP]\n")
                             (mana-num mana-balance)))

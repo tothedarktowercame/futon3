@@ -178,6 +178,35 @@
   (and (string? text)
        (re-find #"(?i)^(?:\s*\[plan\]\s+|\s*plan\s*:)" text)))
 
+(def ^:private plan-required-actions
+  #{"implement" "update" "off-trail" "wide-scan"})
+
+(defn- normalize-action [action]
+  (cond
+    (keyword? action) (name action)
+    (string? action) action
+    (nil? action) nil
+    :else (str action)))
+
+(defn- plan-required? [action]
+  (when-let [value (normalize-action action)]
+    (contains? plan-required-actions value)))
+
+(defn- note-plan-seen! [state text]
+  (when (plan-line? text)
+    (swap! state assoc :turn-plan? true)))
+
+(defn- maybe-warn-missing-plan! [state action]
+  (when (and (plan-required? action)
+             (not (:turn-plan? @state))
+             (not (:turn-plan-warned? @state)))
+    (swap! state assoc :turn-plan-warned? true)
+    (log-warning! "missing-plan"
+                  {:turn (:turn @state)
+                   :action (normalize-action action)
+                   :note "plan required before tool use; expected 'Plan:' or '[plan]' line"})
+    (flush)))
+
 (defn patterns-from-command [cmd]
   (->> (re-seq #"(?:^|\s)([a-z0-9._-]+/[a-z0-9._-]+)" (or cmd ""))
        (map second)
@@ -217,6 +246,38 @@
 
 (defn files-from-change [changes]
   (->> changes (map :path) (remove nil?) vec))
+
+(def ^:private pattern-id-re
+  #"(?:^|/)([a-z0-9._-]+/[a-z0-9._-]+)\.(?:flexiarg|multiarg)$")
+
+(def ^:private arg-line-re
+  #"(?m)^\s*@(?:arg|flexiarg)\s+([a-z0-9._-]+/[a-z0-9._-]+)")
+
+(defn- resolve-pattern-file [path]
+  (let [file (io/file path)]
+    (if (.isAbsolute file)
+      file
+      (io/file (repo-root) path))))
+
+(defn- pattern-ids-from-file [path]
+  (let [file (resolve-pattern-file path)]
+    (when (.exists file)
+      (try
+        (->> (re-seq arg-line-re (slurp file))
+             (map second)
+             distinct
+             vec)
+        (catch Throwable _ nil)))))
+
+(defn- pattern-ids-from-path [path]
+  (when-let [m (re-find pattern-id-re path)]
+    [(second m)]))
+
+(defn- patterns-from-change-path [path]
+  (let [ids (pattern-ids-from-file path)]
+    (if (seq ids)
+      ids
+      (pattern-ids-from-path path))))
 
 (defn fmt-num [value]
   (when (number? value)
@@ -429,10 +490,23 @@
          (str/join " "))))
 
 (defn- note-selected! [state pattern-id]
-  (swap! state update :selected-patterns (fnil conj #{}) pattern-id))
+  (swap! state (fn [st]
+                 (-> st
+                     (update :selected-patterns (fnil conj #{}) pattern-id)
+                     (assoc :last-selected pattern-id)))))
 
 (defn- selected? [state pattern-id]
   (contains? (get @state :selected-patterns #{}) pattern-id))
+
+(defn- resolve-selected-pattern [state pattern-ids]
+  (let [last-selected (:last-selected @state)
+        selected (get @state :selected-patterns #{})
+        matches (vec (filter selected pattern-ids))]
+    (cond
+      (and last-selected (some #{last-selected} pattern-ids)) last-selected
+      (= 1 (count pattern-ids)) (first pattern-ids)
+      (= 1 (count matches)) (first matches)
+      :else nil)))
 
 (defn- ensure-selection!
   [state musn-session turn pattern-id reason reads]
@@ -488,6 +562,7 @@
       (let [text (get-in event [:item :text])]
         (doseq [line (str/split-lines (or text ""))]
           (when (plan-line? line)
+            (note-plan-seen! state line)
             (musn-plan musn-session turn (str/trim line)))
           (if-let [payload (parse-json line)]
             (do
@@ -519,6 +594,7 @@
                   (let [act (:action pa)
                         pid (:pattern/id pa)
                         files (:files pa)]
+                    (maybe-warn-missing-plan! state act)
                     (when (#{"implement" "update"} act)
                       (ensure-selection! state musn-session turn pid
                                          {:mode :use
@@ -552,6 +628,7 @@
               (let [act (:action pa)
                     pid (:pattern/id pa)
                     files (:files pa)]
+                (maybe-warn-missing-plan! state act)
                 (when (#{"implement" "update"} act)
                   (ensure-selection! state musn-session turn pid
                                      {:mode :use
@@ -616,13 +693,30 @@
              (= (get-in event [:item :type]) "file_change"))
         (let [changes (get-in event [:item :changes])
               files (files-from-change changes)
-              pats (->> changes
-                        (map :path)
-                        (keep #(re-find #"(?:^|/)([a-z0-9._-]+/[a-z0-9._-]+)\.(flexiarg|multiarg)$" %))
-                        (map second)
-                        distinct
-                        vec)]
-          (doseq [p pats]
+              pattern-files (->> changes
+                                 (map :path)
+                                 (remove nil?)
+                                 (filter #(re-find pattern-id-re %)))
+              _ (when (seq pattern-files)
+                  (maybe-warn-missing-plan! state "update"))
+              resolved (reduce
+                        (fn [acc path]
+                          (let [candidates (patterns-from-change-path path)]
+                            (if (seq candidates)
+                              (if-let [pid (resolve-selected-pattern state candidates)]
+                                (update acc pid (fnil conj []) path)
+                                (do
+                                  (log-warning! "pattern-edit-without-selection"
+                                                {:turn turn
+                                                 :file path
+                                                 :pattern-count (count candidates)
+                                                 :pattern-sample (vec (take 5 candidates))
+                                                 :note "multiarg change; select a pattern to disambiguate"})
+                                  acc))
+                              acc)))
+                        {}
+                        pattern-files)]
+          (doseq [[p paths] resolved]
             (let [pid (candidate-id p)]
               (when (and pid (not (selected? state pid)))
                 (log-warning! "pattern-edit-without-selection"
@@ -635,7 +729,7 @@
                                   :note "auto selection from pattern file change"
                                   :source :auto}
                                  nil))
-            (let [action-resp (musn-action musn-session turn p "update" "auto file_change" files)]
+            (let [action-resp (musn-action musn-session turn p "update" "auto file_change" paths)]
               (if-let [aif (:aif action-resp)]
                 (log-aif-update! aif)
                 (do
@@ -645,8 +739,8 @@
                                      :action "update"})
                   (log-latest-aif-tap! state musn-session)))
               (log-mana-response! state action-resp))
-            (when (seq files)
-              (musn-evidence musn-session turn p files "auto evidence from change"))))
+            (when (seq paths)
+              (musn-evidence musn-session turn p paths "auto evidence from change"))))
 
       :else nil)))
 
@@ -656,6 +750,9 @@
     (swap! state assoc
            :turn t
            :selected-patterns #{}
+           :last-selected nil
+           :turn-plan? false
+           :turn-plan-warned? false
            :turn-ended nil)
     (let [hud-map (try
                     (when musn-intent
@@ -778,6 +875,9 @@
                          :paused? false
                          :pause-latched? false
                          :selected-patterns #{}
+                         :last-selected nil
+                         :turn-plan? false
+                         :turn-plan-warned? false
                          :last-aif-tap nil
                          :candidate-details {}
                          :turn-ended nil})

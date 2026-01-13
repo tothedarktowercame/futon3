@@ -325,7 +325,10 @@
                         main))
                     "Mana: n/a")
         help-line (when (:musn-help hud)
-                    (format "[MUSN-HELP]\nYou have %s mana. Gain mana points by reading patterns and completing their next steps. Other actions cost mana.\n[/MUSN-HELP]\n"
+                    (format (str "[MUSN-HELP]\n"
+                                 "You have %s mana. Gain mana points by reading patterns and completing their next steps. Other actions cost mana.\n"
+                                 "Before acting, state a 1-2 line plan.\n"
+                                 "[/MUSN-HELP]\n")
                             (mana-num mana-balance)))
         live-summary (:summary aif-live)
         live-line (when (map? live-summary)

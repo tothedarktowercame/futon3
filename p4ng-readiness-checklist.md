@@ -37,6 +37,35 @@ Evidence to look for:
 - [ ] :pattern/action recorded for the pattern edit.
 - [ ] :pattern/use-claimed or :pattern/selection-claimed tied to the change.
 
+### Prompt D: Missing-plan pause + resume
+```
+Start by running a safe tool command before stating any plan line. After the
+warning/pause, add a one-line plan and continue the task normally.
+```
+Evidence to look for:
+- [ ] Inline [musn-warning] missing-plan appears before MUSN-PAUSE.
+- [ ] Pause reason cites missing-plan.
+- [ ] Resume clears the pause and the run continues on the same session.
+
+### Prompt E: Multiarg disambiguation
+```
+Pick a multiarg pattern file (e.g. library/or/or.flexiarg). Explicitly select
+one pattern id from inside it, then make a small edit in that pattern block and
+name the pattern/action used.
+```
+Evidence to look for:
+- [ ] Pattern id used is the specific @arg entry (not the file basename).
+- [ ] No pattern-edit-without-selection warning if selection is explicit.
+- [ ] File-change auto action uses the selected pattern id.
+
+### Prompt F: Use-mode without writes (no-write halt)
+```
+Select a pattern for use and claim you applied it, but do not edit any files.
+```
+Evidence to look for:
+- [ ] MUSN pause at turn end cites :no-write or missing evidence for use-mode.
+- [ ] Resume clears the halt once a write/evidence event is added.
+
 ## Trace Integrity
 - [ ] Session trace is append-only (no in-place edits or reordering).
 - [ ] Each turn has :turn/started and :turn/completed events.

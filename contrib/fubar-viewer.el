@@ -83,6 +83,7 @@
     ("\\[pattern-[^]]+\\]" . font-lock-keyword-face)
     ("\\[hud-[^]]+\\]" . font-lock-preprocessor-face)
     ("\\[MUSN-PAUSE\\]\\|\\[musn-pause\\]" . font-lock-warning-face)
+    ("\\[musn-warning\\]" . font-lock-warning-face)
     ("\\[musn-session\\]" . font-lock-builtin-face)))
 
 (defface fubar-musn-file-change-face

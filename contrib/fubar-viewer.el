@@ -35,6 +35,7 @@
 (defvar-local fubar-musn--last-line-start nil)
 (defvar-local fubar-musn--last-line-end nil)
 (defvar-local fubar-musn--pause-seen nil)
+(defvar-local fubar-musn--pause-reason nil)
 (defvar-local fubar-musn--last-pause-marker nil)
 (defvar-local fubar-musn--session-locked nil)
 
@@ -100,6 +101,7 @@
   (setq-local fubar-musn--last-line-start nil)
   (setq-local fubar-musn--last-line-end nil)
   (setq-local fubar-musn--pause-seen nil)
+  (setq-local fubar-musn--pause-reason nil)
   (setq-local fubar-musn--last-pause-marker nil)
   (setq-local fubar-musn--session-locked nil)
   (setq-local header-line-format nil))
@@ -112,20 +114,66 @@
   (let ((case-fold-search t))
     (and line (string-match-p "\\[musn-pause\\]" line))))
 
+(defun fubar-musn--stringify (value)
+  (cond
+   ((keywordp value) (substring (symbol-name value) 1))
+   ((symbolp value) (symbol-name value))
+   ((stringp value) value)
+   ((null value) nil)
+   (t (format "%s" value))))
+
+(defun fubar-musn--format-reason (reason)
+  (when reason
+    (let* ((rtype (fubar-musn--stringify (plist-get reason :type)))
+           (note (fubar-musn--stringify (plist-get reason :note)))
+           (note (and note (string-trim note))))
+      (cond
+       ((and rtype note) (format "%s: %s" rtype note))
+       (rtype rtype)
+       (note note)
+       (t nil)))))
+
+(defun fubar-musn--pause-reason-from-line (line)
+  (when (and line (string-match "\\[MUSN-PAUSE\\]\\s-+\\(.*\\)$" line))
+    (let* ((json-str (match-string 1 line))
+           (pause (ignore-errors
+                    (json-parse-string json-str
+                                       :object-type 'plist
+                                       :array-type 'list
+                                       :null-object nil
+                                       :false-object nil)))
+           (reason (and pause (plist-get pause :reason))))
+      (fubar-musn--format-reason reason))))
+
 (defun fubar-musn--update-pause-banner ()
   (setq header-line-format
         (when fubar-musn--pause-seen
-          (propertize " MUSN PAUSED - press p to jump to last pause "
-                      'face 'fubar-musn-pause-banner-face))))
+          (let ((reason (and fubar-musn--pause-reason
+                             (not (string-empty-p fubar-musn--pause-reason))
+                             (format " (%s)" fubar-musn--pause-reason))))
+            (propertize (format " MUSN PAUSED%s - press p to jump to last pause "
+                                (or reason ""))
+                        'face 'fubar-musn-pause-banner-face)))))
 
-(defun fubar-musn--note-pause (pos)
+(defun fubar-musn--note-pause (pos line)
   (setq fubar-musn--pause-seen t)
+  (when-let ((reason (fubar-musn--pause-reason-from-line line)))
+    (setq fubar-musn--pause-reason reason))
   (fubar-musn--update-pause-banner)
   (if (markerp fubar-musn--last-pause-marker)
       (set-marker fubar-musn--last-pause-marker pos (current-buffer))
     (setq fubar-musn--last-pause-marker (copy-marker pos)))
   (when (fboundp 'fubar-hud-note-pause)
     (fubar-hud-note-pause)))
+
+(defun fubar-musn--set-paused (paused &optional reason)
+  (setq fubar-musn--pause-seen (and paused t))
+  (cond
+   ((not paused)
+    (setq fubar-musn--pause-reason nil))
+   (reason
+    (setq fubar-musn--pause-reason reason)))
+  (fubar-musn--update-pause-banner))
 
 (defun fubar-musn-jump-to-latest-pause ()
   "Jump to the latest MUSN pause line in the viewer."
@@ -314,8 +362,10 @@
                      "\\[musn\\] event"
                      (format "[musn] %s" event-type)
                      line t t)))
-          (when (string-match "({:type\\s-+\\(\"[^\"]+\"\\|:[^,}[:space:]]+\\)\\)\\s-*,?\\s-*" line)
-            (setq line (replace-match "({" t t line)))
+          (setq line (replace-regexp-in-string
+                      "({:type\\s-+\\(?:\"[^\"]+\"\\|:[^,}[:space:]]+\\)\\s-*,?\\s-*"
+                      "({"
+                      line))
           line)))))
 
 (defun fubar-musn--flatten-line (line)
@@ -363,7 +413,7 @@
                        keymap ,fubar-musn-view-mode-map
                        mouse-face highlight))
     (when (fubar-musn--pause-line-p line)
-      (fubar-musn--note-pause start))
+      (fubar-musn--note-pause start line))
     (setq fubar-musn--last-line-start start)
     (setq fubar-musn--last-line-end (max start (1- (point))))))
 
@@ -394,7 +444,7 @@
                              keymap ,fubar-musn-view-mode-map
                              mouse-face highlight))))
       (when (fubar-musn--pause-line-p joined)
-        (fubar-musn--note-pause start))
+        (fubar-musn--note-pause start joined))
       t)))
 
 (defun fubar-musn-view-detail (&optional pos)
@@ -559,16 +609,24 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
                          (ok (plist-get parsed :ok))
                          (state (plist-get parsed :state))
                          (turn (and state (plist-get state :turn)))
-                         (halted (and state (plist-get state :halt?)))
+                         (halt-map (and state (plist-get state :halt)))
+                         (halted (or (and state (plist-get state :halt?))
+                                     (and halt-map t)))
+                         (halted? (and halted t))
+                         (halt-reason (fubar-musn--format-reason halt-map))
                          (hud (and state (plist-get state :hud)))
                          (intent (and hud (plist-get hud :intent))))
                     (when ok
                       (when turn
                         (setq fubar-musn-turn turn))
+                      (let ((viewer-buf (get-buffer fubar-musn-view-buffer)))
+                        (when viewer-buf
+                          (with-current-buffer viewer-buf
+                            (fubar-musn--set-paused halted? halt-reason))))
                       (with-current-buffer (get-buffer-create "*FuLab HUD*")
                         (fubar-hud--ensure-mode)
                         (when (boundp 'fubar-hud--musn-paused)
-                          (setq fubar-hud--musn-paused halted))
+                          (setq fubar-hud--musn-paused halted?))
                         (when (fboundp 'fubar-hud-set-session-id)
                           (fubar-hud-set-session-id fubar-musn-session-id))
                         (cond

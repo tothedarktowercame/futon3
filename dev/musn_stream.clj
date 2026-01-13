@@ -53,6 +53,8 @@
 
 (def aif-config (read-aif-config aif-config-path))
 
+(declare candidate-id)
+
 (defn parse-json [line]
   (try (json/parse-string line true)
        (catch Throwable _ nil)))
@@ -465,7 +467,8 @@
                 (when-not (:pause-latched? @state)
                   (swap! state assoc :paused? true :pause-latched? true)
                   (log! "[pattern] pause-latch" {:state :latched :turn (:turn @state)})
-                  (print-pause resp))
+                  (print-pause resp)
+                  (System/exit 3))
                 (when (or (:paused? @state) (:pause-latched? @state))
                   (swap! state assoc :paused? false :pause-latched? false)
                   (log! "[pattern] pause-latch" {:state :reset :turn (:turn @state)}))))

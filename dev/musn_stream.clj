@@ -55,6 +55,7 @@
 (def aif-config (read-aif-config aif-config-path))
 
 (declare candidate-id)
+(declare log-warning!)
 
 (defn- repo-root []
   (or (some-> (System/getenv "FUTON3_REPO_ROOT") str/trim not-empty)
@@ -565,65 +566,64 @@
             (note-plan-seen! state line)
             (musn-plan musn-session turn (str/trim line)))
           (if-let [payload (parse-json line)]
-            (do
-              (when-let [sel (parse-pattern-selection payload)]
-                (let [chosen (:chosen sel)
-                      resp (musn-select musn-session
-                                        turn
-                                        chosen
-                                        {:mode (or (:mode sel) :use)
-                                         :note "auto-read from selection event"}
-                                        (:reads sel))]
-                  (if (and resp (:ok resp) chosen)
-                    (note-selected! state (candidate-id chosen))
-                    (when (and chosen (not (:ok resp)))
-                      (log-warning! "select-failed"
-                                    {:turn turn
-                                     :chosen chosen
-                                     :resp resp})))
-                  (when-let [psr (:psr resp)]
-                    (log-selection! psr (candidate-detail state chosen)))
-                  (if-let [aif (:aif resp)]
-                    (log-aif-selection! aif)
-                    (do
-                      (log-aif-missing! "turn/select"
-                                        {:turn turn
-                                         :chosen chosen})
-                      (log-latest-aif-tap! state musn-session))))
-                (when-let [pa (parse-pattern-action payload)]
-                  (let [act (:action pa)
-                        pid (:pattern/id pa)
-                        files (:files pa)]
-                    (maybe-warn-missing-plan! state act)
-                    (when (#{"implement" "update"} act)
-                      (ensure-selection! state musn-session turn pid
-                                         {:mode :use
-                                          :note "auto selection from pattern action"
-                                          :source :auto}
-                                         nil))
-                    (let [action-resp (musn-action musn-session turn pid act (:note pa) files)]
-                      (if-let [aif (:aif action-resp)]
-                        (log-aif-update! aif)
+            (when-let [sel (parse-pattern-selection payload)]
+              (let [chosen (:chosen sel)
+                    resp (musn-select musn-session
+                                      turn
+                                      chosen
+                                      {:mode (or (:mode sel) :use)
+                                       :note "auto-read from selection event"}
+                                      (:reads sel))]
+                (if (and resp (:ok resp) chosen)
+                  (note-selected! state (candidate-id chosen))
+                  (when (and chosen (not (:ok resp)))
+                    (log-warning! "select-failed"
+                                  {:turn turn
+                                   :chosen chosen
+                                   :resp resp})))
+                (when-let [psr (:psr resp)]
+                  (log-selection! psr (candidate-detail state chosen)))
+                (if-let [aif (:aif resp)]
+                  (log-aif-selection! aif)
+                  (do
+                    (log-aif-missing! "turn/select"
+                                      {:turn turn
+                                       :chosen chosen})
+                    (log-latest-aif-tap! state musn-session))))
+              (when-let [pa (parse-pattern-action payload)]
+                (let [act (:action pa)
+                      pid (:pattern/id pa)
+                      files (:files pa)]
+                  (maybe-warn-missing-plan! state act)
+                  (when (#{"implement" "update"} act)
+                    (ensure-selection! state musn-session turn pid
+                                       {:mode :use
+                                        :note "auto selection from pattern action"
+                                        :source :auto}
+                                       nil))
+                  (let [action-resp (musn-action musn-session turn pid act (:note pa) files)]
+                    (if-let [aif (:aif action-resp)]
+                      (log-aif-update! aif)
+                      (do
+                        (log-aif-missing! "turn/action"
+                                          {:turn turn
+                                           :pattern/id (candidate-id pid)
+                                           :action act})
+                        (log-latest-aif-tap! state musn-session)))
+                    (log-mana-response! state action-resp))
+                  (when (#{"implement" "update"} act)
+                    (let [use-resp (musn-use musn-session turn pid)]
+                      (if-let [pur (:pur use-resp)]
+                        (log-use! pur (:aif use-resp))
                         (do
-                          (log-aif-missing! "turn/action"
+                          (log-aif-missing! "turn/use"
                                             {:turn turn
                                              :pattern/id (candidate-id pid)
                                              :action act})
                           (log-latest-aif-tap! state musn-session)))
-                      (log-mana-response! state action-resp))
-                    (when (#{"implement" "update"} act)
-                      (let [use-resp (musn-use musn-session turn pid)]
-                        (if-let [pur (:pur use-resp)]
-                          (log-use! pur (:aif use-resp))
-                          (do
-                            (log-aif-missing! "turn/use"
-                                              {:turn turn
-                                               :pattern/id (candidate-id pid)
-                                               :action act})
-                            (log-latest-aif-tap! state musn-session)))
-                        (log-mana-response! state use-resp)))
-                    (when (seq files)
-                      (musn-evidence musn-session turn pid files "auto evidence from pattern-action"))))))
+                      (log-mana-response! state use-resp)))
+                  (when (seq files)
+                    (musn-evidence musn-session turn pid files "auto evidence from pattern-action")))))
             (when-let [pa (parse-pattern-action-line line)]
               (let [act (:action pa)
                     pid (:pattern/id pa)

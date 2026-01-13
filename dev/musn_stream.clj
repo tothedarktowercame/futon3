@@ -222,6 +222,68 @@
        distinct
        vec))
 
+(defn- strip-wrapper-quotes [token]
+  (-> token
+      (str/replace #"^['\"]+" "")
+      (str/replace #"['\"]+$" "")))
+
+(defn- normalize-helper-token [token]
+  (-> token
+      strip-wrapper-quotes
+      (str/replace #"^\.?/?scripts/" "")
+      (str/replace #"^./" "")))
+
+(defn- normalize-pattern-token [token]
+  (let [clean (strip-wrapper-quotes token)]
+    (if (str/starts-with? clean "library/")
+      (subs clean (count "library/"))
+      clean)))
+
+(defn- parse-helper-command [cmd]
+  (when (string? cmd)
+    (let [raw-tokens (->> (str/split (str/trim cmd) #"\s+")
+                          (remove str/blank?)
+                          vec)
+          tokens (mapv normalize-helper-token raw-tokens)
+          idx (first (keep-indexed (fn [i tok]
+                                     (when (#{"pattern-select" "pattern-use"} tok)
+                                       i))
+                                   tokens))]
+      (when idx
+        (let [tool (keyword (nth tokens idx))
+              pattern-token (get raw-tokens (inc idx))
+              pattern-id (when-let [raw (some-> pattern-token normalize-pattern-token)]
+                           (when (re-matches #"[a-z0-9._-]+/[a-z0-9._-]+" raw)
+                             raw))
+              note (when (> (count raw-tokens) (+ idx 2))
+                     (->> (subvec raw-tokens (+ idx 2))
+                          (str/join " ")
+                          strip-wrapper-quotes
+                          str/trim))]
+          (when pattern-id
+            {:tool tool
+             :pattern-id pattern-id
+             :note (when (seq note) note)}))))))
+
+(defn- handle-helper-command!
+  [state cmd]
+  (when-let [{:keys [tool pattern-id note]} (parse-helper-command cmd)]
+    (let [pid (candidate-id pattern-id)]
+      (when pid
+        (note-selected! state pid)
+        (case tool
+          :pattern-select
+          (log-selection! {:chosen pid
+                           :candidates [pid]
+                           :selection/reason (cond-> {:mode :read
+                                                      :source :command}
+                                               note (assoc :note note))}
+                         (candidate-detail state pid))
+          :pattern-use
+          (log-use! {:pattern/id pid} nil)
+          nil)))
+    true))
+
 (defn parse-pattern-action [payload]
   (when (= "pattern-action" (:type payload))
     {:pattern/id (:pattern-id payload)
@@ -665,40 +727,41 @@
 
 (defn- handle-command-execution!
   [state musn-session turn cmd]
-  (let [pats (patterns-from-command cmd)]
-    (if (seq pats)
-      (doseq [p pats]
-        (let [action-resp (musn-action musn-session turn p "read" nil nil)]
-          (if-let [aif (:aif action-resp)]
-            (log-aif-update! aif)
-            (do
-              (log-aif-missing! "turn/action"
-                                {:turn turn
-                                 :pattern/id (candidate-id p)
-                                 :action "read"})
-              (log-latest-aif-tap! state musn-session)))
-          (log-mana-response! state action-resp)))
-      (do
-        (maybe-warn-missing-plan! state "wide-scan")
-        (let [note (when (string? cmd)
-                     (let [trimmed (str/trim cmd)]
-                       (when-not (str/blank? trimmed)
-                         (str "tool command: " trimmed))))
-              action-resp (musn-action musn-session
-                                       turn
-                                       "musn/plan-before-tool"
-                                       "wide-scan"
-                                       note
-                                       nil)]
-          (if-let [aif (:aif action-resp)]
-            (log-aif-update! aif)
-            (do
-              (log-aif-missing! "turn/action"
-                                {:turn turn
-                                 :pattern/id "musn/plan-before-tool"
-                                 :action "wide-scan"})
-              (log-latest-aif-tap! state musn-session)))
-          (log-mana-response! state action-resp))))))
+  (when-not (handle-helper-command! state cmd)
+    (let [pats (patterns-from-command cmd)]
+      (if (seq pats)
+        (doseq [p pats]
+          (let [action-resp (musn-action musn-session turn p "read" nil nil)]
+            (if-let [aif (:aif action-resp)]
+              (log-aif-update! aif)
+              (do
+                (log-aif-missing! "turn/action"
+                                  {:turn turn
+                                   :pattern/id (candidate-id p)
+                                   :action "read"})
+                (log-latest-aif-tap! state musn-session)))
+            (log-mana-response! state action-resp)))
+        (do
+          (maybe-warn-missing-plan! state "wide-scan")
+          (let [note (when (string? cmd)
+                       (let [trimmed (str/trim cmd)]
+                         (when-not (str/blank? trimmed)
+                           (str "tool command: " trimmed))))
+                action-resp (musn-action musn-session
+                                         turn
+                                         "musn/plan-before-tool"
+                                         "wide-scan"
+                                         note
+                                         nil)]
+            (if-let [aif (:aif action-resp)]
+              (log-aif-update! aif)
+              (do
+                (log-aif-missing! "turn/action"
+                                  {:turn turn
+                                   :pattern/id "musn/plan-before-tool"
+                                   :action "wide-scan"})
+                (log-latest-aif-tap! state musn-session)))
+            (log-mana-response! state action-resp)))))))
 
 (defn- handle-file-change!
   [state musn-session turn changes]

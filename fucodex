@@ -35,6 +35,7 @@ EXPLORE_LIMIT="4"
 EXPLORE_PROMPT_FILE="docs/codex-exploratory-mission.md"
 HUD_MODE=true
 HUD_INTENT=""
+RAW_PROMPT=""
 APPROVAL_POLICY=""
 SKIP_GIT_CHECK=false
 HUD_PRINT=false
@@ -451,6 +452,10 @@ if [[ ${#args[@]} -gt 0 ]]; then
   fi
 fi
 
+if [[ ${#args[@]} -eq 1 && "${args[0]}" != --* ]]; then
+  RAW_PROMPT="${args[0]}"
+fi
+
 if [[ -n "$FORCED_SESSION_ID" ]]; then
   export FUTON3_CODEX_SESSION_ID="$FORCED_SESSION_ID"
 fi
@@ -459,10 +464,12 @@ if [[ -n "$HUD_SERVER" && -z "${FUTON3_CODEX_SERVER_URL-}" ]]; then
 fi
 if $MUSN_MODE; then
   # Handshake intent for MUSN/HUD; prefer explicit HUD_INTENT, else fall back to the prompt when single arg.
-  if [[ -n "$HUD_INTENT" ]]; then
+  if [[ -n "${FUTON3_MUSN_INTENT-}" ]]; then
+    export FUTON3_MUSN_INTENT
+  elif [[ -n "$HUD_INTENT" ]]; then
     export FUTON3_MUSN_INTENT="$HUD_INTENT"
-  elif [[ ${#args[@]} -eq 1 ]]; then
-    export FUTON3_MUSN_INTENT="${args[0]}"
+  elif [[ -n "$RAW_PROMPT" ]]; then
+    export FUTON3_MUSN_INTENT="$RAW_PROMPT"
   fi
 fi
 if $PATTERN_RPC; then

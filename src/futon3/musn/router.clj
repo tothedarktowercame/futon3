@@ -2,10 +2,9 @@
   "In-memory MUSN state machine: validates requests against schemas, enforces core constraints,
    and emits pause/backtrace payloads. This is a pure-Clojure skeleton; wiring to HTTP/Drawbridge
    can wrap these functions."
-  (:require [clojure.set :as set]
-            [clojure.string :as str]
-            [clojure.core.logic :as l]
+  (:require [clojure.string :as str]
             [malli.core :as m]
+            [futon3.musn.logic :as musn-logic]
             [futon3.musn.schema :as schema]))
 
 (declare pause-payload)
@@ -56,53 +55,55 @@
   (update state :warnings (fnil conj []) {:type type :msg msg :at (now)}))
 
 ;; ------------------------------------------------------------------------------
-;; Constraints (core.logic for clarity, but kept simple)
-
-(defn ensure-plan-before-tool [state action]
-  (if (and (not (:plan? state))
-           (#{"implement" "update" "off-trail" "wide-scan"} (:action action)))
-    (-> state
-        (note-warning :missing-plan "plan is required before tool use")
-        (assoc :halt {:type :missing-plan
-                      :note "plan is required before tool use"}))
-    state))
-
-(defn ensure-selection-before-write [state action]
-  (if (and (#{"implement" "update"} (:action action))
-           (not (:selection state)))
-    (-> state
-        (note-warning :missing-selection "implement/update requires selection")
-        (assoc :halt {:type :missing-selection
-                      :note "implement/update requires selection"}))
-    state))
+;; Constraints (core.logic kernel + routing to warnings/halts)
 
 (defn note-write [state action]
   (if (#{"implement" "update"} (:action action))
     (assoc state :write? true)
     state))
 
-(defn enforce-use-requires-evidence [state]
-  (let [{:keys [selection write?]} state
-        mode (get-in selection [:selection/reason :mode])]
-    (if (and (= :use mode) (not write?))
-      (assoc state :halt {:type :no-write
-                          :note "use-mode selection ended with no writes/evidence"})
-      state)))
-
-(defn enforce-off-trail [state]
-  (if (trail-exceeded? state)
-    (assoc state :halt {:type :off-trail
-                        :note "off-trail budget exceeded"})
-    state))
-
-(defn enforce-cost-consent [state action]
-  (if (and (#{:expensive :human-contact} (:cost action))
-           (not (:plan? state)))
+(defn- apply-obligation [state {:keys [obligation]}]
+  (case obligation
+    :missing-plan
+    (-> state
+        (note-warning :missing-plan "plan is required before tool use")
+        (assoc :halt {:type :missing-plan
+                      :note "plan is required before tool use"}))
+    :missing-selection
+    (-> state
+        (note-warning :missing-selection "implement/update requires selection")
+        (assoc :halt {:type :missing-selection
+                      :note "implement/update requires selection"}))
+    :missing-consent
     (-> state
         (note-warning :missing-consent "expensive move without consent/plan")
         (assoc :halt {:type :missing-consent
                       :note "expensive move without consent/plan"}))
+    :off-trail
+    (note-warning state :off-trail "off-trail budget exceeded")
+    :no-write
+    (assoc state :halt {:type :no-write
+                        :note "use-mode selection ended with no writes/evidence"})
     state))
+
+(defn- apply-obligations [state obligations]
+  (reduce apply-obligation state obligations))
+
+(defn apply-action-constraints [state action]
+  (let [logic-result (musn-logic/check-action state action
+                                              {:off-trail? (trail-exceeded? state)
+                                               :trail (:trail state)})
+        obligations (get-in logic-result [:logic :obligations])]
+    (-> state
+        (apply-obligations obligations)
+        (assoc :last-logic logic-result))))
+
+(defn apply-turn-end-constraints [state]
+  (let [logic-result (musn-logic/check-turn-end state)
+        obligations (get-in logic-result [:logic :obligations])]
+    (-> state
+        (apply-obligations obligations)
+        (assoc :last-logic logic-result))))
 
 ;; ------------------------------------------------------------------------------
 ;; Public API (stateful atom passed in)
@@ -119,7 +120,8 @@
    :warnings []
    :halt nil
    :halt? false
-   :write? false})
+   :write? false
+   :last-logic nil})
 
 (defn handle-turn-start! [state-atom req]
   (validate schema/TurnStartReq req)
@@ -133,6 +135,7 @@
                                  :warnings []
                                  :halt nil
                                  :write? false
+                                 :last-logic nil
                                  :allowed (normalize-pattern-set (get-in req [:hud :candidates] [])
                                                                  (get-in req [:hud :namespaces] [])))
                           (update :trail #(assoc % :limit (off-trail-limit {:trail % :off-trail-policy (:off-trail-policy st)}))))))
@@ -156,14 +159,6 @@
     (swap! state-atom assoc :selection psr)
     {:ok true :psr psr}))
 
-(defn apply-action-constraints [state action]
-  (-> state
-      (ensure-plan-before-tool action)
-      (ensure-selection-before-write action)
-      (enforce-cost-consent action)
-      (note-write action)
-      (enforce-off-trail)))
-
 (defn handle-turn-action! [state-atom req]
   (validate schema/TurnActionReq req)
   (let [action {:pattern/id (:pattern/id req)
@@ -175,16 +170,18 @@
                 :on-trail (allowed-pattern? (:allowed @state-atom) (:pattern/id req))}]
     (swap! state-atom
            (fn [st]
-             (-> st
-                 (bump-trail (:on-trail action))
-                 (record-action action)
-                 (apply-action-constraints action))))
+             (let [next-state (-> st
+                                  (bump-trail (:on-trail action))
+                                  (record-action action)
+                                  (note-write action))]
+               (apply-action-constraints next-state action))))
     (let [st @state-atom]
       {:ok (not (:halt st))
        :trail (:trail st)
        :warning (when (:halt st) {:type (:type (:halt st)) :msg (:note (:halt st))})
        :halt? (boolean (:halt st))
        :halt/reason (:halt st)
+       :logic (get-in st [:last-logic :logic])
        :pause (pause-payload st)})))
 
 (defn handle-turn-use! [state-atom req]
@@ -211,7 +208,7 @@
 
 (defn handle-turn-end! [state-atom req]
   (validate schema/TurnEndReq req)
-  (swap! state-atom enforce-use-requires-evidence)
+  (swap! state-atom apply-turn-end-constraints)
   (let [st @state-atom
         halt (:halt st)]
     {:ok (not halt)
@@ -222,6 +219,7 @@
                :warnings (count (:warnings st))}
      :halt? (boolean halt)
      :halt/reason halt
+     :logic (get-in st [:last-logic :logic])
      :pause (pause-payload st)}))
 
 (defn handle-turn-resume! [state-atom req]

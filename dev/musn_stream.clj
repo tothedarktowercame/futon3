@@ -782,8 +782,9 @@
            :turn-plan? false
            :turn-plan-warned? false
            :turn-ended nil)
-    (let [hud-map (try
-                    (when musn-intent
+    (let [intent (some-> musn-intent str/trim not-empty)
+          hud-map (try
+                    (when intent
                       (hud/build-hud {:intent musn-intent
                                       :pattern-limit 8
                                       :namespaces ["musn" "fulab" "aif" "agent"]}))
@@ -803,8 +804,9 @@
           scores (normalize-score-keys raw-scores)
           scores (when (seq candidate-ids)
                    (select-keys scores candidate-ids))
-          hud-payload (cond-> {:intent musn-intent
-                               :candidates candidate-ids}
+          hud-payload (cond-> {}
+                        intent (assoc :intent intent)
+                        (seq candidate-ids) (assoc :candidates candidate-ids)
                         (map? scores) (assoc :scores scores)
                         (seq full-candidates) (assoc :candidate-details full-candidates)
                         (:sigils hud-map) (assoc :sigils (:sigils hud-map))

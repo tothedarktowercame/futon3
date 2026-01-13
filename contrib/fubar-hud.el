@@ -1076,11 +1076,17 @@ Copies intent, sigils, candidates, and any other known HUD fields, then refreshe
                          (let ((hud-win (get-buffer-window fubar-hud-buffer-name t)))
                            (when hud-win
                              (let* ((hud-buf (get-buffer fubar-hud-buffer-name))
-                                    (pause? (and fubar-hud-pause-when-selected
-                                                 (eq (window-buffer (selected-window)) hud-buf)
-                                                 (not (and hud-buf
-                                                           (buffer-local-value 'fubar-hud--session-id hud-buf))))))
-                               (setq fubar-hud--auto-refresh-paused pause?)
+                                    (paused? (and hud-buf
+                                                  (with-current-buffer hud-buf
+                                                    (fubar-hud--paused-p))))
+                                    (pause? (or paused?
+                                                (and fubar-hud-pause-when-selected
+                                                     (eq (window-buffer (selected-window)) hud-buf)
+                                                     (not (and hud-buf
+                                                               (buffer-local-value 'fubar-hud--session-id hud-buf)))))))
+                               (when hud-buf
+                                 (with-current-buffer hud-buf
+                                   (setq fubar-hud--auto-refresh-paused pause?)))
                                (unless pause?
                                  (with-current-buffer fubar-hud-buffer-name
                                    (fubar-hud-refresh)))))))))))

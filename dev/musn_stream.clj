@@ -371,9 +371,9 @@
          confidence-label (format-confidence detail)
          aif-label (when (or g tau)
                      (str " aif=" (str/join ","
-                                           (remove nil?
-                                                   [(when g (str "G=" g))
-                                                    (when tau (str "tau=" tau))]))))]
+                                            (remove nil?
+                                                    [(when g (str "G=" g))
+                                                     (when tau (str "tau=" tau))]))))]
      (let [line (format "[pattern-selection] chosen=%s candidates=%d mode=%s%s%s%s"
                         (:chosen psr)
                         (count (:candidates psr))
@@ -516,39 +516,39 @@
                                         {:turn turn
                                          :chosen chosen})
                       (log-latest-aif-tap! state musn-session))))
-              (when-let [pa (parse-pattern-action payload)]
-                (let [act (:action pa)
-                      pid (:pattern/id pa)
-                      files (:files pa)]
-                  (when (#{"implement" "update"} act)
-                    (ensure-selection! state musn-session turn pid
-                                       {:mode :use
-                                        :note "auto selection from pattern action"
-                                        :source :auto}
-                                       nil))
-                  (let [action-resp (musn-action musn-session turn pid act (:note pa) files)]
-                    (if-let [aif (:aif action-resp)]
-                      (log-aif-update! aif)
-                      (do
-                        (log-aif-missing! "turn/action"
-                                          {:turn turn
-                                           :pattern/id (candidate-id pid)
-                                           :action act})
-                        (log-latest-aif-tap! state musn-session)))
-                    (log-mana-response! state action-resp))
-                  (when (#{"implement" "update"} act)
-                    (let [use-resp (musn-use musn-session turn pid)]
-                      (if-let [pur (:pur use-resp)]
-                        (log-use! pur (:aif use-resp))
+                (when-let [pa (parse-pattern-action payload)]
+                  (let [act (:action pa)
+                        pid (:pattern/id pa)
+                        files (:files pa)]
+                    (when (#{"implement" "update"} act)
+                      (ensure-selection! state musn-session turn pid
+                                         {:mode :use
+                                          :note "auto selection from pattern action"
+                                          :source :auto}
+                                         nil))
+                    (let [action-resp (musn-action musn-session turn pid act (:note pa) files)]
+                      (if-let [aif (:aif action-resp)]
+                        (log-aif-update! aif)
                         (do
-                          (log-aif-missing! "turn/use"
+                          (log-aif-missing! "turn/action"
                                             {:turn turn
                                              :pattern/id (candidate-id pid)
                                              :action act})
                           (log-latest-aif-tap! state musn-session)))
-                      (log-mana-response! state use-resp)))
-                  (when (seq files)
-                    (musn-evidence musn-session turn pid files "auto evidence from pattern-action"))))))
+                      (log-mana-response! state action-resp))
+                    (when (#{"implement" "update"} act)
+                      (let [use-resp (musn-use musn-session turn pid)]
+                        (if-let [pur (:pur use-resp)]
+                          (log-use! pur (:aif use-resp))
+                          (do
+                            (log-aif-missing! "turn/use"
+                                              {:turn turn
+                                               :pattern/id (candidate-id pid)
+                                               :action act})
+                            (log-latest-aif-tap! state musn-session)))
+                        (log-mana-response! state use-resp)))
+                    (when (seq files)
+                      (musn-evidence musn-session turn pid files "auto evidence from pattern-action"))))))
             (when-let [pa (parse-pattern-action-line line)]
               (let [act (:action pa)
                     pid (:pattern/id pa)
@@ -584,60 +584,176 @@
                   (musn-evidence musn-session turn pid files "auto evidence from pattern-action"))))))
 
       ;; command execution
-      (and (= (:type event) "item.completed")
-           (= (get-in event [:item :type]) "command_execution"))
-      (let [cmd (get-in event [:item :command])
-            pats (patterns-from-command cmd)]
-        (doseq [p pats]
-          (let [action-resp (musn-action musn-session turn p "read" nil nil)]
-            (if-let [aif (:aif action-resp)]
-              (log-aif-update! aif)
-              (do
-                (log-aif-missing! "turn/action"
-                                  {:turn turn
-                                   :pattern/id (candidate-id p)
-                                   :action "read"})
-                (log-latest-aif-tap! state musn-session)))
-            (log-mana-response! state action-resp))))
+        (and (= (:type event) "item.completed")
+             (= (get-in event [:item :type]) "command_execution"))
+        (let [cmd (get-in event [:item :command])
+              pats (patterns-from-command cmd)]
+          (doseq [p pats]
+            (let [action-resp (musn-action musn-session turn p "read" nil nil)]
+              (if-let [aif (:aif action-resp)]
+                (log-aif-update! aif)
+                (do
+                  (log-aif-missing! "turn/action"
+                                    {:turn turn
+                                     :pattern/id (candidate-id p)
+                                     :action "read"})
+                  (log-latest-aif-tap! state musn-session)))
+              (log-mana-response! state action-resp))))
 
       ;; file changes
-      (and (= (:type event) "item.completed")
-           (= (get-in event [:item :type]) "file_change"))
-      (let [changes (get-in event [:item :changes])
-            files (files-from-change changes)
-            pats (->> changes
-                      (map :path)
-                      (keep #(re-find #"(?:^|/)([a-z0-9._-]+/[a-z0-9._-]+)\.(flexiarg|multiarg)$" %))
-                      (map second)
-                      distinct
-                      vec)]
-        (doseq [p pats]
-          (let [pid (candidate-id p)]
-            (when (and pid (not (selected? state pid)))
-              (log-warning! "pattern-edit-without-selection"
-                            {:pattern/id pid
-                             :turn turn
-                             :files (vec (take 3 files))
-                             :file-count (count files)}))
-            (ensure-selection! state musn-session turn pid
-                               {:mode :use
-                                :note "auto selection from pattern file change"
-                                :source :auto}
-                               nil))
-          (let [action-resp (musn-action musn-session turn p "update" "auto file_change" files)]
-            (if-let [aif (:aif action-resp)]
-              (log-aif-update! aif)
-              (do
-                (log-aif-missing! "turn/action"
-                                  {:turn turn
-                                   :pattern/id (candidate-id p)
-                                   :action "update"})
-                (log-latest-aif-tap! state musn-session)))
-            (log-mana-response! state action-resp))
-          (when (seq files)
-            (musn-evidence musn-session turn p files "auto evidence from change"))))
+        (and (= (:type event) "item.completed")
+             (= (get-in event [:item :type]) "file_change"))
+        (let [changes (get-in event [:item :changes])
+              files (files-from-change changes)
+              pats (->> changes
+                        (map :path)
+                        (keep #(re-find #"(?:^|/)([a-z0-9._-]+/[a-z0-9._-]+)\.(flexiarg|multiarg)$" %))
+                        (map second)
+                        distinct
+                        vec)]
+          (doseq [p pats]
+            (let [pid (candidate-id p)]
+              (when (and pid (not (selected? state pid)))
+                (log-warning! "pattern-edit-without-selection"
+                              {:pattern/id pid
+                               :turn turn
+                               :files (vec (take 3 files))
+                               :file-count (count files)}))
+              (ensure-selection! state musn-session turn pid
+                                 {:mode :use
+                                  :note "auto selection from pattern file change"
+                                  :source :auto}
+                                 nil))
+            (let [action-resp (musn-action musn-session turn p "update" "auto file_change" files)]
+              (if-let [aif (:aif action-resp)]
+                (log-aif-update! aif)
+                (do
+                  (log-aif-missing! "turn/action"
+                                    {:turn turn
+                                     :pattern/id (candidate-id p)
+                                     :action "update"})
+                  (log-latest-aif-tap! state musn-session)))
+              (log-mana-response! state action-resp))
+            (when (seq files)
+              (musn-evidence musn-session turn p files "auto evidence from change"))))
 
       :else nil))))
+
+(defn- handle-turn-start!
+  [state session event]
+  (let [t (or (:turn event) (inc (:turn @state)) 1)]
+    (swap! state assoc
+           :turn t
+           :selected-patterns #{}
+           :turn-ended nil)
+    (let [hud-map (try
+                    (when musn-intent
+                      (hud/build-hud {:intent musn-intent
+                                      :pattern-limit 8
+                                      :namespaces ["musn" "fulab" "aif" "agent"]}))
+                    (catch Throwable e
+                      (log-musn! state "hud-build error" (.getMessage e))
+                      (println (format "[hud-build-error] %s" (.getMessage e)))
+                      (flush)
+                      nil))
+          full-candidates (vec (or (seq (:candidates hud-map)) []))
+          candidates-present? (contains? hud-map :candidates)
+          raw-candidates (if candidates-present?
+                           (:candidates hud-map)
+                           (:prototypes hud-map))
+          seed-candidates (vec (or raw-candidates []))
+          candidate-ids (candidate-ids seed-candidates)
+          raw-scores (get-in hud-map [:aif :G-scores])
+          scores (normalize-score-keys raw-scores)
+          scores (when (seq candidate-ids)
+                   (select-keys scores candidate-ids))
+          hud-payload (cond-> {:intent musn-intent
+                               :candidates candidate-ids}
+                        (map? scores) (assoc :scores scores)
+                        (seq full-candidates) (assoc :candidate-details full-candidates)
+                        (:sigils hud-map) (assoc :sigils (:sigils hud-map))
+                        (:namespaces hud-map) (assoc :namespaces (:namespaces hud-map))
+                        (:aif hud-map) (assoc :aif (:aif hud-map)))]
+      (let [start-resp (musn-start session t hud-payload)]
+        (if-let [aif (:aif start-resp)]
+          (log-aif-selection! aif)
+          (when (seq candidate-ids)
+            (log-aif-missing! "turn/start"
+                              {:turn t
+                               :candidates (count candidate-ids)})
+            (log-latest-aif-tap! state session)))
+        (log-mana-response! state start-resp))
+      (swap! state assoc
+             :candidate-details (into {}
+                                      (keep (fn [entry]
+                                              (when-let [id (:id entry)]
+                                                [id (select-keys entry
+                                                                 [:maturity-phase
+                                                                  :precision-prior
+                                                                  :evidence-count
+                                                                  :next-steps-count])])))
+                                      full-candidates))
+      (if (seq candidate-ids)
+        (let [line (format "[hud-candidates] %s" (str/join ", " candidate-ids))]
+          (log! line)
+          (println line))
+        (let [line "[hud-candidates] none"]
+          (log! line)
+          (println line)))
+      (when-let [sigils (:sigils hud-map)]
+        (let [line (format "[hud-sigils] %s"
+                           (or (format-sigils sigils) sigils))]
+          (log! line)
+          (println line)))
+      (flush))
+    (when musn-intent
+      ;; announce intent into the stream so HUD can pick it up as handshake
+      (log! (format "[hud-intent] %s" musn-intent))
+      (println (format "[hud-intent] %s" musn-intent))
+      (flush)
+      (when require-approval?
+        (let [line "[musn-pause] intent computed; waiting for approval to proceed"]
+          (log! line)
+          (println line))
+        (flush)
+        ;; Block until a resume note shows up in session state.
+        (wait-for-resume! state session)))))
+
+(defn- handle-turn-completed!
+  [state session event tap-listener]
+  (when (= (:type event) "turn.completed")
+    (let [turn (:turn @state)]
+      (when-not (= turn (:turn-ended @state))
+        (swap! state assoc :turn-ended turn)
+        (swap! state update :turn-end-count (fnil inc 0))
+        (log! "[musn-end]"
+              {:turn turn
+               :event (:type event)
+               :event/turn (:turn event)
+               :usage (:usage event)
+               :end-count (:turn-end-count @state)})
+        (let [resp (musn-end session turn)
+              paused? (:halt? resp)]
+          (log-mana-response! state resp)
+          (if paused?
+            (when-not (:pause-latched? @state)
+              (swap! state assoc :paused? true :pause-latched? true)
+              (log! "[pattern] pause-latch" {:state :latched :turn turn})
+              (print-pause resp)
+              (remove-tap tap-listener)
+              (System/exit 3))
+            (when (or (:paused? @state) (:pause-latched? @state))
+              (swap! state assoc :paused? false :pause-latched? false)
+              (log! "[pattern] pause-latch" {:state :reset :turn turn}))))))))
+
+(defn- process-event!
+  [state session event tap-listener]
+  (log-musn! state "event" event)
+  (let [event-type (:type event)]
+    (if (= event-type "turn.started")
+      (handle-turn-start! state session event)
+      (handle-event! state event session))
+    (handle-turn-completed! state session event tap-listener)))
 
 (defn stream-loop []
   (let [tap-listener (fn [event]
@@ -647,13 +763,13 @@
     (add-tap tap-listener)
     (try
       (let [session (musn-create-session)
-          state (atom {:turn 0
-                       :paused? false
-                       :pause-latched? false
-                       :selected-patterns #{}
-                       :last-aif-tap nil
-                       :candidate-details {}
-                       :turn-ended nil})
+            state (atom {:turn 0
+                         :paused? false
+                         :pause-latched? false
+                         :selected-patterns #{}
+                         :last-aif-tap nil
+                         :candidate-details {}
+                         :turn-ended nil})
             sid (require-session-id session)]
         (log-musn! state "stream-loop start")
         (let [line (format "[musn-session] %s" sid)]
@@ -662,114 +778,7 @@
         (flush)
         (doseq [line (line-seq (io/reader *in*))]
           (when-let [event (parse-json line)]
-            (log-musn! state "event" event)
-            (let [event-type (:type event)]
-              (cond
-                (= event-type "turn.started")
-                (let [t (or (:turn event) (inc (:turn @state)) 1)]
-                  (swap! state assoc
-                         :turn t
-                         :selected-patterns #{}
-                         :turn-ended nil)
-                  (let [hud-map (try
-                                  (when musn-intent
-                                    (hud/build-hud {:intent musn-intent
-                                                    :pattern-limit 8
-                                                    :namespaces ["musn" "fulab" "aif" "agent"]}))
-                                  (catch Throwable e
-                                    (log-musn! state "hud-build error" (.getMessage e))
-                                    (println (format "[hud-build-error] %s" (.getMessage e)))
-                                    (flush)
-                                    nil))
-                        full-candidates (vec (or (seq (:candidates hud-map)) []))
-                        candidates-present? (contains? hud-map :candidates)
-                        raw-candidates (if candidates-present?
-                                         (:candidates hud-map)
-                                         (:prototypes hud-map))
-                        seed-candidates (vec (or raw-candidates []))
-                        candidate-ids (candidate-ids seed-candidates)
-                        raw-scores (get-in hud-map [:aif :G-scores])
-                        scores (normalize-score-keys raw-scores)
-                        scores (when (seq candidate-ids)
-                                 (select-keys scores candidate-ids))
-                        hud-payload (cond-> {:intent musn-intent
-                                             :candidates candidate-ids}
-                                      (map? scores) (assoc :scores scores)
-                                      (seq full-candidates) (assoc :candidate-details full-candidates)
-                                      (:sigils hud-map) (assoc :sigils (:sigils hud-map))
-                                      (:namespaces hud-map) (assoc :namespaces (:namespaces hud-map))
-                                      (:aif hud-map) (assoc :aif (:aif hud-map)))]
-                    (let [start-resp (musn-start session t hud-payload)]
-                      (if-let [aif (:aif start-resp)]
-                        (log-aif-selection! aif)
-                        (when (seq candidate-ids)
-                          (log-aif-missing! "turn/start"
-                                            {:turn t
-                                             :candidates (count candidate-ids)})
-                          (log-latest-aif-tap! state session)))
-                      (log-mana-response! state start-resp))
-                    (swap! state assoc
-                           :candidate-details (into {}
-                                                    (keep (fn [entry]
-                                                            (when-let [id (:id entry)]
-                                                              [id (select-keys entry
-                                                                               [:maturity-phase
-                                                                                :precision-prior
-                                                                                :evidence-count
-                                                                                :next-steps-count])])))
-                                                    full-candidates))
-                    (if (seq candidate-ids)
-                      (let [line (format "[hud-candidates] %s" (str/join ", " candidate-ids))]
-                        (log! line)
-                        (println line))
-                      (let [line "[hud-candidates] none"]
-                        (log! line)
-                        (println line)))
-                    (when-let [sigils (:sigils hud-map)]
-                      (let [line (format "[hud-sigils] %s"
-                                         (or (format-sigils sigils) sigils))]
-                        (log! line)
-                        (println line)))
-                    (flush))
-                  (when musn-intent
-                    ;; announce intent into the stream so HUD can pick it up as handshake
-                    (log! (format "[hud-intent] %s" musn-intent))
-                    (println (format "[hud-intent] %s" musn-intent))
-                    (flush)
-                    (when require-approval?
-                      (let [line "[musn-pause] intent computed; waiting for approval to proceed"]
-                        (log! line)
-                        (println line))
-                      (flush)
-                      ;; Block until a resume note shows up in session state.
-                      (wait-for-resume! state session))))
-
-                :else
-                (handle-event! state event session))
-              (when (= event-type "turn.completed")
-                (let [turn (:turn @state)]
-                  (when-not (= turn (:turn-ended @state))
-                    (swap! state assoc :turn-ended turn)
-                    (swap! state update :turn-end-count (fnil inc 0))
-                    (log! "[musn-end]"
-                          {:turn turn
-                           :event (:type event)
-                           :event/turn (:turn event)
-                           :usage (:usage event)
-                           :end-count (:turn-end-count @state)})
-                    (let [resp (musn-end session turn)
-                          paused? (:halt? resp)]
-                      (log-mana-response! state resp)
-                      (if paused?
-                        (when-not (:pause-latched? @state)
-                          (swap! state assoc :paused? true :pause-latched? true)
-                          (log! "[pattern] pause-latch" {:state :latched :turn turn})
-                          (print-pause resp)
-                          (remove-tap tap-listener)
-                          (System/exit 3))
-                        (when (or (:paused? @state) (:pause-latched? @state))
-                          (swap! state assoc :paused? false :pause-latched? false)
-                          (log! "[pattern] pause-latch" {:state :reset :turn turn})))))))))
+            (process-event! state session event tap-listener)))
       (remove-tap tap-listener)
       (System/exit 0)
       (catch Throwable t
@@ -778,11 +787,10 @@
           (println "[musn-stream] ERROR" (.getMessage t))
           (when-let [d (ex-data t)] (prn d)))
         (log! "[musn-stream] ERROR" (.getMessage t) (ex-data t))
-        (System/exit 4))))
-  ))
+        (System/exit 4)))))
+
 (defn -main [& _]
   (stream-loop))
 
 ;; Invoke main when run as a script (clojure -M dev/musn_stream.clj)
 (apply -main *command-line-args*)
-)

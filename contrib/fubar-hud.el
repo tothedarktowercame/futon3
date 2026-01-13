@@ -751,7 +751,7 @@
     (insert (propertize "━━━ FuLab HUD ━━━\n\n" 'face 'fubar-hud-header-face))
 
     (when (fubar-hud--paused-p)
-      (let ((status (if fubar-hud--musn-paused "HALTED" "PAUSE SEEN"))
+      (let ((status "PAUSED")
             (reason (and fubar-hud--musn-pause-reason
                          (not (string-empty-p fubar-hud--musn-pause-reason))
                          fubar-hud--musn-pause-reason)))

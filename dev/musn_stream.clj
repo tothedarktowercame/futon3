@@ -647,12 +647,13 @@
     (add-tap tap-listener)
     (try
       (let [session (musn-create-session)
-            state (atom {:turn 0
-                         :paused? false
-                         :pause-latched? false
-                         :selected-patterns #{}
-                         :last-aif-tap nil
-                         :candidate-details {}})
+          state (atom {:turn 0
+                       :paused? false
+                       :pause-latched? false
+                       :selected-patterns #{}
+                       :last-aif-tap nil
+                       :candidate-details {}
+                       :turn-ended nil})
             sid (require-session-id session)]
         (log-musn! state "stream-loop start")
         (let [line (format "[musn-session] %s" sid)]
@@ -668,7 +669,8 @@
                 (let [t (or (:turn event) (inc (:turn @state)) 1)]
                   (swap! state assoc
                          :turn t
-                         :selected-patterns #{})
+                         :selected-patterns #{}
+                         :turn-ended nil)
                   (let [hud-map (try
                                   (when musn-intent
                                     (hud/build-hud {:intent musn-intent
@@ -742,31 +744,32 @@
                       ;; Block until a resume note shows up in session state.
                       (wait-for-resume! state session)))))
 
-                (= event-type "turn.completed")
-                (do
+                :else
+                (handle-event! state event session)))))
+            (when (= event-type "turn.completed")
+              (let [turn (:turn @state)]
+                (when-not (= turn (:turn-ended @state))
+                  (swap! state assoc :turn-ended turn)
                   (swap! state update :turn-end-count (fnil inc 0))
                   (log! "[musn-end]"
-                        {:turn (:turn @state)
+                        {:turn turn
                          :event (:type event)
                          :event/turn (:turn event)
                          :usage (:usage event)
                          :end-count (:turn-end-count @state)})
-                  (let [resp (musn-end session (:turn @state))
+                  (let [resp (musn-end session turn)
                         paused? (:halt? resp)]
                     (log-mana-response! state resp)
                     (if paused?
                       (when-not (:pause-latched? @state)
                         (swap! state assoc :paused? true :pause-latched? true)
-                        (log! "[pattern] pause-latch" {:state :latched :turn (:turn @state)})
+                        (log! "[pattern] pause-latch" {:state :latched :turn turn})
                         (print-pause resp)
                         (remove-tap tap-listener)
                         (System/exit 3))
                       (when (or (:paused? @state) (:pause-latched? @state))
                         (swap! state assoc :paused? false :pause-latched? false)
-                        (log! "[pattern] pause-latch" {:state :reset :turn (:turn @state)})))))
-
-                :else
-                (handle-event! state event session)))))
+                        (log! "[pattern] pause-latch" {:state :reset :turn turn})))))))
       (remove-tap tap-listener)
       (System/exit 0)
       (catch Throwable t
@@ -776,9 +779,9 @@
           (when-let [d (ex-data t)] (prn d)))
         (log! "[musn-stream] ERROR" (.getMessage t) (ex-data t))
         (System/exit 4))))
+  )
 (defn -main [& _]
   (stream-loop))
 
 ;; Invoke main when run as a script (clojure -M dev/musn_stream.clj)
 (apply -main *command-line-args*)
-)

@@ -206,7 +206,7 @@
           (let ((reason (and fubar-musn--pause-reason
                              (not (string-empty-p fubar-musn--pause-reason))
                              (format " (%s)" fubar-musn--pause-reason))))
-            (propertize (format " MUSN HALTED%s -- resume in HUD "
+            (propertize (format " MUSN PAUSED%s -- resume in HUD "
                                 (or reason ""))
                         'face 'fubar-musn-pause-banner-face)))
          (fubar-musn--run-active

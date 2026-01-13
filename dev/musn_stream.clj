@@ -582,6 +582,18 @@
                     (log-mana-response! state use-resp)))
                 (when (seq files)
                   (musn-evidence musn-session turn pid files "auto evidence from pattern-action"))))))
+        (when-let [report (hud/parse-agent-report text)]
+          (when-let [pid (:applied report)]
+            (let [mode (case (some-> (:action report) str/lower-case)
+                         "read" :read
+                         "implement" :use
+                         "update" :use
+                         :select)]
+              (ensure-selection! state musn-session turn pid
+                                 {:mode mode
+                                  :note (or (:notes report) "agent report selection")
+                                  :source :report}
+                                 nil)))))
 
       ;; command execution
         (and (= (:type event) "item.completed")

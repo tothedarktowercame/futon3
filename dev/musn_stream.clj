@@ -794,3 +794,4 @@
 
 ;; Invoke main when run as a script (clojure -M dev/musn_stream.clj)
 (apply -main *command-line-args*)
+)

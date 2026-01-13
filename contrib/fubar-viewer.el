@@ -838,6 +838,42 @@ interactively), set the HUD intent immediately as the handshake."
       (switch-to-buffer "*FuLab HUD*")
       (other-window -1))))
 
+(defun fubar-musn--log-empty-p (path)
+  (or (not (file-exists-p path))
+      (= 0 (file-attribute-size (file-attributes path)))))
+
+(defun fubar-musn--latest-file (dir pattern)
+  (let ((files (directory-files dir t pattern)))
+    (car (sort files (lambda (a b)
+                       (time-less-p (nth 5 (file-attributes b))
+                                    (nth 5 (file-attributes a))))))))
+
+(defun fubar-musn--latest-clojure-error ()
+  (let ((latest (fubar-musn--latest-file "/tmp" "^clojure-.*\\.edn$")))
+    (when (and latest (file-readable-p latest))
+      (with-temp-buffer
+        (insert-file-contents latest)
+        (goto-char (point-min))
+        (when (re-search-forward ":clojure.main/message\\s-*\"\\([^\"]+\\)\"" nil t)
+          (match-string 1))))))
+
+(defun fubar-musn--note-launch-error (buf message)
+  (let ((line (format "[musn-launch] %s" message)))
+    (when (buffer-live-p buf)
+      (with-current-buffer buf
+        (let ((inhibit-read-only t))
+          (goto-char (point-max))
+          (insert "\n" line "\n"))))
+    (message "%s" line)))
+
+(defun fubar-musn--check-launch (proc log buf)
+  (when (and (processp proc)
+             (not (process-live-p proc))
+             (fubar-musn--log-empty-p log))
+    (let ((err (or (fubar-musn--latest-clojure-error)
+                   "MUSN stream failed to start (no log output)")))
+      (fubar-musn--note-launch-error buf err))))
+
 ;; One-shot launcher for MUSN runs via fucodex (best effort inference of patterns)
 (defun fubar-musn-launch-and-view (prompt &optional intent)
   "Run fucodex in MUSN mode with PROMPT, stream MUSN log, and open 2-up view.
@@ -875,7 +911,8 @@ from the prompt."
       (with-current-buffer buf
         (setq default-directory fubar-hud-futon3-root)
         (erase-buffer)
-        (start-process-shell-command "fubar-musn-launch" buf cmd))
+        (let ((proc (start-process-shell-command "fubar-musn-launch" buf cmd)))
+          (run-at-time 1 nil #'fubar-musn--check-launch proc log buf)))
       (message "Launched MUSN run with intent: %s" intent))))
 
 (provide 'fubar-viewer)

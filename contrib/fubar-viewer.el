@@ -200,9 +200,6 @@
 (defun fubar-musn--update-pause-banner ()
   (setq header-line-format
         (cond
-         (fubar-musn--run-finished
-          (propertize " MUSN RUN FINISHED "
-                      'face 'fubar-musn-finished-banner-face))
          (fubar-musn--pause-seen
           (let ((reason (and fubar-musn--pause-reason
                              (not (string-empty-p fubar-musn--pause-reason))
@@ -210,6 +207,9 @@
             (propertize (format " MUSN PAUSED%s -- resume in HUD "
                                 (or reason ""))
                         'face 'fubar-musn-pause-banner-face)))
+         (fubar-musn--run-finished
+          (propertize " MUSN RUN FINISHED "
+                      'face 'fubar-musn-finished-banner-face))
          (fubar-musn--run-active
           (propertize " FUCODEX RUNNING "
                       'face 'fubar-musn-running-banner-face))
@@ -333,7 +333,7 @@
       (when (boundp 'fubar-hud--current-hud)
         (setq fubar-hud--current-hud nil))
       (when (fboundp 'fubar-hud-refresh)
-        (fubar-hud-refresh)))))
+        (fubar-hud-refresh))))))
 
 (defun fubar-musn--sync-handshake-from-text (text)
   (let* ((handshake (fubar-musn--extract-handshake text))

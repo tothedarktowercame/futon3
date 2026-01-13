@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+topic="${1:-tools}"
+
+case "$topic" in
+  tools|tool|/tools|/help)
+    cat <<'EOF'
+MUSN help: tools
+
+pattern-action (shell helper; logs reads/updates)
+  pattern-action read f2/p13 "why"
+  pattern-action update or/dream-audit-per-release "note"
+
+rg (search)
+  rg -n "musn-warning" src
+  rg --files -g "*.clj" src
+
+edit files
+  apply_patch (if available in your tool list)
+  perl -pi -e 's/old/new/' path
+EOF
+    ;;
+  pattern|patterns|/pattern)
+    cat <<'EOF'
+MUSN help: pattern selection
+
+- Select a pattern before implement/update.
+- In multiarg files, use the @arg pattern id (not the file basename).
+- Log actions via pattern-action or a FULAB-REPORT block.
+EOF
+    ;;
+  *)
+    echo "usage: musn-help [tools|pattern]" >&2
+    exit 2
+    ;;
+esac

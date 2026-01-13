@@ -25,6 +25,8 @@
 (require 'url)
 (require 'url-http)
 
+(declare-function fubar-musn-launch-and-view "fubar-viewer" (prompt &optional intent))
+
 (defgroup fubar-hud nil
   "HUD display for fulab pattern-aware sessions."
   :group 'fubar
@@ -963,6 +965,16 @@ Copies intent, sigils, candidates, and any other known HUD fields, then refreshe
   (when-let ((buf (get-buffer fubar-hud-stream-buffer-name)))
     (get-buffer-process buf)))
 
+(defun fubar-hud--send-signal (proc signal)
+  "Send SIGNAL to PROC, supporting older Emacs builds."
+  (cond
+   ((fboundp 'process-send-signal)
+    (process-send-signal signal proc))
+   ((and (fboundp 'signal-process) (process-id proc))
+    (signal-process (process-id proc) signal))
+   (t
+    (user-error "Cannot signal process on this Emacs build"))))
+
 (defun fubar-hud-toggle-stream-pause ()
   "Pause or resume the stream process."
   (interactive)
@@ -971,12 +983,12 @@ Copies intent, sigils, candidates, and any other known HUD fields, then refreshe
         (message "No live stream process for %s" fubar-hud-stream-buffer-name)
       (if fubar-hud--stream-paused
           (progn
-            (process-send-signal 'SIGCONT proc)
+            (fubar-hud--send-signal proc 'SIGCONT)
             (setq fubar-hud--stream-paused nil)
             (when (file-exists-p fubar-hud-pause-flag-file)
               (delete-file fubar-hud-pause-flag-file))
             (message "Stream resumed"))
-        (process-send-signal 'SIGSTOP proc)
+        (fubar-hud--send-signal proc 'SIGSTOP)
         (setq fubar-hud--stream-paused t)
         (with-temp-file fubar-hud-pause-flag-file
           (insert "paused\n"))
@@ -1063,6 +1075,19 @@ Returns plist with :session-id and :agent-report."
   (format "codex-%s"
           (substring (md5 (format "%s-%s" (float-time) (random))) 0 8)))
 
+(defun fubar-hud--resolve-intent (prompt intent)
+  "Resolve INTENT for PROMPT using the HUD intent rules."
+  (let ((trimmed (and intent (string-trim intent))))
+    (cond
+     ((and trimmed (not (string-empty-p trimmed))) trimmed)
+     ((and fubar-hud-intent-from-prompt prompt)
+      (let* ((extracted (fubar-hud--extract-intent-from-prompt prompt))
+             (candidate (or extracted prompt)))
+        (when (and candidate
+                   (not (string-empty-p (string-trim candidate))))
+          (string-trim candidate))))
+     (t nil))))
+
 (defun fubar-hud-run-fuclaude (prompt)
   "Run fuclaude with PROMPT and current HUD intent.
 Output goes to *FuLab Raw Stream* buffer. On completion, parses
@@ -1091,7 +1116,7 @@ session ID and FULAB-REPORT to update the HUD."
     (message "Started fuclaude with intent: %s" intent)))
 
 (defun fubar-hud-run-fucodex (prompt &optional intent)
-  "Run fucodex with PROMPT and current HUD intent.
+  "Run fucodex in HUD mode with PROMPT and current HUD intent.
 Starts a live run, binds a new session id, and streams output to
 *FuLab Raw Stream*."
   (interactive
@@ -1106,16 +1131,7 @@ Starts a live run, binds a new session id, and streams output to
          (approval-policy (if (and approval-policy (not (string-empty-p approval-policy)))
                               approval-policy
                             fubar-hud-approval-policy))
-         (intent (let ((trimmed (and intent (string-trim intent))))
-                   (cond
-                    ((and trimmed (not (string-empty-p trimmed))) trimmed)
-                    ((and fubar-hud-intent-from-prompt prompt)
-                     (let* ((extracted (fubar-hud--extract-intent-from-prompt prompt))
-                            (candidate (or extracted prompt)))
-                       (when (and candidate
-                                  (not (string-empty-p (string-trim candidate))))
-                         (string-trim candidate))))
-                    :else nil)))
+         (intent (fubar-hud--resolve-intent prompt intent))
          (session-id (fubar-hud--generate-session-id))
          (buf (get-buffer-create fubar-hud-stream-buffer-name))
          (args (append (list "--live" "--hud" "--session-id" session-id)
@@ -1151,6 +1167,17 @@ Starts a live run, binds a new session id, and streams output to
     (set-process-sentinel proc #'fubar-hud--process-sentinel)
     (fubar-hud-refresh)
     (message "Started fucodex [%s]." session-id)))
+
+(defun fubar-hud-run-fucodex-musn (prompt &optional intent)
+  "Run fucodex in MUSN mode with PROMPT and open the MUSN viewer."
+  (interactive
+   (let ((prompt (read-string "Prompt: ")))
+     (if current-prefix-arg
+         (list prompt (read-string "Intent (blank = none): "))
+       (list prompt nil))))
+  (require 'fubar-viewer)
+  (let ((intent (fubar-hud--resolve-intent prompt intent)))
+    (fubar-musn-launch-and-view prompt intent)))
 
 (defun fubar-hud-resume-session (prompt &optional session-id)
   "Resume SESSION-ID (or current session) with PROMPT.
@@ -1207,13 +1234,17 @@ Output goes to *FuLab Raw Stream* buffer."
     (define-key map "a" #'fubar-hud-accept-staged)
     (define-key map "y" #'fubar-hud-get-prompt-block)
     (define-key map "r" #'fubar-hud-run-fuclaude)
-    (define-key map "c" #'fubar-hud-run-fucodex)
+    (define-key map "m" #'fubar-hud-run-fucodex-musn)
+    (define-key map "c" #'fubar-hud-run-fucodex-musn)
+    (define-key map "C" #'fubar-hud-run-fucodex)
     (define-key map "R" #'fubar-hud-resume-session)
     map)
   "Keymap for `fubar-hud-mode'.")
 
 (define-derived-mode fubar-hud-mode special-mode "FuLab-HUD"
   "Major mode for FuLab HUD display.
+
+Keys: m/c run MUSN, C runs HUD-only.
 
 \\{fubar-hud-mode-map}"
   (setq buffer-read-only t)

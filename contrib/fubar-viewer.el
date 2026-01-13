@@ -504,13 +504,17 @@ interactively), set the HUD intent immediately as the handshake."
     (other-window -1)))
 
 ;; One-shot launcher for MUSN runs via fucodex (best effort inference of patterns)
-(defun fubar-musn-launch-and-view (prompt)
+(defun fubar-musn-launch-and-view (prompt &optional intent)
   "Run fucodex in MUSN mode with PROMPT, stream MUSN log, and open 2-up view.
-Assumes MUSN server is running at `fubar-musn-url`. Patterns are not required;
-the agent can infer from the prompt."
+Optional INTENT overrides the HUD intent and MUSN handshake. Assumes MUSN server
+is running at `fubar-musn-url`. Patterns are not required; the agent can infer
+from the prompt."
   (interactive "sPrompt: ")
   (let* ((default-directory fubar-hud-futon3-root)
-         (intent prompt)
+         (intent (let ((trimmed (and intent (string-trim intent))))
+                   (if (and trimmed (not (string-empty-p trimmed)))
+                       trimmed
+                     prompt)))
          (log fubar-musn--default-log)
          (fucodex-path (expand-file-name "fucodex" fubar-hud-futon3-root))
          (env (concat "FUTON3_MUSN_INTENT=" (shell-quote-argument intent)

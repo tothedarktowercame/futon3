@@ -291,8 +291,36 @@
              (not (member category fubar-musn-stream-unfold-types)))
         (member category fubar-musn-stream-folds))))
 
+(defun fubar-musn--event-type-from-line (line)
+  (when (string-match "\\[musn\\] event (\\({:type\\s-+\\(\"[^\"]+\"\\|:[^,}[:space:]]+\\)\\)" line)
+    (let ((raw (match-string 2 line)))
+      (cond
+       ((and raw
+             (>= (length raw) 2)
+             (string-prefix-p "\"" raw)
+             (string-suffix-p "\"" raw))
+        (substring raw 1 (1- (length raw))))
+       ((and raw (string-prefix-p ":" raw))
+        (substring raw 1))
+       (t raw)))))
+
+(defun fubar-musn--rewrite-event-line (line)
+  (if (not (string-match "\\[musn\\] event" line))
+      line
+    (let ((event-type (fubar-musn--event-type-from-line line)))
+      (if (not event-type)
+          line
+        (let ((line (replace-regexp-in-string
+                     "\\[musn\\] event"
+                     (format "[musn] %s" event-type)
+                     line t t)))
+          (when (string-match "({:type\\s-+\\(\"[^\"]+\"\\|:[^,}[:space:]]+\\)\\)\\s-*,?\\s-*" line)
+            (setq line (replace-match "({" t t line)))
+          line)))))
+
 (defun fubar-musn--flatten-line (line)
-  (let* ((line (fubar-musn--compress-timestamp line))
+  (let* ((line (fubar-musn--rewrite-event-line line))
+         (line (fubar-musn--compress-timestamp line))
          (single (replace-regexp-in-string "[\r\n\t]+" " " (or line "")))
          (single (replace-regexp-in-string " +" " " (string-trim single))))
     single))

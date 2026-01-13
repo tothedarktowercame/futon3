@@ -6,8 +6,8 @@
 (def default-log-path "futon3/logs/logic_audit.edn")
 
 (defonce ^:private log-path (atom default-log-path))
-(defonce ^:private summary (atom {:overall {:attempted 0 :passed 0}
-                                  :runs {}}))
+(defonce ^:private summary-state (atom {:overall {:attempted 0 :passed 0}
+                                        :runs {}}))
 (def ^:private lock (Object.))
 
 (defn set-log-path!
@@ -101,15 +101,15 @@
                  :check/obligation-count obligation-count
                  :check/obligation-kinds obligation-kinds
                  :check/error-count error-count}]
-    (swap! summary update-summary payload)
+    (swap! summary-state update-summary payload)
     (append-log! payload)))
 
 (defn summary
   "Return accumulated summary of logic checks."
   []
-  @summary)
+  @summary-state)
 
 (defn summary-for
   "Return per-run summary for RUN-ID (or session-id)."
   [run-id]
-  (get-in @summary [:runs (normalize-run-id run-id nil)]))
+  (get-in @summary-state [:runs (normalize-run-id run-id nil)]))

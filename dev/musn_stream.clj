@@ -31,6 +31,7 @@
   (let [sid (System/getenv "FUTON3_MUSN_SESSION_ID")]
     (when (and sid (not (str/blank? sid)))
       sid)))
+(def hud-json-path (some-> (System/getenv "FUTON3_HUD_JSON") str/trim not-empty))
 (def require-approval? (not= "0" (or (System/getenv "FUTON3_MUSN_REQUIRE_APPROVAL") "1")))
 (def musn-client-id (or (System/getenv "FUTON3_MUSN_CLIENT_ID") "fucodex"))
 (def aif-config-path (System/getenv "FUTON3_MUSN_AIF_CONFIG_PATH"))
@@ -50,6 +51,15 @@
   (when path
     (try
       (edn/read-string (slurp path))
+      (catch Throwable _ nil))))
+
+(defn- read-hud-json [path]
+  (when (and path (.exists (io/file path)))
+    (try
+      (let [data (json/parse-string (slurp path) true)
+            hud (or (:hud data) data)]
+        (when (map? hud)
+          hud))
       (catch Throwable _ nil))))
 
 (def aif-config (read-aif-config aif-config-path))
@@ -850,16 +860,20 @@
            :turn-plan-warned? false
            :turn-ended nil)
     (let [intent (some-> musn-intent str/trim not-empty)
-          hud-map (try
-                    (when intent
-                      (hud/build-hud {:intent musn-intent
-                                      :pattern-limit 8
-                                      :namespaces ["musn" "fulab" "aif" "agent"]}))
-                    (catch Throwable e
-                      (log-musn! state "hud-build error" (.getMessage e))
-                      (println (format "[hud-build-error] %s" (.getMessage e)))
-                      (flush)
-                      nil))
+          hud-map (or (read-hud-json hud-json-path)
+                      (try
+                        (when intent
+                          (hud/build-hud {:intent musn-intent
+                                          :pattern-limit 8
+                                          :namespaces ["musn" "fulab" "aif" "agent"]}))
+                        (catch Throwable e
+                          (log-musn! state "hud-build error" (.getMessage e))
+                          (println (format "[hud-build-error] %s" (.getMessage e)))
+                          (flush)
+                          nil)))
+          hud-map (if (and intent (map? hud-map) (str/blank? (:intent hud-map)))
+                    (assoc hud-map :intent intent)
+                    hud-map)
           full-candidates (vec (or (seq (:candidates hud-map)) []))
           candidates-present? (contains? hud-map :candidates)
           raw-candidates (if candidates-present?

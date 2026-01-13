@@ -328,12 +328,11 @@
                     (format (str "[MUSN-HELP]\n"
                                  "You have %s mana. Gain mana points by reading patterns and completing their next steps. Other actions cost mana.\n"
                                  "Before acting, state a 1-2 line plan.\n"
-                                 "Tool roster (shell helpers/commands):\n"
-                                 "- pattern-action read library/patternname <state why you want to read it>\n"
-                                 "- pattern-action update library/pattern <summary of revision>\n"
-                                 "- musn-plan: echo plan: <outline your plan>\n"
-                                 "- search: rg -n \"your search string\" src\n"
-                                 "- patch: apply_patch (if available) or perl -pi -e 's/old/new/' path\n"
+                                 "Tool roster (you should emit these signals when you do the corresponding action):\n"
+                                 "- pattern-select library/patternname <state why you want to read it>\n"
+                                 "- pattern-use    library/pattern    <state where you will apply it>\n"
+                                 "- musn-plan      <outline your plan>\n"
+                                 "- search         rg -n <your search string> src\n"
                                  "If unsure, run: musn-help tools  (or musn-help pattern)\n"
                                  "[/MUSN-HELP]\n")
                             (mana-num mana-balance)))

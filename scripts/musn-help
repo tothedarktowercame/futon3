@@ -8,15 +8,14 @@ case "$topic" in
     cat <<'EOF'
 MUSN help: tools
 
-pattern-action (shell helper; logs reads/updates)
-  pattern-action read library/patternname "why"
-  pattern-action update library/pattern "summary"
+pattern signals (emit these in your response or via helper commands)
+  pattern-select library/patternname "why you want to read it"
+  pattern-use    library/pattern "where you will apply it"
 
-plan (use a Plan: line or musn-plan helper)
-  Plan: outline your plan
+plan
   musn-plan "Plan: outline your plan"
 
-search (rg)
+search
   rg -n "your search string" src
   rg --files -g "*.clj" src
 

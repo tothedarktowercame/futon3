@@ -9,6 +9,7 @@
             [futon2.aif.engine :as aif-engine]
             [futon2.aif.adapters.fulab :as fulab]
             [futon3.fulab.pattern-competence :as pc]
+            [futon3.logic-audit :as logic-audit]
             [futon3.musn.fulab :as fulab-musn]
             [futon3.musn.router :as router]))
 
@@ -478,5 +479,6 @@
     (if-let [st (current-state sid)]
       {:ok true
        :session/id sid
-       :state (select-keys st [:turn :hud :selection :actions :trail :warnings :halt :plan? :resume-note])}
+       :state (select-keys st [:turn :hud :selection :actions :trail :warnings :halt :plan? :resume-note])
+       :logic/summary (logic-audit/summary-for sid)}
       {:ok false :err "not-found"})))

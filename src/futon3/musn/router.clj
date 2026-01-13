@@ -4,6 +4,7 @@
    can wrap these functions."
   (:require [clojure.string :as str]
             [malli.core :as m]
+            [futon3.logic-audit :as logic-audit]
             [futon3.musn.logic :as musn-logic]
             [futon3.musn.schema :as schema]))
 
@@ -176,6 +177,12 @@
                                   (note-write action))]
                (apply-action-constraints next-state action))))
     (let [st @state-atom]
+      (when-let [logic (:last-logic st)]
+        (logic-audit/record! {:scope :musn
+                              :session/id (:session/id req)
+                              :run/id (:session/id req)
+                              :op :turn/action
+                              :result logic}))
       {:ok (not (:halt st))
        :trail (:trail st)
        :warning (when (:halt st) {:type (:type (:halt st)) :msg (:note (:halt st))})
@@ -211,6 +218,12 @@
   (swap! state-atom apply-turn-end-constraints)
   (let [st @state-atom
         halt (:halt st)]
+    (when-let [logic (:last-logic st)]
+      (logic-audit/record! {:scope :musn
+                            :session/id (:session/id req)
+                            :run/id (:session/id req)
+                            :op :turn/end
+                            :result logic}))
     {:ok (not halt)
      :summary {:actions (frequencies (map :action (:actions st)))
                :trail (:trail st)

@@ -4,6 +4,7 @@
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
             [clojure.string :as str]
+            [futon3.logic-audit :as logic-audit]
             [futon3.hx.logic :as logic]))
 
 (def pur-fields
@@ -214,17 +215,29 @@
        (filter #(= :pattern/selection-claimed (:event/type %)))))
 
 (defn check-pur [pur session pattern-ids outcome-tags]
-  (logic/check-step {:hx.step/kind :hx/pattern-use-claimed
-                     :hx.step/payload {:pur pur}}
-                    {:session session
-                     :pattern-ids pattern-ids
-                     :outcome-tags outcome-tags}))
+  (let [result (logic/check-step {:hx.step/kind :hx/pattern-use-claimed
+                                  :hx.step/payload {:pur pur}}
+                                 {:session session
+                                  :pattern-ids pattern-ids
+                                  :outcome-tags outcome-tags})]
+    (logic-audit/record! {:scope :hx
+                          :session/id (:session/id pur)
+                          :run/id (:session/id pur)
+                          :op :hx/pattern-use-claimed
+                          :result result})
+    result))
 
 (defn check-psr [psr session pattern-ids]
-  (logic/check-step {:hx.step/kind :hx/pattern-selection-claimed
-                     :hx.step/payload {:psr psr}}
-                    {:session session
-                     :pattern-ids pattern-ids}))
+  (let [result (logic/check-step {:hx.step/kind :hx/pattern-selection-claimed
+                                  :hx.step/payload {:psr psr}}
+                                 {:session session
+                                  :pattern-ids pattern-ids})]
+    (logic-audit/record! {:scope :hx
+                          :session/id (:session/id psr)
+                          :run/id (:session/id psr)
+                          :op :hx/pattern-selection-claimed
+                          :result result})
+    result))
 
 (defn expected-vs-resolved [entries resolver]
   (let [resolved (filter resolver entries)]

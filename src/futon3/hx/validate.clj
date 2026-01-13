@@ -1,12 +1,20 @@
 (ns futon3.hx.validate
   "Self-validation helpers for hypertext links (MVP)."
   (:require [f0.clock :as clock]
+            [futon3.logic-audit :as logic-audit]
             [futon3.hx.logic :as logic]))
+
+(def ^:dynamic *audit-context* nil)
 
 (defn structural-step
   "Run structural checks for a canonical hx step and return validation map."
   [step]
-  (let [result (logic/check-step step)]
+  (let [result (logic/check-step step)
+        context (when (map? *audit-context*) *audit-context*)]
+    (logic-audit/record! (merge {:scope :hx
+                                 :op :hx/structural-step
+                                 :result result}
+                                context))
     {:ok? (:ok? result)
      :errors (:errors result)
      :logic (:logic result)}))

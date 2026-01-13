@@ -3,6 +3,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [futon3.hx.api :as hx]
+            [futon3.hx.validate :as hx-validate]
             [malli.core :as m]
             [malli.error :as me]))
 
@@ -192,7 +193,9 @@
   (let [{:keys [payload]} envelope
         {:keys [msg-id artifact]} (validate! :hx/artifact-register payload)
         run-id (new-run-id router)
-        result (hx/register-artifact! artifact)
+        result (binding [hx-validate/*audit-context* {:session/id (:id client)
+                                                      :run/id (:id client)}]
+                 (hx/register-artifact! artifact))
         reply (assoc result :type "hx/artifact-register" :run-id run-id)]
     (log! router {:client (:id client)
                   :type :hx/artifact-register
@@ -204,7 +207,9 @@
         {:keys [msg-id anchors] :as valid} (validate! :hx/anchors-upsert payload)
         artifact-id (:artifact/id valid)
         run-id (new-run-id router)
-        result (hx/upsert-anchors! artifact-id anchors)
+        result (binding [hx-validate/*audit-context* {:session/id (:id client)
+                                                      :run/id (:id client)}]
+                 (hx/upsert-anchors! artifact-id anchors))
         reply (assoc result :type "hx/anchors-upsert" :run-id run-id)]
     (log! router {:client (:id client)
                   :type :hx/anchors-upsert
@@ -215,7 +220,9 @@
   (let [{:keys [payload]} envelope
         {:keys [msg-id link]} (validate! :hx/link-suggest payload)
         run-id (new-run-id router)
-        result (hx/suggest-link! link)
+        result (binding [hx-validate/*audit-context* {:session/id (:id client)
+                                                      :run/id (:id client)}]
+                 (hx/suggest-link! link))
         reply (assoc result :type "hx/link-suggest" :run-id run-id)]
     (log! router {:client (:id client)
                   :type :hx/link-suggest
@@ -227,7 +234,9 @@
         {:keys [msg-id decided-by validation] :as valid} (validate! :hx/link-accept payload)
         link-id (:link/id valid)
         run-id (new-run-id router)
-        result (hx/accept-link! link-id decided-by validation)
+        result (binding [hx-validate/*audit-context* {:session/id (:id client)
+                                                      :run/id (:id client)}]
+                 (hx/accept-link! link-id decided-by validation))
         reply (assoc result :type "hx/link-accept" :run-id run-id)]
     (log! router {:client (:id client)
                   :type :hx/link-accept
@@ -239,7 +248,9 @@
         {:keys [msg-id decided-by reason validation] :as valid} (validate! :hx/link-reject payload)
         link-id (:link/id valid)
         run-id (new-run-id router)
-        result (hx/reject-link! link-id decided-by reason validation)
+        result (binding [hx-validate/*audit-context* {:session/id (:id client)
+                                                      :run/id (:id client)}]
+                 (hx/reject-link! link-id decided-by reason validation))
         reply (assoc result :type "hx/link-reject" :run-id run-id)]
     (log! router {:client (:id client)
                   :type :hx/link-reject

@@ -4,6 +4,7 @@
             [malli.util :as mu]))
 
 (def PatternId [:re #"^[a-z0-9._-]+/[a-z0-9._-]+$"])
+(def PatternIdKey [:or PatternId keyword?])
 (def FilePath string?)
 (def Anchor [:map
              [:anchor/type keyword?]
@@ -46,7 +47,7 @@
    [:turn int?]
    [:hud {:optional true} [:map {:closed false}
                            [:candidates {:optional true} [:vector PatternId]]
-                           [:scores {:optional true} [:map-of PatternId number?]]
+                           [:scores {:optional true} [:map-of PatternIdKey number?]]
                            [:candidate-details {:optional true} [:vector map?]]
                            [:intent {:optional true} string?]
                            [:sigils {:optional true} [:vector map?]]

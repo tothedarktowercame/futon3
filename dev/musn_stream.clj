@@ -26,9 +26,24 @@
 
 (def musn-url (or (System/getenv "FUTON3_MUSN_URL") "http://localhost:6065"))
 (def musn-intent (System/getenv "FUTON3_MUSN_INTENT"))
+(def musn-session-id
+  (let [sid (System/getenv "FUTON3_MUSN_SESSION_ID")]
+    (when (and sid (not (str/blank? sid)))
+      sid)))
 (def require-approval? (not= "0" (or (System/getenv "FUTON3_MUSN_REQUIRE_APPROVAL") "1")))
 (def musn-client-id (or (System/getenv "FUTON3_MUSN_CLIENT_ID") "fucodex"))
 (def aif-config-path (System/getenv "FUTON3_MUSN_AIF_CONFIG_PATH"))
+
+(defn session-id [session]
+  (or (:session/id session)
+      (:sid session)
+      (get-in session [:session :id])))
+
+(defn require-session-id [session]
+  (let [sid (session-id session)]
+    (when-not sid
+      (throw (ex-info "missing musn session id" {:session session})))
+    sid))
 
 (defn read-aif-config [path]
   (when path
@@ -60,26 +75,29 @@
   (let [policy (cond-> {}
                  aif-config (assoc :aif-config aif-config))
         payload (cond-> {:client {:id musn-client-id}}
+                  musn-session-id (assoc :session/id musn-session-id)
                   (seq policy) (assoc :policy policy))
-        resp (post! "/musn/session/create" payload)]
-    (log! "[musn] session/create" resp)
-    resp))
+        resp (post! "/musn/session/create" payload)
+        sid (session-id resp)
+        session (cond-> resp sid (assoc :session/id sid))]
+    (log! "[musn] session/create" session)
+    session))
 
 (defn musn-start [session turn hud]
-  (let [sid (:session/id session)]
+  (let [sid (require-session-id session)]
     (post! "/musn/turn/start" {:session/id sid
                                :turn turn
                                :hud (cond-> (or hud {})
                                       musn-intent (assoc :intent musn-intent))})))
 
 (defn musn-plan [session turn plan]
-  (let [sid (:session/id session)]
+  (let [sid (require-session-id session)]
     (post! "/musn/turn/plan" {:session/id sid
                               :turn turn
                               :plan plan})))
 
 (defn musn-select [session turn chosen reason reads]
-  (let [sid (:session/id session)]
+  (let [sid (require-session-id session)]
     (post! "/musn/turn/select" {:session/id sid
                                 :turn turn
                                 :candidates (if (seq reads) (vec (distinct (conj reads chosen))) [chosen])
@@ -88,7 +106,7 @@
                                           (seq reads) (assoc :reads reads))})))
 
 (defn musn-action [session turn pattern-id action note files]
-  (let [sid (:session/id session)]
+  (let [sid (require-session-id session)]
     (post! "/musn/turn/action" (cond-> {:session/id sid
                                         :turn turn
                                         :pattern/id pattern-id
@@ -97,11 +115,11 @@
                                  (seq files) (assoc :files files)))))
 
 (defn musn-use [session turn pattern-id]
-  (let [sid (:session/id session)]
+  (let [sid (require-session-id session)]
     (post! "/musn/turn/use" {:session/id sid :turn turn :pattern/id pattern-id})))
 
 (defn musn-evidence [session turn pattern-id files note]
-  (let [sid (:session/id session)]
+  (let [sid (require-session-id session)]
     (post! "/musn/evidence/add" {:session/id sid
                                  :turn turn
                                  :pattern/id pattern-id
@@ -109,15 +127,15 @@
                                  :note note})))
 
 (defn musn-end [session turn]
-  (let [sid (:session/id session)]
+  (let [sid (require-session-id session)]
     (post! "/musn/turn/end" {:session/id sid :turn turn})))
 
 (defn musn-resume [session turn note]
-  (let [sid (:session/id session)]
+  (let [sid (require-session-id session)]
     (post! "/musn/turn/resume" {:session/id sid :turn turn :note note})))
 
 (defn musn-state [session]
-  (let [sid (:session/id session)]
+  (let [sid (require-session-id session)]
     (post! "/musn/session/state" {:session/id sid})))
 
 (defn plan-line? [text]
@@ -335,13 +353,14 @@
   (try
     (let [session (musn-create-session)
           state (atom {:turn 0
-                       :paused? false})]
+                       :paused? false
+                       :pause-latched? false})
+          sid (require-session-id session)]
       (log! "[musn] stream-loop start")
-      (when-let [sid (:session/id session)]
-        (let [line (format "[musn-session] %s" sid)]
-          (log! line)
-          (println line))
-        (flush))
+      (let [line (format "[musn-session] %s" sid)]
+        (log! line)
+        (println line))
+      (flush)
       (doseq [line (line-seq (io/reader *in*))]
         (when-let [event (parse-json line)]
           (log! "[musn] event" event)
@@ -360,9 +379,11 @@
                                 (flush)
                                 nil))
                     full-candidates (vec (or (seq (:candidates hud-map)) []))
-                    seed-candidates (or (seq full-candidates)
-                                        (seq (:prototypes hud-map))
-                                        [])
+                    candidates-present? (contains? hud-map :candidates)
+                    raw-candidates (if candidates-present?
+                                     (:candidates hud-map)
+                                     (:prototypes hud-map))
+                    seed-candidates (vec (or raw-candidates []))
                     candidate-ids (candidate-ids seed-candidates)
                     scores (get-in hud-map [:aif :G-scores])
                     hud-payload (cond-> {:intent musn-intent
@@ -407,19 +428,21 @@
                               (log! line)
                               (println line))
                             (flush)
-                            (swap! state assoc :resume-note note :paused? false))
+                            (swap! state assoc :resume-note note :paused? false :pause-latched? false))
                         (when-not note
                           (recur)))))))))
 
             (= (:type event) "turn.completed")
             (let [resp (musn-end session (:turn @state))
                   paused? (:halt? resp)]
-              (when paused?
-                (when-not (:paused? @state)
-                  (swap! state assoc :paused? true)
-                  (print-pause resp)))
-              (when (and (not paused?) (:paused? @state))
-                (swap! state assoc :paused? false)))
+              (if paused?
+                (when-not (:pause-latched? @state)
+                  (swap! state assoc :paused? true :pause-latched? true)
+                  (log! "[pattern] pause-latch" {:state :latched :turn (:turn @state)})
+                  (print-pause resp))
+                (when (or (:paused? @state) (:pause-latched? @state))
+                  (swap! state assoc :paused? false :pause-latched? false)
+                  (log! "[pattern] pause-latch" {:state :reset :turn (:turn @state)}))))
 
             :else
             (handle-event! state event session))))

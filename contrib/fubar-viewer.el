@@ -36,6 +36,7 @@
 (defvar-local fubar-musn--last-line-end nil)
 (defvar-local fubar-musn--pause-seen nil)
 (defvar-local fubar-musn--last-pause-marker nil)
+(defvar-local fubar-musn--session-locked nil)
 
 (defcustom fubar-musn-stream-folding-enabled t
   "Whether folding is enabled in the MUSN viewer."
@@ -100,7 +101,12 @@
   (setq-local fubar-musn--last-line-end nil)
   (setq-local fubar-musn--pause-seen nil)
   (setq-local fubar-musn--last-pause-marker nil)
+  (setq-local fubar-musn--session-locked nil)
   (setq-local header-line-format nil))
+
+(defun fubar-musn--generate-session-id ()
+  (format "musn-%s"
+          (substring (md5 (format "%s-%s" (float-time) (random))) 0 8)))
 
 (defun fubar-musn--pause-line-p (line)
   (let ((case-fold-search t))
@@ -142,7 +148,15 @@
     (match-string 1 text)))
 
 (defun fubar-musn--extract-hud-intent (text)
-  (when (and text (string-match "\\[hud-intent\\]\\s-*[*\"(]*\\(.*\\?*[^)\"]\\)" text))
+  (when (and text
+             (string-match
+              (concat
+               "\\`\\(?:"
+               "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}T"
+               "[0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\}"
+               "\\(?:\\.[0-9]+\\)?Z?\\s-+\\)?"
+               "\\[hud-intent\\]\\s-*\\(.*\\)$")
+              text))
     (let ((intent (string-trim (match-string 1 text))))
       (when (not (string-empty-p intent))
         intent))))
@@ -159,16 +173,23 @@
 
 (defun fubar-musn--apply-handshake (session-id intent)
   (when session-id
-    (setq fubar-musn-session-id session-id)
-    (fubar-musn--maybe-start-state-poll))
+    (unless (and fubar-musn-session-id
+                 (not (string= fubar-musn-session-id session-id)))
+      (setq fubar-musn-session-id session-id)
+      (fubar-musn--maybe-start-state-poll)))
   (when (or session-id intent)
     (with-current-buffer (get-buffer-create "*FuLab HUD*")
       (when (fboundp 'fubar-hud--ensure-mode)
         (fubar-hud--ensure-mode))
       (when (and session-id (boundp 'fubar-hud--session-id))
-        (setq fubar-hud--session-id session-id))
+        (when (or (null fubar-hud--session-id)
+                  (string-empty-p fubar-hud--session-id)
+                  (string= fubar-hud--session-id session-id))
+          (setq fubar-hud--session-id session-id)))
       (when (and intent (boundp 'fubar-hud--intent))
-        (setq fubar-hud--intent intent))
+        (when (or (null fubar-hud--intent)
+                  (string-empty-p fubar-hud--intent))
+          (setq fubar-hud--intent intent)))
       (when (boundp 'fubar-hud--current-hud)
         (setq fubar-hud--current-hud nil))
       (when (fboundp 'fubar-hud-refresh)
@@ -184,7 +205,7 @@
 
 (defun fubar-musn--sync-handshake-from-log (path)
   "Replay the latest HUD intent/session handshake from PATH."
-  (when (and path (file-readable-p path))
+  (when (and path (file-readable-p path) (null fubar-musn-session-id))
     (with-temp-buffer
       (insert-file-contents path)
       (fubar-musn--sync-handshake-from-text (buffer-string)))))
@@ -402,10 +423,14 @@
             (when (and line (not (string-empty-p (string-trim line))))
               ;; session id handshake
               (when-let ((sid (fubar-musn--extract-session-id line)))
-                (setq fubar-musn-session-id sid)
-                (fubar-musn--maybe-start-state-poll))
+                (when (or (not fubar-musn--session-locked)
+                          (and fubar-musn-session-id
+                               (string= fubar-musn-session-id sid)))
+                  (setq fubar-musn-session-id sid)
+                  (fubar-musn--maybe-start-state-poll)))
               ;; detect HUD intent handshake lines: "[hud-intent] ..."
-              (when (string-match-p "\\[hud-intent\\]" line)
+              (when (and (not fubar-musn--session-locked)
+                         (string-match-p "\\[hud-intent\\]" line))
                 (when-let ((intent (fubar-musn--extract-hud-intent line)))
                   (fubar-musn--apply-handshake nil intent)))
               (if (and (not (fubar-musn--timestamp-line-p line))
@@ -471,7 +496,8 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
     (with-current-buffer buf
       (let ((inhibit-read-only t))
         (erase-buffer)
-        (fubar-musn-view-mode)))
+        (fubar-musn-view-mode))
+      (setq-local fubar-musn--session-locked (and fubar-musn-session-id t)))
     (with-current-buffer buf
       (setq-local fubar-musn--log-path log))
     (setq fubar-musn--proc
@@ -568,9 +594,11 @@ from the prompt."
                    (if (and trimmed (not (string-empty-p trimmed)))
                        trimmed
                      prompt)))
+         (session-id (fubar-musn--generate-session-id))
          (log fubar-musn--default-log)
          (fucodex-path (expand-file-name "fucodex" fubar-hud-futon3-root))
-         (env (concat "FUTON3_MUSN_INTENT=" (shell-quote-argument intent)
+         (env (concat "FUTON3_MUSN_SESSION_ID=" (shell-quote-argument session-id)
+                      " FUTON3_MUSN_INTENT=" (shell-quote-argument intent)
                       " FUTON3_MUSN_URL=" (shell-quote-argument fubar-musn-url)
                       " FUCODEX_PREFLIGHT=off"))
          (cmd (mapconcat #'identity
@@ -578,6 +606,11 @@ from the prompt."
                                "--musn-url" fubar-musn-url
                                (shell-quote-argument prompt))
                          " ")))
+    (setq fubar-musn-session-id session-id)
+    (setq fubar-musn--session-locked t)
+    (fubar-musn--maybe-start-state-poll)
+    (when (fboundp 'fubar-hud-set-session-id)
+      (fubar-hud-set-session-id session-id))
     ;; Reset the local MUSN stream log so we capture the handshake from the top.
     (when (and log (file-exists-p log))
       (with-temp-file log))

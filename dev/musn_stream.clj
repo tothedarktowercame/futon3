@@ -864,15 +864,16 @@
       (when-not (= turn (:turn-ended @state))
         (swap! state assoc :turn-ended turn)
         (swap! state update :turn-end-count (fnil inc 0))
-        (log! "[musn-end]"
-              {:turn turn
-               :event (:type event)
-               :event/turn (:turn event)
-               :usage (:usage event)
-               :end-count (:turn-end-count @state)})
         (let [resp (musn-end session turn)
               paused? (:halt? resp)]
           (log-mana-response! state resp)
+          (when-not paused?
+            (log! "[musn-end]"
+                  {:turn turn
+                   :event (:type event)
+                   :event/turn (:turn event)
+                   :usage (:usage event)
+                   :end-count (:turn-end-count @state)}))
           (if paused?
             (when-not (:pause-latched? @state)
               (swap! state assoc :paused? true :pause-latched? true)

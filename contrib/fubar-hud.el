@@ -240,9 +240,9 @@
                       (let ((line (nth idx lines)))
                         (not (string-empty-p (string-trim line)))))
             (push (string-trim (nth idx lines)) intent-lines)
-            (setq idx (1+ idx))))))
+            (setq idx (1+ idx)))))
       (when intent-lines
-        (string-trim (string-join (nreverse intent-lines) " ")))))
+        (string-trim (string-join (nreverse intent-lines) " "))))))
 
 (defvar-local fubar-hud--stream-fragment ""
   "Partial stream fragment awaiting a newline.")

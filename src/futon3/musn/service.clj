@@ -122,6 +122,17 @@
 (defn- compact [m]
   (into {} (remove (comp nil? val)) m))
 
+(defn- candidate-id [candidate]
+  (cond
+    (map? candidate) (recur (or (:id candidate) (:pattern/id candidate)))
+    (keyword? candidate) (subs (str candidate) 1)
+    (string? candidate) candidate
+    (nil? candidate) nil
+    :else (str candidate)))
+
+(defn- candidate-ids [candidates]
+  (->> candidates (map candidate-id) (remove nil?) vec))
+
 (defn- ensure-dir [f]
   (when f
     (.mkdirs (.getParentFile f))))
@@ -218,14 +229,15 @@
   (let [sid (:session/id req)
         entry (ensure-session! sid nil (:lab/root req) nil)
         candidates (get-in req [:hud :candidates])
+        candidate-ids (candidate-ids candidates)
         scores (get-in req [:hud :scores])
         turn (:turn req)
-        selection (when (seq candidates)
+        selection (when (seq candidate-ids)
                     (aif-engine/select-pattern
                      (:aif-engine entry)
                      {:decision/id (str sid ":turn-" turn)
                       :session/id sid
-                      :candidates candidates
+                      :candidates candidate-ids
                       :candidate-scores scores
                       :anchors [(fulab-musn/turn-anchor turn)]
                       :forecast (fulab-musn/build-forecast turn)}))
@@ -233,7 +245,7 @@
                                         {:session/id sid
                                          :turn (:turn req)
                                          :hud (:hud req)})]
-    (reset-fulab-state! entry turn candidates scores)
+    (reset-fulab-state! entry turn candidate-ids scores)
     (append-lab-event! entry (turn-event :turn/started sid turn {:session/id sid}))
     (persist! entry :turn/start req resp)
     (cond-> resp

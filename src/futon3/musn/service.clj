@@ -75,6 +75,7 @@
   {:turn nil
    :candidates []
    :candidate-scores {}
+   :candidate-details {}
    :psr nil
    :pur nil
    :psr-emitted? false
@@ -82,6 +83,74 @@
    :turn-ended nil
    :turn-ended-resp nil
    :aif-config-logged? false})
+
+(defn- tau-cache-path [lab-root]
+  (io/file lab-root "aif" "tau-cache.edn"))
+
+(defn- read-tau-cache [lab-root]
+  (let [path (tau-cache-path lab-root)]
+    (when (.exists path)
+      (try
+        (edn/read-string (slurp path))
+        (catch Throwable _ nil)))))
+
+(defn- write-tau-cache! [lab-root cache]
+  (let [path (tau-cache-path lab-root)]
+    (io/make-parents path)
+    (spit path (pr-str cache))))
+
+(defn- mean [values]
+  (/ (reduce + values) (double (count values))))
+
+(defn- tau-scale [entry]
+  (double (or (:tau/scale (:aif-config entry)) 1.0)))
+
+(defn- tau->uncertainty [entry tau]
+  (when (and (number? tau) (pos? tau))
+    (/ (tau-scale entry) (double tau))))
+
+(defn- precision->uncertainty [precision]
+  (when (number? precision)
+    (/ 1.0 (double (max 0.05 precision)))))
+
+(declare candidate-id)
+
+(defn- candidate-details-map [details]
+  (->> details
+       (keep (fn [entry]
+               (when-let [id (candidate-id entry)]
+                 [id entry])))
+       (into {})))
+
+(defn- candidate-precision [entry pattern-id]
+  (get-in @(:fulab entry) [:candidate-details pattern-id :precision-prior]))
+
+(defn- candidates-uncertainty
+  ([entry candidate-ids]
+   (candidates-uncertainty entry candidate-ids nil))
+  ([entry candidate-ids candidate-details]
+   (when (seq candidate-ids)
+     (let [cache @(:tau-cache entry)
+           taus (keep cache candidate-ids)
+           cached (when (seq taus) (mean taus))
+           precision-lookup (if (map? candidate-details)
+                              (fn [pid] (get-in candidate-details [pid :precision-prior]))
+                              (fn [pid] (candidate-precision entry pid)))
+           precisions (keep precision-lookup candidate-ids)
+           precision (when (seq precisions) (mean precisions))]
+       (or (tau->uncertainty entry cached)
+           (precision->uncertainty precision))))))
+
+(defn- pattern-uncertainty [entry pattern-id]
+  (when pattern-id
+    (or (tau->uncertainty entry (get @(:tau-cache entry) pattern-id))
+        (precision->uncertainty (candidate-precision entry pattern-id)))))
+
+(defn- update-tau-cache! [entry pattern-id tau]
+  (when (and pattern-id (number? tau))
+    (let [next (assoc (or @(:tau-cache entry) {}) pattern-id (double tau))]
+      (reset! (:tau-cache entry) next)
+      (write-tau-cache! (:lab-root entry) next))))
 
 (defn- mana-config [policy]
   (merge {:start 100 :action-cost 1 :restore 10}
@@ -131,12 +200,13 @@
          (fn [mana]
            (update-in mana [:restores kind] (fnil conj #{}) pattern-id))))
 
-(defn- reset-fulab-state! [entry turn candidates scores]
+(defn- reset-fulab-state! [entry turn candidates scores candidate-details]
   (reset! (:fulab entry)
           (assoc (new-fulab-state)
                  :turn turn
                  :candidates (vec (or candidates []))
-                 :candidate-scores (or scores {}))))
+                 :candidate-scores (or scores {})
+                 :candidate-details (or candidate-details {}))))
 
 (defn- event-base [session-id turn]
   {:event/type :turn/event
@@ -286,10 +356,11 @@
                  :snapshot-file (snapshot-path lab-root sid)
                  :id sid
                  :session-file session-file
-                 :lab-session lab-session
-                 :fulab (atom (new-fulab-state))
-                 :aif-tap (atom nil)
-                 :mana (atom (new-mana-state p))
+	         :lab-session lab-session
+	         :fulab (atom (new-fulab-state))
+	         :aif-tap (atom nil)
+	         :tau-cache (atom (or (read-tau-cache lab-root) {}))
+	         :mana (atom (new-mana-state p))
                  :aif-engine engine
                  :aif-config (:aif-config p)
                  :certificates (:certificates p)
@@ -332,12 +403,14 @@
         entry (ensure-session! sid nil (:lab/root req) nil)
         candidates (get-in req [:hud :candidates])
         candidate-ids (candidate-ids candidates)
+        candidate-details (candidate-details-map (get-in req [:hud :candidate-details]))
         scores (normalize-score-keys (get-in req [:hud :scores]))
         turn (:turn req)
         scores (when (seq candidate-ids)
                  (if (map? scores)
                    (select-keys scores candidate-ids)
                    scores))
+        uncertainty (candidates-uncertainty entry candidate-ids candidate-details)
         selection (when (seq candidate-ids)
                     (aif-engine/select-pattern
                      (:aif-engine entry)
@@ -345,13 +418,14 @@
                       :session/id sid
                       :candidates candidate-ids
                       :candidate-scores scores
+                      :uncertainty uncertainty
                       :anchors [(fulab-musn/turn-anchor turn)]
                       :forecast (fulab-musn/build-forecast turn)}))
         resp (router/handle-turn-start! (:state entry)
                                         {:session/id sid
                                          :turn (:turn req)
                                          :hud (:hud req)})]
-    (reset-fulab-state! entry turn candidate-ids scores)
+    (reset-fulab-state! entry turn candidate-ids scores candidate-details)
     (when (:mana entry)
       (reset-mana-turn! entry turn))
     (append-lab-event! entry (turn-event :turn/started sid turn {:session/id sid}))
@@ -378,12 +452,15 @@
         turn (:turn req)
         candidates (candidate-ids (:candidates req))
         chosen (candidate-id (:chosen req))
+        uncertainty (or (pattern-uncertainty entry chosen)
+                        (candidates-uncertainty entry candidates))
         selection (aif-engine/select-pattern
                    (:aif-engine entry)
                    {:decision/id (str sid ":turn-" turn)
                     :session/id sid
                     :candidates candidates
                     :candidate-scores (get-in @(:fulab entry) [:candidate-scores])
+                    :uncertainty uncertainty
                     :anchors [(fulab-musn/turn-anchor turn)]
                     :forecast (fulab-musn/build-forecast turn)
                     :chosen chosen})
@@ -415,6 +492,8 @@
              :psr-emitted? true))
     (when selection
       (append-lab-event! entry (fulab-musn/summary-event sid :psr selection)))
+    (when-let [tau (get-in selection [:aif :tau])]
+      (update-tau-cache! entry chosen tau))
     (persist! entry :turn/select req resp)
     (cond-> resp
       psr (assoc :psr psr)
@@ -443,8 +522,11 @@
                                                     :session/id sid
                                                     :pattern/id (:pattern/id req)
                                                     :pattern/action (:action req)
+                                                    :uncertainty (pattern-uncertainty entry (:pattern/id req))
                                                     :status :observed})
           aif (:aif belief-update)]
+      (when-let [tau (get-in belief-update [:aif :tau-updated])]
+        (update-tau-cache! entry (:pattern/id req) tau))
       (when (:mana entry)
         (let [{:keys [action-cost restore]} (mana-config (:policy entry))
               cost (double (or action-cost 1))
@@ -494,8 +576,12 @@
           belief-update (aif-engine/update-beliefs (:aif-engine entry)
                                                    {:decision/id (:decision/id pur)
                                                     :session/id sid
+                                                    :pattern/id (:pattern/id req)
                                                     :outcome (:outcome/tags pur)
+                                                    :uncertainty (pattern-uncertainty entry (:pattern/id req))
                                                     :status :observed})]
+      (when-let [tau (get-in belief-update [:aif :tau-updated])]
+        (update-tau-cache! entry (:pattern/id req) tau))
       (when (:mana entry)
         (let [{:keys [restore]} (mana-config (:policy entry))
               restore (double (or restore 10))

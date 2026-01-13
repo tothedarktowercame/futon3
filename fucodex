@@ -591,6 +591,7 @@ PY
     codex_flags+=(--)
   fi
   pause_exit=false
+  set +e
   if $MUSN_MODE; then
     codex exec "${codex_flags[@]}" "${args[@]}" |
       clojure -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/musn_stream.clj"
@@ -599,14 +600,17 @@ PY
       clojure -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/lab_stream_codex.clj"
   fi
   pipe_status=("${PIPESTATUS[@]}")
+  set -e
   status=${pipe_status[0]}
   if [[ "${pipe_status[1]-}" == "3" ]]; then
     pause_exit=true
     status=0
   fi
 else
+  set +e
   codex "${args[@]}"
   status=$?
+  set -e
 fi
 
 mapfile -t matches < <(clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-select-session.clj" --since "$START_ISO" --cwd "$RUN_CWD")
@@ -654,15 +658,19 @@ lab_export_args=(--session-file "$session_file" --repo-root "$RUN_CWD" --lab-roo
 if [[ "$lab_session_id" != "$session_id" ]]; then
   lab_export_args+=(--session-id "$lab_session_id")
 fi
-clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export.clj" "${lab_export_args[@]}"
+if $pause_exit; then
+  echo "[lab] paused; skipping lab export" >&2
+else
+  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export.clj" "${lab_export_args[@]}"
 
-clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-equip.clj" \
-  --session-id "$lab_session_id" \
-  --adapter fulab \
-  --lab-root "$ROOT/lab"
+  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-equip.clj" \
+    --session-id "$lab_session_id" \
+    --adapter fulab \
+    --lab-root "$ROOT/lab"
 
-clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-summarize.clj" \
-  --raw "$ROOT/lab/raw/${lab_session_id}.json"
+  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-summarize.clj" \
+    --raw "$ROOT/lab/raw/${lab_session_id}.json"
+fi
 
 if $pause_exit; then
   echo "[lab] paused for clarification; resume with:" >&2

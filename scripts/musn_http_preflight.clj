@@ -10,6 +10,8 @@
   (let [resp (http/post (endpoint path)
                         {:content-type :json
                          :accept :json
+                         :headers {"x-musn-client" "musn-http-preflight"
+                                   "user-agent" "musn-http-preflight"}
                          :throw-exceptions false
                          :body (json/generate-string payload)})
         body (some-> resp :body (json/parse-string true))]

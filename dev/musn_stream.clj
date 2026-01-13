@@ -85,6 +85,8 @@
   (let [url (str (str/replace musn-url #"/+$" "") path)
         resp (http/post url {:content-type :json
                              :accept :json
+                             :headers {"x-musn-client" musn-client-id
+                                       "user-agent" (str "musn-stream/" musn-client-id)}
                              :throw-exceptions false
                              :body (json/generate-string payload)})
         body (some-> resp :body (json/parse-string true))]
@@ -343,31 +345,52 @@
               (log-aif-tap! tap)))))
       (catch Throwable _ nil))))
 
-(defn log-selection! [psr]
-  (let [reason (:selection/reason psr)
-        mode (:mode reason)
-        reads (:reads reason)
-        aif (:aif reason)
-        g (fmt-num (:G aif))
-        tau (fmt-num (:tau aif))
-        aif-label (when (or g tau)
-                    (str " aif=" (str/join ","
-                                          (remove nil?
-                                                  [(when g (str "G=" g))
-                                                   (when tau (str "tau=" tau))]))))]
-    (let [line (format "[pattern-selection] chosen=%s candidates=%d mode=%s%s%s"
-                       (:chosen psr)
-                       (count (:candidates psr))
-                       (or mode :unknown)
-                       (if (seq reads)
-                         (str " reads=" (str/join "," reads))
-                         "")
-                       (or aif-label ""))]
-      (log! line)
-      (println line))
-    (flush)
-    (when (seq aif)
-      (log-aif-selection! aif))))
+(defn- format-confidence [detail]
+  (when (map? detail)
+    (let [phase (:maturity-phase detail)
+          precision (:precision-prior detail)
+          evidence (:evidence-count detail)
+          next-steps (:next-steps-count detail)
+          parts (remove nil?
+                        [(when phase (str "confidence=" (name phase)))
+                         (when (number? precision) (str "p=" (fmt-num precision)))
+                         (when (number? evidence) (str "e=" (long evidence)))
+                         (when (number? next-steps) (str "n=" (long next-steps)))])]
+      (when (seq parts)
+        (str " " (str/join " " parts))))))
+
+(defn log-selection!
+  ([psr] (log-selection! psr nil))
+  ([psr detail]
+   (let [reason (:selection/reason psr)
+         mode (:mode reason)
+         reads (:reads reason)
+         aif (:aif reason)
+         g (fmt-num (:G aif))
+         tau (fmt-num (:tau aif))
+         confidence-label (format-confidence detail)
+         aif-label (when (or g tau)
+                     (str " aif=" (str/join ","
+                                           (remove nil?
+                                                   [(when g (str "G=" g))
+                                                    (when tau (str "tau=" tau))]))))]
+     (let [line (format "[pattern-selection] chosen=%s candidates=%d mode=%s%s%s%s"
+                        (:chosen psr)
+                        (count (:candidates psr))
+                        (or mode :unknown)
+                        (if (seq reads)
+                          (str " reads=" (str/join "," reads))
+                          "")
+                        (or confidence-label "")
+                        (or aif-label ""))]
+       (log! line)
+       (println line))
+     (flush)
+     (when (seq aif)
+       (log-aif-selection! aif)))))
+
+(defn- candidate-detail [state pattern-id]
+  (get-in @state [:candidate-details (candidate-id pattern-id)]))
 
 (defn log-use! [pur aif]
   (let [pattern-id (:pattern/id pur)
@@ -392,6 +415,20 @@
   (when (seq aif)
     (log-aif-update! aif)))
 
+(defn format-sigils [sigils]
+  (when (seq sigils)
+    (->> sigils
+         (keep (fn [sigil]
+                 (cond
+                   (map? sigil)
+                   (let [emoji (:emoji sigil)
+                         hanzi (:hanzi sigil)]
+                     (when (or emoji hanzi)
+                       (str (or emoji "") "/" (or hanzi ""))))
+                   (string? sigil) sigil
+                   :else (str sigil))))
+         (str/join " "))))
+
 (defn- note-selected! [state pattern-id]
   (swap! state update :selected-patterns (fnil conj #{}) pattern-id))
 
@@ -407,7 +444,7 @@
           (do
             (note-selected! state pid)
             (when-let [psr (:psr resp)]
-              (log-selection! psr))
+              (log-selection! psr (candidate-detail state pid)))
             (if-let [aif (:aif resp)]
               (log-aif-selection! aif)
               (do
@@ -427,6 +464,21 @@
       (log! line)
       (println line))
     (flush)))
+
+(defn- wait-for-resume!
+  [state session]
+  (loop []
+    (Thread/sleep 1000)
+    (when-let [st (musn-state session)]
+      (let [note (get-in st [:state :resume-note])]
+        (if note
+          (do
+            (let [line (format "[musn-resume] note=%s" note)]
+              (log! line)
+              (println line))
+            (flush)
+            (swap! state assoc :resume-note note :paused? false :pause-latched? false))
+          (recur))))))
 
 (defn handle-event! [state event musn-session]
   (let [{:keys [turn]} @state]
@@ -456,7 +508,7 @@
                                      :chosen chosen
                                      :resp resp})))
                   (when-let [psr (:psr resp)]
-                    (log-selection! psr))
+                    (log-selection! psr (candidate-detail state chosen)))
                   (if-let [aif (:aif resp)]
                     (log-aif-selection! aif)
                     (do
@@ -599,112 +651,122 @@
                          :paused? false
                          :pause-latched? false
                          :selected-patterns #{}
-                         :last-aif-tap nil})
+                         :last-aif-tap nil
+                         :candidate-details {}})
             sid (require-session-id session)]
-      (log-musn! state "stream-loop start")
+        (log-musn! state "stream-loop start")
         (let [line (format "[musn-session] %s" sid)]
           (log! line)
           (println line))
         (flush)
         (doseq [line (line-seq (io/reader *in*))]
           (when-let [event (parse-json line)]
-          (log-musn! state "event" event)
-            (cond
-            (= (:type event) "turn.started")
-            (let [t (or (:turn event) (inc (:turn @state)) 1)]
-              (swap! state assoc
-                     :turn t
-                     :selected-patterns #{})
-              (let [hud-map (try
-                              (when musn-intent
-                                (hud/build-hud {:intent musn-intent
-                                                :pattern-limit 8
-                                                :namespaces ["musn" "fulab" "aif" "agent"]}))
-                              (catch Throwable e
-                                (log-musn! state "hud-build error" (.getMessage e))
-                                (println (format "[hud-build-error] %s" (.getMessage e)))
-                                (flush)
-                                nil))
-                    full-candidates (vec (or (seq (:candidates hud-map)) []))
-                    candidates-present? (contains? hud-map :candidates)
-                    raw-candidates (if candidates-present?
-                                     (:candidates hud-map)
-                                     (:prototypes hud-map))
-                    seed-candidates (vec (or raw-candidates []))
-                    candidate-ids (candidate-ids seed-candidates)
-                    raw-scores (get-in hud-map [:aif :G-scores])
-                    scores (normalize-score-keys raw-scores)
-                    scores (when (seq candidate-ids)
-                             (select-keys scores candidate-ids))
-                    hud-payload (cond-> {:intent musn-intent
-                                         :candidates candidate-ids}
-                                  (map? scores) (assoc :scores scores)
-                                  (seq full-candidates) (assoc :candidate-details full-candidates)
-                                  (:sigils hud-map) (assoc :sigils (:sigils hud-map))
-                                  (:namespaces hud-map) (assoc :namespaces (:namespaces hud-map))
-                                  (:aif hud-map) (assoc :aif (:aif hud-map)))]
-                (let [start-resp (musn-start session t hud-payload)]
-                  (if-let [aif (:aif start-resp)]
-                    (log-aif-selection! aif)
-                    (when (seq candidate-ids)
-                      (log-aif-missing! "turn/start"
-                                        {:turn t
-                                         :candidates (count candidate-ids)})
-                      (log-latest-aif-tap! state session)))
-                  (log-mana-response! state start-resp))
-                (if (seq candidate-ids)
-                  (let [line (format "[hud-candidates] %s" (str/join ", " candidate-ids))]
-                    (log! line)
-                    (println line))
-                  (let [line "[hud-candidates] none"]
-                    (log! line)
-                    (println line)))
-                (when-let [sigils (:sigils hud-map)]
-                  (let [line (format "[hud-sigils] %s" sigils)]
-                    (log! line)
-                    (println line)))
-                (flush))
-                (when musn-intent
-                  ;; announce intent into the stream so HUD can pick it up as handshake
-                  (log! (format "[hud-intent] %s" musn-intent))
-                  (println (format "[hud-intent] %s" musn-intent))
-                  (flush)
-                  (when require-approval?
-                    (let [line "[musn-pause] intent computed; waiting for approval to proceed"]
-                      (log! line)
-                      (println line))
+            (log-musn! state "event" event)
+            (let [event-type (:type event)]
+              (cond
+                (= event-type "turn.started")
+                (let [t (or (:turn event) (inc (:turn @state)) 1)]
+                  (swap! state assoc
+                         :turn t
+                         :selected-patterns #{})
+                  (let [hud-map (try
+                                  (when musn-intent
+                                    (hud/build-hud {:intent musn-intent
+                                                    :pattern-limit 8
+                                                    :namespaces ["musn" "fulab" "aif" "agent"]}))
+                                  (catch Throwable e
+                                    (log-musn! state "hud-build error" (.getMessage e))
+                                    (println (format "[hud-build-error] %s" (.getMessage e)))
+                                    (flush)
+                                    nil))
+                        full-candidates (vec (or (seq (:candidates hud-map)) []))
+                        candidates-present? (contains? hud-map :candidates)
+                        raw-candidates (if candidates-present?
+                                         (:candidates hud-map)
+                                         (:prototypes hud-map))
+                        seed-candidates (vec (or raw-candidates []))
+                        candidate-ids (candidate-ids seed-candidates)
+                        raw-scores (get-in hud-map [:aif :G-scores])
+                        scores (normalize-score-keys raw-scores)
+                        scores (when (seq candidate-ids)
+                                 (select-keys scores candidate-ids))
+                        hud-payload (cond-> {:intent musn-intent
+                                             :candidates candidate-ids}
+                                      (map? scores) (assoc :scores scores)
+                                      (seq full-candidates) (assoc :candidate-details full-candidates)
+                                      (:sigils hud-map) (assoc :sigils (:sigils hud-map))
+                                      (:namespaces hud-map) (assoc :namespaces (:namespaces hud-map))
+                                      (:aif hud-map) (assoc :aif (:aif hud-map)))]
+                    (let [start-resp (musn-start session t hud-payload)]
+                      (if-let [aif (:aif start-resp)]
+                        (log-aif-selection! aif)
+                        (when (seq candidate-ids)
+                          (log-aif-missing! "turn/start"
+                                            {:turn t
+                                             :candidates (count candidate-ids)})
+                          (log-latest-aif-tap! state session)))
+                      (log-mana-response! state start-resp))
+                    (swap! state assoc
+                           :candidate-details (into {}
+                                                    (keep (fn [entry]
+                                                            (when-let [id (:id entry)]
+                                                              [id (select-keys entry
+                                                                               [:maturity-phase
+                                                                                :precision-prior
+                                                                                :evidence-count
+                                                                                :next-steps-count])])))
+                                                    full-candidates))
+                    (if (seq candidate-ids)
+                      (let [line (format "[hud-candidates] %s" (str/join ", " candidate-ids))]
+                        (log! line)
+                        (println line))
+                      (let [line "[hud-candidates] none"]
+                        (log! line)
+                        (println line)))
+                    (when-let [sigils (:sigils hud-map)]
+                      (let [line (format "[hud-sigils] %s"
+                                         (or (format-sigils sigils) sigils))]
+                        (log! line)
+                        (println line)))
+                    (flush))
+                  (when musn-intent
+                    ;; announce intent into the stream so HUD can pick it up as handshake
+                    (log! (format "[hud-intent] %s" musn-intent))
+                    (println (format "[hud-intent] %s" musn-intent))
                     (flush)
-                    ;; Block until a resume note shows up in session state.
-                    (loop []
-                      (Thread/sleep 1000)
-                      (when-let [st (musn-state session)]
-                        (let [note (get-in st [:state :resume-note])]
-                          (when note
-                            (let [line (format "[musn-resume] note=%s" note)]
-                              (log! line)
-                              (println line))
-                            (flush)
-                            (swap! state assoc :resume-note note :paused? false :pause-latched? false))
-                        (when-not note
-                          (recur)))))))))
+                    (when require-approval?
+                      (let [line "[musn-pause] intent computed; waiting for approval to proceed"]
+                        (log! line)
+                        (println line))
+                      (flush)
+                      ;; Block until a resume note shows up in session state.
+                      (wait-for-resume! state session)))))
 
-            (= (:type event) "turn.completed")
-            (let [resp (musn-end session (:turn @state))
-                  paused? (:halt? resp)]
-              (log-mana-response! state resp)
-              (if paused?
-                (when-not (:pause-latched? @state)
-                  (swap! state assoc :paused? true :pause-latched? true)
-                  (log! "[pattern] pause-latch" {:state :latched :turn (:turn @state)})
-                  (print-pause resp)
-                  (remove-tap tap-listener)
-                  (System/exit 3))
-                (when (or (:paused? @state) (:pause-latched? @state))
-                  (swap! state assoc :paused? false :pause-latched? false)
-                  (log! "[pattern] pause-latch" {:state :reset :turn (:turn @state)}))))
+                (= event-type "turn.completed")
+                (do
+                  (swap! state update :turn-end-count (fnil inc 0))
+                  (log! "[musn-end]"
+                        {:turn (:turn @state)
+                         :event (:type event)
+                         :event/turn (:turn event)
+                         :usage (:usage event)
+                         :end-count (:turn-end-count @state)})
+                  (let [resp (musn-end session (:turn @state))
+                        paused? (:halt? resp)]
+                    (log-mana-response! state resp)
+                    (if paused?
+                      (when-not (:pause-latched? @state)
+                        (swap! state assoc :paused? true :pause-latched? true)
+                        (log! "[pattern] pause-latch" {:state :latched :turn (:turn @state)})
+                        (print-pause resp)
+                        (remove-tap tap-listener)
+                        (System/exit 3))
+                      (when (or (:paused? @state) (:pause-latched? @state))
+                        (swap! state assoc :paused? false :pause-latched? false)
+                        (log! "[pattern] pause-latch" {:state :reset :turn (:turn @state)})))))
 
-            :else
-            (handle-event! state event session))))
+                :else
+                (handle-event! state event session)))))
       (remove-tap tap-listener)
       (System/exit 0)
       (catch Throwable t
@@ -713,10 +775,10 @@
           (println "[musn-stream] ERROR" (.getMessage t))
           (when-let [d (ex-data t)] (prn d)))
         (log! "[musn-stream] ERROR" (.getMessage t) (ex-data t))
-        (System/exit 4)))))
-
+        (System/exit 4))))
 (defn -main [& _]
   (stream-loop))
 
 ;; Invoke main when run as a script (clojure -M dev/musn_stream.clj)
 (apply -main *command-line-args*)
+)

@@ -80,9 +80,18 @@
         (= uri "/health") (json-response {:ok true})
         (not= :post (:request-method req)) (json-response 405 {:ok false :err "method not allowed"})
         :else
-        (if-let [resp (dispatch uri (parse-json-body req))]
-          (json-response resp)
-          (json-response 404 {:ok false :err "not found"}))))
+        (let [body (parse-json-body req)]
+          (when (= uri "/musn/turn/end")
+            (log! "[musn-http] turn/end"
+                  {:session/id (:session/id body)
+                   :turn (:turn body)
+                   :remote-addr (:remote-addr req)
+                   :user-agent (get-in req [:headers "user-agent"])
+                   :client (get-in req [:headers "x-musn-client"])
+                   :content-length (get-in req [:headers "content-length"])}))
+          (if-let [resp (dispatch uri body)]
+            (json-response resp)
+            (json-response 404 {:ok false :err "not found"})))))
     (catch Throwable t
       (log! "[musn-http] handler error" {:uri (:uri req)
                                          :err (.getMessage t)})

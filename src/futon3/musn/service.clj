@@ -79,6 +79,8 @@
    :pur nil
    :psr-emitted? false
    :pur-emitted? false
+   :turn-ended nil
+   :turn-ended-resp nil
    :aif-config-logged? false})
 
 (defn- mana-config [policy]
@@ -532,74 +534,113 @@
     (persist! entry :evidence/add req resp)
     resp))
 
+(defn- turn-end-ready?
+  [state]
+  (or (:plan? state)
+      (:selection state)
+      (seq (:actions state))))
+
+(defn- turn-summary
+  [state]
+  {:actions (frequencies (map :action (:actions state)))
+   :trail (:trail state)
+   :psr (get-in state [:selection :pattern/id])
+   :pur (get-in state [:pur :pattern/id])
+   :warnings (count (:warnings state))})
+
 (defn turn-end!
   [req]
   (let [sid (:session/id req)
         entry (ensure-session! sid nil (:lab/root req) nil)
         turn (:turn req)
-        resp (router/handle-turn-end! (:state entry)
-                                      {:session/id sid
-                                       :turn (:turn req)})]
-    (append-lab-event! entry (turn-event :turn/completed sid turn {:session/id sid}))
-    (let [fulab-state @(:fulab entry)
-          psr (:psr fulab-state)
-          pur (:pur fulab-state)
-          actions (:actions @(:state entry))
-          inferred-action (first (filter #(contains? #{"implement" "update"} (:action %)) actions))
-          chosen (or (:chosen psr)
-                     (:pattern/id inferred-action))
-          inferred? (boolean (and chosen (not pur) inferred-action))]
-      (when (and chosen (not pur) inferred?)
-        (let [anchors (vec (distinct (concat (action-anchors actions chosen)
-                                             [(fulab-musn/turn-anchor turn)])))
-              pur (fulab-musn/build-pur {:session-id sid
-                                         :turn turn
-                                         :pattern-id chosen
-                                         :reason "inferred from pattern action"
-                                         :anchors anchors
-                                         :inferred? true
-                                         :certificates (:certificates entry)})
-              belief-update (aif-engine/update-beliefs (:aif-engine entry)
-                                                       {:decision/id (:decision/id pur)
-                                                        :session/id sid
-                                                        :outcome (:outcome/tags pur)
-                                                        :status :observed})]
-          (when (:mana entry)
-            (let [{:keys [restore]} (mana-config (:policy entry))
-                  restore (double (or restore 10))
-                  mana @(:mana entry)
-                  action? (some #(= chosen (:pattern/id %)) actions)
-                  restore? (and action?
-                                (not (restored? mana :action->pur chosen)))]
-              (when restore?
-                (apply-mana! entry restore :action->pur {:pattern/id chosen
-                                                         :turn turn
-                                                         :inferred? true})
-                (note-restore! entry :action->pur chosen))))
-          (append-lab-event! entry {:event/type :pattern/use-claimed
-                                    :at (fulab-musn/now-inst)
-                                    :payload {:pur pur}})
-          (append-lab-event! entry (fulab-musn/summary-event sid :pur belief-update))
+        state @(:state entry)
+        fulab-state @(:fulab entry)
+        ended-turn (:turn-ended fulab-state)]
+    (cond
+      (= turn ended-turn)
+      (let [resp (assoc (or (:turn-ended-resp fulab-state) {:ok true})
+                        :duplicate? true)]
+        (persist! entry :turn/end req resp)
+        (cond-> resp
+          (:mana entry) (assoc :mana (mana-view @(:mana entry)))))
+
+      (not (turn-end-ready? state))
+      (let [resp {:ok true
+                  :ignored? true
+                  :reason :turn/end-before-ready
+                  :summary (turn-summary state)
+                  :halt? false
+                  :halt/reason nil}]
+        (persist! entry :turn/end req resp)
+        (cond-> resp
+          (:mana entry) (assoc :mana (mana-view @(:mana entry)))))
+
+      :else
+      (let [resp (router/handle-turn-end! (:state entry)
+                                          {:session/id sid
+                                           :turn (:turn req)})]
+        (append-lab-event! entry (turn-event :turn/completed sid turn {:session/id sid}))
+        (let [fulab-state @(:fulab entry)
+              psr (:psr fulab-state)
+              pur (:pur fulab-state)
+              actions (:actions @(:state entry))
+              inferred-action (first (filter #(contains? #{"implement" "update"} (:action %)) actions))
+              chosen (or (:chosen psr)
+                         (:pattern/id inferred-action))
+              inferred? (boolean (and chosen (not pur) inferred-action))]
+          (when (and chosen (not pur) inferred?)
+            (let [anchors (vec (distinct (concat (action-anchors actions chosen)
+                                                 [(fulab-musn/turn-anchor turn)])))
+                  pur (fulab-musn/build-pur {:session-id sid
+                                             :turn turn
+                                             :pattern-id chosen
+                                             :reason "inferred from pattern action"
+                                             :anchors anchors
+                                             :inferred? true
+                                             :certificates (:certificates entry)})
+                  belief-update (aif-engine/update-beliefs (:aif-engine entry)
+                                                           {:decision/id (:decision/id pur)
+                                                            :session/id sid
+                                                            :outcome (:outcome/tags pur)
+                                                            :status :observed})]
+              (when (:mana entry)
+                (let [{:keys [restore]} (mana-config (:policy entry))
+                      restore (double (or restore 10))
+                      mana @(:mana entry)
+                      action? (some #(= chosen (:pattern/id %)) actions)
+                      restore? (and action?
+                                    (not (restored? mana :action->pur chosen)))]
+                  (when restore?
+                    (apply-mana! entry restore :action->pur {:pattern/id chosen
+                                                             :turn turn
+                                                             :inferred? true})
+                    (note-restore! entry :action->pur chosen))))
+              (append-lab-event! entry {:event/type :pattern/use-claimed
+                                        :at (fulab-musn/now-inst)
+                                        :payload {:pur pur}})
+              (append-lab-event! entry (fulab-musn/summary-event sid :pur belief-update))
+              (swap! (:fulab entry) assoc
+                     :pur pur
+                     :pur-emitted? true)))
+          (when (and psr (not (:pur-emitted? fulab-state)) (not inferred?))
+            (append-lab-event! entry {:event/type :pattern/selection-unapplied
+                                      :at (fulab-musn/now-inst)
+                                      :payload {:session/id sid
+                                                :turn turn
+                                                :decision/id (:decision/id psr)
+                                                :pattern/id (:chosen psr)
+                                                :note "No application recorded for selection."}}))
           (swap! (:fulab entry) assoc
-                 :pur pur
-                 :pur-emitted? true)))
-      (when (and psr (not (:pur-emitted? fulab-state)) (not inferred?))
-        (append-lab-event! entry {:event/type :pattern/selection-unapplied
-                                  :at (fulab-musn/now-inst)
-                                  :payload {:session/id sid
-                                            :turn turn
-                                            :decision/id (:decision/id psr)
-                                            :pattern/id (:chosen psr)
-                                            :note "No application recorded for selection."}}))
-      (swap! (:fulab entry) assoc
-             :turn nil
-             :psr nil
-             :pur nil
-             :psr-emitted? false
-             :pur-emitted? false))
-    (persist! entry :turn/end req resp)
-    (cond-> resp
-      (:mana entry) (assoc :mana (mana-view @(:mana entry))))))
+                 :turn nil
+                 :psr nil
+                 :pur nil
+                 :psr-emitted? false
+                 :pur-emitted? false
+                 :turn-ended turn
+                 :turn-ended-resp resp))
+        (persist! entry :turn/end req resp)
+        (cond-> resp
+          (:mana entry) (assoc :mana (mana-view @(:mana entry))))))))
 
 (defn turn-resume!
   [req]

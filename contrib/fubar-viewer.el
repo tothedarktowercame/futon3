@@ -68,7 +68,7 @@
     (:hud . "\\[hud-")
     (:pause . "\\[MUSN-PAUSE\\]\\|\\[musn-pause\\]")
     (:session . "\\[musn-session\\]")
-    (:musn . "\\[musn\\]")
+    (:musn . "\\[musn[^]]*\\]")
     (:error . "\\[musn-stream\\] ERROR\\|\\bERROR\\b"))
   "Regex rules to map log lines into fold categories."
   :type '(repeat (cons symbol regexp))
@@ -76,9 +76,9 @@
 
 (defvar fubar-musn-view-font-lock-keywords
   '(("^\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}T[^ ]+\\)" . font-lock-comment-face)
-    ("\\[musn\\] file_change\\b" . fubar-musn-file-change-face)
-    ("\\[musn\\] command_execution\\b" . fubar-musn-command-face)
-    ("\\[musn\\] reasoning\\b" . fubar-musn-reasoning-face)
+    ("\\[musn[^]]*\\] file_change\\b" . fubar-musn-file-change-face)
+    ("\\[musn[^]]*\\] command_execution\\b" . fubar-musn-command-face)
+    ("\\[musn[^]]*\\] reasoning\\b" . fubar-musn-reasoning-face)
     ("\\[aif\\]" . font-lock-constant-face)
     ("\\[pattern-[^]]+\\]" . font-lock-keyword-face)
     ("\\[hud-[^]]+\\]" . font-lock-preprocessor-face)
@@ -110,6 +110,17 @@
   "Face for MUSN finished banner."
   :group 'fubar-musn-viewer)
 
+(defface fubar-musn-running-banner-face
+  '((t :inherit font-lock-keyword-face :weight bold))
+  "Face for MUSN running banner."
+  :group 'fubar-musn-viewer)
+
+(defconst fubar-musn--musn-prefix-re "\\[musn[^]]*\\]")
+
+(defun fubar-musn--musn-prefix (line)
+  (when (and line (string-match fubar-musn--musn-prefix-re line))
+    (match-string 0 line)))
+
 (defvar fubar-musn-view-mode-map (make-sparse-keymap))
 
 (let ((map fubar-musn-view-mode-map))
@@ -130,6 +141,7 @@
   (setq-local fubar-musn--pause-reason nil)
   (setq-local fubar-musn--last-pause-marker nil)
   (setq-local fubar-musn--run-finished nil)
+  (setq-local fubar-musn--run-active nil)
   (setq-local fubar-musn--session-locked nil)
   (setq-local header-line-format nil))
 
@@ -141,9 +153,15 @@
   (let ((case-fold-search t))
     (and line (string-match-p "\\[musn-pause\\]" line))))
 
+(defun fubar-musn--run-started-line-p (line)
+  (let ((case-fold-search t))
+    (or (and line (string-match-p (concat fubar-musn--musn-prefix-re " turn\\.started\\b") line))
+        (let ((event-type (fubar-musn--event-type-from-line line)))
+          (and event-type (string= event-type "turn.started"))))))
+
 (defun fubar-musn--run-finished-line-p (line)
   (let ((case-fold-search t))
-    (or (and line (string-match-p "\\[musn\\] turn\\.completed\\b" line))
+    (or (and line (string-match-p (concat fubar-musn--musn-prefix-re " turn\\.completed\\b") line))
         (let ((event-type (fubar-musn--event-type-from-line line)))
           (and event-type (string= event-type "turn.completed"))))))
 
@@ -191,10 +209,21 @@
             (propertize (format " MUSN HALTED%s -- resume in HUD "
                                 (or reason ""))
                         'face 'fubar-musn-pause-banner-face)))
+         (fubar-musn--run-active
+          (propertize " FUCODEX RUNNING "
+                      'face 'fubar-musn-running-banner-face))
          (t nil))))
+
+(defun fubar-musn--set-run-active (active)
+  (setq fubar-musn--run-active (and active t))
+  (when active
+    (setq fubar-musn--run-finished nil))
+  (fubar-musn--update-pause-banner))
 
 (defun fubar-musn--set-run-finished (finished)
   (setq fubar-musn--run-finished (and finished t))
+  (when finished
+    (setq fubar-musn--run-active nil))
   (when finished
     (setq fubar-musn--pause-seen nil)
     (setq fubar-musn--pause-reason nil))
@@ -266,10 +295,19 @@
 
 (defun fubar-musn--apply-handshake (session-id intent)
   (when session-id
-    (unless (and fubar-musn-session-id
-                 (not (string= fubar-musn-session-id session-id)))
-      (setq fubar-musn-session-id session-id)
-      (fubar-musn--maybe-start-state-poll)))
+    (let ((prior fubar-musn-session-id))
+      (when (or (not fubar-musn--session-locked)
+                (null prior)
+                (string= prior session-id))
+        (setq fubar-musn-session-id session-id)
+        (when (and prior (not (string= prior session-id)))
+          (setq fubar-musn-turn nil)
+          (setq fubar-musn--pause-seen nil)
+          (setq fubar-musn--pause-reason nil)
+          (setq fubar-musn--run-active nil)
+          (setq fubar-musn--run-finished nil)
+          (fubar-musn--update-pause-banner))
+        (fubar-musn--maybe-start-state-poll))))
   (when (or session-id intent)
     (with-current-buffer (get-buffer-create "*FuLab HUD*")
       (when (fboundp 'fubar-hud--ensure-mode)
@@ -313,7 +351,9 @@
 
 (defun fubar-musn--json-request (method path payload)
   (let* ((url-request-method method)
-         (url-request-extra-headers '(("Content-Type" . "application/json")))
+         (url-request-extra-headers '(("Content-Type" . "application/json")
+                                      ("X-Musn-Client" . "fubar-viewer")
+                                      ("User-Agent" . "fubar-viewer")))
          (url-request-data (and payload (encode-coding-string (json-encode payload) 'utf-8)))
          (buffer (url-retrieve-synchronously (concat (string-remove-suffix "/" fubar-musn-url) path) t t 5)))
     (unless buffer (error "No response from MUSN"))
@@ -428,12 +468,14 @@
       (match-string 1 line))))
 
 (defun fubar-musn--event-type-from-line (line)
-  (when (string-match "\\[musn\\] event (\\({:type\\s-+\\(\"[^\"]+\"\\|:[^,}[:space:]]+\\)\\)" line)
+  (when (string-match (concat fubar-musn--musn-prefix-re
+                              " event (\\({:type\\s-+\\(\"[^\"]+\"\\|:[^,}[:space:]]+\\)\\)") line)
     (fubar-musn--normalize-token (match-string 2 line))))
 
 (defun fubar-musn--rewrite-item-completed (line)
-  (when (string-match-p "\\[musn\\] event" line)
+  (when (string-match-p (concat fubar-musn--musn-prefix-re " event") line)
     (let ((event-type (fubar-musn--event-type-from-line line))
+          (prefix (or (fubar-musn--musn-prefix line) "[musn]"))
           (item-type (fubar-musn--extract-item-type line))
           (path (fubar-musn--extract-change-path line))
           (command (fubar-musn--extract-command line))
@@ -444,30 +486,31 @@
           (cond
            ((and (string= item-type "file_change") path)
             (if ts
-                (format "%s [musn] %s %s" ts item-type path)
-              (format "[musn] %s %s" item-type path)))
+                (format "%s %s %s %s" ts prefix item-type path)
+              (format "%s %s %s" prefix item-type path)))
            ((and (string= item-type "command_execution") command)
             (if ts
-                (format "%s [musn] %s %s" ts item-type command)
-              (format "[musn] %s %s" item-type command)))
+                (format "%s %s %s %s" ts prefix item-type command)
+              (format "%s %s %s" prefix item-type command)))
            ((string= item-type "reasoning")
             (let ((summary (fubar-musn--summarize-text text)))
               (if ts
-                  (format "%s [musn] %s%s" ts item-type (if summary (concat " " summary) ""))
-                (format "[musn] %s%s" item-type (if summary (concat " " summary) "")))))
+                  (format "%s %s %s%s" ts prefix item-type (if summary (concat " " summary) ""))
+                (format "%s %s%s" prefix item-type (if summary (concat " " summary) "")))))
            (t nil)))))))
 
 (defun fubar-musn--rewrite-event-line (line)
-  (if (not (string-match "\\[musn\\] event" line))
+  (if (not (string-match (concat fubar-musn--musn-prefix-re " event") line))
       line
     (or (fubar-musn--rewrite-item-completed line)
         (let ((event-type (fubar-musn--event-type-from-line line)))
           (if (not event-type)
               line
-            (let ((line (replace-regexp-in-string
-                         "\\[musn\\] event"
-                         (format "[musn] %s" event-type)
-                         line t t)))
+            (let* ((prefix (or (fubar-musn--musn-prefix line) "[musn]"))
+                   (line (replace-regexp-in-string
+                          (concat (regexp-quote prefix) " event")
+                          (format "%s %s" prefix event-type)
+                          line t t)))
               (setq line (replace-regexp-in-string
                           "({:type\\s-+\\(?:\"[^\"]+\"\\|:[^,}[:space:]]+\\)\\s-*,?\\s-*"
                           "({"
@@ -519,7 +562,10 @@
                        keymap ,fubar-musn-view-mode-map
                        mouse-face highlight))
     (when (string-match-p "\\[musn-session\\]" line)
-      (fubar-musn--set-run-finished nil))
+      (fubar-musn--set-run-finished nil)
+      (fubar-musn--set-run-active nil))
+    (when (fubar-musn--run-started-line-p line)
+      (fubar-musn--set-run-active t))
     (when (fubar-musn--pause-line-p line)
       (fubar-musn--note-pause start line))
     (when (fubar-musn--run-finished-line-p line)
@@ -554,7 +600,10 @@
                              keymap ,fubar-musn-view-mode-map
                              mouse-face highlight))))
       (when (string-match-p "\\[musn-session\\]" joined)
-        (fubar-musn--set-run-finished nil))
+        (fubar-musn--set-run-finished nil)
+        (fubar-musn--set-run-active nil))
+      (when (fubar-musn--run-started-line-p joined)
+        (fubar-musn--set-run-active t))
       (when (fubar-musn--pause-line-p joined)
         (fubar-musn--note-pause start joined))
       (when (fubar-musn--run-finished-line-p joined)

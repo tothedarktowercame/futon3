@@ -16,7 +16,9 @@
 
 (defun fubar-musn--post (path payload)
   (let* ((url-request-method "POST")
-         (url-request-extra-headers '(("Content-Type" . "application/json")))
+         (url-request-extra-headers '(("Content-Type" . "application/json")
+                                      ("X-Musn-Client" . "fubar-agent")
+                                      ("User-Agent" . "fubar-agent")))
          (url-request-data (and payload (encode-coding-string (json-encode payload) 'utf-8)))
          (url (concat (string-remove-suffix "/" fubar-musn-url) path))
          (buffer (url-retrieve-synchronously url t t 5)))

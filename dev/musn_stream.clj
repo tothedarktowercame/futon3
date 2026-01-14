@@ -283,6 +283,7 @@
 (defn- normalize-helper-token [token]
   (-> token
       strip-wrapper-quotes
+      (str/replace #".*/scripts/" "")
       (str/replace #"^\.?/?scripts/" "")
       (str/replace #"^./" "")))
 

@@ -563,26 +563,49 @@
   ([aif] (log-aif-selection! nil aif))
   ([state aif]
    (update-aif-policy! state aif)
-   (let [g (fmt-num (:G aif))
+   (let [g-chosen (or (:G aif) (:G-chosen aif))
+         g-values (->> (concat (when (number? g-chosen) [g-chosen])
+                               (vals (or (:G-rejected aif) {}))
+                               (vals (or (:G-scores aif) {})))
+                       (filter number?))
+         g-min (when (seq g-values) (apply min g-values))
+         g-max (when (seq g-values) (apply max g-values))
+         g-span (when (and (number? g-min) (number? g-max))
+                  (- (double g-max) (double g-min)))
+         g (fmt-num g-chosen)
+         g-span (fmt-num g-span)
+         g-count (when (seq g-values) (count g-values))
          tau (fmt-num (:tau aif))
-         g-scores (when (map? (:G-scores aif)) (count (:G-scores aif)))
-         rejected (when (map? (:G-rejected aif)) (count (:G-rejected aif)))]
+         white-space? (:white-space? aif)]
      (log-aif-line! "select"
                     (remove nil?
                             [(when g (str "G=" g))
+                             (when g-span (str "span=" g-span))
+                             (when g-count (str "n=" g-count))
                              (when tau (str "tau=" tau))
-                             (when g-scores (str "G-scores=" g-scores))
-                             (when rejected (str "G-rejected=" rejected))])))))
+                             (when white-space? "white-space")])))))
 
 (defn log-aif-update!
   ([aif] (log-aif-update! nil aif))
   ([state aif]
    (update-aif-policy! state aif)
    (let [err (fmt-num (:prediction-error aif))
-         tau (fmt-num (:tau-updated aif))]
+         tau (fmt-num (:tau-updated aif))
+         ev (fmt-num (:evidence-score aif))
+         delta (fmt-num (:evidence-delta aif))
+         counts (:evidence-counts aif)
+         counts (when (map? counts)
+                  (->> counts
+                       (sort-by (comp str key))
+                       (map (fn [[k v]] (format "%s:%s" (name k) v)))
+                       (take 4)
+                       (str/join ",")))]
      (log-aif-line! "update"
                     (remove nil?
                             [(when err (str "err=" err))
+                             (when ev (str "ev=" ev))
+                             (when delta (str "d=" delta))
+                             (when counts (str "counts=" counts))
                              (when tau (str "tau=" tau))])))))
 
 (defn log-aif-tap! [event]
@@ -1136,8 +1159,11 @@
         (swap! state assoc :turn-ended turn)
         (swap! state update :turn-end-count (fnil inc 0))
         (let [resp (musn-end session turn)
-              paused? (:halt? resp)]
+              paused? (:halt? resp)
+              reason-type (get-in resp [:halt/reason :type])]
           (log-mana-response! state resp)
+          (when-let [policy (:aif/policy resp)]
+            (log-aif-policy! policy))
           (when-not paused?
             (log! "[musn-end]"
                   {:turn turn
@@ -1145,7 +1171,18 @@
                    :event/turn (:turn event)
                    :usage (:usage event)
                    :end-count (:turn-end-count @state)}))
-          (if paused?
+          (if (and paused? (= reason-type :mana-depleted))
+            (do
+              (log! "[musn-end]"
+                    {:turn turn
+                     :event (:type event)
+                     :event/turn (:turn event)
+                     :usage (:usage event)
+                     :end-count (:turn-end-count @state)
+                     :reason :mana-depleted})
+              (remove-tap tap-listener)
+              (System/exit 0))
+            (if paused?
             (when-not (:pause-latched? @state)
               (swap! state assoc :paused? true :pause-latched? true)
               (log! "[pattern] pause-latch" {:state :latched :turn turn})
@@ -1154,7 +1191,7 @@
               (System/exit 3))
             (when (or (:paused? @state) (:pause-latched? @state))
               (swap! state assoc :paused? false :pause-latched? false)
-              (log! "[pattern] pause-latch" {:state :reset :turn turn}))))))))
+              (log! "[pattern] pause-latch" {:state :reset :turn turn})))))))))
 
 (defn- process-event!
   [state session event tap-listener]

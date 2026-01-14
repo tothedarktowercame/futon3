@@ -11,7 +11,8 @@
             [futon3.fulab.pattern-competence :as pc]
             [futon3.logic-audit :as logic-audit]
             [futon3.musn.fulab :as fulab-musn]
-            [futon3.musn.router :as router]))
+            [futon3.musn.router :as router]
+            [futon3.pattern-hints :as hints]))
 
 (def default-policy
   {:off-trail {:free 3 :ratio 0.5 :action "off-trail"}
@@ -26,7 +27,7 @@
   (or (System/getenv "MUSN_LAB_ROOT") "lab"))
 
 (defonce sessions (atom {}))
-(declare get-session append-lab-event!)
+(declare get-session append-lab-event! restored? note-restore! apply-mana! mana-config)
 (defonce aif-tap-installed? (atom false))
 
 (defn- tap->event [tap]
@@ -45,6 +46,92 @@
 (defn- ensure-aif-tap-listener! []
   (when (compare-and-set! aif-tap-installed? false true)
     (add-tap #'handle-aif-tap!)))
+
+(defn- aif-engine-state [entry]
+  (when-let [engine (:aif-engine entry)]
+    (when-let [state (:state engine)]
+      @state)))
+
+(defn- aif-mu-summary [entry pattern-id]
+  (let [state (aif-engine-state entry)
+        evidence (:pattern-evidence state)
+        pattern-evidence (when (and pattern-id (map? evidence))
+                           (get evidence pattern-id))]
+    (cond-> {:pattern-count (count (or evidence {}))}
+      (seq pattern-evidence) (assoc :pattern-evidence pattern-evidence))))
+
+(defn- candidate-precision-summary [candidate-details candidate-ids]
+  (into {}
+        (keep (fn [pid]
+                (let [details (get candidate-details pid)
+                      fallback (hints/pattern-entry pid)
+                      payload (merge (when (map? details)
+                                       (select-keys details
+                                                    [:precision-prior
+                                                     :evidence-count
+                                                     :next-steps-count]))
+                                     (when (map? fallback)
+                                       {:precision-prior (:precision/prior fallback)
+                                        :evidence-count (:evidence/count fallback)
+                                        :next-steps-count (:next-steps/count fallback)}))]
+                  (when (seq payload)
+                    [pid payload]))))
+        candidate-ids))
+
+(defn- resolve-pattern-files [pattern-id files]
+  (let [fallback (some-> (hints/pattern-entry pattern-id) :source/path)
+        candidates (->> (concat (or files [])
+                                (when fallback [fallback]))
+                        (remove nil?)
+                        distinct)]
+    (->> candidates
+         (map io/file)
+         (filter #(.exists %))
+         vec)))
+
+(defn- current-pattern-maturity [pattern-id files]
+  (let [targets (resolve-pattern-files pattern-id files)]
+    (some #(hints/maturity-for-pattern-file % pattern-id) targets)))
+
+(defn- previous-pattern-maturity [entry pattern-id]
+  (or (get @(:pattern-maturity entry) pattern-id)
+      (some-> (hints/pattern-entry pattern-id) :maturity/phase)))
+
+(defn- note-pattern-maturity! [entry pattern-id phase]
+  (swap! (:pattern-maturity entry) assoc pattern-id phase))
+
+(defn- maybe-award-maturity-bonus! [entry pattern-id files action]
+  (when (and (:mana entry)
+             (contains? #{"update" "implement"} (str action))
+             (string? pattern-id))
+    (when-let [current (current-pattern-maturity pattern-id files)]
+      (let [current-phase (:maturity/phase current)
+            prev-phase (previous-pattern-maturity entry pattern-id)
+            mana @(:mana entry)
+            awarded? (restored? mana :maturity-upgrade pattern-id)]
+        (note-pattern-maturity! entry pattern-id current-phase)
+        (when (and (not awarded?)
+                   (= prev-phase :stub)
+                   (= current-phase :active))
+          (let [{:keys [maturity-bonus]} (mana-config (:policy entry))
+                bonus (double (or maturity-bonus 10))]
+            (apply-mana! entry bonus :maturity-upgrade
+                         {:pattern/id pattern-id
+                          :from prev-phase
+                          :to current-phase})
+            (note-restore! entry :maturity-upgrade pattern-id)
+            (append-lab-event! entry {:event/type :mana/bonus
+                                      :at (fulab-musn/now-inst)
+                                      :payload {:pattern/id pattern-id
+                                                :from prev-phase
+                                                :to current-phase
+                                                :delta bonus}})))))))
+
+(defn- tap-aif-context! [payload]
+  (tap> (merge {:type :aif/context} payload)))
+
+(defn- tap-aif-policy! [payload]
+  (tap> (merge {:type :aif/policy} payload)))
 
 (defn- session-agent [client-id]
   (keyword (or (some-> client-id str str/trim) "musn")))
@@ -102,12 +189,37 @@
 (defn- mean [values]
   (/ (reduce + values) (double (count values))))
 
+(defn- scores->tau [scores]
+  (let [scores (->> scores
+                    (keep #(when (number? %) (double %)))
+                    sort
+                    vec)]
+    (cond
+      (< (count scores) 2) 0.5
+      :else (let [best (first scores)
+                  second (second scores)
+                  worst (last scores)
+                  range (max 1.0e-6 (- (double worst) (double best)))
+                  spread (/ (- (double second) (double best)) range)
+                  scaled (+ 0.35 (* 0.6 (min 1.0 spread)))]
+              (-> scaled (max 0.35) (min 0.95) double)))))
+
 (defn- tau-scale [entry]
   (double (or (:tau/scale (:aif-config entry)) 1.0)))
 
 (defn- tau->uncertainty [entry tau]
   (when (and (number? tau) (pos? tau))
     (/ (tau-scale entry) (double tau))))
+
+(defn- scores->uncertainty [entry scores]
+  (when (seq scores)
+    (tau->uncertainty entry (scores->tau scores))))
+
+(defn- uncertainty-detail [value source detail]
+  (when (number? value)
+    (merge {:value (double value)
+            :source source}
+           detail)))
 
 (defn- precision->uncertainty [precision]
   (when (number? precision)
@@ -123,12 +235,16 @@
        (into {})))
 
 (defn- candidate-precision [entry pattern-id]
-  (get-in @(:fulab entry) [:candidate-details pattern-id :precision-prior]))
+  (or (get-in @(:fulab entry) [:candidate-details pattern-id :precision-prior])
+      (some-> (hints/pattern-entry pattern-id) :precision/prior)
+      0.5))
 
-(defn- candidates-uncertainty
+(defn- candidates-uncertainty-details
   ([entry candidate-ids]
-   (candidates-uncertainty entry candidate-ids nil))
+   (candidates-uncertainty-details entry candidate-ids nil nil))
   ([entry candidate-ids candidate-details]
+   (candidates-uncertainty-details entry candidate-ids candidate-details nil))
+  ([entry candidate-ids candidate-details scores]
    (when (seq candidate-ids)
      (let [cache @(:tau-cache entry)
            taus (keep cache candidate-ids)
@@ -137,14 +253,36 @@
                               (fn [pid] (get-in candidate-details [pid :precision-prior]))
                               (fn [pid] (candidate-precision entry pid)))
            precisions (keep precision-lookup candidate-ids)
-           precision (when (seq precisions) (mean precisions))]
-       (or (tau->uncertainty entry cached)
-           (precision->uncertainty precision))))))
+           precision (when (seq precisions) (mean precisions))
+           score-values (cond
+                          (map? scores) (vals scores)
+                          (sequential? scores) scores
+                          :else nil)
+           score-uncertainty (scores->uncertainty entry score-values)]
+       (or (uncertainty-detail (tau->uncertainty entry cached)
+                               :tau-cache
+                               {:tau cached})
+           (uncertainty-detail (precision->uncertainty precision)
+                               :precision-prior
+                               {:precision precision})
+           (uncertainty-detail score-uncertainty
+                               :score-spread
+                               {}))))))
 
-(defn- pattern-uncertainty [entry pattern-id]
+(defn- pattern-uncertainty-details [entry pattern-id]
   (when pattern-id
-    (or (tau->uncertainty entry (get @(:tau-cache entry) pattern-id))
-        (precision->uncertainty (candidate-precision entry pattern-id)))))
+    (let [cached (get @(:tau-cache entry) pattern-id)
+          precision (candidate-precision entry pattern-id)
+          score (get-in @(:fulab entry) [:candidate-scores pattern-id])]
+      (or (uncertainty-detail (tau->uncertainty entry cached)
+                              :tau-cache
+                              {:tau cached})
+          (uncertainty-detail (precision->uncertainty precision)
+                              :precision-prior
+                              {:precision precision})
+          (uncertainty-detail (scores->uncertainty entry [score])
+                              :score-spread
+                              {})))))
 
 (defn- update-tau-cache! [entry pattern-id tau]
   (when (and pattern-id (number? tau))
@@ -153,7 +291,10 @@
       (write-tau-cache! (:lab-root entry) next))))
 
 (defn- mana-config [policy]
-  (merge {:start 100 :action-cost 1 :restore 10}
+  (merge {:start 100
+          :action-cost 1
+          :restore 10
+          :maturity-bonus 10}
          (:mana policy)))
 
 (defn- new-mana-state [policy]
@@ -165,7 +306,8 @@
      :spent 0
      :turn nil
      :restores {:psr->action #{}
-                :action->pur #{}}
+                :action->pur #{}
+                :maturity-upgrade #{}}
      :last-change nil}))
 
 (defn- reset-mana-turn! [entry turn]
@@ -174,7 +316,8 @@
            (-> mana
                (assoc :turn turn)
                (assoc :restores {:psr->action #{}
-                                 :action->pur #{}})))))
+                                 :action->pur #{}
+                                 :maturity-upgrade #{}})))))
 
 (defn- mana-view [mana]
   (dissoc mana :restores))
@@ -191,6 +334,27 @@
                                              :reason reason
                                              :at (fulab-musn/now-inst)}
                                             meta)))))))
+
+(defn- mana-balance [entry]
+  (let [mana @(:mana entry)]
+    (cond
+      (number? (:balance mana)) (double (:balance mana))
+      (number? (:budget mana)) (double (:budget mana))
+      :else nil)))
+
+(defn- mark-mana-depleted! [entry turn]
+  (when-let [balance (mana-balance entry)]
+    (when (neg? balance)
+      (swap! (:state entry)
+             (fn [st]
+               (if (= :mana-depleted (get-in st [:halt :type]))
+                 st
+                 (assoc st :halt {:type :mana-depleted
+                                  :note "mana below zero; turn ends"}))))
+      (append-lab-event! entry {:event/type :mana/depleted
+                                :at (fulab-musn/now-inst)
+                                :payload {:turn turn
+                                          :balance balance}}))))
 
 (defn- restored? [mana kind pattern-id]
   (contains? (get-in mana [:restores kind] #{}) pattern-id))
@@ -324,9 +488,6 @@
   (ensure-dir f)
   (spit f (str (pr-str payload) "\n") :append true))
 
-(defn- compact [m]
-  (into {} (remove (comp nil? val)) m))
-
 (defn session-ids []
   (keys @sessions))
 
@@ -358,8 +519,9 @@
                  :session-file session-file
 	         :lab-session lab-session
 	         :fulab (atom (new-fulab-state))
-	         :aif-tap (atom nil)
+                 :aif-tap (atom nil)
 	         :tau-cache (atom (or (read-tau-cache lab-root) {}))
+                 :pattern-maturity (atom {})
 	         :mana (atom (new-mana-state p))
                  :aif-engine engine
                  :aif-config (:aif-config p)
@@ -410,7 +572,8 @@
                  (if (map? scores)
                    (select-keys scores candidate-ids)
                    scores))
-        uncertainty (candidates-uncertainty entry candidate-ids candidate-details)
+        uncertainty-detail (candidates-uncertainty-details entry candidate-ids candidate-details scores)
+        uncertainty (:value uncertainty-detail)
         selection (when (seq candidate-ids)
                     (aif-engine/select-pattern
                      (:aif-engine entry)
@@ -426,6 +589,17 @@
                                          :turn (:turn req)
                                          :hud (:hud req)})]
     (reset-fulab-state! entry turn candidate-ids scores candidate-details)
+    (when selection
+      (tap-aif-context! {:event :select
+                         :session/id sid
+                         :turn turn
+                         :decision/id (get-in selection [:decision/id])
+                         :candidates candidate-ids
+                         :candidate-scores scores
+                         :precision-priors (candidate-precision-summary candidate-details candidate-ids)
+                         :uncertainty uncertainty-detail
+                         :aif (:aif selection)
+                         :mu (aif-mu-summary entry (:chosen selection))}))
     (when (:mana entry)
       (reset-mana-turn! entry turn))
     (append-lab-event! entry (turn-event :turn/started sid turn {:session/id sid}))
@@ -452,8 +626,14 @@
         turn (:turn req)
         candidates (candidate-ids (:candidates req))
         chosen (candidate-id (:chosen req))
-        uncertainty (or (pattern-uncertainty entry chosen)
-                        (candidates-uncertainty entry candidates))
+        fulab-state @(:fulab entry)
+        candidate-details (:candidate-details fulab-state)
+        score-map (:candidate-scores fulab-state)
+        score-map (when (map? score-map)
+                    (select-keys score-map candidates))
+        uncertainty-detail (or (pattern-uncertainty-details entry chosen)
+                                (candidates-uncertainty-details entry candidates candidate-details score-map))
+        uncertainty (:value uncertainty-detail)
         selection (aif-engine/select-pattern
                    (:aif-engine entry)
                    {:decision/id (str sid ":turn-" turn)
@@ -491,6 +671,17 @@
              :psr psr
              :psr-emitted? true))
     (when selection
+      (tap-aif-context! {:event :select
+                         :session/id sid
+                         :turn turn
+                         :decision/id (get selection :decision/id)
+                         :candidates candidates
+                         :candidate-scores score-map
+                         :precision-priors (candidate-precision-summary candidate-details candidates)
+                         :uncertainty uncertainty-detail
+                         :chosen chosen
+                         :aif (:aif selection)
+                         :mu (aif-mu-summary entry chosen)})
       (append-lab-event! entry (fulab-musn/summary-event sid :psr selection)))
     (when-let [tau (get-in selection [:aif :tau])]
       (update-tau-cache! entry chosen tau))
@@ -503,6 +694,11 @@
   [req]
   (let [sid (:session/id req)
         entry (ensure-session! sid nil (:lab/root req) nil)
+        action {:pattern/id (:pattern/id req)
+                :action (:action req)
+                :note (:note req)
+                :files (:files req)
+                :source (or (:source req) :explicit)}
         resp (router/handle-turn-action! (:state entry)
                                          (compact {:session/id sid
                                                    :turn (:turn req)
@@ -511,45 +707,51 @@
                                                    :note (:note req)
                                                    :files (:files req)
                                                    :source (:source req)
-                                                   :cost (:cost req)}))]
-    (let [action {:pattern/id (:pattern/id req)
-                  :action (:action req)
-                  :note (:note req)
-                  :files (:files req)
-                  :source (or (:source req) :explicit)}
-          belief-update (aif-engine/update-beliefs (:aif-engine entry)
-                                                   {:decision/id (str sid ":action-" (java.util.UUID/randomUUID))
-                                                    :session/id sid
-                                                    :pattern/id (:pattern/id req)
-                                                    :pattern/action (:action req)
-                                                    :uncertainty (pattern-uncertainty entry (:pattern/id req))
-                                                    :status :observed})
-          aif (:aif belief-update)]
-      (when-let [tau (get-in belief-update [:aif :tau-updated])]
-        (update-tau-cache! entry (:pattern/id req) tau))
-      (when (:mana entry)
-        (let [{:keys [action-cost restore]} (mana-config (:policy entry))
-              cost (double (or action-cost 1))
-              restore (double (or restore 10))
-              pid (:pattern/id req)
-              selection-id (get-in @(:state entry) [:selection :pattern/id])
-              mana @(:mana entry)
-              restore? (and pid
-                            (= pid selection-id)
-                            (not (restored? mana :psr->action pid)))]
-          (apply-mana! entry (- cost) :action {:pattern/id pid
-                                               :action (:action req)
-                                               :turn (:turn req)})
-          (when restore?
-            (apply-mana! entry restore :psr->action {:pattern/id pid
-                                                     :action (:action req)
-                                                     :turn (:turn req)})
-            (note-restore! entry :psr->action pid))))
-      (append-lab-event! entry (pattern-action-event sid (:turn req) action))
-      (persist! entry :turn/action req resp)
-      (cond-> resp
-        aif (assoc :aif aif)
-        (:mana entry) (assoc :mana (mana-view @(:mana entry)))))))
+                                                   :cost (:cost req)}))
+        uncertainty-detail (pattern-uncertainty-details entry (:pattern/id req))
+        belief-update (aif-engine/update-beliefs (:aif-engine entry)
+                                                 {:decision/id (str sid ":action-" (java.util.UUID/randomUUID))
+                                                  :session/id sid
+                                                  :pattern/id (:pattern/id req)
+                                                  :pattern/action (:action req)
+                                                  :uncertainty (:value uncertainty-detail)
+                                                  :status :observed})
+        aif (:aif belief-update)]
+    (tap-aif-context! {:event :action
+                       :session/id sid
+                       :turn (:turn req)
+                       :pattern/id (:pattern/id req)
+                       :pattern/action (:action req)
+                       :uncertainty uncertainty-detail
+                       :aif aif
+                       :mu (aif-mu-summary entry (:pattern/id req))})
+    (maybe-award-maturity-bonus! entry (:pattern/id req) (:files req) (:action req))
+    (mark-mana-depleted! entry (:turn req))
+    (when-let [tau (get-in belief-update [:aif :tau-updated])]
+      (update-tau-cache! entry (:pattern/id req) tau))
+    (when (:mana entry)
+      (let [{:keys [action-cost restore]} (mana-config (:policy entry))
+            cost (double (or action-cost 1))
+            restore (double (or restore 10))
+            pid (:pattern/id req)
+            selection-id (get-in @(:state entry) [:selection :pattern/id])
+            mana @(:mana entry)
+            restore? (and pid
+                          (= pid selection-id)
+                          (not (restored? mana :psr->action pid)))]
+        (apply-mana! entry (- cost) :action {:pattern/id pid
+                                             :action (:action req)
+                                             :turn (:turn req)})
+        (when restore?
+          (apply-mana! entry restore :psr->action {:pattern/id pid
+                                                   :action (:action req)
+                                                   :turn (:turn req)})
+          (note-restore! entry :psr->action pid))))
+    (append-lab-event! entry (pattern-action-event sid (:turn req) action))
+    (persist! entry :turn/action req resp)
+    (cond-> resp
+      aif (assoc :aif aif)
+      (:mana entry) (assoc :mana (mana-view @(:mana entry))))))
 
 (defn turn-use!
   [req]
@@ -562,50 +764,60 @@
                                                 :pattern/id (:pattern/id req)
                                                 :anchors (:anchors req)
                                                 :note (:note req)
-                                                :inferred? (:inferred? req)}))]
-    (let [actions (:actions @(:state entry))
-          anchors (vec (distinct (concat (:anchors req)
-                                         (action-anchors actions (:pattern/id req)))))
-          pur (fulab-musn/build-pur {:session-id sid
-                                     :turn turn
-                                     :pattern-id (:pattern/id req)
-                                     :reason (:note req)
-                                     :anchors anchors
-                                     :inferred? (:inferred? req)
-                                     :certificates (:certificates entry)})
-          belief-update (aif-engine/update-beliefs (:aif-engine entry)
-                                                   {:decision/id (:decision/id pur)
-                                                    :session/id sid
-                                                    :pattern/id (:pattern/id req)
-                                                    :outcome (:outcome/tags pur)
-                                                    :uncertainty (pattern-uncertainty entry (:pattern/id req))
-                                                    :status :observed})]
-      (when-let [tau (get-in belief-update [:aif :tau-updated])]
-        (update-tau-cache! entry (:pattern/id req) tau))
-      (when (:mana entry)
-        (let [{:keys [restore]} (mana-config (:policy entry))
-              restore (double (or restore 10))
-              pid (:pattern/id req)
-              mana @(:mana entry)
-              action? (some #(= pid (:pattern/id %)) actions)
-              restore? (and pid
-                            action?
-                            (not (restored? mana :action->pur pid)))]
-          (when restore?
-            (apply-mana! entry restore :action->pur {:pattern/id pid
-                                                     :turn turn})
-            (note-restore! entry :action->pur pid))))
-      (append-lab-event! entry {:event/type :pattern/use-claimed
-                                :at (fulab-musn/now-inst)
-                                :payload {:pur pur}})
-      (append-lab-event! entry (fulab-musn/summary-event sid :pur belief-update))
-      (swap! (:fulab entry) assoc
-             :pur pur
-             :pur-emitted? true)
-      (persist! entry :turn/use req resp)
-      (cond-> (assoc resp :pur pur
-                     :aif (:aif belief-update))
-        (:mana entry) (assoc :mana (mana-view @(:mana entry)))))))
+                                                :inferred? (:inferred? req)}))
+        actions (:actions @(:state entry))
+        anchors (vec (distinct (concat (:anchors req)
+                                       (action-anchors actions (:pattern/id req)))))
+        pur (fulab-musn/build-pur {:session-id sid
+                                   :turn turn
+                                   :pattern-id (:pattern/id req)
+                                   :reason (:note req)
+                                   :anchors anchors
+                                   :inferred? (:inferred? req)
+                                   :certificates (:certificates entry)})
+        uncertainty-detail (pattern-uncertainty-details entry (:pattern/id req))
+        belief-update (aif-engine/update-beliefs (:aif-engine entry)
+                                                 {:decision/id (:decision/id pur)
+                                                  :session/id sid
+                                                  :pattern/id (:pattern/id req)
+                                                  :outcome (:outcome/tags pur)
+                                                  :uncertainty (:value uncertainty-detail)
+                                                  :status :observed})]
+    (tap-aif-context! {:event :use
+                       :session/id sid
+                       :turn turn
+                       :pattern/id (:pattern/id req)
+                       :outcome (:outcome/tags pur)
+                       :uncertainty uncertainty-detail
+                       :aif (:aif belief-update)
+                       :mu (aif-mu-summary entry (:pattern/id req))})
+    (mark-mana-depleted! entry turn)
+    (when-let [tau (get-in belief-update [:aif :tau-updated])]
+      (update-tau-cache! entry (:pattern/id req) tau))
+    (when (:mana entry)
+      (let [{:keys [restore]} (mana-config (:policy entry))
+            restore (double (or restore 10))
+            pid (:pattern/id req)
+            mana @(:mana entry)
+            action? (some #(= pid (:pattern/id %)) actions)
+            restore? (and pid
+                          action?
+                          (not (restored? mana :action->pur pid)))]
+        (when restore?
+          (apply-mana! entry restore :action->pur {:pattern/id pid
+                                                   :turn turn})
+          (note-restore! entry :action->pur pid))))
+    (append-lab-event! entry {:event/type :pattern/use-claimed
+                              :at (fulab-musn/now-inst)
+                              :payload {:pur pur}})
+    (append-lab-event! entry (fulab-musn/summary-event sid :pur belief-update))
+    (swap! (:fulab entry) assoc
+           :pur pur
+           :pur-emitted? true)
+    (persist! entry :turn/use req resp)
+    (cond-> (assoc resp :pur pur
+                   :aif (:aif belief-update))
+      (:mana entry) (assoc :mana (mana-view @(:mana entry))))))
 
 (defn evidence-add!
   [req]
@@ -633,6 +845,20 @@
    :psr (get-in state [:selection :pattern/id])
    :pur (get-in state [:pur :pattern/id])
    :warnings (count (:warnings state))})
+
+(def ^:private aif-auto-use-min-tau 0.55)
+
+(defn- auto-use-policy [state fulab-state]
+  (let [tau (or (get-in fulab-state [:psr :selection/reason :aif :tau])
+                (get-in state [:hud :aif :tau]))
+        allow? (or (nil? tau) (>= (double tau) aif-auto-use-min-tau))]
+    {:tau tau
+     :mode (if allow? :auto-use :abstain)
+     :reason (if allow? "aif-policy" "aif-low-tau")}))
+
+(defn- auto-use-allowed? [policy]
+  (and (map? policy)
+       (not= :abstain (:mode policy))))
 
 (defn turn-end!
   [req]
@@ -664,66 +890,85 @@
       :else
       (let [resp (router/handle-turn-end! (:state entry)
                                           {:session/id sid
-                                           :turn (:turn req)})]
+                                           :turn (:turn req)})
+            fulab-state @(:fulab entry)
+            psr (:psr fulab-state)
+            pur (:pur fulab-state)
+            actions (:actions @(:state entry))
+            inferred-action (first (filter #(contains? #{"implement" "update"} (:action %)) actions))
+            chosen (or (:chosen psr)
+                       (:pattern/id inferred-action))
+            inferred? (boolean (and chosen (not pur) inferred-action))
+            policy (when inferred?
+                     (assoc (auto-use-policy state fulab-state) :chosen chosen))
+            allow-auto-use? (or (nil? policy) (auto-use-allowed? policy))
+            resp (cond-> resp policy (assoc :aif/policy policy))]
         (append-lab-event! entry (turn-event :turn/completed sid turn {:session/id sid}))
-        (let [fulab-state @(:fulab entry)
-              psr (:psr fulab-state)
-              pur (:pur fulab-state)
-              actions (:actions @(:state entry))
-              inferred-action (first (filter #(contains? #{"implement" "update"} (:action %)) actions))
-              chosen (or (:chosen psr)
-                         (:pattern/id inferred-action))
-              inferred? (boolean (and chosen (not pur) inferred-action))]
-          (when (and chosen (not pur) inferred?)
-            (let [anchors (vec (distinct (concat (action-anchors actions chosen)
-                                                 [(fulab-musn/turn-anchor turn)])))
-                  pur (fulab-musn/build-pur {:session-id sid
-                                             :turn turn
-                                             :pattern-id chosen
-                                             :reason "inferred from pattern action"
-                                             :anchors anchors
-                                             :inferred? true
-                                             :certificates (:certificates entry)})
-                  belief-update (aif-engine/update-beliefs (:aif-engine entry)
-                                                           {:decision/id (:decision/id pur)
-                                                            :session/id sid
-                                                            :outcome (:outcome/tags pur)
-                                                            :status :observed})]
-              (when (:mana entry)
-                (let [{:keys [restore]} (mana-config (:policy entry))
-                      restore (double (or restore 10))
-                      mana @(:mana entry)
-                      action? (some #(= chosen (:pattern/id %)) actions)
-                      restore? (and action?
-                                    (not (restored? mana :action->pur chosen)))]
-                  (when restore?
-                    (apply-mana! entry restore :action->pur {:pattern/id chosen
-                                                             :turn turn
-                                                             :inferred? true})
-                    (note-restore! entry :action->pur chosen))))
-              (append-lab-event! entry {:event/type :pattern/use-claimed
-                                        :at (fulab-musn/now-inst)
-                                        :payload {:pur pur}})
-              (append-lab-event! entry (fulab-musn/summary-event sid :pur belief-update))
-              (swap! (:fulab entry) assoc
-                     :pur pur
-                     :pur-emitted? true)))
-          (when (and psr (not (:pur-emitted? fulab-state)) (not inferred?))
-            (append-lab-event! entry {:event/type :pattern/selection-unapplied
+        (when policy
+          (append-lab-event! entry {:event/type :aif/policy
+                                    :at (fulab-musn/now-inst)
+                                    :payload (select-keys policy [:chosen :tau :mode :reason])}))
+        (when policy
+          (tap-aif-policy! {:session/id sid
+                            :turn turn
+                            :policy (select-keys policy [:chosen :tau :mode :reason])}))
+        (when (and chosen (not pur) inferred? allow-auto-use?)
+          (let [anchors (vec (distinct (concat (action-anchors actions chosen)
+                                               [(fulab-musn/turn-anchor turn)])))
+                pur (fulab-musn/build-pur {:session-id sid
+                                           :turn turn
+                                           :pattern-id chosen
+                                           :reason "inferred from pattern action"
+                                           :anchors anchors
+                                           :inferred? true
+                                           :certificates (:certificates entry)})
+                belief-update (aif-engine/update-beliefs (:aif-engine entry)
+                                                         {:decision/id (:decision/id pur)
+                                                          :session/id sid
+                                                          :outcome (:outcome/tags pur)
+                                                          :status :observed})]
+            (when (:mana entry)
+              (let [{:keys [restore]} (mana-config (:policy entry))
+                    restore (double (or restore 10))
+                    mana @(:mana entry)
+                    action? (some #(= chosen (:pattern/id %)) actions)
+                    restore? (and action?
+                                  (not (restored? mana :action->pur chosen)))]
+                (when restore?
+                  (apply-mana! entry restore :action->pur {:pattern/id chosen
+                                                           :turn turn
+                                                           :inferred? true})
+                  (note-restore! entry :action->pur chosen))))
+            (append-lab-event! entry {:event/type :pattern/use-claimed
                                       :at (fulab-musn/now-inst)
-                                      :payload {:session/id sid
-                                                :turn turn
-                                                :decision/id (:decision/id psr)
-                                                :pattern/id (:chosen psr)
-                                                :note "No application recorded for selection."}}))
-          (swap! (:fulab entry) assoc
-                 :turn nil
-                 :psr nil
-                 :pur nil
-                 :psr-emitted? false
-                 :pur-emitted? false
-                 :turn-ended turn
-                 :turn-ended-resp resp))
+                                      :payload {:pur pur}})
+            (append-lab-event! entry (fulab-musn/summary-event sid :pur belief-update))
+            (swap! (:fulab entry) assoc
+                   :pur pur
+                   :pur-emitted? true)))
+        (when (and chosen (not pur) inferred? (not allow-auto-use?))
+          (append-lab-event! entry {:event/type :pattern/use-skipped
+                                    :at (fulab-musn/now-inst)
+                                    :payload {:session/id sid
+                                              :turn turn
+                                              :pattern/id chosen
+                                              :reason "auto-use skipped (low tau)"}}))
+        (when (and psr (not (:pur-emitted? fulab-state)) (not inferred?))
+          (append-lab-event! entry {:event/type :pattern/selection-unapplied
+                                    :at (fulab-musn/now-inst)
+                                    :payload {:session/id sid
+                                              :turn turn
+                                              :decision/id (:decision/id psr)
+                                              :pattern/id (:chosen psr)
+                                              :note "No application recorded for selection."}}))
+        (swap! (:fulab entry) assoc
+               :turn nil
+               :psr nil
+               :pur nil
+               :psr-emitted? false
+               :pur-emitted? false
+               :turn-ended turn
+               :turn-ended-resp resp)
         (persist! entry :turn/end req resp)
         (cond-> resp
           (:mana entry) (assoc :mana (mana-view @(:mana entry))))))))

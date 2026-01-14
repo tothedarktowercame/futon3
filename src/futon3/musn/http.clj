@@ -4,6 +4,7 @@
             [clojure.walk :as walk]
             [org.httpkit.server :as http]
             [clojure.string :as str]
+            [futon3.aif.viz :as aif-viz]
             [futon3.musn.service :as svc]))
 
 (def log-path (or (System/getenv "MUSN_LOG") "/tmp/musn_http.log"))
@@ -24,7 +25,7 @@
   [data]
   (walk/postwalk
    (fn [x]
-     (if (and (map? x))
+     (if (map? x)
        (into {}
              (map (fn [[k v]]
                     (cond
@@ -101,6 +102,8 @@
 
 (defn -main [& _args]
   (let [port (Long/parseLong (or (System/getenv "MUSN_PORT") "6065"))]
+    (when-let [viz-port (some-> (System/getenv "MUSN_AIF_VIZ_PORT") str/trim not-empty)]
+      (aif-viz/start! {:port (Long/parseLong viz-port)}))
     (binding [*out* *err*]
       (println (format "MUSN HTTP server on %d" port))
       (println (format "Logging to %s" log-path)))

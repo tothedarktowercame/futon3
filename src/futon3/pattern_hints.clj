@@ -61,8 +61,6 @@
                    {:emoji emoji
                     :hanzi hanzi}))))))
 
-(defn- read-lines [text]
-  (str/split text #"\n"))
 
 (defn- section-lines
   "Return lines following START-RE until the next section marker."
@@ -123,11 +121,19 @@
            second
            str/trim))
 
-(defn- read-file [file]
-  (slurp (io/file file)))
 
-(def ^:private pattern-roots [(io/file "holes/LDTS")
-                              (io/file "library")])
+(defn- extra-pattern-roots []
+  (let [raw (or (System/getenv "MUSN_PATTERN_ROOTS")
+                (System/getenv "FUTON_PATTERN_ROOTS"))]
+    (->> (str/split (or raw "") #"[,:]")
+         (map str/trim)
+         (remove str/blank?)
+         (map io/file))))
+
+(def ^:private pattern-roots
+  (vec (concat [(io/file "holes/LDTS")
+                (io/file "library")]
+               (extra-pattern-roots))))
 
 (defn- flexiarg-file? [file]
   (let [name (.getName file)]
@@ -165,6 +171,37 @@
           (conj blocks (str/join "\n" current))
           [text])))))
 
+(defn- block-pattern-id [block]
+  (or (extract-meta block "flexiarg")
+      (extract-meta block "arg")))
+
+(defn pattern-blocks
+  "Return a map of pattern-id -> block text for a flexiarg/multiarg file."
+  [text]
+  (into {}
+        (keep (fn [block]
+                (when-let [pid (block-pattern-id block)]
+                  [pid block])))
+        (split-arg-blocks text)))
+
+(defn maturity-for-pattern-text
+  "Return maturity info for PATTERN-ID inside TEXT, or nil if not found."
+  [text pattern-id]
+  (when (and (string? text) (string? pattern-id))
+    (let [blocks (pattern-blocks text)
+          block (cond
+                  (seq blocks) (get blocks pattern-id)
+                  :else text)]
+      (when block
+        (maturity-info block)))))
+
+(defn maturity-for-pattern-file
+  "Return maturity info for PATTERN-ID inside FILE, or nil if not found."
+  [file pattern-id]
+  (let [f (io/file file)]
+    (when (and (.exists f) (string? pattern-id))
+      (maturity-for-pattern-text (slurp f) pattern-id))))
+
 (defn- scan-library []
   (for [root pattern-roots
         :when (.exists root)
@@ -190,6 +227,7 @@
      :title title
      :summary (str/trim summary)
      :sigils sigils
+     :source/path (str file)
      :pattern-ref (when-not (str/blank? pattern-ref)
                     pattern-ref)
      :evidence/count (:evidence/count maturity)
@@ -232,6 +270,12 @@
   (delay (into {}
                (map (juxt :id identity))
                @ldts-patterns)))
+
+(defn pattern-entry
+  "Return the catalog entry for PATTERN-ID, if known."
+  [pattern-id]
+  (when (string? pattern-id)
+    (get @patterns-by-id pattern-id)))
 
 (def ^:private max-missing-target-warnings 5)
 (defonce ^:private !missing-target-warnings (atom 0))

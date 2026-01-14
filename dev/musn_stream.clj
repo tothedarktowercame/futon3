@@ -292,6 +292,17 @@
       (subs clean (count "library/"))
       clean)))
 
+(def ^:private note-path-re
+  #"(?:^|\\s)([A-Za-z0-9_./-]+\\.[A-Za-z0-9_-]+)(?=$|\\s)")
+
+(defn- files-from-note [note]
+  (when (string? note)
+    (->> (re-seq note-path-re note)
+         (map second)
+         (remove str/blank?)
+         distinct
+         vec)))
+
 (defn- parse-helper-command [cmd]
   (when (string? cmd)
     (let [raw-tokens (->> (str/split (str/trim cmd) #"\s+")
@@ -385,6 +396,8 @@
                                     {:turn turn
                                      :pattern/id pid})
                   (log-latest-aif-tap! state musn-session)))
+              (when-let [files (seq (files-from-note note))]
+                (musn-evidence musn-session turn pid files "auto evidence from pattern-use note"))
               (log-mana-response! state use-resp)))
           nil)))
     true))

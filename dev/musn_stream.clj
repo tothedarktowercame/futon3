@@ -329,6 +329,31 @@
              :pattern-id pattern-id
              :note (when (seq note) note)}))))))
 
+(defn- parse-pattern-action-command [cmd]
+  (when (string? cmd)
+    (let [raw-tokens (->> (str/split (str/trim cmd) #"\s+")
+                          (remove str/blank?)
+                          vec)
+          tokens (mapv normalize-helper-token raw-tokens)
+          idx (first (keep-indexed (fn [i tok]
+                                     (when (= "pattern-action" tok) i))
+                                   tokens))]
+      (when idx
+        (let [action (get raw-tokens (inc idx))
+              pattern-token (get raw-tokens (+ idx 2))
+              pattern-id (when-let [raw (some-> pattern-token normalize-pattern-token)]
+                           (when (re-matches #"[a-z0-9._-]+/[a-z0-9._-]+" raw)
+                             raw))
+              note (when (> (count raw-tokens) (+ idx 3))
+                     (->> (subvec raw-tokens (+ idx 3))
+                          (str/join " ")
+                          strip-wrapper-quotes
+                          str/trim))]
+          (when (and action pattern-id)
+            {:action (normalize-action action)
+             :pattern-id pattern-id
+             :note (when (seq note) note)}))))))
+
 (defn- log-aif-policy! [decision]
   (when (map? decision)
     (log-aif-line! "policy"
@@ -695,6 +720,22 @@
   (when (seq aif)
     (log-aif-update! state aif))))
 
+(defn- log-pattern-action! [pattern-id action note files]
+  (let [label (case action
+                "update" "pattern-update"
+                "implement" "pattern-implement"
+                "read" "pattern-read"
+                "pattern-action")
+        parts (remove nil?
+                      [(when pattern-id (str "id=" pattern-id))
+                       (when action (str "action=" action))
+                       (when (seq files) (str "files=" (str/join "," files)))
+                       (when (seq note) (str "note=" note))])
+        line (str "[" label "] " (str/join " " parts))]
+    (log! line)
+    (println line)
+    (flush)))
+
 (defn format-sigils [sigils]
   (when (seq sigils)
     (->> sigils
@@ -808,6 +849,7 @@
                         :note "auto selection from pattern action"
                         :source :auto}
                        nil))
+  (log-pattern-action! (candidate-id pid) act note files)
   (let [action-resp (musn-action musn-session turn pid act note files)]
     (if-let [aif (:aif action-resp)]
       (log-aif-update! state aif)
@@ -873,40 +915,42 @@
 (defn- handle-command-execution!
   [state musn-session turn cmd]
   (when-not (handle-helper-command! state musn-session turn cmd)
-    (let [pats (patterns-from-command cmd)]
-      (if (seq pats)
-        (doseq [p pats]
-          (let [action-resp (musn-action musn-session turn p "read" nil nil)]
-            (if-let [aif (:aif action-resp)]
-              (log-aif-update! state aif)
-              (do
-                (log-aif-missing! "turn/action"
-                                  {:turn turn
-                                   :pattern/id (candidate-id p)
-                                   :action "read"})
-                (log-latest-aif-tap! state musn-session)))
-            (log-mana-response! state action-resp)))
-        (do
-          (maybe-warn-missing-plan! state "wide-scan")
-          (let [note (when (string? cmd)
-                       (let [trimmed (str/trim cmd)]
-                         (when-not (str/blank? trimmed)
-                           (str "tool command: " trimmed))))
-                action-resp (musn-action musn-session
-                                         turn
-                                         "musn/plan-before-tool"
-                                         "wide-scan"
-                                         note
-                                         nil)]
-            (if-let [aif (:aif action-resp)]
-              (log-aif-update! state aif)
-              (do
-                (log-aif-missing! "turn/action"
-                                  {:turn turn
-                                   :pattern/id "musn/plan-before-tool"
-                                   :action "wide-scan"})
-                (log-latest-aif-tap! state musn-session)))
-            (log-mana-response! state action-resp)))))))
+    (if-let [{:keys [action pattern-id note]} (parse-pattern-action-command cmd)]
+      (perform-pattern-action! state musn-session turn pattern-id action note nil)
+      (let [pats (patterns-from-command cmd)]
+        (if (seq pats)
+          (doseq [p pats]
+            (let [action-resp (musn-action musn-session turn p "read" nil nil)]
+              (if-let [aif (:aif action-resp)]
+                (log-aif-update! state aif)
+                (do
+                  (log-aif-missing! "turn/action"
+                                    {:turn turn
+                                     :pattern/id (candidate-id p)
+                                     :action "read"})
+                  (log-latest-aif-tap! state musn-session)))
+              (log-mana-response! state action-resp)))
+          (do
+            (maybe-warn-missing-plan! state "wide-scan")
+            (let [note (when (string? cmd)
+                         (let [trimmed (str/trim cmd)]
+                           (when-not (str/blank? trimmed)
+                             (str "tool command: " trimmed))))
+                  action-resp (musn-action musn-session
+                                           turn
+                                           "musn/plan-before-tool"
+                                           "wide-scan"
+                                           note
+                                           nil)]
+              (if-let [aif (:aif action-resp)]
+                (log-aif-update! state aif)
+                (do
+                  (log-aif-missing! "turn/action"
+                                    {:turn turn
+                                     :pattern/id "musn/plan-before-tool"
+                                     :action "wide-scan"})
+                  (log-latest-aif-tap! state musn-session)))
+              (log-mana-response! state action-resp))))))))
 
 (defn- handle-file-change!
   [state musn-session turn changes]

@@ -211,6 +211,28 @@
   (and (string? text)
        (re-find #"(?i)^(?:\s*\[plan\]\s+|\s*plan\s*:)" text)))
 
+(def ^:private plan-proxy-re
+  #"(?i)^(?:\*+)?\s*plan(?:ning)?\b")
+
+(def ^:private plan-proxy-max-len 180)
+
+(defn- plan-proxy? [text]
+  (when (string? text)
+    (let [line (some-> text str/trim (str/split-lines) first)]
+      (and (string? line)
+           (re-find plan-proxy-re line)))))
+
+(defn- plan-proxy-text [text]
+  (let [line (some-> text str/trim (str/split-lines) first)
+        line (-> (or line "")
+                 (str/replace #"\*+" "")
+                 (str/replace #"\s+" " ")
+                 str/trim)]
+    (cond
+      (str/blank? line) nil
+      (> (count line) plan-proxy-max-len) (subs line 0 plan-proxy-max-len)
+      :else line)))
+
 (def ^:private plan-required-actions
   #{"implement" "update" "off-trail" "wide-scan"})
 
@@ -228,6 +250,13 @@
 (defn- note-plan-seen! [state text]
   (when (plan-line? text)
     (swap! state assoc :turn-plan? true)))
+
+(defn- note-plan-proxy! [state musn-session turn text]
+  (when (and (plan-proxy? text)
+             (not (:turn-plan? @state)))
+    (swap! state assoc :turn-plan? true :turn-plan-proxy? true)
+    (when-let [proxy (plan-proxy-text text)]
+      (musn-plan musn-session turn (str "Plan: " proxy)))))
 
 (defn- maybe-warn-missing-plan! [state action]
   (when (and (plan-required? action)
@@ -824,6 +853,10 @@
                             :source :report}
                            nil)))))
 
+(defn- handle-reasoning-message!
+  [state musn-session turn text]
+  (note-plan-proxy! state musn-session turn text))
+
 (defn- handle-command-execution!
   [state musn-session turn cmd]
   (when-not (handle-helper-command! state musn-session turn cmd)
@@ -933,6 +966,11 @@
       (and (= (:type event) "item.completed")
            (= (get-in event [:item :type]) "command_execution"))
       (handle-command-execution! state musn-session turn (get-in event [:item :command]))
+
+      ;; reasoning text (treat "Planning..." as plan proxy)
+      (and (= (:type event) "item.completed")
+           (= (get-in event [:item :type]) "reasoning"))
+      (handle-reasoning-message! state musn-session turn (get-in event [:item :text]))
 
       ;; file changes
       (and (= (:type event) "item.completed")

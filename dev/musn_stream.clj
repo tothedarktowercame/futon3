@@ -66,10 +66,16 @@
 
 (declare candidate-id)
 (declare log-warning!)
+(declare log-aif-line!)
+(declare fmt-num)
 (declare note-selected!)
 (declare log-selection!)
 (declare candidate-detail)
 (declare log-use!)
+(declare ensure-selection!)
+(declare log-aif-missing!)
+(declare log-latest-aif-tap!)
+(declare log-mana-response!)
 
 (defn- repo-root []
   (or (some-> (System/getenv "FUTON3_REPO_ROOT") str/trim not-empty)
@@ -171,10 +177,14 @@
                                  note (assoc :note note)
                                  (seq files) (assoc :files files)))))
 
-(defn musn-use [session turn pattern-id]
-  (let [sid (require-session-id session)
-        pid (candidate-id pattern-id)]
-    (post! "/musn/turn/use" {:session/id sid :turn turn :pattern/id pid})))
+(defn musn-use
+  ([session turn pattern-id]
+   (musn-use session turn pattern-id nil))
+  ([session turn pattern-id note]
+   (let [sid (require-session-id session)
+         pid (candidate-id pattern-id)]
+     (post! "/musn/turn/use" (cond-> {:session/id sid :turn turn :pattern/id pid}
+                               note (assoc :note note))))))
 
 (defn musn-evidence [session turn pattern-id files note]
   (let [sid (require-session-id session)
@@ -279,22 +289,74 @@
              :pattern-id pattern-id
              :note (when (seq note) note)}))))))
 
+(defn- log-aif-policy! [decision]
+  (when (map? decision)
+    (log-aif-line! "policy"
+                   (remove nil?
+                           [(when-let [choice (:chosen decision)]
+                              (str "chosen=" choice))
+                            (when-let [tau (:tau decision)]
+                              (str "tau=" (fmt-num tau)))
+                            (when-let [mode (:mode decision)]
+                              (str "mode=" (name mode)))
+                            (when-let [reason (:reason decision)]
+                              (str "reason=" reason))]))))
+
+(def ^:private aif-auto-select-min-tau 0.55)
+
+(defn- aif-policy-choice
+  [state candidates]
+  (let [policy (or (:aif-policy @state) {})
+        tau (:tau policy)
+        scores (:G-scores policy)
+        suggested (:suggested policy)
+        scored (when (seq candidates)
+                 (->> candidates
+                      (map (fn [pid]
+                             {:id pid
+                              :G (get scores pid Double/POSITIVE_INFINITY)}))
+                      (sort-by :G)))
+        best (some-> scored first :id)
+        chosen (cond
+                 (and suggested (some #{suggested} candidates)) suggested
+                 best best
+                 :else (first candidates))
+        allow? (or (nil? tau) (>= (double tau) aif-auto-select-min-tau))]
+    {:chosen (when allow? chosen)
+     :tau tau
+     :mode (if allow? :auto-select :abstain)
+     :reason (if allow? "aif-policy" "aif-low-tau")}))
+
 (defn- handle-helper-command!
-  [state cmd]
+  [state musn-session turn cmd]
   (when-let [{:keys [tool pattern-id note]} (parse-helper-command cmd)]
     (let [pid (candidate-id pattern-id)]
       (when pid
-        (note-selected! state pid)
         (case tool
           :pattern-select
-          (log-selection! {:chosen pid
-                           :candidates [pid]
-                           :selection/reason (cond-> {:mode :read
-                                                      :source :command}
-                                               note (assoc :note note))}
-                         (candidate-detail state pid))
+          (do
+            (ensure-selection! state musn-session turn pid
+                               (cond-> {:mode :read
+                                        :source :command}
+                                 note (assoc :note note))
+                               nil)
+            (note-selected! state pid))
           :pattern-use
-          (log-use! {:pattern/id pid} nil)
+          (do
+            (ensure-selection! state musn-session turn pid
+                               (cond-> {:mode :use
+                                        :source :command}
+                                 note (assoc :note note))
+                               nil)
+            (let [use-resp (musn-use musn-session turn pid note)]
+              (if-let [pur (:pur use-resp)]
+                (log-use! state pur (:aif use-resp))
+                (do
+                  (log-aif-missing! "turn/use"
+                                    {:turn turn
+                                     :pattern/id pid})
+                  (log-latest-aif-tap! state musn-session)))
+              (log-mana-response! state use-resp)))
           nil)))
     true))
 
@@ -415,25 +477,45 @@
 (defn log-aif-missing! [label payload]
   (log-warning! (str "aif-missing:" label) payload))
 
-(defn log-aif-selection! [aif]
-  (let [g (fmt-num (:G aif))
-        tau (fmt-num (:tau aif))
-        g-scores (when (map? (:G-scores aif)) (count (:G-scores aif)))
-        rejected (when (map? (:G-rejected aif)) (count (:G-rejected aif)))]
-    (log-aif-line! "select"
-                   (remove nil?
-                           [(when g (str "G=" g))
-                            (when tau (str "tau=" tau))
-                            (when g-scores (str "G-scores=" g-scores))
-                            (when rejected (str "G-rejected=" rejected))]))))
+(defn- update-aif-policy! [state aif]
+  (when (and state (map? aif))
+    (swap! state update :aif-policy
+           (fn [policy]
+             (let [policy (or policy {})
+                   tau (or (:tau aif) (:tau-updated aif) (:tau policy))
+                   patch (cond-> {}
+                           (map? (:G-scores aif)) (assoc :G-scores (:G-scores aif))
+                           (contains? aif :suggested) (assoc :suggested (:suggested aif))
+                           (contains? aif :white-space?) (assoc :white-space? (:white-space? aif))
+                           (contains? aif :rationale) (assoc :rationale (:rationale aif))
+                           (number? tau) (assoc :tau (double tau)))]
+               (merge policy patch))))))
 
-(defn log-aif-update! [aif]
-  (let [err (fmt-num (:prediction-error aif))
-        tau (fmt-num (:tau-updated aif))]
-    (log-aif-line! "update"
-                   (remove nil?
-                           [(when err (str "err=" err))
-                            (when tau (str "tau=" tau))]))))
+(defn log-aif-selection!
+  ([aif] (log-aif-selection! nil aif))
+  ([state aif]
+   (update-aif-policy! state aif)
+   (let [g (fmt-num (:G aif))
+         tau (fmt-num (:tau aif))
+         g-scores (when (map? (:G-scores aif)) (count (:G-scores aif)))
+         rejected (when (map? (:G-rejected aif)) (count (:G-rejected aif)))]
+     (log-aif-line! "select"
+                    (remove nil?
+                            [(when g (str "G=" g))
+                             (when tau (str "tau=" tau))
+                             (when g-scores (str "G-scores=" g-scores))
+                             (when rejected (str "G-rejected=" rejected))])))))
+
+(defn log-aif-update!
+  ([aif] (log-aif-update! nil aif))
+  ([state aif]
+   (update-aif-policy! state aif)
+   (let [err (fmt-num (:prediction-error aif))
+         tau (fmt-num (:tau-updated aif))]
+     (log-aif-line! "update"
+                    (remove nil?
+                            [(when err (str "err=" err))
+                             (when tau (str "tau=" tau))])))))
 
 (defn log-aif-tap! [event]
   (let [payload (or (:payload event) event)
@@ -513,8 +595,9 @@
         (str " " (str/join " " parts))))))
 
 (defn log-selection!
-  ([psr] (log-selection! psr nil))
-  ([psr detail]
+  ([psr] (log-selection! nil psr nil))
+  ([psr detail] (log-selection! nil psr detail))
+  ([state psr detail]
    (let [reason (:selection/reason psr)
          mode (:mode reason)
          reads (:reads reason)
@@ -538,14 +621,16 @@
                         (or aif-label ""))]
        (log! line)
        (println line))
-     (flush)
-     (when (seq aif)
-       (log-aif-selection! aif)))))
+    (flush)
+    (when (seq aif)
+      (log-aif-selection! state aif)))))
 
 (defn- candidate-detail [state pattern-id]
   (get-in @state [:candidate-details (candidate-id pattern-id)]))
 
-(defn log-use! [pur aif]
+(defn log-use!
+  ([pur aif] (log-use! nil pur aif))
+  ([state pur aif]
   (let [pattern-id (:pattern/id pur)
         tags (:outcome/tags pur)
         tau (fmt-num (:tau-updated aif))
@@ -566,7 +651,7 @@
     (println line)
     (flush))
   (when (seq aif)
-    (log-aif-update! aif)))
+    (log-aif-update! state aif))))
 
 (defn format-sigils [sigils]
   (when (seq sigils)
@@ -610,9 +695,9 @@
           (do
             (note-selected! state pid)
             (when-let [psr (:psr resp)]
-              (log-selection! psr (candidate-detail state pid)))
+              (log-selection! state psr (candidate-detail state pid)))
             (if-let [aif (:aif resp)]
-              (log-aif-selection! aif)
+              (log-aif-selection! state aif)
               (do
                 (log-aif-missing! "turn/select"
                                   {:turn turn
@@ -663,9 +748,9 @@
                        :chosen chosen
                        :resp resp})))
     (when-let [psr (:psr resp)]
-      (log-selection! psr (candidate-detail state chosen)))
+      (log-selection! state psr (candidate-detail state chosen)))
     (if-let [aif (:aif resp)]
-      (log-aif-selection! aif)
+      (log-aif-selection! state aif)
       (do
         (log-aif-missing! "turn/select"
                           {:turn turn
@@ -683,7 +768,7 @@
                        nil))
   (let [action-resp (musn-action musn-session turn pid act note files)]
     (if-let [aif (:aif action-resp)]
-      (log-aif-update! aif)
+      (log-aif-update! state aif)
       (do
         (log-aif-missing! "turn/action"
                           {:turn turn
@@ -694,7 +779,7 @@
   (when (#{"implement" "update"} act)
     (let [use-resp (musn-use musn-session turn pid)]
       (if-let [pur (:pur use-resp)]
-        (log-use! pur (:aif use-resp))
+        (log-use! state pur (:aif use-resp))
         (do
           (log-aif-missing! "turn/use"
                             {:turn turn
@@ -741,13 +826,13 @@
 
 (defn- handle-command-execution!
   [state musn-session turn cmd]
-  (when-not (handle-helper-command! state cmd)
+  (when-not (handle-helper-command! state musn-session turn cmd)
     (let [pats (patterns-from-command cmd)]
       (if (seq pats)
         (doseq [p pats]
           (let [action-resp (musn-action musn-session turn p "read" nil nil)]
             (if-let [aif (:aif action-resp)]
-              (log-aif-update! aif)
+              (log-aif-update! state aif)
               (do
                 (log-aif-missing! "turn/action"
                                   {:turn turn
@@ -768,7 +853,7 @@
                                          note
                                          nil)]
             (if-let [aif (:aif action-resp)]
-              (log-aif-update! aif)
+              (log-aif-update! state aif)
               (do
                 (log-aif-missing! "turn/action"
                                   {:turn turn
@@ -792,21 +877,28 @@
                       (if (seq candidates)
                         (if-let [pid (resolve-selected-pattern state candidates)]
                           (update acc pid (fnil conj []) path)
-                          (do
-                            (log-warning! "pattern-edit-without-selection"
-                                          {:turn turn
-                                           :file path
-                                           :pattern-count (count candidates)
-                                           :pattern-sample (vec (take 5 candidates))
-                                           :note "multiarg change; select a pattern to disambiguate"})
-                            acc))
+                          (let [decision (aif-policy-choice state candidates)
+                                chosen (:chosen decision)]
+                            (if chosen
+                              (do
+                                (log-aif-policy! (assoc decision :chosen chosen))
+                                (update acc chosen (fnil conj []) path))
+                              (do
+                                (log-aif-policy! decision)
+                                (log-warning! "pattern-edit-without-selection"
+                                              {:turn turn
+                                               :file path
+                                               :pattern-count (count candidates)
+                                               :pattern-sample (vec (take 5 candidates))
+                                               :note "multiarg change; select a pattern to disambiguate"})
+                                acc))))
                         acc)))
                   {}
                   pattern-files)]
     (doseq [[p paths] resolved]
       (let [pid (candidate-id p)]
         (when (and pid (not (selected? state pid)))
-          (log-warning! "pattern-edit-without-selection"
+          (log-warning! "pattern-edit-auto-selected"
                         {:pattern/id pid
                          :turn turn
                          :files (vec (take 3 files))
@@ -814,11 +906,11 @@
         (ensure-selection! state musn-session turn pid
                            {:mode :use
                             :note "auto selection from pattern file change"
-                            :source :auto}
+                            :source :aif}
                            nil))
       (let [action-resp (musn-action musn-session turn p "update" "auto file_change" paths)]
         (if-let [aif (:aif action-resp)]
-          (log-aif-update! aif)
+          (log-aif-update! state aif)
           (do
             (log-aif-missing! "turn/action"
                               {:turn turn
@@ -893,9 +985,11 @@
                         (:sigils hud-map) (assoc :sigils (:sigils hud-map))
                         (:namespaces hud-map) (assoc :namespaces (:namespaces hud-map))
                         (:aif hud-map) (assoc :aif (:aif hud-map)))]
+      (when-let [aif-policy (:aif hud-map)]
+        (swap! state assoc :aif-policy aif-policy))
       (let [start-resp (musn-start session t hud-payload)]
         (if-let [aif (:aif start-resp)]
-          (log-aif-selection! aif)
+          (log-aif-selection! state aif)
           (when (seq candidate-ids)
             (log-aif-missing! "turn/start"
                               {:turn t

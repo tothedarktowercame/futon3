@@ -67,6 +67,50 @@ Evidence to look for:
 - [ ] MUSN pause at turn end cites :no-write or missing evidence for use-mode.
 - [ ] Resume clears the halt once a write/evidence event is added.
 
+## Sidecar Missions (futon3a)
+
+Use these prompts to exercise cross-repo work in `~/code/futon3a`, guided by
+the sidecar patterns in `library/sidecar/*.flexiarg`.
+
+### Prompt G: Sidecar overview doc (pattern-guided)
+```
+Work in ~/code/futon3a. Read the sidecar patterns in library/sidecar.
+Select exactly two sidecar patterns (pattern-select) that justify an overview.
+Create docs/sidecar-overview.md that summarizes the tri-store separation and the
+proposal ledger invariants. Then explicitly claim pattern use (pattern-use),
+anchored to the new file. Do not edit futon3 files.
+```
+Evidence to look for:
+- [ ] PSR names sidecar patterns (sidecar/*).
+- [ ] PUR anchors point to docs/sidecar-overview.md in futon3a.
+- [ ] :code/edit event references the new futon3a doc.
+
+### Prompt H: SQLite schema skeleton (pattern-guided)
+```
+Work in ~/code/futon3a. Read the sidecar patterns in library/sidecar.
+Select the patterns that govern artifacts/entities/mentions and arrows/proposals.
+Create resources/sidecar/schema.sql with core tables and minimal columns.
+Then explicitly claim pattern use (pattern-use) anchored to schema.sql.
+Do not edit futon3 files.
+```
+Evidence to look for:
+- [ ] PSR names sidecar patterns used for schema decisions.
+- [ ] PUR anchors point to resources/sidecar/schema.sql.
+- [ ] :code/edit event references the schema file.
+
+### Prompt I: Chain builder notes (pattern-guided)
+```
+Work in ~/code/futon3a. Read the sidecar patterns in library/sidecar.
+Select the patterns that cover chain scoring and sense-shift gating.
+Create docs/sidecar-chains.md describing chain scoring + softness accounting and
+the sense-shift gate, with one example chain. Then explicitly claim pattern use
+(pattern-use) anchored to the new file. Do not edit futon3 files.
+```
+Evidence to look for:
+- [ ] PSR names sidecar patterns for chain/scoring and sense shifts.
+- [ ] PUR anchors point to docs/sidecar-chains.md.
+- [ ] :code/edit event references the new futon3a doc.
+
 ## Trace Integrity
 - [ ] Session trace is append-only (no in-place edits or reordering).
 - [ ] Each turn has :turn/started and :turn/completed events.
@@ -104,6 +148,7 @@ Evidence to look for:
 - [ ] :aif/summary emitted at outcome boundary (:aif/kind :pur).
 - [ ] AIF explain/dry-run command prints effective weights + worked example.
 - [ ] Optional :aif/tap events are either present or explicitly out of scope.
+- [ ] `[aif] policy` lines appear when AIF resolves (or abstains from) ambiguous pattern choices.
 
 ## Code-Edit Anchoring (Desired)
 - [ ] Any .clj/.el edit emits a :code/edit event.

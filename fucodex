@@ -276,6 +276,11 @@ PY
   fi
 fi
 
+# Prefer the MUSN intent when HUD intent is not explicitly provided.
+if [[ -z "${HUD_INTENT-}" && -n "${FUTON3_MUSN_INTENT-}" ]]; then
+  HUD_INTENT="$FUTON3_MUSN_INTENT"
+fi
+
 # HUD mode: inject pattern context into prompt
 HUD_FILE=""
 HUD_JSON_FILE=""

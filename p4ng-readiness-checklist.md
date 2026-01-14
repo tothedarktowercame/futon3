@@ -44,8 +44,8 @@ warning/pause, add a one-line plan and continue the task normally.
 ```
 Evidence to look for:
 - [ ] Inline [musn-warning] missing-plan appears before MUSN-PAUSE.
-- [ ] Pause reason cites missing-plan.
-- [ ] Resume clears the pause and the run continues on the same session.
+- [ ] If plan enforcement is enabled, pause reason cites missing-plan and resume clears it.
+- [ ] If plan enforcement is disabled, missing-plan logs a warning but does not pause.
 
 ### Prompt E: Multiarg disambiguation
 ```

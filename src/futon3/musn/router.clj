@@ -38,7 +38,7 @@
                          :limit (:limit trail)})))
 
 (defn off-trail-limit [{:keys [trail off-trail-policy]}]
-  (let [{:keys [on off]} trail
+  (let [{:keys [on]} trail
         {:keys [free ratio]} off-trail-policy]
     (+ (double free) (* (double ratio) (double (or on 0))))))
 
@@ -66,10 +66,11 @@
 (defn- apply-obligation [state {:keys [obligation]}]
   (case obligation
     :missing-plan
-    (-> state
-        (note-warning :missing-plan "plan is required before tool use")
-        (assoc :halt {:type :missing-plan
-                      :note "plan is required before tool use"}))
+    (let [state (note-warning state :missing-plan "plan is required before tool use")]
+      (if (get-in state [:plan-policy :enforce?])
+        (assoc state :halt {:type :missing-plan
+                            :note "plan is required before tool use"})
+        state))
     :missing-selection
     (-> state
         (note-warning :missing-selection "implement/update requires selection")
@@ -118,6 +119,7 @@
    :trail {:on 0 :off 0 :limit (get-in policy [:off-trail :free] 0.0)}
    :off-trail-policy {:free (get-in policy [:off-trail :free] 0.0)
                       :ratio (get-in policy [:off-trail :ratio] 0.5)}
+   :plan-policy (merge {:enforce? false} (:plan policy))
    :warnings []
    :halt nil
    :halt? false

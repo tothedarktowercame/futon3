@@ -328,11 +328,13 @@
                     (format (str "[MUSN-HELP]\n"
                                  "You have %s mana. Gain mana points by reading patterns and completing their next steps. Other actions cost mana.\n"
                                  "Before acting, state a 1-2 line plan.\n"
+                                 "Helpers live in /home/joe/code/futon3/scripts — use those exact paths.\n"
                                  "Tool roster (you should emit these signals when you do the corresponding action):\n"
-                                 "- pattern-select library/<pattern> <state why you want to read it>\n"
-                                 "- pattern-use    library/<pattern> <state where you will apply it>\n"
-                                 "- musn-plan      <outline your plan>\n"
-                                 "- wide-search    ; an alias for rg\n"
+                                 "- /home/joe/code/futon3/scripts/pattern-select library/<pattern> <state why you want to read it>\n"
+                                 "- /home/joe/code/futon3/scripts/pattern-use    library/<pattern> <state where you will apply it>\n"
+                                 "- /home/joe/code/futon3/scripts/pattern-action read|update|implement library/<pattern> <note>\n"
+                                 "- /home/joe/code/futon3/scripts/musn-plan      \"Plan: ...\"\n"
+                                 "- /home/joe/code/futon3/scripts/wide-search   <rg args>\n"
                                  "If unsure, run: musn-help tools  (or musn-help pattern)\n"
                                  "[/MUSN-HELP]\n")
                             (mana-num mana-balance)))

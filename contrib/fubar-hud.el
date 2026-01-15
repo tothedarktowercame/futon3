@@ -258,6 +258,15 @@
       (when intent-lines
         (string-trim (string-join (nreverse intent-lines) " "))))))
 
+(defun fubar-hud--summarize-intent (intent)
+  "Normalize INTENT to a single, HUD-friendly line."
+  (when (and intent (stringp intent))
+    (let* ((line (car (split-string intent "\n")))
+           (clean (string-trim (replace-regexp-in-string "\\s-+" " " (or line intent)))))
+      (if (> (length clean) 160)
+          (concat (substring clean 0 157) "…")
+        clean))))
+
 (defvar-local fubar-hud--stream-fragment ""
   "Partial stream fragment awaiting a newline.")
 
@@ -270,7 +279,7 @@
           (let ((hud-buf (get-buffer fubar-hud-buffer-name)))
             (when hud-buf
               (with-current-buffer hud-buf
-                (setq fubar-hud--intent intent)
+                (setq fubar-hud--intent (fubar-hud--summarize-intent intent))
                 (fubar-hud-refresh)))))))))
 
 (defun fubar-hud--pause-line-p (line)
@@ -958,7 +967,7 @@
   (let ((buf (get-buffer-create fubar-hud-buffer-name)))
     (with-current-buffer buf
       (fubar-hud--ensure-mode)
-      (setq fubar-hud--intent intent)
+      (setq fubar-hud--intent (fubar-hud--summarize-intent intent))
       (fubar-hud-refresh))))
 
 (defun fubar-hud-set-session-id (session-id)
@@ -1006,7 +1015,7 @@ Copies intent, sigils, candidates, and any other known HUD fields, then refreshe
              (candidates (plist-get hud-map :candidates))
              (aif (plist-get hud-map :aif))
              (aif-live (plist-get hud-map :aif-live)))
-        (when intent (setq fubar-hud--intent intent))
+        (when intent (setq fubar-hud--intent (fubar-hud--summarize-intent intent)))
         (when sigils (setq fubar-hud--sigils sigils))
         (when candidates (setq fubar-hud--candidates candidates))
         (when aif (setq fubar-hud--aif aif))

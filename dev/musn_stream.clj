@@ -75,6 +75,7 @@
 (declare ensure-selection!)
 (declare log-aif-missing!)
 (declare log-latest-aif-tap!)
+(declare tap-event-id)
 (declare log-mana-response!)
 
 (defn- repo-root []
@@ -589,7 +590,10 @@
   ([aif] (log-aif-update! nil aif))
   ([state aif]
    (update-aif-policy! state aif)
-   (let [err (fmt-num (:prediction-error aif))
+   (let [delta-map (:belief-delta aif)
+         pid (:pattern/id delta-map)
+         action (:action delta-map)
+         err (fmt-num (:prediction-error aif))
          tau (fmt-num (:tau-updated aif))
          ev (fmt-num (:evidence-score aif))
          delta (fmt-num (:evidence-delta aif))
@@ -606,23 +610,28 @@
                              (when ev (str "ev=" ev))
                              (when delta (str "d=" delta))
                              (when counts (str "counts=" counts))
+                             (when pid (str "pattern=" pid))
+                             (when action (str "action=" (name action)))
                              (when tau (str "tau=" tau))])))))
 
-(defn log-aif-tap! [event]
-  (let [payload (or (:payload event) event)
-        aif (:aif payload)
-        kind (or (:event payload) (:aif/kind payload) (:type event))
-        chosen (:chosen payload)
-        tau (fmt-num (or (:tau aif) (:tau-updated aif)))
-        g (fmt-num (:G-chosen aif))
-        err (fmt-num (:prediction-error aif))]
-    (log-aif-line! "tap"
-                   (remove nil?
-                           [(when kind (str "kind=" (if (keyword? kind) (name kind) kind)))
-                            (when chosen (str "chosen=" chosen))
-                            (when g (str "G=" g))
-                            (when tau (str "tau=" tau))
-                            (when err (str "err=" err))]))))
+(defn log-aif-tap!
+  ([event] (log-aif-tap! nil event))
+  ([state event]
+   (let [payload (or (:payload event) event)
+         aif (:aif payload)
+         kind (or (:event payload) (:aif/kind payload) (:type event))
+         kind (cond
+                (keyword? kind) kind
+                (string? kind) (keyword kind)
+                :else :unknown)
+         tap-id (tap-event-id event)]
+     (when (and state tap-id)
+       (swap! state assoc :last-aif-tap tap-id))
+     (when (map? aif)
+       (cond
+         (= kind :select) (log-aif-selection! state aif)
+         (contains? #{:update :pattern-action :action :use} kind) (log-aif-update! state aif)
+         :else (log-aif-line! "tap" [(str "kind=" (name kind))]))))))
 
 (defn- mana-balance [mana]
   (cond
@@ -668,7 +677,7 @@
                 last-id (:last-aif-tap @state)]
             (when (and tap-id (not= tap-id last-id))
               (swap! state assoc :last-aif-tap tap-id)
-              (log-aif-tap! tap)))))
+              (log-aif-tap! state tap)))))
       (catch Throwable _ nil))))
 
 (defn- format-confidence [detail]
@@ -688,7 +697,7 @@
 (defn log-selection!
   ([psr] (log-selection! nil psr nil))
   ([psr detail] (log-selection! nil psr detail))
-  ([state psr detail]
+  ([_state psr detail]
    (let [reason (:selection/reason psr)
          mode (:mode reason)
          reads (:reads reason)
@@ -713,15 +722,14 @@
        (log! line)
        (println line))
     (flush)
-    (when (seq aif)
-      (log-aif-selection! state aif)))))
+    nil)))
 
 (defn- candidate-detail [state pattern-id]
   (get-in @state [:candidate-details (candidate-id pattern-id)]))
 
 (defn log-use!
   ([pur aif] (log-use! nil pur aif))
-  ([state pur aif]
+  ([_state pur aif]
   (let [pattern-id (:pattern/id pur)
         tags (:outcome/tags pur)
         tau (fmt-num (:tau-updated aif))
@@ -740,9 +748,7 @@
                      (or aif-label ""))]
     (log! line)
     (println line)
-    (flush))
-  (when (seq aif)
-    (log-aif-update! state aif))))
+    (flush))))
 
 (defn- log-pattern-action! [pattern-id action note files]
   (let [label (case action
@@ -803,13 +809,11 @@
             (note-selected! state pid)
             (when-let [psr (:psr resp)]
               (log-selection! state psr (candidate-detail state pid)))
-            (if-let [aif (:aif resp)]
-              (log-aif-selection! state aif)
-              (do
-                (log-aif-missing! "turn/select"
-                                  {:turn turn
-                                   :chosen pid})
-                (log-latest-aif-tap! state musn-session))))
+            (when-not (:aif resp)
+              (log-aif-missing! "turn/select"
+                                {:turn turn
+                                 :chosen pid})
+              (log-latest-aif-tap! state musn-session)))
           (log-warning! "select-failed"
                         {:turn turn
                          :chosen pid
@@ -856,13 +860,11 @@
                        :resp resp})))
     (when-let [psr (:psr resp)]
       (log-selection! state psr (candidate-detail state chosen)))
-    (if-let [aif (:aif resp)]
-      (log-aif-selection! state aif)
-      (do
-        (log-aif-missing! "turn/select"
-                          {:turn turn
-                           :chosen chosen})
-        (log-latest-aif-tap! state musn-session)))))
+    (when-not (:aif resp)
+      (log-aif-missing! "turn/select"
+                        {:turn turn
+                         :chosen chosen})
+      (log-latest-aif-tap! state musn-session))))
 
 (defn- perform-pattern-action!
   [state musn-session turn pid act note files]
@@ -875,14 +877,12 @@
                        nil))
   (log-pattern-action! (candidate-id pid) act note files)
   (let [action-resp (musn-action musn-session turn pid act note files)]
-    (if-let [aif (:aif action-resp)]
-      (log-aif-update! state aif)
-      (do
-        (log-aif-missing! "turn/action"
-                          {:turn turn
-                           :pattern/id (candidate-id pid)
-                           :action act})
-        (log-latest-aif-tap! state musn-session)))
+    (when-not (:aif action-resp)
+      (log-aif-missing! "turn/action"
+                        {:turn turn
+                         :pattern/id (candidate-id pid)
+                         :action act})
+      (log-latest-aif-tap! state musn-session))
     (log-mana-response! state action-resp))
   (when (#{"implement" "update"} act)
     (let [use-resp (musn-use musn-session turn pid)]
@@ -944,15 +944,14 @@
       (let [pats (patterns-from-command cmd)]
         (if (seq pats)
           (doseq [p pats]
+            (log-pattern-action! (candidate-id p) "read" "auto read from command" nil)
             (let [action-resp (musn-action musn-session turn p "read" nil nil)]
-              (if-let [aif (:aif action-resp)]
-                (log-aif-update! state aif)
-                (do
-                  (log-aif-missing! "turn/action"
-                                    {:turn turn
-                                     :pattern/id (candidate-id p)
-                                     :action "read"})
-                  (log-latest-aif-tap! state musn-session)))
+              (when-not (:aif action-resp)
+                (log-aif-missing! "turn/action"
+                                  {:turn turn
+                                   :pattern/id (candidate-id p)
+                                   :action "read"})
+                (log-latest-aif-tap! state musn-session))
               (log-mana-response! state action-resp)))
           (do
             (maybe-warn-missing-plan! state "wide-scan")
@@ -966,14 +965,12 @@
                                            "wide-scan"
                                            note
                                            nil)]
-              (if-let [aif (:aif action-resp)]
-                (log-aif-update! state aif)
-                (do
-                  (log-aif-missing! "turn/action"
-                                    {:turn turn
-                                     :pattern/id "musn/plan-before-tool"
-                                     :action "wide-scan"})
-                  (log-latest-aif-tap! state musn-session)))
+              (when-not (:aif action-resp)
+                (log-aif-missing! "turn/action"
+                                  {:turn turn
+                                   :pattern/id "musn/plan-before-tool"
+                                   :action "wide-scan"})
+                (log-latest-aif-tap! state musn-session))
               (log-mana-response! state action-resp))))))))
 
 (defn- handle-file-change!
@@ -1023,14 +1020,12 @@
                             :source :aif}
                            nil))
       (let [action-resp (musn-action musn-session turn p "update" "auto file_change" paths)]
-        (if-let [aif (:aif action-resp)]
-          (log-aif-update! state aif)
-          (do
-            (log-aif-missing! "turn/action"
-                              {:turn turn
-                               :pattern/id (candidate-id p)
-                               :action "update"})
-            (log-latest-aif-tap! state musn-session)))
+        (when-not (:aif action-resp)
+          (log-aif-missing! "turn/action"
+                            {:turn turn
+                             :pattern/id (candidate-id p)
+                             :action "update"})
+          (log-latest-aif-tap! state musn-session))
         (log-mana-response! state action-resp))
       (when (seq paths)
         (musn-evidence musn-session turn p paths "auto evidence from change")))))
@@ -1203,23 +1198,23 @@
     (handle-turn-completed! state session event tap-listener)))
 
 (defn stream-loop []
-  (let [tap-listener (fn [event]
+  (let [state (atom {:turn 0
+                     :paused? false
+                     :pause-latched? false
+                     :selected-patterns #{}
+                     :last-selected nil
+                     :turn-plan? false
+                     :turn-plan-warned? false
+                     :last-aif-tap nil
+                     :candidate-details {}
+                     :turn-ended nil})
+        tap-listener (fn [event]
                        (when (= :aif/fulab (:type event))
                          (log! "[aif-tap]" event)
-                         (log-aif-tap! event)))]
+                         (log-aif-tap! state event)))]
     (add-tap tap-listener)
     (try
       (let [session (musn-create-session)
-            state (atom {:turn 0
-                         :paused? false
-                         :pause-latched? false
-                         :selected-patterns #{}
-                         :last-selected nil
-                         :turn-plan? false
-                         :turn-plan-warned? false
-                         :last-aif-tap nil
-                         :candidate-details {}
-                         :turn-ended nil})
             sid (require-session-id session)]
         (log-musn! state "stream-loop start")
         (let [line (format "[musn-session] %s" sid)]

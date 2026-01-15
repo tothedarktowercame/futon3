@@ -793,6 +793,7 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
                                      (and halt-map t)))
                          (halted? (and halted t))
                          (halt-reason (fubar-musn--format-reason halt-map))
+                         (paused? (and halted? (not fubar-musn--run-finished)))
                          (hud (and state (plist-get state :hud)))
                          (intent (and hud (plist-get hud :intent))))
                     (when ok
@@ -801,14 +802,14 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
                       (let ((viewer-buf (get-buffer fubar-musn-view-buffer)))
                         (when viewer-buf
                           (with-current-buffer viewer-buf
-                            (fubar-musn--set-paused halted? halt-reason))))
+                          (fubar-musn--set-paused paused? (when paused? halt-reason)))))
                       (with-current-buffer (get-buffer-create "*FuLab HUD*")
                         (fubar-hud--ensure-mode)
                         (cond
                          ((fboundp 'fubar-hud-set-musn-paused)
-                          (fubar-hud-set-musn-paused halted? halt-reason))
+                          (fubar-hud-set-musn-paused paused? (when paused? halt-reason)))
                          ((boundp 'fubar-hud--musn-paused)
-                          (setq fubar-hud--musn-paused halted?)))
+                          (setq fubar-hud--musn-paused paused?)))
                         (when (fboundp 'fubar-hud-set-session-id)
                           (fubar-hud-set-session-id fubar-musn-session-id))
                         (cond

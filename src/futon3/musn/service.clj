@@ -167,6 +167,7 @@
    :pur nil
    :psr-emitted? false
    :pur-emitted? false
+   :deviation nil              ;; AIF-LM-3: track deviation from AIF suggestion
    :turn-ended nil
    :turn-ended-resp nil
    :aif-config-logged? false})
@@ -446,6 +447,20 @@
     (string? chosen) (contains? auto-select-sentinels (str/lower-case chosen))
     :else false))
 
+(defn- detect-deviation
+  "Detect when agent's explicit choice differs from AIF-sampled suggestion.
+   Returns deviation info or nil."
+  [aif-suggested agent-chosen reason]
+  (when (and (string? aif-suggested)
+             (string? agent-chosen)
+             (not= aif-suggested agent-chosen))
+    (let [deviation-reason (get-in reason [:deviation :reason])]
+      {:aif-suggested aif-suggested
+       :agent-chosen agent-chosen
+       :justified? (boolean (and (string? deviation-reason)
+                                 (> (count deviation-reason) 0)))
+       :reason deviation-reason})))
+
 (defn- auto-selection-policy [selection chosen candidates]
   (let [aif (:aif selection)
         abstain? (boolean (:abstain? aif))
@@ -672,12 +687,16 @@
                             :forecast (fulab-musn/build-forecast turn)}
                      (not auto?) (assoc :chosen chosen)))
         aif (:aif selection)
-        sampled (when auto? (:chosen selection))
+        aif-suggested (:chosen selection)
+        sampled (when auto? aif-suggested)
         abstain? (boolean (and auto? (:abstain? aif)))
         chosen (cond
                  (and auto? (not abstain?)) sampled
                  auto? nil
                  :else chosen)
+        ;; AIF-LM-3: Detect deviation from AIF suggestion
+        deviation (when-not auto?
+                    (detect-deviation aif-suggested chosen (:reason req)))
         policy (when auto?
                  (auto-selection-policy selection chosen candidates))
         reason (enrich-reason (or (:reason req) {:mode :read}) selection)
@@ -700,7 +719,8 @@
                                              :reason reason
                                              :anchors (:anchors req)
                                              :certificates (:certificates entry)})
-                (seq g-terms) (assoc :aif/g-terms g-terms)))]
+                (seq g-terms) (assoc :aif/g-terms g-terms)
+                deviation (assoc :deviation deviation)))]
     (when policy
       (append-lab-event! entry {:event/type :aif/policy
                                 :at (fulab-musn/now-inst)
@@ -708,6 +728,17 @@
       (tap-aif-policy! {:session/id sid
                         :turn turn
                         :policy (select-keys policy [:chosen :tau :min-sample :mode :reason :sampled? :abstain?])}))
+    ;; AIF-LM-3: Log deviation event
+    (when deviation
+      (append-lab-event! entry {:event/type :aif/deviation
+                                :at (fulab-musn/now-inst)
+                                :payload {:session/id sid
+                                          :turn turn
+                                          :aif-suggested (:aif-suggested deviation)
+                                          :agent-chosen (:agent-chosen deviation)
+                                          :justified? (:justified? deviation)
+                                          :reason (:reason deviation)}})
+      (swap! (:fulab entry) assoc :deviation deviation))
     (when psr
       (append-lab-event! entry {:event/type :pattern/selection-claimed
                                 :at (fulab-musn/now-inst)
@@ -726,6 +757,7 @@
                          :uncertainty uncertainty-detail
                          :chosen chosen
                          :aif (:aif selection)
+                         :deviation deviation
                          :mu (aif-mu-summary entry chosen)})
       (append-lab-event! entry (fulab-musn/summary-event sid :psr selection)))
     (when-let [tau (get-in selection [:aif :tau])]
@@ -734,6 +766,7 @@
     (cond-> resp
       psr (assoc :psr psr)
       (seq aif-summary) (assoc :aif aif-summary)
+      deviation (assoc :deviation deviation)
       policy (assoc :aif/policy (select-keys policy [:chosen :tau :min-sample :mode :reason :sampled? :abstain?])))))
 
 (defn turn-action!
@@ -897,10 +930,17 @@
 (defn- auto-use-policy [state fulab-state]
   (let [tau (or (get-in fulab-state [:psr :selection/reason :aif :tau])
                 (get-in state [:hud :aif :tau]))
-        allow? (or (nil? tau) (>= (double tau) aif-auto-use-min-tau))]
-    {:tau tau
-     :mode (if allow? :auto-use :abstain)
-     :reason (if allow? "aif-policy" "aif-low-tau")}))
+        deviation (:deviation fulab-state)
+        unjustified-deviation? (and deviation (not (:justified? deviation)))
+        tau-ok? (or (nil? tau) (>= (double tau) aif-auto-use-min-tau))
+        allow? (and tau-ok? (not unjustified-deviation?))]
+    (cond-> {:tau tau
+             :mode (if allow? :auto-use :abstain)
+             :reason (cond
+                       unjustified-deviation? "unjustified-deviation"
+                       (not tau-ok?) "aif-low-tau"
+                       :else "aif-policy")}
+      deviation (assoc :deviation deviation))))
 
 (defn- auto-use-allowed? [policy]
   (and (map? policy)
@@ -1013,6 +1053,7 @@
                :pur nil
                :psr-emitted? false
                :pur-emitted? false
+               :deviation nil
                :turn-ended turn
                :turn-ended-resp resp)
         (persist! entry :turn/end req resp)

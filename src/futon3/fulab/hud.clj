@@ -352,11 +352,22 @@
                       (when (seq parts)
                         (str "AIF live: " (str/join " " parts)))))
         white-space-label (when (:white-space? aif) "white-space tau boost")
+        ;; AIF-LM-3: Compute probability for display
+        aif-prob (when-let [suggested (:suggested aif)]
+                   (let [g-scores (:G-scores aif)
+                         tau (or (:tau aif) 1.0)
+                         logits (map (fn [[id g]] [id (/ (- g) tau)]) g-scores)
+                         max-logit (apply max (map second logits))
+                         exp-logits (map (fn [[id l]] [id (Math/exp (- l max-logit))]) logits)
+                         z (reduce + (map second exp-logits))
+                         probs (into {} (map (fn [[id e]] [id (/ e z)]) exp-logits))]
+                     (get probs suggested)))
         aif-str (if (:suggested aif)
-                  (format "AIF suggests: %s (G=%.2f, τ=%.1f%s)"
+                  (format "AIF suggests: %s (G=%.2f, τ=%.2f, p=%.0f%%%s)"
                           (:suggested aif)
                           (double (get (:G-scores aif) (:suggested aif) 0))
-                          (double (:tau aif))
+                          (double (or (:tau aif) 0.5))
+                          (double (* 100 (or aif-prob 0)))
                           (if white-space-label (str ", " white-space-label) ""))
                   (str "AIF: no suggestion"
                        (when white-space-label (str " (" white-space-label ")"))))]
@@ -375,6 +386,7 @@
          "Declare scope: in-bounds, out-of-bounds, and exit condition.\n"
          "Start your response with: Intent: <one-line restatement of the task>\n"
          "Before acting, state a 1-2 line plan and read the AIF suggestion plus one other candidate (if present).\n"
+         "If selecting a different pattern than AIF suggests, provide a deviation reason explaining why.\n"
          "If you go off-trail, keep it brief and log why.\n"
          "\n"
          "PSR/PUR are emitted each turn from the live stream; focus on real actions.\n"

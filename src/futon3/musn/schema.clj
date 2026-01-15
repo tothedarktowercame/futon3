@@ -15,6 +15,10 @@
    [:reads {:optional true} [:vector PatternId]]
    [:note {:optional true} string?]
    [:source {:optional true} keyword?]              ;; :hud, :auto, :explicit
+   [:deviation {:optional true}                     ;; justification when overriding AIF suggestion
+    [:map
+     [:aif-suggested PatternId]
+     [:reason string?]]]
    [:aif {:optional true}
     [:map
      [:G {:optional true} number?]

@@ -1,14 +1,33 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+auto=false
+
 if [[ $# -lt 1 ]]; then
-  echo "usage: pattern-select <pattern-id> [note]" >&2
+  echo "usage: pattern-select [--auto] <pattern-id>... [note]" >&2
   exit 2
 fi
 
-pattern_raw="$1"
-shift
-note="${*:-}"
+if [[ "${1:-}" == "--auto" || "${1:-}" == "-a" ]]; then
+  auto=true
+  shift
+fi
+
+if [[ $# -lt 1 ]]; then
+  echo "pattern-select: missing pattern id(s)" >&2
+  exit 2
+fi
+
+if [[ "$auto" == "true" ]]; then
+  candidates_raw=("$@")
+  note=""
+  pattern_raw=""
+else
+  pattern_raw="$1"
+  shift
+  candidates_raw=()
+  note="${*:-}"
+fi
 
 sid="${FUTON3_MUSN_SESSION_ID:-}"
 url="${FUTON3_MUSN_URL:-http://localhost:6065}"
@@ -18,20 +37,38 @@ if [[ -z "$sid" ]]; then
   exit 2
 fi
 
-PATTERN_RAW="$pattern_raw" NOTE="$note" SID="$sid" URL="$url" python3 - <<'PY'
+PATTERN_RAW="$pattern_raw" NOTE="$note" SID="$sid" URL="$url" AUTO="$auto" CANDIDATES="${candidates_raw[*]:-}" python3 - <<'PY'
 import json
 import os
 import re
 import sys
 import urllib.request
 
+auto = os.environ.get("AUTO", "").lower() == "true"
 pattern = os.environ.get("PATTERN_RAW", "")
-if pattern.startswith("library/"):
-    pattern = pattern[len("library/"):]
+candidates_raw = os.environ.get("CANDIDATES", "").split()
 
-if not re.match(r"^[a-z0-9._-]+/[a-z0-9._-]+$", pattern or ""):
-    print(f"pattern-select: invalid pattern id '{pattern}'", file=sys.stderr)
-    sys.exit(2)
+def normalize(pat):
+    if pat.startswith("library/"):
+        pat = pat[len("library/"):]
+    return pat
+
+def validate(pat):
+    if not re.match(r"^[a-z0-9._-]+/[a-z0-9._-]+$", pat or ""):
+        print(f"pattern-select: invalid pattern id '{pat}'", file=sys.stderr)
+        sys.exit(2)
+
+if auto:
+    candidates = [normalize(p) for p in candidates_raw if p]
+    if not candidates:
+        print("pattern-select: missing candidates for --auto", file=sys.stderr)
+        sys.exit(2)
+    for pat in candidates:
+        validate(pat)
+else:
+    pattern = normalize(pattern)
+    validate(pattern)
+    candidates = [pattern]
 
 note = os.environ.get("NOTE", "")
 sid = os.environ.get("SID", "")
@@ -52,20 +89,26 @@ if not turn:
     sys.exit(2)
 
 reason = {"mode": "read", "source": "explicit"}
+if auto:
+    reason["source"] = "auto"
 if note:
     reason["note"] = note
 
 payload = {
     "session/id": sid,
     "turn": int(turn),
-    "candidates": [pattern],
-    "chosen": pattern,
+    "candidates": candidates,
     "reason": reason,
 }
+if not auto:
+    payload["chosen"] = pattern
 resp = post("/musn/turn/select", payload)
 if not resp.get("ok", True):
     print(f"pattern-select: musn error {resp}", file=sys.stderr)
     sys.exit(2)
 
-print(json.dumps({"ok": True, "turn": int(turn), "chosen": pattern}))
+result = {"ok": True, "turn": int(turn)}
+if not auto:
+    result["chosen"] = pattern
+print(json.dumps(result))
 PY

@@ -153,14 +153,17 @@
 
 (defn handle-turn-select! [state-atom req]
   (validate schema/TurnSelectReq req)
-  (let [decision-id (str (get req :session/id) ":turn-" (:turn req))
-        psr {:decision/id decision-id
-             :pattern/id (:chosen req)
-             :candidates (:candidates req)
-             :selection/reason (:reason req)
-             :selection/anchors (:anchors req)}]
-    (swap! state-atom assoc :selection psr)
-    {:ok true :psr psr}))
+  (let [chosen (:chosen req)
+        decision-id (str (get req :session/id) ":turn-" (:turn req))]
+    (if (string? chosen)
+      (let [psr {:decision/id decision-id
+                 :pattern/id chosen
+                 :candidates (:candidates req)
+                 :selection/reason (:reason req)
+                 :selection/anchors (:anchors req)}]
+        (swap! state-atom assoc :selection psr)
+        {:ok true :psr psr})
+      {:ok true})))
 
 (defn handle-turn-action! [state-atom req]
   (validate schema/TurnActionReq req)

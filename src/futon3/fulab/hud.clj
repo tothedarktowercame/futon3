@@ -372,6 +372,7 @@
          mana-line "\n"
          (or help-line "")
          "\n"
+         "Declare scope: in-bounds, out-of-bounds, and exit condition.\n"
          "Start your response with: Intent: <one-line restatement of the task>\n"
          "Before acting, state a 1-2 line plan and read the AIF suggestion plus one other candidate (if present).\n"
          "If you go off-trail, keep it brief and log why.\n"

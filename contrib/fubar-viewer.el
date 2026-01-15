@@ -135,6 +135,11 @@
   "Major mode for MUSN stream viewing."
   (setq-local font-lock-defaults '(fubar-musn-view-font-lock-keywords))
   (setq-local truncate-lines t)
+  (let ((table (copy-syntax-table (syntax-table))))
+    ;; Treat quotes as punctuation so unmatched JSON strings do not
+    ;; leak font-lock highlighting across the buffer.
+    (modify-syntax-entry ?\" "." table)
+    (set-syntax-table table))
   (setq-local fubar-musn--partial "")
   (setq-local fubar-musn--last-line-start nil)
   (setq-local fubar-musn--last-line-end nil)
@@ -227,7 +232,9 @@
     (setq fubar-musn--run-active nil))
   (when finished
     (setq fubar-musn--pause-seen nil)
-    (setq fubar-musn--pause-reason nil))
+    (setq fubar-musn--pause-reason nil)
+    (when (fboundp 'fubar-hud-set-musn-paused)
+      (fubar-hud-set-musn-paused nil)))
   (fubar-musn--update-pause-banner))
 
 (defun fubar-musn--note-pause (pos line)

@@ -1,4 +1,4 @@
-;;; flexiarg-mode.el --- Flexiformal argument DSL for EDN-backed summaries -*- lexical-binding: t; -*-
+;;; flexiarg.el --- Flexiformal argument DSL for EDN-backed summaries -*- lexical-binding: t; -*-
 
 ;; Author: ChatGPT (with Joseph in the loop)
 ;; Version: 0.1
@@ -11,37 +11,30 @@
 ;; flexiarg-mode provides a lightweight, Fountain/Ink-style syntax for
 ;; specifying structured arguments that compile to an EDN-style tree.
 ;;
-;; Example syntax:
+;; Example syntax (as used in /home/joe/code/futon3/library and enforced by futon1):
 ;;
-;;   @arg t4r/exec-summary
-;;   @title talk4real – Infrastructure for Developing Collective Intelligence
-;;   @audience research funders, doctoral-training consortia, university R&I leads
-;;   @tone analytic-visionary
-;;   @length 200-250
-;;   @ban cutting-edge, state-of-the-art, world-leading
-;;   @allow-new-claims false
-;;   @max-iterations 3
-;;   @up t4r/main-case
-;;   @next t4r/support
+;;   @flexiarg musn/plan-before-tool
+;;   @title Plan Before Tool Use
+;;   @style pattern
 ;;
-;;   ! conclusion: talk4real reimagines doctoral training as a shared
-;;     experimental learning infrastructure that refines itself through
-;;     reflexive, collective practice.
+;;   ! conclusion: Require a short plan line before any tool or wide scan.
+;;     + context: You are running an agent with live tool calls.
+;;     + IF: The agent reaches for tools before stating its plan.
+;;     + HOWEVER: Tool-first actions hide intent and make audits harder.
+;;     + THEN: Require a brief plan line before tool use and pause if missing.
+;;     + BECAUSE: Plans create anchors for PSR/PUR and keep scope explicit.
+;;       + evidence: lab sessions show plan-before-tool warnings when missing.
+;;     + NEXT-STEPS:
+;;       - Add a check that pauses when the plan line is missing.
+;;       - Capture a run and link it as evidence.
 ;;
-;;   + because: Most doctoral programmes operate within disciplinary silos.
-;;     + therefore: These silos contribute little to system-level learning.
-;;
-;;   + because: Collective-intelligence frameworks can capture feedback
-;;     between researchers, institutions, and communities.
-;;     + therefore: Embedding these feedback loops allows systems to learn.
-;;     + instantiated-by: talk4real applies a REPL-style cycle.
-;;       + clarifies: This cycle links ethnography, computation, design, reflection.
-;;       ? example(optional): Add 1–2 recognisable precedents if space permits.
-;;
-;;   + underpinned-by: The model is structured by three design principles.
-;;     + specifies: Ethical reflexivity ...
-;;     + specifies: Lightweight infrastructure ...
-;;     + specifies: Polyphonic governance ...
+;; Fields:
+;; - summary: use "! conclusion:" (or "! summary:") for the one-line pattern summary.
+;; - context: "+ context:" describes the sphere of endeavor.
+;; - IF/HOWEVER: tension within the context (case-insensitive labels).
+;; - THEN: actions to take that improve or manage the tension.
+;; - BECAUSE: rationale; may include nested "+ evidence:" lines (optional).
+;; - NEXT-STEPS: one or more steps to strengthen the pattern (bullets or next[...] lines).
 ;;
 ;; Commands:
 ;;   M-x flexiarg-show-edn

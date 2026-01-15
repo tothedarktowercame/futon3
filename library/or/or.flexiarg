@@ -96,7 +96,7 @@
   + context: Integration efforts often aim to erase seams via automation and unification; but seamlessness can hide translation work and dilute accountability.
   + if: You need interoperability that preserves meaning differences, provenance, and stewardship across systems.
   + however: Cultural and managerial pressure prizes smooth dashboards and invisible handoffs; when errors appear, no one can see where translation went wrong.
-  + then: Treat seams as features, not flaws. Name and document each seam (e.g., metadata crosswalks), maintain a Seam Registry with steward, cadence, rationale, and “what we’d lose if smoothed,” and hold brief Seam Debates to revisit design choices.
+  + then: Treat seams as features, not flaws. Name and document each seam (e.g., metadata crosswalks), maintain a Seam Registry with steward, cadence, rationale, and “what we’d lose if smoothed,” and hold brief, time-boxed Seam Debates to revisit design choices.
   + because: Constructive friction clarifies ownership, reduces schema drift, and fosters cross-team understanding. Visible seams are repairable edges rather than brittle failure points.
   + next-steps:
       - Create a public Seam Registry for this catalogue’s pipelines.
@@ -120,7 +120,7 @@
 @allow-new-claims false
 
 ! conclusion: Bridge-Before-Portal [🌲/门 🚢/川]
-  + context: Faced with fragmented systems, teams dream of one portal that unifies access; portal projects become expensive, slow, and prone to lock-in.
+  + context: Faced with fragmented systems, teams dream of one portal that unifies access; portal projects become expensive, slow, and prone to locking teams in.
   + if: You seek interoperability and shared visibility quickly while preserving flexibility for future architectures.
   + however: Institutional incentives reward big launches over modest connectors; monolithic portals over-specify needs, become brittle, and exhaust teams.
   + then: Start with bridges rather than portals: small, reversible connections such as exports, DOI cross-links, citation recipes, or shared notebooks. Each bridge must pass a reversal test: can you reconstruct your data or process if the bridge disappears?
@@ -501,10 +501,11 @@
   + context: Release notes usually track technical changes, not shifts in desire, relationships, embodiment, autonomy, or multiplicity; inner drift remains invisible.
   + if: You want to track how work is changing the people and relationships around it, not just the feature set.
   + however: Under deadline pressure, emotional or ethical reflection feels off-topic; there is no structured space for it.
-  + then: Attach a short DREAM Audit to each release: a paragraph reflecting on Desire, Relationality, Embodiment, Autonomy, and Multiplicity since the last iteration. Publish these alongside technical notes.
+  + then: Attach a short DREAM Audit to each release: a brief paragraph reflecting on Desire, Relationality, Embodiment, Autonomy, and Multiplicity since the last iteration. Publish these alongside technical notes.
   + because: DREAM audits keep the project’s inner compass visible, helping teams align ongoing work with founding purpose and relational health.
   + next-steps:
       - Add DREAM notes to the next release of this catalogue.
+      - Link each DREAM audit from the release notes index to keep them findable.
       - Invite individual contributors to contribute micro-audits and aggregate them.
       - Visualise DREAM themes over time as a simple trend or word map.
   + governance:

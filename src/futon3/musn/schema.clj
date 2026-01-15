@@ -1,7 +1,6 @@
 (ns futon3.musn.schema
   "MUSN endpoint and event schemas (Malli). These are used for validation of live, server-managed runs."
-  (:require [malli.core :as m]
-            [malli.util :as mu]))
+  (:require [malli.core :as m]))
 
 (def PatternId [:re #"^[a-z0-9._-]+/[a-z0-9._-]+$"])
 (def PatternIdKey [:or PatternId keyword?])
@@ -91,19 +90,19 @@
    [:session/id string?]
    [:turn int?]
    [:candidates [:vector PatternId]]
-   [:chosen PatternId]
+   [:chosen {:optional true} PatternId]
    [:reason Reason]
    [:anchors {:optional true} [:vector Anchor]]])
 
 (def TurnSelectResp
   [:map
    [:ok boolean?]
-   [:psr [:map
-          [:decision/id string?]
-          [:pattern/id PatternId]
-          [:candidates [:vector PatternId]]
-          [:selection/reason Reason]
-          [:selection/anchors {:optional true} [:vector Anchor]]]]
+   [:psr {:optional true} [:map
+                           [:decision/id string?]
+                           [:pattern/id PatternId]
+                           [:candidates [:vector PatternId]]
+                           [:selection/reason Reason]
+                           [:selection/anchors {:optional true} [:vector Anchor]]]]
    [:aif {:optional true} AifSelectionSummary]])
 
 (def TurnActionReq

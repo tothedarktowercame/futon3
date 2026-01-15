@@ -437,6 +437,31 @@
   (and (seq candidates)
        (string? chosen)
        (some #{chosen} candidates)))
+(def ^:private auto-select-sentinels #{"auto" "aif"})
+
+(defn- auto-select-requested? [chosen]
+  (cond
+    (nil? chosen) true
+    (keyword? chosen) (contains? auto-select-sentinels (name chosen))
+    (string? chosen) (contains? auto-select-sentinels (str/lower-case chosen))
+    :else false))
+
+(defn- auto-selection-policy [selection chosen candidates]
+  (let [aif (:aif selection)
+        abstain? (boolean (:abstain? aif))
+        mode (if (and chosen (not abstain?)) :auto-select :abstain)
+        reason (cond
+                 abstain? "aif-low-tau"
+                 (empty? candidates) "no-candidates"
+                 (nil? chosen) "no-choice"
+                 :else "aif-sampled")]
+    {:chosen chosen
+     :tau (:tau aif)
+     :min-sample (:min-sample aif)
+     :mode mode
+     :reason reason
+     :sampled? (:sampled? aif)
+     :abstain? abstain?}))
 (defn- gen-session-id []
   (str "musn-" (subs (str (java.util.UUID/randomUUID)) 0 8)))
 
@@ -625,7 +650,9 @@
         entry (ensure-session! sid nil (:lab/root req) nil)
         turn (:turn req)
         candidates (candidate-ids (:candidates req))
-        chosen (candidate-id (:chosen req))
+        raw-chosen (:chosen req)
+        auto? (auto-select-requested? raw-chosen)
+        chosen (when-not auto? (candidate-id raw-chosen))
         fulab-state @(:fulab entry)
         candidate-details (:candidate-details fulab-state)
         score-map (:candidate-scores fulab-state)
@@ -636,22 +663,33 @@
         uncertainty (:value uncertainty-detail)
         selection (aif-engine/select-pattern
                    (:aif-engine entry)
-                   {:decision/id (str sid ":turn-" turn)
-                    :session/id sid
-                    :candidates candidates
-                    :candidate-scores (get-in @(:fulab entry) [:candidate-scores])
-                    :uncertainty uncertainty
-                    :anchors [(fulab-musn/turn-anchor turn)]
-                    :forecast (fulab-musn/build-forecast turn)
-                    :chosen chosen})
-        reason (enrich-reason (:reason req) selection)
-        resp (router/handle-turn-select! (:state entry)
-                                         (compact {:session/id sid
-                                                   :turn turn
-                                                   :candidates candidates
-                                                   :chosen chosen
-                                                   :reason reason
-                                                   :anchors (:anchors req)}))
+                   (cond-> {:decision/id (str sid ":turn-" turn)
+                            :session/id sid
+                            :candidates candidates
+                            :candidate-scores (get-in @(:fulab entry) [:candidate-scores])
+                            :uncertainty uncertainty
+                            :anchors [(fulab-musn/turn-anchor turn)]
+                            :forecast (fulab-musn/build-forecast turn)}
+                     (not auto?) (assoc :chosen chosen)))
+        aif (:aif selection)
+        sampled (when auto? (:chosen selection))
+        abstain? (boolean (and auto? (:abstain? aif)))
+        chosen (cond
+                 (and auto? (not abstain?)) sampled
+                 auto? nil
+                 :else chosen)
+        policy (when auto?
+                 (auto-selection-policy selection chosen candidates))
+        reason (enrich-reason (or (:reason req) {:mode :read}) selection)
+        reason (cond-> reason
+                 auto? (assoc :source (or (:source reason) :auto)))
+        req* (compact (assoc req
+                             :session/id sid
+                             :turn turn
+                             :candidates candidates
+                             :chosen chosen
+                             :reason reason))
+        resp (router/handle-turn-select! (:state entry) req*)
         aif-summary (selection-metrics selection)
         g-terms (when selection (selection-g-terms selection))
         psr (when (psr-eligible? candidates chosen)
@@ -663,6 +701,13 @@
                                              :anchors (:anchors req)
                                              :certificates (:certificates entry)})
                 (seq g-terms) (assoc :aif/g-terms g-terms)))]
+    (when policy
+      (append-lab-event! entry {:event/type :aif/policy
+                                :at (fulab-musn/now-inst)
+                                :payload (select-keys policy [:chosen :tau :min-sample :mode :reason :sampled? :abstain?])})
+      (tap-aif-policy! {:session/id sid
+                        :turn turn
+                        :policy (select-keys policy [:chosen :tau :min-sample :mode :reason :sampled? :abstain?])}))
     (when psr
       (append-lab-event! entry {:event/type :pattern/selection-claimed
                                 :at (fulab-musn/now-inst)
@@ -685,10 +730,11 @@
       (append-lab-event! entry (fulab-musn/summary-event sid :psr selection)))
     (when-let [tau (get-in selection [:aif :tau])]
       (update-tau-cache! entry chosen tau))
-    (persist! entry :turn/select req resp)
+    (persist! entry :turn/select req* resp)
     (cond-> resp
       psr (assoc :psr psr)
-      (seq aif-summary) (assoc :aif aif-summary))))
+      (seq aif-summary) (assoc :aif aif-summary)
+      policy (assoc :aif/policy (select-keys policy [:chosen :tau :min-sample :mode :reason :sampled? :abstain?])))))
 
 (defn turn-action!
   [req]

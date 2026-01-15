@@ -167,6 +167,7 @@
                             {:type :run
                              :details {:missing [:sid :scenario-path]}})))
         run-id (new-run-id router)
+        ;; Resolve via F1 adapter when the client only provides a sid.
         resolved-path (or scenario-path
                           (:scenario-path (call-f1 router :export-scenario! run-id sid)))
         result (call-with-timeout run-timeout-ms #(call-f3 router :run-scenario! run-id resolved-path policy))

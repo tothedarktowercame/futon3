@@ -5,7 +5,8 @@
             [org.httpkit.server :as http]
             [clojure.string :as str]
             [futon3.aif.viz :as aif-viz]
-            [futon3.musn.service :as svc]))
+            [futon3.musn.service :as svc]
+            [futon.compass :as compass]))
 
 (def log-path (or (System/getenv "MUSN_LOG") "/tmp/musn_http.log"))
 
@@ -60,6 +61,24 @@
     :headers {"content-type" "application/json"}
     :body (json/generate-string (jsonable payload))}))
 
+(defn- compass-request
+  [body]
+  (let [narrative (or (:narrative body) (:text body) (:query body))
+        top-k (some-> (:top-k body) long)
+        sim-steps (some-> (:sim-steps body) long)
+        seed (some-> (:seed body) long)
+        method (let [m (:method body)]
+                 (if (string? m) (keyword m) m))]
+    (if (str/blank? (str narrative))
+      {:ok false :err "missing narrative"}
+      (apply compass/compass-report
+             narrative
+             (cond-> []
+               top-k (conj :top-k top-k)
+               sim-steps (conj :sim-steps sim-steps)
+               seed (conj :seed seed)
+               method (conj :method method))))))
+
 (defn- dispatch [uri body]
   (case uri
     "/musn/session/create" (svc/create-session! body)
@@ -72,6 +91,11 @@
     "/musn/turn/end"      (svc/turn-end! body)
     "/musn/turn/resume"   (svc/turn-resume! body)
     "/musn/session/state" (svc/session-state! body)
+    "/musn/chat/message"  (svc/chat-message! body)
+    "/musn/chat/bid"      (svc/chat-bid! body)
+    "/musn/chat/unlatch"  (svc/chat-unlatch! body)
+    "/musn/chat/state"    (svc/chat-state! body)
+    "/musn/compass"       (compass-request body)
     nil))
 
 (defn handler [req]

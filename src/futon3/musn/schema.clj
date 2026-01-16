@@ -179,6 +179,78 @@
 (def TurnResumeReq [:map [:session/id string?] [:turn int?] [:note {:optional true} string?]])
 (def TurnResumeResp [:map [:ok boolean?] [:turn int?]])
 
+(def RoomId string?)
+
+(def ChatAuthor
+  [:map
+   [:id string?]
+   [:name {:optional true} string?]])
+
+(def ChatMessageReq
+  [:map
+   [:room RoomId]
+   [:msg-id {:optional true} string?]
+   [:author ChatAuthor]
+   [:text string?]
+   [:lab/root {:optional true} string?]])
+
+(def ChatMessageResp
+  [:map
+   [:ok boolean?]
+   [:room RoomId]
+   [:chat map?]
+   [:paused? boolean?]
+   [:pause {:optional true} map?]
+   [:seq int?]])
+
+(def ChatBidReq
+  [:map
+   [:room RoomId]
+   [:msg-id {:optional true} string?]
+   [:bidder ChatAuthor]
+   [:note {:optional true} string?]
+   [:lab/root {:optional true} string?]])
+
+(def ChatBidResp
+  [:map
+   [:ok boolean?]
+   [:room RoomId]
+   [:bid map?]
+   [:paused? boolean?]
+   [:pause {:optional true} map?]
+   [:seq int?]])
+
+(def ChatUnlatchReq
+  [:map
+   [:room RoomId]
+   [:msg-id {:optional true} string?]
+   [:bid/id {:optional true} string?]
+   [:by {:optional true} ChatAuthor]
+   [:lab/root {:optional true} string?]])
+
+(def ChatUnlatchResp
+  [:map
+   [:ok boolean?]
+   [:room RoomId]
+   [:accepted {:optional true} map?]
+   [:paused? boolean?]
+   [:pause {:optional true} map?]
+   [:seq int?]])
+
+(def ChatStateReq
+  [:map
+   [:room RoomId]
+   [:since {:optional true} int?]
+   [:lab/root {:optional true} string?]])
+
+(def ChatStateResp
+  [:map
+   [:ok boolean?]
+   [:room RoomId]
+   [:state map?]
+   [:events [:vector map?]]
+   [:cursor int?]])
+
 ;; Convenient registry for validation lookup.
 (def registry
   {:pattern/id PatternId
@@ -201,7 +273,15 @@
    :turn/end-req TurnEndReq
    :turn/end-resp TurnEndResp
    :turn/resume-req TurnResumeReq
-   :turn/resume-resp TurnResumeResp})
+   :turn/resume-resp TurnResumeResp
+   :chat/message-req ChatMessageReq
+   :chat/message-resp ChatMessageResp
+   :chat/bid-req ChatBidReq
+   :chat/bid-resp ChatBidResp
+   :chat/unlatch-req ChatUnlatchReq
+   :chat/unlatch-resp ChatUnlatchResp
+   :chat/state-req ChatStateReq
+   :chat/state-resp ChatStateResp})
 
 (defn validator
   "Build a malli validator for the named schema keyword in registry."

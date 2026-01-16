@@ -19,6 +19,7 @@
 
 (require 'json)
 (require 'url)
+(require 'seq)
 (require 'subr-x)
 
 ;;; Configuration
@@ -43,6 +44,26 @@
   :type 'integer
   :group 'fubar)
 
+(defcustom fubar-auto-show-ui t
+  "When non-nil, raise MUSN viewer and HUD on new sessions/turns."
+  :type 'boolean
+  :group 'fubar)
+
+(defcustom fubar-chat-room "lab"
+  "Default MUSN chat room name."
+  :type 'string
+  :group 'fubar)
+
+(defcustom fubar-chat-author-name nil
+  "Optional display name for chat messages (defaults to `fubar-client-id`)."
+  :type '(choice (const nil) string)
+  :group 'fubar)
+
+(defcustom fubar-chat-poll-interval 2
+  "Seconds between chat room polls."
+  :type 'number
+  :group 'fubar)
+
 ;;; State
 
 (defvar fubar--current-session nil
@@ -56,6 +77,140 @@
 
 (defvar fubar--candidates nil
   "Current candidate patterns from HUD.")
+
+(defvar fubar--log-buffer-name "*fubar-log*"
+  "Buffer name for fubar event logs.")
+
+(defvar fubar--last-aif-line nil
+  "Most recent formatted AIF line.")
+
+(defvar fubar--modeline-string nil
+  "Modeline string showing the latest AIF signal.")
+
+(defvar fubar--last-hud nil
+  "Most recent HUD map produced during a turn.")
+
+(defvar fubar-chat--room nil
+  "Active chat room name.")
+
+(defvar fubar-chat--last-cursor 0
+  "Last chat cursor seen for polling.")
+
+(defvar fubar-chat--poll-timer nil
+  "Timer for chat polling.")
+
+(defvar fubar-chat--last-state nil
+  "Last chat room state payload.")
+
+(defvar fubar-chat--buffer-name "*fubar-chat*"
+  "Buffer name for fubar chat room.")
+
+;;; HUD sync (optional, when fubar-viewer/hud is available)
+
+(defun fubar--sync-hud ()
+  "Sync current fubar session into the HUD/state poll when available."
+  (when-let ((session fubar--current-session))
+    (let ((sid (plist-get session :session/id)))
+      (when (and sid (boundp 'fubar-musn-session-id))
+        (setq fubar-musn-session-id sid))
+      (when (get-buffer "*FuLab HUD*")
+        (with-current-buffer "*FuLab HUD*"
+          (when (eq fubar-hud--intent-source :agent)
+            (setq fubar-hud--intent-source nil)
+            (setq fubar-hud--intent nil))))
+      (when (and sid (fboundp 'fubar-hud-set-session-id))
+        (fubar-hud-set-session-id sid))
+      (when (fboundp 'fubar-musn--fetch-state)
+        (fubar-musn--fetch-state))
+      (when (fboundp 'fubar-musn--maybe-start-state-poll)
+        (fubar-musn--maybe-start-state-poll)))))
+
+(defun fubar--maybe-show-ui (intent)
+  "Raise MUSN viewer and HUD when configured."
+  (when (and fubar-auto-show-ui (fboundp 'fubar-musn-view-2up))
+    (let ((log (and (boundp 'fubar-musn--default-log) fubar-musn--default-log)))
+      (fubar-musn-view-2up log intent))))
+
+;;; Modeline
+
+(define-minor-mode fubar-modeline-mode
+  "Show latest fubar AIF signal in the global modeline."
+  :global t
+  :group 'fubar
+  (if fubar-modeline-mode
+      (progn
+        (unless (member 'fubar--modeline-string global-mode-string)
+          (setq global-mode-string
+                (append global-mode-string '(fubar--modeline-string))))
+        (setq fubar--modeline-string (or fubar--last-aif-line " fubar:aif=none")))
+    (setq global-mode-string
+          (delq 'fubar--modeline-string global-mode-string))
+    (setq fubar--modeline-string nil)))
+
+;;; Logging
+
+(defun fubar--log-line (line)
+  "Append LINE to the fubar log buffer."
+  (let ((buf (get-buffer-create fubar--log-buffer-name)))
+    (with-current-buffer buf
+      (goto-char (point-max))
+      (insert line "\n")))
+  (when (boundp 'fubar-musn--default-log)
+    (let ((log fubar-musn--default-log))
+      (when (and (stringp log) (file-writable-p log))
+        (with-temp-buffer
+          (insert line "\n")
+          (write-region (point-min) (point-max) log t 'silent))))))
+
+(defun fubar--maybe-aif-map (value)
+  (when (and (listp value)
+             (or (plist-get value :tau)
+                 (plist-get value :tau-updated)
+                 (plist-get value :prediction-error)
+                 (plist-get value :G)
+                 (plist-get value :G-chosen)))
+    value))
+
+(defun fubar--extract-aif (resp)
+  "Extract an AIF map from RESP when present."
+  (let ((candidates (list (plist-get resp :aif)
+                          (plist-get (plist-get resp :psr) :aif)
+                          (plist-get (plist-get resp :pur) :aif)
+                          (plist-get (plist-get resp :selection/reason) :aif)
+                          (plist-get (plist-get resp :reason) :aif))))
+    (seq-find #'fubar--maybe-aif-map candidates)))
+
+(defun fubar--format-aif-line (event aif)
+  (let* ((g (or (plist-get aif :G) (plist-get aif :G-chosen)))
+         (tau (or (plist-get aif :tau) (plist-get aif :tau-updated)))
+         (err (plist-get aif :prediction-error))
+         (delta (plist-get aif :evidence-delta))
+         (parts (delq nil (list (when g (format "G=%.3f" (float g)))
+                                (when tau (format "tau=%.3f" (float tau)))
+                                (when err (format "err=%.3f" (float err)))
+                                (when delta (format "d=%.3f" (float delta)))))))
+    (when (seq parts)
+      (format "[aif] %s %s" event (string-join parts " ")))))
+
+(defun fubar--note-response (event resp)
+  "Log AIF signals from RESP for EVENT and update modeline."
+  (when resp
+    (when-let ((aif (fubar--extract-aif resp)))
+      (when-let ((line (fubar--format-aif-line event aif)))
+        (setq fubar--last-aif-line (concat " " line))
+        (setq fubar--modeline-string fubar--last-aif-line)
+        (fubar--log-line (format "%s %s" (fubar--now-iso) line))))))
+
+(defun fubar--log-event (event resp)
+  "Log a fubar EVENT to the log buffer (and viewer log file)."
+  (let* ((sid (plist-get fubar--current-session :session/id))
+         (turn fubar--current-turn)
+         (line (format "%s [fubar] event=%s session=%s turn=%s"
+                       (fubar--now-iso)
+                       event
+                       (or sid "unknown")
+                       (or turn 0))))
+    (fubar--log-line line)))
 
 ;;; Utilities
 
@@ -93,6 +248,15 @@
       (list `((certificate/type . "git/commit")
               (certificate/ref . ,commit)
               (certificate/repo . ,root))))))
+
+(defun fubar--plist->alist (plist)
+  "Convert PLIST to an alist for json-encode."
+  (let (out)
+    (while plist
+      (let ((key (pop plist))
+            (val (pop plist)))
+        (setq out (cons (cons key val) out))))
+    (nreverse out)))
 
 ;;; HTTP
 
@@ -135,6 +299,10 @@
       (setq fubar--current-session resp)
       (setq fubar--current-turn 0)
       (setq fubar--selected-pattern nil)
+      (fubar--maybe-show-ui nil)
+      (fubar--sync-hud)
+      (fubar--log-event "session/create" resp)
+      (fubar--note-response "session/create" resp)
       (message "[fubar] Session created: %s" (plist-get resp :session/id))
       resp)))
 
@@ -145,15 +313,34 @@
     (fubar-session-create))
   (let* ((sid (plist-get fubar--current-session :session/id))
          (turn (1+ (or fubar--current-turn 0)))
+         (hud-map (when (fboundp 'fubar-hud--build-hud)
+                    (fubar-hud--build-hud intent)))
+         (hud-map (if (and hud-map (not (plist-get hud-map :intent)))
+                    (plist-put (copy-sequence hud-map) :intent intent)
+                    hud-map))
+         (hud (if hud-map
+                (fubar--plist->alist hud-map)
+                `((intent . ,intent))))
          (payload `((session/id . ,sid)
                     (turn . ,turn)
-                    (hud . ((intent . ,intent))))))
+                    (hud . ,hud))))
     (let ((resp (fubar--post "/musn/turn/start" payload)))
       (setq fubar--current-turn turn)
       (setq fubar--selected-pattern nil)
-      ;; Extract candidates from HUD response
+      (setq fubar--last-hud hud-map)
+      ;; Extract candidates from HUD response.
       (when-let ((hud (plist-get resp :hud)))
         (setq fubar--candidates (plist-get hud :candidates)))
+      (unless fubar--candidates
+        (setq fubar--candidates (plist-get hud-map :candidates)))
+      (when (and hud-map (fboundp 'fubar-hud-apply-hud-state))
+        (fubar-hud-apply-hud-state hud-map))
+      (when (fboundp 'fubar-hud-set-intent)
+        (fubar-hud-set-intent intent))
+      (fubar--maybe-show-ui intent)
+      (fubar--sync-hud)
+      (fubar--log-event "turn/start" resp)
+      (fubar--note-response "turn/start" resp)
       (message "[fubar] Turn %d started" turn)
       resp)))
 
@@ -179,6 +366,8 @@
                                    `((note . ,reason))))))))
     (let ((resp (fubar--post "/musn/turn/select" payload)))
       (setq fubar--selected-pattern pattern-id)
+      (fubar--log-event "turn/select" resp)
+      (fubar--note-response "turn/select" resp)
       (message "[fubar] Selected: %s" pattern-id)
       resp)))
 
@@ -200,6 +389,8 @@
                     ,@(when files
                         `((files . ,(vconcat files)))))))
     (let ((resp (fubar--post "/musn/turn/action" payload)))
+      (fubar--log-event "turn/action" resp)
+      (fubar--note-response "turn/action" resp)
       (message "[fubar] Action logged: %s on %s" action fubar--selected-pattern)
       resp)))
 
@@ -216,6 +407,8 @@
                     ,@(when (and note (not (string-empty-p note)))
                         `((note . ,note))))))
     (let ((resp (fubar--post "/musn/turn/use" payload)))
+      (fubar--log-event "turn/use" resp)
+      (fubar--note-response "turn/use" resp)
       (message "[fubar] Use claimed: %s" fubar--selected-pattern)
       resp)))
 
@@ -235,6 +428,8 @@
                     ,@(when (and note (not (string-empty-p note)))
                         `((note . ,note))))))
     (let ((resp (fubar--post "/musn/evidence/add" payload)))
+      (fubar--log-event "evidence/add" resp)
+      (fubar--note-response "evidence/add" resp)
       (message "[fubar] Evidence added: %s" (car files))
       resp)))
 
@@ -251,6 +446,8 @@
                         `((summary . ((note . ,summary))))))))
     (let ((resp (fubar--post "/musn/turn/end" payload)))
       (setq fubar--selected-pattern nil)
+      (fubar--log-event "turn/end" resp)
+      (fubar--note-response "turn/end" resp)
       (message "[fubar] Turn %d ended" turn)
       resp)))
 
@@ -282,7 +479,205 @@
         fubar--current-turn nil
         fubar--selected-pattern nil
         fubar--candidates nil)
+  (setq fubar--last-aif-line nil
+        fubar--modeline-string (if fubar-modeline-mode " fubar:aif=none" nil))
   (message "[fubar] State reset"))
+
+;;; Chat rooms (MUSN pause-latch + bids)
+
+(defvar fubar-chat-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "g") #'fubar-chat-refresh)
+    (define-key map (kbd "s") #'fubar-chat-send)
+    (define-key map (kbd "b") #'fubar-chat-bid)
+    (define-key map (kbd "u") #'fubar-chat-unlatch)
+    (define-key map (kbd "q") #'fubar-chat-leave)
+    map)
+  "Keymap for `fubar-chat-mode'.")
+
+(define-derived-mode fubar-chat-mode special-mode "FuBar-Chat"
+  "Major mode for MUSN chat rooms."
+  (setq truncate-lines t))
+
+(defun fubar-chat--room ()
+  (or fubar-chat--room fubar-chat-room))
+
+(defun fubar-chat--author ()
+  (let ((name (or fubar-chat-author-name fubar-client-id)))
+    (if (and name (not (string-empty-p name)))
+        `((id . ,fubar-client-id) (name . ,name))
+      `((id . ,fubar-client-id)))))
+
+(defun fubar-chat--buffer ()
+  (let ((buf (get-buffer-create fubar-chat--buffer-name)))
+    (with-current-buffer buf
+      (unless (derived-mode-p 'fubar-chat-mode)
+        (fubar-chat-mode)))
+    buf))
+
+(defun fubar-chat--append-line (line)
+  (with-current-buffer (fubar-chat--buffer)
+    (let ((inhibit-read-only t))
+      (goto-char (point-max))
+      (insert line "\n"))))
+
+(defun fubar-chat--event-type (event)
+  (let ((etype (plist-get event :event/type)))
+    (cond
+     ((keywordp etype) (symbol-name etype))
+     ((symbolp etype) (symbol-name etype))
+     (t (format "%s" etype)))))
+
+(defun fubar-chat--format-event (event)
+  (let* ((etype (fubar-chat--event-type event))
+         (payload (plist-get event :payload))
+         (at (or (plist-get event :at) (plist-get payload :at)))
+         (at (if (stringp at) at (format "%s" at))))
+    (cond
+     ((string= etype "chat/message")
+      (let* ((author (plist-get payload :author))
+             (name (or (plist-get author :name) (plist-get author :id) "anon"))
+             (text (plist-get payload :text)))
+        (format "[%s] %s: %s (latch)" at name text)))
+     ((string= etype "chat/bid")
+      (let* ((bidder (plist-get payload :bidder))
+             (name (or (plist-get bidder :name) (plist-get bidder :id) "anon"))
+             (note (or (plist-get payload :note) ""))
+             (bid-id (plist-get payload :bid/id)))
+        (format "[%s] bid %s by %s %s" at (or bid-id "?") name note)))
+     ((string= etype "chat/unlatch")
+      (let* ((accepted (plist-get payload :accepted))
+             (bid-id (plist-get accepted :bid/id))
+             (by (plist-get payload :by))
+             (name (or (plist-get by :name) (plist-get by :id) "chair")))
+        (format "[%s] unlatch by %s (accepted %s)" at name (or bid-id "?"))))
+     (t
+      (format "[%s] %s" at etype)))))
+
+(defun fubar-chat--apply-events (events)
+  (when (vectorp events)
+    (dotimes (idx (length events))
+      (let ((event (aref events idx)))
+        (fubar-chat--append-line (fubar-chat--format-event event))))))
+
+(defun fubar-chat-refresh ()
+  "Poll the current chat room for new events."
+  (interactive)
+  (let* ((room (fubar-chat--room))
+         (payload `((room . ,room)
+                    ,@(when (> fubar-chat--last-cursor 0)
+                        `((since . ,fubar-chat--last-cursor)))))
+         (resp (fubar--post "/musn/chat/state" payload)))
+    (when (plist-get resp :ok)
+      (setq fubar-chat--last-state (plist-get resp :state))
+      (setq fubar-chat--last-cursor (or (plist-get resp :cursor) fubar-chat--last-cursor))
+      (fubar-chat--apply-events (plist-get resp :events)))))
+
+(defun fubar-chat-join (&optional room)
+  "Join a MUSN chat ROOM (default `fubar-chat-room')."
+  (interactive "sRoom: ")
+  (setq fubar-chat--room (if (and room (not (string-empty-p room)))
+                             room
+                           fubar-chat-room))
+  (setq fubar-chat--last-cursor 0)
+  (setq fubar-chat--last-state nil)
+  (display-buffer (fubar-chat--buffer))
+  (fubar-chat--append-line (format "== Joined room %s ==" fubar-chat--room))
+  (fubar-chat-refresh)
+  (fubar-chat-start-poll))
+
+(defun fubar-chat-leave ()
+  "Leave the current MUSN chat room and stop polling."
+  (interactive)
+  (fubar-chat-stop-poll)
+  (setq fubar-chat--room nil)
+  (message "[fubar] Chat polling stopped"))
+
+(defun fubar-chat-start-poll ()
+  "Start polling the chat room."
+  (when fubar-chat--poll-timer
+    (cancel-timer fubar-chat--poll-timer))
+  (setq fubar-chat--poll-timer
+        (run-at-time 0 fubar-chat-poll-interval #'fubar-chat-refresh)))
+
+(defun fubar-chat-stop-poll ()
+  "Stop polling the chat room."
+  (when fubar-chat--poll-timer
+    (cancel-timer fubar-chat--poll-timer)
+    (setq fubar-chat--poll-timer nil)))
+
+(defun fubar-chat-send (text)
+  "Send TEXT to the current chat room."
+  (interactive "sMessage: ")
+  (let* ((room (fubar-chat--room))
+         (payload `((room . ,room)
+                    (msg-id . ,(fubar--uuid))
+                    (author . ,(fubar-chat--author))
+                    (text . ,text)))
+         (resp (fubar--post "/musn/chat/message" payload)))
+    (if (plist-get resp :ok)
+        (fubar-chat-refresh)
+      (message "[fubar] Chat send failed"))))
+
+(defun fubar-chat-bid (&optional note)
+  "Raise a bid (hand) to unlatch the room."
+  (interactive "sBid note: ")
+  (let* ((room (fubar-chat--room))
+         (payload `((room . ,room)
+                    (msg-id . ,(fubar--uuid))
+                    (bidder . ,(fubar-chat--author))
+                    ,@(when (and note (not (string-empty-p note)))
+                        `((note . ,note)))))
+         (resp (fubar--post "/musn/chat/bid" payload)))
+    (if (plist-get resp :ok)
+        (fubar-chat-refresh)
+      (message "[fubar] Chat bid failed"))))
+
+(defun fubar-chat--pending-bids ()
+  (let* ((state fubar-chat--last-state)
+         (bids (plist-get state :bids))
+         (out nil))
+    (when (vectorp bids)
+      (dotimes (idx (length bids))
+        (let* ((bid (aref bids idx))
+               (status (plist-get bid :status))
+               (pending (or (eq status :pending)
+                            (string= (format "%s" status) "pending")))
+               (bid-id (plist-get bid :bid/id)))
+          (when (and pending bid-id)
+            (push bid-id out)))))
+    (nreverse out)))
+
+(defun fubar-chat-unlatch (&optional bid-id)
+  "Unlatch the room by accepting BID-ID."
+  (interactive)
+  (let* ((bids (fubar-chat--pending-bids))
+         (bid-id (or bid-id
+                     (when bids
+                       (completing-read "Accept bid: " bids nil t)))))
+    (if (or (null bid-id) (string-empty-p bid-id))
+        (message "[fubar] No pending bids")
+      (let* ((room (fubar-chat--room))
+             (payload `((room . ,room)
+                        (msg-id . ,(fubar--uuid))
+                        (bid/id . ,bid-id)
+                        (by . ,(fubar-chat--author))))
+             (resp (fubar--post "/musn/chat/unlatch" payload)))
+        (if (plist-get resp :ok)
+            (fubar-chat-refresh)
+          (message "[fubar] Chat unlatch failed"))))))
+
+;;; Launch fucodex into chat
+
+(defun fubar-chat-launch-fucodex (prompt &optional intent room)
+  "Launch fucodex MUSN run with PROMPT and join the chat ROOM."
+  (interactive "sPrompt: ")
+  (require 'fubar-viewer)
+  (let* ((room (or (and room (not (string-empty-p room)) room) fubar-chat-room))
+         (author (or fubar-chat-author-name fubar-client-id)))
+    (when room
+      (fubar-chat-join room))
+    (fubar-musn-launch-and-view prompt intent room author)))
 
 ;;; Integration with other modes
 
@@ -300,5 +695,7 @@
 ;; (add-hook 'after-save-hook #'fubar-after-save-hook)
 
 (provide 'fubar)
+
+(fubar-modeline-mode 1)
 
 ;;; fubar.el ends here

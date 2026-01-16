@@ -25,7 +25,7 @@
 (require 'url)
 (require 'url-http)
 
-(declare-function fubar-musn-launch-and-view "fubar-viewer" (prompt &optional intent))
+(declare-function fubar-musn-launch-and-view "fubar-viewer" (prompt &optional intent chat-room chat-author))
 
 (defgroup fubar-hud nil
   "HUD display for fulab pattern-aware sessions."
@@ -990,9 +990,9 @@
       (fubar-hud--ensure-mode)
       (unless (equal fubar-hud--session-id session-id)
         (setq fubar-hud--session-id session-id)
-        (unless (eq fubar-hud--intent-source :agent)
-          (setq fubar-hud--intent-source nil)
-          (setq fubar-hud--intent nil)))
+        ;; New session should clear prior intent regardless of source.
+        (setq fubar-hud--intent-source nil)
+        (setq fubar-hud--intent nil))
       (fubar-hud-refresh))))
 
 (defun fubar-hud-set-musn-paused (paused &optional reason)

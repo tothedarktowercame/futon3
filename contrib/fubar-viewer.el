@@ -951,10 +951,11 @@ interactively), set the HUD intent immediately as the handshake."
       (fubar-musn--note-launch-error buf err))))
 
 ;; One-shot launcher for MUSN runs via fucodex (best effort inference of patterns)
-(defun fubar-musn-launch-and-view (prompt &optional intent)
+(defun fubar-musn-launch-and-view (prompt &optional intent chat-room chat-author)
   "Run fucodex in MUSN mode with PROMPT, stream MUSN log, and open 2-up view.
 Optional INTENT overrides the HUD intent and MUSN handshake; otherwise fucodex
-computes a summary intent from PROMPT. Assumes MUSN server is running at
+computes a summary intent from PROMPT. CHAT-ROOM and CHAT-AUTHOR enable MUSN
+chat routing and display name. Assumes MUSN server is running at
 `fubar-musn-url`. Patterns are not required; the agent can infer from the
 prompt."
   (interactive "sPrompt: ")
@@ -962,6 +963,13 @@ prompt."
          (intent (let ((trimmed (and intent (string-trim intent))))
                    (when (and trimmed (not (string-empty-p trimmed)))
                      trimmed)))
+         (chat-room (let ((room (or chat-room (when (boundp 'fubar-chat-room) fubar-chat-room))))
+                      (when (and room (not (string-empty-p room)))
+                        room)))
+         (chat-author (let ((author (or chat-author
+                                        (when (boundp 'fubar-chat-author-name) fubar-chat-author-name))))
+                        (when (and author (not (string-empty-p author)))
+                          author)))
          (session-id (fubar-musn--generate-session-id))
          (log fubar-musn--default-log)
          (fucodex-path (expand-file-name "fucodex" fubar-hud-futon3-root))
@@ -971,6 +979,10 @@ prompt."
                            (concat "FUTON3_MUSN_PROMPT=" (shell-quote-argument prompt))
                            (when intent
                              (concat "FUTON3_MUSN_INTENT=" (shell-quote-argument intent)))
+                           (when chat-room
+                             (concat "FUCODEX_CHAT_ROOM=" (shell-quote-argument chat-room)))
+                           (when chat-author
+                             (concat "FUCODEX_CHAT_AUTHOR=" (shell-quote-argument chat-author)))
                            (concat "FUTON3_MUSN_URL=" (shell-quote-argument fubar-musn-url))
                            "FUCODEX_PREFLIGHT=off"))
                " "))
@@ -987,6 +999,8 @@ prompt."
       (fubar-hud-set-session-id session-id))
     (when (fboundp 'fubar-hud-set-musn-paused)
       (fubar-hud-set-musn-paused nil))
+    (when (and chat-room (fboundp 'fubar-chat-join))
+      (fubar-chat-join chat-room))
     ;; Reset the local MUSN stream log so we capture the handshake from the top.
     (when (and log (file-exists-p log))
       (with-temp-file log))

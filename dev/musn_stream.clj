@@ -1225,6 +1225,12 @@
                         (:aif hud-map) (assoc :aif (:aif hud-map)))]
       (when-let [aif-policy (:aif hud-map)]
         (swap! state assoc :aif-policy aif-policy))
+      ;; Log task summary at turn start
+      (when seed-intent
+        (let [line (format "[task] %s" seed-intent)]
+          (log! line)
+          (println line)
+          (flush)))
       (let [start-resp (musn-start session t hud-payload)]
         (let [logged? (log-latest-aif-tap! state session)]
           (when (and (seq candidate-ids) (not logged?) (not (:aif start-resp)))

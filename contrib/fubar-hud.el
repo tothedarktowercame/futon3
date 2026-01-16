@@ -392,11 +392,13 @@
   "Build HUD via futon3 server."
   (let* ((prototypes (when (and patterns (not (string-empty-p patterns)))
                        (split-string patterns "," t "[[:space:]]+")))
-         (payload `(("intent" . ,(or intent "unspecified"))
-                    ("prototypes" . ,prototypes)
+         (payload `(("prototypes" . ,prototypes)
                     ("pattern-limit" . 4)
                     ("certify-commit" . ,(and fubar-hud-certify-commit t))
                     ("repo-root" . ,fubar-hud-futon3-root)))
+         (payload (if (and intent (not (string-empty-p (string-trim intent))))
+                      (append payload `(("intent" . ,intent)))
+                    payload))
          (payload (if fubar-hud--session-id
                       (append payload `(("session-id" . ,fubar-hud--session-id)))
                     payload))
@@ -414,11 +416,13 @@
   "Build HUD via futon3 server and invoke CALLBACK with the HUD map or nil."
   (let* ((prototypes (when (and patterns (not (string-empty-p patterns)))
                        (split-string patterns "," t "[[:space:]]+")))
-         (payload `(("intent" . ,(or intent "unspecified"))
-                    ("prototypes" . ,prototypes)
+         (payload `(("prototypes" . ,prototypes)
                     ("pattern-limit" . 4)
                     ("certify-commit" . ,(and fubar-hud-certify-commit t))
                     ("repo-root" . ,fubar-hud-futon3-root)))
+         (payload (if (and intent (not (string-empty-p (string-trim intent))))
+                      (append payload `(("intent" . ,intent)))
+                    payload))
          (payload (if fubar-hud--session-id
                       (append payload `(("session-id" . ,fubar-hud--session-id)))
                     payload))
@@ -448,7 +452,9 @@
 (defun fubar-hud--build-hud (intent &optional patterns)
   "Build HUD for INTENT, optionally seeding PATTERNS."
   (or (fubar-hud--build-hud-server intent patterns)
-      (let* ((args (list "--intent" (or intent "unspecified")))
+      (let* ((args (if (and intent (not (string-empty-p (string-trim intent))))
+                        (list "--intent" intent)
+                      nil))
              (args (if patterns
                        (append args (list "--prototypes" patterns))
                      args))
@@ -787,7 +793,7 @@
 
     ;; Intent
     (insert (propertize "Intent\n" 'face 'fubar-hud-header-face))
-    (insert "  " (propertize (or (plist-get hud :intent) "unspecified")
+    (insert "  " (propertize (or (plist-get hud :intent) "")
                               'face 'fubar-hud-intent-face)
             "\n")
     (when (plist-get hud :intent)
@@ -982,9 +988,11 @@
   (let ((buf (get-buffer-create fubar-hud-buffer-name)))
     (with-current-buffer buf
       (fubar-hud--ensure-mode)
-      (setq fubar-hud--session-id session-id)
-      (setq fubar-hud--intent-source nil)
-      (setq fubar-hud--intent nil)
+      (unless (equal fubar-hud--session-id session-id)
+        (setq fubar-hud--session-id session-id)
+        (unless (eq fubar-hud--intent-source :agent)
+          (setq fubar-hud--intent-source nil)
+          (setq fubar-hud--intent nil)))
       (fubar-hud-refresh))))
 
 (defun fubar-hud-set-musn-paused (paused &optional reason)

@@ -1,0 +1,20 @@
+@flexiarg musn/declare-scope
+@title Declare Scope and Exit Condition
+@sigils [🧭/界]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: State in-bounds scope, out-of-bounds scope, and a clear exit condition up front.
+  + context: Ambiguous scope makes it hard to judge off-trail moves and completion.
+  + IF:
+    The agent proceeds without declaring what is in scope or when to stop.
+  + HOWEVER:
+    The run still needs enough flexibility to explore safely.
+  + THEN:
+    Require a brief scope line describing in-bounds, out-of-bounds, and exit condition.
+  + BECAUSE:
+    Explicit scope anchors decisions and makes pauses and audit logs legible.
+  + NEXT-STEPS:
+    - evidence: agent message contains a "Scope:" line with in/out/exit.
+    - evidence-shape: {:scope {:in :string, :out :string, :exit :string}}

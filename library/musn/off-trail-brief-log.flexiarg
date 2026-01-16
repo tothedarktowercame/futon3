@@ -1,0 +1,20 @@
+@flexiarg musn/off-trail-brief-log
+@title Brief Off-Trail Logging
+@sigils [🧾/外]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: When going off-trail, keep the note brief and record why.
+  + context: Off-trail actions are allowed but must be explainable.
+  + IF:
+    The agent goes off-trail without a reason or with long, unfocused justification.
+  + HOWEVER:
+    Exploration can be necessary for progress.
+  + THEN:
+    Log a short reason for off-trail actions (one sentence, anchored to intent).
+  + BECAUSE:
+    Brief reasons preserve auditability without derailing the run.
+  + NEXT-STEPS:
+    - evidence: turn/action note includes a concise off-trail rationale.
+    - evidence-shape: {:action :string, :note :string, :on-trail :boolean}

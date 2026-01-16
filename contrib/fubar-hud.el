@@ -149,6 +149,9 @@
 (defvar-local fubar-hud--intent nil
   "Current intent string.")
 
+(defvar-local fubar-hud--intent-source nil
+  "Where the current intent came from (:agent, :hud, :manual, nil).")
+
 (defvar-local fubar-hud--approval-policy nil
   "Approval policy override for this HUD buffer.")
 
@@ -273,13 +276,15 @@
 (defun fubar-hud--maybe-update-intent-from-line (line)
   "Update HUD intent from a LINE that declares intent."
   (let ((case-fold-search t))
-    (when (string-match "^\\s-*\\(?:\\[intent\\]\\|intent:\\)\\s-*\\(.+\\)$" line)
+    (when (string-match "^\\s-*\\(?:\\[hud-intent\\]\\|hud-intent:\\|\\[intent\\]\\|intent:\\)\\s-*\\(.+\\)$" line)
       (let ((intent (string-trim (match-string 1 line))))
         (when (and intent (not (string-empty-p intent)))
           (let ((hud-buf (get-buffer fubar-hud-buffer-name)))
             (when hud-buf
               (with-current-buffer hud-buf
+                (fubar-hud--ensure-mode)
                 (setq fubar-hud--intent (fubar-hud--summarize-intent intent))
+                (setq fubar-hud--intent-source :agent)
                 (fubar-hud-refresh)))))))))
 
 (defun fubar-hud--pause-line-p (line)
@@ -968,6 +973,7 @@
     (with-current-buffer buf
       (fubar-hud--ensure-mode)
       (setq fubar-hud--intent (fubar-hud--summarize-intent intent))
+      (setq fubar-hud--intent-source :manual)
       (fubar-hud-refresh))))
 
 (defun fubar-hud-set-session-id (session-id)
@@ -977,6 +983,8 @@
     (with-current-buffer buf
       (fubar-hud--ensure-mode)
       (setq fubar-hud--session-id session-id)
+      (setq fubar-hud--intent-source nil)
+      (setq fubar-hud--intent nil)
       (fubar-hud-refresh))))
 
 (defun fubar-hud-set-musn-paused (paused &optional reason)
@@ -1015,15 +1023,21 @@ Copies intent, sigils, candidates, and any other known HUD fields, then refreshe
              (candidates (plist-get hud-map :candidates))
              (aif (plist-get hud-map :aif))
              (aif-live (plist-get hud-map :aif-live)))
-        (when intent (setq fubar-hud--intent (fubar-hud--summarize-intent intent)))
+        (when (and intent (not (eq fubar-hud--intent-source :agent)))
+          (setq fubar-hud--intent (fubar-hud--summarize-intent intent))
+          (setq fubar-hud--intent-source :hud))
         (when sigils (setq fubar-hud--sigils sigils))
         (when candidates (setq fubar-hud--candidates candidates))
         (when aif (setq fubar-hud--aif aif))
         (when aif-live (setq fubar-hud--aif-live aif-live)))
       ;; Render immediately; skip server rebuild when we already have a full HUD payload.
-      (if fubar-hud-async-refresh
-          (fubar-hud--render hud-map)
-        (fubar-hud--render hud-map)))))
+      (let ((render-hud (if (and (eq fubar-hud--intent-source :agent)
+                                 fubar-hud--intent)
+                            (plist-put (copy-sequence hud-map) :intent fubar-hud--intent)
+                          hud-map)))
+        (if fubar-hud-async-refresh
+            (fubar-hud--render render-hud)
+          (fubar-hud--render render-hud))))))
 
 (defun fubar-hud-refresh ()
   "Refresh HUD with current intent."

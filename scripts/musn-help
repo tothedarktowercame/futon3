@@ -24,8 +24,27 @@ MUSN help: pattern selection
 - In multiarg files, use the @arg pattern id (not the file basename).
 EOF
     ;;
+  musn|/musn)
+    cat <<'EOF'
+MUSN help: core patterns (one line each)
+
+- musn/plan-before-tool: require a plan line before any tool or wide scan.
+- musn/declare-scope: state in-bounds, out-of-bounds, and exit condition up front.
+- musn/intent-restatement: first line must be "hud-intent: <brief restatement>".
+- musn/read-aif-plus-one: read the AIF suggestion plus one other candidate before acting.
+- musn/off-trail-brief-log: keep off-trail notes brief and record why.
+- musn/psr-pur-real-actions: PSR/PUR should reflect real actions with evidence.
+- musn/pattern-action-rpc: log pattern actions via pattern-action RPC.
+- musn/pattern-action-justification: justify implement/update notes with why the edit fits.
+- musn/pattern-action-helper-command: use scripts/pattern-action for pattern logging.
+- musn/tool-name-hygiene: do not guess tool names; use documented helpers.
+- musn/fulab-report-block: end responses with a FULAB-REPORT block.
+
+Scope guardrail (local): avoid repo-wide rg/rg --files scans; announce or ask first.
+EOF
+    ;;
   *)
-    echo "usage: musn-help [tools|pattern]" >&2
+    echo "usage: musn-help [tools|pattern|musn]" >&2
     exit 2
     ;;
 esac

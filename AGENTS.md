@@ -74,6 +74,12 @@ run → job-id; status eventually done with metrics.
 
 Killing a client doesn’t affect others; server logs a clean drop.
 
+### MUSN guidance hygiene
+
+- Avoid prompt injection outside MUSN-HELP. If new guidance is needed, add or update a pattern in `library/musn` instead of appending raw instructions to the HUD/prompt.
+- Keep any HUD help text short; prefer pointing to MUSN patterns that agents and humans can read.
+- When guidance is added, ensure it is represented as a pattern with context/IF/HOWEVER/THEN/BECAUSE/next-steps.
+
 
 
 Repo layout (tiny)

@@ -1,0 +1,20 @@
+@flexiarg musn/pattern-action-justification
+@title Justify Implement/Update Actions
+@sigils [📌/因]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Implement/update actions must include a justification tied to the pattern.
+  + context: Pattern-driven edits need explicit rationale to be auditable.
+  + IF:
+    Implement/update notes omit why the edit follows the pattern.
+  + HOWEVER:
+    Short notes are preferred to reduce overhead.
+  + THEN:
+    Require implement/update notes to state why the edit follows the pattern.
+  + BECAUSE:
+    Justified notes prevent unreasoned edits and make warnings meaningful.
+  + NEXT-STEPS:
+    - evidence: pattern-action implement/update notes include a rationale clause.
+    - evidence-shape: {:action :string, :note :string, :pattern/id :string}

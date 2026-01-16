@@ -1,0 +1,20 @@
+@flexiarg musn/pattern-action-helper-command
+@title Use Pattern-Action Helper Commands
+@sigils [🛠️/令]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: When logging pattern actions, use the pattern-action helper command.
+  + context: Direct helper usage ensures reliable pattern-action RPC logs.
+  + IF:
+    The agent logs actions without using the helper command.
+  + HOWEVER:
+    The run still needs to proceed quickly.
+  + THEN:
+    Use `scripts/pattern-action read|implement|update <pattern-id> <note>` when needed.
+  + BECAUSE:
+    The helper ensures consistent RPC payloads and audit records.
+  + NEXT-STEPS:
+    - evidence: command_execution includes scripts/pattern-action for pattern actions.
+    - evidence-shape: {:command :string, :exit_code :int}

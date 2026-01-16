@@ -7,7 +7,8 @@
    - Gets seeded into agent prompts
    - Gets displayed to humans
    - Gets archived with session traces"
-  (:require [clojure.string :as str]
+  (:require [clojure.set :as set]
+            [clojure.string :as str]
             [futon3.pattern-hints :as hints]
             [futon3.cue-embedding :as cue]
             [futon3.glove-intent :as glove]))
@@ -134,7 +135,7 @@
 (defn- score-candidates-with-aif
   "Score candidates using simple heuristics (placeholder for full AIF integration).
    Lower G is better."
-  [candidates {:keys [intent sigils]}]
+  [candidates {:keys [sigils]}]
   (let [white-space? (white-space-candidates? candidates)]
     (if (empty? candidates)
       {:suggested nil
@@ -156,7 +157,7 @@
                                 sigil-bonus (if (and (seq sigils) (seq (:sigils c)))
                                               (let [c-sigils (set (map :emoji (:sigils c)))
                                                     i-sigils (set (map :emoji sigils))]
-                                                (if (seq (clojure.set/intersection c-sigils i-sigils))
+                                                (if (seq (set/intersection c-sigils i-sigils))
                                                   -0.1
                                                   0.0))
                                               0.0)
@@ -207,7 +208,7 @@
    - :mana - optional mana state map for prompt display
    - :musn-help - optional boolean to show MUSN help prompt
    - :certificates - optional certificate vector for PSR/PUR"
-  [{:keys [intent prototypes sigils pattern-limit aif-config certificates mana musn-help]
+  [{:keys [intent prototypes sigils pattern-limit certificates mana musn-help]
     :or {pattern-limit 4}}]
   (let [all-patterns (hints/all-patterns)
         ;; Resolve sigils from intent or prototypes
@@ -229,23 +230,22 @@
                          aif-candidates)
         ;; Score with AIF
         aif-result (score-candidates-with-aif aif-candidates
-                                               {:intent intent
-                                                :sigils resolved-sigils})
+                                               {:sigils resolved-sigils})
         candidate-ids (set (map :id (:patterns hint-result)))
         aif-result (assoc aif-result
                           :suggested-in-candidates
-                          (contains? candidate-ids (:suggested aif-result)))]
-    (let [display-candidates (->> (concat candidates glove-candidates)
-                                  (reduce (fn [{:keys [seen out]} cand]
-                                            (let [cid (:id cand)]
-                                              (if (contains? seen cid)
-                                                {:seen seen :out out}
-                                                {:seen (conj seen cid)
-                                                 :out  (conj out cand)})))
-                                          {:seen #{} :out []})
-                                  :out
-                                  (take pattern-limit))]
-      {:hud/id (generate-hud-id)
+                          (contains? candidate-ids (:suggested aif-result)))
+        display-candidates (->> (concat candidates glove-candidates)
+                                (reduce (fn [{:keys [seen out]} cand]
+                                          (let [cid (:id cand)]
+                                            (if (contains? seen cid)
+                                              {:seen seen :out out}
+                                              {:seen (conj seen cid)
+                                               :out  (conj out cand)})))
+                                        {:seen #{} :out []})
+                                :out
+                                (take pattern-limit))]
+    {:hud/id (generate-hud-id)
      :hud/timestamp (now-inst)
      ;; Input context
      :intent (or intent "unspecified")
@@ -264,7 +264,7 @@
      ;; MUSN help
      :musn-help musn-help
      ;; Agent response (filled after turn)
-     :agent-report nil})))
+     :agent-report nil}))
 
 (defn hud->prompt-block
   "Format HUD as text block for agent prompt injection."
@@ -329,6 +329,7 @@
                                  "You have %s mana. Gain mana points by reading patterns and completing their next steps. Other actions cost mana.\n"
                                  "Before acting, state a 1-2 line plan.\n"
                                  "Helpers live in /home/joe/code/futon3/scripts — use those exact paths.\n"
+                                 "Related design patterns live in /home/joe/code/futon3/library; you may read/edit them if helpful.\n"
                                  "Tool roster (you should emit these signals when you do the corresponding action):\n"
                                  "- /home/joe/code/futon3/scripts/pattern-select library/<pattern> <state why you want to read it>\n"
                                  "- /home/joe/code/futon3/scripts/pattern-use    library/<pattern> <state where you will apply it>\n"
@@ -336,6 +337,7 @@
                                  "- /home/joe/code/futon3/scripts/musn-plan      \"Plan: ...\"\n"
                                  "- /home/joe/code/futon3/scripts/wide-search   <rg args>\n"
                                  "If unsure, run: musn-help tools  (or musn-help pattern)\n"
+                                 "First output line must be: hud-intent: <brief restatement of the task>\n"
                                  "[/MUSN-HELP]\n")
                             (mana-num mana-balance)))
         live-summary (:summary aif-live)
@@ -384,29 +386,9 @@
          (when live-line (str live-line "\n"))
          mana-line "\n"
          (or help-line "")
-         "\n"
-         "Declare scope: in-bounds, out-of-bounds, and exit condition.\n"
-         "Start your response with: Intent: <one-line restatement of the task>\n"
-         "Before acting, state a 1-2 line plan and read the AIF suggestion plus one other candidate (if present).\n"
-         "If selecting a different pattern than AIF suggests, provide a deviation reason explaining why.\n"
-         "If you go off-trail, keep it brief and log why.\n"
-         "\n"
-         "PSR/PUR are emitted each turn from the live stream; focus on real actions.\n"
-         "\n"
-         "Log pattern actions via RPC during the run:\n"
-         "Include :action \"read|implement|update\" and :notes in the FULAB-REPORT block; the stream runner emits the pattern-action event.\n"
-         "For implement/update, the note must state why the edit follows the pattern.\n"
-         "If the helper is needed, run the shell command: pattern-action <read|implement|update> <pattern-id> [note]\n"
-         "Do not guess tool names; pattern-action is a local shell helper (scripts/pattern-action), not a tool call.\n"
-         "Do not edit without a justified pattern-action; unreasoned edits are warnings.\n"
-         "\n"
-         "After completing the task, report which pattern(s) you applied:\n"
-         "[FULAB-REPORT]\n"
-         ":applied \"pattern-id-here\"\n"
-         ":action \"implement\"\n"
-         ":notes \"why this pattern fit\"\n"
-         "[/FULAB-REPORT]\n"
-         "[/FULAB-HUD]")))
+        "\n"
+        "MUSN guidance: run `musn-help musn`.\n"
+        "[/FULAB-HUD]")))
 
 (defn- extract-report-block
   "Extract FULAB-REPORT block from response text."

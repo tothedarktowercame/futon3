@@ -1,0 +1,20 @@
+@flexiarg musn/intent-restatement
+@title Intent Restatement
+@sigils [🗣️/意]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Start the response with a one-line intent restatement.
+  + context: The agent must align its response to the user task and patterns.
+  + IF:
+    The response begins without an explicit intent line.
+  + HOWEVER:
+    The run still needs momentum; we should avoid long preambles.
+  + THEN:
+    Begin with "Intent: <one-line restatement>" before plans or tools.
+  + BECAUSE:
+    A crisp intent line improves PSR/PUR anchoring and human review.
+  + NEXT-STEPS:
+    - evidence: first assistant line starts with "Intent:".
+    - evidence-shape: {:intent :string}

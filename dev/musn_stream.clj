@@ -27,6 +27,7 @@
 
 (def musn-url (or (System/getenv "FUTON3_MUSN_URL") "http://localhost:6065"))
 (def musn-intent (System/getenv "FUTON3_MUSN_INTENT"))
+(def musn-prompt (System/getenv "FUTON3_MUSN_PROMPT"))
 (def musn-session-id
   (let [sid (System/getenv "FUTON3_MUSN_SESSION_ID")]
     (when (and sid (not (str/blank? sid)))
@@ -35,6 +36,57 @@
 (def require-approval? (not= "0" (or (System/getenv "FUTON3_MUSN_REQUIRE_APPROVAL") "1")))
 (def musn-client-id (or (System/getenv "FUTON3_MUSN_CLIENT_ID") "fucodex"))
 (def aif-config-path (System/getenv "FUTON3_MUSN_AIF_CONFIG_PATH"))
+
+(defn- strip-hud-block [prompt]
+  (when (and prompt (string? prompt))
+    (let [lines (str/split-lines prompt)]
+      (->> lines
+           (reduce (fn [{:keys [acc in-block?]} line]
+                     (cond
+                       (re-find #"^\\s*\\[FULAB-HUD\\]\\s*$" line)
+                       {:acc acc :in-block? true}
+                       (re-find #"^\\s*\\[/FULAB-HUD\\]\\s*$" line)
+                       {:acc acc :in-block? false}
+                       in-block? {:acc acc :in-block? in-block?}
+                       :else {:acc (conj acc line) :in-block? in-block?}))
+                   {:acc [] :in-block? false})
+           :acc
+           (str/join "\n")))))
+
+(defn- extract-intent-from-prompt [prompt]
+  (when (and prompt (string? prompt))
+    (let [prompt (or (strip-hud-block prompt) prompt)
+          lines (str/split-lines prompt)
+          start (first (keep-indexed (fn [idx line]
+                                       (when (re-find #"^\\s*(User task|Task|Intent)\\s*:" line)
+                                         idx))
+                                     lines))]
+      (if (some? start)
+        (let [first-line (str/trim (str/replace (nth lines start)
+                                                #"^\\s*(User task|Task|Intent)\\s*:\\s*" ""))]
+          (loop [idx (inc start)
+                 acc (cond-> [] (not (str/blank? first-line)) (conj first-line))]
+            (if (and (< idx (count lines))
+                     (let [line (nth lines idx)]
+                       (not (str/blank? (str/trim line)))))
+              (recur (inc idx) (conj acc (str/trim (nth lines idx))))
+              (str/join " " acc))))
+        (some->> lines
+                 (drop-while #(str/blank? (str/trim %)))
+                 first
+                 str/trim)))))
+
+(defn- summarize-intent [text]
+  (when (and text (string? text))
+    (let [line (or (first (str/split-lines text)) text)
+          cleaned (str/trim (str/replace line #"\s+" " "))]
+      (if (> (count cleaned) 160)
+        (str (subs cleaned 0 157) "...")
+        cleaned))))
+
+(defn- compute-intent [prompt]
+  (let [candidate (or (extract-intent-from-prompt prompt) prompt)]
+    (summarize-intent candidate)))
 
 (defn session-id [session]
   (or (:session/id session)
@@ -77,6 +129,7 @@
 (declare log-latest-aif-tap!)
 (declare tap-event-id)
 (declare log-mana-response!)
+(declare wait-for-resume!)
 
 (defn- repo-root []
   (or (some-> (System/getenv "FUTON3_REPO_ROOT") str/trim not-empty)
@@ -137,8 +190,7 @@
   (let [sid (require-session-id session)]
     (post! "/musn/turn/start" {:session/id sid
                                :turn turn
-                               :hud (cond-> (or hud {})
-                                      musn-intent (assoc :intent musn-intent))})))
+                               :hud (or hud {})})))
 
 (defn musn-plan [session turn plan]
   (let [sid (require-session-id session)]
@@ -212,6 +264,17 @@
   (and (string? text)
        (re-find #"(?i)^(?:\s*\[plan\]\s+|\s*plan\s*:)" text)))
 
+(def ^:private intent-line-re
+  #"(?i)\b(?:hud-)?intent\s*:\s*([^\n]+)")
+
+(defn- intent-line [text]
+  (when (string? text)
+    (let [line (str/trim text)
+          match (re-find intent-line-re line)]
+      (when-let [intent (some-> match second str/trim)]
+        (when-not (str/blank? intent)
+          intent)))))
+
 (def ^:private plan-proxy-re
   #"(?i)^(?:\*+)?\s*plan(?:ning)?\b")
 
@@ -258,6 +321,38 @@
     (swap! state assoc :turn-plan? true :turn-plan-proxy? true)
     (when-let [proxy (plan-proxy-text text)]
       (musn-plan musn-session turn (str "Plan: " proxy)))))
+
+(defn- note-intent-seen! [state musn-session intent]
+  (when (and intent (not (:intent-seen? @state)))
+    (swap! state assoc :intent-seen? true :intent intent)
+    (let [line (format "[hud-intent] %s" intent)]
+      (log! line)
+      (println line)
+      (flush))
+    (when require-approval?
+      (let [line "[musn-pause] intent received; waiting for approval to proceed"]
+        (log! line)
+        (println line)
+        (flush))
+      (wait-for-resume! state musn-session))))
+
+(defn- enforce-intent-first-output!
+  [state musn-session]
+  (when (:first-output? @state)
+    (swap! state assoc :first-output? false)
+    (when-not (:intent-seen? @state)
+      (log-warning! "missing-intent-first-output"
+                    {:turn (:turn @state)
+                     :note "first agent output must include Intent: or hud-intent:"})
+      (let [line "[musn-abort] missing intent in first output; ending run"]
+        (log! line)
+        (println line)
+        (flush))
+      (try
+        (when-let [turn (:turn @state)]
+          (musn-end musn-session turn))
+        (catch Throwable _ nil))
+      (System/exit 0))))
 
 (defn- maybe-warn-missing-plan! [state action]
   (when (and (plan-required? action)
@@ -312,24 +407,31 @@
                           vec)
           tokens (mapv normalize-helper-token raw-tokens)
           idx (first (keep-indexed (fn [i tok]
-                                     (when (#{"pattern-select" "pattern-use"} tok)
+                                     (when (#{"pattern-select" "pattern-use" "musn-help"} tok)
                                        i))
                                    tokens))]
       (when idx
-        (let [tool (keyword (nth tokens idx))
-              pattern-token (get raw-tokens (inc idx))
-              pattern-id (when-let [raw (some-> pattern-token normalize-pattern-token)]
-                           (when (re-matches #"[a-z0-9._-]+/[a-z0-9._-]+" raw)
-                             raw))
-              note (when (> (count raw-tokens) (+ idx 2))
-                     (->> (subvec raw-tokens (+ idx 2))
-                          (str/join " ")
-                          strip-wrapper-quotes
-                          str/trim))]
-          (when pattern-id
-            {:tool tool
-             :pattern-id pattern-id
-             :note (when (seq note) note)}))))))
+        (let [tool (keyword (nth tokens idx))]
+          (case tool
+            :musn-help
+            (let [topic (some-> (get raw-tokens (inc idx))
+                                strip-wrapper-quotes
+                                str/trim)]
+              {:tool tool
+               :topic (or (not-empty topic) "tools")})
+            (let [pattern-token (get raw-tokens (inc idx))
+                  pattern-id (when-let [raw (some-> pattern-token normalize-pattern-token)]
+                               (when (re-matches #"[a-z0-9._-]+/[a-z0-9._-]+" raw)
+                                 raw))
+                  note (when (> (count raw-tokens) (+ idx 2))
+                         (->> (subvec raw-tokens (+ idx 2))
+                              (str/join " ")
+                              strip-wrapper-quotes
+                              str/trim))]
+              (when pattern-id
+                {:tool tool
+                 :pattern-id pattern-id
+                 :note (when (seq note) note)}))))))))
 
 (defn- parse-pattern-action-command [cmd]
   (when (string? cmd)
@@ -396,37 +498,46 @@
 
 (defn- handle-helper-command!
   [state musn-session turn cmd]
-  (when-let [{:keys [tool pattern-id note]} (parse-helper-command cmd)]
-    (let [pid (candidate-id pattern-id)]
-      (when pid
-        (case tool
-          :pattern-select
-          (do
-            (ensure-selection! state musn-session turn pid
-                               (cond-> {:mode :read
-                                        :source :command}
-                                 note (assoc :note note))
-                               nil)
-            (note-selected! state pid))
-          :pattern-use
-          (do
-            (ensure-selection! state musn-session turn pid
-                               (cond-> {:mode :use
-                                        :source :command}
-                                 note (assoc :note note))
-                               nil)
-            (let [use-resp (musn-use musn-session turn pid note)]
-              (if-let [pur (:pur use-resp)]
-                (log-use! state pur (:aif use-resp))
-                (do
-                  (log-aif-missing! "turn/use"
-                                    {:turn turn
-                                     :pattern/id pid})
-                  (log-latest-aif-tap! state musn-session)))
-              (when-let [files (seq (files-from-note note))]
-                (musn-evidence musn-session turn pid files "auto evidence from pattern-use note"))
-              (log-mana-response! state use-resp)))
-          nil)))
+  (when-let [{:keys [tool pattern-id note topic]} (parse-helper-command cmd)]
+    (case tool
+      :pattern-select
+      (when-let [pid (candidate-id pattern-id)]
+        (ensure-selection! state musn-session turn pid
+                           (cond-> {:mode :read
+                                    :source :command}
+                             note (assoc :note note))
+                           nil)
+        (note-selected! state pid))
+      :pattern-use
+      (when-let [pid (candidate-id pattern-id)]
+        (ensure-selection! state musn-session turn pid
+                           (cond-> {:mode :use
+                                    :source :command}
+                             note (assoc :note note))
+                           nil)
+        (let [use-resp (musn-use musn-session turn pid note)]
+          (if-let [pur (:pur use-resp)]
+            (log-use! state pur (:aif use-resp))
+            (do
+              (log-aif-missing! "turn/use"
+                                {:turn turn
+                                 :pattern/id pid})
+              (log-latest-aif-tap! state musn-session)))
+          (when-let [files (seq (files-from-note note))]
+            (musn-evidence musn-session turn pid files "auto evidence from pattern-use note"))
+          (log-mana-response! state use-resp)))
+      :musn-help
+      (let [pid "musn/help"
+            help-note (str "musn-help " (or topic "tools"))
+            action-resp (musn-action musn-session turn pid "read" help-note nil)]
+        (let [logged? (log-latest-aif-tap! state musn-session)]
+          (when (and (not logged?) (not (:aif action-resp)))
+            (log-aif-missing! "turn/action"
+                              {:turn turn
+                               :pattern/id pid
+                               :action "read"})))
+        (log-mana-response! state action-resp))
+      nil)
     true))
 
 (defn parse-pattern-action [payload]
@@ -677,7 +788,8 @@
                 last-id (:last-aif-tap @state)]
             (when (and tap-id (not= tap-id last-id))
               (swap! state assoc :last-aif-tap tap-id)
-              (log-aif-tap! state tap)))))
+              (log-aif-tap! state tap)
+              true))))
       (catch Throwable _ nil))))
 
 (defn- format-confidence [detail]
@@ -809,11 +921,11 @@
             (note-selected! state pid)
             (when-let [psr (:psr resp)]
               (log-selection! state psr (candidate-detail state pid)))
-            (when-not (:aif resp)
-              (log-aif-missing! "turn/select"
-                                {:turn turn
-                                 :chosen pid})
-              (log-latest-aif-tap! state musn-session)))
+            (let [logged? (log-latest-aif-tap! state musn-session)]
+              (when (and (not logged?) (not (:aif resp)))
+                (log-aif-missing! "turn/select"
+                                  {:turn turn
+                                   :chosen pid}))))
           (log-warning! "select-failed"
                         {:turn turn
                          :chosen pid
@@ -860,11 +972,11 @@
                        :resp resp})))
     (when-let [psr (:psr resp)]
       (log-selection! state psr (candidate-detail state chosen)))
-    (when-not (:aif resp)
-      (log-aif-missing! "turn/select"
-                        {:turn turn
-                         :chosen chosen})
-      (log-latest-aif-tap! state musn-session))))
+    (let [logged? (log-latest-aif-tap! state musn-session)]
+      (when (and (not logged?) (not (:aif resp)))
+        (log-aif-missing! "turn/select"
+                          {:turn turn
+                           :chosen chosen})))))
 
 (defn- perform-pattern-action!
   [state musn-session turn pid act note files]
@@ -877,23 +989,23 @@
                        nil))
   (log-pattern-action! (candidate-id pid) act note files)
   (let [action-resp (musn-action musn-session turn pid act note files)]
-    (when-not (:aif action-resp)
-      (log-aif-missing! "turn/action"
-                        {:turn turn
-                         :pattern/id (candidate-id pid)
-                         :action act})
-      (log-latest-aif-tap! state musn-session))
+    (let [logged? (log-latest-aif-tap! state musn-session)]
+      (when (and (not logged?) (not (:aif action-resp)))
+        (log-aif-missing! "turn/action"
+                          {:turn turn
+                           :pattern/id (candidate-id pid)
+                           :action act})))
     (log-mana-response! state action-resp))
   (when (#{"implement" "update"} act)
     (let [use-resp (musn-use musn-session turn pid)]
-      (if-let [pur (:pur use-resp)]
-        (log-use! state pur (:aif use-resp))
-        (do
+      (when-let [pur (:pur use-resp)]
+        (log-use! state pur (:aif use-resp)))
+      (let [logged? (log-latest-aif-tap! state musn-session)]
+        (when (and (not logged?) (not (:aif use-resp)))
           (log-aif-missing! "turn/use"
                             {:turn turn
                              :pattern/id (candidate-id pid)
-                             :action act})
-          (log-latest-aif-tap! state musn-session)))
+                             :action act})))
       (log-mana-response! state use-resp)))
   (when (seq files)
     (musn-evidence musn-session turn pid files "auto evidence from pattern-action")))
@@ -909,6 +1021,8 @@
 (defn- handle-agent-message!
   [state musn-session turn text]
   (doseq [line (str/split-lines (or text ""))]
+    (when-let [intent (intent-line line)]
+      (note-intent-seen! state musn-session intent))
     (when (plan-line? line)
       (note-plan-seen! state line)
       (musn-plan musn-session turn (str/trim line)))
@@ -919,6 +1033,7 @@
         (handle-pattern-action! state musn-session turn pa)))
     (when-let [pa (parse-pattern-action-line line)]
       (handle-pattern-action! state musn-session turn pa)))
+  (enforce-intent-first-output! state musn-session)
   (when-let [report (hud/parse-agent-report text)]
     (when-let [pid (:applied report)]
       (let [mode (case (some-> (:action report) str/lower-case)
@@ -934,10 +1049,15 @@
 
 (defn- handle-reasoning-message!
   [state musn-session turn text]
+  (doseq [line (str/split-lines (or text ""))]
+    (when-let [intent (intent-line line)]
+      (note-intent-seen! state musn-session intent)))
+  (enforce-intent-first-output! state musn-session)
   (note-plan-proxy! state musn-session turn text))
 
 (defn- handle-command-execution!
   [state musn-session turn cmd]
+  (enforce-intent-first-output! state musn-session)
   (when-not (handle-helper-command! state musn-session turn cmd)
     (if-let [{:keys [action pattern-id note]} (parse-pattern-action-command cmd)]
       (perform-pattern-action! state musn-session turn pattern-id action note nil)
@@ -946,12 +1066,12 @@
           (doseq [p pats]
             (log-pattern-action! (candidate-id p) "read" "auto read from command" nil)
             (let [action-resp (musn-action musn-session turn p "read" nil nil)]
-              (when-not (:aif action-resp)
-                (log-aif-missing! "turn/action"
-                                  {:turn turn
-                                   :pattern/id (candidate-id p)
-                                   :action "read"})
-                (log-latest-aif-tap! state musn-session))
+              (let [logged? (log-latest-aif-tap! state musn-session)]
+                (when (and (not logged?) (not (:aif action-resp)))
+                  (log-aif-missing! "turn/action"
+                                    {:turn turn
+                                     :pattern/id (candidate-id p)
+                                     :action "read"})))
               (log-mana-response! state action-resp)))
           (do
             (maybe-warn-missing-plan! state "wide-scan")
@@ -965,16 +1085,17 @@
                                            "wide-scan"
                                            note
                                            nil)]
-              (when-not (:aif action-resp)
-                (log-aif-missing! "turn/action"
-                                  {:turn turn
-                                   :pattern/id "musn/plan-before-tool"
-                                   :action "wide-scan"})
-                (log-latest-aif-tap! state musn-session))
+              (let [logged? (log-latest-aif-tap! state musn-session)]
+                (when (and (not logged?) (not (:aif action-resp)))
+                  (log-aif-missing! "turn/action"
+                                    {:turn turn
+                                     :pattern/id "musn/plan-before-tool"
+                                     :action "wide-scan"})))
               (log-mana-response! state action-resp))))))))
 
 (defn- handle-file-change!
   [state musn-session turn changes]
+  (enforce-intent-first-output! state musn-session)
   (let [files (files-from-change changes)
         pattern-files (->> changes
                            (map :path)
@@ -1020,12 +1141,12 @@
                             :source :aif}
                            nil))
       (let [action-resp (musn-action musn-session turn p "update" "auto file_change" paths)]
-        (when-not (:aif action-resp)
-          (log-aif-missing! "turn/action"
-                            {:turn turn
-                             :pattern/id (candidate-id p)
-                             :action "update"})
-          (log-latest-aif-tap! state musn-session))
+        (let [logged? (log-latest-aif-tap! state musn-session)]
+          (when (and (not logged?) (not (:aif action-resp)))
+            (log-aif-missing! "turn/action"
+                              {:turn turn
+                               :pattern/id (candidate-id p)
+                               :action "update"})))
         (log-mana-response! state action-resp))
       (when (seq paths)
         (musn-evidence musn-session turn p paths "auto evidence from change")))))
@@ -1064,12 +1185,16 @@
            :last-selected nil
            :turn-plan? false
            :turn-plan-warned? false
-           :turn-ended nil)
-    (let [intent (some-> musn-intent str/trim not-empty)
+           :turn-ended nil
+           :first-output? true
+           :intent-seen? false
+           :intent nil)
+    (let [seed-intent (or (some-> musn-intent str/trim not-empty)
+                          (compute-intent musn-prompt))
           hud-map (or (read-hud-json hud-json-path)
                       (try
-                        (when intent
-                          (hud/build-hud {:intent musn-intent
+                        (when seed-intent
+                          (hud/build-hud {:intent seed-intent
                                           :pattern-limit 8
                                           :namespaces ["musn" "fulab" "aif" "agent"]}))
                         (catch Throwable e
@@ -1077,8 +1202,8 @@
                           (println (format "[hud-build-error] %s" (.getMessage e)))
                           (flush)
                           nil)))
-          hud-map (if (and intent (map? hud-map) (str/blank? (:intent hud-map)))
-                    (assoc hud-map :intent intent)
+          hud-map (if (and seed-intent (map? hud-map) (str/blank? (:intent hud-map)))
+                    (assoc hud-map :intent seed-intent)
                     hud-map)
           full-candidates (vec (or (seq (:candidates hud-map)) []))
           candidates-present? (contains? hud-map :candidates)
@@ -1092,7 +1217,6 @@
           scores (when (seq candidate-ids)
                    (select-keys scores candidate-ids))
           hud-payload (cond-> {}
-                        intent (assoc :intent intent)
                         (seq candidate-ids) (assoc :candidates candidate-ids)
                         (map? scores) (assoc :scores scores)
                         (seq full-candidates) (assoc :candidate-details full-candidates)
@@ -1102,13 +1226,11 @@
       (when-let [aif-policy (:aif hud-map)]
         (swap! state assoc :aif-policy aif-policy))
       (let [start-resp (musn-start session t hud-payload)]
-        (if-let [aif (:aif start-resp)]
-          (log-aif-selection! state aif)
-          (when (seq candidate-ids)
+        (let [logged? (log-latest-aif-tap! state session)]
+          (when (and (seq candidate-ids) (not logged?) (not (:aif start-resp)))
             (log-aif-missing! "turn/start"
                               {:turn t
-                               :candidates (count candidate-ids)})
-            (log-latest-aif-tap! state session)))
+                               :candidates (count candidate-ids)})))
         (log-mana-response! state start-resp))
       (swap! state assoc
              :candidate-details (into {}
@@ -1132,19 +1254,7 @@
                            (or (format-sigils sigils) sigils))]
           (log! line)
           (println line)))
-      (flush))
-    (when musn-intent
-      ;; announce intent into the stream so HUD can pick it up as handshake
-      (log! (format "[hud-intent] %s" musn-intent))
-      (println (format "[hud-intent] %s" musn-intent))
-      (flush)
-      (when require-approval?
-        (let [line "[musn-pause] intent computed; waiting for approval to proceed"]
-          (log! line)
-          (println line))
-        (flush)
-        ;; Block until a resume note shows up in session state.
-        (wait-for-resume! state session)))))
+      (flush))))
 
 (defn- handle-turn-completed!
   [state session event tap-listener]
@@ -1205,6 +1315,9 @@
                      :last-selected nil
                      :turn-plan? false
                      :turn-plan-warned? false
+                     :first-output? true
+                     :intent-seen? false
+                     :intent nil
                      :last-aif-tap nil
                      :candidate-details {}
                      :turn-ended nil})

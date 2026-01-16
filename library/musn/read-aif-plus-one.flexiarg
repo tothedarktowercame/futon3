@@ -1,0 +1,20 @@
+@flexiarg musn/read-aif-plus-one
+@title Read AIF Suggestion Plus One
+@sigils [🎯/双]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Read the AIF-suggested pattern plus one other candidate before acting.
+  + context: Pattern guidance is more useful when grounded in at least two candidate reads.
+  + IF:
+    The agent acts after reading only the suggested pattern or none at all.
+  + HOWEVER:
+    Candidate lists may be short or empty in some runs.
+  + THEN:
+    If candidates exist, read the AIF suggestion plus one additional candidate before tools.
+  + BECAUSE:
+    Comparative reads reduce fixation and improve PSR rationale quality.
+  + NEXT-STEPS:
+    - evidence: two pattern-action read events recorded for candidates in the same turn.
+    - evidence-shape: {:pattern/id :string, :action "read", :turn :int}

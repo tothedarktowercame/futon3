@@ -276,9 +276,37 @@ PY
   fi
 fi
 
+# Capture the user prompt before any HUD injection.
+USER_PROMPT=""
+if [[ ${#args[@]} -gt 0 ]]; then
+  for ((i=0; i<${#args[@]}; i++)); do
+    if [[ "${args[$i]}" == "--prompt" && $((i+1)) -lt ${#args[@]} ]]; then
+      USER_PROMPT="${args[$((i+1))]}"
+      break
+    fi
+  done
+  if [[ -z "$USER_PROMPT" && ${#args[@]} -eq 1 && "${args[0]}" != --* ]]; then
+    USER_PROMPT="${args[0]}"
+  fi
+fi
+
 # Prefer the MUSN intent when HUD intent is not explicitly provided.
 if [[ -z "${HUD_INTENT-}" && -n "${FUTON3_MUSN_INTENT-}" ]]; then
   HUD_INTENT="$FUTON3_MUSN_INTENT"
+fi
+if [[ -z "${HUD_INTENT-}" && -n "${USER_PROMPT-}" ]]; then
+  HUD_INTENT="$(USER_PROMPT="$USER_PROMPT" python3 - <<'PY'
+import os
+prompt = os.environ.get("USER_PROMPT", "")
+if not prompt:
+    raise SystemExit(0)
+line = prompt.splitlines()[0] if "\n" in prompt else prompt
+clean = " ".join(line.strip().split())
+if len(clean) > 160:
+    clean = clean[:157] + "..."
+print(clean)
+PY
+)"
 fi
 
 # HUD mode: inject pattern context into prompt
@@ -469,13 +497,14 @@ if [[ -n "$HUD_SERVER" && -z "${FUTON3_CODEX_SERVER_URL-}" ]]; then
   export FUTON3_CODEX_SERVER_URL="$HUD_SERVER"
 fi
 if $MUSN_MODE; then
-  # Handshake intent for MUSN/HUD; prefer explicit HUD_INTENT, else fall back to the prompt when single arg.
+  # Handshake intent for MUSN/HUD; prefer explicit HUD_INTENT, do not fall back to raw prompt.
   if [[ -n "${FUTON3_MUSN_INTENT-}" ]]; then
     export FUTON3_MUSN_INTENT
   elif [[ -n "$HUD_INTENT" ]]; then
     export FUTON3_MUSN_INTENT="$HUD_INTENT"
-  elif [[ -n "$RAW_PROMPT" ]]; then
-    export FUTON3_MUSN_INTENT="$RAW_PROMPT"
+  fi
+  if [[ -n "$RAW_PROMPT" ]]; then
+    export FUTON3_MUSN_PROMPT="$RAW_PROMPT"
   fi
 fi
 if $PATTERN_RPC; then

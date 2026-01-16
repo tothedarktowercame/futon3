@@ -1,0 +1,20 @@
+@flexiarg musn/fulab-report-block
+@title FULAB Report Block
+@sigils [📄/报]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: End the response with a FULAB-REPORT block listing applied patterns.
+  + context: MUSN parses the report block to record pattern use evidence.
+  + IF:
+    The response omits the report block or leaves it empty.
+  + HOWEVER:
+    The agent should stay concise at the end of a turn.
+  + THEN:
+    Emit a FULAB-REPORT block with :applied, :action, and :notes fields.
+  + BECAUSE:
+    Explicit report blocks anchor pattern use records in the log.
+  + NEXT-STEPS:
+    - evidence: agent response contains [FULAB-REPORT] with fields.
+    - evidence-shape: {:applied :string, :action :string, :notes :string}

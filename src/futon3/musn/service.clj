@@ -308,7 +308,8 @@
      :turn nil
      :restores {:psr->action #{}
                 :action->pur #{}
-                :maturity-upgrade #{}}
+                :maturity-upgrade #{}
+                :help-read #{}}
      :last-change nil}))
 
 (defn- reset-mana-turn! [entry turn]
@@ -318,7 +319,8 @@
                (assoc :turn turn)
                (assoc :restores {:psr->action #{}
                                  :action->pur #{}
-                                 :maturity-upgrade #{}})))))
+                                 :maturity-upgrade #{}
+                                 :help-read #{}})))))
 
 (defn- mana-view [mana]
   (dissoc mana :restores))
@@ -813,14 +815,26 @@
             cost (double (or action-cost 1))
             restore (double (or restore 10))
             pid (:pattern/id req)
+            help-action? (and (= "musn/help" (candidate-id pid))
+                              (= "read" (:action req)))
             selection-id (get-in @(:state entry) [:selection :pattern/id])
             mana @(:mana entry)
             restore? (and pid
                           (= pid selection-id)
                           (not (restored? mana :psr->action pid)))]
-        (apply-mana! entry (- cost) :action {:pattern/id pid
+        (when (and help-action? (not (restored? mana :help-read "musn/help")))
+          (apply-mana! entry 1.0 :help-read {:pattern/id "musn/help"
                                              :action (:action req)
                                              :turn (:turn req)})
+          (note-restore! entry :help-read "musn/help"))
+        (when-not help-action?
+          (apply-mana! entry (- cost) :action {:pattern/id pid
+                                               :action (:action req)
+                                               :turn (:turn req)}))
+        (when (and (not help-action?) (= "wide-scan" (:action req)))
+          (apply-mana! entry -1.0 :wide-scan {:pattern/id pid
+                                              :action (:action req)
+                                              :turn (:turn req)}))
         (when restore?
           (apply-mana! entry restore :psr->action {:pattern/id pid
                                                    :action (:action req)

@@ -55,6 +55,28 @@
 (defn note-warning [state type msg]
   (update state :warnings (fnil conj []) {:type type :msg msg :at (now)}))
 
+;; ---------------------------------------------------------------------------
+;; Nudges
+
+(def ^:private wide-scan-pattern "musn/plan-before-tool")
+(def ^:private wide-scan-action "wide-scan")
+(def ^:private wide-scan-nudge-threshold 5)
+(def ^:private wide-scan-nudge
+  "Reminder: add a 1-2 line plan before more tool use.")
+
+(defn- note-wide-scan-nudge [state action]
+  (if (and (= wide-scan-pattern (:pattern/id action))
+           (= wide-scan-action (:action action)))
+    (let [count (inc (or (:wide-scan-count state) 0))
+          nudge? (>= count wide-scan-nudge-threshold)
+          state (assoc state :wide-scan-count (if nudge? 0 count))]
+      (if nudge?
+        (-> state
+            (assoc-in [:hud :notice] wide-scan-nudge)
+            (note-warning :plan-nudge wide-scan-nudge))
+        state))
+    state))
+
 ;; ------------------------------------------------------------------------------
 ;; Constraints (core.logic kernel + routing to warnings/halts)
 
@@ -116,6 +138,7 @@
    :selection nil
    :actions []
    :hud nil
+   :wide-scan-count 0
    :trail {:on 0 :off 0 :limit (get-in policy [:off-trail :free] 0.0)}
    :off-trail-policy {:free (get-in policy [:off-trail :free] 0.0)
                       :ratio (get-in policy [:off-trail :ratio] 0.5)}
@@ -135,6 +158,7 @@
                                  :selection nil
                                  :actions []
                                  :hud (:hud req)
+                                 :wide-scan-count 0
                                  :warnings []
                                  :halt nil
                                  :write? false
@@ -179,7 +203,8 @@
              (let [next-state (-> st
                                   (bump-trail (:on-trail action))
                                   (record-action action)
-                                  (note-write action))]
+                                  (note-write action)
+                                  (note-wide-scan-nudge action))]
                (apply-action-constraints next-state action))))
     (let [st @state-atom]
       (when-let [logic (:last-logic st)]

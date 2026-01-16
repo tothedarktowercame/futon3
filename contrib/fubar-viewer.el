@@ -118,6 +118,49 @@
 
 (defconst fubar-musn--musn-prefix-re "\\[musn[^]]*\\]")
 
+(defun fubar-musn--extract-intent-from-prompt (prompt)
+  "Extract an Intent block from PROMPT when present."
+  (when (and prompt (stringp prompt))
+    (let* ((lines (split-string prompt "\n"))
+           (start (cl-position-if (lambda (line)
+                                    (string-match-p "^\\s-*Intent\\s-*:" line))
+                                  lines))
+           (intent-lines nil))
+      (when start
+        (let ((line (nth start lines)))
+          (setq intent-lines
+                (list (string-trim (replace-regexp-in-string
+                                    "^\\s-*Intent\\s-*:\\s*" "" line))))))
+      (when start
+        (let ((idx (1+ start)))
+          (while (and (< idx (length lines))
+                      (let ((line (nth idx lines)))
+                        (not (string-empty-p (string-trim line)))))
+            (push (string-trim (nth idx lines)) intent-lines)
+            (setq idx (1+ idx)))))
+      (when intent-lines
+        (string-trim (string-join (nreverse intent-lines) " "))))))
+
+(defun fubar-musn--summarize-intent (intent)
+  "Normalize INTENT to a single, viewer-friendly line."
+  (when (and intent (stringp intent))
+    (let* ((line (car (split-string intent "\n")))
+           (clean (string-trim (replace-regexp-in-string "\\s-+" " " (or line intent)))))
+      (if (> (length clean) 160)
+          (concat (substring clean 0 157) "…")
+        clean))))
+
+(defun fubar-musn--resolve-intent (prompt intent)
+  "Resolve INTENT for PROMPT, preferring explicit intent blocks."
+  (let ((trimmed (and intent (string-trim intent))))
+    (cond
+     ((and trimmed (not (string-empty-p trimmed)))
+      (fubar-musn--summarize-intent trimmed))
+     ((and prompt (not (string-empty-p (string-trim prompt))))
+      (let ((extracted (fubar-musn--extract-intent-from-prompt prompt)))
+        (fubar-musn--summarize-intent (or extracted prompt))))
+     (t nil))))
+
 (defun fubar-musn--musn-prefix (line)
   (when (and line (string-match fubar-musn--musn-prefix-re line))
     (match-string 0 line)))
@@ -223,7 +266,11 @@
 (defun fubar-musn--set-run-active (active)
   (setq fubar-musn--run-active (and active t))
   (when active
-    (setq fubar-musn--run-finished nil))
+    (setq fubar-musn--run-finished nil)
+    (setq fubar-musn--pause-seen nil)
+    (setq fubar-musn--pause-reason nil)
+    (when (fboundp 'fubar-hud-set-musn-paused)
+      (fubar-hud-set-musn-paused nil)))
   (fubar-musn--update-pause-banner))
 
 (defun fubar-musn--set-run-finished (finished)
@@ -336,7 +383,9 @@
       (when (and intent (boundp 'fubar-hud--intent))
         (when (or (null fubar-hud--intent)
                   (string-empty-p fubar-hud--intent))
-          (setq fubar-hud--intent intent)))
+          (setq fubar-hud--intent intent))
+        (when (boundp 'fubar-hud--intent-source)
+          (setq fubar-hud--intent-source :agent)))
       (when (boundp 'fubar-hud--current-hud)
         (setq fubar-hud--current-hud nil))
       (when (fboundp 'fubar-hud-refresh)
@@ -571,7 +620,7 @@
          (start (point)))
     (insert display "\n")
     (add-text-properties
-     start (max start (1- (point)))
+     start (point)
      `(fubar-musn-full ,line
                        fubar-musn-category ,category
                        fubar-musn-folded ,folded
@@ -587,7 +636,7 @@
     (when (fubar-musn--run-finished-line-p line)
       (fubar-musn--set-run-finished t))
     (setq fubar-musn--last-line-start start)
-    (setq fubar-musn--last-line-end (max start (1- (point))))))
+    (setq fubar-musn--last-line-end (point))))
 
 (defun fubar-musn--append-to-last-line (line)
   (when fubar-musn--last-line-start
@@ -607,9 +656,9 @@
         (let ((line-end (line-end-position)))
           (delete-region start line-end)
           (insert display)
-          (setq fubar-musn--last-line-end (max start (1- (point))))
+          (setq fubar-musn--last-line-end (point))
           (add-text-properties
-           start (max start (1- (point)))
+           start (point)
            `(fubar-musn-full ,joined
                              fubar-musn-category ,category
                              fubar-musn-folded ,folded
@@ -630,7 +679,9 @@
   "Show the full log line at POS (or point) in a detail buffer."
   (interactive)
   (let* ((pos (or pos (point)))
+         (line-start (line-beginning-position))
          (full (or (get-text-property pos 'fubar-musn-full)
+                   (get-text-property line-start 'fubar-musn-full)
                    (thing-at-point 'line t))))
     (unless (and full (not (string-empty-p (string-trim full))))
       (user-error "No detail available"))
@@ -685,6 +736,9 @@
                                (string= fubar-musn-session-id sid)))
                   (setq fubar-musn-session-id sid)
                   (fubar-musn--maybe-start-state-poll)))
+              ;; HUD sigils line: refresh state to keep HUD in sync
+              (when (string-match-p "\\[hud-sigils\\]" line)
+                (fubar-musn--fetch-state))
               ;; detect HUD intent handshake lines: "[hud-intent] ..."
               (when (and (not fubar-musn--session-locked)
                          (string-match-p "\\[hud-intent\\]" line))
@@ -788,6 +842,7 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
                          (ok (plist-get parsed :ok))
                          (state (plist-get parsed :state))
                          (turn (and state (plist-get state :turn)))
+                         (prior-turn fubar-musn-turn)
                          (halt-map (and state (plist-get state :halt)))
                          (halted (or (and state (plist-get state :halt?))
                                      (and halt-map t)))
@@ -799,10 +854,14 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
                     (when ok
                       (when turn
                         (setq fubar-musn-turn turn))
+                      (when (and prior-turn turn (not (equal prior-turn turn)))
+                        ;; Safety net: turn advanced, so clear stale paused state.
+                        (setq paused? nil)
+                        (setq halt-reason nil))
                       (let ((viewer-buf (get-buffer fubar-musn-view-buffer)))
                         (when viewer-buf
                           (with-current-buffer viewer-buf
-                          (fubar-musn--set-paused paused? (when paused? halt-reason)))))
+                            (fubar-musn--set-paused paused? (when paused? halt-reason)))))
                       (with-current-buffer (get-buffer-create "*FuLab HUD*")
                         (fubar-hud--ensure-mode)
                         (cond
@@ -894,22 +953,27 @@ interactively), set the HUD intent immediately as the handshake."
 ;; One-shot launcher for MUSN runs via fucodex (best effort inference of patterns)
 (defun fubar-musn-launch-and-view (prompt &optional intent)
   "Run fucodex in MUSN mode with PROMPT, stream MUSN log, and open 2-up view.
-Optional INTENT overrides the HUD intent and MUSN handshake. Assumes MUSN server
-is running at `fubar-musn-url`. Patterns are not required; the agent can infer
-from the prompt."
+Optional INTENT overrides the HUD intent and MUSN handshake; otherwise fucodex
+computes a summary intent from PROMPT. Assumes MUSN server is running at
+`fubar-musn-url`. Patterns are not required; the agent can infer from the
+prompt."
   (interactive "sPrompt: ")
   (let* ((default-directory fubar-hud-futon3-root)
          (intent (let ((trimmed (and intent (string-trim intent))))
-                   (if (and trimmed (not (string-empty-p trimmed)))
-                       trimmed
-                     prompt)))
+                   (when (and trimmed (not (string-empty-p trimmed)))
+                     trimmed)))
          (session-id (fubar-musn--generate-session-id))
          (log fubar-musn--default-log)
          (fucodex-path (expand-file-name "fucodex" fubar-hud-futon3-root))
-         (env (concat "FUTON3_MUSN_SESSION_ID=" (shell-quote-argument session-id)
-                      " FUTON3_MUSN_INTENT=" (shell-quote-argument intent)
-                      " FUTON3_MUSN_URL=" (shell-quote-argument fubar-musn-url)
-                      " FUCODEX_PREFLIGHT=off"))
+         (env (string-join
+               (delq nil
+                     (list (concat "FUTON3_MUSN_SESSION_ID=" (shell-quote-argument session-id))
+                           (concat "FUTON3_MUSN_PROMPT=" (shell-quote-argument prompt))
+                           (when intent
+                             (concat "FUTON3_MUSN_INTENT=" (shell-quote-argument intent)))
+                           (concat "FUTON3_MUSN_URL=" (shell-quote-argument fubar-musn-url))
+                           "FUCODEX_PREFLIGHT=off"))
+               " "))
          (cmd (mapconcat #'identity
                          (list env fucodex-path "--live" "--musn"
                                "--musn-url" fubar-musn-url
@@ -933,7 +997,7 @@ from the prompt."
         (erase-buffer)
         (let ((proc (start-process-shell-command "fubar-musn-launch" buf cmd)))
           (run-at-time 1 nil #'fubar-musn--check-launch proc log buf)))
-      (message "Launched MUSN run with intent: %s" intent))))
+      (message "Launched MUSN run%s" (if intent (format " with intent: %s" intent) "")))))
 
 (provide 'fubar-viewer)
 ;;; fubar-viewer.el ends here

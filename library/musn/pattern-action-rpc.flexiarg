@@ -1,0 +1,20 @@
+@flexiarg musn/pattern-action-rpc
+@title Log Pattern Actions via RPC
+@sigils [📡/记]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Use the pattern-action RPC to log read/update/implement actions during the run.
+  + context: MUSN expects structured pattern action logs to support PSR/PUR checks.
+  + IF:
+    Pattern actions are only described in free text or skipped.
+  + HOWEVER:
+    The agent may still need freedom to work in the repo.
+  + THEN:
+    Log each pattern action via RPC with an explicit action and note.
+  + BECAUSE:
+    Structured action logs keep evidence coherent and machine-checkable.
+  + NEXT-STEPS:
+    - evidence: turn/action events with :pattern/id, :action, and :note.
+    - evidence-shape: {:pattern/id :string, :action :string, :note :string}

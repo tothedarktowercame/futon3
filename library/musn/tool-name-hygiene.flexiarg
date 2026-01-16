@@ -1,0 +1,20 @@
+@flexiarg musn/tool-name-hygiene
+@title Tool Name Hygiene
+@sigils [🧼/名]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Do not guess tool names; use known helpers and documented commands.
+  + context: Tool hallucinations cause avoidable failures and derail runs.
+  + IF:
+    The agent invents a tool name or command that does not exist.
+  + HOWEVER:
+    The agent still needs flexibility to select among helpers.
+  + THEN:
+    Only use documented helpers (pattern-action, pattern-select, pattern-use, musn-plan).
+  + BECAUSE:
+    Tool hygiene reduces failures and keeps logs consistent.
+  + NEXT-STEPS:
+    - evidence: no "command not found" for pattern helper tools during the run.
+    - evidence-shape: {:command :string, :exit_code :int}

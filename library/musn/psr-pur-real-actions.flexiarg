@@ -1,0 +1,20 @@
+@flexiarg musn/psr-pur-real-actions
+@title PSR/PUR Reflect Real Actions
+@sigils [🧱/实]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: PSR/PUR should correspond to real actions, not placeholders.
+  + context: PSR/PUR are used to audit and learn from runs.
+  + IF:
+    PSR/PUR records are emitted without concrete edits or evidence anchors.
+  + HOWEVER:
+    Some actions are small or preparatory and may not change files.
+  + THEN:
+    Emit PSR/PUR only when they reflect a real action or anchored decision.
+  + BECAUSE:
+    Action-backed PSR/PUR keep AIF summaries meaningful and reduce noise.
+  + NEXT-STEPS:
+    - evidence: PSR/PUR include anchors tied to code/edit or evidence paths.
+    - evidence-shape: {:anchors [:map], :pattern/id :string, :decision/id :string}

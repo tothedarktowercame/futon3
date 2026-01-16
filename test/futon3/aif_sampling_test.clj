@@ -13,10 +13,13 @@
 
 (def test-candidates ["pattern/a" "pattern/b" "pattern/c"])
 
+;; Scores with wider spread to ensure G differences are significant
+;; New compute-g: G = base * (candidate-score + evidence) + anchors + forecast
+;; With base=0.1, we need larger score differences
 (def test-scores
-  {"pattern/a" 0.1   ;; Best (lowest G)
-   "pattern/b" 0.3
-   "pattern/c" 0.8}) ;; Worst
+  {"pattern/a" 0.5   ;; Best (lowest G after base*score)
+   "pattern/b" 3.0   ;; Medium
+   "pattern/c" 8.0}) ;; Worst (highest G)
 
 (defn make-context [tau-config & {:keys [session-id turn chosen]
                                    :or {session-id "test-session"

@@ -1,5 +1,9 @@
 (ns lab-stream-claude
-  "Stream handler for Claude Code's --output-format stream-json output."
+  "Stream handler for Claude Code's --output-format stream-json output.
+
+   Supports two modes:
+   - Local mode: logs to lab/sessions/*.edn (default)
+   - MUSN mode: posts to MUSN service (when FUTON3_MUSN_URL is set)"
   (:require [clojure.data.json :as json]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -8,6 +12,86 @@
             [futon2.aif.adapters.fulab :as fulab]
             [futon3.fulab.hud :as hud]
             [futon3.fulab.pattern-competence :as pc]))
+
+;; MUSN integration (aligned with fucodex musn_stream.clj)
+
+(def musn-url (System/getenv "FUTON3_MUSN_URL"))
+(def musn-client-id (or (System/getenv "FUTON3_MUSN_CLIENT_ID") "fuclaude"))
+
+(defn musn-enabled? []
+  (and musn-url (not (str/blank? musn-url))))
+
+(defn- musn-post! [path payload]
+  (when (musn-enabled?)
+    (try
+      (let [url (str (str/replace musn-url #"/+$" "") path)
+            conn ^java.net.HttpURLConnection (.openConnection (java.net.URL. url))
+            data (.getBytes (json/write-str payload) "UTF-8")]
+        (.setRequestMethod conn "POST")
+        (.setDoOutput conn true)
+        (.setRequestProperty conn "Content-Type" "application/json")
+        (.setRequestProperty conn "Accept" "application/json")
+        (.setRequestProperty conn "X-Musn-Client" musn-client-id)
+        (with-open [out (.getOutputStream conn)]
+          (.write out data))
+        (let [status (.getResponseCode conn)]
+          (when (= 200 status)
+            (with-open [r (io/reader (.getInputStream conn))]
+              (json/read r :key-fn keyword)))))
+      (catch Exception e
+        (binding [*out* *err*]
+          (println "[fuclaude] MUSN error:" (.getMessage e)))
+        nil))))
+
+(defn musn-session-create! [session-id certificates]
+  (musn-post! "/musn/session/create"
+              (cond-> {:client {:id musn-client-id}}
+                session-id (assoc :session/id session-id)
+                (seq certificates) (assoc :policy {:certificates certificates}))))
+
+(defn musn-turn-start! [session-id turn hud]
+  (musn-post! "/musn/turn/start"
+              {:session/id session-id
+               :turn turn
+               :hud (or hud {})}))
+
+(defn musn-turn-select! [session-id turn candidates chosen reason]
+  (musn-post! "/musn/turn/select"
+              {:session/id session-id
+               :turn turn
+               :candidates (vec candidates)
+               :chosen chosen
+               :reason (or reason {:mode :use})}))
+
+(defn musn-turn-action! [session-id turn pattern-id action note files]
+  (musn-post! "/musn/turn/action"
+              (cond-> {:session/id session-id
+                       :turn turn
+                       :pattern/id pattern-id
+                       :action action}
+                note (assoc :note note)
+                (seq files) (assoc :files (vec files)))))
+
+(defn musn-turn-use! [session-id turn pattern-id note]
+  (musn-post! "/musn/turn/use"
+              (cond-> {:session/id session-id
+                       :turn turn
+                       :pattern/id pattern-id}
+                note (assoc :note note))))
+
+(defn musn-evidence-add! [session-id turn pattern-id files note]
+  (musn-post! "/musn/evidence/add"
+              {:session/id session-id
+               :turn turn
+               :pattern/id pattern-id
+               :files (vec files)
+               :note note}))
+
+(defn musn-turn-end! [session-id turn summary]
+  (musn-post! "/musn/turn/end"
+              (cond-> {:session/id session-id
+                       :turn turn}
+                summary (assoc :summary summary))))
 
 (defn usage []
   (println "Usage: dev/lab-stream-claude.clj [--lab-root PATH] [--patterns CSV] [--chosen ID] [--clock-in CSV] [--session-id ID] [--aif-config PATH] [--aif-select] [--proposal-hook] [--hud-json PATH]")
@@ -268,7 +352,8 @@
            (get-in event [:delta :stop_reason]))))
 
 (defn process-turn-complete! [state candidates chosen aif-config engine]
-  "Process a completed turn - emit PSR/PUR and AIF events."
+  "Process a completed turn - emit PSR/PUR and AIF events.
+   When MUSN is enabled (FUTON3_MUSN_URL set), also posts to MUSN service."
   (let [turn (inc (:turn @state))
         session-id (:session-id @state)
         current (first (:clock-in-queue @state))
@@ -314,6 +399,13 @@
     (append-event! state {:event/type :pattern/use-claimed
                           :at (now-inst)
                           :payload {:pur pur}})
+    ;; MUSN integration: post turn events when enabled
+    (when (musn-enabled?)
+      (musn-turn-select! session-id turn candidates chosen-final
+                         {:mode :use :aif (:aif selection)})
+      (musn-turn-use! session-id turn chosen-final nil)
+      (musn-turn-end! session-id turn {:chosen chosen-final}))
+    ;; Legacy RPC endpoints (for backward compatibility)
     (record-pattern-selection-rpc! state psr)
     (println (format "[pattern-selection] chosen=%s candidates=%d"
                      chosen-final
@@ -390,6 +482,15 @@
                                      :clock-in-queue remaining
                                      :initialized? true)
                     (ensure-raw-writer state)
+                    ;; MUSN: create session when enabled
+                    (when (musn-enabled?)
+                      (let [certificates [{:certificate/type :git/commit
+                                           :certificate/ref (str (java.lang.System/getProperty "user.dir"))
+                                           :certificate/repo repo-root}]]
+                        (musn-session-create! session-id certificates)
+                        (musn-turn-start! session-id 1 (:hud @state)))
+                      (println "[fuclaude] MUSN session created:" session-id)
+                      (flush))
                     (when (and (:hud @state) (not (:hud-logged? @state)))
                       (let [hud-id (get-in @state [:hud :hud/id])]
                         (append-event! state {:event/type :hud/initialized

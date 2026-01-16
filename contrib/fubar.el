@@ -1,92 +1,71 @@
-;;; fubar.el --- Fulab event logging for Emacs -*- lexical-binding: t; -*-
+;;; fubar.el --- Human agent interface for MUSN -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; Capture human-side Fulab events (fubar) from Emacs integrations.
+;; fubar.el provides the same MUSN turn lifecycle as fucodex/fuclaude,
+;; but for human agents working in Emacs.
+;;
+;; Turn lifecycle:
+;;   1. fubar-session-create  - start a new session
+;;   2. fubar-turn-start      - begin a turn with intent
+;;   3. fubar-turn-select     - select a pattern to work with
+;;   4. fubar-turn-action     - log actions (read, implement, update)
+;;   5. fubar-turn-use        - claim pattern use with evidence
+;;   6. fubar-evidence-add    - add evidence files
+;;   7. fubar-turn-end        - complete the turn
+;;
+;; All operations POST to the MUSN service at `fubar-musn-url`.
 
 ;;; Code:
 
 (require 'json)
-(require 'subr-x)
 (require 'url)
+(require 'subr-x)
 
-(defvar my-fubar--repo-root
-  (let* ((base (or load-file-name
-                   (buffer-file-name)
-                   default-directory)))
-    (expand-file-name ".." (file-name-directory base)))
-  "Filesystem root of the futon3 checkout used by fubar.")
+;;; Configuration
 
-(defvar my-fubar-fulab-endpoint nil
-  "Base URL for Fulab event ingestion. When nil, log to `my-fubar-edn-log-file`.")
+(defgroup fubar nil
+  "Human agent interface for MUSN."
+  :group 'tools
+  :prefix "fubar-")
 
-(defvar my-fubar-fulab-endpoint-path "/fulab/event"
-  "Path appended to `my-fubar-fulab-endpoint` to post events.")
+(defcustom fubar-musn-url "http://localhost:6065"
+  "Base URL for the MUSN service."
+  :type 'string
+  :group 'fubar)
 
-(defvar my-fubar-request-timeout 2
-  "Seconds to wait for Fulab HTTP requests before giving up.")
+(defcustom fubar-client-id "fubar"
+  "Client identifier sent with MUSN requests."
+  :type 'string
+  :group 'fubar)
 
-(defvar my-fubar-edn-log-file
-  (expand-file-name "resources/fubar-events.edn" my-fubar--repo-root)
-  "Local EDN log for Fulab events when endpoint is unavailable.")
+(defcustom fubar-request-timeout 5
+  "Timeout in seconds for MUSN HTTP requests."
+  :type 'integer
+  :group 'fubar)
 
-(defvar my-fubar--sessions (make-hash-table :test 'equal)
-  "Session registry for fubar stats and metadata.")
+;;; State
 
-(defvar my-fubar-session-id-fn nil
-  "Optional function that returns the current fubar session id.")
+(defvar fubar--current-session nil
+  "Current MUSN session plist with :session/id, :turn, etc.")
 
-(defvar my-fubar--latched-session-id nil
-  "When non-nil, reuse this session id for subsequent fubar events.")
+(defvar fubar--current-turn nil
+  "Current turn number.")
 
-(defun my-fubar--now-ms ()
-  (floor (* 1000 (float-time (current-time)))))
+(defvar fubar--selected-pattern nil
+  "Currently selected pattern ID.")
 
-(defun my-fubar--initial-stats ()
-  (list :events 0
-        :patterns-used 0
-        :artifacts 0
-        :docs-written 0
-        :cost-usd 0.0
-        :duration-ms 0
-        :first-event-at nil
-        :last-event-at nil))
+(defvar fubar--candidates nil
+  "Current candidate patterns from HUD.")
 
-(defun my-fubar--ensure-session (session-id)
-  (or (gethash session-id my-fubar--sessions)
-      (let ((session (list :id session-id
-                           :pattern-id nil
-                           :patterns-used (vector)
-                           :artifacts (vector)
-                           :docs-written (vector)
-                           :society-paper nil
-                           :stats (my-fubar--initial-stats))))
-        (puthash session-id session my-fubar--sessions)
-        session)))
+;;; Utilities
 
-(defun my-fubar--update-session (session-id updater)
-  (let ((session (my-fubar--ensure-session session-id)))
-    (let ((next (funcall updater session)))
-      (puthash session-id next my-fubar--sessions)
-      next)))
+(defun fubar--now-iso ()
+  "Return current time as ISO 8601 string."
+  (format-time-string "%Y-%m-%dT%H:%M:%S.%3NZ" nil t))
 
-(defun my-fubar--update-stats (session type)
-  (let* ((now (my-fubar--now-ms))
-         (stats (plist-get session :stats))
-         (first (plist-get stats :first-event-at))
-         (stats (plist-put stats :events (1+ (or (plist-get stats :events) 0))))
-         (stats (plist-put stats :last-event-at now))
-         (stats (if first stats (plist-put stats :first-event-at now))))
-    (setq stats
-          (pcase type
-            (:pattern/used
-             (plist-put stats :patterns-used (1+ (or (plist-get stats :patterns-used) 0))))
-            (:doc/written
-             (plist-put stats :docs-written (1+ (or (plist-get stats :docs-written) 0))))
-            (_ stats)))
-    (plist-put session :stats stats)))
-
-(defun my-fubar--uuid ()
-  (let* ((seed (format "%s-%s-%s" (float-time) (random) (user-uid)))
+(defun fubar--uuid ()
+  "Generate a simple UUID."
+  (let* ((seed (format "%s-%s-%s" (float-time) (random) (emacs-pid)))
          (hex (md5 seed)))
     (format "%s-%s-%s-%s-%s"
             (substring hex 0 8)
@@ -95,200 +74,230 @@
             (substring hex 16 20)
             (substring hex 20 32))))
 
-(defun my-fubar--make-event (session-id type &optional data)
-  (let ((base (list :event/id (my-fubar--uuid)
-                    :event/session session-id
-                    :event/type type
-                    :event/ts (my-fubar--now-ms)
-                    :event/source :fubar)))
-    (if data
-        (append base data)
-      base)))
+(defun fubar--repo-root ()
+  "Return the current repository root."
+  (or (locate-dominating-file default-directory ".git")
+      default-directory))
 
-(defun my-fubar--load-events ()
-  (let ((file my-fubar-edn-log-file))
-    (if (and file (file-readable-p file))
-        (condition-case err
-            (with-temp-buffer
-              (insert-file-contents file)
-              (goto-char (point-min))
-              (read (current-buffer)))
-          (error
-           (message "[fubar] Log unreadable: %s" (error-message-string err))
-           []))
-      [])))
+(defun fubar--git-head ()
+  "Return current git HEAD commit."
+  (let ((default-directory (fubar--repo-root)))
+    (string-trim
+     (shell-command-to-string "git rev-parse HEAD 2>/dev/null"))))
 
-(defun my-fubar--write-events (events)
-  (let ((file my-fubar-edn-log-file))
-    (when file
-      (make-directory (file-name-directory file) t)
-      (let ((coding-system-for-write 'utf-8-unix)
-            (print-length nil)
-            (print-level nil))
-        (with-temp-file file
-          (prin1 events (current-buffer))
-          (insert "\n"))))))
+(defun fubar--build-certificates ()
+  "Build certificate list for MUSN."
+  (let ((commit (fubar--git-head))
+        (root (fubar--repo-root)))
+    (when (and commit (not (string-empty-p commit)))
+      (list `((certificate/type . "git/commit")
+              (certificate/ref . ,commit)
+              (certificate/repo . ,root))))))
 
-(defun my-fubar--append-event (event)
-  (let* ((events (my-fubar--load-events))
-         (next (vconcat events (vector event))))
-    (my-fubar--write-events next)
-    next))
+;;; HTTP
 
-(defun my-fubar--session-snapshot (session-id)
-  (let ((session (my-fubar--ensure-session session-id)))
-    (list :pattern/primary (plist-get session :pattern-id)
-          :pattern/trail (plist-get session :patterns-used)
-          :artifacts (plist-get session :artifacts)
-          :docs-written (plist-get session :docs-written)
-          :stats (plist-get session :stats)
-          :society-paper (plist-get session :society-paper))))
+(defun fubar--post (path payload)
+  "POST PAYLOAD to MUSN at PATH, return parsed response."
+  (let* ((url-request-method "POST")
+         (url-request-extra-headers
+          `(("Content-Type" . "application/json")
+            ("Accept" . "application/json")
+            ("X-Musn-Client" . ,fubar-client-id)
+            ("User-Agent" . ,(format "fubar/%s" fubar-client-id))))
+         (url-request-data (encode-coding-string (json-encode payload) 'utf-8))
+         (url (concat (string-trim-right fubar-musn-url "/") path))
+         (buffer (url-retrieve-synchronously url t t fubar-request-timeout)))
+    (when buffer
+      (unwind-protect
+          (with-current-buffer buffer
+            (goto-char (point-min))
+            (when (re-search-forward "\n\n" nil t)
+              (let ((json-object-type 'plist)
+                    (json-array-type 'vector)
+                    (json-key-type 'keyword))
+                (condition-case nil
+                    (json-read)
+                  (error nil)))))
+        (kill-buffer buffer)))))
 
-(defun my-fubar--merge-plists (base override)
-  (let ((result base)
-        (cursor override))
-    (while cursor
-      (setq result (plist-put result (car cursor) (cadr cursor)))
-      (setq cursor (cddr cursor)))
-    result))
+;;; MUSN API
 
-(defun my-fubar--normalize-endpoint (endpoint)
-  (when (and endpoint (stringp endpoint))
-    (replace-regexp-in-string "/+$" "" endpoint)))
+(defun fubar-session-create (&optional session-id)
+  "Create a new MUSN session, optionally with SESSION-ID."
+  (interactive "sSession ID (blank for auto): ")
+  (let* ((certs (fubar--build-certificates))
+         (payload `((client . ((id . ,fubar-client-id)))
+                    ,@(when (and session-id (not (string-empty-p session-id)))
+                        `((session/id . ,session-id)))
+                    ,@(when certs
+                        `((policy . ((certificates . ,(vconcat certs)))))))))
+    (let ((resp (fubar--post "/musn/session/create" payload)))
+      (setq fubar--current-session resp)
+      (setq fubar--current-turn 0)
+      (setq fubar--selected-pattern nil)
+      (message "[fubar] Session created: %s" (plist-get resp :session/id))
+      resp)))
 
-(defun my-fubar--post-event (event)
-  (let* ((base (my-fubar--normalize-endpoint my-fubar-fulab-endpoint))
-         (url-request-method "POST")
-         (url-request-extra-headers '(("Content-Type" . "application/json")))
-         (url-request-data (json-encode event))
-         (coding-system-for-write 'utf-8)
-         (coding-system-for-read 'utf-8)
-         (url (when base (concat base my-fubar-fulab-endpoint-path))))
-    (when url
-      (condition-case err
-          (with-current-buffer (url-retrieve-synchronously url t t my-fubar-request-timeout)
-            (kill-buffer (current-buffer))
-            t)
-        (error
-         (message "[fubar] Fulab sync failed: %s" (error-message-string err))
-         nil)))))
+(defun fubar-turn-start (intent)
+  "Start a new turn with INTENT."
+  (interactive "sIntent: ")
+  (unless fubar--current-session
+    (fubar-session-create))
+  (let* ((sid (plist-get fubar--current-session :session/id))
+         (turn (1+ (or fubar--current-turn 0)))
+         (payload `((session/id . ,sid)
+                    (turn . ,turn)
+                    (hud . ((intent . ,intent))))))
+    (let ((resp (fubar--post "/musn/turn/start" payload)))
+      (setq fubar--current-turn turn)
+      (setq fubar--selected-pattern nil)
+      ;; Extract candidates from HUD response
+      (when-let ((hud (plist-get resp :hud)))
+        (setq fubar--candidates (plist-get hud :candidates)))
+      (message "[fubar] Turn %d started" turn)
+      resp)))
 
-(defun my-fubar-load-events ()
-  "Return logged Fulab events as a vector."
-  (my-fubar--load-events))
+(defun fubar-turn-select (pattern-id &optional reason)
+  "Select PATTERN-ID for the current turn with optional REASON."
+  (interactive
+   (list (completing-read "Pattern: "
+                          (mapcar (lambda (c) (plist-get c :id)) fubar--candidates))
+         (read-string "Reason: ")))
+  (unless fubar--current-session
+    (user-error "No active session. Run fubar-session-create first"))
+  (let* ((sid (plist-get fubar--current-session :session/id))
+         (turn fubar--current-turn)
+         (candidates (if fubar--candidates
+                         (vconcat (mapcar (lambda (c) (plist-get c :id)) fubar--candidates))
+                       (vector pattern-id)))
+         (payload `((session/id . ,sid)
+                    (turn . ,turn)
+                    (candidates . ,candidates)
+                    (chosen . ,pattern-id)
+                    (reason . ((mode . "use")
+                               ,@(when (and reason (not (string-empty-p reason)))
+                                   `((note . ,reason))))))))
+    (let ((resp (fubar--post "/musn/turn/select" payload)))
+      (setq fubar--selected-pattern pattern-id)
+      (message "[fubar] Selected: %s" pattern-id)
+      resp)))
 
-(defun my-fubar-set-session-id (session-id)
-  "Latch SESSION-ID for subsequent fubar events."
-  (setq my-fubar--latched-session-id session-id))
+(defun fubar-turn-action (action &optional note files)
+  "Log ACTION on current pattern with optional NOTE and FILES."
+  (interactive
+   (list (completing-read "Action: " '("read" "implement" "update" "discover"))
+         (read-string "Note: ")))
+  (unless fubar--selected-pattern
+    (user-error "No pattern selected. Run fubar-turn-select first"))
+  (let* ((sid (plist-get fubar--current-session :session/id))
+         (turn fubar--current-turn)
+         (payload `((session/id . ,sid)
+                    (turn . ,turn)
+                    (pattern/id . ,fubar--selected-pattern)
+                    (action . ,action)
+                    ,@(when (and note (not (string-empty-p note)))
+                        `((note . ,note)))
+                    ,@(when files
+                        `((files . ,(vconcat files)))))))
+    (let ((resp (fubar--post "/musn/turn/action" payload)))
+      (message "[fubar] Action logged: %s on %s" action fubar--selected-pattern)
+      resp)))
 
-(defun my-fubar-clear-session-id ()
-  "Clear the latched fubar session id."
-  (setq my-fubar--latched-session-id nil))
+(defun fubar-turn-use (&optional note)
+  "Claim use of current pattern with optional NOTE."
+  (interactive "sNote: ")
+  (unless fubar--selected-pattern
+    (user-error "No pattern selected. Run fubar-turn-select first"))
+  (let* ((sid (plist-get fubar--current-session :session/id))
+         (turn fubar--current-turn)
+         (payload `((session/id . ,sid)
+                    (turn . ,turn)
+                    (pattern/id . ,fubar--selected-pattern)
+                    ,@(when (and note (not (string-empty-p note)))
+                        `((note . ,note))))))
+    (let ((resp (fubar--post "/musn/turn/use" payload)))
+      (message "[fubar] Use claimed: %s" fubar--selected-pattern)
+      resp)))
 
-(defun my-fubar-session-id ()
-  "Return the current fubar session id."
-  (cond
-   (my-fubar--latched-session-id my-fubar--latched-session-id)
-   ((functionp my-fubar-session-id-fn) (funcall my-fubar-session-id-fn))
-   (t (format "fubar-%s" (my-fubar--now-ms)))))
+(defun fubar-evidence-add (files &optional note)
+  "Add FILES as evidence for current pattern with optional NOTE."
+  (interactive
+   (list (list (read-file-name "Evidence file: "))
+         (read-string "Note: ")))
+  (unless fubar--selected-pattern
+    (user-error "No pattern selected. Run fubar-turn-select first"))
+  (let* ((sid (plist-get fubar--current-session :session/id))
+         (turn fubar--current-turn)
+         (payload `((session/id . ,sid)
+                    (turn . ,turn)
+                    (pattern/id . ,fubar--selected-pattern)
+                    (files . ,(vconcat files))
+                    ,@(when (and note (not (string-empty-p note)))
+                        `((note . ,note))))))
+    (let ((resp (fubar--post "/musn/evidence/add" payload)))
+      (message "[fubar] Evidence added: %s" (car files))
+      resp)))
 
-(defun my-fubar-get-session (session-id)
-  "Return the current session snapshot for SESSION-ID."
-  (my-fubar--ensure-session session-id))
+(defun fubar-turn-end (&optional summary)
+  "End current turn with optional SUMMARY."
+  (interactive "sSummary: ")
+  (unless fubar--current-session
+    (user-error "No active session"))
+  (let* ((sid (plist-get fubar--current-session :session/id))
+         (turn fubar--current-turn)
+         (payload `((session/id . ,sid)
+                    (turn . ,turn)
+                    ,@(when (and summary (not (string-empty-p summary)))
+                        `((summary . ((note . ,summary))))))))
+    (let ((resp (fubar--post "/musn/turn/end" payload)))
+      (setq fubar--selected-pattern nil)
+      (message "[fubar] Turn %d ended" turn)
+      resp)))
 
-(defun my-fubar-log-event (session-id type &optional data)
-  "Log a Fulab event for SESSION-ID.
+;;; Convenience commands
 
-TYPE should be a keyword like :clock-in/start, :pattern/used, :doc/written.
-DATA is a plist merged into the event payload."
-  (let* ((session (my-fubar--update-session session-id
-                                            (lambda (sess)
-                                              (my-fubar--update-stats sess type))))
-         (event (my-fubar--make-event session-id type data)))
-    (when (eq type :pattern/used)
-      (let* ((usage (list :pattern/id (plist-get data :pattern/id)
-                          :used-at (my-fubar--now-ms)
-                          :reason (plist-get data :pattern/reason)))
-             (trail (vconcat (plist-get session :patterns-used) (vector usage))))
-        (my-fubar--update-session session-id
-                                  (lambda (sess) (plist-put sess :patterns-used trail)))))
-    (when (eq type :doc/written)
-      (let ((docs (vconcat (plist-get session :docs-written) (vector data))))
-        (my-fubar--update-session session-id
-                                  (lambda (sess) (plist-put sess :docs-written docs)))))
-    (unless (and (my-fubar--post-event event) my-fubar-fulab-endpoint)
-      (my-fubar--append-event event))
-    event))
+(defun fubar-quick-use (pattern-id intent)
+  "Quick workflow: start turn, select PATTERN-ID, claim use with INTENT."
+  (interactive "sPattern ID: \nsIntent: ")
+  (fubar-turn-start intent)
+  (fubar-turn-select pattern-id intent)
+  (fubar-turn-action "implement" intent)
+  (fubar-turn-use intent)
+  (fubar-turn-end intent))
 
-(defun my-fubar-log-clock-in (session-id pattern-id &optional intent context)
-  (my-fubar-set-session-id session-id)
-  (my-fubar--update-session session-id
-                            (lambda (session)
-                              (plist-put session :pattern-id pattern-id)))
-  (my-fubar-log-event session-id :clock-in/start
-                      (list :clock-in/pattern-id pattern-id
-                            :clock-in/intent intent
-                            :clock-in/context (or context (list))
-                            :clock-in/timestamp (my-fubar--now-ms))))
+(defun fubar-status ()
+  "Show current fubar session status."
+  (interactive)
+  (if fubar--current-session
+      (message "[fubar] Session: %s, Turn: %d, Pattern: %s"
+               (plist-get fubar--current-session :session/id)
+               (or fubar--current-turn 0)
+               (or fubar--selected-pattern "none"))
+    (message "[fubar] No active session")))
 
-(defun my-fubar-log-pattern-used (session-id pattern-id &optional reason)
-  (my-fubar-log-event session-id :pattern/used
-                      (list :pattern/id pattern-id
-                            :pattern/reason reason)))
+(defun fubar-reset ()
+  "Reset fubar state."
+  (interactive)
+  (setq fubar--current-session nil
+        fubar--current-turn nil
+        fubar--selected-pattern nil
+        fubar--candidates nil)
+  (message "[fubar] State reset"))
 
-(defun my-fubar-log-doc-written (session-id doc)
-  (my-fubar-log-event session-id :doc/written doc))
+;;; Integration with other modes
 
-(defun my-fubar-record-artifact (session-id artifact-path &optional action)
-  (my-fubar--update-session session-id
-                            (lambda (session)
-                              (let* ((artifact (list :path artifact-path
-                                                     :action (or action :modified)
-                                                     :at (my-fubar--now-ms)))
-                                     (artifacts (vconcat (plist-get session :artifacts)
-                                                        (vector artifact)))
-                                     (stats (plist-get session :stats))
-                                     (stats (plist-put stats :artifacts
-                                                       (1+ (or (plist-get stats :artifacts) 0)))))
-                                (setq session (plist-put session :artifacts artifacts))
-                                (plist-put session :stats stats))))
-  t)
+(defun fubar-log-file-action (action)
+  "Log ACTION on current buffer's file."
+  (when (and fubar--selected-pattern buffer-file-name)
+    (fubar-turn-action action nil (list buffer-file-name))))
 
-(defun my-fubar-set-society-paper (session-id summary)
-  (my-fubar--update-session session-id
-                            (lambda (session)
-                              (plist-put session :society-paper summary)))
-  t)
+(defun fubar-after-save-hook ()
+  "Hook to log file saves as evidence."
+  (when (and fubar--selected-pattern buffer-file-name)
+    (fubar-evidence-add (list buffer-file-name) "saved")))
 
-(defun my-fubar-log-clock-out (session-id &optional payload)
-  (let* ((snapshot (my-fubar--session-snapshot session-id))
-         (body (if payload
-                   (my-fubar--merge-plists snapshot payload)
-                 snapshot)))
-    (my-fubar-clear-session-id)
-    (my-fubar-log-event session-id :clock-out/complete body)))
-
-(defun my-fubar-clock-in (pattern-id intent)
-  "Interactively clock in a fubar session."
-  (interactive "sPattern id: \nsIntent: ")
-  (let ((session-id (my-fubar-session-id)))
-    (my-fubar-log-clock-in session-id pattern-id intent)
-    (message "[fubar] clocked in %s" session-id)))
-
-(defun my-fubar-clock-out (&optional status)
-  "Interactively clock out the current fubar session."
-  (interactive "sStatus (success/error): ")
-  (let ((session-id (my-fubar-session-id))
-        (status (if (string-empty-p (or status "")) :success (intern (concat ":" status)))))
-    (my-fubar-log-clock-out session-id (list :session/status status))
-    (message "[fubar] clocked out %s" session-id)))
-
-(defun my-fubar-society-paper (summary)
-  "Interactively set society paper for the current fubar session."
-  (interactive "sSociety paper summary: ")
-  (let ((session-id (my-fubar-session-id)))
-    (my-fubar-set-society-paper session-id summary)
-    (message "[fubar] society paper set for %s" session-id)))
+;; Optional: auto-log saves as evidence
+;; (add-hook 'after-save-hook #'fubar-after-save-hook)
 
 (provide 'fubar)
 

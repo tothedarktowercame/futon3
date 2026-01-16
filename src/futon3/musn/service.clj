@@ -7,11 +7,11 @@
             [clojure.java.io :as io]
             [clojure.edn :as edn]
             [futon2.aif.engine :as aif-engine]
-            [futon2.aif.adapters.fulab :as fulab]
             [futon3.fulab.pattern-competence :as pc]
             [futon3.logic-audit :as logic-audit]
             [futon3.musn.fulab :as fulab-musn]
             [futon3.musn.router :as router]
+            [futon3.musn.schema :as schema]
             [futon3.pattern-hints :as hints]))
 
 (def default-policy
@@ -27,8 +27,122 @@
   (or (System/getenv "MUSN_LAB_ROOT") "lab"))
 
 (defonce sessions (atom {}))
+(defonce rooms (atom {}))
 (declare get-session append-lab-event! restored? note-restore! apply-mana! mana-config)
 (defonce aif-tap-installed? (atom false))
+
+(defonce fulab-adapter
+  (delay
+    (try
+      (require 'futon2.aif.adapters.fulab)
+      (resolve 'futon2.aif.adapters.fulab/new-adapter)
+      (catch Throwable _ nil))))
+
+(defn- warn-aif-unavailable! [note]
+  (binding [*out* *err*]
+    (println (format "[musn] AIF adapter unavailable (%s)" note))))
+
+(defn- new-aif-engine [config]
+  (if-let [new-adapter @fulab-adapter]
+    (try
+      (aif-engine/new-engine (new-adapter config))
+      (catch Throwable t
+        (warn-aif-unavailable! (.getMessage t))
+        nil))
+    (do
+      (when (seq config)
+        (warn-aif-unavailable! "adapter missing"))
+      nil)))
+
+(def ^:private room-event-limit 200)
+(def ^:private room-cache-limit 200)
+(def ^:private room-bid-limit 50)
+
+(defn- validate! [spec req]
+  (let [validator (schema/validator spec)]
+    (when-not (validator req)
+      (throw (ex-info "invalid request" {:spec spec :value req}))))
+  req)
+
+(defn- now-inst []
+  (java.time.Instant/now))
+
+(defn- room-log-file [lab-root room-id]
+  (io/file lab-root "musn" "chat" (str room-id ".ndjson")))
+
+(defn- new-room [room-id lab-root]
+  {:room/id room-id
+   :lab/root lab-root
+   :log-file (room-log-file lab-root room-id)
+   :paused? false
+   :pause nil
+   :bids []
+   :events []
+   :seq 0
+   :msg-cache {}
+   :msg-cache-order []
+   :last-activity (now-inst)})
+
+(defn- ensure-room [rooms room-id lab-root]
+  (or (get rooms room-id)
+      (new-room room-id lab-root)))
+
+(defn- append-chat-log! [room event]
+  (let [path (:log-file room)]
+    (try
+      (io/make-parents path)
+      (spit path (str (pr-str event) "\n") :append true)
+      (catch Throwable _))))
+
+(defn- cache-key [type msg-id]
+  [type msg-id])
+
+(defn- cached-response [room type msg-id]
+  (when msg-id
+    (get (:msg-cache room) (cache-key type msg-id))))
+
+(defn- remember-response [room type msg-id resp]
+  (if-not msg-id
+    room
+    (let [key (cache-key type msg-id)
+          order (if (some #(= key %) (:msg-cache-order room))
+                  (:msg-cache-order room)
+                  (conj (vec (:msg-cache-order room)) key))
+          cache (assoc (:msg-cache room) key resp)
+          excess (- (count order) room-cache-limit)
+          drop-keys (when (pos? excess) (take excess order))
+          order (if (seq drop-keys) (vec (drop excess order)) order)
+          cache (if (seq drop-keys) (apply dissoc cache drop-keys) cache)]
+      (assoc room :msg-cache cache :msg-cache-order order))))
+
+(defn- append-room-event [room event]
+  (let [event (cond-> event
+                (nil? (:at event)) (assoc :at (now-inst)))
+        seq-id (inc (or (:seq room) 0))
+        event (assoc event :seq seq-id)
+        events (conj (vec (:events room)) event)
+        events (if (> (count events) room-event-limit)
+                 (vec (take-last room-event-limit events))
+                 events)]
+    [(assoc room :seq seq-id :events events :last-activity (:at event)) event]))
+
+(defn- update-room! [room-id lab-root f]
+  (let [result (atom nil)]
+    (swap! rooms
+           (fn [rs]
+             (let [room (ensure-room rs room-id lab-root)
+                   {:keys [room event resp]} (f room)]
+               (reset! result {:room room :event event :resp resp})
+               (assoc rs room-id room))))
+    (let [{:keys [room event resp]} @result]
+      (when event
+        (append-chat-log! room event))
+      resp)))
+
+(defn- trim-bids [bids]
+  (if (> (count bids) room-bid-limit)
+    (vec (take-last room-bid-limit bids))
+    (vec bids)))
 
 (defn- tap->event [tap]
   {:event/type :aif/tap
@@ -548,8 +662,7 @@
           lab-root (or lab-root default-lab-root)
           snap (read-snapshot (snapshot-path lab-root sid))
           st (atom (or snap (router/new-session p)))
-          engine (aif-engine/new-engine (fulab/new-adapter (:aif-config p))
-                                        {:beliefs {}})
+          engine (new-aif-engine (:aif-config p))
           session-file (session-file lab-root sid)
           lab-session (atom (read-lab-session lab-root sid client-id))
           entry {:state st
@@ -616,7 +729,7 @@
                    scores))
         uncertainty-detail (candidates-uncertainty-details entry candidate-ids candidate-details scores)
         uncertainty (:value uncertainty-detail)
-        selection (when (seq candidate-ids)
+        selection (when (and (seq candidate-ids) (:aif-engine entry))
                     (aif-engine/select-pattern
                      (:aif-engine entry)
                      {:decision/id (str sid ":turn-" turn)
@@ -678,16 +791,17 @@
         uncertainty-detail (or (pattern-uncertainty-details entry chosen)
                                 (candidates-uncertainty-details entry candidates candidate-details score-map))
         uncertainty (:value uncertainty-detail)
-        selection (aif-engine/select-pattern
-                   (:aif-engine entry)
-                   (cond-> {:decision/id (str sid ":turn-" turn)
-                            :session/id sid
-                            :candidates candidates
-                            :candidate-scores (get-in @(:fulab entry) [:candidate-scores])
-                            :uncertainty uncertainty
-                            :anchors [(fulab-musn/turn-anchor turn)]
-                            :forecast (fulab-musn/build-forecast turn)}
-                     (not auto?) (assoc :chosen chosen)))
+        selection (when (:aif-engine entry)
+                    (aif-engine/select-pattern
+                     (:aif-engine entry)
+                     (cond-> {:decision/id (str sid ":turn-" turn)
+                              :session/id sid
+                              :candidates candidates
+                              :candidate-scores (get-in @(:fulab entry) [:candidate-scores])
+                              :uncertainty uncertainty
+                              :anchors [(fulab-musn/turn-anchor turn)]
+                              :forecast (fulab-musn/build-forecast turn)}
+                       (not auto?) (assoc :chosen chosen))))
         aif (:aif selection)
         aif-suggested (:chosen selection)
         sampled (when auto? aif-suggested)
@@ -790,29 +904,36 @@
                                                    :source (:source req)
                                                    :cost (:cost req)}))
         uncertainty-detail (pattern-uncertainty-details entry (:pattern/id req))
-        belief-update (aif-engine/update-beliefs (:aif-engine entry)
-                                                 {:decision/id (str sid ":action-" (java.util.UUID/randomUUID))
-                                                  :session/id sid
-                                                  :pattern/id (:pattern/id req)
-                                                  :pattern/action (:action req)
-                                                  :uncertainty (:value uncertainty-detail)
-                                                  :status :observed})
+        belief-update (when (:aif-engine entry)
+                        (aif-engine/update-beliefs (:aif-engine entry)
+                                                   {:decision/id (str sid ":action-" (java.util.UUID/randomUUID))
+                                                    :session/id sid
+                                                    :pattern/id (:pattern/id req)
+                                                    :pattern/action (:action req)
+                                                    :uncertainty (:value uncertainty-detail)
+                                                    :status :observed}))
         aif (:aif belief-update)]
-    (tap-aif-context! {:event :action
-                       :session/id sid
-                       :turn (:turn req)
-                       :pattern/id (:pattern/id req)
-                       :pattern/action (:action req)
-                       :uncertainty uncertainty-detail
-                       :aif aif
-                       :mu (aif-mu-summary entry (:pattern/id req))})
+    (when belief-update
+      (tap-aif-context! {:event :action
+                         :session/id sid
+                         :turn (:turn req)
+                         :pattern/id (:pattern/id req)
+                         :pattern/action (:action req)
+                         :uncertainty uncertainty-detail
+                         :aif aif
+                         :mu (aif-mu-summary entry (:pattern/id req))}))
     (maybe-award-maturity-bonus! entry (:pattern/id req) (:files req) (:action req))
     (mark-mana-depleted! entry (:turn req))
     (when-let [tau (get-in belief-update [:aif :tau-updated])]
       (update-tau-cache! entry (:pattern/id req) tau))
     (when (:mana entry)
       (let [{:keys [action-cost restore]} (mana-config (:policy entry))
-            cost (double (or action-cost 1))
+            base-cost (double (or action-cost 1))
+            cost (case (:cost req)
+                   :human-contact 5.0
+                   :expensive (* 2.0 base-cost)
+                   :cheap (* 0.5 base-cost)
+                   base-cost)
             restore (double (or restore 10))
             pid (:pattern/id req)
             help-action? (and (= "musn/help" (candidate-id pid))
@@ -869,21 +990,23 @@
                                    :inferred? (:inferred? req)
                                    :certificates (:certificates entry)})
         uncertainty-detail (pattern-uncertainty-details entry (:pattern/id req))
-        belief-update (aif-engine/update-beliefs (:aif-engine entry)
-                                                 {:decision/id (:decision/id pur)
-                                                  :session/id sid
-                                                  :pattern/id (:pattern/id req)
-                                                  :outcome (:outcome/tags pur)
-                                                  :uncertainty (:value uncertainty-detail)
-                                                  :status :observed})]
-    (tap-aif-context! {:event :use
-                       :session/id sid
-                       :turn turn
-                       :pattern/id (:pattern/id req)
-                       :outcome (:outcome/tags pur)
-                       :uncertainty uncertainty-detail
-                       :aif (:aif belief-update)
-                       :mu (aif-mu-summary entry (:pattern/id req))})
+        belief-update (when (:aif-engine entry)
+                        (aif-engine/update-beliefs (:aif-engine entry)
+                                                   {:decision/id (:decision/id pur)
+                                                    :session/id sid
+                                                    :pattern/id (:pattern/id req)
+                                                    :outcome (:outcome/tags pur)
+                                                    :uncertainty (:value uncertainty-detail)
+                                                    :status :observed}))]
+    (when belief-update
+      (tap-aif-context! {:event :use
+                         :session/id sid
+                         :turn turn
+                         :pattern/id (:pattern/id req)
+                         :outcome (:outcome/tags pur)
+                         :uncertainty uncertainty-detail
+                         :aif (:aif belief-update)
+                         :mu (aif-mu-summary entry (:pattern/id req))}))
     (mark-mana-depleted! entry turn)
     (when-let [tau (get-in belief-update [:aif :tau-updated])]
       (update-tau-cache! entry (:pattern/id req) tau))
@@ -903,7 +1026,8 @@
     (append-lab-event! entry {:event/type :pattern/use-claimed
                               :at (fulab-musn/now-inst)
                               :payload {:pur pur}})
-    (append-lab-event! entry (fulab-musn/summary-event sid :pur belief-update))
+    (when belief-update
+      (append-lab-event! entry (fulab-musn/summary-event sid :pur belief-update)))
     (swap! (:fulab entry) assoc
            :pur pur
            :pur-emitted? true)
@@ -1022,11 +1146,12 @@
                                            :anchors anchors
                                            :inferred? true
                                            :certificates (:certificates entry)})
-                belief-update (aif-engine/update-beliefs (:aif-engine entry)
-                                                         {:decision/id (:decision/id pur)
-                                                          :session/id sid
-                                                          :outcome (:outcome/tags pur)
-                                                          :status :observed})]
+                belief-update (when (:aif-engine entry)
+                                (aif-engine/update-beliefs (:aif-engine entry)
+                                                           {:decision/id (:decision/id pur)
+                                                            :session/id sid
+                                                            :outcome (:outcome/tags pur)
+                                                            :status :observed}))]
             (when (:mana entry)
               (let [{:keys [restore]} (mana-config (:policy entry))
                     restore (double (or restore 10))
@@ -1042,7 +1167,8 @@
             (append-lab-event! entry {:event/type :pattern/use-claimed
                                       :at (fulab-musn/now-inst)
                                       :payload {:pur pur}})
-            (append-lab-event! entry (fulab-musn/summary-event sid :pur belief-update))
+            (when belief-update
+              (append-lab-event! entry (fulab-musn/summary-event sid :pur belief-update)))
             (swap! (:fulab entry) assoc
                    :pur pur
                    :pur-emitted? true)))
@@ -1100,3 +1226,129 @@
          :mana (when (:mana entry)
                  (mana-view @(:mana entry)))} )
       {:ok false :err "not-found"})))
+
+(defn chat-message!
+  [req]
+  (validate! :chat/message-req req)
+  (let [room-id (:room req)
+        lab-root (or (:lab/root req) default-lab-root)]
+    (update-room! room-id lab-root
+                  (fn [room]
+                    (if-let [cached (cached-response room :chat/message (:msg-id req))]
+                      {:room room :resp cached}
+                      (let [chat-id (str "chat-" (java.util.UUID/randomUUID))
+                            msg {:chat/id chat-id
+                                 :room room-id
+                                 :msg-id (:msg-id req)
+                                 :author (:author req)
+                                 :text (:text req)
+                                 :at (now-inst)}
+                            pause {:reason :chat/message
+                                   :by (:author req)
+                                   :chat/id chat-id
+                                   :msg-id (:msg-id req)
+                                   :at (:at msg)}
+                            [room event] (append-room-event room
+                                                            {:event/type :chat/message
+                                                             :payload (assoc msg :paused? true :pause pause)})
+                            room (assoc room :paused? true :pause pause)
+                            resp {:ok true
+                                  :room room-id
+                                  :chat msg
+                                  :paused? true
+                                  :pause pause
+                                  :seq (:seq room)}
+                            room (remember-response room :chat/message (:msg-id req) resp)]
+                        {:room room :event event :resp resp}))))))
+
+(defn chat-bid!
+  [req]
+  (validate! :chat/bid-req req)
+  (let [room-id (:room req)
+        lab-root (or (:lab/root req) default-lab-root)]
+    (update-room! room-id lab-root
+                  (fn [room]
+                    (if-let [cached (cached-response room :chat/bid (:msg-id req))]
+                      {:room room :resp cached}
+                      (let [bid-id (str "bid-" (java.util.UUID/randomUUID))
+                            bid {:bid/id bid-id
+                                 :room room-id
+                                 :msg-id (:msg-id req)
+                                 :bidder (:bidder req)
+                                 :note (:note req)
+                                 :status :pending
+                                 :at (now-inst)}
+                            bids (trim-bids (conj (vec (:bids room)) bid))
+                            [room event] (append-room-event room
+                                                            {:event/type :chat/bid
+                                                             :payload bid})
+                            room (assoc room :bids bids)
+                            resp {:ok true
+                                  :room room-id
+                                  :bid bid
+                                  :paused? (:paused? room)
+                                  :pause (:pause room)
+                                  :seq (:seq room)}
+                            room (remember-response room :chat/bid (:msg-id req) resp)]
+                        {:room room :event event :resp resp}))))))
+
+(defn chat-unlatch!
+  [req]
+  (validate! :chat/unlatch-req req)
+  (let [room-id (:room req)
+        lab-root (or (:lab/root req) default-lab-root)]
+    (update-room! room-id lab-root
+                  (fn [room]
+                    (if-let [cached (cached-response room :chat/unlatch (:msg-id req))]
+                      {:room room :resp cached}
+                      (let [bid-id (:bid/id req)
+                            pending (filter #(= :pending (:status %)) (:bids room))
+                            selected (if (seq bid-id)
+                                       (some #(when (= bid-id (:bid/id %)) %) pending)
+                                       (first pending))]
+                        (if-not selected
+                          {:room room
+                           :resp {:ok false :err "no-pending-bid"}}
+                          (let [now (now-inst)
+                                accepted (assoc selected
+                                                :status :accepted
+                                                :accepted/by (:by req)
+                                                :accepted/at now)
+                                bids (->> (:bids room)
+                                          (mapv (fn [b]
+                                                  (if (= (:bid/id b) (:bid/id accepted))
+                                                    accepted
+                                                    b)))
+                                          trim-bids)
+                                [room event] (append-room-event room
+                                                                {:event/type :chat/unlatch
+                                                                 :payload {:accepted accepted
+                                                                           :by (:by req)
+                                                                           :at now}})
+                                room (assoc room :paused? false :pause nil :bids bids)
+                                resp {:ok true
+                                      :room room-id
+                                      :accepted accepted
+                                      :paused? false
+                                      :pause nil
+                                      :seq (:seq room)}
+                                room (remember-response room :chat/unlatch (:msg-id req) resp)]
+                            {:room room :event event :resp resp}))))))))
+
+(defn chat-state!
+  [req]
+  (validate! :chat/state-req req)
+  (let [room-id (:room req)
+        lab-root (or (:lab/root req) default-lab-root)
+        room (ensure-room @rooms room-id lab-root)
+        since (or (:since req) 0)
+        events (->> (:events room)
+                    (filter #(> (or (:seq %) 0) since))
+                    vec)
+        state (select-keys room [:paused? :pause :bids :last-activity])]
+    (swap! rooms assoc room-id room)
+    {:ok true
+     :room room-id
+     :state state
+     :events events
+     :cursor (:seq room)}))

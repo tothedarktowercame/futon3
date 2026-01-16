@@ -11,8 +11,10 @@ MUSN help: tools
 Tool roster (emit these signals when you do the corresponding action):
 - pattern-select library/<pattern> "why you want to read it"
 - pattern-use    library/<pattern> "where you will apply it"
+- musn-chat      "question for the user" (human-contact, costs 5 mana)
 - musn-plan      "outline your plan"
 - wide-search    "your search string" (alias for rg)
+Reading musn/help once (pattern-action read) grants +1 mana.
 EOF
     ;;
   pattern|patterns|/pattern)

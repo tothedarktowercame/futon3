@@ -334,8 +334,10 @@
                                  "- /home/joe/code/futon3/scripts/pattern-select library/<pattern> <state why you want to read it>\n"
                                  "- /home/joe/code/futon3/scripts/pattern-use    library/<pattern> <state where you will apply it>\n"
                                  "- /home/joe/code/futon3/scripts/pattern-action read|update|implement library/<pattern> <note>\n"
+                                 "- /home/joe/code/futon3/scripts/musn-chat      \"question for the user\" (human-contact, costs 5 mana)\n"
                                  "- /home/joe/code/futon3/scripts/musn-plan      \"Plan: ...\"\n"
                                  "- /home/joe/code/futon3/scripts/wide-search   <rg args>\n"
+                                 "Reading musn/help once (pattern-action read) grants +1 mana.\n"
                                  "If unsure, run: musn-help tools  (or musn-help pattern)\n"
                                  "First output line must be: hud-intent: <brief restatement of the task>\n"
                                  "[/MUSN-HELP]\n")

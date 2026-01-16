@@ -28,6 +28,9 @@
 (def musn-url (or (System/getenv "FUTON3_MUSN_URL") "http://localhost:6065"))
 (def musn-intent (System/getenv "FUTON3_MUSN_INTENT"))
 (def musn-prompt (System/getenv "FUTON3_MUSN_PROMPT"))
+(def musn-chat-room (some-> (System/getenv "FUTON3_MUSN_CHAT_ROOM") str/trim not-empty))
+(def musn-chat-author (some-> (System/getenv "FUTON3_MUSN_CHAT_AUTHOR") str/trim not-empty))
+(def musn-chat-trim? (contains? #{"1" "true" "yes"} (str/lower-case (or (System/getenv "FUTON3_MUSN_CHAT_TRIM") ""))))
 (def musn-session-id
   (let [sid (System/getenv "FUTON3_MUSN_SESSION_ID")]
     (when (and sid (not (str/blank? sid)))
@@ -273,6 +276,46 @@
 (defn musn-state [session]
   (let [sid (require-session-id session)]
     (post! "/musn/session/state" {:session/id sid})))
+
+(defn- chat-author []
+  {:id musn-client-id
+   :name (or musn-chat-author musn-client-id)})
+
+(defn- chat-msg-id [event]
+  (let [base (or (:id event)
+                 (get-in event [:item :id])
+                 (str "chat-" (java.util.UUID/randomUUID)))]
+    (if-let [sid (some-> musn-session-id str/trim not-empty)]
+      (str sid ":" base)
+      base)))
+
+(defn- strip-fulab-report [text]
+  (-> (or text "")
+      (str/replace #"\[FULAB-REPORT\][\s\S]*?\[/FULAB-REPORT\]" "")
+      (str/replace #"\[FULAB-HUD\][\s\S]*?\[/FULAB-HUD\]" "")
+      str/trim))
+
+(defn- trim-chat-text [text]
+  (let [text (strip-fulab-report text)
+        lines (str/split-lines (or text ""))
+        drop-prefix? (fn [line]
+                       (re-find #"(?i)^\s*(hud-intent|intent|scope|plan)\s*:" line))
+        kept (->> lines
+                  (remove drop-prefix?)
+                  (map str/trim)
+                  (remove str/blank?))
+        trimmed (str/join "\n" kept)]
+    (if (str/blank? trimmed)
+      text
+      trimmed)))
+
+(defn musn-chat-message [text event]
+  (when (and musn-chat-room (string? text) (not (str/blank? text)))
+    (post! "/musn/chat/message"
+           {:room musn-chat-room
+            :msg-id (chat-msg-id event)
+            :author (chat-author)
+            :text (if musn-chat-trim? (trim-chat-text text) text)})))
 
 (defn plan-line? [text]
   (and (string? text)
@@ -809,6 +852,8 @@
    (let [reason (:selection/reason psr)
          mode (:mode reason)
          reads (:reads reason)
+         note (:note reason)
+         source (:source reason)
          aif (:aif reason)
          g (fmt-num (:G aif))
          tau (fmt-num (:tau aif))
@@ -818,10 +863,21 @@
                                             (remove nil?
                                                     [(when g (str "G=" g))
                                                      (when tau (str "tau=" tau))]))))]
-     (let [line (format "[pattern-selection] chosen=%s candidates=%d mode=%s%s%s%s"
+    ;; NOTE: Treat mode=read as a distinct "pattern-read" log label for now.
+    ;; If this blurs semantics downstream, we can revert and instead remove
+    ;; mode=read as a selection option to keep selection reserved for apply intent.
+    (let [label (if (= mode :read) "pattern-read" "pattern-selection")
+           line (format "[%s] chosen=%s candidates=%d mode=%s%s%s%s"
+                        label
                         (:chosen psr)
                         (count (:candidates psr))
                         (or mode :unknown)
+                        (if (seq note)
+                          (str " note=" note)
+                          "")
+                        (if (seq source)
+                          (str " source=" (name source))
+                          "")
                         (if (seq reads)
                           (str " reads=" (str/join "," reads))
                           "")
@@ -1024,7 +1080,7 @@
                    :note "intent line not seen yet; ignoring actions until hud-intent is provided"})))
 
 (defn- handle-agent-message!
-  [state musn-session turn text]
+  [state musn-session turn text event]
   (let [handle-line (fn [line]
                       (when (plan-line? line)
                         (note-plan-seen! state line)
@@ -1050,19 +1106,27 @@
             (note-intent-seen! state musn-session intent)
             (doseq [rest-line (drop (inc idx) lines)]
               (handle-line rest-line)))
-          (warn-missing-intent! state :agent-message)))))
+        (warn-missing-intent! state :agent-message)))))
+  (when (and musn-chat-room (string? text) (not (str/blank? text)))
+    (try
+      (musn-chat-message text event)
+      (swap! state assoc :chat-latched? true)
+      (log! "[chat] message posted" {:room musn-chat-room})
+      (catch Throwable _)))
   (when-let [report (hud/parse-agent-report text)]
     (when-let [pid (:applied report)]
-      (let [mode (case (some-> (:action report) str/lower-case)
-                   "read" :read
-                   "implement" :use
-                   "update" :use
-                   :select)]
-        (ensure-selection! state musn-session turn pid
-                           {:mode mode
-                            :note (or (:notes report) "agent report selection")
-                            :source :report}
-                           nil)))))
+      (let [pid (some-> pid str/trim)]
+        (when (and pid (not (str/blank? pid)) (not= "none" (str/lower-case pid)))
+          (let [mode (case (some-> (:action report) str/lower-case)
+                       "read" :read
+                       "implement" :use
+                       "update" :use
+                       :select)]
+            (ensure-selection! state musn-session turn pid
+                               {:mode mode
+                                :note (or (:notes report) "agent report selection")
+                                :source :report}
+                               nil)))))))
 
 (defn- handle-reasoning-message!
   [state musn-session turn text]
@@ -1177,8 +1241,8 @@
     (cond
       ;; pattern-selection / pattern-action parsed from text payloads (RPC)
       (and (= (:type event) "item.completed")
-           (= (get-in event [:item :type]) "agent_message"))
-      (handle-agent-message! state musn-session turn (get-in event [:item :text]))
+           (contains? #{"agent_message" "assistant_message"} (get-in event [:item :type])))
+      (handle-agent-message! state musn-session turn (get-in event [:item :text]) event)
 
       ;; command execution
       (and (= (:type event) "item.completed")
@@ -1209,7 +1273,8 @@
            :turn-ended nil
            :intent-seen? false
            :intent nil
-           :intent-seed nil)
+           :intent-seed nil
+           :chat-latched? false)
     (let [seed-intent (or (some-> musn-intent str/trim not-empty)
                           (compute-intent musn-prompt))
           hud-map (or (read-hud-json hud-json-path)
@@ -1319,15 +1384,23 @@
               (remove-tap tap-listener)
               (System/exit 0))
             (if paused?
-            (when-not (:pause-latched? @state)
-              (swap! state assoc :paused? true :pause-latched? true)
-              (log! "[pattern] pause-latch" {:state :latched :turn turn})
-              (print-pause resp)
-              (remove-tap tap-listener)
-              (System/exit 3))
-            (when (or (:paused? @state) (:pause-latched? @state))
-              (swap! state assoc :paused? false :pause-latched? false)
-              (log! "[pattern] pause-latch" {:state :reset :turn turn})))))))))
+              (when-not (:pause-latched? @state)
+                (swap! state assoc :paused? true :pause-latched? true)
+                (log! "[pattern] pause-latch" {:state :latched :turn turn})
+                (print-pause resp)
+                (remove-tap tap-listener)
+                (System/exit 3))
+              (if (:chat-latched? @state)
+                (do
+                  (swap! state assoc :paused? true :pause-latched? true :chat-latched? false)
+                  (log! "[chat] pause-latch" {:state :latched :turn turn :room musn-chat-room})
+                  (println (format "[chat-pause] room=%s turn=%s" musn-chat-room turn))
+                  (flush)
+                  (remove-tap tap-listener)
+                  (System/exit 3))
+                (when (or (:paused? @state) (:pause-latched? @state))
+                  (swap! state assoc :paused? false :pause-latched? false)
+                  (log! "[pattern] pause-latch" {:state :reset :turn turn}))))))))))
 
 (defn- process-event!
   [state session event tap-listener]
@@ -1346,6 +1419,7 @@
   (let [state (atom {:turn 0
                      :paused? false
                      :pause-latched? false
+                     :chat-latched? false
                      :selected-patterns #{}
                      :last-selected nil
                      :turn-plan? false

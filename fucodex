@@ -47,6 +47,8 @@ PAUSE_ON_NO_WRITE="${FUCODEX_PAUSE_ON_NO_WRITE:-auto}"
 MUSN_MODE=false
 MUSN_URL="${FUCODEX_MUSN_URL:-http://localhost:6065}"
 UNSANDBOXED=false
+CHAT_ROOM="${FUCODEX_CHAT_ROOM:-}"
+CHAT_AUTHOR="${FUCODEX_CHAT_AUTHOR:-}"
 SCOPE_GUARDRAIL=$'Scope guardrail: avoid repo-wide `rg --files` or wide `rg` searches.\nBefore tool use, state a 1-2 line plan; if a wide scan is likely, either (a) announce it and proceed, or (b) stop and ask for scope; if asking, do not run the scan.\nTreat wide scans as expensive.'
 INTENT_PREFACE=$'First output line format: hud-intent: <one-sentence summary of the text below>.\nDo not call tools or run commands before emitting that line.\nSummarize ONLY the text between <INTENT_TEXT> and </INTENT_TEXT>. Do not include quotes, placeholders, or planning.\n<INTENT_TEXT>\n'
 INTENT_POSTFACE=$'\n</INTENT_TEXT>\nAfter that line, continue with the task using the instructions that follow. Do not summarize any other instructions below.'
@@ -95,6 +97,8 @@ Options:
   --no-pause-on-no-write Disable pause-on-no-write (overrides env default).
   --musn                Route through MUSN mode (enable MUSN preflight and exports).
   --musn-url URL        MUSN service base URL (default: http://localhost:6065 or $FUCODEX_MUSN_URL).
+  --chat-room ROOM      Post agent messages into MUSN chat room (enables --musn).
+  --chat-author NAME    Display name for chat messages (defaults to client id).
   --hud-print           Print HUD block before running codex.
   --hud-server URL      HUD server base URL (default: http://localhost:5050).
 
@@ -179,6 +183,11 @@ while [[ $# -gt 0 ]]; do
     --musn-url)
       MUSN_MODE=true
       MUSN_URL="$2"; shift 2;;
+    --chat-room)
+      MUSN_MODE=true
+      CHAT_ROOM="$2"; shift 2;;
+    --chat-author)
+      CHAT_AUTHOR="$2"; shift 2;;
     --hud-print)
       HUD_PRINT=true; shift;;
     --hud-server)
@@ -561,6 +570,12 @@ if $MUSN_MODE; then
   fi
   if [[ -n "$AIF_CONFIG" ]]; then
     export FUTON3_MUSN_AIF_CONFIG_PATH="$AIF_CONFIG"
+  fi
+  if [[ -n "$CHAT_ROOM" ]]; then
+    export FUTON3_MUSN_CHAT_ROOM="$CHAT_ROOM"
+  fi
+  if [[ -n "$CHAT_AUTHOR" ]]; then
+    export FUTON3_MUSN_CHAT_AUTHOR="$CHAT_AUTHOR"
   fi
 fi
 

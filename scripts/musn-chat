@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+room="${FUTON3_MUSN_CHAT_ROOM:-}"
+author="${FUTON3_MUSN_CHAT_AUTHOR:-${FUTON3_MUSN_CLIENT_ID:-fucodex}}"
+url="${FUTON3_MUSN_URL:-http://localhost:6065}"
+sid="${FUTON3_MUSN_SESSION_ID:-}"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --room)
+      room="$2"; shift 2;;
+    --author)
+      author="$2"; shift 2;;
+    --help|-h)
+      echo "usage: musn-chat [--room ROOM] [--author NAME] <message>" >&2
+      exit 0;;
+    *)
+      break;;
+  esac
+done
+
+if [[ $# -lt 1 ]]; then
+  echo "usage: musn-chat [--room ROOM] [--author NAME] <message>" >&2
+  exit 2
+fi
+
+if [[ -z "$room" ]]; then
+  echo "musn-chat: missing room (set FUTON3_MUSN_CHAT_ROOM or pass --room)" >&2
+  exit 2
+fi
+
+msg="$*"
+
+ROOM="$room" AUTHOR="$author" URL="$url" MSG="$msg" SID="$sid" python3 - <<'PY'
+import json
+import os
+import uuid
+import urllib.request
+
+room = os.environ.get("ROOM", "")
+author = os.environ.get("AUTHOR", "")
+url = os.environ.get("URL", "").rstrip("/")
+msg = os.environ.get("MSG", "")
+sid = os.environ.get("SID", "")
+
+payload = {
+    "room": room,
+    "msg-id": str(uuid.uuid4()),
+    "author": {"id": author, "name": author},
+    "text": msg,
+}
+
+def post(path, payload):
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(url + path, data=data, method="POST")
+    req.add_header("Content-Type", "application/json")
+    with urllib.request.urlopen(req, timeout=2) as resp:
+        raw = resp.read().decode("utf-8") or "{}"
+        return json.loads(raw)
+
+resp = post("/musn/chat/message", payload)
+print(json.dumps(resp))
+
+if sid:
+    state = post("/musn/session/state", {"session/id": sid})
+    turn = (state.get("state") or {}).get("turn")
+    if turn:
+        post("/musn/turn/action", {
+            "session/id": sid,
+            "turn": int(turn),
+            "pattern/id": "musn/user-help",
+            "action": "read",
+            "note": "asked user for help in chat",
+            "cost": "human-contact",
+            "source": "explicit",
+        })
+PY

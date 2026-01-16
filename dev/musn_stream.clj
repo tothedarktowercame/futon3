@@ -79,10 +79,24 @@
 (defn- summarize-intent [text]
   (when (and text (string? text))
     (let [line (or (first (str/split-lines text)) text)
-          cleaned (str/trim (str/replace line #"\s+" " "))]
-      (if (> (count cleaned) 160)
-        (str (subs cleaned 0 157) "...")
-        cleaned))))
+          cleaned (-> line
+                      (str/replace #"[`*_]+" "")
+                      (str/replace #"\s+" " ")
+                      str/trim)
+          cleaned (str/replace cleaned #"(?i)^\s*(please|pls)\s+" "")
+          seps ["—" " -- " " - " ". " "? " "! "]
+          summary (reduce (fn [s sep]
+                            (if-let [idx (str/index-of s sep)]
+                              (subs s 0 idx)
+                              s))
+                          cleaned
+                          seps)
+          summary (-> summary
+                      str/trim
+                      (str/replace "/home/joe/code/futon3/" "")
+                      (str/replace "/home/joe/code/" ""))]
+      (when-not (str/blank? summary)
+        summary))))
 
 (defn- compute-intent [prompt]
   (let [candidate (or (extract-intent-from-prompt prompt) prompt)]
@@ -335,24 +349,6 @@
         (println line)
         (flush))
       (wait-for-resume! state musn-session))))
-
-(defn- enforce-intent-first-output!
-  [state musn-session]
-  (when (:first-output? @state)
-    (swap! state assoc :first-output? false)
-    (when-not (:intent-seen? @state)
-      (log-warning! "missing-intent-first-output"
-                    {:turn (:turn @state)
-                     :note "first agent output must include Intent: or hud-intent:"})
-      (let [line "[musn-abort] missing intent in first output; ending run"]
-        (log! line)
-        (println line)
-        (flush))
-      (try
-        (when-let [turn (:turn @state)]
-          (musn-end musn-session turn))
-        (catch Throwable _ nil))
-      (System/exit 0))))
 
 (defn- maybe-warn-missing-plan! [state action]
   (when (and (plan-required? action)
@@ -1018,22 +1014,43 @@
         note (:note payload)]
     (perform-pattern-action! state musn-session turn pid act note files)))
 
+(defn- warn-missing-intent! [state context]
+  (when-not (or (:intent-missing-warned? @state)
+                (some-> (:intent-seed @state) str/trim not-empty))
+    (swap! state assoc :intent-missing-warned? true)
+    (log-warning! "missing-intent"
+                  {:turn (:turn @state)
+                   :context context
+                   :note "intent line not seen yet; ignoring actions until hud-intent is provided"})))
+
 (defn- handle-agent-message!
   [state musn-session turn text]
-  (doseq [line (str/split-lines (or text ""))]
-    (when-let [intent (intent-line line)]
-      (note-intent-seen! state musn-session intent))
-    (when (plan-line? line)
-      (note-plan-seen! state line)
-      (musn-plan musn-session turn (str/trim line)))
-    (when-let [payload (parse-json line)]
-      (when-let [sel (parse-pattern-selection payload)]
-        (handle-pattern-selection! state musn-session turn sel))
-      (when-let [pa (parse-pattern-action payload)]
-        (handle-pattern-action! state musn-session turn pa)))
-    (when-let [pa (parse-pattern-action-line line)]
-      (handle-pattern-action! state musn-session turn pa)))
-  (enforce-intent-first-output! state musn-session)
+  (let [handle-line (fn [line]
+                      (when (plan-line? line)
+                        (note-plan-seen! state line)
+                        (musn-plan musn-session turn (str/trim line)))
+                      (when-let [payload (parse-json line)]
+                        (when-let [sel (parse-pattern-selection payload)]
+                          (handle-pattern-selection! state musn-session turn sel))
+                        (when-let [pa (parse-pattern-action payload)]
+                          (handle-pattern-action! state musn-session turn pa)))
+                      (when-let [pa (parse-pattern-action-line line)]
+                        (handle-pattern-action! state musn-session turn pa)))]
+    (if (:intent-seen? @state)
+      (doseq [line (str/split-lines (or text ""))]
+        (handle-line line))
+      (let [lines (str/split-lines (or text ""))
+            idx (first (keep-indexed (fn [i line]
+                                       (when (intent-line line)
+                                         i))
+                                     lines))]
+        (if (number? idx)
+          (let [line (nth lines idx)
+                intent (intent-line line)]
+            (note-intent-seen! state musn-session intent)
+            (doseq [rest-line (drop (inc idx) lines)]
+              (handle-line rest-line)))
+          (warn-missing-intent! state :agent-message)))))
   (when-let [report (hud/parse-agent-report text)]
     (when-let [pid (:applied report)]
       (let [mode (case (some-> (:action report) str/lower-case)
@@ -1049,107 +1066,111 @@
 
 (defn- handle-reasoning-message!
   [state musn-session turn text]
-  (doseq [line (str/split-lines (or text ""))]
-    (when-let [intent (intent-line line)]
-      (note-intent-seen! state musn-session intent)))
-  (enforce-intent-first-output! state musn-session)
-  (note-plan-proxy! state musn-session turn text))
+  (if-not (:intent-seen? @state)
+    (warn-missing-intent! state :reasoning)
+    (do
+      (doseq [line (str/split-lines (or text ""))]
+        (when-let [intent (intent-line line)]
+          (note-intent-seen! state musn-session intent)))
+      (note-plan-proxy! state musn-session turn text))))
 
 (defn- handle-command-execution!
   [state musn-session turn cmd]
-  (enforce-intent-first-output! state musn-session)
-  (when-not (handle-helper-command! state musn-session turn cmd)
-    (if-let [{:keys [action pattern-id note]} (parse-pattern-action-command cmd)]
-      (perform-pattern-action! state musn-session turn pattern-id action note nil)
-      (let [pats (patterns-from-command cmd)]
-        (if (seq pats)
-          (doseq [p pats]
-            (log-pattern-action! (candidate-id p) "read" "auto read from command" nil)
-            (let [action-resp (musn-action musn-session turn p "read" nil nil)]
-              (let [logged? (log-latest-aif-tap! state musn-session)]
-                (when (and (not logged?) (not (:aif action-resp)))
-                  (log-aif-missing! "turn/action"
-                                    {:turn turn
-                                     :pattern/id (candidate-id p)
-                                     :action "read"})))
-              (log-mana-response! state action-resp)))
-          (do
-            (maybe-warn-missing-plan! state "wide-scan")
-            (let [note (when (string? cmd)
-                         (let [trimmed (str/trim cmd)]
-                           (when-not (str/blank? trimmed)
-                             (str "tool command: " trimmed))))
-                  action-resp (musn-action musn-session
-                                           turn
-                                           "musn/plan-before-tool"
-                                           "wide-scan"
-                                           note
-                                           nil)]
-              (let [logged? (log-latest-aif-tap! state musn-session)]
-                (when (and (not logged?) (not (:aif action-resp)))
-                  (log-aif-missing! "turn/action"
-                                    {:turn turn
-                                     :pattern/id "musn/plan-before-tool"
-                                     :action "wide-scan"})))
-              (log-mana-response! state action-resp))))))))
+  (if-not (:intent-seen? @state)
+    (warn-missing-intent! state :command)
+    (when-not (handle-helper-command! state musn-session turn cmd)
+      (if-let [{:keys [action pattern-id note]} (parse-pattern-action-command cmd)]
+        (perform-pattern-action! state musn-session turn pattern-id action note nil)
+        (let [pats (patterns-from-command cmd)]
+          (if (seq pats)
+            (doseq [p pats]
+              (log-pattern-action! (candidate-id p) "read" "auto read from command" nil)
+              (let [action-resp (musn-action musn-session turn p "read" nil nil)]
+                (let [logged? (log-latest-aif-tap! state musn-session)]
+                  (when (and (not logged?) (not (:aif action-resp)))
+                    (log-aif-missing! "turn/action"
+                                      {:turn turn
+                                       :pattern/id (candidate-id p)
+                                       :action "read"})))
+                (log-mana-response! state action-resp)))
+            (do
+              (maybe-warn-missing-plan! state "wide-scan")
+              (let [note (when (string? cmd)
+                           (let [trimmed (str/trim cmd)]
+                             (when-not (str/blank? trimmed)
+                               (str "tool command: " trimmed))))
+                    action-resp (musn-action musn-session
+                                             turn
+                                             "musn/plan-before-tool"
+                                             "wide-scan"
+                                             note
+                                             nil)]
+                (let [logged? (log-latest-aif-tap! state musn-session)]
+                  (when (and (not logged?) (not (:aif action-resp)))
+                    (log-aif-missing! "turn/action"
+                                      {:turn turn
+                                       :pattern/id "musn/plan-before-tool"
+                                       :action "wide-scan"})))
+                (log-mana-response! state action-resp)))))))))
 
 (defn- handle-file-change!
   [state musn-session turn changes]
-  (enforce-intent-first-output! state musn-session)
-  (let [files (files-from-change changes)
-        pattern-files (->> changes
-                           (map :path)
-                           (remove nil?)
-                           (filter #(re-find pattern-id-re %)))
-        _ (when (seq pattern-files)
-            (maybe-warn-missing-plan! state "update"))
-        resolved (reduce
-                  (fn [acc path]
-                    (let [candidates (patterns-from-change-path path)]
-                      (if (seq candidates)
-                        (if-let [pid (resolve-selected-pattern state candidates)]
-                          (update acc pid (fnil conj []) path)
-                          (let [decision (aif-policy-choice state candidates)
-                                chosen (:chosen decision)]
-                            (if chosen
-                              (do
-                                (log-aif-policy! (assoc decision :chosen chosen))
-                                (update acc chosen (fnil conj []) path))
-                              (do
-                                (log-aif-policy! decision)
-                                (log-warning! "pattern-edit-without-selection"
-                                              {:turn turn
-                                               :file path
-                                               :pattern-count (count candidates)
-                                               :pattern-sample (vec (take 5 candidates))
-                                               :note "multiarg change; select a pattern to disambiguate"})
-                                acc))))
-                        acc)))
-                  {}
-                  pattern-files)]
-    (doseq [[p paths] resolved]
-      (let [pid (candidate-id p)]
-        (when (and pid (not (selected? state pid)))
-          (log-warning! "pattern-edit-auto-selected"
-                        {:pattern/id pid
-                         :turn turn
-                         :files (vec (take 3 files))
-                         :file-count (count files)}))
-        (ensure-selection! state musn-session turn pid
-                           {:mode :use
-                            :note "auto selection from pattern file change"
-                            :source :aif}
-                           nil))
-      (let [action-resp (musn-action musn-session turn p "update" "auto file_change" paths)]
-        (let [logged? (log-latest-aif-tap! state musn-session)]
-          (when (and (not logged?) (not (:aif action-resp)))
-            (log-aif-missing! "turn/action"
-                              {:turn turn
-                               :pattern/id (candidate-id p)
-                               :action "update"})))
-        (log-mana-response! state action-resp))
-      (when (seq paths)
-        (musn-evidence musn-session turn p paths "auto evidence from change")))))
+  (if-not (:intent-seen? @state)
+    (warn-missing-intent! state :file-change)
+    (let [files (files-from-change changes)
+          pattern-files (->> changes
+                             (map :path)
+                             (remove nil?)
+                             (filter #(re-find pattern-id-re %)))
+          _ (when (seq pattern-files)
+              (maybe-warn-missing-plan! state "update"))
+          resolved (reduce
+                    (fn [acc path]
+                      (let [candidates (patterns-from-change-path path)]
+                        (if (seq candidates)
+                          (if-let [pid (resolve-selected-pattern state candidates)]
+                            (update acc pid (fnil conj []) path)
+                            (let [decision (aif-policy-choice state candidates)
+                                  chosen (:chosen decision)]
+                              (if chosen
+                                (do
+                                  (log-aif-policy! (assoc decision :chosen chosen))
+                                  (update acc chosen (fnil conj []) path))
+                                (do
+                                  (log-aif-policy! decision)
+                                  (log-warning! "pattern-edit-without-selection"
+                                                {:turn turn
+                                                 :file path
+                                                 :pattern-count (count candidates)
+                                                 :pattern-sample (vec (take 5 candidates))
+                                                 :note "multiarg change; select a pattern to disambiguate"})
+                                  acc))))
+                          acc)))
+                    {}
+                    pattern-files)]
+      (doseq [[p paths] resolved]
+        (let [pid (candidate-id p)]
+          (when (and pid (not (selected? state pid)))
+            (log-warning! "pattern-edit-auto-selected"
+                          {:pattern/id pid
+                           :turn turn
+                           :files (vec (take 3 files))
+                           :file-count (count files)}))
+          (ensure-selection! state musn-session turn pid
+                             {:mode :use
+                              :note "auto selection from pattern file change"
+                              :source :aif}
+                             nil))
+        (let [action-resp (musn-action musn-session turn p "update" "auto file_change" paths)]
+          (let [logged? (log-latest-aif-tap! state musn-session)]
+            (when (and (not logged?) (not (:aif action-resp)))
+              (log-aif-missing! "turn/action"
+                                {:turn turn
+                                 :pattern/id (candidate-id p)
+                                 :action "update"})))
+          (log-mana-response! state action-resp))
+        (when (seq paths)
+          (musn-evidence musn-session turn p paths "auto evidence from change"))))))
 
 (defn handle-event! [state event musn-session]
   (let [{:keys [turn]} @state]
@@ -1186,9 +1207,9 @@
            :turn-plan? false
            :turn-plan-warned? false
            :turn-ended nil
-           :first-output? true
            :intent-seen? false
-           :intent nil)
+           :intent nil
+           :intent-seed nil)
     (let [seed-intent (or (some-> musn-intent str/trim not-empty)
                           (compute-intent musn-prompt))
           hud-map (or (read-hud-json hud-json-path)
@@ -1223,6 +1244,8 @@
                         (:sigils hud-map) (assoc :sigils (:sigils hud-map))
                         (:namespaces hud-map) (assoc :namespaces (:namespaces hud-map))
                         (:aif hud-map) (assoc :aif (:aif hud-map)))]
+      (when seed-intent
+        (swap! state assoc :intent-seed seed-intent))
       (when-let [aif-policy (:aif hud-map)]
         (swap! state assoc :aif-policy aif-policy))
       ;; Log task summary at turn start
@@ -1232,6 +1255,8 @@
           (println line)
           (flush)))
       (let [start-resp (musn-start session t hud-payload)]
+        (when (and seed-intent (not (:intent-seen? @state)))
+          (note-intent-seen! state session seed-intent))
         (let [logged? (log-latest-aif-tap! state session)]
           (when (and (seq candidate-ids) (not logged?) (not (:aif start-resp)))
             (log-aif-missing! "turn/start"
@@ -1306,7 +1331,11 @@
 
 (defn- process-event!
   [state session event tap-listener]
-  (log-musn! state "event" event)
+  (let [event-type (:type event)
+        log-event? (or (not= event-type "item.completed")
+                       (:intent-seen? @state))]
+    (when log-event?
+      (log-musn! state "event" event)))
   (let [event-type (:type event)]
     (if (= event-type "turn.started")
       (handle-turn-start! state session event)
@@ -1321,7 +1350,7 @@
                      :last-selected nil
                      :turn-plan? false
                      :turn-plan-warned? false
-                     :first-output? true
+                     :intent-missing-warned? false
                      :intent-seen? false
                      :intent nil
                      :last-aif-tap nil

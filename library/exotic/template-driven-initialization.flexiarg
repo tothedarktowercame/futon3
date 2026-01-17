@@ -1,0 +1,22 @@
+@flexiarg exotic/template-driven-initialization
+@title Template-Driven VISION Initialization
+@sigils [🏗️/模]
+@audience vision initializers, lift registry designers
+@tone foundational
+@style pattern
+
+! conclusion: Initialize VISION from CT templates seeded from futon3a sigil patterns; fall back to degenerate vision when no pattern matches.
+  + context: Defining how a genotype acquires its initial VISION declaration.
+  + IF:
+    Exotic scoring requires a declared VISION, but genotypes don't naturally come with one.
+  + HOWEVER:
+    Requiring manual vision declaration doesn't scale; purely degenerate visions lose the interpretability benefit; random initialization produces noise.
+  + THEN:
+    Seed CT templates from the futon3a pattern catalog (sigils + metadata), then lift to xenotype templates via the lift registry. When a genotype is created, match it to a template if possible; otherwise use degenerate vision (single object, identity morphism). Record template identity in lineage for provenance.
+  + BECAUSE:
+    Templates provide interpretable structure (the vision means something because it came from a pattern). The fallback ensures the system always works. Template provenance supports the contemplative layer's "how did you get here?" question.
+    + evidence: exotic-programming-curriculum.md Basecamp decision log, VISION initialization entry; resources/exotype-xenotype-lift.edn.
+  + NEXT-STEPS:
+    - Define template matching criteria (sigil similarity, hotword overlap).
+    - Implement lift from pattern to CT template.
+    - Add template-id field to vision records.

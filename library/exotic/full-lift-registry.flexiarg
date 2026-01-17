@@ -1,0 +1,22 @@
+@flexiarg exotic/full-lift-registry
+@title Full Lift Registry with Lisp Templates
+@sigils [🔧/升]
+@audience lift implementers, pattern-CT bridge designers
+@tone foundational
+@style pattern
+
+! conclusion: Lift registry uses full Lisp-style expressions for CT templates and lift rules, with evidence/version metadata per entry for provenance and automation.
+  + context: Defining the schema for the exotype-xenotype lift registry that bridges patterns to CT structures.
+  + IF:
+    The lift registry must map sigil patterns to CT templates in a way that supports provenance tracking and eventual automation.
+  + HOWEVER:
+    Simple key-value mappings lose the structure needed for composition; opaque blobs prevent inspection; metadata-free entries can't track where templates came from.
+  + THEN:
+    Use Lisp-style expressions for `:ct-template` (composable, inspectable) and `:lift-rules` (transformations from pattern to template). Include `:evidence` (what supports this mapping), `:version` (which futon1 version), and `:source` metadata per entry.
+  + BECAUSE:
+    Lisp expressions are homoiconic (code as data), making templates manipulable by the same system that uses them. Evidence metadata supports the contemplative layer. Version tracking enables live sync from futon1 as source of truth.
+    + evidence: exotic-programming-curriculum.md Basecamp decision log, Lift registry schema entry; resources/exotype-xenotype-lift.edn structure.
+  + NEXT-STEPS:
+    - Define CT template s-expression grammar.
+    - Implement lift rule interpreter.
+    - Add evidence/version fields to registry entries.

@@ -1,0 +1,22 @@
+@flexiarg exotic/hybrid-execution-semantics
+@title Hybrid Execution Semantics
+@sigils [🎯/执]
+@audience exotic programming implementers, CT layer designers
+@tone foundational
+@style pattern
+
+! conclusion: EXECUTION category objects are milestones with MMCA traces as evidence, preserving both CT interpretability and simulation grounding.
+  + context: Defining what "objects" and "morphisms" mean in the EXECUTION category of exotic programming.
+  + IF:
+    The CT layer must be interpretable (auditable reasoning) while remaining grounded in actual simulation behavior.
+  + HOWEVER:
+    Pure milestone semantics lose the richness of how execution actually proceeded; pure trace semantics drown in detail without categorical structure.
+  + THEN:
+    Use milestones as the categorical objects and morphisms (discrete, auditable checkpoints), but attach MMCA traces as evidence artifacts. The traces support the milestone claims without replacing the categorical structure.
+  + BECAUSE:
+    This keeps CT interpretability (you can ask "what missions were completed?") while grounding in simulation (you can inspect the actual execution path). It also aligns with nonstarter mechanics where clearing events are facts with supporting evidence.
+    + evidence: exotic-programming-curriculum.md Basecamp decision log, EXECUTION semantics entry.
+  + NEXT-STEPS:
+    - Define milestone schema (what constitutes a valid checkpoint).
+    - Specify trace attachment format (which traces support which milestones).
+    - Implement milestone extraction from MMCA runs.

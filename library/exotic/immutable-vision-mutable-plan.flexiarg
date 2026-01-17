@@ -1,0 +1,22 @@
+@flexiarg exotic/immutable-vision-mutable-plan
+@title Immutable Vision, Mutable Plan
+@sigils [📜/变]
+@audience exotic programming implementers, plan functor designers
+@tone foundational
+@style pattern
+
+! conclusion: VISION is immutable once declared; PLAN may be revised but only with logged evidence linking to xenotype/exotype learning.
+  + context: Defining revision policy for the CT structures in exotic programming.
+  + IF:
+    Strategy adaptation (ADAPT natural transformation) requires plan changes, but unconstrained mutation destroys interpretability.
+  + HOWEVER:
+    Fully immutable plans cannot respond to evidence; fully mutable plans lose the distinction between coherent adaptation and goalpost-moving.
+  + THEN:
+    Lock VISION (objects and morphisms) at declaration time. Allow PLAN functor revisions, but require each revision to cite evidence from EXECUTION. Failed plans receive weak positive scores for early failure that saves compute, rather than harsh penalties.
+  + BECAUSE:
+    This preserves the "what you said you would do" (VISION) as an auditable record while allowing "how you're going to do it" (PLAN) to evolve. The evidence requirement makes adaptations justified rather than arbitrary, supporting naturality checking.
+    + evidence: exotic-programming-curriculum.md Basecamp decision log, Plan revision policy entry; exotic-programming-spec.md ADAPT naturality condition.
+  + NEXT-STEPS:
+    - Implement VISION immutability check in category.clj.
+    - Add evidence-citation field to plan revision records.
+    - Define "early failure" scoring bonus.

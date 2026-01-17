@@ -1,0 +1,22 @@
+@flexiarg exotic/construction-discipline
+@title Construction Discipline for Law Checking
+@sigils [🏛️/律]
+@audience category implementers, law checker designers
+@tone foundational
+@style pattern
+
+! conclusion: Use construction discipline (safe constructors) for runtime law checking; reserve property tests for offline verification; log test harness results as evaluation signals.
+  + context: Defining how to check CT laws (associativity, identity, functor preservation, naturality) in the exotic programming system.
+  + IF:
+    CT structures have laws that must hold, but checking laws at every operation is expensive.
+  + HOWEVER:
+    No checking allows invalid structures to propagate; full runtime checking is slow; pure property tests miss runtime violations.
+  + THEN:
+    Use construction discipline: smart constructors that validate laws on creation, preventing invalid structures from existing. Reserve property-based testing (e.g., test.check) for offline verification of constructor correctness. Log test harness outcomes as additional evaluation signals for regime quality.
+  + BECAUSE:
+    Construction discipline provides runtime safety without per-operation overhead (validate once, trust thereafter). Property tests provide confidence in the constructors themselves. Test logs contribute to exotic scoring (regimes that pass more tests are healthier).
+    + evidence: exotic-programming-curriculum.md Basecamp decision log, Law-checking strategy entry.
+  + NEXT-STEPS:
+    - Implement smart constructors for Category, Functor, NatTrans.
+    - Write property tests for law preservation.
+    - Add test pass/fail rate to regime evaluation signals.

@@ -1,0 +1,22 @@
+@flexiarg exotic/dual-windowing
+@title Dual Windowing
+@sigils [🪟/双]
+@audience ratchet implementers, exotic scoring designers
+@tone foundational
+@style pattern
+
+! conclusion: Use two window types: primary (fixed evaluations) for quick ratchet tests, secondary (mission-completion) for interpretable checks once mapping stabilizes.
+  + context: Defining what constitutes a "window" for ratchet memory and delta-scoring.
+  + IF:
+    The ratchet mechanism needs to detect improvement over time, but "time" could mean evaluations, generations, wall-clock, or mission completions.
+  + HOWEVER:
+    Fixed evaluation windows enable rapid testing but lose mission-semantic meaning; mission-completion windows are interpretable but require stable mission mapping before they work.
+  + THEN:
+    Implement both. Primary windows use fixed evaluation counts (e.g., 100 evals) for early ratchet testing. Secondary windows use mission completions once the VISION-to-EXECUTION mapping is stable. The primary window dominates ratchet decisions until mission windows stabilize.
+  + BECAUSE:
+    This allows iterative development (test the ratchet quickly with primary windows) while building toward the interpretable goal (mission-aligned windows for exotic scoring).
+    + evidence: exotic-programming-curriculum.md Basecamp decision log, Window definition entry.
+  + NEXT-STEPS:
+    - Implement primary window counter in exoevolve.
+    - Define mission-completion detection logic.
+    - Add window-type field to ratchet state.

@@ -1,0 +1,22 @@
+@flexiarg exotic/tri-store-lineage
+@title Tri-Store Lineage Model
+@sigils [🗄️/三]
+@audience lineage implementers, provenance designers
+@tone foundational
+@style pattern
+
+! conclusion: Lineage uses a tri-store model: facts (append-only event log), memes (derived lineage graphs), notions (optional fuzzy index), consistent with nonstarter.
+  + context: Defining how to store and query lineage/provenance information for exotic scoring.
+  + IF:
+    The contemplative layer needs to answer "how did this genotype arrive here?" and "is this score earned or hacked?"
+  + HOWEVER:
+    A single flat log is hard to query for lineage; a derived graph alone loses auditability; a fuzzy index alone lacks grounding.
+  + THEN:
+    Use three layers: (1) Facts = append-only event log as single source of truth (every mutation, every score, every adaptation). (2) Memes = derived lineage graph and summaries, rebuilt from facts. (3) Notions = optional fuzzy index for similarity queries. This matches the nonstarter tri-store architecture.
+  + BECAUSE:
+    Facts provide auditability (you can always replay). Memes provide queryability (you can ask about ancestors). Notions provide discoverability (you can find similar paths). The separation keeps each layer's guarantees clean.
+    + evidence: exotic-programming-curriculum.md Basecamp decision log, Lineage storage entry; nonstarter tri-store architecture.
+  + NEXT-STEPS:
+    - Define fact event schema (mutation, scoring, adaptation events).
+    - Implement meme derivation from facts.
+    - Defer notions layer until provenance queries are clearer.

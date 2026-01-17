@@ -1,0 +1,22 @@
+@flexiarg exotic/graded-naturality
+@title Graded Naturality with Curriculum Tightening
+@sigils [📐/渐]
+@audience ADAPT implementers, naturality checker designers
+@tone foundational
+@style pattern
+
+! conclusion: Naturality checking is graded (not boolean) and curriculum-tightened; commutativity residuals are logged for analysis, not hard-failed before M14.
+  + context: Defining how strictly to enforce the naturality condition on ADAPT transformations.
+  + IF:
+    The naturality square (PLAN changes must commute with mission execution) is the core coherence check for adaptations.
+  + HOWEVER:
+    Boolean pass/fail is too strict early on (everything fails) and hides information; pure permissiveness loses the signal entirely.
+  + THEN:
+    Use graded metrics: mission-path edit distance as primary, evidence-vector distance as soft penalty/bonus. Log commutativity residuals (difference between PLAN(f;g) and PLAN(f);PLAN(g)) without hard-failing. Tighten tolerance as the curriculum advances; post-M14, naturality violations may become blocking.
+  + BECAUSE:
+    Graded checking provides signal during development (how close to commutative?) while logging builds the evidence base for later decisions. Curriculum tightening means early exploration isn't penalized but mature systems are held to standards.
+    + evidence: exotic-programming-curriculum.md Basecamp decision log, Naturality strictness entry; Basecamp invariants section.
+  + NEXT-STEPS:
+    - Implement mission-path edit distance metric.
+    - Add residual logging to adapt.clj.
+    - Define curriculum schedule for tolerance tightening.

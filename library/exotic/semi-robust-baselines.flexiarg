@@ -1,0 +1,22 @@
+@flexiarg exotic/semi-robust-baselines
+@title Semi-Robust Baselines for Validation
+@sigils [⚖️/稳]
+@audience validation designers, A/B test implementers
+@tone foundational
+@style pattern
+
+! conclusion: M16 baseline profile uses semi-robust batches: fixed pop/mutation/selection/budget, rotated seed sets across batches, multiple batches for A/B comparability.
+  + context: Defining the experimental profile for validating exotic xenotype against Mission 7/8 baselines.
+  + IF:
+    Validation requires A/B comparison between regimes, but MMCA has inherent stochasticity.
+  + HOWEVER:
+    Fully deterministic runs (single seed) overfit to that seed; fully random runs have high variance that obscures signal; single runs can't estimate variance.
+  + THEN:
+    Fix structural parameters (population size, mutation operators, selection method, evaluation budget). Use fixed seed sets per batch, but rotate seeds across batches. Run multiple batches (e.g., 3 x 5k evaluations) to get variance estimates. Compare regimes within batches before comparing across.
+  + BECAUSE:
+    Semi-robust design balances reproducibility (same seeds within batch) with generalization (different seeds across batches) with statistical power (multiple batches). This is the minimal setup for detecting upward drift vs stationary distribution.
+    + evidence: exotic-programming-curriculum.md Basecamp decision log, Baseline profile entry; README-mission8.md A/B design.
+  + NEXT-STEPS:
+    - Lock parameter values in a config file.
+    - Implement seed rotation across batches.
+    - Define statistical test for "upward trend" detection.

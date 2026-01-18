@@ -1,0 +1,98 @@
+@flexiarg iching/hexagram-29-kan
+@title ䷜ 坎 (Kǎn) - The Abysmal (Water)
+@sigils [☵☵/坎]
+@binary 010010
+@trigrams [water/water]
+@number 29
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Danger repeats; persistence and careful steps are required to pass through.
+  + context: A system faces repeated hazards or uncertainty.
+  + IF:
+    Each move risks loss; signals are noisy and survival is threatened.
+  + HOWEVER:
+    Fear can paralyze; overreaction amplifies the danger.
+  + THEN:
+    Proceed with steady, cautious movement; avoid sharp swings.
+  + BECAUSE:
+    In deep uncertainty, small reliable steps sustain the path.
+    + evidence: Traditional: "The Abysmal repeated. If you are sincere, you have success in your heart."
+  + NEXT-STEPS:
+    - Reduce amplitude of interventions.
+    - Maintain situational awareness.
+    - Pair with ䷝ (離) for illumination.
+
+@ct-interpretation
+  :vision
+  {:objects #{:hazard :safe-passage}
+   :morphism {:id :navigate
+              :source :hazard
+              :target :safe-passage
+              :type :careful}}
+
+  :as-morphism
+  {:domain :uncertain-state
+   :codomain :survivable-state
+   :preservation :moderate
+   :composition :stabilizes-under-risk}
+
+  :adapt
+  {:trigger :panic
+   :evidence [:oscillation :overreaction]
+   :target :hexagram-58-dui}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.2 :return 0.35 :hold 0.3 :pheromone 0.15}
+   :description "Cautious movement; prioritize survival"}
+
+  :precision
+  {:Pi-o 0.8
+   :tau 0.3
+   :description "High observation precision; conservative switching"}
+
+  :pattern-sense
+  {:trail-follow 0.7
+   :gradient-use 0.7
+   :novelty-seek 0.1
+   :description "Follow known safe paths"}
+
+  :adapt-trigger
+  {:condition :panic-detected
+   :interpretation "Overreaction to danger"
+   :switch-to :hexagram-58-dui}
+
+  :failure-mode
+  "Frozen caution prevents resource acquisition"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "坎"
+   :bits "01001000"
+   :interpretation "Cautious partial intervention"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.75
+   :invert-on-phenotype? false
+   :update-prob 0.25
+   :mix-mode :none
+   :description "Low intervention, high selectivity"}
+
+  :tensor-interpretation
+  {:operation :stability-filter
+   :description "Suppress volatility under risk"}
+
+  :regime-prediction
+  {:expected :cautious
+   :dynamics "Slow, stable motion"
+   :eoc-relevance "Stabilizes EoC when volatility rises"}
+
+@domain-transfer-notes
+  "坎 is the pattern of DANGER NAVIGATION across domains:
+   - In ants: cautious foraging/return
+   - In CA: stable filtering under turbulence
+   - In dialogue: careful progression through uncertainty"

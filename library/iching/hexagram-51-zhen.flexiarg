@@ -1,0 +1,98 @@
+@flexiarg iching/hexagram-51-zhen
+@title ䷲ 震 (Zhèn) - The Arousing (Thunder)
+@sigils [☳☳/震]
+@binary 100100
+@trigrams [thunder/thunder]
+@number 51
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Shock awakens and resets; it breaks inertia and renews motion.
+  + context: A system has stagnated or grown complacent.
+  + IF:
+    Motion has slowed and feedback has become dull.
+  + HOWEVER:
+    Shock can destabilize if applied too long or too harshly.
+  + THEN:
+    Use controlled arousal to restore responsiveness, then stabilize.
+  + BECAUSE:
+    Renewal often requires disruption to reintroduce sensitivity.
+    + evidence: Traditional: "Thunder comes: the image of the Arousing."
+  + NEXT-STEPS:
+    - Apply a short disruptive pulse.
+    - Watch for regained responsiveness.
+    - Pair with ䷜ (坎) to temper volatility.
+
+@ct-interpretation
+  :vision
+  {:objects #{:stagnant :aroused}
+   :morphism {:id :shock
+              :source :stagnant
+              :target :aroused
+              :type :disruptive}}
+
+  :as-morphism
+  {:domain :low-motion
+   :codomain :high-motion
+   :preservation :low
+   :composition :resets-cycle}
+
+  :adapt
+  {:trigger :overvolatility
+   :evidence [:collapse :panic]
+   :target :hexagram-29-kan}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.35 :return 0.2 :hold 0.15 :pheromone 0.3}
+   :description "Spike responsiveness; re-lay trails"}
+
+  :precision
+  {:Pi-o 0.5
+   :tau 0.8
+   :description "High exploration to break inertia"}
+
+  :pattern-sense
+  {:trail-follow 0.2
+   :gradient-use 0.3
+   :novelty-seek 0.8
+   :description "Jump to new paths"}
+
+  :adapt-trigger
+  {:condition :destabilize
+   :interpretation "Shock too strong"
+   :switch-to :hexagram-29-kan}
+
+  :failure-mode
+  "Over-arousal prevents consolidation"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "震"
+   :bits "10010000"
+   :interpretation "Pulse-like intervention"}
+
+  :exotype-params
+  {:rotation 3
+   :match-threshold 0.3
+   :invert-on-phenotype? true
+   :update-prob 0.8
+   :mix-mode :scramble
+   :description "High intervention to reset dynamics"}
+
+  :tensor-interpretation
+  {:operation :pulse
+   :description "Transient strong perturbation"}
+
+  :regime-prediction
+  {:expected :aroused
+   :dynamics "Shock-induced variability"
+   :eoc-relevance "Useful for escaping stasis, not for long-term EoC"}
+
+@domain-transfer-notes
+  "震 is the pattern of SHOCK/AROUSAL across domains:
+   - In ants: sudden exploration bursts
+   - In CA: pulse-induced diversity
+   - In dialogue: interruption that resets attention"

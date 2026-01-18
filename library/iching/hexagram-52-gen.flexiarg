@@ -1,0 +1,98 @@
+@flexiarg iching/hexagram-52-gen
+@title ䷳ 艮 (Gèn) - Keeping Still (Mountain)
+@sigils [☶☶/艮]
+@binary 001001
+@trigrams [mountain/mountain]
+@number 52
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Stillness halts motion to restore clarity; it prevents rash action.
+  + context: A system needs to pause to regain stability or avoid error.
+  + IF:
+    Motion is causing confusion or harm.
+  + HOWEVER:
+    Too much stillness becomes paralysis.
+  + THEN:
+    Halt briefly, observe, then resume with renewed alignment.
+  + BECAUSE:
+    Stillness is the boundary that preserves order when action destabilizes.
+    + evidence: Traditional: "Keeping still. It is favorable to remain steadfast."
+  + NEXT-STEPS:
+    - Identify the boundary where action should stop.
+    - Pause long enough to reset.
+    - Pair with ䷲ (震) to restart motion.
+
+@ct-interpretation
+  :vision
+  {:objects #{:moving :still}
+   :morphism {:id :halt
+              :source :moving
+              :target :still
+              :type :boundary}}
+
+  :as-morphism
+  {:domain :active-state
+   :codomain :paused-state
+   :preservation :high
+   :composition :resets-motion}
+
+  :adapt
+  {:trigger :overaction
+   :evidence [:noise :collision]
+   :target :hexagram-51-zhen}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.15 :return 0.25 :hold 0.45 :pheromone 0.15}
+   :description "Pause-heavy policy to avoid destabilization"}
+
+  :precision
+  {:Pi-o 0.8
+   :tau 0.2
+   :description "High precision, low exploration"}
+
+  :pattern-sense
+  {:trail-follow 0.5
+   :gradient-use 0.4
+   :novelty-seek 0.1
+   :description "Stay with known structure"}
+
+  :adapt-trigger
+  {:condition :stuck
+   :interpretation "Stillness too long"
+   :switch-to :hexagram-51-zhen}
+
+  :failure-mode
+  "Paralysis and starvation"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "艮"
+   :bits "00100100"
+   :interpretation "Strong preservation with minimal change"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.9
+   :invert-on-phenotype? false
+   :update-prob 0.15
+   :mix-mode :none
+   :description "High constraint, low intervention"}
+
+  :tensor-interpretation
+  {:operation :identity-plus-clamp
+   :description "Maintain state with strong boundary"}
+
+  :regime-prediction
+  {:expected :stasis
+   :dynamics "Highly stable, low change"
+   :eoc-relevance "Anti-EoC unless paired with arousal"}
+
+@domain-transfer-notes
+  "艮 is the pattern of STILLNESS across domains:
+   - In ants: pausing to avoid destabilization
+   - In CA: stable, frozen patterns
+   - In dialogue: silence to avoid escalation"

@@ -1,0 +1,98 @@
+@flexiarg iching/hexagram-58-dui
+@title ䷹ 兌 (Duì) - The Joyous (Lake)
+@sigils [☱☱/兌]
+@binary 110110
+@trigrams [lake/lake]
+@number 58
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Joy and openness increase flow, but they require discipline to remain constructive.
+  + context: A system thrives through exchange, delight, and mutual responsiveness.
+  + IF:
+    Signals are positive, cooperation is possible, and shared uplift improves performance.
+  + HOWEVER:
+    Pleasure without boundary dissipates into distraction or indulgence.
+  + THEN:
+    Use joy as a coordination signal. Keep the channel open but bounded.
+  + BECAUSE:
+    Joy is a stabilizing feedback when it remains coupled to purpose.
+    + evidence: Traditional: "The Joyous. Success. Perseverance is favorable."
+  + NEXT-STEPS:
+    - Identify where shared uplift improves coordination.
+    - Set limits to prevent drift.
+    - Pair with ䷜ (坎) to balance joy with caution.
+
+@ct-interpretation
+  :vision
+  {:objects #{:exchange :cohesion}
+   :morphism {:id :harmonize
+              :source :exchange
+              :target :cohesion
+              :type :cooperative}}
+
+  :as-morphism
+  {:domain :connected-state
+   :codomain :reinforced-connection
+   :preservation :moderate
+   :composition :reinforces-cycle}
+
+  :adapt
+  {:trigger :excess
+   :evidence [:drift :indulgence]
+   :target :hexagram-29-kan}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.25 :hold 0.2 :pheromone 0.25}
+   :description "Maintain joyful circulation; reinforce trails"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.6
+   :description "Responsive but not chaotic"}
+
+  :pattern-sense
+  {:trail-follow 0.7
+   :gradient-use 0.6
+   :novelty-seek 0.3
+   :description "Follow good paths; explore gently"}
+
+  :adapt-trigger
+  {:condition :overcommitment
+   :interpretation "Too much joy without caution"
+   :switch-to :hexagram-29-kan}
+
+  :failure-mode
+  "Overindulgent cycles starve exploratory capacity"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "兌"
+   :bits "11011000"
+   :interpretation "Open channels with moderate intervention"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.55
+   :invert-on-phenotype? false
+   :update-prob 0.45
+   :mix-mode :majority
+   :description "Coordinated mixing with moderate openness"}
+
+  :tensor-interpretation
+  {:operation :cooperative-mix
+   :description "Reinforces shared structure without full collapse"}
+
+  :regime-prediction
+  {:expected :cooperative
+   :dynamics "Stable oscillations with reinforced patterns"
+   :eoc-relevance "Potentially EoC-adjacent when bounded"}
+
+@domain-transfer-notes
+  "兌 is the pattern of JOYOUS EXCHANGE across domains:
+   - In ants: smooth trail-following with responsive exploration
+   - In CA: stable oscillatory cooperation
+   - In dialogue: open exchange with shared uplift"

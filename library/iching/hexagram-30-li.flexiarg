@@ -1,0 +1,98 @@
+@flexiarg iching/hexagram-30-li
+@title ䷝ 離 (Lí) - The Clinging (Fire)
+@sigils [☲☲/離]
+@binary 101101
+@trigrams [fire/fire]
+@number 30
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Clarity and attachment illuminate, but they also bind and can burn if overheld.
+  + context: A system seeks coherence through focus and illumination.
+  + IF:
+    Signals are clear and alignment is possible through attachment to structure.
+  + HOWEVER:
+    Excess attachment becomes rigidity; fire consumes if it cannot move.
+  + THEN:
+    Hold clarity lightly. Use illumination to guide, not to freeze.
+  + BECAUSE:
+    Fire reveals form but must be fed and bounded; it is a guide, not a cage.
+    + evidence: Traditional: "The Clinging. Perseverance furthers."
+  + NEXT-STEPS:
+    - Identify the stable anchor for clarity.
+    - Prevent fixation by allowing small movement.
+    - Pair with ䷜ (坎) to balance illumination with depth.
+
+@ct-interpretation
+  :vision
+  {:objects #{:unclear :illuminated}
+   :morphism {:id :illuminate
+              :source :unclear
+              :target :illuminated
+              :type :focus}}
+
+  :as-morphism
+  {:domain :noisy-state
+   :codomain :focused-state
+   :preservation :selective
+   :composition :stabilizes-focus}
+
+  :adapt
+  {:trigger :rigidity
+   :evidence [:overfixation :burnout]
+   :target :hexagram-29-kan}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :outbound
+   :policy-priors {:forage 0.5 :return 0.2 :hold 0.2 :pheromone 0.1}
+   :description "Focused foraging with clear targets"}
+
+  :precision
+  {:Pi-o 0.8
+   :tau 0.3
+   :description "High clarity, lower exploration"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.7
+   :novelty-seek 0.2
+   :description "Follow gradients toward clear signals"}
+
+  :adapt-trigger
+  {:condition :overfocus
+   :interpretation "Rigidity detected"
+   :switch-to :hexagram-29-kan}
+
+  :failure-mode
+  "Rigid focus ignores new food sources"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "離"
+   :bits "10110100"
+   :interpretation "Focused intervention with stable anchors"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.7
+   :invert-on-phenotype? false
+   :update-prob 0.4
+   :mix-mode :rotate-left
+   :description "Directional mixing with stable alignment"}
+
+  :tensor-interpretation
+  {:operation :selective-projection
+   :description "Project onto clarified subspace"}
+
+  :regime-prediction
+  {:expected :focused
+   :dynamics "Structured patterns with low noise"
+   :eoc-relevance "EoC-adjacent if not overconstrained"}
+
+@domain-transfer-notes
+  "離 is the pattern of CLARITY/ATTACHMENT across domains:
+   - In ants: focused foraging guided by strong cues
+   - In CA: structured patterns with bounded variability
+   - In dialogue: clear thesis with risk of fixation"

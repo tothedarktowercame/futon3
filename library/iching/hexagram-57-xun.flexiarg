@@ -1,0 +1,98 @@
+@flexiarg iching/hexagram-57-xun
+@title ䷸ 巽 (Xùn) - The Gentle (Wind)
+@sigils [☴☴/巽]
+@binary 011011
+@trigrams [wind/wind]
+@number 57
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Gentle, repeated influence penetrates more deeply than force.
+  + context: A system needs gradual alignment rather than abrupt change.
+  + IF:
+    Direct force fails or causes resistance.
+  + HOWEVER:
+    Excess gentleness can become indecision or drift.
+  + THEN:
+    Apply steady, low-amplitude influence until alignment appears.
+  + BECAUSE:
+    Wind shapes by persistence; gradual pressure can redirect flows.
+    + evidence: Traditional: "The Gentle. Success through what is small."
+  + NEXT-STEPS:
+    - Choose a small, repeatable influence.
+    - Track gradual alignment.
+    - Pair with ䷲ (震) if momentum stalls.
+
+@ct-interpretation
+  :vision
+  {:objects #{:unaligned :aligned}
+   :morphism {:id :nudge
+              :source :unaligned
+              :target :aligned
+              :type :gentle}}
+
+  :as-morphism
+  {:domain :misaligned-state
+   :codomain :aligned-state
+   :preservation :high
+   :composition :slowly-guides}
+
+  :adapt
+  {:trigger :no-progress
+   :evidence [:stasis :drift]
+   :target :hexagram-51-zhen}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.25 :pheromone 0.15}
+   :description "Steady alignment with gentle nudges"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.5
+   :description "Attentive and steady"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Follow gradients, small exploration"}
+
+  :adapt-trigger
+  {:condition :no-shift
+   :interpretation "Gentle influence stalled"
+   :switch-to :hexagram-51-zhen}
+
+  :failure-mode
+  "Too much softness causes drift"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "巽"
+   :bits "01101100"
+   :interpretation "Low-amplitude guided intervention"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.6
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :rotate-right
+   :description "Directional gentle mixing"}
+
+  :tensor-interpretation
+  {:operation :gentle-rotation
+   :description "Small nudges that preserve structure"}
+
+  :regime-prediction
+  {:expected :aligned
+   :dynamics "Slow convergence with preserved diversity"
+   :eoc-relevance "Potentially stabilizing for EoC"}
+
+@domain-transfer-notes
+  "巽 is the pattern of GENTLE INFLUENCE across domains:
+   - In ants: steady correction via mild trail following
+   - In CA: slow rotation preserving structure
+   - In dialogue: gradual persuasion"

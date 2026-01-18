@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-09-xiaochu
+@title ䷈ 小畜 (Xiǎo Chù) - The Taming Power of the Small
+@sigils [☴☰/小畜]
+@binary 111011
+@trigrams [wind/heaven]
+@number 9
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Small influences can restrain great forces; gentle control accumulates.
+  + context: A strong momentum needs subtle correction.
+  + IF:
+    Power is present but must be regulated without direct confrontation.
+  + HOWEVER:
+    Minor control is slow and can be overwhelmed.
+  + THEN:
+    Apply repeated small corrections to guide the larger force.
+  + BECAUSE:
+    Gentle constraints can shape large motion over time.
+    + evidence: Traditional: "The Taming Power of the Small. Success."
+  + NEXT-STEPS:
+    - Identify the small leverage points.
+    - Apply consistent, light pressure.
+    - Pair with ䷂ (屯) if turbulence grows.
+
+@ct-interpretation
+  :vision
+  {:objects #{:strong :guided}
+   :morphism {:id :tame
+              :source :strong
+              :target :guided
+              :type :gentle}}
+
+  :as-morphism
+  {:domain :high-momentum
+   :codomain :steered-momentum
+   :preservation :moderate
+   :composition :nudges}
+
+  :adapt
+  {:trigger :overwhelm
+   :evidence [:loss-of-control :breakthrough]
+   :target :hexagram-03-zhun}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.35 :return 0.3 :hold 0.2 :pheromone 0.15}
+   :description "Gentle steering of strong foraging drive"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.5
+   :description "Moderate responsiveness"}
+
+  :pattern-sense
+  {:trail-follow 0.5
+   :gradient-use 0.5
+   :novelty-seek 0.3
+   :description "Guide without suppressing"}
+
+  :adapt-trigger
+  {:condition :overrun
+   :interpretation "Control overwhelmed"
+   :switch-to :hexagram-03-zhun}
+
+  :failure-mode
+  "Small corrections fail to restrain surges"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "小畜"
+   :bits "11101100"
+   :interpretation "Small constraints on strong pressure"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.55
+   :invert-on-phenotype? false
+   :update-prob 0.45
+   :mix-mode :rotate-right
+   :description "Gentle steering"}
+
+  :tensor-interpretation
+  {:operation :small-nudge
+   :description "Light correction of strong flow"}
+
+  :regime-prediction
+  {:expected :guided
+   :dynamics "Strong motion with mild steering"
+   :eoc-relevance "Potentially stabilizing for EoC"}
+
+@domain-transfer-notes
+  "小畜 is the pattern of GENTLE RESTRAINT across domains:
+   - In ants: slight steering of foraging
+   - In CA: mild control of strong dynamics"

@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-05-xu
+@title ䷄ 需 (Xū) - Waiting
+@sigils [☵☰/需]
+@binary 111010
+@trigrams [water/heaven]
+@number 5
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Waiting is active patience; prepare and hold position until conditions align.
+  + context: Progress is possible but conditions are not yet favorable.
+  + IF:
+    Action now would waste resources or increase risk.
+  + HOWEVER:
+    Waiting without preparation is idle.
+  + THEN:
+    Hold steady while strengthening readiness.
+  + BECAUSE:
+    Timing matters; disciplined patience preserves capacity.
+    + evidence: Traditional: "Waiting. If you are sincere, you have light and success."
+  + NEXT-STEPS:
+    - Identify the alignment condition.
+    - Maintain readiness and supplies.
+    - Pair with ䷆ (訟) if conflict arises.
+
+@ct-interpretation
+  :vision
+  {:objects #{:ready :aligned}
+   :morphism {:id :await
+              :source :ready
+              :target :aligned
+              :type :timing}}
+
+  :as-morphism
+  {:domain :prepared-state
+   :codomain :opportune-state
+   :preservation :high
+   :composition :delays-until-ready}
+
+  :adapt
+  {:trigger :impatience
+   :evidence [:rushed-action :loss]
+   :target :hexagram-06-song}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.2 :return 0.35 :hold 0.35 :pheromone 0.1}
+   :description "Hold with readiness; conserve resources"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.3
+   :description "Cautious and steady"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.4
+   :novelty-seek 0.1
+   :description "Maintain known paths while waiting"}
+
+  :adapt-trigger
+  {:condition :forced-conflict
+   :interpretation "Waiting breaks into dispute"
+   :switch-to :hexagram-06-song}
+
+  :failure-mode
+  "Over-waiting leads to missed opportunity"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "需"
+   :bits "11101000"
+   :interpretation "High readiness with low intervention"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.8
+   :invert-on-phenotype? false
+   :update-prob 0.2
+   :mix-mode :none
+   :description "Strong constraint, low update"}
+
+  :tensor-interpretation
+  {:operation :holding-pattern
+   :description "Preserve state until trigger"}
+
+  :regime-prediction
+  {:expected :steady
+   :dynamics "Stable, low-change trajectories"
+   :eoc-relevance "Anti-EoC unless paired with activation"}
+
+@domain-transfer-notes
+  "需 is the pattern of PREPARED WAITING across domains:
+   - In ants: hold position with supplies
+   - In CA: low-change stability"

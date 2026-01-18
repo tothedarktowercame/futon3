@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-03-zhun
+@title ䷂ 屯 (Zhūn) - Difficulty at the Beginning
+@sigils [☵☳/屯]
+@binary 100010
+@trigrams [water/thunder]
+@number 3
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Beginnings are chaotic; persistence and small structure enable growth.
+  + context: A system has just initiated and lacks stable form.
+  + IF:
+    Movement is present but coordination is poor and obstacles are frequent.
+  + HOWEVER:
+    Forcing order too early collapses vitality.
+  + THEN:
+    Establish minimal scaffolds and advance in small steps.
+  + BECAUSE:
+    Early turbulence is normal; structure must emerge gradually.
+    + evidence: Traditional: "Difficulty at the beginning brings success through perseverance."
+  + NEXT-STEPS:
+    - Identify the smallest stabilizing loop.
+    - Protect the nascent structure from collapse.
+    - Pair with ䷃ (蒙) to develop learning.
+
+@ct-interpretation
+  :vision
+  {:objects #{:incipient :forming}
+   :morphism {:id :scaffold
+              :source :incipient
+              :target :forming
+              :type :bootstrapping}}
+
+  :as-morphism
+  {:domain :chaotic-start
+   :codomain :proto-order
+   :preservation :low
+   :composition :initiates-stabilization}
+
+  :adapt
+  {:trigger :overconstraint
+   :evidence [:stall :collapse]
+   :target :hexagram-04-meng}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.4 :return 0.2 :hold 0.2 :pheromone 0.2}
+   :description "Exploration with light stabilization"}
+
+  :precision
+  {:Pi-o 0.4
+   :tau 0.7
+   :description "Exploratory, lightly guided"}
+
+  :pattern-sense
+  {:trail-follow 0.3
+   :gradient-use 0.4
+   :novelty-seek 0.7
+   :description "Search for viable paths"}
+
+  :adapt-trigger
+  {:condition :stall
+   :interpretation "Need learning/discipline"
+   :switch-to :hexagram-04-meng}
+
+  :failure-mode
+  "Early chaos never stabilizes"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "屯"
+   :bits "10001000"
+   :interpretation "Turbulent start with weak structure"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.4
+   :invert-on-phenotype? true
+   :update-prob 0.6
+   :mix-mode :scramble
+   :description "Active intervention to seed structure"}
+
+  :tensor-interpretation
+  {:operation :bootstrapping-mix
+   :description "Mixing to seed emergent order"}
+
+  :regime-prediction
+  {:expected :turbulent
+   :dynamics "Early churn with emerging motifs"
+   :eoc-relevance "Pre-EoC; needs stabilization"}
+
+@domain-transfer-notes
+  "屯 is the pattern of BOOTSTRAPPED BEGINNINGS across domains:
+   - In ants: early exploration with fragile loops
+   - In CA: turbulent starts before structure"

@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-10-lu
+@title ䷉ 履 (Lǚ) - Treading
+@sigils [☱☰/履]
+@binary 111110
+@trigrams [lake/heaven]
+@number 10
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Treading carefully among power prevents harm; respect the terrain.
+  + context: A system moves within strong forces or constraints.
+  + IF:
+    Progress requires precision and respect for boundaries.
+  + HOWEVER:
+    Reckless steps provoke danger.
+  + THEN:
+    Move with care, maintain balance, and avoid provoking instability.
+  + BECAUSE:
+    Safe progress depends on situational awareness and measured action.
+    + evidence: Traditional: "Treading. Tread upon the tail of the tiger. It does not bite."
+  + NEXT-STEPS:
+    - Identify the dangerous edges.
+    - Slow down and keep balance.
+    - Pair with ䷄ (需) to wait when needed.
+
+@ct-interpretation
+  :vision
+  {:objects #{:dangerous-path :safe-step}
+   :morphism {:id :tread
+              :source :dangerous-path
+              :target :safe-step
+              :type :careful}}
+
+  :as-morphism
+  {:domain :constrained-state
+   :codomain :safe-progress
+   :preservation :high
+   :composition :careful-progress}
+
+  :adapt
+  {:trigger :instability
+   :evidence [:risk-spike :near-failure]
+   :target :hexagram-05-xu}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.25 :pheromone 0.15}
+   :description "Careful movement under constraints"}
+
+  :precision
+  {:Pi-o 0.75
+   :tau 0.3
+   :description "High precision, low exploration"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.1
+   :description "Respect established paths"}
+
+  :adapt-trigger
+  {:condition :risk-spike
+   :interpretation "Pause and wait"
+   :switch-to :hexagram-05-xu}
+
+  :failure-mode
+  "Over-cautiousness reduces gains"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "履"
+   :bits "11111000"
+   :interpretation "Strong structure with careful constraints"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.75
+   :invert-on-phenotype? false
+   :update-prob 0.25
+   :mix-mode :none
+   :description "Careful, low intervention"}
+
+  :tensor-interpretation
+  {:operation :careful-filter
+   :description "Preserve structure while moving safely"}
+
+  :regime-prediction
+  {:expected :stable
+   :dynamics "Safe, low-variance progression"
+   :eoc-relevance "Stabilizes, may reduce exploration"}
+
+@domain-transfer-notes
+  "履 is the pattern of CAREFUL PROGRESS across domains:
+   - In ants: cautious movement
+   - In CA: stable motion under constraints"

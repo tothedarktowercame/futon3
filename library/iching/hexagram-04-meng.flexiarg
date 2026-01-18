@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-04-meng
+@title ䷃ 蒙 (Méng) - Youthful Folly / Envelopment
+@sigils [☶☵/蒙]
+@binary 010001
+@trigrams [mountain/water]
+@number 4
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Immature energy needs guidance; learning requires discipline and patience.
+  + context: A system is active but naive, prone to error.
+  + IF:
+    Signals are noisy and actions are misaligned.
+  + HOWEVER:
+    Excess correction discourages growth.
+  + THEN:
+    Provide clear constraints and allow iterative learning.
+  + BECAUSE:
+    Early systems grow through guidance, not through force.
+    + evidence: Traditional: "Youthful folly. It is not I who seek the young fool; the young fool seeks me."
+  + NEXT-STEPS:
+    - Define a small set of clear rules.
+    - Encourage feedback without harsh punishment.
+    - Pair with ䷂ (屯) to stabilize learning.
+
+@ct-interpretation
+  :vision
+  {:objects #{:naive :guided}
+   :morphism {:id :teach
+              :source :naive
+              :target :guided
+              :type :constraint}}
+
+  :as-morphism
+  {:domain :noisy-state
+   :codomain :disciplined-state
+   :preservation :moderate
+   :composition :supports-learning}
+
+  :adapt
+  {:trigger :stagnant-learning
+   :evidence [:repetition :no-improvement]
+   :target :hexagram-03-zhun}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.25 :pheromone 0.15}
+   :description "Guided exploration with constraints"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.5
+   :description "Balanced guidance and exploration"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.3
+   :description "Follow hints; allow modest exploration"}
+
+  :adapt-trigger
+  {:condition :no-learning
+   :interpretation "Need to re-seed turbulence"
+   :switch-to :hexagram-03-zhun}
+
+  :failure-mode
+  "Over-constraint suppresses learning"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "蒙"
+   :bits "01000100"
+   :interpretation "Guided mixing with constraints"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.65
+   :invert-on-phenotype? false
+   :update-prob 0.45
+   :mix-mode :majority
+   :description "Constraint-biased coordination"}
+
+  :tensor-interpretation
+  {:operation :guided-projection
+   :description "Mixing constrained toward structure"}
+
+  :regime-prediction
+  {:expected :learning
+   :dynamics "Emergent structure with corrections"
+   :eoc-relevance "EoC-adjacent if guidance stays light"}
+
+@domain-transfer-notes
+  "蒙 is the pattern of GUIDED LEARNING across domains:
+   - In ants: constrained exploration
+   - In CA: structured emergence"

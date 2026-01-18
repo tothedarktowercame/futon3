@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-08-bi
+@title ䷇ 比 (Bǐ) - Holding Together / Union
+@sigils [☵☷/比]
+@binary 000010
+@trigrams [water/earth]
+@number 8
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Union creates strength; cohesion must be chosen and maintained.
+  + context: A system seeks stability through alliance and shared bonds.
+  + IF:
+    Agents can align under a common center.
+  + HOWEVER:
+    Forced unity can hide weakness or suppress needed diversity.
+  + THEN:
+    Form bonds through trust and clear purpose; allow exits when misaligned.
+  + BECAUSE:
+    Cohesion is a chosen alignment, not a permanent constraint.
+    + evidence: Traditional: "Holding together brings success."
+  + NEXT-STEPS:
+    - Establish a center of trust.
+    - Maintain cohesion through shared benefit.
+    - Pair with ䷆ (師) for disciplined action.
+
+@ct-interpretation
+  :vision
+  {:objects #{:scattered :unified}
+   :morphism {:id :bind
+              :source :scattered
+              :target :unified
+              :type :cohesive}}
+
+  :as-morphism
+  {:domain :distributed-state
+   :codomain :cohesive-state
+   :preservation :moderate
+   :composition :binds}
+
+  :adapt
+  {:trigger :forced-unity
+   :evidence [:suppression :fragility]
+   :target :hexagram-07-shi}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.25 :return 0.35 :hold 0.25 :pheromone 0.15}
+   :description "Bonding via shared return cycles"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Steady cohesion"}
+
+  :pattern-sense
+  {:trail-follow 0.7
+   :gradient-use 0.5
+   :novelty-seek 0.15
+   :description "Follow shared routes"}
+
+  :adapt-trigger
+  {:condition :fragile-unity
+   :interpretation "Shift to disciplined coordination"
+   :switch-to :hexagram-07-shi}
+
+  :failure-mode
+  "Rigid unity suppresses exploration"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "比"
+   :bits "00001000"
+   :interpretation "Cohesive mixing near a center"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.6
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :majority
+   :description "Consensus-based updates"}
+
+  :tensor-interpretation
+  {:operation :consensus
+   :description "Local agreement strengthens structure"}
+
+  :regime-prediction
+  {:expected :cohesive
+   :dynamics "Unified patterns with low variance"
+   :eoc-relevance "Stabilizes but may reduce diversity"}
+
+@domain-transfer-notes
+  "比 is the pattern of UNION across domains:
+   - In ants: cohesion around shared routes
+   - In CA: consensus structures"

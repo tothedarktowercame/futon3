@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-06-song
+@title ䷅ 訟 (Sòng) - Conflict
+@sigils [☰☵/訟]
+@binary 010111
+@trigrams [heaven/water]
+@number 6
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Conflict arises when forces oppose; clarity and restraint prevent escalation.
+  + context: Two currents collide and progress halts.
+  + IF:
+    Goals or signals are misaligned and actions interfere.
+  + HOWEVER:
+    Escalation consumes resources and worsens the split.
+  + THEN:
+    Seek clarification and minimal resolution; avoid total confrontation.
+  + BECAUSE:
+    Conflict can be resolved through boundary-setting rather than domination.
+    + evidence: Traditional: "Conflict. You are sincere, but you will be obstructed."
+  + NEXT-STEPS:
+    - Identify the misalignment.
+    - Reduce interference pathways.
+    - Pair with ䷄ (需) to return to patience.
+
+@ct-interpretation
+  :vision
+  {:objects #{:opposed :clarified}
+   :morphism {:id :clarify
+              :source :opposed
+              :target :clarified
+              :type :boundary}}
+
+  :as-morphism
+  {:domain :conflicted-state
+   :codomain :bounded-state
+   :preservation :low
+   :composition :reduces-interference}
+
+  :adapt
+  {:trigger :escalation
+   :evidence [:collision :loss]
+   :target :hexagram-05-xu}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.25 :return 0.3 :hold 0.3 :pheromone 0.15}
+   :description "Contain conflict; avoid escalation"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Moderate responsiveness"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.4
+   :novelty-seek 0.2
+   :description "Avoid conflicting gradients"}
+
+  :adapt-trigger
+  {:condition :escalate
+   :interpretation "Return to waiting"
+   :switch-to :hexagram-05-xu}
+
+  :failure-mode
+  "Escalation drains reserves"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "訟"
+   :bits "01011100"
+   :interpretation "Competing pressures"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.55
+   :invert-on-phenotype? true
+   :update-prob 0.45
+   :mix-mode :xor-neighbor
+   :description "Competitive mixing"}
+
+  :tensor-interpretation
+  {:operation :opposition
+   :description "Interference between competing modes"}
+
+  :regime-prediction
+  {:expected :contentious
+   :dynamics "Irregular oscillations"
+   :eoc-relevance "Can seed EoC if resolved"}
+
+@domain-transfer-notes
+  "訟 is the pattern of CONFLICT across domains:
+   - In ants: competing gradients and stalled returns
+   - In CA: interfering waves"

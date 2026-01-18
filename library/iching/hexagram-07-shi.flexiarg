@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-07-shi
+@title ䷆ 師 (Shī) - The Army
+@sigils [☷☵/師]
+@binary 010000
+@trigrams [earth/water]
+@number 7
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Collective action requires discipline; coordination must serve a clear objective.
+  + context: Many agents act together under pressure.
+  + IF:
+    The system needs coordinated motion and unified direction.
+  + HOWEVER:
+    Without discipline, the group fragments or overreaches.
+  + THEN:
+    Establish clear command and shared objectives; coordinate actions.
+  + BECAUSE:
+    Collective strength emerges only with alignment and restraint.
+    + evidence: Traditional: "The Army. Perseverance furthers."
+  + NEXT-STEPS:
+    - Define the common objective.
+    - Assign roles and limits.
+    - Pair with ䷇ (比) to maintain cohesion.
+
+@ct-interpretation
+  :vision
+  {:objects #{:many :aligned}
+   :morphism {:id :coordinate
+              :source :many
+              :target :aligned
+              :type :collective}}
+
+  :as-morphism
+  {:domain :distributed-state
+   :codomain :coordinated-state
+   :preservation :moderate
+   :composition :synchronizes}
+
+  :adapt
+  {:trigger :fragmentation
+   :evidence [:drift :loss-of-command]
+   :target :hexagram-08-bi}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.2 :pheromone 0.2}
+   :description "Coordinated trail-based movement"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Cohesion with moderate exploration"}
+
+  :pattern-sense
+  {:trail-follow 0.7
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Prefer shared routes"}
+
+  :adapt-trigger
+  {:condition :fragmentation
+   :interpretation "Shift to bonding"
+   :switch-to :hexagram-08-bi}
+
+  :failure-mode
+  "Uncoordinated swarms waste resources"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "師"
+   :bits "01000000"
+   :interpretation "Coordinated but restrained pressure"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.6
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :majority
+   :description "Coordinated mixing with restraint"}
+
+  :tensor-interpretation
+  {:operation :synchronized-mix
+   :description "Align local updates into collective motion"}
+
+  :regime-prediction
+  {:expected :coordinated
+   :dynamics "Structured collective patterns"
+   :eoc-relevance "May stabilize EoC by cohesion"}
+
+@domain-transfer-notes
+  "師 is the pattern of COORDINATED FORCE across domains:
+   - In ants: disciplined trail following
+   - In CA: synchronized structures"

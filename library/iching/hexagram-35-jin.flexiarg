@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-35-jin
+@title ䷢ 晉 (Jìn) - Progress
+@sigils [☲☷/晉]
+@binary 000101
+@trigrams [fire/earth]
+@number 35
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Progress comes from clear advancement and steady illumination.
+  + context: A system is ready to advance.
+  + IF:
+    The path is visible and energy is aligned.
+  + HOWEVER:
+    Rapid advance without grounding invites reversal.
+  + THEN:
+    Advance steadily with clarity.
+  + BECAUSE:
+    Progress is sustained by balance between vision and support.
+    + evidence: Traditional: "Progress. The powerful prince is honored."
+  + NEXT-STEPS:
+    - Keep the path visible.
+    - Maintain support structures.
+    - Pair with ䷣ (明夷) if light dims.
+
+@ct-interpretation
+  :vision
+  {:objects #{:stagnant :advancing}
+   :morphism {:id :advance
+              :source :stagnant
+              :target :advancing
+              :type :progressive}}
+
+  :as-morphism
+  {:domain :held-state
+   :codomain :forward-state
+   :preservation :moderate
+   :composition :advances}
+
+  :adapt
+  {:trigger :light-dim
+   :evidence [:opacity :resistance]
+   :target :hexagram-36-mingyi}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :outbound
+   :policy-priors {:forage 0.5 :return 0.2 :hold 0.15 :pheromone 0.15}
+   :description "Steady advance"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Clear, steady movement"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.6
+   :novelty-seek 0.3
+   :description "Advance toward clear signals"}
+
+  :adapt-trigger
+  {:condition :light-dim
+   :interpretation "Protect light"
+   :switch-to :hexagram-36-mingyi}
+
+  :failure-mode
+  "Over-advance without support"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "晉"
+   :bits "00010100"
+   :interpretation "Clear advance"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.55
+   :invert-on-phenotype? false
+   :update-prob 0.45
+   :mix-mode :rotate-left
+   :description "Guided advance"}
+
+  :tensor-interpretation
+  {:operation :advance
+   :description "Forward transformation"}
+
+  :regime-prediction
+  {:expected :progressing
+   :dynamics "Advancing structure"
+   :eoc-relevance "EoC-adjacent if balanced"}
+
+@domain-transfer-notes
+  "晉 is the pattern of PROGRESS across domains:
+   - In ants: steady advance
+   - In CA: forward movement"

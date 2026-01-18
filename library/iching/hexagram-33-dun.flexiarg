@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-33-dun
+@title ䷠ 遯 (Dùn) - Retreat
+@sigils [☰☶/遯]
+@binary 001111
+@trigrams [heaven/mountain]
+@number 33
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Retreat preserves strength; withdrawal at the right time prevents loss.
+  + context: A system faces overwhelming pressure or misalignment.
+  + IF:
+    Continuing forward would cause harm.
+  + HOWEVER:
+    Retreat without purpose leads to decay.
+  + THEN:
+    Withdraw to preserve resources and regroup.
+  + BECAUSE:
+    Strategic retreat maintains capacity for later action.
+    + evidence: Traditional: "Retreat. Success."
+  + NEXT-STEPS:
+    - Identify the safe withdrawal path.
+    - Preserve essential resources.
+    - Pair with ䷡ (大壯) when strength returns.
+
+@ct-interpretation
+  :vision
+  {:objects #{:exposed :withdrawn}
+   :morphism {:id :retreat
+              :source :exposed
+              :target :withdrawn
+              :type :protective}}
+
+  :as-morphism
+  {:domain :overpressured
+   :codomain :protected
+   :preservation :high
+   :composition :withdraws}
+
+  :adapt
+  {:trigger :recovered
+   :evidence [:stability :capacity]
+   :target :hexagram-34-dazhuang}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :return
+   :policy-priors {:forage 0.2 :return 0.45 :hold 0.25 :pheromone 0.1}
+   :description "Withdraw and return to safety"}
+
+  :precision
+  {:Pi-o 0.8
+   :tau 0.3
+   :description "Cautious retreat"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.1
+   :description "Follow safe routes"}
+
+  :adapt-trigger
+  {:condition :recovered
+   :interpretation "Reassert strength"
+   :switch-to :hexagram-34-dazhuang}
+
+  :failure-mode
+  "Endless retreat leads to starvation"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "遯"
+   :bits "00111100"
+   :interpretation "Withdrawal / high constraint"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.8
+   :invert-on-phenotype? false
+   :update-prob 0.25
+   :mix-mode :none
+   :description "Preserve and withdraw"}
+
+  :tensor-interpretation
+  {:operation :withdraw
+   :description "Reduce intervention, preserve state"}
+
+  :regime-prediction
+  {:expected :withdrawn
+   :dynamics "Reduced activity"
+   :eoc-relevance "Anti-EoC unless followed by reactivation"}
+
+@domain-transfer-notes
+  "遯 is the pattern of RETREAT across domains:
+   - In ants: returning and conserving
+   - In CA: reduced intervention"

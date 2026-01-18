@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-31-xian
+@title ䷞ 咸 (Xián) - Influence / Wooing
+@sigils [☱☶/咸]
+@binary 001110
+@trigrams [lake/mountain]
+@number 31
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Influence arises through gentle attraction; alignment forms without force.
+  + context: A system seeks alignment through resonance rather than command.
+  + IF:
+    Subtle signals can draw agents into coherence.
+  + HOWEVER:
+    Over-seduction weakens autonomy and resilience.
+  + THEN:
+    Use soft attraction to align, then stabilize the bond.
+  + BECAUSE:
+    Influence works when it respects the receiver's agency.
+    + evidence: Traditional: "Influence. Success. Perseverance furthers."
+  + NEXT-STEPS:
+    - Identify the resonant signal.
+    - Strengthen alignment without force.
+    - Pair with ䷟ (恒) to sustain duration.
+
+@ct-interpretation
+  :vision
+  {:objects #{:unaligned :resonant}
+   :morphism {:id :attract
+              :source :unaligned
+              :target :resonant
+              :type :gentle}}
+
+  :as-morphism
+  {:domain :separate
+   :codomain :aligned
+   :preservation :moderate
+   :composition :forms-bond}
+
+  :adapt
+  {:trigger :instability
+   :evidence [:drift :weak-binding]
+   :target :hexagram-32-heng}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.25 :hold 0.2 :pheromone 0.25}
+   :description "Align via gentle trail influence"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.5
+   :description "Responsive attraction"}
+
+  :pattern-sense
+  {:trail-follow 0.7
+   :gradient-use 0.6
+   :novelty-seek 0.2
+   :description "Follow resonant cues"}
+
+  :adapt-trigger
+  {:condition :weak-binding
+   :interpretation "Need duration"
+   :switch-to :hexagram-32-heng}
+
+  :failure-mode
+  "Attraction fades without stability"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "咸"
+   :bits "00111000"
+   :interpretation "Attractive mixing"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.55
+   :invert-on-phenotype? false
+   :update-prob 0.45
+   :mix-mode :rotate-left
+   :description "Gentle alignment"}
+
+  :tensor-interpretation
+  {:operation :resonant-coupling
+   :description "Couple states through attraction"}
+
+  :regime-prediction
+  {:expected :aligned
+   :dynamics "Coherent attraction without collapse"
+   :eoc-relevance "EoC-adjacent if balance holds"}
+
+@domain-transfer-notes
+  "咸 is the pattern of INFLUENCE across domains:
+   - In ants: resonance via trail cues
+   - In CA: gentle alignment"

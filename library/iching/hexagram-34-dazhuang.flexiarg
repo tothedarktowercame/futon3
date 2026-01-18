@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-34-dazhuang
+@title ䷡ 大壯 (Dà Zhuàng) - Great Power
+@sigils [☳☰/大壯]
+@binary 111100
+@trigrams [thunder/heaven]
+@number 34
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Great power must be disciplined; strength without restraint leads to harm.
+  + context: A system has accumulated strong momentum.
+  + IF:
+    Power is high and action is tempting.
+  + HOWEVER:
+    Unchecked force creates backlash or collapse.
+  + THEN:
+    Apply strength with restraint and timing.
+  + BECAUSE:
+    Power is sustainable only when governed.
+    + evidence: Traditional: "Great Power. Perseverance furthers."
+  + NEXT-STEPS:
+    - Identify the safe channel for strength.
+    - Restrain excess.
+    - Pair with ䷠ (遯) when overreach appears.
+
+@ct-interpretation
+  :vision
+  {:objects #{:powerful :disciplined}
+   :morphism {:id :govern
+              :source :powerful
+              :target :disciplined
+              :type :restraint}}
+
+  :as-morphism
+  {:domain :high-energy
+   :codomain :disciplined-energy
+   :preservation :moderate
+   :composition :channels-power}
+
+  :adapt
+  {:trigger :overreach
+   :evidence [:backlash :instability]
+   :target :hexagram-33-dun}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :outbound
+   :policy-priors {:forage 0.55 :return 0.2 :hold 0.1 :pheromone 0.15}
+   :description "Strong outward push with restraint"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.4
+   :description "Directed strength"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.6
+   :novelty-seek 0.4
+   :description "Advance with control"}
+
+  :adapt-trigger
+  {:condition :overreach
+   :interpretation "Retreat to preserve strength"
+   :switch-to :hexagram-33-dun}
+
+  :failure-mode
+  "Overpowering action causes collapse"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "大壯"
+   :bits "11110000"
+   :interpretation "Strong intervention with potential overreach"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.5
+   :invert-on-phenotype? true
+   :update-prob 0.65
+   :mix-mode :scramble
+   :description "Strong intervention"}
+
+  :tensor-interpretation
+  {:operation :power
+   :description "High-energy transformation"}
+
+  :regime-prediction
+  {:expected :high-energy
+   :dynamics "Strong motion with risk of instability"
+   :eoc-relevance "Can push beyond EoC if unchecked"}
+
+@domain-transfer-notes
+  "大壯 is the pattern of GREAT POWER across domains:
+   - In ants: strong exploration with restraint
+   - In CA: high-energy dynamics"

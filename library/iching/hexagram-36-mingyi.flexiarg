@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-36-mingyi
+@title ䷣ 明夷 (Míng Yí) - Darkening of the Light
+@sigils [☷☲/明夷]
+@binary 101000
+@trigrams [earth/fire]
+@number 36
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: When light is obscured, protect clarity by withdrawing its display.
+  + context: A system faces hostile conditions that suppress visibility.
+  + IF:
+    Clear signals are punished or extinguished.
+  + HOWEVER:
+    Total withdrawal leads to loss of direction.
+  + THEN:
+    Hide the light to preserve it, and wait for a safer time to re-emerge.
+  + BECAUSE:
+    Preservation of clarity is more important than immediate display.
+    + evidence: Traditional: "Darkening of the light. It is favorable to be steadfast in adversity."
+  + NEXT-STEPS:
+    - Reduce exposure.
+    - Preserve internal coherence.
+    - Pair with ䷢ (晉) to return to progress.
+
+@ct-interpretation
+  :vision
+  {:objects #{:visible :hidden}
+   :morphism {:id :conceal
+              :source :visible
+              :target :hidden
+              :type :protective}}
+
+  :as-morphism
+  {:domain :exposed
+   :codomain :protected
+   :preservation :high
+   :composition :shields}
+
+  :adapt
+  {:trigger :safe-window
+   :evidence [:stability :openness]
+   :target :hexagram-35-jin}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :return
+   :policy-priors {:forage 0.2 :return 0.45 :hold 0.25 :pheromone 0.1}
+   :description "Withdraw and protect resources"}
+
+  :precision
+  {:Pi-o 0.8
+   :tau 0.3
+   :description "Cautious, protective"}
+
+  :pattern-sense
+  {:trail-follow 0.5
+   :gradient-use 0.4
+   :novelty-seek 0.1
+   :description "Avoid exposure"}
+
+  :adapt-trigger
+  {:condition :safe-window
+   :interpretation "Return to progress"
+   :switch-to :hexagram-35-jin}
+
+  :failure-mode
+  "Over-withdrawal leads to stagnation"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "明夷"
+   :bits "10100000"
+   :interpretation "Suppressed illumination"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.8
+   :invert-on-phenotype? false
+   :update-prob 0.2
+   :mix-mode :none
+   :description "Low intervention with high constraint"}
+
+  :tensor-interpretation
+  {:operation :conceal
+   :description "Reduce exposure to maintain coherence"}
+
+  :regime-prediction
+  {:expected :withdrawn
+   :dynamics "Suppressed variability"
+   :eoc-relevance "Anti-EoC unless followed by re-illumination"}
+
+@domain-transfer-notes
+  "明夷 is the pattern of PROTECTED LIGHT across domains:
+   - In ants: withdrawal under threat
+   - In CA: damped variability"

@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-32-heng
+@title ䷟ 恆 (Héng) - Duration
+@sigils [☳☴/恆]
+@binary 011100
+@trigrams [thunder/wind]
+@number 32
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Duration sustains what is begun; persistence stabilizes change.
+  + context: A system must maintain a viable pattern over time.
+  + IF:
+    A workable alignment exists but is fragile.
+  + HOWEVER:
+    Rigid persistence can block adaptation.
+  + THEN:
+    Maintain constancy while allowing small corrections.
+  + BECAUSE:
+    Stable duration is dynamic, not static.
+    + evidence: Traditional: "Duration. Success. No blame."
+  + NEXT-STEPS:
+    - Identify the stable rhythm.
+    - Preserve it with light correction.
+    - Pair with ䷞ (咸) to renew influence.
+
+@ct-interpretation
+  :vision
+  {:objects #{:aligned :sustained}
+   :morphism {:id :sustain
+              :source :aligned
+              :target :sustained
+              :type :persistent}}
+
+  :as-morphism
+  {:domain :working-state
+   :codomain :stable-state
+   :preservation :high
+   :composition :maintains}
+
+  :adapt
+  {:trigger :stagnation
+   :evidence [:rigidity :loss-of-fit]
+   :target :hexagram-31-xian}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.25 :pheromone 0.15}
+   :description "Maintain steady cycles"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Stable persistence"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Sustain established paths"}
+
+  :adapt-trigger
+  {:condition :rigidity
+   :interpretation "Renew influence"
+   :switch-to :hexagram-31-xian}
+
+  :failure-mode
+  "Rigid persistence blocks adaptation"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "恆"
+   :bits "01110000"
+   :interpretation "Sustaining structure"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.7
+   :invert-on-phenotype? false
+   :update-prob 0.3
+   :mix-mode :majority
+   :description "Low churn, stable persistence"}
+
+  :tensor-interpretation
+  {:operation :stability
+   :description "Maintain pattern with minor corrections"}
+
+  :regime-prediction
+  {:expected :stable
+   :dynamics "Sustained order"
+   :eoc-relevance "Stabilizes EoC if not overconstrained"}
+
+@domain-transfer-notes
+  "恆 is the pattern of DURATION across domains:
+   - In ants: stable cycles
+   - In CA: persistent patterns"

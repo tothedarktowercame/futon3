@@ -1,0 +1,99 @@
+@flexiarg iching/hexagram-19-lin
+@title ䷒ 臨 (Lín) - Approach
+@sigils [☷☱/臨]
+@binary 110000
+@trigrams [earth/lake]
+@number 19
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Approach is confident engagement; progress comes by drawing near with care.
+  + context: A system moves toward influence or engagement.
+  + IF:
+    The situation invites approach and contact.
+  + HOWEVER:
+    Over-assertion provokes resistance.
+  + THEN:
+    Advance with openness and restraint.
+  + BECAUSE:
+    Proximity builds influence when tempered by respect.
+    + evidence: Traditional: "Approach. Supreme success. Perseverance furthers."
+  + NEXT-STEPS:
+    - Identify the point of contact.
+    - Reduce distance without forcing.
+    - Pair with ䷓ (觀) to observe feedback.
+
+@ct-interpretation
+  :vision
+  {:objects #{:distant :near}
+   :morphism {:id :approach
+              :source :distant
+              :target :near
+              :type :engagement}}
+
+  :as-morphism
+  {:domain :separated
+   :codomain :engaged
+   :preservation :moderate
+   :composition :closes-distance}
+
+  :adapt
+  {:trigger :resistance
+   :evidence [:pushback :misalignment]
+   :target :hexagram-20-guan}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.35 :return 0.3 :hold 0.2 :pheromone 0.15}
+   :description "Engage gradually; maintain return"
+
+  }
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.5
+   :description "Responsive but cautious"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.3
+   :description "Approach signals without overcommit"}
+
+  :adapt-trigger
+  {:condition :pushback
+   :interpretation "Step back to observe"
+   :switch-to :hexagram-20-guan}
+
+  :failure-mode
+  "Over-approach causes backlash"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "臨"
+   :bits "11000000"
+   :interpretation "Approach with moderate intervention"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.55
+   :invert-on-phenotype? false
+   :update-prob 0.4
+   :mix-mode :majority
+   :description "Engage while preserving structure"}
+
+  :tensor-interpretation
+  {:operation :convergent-step
+   :description "Reduce distance between modes"}
+
+  :regime-prediction
+  {:expected :engaged
+   :dynamics "Converging patterns"
+   :eoc-relevance "Potentially stabilizing"}
+
+@domain-transfer-notes
+  "臨 is the pattern of APPROACH across domains:
+   - In ants: gradual engagement with signals
+   - In CA: convergent dynamics"

@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-23-bo
+@title ䷖ 剝 (Bō) - Splitting Apart
+@sigils [☶☷/剝]
+@binary 000001
+@trigrams [mountain/earth]
+@number 23
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Splitting apart signals decay; withdraw and preserve what remains.
+  + context: A system is decomposing or losing coherence.
+  + IF:
+    Support structures are failing.
+  + HOWEVER:
+    Fighting collapse directly wastes resources.
+  + THEN:
+    Withdraw, preserve essentials, and prepare for renewal.
+  + BECAUSE:
+    Collapse must complete before reconstruction.
+    + evidence: Traditional: "Splitting apart. It does not further one to go anywhere."
+  + NEXT-STEPS:
+    - Identify what can be preserved.
+    - Reduce activity.
+    - Pair with ䷗ (復) for renewal.
+
+@ct-interpretation
+  :vision
+  {:objects #{:coherent :fragmenting}
+   :morphism {:id :decompose
+              :source :coherent
+              :target :fragmenting
+              :type :decay}}
+
+  :as-morphism
+  {:domain :stable
+   :codomain :decomposing
+   :preservation :low
+   :composition :breaks-structure}
+
+  :adapt
+  {:trigger :renewal-window
+   :evidence [:stabilized-ruins]
+   :target :hexagram-24-fu}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :hold
+   :policy-priors {:forage 0.15 :return 0.35 :hold 0.4 :pheromone 0.1}
+   :description "Withdraw and conserve"}
+
+  :precision
+  {:Pi-o 0.8
+   :tau 0.2
+   :description "High caution"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.3
+   :novelty-seek 0.1
+   :description "Avoid new commitments"}
+
+  :adapt-trigger
+  {:condition :renewal
+   :interpretation "Move to return"
+   :switch-to :hexagram-24-fu}
+
+  :failure-mode
+  "Collapse leads to starvation"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "剝"
+   :bits "00000100"
+   :interpretation "Decay of structure"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.85
+   :invert-on-phenotype? false
+   :update-prob 0.1
+   :mix-mode :none
+   :description "Minimal intervention, structure falls apart"}
+
+  :tensor-interpretation
+  {:operation :erosion
+   :description "Gradual loss of structure"}
+
+  :regime-prediction
+  {:expected :decay
+   :dynamics "Collapse into static remnants"
+   :eoc-relevance "Anti-EoC"}
+
+@domain-transfer-notes
+  "剝 is the pattern of DECAY across domains:
+   - In ants: withdrawal and conservation
+   - In CA: structural breakdown"

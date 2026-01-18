@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-25-wuwang
+@title ䷘ 無妄 (Wú Wàng) - Innocence
+@sigils [☳☰/無妄]
+@binary 111100
+@trigrams [thunder/heaven]
+@number 25
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Innocence acts without ulterior motive; alignment with the natural course brings success.
+  + context: A system operates best when actions are unforced and sincere.
+  + IF:
+    There is no hidden agenda and signals are clear.
+  + HOWEVER:
+    Naivety can overlook hazards.
+  + THEN:
+    Act simply and directly, but remain aware.
+  + BECAUSE:
+    Unforced action aligns with stable dynamics.
+    + evidence: Traditional: "Innocence. Supreme success. Perseverance furthers."
+  + NEXT-STEPS:
+    - Remove unnecessary manipulation.
+    - Follow the direct path.
+    - Pair with ䷙ (大畜) if restraint is needed.
+
+@ct-interpretation
+  :vision
+  {:objects #{:pure :aligned}
+   :morphism {:id :act
+              :source :pure
+              :target :aligned
+              :type :direct}}
+
+  :as-morphism
+  {:domain :simple-state
+   :codomain :aligned-state
+   :preservation :high
+   :composition :direct}
+
+  :adapt
+  {:trigger :unexpected-risk
+   :evidence [:hazard :loss]
+   :target :hexagram-26-dachu}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :outbound
+   :policy-priors {:forage 0.5 :return 0.2 :hold 0.2 :pheromone 0.1}
+   :description "Direct foraging without overcomplication"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.5
+   :description "Simple, responsive"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.5
+   :novelty-seek 0.4
+   :description "Balanced directness"}
+
+  :adapt-trigger
+  {:condition :hazard
+   :interpretation "Need restraint"
+   :switch-to :hexagram-26-dachu}
+
+  :failure-mode
+  "Naive directness hits hazards"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "無妄"
+   :bits "11110000"
+   :interpretation "Direct intervention with minimal artifice"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.5
+   :invert-on-phenotype? false
+   :update-prob 0.5
+   :mix-mode :rotate-left
+   :description "Direct, balanced action"}
+
+  :tensor-interpretation
+  {:operation :direct
+   :description "Simple transformation without manipulation"}
+
+  :regime-prediction
+  {:expected :simple
+   :dynamics "Clear, direct patterns"
+   :eoc-relevance "EoC-adjacent if balanced"}
+
+@domain-transfer-notes
+  "無妄 is the pattern of INNOCENCE across domains:
+   - In ants: direct foraging
+   - In CA: simple direct updates"

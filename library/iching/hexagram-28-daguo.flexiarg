@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-28-daguo
+@title ䷛ 大過 (Dà Guò) - Great Exceeding
+@sigils [☱☶/大過]
+@binary 001110
+@trigrams [lake/mountain]
+@number 28
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Excess strains the structure; decisive correction is required before collapse.
+  + context: A system is overloaded or overextended.
+  + IF:
+    Load exceeds capacity and stress accumulates.
+  + HOWEVER:
+    Overcorrection can cause collapse.
+  + THEN:
+    Reduce load or reinforce the structure quickly.
+  + BECAUSE:
+    Exceeding limits leads to sudden failure if unaddressed.
+    + evidence: Traditional: "Great Exceeding. The ridgepole sags."
+  + NEXT-STEPS:
+    - Identify the overload.
+    - Reduce or redistribute load.
+    - Pair with ䷚ (頤) for sustained nourishment.
+
+@ct-interpretation
+  :vision
+  {:objects #{:overloaded :relieved}
+   :morphism {:id :relieve
+              :source :overloaded
+              :target :relieved
+              :type :corrective}}
+
+  :as-morphism
+  {:domain :excess-state
+   :codomain :relieved-state
+   :preservation :low
+   :composition :relieves}
+
+  :adapt
+  {:trigger :stabilized
+   :evidence [:load-normalized]
+   :target :hexagram-27-yi}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.2 :return 0.4 :hold 0.2 :pheromone 0.2}
+   :description "Reduce overload; prioritize return"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.5
+   :description "Responsive correction"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.4
+   :novelty-seek 0.2
+   :description "Reduce strain"}
+
+  :adapt-trigger
+  {:condition :relieved
+   :interpretation "Return to nourishment"
+   :switch-to :hexagram-27-yi}
+
+  :failure-mode
+  "Collapse from overload"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "大過"
+   :bits "00111000"
+   :interpretation "Excess pressure"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.45
+   :invert-on-phenotype? true
+   :update-prob 0.6
+   :mix-mode :swap-halves
+   :description "Corrective restructuring"}
+
+  :tensor-interpretation
+  {:operation :relief
+   :description "Reduce overload through rebalancing"}
+
+  :regime-prediction
+  {:expected :corrective
+   :dynamics "Sharp adjustments to reduce stress"
+   :eoc-relevance "Can destabilize then recover"}
+
+@domain-transfer-notes
+  "大過 is the pattern of OVERLOAD across domains:
+   - In ants: overload correction
+   - In CA: structural strain and adjustment"

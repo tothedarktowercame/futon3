@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-24-fu
+@title ䷗ 復 (Fù) - Return
+@sigils [☳☷/復]
+@binary 000100
+@trigrams [thunder/earth]
+@number 24
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Return begins after decline; renewal starts with a small movement.
+  + context: A system emerges from decay toward new motion.
+  + IF:
+    A small signal of renewal appears.
+  + HOWEVER:
+    Overextension risks relapse.
+  + THEN:
+    Follow the small return and rebuild gradually.
+  + BECAUSE:
+    Renewal begins with a single, protected step.
+    + evidence: Traditional: "Return. Success. Going out and coming in without error."
+  + NEXT-STEPS:
+    - Identify the first sign of renewal.
+    - Protect it.
+    - Pair with ䷖ (剝) to avoid relapse.
+
+@ct-interpretation
+  :vision
+  {:objects #{:decayed :renewing}
+   :morphism {:id :return
+              :source :decayed
+              :target :renewing
+              :type :recovery}}
+
+  :as-morphism
+  {:domain :collapsed
+   :codomain :restarting
+   :preservation :low
+   :composition :restarts}
+
+  :adapt
+  {:trigger :overreach
+   :evidence [:relapse :collapse]
+   :target :hexagram-23-bo}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.35 :return 0.25 :hold 0.2 :pheromone 0.2}
+   :description "Cautious renewal"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.6
+   :description "Exploratory but cautious"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.4
+   :novelty-seek 0.5
+   :description "Seek new paths gently"}
+
+  :adapt-trigger
+  {:condition :relapse
+   :interpretation "Return to withdrawal"
+   :switch-to :hexagram-23-bo}
+
+  :failure-mode
+  "Renewal too fast causes relapse"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "復"
+   :bits "00010000"
+   :interpretation "Renewal pulse"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.4
+   :invert-on-phenotype? true
+   :update-prob 0.55
+   :mix-mode :scramble
+   :description "Reactivating intervention"}
+
+  :tensor-interpretation
+  {:operation :renewal
+   :description "Restart dynamics from collapse"}
+
+  :regime-prediction
+  {:expected :renewing
+   :dynamics "Small resurgence of structure"
+   :eoc-relevance "Pre-EoC"}
+
+@domain-transfer-notes
+  "復 is the pattern of RETURN across domains:
+   - In ants: cautious re-engagement
+   - In CA: renewal after collapse"

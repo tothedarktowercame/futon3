@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-27-yi
+@title ䷚ 頤 (Yí) - Nourishment
+@sigils [☶☳/頤]
+@binary 100001
+@trigrams [mountain/thunder]
+@number 27
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Nourishment sustains; feeding must be balanced and disciplined.
+  + context: A system must sustain itself through intake and digestion.
+  + IF:
+    Resources are available but must be managed.
+  + HOWEVER:
+    Overfeeding or underfeeding both weaken the system.
+  + THEN:
+    Establish balanced intake and expenditure cycles.
+  + BECAUSE:
+    Sustainable dynamics require steady nourishment.
+    + evidence: Traditional: "Nourishment. Perseverance brings good fortune."
+  + NEXT-STEPS:
+    - Calibrate intake.
+    - Monitor reserves.
+    - Pair with ䷛ (大過) if excess grows.
+
+@ct-interpretation
+  :vision
+  {:objects #{:hungry :nourished}
+   :morphism {:id :feed
+              :source :hungry
+              :target :nourished
+              :type :sustaining}}
+
+  :as-morphism
+  {:domain :depleted
+   :codomain :replenished
+   :preservation :moderate
+   :composition :sustains}
+
+  :adapt
+  {:trigger :overload
+   :evidence [:excess :imbalance]
+   :target :hexagram-28-daguo}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :return
+   :policy-priors {:forage 0.3 :return 0.4 :hold 0.2 :pheromone 0.1}
+   :description "Balanced intake and return"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Stable nourishment cycle"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Follow nourishment cues"}
+
+  :adapt-trigger
+  {:condition :overfeed
+   :interpretation "Prevent overload"
+   :switch-to :hexagram-28-daguo}
+
+  :failure-mode
+  "Imbalanced intake causes collapse"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "頤"
+   :bits "10000100"
+   :interpretation "Sustaining update pattern"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.65
+   :invert-on-phenotype? false
+   :update-prob 0.4
+   :mix-mode :majority
+   :description "Sustaining mixing"}
+
+  :tensor-interpretation
+  {:operation :nourish
+   :description "Sustain structure through steady updates"}
+
+  :regime-prediction
+  {:expected :sustaining
+   :dynamics "Stable replenishment cycles"
+   :eoc-relevance "Stabilizes EoC via nourishment"}
+
+@domain-transfer-notes
+  "頤 is the pattern of NOURISHMENT across domains:
+   - In ants: balanced foraging/return
+   - In CA: sustaining updates"

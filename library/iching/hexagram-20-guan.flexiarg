@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-20-guan
+@title ䷓ 觀 (Guān) - Contemplation / Viewing
+@sigils [☴☷/觀]
+@binary 000011
+@trigrams [wind/earth]
+@number 20
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Observation clarifies; step back to see the whole before acting.
+  + context: A system needs assessment and perspective.
+  + IF:
+    Action is uncertain and signals are ambiguous.
+  + HOWEVER:
+    Observation without action can lead to stagnation.
+  + THEN:
+    Pause to observe, then re-engage with clarity.
+  + BECAUSE:
+    Accurate perception guides effective action.
+    + evidence: Traditional: "Contemplation. The ablution has been made, but not yet the offering."
+  + NEXT-STEPS:
+    - Gather a wide view.
+    - Identify dominant patterns.
+    - Pair with ䷒ (臨) to re-approach.
+
+@ct-interpretation
+  :vision
+  {:objects #{:unclear :observed}
+   :morphism {:id :observe
+              :source :unclear
+              :target :observed
+              :type :perceptive}}
+
+  :as-morphism
+  {:domain :uncertain
+   :codomain :clarified
+   :preservation :high
+   :composition :prepares-action}
+
+  :adapt
+  {:trigger :over-wait
+   :evidence [:stall :missed-opportunity]
+   :target :hexagram-19-lin}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.2 :return 0.3 :hold 0.35 :pheromone 0.15}
+   :description "Pause and observe"}
+
+  :precision
+  {:Pi-o 0.85
+   :tau 0.3
+   :description "High attention, low exploration"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.1
+   :description "Observe existing structure"}
+
+  :adapt-trigger
+  {:condition :clarity
+   :interpretation "Resume approach"
+   :switch-to :hexagram-19-lin}
+
+  :failure-mode
+  "Observation without action leads to stagnation"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "觀"
+   :bits "00001100"
+   :interpretation "High observation, low intervention"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.8
+   :invert-on-phenotype? false
+   :update-prob 0.2
+   :mix-mode :none
+   :description "Observe without rewriting"}
+
+  :tensor-interpretation
+  {:operation :identity
+   :description "Preserve state while collecting signals"}
+
+  :regime-prediction
+  {:expected :stable
+   :dynamics "Low-change observation"
+   :eoc-relevance "Stabilizes but may reduce exploration"}
+
+@domain-transfer-notes
+  "觀 is the pattern of CONTEMPLATION across domains:
+   - In ants: pausing to observe
+   - In CA: low-change monitoring"

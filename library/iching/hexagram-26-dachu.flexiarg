@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-26-dachu
+@title ䷙ 大畜 (Dà Chù) - The Taming Power of the Great
+@sigils [☰☶/大畜]
+@binary 001111
+@trigrams [heaven/mountain]
+@number 26
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Great power is restrained for later use; accumulate strength under control.
+  + context: A system holds large capacity that must be disciplined.
+  + IF:
+    Strength is present but should not be released yet.
+  + HOWEVER:
+    Excess restraint wastes potential.
+  + THEN:
+    Store and refine power until the moment is right.
+  + BECAUSE:
+    Controlled accumulation enables decisive action later.
+    + evidence: Traditional: "The Taming Power of the Great. Perseverance furthers."
+  + NEXT-STEPS:
+    - Build reserves.
+    - Maintain discipline.
+    - Pair with ䷘ (無妄) to act directly when ready.
+
+@ct-interpretation
+  :vision
+  {:objects #{:powerful :contained}
+   :morphism {:id :contain
+              :source :powerful
+              :target :contained
+              :type :restraint}}
+
+  :as-morphism
+  {:domain :high-energy
+   :codomain :contained-energy
+   :preservation :high
+   :composition :stores}
+
+  :adapt
+  {:trigger :readiness
+   :evidence [:capacity-peak :clear-path]
+   :target :hexagram-25-wuwang}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.25 :return 0.35 :hold 0.3 :pheromone 0.1}
+   :description "Restrain and store energy"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.3
+   :description "Controlled, low exploration"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.1
+   :description "Maintain structure while storing"}
+
+  :adapt-trigger
+  {:condition :readiness
+   :interpretation "Release stored power"
+   :switch-to :hexagram-25-wuwang}
+
+  :failure-mode
+  "Over-restraint wastes opportunity"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "大畜"
+   :bits "00111100"
+   :interpretation "Strong structure with restraint"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.8
+   :invert-on-phenotype? false
+   :update-prob 0.25
+   :mix-mode :majority
+   :description "Store and stabilize"}
+
+  :tensor-interpretation
+  {:operation :containment
+   :description "Restrained dynamics with preserved energy"}
+
+  :regime-prediction
+  {:expected :contained
+   :dynamics "Stable, energy-storing patterns"
+   :eoc-relevance "Anti-EoC unless released"}
+
+@domain-transfer-notes
+  "大畜 is the pattern of GREAT RESTRAINT across domains:
+   - In ants: storing energy, restrained movement
+   - In CA: stable energy reservoirs"

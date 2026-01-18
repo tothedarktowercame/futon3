@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-22-bi
+@title ䷕ 賁 (Bì) - Grace
+@sigils [☲☶/賁]
+@binary 001101
+@trigrams [fire/mountain]
+@number 22
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Grace adorns structure; form must serve function.
+  + context: A system needs refinement and presentation after disruption.
+  + IF:
+    The core structure is sound but requires alignment or clarity.
+  + HOWEVER:
+    Excess ornament distracts from substance.
+  + THEN:
+    Apply refinement that supports function.
+  + BECAUSE:
+    Form without function collapses; function without form is rough.
+    + evidence: Traditional: "Grace. Success."
+  + NEXT-STEPS:
+    - Identify the core structure.
+    - Refine without excess.
+    - Pair with ䷔ (噬嗑) if obstruction returns.
+
+@ct-interpretation
+  :vision
+  {:objects #{:raw :refined}
+   :morphism {:id :refine
+              :source :raw
+              :target :refined
+              :type :ornament}}
+
+  :as-morphism
+  {:domain :rough-structure
+   :codomain :refined-structure
+   :preservation :high
+   :composition :polishes}
+
+  :adapt
+  {:trigger :ornament-overreach
+   :evidence [:surface-only :drift]
+   :target :hexagram-21-shihe}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.25 :pheromone 0.15}
+   :description "Refine behavior; avoid excess"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Balanced refinement"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Polish existing structure"}
+
+  :adapt-trigger
+  {:condition :surface-only
+   :interpretation "Return to cutting through"
+   :switch-to :hexagram-21-shihe}
+
+  :failure-mode
+  "Over-ornament reduces function"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "賁"
+   :bits "00110100"
+   :interpretation "Refinement without major disruption"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.65
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :majority
+   :description "Polishing mix"}
+
+  :tensor-interpretation
+  {:operation :refinement
+   :description "Polish structure without altering core"}
+
+  :regime-prediction
+  {:expected :refined
+   :dynamics "Stable patterns with improved coherence"
+   :eoc-relevance "Stabilizes post-disruption"}
+
+@domain-transfer-notes
+  "賁 is the pattern of REFINEMENT across domains:
+   - In ants: smooth trails, reduced noise
+   - In CA: polished structure"

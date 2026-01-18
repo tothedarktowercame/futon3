@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-21-shihe
+@title ䷔ 噬嗑 (Shì Hé) - Biting Through
+@sigils [☳☲/噬嗑]
+@binary 101100
+@trigrams [thunder/fire]
+@number 21
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Obstacles require decisive action; clarity guides cutting through.
+  + context: A system faces a blockage or corruption.
+  + IF:
+    Progress is stopped by a hard obstacle.
+  + HOWEVER:
+    Excess force can damage the system.
+  + THEN:
+    Act decisively and precisely to remove the obstruction.
+  + BECAUSE:
+    Clarity plus force resolves blockages without chaos.
+    + evidence: Traditional: "Biting through. Success."
+  + NEXT-STEPS:
+    - Identify the obstruction.
+    - Apply targeted force.
+    - Pair with ䷕ (賁) to restore form.
+
+@ct-interpretation
+  :vision
+  {:objects #{:blocked :cleared}
+   :morphism {:id :cut
+              :source :blocked
+              :target :cleared
+              :type :decisive}}
+
+  :as-morphism
+  {:domain :obstructed
+   :codomain :cleared
+   :preservation :low
+   :composition :cuts-through}
+
+  :adapt
+  {:trigger :overdamage
+   :evidence [:excess-force :instability]
+   :target :hexagram-22-bi}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.4 :return 0.25 :hold 0.1 :pheromone 0.25}
+   :description "Targeted clearing via exploration"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.6
+   :description "Decisive but responsive"}
+
+  :pattern-sense
+  {:trail-follow 0.3
+   :gradient-use 0.5
+   :novelty-seek 0.6
+   :description "Break through blockages"}
+
+  :adapt-trigger
+  {:condition :overdamage
+   :interpretation "Restore form"
+   :switch-to :hexagram-22-bi}
+
+  :failure-mode
+  "Overforce damages structure"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "噬嗑"
+   :bits "10110000"
+   :interpretation "Targeted disruptive intervention"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.45
+   :invert-on-phenotype? true
+   :update-prob 0.6
+   :mix-mode :xor-neighbor
+   :description "Cut-through mixing"}
+
+  :tensor-interpretation
+  {:operation :cut
+   :description "Remove obstruction by selective disruption"}
+
+  :regime-prediction
+  {:expected :clearing
+   :dynamics "Disruption followed by new structure"
+   :eoc-relevance "Can seed EoC after blockage"}
+
+@domain-transfer-notes
+  "噬嗑 is the pattern of CUTTING THROUGH across domains:
+   - In ants: break out of stuck loops
+   - In CA: targeted disruption"

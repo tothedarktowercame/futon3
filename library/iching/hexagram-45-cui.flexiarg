@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-45-cui
+@title ䷬ 萃 (Cuì) - Gathering Together
+@sigils [☱☷/萃]
+@binary 000110
+@trigrams [lake/earth]
+@number 45
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Gathering concentrates resources; cohesion enables collective strength.
+  + context: A system benefits from consolidation and shared focus.
+  + IF:
+    Dispersed elements can be brought together.
+  + HOWEVER:
+    Over-concentration can reduce adaptability.
+  + THEN:
+    Gather with purpose, maintain channels for circulation.
+  + BECAUSE:
+    Concentration creates leverage when aligned with intent.
+    + evidence: Traditional: "Gathering together. Success."
+  + NEXT-STEPS:
+    - Identify the gathering point.
+    - Stabilize cohesion.
+    - Pair with ䷭ (升) to expand once stable.
+
+@ct-interpretation
+  :vision
+  {:objects #{:scattered :gathered}
+   :morphism {:id :gather
+              :source :scattered
+              :target :gathered
+              :type :cohesive}}
+
+  :as-morphism
+  {:domain :distributed
+   :codomain :concentrated
+   :preservation :moderate
+   :composition :concentrates}
+
+  :adapt
+  {:trigger :stagnation
+   :evidence [:overconcentration :rigidity]
+   :target :hexagram-46-sheng}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :return
+   :policy-priors {:forage 0.25 :return 0.45 :hold 0.2 :pheromone 0.1}
+   :description "Consolidate around home"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Stable gathering"}
+
+  :pattern-sense
+  {:trail-follow 0.7
+   :gradient-use 0.5
+   :novelty-seek 0.1
+   :description "Converge on shared routes"}
+
+  :adapt-trigger
+  {:condition :overconcentration
+   :interpretation "Initiate expansion"
+   :switch-to :hexagram-46-sheng}
+
+  :failure-mode
+  "Over-gathering reduces exploration"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "萃"
+   :bits "00011000"
+   :interpretation "Concentrating dynamics"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.65
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :majority
+   :description "Consolidating mix"}
+
+  :tensor-interpretation
+  {:operation :gather
+   :description "Concentrate local structure"}
+
+  :regime-prediction
+  {:expected :cohesive
+   :dynamics "Convergent patterns"
+   :eoc-relevance "Stabilizes, may reduce diversity"}
+
+@domain-transfer-notes
+  "萃 is the pattern of GATHERING across domains:
+   - In ants: consolidation near home
+   - In CA: convergent patterns"

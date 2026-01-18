@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-49-ge
+@title ䷰ 革 (Gé) - Revolution
+@sigils [☱☲/革]
+@binary 101110
+@trigrams [lake/fire]
+@number 49
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Revolution replaces the old with the new; timing and legitimacy matter.
+  + context: A system requires a major transformation.
+  + IF:
+    Existing structures no longer serve.
+  + HOWEVER:
+    Premature revolution causes chaos.
+  + THEN:
+    Act decisively at the right time; establish legitimacy.
+  + BECAUSE:
+    Deep change must be timed and justified to hold.
+    + evidence: Traditional: "Revolution. On your own day you are believed."
+  + NEXT-STEPS:
+    - Identify the broken structure.
+    - Prepare for decisive change.
+    - Pair with ䷱ (鼎) to stabilize the new order.
+
+@ct-interpretation
+  :vision
+  {:objects #{:old :new}
+   :morphism {:id :replace
+              :source :old
+              :target :new
+              :type :transformative}}
+
+  :as-morphism
+  {:domain :obsolete
+   :codomain :renewed
+   :preservation :low
+   :composition :replaces}
+
+  :adapt
+  {:trigger :instability
+   :evidence [:chaos :resistance]
+   :target :hexagram-50-ding}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.4 :return 0.2 :hold 0.1 :pheromone 0.3}
+   :description "Decisive behavioral reset"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.7
+   :description "High change with monitoring"}
+
+  :pattern-sense
+  {:trail-follow 0.3
+   :gradient-use 0.4
+   :novelty-seek 0.6
+   :description "Break from old paths"}
+
+  :adapt-trigger
+  {:condition :chaos
+   :interpretation "Stabilize"
+   :switch-to :hexagram-50-ding}
+
+  :failure-mode
+  "Revolution without stability collapses"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "革"
+   :bits "10111000"
+   :interpretation "Transformative intervention"}
+
+  :exotype-params
+  {:rotation 3
+   :match-threshold 0.4
+   :invert-on-phenotype? true
+   :update-prob 0.7
+   :mix-mode :scramble
+   :description "Strong reset"}
+
+  :tensor-interpretation
+  {:operation :revolution
+   :description "Replace structure"}
+
+  :regime-prediction
+  {:expected :transforming
+   :dynamics "Rapid change with high variance"
+   :eoc-relevance "Can escape stagnation, risks chaos"}
+
+@domain-transfer-notes
+  "革 is the pattern of REVOLUTION across domains:
+   - In ants: behavioral reset
+   - In CA: rapid regime change"

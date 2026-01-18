@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-50-ding
+@title ䷱ 鼎 (Dǐng) - The Cauldron
+@sigils [☲☴/鼎]
+@binary 011101
+@trigrams [fire/wind]
+@number 50
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: The cauldron stabilizes transformation; it refines and sustains the new order.
+  + context: A system must consolidate after transformation.
+  + IF:
+    Change has occurred and needs stabilization.
+  + HOWEVER:
+    Over-stabilization can halt growth.
+  + THEN:
+    Refine and sustain the new structure with steady heat.
+  + BECAUSE:
+    Durable transformation requires stable vessels.
+    + evidence: Traditional: "The Cauldron. Supreme success."
+  + NEXT-STEPS:
+    - Stabilize the new pattern.
+    - Refine gradually.
+    - Pair with ䷰ (革) if renewal is needed again.
+
+@ct-interpretation
+  :vision
+  {:objects #{:raw-change :refined}
+   :morphism {:id :refine
+              :source :raw-change
+              :target :refined
+              :type :stabilizing}}
+
+  :as-morphism
+  {:domain :post-change
+   :codomain :stable
+   :preservation :high
+   :composition :stabilizes}
+
+  :adapt
+  {:trigger :stagnation
+   :evidence [:rigidity :decay]
+   :target :hexagram-49-ge}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.25 :pheromone 0.15}
+   :description "Refine and stabilize behavior"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Stable refinement"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Consolidate new routes"}
+
+  :adapt-trigger
+  {:condition :rigidity
+   :interpretation "Renew"
+   :switch-to :hexagram-49-ge}
+
+  :failure-mode
+  "Stabilization freezes dynamics"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "鼎"
+   :bits "01110100"
+   :interpretation "Refinement and stabilization"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.65
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :majority
+   :description "Refining mix"}
+
+  :tensor-interpretation
+  {:operation :refine
+   :description "Stabilize and refine"}
+
+  :regime-prediction
+  {:expected :refined
+   :dynamics "Stable post-change structure"
+   :eoc-relevance "Stabilizes after disruption"}
+
+@domain-transfer-notes
+  "鼎 is the pattern of REFINEMENT AFTER CHANGE across domains:
+   - In ants: stabilizing behavior after resets
+   - In CA: refined structure"

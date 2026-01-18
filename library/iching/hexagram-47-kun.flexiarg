@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-47-kun
+@title ䷮ 困 (Kùn) - Oppression / Exhaustion
+@sigils [☱☵/困]
+@binary 010110
+@trigrams [lake/water]
+@number 47
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Exhaustion constrains movement; inner clarity preserves resilience.
+  + context: A system is under pressure and energy is low.
+  + IF:
+    Resources are depleted and paths are limited.
+  + HOWEVER:
+    Despair accelerates collapse.
+  + THEN:
+    Preserve inner coherence and conserve resources.
+  + BECAUSE:
+    Endurance in adversity keeps the system alive.
+    + evidence: Traditional: "Oppression. Success. Perseverance."
+  + NEXT-STEPS:
+    - Conserve energy.
+    - Maintain internal clarity.
+    - Pair with ䷯ (井) to restore resources.
+
+@ct-interpretation
+  :vision
+  {:objects #{:strained :enduring}
+   :morphism {:id :endure
+              :source :strained
+              :target :enduring
+              :type :conserving}}
+
+  :as-morphism
+  {:domain :depleted
+   :codomain :enduring
+   :preservation :high
+   :composition :conserves}
+
+  :adapt
+  {:trigger :resource-found
+   :evidence [:relief :replenish]
+   :target :hexagram-48-jing}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :return
+   :policy-priors {:forage 0.2 :return 0.5 :hold 0.2 :pheromone 0.1}
+   :description "Conserve and return"}
+
+  :precision
+  {:Pi-o 0.8
+   :tau 0.3
+   :description "Cautious endurance"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.4
+   :novelty-seek 0.1
+   :description "Avoid waste"}
+
+  :adapt-trigger
+  {:condition :relief
+   :interpretation "Restore resources"
+   :switch-to :hexagram-48-jing}
+
+  :failure-mode
+  "Exhaustion leads to collapse"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "困"
+   :bits "01011000"
+   :interpretation "Energy constrained"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.8
+   :invert-on-phenotype? false
+   :update-prob 0.2
+   :mix-mode :none
+   :description "Low intervention, high constraint"}
+
+  :tensor-interpretation
+  {:operation :conserve
+   :description "Preserve under pressure"}
+
+  :regime-prediction
+  {:expected :exhausted
+   :dynamics "Low activity, constrained"
+   :eoc-relevance "Anti-EoC unless relief arrives"}
+
+@domain-transfer-notes
+  "困 is the pattern of EXHAUSTION across domains:
+   - In ants: conserving energy under strain
+   - In CA: low-activity constraint"

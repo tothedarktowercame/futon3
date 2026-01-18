@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-48-jing
+@title ䷯ 井 (Jǐng) - The Well
+@sigils [☵☴/井]
+@binary 011010
+@trigrams [water/wind]
+@number 48
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: The well is a stable source; renewal comes from steady replenishment.
+  + context: A system needs a reliable resource base.
+  + IF:
+    Recovery depends on steady supply.
+  + HOWEVER:
+    Neglect of the source leads to collapse.
+  + THEN:
+    Maintain the source and distribute its benefits.
+  + BECAUSE:
+    Sustained systems require stable replenishment.
+    + evidence: Traditional: "The Well. The town may be changed, but the well cannot be changed."
+  + NEXT-STEPS:
+    - Protect the source.
+    - Ensure access and distribution.
+    - Pair with ䷮ (困) to manage exhaustion.
+
+@ct-interpretation
+  :vision
+  {:objects #{:depleted :replenished}
+   :morphism {:id :restore
+              :source :depleted
+              :target :replenished
+              :type :sustaining}}
+
+  :as-morphism
+  {:domain :resource-poor
+   :codomain :resource-rich
+   :preservation :moderate
+   :composition :replenishes}
+
+  :adapt
+  {:trigger :neglect
+   :evidence [:drying :access-loss]
+   :target :hexagram-47-kun}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :return
+   :policy-priors {:forage 0.25 :return 0.45 :hold 0.2 :pheromone 0.1}
+   :description "Replenish at stable sources"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Steady replenishment"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Maintain source access"}
+
+  :adapt-trigger
+  {:condition :neglect
+   :interpretation "Conserve"
+   :switch-to :hexagram-47-kun}
+
+  :failure-mode
+  "Neglected source collapses"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "井"
+   :bits "01101000"
+   :interpretation "Stable replenishment"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.7
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :majority
+   :description "Sustaining update"}
+
+  :tensor-interpretation
+  {:operation :replenish
+   :description "Maintain source stability"}
+
+  :regime-prediction
+  {:expected :replenishing
+   :dynamics "Stable replenishment cycles"
+   :eoc-relevance "Stabilizes EoC by providing resources"}
+
+@domain-transfer-notes
+  "井 is the pattern of STABLE SOURCE across domains:
+   - In ants: reliable food source
+   - In CA: stable replenishment"

@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-46-sheng
+@title ䷭ 升 (Sheng) - Pushing Upward
+@sigils [☷☴/升]
+@binary 011000
+@trigrams [earth/wind]
+@number 46
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Gradual ascent builds strength; steady progress avoids collapse.
+  + context: A system is ready to expand or rise.
+  + IF:
+    Growth is possible but requires patience.
+  + HOWEVER:
+    Rushing upward causes instability.
+  + THEN:
+    Advance step by step, reinforcing each gain.
+  + BECAUSE:
+    Sustained ascent is achieved through gradual accumulation.
+    + evidence: Traditional: "Pushing upward. It furthers one to see the great man."
+  + NEXT-STEPS:
+    - Identify the next step upward.
+    - Reinforce gains.
+    - Pair with ䷬ (萃) to consolidate.
+
+@ct-interpretation
+  :vision
+  {:objects #{:low :rising}
+   :morphism {:id :ascend
+              :source :low
+              :target :rising
+              :type :gradual}}
+
+  :as-morphism
+  {:domain :stable
+   :codomain :growing
+   :preservation :moderate
+   :composition :builds}
+
+  :adapt
+  {:trigger :overreach
+   :evidence [:instability :slip]
+   :target :hexagram-45-cui}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :outbound
+   :policy-priors {:forage 0.45 :return 0.25 :hold 0.2 :pheromone 0.1}
+   :description "Gradual expansion"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.5
+   :description "Measured exploration"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.6
+   :novelty-seek 0.3
+   :description "Expand steadily"}
+
+  :adapt-trigger
+  {:condition :slip
+   :interpretation "Consolidate"
+   :switch-to :hexagram-45-cui}
+
+  :failure-mode
+  "Over-ambitious expansion collapses"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "升"
+   :bits "01100000"
+   :interpretation "Gradual ascent"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.55
+   :invert-on-phenotype? false
+   :update-prob 0.45
+   :mix-mode :rotate-right
+   :description "Stepwise expansion"}
+
+  :tensor-interpretation
+  {:operation :ascent
+   :description "Gradual growth"}
+
+  :regime-prediction
+  {:expected :growing
+   :dynamics "Steady expansion"
+   :eoc-relevance "Can approach EoC if balanced"}
+
+@domain-transfer-notes
+  "升 is the pattern of GRADUAL ASCENT across domains:
+   - In ants: stepwise expansion
+   - In CA: rising structure"

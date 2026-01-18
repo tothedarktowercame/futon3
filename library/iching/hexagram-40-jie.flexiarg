@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-40-jie
+@title ䷧ 解 (Jiě) - Release
+@sigils [☳☵/解]
+@binary 010100
+@trigrams [thunder/water]
+@number 40
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Release dissolves tension; movement resumes after obstruction.
+  + context: A system has found a way out of blockage.
+  + IF:
+    The barrier loosens and flow can resume.
+  + HOWEVER:
+    Release without direction can scatter energy.
+  + THEN:
+    Use the opening to restore healthy flow.
+  + BECAUSE:
+    Dissolving tension is only useful if followed by alignment.
+    + evidence: Traditional: "Release. The southwest furthers."
+  + NEXT-STEPS:
+    - Restore circulation.
+    - Avoid immediate re-blocking.
+    - Pair with ䷦ (蹇) if obstruction returns.
+
+@ct-interpretation
+  :vision
+  {:objects #{:blocked :released}
+   :morphism {:id :release
+              :source :blocked
+              :target :released
+              :type :liberating}}
+
+  :as-morphism
+  {:domain :constrained
+   :codomain :free-flow
+   :preservation :low
+   :composition :opens}
+
+  :adapt
+  {:trigger :reblock
+   :evidence [:stuck :reconstraint]
+   :target :hexagram-39-jian}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.35 :return 0.25 :hold 0.15 :pheromone 0.25}
+   :description "Resume motion after release"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.7
+   :description "Exploratory release"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.5
+   :novelty-seek 0.5
+   :description "Explore reopened paths"}
+
+  :adapt-trigger
+  {:condition :reblock
+   :interpretation "Return to obstruction";
+   :switch-to :hexagram-39-jian}
+
+  :failure-mode
+  "Release without structure leads to scatter"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "解"
+   :bits "01010000"
+   :interpretation "Release of constraints"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.4
+   :invert-on-phenotype? true
+   :update-prob 0.6
+   :mix-mode :scramble
+   :description "Open dynamics after constraint"}
+
+  :tensor-interpretation
+  {:operation :release
+   :description "Reduce constraints to restore flow"}
+
+  :regime-prediction
+  {:expected :released
+   :dynamics "Flow resumes with variability"
+   :eoc-relevance "Can re-enter EoC after obstruction"}
+
+@domain-transfer-notes
+  "解 is the pattern of RELEASE across domains:
+   - In ants: movement resumes
+   - In CA: constraint dissolution"

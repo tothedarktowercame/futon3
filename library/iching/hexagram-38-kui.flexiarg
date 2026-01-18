@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-38-kui
+@title ䷥ 睽 (Kuí) - Opposition
+@sigils [☲☱/睽]
+@binary 110101
+@trigrams [fire/lake]
+@number 38
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Opposition clarifies differences; divergence can be productive if bounded.
+  + context: A system experiences internal divergence or competing directions.
+  + IF:
+    Forces pull in different directions.
+  + HOWEVER:
+    Unchecked divergence fractures the system.
+  + THEN:
+    Maintain boundaries and seek complementarity.
+  + BECAUSE:
+    Opposition can sharpen clarity when kept within limits.
+    + evidence: Traditional: "Opposition. In small matters, good fortune."
+  + NEXT-STEPS:
+    - Identify the divergence.
+    - Keep channels open without forcing unity.
+    - Pair with ䷤ (家人) to restore order.
+
+@ct-interpretation
+  :vision
+  {:objects #{:divergent :bounded}
+   :morphism {:id :differentiate
+              :source :divergent
+              :target :bounded
+              :type :contrast}}
+
+  :as-morphism
+  {:domain :opposed
+   :codomain :bounded-opposition
+   :preservation :low
+   :composition :differentiates}
+
+  :adapt
+  {:trigger :fracture
+   :evidence [:split :collapse]
+   :target :hexagram-37-jiaren}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.35 :return 0.25 :hold 0.2 :pheromone 0.2}
+   :description "Allow divergence but prevent fracture"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.6
+   :description "Responsive to divergence"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.4
+   :novelty-seek 0.4
+   :description "Explore divergent paths"}
+
+  :adapt-trigger
+  {:condition :fracture
+   :interpretation "Return to order"
+   :switch-to :hexagram-37-jiaren}
+
+  :failure-mode
+  "Divergence leads to fragmentation"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "睽"
+   :bits "11010100"
+   :interpretation "Oppositional mixing"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.45
+   :invert-on-phenotype? true
+   :update-prob 0.55
+   :mix-mode :xor-neighbor
+   :description "Encourage contrast"}
+
+  :tensor-interpretation
+  {:operation :contrast
+   :description "Promote divergence within bounds"}
+
+  :regime-prediction
+  {:expected :divergent
+   :dynamics "Oppositional patterns"
+   :eoc-relevance "Can seed EoC if bounded"}
+
+@domain-transfer-notes
+  "睽 is the pattern of OPPOSITION across domains:
+   - In ants: divergent exploration
+   - In CA: contrasting motifs"

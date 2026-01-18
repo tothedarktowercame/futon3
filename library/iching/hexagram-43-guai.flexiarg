@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-43-guai
+@title ䷪ 夬 (Guài) - Breakthrough
+@sigils [☰☱/夬]
+@binary 110111
+@trigrams [heaven/lake]
+@number 43
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Breakthrough removes obstruction; decisive action clears the way.
+  + context: A system is ready to remove a final blockage.
+  + IF:
+    A clear obstacle remains and momentum is sufficient.
+  + HOWEVER:
+    Excess force can overshoot and destabilize.
+  + THEN:
+    Act decisively, but with restraint and clarity.
+  + BECAUSE:
+    Timely breakthrough unlocks progress.
+    + evidence: Traditional: "Breakthrough. One must make it known at the king's court."
+  + NEXT-STEPS:
+    - Identify the final obstruction.
+    - Apply decisive action.
+    - Pair with ䷫ (姤) to manage encounter.
+
+@ct-interpretation
+  :vision
+  {:objects #{:blocked :opened}
+   :morphism {:id :breakthrough
+              :source :blocked
+              :target :opened
+              :type :decisive}}
+
+  :as-morphism
+  {:domain :obstructed
+   :codomain :opened
+   :preservation :low
+   :composition :clears}
+
+  :adapt
+  {:trigger :overreach
+   :evidence [:instability :scatter]
+   :target :hexagram-44-gou}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :outbound
+   :policy-priors {:forage 0.5 :return 0.2 :hold 0.1 :pheromone 0.2}
+   :description "Decisive clearing"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.6
+   :description "Decisive but responsive"}
+
+  :pattern-sense
+  {:trail-follow 0.3
+   :gradient-use 0.5
+   :novelty-seek 0.6
+   :description "Break through"}
+
+  :adapt-trigger
+  {:condition :overreach
+   :interpretation "Manage encounter"
+   :switch-to :hexagram-44-gou}
+
+  :failure-mode
+  "Breakthrough overshoots"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "夬"
+   :bits "11011100"
+   :interpretation "Decisive clearing"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.45
+   :invert-on-phenotype? true
+   :update-prob 0.6
+   :mix-mode :scramble
+   :description "Decisive intervention"}
+
+  :tensor-interpretation
+  {:operation :breakthrough
+   :description "Clear obstruction"}
+
+  :regime-prediction
+  {:expected :clearing
+   :dynamics "Rapid change with new opening"
+   :eoc-relevance "Can push into new regime"}
+
+@domain-transfer-notes
+  "夬 is the pattern of BREAKTHROUGH across domains:
+   - In ants: decisive clearing
+   - In CA: rapid regime shift"

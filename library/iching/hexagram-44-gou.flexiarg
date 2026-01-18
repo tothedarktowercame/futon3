@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-44-gou
+@title ䷫ 姤 (Gòu) - Coming to Meet
+@sigils [☰☴/姤]
+@binary 011111
+@trigrams [heaven/wind]
+@number 44
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Encountering a powerful influence requires restraint; one must not be seduced blindly.
+  + context: A system meets a strong new force.
+  + IF:
+    A sudden influence appears.
+  + HOWEVER:
+    Immediate attachment can lead to loss of control.
+  + THEN:
+    Meet the force with caution; integrate only what is stable.
+  + BECAUSE:
+    Encounters can transform the system if handled with restraint.
+    + evidence: Traditional: "Coming to meet. The maiden is powerful."
+  + NEXT-STEPS:
+    - Identify the new influence.
+    - Limit exposure.
+    - Pair with ䷪ (夬) if decisive action is required.
+
+@ct-interpretation
+  :vision
+  {:objects #{:unknown :encountered}
+   :morphism {:id :encounter
+              :source :unknown
+              :target :encountered
+              :type :contact}}
+
+  :as-morphism
+  {:domain :unmet
+   :codomain :met
+   :preservation :low
+   :composition :initiates-contact}
+
+  :adapt
+  {:trigger :overinfluence
+   :evidence [:loss-of-control :capture]
+   :target :hexagram-43-guai}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.35 :return 0.25 :hold 0.2 :pheromone 0.2}
+   :description "Cautious encounter"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.6
+   :description "Responsive to new signals"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.5
+   :novelty-seek 0.5
+   :description "Explore new influence with caution"}
+
+  :adapt-trigger
+  {:condition :capture
+   :interpretation "Break through"
+   :switch-to :hexagram-43-guai}
+
+  :failure-mode
+  "Over-attachment to new influence"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "姤"
+   :bits "01111100"
+   :interpretation "Sudden encounter"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.5
+   :invert-on-phenotype? true
+   :update-prob 0.55
+   :mix-mode :rotate-right
+   :description "Encounter-driven mixing"}
+
+  :tensor-interpretation
+  {:operation :encounter
+   :description "Introduce new influence"}
+
+  :regime-prediction
+  {:expected :encounter
+   :dynamics "New influence alters dynamics"
+   :eoc-relevance "Can disrupt or enrich EoC"}
+
+@domain-transfer-notes
+  "姤 is the pattern of ENCOUNTER across domains:
+   - In ants: cautious engagement with new signals
+   - In CA: new influence injection"

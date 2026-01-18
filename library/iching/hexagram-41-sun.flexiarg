@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-41-sun
+@title ䷨ 損 (Sǔn) - Decrease
+@sigils [☶☱/損]
+@binary 110001
+@trigrams [mountain/lake]
+@number 41
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Decrease restores balance; reduction in one place nourishes another.
+  + context: A system must reduce excess to regain equilibrium.
+  + IF:
+    One side is overextended or bloated.
+  + HOWEVER:
+    Excess reduction can weaken the whole.
+  + THEN:
+    Reduce with purpose, redirecting resources.
+  + BECAUSE:
+    Balance is regained by redistributing, not by collapsing.
+    + evidence: Traditional: "Decrease. There is no blame."
+  + NEXT-STEPS:
+    - Identify excess.
+    - Redirect toward need.
+    - Pair with ䷩ (益) to restore growth.
+
+@ct-interpretation
+  :vision
+  {:objects #{:excess :balanced}
+   :morphism {:id :decrease
+              :source :excess
+              :target :balanced
+              :type :redistribute}}
+
+  :as-morphism
+  {:domain :imbalanced
+   :codomain :balanced
+   :preservation :moderate
+   :composition :reduces}
+
+  :adapt
+  {:trigger :depleted
+   :evidence [:underflow :loss]
+   :target :hexagram-42-yi}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :return
+   :policy-priors {:forage 0.25 :return 0.4 :hold 0.2 :pheromone 0.15}
+   :description "Reduce outward push; consolidate"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Balanced reduction"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.4
+   :novelty-seek 0.2
+   :description "Consolidate routes"}
+
+  :adapt-trigger
+  {:condition :underflow
+   :interpretation "Shift to increase"
+   :switch-to :hexagram-42-yi}
+
+  :failure-mode
+  "Over-reduction causes starvation"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "損"
+   :bits "11000100"
+   :interpretation "Controlled reduction"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.7
+   :invert-on-phenotype? false
+   :update-prob 0.3
+   :mix-mode :none
+   :description "Reduce intervention"}
+
+  :tensor-interpretation
+  {:operation :reduction
+   :description "Lower activity to rebalance"}
+
+  :regime-prediction
+  {:expected :reduced
+   :dynamics "Lower activity with stabilization"
+   :eoc-relevance "Stabilizes, may reduce diversity"}
+
+@domain-transfer-notes
+  "損 is the pattern of DECREASE across domains:
+   - In ants: consolidation
+   - In CA: reduced activity"

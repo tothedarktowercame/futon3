@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-37-jiaren
+@title ䷤ 家人 (Jiā Rén) - The Family
+@sigils [☴☲/家人]
+@binary 101011
+@trigrams [wind/fire]
+@number 37
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Order begins at home; stable roles and inner discipline create coherence.
+  + context: A system needs internal structure and role clarity.
+  + IF:
+    Coordination depends on stable internal relations.
+  + HOWEVER:
+    Rigidity can stifle adaptation.
+  + THEN:
+    Establish clear roles while allowing gentle adjustment.
+  + BECAUSE:
+    Internal coherence is the base for external success.
+    + evidence: Traditional: "The Family. The perseverance of the woman furthers."
+  + NEXT-STEPS:
+    - Define internal roles.
+    - Maintain consistent routines.
+    - Pair with ䷥ (睽) to handle divergence.
+
+@ct-interpretation
+  :vision
+  {:objects #{:disordered :ordered}
+   :morphism {:id :organize
+              :source :disordered
+              :target :ordered
+              :type :domestic}}
+
+  :as-morphism
+  {:domain :internal-state
+   :codomain :ordered-state
+   :preservation :moderate
+   :composition :stabilizes}
+
+  :adapt
+  {:trigger :divergence
+   :evidence [:role-conflict :drift]
+   :target :hexagram-38-kui}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :return
+   :policy-priors {:forage 0.25 :return 0.4 :hold 0.25 :pheromone 0.1}
+   :description "Home-centric stability"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Stable routines"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Maintain home structure"}
+
+  :adapt-trigger
+  {:condition :role-conflict
+   :interpretation "Handle divergence"
+   :switch-to :hexagram-38-kui}
+
+  :failure-mode
+  "Over-domestication reduces exploration"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "家人"
+   :bits "10101100"
+   :interpretation "Internal ordering"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.65
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :majority
+   :description "Structured internal coordination"}
+
+  :tensor-interpretation
+  {:operation :domestic-order
+   :description "Stabilize internal structure"}
+
+  :regime-prediction
+  {:expected :ordered
+   :dynamics "Stable internal patterns"
+   :eoc-relevance "Stabilizes but may reduce exploration"}
+
+@domain-transfer-notes
+  "家人 is the pattern of INTERNAL ORDER across domains:
+   - In ants: home-centric routines
+   - In CA: stable internal structure"

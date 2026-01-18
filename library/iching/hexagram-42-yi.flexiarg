@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-42-yi
+@title ䷩ 益 (Yì) - Increase
+@sigils [☴☳/益]
+@binary 100011
+@trigrams [wind/thunder]
+@number 42
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Increase grows capacity; growth should be guided and distributed.
+  + context: A system can expand or intensify.
+  + IF:
+    Conditions support growth.
+  + HOWEVER:
+    Unguided growth destabilizes.
+  + THEN:
+    Increase with direction and balance.
+  + BECAUSE:
+    Growth is sustainable when aligned.
+    + evidence: Traditional: "Increase. It furthers one to undertake something."
+  + NEXT-STEPS:
+    - Identify where growth helps.
+    - Channel gains productively.
+    - Pair with ䷨ (損) to rebalance.
+
+@ct-interpretation
+  :vision
+  {:objects #{:limited :expanded}
+   :morphism {:id :increase
+              :source :limited
+              :target :expanded
+              :type :growth}}
+
+  :as-morphism
+  {:domain :constrained
+   :codomain :expanded
+   :preservation :moderate
+   :composition :expands}
+
+  :adapt
+  {:trigger :overgrowth
+   :evidence [:instability :overflow]
+   :target :hexagram-41-sun}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :outbound
+   :policy-priors {:forage 0.45 :return 0.25 :hold 0.15 :pheromone 0.15}
+   :description "Growth through increased exploration"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.6
+   :description "Exploratory growth"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.5
+   :novelty-seek 0.5
+   :description "Expand into new areas"}
+
+  :adapt-trigger
+  {:condition :overgrowth
+   :interpretation "Reduce"
+   :switch-to :hexagram-41-sun}
+
+  :failure-mode
+  "Overgrowth destabilizes"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "益"
+   :bits "10001100"
+   :interpretation "Growth-oriented intervention"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.5
+   :invert-on-phenotype? true
+   :update-prob 0.6
+   :mix-mode :rotate-right
+   :description "Increase activity"}
+
+  :tensor-interpretation
+  {:operation :increase
+   :description "Expand dynamics"}
+
+  :regime-prediction
+  {:expected :growing
+   :dynamics "Rising activity"
+   :eoc-relevance "Can approach EoC if balanced"}
+
+@domain-transfer-notes
+  "益 is the pattern of INCREASE across domains:
+   - In ants: growth in exploration
+   - In CA: rising activity"

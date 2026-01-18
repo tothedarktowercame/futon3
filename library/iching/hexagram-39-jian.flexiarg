@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-39-jian
+@title ䷦ 蹇 (Jiǎn) - Obstruction / Limping
+@sigils [☵☶/蹇]
+@binary 001010
+@trigrams [water/mountain]
+@number 39
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Obstruction requires detour and assistance; forcing forward fails.
+  + context: A system meets a blocking difficulty.
+  + IF:
+    Direct progress is blocked.
+  + HOWEVER:
+    Pushing harder wastes resources.
+  + THEN:
+    Seek support or alternate routes.
+  + BECAUSE:
+    Obstruction is resolved by reorientation, not force.
+    + evidence: Traditional: "Obstruction. Advantageous to remain steadfast."
+  + NEXT-STEPS:
+    - Identify the blockage.
+    - Find indirect paths.
+    - Pair with ䷧ (解) to release.
+
+@ct-interpretation
+  :vision
+  {:objects #{:blocked :detour}
+   :morphism {:id :detour
+              :source :blocked
+              :target :detour
+              :type :indirect}}
+
+  :as-morphism
+  {:domain :obstructed
+   :codomain :alternative-path
+   :preservation :moderate
+   :composition :reroutes}
+
+  :adapt
+  {:trigger :opening
+   :evidence [:path-clear]
+   :target :hexagram-40-jie}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.2 :pheromone 0.2}
+   :description "Seek alternate routes"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.6
+   :description "Responsive to obstacles"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.5
+   :novelty-seek 0.5
+   :description "Explore detours"}
+
+  :adapt-trigger
+  {:condition :opening
+   :interpretation "Release"
+   :switch-to :hexagram-40-jie}
+
+  :failure-mode
+  "Repeated obstruction without detour"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "蹇"
+   :bits "00101000"
+   :interpretation "Blocked motion"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.7
+   :invert-on-phenotype? false
+   :update-prob 0.3
+   :mix-mode :none
+   :description "Constrained, low intervention"}
+
+  :tensor-interpretation
+  {:operation :block
+   :description "Restrict movement"}
+
+  :regime-prediction
+  {:expected :obstructed
+   :dynamics "Stalled patterns with occasional reroutes"
+   :eoc-relevance "Anti-EoC unless detour emerges"}
+
+@domain-transfer-notes
+  "蹇 is the pattern of OBSTRUCTION across domains:
+   - In ants: blocked routes
+   - In CA: stalled dynamics"

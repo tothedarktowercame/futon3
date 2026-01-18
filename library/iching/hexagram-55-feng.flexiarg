@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-55-feng
+@title ䷶ 豐 (Fēng) - Abundance
+@sigils [☳☲/豐]
+@binary 101100
+@trigrams [thunder/fire]
+@number 55
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Abundance shines brightly but declines quickly; manage peak with awareness.
+  + context: A system experiences peak activity or success.
+  + IF:
+    Resources and energy are at a maximum.
+  + HOWEVER:
+    Peaks are transient and can lead to decline.
+  + THEN:
+    Use the peak wisely, prepare for reduction.
+  + BECAUSE:
+    Abundance must be stewarded to avoid collapse.
+    + evidence: Traditional: "Abundance. The king attains abundance."
+  + NEXT-STEPS:
+    - Capitalize on the peak.
+    - Prepare for decline.
+    - Pair with ䷷ (旅) to handle transition.
+
+@ct-interpretation
+  :vision
+  {:objects #{:peak :managed}
+   :morphism {:id :steward-peak
+              :source :peak
+              :target :managed
+              :type :stewardship}}
+
+  :as-morphism
+  {:domain :abundant
+   :codomain :managed-abundance
+   :preservation :moderate
+   :composition :stabilizes-peak}
+
+  :adapt
+  {:trigger :decline
+   :evidence [:fade :loss]
+   :target :hexagram-56-lv}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :outbound
+   :policy-priors {:forage 0.45 :return 0.25 :hold 0.15 :pheromone 0.15}
+   :description "Use abundance for productive expansion"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.6
+   :description "Active utilization"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.6
+   :novelty-seek 0.4
+   :description "Expand during peak"}
+
+  :adapt-trigger
+  {:condition :decline
+   :interpretation "Shift to traveler mode"
+   :switch-to :hexagram-56-lv}
+
+  :failure-mode
+  "Peak dissipates without preparation"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "豐"
+   :bits "10110000"
+   :interpretation "Peak activity"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.5
+   :invert-on-phenotype? true
+   :update-prob 0.6
+   :mix-mode :scramble
+   :description "High activity"}
+
+  :tensor-interpretation
+  {:operation :abundance
+   :description "Peak dynamics"}
+
+  :regime-prediction
+  {:expected :peak
+   :dynamics "High activity with eventual decline"
+   :eoc-relevance "Can overshoot EoC"}
+
+@domain-transfer-notes
+  "豐 is the pattern of ABUNDANCE across domains:
+   - In ants: peak foraging
+   - In CA: high activity peak"

@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-59-huan
+@title ䷺ 渙 (Huàn) - Dispersion
+@sigils [☴☵/渙]
+@binary 010011
+@trigrams [wind/water]
+@number 59
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Dispersion dissolves blockages; scattering restores flow.
+  + context: A system is stuck in rigid structures.
+  + IF:
+    Bound structures prevent circulation.
+  + HOWEVER:
+    Excess dispersion leads to loss of coherence.
+  + THEN:
+    Dissolve rigidity and re-establish flow.
+  + BECAUSE:
+    Dissolving blockages restores circulation.
+    + evidence: Traditional: "Dispersion. Success."
+  + NEXT-STEPS:
+    - Identify rigid blocks.
+    - Dissolve gently.
+    - Pair with ䷻ (節) to re-establish limits.
+
+@ct-interpretation
+  :vision
+  {:objects #{:blocked :dispersed}
+   :morphism {:id :disperse
+              :source :blocked
+              :target :dispersed
+              :type :dissolving}}
+
+  :as-morphism
+  {:domain :rigid
+   :codomain :flowing
+   :preservation :low
+   :composition :dissolves}
+
+  :adapt
+  {:trigger :over-dispersion
+   :evidence [:loss :scatter]
+   :target :hexagram-60-jie}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.35 :return 0.25 :hold 0.15 :pheromone 0.25}
+   :description "Break rigid loops"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.7
+   :description "Exploratory dispersion"}
+
+  :pattern-sense
+  {:trail-follow 0.3
+   :gradient-use 0.4
+   :novelty-seek 0.6
+   :description "Disperse to restore flow"}
+
+  :adapt-trigger
+  {:condition :scatter
+   :interpretation "Re-establish limits"
+   :switch-to :hexagram-60-jie}
+
+  :failure-mode
+  "Dispersion without re-cohesion"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "渙"
+   :bits "01001100"
+   :interpretation "Dissolving intervention"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.45
+   :invert-on-phenotype? true
+   :update-prob 0.6
+   :mix-mode :scramble
+   :description "Dissolve rigid structure"}
+
+  :tensor-interpretation
+  {:operation :dispersion
+   :description "Break rigid patterns"}
+
+  :regime-prediction
+  {:expected :dispersed
+   :dynamics "Scattered patterns"
+   :eoc-relevance "Can re-enable EoC if re-bounded"}
+
+@domain-transfer-notes
+  "渙 is the pattern of DISPERSION across domains:
+   - In ants: breaking rigid trails
+   - In CA: dispersing structure"

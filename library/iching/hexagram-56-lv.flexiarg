@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-56-lv
+@title ䷷ 旅 (Lǚ) - The Wanderer
+@sigils [☶☲/旅]
+@binary 101001
+@trigrams [mountain/fire]
+@number 56
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: The wanderer is transient; adaptability and caution sustain movement.
+  + context: A system is in transition or away from stable base.
+  + IF:
+    Stability is absent and mobility is required.
+  + HOWEVER:
+    Rootlessness can lead to loss.
+  + THEN:
+    Travel lightly, adapt quickly, and avoid unnecessary conflict.
+  + BECAUSE:
+    Temporary states require flexibility and awareness.
+    + evidence: Traditional: "The Wanderer. Success through smallness."
+  + NEXT-STEPS:
+    - Keep resources light.
+    - Avoid deep commitments.
+    - Pair with ䷶ (豐) when abundance returns.
+
+@ct-interpretation
+  :vision
+  {:objects #{:rooted :moving}
+   :morphism {:id :wander
+              :source :rooted
+              :target :moving
+              :type :transient}}
+
+  :as-morphism
+  {:domain :stable
+   :codomain :transient
+   :preservation :low
+   :composition :moves}
+
+  :adapt
+  {:trigger :stability
+   :evidence [:base-found :resources]
+   :target :hexagram-55-feng}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.35 :return 0.25 :hold 0.2 :pheromone 0.2}
+   :description "Light, adaptive movement"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.7
+   :description "Exploratory mobility"}
+
+  :pattern-sense
+  {:trail-follow 0.3
+   :gradient-use 0.4
+   :novelty-seek 0.6
+   :description "Wander and adapt"}
+
+  :adapt-trigger
+  {:condition :base-found
+   :interpretation "Return to abundance"
+   :switch-to :hexagram-55-feng}
+
+  :failure-mode
+  "Wandering without anchors leads to starvation"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "旅"
+   :bits "10100100"
+   :interpretation "Transient dynamics"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.45
+   :invert-on-phenotype? true
+   :update-prob 0.55
+   :mix-mode :scramble
+   :description "Mobile, adaptive intervention"}
+
+  :tensor-interpretation
+  {:operation :wander
+   :description "Transient movement"}
+
+  :regime-prediction
+  {:expected :transient
+   :dynamics "Mobile patterns with low stability"
+   :eoc-relevance "Can explore but unstable"}
+
+@domain-transfer-notes
+  "旅 is the pattern of WANDERING across domains:
+   - In ants: roaming adaptation
+   - In CA: transient structures"

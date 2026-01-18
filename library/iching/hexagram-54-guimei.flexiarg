@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-54-guimei
+@title ䷵ 歸妹 (Guī Mèi) - The Marrying Maiden
+@sigils [☳☱/歸妹]
+@binary 110100
+@trigrams [thunder/lake]
+@number 54
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: An alliance formed out of sequence brings tension; align roles carefully.
+  + context: A system forms a union with uneven roles or timing.
+  + IF:
+    A secondary force seeks union without full alignment.
+  + HOWEVER:
+    Misalignment destabilizes the alliance.
+  + THEN:
+    Recognize the imbalance and adjust roles gently.
+  + BECAUSE:
+    Lasting unions require proper timing and role clarity.
+    + evidence: Traditional: "The Marrying Maiden. Undertakings bring misfortune."
+  + NEXT-STEPS:
+    - Identify role imbalance.
+    - Adjust expectations.
+    - Pair with ䷴ (漸) to restore gradual order.
+
+@ct-interpretation
+  :vision
+  {:objects #{:misaligned :adjusted}
+   :morphism {:id :realign
+              :source :misaligned
+              :target :adjusted
+              :type :role-correction}}
+
+  :as-morphism
+  {:domain :unequal
+   :codomain :balanced
+   :preservation :moderate
+   :composition :reorders}
+
+  :adapt
+  {:trigger :stabilized
+   :evidence [:roles-aligned]
+   :target :hexagram-53-jian}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.2 :pheromone 0.2}
+   :description "Adjust roles and timing"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.6
+   :description "Responsive realignment"}
+
+  :pattern-sense
+  {:trail-follow 0.5
+   :gradient-use 0.4
+   :novelty-seek 0.3
+   :description "Adaptive correction"}
+
+  :adapt-trigger
+  {:condition :roles-aligned
+   :interpretation "Return to gradual progress"
+   :switch-to :hexagram-53-jian}
+
+  :failure-mode
+  "Persistent misalignment causes instability"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "歸妹"
+   :bits "11010000"
+   :interpretation "Misaligned coupling"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.5
+   :invert-on-phenotype? true
+   :update-prob 0.55
+   :mix-mode :xor-neighbor
+   :description "Correct misalignment"}
+
+  :tensor-interpretation
+  {:operation :realign
+   :description "Correct improper alignment"}
+
+  :regime-prediction
+  {:expected :corrective
+   :dynamics "Adjustment of misalignment"
+   :eoc-relevance "Can destabilize then recover"}
+
+@domain-transfer-notes
+  "歸妹 is the pattern of MISALIGNED UNION across domains:
+   - In ants: role imbalance
+   - In CA: corrective adjustments"

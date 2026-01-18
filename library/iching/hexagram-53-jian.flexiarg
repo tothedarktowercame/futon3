@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-53-jian
+@title ䷴ 漸 (Jiàn) - Gradual Progress
+@sigils [☴☶/漸]
+@binary 001011
+@trigrams [wind/mountain]
+@number 53
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Gradual progress accumulates; small steps build lasting change.
+  + context: A system needs steady development without disruption.
+  + IF:
+    Rapid change would destabilize.
+  + HOWEVER:
+    Too much caution can stall growth.
+  + THEN:
+    Advance steadily with patient accumulation.
+  + BECAUSE:
+    Durable change is built incrementally.
+    + evidence: Traditional: "Gradual progress. The maiden is given in marriage."
+  + NEXT-STEPS:
+    - Identify the next small step.
+    - Maintain continuity.
+    - Pair with ䷵ (歸妹) if imbalance appears.
+
+@ct-interpretation
+  :vision
+  {:objects #{:emerging :advancing}
+   :morphism {:id :increment
+              :source :emerging
+              :target :advancing
+              :type :gradual}}
+
+  :as-morphism
+  {:domain :slow-change
+   :codomain :steady-advance
+   :preservation :high
+   :composition :accumulates}
+
+  :adapt
+  {:trigger :stall
+   :evidence [:plateau :imbalance]
+   :target :hexagram-54-guimei}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.35 :return 0.3 :hold 0.2 :pheromone 0.15}
+   :description "Gradual expansion"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Steady progress"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Incremental exploration"}
+
+  :adapt-trigger
+  {:condition :imbalance
+   :interpretation "Correct misalignment"
+   :switch-to :hexagram-54-guimei}
+
+  :failure-mode
+  "Progress stalls due to overcaution"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "漸"
+   :bits "00101100"
+   :interpretation "Gradual alignment"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.65
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :rotate-right
+   :description "Stepwise alignment"}
+
+  :tensor-interpretation
+  {:operation :increment
+   :description "Gradual progression"}
+
+  :regime-prediction
+  {:expected :gradual
+   :dynamics "Slow stable advancement"
+   :eoc-relevance "Stabilizes EoC by smoothing"}
+
+@domain-transfer-notes
+  "漸 is the pattern of GRADUAL PROGRESS across domains:
+   - In ants: steady expansion
+   - In CA: gradual alignment"

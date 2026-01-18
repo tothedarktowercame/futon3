@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-60-jie
+@title ䷻ 節 (Jié) - Limitation
+@sigils [☱☵/節]
+@binary 010110
+@trigrams [lake/water]
+@number 60
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Limitation restores order; constraints enable sustainable flow.
+  + context: A system needs boundaries to avoid excess dispersion.
+  + IF:
+    Activity has become scattered or wasteful.
+  + HOWEVER:
+    Excess constraint suffocates growth.
+  + THEN:
+    Set clear limits to restore sustainable flow.
+  + BECAUSE:
+    Boundaries preserve coherence and resource integrity.
+    + evidence: Traditional: "Limitation. Success."
+  + NEXT-STEPS:
+    - Identify necessary limits.
+    - Apply constraints lightly.
+    - Pair with ䷺ (渙) if stagnation returns.
+
+@ct-interpretation
+  :vision
+  {:objects #{:scattered :bounded}
+   :morphism {:id :limit
+              :source :scattered
+              :target :bounded
+              :type :constraint}}
+
+  :as-morphism
+  {:domain :unbounded
+   :codomain :bounded
+   :preservation :moderate
+   :composition :constrains}
+
+  :adapt
+  {:trigger :stagnation
+   :evidence [:rigidity :loss]
+   :target :hexagram-59-huan}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.25 :return 0.35 :hold 0.25 :pheromone 0.15}
+   :description "Reintroduce boundaries"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Balanced limitation"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.4
+   :novelty-seek 0.2
+   :description "Constrain wandering"}
+
+  :adapt-trigger
+  {:condition :rigidity
+   :interpretation "Dispersion"
+   :switch-to :hexagram-59-huan}
+
+  :failure-mode
+  "Over-limitation freezes dynamics"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "節"
+   :bits "01011000"
+   :interpretation "Boundary setting"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.75
+   :invert-on-phenotype? false
+   :update-prob 0.25
+   :mix-mode :none
+   :description "Constraint-heavy"}
+
+  :tensor-interpretation
+  {:operation :limit
+   :description "Bound dynamics"}
+
+  :regime-prediction
+  {:expected :bounded
+   :dynamics "Constrained patterns"
+   :eoc-relevance "Stabilizes after dispersion"}
+
+@domain-transfer-notes
+  "節 is the pattern of LIMITATION across domains:
+   - In ants: reintroduce constraints
+   - In CA: bounded dynamics"

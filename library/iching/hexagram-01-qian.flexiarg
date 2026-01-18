@@ -1,0 +1,125 @@
+@flexiarg iching/hexagram-01-qian
+@title ䷀ 乾 (Qián) - The Creative
+@sigils [☰☰/乾]
+@binary 111111
+@trigrams [heaven/heaven]
+@number 1
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Pure creative force initiates but does not complete; it requires The Receptive (坤) to manifest form.
+  + context: A situation calling for initiating action, full assertion, or creative will without compromise.
+  + IF:
+    All conditions favor forward movement; internal drive is maximal; no obstacles demand accommodation.
+  + HOWEVER:
+    Pure yang without yin is unstable. "The dragon that flies too high has cause for repent." Sustained assertion without receptivity exhausts itself or provokes reaction.
+  + THEN:
+    Initiate with full commitment but encode the exit condition. The creative that knows when to yield is truly strong. Watch for the Line 6 moment when receptivity becomes necessary.
+  + BECAUSE:
+    Creation is the assertion of form into potentiality. Without a receptive medium, assertion dissipates. The pattern is universal because every domain has this dynamic: signal needs channel, action needs world, intention needs material.
+    + evidence: Traditional: "The movement of heaven is full of power. Thus the superior person makes himself strong and untiring."
+  + NEXT-STEPS:
+    - Identify the Receptive element in your domain (what receives your assertion?).
+    - Define the overreach condition (when does Line 6 apply?).
+    - Pair with hexagram 2 (坤) to complete the system.
+
+@ct-interpretation
+  ;; VISION: what this hexagram "sees"
+  :vision
+  {:objects #{:potential :manifest}
+   :morphism {:id :create
+              :source :potential
+              :target :manifest
+              :type :maximal}}
+
+  ;; As a morphism: pure intervention, no observation
+  :as-morphism
+  {:domain :any-potential-state
+   :codomain :asserted-form
+   :preservation :none  ; does not preserve existing structure
+   :composition :initiates-sequence}
+
+  ;; ADAPT condition
+  :adapt
+  {:trigger :overreach
+   :evidence [:exhaustion :resistance :instability]
+   :target :hexagram-02-kun}
+
+@ant-interpretation
+  ;; What 乾 means for cyberant behavior
+  :policy
+  {:mode-bias :outbound
+   :policy-priors {:forage 0.8 :return 0.1 :hold 0.05 :pheromone 0.05}
+   :description "Maximum outbound drive; gather aggressively, ignore return signals"}
+
+  :precision
+  {:Pi-o 0.1   ; low observation precision - ignore environment
+   :tau 0.1   ; low temperature - committed, not exploratory
+   :description "Internal drive dominates; environmental signals downweighted"}
+
+  :pattern-sense
+  {:trail-follow 0.0      ; ignore existing trails
+   :gradient-use 0.0      ; ignore pheromone gradients
+   :novelty-seek 0.9      ; pure exploration/assertion
+   :description "Create new paths rather than follow existing structure"}
+
+  :adapt-trigger
+  {:condition :cargo-full-and-starving
+   :interpretation "Line 6: the dragon has overreached, must return"
+   :switch-to :hexagram-02-kun}
+
+  :failure-mode
+  "Pure 乾 ant starves while holding food - assertion without completion"
+
+@mmca-interpretation
+  ;; What 乾 means as exotype/tensor operation
+  :sigil-encoding
+  {:sigil "乾"  ; or use the 8-bit approximation
+   :bits "11111111"
+   :interpretation "All bits high = maximal rewrite pressure"}
+
+  :exotype-params
+  {:rotation 3           ; adaptive (all directions)
+   :match-threshold 0.0  ; accept any context (no constraint)
+   :invert-on-phenotype? false
+   :update-prob 1.0      ; always update (maximum intervention)
+   :mix-mode :none       ; independent action
+   :description "Maximum exotype pressure, deterministic rewrite"}
+
+  :tensor-interpretation
+  {:operation :full-projection
+   :description "Project state fully onto attractor; ignore prior structure"
+   :matrix-form "P = |target⟩⟨target| (projector onto asserted state)"
+   :eigenstructure "Single eigenvalue 1; all other states map to target"}
+
+  :regime-prediction
+  {:expected :collapse-to-attractor
+   :dynamics "Fast convergence to fixed point or simple cycle"
+   :eoc-relevance "Anti-EoC: eliminates diversity, forces uniformity"
+   :caveat "But may INITIATE interesting dynamics that 坤 then sustains"}
+
+@morphisms-to-other-hexagrams
+  ;; How 乾 transforms to/from other hexagrams
+  :primary-pair
+  {:hexagram :hexagram-02-kun
+   :relationship :complement
+   :transformation "Yang exhausts → yields to Yin"
+   :trigger :line-6-changing}
+
+  :generates
+  [{:target :hexagram-11-tai
+    :mechanism "乾 descends, 坤 ascends → meeting in middle"
+    :interpretation "Creative submits to serve; receptive rises to meet"}]
+
+@domain-transfer-notes
+  "乾 is the pattern of INITIATION across domains:
+   - In ants: aggressive foraging ignoring return signals
+   - In CA: deterministic rewrite collapsing to attractor
+   - In music: the opening statement, forte, no response yet
+   - In argument: pure assertion, no concession
+   - In code: the write that ignores existing state
+
+   The MORPHISM from 乾 to other hexagrams is the pattern of
+   how pure assertion must eventually accommodate. This is
+   domain-general and should transfer."

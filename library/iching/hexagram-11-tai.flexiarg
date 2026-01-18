@@ -1,0 +1,176 @@
+@flexiarg iching/hexagram-11-tai
+@title ䷊ 泰 (Tài) - Peace / Harmony
+@sigils [☷☰/泰]
+@binary 000111
+@trigrams [earth/heaven]
+@number 11
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: When the creative (heaven/乾) places itself below and the receptive (earth/坤) above, their energies meet and mingle - this is Peace.
+  + context: A situation where assertion serves receptivity, where the strong supports the yielding, where initiative and response find dynamic balance.
+  + IF:
+    The creative force is willing to descend (serve, support) and the receptive is willing to rise (engage, participate). Neither dominates; both contribute.
+  + HOWEVER:
+    Peace is not stasis. It is dynamic equilibrium requiring continuous adjustment. The moment one force stops moving toward the other, the balance tips toward hexagram 12 (否, Obstruction).
+  + THEN:
+    Cultivate the meeting point. The creative must not assert dominance; the receptive must not collapse into passivity. Maintain the circulation: heaven's energy descends, earth's energy rises, they meet in the middle.
+  + BECAUSE:
+    Sustainable dynamics require both initiation and sustainment in conversation. This is the edge-of-chaos condition: enough creative pressure to maintain change, enough receptive structure to prevent dissolution.
+    + evidence: Traditional: "Heaven and earth unite: the image of Peace. Thus the ruler divides and completes the course of heaven and earth; he furthers and regulates the gifts of heaven and earth, and so aids the people."
+  + NEXT-STEPS:
+    - Identify the meeting point in your domain (where do creation and reception converse?).
+    - Define the tipping conditions (what breaks the peace?).
+    - Watch for hexagram 12 (否) as the failure mode.
+
+@ct-interpretation
+  ;; VISION: what this hexagram "sees"
+  :vision
+  {:objects #{:creative-impulse :receptive-field :meeting-point}
+   :morphisms [{:id :descend :source :creative-impulse :target :meeting-point}
+               {:id :ascend :source :receptive-field :target :meeting-point}]}
+
+  ;; As a morphism: balanced composition of intervention and observation
+  :as-morphism
+  {:domain :polarized-state
+   :codomain :dynamic-equilibrium
+   :preservation :partial  ; preserves some structure, transforms some
+   :composition :creates-cycle}
+
+  ;; This IS the composition of 乾 and 坤
+  :as-composition
+  {:first :hexagram-01-qian
+   :second :hexagram-02-kun
+   :composition-type :meeting  ; not sequential, but convergent
+   :result "Dynamic equilibrium where both forces are active"}
+
+  ;; ADAPT condition
+  :adapt
+  {:trigger :imbalance
+   :evidence [:one-force-dominates :stagnation :separation]
+   :target :hexagram-12-pi}
+
+@ant-interpretation
+  ;; What 泰 means for cyberant behavior
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.35 :return 0.35 :hold 0.15 :pheromone 0.15}
+   :description "Balanced between outbound and homebound; responsive to context"}
+
+  :precision
+  {:Pi-o 0.5   ; balanced observation precision
+   :tau 0.5   ; balanced temperature
+   :description "Neither internal drive nor environment dominates; both inform"}
+
+  :pattern-sense
+  {:trail-follow 0.5      ; moderate trail following
+   :gradient-use 0.5      ; moderate gradient use
+   :novelty-seek 0.5      ; moderate exploration
+   :description "Balance existing paths and new exploration"}
+
+  :mode-transitions
+  {:outbound->homebound {:trigger :cargo-acquired :threshold 0.5}
+   :homebound->outbound {:trigger :cargo-deposited :threshold 0.5}
+   :description "Smooth cycling between gather and return phases"}
+
+  :adapt-trigger
+  {:condition :mode-stuck
+   :interpretation "Imbalance: one phase dominating, circulation broken"
+   :response :force-mode-switch}
+
+  :success-mode
+  "泰 ant maintains healthy gather-return cycle, neither starving nor hoarding"
+
+  :failure-mode
+  "Imbalance: becomes pure 乾 (starves while exploring) or pure 坤 (passive, no gathering)"
+
+@mmca-interpretation
+  ;; What 泰 means as exotype/tensor operation
+  :sigil-encoding
+  {:sigil "泰"
+   :bits "00011100"  ; approximate: low-high-low pattern, meeting in middle
+   :interpretation "Mixed bits = balanced rewrite pressure"}
+
+  :exotype-params
+  {:rotation 1           ; moderate rotation
+   :match-threshold 0.5  ; moderate constraint
+   :invert-on-phenotype? true  ; responsive to phenotype layer
+   :update-prob 0.5      ; probabilistic update (sometimes intervene, sometimes preserve)
+   :mix-mode :majority   ; coordinate with neighbors
+   :description "Balanced exotype pressure, context-sensitive operation"}
+
+  :tensor-interpretation
+  {:operation :convex-combination
+   :description "Weighted average of projection (乾) and identity (坤)"
+   :matrix-form "M = α|target⟩⟨target| + (1-α)I, where α ∈ (0,1)"
+   :eigenstructure "Spectrum between 1 and α; partial convergence"}
+
+  :regime-prediction
+  {:expected :edge-of-chaos
+   :dynamics "Sustained heterogeneity; neither collapse nor explosion"
+   :eoc-relevance "THIS IS THE EOC CONDITION: enough pressure to change, enough structure to persist"
+   :mechanism "Creative pressure prevents stasis; receptive structure prevents dissolution"}
+
+  :parameter-sensitivity
+  {:critical-parameter :update-prob
+   :critical-range [0.3 0.7]
+   :description "泰 exists in the balance; too high → 乾, too low → 坤"}
+
+@morphisms-to-other-hexagrams
+  ;; How 泰 transforms to/from other hexagrams
+  :inverse
+  {:hexagram :hexagram-12-pi
+   :name "否 (Pǐ) - Obstruction"
+   :relationship :inverse
+   :structure "Heaven above, earth below - they separate instead of meeting"
+   :transformation "When circulation stops, peace becomes obstruction"}
+
+  :degenerations
+  [{:target :hexagram-01-qian
+    :mechanism "Creative force dominates, receptive withdraws"
+    :trigger :assertion-overwhelms}
+   {:target :hexagram-02-kun
+    :mechanism "Receptive force dominates, creative withdraws"
+    :trigger :passivity-overwhelms}]
+
+  :emergence-from
+  [{:source :hexagram-01-qian
+    :mechanism "Creative learns to descend/serve"
+    :trigger :wisdom-of-yielding}
+   {:source :hexagram-02-kun
+    :mechanism "Receptive learns to rise/engage"
+    :trigger :courage-to-participate}]
+
+@domain-transfer-notes
+  "泰 is the pattern of DYNAMIC BALANCE across domains:
+   - In ants: healthy gather-return cycle, neither starving nor hoarding
+   - In CA: edge-of-chaos, sustained heterogeneity
+   - In music: call and response, tension and resolution in dialogue
+   - In argument: dialectic, thesis meeting antithesis
+   - In code: read-modify-write cycle with appropriate locking
+
+   The MORPHISM structure around 泰:
+   - 乾 + 坤 → 泰 (composition: meeting of poles)
+   - 泰 → 否 (degeneration: separation of poles)
+   - 泰 → 乾 or 坤 (collapse: one pole dominates)
+
+   This is the EDGE OF CHAOS pattern. If the transfer hypothesis holds,
+   sigils/exotypes that produce EoC in CA should produce analogous
+   'sustainable adaptability' in ants and other domains."
+
+@experimental-predictions
+  ;; Concrete predictions for testing
+  :ca-prediction
+  "Exotypes with params near 泰 (update-prob ~0.5, match-threshold ~0.5)
+   should show sustained heterogeneity in MMCA runs."
+
+  :ant-prediction
+  "Cyberants configured with 泰 params should show:
+   1. Higher survival than pure 乾 or 坤
+   2. Balanced gather/return statistics
+   3. Robustness across different map layouts"
+
+  :transfer-test
+  "If EoC exotypes from MMCA (identified via M17) produce 泰-like
+   ant behavior, this validates domain-general transfer."

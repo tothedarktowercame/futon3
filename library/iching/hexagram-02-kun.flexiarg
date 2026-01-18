@@ -1,0 +1,125 @@
+@flexiarg iching/hexagram-02-kun
+@title ䷁ 坤 (Kūn) - The Receptive
+@sigils [☷☷/坤]
+@binary 000000
+@trigrams [earth/earth]
+@number 2
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Pure receptive force sustains and completes but does not initiate; it requires The Creative (乾) to provide form.
+  + context: A situation calling for yielding, supporting, following, or providing the medium for another's initiative.
+  + IF:
+    The creative impulse comes from elsewhere; your role is to receive, sustain, and bring to completion what has been initiated.
+  + HOWEVER:
+    Pure yin without yang is formless. Receptivity without something to receive becomes void, passive, or dissipated. The mare follows but must have a direction to follow.
+  + THEN:
+    Yield with full commitment to the yielding. Do not initiate, but sustain with inexhaustible patience. The receptive that tries to lead loses its power; the receptive that fully receives gains everything.
+  + BECAUSE:
+    Completion requires a medium that accepts form without distorting it. The pattern is universal: every signal needs a channel, every seed needs soil, every assertion needs a world that can hold it.
+    + evidence: Traditional: "The earth's condition is receptive devotion. Thus the superior person who has breadth of character carries the outer world."
+  + NEXT-STEPS:
+    - Identify what you are receiving (what creative force are you supporting?).
+    - Define the void condition (when does receptivity become emptiness?).
+    - Pair with hexagram 1 (乾) to complete the system.
+
+@ct-interpretation
+  ;; VISION: what this hexagram "sees"
+  :vision
+  {:objects #{:form :sustained-form}
+   :morphism {:id :sustain
+              :source :form
+              :target :sustained-form
+              :type :identity-preserving}}
+
+  ;; As a morphism: pure observation, no intervention
+  :as-morphism
+  {:domain :any-asserted-form
+   :codomain :same-form-sustained
+   :preservation :maximal  ; preserves all existing structure
+   :composition :continues-sequence}
+
+  ;; ADAPT condition
+  :adapt
+  {:trigger :void
+   :evidence [:nothing-to-receive :formlessness :dissipation]
+   :target :hexagram-01-qian}
+
+@ant-interpretation
+  ;; What 坤 means for cyberant behavior
+  :policy
+  {:mode-bias :homebound
+   :policy-priors {:forage 0.1 :return 0.7 :hold 0.15 :pheromone 0.05}
+   :description "Maximum receptivity to environment; follow signals, return cargo"}
+
+  :precision
+  {:Pi-o 0.9   ; high observation precision - fully attend to environment
+   :tau 0.9   ; high temperature - responsive, not committed
+   :description "Environmental signals dominate; internal drive downweighted"}
+
+  :pattern-sense
+  {:trail-follow 0.9      ; follow existing trails strongly
+   :gradient-use 0.9      ; follow pheromone gradients
+   :novelty-seek 0.0      ; no exploration, pure exploitation of existing paths
+   :description "Follow existing structure rather than create new paths"}
+
+  :adapt-trigger
+  {:condition :no-trail-no-gradient-no-cargo
+   :interpretation "Void: nothing to receive, must initiate"
+   :switch-to :hexagram-01-qian}
+
+  :failure-mode
+  "Pure 坤 ant wanders following noise when no real signal exists"
+
+@mmca-interpretation
+  ;; What 坤 means as exotype/tensor operation
+  :sigil-encoding
+  {:sigil "坤"  ; or use the 8-bit approximation
+   :bits "00000000"
+   :interpretation "All bits low = minimal rewrite pressure"}
+
+  :exotype-params
+  {:rotation 0           ; fixed orientation
+   :match-threshold 1.0  ; require exact match (maximal constraint)
+   :invert-on-phenotype? false
+   :update-prob 0.0      ; never update (no intervention)
+   :mix-mode :none       ; no mixing
+   :description "Minimal exotype pressure, identity operation"}
+
+  :tensor-interpretation
+  {:operation :identity
+   :description "Preserve state exactly; no transformation"
+   :matrix-form "I = identity matrix"
+   :eigenstructure "All eigenvalues 1; every state is fixed point"}
+
+  :regime-prediction
+  {:expected :preserve-initial-condition
+   :dynamics "No evolution; frozen at initial state"
+   :eoc-relevance "Anti-EoC: eliminates change, forces stasis"
+   :caveat "But may SUSTAIN interesting dynamics that 乾 initiated"}
+
+@morphisms-to-other-hexagrams
+  ;; How 坤 transforms to/from other hexagrams
+  :primary-pair
+  {:hexagram :hexagram-01-qian
+   :relationship :complement
+   :transformation "Yin empties → calls for Yang"
+   :trigger :void-condition}
+
+  :generates
+  [{:target :hexagram-11-tai
+    :mechanism "坤 rises, 乾 descends → meeting in middle"
+    :interpretation "Receptive rises to meet; creative descends to serve"}]
+
+@domain-transfer-notes
+  "坤 is the pattern of SUSTAINING/RECEIVING across domains:
+   - In ants: following trails, returning cargo, responding to signals
+   - In CA: identity operation preserving existing state
+   - In music: the rest, the silence that holds the note
+   - In argument: listening, conceding, receiving the point
+   - In code: the read that preserves state
+
+   The MORPHISM from 坤 to other hexagrams is the pattern of
+   how pure receptivity must eventually call for initiative. This is
+   domain-general and should transfer."

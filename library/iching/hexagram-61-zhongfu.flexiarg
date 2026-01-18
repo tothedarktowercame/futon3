@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-61-zhongfu
+@title ䷼ 中孚 (Zhōng Fú) - Inner Truth
+@sigils [☴☱/中孚]
+@binary 110011
+@trigrams [wind/lake]
+@number 61
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Inner truth creates trust; coherence between inner and outer stabilizes the system.
+  + context: A system needs reliable alignment and trust.
+  + IF:
+    Signals and actions can be made consistent.
+  + HOWEVER:
+    Hollow sincerity fails under stress.
+  + THEN:
+    Maintain inner coherence and let actions reflect it.
+  + BECAUSE:
+    Trust emerges when inner state and outward behavior match.
+    + evidence: Traditional: "Inner truth. Pigs and fishes. Good fortune."
+  + NEXT-STEPS:
+    - Align inner state with action.
+    - Maintain transparency.
+    - Pair with ䷽ (小過) for cautious adjustment.
+
+@ct-interpretation
+  :vision
+  {:objects #{:incoherent :coherent}
+   :morphism {:id :align
+              :source :incoherent
+              :target :coherent
+              :type :truthful}}
+
+  :as-morphism
+  {:domain :misaligned
+   :codomain :coherent
+   :preservation :high
+   :composition :stabilizes-trust}
+
+  :adapt
+  {:trigger :fragility
+   :evidence [:stress-failure :drift]
+   :target :hexagram-62-xiaoguo}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.25 :pheromone 0.15}
+   :description "Consistent cycles with transparency"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Stable, trustworthy behavior"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Coherent pathing"}
+
+  :adapt-trigger
+  {:condition :fragility
+   :interpretation "Reduce scale"
+   :switch-to :hexagram-62-xiaoguo}
+
+  :failure-mode
+  "Trust collapses under stress"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "中孚"
+   :bits "11001100"
+   :interpretation "Coherent alignment"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.65
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :majority
+   :description "Maintain coherence"}
+
+  :tensor-interpretation
+  {:operation :coherence
+   :description "Align internal and external structure"}
+
+  :regime-prediction
+  {:expected :coherent
+   :dynamics "Stable alignment"
+   :eoc-relevance "Stabilizes EoC"}
+
+@domain-transfer-notes
+  "中孚 is the pattern of INNER TRUTH across domains:
+   - In ants: consistent cycles
+   - In CA: coherent structure"

@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-62-xiaoguo
+@title ䷽ 小過 (Xiǎo Guò) - Small Exceeding
+@sigils [☳☶/小過]
+@binary 001100
+@trigrams [thunder/mountain]
+@number 62
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Small exceeding requires caution; modest corrections outperform grand gestures.
+  + context: A system must adjust while avoiding large disruptions.
+  + IF:
+    Minor overreach is possible, but large action is risky.
+  + HOWEVER:
+    Excess caution can block needed change.
+  + THEN:
+    Make small, precise adjustments.
+  + BECAUSE:
+    Minor corrections are safer and more sustainable.
+    + evidence: Traditional: "Small exceeding. Success. It is favorable to be steadfast."
+  + NEXT-STEPS:
+    - Identify the smallest needed correction.
+    - Apply gently.
+    - Pair with ䷼ (中孚) to maintain coherence.
+
+@ct-interpretation
+  :vision
+  {:objects #{:off-track :corrected}
+   :morphism {:id :correct
+              :source :off-track
+              :target :corrected
+              :type :small}}
+
+  :as-morphism
+  {:domain :slightly-off
+   :codomain :aligned
+   :preservation :high
+   :composition :nudges}
+
+  :adapt
+  {:trigger :need-large-change
+   :evidence [:persistent-error]
+   :target :hexagram-61-zhongfu}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.25 :pheromone 0.15}
+   :description "Small corrections"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Careful adjustments"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Minor corrections"}
+
+  :adapt-trigger
+  {:condition :persistent-error
+   :interpretation "Return to coherence"
+   :switch-to :hexagram-61-zhongfu}
+
+  :failure-mode
+  "Small corrections fail when large change is required"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "小過"
+   :bits "00110000"
+   :interpretation "Small correction"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.65
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :rotate-right
+   :description "Small corrective update"}
+
+  :tensor-interpretation
+  {:operation :small-nudge
+   :description "Minor correction"}
+
+  :regime-prediction
+  {:expected :corrective
+   :dynamics "Small adjustments"
+   :eoc-relevance "Stabilizes EoC by fine-tuning"}
+
+@domain-transfer-notes
+  "小過 is the pattern of SMALL EXCEEDING across domains:
+   - In ants: small corrections
+   - In CA: fine-tuning"

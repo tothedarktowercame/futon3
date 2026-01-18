@@ -1,0 +1,106 @@
+@flexiarg iching/hexagram-64-weiji
+@title ䷿ 未濟 (Wèi Jì) - Before Completion
+@sigils [☲☵/未濟]
+@binary 010101
+@trigrams [fire/water]
+@number 64
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: The work is near completion but not yet stable; progress requires careful sequencing.
+  + context: A system is active and close to resolution, but order is not settled.
+  + IF:
+    The signals are strong, the goal is visible, but coherence is still forming.
+  + HOWEVER:
+    Premature closure breaks the pattern; forceful completion causes collapse.
+  + THEN:
+    Move in small steps. Preserve optionality and sequence the final transitions.
+  + BECAUSE:
+    Incomplete order is volatile; the final alignment must be earned, not forced.
+    + evidence: Traditional: "Before completion, success; the small fox wets its tail."
+  + NEXT-STEPS:
+    - Identify which transition is not yet aligned.
+    - Reduce intervention amplitude until stability emerges.
+    - Pair with hexagram 63 (既濟) once alignment holds.
+
+@ct-interpretation
+  :vision
+  {:objects #{:incomplete :aligned}
+   :morphism {:id :align
+              :source :incomplete
+              :target :aligned
+              :type :convergent}}
+
+  :as-morphism
+  {:domain :active-state
+   :codomain :near-order
+   :preservation :partial
+   :composition :prepares-cycle}
+
+  :adapt
+  {:trigger :instability
+   :evidence [:overshoot :churn :noise]
+   :target :hexagram-63-jiji}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.4 :return 0.3 :hold 0.15 :pheromone 0.15}
+   :description "Exploratory push with cautious return"}
+
+  :precision
+  {:Pi-o 0.5
+   :tau 0.7
+   :description "Exploratory temperature; ready to shift once signals align"}
+
+  :pattern-sense
+  {:trail-follow 0.3
+   :gradient-use 0.4
+   :novelty-seek 0.6
+   :description "Search for alignment; follow weak structure"}
+
+  :adapt-trigger
+  {:condition :alignment-found
+   :interpretation "Completion is near; stabilize"
+   :switch-to :hexagram-63-jiji}
+
+  :failure-mode
+  "Over-exploration prevents stabilization; cycles never close"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "未濟"
+   :bits "01010101"
+   :interpretation "Alternating instability; order forming but not closed"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.35
+   :invert-on-phenotype? true
+   :update-prob 0.65
+   :mix-mode :scramble
+   :description "Active intervention; structure forming but still turbulent"}
+
+  :tensor-interpretation
+  {:operation :partial-mixing
+   :description "Mixing dominates until alignment appears"
+   :matrix-form "M = αP + (1-α)R, α moderate, R randomizing"
+   :eigenstructure "Noisy spectrum; convergence not yet locked"}
+
+  :regime-prediction
+  {:expected :turbulent
+   :dynamics "Active churn with intermittent structure"
+   :eoc-relevance "Pre-EoC: near balance but unstable"}
+
+@morphisms-to-other-hexagrams
+  :complement
+  {:hexagram :hexagram-63-jiji
+   :relationship :near-inverse
+   :transformation "Alignment closes; instability resolves"}
+
+@domain-transfer-notes
+  "未濟 is the pattern of PRE-COMPLETION across domains:
+   - In ants: exploratory drive with partial returns
+   - In CA: turbulence with intermittent structure
+   - In argument: nearing consensus but still unstable"

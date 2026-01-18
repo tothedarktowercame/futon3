@@ -1,0 +1,106 @@
+@flexiarg iching/hexagram-63-jiji
+@title ䷾ 既濟 (Jì Jì) - After Completion
+@sigils [☵☲/既濟]
+@binary 101010
+@trigrams [water/fire]
+@number 63
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: The work is complete and order is high, yet the moment of completion is fragile and must be sustained.
+  + context: A system has reached stability and apparent success, but decay or complacency is the hidden risk.
+  + IF:
+    The cycles line up, outputs are correct, and the system feels "done."
+  + HOWEVER:
+    Completion invites drift. What is finished is also vulnerable; perfection is unstable.
+  + THEN:
+    Guard the edges. Maintain vigilance and small corrections to prevent unraveling.
+  + BECAUSE:
+    Stable order is a dynamic achievement, not a final state. Sustained coherence requires continued care.
+    + evidence: Traditional: "After completion, success; yet the small fox must not wet its tail."
+  + NEXT-STEPS:
+    - Identify the fragile boundary where decay begins.
+    - Introduce light maintenance cycles.
+    - Pair with hexagram 64 (未濟) to keep readiness.
+
+@ct-interpretation
+  :vision
+  {:objects #{:complete :maintained}
+   :morphism {:id :maintain
+              :source :complete
+              :target :maintained
+              :type :identity-preserving}}
+
+  :as-morphism
+  {:domain :ordered-state
+   :codomain :ordered-state
+   :preservation :high
+   :composition :stabilizes-cycle}
+
+  :adapt
+  {:trigger :drift
+   :evidence [:slippage :minor-failure :fatigue]
+   :target :hexagram-64-weiji}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.25 :return 0.35 :hold 0.25 :pheromone 0.15}
+   :description "Light maintenance: return slightly favored, but cycles continue"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Moderate commitment with attentive correction"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.6
+   :novelty-seek 0.2
+   :description "Maintain existing trails with gentle exploration"}
+
+  :adapt-trigger
+  {:condition :local-slippage
+   :interpretation "Completion is decaying; shift to readiness"
+   :switch-to :hexagram-64-weiji}
+
+  :failure-mode
+  "Over-conservation leads to stagnation and vulnerability"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "既濟"
+   :bits "10101010"
+   :interpretation "Alternating structure; stable but brittle"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.65
+   :invert-on-phenotype? false
+   :update-prob 0.35
+   :mix-mode :majority
+   :description "Gentle intervention; maintain order with light correction"}
+
+  :tensor-interpretation
+  {:operation :stabilizing-filter
+   :description "Bias toward maintaining existing structure"
+   :matrix-form "M = (1-ε)I + εP, with small ε"
+   :eigenstructure "Dominant eigenvalue near 1; small corrective modes"}
+
+  :regime-prediction
+  {:expected :ordered
+   :dynamics "Stable structure with low-amplitude corrections"
+   :eoc-relevance "Borderline EoC: order preserved, novelty damped"}
+
+@morphisms-to-other-hexagrams
+  :complement
+  {:hexagram :hexagram-64-weiji
+   :relationship :near-inverse
+   :transformation "Completion slips into pre-completion"}
+
+@domain-transfer-notes
+  "既濟 is the pattern of COMPLETION AND MAINTENANCE across domains:
+   - In ants: stable cycles with periodic corrections
+   - In CA: ordered pattern maintained by light intervention
+   - In argument: consensus maintained with vigilance"

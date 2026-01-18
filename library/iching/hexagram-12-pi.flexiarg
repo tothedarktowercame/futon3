@@ -1,0 +1,111 @@
+@flexiarg iching/hexagram-12-pi
+@title ䷋ 否 (Pǐ) - Obstruction / Standstill
+@sigils [☰☷/否]
+@binary 111000
+@trigrams [heaven/earth]
+@number 12
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: When heaven and earth separate, circulation stops; progress stalls until the poles meet again.
+  + context: A system has lost exchange between initiative and support; movement continues but no longer connects.
+  + IF:
+    The strong withdraws upward, the receptive sinks downward, and the middle empties.
+  + HOWEVER:
+    Standstill is not the end; it is a sign that the channel is broken, not that force is absent.
+  + THEN:
+    Restore circulation by re-linking the poles. Reduce domination, invite reciprocity, and reopen the path.
+  + BECAUSE:
+    Sustained dynamics require exchange. When the channel breaks, energy persists but coherence fades.
+    + evidence: Traditional: "Heaven and earth do not unite: the image of Obstruction."
+  + NEXT-STEPS:
+    - Identify the broken channel (where exchange stopped).
+    - Create a small conduit that forces interaction.
+    - Pair with hexagram 11 (泰) to re-establish balance.
+
+@ct-interpretation
+  :vision
+  {:objects #{:upper :lower :separation}
+   :morphisms [{:id :withdraw :source :lower :target :separation}
+               {:id :ascend :source :upper :target :separation}]}
+
+  :as-morphism
+  {:domain :coupled-state
+   :codomain :decoupled-state
+   :preservation :low
+   :composition :breaks-cycle}
+
+  :adapt
+  {:trigger :stagnation
+   :evidence [:no-exchange :drift :local-collapse]
+   :target :hexagram-11-tai}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.2 :return 0.2 :hold 0.4 :pheromone 0.2}
+   :description "Hold position; low circulation between outbound/homebound"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.3
+   :description "Cautious, low-switching regime; prefers local stability"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.3
+   :novelty-seek 0.1
+   :description "Follow local traces, avoid new commitments"}
+
+  :adapt-trigger
+  {:condition :no-progress
+   :interpretation "Standstill detected; re-open circulation"
+   :switch-to :hexagram-11-tai}
+
+  :failure-mode
+  "Stuck ants oscillate locally; neither gather nor return reliably"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "否"
+   :bits "11100000"
+   :interpretation "Separated pressure: strong top, weak bottom"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.85
+   :invert-on-phenotype? false
+   :update-prob 0.15
+   :mix-mode :none
+   :description "Low intervention with strict matching; decoupled flow"}
+
+  :tensor-interpretation
+  {:operation :blocked-coupling
+   :description "Partial projection with suppressed exchange"
+   :matrix-form "M = diag([1, 1, 0, 0])"
+   :eigenstructure "Two stable subspaces with weak coupling"}
+
+  :regime-prediction
+  {:expected :stagnation
+   :dynamics "Separated domains; weak or absent exchange"
+   :eoc-relevance "Anti-EoC: breaks circulation needed for sustained heterogeneity"}
+
+@morphisms-to-other-hexagrams
+  :inverse
+  {:hexagram :hexagram-11-tai
+   :relationship :inverse
+   :transformation "When circulation resumes, obstruction dissolves"}
+
+  :degenerations
+  [{:target :hexagram-02-kun
+    :mechanism "Receptive dominates; initiative withdraws"}
+   {:target :hexagram-01-qian
+    :mechanism "Creative dominates; receptivity withdraws"}]
+
+@domain-transfer-notes
+  "否 is the pattern of SEPARATION across domains:
+   - In ants: stalled circulation between gather and return
+   - In CA: regions that decouple and freeze
+   - In argument: parties talk past each other
+   - In code: components no longer exchange state"

@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-17-sui
+@title ䷐ 隨 (Suí) - Following
+@sigils [☱☳/隨]
+@binary 100110
+@trigrams [lake/thunder]
+@number 17
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Following aligns with a moving leader; success comes from flexible responsiveness.
+  + context: A system must adapt to an external lead or changing signal.
+  + IF:
+    A clear direction emerges from outside the agent.
+  + HOWEVER:
+    Blind following can lead into traps.
+  + THEN:
+    Follow with discernment; retain the ability to disengage.
+  + BECAUSE:
+    Alignment with a strong signal can accelerate progress if not rigid.
+    + evidence: Traditional: "Following. Success. Perseverance furthers."
+  + NEXT-STEPS:
+    - Identify the reliable signal.
+    - Follow while monitoring risk.
+    - Pair with ䷑ (蠱) if decay appears.
+
+@ct-interpretation
+  :vision
+  {:objects #{:independent :following}
+   :morphism {:id :align
+              :source :independent
+              :target :following
+              :type :responsive}}
+
+  :as-morphism
+  {:domain :self-directed
+   :codomain :aligned-to-signal
+   :preservation :moderate
+   :composition :adapts-to-lead}
+
+  :adapt
+  {:trigger :mislead
+   :evidence [:trap :decay]
+   :target :hexagram-18-gu}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.25 :return 0.3 :hold 0.2 :pheromone 0.25}
+   :description "Follow strong trails; remain flexible"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.5
+   :description "Responsive to signals"}
+
+  :pattern-sense
+  {:trail-follow 0.8
+   :gradient-use 0.6
+   :novelty-seek 0.2
+   :description "Strong following of existing paths"}
+
+  :adapt-trigger
+  {:condition :decay
+   :interpretation "Signal rotting"
+   :switch-to :hexagram-18-gu}
+
+  :failure-mode
+  "Following into depletion"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "隨"
+   :bits "10011000"
+   :interpretation "Strong alignment to neighbor signals"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.6
+   :invert-on-phenotype? false
+   :update-prob 0.4
+   :mix-mode :rotate-left
+   :description "Follow local gradients"}
+
+  :tensor-interpretation
+  {:operation :alignment
+   :description "Align with dominant local signal"}
+
+  :regime-prediction
+  {:expected :aligned
+   :dynamics "Coherent flow following a leader"
+   :eoc-relevance "Stabilizing, but may reduce exploration"}
+
+@domain-transfer-notes
+  "隨 is the pattern of FOLLOWING across domains:
+   - In ants: trail following
+   - In CA: alignment to dominant patterns"

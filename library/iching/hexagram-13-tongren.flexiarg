@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-13-tongren
+@title ䷌ 同人 (Tóng Rén) - Fellowship with Men
+@sigils [☰☲/同人]
+@binary 101111
+@trigrams [heaven/fire]
+@number 13
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Fellowship arises from shared clarity and purpose; alignment enables coordinated action.
+  + context: A system seeks unified collaboration.
+  + IF:
+    Goals align and communication is clear.
+  + HOWEVER:
+    Fellowship without openness becomes factionalism.
+  + THEN:
+    Build shared purpose and maintain transparent exchange.
+  + BECAUSE:
+    True coordination requires common vision, not coercion.
+    + evidence: Traditional: "Fellowship with men in the open. Success."
+  + NEXT-STEPS:
+    - Clarify the shared objective.
+    - Maintain open channels.
+    - Pair with ䷆ (師) for disciplined action.
+
+@ct-interpretation
+  :vision
+  {:objects #{:isolated :aligned}
+   :morphism {:id :unify
+              :source :isolated
+              :target :aligned
+              :type :collective}}
+
+  :as-morphism
+  {:domain :distributed-state
+   :codomain :aligned-state
+   :preservation :moderate
+   :composition :coordinates}
+
+  :adapt
+  {:trigger :factionalism
+   :evidence [:closed-groups :drift]
+   :target :hexagram-14-dayou}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.3 :return 0.3 :hold 0.2 :pheromone 0.2}
+   :description "Shared routes and coordinated return"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Aligned but responsive"}
+
+  :pattern-sense
+  {:trail-follow 0.7
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Follow common paths"}
+
+  :adapt-trigger
+  {:condition :fragmentation
+   :interpretation "Need stronger cohesion"
+   :switch-to :hexagram-14-dayou}
+
+  :failure-mode
+  "Closed groups reduce exploration"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "同人"
+   :bits "10111100"
+   :interpretation "Clear signals align collective motion"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.6
+   :invert-on-phenotype? false
+   :update-prob 0.4
+   :mix-mode :majority
+   :description "Collective alignment"}
+
+  :tensor-interpretation
+  {:operation :consensus
+   :description "Alignment through shared signal"}
+
+  :regime-prediction
+  {:expected :cohesive
+   :dynamics "Aligned patterns with steady exchange"
+   :eoc-relevance "Stabilizes without full collapse"}
+
+@domain-transfer-notes
+  "同人 is the pattern of FELLOWSHIP across domains:
+   - In ants: shared routes and coordinated return
+   - In CA: aligned motifs with exchange"

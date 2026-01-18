@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-18-gu
+@title ䷑ 蠱 (Gǔ) - Work on What Has Been Spoiled
+@sigils [☴☶/蠱]
+@binary 001011
+@trigrams [wind/mountain]
+@number 18
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Decay requires deliberate repair; clear corruption before progress resumes.
+  + context: A system has drifted into dysfunction.
+  + IF:
+    Patterns have rotted and signals are misleading.
+  + HOWEVER:
+    Repair is slow and demands focused intervention.
+  + THEN:
+    Identify the decay and rebuild structure deliberately.
+  + BECAUSE:
+    Without repair, inherited corruption spreads.
+    + evidence: Traditional: "Work on what has been spoiled. Supreme success."
+  + NEXT-STEPS:
+    - Diagnose the decay source.
+    - Apply corrective interventions.
+    - Pair with ䷐ (隨) once alignment returns.
+
+@ct-interpretation
+  :vision
+  {:objects #{:corrupt :restored}
+   :morphism {:id :repair
+              :source :corrupt
+              :target :restored
+              :type :corrective}}
+
+  :as-morphism
+  {:domain :degraded-state
+   :codomain :repaired-state
+   :preservation :low
+   :composition :restores}
+
+  :adapt
+  {:trigger :stabilized
+   :evidence [:signal-clean :coherence]
+   :target :hexagram-17-sui}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.35 :return 0.25 :hold 0.2 :pheromone 0.2}
+   :description "Active repair through targeted exploration"}
+
+  :precision
+  {:Pi-o 0.6
+   :tau 0.6
+   :description "Balanced exploration and correction"}
+
+  :pattern-sense
+  {:trail-follow 0.4
+   :gradient-use 0.4
+   :novelty-seek 0.5
+   :description "Seek and repair"}
+
+  :adapt-trigger
+  {:condition :coherence-restored
+   :interpretation "Return to following"
+   :switch-to :hexagram-17-sui}
+
+  :failure-mode
+  "Over-repair consumes resources"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "蠱"
+   :bits "00101100"
+   :interpretation "Corrective intervention on degraded structure"}
+
+  :exotype-params
+  {:rotation 2
+   :match-threshold 0.5
+   :invert-on-phenotype? true
+   :update-prob 0.55
+   :mix-mode :xor-neighbor
+   :description "Corrective mixing"}
+
+  :tensor-interpretation
+  {:operation :repair
+   :description "Corrective transformation"}
+
+  :regime-prediction
+  {:expected :repairing
+   :dynamics "Disrupted patterns with corrective shifts"
+   :eoc-relevance "Can restore EoC after collapse"}
+
+@domain-transfer-notes
+  "蠱 is the pattern of REPAIR across domains:
+   - In ants: targeted exploration to fix decay
+   - In CA: corrective disruptions"

@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-14-dayou
+@title ䷍ 大有 (Dà Yǒu) - Great Possession
+@sigils [☲☰/大有]
+@binary 111101
+@trigrams [fire/heaven]
+@number 14
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Great possession requires humility and wise distribution; abundance can destabilize if mishandled.
+  + context: A system has accumulated strong resources or advantage.
+  + IF:
+    Capacity is high and expansion is possible.
+  + HOWEVER:
+    Hoarding or overconfidence leads to collapse.
+  + THEN:
+    Distribute resources and maintain order; keep the advantage aligned with purpose.
+  + BECAUSE:
+    Abundance is only stable when managed with clarity.
+    + evidence: Traditional: "Great possession. Supreme success."
+  + NEXT-STEPS:
+    - Allocate resources wisely.
+    - Avoid arrogance and waste.
+    - Pair with ䷌ (同人) for shared benefit.
+
+@ct-interpretation
+  :vision
+  {:objects #{:abundant :ordered}
+   :morphism {:id :steward
+              :source :abundant
+              :target :ordered
+              :type :governance}}
+
+  :as-morphism
+  {:domain :resource-rich
+   :codomain :stable-abundance
+   :preservation :moderate
+   :composition :stewards}
+
+  :adapt
+  {:trigger :hoarding
+   :evidence [:imbalance :waste]
+   :target :hexagram-13-tongren}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.25 :return 0.35 :hold 0.2 :pheromone 0.2}
+   :description "Manage abundance with stable return"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Steady stewardship"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.6
+   :novelty-seek 0.2
+   :description "Balanced allocation"}
+
+  :adapt-trigger
+  {:condition :resource-imbalance
+   :interpretation "Return to fellowship"
+   :switch-to :hexagram-13-tongren}
+
+  :failure-mode
+  "Resource surplus induces complacency"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "大有"
+   :bits "11110100"
+   :interpretation "Strong signal with moderated control"}
+
+  :exotype-params
+  {:rotation 1
+   :match-threshold 0.65
+   :invert-on-phenotype? false
+   :update-prob 0.4
+   :mix-mode :rotate-left
+   :description "Stable guidance of abundant dynamics"}
+
+  :tensor-interpretation
+  {:operation :stewardship
+   :description "Maintain abundance without collapse"}
+
+  :regime-prediction
+  {:expected :stable-abundance
+   :dynamics "High activity with maintained order"
+   :eoc-relevance "Potentially strong EoC if balanced"}
+
+@domain-transfer-notes
+  "大有 is the pattern of STEWARDSHIP across domains:
+   - In ants: balanced use of abundant food
+   - In CA: high-activity stable regimes"

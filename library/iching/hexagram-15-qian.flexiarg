@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-15-qian
+@title ䷎ 謙 (Qiān) - Modesty
+@sigils [☶☷/謙]
+@binary 000001
+@trigrams [mountain/earth]
+@number 15
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Modesty levels extremes; it brings balance by lowering the high and raising the low.
+  + context: A system needs balance and correction of excess.
+  + IF:
+    Extremes have formed and stability is threatened.
+  + HOWEVER:
+    Excess correction can suppress necessary drive.
+  + THEN:
+    Apply humility: reduce excess, support the weak.
+  + BECAUSE:
+    Balance is sustained when extremes are tempered.
+    + evidence: Traditional: "Modesty creates success."
+  + NEXT-STEPS:
+    - Identify extremes.
+    - Apply gentle equalization.
+    - Pair with ䷐ (豫) for renewed energy.
+
+@ct-interpretation
+  :vision
+  {:objects #{:extreme :balanced}
+   :morphism {:id :level
+              :source :extreme
+              :target :balanced
+              :type :equalizing}}
+
+  :as-morphism
+  {:domain :imbalanced
+   :codomain :balanced
+   :preservation :moderate
+   :composition :equalizes}
+
+  :adapt
+  {:trigger :overcorrection
+   :evidence [:suppression :stagnation]
+   :target :hexagram-16-yu}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :maintain
+   :policy-priors {:forage 0.25 :return 0.35 :hold 0.25 :pheromone 0.15}
+   :description "Leveling cycles, avoid extremes"}
+
+  :precision
+  {:Pi-o 0.7
+   :tau 0.4
+   :description "Balanced response"}
+
+  :pattern-sense
+  {:trail-follow 0.6
+   :gradient-use 0.5
+   :novelty-seek 0.2
+   :description "Steady equalization"}
+
+  :adapt-trigger
+  {:condition :stagnation
+   :interpretation "Need renewed energy"
+   :switch-to :hexagram-16-yu}
+
+  :failure-mode
+  "Over-leveling suppresses exploration"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "謙"
+   :bits "00000100"
+   :interpretation "Low intervention with balancing"}
+
+  :exotype-params
+  {:rotation 0
+   :match-threshold 0.7
+   :invert-on-phenotype? false
+   :update-prob 0.3
+   :mix-mode :majority
+   :description "Gentle balancing"}
+
+  :tensor-interpretation
+  {:operation :equalizer
+   :description "Reduce extremes, reinforce middle"}
+
+  :regime-prediction
+  {:expected :balanced
+   :dynamics "Moderate stability"
+   :eoc-relevance "Stabilizes EoC"}
+
+@domain-transfer-notes
+  "謙 is the pattern of MODEST BALANCE across domains:
+   - In ants: level resource use
+   - In CA: suppress extremes"

@@ -1,0 +1,97 @@
+@flexiarg iching/hexagram-16-yu
+@title ䷏ 豫 (Yù) - Enthusiasm
+@sigils [☳☷/豫]
+@binary 000100
+@trigrams [thunder/earth]
+@number 16
+@audience improvisers, system designers, CT practitioners
+@tone foundational
+@style pattern
+
+! conclusion: Enthusiasm mobilizes energy; it must be channeled to avoid disorder.
+  + context: A system needs momentum and coordinated excitement.
+  + IF:
+    Energy is low and action must begin.
+  + HOWEVER:
+    Unchanneled enthusiasm becomes chaos.
+  + THEN:
+    Raise energy and direct it with structure.
+  + BECAUSE:
+    Motivation is a force multiplier when aligned.
+    + evidence: Traditional: "Enthusiasm. It furthers one to install helpers and set armies marching."
+  + NEXT-STEPS:
+    - Rally energy.
+    - Provide a channel.
+    - Pair with ䷎ (謙) to prevent excess.
+
+@ct-interpretation
+  :vision
+  {:objects #{:dormant :mobilized}
+   :morphism {:id :energize
+              :source :dormant
+              :target :mobilized
+              :type :activation}}
+
+  :as-morphism
+  {:domain :low-energy
+   :codomain :active
+   :preservation :low
+   :composition :activates}
+
+  :adapt
+  {:trigger :overexuberance
+   :evidence [:chaos :scatter]
+   :target :hexagram-15-qian}
+
+@ant-interpretation
+  :policy
+  {:mode-bias :adaptive
+   :policy-priors {:forage 0.4 :return 0.2 :hold 0.1 :pheromone 0.3}
+   :description "Mobilize exploration and trail laying"}
+
+  :precision
+  {:Pi-o 0.5
+   :tau 0.8
+   :description "High energy, exploratory"}
+
+  :pattern-sense
+  {:trail-follow 0.3
+   :gradient-use 0.4
+   :novelty-seek 0.7
+   :description "Explore with excitement"}
+
+  :adapt-trigger
+  {:condition :chaos
+   :interpretation "Need balance"
+   :switch-to :hexagram-15-qian}
+
+  :failure-mode
+  "Energy disperses without gains"
+
+@mmca-interpretation
+  :sigil-encoding
+  {:sigil "豫"
+   :bits "00010000"
+   :interpretation "Activation pulse"}
+
+  :exotype-params
+  {:rotation 3
+   :match-threshold 0.35
+   :invert-on-phenotype? true
+   :update-prob 0.7
+   :mix-mode :scramble
+   :description "High intervention to activate"}
+
+  :tensor-interpretation
+  {:operation :activation
+   :description "Inject energy into dynamics"}
+
+  :regime-prediction
+  {:expected :active
+   :dynamics "High variance with bursts"
+   :eoc-relevance "Can seed EoC but may destabilize"}
+
+@domain-transfer-notes
+  "豫 is the pattern of ENTHUSIASM across domains:
+   - In ants: mobilized exploration
+   - In CA: activation bursts"

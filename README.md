@@ -40,6 +40,7 @@ Port map (defaults):
 - Transport/HUD format: 5050 (`HUD_SERVER`)
 - UI + pattern-action RPC: 6060 (`FUTON3_CODEX_SERVER_URL`)
 - MUSN HTTP: 6065 (`FUTON3_MUSN_URL`)
+- MUSN IRC bridge: 6667 (`scripts/musn_irc_bridge.clj`)
 
 Hotloading fixes into the running server (optional):
 ```bash
@@ -53,6 +54,34 @@ ADMIN_TOKEN=$(cat .admintoken) clojure -M -e "
 ```
 See `README-drawbridge.md` for more details.
 
+## Fucodex I Ching Demo
+Run `./scripts/demo-fucodex-iching.sh` to clock in the I Ching hexagram patterns from
+`library/iching/` and generate a short demo note (no code changes).
+
+## MUSN Chat Supervisor
+To drive fucodex entirely from IRC, run:
+```bash
+./scripts/musn_chat_supervisor.clj --room lab --bot-name fucodex --no-sandbox --approval-policy never
+```
+In IRC, post:
+```
+!new Review the new I Ching patterns and post a summary
+!new token:fucodex2 Start a parallel review with a separate session
+!task Continue with the active fucodex session
+!task fucodex2 Continue with the fucodex2 session (after !new token:fucodex2)
+!task sid:musn-abc123 Continue with a specific MUSN session id
+```
+`!new` establishes a fresh session id for a token (defaults to the bot name).
+`!task` reuses the most recent session for that token; if no session exists yet,
+it creates a new one. Use `token:`/`sid:` prefixes to force a target.
+Use `--approval-policy never` to avoid interactive approvals, or omit it to keep
+Codex defaults.
+Session mappings persist in `/tmp/musn_chat_sessions.edn`; delete it to reset.
+To open the MUSN HUD/viewer for a session id, run in Emacs:
+```
+M-x fubar-musn-view-session
+```
+
 ## Quick Start
 1. Install deps (first run populates `.m2/`):
    ```bash
@@ -64,6 +93,7 @@ See `README-drawbridge.md` for more details.
    ```
    - Transport (WS+HTTP) → `http://localhost:5050`
    - UI endpoints → `http://localhost:6060`
+   - MUSN HTTP → `http://localhost:6065`
 3. (Optional) Load sample events:
    ```bash
    make demo

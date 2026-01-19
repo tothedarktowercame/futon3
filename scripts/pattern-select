@@ -73,6 +73,7 @@ else:
 note = os.environ.get("NOTE", "")
 sid = os.environ.get("SID", "")
 url = os.environ.get("URL", "").rstrip("/")
+helper_mode = os.environ.get("FUTON3_MUSN_HELPER_MODE", "").lower()
 
 def post(path, payload):
     data = json.dumps(payload).encode("utf-8")
@@ -82,33 +83,41 @@ def post(path, payload):
         raw = resp.read().decode("utf-8") or "{}"
         return json.loads(raw)
 
-state = post("/musn/session/state", {"session/id": sid})
-turn = (state.get("state") or {}).get("turn")
-if not turn:
-    print("pattern-select: missing turn in session state", file=sys.stderr)
-    sys.exit(2)
+try:
+    if helper_mode == "stream":
+        result = {"ok": True}
+        if not auto:
+            result["chosen"] = pattern
+        print(json.dumps(result))
+        raise SystemExit(0)
+    state = post("/musn/session/state", {"session/id": sid})
+    turn = (state.get("state") or {}).get("turn")
+    if not turn:
+        raise RuntimeError("missing turn in session state")
 
-reason = {"mode": "read", "source": "explicit"}
-if auto:
-    reason["source"] = "auto"
-if note:
-    reason["note"] = note
+    reason = {"mode": "read", "source": "explicit"}
+    if auto:
+        reason["source"] = "auto"
+    if note:
+        reason["note"] = note
 
-payload = {
-    "session/id": sid,
-    "turn": int(turn),
-    "candidates": candidates,
-    "reason": reason,
-}
-if not auto:
-    payload["chosen"] = pattern
-resp = post("/musn/turn/select", payload)
-if not resp.get("ok", True):
-    print(f"pattern-select: musn error {resp}", file=sys.stderr)
-    sys.exit(2)
+    payload = {
+        "session/id": sid,
+        "turn": int(turn),
+        "candidates": candidates,
+        "reason": reason,
+    }
+    if not auto:
+        payload["chosen"] = pattern
+    resp = post("/musn/turn/select", payload)
+    if not resp.get("ok", True):
+        raise RuntimeError(f"musn error {resp}")
 
-result = {"ok": True, "turn": int(turn)}
-if not auto:
-    result["chosen"] = pattern
-print(json.dumps(result))
+    result = {"ok": True, "turn": int(turn)}
+    if not auto:
+        result["chosen"] = pattern
+    print(json.dumps(result))
+except Exception as exc:
+    print(json.dumps({"ok": False, "error": str(exc)}))
+    sys.exit(0)
 PY

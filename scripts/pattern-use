@@ -36,6 +36,7 @@ if not re.match(r"^[a-z0-9._-]+/[a-z0-9._-]+$", pattern or ""):
 note = os.environ.get("NOTE", "")
 sid = os.environ.get("SID", "")
 url = os.environ.get("URL", "").rstrip("/")
+helper_mode = os.environ.get("FUTON3_MUSN_HELPER_MODE", "").lower()
 
 def post(path, payload):
     data = json.dumps(payload).encode("utf-8")
@@ -45,24 +46,29 @@ def post(path, payload):
         raw = resp.read().decode("utf-8") or "{}"
         return json.loads(raw)
 
-state = post("/musn/session/state", {"session/id": sid})
-turn = (state.get("state") or {}).get("turn")
-if not turn:
-    print("pattern-use: missing turn in session state", file=sys.stderr)
-    sys.exit(2)
+try:
+    if helper_mode == "stream":
+        print(json.dumps({"ok": True, "pattern/id": pattern}))
+        raise SystemExit(0)
+    state = post("/musn/session/state", {"session/id": sid})
+    turn = (state.get("state") or {}).get("turn")
+    if not turn:
+        raise RuntimeError("missing turn in session state")
 
-payload = {
-    "session/id": sid,
-    "turn": int(turn),
-    "pattern/id": pattern,
-}
-if note:
-    payload["note"] = note
+    payload = {
+        "session/id": sid,
+        "turn": int(turn),
+        "pattern/id": pattern,
+    }
+    if note:
+        payload["note"] = note
 
-resp = post("/musn/turn/use", payload)
-if not resp.get("ok", True):
-    print(f"pattern-use: musn error {resp}", file=sys.stderr)
-    sys.exit(2)
+    resp = post("/musn/turn/use", payload)
+    if not resp.get("ok", True):
+        raise RuntimeError(f"musn error {resp}")
 
-print(json.dumps({"ok": True, "turn": int(turn), "pattern/id": pattern}))
+    print(json.dumps({"ok": True, "turn": int(turn), "pattern/id": pattern}))
+except Exception as exc:
+    print(json.dumps({"ok": False, "error": str(exc)}))
+    sys.exit(0)
 PY

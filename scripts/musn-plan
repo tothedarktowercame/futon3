@@ -24,6 +24,7 @@ import urllib.request
 sid = os.environ.get("SID", "")
 url = os.environ.get("URL", "").rstrip("/")
 plan = os.environ.get("PLAN", "")
+helper_mode = os.environ.get("FUTON3_MUSN_HELPER_MODE", "").lower()
 
 def post(path, payload):
     data = json.dumps(payload).encode("utf-8")
@@ -33,12 +34,18 @@ def post(path, payload):
         raw = resp.read().decode("utf-8") or "{}"
         return json.loads(raw)
 
-state = post("/musn/session/state", {"session/id": sid})
-turn = (state.get("state") or {}).get("turn")
-if not turn:
-    print("musn-plan: missing turn in session state", file=sys.stderr)
-    sys.exit(2)
+try:
+    if helper_mode == "stream":
+        print(json.dumps({"ok": True}))
+        raise SystemExit(0)
+    state = post("/musn/session/state", {"session/id": sid})
+    turn = (state.get("state") or {}).get("turn")
+    if not turn:
+        raise RuntimeError("missing turn in session state")
 
-post("/musn/turn/plan", {"session/id": sid, "turn": int(turn), "plan": plan})
-print(json.dumps({"ok": True, "turn": int(turn)}))
+    post("/musn/turn/plan", {"session/id": sid, "turn": int(turn), "plan": plan})
+    print(json.dumps({"ok": True, "turn": int(turn)}))
+except Exception as exc:
+    print(json.dumps({"ok": False, "error": str(exc)}))
+    sys.exit(0)
 PY

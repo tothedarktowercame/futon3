@@ -28,8 +28,15 @@
 (defonce server-state (atom {:clients {}
                              :rooms {}}))
 
+(def ^:private log-path
+  (or (System/getenv "MUSN_IRC_LOG") "/tmp/musn_irc_bridge.log"))
+
 (defn- log! [msg]
-  (println (str "[musn-irc] " msg)))
+  (let [line (str "[musn-irc] " msg)]
+    (println line)
+    (try
+      (spit log-path (str (java.time.Instant/now) " " line "\n") :append true)
+      (catch Throwable _))))
 
 (defn- strip-fulab-report [text]
   (let [text (or text "")]
@@ -48,6 +55,13 @@
 (defn- broadcast! [clients line]
   (doseq [client clients]
     (send-line! client line)))
+
+(defn- broadcast-except! [clients exclude-nick line]
+  (let [exclude-nick (some-> exclude-nick str/trim not-empty)]
+    (doseq [client clients]
+      (when-not (and exclude-nick
+                     (= exclude-nick (:nick client)))
+        (send-line! client line)))))
 
 (defn- room-clients [room-id]
   (let [clients (vals (:clients @server-state))]
@@ -104,9 +118,15 @@
                   (when (seq text)
                     (note-room-nick! room-id name)
                     (doseq [line (str/split-lines text)]
-                      (broadcast! (room-clients room-id)
-                                  (format ":%s!%s@musn PRIVMSG #%s :%s"
-                                          name name room-id line)))))))))
+                      (broadcast-except! (room-clients room-id) name
+                                         (format ":%s!%s@musn PRIVMSG #%s :%s"
+                                                 name name room-id line)))
+                    (log! (format "relay #%s <%s> %s"
+                                  room-id
+                                  name
+                                  (if (> (count text) 120)
+                                    (str (subs text 0 117) "...")
+                                    text)))))))))
         (Thread/sleep (long (* 1000 poll-interval)))
         (recur next-cursor)))))
 
@@ -202,7 +222,11 @@
 
       (str/starts-with? line "PRIVMSG ")
       (let [[_ target rest] (str/split line #"\s+" 3)
-            text (or (second (str/split rest #" :" 2)) "")]
+            rest (or rest "")
+            text (cond
+                   (str/starts-with? rest ":") (subs rest 1)
+                   (str/includes? rest " :") (or (second (str/split rest #" :" 2)) "")
+                   :else rest)]
         (when (and target (:nick client))
           (handle-privmsg! (get-in @server-state [:clients (:id client)]) target text musn-url)))
 
@@ -248,18 +272,31 @@
                 :user nil
                 :registered? false
                 :room nil}]
+    (try
+      (.setKeepAlive socket true)
+      (catch Throwable _))
+    (log! (format "client %s connected from %s"
+                  id
+                  (try (.getRemoteSocketAddress socket) (catch Throwable _ "unknown"))))
     (swap! server-state assoc-in [:clients id] client)
     (try
       (loop []
         (when-let [line (.readLine reader)]
-          (handle-line! (get-in @server-state [:clients id]) line musn-url poll-interval default-room)
+          (when-not (str/starts-with? line "PING")
+            (log! (format "client %s line: %s" id line)))
+          (try
+            (handle-line! (get-in @server-state [:clients id]) line musn-url poll-interval default-room)
+            (catch Throwable t
+              (log! (format "handler error for %s: %s" id (.getMessage t)))))
           (recur)))
-      (catch Exception _ nil)
+      (catch Exception e
+        (log! (format "client %s read error: %s" id (.getMessage e))))
       (finally
         (let [room (:room (get-in @server-state [:clients id]))]
           (swap! server-state update :clients dissoc id)
           (when room
             (maybe-stop-room! room)))
+        (log! (format "client %s disconnected" id))
         (try (.close socket) (catch Exception _ nil))))))
 
 (defn -main [& args]

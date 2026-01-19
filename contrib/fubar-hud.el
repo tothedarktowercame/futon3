@@ -115,7 +115,7 @@
   :type 'boolean
   :group 'fubar-hud)
 
-(defcustom fubar-hud-approval-policy "untrusted"
+(defcustom fubar-hud-approval-policy "never"
   "Approval policy to pass to fucodex runs."
   :type '(choice (const "never")
                  (const "untrusted")
@@ -1321,10 +1321,12 @@ Starts a live run, binds a new session id, and streams output to
          (intent (fubar-hud--resolve-intent prompt intent))
          (session-id (fubar-hud--generate-session-id))
          (buf (get-buffer-create fubar-hud-stream-buffer-name))
+         (no-sandbox? (and approval-policy (string= approval-policy "never")))
          (args (append (list "--live" "--hud" "--session-id" session-id)
                        (when intent (list "--intent" intent))
                        (when (and approval-policy (not (string-empty-p approval-policy)))
                          (list "--approval-policy" approval-policy))
+                       (when no-sandbox? (list "--no-sandbox"))
                        (when fubar-hud-fucodex-aif-select (list "--aif-select"))
                        (list prompt)))
          (process-environment (cons (format "HUD_SERVER=%s" fubar-hud-server-url)
@@ -1399,11 +1401,16 @@ Output goes to *FuLab Raw Stream* buffer."
          (hud-intent (and (stringp hud-intent)
                           (not (string-empty-p hud-intent))
                           hud-intent))
+         (approval-policy (fubar-hud--current-approval-policy))
+         (approval-policy (when (and (stringp approval-policy)
+                                     (not (string-empty-p approval-policy)))
+                            approval-policy))
+         (no-sandbox? (and approval-policy (string= approval-policy "never")))
          (use-fucodex (file-executable-p fucodex-path))
          (cmd (cond
                (use-fucodex
                 (if sid
-                  (format "FUTON3_MUSN_SESSION_ID=%s FUTON3_MUSN_URL=%s%s FUCODEX_PREFLIGHT=off %s --live --musn --session-id %s resume --last %s 2>&1"
+                  (format "FUTON3_MUSN_SESSION_ID=%s FUTON3_MUSN_URL=%s%s FUCODEX_PREFLIGHT=off %s --live --musn --session-id %s%s%s resume --last %s 2>&1"
                           (shell-quote-argument sid)
                           (shell-quote-argument fubar-musn-url)
                           (if hud-intent
@@ -1411,13 +1418,25 @@ Output goes to *FuLab Raw Stream* buffer."
                             "")
                           fucodex-path
                           escaped-sid
+                          (if approval-policy
+                              (concat " --approval-policy " approval-policy)
+                            "")
+                          (if no-sandbox?
+                              " --no-sandbox"
+                            "")
                           escaped-prompt)
-                  (format "FUTON3_MUSN_URL=%s%s FUCODEX_PREFLIGHT=off %s --live --musn resume --last %s 2>&1"
+                  (format "FUTON3_MUSN_URL=%s%s FUCODEX_PREFLIGHT=off %s --live --musn%s%s resume --last %s 2>&1"
                           (shell-quote-argument fubar-musn-url)
                           (if hud-intent
                               (concat " FUTON3_MUSN_INTENT=" (shell-quote-argument hud-intent))
                             "")
                           fucodex-path
+                          (if approval-policy
+                              (concat " --approval-policy " approval-policy)
+                            "")
+                          (if no-sandbox?
+                              " --no-sandbox"
+                            "")
                           escaped-prompt)))
                (sid
                 (format "HUD_SERVER=http://localhost:5050 %s/fuclaude --resume %s -p %s 2>&1"

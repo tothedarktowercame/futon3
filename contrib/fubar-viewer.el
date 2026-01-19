@@ -27,6 +27,23 @@
 (defvar fubar-musn-turn nil)
 (defvar fubar-musn--proc nil)
 (defvar fubar-musn--default-log "/tmp/musn_stream.log")
+
+(defun fubar-musn--log-path (session-id)
+  "Return log path for SESSION-ID."
+  (let* ((sid (and session-id (string-trim session-id)))
+         (safe (and sid (not (string-empty-p sid))
+                    (replace-regexp-in-string "[^a-zA-Z0-9._-]+" "-" sid))))
+    (if (and safe (not (string-empty-p safe)))
+        (format "/tmp/musn_stream.%s.log" safe)
+      fubar-musn--default-log)))
+(defun fubar-musn--known-sessions ()
+  "Return known MUSN session ids from log files."
+  (let ((files (ignore-errors (directory-files "/tmp" nil "^musn_stream\\..+\\.log$"))))
+    (let ((ids (mapcar (lambda (file)
+                         (when (string-match "^musn_stream\\.\\(.+\\)\\.log$" file)
+                           (match-string 1 file)))
+                       (or files '()))))
+      (delete-dups (delq nil ids)))))
 (defvar fubar-musn--state-refresh-seconds 3
   "Poll interval (seconds) to refresh HUD intent/state from MUSN.")
 (defvar fubar-musn--state-timer nil)
@@ -811,8 +828,17 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
       (setq-local fubar-musn--session-locked (and fubar-musn-session-id t)))
     (with-current-buffer buf
       (setq-local fubar-musn--log-path log))
+    (let ((snapshot (with-temp-buffer
+                      (when (and (file-exists-p log)
+                                 (executable-find "tail"))
+                        (when (zerop (call-process "tail" nil t nil "-n" "200" log))
+                          (buffer-string))))))
+      (when (and snapshot (not (string-empty-p snapshot)))
+        (with-current-buffer buf
+          (let ((inhibit-read-only t))
+            (insert snapshot)))))
     (setq fubar-musn--proc
-          (start-process "fubar-musn-tail" buf "tail" "-f" "-n" "200" log))
+          (start-process "fubar-musn-tail" buf "tail" "-f" "-n" "0" log))
     (set-process-filter fubar-musn--proc #'fubar-musn--stream-filter)
     (set-process-query-on-exit-flag fubar-musn--proc nil)
     (display-buffer buf)
@@ -914,6 +940,32 @@ interactively), set the HUD intent immediately as the handshake."
       (switch-to-buffer "*FuLab HUD*")
       (other-window -1))))
 
+(defun fubar-musn-view-session (session-id &optional intent)
+  "Open MUSN viewer for SESSION-ID using its per-session log file."
+  (interactive
+   (let* ((default (or fubar-musn-session-id ""))
+          (candidates (fubar-musn--known-sessions))
+          (prompt (if candidates
+                      (format "MUSN session id (default %s): " default)
+                    (format "MUSN session id%s: "
+                            (if (string-empty-p default) "" (format " (default %s)" default)))))
+          (input (if candidates
+                     (completing-read prompt candidates nil nil nil nil default)
+                   (read-string prompt nil nil default))))
+     (list input)))
+  (let* ((sid (and session-id (string-trim session-id)))
+         (log (fubar-musn--log-path sid)))
+    (when (and log (not (file-exists-p log)))
+      (with-temp-file log))
+    (when (and sid (not (string-empty-p sid)))
+      (setq fubar-musn-session-id sid)
+      (setq fubar-musn--session-locked t)
+      (when (fboundp 'fubar-hud-set-session-id)
+        (fubar-hud-set-session-id sid))
+      (when (fboundp 'fubar-musn--maybe-start-state-poll)
+        (fubar-musn--maybe-start-state-poll)))
+    (fubar-musn-view-2up log intent)))
+
 (defun fubar-musn--log-empty-p (path)
   (or (not (file-exists-p path))
       (= 0 (file-attribute-size (file-attributes path)))))
@@ -963,6 +1015,12 @@ prompt."
          (intent (let ((trimmed (and intent (string-trim intent))))
                    (when (and trimmed (not (string-empty-p trimmed)))
                      trimmed)))
+         (approval-policy (when (fboundp 'fubar-hud--current-approval-policy)
+                            (fubar-hud--current-approval-policy)))
+         (approval-policy (when (and (stringp approval-policy)
+                                     (not (string-empty-p approval-policy)))
+                            approval-policy))
+         (no-sandbox? (and approval-policy (string= approval-policy "never")))
          (chat-room (let ((room (or chat-room (when (boundp 'fubar-chat-room) fubar-chat-room))))
                       (when (and room (not (string-empty-p room)))
                         room)))
@@ -971,11 +1029,12 @@ prompt."
                         (when (and author (not (string-empty-p author)))
                           author)))
          (session-id (fubar-musn--generate-session-id))
-         (log fubar-musn--default-log)
+         (log (fubar-musn--log-path session-id))
          (fucodex-path (expand-file-name "fucodex" fubar-hud-futon3-root))
          (env (string-join
                (delq nil
                      (list (concat "FUTON3_MUSN_SESSION_ID=" (shell-quote-argument session-id))
+                           (concat "FUTON3_MUSN_LOG=" (shell-quote-argument log))
                            (concat "FUTON3_MUSN_PROMPT=" (shell-quote-argument prompt))
                            (when intent
                              (concat "FUTON3_MUSN_INTENT=" (shell-quote-argument intent)))
@@ -984,13 +1043,17 @@ prompt."
                            (when chat-author
                              (concat "FUCODEX_CHAT_AUTHOR=" (shell-quote-argument chat-author)))
                            (concat "FUTON3_MUSN_URL=" (shell-quote-argument fubar-musn-url))
+                           (when no-sandbox? "FUTON3_MUSN_REQUIRE_APPROVAL=0")
                            "FUCODEX_PREFLIGHT=off"))
                " "))
-         (cmd (mapconcat #'identity
-                         (list env fucodex-path "--live" "--musn"
-                               "--musn-url" fubar-musn-url
-                               (shell-quote-argument prompt))
-                         " ")))
+         (args (append (list fucodex-path "--live" "--musn"
+                             "--musn-url" fubar-musn-url)
+                       (when approval-policy
+                         (list "--approval-policy" approval-policy))
+                       (when no-sandbox?
+                         (list "--no-sandbox"))
+                       (list (shell-quote-argument prompt))))
+         (cmd (string-join (cons env args) " ")))
     (setq fubar-musn-session-id session-id)
     (setq fubar-musn--session-locked t)
     (fubar-musn--set-paused nil)
@@ -1002,9 +1065,9 @@ prompt."
     (when (and chat-room (fboundp 'fubar-chat-join))
       (fubar-chat-join chat-room))
     ;; Reset the local MUSN stream log so we capture the handshake from the top.
-    (when (and log (file-exists-p log))
+    (when log
       (with-temp-file log))
-    (fubar-musn-view-2up nil intent)
+    (fubar-musn-view-2up log intent)
     (let ((buf (get-buffer-create fubar-hud-stream-buffer-name)))
       (with-current-buffer buf
         (setq default-directory fubar-hud-futon3-root)

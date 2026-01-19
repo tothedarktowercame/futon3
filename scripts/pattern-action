@@ -61,6 +61,7 @@ pattern_id = os.environ.get("PATTERN_ID", "")
 note = os.environ.get("PATTERN_NOTE", "")
 session_id = os.environ.get("PATTERN_SESSION_ID", "")
 server_url = os.environ.get("PATTERN_SERVER_URL", "")
+helper_mode = os.environ.get("FUTON3_MUSN_HELPER_MODE", "").lower()
 
 payload = {"pattern-id": pattern_id, "action": action}
 if note:
@@ -71,14 +72,34 @@ data = json.dumps(payload).encode("utf-8")
 req = urllib.request.Request(url, data=data, method="POST")
 req.add_header("Content-Type", "application/json")
 
-with urllib.request.urlopen(req, timeout=2) as resp:
-    resp.read()
-
-print(json.dumps({
-    "type": "pattern-action",
-    "action": action,
-    "pattern-id": pattern_id,
-    "note": note,
-    "ok": True
-}))
+try:
+    if helper_mode == "stream":
+        print(json.dumps({
+            "type": "pattern-action",
+            "action": action,
+            "pattern-id": pattern_id,
+            "note": note,
+            "ok": True,
+            "deferred": "stream"
+        }))
+        raise SystemExit(0)
+    with urllib.request.urlopen(req, timeout=2) as resp:
+        resp.read()
+    print(json.dumps({
+        "type": "pattern-action",
+        "action": action,
+        "pattern-id": pattern_id,
+        "note": note,
+        "ok": True
+    }))
+except Exception as exc:
+    print(json.dumps({
+        "type": "pattern-action",
+        "action": action,
+        "pattern-id": pattern_id,
+        "note": note,
+        "ok": False,
+        "error": str(exc)
+    }))
+    sys.exit(0)
 PY

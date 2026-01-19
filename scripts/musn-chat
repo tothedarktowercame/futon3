@@ -59,20 +59,24 @@ def post(path, payload):
         raw = resp.read().decode("utf-8") or "{}"
         return json.loads(raw)
 
-resp = post("/musn/chat/message", payload)
-print(json.dumps(resp))
+try:
+    resp = post("/musn/chat/message", payload)
+    print(json.dumps(resp))
 
-if sid:
-    state = post("/musn/session/state", {"session/id": sid})
-    turn = (state.get("state") or {}).get("turn")
-    if turn:
-        post("/musn/turn/action", {
-            "session/id": sid,
-            "turn": int(turn),
-            "pattern/id": "musn/user-help",
-            "action": "read",
-            "note": "asked user for help in chat",
-            "cost": "human-contact",
-            "source": "explicit",
-        })
+    if sid:
+        state = post("/musn/session/state", {"session/id": sid})
+        turn = (state.get("state") or {}).get("turn")
+        if turn:
+            post("/musn/turn/action", {
+                "session/id": sid,
+                "turn": int(turn),
+                "pattern/id": "musn/user-help",
+                "action": "read",
+                "note": "asked user for help in chat",
+                "cost": "human-contact",
+                "source": "explicit",
+            })
+except Exception as exc:
+    print(json.dumps({"ok": False, "error": str(exc)}))
+    sys.exit(0)
 PY

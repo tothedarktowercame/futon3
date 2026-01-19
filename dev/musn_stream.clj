@@ -16,7 +16,11 @@
             [clj-http.client :as http]
             [futon3.fulab.hud :as hud]))
 
-(def debug-log "/tmp/musn_stream.log")
+(def debug-log
+  (or (some-> (System/getenv "FUTON3_MUSN_LOG") str/trim not-empty)
+      (when-let [sid (some-> (System/getenv "FUTON3_MUSN_SESSION_ID") str/trim not-empty)]
+        (str "/tmp/musn_stream." sid ".log"))
+      "/tmp/musn_stream.log"))
 
 (defn log! [msg & more]
   (when debug-log
@@ -867,7 +871,7 @@
     ;; If this blurs semantics downstream, we can revert and instead remove
     ;; mode=read as a selection option to keep selection reserved for apply intent.
     (let [label (if (= mode :read) "pattern-read" "pattern-selection")
-           line (format "[%s] chosen=%s candidates=%d mode=%s%s%s%s"
+           line (format "[%s] chosen=%s candidates=%d mode=%s%s%s%s%s%s"
                         label
                         (:chosen psr)
                         (count (:candidates psr))
@@ -1244,10 +1248,23 @@
            (contains? #{"agent_message" "assistant_message"} (get-in event [:item :type])))
       (handle-agent-message! state musn-session turn (get-in event [:item :text]) event)
 
+      ;; command execution (item.started fallback for streams that omit command on completion)
+      (and (= (:type event) "item.started")
+           (= (get-in event [:item :type]) "command_execution"))
+      (let [item-id (get-in event [:item :id])
+            seen? (contains? (get @state :handled-command-ids #{}) item-id)]
+        (when-not seen?
+          (swap! state update :handled-command-ids (fnil conj #{}) item-id)
+          (handle-command-execution! state musn-session turn (get-in event [:item :command]))))
+
       ;; command execution
       (and (= (:type event) "item.completed")
            (= (get-in event [:item :type]) "command_execution"))
-      (handle-command-execution! state musn-session turn (get-in event [:item :command]))
+      (let [item-id (get-in event [:item :id])
+            seen? (contains? (get @state :handled-command-ids #{}) item-id)]
+        (when-not seen?
+          (swap! state update :handled-command-ids (fnil conj #{}) item-id)
+          (handle-command-execution! state musn-session turn (get-in event [:item :command]))))
 
       ;; reasoning text (treat "Planning..." as plan proxy)
       (and (= (:type event) "item.completed")
@@ -1302,7 +1319,10 @@
           scores (normalize-score-keys raw-scores)
           scores (when (seq candidate-ids)
                    (select-keys scores candidate-ids))
+          resolved-intent (or (some-> (:intent hud-map) str/trim not-empty)
+                              (some-> seed-intent str/trim not-empty))
           hud-payload (cond-> {}
+                        resolved-intent (assoc :intent resolved-intent)
                         (seq candidate-ids) (assoc :candidates candidate-ids)
                         (map? scores) (assoc :scores scores)
                         (seq full-candidates) (assoc :candidate-details full-candidates)
@@ -1313,6 +1333,9 @@
         (swap! state assoc :intent-seed seed-intent))
       (when-let [aif-policy (:aif hud-map)]
         (swap! state assoc :aif-policy aif-policy))
+      (swap! state assoc :hud-candidates candidate-ids)
+      (when (and seed-intent (not (:intent-seen? @state)))
+        (note-intent-seen! state session seed-intent))
       ;; Log task summary at turn start
       (when seed-intent
         (let [line (format "[task] %s" seed-intent)]
@@ -1320,8 +1343,6 @@
           (println line)
           (flush)))
       (let [start-resp (musn-start session t hud-payload)]
-        (when (and seed-intent (not (:intent-seen? @state)))
-          (note-intent-seen! state session seed-intent))
         (let [logged? (log-latest-aif-tap! state session)]
           (when (and (seq candidate-ids) (not logged?) (not (:aif start-resp)))
             (log-aif-missing! "turn/start"
@@ -1422,6 +1443,8 @@
                      :chat-latched? false
                      :selected-patterns #{}
                      :last-selected nil
+                     :handled-command-ids #{}
+                     :hud-candidates []
                      :turn-plan? false
                      :turn-plan-warned? false
                      :intent-missing-warned? false

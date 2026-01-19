@@ -568,6 +568,7 @@ if $MUSN_MODE; then
   if [[ -n "$MUSN_SESSION_ID" ]]; then
     export FUTON3_MUSN_SESSION_ID="$MUSN_SESSION_ID"
   fi
+  export FUTON3_MUSN_HELPER_MODE="stream"
   if [[ -n "$AIF_CONFIG" ]]; then
     export FUTON3_MUSN_AIF_CONFIG_PATH="$AIF_CONFIG"
   fi

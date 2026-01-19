@@ -7,7 +7,7 @@
 @length any
 @factor Concentration (samādhi)
 @IFR: FUTON5 operates as the samādhi (concentration) engine, turning improvisation, CT riffs, musical chops, and Nonstarter economics into renewable practices that keep creativity gathered without teleological drag.
-@state Design-only plan; prototypes have narrative intent but no running code or artefacts yet.
+@state Design-only plan; Mission 0 planning artifacts exist (tickets + notebook), but no running code or validated artefacts yet.
 @next start
 
 
@@ -92,6 +92,10 @@
   + if: You want confidence that FUTON5's approach is real rather than just well-specified.
   + however: No concrete demonstration yet shows a pattern developed for (e.g.) ant simulation actually working when applied to cellular automata control, music, or another domain.
   + then: Select 2-3 patterns from the core set, develop them fully in one domain (e.g., ants or MetaCA), then apply them to a different domain (e.g., musical improvisation or crowdfunding) and document whether they work, fail, or require adaptation. Record the results as evidence for or against the transfer thesis.
+  + status[planning]
+  + evidence:
+    - `/home/joe/code/futon5/TICKETS-mission-0.md` — Mission 0 ticket plan for CT-native self-transfer (commit 802b16c).
+    - `/home/joe/code/futon5/resources/exotic-programming-notebook-iii.org` — Mission 0 notebook additions (commit 802b16c).
   + because: A key milestone for FUTON5's plausibility is demonstrating that patterns developed in one domain actually transfer to another—not just that they can be written, but that they work.
 
 ! instantiated-by: Prototype 9 — 12-Prototype Year (Concentration Arc) [🌲/末 🌽/己]

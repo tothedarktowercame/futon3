@@ -1,0 +1,60 @@
+@flexiarg iiching/exotype-XYZ
+@title Exotype XYZ (0xYY)
+@bits 00000000
+@number 0
+@hex 0x00
+@hamming-weight 0
+@audience exotype implementers, mmca users
+@tone reference
+@style pattern
+@futon5-ref
+@futon5-manifest-path futon5/resources/exotype-program-manifest.edn
+@futon5-lift-path futon5/resources/exotype-xenotype-lift.edn
+
+! conclusion: Exotype XYZ is encoded; program and lift semantics pending futon5 mapping.
+  + context: Canonical 8-bit encoding for exotype XYZ.
+  + IF:
+    You need an explicit, searchable exotype record.
+  + HOWEVER:
+    Program, lift, and parameter mappings are not yet recorded here.
+  + THEN:
+    Use the encoding fields for identification and attach futon5 semantics
+    when available.
+  + BECAUSE:
+    Explicit encodings make exotype knowledge inspectable and comparable.
+  + NEXT-STEPS:
+    - blocked-by[futon5-exotypes]
+
+@exotype-encoding
+  :bit-order :msb->lsb
+  :bits-b7..b0 [b7 b6 b5 b4 b3 b2 b1 b0]
+
+@exotype-program
+  ;; Fill from futon5 when available
+  :program-id nil
+  :program-name nil
+  :program-kind nil
+  :tier nil
+  :scope nil
+  :inputs nil
+  :outputs nil
+  :invariants nil
+  :word-variation nil
+  :notes "blocked-by[futon5-exotypes]"
+
+@exotype-lift
+  ;; Fill from futon5 when available
+  :ct-template nil
+  :lift-rules nil
+  :evidence nil
+  :notes "blocked-by[futon5-exotypes]"
+
+@exotype-params
+  ;; Fill from futon5 when available
+  :rotation nil
+  :match-threshold nil
+  :invert-on-phenotype? nil
+  :update-prob nil
+  :mix-mode nil
+  :mix-shift nil
+  :notes "blocked-by[futon5-exotypes]"

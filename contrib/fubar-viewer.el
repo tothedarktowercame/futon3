@@ -895,24 +895,32 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
                           (fubar-hud-set-musn-paused paused? (when paused? halt-reason)))
                          ((boundp 'fubar-hud--musn-paused)
                           (setq fubar-hud--musn-paused paused?)))
+                        (let ((hud-session (and (boundp 'fubar-hud--session-id) fubar-hud--session-id)))
+                          (when (and hud-session (not (string-empty-p hud-session))
+                                     (not (string= hud-session fubar-musn-session-id)))
+                            (cl-return-from fubar-musn--fetch-state nil)))
                         (when (fboundp 'fubar-hud-set-session-id)
                           (fubar-hud-set-session-id fubar-musn-session-id))
-                        (cond
-                         (hud
-                          ;; Apply full MUSN HUD payload and render immediately so it does not get overwritten.
-                          (setq fubar-hud--current-hud hud)
+                        (let ((has-candidates (seq (plist-get hud :candidates)))
+                              (has-sigils (seq (plist-get hud :sigils)))
+                              (has-aif (plist-get hud :aif)))
                           (cond
-                           ((fboundp 'fubar-hud-apply-hud-state)
-                            (fubar-hud-apply-hud-state hud))
-                           ((fboundp 'fubar-hud--render)
-                            (fubar-hud--render hud))))
-                         ((and intent (fboundp 'fubar-hud-set-intent))
-                          (setq fubar-hud--intent intent)
-                          (fubar-hud-refresh))))))
+                           ((and hud (or has-candidates has-sigils has-aif))
+                            ;; Apply full MUSN HUD payload and render immediately so it does not get overwritten.
+                            (setq fubar-hud--current-hud hud)
+                            (cond
+                             ((fboundp 'fubar-hud-apply-hud-state)
+                              (fubar-hud-apply-hud-state hud))
+                             ((fboundp 'fubar-hud--render)
+                              (fubar-hud--render hud))))
+                           ((and intent (fboundp 'fubar-hud-set-intent))
+                            (setq fubar-hud--intent intent)
+                            (fubar-hud-refresh))))))))
               (when (buffer-live-p buffer)
                 (kill-buffer buffer)))))
       ;; ignore failures
-      nil))))
+      nil)))
+
 (defun fubar-musn-view-2up (&optional path intent)
   "Open a 2-up view: MUSN stream on the left, *FuLab HUD* on the right.
 PATH defaults to /tmp/musn_stream.log. If INTENT is provided (or entered
@@ -1058,6 +1066,8 @@ prompt."
     (setq fubar-musn--session-locked t)
     (fubar-musn--set-paused nil)
     (fubar-musn--maybe-start-state-poll)
+    (when (fboundp 'fubar-register-session)
+      (fubar-register-session session-id "fucodex" intent (called-interactively-p 'interactive)))
     (when (fboundp 'fubar-hud-set-session-id)
       (fubar-hud-set-session-id session-id))
     (when (fboundp 'fubar-hud-set-musn-paused)

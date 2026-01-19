@@ -283,9 +283,10 @@
             (when hud-buf
               (with-current-buffer hud-buf
                 (fubar-hud--ensure-mode)
-                (setq fubar-hud--intent (fubar-hud--summarize-intent intent))
-                (setq fubar-hud--intent-source :agent)
-                (fubar-hud-refresh)))))))))
+                (unless (eq fubar-hud--intent-source :manual)
+                  (setq fubar-hud--intent (fubar-hud--summarize-intent intent))
+                  (setq fubar-hud--intent-source :agent)
+                  (fubar-hud-refresh))))))))))
 
 (defun fubar-hud--pause-line-p (line)
   (let ((case-fold-search t))
@@ -539,8 +540,12 @@
   "Create clickable button for PATTERN-ID."
   (let ((map (make-sparse-keymap)))
     (define-key map [mouse-1] (lambda () (interactive)
+                                 (when (fboundp 'fubar-log-pattern-read)
+                                   (fubar-log-pattern-read pattern-id "hud-click"))
                                  (funcall fubar-hud-pattern-click-action pattern-id)))
     (define-key map (kbd "RET") (lambda () (interactive)
+                                   (when (fboundp 'fubar-log-pattern-read)
+                                     (fubar-log-pattern-read pattern-id "hud-click"))
                                    (funcall fubar-hud-pattern-click-action pattern-id)))
     (propertize pattern-id
                 'face 'fubar-hud-pattern-id-face
@@ -1053,6 +1058,11 @@ Copies intent, sigils, candidates, and any other known HUD fields, then refreshe
   (cl-block fubar-hud-refresh
     (let ((buf (get-buffer-create fubar-hud-buffer-name)))
       (with-current-buffer buf
+        (when (and fubar-hud-pause-when-selected
+                   (not (called-interactively-p 'interactive))
+                   (eq (window-buffer (selected-window)) buf))
+          (setq fubar-hud--auto-refresh-paused t)
+          (cl-return-from fubar-hud-refresh nil))
         ;; If a MUSN HUD payload is present, render it and skip async rebuild.
         (when (and fubar-hud--current-hud fubar-hud-async-refresh)
           (fubar-hud--render fubar-hud--current-hud)
@@ -1280,6 +1290,7 @@ Returns plist with :session-id and :agent-report."
 Output goes to *FuLab Raw Stream* buffer. On completion, parses
 session ID and FULAB-REPORT to update the HUD."
   (interactive "sPrompt: ")
+  (require 'fubar nil t)
   (let* ((default-directory fubar-hud-futon3-root)
          (hud-buf (get-buffer fubar-hud-buffer-name))
          (intent (or (when hud-buf
@@ -1300,6 +1311,11 @@ session ID and FULAB-REPORT to update the HUD."
     (setq proc (start-process-shell-command "fuclaude" buf cmd))
     (process-put proc 'fubar-hud-label "fuclaude")
     (set-process-sentinel proc #'fubar-hud--process-sentinel)
+    (when (fboundp 'fubar-register-session)
+      (fubar-register-session (buffer-local-value 'fubar-hud--session-id hud-buf)
+                              "fuclaude"
+                              intent
+                              (called-interactively-p 'interactive)))
     (message "Started fuclaude with intent: %s" intent)))
 
 (defun fubar-hud-run-fucodex (prompt &optional intent)
@@ -1311,6 +1327,7 @@ Starts a live run, binds a new session id, and streams output to
      (if current-prefix-arg
          (list prompt (read-string "Intent (blank = none): "))
        (list prompt nil))))
+  (require 'fubar nil t)
   (let* ((default-directory fubar-hud-futon3-root)
          (hud-buf (get-buffer-create fubar-hud-buffer-name))
          (approval-policy (when hud-buf
@@ -1355,6 +1372,8 @@ Starts a live run, binds a new session id, and streams output to
     (process-put proc 'fubar-hud-label "fucodex")
     (set-process-sentinel proc #'fubar-hud--process-sentinel)
     (fubar-hud-refresh)
+    (when (fboundp 'fubar-register-session)
+      (fubar-register-session session-id "fucodex" intent (called-interactively-p 'interactive)))
     (message "Started fucodex [%s]." session-id)))
 
 (defun fubar-hud-run-fucodex-musn (prompt &optional intent)

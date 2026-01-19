@@ -568,6 +568,9 @@
           session-id (:session-id payload)
           mana (:mana payload)
           musn-help (:musn-help payload)
+          musn-help-force (:musn-help-force payload)
+          musn-hud (:musn-hud payload)
+          musn-hud-force (:musn-hud-force payload)
           repo-root (or (:repo-root payload)
                         (get-in @(:config state) [:repo :root])
                         (System/getProperty "user.dir"))
@@ -576,7 +579,9 @@
           live (when session-id
                  (some-> (read-session repo-root session-id)
                          aif-live))
-          musn-help (when (true? musn-help)
+          musn-help (cond
+                      (true? musn-help-force) true
+                      (true? musn-help)
                       (let [help-state (:hud-help state)
                             sid (some-> session-id str str/trim)]
                         (when (seq sid)
@@ -584,12 +589,17 @@
                             (when-not seen?
                               (swap! help-state update :sessions conj sid))
                             (not seen?)))))
+          musn-hud (cond
+                     (true? musn-hud-force) true
+                     (true? musn-hud) true
+                     :else false)
           hud (hud/build-hud {:intent intent
                               :prototypes prototypes
                               :sigils sigils
                               :pattern-limit limit
                               :mana mana
                               :musn-help musn-help
+                              :musn-hud musn-hud
                               :certificates certs})
           hud (if live
                 (assoc hud :aif-live live)

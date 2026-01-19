@@ -78,6 +78,18 @@
 (defvar fubar--candidates nil
   "Current candidate patterns from HUD.")
 
+(defvar fubar--musn-help-pending t
+  "Whether the MUSN help screen should be emitted on the next HUD request.")
+
+(defvar fubar--session-registry (make-hash-table :test 'equal)
+  "Registry of known sessions keyed by session id.")
+
+(defvar fubar--session-order nil
+  "List of session ids in most-recent-first order.")
+
+(defvar fubar--active-session nil
+  "Session id currently bound to the HUD.")
+
 (defvar fubar--log-buffer-name "*fubar-log*"
   "Buffer name for fubar event logs.")
 
@@ -218,6 +230,29 @@
   "Return current time as ISO 8601 string."
   (format-time-string "%Y-%m-%dT%H:%M:%S.%3NZ" nil t))
 
+(defun fubar-register-session (session-id &optional type intent interactive)
+  "Register SESSION-ID with optional TYPE and INTENT.
+If INTERACTIVE is non-nil, bind the HUD to this session."
+  (let* ((sid (and session-id (stringp session-id) (string-trim session-id)))
+         (now (fubar--now-iso)))
+    (when (and sid (not (string-empty-p sid)))
+      (let ((entry (list :id sid
+                         :type (or type "unknown")
+                         :intent intent
+                         :updated-at now)))
+        (puthash sid entry fubar--session-registry)
+        (setq fubar--session-order (cons sid (delete sid fubar--session-order)))
+        (when interactive
+          (setq fubar--active-session sid)
+          (when (fboundp 'fubar-hud-set-session-id)
+            (fubar-hud-set-session-id sid))
+          (when (and intent (fboundp 'fubar-hud-set-intent))
+            (fubar-hud-set-intent intent)))))))
+
+(defun fubar-active-session ()
+  "Return the currently active HUD session id."
+  fubar--active-session)
+
 (defun fubar--uuid ()
   "Generate a simple UUID."
   (let* ((seed (format "%s-%s-%s" (float-time) (random) (emacs-pid)))
@@ -299,6 +334,8 @@
       (setq fubar--current-session resp)
       (setq fubar--current-turn 0)
       (setq fubar--selected-pattern nil)
+      (setq fubar--musn-help-pending t)
+      (fubar-register-session (plist-get resp :session/id) "fubar" nil t)
       (fubar--maybe-show-ui nil)
       (fubar--sync-hud)
       (fubar--log-event "session/create" resp)
@@ -309,6 +346,7 @@
 (defun fubar-turn-start (intent)
   "Start a new turn with INTENT."
   (interactive "sIntent: ")
+  (require 'fubar-hud nil t)
   (unless fubar--current-session
     (fubar-session-create))
   (let* ((sid (plist-get fubar--current-session :session/id))
@@ -321,13 +359,18 @@
          (hud (if hud-map
                 (fubar--plist->alist hud-map)
                 `((intent . ,intent))))
+         (hud (if fubar--musn-help-pending
+                (append hud '((musn-help . t)))
+                hud))
          (payload `((session/id . ,sid)
                     (turn . ,turn)
                     (hud . ,hud))))
     (let ((resp (fubar--post "/musn/turn/start" payload)))
       (setq fubar--current-turn turn)
       (setq fubar--selected-pattern nil)
+      (setq fubar--musn-help-pending nil)
       (setq fubar--last-hud hud-map)
+      (fubar-register-session sid "fubar" intent (called-interactively-p 'interactive))
       ;; Extract candidates from HUD response.
       (when-let ((hud (plist-get resp :hud)))
         (setq fubar--candidates (plist-get hud :candidates)))
@@ -337,6 +380,8 @@
         (fubar-hud-apply-hud-state hud-map))
       (when (fboundp 'fubar-hud-set-intent)
         (fubar-hud-set-intent intent))
+      (when (fboundp 'fubar-hud-refresh)
+        (fubar-hud-refresh))
       (fubar--maybe-show-ui intent)
       (fubar--sync-hud)
       (fubar--log-event "turn/start" resp)
@@ -392,6 +437,24 @@
       (fubar--log-event "turn/action" resp)
       (fubar--note-response "turn/action" resp)
       (message "[fubar] Action logged: %s on %s" action fubar--selected-pattern)
+      resp)))
+
+(defun fubar-log-pattern-read (pattern-id &optional note)
+  "Log a read action for PATTERN-ID without changing selection."
+  (unless fubar--current-session
+    (user-error "No active session. Run fubar-session-create first"))
+  (let* ((sid (plist-get fubar--current-session :session/id))
+         (turn fubar--current-turn)
+         (payload `((session/id . ,sid)
+                    (turn . ,turn)
+                    (pattern/id . ,pattern-id)
+                    (action . "read")
+                    ,@(when (and note (not (string-empty-p note)))
+                        `((note . ,note))))))
+    (let ((resp (fubar--post "/musn/turn/action" payload)))
+      (fubar--log-event "turn/action" resp)
+      (fubar--note-response "turn/action" resp)
+      (message "[fubar] Read logged: %s" pattern-id)
       resp)))
 
 (defun fubar-turn-use (&optional note)
@@ -450,6 +513,14 @@
       (fubar--note-response "turn/end" resp)
       (message "[fubar] Turn %d ended" turn)
       resp)))
+
+(defun fubar-musn-help ()
+  "Request the MUSN help screen on the next HUD render."
+  (interactive)
+  (setq fubar--musn-help-pending t)
+  (when (fboundp 'fubar-hud-refresh)
+    (fubar-hud-refresh))
+  (message "[fubar] MUSN help will be shown on the next HUD render."))
 
 ;;; Convenience commands
 

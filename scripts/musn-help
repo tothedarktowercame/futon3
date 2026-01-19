@@ -2,25 +2,41 @@
 set -euo pipefail
 
 topic="${1:-tools}"
+session_id="${FUTON3_MUSN_SESSION_ID:-}"
+if [[ -n "$session_id" ]]; then
+  touch "/tmp/futon3-musn-help-${session_id}.flag"
+else
+  touch "/tmp/futon3-musn-help.flag"
+fi
+
+cat <<'EOF'
+[MUSN-HELP]
+You start with 100 mana points. Gain mana by reading patterns and completing their next steps.
+Most other actions cost mana.
+Helper functions live in /home/joe/code/futon3/scripts — use those exact paths.
+Related design patterns live in /home/joe/code/futon3/library; you may read/edit them if helpful.
+Tool roster (you should emit these signals when you do the corresponding action):
+- /home/joe/code/futon3/scripts/pattern-select library/<pattern> <state why you want to read it>
+- /home/joe/code/futon3/scripts/pattern-use    library/<pattern> <state where you will apply it>
+- /home/joe/code/futon3/scripts/pattern-action read|update|implement library/<pattern> <note>
+- /home/joe/code/futon3/scripts/musn-chat      "question for the user" (human-contact, costs 5 mana)
+- /home/joe/code/futon3/scripts/musn-plan      "Plan: ..."
+- /home/joe/code/futon3/scripts/wide-search   <rg args>
+- /home/joe/code/futon3/scripts/musn-hud      Use this command to bring up helpful pattern guidance and stats about your run.
+- /home/joe/code/futon3/scripts/musn-help     Brings up this help screen.
+Further information can be obtained by running musn-help <tool> or musn-help <pattern>
+Before using a tool, state a 1-2 line plan.
+Your next output should exercise musn-plan by describing your next steps.
+[/MUSN-HELP]
+EOF
 
 case "$topic" in
   tools|tool|/tools|/help)
-    cat <<'EOF'
-MUSN help: tools
-
-Tool roster (emit these signals when you do the corresponding action):
-- pattern-select library/<pattern> "why you want to read it"
-- pattern-use    library/<pattern> "where you will apply it"
-- musn-chat      "question for the user" (human-contact, costs 5 mana)
-- musn-plan      "outline your plan"
-- wide-search    "your search string" (alias for rg)
-Reading musn/help once (pattern-action read) grants +1 mana.
-EOF
     ;;
   pattern|patterns|/pattern)
     cat <<'EOF'
-MUSN help: pattern selection
 
+MUSN help: pattern selection
 - Select a pattern before implement/update.
 - Pattern ids look like namespace/name (example: f2/p13).
 - In multiarg files, use the @arg pattern id (not the file basename).
@@ -28,8 +44,8 @@ EOF
     ;;
   musn|/musn)
     cat <<'EOF'
-MUSN help: core patterns (one line each)
 
+MUSN help: core patterns (one line each)
 - musn/plan-before-tool: require a plan line before any tool or wide scan.
 - musn/declare-scope: state in-bounds, out-of-bounds, and exit condition up front.
 - musn/intent-restatement: first line must be "hud-intent: <brief restatement>".

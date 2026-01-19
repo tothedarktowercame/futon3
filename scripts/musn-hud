@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+session_id="${FUTON3_MUSN_SESSION_ID:-}"
+if [[ -n "$session_id" ]]; then
+  touch "/tmp/futon3-musn-hud-${session_id}.flag"
+else
+  touch "/tmp/futon3-musn-hud.flag"
+fi
+
+cat <<'EOF'
+[MUSN-HUD]
+This command requests a HUD refresh on the next prompt. Look for the [FULAB-HUD]
+block to review pattern guidance and run stats.
+[/MUSN-HUD]
+EOF

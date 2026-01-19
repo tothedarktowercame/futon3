@@ -207,8 +207,9 @@
    - :aif-config - AIF configuration map
    - :mana - optional mana state map for prompt display
    - :musn-help - optional boolean to show MUSN help prompt
+   - :musn-hud - optional boolean to show HUD AIF stats
    - :certificates - optional certificate vector for PSR/PUR"
-  [{:keys [intent prototypes sigils pattern-limit certificates mana musn-help]
+  [{:keys [intent prototypes sigils pattern-limit certificates mana musn-help musn-hud]
     :or {pattern-limit 4}}]
   (let [all-patterns (hints/all-patterns)
         ;; Resolve sigils from intent or prototypes
@@ -261,8 +262,9 @@
      :aif aif-result
      ;; Mana state
      :mana mana
-     ;; MUSN help
+     ;; MUSN help + HUD stats
      :musn-help musn-help
+     :musn-hud musn-hud
      ;; Agent response (filled after turn)
      :agent-report nil}))
 
@@ -325,23 +327,24 @@
                         main))
                     "Mana: n/a")
         help-line (when (:musn-help hud)
-                    (format (str "[MUSN-HELP]\n"
-                                 "You have %s mana. Gain mana points by reading patterns and completing their next steps. Other actions cost mana.\n"
-                                 "Before acting, state a 1-2 line plan.\n"
-                                 "Helpers live in /home/joe/code/futon3/scripts — use those exact paths.\n"
-                                 "Related design patterns live in /home/joe/code/futon3/library; you may read/edit them if helpful.\n"
-                                 "Tool roster (you should emit these signals when you do the corresponding action):\n"
-                                 "- /home/joe/code/futon3/scripts/pattern-select library/<pattern> <state why you want to read it>\n"
-                                 "- /home/joe/code/futon3/scripts/pattern-use    library/<pattern> <state where you will apply it>\n"
-                                 "- /home/joe/code/futon3/scripts/pattern-action read|update|implement library/<pattern> <note>\n"
-                                 "- /home/joe/code/futon3/scripts/musn-chat      \"question for the user\" (human-contact, costs 5 mana)\n"
-                                 "- /home/joe/code/futon3/scripts/musn-plan      \"Plan: ...\"\n"
-                                 "- /home/joe/code/futon3/scripts/wide-search   <rg args>\n"
-                                 "Reading musn/help once (pattern-action read) grants +1 mana.\n"
-                                 "If unsure, run: musn-help tools  (or musn-help pattern)\n"
-                                 "First output line must be: hud-intent: <brief restatement of the task>\n"
-                                 "[/MUSN-HELP]\n")
-                            (mana-num mana-balance)))
+                    (str "[MUSN-HELP]\n"
+                         "You start with 100 mana points. Gain mana by reading patterns and completing their next steps.\n"
+                         "Most other actions cost mana.\n"
+                         "Helper functions live in /home/joe/code/futon3/scripts — use those exact paths.\n"
+                         "Related design patterns live in /home/joe/code/futon3/library; you may read/edit them if helpful.\n"
+                         "Tool roster (you should emit these signals when you do the corresponding action):\n"
+                         "- /home/joe/code/futon3/scripts/pattern-select library/<pattern> <state why you want to read it>\n"
+                         "- /home/joe/code/futon3/scripts/pattern-use    library/<pattern> <state where you will apply it>\n"
+                         "- /home/joe/code/futon3/scripts/pattern-action read|update|implement library/<pattern> <note>\n"
+                         "- /home/joe/code/futon3/scripts/musn-chat      \"question for the user\" (human-contact, costs 5 mana)\n"
+                         "- /home/joe/code/futon3/scripts/musn-plan      \"Plan: ...\"\n"
+                         "- /home/joe/code/futon3/scripts/wide-search   <rg args>\n"
+                         "- /home/joe/code/futon3/scripts/musn-hud      Use this command to bring up helpful pattern guidance and stats about your run.\n"
+                         "- /home/joe/code/futon3/scripts/musn-help     Brings up this help screen.\n"
+                         "Further information can be obtained by running musn-help <tool> or musn-help <pattern>\n"
+                         "Before using a tool, state a 1-2 line plan.\n"
+                         "Your next output should exercise musn-plan by describing your next steps.\n"
+                         "[/MUSN-HELP]\n"))
         live-summary (:summary aif-live)
         live-line (when (map? live-summary)
                     (let [kind (or (:kind live-summary) "tap")
@@ -357,6 +360,21 @@
                                          (when err (str "err=" err))])]
                       (when (seq parts)
                         (str "AIF live: " (str/join " " parts)))))
+        selection-line (when-let [sel (:last-selection aif-live)]
+                         (let [pid (:pattern-id sel)
+                               mode (:mode sel)]
+                           (when (or pid mode)
+                             (str "selection=" (or pid "?")
+                                  (when mode (str " (" (name mode) ")"))))))
+        use-line (when-let [use (:last-use aif-live)]
+                   (let [pid (:pattern-id use)]
+                     (when pid
+                       (str "use=" pid))))
+        stats-line (when (:musn-hud hud)
+                     (let [parts (remove nil? [live-line selection-line use-line])]
+                       (if (seq parts)
+                         (str "AIF stats: " (str/join " | " parts))
+                         "AIF stats: none")))
         white-space-label (when (:white-space? aif) "white-space tau boost")
         ;; AIF-LM-3: Compute probability for display
         aif-prob (when-let [suggested (:suggested aif)]
@@ -369,15 +387,10 @@
                          probs (into {} (map (fn [[id e]] [id (/ e z)]) exp-logits))]
                      (get probs suggested)))
         aif-str (if (:suggested aif)
-                  (format "AIF suggests: %s (G=%.2f, τ=%.2f, p=%.0f%%%s)"
-                          (:suggested aif)
-                          (double (get (:G-scores aif) (:suggested aif) 0))
-                          (double (or (:tau aif) 0.5))
-                          (double (* 100 (or aif-prob 0)))
-                          (if white-space-label (str ", " white-space-label) ""))
-                  (str "AIF: no suggestion"
-                       (when white-space-label (str " (" white-space-label ")"))))]
-    (str "[FULAB-HUD]\n"
+                  (format "AIF suggests: %s" (:suggested aif))
+                  "AIF suggests: none")]
+    (str (or help-line "")
+         "[FULAB-HUD]\n"
          "Intent: " (:intent hud) "\n"
          "Sigils: " sigil-str "\n"
          "\n"
@@ -385,12 +398,10 @@
          candidates-str "\n"
          "\n"
          aif-str "\n"
-         (when live-line (str live-line "\n"))
-         mana-line "\n"
-         (or help-line "")
-        "\n"
-        "MUSN guidance: run `musn-help musn`.\n"
-        "[/FULAB-HUD]")))
+         (when stats-line
+           (str stats-line "\n"
+                "TODO: consider live-updating pattern candidates when musn-hud is requested.\n"))
+         "[/FULAB-HUD]")))
 
 (defn- extract-report-block
   "Extract FULAB-REPORT block from response text."

@@ -58,6 +58,8 @@ MANA_EARNED="${FUTON3_MUSN_MANA_EARNED:-0}"
 MANA_SPENT="${FUTON3_MUSN_MANA_SPENT:-0}"
 MUSN_HELP="${FUCODEX_MUSN_HELP:-auto}"
 MUSN_SESSION_ID="${FUTON3_MUSN_SESSION_ID:-}"
+MUSN_HELP_FORCE=false
+MUSN_HUD_FORCE=false
 
 if [[ "${FUCODEX_HUD-}" == "0" || "${FUCODEX_HUD-}" == "false" ]]; then
   HUD_MODE=false
@@ -367,6 +369,8 @@ if not raw_help or raw_help == "auto":
     musn_help = musn_mode
 else:
     musn_help = parse_bool(raw_help, musn_mode)
+musn_help_force = parse_bool(os.environ.get("MUSN_HELP_FORCE"), False)
+musn_hud_force = parse_bool(os.environ.get("MUSN_HUD_FORCE"), False)
 
 mana_start = parse_num(os.environ.get("MANA_START", "100"), 100.0)
 mana_balance = parse_num(os.environ.get("MANA_BALANCE", str(mana_start)), mana_start)
@@ -391,7 +395,14 @@ if musn_mode:
         "earned": mana_earned,
         "spent": mana_spent,
     }
-    payload["musn-help"] = musn_help
+    if musn_help_force:
+        payload["musn-help"] = True
+        payload["musn-help-force"] = True
+    else:
+        payload["musn-help"] = musn_help
+    if musn_hud_force:
+        payload["musn-hud"] = True
+        payload["musn-hud-force"] = True
 
 print(json.dumps(payload))
 PY
@@ -578,6 +589,22 @@ if $MUSN_MODE; then
   if [[ -n "$CHAT_AUTHOR" ]]; then
     export FUTON3_MUSN_CHAT_AUTHOR="$CHAT_AUTHOR"
   fi
+  if [[ -n "$MUSN_SESSION_ID" && -f "/tmp/futon3-musn-help-${MUSN_SESSION_ID}.flag" ]]; then
+    MUSN_HELP_FORCE=true
+    rm -f "/tmp/futon3-musn-help-${MUSN_SESSION_ID}.flag"
+  elif [[ -f "/tmp/futon3-musn-help.flag" ]]; then
+    MUSN_HELP_FORCE=true
+    rm -f "/tmp/futon3-musn-help.flag"
+  fi
+  if [[ -n "$MUSN_SESSION_ID" && -f "/tmp/futon3-musn-hud-${MUSN_SESSION_ID}.flag" ]]; then
+    MUSN_HUD_FORCE=true
+    rm -f "/tmp/futon3-musn-hud-${MUSN_SESSION_ID}.flag"
+  elif [[ -f "/tmp/futon3-musn-hud.flag" ]]; then
+    MUSN_HUD_FORCE=true
+    rm -f "/tmp/futon3-musn-hud.flag"
+  fi
+  export MUSN_HELP_FORCE
+  export MUSN_HUD_FORCE
 fi
 
 if $PATTERN_RPC && [[ ${#args[@]} -eq 1 ]]; then

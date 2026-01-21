@@ -1,0 +1,63 @@
+@flexiarg iiching/exotype-030
+@title Exotype 030 (0x1E)
+@sigils [🌹/己]
+@bits 00011110
+@number 30
+@hex 0x1E
+@hamming-weight 4
+@audience exotype implementers, mmca users
+@tone reference
+@style pattern
+@futon5-ref futon5/resources/exotype-program-manifest.edn; futon5/resources/exotype-xenotype-lift.edn; futon5/src/futon5/ct/exotype_programs.clj; futon5/src/futon5/mmca/exotype.clj
+@futon5-manifest-path futon5/resources/exotype-program-manifest.edn
+@futon5-lift-path futon5/resources/exotype-xenotype-lift.edn
+
+! conclusion: Exotype 030 is encoded; program/params mapped from futon5; lift registry evidence recorded.
+  + context: Canonical 8-bit encoding for exotype 030.
+  + IF:
+    You need an explicit, searchable exotype record.
+  + HOWEVER:
+    The lift registry records pattern bindings but no lift-rules.
+  + THEN:
+    Use the encoding fields for identification, the manifest for program/params,
+    and the lift registry for pattern evidence.
+  + BECAUSE:
+    Explicit encodings make exotype knowledge inspectable and comparable.
+  + NEXT-STEPS:
+    - Confirm lift rules for this exotype in futon5 lift registry.
+
+@exotype-encoding
+  :bit-order :msb->lsb
+  :bits-b7..b0 [0 0 0 1 1 1 1 0]
+
+@exotype-program
+  :program-id :contextual-mutate+mix
+  :program-name "contextual-mutate+mix"
+  :program-kind :stochastic-kleisli
+  :tier :super
+  :scope :kernel-transformer
+  :inputs {:kernel-transformer [:kernel-spec :context :params :rng], :context-step [:history :rng]}
+  :outputs [:kernel-spec]
+  :invariants [:normalize :probabilistic-update]
+  :word-variation :by-tier
+  :notes "From futon5/resources/exotype-program-manifest.edn."
+
+
+@exotype-lift
+  :pattern-ids ["vsat/embedded-annotation"]
+  :ct-template nil
+  :lift-rules nil
+  :evidence [{:pattern-id "vsat/embedded-annotation", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"}]
+  :notes "Lift registry evidence from futon5/resources/exotype-xenotype-lift.edn."
+
+
+@exotype-params
+  :rotation 0
+  :match-threshold 0.4444444444444444
+  :invert-on-phenotype? true
+  :update-prob 0.75
+  :mix-mode :swap-halves
+  :mix-shift 2
+  :notes "From futon5/resources/exotype-program-manifest.edn."
+@exotype-ratchet
+  :evidence [{:scale 3.5585817423269233, :delta-q50-n 0.6097722661462557, :exotype {:sigil "大", :tier :super, :params {:rotation 0, :match-threshold 0.4444444444444444, :invert-on-phenotype? true, :update-prob 0.75, :mix-mode :swap-halves, :mix-shift 2}}, :delta-mean-n 0.30664229165664386, :window 8, :threshold 0.02, :seed 323730332, :delta-score 0.7139471407262443, :delta-weighted 0.4278942814524886, :at "2026-01-21T23:09:11.138272286Z", :gate nil, :final-score 35.011538350195124, :run-id 161, :log "/tmp/ratchet-sanity-gated-20260121-230352.edn"}]

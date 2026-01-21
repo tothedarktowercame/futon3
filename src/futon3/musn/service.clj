@@ -580,9 +580,12 @@
 (defn- auto-selection-policy [selection chosen candidates]
   (let [aif (:aif selection)
         abstain? (boolean (:abstain? aif))
-        mode (if (and chosen (not abstain?)) :auto-select :abstain)
+        mode (cond
+               (and abstain? (seq candidates)) :explore
+               (and chosen (not abstain?)) :auto-select
+               :else :abstain)
         reason (cond
-                 abstain? "aif-low-tau"
+                 abstain? "aif-low-tau-explore"
                  (empty? candidates) "no-candidates"
                  (nil? chosen) "no-choice"
                  :else "aif-sampled")]
@@ -817,7 +820,9 @@
                  (auto-selection-policy selection chosen candidates))
         reason (enrich-reason (or (:reason req) {:mode :read}) selection)
         reason (cond-> reason
-                 auto? (assoc :source (or (:source reason) :auto)))
+                 auto? (assoc :source (or (:source reason) :auto))
+                 abstain? (assoc :mode :explore
+                                 :note (or (:note reason) "aif-low-tau -> explore")))
         req* (compact (assoc req
                              :session/id sid
                              :turn turn

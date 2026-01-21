@@ -62,6 +62,7 @@ Tau derives from uncertainty, in priority order:
 - `tau-cache` for known patterns,
 - precision priors from maturity,
 - score spread across candidates.
+Prediction-error proxies (from outcomes) increase uncertainty and lower tau.
 
 Tau is clamped by config (`:tau/min`, `:tau/max`).
 
@@ -70,7 +71,7 @@ Tau is clamped by config (`:tau/min`, `:tau/max`).
 Given candidates `c_i` and their `G_i`:
 - Compute logits `l_i = -G_i / tau`.
 - Sample with softmax (or Gumbel-softmax).
-- If tau < `tau/min-sample` (default 0.55), abstain from auto-selection.
+- If tau < `tau/min-sample` (default 0.55), switch to explore mode instead of auto-selection.
 
 Sampling must be deterministic under a fixed seed:
 - Seed = hash(session-id, turn, candidates).

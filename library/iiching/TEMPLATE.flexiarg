@@ -1,5 +1,6 @@
 @flexiarg iiching/exotype-XYZ
 @title Exotype XYZ (0xYY)
+@sigils [🌹/己]
 @bits 00000000
 @number 0
 @hex 0x00
@@ -48,6 +49,11 @@
   :lift-rules nil
   :evidence nil
   :notes "blocked-by[futon5-exotypes]"
+
+@exotype-ratchet
+  ;; Persistent ratchet evidence (append-only, curated)
+  :evidence []
+  :notes "ratchet evidence appended from futon5 exoevolve logs"
 
 @exotype-params
   ;; Fill from futon5 when available

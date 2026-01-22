@@ -1,0 +1,342 @@
+@multiarg futon3a/devmap
+@title FUTON3A Development Map — Pattern Guidance & Audit Logging (象 Memory Beast)
+@audience futon-devs, pattern-users, future-you
+@tone formal-analytic
+@style roadmap
+@allow-new-claims true
+@length any
+@factor Joy (pīti) — effective action via pattern guidance
+@IFR: FUTON3A is the pattern guidance and audit logging layer. It provides Portal (Drawbridge pattern retrieval from Futon1), Sidecar (append-only audit trail of selections/actions/evidence), and Compass (GFE-inspired alignment scoring). The 象 (xiang) metaphor: patterns backed by living memory, not just static files. Flexiarg is the serialization format; futon3a is the operational substrate.
+@state Operational prototype exists; needs 2 months of steady work to become reliable for unsupervised night-shift automation.
+@next Library evidence scan (C0), then stabilization missions
+
+
+! instantiated-by: Prototype 0 — Portal Query Layer [🔍/习 🌐/门]
+  :maturity :active
+  :depends-on []
+  :evidence-for-settled [PSR/PUR logs showing reliable pattern retrieval in 10+ fucodex sessions]
+
+  + context: You want pattern-guided agent work where candidates come from Futon1.
+  + IF: Patterns live in futon3/library as flexiarg files, synced to Futon1 via pattern_sync.clj
+  + HOWEVER: Agents need a query interface, not just file paths, and scoring needs to be more than token matching
+  + THEN: Portal provides Drawbridge-based eval + pattern queries with keyword/namespace/hotword scoring
+  + BECAUSE: Pattern retrieval must be fast, context-aware, and not require agents to know file layout
+
+  + EVIDENCE:
+    evidence[src/musn/portal.clj implements query-patterns with namespace/hotword filtering]
+    evidence[scripts/portal CLI wrapper exists and works with fucodex/fuclaude]
+    evidence[futon3a/docs/portal-interop.md documents the contract]
+
+  + NEXT-STEPS:
+    next[Upgrade scoring beyond token matching — use meme layer (ANN) when available]
+    next[Add pattern metadata caching to reduce Futon1 round-trips]
+    next[Log portal query latency and cache hit rates for optimization]
+
+  :success-criteria
+    pass[Can query patterns by namespace in <200ms]
+    pass[Hotword scoring returns relevant candidates 80%+ of the time]
+    pass[Handles Futon1 downtime gracefully (falls back to local cache)]
+    fail[Returns stale patterns after library update without cache invalidation]
+
+  :psr-example "Selected portal for fucodex integration because agents need context-aware pattern retrieval"
+  :pur-template "Used portal in session {{session-id}}, retrieved {{count}} patterns in {{ms}}ms, outcome: {{success|timeout|error}}"
+
+
+! instantiated-by: Prototype 1 — Sidecar Audit Trail [📝/记 ⛓️/链]
+  :maturity :active
+  :depends-on []
+  :evidence-for-settled [Full PSR/PUR chain in 20+ sessions with zero audit gaps]
+
+  + context: You need machine-checkable evidence of what patterns were selected, used, and how they performed.
+  + IF: Agents run and produce artifacts, but selection rationale is opaque and outcomes aren't traceable
+  + HOWEVER: Without structured logging, you can't validate patterns, calibrate confidence, or debug failures
+  + THEN: Sidecar appends PSR (selection), action, evidence, and promotion events to session logs
+  + BECAUSE: PSR/PUR discipline is the phenomenological instrument for pattern validation
+
+  + EVIDENCE:
+    evidence[src/musn/core.clj implements select!, action!, evidence!, end-turn!]
+    evidence[Logs write to log/<session>.edn with full provenance]
+    evidence[musn_chat_supervisor.clj reads and summarizes pattern traces]
+
+  + NEXT-STEPS:
+    next[Add confidence scoring based on prediction error (expected vs actual outcome)]
+    next[Implement chain validation (every PSR has matching PUR or justified deviation)]
+    next[Wire sidecar logs back to Futon1 to update pattern confidence scores]
+
+  :success-criteria
+    pass[Every fucodex session produces complete sidecar log with PSR/PUR pairs]
+    pass[Logs are valid EDN and parseable by lab-export.clj]
+    pass[Pattern traces show clear select→action→evidence chains]
+    fail[Missing PSRs or PURs in session log (audit gap)]
+    fail[Logs contain unparseable EDN or missing required fields]
+
+  :psr-example "Selected sidecar for fulab integration because we need audit trails for pattern validation"
+  :pur-template "Used sidecar in {{session-id}}, logged {{psr-count}} selections + {{pur-count}} outcomes, chain-complete: {{true|false}}"
+
+
+! instantiated-by: Prototype 2 — Compass GFE Alignment [🧭/向 ⚖️/衡]
+  :maturity :greenfield
+  :depends-on [futon3a/P0, futon3a/P1]
+  :evidence-for-active [Compass runs end-to-end on sample narratives with explainable scores]
+  :evidence-for-settled [Compass scores correlate with human HIT judgments at r>0.6]
+
+  + context: You want to score policies/actions by how well they align with desired futures encoded in patterns.
+  + IF: Patterns contain THEN (desired outcomes) and HOWEVER (obstacles), which encode preferences
+  + HOWEVER: No current mechanism extracts preferences from pattern text and scores candidate actions against them
+  + THEN: Compass retrieves patterns via Portal, extracts preference model, simulates policies, scores via GFE
+  + BECAUSE: Generalized Free Energy (pragmatic + epistemic value) provides principled alignment scoring
+
+  + EVIDENCE:
+    evidence[futon3a/docs/compass-demonstrator-plan.md defines architecture]
+    evidence[Early compass code exists in futon3a/src/futon/compass.clj (stub)]
+
+  + NEXT-STEPS:
+    next[Implement preference extraction from flexiarg THEN/HOWEVER/NEXT-STEPS fields]
+    next[Build minimal policy simulator (can use abstract state transitions or futon5 MMCA substrate)]
+    next[Implement GFE scoring: G = -(0.6*pragmatic + 0.4*epistemic)]
+    next[Test on 10 sample narratives with known good/bad outcomes]
+    next[Compare compass scores to human judgments to calibrate weights]
+
+  :success-criteria
+    pass[Compass takes narrative input and returns ranked policies with explainable G scores]
+    pass[GFE scores correlate with human "this feels aligned" judgments at r>0.5]
+    pass[Ablation test: removing preference model degrades scores]
+    fail[G scores are random or anti-correlated with human judgments]
+    fail[Cannot explain why policy A scored higher than policy B]
+
+  :psr-example "Selected compass for futon5 E1 integration because we need principled exotype selection"
+  :pur-template "Used compass on {{narrative}}, top policy: {{policy-id}} (G={{score}}), human-aligned: {{yes|no|unclear}}"
+
+
+! instantiated-by: Prototype 3 — Meme Layer (ANN Search) [🧠/忆 🔎/索]
+  :maturity :stub
+  :depends-on [futon3a/P0]
+  :evidence-for-greenfield [ANN index built from library patterns, query latency <50ms]
+  :evidence-for-active [Semantic search outperforms keyword search on blind test set]
+
+  + context: You want pattern retrieval to understand semantic similarity, not just keyword overlap.
+  + IF: Portal uses token matching (keyword/hotword scoring)
+  + HOWEVER: Semantically similar patterns may not share keywords; keyword search misses relevant candidates
+  + THEN: Build ANN index from pattern embeddings (GloVe, fastText, or MiniLM) and use for similarity search
+  + BECAUSE: Xenotype compression (CT templates) is the goal, but embeddings are a useful intermediate step
+
+  + EVIDENCE:
+    evidence[futon3a/docs/pattern-indexing.md documents embedding options]
+    evidence[scripts/index_patterns.sh exists but needs integration]
+
+  + NEXT-STEPS:
+    next[Build notions index from library patterns using existing embedding scripts]
+    next[Add ANN query endpoint to Portal (fallback to keyword search if ANN unavailable)]
+    next[Blind test: compare ANN retrieval vs keyword retrieval on 20 known-good pattern-task pairs]
+    next[If ANN wins: promote to default; if keyword wins: keep as optional enhancement]
+
+  :success-criteria
+    pass[ANN index builds in <5min for ~400 patterns]
+    pass[Semantic search returns relevant patterns that keyword search misses]
+    pass[Query latency stays <200ms (including embedding + ANN lookup)]
+    fail[ANN search is slower or less accurate than keyword search]
+
+  :psr-example "Selected meme-layer for semantic pattern search because keyword matching is too brittle"
+  :pur-template "Used ANN search for query {{query}}, retrieved {{count}} patterns, relevant: {{count-relevant}}, latency: {{ms}}ms"
+
+
+! instantiated-by: Prototype 4 — Mission Queue & Supervisor [📋/务 👁️/督]
+  :maturity :greenfield
+  :depends-on [futon3a/P1]
+  :evidence-for-active [Queue file exists, supervisor can pop and execute missions]
+  :evidence-for-settled [Night-shift runs 3+ missions autonomously with morning review protocol]
+
+  + context: You want Codex to run multiple missions overnight while you sleep.
+  + IF: musn_chat_supervisor.clj handles chat-triggered tasks (!task, !new)
+  + HOWEVER: No queue for pre-loaded missions; no escalation protocol for errors/blockers
+  + THEN: Extend supervisor to read mission queue, execute sequentially, escalate on failure
+  + BECAUSE: Night-shift automation requires mission chaining without human intervention
+
+  + EVIDENCE:
+    evidence[musn_chat_supervisor.clj exists and runs chat-based tasks]
+    evidence[Night-shift architecture documented in futon0/README-excursions.md]
+
+  + NEXT-STEPS:
+    next[Define mission queue format: /tmp/musn-mission-queue.edn with [{:id :C1 :prompt "..." :priority 1}]]
+    next[Extend supervisor to check queue before polling chat]
+    next[Add escalation: detect non-zero exit, "blocked" in output, confidence <threshold]
+    next[Post escalations to separate channel or /tmp/night-shift-escalations.edn]
+    next[Test: queue 2 missions (C0, C1), run overnight, review in morning]
+
+  :success-criteria
+    pass[Queue file is valid EDN and supervisor parses it correctly]
+    pass[Missions execute sequentially; queue advances on success]
+    pass[Escalations are logged when fucodex exits non-zero or logs "blocked"]
+    pass[Morning review shows: completed missions, escalated issues, remaining queue]
+    fail[Queue executes missions in parallel (race condition)]
+    fail[Escalation not triggered when fucodex fails]
+
+  :psr-example "Selected mission-queue for night-shift work because we need autonomous multi-mission execution"
+  :pur-template "Queued {{count}} missions, executed {{completed}}, escalated {{escalated}}, remaining {{remaining}}"
+
+
+! instantiated-by: Prototype 5 — Morning Review Protocol [☀️/晨 📊/评]
+  :maturity :stub
+  :depends-on [futon3a/P4]
+  :evidence-for-greenfield [Review script exists and runs on night-shift logs]
+  :evidence-for-active [Morning review used for 7 consecutive days with actionable output]
+
+  + context: You need a morning ritual to review what Codex did overnight.
+  + IF: Night-shift runs missions via supervisor queue
+  + HOWEVER: Logs are raw EDN/JSON; no human-readable summary of what happened
+  + THEN: Morning review script (fuclaude mission) reads logs, summarizes, proposes next missions
+  + BECAUSE: Night-shift is only useful if you can quickly understand results and decide next steps
+
+  + EVIDENCE:
+    evidence[Morning review concept documented in futon0/README-excursions.md]
+
+  + NEXT-STEPS:
+    next[Write morning-review script: reads /tmp/night-shift-log.edn or /tmp/musn-mission-queue.edn]
+    next[Summary format: missions completed (with PSR/PUR counts), escalations, blockers, next-mission proposals]
+    next[Integrate with futon0 morning protocol: review happens 7:00-8:00 before recordings]
+    next[Test: run 1 night-shift, run morning review, validate output is actionable]
+
+  :success-criteria
+    pass[Morning review runs in <2min and produces human-readable summary]
+    pass[Summary includes: completed missions, escalated issues, proposed next missions]
+    pass[Actionable: you can decide "approve next missions" or "adjust queue" in <5min]
+    fail[Summary is too verbose (>1 page) or too terse (missing key info)]
+    fail[Cannot tell from summary whether missions succeeded or failed]
+
+  :psr-example "Selected morning-review for daily night-shift triage because raw logs are too noisy"
+  :pur-template "Reviewed {{count}} missions, actionable: {{yes|no}}, time-to-decision: {{minutes}}min"
+
+
+! instantiated-by: Prototype 6 — Library Evidence Feedback [🔄/馈 📈/升]
+  :maturity :stub
+  :depends-on [futon3a/P1, futon3/P1]
+  :evidence-for-greenfield [PSR/PUR logs can be parsed and aggregated per pattern]
+  :evidence-for-active [Pattern confidence scores update based on observed outcomes]
+
+  + context: You want pattern maturity ratings to reflect actual use, not just initial assessment.
+  + IF: Sidecar logs contain PSR/PUR chains showing pattern selection and outcomes
+  + HOWEVER: Library patterns have static :maturity states that don't update based on evidence
+  + THEN: Aggregate PSR/PUR logs per pattern, compute success rate, update confidence/maturity in Futon1
+  + BECAUSE: Patterns should be promoted to :settled when evidence supports it, demoted when they fail
+
+  + EVIDENCE:
+    evidence[Sidecar logs exist with pattern IDs and outcomes]
+    evidence[Library coherence patterns exist (library-coherence/library-evidence-ledger)]
+
+  + NEXT-STEPS:
+    next[Write evidence aggregator: parse all sidecar logs, group by pattern ID]
+    next[Compute per-pattern metrics: use count, success rate, last used, PSR/PUR completeness]
+    next[Define promotion criteria: :greenfield→:active after 3+ successful uses, :active→:settled after 10+ with >80% success]
+    next[Wire into pattern_sync.clj to push updated maturity states back to Futon1]
+    next[Test: run 5 sessions with same pattern, verify confidence score updates]
+
+  :success-criteria
+    pass[Evidence aggregator produces per-pattern report with use count and success rate]
+    pass[Patterns auto-promote when criteria met (e.g., 3 successful uses → :active)]
+    pass[Patterns auto-demote when success rate <50% over 10 uses]
+    fail[Promotions happen without sufficient evidence]
+    fail[Confidence scores don't reflect recent failures]
+
+  :psr-example "Selected evidence-feedback for library curation because manual triage doesn't scale"
+  :pur-template "Analyzed {{session-count}} sessions, promoted {{promoted-count}} patterns, demoted {{demoted-count}}, errors: {{errors}}"
+
+
+! instantiated-by: Prototype 7 — Xenotype CT Attachment [🔷/型 🧬/构]
+  :maturity :stub
+  :depends-on [futon5/E1-Stage6, futon3a/P1]
+  :evidence-for-greenfield [CT templates can be serialized in flexiarg format]
+  :evidence-for-active [Patterns have attached CT templates; templates are used in compass scoring]
+
+  + context: You want patterns to be compressed via Xenotype CT templates, not just stored as text.
+  + IF: Futon5 E1 produces validated hexagram families with CT interpretations
+  + HOWEVER: No mechanism to attach CT templates to futon3 library patterns
+  + THEN: Define CT template format in flexiarg, attach to patterns, use in compass preference extraction
+  + BECAUSE: Xenotype compression is ~10^6x more powerful than embedding distance
+
+  + EVIDENCE:
+    evidence[Futon5 E1 plan includes Stage 6: CT interpretation (futon5/docs/Excursion-1-P1-xenotype-motifs.md)]
+    evidence[p4ng paper discusses pattern anatomy with CT implications]
+
+  + NEXT-STEPS:
+    next[Define CT template schema: what fields, how to serialize in flexiarg]
+    next[Implement CT attachment: add @ct-template field to flexiarg format]
+    next[Update compass to extract CT templates and use in preference model]
+    next[Test: attach CT template to tai-zone pattern, verify compass uses it]
+    next[Wait for futon5 E1 Stage 6 to produce validated CT templates, then attach to library patterns]
+
+  :success-criteria
+    pass[CT templates can be serialized in flexiarg and parsed by futon3a]
+    pass[Compass extracts CT template and uses it to score policies]
+    pass[Patterns with CT templates show higher confidence than those without (given equal evidence)]
+    fail[CT template format is too rigid to capture pattern structure]
+    fail[Compass ignores CT templates in scoring]
+
+  :psr-example "Selected ct-attachment for xenotype compression because GloVe embeddings lose operational structure"
+  :pur-template "Attached CT template to {{pattern-id}}, compass used it: {{yes|no}}, confidence delta: {{delta}}"
+
+
+! instantiated-by: Prototype 8 — Futon3a→Futon0 Telemetry Bridge [📡/传 📊/监]
+  :maturity :stub
+  :depends-on [futon0/P2, futon3a/P1]
+  :evidence-for-greenfield [Sidecar logs are pushed to futon0 for vitality tracking]
+  :evidence-for-active [Futon0 HUD shows futon3a pattern activity alongside other vitality signals]
+
+  + context: You want pattern usage to show up in futon0 vitality scans.
+  + IF: Futon0 tracks vitality via scanners (process, git, etc.)
+  + HOWEVER: Futon3a sidecar logs (PSR/PUR) aren't visible in futon0 HUD
+  + THEN: Push sidecar events to futon0 telemetry stream; add pattern-activity scanner
+  + BECAUSE: Pattern activity is a vitality signal (shows active work, not just commits)
+
+  + EVIDENCE:
+    evidence[Futon0 scanner protocol exists (futon0_protocol.md)]
+    evidence[Sidecar logs are structured EDN]
+
+  + NEXT-STEPS:
+    next[Define futon0 telemetry format for pattern events]
+    next[Add sidecar export: after session ends, push PSR/PUR summary to futon0]
+    next[Write futon0 scanner: reads pattern telemetry, aggregates by day/week]
+    next[Add to HUD: pattern-activity chart (selections/uses/outcomes per day)]
+
+  :success-criteria
+    pass[Sidecar logs are pushed to futon0 telemetry directory]
+    pass[Futon0 HUD shows pattern activity alongside git/process activity]
+    pass[Pattern activity scanner runs without errors]
+    fail[Telemetry push fails silently (no error logged)]
+    fail[HUD shows stale pattern data]
+
+  :psr-example "Selected telemetry-bridge for futon0 integration because pattern activity is a vitality signal"
+  :pur-template "Pushed {{event-count}} pattern events to futon0, scanner updated: {{yes|no}}"
+
+
+! instantiated-by: Prototype 9 — Stabilization Mission Sequence [🔧/稳 ✅/固]
+  :maturity :greenfield
+  :depends-on [futon3a/P0, futon3a/P1, futon3a/P4]
+  :evidence-for-active [Stabilization missions defined and queued]
+  :evidence-for-settled [All stabilization missions pass for 2 consecutive weeks]
+
+  + context: You need futon3a to be reliable before night-shift automation is trustworthy.
+  + IF: Futon3a basic prototype exists (portal, sidecar, supervisor)
+  + HOWEVER: Not battle-tested; may have edge cases, race conditions, or silent failures
+  + THEN: Define stabilization mission sequence: daily smoke tests, stress tests, error injection
+  + BECAUSE: 2 months of steady work = systematic testing and hardening
+
+  + EVIDENCE:
+    evidence[README-excursions.md calls out "2 months of steady work to become reliable"]
+
+  + NEXT-STEPS:
+    next[Define stabilization missions: S1 (smoke test), S2 (concurrent sessions), S3 (error recovery), S4 (queue edge cases)]
+    next[S1: Run portal query + sidecar logging in isolation, verify logs are valid]
+    next[S2: Run 3 fucodex sessions concurrently, verify no race conditions in logs]
+    next[S3: Kill fucodex mid-run, verify supervisor detects and escalates]
+    next[S4: Queue 5 missions with dependencies, verify execution order is correct]
+    next[Run stabilization sequence weekly for 8 weeks]
+
+  :success-criteria
+    pass[All stabilization missions pass without manual intervention]
+    pass[Edge cases (concurrent sessions, killed processes, malformed queue) are handled gracefully]
+    pass[After 8 weeks: no new failure modes discovered]
+    fail[Same failure mode recurs 3+ times without fix]
+    fail[Silent failures (no error logged but incorrect behavior)]
+
+  :psr-example "Selected stabilization-missions for futon3a hardening because prototype needs 2 months of testing"
+  :pur-template "Ran {{mission-count}} stabilization missions, passed {{passed}}, failed {{failed}}, new-issues: {{count}}"

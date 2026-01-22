@@ -1,5 +1,6 @@
 @flexiarg iiching/exotype-000
 @title Exotype 000 (0x00)
+@sigils [🌹/己]
 @bits 00000000
 @number 0
 @hex 0x00
@@ -11,19 +12,19 @@
 @futon5-manifest-path futon5/resources/exotype-program-manifest.edn
 @futon5-lift-path futon5/resources/exotype-xenotype-lift.edn
 
-! conclusion: Exotype 000 is encoded; program/params mapped from futon5; lift registry captured where present.
+! conclusion: Exotype 000 is encoded; program/params mapped from futon5; lift registry evidence recorded.
   + context: Canonical 8-bit encoding for exotype 000.
   + IF:
     You need an explicit, searchable exotype record.
   + HOWEVER:
-    Lift rules and CT templates may be absent in the futon5 lift registry.
+    The lift registry records pattern bindings but no lift-rules.
   + THEN:
-    Use the encoding fields for identification and pull program/params from
-    the manifest; record lift registry evidence when present.
+    Use the encoding fields for identification, the manifest for program/params,
+    and the lift registry for pattern evidence.
   + BECAUSE:
     Explicit encodings make exotype knowledge inspectable and comparable.
   + NEXT-STEPS:
-    - Confirm lift rules or CT templates for bits 00000000 in futon5 lift registry.
+    - Confirm lift rules for this exotype in futon5 lift registry.
 
 @exotype-encoding
   :bit-order :msb->lsb
@@ -35,21 +36,20 @@
   :program-kind :stochastic-kleisli
   :tier :super
   :scope :kernel-transformer
-  :inputs {:kernel-transformer [:kernel-spec :context :params :rng]
-           :context-step [:history :rng]}
+  :inputs {:kernel-transformer [:kernel-spec :context :params :rng], :context-step [:history :rng]}
   :outputs [:kernel-spec]
   :invariants [:normalize :probabilistic-update]
   :word-variation :by-tier
   :notes "From futon5/resources/exotype-program-manifest.edn."
 
+
 @exotype-lift
   :pattern-ids ["paramitas/discernment"]
-  :ct-template nil
+  :ct-template (category {:name :exotic/vision-paramitas-discernment, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})
   :lift-rules nil
-  :evidence [{:pattern-id "paramitas/discernment"
-              :source :futon3a
-              :source-path "futon5/resources/exotype-xenotype-lift.edn"}]
-  :notes "Lift registry has no ct-template or lift-rules for bits 00000000."
+  :evidence [{:pattern-id "paramitas/discernment", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-paramitas-discernment, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})}]
+  :notes "Lift registry evidence from futon5/resources/exotype-xenotype-lift.edn."
+
 
 @exotype-params
   :rotation 0

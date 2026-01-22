@@ -1,0 +1,61 @@
+@flexiarg iiching/exotype-175
+@title Exotype 175 (0xAF)
+@sigils [🌹/己]
+@bits 10101111
+@number 175
+@hex 0xAF
+@hamming-weight 6
+@audience exotype implementers, mmca users
+@tone reference
+@style pattern
+@futon5-ref futon5/resources/exotype-program-manifest.edn; futon5/resources/exotype-xenotype-lift.edn; futon5/src/futon5/ct/exotype_programs.clj; futon5/src/futon5/mmca/exotype.clj
+@futon5-manifest-path futon5/resources/exotype-program-manifest.edn
+@futon5-lift-path futon5/resources/exotype-xenotype-lift.edn
+
+! conclusion: Exotype 175 is encoded; program/params mapped from futon5; lift registry evidence recorded.
+  + context: Canonical 8-bit encoding for exotype 175.
+  + IF:
+    You need an explicit, searchable exotype record.
+  + HOWEVER:
+    The lift registry records pattern bindings but no lift-rules.
+  + THEN:
+    Use the encoding fields for identification, the manifest for program/params,
+    and the lift registry for pattern evidence.
+  + BECAUSE:
+    Explicit encodings make exotype knowledge inspectable and comparable.
+  + NEXT-STEPS:
+    - Confirm lift rules for this exotype in futon5 lift registry.
+
+@exotype-encoding
+  :bit-order :msb->lsb
+  :bits-b7..b0 [1 0 1 0 1 1 1 1]
+
+@exotype-program
+  :program-id :contextual-mutate+mix
+  :program-name "contextual-mutate+mix"
+  :program-kind :stochastic-kleisli
+  :tier :super
+  :scope :kernel-transformer
+  :inputs {:kernel-transformer [:kernel-spec :context :params :rng], :context-step [:history :rng]}
+  :outputs [:kernel-spec]
+  :invariants [:normalize :probabilistic-update]
+  :word-variation :by-tier
+  :notes "From futon5/resources/exotype-program-manifest.edn."
+
+
+@exotype-lift
+  :pattern-ids ["ants/white-space-scout" "dsc/appendix-epistemic-bridge" "f2/p9" "pacspine/quick-intro"]
+  :ct-template (category {:name :exotic/vision-ants-white-space-scout, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})
+  :lift-rules nil
+  :evidence [{:pattern-id "ants/white-space-scout", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-ants-white-space-scout, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})} {:pattern-id "dsc/appendix-epistemic-bridge", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "f2/p9", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "pacspine/quick-intro", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"}]
+  :notes "Lift registry evidence from futon5/resources/exotype-xenotype-lift.edn."
+
+
+@exotype-params
+  :rotation 2
+  :match-threshold 0.6666666666666666
+  :invert-on-phenotype? true
+  :update-prob 1.0
+  :mix-mode :scramble
+  :mix-shift 2
+  :notes "From futon5/resources/exotype-program-manifest.edn."

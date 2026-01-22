@@ -1,0 +1,61 @@
+@flexiarg iiching/exotype-082
+@title Exotype 082 (0x52)
+@sigils [🌹/己]
+@bits 01010010
+@number 82
+@hex 0x52
+@hamming-weight 3
+@audience exotype implementers, mmca users
+@tone reference
+@style pattern
+@futon5-ref futon5/resources/exotype-program-manifest.edn; futon5/resources/exotype-xenotype-lift.edn; futon5/src/futon5/ct/exotype_programs.clj; futon5/src/futon5/mmca/exotype.clj
+@futon5-manifest-path futon5/resources/exotype-program-manifest.edn
+@futon5-lift-path futon5/resources/exotype-xenotype-lift.edn
+
+! conclusion: Exotype 082 is encoded; program/params mapped from futon5; lift registry evidence recorded.
+  + context: Canonical 8-bit encoding for exotype 082.
+  + IF:
+    You need an explicit, searchable exotype record.
+  + HOWEVER:
+    The lift registry records pattern bindings but no lift-rules.
+  + THEN:
+    Use the encoding fields for identification, the manifest for program/params,
+    and the lift registry for pattern evidence.
+  + BECAUSE:
+    Explicit encodings make exotype knowledge inspectable and comparable.
+  + NEXT-STEPS:
+    - Confirm lift rules for this exotype in futon5 lift registry.
+
+@exotype-encoding
+  :bit-order :msb->lsb
+  :bits-b7..b0 [0 1 0 1 0 0 1 0]
+
+@exotype-program
+  :program-id :contextual-mutate+mix
+  :program-name "contextual-mutate+mix"
+  :program-kind :stochastic-kleisli
+  :tier :super
+  :scope :kernel-transformer
+  :inputs {:kernel-transformer [:kernel-spec :context :params :rng], :context-step [:history :rng]}
+  :outputs [:kernel-spec]
+  :invariants [:normalize :probabilistic-update]
+  :word-variation :by-tier
+  :notes "From futon5/resources/exotype-program-manifest.edn."
+
+
+@exotype-lift
+  :pattern-ids ["corps/five-arrows-fit" "workflow-coherence/sphere-equilibrium"]
+  :ct-template (category {:name :exotic/vision-workflow-coherence-sphere-equilibrium, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})
+  :lift-rules nil
+  :evidence [{:pattern-id "corps/five-arrows-fit", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "workflow-coherence/sphere-equilibrium", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-workflow-coherence-sphere-equilibrium, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})}]
+  :notes "Lift registry evidence from futon5/resources/exotype-xenotype-lift.edn."
+
+
+@exotype-params
+  :rotation 1
+  :match-threshold 0.3333333333333333
+  :invert-on-phenotype? false
+  :update-prob 0.75
+  :mix-mode :rotate-right
+  :mix-shift 3
+  :notes "From futon5/resources/exotype-program-manifest.edn."

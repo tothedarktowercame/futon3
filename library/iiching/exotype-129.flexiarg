@@ -1,0 +1,61 @@
+@flexiarg iiching/exotype-129
+@title Exotype 129 (0x81)
+@sigils [🌹/己]
+@bits 10000001
+@number 129
+@hex 0x81
+@hamming-weight 2
+@audience exotype implementers, mmca users
+@tone reference
+@style pattern
+@futon5-ref futon5/resources/exotype-program-manifest.edn; futon5/resources/exotype-xenotype-lift.edn; futon5/src/futon5/ct/exotype_programs.clj; futon5/src/futon5/mmca/exotype.clj
+@futon5-manifest-path futon5/resources/exotype-program-manifest.edn
+@futon5-lift-path futon5/resources/exotype-xenotype-lift.edn
+
+! conclusion: Exotype 129 is encoded; program/params mapped from futon5; lift registry evidence recorded.
+  + context: Canonical 8-bit encoding for exotype 129.
+  + IF:
+    You need an explicit, searchable exotype record.
+  + HOWEVER:
+    The lift registry records pattern bindings but no lift-rules.
+  + THEN:
+    Use the encoding fields for identification, the manifest for program/params,
+    and the lift registry for pattern evidence.
+  + BECAUSE:
+    Explicit encodings make exotype knowledge inspectable and comparable.
+  + NEXT-STEPS:
+    - Confirm lift rules for this exotype in futon5 lift registry.
+
+@exotype-encoding
+  :bit-order :msb->lsb
+  :bits-b7..b0 [1 0 0 0 0 0 0 1]
+
+@exotype-program
+  :program-id :contextual-mutate+mix
+  :program-name "contextual-mutate+mix"
+  :program-kind :stochastic-kleisli
+  :tier :super
+  :scope :kernel-transformer
+  :inputs {:kernel-transformer [:kernel-spec :context :params :rng], :context-step [:history :rng]}
+  :outputs [:kernel-spec]
+  :invariants [:normalize :probabilistic-update]
+  :word-variation :by-tier
+  :notes "From futon5/resources/exotype-program-manifest.edn."
+
+
+@exotype-lift
+  :pattern-ids ["p4ng/attribution-forward" "p4ng/reflection-scaffold-upgrade" "software-design/observer-pattern" "software-design/proxy-pattern"]
+  :ct-template (category {:name :exotic/vision-software-design-observer-pattern, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})
+  :lift-rules nil
+  :evidence [{:pattern-id "p4ng/attribution-forward", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/reflection-scaffold-upgrade", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "software-design/observer-pattern", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-software-design-observer-pattern, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})} {:pattern-id "software-design/proxy-pattern", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-software-design-proxy-pattern, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})}]
+  :notes "Lift registry evidence from futon5/resources/exotype-xenotype-lift.edn."
+
+
+@exotype-params
+  :rotation 2
+  :match-threshold 0.1111111111111111
+  :invert-on-phenotype? false
+  :update-prob 0.5
+  :mix-mode :rotate-left
+  :mix-shift 3
+  :notes "From futon5/resources/exotype-program-manifest.edn."

@@ -1,5 +1,6 @@
 @flexiarg iiching/exotype-007
 @title Exotype 007 (0x07)
+@sigils [🌹/己]
 @bits 00000111
 @number 7
 @hex 0x07
@@ -44,9 +45,9 @@
 
 @exotype-lift
   :pattern-ids ["vsatlas/accountable-poc" "vsatlas/current-strength-gap" "vsatlas/value-flow-constellation"]
-  :ct-template nil
+  :ct-template (category {:name :exotic/vision-vsatlas-accountable-poc, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})
   :lift-rules nil
-  :evidence [{:pattern-id "vsatlas/accountable-poc", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "vsatlas/current-strength-gap", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "vsatlas/value-flow-constellation", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"}]
+  :evidence [{:pattern-id "vsatlas/accountable-poc", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-vsatlas-accountable-poc, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})} {:pattern-id "vsatlas/current-strength-gap", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-vsatlas-current-strength-gap, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})} {:pattern-id "vsatlas/value-flow-constellation", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-vsatlas-value-flow-constellation, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})}]
   :notes "Lift registry evidence from futon5/resources/exotype-xenotype-lift.edn."
 
 

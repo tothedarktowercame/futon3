@@ -1,0 +1,61 @@
+@flexiarg iiching/exotype-247
+@title Exotype 247 (0xF7)
+@sigils [🌹/己]
+@bits 11110111
+@number 247
+@hex 0xF7
+@hamming-weight 7
+@audience exotype implementers, mmca users
+@tone reference
+@style pattern
+@futon5-ref futon5/resources/exotype-program-manifest.edn; futon5/resources/exotype-xenotype-lift.edn; futon5/src/futon5/ct/exotype_programs.clj; futon5/src/futon5/mmca/exotype.clj
+@futon5-manifest-path futon5/resources/exotype-program-manifest.edn
+@futon5-lift-path futon5/resources/exotype-xenotype-lift.edn
+
+! conclusion: Exotype 247 is encoded; program/params mapped from futon5; lift mapping not yet in registry.
+  + context: Canonical 8-bit encoding for exotype 247.
+  + IF:
+    You need an explicit, searchable exotype record.
+  + HOWEVER:
+    The lift registry has no mapping for this exotype yet.
+  + THEN:
+    Use the encoding fields for identification and the futon5 manifest for
+    program/params until lift mappings land.
+  + BECAUSE:
+    Explicit encodings make exotype knowledge inspectable and comparable.
+  + NEXT-STEPS:
+    - blocked-by[futon5-exotype-lift]
+
+@exotype-encoding
+  :bit-order :msb->lsb
+  :bits-b7..b0 [1 1 1 1 0 1 1 1]
+
+@exotype-program
+  :program-id :contextual-mutate+mix
+  :program-name "contextual-mutate+mix"
+  :program-kind :stochastic-kleisli
+  :tier :super
+  :scope :kernel-transformer
+  :inputs {:kernel-transformer [:kernel-spec :context :params :rng], :context-step [:history :rng]}
+  :outputs [:kernel-spec]
+  :invariants [:normalize :probabilistic-update]
+  :word-variation :by-tier
+  :notes "From futon5/resources/exotype-program-manifest.edn."
+
+
+@exotype-lift
+  :pattern-ids []
+  :ct-template nil
+  :lift-rules nil
+  :evidence []
+  :notes "No lift mapping for bits 11110111 in futon5/resources/exotype-xenotype-lift.edn."
+
+
+@exotype-params
+  :rotation 3
+  :match-threshold 0.7777777777777778
+  :invert-on-phenotype? true
+  :update-prob 1.0
+  :mix-mode :scramble
+  :mix-shift 2
+  :notes "From futon5/resources/exotype-program-manifest.edn."

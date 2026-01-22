@@ -1,5 +1,6 @@
 @flexiarg iiching/exotype-015
 @title Exotype 015 (0x0F)
+@sigils [🌹/己]
 @bits 00001111
 @number 15
 @hex 0x0F
@@ -16,14 +17,14 @@
   + IF:
     You need an explicit, searchable exotype record.
   + HOWEVER:
-    The lift registry records multiple pattern bindings but no lift-rules.
+    The lift registry records pattern bindings but no lift-rules.
   + THEN:
     Use the encoding fields for identification, the manifest for program/params,
     and the lift registry for pattern evidence.
   + BECAUSE:
     Explicit encodings make exotype knowledge inspectable and comparable.
   + NEXT-STEPS:
-    - Confirm lift rules for bits 00001111 in futon5 lift registry.
+    - Confirm lift rules for this exotype in futon5 lift registry.
 
 @exotype-encoding
   :bit-order :msb->lsb
@@ -35,42 +36,20 @@
   :program-kind :stochastic-kleisli
   :tier :super
   :scope :kernel-transformer
-  :inputs {:kernel-transformer [:kernel-spec :context :params :rng]
-           :context-step [:history :rng]}
+  :inputs {:kernel-transformer [:kernel-spec :context :params :rng], :context-step [:history :rng]}
   :outputs [:kernel-spec]
   :invariants [:normalize :probabilistic-update]
   :word-variation :by-tier
   :notes "From futon5/resources/exotype-program-manifest.edn."
 
+
 @exotype-lift
-  :pattern-ids ["devmap-coherence/ifr-f1-dhammavicaya"
-                "f1/p3"
-                "f2/p13"
-                "f6/p4"
-                "hdm/deep-storage-to-active-graph"]
-  :ct-template (category {:name :exotic/vision-f1-p3,
-                          :objects [:start :graph-memory :api-contract],
-                          :morphisms {:m9 [:start :graph-memory],
-                                      :m10 [:graph-memory :api-contract],
-                                      :m9+m10 [:start :api-contract]},
-                          :compose {[:m10 :m9] :m9+m10}})
+  :pattern-ids ["devmap-coherence/ifr-f1-dhammavicaya" "f1/p3" "f2/p13" "f6/p4" "hdm/deep-storage-to-active-graph"]
+  :ct-template (category {:name :exotic/vision-devmap-coherence-ifr-f1-dhammavicaya, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})
   :lift-rules nil
-  :evidence [{:pattern-id "devmap-coherence/ifr-f1-dhammavicaya"
-              :source :futon3a
-              :source-path "futon5/resources/exotype-xenotype-lift.edn"}
-             {:pattern-id "f1/p3"
-              :source :futon3a
-              :source-path "futon5/resources/exotype-xenotype-lift.edn"}
-             {:pattern-id "f2/p13"
-              :source :futon3a
-              :source-path "futon5/resources/exotype-xenotype-lift.edn"}
-             {:pattern-id "f6/p4"
-              :source :futon3a
-              :source-path "futon5/resources/exotype-xenotype-lift.edn"}
-             {:pattern-id "hdm/deep-storage-to-active-graph"
-              :source :futon3a
-              :source-path "futon5/resources/exotype-xenotype-lift.edn"}]
-  :notes "Lift registry has a ct-template for f1/p3; no lift-rules for bits 00001111."
+  :evidence [{:pattern-id "devmap-coherence/ifr-f1-dhammavicaya", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-devmap-coherence-ifr-f1-dhammavicaya, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})} {:pattern-id "f1/p3", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-f1-p3, :objects [:start :graph-memory :api-contract], :morphisms {:m9 [:start :graph-memory], :m10 [:graph-memory :api-contract], :m9+m10 [:start :api-contract]}, :compose {[:m10 :m9] :m9+m10}})} {:pattern-id "f2/p13", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "f6/p4", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "hdm/deep-storage-to-active-graph", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-hdm-deep-storage-to-active-graph, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})}]
+  :notes "Lift registry evidence from futon5/resources/exotype-xenotype-lift.edn."
+
 
 @exotype-params
   :rotation 0

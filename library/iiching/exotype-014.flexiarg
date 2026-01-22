@@ -1,0 +1,61 @@
+@flexiarg iiching/exotype-014
+@title Exotype 014 (0x0E)
+@sigils [🌹/己]
+@bits 00001110
+@number 14
+@hex 0x0E
+@hamming-weight 3
+@audience exotype implementers, mmca users
+@tone reference
+@style pattern
+@futon5-ref futon5/resources/exotype-program-manifest.edn; futon5/resources/exotype-xenotype-lift.edn; futon5/src/futon5/ct/exotype_programs.clj; futon5/src/futon5/mmca/exotype.clj
+@futon5-manifest-path futon5/resources/exotype-program-manifest.edn
+@futon5-lift-path futon5/resources/exotype-xenotype-lift.edn
+
+! conclusion: Exotype 014 is encoded; program/params mapped from futon5; lift registry evidence recorded.
+  + context: Canonical 8-bit encoding for exotype 014.
+  + IF:
+    You need an explicit, searchable exotype record.
+  + HOWEVER:
+    The lift registry records pattern bindings but no lift-rules.
+  + THEN:
+    Use the encoding fields for identification, the manifest for program/params,
+    and the lift registry for pattern evidence.
+  + BECAUSE:
+    Explicit encodings make exotype knowledge inspectable and comparable.
+  + NEXT-STEPS:
+    - Confirm lift rules for this exotype in futon5 lift registry.
+
+@exotype-encoding
+  :bit-order :msb->lsb
+  :bits-b7..b0 [0 0 0 0 1 1 1 0]
+
+@exotype-program
+  :program-id :contextual-mutate+mix
+  :program-name "contextual-mutate+mix"
+  :program-kind :stochastic-kleisli
+  :tier :super
+  :scope :kernel-transformer
+  :inputs {:kernel-transformer [:kernel-spec :context :params :rng], :context-step [:history :rng]}
+  :outputs [:kernel-spec]
+  :invariants [:normalize :probabilistic-update]
+  :word-variation :by-tier
+  :notes "From futon5/resources/exotype-program-manifest.edn."
+
+
+@exotype-lift
+  :pattern-ids ["ai4ci/technical-grounding" "aif/structured-observation-vector" "dsc/evidence-situated-log" "fulab/pattern-propose" "library-coherence/library-evidence-ledger" "p4ng/boundary-oscillation" "p4ng/call-a-synthesizer" "p4ng/co-design-partners-agent" "p4ng/feedback-rhythms" "p4ng/five-p-rhythm" "p4ng/institutional-drift" "p4ng/meta-reflection-loop-agent" "p4ng/pattern-activation" "p4ng/readiness-windows" "p4ng/timebox-the-core" "p4ng/timebox-the-core-agent" "p4ng/timebox-the-core-agent-prime" "p4ng/two-stage-fidelity" "t4r/exec-summary-tree" "t4r/legacy" "t4r/rationale" "t4r/supplement" "vsat/reflective-container"]
+  :ct-template (category {:name :exotic/vision-ai4ci-technical-grounding, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})
+  :lift-rules nil
+  :evidence [{:pattern-id "ai4ci/technical-grounding", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-ai4ci-technical-grounding, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})} {:pattern-id "aif/structured-observation-vector", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-aif-structured-observation-vector, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})} {:pattern-id "dsc/evidence-situated-log", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "fulab/pattern-propose", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "library-coherence/library-evidence-ledger", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-library-coherence-library-evidence-ledger, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})} {:pattern-id "p4ng/boundary-oscillation", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/call-a-synthesizer", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/co-design-partners-agent", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/feedback-rhythms", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/five-p-rhythm", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/institutional-drift", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/meta-reflection-loop-agent", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/pattern-activation", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/readiness-windows", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/timebox-the-core", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/timebox-the-core-agent", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/timebox-the-core-agent-prime", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "p4ng/two-stage-fidelity", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "t4r/exec-summary-tree", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"} {:pattern-id "t4r/legacy", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-t4r-legacy, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})} {:pattern-id "t4r/rationale", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-t4r-rationale, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})} {:pattern-id "t4r/supplement", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-t4r-supplement, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})} {:pattern-id "vsat/reflective-container", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"}]
+  :notes "Lift registry evidence from futon5/resources/exotype-xenotype-lift.edn."
+
+
+@exotype-params
+  :rotation 0
+  :match-threshold 0.2222222222222222
+  :invert-on-phenotype? true
+  :update-prob 0.75
+  :mix-mode :swap-halves
+  :mix-shift 0
+  :notes "From futon5/resources/exotype-program-manifest.edn."

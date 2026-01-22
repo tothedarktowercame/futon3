@@ -45,9 +45,9 @@
 
 @exotype-lift
   :pattern-ids ["agent/commitment-varies-with-confidence"]
-  :ct-template nil
+  :ct-template (category {:name :exotic/vision-agent-commitment-varies-with-confidence, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})
   :lift-rules nil
-  :evidence [{:pattern-id "agent/commitment-varies-with-confidence", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn"}]
+  :evidence [{:pattern-id "agent/commitment-varies-with-confidence", :source :futon3a, :source-path "futon5/resources/exotype-xenotype-lift.edn", :ct-template (category {:name :exotic/vision-agent-commitment-varies-with-confidence, :objects [:constraint :future :start :rationale :context :action], :morphisms {:m-next [:action :future], :m-if-next [:context :future], :m-because [:rationale :action], :m-start [:start :action], :m-however-next [:constraint :future], :m-because-next [:rationale :future], :m-if [:context :action], :m-however [:constraint :action], :m-start-next [:start :future]}, :compose {[:m-next :m-start] :m-start-next, [:m-next :m-if] :m-if-next, [:m-next :m-however] :m-however-next, [:m-next :m-because] :m-because-next}})}]
   :notes "Lift registry evidence from futon5/resources/exotype-xenotype-lift.edn."
 
 
@@ -59,7 +59,3 @@
   :mix-mode :swap-halves
   :mix-shift 0
   :notes "From futon5/resources/exotype-program-manifest.edn."
-@exotype-ratchet
-  :evidence [{:scale 2.3390891459906458, :delta-q50-n 0.7359024010272638, :exotype {:sigil "认", :tier :local, :params {:rotation 2, :match-threshold 0.4444444444444444, :invert-on-phenotype? true, :update-prob 0.75, :mix-mode :swap-halves, :mix-shift 0}}, :delta-mean-n 0.6748958723978717, :window 5, :threshold 0.02, :seed 132996239, :delta-score 0.8496492419248143, :delta-weighted 0.6992984838496286, :at "2026-01-21T23:09:11.101143038Z", :gate nil, :final-score 31.1592791074778, :run-id 101, :log "/tmp/ratchet-sanity-gated-20260121-230352.edn"}]
-@exotype-ratchet
-  :evidence [{:ct-template nil, :scale 2.3390891459906458, :delta-q50-n 0.7359024010272638, :exotype {:sigil "认", :tier :local, :params {:rotation 2, :match-threshold 0.4444444444444444, :invert-on-phenotype? true, :update-prob 0.75, :mix-mode :swap-halves, :mix-shift 0}}, :delta-mean-n 0.6748958723978717, :window 5, :threshold 0.02, :seed 132996239, :delta-score 0.8496492419248143, :ct-source nil, :delta-weighted 0.6992984838496286, :at "2026-01-21T23:27:41.896541690Z", :gate nil, :final-score 31.1592791074778, :run-id 101, :log "/tmp/ratchet-sanity-gated-20260121-230352.edn"}]

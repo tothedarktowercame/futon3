@@ -1,0 +1,32 @@
+@flexiarg control/agential-pattern-hygiene
+@title Agential Pattern Hygiene
+@sigils [🧹/洁 📝/维]
+@factor Energy (viriya) — sustained effort to maintain what matters
+
+! conclusion:
+  When using design patterns as agent governance, teach agents to maintain pattern quality by promoting evidence and updating core reasoning
+
+  + context: You are using flexiarg patterns as a control layer for agential coding infrastructure.
+  + IF:
+    Patterns guide agent behavior through IF/HOWEVER/THEN/BECAUSE reasoning and accumulate evidence in EVIDENCE/NEXT-STEPS sections
+
+  + HOWEVER:
+    Agents don't automatically know to maintain patterns — they may treat patterns as write-only logs, appending evidence without updating core reasoning or promoting next-steps to evidence when completed
+
+  + THEN:
+    Explicitly teach agents pattern hygiene: (1) move completed NEXT-STEPS to EVIDENCE when done, (2) update core IF/HOWEVER/THEN/BECAUSE if evidence refutes or refines the reasoning, (3) prune obsolete next-steps, (4) mark patterns for promotion (:stub→:greenfield→:active→:settled) when criteria met
+
+  + BECAUSE:
+    Patterns can increase in quality through use and become living documents that reflect learned experience, rather than degrading into unmaintained dumping grounds. This keeps the library curated and trustworthy.
+
+  + EVIDENCE:
+    evidence[2026-01-22: During futon3a.devmap review, Joe spotted that P3 (Meme Layer) had dependency direction wrong and P2 (Compass) was missing prior art from futon2/fulab. These were fixed by updating EVIDENCE section and refining BECAUSE clause — pattern improved through review]
+    evidence[library/control patterns themselves model this: effort-estimation, agential-oss-infrastructure, agential-efficiency-measurement were created when meta-patterns became clear during devmap work]
+
+  + NEXT-STEPS:
+    next[Add pattern hygiene instructions to fucodex/fuclaude system prompts]
+    next[When agent completes a next-step, prompt it to move that step to evidence]
+    next[In morning review protocol (futon3a/P5), include pattern hygiene check: any next-steps that should be promoted?]
+    next[In library evidence feedback (futon3a/P6), flag patterns with stale next-steps (not updated in 4+ weeks) for hygiene review]
+    next[Test: run 5 sessions with explicit hygiene prompts, measure whether patterns improve vs degrade]
+

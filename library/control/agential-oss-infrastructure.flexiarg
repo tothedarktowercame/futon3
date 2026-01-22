@@ -1,0 +1,31 @@
+@flexiarg control/agential-oss-infrastructure
+@title Agential Open Source Infrastructure
+@sigils [🤖/源 📜/迹]
+@factor Joy (pīti) — effective action that leaves traceable evidence
+
+! conclusion:
+  When agents write significant code in open-source contexts, make learning loops explicit via tool-use logging (PSR/PUR, sidecar audit trails)
+
+  + context: You are building infrastructure for agent-assisted or agent-authored open-source software.
+  + IF:
+    Agential programming is real — agents write, review, and maintain significant portions of codebases
+
+  + HOWEVER:
+    You remain committed to open-source principles: transparency, auditability, collaborative improvement
+
+  + THEN:
+    Develop explicit open-source infrastructure for agents: tool-use logging (sidecar), pattern selection records (PSR), pattern use records (PUR), confidence scoring, evidence chains
+
+  + BECAUSE:
+    Human OSS relies on tacit learning loops (code review norms, testing practices, maintainer judgment acquired through socialization). Agents don't learn through socialization — their learning loops must be explicit, machine-checkable, and auditable. This makes certain economic and coordination patterns visible that were previously implicit.
+
+  + EVIDENCE:
+    evidence[futon3a sidecar implements PSR/PUR logging for pattern-guided agent work]
+    evidence[musn_chat_supervisor.clj aggregates pattern traces for review]
+    evidence[p4ng paper (Patterns for a New Generation) describes PSR/PUR as audit mechanism]
+
+  + NEXT-STEPS:
+    next[Document how sidecar logging enables new coordination patterns beyond traditional OSS]
+    next[Identify which tacit human OSS practices need explicit agent infrastructure]
+    next[Consider: does this infrastructure frighten traditional OSS communities? If so, how to frame it gently?]
+    next[Explore post-OSS economic models that emerge when learning loops are explicit]

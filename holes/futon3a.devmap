@@ -89,6 +89,8 @@
   + EVIDENCE:
     evidence[futon3a/docs/compass-demonstrator-plan.md defines architecture]
     evidence[Early compass code exists in futon3a/src/futon/compass.clj (stub)]
+    evidence[futon2 implements EFE (Expected Free Energy) scoring for AIF ant policies — compass extends this to pattern selection]
+    evidence[fulab adapters (lab-aif-equip.clj) provide infrastructure for GFE/EFE computation — compass reuses this machinery]
 
   + NEXT-STEPS:
     next[Implement preference extraction from flexiarg THEN/HOWEVER/NEXT-STEPS fields]
@@ -118,7 +120,7 @@
   + IF: Portal uses token matching (keyword/hotword scoring)
   + HOWEVER: Semantically similar patterns may not share keywords; keyword search misses relevant candidates
   + THEN: Build ANN index from pattern embeddings (GloVe, fastText, or MiniLM) and use for similarity search
-  + BECAUSE: Xenotype compression (CT templates) is the goal, but embeddings are a useful intermediate step
+  + BECAUSE: Semantic similarity via embeddings captures useful structure that keyword search misses, providing preliminary evidence for what Xenotype CT compression will eventually formalize
 
   + EVIDENCE:
     evidence[futon3a/docs/pattern-indexing.md documents embedding options]
@@ -129,6 +131,8 @@
     next[Add ANN query endpoint to Portal (fallback to keyword search if ANN unavailable)]
     next[Blind test: compare ANN retrieval vs keyword retrieval on 20 known-good pattern-task pairs]
     next[If ANN wins: promote to default; if keyword wins: keep as optional enhancement]
+    next[Once Xenotype CT work (P7) is active, compare CT-based retrieval against ANN baseline]
+    next[Eventually: replace or augment ANN search with Xenotype compression once validated]
 
   :success-criteria
     pass[ANN index builds in <5min for ~400 patterns]
@@ -167,6 +171,7 @@
     pass[Queue file is valid EDN and supervisor parses it correctly]
     pass[Missions execute sequentially; queue advances on success]
     pass[Escalations are logged when fucodex exits non-zero or logs "blocked"]
+    pass[Every mission logs token consumption (input/output) and wall-clock duration]
     pass[Morning review shows: completed missions, escalated issues, remaining queue]
     fail[Queue executes missions in parallel (race condition)]
     fail[Escalation not triggered when fucodex fails]
@@ -189,6 +194,7 @@
 
   + EVIDENCE:
     evidence[Morning review concept documented in futon0/README-excursions.md]
+    evidence[2026-01-22 session: Claude + Joe walked through futon3a.devmap P0-P4, Joe provided feedback per prototype, spotted issues (P3 dependency direction, P2 missing prior art, P4 missing measurement), approved/refined each. Format was effective: structured, bounded, actionable within 30min]
 
   + NEXT-STEPS:
     next[Write morning-review script: reads /tmp/night-shift-log.edn or /tmp/musn-mission-queue.edn]
@@ -222,6 +228,7 @@
   + EVIDENCE:
     evidence[Sidecar logs exist with pattern IDs and outcomes]
     evidence[Library coherence patterns exist (library-coherence/library-evidence-ledger)]
+    evidence[2026-01-22: Despite ~80 coherence patterns in library, futon3/futon5 devmaps are hard to follow - unclear what's done, coherence routines are hard to run. Customer pain: pattern authors (Joe + Claude) can't easily use their own patterns. This signals that patterns need evidence-based curation, not just accumulation]
 
   + NEXT-STEPS:
     next[Write evidence aggregator: parse all sidecar logs, group by pattern ID]
@@ -243,26 +250,30 @@
 
 ! instantiated-by: Prototype 7 — Xenotype CT Attachment [🔷/型 🧬/构]
   :maturity :stub
-  :depends-on [futon5/E1-Stage6, futon3a/P1]
+  :depends-on [futon5/E1-Stage6, futon3a/P1, futon3a/P3]
   :evidence-for-greenfield [CT templates can be serialized in flexiarg format]
   :evidence-for-active [Patterns have attached CT templates; templates are used in compass scoring]
 
-  + context: You want patterns to be compressed via Xenotype CT templates, not just stored as text.
+  + context: You want patterns to be compressed via Xenotype CT templates, not just stored as text or embeddings.
   + IF: Futon5 E1 produces validated hexagram families with CT interpretations
-  + HOWEVER: No mechanism to attach CT templates to futon3 library patterns
-  + THEN: Define CT template format in flexiarg, attach to patterns, use in compass preference extraction
-  + BECAUSE: Xenotype compression is ~10^6x more powerful than embedding distance
+  + HOWEVER: No mechanism to attach CT templates to futon3 library patterns, and current embedding-based retrieval (P3) provides only geometric similarity
+  + THEN: Define CT template format in flexiarg, attach to patterns, use in compass preference extraction, validate against P3 ANN baseline
+  + BECAUSE: Xenotype compression is ~10^6x more powerful than embedding distance — it captures operational structure, not just proximity
 
   + EVIDENCE:
     evidence[Futon5 E1 plan includes Stage 6: CT interpretation (futon5/docs/Excursion-1-P1-xenotype-motifs.md)]
     evidence[p4ng paper discusses pattern anatomy with CT implications]
+    evidence[2026-01-22: Sigils already exist as pattern decorators (@sigils [🔷/型 🧬/构]) throughout library. Hanzi characters are proto-sigils. Initial prototype: extract hanzi from @sigils fields → maps to 64 hexagrams (constrained vocab). Sigils became sigils when used to annotate patterns - this is evidence the CT attachment will work]
 
   + NEXT-STEPS:
+    next[Extract hanzi from existing @sigils decorators across library as proto-sigil dataset]
+    next[Map proto-sigils to 64 hexagram families (constrained vocab) - initial attachment]
     next[Define CT template schema: what fields, how to serialize in flexiarg]
     next[Implement CT attachment: add @ct-template field to flexiarg format]
     next[Update compass to extract CT templates and use in preference model]
     next[Test: attach CT template to tai-zone pattern, verify compass uses it]
     next[Wait for futon5 E1 Stage 6 to produce validated CT templates, then attach to library patterns]
+    next[Consider cyber-pattern companion prototype: treat patterns themselves as CT objects (morphisms between patterns, pattern composition laws), analogous to cyber-ants and cyber-MMCAs]
 
   :success-criteria
     pass[CT templates can be serialized in flexiarg and parsed by futon3a]
@@ -275,7 +286,7 @@
   :pur-template "Attached CT template to {{pattern-id}}, compass used it: {{yes|no}}, confidence delta: {{delta}}"
 
 
-! instantiated-by: Prototype 8 — Futon3a→Futon0 Telemetry Bridge [📡/传 📊/监]
+! instantiated-by: Prototype 8 — Futon3a→Futon0 Telemetry Bridge (Raw) [📡/传 📊/监]
   :maturity :stub
   :depends-on [futon0/P2, futon3a/P1]
   :evidence-for-greenfield [Sidecar logs are pushed to futon0 for vitality tracking]
@@ -296,6 +307,7 @@
     next[Add sidecar export: after session ends, push PSR/PUR summary to futon0]
     next[Write futon0 scanner: reads pattern telemetry, aggregates by day/week]
     next[Add to HUD: pattern-activity chart (selections/uses/outcomes per day)]
+    next[Note: This is raw telemetry only; see P10 for intelligent digest/compression]
 
   :success-criteria
     pass[Sidecar logs are pushed to futon0 telemetry directory]
@@ -308,35 +320,104 @@
   :pur-template "Pushed {{event-count}} pattern events to futon0, scanner updated: {{yes|no}}"
 
 
-! instantiated-by: Prototype 9 — Stabilization Mission Sequence [🔧/稳 ✅/固]
-  :maturity :greenfield
-  :depends-on [futon3a/P0, futon3a/P1, futon3a/P4]
-  :evidence-for-active [Stabilization missions defined and queued]
-  :evidence-for-settled [All stabilization missions pass for 2 consecutive weeks]
+! instantiated-by: Prototype 10 — Proof-Theoretic Digest/Compression [🗜️/压 📬/信]
+  :maturity :stub
+  :depends-on [futon3a/P1, futon3a/P6, futon3a/P8, futon5/reflection-layer]
+  :evidence-for-greenfield [Digest pipeline runs: 1000 PSR/PURs → 100 patterns → 10 messages]
+  :evidence-for-active [Morning review uses digest, not raw logs; digest is actionable in <5min]
 
-  + context: You need futon3a to be reliable before night-shift automation is trustworthy.
-  + IF: Futon3a basic prototype exists (portal, sidecar, supervisor)
-  + HOWEVER: Not battle-tested; may have edge cases, race conditions, or silent failures
-  + THEN: Define stabilization mission sequence: daily smoke tests, stress tests, error injection
-  + BECAUSE: 2 months of steady work = systematic testing and hardening
+  + context: You need to review overnight work efficiently, not wade through thousands of raw PSR/PUR events.
+  + IF: Night-shift produces hundreds or thousands of PSR/PUR events across multiple missions
+  + HOWEVER: Human vitality assessment requires compression: showing 1000 raw events is not actionable
+  + THEN: Build proof-theoretic compression pipeline: (1) aggregate PSR/PURs by pattern ID, (2) cluster patterns by coherence theme, (3) generate high-level inbox messages using categorical structure
+  + BECAUSE: Mathematical discipline (CT, proof theory) provides principled compression. Evidence chains, pattern composition, and morphisms between patterns allow 1000→100→10 compression while preserving actionable signal.
+
+  + EVIDENCE:
+    evidence[2026-01-22: Joe noted "vitality doesn't mean 1000s of PSRs/PURs in the morning, need 1000→100→10 compression"]
+    evidence[Proof-theoretic foundations (CT, category of patterns) provide compression structure]
+    evidence[P7 cyber-pattern idea: patterns as CT objects with morphisms, enables compositional reasoning]
+    evidence[futon5/src/futon5/ct/dsl.clj already has design-pattern-category with objects (if/then/however/because/next-steps), plus Category/Functor/NaturalTransformation infrastructure]
+    evidence[futon0/README-excursions.md defines C1-C4 coherence missions for stack introspection — CT formalization would give these missions mathematical discipline]
+    evidence[futon5 reflection layer (proposed): futon-stack-category, devmap-category, devmap→stack functor — CT model of the stack itself, which P10 can call for principled compression]
+    evidence[2026-01-22: Joe recalled prior discussion of "self-describing stack" but it was hard to find in current devmaps/docs. The failure mode (can't find cool idea in own stack) is itself evidence that we need CT-backed reflection layer]
+
+  + NEXT-STEPS:
+    next[Stage 1: Aggregate PSR/PURs by pattern ID (1000 events → 100 patterns with counts/outcomes)]
+    next[Stage 2: Cluster patterns by coherence namespace (stack, devmap, library, workflow, code)]
+    next[Stage 3: Extract themes using categorical structure (which patterns compose? which patterns are terminal?)]
+    next[Stage 4: Generate inbox messages: "10 stack-coherence patterns used, 8 succeeded, 2 escalated: X and Y"]
+    next[Test: run night-shift with 100+ PSR/PUR events, verify digest is actionable in <5min]
+    next[Integration: morning review (P5) reads digest, not raw logs]
+
+  :success-criteria
+    pass[Digest compresses 1000 PSR/PURs to ~10 actionable messages]
+    pass[Compression preserves critical signal: escalations, failures, new patterns]
+    pass[Messages use categorical structure (pattern composition, coherence themes) not just counting]
+    pass[Human can make go/no-go decisions in <5min based on digest alone]
+    fail[Digest loses critical information (e.g., silent failure not surfaced)]
+    fail[Messages are still too verbose or require reading raw logs]
+
+  :psr-example "Selected proof-theoretic-digest for morning review because 1000 raw PSR/PURs is not actionable"
+  :pur-template "Compressed {{raw-event-count}} events to {{message-count}} messages, review-time: {{minutes}}min, actionable: {{yes|no}}"
+
+
+! instantiated-by: Prototype 11 — Stabilization & Hub Demonstration [🔧/稳 ⚙️/枢]
+  :maturity :greenfield
+  :depends-on [futon3a/P0, futon3a/P1, futon3a/P4, futon3a/P10]
+  :evidence-for-active [Stabilization missions defined and queued; futon3a coordinates cross-stack missions]
+  :evidence-for-settled [All stabilization missions pass for 2 consecutive weeks; futon3a serves as operational hub for futon0-7]
+
+  + context: You need futon3a to be reliable AND demonstrate it can serve as the coordination hub for the entire FUTON stack.
+  + IF: Futon3a basic prototype exists (portal, sidecar, supervisor, digest) and FUTON stack has 8 repos (futon0-7)
+  + HOWEVER: Futon3a is not battle-tested, AND its role as central coordination hub is not yet proven
+  + THEN: Define stabilization missions that test reliability AND hub missions that demonstrate cross-stack coordination (futon0 vitality + futon3 patterns + futon5 MMCA + futon2 AIF)
+  + BECAUSE: Futon3a has outsized leverage — if it becomes the reliable hub, the entire stack benefits. This justifies Claude Max investment. Not just smoke tests, but demonstrating futon3a can orchestrate the whole.
 
   + EVIDENCE:
     evidence[README-excursions.md calls out "2 months of steady work to become reliable"]
+    evidence[2026-01-22: Joe noted "this work has outsized leverage on rest of FUTON stack, that's why Claude Max is worth it - not just battle testing but demonstrating futon3a can become the hub"]
+    evidence[Coherence missions C0-C4 already sketched: library scan, devmap migration, workflow coherence]
 
   + NEXT-STEPS:
-    next[Define stabilization missions: S1 (smoke test), S2 (concurrent sessions), S3 (error recovery), S4 (queue edge cases)]
-    next[S1: Run portal query + sidecar logging in isolation, verify logs are valid]
-    next[S2: Run 3 fucodex sessions concurrently, verify no race conditions in logs]
-    next[S3: Kill fucodex mid-run, verify supervisor detects and escalates]
-    next[S4: Queue 5 missions with dependencies, verify execution order is correct]
-    next[Run stabilization sequence weekly for 8 weeks]
+    next[Structure as interleaved mission sequence so hub and stability co-evolve:]
+
+    next[Week 1-2 Missions (Foundation):
+      M1: S1 smoke test (portal + sidecar isolation) + H1-lite (query patterns from futon3 only)
+      M2: Verify M1 logs, fix issues, iterate until clean
+      Checkpoint: basic portal/sidecar works, PSR/PUR logs valid]
+
+    next[Week 3-4 Missions (Cross-stack):
+      M3: S2 concurrent sessions + H1-full (portal queries futon2 AIF + futon5 MMCA patterns)
+      M4: S3 error recovery (kill mid-run) + H2-lite (raw telemetry to futon0)
+      Checkpoint: cross-repo queries work, supervisor escalates on failures]
+
+    next[Week 5-6 Missions (Compression):
+      M5: P10 digest implementation (1000→100→10 compression)
+      M6: H2-full (digest integrates with futon0 vitality) + S4 queue edge cases
+      Checkpoint: morning review uses digest, queue handles edge cases]
+
+    next[Week 7-8 Missions (Hub demonstration):
+      M7: H3 coordinate futon5 E1 Stage 1 via overnight mission queue
+      M8: Full hub demo: queue 3 cross-stack missions overnight, morning review via digest, make go/no-go decisions in <5min
+      Checkpoint: futon3a is operational hub for FUTON stack]
+
+    next[Each mission runs as overnight Codex work with morning review protocol]
+    next[Failures don't block — they become evidence for what needs hardening]
 
   :success-criteria
     pass[All stabilization missions pass without manual intervention]
+    pass[Hub missions demonstrate futon3a coordinates across futon0, futon2, futon3, futon5]
     pass[Edge cases (concurrent sessions, killed processes, malformed queue) are handled gracefully]
-    pass[After 8 weeks: no new failure modes discovered]
+    pass[After 8 weeks: futon3a is the proven operational hub for FUTON stack]
     fail[Same failure mode recurs 3+ times without fix]
     fail[Silent failures (no error logged but incorrect behavior)]
+    fail[Hub missions show futon3a cannot reliably coordinate cross-stack work]
 
-  :psr-example "Selected stabilization-missions for futon3a hardening because prototype needs 2 months of testing"
-  :pur-template "Ran {{mission-count}} stabilization missions, passed {{passed}}, failed {{failed}}, new-issues: {{count}}"
+  :psr-example "Selected stabilization-and-hub for futon3a because it has outsized leverage on entire FUTON stack"
+  :pur-template "Ran {{stabilization-count}} stability missions + {{hub-count}} hub missions, stability: {{passed-s}}/{{total-s}}, hub-coordination: {{passed-h}}/{{total-h}}, new-issues: {{count}}"
+
+  :effort-estimate {
+    :tokens {:context 50k :implementation 200k :review 20k}
+    :hours {:joe 16 :codex 40}
+    :confidence :medium
+  }

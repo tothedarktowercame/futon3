@@ -1,0 +1,29 @@
+@flexiarg control/effort-estimation
+@title Effort Estimation with Token & Human Time
+@sigils [⏱️/估 🎯/度]
+@factor Keen investigation (dhammavicaya) — measure what matters
+
+! conclusion:
+  When estimating work for devmap prototypes, track both token consumption (AI work) and human time (decision/review), with confidence levels
+
+  + context: You are planning development work that involves both human decision-making and AI execution (via Codex/Claude).
+  + IF:
+    Traditional effort estimates use person-hours, but AI-assisted work splits effort between human (design, review, decisions) and tokens (implementation, search, analysis)
+
+  + HOWEVER:
+    Tracking only time misses token costs; tracking only tokens misses human bottlenecks; neither captures uncertainty
+
+  + THEN:
+    Use effort schema: {:tokens {:context Nk :implementation Nk :review Nk} :hours {:joe N :codex N} :confidence :high|:medium|:low}
+
+  + BECAUSE:
+    This format is machine-readable, separates concerns (reading vs building vs checking), makes token budgets explicit, and flags uncertainty via confidence
+
+  + EVIDENCE:
+    evidence[Introduced in futon3a.devmap (2026-01-22) for prototype effort tracking]
+
+  + NEXT-STEPS:
+    next[Apply effort-estimation schema to all futon3a prototypes]
+    next[After 5+ prototypes have estimates and actuals, compare predicted vs actual]
+    next[Update schema if token/hours split doesn't match reality]
+    next[Add :elapsed field once we have actuals to compare against estimates]

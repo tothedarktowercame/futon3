@@ -1,0 +1,33 @@
+@flexiarg control/agential-efficiency-measurement
+@title Agential Efficiency Measurement
+@sigils [⚡/效 📊/测]
+@factor Tranquility (passaddhi) — avoid running hot, measure actual consumption
+
+! conclusion:
+  When building agential coding infrastructure, measure token consumption and execution time as proxies for energy usage
+
+  + context: You are building systems where AI agents perform significant computational work (code generation, analysis, search).
+  + IF:
+    Agential coding can increase productivity and enable new capabilities
+
+  + HOWEVER:
+    Current energy usage patterns for AI inference are non-trivial; without measurement, efficiency claims are unfounded
+
+  + THEN:
+    Instrument all agent operations to measure: tokens consumed (input + output), wall-clock time, retries/failures. Log these metrics per mission/session. Compare agent-assisted work against human-only baseline where possible.
+
+  + BECAUSE:
+    (1) Planetary: Energy efficiency matters. If agential coding is less efficient than human coding, that's a real cost.
+    (2) Economic: People will pay for proven efficiency gains. Unmeasured efficiency is a claim, not a fact.
+    (3) Optimization: You can only improve what you measure. Metrics reveal where agents waste tokens on unproductive loops.
+
+  + EVIDENCE:
+    evidence[futon3a/P4 (mission queue) includes pass criterion for token/time measurement per mission]
+    evidence[futon3a sidecar logs include session duration and turn counts (proxy for token use)]
+
+  + NEXT-STEPS:
+    next[Add token counters to all fucodex/fuclaude sessions (input tokens, output tokens, total)]
+    next[Log mission-level metrics: tokens/mission, time/mission, success rate]
+    next[Baseline: measure human time for equivalent tasks (where feasible)]
+    next[After 10+ missions: analyze whether night-shift automation is more efficient than equivalent human work]
+    next[If efficiency gains are proven: document them; if not: identify waste and optimize]

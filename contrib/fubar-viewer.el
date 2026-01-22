@@ -91,18 +91,6 @@
   :type '(repeat (cons symbol regexp))
   :group 'fubar-musn-viewer)
 
-(defvar fubar-musn-view-font-lock-keywords
-  '(("^\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}T[^ ]+\\)" . font-lock-comment-face)
-    ("\\[musn[^]]*\\] file_change\\b" . fubar-musn-file-change-face)
-    ("\\[musn[^]]*\\] command_execution\\b" . fubar-musn-command-face)
-    ("\\[musn[^]]*\\] reasoning\\b" . fubar-musn-reasoning-face)
-    ("\\[aif\\]" . font-lock-constant-face)
-    ("\\[pattern-[^]]+\\]" . font-lock-keyword-face)
-    ("\\[hud-[^]]+\\]" . font-lock-preprocessor-face)
-    ("\\[MUSN-PAUSE\\]\\|\\[musn-pause\\]" . font-lock-warning-face)
-    ("\\[musn-warning\\]" . font-lock-warning-face)
-    ("\\[musn-session\\]" . font-lock-builtin-face)))
-
 (defface fubar-musn-file-change-face
   '((t :foreground "dark green"))
   "Face for file change summaries."
@@ -132,6 +120,18 @@
   '((t :inherit font-lock-keyword-face :weight bold))
   "Face for MUSN running banner."
   :group 'fubar-musn-viewer)
+
+(defvar fubar-musn-view-font-lock-keywords
+  '(("^\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}T[^ ]+\\)" . font-lock-comment-face)
+    ("\\[musn[^]]*\\] file_change\\b" . 'fubar-musn-file-change-face)
+    ("\\[musn[^]]*\\] command_execution\\b" . 'fubar-musn-command-face)
+    ("\\[musn[^]]*\\] reasoning\\b" . 'fubar-musn-reasoning-face)
+    ("\\[aif\\]" . font-lock-constant-face)
+    ("\\[pattern-[^]]+\\]" . font-lock-keyword-face)
+    ("\\[hud-[^]]+\\]" . font-lock-preprocessor-face)
+    ("\\[MUSN-PAUSE\\]\\|\\[musn-pause\\]" . font-lock-warning-face)
+    ("\\[musn-warning\\]" . font-lock-warning-face)
+    ("\\[musn-session\\]" . font-lock-builtin-face)))
 
 (defconst fubar-musn--musn-prefix-re "\\[musn[^]]*\\]")
 
@@ -643,6 +643,10 @@
                        fubar-musn-folded ,folded
                        keymap ,fubar-musn-view-mode-map
                        mouse-face highlight))
+    (if (fboundp 'font-lock-ensure)
+        (font-lock-ensure start (point))
+      (when (fboundp 'font-lock-fontify-region)
+        (font-lock-fontify-region start (point))))
     (when (string-match-p "\\[musn-session\\]" line)
       (fubar-musn--set-run-finished nil)
       (fubar-musn--set-run-active nil))
@@ -680,7 +684,11 @@
                              fubar-musn-category ,category
                              fubar-musn-folded ,folded
                              keymap ,fubar-musn-view-mode-map
-                             mouse-face highlight))))
+                             mouse-face highlight))
+          (if (fboundp 'font-lock-ensure)
+              (font-lock-ensure start (point))
+            (when (fboundp 'font-lock-fontify-region)
+              (font-lock-fontify-region start (point))))))
       (when (string-match-p "\\[musn-session\\]" joined)
         (fubar-musn--set-run-finished nil)
         (fubar-musn--set-run-active nil))
@@ -690,7 +698,7 @@
         (fubar-musn--note-pause start joined))
       (when (fubar-musn--run-finished-line-p joined)
         (fubar-musn--set-run-finished t))
-      t)))
+      t))
 
 (defun fubar-musn-view-detail (&optional pos)
   "Show the full log line at POS (or point) in a detail buffer."
@@ -836,7 +844,19 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
       (when (and snapshot (not (string-empty-p snapshot)))
         (with-current-buffer buf
           (let ((inhibit-read-only t))
-            (insert snapshot)))))
+            (insert snapshot)
+            (if (fboundp 'font-lock-ensure)
+                (font-lock-ensure (point-min) (point-max))
+              (when (fboundp 'font-lock-fontify-region)
+                (font-lock-fontify-region (point-min) (point-max)))))))))
+
+(defun fubar-musn-view-fontify-buffer ()
+  "Force fontification of the current MUSN viewer buffer."
+  (interactive)
+  (if (fboundp 'font-lock-ensure)
+      (font-lock-ensure (point-min) (point-max))
+    (when (fboundp 'font-lock-fontify-region)
+      (font-lock-fontify-region (point-min) (point-max)))))
     (setq fubar-musn--proc
           (start-process "fubar-musn-tail" buf "tail" "-f" "-n" "0" log))
     (set-process-filter fubar-musn--proc #'fubar-musn--stream-filter)

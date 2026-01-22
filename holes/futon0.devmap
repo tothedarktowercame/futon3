@@ -53,11 +53,14 @@ can emerge naturally.
 + status[done]
 
 + evidence:
-  - The FUTON0 clock already exists: Tatami/API chat sessions automatically
-    emit timestamped events, providing a ground truth for daily activity.
-  - Git commits, recording timestamps, and filesystem modification times supply
-    ambient movement/engagement signals with zero added logging.
-  - FUTON1 work-session tags already show >90% end-of-session coverage.
+  - evidence[futon0/README.md#Git activity manifest] Git activity manifest
+    pipeline via `scripts/git_vitality_sync.sh` and `scripts/git_activity.py`.
+  - evidence[futon0/README.md#Zoom R4 ingest] Zoom R4 ingest + catalog via
+    `scripts/zoom_sync.py` and `systemd/README.md`.
+  - evidence[futon0/README.md#Vitality scanner stub] Vitality scanner stub in
+    `scripts/futon0/vitality/scanner.clj`.
+  - evidence[futon0/futon0_manifest.md] Signal manifest enumerates Tatami/git/
+    filesystem/recording channels for the vitality pipeline.
 
 + next:
   Build the cron-based vitality scanner; implement the weekly tai-chi HUD prompt;
@@ -100,22 +103,21 @@ can emerge naturally.
   feel lighter, more joyful, and more tractable*. When salients reappear on
   schedule and WIP remains bounded, drift does not accumulate and affect settles.
 
++ status[ready]
+
 + evidence:
-  - Org already represents the canonical project hierarchy (AOB, Ambitions).
-  - Weekly AOB/Ambitions sessions are timestamped (Tatami/API or calendar).
-  - FUTON1 tags provide >90% work-session closure coverage.
-  - Sphere balance and WIP creep can already be inferred from Org + FUTON1.
-  - status[ready-pending-final-decisions-and-testing]
-  - `futon0/futon0_rhythm.md` (cadence, envelope logging, buildout plan).
-  - `futon0/futon0_protocol.md` (open decisions + affect sourcing).
-  - `futon0/data/backup_cadence.json`, `futon0/data/backup_report_example.json`,
-    `futon0/data/backup_experiments.json`, `futon0/data/affect_markers.json`.
-  - `futon0/scripts/futon0/backup/snapshot.clj`,
-    `futon0/scripts/futon0/rhythm/envelope.clj`,
-    `futon0/scripts/futon0/rhythm/salients.clj`,
-    `futon0/scripts/futon0/rhythm/experiments.clj`,
-    `futon0/scripts/futon0/rhythm/quarterly.clj`,
-    `futon0/scripts/futon0/rhythm/dry_run.clj`.
+  - evidence[futon0/futon0_rhythm.md] Cadence, envelope logging, buildout plan.
+  - evidence[futon0/futon0_protocol.md] Open decisions + affect sourcing.
+  - evidence[futon0/data/backup_cadence.json] Cadence snapshot inputs.
+  - evidence[futon0/data/backup_report_example.json] Report example payload.
+  - evidence[futon0/data/backup_experiments.json] Rhythm experiment config.
+  - evidence[futon0/data/affect_markers.json] Affect marker index.
+  - evidence[futon0/scripts/futon0/backup/snapshot.clj] Backup snapshotter.
+  - evidence[futon0/scripts/futon0/rhythm/envelope.clj] Rhythm envelope logic.
+  - evidence[futon0/scripts/futon0/rhythm/salients.clj] Salients extraction.
+  - evidence[futon0/scripts/futon0/rhythm/experiments.clj] Rhythm experiments.
+  - evidence[futon0/scripts/futon0/rhythm/quarterly.clj] Quarterly analysis.
+  - evidence[futon0/scripts/futon0/rhythm/dry_run.clj] Dry run driver.
 
 + next:
   Consolidate the weekly sync into a fixed time; prune stale Org headings
@@ -164,6 +166,9 @@ can emerge naturally.
   Upholding alignment and constraints at the base prevents the entire FUTON
   stack from drifting into incoherence or overload. When obligations, health,
   and review practices stay grounded, forward movement becomes stable and real.
+
++ status[blocked]
++ blocked-by[missing core-obligations pulse + evidence artifacts in futon0 repo]
 
 + evidence:
   - Health baselines visible through Prototype 0 (movement/sleep Y/N).
@@ -219,6 +224,9 @@ can emerge naturally.
   while FUTON3 will later formalise this as proof-theoretic salience
   certification.
 
++ status[blocked]
++ blocked-by[missing futon1/org consolidation + futon3 salience pane artifacts]
+
 + evidence:
   - Org and FUTON1 currently reflect overlapping state that allows detection
     of divergence.
@@ -267,6 +275,9 @@ can emerge naturally.
   your future alignment opportunities. Hyperreal becomes evolutionary rather
   than transactional.
 
++ status[blocked]
++ blocked-by[missing reusable module template + proof artifacts]
+
 + evidence:
   - Existing consulting deliverables already include modular components.
   - Client communication typically happens through channels that are easily
@@ -287,7 +298,7 @@ can emerge naturally.
     - Evidence of alignment gain: smoother scoping, clearer pricing,
       better-fit clients, and reduced bespoke overhead.
 
-! instantiated-by: Prototype 5 — Ambition 2 FUTON–Arxana Stack Stewardship [💖/用 👥/久]
+! instantiated-by: Prototype 5 — Ambition 2 FUTON–Arxana Stack Stewardship [💖/久 👥/用]
 
 + context:
   FUTON0 needs a reliable, steadily improving environment for thought. Daily use
@@ -311,6 +322,9 @@ can emerge naturally.
   system stronger over time. This keeps FUTON–Arxana evolving into a stable,
   coherent environment rather than an abandoned prototype.
 
++ status[blocked]
++ blocked-by[missing daily usage evidence + architecture notes inventory]
+
 + evidence:
   - FUTON1 already supports daily usage with minimal friction.
   - Architecture notes demonstrate where documentation has prevented drift.
@@ -325,7 +339,7 @@ can emerge naturally.
     - Architecture notes showing reduced drift or clearer decision points.
     - Arxana prototypes yielding stable nodes or literate fragments.
 
-! instantiated-by: Prototype 6 — Ambition 3 Mojo, Evolving Variety, + Reflective Rhythm [💖/弓 🙇/叉]
+! instantiated-by: Prototype 6 — Ambition 3 Mojo, Evolving Variety, + Reflective Rhythm [💖/书 🙇/业]
 
 + context:
   FUTON0 needs a source of evolving, meaningful variety. Moments of “wondrous
@@ -350,6 +364,9 @@ can emerge naturally.
   refresh the generative model, and increase adaptive variety. This introduces
   just enough uncertainty to stimulate growth without destabilising the system.
 
++ status[blocked]
++ blocked-by[missing futon1 tags + concrete rhythm experiment evidence]
+
 + evidence:
   - Rhythm experiments such as PAR sessions, RAP sessions, Mojo prompts, and
     card draws have reliably triggered moments of insight without becoming rigid.
@@ -367,7 +384,7 @@ can emerge naturally.
     - Detectable reductions in stagnation or pattern ossification.
     - FUTON3 identification of proto-patterns emerging from these encounters.
 
-! instantiated-by: Prototype 7 — Ambition 4 Role Transition Trajectory [🔦/口 💖/用]
+! instantiated-by: Prototype 7 — Ambition 4 Role Transition Trajectory [🔦/口 💖/亏]
 @multiarg futon0/prototype7
 @title Ambition 4 — Applied Futon Theory: Co-Evolution With Future Environments
 @audience futon-devs, reflective-agents
@@ -399,6 +416,9 @@ can emerge naturally.
   all times are immediately accessible in certain states of consciousness. In
   applied futon theory, alignment grows through co-evolution with virtual
   states, not through selection or prediction.
+
++ status[blocked]
++ blocked-by[missing futon1 tags + alignment evidence artifacts]
 
 + evidence:
   - Prior trajectories (Hyperreal, VSATLAS, ORP, band work) emerged through
@@ -450,6 +470,9 @@ can emerge naturally.
   while FUTON3 handles representational coherence. Without the former, FUTON3
   cannot see; without the latter, FUTON0’s perceptions cannot stabilise.
   Together, they keep the stack aligned across time.
+
++ status[blocked]
++ blocked-by[missing evidence trail linking futon1 moments to futon3 devmap refreshes]
 
 + evidence:
   - Narrative reflection in this conversation has repeatedly revealed futons

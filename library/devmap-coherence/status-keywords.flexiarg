@@ -1,0 +1,49 @@
+@flexiarg devmap-coherence/status-keywords
+@title Devmap Status Keywords
+@sigils [➰/本 🌆/工]
+@factor Keen investigation (dhammavicaya)
+
+! conclusion:
+  classify each prototype with a status keyword derived from the presence of
+  next-steps and evidence, then interpret the status using the litany/system/
+  worldview/myth ladder so status reflects both activity and epistemic depth
+
+  + context: Devmap clauses already carry "next" and "evidence" signals, but
+  + context: the stack lacks a shared status language that ties those signals
+  + context: to how stable or speculative the work really is.
+
+  + IF:
+    you can extract "next-steps" and "evidence" markers from each prototype
+
+  + HOWEVER:
+    without a shared mapping, different reviewers read the same clause as done,
+    active, or speculative.
+
+  + THEN:
+    assign a status keyword using the table below and store it in the clause;
+    use the litany/system/worldview/myth mapping to communicate how stable the
+    clause is and how much interpretation remains.
+
+  + BECAUSE:
+    a precise, repeatable mapping keeps devmap reviews consistent and allows
+    automated triage without losing epistemic nuance.
+
+  + EVIDENCE:
+    for each prototype, record "next-steps present?" and "evidence present?"
+    as checkable fields, then compute the status keyword using the mapping
+    table; the table itself is the recipe, not a one-time judgment.
+
+  + STATUS-MAPPING:
+    yes next-steps + yes evidence -> :active (precision prior 0.8)
+    yes next-steps + no evidence -> :greenfield (precision prior 0.4)
+    no next-steps + yes evidence -> :settled (precision prior 0.9)
+    no next-steps + no evidence -> :stub (precision prior 0.2)
+
+  + INTERPRETATION:
+    :settled <-> litany: surface-stable, use without reopening interpretation
+    :active <-> system: ongoing dynamics, feedback and coordination costs matter
+    :greenfield <-> worldview: competing hypotheses are still in play
+    :stub <-> myth: intuitive/speculative frames not yet operationalized
+
+  + NEXT-STEPS:
+    next[Add the status keyword to each prototype line as a standard field.]

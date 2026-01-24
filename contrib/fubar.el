@@ -63,6 +63,15 @@
   "Seconds between chat room polls."
   :type 'number
   :group 'fubar)
+(defcustom fubar-chat-auto-open-runner t
+  "Auto-open the MUSN runner when a chat message announces a new session."
+  :type 'boolean
+  :group 'fubar)
+(defcustom fubar-chat-auto-open-authors '("fucodex")
+  "Chat author names that may trigger auto-opening the MUSN runner.
+Nil means allow any author."
+  :type '(repeat string)
+  :group 'fubar)
 
 ;;; State
 
@@ -116,6 +125,8 @@
 
 (defvar fubar-chat--buffer-name "*fubar-chat*"
   "Buffer name for fubar chat room.")
+(defvar fubar-chat--last-auto-session nil
+  "Last MUSN session auto-opened from chat.")
 
 ;;; HUD sync (optional, when fubar-viewer/hud is available)
 
@@ -623,13 +634,41 @@ If INTERACTIVE is non-nil, bind the HUD to this session."
              (name (or (plist-get by :name) (plist-get by :id) "chair")))
         (format "[%s] unlatch by %s (accepted %s)" at name (or bid-id "?"))))
      (t
-      (format "[%s] %s" at etype)))))
+     (format "[%s] %s" at etype)))))
+
+(defun fubar-chat--extract-session-id (text)
+  (when (and text (stringp text))
+    (when (string-match "Starting \\(musn-[A-Za-z0-9._-]+\\)\\b" text)
+      (match-string 1 text))))
+
+(defun fubar-chat--author-allowed-p (name)
+  (or (null fubar-chat-auto-open-authors)
+      (member (downcase (or name ""))
+              (mapcar #'downcase fubar-chat-auto-open-authors))))
+
+(defun fubar-chat--maybe-auto-open (event)
+  (when (and fubar-chat-auto-open-runner
+             (string= (fubar-chat--event-type event) "chat/message"))
+    (let* ((payload (plist-get event :payload))
+           (author (plist-get payload :author))
+           (name (or (plist-get author :name) (plist-get author :id) "anon"))
+           (text (plist-get payload :text))
+           (sid (fubar-chat--extract-session-id text)))
+      (when (and sid
+                 (not (string-empty-p sid))
+                 (not (equal sid fubar-chat--last-auto-session))
+                 (fubar-chat--author-allowed-p name))
+        (setq fubar-chat--last-auto-session sid)
+        (require 'fubar-viewer nil t)
+        (when (fboundp 'fubar-musn-view-session)
+          (fubar-musn-view-session sid))))))
 
 (defun fubar-chat--apply-events (events)
   (when (vectorp events)
     (dotimes (idx (length events))
       (let ((event (aref events idx)))
-        (fubar-chat--append-line (fubar-chat--format-event event))))))
+        (fubar-chat--append-line (fubar-chat--format-event event))
+        (fubar-chat--maybe-auto-open event)))))
 
 (defun fubar-chat-refresh ()
   "Poll the current chat room for new events."

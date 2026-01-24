@@ -58,6 +58,7 @@
 (defvar-local fubar-musn--last-pause-marker nil)
 (defvar-local fubar-musn--run-finished nil)
 (defvar-local fubar-musn--session-locked nil)
+(defvar-local fubar-musn--disabled nil)
 
 (defcustom fubar-musn-stream-folding-enabled t
   "Whether folding is enabled in the MUSN viewer."
@@ -95,31 +96,37 @@
   '((t :foreground "dark green"))
   "Face for file change summaries."
   :group 'fubar-musn-viewer)
+(defvar fubar-musn-file-change-face 'fubar-musn-file-change-face)
 
 (defface fubar-musn-command-face
   '((t :foreground "orange"))
   "Face for command execution summaries."
   :group 'fubar-musn-viewer)
+(defvar fubar-musn-command-face 'fubar-musn-command-face)
 
 (defface fubar-musn-reasoning-face
   '((t :foreground "purple"))
   "Face for reasoning summaries."
   :group 'fubar-musn-viewer)
+(defvar fubar-musn-reasoning-face 'fubar-musn-reasoning-face)
 
 (defface fubar-musn-pause-banner-face
   '((t :inherit font-lock-warning-face :weight bold))
   "Face for MUSN pause banner."
   :group 'fubar-musn-viewer)
+(defvar fubar-musn-pause-banner-face 'fubar-musn-pause-banner-face)
 
 (defface fubar-musn-finished-banner-face
   '((t :inherit success :weight bold))
   "Face for MUSN finished banner."
   :group 'fubar-musn-viewer)
+(defvar fubar-musn-finished-banner-face 'fubar-musn-finished-banner-face)
 
 (defface fubar-musn-running-banner-face
   '((t :inherit font-lock-keyword-face :weight bold))
   "Face for MUSN running banner."
   :group 'fubar-musn-viewer)
+(defvar fubar-musn-running-banner-face 'fubar-musn-running-banner-face)
 
 (defvar fubar-musn-view-font-lock-keywords
   '(("^\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}T[^ ]+\\)" . font-lock-comment-face)
@@ -209,7 +216,14 @@
   (setq-local fubar-musn--run-finished nil)
   (setq-local fubar-musn--run-active nil)
   (setq-local fubar-musn--session-locked nil)
-  (setq-local header-line-format nil))
+  (setq-local header-line-format nil)
+  (when (not (string= (buffer-name) fubar-musn-view-buffer))
+    (setq-local fubar-musn--disabled t)
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (insert "fubar-musn-view-mode is intended for the viewer buffer only.\n"
+              "Use M-x fubar-musn-view-stream to open the MUSN viewer.\n"))
+    (message "fubar-musn-view-mode: use fubar-musn-view-stream instead")))
 
 (defun fubar-musn--generate-session-id ()
   (format "musn-%s"
@@ -698,7 +712,7 @@
         (fubar-musn--note-pause start joined))
       (when (fubar-musn--run-finished-line-p joined)
         (fubar-musn--set-run-finished t))
-      t))
+      t)))
 
 (defun fubar-musn-view-detail (&optional pos)
   "Show the full log line at POS (or point) in a detail buffer."
@@ -848,7 +862,13 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
             (if (fboundp 'font-lock-ensure)
                 (font-lock-ensure (point-min) (point-max))
               (when (fboundp 'font-lock-fontify-region)
-                (font-lock-fontify-region (point-min) (point-max)))))))))
+                (font-lock-fontify-region (point-min) (point-max))))))))
+    (setq fubar-musn--proc
+          (start-process "fubar-musn-tail" buf "tail" "-f" "-n" "0" log))
+    (set-process-filter fubar-musn--proc #'fubar-musn--stream-filter)
+    (set-process-query-on-exit-flag fubar-musn--proc nil)
+    (display-buffer buf)
+    (message "Streaming MUSN log: %s" log)))
 
 (defun fubar-musn-view-fontify-buffer ()
   "Force fontification of the current MUSN viewer buffer."
@@ -857,12 +877,6 @@ Sends /musn/turn/resume with the latest session/turn. NOTE defaults to \"proceed
       (font-lock-ensure (point-min) (point-max))
     (when (fboundp 'font-lock-fontify-region)
       (font-lock-fontify-region (point-min) (point-max)))))
-    (setq fubar-musn--proc
-          (start-process "fubar-musn-tail" buf "tail" "-f" "-n" "0" log))
-    (set-process-filter fubar-musn--proc #'fubar-musn--stream-filter)
-    (set-process-query-on-exit-flag fubar-musn--proc nil)
-    (display-buffer buf)
-    (message "Streaming MUSN log: %s" log)))
 
 (defun fubar-musn--fetch-state ()
   "Fetch current MUSN session state via HTTP and update the HUD."

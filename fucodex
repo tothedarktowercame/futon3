@@ -12,12 +12,123 @@ fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Extra deps/paths layered on top of the project basis when running lab/musn streams.
-LAB_DEPS='{:paths ["scripts" "src" "resources" "dev" "."] :deps {org.clojure/data.json {:mvn/version "2.5.0"} cheshire/cheshire {:mvn/version "5.11.0"} clj-http/clj-http {:mvn/version "3.12.3"} futon2/futon2 {:local/root "/home/joe/code/futon2"}}}'
+LAB_DEPS='{:paths ["scripts" "src" "resources" "dev" "."] :deps {org.clojure/data.json {:mvn/version "2.5.0"} cheshire/cheshire {:mvn/version "5.11.0"} clj-http/clj-http {:mvn/version "3.12.3"} futon2/futon2 {:local/root "/home/joe/code/futon2"} futon5/futon5 {:local/root "/home/joe/code/futon5"}}}'
 START_ISO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 RUN_CWD="$(pwd)"
 export PATH="$ROOT/scripts:$PATH"
 
+run_clj() {
+  (cd "$ROOT" && clojure "$@")
+}
+
+build_clj_args() {
+  clj_args=(--lab-root "$ROOT/lab")
+  if [[ -n "$PATTERNS" ]]; then
+    clj_args+=(--patterns "$PATTERNS")
+  fi
+  if [[ -n "$CHOSEN" ]]; then
+    clj_args+=(--chosen "$CHOSEN")
+  fi
+  if [[ -n "$CLOCK_IN" ]]; then
+    clj_args+=(--clock-in "$CLOCK_IN")
+  fi
+  if [[ -n "$FORCED_SESSION_ID" ]]; then
+    clj_args+=(--session-id "$FORCED_SESSION_ID")
+  fi
+  if [[ -n "$AIF_CONFIG" ]]; then
+    clj_args+=(--aif-config "$AIF_CONFIG")
+  fi
+  if [[ -n "$HUD_JSON_FILE" ]]; then
+    clj_args+=(--hud-json "$HUD_JSON_FILE")
+  fi
+  if $AIF_SELECT; then
+    clj_args+=(--aif-select)
+  fi
+  if $PROPOSAL_HOOK; then
+    clj_args+=(--proposal-hook)
+  fi
+  if $PATTERN_RPC; then
+    clj_args+=(--enforce-pattern-actions)
+  fi
+  if [[ "$PAUSE_ON_NO_WRITE" == "true" ]]; then
+    clj_args+=(--pause-on-no-write)
+  fi
+}
+
+LIVE_LOG_PID=""
+LIVE_LOG_PATH=""
+MUSN_LOG_PID=""
+MUSN_LOG_PATH=""
+INTERRUPTED=false
+
+start_live_log() {
+  build_clj_args
+  LIVE_LOG_PATH="/tmp/fucodex-live-log-$$.log"
+  (
+    while true; do
+      match="$(run_clj -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-select-session.clj" --since "$START_ISO" --cwd "$RUN_CWD" | tail -n 1)"
+      if [[ -n "$match" ]]; then
+        session_file="${match#*$'\t'}"
+        tail -n 0 -f "$session_file" | run_clj -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/lab_stream_codex.clj" "${clj_args[@]}" >>"$LIVE_LOG_PATH" 2>&1
+        break
+      fi
+      sleep 1
+    done
+  ) &
+  LIVE_LOG_PID=$!
+}
+
+stop_live_log() {
+  if [[ -n "${LIVE_LOG_PID-}" ]]; then
+    kill "$LIVE_LOG_PID" >/dev/null 2>&1 || true
+    LIVE_LOG_PID=""
+  fi
+}
+
+start_musn_log() {
+  build_clj_args
+  MUSN_LOG_PATH="/tmp/fucodex-musn-log-$$.log"
+  : > "$MUSN_LOG_PATH"
+  : > "/tmp/musn_stream.log"
+  (
+    while true; do
+      match="$(select_latest_session)"
+      if [[ -n "$match" ]]; then
+        session_file="${match#*$'\t'}"
+        tail -n 0 -f "$session_file" | run_clj -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/musn_stream.clj" >>"$MUSN_LOG_PATH" 2>&1
+        break
+      fi
+      sleep 1
+    done
+  ) &
+  MUSN_LOG_PID=$!
+}
+
+stop_musn_log() {
+  if [[ -n "${MUSN_LOG_PID-}" ]]; then
+    kill "$MUSN_LOG_PID" >/dev/null 2>&1 || true
+    MUSN_LOG_PID=""
+  fi
+}
+
+cleanup() {
+  stop_live_log
+  stop_musn_log
+}
+
+trap 'INTERRUPTED=true; cleanup; exit 130' INT
+trap cleanup EXIT
+
+select_latest_session() {
+  run_clj -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-select-session.clj" --since "$START_ISO" --cwd "$RUN_CWD" | tail -n 1
+}
+
 LIVE=false
+CLI_MODE=false
+NO_AIF=false
+NO_SUMMARY=false
+WITH_AIF=false
+LIVE_LOG=false
 PATTERNS=""
 CHOSEN=""
 CLOCK_IN=""
@@ -39,6 +150,7 @@ RAW_PROMPT=""
 APPROVAL_POLICY=""
 SKIP_GIT_CHECK=false
 HUD_PRINT=false
+HUD_SPLASH_ONLY=false
 HUD_SERVER="${HUD_SERVER:-http://localhost:5050}"
 FUTON3_CODEX_SERVER_URL="${FUTON3_CODEX_SERVER_URL:-http://localhost:6060}"
 export FUTON3_CODEX_SERVER_URL
@@ -70,11 +182,17 @@ fi
 
 show_help() {
   cat <<'EOF'
-Usage: fucodex [--live] [--patterns CSV] [--chosen PATTERN] [--clock-in PATTERN] [--session-id ID] [--aif-config PATH] [--aif-explain [PATH]]... [args...]
+Usage: fucodex [--live|--cli] [--patterns CSV] [--chosen PATTERN] [--clock-in PATTERN] [--session-id ID] [--aif-config PATH] [--aif-explain [PATH]]... [args...]
 
 Options:
   -h, --help           Show this help.
   --live               Run Codex in live mode with lab streaming.
+  --cli                Logged interactive Codex session (no live streaming).
+  --with-aif           Enable HUD splash + AIF equip (re-enables HUD and AIF after --cli).
+  --live-log           Stream Codex JSONL into lab/sessions during interactive runs.
+  --no-aif             Skip AIF equip pass after the run.
+  --no-summary         Skip lab stub summarization after the run.
+  --log-only           Skip AIF and summarization (raw/trace logs only).
   --patterns CSV       Comma-separated patterns for the run manifest.
   --chosen PATTERN     Set chosen pattern (ignored when --clock-in is provided).
   --clock-in PATTERN   Add a clock-in pattern (repeatable or comma-separated; overrides --chosen).
@@ -105,6 +223,7 @@ Options:
   --hud-server URL      HUD server base URL (default: http://localhost:5050).
 
 Examples:
+  fucodex --cli
   fucodex --live exec --prompt "Draft the summary"
   fucodex --live --patterns "ants/white-space-scout" --chosen ants/white-space-scout exec --prompt "Explain"
   fucodex --live --clock-in ants/white-space-scout --clock-in ants/pheromone-trail-tuner exec --prompt "Review"
@@ -125,6 +244,29 @@ while [[ $# -gt 0 ]]; do
       exit 0;;
     --live)
       LIVE=true; shift;;
+    --cli)
+      CLI_MODE=true
+      LIVE=false
+      HUD_MODE=false
+      NO_AIF=true
+      shift;;
+    --with-aif)
+      WITH_AIF=true
+      HUD_MODE=true
+      HUD_PRINT=true
+      NO_AIF=false
+      NO_SUMMARY=false
+      shift;;
+    --live-log)
+      LIVE_LOG=true; shift;;
+    --no-aif)
+      NO_AIF=true; shift;;
+    --no-summary)
+      NO_SUMMARY=true; shift;;
+    --log-only)
+      NO_AIF=true
+      NO_SUMMARY=true
+      shift;;
     --patterns)
       PATTERNS="$2"; shift 2;;
     --chosen)
@@ -198,6 +340,31 @@ while [[ $# -gt 0 ]]; do
       args+=("$1"); shift;;
   esac
 done
+
+if $WITH_AIF; then
+  HUD_MODE=true
+  HUD_PRINT=true
+  NO_AIF=false
+  NO_SUMMARY=false
+  if $CLI_MODE; then
+    HUD_SPLASH_ONLY=true
+  fi
+fi
+
+if $CLI_MODE; then
+  if [[ -z "${TERM-}" || "${TERM-}" == "dumb" ]]; then
+    export TERM="xterm-256color"
+  fi
+fi
+
+FUCODEX_SPLASH=$'[FUCODEX-SPLASH]\nInteractive Codex session bootstrapped via fucodex.\nLogging is enabled (lab/raw, lab/trace, lab/stubs).\nUse /home/joe/code/futon3/scripts/musn-help for the help screen.\nUse /home/joe/code/futon3/scripts/musn-hud to refresh the HUD.\n[/FUCODEX-SPLASH]'
+FUCODEX_HELP=$'[MUSN-HELP]\nYou start with 100 mana points. Gain mana by reading patterns and completing their next steps.\nMost other actions cost mana.\nHelper functions live in /home/joe/code/futon3/scripts — use those exact paths.\nRelated design patterns live in /home/joe/code/futon3/library; you may read/edit them if helpful.\nIMPORTANT: log ALL pattern reads/uses/updates via the RPC helpers below (natural language is not enough).\nTo confirm that you will use the RPC for all pattern reads/uses/updates, reply \"I will use the RPC\" and list one example usage.\nTool roster (you should emit these signals when you do the corresponding action):\n- /home/joe/code/futon3/scripts/pattern-select library/<pattern> <state why you want to read it>\n- /home/joe/code/futon3/scripts/pattern-use    library/<pattern> <state where you will apply it>\n- /home/joe/code/futon3/scripts/pattern-action read|update|implement library/<pattern> <note>\n- /home/joe/code/futon3/scripts/musn-chat      \"question for the user\" (human-contact, costs 5 mana)\n- /home/joe/code/futon3/scripts/musn-plan      \"Plan: ...\"\n- /home/joe/code/futon3/scripts/wide-search   <rg args>\n- /home/joe/code/futon3/scripts/musn-hud      Use this command to bring up helpful pattern guidance and stats about your run.\n- /home/joe/code/futon3/scripts/musn-help     Brings up this help screen.\nFurther information can be obtained by running musn-help <tool> or musn-help <pattern>\nBefore using a tool, state a 1-2 line plan.\nYour next output should exercise musn-plan by describing your next steps.\n[/MUSN-HELP]'
+
+if $CLI_MODE && $WITH_AIF && [[ ${#args[@]} -eq 0 ]]; then
+  if ! $HUD_SPLASH_ONLY; then
+    args=("Begin interactive session.")
+  fi
+fi
 
 if [[ "${CODEX_SKIP_GIT_REPO_CHECK-}" == "1" || "${CODEX_SKIP_GIT_REPO_CHECK-}" == "true" ]]; then
   SKIP_GIT_CHECK=true
@@ -327,6 +494,9 @@ line = line.replace("/home/joe/code/", "")
 print(line)
 PY
 )"
+fi
+if $CLI_MODE && $WITH_AIF && [[ -z "${HUD_INTENT-}" ]]; then
+  HUD_INTENT="Interactive fucodex session"
 fi
 
 # HUD mode: inject pattern context into prompt
@@ -466,13 +636,16 @@ PY
   if $HUD_PRINT; then
     echo "$HUD_BLOCK"
   fi
-  # Rebuild args with HUD prepended to prompt
-  # For codex, the prompt is typically the last arg or after --prompt
-  new_args=()
-  for ((i=0; i<${#args[@]}; i++)); do
-    if [[ "${args[$i]}" == "--prompt" && $((i+1)) -lt ${#args[@]} ]]; then
-      original_prompt="${args[$((i+1))]}"
-      combined_prompt="${INTENT_PREFACE}${original_prompt}
+  if $HUD_SPLASH_ONLY; then
+    echo "[fucodex] HUD splash only (interactive mode)" >&2
+  else
+    # Rebuild args with HUD prepended to prompt
+    # For codex, the prompt is typically the last arg or after --prompt
+    new_args=()
+    for ((i=0; i<${#args[@]}; i++)); do
+      if [[ "${args[$i]}" == "--prompt" && $((i+1)) -lt ${#args[@]} ]]; then
+        original_prompt="${args[$((i+1))]}"
+        combined_prompt="${INTENT_PREFACE}${original_prompt}
 ${INTENT_POSTFACE}
 
 ${HUD_BLOCK}
@@ -480,11 +653,11 @@ ${HUD_BLOCK}
 ${SCOPE_GUARDRAIL}
 
 User task: ${original_prompt}"
-      new_args+=("--prompt" "$combined_prompt")
-      ((i++))  # Skip the next element since we handled it
-    elif [[ $i -eq $((${#args[@]}-1)) && "${args[$i]}" != --* && "${new_args[*]}" != *"--prompt"* ]]; then
-      # Last arg without --prompt flag (bare prompt)
-      combined_prompt="${INTENT_PREFACE}${args[$i]}
+        new_args+=("--prompt" "$combined_prompt")
+        ((i++))  # Skip the next element since we handled it
+      elif [[ $i -eq $((${#args[@]}-1)) && "${args[$i]}" != --* && "${new_args[*]}" != *"--prompt"* ]]; then
+        # Last arg without --prompt flag (bare prompt)
+        combined_prompt="${INTENT_PREFACE}${args[$i]}
 ${INTENT_POSTFACE}
 
 ${HUD_BLOCK}
@@ -492,13 +665,14 @@ ${HUD_BLOCK}
 ${SCOPE_GUARDRAIL}
 
 User task: ${args[$i]}"
-      new_args+=("$combined_prompt")
-    else
-      new_args+=("${args[$i]}")
-    fi
-  done
-  args=("${new_args[@]}")
-  echo "[fucodex] HUD injected with ${HUD_INTENT:-unspecified} intent" >&2
+        new_args+=("$combined_prompt")
+      else
+        new_args+=("${args[$i]}")
+      fi
+    done
+    args=("${new_args[@]}")
+    echo "[fucodex] HUD injected with ${HUD_INTENT:-unspecified} intent" >&2
+  fi
 fi
 
 # Ensure MUSN handshake intent line even when HUD is disabled.
@@ -574,12 +748,15 @@ fi
 if $PATTERN_RPC; then
   export PATTERN_ACTION_RPC=1
 fi
-if $MUSN_MODE; then
-  export FUTON3_MUSN_URL="$MUSN_URL"
-  if [[ -n "$MUSN_SESSION_ID" ]]; then
-    export FUTON3_MUSN_SESSION_ID="$MUSN_SESSION_ID"
-  fi
-  export FUTON3_MUSN_HELPER_MODE="stream"
+  if $MUSN_MODE; then
+    export FUTON3_MUSN_URL="$MUSN_URL"
+    if [[ -n "$MUSN_SESSION_ID" ]]; then
+      export FUTON3_MUSN_SESSION_ID="$MUSN_SESSION_ID"
+    fi
+    if [[ -z "${FUTON3_MUSN_LOG-}" ]]; then
+      export FUTON3_MUSN_LOG="/tmp/musn_stream.log"
+    fi
+    export FUTON3_MUSN_HELPER_MODE="stream"
   if [[ -n "$AIF_CONFIG" ]]; then
     export FUTON3_MUSN_AIF_CONFIG_PATH="$AIF_CONFIG"
   fi
@@ -615,6 +792,8 @@ User task: ${args[0]}")
   fi
 fi
 
+pause_exit=false
+
 if $LIVE; then
   if [[ ${#args[@]} -eq 0 ]]; then
     echo "[lab] --live requires a codex command (use 'exec \"...\"' or a subcommand)" >&2
@@ -625,7 +804,7 @@ if $LIVE; then
     preflight_mode="${FUCODEX_PREFLIGHT:-auto}"
     preflight_mode="$(printf '%s' "$preflight_mode" | tr '[:upper:]' '[:lower:]')"
     if [[ "$preflight_mode" != "off" && "$preflight_mode" != "0" && "$preflight_mode" != "false" ]]; then
-      if ! MUSN_URL="$MUSN_URL" clojure -M -m scripts.musn_http_preflight >/dev/null; then
+      if ! MUSN_URL="$MUSN_URL" run_clj -M -m scripts.musn_http_preflight >/dev/null; then
         echo "[lab] MUSN HTTP preflight failed; aborting run" >&2
         exit 2
       fi
@@ -635,25 +814,7 @@ if $LIVE; then
     args=("${args[@]:1}")
   fi
   set -o pipefail
-  clj_args=(--lab-root "$ROOT/lab")
-  if [[ -n "$PATTERNS" ]]; then
-    clj_args+=(--patterns "$PATTERNS")
-  fi
-  if [[ -n "$CHOSEN" ]]; then
-    clj_args+=(--chosen "$CHOSEN")
-  fi
-  if [[ -n "$CLOCK_IN" ]]; then
-    clj_args+=(--clock-in "$CLOCK_IN")
-  fi
-  if [[ -n "$FORCED_SESSION_ID" ]]; then
-    clj_args+=(--session-id "$FORCED_SESSION_ID")
-  fi
-  if [[ -n "$AIF_CONFIG" ]]; then
-    clj_args+=(--aif-config "$AIF_CONFIG")
-  fi
-  if [[ -n "$HUD_JSON_FILE" ]]; then
-    clj_args+=(--hud-json "$HUD_JSON_FILE")
-  fi
+  build_clj_args
   if [[ ${#args[@]} -gt 0 ]]; then
     prompt_text=$(printf "%s " "${args[@]}")
     trail_allow=$(python3 - <<'PY'
@@ -670,18 +831,6 @@ PY
       clj_args+=(--trail-allow "$trail_allow")
     fi
   fi
-  if $AIF_SELECT; then
-    clj_args+=(--aif-select)
-  fi
-  if $PROPOSAL_HOOK; then
-    clj_args+=(--proposal-hook)
-  fi
-  if $PATTERN_RPC; then
-    clj_args+=(--enforce-pattern-actions)
-  fi
-  if [[ "$PAUSE_ON_NO_WRITE" == "true" ]]; then
-    clj_args+=(--pause-on-no-write)
-  fi
   preflight_mode="${FUCODEX_PREFLIGHT:-auto}"
   preflight_mode="$(printf '%s' "$preflight_mode" | tr '[:upper:]' '[:lower:]')"
   if [[ "$preflight_mode" != "off" && "$preflight_mode" != "0" && "$preflight_mode" != "false" ]]; then
@@ -697,7 +846,7 @@ PY
       fi
     fi
     if $preflight_needed; then
-      if ! clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab_stream_codex.clj" --help >/dev/null; then
+      if ! run_clj -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab_stream_codex.clj" --help >/dev/null; then
         echo "[lab] preflight failed: dev/lab_stream_codex.clj did not compile; aborting run" >&2
         exit 2
       fi
@@ -719,14 +868,13 @@ PY
   if [[ ${#args[@]} -gt 0 && "${args[0]}" == -* ]]; then
     codex_flags+=(--)
   fi
-  pause_exit=false
   set +e
   if $MUSN_MODE; then
     codex exec "${codex_flags[@]}" "${args[@]}" |
-      clojure -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/musn_stream.clj"
+      run_clj -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/musn_stream.clj"
   else
     codex exec "${codex_flags[@]}" "${args[@]}" |
-      clojure -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/lab_stream_codex.clj"
+      run_clj -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/lab_stream_codex.clj"
   fi
   pipe_status=("${PIPESTATUS[@]}")
   set -e
@@ -737,12 +885,53 @@ PY
   fi
 else
   set +e
-  codex "${args[@]}"
-  status=$?
+  if $LIVE_LOG; then
+    start_live_log
+  fi
+  if $MUSN_MODE; then
+    start_musn_log
+  fi
+  if $CLI_MODE && $WITH_AIF; then
+    prime_splash=$'Priming step 1/3 (splash). Do not run any tools or commands. Reply only with \"primed\".\n\n'"$FUCODEX_SPLASH"
+    prime_help=$'Priming step 2/3 (help). Do not run any tools or commands. Reply only with:\nI will use the RPC\nExample: /home/joe/code/futon3/scripts/pattern-action read library/software-design/facade \"why\"\n\n'"$FUCODEX_HELP"
+    prime_hud=$'Priming step 3/3 (HUD). Do not run any tools or commands. Reply only with \"primed\".\n\n'"${HUD_BLOCK-}"
+
+    codex exec "$prime_splash"
+    status=$?
+    if [[ $status -eq 0 ]]; then
+      latest="$(select_latest_session)"
+      session_id="${latest%%$'\t'*}"
+      if [[ -z "$session_id" ]]; then
+        echo "[fucodex] unable to locate session after splash priming" >&2
+        status=2
+      fi
+    fi
+    if [[ $status -eq 0 ]]; then
+      codex exec resume "$session_id" "$prime_help"
+      status=$?
+    fi
+    if [[ $status -eq 0 && -n "${HUD_BLOCK-}" ]]; then
+      codex exec resume "$session_id" "$prime_hud"
+      status=$?
+    fi
+    if [[ $status -eq 0 ]]; then
+      codex resume "$session_id"
+      status=$?
+    fi
+  else
+    codex "${args[@]}"
+    status=$?
+  fi
+  if $LIVE_LOG; then
+    stop_live_log
+  fi
+  if $MUSN_MODE; then
+    stop_musn_log
+  fi
   set -e
 fi
 
-mapfile -t matches < <(clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-select-session.clj" --since "$START_ISO" --cwd "$RUN_CWD")
+mapfile -t matches < <(run_clj -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-select-session.clj" --since "$START_ISO" --cwd "$RUN_CWD")
 
 if [[ ${#matches[@]} -eq 0 ]]; then
   echo "[lab] no Codex sessions found for $RUN_CWD since $START_ISO" >&2
@@ -750,7 +939,9 @@ if [[ ${#matches[@]} -eq 0 ]]; then
 fi
 
 if [[ ${#matches[@]} -gt 1 ]]; then
-  if [[ ! -t 0 ]]; then
+  if $CLI_MODE; then
+    selected="${matches[$((${#matches[@]}-1))]}"
+  elif [[ ! -t 0 ]]; then
     echo "[lab] warning: stdin is not a TTY; selecting first session (${matches[0]%%$'\t'*})" >&2
     selected="${matches[0]}"
   else
@@ -787,21 +978,25 @@ lab_export_args=(--session-file "$session_file" --repo-root "$RUN_CWD" --lab-roo
 if [[ "$lab_session_id" != "$session_id" ]]; then
   lab_export_args+=(--session-id "$lab_session_id")
 fi
-if $pause_exit; then
+if [[ "${pause_exit:-false}" == "true" ]]; then
   echo "[lab] paused; skipping lab export" >&2
 else
-  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export.clj" "${lab_export_args[@]}"
+  run_clj -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export.clj" "${lab_export_args[@]}"
 
-  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-equip.clj" \
-    --session-id "$lab_session_id" \
-    --adapter fulab \
-    --lab-root "$ROOT/lab"
+  if ! $NO_AIF; then
+    run_clj -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-aif-equip.clj" \
+      --session-id "$lab_session_id" \
+      --adapter fulab \
+      --lab-root "$ROOT/lab"
+  fi
 
-  clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-summarize.clj" \
-    --raw "$ROOT/lab/raw/${lab_session_id}.json"
+  if ! $NO_SUMMARY; then
+    run_clj -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-summarize.clj" \
+      --raw "$ROOT/lab/raw/${lab_session_id}.json"
+  fi
 fi
 
-if $pause_exit; then
+if [[ "${pause_exit:-false}" == "true" ]]; then
   echo "[lab] paused for clarification; resume with:" >&2
   echo "  fucodex --session-id ${lab_session_id} resume --last \"Clarify scope: ...\"" >&2
 fi

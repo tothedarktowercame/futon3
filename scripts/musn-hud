@@ -2,15 +2,70 @@
 set -euo pipefail
 
 session_id="${FUTON3_MUSN_SESSION_ID:-}"
+hud_server="${FUTON3_HUD_SERVER:-http://localhost:5050}"
+intent="${FUTON3_MUSN_INTENT:-${FUTON3_MUSN_PROMPT:-}}"
+cwd="${FUTON3_MUSN_CWD:-${PWD}}"
+patterns="${FUTON3_MUSN_PATTERNS:-}"
 if [[ -n "$session_id" ]]; then
   touch "/tmp/futon3-musn-hud-${session_id}.flag"
 else
   touch "/tmp/futon3-musn-hud.flag"
 fi
 
-cat <<'EOF'
+payload=$(INTENT="$intent" PROMPT="${FUTON3_MUSN_PROMPT:-}" PATTERNS="$patterns" SESSION_ID="$session_id" RUN_CWD="$cwd" python3 - <<'PY'
+import json, os, re
+intent = os.environ.get("INTENT", "").strip()
+prompt = os.environ.get("PROMPT", "").strip()
+if not intent and prompt:
+    line = prompt.splitlines()[0] if "\n" in prompt else prompt
+    line = re.sub(r"[`*_]+", "", line)
+    line = re.sub(r"\s+", " ", line).strip()
+    intent = line
+patterns = [p.strip() for p in (os.environ.get("PATTERNS", "").split(",")) if p.strip()]
+session_id = os.environ.get("SESSION_ID", "").strip()
+payload = {
+    "intent": intent,
+    "prototypes": patterns,
+    "pattern-limit": 4,
+    "certify-commit": True,
+    "repo-root": os.environ.get("RUN_CWD", os.getcwd()),
+}
+if session_id:
+    payload["session-id"] = session_id
+print(json.dumps(payload))
+PY
+)
+
+HUD_RESPONSE="$(curl -sS -X POST "${hud_server%/}/fulab/hud/format" \
+  -H "content-type: application/json" \
+  -d "$payload")" || {
+  cat <<'EOF'
 [MUSN-HUD]
-This command requests a HUD refresh on the next prompt. Look for the [FULAB-HUD]
-block to review pattern guidance and run stats.
+HUD server not reachable. Set FUTON3_HUD_SERVER or start the HUD service.
 [/MUSN-HUD]
 EOF
+  exit 0
+}
+
+HUD_BLOCK="$(printf "%s" "$HUD_RESPONSE" | python3 - <<'PY'
+import json, sys
+raw = sys.stdin.read()
+try:
+    data = json.loads(raw)
+except Exception:
+    data = {}
+prompt = data.get("prompt", "")
+if prompt:
+    sys.stdout.write(prompt)
+PY
+)"
+
+if [[ -n "$HUD_BLOCK" ]]; then
+  printf "%s\n" "$HUD_BLOCK"
+else
+  cat <<'EOF'
+[MUSN-HUD]
+HUD refresh requested. Look for a [FULAB-HUD] block on the next prompt.
+[/MUSN-HUD]
+EOF
+fi

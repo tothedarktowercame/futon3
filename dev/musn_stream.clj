@@ -43,6 +43,9 @@
 (def require-approval? (not= "0" (or (System/getenv "FUTON3_MUSN_REQUIRE_APPROVAL") "1")))
 (def musn-client-id (or (System/getenv "FUTON3_MUSN_CLIENT_ID") "fucodex"))
 (def aif-config-path (System/getenv "FUTON3_MUSN_AIF_CONFIG_PATH"))
+(def log-raw-events?
+  (contains? #{"1" "true" "yes"}
+             (str/lower-case (or (System/getenv "FUTON3_MUSN_LOG_EVENTS") ""))))
 
 (defn- strip-hud-block [prompt]
   (when (and prompt (string? prompt))
@@ -109,6 +112,36 @@
   (let [candidate (or (extract-intent-from-prompt prompt) prompt)]
     (summarize-intent candidate)))
 
+(defn- priming-message? [text]
+  (when (string? text)
+    (or (str/starts-with? (str/trim text) "Priming step")
+        (str/includes? text "[FUCODEX-SPLASH]")
+        (str/includes? text "[MUSN-HELP]")
+        (str/includes? text "[FULAB-HUD]"))))
+
+(defn- system-user-message? [text]
+  (when (string? text)
+    (or (str/starts-with? (str/trim text) "<environment_context>")
+        (str/starts-with? (str/trim text) "# AGENTS.md instructions"))))
+
+(defn- skip-user-message? [text]
+  (or (priming-message? text)
+      (system-user-message? text)))
+
+(defn- parse-function-call-args [payload]
+  (when (map? payload)
+    (let [args (:arguments payload)]
+      (when (string? args)
+        (try
+          (json/parse-string args true)
+          (catch Throwable _ nil))))))
+
+(defn- command-from-function-call [payload]
+  (let [name (:name payload)
+        args (parse-function-call-args payload)]
+    (when (and (= name "exec_command") (map? args))
+      (:cmd args))))
+
 (defn session-id [session]
   (or (:session/id session)
       (:sid session)
@@ -150,6 +183,8 @@
 (declare log-latest-aif-tap!)
 (declare tap-event-id)
 (declare log-mana-response!)
+(declare handle-turn-start!)
+(declare handle-turn-completed!)
 (declare wait-for-resume!)
 
 (defn- repo-root []
@@ -1278,9 +1313,42 @@
 
       :else nil)))
 
+(defn- handle-session-event!
+  [state musn-session event tap-listener]
+  (let [etype (:type event)
+        payload (:payload event)]
+    (cond
+      (and (= etype "event_msg")
+           (= (:type payload) "user_message"))
+      (let [text (:message payload)]
+        (when-not (skip-user-message? text)
+          (when (and (> (:turn @state) 0)
+                     (not= (:turn @state) (:turn-ended @state)))
+            (handle-turn-completed! state musn-session {:type "turn.completed"} tap-listener))
+          (handle-turn-start! state musn-session {:type "turn.started"
+                                                  :prompt text})))
+
+      (and (= etype "event_msg")
+           (= (:type payload) "agent_message"))
+      (when-let [text (:message payload)]
+        (handle-agent-message! state musn-session (:turn @state) text event))
+
+      (and (= etype "event_msg")
+           (= (:type payload) "agent_reasoning"))
+      (when-let [text (:text payload)]
+        (handle-reasoning-message! state musn-session (:turn @state) text))
+
+      (and (= etype "response_item")
+           (= (:type payload) "function_call"))
+      (when-let [cmd (command-from-function-call payload)]
+        (handle-command-execution! state musn-session (:turn @state) cmd))
+
+      :else nil)))
+
 (defn- handle-turn-start!
   [state session event]
-  (let [t (or (:turn event) (inc (:turn @state)) 1)]
+  (let [t (or (:turn event) (inc (:turn @state)) 1)
+        prompt (when (map? event) (:prompt event))]
     (swap! state assoc
            :turn t
            :selected-patterns #{}
@@ -1292,7 +1360,8 @@
            :intent nil
            :intent-seed nil
            :chat-latched? false)
-    (let [seed-intent (or (some-> musn-intent str/trim not-empty)
+    (let [seed-intent (or (some-> prompt compute-intent)
+                          (some-> musn-intent str/trim not-empty)
                           (compute-intent musn-prompt))
           hud-map (or (read-hud-json hud-json-path)
                       (try
@@ -1425,16 +1494,20 @@
 
 (defn- process-event!
   [state session event tap-listener]
-  (let [event-type (:type event)
-        log-event? (or (not= event-type "item.completed")
-                       (:intent-seen? @state))]
-    (when log-event?
-      (log-musn! state "event" event)))
-  (let [event-type (:type event)]
-    (if (= event-type "turn.started")
-      (handle-turn-start! state session event)
-      (handle-event! state event session))
-    (handle-turn-completed! state session event tap-listener)))
+  (if (contains? #{"event_msg" "response_item" "turn_context"} (:type event))
+    (handle-session-event! state session event tap-listener)
+    (do
+      (let [event-type (:type event)
+            log-event? (and log-raw-events?
+                            (or (not= event-type "item.completed")
+                                (:intent-seen? @state)))]
+        (when log-event?
+          (log-musn! state "event" event)))
+      (let [event-type (:type event)]
+        (if (= event-type "turn.started")
+          (handle-turn-start! state session event)
+          (handle-event! state event session))
+        (handle-turn-completed! state session event tap-listener)))))
 
 (defn stream-loop []
   (let [state (atom {:turn 0
@@ -1468,7 +1541,10 @@
         (flush)
         (doseq [line (line-seq (io/reader *in*))]
           (when-let [event (parse-json line)]
-            (process-event! state session event tap-listener))))
+            (process-event! state session event tap-listener)))
+        (when (and (> (:turn @state) 0)
+                   (not= (:turn @state) (:turn-ended @state)))
+          (handle-turn-completed! state session {:type "turn.completed"} tap-listener)))
       (remove-tap tap-listener)
       (System/exit 0)
       (catch Throwable t

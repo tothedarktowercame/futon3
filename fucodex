@@ -152,6 +152,10 @@ SKIP_GIT_CHECK=false
 HUD_PRINT=false
 HUD_SPLASH_ONLY=false
 HUD_SERVER="${HUD_SERVER:-http://localhost:5050}"
+PORTAL_HUD=false
+PORTAL_ROOT="${FUCODEX_PORTAL_ROOT:-$ROOT/../futon3a}"
+PORTAL_NAMESPACE=""
+PORTAL_LIMIT=""
 FUTON3_CODEX_SERVER_URL="${FUTON3_CODEX_SERVER_URL:-http://localhost:6060}"
 export FUTON3_CODEX_SERVER_URL
 PATTERN_RPC=true
@@ -209,6 +213,10 @@ Options:
   --proposal-hook       Emit proposal draft when candidates are insufficient.
   --hud                 Enable HUD mode: seed patterns into prompt, parse response (default on).
   --no-hud              Disable HUD mode even if default is on.
+  --portal-hud          Build HUD from futon3a portal candidates instead of HUD server.
+  --portal-root PATH    Path to futon3a repo (default: ../futon3a).
+  --portal-namespace NS Restrict portal candidates to a namespace.
+  --portal-limit N      Max portal candidates (default: explore limit or 4).
   --intent TEXT         Intent/goal for HUD pattern selection.
   --approval-policy     Approval policy for codex exec (e.g., untrusted, never).
   --no-sandbox          Run codex exec with no sandbox or approvals (dangerous).
@@ -310,6 +318,14 @@ while [[ $# -gt 0 ]]; do
       HUD_MODE=true; shift;;
     --no-hud)
       HUD_MODE=false; shift;;
+    --portal-hud)
+      PORTAL_HUD=true; shift;;
+    --portal-root)
+      PORTAL_ROOT="$2"; shift 2;;
+    --portal-namespace)
+      PORTAL_NAMESPACE="$2"; shift 2;;
+    --portal-limit)
+      PORTAL_LIMIT="$2"; shift 2;;
     --intent)
       HUD_INTENT="$2"; shift 2;;
     --approval-policy)
@@ -503,11 +519,27 @@ fi
 HUD_FILE=""
 HUD_JSON_FILE=""
 if $HUD_MODE; then
-  HUD_ENDPOINT="${HUD_SERVER%/}/fulab/hud/format"
-  HUD_PAYLOAD=$(HUD_INTENT="$HUD_INTENT" PATTERNS="$PATTERNS" EXPLORE_LIMIT="$EXPLORE_LIMIT" RUN_CWD="$RUN_CWD" \
-    MANA_START="$MANA_START" MANA_BALANCE="$MANA_BALANCE" MANA_EARNED="$MANA_EARNED" MANA_SPENT="$MANA_SPENT" \
-    MUSN_MODE="$MUSN_MODE" MUSN_HELP="$MUSN_HELP" SESSION_ID="$MUSN_SESSION_ID" \
-    python3 - <<'PY'
+  HUD_JSON_FILE="$(mktemp -t fucodex-hud-XXXXXX.json)"
+  trap '[[ -n "${HUD_JSON_FILE-}" ]] && rm -f "$HUD_JSON_FILE"' EXIT
+
+  if $PORTAL_HUD; then
+    portal_limit="${PORTAL_LIMIT:-$EXPLORE_LIMIT}"
+    [[ -z "$portal_limit" ]] && portal_limit="4"
+    portal_args=(--intent "$HUD_INTENT" --limit "$portal_limit" --out "$HUD_JSON_FILE" --portal-root "$PORTAL_ROOT")
+    if [[ -n "$PORTAL_NAMESPACE" ]]; then
+      portal_args+=(--namespace "$PORTAL_NAMESPACE")
+    fi
+    if ! run_clj -M -m scripts.portal-hud "${portal_args[@]}" >/dev/null; then
+      echo "[fucodex] portal HUD generation failed" >&2
+      exit 2
+    fi
+    HUD_RESPONSE="$(cat "$HUD_JSON_FILE")"
+  else
+    HUD_ENDPOINT="${HUD_SERVER%/}/fulab/hud/format"
+    HUD_PAYLOAD=$(HUD_INTENT="$HUD_INTENT" PATTERNS="$PATTERNS" EXPLORE_LIMIT="$EXPLORE_LIMIT" RUN_CWD="$RUN_CWD" \
+      MANA_START="$MANA_START" MANA_BALANCE="$MANA_BALANCE" MANA_EARNED="$MANA_EARNED" MANA_SPENT="$MANA_SPENT" \
+      MUSN_MODE="$MUSN_MODE" MUSN_HELP="$MUSN_HELP" SESSION_ID="$MUSN_SESSION_ID" \
+      python3 - <<'PY'
 import json, os
 
 intent = os.environ.get("HUD_INTENT", "")
@@ -578,15 +610,15 @@ print(json.dumps(payload))
 PY
 )
 
-  HUD_RESPONSE=$(curl -sS -X POST "$HUD_ENDPOINT" \
-    -H "content-type: application/json" \
-    -d "$HUD_PAYLOAD") || {
-    echo "[fucodex] HUD server not reachable at $HUD_ENDPOINT" >&2
-    exit 2
-  }
-  HUD_JSON_FILE="$(mktemp -t fucodex-hud-XXXXXX.json)"
-  trap '[[ -n "${HUD_JSON_FILE-}" ]] && rm -f "$HUD_JSON_FILE"' EXIT
-  printf "%s" "$HUD_RESPONSE" > "$HUD_JSON_FILE"
+    HUD_RESPONSE=$(curl -sS -X POST "$HUD_ENDPOINT" \
+      -H "content-type: application/json" \
+      -d "$HUD_PAYLOAD") || {
+      echo "[fucodex] HUD server not reachable at $HUD_ENDPOINT" >&2
+      exit 2
+    }
+    printf "%s" "$HUD_RESPONSE" > "$HUD_JSON_FILE"
+  fi
+
   export FUTON3_HUD_JSON="$HUD_JSON_FILE"
 
   if [[ -z "$PATTERNS" ]]; then

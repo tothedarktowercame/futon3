@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v bb >/dev/null 2>&1; then
+  exec bb "$(dirname "$0")/nonstarter_propose.clj" "$@"
+fi
+
+echo "nonstarter-propose: babashka (bb) not found" >&2
+exit 2

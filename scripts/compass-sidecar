@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+FUTON3A_ROOT="${FUTON3A_ROOT:-$ROOT/../futon3a}"
+REPORT_OUT=""
+NARRATIVE=""
+NARRATIVE_FILE=""
+LEVEL=""
+TOP_K=""
+SIM_STEPS=""
+SEED=""
+METHOD=""
+LIMIT=""
+FORMAT_JSON=false
+
+usage() {
+  cat <<'EOF' >&2
+usage: compass-sidecar --narrative "..." [options]
+       compass-sidecar --narrative-file PATH [options]
+
+Options:
+  --level N         Compass GFE level (default 0).
+  --top-k N         Pattern retrieval top-k (default 5).
+  --sim-steps N     Simulation steps (default 10).
+  --seed N          RNG seed (default 42).
+  --method KW       Retrieval method (level 0 only).
+  --limit N         Max proposals to record.
+  --out PATH        Report output path (default /tmp/compass-report-<ts>.edn).
+  --json            JSON output for sidecar response.
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --narrative)
+      NARRATIVE="$2"; shift 2;;
+    --narrative-file)
+      NARRATIVE_FILE="$2"; shift 2;;
+    --level)
+      LEVEL="$2"; shift 2;;
+    --top-k)
+      TOP_K="$2"; shift 2;;
+    --sim-steps)
+      SIM_STEPS="$2"; shift 2;;
+    --seed)
+      SEED="$2"; shift 2;;
+    --method)
+      METHOD="$2"; shift 2;;
+    --limit)
+      LIMIT="$2"; shift 2;;
+    --out)
+      REPORT_OUT="$2"; shift 2;;
+    --json)
+      FORMAT_JSON=true; shift;;
+    -h|--help)
+      usage; exit 0;;
+    *)
+      if [[ -z "$NARRATIVE" ]]; then
+        NARRATIVE="$1"
+      else
+        NARRATIVE="$NARRATIVE $1"
+      fi
+      shift;;
+  esac
+done
+
+if [[ -z "$NARRATIVE" && -z "$NARRATIVE_FILE" ]]; then
+  usage
+  exit 2
+fi
+
+if [[ -z "$REPORT_OUT" ]]; then
+  REPORT_OUT="/tmp/compass-report-$(date +%s).edn"
+fi
+
+if [[ ! -d "$FUTON3A_ROOT" ]]; then
+  echo "compass-sidecar: FUTON3A_ROOT not found: $FUTON3A_ROOT" >&2
+  exit 2
+fi
+
+report_args=(--out "$REPORT_OUT")
+if [[ -n "$NARRATIVE" ]]; then
+  report_args+=(--narrative "$NARRATIVE")
+fi
+if [[ -n "$NARRATIVE_FILE" ]]; then
+  report_args+=(--narrative-file "$NARRATIVE_FILE")
+fi
+if [[ -n "$LEVEL" ]]; then
+  report_args+=(--level "$LEVEL")
+fi
+if [[ -n "$TOP_K" ]]; then
+  report_args+=(--top-k "$TOP_K")
+fi
+if [[ -n "$SIM_STEPS" ]]; then
+  report_args+=(--sim-steps "$SIM_STEPS")
+fi
+if [[ -n "$SEED" ]]; then
+  report_args+=(--seed "$SEED")
+fi
+if [[ -n "$METHOD" ]]; then
+  report_args+=(--method "$METHOD")
+fi
+
+(
+  cd "$FUTON3A_ROOT"
+  clojure -M -m scripts.compass-report "${report_args[@]}"
+)
+
+sidecar_args=(--report "$REPORT_OUT")
+if [[ -n "$LIMIT" ]]; then
+  sidecar_args+=(--limit "$LIMIT")
+fi
+if [[ "$FORMAT_JSON" == "true" ]]; then
+  sidecar_args+=(--json)
+fi
+
+(
+  cd "$FUTON3A_ROOT"
+  clojure -M -m scripts.compass-sidecar "${sidecar_args[@]}"
+)

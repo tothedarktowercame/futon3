@@ -1,7 +1,10 @@
 @flexiarg stack-coherence/ready-blocked-triage
 @title Ready/Blocked/Triage Classifier
-@sigils [🚞/本]
+@sigils [🚞/本 ✓/状]
+@audience futon stewards, stack maintainers
+@tone analytic-neutral
 @factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger stack-coherence/stack-blocker-detection devmap-coherence/prototype-maturity-lifecycle devmap-coherence/next-steps-to-done]
 
 ! conclusion:
   for each clause, inspect evidence (README links, commits, tests) and blockers; emit a status report `status[done|ready|blocked|drift] blocked-by[...] evidence[...]`

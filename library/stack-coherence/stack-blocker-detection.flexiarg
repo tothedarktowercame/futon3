@@ -1,7 +1,10 @@
 @flexiarg stack-coherence/stack-blocker-detection
 @title Stack Blocker Detection
-@sigils [👘/示]
+@sigils [👘/示 🚧/阻]
+@audience futon stewards, stack maintainers
+@tone analytic-neutral
 @factor Keen investigation (dhammavicaya)
+@references [stack-coherence/ready-blocked-triage stack-coherence/evidence-ledger devmap-coherence/prototype-alignment-bridge]
 
 ! conclusion:
   scan devmaps for declared dependencies, inspect referenced dirs/tests/commits, and emit a blocker report for each clause: `blocked-by[...]`, `evidence[...]`, `status[ready/not-ready]`

@@ -1,490 +1,314 @@
 @multiarg futon0/devmap
-@title FUTON0 Development Map
+@title FUTON0 Development Map — Cyborg Interface Layer
 @audience futon-devs, reflective-agents, future-you
 @tone formal-analytic
 @style roadmap
-@allow-new-claims true
-@length any
 @factor Mindful apprehension (sati + sampajañña)
-@IFR: FUTON0 is the mindfulness and futon-perception layer: the lived,
-experiential basis through which real-but-virtual futures (futons) become
-intelligible via symbolic mediation. It stabilises vitality, rhythm, clarity,
-and the conditions for “wondrous apprehension”. FUTON0 provides a
-bio-mechanical interface to the extended cognitive architecture—the cybernetic
-floor from which the whole FUTON stack perceives, adapts, and co-evolves with
-its future.
-
-@state Vitality telemetry is operational: the scanner, git activity pipeline,
-and Zoom R4 ingest run end-to-end, and the Stack HUD is the Futon0 surface
-(dedicated frame + context buffer) for vitality rows, boundary gaps, reminders,
-and voice-typing controls. Stack HUD snapshots are logged over time (daily
-JSONL plus compacted summaries). The data stores are still periodic JSON
-snapshots wired via cron/systemd rather than a real-time shared state.
-
-@next Maintain and develop minimal models of vitality signals; cultivate
-periodic wondrous apprehension; and continue light futon-prototyping efforts
-with steady awareness, so that both clear devmaps and concrete implementations
-can emerge naturally.
-
-! instantiated-by: Prototype 0 — System Vitality Indicators [🙇/亏 🔃/叉]
-
-+ context:
-  FUTON0 provides the minimal embodied/creative signals required for early
-  detection of imbalance, while avoiding expansion of lifelogging overhead.
-
-+ if:
-  You want dependable early warning of drift in health, energy, or expressive rhythm.
-
-+ however:
-  Existing signals are scattered (notes, reminders, implicit habits) and
-  therefore unreliable as a coherent early-warning interface.
-
-+ then:
-  Use only *existing traceable activity* as indicators: Tatami sessions,
-  git commits, filesystem timestamps, and micro-recording cadence. Add one
-  lightweight prompt-based behaviour: a weekly tai-chi intention check surfaced
-  automatically by the FUTON3 HUD. No manual lifelogging is introduced.
-
-+ because:
-  Indicators remain sustainable only when they create no friction. A minimal
-  interface built from pre-existing behavioural traces provides consistent,
-  low-noise signals that prevent hidden imbalance from migrating up-stack.
-
-+ status[done]
-
-+ evidence:
-  - evidence[futon0/README.md#Git activity manifest] Git activity manifest
-    pipeline via `scripts/git_vitality_sync.sh` and `scripts/git_activity.py`.
-  - evidence[futon0/README.md#Zoom R4 ingest] Zoom R4 ingest + catalog via
-    `scripts/zoom_sync.py` and `systemd/README.md`.
-  - evidence[futon0/README.md#Vitality scanner stub] Vitality scanner stub in
-    `scripts/futon0/vitality/scanner.clj`.
-  - evidence[futon0/futon0_manifest.md] Signal manifest enumerates Tatami/git/
-    filesystem/recording channels for the vitality pipeline.
-
-+ next:
-  Build the cron-based vitality scanner; implement the weekly tai-chi HUD prompt;
-  run a 30–45 day pilot to stabilise thresholds; and refine the vitality
-  interface only after reviewing correlations with mood, focus, and WIP drift.
-
-  + next-evidence:
-    - Extend the cron scanner to generate a daily summary of filesystem
-      activity, recording cadence, and Tatami timestamps.
-    - Capture tai-chi intention Y/N responses in FUTON3, creating a new sparse
-      evidentiary channel without manual logging.
-    - Implement a lightweight inference pass (FUTON3 or FUTON4) to interpret
-      these signals for trend detection and early-warning triggers.
-
-! instantiated-by: Prototype 1 — Epistemic Rhythm & Salients [💖/弓 🌲/以]
-
-+ context:
-  FUTON0 stabilises your epistemic rhythm: a weekly/multi-weekly cycle of
-  review, planning, and salience-tracking that keeps work across all spheres
-  coherent while avoiding data fragmentation or over-tracking.
-
-+ if:
-  You want to programme yourself the way you programme systems—maintaining
-  legible salients across institutional, consulting, technical, reflective,
-  and infrastructural spheres with minimal friction.
-
-+ however:
-  Without a normalised rhythm, weekly reviews slip; projects drift outside
-  the canonical Org structure; and WIP silently grows past safe limits.
-
-+ then:
-  Hold a weekly AOB/Ambitions sync; treat Org as the canonical plan/export
-  store; mirror all active projects into a minimal FUTON1 substrate; review
-  sphere balance weekly; and enforce the WIP cap (>3 active tracks requires
-  pausing one). Cron/HUD integration surfaces upcoming reviews (“Weekly review
-  in 3 days,” “Monthly audit approaching”) without additional lifelogging.
-
-+ because:
-  A stable epistemic rhythm prevents unbounded cognitive load *and makes life
-  feel lighter, more joyful, and more tractable*. When salients reappear on
-  schedule and WIP remains bounded, drift does not accumulate and affect settles.
-
-+ status[ready]
-
-+ evidence:
-  - evidence[futon0/futon0_rhythm.md] Cadence, envelope logging, buildout plan.
-  - evidence[futon0/futon0_protocol.md] Open decisions + affect sourcing.
-  - evidence[futon0/data/backup_cadence.json] Cadence snapshot inputs.
-  - evidence[futon0/data/backup_report_example.json] Report example payload.
-  - evidence[futon0/data/backup_experiments.json] Rhythm experiment config.
-  - evidence[futon0/data/affect_markers.json] Affect marker index.
-  - evidence[futon0/scripts/futon0/backup/snapshot.clj] Backup snapshotter.
-  - evidence[futon0/scripts/futon0/rhythm/envelope.clj] Rhythm envelope logic.
-  - evidence[futon0/scripts/futon0/rhythm/salients.clj] Salients extraction.
-  - evidence[futon0/scripts/futon0/rhythm/experiments.clj] Rhythm experiments.
-  - evidence[futon0/scripts/futon0/rhythm/quarterly.clj] Quarterly analysis.
-  - evidence[futon0/scripts/futon0/rhythm/dry_run.clj] Dry run driver.
-
-+ next:
-  Consolidate the weekly sync into a fixed time; prune stale Org headings
-  monthly; ensure every active project has an Org headline and FUTON1 tag;
-  integrate HUD reminders for weekly/monthly cadence; and refine the WIP
-  audit to produce actionable “pause/don’t-start” prompts.
-
-  + next-evidence:
-    - Cron job generates weekly/mid-week/monthly reminders surfaced in the HUD.
-    - FUTON3 salience panel merges Org + FUTON1 metadata into a weekly
-      salients snapshot with diff from prior weeks.
-    - Quarterly rhythm analysis correlates stable cadence with subjective
-      affect measures (energy, focus, lightness) to test the experiential claim.
-
-! instantiated-by: Prototype 2 — Core Obligations Contract [👕/业 🎑/书]
-@multiarg futon0/prototype2
-@title Core Obligations Contract
-@audience futon-devs, reflective-agents
-@tone analytic-concise
-@style flexiarg
-
-+ context:
-  FUTON0 must uphold the fundamental constraints that keep the entire stack
-  viable: sustained alignment with your current role, movement toward a more
-  suitably aligned next role, and protection of basic health baselines. This
-  layer also ensures that Prototype 1’s analytics loop remains genuinely useful
-  rather than self-perpetuating.
-
-+ if:
-  You want your working life to remain healthy and coherent while moving toward
-  a better-aligned future role, without sacrificing present obligations or
-  drifting into avoidant behaviour.
-
-+ however:
-  When attention shifts to higher layers, core obligations can slide into the
-  background; health erosion becomes invisible; and epistemic-review routines
-  can quietly expand beyond their real value.
-
-+ then:
-  Maintain consistently and measurably strong alignment with the current role
-  while increasing alignment with a future role; keep health baselines intact;
-  and periodically check whether Prototype 1’s analytics loop is delivering
-  practical benefit.
-
-+ because:
-  Upholding alignment and constraints at the base prevents the entire FUTON
-  stack from drifting into incoherence or overload. When obligations, health,
-  and review practices stay grounded, forward movement becomes stable and real.
-
-+ status[blocked]
-+ blocked-by[missing core-obligations pulse + evidence artifacts in futon0 repo]
-
-+ evidence:
-  - Health baselines visible through Prototype 0 (movement/sleep Y/N).
-  - Current-role performance inferred from deliverables, responsiveness,
-    and deadline stability.
-  - FUTON1 tags showing adequate work-session closure coverage.
-
-+ next:
-  Make alignment in the current role more explicit (quick weekly pulse-check);
-  establish a small, low-friction trajectory toward the next aligned role;
-  and add a brief weekly check on the usefulness of Prototype 1.
-
-  + next-evidence:
-    - Cron-backed extraction of role-search traces (calendar items, files,
-      emails) to show gentle forward movement.
-    - A FUTON3 prompt asking “Did this week’s review help maintain alignment?”
-      as a simple measure of analytics-loop value.
-    - Correlations between Prototype 0 vitality signals and stable current-role
-      performance to validate the alignment hypothesis.
-
-
-! instantiated-by: Prototype 3 — Ambition 0 Meta-Managed Infrastructure [🙇/叉 💖/用]
-
-@multiarg futon0/prototype3
-@title Ambition 0 — Meta-Managed Infrastructure
-@audience futon-devs, reflective-agents
-@tone analytic-concise
-@style flexiarg
-
-+ context:
-  FUTON0 needs an infrastructure layer that not only keeps reality and
-  representation aligned, but also increases the system’s capacity for
-  alignment over time (Ashby-style requisite variety).
-
-+ if:
-  You want your tools to help you notice, raise, and refine signals that
-  support increasing alignment in work, health, and direction.
-
-+ however:
-  Interfaces drift, signals blur, and representational structures lose fidelity.
-  When this happens, the system cannot increase alignment because it cannot
-  perceive what is changing or what needs attention.
-
-+ then:
-  Treat FUTON1 as the source of truth; use Org as a lightweight interface to
-  it; prune dashboards to highlight only rising or fading salients; and run a
-  brief reconciliation loop that raises proto-pattern signals for review.
-
-+ because:
-  This layer provides the Markov blanket through which alignment can improve.
-  Prototype 3 acts as the experience-design prototype of FUTON3: it raises
-  signals, surfaces proto-patterns, and increases representational variety,
-  while FUTON3 will later formalise this as proof-theoretic salience
-  certification.
-
-+ status[blocked]
-+ blocked-by[missing futon1/org consolidation + futon3 salience pane artifacts]
-
-+ evidence:
-  - Org and FUTON1 currently reflect overlapping state that allows detection
-    of divergence.
-  - Dashboards already reveal what is becoming noisy or inert.
-  - Backups and timestamps show which elements are live or stale.
-
-+ next:
-  Migrate remaining project state into FUTON1; reduce Org to a thin interface;
-  and introduce a weekly “rising/fading signals” pane in FUTON3 to surface
-  proto-patterns for reflection.
-
-  + next-evidence:
-    - Divergence checks that quantify where representation is lagging reality.
-    - Signal-rise/signal-fade detectors for dashboards and headings.
-    - FUTON3-generated proto-pattern stubs based on behavioural traces.
-
-! instantiated-by: Prototype 4 — Ambition 1 Hyperreal Enterprises Practice [👎/习 💖/己]
-@multiarg futon0/prototype4
-@title Ambition 1 — Hyperreal Enterprises Practice
-@audience futon-devs, reflective-agents
-@tone analytic-concise
-@style flexiarg
-
-+ context:
-  Hyperreal requires a consulting practice that increases alignment between
-  your research, your livelihood, and your long-term direction while generating
-  reusable structure rather than bespoke one-offs.
-
-+ if:
-  You want each engagement to contribute both to financial stability and to
-  the evolution of a sustainable, research-informed independent practice.
-
-+ however:
-  Without intentional structure, communication slips; deliverables fragment
-  into bespoke artefacts; and the insights generated fail to loop back into
-  the system that needs them.
-
-+ then:
-  Keep client communication transparent; produce deliverables as reusable,
-  documented modules; and extract consulting insights as proto-patterns that
-  flow into the Hyperreal backlog and FUTON3’s salience pipeline.
-
-+ because:
-  This turns consulting into an alignment engine: work generates reusable
-  structure, structure generates higher variety, and higher variety increases
-  your future alignment opportunities. Hyperreal becomes evolutionary rather
-  than transactional.
-
-+ status[blocked]
-+ blocked-by[missing reusable module template + proof artifacts]
-
-+ evidence:
-  - Existing consulting deliverables already include modular components.
-  - Client communication typically happens through channels that are easily
-    timestamped and reviewable.
-  - Notes from past engagements show extractable conceptual structure.
-  - The VSATLAS work demonstrates a clean example: a reusable flexiarg design
-    that extends the client’s system while revealing future service-provision
-    revenue streams.
-
-+ next:
-  Introduce a lightweight “module template” for new deliverables; add a brief
-  reflection step at the end of each engagement; and feed extracted insights
-  into FUTON3 for proto-pattern surfacing.
-
-  + next-evidence:
-    - Detection of repeated module reuse across engagements.
-    - FUTON3-generated proto-patterns based on recurring consulting moves.
-    - Evidence of alignment gain: smoother scoping, clearer pricing,
-      better-fit clients, and reduced bespoke overhead.
-
-! instantiated-by: Prototype 5 — Ambition 2 FUTON–Arxana Stack Stewardship [💖/久 👥/用]
-
-+ context:
-  FUTON0 needs a reliable, steadily improving environment for thought. Daily use
-  and clear architectural notes keep the FUTON–Arxana stack coherent and usable.
-
-+ if:
-  You want FUTON–Arxana to become a dependable workspace for reasoning,
-  development, and collaboration.
-
-+ however:
-  Skipped daily use weakens the system; undocumented decisions cause drift;
-  and premature collaboration introduces scope creep.
-
-+ then:
-  Use FUTON1 daily as the live testbed; record architecture reflections as they
-  arise; and add collaborators gradually with guardrails that protect scope and
-  focus.
-
-+ because:
-  Frequent contact and lightweight documentation prevent drift and make the
-  system stronger over time. This keeps FUTON–Arxana evolving into a stable,
-  coherent environment rather than an abandoned prototype.
-
-+ status[blocked]
-+ blocked-by[missing daily usage evidence + architecture notes inventory]
-
-+ evidence:
-  - FUTON1 already supports daily usage with minimal friction.
-  - Architecture notes demonstrate where documentation has prevented drift.
-  - Early collaborative experiments (e.g., with Rob) show the value of guardrails.
-
-+ next:
-  Stabilise daily usage with light scaffolding; formalise a minimal architecture
-  note-taking protocol; and extend Arxana gradually as stable components emerge.
-
-  + next-evidence:
-    - Daily FUTON1 usage detectable via timestamps.
-    - Architecture notes showing reduced drift or clearer decision points.
-    - Arxana prototypes yielding stable nodes or literate fragments.
-
-! instantiated-by: Prototype 6 — Ambition 3 Mojo, Evolving Variety, + Reflective Rhythm [💖/书 🙇/业]
-
-+ context:
-  FUTON0 needs a source of evolving, meaningful variety. Moments of “wondrous
-  apprehension”—small encounters with insight, novelty, or strangeness—keep the
-  internal model flexible and alive.
-
-+ if:
-  You want learning, creativity, and self-understanding to deepen through
-  controlled contact with the unknown rather than through routine or ritual.
-
-+ however:
-  When these encounters vanish or are postponed indefinitely, patterns ossify,
-  curiosity shrinks, and alignment stops increasing.
-
-+ then:
-  Invite small, natural opportunities for wondrous apprehension—through ideas,
-  conversations, creative acts, or symbolic cues—and metabolise them lightly,
-  without turning them into obligations or scheduled rituals.
-
-+ because:
-  These brief encounters act as evolutionary impulses: they expand perspective,
-  refresh the generative model, and increase adaptive variety. This introduces
-  just enough uncertainty to stimulate growth without destabilising the system.
-
-+ status[blocked]
-+ blocked-by[missing futon1 tags + concrete rhythm experiment evidence]
-
-+ evidence:
-  - Rhythm experiments such as PAR sessions, RAP sessions, Mojo prompts, and
-    card draws have reliably triggered moments of insight without becoming rigid.
-  - Creative or relational encounters have historically produced generative
-    perspective shifts.
-  - Minimal reflection has been sufficient to integrate these signals.
-
-+ next:
-  Keep the system open to small shocks of insight; capture only what feels
-  naturally significant; and allow FUTON1 or FUTON3 to mark these moments
-  lightly when they matter.
-
-  + next-evidence:
-    - Occasional tags noting spontaneous insight or perspective shift.
-    - Detectable reductions in stagnation or pattern ossification.
-    - FUTON3 identification of proto-patterns emerging from these encounters.
-
-! instantiated-by: Prototype 7 — Ambition 4 Role Transition Trajectory [🔦/口 💖/亏]
-@multiarg futon0/prototype7
-@title Ambition 4 — Applied Futon Theory: Co-Evolution With Future Environments
-@audience futon-devs, reflective-agents
-@tone analytic-concise
-@style flexiarg
-
-+ context:
-  FUTON0 must support your co-evolution with future environments—roles,
-  collaborators, and communities that do not yet fully exist but already exert
-  directional influence as futons (real-but-virtual futures).
-
-+ if:
-  You want your future working life to emerge through mutual shaping rather
-  than reactive job-seeking or inherited scripts.
-
-+ however:
-  When futures are treated as fixed targets or when symbols are mistaken for
-  the futons they mediate, misalignment grows and trajectories become brittle.
-
-+ then:
-  Attend to symbolic signals that reveal possible future environments; explore
-  lightly; cultivate relationships that show reciprocal responsiveness; and let
-  alignment emerge through ongoing co-evolution rather than forced planning.
-
-+ because:
-  Futons influence the present something like photons. The co-evolution of
-  present and future echoes Gotama’s dependent causality—agent and future
-  conditions arise together in a logical chain—and Alan Moore’s insight that
-  all times are immediately accessible in certain states of consciousness. In
-  applied futon theory, alignment grows through co-evolution with virtual
-  states, not through selection or prediction.
-
-+ status[blocked]
-+ blocked-by[missing futon1 tags + alignment evidence artifacts]
-
-+ evidence:
-  - Prior trajectories (Hyperreal, VSATLAS, ORP, band work) emerged through
-    reciprocal adaptation, not explicit search.
-  - Symbolic cues—patterns, conversations, prototypes—have repeatedly revealed
-    access to futures not yet actual.
-  - Misaligned contexts typically show low responsiveness early, acting as
-    non-resonant futons.
-
-+ next:
-  Track signals of futonic resonance or dissonance; maintain light exploratory
-  contact with promising environments; and let the trajectory refine itself
-  through reciprocal influence rather than pressure.
-
-  + next-evidence:
-    - FUTON1 tags capturing futonic moments (resonance, responsiveness,
-      momentum).
-    - Notes marking when symbolic cues open or close access to future
-      attractors.
-    - Increasing clarity, lightness, and alignment as co-evolution proceeds.
-
-
-! instantiated-by: Prototype 8 — Stack Coverage Check [👐/广 🔃/用]
-
-+ context:
-  Devmaps belong to FUTON3: they are symbolic membranes through which FUTON3
-  perceives futons and maintains structural coherence across the stack.
-  FUTON0’s role is to support the mindful conditions that allow these symbolic
-  structures to appear, evolve, and be refreshed.
-
-+ if:
-  You want FUTON3 to notice where the system’s symbolic interfaces to future
-  environments are missing, stale, or drifting, before the whole system loses
-  alignment.
-
-+ however:
-  When narrative, reflection, and wondrous apprehension are weakened, futons
-  become harder to perceive; devmaps stagnate; and FUTON3 loses access to
-  future-relevant structure.
-
-+ then:
-  Maintain a light narrative awareness of the system’s evolving futures; allow
-  futons to be apprehended through conversation, reflection, and symbolic
-  cues; and let FUTON3 formalise these perceptions into updated devmaps when
-  needed.
-
-+ because:
-  FUTON0 provides the experiential ground—a mindful openness to futons—
-  while FUTON3 handles representational coherence. Without the former, FUTON3
-  cannot see; without the latter, FUTON0’s perceptions cannot stabilise.
-  Together, they keep the stack aligned across time.
-
-+ status[blocked]
-+ blocked-by[missing evidence trail linking futon1 moments to futon3 devmap refreshes]
-
-+ evidence:
-  - Narrative reflection in this conversation has repeatedly revealed futons
-    that were not yet encoded in devmaps.
-  - FUTON3 updates gain clarity when experiential insight precedes them.
-  - Wondrous apprehension consistently precedes formalisation.
-
-+ next:
-  Support FUTON3 by staying attuned to emerging futons; mark futon moments
-  lightly when they arise; and trust FUTON3 to handle structural consolidation.
-
-  + next-evidence:
-    - FUTON1 entries capturing futon moments.
-    - FUTON3 updates that align with experiential insight.
-    - Clearer, more resonant devmaps appearing naturally over time.
+@IFR: FUTON0 is the cyborg interface layer — the membrane where human vitality
+becomes stack-legible and stack state becomes human-perceivable.
+@state Stack HUD operational; bidirectional channels demonstrated; infrastructure
+substrate working. Health monitoring, affect signals, and epistemic rhythm not
+yet instrumented.
+@next P4 (health/alignment monitoring) then P5 (affect signals).
+
+## The Argument
+
+FUTON0 is the cyborg interface layer — the membrane where human vitality becomes
+stack-legible and stack state becomes human-perceivable. The Stack HUD is the
+primary implementation: it reads vitality signals from existing traces (commit
+times, recording cadence, Tatami sessions) and presents stack state (boundaries,
+liveness, patterns, reminders) in a glanceable frame — zero extra lifelogging.
+Voice-to-text, text-to-speech (podcast synthesis uses both), Kinesis board, and
+the HUD demonstrate that human→stack and stack→human channels work. The
+infrastructure substrate — Alacritty, Emacs, Linode, FUTON1, Org, pattern sync,
+Codex, Claude — provides the plumbing. Health and alignment monitoring will
+infer actual health from traces (commit times → sleep, activity → energy) plus
+role alignment. Affect signals will track moments of insight and emotional
+valence through logged agent sessions, sitting between futon0 and futon3.
+Epistemic rhythm will establish weekly/monthly review cycles that bound WIP.
+Consulting reuse will systematize proto-pattern extraction. Stack stewardship
+will formalize daily practices. Futonic co-evolution will make symbolic signals
+of future environments legible through Compass, with literary work entering at
+that stage. Together these ground the stack's perception — the done prototypes
+prove the interface works; the planned prototypes make it health-aware,
+affect-sensitive, and generative.
+
+
+! instantiated-by: Prototype 1 — Stack HUD [🙇/亏 🔃/叉]
+  :maturity :settled
+  :depends-on []
+  :source [f0/p0]
+  :evidence-for-settled [HUD used daily for 30+ days with vitality signals accurate]
+
+  + context: The Stack HUD is the primary cyborg interface implementation.
+  + IF: Human vitality leaves traces in computational systems (commits, sessions, recordings)
+  + HOWEVER: These traces are scattered; stack state is distributed across futons
+  + THEN: The HUD reads vitality signals and presents stack state in a glanceable frame
+  + BECAUSE: Zero-friction bidirectional perception is the core cyborg promise
+
+  + EVIDENCE:
+    evidence[futon0/contrib/stack-hud.el implements vitality scanning + stack state display]
+    evidence[futon0/scripts/futon0/vitality/scanner.bb runs vitality scans]
+    evidence[Stack HUD logs to futon0/data/stack-hud/*.jsonl]
+
+  + NEXT-STEPS:
+    next[Refine vitality signal interpretation (commit times → sleep inference)]
+    next[Add health threshold alerts to HUD warnings]
+
+  :success-criteria
+    pass[HUD displays current vitality + stack state within 2 seconds of opening]
+    pass[Vitality signals update automatically when underlying data changes]
+    fail[HUD requires manual refresh to show current state]
+
+
+! instantiated-by: Prototype 2 — Bidirectional Channels [💬/口 🔊/声]
+  :maturity :active
+  :depends-on [f0/P1]
+  :source [hdm/human-machine-dialogue]
+  :evidence-for-settled [Both directions used daily; exchanges logged as reusable knowledge]
+
+  + context: The cyborg membrane must flow both ways.
+  + IF: Human→stack channels (voice, keyboard) and stack→human channels (HUD, TTS) exist
+  + HOWEVER: They developed separately; not yet unified as "the interface"
+  + THEN: Recognize voice-to-text, text-to-speech, Kinesis, HUD as aspects of one bidirectional membrane
+  + BECAUSE: Per hdm/human-machine-dialogue — dialogue is how humans learn; embedding it aligns with practice
+
+  + EVIDENCE:
+    evidence[futon0/contrib/stack-hud.el includes voice-typing integration]
+    evidence[Podcast synthesis uses both STT and TTS]
+    evidence[Kinesis Advantage board is the primary tactile interface]
+
+  + NEXT-STEPS:
+    next[Log voice interactions as reviewable exchanges (per hdm pattern)]
+    next[Unify channel telemetry in Stack HUD]
+
+  :success-criteria
+    pass[Voice input and HUD output feel like one interface, not separate tools]
+    pass[Exchanges are logged and can become reusable knowledge]
+    fail[Channels remain siloed with no unified view]
+
+
+! instantiated-by: Prototype 3 — Infrastructure Substrate [🔧/具 💻/机]
+  :maturity :active
+  :depends-on []
+  :evidence-for-settled [All components operational for 90+ days]
+
+  + context: The cyborg interface requires working infrastructure.
+  + IF: Multiple tools (Alacritty, Emacs, Linode, FUTON1, Codex, Claude) constitute the substrate
+  + HOWEVER: They are typically invisible until something breaks
+  + THEN: Document the substrate inventory; monitor health; acknowledge paid dependencies
+  + BECAUSE: The plumbing must work for anything else to matter
+
+  + EVIDENCE:
+    evidence[Alacritty terminal emulator in daily use]
+    evidence[Emacs with stack-hud.el, tatami, arxana-patterns]
+    evidence[Linode hosting FUTON1 API]
+    evidence[FUTON1 pattern sync operational]
+    evidence[Codex and Claude subscriptions active]
+
+  + NEXT-STEPS:
+    next[Add infrastructure health checks to Stack HUD]
+    next[Document substrate inventory in futon0/docs/infrastructure.md]
+
+  :success-criteria
+    pass[All substrate components reachable from Stack HUD health check]
+    pass[Paid subscription status visible]
+    fail[Infrastructure failure not detected until downstream breakage]
+
+
+! instantiated-by: Prototype 4 — Health and Alignment Monitoring [💖/体 🎯/向]
+  :maturity :stub
+  :depends-on [f0/P1]
+  :source [f0/p0]
+  :evidence-for-greenfield [Commit-time sleep inference implemented and tested]
+  :evidence-for-active [Health signals displayed in HUD with threshold alerts]
+
+  + context: The core cyborg promise — actual health becomes stack-legible.
+  + IF: Commit timestamps, activity patterns, and session logs reveal physical state
+  + HOWEVER: Currently only activity is tracked, not health inference
+  + THEN: Infer sleep (from late commits), energy (from activity gaps), role alignment (from work patterns)
+  + BECAUSE: Health monitoring without extra lifelogging is why the cyborg frame matters
+
+  + EVIDENCE:
+    evidence[Vitality scanner captures commit times and session timestamps]
+    evidence[Gap detection exists but not health interpretation]
+
+  + NEXT-STEPS:
+    next[Implement commit-time → sleep pattern inference]
+    next[Add energy inference from activity cadence]
+    next[Surface health signals in Stack HUD with configurable thresholds]
+    next[Track role alignment: current-role health + future-role trajectory signals]
+
+  :success-criteria
+    pass[Sleep pattern inference matches self-report within 1 hour]
+    pass[Energy warnings surface before burnout, not after]
+    pass[Role alignment visible as trajectory, not just snapshot]
+    fail[Health signals are noise (no predictive value)]
+
+
+! instantiated-by: Prototype 5 — Affect Signals [🎭/感 💡/悟]
+  :maturity :stub
+  :depends-on [f0/P1, f0/P4]
+  :source [f2/p0]
+  :evidence-for-greenfield [Affect markers extracted from 10+ logged sessions]
+  :evidence-for-active [Affect signals visible in HUD; patterns surfaced to FUTON3]
+
+  + context: Track moments of insight, perspective shift, emotional valence.
+  + IF: Chat and coding agent sessions contain affect signals (enthusiasm, frustration, breakthrough)
+  + HOWEVER: Currently sessions are logged but not analyzed for affect
+  + THEN: Extract affect markers from logged sessions; surface to HUD; feed to FUTON3
+  + BECAUSE: Per f2/p0, affect is part of the AIF loop (observe → perceive → affect → core); surface it to f0
+
+  + EVIDENCE:
+    evidence[Agent sessions logged to futon0/data/ and Tatami]
+    evidence[Affect marker experiments in futon0/data/affect_markers.json]
+    evidence[f2/p0 defines affect as pipeline stage]
+
+  + NEXT-STEPS:
+    next[Define affect marker vocabulary (insight, frustration, flow, block)]
+    next[Implement affect extraction from session logs]
+    next[Add affect timeline to Stack HUD]
+    next[Wire affect signals to FUTON3 for pattern correlation]
+
+  :success-criteria
+    pass[Affect markers extracted with >70% agreement to self-report]
+    pass[Insight moments correlate with productive sessions]
+    fail[Affect extraction is pure noise]
+
+
+! instantiated-by: Prototype 6 — Epistemic Rhythm [📅/律 🔄/周]
+  :maturity :stub
+  :depends-on [f0/P1]
+  :source [workflow-coherence/weekly-rhythm]
+  :evidence-for-greenfield [Weekly rhythm check implemented in HUD]
+  :evidence-for-active [Rhythm maintained for 8+ consecutive weeks]
+
+  + context: Bounded WIP and regular review cycles keep cognitive load tractable.
+  + IF: More than 7 days pass since last AOB or Ambitions sync
+  + HOWEVER: Without automated detection, missed weeks go unnoticed until load spikes
+  + THEN: Flag the gap in Stack HUD; prompt review before new work starts
+  + BECAUSE: Per workflow-coherence/weekly-rhythm — rhythm prevents unbounded WIP and makes life lighter
+
+  + EVIDENCE:
+    evidence[workflow-coherence/weekly-rhythm.flexiarg defines the pattern]
+    evidence[Org contains AOB and Ambitions structure]
+    evidence[futon0/futon0_rhythm.md documents cadence intent]
+
+  + NEXT-STEPS:
+    next[Implement weekly rhythm check in Stack HUD]
+    next[Add monthly rhythm check]
+    next[Surface WIP count with cap warning (>3 active tracks)]
+    next[Log rhythm compliance for correlation with affect/health]
+
+  :success-criteria
+    pass[HUD warns when weekly review is overdue]
+    pass[WIP cap violations are visible before overload]
+    fail[Rhythm gaps detected only in retrospect]
+
+
+! instantiated-by: Prototype 7 — Consulting Reuse [🔄/复 📦/模]
+  :maturity :stub
+  :depends-on [f0/P1, f3a/P0]
+  :source [p4ng/pattern-priming fulab/pattern-propose]
+  :evidence-for-greenfield [Proto-pattern extracted from one engagement]
+  :evidence-for-active [3+ engagements have generated reusable patterns in FUTON3]
+
+  + context: Consulting engagements should generate reusable structure, not just deliverables.
+  + IF: Engagements produce insights that recur across clients
+  + HOWEVER: Currently extraction is ad-hoc; insights evaporate
+  + THEN: Systematize proto-pattern extraction; flow through membrane to FUTON3
+  + BECAUSE: Per p4ng/pattern-priming — patterns need priming before activation; consulting is a priming source
+
+  + EVIDENCE:
+    evidence[VSATLAS engagement produced reusable flexiarg design]
+    evidence[p4ng/pattern-priming.flexiarg defines extraction approach]
+    evidence[fulab/pattern-propose.flexiarg defines agent pattern proposal]
+
+  + NEXT-STEPS:
+    next[Define consulting proto-pattern template]
+    next[Extract patterns from recent engagements retrospectively]
+    next[Add engagement reflection step to workflow]
+
+  :success-criteria
+    pass[Each engagement produces at least one proto-pattern candidate]
+    pass[Proto-patterns flow to FUTON3 and become scoreable]
+    fail[Consulting remains transactional with no structural residue]
+
+
+! instantiated-by: Prototype 8 — Stack Stewardship [🏠/守 📝/记]
+  :maturity :stub
+  :depends-on [f0/P1, f0/P3]
+  :evidence-for-greenfield [Stewardship protocol documented]
+  :evidence-for-active [Protocol followed for 30+ days with architecture notes accumulating]
+
+  + context: Daily use and lightweight documentation keep the system coherent.
+  + IF: The stack requires ongoing attention to remain healthy
+  + HOWEVER: Stewardship currently happens informally; no protocol
+  + THEN: Formalize daily use expectations; architecture note protocol; collaborator guardrails
+  + BECAUSE: Systems drift without stewardship; informal practice doesn't survive interruption
+
+  + EVIDENCE:
+    evidence[Daily FUTON1 use happens but isn't tracked]
+    evidence[Architecture notes exist but inconsistently]
+
+  + NEXT-STEPS:
+    next[Document stewardship protocol in futon0/docs/stewardship.md]
+    next[Add stewardship check to Stack HUD (days since last architecture note)]
+    next[Define collaborator onboarding guardrails]
+
+  :success-criteria
+    pass[Stewardship protocol survives 2-week vacation without system drift]
+    pass[New collaborator can onboard using documented guardrails]
+    fail[System coherence degrades during any absence]
+
+
+! instantiated-by: Prototype 9 — Futonic Co-evolution [🔮/未 ✨/演]
+  :maturity :stub
+  :depends-on [f0/P5, f3a/P2]
+  :source [Compass]
+  :evidence-for-greenfield [Compass scores correlate with futonic resonance signals]
+  :evidence-for-active [Literary work flows through membrane; bots respond meaningfully]
+
+  + context: Attend to symbolic signals of future environments; let alignment emerge.
+  + IF: Futons (real-but-virtual futures) exert influence through symbolic signals
+  + HOWEVER: Currently this is intuitive, not stack-legible
+  + THEN: Make futonic signals legible through Compass; literary work enters here
+  + BECAUSE: Co-evolution with futures requires perceiving them; Compass is the perceptual instrument
+
+  + EVIDENCE:
+    evidence[Compass implementation in futon3a/src/futon/compass.clj]
+    evidence[Prior trajectories (Hyperreal, VSATLAS) emerged through reciprocal adaptation]
+    evidence[Literary work (Burroughs/Anderson-inspired) exists but not yet in stack]
+
+  + NEXT-STEPS:
+    next[Validate Compass scoring against known futonic resonance/dissonance]
+    next[Define literary work ingestion pathway]
+    next[Test: what do the bots make of the writing?]
+
+  :success-criteria
+    pass[Compass scores distinguish resonant from non-resonant futures]
+    pass[Literary work flows through membrane and generates pattern responses]
+    fail[Futonic signals remain purely intuitive with no stack representation]
+
+
+! instantiated-by: Prototype 10 — Conclusion [🔚/结 🌐/全]
+  :maturity :greenfield
+  :depends-on [f0/P1 f0/P2 f0/P3 f0/P4 f0/P5 f0/P6 f0/P7 f0/P8 f0/P9]
+
+  + context: The cumulative argument — bidirectional legibility grounds the stack.
+  + IF: All prototypes are implemented and operational
+  + HOWEVER: The whole may be more (or less) than the sum of parts
+  + THEN: Validate that the stack is genuinely legible in both directions
+  + BECAUSE: Without the cyborg interface, higher futons cannot see; without higher futons, the interface has nothing to show
+
+  + EVIDENCE:
+    evidence[P1-P3 demonstrate interface works]
+    evidence[P4-P9 make it health-aware, affect-sensitive, generative]
+
+  + NEXT-STEPS:
+    next[Integration test: can morning review surface health + affect + rhythm + futonic signals?]
+    next[Validate bidirectionality: does human insight flow up? does stack state flow down?]
+
+  :success-criteria
+    pass[Stack perceives human; human perceives stack; both adapt]
+    fail[Legibility is one-way or illusory]

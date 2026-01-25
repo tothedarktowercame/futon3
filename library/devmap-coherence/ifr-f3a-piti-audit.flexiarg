@@ -1,0 +1,27 @@
+@flexiarg devmap-coherence/ifr-f3a-piti-audit
+@title IFR — FUTON3A Pattern Guidance & Audit (pīti-audit)
+@sigils [🧭/向 📝/记]
+@factor Joy (pīti) — effective action via pattern guidance
+@references [devmap-coherence/ifr-f3-piti devmap-coherence/prototype-alignment-bridge]
+
+! conclusion:
+  verify that Portal retrieves patterns reliably, Sidecar logs complete PSR/PUR chains, and Compass scores are explainable; confirm that futon3a serves as operational hub by checking cross-futon coordination artifacts
+
+  + context: FUTON3A is the pattern guidance and audit logging layer — Portal, Sidecar, Compass. It aims to become the operational hub for the stack.
+  + IF:
+    FUTON3A provides pattern retrieval, audit trails, and alignment scoring that other futons depend on for coordination
+
+  + HOWEVER:
+    without regular validation, portal queries may return stale patterns, sidecar chains may have gaps, and compass scores may become decorative rather than actionable
+
+  + THEN:
+    verify that Portal retrieves patterns reliably, Sidecar logs complete PSR/PUR chains, and Compass scores are explainable; confirm that futon3a serves as operational hub by checking cross-futon coordination artifacts
+
+  + BECAUSE:
+    pīti-audit extends pīti (joy of effective action) to the audit layer itself — futon3a must prove it can coordinate the stack, not just log events
+
+  + NEXT-STEPS:
+    next[Run portal latency + cache hit checks weekly; flag degradation.]
+    next[Validate PSR/PUR chain completeness in morning review; emit obligations for gaps.]
+    next[Test compass scoring on known-good/known-bad cases quarterly to prevent drift.]
+    next[Track hub coordination metrics: how many cross-futon missions ran successfully via futon3a queue.]

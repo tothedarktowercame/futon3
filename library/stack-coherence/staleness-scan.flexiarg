@@ -1,7 +1,10 @@
 @flexiarg stack-coherence/staleness-scan
 @title Staleness Scan
-@sigils [🌄/止]
+@sigils [🌄/止 ⏰/旧]
+@audience futon stewards, stack maintainers
+@tone analytic-neutral
 @factor Keen investigation (dhammavicaya)
+@references [stack-coherence/readme-devmap-sync stack-coherence/commit-intent-alignment devmap-coherence/ifr-state-convergence]
 
 ! conclusion:
   compare timestamps (git log, last edited dates) to linked clauses; flag anything older than the freshness window and prompt a refresh with pointers to the newest artifacts

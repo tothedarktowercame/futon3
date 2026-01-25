@@ -1,0 +1,40 @@
+@flexiarg stack-coherence/maturity-evidence-audit
+@title Maturity Evidence Audit
+@sigils [📈/升 🔍/证]
+@audience futon stewards, stack maintainers
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [devmap-coherence/prototype-maturity-lifecycle stack-coherence/evidence-ledger stack-coherence/ready-blocked-triage]
+
+! conclusion:
+  for each prototype with a :maturity tag, verify that evidence supports the claimed level; flag mismatches and emit promotion or demotion recommendations
+
+  + context: Prototypes claim maturity levels (:stub, :greenfield, :active, :settled) but these claims can drift from reality.
+  + IF:
+    devmap prototypes carry :maturity tags indicating their readiness level
+
+  + HOWEVER:
+    maturity claims are often aspirational — a prototype tagged :active may have failing tests, and one tagged :stub may actually be running in production
+
+  + THEN:
+    for each prototype with a :maturity tag, verify that evidence supports the claimed level; flag mismatches and emit promotion or demotion recommendations
+
+  + BECAUSE:
+    maturity tags are trust signals — downstream consumers decide what to depend on based on claimed maturity, so false claims cause silent breakage
+
+  + AUDIT-CRITERIA:
+    :stub claims valid if: no runnable implementation exists
+    :greenfield claims valid if: code exists but no end-to-end test evidence
+    :active claims valid if: runs end-to-end, has 3+ logged uses, PSR/PUR evidence
+    :settled claims valid if: 10+ uses, >80% success rate, no regressions in 2 weeks
+
+  + MISMATCH-ACTIONS:
+    over-claimed (e.g., :active but no evidence) → demote and flag for attention
+    under-claimed (e.g., :stub but has passing tests) → recommend promotion
+    no-tag (missing :maturity) → flag for classification
+
+  + NEXT-STEPS:
+    next[Run maturity audit on all devmap prototypes; generate mismatch report.]
+    next[Add :maturity tags to any prototype missing them.]
+    next[Wire maturity changes into sidecar logs for audit trail.]
+    next[Review maturity mismatches in weekly stack triage.]

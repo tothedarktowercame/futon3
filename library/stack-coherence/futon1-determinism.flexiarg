@@ -1,7 +1,10 @@
 @flexiarg stack-coherence/futon1-determinism
 @title Futon1 Determinism Gate
-@sigils [👴/申]
+@sigils [👴/申 🔒/定]
+@audience futon stewards, stack maintainers
+@tone analytic-neutral
 @factor Keen investigation (dhammavicaya)
+@references [devmap-coherence/baseline-freeze devmap-coherence/ifr-f1-dhammavicaya stack-coherence/evidence-ledger]
 
 ! conclusion:
   rely on the `Futon1 Deterministic Stack` GitHub Action (`futon1/.github/workflows/futon1-stack-tests.yml`) or run the suites manually (`cd futon1/apps/client && clojure -M:test`, `cd apps/graph-memory && clojure -M:test -m cognitect.test-runner`, `cd apps/nlp-interface && clojure -M:test`). When any leg fails, regenerate `resources/baseline/demo_session.edn` via `clojure -M:baseline/snapshot --write ...` or fix the regression before advancing futons that depend on storage/NLP determinism

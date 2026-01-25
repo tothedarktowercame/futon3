@@ -1,7 +1,10 @@
 @flexiarg stack-coherence/commit-intent-alignment
 @title Commit Intent Alignment
-@sigils [🌆/上]
+@sigils [🌆/上 🔗/提]
+@audience futon stewards, stack maintainers
+@tone analytic-neutral
 @factor Energy (viriya)
+@references [stack-coherence/staleness-scan stack-coherence/ready-blocked-triage devmap-coherence/next-steps-to-done]
 
 ! conclusion:
   correlate commit messages/PRs with devmap IDs; for each match, update the clause status + evidence ledger; if a clause stays marked “planned” despite recent commits, flag it as `drift` and prompt someone to reconcile

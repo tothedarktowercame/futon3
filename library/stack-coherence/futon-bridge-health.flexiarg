@@ -1,0 +1,41 @@
+@flexiarg stack-coherence/futon-bridge-health
+@title Futon Bridge Health Check
+@sigils [🌉/桥 ✓/通]
+@audience futon stewards, stack maintainers
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [devmap-coherence/prototype-alignment-bridge stack-coherence/stack-blocker-detection devmap-coherence/ifr-f2-viriya devmap-coherence/ifr-f3-piti]
+
+! conclusion:
+  for each declared cross-futon bridge (f1→f2, f2→f3, f3→f4, etc.), verify the bridge artifact exists, is callable, and returns expected data; emit health report per bridge with status, latency, and last-verified timestamp
+
+  + context: The FUTON stack depends on bridges between layers — adapters, exports, APIs, shared schemas. Bridge failures silently break coordination.
+  + IF:
+    futons declare dependencies on upstream layers ("uses futon1 graph memory", "receives futon2 pivot streams", "calls futon3 portal")
+
+  + HOWEVER:
+    bridge health is rarely tested explicitly; a broken bridge manifests as mysterious downstream failures rather than a clear "bridge X is down"
+
+  + THEN:
+    for each declared cross-futon bridge (f1→f2, f2→f3, f3→f4, etc.), verify the bridge artifact exists, is callable, and returns expected data; emit health report per bridge with status, latency, and last-verified timestamp
+
+  + BECAUSE:
+    dhammavicaya requires knowing what exists — bridges are the connective tissue of the stack, and their health must be observable, not assumed
+
+  + BRIDGE-INVENTORY:
+    f0→f3a: vitality telemetry → futon3a morning review
+    f1→f2: graph memory → pivot stream context
+    f1→f3: graph memory → pattern store sync
+    f2→f3: pivot streams → proof trails
+    f3→f3a: pattern canon → portal queries
+    f3a→f0: audit logs → vitality dashboard
+    f3→f4: proof trails → Arxana nodes
+    f4→f5: GravPad → concentration practices
+    f5→f6: ledgers → Hyperreal entries
+    f3→f6: vetted patterns → argumentarium
+    f2,f3,f5,f6→f7: all artifacts → civic field
+
+  + NEXT-STEPS:
+    next[Create a bridge registry listing each declared bridge with its health check method.]
+    next[Run bridge health checks weekly; log failures as stack blockers.]
+    next[Add bridge status to futon3a morning review digest.]

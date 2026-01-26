@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# audit-sigils: Check all devmaps and patterns for invalid sigils
+# Uses the chops service to validate against tokizh.org canonical mapping
+
+FUTON3_ROOT="${FUTON3_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
+
+cd "$FUTON3_ROOT"
+
+clj -M -e '
+(require (quote [futon3.chops :as chops])
+         (quote [clojure.java.io :as io])
+         (quote [clojure.string :as str]))
+
+(defn extract-sigils-from-file [file]
+  "Extract emoji/hanzi sigil pairs from a file."
+  (let [text (slurp file)
+        ;; Match patterns like 🐜/予 or ➰/双
+        ;; Unicode ranges: emoji symbols + CJK unified ideographs
+        pattern #"([^\s\[\]/A-Za-z0-9]+)/([\u4e00-\u9fff])"
+        matches (re-seq pattern text)]
+    (map first matches)))
+
+(defn audit-file [file]
+  (let [sigils (extract-sigils-from-file file)
+        results (map chops/validate-sigil sigils)
+        invalid (filter (complement :valid?) results)]
+    {:file (.getName file)
+     :path (.getPath file)
+     :total (count sigils)
+     :invalid (count invalid)
+     :errors invalid}))
+
+(defn print-audit-report [audits]
+  (println "Sigil Audit Report")
+  (println "==================")
+  (println)
+
+  (let [total-files (count audits)
+        total-sigils (reduce + (map :total audits))
+        total-invalid (reduce + (map :invalid audits))
+        problem-files (filter #(pos? (:invalid %)) audits)]
+
+    (println (str "Files checked:   " total-files))
+    (println (str "Sigils checked:  " total-sigils))
+    (println (str "Invalid sigils:  " total-invalid))
+    (println)
+
+    (if (empty? problem-files)
+      (println "✓ All sigils are canonical!")
+      (do
+        (println "✗ Files with invalid sigils:")
+        (println)
+        (doseq [audit problem-files]
+          (println (str "  " (:path audit) " (" (:invalid audit) " invalid)"))
+          (doseq [err (:errors audit)]
+            (println (str "    ✗ " (:input err)))
+            (doseq [e (:errors err)]
+              (println (str "      → " (:message e))))))
+        (println)
+        (System/exit 1)))))
+
+;; Find all devmap and flexiarg files
+(let [holes-dir (io/file "holes")
+      library-dir (io/file "library")
+      devmaps (filter #(str/ends-with? (.getName %) ".devmap")
+                      (file-seq holes-dir))
+      audits (map audit-file devmaps)]
+  (print-audit-report audits))
+'

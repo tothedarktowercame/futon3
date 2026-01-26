@@ -1,232 +1,480 @@
 @multiarg futon2/devmap
-@title FUTON2 Development Map
+@title FUTON2 Development Map — Active Inference Engine & Ant Demonstrators
 @audience futon-devs, simulation-agents, future-you
 @tone formal-analytic
 @style roadmap
-@allow-new-claims true
-@length any
 @factor Energy (viriya)
-@IFR: FUTON2 is the viriya (energy) chamber: a narratable Active Inference engine whose ants are first demonstrators for AIF agent species that will eventually crawl FUTON1 graph memory, export state to higher futons, and turn insight into kinetic practice across the network.
-@state Ant sim + AIF loop run end-to-end with analyzer hooks, and cyber-ants can
-swap in for the classic faction via Futon3-derived patterns. Architecture
-baseline documented in stack-baseline.md. Observation property tests strong
-(440+ iterations). Hunger/tau goldens recorded (6 scenarios). Policy goldens
-recorded (5 scenarios). Gaps: formal semantics docs and white-space tests
-missing.
-@next Formalize micro-step semantics in doc/trace-semantics.md, update README observation vector, add white-space property tests, expand policy goldens to 10 scenarios.
+@IFR: FUTON2 provides a narratable Active Inference engine whose ants are first
+demonstrators for AIF agent species. The same engine powers futon3 fulab agents
+and may drive futon5 MetaCA simulations—making FUTON2 the shared AIF substrate
+that turns insight into kinetic practice across the stack.
+@state Core AIF stack (observe→perceive→affect→policy→act) running end-to-end
+with analyzer hooks. Observation property tests strong (440+ iterations).
+Hunger/tau goldens recorded (6 scenarios). Policy goldens recorded (5 scenarios).
+Microtraces locked (4 scenarios). Gaps: world mechanics contract undocumented;
+external stepping API missing; futon1/futon3 bridges planned but not implemented.
+@next Formalize world mechanics contract; expose external stepping API for
+episode export; design futon1 graph adapter; expand policy goldens to 10 scenarios.
+
+## The Argument
+
+FUTON2 provides a narratable Active Inference engine with the ant war-game as its
+first demonstrator. The AIF stack baseline documents the full pipeline—observe,
+perceive, affect, policy, act—with locked parameters and golden microtraces so
+the system behaves reproducibly across seeds and refactors. The observation layer
+is hardened with property tests ensuring all sensory channels normalize to [0,1]
+across hundreds of random worlds. The predictive coding microcycle produces
+per-step traces of hunger, tau, and error evolution that regression tests lock
+against golden scenarios. Hunger and precision dynamics have six golden sequences
+covering normal operation through starvation, overstimulation, and cargo stress.
+The policy layer surfaces EFE-based action rankings through a deterministic
+harness with golden scenarios for forage, return, explore, and defend modes.
+The world mechanics provide the environment contract that all agent behaviour
+depends on. Pivot streams and analyzers enable introspection, feeding metrics
+to higher futons. An external stepping API will let futon3 and futon5 drive
+episodes programmatically. Bridges to futon1 graph memory and futon3 proofwork
+will let AIF agents read fact graphs and contribute to shared missions. Viriya
+metrics will connect simulation dynamics to social activation, making FUTON2
+a practice accelerator rather than a curiosity.
 
 
-! instantiated-by: Prototype 0 — AIF Stack Baseline (observe → perceive → affect → core) [🌝/四 🗿/刊]
-  + context: FUTON2 runs a full Active Inference loop in the ant war-game, wiring `ants.aif.observe`, `ants.aif.perceive`, `ants.aif.affect`, and `ants.aif.core` into one tick-by-tick pipeline.
-  + if: You want a stable story that shows how observation, prediction errors, precision, and actions integrate per tick.
-  + however: Modules are individually solid but no single document freezes hunger/tau semantics or traces the whole stack.
-  + then: Capture a top-level architecture note from sensory keys through world updates, lock current hunger and predictive micro-step parameters, and add four golden AIF microtraces.
-  + because: A documented baseline prevents accidental drift before you optimise policy, analyzers, or mechanics.
-  + evidence:
-    - `futon2/doc/stack-baseline.md` (76 lines): Documents 5-stage pipeline (observe→perceive→affect→policy→act),
-      locks baseline parameters (max-steps=4, alpha=0.45, beta=0.28), lists observation vector ABI.
-    - `futon2/src/ants/aif/core.clj` (209 lines): `aif-step()` orchestrates full tick, `default-aif-config` defines
-      all nested config (preferences, precision, actions, efe, modes).
-    - `futon2/src/ants/aif/observe.clj` (185 lines): `g-observe()` normalizes 14 channels to [0,1].
-    - `futon2/src/ants/aif/perceive.clj` (165 lines): Multi-step predictive coding with trace output.
-    - `futon2/src/ants/aif/affect.clj` (240 lines): `tick-hunger()`, `hunger->tau()`, `modulate-precisions()`, `update-tau()`.
-    - `futon2/src/ants/aif/policy.clj` (841 lines): EFE-based action selection with mode-conditioned biases.
-    - `futon2/doc/trace/single_tick.edn` + `futon2/doc/trace/single_tick.svg`: Deterministic trace artifact + plot.
-    - `futon2/test/resources/goldens/microtraces.edn`: 4 golden perception traces (baseline, hungry-near-enemy,
-      sated-on-trail, homebound-low-pher).
-  + next-evidence:
-    - `doc/trace-semantics.md` explaining micro-step semantics and why errors are 0.0 in goldens.
-    - `doc/hunger-tau-coupling.md` documenting when update-tau fires vs perceive-internal hunger updates.
-    - 4 complete tick traces with commentary (forage, return, explore, defend scenarios).
+! instantiated-by: Prototype 0 — AIF Stack Baseline [🌝/四 🗿/刊]
+  :maturity :active
+  :depends-on []
+  :evidence-for-active [Stack running end-to-end for 90+ days; 4 golden microtraces locked; parameters documented]
+
+  + context: FUTON2 runs a full Active Inference loop in the ant war-game.
+  + IF: You want a stable story showing how observation, prediction errors, precision, and actions integrate per tick
+  + HOWEVER: Without a documented baseline, modules can drift and break silently
+  + THEN: Capture top-level architecture (sensory keys through world updates), lock hunger and predictive micro-step parameters, and maintain golden AIF microtraces
+  + BECAUSE: A documented baseline prevents accidental drift before optimising policy, analyzers, or mechanics
+
+  + EVIDENCE:
+    evidence[doc/stack-baseline.md documents 5-stage pipeline with locked parameters]
+    evidence[src/ants/aif/core.clj orchestrates full tick via aif-step()]
+    evidence[test/resources/goldens/microtraces.edn locks 4 golden perception traces]
+    evidence[doc/trace/single_tick.edn + SVG provide deterministic trace artifacts]
+
+  + NEXT-STEPS:
+    next[Add doc/trace-semantics.md explaining micro-step semantics]
+    next[Document hunger-tau coupling (when update-tau fires vs perceive-internal updates)]
+    next[Add 4 complete tick traces with commentary (forage, return, explore, defend)]
+
+  :success-criteria
+    pass[Golden microtraces pass regression tests]
+    pass[Parameters locked in stack-baseline.md]
+    pass[New modules can integrate without breaking existing traces]
+    fail[Microtrace regression without version bump or migration]
+
+  :psr-example "Selected AIF stack baseline for fulab integration because it's the reference AIF implementation"
+  :pur-template "AIF tick {{tick-id}}, perception steps: {{steps}}, final tau: {{tau}}"
+
 
 ! instantiated-by: Prototype 1 — Observation Layer Hardening [🌝/四 👎/刊]
-  + context: `g-observe` normalises sensory evidence (food, pheromones, proximity, novelty, reserves) into the vectors passed downstream.
-  + if: You want deterministic observations across seeds and a nailed-down vector ABI for later ML.
-  + however: Normalisation bounds and neighbour logic assumptions are scattered across helpers.
-  + then: Write property tests that enforce 0–1 ranges, document the `sense->vector` ordering, and add edge-case tests for grid borders, max-distance tweaks, and degenerate pheromone fields.
-  + because: Reliable observations keep perception and policy stable no matter the world configuration.
-  + evidence:
-    - `futon2/test/ants/aif/observe_test.clj` (207 lines): Property tests + unit tests.
-      - `g-observe-values-clamped`: 200 random worlds, all 16 keys verified ∈ [0,1].
-      - `g-observe-border-neighbor-means`: 120 iterations testing edge/corner calculations.
-      - `degenerate-field-normalizes-to-zero`: Handles max-food=0 gracefully.
-      - `sense-vector-ordering`: Locks 14-element vector ABI.
-    - `futon2/src/ants/aif/observe.clj`: `clamp01()`, `normalize()` enforce bounds; all channels
-      pass through normalization before return (lines 161-177).
-    - `futon2/doc/stack-baseline.md` (lines 7-9): Lists observation ABI ordering.
-    - `futon2/README.md` (lines 88-93): Documents sense→vector keys (needs update: lists 13, actual is 14).
-  + next-evidence:
-    - `doc/observation-spec.md` listing all normalization bounds (max-food, max-pher, max-dist, max-reserve).
-    - White-space detection property tests (`:white?` field currently untested).
-    - Documentation of 8-neighborhood offset logic.
+  :maturity :active
+  :depends-on [f2/P0]
+  :evidence-for-active [440+ property test iterations; 14-channel vector ABI locked]
 
-! instantiated-by: Prototype 2 — Predictive Coding Microcycle Clarity [🙇/乡 📤/叉]
-  + context: Perception performs multi-step updates of mu, tau, Pi-o, goals, and weighted errors with annealing.
-  + if: You want inspectors (or future Arxana bridges) to understand belief updates.
-  + however: Hunger updates, sensory prediction, and error accumulation are interwoven without a canonical trace.
-  + then: Publish a single-tick perception trace with plots of hunger, tau, and error per micro-step, and formalise an interface for extracting a mu/precision snapshot.
-  + because: Clear cycles make later integrations with futon4 symbolic memory far easier.
-  + evidence:
-    - `test/resources/goldens/microtraces.edn` (24 lines): 4 golden scenarios with per-step traces.
-      - `:baseline`: h 0.66→0.79, tau 1.47→0.81 over 4 steps.
-      - `:hungry-near-enemy`: h jumps to 1.0, tau floors.
-      - `:sated-on-trail`: h stays low 0.22→0.33, tau peaks 2.06→1.5.
-      - `:homebound-low-pher`: h 0.55→1.0, tau drops 1.76→0.33.
-    - `test/ants/aif/microtrace_regression_test.clj` (80 lines): Runs 4 scenarios through `aif-step`,
-      compares `:perception :trace` to golden, locks baseline parameters.
-    - `tools/trace_tick.clj` (151 lines): Generates `doc/trace/single_tick.edn` + SVG plot.
-    - `doc/trace/single_tick.svg`: Renders tau (red), h (blue), error (purple) with legend.
-    - `src/ants/aif/perceive.clj` (lines 133-164): Loop outputs `{:tau, :h, :error}` per micro-step.
-  + next-evidence:
-    - `doc/trace-semantics.md` formalizing micro-step semantics (why errors are 0.0, annealing formula).
-    - Goal-bias mechanism documented and tested (blending toward home/enemy based on cargo).
+  + context: g-observe normalises sensory evidence into vectors for downstream processing.
+  + IF: You want deterministic observations across seeds and a nailed-down vector ABI
+  + HOWEVER: Without property tests, normalisation bounds and edge cases can break silently
+  + THEN: Enforce 0–1 ranges via property tests, document sense→vector ordering, and test edge cases (borders, degenerate fields)
+  + BECAUSE: Reliable observations keep perception and policy stable across world configurations
 
-! instantiated-by: Prototype 3 — Hunger & Precision Dynamics Goldens [💫/六 🙇/叉]
-  + context: Functions such as `tick-hunger`, `update-hunger`, `update-tau`, and `modulate-precisions` control the most sensitive dynamics.
-  + if: You want reproducible affective behaviour that survives refactors.
-  + however: There are no golden tests for tau evolution, hunger saturation, or reserve-driven adjustments.
-  + then: Record six golden sequences (normal, starvation, overstimulation, heavy-cargo, high-risk, high-ingest) and lock expected tau floors/caps for each.
-  + because: Once goldens exist, small tune-ups stop breaking entire colony behaviour.
-  + evidence:
-    - `test/resources/goldens/hunger_tau.edn` (163 lines): 6 golden sequences as specified.
-      - `:normal`: h=0.42→0.427→0.233, tau=2.076 (strong feeding effect).
-      - `:starvation`: h=0.88→0.896→0.887, tau FLOORS at 0.605 (exploitation mode).
-      - `:overstimulation`: h=0.50→0.506→0.262, tau PEAKS at 2.011 (exploration mode).
-      - `:heavy-cargo`: cargo=0.95, h=0.58→0.961, tau FLOORS at 0.597 (load stress).
-      - `:high-risk`: h=0.60→0.671→0.649, tau=1.14 (moderate modulation).
-      - `:high-ingest`: h=0.70→0.67→0.185, tau PEAKS at 2.18 (strong relief).
-    - `test/ants/aif/hunger_regression_test.clj` (29 lines): Loads 6 scenarios, evaluates
-      tick-hunger → update-hunger → hunger->tau → modulate-precisions, compares to golden.
-    - `tools/hunger_goldens.clj` (75 lines): Generator script for golden file.
-    - `README.md` (lines 117-129): Documents hunger config parameters and defaults.
-  + next-evidence:
-    - `doc/hunger-goldens-guide.md` explaining behavioral regime each scenario represents.
-    - SVG plots for hunger_tau trajectories (like trace_tick.clj does for microtraces).
-    - Tau-floor/tau-cap assertions added to regression test (currently equality-only).
-    - Boundary saturation tests (e.g., h=0.99 + 0.1 delta → clamps to 1.0).
+  + EVIDENCE:
+    evidence[test/ants/aif/observe_test.clj runs 200+ random worlds with g-observe-values-clamped]
+    evidence[120 iterations test border/corner neighbor calculations]
+    evidence[Degenerate field test handles max-food=0 gracefully]
+    evidence[14-element vector ABI locked in sense-vector-ordering test]
 
-! instantiated-by: Prototype 4 — Policy Layer Surfacing [🍲/乡 🔥/代]
-  + context: `ants.aif.policy` selects actions using EFE metrics while `attach-policy-diagnostics` emits traces.
-  + if: You want reproducible policy choices under controlled sensory inputs.
-  + however: There is no standalone harness that feeds synthetic mu/observation pairs.
-  + then: Build `(eval-policy mu prec obs config)` as a harness and add golden action rankings for ten canonical scenarios (e.g. rich food, enemy close, starvation risk).
-  + because: Stabilised policies are mandatory before benchmarking or bridging into futon1 salience services.
-  + evidence:
-    - `test/resources/goldens/policy_harness.edn`: 5 golden scenarios with action rankings.
-      - `:forage-normal`: Empty-handed, good food signal → forage preferred.
-      - `:loaded-homebound`: High cargo, near home → return preferred.
-      - `:white-space-scout`: No signals, exploring → pheromone preferred.
-      - `:deficit-colony`: Low reserves, high hunger → return prioritized.
-      - `:maintain-pheromone`: Good trail, near home → pheromone preferred.
-      Each includes: p (probability), G (free energy), risk, ambiguity, info, colony, survival, action-cost.
-    - `tools/policy_harness.clj` (128 lines): Generator for 5 canonical scenarios.
-    - `test/ants/aif/policy_harness_test.clj` (20 lines): Loads scenarios, runs `eval-policy`,
-      compares rankings to golden.
-    - `test/ants/aif/policy_test.clj` (187 lines): Comprehensive behavioral tests
-      (shape, preference coupling, starvation tau clamping, nest action filtering).
-    - `src/ants/aif/policy.clj`: `eval-policy()` function exists (deterministic ranking harness).
-  + next-evidence:
-    - Expand to 10 canonical scenarios as specified in devmap (currently 5).
-    - Document EFE component formulas (risk, ambiguity, info, colony, survival) in `doc/policy-spec.md`.
+  + NEXT-STEPS:
+    next[Add doc/observation-spec.md listing all normalization bounds]
+    next[Add white-space detection property tests (:white? field currently untested)]
+    next[Update README.md observation vector docs (lists 13, actual is 14)]
 
-! instantiated-by: Prototype 5 — World Mechanics Contract (war.clj) [🎑/书 👕/办]
-  + context: The simulator handles evaporation, movement, gather/deposit, pheromone dynamics, hunger propagation, reserves, and termination.
-  + if: You want FUTON2 to be a reliable agent-environment backend.
-  + however: Movement heuristics, gather thresholds, and white-streak rules are powerful yet lightly documented.
-  + then: Document all invariants (pheromone caps, grid bounds, gather limits), seed movement decisions for determinism, and split movement modes into testable units.
-  + because: A clear contract keeps the world trustworthy when other prototypes depend on it for episodes.
+  :success-criteria
+    pass[All sensory channels return values in [0,1]]
+    pass[Vector ABI stable across refactors]
+    pass[Edge cases (borders, empty fields) handled correctly]
+    fail[Observation varies non-deterministically for same input]
 
-! instantiated-by: Prototype 6 — Live Analyzer & Pivot Stream Stabilisation [🚢/已 🐲/无]
-  + context: The live analyzer consumes pivot events, computes EWMA metrics, detects starvation spirals, and prints mode transitions.
-  + if: You want analyzer outputs to feed futon3 evaluations or futon4 reflexive agents.
-  + however: Pivot schemas are implicit and analyzer assumptions are undocumented.
-  + then: Freeze a versioned pivot-row schema, add tests for required keys (:act, :mode, :cargo, :ing, etc.), and ship an example analyzer plugin for futon4.
-  + because: Pivot streams are FUTON2’s event bus and must behave like a stable ABI.
+  :psr-example "Selected observation hardening for ML export because deterministic vectors are prerequisite"
+  :pur-template "Observation test run, iterations: {{count}}, channels: 14, all clamped: {{yes|no}}"
 
-! instantiated-by: Prototype 7 — Classic vs AIF Benchmark Suite [🗿/三 ⚡️/内]
-  + context: Benchmark scripts compare classic ants to AIF runs across scores, durations, and G-ema.
-  + if: You want formal behavioural comparisons rather than anecdotes.
-  + however: Only three preset scenarios exist and there is no variance analysis.
-  + then: Add parametrised benchmarks spanning grid sizes, pheromone decay, hunger burn, and tau floors; capture plots and golden CSVs.
-  + because: FUTON2 should function as a scientific system with reproducible metrics.
 
-! instantiated-by: Prototype 8 — External Control & Episode Export [📤/予 🚢/已]
-  + context: `simulate` drives the war sim but offers no external stepping API.
-  + if: You want futon3 or futon4 to request “give me N steps with this config.”
-  + however: Stepping remains tied to the CLI and HUD.
-  + then: Expose `(futon2.step world n {:emit-pivot? true})`, add EDN exports of full episodes, and keep pivot batches consistent.
-  + because: Exported episodes are critical for agent training, memory, and pattern extraction.
+! instantiated-by: Prototype 2 — Predictive Coding Microcycle [🙇/乡 📤/叉]
+  :maturity :active
+  :depends-on [f2/P0]
+  :evidence-for-active [4 golden scenarios locked; regression tests pass; trace tooling operational]
 
-! instantiated-by: Prototype 9 — futon1 ↔ futon2 Alignment Layer [👎/刊 👭/二]
-  + context: FUTON1 emits focus headers and salience; FUTON2 emits percept/action streams.
-  + if: You want the ants to act as embodied readers + writers of futon1’s graph.
-  + however: there is no shared dictionary between entities/intents and colony modes, so exports are useless to FUTON1.
-  + then: define the crosswalk (entities ↔ colonies, intents ↔ behaviours), publish an export schema, and prove it by replaying one colony while FUTON1 ingests the stream and surfaces it back to users.
-  + because: a working bridge proves ants can reason over the same facts as the rest of the stack.
+  + context: Perception performs multi-step updates of mu, tau, Pi-o, goals, and weighted errors.
+  + IF: Inspectors or future bridges need to understand belief updates
+  + HOWEVER: Without canonical traces, hunger updates and error accumulation are opaque
+  + THEN: Publish single-tick perception traces with per-step hunger, tau, and error; lock against golden scenarios
+  + BECAUSE: Clear cycles make integrations with futon4 symbolic memory and futon3 fulab far easier
 
-! instantiated-by: Prototype 10 — Curriculum Scenarios & AIF Behaviour Cards [🎴/乡 🐜/予]
+  + EVIDENCE:
+    evidence[test/resources/goldens/microtraces.edn has 4 golden scenarios with per-step traces]
+    evidence[test/ants/aif/microtrace_regression_test.clj compares live runs to goldens]
+    evidence[tools/trace_tick.clj generates doc/trace/single_tick.edn + SVG]
+    evidence[src/ants/aif/perceive.clj outputs {tau, h, error} per micro-step]
+
+  + NEXT-STEPS:
+    next[Add doc/trace-semantics.md formalizing micro-step semantics]
+    next[Document goal-bias mechanism (blending toward home/enemy based on cargo)]
+    next[Explain why errors are 0.0 in certain goldens]
+
+  :success-criteria
+    pass[Golden scenarios pass regression tests]
+    pass[Traces show tau, h, error evolution per step]
+    pass[External tools can extract mu/precision snapshots]
+    fail[Perception output varies for same input and config]
+
+  :psr-example "Selected predictive coding traces for fulab agent debugging because step-by-step visibility is essential"
+  :pur-template "Microtrace scenario {{name}}, steps: {{count}}, final tau: {{tau}}, final h: {{h}}"
+
+
+! instantiated-by: Prototype 3 — Hunger & Precision Dynamics [💫/六 🙇/叉]
+  :maturity :active
+  :depends-on [f2/P0]
+  :evidence-for-active [6 golden sequences locked; regression tests pass]
+
+  + context: tick-hunger, update-hunger, update-tau, and modulate-precisions control the most sensitive dynamics.
+  + IF: Affective behaviour must survive refactors reproducibly
+  + HOWEVER: Without goldens, tau evolution and hunger saturation can drift
+  + THEN: Record golden sequences for key scenarios (normal, starvation, overstimulation, heavy-cargo, high-risk, high-ingest) and lock expected tau floors/caps
+  + BECAUSE: Once goldens exist, small tune-ups stop breaking entire colony behaviour
+
+  + EVIDENCE:
+    evidence[test/resources/goldens/hunger_tau.edn has 6 golden sequences as specified]
+    evidence[test/ants/aif/hunger_regression_test.clj runs all 6 scenarios through full affect pipeline]
+    evidence[tools/hunger_goldens.clj generates golden file deterministically]
+    evidence[README.md documents hunger config parameters and defaults]
+
+  + NEXT-STEPS:
+    next[Add doc/hunger-goldens-guide.md explaining behavioral regime each scenario represents]
+    next[Generate SVG plots for hunger_tau trajectories]
+    next[Add tau-floor/tau-cap assertions to regression test]
+    next[Add boundary saturation tests (h=0.99 + delta → clamps to 1.0)]
+
+  :success-criteria
+    pass[All 6 golden scenarios pass regression tests]
+    pass[Tau floors and caps behave as documented]
+    pass[Hunger saturation clamps correctly at boundaries]
+    fail[Affective dynamics change without golden update]
+
+  :psr-example "Selected hunger goldens for refactor safety because affect dynamics are most sensitive to drift"
+  :pur-template "Hunger scenario {{name}}, h: {{h_start}}→{{h_end}}, tau: {{tau}}"
+
+
+! instantiated-by: Prototype 4 — Policy Layer Harness [🍲/乡 🔥/代]
+  :maturity :active
+  :depends-on [f2/P0, f2/P2, f2/P3]
+  :evidence-for-active [5 golden scenarios locked; deterministic eval-policy function operational]
+
+  + context: ants.aif.policy selects actions using EFE metrics.
+  + IF: Policy choices must be reproducible under controlled inputs
+  + HOWEVER: Without a standalone harness, policy testing requires full sim runs
+  + THEN: Provide eval-policy harness that accepts synthetic mu/observation pairs; lock golden action rankings for canonical scenarios
+  + BECAUSE: Stabilised policies are mandatory before benchmarking or bridging into futon1 salience services
+
+  + EVIDENCE:
+    evidence[test/resources/goldens/policy_harness.edn has 5 golden scenarios with action rankings]
+    evidence[tools/policy_harness.clj generates canonical scenarios]
+    evidence[test/ants/aif/policy_harness_test.clj compares rankings to golden]
+    evidence[test/ants/aif/policy_test.clj has comprehensive behavioral tests]
+
+  + NEXT-STEPS:
+    next[Expand to 10 canonical scenarios as specified]
+    next[Document EFE component formulas in doc/policy-spec.md]
+    next[Add policy response time instrumentation]
+
+  :success-criteria
+    pass[eval-policy produces deterministic rankings for same inputs]
+    pass[Golden scenarios cover forage, return, explore, defend modes]
+    pass[Policy changes require golden updates with rationale]
+    fail[Action rankings vary non-deterministically]
+
+  :psr-example "Selected policy harness for fulab agent validation because reproducible decisions enable debugging"
+  :pur-template "Policy eval scenario {{name}}, top action: {{action}}, G: {{G}}"
+
+
+! instantiated-by: Prototype 5 — World Mechanics Contract [🎑/书 👕/办]
+  :maturity :greenfield
+  :depends-on []
+  :evidence-for-active [Contract documented; invariants tested; movement deterministic]
+
+  + context: The simulator handles evaporation, movement, gather/deposit, pheromone dynamics, hunger propagation, and reserves.
+  + IF: FUTON2 should be a reliable agent-environment backend
+  + HOWEVER: Movement heuristics and gather thresholds are powerful yet lightly documented
+  + THEN: Document all invariants (pheromone caps, grid bounds, gather limits), seed movement for determinism, and split movement modes into testable units
+  + BECAUSE: A clear contract keeps the world trustworthy when other prototypes depend on it for episodes
+
+  + EVIDENCE:
+    evidence[war.clj implements full world mechanics]
+    evidence[Basic simulation runs deterministically with fixed seeds]
+
+  + NEXT-STEPS:
+    next[Document pheromone caps, grid bounds, gather limits in doc/world-contract.md]
+    next[Add property tests for movement determinism]
+    next[Split movement modes into testable units]
+    next[Document white-streak rules]
+
+  :success-criteria
+    pass[World invariants documented and tested]
+    pass[Movement deterministic for same seed]
+    pass[Gather/deposit thresholds explicit and tested]
+    fail[World state drifts non-deterministically]
+
+  :psr-example "Selected world contract for episode export because external consumers need guaranteed semantics"
+  :pur-template "World step {{tick}}, ants: {{count}}, food: {{food}}, pheromone max: {{pher}}"
+
+
+! instantiated-by: Prototype 6 — Pivot Stream & Analyzer [🚢/已 🐲/无]
+  :maturity :greenfield
+  :depends-on [f2/P0]
+  :evidence-for-active [Schema versioned; required keys tested; futon3/futon4 can subscribe]
+
+  + context: The live analyzer consumes pivot events, computes EWMA metrics, and detects starvation spirals.
+  + IF: Analyzer outputs should feed futon3 evaluations or futon4 reflexive agents
+  + HOWEVER: Pivot schemas are implicit and analyzer assumptions undocumented
+  + THEN: Freeze versioned pivot-row schema, test required keys, and ship example analyzer plugin
+  + BECAUSE: Pivot streams are FUTON2's event bus and must behave like a stable ABI
+
+  + EVIDENCE:
+    evidence[Live analyzer operational in war.clj]
+    evidence[Pivot events emitted per tick]
+
+  + NEXT-STEPS:
+    next[Freeze pivot-row schema in doc/pivot-schema.md]
+    next[Add tests for required keys (:act, :mode, :cargo, :ing, etc.)]
+    next[Ship example analyzer plugin for futon4]
+    next[Document EWMA metric calculations]
+
+  :success-criteria
+    pass[Pivot schema versioned and stable]
+    pass[Required keys validated on emit]
+    pass[External consumers can subscribe without internal knowledge]
+    fail[Schema changes break downstream consumers]
+
+  :psr-example "Selected pivot schema for futon4 integration because event bus stability enables composition"
+  :pur-template "Pivot batch {{batch}}, events: {{count}}, schema version: {{version}}"
+
+
+! instantiated-by: Prototype 7 — External Stepping API [📤/予 🚢/已]
+  :maturity :greenfield
+  :depends-on [f2/P5, f2/P6]
+  :evidence-for-active [futon2.step function exposed; EDN episode export working]
+
+  + context: simulate drives the war sim but offers no external stepping API.
+  + IF: futon3 fulab or futon5 MetaCA want to request "give me N steps with this config"
+  + HOWEVER: Stepping remains tied to CLI and HUD
+  + THEN: Expose (futon2.step world n {:emit-pivot? true}), add EDN exports of full episodes
+  + BECAUSE: Exported episodes are critical for agent training, memory, and pattern extraction
+
+  + EVIDENCE:
+    evidence[simulate function exists in war.clj]
+    evidence[Basic stepping possible via REPL]
+
+  + NEXT-STEPS:
+    next[Expose futon2.step as public API]
+    next[Add EDN episode export with pivot batches]
+    next[Document stepping API for futon3/futon5 consumers]
+    next[Add episode replay capability]
+
+  :success-criteria
+    pass[External callers can step world programmatically]
+    pass[Episodes exportable as EDN]
+    pass[Pivot batches consistent across export]
+    fail[Stepping requires internal knowledge or HUD]
+
+  :psr-example "Selected stepping API for fulab because agents need programmatic episode control"
+  :pur-template "Episode export {{id}}, steps: {{count}}, pivots: {{pivot_count}}"
+
+
+! instantiated-by: Prototype 8 — Benchmark Suite [🗿/三 ⚡️/内]
+  :maturity :greenfield
+  :depends-on [f2/P7]
+  :evidence-for-active [Parametrised benchmarks across grid sizes; golden CSVs captured]
+
+  + context: Benchmark scripts compare classic ants to AIF runs across scores and durations.
+  + IF: You want formal behavioural comparisons rather than anecdotes
+  + HOWEVER: Only three preset scenarios exist with no variance analysis
+  + THEN: Add parametrised benchmarks spanning grid sizes, pheromone decay, hunger burn, and tau floors; capture plots and golden CSVs
+  + BECAUSE: FUTON2 should function as a scientific system with reproducible metrics
+
+  + EVIDENCE:
+    evidence[Basic benchmark scripts exist]
+    evidence[Classic vs AIF comparison possible]
+
+  + NEXT-STEPS:
+    next[Parametrise benchmarks across grid sizes, decay rates, hunger burn]
+    next[Add variance analysis across seeds]
+    next[Capture golden CSVs for regression]
+    next[Generate comparison plots]
+
+  :success-criteria
+    pass[Benchmarks parametrised and reproducible]
+    pass[Classic vs AIF differences quantified]
+    pass[Golden CSVs prevent silent regressions]
+    fail[Benchmark results vary unexpectedly]
+
+  :psr-example "Selected benchmark suite for AIF validation because claims need quantified evidence"
+  :pur-template "Benchmark {{name}}, classic score: {{classic}}, AIF score: {{aif}}, delta: {{delta}}"
+
+
+! instantiated-by: Prototype 9 — futon1 Graph Adapter [👎/刊 👭/二]
+  :maturity :greenfield
+  :depends-on [f2/P6, f2/P7]
+  :source [f1/P7 f1/P8]
+  :evidence-for-active [Adapter converts percepts↔graph facts; colony run exports to futon1 salience]
+
+  + context: FUTON1 offers graph-memory API; FUTON2 emits percept/action streams.
+  + IF: Ants should be the first AIF agents that read fact graphs and write beliefs
+  + HOWEVER: Percepts/actions are locked to grid coordinates with no mapping to futon1 entity IDs
+  + THEN: Design bidirectional adapter (percepts→graph facts, graph cues→priors), version ABI, replay colony run that exports beliefs into futon1
+  + BECAUSE: A working bridge proves ants can reason over the same facts as the rest of the stack
+
+  + EVIDENCE:
+    evidence[futon1 graph-memory API documented and operational]
+    evidence[FUTON2 pivot streams provide raw material for export]
+
+  + NEXT-STEPS:
+    next[Design percept→entity mapping]
+    next[Design graph cue→prior injection]
+    next[Version adapter ABI]
+    next[Demo: replay colony while futon1 ingests stream]
+
+  :success-criteria
+    pass[Adapter bidirectionally converts percepts and graph facts]
+    pass[Colony beliefs visible in futon1 salience tables]
+    pass[ABI versioned for evolution]
+    fail[Export corrupts futon1 state]
+
+  :psr-example "Selected graph adapter for futon1 integration because shared facts enable cross-futon reasoning"
+  :pur-template "Adapter export {{colony}}, entities: {{count}}, relations: {{rels}}"
+
+
+! instantiated-by: Prototype 10 — futon3 Proofwork Bridge [🌀/内 🙅/刊]
+  :maturity :greenfield
+  :depends-on [f2/P6, f2/P7]
+  :source [f3/trails f3/MUSN]
+  :evidence-for-active [Trail→mission translator working; agent runs logged as trail payloads]
+
+  + context: FUTON3 trails record which patterns were checked during human work sessions.
+  + IF: FUTON2 analyzers should ingest trails and commission agent goals
+  + HOWEVER: No ingestion path for trail EDN, no feedback loop to direct agents
+  + THEN: Add trail→mission translator, plus reporting showing how agent runs affect subsequent checks
+  + BECAUSE: Shared missions keep the energy loop tight between simulations and human proofwork
+
+  + EVIDENCE:
+    evidence[FUTON3 trails operational with pattern tracking]
+    evidence[FUTON2 can emit mission-style payloads via pivot]
+
+  + NEXT-STEPS:
+    next[Design trail→mission schema]
+    next[Implement trail ingestion in FUTON2]
+    next[Add mission→agent goal queue]
+    next[Report agent impact on pattern checks]
+
+  :success-criteria
+    pass[Trails ingestible as agent missions]
+    pass[Agent runs produce trail-style payloads]
+    pass[Feedback loop visible in reports]
+    fail[Trails and agent runs disconnected]
+
+  :psr-example "Selected proofwork bridge for shared energy because human and agent work should reinforce"
+  :pur-template "Trail ingested {{trail}}, missions: {{count}}, agent runs: {{runs}}"
+
+
+! instantiated-by: Prototype 11 — Curriculum & Behaviour Cards [🎴/乡 🐜/予]
+  :maturity :greenfield
+  :depends-on [f2/P7]
+  :evidence-for-active [Named curriculum with fixed-seed episodes; behaviour cards exportable]
+
   + context: The current war scenario is rich but single-purpose.
-  + if: You want FUTON2 to double as a pedagogical engine for Active Inference.
-  + however: There is no named curriculum.
-  + then: Create behaviour cards (home-return, starvation spiral, over-exploration, defensive lattice, greedy gatherer collapse), simulate each with fixed seeds, and export the episodes.
-  + because: These cards seed pattern extraction and future training systems.
+  + IF: FUTON2 should double as a pedagogical engine for Active Inference
+  + HOWEVER: There is no named curriculum
+  + THEN: Create behaviour cards (home-return, starvation spiral, over-exploration, defensive lattice, greedy gatherer), simulate with fixed seeds, export episodes
+  + BECAUSE: These cards seed pattern extraction and future training systems
 
-! instantiated-by: Prototype 11 — AIF Agent Debugger & Mu/Precision Visualiser [😻/由 🚢/一]
+  + EVIDENCE:
+    evidence[Fixed-seed simulation possible]
+    evidence[Various behavioral modes observable in runs]
+
+  + NEXT-STEPS:
+    next[Define 5 canonical behaviour cards with descriptions]
+    next[Record fixed-seed episodes for each]
+    next[Export episodes as training data]
+    next[Document as AIF pedagogy resource]
+
+  :success-criteria
+    pass[Each behaviour card has fixed-seed episode]
+    pass[Episodes exportable for training]
+    pass[Cards serve as AIF teaching examples]
+    fail[Behaviours not reproducible across runs]
+
+  :psr-example "Selected curriculum cards for AIF pedagogy because worked examples accelerate learning"
+  :pur-template "Behaviour card {{name}}, seed: {{seed}}, steps: {{steps}}"
+
+
+! instantiated-by: Prototype 12 — Viriya Metrics [⚡️/习 🐜/己]
+  :maturity :greenfield
+  :depends-on [f2/P6, f2/P9, f2/P10]
+  :evidence-for-active [Viriya indicators logged per episode; futon3/futon7 can read energy health]
+
+  + context: FUTON2 carries the Factor of Awakening "energy/viriya": vigor, commitment, kinetic practice.
+  + IF: Simulations should reflect and inform real social activation
+  + HOWEVER: Current metrics stop at hunger/tau; nothing measures vigor or coordination throughput
+  + THEN: Introduce viriya indicators (colony activation score, pledge adherence, trail transfer), log per episode, export to futon3/futon7
+  + BECAUSE: Tying simulation to viriya turns FUTON2 into a practice accelerator
+
+  + EVIDENCE:
+    evidence[Hunger/tau metrics operational]
+    evidence[Colony-level aggregates computable from pivot]
+
+  + NEXT-STEPS:
+    next[Define viriya indicator formulas]
+    next[Implement colony activation score]
+    next[Export viriya metrics to futon3/futon7]
+    next[Document practice acceleration use cases]
+
+  :success-criteria
+    pass[Viriya indicators computed per episode]
+    pass[Higher futons can read energy health]
+    pass[Metrics correlate with observable colony vigor]
+    fail[Viriya disconnected from actual dynamics]
+
+  :psr-example "Selected viriya metrics for practice integration because simulation should inform real activation"
+  :pur-template "Episode {{id}}, viriya score: {{score}}, activation: {{level}}"
+
+
+! instantiated-by: Prototype 13 — Debugger & Visualiser [😻/由 🚢/一]
+  :maturity :greenfield
+  :depends-on [f2/P6]
+  :evidence-for-active [Clerk notebook plots tau/hunger/error timelines; follow-agent mode traces mu]
+
   + context: Pivot logs are textual and require manual parsing.
-  + if: You want interactive introspection of mu vectors, tau evolution, and weighted errors.
-  + however: No visualiser or “follow Alice” mode exists.
-  + then: Build a Clerk notebook (or similar) that plots tau, hunger, errors, and pivot timelines, plus a mode that traces one agent’s full mu timeline.
-  + because: Visual insight accelerates iteration and debugging.
+  + IF: You want interactive introspection of mu vectors, tau evolution, and weighted errors
+  + HOWEVER: No visualiser or "follow Alice" mode exists
+  + THEN: Build Clerk notebook plotting tau, hunger, errors, pivot timelines; add mode that traces one agent's full mu timeline
+  + BECAUSE: Visual insight accelerates iteration and debugging
 
-! instantiated-by: Prototype 12 — Year-End Packaging & Story [🌽/末]
-  + context: FUTON2 must read as a coherent simulation layer to partners and future prototypes.
-  + if: You want it to be adoptable as a research simulator.
-  + however: The codebase is powerful but intimidating without a unifying story.
-  + then: Package the release with a top-level README, whitepaper, stepping API, goldens, and versioned pivot schema.
-  + because: Strong packaging turns FUTON2 into a reusable, inspectable module inside the full FUTON stack.
+  + EVIDENCE:
+    evidence[Pivot data available for visualization]
+    evidence[trace_tick.clj generates SVG plots]
 
-! instantiated-by: Prototype 13 — Graph Memory Adapter & Agent ABI [👎/乃 🙅/去]
-  + context: FUTON1 now offers a documented graph-memory API; FUTON2 needs to speak it to graduate beyond the sandbox.
-  + if: You want ants to be the first drop-in “AIF agent” that reads fact graphs and writes back its beliefs.
-  + however: percepts/actions remain locked to grid coordinates, so nothing maps to FUTON1 entity IDs or relation semantics.
-  + then: design a bidirectional adapter (percepts → graph facts, graph cues → priors), version the ABI, and replay a colony run that exports beliefs into FUTON1 salience tables. Treat FUTON3 proof trails as “human pheromone lines”: export the canonical trail EDN (pattern IDs, fruits/orbs, joy deltas) into FUTON1, expose them via the adapter so analyzers ingest them as missions, and log agent runs as trail-style payloads (mission, outcome, energy delta) back into MUSN so FUTON3 records “agent proofs.”
-  + because: once the adapter honours shared trail/pheromone energy, human proofwork and AIF runs guide each other through the same mission record instead of bespoke glue.
+  + NEXT-STEPS:
+    next[Build Clerk notebook for AIF visualization]
+    next[Add follow-agent mode for single-ant tracing]
+    next[Plot mu vector evolution over time]
+    next[Integrate with pivot stream for live updates]
 
-! instantiated-by: Prototype 14 — Viriya Field & Social Activation Metrics [⚡️/习 🐜/己]
-  + context: FUTON2 carries the Factor of Awakening “energy/viriya”: vigor, commitment, and kinetic practice.
-  + if: You want simulations to reflect and inform real social activation—networked collaboration, shared commitments, and practice loops across humans + agents.
-  + however: Current metrics stop at hunger/tau; nothing measures vigor, pledge strength, or coordination throughput.
-  + then: Introduce viriya indicators (e.g., colony activation score, pledge adherence, transfer of trails into collaborative tasks), log them per episode, and export them so futon3/futon7 can read “energy health.”
-  + because: Tying the simulation to viriya turns FUTON2 into a practice accelerator instead of a curiosity.
+  :success-criteria
+    pass[Tau/hunger/error plottable interactively]
+    pass[Single agent traceable through full episode]
+    pass[Visualizations update from pivot stream]
+    fail[Debugging requires manual log parsing]
 
-! instantiated-by: Prototype 15 — Sandbox Bridge & Presence Interface [🌀/内 🙅/刊]
-  + context: FUTON3 now emphasises flexiformal proofwork but still hosts multi-user rooms and SAFE REPL affordances.
-  + if: You want AIF agents (ants and successors) to inhabit those rooms, receive room/talk updates, and emit actions back into the simulation.
-  + however: No interface maps MUSN room events/presence into FUTON2 percepts, nor do ants announce themselves inside FUTON3.
-  + then: Define a bidirectional “presence bus” (rooms → observation cues, agent actions → MUSN events), add authentication so only designated colonies bridge, and ship a demo where ants report discoveries into a FUTON3 trail.
-  + because: This proves that AIF agents can show up wherever proofwork happens, not just inside a war grid.
-
-! instantiated-by: Prototype 16 — Lobby Bus & MUSN Intake [🙅/无 🔦/门]
-  + context: FUTON3 runs with MUSN as a shared graph and chatgpt-shell as a HUD, but ChatGPT-API currently has only conversational access and no principled way to commit events back into MUSN.
-  + if: You want ChatGPT-API to propose or make *persistent* updates (breach logs, paramitā orbs, devmap notes, pattern instantiations) without giving it full god-mode over the stack.
-  + however: There is no explicit one-room “Lobby” where HUD traffic is normalised into MUSN events, no single-writer policy, and no clear schema for what counts as an escalated, storable event versus transient chatter.
-  + then: Create a dedicated Lobby room in MUSN with a minimal intake schema (`:musn/events` envelopes on an escalated bus), grant exactly one writer identity (the chatgpt-shell / FUTON3 service account), and implement a Clojure bridge that (a) parses HUD EDN, (b) validates and timestamps Lobby events, and (c) transacts them into the MUSN graph as append-only nodes that downstream agents can subscribe to.
-  + because: This proves that a single HUD-bound agent can safely “step into” MUSN through a constrained door—acting as a semi-privileged clerk rather than an all-powerful daemon—and sets the pattern for later extending the presence bus (Prototype 15) to multiple rooms and multiple authenticated agent writers.
-  + example: To assist the user with time management, ChatGPT-API offered: “Do you want breaches auto-logged if you’re still active at 22:10?”  At present there’s no way for ChatGPT to *actually* log such breaches anywhere. Rather than assuming all escalated events must be elicited in the same way at all times, allow `set-user-system-prompt` in futon3’s `aob-chatgpt.el` to switch between modes (e.g. `:normal`, `:breach-logging`) under external control (cron, or a MUSN agent). ChatGPT-API can then *propose* mode shifts or breach events via the Lobby, while the MUSN side decides which proposals to enact.
-  + example2: While reviewing a day’s evidence, ChatGPT-API proposes a structured “paramitā reflection” event via the Lobby:
-    {:musn/events
-      [{:event/type     :paramita/reflection
-        :event/paramita :equanimity
-        :event/notes    "User can apply 9 of Cups to understand the source of a workplace frustration."
-        :event/request  :musn.store!}]}
-  This safely introduces reflective practice artefacts into MUSN without conflating them with actual
-  mode changes or breach logging. It demonstrates that the Lobby is not only
-  for operational concerns (like curfew rules) but also for epistemic/ritual
-  artefacts that support the broader FUTON practice space.  The HUD then renders a subtle, clickable banner: Reflection exercise suggested ▸
-
-! instantiated-by: Prototype 16 — Wisdom Trail Harvest & Pattern Seeding [➰/去 👎/了]
-  + context: FUTON3 trails now record which patterns were checked or advanced during human work sessions.
-  + if: You want FUTON2 analyzers to ingest those trails, compare them to colony behaviour, and commission new agent goals.
-  + however: There is no ingestion path for trail EDN, nor a feedback loop that says “agents, go gather evidence for Pattern X.”
-  + then: Add a `trail->mission` translator that turns FUTON3 proof deltas into FUTON2 goal queues, plus a reporting job that shows how agent runs affected subsequent checks.
-  + because: Shared missions keep the “energy” loop tight between simulations and human proofwork.
+  :psr-example "Selected debugger for development velocity because visual insight beats log parsing"
+  :pur-template "Debug session {{id}}, agent: {{agent}}, frames: {{count}}"

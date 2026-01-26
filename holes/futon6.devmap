@@ -1,154 +1,327 @@
 @multiarg futon6/devmap
-@title FUTON6 Development Map — Hyperreal Dictionary & Mathematical Habitat
+@title FUTON6 Development Map — Comprehensive Mathematics Dictionary
 @audience futon-devs, pattern-agents, HDM-stewards, future-you
 @tone formal-analytic
 @style roadmap
-@allow-new-claims true
 @factor Equanimity (upekkhā)
-@IFR: FUTON6 is the “mathematical habitat” layer of the stack: the place where
-mathematics becomes inhabitable by humans and agents through a pattern-indexed,
-flexiformal, open-ended dictionary. It draws verified argumentation from FUTON3;
-structural memory from FUTON1; and provides the conceptual terrain for FUTON7’s
-civic-scale reasoning. F6 is the **pattern-city of mathematics**, not the
-execution engine (F3) nor the editing environment (F4).
-@state Design-only vision; no dedicated HDM code or imports exist yet beyond conceptual outlines.
-@next start
+@IFR: FUTON6 is a comprehensive mathematics dictionary where informal and formal
+arguments coexist, indexed by patterns at multiple levels of abstraction.
+@state Design-only vision; no dedicated code or imports exist yet beyond
+conceptual outlines.
+@next Define seed domain; implement first concrete entries; design reasoning map.
 
-! instantiated-by: Prototype 0 — FUTON6 Frame & Charter [👎/仍 💬/么]
-  + context: F6 names the HDM layer: the place where mathematical content,
-    scholia, and argument patterns live as shared habitat.
-  + if: A crisp scope is needed so HDM does not dissolve into "general aspiration."
-  + however: Current F6 references still blur its role with F3 execution and F4 editing.
-  + then: Write the F6 charter: (1) remit, (2) neighbours (F3/F4/F5),
-    (3) responsibilities (stewardship of content, scholia, pattern indexing),
-    (4) non-responsibilities (checking = F3; tooling = F4).
-    Note: Via Curry-Howard, the same machinery could in principle extend to programs (proofs = programs), but this is explicitly deferred to avoid swallowing everything prematurely. F6's scope is mathematical knowledge; code-as-proof is a conceptually adjacent but separate concern.
-  + because: A charter stabilises FUTON's cascade and prevents scope creep.
+## The Argument
 
-! instantiated-by: Prototype 1 — Pattern/Proof Bridge [👎/已 🍍/双]
-  + context: F3 handles flexiarg, proof trails, and pattern canonicalisation.
-  + if: F6 should receive arguments in a stable, machine-tractable form.
-  + however: F6 currently implies it must “perform” canonicalisation.
-  + then: Define a simple import contract: `check → f6-node`, which lifts checked
-    arguments from F3 into the HDM, attaching math metadata but not re-checking.
-  + because: This respects the separation of powers (F3 = execution; F6 = habitat).
+FUTON6 is a comprehensive mathematics dictionary. Informal arguments from F3
+are supported alongside formal proofs—F3 manages everyday reasoning patterns
+like "look for an easier problem" or "fully work a set of relevant examples".
+A seed domain provides the first concrete entries: definitions, examples, small
+proofs. Cross-domain reasoning patterns name moves like quotient constructions
+that work across many fields. Domain-specific patterns name constructs like
+ultrafilters that are particular to one area. A reasoning map shows how informal,
+cross-domain, and domain-specific patterns fit together to make mathematics work.
+Interactive tutorials let people practice by working through problems. Landscape
+mode shows how entries connect to neighbours. StackExchange import seeds the
+dictionary with Q&A pairs. An agent protocol defines what queries and edits are
+permitted. General purpose mathematical models are used to describe the growth
+and development of futon6 and are presented in a way that will make them
+reusable in other knowledge domains.
 
-! instantiated-by: Prototype 2 — Fruits/Orbs as Math-Annotators [🍍/办 🔸/十]
-  + context: F3 annotates flexiform arguments with fruits and pāramitā orbs.
-  + if: F6 wants to preserve narrative weight in math-native form.
-  + however: No mapping exists from fruit/orb → math-role (lemma, axiom, strategy).
-  + then: Define a light translation layer: e.g. 🍍→ indicator lemma; 🗝️→ axiom; 
-    🍁→ strategic move; 🐉→ nontrivial dependence. F6 stores these tags but
-    does not manage the fruit system itself.
-  + because: It preserves argumentative salience without overextending F6.
 
-! instantiated-by: Prototype 3 — Hyperreal Dictionary Seedbed [🔸/小 💬/才]
-  + context: HDM’s mission is to build inhabitable mathematics, not abstract criteria.
-  + if: F6 needs a concrete minimal slice to prove viability.
-  + however: No seed slice or exemplars have been frozen.
-  + then: Choose a coherent seed domain (e.g. compactness patterns in MSC26, basic
-    categorical arrows, Abelian groups, Dirichlet distributions) and create linked
-    entries: definitions, examples, small proofs, scholia, code.
-  + because: A tangible neighbourhood demonstrates HDM’s inhabitable promise.
+! instantiated-by: Prototype 0 — Informal Argument Support [👎/已 🍍/双]
+  :maturity :greenfield
+  :depends-on [f3/P1, f3/P2]
+  :evidence-for-active [Informal arguments import from F3; metadata attached]
 
-! instantiated-by: Prototype 4 — Layer-3 Reasoning Patterns [💬/乃 🔺/今]
-  + context: HDM is the choreography of mathematical moves, not just a pile of entries.
-  + if: FUTON6 needs a vocabulary of cross-domain reasoning idioms (quotient tricks,
-    local->global moves, dualisation, extremisation) so agents can navigate strategy.
-  + however: No curated Layer-3 catalogue exists, so every entry re-invents its own
-    outline language.
-  + then: Freeze a small but expandable L3 pattern set, tag the seed domain entries
-    with those moves, and expose L3 IDs to F6-aware agents as their default reasoning
-    vocabulary.
-  + because: L3 patterns supply the “physics” of mathematical reasoning and make HDM
-    truly traversable.
+  + context: F3 manages everyday reasoning patterns like "look for an easier problem".
+  + IF: Mathematics should include informal reasoning alongside formal proofs
+  + HOWEVER: Traditional dictionaries separate informal and formal content
+  + THEN: Import checked arguments from F3 with metadata; support both informal and formal entries
+  + BECAUSE: Real mathematical practice uses informal reasoning patterns
 
-! instantiated-by: Prototype 5 — Layer-4 Domain Patterns [🔺/今 👉/乃]
-  + context: Subject areas (MSC slices) have canonical machinery—ultrafilters,
-    Yoneda, compact operators, Markov kernels—that sit between general motifs and
-    specific entries.
-  + if: FUTON6 needs Layer-4 pattern nodes that capture domain-specific constructs,
-    typical lemmas, and dependencies.
-  + however: Today those structures are either flattened into individual entries or
-    treated as vague generalities.
-  + then: Identify 10-20 L4 candidates for the seed slice, represent each as a node
-    with domain metadata, canonical usages, and referenced L3 moves, and ensure L4
-    nodes refactor like any other content.
-  + because: L4 patterns provide the local physics that make each mathematical
-    neighbourhood habitable.
+  + EVIDENCE:
+    evidence[F3 pattern canon exists]
+    evidence[F3 check DSL operational]
 
-! instantiated-by: Prototype 6 — L3<->L4 Relation Map [👉/田 🔺/今]
-  + context: FUTON6 spans HDM motifs, L3 reasoning physics, L4 domain machinery,
-    and concrete entries.
-  + if: Imports and viewers need an explicit handshake so layers do not blur.
-  + however: No rulebook specifies how L3 motifs embed in L4 constructs or how L4
-    clusters point back to universal moves.
-  + then: Publish the relation: L3 = field-independent moves, L4 = field-dependent
-    machinery; require new entries to declare which layer they instantiate, and build
-    viewers showing the L3<->L4 wiring for any definition, proof, or example.
-  + because: A fractal, Alexanderian cascade keeps FUTON6 coherent as it scales.
+  + NEXT-STEPS:
+    next[Define import contract from F3]
+    next[Attach math metadata to imported arguments]
+    next[Test informal/formal coexistence]
 
-! instantiated-by: Prototype 7 — HDM Dojo Mode [🌀/习 🐴/二]
-  + context: Mathematics becomes native when practiced like a dojo: progressive
-    disclosure, sparring partners, and navigable landscapes. The goal is not just formal validity but *teachable, understandable proofs*—capturing the pedagogical path, not just the logical structure.
-  + if: FUTON6 is to turn math into a habitable habitat for humans and agents, with proofs that are self-documenting and constructing agents gain assurance of correctness.
-  + however: Current assets are static entries; they do not yet function as a training
-    ground that links moves, contexts, views, and guidance. Proofs may be valid but not teachable.
-  + then: Blend L3/L4 tagging with scholium landscapes, progressive outline->detail
-    modes, and agent sparring protocols so users can practice reasoning moves inside
-    HDM itself. Ensure that proof structure captures both formal validity and informal scaffolding—the design patterns for how proofs are constructed, making them teachable and understandable.
-  + because: Mathematical fluency emerges from embodied practice, not passive
-    reading. The dojo keeps HDM alive and ensures that proofs are not just correct but comprehensible—agents constructing proofs gain assurance not just of validity but of teachability.
+  :success-criteria
+    pass[Informal arguments import correctly]
+    pass[Metadata preserved]
+    pass[Both types navigable together]
+    fail[Informal content rejected or lost]
 
-! instantiated-by: Prototype 8 — Scholium & Proof-Landscape Mode [🙅/无 🐲/乃]
-  + context: F3 emits proof trails; F1 provides graph memory.
-  + if: F6 wants users/agents to traverse mathematics as connected terrain.
-  + however: No math-specific landscape viewer exists.
-  + then: Add scholium metadata (e.g. related lemmas, commentary nodes,
-    viewpoint shifts) and render “neighbourhoods”: clusters of results,
-    arguments, patterns, counterexamples.
-  + because: Landscapes differentiate HDM from a static encyclopedia.
+  :psr-example "Selected informal argument support because real mathematics uses everyday reasoning"
+  :pur-template "Import {{argument}}, type: {{informal|formal}}, metadata: {{attached}}"
 
-! instantiated-by: Prototype 9 — Language ⇄ Math Transformations [💬/匀 🍍/卡]
-  + context: F6 aspires to maintain both NL-friendly and math-native views.
-  + if: You want consistent transformations across entries.
-  + however: NL ↔ math translations are currently ad hoc.
-  + then: Define several translation templates for the seed domain (e.g.,
-    “definition block”, “example pattern”, “lemma skeleton”) and exercise them
-    with FUTON3’s flexigrammar.
-  + because: Even partial bilingualism greatly improves usability.
 
-! instantiated-by: Prototype 10 — Math-Aware Agent Protocol [🙅/无 🍍/工]
-  + context: F6 will eventually host agents that annotate, refactor, or query entries.
-  + if: You want safe and productive agent behaviour.
-  + however: The current protocol is conflated with F3’s checking API.
-  + then: Define an F6-specific protocol: allowed queries (definitions, pattern IDs,
-    dependency graphs), acceptable outputs (annotations, reorganisations),
-    and guardrails (no overwriting canonical entries without review).
-  + because: Math-literate agents are central to HDM-as-habitat.
+! instantiated-by: Prototype 1 — Seed Domain [🔸/小 💬/才]
+  :maturity :greenfield
+  :depends-on []
+  :evidence-for-active [Seed domain defined; first entries created]
 
-! instantiated-by: Prototype 11 — Non-Capture Guardrails [🔦/开 🌞/公]
-  + context: HDM inherits the “war machine” mandate: remain non-state, non-enclosed.
-  + if: F6 is to remain an open mathematical habitat.
-  + however: Capture risks (institutional, corporate, epistemic) are unarticulated.
-  + then: Publish a Non-Capture Charter specifying: open licensing, provenance
-    transparency, anti-proprietary entanglement, dual-representation redundancy.
-    Mark entries whose sources impose constraints.
-  + because: Commons integrity is crucial for HDM’s long-term survival.
+  + context: A concrete seed domain proves viability.
+  + IF: You want to demonstrate the dictionary works
+  + HOWEVER: Abstract designs need concrete examples
+  + THEN: Choose a coherent seed domain and create linked entries: definitions, examples, small proofs, scholia
+  + BECAUSE: A tangible neighbourhood demonstrates the approach
 
-! instantiated-by: Prototype 12 — F6⇄F7 Scenarios [🔸/小 🐊/十]
-  + context: FUTON7 builds civic imaginaries and long-range scenarios.
-  + if: Math should inform F7, not remain siloed.
-  + however: There is no pipeline from HDM entries to F7 narratives.
-  + then: Package small argument bundles (e.g. growth/decay patterns, 
-    equilibrium models, scaling laws) as exportable F6→F7 kits.
-  + because: Mathematics should feed collective imagination, not remain inert.
+  + EVIDENCE:
+    evidence[Seed domain candidates identified (compactness, categorical arrows, Abelian groups)]
 
-! instantiated-by: Prototype 13 — FLEX Training Ground Link [🚢/未 💬/氏]
-  + context: F3 now ships the “Flexiformal Training Ground.”
-  + if: F6 wants stewards who know how to handle patterns and proofs.
-  + however: F6 does not yet reference this training layer.
-  + then: In onboarding docs, require that new math agents/humans pass the F3
-    training ground. Capture their trails and store them as scholium notes
-    attached to early entries.
-  + because: This closes the developmental loop and ensures quality control.
+  + NEXT-STEPS:
+    next[Select seed domain]
+    next[Create first 10-20 entries]
+    next[Link entries with cross-references]
+
+  :success-criteria
+    pass[Seed domain entries exist]
+    pass[Entries linked coherently]
+    pass[Examples and proofs included]
+    fail[Entries isolated or incomplete]
+
+  :psr-example "Selected seed domain for proof of concept because concrete examples validate design"
+  :pur-template "Seed entry {{id}}, type: {{def|example|proof}}, links: {{count}}"
+
+
+! instantiated-by: Prototype 2 — Cross-Domain Reasoning Patterns [💬/乃 🔺/今]
+  :maturity :greenfield
+  :depends-on [f6/P1]
+  :evidence-for-active [Cross-domain patterns catalogued; entries tagged]
+
+  + context: Some reasoning moves work across many fields.
+  + IF: You want to name and reuse general mathematical strategies
+  + HOWEVER: These moves are often left implicit
+  + THEN: Catalogue cross-domain patterns like quotient constructions, local-to-global arguments, dualisation; tag entries with applicable patterns
+  + BECAUSE: Named patterns become teachable and reusable
+
+  + EVIDENCE:
+    evidence[Pattern candidates identified from mathematical practice]
+
+  + NEXT-STEPS:
+    next[Catalogue 10-15 cross-domain patterns]
+    next[Tag seed domain entries]
+    next[Document pattern usage]
+
+  :success-criteria
+    pass[Patterns catalogued with examples]
+    pass[Entries tagged appropriately]
+    pass[Patterns reused across domains]
+    fail[Patterns remain implicit]
+
+  :psr-example "Selected cross-domain patterns for reuse because general moves should be named"
+  :pur-template "Pattern {{id}}, domains: {{count}}, uses: {{entries}}"
+
+
+! instantiated-by: Prototype 3 — Domain-Specific Patterns [🔺/今 👉/乃]
+  :maturity :greenfield
+  :depends-on [f6/P1]
+  :evidence-for-active [Domain-specific patterns catalogued; entries tagged]
+
+  + context: Each mathematical area has characteristic constructs.
+  + IF: You want to capture domain-specific machinery
+  + HOWEVER: These constructs are often described only within their home domain
+  + THEN: Catalogue domain-specific patterns like ultrafilters, Yoneda, compact operators, Markov kernels; document canonical usages
+  + BECAUSE: Named constructs make each domain navigable
+
+  + EVIDENCE:
+    evidence[Domain constructs identified from seed domain]
+
+  + NEXT-STEPS:
+    next[Catalogue 10-20 domain-specific patterns for seed domain]
+    next[Document canonical usages]
+    next[Link to cross-domain patterns where applicable]
+
+  :success-criteria
+    pass[Domain patterns catalogued]
+    pass[Canonical usages documented]
+    pass[Links to cross-domain patterns]
+    fail[Domain machinery undocumented]
+
+  :psr-example "Selected domain-specific patterns for navigability because each field has characteristic tools"
+  :pur-template "Domain pattern {{id}}, field: {{domain}}, usages: {{count}}"
+
+
+! instantiated-by: Prototype 4 — Reasoning Map [👉/田 🔺/今]
+  :maturity :greenfield
+  :depends-on [f6/P0, f6/P2, f6/P3]
+  :evidence-for-active [Reasoning map connects informal, cross-domain, and domain-specific patterns]
+
+  + context: Three kinds of pattern need to connect coherently.
+  + IF: You want to see how informal, cross-domain, and domain-specific patterns work together
+  + HOWEVER: Without a map, the pattern layers remain isolated
+  + THEN: Build a reasoning map showing how the three pattern types fit together to make mathematics work
+  + BECAUSE: The map reveals the structure of mathematical reasoning
+
+  + EVIDENCE:
+    evidence[Three pattern types defined]
+    evidence[Seed domain provides test cases]
+
+  + NEXT-STEPS:
+    next[Design reasoning map structure]
+    next[Populate with seed domain examples]
+    next[Test navigation across pattern types]
+
+  :success-criteria
+    pass[Map connects all three pattern types]
+    pass[Navigation works across levels]
+    pass[Structure visible to users]
+    fail[Pattern types remain isolated]
+
+  :psr-example "Selected reasoning map for coherence because patterns must connect"
+  :pur-template "Map query {{entry}}, informal: {{inf}}, cross-domain: {{cd}}, domain: {{dom}}"
+
+
+! instantiated-by: Prototype 5 — Interactive Tutorials [🌀/习 🐴/二]
+  :maturity :greenfield
+  :depends-on [f6/P1, f6/P4]
+  :evidence-for-active [Tutorials operational; users practice by working problems]
+
+  + context: Mathematics is learned by doing, not just reading.
+  + IF: You want people to practice mathematical reasoning
+  + HOWEVER: Static entries do not support practice
+  + THEN: Build interactive tutorials that let people work through problems using the dictionary content
+  + BECAUSE: Practice builds fluency
+
+  + EVIDENCE:
+    evidence[Seed domain provides tutorial content]
+    evidence[F3 training ground provides model]
+
+  + NEXT-STEPS:
+    next[Design tutorial format]
+    next[Create tutorials for seed domain]
+    next[Test with users]
+
+  :success-criteria
+    pass[Tutorials guide problem-solving]
+    pass[Users can practice reasoning moves]
+    pass[Progress tracked]
+    fail[Tutorials passive or unusable]
+
+  :psr-example "Selected interactive tutorials for learning because practice builds fluency"
+  :pur-template "Tutorial {{id}}, problems: {{count}}, completed: {{done}}"
+
+
+! instantiated-by: Prototype 6 — Landscape Mode [🙅/无 🐲/乃]
+  :maturity :greenfield
+  :depends-on [f6/P1, f6/P4]
+  :evidence-for-active [Landscape view shows connected neighbourhoods]
+
+  + context: Mathematical entries have neighbours: related lemmas, examples, counterexamples.
+  + IF: You want to navigate mathematics as connected terrain
+  + HOWEVER: Flat lists hide structure
+  + THEN: Build landscape mode that renders neighbourhoods of related content
+  + BECAUSE: Connected views reveal mathematical structure
+
+  + EVIDENCE:
+    evidence[Seed domain entries have cross-references]
+    evidence[F1 graph memory provides storage]
+
+  + NEXT-STEPS:
+    next[Design neighbourhood visualization]
+    next[Implement for seed domain]
+    next[Test navigation]
+
+  :success-criteria
+    pass[Neighbourhoods render correctly]
+    pass[Related content visible]
+    pass[Navigation intuitive]
+    fail[Entries appear isolated]
+
+  :psr-example "Selected landscape mode for navigation because connected views reveal structure"
+  :pur-template "Landscape {{entry}}, neighbours: {{count}}, depth: {{levels}}"
+
+
+! instantiated-by: Prototype 7 — StackExchange Import [🙅/叉 💤/久]
+  :maturity :greenfield
+  :depends-on [f6/P0]
+  :evidence-for-active [Q&A pairs imported; mapped to dictionary schema]
+
+  + context: StackExchange has thousands of mathematical Q&A pairs.
+  + IF: You want to seed the dictionary with real content
+  + HOWEVER: External content needs mapping to our schema
+  + THEN: Build importer that maps StackExchange Q&A to dictionary entries with pattern tags
+  + BECAUSE: Curated Q&A provides initial density
+
+  + EVIDENCE:
+    evidence[StackExchange Math data available]
+    evidence[Schema defined for entries]
+
+  + NEXT-STEPS:
+    next[Build StackExchange parser]
+    next[Map Q&A to entry schema]
+    next[Tag with patterns]
+    next[Review imported content]
+
+  :success-criteria
+    pass[Q&A pairs import correctly]
+    pass[Mapped to dictionary schema]
+    pass[Pattern tags applied]
+    fail[Import corrupts or loses content]
+
+  :psr-example "Selected StackExchange import for seeding because real Q&A provides density"
+  :pur-template "Import batch {{id}}, questions: {{count}}, tagged: {{tagged}}"
+
+
+! instantiated-by: Prototype 8 — Agent Protocol [🙅/无 🍍/工]
+  :maturity :greenfield
+  :depends-on [f6/P1]
+  :evidence-for-active [Protocol defined; agents query and edit safely]
+
+  + context: Agents will query, annotate, and refactor dictionary entries.
+  + IF: You want safe and productive agent behaviour
+  + HOWEVER: Unrestricted access risks corruption
+  + THEN: Define protocol specifying allowed queries, acceptable edits, and review requirements
+  + BECAUSE: Bounded access keeps content safe while enabling automation
+
+  + EVIDENCE:
+    evidence[F3 agent protocol provides model]
+    evidence[Dictionary schema defines valid operations]
+
+  + NEXT-STEPS:
+    next[Define allowed queries]
+    next[Define acceptable edits]
+    next[Implement review workflow]
+    next[Test with agents]
+
+  :success-criteria
+    pass[Agents query without errors]
+    pass[Edits reviewed before commit]
+    pass[No unauthorized changes]
+    fail[Agents corrupt or bypass review]
+
+  :psr-example "Selected agent protocol for safety because bounded access enables automation"
+  :pur-template "Agent action {{type}}, query: {{query}}, reviewed: {{yes|no}}"
+
+
+! instantiated-by: Prototype 9 — Reusable Mathematical Models [🔸/小 🐊/十]
+  :maturity :greenfield
+  :depends-on [f6/P1, f6/P2]
+  :evidence-for-active [Models describe F6 development; reusable in other domains]
+
+  + context: General purpose mathematical models should be reusable.
+  + IF: You want models that transfer to other knowledge domains
+  + HOWEVER: Models are often locked to their original context
+  + THEN: Use mathematical models to describe F6's own growth and development; present them for reuse elsewhere
+  + BECAUSE: Eating your own cooking validates reusability
+
+  + EVIDENCE:
+    evidence[F6 development provides test case]
+    evidence[Growth/equilibrium models identified]
+
+  + NEXT-STEPS:
+    next[Identify models applicable to F6 development]
+    next[Document models in reusable form]
+    next[Test application to other domains]
+
+  :success-criteria
+    pass[Models describe F6 development]
+    pass[Models documented for reuse]
+    pass[At least one external application]
+    fail[Models locked to F6 context]
+
+  :psr-example "Selected reusable models for transfer because general models should work elsewhere"
+  :pur-template "Model {{id}}, domain: {{F6|other}}, reused: {{yes|no}}"

@@ -1,168 +1,286 @@
 @multiarg futon4/devmap
-@title FUTON4 Development Map
+@title FUTON4 Development Map — Memory Atelier & Hypertext Editing
 @audience futon-devs, pattern-agents, future-you
 @tone formal-analytic
 @style roadmap
-@allow-new-claims true
-@length any
 @factor Tranquility (passaddhi)
-@IFR: FUTON4 becomes the passaddhi (tranquility) memory atelier where Arxana, graph memory, flexiarg, and agents interoperate, letting symbolic artefacts be edited, linked, and narrated in one continuous workspace that settles and integrates the energetic work beneath it.
-@state Arxana reanimation through M4 is working (storage bridge, browsing,
-relations) and the system is now in QA. Inclusion/transclusion UX is WIP.
-Export to standard formats works, but import for modern doc formats does not
-yet; release prep and tagging remain open.
-@next Deliver the pending inclusion UX, document modern import/export/migration shims, and grow the QA + contributor guide so a “revived” release can be tagged.
+@IFR: FUTON4 is a memory workspace where documents, design patterns, and
+annotations share a common editing environment, letting symbolic artefacts be
+edited, linked, and narrated in one continuous workspace.
+@state Arxana reanimation complete (storage bridge, browsing, relations, 80+
+tests). Scholium mode has inclusion/transclusion previews with toggle commands.
+Pattern template support operational. Gaps: graph storage layer not wired to
+Datascript; XTDB integration pending; multi-user and literary interfaces planned.
+@next Complete scholium UX for main article buffer; wire storage layer to
+Datascript; begin XTDB integration for version history.
+
+## The Argument
+
+FUTON4 is a memory workspace where documents, design patterns, and annotations
+share a common editing environment. A key use case is to align software
+documentation and code, and for this reason an early prototype makes the system
+self-documenting. Arxana is a hypertext editor that links document fragments
+and lets you annotate them with scholia. Scholium mode shows how content is
+included or transcluded from other documents, with visual previews. Design
+patterns in a standard template are supported, translating into graph nodes for
+both human and machine editing. Futon4 stores text fragments and hyperlinks as
+addressable nodes so they can be queried and linked. XTDB adds version history
+so you can see how documents evolved over time. Multi-user support lets
+collaborators share a semantic space. A literary interface supports long-form
+writing like books and manuscripts.
 
 
-! instantiated-by: Prototype 0 (Running Since 29 July 2025) [🌽/久 🙅/才]
-  + context: Prototype 0 establishes the symbolic foundations, artefact inventory, and DREAM logic.
-  + if: You want a coherent first cycle of a year-long 12-prototype run.
-  + however: Symbolic activation does not yet translate into memory operations or agent affordances.
-  + then: Establish baseline artefacts (README-manifesto, clock interface, Arxana reboot outline).
-  + because: This creates an anchor for all subsequent prototypes.
-  + status[ready]
-  + evidence:
-    - `spine.org` — Master orchestration file with tangling machinery (lines 19–103).
-    - `dev/bootstrap.el` — Repeatable build harness for interactive + batch builds.
-    - `AGENTS.md` — Development manifesto describing Phase 1/2 strategy.
-    - `docs/reanimation-plan.org` — M0–M6 milestone tracker with checkbox progress.
-    - `test/arxana-bootstrap-test.el` — Baseline harness validation (3 tests).
-    - `arxana-tangled.el` — Generated single-source output (3752 lines) proving round-trip.
+! instantiated-by: Prototype 0 — Self-Documenting Foundations [🌽/久 🙅/才]
+  :maturity :settled
+  :depends-on []
+  :evidence-for-settled [Tangling machinery operational; bootstrap harness tested; manifesto documented]
 
-! instantiated-by: Prototype 1 — Arxana Reboot (Week-long target) [🙅/久 💖/用]
-  + context: Legacy literate-programming structure exists but is dormant.
-  + if: You want stable parsing, node navigation, and save-back-to-LaTeX working.
-  + however: Legacy Emacs-Lisp and refactored Clojure schemas diverge.
-  + then: Reboot spine parser, restore node browsing, define new nema-based schema, test round-trip edits.
-  + because: A functioning editor is the precondition for all downstream memory work.
-  + status[ready-pending-final-checks]
-  + evidence:
-    - Spine parser rebooted: `spine.org` lines 50–103 define `arxana-tangle-spine-concat`.
-    - Node browsing restored: `dev/arxana-relations.el` (ego, cooccur, tail commands),
-      `dev/arxana-browse.el` (catalog, labels, history navigation).
-    - Nema-based schema defined: `0-Reintroduction.org` documents the EAV model
-      (nema, article, metadata scholium, event/hyperedge, plexus).
-    - Round-trip edits tested: 15 test files in `test/` (~80 tests total) including
-      `arxana-adjacency-test.el`, `arxana-saving-test.el`, `arxana-store-test.el`.
-    - Storage bridge complete: `dev/arxana-store.el` (350+ lines) with 12 Futon API helpers,
-      documented in `docs/storage-bridge.org` with curl examples.
-    - Article lifecycle: `dev/arxana-article.el` (metadata sync, deletion propagation).
-    - Scholia authoring: `dev/arxana-scholium.el` (compose, region capture, authoring mode).
-    - Derivation previews: `dev/arxana-derivation.el` (collapsible previews, color overlays,
-      toggle commands for inclusion/transclusion/identification highlights).
-    - Inclusion/transclusion guards: `dev/arxana-inclusion.el` + tests
-      (`test/arxana-inclusion-test.el`, `test/arxana-inclusion-batch-test.el`).
-    - Import/export shims: `dev/arxana-import.el` (Org file/directory import),
-      `dev/arxana-export.el` (Org export with MANIFEST generation).
-    - QA/docs bundle: `README.md` (testing + verification), `docs/contributor-guide.md`,
-      `docs/docbook/futon4/futon4.org` (compat/test support + contributor guide).
-  + next (workflow plumbing):
-    - Create import/export shims for modern doc formats. [DONE — see evidence above]
-    - Produce migration notes for historical datasets. [PENDING — M5 item 4/4]
-  + next (QA & release prep):
-    - Grow the ERT suite (unit, integration, CLI smoke). [DONE — 15 files, ~80 tests]
-    - Document test instructions and CI hooks. [PARTIAL — README + docbook docs cover tests; no CI config]
-    - Provide contributor guide (coding style, tangling, testing). [DONE — `docs/contributor-guide.md`]
-    - Tag a "revived" release with reproducible steps. [PENDING]
-  + next-evidence:
-    - `docs/migration-guide.org` documenting import paths for historical .epub/.tex formats.
-    - `.github/workflows/test.yml` or equivalent CI configuration.
-    - Git tag marking the "revived" Prototype 1 release.
+  + context: A key use case for futon4 is to align software documentation and code.
+  + IF: You want documentation and implementation to stay synchronized
+  + HOWEVER: Without self-documenting infrastructure, docs and code drift apart
+  + THEN: Make the system self-documenting with tangling machinery, bootstrap harness, and development manifesto
+  + BECAUSE: This creates an anchor for all subsequent prototypes
 
-! instantiated-by: Prototype 2 — Graph Memory (Datascript) [🙅/久 👀/乃]
-  + context: The hyperedge schema for Arxana exists on paper but not in running code.
-  + if: You want argument fragments to become addressable nodes with provenance.
-  + however: there is no minimal memory manager wiring Arxana buffers to Datascript.
-  + then: implement `add-node`, `activate-node`, and `link-node`; persist them via Datascript; replay a session to prove round-trips.
-  + because: without a living graph memory, Arxana never escapes editor cosplay.
+  + EVIDENCE:
+    evidence[spine.org provides master orchestration with tangling machinery (lines 19-103)]
+    evidence[dev/bootstrap.el is repeatable build harness for interactive + batch builds]
+    evidence[AGENTS.md is development manifesto describing Phase 1/2 strategy]
+    evidence[docs/reanimation-plan.org tracks M0-M6 milestones with checkbox progress]
+    evidence[test/arxana-bootstrap-test.el validates baseline harness (3 tests)]
+    evidence[arxana-tangled.el is generated single-source output (3752 lines) proving round-trip]
 
-! instantiated-by: Prototype 3 — Flexiarg ⇄ Arxana Integration [🙅/双 💬/卡]
-  + context: Flexiarg is acting as a pidgin for arguments and patterns.
-  + if: You want arguments to compile into graph nodes and be editable via Arxana.
-  + however: No translation layer exists between pidgin text and structured memory entries.
-  + then: Define schema mapping: argument-block → rule node (Q/A pair).
-  + because: This yields bidirectional editing: human-readable ↔ machine-structured.
+  + NEXT-STEPS:
+    next[Maintain synchronization as system evolves]
 
-! instantiated-by: Prototype 4 — Agent Layer Bridge (FUTON3) [👐/么 👘/工]
-  + context: Agents can “speak” flexiarg but cannot yet access memory graphs.
-  + if: You want pattern-aware agents who can detect tension, link motifs, and apply PIDGIN→PROSE.
-  + however: No API exists to let a GPT-based agent query the graph.
-  + then: Create REPL-level bridge (datascript queries + JSON-rpc + Emacs functions).
-  + because: This is what upgrades GPT into a pattern-capable agent.
+  :success-criteria
+    pass[Tangling produces consistent output]
+    pass[Bootstrap harness runs without errors]
+    pass[Documentation reflects current implementation]
+    fail[Docs and code diverge silently]
 
-! instantiated-by: Prototype 5 — Multi-user Memory (MUSN revival) [🔦/门 🙅/互]
-  + context: MUSN existed as a concept for multi-user semantic memory.
-  + if: You want collaborators (Serena, Rob, Harvinder, etc.) to share a semantic space.
-  + however: No multi-user or sync layer exists yet.
-  + then: Use Datascript local + XTDB remote as stepping stones.
-  + because: This will open the door to multi-agent co-reasoning and shared prototyping.
+  :psr-example "Selected self-documenting foundations because aligned docs reduce maintenance burden"
+  :pur-template "Tangle run, output: {{file}}, lines: {{count}}, errors: {{errors}}"
 
-! instantiated-by: Prototype 6 — Argumentarium / Scholium Mode [🐲/久 🙅/用]
-  + context: You want something like Spinoza's *Ethics* but with imports, hypergraphs, and links.
-  + if: You want a library of arguments with provenance, alternative proofs, counterproofs.
-  + however: Current flexiargs do not yet link into a live scholium tree.
-  + then: Add scholium metadata + "view scholium tree" mode in Arxana.
-  + because: This becomes the living mathematical-philosophical substrate.
-  + next (inclusion/transclusion UX):
-    - Visually differentiate included vs. transcluded regions in the main article buffer.
-      [PARTIAL — `dev/arxana-derivation.el` provides collapsible previews + color overlays
-      in display buffer; main article buffer highlighting not yet wired]
-    - Provide toggle commands to highlight each derivative type independently.
-      [DONE — `arxana-derivation-toggle-inclusion-highlights`,
-      `arxana-derivation-toggle-transclusion-highlights`,
-      `arxana-derivation-toggle-identification-highlights`]
-    - Document the visual affordances and add a regression test covering both styles.
-      [PARTIAL — `test/arxana-derivation-test.el` (5 tests) covers preview rendering;
-      no formal UX doc yet]
-  + partial-evidence (inclusion/transclusion UX):
-    - `dev/arxana-derivation.el` (290+ lines): preview blocks, face definitions
-      (`arxana-derivation-inclusion-face`, `-transclusion-face`, `-identification-face`),
-      customization variables (`arxana-derivation-preview-max-chars/lines`).
-    - `test/arxana-derivation-test.el`: 5 tests covering preview detection, rendering, toggle.
-  + next-evidence (inclusion/transclusion UX):
-    - Main article buffer overlays wired to `mark-things-up` hook.
-    - `docs/inclusion-ui.md` documenting visual affordances and toggle commands.
-    - Integration test verifying main buffer + display buffer side-by-side.
-    - Optional: CRDT-backed multi-user transclusion sessions (when collaboration is needed).
 
-! instantiated-by: Prototype 7 — XTDB Integration [⌛️/久 🙅/分]
-  + context: Bi-temporal, multi-user storage needed for long-term evolution.
-  + if: You want durability, branching histories, provenance queries.
-  + however: XTDB idioms differ from Datascript; schema migration needed.
-  + then: Rekey schema, add transaction logs, implement time-travel queries.
-  + because: This turns Arxana into a serious memory engine.
+! instantiated-by: Prototype 1 — Arxana Hypertext Editor [🙅/久 💖/用]
+  :maturity :settled
+  :depends-on [f4/P0]
+  :evidence-for-settled [Spine parser rebooted; node browsing restored; storage bridge complete; 80+ tests pass]
 
-! instantiated-by: Prototype 8 — Pattern Library Activation [🐺/已 ➰/了]
-  + context: You have dozens of patterns (Mojo, ORP, Paramita, Flexiarg, etc.).
-  + if: You want agents to recommend patterns or detect pattern-relevant situations.
-  + however: Patterns are not yet encoded in memory or linked to triggers.
-  + then: Import patterns as graph rules; map IF/HOWEVER/THEN/BECAUSE into triggers & actions.
-  + because: This yields genuine pattern-aware intelligence.
+  + context: Arxana is a hypertext editor that links document fragments and annotations.
+  + IF: You want stable parsing, node navigation, and save-back working
+  + HOWEVER: Legacy structures were dormant and needed reanimation
+  + THEN: Reboot spine parser, restore node browsing, define nema-based schema, implement storage bridge, test round-trip edits
+  + BECAUSE: A functioning editor is the precondition for all downstream memory work
 
-! instantiated-by: Prototype 9 — StackExchange Import [🙅/叉 💤/久]
-  + context: StackExchange holds thousands of argued Q/A pairs that fit Arxana’s schema.
-  + if: You want to harvest them as production rules with provenance.
-  + however: there is no importer aligning their Markdown into our graph schema.
-  + then: build a parser, map Q/A + comments into rule nodes, annotate tags, and cross-index them with existing flexiargs.
-  + because: seeding the memory with curated Q/A pairs gives Arxana instant argumentative density.
+  + EVIDENCE:
+    evidence[spine.org lines 50-103 define arxana-tangle-spine-concat]
+    evidence[dev/arxana-relations.el provides ego, cooccur, tail commands]
+    evidence[dev/arxana-browse.el provides catalog, labels, history navigation]
+    evidence[0-Reintroduction.org documents EAV model (nema, article, metadata scholium, event/hyperedge, plexus)]
+    evidence[15 test files in test/ with ~80 tests total]
+    evidence[dev/arxana-store.el (350+ lines) with 12 Futon API helpers]
+    evidence[docs/storage-bridge.org documents API with curl examples]
+    evidence[dev/arxana-article.el handles metadata sync and deletion propagation]
+    evidence[dev/arxana-scholium.el provides compose, region capture, authoring mode]
 
-! instantiated-by: Prototype 10 — Corpus Mathematics Layer [👯/未 💬/义]
-  + context: You want to bridge natural/formal logic (Strand 1B).
-  + if: You want Dirichlet distributions and Abelian groups to live in the same memory model.
-  + however: No symbolic math integration exists yet.
-  + then: Build math namespace + flexiarg-lemma type + REPL test harness.
-  + because: This is how FUTON becomes an “AI Scientist.”
+  + NEXT-STEPS:
+    next[Produce migration notes for historical datasets (M5 item)]
+    next[Add CI configuration for automated testing]
+    next[Tag "revived" release with reproducible steps]
 
-! instantiated-by: Prototype 11 — Literary Interface (Penmaster) [🙅/也 💖/久]
-  + context: You want Arxana to also serve as a book-editing and generative-literary tool.
-  + if: You want to edit Penmaster or draft your book via Arxana blocks.
-  + however: No good UI for long-form text yet.
-  + then: Add “manuscript mode” + chunking + cross-reference map.
-  + because: FUTON becomes the writing environment.
+  :success-criteria
+    pass[Spine parser produces correct output]
+    pass[Node browsing navigates document graph]
+    pass[Storage bridge syncs with futon1]
+    pass[Round-trip edits preserve content]
+    fail[Edits corrupt document structure]
 
-! instantiated-by: Prototype 12 — Year-End Synthesis [🌽/末 🏃/功]
-  + context: The prototype cycle ends; reflection and forward-planning needed.
-  + if: You want long-term stability, and upgraded beta-schema.
-  + however: Accumulated divergence between prototypes must be unified.
-  + then: Run full PAR + CLA + DREAM integration cycle.
-  + because: This sets the stage for FUTON5+.
+  :psr-example "Selected Arxana reboot for hypertext editing because linked documents need stable infrastructure"
+  :pur-template "Arxana session, nodes visited: {{count}}, edits: {{edits}}, saved: {{yes|no}}"
+
+
+! instantiated-by: Prototype 2 — Scholium Mode [🐲/久 🙅/用]
+  :maturity :active
+  :depends-on [f4/P1]
+  :evidence-for-active [Derivation previews working; toggle commands implemented; 5 tests pass]
+
+  + context: Scholium mode shows how content is included or transcluded from other documents.
+  + IF: You want to see document relationships with visual affordances
+  + HOWEVER: Inclusion/transclusion relationships were not visually differentiated
+  + THEN: Add collapsible previews, color overlays, and toggle commands for inclusion/transclusion/identification highlights
+  + BECAUSE: Visual affordances make document structure navigable
+
+  + EVIDENCE:
+    evidence[dev/arxana-derivation.el (290+ lines) provides preview blocks and face definitions]
+    evidence[arxana-derivation-toggle-inclusion-highlights command implemented]
+    evidence[arxana-derivation-toggle-transclusion-highlights command implemented]
+    evidence[arxana-derivation-toggle-identification-highlights command implemented]
+    evidence[test/arxana-derivation-test.el covers preview detection, rendering, toggle (5 tests)]
+
+  + NEXT-STEPS:
+    next[Wire main article buffer overlays to mark-things-up hook]
+    next[Document visual affordances in docs/inclusion-ui.md]
+    next[Add integration test for main buffer + display buffer side-by-side]
+
+  :success-criteria
+    pass[Previews render correctly in display buffer]
+    pass[Toggle commands differentiate derivative types]
+    pass[Main article buffer shows overlays]
+    fail[Inclusion/transclusion indistinguishable]
+
+  :psr-example "Selected scholium mode for document relationships because visual previews aid navigation"
+  :pur-template "Scholium view, inclusions: {{inc}}, transclusions: {{trans}}, identifications: {{id}}"
+
+
+! instantiated-by: Prototype 3 — Design Pattern Templates [🙅/双 💬/卡]
+  :maturity :active
+  :depends-on [f4/P1]
+  :evidence-for-active [Flexiarg format operational; pattern templates translate to graph nodes]
+
+  + context: Design patterns in a standard template need to be editable as both text and graph.
+  + IF: You want patterns to be human-readable and machine-structured
+  + HOWEVER: Without a translation layer, patterns stay as flat text
+  + THEN: Define schema mapping argument blocks (IF/HOWEVER/THEN/BECAUSE) to graph nodes; support bidirectional editing
+  + BECAUSE: Bidirectional editing lets humans and machines work on the same artefacts
+
+  + EVIDENCE:
+    evidence[Flexiarg format documented and in use across devmaps]
+    evidence[Pattern templates parseable as structured blocks]
+
+  + NEXT-STEPS:
+    next[Implement graph node generation from flexiarg blocks]
+    next[Add bidirectional sync (graph changes reflect in text)]
+    next[Test round-trip editing of pattern templates]
+
+  :success-criteria
+    pass[Flexiarg blocks translate to graph nodes]
+    pass[Graph edits reflect back in text]
+    pass[Pattern metadata preserved in translation]
+    fail[Translation loses structure or content]
+
+  :psr-example "Selected pattern templates for bidirectional editing because patterns serve humans and machines"
+  :pur-template "Pattern translate {{id}}, nodes: {{count}}, round-trip: {{pass|fail}}"
+
+
+! instantiated-by: Prototype 4 — Graph Storage Layer [🙅/久 👀/乃]
+  :maturity :greenfield
+  :depends-on [f4/P1]
+  :evidence-for-active [Storage wired to Datascript; nodes addressable and queryable]
+
+  + context: Futon4 stores text fragments and hyperlinks as addressable nodes.
+  + IF: You want fragments to be queryable and linkable
+  + HOWEVER: No memory manager wires Arxana buffers to Datascript
+  + THEN: Implement add-node, activate-node, link-node; persist via Datascript; replay sessions to prove round-trips
+  + BECAUSE: Without a living graph memory, Arxana cannot escape editor mode
+
+  + EVIDENCE:
+    evidence[Arxana store talks to futon1 API]
+    evidence[Basic node operations exist]
+
+  + NEXT-STEPS:
+    next[Wire Arxana buffers to Datascript]
+    next[Implement add-node, activate-node, link-node]
+    next[Test session replay for round-trip verification]
+
+  :success-criteria
+    pass[Nodes stored in Datascript]
+    pass[Nodes queryable by ID and content]
+    pass[Session replay reconstructs state]
+    fail[Node operations not persisted]
+
+  :psr-example "Selected graph storage for queryable fragments because addressable nodes enable linking"
+  :pur-template "Node operation {{op}}, node: {{id}}, persisted: {{yes|no}}"
+
+
+! instantiated-by: Prototype 5 — XTDB Version History [⌛️/久 🙅/分]
+  :maturity :greenfield
+  :depends-on [f4/P4]
+  :evidence-for-active [XTDB integrated; time-travel queries working; branching histories supported]
+
+  + context: XTDB adds version history so you can see how documents evolved.
+  + IF: You want durability, branching histories, and provenance queries
+  + HOWEVER: XTDB idioms differ from Datascript and require schema migration
+  + THEN: Rekey schema for XTDB, add transaction logs, implement time-travel queries
+  + BECAUSE: Version history turns Arxana into a serious memory engine
+
+  + EVIDENCE:
+    evidence[XTDB available in futon1 stack]
+    evidence[Schema migration patterns documented]
+
+  + NEXT-STEPS:
+    next[Design XTDB schema for Arxana nodes]
+    next[Implement transaction logging]
+    next[Add time-travel query interface]
+    next[Test branching and merge scenarios]
+
+  :success-criteria
+    pass[Documents have version history]
+    pass[Time-travel queries return past states]
+    pass[Branching histories supported]
+    fail[History lost on edit]
+
+  :psr-example "Selected XTDB for version history because document evolution needs to be traceable"
+  :pur-template "Time-travel query, node: {{id}}, timestamp: {{ts}}, found: {{yes|no}}"
+
+
+! instantiated-by: Prototype 6 — Multi-User Support [🔦/门 🙅/互]
+  :maturity :greenfield
+  :depends-on [f4/P5]
+  :evidence-for-active [Multi-user sync operational; collaborators share semantic space]
+
+  + context: Multi-user support lets collaborators share a semantic space.
+  + IF: You want multiple people to work in the same document graph
+  + HOWEVER: No multi-user or sync layer exists yet
+  + THEN: Use Datascript local + XTDB remote as stepping stones; implement sync protocol
+  + BECAUSE: Shared memory opens the door to collaborative reasoning
+
+  + EVIDENCE:
+    evidence[XTDB provides remote persistence foundation]
+    evidence[Datascript provides local cache]
+
+  + NEXT-STEPS:
+    next[Design sync protocol between local and remote]
+    next[Implement conflict resolution]
+    next[Test multi-user editing scenarios]
+    next[Add presence indicators]
+
+  :success-criteria
+    pass[Multiple users see consistent state]
+    pass[Edits propagate to all users]
+    pass[Conflicts resolved gracefully]
+    fail[Users see divergent states]
+
+  :psr-example "Selected multi-user support for collaboration because shared memory enables co-reasoning"
+  :pur-template "Sync event, users: {{count}}, conflicts: {{conflicts}}, resolved: {{yes|no}}"
+
+
+! instantiated-by: Prototype 7 — Literary Interface [🙅/也 💖/久]
+  :maturity :greenfield
+  :depends-on [f4/P2]
+  :evidence-for-active [Manuscript mode operational; chunking and cross-reference working]
+
+  + context: A literary interface supports long-form writing like books and manuscripts.
+  + IF: You want to edit books or long-form text via Arxana
+  + HOWEVER: No good UI for long-form text exists yet
+  + THEN: Add manuscript mode with chunking and cross-reference map
+  + BECAUSE: FUTON becomes a writing environment, not just an editor
+
+  + EVIDENCE:
+    evidence[Arxana handles document fragments]
+    evidence[Scholium mode provides linking infrastructure]
+
+  + NEXT-STEPS:
+    next[Design manuscript mode UI]
+    next[Implement chapter/section chunking]
+    next[Add cross-reference map visualization]
+    next[Test with real manuscript content]
+
+  :success-criteria
+    pass[Long documents chunked into navigable sections]
+    pass[Cross-references visualized and navigable]
+    pass[Manuscript mode supports book-length content]
+    fail[Long documents unwieldy to edit]
+
+  :psr-example "Selected literary interface for book editing because long-form writing needs specialized support"
+  :pur-template "Manuscript session, chapters: {{count}}, cross-refs: {{refs}}, words: {{words}}"

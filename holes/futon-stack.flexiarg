@@ -1,0 +1,156 @@
+@flexiarg futon-stack/argument
+@title The FUTON Stack — An Argument for Persistent Knowledge Infrastructure
+@sigils [🧠/本 🔗/工]
+@audience outsiders, collaborators, future-you
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [devmap-coherence/prototype-structure-checklist stack-coherence/futon-bridge-health]
+
+! conclusion:
+  The futon stack is infrastructure for knowledge work that persists, compounds,
+  and transfers—turning ephemeral problem-solving into durable, reusable artefacts.
+
+  + context: Most knowledge work disappears. You solve a problem, write some code,
+    have an insight—and then it's gone, locked in your head or scattered across
+    emails and notebooks.
+
+  + IF:
+    you want knowledge work to persist and compound rather than evaporate
+
+  + HOWEVER:
+    current tools treat each session as ephemeral; insights are not captured,
+    patterns are not named, and reasoning is not checkable
+
+  + THEN:
+    build layered infrastructure where everything is addressable, agents have
+    principled perception-action loops, reasoning is checkable, and patterns
+    transfer across domains
+
+  + BECAUSE:
+    compounding requires persistence, and transfer requires abstraction—the
+    stack provides both
+
+
+! conclusion:
+  FUTON1 provides graph memory where everything—text fragments, relationships,
+  annotations—lives as addressable nodes that can be queried and linked.
+
+  + IF: you need a foundation for persistent knowledge
+  + HOWEVER: scattered files and databases do not support linking and querying
+  + THEN: store everything as graph nodes with typed edges
+  + BECAUSE: addressable nodes are the prerequisite for all higher layers
+
+
+! conclusion:
+  FUTON2 provides an active inference engine that gives agents a principled way
+  to observe their environment, perceive what matters, and act—this same engine
+  powers both the reasoning agents in futon3 and the cellular automata
+  experiments in futon5.
+
+  + IF: agents need to act in changing environments
+  + HOWEVER: ad-hoc agent loops lack principled grounding
+  + THEN: implement observe-perceive-affect-policy-act loops with free energy minimization
+  + BECAUSE: active inference provides a unified framework for perception and action
+
+
+! conclusion:
+  FUTON3 handles the messy reality of human reasoning: arguments that are not
+  formal proofs but still need to be checked, patterns that recur across problems,
+  and the gap between how people actually think and what machines can verify.
+
+  + IF: real reasoning is informal but still needs validation
+  + HOWEVER: formal proof systems reject most human arguments
+  + THEN: build flexiformal pattern checking that validates structure without requiring full formalization
+  + BECAUSE: checked informal arguments are more valuable than unchecked ones
+
+
+! conclusion:
+  FUTON4 provides the editing environment where documents, patterns, and
+  annotations share a common workspace—Arxana links fragments and scholia so you
+  can see how ideas connect and evolve.
+
+  + IF: knowledge workers need to edit and annotate linked content
+  + HOWEVER: traditional editors treat documents as isolated files
+  + THEN: build a hypertext editor where fragments, links, and scholia coexist
+  + BECAUSE: connected editing reveals structure that flat files hide
+
+
+! conclusion:
+  FUTON5 collects design patterns for improvisation—not fixed procedures but
+  flexible moves that transfer across domains. Wiring diagrams give these patterns
+  a category-theoretic interpretation, and a transfer milestone proves that
+  patterns developed in one domain (cellular automata) work in another (ant
+  simulations).
+
+  + IF: you want reusable patterns for improvisation
+  + HOWEVER: informal patterns lack compositional semantics
+  + THEN: represent patterns as wiring diagrams with CT interpretation; prove transfer across domains
+  + BECAUSE: compositional patterns can be developed once and applied many times
+
+
+! conclusion:
+  FUTON6 builds a mathematics dictionary where informal reasoning patterns sit
+  alongside formal proofs, making mathematical knowledge navigable rather than
+  locked in textbooks.
+
+  + IF: mathematical knowledge should be navigable and reusable
+  + HOWEVER: textbooks are linear and proofs are opaque
+  + THEN: build a dictionary with informal arguments, cross-domain patterns, and domain-specific constructs
+  + BECAUSE: named patterns at multiple levels make mathematics teachable and transferable
+
+
+! conclusion:
+  FUTON7 applies these ideas to economic life. Hyperreal Enterprises operates as
+  a seed institution testing transparent governance. Gravpad does to the web what
+  street art does to cities—adding commentary and accountability information
+  without requiring permission from those being made transparent. Scenario
+  simulations let you prototype civic and economic structures before committing
+  to them.
+
+  + IF: economic and civic structures need transparency
+  + HOWEVER: current systems obscure costs, relationships, and externalities
+  + THEN: build transparency infrastructure that does not require permission from those being made transparent
+  + BECAUSE: accountability should not depend on voluntary disclosure
+
+
+! conclusion:
+  The layers connect through shared infrastructure: graph memory stores everything,
+  active inference provides the perception-action loop, pattern checking validates
+  reasoning, and wiring diagrams transfer between domains.
+
+  + context: Cross-futon bridges make the stack cohere.
+
+  + BRIDGES:
+    f1 ──graph memory──→ f4 (Arxana stores documents as graph nodes)
+    f2 ──AIF engine──→ f3 (fulab agents use observe-perceive-act loop)
+    f2 ──AIF engine──→ f5 (MetaCA uses same infrastructure)
+    f3 ──checked arguments──→ f6 (informal reasoning imports to dictionary)
+    f5 ──wiring diagrams──→ f2 (transfer from MetaCA to ant simulation)
+    f6 ──mathematical models──→ f7 (scenario simulations use growth models)
+
+  + IF: layers must interoperate
+  + HOWEVER: isolated layers become silos
+  + THEN: define explicit bridges with shared infrastructure
+  + BECAUSE: coherence requires connection
+
+
++ EVIDENCE:
+  evidence[Seven futons with defined devmaps in holes/]
+  evidence[Shared infrastructure: graph memory (f1), AIF engine (f2), MUSN transport (f3)]
+  evidence[Transfer milestone demonstrates cross-domain pattern reuse (f5/P4)]
+  evidence[Hyperreal operates as living prototype (f7/P0)]
+
++ NEXT-STEPS:
+  next[Validate integration points with end-to-end tests]
+  next[Document more transfer examples beyond MetaCA→ants]
+  next[Test stack with real knowledge workers outside the project]
+  next[Write tutorials for each layer]
+
+:success-criteria
+  pass[Knowledge persists across sessions]
+  pass[Patterns transfer between domains]
+  pass[Stack usable by people outside the project]
+  fail[Layers remain isolated silos]
+
+:psr-example "Selected layered architecture because compounding requires persistence and transfer requires abstraction"
+:pur-template "Stack session, layers touched: {{layers}}, bridges crossed: {{bridges}}, artifacts persisted: {{count}}"

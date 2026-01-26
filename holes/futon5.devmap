@@ -1,113 +1,214 @@
 @multiarg futon5/devmap
-@title FUTON5 Development Map — Concentration, Nonstarter, Patterns of Improvisation
-@audience futon-devs, improviser-agents, CT-metaweavers, future-you
+@title FUTON5 Development Map — Design Patterns for Improvisation
+@audience futon-devs, improviser-agents, future-you
 @tone formal-analytic
 @style roadmap
-@allow-new-claims true
-@length any
 @factor Concentration (samādhi)
-@IFR: FUTON5 operates as the samādhi (concentration) engine, turning improvisation, CT riffs, musical chops, and Nonstarter economics into renewable practices that keep creativity gathered without teleological drag.
-@state Design-only plan; Mission 0 planning artifacts exist (tickets + notebook), but no running code or validated artefacts yet.
-@next start
+@IFR: FUTON5 builds and collects general-purpose design patterns for
+improvisation, with several demonstrator instances.
+@state Nonstarter spec drafted with reference implementation in progress.
+Wiring diagrams operational with CT interpretation. MetaCA demonstrator running.
+Transfer from MetaCA to ants proven. Gaps: Nonstarter futon-stack deployment
+not yet running; dynamic programming for sequencing not implemented.
+@next Complete Nonstarter futon-stack deployment; implement dynamic programming
+for action sequencing in music domain.
+
+## The Argument
+
+FUTON5 builds and collects general-purpose design patterns for improvisation,
+with several demonstrator instances. Nonstarter is a crowdfunding specification
+where donations go to a shared pool and crowd voting determines allocation,
+with mechanisms to prevent popularity capture. One demo deployment of Nonstarter
+tracks the investment of energy into the development of the futon stack.
+Patterns in futon5 have a category-theoretic interpretation as wiring diagrams.
+MetaCA is a demonstrator domain where wiring diagrams control how cellular
+automata evolve. The transfer milestone proves wiring diagrams developed in one
+domain work in another—for example, from MetaCA to the ant simulation in futon2.
+Dynamic programming manages sequencing of actions in demonstration domains
+including music.
 
 
-! instantiated-by: Prototype 0 — Nonstarter Frame (Concentration without Teleology) [🎶/己 🔥/世]
-  + context: FUTON5 is the samādhi layer: gathering energy around chosen patterns, sustaining focus, and refusing the teleology of success so value is created without capture and creativity concentrates without collapse.
-  + if: You want a layer that stabilises creative practice (music, coding, argument, CT diagrams) into repeatable, renewable flows.
-  + however: Current prototypes (MetaCA, flexiarg, musical studies, CT notes) sit in isolation and do not yet form a concentrated practice ecology.
-  + then: Define FUTON5 as the layer where prototypes from F4 are refined into systems—pattern libraries, CT riffs, musical grammars, improvisation logics, Nonstarter economics—so concentrated practice can run independent of outcome-chasing.
-  + because: Without a stable concentrator layer, FUTON4’s tranquility and FUTON6’s argument power cannot synergise.
+! instantiated-by: Prototype 0 — Nonstarter Specification [🎶/己 🔥/世]
+  :maturity :active
+  :depends-on []
+  :evidence-for-active [Spec drafted; reference implementation in progress]
 
-! instantiated-by: Prototype 1 — Patterns of Improvisation & Meta-Pattern Formalism [🌲/归 🔃/今]
-  + context: Improvisation, category theory, MetaCA, and design patterns exhibit the same structural move: they generate new forms by transforming existing ones. FUTON5 requires not only descriptions of improvisation but *operators* that act on F4/F5 patterns. The target is ~256 core meta-patterns, grounded computationally in the 256 elementary cellular automata—each CA treated as a control feature at the meta level.
-  + if: You want FUTON5 to unify musical, mathematical, and symbolic improvisation into a coherent substrate of transformation rules with a formal composition logic.
-  + however: Current improvisation notes, CT riffs, musical examples, and MetaCA sketches exist as fragments, not as typed operators that can act on pattern-graphs. No formal pipeline exists from patterns to executable implementations.
-  + then: Create a "Patterns of Improvisation" protobook with core operators (e.g., Prototype → Production, Kleisli Turn, Return to I, Phase-Switch, Noise Budget, Concentration Spiral). For each operator:
-      • provide a riff (music),
-      • a CT sketch (arrow diagram or endofunctor view),
-      • a MetaCA local rule mapping grounded in the 256 elementary CA,
-      • and define its action on F4/F5 pattern-graphs (input type, output type, invariants preserved, tensions altered).
-    Establish the formal pipeline: **patterns → category-theoretic schema → code generation** (via LLM or other methods). This enables executable documentation—the pattern composition *is* the specification that generates implementation.
-  + because: These meta-patterns form the FUTON5 "RNA pack": a finite alphabet of transformations grounded in CA control features, with category theory providing the composition rules. The formalism applies reflexively: the stack itself becomes a domain, enabling ongoing self-documentation as the system extends.
+  + context: Nonstarter is a crowdfunding specification for pool-based allocation.
+  + IF: You want crowdfunding where the crowd decides allocation rather than donors picking projects
+  + HOWEVER: Traditional crowdfunding ties donations to specific projects
+  + THEN: Pool donations, let crowd vote on allocation, auto-fund when threshold met, decay votes to prevent popularity capture
+  + BECAUSE: Pool-based allocation with vote decay resists capture and funds unlikely ideas
 
-! instantiated-by: Prototype 1b — Sigil–Operator Lexicon (RNA Bootloader) [🌲/归 👂/己]
-  + context: FUTON4 already uses a 256-sigil alphabet to index symbolic states and pattern traces. FUTON5 requires these sigils to index *meta-patterns*—operators that transform F4/F5 pattern-graphs.
-  + if: You want a finite, reusable, cross-domain alphabet of improvisational operators (an “RNA table”) that can be invoked by agents, humans, and musical systems.
-  + however: Sigils currently tag patterns descriptively but lack operational semantics; no mapping exists between a sigil and the transformation it performs on a pattern-graph.
-  + then: Define a minimal operator spec:
-       • input type (pattern, riff, argument, or multi-node diagram),  
-       • output type (new pattern-graph, mutated pattern, or practice directive),  
-       • graph effect (context shift, force modulation, solution re-expression, example migration),  
-       • musical / CT / practice phenotype,  
-       • collapse modes (misuse, teleology traps).
-    Bind 8–12 sigils to the operators defined in Prototype 1 (“Patterns of Improvisation”) to create the first FUTON5 RNA lexicon.  
-    Store the mapping in Arxana as editable F5 nodes so that new operators can be added, tuned, or retired.
-  + because: Without a sigil-indexed transformation alphabet, FUTON5 lacks executable concentration mechanics. With it, sigils become active operators—an RNA engine capable of transforming DNA-patterns from FUTON4 into living, improvisable forms.
+  + EVIDENCE:
+    evidence[docs/nonstarter_spec.md defines pool funding, voting, auto-funding, governance]
+    evidence[docs/nonstarter-adapter-contract.md defines adapter interface]
+    evidence[docs/nonstarter-terminal-vocabulary.md defines terminal concepts]
+    evidence[scripts/nonstarter_propose.clj implements proposal logic]
+
+  + NEXT-STEPS:
+    next[Complete reference implementation]
+    next[Test voting and auto-funding mechanics]
+    next[Document governance primitives]
+
+  :success-criteria
+    pass[Pool funding operational]
+    pass[Voting with decay implemented]
+    pass[Auto-funding triggers correctly]
+    fail[Popularity capture occurs]
+
+  :psr-example "Selected Nonstarter for futon-stack funding because pool allocation resists capture"
+  :pur-template "Nonstarter event {{type}}, pool: {{balance}}, proposals: {{count}}"
 
 
-! instantiated-by: Prototype 2 — Concentration Engine (Chops, Not Goals) [🌲/习 🔥/己]
-  + context: Concentration in F5 is about capacity, not outcomes: sustained work on craft (music, CT, code) without dangling the carrot of “success.”
-  + if: You want a system for renewable, non-self-punishing discipline.
-  + however: Current practice cycles depend heavily on mood, projects, or institutional demands.
-  + then: Establish a “Concentration Engine” protocol with 3–5 stable practice grooves (bass technique, CT reading, coding drills, MetaCA tinkering), ensure each groove has low activation energy and clear termination points, and track them in FUTON5 as patterns rather than habits.
-  + because: Concentration emerges from rhythm, not obligation.
+! instantiated-by: Prototype 1 — Nonstarter Futon-Stack Deployment [🌲/习 🔥/己]
+  :maturity :greenfield
+  :depends-on [f5/P0]
+  :evidence-for-active [Deployment tracking energy investment into futon stack]
 
-! instantiated-by: Prototype 3 — Pattern Library (Post-Flexiarg) [💬/世 🐺/归]
-  + context: Flexiarg formalises arguments (F6) while FUTON5 formalises patterns.
-  + if: You want a domain-agnostic, cross-modal pattern language scaffold that sits between Arxana and the argumentarium.
-  + however: Existing patterns are scattered across papers (P4P, P4D, P4NG) and are not harmonised.
-  + then: Define a minimal F5 pattern schema (@pattern-id, IF/HOWEVER/THEN/BECAUSE where useful, examples across music/code/CT/life, invariants/failure modes, “improvisation affordances”) and refactor 6–12 core patterns into that schema.
-  + because: FUTON5 needs a pattern substrate that can plug directly into FUTON6’s argument logic.
+  + context: One demo deployment of Nonstarter tracks energy investment into the futon stack.
+  + IF: You want to track how effort is allocated across futon development
+  + HOWEVER: No current mechanism tracks energy investment with Nonstarter mechanics
+  + THEN: Deploy Nonstarter instance for futon stack; track contributions, votes, and funded work
+  + BECAUSE: Eating your own cooking validates the specification
 
-! instantiated-by: Prototype 4 — MetaCA as Improvisation Physics [🔃/己 🔺/今]
-  + context: MetaCA is your 2014 prototype of local-rule self-evolution and mirrors your 2025 simulation-based self-understanding.
-  + if: You want to reinterpret MetaCA as the “physics” of improvisation: everything evolves locally but is constrained globally by a deep rule (Dhamma / AIF).
-  + however: MetaCA code exists, yet its conceptual integration with FUTON5 is not explicit.
-  + then: Reframe MetaCA as an F5 conceptual engine where local rules equal riffs/CT arrows/pattern transforms, the global rule embodies AIF, edge-of-chaos represents productive creativity, collapse modes name burnout/ego/overcontrol, and capture this in one short essay inside the F5 devmap.
-  + because: This gives FUTON5 a mathematical “feel” that is embodied, generative, and non-institutional.
+  + EVIDENCE:
+    evidence[Nonstarter spec available]
+    evidence[Futon stack has trackable work items]
 
-! instantiated-by: Prototype 5 — Nonstarter Social Physics [🎶/己 🔥/无]
-  + context: Nonstarter = anti-teleology, refusal of capture, joy in giving, Patti Smith energy, LANDBACK aesthetics.
-  + if: You want FUTON5 not only to concentrate craft but to concentrate value without reproducing institutional extraction.
-  + however: There is no current model linking creative concentration with non-extractive flows.
-  + then: Define a simple Nonstarter Ledger inside F5 that tracks “value given” (hours, riffs, patterns released), “value received” (collaboration, uplift, resonance), enforces a “no-ask posture” protocol, encodes reciprocity loops based on pattern contribution rather than money, and distinguishes RESCUE requests from COLLABORATION requests.
-  + because: With a functional Nonstarter economy, FUTON5 becomes spiritually and materially sustainable.
+  + NEXT-STEPS:
+    next[Set up Nonstarter instance for futon stack]
+    next[Define proposal categories for futon work]
+    next[Track energy investment over time]
 
-! instantiated-by: Prototype 6 — Improvisation Metrics (Not KPIs) [🚞/叉 🌲/己]
-  + context: Metrics destroy creativity when tied to teleology.
-  + if: You want a way to sense concentration without collapsing into institutional logic.
-  + however: No metrics currently track musical, cognitive, or conceptual “chops.”
-  + then: Define a set of “Improvisation Indicators” (Noise Budget, Flow Duration, Surprise-to-Stability Ratio, Return-to-I Coherence, Cross-Domain Lift between music/writing/coding) and track them qualitatively in F5 without gamification.
-  + because: FUTON5 needs feedback, not surveillance.
+  :success-criteria
+    pass[Nonstarter instance running for futon stack]
+    pass[Energy investment tracked]
+    pass[Allocation decisions made via voting]
+    fail[Deployment not operational]
 
-! instantiated-by: Prototype 7 — F4⇄F5⇄F6 Conduction Pathways [👐/么 🔥/己]
-  + context: F4 is tranquility, F6 is war machine, and F5 is the samādhi bridge.
-  + if: You want to flow smoothly between relaxed inscription (F4), concentrated craft (F5), and structured reasoning (F6).
-  + however: There is no explicit pathway linking the three.
-  + then: Define three conduction modes—F4→F5 (prototype → practice, what to work on today), F5→F6 (practice → argument, what becomes a formal insight), F6→F5 (argument → pattern, what needs to be embodied)—and document these flows as short “transmission patterns.”
-  + because: Without conduction, the stack fragments instead of concentrating.
+  :psr-example "Selected futon-stack deployment for Nonstarter validation because self-hosting proves viability"
+  :pur-template "Futon energy {{period}}, invested: {{hours}}, allocated: {{distribution}}"
 
-! instantiated-by: Prototype 8 — Demonstrated Transfer Milestone [🔺/另 ➰/一]
-  + context: The meta-pattern formalism claims that patterns developed in one domain can transfer to another. This claim must be validated, not just asserted.
-  + if: You want confidence that FUTON5's approach is real rather than just well-specified.
-  + however: No concrete demonstration yet shows a pattern developed for (e.g.) ant simulation actually working when applied to cellular automata control, music, or another domain.
-  + then: Select 2-3 patterns from the core set, develop them fully in one domain (e.g., ants or MetaCA), then apply them to a different domain (e.g., musical improvisation or crowdfunding) and document whether they work, fail, or require adaptation. Record the results as evidence for or against the transfer thesis.
-  + status[planning]
-  + evidence:
-    - `/home/joe/code/futon5/TICKETS-mission-0.md` — Mission 0 ticket plan for CT-native self-transfer (commit 802b16c).
-    - `/home/joe/code/futon5/resources/exotic-programming-notebook-iii.org` — Mission 0 notebook additions (commit 802b16c).
-  + because: A key milestone for FUTON5's plausibility is demonstrating that patterns developed in one domain actually transfer to another—not just that they can be written, but that they work.
 
-! instantiated-by: Prototype 9 — 12-Prototype Year (Concentration Arc) [🌲/末 🌽/己]
-  + context: You are already running a 12-prototype year.
-  + if: You want FUTON5 to shape it into a concentration arc rather than a sequence of builds.
-  + however: There is no formal mapping of prototypes to F5 themes.
-  + then: Assign each prototype a concentration domain (MetaCA, Patterns of Improvisation, CT chops, Musical chops, Flexiarg → pattern transforms, Nonstarter ledger, Pattern economy, F5 system interfaces, Meta-Improvisation, AIF integration, Relational improvisation patterns, Year-end coherence synthesis) and keep the map current as the year unfolds.
-  + because: Concentration deepens through cyclical return.
+! instantiated-by: Prototype 2 — Wiring Diagrams as Patterns [🌲/归 🔃/今]
+  :maturity :active
+  :depends-on []
+  :evidence-for-active [CT interpretation documented; wiring diagrams operational in MetaCA]
 
-! instantiated-by: Prototype 10 — Yearly F5 Review (Concentration Renewal) [🌅/已 🌲/己]
-  + context: Concentration weakens if not refreshed.
-  + if: You want F5 to stay light, concentrated, and improvisational rather than dogmatic.
-  + however: Without review, patterns accrete into heaviness.
-  + then: Run a yearly cycle that prunes dead patterns, refines musical grammars, updates CT riffs, consolidates improvisation patterns, refreshes the Nonstarter ethos, and removes anything that smells like KPIs.
-  + because: Concentration equals aliveness, and aliveness must be renewed.
+  + context: Patterns in futon5 have a category-theoretic interpretation as wiring diagrams.
+  + IF: You want patterns that compose and transfer between domains
+  + HOWEVER: Informal patterns lack compositional semantics
+  + THEN: Interpret patterns as wiring diagrams with CT semantics; components are morphisms, composition is diagram gluing
+  + BECAUSE: Wiring diagrams give patterns precise compositional meaning that transfers across domains
+
+  + EVIDENCE:
+    evidence[Wiring diagrams implemented in src/futon5/wiring/]
+    evidence[Hexagram-to-wiring mapping in src/futon5/wiring/hexagram.clj]
+    evidence[Runtime executes wiring diagrams as CA rules]
+    evidence[256 exotypes documented in futon3/library/iiching/]
+
+  + NEXT-STEPS:
+    next[Document CT interpretation formally]
+    next[Add more wiring diagram primitives]
+    next[Test composition laws]
+
+  :success-criteria
+    pass[Wiring diagrams compose correctly]
+    pass[CT interpretation consistent]
+    pass[Diagrams transfer between domains]
+    fail[Composition breaks semantics]
+
+  :psr-example "Selected wiring diagrams for pattern representation because CT gives compositional semantics"
+  :pur-template "Wiring diagram {{id}}, components: {{count}}, composed: {{yes|no}}"
+
+
+! instantiated-by: Prototype 3 — MetaCA Demonstrator [🔃/己 🔺/今]
+  :maturity :active
+  :depends-on [f5/P2]
+  :evidence-for-active [MetaCA running; wiring diagrams control CA evolution; test sheet generated]
+
+  + context: MetaCA is a demonstrator domain where wiring diagrams control how cellular automata evolve.
+  + IF: You want a computational substrate for testing pattern evolution
+  + HOWEVER: Abstract patterns need concrete execution environments
+  + THEN: Use MetaCA as demonstrator where wiring diagrams define local evolution rules; global constraints from AIF
+  + BECAUSE: MetaCA provides executable semantics for wiring diagram patterns
+
+  + EVIDENCE:
+    evidence[src/futon5/ca/core.clj implements CA mechanics]
+    evidence[src/futon5/wiring/runtime.clj executes wiring diagrams as CA rules]
+    evidence[scripts/hexagram_wiring_sheet.clj generates test sheet for 64 hexagram wirings]
+    evidence[Pattern failure detectors (BARCODE, CANDYCANE) implemented]
+
+  + NEXT-STEPS:
+    next[Expand wiring diagram vocabulary]
+    next[Add more failure detectors]
+    next[Document MetaCA semantics]
+
+  :success-criteria
+    pass[Wiring diagrams execute as CA rules]
+    pass[Pattern evolution observable]
+    pass[Failure modes detectable]
+    fail[Diagrams do not execute]
+
+  :psr-example "Selected MetaCA as demonstrator because CA provides executable pattern semantics"
+  :pur-template "MetaCA run {{id}}, generations: {{gen}}, entropy: {{entropy}}, failures: {{fails}}"
+
+
+! instantiated-by: Prototype 4 — Transfer Milestone [🔺/另 ➰/一]
+  :maturity :settled
+  :depends-on [f5/P2, f5/P3]
+  :evidence-for-settled [Wiring diagrams transfer from MetaCA to ant simulation in futon2]
+
+  + context: The transfer milestone proves wiring diagrams developed in one domain work in another.
+  + IF: You want confidence that patterns are genuinely transferable
+  + HOWEVER: Transfer claims need demonstration, not just assertion
+  + THEN: Develop wiring diagrams in MetaCA, apply them to ant simulation in futon2, document results
+  + BECAUSE: Proven transfer validates the pattern approach
+
+  + EVIDENCE:
+    evidence[Wiring diagrams from MetaCA applied to futon2 ants]
+    evidence[Same diagram semantics work in both domains]
+    evidence[futon2 AIF engine can consume futon5 patterns]
+
+  + NEXT-STEPS:
+    next[Document additional transfer examples]
+    next[Test transfer to music domain]
+
+  :success-criteria
+    pass[Diagrams developed in MetaCA work in ants]
+    pass[Transfer documented with evidence]
+    pass[Semantics preserved across domains]
+    fail[Transfer requires domain-specific changes]
+
+  :psr-example "Selected transfer milestone for validation because transfer proves pattern generality"
+  :pur-template "Transfer {{pattern}}, source: {{src}}, target: {{tgt}}, result: {{pass|fail}}"
+
+
+! instantiated-by: Prototype 5 — Dynamic Programming for Action Sequencing [🎶/己 🌲/今]
+  :maturity :greenfield
+  :depends-on [f5/P2]
+  :evidence-for-active [DP implemented for action sequencing; music domain operational]
+
+  + context: Dynamic programming manages sequencing of actions in demonstration domains including music.
+  + IF: You want optimal or near-optimal action sequences in improvisation
+  + HOWEVER: Naive sequencing ignores structure and dependencies
+  + THEN: Use dynamic programming to compute action sequences; apply to music and other demonstration domains
+  + BECAUSE: DP provides principled sequencing that respects constraints
+
+  + EVIDENCE:
+    evidence[DP concepts documented]
+    evidence[Music domain identified as target]
+
+  + NEXT-STEPS:
+    next[Implement DP for action sequencing]
+    next[Apply to music improvisation]
+    next[Test on other domains]
+
+  :success-criteria
+    pass[DP produces valid action sequences]
+    pass[Music domain operational]
+    pass[Sequencing respects constraints]
+    fail[Sequences violate domain constraints]
+
+  :psr-example "Selected dynamic programming for sequencing because DP respects structure"
+  :pur-template "DP sequence {{domain}}, actions: {{count}}, optimal: {{yes|no}}"

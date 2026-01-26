@@ -55,6 +55,11 @@
        :profile profile
        :timestamp ts
        :intent (:intent entry)
+       :cue/text (or (:cue/text entry)
+                     (:intent entry))
+       :cue/pattern-id (or (:cue/pattern-id entry)
+                           (some-> (:matches cues) first :pattern/id))
+       :cue/timestamp (or (:cue/timestamp entry) ts)
        :patterns (vec (primary-patterns entry))
        :events (vec (:events entry))
        :futons (or (ensure-vec (:futons entry))

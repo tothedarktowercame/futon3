@@ -76,9 +76,10 @@
      :workday/raw payload}))
 
 (defn submit!
-  "Validate PAYLOAD and append it to the local log.
-   Returns {:ok bool ...} so the caller can surface errors." 
-  [{:keys [payload client msg-id run-id source]}]
+  "Validate PAYLOAD and append it to the local log when LOG? is true.
+   Returns {:ok bool ...} so the caller can surface errors."
+  [{:keys [payload client msg-id run-id source log?]
+    :or {log? true}}]
   (if (blankish? (:activity payload))
     {:ok false
      :err "invalid-payload"
@@ -88,13 +89,15 @@
                              :msg-id msg-id
                              :run-id run-id
                              :source source})
-          persisted (append-log! entry)]
+          persisted (if log? (append-log! entry) entry)]
       {:ok true
        :status :accepted
        :entry persisted
-       :log-path (current-log-path)
-       :blocked-by [:f1.persistence]
-       :note "Queued locally; forward to FUTON1 graph when adapter is ready."})))
+       :log-path (when log? (current-log-path))
+       :blocked-by (when log? [:f1.persistence])
+       :note (if log?
+               "Queued locally; forward to FUTON1 graph when adapter is ready."
+               "Forwarded to FUTON1 graph.")})))
 
 (defn check-request
   "If the payload asked for an immediate pattern check, build the request map.

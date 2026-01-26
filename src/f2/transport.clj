@@ -234,16 +234,19 @@
 (defn- handle-workday [state client envelope]
   (let [payload (:payload envelope)
         run-id ((run-id-fn state))
+        futon1-config (get @(:config state) :futon1)
+        futon1-enabled? (and (get futon1-config :enabled?)
+                             (seq (get futon1-config :api-base)))
         submission (workday/submit! {:payload payload
                                      :client client
                                      :msg-id (:msg-id envelope)
                                      :run-id run-id
-                                     :source :ws})]
+                                     :source :ws
+                                     :log? (not futon1-enabled?)})]
     (if (:ok submission)
       (let [entry (:entry submission)
             check-request (workday/check-request payload entry)
             check-outcome (when check-request (checks/check! check-request))
-            futon1-config (get @(:config state) :futon1)
             _ (record-history! state {:client (:id client)
                                       :type :workday
                                       :stamp (now-stamp state)

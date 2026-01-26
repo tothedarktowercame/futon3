@@ -3,7 +3,8 @@
   (:require [cheshire.core :as json]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [futon3.portal :as portal]))
 
 (defn- read-edn [path]
   (-> path io/file slurp edn/read-string))
@@ -342,6 +343,23 @@
   (when (number? score)
     (-> 1.0 (- (min 1.0 (double score))) (max 0.0))))
 
+(defn- portal-neighbors
+  [intent limit namespace]
+  (->> (portal/suggest {:intent intent :limit limit :namespace namespace})
+       (keep (fn [entry]
+               (let [pid (:id entry)
+                     score (:score entry)]
+                 (when (and pid (number? score))
+                   (assoc entry
+                          :id pid
+                          :score/similarity (double score)
+                          :score/glove-distance (score->distance score)
+                          :score (score->distance score)
+                          :score-source :portal)))))
+       (map (fn [entry]
+              (merge (get @patterns-by-id (:id entry)) entry)))
+       vec))
+
 (defn- glove-neighbors
   [seed-ids limit]
   (if (seq seed-ids)
@@ -474,7 +492,8 @@
              first)
     :else nil))
 
-(defn hints [{:keys [sigils prototypes pattern-limit fruit-limit paramita-limit glove-pattern-limit]
+(defn hints [{:keys [sigils prototypes pattern-limit fruit-limit paramita-limit glove-pattern-limit
+                     intent portal-limit portal-namespace]
               :or {pattern-limit 4
                    fruit-limit 2
                    paramita-limit 2}}]
@@ -490,6 +509,7 @@
                            entry))
                        patterns)
         glove-limit (or glove-pattern-limit pattern-limit)
+        portal-limit (or portal-limit pattern-limit)
         seed-ids (cond
                    (seq patterns) (map :id patterns)
                    (seq prototypes) prototypes
@@ -498,11 +518,14 @@
                          (glove-neighbors seed-ids glove-limit)
                          ;; fallback: surface best glove neighbors overall
                          (glove-neighbors-all glove-limit))
-        merged-patterns (merge-patterns patterns glove-patterns pattern-limit)]
+        portal-patterns (if (seq intent)
+                          (portal-neighbors intent portal-limit portal-namespace)
+                          [])
+        merged-patterns (merge-patterns patterns (concat glove-patterns portal-patterns) pattern-limit)]
     (when-not (seq targets)
       (warn-missing-targets sigils prototypes))
     {:patterns merged-patterns
-     :glove-patterns glove-patterns
+     :glove-patterns (vec (concat glove-patterns portal-patterns))
      :fruits (if (seq targets)
                (nearest-fruits targets fruit-limit)
                [])

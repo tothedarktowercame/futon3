@@ -221,7 +221,8 @@
         ;; Fetch pattern hints
         hint-result (hints/hints {:sigils resolved-sigils
                                   :prototypes prototypes
-                                  :pattern-limit pattern-limit})
+                                  :pattern-limit pattern-limit
+                                  :intent intent})
         candidates (mapv format-candidate (:patterns hint-result))
         glove-candidates (mapv format-candidate (:glove-patterns hint-result))
         aif-candidates (hints/aif-candidates (:patterns hint-result)

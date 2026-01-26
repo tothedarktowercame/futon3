@@ -464,6 +464,62 @@
                 (map json/encode)
                 (str/join "\n"))}))
 
+;; Forward declarations for HTTP handlers
+(declare json-response)
+
+(defn- ensure-seq [value]
+  (cond
+    (nil? value) nil
+    (sequential? value) value
+    :else [value]))
+
+(defn- ensure-text [value]
+  (cond
+    (nil? value) nil
+    (string? value) value
+    :else (pr-str value)))
+
+(defn- http-origin [request payload]
+  (let [origin (when (map? (:origin payload)) (:origin payload))
+        remote (some-> (:remote-addr request) str)]
+    (merge {:source :http
+            :remote-addr remote}
+           origin)))
+
+(defn- normalize-check-payload [payload]
+  (let [pattern-id (or (:pattern/id payload)
+                       (:pattern-id payload)
+                       (:pattern payload))
+        context (ensure-text (:context payload))
+        evidence (ensure-seq (:evidence payload))
+        sigils (ensure-seq (:sigils payload))
+        prototypes (ensure-seq (:prototypes payload))]
+    (-> payload
+        (dissoc :pattern-id :pattern)
+        (cond-> pattern-id (assoc :pattern/id pattern-id))
+        (cond-> context (assoc :context context))
+        (cond-> evidence (assoc :evidence evidence))
+        (cond-> sigils (assoc :sigils sigils))
+        (cond-> prototypes (assoc :prototypes prototypes)))))
+
+(defn- normalize-workday-payload [payload]
+  (let [activity (ensure-text (:activity payload))
+        evidence (ensure-seq (:evidence payload))
+        sigils (ensure-seq (:sigils payload))
+        prototypes (ensure-seq (:prototypes payload))
+        tags (ensure-seq (:tags payload))]
+    (-> payload
+        (cond-> activity (assoc :activity activity))
+        (cond-> evidence (assoc :evidence evidence))
+        (cond-> sigils (assoc :sigils sigils))
+        (cond-> prototypes (assoc :prototypes prototypes))
+        (cond-> tags (assoc :tags tags)))))
+
+(defn- parse-json-body [request]
+  (let [body (slurp (:body request))]
+    (when-not (str/blank? body)
+      (json/parse-string body true))))
+
 (defn- handle-check-http [state request]
   (try
     (let [payload (normalize-check-payload (or (parse-json-body request) {}))
@@ -566,59 +622,6 @@
   {:status status
    :headers {"content-type" "application/json"}
    :body (json/encode body)})
-
-(defn- parse-json-body [request]
-  (let [body (slurp (:body request))]
-    (when-not (str/blank? body)
-      (json/parse-string body true))))
-
-(defn- ensure-seq [value]
-  (cond
-    (nil? value) nil
-    (sequential? value) value
-    :else [value]))
-
-(defn- ensure-text [value]
-  (cond
-    (nil? value) nil
-    (string? value) value
-    :else (pr-str value)))
-
-(defn- http-origin [request payload]
-  (let [origin (when (map? (:origin payload)) (:origin payload))
-        remote (some-> (:remote-addr request) str)]
-    (merge {:source :http
-            :remote-addr remote}
-           origin)))
-
-(defn- normalize-check-payload [payload]
-  (let [pattern-id (or (:pattern/id payload)
-                       (:pattern-id payload)
-                       (:pattern payload))
-        context (ensure-text (:context payload))
-        evidence (ensure-seq (:evidence payload))
-        sigils (ensure-seq (:sigils payload))
-        prototypes (ensure-seq (:prototypes payload))]
-    (-> payload
-        (dissoc :pattern-id :pattern)
-        (cond-> pattern-id (assoc :pattern/id pattern-id))
-        (cond-> context (assoc :context context))
-        (cond-> evidence (assoc :evidence evidence))
-        (cond-> sigils (assoc :sigils sigils))
-        (cond-> prototypes (assoc :prototypes prototypes)))))
-
-(defn- normalize-workday-payload [payload]
-  (let [activity (ensure-text (:activity payload))
-        evidence (ensure-seq (:evidence payload))
-        sigils (ensure-seq (:sigils payload))
-        prototypes (ensure-seq (:prototypes payload))
-        tags (ensure-seq (:tags payload))]
-    (-> payload
-        (cond-> activity (assoc :activity activity))
-        (cond-> evidence (assoc :evidence evidence))
-        (cond-> sigils (assoc :sigils sigils))
-        (cond-> prototypes (assoc :prototypes prototypes))
-        (cond-> tags (assoc :tags tags)))))
 
 (defn- git-head [repo-root]
   (let [{:keys [exit out err]} (shell/sh "git" "-C" repo-root "rev-parse" "HEAD")]

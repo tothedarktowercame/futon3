@@ -56,7 +56,8 @@
                :room "lab"
                :poll-interval 2.0
                :bot-name "fucodex"
-               :fucodex "fucodex"
+               :agent "fucodex"
+               :mode :auto  ; :auto, :claude, or :codex
                :no-sandbox false
                :approval-policy nil}]
     (if (empty? args)
@@ -67,10 +68,22 @@
           "--room" (recur rest (assoc opts :room val))
           "--poll-interval" (recur rest (assoc opts :poll-interval (Double/parseDouble val)))
           "--bot-name" (recur rest (assoc opts :bot-name val))
-          "--fucodex" (recur rest (assoc opts :fucodex val))
+          "--fucodex" (recur rest (assoc opts :agent val))  ; legacy alias
+          "--agent" (recur rest (assoc opts :agent val))
+          "--mode" (recur rest (assoc opts :mode (keyword val)))
           "--no-sandbox" (recur rest (assoc opts :no-sandbox true))
           "--approval-policy" (recur rest (assoc opts :approval-policy val))
           (recur rest opts))))))
+
+(defn- detect-agent-mode
+  "Detect whether agent command is claude-style or codex-style."
+  [agent-cmd mode]
+  (if (= mode :auto)
+    (cond
+      (str/includes? (str agent-cmd) "fuclaude") :claude
+      (str/includes? (str agent-cmd) "claude") :claude
+      :else :codex)
+    mode))
 
 (defn- strip-fulab-report [text]
   (let [text (or text "")]
@@ -222,27 +235,33 @@
       known-token? {:token head :body (or tail "") :implicit-token? false}
       :else {:token nil :body body :implicit-token? true})))
 
-(defn- run-fucodex!
-  [fucodex musn-url room bot-name session-id prompt intent no-sandbox approval-policy]
-  (let [fucodex (or (when (and fucodex (re-find #"/" fucodex)) fucodex)
-                    (let [candidate (io/file (System/getProperty "user.dir") (or fucodex "fucodex"))]
-                      (when (.exists candidate) (.getAbsolutePath candidate)))
-                    fucodex)
-        args (cond-> [fucodex
-                      "--live"
-                      "--musn"
-                      "--musn-url" musn-url
-                      "--session-id" session-id
-                      "--chat-room" room
-                      "--chat-author" bot-name]
-               (and intent (not (str/blank? intent)))
-               (conj "--intent" intent)
-               no-sandbox (conj "--no-sandbox")
-               (and approval-policy (not (str/blank? approval-policy)))
-               (conj "--approval-policy" approval-policy))
-        args (conj args
-                   "resume"
-                   "--last" prompt)
+(defn- run-agent!
+  "Run agent (fuclaude or fucodex) to resume an existing session."
+  [agent-cmd mode musn-url room bot-name session-id prompt intent no-sandbox approval-policy]
+  (let [agent-cmd (or (when (and agent-cmd (re-find #"/" agent-cmd)) agent-cmd)
+                      (let [candidate (io/file (System/getProperty "user.dir") (or agent-cmd "fucodex"))]
+                        (when (.exists candidate) (.getAbsolutePath candidate)))
+                      agent-cmd)
+        mode (detect-agent-mode agent-cmd mode)
+        ;; Common args for both modes
+        base-args (cond-> [agent-cmd
+                           "--live"
+                           "--musn"
+                           "--musn-url" musn-url
+                           "--session-id" session-id
+                           "--chat-room" room
+                           "--chat-author" bot-name]
+                    (and intent (not (str/blank? intent)))
+                    (conj "--intent" intent)
+                    no-sandbox (conj (if (= mode :claude) "--yolo" "--no-sandbox"))
+                    (and approval-policy (not (str/blank? approval-policy)))
+                    (conj "--approval-policy" approval-policy))
+        ;; Mode-specific suffix
+        args (if (= mode :claude)
+               ;; fuclaude: --continue -p <prompt>
+               (into base-args ["--continue" "-p" prompt])
+               ;; fucodex: resume --last <prompt>
+               (into base-args ["resume" "--last" prompt]))
         pb (doto (ProcessBuilder. ^java.util.List args)
              (.inheritIO))
         env (.environment pb)
@@ -250,38 +269,49 @@
     (.put env "FUTON3_MUSN_REQUIRE_APPROVAL" "0")
     (.put env "FUTON3_MUSN_CHAT_TRIM" "1")
     (.put env "FUTON3_MUSN_LOG" (musn-log-path session-id))
-    (log! "starting fucodex run" {:room room :bot bot-name :session session-id :cmd fucodex})
+    (log! "starting agent run" {:room room :bot bot-name :session session-id :cmd agent-cmd :mode mode})
     (try
       (let [proc (.start pb)
             exit-code (.waitFor proc)
             duration-ms (.toMillis (java.time.Duration/between started-at (Instant/now)))]
-        (log! "fucodex run complete" {:exit exit-code :ms duration-ms :session session-id})
+        (log! "agent run complete" {:exit exit-code :ms duration-ms :session session-id})
         (when (not= 0 exit-code)
-          (log! "fucodex exited non-zero" {:exit exit-code :session session-id})))
+          (log! "agent exited non-zero" {:exit exit-code :session session-id})))
       (catch Throwable t
-        (log! "fucodex failed to start" {:err (.getMessage t) :session session-id})))
+        (log! "agent failed to start" {:err (.getMessage t) :session session-id})))
     {:ok true :started-at started-at}))
 
-(defn- run-fucodex-new!
-  [fucodex musn-url room bot-name session-id intent no-sandbox approval-policy]
-  (let [fucodex (or (when (and fucodex (re-find #"/" fucodex)) fucodex)
-                    (let [candidate (io/file (System/getProperty "user.dir") (or fucodex "fucodex"))]
-                      (when (.exists candidate) (.getAbsolutePath candidate)))
-                    fucodex)
-        args (cond-> [fucodex
-                      "--live"
-                      "--musn"
-                      "--musn-url" musn-url
-                      "--chat-room" room
-                      "--chat-author" bot-name]
-               (and session-id (not (str/blank? session-id)))
-               (conj "--session-id" session-id)
-               no-sandbox (conj "--no-sandbox")
-               (and approval-policy (not (str/blank? approval-policy)))
-               (conj "--approval-policy" approval-policy)
-               (and intent (not (str/blank? intent)))
-               (conj "--intent" intent)
-               true (conj "exec" "--prompt" intent))
+;; Legacy alias for backwards compatibility
+(def run-fucodex! run-agent!)
+
+(defn- run-agent-new!
+  "Run agent (fuclaude or fucodex) to start a new session."
+  [agent-cmd mode musn-url room bot-name session-id intent no-sandbox approval-policy]
+  (let [agent-cmd (or (when (and agent-cmd (re-find #"/" agent-cmd)) agent-cmd)
+                      (let [candidate (io/file (System/getProperty "user.dir") (or agent-cmd "fucodex"))]
+                        (when (.exists candidate) (.getAbsolutePath candidate)))
+                      agent-cmd)
+        mode (detect-agent-mode agent-cmd mode)
+        ;; Common args for both modes
+        base-args (cond-> [agent-cmd
+                           "--live"
+                           "--musn"
+                           "--musn-url" musn-url
+                           "--chat-room" room
+                           "--chat-author" bot-name]
+                    (and session-id (not (str/blank? session-id)))
+                    (conj "--session-id" session-id)
+                    no-sandbox (conj (if (= mode :claude) "--yolo" "--no-sandbox"))
+                    (and approval-policy (not (str/blank? approval-policy)))
+                    (conj "--approval-policy" approval-policy)
+                    (and intent (not (str/blank? intent)))
+                    (conj "--intent" intent))
+        ;; Mode-specific suffix
+        args (if (= mode :claude)
+               ;; fuclaude: -p <prompt>
+               (into base-args ["-p" intent])
+               ;; fucodex: exec --prompt <prompt>
+               (into base-args ["exec" "--prompt" intent]))
         pb (doto (ProcessBuilder. ^java.util.List args)
              (.inheritIO))
         env (.environment pb)
@@ -289,17 +319,20 @@
     (.put env "FUTON3_MUSN_REQUIRE_APPROVAL" "0")
     (.put env "FUTON3_MUSN_CHAT_TRIM" "1")
     (.put env "FUTON3_MUSN_LOG" (musn-log-path session-id))
-    (log! "starting fucodex run (new)" {:room room :bot bot-name :session session-id :cmd fucodex})
+    (log! "starting agent run (new)" {:room room :bot bot-name :session session-id :cmd agent-cmd :mode mode})
     (try
       (let [proc (.start pb)
             exit-code (.waitFor proc)
             duration-ms (.toMillis (java.time.Duration/between started-at (Instant/now)))]
-        (log! "fucodex run complete (new)" {:exit exit-code :ms duration-ms :session session-id})
+        (log! "agent run complete (new)" {:exit exit-code :ms duration-ms :session session-id})
         (when (not= 0 exit-code)
-          (log! "fucodex exited non-zero (new)" {:exit exit-code :session session-id})))
+          (log! "agent exited non-zero (new)" {:exit exit-code :session session-id})))
       (catch Throwable t
-        (log! "fucodex failed to start (new)" {:err (.getMessage t) :session session-id})))
+        (log! "agent failed to start (new)" {:err (.getMessage t) :session session-id})))
     {:ok true :started-at started-at}))
+
+;; Legacy alias for backwards compatibility
+(def run-fucodex-new! run-agent-new!)
 
 (def ^:private pattern-line-re
   #"^([0-9T:\.\-Z]+)\s+\[(pattern-[^\]]+)\]\s+(.*)$")
@@ -354,8 +387,8 @@
     "Pattern trace: none"))
 
 (defn- poll-loop!
-  [{:keys [musn-url room poll-interval bot-name fucodex no-sandbox approval-policy]}]
-  (log! "starting supervisor" {:room room :bot bot-name :musn musn-url})
+  [{:keys [musn-url room poll-interval bot-name agent mode no-sandbox approval-policy]}]
+  (log! "starting supervisor" {:room room :bot bot-name :agent agent :mode mode :musn musn-url})
   (wait-for-musn! musn-url)
   (let [started-at (Instant/now)
         init-resp (musn-post! musn-url "/musn/chat/state" {:room room})
@@ -411,7 +444,7 @@
                                         (format "Starting %s for !task %s" session-id token)))
                   (future
                     (try
-                      (let [result (run-fucodex! fucodex musn-url room bot-name session-id body body no-sandbox approval-policy)
+                      (let [result (run-agent! agent mode musn-url room bot-name session-id body body no-sandbox approval-policy)
                             started-at (:started-at result)
                             log-path (musn-log-path session-id)
                             trace (read-pattern-trace log-path started-at)
@@ -435,7 +468,7 @@
                                       (format "Starting %s for !new" session-id))
                   (future
                     (try
-                      (let [result (run-fucodex-new! fucodex musn-url room bot-name session-id body no-sandbox approval-policy)
+                      (let [result (run-agent-new! agent mode musn-url room bot-name session-id body no-sandbox approval-policy)
                             started-at (:started-at result)
                             log-path (musn-log-path session-id)
                             trace (read-pattern-trace log-path started-at)

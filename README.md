@@ -100,6 +100,76 @@ M-x fubar-musn-view-session
    # streams dev/demo_events.ndjson via the ingest path
    ```
 
+## Fuclaude / Fucodex Usage
+
+Use `fuclaude` and `fucodex` instead of raw `claude` / `codex` to get automatic session logging, pattern context injection, and audit trails.
+
+### Common invocations
+
+```bash
+# Basic usage (replaces `claude -p "task"`)
+./fuclaude --live -p "Fix the bug in parser.clj"
+
+# Basic usage (replaces `codex exec "task"`)
+./fucodex --live exec --prompt "Add unit tests for the API"
+
+# With full MUSN tracking (recommended for important work)
+./fuclaude --musn --live -p "Implement the new feature"
+./fucodex --musn --live exec --prompt "Refactor authentication"
+
+# Resume a previous session
+./fuclaude --resume <session-id> -p "Continue from where we left off"
+./fucodex --live resume --last "Continue work"
+
+# Interactive mode with AIF pattern guidance
+./fucodex --cli --with-aif
+
+# Exploratory pattern application
+./fuclaude explore --explore-hotwords "devmap,coherence"
+./fucodex explore --explore-namespaces "code-coherence,stack-coherence"
+```
+
+### What you get
+
+- **Session logs**: `lab/raw/`, `lab/trace/`, `lab/stubs/`
+- **Pattern context**: HUD injects relevant patterns into prompts
+- **PSR/PUR capture**: Pattern Selection Records and Pattern Use Records
+- **AIF scoring**: Adaptive scoring of pattern candidates
+- **Intent extraction**: Automatic intent parsing for audit trails
+
+### Shell aliases (optional)
+
+Add to your `.bashrc` or `.zshrc`:
+
+```bash
+alias fc='cd /home/joe/code/futon3 && ./fuclaude --live -p'
+alias fcm='cd /home/joe/code/futon3 && ./fuclaude --musn --live -p'
+alias fx='cd /home/joe/code/futon3 && ./fucodex --live exec --prompt'
+alias fxm='cd /home/joe/code/futon3 && ./fucodex --musn --live exec --prompt'
+alias fxi='cd /home/joe/code/futon3 && ./fucodex --cli --with-aif'
+```
+
+### Pattern RPC helpers
+
+When running with `--musn` or `--pattern-rpc`, these scripts are available:
+
+```bash
+# Log pattern reads/uses/updates
+/home/joe/code/futon3/scripts/pattern-action read|update|implement library/<pattern> <note>
+/home/joe/code/futon3/scripts/pattern-select library/<pattern> <reason>
+/home/joe/code/futon3/scripts/pattern-use library/<pattern> <where applied>
+
+# Find similar patterns
+/home/joe/code/futon3/scripts/nearest-patterns <pattern-id> [--limit N] [--method glove|sigil|combined]
+
+# Mana/sospeso protocol
+/home/joe/code/futon3/scripts/give-mana <amount> <note>
+
+# Help and HUD refresh
+/home/joe/code/futon3/scripts/musn-help
+/home/joe/code/futon3/scripts/musn-hud
+```
+
 ## Elisp Package Tests
 Use the package runner to target individual Elisp test files:
 ```bash

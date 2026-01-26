@@ -19,27 +19,27 @@ futon3.devmap. These prototypes are all `:active` (operational but incomplete).
 
 ### P0: MUSN Transport
 
-- [ ] Freeze transport contract v1 in `docs/protocol/transport-contract-v1.md`
+- [x] Freeze transport contract v1 in `docs/protocol/transport-contract-v1.md`
   - Document event types: pattern-apply, gap-report, trail-capture
   - Specify NDJSON log format with schema
   - Version the contract (v1.0)
 
-- [ ] Document sandbox profile as canonical proofwork runtime
+- [x] Document sandbox profile as canonical proofwork runtime
   - Capture environment variables, paths, dependencies
   - Publish as `docs/protocol/sandbox-profile.md`
 
 ### P5: Similarity Field (futon3a integration)
 
-- [ ] Design futon3/futon3a bridge architecture
-  - Option A: futon3 HUD calls futon3a portal via Drawbridge
+- [x] Design futon3/futon3a bridge architecture
+  - Option A: futon3 HUD calls futon3a portal via Drawbridge ← **selected**
   - Option B: futon3 imports futon3a as library dependency
   - Option C: Merge futon3a into futon3
   - Document decision in `docs/architecture/futon3a-integration.md`
 
-- [ ] Decide: unify pattern stores vs. maintain bridge
-  - futon3 has `resources/sigils/patterns-index.tsv`
-  - futon3a has `resources/notions/` with embeddings
-  - Need single source of truth or explicit sync
+- [x] Decide: unify pattern stores vs. maintain bridge
+  - futon3 has `resources/sigils/patterns-index.tsv` ← **authoritative**
+  - futon3a has `resources/notions/` with embeddings ← **derived**
+  - Sync is explicit; rebuilds are versioned
 
 **Exit criteria**: Contract doc exists and is versioned. Bridge architecture decided.
 

@@ -116,4 +116,4 @@ Unsupported types must return:
 
 - General transport overview: `docs/protocol.md`
 - Golden transcripts for check jobs: `docs/protocol/golden-transcripts.md`
-- Sandbox profile for deterministic replay: `docs/sandbox/README.md`
+- Sandbox profile for deterministic replay: `docs/protocol/sandbox-profile.md`

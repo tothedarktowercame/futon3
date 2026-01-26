@@ -163,6 +163,8 @@ PORTAL_NAMESPACE=""
 PORTAL_LIMIT=""
 FUTON3_CODEX_SERVER_URL="${FUTON3_CODEX_SERVER_URL:-http://localhost:6060}"
 export FUTON3_CODEX_SERVER_URL
+RESUME_SESSION=""
+CONTINUE_LAST=false
 PATTERN_RPC=true
 PAUSE_ON_NO_WRITE="${FUCODEX_PAUSE_ON_NO_WRITE:-auto}"
 MUSN_MODE=false
@@ -238,6 +240,10 @@ Options:
   --musn-pass SECRET    IRC PASS for musn-chat (enables IRC transport when set).
   --musn-irc-host HOST  IRC bridge host for musn-chat (default: $MUSN_IRC_HOST).
   --musn-irc-port PORT  IRC bridge port for musn-chat (default: $MUSN_IRC_PORT).
+  --resume ID           Resume a previous session by ID (alias for resume subcommand).
+  --continue            Continue the most recent session (alias for resume --last).
+  --allow-edits         Alias for --approval-policy never (skip approvals).
+  --yolo                Alias for --no-sandbox (dangerous).
   --hud-print           Print HUD block before running codex.
   --hud-server URL      HUD server base URL (default: http://localhost:5050).
 
@@ -375,6 +381,17 @@ while [[ $# -gt 0 ]]; do
       MUSN_IRC_HOST="$2"; shift 2;;
     --musn-irc-port)
       MUSN_IRC_PORT="$2"; shift 2;;
+    --resume)
+      RESUME_SESSION="$2"; shift 2;;
+    --continue)
+      CONTINUE_LAST=true; shift;;
+    --allow-edits)
+      if [[ -z "$APPROVAL_POLICY" ]]; then
+        APPROVAL_POLICY="never"
+      fi
+      shift;;
+    --yolo)
+      UNSANDBOXED=true; shift;;
     --hud-print)
       HUD_PRINT=true; shift;;
     --hud-server)
@@ -857,6 +874,24 @@ if $PATTERN_RPC && [[ ${#args[@]} -eq 1 ]]; then
     args=("${SCOPE_GUARDRAIL}
 
 User task: ${args[0]}")
+  fi
+fi
+
+if [[ -n "$RESUME_SESSION" || $CONTINUE_LAST == true ]]; then
+  if [[ ${#args[@]} -eq 0 ]]; then
+    echo "[lab] --resume/--continue requires a prompt (use exec --prompt ...)" >&2
+    show_help
+    exit 2
+  fi
+  if [[ "${args[0]}" != "resume" ]]; then
+    resume_args=("resume")
+    if [[ -n "$RESUME_SESSION" ]]; then
+      resume_args+=("$RESUME_SESSION")
+    else
+      resume_args+=("--last")
+    fi
+    resume_args+=("${args[@]}")
+    args=("${resume_args[@]}")
   fi
 fi
 

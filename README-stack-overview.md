@@ -1,5 +1,7 @@
 # The FUTON Stack
 
+F0 is an interface to a system that supports the human capability to reason, remember, verify, compose, and act effectively. It monitors vitality, rhythm, and attention. The human is not a component of the system; the system is an extension of the human.
+
 Knowledge work produces artifacts: code, documents, arguments, designs. Most of these artifacts are not preserved in a form that permits retrieval, linking, or verification. Sessions end, files scatter, and reasoning remains implicit. This is an empirical observation about how knowledge work currently operates.
 
 For knowledge to compound, artifacts must be addressable. Graph memory stores text fragments, relationships, and annotations as nodes with typed edges. Addressability is a precondition for linking and querying.
@@ -18,4 +20,6 @@ Economic systems obscure costs, externalities, and relationships. Transparency t
 
 The layers share infrastructure: graph memory underlies storage, active inference underlies agent loops, pattern checking underlies validation, wiring diagrams underlie transfer. The dependencies are: F4 stores in F1; F3 and F5 agents use F2; F6 imports from F3; F7 simulations use F6 models; F5 patterns transfer to F2 domains.
 
-The stack is the conjunction of these layers and their connections. The argument for building it is: if knowledge work should compound, and compounding requires persistence and transfer, and persistence requires addressability, and transfer requires compositional abstraction, then infrastructure providing these properties is necessary. The futon stack is a concrete proposal for such infrastructure.
+The futon stack is the conjunction of these layers with the stated dependencies. Each layer reflects the whole from its perspective: F0 sees vitality, F1 sees memory, F2 sees action, F3 sees evidence, F4 sees documents, F5 sees patterns, F6 sees mathematics, F7 sees economics. The layers do not interact directly but are pre-harmonized through shared infrastructure and consistent interfaces. The structure extends human capability to reason, remember, verify, compose, and act.
+
+FUTON is not a project in the usual sense, but a derivation or construction based on the points above. Because it proceeds by informal reasoning rather than formal proof, we admit that we could be wrong, and none of the conclusions are necessary in a strict logical sense. The construction process provides many opportunities for verification and falsification of the overall argument. What is clear is that if people don't build something like this, it will never exist.

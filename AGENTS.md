@@ -1,3 +1,73 @@
+## Sigil validation with 印章 (chops)
+
+Before creating or modifying patterns, validate sigils against canonical sets using `futon3.chops`.
+
+### Canonical sets
+
+- **Emojis** (~124): from `resources/tokizh/tokizh.org` — each maps to a toki pona word
+- **Hanzi** (256): from `resources/truth-table-8/truth-table-8.el` — each maps to an 8-bit value
+
+Sigils encode two-word concepts: `emoji/hanzi` = `word₁/word₂`. Valid sigils use any canonical emoji + any canonical hanzi (combinatorial).
+
+### Validating sigils
+
+```clojure
+(require '[futon3.chops :as chops])
+
+;; Validate a single sigil
+(chops/validate-sigil "🐜/予")
+;; => {:valid? true, :decoded {:word1 "lili", :word2 "e", :reading "lili e"}}
+
+;; Validate multiple
+(chops/validate-sigils ["🐜/予" "🐺/内"])
+
+;; Check if components are canonical
+(chops/valid-emoji? "🐜")   ; => true
+(chops/valid-hanzi? "予")   ; => true
+```
+
+### Stamping patterns
+
+Before committing new patterns, stamp them to record validation:
+
+```clojure
+(chops/stamp {:pattern-id "my-pattern"} ["🐜/予" "🐺/内"])
+;; => {:pattern-id "my-pattern"
+;;     :chop/status :valid
+;;     :chop/timestamp "2025-01-26T..."
+;;     :chop/validation {...}}
+```
+
+### Auditing devmaps
+
+Run `scripts/audit-sigils` to check all devmaps for invalid sigils:
+
+```bash
+./scripts/audit-sigils
+# Sigil Audit Report
+# Files checked: 9
+# Invalid sigils: 0
+# ✓ All sigils are canonical!
+```
+
+### Migrating invalid sigils
+
+If you encounter invalid sigils, use `scripts/migrate-sigils`:
+
+```bash
+./scripts/migrate-sigils --dry-run  # preview changes
+./scripts/migrate-sigils            # apply migrations
+```
+
+Migrations are defined in `resources/sigils/sigil-migrations.edn` with semantic rationales.
+
+### Core vs enlarged pattern sets
+
+- **Core patterns**: sigils where hanzi is in tokizh.org (124 chars) — fully toki pona readable
+- **Enlarged patterns**: sigils using other truth-table-8 hanzi (132 chars) — emoji readable, hanzi as pure symbol
+
+Both are valid; core patterns have richer semantic decoding.
+
 ## Maintaining devmap + pattern coherence
 
 - Keep each futon devmap in sync with reality: when a clause is finished, cite the evidence (README section, test, tag); when it is blocked, note the dependency. Use the stack-coherence patterns (e.g. `stack-blocker-detection`) to spot empty dirs or missing artifacts and record `blocked-by[...]` until the prerequisite is done.

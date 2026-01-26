@@ -1,8 +1,42 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+usage() {
+  cat <<'EOF'
+usage:
+  musn-plan --diagram-file <path>
+  musn-plan --diagram <edn>
+  musn-plan --diagram-stdin
+
+Plan diagram requirements (EDN):
+  - Must be a wiring diagram with :nodes, :edges, :output
+  - Use these components for steps:
+      :musn.plan/action-reasoning  ;; reasoning note
+      :musn.plan/action-command    ;; shell command
+      :musn.plan/action-file-edit  ;; file edits/patches
+      :musn.plan/action-tool       ;; external tool/API use
+  - Typical flow is a :musn.plan/sequence node with edges from each step.
+
+Example (maps reasoning/command/file-edit/tool to components):
+  {:nodes [{:id :s1 :component :musn.plan/action-reasoning
+            :params {:note "Define plan object schema"}}
+           {:id :s2 :component :musn.plan/action-command
+            :params {:cmd "rg -n \"plan\" src"}}
+           {:id :s3 :component :musn.plan/action-file-edit
+            :params {:note "Update registry schema file"}}
+           {:id :s4 :component :musn.plan/action-tool
+            :params {:note "Query external API for reference"}}
+           {:id :seq :component :musn.plan/sequence}]
+   :edges [{:from :s1 :to :seq :to-port :actions}
+           {:from :s2 :to :seq :to-port :actions}
+           {:from :s3 :to :seq :to-port :actions}
+           {:from :s4 :to :seq :to-port :actions}]
+   :output :seq}
+EOF
+}
+
 if [[ $# -lt 1 ]]; then
-  echo "usage: musn-plan --diagram-file <path> | --diagram <edn> | --diagram-stdin" >&2
+  usage >&2
   exit 2
 fi
 sid="${FUTON3_MUSN_SESSION_ID:-}"
@@ -27,7 +61,7 @@ elif [[ "${1-}" == "--diagram-stdin" ]]; then
   mode="stdin"
   shift
 else
-  echo "musn-plan: expected --diagram-file, --diagram, or --diagram-stdin" >&2
+  usage >&2
   exit 2
 fi
 

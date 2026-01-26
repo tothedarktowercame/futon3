@@ -1,0 +1,31 @@
+{:queue/version "0.1"
+ :queue/updated #inst "2026-01-23T17:10:00Z"
+ :missions
+ [{:mission/id "M1"
+   :mission/name "Smoke Test + H1-Lite"
+   :mission/type :stabilization
+   :mission/week [1 2]
+   :mission/depends ["P0" "P1"]
+   :mission/gate "futon3a/P11"
+   :mission/spec "M1-smoke-test.md"
+   :mission/status :passed
+   :mission/runs
+   [{:run/id "M1-run-001"
+     :run/started #inst "2026-01-23T17:00:00Z"
+     :run/ended #inst "2026-01-23T17:10:00Z"
+     :run/executor "joe+claude"
+     :run/mode :manual
+     :run/status :passed
+     :run/criteria
+     {:portal-ping {:status :pass :evidence "(+ 1 2) returned 3"}
+      :musn-core-load {:status :pass :evidence "require succeeded"}
+      :session-create {:status :pass :evidence "musn-8bb79fd6"}
+      :turn-start {:status :pass :evidence "guidance returned from Futon1"}
+      :pattern-select {:status :pass :evidence "stack-coherence/evidence-ledger"}
+      :action-log {:status :pass :evidence "verify action recorded"}
+      :turn-end {:status :pass :evidence "summary correct"}
+      :log-valid-edn {:status :pass :evidence "5 lines parsed successfully"}
+      :timestamps-inst {:status :pass :evidence "#inst format, not #object"}}
+     :run/artifacts
+     ["/home/joe/code/futon3a/log/musn-8bb79fd6.edn"]
+     :run/notes "Fixed timestamp serialization from #object to #inst. Shell escaping of ! handled by wrapper scripts."}]}]}

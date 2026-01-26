@@ -334,15 +334,15 @@
                                   (when (number? amount)
                                     (double amount))))
                               donations))
-          count (count donations)
+          donation-count (count donations)
           failed-count (count failed)
           pending (when (and donate?
                              (number? plan-award)
                              (pos? (double plan-award))
-                             (zero? (+ count failed-count)))
+                             (zero? (+ donation-count failed-count)))
                     (double plan-award))]
-      (when (or (pos? count) (pos? failed-count) (number? pending))
-        (cond-> {:count count
+      (when (or (pos? donation-count) (pos? failed-count) (number? pending))
+        (cond-> {:count donation-count
                  :total total
                  :failed failed-count}
           (number? pending) (assoc :pending pending))))))

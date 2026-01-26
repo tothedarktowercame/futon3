@@ -230,11 +230,20 @@ Options:
   --hud-print           Print HUD block before running codex.
   --hud-server URL      HUD server base URL (default: http://localhost:5050).
 
+RPCs (available when running with --musn or --pattern-rpc):
+  /home/joe/code/futon3/scripts/pattern-action  Log pattern read/update/implement
+  /home/joe/code/futon3/scripts/pattern-select  Select a pattern for reading
+  /home/joe/code/futon3/scripts/pattern-use     Mark a pattern as applied
+  /home/joe/code/futon3/scripts/musn-help       Show MUSN help screen
+  /home/joe/code/futon3/scripts/musn-hud        Bring up HUD guidance
+  /home/joe/code/futon3/scripts/give-mana       Donate mana to the pool (sospeso protocol)
+
 Examples:
   fucodex --cli
   fucodex --live exec --prompt "Draft the summary"
   fucodex --live --patterns "ants/white-space-scout" --chosen ants/white-space-scout exec --prompt "Explain"
   fucodex --live --clock-in ants/white-space-scout --clock-in ants/pheromone-trail-tuner exec --prompt "Review"
+  fucodex --musn --live exec --prompt "Task with MUSN tracking"
   fucodex --live resume --last "Continue work"
   fucodex --aif-explain docs/aif/fulab-config.edn
   fucodex --aif-explain

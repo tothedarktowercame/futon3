@@ -5,11 +5,17 @@ if [[ -z "${BASH_VERSION-}" ]]; then
   exec bash "$0" "$@"
 fi
 
+# Debug: print invoked command and env when troubleshooting MUSN classpath
+if [[ "${FUCLAUDE_DEBUG-}" == "1" ]]; then
+  set -x
+fi
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}
-                  futon2/futon2 {:local/root "../futon2"}}}'
+# Extra deps/paths layered on top of the project basis when running lab/musn streams.
+LAB_DEPS='{:paths ["scripts" "src" "resources" "dev" "."] :deps {org.clojure/data.json {:mvn/version "2.5.0"} cheshire/cheshire {:mvn/version "5.11.0"} clj-http/clj-http {:mvn/version "3.12.3"} futon2/futon2 {:local/root "/home/joe/code/futon2"}}}'
 START_ISO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 RUN_CWD="$(pwd)"
+export PATH="$ROOT/scripts:$PATH"
 
 LIVE=false
 PATTERNS=""
@@ -28,13 +34,35 @@ EXPLORE_NAMESPACES=""
 EXPLORE_LIMIT="4"
 EXPLORE_PROMPT_FILE="docs/claude-exploratory-mission.md"
 PRINT_MODE=false
-HUD_MODE=false
+HUD_MODE=true
 HUD_INTENT=""
 HUD_PRINT=false
 HUD_SERVER="${HUD_SERVER:-http://localhost:5050}"
+FUTON3_CODEX_SERVER_URL="${FUTON3_CODEX_SERVER_URL:-http://localhost:6060}"
+export FUTON3_CODEX_SERVER_URL
 RESUME_SESSION=""
 CONTINUE_LAST=false
 PERMISSION_MODE=""
+PATTERN_RPC=true
+MUSN_MODE=false
+MUSN_URL="${FUCLAUDE_MUSN_URL:-http://localhost:6065}"
+CHAT_ROOM="${FUCLAUDE_CHAT_ROOM:-}"
+CHAT_AUTHOR="${FUCLAUDE_CHAT_AUTHOR:-}"
+SCOPE_GUARDRAIL=$'Scope guardrail: avoid repo-wide `rg --files` or wide `rg` searches.\nBefore tool use, state a 1-2 line plan; if a wide scan is likely, either (a) announce it and proceed, or (b) stop and ask for scope; if asking, do not run the scan.\nTreat wide scans as expensive.'
+INTENT_PREFACE=$'First output line format: hud-intent: <one-sentence summary of the text below>.\nDo not call tools or run commands before emitting that line.\nSummarize ONLY the text between <INTENT_TEXT> and </INTENT_TEXT>. Do not include quotes, placeholders, or planning.\n<INTENT_TEXT>\n'
+INTENT_POSTFACE=$'\n</INTENT_TEXT>\nAfter that line, continue with the task using the instructions that follow. Do not summarize any other instructions below.'
+MANA_START="${FUTON3_MUSN_MANA_START:-100}"
+MANA_BALANCE="${FUTON3_MUSN_MANA_BALANCE:-$MANA_START}"
+MANA_EARNED="${FUTON3_MUSN_MANA_EARNED:-0}"
+MANA_SPENT="${FUTON3_MUSN_MANA_SPENT:-0}"
+MUSN_HELP="${FUCLAUDE_MUSN_HELP:-auto}"
+MUSN_SESSION_ID="${FUTON3_MUSN_SESSION_ID:-}"
+MUSN_HELP_FORCE=false
+MUSN_HUD_FORCE=false
+
+if [[ "${FUCLAUDE_HUD-}" == "0" || "${FUCLAUDE_HUD-}" == "false" ]]; then
+  HUD_MODE=false
+fi
 
 show_help() {
   cat <<'EOF'
@@ -58,19 +86,34 @@ Options:
   --explore-prompt      Prompt file to use (default: docs/claude-exploratory-mission.md).
   --aif-select          Let AIF choose the pattern (used in explore).
   --proposal-hook       Emit proposal draft when candidates are insufficient.
-  --hud                 Enable HUD mode: seed patterns into prompt, parse response.
+  --hud                 Enable HUD mode: seed patterns into prompt, parse response (default on).
+  --no-hud              Disable HUD mode even if default is on.
   --intent TEXT         Intent/goal for HUD pattern selection.
   --hud-print           Print HUD block before running claude.
   --hud-server URL      HUD server base URL (default: http://localhost:5050).
+  --pattern-rpc         Enable pattern-action RPC and enforce explicit reads (default: on).
+  --musn                Route through MUSN mode (enable MUSN preflight and exports).
+  --musn-url URL        MUSN service base URL (default: http://localhost:6065 or $FUCLAUDE_MUSN_URL).
+  --chat-room ROOM      Post agent messages into MUSN chat room (enables --musn).
+  --chat-author NAME    Display name for chat messages (defaults to client id).
   --resume ID           Resume a previous session by ID.
   --continue            Continue the most recent session.
   --allow-edits         Allow file edits without prompting (permission-mode: acceptEdits).
   --yolo                Bypass all permission checks (use in sandboxed environments only).
 
+RPCs (available when running with --musn or --pattern-rpc):
+  /home/joe/code/futon3/scripts/pattern-action  Log pattern read/update/implement
+  /home/joe/code/futon3/scripts/pattern-select  Select a pattern for reading
+  /home/joe/code/futon3/scripts/pattern-use     Mark a pattern as applied
+  /home/joe/code/futon3/scripts/musn-help       Show MUSN help screen
+  /home/joe/code/futon3/scripts/musn-hud        Bring up HUD guidance
+  /home/joe/code/futon3/scripts/give-mana       Donate mana to the pool (sospeso protocol)
+
 Examples:
   fuclaude --live -p "Draft the summary"
   fuclaude --live --patterns "ants/white-space-scout" --chosen ants/white-space-scout -p "Explain"
   fuclaude --live --clock-in ants/white-space-scout --clock-in ants/pheromone-trail-tuner -p "Review"
+  fuclaude --musn --live -p "Task with MUSN tracking"
   fuclaude --aif-explain docs/aif/fulab-config.edn
   fuclaude --aif-explain
   fuclaude explore --explore-hotwords "aif,session,trace"
@@ -131,12 +174,26 @@ while [[ $# -gt 0 ]]; do
       PROPOSAL_HOOK=true; shift;;
     --hud)
       HUD_MODE=true; shift;;
+    --no-hud)
+      HUD_MODE=false; shift;;
     --intent)
       HUD_INTENT="$2"; shift 2;;
     --hud-print)
       HUD_PRINT=true; shift;;
     --hud-server)
       HUD_SERVER="$2"; shift 2;;
+    --pattern-rpc)
+      PATTERN_RPC=true; shift;;
+    --musn)
+      MUSN_MODE=true; shift;;
+    --musn-url)
+      MUSN_MODE=true
+      MUSN_URL="$2"; shift 2;;
+    --chat-room)
+      MUSN_MODE=true
+      CHAT_ROOM="$2"; shift 2;;
+    --chat-author)
+      CHAT_AUTHOR="$2"; shift 2;;
     --resume)
       RESUME_SESSION="$2"; shift 2;;
     --continue)
@@ -213,20 +270,111 @@ if [[ -n "$CHOSEN" && -n "$CLOCK_IN" ]]; then
   echo "[fuclaude] warning: --chosen is ignored when --clock-in is provided" >&2
 fi
 
+# Generate session ID when pattern RPC or MUSN is enabled
+if $PATTERN_RPC && [[ -z "$FORCED_SESSION_ID" ]]; then
+  FORCED_SESSION_ID="$(python3 - <<'PY'
+import uuid
+print(f"claude-{uuid.uuid4().hex[:8]}")
+PY
+)"
+fi
+
+if $MUSN_MODE && [[ -z "$MUSN_SESSION_ID" ]]; then
+  if [[ -n "$FORCED_SESSION_ID" ]]; then
+    MUSN_SESSION_ID="$FORCED_SESSION_ID"
+  else
+    MUSN_SESSION_ID="musn-$(python3 - <<'PY'
+import uuid
+print(str(uuid.uuid4())[:8])
+PY
+)"
+  fi
+fi
+
+# Capture the user prompt before any HUD injection.
+USER_PROMPT=""
+if [[ ${#args[@]} -gt 0 ]]; then
+  for ((i=0; i<${#args[@]}; i++)); do
+    if [[ "${args[$i]}" == "-p" && $((i+1)) -lt ${#args[@]} ]]; then
+      USER_PROMPT="${args[$((i+1))]}"
+      break
+    fi
+  done
+fi
+
+# Prefer the MUSN intent when HUD intent is not explicitly provided.
+if [[ -z "${HUD_INTENT-}" && -n "${FUTON3_MUSN_INTENT-}" ]]; then
+  HUD_INTENT="$FUTON3_MUSN_INTENT"
+fi
+if [[ -z "${HUD_INTENT-}" && -n "${USER_PROMPT-}" ]]; then
+  HUD_INTENT="$(USER_PROMPT="$USER_PROMPT" python3 - <<'PY'
+import os
+import re
+prompt = os.environ.get("USER_PROMPT", "")
+if not prompt:
+    raise SystemExit(0)
+line = prompt.splitlines()[0] if "\n" in prompt else prompt
+line = re.sub(r"[`*_]+", "", line)
+line = re.sub(r"\\s+", " ", line).strip()
+line = re.sub(r"^\\s*(please|pls)\\s+", "", line, flags=re.IGNORECASE)
+for sep in ["—", " -- ", " - ", ". ", "? ", "! "]:
+    if sep in line:
+        line = line.split(sep, 1)[0].strip()
+        break
+line = line.replace("/home/joe/code/futon3/", "")
+line = line.replace("/home/joe/code/", "")
+print(line)
+PY
+)"
+fi
+
 # HUD mode: inject pattern context into prompt
+HUD_FILE=""
 HUD_JSON_FILE=""
 if $HUD_MODE && $PRINT_MODE; then
   HUD_ENDPOINT="${HUD_SERVER%/}/fulab/hud/format"
-  HUD_PAYLOAD=$(HUD_INTENT="$HUD_INTENT" PATTERNS="$PATTERNS" EXPLORE_LIMIT="$EXPLORE_LIMIT" RUN_CWD="$RUN_CWD" python3 - <<'PY'
+  HUD_PAYLOAD=$(HUD_INTENT="$HUD_INTENT" PATTERNS="$PATTERNS" EXPLORE_LIMIT="$EXPLORE_LIMIT" RUN_CWD="$RUN_CWD" \
+    MANA_START="$MANA_START" MANA_BALANCE="$MANA_BALANCE" MANA_EARNED="$MANA_EARNED" MANA_SPENT="$MANA_SPENT" \
+    MUSN_MODE="$MUSN_MODE" MUSN_HELP="$MUSN_HELP" SESSION_ID="$MUSN_SESSION_ID" \
+    python3 - <<'PY'
 import json, os
 
 intent = os.environ.get("HUD_INTENT", "")
 patterns = os.environ.get("PATTERNS", "")
+session_id = (os.environ.get("SESSION_ID", "") or "").strip()
 limit = os.environ.get("EXPLORE_LIMIT", "4")
 try:
     limit = int(limit)
 except ValueError:
     limit = 4
+def parse_num(value, default):
+    try:
+        return float(value)
+    except Exception:
+        return default
+def parse_bool(value, default=False):
+    if value is None:
+        return default
+    raw = str(value).strip().lower()
+    if raw in ("1", "true", "yes", "y", "on"):
+        return True
+    if raw in ("0", "false", "no", "n", "off"):
+        return False
+    return default
+
+musn_mode = parse_bool(os.environ.get("MUSN_MODE"), False)
+raw_help = os.environ.get("MUSN_HELP", "").strip().lower()
+if not raw_help or raw_help == "auto":
+    musn_help = musn_mode
+else:
+    musn_help = parse_bool(raw_help, musn_mode)
+musn_help_force = parse_bool(os.environ.get("MUSN_HELP_FORCE"), False)
+musn_hud_force = parse_bool(os.environ.get("MUSN_HUD_FORCE"), False)
+
+mana_start = parse_num(os.environ.get("MANA_START", "100"), 100.0)
+mana_balance = parse_num(os.environ.get("MANA_BALANCE", str(mana_start)), mana_start)
+mana_earned = parse_num(os.environ.get("MANA_EARNED", "0"), 0.0)
+mana_spent = parse_num(os.environ.get("MANA_SPENT", "0"), 0.0)
 
 prototypes = [p for p in patterns.split(",") if p.strip()] if patterns else []
 
@@ -237,6 +385,23 @@ payload = {
     "certify-commit": True,
     "repo-root": os.environ.get("RUN_CWD", os.getcwd()),
 }
+if session_id:
+    payload["session-id"] = session_id
+if musn_mode:
+    payload["mana"] = {
+        "budget": mana_start,
+        "balance": mana_balance,
+        "earned": mana_earned,
+        "spent": mana_spent,
+    }
+    if musn_help_force:
+        payload["musn-help"] = True
+        payload["musn-help-force"] = True
+    else:
+        payload["musn-help"] = musn_help
+    if musn_hud_force:
+        payload["musn-hud"] = True
+        payload["musn-hud-force"] = True
 
 print(json.dumps(payload))
 PY
@@ -249,7 +414,30 @@ PY
     exit 2
   }
   HUD_JSON_FILE="$(mktemp -t fuclaude-hud-XXXXXX.json)"
+  trap '[[ -n "${HUD_JSON_FILE-}" ]] && rm -f "$HUD_JSON_FILE"' EXIT
   printf "%s" "$HUD_RESPONSE" > "$HUD_JSON_FILE"
+  export FUTON3_HUD_JSON="$HUD_JSON_FILE"
+
+  if [[ -z "$PATTERNS" ]]; then
+    HUD_PATTERNS=$(HUD_RESPONSE="$HUD_RESPONSE" python3 - <<'PY'
+import json, os
+
+raw = os.environ.get("HUD_RESPONSE", "")
+try:
+    data = json.loads(raw)
+except Exception:
+    data = {}
+
+hud = data.get("hud", {}) or {}
+candidates = hud.get("candidates", []) or []
+ids = [c.get("id") for c in candidates if isinstance(c, dict) and c.get("id")]
+print(",".join(ids))
+PY
+)
+    if [[ -n "$HUD_PATTERNS" ]]; then
+      PATTERNS="$HUD_PATTERNS"
+    fi
+  fi
 
   HUD_BLOCK=$(HUD_RESPONSE="$HUD_RESPONSE" python3 - <<'PY'
 import json, os, sys
@@ -283,7 +471,12 @@ PY
   for ((i=0; i<${#args[@]}; i++)); do
     if [[ "${args[$i]}" == "-p" && $((i+1)) -lt ${#args[@]} ]]; then
       original_prompt="${args[$((i+1))]}"
-      combined_prompt="${HUD_BLOCK}
+      combined_prompt="${INTENT_PREFACE}${original_prompt}
+${INTENT_POSTFACE}
+
+${HUD_BLOCK}
+
+${SCOPE_GUARDRAIL}
 
 User task: ${original_prompt}"
       new_args+=("-p" "$combined_prompt")
@@ -296,6 +489,81 @@ User task: ${original_prompt}"
   echo "[fuclaude] HUD injected with ${HUD_INTENT:-unspecified} intent" >&2
 fi
 
+# Ensure MUSN handshake intent line even when HUD is disabled.
+if $MUSN_MODE && ! $HUD_MODE && $PRINT_MODE; then
+  new_args=()
+  for ((i=0; i<${#args[@]}; i++)); do
+    if [[ "${args[$i]}" == "-p" && $((i+1)) -lt ${#args[@]} ]]; then
+      original_prompt="${args[$((i+1))]}"
+      combined_prompt="${INTENT_PREFACE}${original_prompt}
+${INTENT_POSTFACE}
+
+${SCOPE_GUARDRAIL}
+
+User task: ${original_prompt}"
+      new_args+=("-p" "$combined_prompt")
+      ((++i))
+    else
+      new_args+=("${args[$i]}")
+    fi
+  done
+  args=("${new_args[@]}")
+fi
+
+# Set environment variables for session/pattern RPC
+if [[ -n "$FORCED_SESSION_ID" ]]; then
+  export FUTON3_CODEX_SESSION_ID="$FORCED_SESSION_ID"
+fi
+if [[ -n "$HUD_SERVER" && -z "${FUTON3_CODEX_SERVER_URL-}" ]]; then
+  export FUTON3_CODEX_SERVER_URL="$HUD_SERVER"
+fi
+if $MUSN_MODE; then
+  if [[ -n "${FUTON3_MUSN_INTENT-}" ]]; then
+    export FUTON3_MUSN_INTENT
+  elif [[ -n "$HUD_INTENT" ]]; then
+    export FUTON3_MUSN_INTENT="$HUD_INTENT"
+  fi
+  if [[ -n "$USER_PROMPT" ]]; then
+    export FUTON3_MUSN_PROMPT="$USER_PROMPT"
+  fi
+fi
+if $PATTERN_RPC; then
+  export PATTERN_ACTION_RPC=1
+fi
+if $MUSN_MODE; then
+  export FUTON3_MUSN_URL="$MUSN_URL"
+  if [[ -n "$MUSN_SESSION_ID" ]]; then
+    export FUTON3_MUSN_SESSION_ID="$MUSN_SESSION_ID"
+  fi
+  export FUTON3_MUSN_HELPER_MODE="stream"
+  if [[ -n "$AIF_CONFIG" ]]; then
+    export FUTON3_MUSN_AIF_CONFIG_PATH="$AIF_CONFIG"
+  fi
+  if [[ -n "$CHAT_ROOM" ]]; then
+    export FUTON3_MUSN_CHAT_ROOM="$CHAT_ROOM"
+  fi
+  if [[ -n "$CHAT_AUTHOR" ]]; then
+    export FUTON3_MUSN_CHAT_AUTHOR="$CHAT_AUTHOR"
+  fi
+  # Check for MUSN help/hud force flags
+  if [[ -n "$MUSN_SESSION_ID" && -f "/tmp/futon3-musn-help-${MUSN_SESSION_ID}.flag" ]]; then
+    MUSN_HELP_FORCE=true
+    rm -f "/tmp/futon3-musn-help-${MUSN_SESSION_ID}.flag"
+  elif [[ -f "/tmp/futon3-musn-help.flag" ]]; then
+    MUSN_HELP_FORCE=true
+    rm -f "/tmp/futon3-musn-help.flag"
+  fi
+  if [[ -n "$MUSN_SESSION_ID" && -f "/tmp/futon3-musn-hud-${MUSN_SESSION_ID}.flag" ]]; then
+    MUSN_HUD_FORCE=true
+    rm -f "/tmp/futon3-musn-hud-${MUSN_SESSION_ID}.flag"
+  elif [[ -f "/tmp/futon3-musn-hud.flag" ]]; then
+    MUSN_HUD_FORCE=true
+    rm -f "/tmp/futon3-musn-hud.flag"
+  fi
+  export MUSN_HELP_FORCE
+  export MUSN_HUD_FORCE
+fi
+
 # Create marker file for timing comparison (before claude runs)
 touch -d "$START_ISO" /tmp/fuclaude-marker-$$
 trap 'rm -f /tmp/fuclaude-marker-$$ "${HUD_JSON_FILE-}" 2>/dev/null || true' EXIT
@@ -305,6 +573,17 @@ if $LIVE; then
     echo "[fuclaude] --live requires -p prompt (non-interactive mode)" >&2
     show_help
     exit 2
+  fi
+  # MUSN preflight check
+  if $MUSN_MODE; then
+    preflight_mode="${FUCLAUDE_PREFLIGHT:-auto}"
+    preflight_mode="$(printf '%s' "$preflight_mode" | tr '[:upper:]' '[:lower:]')"
+    if [[ "$preflight_mode" != "off" && "$preflight_mode" != "0" && "$preflight_mode" != "false" ]]; then
+      if ! MUSN_URL="$MUSN_URL" clojure -M -m scripts.musn_http_preflight >/dev/null; then
+        echo "[fuclaude] MUSN HTTP preflight failed; aborting run" >&2
+        exit 2
+      fi
+    fi
   fi
   set -o pipefail
   clj_args=(--lab-root "$ROOT/lab")
@@ -332,6 +611,9 @@ if $LIVE; then
   if [[ -n "$HUD_JSON_FILE" ]]; then
     clj_args+=(--hud-json "$HUD_JSON_FILE")
   fi
+  if $PATTERN_RPC; then
+    clj_args+=(--enforce-pattern-actions)
+  fi
   # Build resume flags for claude
   resume_args=()
   if [[ -n "$RESUME_SESSION" ]]; then
@@ -345,7 +627,14 @@ if $LIVE; then
     permission_args+=(--permission-mode "$PERMISSION_MODE")
   fi
   # Claude uses --print --output-format stream-json --verbose for streaming
-  claude --print --output-format stream-json --verbose "${permission_args[@]}" "${resume_args[@]}" "${args[@]}" | clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-claude.clj" "${clj_args[@]}"
+  # Route through musn_stream.clj when MUSN mode is enabled
+  if $MUSN_MODE; then
+    claude --print --output-format stream-json --verbose "${permission_args[@]}" "${resume_args[@]}" "${args[@]}" | \
+      clojure -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/musn_stream.clj"
+  else
+    claude --print --output-format stream-json --verbose "${permission_args[@]}" "${resume_args[@]}" "${args[@]}" | \
+      clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-claude.clj" "${clj_args[@]}"
+  fi
   status=${PIPESTATUS[0]}
 else
   # Non-live mode: run claude normally

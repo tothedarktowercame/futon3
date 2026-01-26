@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# give-mana: Donate mana to the pool (pure dana)
+# Used by agents to contribute mana when completing work with uncertainty.
+# See futon5/AGENTS.md for the sospeso protocol.
+
+FUTON5_ROOT="${FUTON5_ROOT:-/home/joe/code/futon5}"
+NONSTARTER_DB="${NONSTARTER_DB:-$FUTON5_ROOT/data/nonstarter.db}"
+
+show_help() {
+  cat <<'EOF'
+Usage: give-mana <amount> [--note "reason"]
+       give-mana sospeso --action "description" --confidence P --cost C
+
+Donate mana to the pool (pure dana, not earmarked).
+
+Direct donation:
+  give-mana 5 --note "completed task with uncertainty"
+
+Sospeso (confidence-triggered):
+  give-mana sospeso --action "refactored parser" --confidence 0.8 --cost 2.0
+
+  This donates (1-p)*C to the pool. With p=0.8 and C=2.0, that's 0.4 mana.
+  Valid confidence values: 0.3, 0.6, 0.8, 0.95
+
+Check pool balance:
+  give-mana pool
+
+Examples:
+  give-mana 1.0 --note "documentation update"
+  give-mana sospeso --action "multi-file refactor" --confidence 0.6 --cost 3.0
+  give-mana pool
+EOF
+}
+
+if [[ $# -eq 0 ]]; then
+  show_help
+  exit 0
+fi
+
+# Run from futon5 directory to access nonstarter-mana script
+cd "$FUTON5_ROOT"
+
+case "$1" in
+  -h|--help)
+    show_help
+    exit 0
+    ;;
+  pool)
+    clj -M -m scripts.nonstarter-mana pool --db "$NONSTARTER_DB" --format text
+    ;;
+  sospeso)
+    shift
+    clj -M -m scripts.nonstarter-mana sospeso --db "$NONSTARTER_DB" --format text "$@"
+    ;;
+  *)
+    amount="$1"
+    shift
+    note=""
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --note)
+          note="$2"
+          shift 2
+          ;;
+        *)
+          echo "give-mana: unknown option $1" >&2
+          exit 2
+          ;;
+      esac
+    done
+    clj -M -m scripts.nonstarter-mana donate \
+      --db "$NONSTARTER_DB" \
+      --amount "$amount" \
+      --donor "fulab-agent" \
+      ${note:+--note "$note"} \
+      --format text
+    ;;
+esac

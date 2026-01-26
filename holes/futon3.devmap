@@ -196,25 +196,29 @@ stack components queryable entities in the hypergraph.
 
 
 ! instantiated-by: Prototype 5 — Similarity Field [🌂/甲 👂/归]
-  :maturity :greenfield
+  :maturity :active
   :depends-on [f3/P1]
-  :evidence-for-active [Similarity queries integrated; deterministic neighbourhoods tested]
+  :evidence-for-active [futon3a provides pattern indexing with GloVe/fastText/MiniLM embeddings; portal queries operational]
 
   + context: Sigil-distance and GloVe embeddings enable pattern suggestions.
   + IF: You want reproducible neighbourhood queries for pattern suggestions
-  + HOWEVER: Embeddings live in ad-hoc CSVs, not wired into FUTON3 APIs
+  + HOWEVER: Embeddings live in futon3a, not wired into FUTON3 APIs
   + THEN: Integrate sigil-distance matrix and GloVe embeddings as first-class service (pattern search API, nearest-patterns command, CLI/UI views); publish tests proving deterministic neighbourhoods
   + BECAUSE: Pattern suggestion quality underpins the flexiformal workflow
 
   + EVIDENCE:
     evidence[Sigil-distance matrix exists in CSVs]
     evidence[GloVe embeddings available]
+    evidence[futon3a/scripts/index_patterns.sh builds notions index with GloVe/fastText/MiniLM]
+    evidence[futon3a/scripts/portal provides pattern search and suggest commands]
+    evidence[futon3a/docs/pattern-indexing.md documents embedding pipeline]
 
   + NEXT-STEPS:
-    next[Wire embeddings into pattern search API]
-    next[Add nearest-patterns command]
+    next[Integrate futon3a portal into futon3 HUD server for pattern suggestions]
+    next[Wire futon3a embeddings into futon3 pattern search API]
+    next[Add nearest-patterns command to fuclaude/fucodex]
     next[Publish deterministic neighbourhood tests]
-    next[Add CLI/UI views for pattern suggestions]
+    next[Unify futon3 and futon3a pattern stores or establish clear bridge]
 
   :success-criteria
     pass[Pattern search API returns nearest patterns]

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# audit-sigils: Check all devmaps and patterns for invalid sigils
+# audit-sigils: Check devmaps and library patterns for invalid sigils
 # Uses the chops service to validate against tokizh.org canonical mapping
 
 FUTON3_ROOT="${FUTON3_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
@@ -61,11 +61,16 @@ clj -M -e '
         (println)
         (System/exit 1)))))
 
-;; Find all devmap and flexiarg files
+;; Find devmaps in holes plus flexiarg/multiarg in library
 (let [holes-dir (io/file "holes")
       library-dir (io/file "library")
       devmaps (filter #(str/ends-with? (.getName %) ".devmap")
                       (file-seq holes-dir))
-      audits (map audit-file devmaps)]
+      library-files (filter #(and (.isFile %)
+                                  (or (str/ends-with? (.getName %) ".flexiarg")
+                                      (str/ends-with? (.getName %) ".multiarg")
+                                      (str/ends-with? (.getName %) ".devmap")))
+                             (file-seq library-dir))
+      audits (map audit-file (concat devmaps library-files))]
   (print-audit-report audits))
 '

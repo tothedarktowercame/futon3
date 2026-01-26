@@ -1,14 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# migrate-sigils: Apply sigil migrations to devmaps
+# migrate-sigils: Apply sigil migrations to devmaps and library patterns
 # Rewrites invalid sigils to canonical equivalents
 
 FUTON3_ROOT="${FUTON3_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 
 cd "$FUTON3_ROOT"
 
-clj -M -e '
+dry_run=false
+if [[ "${1-}" == "--dry-run" ]]; then
+  dry_run=true
+  shift
+fi
+if [[ $# -gt 0 ]]; then
+  echo "migrate-sigils: unknown option $1" >&2
+  exit 2
+fi
+
+SIGIL_MIGRATE_DRY_RUN="$dry_run" clj -M -e '
 (require (quote [clojure.java.io :as io])
          (quote [clojure.string :as str])
          (quote [clojure.edn :as edn]))
@@ -54,12 +64,19 @@ clj -M -e '
         (println "  [written]")))
     (count @migrations)))
 
-(let [dry-run? (= "--dry-run" (first *command-line-args*))
+(let [dry-run? (= "true" (System/getenv "SIGIL_MIGRATE_DRY_RUN"))
       holes-dir (io/file "holes")
+      library-dir (io/file "library")
       devmaps (filter #(str/ends-with? (.getName %) ".devmap")
                       (file-seq holes-dir))
-      total (reduce + (map #(migrate-file % dry-run?) devmaps))]
+      library-files (filter #(and (.isFile %)
+                                  (or (str/ends-with? (.getName %) ".flexiarg")
+                                      (str/ends-with? (.getName %) ".multiarg")
+                                      (str/ends-with? (.getName %) ".devmap")))
+                             (file-seq library-dir))
+      targets (concat devmaps library-files)
+      total (reduce + (map #(migrate-file % dry-run?) targets))]
   (println (str "\nTotal migrations: " total))
   (when dry-run?
     (println "(dry run - no files changed)")))
-' -- "$@"
+'

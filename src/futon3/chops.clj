@@ -12,11 +12,11 @@
    The emoji and hanzi do NOT need to come from the same row.
 
    Valid sigils: any known emoji + any known hanzi (combinatorial).
-   This gives ~124 × 124 ≈ 15,000 possible two-word sigils.
+   This gives ~124 × 256 ≈ 31,700 possible two-word sigils.
 
    Sigil formats:
    - emoji/hanzi (used in devmaps): e.g., 🐜/予 = lili/e
-   - tokipona/tokipona (used in patterns): e.g., lili/pana"
+   - tokipona/hanzi (used in patterns): e.g., lili/予"
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.edn :as edn]))
@@ -244,8 +244,8 @@
      :input sigil-str}))
 
 (defn validate-tokipona-pair
-  "Validate a tokipona/tokipona sigil pair (both words in toki pona).
-   Returns {:valid? true/false :errors [...] :decoded {...}}"
+  "Validate a tokipona/tokipona pair. Note: tokipona/tokipona is not a valid
+   sigil format; use tokipona/hanzi by mapping the right-hand word via tokizh.org."
   [sigil-str]
   (if-let [[tp1 tp2] (parse-sigil-pair sigil-str)]
     (let [entry1 (get @tokipona->entry tp1)
@@ -279,12 +279,36 @@
 
 (defn validate-sigil
   "Validate a sigil string, auto-detecting emoji vs tokipona format.
-   Returns {:valid? true/false :errors [...] :canonical {...} :format :emoji|:tokipona}"
+   Returns {:valid? true/false :errors [...] :canonical {...} :format :emoji|:tokipona|:tokipona-pair}"
   [sigil-str]
   (if-let [[left _] (parse-sigil-pair sigil-str)]
     ;; Heuristic: if left part contains ASCII letters, it's tokipona
     (if (re-find #"[a-z]" left)
-      (assoc (validate-tokipona-sigil sigil-str) :format :tokipona)
+      (let [[tp1 tp2] (parse-sigil-pair sigil-str)]
+        (if (re-find #"[a-z]" tp2)
+          (let [entry1 (get @tokipona->entry tp1)
+                entry2 (get @tokipona->entry tp2)
+                errors (cond-> []
+                         (nil? entry1)
+                         (conj {:type :unknown-tokipona
+                                :tokipona tp1
+                                :message (str "Unknown toki pona word: " tp1)})
+
+                         (nil? entry2)
+                         (conj {:type :unknown-tokipona
+                                :tokipona tp2
+                                :message (str "Unknown toki pona word: " tp2)}))
+                suggested (when (and entry1 entry2)
+                            (str tp1 "/" (:hanzi entry2)))]
+            {:valid? false
+             :format :tokipona-pair
+             :input sigil-str
+             :suggested suggested
+             :errors (conj errors
+                           {:type :tokipona-pair
+                            :message "tokipona/tokipona is invalid; use tokipona/hanzi"
+                            :suggested suggested})})
+          (assoc (validate-tokipona-sigil sigil-str) :format :tokipona)))
       (assoc (validate-emoji-sigil sigil-str) :format :emoji))
     {:valid? false
      :errors [{:type :parse-error

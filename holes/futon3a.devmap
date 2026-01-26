@@ -11,7 +11,7 @@
 @next Library evidence scan (C0), then stabilization missions
 
 
-! instantiated-by: Prototype 0 — Portal Query Layer [🔍/习 🌐/门]
+! instantiated-by: Prototype 0 — Portal Query Layer [👓/习 🌏/门]
   :maturity :active
   :depends-on []
   :evidence-for-settled [PSR/PUR logs showing reliable pattern retrieval in 10+ fucodex sessions]
@@ -42,7 +42,7 @@
   :pur-template "Used portal in session {{session-id}}, retrieved {{count}} patterns in {{ms}}ms, outcome: {{success|timeout|error}}"
 
 
-! instantiated-by: Prototype 1 — Sidecar Audit Trail [📝/记 ⛓️/链]
+! instantiated-by: Prototype 1 — Sidecar Audit Trail [📁/忆 ➰/久]
   :maturity :active
   :depends-on []
   :evidence-for-settled [Full PSR/PUR chain in 20+ sessions with zero audit gaps]
@@ -74,7 +74,7 @@
   :pur-template "Used sidecar in {{session-id}}, logged {{psr-count}} selections + {{pur-count}} outcomes, chain-complete: {{true|false}}"
 
 
-! instantiated-by: Prototype 2 — Compass GFE Alignment [🧭/向 ⚖️/衡]
+! instantiated-by: Prototype 2 — Compass GFE Alignment [🚞/止 👯/平]
   :maturity :greenfield
   :depends-on [futon3a/P0, futon3a/P1]
   :evidence-for-active [Compass runs end-to-end on sample narratives with explainable scores]
@@ -110,7 +110,7 @@
   :pur-template "Used compass on {{narrative}}, top policy: {{policy-id}} (G={{score}}), human-aligned: {{yes|no|unclear}}"
 
 
-! instantiated-by: Prototype 3 — Meme Layer (ANN Search) [🧠/忆 🔎/索]
+! instantiated-by: Prototype 3 — Meme Layer (ANN Search) [🐲/忆 👓/见]
   :maturity :stub
   :depends-on [futon3a/P0]
   :evidence-for-greenfield [ANN index built from library patterns, query latency <50ms]
@@ -144,7 +144,7 @@
   :pur-template "Used ANN search for query {{query}}, retrieved {{count}} patterns, relevant: {{count-relevant}}, latency: {{ms}}ms"
 
 
-! instantiated-by: Prototype 4 — Mission Queue & Supervisor [📋/务 👁️/督]
+! instantiated-by: Prototype 4 — Mission Queue & Supervisor [📁/业 👀/王]
   :maturity :greenfield
   :depends-on [futon3a/P1]
   :evidence-for-active [Queue file exists, supervisor can pop and execute missions]
@@ -180,7 +180,7 @@
   :pur-template "Queued {{count}} missions, executed {{completed}}, escalated {{escalated}}, remaining {{remaining}}"
 
 
-! instantiated-by: Prototype 5 — Morning Review Protocol [☀️/晨 📊/评]
+! instantiated-by: Prototype 5 — Morning Review Protocol [🌞/日 ✌️/义]
   :maturity :stub
   :depends-on [futon3a/P4]
   :evidence-for-greenfield [Review script exists and runs on night-shift logs]
@@ -213,7 +213,7 @@
   :pur-template "Reviewed {{count}} missions, actionable: {{yes|no}}, time-to-decision: {{minutes}}min"
 
 
-! instantiated-by: Prototype 6 — Library Evidence Feedback [🔄/馈 📈/升]
+! instantiated-by: Prototype 6 — Library Evidence Feedback [🔃/予 ☝️/升]
   :maturity :stub
   :depends-on [futon3a/P1, futon3/P1]
   :evidence-for-greenfield [PSR/PUR logs can be parsed and aggregated per pattern]
@@ -248,7 +248,7 @@
   :pur-template "Analyzed {{session-count}} sessions, promoted {{promoted-count}} patterns, demoted {{demoted-count}}, errors: {{errors}}"
 
 
-! instantiated-by: Prototype 7 — Xenotype CT Attachment [🔷/型 🧬/构]
+! instantiated-by: Prototype 7 — Xenotype CT Attachment [💎/本 🌀/木]
   :maturity :stub
   :depends-on [futon5/E1-Stage6, futon3a/P1, futon3a/P3]
   :evidence-for-greenfield [CT templates can be serialized in flexiarg format]
@@ -263,7 +263,7 @@
   + EVIDENCE:
     evidence[Futon5 E1 plan includes Stage 6: CT interpretation (futon5/docs/Excursion-1-P1-xenotype-motifs.md)]
     evidence[p4ng paper discusses pattern anatomy with CT implications]
-    evidence[2026-01-22: Sigils already exist as pattern decorators (@sigils [🔷/型 🧬/构]) throughout library. Hanzi characters are proto-sigils. Initial prototype: extract hanzi from @sigils fields → maps to 64 hexagrams (constrained vocab). Sigils became sigils when used to annotate patterns - this is evidence the CT attachment will work]
+    evidence[2026-01-22: Sigils already exist as pattern decorators (@sigils [💎/本 🌀/木]) throughout library. Hanzi characters are proto-sigils. Initial prototype: extract hanzi from @sigils fields → maps to 64 hexagrams (constrained vocab). Sigils became sigils when used to annotate patterns - this is evidence the CT attachment will work]
 
   + NEXT-STEPS:
     next[Extract hanzi from existing @sigils decorators across library as proto-sigil dataset]
@@ -286,7 +286,7 @@
   :pur-template "Attached CT template to {{pattern-id}}, compass used it: {{yes|no}}, confidence delta: {{delta}}"
 
 
-! instantiated-by: Prototype 8 — Futon3a→Futon0 Telemetry Bridge (Raw) [📡/传 📊/监]
+! instantiated-by: Prototype 8 — Futon3a→Futon0 Telemetry Bridge (Raw) [📤/予 ✌️/见]
   :maturity :stub
   :depends-on [futon0/P2, futon3a/P1]
   :evidence-for-greenfield [Sidecar logs are pushed to futon0 for vitality tracking]
@@ -320,7 +320,7 @@
   :pur-template "Pushed {{event-count}} pattern events to futon0, scanner updated: {{yes|no}}"
 
 
-! instantiated-by: Prototype 10 — Proof-Theoretic Digest/Compression [🗜️/压 📬/信]
+! instantiated-by: Prototype 10 — Proof-Theoretic Digest/Compression [📎/下 📤/文]
   :maturity :stub
   :depends-on [futon3a/P1, futon3a/P6, futon3a/P8, futon5/reflection-layer]
   :evidence-for-greenfield [Digest pipeline runs: 1000 PSR/PURs → 100 patterns → 10 messages]
@@ -361,7 +361,7 @@
   :pur-template "Compressed {{raw-event-count}} events to {{message-count}} messages, review-time: {{minutes}}min, actionable: {{yes|no}}"
 
 
-! instantiated-by: Prototype 11 — Stabilization & Hub Demonstration [🔧/稳 ⚙️/枢]
+! instantiated-by: Prototype 11 — Stabilization & Hub Demonstration [📎/平 📎/中]
   :maturity :greenfield
   :depends-on [futon3a/P0, futon3a/P1, futon3a/P4, futon3a/P10]
   :evidence-for-active [Stabilization missions defined and queued; futon3a coordinates cross-stack missions]

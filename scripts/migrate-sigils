@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# migrate-sigils: Apply sigil migrations to devmaps
+# Rewrites invalid sigils to canonical equivalents
+
+FUTON3_ROOT="${FUTON3_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
+
+cd "$FUTON3_ROOT"
+
+clj -M -e '
+(require (quote [clojure.java.io :as io])
+         (quote [clojure.string :as str])
+         (quote [clojure.edn :as edn]))
+
+(def migrations
+  (edn/read-string (slurp (io/resource "sigils/sigil-migrations.edn"))))
+
+(def emoji-map
+  (into {} (for [[k [v _ _]] (:emoji migrations)] [k v])))
+
+(def hanzi-map
+  (into {} (for [[k [v _ _]] (:hanzi migrations)] [k v])))
+
+(defn migrate-sigil [sigil-str]
+  "Migrate a single sigil, returning [original new changed?]"
+  (if-let [[_ emoji hanzi] (re-matches #"([^\s/]+)/(.)" sigil-str)]
+    (let [new-emoji (get emoji-map emoji emoji)
+          new-hanzi (get hanzi-map hanzi hanzi)
+          new-sigil (str new-emoji "/" new-hanzi)
+          changed? (not= sigil-str new-sigil)]
+      [sigil-str new-sigil changed?])
+    [sigil-str sigil-str false]))
+
+(defn migrate-file [file dry-run?]
+  (let [original (slurp file)
+        ;; Find all sigil-like patterns
+        pattern #"([^\s\[\]A-Za-z0-9/]+)/([\u4e00-\u9fff])"
+        migrations (atom [])
+        migrated (str/replace original pattern
+                              (fn [[match emoji hanzi]]
+                                (let [new-emoji (get emoji-map emoji emoji)
+                                      new-hanzi (get hanzi-map hanzi hanzi)
+                                      new-sigil (str new-emoji "/" new-hanzi)]
+                                  (when (not= match new-sigil)
+                                    (swap! migrations conj [match new-sigil]))
+                                  new-sigil)))]
+    (when (seq @migrations)
+      (println (str "\n" (.getName file) ":"))
+      (doseq [[old new] @migrations]
+        (println (str "  " old " → " new)))
+      (when-not dry-run?
+        (spit file migrated)
+        (println "  [written]")))
+    (count @migrations)))
+
+(let [dry-run? (= "--dry-run" (first *command-line-args*))
+      holes-dir (io/file "holes")
+      devmaps (filter #(str/ends-with? (.getName %) ".devmap")
+                      (file-seq holes-dir))
+      total (reduce + (map #(migrate-file % dry-run?) devmaps))]
+  (println (str "\nTotal migrations: " total))
+  (when dry-run?
+    (println "(dry run - no files changed)")))
+' -- "$@"

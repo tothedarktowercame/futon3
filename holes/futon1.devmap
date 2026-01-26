@@ -38,7 +38,7 @@ experimental workflows—fulab runs are partly implemented; MMCA experiment
 storage is planned.
 
 
-! instantiated-by: Prototype 0 — HTTP API (Canonical Interface) [🌐/接 📡/应]
+! instantiated-by: Prototype 0 — HTTP API (Canonical Interface) [🌏/及 📤/及]
   :maturity :settled
   :depends-on []
   :evidence-for-settled [API in daily use for 90+ days; evolution protocols documented]
@@ -70,7 +70,7 @@ storage is planned.
   :pur-template "Used API endpoint {{endpoint}}, response time: {{ms}}ms, status: {{success|error}}"
 
 
-! instantiated-by: Prototype 1 — XTDB Hydration [💧/润 🔄/复]
+! instantiated-by: Prototype 1 — XTDB Hydration [🌊/水 🔃/反]
   :maturity :settled
   :depends-on [f1/P3]
   :evidence-for-settled [Hydration verified across 100+ restart cycles; fallback to legacy tested]
@@ -101,7 +101,7 @@ storage is planned.
   :pur-template "Hydration from {{source}}, entities loaded: {{count}}, duration: {{ms}}ms"
 
 
-! instantiated-by: Prototype 2 — Invariant Enforcement [🛑/止 ✓/验]
+! instantiated-by: Prototype 2 — Invariant Enforcement [👉/止 😄/正]
   :maturity :active
   :depends-on [f1/P0]
   :evidence-for-settled [Zero silent corruptions over 60+ days; all invariant violations logged and halted]
@@ -132,7 +132,7 @@ storage is planned.
   :pur-template "Invariant check {{invariant-id}}, result: {{pass|halt}}, context: {{details}}"
 
 
-! instantiated-by: Prototype 3 — Graph-Memory Schema & Mirroring [🗄️/图 🔄/镜]
+! instantiated-by: Prototype 3 — Graph-Memory Schema & Mirroring [🍵/文 🔃/反]
   :maturity :active
   :depends-on []
   :evidence-for-settled [Schema stable for 90+ days; mirroring verified across restart cycles]
@@ -165,7 +165,7 @@ storage is planned.
   :pur-template "Graph operation {{op}}, entities affected: {{count}}, mirrored: {{yes|no}}"
 
 
-! instantiated-by: Prototype 4 — NLP Interface [📝/词 🏷️/标]
+! instantiated-by: Prototype 4 — NLP Interface [📁/义 🎴/印]
   :maturity :active
   :depends-on []
   :evidence-for-settled [Deterministic outputs verified across 50+ test fixtures]
@@ -197,7 +197,7 @@ storage is planned.
   :pur-template "NLP processed {{char-count}} chars, entities: {{entity-count}}, deterministic: {{yes|no}}"
 
 
-! instantiated-by: Prototype 5 — Open-World Ingest [📥/入 🌍/开]
+! instantiated-by: Prototype 5 — Open-World Ingest [📥/入 🌏/开]
   :maturity :active
   :depends-on [f1/P3, f1/P4]
   :evidence-for-settled [Ingest outputs stable across 20+ corpus runs; ID stability verified]
@@ -230,7 +230,7 @@ storage is planned.
   :pur-template "Ingested {{doc-count}} documents, entities: {{entity-count}}, relations: {{rel-count}}"
 
 
-! instantiated-by: Prototype 6 — Demo/Client (API Demonstration) [🎭/演 📋/示]
+! instantiated-by: Prototype 6 — Demo/Client (API Demonstration) [💖/业 📁/示]
   :maturity :active
   :depends-on [f1/P0]
   :evidence-for-settled [Demo exactly mirrors API behaviour; used as API reference in documentation]
@@ -260,7 +260,7 @@ storage is planned.
   :pur-template "Demo session {{session-id}}, API-equivalent: {{yes|no}}, divergences: {{count}}"
 
 
-! instantiated-by: Prototype 7 — Query Workflows [🔍/查 📊/览]
+! instantiated-by: Prototype 7 — Query Workflows [👓/见 ✌️/见]
   :maturity :greenfield
   :depends-on [f1/P0, f1/P3]
   :source [futon3a/P0]
@@ -293,7 +293,7 @@ storage is planned.
   :pur-template "Query {{query-type}}, results: {{count}}, latency: {{ms}}ms"
 
 
-! instantiated-by: Prototype 8 — Pilot Storage (fulab, MMCA) [🧪/验 💾/存]
+! instantiated-by: Prototype 8 — Pilot Storage (fulab, MMCA) [🎑/正 🍵/内]
   :maturity :greenfield
   :depends-on [f1/P3, f1/P1]
   :source [futon5/E1 fulab/experiment-runs]

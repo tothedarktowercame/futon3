@@ -1357,3 +1357,43 @@
      :state state
      :events events
      :cursor (:seq room)}))
+
+;; =============================================================================
+;; Scribe Functions - Record and retrieve conversation turns for HUD context
+;; =============================================================================
+
+(defn record-turn!
+  "Record a conversation turn (user or agent message) to session.
+   Role should be :user or :agent. Content is truncated to 500 chars for storage."
+  [session-id role content]
+  (when-let [entry (get-session session-id)]
+    (let [truncated (if (> (count content) 500)
+                      (str (subs content 0 500) "...")
+                      content)
+          event {:event/type (case role
+                               :user :turn/user
+                               :agent :turn/agent
+                               :turn/unknown)
+                 :at (fulab-musn/now-inst)
+                 :payload {:role role :content truncated}}]
+      (append-lab-event! entry event)
+      {:ok true :event/type (:event/type event)})))
+
+(defn recent-turns
+  "Get recent conversation turns from session for HUD context.
+   Returns up to n most recent :turn/user and :turn/agent events."
+  [session-id n]
+  (when-let [entry (get-session session-id)]
+    (->> @(:lab-session entry)
+         :events
+         (filter #(#{:turn/user :turn/agent} (:event/type %)))
+         (take-last n)
+         vec)))
+
+(defn turns->context
+  "Convert recent turns to a context string for HUD sigil computation."
+  [session-id n]
+  (when-let [turns (recent-turns session-id n)]
+    (->> turns
+         (map #(get-in % [:payload :content]))
+         (str/join " "))))

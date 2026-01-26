@@ -47,16 +47,16 @@ EOF
   exit 0
 }
 
-HUD_BLOCK="$(printf "%s" "$HUD_RESPONSE" | python3 - <<'PY'
-import json, sys
-raw = sys.stdin.read()
+HUD_BLOCK="$(HUD_JSON="$HUD_RESPONSE" python3 - <<'PY'
+import json, os
+raw = os.environ.get("HUD_JSON", "")
 try:
     data = json.loads(raw)
 except Exception:
     data = {}
 prompt = data.get("prompt", "")
 if prompt:
-    sys.stdout.write(prompt)
+    print(prompt, end="")
 PY
 )"
 

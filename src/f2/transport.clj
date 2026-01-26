@@ -10,6 +10,7 @@
             [futon3.fulab.hud :as hud]
             [futon3.fulab.pattern-competence :as pc]
             [futon3.futon2-bridge :as futon2-bridge]
+            [futon3.musn.service :as musn-svc]
             [futon3.tatami :as tatami]
             [futon3.workday :as workday]
             [futon3.futon1-bridge :as f1-bridge]
@@ -734,6 +735,15 @@
           live (when session-id
                  (some-> (read-session repo-root session-id)
                          aif-live))
+          ;; Scribe integration: enrich intent with recent conversation turns
+          turn-context (when session-id
+                         (musn-svc/turns->context session-id 6))
+          enriched-intent (if (and turn-context (seq turn-context))
+                            (str intent " [Recent: "
+                                 (subs turn-context 0 (min 300 (count turn-context)))
+                                 (when (> (count turn-context) 300) "...")
+                                 "]")
+                            intent)
           musn-help (cond
                       (true? musn-help-force) true
                       (true? musn-help)
@@ -748,7 +758,7 @@
                      (true? musn-hud-force) true
                      (true? musn-hud) true
                      :else false)
-          hud (hud/build-hud {:intent intent
+          hud (hud/build-hud {:intent enriched-intent
                               :prototypes prototypes
                               :sigils sigils
                               :pattern-limit limit
@@ -758,6 +768,9 @@
                               :certificates certs})
           hud (if live
                 (assoc hud :aif-live live)
+                hud)
+          hud (if turn-context
+                (assoc hud :scribe-context? true)
                 hud)
           prompt (hud/hud->prompt-block hud)]
       (json-response 200 {:ok true

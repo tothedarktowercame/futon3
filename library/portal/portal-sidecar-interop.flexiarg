@@ -1,0 +1,23 @@
+@flexiarg portal/portal-sidecar-interop
+@title Portal and Sidecar Interop
+@audience musn architects, portal users
+@tone technical
+@style pattern
+
+! conclusion: Use portal to fetch guidance and sidecar to persist actions and evidence.
+  + context: Agents need one query path and one audit path.
+  + IF:
+    Guidance and logging share the same storage or implicit side effects.
+  + HOWEVER:
+    You still want a tight loop from intent to action to evidence.
+  + THEN:
+    Fetch patterns and intent through portal, perform work, and record selections, actions,
+    and evidence in sidecar as append-only events.
+  + BECAUSE:
+    Separating query and audit paths keeps guidance flexible and logs authoritative.
+  + BECAUSE->EVIDENCE: src/musn/portal.clj; scripts/portal
+  + BECAUSE->EVIDENCE: src/sidecar/store.clj; src/sidecar/validation.clj
+  + use: docs/portal-interop.md; docs/sidecar-usage.md
+  + NEXT-STEPS:
+    - Add portal helpers that call sidecar log APIs directly.
+    - Document the log schema exposed to portal for reporting.

@@ -1,0 +1,23 @@
+@flexiarg portal/portal-command-surface
+@title Portal Command Surface
+@audience musn architects, portal users
+@tone technical
+@style pattern
+
+! conclusion: Keep portal commands minimal, composable, and consistent across query modes.
+  + context: Portal is the agent-facing entry point for query and eval.
+  + IF:
+    Portal subcommands drift or duplicate responsibilities.
+  + HOWEVER:
+    You need fast iteration without breaking agent workflows.
+  + THEN:
+    Define a stable command surface that separates eval, pattern queries, and sidecar logging helpers.
+  + BECAUSE:
+    A small, consistent surface makes automation reliable and user docs durable.
+  + BECAUSE->EVIDENCE: src/musn/portal.clj; scripts/portal
+  + BECAUSE->EVIDENCE: scripts/musn-session; scripts/musn-select; scripts/musn-action
+  + use: docs/portal-interop.md; docs/sidecar-usage.md
+  + NEXT-STEPS:
+    - Document command stability guarantees and deprecations.
+    - Add portal flags for target log selection when writing sidecar events.
+    - Document command stability guarantees and deprecations.

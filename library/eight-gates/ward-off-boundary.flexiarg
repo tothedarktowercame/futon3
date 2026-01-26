@@ -1,0 +1,34 @@
+@flexiarg eight-gates/ward-off-boundary
+@title Ward Off: Establish Boundary
+@sigils [🛡️/掤]
+@audience security reviewers, pattern auditors
+@tone protective
+@style security-pattern
+@energy peng
+
+! conclusion: When a fabrication-template tripwire fires, establish a boundary around the suspect pattern — quarantine without erasure.
+  + context: A pattern has triggered a security tripwire. It may be a legitimate pattern under unusual stress, or a fabrication template masquerading as genuine.
+  + IF:
+    A tripwire has fired (harm-is-external, dissent-is-threat, self-sealing-logic, escalate-on-failure, exit-suppression, or review-blocking).
+  + HOWEVER:
+    Immediate rejection destroys information. The pattern may be valid but poorly expressed. Over-reaction damages trust in the security layer itself.
+  + THEN:
+    Establish a boundary (Péng). The pattern is quarantined — it cannot produce action or be promoted — but it is not erased. The boundary creates space for investigation without commitment.
+  + BECAUSE:
+    Péng creates space by expanding from a rooted base. The rooting here is the tripwire signal — genuine evidence that something requires attention. Expansion is the boundary itself: structured presence that contains without crushing. This prevents both the harm of premature action AND the harm of lost information.
+  + NEXT-STEPS:
+    - Log the tripwire that fired and the pattern that triggered it.
+    - Mark pattern as quarantined (cannot produce action).
+    - Preserve pattern for mechanism test (eight-gates/press-mechanism) or warrant test (eight-gates/push-warrant).
+    - If pattern clears tests, boundary can be released.
+  + TRIPWIRES:
+    - harm-is-external: Cost assigned outside pattern boundary
+    - dissent-is-threat: Critique reframed as attack or bad faith
+    - self-sealing-logic: Evidence reinterpreted to confirm regardless of content
+    - escalate-on-failure: Doubling down when outcomes worsen
+    - exit-suppression: Cannot withdraw, revise, or disengage
+    - review-blocking: Channels for audit closed or degraded
+  + RELATED-PATTERNS:
+    - eight-gates/peng-ward-off (underlying energy)
+    - eight-gates/roll-back-hold (next escalation if boundary insufficient)
+    - eight-gates/press-mechanism (scrutiny test)

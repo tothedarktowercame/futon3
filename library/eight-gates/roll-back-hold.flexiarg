@@ -1,0 +1,32 @@
+@flexiarg eight-gates/roll-back-hold
+@title Roll Back: Hold Without Adopting
+@sigils [⏸️/捋]
+@audience security reviewers, pattern auditors
+@tone yielding
+@style security-pattern
+@energy lu
+
+! conclusion: When a pattern is under suspicion but not clearly malign, yield — hold without adopting, redirect without resisting.
+  + context: A pattern has been quarantined (eight-gates/ward-off-boundary) or flagged for review. We cannot yet determine if it's a genuine pattern or fabrication template.
+  + IF:
+    A quarantined pattern requires further investigation, but active resistance would either destroy information or trigger defensive escalation from the pattern's proponents.
+  + HOWEVER:
+    Simply waiting allows the pattern to continue consuming resources. Active rejection risks destroying legitimate patterns. Neither pure passivity nor aggressive rejection navigates the tension.
+  + THEN:
+    Roll back (Lǚ). Yield to the pattern's existence without adopting its recommendations. Adhere to its surface structure while redirecting its energy away from action. This buys time for investigation without commitment.
+  + BECAUSE:
+    Lǚ yields and redirects incoming force rather than meeting it directly. In security terms: we acknowledge the pattern exists, we don't deny its claims, but we don't let it produce action. By adhering to the pattern's structure, we can study it. By redirecting its energy, we prevent harm while preserving information.
+  + NEXT-STEPS:
+    - Accept pattern into review queue (not rejection).
+    - Study the BECAUSE clause for mechanism and warrant.
+    - Track who or what advocates for the pattern (information, not persecution).
+    - If pattern shows genuine correction signals, consider releasing.
+    - If pattern resists scrutiny, escalate to eight-gates/press-mechanism.
+  + ESCALATION-FROM:
+    - eight-gates/ward-off-boundary (if boundary alone is insufficient)
+  + ESCALATION-TO:
+    - eight-gates/press-mechanism (if pattern resists review)
+    - eight-gates/push-warrant (if mechanism passes but warrant unclear)
+  + RELATED-PATTERNS:
+    - eight-gates/lu-roll-back (underlying energy)
+    - eight-gates/ward-off-boundary (prior step)

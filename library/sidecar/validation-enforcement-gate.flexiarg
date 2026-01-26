@@ -1,0 +1,26 @@
+@flexiarg sidecar/validation-enforcement-gate
+@title Validation and Enforcement Gate
+@audience musn architects, data layer
+@tone technical
+@style pattern
+
+! conclusion: Enforce invariants at write-time with explicit validation gates.
+  + context: The sidecar flow relies on strict store boundaries and explicit promotion.
+  + IF:
+    Writes bypass invariants or validation is optional.
+  + HOWEVER:
+    You need flexible ingestion and fast iteration.
+  + THEN:
+    Define a validation gate that checks required fields, enum constraints, and store boundaries before any write.
+  + BECAUSE:
+    Centralized enforcement prevents silent drift and keeps logs auditable.
+  + BECAUSE->EVIDENCE: docs/sidecar-promotion-flow.md; docs/sidecar-promotions.md
+  + BECAUSE->EVIDENCE: docs/sidecar-query-flow.md; docs/sidecar-audit-flow.md
+  + BECAUSE->EVIDENCE: resources/sidecar/schema.sql
+  + BECAUSE->EVIDENCE: src/sidecar/validation.clj; src/sidecar/store.clj; test/sidecar/store_test.clj
+  + BECAUSE->EVIDENCE: src/sidecar/validation.clj; test/sidecar/store_test.clj
+  + use: docs/sidecar-usage.md; docs/sidecar-demo.md
+  + NEXT-STEPS:
+    - Define validators for proposals, promotions, and bridge triples keyed to schema fields (status enums, required ids, score bounds).
+    - Reject any attempt to write facts or bridge triples outside the promotion pathway.
+    - Enforce append-only writes for proposals and promotions (no updates or deletes).

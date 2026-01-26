@@ -1,0 +1,21 @@
+@flexiarg sidecar/typed-kolmogorov-arrows
+@title Typed Kolmogorov Arrows
+@audience musn architects, chain builder
+@tone technical
+@style pattern
+
+! conclusion: Represent semantic transforms as typed arrows with status and confidence.
+  + context: Chain recovery depends on explicit, interpretable links.
+  + IF:
+    Chain steps are untyped or implied only by similarity.
+  + HOWEVER:
+    You need translation, abstraction, and metonymy moves.
+  + THEN:
+    Store arrows with mode, payload, scope, confidence, and status.
+  + BECAUSE:
+    Typed arrows make transforms inspectable and scoreable in chains.
+  + evidence: docs/sidecar-grounding-and-chains.md
+  + NEXT-STEPS:
+    - Define the arrows table and a required mode vocabulary.
+    - Require status transitions (draft, active, retired).
+    - Add validation for scope tags and confidence ranges.

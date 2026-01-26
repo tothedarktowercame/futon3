@@ -1,0 +1,33 @@
+@flexiarg eight-gates/split-isolate
+@title Split: Isolate Pattern from Context
+@sigils [✂️/挒]
+@audience security reviewers, pattern auditors
+@tone separating
+@style security-pattern
+@energy lie
+
+! conclusion: Completely separate the pattern from its operating context — isolation prevents spread while maintaining the pattern for study.
+  + context: A pattern has failed tests and extraction was insufficient. The pattern must be fully isolated to prevent contamination of other patterns and the broader system.
+  + IF:
+    A pattern's harmful properties cannot be surgically extracted. The contamination is structural — removing it would destroy the pattern entirely. But destroying it loses information about how fabrication templates work.
+  + HOWEVER:
+    Isolation is expensive. An isolated pattern consumes attention and review resources. Over-isolation creates a graveyard of patterns that never get reviewed. Under-isolation lets contamination spread.
+  + THEN:
+    Split (Liè). Separate the pattern completely from active consideration. Move it to an isolated namespace where it cannot affect other patterns, but preserve it for study and documentation of fabrication-template signatures.
+  + BECAUSE:
+    Liè is a splitting energy that creates separation through opposing forces. In security terms: we're not destroying the pattern, we're separating it from the context in which it could do harm. This is different from extraction (Cǎi) which removes a component — splitting removes the pattern from the field entirely while keeping it intact for analysis.
+  + ISOLATION-PROCEDURE:
+    1. Create isolation record with full pattern content.
+    2. Remove pattern from active library.
+    3. Document why isolation was necessary (which tests failed, what signals).
+    4. Add to fabrication-template signature database.
+    5. Schedule periodic review for potential rehabilitation.
+  + NEXT-STEPS:
+    - Isolated patterns inform future tripwire development.
+    - Signatures from isolated patterns improve detection.
+    - If new evidence emerges → pattern can be re-evaluated.
+    - If pattern is confirmed fabrication template → document in anti-pattern library.
+  + RELATED-PATTERNS:
+    - eight-gates/lie-split (underlying energy)
+    - eight-gates/pluck-extract (prior escalation)
+    - eight-gates/elbow-immediate (if immediate action needed)

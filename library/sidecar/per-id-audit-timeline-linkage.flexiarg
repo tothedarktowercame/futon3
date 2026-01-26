@@ -1,0 +1,24 @@
+@flexiarg sidecar/per-id-audit-timeline-linkage
+@title Per-ID Audit Timeline Linkage
+@audience musn architects, governance
+@tone technical
+@style pattern
+
+! conclusion: Resolve per-id timelines across linked semantic records.
+  + context: Audits must show how a proposal becomes a promotion and fact, not just isolated records.
+  + IF:
+    Per-id queries only return exact id matches and ignore related records.
+  + HOWEVER:
+    Operators need a contiguous narrative for each claim.
+  + THEN:
+    Link timelines across relationships (proposal->promotion->fact, evidence targets, chain steps)
+    and surface all related events in a single per-id view.
+  + BECAUSE:
+    Cross-entity linkage turns append-only logs into inspectable histories.
+  + BECAUSE->EVIDENCE: src/sidecar/store.clj; test/sidecar/store_test.clj
+  + BECAUSE->EVIDENCE: src/sidecar/inspect.clj; scripts/sidecar-inspect
+  + BECAUSE->EVIDENCE: src/sidecar/store.clj (latest-active-state); src/sidecar/cli.clj; src/sidecar/inspect.clj
+  + use: docs/sidecar-usage.md; docs/sidecar-demo.md
+  + NEXT-STEPS:
+    - Add explicit ordering rules when timestamps collide.
+    - Document latest active state queries in docs/sidecar-usage.md.

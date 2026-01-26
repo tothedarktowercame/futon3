@@ -1,0 +1,38 @@
+@flexiarg eight-gates/elbow-immediate
+@title Elbow: Immediate Intervention
+@sigils [💥/肘]
+@audience security reviewers, pattern auditors
+@tone urgent
+@style security-pattern
+@energy zhou
+
+! conclusion: Close-range immediate intervention when a pattern is actively causing harm — stop the action first, investigate later.
+  + context: A pattern is not just theoretically harmful but is actively causing harm right now. Normal escalation is too slow. We need to stop the action immediately.
+  + IF:
+    A pattern has been deployed and is producing visible harm. The normal test sequence (quarantine → hold → mechanism → warrant) is too slow. By the time tests complete, more harm occurs.
+  + HOWEVER:
+    Immediate intervention can be wrong. Acting without full assessment risks stopping legitimate patterns. The urgency itself can be manipulated — false urgency is a fabrication-template tactic. We must balance speed with accuracy.
+  + THEN:
+    Elbow (Zhǒu). Small, centered, close-range intervention. Stop the immediate action. Don't engage the whole pattern — just halt what's happening right now. This is not a judgment on the pattern's validity, just a pause on its current effect.
+  + BECAUSE:
+    Zhǒu is a close-range strike that doesn't require full extension or commitment. In security terms: we can intervene quickly without committing to a full judgment. This is tactical — stop the bleeding first, diagnose later. The smallness of elbow energy means we intervene precisely on the current action, not the pattern as a whole.
+  + INTERVENTION-PROCEDURE:
+    1. Identify the immediate harmful action (not the pattern, the action).
+    2. Halt that specific action.
+    3. Log the intervention with timestamp.
+    4. Trigger full security scan as follow-up.
+    5. Do NOT pass judgment on pattern validity yet.
+  + ESCALATION-TRIGGERS:
+    - Active harm visible (ahimsa violation in progress)
+    - Harm is scaling (bounded criterion failing)
+    - Exit being suppressed (corrigible criterion failing)
+    - Multiple tripwires firing simultaneously
+  + NEXT-STEPS:
+    - Immediate action halted → begin normal escalation sequence.
+    - If intervention was wrong → document false positive.
+    - If intervention was right → proceed to warrant test with urgency.
+    - Pattern status: frozen pending review.
+  + RELATED-PATTERNS:
+    - eight-gates/zhou-elbow (underlying energy)
+    - eight-gates/split-isolate (if intervention confirms fabrication)
+    - eight-gates/lean-commit (if pattern requires full escalation)

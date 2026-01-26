@@ -1,0 +1,34 @@
+@flexiarg eight-gates/pluck-extract
+@title Pluck: Extract Suspect Component
+@sigils [🎣/採]
+@audience security reviewers, pattern auditors
+@tone surgical
+@style security-pattern
+@energy cai
+
+! conclusion: Extract the suspect component from a pattern while preserving what can be salvaged — surgical intervention rather than total rejection.
+  + context: A pattern has failed mechanism or warrant tests, but may contain valuable components. Total rejection loses information. Surgical extraction preserves what's valid while removing what's harmful.
+  + IF:
+    A pattern contains both valid and fabrication-template components mixed together. Rejecting the whole pattern loses good material. Accepting it risks the harmful parts.
+  + HOWEVER:
+    Extraction can be imprecise. We might extract too little (leaving contamination) or too much (destroying valid structure). The boundary between valid and harmful is not always clear.
+  + THEN:
+    Pluck (Cǎi). Ground the pattern by connecting specifically to what failed. Extract the failing component — usually the BECAUSE clause or a specific THEN action — and quarantine it separately. Preserve remaining structure for possible rehabilitation.
+  + BECAUSE:
+    Cǎi is a downward grounding energy that seizes and connects. In security terms: we don't destroy the whole pattern, we specifically identify and remove the contaminated component. This respects that patterns often fail in specific ways rather than globally. The grounding aspect means we stay connected to evidence — we extract what the tests identified, not what we suspect.
+  + EXTRACTION-PROCEDURE:
+    1. Identify which test failed (mechanism or warrant).
+    2. Locate the specific failing component (usually BECAUSE, sometimes THEN).
+    3. Create a quarantine record with the extracted component.
+    4. Mark the remaining pattern as "extracted" — usable but incomplete.
+    5. Log the extraction for audit.
+  + NEXT-STEPS:
+    - Quarantined component enters long-term hold.
+    - Remaining pattern may be usable with explicit caveat.
+    - If extraction leaves pattern incoherent → escalate to eight-gates/split-isolate.
+    - If pattern rehabilitates with new BECAUSE → can re-enter normal flow.
+  + RELATED-PATTERNS:
+    - eight-gates/cai-pluck (underlying energy)
+    - eight-gates/press-mechanism (identifies what to extract)
+    - eight-gates/push-warrant (identifies what to extract)
+    - eight-gates/split-isolate (if extraction insufficient)

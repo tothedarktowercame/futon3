@@ -1,0 +1,22 @@
+@flexiarg portal/first-class-query-interface
+@title First-Class Query Interface
+@audience musn architects, portal users
+@tone technical
+@style pattern
+
+! conclusion: Treat query as a first-class operation via Drawbridge.
+  + context: Intent lives in the database and queries must be expressive.
+  + IF:
+    Pattern retrieval is constrained to fixed endpoints.
+  + HOWEVER:
+    You need SPARQL-like flexibility without endpoint sprawl.
+  + THEN:
+    Use Drawbridge and portal helpers so queries can compose lex, ANN, and chain steps.
+  + BECAUSE:
+    First-class queries support rich exploration and align guidance with intent.
+  + BECAUSE->EVIDENCE: src/musn/portal.clj; scripts/portal
+  + use: docs/portal-interop.md; docs/sidecar-usage.md
+  + NEXT-STEPS:
+    - Add portal subcommands for suggest, propose, and promote.
+    - Document how to query intent and pattern metadata directly.
+    - Include examples that mix lexical and ANN expansion.

@@ -1,0 +1,21 @@
+@flexiarg sidecar/artifact-entity-mention-grounding
+@title Artifact, Entity, and Mention Grounding
+@audience musn architects, ingestion
+@tone technical
+@style pattern
+
+! conclusion: Ground semantics on artifacts, entities, aliases, and mentions in SQLite.
+  + context: Patterns and documents provide text that must be inspectable and queryable.
+  + IF:
+    Queries rely on embeddings alone without deterministic anchors.
+  + HOWEVER:
+    You still want fast similarity and fuzzy recall.
+  + THEN:
+    Store artifacts, entities, aliases, and mentions as deterministic extraction outputs.
+  + BECAUSE:
+    Grounding makes proposals auditable and promotes stable chain building.
+  + evidence: docs/sidecar-grounding-and-chains.md
+  + NEXT-STEPS:
+    - Define the artifacts, entities, aliases, and mentions tables.
+    - Implement ingestion that hashes artifacts and records mention spans.
+    - Add a minimal alias weighting scheme for lexical expansion.

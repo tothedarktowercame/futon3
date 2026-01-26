@@ -1,0 +1,23 @@
+@flexiarg sidecar/explicit-promotion-to-facts
+@title Explicit Promotion to Facts
+@audience musn architects, governance
+@tone technical
+@style pattern
+
+! conclusion: Promote proposals to facts only via explicit, logged actions.
+  + context: Facts must remain authoritative and defeasible.
+  + IF:
+    Proposals become facts implicitly or through side effects.
+  + HOWEVER:
+    You want good proposals to become facts when warranted.
+  + THEN:
+    Require a promote action that passes the validation gate and appends a promotion record.
+  + BECAUSE:
+    Explicit promotion prevents silent contamination and preserves auditability.
+  + BECAUSE->EVIDENCE: docs/sidecar-promotions.md; docs/sidecar-promotion-flow.md; resources/sidecar/schema.sql
+  + BECAUSE->EVIDENCE: docs/sidecar-audit-flow.md; docs/sidecar-promotion-flow.md; resources/sidecar/schema.sql
+  + use: docs/sidecar-usage.md; docs/sidecar-demo.md
+  + NEXT-STEPS:
+    - Define promotion log records with rationale and decided_by.
+    - Route promotion writes through the validation gate (required fields, enum constraints, score bounds).
+    - Reject direct fact writes outside the promotion action.

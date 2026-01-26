@@ -1,0 +1,21 @@
+@flexiarg sidecar/bridge-triple-escalator
+@title Bridge Triple Escalator
+@audience musn architects, chain builder
+@tone technical
+@style pattern
+
+! conclusion: Use curated bridge triples to justify difficult hops.
+  + context: Some chains need domain knowledge that embeddings cannot justify.
+  + IF:
+    A chain step requires a cross-domain leap with only fuzzy support.
+  + HOWEVER:
+    You still want puzzle-like chain recovery.
+  + THEN:
+    Store minimal bridge triples in SQLite and use them to justify or gate hops.
+  + BECAUSE:
+    Curated bridges provide explicit warrants without inflating facts prematurely.
+  + BECAUSE->EVIDENCE: docs/sidecar-promotions.md; resources/sidecar/schema.sql
+  + NEXT-STEPS:
+    - Define the bridge_triples table and editing workflow.
+    - Reference bridge triples in chain evidence output.
+    - Use bridges to allow otherwise gated sense shifts.

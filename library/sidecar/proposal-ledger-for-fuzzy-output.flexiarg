@@ -1,0 +1,22 @@
+@flexiarg sidecar/proposal-ledger-for-fuzzy-output
+@title Proposal Ledger for Fuzzy Output
+@audience musn architects, search
+@tone technical
+@style pattern
+
+! conclusion: Record all fuzzy results as proposals with evidence in SQLite.
+  + context: ANN search yields useful candidates without authority.
+  + IF:
+    Vector neighbors are used directly as facts or chain steps.
+  + HOWEVER:
+    You need fuzzy recall to propose candidates for review.
+  + THEN:
+    Write each fuzzy output as a proposal with score, method, and evidence.
+  + BECAUSE:
+    A proposal ledger preserves provenance and enables explicit promotion.
+  + BECAUSE->EVIDENCE: docs/sidecar-promotions.md; resources/sidecar/schema.sql
+  + BECAUSE->EVIDENCE: docs/sidecar-audit-flow.md; resources/sidecar/schema.sql
+  + NEXT-STEPS:
+    - Implement the proposals table and status workflow.
+    - Store neighbor ids and distances in evidence_json.
+    - Add CLI support for propose and review.

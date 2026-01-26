@@ -1,0 +1,23 @@
+@flexiarg sidecar/chain-builder-softness-accounting
+@title Chain Builder with Softness Accounting
+@audience musn architects, query UX
+@tone technical
+@style pattern
+
+! conclusion: Build short chains and report softness per hop.
+  + context: Users need explainable chains, not just candidate lists.
+  + IF:
+    Queries return flat neighbor lists without justification.
+  + HOWEVER:
+    You want puzzle-like chain recovery with clear evidence.
+  + THEN:
+    Build short chains over arrows, bridges, and proposals, and report softness metrics.
+  + BECAUSE:
+    Softness accounting shows where fuzz enters the chain and enables review.
+  + evidence: docs/sidecar-chains.md
+  + evidence: src/sidecar/store.clj; test/sidecar/store_test.clj
+  + BECAUSE->EVIDENCE: src/sidecar/store.clj (chain-score, step-evidence); test/sidecar/store_test.clj
+  + BECAUSE->EVIDENCE: test/sidecar/store_test.clj (chain-softness-scoring)
+  + use: docs/sidecar-usage.md; docs/sidecar-demo.md
+  + NEXT-STEPS:
+    - Document chain scoring and per-hop evidence output in docs/sidecar-chains.md.

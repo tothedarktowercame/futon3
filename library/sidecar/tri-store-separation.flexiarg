@@ -1,0 +1,23 @@
+@flexiarg sidecar/tri-store-separation
+@title Tri-Store Semantic Separation
+@audience musn architects, data layer
+@tone technical
+@style pattern
+
+! conclusion: Separate facts, memes, and notions into distinct stores.
+  + context: You need semantic gain without allowing fuzzy output to become authoritative.
+  + IF:
+    Similarity search and curated semantics share one store or one truth level.
+  + HOWEVER:
+    You still need fast candidate proposals and inspectable semantics.
+  + THEN:
+    Use XTDB for facts, SQLite for inspectable memes, and ANN/HNSW for notions, and enforce boundaries.
+  + BECAUSE:
+    Each store has a different trust level; separation keeps fuzz from becoming fact.
+  + evidence: docs/sidecar-query-flow.md; docs/sidecar-promotion-flow.md
+  + use: docs/sidecar-query-flow.md; docs/sidecar-promotion-flow.md
+  + use: docs/sidecar-usage.md; docs/sidecar-demo.md
+  + NEXT-STEPS:
+    - Define the three adapters and enforce that ANN results only create proposals.
+    - Add checks that facts are written only through explicit promotion.
+    - Document store responsibilities and invariants.

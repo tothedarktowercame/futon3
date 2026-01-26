@@ -1,0 +1,38 @@
+@flexiarg eight-gates/press-mechanism
+@title Press: Demand Mechanism Test
+@sigils [🔍/擠]
+@audience security reviewers, pattern auditors
+@tone scrutinizing
+@style security-pattern
+@energy ji
+
+! conclusion: Focus scrutiny on the BECAUSE clause — is it actually explaining what causes what, or is it decorative rationalization?
+  + context: A pattern is under review (eight-gates/roll-back-hold). We need to determine whether its BECAUSE clause contains genuine causal explanation or post-hoc decoration.
+  + IF:
+    A pattern's BECAUSE clause needs verification. We suspect it may be decorative — explaining why the pattern is attractive without explaining why it works.
+  + HOWEVER:
+    Genuine BECAUSE clauses can be hard to distinguish from decorative ones by surface inspection alone. Over-aggressive testing destroys speculative-but-genuine patterns. Under-testing lets fabrication templates through.
+  + THEN:
+    Press (Jǐ). Concentrate force on a specific point: the BECAUSE clause. Apply the mechanism test: "Is this BECAUSE actually explaining what causes what?"
+  + BECAUSE:
+    Jǐ focuses energy on a single point. In security terms: we don't attack the whole pattern, we scrutinize the warrant. A decorative BECAUSE can justify any THEN equally well — it's post-hoc rationalization that sounds explanatory but carries no discriminative power. A genuine BECAUSE constrains which THEN clauses follow — it has causal teeth.
+  + MECHANISM-TEST:
+    The mechanism test asks: "Would this BECAUSE clause distinguish between success and failure?"
+    - If BECAUSE could explain why the pattern succeeds AND why it fails with equal plausibility → decorative
+    - If BECAUSE predicts specific failure modes that would disconfirm it → genuine mechanism
+    - If BECAUSE changes based on outcome (heads I win, tails you lose) → self-sealing
+  + TEST-PROCEDURE:
+    1. State the pattern's BECAUSE clause explicitly.
+    2. Ask: What outcome would disconfirm this BECAUSE?
+    3. If no disconfirmation is possible → fail mechanism test.
+    4. If disconfirmation is possible → ask: Has it been checked?
+    5. If checked and pattern survived → pass mechanism test.
+    6. If not checked → hold for evidence collection.
+  + NEXT-STEPS:
+    - If pattern fails mechanism test: escalate to eight-gates/split-extract (remove from active consideration).
+    - If pattern passes mechanism test: proceed to eight-gates/push-warrant.
+    - If test is indeterminate: hold in eight-gates/roll-back-hold, collect more evidence.
+  + RELATED-PATTERNS:
+    - eight-gates/ji-press (underlying energy)
+    - eight-gates/push-warrant (if mechanism passes, warrant is next)
+    - eight-gates/split-extract (if mechanism fails)

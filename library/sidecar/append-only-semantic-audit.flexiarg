@@ -1,0 +1,26 @@
+@flexiarg sidecar/append-only-semantic-audit
+@title Append-Only Semantic Audit
+@audience musn architects, governance
+@tone technical
+@style pattern
+
+! conclusion: Keep semantic writes append-only with provenance at the store boundary.
+  + context: Semantic evolution must be inspectable and reversible.
+  + IF:
+    Proposal or fact updates overwrite prior states.
+  + HOWEVER:
+    You need to revise or retire claims over time.
+  + THEN:
+    Persist every semantic write (proposal, promotion, evidence, action, fact, chain) as append-only
+    records with identifiers and audit metadata, and reject duplicate ids at the store boundary.
+  + BECAUSE:
+    Append-only logs enable audits and provenance tracking without silent mutation.
+  + BECAUSE->EVIDENCE: docs/sidecar-promotions.md; docs/sidecar-promotion-flow.md; resources/sidecar/schema.sql
+  + BECAUSE->EVIDENCE: docs/sidecar-audit-flow.md; src/sidecar/store.clj
+  + BECAUSE->EVIDENCE: src/sidecar/store.clj; test/sidecar/store_test.clj
+  + BECAUSE->EVIDENCE: src/sidecar/store.clj; src/sidecar/cli.clj
+  + use: docs/sidecar-usage.md; docs/sidecar-demo.md
+  + NEXT-STEPS:
+    - Add explicit status transitions in the proposals table.
+    - Append promotion and retirement events with timestamps.
+    - Define a compact audit view for append-only events (per id).

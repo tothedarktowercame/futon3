@@ -1,0 +1,22 @@
+@flexiarg sidecar/sense-shift-gate
+@title Sense-Shift Gate
+@audience musn architects, chain builder
+@tone technical
+@style pattern
+
+! conclusion: Allow sense shifts only when explicitly typed or bridged.
+  + context: Sense broadening or narrowing can cause semantic drift.
+  + IF:
+    Sense shifts are applied freely in chain building.
+  + HOWEVER:
+    Some shifts are necessary to connect domains.
+  + THEN:
+    Gate sense-broaden and sense-narrow steps to typed arrows or bridge triples.
+  + BECAUSE:
+    Gating reduces drift and keeps chains explainable.
+  + evidence: docs/sidecar-query-flow.md
+  + use: docs/sidecar-query-flow.md
+  + BECAUSE->EVIDENCE: src/sidecar/store.clj (sense-shift-issue, shift-annotation); test/sidecar/store_test.clj
+  + use: docs/sidecar-usage.md; docs/sidecar-demo.md
+  + NEXT-STEPS:
+    - Document sense-shift gating rules in docs/sidecar-query-flow.md.

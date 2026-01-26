@@ -19,7 +19,13 @@
 (def ^:private sigil-index
   (delay (read-edn "resources/sigils/index.edn")))
 
-(def ^:private emoji-order (delay (:emoji @sigil-index)))
+;; Helper to normalize index entries consistently with split-sigils
+(defn- normalize-emoji [e]
+  (some-> e
+          (str/replace #"[\uFE0E\uFE0F\u200D]" "")
+          str/trim))
+
+(def ^:private emoji-order (delay (mapv normalize-emoji (:emoji @sigil-index))))
 (def ^:private hanzi-order (delay (:hanzi @sigil-index)))
 (def ^:private emoji-pos (delay (zipmap @emoji-order (range))))
 (def ^:private hanzi-pos (delay (zipmap @hanzi-order (range))))
@@ -27,6 +33,9 @@
 (def ^:private hanzi-norm (delay (max 1 (dec (count @hanzi-order)))))
 
 (def ^:private fruits-data (delay (read-edn "resources/sigils/fruits.edn")))
+
+;; Track warned sigils to avoid spamming logs
+(defonce ^:private warned-sigils (atom #{}))
 (def ^:private paramita-data (delay (read-edn "resources/sigils/paramitas.edn")))
 
 (def ^:private glove-patterns-data
@@ -312,16 +321,32 @@
     (when-let [hd (hanzi-distance (:hanzi target) (:hanzi clause))]
       (/ (+ ed hd) 2.0))))
 
-(defn- warn-missing-sigil [sigil]
-  (println (str "[sigil-warn] detected sigil not in index: "
-                (:emoji sigil) "/" (:hanzi sigil))))
+(defn- sigil-missing-parts
+  "Return which parts of sigil are missing from index: :emoji, :hanzi, or :both."
+  [sigil]
+  (let [e-miss (not (contains? @emoji-pos (:emoji sigil)))
+        h-miss (not (contains? @hanzi-pos (:hanzi sigil)))]
+    (cond
+      (and e-miss h-miss) :both
+      e-miss :emoji
+      h-miss :hanzi
+      :else nil)))
+
+(defn- warn-missing-sigil [sigil source]
+  (let [key [(:emoji sigil) (:hanzi sigil) source]]
+    (when-not (contains? @warned-sigils key)
+      (when-let [missing (sigil-missing-parts sigil)]
+        (swap! warned-sigils conj key)
+        (println (str "[sigil-warn] " source " sigil missing " (name missing) " in index: "
+                      (:emoji sigil) "/" (:hanzi sigil)))))))
 
 (defn- entry-distance [targets entry]
   (some->> (for [t targets
                  sig (:sigils entry)]
              (let [d (pair-distance t sig)]
                (when (nil? d)
-                 (warn-missing-sigil t))
+                 (warn-missing-sigil t "target")
+                 (warn-missing-sigil sig "clause"))
                d))
            (remove nil?)
            seq

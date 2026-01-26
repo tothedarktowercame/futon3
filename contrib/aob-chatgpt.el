@@ -164,12 +164,12 @@ When nil, fall back to `org-agenda-files`."
          (insert-file-contents path)
          (buffer-string))))))
 
-(unless (getenv "GEMINI_API_KEY")
-  (setenv "GEMINI_API_KEY"
-          (string-trim
-           (with-temp-buffer
-             (insert-file-contents "~/.gemini-key")
-             (buffer-string)))))
+;; (unless (getenv "GEMINI_API_KEY")
+;;   (setenv "GEMINI_API_KEY"
+;;           (string-trim
+;;            (with-temp-buffer
+;;              (insert-file-contents "~/.gemini-key")
+;;              (buffer-string)))))
 
 (setq chatgpt-shell-openai-key #'my-chatgpt-shell--read-openai-key)
 

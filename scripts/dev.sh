@@ -1,51 +1,34 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Futon3 consolidated dev server
+#
+# All services now run in a single JVM via f2.musn:
+#   - Transport (HUD) on port 5050
+#   - UI on port 6060
+#   - MUSN HTTP on port 6065
+#   - IRC bridge on port 6667
+#   - Chat supervisor (polling)
+#
+# Environment variables to disable services:
+#   FUTON3_MUSN_HTTP=0       - disable MUSN HTTP service
+#   FUTON3_IRC_BRIDGE=0      - disable IRC bridge
+#   FUTON3_CHAT_SUPERVISOR=0 - disable chat supervisor
+#
+# Example: run without chat supervisor (for manual fuclaude testing)
+#   FUTON3_CHAT_SUPERVISOR=0 ./scripts/dev.sh
+
 touch /tmp/musn_stream.log
 
-clojure -M -m futon3.musn.http &
-musn_http_pid=$!
-
-MUSN_URL="${FUTON3_MUSN_URL:-http://localhost:6065}"
-clojure -M -m scripts.musn-irc-bridge --musn-url "$MUSN_URL" &
-irc_bridge_pid=$!
-
-# Chat supervisor can use fuclaude or fucodex; skip if SKIP_CHAT_SUPERVISOR=1
-chat_supervisor_pid=""
-if [[ "${SKIP_CHAT_SUPERVISOR:-}" != "1" ]]; then
-  # Determine which agent to use (prefer fuclaude, fall back to fucodex)
-  AGENT_CMD=""
-  AGENT_MODE=""
-  if [[ -x "./fuclaude" ]] && command -v claude &>/dev/null; then
-    AGENT_CMD="./fuclaude"
-    AGENT_MODE="claude"
-  elif [[ -x "./fucodex" ]] && command -v codex &>/dev/null; then
-    AGENT_CMD="./fucodex"
-    AGENT_MODE="codex"
-  fi
-
-  if [[ -n "$AGENT_CMD" ]]; then
-    echo "[dev.sh] Starting chat supervisor with $AGENT_CMD (mode=$AGENT_MODE)"
-    clojure -M -m scripts.musn-chat-supervisor --musn-url "$MUSN_URL" --agent "$AGENT_CMD" --mode "$AGENT_MODE" --no-sandbox --approval-policy never &
-    chat_supervisor_pid=$!
-  else
-    echo "[dev.sh] Skipping chat supervisor (neither claude nor codex available)"
-  fi
-else
-  echo "[dev.sh] Skipping chat supervisor (SKIP_CHAT_SUPERVISOR=1)"
+# Legacy env var support
+if [[ "${SKIP_CHAT_SUPERVISOR:-}" == "1" ]]; then
+  export FUTON3_CHAT_SUPERVISOR=0
 fi
 
-cleanup() {
-  if [[ -n "${musn_http_pid:-}" ]]; then
-    kill "${musn_http_pid}" 2>/dev/null || true
-  fi
-  if [[ -n "${irc_bridge_pid:-}" ]]; then
-    kill "${irc_bridge_pid}" 2>/dev/null || true
-  fi
-  if [[ -n "${chat_supervisor_pid:-}" ]]; then
-    kill "${chat_supervisor_pid}" 2>/dev/null || true
-  fi
-}
-trap cleanup EXIT
-
-clojure -M:dev "$@"
+# Pass through any JVM opts for memory limits if desired
+# Example: JAVA_OPTS="-Xmx1g" ./scripts/dev.sh
+if [[ -n "${JAVA_OPTS:-}" ]]; then
+  exec clojure $JAVA_OPTS -M:dev "$@"
+else
+  exec clojure -M:dev "$@"
+fi

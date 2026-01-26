@@ -16,7 +16,8 @@
         metosin/malli {:mvn/version "0.16.3"}
         org.clojure/core.logic {:mvn/version "1.0.1"}
         futon2/futon2 {:local/root "../futon2"}
-        futon3a/futon3a {:local/root "../futon3a"}}
+        futon3a/futon3a {:local/root "../futon3a"}
+        futon1-api/futon1-api {:local/root "../futon1/apps/api"}}
 
  :aliases {:dev {:main-opts ["-m" "f2.musn"]}
            :test

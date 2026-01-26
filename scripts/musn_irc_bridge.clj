@@ -397,13 +397,74 @@
         (log! (format "client %s disconnected" id))
         (try (.close socket) (catch Exception _ nil))))))
 
-(defn -main [& args]
-  (let [{:keys [host port musn-url poll-interval room password allowlist]} (parse-args args)]
-    (log! (format "listening on %s:%d (musn=%s)" host port musn-url))
-    (with-open [server (ServerSocket. port 50 (java.net.InetAddress/getByName host))]
-      (while true
-        (let [socket (.accept server)]
-          (future (handle-client! socket musn-url poll-interval room password allowlist)))))))
+(defonce ^:private bridge-state (atom nil))
 
-(when (= *file* (or (System/getProperty "babashka.file") *file*))
-  (apply -main *command-line-args*))
+(defn- accept-loop! [^ServerSocket server musn-url poll-interval default-room stop-flag]
+  (try
+    (while (not @stop-flag)
+      (try
+        (let [socket (.accept server)]
+          (future (handle-client! socket musn-url poll-interval default-room)))
+        (catch java.net.SocketException _
+          ;; Server socket closed, exit loop
+          nil)))
+    (catch Throwable t
+      (when-not @stop-flag
+        (log! (format "accept loop error: %s" (.getMessage t)))))))
+
+(defn- stop-all-rooms! []
+  (doseq [[room-id _] (:rooms @server-state)]
+    (stop-room-poller! room-id))
+  (swap! server-state assoc :rooms {}))
+
+(defn- close-all-clients! []
+  (doseq [[_ client] (:clients @server-state)]
+    (try
+      (when-let [socket (:socket client)]
+        (.close ^Socket socket))
+      (catch Throwable _)))
+  (swap! server-state assoc :clients {}))
+
+(defn start!
+  "Start the IRC bridge server. Returns a stop function.
+   Options:
+     :host - bind address (default 127.0.0.1)
+     :port - IRC port (default 6667)
+     :musn-url - MUSN service URL (default http://localhost:6065)
+     :poll-interval - room poll interval in seconds (default 2.0)
+     :room - default room to join"
+  ([] (start! {}))
+  ([opts]
+   (let [host (or (:host opts) "127.0.0.1")
+         port (or (:port opts) 6667)
+         musn-url (or (:musn-url opts) "http://localhost:6065")
+         poll-interval (or (:poll-interval opts) 2.0)
+         default-room (:room opts)
+         stop-flag (atom false)
+         server (ServerSocket. port 50 (java.net.InetAddress/getByName host))
+         accept-thread (future (accept-loop! server musn-url poll-interval default-room stop-flag))]
+     (log! (format "listening on %s:%d (musn=%s)" host port musn-url))
+     (reset! bridge-state {:server server
+                           :stop-flag stop-flag
+                           :accept-thread accept-thread})
+     (fn []
+       (reset! stop-flag true)
+       (try (.close server) (catch Throwable _))
+       (stop-all-rooms!)
+       (close-all-clients!)
+       (reset! bridge-state nil)))))
+
+(defn stop!
+  "Stop the IRC bridge server."
+  []
+  (when-let [{:keys [server stop-flag]} @bridge-state]
+    (reset! stop-flag true)
+    (try (.close ^ServerSocket server) (catch Throwable _))
+    (stop-all-rooms!)
+    (close-all-clients!)
+    (reset! bridge-state nil)))
+
+(defn -main [& args]
+  (let [opts (parse-args args)]
+    (start! opts)
+    @(promise)))

@@ -387,7 +387,7 @@
     "Pattern trace: none"))
 
 (defn- poll-loop!
-  [{:keys [musn-url room poll-interval bot-name agent mode no-sandbox approval-policy]}]
+  [{:keys [musn-url room poll-interval bot-name agent mode no-sandbox approval-policy stop-flag]}]
   (log! "starting supervisor" {:room room :bot bot-name :agent agent :mode mode :musn musn-url})
   (wait-for-musn! musn-url)
   (let [started-at (Instant/now)
@@ -401,86 +401,128 @@
         running (atom #{})]
     (loop [cursor init-cursor
            seen seen-init]
-      (let [payload (cond-> {:room room}
-                      (pos? cursor) (assoc :since cursor))
-            {:keys [status body]} (musn-post! musn-url "/musn/chat/state" payload)
-            ok? (and (= 200 status) (:ok body))
-            next-cursor (if ok? (or (:cursor body) cursor) cursor)
-            events (when ok? (:events body))
-            messages (->> events (map parse-chat-message) (remove nil?) vec)
-            recent (->> messages
-                        (filter (fn [msg]
-                                  (when-let [at (parse-instant (:at msg))]
-                                    (not (.isBefore at started-at)))))
-                        (remove #(same-bot? bot-name %))
-                        vec)
-            new-messages (->> recent
-                              (remove #(contains? seen (:msg-id %)))
-                              vec)
-            seen (into seen (map :msg-id messages))]
-        (doseq [message new-messages]
-          (when-let [{:keys [token body implicit-token?]} (parse-task (:text message))]
-            (let [inferred (when (and implicit-token? (not (str/blank? body)))
-                             (infer-task-target room body))
-                  token (or (:token inferred) token)
-                  session-id (:session-id inferred)
-                  body (or (:body inferred) body)
-                  implicit-token? (if inferred (:implicit-token? inferred) implicit-token?)
-                  raw-token (or token bot-name)
-                  token (sanitize-token raw-token)
-                  existing-session (session-for room token)
-                  session-id (or session-id existing-session)
-                  session-id (or session-id (new-session-id room token))]
-              (when (and session-id (not= session-id existing-session))
-                (set-session! room token session-id))
-              (if (contains? @running session-id)
-                (log! "task ignored (session running)"
-                      {:session session-id :from (:name message)})
-                (do
-                  (swap! running conj session-id)
-                  (musn-chat-message! musn-url room bot-name
-                                      (if implicit-token?
-                                        (format "Starting %s for !task" session-id)
-                                        (format "Starting %s for !task %s" session-id token)))
-                  (future
-                    (try
-                      (let [result (run-agent! agent mode musn-url room bot-name session-id body body no-sandbox approval-policy)
-                            started-at (:started-at result)
-                            log-path (musn-log-path session-id)
-                            trace (read-pattern-trace log-path started-at)
-                            summary (summarize-pattern-trace trace)]
-                        (when summary
-                          (musn-chat-message! musn-url room bot-name summary)))
-                      (finally
-                        (swap! running disj session-id))))))))
-          (when-let [{:keys [token body session-id]} (parse-new (:text message))]
-            (let [raw-token (or token bot-name)
-                  token (sanitize-token raw-token)
-                  session-id (or (and (seq session-id) session-id)
-                                 (new-session-id room token))]
-              (if (contains? @running session-id)
-                (log! "new ignored (session running)"
-                      {:session session-id :from (:name message)})
-                (do
-                  (swap! running conj session-id)
-                  (set-session! room token session-id)
-                  (musn-chat-message! musn-url room bot-name
-                                      (format "Starting %s for !new" session-id))
-                  (future
-                    (try
-                      (let [result (run-agent-new! agent mode musn-url room bot-name session-id body no-sandbox approval-policy)
-                            started-at (:started-at result)
-                            log-path (musn-log-path session-id)
-                            trace (read-pattern-trace log-path started-at)
-                            summary (summarize-pattern-trace trace)]
-                        (when summary
-                          (musn-chat-message! musn-url room bot-name summary)))
-                      (finally
-                        (swap! running disj session-id)))))))))
-        (Thread/sleep (long (* 1000 poll-interval)))
-        (recur next-cursor seen)))))
+      (when-not (and stop-flag @stop-flag)
+        (let [payload (cond-> {:room room}
+                        (pos? cursor) (assoc :since cursor))
+              {:keys [status body]} (musn-post! musn-url "/musn/chat/state" payload)
+              ok? (and (= 200 status) (:ok body))
+              next-cursor (if ok? (or (:cursor body) cursor) cursor)
+              events (when ok? (:events body))
+              messages (->> events (map parse-chat-message) (remove nil?) vec)
+              recent (->> messages
+                          (filter (fn [msg]
+                                    (when-let [at (parse-instant (:at msg))]
+                                      (not (.isBefore at started-at)))))
+                          (remove #(same-bot? bot-name %))
+                          vec)
+              new-messages (->> recent
+                                (remove #(contains? seen (:msg-id %)))
+                                vec)
+              seen (into seen (map :msg-id messages))]
+          (doseq [message new-messages]
+            (when-let [{:keys [token body implicit-token?]} (parse-task (:text message))]
+              (let [inferred (when (and implicit-token? (not (str/blank? body)))
+                               (infer-task-target room body))
+                    token (or (:token inferred) token)
+                    session-id (:session-id inferred)
+                    body (or (:body inferred) body)
+                    implicit-token? (if inferred (:implicit-token? inferred) implicit-token?)
+                    raw-token (or token bot-name)
+                    token (sanitize-token raw-token)
+                    existing-session (session-for room token)
+                    session-id (or session-id existing-session)
+                    session-id (or session-id (new-session-id room token))]
+                (when (and session-id (not= session-id existing-session))
+                  (set-session! room token session-id))
+                (if (contains? @running session-id)
+                  (log! "task ignored (session running)"
+                        {:session session-id :from (:name message)})
+                  (do
+                    (swap! running conj session-id)
+                    (musn-chat-message! musn-url room bot-name
+                                        (if implicit-token?
+                                          (format "Starting %s for !task" session-id)
+                                          (format "Starting %s for !task %s" session-id token)))
+                    (future
+                      (try
+                        (let [result (run-agent! agent mode musn-url room bot-name session-id body body no-sandbox approval-policy)
+                              started-at (:started-at result)
+                              log-path (musn-log-path session-id)
+                              trace (read-pattern-trace log-path started-at)
+                              summary (summarize-pattern-trace trace)]
+                          (when summary
+                            (musn-chat-message! musn-url room bot-name summary)))
+                        (finally
+                          (swap! running disj session-id))))))))
+            (when-let [{:keys [token body session-id]} (parse-new (:text message))]
+              (let [raw-token (or token bot-name)
+                    token (sanitize-token raw-token)
+                    session-id (or (and (seq session-id) session-id)
+                                   (new-session-id room token))]
+                (if (contains? @running session-id)
+                  (log! "new ignored (session running)"
+                        {:session session-id :from (:name message)})
+                  (do
+                    (swap! running conj session-id)
+                    (set-session! room token session-id)
+                    (musn-chat-message! musn-url room bot-name
+                                        (format "Starting %s for !new" session-id))
+                    (future
+                      (try
+                        (let [result (run-agent-new! agent mode musn-url room bot-name session-id body no-sandbox approval-policy)
+                              started-at (:started-at result)
+                              log-path (musn-log-path session-id)
+                              trace (read-pattern-trace log-path started-at)
+                              summary (summarize-pattern-trace trace)]
+                          (when summary
+                            (musn-chat-message! musn-url room bot-name summary)))
+                        (finally
+                          (swap! running disj session-id)))))))))
+          (Thread/sleep (long (* 1000 poll-interval)))
+          (recur next-cursor seen)))))
+  (log! "supervisor stopped"))
+
+(defonce ^:private supervisor-state (atom nil))
+
+(defn start!
+  "Start the chat supervisor. Returns a stop function.
+   Options:
+     :musn-url - MUSN service URL (default http://localhost:6065)
+     :room - chat room to monitor (default \"lab\")
+     :poll-interval - poll interval in seconds (default 2.0)
+     :bot-name - bot display name (default \"fucodex\")
+     :agent - agent command (default \"fucodex\")
+     :mode - :auto, :claude, or :codex (default :auto)
+     :no-sandbox - bypass sandbox (default false)
+     :approval-policy - approval policy string"
+  ([] (start! {}))
+  ([opts]
+   (let [opts (merge {:musn-url "http://localhost:6065"
+                      :room "lab"
+                      :poll-interval 2.0
+                      :bot-name "fucodex"
+                      :agent "fucodex"
+                      :mode :auto
+                      :no-sandbox false
+                      :approval-policy nil}
+                     opts)
+         stop-flag (atom false)
+         opts (assoc opts :stop-flag stop-flag)
+         poll-thread (future (poll-loop! opts))]
+     (reset! supervisor-state {:stop-flag stop-flag
+                               :poll-thread poll-thread
+                               :opts opts})
+     (fn []
+       (reset! stop-flag true)
+       (reset! supervisor-state nil)))))
+
+(defn stop!
+  "Stop the chat supervisor."
+  []
+  (when-let [{:keys [stop-flag]} @supervisor-state]
+    (reset! stop-flag true)
+    (reset! supervisor-state nil)))
 
 (defn -main [& args]
-  (poll-loop! (parse-args args)))
-
-(apply -main *command-line-args*)
+  (start! (parse-args args))
+  @(promise))

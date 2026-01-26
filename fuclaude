@@ -17,16 +17,67 @@ START_ISO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 RUN_CWD="$(pwd)"
 export PATH="$ROOT/scripts:$PATH"
 
+run_clj() {
+  (cd "$ROOT" && clojure "$@")
+}
+
+# Get Claude project directory for current working directory
+get_claude_project_dir() {
+  local claude_dir="$HOME/.claude/projects"
+  local project_name
+  project_name=$(echo "$RUN_CWD" | sed 's|^/||; s|/|-|g')
+  echo "$claude_dir/-$project_name"
+}
+
+# Select latest Claude session file since START_ISO
+select_latest_session() {
+  local project_dir
+  project_dir="$(get_claude_project_dir)"
+  if [[ -d "$project_dir" ]]; then
+    find "$project_dir" -maxdepth 1 -name "*.jsonl" ! -name "agent-*" -newer /tmp/fuclaude-marker-$$ 2>/dev/null | head -1
+  fi
+}
+
+# Background MUSN logging (tails session file through musn_stream.clj)
+MUSN_LOG_PID=""
+MUSN_LOG_PATH=""
+
+start_musn_log() {
+  MUSN_LOG_PATH="/tmp/fuclaude-musn-log-$$.log"
+  : > "$MUSN_LOG_PATH"
+  (
+    while true; do
+      session_file="$(select_latest_session)"
+      if [[ -n "$session_file" ]]; then
+        tail -n 0 -f "$session_file" | bb "$ROOT/dev/musn_stream_bb.clj" >>"$MUSN_LOG_PATH" 2>&1
+        break
+      fi
+      sleep 1
+    done
+  ) &
+  MUSN_LOG_PID=$!
+}
+
+stop_musn_log() {
+  if [[ -n "${MUSN_LOG_PID-}" ]]; then
+    kill "$MUSN_LOG_PID" >/dev/null 2>&1 || true
+    MUSN_LOG_PID=""
+  fi
+}
+
 if [[ "${1-}" == "nearest-patterns" ]]; then
   shift
   exec "$ROOT/scripts/nearest-patterns" "$@"
 fi
 
 LIVE=false
+CLI_MODE=false
+WITH_AIF=false
 PATTERNS=""
 CHOSEN=""
 CLOCK_IN=""
 FORCED_SESSION_ID=""
+FORCED_SESSION_USER_PROVIDED=false
 AIF_CONFIG=""
 AIF_EXPLAIN=false
 AIF_EXPLAIN_PATH=""
@@ -48,6 +99,7 @@ export FUTON3_CODEX_SERVER_URL
 RESUME_SESSION=""
 CONTINUE_LAST=false
 PERMISSION_MODE=""
+DANGEROUSLY_SKIP=false
 PATTERN_RPC=true
 MUSN_MODE=false
 MUSN_URL="${FUCLAUDE_MUSN_URL:-http://localhost:6065}"
@@ -80,6 +132,8 @@ Options:
   -h, --help           Show this help.
   --live               Run Claude in live mode with lab streaming (requires -p prompt).
   --print              Alias for --live (non-interactive mode).
+  --cli                Logged interactive Claude session (no live streaming).
+  --with-aif           Enable HUD splash + AIF equip (re-enables HUD and AIF after --cli).
   --patterns CSV       Comma-separated patterns for the run manifest.
   --chosen PATTERN     Set chosen pattern (ignored when --clock-in is provided).
   --clock-in PATTERN   Add a clock-in pattern (repeatable or comma-separated; overrides --chosen).
@@ -126,6 +180,8 @@ Examples:
   fuclaude --live --patterns "ants/white-space-scout" --chosen ants/white-space-scout -p "Explain"
   fuclaude --live --clock-in ants/white-space-scout --clock-in ants/pheromone-trail-tuner -p "Review"
   fuclaude --musn --live -p "Task with MUSN tracking"
+  fuclaude --cli --with-aif --musn   # Interactive with AIF priming and MUSN logging
+  fuclaude --cli --musn              # Interactive with background MUSN logging
   fuclaude --aif-explain docs/aif/fulab-config.edn
   fuclaude --aif-explain
   fuclaude explore --explore-hotwords "aif,session,trace"
@@ -145,6 +201,10 @@ while [[ $# -gt 0 ]]; do
       exit 0;;
     --live|--print)
       LIVE=true; shift;;
+    --cli)
+      CLI_MODE=true; shift;;
+    --with-aif)
+      WITH_AIF=true; shift;;
     --patterns)
       PATTERNS="$2"; shift 2;;
     --chosen)
@@ -157,7 +217,7 @@ while [[ $# -gt 0 ]]; do
       fi
       shift 2;;
     --session-id)
-      FORCED_SESSION_ID="$2"; shift 2;;
+      FORCED_SESSION_ID="$2"; FORCED_SESSION_USER_PROVIDED=true; shift 2;;
     --aif-config)
       AIF_CONFIG="$2"; shift 2;;
     --aif-explain)
@@ -219,7 +279,7 @@ while [[ $# -gt 0 ]]; do
     --allow-edits)
       PERMISSION_MODE="acceptEdits"; shift;;
     --yolo)
-      PERMISSION_MODE="bypassPermissions"; shift;;
+      DANGEROUSLY_SKIP=true; shift;;
     -p)
       PRINT_MODE=true
       args+=("-p" "$2"); shift 2;;
@@ -349,7 +409,9 @@ fi
 # HUD mode: inject pattern context into prompt
 HUD_FILE=""
 HUD_JSON_FILE=""
-if $HUD_MODE && $PRINT_MODE; then
+
+# Fetch HUD block for --live mode OR --cli --with-aif mode
+if $HUD_MODE && { $PRINT_MODE || { $CLI_MODE && $WITH_AIF; }; }; then
   HUD_ENDPOINT="${HUD_SERVER%/}/fulab/hud/format"
   HUD_PAYLOAD=$(HUD_INTENT="$HUD_INTENT" PATTERNS="$PATTERNS" EXPLORE_LIMIT="$EXPLORE_LIMIT" RUN_CWD="$RUN_CWD" \
     MANA_START="$MANA_START" MANA_BALANCE="$MANA_BALANCE" MANA_EARNED="$MANA_EARNED" MANA_SPENT="$MANA_SPENT" \
@@ -593,7 +655,8 @@ fi
 
 # Create marker file for timing comparison (before claude runs)
 touch -d "$START_ISO" /tmp/fuclaude-marker-$$
-trap 'rm -f /tmp/fuclaude-marker-$$ "${HUD_JSON_FILE-}" 2>/dev/null || true' EXIT
+trap 'stop_musn_log 2>/dev/null || true; rm -f /tmp/fuclaude-marker-$$ "${HUD_JSON_FILE-}" 2>/dev/null || true' EXIT
+trap 'stop_musn_log 2>/dev/null || true; exit 130' INT
 
 if $LIVE; then
   if ! $PRINT_MODE; then
@@ -650,19 +713,95 @@ if $LIVE; then
   fi
   # Build permission flags for claude
   permission_args=()
-  if [[ -n "$PERMISSION_MODE" ]]; then
+  if $DANGEROUSLY_SKIP; then
+    permission_args+=(--dangerously-skip-permissions)
+  elif [[ -n "$PERMISSION_MODE" ]]; then
     permission_args+=(--permission-mode "$PERMISSION_MODE")
   fi
   # Claude uses --print --output-format stream-json --verbose for streaming
-  # Route through musn_stream.clj when MUSN mode is enabled
+  # Route through musn_stream_bb.clj (babashka) when MUSN mode is enabled for fast startup
   if $MUSN_MODE; then
     claude --print --output-format stream-json --verbose "${permission_args[@]}" "${resume_args[@]}" "${args[@]}" | \
-      clojure -Sdeps "${LAB_DEPS}" -M "$ROOT/dev/musn_stream.clj"
+      bb "$ROOT/dev/musn_stream_bb.clj"
   else
     claude --print --output-format stream-json --verbose "${permission_args[@]}" "${resume_args[@]}" "${args[@]}" | \
       clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-stream-claude.clj" "${clj_args[@]}"
   fi
   status=${PIPESTATUS[0]}
+elif $CLI_MODE; then
+  # CLI mode: interactive Claude with optional background MUSN logging
+  set +e
+
+  # Default to acceptEdits for --cli --with-aif (unless user specified otherwise)
+  if [[ -z "$PERMISSION_MODE" ]] && $WITH_AIF; then
+    PERMISSION_MODE="acceptEdits"
+  fi
+
+  # Build permission flags
+  permission_args=()
+  if $DANGEROUSLY_SKIP; then
+    permission_args+=(--dangerously-skip-permissions)
+  elif [[ -n "$PERMISSION_MODE" ]]; then
+    permission_args+=(--permission-mode "$PERMISSION_MODE")
+  fi
+
+  if $MUSN_MODE; then
+    start_musn_log
+  fi
+
+  if $WITH_AIF; then
+    # Three-step priming flow (like fucodex --cli --with-aif)
+    FUCLAUDE_SPLASH="${FUCLAUDE_SPLASH:-Welcome to FuClaude with AIF integration.}"
+    FUCLAUDE_HELP="${FUCLAUDE_HELP:-Pattern RPCs are available at $ROOT/scripts/pattern-*.}"
+
+    prime_splash=$'Priming step 1/3 (splash). Do not run any tools or commands. Reply only with "primed".\n\n'"$FUCLAUDE_SPLASH"
+    prime_help=$'Priming step 2/3 (help). Do not run any tools or commands. Reply only with:\nI will use the RPC\nExample: '"$ROOT"$'/scripts/pattern-action read library/software-design/facade "why"\n\n'"$FUCLAUDE_HELP"
+    prime_hud=$'Priming step 3/3 (HUD). Do not run any tools or commands. Reply only with "primed".\n\n'"${HUD_BLOCK-}"
+
+    # Step 1: Splash
+    claude --print "${permission_args[@]}" -p "$prime_splash" >/dev/null 2>&1
+    status=$?
+
+    if [[ $status -eq 0 ]]; then
+      # Find the session that was just created
+      sleep 1  # Give claude time to write session file
+      session_file="$(select_latest_session)"
+      if [[ -z "$session_file" ]]; then
+        echo "[fuclaude] unable to locate session after splash priming" >&2
+        status=2
+      else
+        session_id="$(basename "$session_file" .jsonl)"
+      fi
+    fi
+
+    # Step 2: Help (resume)
+    if [[ $status -eq 0 ]]; then
+      claude --print "${permission_args[@]}" --resume "$session_id" -p "$prime_help" >/dev/null 2>&1
+      status=$?
+    fi
+
+    # Step 3: HUD (resume, if HUD block exists)
+    if [[ $status -eq 0 && -n "${HUD_BLOCK-}" ]]; then
+      claude --print "${permission_args[@]}" --resume "$session_id" -p "$prime_hud" >/dev/null 2>&1
+      status=$?
+    fi
+
+    # Step 4: Interactive session
+    if [[ $status -eq 0 ]]; then
+      echo "[fuclaude] Priming complete. Starting interactive session: $session_id"
+      claude "${permission_args[@]}" --resume "$session_id"
+      status=$?
+    fi
+  else
+    # Simple CLI mode: just run claude interactively with background MUSN
+    claude "${permission_args[@]}" "${args[@]}"
+    status=$?
+  fi
+
+  if $MUSN_MODE; then
+    stop_musn_log
+  fi
+  set -e
 else
   # Non-live mode: run claude normally
   # Build resume flags for claude
@@ -674,7 +813,9 @@ else
   fi
   # Build permission flags for claude
   permission_args=()
-  if [[ -n "$PERMISSION_MODE" ]]; then
+  if $DANGEROUSLY_SKIP; then
+    permission_args+=(--dangerously-skip-permissions)
+  elif [[ -n "$PERMISSION_MODE" ]]; then
     permission_args+=(--permission-mode "$PERMISSION_MODE")
   fi
   claude "${permission_args[@]}" "${resume_args[@]}" "${args[@]}"
@@ -714,7 +855,9 @@ if [[ ${#matches[@]} -eq 0 ]]; then
 fi
 
 # Session selection with TTY detection
-if [[ -n "$FORCED_SESSION_ID" ]]; then
+# Only match by FORCED_SESSION_ID if it was explicitly provided by the user
+# (not synthetically generated for MUSN/pattern-rpc tracking)
+if [[ -n "$FORCED_SESSION_ID" ]] && $FORCED_SESSION_USER_PROVIDED; then
   for f in "${matches[@]}"; do
     if [[ "$(basename "$f" .jsonl)" == "$FORCED_SESSION_ID" ]]; then
       selected="$f"

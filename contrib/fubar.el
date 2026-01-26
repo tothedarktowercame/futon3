@@ -804,6 +804,38 @@ If INTERACTIVE is non-nil, bind the HUD to this session."
 ;; Optional: auto-log saves as evidence
 ;; (add-hook 'after-save-hook #'fubar-after-save-hook)
 
+;;; Kill fuclaude/fucodex processes
+
+(defun fubar-kill-fuclaude ()
+  "Kill any running fuclaude/fucodex interactive sessions.
+Useful when C-c doesn't propagate through EAT or other terminal emulators."
+  (interactive)
+  (let ((killed 0))
+    ;; Kill claude --resume processes (interactive sessions)
+    (dolist (line (process-lines "pgrep" "-f" "claude.*--resume"))
+      (when (string-match "\\([0-9]+\\)" line)
+        (let ((pid (match-string 1 line)))
+          (call-process "kill" nil nil nil pid)
+          (setq killed (1+ killed)))))
+    ;; Kill fuclaude wrapper processes
+    (dolist (line (process-lines "pgrep" "-f" "fuclaude --cli"))
+      (when (string-match "\\([0-9]+\\)" line)
+        (let ((pid (match-string 1 line)))
+          (call-process "kill" nil nil nil pid)
+          (setq killed (1+ killed)))))
+    ;; Kill fucodex wrapper processes
+    (dolist (line (process-lines "pgrep" "-f" "fucodex --cli"))
+      (when (string-match "\\([0-9]+\\)" line)
+        (let ((pid (match-string 1 line)))
+          (call-process "kill" nil nil nil pid)
+          (setq killed (1+ killed)))))
+    (if (> killed 0)
+        (message "[fubar] Killed %d process(es)" killed)
+      (message "[fubar] No fuclaude/fucodex processes found"))))
+
+(defalias 'eat-kill-fuclaude 'fubar-kill-fuclaude
+  "Alias for `fubar-kill-fuclaude' for discoverability.")
+
 (provide 'fubar)
 
 (fubar-modeline-mode 1)

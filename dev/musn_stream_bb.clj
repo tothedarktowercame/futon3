@@ -6,6 +6,7 @@
 (ns musn-stream-bb
   (:require [babashka.http-client :as http]
             [cheshire.core :as json]
+            [clojure.edn :as edn]
             [clojure.string :as str]
             [clojure.java.io :as io]))
 
@@ -66,6 +67,25 @@
                :turn turn
                :plan plan}))
 
+(defn turn-plan-diagram! [session-id turn diagram]
+  (musn-post! "/musn/turn/plan"
+              {:session/id session-id
+               :turn turn
+               :plan/diagram diagram}))
+
+(def ^:private plan-diagram-re
+  #"(?is)\[plan/diagram\]\s*(.*?)\s*\[/plan/diagram\]")
+
+(defn- parse-plan-diagram [text]
+  (when (string? text)
+    (when-let [match (re-find plan-diagram-re text)]
+      (let [payload (second match)]
+        (try
+          (edn/read-string payload)
+          (catch Throwable t
+            (log! "plan-diagram-parse-failed" (.getMessage t))
+            nil))))))
+
 (defn scribe-turn! [session-id role content]
   (when (and session-id (seq content))
     (musn-post! "/musn/scribe/turn"
@@ -118,6 +138,8 @@
       "result"
       (when-let [session-id (:session-id @state)]
         (let [content (str (:current-content @state))]
+          (when-let [diagram (parse-plan-diagram content)]
+            (turn-plan-diagram! session-id (:turn @state) diagram))
           (when (seq content)
             (scribe-turn! session-id :agent content)))
         (turn-end! session-id (:turn @state)))

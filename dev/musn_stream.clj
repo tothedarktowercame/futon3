@@ -254,6 +254,12 @@
                               :turn turn
                               :plan plan})))
 
+(defn musn-plan-diagram [session turn diagram]
+  (let [sid (require-session-id session)]
+    (post! "/musn/turn/plan" {:session/id sid
+                              :turn turn
+                              :plan/diagram diagram})))
+
 (defn musn-select [session turn chosen reason reads]
   (let [sid (require-session-id session)
         chosen-id (candidate-id chosen)
@@ -360,6 +366,20 @@
   (and (string? text)
        (re-find #"(?i)^(?:\s*\[plan\]\s+|\s*plan\s*:)" text)))
 
+(def ^:private plan-diagram-re
+  #"(?is)\[plan/diagram\]\s*(.*?)\s*\[/plan/diagram\]")
+
+(defn- parse-plan-diagram [text]
+  (when (string? text)
+    (when-let [match (re-find plan-diagram-re text)]
+      (let [payload (second match)]
+        (try
+          (edn/read-string payload)
+          (catch Throwable t
+            (log-warning! "plan-diagram-parse-failed"
+                          {:error (.getMessage t)})
+            nil))))))
+
 (def ^:private intent-line-re
   #"(?i)\b(?:hud-)?intent\s*:\s*([^\n]+)")
 
@@ -417,6 +437,13 @@
     (swap! state assoc :turn-plan? true :turn-plan-proxy? true)
     (when-let [proxy (plan-proxy-text text)]
       (musn-plan musn-session turn (str "Plan: " proxy)))))
+
+(defn- note-plan-diagram! [state musn-session turn text]
+  (when (and (string? text)
+             (not (:turn-plan? @state)))
+    (when-let [diagram (parse-plan-diagram text)]
+      (swap! state assoc :turn-plan? true :turn-plan-diagram? true)
+      (musn-plan-diagram musn-session turn diagram))))
 
 (defn- note-intent-seen! [state musn-session intent]
   (when (and intent (not (:intent-seen? @state)))
@@ -1120,6 +1147,7 @@
 
 (defn- handle-agent-message!
   [state musn-session turn text event]
+  (note-plan-diagram! state musn-session turn text)
   (let [handle-line (fn [line]
                       (when (plan-line? line)
                         (note-plan-seen! state line)

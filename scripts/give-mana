@@ -41,6 +41,7 @@ fi
 
 # Run from futon5 directory to access nonstarter-mana script
 cd "$FUTON5_ROOT"
+CLJ_PATHS='{:paths ["src" "resources" "test" "."]}'
 
 case "$1" in
   -h|--help)
@@ -48,11 +49,11 @@ case "$1" in
     exit 0
     ;;
   pool)
-    clj -M -m scripts.nonstarter-mana pool --db "$NONSTARTER_DB" --format text
+    clj -Sdeps "$CLJ_PATHS" -M -m scripts.nonstarter-mana pool --db "$NONSTARTER_DB" --format text
     ;;
   sospeso)
     shift
-    clj -M -m scripts.nonstarter-mana sospeso --db "$NONSTARTER_DB" --format text "$@"
+    clj -Sdeps "$CLJ_PATHS" -M -m scripts.nonstarter-mana sospeso --db "$NONSTARTER_DB" --format text "$@"
     ;;
   *)
     amount="$1"
@@ -70,7 +71,7 @@ case "$1" in
           ;;
       esac
     done
-    clj -M -m scripts.nonstarter-mana donate \
+    clj -Sdeps "$CLJ_PATHS" -M -m scripts.nonstarter-mana donate \
       --db "$NONSTARTER_DB" \
       --amount "$amount" \
       --donor "fulab-agent" \

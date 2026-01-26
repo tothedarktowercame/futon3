@@ -6,6 +6,7 @@
             [malli.core :as m]
             [futon3.logic-audit :as logic-audit]
             [futon3.musn.logic :as musn-logic]
+            [futon3.musn.plan-wiring :as plan-wiring]
             [futon3.musn.schema :as schema]))
 
 (declare pause-payload)
@@ -172,8 +173,40 @@
 
 (defn handle-turn-plan! [state-atom req]
   (validate schema/TurnPlanReq req)
-  (swap! state-atom assoc :plan? true :plan (:plan req))
-  {:ok true :plan/accepted true})
+  (let [diagram (when-let [raw (:plan/diagram req)]
+                  (plan-wiring/normalize-diagram raw))
+        components-path (:plan/components-path req)
+        eval-config (:plan/eval-config req)
+        validation (when diagram
+                     (let [lib (if components-path
+                                 (plan-wiring/load-components components-path)
+                                 (plan-wiring/load-components))
+                           result (plan-wiring/validate-diagram lib diagram)]
+                       (when-not (:ok? result)
+                         (throw (ex-info "invalid plan wiring diagram"
+                                         {:errors (:errors result)
+                                          :warnings (:warnings result)})))
+                       result))
+        eval-result (when diagram
+                      (plan-wiring/evaluate-plan+eval diagram {:eval/config eval-config
+                                                               :plan/context (:plan/context req)}))]
+    (when (and (nil? (:plan req)) (nil? diagram))
+      (throw (ex-info "turn/plan requires :plan or :plan/diagram" {:req req})))
+    (swap! state-atom
+           (fn [st]
+             (cond-> (assoc st :plan? true :plan (:plan req))
+               diagram
+               (assoc :plan/diagram diagram
+                      :plan/type (:plan/type req)
+                      :plan/components-path components-path
+                      :plan/context (:plan/context req)
+                      :plan/eval-config eval-config
+                      :plan/warnings (:warnings validation)
+                      :plan/eval (:eval eval-result)))))
+    {:ok true
+     :plan/accepted true
+     :plan/warnings (:warnings validation)
+     :plan/eval (:eval eval-result)}))
 
 (defn handle-turn-select! [state-atom req]
   (validate schema/TurnSelectReq req)

@@ -1,0 +1,37 @@
+{:meta {:name "MUSN Plan Eval Components"
+        :version 1
+        :description "Components for wiring-based plan evaluation"
+        :created "2026-01-26"}
+
+ :types {:features "Plan feature map"
+         :eval "Plan evaluation map"
+         :scalar "Float"
+         :map "Map"}
+
+ :components
+ {;; Feature extraction
+  :musn.plan/feature-extract
+  {:inputs []
+   :outputs [[:features :features]]
+   :doc "Extract features from plan actions + diagram"}
+
+  ;; Scoring
+  :musn.plan/feature-score
+  {:inputs [[:features :features]]
+   :outputs [[:score :scalar]]
+   :doc "Compute base confidence score from features"}
+
+  :musn.plan/risk-score
+  {:inputs [[:features :features]]
+   :outputs [[:risk :scalar]]
+   :doc "Compute risk score from features"}
+
+  :musn.plan/risk-discount
+  {:inputs [[:score :scalar] [:risk :scalar]]
+   :outputs [[:confidence :scalar]]
+   :doc "Apply risk discount to base confidence"}
+
+  :musn.plan/eval-output
+  {:inputs [[:confidence :scalar] [:risk :scalar] [:score :scalar] [:features :features]]
+   :outputs [[:eval :eval]]
+   :doc "Assemble evaluation payload"}}}

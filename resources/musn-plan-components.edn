@@ -1,0 +1,61 @@
+{:meta {:name "MUSN Plan Wiring Components"
+        :version 1
+        :description "Components for wiring-based plans"
+        :created "2026-01-26"}
+
+ :types {:action "Action payload map"
+         :action-list "Vector of actions"
+         :bool "Boolean"
+         :scalar "Float"
+         :string "String"
+         :int "Integer"
+         :keyword "Keyword"
+         :map "Map"}
+
+ :components
+ {;; Actions (registry classes)
+  :musn.plan/action
+  {:inputs [[:type :keyword] [:spec :map]]
+   :outputs [[:action :action]]
+   :doc "Emit an action with explicit type + spec"}
+
+  :musn.plan/action-command
+  {:inputs [[:spec :map]]
+   :outputs [[:action :action]]
+   :doc "Command execution action"}
+
+  :musn.plan/action-reasoning
+  {:inputs [[:spec :map]]
+   :outputs [[:action :action]]
+   :doc "Reasoning action"}
+
+  :musn.plan/action-file-edit
+  {:inputs [[:spec :map]]
+   :outputs [[:action :action]]
+   :doc "File edit action"}
+
+  :musn.plan/action-tool
+  {:inputs [[:spec :map]]
+   :outputs [[:action :action]]
+   :doc "Generic tool-use action"}
+
+  ;; Combinators
+  :musn.plan/sequence
+  {:inputs [[:actions :action-list]]
+   :outputs [[:actions :action-list]]
+   :doc "Return actions as a sequence"}
+
+  :musn.plan/parallel
+  {:inputs [[:actions :action-list]]
+   :outputs [[:actions :action-list]]
+   :doc "Return actions as a parallel group (treated as a sequence for now)"}
+
+  :musn.plan/if-then-else
+  {:inputs [[:cond :bool] [:then :action-list] [:else :action-list]]
+   :outputs [[:actions :action-list]]
+   :doc "Choose between two action lists"}
+
+  :musn.plan/gate
+  {:inputs [[:cond :bool] [:actions :action-list]]
+   :outputs [[:actions :action-list]]
+   :doc "Pass actions when cond is true"}}}

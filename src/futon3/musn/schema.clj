@@ -3,6 +3,7 @@
   (:require [malli.core :as m]))
 
 (def PatternId [:re #"^[a-z0-9._-]+/[a-z0-9._-]+$"])
+(def TurnId [:int])
 (def PatternIdKey [:or PatternId keyword?])
 (def FilePath string?)
 (def Anchor [:map
@@ -64,7 +65,7 @@
 (def TurnStartReq
   [:map
    [:session/id string?]
-   [:turn int?]
+   [:turn TurnId]
    [:hud {:optional true} [:map {:closed false}
                            [:candidates {:optional true} [:vector PatternId]]
                            [:scores {:optional true} [:map-of PatternIdKey number?]]
@@ -77,7 +78,7 @@
 (def TurnStartResp
   [:map
    [:ok boolean?]
-   [:turn int?]
+   [:turn TurnId]
    [:allowed [:map [:patterns [:vector PatternId]]
               [:namespaces {:optional true} [:vector string?]]]]
    [:aif {:optional true} [:map
@@ -86,13 +87,28 @@
    [:mana {:optional true} ManaState]
    [:trail [:map [:on int?] [:off int?] [:limit number?]]]])
 
-(def TurnPlanReq [:map [:session/id string?] [:turn int?] [:plan string?]])
-(def TurnPlanResp [:map [:ok boolean?] [:plan/accepted boolean?]])
+(def TurnPlanReq
+  [:map
+   [:session/id string?]
+   [:turn TurnId]
+   [:plan {:optional true} string?]
+   [:plan/type {:optional true} keyword?]
+   [:plan/diagram {:optional true} map?]
+   [:plan/components-path {:optional true} string?]
+   [:plan/context {:optional true} map?]
+   [:plan/eval-config {:optional true} map?]])
+(def TurnPlanResp
+  [:map
+   [:ok boolean?]
+   [:plan/accepted boolean?]
+   [:plan/warnings {:optional true} [:vector string?]]
+   [:plan/eval {:optional true} map?]
+   [:mana {:optional true} ManaState]])
 
 (def TurnSelectReq
   [:map
    [:session/id string?]
-   [:turn int?]
+   [:turn TurnId]
    [:candidates [:vector PatternId]]
    [:chosen {:optional true} PatternId]
    [:reason Reason]
@@ -112,7 +128,7 @@
 (def TurnActionReq
   [:map
    [:session/id string?]
-   [:turn int?]
+   [:turn TurnId]
    [:pattern/id PatternId]
    [:action [:enum "read" "implement" "update" "off-trail" "wide-scan"]]
    [:note {:optional true} string?]
@@ -134,7 +150,7 @@
 (def TurnUseReq
   [:map
    [:session/id string?]
-   [:turn int?]
+   [:turn TurnId]
    [:pattern/id PatternId]
    [:anchors {:optional true} [:vector Anchor]]
    [:note {:optional true} string?]
@@ -153,14 +169,14 @@
 (def EvidenceAddReq
   [:map
    [:session/id string?]
-   [:turn int?]
+   [:turn TurnId]
    [:pattern/id PatternId]
    [:files [:vector FilePath]]
    [:note string?]])
 
 (def EvidenceAddResp [:map [:ok boolean?] [:record/id string?]])
 
-(def TurnEndReq [:map [:session/id string?] [:turn int?]])
+(def TurnEndReq [:map [:session/id string?] [:turn TurnId]])
 
 (def TurnEndResp
   [:map
@@ -170,14 +186,20 @@
               [:trail [:map [:on int?] [:off int?]]]
               [:psr {:optional true} PatternId]
               [:pur {:optional true} PatternId]
-              [:warnings int?]]]
+              [:warnings int?]
+              [:mana/donations {:optional true}
+               [:map
+                [:count int?]
+                [:total number?]
+                [:failed int?]
+                [:pending {:optional true} number?]]]]]
    [:halt? boolean?]
    [:halt/reason {:optional true} map?]
    [:logic {:optional true} map?]
    [:mana {:optional true} ManaState]])
 
-(def TurnResumeReq [:map [:session/id string?] [:turn int?] [:note {:optional true} string?]])
-(def TurnResumeResp [:map [:ok boolean?] [:turn int?]])
+(def TurnResumeReq [:map [:session/id string?] [:turn TurnId] [:note {:optional true} string?]])
+(def TurnResumeResp [:map [:ok boolean?] [:turn TurnId]])
 
 (def RoomId string?)
 

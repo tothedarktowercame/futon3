@@ -5,6 +5,7 @@
    and be replayed or resumed. Logs are EDN lines under lab/musn/, keyed by session id."
   (:require [clojure.string :as str]
             [clojure.java.io :as io]
+            [clojure.java.shell :as shell]
             [clojure.edn :as edn]
             [futon2.aif.engine :as aif-engine]
             [futon3.fulab.pattern-competence :as pc]
@@ -28,7 +29,7 @@
 
 (defonce sessions (atom {}))
 (defonce rooms (atom {}))
-(declare get-session append-lab-event! restored? note-restore! apply-mana! mana-config)
+(declare get-session append-lab-event! restored? note-restore! apply-mana! mana-config turn-event)
 (defonce aif-tap-installed? (atom false))
 
 (defonce fulab-adapter
@@ -319,6 +320,40 @@
                   scaled (+ 0.35 (* 0.6 (min 1.0 spread)))]
               (-> scaled (max 0.35) (min 0.95) double)))))
 
+(defn- donation-summary [entry turn]
+  (let [events (or (:events @(:lab-session entry)) [])
+        turn (or turn (:turn @(:state entry)))
+        plan-award (get-in @(:state entry) [:plan/eval :musn.plan/mana :award])
+        donate? (true? (:donate? (plan-eval-config (:policy entry))))]
+    (let [turn-events (filter #(= turn (:turn %)) events)
+          donations (filter #(= :mana/donation (:event/type %)) turn-events)
+          failed (filter #(= :mana/donation-failed (:event/type %)) turn-events)
+          total (reduce + 0.0
+                        (keep (fn [event]
+                                (let [amount (get-in event [:payload :amount])]
+                                  (when (number? amount)
+                                    (double amount))))
+                              donations))
+          count (count donations)
+          failed-count (count failed)
+          pending (when (and donate?
+                             (number? plan-award)
+                             (pos? (double plan-award))
+                             (zero? (+ count failed-count)))
+                    (double plan-award))]
+      (when (or (pos? count) (pos? failed-count) (number? pending))
+        (cond-> {:count count
+                 :total total
+                 :failed failed-count}
+          (number? pending) (assoc :pending pending))))))
+
+(defn- with-donation-summary [resp entry turn]
+  (if-let [summary (:summary resp)]
+    (if-let [donations (donation-summary entry turn)]
+      (assoc resp :summary (assoc summary :mana/donations donations))
+      resp)
+    resp))
+
 (defn- tau-scale [entry]
   (double (or (:tau/scale (:aif-config entry)) 1.0)))
 
@@ -411,6 +446,76 @@
           :restore 10
           :maturity-bonus 10}
          (:mana policy)))
+
+(def ^:private default-plan-eval-config
+  {:award? true
+   :donate? false
+   :donate-min 0.0
+   :donate-max nil
+   :donate-cmd nil
+   :donate-donor "musn-plan"})
+
+(defn- env-truthy? [value]
+  (contains? #{"1" "true" "yes" "on"} (some-> value str str/lower-case)))
+
+(defn- plan-eval-config [policy]
+  (let [cfg (merge default-plan-eval-config
+                   (get-in policy [:mana :plan-eval]))]
+    (if-let [flag (System/getenv "MUSN_DANA_ENABLED")]
+      (assoc cfg :donate? (env-truthy? flag))
+      cfg)))
+
+(defn- plan-eval-award [plan-eval]
+  (when (map? plan-eval)
+    (let [award (get-in plan-eval [:musn.plan/mana :award])]
+      (when (number? award)
+        (double award)))))
+
+(defn- donation-cmd [config]
+  (or (:donate-cmd config)
+      (System/getenv "MUSN_DANA_CMD")
+      (str (System/getProperty "user.dir") "/scripts/give-mana")))
+
+(defn- plan-eval-note [entry turn plan-eval]
+  (let [confidence (double (or (:musn.plan/confidence plan-eval) 0.0))
+        risk (double (or (:musn.plan/risk plan-eval) 0.0))]
+    (format "plan-eval %s turn %s (confidence %.2f risk %.2f)"
+            (:id entry) turn confidence risk)))
+
+(defn- donate-plan-eval! [entry turn amount plan-eval]
+  (let [config (plan-eval-config (:policy entry))
+        donate? (true? (:donate? config))
+        minv (double (or (:donate-min config) 0.0))
+        maxv (:donate-max config)
+        amount (double amount)
+        amount (cond-> amount
+                 (number? maxv) (min (double maxv))
+                 :always (max minv))]
+    (when (and donate? (pos? amount))
+      (let [note (plan-eval-note entry turn plan-eval)
+            cmd (donation-cmd config)]
+        (future
+          (try
+            (let [args (cond-> [cmd (format "%.4f" amount)]
+                         (seq note) (into ["--note" note]))
+                  result (apply shell/sh args)
+                  payload {:session/id (:id entry)
+                           :turn turn
+                           :amount amount
+                           :note note
+                           :plan/eval plan-eval
+                           :exit (:exit result)}]
+              (if (zero? (:exit result))
+                (append-lab-event! entry (turn-event :mana/donation (:id entry) turn payload))
+                (append-lab-event! entry (turn-event :mana/donation-failed (:id entry) turn
+                                                     (assoc payload
+                                                            :stderr (:err result)
+                                                            :stdout (:out result))))))
+            (catch Throwable t
+              (append-lab-event! entry (turn-event :mana/donation-failed (:id entry) turn
+                                                   {:amount amount
+                                                    :note note
+                                                    :error (.getMessage t)})))))))))
 
 (defn- new-mana-state [policy]
   (let [{:keys [start]} (mana-config policy)
@@ -743,9 +848,10 @@
                       :anchors [(fulab-musn/turn-anchor turn)]
                       :forecast (fulab-musn/build-forecast turn)}))
         resp (router/handle-turn-start! (:state entry)
-                                        {:session/id sid
-                                         :turn (:turn req)
-                                         :hud (:hud req)})]
+                                        (cond-> {:session/id sid
+                                                 :turn (:turn req)}
+                                          (:hud req)
+                                          (assoc :hud (:hud req))))]
     (reset-fulab-state! entry turn candidate-ids scores candidate-details)
     (when selection
       (tap-aif-context! {:event :select
@@ -770,12 +876,38 @@
   [req]
   (let [sid (:session/id req)
         entry (ensure-session! sid nil (:lab/root req) nil)
-        resp (router/handle-turn-plan! (:state entry)
-                                       {:session/id sid
-                                        :turn (:turn req)
-                                        :plan (:plan req)})]
+        turn (:turn req)
+        plan-type (let [t (:plan/type req)]
+                    (cond
+                      (keyword? t) t
+                      (string? t) (keyword t)
+                      :else nil))
+        payload (cond-> {:session/id sid
+                         :turn (:turn req)}
+                  (some? (:plan req)) (assoc :plan (:plan req))
+                  plan-type (assoc :plan/type plan-type)
+                  (:plan/diagram req) (assoc :plan/diagram (:plan/diagram req))
+                  (:plan/components-path req) (assoc :plan/components-path (:plan/components-path req))
+                  (:plan/context req) (assoc :plan/context (:plan/context req))
+                  (:plan/eval-config req) (assoc :plan/eval-config (:plan/eval-config req)))
+        resp (router/handle-turn-plan! (:state entry) payload)
+        plan-eval (:plan/eval resp)
+        award (plan-eval-award plan-eval)
+        plan-config (plan-eval-config (:policy entry))]
+    (when (and (:mana entry)
+               (true? (:award? plan-config))
+               (number? award)
+               (pos? award))
+      (apply-mana! entry award :plan-eval {:plan/eval plan-eval})
+      (append-lab-event! entry
+                         (turn-event :mana/credit sid turn
+                                     {:amount award
+                                      :reason :plan-eval
+                                      :plan/eval plan-eval}))
+      (donate-plan-eval! entry turn award plan-eval))
     (persist! entry :turn/plan req resp)
-    resp))
+    (cond-> resp
+      (:mana entry) (assoc :mana (mana-view @(:mana entry))))))
 
 (defn turn-select!
   [req]
@@ -1100,7 +1232,8 @@
     (cond
       (= turn ended-turn)
       (let [resp (assoc (or (:turn-ended-resp fulab-state) {:ok true})
-                        :duplicate? true)]
+                        :duplicate? true)
+            resp (with-donation-summary resp entry turn)]
         (persist! entry :turn/end req resp)
         (cond-> resp
           (:mana entry) (assoc :mana (mana-view @(:mana entry)))))
@@ -1111,7 +1244,8 @@
                   :reason :turn/end-before-ready
                   :summary (turn-summary state)
                   :halt? false
-                  :halt/reason nil}]
+                  :halt/reason nil}
+            resp (with-donation-summary resp entry turn)]
         (persist! entry :turn/end req resp)
         (cond-> resp
           (:mana entry) (assoc :mana (mana-view @(:mana entry)))))
@@ -1131,7 +1265,8 @@
             policy (when inferred?
                      (assoc (auto-use-policy state fulab-state) :chosen chosen))
             allow-auto-use? (or (nil? policy) (auto-use-allowed? policy))
-            resp (cond-> resp policy (assoc :aif/policy policy))]
+            resp (cond-> resp policy (assoc :aif/policy policy))
+            resp (with-donation-summary resp entry turn)]
         (append-lab-event! entry (turn-event :turn/completed sid turn {:session/id sid}))
         (when policy
           (append-lab-event! entry {:event/type :aif/policy

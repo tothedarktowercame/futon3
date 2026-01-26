@@ -11,6 +11,7 @@ futon3.devmap. These prototypes are all `:active` (operational but incomplete).
 | 2 | Persistence Layer | P3, P4, P5 | futon1 persistence operational |
 | 3 | APIs & Adapters | P2, P4, P5 | HTTP endpoints live |
 | 4 | Rollups & Testing | P0, P2, P3, P4, P5 | Golden tests pass |
+| 5 | Actionable Checklist (Mana Readiness) | P0, P2, P3, P4, P5 | Mana donation surfaces live + verified |
 
 ## Stage 1: Contract & Bridge (Foundation)
 
@@ -150,6 +151,39 @@ futon3.devmap. These prototypes are all `:active` (operational but incomplete).
 
 ---
 
+## Stage 5: Actionable Checklist (Mana Readiness)
+
+**Goal**: Make mana donation & precision signals routine for futon3 agents, with
+clear control surfaces and evidence that the loop works.
+
+### Checklist
+
+**Surface A: Donation & precision plumbing**
+- [ ] Add a Nonstarter control surface (CLI or RPC) that can:
+  - donate mana (sospeso) with a note, and
+  - cast hypothesis votes (precision).
+- [ ] Ensure the surface accepts config (db path + defaults) so it works across futon instances.
+- [ ] Add a minimal “mana status” command (pool balance, total donated, total funded).
+
+**Surface B: Evidence & log linkage**
+- [ ] Log mana donations and votes into the MUSN trail (event type + note + amount).
+- [ ] Ensure trails include enough detail to reconstruct “why donation happened”.
+
+**Surface C: Operational tests**
+- [ ] A golden transcript that simulates:
+  - performing a non-trivial action,
+  - triggering sospeso,
+  - donating mana + writing blast radius note.
+- [ ] A vote‑reorder test showing a lower‑priority item rises above others.
+
+**Surface D: Operator guidance**
+- [ ] Short doc snippet: how agents decide “donate vs vote”.
+- [ ] Example: “sospeso: ASSURANCE_REQUIRED” formatted donation note.
+
+**Exit criteria**: Donation + vote surfaces are live, logged, and verified by golden tests; operators can follow the checklist without custom setup.
+
+---
+
 ## Dependencies Graph
 
 ```
@@ -175,6 +209,12 @@ Stage 4 (Polish)               │
 ├── P5: deterministic tests
 ├── P2: latency instrumentation
 └── P4: fubar.el integration
+                               │
+Stage 5 (Mana Readiness)       │
+├── Donation + vote surfaces live
+├── Trails include mana events
+├── Golden tests for sospeso + vote reorder
+└── Operator guidance published
 ```
 
 ---
@@ -183,7 +223,8 @@ Stage 4 (Polish)               │
 
 Each stage is designed to be completable in a focused work session. Stage 1 is
 mostly documentation and decision-making. Stages 2-3 are implementation-heavy.
-Stage 4 is testing and polish.
+Stage 4 is testing and polish. Stage 5 is a short integration pass to make
+mana donation surfaces operational.
 
 The futon3a integration (P5) touches all stages because it's currently a
 separate repo. The Stage 1 decision about bridge vs. merge will affect how

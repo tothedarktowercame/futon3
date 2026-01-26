@@ -170,6 +170,9 @@ MUSN_URL="${FUCODEX_MUSN_URL:-http://localhost:6065}"
 UNSANDBOXED=false
 CHAT_ROOM="${FUCODEX_CHAT_ROOM:-}"
 CHAT_AUTHOR="${FUCODEX_CHAT_AUTHOR:-}"
+MUSN_CHAT_PASS="${FUCODEX_MUSN_PASS:-${MUSN_IRC_PASSWORD:-}}"
+MUSN_IRC_HOST="${FUCODEX_MUSN_IRC_HOST:-${MUSN_IRC_HOST:-}}"
+MUSN_IRC_PORT="${FUCODEX_MUSN_IRC_PORT:-${MUSN_IRC_PORT:-}}"
 SCOPE_GUARDRAIL=$'Scope guardrail: avoid repo-wide `rg --files` or wide `rg` searches.\nBefore tool use, state a 1-2 line plan; if a wide scan is likely, either (a) announce it and proceed, or (b) stop and ask for scope; if asking, do not run the scan.\nTreat wide scans as expensive.'
 INTENT_PREFACE=$'First output line format: hud-intent: <one-sentence summary of the text below>.\nDo not call tools or run commands before emitting that line.\nSummarize ONLY the text between <INTENT_TEXT> and </INTENT_TEXT>. Do not include quotes, placeholders, or planning.\n<INTENT_TEXT>\n'
 INTENT_POSTFACE=$'\n</INTENT_TEXT>\nAfter that line, continue with the task using the instructions that follow. Do not summarize any other instructions below.'
@@ -232,6 +235,9 @@ Options:
   --musn-url URL        MUSN service base URL (default: http://localhost:6065 or $FUCODEX_MUSN_URL).
   --chat-room ROOM      Post agent messages into MUSN chat room (enables --musn).
   --chat-author NAME    Display name for chat messages (defaults to client id).
+  --musn-pass SECRET    IRC PASS for musn-chat (enables IRC transport when set).
+  --musn-irc-host HOST  IRC bridge host for musn-chat (default: $MUSN_IRC_HOST).
+  --musn-irc-port PORT  IRC bridge port for musn-chat (default: $MUSN_IRC_PORT).
   --hud-print           Print HUD block before running codex.
   --hud-server URL      HUD server base URL (default: http://localhost:5050).
 
@@ -363,6 +369,12 @@ while [[ $# -gt 0 ]]; do
       CHAT_ROOM="$2"; shift 2;;
     --chat-author)
       CHAT_AUTHOR="$2"; shift 2;;
+    --musn-pass)
+      MUSN_CHAT_PASS="$2"; shift 2;;
+    --musn-irc-host)
+      MUSN_IRC_HOST="$2"; shift 2;;
+    --musn-irc-port)
+      MUSN_IRC_PORT="$2"; shift 2;;
     --hud-print)
       HUD_PRINT=true; shift;;
     --hud-server)
@@ -812,6 +824,15 @@ fi
   fi
   if [[ -n "$CHAT_AUTHOR" ]]; then
     export FUTON3_MUSN_CHAT_AUTHOR="$CHAT_AUTHOR"
+  fi
+  if [[ -n "$MUSN_CHAT_PASS" ]]; then
+    export FUTON3_MUSN_CHAT_PASS="$MUSN_CHAT_PASS"
+  fi
+  if [[ -n "$MUSN_IRC_HOST" ]]; then
+    export FUTON3_MUSN_IRC_HOST="$MUSN_IRC_HOST"
+  fi
+  if [[ -n "$MUSN_IRC_PORT" ]]; then
+    export FUTON3_MUSN_IRC_PORT="$MUSN_IRC_PORT"
   fi
   if [[ -n "$MUSN_SESSION_ID" && -f "/tmp/futon3-musn-help-${MUSN_SESSION_ID}.flag" ]]; then
     MUSN_HELP_FORCE=true

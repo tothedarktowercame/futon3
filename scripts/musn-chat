@@ -5,6 +5,10 @@ room="${FUTON3_MUSN_CHAT_ROOM:-}"
 author="${FUTON3_MUSN_CHAT_AUTHOR:-${FUTON3_MUSN_CLIENT_ID:-fucodex}}"
 url="${FUTON3_MUSN_URL:-http://localhost:6065}"
 sid="${FUTON3_MUSN_SESSION_ID:-}"
+transport="${FUTON3_MUSN_CHAT_TRANSPORT:-http}"
+irc_host="${FUTON3_MUSN_IRC_HOST:-${MUSN_IRC_HOST:-localhost}}"
+irc_port="${FUTON3_MUSN_IRC_PORT:-${MUSN_IRC_PORT:-6667}}"
+irc_pass="${FUTON3_MUSN_CHAT_PASS:-${MUSN_IRC_PASSWORD:-}}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -12,8 +16,16 @@ while [[ $# -gt 0 ]]; do
       room="$2"; shift 2;;
     --author)
       author="$2"; shift 2;;
+    --transport)
+      transport="$2"; shift 2;;
+    --irc-host)
+      irc_host="$2"; shift 2;;
+    --irc-port)
+      irc_port="$2"; shift 2;;
+    --irc-pass)
+      irc_pass="$2"; shift 2;;
     --help|-h)
-      echo "usage: musn-chat [--room ROOM] [--author NAME] <message>" >&2
+      echo "usage: musn-chat [--room ROOM] [--author NAME] [--transport http|irc] [--irc-host HOST] [--irc-port PORT] [--irc-pass PASS] <message>" >&2
       exit 0;;
     *)
       break;;
@@ -21,7 +33,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ $# -lt 1 ]]; then
-  echo "usage: musn-chat [--room ROOM] [--author NAME] <message>" >&2
+  echo "usage: musn-chat [--room ROOM] [--author NAME] [--transport http|irc] [--irc-host HOST] [--irc-port PORT] [--irc-pass PASS] <message>" >&2
   exit 2
 fi
 
@@ -31,6 +43,53 @@ if [[ -z "$room" ]]; then
 fi
 
 msg="$*"
+
+if [[ -n "$irc_pass" && "$transport" == "http" ]]; then
+  transport="irc"
+fi
+
+if [[ "$transport" == "irc" ]]; then
+  ROOM="$room" AUTHOR="$author" MSG="$msg" IRC_HOST="$irc_host" IRC_PORT="$irc_port" IRC_PASS="$irc_pass" python3 - <<'PY'
+import json
+import os
+import socket
+import sys
+import time
+
+room = os.environ.get("ROOM", "")
+author = os.environ.get("AUTHOR", "") or "fucodex"
+msg = os.environ.get("MSG", "")
+host = os.environ.get("IRC_HOST", "localhost")
+port = int(os.environ.get("IRC_PORT", "6667"))
+password = os.environ.get("IRC_PASS", "")
+
+def send_line(writer, line):
+    writer.write(line + "\r\n")
+    writer.flush()
+
+try:
+    sock = socket.create_connection((host, port), timeout=3)
+    writer = sock.makefile("w")
+    if password:
+        send_line(writer, f"PASS {password}")
+    send_line(writer, f"NICK {author}")
+    send_line(writer, f"USER {author} 0 * :{author}")
+    send_line(writer, f"JOIN #{room}")
+    time.sleep(0.1)
+    send_line(writer, f"PRIVMSG #{room} :{msg}")
+    send_line(writer, "QUIT")
+    try:
+        writer.close()
+        sock.close()
+    except Exception:
+        pass
+    print(json.dumps({"ok": True, "transport": "irc"}))
+except Exception as exc:
+    print(json.dumps({"ok": False, "transport": "irc", "error": str(exc)}))
+    sys.exit(0)
+PY
+  exit 0
+fi
 
 ROOM="$room" AUTHOR="$author" URL="$url" MSG="$msg" SID="$sid" python3 - <<'PY'
 import json

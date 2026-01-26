@@ -42,6 +42,18 @@ Port map (defaults):
 - MUSN HTTP: 6065 (`FUTON3_MUSN_URL`)
 - MUSN IRC bridge: 6667 (`scripts/musn_irc_bridge.clj`)
 
+## MUSN IRC Bridge (remote)
+To expose the IRC bridge on a server, enable auth + allowlisting and bind to 0.0.0.0:
+```bash
+MUSN_IRC_PASSWORD='your-secret' \
+MUSN_IRC_ALLOWLIST='203.0.113.10,198.51.100.0/24' \
+clojure -M -m scripts.musn-irc-bridge --host 0.0.0.0 --port 6667 --musn-url http://127.0.0.1:6065
+```
+Clients must send `PASS your-secret` before `NICK`/`USER`/`JOIN`. For encryption, put the port behind
+an SSH tunnel or a TLS terminator (nginx stream / stunnel).
+To have fuclaude/fucodex post chat via IRC, pass `--musn-pass` (and optionally
+`--musn-irc-host`/`--musn-irc-port`) so `scripts/musn-chat` uses the bridge.
+
 Hotloading fixes into the running server (optional):
 ```bash
 ADMIN_TOKEN=$(cat .admintoken) clojure -M -e "

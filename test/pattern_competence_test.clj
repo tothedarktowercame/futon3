@@ -52,6 +52,11 @@
               :risks []
               :success []
               :failure []}
+   :aif/g-terms [{:term-id :tau
+                  :observation-keys [:tau]
+                  :precision-channels {:tau 1.0}
+                  :intermediate-values {:tau 1.0}
+                  :final-contribution 1.0}]
    :rejections {"p2" {:codes [:reject/test] :note "not fit"}}
    :horizon :short})
 

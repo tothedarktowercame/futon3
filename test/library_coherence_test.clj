@@ -30,9 +30,10 @@
 (def required-clauses ["IF:" "HOWEVER:" "THEN:" "BECAUSE:"])
 
 (defn- sigil-tokens [text]
-  (->> (re-seq #"\[(.*?)\]" text)
-       (map second)
-       (mapcat #(str/split % #"\s+"))
+  (->> (str/split-lines text)
+       (map str/trim)
+       (filter #(str/starts-with? % "@sigils"))
+       (mapcat #(re-seq #"[^\s\[\]]+/[^\s\[\]]+" %))
        (keep (fn [token]
                (let [tok (str/trim token)]
                  (when (and (not (str/blank? tok))

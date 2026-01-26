@@ -1,314 +1,224 @@
 @multiarg futon0/devmap
-@title FUTON0 Development Map — Cyborg Interface Layer
+@title FUTON0 Development Map — Human-System Interface
 @audience futon-devs, reflective-agents, future-you
 @tone formal-analytic
 @style roadmap
 @factor Mindful apprehension (sati + sampajañña)
-@IFR: FUTON0 is the cyborg interface layer — the membrane where human vitality
-becomes stack-legible and stack state becomes human-perceivable.
-@state Stack HUD operational; bidirectional channels demonstrated; infrastructure
-substrate working. Health monitoring, affect signals, and epistemic rhythm not
-yet instrumented.
-@next P4 (health/alignment monitoring) then P5 (affect signals).
+@IFR: FUTON0 is the interface through which the system extends human capability.
+It monitors vitality, rhythm, and attention, making human state legible to the
+stack and stack state perceivable to the human. The human is not a component of
+the system; the system is an extension of the human.
+@state P0 (core infrastructure) operational: Stack HUD, bidirectional channels,
+infrastructure substrate working. P1-P7 (layer interfaces) not yet established.
+@next Establish F0-F1 interface (memory access), then F0-F2 (agent perception).
 
 ## The Argument
 
-FUTON0 is the cyborg interface layer — the membrane where human vitality becomes
-stack-legible and stack state becomes human-perceivable. The Stack HUD is the
-primary implementation: it reads vitality signals from existing traces (commit
-times, recording cadence, Tatami sessions) and presents stack state (boundaries,
-liveness, patterns, reminders) in a glanceable frame — zero extra lifelogging.
-Voice-to-text, text-to-speech (podcast synthesis uses both), Kinesis board, and
-the HUD demonstrate that human→stack and stack→human channels work. The
-infrastructure substrate — Alacritty, Emacs, Linode, FUTON1, Org, pattern sync,
-Codex, Claude — provides the plumbing. Health and alignment monitoring will
-infer actual health from traces (commit times → sleep, activity → energy) plus
-role alignment. Affect signals will track moments of insight and emotional
-valence through logged agent sessions, sitting between futon0 and futon3.
-Epistemic rhythm will establish weekly/monthly review cycles that bound WIP.
-Consulting reuse will systematize proto-pattern extraction. Stack stewardship
-will formalize daily practices. Futonic co-evolution will make symbolic signals
-of future environments legible through Compass, with literary work entering at
-that stage. Together these ground the stack's perception — the done prototypes
-prove the interface works; the planned prototypes make it health-aware,
-affect-sensitive, and generative.
+FUTON0 is the interface through which the system extends human capability to
+reason, remember, verify, compose, and act effectively. The Stack HUD, voice
+channels, and infrastructure substrate establish that the interface works at all
+(P0). The remaining work is to extend this interface across each layer of the
+stack: F1 (memory), F2 (agents), F3 (verification), F4 (hypertext), F5
+(patterns), F6 (mathematics), F7 (transparency). When all layer interfaces work,
+F0 is complete — the human can access the full capability of the system through
+a unified interface. Each layer reflects the whole from its perspective; F0 sees
+vitality, rhythm, and attention as the ground from which all other capabilities
+become accessible.
 
 
-! instantiated-by: Prototype 1 — Stack HUD [🙇/亏 🔃/叉]
-  :maturity :settled
-  :depends-on []
-  :source [f0/p0]
-  :evidence-for-settled [HUD used daily for 30+ days with vitality signals accurate]
-
-  + context: The Stack HUD is the primary cyborg interface implementation.
-  + IF: Human vitality leaves traces in computational systems (commits, sessions, recordings)
-  + HOWEVER: These traces are scattered; stack state is distributed across futons
-  + THEN: The HUD reads vitality signals and presents stack state in a glanceable frame
-  + BECAUSE: Zero-friction bidirectional perception is the core cyborg promise
-
-  + EVIDENCE:
-    evidence[futon0/contrib/stack-hud.el implements vitality scanning + stack state display]
-    evidence[futon0/scripts/futon0/vitality/scanner.bb runs vitality scans]
-    evidence[Stack HUD logs to futon0/data/stack-hud/*.jsonl]
-
-  + NEXT-STEPS:
-    next[Refine vitality signal interpretation (commit times → sleep inference)]
-    next[Add health threshold alerts to HUD warnings]
-
-  :success-criteria
-    pass[HUD displays current vitality + stack state within 2 seconds of opening]
-    pass[Vitality signals update automatically when underlying data changes]
-    fail[HUD requires manual refresh to show current state]
-
-
-! instantiated-by: Prototype 2 — Bidirectional Channels [💬/口 🔊/声]
-  :maturity :active
-  :depends-on [f0/P1]
-  :source [hdm/human-machine-dialogue]
-  :evidence-for-settled [Both directions used daily; exchanges logged as reusable knowledge]
-
-  + context: The cyborg membrane must flow both ways.
-  + IF: Human→stack channels (voice, keyboard) and stack→human channels (HUD, TTS) exist
-  + HOWEVER: They developed separately; not yet unified as "the interface"
-  + THEN: Recognize voice-to-text, text-to-speech, Kinesis, HUD as aspects of one bidirectional membrane
-  + BECAUSE: Per hdm/human-machine-dialogue — dialogue is how humans learn; embedding it aligns with practice
-
-  + EVIDENCE:
-    evidence[futon0/contrib/stack-hud.el includes voice-typing integration]
-    evidence[Podcast synthesis uses both STT and TTS]
-    evidence[Kinesis Advantage board is the primary tactile interface]
-
-  + NEXT-STEPS:
-    next[Log voice interactions as reviewable exchanges (per hdm pattern)]
-    next[Unify channel telemetry in Stack HUD]
-
-  :success-criteria
-    pass[Voice input and HUD output feel like one interface, not separate tools]
-    pass[Exchanges are logged and can become reusable knowledge]
-    fail[Channels remain siloed with no unified view]
-
-
-! instantiated-by: Prototype 3 — Infrastructure Substrate [🔧/具 💻/机]
+! instantiated-by: Prototype 0 — Core Infrastructure [🙇/亏 🔃/叉]
   :maturity :active
   :depends-on []
-  :evidence-for-settled [All components operational for 90+ days]
+  :evidence-for-active [Stack HUD operational; bidirectional channels demonstrated; infrastructure working]
 
-  + context: The cyborg interface requires working infrastructure.
-  + IF: Multiple tools (Alacritty, Emacs, Linode, FUTON1, Codex, Claude) constitute the substrate
-  + HOWEVER: They are typically invisible until something breaks
-  + THEN: Document the substrate inventory; monitor health; acknowledge paid dependencies
-  + BECAUSE: The plumbing must work for anything else to matter
-
-  + EVIDENCE:
-    evidence[Alacritty terminal emulator in daily use]
-    evidence[Emacs with stack-hud.el, tatami, arxana-patterns]
-    evidence[Linode hosting FUTON1 API]
-    evidence[FUTON1 pattern sync operational]
-    evidence[Codex and Claude subscriptions active]
-
-  + NEXT-STEPS:
-    next[Add infrastructure health checks to Stack HUD]
-    next[Document substrate inventory in futon0/docs/infrastructure.md]
-
-  :success-criteria
-    pass[All substrate components reachable from Stack HUD health check]
-    pass[Paid subscription status visible]
-    fail[Infrastructure failure not detected until downstream breakage]
-
-
-! instantiated-by: Prototype 4 — Health and Alignment Monitoring [💖/体 🎯/向]
-  :maturity :stub
-  :depends-on [f0/P1]
-  :source [f0/p0]
-  :evidence-for-greenfield [Commit-time sleep inference implemented and tested]
-  :evidence-for-active [Health signals displayed in HUD with threshold alerts]
-
-  + context: The core cyborg promise — actual health becomes stack-legible.
-  + IF: Commit timestamps, activity patterns, and session logs reveal physical state
-  + HOWEVER: Currently only activity is tracked, not health inference
-  + THEN: Infer sleep (from late commits), energy (from activity gaps), role alignment (from work patterns)
-  + BECAUSE: Health monitoring without extra lifelogging is why the cyborg frame matters
+  + context: The interface must work at all before it can extend human capability.
+  + IF: The human needs to perceive stack state and the stack needs to perceive human vitality
+  + HOWEVER: These capabilities require working infrastructure, channels, and monitoring
+  + THEN: Establish Stack HUD, bidirectional channels (voice, keyboard, TTS), infrastructure substrate, health monitoring, affect signals, epistemic rhythm, and stewardship practices
+  + BECAUSE: This is the foundation — without it, no layer interface can function
 
   + EVIDENCE:
+    evidence[Stack HUD (futon0/contrib/stack-hud.el) displays vitality + stack state]
+    evidence[Voice-to-text, text-to-speech, Kinesis board operational]
+    evidence[Infrastructure substrate (Alacritty, Emacs, Linode, FUTON1, Codex, Claude) working]
     evidence[Vitality scanner captures commit times and session timestamps]
-    evidence[Gap detection exists but not health interpretation]
 
   + NEXT-STEPS:
-    next[Implement commit-time → sleep pattern inference]
-    next[Add energy inference from activity cadence]
-    next[Surface health signals in Stack HUD with configurable thresholds]
-    next[Track role alignment: current-role health + future-role trajectory signals]
+    next[Complete health monitoring (sleep inference, energy inference)]
+    next[Complete affect signal extraction from logged sessions]
+    next[Complete epistemic rhythm checks (weekly/monthly)]
+    next[Document stewardship protocol]
 
   :success-criteria
-    pass[Sleep pattern inference matches self-report within 1 hour]
-    pass[Energy warnings surface before burnout, not after]
-    pass[Role alignment visible as trajectory, not just snapshot]
-    fail[Health signals are noise (no predictive value)]
+    pass[HUD displays vitality + stack state within 2 seconds]
+    pass[Bidirectional channels feel unified, not siloed]
+    pass[Health/affect/rhythm signals are meaningful, not noise]
+    fail[Core infrastructure requires constant manual intervention]
 
 
-! instantiated-by: Prototype 5 — Affect Signals [🎭/感 💡/悟]
+! instantiated-by: Prototype 1 — F0-F1 Interface (Memory Access) [📚/记 🔍/查]
   :maturity :stub
-  :depends-on [f0/P1, f0/P4]
-  :source [f2/p0]
-  :evidence-for-greenfield [Affect markers extracted from 10+ logged sessions]
-  :evidence-for-active [Affect signals visible in HUD; patterns surfaced to FUTON3]
+  :depends-on [f0/P0, f1/P0]
 
-  + context: Track moments of insight, perspective shift, emotional valence.
-  + IF: Chat and coding agent sessions contain affect signals (enthusiasm, frustration, breakthrough)
-  + HOWEVER: Currently sessions are logged but not analyzed for affect
-  + THEN: Extract affect markers from logged sessions; surface to HUD; feed to FUTON3
-  + BECAUSE: Per f2/p0, affect is part of the AIF loop (observe → perceive → affect → core); surface it to f0
-
-  + EVIDENCE:
-    evidence[Agent sessions logged to futon0/data/ and Tatami]
-    evidence[Affect marker experiments in futon0/data/affect_markers.json]
-    evidence[f2/p0 defines affect as pipeline stage]
+  + context: F1 is graph memory — fragments, relationships, annotations as nodes.
+  + IF: The human needs to access, query, and navigate stored knowledge
+  + HOWEVER: Currently F1 access requires direct API calls or Emacs functions
+  + THEN: Surface memory access through F0 — query from HUD, see relationships, navigate links
+  + BECAUSE: If the human cannot easily access memory, F1 does not extend their capability
 
   + NEXT-STEPS:
-    next[Define affect marker vocabulary (insight, frustration, flow, block)]
-    next[Implement affect extraction from session logs]
-    next[Add affect timeline to Stack HUD]
-    next[Wire affect signals to FUTON3 for pattern correlation]
+    next[Add memory query widget to Stack HUD]
+    next[Surface recent fragments and their relationships]
+    next[Enable link navigation from HUD context]
 
   :success-criteria
-    pass[Affect markers extracted with >70% agreement to self-report]
-    pass[Insight moments correlate with productive sessions]
-    fail[Affect extraction is pure noise]
+    pass[Human can query F1 without leaving the HUD context]
+    pass[Relationships are visible and navigable]
+    fail[F1 access remains a separate, friction-full operation]
 
 
-! instantiated-by: Prototype 6 — Epistemic Rhythm [📅/律 🔄/周]
+! instantiated-by: Prototype 2 — F0-F2 Interface (Agent Perception) [🤖/智 👁/观]
   :maturity :stub
-  :depends-on [f0/P1]
-  :source [workflow-coherence/weekly-rhythm]
-  :evidence-for-greenfield [Weekly rhythm check implemented in HUD]
-  :evidence-for-active [Rhythm maintained for 8+ consecutive weeks]
+  :depends-on [f0/P0, f2/P0]
 
-  + context: Bounded WIP and regular review cycles keep cognitive load tractable.
-  + IF: More than 7 days pass since last AOB or Ambitions sync
-  + HOWEVER: Without automated detection, missed weeks go unnoticed until load spikes
-  + THEN: Flag the gap in Stack HUD; prompt review before new work starts
-  + BECAUSE: Per workflow-coherence/weekly-rhythm — rhythm prevents unbounded WIP and makes life lighter
-
-  + EVIDENCE:
-    evidence[workflow-coherence/weekly-rhythm.flexiarg defines the pattern]
-    evidence[Org contains AOB and Ambitions structure]
-    evidence[futon0/futon0_rhythm.md documents cadence intent]
+  + context: F2 is active inference — perception-action loops for agents.
+  + IF: The human needs to perceive what agents are doing and direct their actions
+  + HOWEVER: Currently agent sessions are logged but not surfaced in real-time
+  + THEN: Surface agent state through F0 — see current beliefs, policies, actions; redirect when needed
+  + BECAUSE: If the human cannot perceive agents, they cannot effectively collaborate with them
 
   + NEXT-STEPS:
-    next[Implement weekly rhythm check in Stack HUD]
-    next[Add monthly rhythm check]
-    next[Surface WIP count with cap warning (>3 active tracks)]
-    next[Log rhythm compliance for correlation with affect/health]
+    next[Surface active agent sessions in Stack HUD]
+    next[Show agent beliefs and current policy]
+    next[Enable human redirection of agent focus]
 
   :success-criteria
-    pass[HUD warns when weekly review is overdue]
-    pass[WIP cap violations are visible before overload]
-    fail[Rhythm gaps detected only in retrospect]
+    pass[Human can see what agents are doing without reading logs]
+    pass[Human can redirect agents through F0 interface]
+    fail[Agent state remains opaque until session ends]
 
 
-! instantiated-by: Prototype 7 — Consulting Reuse [🔄/复 📦/模]
+! instantiated-by: Prototype 3 — F0-F3 Interface (Verification Visibility) [✓/验 📋/证]
   :maturity :stub
-  :depends-on [f0/P1, f3a/P0]
-  :source [p4ng/pattern-priming fulab/pattern-propose]
-  :evidence-for-greenfield [Proto-pattern extracted from one engagement]
-  :evidence-for-active [3+ engagements have generated reusable patterns in FUTON3]
+  :depends-on [f0/P0, f3/P0]
 
-  + context: Consulting engagements should generate reusable structure, not just deliverables.
-  + IF: Engagements produce insights that recur across clients
-  + HOWEVER: Currently extraction is ad-hoc; insights evaporate
-  + THEN: Systematize proto-pattern extraction; flow through membrane to FUTON3
-  + BECAUSE: Per p4ng/pattern-priming — patterns need priming before activation; consulting is a priming source
-
-  + EVIDENCE:
-    evidence[VSATLAS engagement produced reusable flexiarg design]
-    evidence[p4ng/pattern-priming.flexiarg defines extraction approach]
-    evidence[fulab/pattern-propose.flexiarg defines agent pattern proposal]
+  + context: F3 is pattern checking — validation of informal arguments.
+  + IF: The human needs to see verification status of claims and arguments
+  + HOWEVER: Currently checks are logged but not surfaced to F0
+  + THEN: Surface verification status through F0 — see which claims are checked, what evidence exists, what is missing
+  + BECAUSE: If the human cannot see verification status, they cannot trust or improve arguments
 
   + NEXT-STEPS:
-    next[Define consulting proto-pattern template]
-    next[Extract patterns from recent engagements retrospectively]
-    next[Add engagement reflection step to workflow]
+    next[Surface recent checks in Stack HUD]
+    next[Show evidence status for active claims]
+    next[Highlight missing evidence or blocked checks]
 
   :success-criteria
-    pass[Each engagement produces at least one proto-pattern candidate]
-    pass[Proto-patterns flow to FUTON3 and become scoreable]
-    fail[Consulting remains transactional with no structural residue]
+    pass[Human can see verification status at a glance]
+    pass[Missing evidence is visible and actionable]
+    fail[Verification remains invisible until explicitly queried]
 
 
-! instantiated-by: Prototype 8 — Stack Stewardship [🏠/守 📝/记]
+! instantiated-by: Prototype 4 — F0-F4 Interface (Hypertext Navigation) [📄/文 🔗/链]
   :maturity :stub
-  :depends-on [f0/P1, f0/P3]
-  :evidence-for-greenfield [Stewardship protocol documented]
-  :evidence-for-active [Protocol followed for 30+ days with architecture notes accumulating]
+  :depends-on [f0/P0, f4/P0]
 
-  + context: Daily use and lightweight documentation keep the system coherent.
-  + IF: The stack requires ongoing attention to remain healthy
-  + HOWEVER: Stewardship currently happens informally; no protocol
-  + THEN: Formalize daily use expectations; architecture note protocol; collaborator guardrails
-  + BECAUSE: Systems drift without stewardship; informal practice doesn't survive interruption
-
-  + EVIDENCE:
-    evidence[Daily FUTON1 use happens but isn't tracked]
-    evidence[Architecture notes exist but inconsistently]
+  + context: F4 is hypertext editing — documents as graph nodes with relationships.
+  + IF: The human needs to navigate documents and their relationships
+  + HOWEVER: Currently document navigation is through Emacs/Arxana directly
+  + THEN: Surface document structure through F0 — see current document context, related documents, annotations
+  + BECAUSE: If the human cannot navigate hypertext fluidly, document relationships remain implicit
 
   + NEXT-STEPS:
-    next[Document stewardship protocol in futon0/docs/stewardship.md]
-    next[Add stewardship check to Stack HUD (days since last architecture note)]
-    next[Define collaborator onboarding guardrails]
+    next[Surface document context in Stack HUD]
+    next[Show related documents and annotations]
+    next[Enable quick navigation to linked fragments]
 
   :success-criteria
-    pass[Stewardship protocol survives 2-week vacation without system drift]
-    pass[New collaborator can onboard using documented guardrails]
-    fail[System coherence degrades during any absence]
+    pass[Human can see document relationships from HUD]
+    pass[Navigation between related documents is fluid]
+    fail[Document relationships require manual search]
 
 
-! instantiated-by: Prototype 9 — Futonic Co-evolution [🔮/未 ✨/演]
+! instantiated-by: Prototype 5 — F0-F5 Interface (Pattern Work) [🔷/模 🔄/迁]
   :maturity :stub
-  :depends-on [f0/P5, f3a/P2]
-  :source [Compass]
-  :evidence-for-greenfield [Compass scores correlate with futonic resonance signals]
-  :evidence-for-active [Literary work flows through membrane; bots respond meaningfully]
+  :depends-on [f0/P0, f5/P0]
 
-  + context: Attend to symbolic signals of future environments; let alignment emerge.
-  + IF: Futons (real-but-virtual futures) exert influence through symbolic signals
-  + HOWEVER: Currently this is intuitive, not stack-legible
-  + THEN: Make futonic signals legible through Compass; literary work enters here
-  + BECAUSE: Co-evolution with futures requires perceiving them; Compass is the perceptual instrument
-
-  + EVIDENCE:
-    evidence[Compass implementation in futon3a/src/futon/compass.clj]
-    evidence[Prior trajectories (Hyperreal, VSATLAS) emerged through reciprocal adaptation]
-    evidence[Literary work (Burroughs/Anderson-inspired) exists but not yet in stack]
+  + context: F5 is wiring diagrams — compositional pattern transfer across domains.
+  + IF: The human needs to work with patterns, see transfers, compose diagrams
+  + HOWEVER: Currently pattern work requires understanding category theory notation
+  + THEN: Surface pattern structure through F0 — see active patterns, visualize wiring, understand transfers
+  + BECAUSE: If the human cannot perceive patterns, they cannot leverage compositional abstraction
 
   + NEXT-STEPS:
-    next[Validate Compass scoring against known futonic resonance/dissonance]
-    next[Define literary work ingestion pathway]
-    next[Test: what do the bots make of the writing?]
+    next[Surface active patterns and their domains in Stack HUD]
+    next[Visualize wiring diagrams in accessible form]
+    next[Show pattern transfers between domains]
 
   :success-criteria
-    pass[Compass scores distinguish resonant from non-resonant futures]
-    pass[Literary work flows through membrane and generates pattern responses]
-    fail[Futonic signals remain purely intuitive with no stack representation]
+    pass[Human can see which patterns are active and where]
+    pass[Wiring diagrams are comprehensible without CT background]
+    fail[Pattern work remains expert-only]
 
 
-! instantiated-by: Prototype 10 — Conclusion [🔚/结 🌐/全]
+! instantiated-by: Prototype 6 — F0-F6 Interface (Mathematical Access) [∑/数 📖/典]
+  :maturity :stub
+  :depends-on [f0/P0, f6/P0]
+
+  + context: F6 is mathematical dictionary — definitions, proofs, examples with cross-references.
+  + IF: The human needs random access to mathematical knowledge
+  + HOWEVER: Currently math access is through linear reading or search
+  + THEN: Surface mathematical structure through F0 — query definitions, see dependencies, navigate proofs
+  + BECAUSE: If the human cannot access math nonlinearly, the dictionary structure provides no advantage
+
+  + NEXT-STEPS:
+    next[Add math query capability to Stack HUD]
+    next[Surface definition dependencies and examples]
+    next[Enable proof navigation from HUD context]
+
+  :success-criteria
+    pass[Human can query mathematical concepts from HUD]
+    pass[Dependencies between definitions are visible]
+    fail[Math access remains search-based with no structure]
+
+
+! instantiated-by: Prototype 7 — F0-F7 Interface (Transparency/Simulation) [🔍/透 🎮/模]
+  :maturity :stub
+  :depends-on [f0/P0, f7/P0]
+
+  + context: F7 is transparency and civic simulation — annotations on web content, scenario modeling.
+  + IF: The human needs to see transparency annotations and run simulations
+  + HOWEVER: Currently these are separate browser extensions and notebooks
+  + THEN: Surface transparency and simulation through F0 — see annotations, run scenarios, understand models
+  + BECAUSE: If the human cannot access transparency tools fluidly, economic structures remain opaque
+
+  + NEXT-STEPS:
+    next[Surface active annotations in Stack HUD]
+    next[Enable scenario simulation from HUD context]
+    next[Show model assumptions and results]
+
+  :success-criteria
+    pass[Human can see transparency annotations from HUD]
+    pass[Simulations are runnable without context switch]
+    fail[Transparency tools remain siloed from main interface]
+
+
+! instantiated-by: Completion — Full Layer Integration [🔚/结 🌐/全]
   :maturity :greenfield
-  :depends-on [f0/P1 f0/P2 f0/P3 f0/P4 f0/P5 f0/P6 f0/P7 f0/P8 f0/P9]
+  :depends-on [f0/P0, f0/P1, f0/P2, f0/P3, f0/P4, f0/P5, f0/P6, f0/P7]
 
-  + context: The cumulative argument — bidirectional legibility grounds the stack.
-  + IF: All prototypes are implemented and operational
-  + HOWEVER: The whole may be more (or less) than the sum of parts
-  + THEN: Validate that the stack is genuinely legible in both directions
-  + BECAUSE: Without the cyborg interface, higher futons cannot see; without higher futons, the interface has nothing to show
-
-  + EVIDENCE:
-    evidence[P1-P3 demonstrate interface works]
-    evidence[P4-P9 make it health-aware, affect-sensitive, generative]
+  + context: F0 is complete when all layer interfaces work.
+  + IF: P0-P7 are all operational
+  + HOWEVER: Integration may reveal gaps not visible in individual prototypes
+  + THEN: Validate that the human can access all stack capabilities through F0
+  + BECAUSE: The system extends human capability only if all layers are accessible
 
   + NEXT-STEPS:
-    next[Integration test: can morning review surface health + affect + rhythm + futonic signals?]
-    next[Validate bidirectionality: does human insight flow up? does stack state flow down?]
+    next[Integration test: access all layers through morning review workflow]
+    next[Identify friction points in layer transitions]
+    next[Validate that capability extension is real, not theoretical]
 
   :success-criteria
-    pass[Stack perceives human; human perceives stack; both adapt]
-    fail[Legibility is one-way or illusory]
+    pass[Human can access memory, agents, verification, hypertext, patterns, math, transparency through unified interface]
+    pass[Layer transitions are fluid, not jarring]
+    fail[Some layers remain inaccessible or require context switch]

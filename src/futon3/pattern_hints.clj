@@ -552,6 +552,30 @@
     (nearest-paramitas sigils limit)
     []))
 
+(defn nearest-patterns
+  "Return nearest patterns for PATTERN-ID.
+   Options: {:limit N :method :combined|:sigil|:glove}."
+  ([pattern-id] (nearest-patterns pattern-id {}))
+  ([pattern-id {:keys [limit method]}]
+   (let [limit (or limit 6)
+         method (keyword (or method :combined))
+         entry (pattern-entry pattern-id)
+         sigils (:sigils entry)
+         sigil-patterns (if (seq sigils)
+                          (nearest sigils @ldts-patterns limit)
+                          [])
+         glove-patterns (if (seq pattern-id)
+                          (glove-neighbors [pattern-id] limit)
+                          [])
+         glove-patterns (mapv (fn [entry]
+                                (merge (get @patterns-by-id (:id entry)) entry))
+                              glove-patterns)]
+     (case method
+       :sigil sigil-patterns
+       :glove glove-patterns
+       :combined (merge-patterns sigil-patterns glove-patterns limit)
+       (merge-patterns sigil-patterns glove-patterns limit)))))
+
 (defn fruit-definitions
   "Return the cached fruit definition vector (see resources/sigils/fruits.edn)."
   []

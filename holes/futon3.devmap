@@ -115,11 +115,12 @@ stack components queryable entities in the hypergraph.
     evidence[src/futon3/checks.clj implements check DSL]
     evidence[src/f2/router.clj routes check requests]
     evidence[src/futon3/futon1_bridge.clj wires to futon1]
+    evidence[src/futon3/futon2_bridge.clj logs viriya deltas for checks]
+    evidence[src/f2/transport.clj exposes /musn/check HTTP endpoint]
+    evidence[docs/api/musn.yaml documents /musn/check]
     evidence[test/transport_test.clj covers workday/check forwarding]
 
   + NEXT-STEPS:
-    next[Ship futon1/futon2 adapters so checks replicate to graph + viriya stores]
-    next[Expose /musn/check over HTTP once transport contract frozen]
     next[Add check latency instrumentation]
 
   :success-criteria
@@ -177,12 +178,13 @@ stack components queryable entities in the hypergraph.
 
   + EVIDENCE:
     evidence[src/futon3/workday.clj implements workday intake]
+    evidence[src/f2/transport.clj exposes /musn/workday/submit HTTP endpoint]
+    evidence[docs/api/musn.yaml documents /musn/workday/submit]
     evidence[test/transport_test.clj covers workday submission]
     evidence[README documents workday API]
 
   + NEXT-STEPS:
     next[Replace futon3/logs/workday.edn queue with futon1 persistence (workday->graph)]
-    next[Add HTTP affordances for instrumentation stewards]
     next[Integrate fubar.el alongside aob-chatgpt]
 
   :success-criteria
@@ -212,11 +214,13 @@ stack components queryable entities in the hypergraph.
     evidence[futon3a/scripts/index_patterns.sh builds notions index with GloVe/fastText/MiniLM]
     evidence[futon3a/scripts/portal provides pattern search and suggest commands]
     evidence[futon3a/docs/pattern-indexing.md documents embedding pipeline]
+    evidence[src/futon3/pattern_hints.clj exposes nearest-patterns helper]
+    evidence[scripts/nearest-patterns provides nearest-patterns command]
+    evidence[fucodex/fuclaude route nearest-patterns subcommand]
 
   + NEXT-STEPS:
     next[Integrate futon3a portal into futon3 HUD server for pattern suggestions]
     next[Wire futon3a embeddings into futon3 pattern search API]
-    next[Add nearest-patterns command to fuclaude/fucodex]
     next[Publish deterministic neighbourhood tests]
     next[Unify futon3 and futon3a pattern stores or establish clear bridge]
 

@@ -9,6 +9,7 @@
             [futon3.checks :as checks]
             [futon3.fulab.hud :as hud]
             [futon3.fulab.pattern-competence :as pc]
+            [futon3.futon2-bridge :as futon2-bridge]
             [futon3.tatami :as tatami]
             [futon3.workday :as workday]
             [futon3.futon1-bridge :as f1-bridge]
@@ -235,6 +236,7 @@
   (let [payload (:payload envelope)
         run-id ((run-id-fn state))
         futon1-config (get @(:config state) :futon1)
+        futon2-config (get @(:config state) :futon2)
         futon1-enabled? (and (get futon1-config :enabled?)
                              (seq (get futon1-config :api-base)))
         submission (workday/submit! {:payload payload
@@ -256,6 +258,8 @@
             _ (f1-bridge/record-workday! futon1-config entry)
             _ (when check-outcome
                 (f1-bridge/record-check! futon1-config check-outcome))
+            _ (when check-outcome
+                (futon2-bridge/record-check! futon2-config check-outcome))
             base {:ok true
                   :type "workday"
                   :run-id run-id
@@ -288,7 +292,8 @@
   (let [request (prepare-check-request state client envelope)
         result (checks/check! request)
         run-id (:run-id request)
-        futon1-config (get @(:config state) :futon1)]
+        futon1-config (get @(:config state) :futon1)
+        futon2-config (get @(:config state) :futon2)]
     (if (:ok result)
       (let [proof (:proof result)]
         (record-history! state {:client (:id client)
@@ -298,6 +303,7 @@
                                 :pattern (:pattern/id proof)
                                 :status (:status result)})
         (f1-bridge/record-check! futon1-config result)
+        (futon2-bridge/record-check! futon2-config result)
         {:reply {:ok true
                  :type "check"
                  :run-id run-id
@@ -458,6 +464,99 @@
                 (map json/encode)
                 (str/join "\n"))}))
 
+(defn- handle-check-http [state request]
+  (try
+    (let [payload (normalize-check-payload (or (parse-json-body request) {}))
+          run-id ((run-id-fn state))
+          proof-id (when-let [id-fn (proof-id-fn state)]
+                     (id-fn run-id))
+          request (-> payload
+                      (assoc :run-id run-id
+                             :proof/recorded (now-iso state)
+                             :origin (http-origin request payload))
+                      (cond-> proof-id (assoc :proof/id proof-id)))
+          result (checks/check! request)
+          futon1-config (get @(:config state) :futon1)
+          futon2-config (get @(:config state) :futon2)]
+      (when (:ok result)
+        (record-history! state {:client "http"
+                                :type :check
+                                :stamp (now-stamp state)
+                                :run-id run-id
+                                :pattern (get-in result [:proof :pattern/id])
+                                :status (:status result)}))
+      (f1-bridge/record-check! futon1-config result)
+      (futon2-bridge/record-check! futon2-config result)
+      (if (:ok result)
+        (json-response 200 {:ok true
+                            :type "check"
+                            :run-id run-id
+                            :status (:status result)
+                            :missing (:missing result)
+                            :derived (:derived/tasks result)
+                            :proof (:proof result)
+                            :log (:log-path result)})
+        (json-response 200 {:ok false
+                            :type "check"
+                            :err (:err result)
+                            :details (:details result)})))
+    (catch Exception e
+      (json-response 500 {:ok false
+                          :type "check"
+                          :err "check-failed"
+                          :details (.getMessage e)}))))
+
+(defn- handle-workday-submit [state request]
+  (try
+    (let [payload (normalize-workday-payload (or (parse-json-body request) {}))
+          run-id ((run-id-fn state))
+          futon1-config (get @(:config state) :futon1)
+          futon2-config (get @(:config state) :futon2)
+          futon1-enabled? (and (get futon1-config :enabled?)
+                               (seq (get futon1-config :api-base)))
+          client {:id "http-client"
+                  :name "http-client"
+                  :remote-addr (some-> (:remote-addr request) str)}
+          submission (workday/submit! {:payload payload
+                                       :client client
+                                       :msg-id (:msg-id payload)
+                                       :run-id run-id
+                                       :source :http
+                                       :log? (not futon1-enabled?)})]
+      (if (:ok submission)
+        (let [entry (:entry submission)
+              check-request (workday/check-request payload entry)
+              check-outcome (when check-request (checks/check! check-request))
+              _ (record-history! state {:client "http"
+                                        :type :workday
+                                        :stamp (now-stamp state)
+                                        :run-id run-id
+                                        :workday/id (:workday/id entry)
+                                        :activity (:workday/activity entry)})
+              _ (f1-bridge/record-workday! futon1-config entry)
+              _ (when check-outcome
+                  (f1-bridge/record-check! futon1-config check-outcome))
+              _ (when check-outcome
+                  (futon2-bridge/record-check! futon2-config check-outcome))
+              base {:ok true
+                    :type "workday"
+                    :run-id run-id
+                    :workday/id (:workday/id entry)
+                    :log (:log-path submission)
+                    :blocked-by (:blocked-by submission)
+                    :note (:note submission)}]
+          (json-response 200 (cond-> base
+                               check-outcome (assoc :check check-outcome))))
+        (json-response 200 {:ok false
+                            :type "workday"
+                            :err (:err submission)
+                            :details (:details submission)})))
+    (catch Exception e
+      (json-response 500 {:ok false
+                          :type "workday"
+                          :err "workday-submit-failed"
+                          :details (.getMessage e)}))))
+
 (defn- plaintext-response [status body]
   {:status status
    :headers {"content-type" "text/plain"}
@@ -472,6 +571,54 @@
   (let [body (slurp (:body request))]
     (when-not (str/blank? body)
       (json/parse-string body true))))
+
+(defn- ensure-seq [value]
+  (cond
+    (nil? value) nil
+    (sequential? value) value
+    :else [value]))
+
+(defn- ensure-text [value]
+  (cond
+    (nil? value) nil
+    (string? value) value
+    :else (pr-str value)))
+
+(defn- http-origin [request payload]
+  (let [origin (when (map? (:origin payload)) (:origin payload))
+        remote (some-> (:remote-addr request) str)]
+    (merge {:source :http
+            :remote-addr remote}
+           origin)))
+
+(defn- normalize-check-payload [payload]
+  (let [pattern-id (or (:pattern/id payload)
+                       (:pattern-id payload)
+                       (:pattern payload))
+        context (ensure-text (:context payload))
+        evidence (ensure-seq (:evidence payload))
+        sigils (ensure-seq (:sigils payload))
+        prototypes (ensure-seq (:prototypes payload))]
+    (-> payload
+        (dissoc :pattern-id :pattern)
+        (cond-> pattern-id (assoc :pattern/id pattern-id))
+        (cond-> context (assoc :context context))
+        (cond-> evidence (assoc :evidence evidence))
+        (cond-> sigils (assoc :sigils sigils))
+        (cond-> prototypes (assoc :prototypes prototypes)))))
+
+(defn- normalize-workday-payload [payload]
+  (let [activity (ensure-text (:activity payload))
+        evidence (ensure-seq (:evidence payload))
+        sigils (ensure-seq (:sigils payload))
+        prototypes (ensure-seq (:prototypes payload))
+        tags (ensure-seq (:tags payload))]
+    (-> payload
+        (cond-> activity (assoc :activity activity))
+        (cond-> evidence (assoc :evidence evidence))
+        (cond-> sigils (assoc :sigils sigils))
+        (cond-> prototypes (assoc :prototypes prototypes))
+        (cond-> tags (assoc :tags tags)))))
 
 (defn- git-head [repo-root]
   (let [{:keys [exit out err]} (shell/sh "git" "-C" repo-root "rev-parse" "HEAD")]
@@ -624,6 +771,10 @@
     (handle-hud-format state request)
     (and (= (:uri request) "/musn/ws") (= (:request-method request) :get))
     (websocket-handler state request)
+    (and (= (:uri request) "/musn/check") (= (:request-method request) :post))
+    (handle-check-http state request)
+    (and (= (:uri request) "/musn/workday/submit") (= (:request-method request) :post))
+    (handle-workday-submit state request)
     (and (= (:uri request) "/musn/ingest") (= (:request-method request) :post))
     (handle-ingest state request)
     :else

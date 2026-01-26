@@ -340,6 +340,7 @@
                          "- /home/joe/code/futon3/scripts/musn-chat      \"question for the user\" (human-contact, costs 5 mana)\n"
                          "- /home/joe/code/futon3/scripts/musn-plan      \"Plan: ...\"\n"
                          "- /home/joe/code/futon3/scripts/wide-search   <rg args>\n"
+                         "- /home/joe/code/futon3/scripts/nearest-patterns <pattern-id> [--limit N] [--method glove|sigil|combined]\n"
                          "- /home/joe/code/futon3/scripts/musn-hud      Use this command to bring up helpful pattern guidance and stats about your run.\n"
                          "- /home/joe/code/futon3/scripts/musn-help     Brings up this help screen.\n"
                          "Further information can be obtained by running musn-help <tool> or musn-help <pattern>\n"

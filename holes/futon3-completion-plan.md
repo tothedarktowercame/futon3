@@ -79,26 +79,26 @@ futon3.devmap. These prototypes are all `:active` (operational but incomplete).
 
 ### P2: Check DSL & Applicability Engine
 
-- [ ] Expose `/musn/check` over HTTP
+- [x] Expose `/musn/check` over HTTP
   - Endpoint accepts: pattern-id, context EDN, evidence refs
   - Returns: status, missing fields, derived tasks
   - Requires Stage 1 contract freeze
 
-- [ ] Ship futon1/futon2 adapters for checks
+- [x] Ship futon1/futon2 adapters for checks
   - `proof->graph`: Accepted checks become futon1 relations
   - `proof->energy`: Checks emit viriya deltas for futon2 dashboards
   - Lock adapters with fixtures and schemas
 
 ### P5: Similarity Field
 
-- [ ] Add `nearest-patterns` command to fuclaude/fucodex
+- [x] Add `nearest-patterns` command to fuclaude/fucodex
   - `scripts/nearest-patterns <pattern-id> [--limit N] [--method glove|sigil]`
   - Also available as RPC from runners
   - Update musn-help to document it
 
 ### P4: Workday Instrumentation
 
-- [ ] Add HTTP affordances for instrumentation stewards
+- [x] Add HTTP affordances for instrumentation stewards
   - `POST /musn/workday/submit` for external clients
   - Returns pattern hits/misses and follow-up obligations
   - Swagger/OpenAPI spec in `docs/api/`

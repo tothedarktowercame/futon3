@@ -1,0 +1,141 @@
+openapi: 3.0.3
+info:
+  title: Futon3 MUSN API
+  version: "0.1"
+paths:
+  /musn/check:
+    post:
+      summary: Run a pattern applicability check
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pattern/id:
+                  type: string
+                  description: Pattern id (preferred)
+                pattern-id:
+                  type: string
+                  description: Pattern id alias
+                pattern:
+                  type: string
+                  description: Pattern id alias
+                context:
+                  description: Context string or EDN-ish payload (will be pr-str'd)
+                evidence:
+                  type: array
+                  items: {}
+                sigils:
+                  type: array
+                  items:
+                    type: string
+                prototypes:
+                  type: array
+                  items:
+                    type: string
+                aif-trace:
+                  type: object
+                  description: Optional AIF summary map
+                origin:
+                  type: object
+                  description: Optional origin override (source is forced to http)
+      responses:
+        "200":
+          description: Check result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  type:
+                    type: string
+                  run-id:
+                    type: string
+                  status:
+                    type: string
+                  missing:
+                    type: array
+                    items: {}
+                  derived:
+                    type: array
+                    items:
+                      type: string
+                  proof:
+                    type: object
+                  log:
+                    type: string
+                  err:
+                    type: string
+                  details:
+                    type: object
+  /musn/workday/submit:
+    post:
+      summary: Submit a workday entry (optionally run a check)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                msg-id:
+                  type: string
+                actor:
+                  type: string
+                activity:
+                  description: Activity summary (string or EDN-ish payload)
+                evidence:
+                  type: array
+                  items: {}
+                sigils:
+                  type: array
+                  items:
+                    type: string
+                prototypes:
+                  type: array
+                  items:
+                    type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+                notes:
+                  type: string
+                check:
+                  type: object
+                  description: Optional nested check request (pattern/id, context, evidence, etc.)
+      responses:
+        "200":
+          description: Workday submission result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  type:
+                    type: string
+                  run-id:
+                    type: string
+                  workday/id:
+                    type: string
+                  log:
+                    type: string
+                  blocked-by:
+                    type: array
+                    items: {}
+                  note:
+                    type: string
+                  check:
+                    type: object
+                  err:
+                    type: string
+                  details:
+                    type: object

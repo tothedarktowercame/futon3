@@ -17,6 +17,11 @@ START_ISO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 RUN_CWD="$(pwd)"
 export PATH="$ROOT/scripts:$PATH"
 
+if [[ "${1-}" == "nearest-patterns" ]]; then
+  shift
+  exec "$ROOT/scripts/nearest-patterns" "$@"
+fi
+
 LIVE=false
 PATTERNS=""
 CHOSEN=""
@@ -105,6 +110,7 @@ RPCs (available when running with --musn or --pattern-rpc):
   /home/joe/code/futon3/scripts/pattern-action  Log pattern read/update/implement
   /home/joe/code/futon3/scripts/pattern-select  Select a pattern for reading
   /home/joe/code/futon3/scripts/pattern-use     Mark a pattern as applied
+  /home/joe/code/futon3/scripts/nearest-patterns <pattern-id> [--limit N] [--method glove|sigil|combined]
   /home/joe/code/futon3/scripts/musn-help       Show MUSN help screen
   /home/joe/code/futon3/scripts/musn-hud        Bring up HUD guidance
   /home/joe/code/futon3/scripts/give-mana       Donate mana to the pool (sospeso protocol)

@@ -86,8 +86,8 @@ In IRC, post:
 `!new` establishes a fresh session id for a token (defaults to the bot name).
 `!task` reuses the most recent session for that token; if no session exists yet,
 it creates a new one. Use `token:`/`sid:` prefixes to force a target.
-Use `--approval-policy never` to avoid interactive approvals, or omit it to keep
-Codex defaults.
+Use `--approval-policy never` (or `--allow-edits`) to avoid interactive approvals, or omit
+it to keep Codex defaults. `--yolo` is an alias for `--no-sandbox` (dangerous).
 Session mappings persist in `/tmp/musn_chat_sessions.edn`; delete it to reset.
 To open the MUSN HUD/viewer for a session id, run in Emacs:
 ```
@@ -132,9 +132,12 @@ Use `fuclaude` and `fucodex` instead of raw `claude` / `codex` to get automatic 
 # Resume a previous session
 ./fuclaude --resume <session-id> -p "Continue from where we left off"
 ./fucodex --live resume --last "Continue work"
+./fucodex --live --continue --prompt "Continue work"  # alias for resume --last
+./fucodex --live --resume <session-id> --prompt "Continue work"  # alias for resume <id>
 
 # Interactive mode with AIF pattern guidance
 ./fucodex --cli --with-aif
+./fucodex --cli --with-aif --intent "I want to work on this"
 
 # Exploratory pattern application
 ./fuclaude explore --explore-hotwords "devmap,coherence"

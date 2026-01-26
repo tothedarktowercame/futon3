@@ -85,4 +85,11 @@ To extend a session with additional turns (and additional clock-ins), resume via
 ./fucodex --live --session-id <session-id> resume --last "Continue work"
 ```
 
+Aliases:
+
+```
+./fucodex --live --resume <session-id> --prompt "Continue work"
+./fucodex --live --continue --prompt "Continue work"
+```
+
 This appends to the existing session file while keeping the same run id for reports.

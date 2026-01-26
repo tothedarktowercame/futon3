@@ -395,6 +395,7 @@
          "[FULAB-HUD]\n"
          "Intent: " (:intent hud) "\n"
          "Sigils: " sigil-str "\n"
+         mana-line "\n"
          "\n"
          "Pattern candidates (reason about these):\n"
          candidates-str "\n"

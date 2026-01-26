@@ -744,6 +744,13 @@
                                  (when (> (count turn-context) 300) "...")
                                  "]")
                             intent)
+          ;; Pull mana from MUSN session if not provided in payload
+          session-mana (when (and session-id (not mana))
+                         (when-let [entry (musn-svc/get-session session-id)]
+                           (when-let [mana-atom (:mana entry)]
+                             (let [m @mana-atom]
+                               (select-keys m [:budget :balance :earned :spent])))))
+          mana (or mana session-mana)
           musn-help (cond
                       (true? musn-help-force) true
                       (true? musn-help)

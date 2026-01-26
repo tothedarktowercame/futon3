@@ -1,4 +1,14 @@
 #!/usr/bin/env clojure
+;; MUSN IRC bridge.
+;;
+;; Options:
+;;   --host HOST
+;;   --port PORT
+;;   --musn-url URL
+;;   --poll-interval SECONDS
+;;   --room NAME
+;;   --password SECRET (or MUSN_IRC_PASSWORD)
+;;   --allowlist CSV (or MUSN_IRC_ALLOWLIST, comma-separated IPs/CIDRs)
 (ns scripts.musn-irc-bridge
   (:require [cheshire.core :as json]
             [clj-http.client :as http]
@@ -13,9 +23,16 @@
                :port 6667
                :musn-url "http://localhost:6065"
                :poll-interval 2.0
-               :room nil}]
+               :room nil
+               :password (System/getenv "MUSN_IRC_PASSWORD")
+               :allowlist (some-> (System/getenv "MUSN_IRC_ALLOWLIST")
+                                  (str/split #","))}]
     (if (empty? args)
-      opts
+      (update opts :allowlist (fn [entries]
+                                (->> entries
+                                     (map str/trim)
+                                     (remove str/blank?)
+                                     vec)))
       (let [[flag val & rest] args]
         (case flag
           "--host" (recur rest (assoc opts :host val))
@@ -23,6 +40,8 @@
           "--musn-url" (recur rest (assoc opts :musn-url val))
           "--poll-interval" (recur rest (assoc opts :poll-interval (Double/parseDouble val)))
           "--room" (recur rest (assoc opts :room val))
+          "--password" (recur rest (assoc opts :password val))
+          "--allowlist" (recur rest (update opts :allowlist into (str/split (or val "") #",")))
           (recur rest opts))))))
 
 (defonce server-state (atom {:clients {}
@@ -37,6 +56,61 @@
     (try
       (spit log-path (str (java.time.Instant/now) " " line "\n") :append true)
       (catch Throwable _))))
+
+(defn- ipv4->int [ip]
+  (when (string? ip)
+    (let [parts (str/split ip #"\.")]
+      (when (= 4 (count parts))
+        (try
+          (let [[a b c d] (map #(Integer/parseInt %) parts)]
+            (when (every? #(<= 0 % 255) [a b c d])
+              (-> (bit-shift-left a 24)
+                  (bit-or (bit-shift-left b 16))
+                  (bit-or (bit-shift-left c 8))
+                  (bit-or d))))
+          (catch Exception _ nil))))))
+
+(defn- cidr-entry [token]
+  (when (string? token)
+    (if (str/includes? token "/")
+      (let [[ip bits] (str/split token #"/" 2)
+            ip-int (ipv4->int (str/trim ip))
+            bits (try (Integer/parseInt (str/trim bits))
+                      (catch Exception _ nil))]
+        (when (and ip-int bits (<= 0 bits 32))
+          {:kind :cidr
+           :ip ip-int
+           :bits bits
+           :raw token}))
+      {:kind :ip
+       :ip (str/trim token)
+       :raw token})))
+
+(defn- allowlist-entries [entries]
+  (->> entries
+       (map cidr-entry)
+       (remove nil?)
+       vec))
+
+(defn- ipv4-in-cidr? [ip-int {:keys [ip bits]}]
+  (let [mask (if (zero? bits) 0 (bit-shift-left -1 (- 32 bits)))]
+    (= (bit-and ip-int mask) (bit-and ip mask))))
+
+(defn- allowed-remote? [allowlist remote-ip]
+  (let [entries (allowlist-entries allowlist)]
+    (if (empty? entries)
+      true
+      (let [ipv4 (ipv4->int remote-ip)]
+        (boolean
+         (some (fn [{:keys [kind ip] :as entry}]
+                 (case kind
+                   :ip (= ip remote-ip)
+                   :cidr (and ipv4 (ipv4-in-cidr? ipv4 entry))
+                   false))
+               entries))))))
+
+(defn- auth-required? [password]
+  (and (string? password) (not (str/blank? password))))
 
 (defn- strip-fulab-report [text]
   (let [text (or text "")]
@@ -185,9 +259,17 @@
         (when (not= 200 status)
           (send-line! client (format ":musn NOTICE %s :MUSN chat post failed" (:nick client))))))))
 
-(defn- handle-line! [client line musn-url poll-interval default-room]
+(defn- handle-line! [client line musn-url poll-interval default-room password]
   (let [line (str/trimr line)]
     (cond
+      (and (auth-required? password)
+           (not (:authed? client))
+           (not (str/starts-with? line "PASS "))
+           (not (str/starts-with? line "PING"))
+           (not (str/starts-with? line "CAP "))
+           (not (str/starts-with? line "QUIT")))
+      (send-line! client ":musn NOTICE * :PASS required")
+
       (str/starts-with? line "PING")
       (let [token (second (str/split line #"\s+" 2))]
         (send-line! client (format "PONG %s" (or token ""))))
@@ -199,12 +281,22 @@
         (when (str/includes? line "REQ")
           (send-line! client "CAP * NAK :")))
 
+      (str/starts-with? line "PASS ")
+      (let [pass (second (str/split line #"\s+" 2))]
+        (if (= pass password)
+          (do
+            (swap! server-state assoc-in [:clients (:id client) :authed?] true)
+            (send-line! client ":musn NOTICE * :PASS accepted"))
+          (do
+            (send-line! client ":musn NOTICE * :PASS rejected")
+            (throw (ex-info "auth-failed" {})))))
+
       (str/starts-with? line "NICK ")
       (let [nick (second (str/split line #"\s+" 2))]
         (swap! server-state assoc-in [:clients (:id client) :nick] (str/trim nick))
         (when (welcome! (get-in @server-state [:clients (:id client)]))
           (swap! server-state assoc-in [:clients (:id client) :registered?] true))
-        (when (and default-room (:user client) (nil? (:room client)))
+        (when (and default-room (:user client) (nil? (:room client)) (:authed? client))
           (join-room! (get-in @server-state [:clients (:id client)]) default-room musn-url poll-interval)))
 
       (str/starts-with? line "USER ")
@@ -212,7 +304,7 @@
         (swap! server-state assoc-in [:clients (:id client) :user] (str/trim user))
         (when (welcome! (get-in @server-state [:clients (:id client)]))
           (swap! server-state assoc-in [:clients (:id client) :registered?] true))
-        (when (and default-room (:nick client) (nil? (:room client)))
+        (when (and default-room (:nick client) (nil? (:room client)) (:authed? client))
           (join-room! (get-in @server-state [:clients (:id client)]) default-room musn-url poll-interval)))
 
       (str/starts-with? line "JOIN ")
@@ -260,10 +352,11 @@
 
       :else nil)))
 
-(defn- handle-client! [^Socket socket musn-url poll-interval default-room]
+(defn- handle-client! [^Socket socket musn-url poll-interval default-room password allowlist]
   (let [id (str (UUID/randomUUID))
         reader (BufferedReader. (InputStreamReader. (.getInputStream socket)))
         writer (BufferedWriter. (OutputStreamWriter. (.getOutputStream socket)))
+        remote-ip (try (.getHostAddress (.getInetAddress socket)) (catch Throwable _ "unknown"))
         client {:id id
                 :socket socket
                 :in reader
@@ -271,7 +364,9 @@
                 :nick nil
                 :user nil
                 :registered? false
-                :room nil}]
+                :room nil
+                :authed? (not (auth-required? password))
+                :remote-ip remote-ip}]
     (try
       (.setKeepAlive socket true)
       (catch Throwable _))
@@ -280,12 +375,15 @@
                   (try (.getRemoteSocketAddress socket) (catch Throwable _ "unknown"))))
     (swap! server-state assoc-in [:clients id] client)
     (try
+      (when-not (allowed-remote? allowlist remote-ip)
+        (send-line! client ":musn NOTICE * :Connection rejected (allowlist)")
+        (throw (ex-info "allowlist-reject" {:remote remote-ip})))
       (loop []
         (when-let [line (.readLine reader)]
           (when-not (str/starts-with? line "PING")
             (log! (format "client %s line: %s" id line)))
           (try
-            (handle-line! (get-in @server-state [:clients id]) line musn-url poll-interval default-room)
+            (handle-line! (get-in @server-state [:clients id]) line musn-url poll-interval default-room password)
             (catch Throwable t
               (log! (format "handler error for %s: %s" id (.getMessage t)))))
           (recur)))
@@ -300,12 +398,12 @@
         (try (.close socket) (catch Exception _ nil))))))
 
 (defn -main [& args]
-  (let [{:keys [host port musn-url poll-interval room]} (parse-args args)]
+  (let [{:keys [host port musn-url poll-interval room password allowlist]} (parse-args args)]
     (log! (format "listening on %s:%d (musn=%s)" host port musn-url))
     (with-open [server (ServerSocket. port 50 (java.net.InetAddress/getByName host))]
       (while true
         (let [socket (.accept server)]
-          (future (handle-client! socket musn-url poll-interval room)))))))
+          (future (handle-client! socket musn-url poll-interval room password allowlist)))))))
 
 (when (= *file* (or (System/getProperty "babashka.file") *file*))
   (apply -main *command-line-args*))

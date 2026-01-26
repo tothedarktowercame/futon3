@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -lt 1 ]]; then
-  echo "usage: musn-plan [--diagram --step \"type: detail\" ...] <plan line>" >&2
+  echo "usage: musn-plan --diagram-file <path> | --diagram <edn> | --diagram-stdin" >&2
   exit 2
 fi
 sid="${FUTON3_MUSN_SESSION_ID:-}"
@@ -13,104 +13,58 @@ if [[ -z "$sid" ]]; then
   exit 2
 fi
 
-SID="$sid" URL="$url" python3 - "$@" <<'PY'
-import json
-import os
-import sys
-import urllib.request
-import re
+mode=""
+payload=""
+if [[ "${1-}" == "--diagram-file" ]]; then
+  mode="file"
+  payload="${2-}"
+  shift 2
+elif [[ "${1-}" == "--diagram" ]]; then
+  mode="inline"
+  shift
+  payload="$*"
+elif [[ "${1-}" == "--diagram-stdin" ]]; then
+  mode="stdin"
+  shift
+else
+  echo "musn-plan: expected --diagram-file, --diagram, or --diagram-stdin" >&2
+  exit 2
+fi
 
-sid = os.environ.get("SID", "")
-url = os.environ.get("URL", "").rstrip("/")
-helper_mode = os.environ.get("FUTON3_MUSN_HELPER_MODE", "").lower()
-args = list(sys.argv[1:])
-
-def post(path, payload):
-    data = json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(url + path, data=data, method="POST")
-    req.add_header("Content-Type", "application/json")
-    with urllib.request.urlopen(req, timeout=2) as resp:
-        raw = resp.read().decode("utf-8") or "{}"
-        return json.loads(raw)
-
-def usage():
-    return (
-        "usage: musn-plan [--diagram --step \"type: detail\" ...] <plan line>\n"
-        "  types: reasoning|command|file-edit|tool (default: reasoning)\n"
-    )
-
-def parse_args(argv):
-    steps = []
-    diagram_mode = False
-    plan_line = []
-    i = 0
-    while i < len(argv):
-        token = argv[i]
-        if token in ("-h", "--help"):
-            print(usage())
-            raise SystemExit(0)
-        if token == "--diagram":
-            diagram_mode = True
-            i += 1
-            continue
-        if token == "--step":
-            if i + 1 >= len(argv):
-                raise RuntimeError("--step requires a value")
-            steps.append(argv[i + 1])
-            i += 2
-            continue
-        plan_line.append(token)
-        i += 1
-    return diagram_mode, steps, " ".join(plan_line).strip()
-
-def step_to_node(step, idx):
-    raw = (step or "").strip()
-    m = re.match(r"(?i)^(reasoning|reason|think|note|command|cmd|file-edit|edit|tool)\s*:\s*(.*)$", raw)
-    if m:
-        kind = m.group(1).lower()
-        body = m.group(2).strip()
-    else:
-        kind = "reasoning"
-        body = raw
-    if kind in ("command", "cmd"):
-        component = "musn.plan/action-command"
-        params = {"cmd": body}
-    elif kind in ("file-edit", "edit"):
-        component = "musn.plan/action-file-edit"
-        params = {"note": body}
-    elif kind == "tool":
-        component = "musn.plan/action-tool"
-        params = {"note": body}
-    else:
-        component = "musn.plan/action-reasoning"
-        params = {"note": body}
-    return {"id": f"s{idx}", "component": component, "params": params}
-
-try:
-    if helper_mode == "stream":
-        print(json.dumps({"ok": True}))
-        raise SystemExit(0)
-    diagram_mode, steps, plan_line = parse_args(args)
-    state = post("/musn/session/state", {"session/id": sid})
-    turn = (state.get("state") or {}).get("turn")
-    if not turn:
-        raise RuntimeError("missing turn in session state")
-
-    if steps or diagram_mode:
-        if not steps:
-            raise RuntimeError("diagram mode requires at least one --step")
-        nodes = [step_to_node(step, i + 1) for i, step in enumerate(steps)]
-        nodes.append({"id": "seq", "component": "musn.plan/sequence"})
-        edges = [{"from": node["id"], "to": "seq", "to-port": "actions"} for node in nodes if node["id"] != "seq"]
-        diagram = {"nodes": nodes, "edges": edges, "output": "seq"}
-        post("/musn/turn/plan", {"session/id": sid, "turn": int(turn), "plan/diagram": diagram})
-    else:
-        if not plan_line:
-            raise RuntimeError("missing plan line")
-        post("/musn/turn/plan", {"session/id": sid, "turn": int(turn), "plan": plan_line})
-
-    print(json.dumps({"ok": True, "turn": int(turn)}))
-except Exception as exc:
-    print(json.dumps({"ok": False, "error": str(exc)}))
-    sys.exit(0)
-PY
+SID="$sid" URL="$url" MODE="$mode" PAYLOAD="$payload" clojure -M -e '
+  (require '\''[clojure.edn :as edn])
+  (require '\''[clj-http.client :as http])
+  (require '\''[cheshire.core :as json])
+  (def sid (System/getenv "SID"))
+  (def url (or (System/getenv "URL") ""))
+  (def helper (some-> (System/getenv "FUTON3_MUSN_HELPER_MODE") clojure.string/lower-case))
+  (def mode (or (System/getenv "MODE") ""))
+  (def payload (System/getenv "PAYLOAD"))
+  (defn post! [path body]
+    (let [resp (http/post (str url path)
+                          {:content-type :json
+                           :accept :json
+                           :throw-exceptions false
+                           :body (json/generate-string body)})]
+      (when (= 200 (:status resp))
+        (json/parse-string (:body resp) true))))
+  (try
+    (if (= helper "stream")
+      (do (println (json/generate-string {:ok true})) (System/exit 0))
+      (let [diagram (case mode
+                      "file" (edn/read-string (slurp payload))
+                      "inline" (edn/read-string payload)
+                      "stdin" (edn/read-string (slurp *in*))
+                      (throw (ex-info "unknown mode" {:mode mode})))
+            state (post! "/musn/session/state" {:session/id sid})
+            turn (get-in state [:state :turn])]
+        (when-not turn
+          (throw (ex-info "missing turn in session state" {:state state})))
+        (post! "/musn/turn/plan" {:session/id sid
+                                 :turn (int turn)
+                                 :plan/diagram diagram})
+        (println (json/generate-string {:ok true :turn (int turn)}))))
+    (catch Throwable t
+      (println (json/generate-string {:ok false :error (.getMessage t)}))
+      (System/exit 0)))
+'

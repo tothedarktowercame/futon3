@@ -49,13 +49,16 @@ stack components queryable entities in the hypergraph.
 
   + EVIDENCE:
     evidence[docs/protocol.md documents transport contracts]
+    evidence[docs/protocol/transport-contract-v1.md freezes check-job contract]
+    evidence[docs/protocol/golden-transcripts.md lists golden transcript fixtures]
     evidence[src/f2/router.clj implements event routing]
     evidence[test/f2/router_test.clj has 100-event idempotency + acceptance tests]
+    evidence[test/f2/transport_golden_test.clj replays golden transcripts]
+    evidence[test/fixtures/transport/golden-check-request.ndjson anchors deterministic transcripts]
     evidence[test/transport_test.clj covers per-client disconnect logging]
 
   + NEXT-STEPS:
-    next[Freeze transport contract v1 in docs/protocol/transport-contract-v1.md]
-    next[Add golden transcripts for pattern-apply, gap-report, trail-capture]
+    next[Wire golden transcript replay into CI]
     next[Document sandbox profile as canonical proofwork runtime]
 
   :success-criteria

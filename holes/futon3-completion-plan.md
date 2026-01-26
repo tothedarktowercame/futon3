@@ -113,37 +113,37 @@ futon3.devmap. These prototypes are all `:active` (operational but incomplete).
 
 ### P0: MUSN Transport
 
-- [ ] Add golden transcripts for pattern-apply, gap-report, trail-capture
-  - Place in `test/fixtures/golden/`
-  - CI validates transcripts are reproducible
+- [x] Add golden transcripts for pattern-apply, gap-report, trail-capture
+  - Place in `test/fixtures/transport/`
+  - Replay tests in `test/f2/transport_golden_test.clj`
 
 ### P3: Trail & Proof-State Journal
 
-- [ ] Implement daily rollups of clause advancement
+- [x] Implement daily rollups of clause advancement
   - Script or service that aggregates trails by day
   - Shows which devmap clauses advanced
   - Output: `lab/rollups/YYYY-MM-DD.edn`
 
-- [ ] Add proof artifacts (HUD screenshots or /musn/cues transcripts)
+- [x] Add proof artifacts (HUD screenshots or /musn/cues transcripts)
   - Capture mechanism for visual proof
   - Store in `lab/artifacts/`
 
 ### P5: Similarity Field
 
-- [ ] Publish deterministic neighbourhood tests
+- [x] Publish deterministic neighbourhood tests
   - Given pattern X, neighbours are always [A, B, C] in that order
   - Tests for both sigil-distance and GloVe methods
   - Place in `test/futon3/similarity_test.clj`
 
 ### P2: Check DSL
 
-- [ ] Add check latency instrumentation
+- [x] Add check latency instrumentation
   - Metrics: p50, p95, p99 check times
   - Log slow checks (>100ms)
 
 ### P4: Workday Instrumentation
 
-- [ ] Integrate fubar.el alongside aob-chatgpt
+- [x] Integrate fubar.el alongside aob-chatgpt
   - Emacs can submit workday claims via HTTP or Drawbridge
   - Document in `contrib/futon3-emacs.el` or similar
 

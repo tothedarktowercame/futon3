@@ -29,10 +29,10 @@
       (json/parse-string true)
       (dissoc :log)))
 
-(deftest golden-check-transcript-replays
+(defn- replay-transcript! [request-path reply-path]
   (let [state (make-state)
-        request-lines (load-ndjson "test/fixtures/transport/golden-check-request.ndjson")
-        expected-lines (load-ndjson "test/fixtures/transport/golden-check-reply.ndjson")
+        request-lines (load-ndjson request-path)
+        expected-lines (load-ndjson reply-path)
         envelopes (map #(json/parse-string % true) request-lines)
         expected (map #(json/parse-string % true) expected-lines)
         actual (map (fn [envelope]
@@ -42,3 +42,18 @@
                     envelopes)]
     (is (= (map #(dissoc % :log) expected)
            actual))))
+
+(deftest golden-check-transcript-replays
+  (replay-transcript!
+   "test/fixtures/transport/golden-check-request.ndjson"
+   "test/fixtures/transport/golden-check-reply.ndjson"))
+
+(deftest golden-gap-report-transcript-replays
+  (replay-transcript!
+   "test/fixtures/transport/golden-gap-report-request.ndjson"
+   "test/fixtures/transport/golden-gap-report-reply.ndjson"))
+
+(deftest golden-trail-capture-transcript-replays
+  (replay-transcript!
+   "test/fixtures/transport/golden-trail-capture-request.ndjson"
+   "test/fixtures/transport/golden-trail-capture-reply.ndjson"))

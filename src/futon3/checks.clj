@@ -12,6 +12,9 @@
 (defonce ^:private log-path (atom default-log-path))
 (def ^:private lock (Object.))
 (def ^:private catalog (atom nil))
+(def ^:private latency-samples (atom []))
+(def ^:private latency-sample-limit 500)
+(def ^:private slow-check-ms 100.0)
 
 (def ^:private aif-observation-vector-schema
   [:map {:closed true}
@@ -92,6 +95,36 @@
 
 (defn current-log-path []
   @log-path)
+
+(defn- record-latency! [pattern-id latency-ms]
+  (when (number? latency-ms)
+    (swap! latency-samples
+           (fn [samples]
+             (let [next (conj samples (double latency-ms))
+                   excess (- (count next) latency-sample-limit)]
+               (if (pos? excess)
+                 (vec (drop excess next))
+                 (vec next)))))
+    (when (and (number? slow-check-ms)
+               (> (double latency-ms) slow-check-ms))
+      (binding [*out* *err*]
+        (println (format "[checks] slow-check %.1fms pattern=%s"
+                         (double latency-ms)
+                         (or pattern-id "unknown")))))))
+
+(defn latency-summary
+  "Return latency percentiles for recent check! calls."
+  []
+  (let [samples (sort @latency-samples)
+        n (count samples)
+        pick (fn [p]
+               (when (pos? n)
+                 (let [idx (int (Math/ceil (* p (dec n))))]
+                   (double (nth samples idx)))))]
+    {:count n
+     :p50 (pick 0.50)
+     :p95 (pick 0.95)
+     :p99 (pick 0.99)}))
 
 (defn- ensure-log-file! []
   (let [file (io/file @log-path)
@@ -199,53 +232,58 @@
     :proof/keys [id recorded]
     :as request
     pattern-id :pattern/id}]
-  (cond
-    (blankish? pattern-id)
-    {:ok false :err "missing-pattern-id" :details {:request request}}
+  (let [start (System/nanoTime)
+        finish (fn [result]
+                 (let [latency-ms (/ (- (System/nanoTime) start) 1000000.0)]
+                   (record-latency! pattern-id latency-ms)
+                   (assoc result :latency-ms latency-ms)))]
+    (cond
+      (blankish? pattern-id)
+      (finish {:ok false :err "missing-pattern-id" :details {:request request}})
 
-    (blankish? context)
-    {:ok false :err "missing-context" :details {:pattern/id pattern-id}}
+      (blankish? context)
+      (finish {:ok false :err "missing-context" :details {:pattern/id pattern-id}})
 
-    :else
-    (try
-      (validate-request! request)
-      (let [catalog (catalog!)
-            pattern (get catalog pattern-id)]
-        (if (nil? pattern)
-          {:ok false :err "unknown-pattern" :details {:pattern/id pattern-id}}
-          (let [text (normalized-text context evidence)
-                hits (hit-set (:pattern/hotwords pattern) text)
-                status (determine-status {:hits hits :evidence (seq evidence)})
-                proof (cond-> {:proof/id (or id (random-proof-id))
-                               :proof/run-id (or run-id (random-proof-id))
-                               :proof/recorded (or recorded (clock/->iso-string))
-                               :pattern/id pattern-id
-                               :pattern/title (:pattern/title pattern)
-                               :pattern/rationale (:pattern/rationale pattern)
-                               :pattern/hotwords (:pattern/hotwords pattern)
-                               :pattern/hanzi (:pattern/hanzi pattern)
-                               :check/context context
-                               :check/evidence (vec evidence)
-                               :check/sigils (vec sigils)
-                               :check/prototypes (vec prototypes)
-                               :check/origin origin
-                               :proof/status status
-                               :proof/hits (vec (sort hits))
-                               :proof/similarity (similarity hits (count (:pattern/hotwords pattern)))}
-                        aif-trace (assoc :check/aif-trace aif-trace))
-                missing (cond-> []
-                          (= status :needs-evidence) (conj :evidence)
-                          (= status :needs-context) (conj :context))
-                derived (derived-actions status pattern)
-                logged (append-log! proof)]
-            {:ok true
-             :status status
-             :missing missing
-             :derived/tasks derived
-             :proof logged
-             :log-path (current-log-path)})))
-      (catch clojure.lang.ExceptionInfo ex
-        (let [{:keys [type details]} (ex-data ex)]
-          (if (= :invalid-request type)
-            {:ok false :err "invalid-request" :details details}
-            (throw ex)))))))
+      :else
+      (try
+        (validate-request! request)
+        (let [catalog (catalog!)
+              pattern (get catalog pattern-id)]
+          (if (nil? pattern)
+            (finish {:ok false :err "unknown-pattern" :details {:pattern/id pattern-id}})
+            (let [text (normalized-text context evidence)
+                  hits (hit-set (:pattern/hotwords pattern) text)
+                  status (determine-status {:hits hits :evidence (seq evidence)})
+                  proof (cond-> {:proof/id (or id (random-proof-id))
+                                 :proof/run-id (or run-id (random-proof-id))
+                                 :proof/recorded (or recorded (clock/->iso-string))
+                                 :pattern/id pattern-id
+                                 :pattern/title (:pattern/title pattern)
+                                 :pattern/rationale (:pattern/rationale pattern)
+                                 :pattern/hotwords (:pattern/hotwords pattern)
+                                 :pattern/hanzi (:pattern/hanzi pattern)
+                                 :check/context context
+                                 :check/evidence (vec evidence)
+                                 :check/sigils (vec sigils)
+                                 :check/prototypes (vec prototypes)
+                                 :check/origin origin
+                                 :proof/status status
+                                 :proof/hits (vec (sort hits))
+                                 :proof/similarity (similarity hits (count (:pattern/hotwords pattern)))}
+                          aif-trace (assoc :check/aif-trace aif-trace))
+                  missing (cond-> []
+                            (= status :needs-evidence) (conj :evidence)
+                            (= status :needs-context) (conj :context))
+                  derived (derived-actions status pattern)
+                  logged (append-log! proof)]
+              (finish {:ok true
+                       :status status
+                       :missing missing
+                       :derived/tasks derived
+                       :proof logged
+                       :log-path (current-log-path)}))))
+        (catch clojure.lang.ExceptionInfo ex
+          (let [{:keys [type details]} (ex-data ex)]
+            (if (= :invalid-request type)
+              (finish {:ok false :err "invalid-request" :details details})
+              (throw ex))))))))

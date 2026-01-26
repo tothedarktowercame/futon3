@@ -17,7 +17,7 @@
     "Environment variables:"
     "  FUTON1_API_BASE   Base URL for Futon1 API (e.g. http://localhost:8080/api/alpha)"
     "  FUTON1_PROFILE    Optional profile header"
-    "  FUTON3_ROOT       Default root if --root not provided"])))
+    "  FUTON3_ROOT       Default root if --root not provided"]))
 
 (defn- parse-args [args]
   (loop [opts {:root (or (some-> (System/getenv "FUTON3_ROOT") str/trim not-empty) ".")

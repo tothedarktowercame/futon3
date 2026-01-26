@@ -190,6 +190,30 @@
                   :job-id job-id})
     {:reply (remember! router msg-id reply)}))
 
+(defn handle-gap-report [router client envelope]
+  (let [{:keys [payload]} envelope
+        {:keys [msg-id]} (validate! :gap-report payload)
+        run-id (new-run-id router)
+        reply {:ok true
+               :type "gap-report"
+               :run-id run-id}]
+    (log! router {:client (:id client)
+                  :type :gap-report
+                  :run-id run-id})
+    {:reply (remember! router msg-id reply)}))
+
+(defn handle-trail-capture [router client envelope]
+  (let [{:keys [payload]} envelope
+        {:keys [msg-id]} (validate! :trail-capture payload)
+        run-id (new-run-id router)
+        reply {:ok true
+               :type "trail-capture"
+               :run-id run-id}]
+    (log! router {:client (:id client)
+                  :type :trail-capture
+                  :run-id run-id})
+    {:reply (remember! router msg-id reply)}))
+
 (defn handle-hx-artifact-register [router client envelope]
   (let [{:keys [payload]} envelope
         {:keys [msg-id artifact]} (validate! :hx/artifact-register payload)
@@ -305,6 +329,8 @@
     :export (handle-export router client envelope)
     :run (handle-run router client envelope)
     :status (handle-status router client envelope)
+    :gap-report (handle-gap-report router client envelope)
+    :trail-capture (handle-trail-capture router client envelope)
     :hx/artifact-register (handle-hx-artifact-register router client envelope)
     :hx/anchors-upsert (handle-hx-anchors-upsert router client envelope)
     :hx/link-suggest (handle-hx-link-suggest router client envelope)

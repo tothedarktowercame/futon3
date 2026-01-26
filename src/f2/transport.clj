@@ -357,6 +357,8 @@
       :export (route-via-router state client-id type envelope)
       :run (route-via-router state client-id type envelope)
       :status (route-via-router state client-id type envelope)
+      :gap-report (route-via-router state client-id type envelope)
+      :trail-capture (route-via-router state client-id type envelope)
       :hx/artifact-register (route-via-router state client-id type envelope)
       :hx/anchors-upsert (route-via-router state client-id type envelope)
       :hx/link-suggest (route-via-router state client-id type envelope)

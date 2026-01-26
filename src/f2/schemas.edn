@@ -27,6 +27,17 @@
  :status [:map {:closed true}
           [:msg-id [:string {:min 1}]]
           [:job-id [:string {:min 1}]]]
+ :gap-report [:map {:closed true}
+              [:msg-id [:string {:min 1}]]
+              [:devmap/id [:string {:min 1}]]
+              [:pattern/id {:optional true} [:string {:min 1}]]
+              [:gap/summary [:string {:min 1}]]
+              [:evidence {:optional true} [:vector :string]]]
+ :trail-capture [:map {:closed true}
+                 [:msg-id [:string {:min 1}]]
+                 [:trail/id [:string {:min 1}]]
+                 [:entries [:vector [:map {:closed false}]]]
+                 [:meta {:optional true} [:map {:closed false}]]]
  :hx/artifact-register [:map {:closed true}
                         [:msg-id [:string {:min 1}]]
                         [:artifact [:map {:closed false}

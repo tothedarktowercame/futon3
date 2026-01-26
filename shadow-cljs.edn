@@ -1,0 +1,20 @@
+;; shadow-cljs configuration for Futon3 ClojureScript builds
+;;
+;; Development: npx shadow-cljs watch notebook
+;; Release:     npx shadow-cljs release notebook
+;;
+;; Future: WebSocket-based features could use the existing /musn/ws endpoint
+;; for bidirectional communication (multi-agent chat, collaborative editing, etc.)
+
+{:source-paths ["src-cljs"]
+
+ :dependencies [[reagent "1.2.0"]
+                [cljs-http "0.1.46"]]
+
+ :builds
+ {:notebook
+  {:target :browser
+   :output-dir "resources/public/js"
+   :asset-path "/js"
+   :modules {:notebook {:init-fn futon3.notebook.core/init!}}
+   :devtools {:repl-pprint true}}}}

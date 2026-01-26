@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scribe Notebook - Live</title>
+  <style>
+    :root {
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #16213e;
+      --bg-user: #1e3a5f;
+      --bg-agent: #2d2d44;
+      --text-primary: #eaeaea;
+      --text-secondary: #a0a0a0;
+      --accent-user: #6ec1e4;
+      --accent-agent: #c792ea;
+      --accent-system: #89ddff;
+      --accent-live: #a6e22e;
+      --accent-error: #f92672;
+      --border-color: #3a3a5a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Menlo', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      color: var(--accent-user);
+      font-size: 1.5rem;
+      margin: 0 0 10px 0;
+      font-weight: 500;
+    }
+
+    .meta {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .connection-status {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .connection-status.connected {
+      background: rgba(166, 226, 46, 0.15);
+      color: var(--accent-live);
+    }
+
+    .connection-status.disconnected {
+      background: rgba(249, 38, 114, 0.15);
+      color: var(--accent-error);
+    }
+
+    main {
+      min-height: 200px;
+    }
+
+    .turn {
+      margin-bottom: 24px;
+      border-radius: 8px;
+      overflow: hidden;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .turn-header {
+      padding: 8px 16px;
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .turn-content {
+      padding: 16px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .turn.user {
+      background: var(--bg-user);
+      border-left: 3px solid var(--accent-user);
+    }
+
+    .turn.user .turn-header {
+      background: rgba(110, 193, 228, 0.1);
+      color: var(--accent-user);
+    }
+
+    .turn.user .role::before {
+      content: '❯ ';
+    }
+
+    .turn.agent {
+      background: var(--bg-agent);
+      border-left: 3px solid var(--accent-agent);
+    }
+
+    .turn.agent .turn-header {
+      background: rgba(199, 146, 234, 0.1);
+      color: var(--accent-agent);
+    }
+
+    .turn.system {
+      background: var(--bg-secondary);
+      border-left: 3px solid var(--accent-system);
+      font-size: 0.85rem;
+    }
+
+    .turn.system .turn-header {
+      background: rgba(137, 221, 255, 0.1);
+      color: var(--accent-system);
+    }
+
+    .timestamp {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    .summary {
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+
+    .summary h2 {
+      color: var(--accent-system);
+      font-size: 1rem;
+      margin: 0 0 15px 0;
+      font-weight: 500;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      color: var(--accent-user);
+      font-weight: bold;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Loading state */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+
+    .loading::after {
+      content: '';
+      animation: dots 1.5s infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="loading">Connecting to notebook</div>
+    </div>
+  </div>
+  <script src="/js/notebook.js"></script>
+</body>
+</html>

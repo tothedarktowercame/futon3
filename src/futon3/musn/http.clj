@@ -6,6 +6,7 @@
             [clojure.string :as str]
             [futon3.aif.viz :as aif-viz]
             [futon3.musn.service :as svc]
+            [futon3.fulab.hud :as hud]
             [futon.compass :as compass]))
 
 (def log-path (or (System/getenv "MUSN_LOG") "/tmp/musn_http.log"))
@@ -79,6 +80,20 @@
                seed (conj :seed seed)
                method (conj :method method))))))
 
+(defn- hud-build-request [body]
+  (let [intent (:intent body)
+        pattern-limit (or (:pattern-limit body) 8)
+        namespaces (or (:namespaces body) ["musn" "fulab" "aif" "agent"])]
+    (if (str/blank? intent)
+      {:ok false :err "missing intent"}
+      (try
+        {:ok true
+         :hud (hud/build-hud {:intent intent
+                              :pattern-limit pattern-limit
+                              :namespaces namespaces})}
+        (catch Throwable t
+          {:ok false :err (.getMessage t)})))))
+
 (defn- dispatch [uri body]
   (case uri
     "/musn/session/create" (svc/create-session! body)
@@ -96,6 +111,9 @@
     "/musn/chat/unlatch"  (svc/chat-unlatch! body)
     "/musn/chat/state"    (svc/chat-state! body)
     "/musn/compass"       (compass-request body)
+    "/musn/hud/build"     (hud-build-request body)
+    "/musn/scribe/turn"   (let [{:keys [session/id role content]} body]
+                            (svc/record-turn! id (keyword role) content))
     nil))
 
 (defn handler [req]
@@ -124,15 +142,40 @@
                           :err (.getMessage t)
                           :type (keyword (.. t getClass getSimpleName))}))))
 
+(defonce ^:private server-state (atom nil))
+
+(defn start!
+  "Start the MUSN HTTP server. Returns a stop function.
+   Options:
+     :port - HTTP port (default 6065)
+     :aif-viz-port - optional AIF visualization port"
+  ([] (start! {}))
+  ([opts]
+   (let [port (or (:port opts)
+                  (some-> (System/getenv "MUSN_PORT") Long/parseLong)
+                  6065)
+         aif-viz-port (or (:aif-viz-port opts)
+                          (some-> (System/getenv "MUSN_AIF_VIZ_PORT") str/trim not-empty Long/parseLong))]
+     (when aif-viz-port
+       (aif-viz/start! {:port aif-viz-port}))
+     (log! (format "MUSN HTTP server on %d" port))
+     (let [stop-fn (http/run-server handler {:port port})]
+       (reset! server-state {:port port :stop-fn stop-fn})
+       stop-fn))))
+
+(defn stop!
+  "Stop the MUSN HTTP server."
+  []
+  (when-let [{:keys [stop-fn]} @server-state]
+    (stop-fn)
+    (reset! server-state nil)))
+
 (defn -main [& _args]
   (let [port (Long/parseLong (or (System/getenv "MUSN_PORT") "6065"))]
-    (when-let [viz-port (some-> (System/getenv "MUSN_AIF_VIZ_PORT") str/trim not-empty)]
-      (aif-viz/start! {:port (Long/parseLong viz-port)}))
     (binding [*out* *err*]
       (println (format "MUSN HTTP server on %d" port))
       (println (format "Logging to %s" log-path)))
-    (log! (format "MUSN HTTP server on %d" port))
-    (http/run-server handler {:port port})
+    (start! {:port port})
     (binding [*out* *err*]
       (println "Press Ctrl+C to exit."))
     @(promise)))

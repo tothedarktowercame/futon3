@@ -788,22 +788,102 @@
                           :error "hud-format-failed"
                           :detail (.getMessage e)}))))
 
-(defn handler [state request]
-  (cond
-    (= [:get "/healthz"] [(:request-method request) (:uri request)])
-    (plaintext-response 200 "ok")
-    (and (= (:uri request) "/fulab/hud/format") (= (:request-method request) :post))
-    (handle-hud-format state request)
-    (and (= (:uri request) "/musn/ws") (= (:request-method request) :get))
-    (websocket-handler state request)
-    (and (= (:uri request) "/musn/check") (= (:request-method request) :post))
-    (handle-check-http state request)
-    (and (= (:uri request) "/musn/workday/submit") (= (:request-method request) :post))
-    (handle-workday-submit state request)
-    (and (= (:uri request) "/musn/ingest") (= (:request-method request) :post))
-    (handle-ingest state request)
-    :else
+;; =============================================================================
+;; Live Notebook Viewer - SSE streaming of conversation turns
+;; Future: WebSocket support via /musn/ws for bidirectional features
+;; =============================================================================
+
+(defn- serve-static-file [path content-type]
+  (if-let [resource (io/resource path)]
+    {:status 200
+     :headers {"content-type" content-type}
+     :body (slurp resource)}
     (plaintext-response 404 "not-found")))
+
+(defn- event->sse-data [event]
+  (json/encode (-> event
+                   (update :event/type #(when % (name %)))
+                   (update-in [:payload :role] #(when % (name %))))))
+
+(defn- handle-notebook-stream [state request session-id]
+  ;; SSE endpoint for live notebook updates
+  (http/with-channel request channel
+    (http/send! channel
+                {:status 200
+                 :headers {"content-type" "text/event-stream"
+                           "cache-control" "no-cache"
+                           "connection" "keep-alive"}}
+                false)
+    ;; Send initial state
+    (let [events (or (musn-svc/recent-turns session-id 100)
+                     [])
+          init-data (json/encode {:type "init"
+                                  :session-id session-id
+                                  :events (mapv #(-> %
+                                                     (update :event/type name)
+                                                     (update-in [:payload :role] name))
+                                                events)})]
+      (http/send! channel (str "data: " init-data "\n\n") false))
+    ;; Poll for new events (simple approach; could use core.async watch later)
+    (let [poll-interval 1000
+          last-count (atom (count (musn-svc/recent-turns session-id 1000)))]
+      (future
+        (try
+          (loop []
+            (Thread/sleep poll-interval)
+            (when (http/open? channel)
+              (let [events (musn-svc/recent-turns session-id 1000)
+                    current-count (count events)]
+                (when (> current-count @last-count)
+                  (let [new-events (drop @last-count events)]
+                    (doseq [event new-events]
+                      (let [data (json/encode {:type "turn"
+                                               :event (-> event
+                                                          (update :event/type name)
+                                                          (update-in [:payload :role] name))})]
+                        (http/send! channel (str "data: " data "\n\n") false))))
+                  (reset! last-count current-count)))
+              (recur)))
+          (catch Exception e
+            (println "SSE stream error:" (.getMessage e))))))))
+
+(defn- extract-session-from-path [uri]
+  (when-let [match (re-find #"/fulab/notebook/([^/]+)" uri)]
+    (second match)))
+
+(defn handler [state request]
+  (let [uri (:uri request)
+        method (:request-method request)]
+    (cond
+      (= [:get "/healthz"] [method uri])
+      (plaintext-response 200 "ok")
+
+      ;; Notebook viewer routes
+      (and (= method :get) (re-matches #"/fulab/notebook/[^/]+/stream" uri))
+      (let [session-id (extract-session-from-path uri)]
+        (handle-notebook-stream state request session-id))
+
+      (and (= method :get) (re-matches #"/fulab/notebook/[^/]+" uri))
+      (serve-static-file "public/notebook.html" "text/html")
+
+      ;; Static assets
+      (and (= method :get) (str/starts-with? uri "/js/"))
+      (let [path (str "public" uri)]
+        (serve-static-file path "application/javascript"))
+
+      ;; Existing routes
+      (and (= uri "/fulab/hud/format") (= method :post))
+      (handle-hud-format state request)
+      (and (= uri "/musn/ws") (= method :get))
+      (websocket-handler state request)
+      (and (= uri "/musn/check") (= method :post))
+      (handle-check-http state request)
+      (and (= uri "/musn/workday/submit") (= method :post))
+      (handle-workday-submit state request)
+      (and (= uri "/musn/ingest") (= method :post))
+      (handle-ingest state request)
+      :else
+      (plaintext-response 404 "not-found"))))
 
 (defn start!
   ([state]

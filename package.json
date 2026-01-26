@@ -1,0 +1,17 @@
+{
+  "name": "futon3-cljs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "watch": "shadow-cljs watch notebook",
+    "release": "shadow-cljs release notebook",
+    "clean": "rm -rf resources/public/js"
+  },
+  "devDependencies": {
+    "shadow-cljs": "^2.26.0"
+  },
+  "dependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  }
+}

@@ -1,0 +1,20 @@
+@flexiarg realtime/branch-parallelism
+@title Split Realtime Work Across Feature Branches
+@sigils [🎑/义]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Parallel feature branches reduce collisions; shared edits increase churn.
+  + context: Realtime collaboration benefits from clear ownership boundaries.
+  + IF:
+    Multiple agents edit the same files or functions in the same branch.
+  + HOWEVER:
+    Some hot paths require fast shared edits.
+  + THEN:
+    Split work into named feature branches with explicit core/integration ownership and merge via review.
+  + BECAUSE:
+    Clear boundaries lower conflict risk and preserve velocity.
+  + NEXT-STEPS:
+    - evidence: branch names encode scope (e.g., feat/pattern-check-core, feat/pattern-check-integration).
+    - evidence-shape: {:branch :string, :scope :string, :owner :string}

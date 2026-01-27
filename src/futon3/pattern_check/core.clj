@@ -13,6 +13,7 @@
    :max-lines 50
    :max-buffer 1000
    :duplicate-cache-ttl-ms 60000
+   :duplicate-paths ["library/**/*.flexiarg" "devmaps/**/*.edn"]
    :include-ids? true
    :include-decoded? false})
 
@@ -127,28 +128,69 @@
      :psr-ids psr-ids
      :pur-ids pur-ids}))
 
-(defn- expand-glob
-  "Expand a simple glob within its parent directory (non-recursive)."
+(defn- wildcard?
+  [s]
+  (boolean (re-find #"[\*\?\[]" (str s))))
+
+(defn- glob-root
+  "Return a base directory for a glob pattern."
   [pattern]
-  (let [path (io/file pattern)
-        parent (.getParentFile path)
-        name (.getName path)
-        dir (or parent (io/file "."))
+  (let [pattern (str pattern)
+        abs? (str/starts-with? pattern "/")
+        parts (->> (str/split pattern #"/") (remove empty?))
+        idx (first (keep-indexed (fn [i part] (when (wildcard? part) i)) parts))
+        root-parts (cond
+                     (nil? idx) (butlast parts)
+                     (zero? idx) []
+                     :else (take idx parts))
+        root (str (when abs? "/") (str/join "/" root-parts))]
+    (if (str/blank? root) "." root)))
+
+(defn- expand-glob
+  "Expand a glob pattern by walking from its base directory."
+  [pattern]
+  (let [pattern (str pattern)
+        abs? (str/starts-with? pattern "/")
+        cwd (.toAbsolutePath (java.nio.file.Paths/get "" (make-array String 0)))
+        root-str (glob-root pattern)
+        root-path (let [p (java.nio.file.Paths/get root-str (make-array String 0))]
+                    (if abs? p (.resolve cwd p)))
         matcher (.getPathMatcher (java.nio.file.FileSystems/getDefault)
-                                 (str "glob:" name))]
-    (when (.exists dir)
-      (->> (.listFiles dir)
-           (filter #(.isFile ^java.io.File %))
-           (filter #(matcher (.toPath ^java.io.File %)))
-           (map #(.getPath ^java.io.File %))))))
+                                 (str "glob:" pattern))]
+    (when (java.nio.file.Files/exists root-path (make-array java.nio.file.LinkOption 0))
+      (with-open [stream (java.nio.file.Files/walk root-path)]
+        (->> (iterator-seq (.iterator stream))
+             (filter #(java.nio.file.Files/isRegularFile % (make-array java.nio.file.LinkOption 0)))
+             (map (fn [p]
+                    (let [candidate (if abs? p (.relativize cwd p))]
+                      (when (.matches matcher candidate)
+                        (.toString p)))))
+             (remove nil?)
+             vec)))))
+
+(defn- expand-dir
+  "Expand a directory to all files beneath it."
+  [dir]
+  (let [path (.toPath (io/file dir))]
+    (when (java.nio.file.Files/exists path (make-array java.nio.file.LinkOption 0))
+      (with-open [stream (java.nio.file.Files/walk path)]
+        (->> (iterator-seq (.iterator stream))
+             (filter #(java.nio.file.Files/isRegularFile % (make-array java.nio.file.LinkOption 0)))
+             (map #(.toString %))
+             vec)))))
 
 (defn- expand-paths
   [paths]
   (->> paths
+       (remove nil?)
        (mapcat (fn [p]
-                 (if (re-find #"[\*\?\[]" p)
-                   (or (expand-glob p) [])
-                   [p])))
+                 (let [p (str p)
+                       f (io/file p)]
+                   (cond
+                     (wildcard? p) (or (expand-glob p) [])
+                     (.isFile f) [(.getPath f)]
+                     (.isDirectory f) (or (expand-dir p) [])
+                     :else []))))
        distinct
        vec))
 
@@ -162,7 +204,8 @@
 (defn build-duplicate-index
   "Build sigil->locations index and duplicate set from file paths."
   [paths now-ms]
-  (let [expanded (expand-paths paths)
+  (let [input (vec (remove nil? (or paths [])))
+        expanded (expand-paths input)
         sigil->locations (reduce (fn [acc path]
                                    (let [sigils (sigils-in-file path)]
                                      (reduce (fn [m sigil]
@@ -175,7 +218,8 @@
                               (filter #(> (count (val %)) 1))
                               (map key)
                               set)]
-    {:paths expanded
+    {:source-paths input
+     :paths expanded
      :built-at now-ms
      :sigil->locations sigil->locations
      :duplicate-sigils duplicate-sigils}))
@@ -183,11 +227,13 @@
 (defn refresh-duplicate-index
   "Refresh duplicate index if missing or stale."
   [index paths now-ms ttl-ms]
-  (if (or (nil? index)
-          (not= (set paths) (set (:paths index)))
-          (> (- now-ms (:built-at index 0)) ttl-ms))
-    (build-duplicate-index paths now-ms)
-    index))
+  (let [paths (or paths [])
+        cached (or (:source-paths index) [])]
+    (if (or (nil? index)
+            (not= (set paths) (set cached))
+            (> (- now-ms (:built-at index 0)) ttl-ms))
+      (build-duplicate-index paths now-ms)
+      index)))
 
 (defn ingest-lines
   "Add lines into the buffer; drop oldest if max-buffer exceeded."
@@ -273,7 +319,9 @@
 
    Returns {:report map :duplicate-index updated-index}."
   [batch duplicate-index paths now-ms config]
-  (let [index (refresh-duplicate-index duplicate-index paths now-ms (:duplicate-cache-ttl-ms config))
+  (let [paths (vec (or (seq paths) (seq (:duplicate-paths config)) []))
+        index (when (seq paths)
+                (refresh-duplicate-index duplicate-index paths now-ms (:duplicate-cache-ttl-ms config)))
         {:keys [report]} (analyze-batch batch index config)]
     {:report report
      :duplicate-index index}))

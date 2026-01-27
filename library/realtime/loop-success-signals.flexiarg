@@ -1,0 +1,22 @@
+@flexiarg realtime/loop-success-signals
+@title Realtime Loop Success Signals
+@sigils [🐜/予]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Treat the loop as healthy when batches stay small, latency stays low, and JSONL output is continuous.
+  + context: The realtime loop must stay responsive under bursty chat traffic.
+  + IF:
+    Batch latency stays under target, dropped_lines stay near zero, and JSONL records are continuous.
+  + HOWEVER:
+    Short bursts may spike latency or trigger small drops.
+  + THEN:
+    Keep current settings; focus on integration coverage and matcher quality, not tuning.
+  + BECAUSE:
+    Stable throughput and low loss indicate the core loop is doing its job.
+  + NEXT-STEPS:
+    - evidence: batch latency histogram stays below target (e.g., <200ms).
+    - evidence: dropped_lines == 0 for most batches.
+    - evidence: JSONL records show steady batch_id increments.
+    - evidence-shape: {:latency_ms :int, :dropped_lines :int, :batch_id :int}

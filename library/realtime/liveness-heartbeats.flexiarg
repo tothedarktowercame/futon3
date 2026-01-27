@@ -1,0 +1,23 @@
+@flexiarg realtime/liveness-heartbeats
+@title Require Liveness Heartbeats With Sequence Context
+@sigils [💗/七]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Make liveness a first-class signal via periodic heartbeats tied to sequence numbers.
+  + context: Agents can appear idle or silently stop listening; humans keep pinging.
+  + IF:
+    You need confidence that listeners and bridges are functioning continuously, not just at join time.
+  + HOWEVER:
+    A simple ping is ambiguous (didn't hear, busy, crashed, wrong channel), and manual checking does not scale.
+  + THEN:
+    Require heartbeats: each agent emits a heartbeat every T seconds containing session-id, transport, last-received-seq, last-sent-seq, and current-mode; the moderator HUD flags stalls after N misses or when stale for S seconds and emits a stall event with the reason.
+  + BECAUSE:
+    Liveness without sequence context does not distinguish quiet from partitioned.
+  + NEXT-STEPS:
+    - evidence: tune heartbeat period vs noise and false alarms.
+    - evidence: record false positives/negatives.
+    - evidence: correlate stalls with actual bridge failures.
+    - evidence: measure time-to-stall detection vs real outage.
+    - evidence-shape: {:session/id :string, :transport :keyword, :last-received-seq :int, :last-sent-seq :int, :mode :keyword, :heartbeat/seconds :int, :missed/count :int, :missed/threshold :int, :stale/seconds :int, :grace/seconds :int, :stall/flagged? :boolean, :stall/reason :keyword, :stall/ts :string, :ts :string}

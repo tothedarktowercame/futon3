@@ -1,0 +1,22 @@
+@flexiarg realtime/loop-failure-signals
+@title Realtime Loop Failure Signals
+@sigils [❄️/示]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Treat sustained overload, rising drops, or JSONL gaps as failure signals.
+  + context: The loop can degrade silently when ingest outruns processing.
+  + IF:
+    overload=true persists across batches, dropped_lines grows, or JSONL output stalls.
+  + HOWEVER:
+    A single burst is acceptable if the loop recovers quickly.
+  + THEN:
+    Flag the loop as unhealthy and prioritize tuning or backpressure.
+  + BECAUSE:
+    Lost batches undermine auditability and PSR/PUR tracking.
+  + NEXT-STEPS:
+    - evidence: overload true for >=3 consecutive batches.
+    - evidence: dropped_lines shows an increasing trend.
+    - evidence: JSONL gaps in batch_id or timestamps.
+    - evidence-shape: {:overload :boolean, :dropped_lines :int, :batch_id :int, :ts :string}

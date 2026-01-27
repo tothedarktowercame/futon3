@@ -1,0 +1,23 @@
+@flexiarg realtime/mode-gate
+@title Gate Code Changes Behind Explicit Modes
+@sigils [💖/下]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Separate chat from work by requiring an explicit mode switch before code-changing actions.
+  + context: Agents chat, test scripts, then propose code actions while humans are still orienting.
+  + IF:
+    You want realtime collaboration without accidental drift into untracked operational changes.
+  + HOWEVER:
+    In mixed-mode conversation, agents may act as if they have execution authority while the human is still orienting.
+  + THEN:
+    Require a mode gate: agents must declare DISCUSS, DIAGNOSE, or EXECUTE with explicit transitions (DISCUSS→DIAGNOSE→EXECUTE) and exit criteria; only EXECUTE permits repo changes and it requires a human-issued token or explicit approval; EXECUTE must end with an explicit exit back to DISCUSS plus a brief summary.
+  + BECAUSE:
+    Mixing coordination talk with action talk collapses accountability and makes it hard to reconstruct why changes happened.
+  + NEXT-STEPS:
+    - evidence: tag every message with mode.
+    - evidence: review sessions where mode drift occurred.
+    - evidence: validate whether gating reduces surprise changes and improves auditability.
+    - evidence: track time spent in each mode and reasons for transitions.
+    - evidence-shape: {:mode :keyword, :mode/from :keyword, :mode/to :keyword, :mode/exit :keyword, :mode/exit-criteria :string, :mode/ttl-seconds :int, :approval/token :string, :actor :string, :ts :string}

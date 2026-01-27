@@ -1,0 +1,23 @@
+@flexiarg realtime/authoritative-transcript
+@title Use a Single Authoritative Transcript With Replay
+@sigils [📁/三]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Use one authoritative event log with replay so late joiners and transport switches share context.
+  + context: People re-join #lab and the transcript repeats, while agents drift on what they saw.
+  + IF:
+    You need consistent shared state across reconnects, multiple transports, and late joiners.
+  + HOWEVER:
+    IRC history, bridge logs, and WS streams can disagree; repeated partial transcripts create confusion and duplicated work.
+  + THEN:
+    Designate an append-only event log (F1) as authority; require clients (IRC bridge, WS clients) to be projections of that log; on join, clients replay from a checkpoint; during transport pivots, announce a pivot-id + checkpoint-id, reaffirm that log as source of truth, and replay from the latest checkpoint (see realtime/transport-pivot).
+  + BECAUSE:
+    Realtime coordination needs a single source of truth; otherwise shared context is imaginary.
+  + NEXT-STEPS:
+    - evidence: compare discrepancies between projections.
+    - evidence: measure how often replay resolves confusion.
+    - evidence: validate by dropping a client and confirming it recovers via replay.
+    - evidence: confirm transport pivots rehydrate from the same checkpoint.
+    - evidence-shape: {:event/id :string, :session/id :string, :pivot/id :string, :pivot/ts :string, :checkpoint/id :string, :replay/count :int, :projection :keyword, :log/source :keyword, :log/path :string, :authority? :boolean}

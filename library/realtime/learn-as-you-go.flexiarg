@@ -1,0 +1,20 @@
+@flexiarg realtime/learn-as-you-go
+@title Capture Realtime Learnings as Patterns
+@sigils [🌂/日]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Log what works and what fails as patterns; otherwise the loop stalls.
+  + context: New workflows surface edge cases and implicit assumptions.
+  + IF:
+    Realtime deviations are handled ad hoc and not recorded.
+  + HOWEVER:
+    Early iterations can be noisy and imperfect.
+  + THEN:
+    Record brief realtime patterns capturing “works well / doesn’t work,” then refine with evidence.
+  + BECAUSE:
+    Explicit learnings reduce repeated mistakes and speed calibration.
+  + NEXT-STEPS:
+    - evidence: add a realtime pattern after each notable failure or success.
+    - evidence-shape: {:works-well [:string], :doesnt-work [:string], :evidence [:string]}

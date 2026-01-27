@@ -1,0 +1,21 @@
+@flexiarg realtime/loop-recovery-actions
+@title Realtime Loop Recovery Actions
+@sigils [🌂/令]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: When the loop is unhealthy, reduce pressure, narrow scope, or loosen batch thresholds until it stabilizes.
+  + context: The core loop must remain responsive even under overload.
+  + IF:
+    Overload persists or batch latency exceeds the target for multiple batches.
+  + HOWEVER:
+    We still need minimal coverage of critical signals (PSR/PUR + sigil validity).
+  + THEN:
+    Temporarily raise max_wait/max_lines, reduce input sources, or disable expensive scans (e.g., duplicate checks) until stable.
+  + BECAUSE:
+    Controlled degradation preserves core signals without cascading failures.
+  + NEXT-STEPS:
+    - evidence: config change recorded with new thresholds.
+    - evidence: overload clears within N batches after adjustment.
+    - evidence-shape: {:config :map, :overload :boolean, :batch_id :int}

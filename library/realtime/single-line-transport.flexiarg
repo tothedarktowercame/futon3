@@ -1,0 +1,20 @@
+@flexiarg realtime/single-line-transport
+@title Keep Realtime Messages Single-Line
+@sigils [🚞/文]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Single-line messages transmit reliably; multi-line fragments do not.
+  + context: IRC relays can split or interleave long multi-line messages.
+  + IF:
+    Messages contain newlines or multiple blocks that fragment on relay.
+  + HOWEVER:
+    Some content needs detail beyond a short line.
+  + THEN:
+    Send a single-line primary message with a short summary and attach details via files or structured events.
+  + BECAUSE:
+    A single-line payload preserves ordering and reduces lost context.
+  + NEXT-STEPS:
+    - evidence: message-length capped (~350 words) with no newlines.
+    - evidence-shape: {:summary :string, :detail-ref :string}

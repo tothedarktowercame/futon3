@@ -1,0 +1,21 @@
+@flexiarg realtime/transport-pivot
+@title Treat Transport Switches as Explicit Pivots
+@sigils [🚞/丁]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Treat transport changes as controlled migrations, not ad-hoc chat suggestions.
+  + context: Sessions begin on IRC, then someone proposes switching to direct WebSocket while work is underway.
+  + IF:
+    You are collaborating in realtime and want to switch from an IRC bridge to direct WS for latency/reliability.
+  + HOWEVER:
+    Switching midstream creates split-brain conversation, duplicated messages, and uncertainty about the authoritative channel.
+  + THEN:
+    Introduce a Transport Pivot: announce the target transport, freeze new tasks, replay the last N messages into the new channel, optionally dual-write for T seconds, and only then declare the new channel authoritative and reaffirm the authoritative transcript (see realtime/authoritative-transcript).
+  + BECAUSE:
+    A transport switch changes the epistemic ground (what counts as shared state), so it needs an explicit cutover.
+  + NEXT-STEPS:
+    - evidence: measure divergence events (missed/duplicated turns) during pivots.
+    - evidence: compare hard cutover vs dual-write for 60s.
+    - evidence-shape: {:pivot/id :string, :pivot/ts :string, :from :keyword, :to :keyword, :replay/count :int, :dual-write/seconds :int, :rollback/trigger :string, :cutover/ts :string}

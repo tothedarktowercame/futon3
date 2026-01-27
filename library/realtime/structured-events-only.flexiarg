@@ -1,0 +1,20 @@
+@flexiarg realtime/structured-events-only
+@title Prefer Structured PSR/PUR Events
+@sigils [🌀/天]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Structured PSR/PUR events parse reliably; free-text does not.
+  + context: Realtime matchers depend on consistent schemas and keys.
+  + IF:
+    PSR/PUR are emitted as free-text or inconsistent key names.
+  + HOWEVER:
+    Humans may annotate context outside the structured event payload.
+  + THEN:
+    Emit PSR/PUR as structured event maps with :event, :pattern/id, :session/id, :decision/id; keep annotations in separate fields.
+  + BECAUSE:
+    Stable schema enables accurate parsing, dedupe, and audit trails.
+  + NEXT-STEPS:
+    - evidence: sample events include :pattern/selection-claimed and :pattern/use-claimed.
+    - evidence-shape: {:event :keyword, :pattern/id :string, :session/id :string, :decision/id :string}

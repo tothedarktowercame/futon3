@@ -1,0 +1,23 @@
+@flexiarg realtime/rendezvous-handshake
+@title Require Realtime Rendezvous Handshakes
+@sigils [🎎/一]
+@audience fulab agents, musn server
+@tone technical
+@style pattern
+
+! conclusion: Start work only after a signed hello+ack handshake confirms coherent reception.
+  + context: Realtime multi-agent coding sessions (human + 2+ agents) over IRC/WS bridges can silently fail.
+  + IF:
+    You need to know who is present, who is receiving messages, and whether it is safe to start work.
+  + HOWEVER:
+    Presence in the room is not evidence of reception; bridges/listeners can be stale, duplicated, or partitioned.
+  + THEN:
+    Require an explicit rendezvous handshake: each participant emits a signed hello with capabilities, transport, last-seen seq, and handshake id/nonce, and the moderator must see matching acks from each agent before tasking begins; set an ack deadline to avoid silent stalls.
+  + BECAUSE:
+    Without an explicit handshake, the system confuses "connected" with "coherent," and coordination collapses into manual pinging.
+  + NEXT-STEPS:
+    - evidence: log handshake completion rate per session.
+    - evidence: track time-to-first-ack per transport.
+    - evidence: record cases where presence=true but reception=false.
+    - evidence: record ack latency distribution by transport.
+    - evidence-shape: {:participant/id :string, :transport :keyword, :capabilities [:keyword], :last-seen-seq :int, :handshake/id :string, :handshake/nonce :string, :handshake/ts :string, :ack/seen :boolean, :ack/ts :string, :ack/latency-ms :int, :ack/deadline-seconds :int}

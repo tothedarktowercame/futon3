@@ -54,3 +54,26 @@
       (spit f2 "🐜/予")
       (let [index (core/build-duplicate-index [(.getPath f1) (.getPath f2)] 0)]
         (is (contains? (:duplicate-sigils index) "🐜/予"))))))
+
+(deftest duplicate-index-glob
+  (testing "expands recursive globs for duplicate detection"
+    (let [dir (java.nio.file.Files/createTempDirectory "sigil-glob" (make-array java.nio.file.attribute.FileAttribute 0))
+          sub (java.nio.file.Files/createDirectories (.resolve dir "nested") (make-array java.nio.file.attribute.FileAttribute 0))
+          f1 (.toFile (java.nio.file.Files/createTempFile dir "a" ".edn" (make-array java.nio.file.attribute.FileAttribute 0)))
+          f2 (.toFile (java.nio.file.Files/createTempFile sub "b" ".edn" (make-array java.nio.file.attribute.FileAttribute 0)))
+          pattern (str (.toString dir) "/**/*.edn")]
+      (spit f1 "🐜/予")
+      (spit f2 "🐜/予")
+      (let [index (core/build-duplicate-index [pattern] 0)]
+        (is (contains? (:duplicate-sigils index) "🐜/予"))
+        (is (<= 2 (count (get (:sigil->locations index) "🐜/予")))))))))
+
+(deftest duplicate-index-dir-path
+  (testing "accepts directory paths"
+    (let [dir (java.nio.file.Files/createTempDirectory "sigil-dir" (make-array java.nio.file.attribute.FileAttribute 0))
+          f1 (.toFile (java.nio.file.Files/createTempFile dir "a" ".txt" (make-array java.nio.file.attribute.FileAttribute 0)))
+          f2 (.toFile (java.nio.file.Files/createTempFile dir "b" ".txt" (make-array java.nio.file.attribute.FileAttribute 0)))]
+      (spit f1 "🐜/予")
+      (spit f2 "🐜/予")
+      (let [index (core/build-duplicate-index [(.getPath (.toFile dir))] 0)]
+        (is (contains? (:duplicate-sigils index) "🐜/予")))))))

@@ -103,9 +103,15 @@ class CodexChatBridge {
       args.push("--pass", IRC_PASS);
     }
 
-    console.error(`[bridge] Starting IRC listener...`);
+    console.error(`[bridge] Starting IRC listener with args:`, args);
+    console.error(`[bridge] Working dir: ${WORKING_DIR}`);
     const listener = spawn("python3", ["scripts/musn-irc-listen", ...args], {
       cwd: WORKING_DIR,
+    });
+
+    // Capture stderr for debugging
+    listener.stderr.on("data", (data) => {
+      console.error(`[listener stderr] ${data.toString().trim()}`);
     });
 
     const rl = readline.createInterface({ input: listener.stdout });
@@ -155,6 +161,9 @@ class CodexChatBridge {
 
 // CLI
 async function main() {
+  if (!IRC_PASS) {
+    console.error("[bridge] Warning: MUSN_IRC_PASSWORD not set - connection may fail");
+  }
   const args = process.argv.slice(2);
   const config: ChatBridgeConfig = {
     room: IRC_ROOM,

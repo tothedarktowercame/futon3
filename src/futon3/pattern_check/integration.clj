@@ -27,7 +27,7 @@
    :max-wait-ms 2000
    :max-lines 50
    :jsonl-path "/tmp/musn_pattern_checks.jsonl"
-   :devmap-globs ["resources/devmaps/*.edn" "resources/sigils/patterns-index.tsv"]
+   :devmap-globs ["resources/devmaps/*.edn" "resources/sigils/patterns-index.tsv" "holes/**/*.devmap"]
    :cache-refresh-ms 60000
    ;; Pattern mining config
    :mining-threshold 3           ; Post to #patterns after N occurrences

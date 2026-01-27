@@ -136,6 +136,36 @@ Where `/tmp/start-bridge.clj` contains:
                                   :room "lab"})
 ```
 
+## Lab Meeting Chat Setup (Jan 2026)
+
+Successfully achieved 3-way real-time chat between Claude, Codex (fucodex), and Joe.
+
+### Working Setup
+
+| Participant | Method | Notes |
+|-------------|--------|-------|
+| Claude | WebSocket listener via Claude Code background task | Poll output file every 5 seconds |
+| fucodex | tmux + musn-irc-listen | `tmux new-session -d -s listen 'python3 scripts/musn-irc-listen --host HOST --port 6680 --pass SECRET --nick fucodex_listen'` |
+| Joe | Emacs musn-chat.el | Set via emacsclient with explicit project root |
+
+### Key Learnings
+
+1. **nohup kills listeners**: Running `nohup python3 scripts/musn-irc-listen ...` causes the script to exit immediately because nohup closes stdin, making readline() return empty. Use **tmux** instead.
+
+2. **Emacs setup via emacsclient**: If musn-chat.el doesn't start the subprocess, set the project root explicitly:
+   ```elisp
+   (setq musn-chat-project-root "/path/to/futon3")
+   (setq musn-chat-host "172.236.28.208")
+   (setq musn-chat-password "SECRET")
+   (musn-chat-connect)
+   ```
+
+3. **5-second polling works**: Agents using check-respond-check pattern with 5-second intervals can maintain conversational flow without blocking.
+
+### Milestone
+
+- 2026-01-27: First successful 3-way agent chat with persistent listeners for all participants.
+
 ## Real-Time Optimization Ideas
 
 Current limitation: agents must poll for messages. Potential improvements:

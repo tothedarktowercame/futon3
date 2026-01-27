@@ -1,125 +1,82 @@
 # Realtime Pattern-Check Loop (Spec)
 
-This document specifies the realtime pattern-check loop that validates sigils and
-signals pattern/devmap coherence issues from live chat without blocking the IRC
-relay. It is read-only with respect to the repo (no writes outside JSONL logs).
+## Scope
+Continuously validate sigils and detect PSR/PUR activity from live chat without blocking
+IRC relay or Codex streaming. Output is read-only JSONL; no repo writes or migrations.
 
-## 1) Buffer mechanism
+## 1) Buffer Mechanism
+- **Sources**: IRC stream, notify-log tail, or other line-oriented feed.
+- **Normalization**: trim whitespace; ignore empty lines; attach source metadata.
+- **Batching**: debounce into small batches (`max_wait=2s` or `max_lines=50`).
+- **Backlog cap**: bounded buffer (default `max_buffer=1000` lines). If overflow,
+  drop oldest lines and record `dropped_lines` for the batch.
+- **Batch metadata**: assign `batch_id` (monotonic), `window_start`, `window_end`,
+  and `source` to each batch for traceability.
 
-### Inputs
-- Line events from IRC (preferred) or a notify-log tail.
-- Each line is normalized into a line item with:
-  - `ts` (ISO-8601 UTC), `source` (irc | notify-log), `raw` (string)
-  - optional metadata: `channel`, `nick`, `host`, `msg_id`
+## 2) Pattern Matchers
+### 2.1 Sigil extraction + chops
+- Extract `emoji/hanzi` tokens from each line (simple tokenization; allow multiple
+  per line).
+- Validate each candidate with `futon3.chops/validate-sigil`.
+- Record `invalid_sigils` (unique, per batch) and `sigils_checked` count.
+- Optional: retain decoded readings for diagnostics (do not emit to IRC by default).
 
-### Buffering
-- Maintain an in-memory ring buffer of line items (default `max_buffer_lines=200`).
-- Debounce into batches using:
-  - `max_wait` (default 2s)
-  - `max_lines` (default 50)
-- Flush conditions:
-  - `max_lines` reached, or
-  - `max_wait` elapsed since first line in batch
+### 2.2 PSR/PUR detection
+- Detect structured PSR/PUR lines in JSON/EDN payloads emitted by live runs.
+- Recognize event names:
+  - `:pattern/selection-claimed` (PSR)
+  - `:pattern/use-claimed` (PUR)
+  - `turn/select` (PSR)
+  - `turn/use` (PUR)
+- Extract identifiers when present: `:pattern/id`, `:session/id`, `:decision/id`.
+- Report `psr_seen` and `pur_seen` counts; optionally include `psr_ids` / `pur_ids`.
 
-### Overload behavior
-- If buffer exceeds `max_buffer_lines`, drop oldest items and record `dropped`.
-- If processing lags behind ingestion by >2 batches, skip to the most recent
-  batch and mark `skipped_batches` in the JSONL output.
-- The loop must remain responsive; correctness is best-effort under overload.
+### 2.3 Duplicate sigil pair detection
+- Read devmap + pattern files (configurable globs) and map `sigil -> locations`.
+- Flag duplicates where the same sigil pair appears in multiple locations.
+- Cache the scan results and refresh on a timer (e.g. every 60s) to avoid
+  per-batch filesystem churn.
 
-## 2) Pattern matchers (chops, PSR/PUR)
+## 3) JSONL Schema
+- Append JSONL records to `/tmp/musn_pattern_checks.jsonl`.
+- One record per processed batch; fast append only.
 
-### Sigil extraction + validation
-- Extract candidate sigils by scanning for `emoji/hanzi` tokens.
-- For each candidate, validate with `futon3.chops`:
-  - `(chops/validate-sigil sigil)`
-  - Record `valid?`, `decoded.word1`, `decoded.word2`, and `decoded.reading`.
-- Maintain counts:
-  - `sigils.checked`, `sigils.valid`, `sigils.invalid`.
+Required fields:
+- `ts` (ISO-8601 UTC)
+- `batch_id` (int)
+- `source` (string)
+- `batch_lines` (int)
+- `sigils_checked` (int)
+- `invalid_sigils` (array of strings)
+- `duplicate_pairs` (array of strings)
+- `psr_seen` (int)
+- `pur_seen` (int)
 
-### PSR / PUR matcher
-- Detect Pattern Status Reports (PSR) and Pattern Update Reports (PUR).
-- Accept both compact and expanded formats:
-  - `PSR: pattern-id=<id> status=<status> ...`
-  - `PUR: pattern-id=<id> change=<summary> ...`
-- Extract `pattern-id` and any known key-value pairs; store raw remainder for
-  unknown fields.
-- Track totals: `psr.seen`, `pur.seen`, and arrays of `psr.ids`, `pur.ids`.
+Optional fields:
+- `dropped_lines` (int)
+- `window_start` / `window_end` (ISO-8601)
+- `psr_ids` / `pur_ids` (array of ids)
+- `latency_ms` (int)
+- `overload` (boolean)
 
-### Duplicate sigil pair detection
-- Build a cached map of sigil-pairs from devmaps/pattern library files.
-- Flag duplicates when the same sigil pair appears in multiple devmaps.
-- Cache refreshes on a timer (default 60s) to keep checks fast and read-only.
-
-## 3) JSONL schema
-
-### Output file
-- Append-only JSONL file at `/tmp/musn_pattern_checks.jsonl`.
-- One record per processed batch.
-
-### Record schema (v1)
+Example record:
 ```
-{
-  "ts": "2026-01-27T18:05:12Z",
-  "source": "irc",
-  "batch": {
-    "lines": 18,
-    "dropped": 0,
-    "skipped_batches": 0,
-    "latency_ms": 120
-  },
-  "sigils": {
-    "checked": 7,
-    "valid": 7,
-    "invalid": []
-  },
-  "sigil_reads": [
-    {"sigil": "🐜/予", "word1": "lili", "word2": "e", "reading": "lili e"}
-  ],
-  "duplicates": {
-    "pairs": [],
-    "count": 0
-  },
-  "psr": {"seen": 2, "ids": ["stack-blocker-detection"]},
-  "pur": {"seen": 1, "ids": ["pattern-differentiation-alarms"]},
-  "errors": []
-}
+{"ts":"2026-01-27T18:05:12Z","batch_id":42,"source":"irc","batch_lines":18,"sigils_checked":7,"invalid_sigils":["🐺/内"],"duplicate_pairs":["🐜/予"],"psr_seen":2,"pur_seen":1,"dropped_lines":0}
 ```
 
-### Notes
-- `sigil_reads` is optional and only includes validated sigils with decoded
-  readings (to keep records compact).
-- `errors` contains non-fatal exceptions or parse warnings.
+## 4) Integration Points
+- **IRC ingest**: live stream or notify-log tail as the primary feed.
+- **Optional IRC warnings**: rate-limited notices for invalid sigils or duplicates.
+- **Devmap/pattern scans**: read-only checks for duplicate sigils across devmaps.
+- **AIF/PSR/PUR sources**: session files (`lab/sessions/<session-id>.edn`) and
+  live stream events (`:pattern/selection-claimed`, `:pattern/use-claimed`).
+- **Batch audits**: optional periodic full checks via `scripts/audit-sigils`.
 
-## 4) Integration points
-
-### Inputs
-- IRC stream integration (primary): subscribe to relay output or socket feed.
-- Notify-log tail (fallback): read-only file tailer.
-
-### Outputs
-- JSONL append to `/tmp/musn_pattern_checks.jsonl`.
-- Optional IRC warnings (rate-limited) for:
-  - invalid sigils
-  - duplicate sigil pairs
-
-### Repo artifacts
-- Read-only scans of devmaps/pattern library for duplicate sigil pairs.
-- Optional periodic audit via `scripts/audit-sigils` (out of band).
-- Optional migration hints via `scripts/migrate-sigils --dry-run`.
-
-## 5) Async model
-
-### Threads / queues
-- Ingest thread: reads lines, enqueues line items into the buffer.
-- Worker thread: builds batches, runs matchers, appends JSONL.
-- Use a bounded queue; on overflow, drop oldest items and log `overload`.
-
-### Timing constraints
-- Batch processing must not block ingest.
-- JSONL writes are simple append operations and should complete quickly.
-- If processing falls behind, skip batches rather than slow the relay.
-
-### Error handling
-- All matcher failures are non-fatal; emit to `errors` and continue.
-- Invalid inputs never crash the loop.
+## 5) Async Model
+- **Ingest thread**: non-blocking; pushes lines into a bounded queue.
+- **Worker**: parses + validates batches off the ingest thread.
+- **Output**: JSONL append is synchronous per batch but must stay under 10ms.
+- **Overload**: when queue is full, drop oldest lines and emit a batch with
+  `overload=true` and `dropped_lines`.
+- **Responsiveness**: prioritize low latency over completeness; skipping is ok
+  as long as it is reported.

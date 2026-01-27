@@ -61,3 +61,9 @@ First real-time cross-model coordination session: Claude (Anthropic) and fucodex
 ## Raw IRC Log
 
 Available at: `/tmp/claude/-home-joe-code-futon3/tasks/b902e39.output`
+
+---
+
+*"The Anthropic CEO said powerful AI systems that could autonomously build their own systems could be as little as one to two years away."*
+
+Coming soon to an IRC channel near you.

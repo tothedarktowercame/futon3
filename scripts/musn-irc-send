@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+"""Send a message to an IRC room via the MUSN IRC bridge.
+
+Usage:
+    ./scripts/musn-irc-send "Hello from Claude!"
+    ./scripts/musn-irc-send --nick claude --room lab "Hello!"
+    echo "Hello!" | ./scripts/musn-irc-send
+
+Environment variables:
+    MUSN_IRC_HOST, MUSN_IRC_PORT, MUSN_IRC_NICK, MUSN_IRC_ROOM, MUSN_IRC_PASSWORD
+"""
+import argparse
+import os
+import socket
+import sys
+import time
+
+
+def env(name, default=""):
+    return os.environ.get(name) or default
+
+
+def pick(*names, default=""):
+    for name in names:
+        val = os.environ.get(name)
+        if val:
+            return val
+    return default
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Send a message to an IRC room.")
+    parser.add_argument("message", nargs="?", help="Message to send (or read from stdin)")
+    parser.add_argument("--room", default=pick("MUSN_IRC_ROOM", "FUTON3_MUSN_CHAT_ROOM", default="lab"))
+    parser.add_argument("--nick", default=pick("MUSN_IRC_NICK", "FUTON3_MUSN_CHAT_AUTHOR", default="claude"))
+    parser.add_argument("--host", default=pick("FUTON3_MUSN_IRC_HOST", "MUSN_IRC_HOST", default="localhost"))
+    parser.add_argument("--port", type=int, default=int(pick("FUTON3_MUSN_IRC_PORT", "MUSN_IRC_PORT", default="6680")))
+    parser.add_argument("--pass", dest="password", default=pick("FUTON3_MUSN_CHAT_PASS", "MUSN_IRC_PASSWORD", default=""))
+    parser.add_argument("-v", "--verbose", action="store_true", help="Print IRC protocol lines")
+    args = parser.parse_args()
+
+    # Get message from arg or stdin
+    if args.message:
+        message = args.message
+    elif not sys.stdin.isatty():
+        message = sys.stdin.read().strip()
+    else:
+        print("Usage: musn-irc-send 'message' or echo 'message' | musn-irc-send", file=sys.stderr)
+        return 1
+
+    if not message:
+        print("Error: empty message", file=sys.stderr)
+        return 1
+
+    room = args.room.lstrip("#")
+    if not room:
+        print("Error: missing room", file=sys.stderr)
+        return 1
+
+    try:
+        sock = socket.create_connection((args.host, args.port), timeout=10)
+    except Exception as exc:
+        print(f"Error: connect failed: {exc}", file=sys.stderr)
+        return 1
+
+    f = sock.makefile("rwb", buffering=0)
+
+    def send(line):
+        f.write((line + "\r\n").encode("utf-8", errors="ignore"))
+        if args.verbose:
+            print(f">> {line}", flush=True)
+
+    try:
+        if args.password:
+            send(f"PASS {args.password}")
+        send(f"NICK {args.nick}")
+        send(f"USER {args.nick} 0 * :{args.nick}")
+        send(f"JOIN #{room}")
+        time.sleep(0.3)  # Wait for join to complete
+        send(f"PRIVMSG #{room} :{message}")
+        time.sleep(0.5)  # Wait for message to be relayed
+        send("QUIT")
+    except Exception as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    finally:
+        try:
+            f.close()
+            sock.close()
+        except Exception:
+            pass
+
+    if args.verbose:
+        print("Message sent.", flush=True)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

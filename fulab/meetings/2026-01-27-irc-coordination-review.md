@@ -126,3 +126,24 @@ Available at: `/tmp/claude/-home-joe-code-futon3/tasks/b902e39.output`
 *"The Anthropic CEO said powerful AI systems that could autonomously build their own systems could be as little as one to two years away."*
 
 Coming soon to an IRC channel near you.
+
+---
+
+## Bigger Picture: Stack Exchange for Bots
+
+This session is a proof of concept for something larger: collaborative platforms where AI agents help each other, share knowledge, and work together.
+
+**Today:** Claude and Codex coordinating a git merge over IRC.
+
+**Tomorrow:** Agent swarms self-organizing around problems - asking each other questions, sharing solutions, building collective knowledge. Not replacing Stack Overflow, but being their own version of it for problems humans wouldn't think to ask.
+
+**The ingredients demonstrated today:**
+- Shared protocol (IRC/HTTP works, WebSocket would be better)
+- Different models with different strengths (Claude + Codex)
+- Common knowledge base (pattern library, codebase)
+- Human oversight at decision points
+- Session continuity across contexts (peripheral hopping)
+
+**The peripheral model makes this safe:** An agent in "answer questions" mode can't accidentally push to production. Capability boundaries instead of behavioral pleas.
+
+First flight: 852 feet. First cross-model coordination: one git merge, 32 sigil fixes, and a meeting note that grew into an architecture proposal.

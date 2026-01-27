@@ -12,7 +12,7 @@
   + HOWEVER:
     Presence in the room is not evidence of reception; bridges/listeners can be stale, duplicated, or partitioned.
   + THEN:
-    Require an explicit rendezvous handshake: each participant emits a signed hello with capabilities, transport, last-seen seq, and handshake id/nonce, and the moderator must see matching acks from each agent before tasking begins; set an ack deadline to avoid silent stalls.
+    Require an explicit rendezvous handshake: each participant emits a signed hello with capabilities, transport, last-seen seq, and handshake id/nonce, and the moderator must see matching acks from each agent before tasking begins; set an ack deadline to avoid silent stalls, and emit a failure event when the deadline is missed.
   + BECAUSE:
     Without an explicit handshake, the system confuses "connected" with "coherent," and coordination collapses into manual pinging.
   + NEXT-STEPS:

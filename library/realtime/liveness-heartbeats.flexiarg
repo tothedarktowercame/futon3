@@ -12,7 +12,7 @@
   + HOWEVER:
     A simple ping is ambiguous (didn't hear, busy, crashed, wrong channel), and manual checking does not scale.
   + THEN:
-    Require heartbeats: each agent emits a heartbeat every T seconds containing session-id, transport, last-received-seq, last-sent-seq, and current-mode; the moderator HUD flags stalls after N misses or when stale for S seconds and emits a stall event with the reason.
+    Require heartbeats: each agent emits a heartbeat every T seconds containing session-id, transport, last-received-seq, last-sent-seq, and current-mode; the moderator HUD flags stalls after N misses or when stale for S seconds and emits a stall event with the reason; stalled instances must reconnect or shut down.
   + BECAUSE:
     Liveness without sequence context does not distinguish quiet from partitioned.
   + NEXT-STEPS:

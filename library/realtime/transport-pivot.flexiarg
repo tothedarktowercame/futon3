@@ -12,7 +12,7 @@
   + HOWEVER:
     Switching midstream creates split-brain conversation, duplicated messages, and uncertainty about the authoritative channel.
   + THEN:
-    Introduce a Transport Pivot: announce the target transport, freeze new tasks, replay the last N messages into the new channel, optionally dual-write for T seconds, and only then declare the new channel authoritative and reaffirm the authoritative transcript (see realtime/authoritative-transcript).
+    Introduce a Transport Pivot: announce the target transport, freeze new tasks, replay the last N messages into the new channel, optionally dual-write for T seconds, and only then declare the new channel authoritative and reaffirm the authoritative transcript (see realtime/authoritative-transcript); record pivot-id and checkpoint-id in the log-of-record.
   + BECAUSE:
     A transport switch changes the epistemic ground (what counts as shared state), so it needs an explicit cutover.
   + NEXT-STEPS:

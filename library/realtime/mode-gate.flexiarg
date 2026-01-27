@@ -12,7 +12,7 @@
   + HOWEVER:
     In mixed-mode conversation, agents may act as if they have execution authority while the human is still orienting.
   + THEN:
-    Require a mode gate: agents must declare DISCUSS, DIAGNOSE, or EXECUTE with explicit transitions (DISCUSS→DIAGNOSE→EXECUTE) and exit criteria; only EXECUTE permits repo changes and it requires a human-issued token or explicit approval; EXECUTE must end with an explicit exit back to DISCUSS plus a brief summary.
+    Require a mode gate: agents must declare DISCUSS, DIAGNOSE, or EXECUTE with explicit transitions (DISCUSS→DIAGNOSE→EXECUTE) and exit criteria; only EXECUTE permits repo changes and it requires a human-issued token or explicit approval; EXECUTE must end with an explicit exit back to DISCUSS plus a brief summary; define a reset/timeout (e.g., human RESET or TTL) to prevent stuck modes.
   + BECAUSE:
     Mixing coordination talk with action talk collapses accountability and makes it hard to reconstruct why changes happened.
   + NEXT-STEPS:

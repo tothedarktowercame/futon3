@@ -1526,6 +1526,24 @@
       (append-lab-event! entry event)
       {:ok true :event/type :turn/plan})))
 
+(defn record-plan-wiring!
+  "Record a plan event from EDN wiring diagram, auto-generating Mermaid.
+   The wiring should have :nodes, :edges, and :output keys."
+  [session-id note wiring]
+  (when-let [entry (get-session session-id)]
+    (let [mermaid (try
+                    (require 'futon3.musn.plan-wiring)
+                    ((resolve 'futon3.musn.plan-wiring/plan->mermaid) wiring)
+                    (catch Exception e
+                      (str "flowchart LR\n    error[\"Failed to generate: " (.getMessage e) "\"]")))
+          event {:event/type :turn/plan
+                 :at (fulab-musn/now-inst)
+                 :payload (cond-> {:wiring wiring}
+                            note (assoc :note note)
+                            mermaid (assoc :diagram mermaid))}]
+      (append-lab-event! entry event)
+      {:ok true :event/type :turn/plan :mermaid? (some? mermaid)})))
+
 (defn recent-turns
   "Get recent conversation turns from session for HUD context.
    Returns up to n most recent :turn/user and :turn/agent events."

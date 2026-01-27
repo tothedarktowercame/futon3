@@ -805,6 +805,82 @@
                    (update :event/type #(when % (name %)))
                    (update-in [:payload :role] #(when % (name %))))))
 
+(defn- get-latest-plan-diagram
+  "Get the most recent plan diagram from a session."
+  [session-id]
+  (when-let [events (musn-svc/recent-scribe-events session-id 1000)]
+    (->> events
+         (filter #(= :turn/plan (:event/type %)))
+         last
+         :payload
+         :diagram)))
+
+(defn- handle-plan-diagram [session-id]
+  (if-let [diagram (get-latest-plan-diagram session-id)]
+    {:status 200
+     :headers {"content-type" "text/html; charset=utf-8"}
+     :body (str "<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+  <meta charset=\"UTF-8\">
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+  <title>Plan Diagram - " session-id "</title>
+  <style>
+    body {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      background: #1a1a2e;
+      color: #eaeaea;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #f9a825;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+    .mermaid {
+      background: #16213e;
+      padding: 30px;
+      border-radius: 8px;
+      border: 1px solid #3a3a5a;
+    }
+    .back-link {
+      margin-top: 20px;
+      color: #6ec1e4;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Plan: " session-id "</h1>
+  <div class=\"mermaid\">
+" diagram "
+  </div>
+  <a class=\"back-link\" href=\"/fulab/notebook/" session-id "\">← Back to notebook</a>
+  <script src=\"https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js\"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#2d2d44',
+        primaryTextColor: '#eaeaea',
+        primaryBorderColor: '#6ec1e4',
+        lineColor: '#c792ea',
+        secondaryColor: '#1e3a5f',
+        tertiaryColor: '#16213e'
+      }
+    });
+  </script>
+</body>
+</html>")}
+    (plaintext-response 404 "no plan diagram found")))
+
 (defn- handle-notebook-stream [state request session-id]
   ;; SSE endpoint for live notebook updates
   (http/with-channel request channel
@@ -862,6 +938,10 @@
       (and (= method :get) (re-matches #"/fulab/notebook/[^/]+/stream" uri))
       (let [session-id (extract-session-from-path uri)]
         (handle-notebook-stream state request session-id))
+
+      (and (= method :get) (re-matches #"/fulab/plan/[^/]+/diagram" uri))
+      (let [session-id (second (re-find #"/fulab/plan/([^/]+)/diagram" uri))]
+        (handle-plan-diagram session-id))
 
       (and (= method :get) (re-matches #"/fulab/notebook/[^/]+" uri))
       (serve-static-file "public/notebook.html" "text/html")

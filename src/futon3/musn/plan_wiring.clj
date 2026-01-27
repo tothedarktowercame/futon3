@@ -626,3 +626,103 @@
          eval (evaluate-plan-eval diagram actions opts)]
      {:actions actions
       :eval eval})))
+
+;; =============================================================================
+;; Mermaid diagram generation
+;; =============================================================================
+
+(def ^:private component->mermaid-shape
+  "Map component types to Mermaid node shapes."
+  {:musn.plan/action-reasoning  ["[" "]"]      ; rectangle
+   :musn.plan/action-command    ["([" "])"]    ; stadium/pill
+   :musn.plan/action-file-edit  ["[(" ")]"]    ; cylinder
+   :musn.plan/action-tool       ["{{" "}}"]    ; hexagon
+   :musn.plan/action            ["[" "]"]      ; rectangle
+   :musn.plan/sequence          ["[" "]"]      ; rectangle
+   :musn.plan/parallel          ["[/" "/]"]    ; parallelogram
+   :musn.plan/if-then-else      ["{" "}"]      ; diamond
+   :musn.plan/gate              ["{" "}"]})    ; diamond
+
+(defn- component-short-name
+  "Extract short name from component keyword."
+  [component]
+  (when component
+    (let [n (name component)]
+      (cond
+        (str/starts-with? n "action-") (subs n 7)
+        (str/starts-with? n "action") "action"
+        :else n))))
+
+(defn- node-label
+  "Generate a label for a node based on its component and params."
+  [node]
+  (let [component (:component node)
+        params (:params node)
+        short-name (component-short-name component)
+        detail (or (:note params)
+                   (:cmd params)
+                   (:spec params)
+                   (:desc params))]
+    (if detail
+      (let [detail-str (if (string? detail)
+                         detail
+                         (pr-str detail))
+            truncated (if (> (count detail-str) 30)
+                        (str (subs detail-str 0 27) "...")
+                        detail-str)]
+        (str short-name ": " truncated))
+      short-name)))
+
+(defn- escape-mermaid
+  "Escape special characters for Mermaid labels."
+  [s]
+  (-> s
+      (str/replace "\"" "'")
+      (str/replace "[" "(")
+      (str/replace "]" ")")
+      (str/replace "{" "(")
+      (str/replace "}" ")")))
+
+(defn- node->mermaid
+  "Convert a node to a Mermaid node definition."
+  [node]
+  (let [id (name (:id node))
+        component (:component node)
+        [open close] (get component->mermaid-shape component ["[" "]"])
+        label (escape-mermaid (node-label node))]
+    (str "    " id open "\"" label "\"" close)))
+
+(defn- edge->mermaid
+  "Convert an edge to a Mermaid edge definition."
+  [edge]
+  (let [from (name (:from edge))
+        to (name (:to edge))
+        label (:label edge)]
+    (if label
+      (str "    " from " -->|" (escape-mermaid label) "| " to)
+      (str "    " from " --> " to))))
+
+(defn plan->mermaid
+  "Convert a plan wiring diagram to Mermaid flowchart syntax.
+
+   Options:
+     :direction - flowchart direction: :LR (default), :TD, :TB, :RL, :BT
+     :title - optional title for the diagram
+
+   Example:
+     (plan->mermaid {:nodes [...] :edges [...] :output :seq})
+     ;; => \"flowchart LR\\n    s1[...]\\n    ...\"
+  "
+  ([diagram] (plan->mermaid diagram {}))
+  ([diagram {:keys [direction title] :or {direction :LR}}]
+   (let [diagram (normalize-diagram diagram)
+         nodes (:nodes diagram)
+         edges (:edges diagram)
+         output-id (:output diagram)
+         dir-str (name direction)
+         lines (cond-> [(str "flowchart " dir-str)]
+                 title (conj (str "    %% " title))
+                 true (into (map node->mermaid nodes))
+                 output-id (conj (str "    " (name output-id) " --> out((output))"))
+                 true (into (map edge->mermaid edges)))]
+     (str/join "\n" lines))))

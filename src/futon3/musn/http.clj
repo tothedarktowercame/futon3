@@ -116,6 +116,9 @@
                             (svc/record-turn! id (keyword role) content))
     "/musn/scribe/plan"   (let [{:keys [session/id note diagram]} body]
                             (svc/record-plan! id note diagram))
+    "/musn/scribe/plan-wiring"
+                          (let [{:keys [session/id note wiring]} body]
+                            (svc/record-plan-wiring! id note wiring))
     nil))
 
 (defn handler [req]

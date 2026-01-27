@@ -1,3 +1,17 @@
+# Agent Reference Guide
+
+## Quick Reference
+
+| Task | Tool | Example |
+|------|------|---------|
+| Validate sigil | `futon3.chops` | `(chops/validate-sigil "🐜/予")` |
+| Stamp pattern | `futon3.chops` | `(chops/stamp {:id "x"} ["🐜/予"])` |
+| Audit all sigils | `scripts/audit-sigils` | `./scripts/audit-sigils` |
+| Hot reload | Drawbridge | See "Drawbridge hot reloading" below |
+| Pattern check | `futon3.pattern-check.integration` | See "Realtime pattern checking" below |
+
+---
+
 ## Sigil validation with 印章 (chops)
 
 Before creating or modifying patterns, validate sigils against canonical sets using `futon3.chops`.
@@ -204,3 +218,51 @@ Some changes still require a full server restart:
 - Adding new dependencies to `deps.edn`
 - Changes to startup/initialization code in `f2.musn`
 - Modifications to atoms/state that are initialized with `defonce`
+
+## Realtime pattern checking
+
+The pattern-check loop validates sigils and PSR/PUR events from live IRC chat without blocking the relay. It writes read-only JSONL logs.
+
+### Running the pattern checker
+
+```bash
+# Connect to IRC bridge and write JSONL output
+clj -M -m futon3.pattern-check.integration \
+  --host localhost \
+  --port 6680 \
+  --room lab \
+  --password $MUSN_IRC_PASSWORD \
+  --output /tmp/musn_pattern_checks.jsonl
+```
+
+### REPL usage
+
+```clojure
+(require '[futon3.pattern-check.integration :as pci])
+
+;; Start standalone checker (no IRC)
+(def checker (pci/start! {:jsonl-path "/tmp/test_checks.jsonl"}))
+
+;; Manually ingest lines
+(pci/ingest! checker (pci/normalize-line "Message with 🐜/予" :source :irc))
+
+;; Stop
+(pci/stop! checker)
+
+;; Or start with IRC connection
+(def listener (pci/start-irc-listener!
+               {:host "localhost" :port 6680 :room "lab"
+                :password "secret" :jsonl-path "/tmp/checks.jsonl"}))
+(pci/stop-irc-listener! listener)
+```
+
+### What it checks
+
+- **Sigils**: Extracts `emoji/hanzi` and `tokipona/hanzi` patterns, validates via `futon3.chops`
+- **PSR events**: Detects `:pattern/selection-claimed` and `:turn/select` structured events
+- **PUR events**: Detects `:pattern/use-claimed` and `:turn/use` structured events
+- **JSONL output**: One record per batch with sigil counts, PSR/PUR ids, and errors
+
+### Spec
+
+See `docs/realtime-pattern-check.md` for the full specification including buffer behavior, batch timing, and schema details.

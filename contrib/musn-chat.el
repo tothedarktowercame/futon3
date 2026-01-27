@@ -75,7 +75,8 @@
   "Process filter for chat output."
   (when (buffer-live-p (process-buffer proc))
     (with-current-buffer (process-buffer proc)
-      (let ((moving (= (point) (process-mark proc))))
+      (let ((inhibit-read-only t)
+            (moving (= (point) (process-mark proc))))
         (save-excursion
           (goto-char (process-mark proc))
           (insert string)
@@ -88,11 +89,18 @@
   (message "MUSN Chat: %s" (string-trim event)))
 
 ;;;###autoload
-(defun musn-chat-connect ()
-  "Connect to MUSN IRC chat."
-  (interactive)
+(defun musn-chat-connect (&optional host)
+  "Connect to MUSN IRC chat.
+With prefix arg or HOST, prompt for host. Otherwise use `musn-chat-host'."
+  (interactive (list (when current-prefix-arg
+                       (read-string "Host: " musn-chat-host))))
   (when (and musn-chat-process (process-live-p musn-chat-process))
     (error "Already connected. Use musn-chat-disconnect first"))
+  (when host
+    (setq musn-chat-host host))
+  ;; Prompt for password if not set
+  (unless musn-chat-password
+    (setq musn-chat-password (read-passwd "IRC password: ")))
   (let* ((root (musn-chat--find-project-root))
          (default-directory root)
          (script (expand-file-name musn-chat-script root))
@@ -101,16 +109,17 @@
     (setq musn-chat-project-root root)
     (with-current-buffer buf
       (musn-chat-mode)
-      (erase-buffer)
-      (insert (format ";;; Connecting to %s:%d as %s in #%s...\n\n"
-                      musn-chat-host musn-chat-port
-                      musn-chat-nick musn-chat-room)))
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (insert (format ";;; Connecting to %s:%d as %s in #%s...\n\n"
+                        musn-chat-host musn-chat-port
+                        musn-chat-nick musn-chat-room))))
     (setq musn-chat-process
           (apply #'start-process "musn-chat" buf "python3" script args))
     (set-process-filter musn-chat-process #'musn-chat--filter)
     (set-process-sentinel musn-chat-process #'musn-chat--sentinel)
     (display-buffer buf)
-    (message "MUSN Chat: connecting...")))
+    (message "MUSN Chat: connecting to %s:%d..." musn-chat-host musn-chat-port)))
 
 (defun musn-chat-disconnect ()
   "Disconnect from MUSN IRC chat."

@@ -1,27 +1,25 @@
 # Realtime Pattern-Check Loop (Spec)
 
-## Scope
-Continuously validate sigils and detect PSR/PUR activity from live chat without blocking
-IRC relay or Codex streaming. Output is read-only JSONL; no repo writes or migrations.
+This spec defines a low-latency loop that validates sigils and detects PSR/PUR
+signals from live chat, without blocking the IRC relay. Output is append-only
+JSONL; no repo writes or migrations.
 
 ## 1) Buffer Mechanism
-- **Sources**: IRC stream, notify-log tail, or other line-oriented feed.
-- **Normalization**: trim whitespace; ignore empty lines; attach source metadata.
+- **Sources**: IRC stream (preferred) or notify-log tail.
+- **Normalize**: trim whitespace; ignore empty lines; attach `{ts, source, raw}`.
 - **Batching**: debounce into small batches (`max_wait=2s` or `max_lines=50`).
 - **Backlog cap**: bounded buffer (default `max_buffer=1000` lines). If overflow,
-  drop oldest lines and record `dropped_lines` for the batch.
-- **Batch metadata**: assign `batch_id` (monotonic), `window_start`, `window_end`,
-  and `source` to each batch for traceability.
+  drop oldest lines and record `dropped_lines`.
+- **Batch metadata**: assign `batch_id` (monotonic), `window_start`, `window_end`.
 
-## 2) Pattern Matchers
+## 2) Pattern Matchers (chops, PSR/PUR)
 ### 2.1 Sigil extraction + chops
-- Extract `emoji/hanzi` tokens from each line (simple tokenization; allow multiple
-  per line).
+- Extract candidate `emoji/hanzi` tokens from each line (allow multiple per line).
 - Validate each candidate with `futon3.chops/validate-sigil`.
-- Record `invalid_sigils` (unique, per batch) and `sigils_checked` count.
-- Optional: retain decoded readings for diagnostics (do not emit to IRC by default).
+- Record `sigils_checked` and `invalid_sigils` (unique, per batch).
+- Optional: retain decoded readings for diagnostics (not emitted to IRC by default).
 
-### 2.2 PSR/PUR detection
+### 2.2 PSR / PUR matcher
 - Detect structured PSR/PUR lines in JSON/EDN payloads emitted by live runs.
 - Recognize event names:
   - `:pattern/selection-claimed` (PSR)
@@ -29,13 +27,12 @@ IRC relay or Codex streaming. Output is read-only JSONL; no repo writes or migra
   - `turn/select` (PSR)
   - `turn/use` (PUR)
 - Extract identifiers when present: `:pattern/id`, `:session/id`, `:decision/id`.
-- Report `psr_seen` and `pur_seen` counts; optionally include `psr_ids` / `pur_ids`.
+- Report `psr_seen` and `pur_seen`; optionally include `psr_ids` / `pur_ids`.
 
 ### 2.3 Duplicate sigil pair detection
 - Read devmap + pattern files (configurable globs) and map `sigil -> locations`.
-- Flag duplicates where the same sigil pair appears in multiple locations.
-- Cache the scan results and refresh on a timer (e.g. every 60s) to avoid
-  per-batch filesystem churn.
+- Flag duplicates when the same sigil pair appears in multiple locations.
+- Cache scan results and refresh on a timer (e.g. every 60s) to avoid churn.
 
 ## 3) JSONL Schema
 - Append JSONL records to `/tmp/musn_pattern_checks.jsonl`.
@@ -76,7 +73,6 @@ Example record:
 - **Ingest thread**: non-blocking; pushes lines into a bounded queue.
 - **Worker**: parses + validates batches off the ingest thread.
 - **Output**: JSONL append is synchronous per batch but must stay under 10ms.
-- **Overload**: when queue is full, drop oldest lines and emit a batch with
-  `overload=true` and `dropped_lines`.
+- **Overload**: when queue is full, drop oldest lines and emit `overload=true`.
 - **Responsiveness**: prioritize low latency over completeness; skipping is ok
   as long as it is reported.

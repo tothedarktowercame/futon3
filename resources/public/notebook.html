@@ -205,6 +205,28 @@
       40% { content: '..'; }
       60%, 100% { content: '...'; }
     }
+
+    /* Mermaid diagram styling */
+    .turn.plan {
+      background: var(--bg-secondary);
+      border-left: 3px solid #f9a825;
+    }
+
+    .turn.plan .turn-header {
+      background: rgba(249, 168, 37, 0.1);
+      color: #f9a825;
+    }
+
+    .mermaid {
+      background: var(--bg-primary);
+      padding: 16px;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+
+    .mermaid svg {
+      max-width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -213,6 +235,21 @@
       <div class="loading">Connecting to notebook</div>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#2d2d44',
+        primaryTextColor: '#eaeaea',
+        primaryBorderColor: '#6ec1e4',
+        lineColor: '#c792ea',
+        secondaryColor: '#1e3a5f',
+        tertiaryColor: '#16213e'
+      }
+    });
+  </script>
   <script src="/js/notebook.js"></script>
 </body>
 </html>

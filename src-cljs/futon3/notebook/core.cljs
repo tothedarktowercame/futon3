@@ -89,12 +89,44 @@
    [:div.turn-content
     (pr-str payload)]])
 
+;; Mermaid rendering
+(defn render-mermaid! []
+  (when (exists? js/mermaid)
+    (.run js/mermaid)))
+
+(defn mermaid-diagram
+  "Render a mermaid diagram. Call render-mermaid! after component mounts."
+  [diagram-str]
+  (r/create-class
+   {:component-did-mount render-mermaid!
+    :component-did-update render-mermaid!
+    :reagent-render
+    (fn [diagram-str]
+      [:div.mermaid diagram-str])}))
+
+(defn plan-component [{:keys [event/type at payload]}]
+  (let [diagram (or (:diagram payload) (:mermaid payload))
+        note (or (:note payload) (:plan payload))]
+    [:div.turn.plan
+     [:div.turn-header
+      [:span.role "PLAN"]
+      [:span.timestamp (format-timestamp at)]]
+     [:div.turn-content
+      (when note [:div.plan-note note])
+      (when diagram [mermaid-diagram diagram])]]))
+
 (defn event-component [event]
   (let [etype (:event/type event)
         ;; Handle both keyword and string event types from JSON
         etype-str (if (keyword? etype) (name etype) (str etype))]
-    (if (#{"user" "agent" "turn/user" "turn/agent"} etype-str)
+    (cond
+      (#{"user" "agent" "turn/user" "turn/agent"} etype-str)
       [turn-component event]
+
+      (#{"plan" "turn/plan"} etype-str)
+      [plan-component event]
+
+      :else
       [system-event-component event])))
 
 (defn connection-status []

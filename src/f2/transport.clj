@@ -815,24 +815,24 @@
                            "connection" "keep-alive"}}
                 false)
     ;; Send initial state
-    (let [events (or (musn-svc/recent-turns session-id 100)
+    (let [events (or (musn-svc/recent-scribe-events session-id 100)
                      [])
           init-data (json/encode {:type "init"
                                   :session-id session-id
                                   :events (mapv #(-> %
                                                      (update :event/type name)
-                                                     (update-in [:payload :role] name))
+                                                     (update-in [:payload :role] (fn [r] (when r (name r)))))
                                                 events)})]
       (http/send! channel (str "data: " init-data "\n\n") false))
     ;; Poll for new events (simple approach; could use core.async watch later)
     (let [poll-interval 1000
-          last-count (atom (count (musn-svc/recent-turns session-id 1000)))]
+          last-count (atom (count (musn-svc/recent-scribe-events session-id 1000)))]
       (future
         (try
           (loop []
             (Thread/sleep poll-interval)
             (when (http/open? channel)
-              (let [events (musn-svc/recent-turns session-id 1000)
+              (let [events (musn-svc/recent-scribe-events session-id 1000)
                     current-count (count events)]
                 (when (> current-count @last-count)
                   (let [new-events (drop @last-count events)]
@@ -840,7 +840,7 @@
                       (let [data (json/encode {:type "turn"
                                                :event (-> event
                                                           (update :event/type name)
-                                                          (update-in [:payload :role] name))})]
+                                                          (update-in [:payload :role] (fn [r] (when r (name r)))))})]
                         (http/send! channel (str "data: " data "\n\n") false))))
                   (reset! last-count current-count)))
               (recur)))

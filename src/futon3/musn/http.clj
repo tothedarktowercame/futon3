@@ -114,6 +114,8 @@
     "/musn/hud/build"     (hud-build-request body)
     "/musn/scribe/turn"   (let [{:keys [session/id role content]} body]
                             (svc/record-turn! id (keyword role) content))
+    "/musn/scribe/plan"   (let [{:keys [session/id note diagram]} body]
+                            (svc/record-plan! id note diagram))
     nil))
 
 (defn handler [req]

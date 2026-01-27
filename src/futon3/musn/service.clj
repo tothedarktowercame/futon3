@@ -1514,6 +1514,18 @@
       (append-lab-event! entry event)
       {:ok true :event/type (:event/type event)})))
 
+(defn record-plan!
+  "Record a plan event with optional Mermaid diagram to session."
+  [session-id note diagram]
+  (when-let [entry (get-session session-id)]
+    (let [event {:event/type :turn/plan
+                 :at (fulab-musn/now-inst)
+                 :payload (cond-> {}
+                            note (assoc :note note)
+                            diagram (assoc :diagram diagram))}]
+      (append-lab-event! entry event)
+      {:ok true :event/type :turn/plan})))
+
 (defn recent-turns
   "Get recent conversation turns from session for HUD context.
    Returns up to n most recent :turn/user and :turn/agent events."
@@ -1522,6 +1534,17 @@
     (->> @(:lab-session entry)
          :events
          (filter #(#{:turn/user :turn/agent} (:event/type %)))
+         (take-last n)
+         vec)))
+
+(defn recent-scribe-events
+  "Get recent scribe events (turns + plans) from session for notebook display.
+   Returns up to n most recent :turn/user, :turn/agent, and :turn/plan events."
+  [session-id n]
+  (when-let [entry (get-session session-id)]
+    (->> @(:lab-session entry)
+         :events
+         (filter #(#{:turn/user :turn/agent :turn/plan} (:event/type %)))
          (take-last n)
          vec)))
 

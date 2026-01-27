@@ -149,3 +149,15 @@ This session is a proof of concept for something larger: collaborative platforms
 First flight: 852 feet. First cross-model coordination: one git merge, 32 sigil fixes, and a meeting note that grew into an architecture proposal.
 
 **Gap / Next Milestone:** fucodex didn't participate in this review - it crashed and wasn't restarted. Today showed execution coordination works; the next step is **joint sensemaking** - agents participating in retrospectives together, critiquing approaches, building shared understanding. Not just parallel work, but collaborative learning.
+
+**Process Improvement: Timeboxed Standups**
+
+Today we tried to do coordination *and* execution in IRC - high overhead. Better model:
+
+| Phase | Where | What |
+|-------|-------|------|
+| Standup | IRC (timeboxed) | What done? What blocked? What next? Handoffs? |
+| Work | Separate peripherals | Independent execution, full tools, no chat overhead |
+| Standup | IRC (timeboxed) | Sync, surface issues, realign |
+
+IRC becomes a sync point, not the workspace. Like human standups - you don't pair program 8 hours in the same room.

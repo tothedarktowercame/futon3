@@ -161,7 +161,7 @@
      (when aif-viz-port
        (aif-viz/start! {:port aif-viz-port}))
      (log! (format "MUSN HTTP server on %d" port))
-     (let [stop-fn (http/run-server handler {:port port})]
+     (let [stop-fn (http/run-server #'handler {:port port})]  ;; var for hot reload
        (reset! server-state {:port port :stop-fn stop-fn})
        stop-fn))))
 

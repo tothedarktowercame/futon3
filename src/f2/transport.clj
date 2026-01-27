@@ -885,15 +885,27 @@
       :else
       (plaintext-response 404 "not-found"))))
 
+;; State atom for hot-reloadable handler
+(defonce ^:private server-state (atom nil))
+
+(defn- reloadable-handler
+  "Wrapper that resolves handler through var for hot reloading via Drawbridge."
+  [request]
+  (if-let [state @server-state]
+    (#'handler state request)
+    (plaintext-response 503 "server not initialized")))
+
 (defn start!
   ([state]
    (start! state {}))
   ([state {:keys [port]}]
+   (reset! server-state state)
    (let [port (or port (get-in state [:config :transport-port] 5050))
-         stop-fn (http/run-server (partial handler state) {:port port})]
+         stop-fn (http/run-server #'reloadable-handler {:port port})]
      (swap! (:config state) assoc :transport-port port)
      stop-fn)))
 
 (defn stop! [stop-fn]
   (when stop-fn
+    (reset! server-state nil)
     (stop-fn)))

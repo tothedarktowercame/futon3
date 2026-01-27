@@ -43,6 +43,17 @@ First real-time cross-model coordination session: Claude (Anthropic) and fucodex
 - Cross-model coordination (Claude + Codex) worked smoothly - the IRC protocol abstracted away model differences
 - Different formatting styles were noticeable but didn't impede collaboration
 
+## Observations on AIF Pattern Guidance (Fucodex)
+
+The Fucodex wrapper adds Active Inference pattern-guided behavior to Codex, but today it seemed to add overhead rather than capability:
+
+- Excessive "hud-intent:" preambles before actions
+- Over-compliance: asking for confirmation on decisions it could have made autonomously
+- Meta-commentary about plans rather than executing them
+- Regular Codex would likely have just fixed the sigils and pushed
+
+**Takeaway:** The AIF pattern guidance needs refinement. Patterns should make agents *more* effective, not more ceremonial. The current implementation may be over-constraining rather than helpfully guiding.
+
 ## Outcomes
 
 - `feat/pattern-check-integration` merged to main (commit 22a9869)

@@ -1,18 +1,23 @@
 #!/usr/bin/env clojure
-;; MUSN IRC bridge.
+;; MUSN IRC bridge with WebSocket support.
 ;;
 ;; Options:
-;;   --host HOST
-;;   --port PORT
-;;   --musn-url URL
-;;   --poll-interval SECONDS
-;;   --room NAME
-;;   --password SECRET (or MUSN_IRC_PASSWORD)
-;;   --allowlist CSV (or MUSN_IRC_ALLOWLIST, comma-separated IPs/CIDRs)
+;;   --host HOST           Bind address (default 127.0.0.1)
+;;   --port PORT           IRC port (default 6667)
+;;   --ws-port PORT        WebSocket port (default: none, disabled)
+;;   --musn-url URL        MUSN service URL (default http://localhost:6065)
+;;   --poll-interval SECS  Room poll interval (default 2.0)
+;;   --room NAME           Default room to auto-join
+;;   --password SECRET     Auth password (or MUSN_IRC_PASSWORD env)
+;;   --allowlist CSV       Allowed IPs/CIDRs (or MUSN_IRC_ALLOWLIST env)
+;;
+;; WebSocket clients connect to ws://host:ws-port/?nick=NAME&room=ROOM&pass=SECRET
+;; and receive JSON messages: {type: "message", room, nick, text, timestamp}
 (ns scripts.musn-irc-bridge
   (:require [cheshire.core :as json]
             [clj-http.client :as http]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [org.httpkit.server :as httpkit])
   (:import [java.io BufferedReader InputStreamReader OutputStreamWriter BufferedWriter]
            [java.net ServerSocket Socket]
            [java.util UUID]))
@@ -21,6 +26,7 @@
   (loop [args args
          opts {:host "127.0.0.1"
                :port 6667
+               :ws-port nil
                :musn-url "http://localhost:6065"
                :poll-interval 2.0
                :room nil
@@ -37,6 +43,7 @@
         (case flag
           "--host" (recur rest (assoc opts :host val))
           "--port" (recur rest (assoc opts :port (Integer/parseInt val)))
+          "--ws-port" (recur rest (assoc opts :ws-port (Integer/parseInt val)))
           "--musn-url" (recur rest (assoc opts :musn-url val))
           "--poll-interval" (recur rest (assoc opts :poll-interval (Double/parseDouble val)))
           "--room" (recur rest (assoc opts :room val))
@@ -44,7 +51,8 @@
           "--allowlist" (recur rest (update opts :allowlist into (str/split (or val "") #",")))
           (recur rest opts))))))
 
-(defonce server-state (atom {:clients {}
+(defonce server-state (atom {:clients {}      ;; IRC clients
+                             :ws-clients {}   ;; WebSocket clients
                              :rooms {}}))
 
 (def ^:private log-path
@@ -138,8 +146,27 @@
         (send-line! client line)))))
 
 (defn- room-clients [room-id]
+  "Get IRC clients in a room."
   (let [clients (vals (:clients @server-state))]
     (filter #(= room-id (:room %)) clients)))
+
+(defn- ws-room-clients [room-id]
+  "Get WebSocket clients in a room."
+  (let [clients (vals (:ws-clients @server-state))]
+    (filter #(= room-id (:room %)) clients)))
+
+(defn- send-ws! [client data]
+  "Send JSON data to a WebSocket client."
+  (when-let [ch (:channel client)]
+    (try
+      (httpkit/send! ch (json/generate-string data))
+      (catch Throwable _))))
+
+(defn- broadcast-ws! [room-id exclude-nick msg-data]
+  "Broadcast a message to all WebSocket clients in a room."
+  (doseq [client (ws-room-clients room-id)]
+    (when-not (and exclude-nick (= exclude-nick (:nick client)))
+      (send-ws! client msg-data))))
 
 (defn- room-nicks [room-id]
   (let [clients (room-clients room-id)
@@ -188,13 +215,22 @@
                 (let [payload (:payload event)
                       author (:author payload)
                       name (or (:name author) (:id author) "anon")
-                      text (strip-fulab-report (:text payload))]
+                      text (strip-fulab-report (:text payload))
+                      timestamp (or (:at event) (str (java.time.Instant/now)))]
                   (when (seq text)
                     (note-room-nick! room-id name)
+                    ;; Broadcast to IRC clients
                     (doseq [line (str/split-lines text)]
                       (broadcast-except! (room-clients room-id) name
                                          (format ":%s!%s@musn PRIVMSG #%s :%s"
                                                  name name room-id line)))
+                    ;; Broadcast to WebSocket clients
+                    (broadcast-ws! room-id name
+                                   {:type "message"
+                                    :room room-id
+                                    :nick name
+                                    :text text
+                                    :timestamp timestamp})
                     (log! (format "relay #%s <%s> %s"
                                   room-id
                                   name
@@ -218,7 +254,8 @@
     (reset! stop-flag true)))
 
 (defn- maybe-stop-room! [room-id]
-  (when (empty? (room-clients room-id))
+  (when (and (empty? (room-clients room-id))
+             (empty? (ws-room-clients room-id)))
     (stop-room-poller! room-id)
     (swap! server-state update :rooms dissoc room-id)))
 
@@ -400,6 +437,112 @@
 
 (defonce ^:private bridge-state (atom nil))
 
+;; ---------------------------------------------------------------------------
+;; WebSocket Handler
+;; ---------------------------------------------------------------------------
+
+(defn- ws-handle-message! [client-id text musn-url]
+  "Handle incoming WebSocket message (JSON)."
+  (try
+    (let [data (json/parse-string text true)
+          msg-type (:type data)]
+      (case msg-type
+        "message"
+        (let [client (get-in @server-state [:ws-clients client-id])
+              room-id (:room client)
+              nick (:nick client)
+              msg-text (:text data)]
+          (when (and room-id nick (seq msg-text))
+            (let [payload {:room room-id
+                           :msg-id (str (UUID/randomUUID))
+                           :author {:id nick :name nick}
+                           :text msg-text}]
+              (musn-post! musn-url "/musn/chat/message" payload))))
+
+        "join"
+        (let [room-id (str/replace (or (:room data) "") #"^#" "")]
+          (when (seq room-id)
+            (swap! server-state assoc-in [:ws-clients client-id :room] room-id)
+            (let [client (get-in @server-state [:ws-clients client-id])]
+              (note-room-nick! room-id (:nick client))
+              (send-ws! client {:type "joined" :room room-id :nicks (vec (room-nicks room-id))}))))
+
+        ;; Unknown message type - ignore
+        nil))
+    (catch Throwable t
+      (log! (format "ws message parse error: %s" (.getMessage t))))))
+
+(defn- ws-handler [musn-url poll-interval default-room password allowlist]
+  "Create WebSocket handler for http-kit."
+  (fn [req]
+    (let [params (some-> (:query-string req)
+                         (java.net.URLDecoder/decode "UTF-8")
+                         (#(str/split % #"&"))
+                         (->> (map #(str/split % #"=" 2))
+                              (filter #(= 2 (count %)))
+                              (into {})))
+          nick (get params "nick")
+          room (or (get params "room") default-room)
+          pass (get params "pass")
+          remote-ip (or (get-in req [:headers "x-forwarded-for"])
+                        (:remote-addr req)
+                        "unknown")]
+      ;; Check auth
+      (cond
+        (and (auth-required? password) (not= pass password))
+        {:status 403 :body "Forbidden: invalid password"}
+
+        (not (allowed-remote? allowlist remote-ip))
+        {:status 403 :body "Forbidden: IP not allowed"}
+
+        (str/blank? nick)
+        {:status 400 :body "Bad Request: nick parameter required"}
+
+        :else
+        (httpkit/with-channel req channel
+          (let [client-id (str (UUID/randomUUID))
+                room-id (str/replace (or room "") #"^#" "")
+                client {:id client-id
+                        :channel channel
+                        :nick nick
+                        :room (when (seq room-id) room-id)
+                        :remote-ip remote-ip}]
+            (log! (format "ws client %s connected as %s from %s" client-id nick remote-ip))
+            (swap! server-state assoc-in [:ws-clients client-id] client)
+
+            ;; Ensure room poller is running if room specified
+            (when (seq room-id)
+              (ensure-room-poller! musn-url room-id poll-interval)
+              (note-room-nick! room-id nick))
+
+            ;; Send welcome message
+            (send-ws! client {:type "welcome"
+                              :nick nick
+                              :room room-id
+                              :nicks (when (seq room-id) (vec (room-nicks room-id)))})
+
+            ;; Handle incoming messages
+            (httpkit/on-receive channel
+                                (fn [data]
+                                  (ws-handle-message! client-id data musn-url)))
+
+            ;; Handle close
+            (httpkit/on-close channel
+                              (fn [_status]
+                                (log! (format "ws client %s disconnected" client-id))
+                                (let [room (:room (get-in @server-state [:ws-clients client-id]))]
+                                  (swap! server-state update :ws-clients dissoc client-id)
+                                  (when room
+                                    (maybe-stop-room! room)))))))))))
+
+(defn- close-all-ws-clients! []
+  (doseq [[_ client] (:ws-clients @server-state)]
+    (try
+      (when-let [ch (:channel client)]
+        (httpkit/close ch))
+      (catch Throwable _)))
+  (swap! server-state assoc :ws-clients {}))
+
 (defn- accept-loop! [^ServerSocket server musn-url poll-interval default-room password allowlist stop-flag]
   (try
     (while (not @stop-flag)
@@ -427,17 +570,21 @@
   (swap! server-state assoc :clients {}))
 
 (defn start!
-  "Start the IRC bridge server. Returns a stop function.
+  "Start the IRC bridge server with optional WebSocket support. Returns a stop function.
    Options:
      :host - bind address (default 127.0.0.1)
      :port - IRC port (default 6667)
+     :ws-port - WebSocket port (default nil, disabled)
      :musn-url - MUSN service URL (default http://localhost:6065)
      :poll-interval - room poll interval in seconds (default 2.0)
-     :room - default room to join"
+     :room - default room to join
+     :password - auth password
+     :allowlist - allowed IPs/CIDRs"
   ([] (start! {}))
   ([opts]
    (let [host (or (:host opts) "127.0.0.1")
          port (or (:port opts) 6667)
+         ws-port (:ws-port opts)
          musn-url (or (:musn-url opts) "http://localhost:6065")
          poll-interval (or (:poll-interval opts) 2.0)
          default-room (:room opts)
@@ -445,26 +592,36 @@
          allowlist (:allowlist opts)
          stop-flag (atom false)
          server (ServerSocket. port 50 (java.net.InetAddress/getByName host))
-         accept-thread (future (accept-loop! server musn-url poll-interval default-room password allowlist stop-flag))]
-     (log! (format "listening on %s:%d (musn=%s)" host port musn-url))
+         accept-thread (future (accept-loop! server musn-url poll-interval default-room password allowlist stop-flag))
+         ;; Start WebSocket server if port specified
+         ws-stop-fn (when ws-port
+                      (let [handler (ws-handler musn-url poll-interval default-room password allowlist)]
+                        (log! (format "ws listening on %s:%d" host ws-port))
+                        (httpkit/run-server handler {:ip host :port ws-port})))]
+     (log! (format "irc listening on %s:%d (musn=%s)" host port musn-url))
      (reset! bridge-state {:server server
                            :stop-flag stop-flag
-                           :accept-thread accept-thread})
+                           :accept-thread accept-thread
+                           :ws-stop-fn ws-stop-fn})
      (fn []
        (reset! stop-flag true)
        (try (.close server) (catch Throwable _))
+       (when ws-stop-fn (ws-stop-fn))
        (stop-all-rooms!)
        (close-all-clients!)
+       (close-all-ws-clients!)
        (reset! bridge-state nil)))))
 
 (defn stop!
   "Stop the IRC bridge server."
   []
-  (when-let [{:keys [server stop-flag]} @bridge-state]
+  (when-let [{:keys [server stop-flag ws-stop-fn]} @bridge-state]
     (reset! stop-flag true)
     (try (.close ^ServerSocket server) (catch Throwable _))
+    (when ws-stop-fn (ws-stop-fn))
     (stop-all-rooms!)
     (close-all-clients!)
+    (close-all-ws-clients!)
     (reset! bridge-state nil)))
 
 (defn -main [& args]

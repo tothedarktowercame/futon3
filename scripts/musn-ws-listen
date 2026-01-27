@@ -1,0 +1,107 @@
+#!/usr/bin/env bb
+;; MUSN WebSocket chat listener (Babashka)
+;;
+;; Usage:
+;;   ./scripts/musn-ws-listen --nick claude --room lab --pass SECRET
+;;   ./scripts/musn-ws-listen --host 172.236.28.208 --port 6681 --nick claude --room lab
+;;
+;; Environment variables:
+;;   MUSN_WS_HOST, MUSN_WS_PORT, MUSN_WS_NICK, MUSN_WS_ROOM, MUSN_WS_PASS
+
+(ns musn-ws-listen
+  (:require [cheshire.core :as json]
+            [clojure.string :as str])
+  (:import [java.net URI]
+           [java.net.http HttpClient WebSocket WebSocket$Listener]
+           [java.util.concurrent CompletableFuture CountDownLatch]))
+
+(defn env [name default]
+  (or (System/getenv name) default))
+
+(defn parse-args [args]
+  (loop [args args
+         opts {:host (env "MUSN_WS_HOST" "localhost")
+               :port (env "MUSN_WS_PORT" "6681")
+               :nick (env "MUSN_WS_NICK" "bb_listener")
+               :room (env "MUSN_WS_ROOM" "lab")
+               :pass (env "MUSN_WS_PASS" "")
+               :raw false}]
+    (if (empty? args)
+      opts
+      (let [[flag val & rest] args]
+        (case flag
+          "--host" (recur rest (assoc opts :host val))
+          "--port" (recur rest (assoc opts :port val))
+          "--nick" (recur rest (assoc opts :nick val))
+          "--room" (recur rest (assoc opts :room val))
+          "--pass" (recur rest (assoc opts :pass val))
+          "--raw"  (recur (cons val rest) (assoc opts :raw true))
+          (recur rest opts))))))
+
+(defn build-uri [{:keys [host port nick room pass]}]
+  (let [query (str "nick=" (java.net.URLEncoder/encode nick "UTF-8")
+                   "&room=" (java.net.URLEncoder/encode room "UTF-8")
+                   (when (seq pass)
+                     (str "&pass=" (java.net.URLEncoder/encode pass "UTF-8"))))]
+    (URI. (str "ws://" host ":" port "/?" query))))
+
+(defn format-message [data raw?]
+  (if raw?
+    (json/generate-string data)
+    (let [msg-type (:type data)]
+      (case msg-type
+        "welcome" (str "[connected] nick=" (:nick data) " room=#" (:room data)
+                       " users=" (str/join "," (:nicks data [])))
+        "message" (str (:nick data) " (#" (:room data) "): " (:text data))
+        "joined"  (str "[joined #" (:room data) "] users=" (str/join "," (:nicks data [])))
+        (json/generate-string data)))))
+
+(defn create-listener [raw? latch]
+  (reify WebSocket$Listener
+    (onOpen [_ ws]
+      (println "[ws] connected")
+      (.request ws 1))
+
+    (onText [_ ws data last?]
+      (try
+        (let [text (str data)
+              parsed (json/parse-string text true)]
+          (println (format-message parsed raw?))
+          (flush))
+        (catch Exception e
+          (println "[ws] parse error:" (.getMessage e))))
+      (.request ws 1)
+      (CompletableFuture/completedFuture nil))
+
+    (onClose [_ ws status reason]
+      (println (str "[ws] closed: " status " " reason))
+      (.countDown latch)
+      (CompletableFuture/completedFuture nil))
+
+    (onError [_ ws err]
+      (println (str "[ws] error: " (.getMessage err)))
+      (.countDown latch))))
+
+(defn connect! [opts]
+  (let [uri (build-uri opts)
+        client (HttpClient/newHttpClient)
+        latch (CountDownLatch. 1)
+        listener (create-listener (:raw opts) latch)
+        ws-future (.buildAsync (.newWebSocketBuilder client) uri listener)]
+    (println (str "[ws] connecting to " uri))
+    (try
+      (let [ws (.get ws-future)]
+        ;; Keep connection alive until closed
+        (.await latch))
+      (catch Exception e
+        (println (str "[ws] connection failed: " (.getMessage e)))))))
+
+(defn -main [& args]
+  (let [opts (parse-args args)]
+    (when (str/blank? (:nick opts))
+      (println "Error: --nick required")
+      (System/exit 1))
+    (connect! opts)))
+
+(when (= *file* (System/getProperty "babashka.file"))
+  (apply -main *command-line-args*))

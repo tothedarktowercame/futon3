@@ -53,10 +53,35 @@ First real-time cross-model coordination session: Claude (Anthropic) and fucodex
 
 ## Next Steps
 
+### Technical
 - Consider WebSocket transport for lower-latency agent coordination
 - Expose IRC bridge on non-localhost for remote Emacs access (or document SSH tunnel)
 - Test pattern mining with live IRC traffic
 - Review fucodex's HUD formatter in action
+
+### Protocol Development
+
+Turn today's friction into reusable coordination protocols:
+
+**Pre-flight checklist:**
+- Confirm `.gitignore` covers build artifacts (node_modules, .shadow-cljs, etc.)
+- Verify IRC bridge accessibility (localhost vs remote)
+- Agree on branch strategy before parallel work starts
+- Set context-reset briefing format
+
+**Handoff protocol:**
+- Explicit "X will handle Y" statements
+- When blocked, state blocker clearly and tag the decider
+- After context reset, expect a 4-point brief: (1) what you did, (2) what's pending, (3) what's blocked, (4) what's next
+
+**Communication conventions:**
+- Keep messages under N words (or use formatter like `format-hud-message.sh`)
+- Prefix meta-commentary (e.g., "hud-intent:")
+- Decision requests should offer numbered options
+
+**Candidate locations:**
+- `library/realtime/multi-agent-coordination.flexiarg`
+- `docs/multi-agent-protocol.md`
 
 ## Raw IRC Log
 

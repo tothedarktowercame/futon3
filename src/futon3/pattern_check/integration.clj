@@ -262,10 +262,123 @@
     (when-let [line-item (parse-irc-privmsg raw-line)]
       (ingest! checker line-item))))
 
+;; --- IRC socket listener ---
+
+(defn- irc-connect
+  "Connect to IRC server and return socket + reader + writer."
+  [host port]
+  (let [socket (java.net.Socket. host (int port))
+        reader (java.io.BufferedReader. (java.io.InputStreamReader. (.getInputStream socket)))
+        writer (java.io.BufferedWriter. (java.io.OutputStreamWriter. (.getOutputStream socket)))]
+    {:socket socket :reader reader :writer writer}))
+
+(defn- irc-send! [writer line]
+  (locking writer
+    (.write writer (str line "\r\n"))
+    (.flush writer)))
+
+(defn- irc-read-line [reader]
+  (.readLine reader))
+
+(defn start-irc-listener!
+  "Start an IRC listener that feeds the pattern checker.
+   Returns {:checker ... :listener-future ...}.
+
+   Options:
+   - :host IRC host (default localhost)
+   - :port IRC port (default 6667)
+   - :nick Listener nick (default pattern_checker)
+   - :room Room to join
+   - :password Optional password
+   - :jsonl-path Output file (default /tmp/musn_pattern_checks.jsonl)"
+  [opts]
+  (let [host (or (:host opts) "localhost")
+        port (or (:port opts) 6667)
+        nick (or (:nick opts) "pattern_checker")
+        room (or (:room opts) "lab")
+        password (:password opts)
+        checker (start! (select-keys opts [:jsonl-path :max-buffer-lines :max-wait-ms :max-lines]))
+        running? (:running? checker)]
+    (assoc checker
+           :listener-future
+           (future
+             (try
+               (let [{:keys [reader writer socket]} (irc-connect host port)]
+                 (try
+                   ;; Auth and join
+                   (when password
+                     (irc-send! writer (str "PASS " password)))
+                   (irc-send! writer (str "NICK " nick))
+                   (irc-send! writer (str "USER " nick " 0 * :" nick))
+                   (irc-send! writer (str "JOIN #" room))
+
+                   ;; Read loop
+                   (loop []
+                     (when @running?
+                       (if-let [line (irc-read-line reader)]
+                         (do
+                           ;; Handle PING
+                           (when (str/starts-with? line "PING")
+                             (irc-send! writer (str "PONG " (subs line 5))))
+                           ;; Ingest PRIVMSG
+                           (when-let [line-item (parse-irc-privmsg line)]
+                             (ingest! checker line-item))
+                           (recur))
+                         ;; Connection closed
+                         (println "[pattern-check] IRC connection closed"))))
+
+                   (finally
+                     (try
+                       (irc-send! writer "QUIT")
+                       (.close socket)
+                       (catch Exception _)))))
+               (catch Exception e
+                 (println "[pattern-check] IRC listener error:" (.getMessage e))))))))
+
+(defn stop-irc-listener!
+  "Stop the IRC listener and pattern checker."
+  [listener]
+  (stop! listener)
+  (when-let [f (:listener-future listener)]
+    (future-cancel f)))
+
+;; --- CLI entry point ---
+
+(defn -main
+  "Start pattern checker connected to IRC.
+   Usage: clj -M -m futon3.pattern-check.integration [options]
+
+   Options:
+     --host HOST      IRC host (default localhost)
+     --port PORT      IRC port (default 6667)
+     --nick NICK      Listener nick (default pattern_checker)
+     --room ROOM      Room to join (default lab)
+     --password PASS  IRC password
+     --output PATH    JSONL output (default /tmp/musn_pattern_checks.jsonl)"
+  [& args]
+  (let [opts (loop [args args opts {}]
+               (if (empty? args)
+                 opts
+                 (let [[flag val & rest] args]
+                   (case flag
+                     "--host" (recur rest (assoc opts :host val))
+                     "--port" (recur rest (assoc opts :port (Integer/parseInt val)))
+                     "--nick" (recur rest (assoc opts :nick val))
+                     "--room" (recur rest (assoc opts :room val))
+                     "--password" (recur rest (assoc opts :password val))
+                     "--output" (recur rest (assoc opts :jsonl-path val))
+                     (recur rest opts)))))]
+    (println "[pattern-check] Starting IRC listener with opts:" opts)
+    (let [listener (start-irc-listener! opts)]
+      (println "[pattern-check] Connected. Writing to" (get-in listener [:config :jsonl-path]))
+      (println "[pattern-check] Press Ctrl+C to stop.")
+      ;; Block until interrupted
+      @(:listener-future listener))))
+
 ;; --- REPL / testing helpers ---
 
 (comment
-  ;; Start checker
+  ;; Start checker without IRC
   (def checker (start! {:jsonl-path "/tmp/test_pattern_checks.jsonl"}))
 
   ;; Simulate IRC lines
@@ -280,4 +393,19 @@
 
   ;; Stop
   (stop! checker)
+
+  ;; --- With IRC listener ---
+  ;; Start listener connected to local IRC bridge
+  (def listener (start-irc-listener!
+                 {:host "localhost"
+                  :port 6680
+                  :room "lab"
+                  :password "OriginalGolden1937"
+                  :jsonl-path "/tmp/test_pattern_checks.jsonl"}))
+
+  ;; Check output after some chat activity
+  (slurp "/tmp/test_pattern_checks.jsonl")
+
+  ;; Stop
+  (stop-irc-listener! listener)
   )

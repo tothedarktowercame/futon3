@@ -21,11 +21,36 @@ const IRC_PASS = process.env.MUSN_IRC_PASSWORD || "";
 const IRC_ROOM = process.env.MUSN_IRC_ROOM || "lab";
 const IRC_NICK = process.env.MUSN_IRC_NICK || "fucodex";
 const WORKING_DIR = process.env.FUCODEX_WORKING_DIR || process.cwd();
+const MUSN_URL = process.env.FUCODEX_MUSN_URL || "http://localhost:6065";
+
+// Fulab RPC environment - passed to Codex so tools work
+function buildFulabEnv(sessionId: string, chatRoom: string, chatAuthor: string): Record<string, string> {
+  return {
+    // Core RPC
+    PATTERN_ACTION_RPC: "1",
+    FUTON3_CODEX_SESSION_ID: sessionId,
+
+    // MUSN
+    FUTON3_MUSN_URL: MUSN_URL,
+    FUTON3_MUSN_SESSION_ID: sessionId,
+    FUTON3_MUSN_LOG: "/tmp/musn_stream.log",
+    FUTON3_MUSN_HELPER_MODE: "stream",
+
+    // Chat
+    FUTON3_MUSN_CHAT_ROOM: chatRoom,
+    FUTON3_MUSN_CHAT_AUTHOR: chatAuthor,
+    FUTON3_MUSN_CHAT_PASS: IRC_PASS,
+    FUTON3_MUSN_IRC_HOST: IRC_HOST,
+    FUTON3_MUSN_IRC_PORT: IRC_PORT,
+  };
+}
 
 interface ChatBridgeConfig {
   room: string;
   nick: string;
   resumeThreadId?: string;
+  sandbox?: string;  // "danger-full-access" or other values
+  askForApproval?: string;  // "never", "on-failure", etc.
 }
 
 class CodexChatBridge {
@@ -44,10 +69,21 @@ class CodexChatBridge {
       this.thread = this.codex.resumeThread(this.config.resumeThreadId);
     } else {
       console.error(`[bridge] Starting new thread`);
-      this.thread = this.codex.startThread({
+      const threadOptions: any = {
         workingDirectory: WORKING_DIR,
         skipGitRepoCheck: true,
-      });
+      };
+      // Pass sandbox option if specified
+      if (this.config.sandbox) {
+        threadOptions.sandbox = this.config.sandbox;
+        console.error(`[bridge] Sandbox mode: ${this.config.sandbox}`);
+      }
+      // Pass approval option if specified
+      if (this.config.askForApproval) {
+        threadOptions.askForApproval = this.config.askForApproval;
+        console.error(`[bridge] Ask for approval: ${this.config.askForApproval}`);
+      }
+      this.thread = this.codex.startThread(threadOptions);
       console.error(`[bridge] Thread ID: ${this.thread.id}`);
     }
   }
@@ -180,6 +216,12 @@ async function main() {
         break;
       case "--resume":
         config.resumeThreadId = args[++i];
+        break;
+      case "--sandbox":
+        config.sandbox = args[++i];
+        break;
+      case "--ask-for-approval":
+        config.askForApproval = args[++i];
         break;
     }
   }

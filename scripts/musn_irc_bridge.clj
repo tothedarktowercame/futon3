@@ -441,7 +441,7 @@
 ;; WebSocket Handler
 ;; ---------------------------------------------------------------------------
 
-(defn- ws-handle-message! [client-id text musn-url]
+(defn- ws-handle-message! [client-id text musn-url poll-interval]
   "Handle incoming WebSocket message (JSON)."
   (try
     (let [data (json/parse-string text true)
@@ -464,6 +464,7 @@
           (when (seq room-id)
             (swap! server-state assoc-in [:ws-clients client-id :room] room-id)
             (let [client (get-in @server-state [:ws-clients client-id])]
+              (ensure-room-poller! musn-url room-id poll-interval)
               (note-room-nick! room-id (:nick client))
               (send-ws! client {:type "joined" :room room-id :nicks (vec (room-nicks room-id))}))))
 
@@ -472,20 +473,33 @@
     (catch Throwable t
       (log! (format "ws message parse error: %s" (.getMessage t))))))
 
+(defn- first-forwarded-for [value]
+  (some-> value
+          (str/split #",")
+          first
+          str/trim
+          not-empty))
+
+(defn- parse-query [query]
+  (if (str/blank? query)
+    {}
+    (->> (str/split query #"&")
+         (keep (fn [pair]
+                 (let [[k v] (str/split pair #"=" 2)]
+                   (when (and k v)
+                     [(java.net.URLDecoder/decode k "UTF-8")
+                      (java.net.URLDecoder/decode v "UTF-8")]))))
+         (into {}))))
+
 (defn- ws-handler [musn-url poll-interval default-room password allowlist]
   "Create WebSocket handler for http-kit."
   (fn [req]
-    (let [params (some-> (:query-string req)
-                         (java.net.URLDecoder/decode "UTF-8")
-                         (#(str/split % #"&"))
-                         (->> (map #(str/split % #"=" 2))
-                              (filter #(= 2 (count %)))
-                              (into {})))
+    (let [params (parse-query (:query-string req))
           nick (get params "nick")
           room (or (get params "room") default-room)
           pass (get params "pass")
-          remote-ip (or (get-in req [:headers "x-forwarded-for"])
-                        (:remote-addr req)
+          remote-ip (or (:remote-addr req)
+                        (first-forwarded-for (get-in req [:headers "x-forwarded-for"]))
                         "unknown")]
       ;; Check auth
       (cond
@@ -524,7 +538,7 @@
             ;; Handle incoming messages
             (httpkit/on-receive channel
                                 (fn [data]
-                                  (ws-handle-message! client-id data musn-url)))
+                                  (ws-handle-message! client-id data musn-url poll-interval)))
 
             ;; Handle close
             (httpkit/on-close channel

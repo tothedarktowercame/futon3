@@ -172,3 +172,35 @@ make test   # unit + replay tests
 `scripts/test-elisp.sh` drives the chatgpt-shell HUD tests. Keep them gentle by supplying
 `ERT_SELECTOR` (e.g., `ERT_SELECTOR='futon3-prototype-*'`) and, when running everything, consider
 `ulimit -v 2097152` to avoid GUI Emacs OOMs.
+
+## Drawbridge hot reloading
+
+The HTTP handlers use var references (`#'handler`) so code changes can be hot-reloaded without restarting the server.
+
+### Reloading after edits
+
+After editing a Clojure source file, reload it via Drawbridge:
+
+```bash
+curl -s -X POST "http://127.0.0.1:6767/repl" \
+  -H "X-Admin-Token: $ADMIN_TOKEN" \
+  --data-urlencode 'op=eval' \
+  --data-urlencode 'code=(load-file "src/f2/transport.clj")'
+```
+
+Use `load-file` rather than `require :reload` - it forces re-reading from disk.
+
+### Common reload targets
+
+| File | Reload command |
+|------|----------------|
+| Transport (port 5050) | `(load-file "src/f2/transport.clj")` |
+| MUSN HTTP (port 6065) | `(load-file "src/futon3/musn/http.clj")` |
+| MUSN service | `(load-file "src/futon3/musn/service.clj")` |
+
+### When to restart instead
+
+Some changes still require a full server restart:
+- Adding new dependencies to `deps.edn`
+- Changes to startup/initialization code in `f2.musn`
+- Modifications to atoms/state that are initialized with `defonce`

@@ -1,12 +1,14 @@
 # IRC Multi-Agent Coordination Review
 
 **Date:** 2026-01-27
-**Participants:** Joe, Claude, fucodex
+**Participants:** Joe, Claude (Anthropic), fucodex (OpenAI Codex)
 **Channel:** #lab via MUSN IRC bridge
 
 ## Summary
 
-First real-time coordination session between two Claude agents (Claude and fucodex) with Joe directing via IRC. Pattern mining integration was merged to main; fucodex fixed 32 invalid sigils and integrated HUD message formatting.
+First real-time cross-model coordination session: Claude (Anthropic) and fucodex (OpenAI Codex with the Fucodex wrapper) working together with Joe directing via IRC. Pattern mining integration was merged to main; fucodex fixed 32 invalid sigils and integrated HUD message formatting.
+
+**Note:** fucodex runs on OpenAI's Codex model, wrapped by `scripts/fucodex-chat-bridge.ts` which handles IRC integration, message formatting, and the "hud-intent:" prefixes seen in chat.
 
 ## What Worked Well
 
@@ -32,12 +34,14 @@ First real-time coordination session between two Claude agents (Claude and fucod
 
 5. **Polling latency** - Claude was polling IRC every 10-20 seconds; real-time WebSocket would be smoother.
 
-## Observations on Multi-Agent Coordination
+## Observations on Cross-Model Coordination
 
 - Human as decision-maker worked well for blocking questions
 - Agents needed explicit handoff statements to avoid stepping on each other
 - Different context windows = different awareness levels; briefing after restart was essential
-- The "hud-intent:" prefix fucodex uses helps distinguish meta-commentary from actual work
+- The "hud-intent:" prefix from the Fucodex wrapper helps distinguish meta-commentary from actual work
+- Cross-model coordination (Claude + Codex) worked smoothly - the IRC protocol abstracted away model differences
+- Different formatting styles were noticeable but didn't impede collaboration
 
 ## Outcomes
 

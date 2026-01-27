@@ -184,25 +184,43 @@
 ;; --- Pattern mining ---
 
 (defn- post-to-musn!
-  "Post a message to a MUSN chat room."
+  "Post a message to a MUSN chat room. Returns response code or nil on error."
   [musn-url room author text]
   (try
     (let [url (str musn-url "/musn/chat/message")
           body (json/write-str {:room room
                                 :author {:id author :name author}
-                                :text text})]
-      (with-open [conn (-> (java.net.URL. url)
-                           (.openConnection))]
-        (doto conn
-          (.setRequestMethod "POST")
-          (.setRequestProperty "Content-Type" "application/json")
-          (.setDoOutput true))
-        (with-open [os (.getOutputStream conn)]
-          (.write os (.getBytes body "UTF-8")))
-        (.getResponseCode conn)))
+                                :text text})
+          conn (-> (java.net.URL. url)
+                   (.openConnection))]
+      (doto conn
+        (.setRequestMethod "POST")
+        (.setRequestProperty "Content-Type" "application/json")
+        (.setDoOutput true))
+      (with-open [os (.getOutputStream conn)]
+        (.write os (.getBytes body "UTF-8")))
+      (let [code (.getResponseCode conn)]
+        (.disconnect conn)
+        code))
     (catch Exception e
       (println "[pattern-mining] Failed to post:" (.getMessage e))
       nil)))
+
+(defn ensure-patterns-room!
+  "Ensure the #patterns room exists by posting an init message.
+   Returns true if successful, false otherwise."
+  [config]
+  (let [{:keys [musn-url patterns-room mining-threshold]} config
+        init-msg (format "Pattern mining active. Will post when sigils/patterns are seen %d+ times."
+                         mining-threshold)]
+    (println "[pattern-mining] Initializing #" patterns-room "room...")
+    (if-let [code (post-to-musn! musn-url patterns-room "pattern_miner" init-msg)]
+      (do
+        (println "[pattern-mining] Room #" patterns-room "ready (HTTP" code ")")
+        (= 200 code))
+      (do
+        (println "[pattern-mining] Warning: Could not initialize #" patterns-room "- mining will still work but posts may fail")
+        false))))
 
 (defn- update-mining-state
   "Update mining state with batch results, return items to post."
@@ -329,7 +347,8 @@
             (recur [] nil)))))))
 
 (defn start!
-  "Start the pattern checker with the given config."
+  "Start the pattern checker with the given config.
+   Automatically initializes the #patterns room for mining output."
   [config-overrides]
   (let [config (merge default-config config-overrides)
         buffer (LinkedBlockingQueue. ^int (:max-buffer-lines config))
@@ -339,6 +358,8 @@
                                       :buffer buffer
                                       :running? running?
                                       :mining-state mining-state})]
+    ;; Initialize the patterns room (creates it if needed)
+    (ensure-patterns-room! config)
     (assoc checker
            :worker-future
            (future (worker-loop checker)))))

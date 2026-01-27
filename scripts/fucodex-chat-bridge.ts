@@ -73,14 +73,19 @@ class CodexChatBridge {
         workingDirectory: WORKING_DIR,
         skipGitRepoCheck: true,
       };
-      // Pass sandbox option if specified
+      // Pass sandbox option if specified (SDK uses sandbox_mode)
       if (this.config.sandbox) {
-        threadOptions.sandbox = this.config.sandbox;
+        threadOptions.sandbox_mode = this.config.sandbox;
         console.error(`[bridge] Sandbox mode: ${this.config.sandbox}`);
+      }
+      // Enable network access if sandbox is disabled
+      if (this.config.sandbox === "none" || this.config.sandbox === "danger-full-access") {
+        threadOptions.network_access_enabled = true;
+        console.error(`[bridge] Network access enabled`);
       }
       // Pass approval option if specified
       if (this.config.askForApproval) {
-        threadOptions.askForApproval = this.config.askForApproval;
+        threadOptions.ask_for_approval = this.config.askForApproval;
         console.error(`[bridge] Ask for approval: ${this.config.askForApproval}`);
       }
       this.thread = this.codex.startThread(threadOptions);

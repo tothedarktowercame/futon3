@@ -93,11 +93,28 @@
                  :role (name role)
                  :content content})))
 
+(defn note-native-planning! [session-id tool-name opts]
+  "Notify MUSN that native planning tools were detected."
+  (when session-id
+    (musn-post! "/musn/scribe/native-planning"
+                (merge {:session/id session-id
+                        :tool tool-name}
+                       opts))))
+
+(defn record-native-plan! [session-id tasks]
+  "Record a plan derived from native task list."
+  (when (and session-id (seq tasks))
+    (musn-post! "/musn/scribe/native-plan"
+                {:session/id session-id
+                 :tasks tasks})))
+
 ;; State atom
 (def state (atom {:session-id nil
                   :turn 0
                   :started? false
-                  :current-content (StringBuilder.)}))
+                  :current-content (StringBuilder.)
+                  :native-planning-detected false
+                  :pending-tasks []}))
 
 (defn extract-type [event]
   (or (:type event)
@@ -108,19 +125,54 @@
           (:content_block_start event) "content_block_start"
           (:content_block_delta event) "content_block_delta"
           (:content_block_stop event) "content_block_stop"
+          (:tool_use event) "tool_use"
+          (:tool_result event) "tool_result"
           :else nil))))
+
+(def ^:private native-planning-tools
+  #{"TaskCreate" "TaskUpdate" "TaskList" "TaskGet"})
+
+(defn- extract-text-content [content]
+  "Extract text from content which may be a string or array of content blocks.
+   Only extracts text blocks, NOT tool_result blocks (those are noise)."
+  (cond
+    (string? content) content
+    (sequential? content)
+    (->> content
+         (keep (fn [block]
+                 (when (and (map? block) (= "text" (:type block)))
+                   (:text block))))
+         (str/join "\n"))
+    :else nil))
 
 (defn handle-event [event]
   (let [event-type (extract-type event)]
     (case event-type
-      ;; User message - record immediately
+      ;; User message - record immediately (streaming format)
       "human"
       (when-let [session-id (:session-id @state)]
         (let [content (get-in event [:message :content])]
           (when (string? content)
             (scribe-turn! session-id :user content))))
 
-      ;; Assistant message start - reset content accumulator
+      ;; JSONL checkpoint format - user message
+      "user"
+      (when-let [session-id (:session-id @state)]
+        (let [raw-content (get-in event [:message :content])
+              content (extract-text-content raw-content)]
+          (when (and content (not (str/blank? content)))
+            (scribe-turn! session-id :user content))))
+
+      ;; JSONL checkpoint format - assistant message (complete)
+      "assistant"
+      (when-let [session-id (:session-id @state)]
+        (let [raw-content (get-in event [:message :content])
+              content (extract-text-content raw-content)]
+          (when (and content (not (str/blank? content)))
+            (swap! state update :turn inc)
+            (scribe-turn! session-id :agent content))))
+
+      ;; Assistant message start - reset content accumulator (streaming format)
       "message"
       (let [msg (:message event)]
         (when (= "assistant" (:role msg))
@@ -134,6 +186,34 @@
       (when-let [text (get-in event [:delta :text])]
         (.append (:current-content @state) text))
 
+      ;; Tool use - detect native planning tools
+      "tool_use"
+      (let [tool-name (or (:name event)
+                          (get-in event [:tool_use :name])
+                          (get-in event [:content_block :name]))]
+        (when (contains? native-planning-tools tool-name)
+          (swap! state assoc :native-planning-detected true)
+          (when-let [session-id (:session-id @state)]
+            (let [input (or (:input event)
+                            (get-in event [:tool_use :input])
+                            (get-in event [:content_block :input]))]
+              (note-native-planning! session-id tool-name
+                                     {:task-id (get input :taskId)
+                                      :subject (get input :subject)})
+              ;; Track TaskCreate for batch recording
+              (when (= "TaskCreate" tool-name)
+                (swap! state update :pending-tasks conj
+                       {:id (get input :taskId)
+                        :subject (get input :subject)
+                        :description (get input :description)
+                        :status "pending"}))))))
+
+      ;; Tool result - capture task list if TaskList was called
+      "tool_result"
+      (when (:native-planning-detected @state)
+        (when-let [tasks (get-in event [:result :tasks])]
+          (swap! state assoc :pending-tasks (vec tasks))))
+
       ;; Result - scribe accumulated content and end turn
       "result"
       (when-let [session-id (:session-id @state)]
@@ -142,6 +222,12 @@
             (turn-plan-diagram! session-id (:turn @state) diagram))
           (when (seq content)
             (scribe-turn! session-id :agent content)))
+        ;; Record native plan at turn end if planning was detected
+        (when (:native-planning-detected @state)
+          (let [tasks (:pending-tasks @state)]
+            (when (seq tasks)
+              (record-native-plan! session-id tasks)))
+          (swap! state assoc :native-planning-detected false :pending-tasks []))
         (turn-end! session-id (:turn @state)))
 
       ;; Pass through

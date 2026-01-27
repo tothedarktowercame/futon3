@@ -1120,5 +1120,52 @@ prompt."
           (run-at-time 1 nil #'fubar-musn--check-launch proc log buf)))
       (message "Launched MUSN run%s" (if intent (format " with intent: %s" intent) "")))))
 
+;; =============================================================================
+;; WebSocket Integration - Bridge to fuclient-logs.el
+;; =============================================================================
+
+(declare-function fuclient-logs-connect "fuclient-logs" (session-id))
+(declare-function fuclient-logs-disconnect "fuclient-logs" ())
+
+(defun fubar-musn-view-switch-to-ws ()
+  "Switch from log tailing to WebSocket streaming view.
+Uses the current session ID from the viewer. Requires fuclient-logs.el."
+  (interactive)
+  (unless (require 'fuclient-logs nil t)
+    (user-error "fuclient-logs.el not available - install websocket.el first"))
+  (let ((session-id fubar-musn-session-id))
+    (unless (and session-id (not (string-empty-p session-id)))
+      (setq session-id (read-string "Session ID: ")))
+    ;; Stop log tailing
+    (when (process-live-p fubar-musn--proc)
+      (delete-process fubar-musn--proc))
+    ;; Connect via WebSocket
+    (fuclient-logs-connect session-id)
+    (message "Switched to WebSocket streaming for %s" session-id)))
+
+(defun fubar-musn-view-ws-session (session-id)
+  "Open WebSocket log viewer for SESSION-ID.
+Alternative to fubar-musn-view-session that uses WebSocket instead of tail."
+  (interactive
+   (let* ((default (or fubar-musn-session-id ""))
+          (candidates (fubar-musn--known-sessions))
+          (prompt (if candidates
+                      (format "MUSN session id (default %s): " default)
+                    (format "MUSN session id%s: "
+                            (if (string-empty-p default) "" (format " (default %s)" default)))))
+          (input (if candidates
+                     (completing-read prompt candidates nil nil nil nil default)
+                   (read-string prompt nil nil default))))
+     (list input)))
+  (unless (require 'fuclient-logs nil t)
+    (user-error "fuclient-logs.el not available - install websocket.el first"))
+  (let ((sid (and session-id (string-trim session-id))))
+    (when (and sid (not (string-empty-p sid)))
+      (setq fubar-musn-session-id sid))
+    (fuclient-logs-connect sid)))
+
+;; Add keybinding in viewer mode
+(define-key fubar-musn-view-mode-map (kbd "w") #'fubar-musn-view-switch-to-ws)
+
 (provide 'fubar-viewer)
 ;;; fubar-viewer.el ends here

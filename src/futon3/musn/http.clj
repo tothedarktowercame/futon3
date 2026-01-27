@@ -119,6 +119,14 @@
     "/musn/scribe/plan-wiring"
                           (let [{:keys [session/id note wiring]} body]
                             (svc/record-plan-wiring! id note wiring))
+    "/musn/scribe/native-planning"
+                          (let [{:keys [session/id tool task-id subject]} body]
+                            (svc/note-native-planning-detected! id tool
+                                                                :task-id task-id
+                                                                :subject subject))
+    "/musn/scribe/native-plan"
+                          (let [{:keys [session/id tasks note]} body]
+                            (svc/record-native-plan! id tasks :note note))
     nil))
 
 (defn handler [req]

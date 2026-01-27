@@ -9,6 +9,7 @@
             [futon3.checks :as checks]
             [futon3.fulab.hud :as hud]
             [futon3.fulab.pattern-competence :as pc]
+            [futon3.lab.enrichment :as enrichment]
             [futon3.futon2-bridge :as futon2-bridge]
             [futon3.musn.service :as musn-svc]
             [futon3.tatami :as tatami]
@@ -923,9 +924,139 @@
           (catch Exception e
             (println "SSE stream error:" (.getMessage e))))))))
 
+;; =============================================================================
+;; WebSocket Session Stream - Real-time notebook events via WebSocket
+;; =============================================================================
+
+(defn- keyword->str [kw]
+  "Convert keyword to string, preserving namespace."
+  (when kw
+    (if-let [ns (namespace kw)]
+      (str ns "/" (name kw))
+      (name kw))))
+
+(defn- normalize-event-for-ws
+  "Normalize event for WebSocket transmission."
+  [event]
+  (-> event
+      (update :event/type keyword->str)
+      (update-in [:payload :role] #(when % (name %)))))
+
+(defn- handle-session-ws
+  "WebSocket endpoint for streaming MUSN session events.
+   Similar to SSE notebook stream but uses WebSocket for bidirectional support."
+  [state request session-id]
+  (http/with-channel request channel
+    ;; Send initial state with recent events
+    (let [events (or (musn-svc/recent-scribe-events session-id 50) [])
+          init-msg (json/encode {:type "init"
+                                 :session_id session-id
+                                 :event_count (count events)
+                                 :events (mapv normalize-event-for-ws events)})]
+      (http/send! channel init-msg false))
+
+    ;; Handle client messages (filter commands, ping)
+    (http/on-receive channel
+      (fn [raw]
+        (try
+          (let [msg (json/parse-string raw true)
+                msg-type (:type msg)]
+            (case msg-type
+              "ping" (http/send! channel (json/encode {:type "pong"
+                                                       :at (now-iso state)}) false)
+              "filter" nil ;; Future: filter by event type
+              nil))
+          (catch Exception _
+            nil))))
+
+    ;; Poll for new events and push to client
+    (let [poll-interval 500
+          last-count (atom (count (musn-svc/recent-scribe-events session-id 1000)))]
+      (future
+        (try
+          (loop []
+            (Thread/sleep poll-interval)
+            (when (http/open? channel)
+              (let [events (musn-svc/recent-scribe-events session-id 1000)
+                    current-count (count events)]
+                (when (> current-count @last-count)
+                  (let [new-events (drop @last-count events)]
+                    (doseq [event new-events]
+                      (let [ws-event {:type "event"
+                                      :event/type (when-let [t (:event/type event)] (name t))
+                                      :at (:at event)
+                                      :session_id session-id
+                                      :payload (-> (:payload event)
+                                                   (update :role #(when % (name %))))}]
+                        (http/send! channel (json/encode ws-event) false))))
+                  (reset! last-count current-count)))
+              (recur)))
+          (catch Exception e
+            (println "WebSocket stream error:" (.getMessage e))))))
+
+    ;; Handle close
+    (http/on-close channel
+      (fn [_status]
+        nil))))
+
 (defn- extract-session-from-path [uri]
   (when-let [match (re-find #"/fulab/notebook/([^/]+)" uri)]
     (second match)))
+
+;; =============================================================================
+;; Arxana Anchor/Link HTTP Handlers
+;; =============================================================================
+
+(defn- handle-anchor-create [state request]
+  (try
+    (let [payload (or (parse-json-body request) {})
+          session-id (:session-id payload)
+          turn (:turn payload)
+          anchor-type (keyword (or (:type payload) "insight"))
+          content (:content payload)
+          note (:note payload)
+          author (:author payload)]
+      (if (or (nil? session-id) (nil? turn) (nil? content))
+        (json-response 400 {:ok false :err "missing-required-fields"
+                            :required [:session-id :turn :content]})
+        (let [result (musn-svc/record-anchor! session-id turn anchor-type content
+                                               :note note :author author)]
+          (json-response (if (:ok result) 200 400) result))))
+    (catch Exception e
+      (json-response 500 {:ok false :err "anchor-create-failed" :detail (.getMessage e)}))))
+
+(defn- handle-link-create [state request]
+  (try
+    (let [payload (or (parse-json-body request) {})
+          from-anchor (:from payload)
+          to-anchor (:to payload)
+          link-type (keyword (or (:type payload) "references"))
+          note (:note payload)
+          author (:author payload)]
+      (if (or (nil? from-anchor) (nil? to-anchor))
+        (json-response 400 {:ok false :err "missing-required-fields"
+                            :required [:from :to]})
+        (let [result (musn-svc/create-link! from-anchor to-anchor link-type
+                                             :note note :author author)]
+          (json-response (if (:ok result) 200 400) result))))
+    (catch Exception e
+      (json-response 500 {:ok false :err "link-create-failed" :detail (.getMessage e)}))))
+
+(defn- handle-anchors-get [state session-id turn]
+  (try
+    (let [anchors (if turn
+                    (musn-svc/get-anchors session-id :turn (Integer/parseInt turn))
+                    (musn-svc/get-anchors session-id))]
+      (json-response 200 {:ok true :session-id session-id :anchors (vec anchors)}))
+    (catch Exception e
+      (json-response 500 {:ok false :err "anchors-get-failed" :detail (.getMessage e)}))))
+
+(defn- handle-links-get [state anchor-id]
+  (try
+    (let [links (musn-svc/get-links anchor-id)]
+      (json-response 200 {:ok true :anchor-id anchor-id :links links}))
+    (catch Exception e
+      (json-response 500 {:ok false :err "links-get-failed" :detail (.getMessage e)}))))
 
 (defn handler [state request]
   (let [uri (:uri request)
@@ -933,6 +1064,87 @@
     (cond
       (= [:get "/healthz"] [method uri])
       (plaintext-response 200 "ok")
+
+      ;; Arxana anchor/link routes
+      (and (= method :post) (= uri "/arxana/anchor/create"))
+      (handle-anchor-create state request)
+
+      (and (= method :post) (= uri "/arxana/link/create"))
+      (handle-link-create state request)
+
+      (and (= method :get) (re-matches #"/arxana/anchors/[^/]+" uri))
+      (let [session-id (second (re-find #"/arxana/anchors/([^/]+)" uri))
+            turn (get (:query-params request) "turn")]
+        (handle-anchors-get state session-id turn))
+
+      (and (= method :get) (re-matches #"/arxana/links/.*" uri))
+      (let [anchor-id (second (re-find #"/arxana/links/(.+)" uri))]
+        (handle-links-get state anchor-id))
+
+      ;; Semantic anchor linking (POST to handle complex anchor IDs)
+      (and (= method :post) (= uri "/arxana/suggest-links"))
+      (try
+        (let [payload (or (parse-json-body request) {})
+              session-id (:session-id payload)
+              anchor-id (:anchor-id payload)
+              limit (or (:limit payload) 3)]
+          (if (and session-id anchor-id)
+            (let [suggestions (musn-svc/suggest-links-for-anchor session-id anchor-id :limit limit)]
+              (json-response 200 {:ok true :anchor-id anchor-id :suggestions (vec suggestions)}))
+            (json-response 400 {:ok false :err "missing-session-id-or-anchor-id"})))
+        (catch Exception e
+          (json-response 500 {:ok false :err "suggest-links-failed" :detail (.getMessage e)})))
+
+      (and (= method :post) (= uri "/arxana/auto-link"))
+      (try
+        (let [payload (or (parse-json-body request) {})
+              session-id (:session-id payload)
+              threshold (or (:threshold payload) 0.3)
+              limit (or (:limit payload) 10)]
+          (if session-id
+            (let [result (musn-svc/auto-link-anchors! session-id :threshold threshold :limit limit)]
+              (json-response 200 result))
+            (json-response 400 {:ok false :err "missing-session-id"})))
+        (catch Exception e
+          (json-response 500 {:ok false :err "auto-link-failed" :detail (.getMessage e)})))
+
+      ;; Lab enrichment endpoint - enrich content with patterns + embeddings
+      (and (= method :post) (= uri "/lab/enrich"))
+      (try
+        (let [payload (or (parse-json-body request) {})
+              content (:content payload)
+              session-id (:session-id payload)
+              use-portal (if (contains? payload :use-portal) (:use-portal payload) true)
+              pattern-limit (or (:pattern-limit payload) 5)
+              namespace (:namespace payload)]
+          (if content
+            (let [result (enrichment/enrich content
+                                            :session-id session-id
+                                            :use-portal use-portal
+                                            :pattern-limit pattern-limit
+                                            :namespace namespace)]
+              (json-response 200 {:ok true :enrichment result}))
+            (json-response 400 {:ok false :err "missing-content"})))
+        (catch Exception e
+          (json-response 500 {:ok false :err "enrichment-failed" :detail (.getMessage e)})))
+
+      ;; Lab recurring patterns - patterns that have recurred across sessions
+      (and (= method :get) (= uri "/lab/recurring-patterns"))
+      (try
+        (let [params (or (:query-params request) {})
+              min-count (some-> (get params "min-count") Integer/parseInt)
+              min-sessions (some-> (get params "min-sessions") Integer/parseInt)]
+          (let [result (enrichment/recurring-patterns
+                        :min-count (or min-count 3)
+                        :min-sessions (or min-sessions 2))]
+            (json-response 200 {:ok true :patterns result})))
+        (catch Exception e
+          (json-response 500 {:ok false :err "recurring-patterns-failed" :detail (.getMessage e)})))
+
+      ;; WebSocket session stream (must be before SSE route)
+      (and (= method :get) (re-matches #"/fulab/session/[^/]+/ws" uri))
+      (let [session-id (second (re-find #"/fulab/session/([^/]+)/ws" uri))]
+        (handle-session-ws state request session-id))
 
       ;; Notebook viewer routes
       (and (= method :get) (re-matches #"/fulab/notebook/[^/]+/stream" uri))
@@ -962,6 +1174,50 @@
       (handle-workday-submit state request)
       (and (= uri "/musn/ingest") (= method :post))
       (handle-ingest state request)
+
+      ;; Native planning detection endpoints
+      (and (= uri "/musn/scribe/native-planning") (= method :post))
+      (try
+        (let [payload (or (parse-json-body request) {})
+              session-id (:session/id payload)
+              tool-name (:tool payload)
+              task-id (:task-id payload)
+              subject (:subject payload)]
+          (if session-id
+            (let [result (musn-svc/note-native-planning-detected! session-id tool-name
+                                                                  :task-id task-id
+                                                                  :subject subject)]
+              (json-response 200 (or result {:ok false :err "session-not-found"})))
+            (json-response 400 {:ok false :err "missing-session-id"})))
+        (catch Exception e
+          (json-response 500 {:ok false :err "native-planning-failed" :detail (.getMessage e)})))
+
+      (and (= uri "/musn/scribe/native-plan") (= method :post))
+      (try
+        (let [payload (or (parse-json-body request) {})
+              session-id (:session/id payload)
+              tasks (:tasks payload)]
+          (if (and session-id (seq tasks))
+            (let [result (musn-svc/record-native-plan! session-id tasks)]
+              (json-response 200 (or result {:ok false :err "session-not-found"})))
+            (json-response 400 {:ok false :err "missing-session-id-or-tasks"})))
+        (catch Exception e
+          (json-response 500 {:ok false :err "native-plan-failed" :detail (.getMessage e)})))
+
+      ;; Record conversation turn (user or agent message)
+      (and (= uri "/musn/scribe/turn") (= method :post))
+      (try
+        (let [payload (or (parse-json-body request) {})
+              session-id (:session/id payload)
+              role (keyword (or (:role payload) "user"))
+              content (:content payload)]
+          (if (and session-id content)
+            (let [result (musn-svc/record-turn! session-id role content)]
+              (json-response 200 (or result {:ok false :err "session-not-found"})))
+            (json-response 400 {:ok false :err "missing-session-id-or-content"})))
+        (catch Exception e
+          (json-response 500 {:ok false :err "turn-recording-failed" :detail (.getMessage e)})))
+
       :else
       (plaintext-response 404 "not-found"))))
 

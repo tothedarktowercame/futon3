@@ -26,6 +26,7 @@
 (require 'url-http)
 
 (declare-function fubar-musn-launch-and-view "fubar-viewer" (prompt &optional intent chat-room chat-author))
+(declare-function fuclient-logs-connect "fuclient-logs" (session-id))
 
 (defgroup fubar-hud nil
   "HUD display for fulab pattern-aware sessions."
@@ -794,7 +795,14 @@
     ;; Session
     (when fubar-hud--session-id
       (insert (propertize "Session\n" 'face 'fubar-hud-header-face))
-      (insert "  " (propertize fubar-hud--session-id 'face 'font-lock-constant-face) "\n\n"))
+      (insert "  " (propertize fubar-hud--session-id 'face 'font-lock-constant-face) " ")
+      (insert-text-button "[Live Stream]"
+                          'help-echo "Open WebSocket log stream for this session"
+                          'action (lambda (_event)
+                                    (when (require 'fuclient-logs nil t)
+                                      (fuclient-logs-connect fubar-hud--session-id)))
+                          'follow-link t)
+      (insert "\n\n"))
 
     ;; Intent
     (insert (propertize "Intent\n" 'face 'fubar-hud-header-face))

@@ -1556,13 +1556,14 @@
          vec)))
 
 (defn recent-scribe-events
-  "Get recent scribe events (turns + plans) from session for notebook display.
-   Returns up to n most recent :turn/user, :turn/agent, and :turn/plan events."
+  "Get recent scribe events (turns + plans + arxana) from session for notebook display.
+   Returns up to n most recent turn, plan, planning-hint, and anchor/link events."
   [session-id n]
   (when-let [entry (get-session session-id)]
     (->> @(:lab-session entry)
          :events
-         (filter #(#{:turn/user :turn/agent :turn/plan} (:event/type %)))
+         (filter #(#{:turn/user :turn/agent :turn/plan :planning/native-detected
+                     :arxana/anchor-created :arxana/link-created} (:event/type %)))
          (take-last n)
          vec)))
 
@@ -1573,3 +1574,331 @@
     (->> turns
          (map #(get-in % [:payload :content]))
          (str/join " "))))
+
+;; =============================================================================
+;; Native Plan Detection - Convert Claude's TaskCreate/TaskUpdate to EDN plans
+;; =============================================================================
+
+(defn- task->node
+  "Convert a native task to a plan wiring node."
+  [task idx]
+  (let [task-id (or (:id task) (str "task-" idx))
+        subject (or (:subject task) "unnamed task")]
+    {:id (keyword task-id)
+     :component :musn.plan/action-reasoning
+     :params {:note subject
+              :desc (:description task)}}))
+
+(defn- tasks->edges
+  "Convert task dependencies (blockedBy) to plan wiring edges."
+  [tasks]
+  (->> tasks
+       (mapcat (fn [task]
+                 (when-let [blocked-by (:blockedBy task)]
+                   (map (fn [dep]
+                          {:from (keyword dep)
+                           :to (keyword (:id task))})
+                        blocked-by))))
+       (remove nil?)
+       vec))
+
+(defn- tasks->plan-wiring
+  "Convert a list of native tasks to plan wiring format.
+   Returns an EDN plan structure suitable for record-plan-wiring!"
+  [tasks]
+  (let [tasks (vec tasks)
+        nodes (map-indexed (fn [idx task] (task->node task idx)) tasks)
+        edges (tasks->edges tasks)
+        ;; Output is the last task without any blockers of its own
+        blocking-ids (set (mapcat :blockedBy tasks))
+        terminal-tasks (->> tasks
+                            (remove #(contains? blocking-ids (:id %)))
+                            (filter #(or (nil? (:status %))
+                                         (= "pending" (:status %))
+                                         (= "in_progress" (:status %)))))
+        output-id (or (some-> (first terminal-tasks) :id keyword)
+                      (some-> (last tasks) :id keyword))]
+    {:nodes (vec nodes)
+     :edges edges
+     :output output-id
+     :source :native-task-list}))
+
+(defn- tasks->mermaid
+  "Convert native tasks to a Mermaid flowchart."
+  [tasks]
+  (try
+    (require 'futon3.musn.plan-wiring)
+    (let [wiring (tasks->plan-wiring tasks)]
+      ((resolve 'futon3.musn.plan-wiring/plan->mermaid) wiring {:direction :TD}))
+    (catch Exception e
+      (str "flowchart TD\n    error[\"Failed to generate: " (.getMessage e) "\"]"))))
+
+(defn record-native-plan!
+  "Record a plan event derived from Claude's native TaskCreate/TaskUpdate tools.
+   Converts the task list to EDN wiring format and generates a Mermaid diagram.
+
+   Tasks should be a sequence of maps with :id, :subject, :description, :status,
+   and optionally :blockedBy (list of task IDs this task depends on)."
+  [session-id tasks & {:keys [note]}]
+  (when-let [entry (get-session session-id)]
+    (let [wiring (tasks->plan-wiring tasks)
+          mermaid (tasks->mermaid tasks)
+          note (or note "Plan derived from native task list")
+          event {:event/type :turn/plan
+                 :at (fulab-musn/now-inst)
+                 :payload {:source :native-task-list
+                           :task-count (count tasks)
+                           :note note
+                           :wiring wiring
+                           :diagram mermaid}}]
+      (append-lab-event! entry event)
+      {:ok true
+       :event/type :turn/plan
+       :source :native-task-list
+       :task-count (count tasks)})))
+
+(defn note-native-planning-detected!
+  "Record that native planning tools (TaskCreate/TaskUpdate) were detected.
+   This is a hint to the agent to generate an EDN plan sketch after the fact."
+  [session-id tool-name & {:keys [task-id subject]}]
+  (when-let [entry (get-session session-id)]
+    (let [event {:event/type :planning/native-detected
+                 :at (fulab-musn/now-inst)
+                 :payload {:tool tool-name
+                           :task-id task-id
+                           :subject subject
+                           :hint "Consider generating an EDN plan sketch for the plan viewer"}}]
+      (append-lab-event! entry event)
+      {:ok true :event/type :planning/native-detected})))
+
+;; =============================================================================
+;; Arxana Graph Persistence - Anchors and Links for Lab Notebooks
+;; =============================================================================
+
+(defn- anchors-index-path [lab-root]
+  (io/file lab-root "anchors" "index.edn"))
+
+(defn- links-graph-path [lab-root]
+  (io/file lab-root "links" "graph.edn"))
+
+(defn- generate-anchor-id [session-id turn anchor-type idx]
+  (format "%s:turn-%s:%s-%s" session-id turn (name anchor-type) idx))
+
+(defn- read-anchors-index [lab-root]
+  (let [path (anchors-index-path lab-root)]
+    (when (.exists path)
+      (try
+        (->> (slurp path)
+             str/split-lines
+             (remove str/blank?)
+             (map edn/read-string)
+             vec)
+        (catch Throwable _ [])))))
+
+(defn- append-anchor! [lab-root anchor]
+  (let [path (anchors-index-path lab-root)]
+    (io/make-parents path)
+    (spit path (str (pr-str anchor) "\n") :append true)))
+
+(defn- read-links-graph [lab-root]
+  (let [path (links-graph-path lab-root)]
+    (when (.exists path)
+      (try
+        (->> (slurp path)
+             str/split-lines
+             (remove str/blank?)
+             (map edn/read-string)
+             vec)
+        (catch Throwable _ [])))))
+
+(defn- append-link! [lab-root link]
+  (let [path (links-graph-path lab-root)]
+    (io/make-parents path)
+    (spit path (str (pr-str link) "\n") :append true)))
+
+(defn record-anchor!
+  "Record an anchor (named point) within a session turn.
+   Anchor types: :insight, :decision, :question, :artifact
+   Returns the anchor record with generated ID."
+  [session-id turn anchor-type content & {:keys [note author]}]
+  (when-let [entry (get-session session-id)]
+    (let [lab-root (:lab-root entry)
+          existing (or (read-anchors-index lab-root) [])
+          session-anchors (filter #(= session-id (:anchor/session %)) existing)
+          turn-anchors (filter #(= turn (:anchor/turn %)) session-anchors)
+          type-anchors (filter #(= anchor-type (:anchor/type %)) turn-anchors)
+          idx (inc (count type-anchors))
+          anchor-id (generate-anchor-id session-id turn anchor-type idx)
+          truncated-content (if (> (count content) 500)
+                              (str (subs content 0 500) "...")
+                              content)
+          anchor {:anchor/id anchor-id
+                  :anchor/session session-id
+                  :anchor/turn turn
+                  :anchor/type anchor-type
+                  :anchor/content truncated-content
+                  :anchor/created (fulab-musn/now-inst)
+                  :anchor/author (or author "agent")}
+          anchor (if note (assoc anchor :anchor/note note) anchor)
+          event {:event/type :arxana/anchor-created
+                 :at (fulab-musn/now-inst)
+                 :payload {:anchor/id anchor-id
+                           :anchor/type anchor-type
+                           :anchor/turn turn}}]
+      (append-anchor! lab-root anchor)
+      (append-lab-event! entry event)
+      {:ok true :anchor anchor})))
+
+(defn create-link!
+  "Create a typed link between two anchors.
+   Link types: :supports, :contradicts, :extends, :implements, :references
+   Returns the link record."
+  [from-anchor to-anchor link-type & {:keys [note author]}]
+  ;; Find session for from-anchor to get lab-root
+  (let [from-session (first (str/split from-anchor #":"))
+        entry (get-session from-session)]
+    (if-not entry
+      {:ok false :err "session-not-found" :session from-session}
+      (let [lab-root (:lab-root entry)
+            existing-anchors (or (read-anchors-index lab-root) [])
+            from-exists? (some #(= from-anchor (:anchor/id %)) existing-anchors)
+            to-exists? (some #(= to-anchor (:anchor/id %)) existing-anchors)
+            link-id (str "link-" (subs (str (java.util.UUID/randomUUID)) 0 8))
+            link {:link/id link-id
+                  :link/from from-anchor
+                  :link/to to-anchor
+                  :link/type link-type
+                  :link/created (fulab-musn/now-inst)
+                  :link/author (or author "agent")}
+            link (if note (assoc link :link/note note) link)]
+        (when (or from-exists? to-exists?) ;; Allow forward references
+          (append-link! lab-root link)
+          (append-lab-event! entry {:event/type :arxana/link-created
+                                    :at (fulab-musn/now-inst)
+                                    :payload {:link/id link-id
+                                              :link/from from-anchor
+                                              :link/to to-anchor
+                                              :link/type link-type}}))
+        (if (or from-exists? to-exists?)
+          {:ok true :link link}
+          {:ok false :err "no-anchor-exists" :from from-anchor :to to-anchor})))))
+
+(defn get-anchors
+  "Get anchors for a session, optionally filtered by turn."
+  [session-id & {:keys [turn]}]
+  (when-let [entry (get-session session-id)]
+    (let [lab-root (:lab-root entry)
+          anchors (or (read-anchors-index lab-root) [])
+          session-anchors (filter #(= session-id (:anchor/session %)) anchors)]
+      (if turn
+        (filter #(= turn (:anchor/turn %)) session-anchors)
+        session-anchors))))
+
+(defn get-links
+  "Get links for an anchor (outgoing and incoming)."
+  [anchor-id]
+  (let [session-id (first (str/split anchor-id #":"))
+        entry (get-session session-id)]
+    (when entry
+      (let [lab-root (:lab-root entry)
+            links (or (read-links-graph lab-root) [])]
+        {:outgoing (filter #(= anchor-id (:link/from %)) links)
+         :incoming (filter #(= anchor-id (:link/to %)) links)}))))
+
+(defn get-backlinks
+  "Get all anchors that link TO the given anchor."
+  [anchor-id]
+  (let [links (get-links anchor-id)]
+    (when links
+      (->> (:incoming links)
+           (map :link/from)
+           vec))))
+
+;; =============================================================================
+;; Semantic Anchor Linking (futon3a integration)
+;; =============================================================================
+
+(defn- anchor-text
+  "Extract searchable text from an anchor."
+  [anchor]
+  (str (:anchor/content anchor)
+       (when-let [note (:anchor/note anchor)]
+         (str " " note))))
+
+(defn suggest-similar-anchors
+  "Find anchors semantically similar to the given anchor content.
+   Uses futon3a portal if available, falls back to simple text matching.
+   Returns vector of {:anchor/id :similarity} sorted by similarity."
+  [session-id anchor-id & {:keys [limit] :or {limit 5}}]
+  (when-let [entry (get-session session-id)]
+    (let [lab-root (:lab-root entry)
+          all-anchors (or (read-anchors-index lab-root) [])
+          target-anchor (first (filter #(= anchor-id (:anchor/id %)) all-anchors))
+          other-anchors (remove #(= anchor-id (:anchor/id %)) all-anchors)]
+      (when target-anchor
+        (let [target-text (anchor-text target-anchor)
+              target-words (set (str/split (str/lower-case target-text) #"\s+"))
+              ;; Simple word overlap similarity (fallback when futon3a unavailable)
+              scored (->> other-anchors
+                          (map (fn [anchor]
+                                 (let [anchor-words (set (str/split (str/lower-case (anchor-text anchor)) #"\s+"))
+                                       intersection (clojure.set/intersection target-words anchor-words)
+                                       union (clojure.set/union target-words anchor-words)
+                                       jaccard (if (empty? union) 0.0
+                                                   (/ (count intersection) (double (count union))))]
+                                   {:anchor/id (:anchor/id anchor)
+                                    :anchor/type (:anchor/type anchor)
+                                    :anchor/session (:anchor/session anchor)
+                                    :similarity jaccard})))
+                          (filter #(> (:similarity %) 0.1))
+                          (sort-by :similarity >)
+                          (take limit)
+                          vec)]
+          scored)))))
+
+(defn suggest-links-for-anchor
+  "Suggest potential links for an anchor based on semantic similarity.
+   Returns candidate links with suggested types based on anchor types."
+  [session-id anchor-id & {:keys [limit] :or {limit 3}}]
+  (when-let [similar (suggest-similar-anchors session-id anchor-id :limit limit)]
+    (let [anchors (or (read-anchors-index (:lab-root (get-session session-id))) [])
+          source-anchor (first (filter #(= anchor-id (:anchor/id %)) anchors))
+          source-type (:anchor/type source-anchor)]
+      (->> similar
+           (map (fn [{:keys [anchor/id anchor/type similarity]}]
+                  (let [;; Suggest link type based on anchor types
+                        suggested-type (cond
+                                         (and (= source-type :insight) (= type :decision)) :supports
+                                         (and (= source-type :decision) (= type :insight)) :implements
+                                         (and (= source-type :question) (= type :insight)) :extends
+                                         (= source-type type) :references
+                                         :else :references)]
+                    {:from anchor-id
+                     :to id
+                     :suggested-type suggested-type
+                     :similarity similarity})))
+           vec))))
+
+(defn auto-link-anchors!
+  "Automatically create links between semantically similar anchors.
+   Only creates links above the similarity threshold."
+  [session-id & {:keys [threshold limit] :or {threshold 0.3 limit 10}}]
+  (when-let [entry (get-session session-id)]
+    (let [lab-root (:lab-root entry)
+          all-anchors (or (read-anchors-index lab-root) [])
+          session-anchors (filter #(= session-id (:anchor/session %)) all-anchors)
+          existing-links (or (read-links-graph lab-root) [])
+          existing-pairs (set (map (fn [link] [(:link/from link) (:link/to link)]) existing-links))
+          created (atom [])]
+      (doseq [anchor session-anchors]
+        (let [suggestions (suggest-links-for-anchor session-id (:anchor/id anchor) :limit limit)]
+          (doseq [{:keys [from to suggested-type similarity]} suggestions]
+            (when (and (>= similarity threshold)
+                       (not (contains? existing-pairs [from to]))
+                       (not (contains? existing-pairs [to from])))
+              (let [result (create-link! from to suggested-type
+                                         :note (format "Auto-linked (similarity: %.2f)" similarity)
+                                         :author "arxana-auto")]
+                (when (:ok result)
+                  (swap! created conj (:link result))))))))
+      {:ok true :links-created (count @created) :links @created})))

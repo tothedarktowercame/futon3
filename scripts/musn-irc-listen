@@ -89,7 +89,11 @@ def main():
 
     try:
         while True:
-            raw = file.readline()
+            try:
+                raw = file.readline()
+            except Exception as exc:
+                print(f"[irc] read error: {exc}", flush=True)
+                break
             if not raw:
                 print("[irc] connection closed", flush=True)
                 break

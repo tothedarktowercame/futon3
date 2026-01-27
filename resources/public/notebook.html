@@ -144,6 +144,22 @@
       font-size: 0.7rem;
     }
 
+    a.timestamp {
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    a.timestamp:hover {
+      color: #f9a825;
+      text-decoration: underline;
+    }
+
+    .turn.plan a.timestamp::after {
+      content: ' ↗';
+      font-size: 0.6rem;
+    }
+
     footer {
       margin-top: 40px;
       padding-top: 20px;

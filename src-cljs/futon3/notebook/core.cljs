@@ -106,11 +106,16 @@
 
 (defn plan-component [{:keys [event/type at payload]}]
   (let [diagram (or (:diagram payload) (:mermaid payload))
-        note (or (:note payload) (:plan payload))]
+        note (or (:note payload) (:plan payload))
+        session-id (:session-id @app-state)
+        diagram-url (when session-id (str "/fulab/plan/" session-id "/diagram"))]
     [:div.turn.plan
      [:div.turn-header
       [:span.role "PLAN"]
-      [:span.timestamp (format-timestamp at)]]
+      (if diagram-url
+        [:a.timestamp {:href diagram-url :target "_blank" :title "Open diagram"}
+         (format-timestamp at)]
+        [:span.timestamp (format-timestamp at)])]
      [:div.turn-content
       (when note [:div.plan-note note])
       (when diagram [mermaid-diagram diagram])]]))

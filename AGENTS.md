@@ -40,6 +40,19 @@ Sigils encode two-word concepts: `emoji/hanzi` = `word₁/word₂`. Valid sigils
 (chops/valid-hanzi? "予")   ; => true
 ```
 
+### Finding `futon3.chops`
+
+- **Code**: `src/futon3/chops.clj` (namespace `futon3.chops`)
+- **Canonical sources**: `resources/tokizh/tokizh.org`, `resources/truth-table-8/truth-table-8.el`
+- **Quick check** (from repo root):
+  ```bash
+  clj -M -e '(require (quote futon3.chops)) (println (futon3.chops/valid-emoji? "🐜"))'
+  ```
+- If the namespace won’t load in a bare REPL, you can force-load it:
+  ```bash
+  clj -M -e '(load-file "src/futon3/chops.clj") (require (quote futon3.chops)) (println (futon3.chops/valid-hanzi? "予"))'
+  ```
+
 ### Stamping patterns
 
 Before committing new patterns, stamp them to record validation:

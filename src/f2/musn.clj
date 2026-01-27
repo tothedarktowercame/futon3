@@ -45,6 +45,12 @@
 (def ^:private futon1-api-enabled?
   (not= "0" (env-trim "FUTON1_API")))
 
+;; IRC bridge config (override via env)
+(def ^:private irc-bridge-host (or (env-trim "FUTON3_IRC_HOST") "127.0.0.1"))
+(def ^:private irc-bridge-port
+  (or (some-> (env-trim "FUTON3_IRC_PORT") Long/parseLong) 6667))
+(def ^:private irc-bridge-password (env-trim "FUTON3_IRC_PASSWORD"))
+
 (def default-config
   {:transport-port 5050
    :ui-port 6060
@@ -64,8 +70,9 @@
    :musn-http {:enabled? musn-http-enabled?
                :port 6065}
    :irc-bridge {:enabled? irc-bridge-enabled?
-                :host "127.0.0.1"
-                :port 6667
+                :host irc-bridge-host
+                :port irc-bridge-port
+                :password irc-bridge-password
                 :musn-url "http://localhost:6065"
                 :poll-interval 2.0
                 :room nil}

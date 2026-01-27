@@ -1,0 +1,125 @@
+#!/bin/bash
+# Evaluate Clojure code via Drawbridge (nREPL over HTTP)
+#
+# Usage:
+#   ./scripts/repl-eval '(+ 1 2)'
+#   ./scripts/repl-eval '(require '\''my.ns)'
+#   echo '(+ 1 2)' | ./scripts/repl-eval
+#
+# Environment:
+#   ADMIN_TOKEN       - Auth token (default: from .admintoken or 'change-me')
+#   DRAWBRIDGE_HOST   - Host (default: 127.0.0.1)
+#   DRAWBRIDGE_PORT   - Port (default: 6767)
+
+set -e
+
+HOST="${DRAWBRIDGE_HOST:-127.0.0.1}"
+PORT="${DRAWBRIDGE_PORT:-6767}"
+COOKIES="/tmp/drawbridge-cookies-$$"
+
+# Token from env, .admintoken file, or default
+if [[ -n "$ADMIN_TOKEN" ]]; then
+  TOKEN="$ADMIN_TOKEN"
+elif [[ -f .admintoken ]]; then
+  TOKEN="$(cat .admintoken | tr -d '\n')"
+else
+  TOKEN="change-me"
+fi
+
+# Read code from argument or stdin
+if [[ $# -gt 0 ]]; then
+  CODE="$*"
+else
+  CODE="$(cat)"
+fi
+
+if [[ -z "$CODE" ]]; then
+  echo "Usage: repl-eval '<clojure-code>'" >&2
+  echo "       echo '(+ 1 2)' | repl-eval" >&2
+  exit 1
+fi
+
+cleanup() {
+  rm -f "$COOKIES"
+}
+trap cleanup EXIT
+
+URL="http://$HOST:$PORT/repl?token=$TOKEN"
+
+# First call sets up Ring session (returns empty, but sets cookie)
+curl -s -c "$COOKIES" "$URL" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "op=clone" >/dev/null 2>&1
+
+# Check for connection errors
+if [[ ! -f "$COOKIES" ]]; then
+  echo "Error: Cannot connect to Drawbridge at $HOST:$PORT" >&2
+  echo "Is the server running with FUTON3_DRAWBRIDGE=1?" >&2
+  exit 1
+fi
+
+# Second call actually clones the session
+CLONE_RESP=$(curl -s -c "$COOKIES" -b "$COOKIES" "$URL" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "op=clone" 2>&1)
+
+# Check for auth errors
+if [[ "$CLONE_RESP" == "forbidden" ]]; then
+  echo "Error: Authentication failed (check ADMIN_TOKEN)" >&2
+  exit 1
+fi
+
+# Extract session ID
+if command -v jq &>/dev/null; then
+  SESSION=$(echo "$CLONE_RESP" | jq -r '.[0]["new-session"] // empty')
+else
+  SESSION=$(echo "$CLONE_RESP" | grep -o '"new-session":"[^"]*"' | cut -d'"' -f4)
+fi
+
+if [[ -z "$SESSION" ]]; then
+  echo "Error: Failed to create nREPL session" >&2
+  echo "Response: $CLONE_RESP" >&2
+  exit 1
+fi
+
+# Send eval request with session (result comes on next poll)
+curl -s -c "$COOKIES" -b "$COOKIES" "$URL" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  --data-urlencode "op=eval" \
+  --data-urlencode "code=$CODE" \
+  --data-urlencode "session=$SESSION" >/dev/null
+
+# Poll for result (Drawbridge returns results on the NEXT request)
+RESPONSE=$(curl -s -c "$COOKIES" -b "$COOKIES" "$URL" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "op=clone" 2>&1)
+
+# Parse nREPL response - extract value, out, or err
+if command -v jq &>/dev/null; then
+  VALUE=$(echo "$RESPONSE" | jq -r '[.[] | select(.value != null) | .value] | join("")' 2>/dev/null)
+  OUT=$(echo "$RESPONSE" | jq -r '[.[] | select(.out != null) | .out] | join("")' 2>/dev/null)
+  ERR=$(echo "$RESPONSE" | jq -r '[.[] | select(.err != null) | .err] | join("")' 2>/dev/null)
+  EX=$(echo "$RESPONSE" | jq -r '[.[] | select(.ex != null) | .ex] | .[0] // empty' 2>/dev/null)
+
+  # Print stdout if any
+  if [[ -n "$OUT" ]]; then
+    printf "%s" "$OUT"
+  fi
+
+  # Print stderr/exceptions
+  if [[ -n "$ERR" ]]; then
+    printf "%s" "$ERR" >&2
+  fi
+
+  if [[ -n "$EX" ]]; then
+    exit 1
+  fi
+
+  # Print value
+  if [[ -n "$VALUE" ]]; then
+    echo "$VALUE"
+  fi
+else
+  # Fallback: just print raw response
+  echo "$RESPONSE"
+fi

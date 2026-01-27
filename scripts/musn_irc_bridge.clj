@@ -282,7 +282,8 @@
           (send-line! client "CAP * NAK :")))
 
       (str/starts-with? line "PASS ")
-      (let [pass (second (str/split line #"\s+" 2))]
+      (let [pass (-> (second (str/split line #"\s+" 2))
+                     (str/replace #"^:" ""))]  ;; Strip IRC trailing-param colon
         (if (= pass password)
           (do
             (swap! server-state assoc-in [:clients (:id client) :authed?] true)
@@ -399,12 +400,12 @@
 
 (defonce ^:private bridge-state (atom nil))
 
-(defn- accept-loop! [^ServerSocket server musn-url poll-interval default-room stop-flag]
+(defn- accept-loop! [^ServerSocket server musn-url poll-interval default-room password allowlist stop-flag]
   (try
     (while (not @stop-flag)
       (try
         (let [socket (.accept server)]
-          (future (handle-client! socket musn-url poll-interval default-room)))
+          (future (handle-client! socket musn-url poll-interval default-room password allowlist)))
         (catch java.net.SocketException _
           ;; Server socket closed, exit loop
           nil)))
@@ -440,9 +441,11 @@
          musn-url (or (:musn-url opts) "http://localhost:6065")
          poll-interval (or (:poll-interval opts) 2.0)
          default-room (:room opts)
+         password (:password opts)
+         allowlist (:allowlist opts)
          stop-flag (atom false)
          server (ServerSocket. port 50 (java.net.InetAddress/getByName host))
-         accept-thread (future (accept-loop! server musn-url poll-interval default-room stop-flag))]
+         accept-thread (future (accept-loop! server musn-url poll-interval default-room password allowlist stop-flag))]
      (log! (format "listening on %s:%d (musn=%s)" host port musn-url))
      (reset! bridge-state {:server server
                            :stop-flag stop-flag

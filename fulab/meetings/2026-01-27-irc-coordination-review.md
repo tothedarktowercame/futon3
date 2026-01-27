@@ -94,6 +94,29 @@ Turn today's friction into reusable coordination protocols:
 - `library/realtime/multi-agent-coordination.flexiarg`
 - `docs/multi-agent-protocol.md`
 
+### Architecture: Peripheral Hopping
+
+A more robust approach than prompt-level AIF guidance: agents hop between **peripherals** (constrained capability envelopes) while preserving session memory.
+
+**Why this beats RPC wrappers:**
+- Constraints are structural, not behavioral - no compliance theater needed
+- Agent doesn't need to be told "please be careful" - it literally can't exceed scope
+- Memory/context travels with the agent across hops
+- Each peripheral is a tight capability box appropriate to the task phase
+
+**Example flow:**
+```
+[Research peripheral] → can read, search, explore
+        ↓ hop with memory
+[Edit peripheral] → can modify specific files
+        ↓ hop with memory
+[Deploy peripheral] → can push, can't edit
+```
+
+**Gating:** Hops between peripherals can be human-approved or pattern-gated (e.g., "only hop to deploy if tests passed").
+
+**Proof of concept:** This very session - IRC coordination (multi-agent, chat-constrained) then direct 1:1 (full tools, low overhead) - demonstrated peripheral switching with context continuity. Same understanding, different capability envelopes, coherent output.
+
 ## Raw IRC Log
 
 Available at: `/tmp/claude/-home-joe-code-futon3/tasks/b902e39.output`

@@ -28,7 +28,23 @@
    :max-lines 50
    :jsonl-path "/tmp/musn_pattern_checks.jsonl"
    :devmap-globs ["resources/devmaps/*.edn" "resources/sigils/patterns-index.tsv"]
-   :cache-refresh-ms 60000})
+   :cache-refresh-ms 60000
+   ;; Pattern mining config
+   :mining-threshold 3           ; Post to #patterns after N occurrences
+   :mining-window-batches 10     ; Rolling window of batches to track
+   :patterns-room "patterns"     ; MUSN room to post pattern discoveries
+   :musn-url "http://localhost:6065"})
+
+;; --- Pattern mining state ---
+
+(defn- make-mining-state
+  "Create initial pattern mining state."
+  []
+  {:sigil-counts {}     ; sigil -> count in window
+   :psr-counts {}       ; pattern-id -> count
+   :pur-counts {}       ; pattern-id -> count
+   :posted #{}          ; items already posted to avoid duplicates
+   :batch-history []})  ; ring buffer of recent batch summaries
 
 ;; --- Line item normalization ---
 
@@ -165,14 +181,105 @@
   (let [json-line (json/write-str record)]
     (spit path (str json-line "\n") :append true)))
 
+;; --- Pattern mining ---
+
+(defn- post-to-musn!
+  "Post a message to a MUSN chat room."
+  [musn-url room author text]
+  (try
+    (let [url (str musn-url "/musn/chat/message")
+          body (json/write-str {:room room
+                                :author {:id author :name author}
+                                :text text})]
+      (with-open [conn (-> (java.net.URL. url)
+                           (.openConnection))]
+        (doto conn
+          (.setRequestMethod "POST")
+          (.setRequestProperty "Content-Type" "application/json")
+          (.setDoOutput true))
+        (with-open [os (.getOutputStream conn)]
+          (.write os (.getBytes body "UTF-8")))
+        (.getResponseCode conn)))
+    (catch Exception e
+      (println "[pattern-mining] Failed to post:" (.getMessage e))
+      nil)))
+
+(defn- update-mining-state
+  "Update mining state with batch results, return items to post."
+  [state report config]
+  (let [{:keys [mining-threshold mining-window-batches]} config
+        {:keys [sigil-counts psr-counts pur-counts posted batch-history]} state
+
+        ;; Extract items from this batch
+        valid-sigils (map :sigil (:sigil_reads report))
+        psr-ids (get-in report [:psr :ids])
+        pur-ids (get-in report [:pur :ids])
+
+        ;; Update counts
+        new-sigil-counts (reduce (fn [m s] (update m s (fnil inc 0))) sigil-counts valid-sigils)
+        new-psr-counts (reduce (fn [m id] (update m id (fnil inc 0))) psr-counts psr-ids)
+        new-pur-counts (reduce (fn [m id] (update m id (fnil inc 0))) pur-counts pur-ids)
+
+        ;; Find items crossing threshold (not yet posted)
+        threshold-sigils (->> new-sigil-counts
+                              (filter (fn [[s c]] (and (>= c mining-threshold)
+                                                       (not (contains? posted [:sigil s])))))
+                              (map first))
+        threshold-psrs (->> new-psr-counts
+                            (filter (fn [[id c]] (and (>= c mining-threshold)
+                                                      (not (contains? posted [:psr id])))))
+                            (map first))
+        threshold-purs (->> new-pur-counts
+                            (filter (fn [[id c]] (and (>= c mining-threshold)
+                                                      (not (contains? posted [:pur id])))))
+                            (map first))
+
+        ;; Mark as posted
+        new-posted (-> posted
+                       (into (map (fn [s] [:sigil s]) threshold-sigils))
+                       (into (map (fn [id] [:psr id]) threshold-psrs))
+                       (into (map (fn [id] [:pur id]) threshold-purs)))
+
+        ;; Trim batch history to window size
+        new-history (take mining-window-batches (conj batch-history report))]
+
+    {:state {:sigil-counts new-sigil-counts
+             :psr-counts new-psr-counts
+             :pur-counts new-pur-counts
+             :posted new-posted
+             :batch-history new-history}
+     :to-post {:sigils threshold-sigils
+               :psrs threshold-psrs
+               :purs threshold-purs}}))
+
+(defn- post-discoveries!
+  "Post discovered patterns to #patterns channel."
+  [to-post config]
+  (let [{:keys [musn-url patterns-room mining-threshold]} config
+        {:keys [sigils psrs purs]} to-post]
+    ;; Post sigils
+    (doseq [sigil sigils]
+      (let [validation (chops/validate-sigil sigil)
+            reading (get-in validation [:decoded :reading] sigil)
+            msg (format "Sigil mined: %s (%s) - seen %d+ times" sigil reading mining-threshold)]
+        (post-to-musn! musn-url patterns-room "pattern_miner" msg)))
+    ;; Post PSRs
+    (doseq [psr psrs]
+      (let [msg (format "Pattern selected (PSR) %d+ times: %s" mining-threshold psr)]
+        (post-to-musn! musn-url patterns-room "pattern_miner" msg)))
+    ;; Post PURs
+    (doseq [pur purs]
+      (let [msg (format "Pattern used (PUR) %d+ times: %s" mining-threshold pur)]
+        (post-to-musn! musn-url patterns-room "pattern_miner" msg)))))
+
 ;; --- Async runtime ---
 
-(defrecord PatternChecker [config buffer worker-future running?])
+(defrecord PatternChecker [config buffer worker-future running? mining-state])
 
 (defn- worker-loop
   "Worker loop that processes batches from the buffer."
   [checker]
-  (let [{:keys [config buffer running?]} checker
+  (let [{:keys [config buffer running? mining-state]} checker
         {:keys [max-wait-ms max-lines jsonl-path]} config]
     (loop [batch []
            batch-start nil]
@@ -190,8 +297,16 @@
                 ;; Batch full, process it
                 (do
                   (when (seq new-batch)
-                    (let [report (process-batch new-batch {})]
-                      (write-jsonl! jsonl-path report)))
+                    (let [report (process-batch new-batch {})
+                          ;; Update mining state and check for discoveries
+                          {:keys [state to-post]} (update-mining-state @mining-state report config)]
+                      (reset! mining-state state)
+                      (write-jsonl! jsonl-path report)
+                      ;; Post any discoveries to #patterns
+                      (when (or (seq (:sigils to-post))
+                                (seq (:psrs to-post))
+                                (seq (:purs to-post)))
+                        (post-discoveries! to-post config))))
                   (recur [] nil))
                 ;; Continue batching
                 (recur new-batch new-start)))
@@ -199,8 +314,14 @@
             ;; Timeout - flush current batch
             (seq batch)
             (do
-              (let [report (process-batch batch {})]
-                (write-jsonl! jsonl-path report))
+              (let [report (process-batch batch {})
+                    {:keys [state to-post]} (update-mining-state @mining-state report config)]
+                (reset! mining-state state)
+                (write-jsonl! jsonl-path report)
+                (when (or (seq (:sigils to-post))
+                          (seq (:psrs to-post))
+                          (seq (:purs to-post)))
+                  (post-discoveries! to-post config)))
               (recur [] nil))
 
             ;; Nothing to do
@@ -213,9 +334,11 @@
   (let [config (merge default-config config-overrides)
         buffer (LinkedBlockingQueue. ^int (:max-buffer-lines config))
         running? (atom true)
+        mining-state (atom (make-mining-state))
         checker (map->PatternChecker {:config config
                                       :buffer buffer
-                                      :running? running?})]
+                                      :running? running?
+                                      :mining-state mining-state})]
     (assoc checker
            :worker-future
            (future (worker-loop checker)))))

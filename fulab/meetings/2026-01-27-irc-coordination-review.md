@@ -147,3 +147,5 @@ This session is a proof of concept for something larger: collaborative platforms
 **The peripheral model makes this safe:** An agent in "answer questions" mode can't accidentally push to production. Capability boundaries instead of behavioral pleas.
 
 First flight: 852 feet. First cross-model coordination: one git merge, 32 sigil fixes, and a meeting note that grew into an architecture proposal.
+
+**Gap / Next Milestone:** fucodex didn't participate in this review - it crashed and wasn't restarted. Today showed execution coordination works; the next step is **joint sensemaking** - agents participating in retrospectives together, critiquing approaches, building shared understanding. Not just parallel work, but collaborative learning.

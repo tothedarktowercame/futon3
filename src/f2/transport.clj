@@ -896,28 +896,23 @@
                      [])
           init-data (json/encode {:type "init"
                                   :session-id session-id
-                                  :events (mapv #(-> %
-                                                     (update :event/type name)
-                                                     (update-in [:payload :role] (fn [r] (when r (name r)))))
-                                                events)})]
+                                  :events (mapv normalize-event-for-stream events)})]
       (http/send! channel (str "data: " init-data "\n\n") false))
     ;; Poll for new events (simple approach; could use core.async watch later)
     (let [poll-interval 1000
-          last-count (atom (count (musn-svc/recent-scribe-events session-id 1000)))]
+          last-count (atom (count (or (musn-svc/scribe-events session-id) [])))]
       (future
         (try
           (loop []
             (Thread/sleep poll-interval)
             (when (http/open? channel)
-              (let [events (musn-svc/recent-scribe-events session-id 1000)
+              (let [events (or (musn-svc/scribe-events session-id) [])
                     current-count (count events)]
                 (when (> current-count @last-count)
                   (let [new-events (drop @last-count events)]
                     (doseq [event new-events]
                       (let [data (json/encode {:type "turn"
-                                               :event (-> event
-                                                          (update :event/type name)
-                                                          (update-in [:payload :role] (fn [r] (when r (name r)))))})]
+                                               :event (normalize-event-for-stream event)})]
                         (http/send! channel (str "data: " data "\n\n") false))))
                   (reset! last-count current-count)))
               (recur)))
@@ -935,8 +930,8 @@
       (str ns "/" (name kw))
       (name kw))))
 
-(defn- normalize-event-for-ws
-  "Normalize event for WebSocket transmission."
+(defn- normalize-event-for-stream
+  "Normalize event for stream transmission."
   [event]
   (-> event
       (update :event/type keyword->str)
@@ -950,9 +945,9 @@
     ;; Send initial state with recent events
     (let [events (or (musn-svc/recent-scribe-events session-id 50) [])
           init-msg (json/encode {:type "init"
-                                 :session_id session-id
-                                 :event_count (count events)
-                                 :events (mapv normalize-event-for-ws events)})]
+                                 :session-id session-id
+                                 :event-count (count events)
+                                 :events (mapv normalize-event-for-stream events)})]
       (http/send! channel init-msg false))
 
     ;; Handle client messages (filter commands, ping)
@@ -971,23 +966,20 @@
 
     ;; Poll for new events and push to client
     (let [poll-interval 500
-          last-count (atom (count (musn-svc/recent-scribe-events session-id 1000)))]
+          last-count (atom (count (or (musn-svc/scribe-events session-id) [])))]
       (future
         (try
           (loop []
             (Thread/sleep poll-interval)
             (when (http/open? channel)
-              (let [events (musn-svc/recent-scribe-events session-id 1000)
+              (let [events (or (musn-svc/scribe-events session-id) [])
                     current-count (count events)]
                 (when (> current-count @last-count)
                   (let [new-events (drop @last-count events)]
                     (doseq [event new-events]
                       (let [ws-event {:type "event"
-                                      :event/type (when-let [t (:event/type event)] (name t))
-                                      :at (:at event)
-                                      :session_id session-id
-                                      :payload (-> (:payload event)
-                                                   (update :role #(when % (name %))))}]
+                                      :session-id session-id
+                                      :event (normalize-event-for-stream event)}]
                         (http/send! channel (json/encode ws-event) false))))
                   (reset! last-count current-count)))
               (recur)))
@@ -1044,8 +1036,13 @@
 
 (defn- handle-anchors-get [state session-id turn]
   (try
-    (let [anchors (if turn
-                    (musn-svc/get-anchors session-id :turn (Integer/parseInt turn))
+    (let [turn (when turn
+                 (let [trim (str/trim (str turn))]
+                   (if (re-matches #"-?\\d+" trim)
+                     (Integer/parseInt trim)
+                     trim)))
+          anchors (if turn
+                    (musn-svc/get-anchors session-id :turn turn)
                     (musn-svc/get-anchors session-id))]
       (json-response 200 {:ok true :session-id session-id :anchors (vec anchors)}))
     (catch Exception e

@@ -1555,17 +1555,24 @@
          (take-last n)
          vec)))
 
-(defn recent-scribe-events
-  "Get recent scribe events (turns + plans + arxana) from session for notebook display.
-   Returns up to n most recent turn, plan, planning-hint, and anchor/link events."
-  [session-id n]
+(defn scribe-events
+  "Get scribe events (turns + plans + arxana) from session.
+   Returns all matching events in session order."
+  [session-id]
   (when-let [entry (get-session session-id)]
     (->> @(:lab-session entry)
          :events
          (filter #(#{:turn/user :turn/agent :turn/plan :planning/native-detected
                      :arxana/anchor-created :arxana/link-created} (:event/type %)))
-         (take-last n)
          vec)))
+
+(defn recent-scribe-events
+  "Get recent scribe events (turns + plans + arxana) from session for notebook display.
+   Returns up to n most recent turn, plan, planning-hint, and anchor/link events."
+  [session-id n]
+  (some-> (scribe-events session-id)
+          (take-last n)
+          vec))
 
 (defn turns->context
   "Convert recent turns to a context string for HUD sigil computation."
@@ -1716,19 +1723,34 @@
     (io/make-parents path)
     (spit path (str (pr-str link) "\n") :append true)))
 
+(defn- normalize-turn
+  "Normalize turn values for anchor storage/filtering."
+  [turn]
+  (cond
+    (integer? turn) turn
+    (string? turn) (try
+                     (Integer/parseInt (str/trim turn))
+                     (catch Exception _ turn))
+    :else turn))
+
 (defn record-anchor!
   "Record an anchor (named point) within a session turn.
    Anchor types: :insight, :decision, :question, :artifact
    Returns the anchor record with generated ID."
   [session-id turn anchor-type content & {:keys [note author]}]
   (when-let [entry (get-session session-id)]
-    (let [lab-root (:lab-root entry)
+    (let [turn (normalize-turn turn)
+          lab-root (:lab-root entry)
           existing (or (read-anchors-index lab-root) [])
           session-anchors (filter #(= session-id (:anchor/session %)) existing)
           turn-anchors (filter #(= turn (:anchor/turn %)) session-anchors)
           type-anchors (filter #(= anchor-type (:anchor/type %)) turn-anchors)
           idx (inc (count type-anchors))
-          anchor-id (generate-anchor-id session-id turn anchor-type idx)
+          base-id (generate-anchor-id session-id turn anchor-type idx)
+          existing-ids (set (map :anchor/id existing))
+          anchor-id (if (contains? existing-ids base-id)
+                      (str base-id "-" (subs (str (java.util.UUID/randomUUID)) 0 6))
+                      base-id)
           truncated-content (if (> (count content) 500)
                               (str (subs content 0 500) "...")
                               content)
@@ -1791,7 +1813,8 @@
           anchors (or (read-anchors-index lab-root) [])
           session-anchors (filter #(= session-id (:anchor/session %)) anchors)]
       (if turn
-        (filter #(= turn (:anchor/turn %)) session-anchors)
+        (let [turn (normalize-turn turn)]
+          (filter #(= turn (:anchor/turn %)) session-anchors))
         session-anchors))))
 
 (defn get-links
@@ -1866,15 +1889,17 @@
           source-type (:anchor/type source-anchor)]
       (->> similar
            (map (fn [{:keys [anchor/id anchor/type similarity]}]
-                  (let [;; Suggest link type based on anchor types
+                  (let [target-id anchor/id
+                        target-type anchor/type
+                        ;; Suggest link type based on anchor types
                         suggested-type (cond
-                                         (and (= source-type :insight) (= type :decision)) :supports
-                                         (and (= source-type :decision) (= type :insight)) :implements
-                                         (and (= source-type :question) (= type :insight)) :extends
-                                         (= source-type type) :references
+                                         (and (= source-type :insight) (= target-type :decision)) :supports
+                                         (and (= source-type :decision) (= target-type :insight)) :implements
+                                         (and (= source-type :question) (= target-type :insight)) :extends
+                                         (= source-type target-type) :references
                                          :else :references)]
                     {:from anchor-id
-                     :to id
+                     :to target-id
                      :suggested-type suggested-type
                      :similarity similarity})))
            vec))))

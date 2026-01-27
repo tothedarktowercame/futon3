@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+import argparse
+import os
+import socket
+import sys
+import time
+
+
+def env(name, default=""):
+    return os.environ.get(name) or default
+
+
+def pick(*names, default=""):
+    for name in names:
+        val = os.environ.get(name)
+        if val:
+            return val
+    return default
+
+
+def connect(host, port, timeout=10):
+    sock = socket.create_connection((host, port), timeout=timeout)
+    sock.settimeout(None)
+    return sock
+
+
+def parse_privmsg(line):
+    # :nick!user@host PRIVMSG #room :message
+    if " PRIVMSG " not in line:
+        return None
+    prefix, rest = line[1:].split(" ", 1)
+    if " :" not in rest:
+        return None
+    command_part, text = rest.split(" :", 1)
+    parts = command_part.split()
+    if len(parts) < 2:
+        return None
+    target = parts[1]
+    nick = prefix.split("!", 1)[0]
+    return nick, target, text
+
+
+def parse_notice(line):
+    if " NOTICE " not in line:
+        return None
+    if " :" not in line:
+        return None
+    prefix, rest = line[1:].split(" ", 1)
+    _, text = rest.split(" :", 1)
+    nick = prefix.split("!", 1)[0]
+    return nick, text
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Listen to an IRC room and print messages.")
+    parser.add_argument("--room", default=pick("MUSN_IRC_ROOM", "FUTON3_MUSN_CHAT_ROOM", default="lab"))
+    parser.add_argument("--nick", default=pick("MUSN_IRC_NICK", "FUTON3_MUSN_CHAT_AUTHOR", "FUTON3_MUSN_CLIENT_ID", default="fucodex_listen"))
+    parser.add_argument("--host", default=pick("FUTON3_MUSN_IRC_HOST", "MUSN_IRC_HOST", default="localhost"))
+    parser.add_argument("--port", type=int, default=int(pick("FUTON3_MUSN_IRC_PORT", "MUSN_IRC_PORT", default="6680")))
+    parser.add_argument("--pass", dest="password", default=pick("FUTON3_MUSN_CHAT_PASS", "MUSN_IRC_PASSWORD", default=""))
+    parser.add_argument("--raw", action="store_true", help="Print raw IRC lines.")
+    args = parser.parse_args()
+
+    room = args.room.lstrip("#")
+    if not room:
+        print("missing room (set MUSN_IRC_ROOM or pass --room)", file=sys.stderr)
+        return 2
+
+    print(f"[irc] connecting {args.host}:{args.port} as {args.nick} room #{room}", flush=True)
+
+    try:
+        sock = connect(args.host, args.port)
+    except Exception as exc:
+        print(f"[irc] connect failed: {exc}", file=sys.stderr)
+        return 1
+
+    file = sock.makefile("rwb", buffering=0)
+
+    def send(line):
+        file.write((line + "\r\n").encode("utf-8", errors="ignore"))
+        if args.raw:
+            print(f">> {line}", flush=True)
+
+    if args.password:
+        send(f"PASS {args.password}")
+    send(f"NICK {args.nick}")
+    send(f"USER {args.nick} 0 * :{args.nick}")
+    send(f"JOIN #{room}")
+
+    try:
+        while True:
+            raw = file.readline()
+            if not raw:
+                print("[irc] connection closed", flush=True)
+                break
+            line = raw.decode(errors="replace").rstrip("\r\n")
+            if line.startswith("PING"):
+                token = line.split(" ", 1)[-1]
+                send(f"PONG {token}")
+                continue
+            if args.raw:
+                print(f"<< {line}", flush=True)
+                continue
+            msg = parse_privmsg(line)
+            if msg:
+                nick, target, text = msg
+                print(f"{nick} ({target}): {text}", flush=True)
+                continue
+            notice = parse_notice(line)
+            if notice:
+                nick, text = notice
+                print(f"-{nick}- {text}", flush=True)
+                continue
+    except KeyboardInterrupt:
+        pass
+    finally:
+        try:
+            send("QUIT")
+        except Exception:
+            pass
+        try:
+            file.close()
+            sock.close()
+        except Exception:
+            pass
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

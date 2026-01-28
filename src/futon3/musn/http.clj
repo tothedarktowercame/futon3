@@ -205,20 +205,43 @@
   "Start the MUSN HTTP server. Returns a stop function.
    Options:
      :port - HTTP port (default 6065)
+     :ssl-port - HTTPS/WSS port (default nil, disabled)
+     :ssl-context - javax.net.ssl.SSLContext for TLS
+     :ssl-domain - Let's Encrypt domain (alternative to ssl-context)
      :aif-viz-port - optional AIF visualization port"
   ([] (start! {}))
   ([opts]
    (let [port (or (:port opts)
                   (some-> (System/getenv "MUSN_PORT") Long/parseLong)
                   6065)
+         ssl-port (or (:ssl-port opts)
+                      (some-> (System/getenv "MUSN_SSL_PORT") Long/parseLong))
+         ssl-domain (or (:ssl-domain opts)
+                        (System/getenv "MUSN_SSL_DOMAIN"))
+         ssl-context (or (:ssl-context opts)
+                         (when ssl-domain
+                           (require 'futon3.ssl)
+                           ((resolve 'futon3.ssl/ssl-context-from-letsencrypt) ssl-domain)))
          aif-viz-port (or (:aif-viz-port opts)
-                          (some-> (System/getenv "MUSN_AIF_VIZ_PORT") str/trim not-empty Long/parseLong))]
+                          (some-> (System/getenv "MUSN_AIF_VIZ_PORT") str/trim not-empty Long/parseLong))
+         stop-fns (atom [])]
      (when aif-viz-port
        (aif-viz/start! {:port aif-viz-port}))
+
+     ;; Start HTTP server
      (log! (format "MUSN HTTP server on %d" port))
-     (let [stop-fn (http/run-server #'handler {:port port})]  ;; var for hot reload
-       (reset! server-state {:port port :stop-fn stop-fn})
-       stop-fn))))
+     (swap! stop-fns conj (http/run-server #'handler {:port port}))
+
+     ;; Start HTTPS/WSS server if configured
+     (when (and ssl-port ssl-context)
+       (log! (format "MUSN HTTPS/WSS server on %d" ssl-port))
+       (swap! stop-fns conj (http/run-server #'handler {:port ssl-port
+                                                         :ssl? true
+                                                         :ssl-context ssl-context})))
+
+     (let [stop-all (fn [] (doseq [f @stop-fns] (f)))]
+       (reset! server-state {:port port :ssl-port ssl-port :stop-fn stop-all})
+       stop-all))))
 
 (defn stop!
   "Stop the MUSN HTTP server."

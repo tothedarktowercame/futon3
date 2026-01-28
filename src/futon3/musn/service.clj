@@ -1742,6 +1742,20 @@
               :append true)
         ;; Broadcast to WebSocket clients
         (broadcast-activity! record)
+        ;; Process for affect signals (async, fire-and-forget)
+        (future
+          (try
+            (binding [*out* *err*]  ;; ensure output goes to stderr
+              (println "[affect] Processing activity:" (:agent record))
+              (require 'futon3a.affect)
+              (let [proc-fn (resolve 'futon3a.affect/process!)]
+                (when proc-fn
+                  (proc-fn record)
+                  (println "[affect] Done processing"))))
+            (catch Throwable t
+              (binding [*out* *err*]
+                (println "[affect] Error:" (.getMessage t))
+                (.printStackTrace t)))))
         {:ok true :logged record}
         (catch Throwable t
           {:ok false :err (.getMessage t)})))))

@@ -1679,6 +1679,67 @@
       {:ok true :event/type :planning/native-detected})))
 
 ;; =============================================================================
+;; Activity Logging - Unified agent activity tracking for vitality monitoring
+;; =============================================================================
+
+(def ^:private activity-log-path
+  (io/file (or (System/getenv "MUSN_LAB_ROOT") "lab") "activity" "log.ndjson"))
+
+(defn activity-log!
+  "Log agent activity for vitality monitoring. All agents (Claude, Codex, etc.)
+   should POST here to create a unified activity stream.
+
+   Required fields:
+     :agent    - keyword, e.g. :claude, :codex, :fucodex
+     :source   - keyword, e.g. :claude-code, :aob-chatgpt, :codex-cli
+
+   Optional fields:
+     :session/id - session identifier if within a session
+     :at         - ISO timestamp (defaults to now)
+     :event/type - defaults to :agent/interaction
+     :metadata   - arbitrary map of additional data
+
+   Example:
+     POST /musn/activity/log
+     {\"agent\": \"claude\", \"source\": \"claude-code\",
+      \"session/id\": \"abc123\", \"metadata\": {\"cwd\": \"/home/joe/code\"}}
+  "
+  [{:keys [agent source session/id at event/type metadata] :as body}]
+  (if (or (nil? agent) (nil? source))
+    {:ok false :err "missing required field: agent or source"}
+    (let [timestamp (or at (str (fulab-musn/now-inst)))
+          event-type (or event/type :agent/interaction)
+          record {:event/type event-type
+                  :agent (keyword agent)
+                  :source (keyword source)
+                  :at timestamp
+                  :session/id id
+                  :metadata metadata}]
+      (try
+        (io/make-parents activity-log-path)
+        (spit activity-log-path
+              (str (pr-str record) "\n")
+              :append true)
+        {:ok true :logged record}
+        (catch Throwable t
+          {:ok false :err (.getMessage t)})))))
+
+(defn activity-log-entries
+  "Read activity log entries. Returns a lazy seq of records."
+  ([] (activity-log-entries nil))
+  ([{:keys [since agent source limit]}]
+   (when (.exists activity-log-path)
+     (let [entries (->> (slurp activity-log-path)
+                        str/split-lines
+                        (remove str/blank?)
+                        (map edn/read-string))]
+       (cond->> entries
+         agent (filter #(= (keyword agent) (:agent %)))
+         source (filter #(= (keyword source) (:source %)))
+         since (filter #(pos? (compare (:at %) since)))
+         limit (take limit))))))
+
+;; =============================================================================
 ;; Arxana Graph Persistence - Anchors and Links for Lab Notebooks
 ;; =============================================================================
 

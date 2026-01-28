@@ -234,16 +234,57 @@ Set to nil to disable persistence entirely.")
 (defvar-local my-chatgpt-shell--context-face-cookie nil
   "Face remap cookie for the Tatami HUD buffer.")
 
+;; --- MUSN Activity Logging (vitality monitoring) ---
+(defvar my-chatgpt-shell-musn-url "http://oj.futon.garden:6065"
+  "MUSN server URL for activity logging. Set to nil to disable.")
+(defvar-local my-chatgpt-shell--session-id nil
+  "Session ID for this chat buffer, used for activity tracking.")
+
+(defun my-chatgpt-shell--generate-session-id ()
+  "Generate a unique session ID based on buffer name and timestamp."
+  (format "chatgpt-%s-%s"
+          (format-time-string "%Y%m%d-%H%M%S")
+          (substring (md5 (format "%s-%s" (buffer-name) (random))) 0 8)))
+
+(defun my-chatgpt-shell--log-activity (event-type &optional metadata)
+  "POST activity to MUSN for vitality monitoring.
+EVENT-TYPE is a string like \"agent/prompt-submit\".
+METADATA is an optional alist of extra data."
+  (when (and my-chatgpt-shell-musn-url my-chatgpt-shell--session-id)
+    (let* ((url (concat my-chatgpt-shell-musn-url "/musn/activity/log"))
+           (payload `((agent . "chatgpt")
+                      (source . "aob-chatgpt")
+                      (session/id . ,my-chatgpt-shell--session-id)
+                      (event/type . ,event-type)
+                      (metadata . ,(append
+                                    `((buffer . ,(buffer-name)))
+                                    metadata))))
+           (json-payload (json-encode payload)))
+      ;; Fire and forget - don't block on response
+      (ignore-errors
+        (let ((url-request-method "POST")
+              (url-request-extra-headers '(("Content-Type" . "application/json")))
+              (url-request-data json-payload))
+          (url-retrieve url (lambda (_) (kill-buffer)) nil t t))))))
+
 (defun my-chatgpt-shell--init-context ()
   (setq my-chatgpt-shell--seeded-context nil)
   (my-chatgpt-shell-set-profile "General")
-  (add-hook 'kill-buffer-hook #'my-chatgpt-shell--release-hud-state nil t))
+  ;; Generate session ID for activity tracking
+  (setq my-chatgpt-shell--session-id (my-chatgpt-shell--generate-session-id))
+  (my-chatgpt-shell--log-activity "agent/session-start")
+  (add-hook 'kill-buffer-hook #'my-chatgpt-shell--release-hud-state nil t)
+  (add-hook 'kill-buffer-hook #'my-chatgpt-shell--log-session-end nil t))
 
 (defun my-chatgpt-shell--release-hud-state ()
   "Drop the HUD registry entry for the current buffer when it dies."
   (remhash (current-buffer) my-chatgpt-shell--hud-state-registry)
   (when (eq my-chatgpt-shell--context-source (current-buffer))
     (setq my-chatgpt-shell--context-source nil)))
+
+(defun my-chatgpt-shell--log-session-end ()
+  "Log session end to MUSN when buffer is killed."
+  (my-chatgpt-shell--log-activity "agent/session-end"))
 
 (defun my-chatgpt-shell--state-buffer ()
   "Return the chat buffer that owns the current Tatami HUD state."
@@ -2949,6 +2990,8 @@ profile-specific prompt loaded from `my-futon-prompt-directory`."
 
 Always sets the system prompt. Tatami ingestion now occurs via
 `my-chatgpt-shell-after-command` so the LLM response is not blocked."
+  (my-chatgpt-shell--log-activity "agent/prompt-submit"
+                                   `((prompt-length . ,(length command))))
   (set-user-system-prompt command))
 
 (defun my-chatgpt-shell--context-buffer (&optional ensure)

@@ -897,11 +897,34 @@ fi
 
 pause_exit=false
 
+log_activity() {
+  # POST activity to MUSN for vitality monitoring (fire and forget)
+  local event_type="${1:-agent/session-start}"
+  curl -s -X POST "${MUSN_URL}/musn/activity/log" \
+    -H "Content-Type: application/json" \
+    -d "$(jq -n \
+      --arg session_id "$MUSN_SESSION_ID" \
+      --arg cwd "$RUN_CWD" \
+      --arg event_type "$event_type" \
+      --arg intent "${HUD_INTENT:-}" \
+      '{
+        agent: "codex",
+        source: "fucodex",
+        "session/id": $session_id,
+        "event/type": $event_type,
+        metadata: {cwd: $cwd, intent: $intent}
+      }')" >/dev/null 2>&1 &
+}
+
 if $LIVE; then
   if [[ ${#args[@]} -eq 0 ]]; then
     echo "[lab] --live requires a codex command (use 'exec \"...\"' or a subcommand)" >&2
     show_help
     exit 2
+  fi
+  # Log session start activity
+  if [[ -n "$MUSN_URL" ]]; then
+    log_activity "agent/session-start"
   fi
   if $MUSN_MODE; then
     preflight_mode="${FUCODEX_PREFLIGHT:-auto}"
@@ -1084,6 +1107,10 @@ fi
 if [[ "${pause_exit:-false}" == "true" ]]; then
   echo "[lab] paused; skipping lab export" >&2
 else
+  # Log session end activity
+  if [[ -n "$MUSN_URL" ]]; then
+    log_activity "agent/session-end"
+  fi
   run_clj -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export.clj" "${lab_export_args[@]}"
 
   if ! $NO_AIF; then

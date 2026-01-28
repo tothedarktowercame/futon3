@@ -235,8 +235,9 @@ Set to nil to disable persistence entirely.")
   "Face remap cookie for the Tatami HUD buffer.")
 
 ;; --- MUSN Activity Logging (vitality monitoring) ---
-(defvar my-chatgpt-shell-musn-url "http://oj.futon.garden:6065"
-  "MUSN server URL for activity logging. Set to nil to disable.")
+(defvar my-chatgpt-shell-musn-url nil
+  "MUSN server URL for activity logging (e.g. \"http://your-server:6065\").
+Set this in your init.el to enable cross-machine vitality tracking.")
 (defvar-local my-chatgpt-shell--session-id nil
   "Session ID for this chat buffer, used for activity tracking.")
 

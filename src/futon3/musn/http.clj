@@ -178,6 +178,17 @@
         (and (= uri "/musn/activity/ws") (= method :get))
         (handle-activity-ws req)
 
+        ;; GET endpoint for activity entries
+        (and (= uri "/musn/activity/entries") (= method :get))
+        (let [params (some-> (:query-string req)
+                             (java.net.URLDecoder/decode "UTF-8")
+                             (clojure.string/split #"&")
+                             (->> (map #(clojure.string/split % #"=" 2))
+                                  (into {})))
+              limit (some-> (get params "limit") parse-long)
+              entries (svc/activity-log-entries {:limit (or limit 20)})]
+          (json-response {:ok true :entries (vec entries)}))
+
         (not= :post method) (json-response 405 {:ok false :err "method not allowed"})
         :else
         (let [body (parse-json-body req)]

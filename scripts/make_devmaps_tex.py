@@ -37,6 +37,9 @@ SPECIALS = {
 }
 
 
+CODE_BREAK_CHARS = {",", ";", ":", "|", "/", "\\", "_", "-", "=", "+", "?", "&"}
+
+
 def normalize_quotes(text: str) -> str:
     result: list[str] = []
     backtick_open = False
@@ -87,11 +90,13 @@ def escape_line(line: str) -> str:
     return "".join(result)
 
 
-def choose_verb_delim(text: str) -> str | None:
-    for delim in ("|", "/", "+", "!", "#", "@", "~", ";", ":"):
-        if delim not in text:
-            return delim
-    return None
+def escape_code_line(line: str) -> str:
+    result: list[str] = []
+    for ch in line:
+        result.append(SPECIALS.get(ch, ch))
+        if ch in CODE_BREAK_CHARS:
+            result.append(r"\allowbreak{}")
+    return "".join(result)
 
 
 def split_sections(raw_lines: list[str]) -> list[tuple[str, list[str]]]:
@@ -187,12 +192,8 @@ def render_lines(raw_lines: list[str], emoji_chars: set[str]) -> list[str]:
 
         code_candidate = body.lstrip()
         if code_candidate and code_candidate[0] in "{:[]}":
-            delim = choose_verb_delim(code_candidate)
-            if delim:
-                lines.append(f"{indent}\\verb{delim}{code_candidate}{delim}\\\\")
-            else:
-                escaped_code = escape_line(code_candidate)
-                lines.append(f"{indent}\\texttt{{{escaped_code}}}\\\\")
+            escaped_code = escape_code_line(code_candidate)
+            lines.append(f"{indent}\\texttt{{{escaped_code}}}\\\\")
             i += 1
             continue
 

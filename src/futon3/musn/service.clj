@@ -8,6 +8,7 @@
             [clojure.java.io :as io]
             [clojure.java.shell :as shell]
             [clojure.edn :as edn]
+            [org.httpkit.server :as http]
             [futon2.aif.engine :as aif-engine]
             [futon3.fulab.pattern-competence :as pc]
             [futon3.logic-audit :as logic-audit]
@@ -1700,8 +1701,8 @@
   (let [msg (json/generate-string record)]
     (doseq [ch @activity-ws-clients]
       (try
-        (when (org.httpkit.server/open? ch)
-          (org.httpkit.server/send! ch msg false))
+        (when (http/open? ch)
+          (http/send! ch msg false))
         (catch Exception _ nil)))))
 
 (defn activity-log!

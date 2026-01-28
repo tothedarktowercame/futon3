@@ -1704,11 +1704,11 @@
      {\"agent\": \"claude\", \"source\": \"claude-code\",
       \"session/id\": \"abc123\", \"metadata\": {\"cwd\": \"/home/joe/code\"}}
   "
-  [{:keys [agent source session/id at event/type metadata] :as body}]
+  [{:keys [agent source session/id at metadata] :as body}]
   (if (or (nil? agent) (nil? source))
     {:ok false :err "missing required field: agent or source"}
     (let [timestamp (or at (str (fulab-musn/now-inst)))
-          event-type (or event/type :agent/interaction)
+          event-type (or (:event/type body) :agent/interaction)
           record {:event/type event-type
                   :agent (keyword agent)
                   :source (keyword source)

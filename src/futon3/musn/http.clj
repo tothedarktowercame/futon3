@@ -218,10 +218,6 @@
                       (some-> (System/getenv "MUSN_SSL_PORT") Long/parseLong))
          ssl-domain (or (:ssl-domain opts)
                         (System/getenv "MUSN_SSL_DOMAIN"))
-         ssl-context (or (:ssl-context opts)
-                         (when ssl-domain
-                           (require 'futon3.ssl)
-                           ((resolve 'futon3.ssl/ssl-context-from-letsencrypt) ssl-domain)))
          aif-viz-port (or (:aif-viz-port opts)
                           (some-> (System/getenv "MUSN_AIF_VIZ_PORT") str/trim not-empty Long/parseLong))
          stop-fns (atom [])]
@@ -232,12 +228,7 @@
      (log! (format "MUSN HTTP server on %d" port))
      (swap! stop-fns conj (http/run-server #'handler {:port port}))
 
-     ;; Start HTTPS/WSS server if configured
-     (when (and ssl-port ssl-context)
-       (log! (format "MUSN HTTPS/WSS server on %d" ssl-port))
-       (swap! stop-fns conj (http/run-server #'handler {:port ssl-port
-                                                         :ssl? true
-                                                         :ssl-context ssl-context})))
+     ;; Note: For WSS/TLS, use nginx as reverse proxy to this HTTP server
 
      (let [stop-all (fn [] (doseq [f @stop-fns] (f)))]
        (reset! server-state {:port port :ssl-port ssl-port :stop-fn stop-all})

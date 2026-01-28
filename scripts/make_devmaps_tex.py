@@ -21,6 +21,15 @@ FLEXI_TAGS = {
 FLEXI_RE = re.compile(r"^(?P<indent>\s*)\+\s*(?P<tag>[A-Za-z-]+):(?P<rest>.*)")
 DONE_STATUS_RE = re.compile(r"status\[(?i:done)\]")
 INSTANTIATED_RE = re.compile(r"^\s*!\s+instantiated-by:", re.IGNORECASE)
+MATURITY_RE = re.compile(r"^\s*:maturity\s+:([A-Za-z-]+)\s*$", re.IGNORECASE)
+
+MATURITY_ENV = {
+    "active": "devmapactive",
+    "settled": "devmapsettled",
+    "greenfield": "devmapgreenfield",
+    "green-field": "devmapgreenfield",
+    "stub": "devmapstub",
+}
 
 
 SPECIALS = {
@@ -118,6 +127,14 @@ def split_sections(raw_lines: list[str]) -> list[tuple[str, list[str]]]:
 
 def section_is_done(raw_lines: list[str]) -> bool:
     return any(DONE_STATUS_RE.search(line) for line in raw_lines)
+
+
+def section_maturity(raw_lines: list[str]) -> str | None:
+    for line in raw_lines:
+        match = MATURITY_RE.match(line)
+        if match:
+            return match.group(1).lower()
+    return None
 
 
 def render_lines(raw_lines: list[str], emoji_chars: set[str]) -> list[str]:
@@ -299,10 +316,19 @@ def build_block(title: str, content: str, emoji_chars: set[str]) -> str:
     block_lines.append("\\medskip")
     for kind, section_lines in sections:
         rendered = render_lines(section_lines, emoji_chars)
-        if kind == "prototype" and section_is_done(section_lines):
-            block_lines.append(r"\begin{devmapdone}")
-            block_lines.extend(rendered)
-            block_lines.append(r"\end{devmapdone}")
+        if kind == "prototype":
+            env = None
+            if section_is_done(section_lines):
+                env = "devmapdone"
+            else:
+                maturity = section_maturity(section_lines)
+                env = MATURITY_ENV.get(maturity)
+            if env:
+                block_lines.append(rf"\begin{{{env}}}")
+                block_lines.extend(rendered)
+                block_lines.append(rf"\end{{{env}}}")
+            else:
+                block_lines.extend(rendered)
         else:
             block_lines.extend(rendered)
     return "\n".join(block_lines)
@@ -409,8 +435,32 @@ def main() -> None:
 \newcommand{\flexitag}[1]{\textcolor[gray]{0.35}{\textit{#1}}}
 \newcommand{\tightquotecomma}{\textquoteright\kern-0.08em,}
 \definecolor{devmapdonebg}{RGB}{232,246,232}
+\definecolor{devmapactivebg}{RGB}{255,244,214}
+\definecolor{devmapsettledbg}{RGB}{221,236,255}
+\definecolor{devmapgreenfieldbg}{RGB}{226,255,226}
+\definecolor{devmapstubbg}{RGB}{242,242,242}
 \newenvironment{devmapdone}{%
   \def\FrameCommand{\colorbox{devmapdonebg}}%
+  \setlength{\fboxsep}{2pt}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore}%
+}{\endMakeFramed}
+\newenvironment{devmapactive}{%
+  \def\FrameCommand{\colorbox{devmapactivebg}}%
+  \setlength{\fboxsep}{2pt}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore}%
+}{\endMakeFramed}
+\newenvironment{devmapsettled}{%
+  \def\FrameCommand{\colorbox{devmapsettledbg}}%
+  \setlength{\fboxsep}{2pt}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore}%
+}{\endMakeFramed}
+\newenvironment{devmapgreenfield}{%
+  \def\FrameCommand{\colorbox{devmapgreenfieldbg}}%
+  \setlength{\fboxsep}{2pt}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore}%
+}{\endMakeFramed}
+\newenvironment{devmapstub}{%
+  \def\FrameCommand{\colorbox{devmapstubbg}}%
   \setlength{\fboxsep}{2pt}%
   \MakeFramed{\advance\hsize-\width \FrameRestore}%
 }{\endMakeFramed}

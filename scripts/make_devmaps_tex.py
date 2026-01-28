@@ -153,6 +153,14 @@ def render_lines(raw_lines: list[str], emoji_chars: set[str]) -> list[str]:
         body = raw_line[len(indent) :]
         body_lower = body.lstrip().lower()
 
+        is_heading = heading_re.match(raw_line)
+        is_flexi = bool(FLEXI_RE.match(body))
+        is_directive = body_lower.startswith("@")
+        is_instantiated = body_lower.startswith("! instantiated-by:")
+        is_bullet = body.lstrip().startswith("-")
+        code_candidate = body.lstrip()
+        is_codeish = bool(code_candidate and code_candidate[0] in "{:[]}")
+
         heading_match = heading_re.match(raw_line)
         if heading_match:
             title = heading_match.group("title").strip()
@@ -225,8 +233,7 @@ def render_lines(raw_lines: list[str], emoji_chars: set[str]) -> list[str]:
             i += 1
             continue
 
-        code_candidate = body.lstrip()
-        if code_candidate and code_candidate[0] in "{:[]}":
+        if is_codeish:
             escaped_code = escape_code_line(code_candidate)
             lines.append(f"{indent}\\texttt{{{escaped_code}}}\\\\")
             i += 1
@@ -242,6 +249,40 @@ def render_lines(raw_lines: list[str], emoji_chars: set[str]) -> list[str]:
             make_bold = True
         if body_lower.startswith("! instantiated-by:"):
             make_bold = True
+
+        is_regular = not (is_heading or is_flexi or is_directive or is_instantiated or is_bullet or is_codeish)
+        if is_regular and not make_bold:
+            j = i
+            para_lines: list[str] = []
+            while j < total:
+                look = raw_lines[j]
+                look_stripped = look.strip()
+                if not look_stripped:
+                    break
+                look_body = look.lstrip()
+                look_lower = look_body.lower()
+                look_code = look_body.lstrip()
+                if (
+                    heading_re.match(look)
+                    or FLEXI_RE.match(look_body)
+                    or look_lower.startswith("@")
+                    or look_lower.startswith("! instantiated-by:")
+                    or look_body.startswith("-")
+                    or (look_code and look_code[0] in "{:[]}")
+                ):
+                    break
+                para_lines.append(look_body.strip())
+                for ch in look:
+                    if ord(ch) >= 128 and needs_emoji_font(ch):
+                        emoji_chars.add(ch)
+                j += 1
+            if para_lines:
+                paragraph = normalize_quotes(" ".join(para_lines))
+                escaped_paragraph = escape_line(paragraph)
+                lines.append(f"{indent}{escaped_paragraph}\\\\")
+                i = j
+                continue
+
         if make_bold:
             escaped = rf"\textbf{{{escaped}}}"
         lines.append(f"{indent}{escaped}\\\\")

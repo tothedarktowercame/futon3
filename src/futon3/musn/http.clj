@@ -1,6 +1,7 @@
 (ns futon3.musn.http
   "HTTP adapter for MUSN service. Provides JSON endpoints for session + turn lifecycle."
   (:require [cheshire.core :as json]
+            [clojure.java.io :as io]
             [clojure.walk :as walk]
             [org.httpkit.server :as http]
             [clojure.string :as str]
@@ -188,6 +189,18 @@
               limit (some-> (get params "limit") parse-long)
               entries (svc/activity-log-entries {:limit (or limit 20)})]
           (json-response {:ok true :entries (vec entries)}))
+
+        ;; GET endpoint for vitality scan data
+        (and (= uri "/musn/vitality") (= method :get))
+        (let [scan-path (io/file (or (System/getenv "FUTON3_ROOT") ".")
+                                 "resources/vitality/latest_scan.json")]
+          (if (.exists scan-path)
+            (try
+              (let [data (json/parse-string (slurp scan-path) true)]
+                (json-response {:ok true :vitality data}))
+              (catch Exception e
+                (json-response 500 {:ok false :err (.getMessage e)})))
+            (json-response 404 {:ok false :err "vitality scan not found"})))
 
         (not= :post method) (json-response 405 {:ok false :err "method not allowed"})
         :else

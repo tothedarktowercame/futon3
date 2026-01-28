@@ -1888,9 +1888,10 @@
           source-anchor (first (filter #(= anchor-id (:anchor/id %)) anchors))
           source-type (:anchor/type source-anchor)]
       (->> similar
-           (map (fn [{:keys [anchor/id anchor/type similarity]}]
-                  (let [target-id anchor/id
-                        target-type anchor/type
+           (map (fn [entry]
+                  (let [target-id (:anchor/id entry)
+                        target-type (:anchor/type entry)
+                        similarity (:similarity entry)
                         ;; Suggest link type based on anchor types
                         suggested-type (cond
                                          (and (= source-type :insight) (= target-type :decision)) :supports

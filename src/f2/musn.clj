@@ -164,12 +164,14 @@
 (defn start!
   ([] (start! {}))
   ([opts]
-   (let [config (merge-with (fn [a b] (if (map? a) (merge a b) b))
-                            default-config
-                            (when drawbridge-enabled?
-                              {:drawbridge (assoc (:drawbridge default-config) :enabled? true)})
-                            opts)
-         state (build-state config)]
+  (let [config (merge-with (fn [a b] (if (map? a) (merge a b) b))
+                           default-config
+                           (when drawbridge-enabled?
+                             {:drawbridge (assoc (:drawbridge default-config) :enabled? true)})
+                           opts)
+        state (build-state config)
+        profile (or (get-in config [:futon1-api :profile])
+                    (get-in config [:futon1 :profile]))]
      (phoebe/print-banner!
       {:app {:name "f2.musn"}
        :ports {:transport (:transport-port config)
@@ -188,7 +190,12 @@
        :config {:futon1 (:futon1 config)
                 :futon1-api (select-keys (:futon1-api config) [:enabled? :profile])
                 :drawbridge (select-keys (:drawbridge config) [:enabled? :bind :port])
-                :chat-supervisor (select-keys (:chat-supervisor config) [:enabled? :room :agent :mode])}})
+                :chat-supervisor (select-keys (:chat-supervisor config) [:enabled? :room :agent :mode])}
+       :env-overrides (cond-> {"FUTON3_ROOT" (get-in (phoebe/snapshot) [:git :root])}
+                        profile (assoc "FUTON1_PROFILE" profile)
+                        (get-in config [:futon1-api :port]) (assoc "ALPHA_PORT" (str (get-in config [:futon1-api :port])))
+                        (get-in config [:futon1 :api-base]) (assoc "FUTON1_API_BASE" (get-in config [:futon1 :api-base]))
+                        (get-in config [:futon1-api :enabled?]) (assoc "FUTON1_API" "1"))})
      (println "[f2.musn] Starting core services...")
      (flush)
      ;; Core services (always started)

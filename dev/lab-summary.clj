@@ -1,8 +1,9 @@
 #!/usr/bin/env clojure
 
-(require '[clojure.data.json :as json])
-(require '[clojure.java.io :as io])
-(require '[clojure.string :as str])
+(ns dev.lab-summary
+  (:require [clojure.data.json :as json]
+            [clojure.java.io :as io]
+            [clojure.string :as str]))
 
 (defn usage []
   (println "Usage: dev/lab-summary.clj --session-id ID --lab-root PATH")
@@ -26,7 +27,7 @@
 (defn parse-duration [start end]
   (when (and start end)
     (try
-      (let [fmt (java.time.format.DateTimeFormatter/ISO_INSTANT)
+      (let [fmt java.time.format.DateTimeFormatter/ISO_INSTANT
             t1 (java.time.Instant/parse start)
             t2 (java.time.Instant/parse end)
             dur (java.time.Duration/between t1 t2)

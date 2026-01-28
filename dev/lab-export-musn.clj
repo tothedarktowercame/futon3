@@ -1,9 +1,10 @@
 #!/usr/bin/env clojure
 
-(require '[clojure.data.json :as json])
-(require '[clojure.edn :as edn])
-(require '[clojure.java.io :as io])
-(require '[clojure.string :as str])
+(ns dev.lab-export-musn
+  (:require [clojure.data.json :as json]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.string :as str]))
 
 (defn usage []
   (println "Usage: dev/lab-export-musn.clj --session-id ID | --musn-file PATH")

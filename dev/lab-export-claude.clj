@@ -1,8 +1,9 @@
 #!/usr/bin/env clojure
 
-(require '[clojure.data.json :as json])
-(require '[clojure.java.io :as io])
-(require '[clojure.string :as str])
+(ns dev.lab-export-claude
+  (:require [clojure.data.json :as json]
+            [clojure.java.io :as io]
+            [clojure.string :as str]))
 
 (defn usage []
   (println "Usage: dev/lab-export-claude.clj --session-file PATH [--repo-root PATH] [--lab-root PATH]")

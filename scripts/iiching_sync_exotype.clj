@@ -1,4 +1,4 @@
-(ns iiching.sync-exotype
+(ns scripts.iiching-sync-exotype
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]))

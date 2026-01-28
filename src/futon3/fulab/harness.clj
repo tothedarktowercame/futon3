@@ -316,22 +316,23 @@
         md-path (io/file out-dir "fulab-regime-sweep.md")]
     (spit edn-path (with-out-str (pprint/pprint results)))
     (spit json-path (json/generate-string results {:pretty true}))
-    (spit md-path (with-out-str
-                   (println "# Fulab Regime Sweep")
-                   (println "")
-                   (println "| Regime | Controller | Success Rate | Tool Calls | Strategy Diversity | Plan Diversity | Hypothesis Turnover | Avg Score |")
-                   (println "| --- | --- | --- | --- | --- | --- | --- | --- |")
-                   (doseq [[regime-id {:keys [controllers]}] (:regimes results)
-                           [controller-id {:keys [metrics]}] controllers]
-                     (println (format "| %s | %s | %.2f | %d | %d | %d | %d | %.2f |"
-                                      (name regime-id)
-                                      (name controller-id)
-                                      (double (:success-rate metrics))
-                                      (long (:tool-calls metrics))
-                                      (long (:strategy/diversity metrics))
-                                      (long (:plan/diversity metrics))
-                                      (long (:hypothesis/turnover metrics))
-                                      (double (:avg-score metrics))))))
+    (spit md-path
+          (with-out-str
+            (println "# Fulab Regime Sweep")
+            (println "")
+            (println "| Regime | Controller | Success Rate | Tool Calls | Strategy Diversity | Plan Diversity | Hypothesis Turnover | Avg Score |")
+            (println "| --- | --- | --- | --- | --- | --- | --- | --- |")
+            (doseq [[regime-id {:keys [controllers]}] (:regimes results)
+                    [controller-id {:keys [metrics]}] controllers]
+              (println (format "| %s | %s | %.2f | %d | %d | %d | %d | %.2f |"
+                               (name regime-id)
+                               (name controller-id)
+                               (double (:success-rate metrics))
+                               (long (:tool-calls metrics))
+                               (long (:strategy/diversity metrics))
+                               (long (:plan/diversity metrics))
+                               (long (:hypothesis/turnover metrics))
+                               (double (:avg-score metrics)))))))
     (assoc results
            :output/paths {:edn (.getPath edn-path)
                           :json (.getPath json-path)

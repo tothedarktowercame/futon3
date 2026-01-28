@@ -17,6 +17,7 @@
             [f2.transport :as transport]
             [f2.ui :as ui]
             [futon3.musn.http :as musn-http]
+            [phoebe.runtime :as phoebe]
             [scripts.musn-irc-bridge :as irc-bridge]
             [scripts.musn-chat-supervisor :as chat-supervisor]
             [api.server :as futon1-api]))
@@ -169,6 +170,25 @@
                               {:drawbridge (assoc (:drawbridge default-config) :enabled? true)})
                             opts)
          state (build-state config)]
+     (phoebe/print-banner!
+      {:app {:name "f2.musn"}
+       :ports {:transport (:transport-port config)
+               :ui (:ui-port config)
+               :musn-http (get-in config [:musn-http :port])
+               :irc-bridge (get-in config [:irc-bridge :port])
+               :drawbridge (get-in config [:drawbridge :port])
+               :futon1-api (get-in config [:futon1-api :port])}
+       :services {:transport true
+                  :ui true
+                  :drawbridge (get-in config [:drawbridge :enabled?])
+                  :musn-http (get-in config [:musn-http :enabled?])
+                  :irc-bridge (get-in config [:irc-bridge :enabled?])
+                  :chat-supervisor (get-in config [:chat-supervisor :enabled?])
+                  :futon1-api (get-in config [:futon1-api :enabled?])}
+       :config {:futon1 (:futon1 config)
+                :futon1-api (select-keys (:futon1-api config) [:enabled? :profile])
+                :drawbridge (select-keys (:drawbridge config) [:enabled? :bind :port])
+                :chat-supervisor (select-keys (:chat-supervisor config) [:enabled? :room :agent :mode])}})
      (println "[f2.musn] Starting core services...")
      (flush)
      ;; Core services (always started)

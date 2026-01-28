@@ -17,7 +17,8 @@
         org.clojure/core.logic {:mvn/version "1.0.1"}
         futon2/futon2 {:local/root "../futon2"}
         futon3a/futon3a {:local/root "../futon3a"}
-        futon1-api/futon1-api {:local/root "../futon1/apps/api"}}
+        futon1-api/futon1-api {:local/root "../futon1/apps/api"}
+        common/common {:local/root "../futon1/apps/common"}}
 
  :aliases {:dev {:main-opts ["-m" "f2.musn"]}
            :test

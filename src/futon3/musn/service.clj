@@ -3,7 +3,8 @@
 
    This module also handles light persistence (append-only log + snapshot) so MUSN sessions can survive crashes
    and be replayed or resumed. Logs are EDN lines under lab/musn/, keyed by session id."
-  (:require [clojure.string :as str]
+  (:require [cheshire.core :as json]
+            [clojure.string :as str]
             [clojure.java.io :as io]
             [clojure.java.shell :as shell]
             [clojure.edn :as edn]
@@ -1685,6 +1686,24 @@
 (def ^:private activity-log-path
   (io/file (or (System/getenv "MUSN_LAB_ROOT") "lab") "activity" "log.ndjson"))
 
+;; WebSocket clients subscribed to activity stream
+(defonce activity-ws-clients (atom #{}))
+
+(defn register-activity-client! [channel]
+  (swap! activity-ws-clients conj channel))
+
+(defn unregister-activity-client! [channel]
+  (swap! activity-ws-clients disj channel))
+
+(defn broadcast-activity! [record]
+  "Broadcast an activity record to all connected WebSocket clients."
+  (let [msg (json/generate-string record)]
+    (doseq [ch @activity-ws-clients]
+      (try
+        (when (org.httpkit.server/open? ch)
+          (org.httpkit.server/send! ch msg false))
+        (catch Exception _ nil)))))
+
 (defn activity-log!
   "Log agent activity for vitality monitoring. All agents (Claude, Codex, etc.)
    should POST here to create a unified activity stream.
@@ -1720,6 +1739,8 @@
         (spit activity-log-path
               (str (pr-str record) "\n")
               :append true)
+        ;; Broadcast to WebSocket clients
+        (broadcast-activity! record)
         {:ok true :logged record}
         (catch Throwable t
           {:ok false :err (.getMessage t)})))))

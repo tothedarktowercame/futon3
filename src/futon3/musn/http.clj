@@ -130,12 +130,55 @@
     "/musn/activity/log"  (svc/activity-log! body)
     nil))
 
+(defn- handle-activity-ws
+  "WebSocket endpoint for bidirectional activity streaming.
+   - Receives: activity events from clients (logged + broadcast)
+   - Sends: all activity events to connected clients"
+  [req]
+  (http/with-channel req channel
+    ;; Register client
+    (svc/register-activity-client! channel)
+    (log! "[activity-ws] client connected" {:remote (:remote-addr req)})
+
+    ;; Send recent history on connect
+    (let [recent (take-last 50 (svc/activity-log-entries))
+          init-msg (json/generate-string {:type "init"
+                                          :count (count recent)
+                                          :events (vec recent)})]
+      (http/send! channel init-msg false))
+
+    ;; Handle incoming messages (activity events from clients)
+    (http/on-receive channel
+      (fn [raw]
+        (try
+          (let [msg (json/parse-string raw true)]
+            (case (:type msg)
+              "ping" (http/send! channel (json/generate-string {:type "pong"}) false)
+              "activity" (svc/activity-log! (:payload msg))
+              ;; Default: treat as activity event directly
+              (when (and (:agent msg) (:source msg))
+                (svc/activity-log! msg))))
+          (catch Exception e
+            (log! "[activity-ws] parse error" {:err (.getMessage e)})))))
+
+    ;; Handle disconnect
+    (http/on-close channel
+      (fn [status]
+        (svc/unregister-activity-client! channel)
+        (log! "[activity-ws] client disconnected" {:status status})))))
+
 (defn handler [req]
   (try
-    (let [uri (:uri req)]
+    (let [uri (:uri req)
+          method (:request-method req)]
       (cond
         (= uri "/health") (json-response {:ok true})
-        (not= :post (:request-method req)) (json-response 405 {:ok false :err "method not allowed"})
+
+        ;; WebSocket endpoint for activity stream
+        (and (= uri "/musn/activity/ws") (= method :get))
+        (handle-activity-ws req)
+
+        (not= :post method) (json-response 405 {:ok false :err "method not allowed"})
         :else
         (let [body (parse-json-body req)]
           (when (= uri "/musn/turn/end")

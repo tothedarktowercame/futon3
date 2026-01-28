@@ -125,6 +125,7 @@ def render_lines(raw_lines: list[str], emoji_chars: set[str]) -> list[str]:
     in_ifr = False
     i = 0
     total = len(raw_lines)
+    heading_re = re.compile(r"^(?P<indent>\s*)#{2,6}\s+(?P<title>.+)$")
     while i < total:
         raw_line = raw_lines[i]
         for ch in raw_line:
@@ -151,6 +152,40 @@ def render_lines(raw_lines: list[str], emoji_chars: set[str]) -> list[str]:
         indent = raw_line[: len(raw_line) - len(raw_line.lstrip())]
         body = raw_line[len(indent) :]
         body_lower = body.lstrip().lower()
+
+        heading_match = heading_re.match(raw_line)
+        if heading_match:
+            title = heading_match.group("title").strip()
+            if title:
+                escaped_title = escape_line(normalize_quotes(title))
+                lines.append(f"{indent}\\textbf{{{escaped_title}}}\\par")
+            j = i + 1
+            para_lines: list[str] = []
+            while j < total:
+                look = raw_lines[j]
+                look_stripped = look.strip()
+                if not look_stripped:
+                    break
+                look_body = look.lstrip()
+                look_lower = look_body.lower()
+                if (
+                    FLEXI_RE.match(look_body)
+                    or look_lower.startswith("@")
+                    or look_lower.startswith("! instantiated-by:")
+                    or heading_re.match(look)
+                ):
+                    break
+                para_lines.append(look_body.strip())
+                for ch in look:
+                    if ord(ch) >= 128 and needs_emoji_font(ch):
+                        emoji_chars.add(ch)
+                j += 1
+            if para_lines:
+                paragraph = normalize_quotes(" ".join(para_lines))
+                escaped_paragraph = escape_line(paragraph)
+                lines.append(f"{indent}{escaped_paragraph}\\\\")
+            i = j
+            continue
 
         match = FLEXI_RE.match(body)
         if match and match.group("tag").lower() in FLEXI_TAGS:

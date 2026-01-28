@@ -882,6 +882,20 @@
 </html>")}
     (plaintext-response 404 "no plan diagram found")))
 
+(defn- keyword->str [kw]
+  "Convert keyword to string, preserving namespace."
+  (when kw
+    (if-let [ns (namespace kw)]
+      (str ns "/" (name kw))
+      (name kw))))
+
+(defn- normalize-event-for-stream
+  "Normalize event for stream transmission."
+  [event]
+  (-> event
+      (update :event/type keyword->str)
+      (update-in [:payload :role] #(when % (name %)))))
+
 (defn- handle-notebook-stream [state request session-id]
   ;; SSE endpoint for live notebook updates
   (http/with-channel request channel
@@ -922,20 +936,6 @@
 ;; =============================================================================
 ;; WebSocket Session Stream - Real-time notebook events via WebSocket
 ;; =============================================================================
-
-(defn- keyword->str [kw]
-  "Convert keyword to string, preserving namespace."
-  (when kw
-    (if-let [ns (namespace kw)]
-      (str ns "/" (name kw))
-      (name kw))))
-
-(defn- normalize-event-for-stream
-  "Normalize event for stream transmission."
-  [event]
-  (-> event
-      (update :event/type keyword->str)
-      (update-in [:payload :role] #(when % (name %)))))
 
 (defn- handle-session-ws
   "WebSocket endpoint for streaming MUSN session events.

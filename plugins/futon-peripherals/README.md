@@ -12,6 +12,23 @@ Peripherals are **constrained capability envelopes** - like game modes in a MUD/
 
 ## Peripherals
 
+### Chat (IRC Discussion)
+
+```bash
+# Start chat peripheral (new session)
+./scripts/fuclaude-chat-bridge.ts --room lab --nick fuclaude
+
+# Resume session (peripheral hop with memory)
+./scripts/fuclaude-chat-bridge.ts --room lab --resume <session-id>
+```
+
+Multi-agent coordination via IRC.
+- CAN: Discuss, coordinate, plan, answer questions
+- CANNOT: Edit files, run commands
+- MEMORY: Session persists in `/tmp/fuclaude-sessions/`
+
+Parallel to `fucodex-chat-bridge.ts` for Codex.
+
 ### Explore (Read-Only)
 
 ```

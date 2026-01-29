@@ -290,6 +290,75 @@
                   all-items)
      :status status}))
 
+;; =============================================================================
+;; Stack Learning (Epistemic Rhythm Level 3)
+;; =============================================================================
+
+(defn- compute-stack-learning
+  "Compute stack learning metrics from MUSN activity entries.
+   Looks for PSR, PUR, and PAR events to measure pattern usage and learning."
+  [activity-entries]
+  (let [;; Filter for learning-related events
+        psr-events (filter #(or (= "psr" (:event/type %))
+                                (= "session/psr" (:event/type %))
+                                (str/includes? (str (:event/type %)) "psr"))
+                           activity-entries)
+        pur-events (filter #(or (= "pur" (:event/type %))
+                                (= "session/pur" (:event/type %))
+                                (str/includes? (str (:event/type %)) "pur"))
+                           activity-entries)
+        par-events (filter #(or (= "session/par" (:event/type %))
+                                (= "par" (:event/type %)))
+                           activity-entries)
+        ;; Extract patterns from PSR events
+        patterns-from-psr (->> psr-events
+                               (keep #(or (:pattern/id %) (:pattern %)))
+                               (filter some?))
+        ;; Extract patterns from PAR events (nested in patterns_used)
+        patterns-from-par (->> par-events
+                               (mapcat #(or (:patterns_used %) []))
+                               (keep :pattern))
+        all-patterns (concat patterns-from-psr patterns-from-par)
+        unique-patterns (distinct all-patterns)
+        ;; Extract prediction errors from PUR events
+        pur-prediction-errors (->> pur-events
+                                   (keep #(or (:prediction-error %) (:prediction_error %)))
+                                   (filter number?))
+        ;; Extract prediction errors from PAR events (nested)
+        par-prediction-errors (->> par-events
+                                   (mapcat #(or (:prediction_errors %) []))
+                                   (keep :magnitude)
+                                   (filter number?))
+        all-prediction-errors (concat pur-prediction-errors par-prediction-errors)
+        ;; Count suggestions (new pattern proposals)
+        suggestions-count (->> par-events
+                               (mapcat #(or (:suggestions %) []))
+                               count)
+        ;; Compute metrics
+        sessions-total (count (distinct (keep :session/id activity-entries)))
+        sessions-with-pars (count par-events)
+        unique-count (count unique-patterns)
+        pattern-reuse-rate (when (pos? unique-count)
+                            (double (/ (count all-patterns) unique-count)))
+        avg-prediction-error (when (seq all-prediction-errors)
+                               (double (/ (reduce + all-prediction-errors)
+                                          (count all-prediction-errors))))
+        ;; Compute status
+        status (cond
+                 (zero? sessions-with-pars) "cold"
+                 (< sessions-with-pars 5) "warming"
+                 (pos? suggestions-count) "growing"
+                 :else "mature")]
+    {:sessions_total sessions-total
+     :sessions_with_pars sessions-with-pars
+     :psr_count (count psr-events)
+     :pur_count (count pur-events)
+     :unique_patterns_used unique-count
+     :pattern_reuse_rate pattern-reuse-rate
+     :avg_prediction_error avg-prediction-error
+     :new_patterns_proposed suggestions-count
+     :status status}))
+
 (defn- fetch-personal-vitality
   "Fetch personal vitality from the futon5a personal API.
    Includes priors (EWMA of historical clears), prediction error, and meta vitality.
@@ -451,7 +520,7 @@
               entries (svc/activity-log-entries {:limit (or limit 20)})]
           (json-response {:ok true :entries (vec entries)}))
 
-        ;; GET endpoint for vitality scan data (futon + personal + interface coverage)
+        ;; GET endpoint for vitality scan data (futon + personal + interface + stack learning)
         (and (= uri "/musn/vitality") (= method :get))
         (let [scan-path (io/file (or (System/getenv "FUTON3_ROOT") ".")
                                  "resources/vitality/latest_scan.json")
@@ -460,11 +529,15 @@
                              (json/parse-string (slurp scan-path) true)
                              (catch Exception _ nil)))
               personal-data (fetch-personal-vitality)
-              interface-data (compute-interface-coverage)]
+              interface-data (compute-interface-coverage)
+              ;; Get activity entries for stack learning computation
+              activity-entries (try (svc/activity-log-entries {:limit 500}) (catch Throwable _ []))
+              stack-data (compute-stack-learning activity-entries)]
           (json-response {:ok true
                           :vitality (cond-> (or futon-data {})
                                       personal-data (assoc :personal_vitality personal-data)
-                                      interface-data (assoc :interface_coverage interface-data))}))
+                                      interface-data (assoc :interface_coverage interface-data)
+                                      stack-data (assoc :stack_learning stack-data))}))
 
         (not= :post method) (json-response 405 {:ok false :err "method not allowed"})
         :else

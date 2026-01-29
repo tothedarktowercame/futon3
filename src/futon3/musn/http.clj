@@ -187,6 +187,109 @@
                        :week2_action "alert"
                        :week3_action "escalate"}}))
 
+;; =============================================================================
+;; Interface Coverage (Epistemic Rhythm Level 2)
+;; =============================================================================
+
+(def ^:private maturity-order
+  "Maturity progression for devmap items."
+  [:greenfield :stub :sketch :active :qa :stable])
+
+(def ^:private maturity-scores
+  {:greenfield 0
+   :stub 0.1
+   :sketch 0.25
+   :active 0.5
+   :qa 0.75
+   :stable 1.0})
+
+(defn- parse-devmap-items
+  "Parse a devmap file and extract prototype items with maturity levels.
+   Returns a sequence of {:id, :title, :maturity, :next-steps-count}."
+  [content]
+  (let [lines (str/split-lines content)]
+    (loop [remaining lines
+           current-item nil
+           items []]
+      (if (empty? remaining)
+        (if current-item (conj items current-item) items)
+        (let [line (first remaining)
+              rest-lines (rest remaining)]
+          (cond
+            ;; New prototype item
+            (str/starts-with? line "! instantiated-by:")
+            (let [title (str/trim (subs line 18))
+                  ;; Extract short ID from title (e.g., "Prototype 0" -> "P0")
+                  id-match (re-find #"Prototype\s+(\d+)" title)
+                  id (when id-match (str "P" (second id-match)))]
+              (recur rest-lines
+                     {:id id :title title :maturity :stub :next-steps-count 0}
+                     (if current-item (conj items current-item) items)))
+
+            ;; Maturity line
+            (and current-item (re-find #":maturity\s+:(\w+)" line))
+            (let [[_ mat] (re-find #":maturity\s+:(\w+)" line)]
+              (recur rest-lines
+                     (assoc current-item :maturity (keyword mat))
+                     items))
+
+            ;; Next step line
+            (and current-item (str/includes? line "next["))
+            (recur rest-lines
+                   (update current-item :next-steps-count inc)
+                   items)
+
+            :else
+            (recur rest-lines current-item items)))))))
+
+(defn- compute-interface-coverage
+  "Compute interface coverage from devmaps in the holes directory.
+   Returns coverage metrics for epistemic rhythm."
+  []
+  (let [holes-dir (io/file (or (System/getenv "FUTON3_ROOT") ".") "holes")
+        devmap-files (when (.exists holes-dir)
+                       (->> (.listFiles holes-dir)
+                            (filter #(str/ends-with? (.getName %) ".devmap"))))
+        all-items (when (seq devmap-files)
+                    (->> devmap-files
+                         (mapcat (fn [f]
+                                   (let [prefix (-> (.getName f)
+                                                    (str/replace ".devmap" ""))]
+                                     (map #(assoc % :devmap prefix)
+                                          (parse-devmap-items (slurp f))))))
+                         (filter :id)))
+        by-maturity (group-by :maturity all-items)
+        total (count all-items)
+        ;; Items with maturity beyond :stub are "addressed"
+        addressed (count (filter #(not= :stub (:maturity %)) all-items))
+        ;; Compute weighted coverage score
+        coverage-score (when (pos? total)
+                         (/ (reduce + (map #(get maturity-scores (:maturity %) 0) all-items))
+                            total))
+        ;; Items in :qa or :stable are "recent progress"
+        recent-progress (->> all-items
+                             (filter #(#{:qa :stable} (:maturity %)))
+                             (map #(str (:devmap %) "/" (:id %) ":" (name (:maturity %))))
+                             vec)
+        ;; Compute status
+        status (cond
+                 (zero? total) "no_data"
+                 (< coverage-score 0.2) "nascent"
+                 (< coverage-score 0.5) "expanding"
+                 (< coverage-score 0.8) "maturing"
+                 :else "stable")]
+    {:stubs_total total
+     :stubs_addressed addressed
+     :stubs_by_maturity (into {} (map (fn [[k v]] [(name k) (count v)]) by-maturity))
+     :coverage_rate (when coverage-score (double coverage-score))
+     :recent_progress recent-progress
+     :items (mapv (fn [item]
+                    {:id (str (:devmap item) "/" (:id item))
+                     :maturity (name (:maturity item))
+                     :next_steps (:next-steps-count item)})
+                  all-items)
+     :status status}))
+
 (defn- fetch-personal-vitality
   "Fetch personal vitality from the futon5a personal API.
    Includes priors (EWMA of historical clears), prediction error, and meta vitality.
@@ -348,7 +451,7 @@
               entries (svc/activity-log-entries {:limit (or limit 20)})]
           (json-response {:ok true :entries (vec entries)}))
 
-        ;; GET endpoint for vitality scan data (futon + personal)
+        ;; GET endpoint for vitality scan data (futon + personal + interface coverage)
         (and (= uri "/musn/vitality") (= method :get))
         (let [scan-path (io/file (or (System/getenv "FUTON3_ROOT") ".")
                                  "resources/vitality/latest_scan.json")
@@ -356,10 +459,12 @@
                            (try
                              (json/parse-string (slurp scan-path) true)
                              (catch Exception _ nil)))
-              personal-data (fetch-personal-vitality)]
+              personal-data (fetch-personal-vitality)
+              interface-data (compute-interface-coverage)]
           (json-response {:ok true
                           :vitality (cond-> (or futon-data {})
-                                      personal-data (assoc :personal_vitality personal-data))}))
+                                      personal-data (assoc :personal_vitality personal-data)
+                                      interface-data (assoc :interface_coverage interface-data))}))
 
         (not= :post method) (json-response 405 {:ok false :err "method not allowed"})
         :else

@@ -4,6 +4,7 @@
             [clojure.java.io :as io]
             [clojure.walk :as walk]
             [org.httpkit.server :as http]
+            [org.httpkit.client :as http-client]
             [clojure.string :as str]
             [futon3.aif.viz :as aif-viz]
             [futon3.musn.service :as svc]
@@ -94,6 +95,163 @@
                               :namespaces namespaces})}
         (catch Throwable t
           {:ok false :err (.getMessage t)})))))
+
+(def ^:private personal-api-base
+  (or (System/getenv "PERSONAL_API_URL") "http://127.0.0.1:7778"))
+
+(def ^:private default-priors
+  "Default priors for cold start (168h week allocation)."
+  {:sleep 56 :maintenance 24 :slack 28
+   :q1 8 :q2 15 :q3 12 :q4 25})
+
+(defn- ewma-priors
+  "Compute EWMA priors from historical weeks.
+   alpha = weight for most recent observation (default 0.3).
+   Falls back to default-priors if no history."
+  [history & {:keys [alpha] :or {alpha 0.3}}]
+  (if (empty? history)
+    default-priors
+    (let [;; Get clears from each historical week, most recent first
+          historical-clears (keep :clears (reverse history))]
+      (if (empty? historical-clears)
+        default-priors
+        ;; Compute EWMA: start from oldest, weight newer observations more
+        (reduce
+         (fn [prior clears]
+           (let [all-keys (set (concat (keys prior) (keys clears)))]
+             (into {}
+                   (for [k all-keys]
+                     (let [p (get prior k 0)
+                           c (get clears k 0)
+                           pv (if (number? p) p 0)
+                           cv (if (number? c) c 0)]
+                       ;; EWMA: new = alpha * observation + (1-alpha) * prior
+                       [k (+ (* alpha cv) (* (- 1 alpha) pv))])))))
+         default-priors
+         historical-clears)))))
+
+(defn- weeks-since
+  "Compute weeks between two ISO date strings (YYYY-MM-DD).
+   Returns nil if either date is invalid."
+  [from-date to-date]
+  (try
+    (let [from (java.time.LocalDate/parse from-date)
+          to (java.time.LocalDate/parse to-date)]
+      (Math/abs (.between java.time.temporal.ChronoUnit/WEEKS from to)))
+    (catch Throwable _ nil)))
+
+(defn- compute-meta-vitality
+  "Compute meta-level vitality: engagement and delivery priors.
+   - user_engagement: has user bid recently?
+   - system_delivery: has system delivered value recently?"
+  [current-week history-data activity-entries]
+  (let [today (str (java.time.LocalDate/now))
+        ;; Find most recent week with non-empty bids
+        weeks-with-bids (filter (fn [w]
+                                  (let [bids (:bids w)]
+                                    (and (map? bids) (seq bids))))
+                                history-data)
+        last-bid-week (or (:week-id (first weeks-with-bids))
+                          (when (seq (:bids current-week)) (:week-id current-week)))
+        weeks-since-bid (when last-bid-week
+                          (weeks-since last-bid-week today))
+        ;; System delivery: check MUSN activity entries
+        last-activity (first activity-entries)
+        last-delivery-date (when last-activity
+                             (some-> (:at last-activity)
+                                     (subs 0 10)))  ; Extract YYYY-MM-DD
+        weeks-since-delivery (when last-delivery-date
+                               (weeks-since last-delivery-date today))
+        ;; Compute statuses
+        user-status (cond
+                      (nil? weeks-since-bid) "no_data"
+                      (zero? weeks-since-bid) "on_track"
+                      (= 1 weeks-since-bid) "due"
+                      (= 2 weeks-since-bid) "overdue"
+                      :else "lapsed")
+        system-status (cond
+                        (nil? weeks-since-delivery) "no_data"
+                        (<= weeks-since-delivery 1) "active"
+                        (= 2 weeks-since-delivery) "stale"
+                        :else "dead")]
+    {:user_engagement {:prior "bid_weekly"
+                       :last_bid last-bid-week
+                       :weeks_since_bid weeks-since-bid
+                       :status user-status}
+     :system_delivery {:prior "deliver_weekly"
+                       :last_delivery last-delivery-date
+                       :weeks_since_delivery weeks-since-delivery
+                       :status system-status}
+     :dead_man_switch {:threshold_weeks 3
+                       :week1_action "nudge"
+                       :week2_action "alert"
+                       :week3_action "escalate"}}))
+
+(defn- fetch-personal-vitality
+  "Fetch personal vitality from the futon5a personal API.
+   Includes priors (EWMA of historical clears), prediction error, and meta vitality.
+   Returns nil if the API is not available."
+  []
+  (try
+    (let [week-resp @(http-client/get (str personal-api-base "/api/personal/week")
+                                       {:timeout 2000})
+          status-resp @(http-client/get (str personal-api-base "/api/personal/status")
+                                         {:timeout 2000})
+          history-resp @(http-client/get (str personal-api-base "/api/personal/history?n=8")
+                                          {:timeout 2000})]
+      (when (and (= 200 (:status week-resp))
+                 (= 200 (:status status-resp)))
+        (let [week-data (json/parse-string (:body week-resp) true)
+              status-data (json/parse-string (:body status-resp) true)
+              history-data (when (= 200 (:status history-resp))
+                             (json/parse-string (:body history-resp) true))
+              bids (or (:bids week-data) {})
+              clears (or (:clears week-data) {})
+              ;; Compute priors from history (EWMA) or use defaults
+              priors (ewma-priors history-data)
+              ;; Compute delta per category (clears - bids = intention deviation)
+              all-keys (set (concat (keys bids) (keys clears) (keys priors)))
+              deltas (into {}
+                           (for [k all-keys]
+                             (let [bid (get bids k 0)
+                                   clear (get clears k 0)
+                                   b (if (number? bid) bid 0)
+                                   c (if (number? clear) clear 0)]
+                               [k (- c b)])))
+              ;; Compute prediction error (clears - priors = expectation deviation)
+              prediction-error (into {}
+                                     (for [k all-keys]
+                                       (let [prior (get priors k 0)
+                                             clear (get clears k 0)
+                                             p (if (number? prior) prior 0)
+                                             c (if (number? clear) clear 0)]
+                                         [k (- c p)])))
+              ;; Generate flags for significant discrepancies
+              flags (vec (distinct
+                          (keep (fn [[k delta]]
+                                  (let [kname (name k)]
+                                    (cond
+                                      (and (= kname "sleep") (< delta -7)) "sleep-deficit"
+                                      (and (str/includes? kname "q4") (< delta -5)) "q4-squeezed"
+                                      (and (= kname "creative") (< delta -3)) "creative-squeezed"
+                                      :else nil)))
+                                (merge deltas prediction-error))))
+              ;; Compute meta vitality (engagement + delivery priors)
+              activity-entries (try (svc/activity-log-entries {:limit 5}) (catch Throwable _ []))
+              meta-vitality (compute-meta-vitality week-data history-data activity-entries)]
+          {:week (:week-id week-data)
+           :priors priors
+           :bids bids
+           :clears clears
+           :delta_by_category deltas
+           :prediction_error prediction-error
+           :bid_total (:bid-total status-data)
+           :clear_total (:clear-total status-data)
+           :unallocated (:unallocated status-data)
+           :flags flags
+           :meta_vitality meta-vitality})))
+    (catch Throwable _
+      nil)))
 
 (defn- dispatch [uri body]
   (case uri
@@ -190,17 +348,18 @@
               entries (svc/activity-log-entries {:limit (or limit 20)})]
           (json-response {:ok true :entries (vec entries)}))
 
-        ;; GET endpoint for vitality scan data
+        ;; GET endpoint for vitality scan data (futon + personal)
         (and (= uri "/musn/vitality") (= method :get))
         (let [scan-path (io/file (or (System/getenv "FUTON3_ROOT") ".")
-                                 "resources/vitality/latest_scan.json")]
-          (if (.exists scan-path)
-            (try
-              (let [data (json/parse-string (slurp scan-path) true)]
-                (json-response {:ok true :vitality data}))
-              (catch Exception e
-                (json-response 500 {:ok false :err (.getMessage e)})))
-            (json-response 404 {:ok false :err "vitality scan not found"})))
+                                 "resources/vitality/latest_scan.json")
+              futon-data (when (.exists scan-path)
+                           (try
+                             (json/parse-string (slurp scan-path) true)
+                             (catch Exception _ nil)))
+              personal-data (fetch-personal-vitality)]
+          (json-response {:ok true
+                          :vitality (cond-> (or futon-data {})
+                                      personal-data (assoc :personal_vitality personal-data))}))
 
         (not= :post method) (json-response 405 {:ok false :err "method not allowed"})
         :else

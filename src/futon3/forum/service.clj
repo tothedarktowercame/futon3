@@ -16,6 +16,7 @@
 (defonce threads (atom {}))   ;; thread-id -> thread
 (defonce posts (atom {}))     ;; post-id -> post
 (defonce subscribers (atom {})) ;; channel -> filter-opts
+(defonce event-handlers (atom #{})) ;; set of handler fns for Java-WebSocket bridge
 
 ;; Forward declarations
 (declare notify-subscribers!)
@@ -224,13 +225,29 @@
        (or (nil? tag) (some #{tag} (get-in event [:post :post/tags])))))
 
 (defn notify-subscribers! [event]
+  ;; Notify http-kit WebSocket subscribers
   (doseq [[channel filter-opts] @subscribers]
     (when (matches-filter? event filter-opts)
       (try
         ;; Channel send is injected by http layer
         (when-let [send-fn (:send-fn (meta channel))]
           (send-fn event))
-        (catch Exception _ nil)))))
+        (catch Exception _ nil))))
+  ;; Notify Java-WebSocket event handlers
+  (doseq [handler @event-handlers]
+    (try
+      (handler event)
+      (catch Exception _ nil))))
+
+(defn register-event-handler!
+  "Register a handler fn to receive all forum events (for Java-WebSocket bridge)."
+  [handler-fn]
+  (swap! event-handlers conj handler-fn))
+
+(defn unregister-event-handler!
+  "Unregister an event handler."
+  [handler-fn]
+  (swap! event-handlers disj handler-fn))
 
 ;; =============================================================================
 ;; MUSN integration

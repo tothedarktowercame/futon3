@@ -13,6 +13,7 @@
             [futon3.futon2-bridge :as futon2-bridge]
             [futon3.forum.http :as forum-http]
             [futon3.forum.service :as forum-svc]
+            [futon3.forum.ws :as forum-ws]
             [futon3.musn.service :as musn-svc]
             [futon3.tatami :as tatami]
             [futon3.workday :as workday]
@@ -1407,6 +1408,8 @@
    (reset! server-state state)
    ;; Initialize forum service
    (forum-svc/init!)
+   ;; Start Java-WebSocket server for forum (avoids http-kit compression issues)
+   (forum-ws/start!)
    (let [port (or port (get-in state [:config :transport-port] 5050))
          stop-fn (http/run-server #'reloadable-handler {:port port})]
      (swap! (:config state) assoc :transport-port port)

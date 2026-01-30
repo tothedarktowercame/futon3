@@ -26,7 +26,10 @@
          '[clojure.java.io :as io]
          '[clojure.string :as str])
 
+;; Forum HTTP server (for posting replies via Agency callback)
 (def forum-server (or (System/getenv "FORUM_SERVER") "http://localhost:5050"))
+;; Forum WebSocket server (Java-WebSocket on port 5055)
+(def forum-ws-server (or (System/getenv "FORUM_WS_SERVER") "ws://localhost:5055"))
 (def forum-thread (System/getenv "FORUM_THREAD"))
 (def mention (System/getenv "FORUM_MENTION"))
 (def agent-id (or (System/getenv "AGENCY_AGENT_ID") "fuclaude"))
@@ -126,8 +129,8 @@
                 (println "Agency run failed:" (.getMessage e))))))))))
 
 (defn ws-url []
-  (let [base (str/replace forum-server #"^http" "ws")]
-    (str base "/forum/stream/ws?thread-id=" forum-thread)))
+  ;; Use dedicated Java-WebSocket server (port 5055 by default)
+  (str forum-ws-server "?thread-id=" forum-thread))
 
 (println "fuclaude forum bridge starting...")
 (println "  Thread:" forum-thread)

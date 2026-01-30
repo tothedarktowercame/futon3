@@ -1,10 +1,15 @@
 (ns futon3.forum.http
   "HTTP + WebSocket API for Forum service."
   (:require [cheshire.core :as json]
+            [clj-http.client :as http-client]
             [clojure.string :as str]
             [futon3.forum.service :as forum]
             [org.httpkit.server :as http])
   (:import (java.time Instant)))
+
+;; Agency server URL (default localhost, override via env)
+(def ^:private agency-server
+  (or (System/getenv "FORUM_AGENCY_SERVER") "http://localhost:7070"))
 
 ;; =============================================================================
 ;; Helpers
@@ -137,6 +142,57 @@
             (forum/unsubscribe! wrapped-channel)))))))
 
 ;; =============================================================================
+;; Agency dispatch endpoint
+;; =============================================================================
+
+(def ^:private forum-server
+  (or (System/getenv "FORUM_PUBLIC_SERVER") "http://localhost:5050"))
+
+(defn handle-dispatch
+  "Dispatch a task to Agency and configure it to reply back to this thread.
+   POST /forum/thread/:id/dispatch
+   Body: {peripheral, prompt, agent-id, ?musn, ?cwd, ?approval-policy}"
+  [thread-id request]
+  (if-not (forum/get-thread thread-id)
+    (json-response 404 {:ok false :err "thread-not-found"})
+    (let [payload (parse-json-body request)
+          {:keys [peripheral prompt agent-id musn cwd approval-policy no-sandbox]} payload
+          token (get-in request [:headers "x-agency-token"])]
+      (if (or (str/blank? peripheral) (str/blank? prompt) (str/blank? agent-id))
+        (json-response 400 {:ok false :err "missing-required-fields"
+                            :required [:peripheral :prompt :agent-id]})
+        (try
+          ;; Call Agency with forum callback config
+          (let [agency-payload {:agent-id agent-id
+                                :peripheral peripheral
+                                :prompt prompt
+                                :musn musn
+                                :cwd cwd
+                                :approval-policy approval-policy
+                                :no-sandbox no-sandbox
+                                :forum {:server forum-server
+                                        :thread-id thread-id
+                                        :token token
+                                        :author agent-id}}
+                resp (http-client/post (str agency-server "/agency/run")
+                       {:content-type :json
+                        :body (json/encode agency-payload)
+                        :throw-exceptions false
+                        :as :json})]
+            (if (= 200 (:status resp))
+              (json-response 200 {:ok true
+                                  :dispatched true
+                                  :agency-response (:body resp)})
+              (json-response 502 {:ok false
+                                  :err "agency-call-failed"
+                                  :status (:status resp)
+                                  :detail (:body resp)})))
+          (catch Exception e
+            (json-response 500 {:ok false
+                                :err "dispatch-failed"
+                                :detail (.getMessage e)})))))))
+
+;; =============================================================================
 ;; Analytics endpoints
 ;; =============================================================================
 
@@ -174,6 +230,11 @@
       (and (= method :post) (re-matches #"/forum/thread/[^/]+/reply" uri))
       (let [thread-id (second (re-find #"/forum/thread/([^/]+)/reply" uri))]
         (handle-create-post thread-id request))
+
+      ;; Dispatch to Agency
+      (and (= method :post) (re-matches #"/forum/thread/[^/]+/dispatch" uri))
+      (let [thread-id (second (re-find #"/forum/thread/([^/]+)/dispatch" uri))]
+        (handle-dispatch thread-id request))
 
       ;; Post operations
       (and (= method :get) (re-matches #"/forum/post/[^/]+" uri))

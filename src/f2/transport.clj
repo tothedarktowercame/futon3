@@ -991,6 +991,167 @@
       (fn [_status]
         nil))))
 
+;; =============================================================================
+;; Claude Code JSONL Streaming - Real-time file tailing via WebSocket
+;; =============================================================================
+
+(defonce claude-stream-watchers (atom {}))
+
+(defn- parse-claude-jsonl-line
+  "Parse a single JSONL line from Claude Code transcript."
+  [line]
+  (try
+    (let [entry (json/parse-string line true)
+          msg-type (:type entry)
+          message (:message entry)
+          timestamp (:timestamp entry)]
+      (case msg-type
+        "user"
+        (let [content (or (:content message) (when (string? message) message) "")]
+          {:type "user"
+           :timestamp timestamp
+           :text (if (string? content)
+                   content
+                   ;; Handle array content
+                   (->> content
+                        (filter #(= "text" (:type %)))
+                        (map :text)
+                        (str/join "\n")))})
+
+        "assistant"
+        (let [content (or (:content message) (when (string? message) message) "")]
+          {:type "assistant"
+           :timestamp timestamp
+           :text (if (string? content)
+                   content
+                   (->> content
+                        (filter #(= "text" (:type %)))
+                        (map :text)
+                        (str/join "\n")))})
+
+        "tool_use"
+        {:type "tool_use"
+         :timestamp timestamp
+         :tool-name (or (:name message) "unknown")
+         :input (pr-str (or (:input message) {}))}
+
+        "tool_result"
+        {:type "tool_result"
+         :timestamp timestamp
+         :content (str (or (:content message) ""))}
+
+        "summary"
+        {:type "summary"
+         :timestamp timestamp
+         :text "[Context compacted]"}
+
+        ;; Default - include raw for debugging
+        {:type msg-type
+         :timestamp timestamp
+         :raw entry}))
+    (catch Exception _
+      nil)))
+
+(defn- parse-query-string
+  "Parse query string into map of params."
+  [query-string]
+  (when query-string
+    (into {}
+          (for [pair (str/split query-string #"&")
+                :let [[k v] (str/split pair #"=" 2)]
+                :when k]
+            [k (java.net.URLDecoder/decode (or v "") "UTF-8")]))))
+
+(defn- handle-claude-stream-ws
+  "WebSocket endpoint for streaming Claude Code JSONL file changes.
+   Query params:
+   - path: path to JSONL file (required)
+   - tail: number of recent lines to send on connect (default 50)"
+  [state request]
+  (let [params (or (:query-params request)
+                   (parse-query-string (:query-string request))
+                   {})
+        jsonl-path (get params "path")
+        tail-lines (or (some-> (get params "tail") Integer/parseInt) 50)]
+    (if (or (nil? jsonl-path) (not (.exists (io/file jsonl-path))))
+      (json-response 400 {:ok false :err "invalid-path" :path jsonl-path})
+      (http/with-channel request channel
+        (let [file (io/file jsonl-path)
+              watcher-id (str (UUID/randomUUID))
+              stop-flag (atom false)]
+
+          ;; Register watcher
+          (swap! claude-stream-watchers assoc watcher-id
+                 {:path jsonl-path :channel channel :stop-flag stop-flag})
+
+          ;; Send initial tail
+          (try
+            (with-open [rdr (io/reader file)]
+              (let [all-lines (vec (line-seq rdr))
+                    recent (take-last tail-lines all-lines)
+                    events (->> recent
+                                (map parse-claude-jsonl-line)
+                                (filter some?)
+                                (filter #(seq (:text %))))]
+                (http/send! channel
+                  (json/encode {:type "init"
+                                :path jsonl-path
+                                :line-count (count all-lines)
+                                :events (vec events)})
+                  false)))
+            (catch Exception e
+              (http/send! channel
+                (json/encode {:type "error" :err "read-failed" :detail (.getMessage e)})
+                false)))
+
+          ;; Handle client messages
+          (http/on-receive channel
+            (fn [raw]
+              (try
+                (let [msg (json/parse-string raw true)]
+                  (case (:type msg)
+                    "ping" (http/send! channel
+                             (json/encode {:type "pong" :at (now-iso state)}) false)
+                    nil))
+                (catch Exception _ nil))))
+
+          ;; Start file watcher loop
+          (future
+            (try
+              (let [last-size (atom (.length file))
+                    last-line-count (atom (with-open [r (io/reader file)]
+                                            (count (line-seq r))))]
+                (loop []
+                  (Thread/sleep 300)
+                  (when (and (http/open? channel) (not @stop-flag))
+                    (let [current-size (.length file)]
+                      (when (> current-size @last-size)
+                        ;; File grew - read new lines
+                        (try
+                          (with-open [rdr (io/reader file)]
+                            (let [all-lines (vec (line-seq rdr))
+                                  current-count (count all-lines)
+                                  new-lines (drop @last-line-count all-lines)]
+                              (doseq [line new-lines]
+                                (when-let [event (parse-claude-jsonl-line line)]
+                                  (when (seq (:text event))
+                                    (http/send! channel
+                                      (json/encode {:type "event" :event event})
+                                      false))))
+                              (reset! last-line-count current-count)))
+                          (catch Exception e
+                            (println "Claude stream read error:" (.getMessage e))))
+                        (reset! last-size current-size)))
+                    (recur))))
+              (catch Exception e
+                (println "Claude stream watcher error:" (.getMessage e)))))
+
+          ;; Handle close
+          (http/on-close channel
+            (fn [_status]
+              (reset! stop-flag true)
+              (swap! claude-stream-watchers dissoc watcher-id))))))))
+
 (defn- extract-session-from-path [uri]
   (when-let [match (re-find #"/fulab/notebook/([^/]+)" uri)]
     (second match)))
@@ -1142,6 +1303,10 @@
       (and (= method :get) (re-matches #"/fulab/session/[^/]+/ws" uri))
       (let [session-id (second (re-find #"/fulab/session/([^/]+)/ws" uri))]
         (handle-session-ws state request session-id))
+
+      ;; Claude Code JSONL stream (WebSocket file tailing)
+      (and (= method :get) (= uri "/fulab/claude-stream/ws"))
+      (handle-claude-stream-ws state request)
 
       ;; Notebook viewer routes
       (and (= method :get) (re-matches #"/fulab/notebook/[^/]+/stream" uri))

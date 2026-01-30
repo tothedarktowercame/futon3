@@ -1,0 +1,16 @@
+{:peripherals
+ {:pattern-search
+  {:runner :pattern-search
+   :limit 5
+   :namespace nil
+   :auto-action true
+   :action "use"
+   :action-note "Agency pattern-search recommended use."
+   :entry "You are operating in the pattern-search peripheral. Use the futon3a portal to find and assess patterns."
+   :prompt "Workflow:\n1) Run: /home/joe/code/futon3a/scripts/portal suggest \"{{prompt}}\" --limit 5\n2) For top candidates, run: /home/joe/code/futon3a/scripts/portal patterns get <pattern-id>\n3) Choose the best pattern and explain why.\n4) If MUSN session id is present ({{musn-session-id}}), record selection with:\n   /home/joe/code/futon3a/scripts/musn-select {{musn-session-id}} <pattern-id> \"<reason>\"\n5) If you recommend applying the pattern now, record an action with:\n   /home/joe/code/futon3a/scripts/musn-action {{musn-session-id}} <pattern-id> \"use\" \"<note>\"\nReturn a concise report:\n- Top candidates (1 line each)\n- Selected pattern + reason\n- Next action"
+   :postlude "If MUSN session id is empty, skip the musn-select/musn-action commands and just report results."}
+
+  :chat
+  {:entry "You are in chat peripheral mode. Keep replies concise and helpful."
+   :prompt "Reply to the user in the same tone and context."
+   :postlude ""}}}

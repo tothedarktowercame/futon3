@@ -11,6 +11,8 @@
             [futon3.fulab.pattern-competence :as pc]
             [futon3.lab.enrichment :as enrichment]
             [futon3.futon2-bridge :as futon2-bridge]
+            [futon3.forum.http :as forum-http]
+            [futon3.forum.service :as forum-svc]
             [futon3.musn.service :as musn-svc]
             [futon3.tatami :as tatami]
             [futon3.workday :as workday]
@@ -1380,6 +1382,11 @@
         (catch Exception e
           (json-response 500 {:ok false :err "turn-recording-failed" :detail (.getMessage e)})))
 
+      ;; Forum routes (delegate to forum-http)
+      (str/starts-with? uri "/forum/")
+      (or (forum-http/route request)
+          (plaintext-response 404 "not-found"))
+
       :else
       (plaintext-response 404 "not-found"))))
 
@@ -1398,6 +1405,8 @@
    (start! state {}))
   ([state {:keys [port]}]
    (reset! server-state state)
+   ;; Initialize forum service
+   (forum-svc/init!)
    (let [port (or port (get-in state [:config :transport-port] 5050))
          stop-fn (http/run-server #'reloadable-handler {:port port})]
      (swap! (:config state) assoc :transport-port port)

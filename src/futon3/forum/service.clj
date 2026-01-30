@@ -60,6 +60,31 @@
 ;; Thread operations
 ;; =============================================================================
 
+(defn- normalize-tag [tag]
+  (cond
+    (keyword? tag) tag
+    (string? tag) (keyword tag)
+    (nil? tag) nil
+    :else (keyword (str tag))))
+
+(defn- normalize-tags [tags]
+  (when (seq tags)
+    (->> tags
+         (map normalize-tag)
+         (remove nil?)
+         vec)))
+
+(defn- tag->str [tag]
+  (cond
+    (keyword? tag) (subs (str tag) 1)
+    (string? tag) tag
+    (nil? tag) ""
+    :else (str tag)))
+
+(defn- tag-match? [tag tags]
+  (let [needle (tag->str tag)]
+    (some #(= needle (tag->str %)) tags)))
+
 (defn create-thread!
   "Create a new thread (proof tree root).
 
@@ -68,11 +93,13 @@
    - :author - agent id (required)
    - :body - initial post body (required)
    - :goal - optional goal/theorem this thread addresses
-   - :tags - optional vector of keyword tags"
-  [{:keys [title author body goal tags]}]
+   - :tags - optional vector of keyword tags
+   - :pinned? - optional boolean to pin thread"
+  [{:keys [title author body goal tags pinned?]}]
   (let [thread-id (gen-id "t")
         post-id (gen-id "p")
         now (now-iso)
+        tags (normalize-tags tags)
         post {:post/id post-id
               :post/thread-id thread-id
               :post/author author
@@ -92,6 +119,7 @@
                 :thread/post-count 1
                 :thread/participants #{author}
                 :thread/tags (or tags [])
+                :thread/pinned? (boolean pinned?)
                 :thread/status :open}]
     (swap! threads assoc thread-id thread)
     (swap! posts assoc post-id post)
@@ -106,21 +134,41 @@
   "List threads, optionally filtered.
 
    Options:
-   - :tag - filter by tag
+   - :tag - filter by tag (string or keyword)
    - :author - filter by author
    - :status - filter by status (:open, :closed)
+   - :pinned? - filter by pinned boolean
    - :limit - max results (default 50)"
-  [& {:keys [tag author status limit] :or {limit 50}}]
+  [& {:keys [tag author status pinned? limit] :or {limit 50}}]
   (let [all (vals @threads)
         filtered (cond->> all
-                   tag (filter #(some #{tag} (:thread/tags %)))
+                   tag (filter #(tag-match? tag (:thread/tags %)))
                    author (filter #(= author (:thread/author %)))
-                   status (filter #(= status (:thread/status %))))]
-    (->> filtered
-         (sort-by :thread/updated)
-         reverse
-         (take limit)
-         vec)))
+                   status (filter #(= status (:thread/status %)))
+                   (some? pinned?) (filter #(= (boolean pinned?) (boolean (:thread/pinned? %)))))]
+    (if (some? pinned?)
+      (->> filtered
+           (sort-by :thread/updated)
+           reverse
+           (take limit)
+           vec)
+      (let [sorted (->> filtered (sort-by :thread/updated) reverse)
+            pinned (filter :thread/pinned? sorted)
+            unpinned (remove :thread/pinned? sorted)]
+        (->> (concat pinned unpinned)
+             (take limit)
+             vec)))))
+
+(defn set-thread-pinned!
+  "Set pinned state for a thread. Does not modify :thread/updated." 
+  [thread-id pinned?]
+  (if-let [thread (get-thread thread-id)]
+    (let [updated (assoc thread :thread/pinned? (boolean pinned?))]
+      (swap! threads assoc thread-id updated)
+      (persist!)
+      (notify-subscribers! {:type :thread-pinned :thread updated})
+      {:ok true :thread updated})
+    {:ok false :err "thread-not-found"}))
 
 ;; =============================================================================
 ;; Post operations
@@ -141,6 +189,7 @@
   (if-let [thread (get-thread thread-id)]
     (let [post-id (gen-id "p")
           now (now-iso)
+          tags (normalize-tags tags)
           reply-to (or in-reply-to (:thread/root-post-id thread))
           post {:post/id post-id
                 :post/thread-id thread-id
@@ -187,8 +236,8 @@
                            (let [ptags (:post/tags post)
                                  thread (get-thread (:post/thread-id post))
                                  ttags (:thread/tags thread)]
-                             (or (some #{tag} ptags)
-                                 (some #{tag} ttags))))
+                             (or (tag-match? tag ptags)
+                                 (tag-match? tag ttags))))
                          all)
                  all)]
     (->> tagged

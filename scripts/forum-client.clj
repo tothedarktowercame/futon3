@@ -2,12 +2,13 @@
 ;; Forum CLI client - for agents to post and read
 ;;
 ;; Usage:
-;;   bb scripts/forum-client.clj list [--tag TAG]            - List threads
+;;   bb scripts/forum-client.clj list [--tag TAG] [--pinned|--unpinned]
 ;;   bb scripts/forum-client.clj read <thread-id>            - Read a thread
 ;;   bb scripts/forum-client.clj create <title> <body>       - Create thread
-;;       [--goal GOAL] [--tags TAG1,TAG2]
+;;       [--goal GOAL] [--tags TAG1,TAG2] [--pinned]
 ;;   bb scripts/forum-client.clj reply <thread-id> <body>    - Reply to thread
 ;;       [--tags TAG1,TAG2]
+;;   bb scripts/forum-client.clj pin <thread-id> [true|false]
 ;;   bb scripts/forum-client.clj stream                      - Live stream
 ;;
 ;; Environment:
@@ -52,6 +53,17 @@
           (recur (nnext remaining) out (second remaining))
           (recur (rest remaining) (conj out arg) value))))))
 
+(defn parse-switch [args flag]
+  (loop [remaining args
+         out []
+         present? false]
+    (if (empty? remaining)
+      [present? out]
+      (let [arg (first remaining)]
+        (if (= arg flag)
+          (recur (rest remaining) out true)
+          (recur (rest remaining) (conj out arg) present?))))))
+
 (defn parse-tags [value]
   (when (and value (not (str/blank? value)))
     (->> (str/split value #",")
@@ -61,9 +73,17 @@
          vec)))
 
 (defn cmd-list [args]
-  (let [[tag _args] (parse-flag args "--tag")
+  (let [[tag args] (parse-flag args "--tag")
+        [pinned? args] (parse-switch args "--pinned")
+        [unpinned? _args] (parse-switch args "--unpinned")
+        pinned-param (cond
+                       (and pinned? unpinned?) nil
+                       pinned? "true"
+                       unpinned? "false"
+                       :else nil)
         response (api-get (cond-> "/forum/threads"
-                            (seq tag) (str "?tag=" tag)))
+                            (seq tag) (str "?tag=" tag)
+                            pinned-param (str (if (seq tag) "&" "?") "pinned=" pinned-param)))
         threads (:threads response)]
     (if (empty? threads)
       (println "No threads yet.")
@@ -97,12 +117,14 @@
 (defn cmd-create [args]
   (let [[goal args] (parse-flag args "--goal")
         [tags args] (parse-flag args "--tags")
+        [pinned? args] (parse-switch args "--pinned")
         [title body & _] args
         data {:title title
               :author author
               :body body}
         data (if goal (assoc data :goal goal) data)
         data (if-let [tags (parse-tags tags)] (assoc data :tags tags) data)
+        data (if pinned? (assoc data :pinned? true) data)
         response (api-post "/forum/thread/create" data)]
     (if (:ok response)
       (println "Created:" (get-in response [:thread :thread/id]))
@@ -118,6 +140,17 @@
         response (api-post (str "/forum/thread/" thread-id "/reply") data)]
     (if (:ok response)
       (println "Posted:" (get-in response [:post :post/id]))
+      (println "Failed:" (:err response)))))
+
+(defn cmd-pin [args]
+  (let [[thread-id value] args
+        pinned? (if (some? value)
+                  (contains? #{"true" "1" "yes" "y"} (str/lower-case value))
+                  true)
+        response (api-post (str "/forum/thread/" thread-id "/pin")
+                           {:pinned? pinned?})]
+    (if (:ok response)
+      (println "Pinned:" thread-id (if pinned? "true" "false"))
       (println "Failed:" (:err response)))))
 
 (defn cmd-stream []
@@ -167,10 +200,13 @@
              (println "Usage: forum-client.clj read <thread-id>"))
     "create" (if (>= (count args) 2)
                (cmd-create args)
-               (println "Usage: forum-client.clj create <title> <body> [--goal GOAL] [--tags TAG1,TAG2]"))
+               (println "Usage: forum-client.clj create <title> <body> [--goal GOAL] [--tags TAG1,TAG2] [--pinned]"))
     "reply" (if (>= (count args) 2)
               (cmd-reply args)
               (println "Usage: forum-client.clj reply <thread-id> <body> [pattern] [--tags TAG1,TAG2]"))
+    "pin" (if (>= (count args) 1)
+            (cmd-pin args)
+            (println "Usage: forum-client.clj pin <thread-id> [true|false]"))
     "stream" (cmd-stream)
     (do
       (println "Forum CLI Client")

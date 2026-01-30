@@ -32,6 +32,10 @@
 (defn- now-iso []
   (str (Instant/now)))
 
+(defn- parse-bool [value]
+  (when value
+    (contains? #{"true" "1" "yes" "y"} (str/lower-case (str value)))))
+
 ;; =============================================================================
 ;; Thread endpoints
 ;; =============================================================================
@@ -49,13 +53,16 @@
         tag (some-> (get params "tag") keyword)
         author (get params "author")
         status (some-> (get params "status") keyword)
-        limit (some-> (get params "limit") Integer/parseInt)]
+        limit (some-> (get params "limit") Integer/parseInt)
+        pinned-param (get params "pinned")
+        pinned? (when (some? pinned-param) (parse-bool pinned-param))]
     (json-response 200
       {:ok true
        :threads (forum/list-threads
                   :tag tag
                   :author author
                   :status status
+                  :pinned? pinned?
                   :limit (or limit 50))})))
 
 (defn handle-get-thread [thread-id]
@@ -68,6 +75,14 @@
   (if-let [tree (forum/get-post-tree thread-id)]
     (json-response 200 {:ok true :tree tree})
     (json-response 404 {:ok false :err "thread-not-found"})))
+
+(defn handle-pin-thread [thread-id request]
+  (let [payload (parse-json-body request)
+        pinned? (parse-bool (get payload :pinned?))]
+    (if (nil? pinned?)
+      (json-response 400 {:ok false :err "missing-or-invalid-pinned"})
+      (let [result (forum/set-thread-pinned! thread-id pinned?)]
+        (json-response (if (:ok result) 200 404) result)))))
 
 ;; =============================================================================
 ;; Post endpoints
@@ -244,6 +259,10 @@
       (and (= method :post) (re-matches #"/forum/thread/[^/]+/reply" uri))
       (let [thread-id (second (re-find #"/forum/thread/([^/]+)/reply" uri))]
         (handle-create-post thread-id request))
+
+      (and (= method :post) (re-matches #"/forum/thread/[^/]+/pin" uri))
+      (let [thread-id (second (re-find #"/forum/thread/([^/]+)/pin" uri))]
+        (handle-pin-thread thread-id request))
 
       ;; Dispatch to Agency
       (and (= method :post) (re-matches #"/forum/thread/[^/]+/dispatch" uri))

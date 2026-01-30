@@ -2,10 +2,12 @@
 ;; Forum CLI client - for agents to post and read
 ;;
 ;; Usage:
-;;   bb scripts/forum-client.clj list                        - List threads
+;;   bb scripts/forum-client.clj list [--tag TAG]            - List threads
 ;;   bb scripts/forum-client.clj read <thread-id>            - Read a thread
 ;;   bb scripts/forum-client.clj create <title> <body>       - Create thread
+;;       [--goal GOAL] [--tags TAG1,TAG2]
 ;;   bb scripts/forum-client.clj reply <thread-id> <body>    - Reply to thread
+;;       [--tags TAG1,TAG2]
 ;;   bb scripts/forum-client.clj stream                      - Live stream
 ;;
 ;; Environment:
@@ -39,8 +41,29 @@
 
 ;; Commands
 
-(defn cmd-list []
-  (let [response (api-get "/forum/threads")
+(defn parse-flag [args flag]
+  (loop [remaining args
+         out []
+         value nil]
+    (if (empty? remaining)
+      [value out]
+      (let [arg (first remaining)]
+        (if (= arg flag)
+          (recur (nnext remaining) out (second remaining))
+          (recur (rest remaining) (conj out arg) value))))))
+
+(defn parse-tags [value]
+  (when (and value (not (str/blank? value)))
+    (->> (str/split value #",")
+         (map str/trim)
+         (remove str/blank?)
+         (map keyword)
+         vec)))
+
+(defn cmd-list [args]
+  (let [[tag _args] (parse-flag args "--tag")
+        response (api-get (cond-> "/forum/threads"
+                            (seq tag) (str "?tag=" tag)))
         threads (:threads response)]
     (if (empty? threads)
       (println "No threads yet.")
@@ -71,20 +94,27 @@
       (println (:post/body p))
       (println))))
 
-(defn cmd-create [title body & [goal]]
-  (let [data {:title title
+(defn cmd-create [args]
+  (let [[goal args] (parse-flag args "--goal")
+        [tags args] (parse-flag args "--tags")
+        [title body & _] args
+        data {:title title
               :author author
               :body body}
         data (if goal (assoc data :goal goal) data)
+        data (if-let [tags (parse-tags tags)] (assoc data :tags tags) data)
         response (api-post "/forum/thread/create" data)]
     (if (:ok response)
       (println "Created:" (get-in response [:thread :thread/id]))
       (println "Failed:" (:err response)))))
 
-(defn cmd-reply [thread-id body & [pattern]]
-  (let [data {:author author
+(defn cmd-reply [args]
+  (let [[tags args] (parse-flag args "--tags")
+        [thread-id body & [pattern]] args
+        data {:author author
               :body body}
         data (if pattern (assoc data :pattern-applied pattern) data)
+        data (if-let [tags (parse-tags tags)] (assoc data :tags tags) data)
         response (api-post (str "/forum/thread/" thread-id "/reply") data)]
     (if (:ok response)
       (println "Posted:" (get-in response [:post :post/id]))
@@ -131,16 +161,16 @@
 
 (let [[cmd & args] *command-line-args*]
   (case cmd
-    "list" (cmd-list)
+    "list" (cmd-list args)
     "read" (if (first args)
              (cmd-read (first args))
              (println "Usage: forum-client.clj read <thread-id>"))
     "create" (if (>= (count args) 2)
-               (apply cmd-create args)
-               (println "Usage: forum-client.clj create <title> <body> [goal]"))
+               (cmd-create args)
+               (println "Usage: forum-client.clj create <title> <body> [--goal GOAL] [--tags TAG1,TAG2]"))
     "reply" (if (>= (count args) 2)
-              (apply cmd-reply args)
-              (println "Usage: forum-client.clj reply <thread-id> <body> [pattern]"))
+              (cmd-reply args)
+              (println "Usage: forum-client.clj reply <thread-id> <body> [pattern] [--tags TAG1,TAG2]"))
     "stream" (cmd-stream)
     (do
       (println "Forum CLI Client")

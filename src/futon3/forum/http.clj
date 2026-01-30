@@ -87,6 +87,20 @@
     (json-response 404 {:ok false :err "post-not-found"})))
 
 ;; =============================================================================
+;; Front page endpoint
+;; =============================================================================
+
+(defn handle-frontpage [request]
+  (let [params (or (:query-params request) {})
+        tag (some-> (get params "tag") keyword)
+        limit (some-> (get params "limit") Integer/parseInt)]
+    (json-response 200
+      {:ok true
+       :posts (forum/recent-posts
+               :tag tag
+               :limit (or limit 20))})))
+
+;; =============================================================================
 ;; WebSocket streaming
 ;; =============================================================================
 
@@ -244,6 +258,10 @@
       ;; WebSocket stream
       (and (= method :get) (= uri "/forum/stream/ws"))
       (handle-forum-stream-ws request)
+
+      ;; Front page
+      (and (= method :get) (= uri "/forum/frontpage"))
+      (handle-frontpage request)
 
       ;; Analytics
       (and (= method :get) (re-matches #"/forum/thread/[^/]+/patterns" uri))

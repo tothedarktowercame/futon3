@@ -173,6 +173,29 @@
        (sort-by :post/timestamp)
        vec))
 
+(defn recent-posts
+  "Return recent posts across all threads.
+
+   Options:
+   - :limit - max results (default 20)
+   - :tag - filter by tag (matches post tags or thread tags)"
+  [& {:keys [limit tag] :or {limit 20}}]
+  (let [all (vals @posts)
+        tagged (if tag
+                 (filter (fn [post]
+                           (let [ptags (:post/tags post)
+                                 thread (get-thread (:post/thread-id post))
+                                 ttags (:thread/tags thread)]
+                             (or (some #{tag} ptags)
+                                 (some #{tag} ttags))))
+                         all)
+                 all)]
+    (->> tagged
+         (sort-by :post/timestamp)
+         reverse
+         (take limit)
+         vec)))
+
 (defn get-post-tree
   "Get posts as a tree structure (for proof tree visualization)."
   [thread-id]

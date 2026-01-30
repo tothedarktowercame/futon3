@@ -40,6 +40,10 @@
                      (str (io/file (System/getProperty "user.dir") ".." "futon3a")))
    :workdir (or (System/getenv "AGENCY_WORKDIR")
                 (System/getProperty "user.dir"))
+   :forum-server (or (System/getenv "AGENCY_FORUM_SERVER")
+                     (System/getenv "FORUM_SERVER"))
+   :forum-token (or (System/getenv "AGENCY_FORUM_TOKEN")
+                    (System/getenv "FORUM_TOKEN"))
    :approval-policy (System/getenv "AGENCY_APPROVAL_POLICY")
    :no-sandbox (env-bool "AGENCY_NO_SANDBOX" false)
    :skip-git-check (env-bool "AGENCY_SKIP_GIT_CHECK" true)
@@ -289,6 +293,33 @@
 (defn- match-count [tokens text]
   (let [haystack (str/lower-case (or text ""))]
     (count (filter #(str/includes? haystack %) tokens))))
+
+(defn- forum-thread-id [forum]
+  (or (:thread-id forum)
+      (:thread/id forum)
+      (:thread_id forum)))
+
+(defn- forum-config [forum agent-id]
+  {:server (or (:server forum) (:forum-server (config)))
+   :token (or (:token forum) (:forum-token (config)))
+   :author (or (:author forum) (name agent-id))})
+
+(defn- post-forum-reply!
+  [{:keys [server token author]} thread-id body pattern]
+  (when (and server thread-id (seq (str body)))
+    (try
+      (http/post (str (str/replace server #"/+$" "")
+                      "/forum/thread/" thread-id "/reply")
+                 {:content-type :json
+                  :accept :json
+                  :throw-exceptions false
+                  :headers (cond-> {"Content-Type" "application/json"}
+                             token (assoc "X-Agency-Token" token))
+                  :body (json/generate-string
+                         (cond-> {:author author
+                                  :body body}
+                           pattern (assoc :pattern-applied pattern)))})
+      (catch Exception _ nil))))
 
 (defn- parse-usage [usage]
   (when (map? usage)
@@ -545,7 +576,7 @@
       (catch Exception _ nil))))
 
 (defn roll-over!
-  [agent-id reason {:keys [musn]}]
+  [agent-id reason {:keys [musn forum]}]
   (with-agent-lock
    agent-id
    (fn []
@@ -569,6 +600,13 @@
         {:reason reason
          :from-thread current-thread
          :ancestor-chain next-chain})
+        (when-let [thread-id (forum-thread-id forum)]
+          (post-forum-reply!
+           (forum-config forum agent-id)
+           thread-id
+           (str "Agency rollover: " (or current-thread "<none>")
+                " -> (new thread) reason=" reason)
+           "agency/rollover"))
        {:ok true
         :agent-id (name agent-id)
         :rolled true
@@ -585,15 +623,16 @@
     (assoc state :agent/recent-messages messages)))
 
 (defn run-peripheral!
-  [{:keys [agent-id peripheral prompt musn thread-id cwd approval-policy no-sandbox]}]
+  [{:keys [agent-id peripheral prompt musn forum thread-id cwd approval-policy no-sandbox]}]
   (with-agent-lock
    agent-id
    (fn []
-     (let [state (ensure-agent-state! agent-id)
+     (let [peripheral-id (if (keyword? peripheral) (name peripheral) (str peripheral))
+           state (ensure-agent-state! agent-id)
            state (if thread-id
                    (assoc state :agent/current-thread-id thread-id)
                    state)
-           peripheral (get-peripheral peripheral)
+           peripheral (get-peripheral peripheral-id)
            prompt-text (build-run-prompt peripheral state {:prompt prompt
                                                            :musn musn
                                                            :agent-id agent-id})
@@ -620,6 +659,12 @@
                   (append-recent-message {:role :assistant
                                           :author (name agent-id)
                                           :text (:response result)}))))
+           (when-let [thread-id (forum-thread-id forum)]
+             (post-forum-reply!
+              (forum-config forum agent-id)
+              thread-id
+              (:response result)
+              peripheral-id))
            {:ok true
             :agent-id (name agent-id)
             :thread-id (:agent/current-thread-id (ensure-agent-state! agent-id))
@@ -629,7 +674,7 @@
                context-err? (context-error? (:error result))
                retry? (and context-err? (:retry-on-overflow (config)))]
            (when (and context-err? retry?)
-             (roll-over! agent-id "context-overflow" {:musn musn}))
+             (roll-over! agent-id "context-overflow" {:musn musn :forum forum}))
            (if (and context-err? retry?)
              (let [state (ensure-agent-state! agent-id)
                    retry-prompt (build-run-prompt peripheral state {:prompt prompt
@@ -650,6 +695,13 @@
                           (append-recent-message {:role :user :author "user" :text prompt})
                           (append-recent-message {:role :assistant :author (name agent-id)
                                                   :text (or (:response retry-result) "")}))))
+                   (when-let [thread-id (forum-thread-id forum)]
+                     (post-forum-reply!
+                      (forum-config forum agent-id)
+                      thread-id
+                      (str "Agency completed (retry):\n"
+                           (or (:response retry-result) "(no response)"))
+                      peripheral-id))
                    {:ok true
                     :agent-id (name agent-id)
                     :thread-id next-thread
@@ -674,7 +726,15 @@
                                                             :text (or (:response result) "")}))))
                      rollover? (usage-rollover? (:agent/token-usage updated))]
                  (when rollover?
-                   (roll-over! agent-id "usage-threshold" {:musn musn}))
+                   (roll-over! agent-id "usage-threshold" {:musn musn :forum forum}))
+                 (when-let [thread-id (forum-thread-id forum)]
+                   (post-forum-reply!
+                    (forum-config forum agent-id)
+                    thread-id
+                    (str "Agency completed:\n"
+                         (or (:response result) "(no response)")
+                         (when rollover? "\n(rolled over due to usage threshold)"))
+                    peripheral-id))
                  {:ok true
                   :agent-id (name agent-id)
                   :thread-id (:agent/current-thread-id (ensure-agent-state! agent-id))

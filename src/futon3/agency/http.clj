@@ -38,7 +38,7 @@
          (into {}))))
 
 (defn- handle-run [body]
-  (let [{:keys [agent-id peripheral prompt musn thread-id cwd approval-policy no-sandbox]} body]
+  (let [{:keys [agent-id peripheral prompt musn forum thread-id cwd approval-policy no-sandbox]} body]
     (if (or (str/blank? (str agent-id))
             (str/blank? (str peripheral))
             (str/blank? (str prompt)))
@@ -47,17 +47,18 @@
                             :peripheral peripheral
                             :prompt prompt
                             :musn musn
+                            :forum forum
                             :thread-id thread-id
                             :cwd cwd
                             :approval-policy approval-policy
                             :no-sandbox no-sandbox}))))
 
 (defn- handle-rollover [body]
-  (let [{:keys [agent-id reason musn]} body
+  (let [{:keys [agent-id reason musn forum]} body
         reason (or reason "manual")]
     (if (str/blank? (str agent-id))
       {:ok false :err "missing agent-id"}
-      (svc/roll-over! agent-id reason {:musn musn}))))
+      (svc/roll-over! agent-id reason {:musn musn :forum forum}))))
 
 (defn- handle-state [params]
   (let [agent-id (get params "agent-id")]
@@ -120,4 +121,3 @@
 (defn -main [& _args]
   (start! {})
   @(promise))
-

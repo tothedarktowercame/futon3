@@ -99,7 +99,8 @@
         :else
         (json-response 404 {:ok false :err "not found"})))
     (catch Throwable t
-      (log! "handler error" {:err (.getMessage t)})
+      (log! "handler error" {:err (.getMessage t)
+                             :trace (mapv str (.getStackTrace t))})
       (json-response 400 {:ok false :err (.getMessage t)}))))
 
 (defonce ^:private server-state (atom nil))

@@ -10,14 +10,16 @@
            (java.time Instant)))
 
 (defn- env-int [key default]
-  (try
-    (some-> (System/getenv key) str/trim not-empty Long/parseLong)
-    (catch Exception _ default)))
+  (or (try
+        (some-> (System/getenv key) str/trim not-empty Long/parseLong)
+        (catch Exception _ nil))
+      default))
 
 (defn- env-float [key default]
-  (try
-    (some-> (System/getenv key) str/trim not-empty Double/parseDouble)
-    (catch Exception _ default)))
+  (or (try
+        (some-> (System/getenv key) str/trim not-empty Double/parseDouble)
+        (catch Exception _ nil))
+      default))
 
 (defn- env-bool [key default]
   (let [value (some-> (System/getenv key) str/trim str/lower-case)]
@@ -35,7 +37,7 @@
    :summary-words (env-int "AGENCY_SUMMARY_WORDS" 250)
    :recent-messages (env-int "AGENCY_CONTEXT_RECENT_MESSAGES" 12)
    :lock-timeout-ms (env-int "AGENCY_LOCK_TIMEOUT_MS" 15000)
-   :codex-bin (or (System/getenv "AGENCY_CODEX_BIN") "codex")
+   :codex-bin (or (System/getenv "AGENCY_CODEX_BIN") "claude")
    :futon3a-root (or (System/getenv "AGENCY_FUTON3A_ROOT")
                      (str (io/file (System/getProperty "user.dir") ".." "futon3a")))
    :workdir (or (System/getenv "AGENCY_WORKDIR")
@@ -226,16 +228,21 @@
     (str/join "\n\n" blocks)))
 
 (defn- codex-command
+  "Build CLI command for claude (formerly codex).
+   Uses --print for non-interactive mode with json output.
+   Wraps in bash with stdin redirect to prevent hanging."
   [{:keys [prompt resume-id approval-policy no-sandbox skip-git-check]}]
-  (let [base (cond-> [(or (:codex-bin (config)) "codex")
-                      "exec"
-                      "--json"]
-               skip-git-check (conj "--skip-git-repo-check")
-               no-sandbox (conj "--dangerously-bypass-approvals-and-sandbox")
-               approval-policy (conj "-c" (str "approval_policy=" approval-policy)))]
-    (cond-> base
-      resume-id (conj "resume" resume-id)
-      true (conj prompt))))
+  (let [cli-bin (or (:codex-bin (config)) "claude")
+        cli-args (cond-> ["--print" "--output-format" "json"]
+                   no-sandbox (conj "--dangerously-skip-permissions")
+                   approval-policy (conj "--permission-mode" approval-policy)
+                   resume-id (conj "--resume" resume-id))
+        ;; Escape the prompt for shell
+        escaped-prompt (-> prompt
+                           (clojure.string/replace "\\" "\\\\")
+                           (clojure.string/replace "'" "'\\''"))
+        shell-cmd (str cli-bin " " (clojure.string/join " " cli-args) " '" escaped-prompt "' </dev/null")]
+    ["/bin/bash" "-c" shell-cmd]))
 
 (defn- parse-json-line [line]
   (try
@@ -346,61 +353,34 @@
     (doseq [[k v] (merge env {})]
       (.put pb-env (str k) (str v)))
     (let [process (.start pb)
+          _ (.close (.getOutputStream process)) ;; Close stdin to prevent hanging
           reader (BufferedReader. (InputStreamReader. (.getInputStream process)))
-          response (atom nil)
-          thread-id (atom nil)
-          usage (atom nil)
-          errors (atom [])
-          lines (atom [])]
+          output (StringBuilder.)]
+      ;; Read all output
       (loop []
         (when-let [line (.readLine reader)]
-          (swap! lines conj line)
-          (when-let [parsed (parse-json-line line)]
-            (let [etype (:type parsed)
-                  payload (:payload parsed)]
-              (cond
-                (= etype "thread.started")
-                (when-let [tid (:thread_id parsed)]
-                  (reset! thread-id tid))
-
-                (= etype "turn.completed")
-                (when-let [u (:usage parsed)]
-                  (reset! usage (parse-usage u)))
-
-                (= etype "turn.failed")
-                (swap! errors conj (or (get-in parsed [:error :message]) "turn-failed"))
-
-                (= etype "error")
-                (swap! errors conj (:message parsed))
-
-                (and (= etype "item.completed")
-                     (= "agent_message" (get-in parsed [:item :type])))
-                (when-let [text (get-in parsed [:item :text])]
-                  (reset! response text))
-
-                (and (= etype "response_item")
-                     (= "message" (get-in parsed [:payload :type]))
-                     (= "assistant" (get-in parsed [:payload :role])))
-                (when-let [text (extract-assistant-text (get-in parsed [:payload :content]))]
-                  (reset! response text))
-
-                (and (= etype "event_msg")
-                     (= "agent_message" (get-in parsed [:payload :type])))
-                (when-let [text (or (:message payload) (:text payload))]
-                  (reset! response text))
-
-                :else nil)))
+          (.append output line)
+          (.append output "\n")
           (recur)))
       (.waitFor process)
       (let [exit (.exitValue process)
-            err (when (or (seq @errors) (not= 0 exit))
-                  (or (first @errors) (str "codex-exec-exit-" exit)))]
+            out-str (str output)
+            ;; Parse the JSON result (claude --print --output-format json returns a single JSON object)
+            parsed (parse-json out-str)
+            is-error (or (:is_error parsed) (= "error" (:subtype parsed)))
+            response (or (:result parsed) (extract-assistant-text parsed))
+            thread-id (or (:session_id parsed) resume-id)
+            usage (parse-usage (:usage parsed))
+            err (cond
+                  (not= 0 exit) (str "claude-exit-" exit ": " (or (:error parsed) out-str))
+                  is-error (or (:error parsed) "claude-error")
+                  :else nil)]
         {:ok (nil? err)
          :error err
-         :response @response
-         :thread-id (or @thread-id resume-id)
-         :usage @usage
-         :lines @lines}))))
+         :response response
+         :thread-id thread-id
+         :usage usage
+         :output out-str}))))
 
 (defn- context-error? [err]
   (when err

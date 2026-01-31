@@ -62,6 +62,11 @@ fi
 # Enable Drawbridge by default for dev (hot-reloading on port 6767)
 export FUTON3_DRAWBRIDGE="${FUTON3_DRAWBRIDGE:-1}"
 
+# Load ADMIN_TOKEN from .admintoken if not already set (required for Drawbridge)
+if [[ -z "${ADMIN_TOKEN:-}" && -f .admintoken ]]; then
+  export ADMIN_TOKEN="$(cat .admintoken | tr -d '\n')"
+fi
+
 # Bootstrap penholder registry (needed for fresh data dirs).
 if [[ "${FUTON1_API:-1}" != "0" && "${FUTON1_BOOTSTRAP_PENHOLDER:-1}" != "0" ]]; then
   FUTON1_ROOT="${FUTON1_ROOT:-${ROOT}/../futon1}"

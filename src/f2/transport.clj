@@ -21,6 +21,7 @@
             [f2.repl :as repl]
             [f2.semantics :as semantics]
             [f2.router :as router]
+            [phoebe.runtime :as phoebe]
             [org.httpkit.server :as http])
   (:import (java.time Clock Instant)
            (java.util UUID)))
@@ -1356,12 +1357,43 @@
     (catch Exception e
       (json-response 500 {:ok false :err "links-get-failed" :detail (.getMessage e)}))))
 
+(defn- handle-stack-status
+  "Return live health status of all services in this stack."
+  [state _request]
+  (try
+    (let [config @(:config state)
+          ;; Collect all known ports
+          ports {:transport (or (:transport-port config) 5050)
+                 :ui (or (:ui-port config) 6060)
+                 :forum-ws 5055
+                 :musn-http (get-in config [:musn-http :port] 6065)
+                 :irc-bridge (get-in config [:irc-bridge :port] 6667)
+                 :futon1-api (get-in config [:futon1-api :port] 8080)}
+          ;; Which services are enabled
+          services {:transport true
+                    :ui true
+                    :forum-ws true
+                    :musn-http (get-in config [:musn-http :enabled?] true)
+                    :irc-bridge (get-in config [:irc-bridge :enabled?] true)
+                    :futon1-api (get-in config [:futon1-api :enabled?] true)}
+          status (phoebe/live-status ports services)]
+      (json-response 200 {:ok true
+                          :stack status
+                          :app {:name "f2.musn"}}))
+    (catch Exception e
+      (json-response 500 {:ok false
+                          :err "stack-status-failed"
+                          :detail (.getMessage e)}))))
+
 (defn handler [state request]
   (let [uri (:uri request)
         method (:request-method request)]
     (cond
       (= [:get "/healthz"] [method uri])
       (plaintext-response 200 "ok")
+
+      (= [:get "/stack/status"] [method uri])
+      (handle-stack-status state request)
 
       ;; Arxana anchor/link routes
       (and (= method :post) (= uri "/arxana/anchor/create"))

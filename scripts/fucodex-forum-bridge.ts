@@ -5,6 +5,7 @@
  * Usage:
  *   ./fucodex-forum-bridge.ts --thread t-123bcc8e --nick fucodex
  *   ./fucodex-forum-bridge.ts --thread t-123bcc8e --nick fucodex --resume <thread-id>
+ *   ./fucodex-forum-bridge.ts --thread t-123bcc8e --poll-interval 3000
  *
  * Env:
  *   FORUM_SERVER       - Forum HTTP base URL (default http://localhost:5050)
@@ -12,6 +13,7 @@
  *   FORUM_THREAD       - Forum thread id (fallback if --thread not set)
  *   FORUM_AUTHOR       - Author name (default fucodex)
  *   FORUM_BRIDGE_PATTERN - Pattern applied label to mark bridge replies (default "forum-bridge")
+ *   FORUM_POLL_INTERVAL - Poll interval ms (default 0, disables polling)
  *
  * Context safety tuning (same as IRC bridge):
  *   FUCODEX_CONTEXT_MAX_TOKENS, FUCODEX_CONTEXT_RECENT_MESSAGES,
@@ -25,6 +27,7 @@ const FORUM_WS_SERVER = process.env.FORUM_WS_SERVER || "";
 const FORUM_THREAD = process.env.FORUM_THREAD || "";
 const FORUM_AUTHOR = process.env.FORUM_AUTHOR || "fucodex";
 const BRIDGE_PATTERN = process.env.FORUM_BRIDGE_PATTERN || "forum-bridge";
+const FORUM_POLL_INTERVAL = Number.parseInt(process.env.FORUM_POLL_INTERVAL || "0", 10);
 const CONTEXT_SAFE = process.env.FUCODEX_CONTEXT_SAFE !== "0";
 const CONTEXT_MAX_TOKENS = Number.parseInt(process.env.FUCODEX_CONTEXT_MAX_TOKENS || "12000", 10);
 const CONTEXT_RECENT_MESSAGES = Number.parseInt(process.env.FUCODEX_CONTEXT_RECENT_MESSAGES || "12", 10);
@@ -49,6 +52,7 @@ interface ForumBridgeConfig {
   contextRecentMessages?: number;
   contextSummaryWords?: number;
   contextRolloverRatio?: number;
+  pollInterval?: number;
 }
 
 type ForumPost = {
@@ -76,25 +80,34 @@ class CodexForumBridge {
   private threadOptions: any;
   private ws: WebSocket | null = null;
   private seen = new Set<string>();
+  private pollInterval: number;
+  private pollInitialized = false;
 
   constructor(config: ForumBridgeConfig) {
     this.config = config;
     this.codex = new Codex();
     this.contextSafe = config.contextSafe ?? CONTEXT_SAFE;
-    const maxTokens = Number.isFinite(config.contextMaxTokens) ? config.contextMaxTokens : CONTEXT_MAX_TOKENS;
-    const recentMessages = Number.isFinite(config.contextRecentMessages)
-      ? config.contextRecentMessages
-      : CONTEXT_RECENT_MESSAGES;
-    const summaryWords = Number.isFinite(config.contextSummaryWords)
-      ? config.contextSummaryWords
-      : CONTEXT_SUMMARY_WORDS;
-    const rolloverRatio = Number.isFinite(config.contextRolloverRatio)
-      ? config.contextRolloverRatio
-      : CONTEXT_ROLLOVER_RATIO;
+    const maxTokens =
+      typeof config.contextMaxTokens === "number" && Number.isFinite(config.contextMaxTokens)
+        ? config.contextMaxTokens
+        : CONTEXT_MAX_TOKENS;
+    const recentMessages =
+      typeof config.contextRecentMessages === "number" && Number.isFinite(config.contextRecentMessages)
+        ? config.contextRecentMessages
+        : CONTEXT_RECENT_MESSAGES;
+    const summaryWords =
+      typeof config.contextSummaryWords === "number" && Number.isFinite(config.contextSummaryWords)
+        ? config.contextSummaryWords
+        : CONTEXT_SUMMARY_WORDS;
+    const rolloverRatio =
+      typeof config.contextRolloverRatio === "number" && Number.isFinite(config.contextRolloverRatio)
+        ? config.contextRolloverRatio
+        : CONTEXT_ROLLOVER_RATIO;
     this.contextMaxTokens = maxTokens;
     this.contextRecentMessages = Math.max(1, recentMessages);
     this.contextSummaryWords = Math.max(50, summaryWords);
     this.contextRolloverRatio = Math.min(0.95, Math.max(0.5, rolloverRatio));
+    this.pollInterval = Number.isFinite(config.pollInterval) ? Number(config.pollInterval) : FORUM_POLL_INTERVAL;
     this.threadOptions = this.buildThreadOptions();
   }
 
@@ -152,6 +165,11 @@ class CodexForumBridge {
   }
 
   async runListener() {
+    if (this.pollInterval > 0) {
+      console.error(`[bridge] Polling enabled (${this.pollInterval} ms)`);
+      await this.runPollingLoop();
+      return;
+    }
     const url = this.wsUrl();
     console.error(`[bridge] Connecting to ${url}`);
     this.ws = new WebSocket(url);
@@ -203,6 +221,60 @@ class CodexForumBridge {
     this.ws.addEventListener("error", (err) => {
       console.error("[bridge] WebSocket error:", err);
     });
+  }
+
+  private async runPollingLoop() {
+    for (;;) {
+      try {
+        const data = await this.fetchThread();
+        const posts: ForumPost[] = Array.isArray(data?.posts) ? data.posts : [];
+        if (!this.pollInitialized) {
+          for (const post of posts) {
+            const postId = post["post/id"];
+            if (postId) this.seen.add(postId);
+          }
+          if (this.contextSafe && !this.contextSeeded) {
+            const tail = posts.slice(-this.contextRecentMessages);
+            for (const post of tail) {
+              const author = post["post/author"] || "unknown";
+              const body = post["post/body"] || "";
+              if (!body) continue;
+              this.recordMessage({ role: "user", author, text: body });
+            }
+          }
+          this.pollInitialized = true;
+        } else {
+          const newPosts = posts.filter((post) => {
+            const postId = post["post/id"];
+            return postId && !this.seen.has(postId);
+          });
+          if (newPosts.length > 0) {
+            newPosts.sort((a, b) => {
+              const at = a["post/timestamp"] || "";
+              const bt = b["post/timestamp"] || "";
+              return at.localeCompare(bt);
+            });
+            for (const post of newPosts) {
+              await this.handlePost(post);
+            }
+          }
+        }
+      } catch (err) {
+        console.error(`[bridge] Polling error: ${err}`);
+      }
+      await new Promise((resolve) => setTimeout(resolve, this.pollInterval));
+    }
+  }
+
+  private async fetchThread(): Promise<{ posts?: ForumPost[] } | null> {
+    const response = await fetch(`${FORUM_SERVER.replace(/\/+$/, "")}/forum/thread/${this.config.threadId}`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error(`Forum thread fetch failed: ${response.status}`);
+    }
+    return response.json();
   }
 
   private wsUrl(): string {
@@ -423,6 +495,7 @@ async function main() {
     contextRecentMessages: CONTEXT_RECENT_MESSAGES,
     contextSummaryWords: CONTEXT_SUMMARY_WORDS,
     contextRolloverRatio: CONTEXT_ROLLOVER_RATIO,
+    pollInterval: FORUM_POLL_INTERVAL,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -456,6 +529,9 @@ async function main() {
         break;
       case "--context-rollover-ratio":
         config.contextRolloverRatio = Number.parseFloat(args[++i]);
+        break;
+      case "--poll-interval":
+        config.pollInterval = Number.parseInt(args[++i], 10);
         break;
     }
   }

@@ -9,6 +9,8 @@ set -euo pipefail
 #   - MUSN HTTP on port 6065
 #   - IRC bridge on port 6667
 #   - Forum WebSocket on port 5055
+#   - Lab WebSocket on port 5056
+#   - Drawbridge REPL on port 6767
 #   - Chat supervisor (polling)
 #   - Agency HTTP on port 7070 (separate process)
 #
@@ -17,6 +19,10 @@ set -euo pipefail
 #   FUTON3_IRC_BRIDGE=0      - disable IRC bridge
 #   FUTON3_CHAT_SUPERVISOR=0 - disable chat supervisor
 #   FUTON3_AGENCY=0          - disable Agency HTTP service
+#   FUTON3_DRAWBRIDGE=0      - disable Drawbridge REPL (enabled by default)
+#
+# Drawbridge runs on port 6767 for hot-reloading code:
+#   ./scripts/repl-eval '(require '\''f2.transport :reload)'
 #
 # Example: run without chat supervisor (for manual fuclaude testing)
 #   FUTON3_CHAT_SUPERVISOR=0 ./scripts/dev.sh
@@ -52,6 +58,9 @@ fi
 if [[ "${SKIP_CHAT_SUPERVISOR:-}" == "1" ]]; then
   export FUTON3_CHAT_SUPERVISOR=0
 fi
+
+# Enable Drawbridge by default for dev (hot-reloading on port 6767)
+export FUTON3_DRAWBRIDGE="${FUTON3_DRAWBRIDGE:-1}"
 
 # Bootstrap penholder registry (needed for fresh data dirs).
 if [[ "${FUTON1_API:-1}" != "0" && "${FUTON1_BOOTSTRAP_PENHOLDER:-1}" != "0" ]]; then

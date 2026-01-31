@@ -1065,6 +1065,77 @@
                 :when k]
             [k (java.net.URLDecoder/decode (or v "") "UTF-8")]))))
 
+(defn- scan-claude-projects
+  "Scan ~/.claude/projects/ for JSONL session files.
+   Returns list of session maps sorted by modification time (newest first)."
+  []
+  (let [claude-dir (io/file (System/getProperty "user.home") ".claude" "projects")]
+    (when (.exists claude-dir)
+      (->> (file-seq claude-dir)
+           (filter #(and (.isFile %)
+                         (str/ends-with? (.getName %) ".jsonl")))
+           (map (fn [f]
+                  (let [path (.getAbsolutePath f)
+                        parent-name (.getName (.getParentFile f))
+                        ;; Extract project name from parent dir (e.g., "-home-joe-code-futon3")
+                        project (-> parent-name
+                                    (str/replace #"^-" "")
+                                    (str/replace #"-" "/"))
+                        modified (.lastModified f)
+                        size (.length f)
+                        ;; Consider active if modified in last hour
+                        active? (> modified (- (System/currentTimeMillis) 3600000))]
+                    {:id (str/replace (.getName f) #"\.jsonl$" "")
+                     :project project
+                     :path path
+                     :modified (str (java.time.Instant/ofEpochMilli modified))
+                     :size-kb (quot size 1024)
+                     :active active?})))
+           (sort-by :modified #(compare %2 %1))))))
+
+(defn- scan-lab-raw
+  "Scan lab/raw/ for archived session JSON files.
+   Returns list of session maps sorted by modification time (newest first)."
+  [state]
+  (let [config (config! state)
+        lab-root (or (:lab-root config)
+                     (io/file "lab" "raw"))]
+    (let [lab-dir (if (instance? java.io.File lab-root)
+                    lab-root
+                    (io/file lab-root))]
+      (when (.exists lab-dir)
+        (->> (.listFiles lab-dir)
+             (filter #(and (.isFile %)
+                           (str/ends-with? (.getName %) ".json")))
+             (map (fn [f]
+                    (let [path (.getAbsolutePath f)
+                          modified (.lastModified f)
+                          size (.length f)]
+                      {:id (str/replace (.getName f) #"\.json$" "")
+                       :path path
+                       :modified (str (java.time.Instant/ofEpochMilli modified))
+                       :size-kb (quot size 1024)
+                       :archived true})))
+             (sort-by :modified #(compare %2 %1)))))))
+
+(defn- handle-lab-sessions-active
+  "List active Claude Code sessions."
+  [_state _request]
+  (try
+    (let [sessions (scan-claude-projects)]
+      (json-response 200 {:ok true :sessions (vec sessions)}))
+    (catch Exception e
+      (json-response 500 {:ok false :err "scan-failed" :detail (.getMessage e)}))))
+
+(defn- handle-lab-sessions-archived
+  "List archived lab sessions."
+  [state _request]
+  (try
+    (let [sessions (scan-lab-raw state)]
+      (json-response 200 {:ok true :sessions (vec sessions)}))
+    (catch Exception e
+      (json-response 500 {:ok false :err "scan-failed" :detail (.getMessage e)}))))
+
 (defn- handle-claude-stream-ws
   "WebSocket endpoint for streaming Claude Code JSONL file changes.
    Query params:
@@ -1310,6 +1381,25 @@
       ;; Claude Code JSONL stream (WebSocket file tailing)
       (and (= method :get) (= uri "/fulab/claude-stream/ws"))
       (handle-claude-stream-ws state request)
+
+      ;; Lab sessions listing
+      (and (= method :get) (= uri "/fulab/lab/sessions/active"))
+      (handle-lab-sessions-active state request)
+
+      (and (= method :get) (= uri "/fulab/lab/sessions/archived"))
+      (handle-lab-sessions-archived state request)
+
+      (and (= method :get) (= uri "/fulab/lab/sessions"))
+      ;; Combined: active + archived
+      (try
+        (let [active (or (scan-claude-projects) [])
+              archived (or (scan-lab-raw state) [])
+              all (concat (map #(assoc % :source "active") active)
+                          (map #(assoc % :source "archived") archived))]
+          (json-response 200 {:ok true
+                              :sessions (vec (sort-by :modified #(compare %2 %1) all))}))
+        (catch Exception e
+          (json-response 500 {:ok false :err "scan-failed" :detail (.getMessage e)})))
 
       ;; Notebook viewer routes
       (and (= method :get) (re-matches #"/fulab/notebook/[^/]+/stream" uri))

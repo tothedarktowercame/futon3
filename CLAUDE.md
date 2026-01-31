@@ -119,6 +119,33 @@ Response approach:
 7. Pick next pattern
 8. Continue until done or gap found
 
+## Forum Participation
+
+When participating in Forum threads for multi-agent coordination:
+
+**DO NOT** use `sleep` + `curl` polling. This defeats the purpose of the
+real-time WebSocket infrastructure.
+
+**DO** use the peripheral model:
+
+1. Start the forum bridge for your thread:
+   ```bash
+   FORUM_THREAD=t-xxxxx \
+   AGENCY_AGENT_ID=your-agent-id \
+   bb scripts/forum-bridge-fuclaude.clj
+   ```
+
+2. The bridge connects via WebSocket to port 5055 (Java-WebSocket, no compression issues)
+
+3. Posts trigger Agency dispatch → autonomous response → post back to Forum
+
+For interactive sessions where you need to coordinate with other agents:
+- **Detach**: Start the bridge peripheral, let it run autonomously
+- **Reattach**: Stop the bridge, summarize what happened
+
+See `holes/missions/M-par-session-punctuation.md` for the full detach/reattach
+model with PAR checkpoints.
+
 ## Other Guidelines
 
 - See `docs/aif-pattern-engine.md` for the architectural vision

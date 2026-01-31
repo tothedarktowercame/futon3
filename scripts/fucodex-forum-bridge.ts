@@ -14,6 +14,9 @@
  *   FORUM_AUTHOR       - Author name (default fucodex)
  *   FORUM_BRIDGE_PATTERN - Pattern applied label to mark bridge replies (default "forum-bridge")
  *   FORUM_POLL_INTERVAL - Poll interval ms (default 0, disables polling)
+ *   FORUM_BRIDGE_STATE_PATH - State file path for persistence (default: lab/agency/forum-bridge-<thread>.json)
+ *   FORUM_SEEN_LIMIT   - Max seen post IDs to retain (default 2000)
+ *   FORUM_HEARTBEAT_SECONDS - Heartbeat log interval (default 60; 0 disables)
  *
  * Context safety tuning (same as IRC bridge):
  *   FUCODEX_CONTEXT_MAX_TOKENS, FUCODEX_CONTEXT_RECENT_MESSAGES,
@@ -21,6 +24,8 @@
  */
 
 import { Codex } from "@openai/codex-sdk";
+import { promises as fs } from "fs";
+import * as path from "path";
 
 const FORUM_SERVER = process.env.FORUM_SERVER || "http://localhost:5050";
 const FORUM_WS_SERVER = process.env.FORUM_WS_SERVER || "";
@@ -34,6 +39,9 @@ const CONTEXT_RECENT_MESSAGES = Number.parseInt(process.env.FUCODEX_CONTEXT_RECE
 const CONTEXT_SUMMARY_WORDS = Number.parseInt(process.env.FUCODEX_CONTEXT_SUMMARY_WORDS || "250", 10);
 const CONTEXT_ROLLOVER_RATIO = Number.parseFloat(process.env.FUCODEX_CONTEXT_ROLLOVER_RATIO || "0.85");
 const WS_RECONNECT_DELAY = Number.parseInt(process.env.FORUM_WS_RECONNECT_DELAY || "3", 10);
+const FORUM_STATE_PATH = process.env.FORUM_BRIDGE_STATE_PATH || "";
+const FORUM_SEEN_LIMIT = Number.parseInt(process.env.FORUM_SEEN_LIMIT || "2000", 10);
+const FORUM_HEARTBEAT_SECONDS = Number.parseInt(process.env.FORUM_HEARTBEAT_SECONDS || "60", 10);
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -80,6 +88,11 @@ class CodexForumBridge {
   private threadOptions: any;
   private ws: WebSocket | null = null;
   private seen = new Set<string>();
+  private seenOrder: string[] = [];
+  private statePath: string | null = null;
+  private saveTimer: NodeJS.Timeout | null = null;
+  private heartbeatTimer: NodeJS.Timeout | null = null;
+  private lastSeenId: string | null = null;
   private pollInterval: number;
   private pollInitialized = false;
 
@@ -109,16 +122,21 @@ class CodexForumBridge {
     this.contextRolloverRatio = Math.min(0.95, Math.max(0.5, rolloverRatio));
     this.pollInterval = Number.isFinite(config.pollInterval) ? Number(config.pollInterval) : FORUM_POLL_INTERVAL;
     this.threadOptions = this.buildThreadOptions();
+    this.statePath = this.resolveStatePath();
   }
 
   async init() {
-    if (this.config.resumeThreadId) {
-      console.error(`[bridge] Resuming thread: ${this.config.resumeThreadId}`);
-      this.thread = this.codex.resumeThread(this.config.resumeThreadId);
+    await this.loadState();
+    const resumeId = this.config.resumeThreadId || this.loadResumeThreadId();
+    if (resumeId) {
+      console.error(`[bridge] Resuming thread: ${resumeId}`);
+      this.thread = this.codex.resumeThread(resumeId);
       this.contextSeeded = true;
     } else {
       await this.startNewThread("initial");
     }
+    this.startHeartbeat();
+    this.installExitHandlers();
   }
 
   async handlePost(post: ForumPost) {
@@ -127,9 +145,10 @@ class CodexForumBridge {
     const body = post["post/body"] || "";
     if (!postId || !body) return;
     if (this.seen.has(postId)) return;
-    this.seen.add(postId);
+    this.markSeen(postId);
     if (author === this.config.nick) return;
     if (post["post/pattern-applied"] === BRIDGE_PATTERN) return;
+    this.lastSeenId = postId;
 
     const basePrompt = `[${author}]: ${body}`;
     const prompt = this.buildPrompt(basePrompt);
@@ -143,6 +162,7 @@ class CodexForumBridge {
       this.contextSeeded = true;
       await this.rollOverIfNeeded(result.usage);
       await this.sendReply(response);
+      this.scheduleSave();
     } catch (err) {
       console.error(`[bridge] Error: ${err}`);
       if (this.isContextError(err)) {
@@ -157,6 +177,7 @@ class CodexForumBridge {
           this.contextSeeded = true;
           await this.rollOverIfNeeded(retry.usage);
           await this.sendReply(response);
+          this.scheduleSave();
         } catch (retryErr) {
           console.error(`[bridge] Retry failed: ${retryErr}`);
         }
@@ -191,7 +212,7 @@ class CodexForumBridge {
         // Seed recent messages for context (do not respond)
         for (const post of recent) {
           const postId = post["post/id"];
-          if (postId) this.seen.add(postId);
+          if (postId) this.markSeen(postId);
         }
         if (this.contextSafe && !this.contextSeeded) {
           const tail = recent.slice(-this.contextRecentMessages);
@@ -231,7 +252,7 @@ class CodexForumBridge {
         if (!this.pollInitialized) {
           for (const post of posts) {
             const postId = post["post/id"];
-            if (postId) this.seen.add(postId);
+            if (postId) this.markSeen(postId);
           }
           if (this.contextSafe && !this.contextSeeded) {
             const tail = posts.slice(-this.contextRecentMessages);
@@ -357,6 +378,7 @@ class CodexForumBridge {
     console.error(`[bridge] Starting new thread (${reason})`);
     this.thread = this.codex.startThread(this.threadOptions);
     this.contextSeeded = false;
+    this.scheduleSave();
   }
 
   private buildPrompt(basePrompt: string): string {
@@ -482,6 +504,104 @@ class CodexForumBridge {
     }
     const joined = sections.join("\n");
     return joined.length > 2000 ? joined.slice(0, 2000).trim() : joined;
+  }
+
+  private resolveStatePath(): string | null {
+    if (FORUM_STATE_PATH) return FORUM_STATE_PATH;
+    const base = path.join(process.cwd(), "lab", "agency");
+    const safeThread = this.config.threadId || "unknown";
+    return path.join(base, `forum-bridge-${safeThread}.json`);
+  }
+
+  private loadResumeThreadId(): string | undefined {
+    return this.thread?.id || this.thread?.threadId || undefined;
+  }
+
+  private markSeen(postId: string) {
+    if (this.seen.has(postId)) return;
+    this.seen.add(postId);
+    this.seenOrder.push(postId);
+    if (this.seenOrder.length > FORUM_SEEN_LIMIT) {
+      const dropCount = this.seenOrder.length - FORUM_SEEN_LIMIT;
+      const dropped = this.seenOrder.splice(0, dropCount);
+      for (const id of dropped) {
+        this.seen.delete(id);
+      }
+    }
+    this.scheduleSave();
+  }
+
+  private scheduleSave() {
+    if (!this.statePath) return;
+    if (this.saveTimer) return;
+    this.saveTimer = setTimeout(() => {
+      this.saveTimer = null;
+      void this.saveState();
+    }, 1500);
+  }
+
+  private async saveState() {
+    if (!this.statePath) return;
+    const payload = {
+      threadId: this.config.threadId,
+      codexThreadId: this.thread?.id || this.thread?.threadId || null,
+      summary: this.summary,
+      recentMessages: this.recentMessages,
+      contextSeeded: this.contextSeeded,
+      seenIds: this.seenOrder,
+      lastSeenId: this.lastSeenId,
+      savedAt: new Date().toISOString(),
+    };
+    try {
+      await fs.mkdir(path.dirname(this.statePath), { recursive: true });
+      await fs.writeFile(this.statePath, JSON.stringify(payload, null, 2), "utf8");
+    } catch (err) {
+      console.error(`[bridge] Failed to save state: ${err}`);
+    }
+  }
+
+  private async loadState() {
+    if (!this.statePath) return;
+    try {
+      const raw = await fs.readFile(this.statePath, "utf8");
+      const data = JSON.parse(raw);
+      if (data.summary) this.summary = String(data.summary);
+      if (Array.isArray(data.recentMessages)) {
+        this.recentMessages = data.recentMessages.filter((m: any) => m && typeof m.text === "string");
+      }
+      if (typeof data.contextSeeded === "boolean") this.contextSeeded = data.contextSeeded;
+      if (Array.isArray(data.seenIds)) {
+        this.seenOrder = data.seenIds.filter((id: any) => typeof id === "string");
+        this.seen = new Set(this.seenOrder);
+      }
+      if (typeof data.lastSeenId === "string") this.lastSeenId = data.lastSeenId;
+      if (!this.config.resumeThreadId && typeof data.codexThreadId === "string") {
+        this.config.resumeThreadId = data.codexThreadId;
+      }
+      console.error(`[bridge] Loaded state from ${this.statePath}`);
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+        console.error(`[bridge] Failed to load state: ${err}`);
+      }
+    }
+  }
+
+  private startHeartbeat() {
+    if (!Number.isFinite(FORUM_HEARTBEAT_SECONDS) || FORUM_HEARTBEAT_SECONDS <= 0) return;
+    if (this.heartbeatTimer) return;
+    this.heartbeatTimer = setInterval(() => {
+      console.error(
+        `[bridge] heartbeat thread=${this.config.threadId} seen=${this.seen.size} last=${this.lastSeenId || "none"}`
+      );
+    }, FORUM_HEARTBEAT_SECONDS * 1000);
+  }
+
+  private installExitHandlers() {
+    const handler = () => {
+      void this.saveState().finally(() => process.exit(0));
+    };
+    process.on("SIGINT", handler);
+    process.on("SIGTERM", handler);
   }
 }
 

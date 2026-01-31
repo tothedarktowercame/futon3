@@ -4,9 +4,9 @@
 
 ;; Stream Claude Code session transcripts in real-time via WebSocket.
 ;;
-;; This package connects to futon3's /fulab/claude-stream/ws endpoint
-;; which tails a Claude Code JSONL file and pushes new events as they
-;; are written.
+;; This package connects to futon3's lab-ws Java-WebSocket server on port 5056
+;; which streams the full Claude Code JSONL history and pushes new events
+;; as they are written.
 ;;
 ;; Usage:
 ;;   M-x fuclient-claude-stream-connect
@@ -20,11 +20,11 @@
 ;;   RET - On a file path, open that file
 ;;
 ;; Configuration:
-;;   (setq fuclient-claude-stream-server "ws://localhost:5050")
+;;   (setq fuclient-claude-stream-server "ws://localhost:5056")
 ;;   (setq fuclient-claude-stream-default-path "~/.claude/projects/.../session.jsonl")
 ;;
 ;; For Codex/remote use, set the server to your futon3 host:
-;;   (setq fuclient-claude-stream-server "ws://your-server:5050")
+;;   (setq fuclient-claude-stream-server "ws://your-server:5056")
 
 ;;; Code:
 
@@ -36,8 +36,8 @@
   "Claude Code JSONL live streaming."
   :group 'communication)
 
-(defcustom fuclient-claude-stream-server "ws://localhost:5050"
-  "WebSocket server URL for futon3."
+(defcustom fuclient-claude-stream-server "ws://localhost:5056"
+  "WebSocket server URL for lab-ws (Java-WebSocket server)."
   :type 'string
   :group 'fuclient-claude-stream)
 
@@ -262,12 +262,11 @@
     ;; Disconnect existing
     (fuclient-claude-stream-disconnect)
 
-    ;; Build URL
+    ;; Build URL (lab-ws on 5056 uses direct query params, no path prefix)
     (let* ((encoded-path (url-hexify-string path))
-           (url (format "%s/fulab/claude-stream/ws?path=%s&tail=%d"
+           (url (format "%s?path=%s"
                         fuclient-claude-stream-server
-                        encoded-path
-                        fuclient-claude-stream-tail-lines)))
+                        encoded-path)))
 
       ;; Clear buffer
       (with-current-buffer (fuclient-claude-stream--get-buffer)

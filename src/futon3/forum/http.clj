@@ -129,7 +129,7 @@
       (let [send-fn (fn [event]
                       (when (http/open? channel)
                         (http/send! channel (json/encode event) false)))
-            wrapped-channel (with-meta channel {:send-fn send-fn})]
+            wrapped-channel {:channel channel :send-fn send-fn}]
 
         ;; Subscribe
         (forum/subscribe! wrapped-channel

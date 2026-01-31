@@ -278,8 +278,8 @@
   (doseq [[channel filter-opts] @subscribers]
     (when (matches-filter? event filter-opts)
       (try
-        ;; Channel send is injected by http layer
-        (when-let [send-fn (:send-fn (meta channel))]
+        ;; Channel send is injected by http layer (as map with :send-fn key)
+        (when-let [send-fn (or (:send-fn channel) (:send-fn (meta channel)))]
           (send-fn event))
         (catch Exception _ nil))))
   ;; Notify Java-WebSocket event handlers

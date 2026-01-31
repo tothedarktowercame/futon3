@@ -219,11 +219,10 @@
   "Handle WebSocket error ERR.
 Ignore spurious 400 errors that occur during SSL handshake but don't
 prevent the connection from working."
-  (unless (and (listp err)
-               (eq (car err) 'websocket-received-error-http-response)
-               (memq 400 err))
-    (fuclient-claude-stream--append
-     (format "\n--- Error: %s ---\n" err))))
+  (let ((err-str (format "%s" err)))
+    (unless (string-match-p "400" err-str)
+      (fuclient-claude-stream--append
+       (format "\n--- Error: %s ---\n" err)))))
 
 (defun fuclient-claude-stream--schedule-reconnect ()
   "Schedule a reconnection attempt."

@@ -38,6 +38,11 @@
   :type 'string
   :group 'fuclient-forum)
 
+(defcustom fuclient-forum-auto-refresh-interval 3
+  "Seconds between auto-refreshes in thread view. Set to 0 to disable."
+  :type 'integer
+  :group 'fuclient-forum)
+
 (defface fuclient-forum-author-face
   '((t :foreground "#88c0d0" :weight bold))
   "Face for post authors."
@@ -173,13 +178,40 @@
 (define-derived-mode fuclient-forum-thread-mode special-mode "Forum-Thread"
   "Mode for viewing a forum thread."
   (setq-local truncate-lines nil)
-  (setq buffer-read-only t))
+  (setq buffer-read-only t)
+  (add-hook 'kill-buffer-hook #'fuclient-forum--stop-auto-refresh nil t))
+
+(defvar-local fuclient-forum--refresh-timer nil
+  "Timer used to auto-refresh the current thread view.")
+
+(defun fuclient-forum--start-auto-refresh ()
+  "Start auto-refreshing the current thread view."
+  (when (and (numberp fuclient-forum-auto-refresh-interval)
+             (> fuclient-forum-auto-refresh-interval 0))
+    (let ((buf (current-buffer)))
+      (fuclient-forum--stop-auto-refresh)
+      (setq fuclient-forum--refresh-timer
+            (run-with-timer
+             fuclient-forum-auto-refresh-interval
+             fuclient-forum-auto-refresh-interval
+             (lambda ()
+               (when (buffer-live-p buf)
+                 (with-current-buffer buf
+                   (when fuclient-forum--current-thread-id
+                     (fuclient-forum-refresh-thread t))))))))))
+
+(defun fuclient-forum--stop-auto-refresh ()
+  "Stop auto-refreshing the current thread view."
+  (when (timerp fuclient-forum--refresh-timer)
+    (cancel-timer fuclient-forum--refresh-timer))
+  (setq fuclient-forum--refresh-timer nil))
 
 (defvar-local fuclient-forum--current-thread-id nil
   "Current thread ID in this buffer.")
 
-(defun fuclient-forum-view-thread (thread-id)
-  "View a thread by ID."
+(defun fuclient-forum-view-thread (thread-id &optional no-display)
+  "View a thread by ID. When NO-DISPLAY is non-nil, do not pop the buffer."
+  (interactive "sThread ID: ")
   (let* ((response (fuclient-forum--get (format "/forum/thread/%s" thread-id)))
          (thread (alist-get 'thread response))
          (posts (alist-get 'posts response))
@@ -205,8 +237,11 @@
         (dolist (post posts)
           (fuclient-forum--insert-post post))
         (goto-char (point-min))
-        (fuclient-forum-thread-mode)))
-    (pop-to-buffer buf)))
+        (fuclient-forum-thread-mode)
+        (fuclient-forum--start-auto-refresh)))
+    (unless no-display
+      (pop-to-buffer buf))
+    buf))
 
 (defun fuclient-forum--insert-post (post)
   "Insert a formatted POST."
@@ -237,12 +272,12 @@
     (insert (or body ""))
     (insert "\n\n")))
 
-(defun fuclient-forum-refresh-thread ()
-  "Refresh current thread."
+(defun fuclient-forum-refresh-thread (&optional no-display)
+  "Refresh current thread. When NO-DISPLAY is non-nil, avoid popping buffers."
   (interactive)
   (when fuclient-forum--current-thread-id
     (let ((at-end (>= (point) (- (point-max) 100))))
-      (fuclient-forum-view-thread fuclient-forum--current-thread-id)
+      (fuclient-forum-view-thread fuclient-forum--current-thread-id no-display)
       (if at-end
           (goto-char (point-max))
         (goto-char (point-min))))))

@@ -91,6 +91,9 @@
 (defvar fuclient-claude-stream--reconnect-timer nil
   "Timer for auto-reconnect.")
 
+(defvar fuclient-claude-stream--connected nil
+  "Non-nil if we received data (confirms connection worked).")
+
 (defcustom fuclient-claude-stream-auto-reconnect t
   "Whether to automatically reconnect on disconnect."
   :type 'boolean
@@ -174,6 +177,7 @@
 
 (defun fuclient-claude-stream--on-message (_ws frame)
   "Handle incoming WebSocket FRAME."
+  (setq fuclient-claude-stream--connected t)  ; Mark as successfully connected
   (let* ((payload (websocket-frame-text frame))
          (json-object-type 'alist)
          (json-array-type 'list)
@@ -204,17 +208,25 @@
             (format "ERROR: %s\n" (cdr (assq 'err data))))))))))
 
 (defun fuclient-claude-stream--on-close (_ws)
-  "Handle WebSocket close."
-  (message "[claude-stream] on-close called")
-  (fuclient-claude-stream--append "\n--- Disconnected ---\n")
-  (when fuclient-claude-stream--ping-timer
-    (cancel-timer fuclient-claude-stream--ping-timer)
-    (setq fuclient-claude-stream--ping-timer nil))
-  (setq fuclient-claude-stream--websocket nil)
-  ;; Auto-reconnect if enabled and we have a path
-  (when (and fuclient-claude-stream-auto-reconnect
-             fuclient-claude-stream--current-path)
-    (fuclient-claude-stream--schedule-reconnect)))
+  "Handle WebSocket close.
+Ignore spurious close events during SSL handshake (when we haven't
+received any data yet)."
+  (message "[claude-stream] on-close called, connected=%s" fuclient-claude-stream--connected)
+  ;; Only act on close if we actually received data (not spurious SSL handshake close)
+  (if fuclient-claude-stream--connected
+      (progn
+        (fuclient-claude-stream--append "\n--- Disconnected ---\n")
+        (when fuclient-claude-stream--ping-timer
+          (cancel-timer fuclient-claude-stream--ping-timer)
+          (setq fuclient-claude-stream--ping-timer nil))
+        (setq fuclient-claude-stream--websocket nil)
+        (setq fuclient-claude-stream--connected nil)
+        ;; Auto-reconnect if enabled and we have a path
+        (when (and fuclient-claude-stream-auto-reconnect
+                   fuclient-claude-stream--current-path)
+          (fuclient-claude-stream--schedule-reconnect)))
+    ;; Spurious close during handshake - ignore
+    (message "[claude-stream] Ignoring spurious close during handshake")))
 
 (defun fuclient-claude-stream--on-error (_ws _type err)
   "Handle WebSocket error ERR.
@@ -292,6 +304,7 @@ prevent the connection from working."
 
       ;; Connect
       (setq fuclient-claude-stream--current-path path)
+      (setq fuclient-claude-stream--connected nil)  ; Reset connected flag
       (setq fuclient-claude-stream--websocket
             (websocket-open url
                             :on-open (lambda (_ws) (message "[claude-stream] WebSocket connected"))
@@ -321,7 +334,8 @@ prevent the connection from working."
     (when (and fuclient-claude-stream--websocket
                (websocket-openp fuclient-claude-stream--websocket))
       (websocket-close fuclient-claude-stream--websocket)))
-  (setq fuclient-claude-stream--websocket nil))
+  (setq fuclient-claude-stream--websocket nil)
+  (setq fuclient-claude-stream--connected nil))
 
 (defun fuclient-claude-stream-reconnect ()
   "Reconnect to the current stream."

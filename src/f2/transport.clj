@@ -1094,6 +1094,59 @@
                      :active active?})))
            (sort-by :modified #(compare %2 %1))))))
 
+(defn- read-first-jsonl
+  "Read and parse the first JSON object in JSONL FILE."
+  [file]
+  (try
+    (with-open [reader (io/reader file)]
+      (loop []
+        (when-let [line (.readLine reader)]
+          (if (str/blank? line)
+            (recur)
+            (try
+              (json/parse-string line true)
+              (catch Exception _
+                (recur)))))))
+    (catch Exception _
+      nil)))
+
+(defn- normalize-project-path [path]
+  (let [home (System/getProperty "user.home")]
+    (if (and path home (str/starts-with? path home))
+      (str "~" (subs path (count home)))
+      path)))
+
+(defn- scan-codex-sessions
+  "Scan ~/.codex/sessions/ for JSONL session files.
+   Returns list of session maps sorted by modification time (newest first)."
+  []
+  (let [codex-dir (io/file (System/getProperty "user.home") ".codex" "sessions")]
+    (when (.exists codex-dir)
+      (->> (file-seq codex-dir)
+           (filter #(and (.isFile %)
+                         (str/ends-with? (.getName %) ".jsonl")))
+           (map (fn [f]
+                  (let [path (.getAbsolutePath f)
+                        modified (.lastModified f)
+                        size (.length f)
+                        active? (> modified (- (System/currentTimeMillis) 3600000))
+                        meta (read-first-jsonl f)
+                        payload (:payload meta)
+                        session-id (or (:id payload)
+                                       (str/replace (.getName f) #"\.jsonl$" ""))
+                        cwd (normalize-project-path (:cwd payload))
+                        project (or cwd "codex")
+                        originator (:originator payload)]
+                    {:id session-id
+                     :project project
+                     :path path
+                     :modified (str (java.time.Instant/ofEpochMilli modified))
+                     :size-kb (quot size 1024)
+                     :active active?
+                     :source "codex"
+                     :originator originator})))
+           (sort-by :modified #(compare %2 %1))))))
+
 (defn- scan-lab-raw
   "Scan lab/raw/ for archived session JSON files.
    Returns list of session maps sorted by modification time (newest first)."
@@ -1120,10 +1173,11 @@
              (sort-by :modified #(compare %2 %1)))))))
 
 (defn- handle-lab-sessions-active
-  "List active Claude Code sessions."
+  "List active Codex/Claude sessions."
   [_state _request]
   (try
-    (let [sessions (scan-claude-projects)]
+    (let [sessions (concat (or (scan-claude-projects) [])
+                           (or (scan-codex-sessions) []))]
       (json-response 200 {:ok true :sessions (vec sessions)}))
     (catch Exception e
       (json-response 500 {:ok false :err "scan-failed" :detail (.getMessage e)}))))
@@ -1490,7 +1544,8 @@
       (and (= method :get) (= uri "/fulab/lab/sessions"))
       ;; Combined: active + archived
       (try
-        (let [active (or (scan-claude-projects) [])
+        (let [active (concat (or (scan-claude-projects) [])
+                             (or (scan-codex-sessions) []))
               archived (or (scan-lab-raw state) [])
               all (concat (map #(assoc % :source "active") active)
                           (map #(assoc % :source "archived") archived))]

@@ -1,6 +1,6 @@
 CLOJURE=clojure
 
-.PHONY: dev test demo repl lint
+.PHONY: dev test demo repl lint sync-patterns
 
 dev:
 	./scripts/dev.sh
@@ -18,3 +18,6 @@ repl:
 
 lint:
 	./scripts/lint.sh
+
+sync-patterns:
+	./scripts/sync_patterns.sh

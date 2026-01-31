@@ -1,0 +1,44 @@
+@flexiarg stack-coherence/futon1-storage-coherence
+@title Futon1 Storage Coherence Guard
+@sigils [🗿/正]
+@audience futon stewards, stack maintainers
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/futon1-determinism sidecar/validation-enforcement-gate repository-transition/invariants]
+
+! conclusion:
+  keep Futon1 storage coherent by enforcing Charon-guarded invariant checks on every write, requiring a penholder registry entry for each model descriptor, and bootstrapping the penholder registry before first write to a new data dir
+
+  + context: Futon1 graph memory restores from XTDB or legacy events, then immediately enforces model invariants on startup and on every write.
+  + IF:
+    `app.store/tx!` runs a verify function on a preview conn and rejects writes when invariants fail, and `app.store-manager` installs the Charon guardian when `MODEL_VERIFY_ON_WRITE` is enabled
+
+  + HOWEVER:
+    new or swapped `BASIC_CHAT_DATA_DIR` roots can be missing penholder registry entries, and missing `MODEL_PENHOLDER` values make authorization fail on the very first model descriptor upsert
+
+  + THEN:
+    always enable `MODEL_VERIFY_ON_WRITE` in production, set `MODEL_PENHOLDER`, and run `scripts.charon-penholder-bootstrap` (or equivalent) once per new data root before starting the API; keep `BASIC_CHAT_DATA_DIR` isolated per running JVM
+
+  + BECAUSE:
+    the Charon guard provides deterministic rejection of invalid writes, and the penholder registry ensures every model descriptor is authorized and signed before it can mutate the store
+
+  + IMPLEMENTATION:
+    `apps/graph-memory/src/app/store.clj`: `tx!` forbids `:skip-verify?`, verifies against a preview conn, and throws on invariant failure
+    `apps/graph-memory/src/app/store_manager.clj`: installs `charon-guard/guard-event`, ensures descriptors, and checks invariants at startup
+    `apps/graph-memory/src/app/invariants.clj`: `verify-event` enforces penholder registry membership for model descriptors
+    `apps/graph-memory/src/scripts/charon_penholder_bootstrap.clj`: seeds the penholder registry with model descriptor entries
+
+  + SETTINGS:
+    BASIC_CHAT_DATA_DIR: data root (unique per JVM)
+    MODEL_PENHOLDER: identity used for penholder certificates (e.g. user)
+    MODEL_VERIFY_ON_WRITE: enable Charon guard on every write (default true)
+    XTDB_CONFIG: path to XTDB config for canonical store
+
+  + FAILURE-MODES:
+    penholder missing entry -> invariant failure on first descriptor write
+    unauthorized penholder -> reject writes until registry updated
+    shared data dir across JVMs -> nondeterministic invariants and corruption
+
+  + NEXT-STEPS:
+    next[Add a bootstrap hook in dev scripts to seed penholder registry on empty data dirs.]
+    next[Surface penholder/invariant failures as explicit stack blockers in triage logs.]

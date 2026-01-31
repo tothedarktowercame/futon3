@@ -96,6 +96,14 @@
   :type 'integer
   :group 'fuclient-claude-stream)
 
+(defun fuclient-claude-stream--local-server-p ()
+  "Return non-nil if the configured server is local."
+  (let ((server (or fuclient-claude-stream-server "")))
+    (or (string-match-p "\\`ws://localhost\\b" server)
+        (string-match-p "\\`ws://127\\.0\\.0\\.1\\b" server)
+        (string-match-p "\\`wss://localhost\\b" server)
+        (string-match-p "\\`wss://127\\.0\\.0\\.1\\b" server))))
+
 (defun fuclient-claude-stream--get-buffer ()
   "Get or create the stream buffer."
   (let ((buf (get-buffer-create fuclient-claude-stream--buffer-name)))
@@ -247,7 +255,8 @@
                                   "~/.claude/projects/"))))
     ;; Expand and validate path
     (setq path (expand-file-name path))
-    (unless (file-exists-p path)
+    (unless (or (file-exists-p path)
+                (not (fuclient-claude-stream--local-server-p)))
       (user-error "File not found: %s" path))
 
     ;; Disconnect existing

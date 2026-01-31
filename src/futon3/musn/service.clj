@@ -2094,8 +2094,7 @@
               {:thread-id new-thread-id :author author})))
         (catch Throwable t
           (binding [*out* *err*]
-            (println "[musn] forum thread creation failed:" (.getMessage t))))
-        nil))))
+            (println "[musn] forum thread creation failed:" (.getMessage t))))))))
 
 (defn- relay-par-to-forum!
   [entry forum par-event]

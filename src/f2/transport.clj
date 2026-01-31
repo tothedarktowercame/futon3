@@ -1312,13 +1312,13 @@
   "WebSocket endpoint for streaming Claude Code JSONL file changes.
    Query params:
    - path: path to JSONL file (required)
-   - tail: number of recent lines to send on connect (default 50)"
+   - tail: number of recent lines to send on connect (default: all lines)"
   [state request]
   (let [params (or (:query-params request)
                    (parse-query-string (:query-string request))
                    {})
         jsonl-path (get params "path")
-        tail-lines (or (some-> (get params "tail") Integer/parseInt) 50)]
+        tail-lines (some-> (get params "tail") Integer/parseInt)]  ;; nil = all lines
     (if (or (nil? jsonl-path) (not (.exists (io/file jsonl-path))))
       (json-response 400 {:ok false :err "invalid-path" :path jsonl-path})
       (http/with-channel request channel
@@ -1330,11 +1330,13 @@
           (swap! claude-stream-watchers assoc watcher-id
                  {:path jsonl-path :channel channel :stop-flag stop-flag})
 
-          ;; Send initial tail
+          ;; Send initial history (full by default, or tail if specified)
           (try
             (with-open [rdr (io/reader file)]
               (let [all-lines (vec (line-seq rdr))
-                    recent (take-last tail-lines all-lines)
+                    recent (if tail-lines
+                             (take-last tail-lines all-lines)
+                             all-lines)
                     events (->> recent
                                 (map parse-claude-jsonl-line)
                                 (filter some?)

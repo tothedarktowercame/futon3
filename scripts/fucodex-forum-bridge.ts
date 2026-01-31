@@ -157,13 +157,20 @@ class CodexForumBridge {
     if (!postId || !body) return;
     if (this.seen.has(postId)) return;
     this.markSeen(postId);
-    if (author === this.config.nick) return;
-    if (post["post/pattern-applied"] === BRIDGE_PATTERN) return;
+    if (author === this.config.nick) {
+      console.error(`[bridge] rx ${postId} from self (ignored)`);
+      return;
+    }
+    if (post["post/pattern-applied"] === BRIDGE_PATTERN) {
+      console.error(`[bridge] rx ${postId} from bridge pattern (ignored)`);
+      return;
+    }
     this.lastSeenId = postId;
 
     const basePrompt = `[${author}]: ${body}`;
     const prompt = this.buildPrompt(basePrompt);
-    console.error(`[bridge] Received: ${prompt.slice(0, 200)}...`);
+    console.error(`[bridge] rx ${postId} ${author} (${body.length} chars)`);
+    console.error(`[bridge] rx preview: ${body.slice(0, 200)}${body.length > 200 ? "..." : ""}`);
 
     try {
       const result = await this.thread.run(prompt);
@@ -172,7 +179,7 @@ class CodexForumBridge {
       this.recordMessage({ role: "assistant", author: this.config.nick, text: response });
       this.contextSeeded = true;
       await this.rollOverIfNeeded(result.usage);
-      await this.sendReply(response);
+      await this.sendReply(response, postId);
       this.scheduleSave();
     } catch (err) {
       console.error(`[bridge] Error: ${err}`);
@@ -187,7 +194,7 @@ class CodexForumBridge {
           this.recordMessage({ role: "assistant", author: this.config.nick, text: response });
           this.contextSeeded = true;
           await this.rollOverIfNeeded(retry.usage);
-          await this.sendReply(response);
+          await this.sendReply(response, postId);
           this.scheduleSave();
         } catch (retryErr) {
           console.error(`[bridge] Retry failed: ${retryErr}`);
@@ -251,7 +258,7 @@ class CodexForumBridge {
       setTimeout(() => this.runListener(), WS_RECONNECT_DELAY * 1000);
     });
     this.ws.addEventListener("error", (err) => {
-      console.error("[bridge] WebSocket error:", err);
+      console.error(`[bridge] WebSocket error: ${err}`);
     });
   }
 
@@ -330,9 +337,11 @@ class CodexForumBridge {
     return `ws://${trimmed}/forum/stream/ws`;
   }
 
-  private async sendReply(text: string) {
+  private async sendReply(text: string, replyTo?: string) {
     const chunks = this.splitMessage(text, 1800);
+    let index = 0;
     for (const chunk of chunks) {
+      index += 1;
       const payload = {
         author: this.config.nick,
         body: chunk,
@@ -344,7 +353,11 @@ class CodexForumBridge {
         body: JSON.stringify(payload),
       });
       if (!response.ok) {
-        console.error(`[bridge] Post failed: ${response.status}`);
+        console.error(`[bridge] tx failed ${response.status} (chunk ${index}/${chunks.length})`);
+      } else {
+        console.error(
+          `[bridge] tx ok${replyTo ? ` reply-to ${replyTo}` : ""} (chunk ${index}/${chunks.length}, ${chunk.length} chars)`
+        );
       }
     }
   }
@@ -538,9 +551,10 @@ class CodexForumBridge {
       this.logStream = createWriteStream(this.logPath, { flags: "a" });
       const originalError = console.error.bind(console);
       console.error = (...args: unknown[]) => {
-        originalError(...args);
+        const timestamp = new Date().toISOString();
+        const line = `[${timestamp}] ${args.map((arg) => String(arg)).join(" ")}`;
+        originalError(line);
         if (this.logStream) {
-          const line = args.map((arg) => String(arg)).join(" ");
           this.logStream.write(`${line}\n`);
         }
       };

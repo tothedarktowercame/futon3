@@ -189,28 +189,58 @@ make test   # unit + replay tests
 
 ## Drawbridge hot reloading
 
-The HTTP handlers use var references (`#'handler`) so code changes can be hot-reloaded without restarting the server.
+**IMPORTANT**: Always use hot-reloading instead of restarting the server. Drawbridge is enabled by default in `make dev` and runs on port 6767.
 
-### Reloading after edits
+### Prerequisites
 
-After editing a Clojure source file, reload it via Drawbridge:
+Drawbridge requires `ADMIN_TOKEN` to be set. The `make dev` script automatically loads it from `.admintoken` if present:
 
 ```bash
-curl -s -X POST "http://127.0.0.1:6767/repl" \
-  -H "X-Admin-Token: $ADMIN_TOKEN" \
-  --data-urlencode 'op=eval' \
-  --data-urlencode 'code=(load-file "src/f2/transport.clj")'
+# Create token file (one-time setup)
+echo "your-secret-token" > .admintoken
 ```
 
-Use `load-file` rather than `require :reload` - it forces re-reading from disk.
+### Using the repl-eval helper
+
+The `scripts/repl-eval` script is the preferred way to hot-reload code:
+
+```bash
+# Reload a namespace after editing
+./scripts/repl-eval '(require '\''f2.transport :reload)'
+
+# Or use load-file for guaranteed re-read from disk
+./scripts/repl-eval '(load-file "src/f2/transport.clj")'
+
+# Evaluate any Clojure expression
+./scripts/repl-eval '(+ 1 2)'
+
+# Check current state
+./scripts/repl-eval '(count @f2.transport/claude-stream-watchers)'
+```
 
 ### Common reload targets
 
 | File | Reload command |
 |------|----------------|
-| Transport (port 5050) | `(load-file "src/f2/transport.clj")` |
-| MUSN HTTP (port 6065) | `(load-file "src/futon3/musn/http.clj")` |
-| MUSN service | `(load-file "src/futon3/musn/service.clj")` |
+| Transport (port 5050) | `(require 'f2.transport :reload)` |
+| MUSN HTTP (port 6065) | `(require 'futon3.musn.http :reload)` |
+| MUSN service | `(require 'futon3.musn.service :reload)` |
+| Lab WebSocket (port 5056) | `(require 'futon3.lab.ws :reload)` |
+
+### Verifying Drawbridge is running
+
+```bash
+# Should return a result, not "connection refused"
+./scripts/repl-eval '(+ 1 2)'
+
+# Check listening ports
+ss -tlnp | grep 6767
+```
+
+If Drawbridge isn't running, check:
+1. `ADMIN_TOKEN` is set (or `.admintoken` file exists)
+2. `FUTON3_DRAWBRIDGE` is not set to `0`
+3. Restart `make dev` to pick up changes
 
 ### When to restart instead
 
@@ -218,6 +248,7 @@ Some changes still require a full server restart:
 - Adding new dependencies to `deps.edn`
 - Changes to startup/initialization code in `f2.musn`
 - Modifications to atoms/state that are initialized with `defonce`
+- Adding new Java-WebSocket servers (forum-ws, lab-ws)
 
 ## Realtime pattern checking
 

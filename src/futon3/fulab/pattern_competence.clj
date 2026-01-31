@@ -107,6 +107,23 @@
    :rejections {}
    :horizon :short})
 
+(defn par-template
+  "Post-Action Review template for session punctuation.
+   Tags: :checkpoint, :detach, :reattach"
+  [session-id sequence]
+  {:par/id (str (java.util.UUID/randomUUID))
+   :session/id session-id
+   :par/sequence sequence
+   :par/span {:from-eid nil :to-eid nil      ;; event IDs (primary)
+              :from-ts nil :to-ts nil}        ;; timestamps (optional fallback)
+   :par/questions {:intention ""              ;; what we expected to learn/make
+                   :happening ""              ;; what and how we're learning
+                   :perspectives ""           ;; different views on what's happening
+                   :learned ""                ;; what we learned or changed
+                   :forward ""}               ;; what else should we change
+   :par/tags []                               ;; :checkpoint, :detach, :reattach
+   :par/created-at (now-inst)})
+
 (defn pattern-proposal-template [session-id]
   {:proposal/id (str (java.util.UUID/randomUUID))
    :session/id session-id

@@ -2025,3 +2025,56 @@
                 (when (:ok result)
                   (swap! created conj (:link result))))))))
       {:ok true :links-created (count @created) :links @created})))
+
+;; =============================================================================
+;; PAR (Post-Action Review) events
+;; =============================================================================
+
+(defn create-par!
+  "Create a Post-Action Review event for session punctuation.
+
+   Tags can include :checkpoint, :detach, :reattach.
+   Span references the event range covered by this PAR.
+   Questions follow the 5-question PAR template:
+   - intention: what we expected to learn/make
+   - happening: what and how we're learning
+   - perspectives: different views on what's happening
+   - learned: what we learned or changed
+   - forward: what else should we change
+
+   Returns the PAR event."
+  [session-id & {:keys [span-from span-to questions tags]
+                 :or {tags [:checkpoint]}}]
+  (when-let [entry (get-session session-id)]
+    (let [par-id (str "par-" (subs (str (java.util.UUID/randomUUID)) 0 8))
+          events (:events entry)
+          sequence (inc (count (filter #(= :session/par (:event/type %)) events)))
+          now (fulab-musn/now-inst)
+          par-event {:event/type :session/par
+                     :at now
+                     :par/id par-id
+                     :par/sequence sequence
+                     :par/span {:from-eid span-from
+                                :to-eid span-to
+                                :from-ts (when span-from
+                                           (:at (first (filter #(= span-from (:event/id %)) events))))
+                                :to-ts now}
+                     :par/questions (or questions {})
+                     :par/tags (vec tags)
+                     :session/id session-id}]
+      (append-lab-event! entry par-event)
+      {:ok true :par par-event})))
+
+(defn get-pars
+  "Get all PAR events for a session."
+  [session-id]
+  (when-let [entry (get-session session-id)]
+    (->> (:events entry)
+         (filter #(= :session/par (:event/type %)))
+         (sort-by :par/sequence)
+         vec)))
+
+(defn latest-par
+  "Get the most recent PAR for a session."
+  [session-id]
+  (last (get-pars session-id)))

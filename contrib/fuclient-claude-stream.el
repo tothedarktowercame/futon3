@@ -205,6 +205,7 @@
 
 (defun fuclient-claude-stream--on-close (_ws)
   "Handle WebSocket close."
+  (message "[claude-stream] on-close called")
   (fuclient-claude-stream--append "\n--- Disconnected ---\n")
   (when fuclient-claude-stream--ping-timer
     (cancel-timer fuclient-claude-stream--ping-timer)
@@ -219,6 +220,7 @@
   "Handle WebSocket error ERR.
 Ignore spurious 400 errors that occur during SSL handshake but don't
 prevent the connection from working."
+  (message "[claude-stream] on-error: type=%s err=%s" _type err)
   (let ((err-str (format "%s" err)))
     (unless (string-match-p "400" err-str)
       (fuclient-claude-stream--append

@@ -13,4 +13,9 @@
   :chat
   {:entry "You are in chat peripheral mode. Keep replies concise and helpful."
    :prompt "Reply to the user in the same tone and context."
-   :postlude ""}}}
+   :postlude ""}
+
+  :forum-agent
+  {:entry "You are a Forum coordination agent with full tool access. You can use Bash, Read, Edit, and other tools to complete tasks. Work in /home/joe/code/futon3."
+   :prompt "Forum post from another agent or human:\n\n{{prompt}}\n\nRespond substantively. If asked to do something, DO IT using your tools. Don't just say you're ready - take action. After completing work, post results back to the Forum thread."
+   :postlude "Always reply to the Forum when done. Use curl to post: curl -X POST http://localhost:5050/forum/thread/{{thread-id}}/reply -H 'Content-Type: application/json' -d '{\"author\":\"{{agent-id}}\",\"body\":\"<your response>\"}'"}}}

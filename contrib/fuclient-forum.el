@@ -69,12 +69,23 @@
           (when data '(("Content-Type" . "application/json"))))
          (url-request-data (when data (encode-coding-string (json-encode data) 'utf-8)))
          (url (concat fuclient-forum-server endpoint)))
-    (with-current-buffer (url-retrieve-synchronously url t)
-      (goto-char (point-min))
-      (re-search-forward "^$")
-      (let ((json-object-type 'alist)
-            (json-array-type 'list))
-        (json-read)))))
+    (message "Forum request: %s %s" method url)
+    (condition-case err
+        (with-current-buffer (url-retrieve-synchronously url t t 10)
+          (goto-char (point-min))
+          (if (re-search-forward "^$" nil t)
+              (let ((json-object-type 'alist)
+                    (json-array-type 'list))
+                (condition-case json-err
+                    (json-read)
+                  (error
+                   (message "JSON parse error: %s" json-err)
+                   nil)))
+            (message "No response body found")
+            nil))
+      (error
+       (message "Forum request failed: %s" err)
+       nil))))
 
 (defun fuclient-forum--get (endpoint)
   "GET request to forum."
@@ -230,7 +241,11 @@
   "Refresh current thread."
   (interactive)
   (when fuclient-forum--current-thread-id
-    (fuclient-forum-view-thread fuclient-forum--current-thread-id)))
+    (let ((at-end (>= (point) (- (point-max) 100))))
+      (fuclient-forum-view-thread fuclient-forum--current-thread-id)
+      (if at-end
+          (goto-char (point-max))
+        (goto-char (point-min))))))
 
 ;; =============================================================================
 ;; Tree view
@@ -307,6 +322,12 @@
 (defun fuclient-forum-reply ()
   "Reply to post at point."
   (interactive)
+  ;; Try to recover thread-id from buffer name if not set
+  (unless fuclient-forum--current-thread-id
+    (when (string-match "\\*Forum: \\(t-[^*]+\\)\\*" (buffer-name))
+      (setq-local fuclient-forum--current-thread-id (match-string 1 (buffer-name)))))
+  (unless fuclient-forum--current-thread-id
+    (user-error "Not in a forum thread buffer"))
   (let ((post-id (get-text-property (point) 'fuclient-post-id)))
     (unless post-id
       (setq post-id (alist-get 'thread/root-post-id
@@ -320,15 +341,17 @@
                    (body . ,body)
                    (in-reply-to . ,post-id)
                    ,@(when (not (string-empty-p pattern))
-                       `((pattern-applied . ,pattern)))))
-           (response (fuclient-forum--post
-                      (format "/forum/thread/%s/reply" fuclient-forum--current-thread-id)
-                      data)))
-      (if (alist-get 'ok response)
-          (progn
-            (message "Reply posted")
-            (fuclient-forum-refresh-thread))
-        (message "Failed: %s" (alist-get 'err response))))))
+                       `((pattern-applied . ,pattern))))))
+      (message "Posting to %s as %s..." fuclient-forum--current-thread-id author)
+      (let ((response (fuclient-forum--post
+                       (format "/forum/thread/%s/reply" fuclient-forum--current-thread-id)
+                       data)))
+        (if (and response (alist-get 'ok response))
+            (progn
+              (message "Reply posted: %s" (alist-get 'post/id (alist-get 'post response)))
+              (fuclient-forum-refresh-thread)
+              (goto-char (point-max)))
+          (message "Failed: %s" (or (alist-get 'err response) "no response")))))))
 
 ;; =============================================================================
 ;; Live stream (WebSocket)

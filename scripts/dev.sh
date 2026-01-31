@@ -8,6 +8,7 @@ set -euo pipefail
 #   - UI on port 6060
 #   - MUSN HTTP on port 6065
 #   - IRC bridge on port 6667
+#   - Forum WebSocket on port 5055
 #   - Chat supervisor (polling)
 #   - Agency HTTP on port 7070 (separate process)
 #
@@ -19,6 +20,18 @@ set -euo pipefail
 #
 # Example: run without chat supervisor (for manual fuclaude testing)
 #   FUTON3_CHAT_SUPERVISOR=0 ./scripts/dev.sh
+
+cd "$(dirname "$0")/.."
+
+# Load environment defaults
+# Priority: existing env vars > .env.local > .env.dev
+if [[ -f .env.local ]]; then
+  echo "[dev] Loading .env.local"
+  set -a; source .env.local; set +a
+elif [[ -f .env.dev ]]; then
+  echo "[dev] Loading .env.dev"
+  set -a; source .env.dev; set +a
+fi
 
 touch /tmp/musn_stream.log
 

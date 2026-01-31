@@ -103,17 +103,22 @@
   ([{:keys [port]}]
    (let [port (or port
                   (some-> (System/getenv "FORUM_WS_PORT") Integer/parseInt)
-                  5055)
-         server (create-server port)]
+                  5055)]
+     (try
+       (let [server (create-server port)]
+         ;; Register with forum service for events
+         (forum/register-event-handler! forum-event-handler)
 
-     ;; Register with forum service for events
-     (forum/register-event-handler! forum-event-handler)
+         (.start server)
+         (reset! server-state {:server server :port port})
 
-     (.start server)
-     (reset! server-state {:server server :port port})
-
-     (println "[forum-ws] Forum WebSocket server running on port" port)
-     server)))
+         (println "[forum-ws] Forum WebSocket server running on port" port)
+         server)
+       (catch Exception e
+         (println "[forum-ws] ERROR: Failed to start WebSocket server on port" port)
+         (println "[forum-ws] Exception:" (.getMessage e))
+         (.printStackTrace e)
+         nil)))))
 
 (defn stop! []
   (when-let [{:keys [server]} @server-state]
@@ -122,3 +127,12 @@
     (reset! server-state nil)
     (reset! clients {})
     (println "[forum-ws] Forum WebSocket server stopped")))
+
+(defn status
+  "Return current WebSocket server status."
+  []
+  (if-let [{:keys [server port]} @server-state]
+    {:running true
+     :port port
+     :clients (count @clients)}
+    {:running false}))

@@ -8,9 +8,11 @@
     "clean": "rm -rf resources/public/js"
   },
   "devDependencies": {
+    "@types/ws": "^8.18.1",
     "shadow-cljs": "^2.26.0"
   },
   "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.2.27",
     "@openai/codex-sdk": "^0.92.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"

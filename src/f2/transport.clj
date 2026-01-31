@@ -1103,10 +1103,12 @@
         (when-let [line (.readLine reader)]
           (if (str/blank? line)
             (recur)
-            (try
-              (json/parse-string line true)
-              (catch Exception _
-                (recur)))))))
+            (let [parsed (try
+                           (json/parse-string line true)
+                           (catch Exception _ ::invalid))]
+              (if (identical? parsed ::invalid)
+                (recur)
+                parsed))))))
     (catch Exception _
       nil)))
 

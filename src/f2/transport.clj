@@ -14,6 +14,7 @@
             [futon3.forum.http :as forum-http]
             [futon3.forum.service :as forum-svc]
             [futon3.forum.ws :as forum-ws]
+            [futon3.lab.ws :as lab-ws]
             [futon3.musn.service :as musn-svc]
             [futon3.tatami :as tatami]
             [futon3.workday :as workday]
@@ -1473,6 +1474,7 @@
           ports {:transport (or (:transport-port config) 5050)
                  :ui (or (:ui-port config) 6060)
                  :forum-ws 5055
+                 :lab-ws 5056
                  :musn-http (get-in config [:musn-http :port] 6065)
                  :irc-bridge (get-in config [:irc-bridge :port] 6667)
                  :futon1-api (get-in config [:futon1-api :port] 8080)}
@@ -1480,6 +1482,7 @@
           services {:transport true
                     :ui true
                     :forum-ws true
+                    :lab-ws true
                     :musn-http (get-in config [:musn-http :enabled?] true)
                     :irc-bridge (get-in config [:irc-bridge :enabled?] true)
                     :futon1-api (get-in config [:futon1-api :enabled?] true)}
@@ -1716,8 +1719,9 @@
    (reset! server-state state)
    ;; Initialize forum service
    (forum-svc/init!)
-   ;; Start Java-WebSocket server for forum (avoids http-kit compression issues)
+   ;; Start Java-WebSocket servers (avoids http-kit masking/compression issues)
    (forum-ws/start!)
+   (lab-ws/start!)
    (let [port (or port (get-in state [:config :transport-port] 5050))
          stop-fn (http/run-server #'reloadable-handler {:port port})]
      (swap! (:config state) assoc :transport-port port)

@@ -9,11 +9,13 @@ set -euo pipefail
 #   - MUSN HTTP on port 6065
 #   - IRC bridge on port 6667
 #   - Chat supervisor (polling)
+#   - Agency HTTP on port 7070 (separate process)
 #
 # Environment variables to disable services:
 #   FUTON3_MUSN_HTTP=0       - disable MUSN HTTP service
 #   FUTON3_IRC_BRIDGE=0      - disable IRC bridge
 #   FUTON3_CHAT_SUPERVISOR=0 - disable chat supervisor
+#   FUTON3_AGENCY=0          - disable Agency HTTP service
 #
 # Example: run without chat supervisor (for manual fuclaude testing)
 #   FUTON3_CHAT_SUPERVISOR=0 ./scripts/dev.sh
@@ -60,8 +62,31 @@ fi
 
 # Pass through any JVM opts for memory limits if desired
 # Example: JAVA_OPTS="-Xmx1g" ./scripts/dev.sh
+port_open() {
+  local port="$1"
+  (echo > "/dev/tcp/127.0.0.1/${port}") >/dev/null 2>&1
+}
+
+agency_pid=""
+if [[ "${FUTON3_AGENCY:-1}" != "0" ]]; then
+  if port_open 7070; then
+    echo "[dev] Agency already running on port 7070."
+  else
+    echo "[dev] Starting Agency on port 7070..."
+    (cd "${ROOT}" && ./scripts/agency) &
+    agency_pid="$!"
+  fi
+fi
+
+cleanup() {
+  if [[ -n "${agency_pid}" ]]; then
+    kill "${agency_pid}" >/dev/null 2>&1 || true
+  fi
+}
+trap cleanup EXIT
+
 if [[ -n "${JAVA_OPTS:-}" ]]; then
-  exec clojure $JAVA_OPTS -M:dev "$@"
+  clojure $JAVA_OPTS -M:dev "$@"
 else
-  exec clojure -M:dev "$@"
+  clojure -M:dev "$@"
 fi

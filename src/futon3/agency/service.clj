@@ -37,7 +37,7 @@
    :summary-words (env-int "AGENCY_SUMMARY_WORDS" 250)
    :recent-messages (env-int "AGENCY_CONTEXT_RECENT_MESSAGES" 12)
    :lock-timeout-ms (env-int "AGENCY_LOCK_TIMEOUT_MS" 15000)
-   :codex-bin (or (System/getenv "AGENCY_CODEX_BIN") "claude")
+   :codex-bin (or (System/getenv "AGENCY_CODEX_BIN") "codex")
    :futon3a-root (or (System/getenv "AGENCY_FUTON3A_ROOT")
                      (str (io/file (System/getProperty "user.dir") ".." "futon3a")))
    :workdir (or (System/getenv "AGENCY_WORKDIR")
@@ -82,6 +82,8 @@
    :agent/summary ""
    :agent/recent-messages []
    :agent/token-usage nil
+   :agent/rollover-required false
+   :agent/rollover-reason nil
    :agent/last-active (now-inst)})
 
 (defn ensure-agent-state!
@@ -555,43 +557,42 @@
                           :metadata payload})})
       (catch Exception _ nil))))
 
-(defn roll-over!
+(defn- roll-over-state!
   [agent-id reason {:keys [musn forum]}]
+  (let [state (ensure-agent-state! agent-id)
+        _ (when (or (seq (:agent/summary state))
+                    (seq (:agent/recent-messages state)))
+            (update-summary! agent-id state reason))
+        current-thread (:agent/current-thread-id (ensure-agent-state! agent-id))
+        next-chain (cond-> (vec (or (:agent/ancestor-chain state) []))
+                     current-thread (conj current-thread))]
+    (update-agent-state!
+     agent-id
+     (fn [st]
+       (-> st
+           (assoc :agent/ancestor-chain next-chain
+                  :agent/current-thread-id nil
+                  :agent/recent-messages []
+                  :agent/rollover-required false
+                  :agent/rollover-reason nil
+                  :agent/last-rollover {:at (now-inst) :reason reason}))))
+    (emit-rollover-event!
+     {:musn-url (get musn :url) :session-id (get musn :session-id)}
+     {:reason reason
+      :from-thread current-thread
+      :ancestor-chain next-chain})
+    {:ok true
+     :agent-id (name agent-id)
+     :rolled true
+     :from-thread current-thread
+     :ancestor-chain next-chain}))
+
+(defn roll-over!
+  [agent-id reason opts]
   (with-agent-lock
    agent-id
    (fn []
-     (let [state (ensure-agent-state! agent-id)
-           _ (when (or (seq (:agent/summary state))
-                       (seq (:agent/recent-messages state)))
-               (update-summary! agent-id state reason))
-           current-thread (:agent/current-thread-id (ensure-agent-state! agent-id))
-           next-chain (cond-> (vec (or (:agent/ancestor-chain state) []))
-                        current-thread (conj current-thread))]
-       (update-agent-state!
-        agent-id
-        (fn [st]
-          (-> st
-              (assoc :agent/ancestor-chain next-chain
-                     :agent/current-thread-id nil
-                     :agent/recent-messages []
-                     :agent/last-rollover {:at (now-inst) :reason reason}))))
-       (emit-rollover-event!
-        {:musn-url (get musn :url) :session-id (get musn :session-id)}
-        {:reason reason
-         :from-thread current-thread
-         :ancestor-chain next-chain})
-        (when-let [thread-id (forum-thread-id forum)]
-          (post-forum-reply!
-           (forum-config forum agent-id)
-           thread-id
-           (str "Agency rollover: " (or current-thread "<none>")
-                " -> (new thread) reason=" reason)
-           "agency/rollover"))
-       {:ok true
-        :agent-id (name agent-id)
-        :rolled true
-        :from-thread current-thread
-        :ancestor-chain next-chain}))))
+     (roll-over-state! agent-id reason opts))))
 
 (defn- append-recent-message
   [state message]
@@ -603,15 +604,23 @@
     (assoc state :agent/recent-messages messages)))
 
 (defn run-peripheral!
-  [{:keys [agent-id peripheral prompt musn forum thread-id cwd approval-policy no-sandbox]}]
+  [{:keys [agent-id peripheral prompt musn forum resume-id thread-id cwd approval-policy no-sandbox]}]
   (with-agent-lock
    agent-id
    (fn []
      (let [peripheral-id (if (keyword? peripheral) (name peripheral) (str peripheral))
            state (ensure-agent-state! agent-id)
-           state (if thread-id
-                   (assoc state :agent/current-thread-id thread-id)
+           resume-id (or resume-id
+                         (when (and thread-id (nil? forum))
+                           thread-id))
+           state (if resume-id
+                   (assoc state :agent/current-thread-id resume-id)
                    state)
+           _ (when (:agent/rollover-required state)
+               (roll-over-state! agent-id
+                                 (or (:agent/rollover-reason state) "usage-threshold")
+                                 {:musn musn :forum forum}))
+           state (ensure-agent-state! agent-id)
            peripheral (get-peripheral peripheral-id)
            prompt-text (build-run-prompt peripheral state {:prompt prompt
                                                            :musn musn
@@ -654,7 +663,7 @@
                context-err? (context-error? (:error result))
                retry? (and context-err? (:retry-on-overflow (config)))]
            (when (and context-err? retry?)
-             (roll-over! agent-id "context-overflow" {:musn musn :forum forum}))
+             (roll-over-state! agent-id "context-overflow" {:musn musn :forum forum}))
            (if (and context-err? retry?)
              (let [state (ensure-agent-state! agent-id)
                    retry-prompt (build-run-prompt peripheral state {:prompt prompt
@@ -679,8 +688,7 @@
                      (post-forum-reply!
                       (forum-config forum agent-id)
                       thread-id
-                      (str "Agency completed (retry):\n"
-                           (or (:response retry-result) "(no response)"))
+                      (or (:response retry-result) "(no response)")
                       peripheral-id))
                    {:ok true
                     :agent-id (name agent-id)
@@ -706,21 +714,25 @@
                                                             :text (or (:response result) "")}))))
                      rollover? (usage-rollover? (:agent/token-usage updated))]
                  (when rollover?
-                   (roll-over! agent-id "usage-threshold" {:musn musn :forum forum}))
+                   (update-agent-state!
+                    agent-id
+                    (fn [st]
+                      (assoc st
+                             :agent/rollover-required true
+                             :agent/rollover-reason "usage-threshold"))))
                  (when-let [thread-id (forum-thread-id forum)]
                    (post-forum-reply!
                     (forum-config forum agent-id)
                     thread-id
-                    (str "Agency completed:\n"
-                         (or (:response result) "(no response)")
-                         (when rollover? "\n(rolled over due to usage threshold)"))
+                    (or (:response result) "(no response)")
                     peripheral-id))
                  {:ok true
                   :agent-id (name agent-id)
                   :thread-id (:agent/current-thread-id (ensure-agent-state! agent-id))
                   :response (:response result)
                   :usage (:usage result)
-                  :rolled rollover?})
+                  :rolled rollover?
+                  :rollover-pending rollover?})
                {:ok false
                 :agent-id (name agent-id)
                 :error (:error result)}))))))))

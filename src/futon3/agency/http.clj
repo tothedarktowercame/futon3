@@ -38,7 +38,10 @@
          (into {}))))
 
 (defn- handle-run [body]
-  (let [{:keys [agent-id peripheral prompt musn forum thread-id cwd approval-policy no-sandbox]} body]
+  (let [{:keys [agent-id peripheral prompt musn forum resume-id thread-id cwd approval-policy no-sandbox]} body
+        resume-id (or resume-id
+                      (when (and thread-id (nil? forum))
+                        thread-id))]
     (if (or (str/blank? (str agent-id))
             (str/blank? (str peripheral))
             (str/blank? (str prompt)))
@@ -48,7 +51,7 @@
                             :prompt prompt
                             :musn musn
                             :forum forum
-                            :thread-id thread-id
+                            :resume-id resume-id
                             :cwd cwd
                             :approval-policy approval-policy
                             :no-sandbox no-sandbox}))))

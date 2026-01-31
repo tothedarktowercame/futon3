@@ -185,7 +185,7 @@
   (if-not (forum/get-thread thread-id)
     (json-response 404 {:ok false :err "thread-not-found"})
     (let [payload (parse-json-body request)
-          {:keys [peripheral prompt agent-id musn cwd approval-policy no-sandbox]} payload
+          {:keys [peripheral prompt agent-id musn cwd approval-policy no-sandbox resume-id]} payload
           token (get-in request [:headers "x-agency-token"])]
       (if (or (str/blank? peripheral) (str/blank? prompt) (str/blank? agent-id))
         (json-response 400 {:ok false :err "missing-required-fields"
@@ -199,6 +199,7 @@
                                 :cwd cwd
                                 :approval-policy approval-policy
                                 :no-sandbox no-sandbox
+                                :resume-id resume-id
                                 :forum {:server forum-server
                                         :thread-id thread-id
                                         :token token

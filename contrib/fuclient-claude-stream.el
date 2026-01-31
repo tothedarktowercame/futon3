@@ -176,36 +176,42 @@
           (goto-char (point-max)))))))
 
 (defun fuclient-claude-stream--on-message (_ws frame)
-  "Handle incoming WebSocket FRAME."
-  (setq fuclient-claude-stream--connected t)  ; Mark as successfully connected
-  (let* ((payload (websocket-frame-text frame))
-         (json-object-type 'alist)
-         (json-array-type 'list)
-         (data (condition-case nil
-                   (json-read-from-string payload)
-                 (error nil))))
-    (when data
-      (let ((msg-type (cdr (assq 'type data))))
-        (pcase msg-type
-          ("init"
-           (let ((events (cdr (assq 'events data)))
-                 (line-count (cdr (assq 'line-count data)))
-                 (par-count (cdr (assq 'par-count data))))
-             (fuclient-claude-stream--append
-              (format "--- Connected: %d lines, %d events, %d PARs ---\n\n"
-                      (or line-count 0) (length events) (or par-count 0)))
-             (dolist (event events)
-               (fuclient-claude-stream--append
-                (fuclient-claude-stream--format-event event)))))
-          ("event"
-           (let ((event (cdr (assq 'event data))))
-             (fuclient-claude-stream--append
-              (fuclient-claude-stream--format-event event))))
-          ("pong"
-           nil) ;; Keepalive response, ignore
-          ("error"
-           (fuclient-claude-stream--append
-            (format "ERROR: %s\n" (cdr (assq 'err data))))))))))
+  "Handle incoming WebSocket FRAME.
+Defensively handles malformed frames during SSL handshake."
+  (condition-case err
+      (when (and frame (websocket-frame-p frame))
+        (setq fuclient-claude-stream--connected t)  ; Mark as successfully connected
+        (let* ((payload (websocket-frame-text frame))
+               (json-object-type 'alist)
+               (json-array-type 'list)
+               (data (condition-case nil
+                         (json-read-from-string payload)
+                       (error nil))))
+          (when data
+            (let ((msg-type (cdr (assq 'type data))))
+              (pcase msg-type
+                ("init"
+                 (let ((events (cdr (assq 'events data)))
+                       (line-count (cdr (assq 'line-count data)))
+                       (par-count (cdr (assq 'par-count data))))
+                   (fuclient-claude-stream--append
+                    (format "--- Connected: %d lines, %d events, %d PARs ---\n\n"
+                            (or line-count 0) (length events) (or par-count 0)))
+                   (dolist (event events)
+                     (fuclient-claude-stream--append
+                      (fuclient-claude-stream--format-event event)))))
+                ("event"
+                 (let ((event (cdr (assq 'event data))))
+                   (fuclient-claude-stream--append
+                    (fuclient-claude-stream--format-event event))))
+                ("pong"
+                 nil) ;; Keepalive response, ignore
+                ("error"
+                 (fuclient-claude-stream--append
+                  (format "ERROR: %s\n" (cdr (assq 'err data))))))))))
+    (error
+     ;; Ignore errors during SSL handshake quirks
+     (message "[claude-stream] on-message error (ignoring): %s" err))))
 
 (defun fuclient-claude-stream--on-close (_ws)
   "Handle WebSocket close.

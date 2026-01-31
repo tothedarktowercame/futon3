@@ -1121,7 +1121,9 @@
     (when (.exists claude-dir)
       (->> (file-seq claude-dir)
            (filter #(and (.isFile %)
-                         (str/ends-with? (.getName %) ".jsonl")))
+                         (str/ends-with? (.getName %) ".jsonl")
+                         ;; Exclude subagent session files (internal Claude Code implementation detail)
+                         (not (str/includes? (.getAbsolutePath %) "/subagents/"))))
            (map (fn [f]
                   (let [path (.getAbsolutePath f)
                         parent-name (.getName (.getParentFile f))

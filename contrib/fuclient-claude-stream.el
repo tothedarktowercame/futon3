@@ -216,9 +216,14 @@
     (fuclient-claude-stream--schedule-reconnect)))
 
 (defun fuclient-claude-stream--on-error (_ws _type err)
-  "Handle WebSocket error ERR."
-  (fuclient-claude-stream--append
-   (format "\n--- Error: %s ---\n" err)))
+  "Handle WebSocket error ERR.
+Ignore spurious 400 errors that occur during SSL handshake but don't
+prevent the connection from working."
+  (unless (and (listp err)
+               (eq (car err) 'websocket-received-error-http-response)
+               (memq 400 err))
+    (fuclient-claude-stream--append
+     (format "\n--- Error: %s ---\n" err))))
 
 (defun fuclient-claude-stream--schedule-reconnect ()
   "Schedule a reconnection attempt."
@@ -288,6 +293,7 @@
       (setq fuclient-claude-stream--current-path path)
       (setq fuclient-claude-stream--websocket
             (websocket-open url
+                            :on-open (lambda (_ws) (message "[claude-stream] WebSocket connected"))
                             :on-message #'fuclient-claude-stream--on-message
                             :on-close #'fuclient-claude-stream--on-close
                             :on-error #'fuclient-claude-stream--on-error))

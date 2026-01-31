@@ -17,6 +17,9 @@
  *   FORUM_BRIDGE_STATE_PATH - State file path for persistence (default: lab/agency/forum-bridge-<thread>.json)
  *   FORUM_SEEN_LIMIT   - Max seen post IDs to retain (default 2000)
  *   FORUM_HEARTBEAT_SECONDS - Heartbeat log interval (default 60; 0 disables)
+ *   FORUM_BRIDGE_LOG_PATH - Log file for bridge trace (default: lab/agency/forum-bridge-<thread>.log)
+ *   FORUM_BRIDGE_OPEN_TERMINAL - When "1", open alacritty tailing the log
+ *   FORUM_BRIDGE_TAIL_LINES - Tail lines when opening terminal (default 200)
  *
  * Context safety tuning (same as IRC bridge):
  *   FUCODEX_CONTEXT_MAX_TOKENS, FUCODEX_CONTEXT_RECENT_MESSAGES,
@@ -24,7 +27,8 @@
  */
 
 import { Codex } from "@openai/codex-sdk";
-import { promises as fs } from "fs";
+import { createWriteStream, promises as fs } from "fs";
+import { spawn } from "child_process";
 import * as path from "path";
 
 const FORUM_SERVER = process.env.FORUM_SERVER || "http://localhost:5050";
@@ -42,6 +46,9 @@ const WS_RECONNECT_DELAY = Number.parseInt(process.env.FORUM_WS_RECONNECT_DELAY 
 const FORUM_STATE_PATH = process.env.FORUM_BRIDGE_STATE_PATH || "";
 const FORUM_SEEN_LIMIT = Number.parseInt(process.env.FORUM_SEEN_LIMIT || "2000", 10);
 const FORUM_HEARTBEAT_SECONDS = Number.parseInt(process.env.FORUM_HEARTBEAT_SECONDS || "60", 10);
+const FORUM_LOG_PATH = process.env.FORUM_BRIDGE_LOG_PATH || "";
+const FORUM_OPEN_TERMINAL = process.env.FORUM_BRIDGE_OPEN_TERMINAL === "1";
+const FORUM_TAIL_LINES = Number.parseInt(process.env.FORUM_BRIDGE_TAIL_LINES || "200", 10);
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -90,6 +97,8 @@ class CodexForumBridge {
   private seen = new Set<string>();
   private seenOrder: string[] = [];
   private statePath: string | null = null;
+  private logPath: string | null = null;
+  private logStream: ReturnType<typeof createWriteStream> | null = null;
   private saveTimer: NodeJS.Timeout | null = null;
   private heartbeatTimer: NodeJS.Timeout | null = null;
   private lastSeenId: string | null = null;
@@ -123,9 +132,11 @@ class CodexForumBridge {
     this.pollInterval = Number.isFinite(config.pollInterval) ? Number(config.pollInterval) : FORUM_POLL_INTERVAL;
     this.threadOptions = this.buildThreadOptions();
     this.statePath = this.resolveStatePath();
+    this.logPath = this.resolveLogPath();
   }
 
   async init() {
+    await this.setupLogging();
     await this.loadState();
     const resumeId = this.config.resumeThreadId || this.loadResumeThreadId();
     if (resumeId) {
@@ -511,6 +522,56 @@ class CodexForumBridge {
     const base = path.join(process.cwd(), "lab", "agency");
     const safeThread = this.config.threadId || "unknown";
     return path.join(base, `forum-bridge-${safeThread}.json`);
+  }
+
+  private resolveLogPath(): string | null {
+    if (FORUM_LOG_PATH) return FORUM_LOG_PATH;
+    const base = path.join(process.cwd(), "lab", "agency");
+    const safeThread = this.config.threadId || "unknown";
+    return path.join(base, `forum-bridge-${safeThread}.log`);
+  }
+
+  private async setupLogging() {
+    if (!this.logPath) return;
+    try {
+      await fs.mkdir(path.dirname(this.logPath), { recursive: true });
+      this.logStream = createWriteStream(this.logPath, { flags: "a" });
+      const originalError = console.error.bind(console);
+      console.error = (...args: unknown[]) => {
+        originalError(...args);
+        if (this.logStream) {
+          const line = args.map((arg) => String(arg)).join(" ");
+          this.logStream.write(`${line}\n`);
+        }
+      };
+      if (FORUM_OPEN_TERMINAL) {
+        this.openTerminalTail(this.logPath);
+      }
+    } catch (err) {
+      console.error(`[bridge] Failed to setup logging: ${err}`);
+    }
+  }
+
+  private openTerminalTail(logPath: string) {
+    const tailLines = Number.isFinite(FORUM_TAIL_LINES) ? FORUM_TAIL_LINES : 200;
+    const quoted = this.shellQuote(logPath);
+    const command = `tail -n ${tailLines} -f ${quoted}`;
+    try {
+      const child = spawn("alacritty", ["-e", "bash", "-lc", command], {
+        detached: true,
+        stdio: "ignore",
+      });
+      child.on("error", (err) => {
+        console.error(`[bridge] Failed to launch alacritty: ${err}`);
+      });
+      child.unref();
+    } catch (err) {
+      console.error(`[bridge] Failed to launch alacritty: ${err}`);
+    }
+  }
+
+  private shellQuote(value: string): string {
+    return `'${value.replace(/'/g, "'\\''")}'`;
   }
 
   private loadResumeThreadId(): string | undefined {

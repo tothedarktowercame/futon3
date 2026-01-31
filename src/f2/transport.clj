@@ -23,7 +23,8 @@
             [f2.semantics :as semantics]
             [f2.router :as router]
             [phoebe.runtime :as phoebe]
-            [org.httpkit.server :as http])
+            [org.httpkit.server :as http]
+            [org.httpkit.client :as http-client])
   (:import (java.time Clock Instant)
            (java.util UUID)))
 
@@ -1224,13 +1225,55 @@
                        :archived true})))
              (sort-by :modified #(compare %2 %1)))))))
 
+(defn- parse-remote-sources
+  "Parse LAB_REMOTE_SOURCES env var.
+   Format: name1=url1,name2=url2
+   Example: laptop=http://192.168.1.100:5050,server=http://10.0.0.5:5050"
+  []
+  (when-let [env (System/getenv "LAB_REMOTE_SOURCES")]
+    (->> (str/split env #",")
+         (map str/trim)
+         (filter seq)
+         (map (fn [entry]
+                (let [[name url] (str/split entry #"=" 2)]
+                  (when (and name url)
+                    {:name (str/trim name)
+                     :url (str/trim url)}))))
+         (filter some?)
+         vec)))
+
+(defn- fetch-remote-sessions
+  "Fetch sessions from a remote Lab source.
+   Returns sessions with :remote-source added, or empty vec on failure."
+  [{:keys [name url]}]
+  (try
+    (let [resp @(http-client/get (str url "/fulab/lab/sessions/active")
+                                  {:timeout 3000})
+          body (when (= 200 (:status resp))
+                 (json/parse-string (:body resp) true))]
+      (when (:ok body)
+        (->> (:sessions body)
+             (map #(assoc % :remote-source name :remote-url url))
+             vec)))
+    (catch Exception e
+      (println "[lab] Failed to fetch from" name ":" (.getMessage e))
+      [])))
+
 (defn- handle-lab-sessions-active
-  "List active Codex/Claude sessions."
+  "List active Codex/Claude sessions, including remote sources."
   [_state _request]
   (try
-    (let [sessions (concat (or (scan-claude-projects) [])
-                           (or (scan-codex-sessions) []))]
-      (json-response 200 {:ok true :sessions (vec sessions)}))
+    (let [local-sessions (concat (or (scan-claude-projects) [])
+                                  (or (scan-codex-sessions) []))
+          remote-sources (parse-remote-sources)
+          remote-sessions (when (seq remote-sources)
+                            (->> remote-sources
+                                 (mapcat fetch-remote-sessions)
+                                 vec))
+          all-sessions (concat local-sessions (or remote-sessions []))]
+      (json-response 200 {:ok true
+                          :sessions (vec all-sessions)
+                          :remote-sources (mapv :name remote-sources)}))
     (catch Exception e
       (json-response 500 {:ok false :err "scan-failed" :detail (.getMessage e)}))))
 

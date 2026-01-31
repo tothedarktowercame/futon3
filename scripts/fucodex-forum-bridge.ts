@@ -274,7 +274,7 @@ class CodexForumBridge {
     if (!response.ok) {
       throw new Error(`Forum thread fetch failed: ${response.status}`);
     }
-    return response.json();
+    return (await response.json()) as { posts?: ForumPost[] };
   }
 
   private wsUrl(): string {

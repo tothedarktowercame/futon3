@@ -5,10 +5,27 @@ Agency currently behaves opposite to the intended "keep the same Codex thread un
 ## Goal
 
 Align Agency with the intended behavior:
-- Keep using the same Codex session/thread id while it fits.
-- On overflow, roll to a new Codex session and carry forward summary + state capsule.
-- Never confuse Forum thread IDs with Codex resume IDs.
+- Keep using the same LLM session/thread id (Codex or Claude) while it fits.
+- On overflow, roll to a new LLM session and carry forward summary + state capsule.
+- Never confuse Forum thread IDs with LLM resume IDs.
 - Keep Forum replies clean (no system-prefixed boilerplate unless explicitly requested).
+
+## First principles
+
+Agency is the **client-side session continuity layer**. It is not the agent itself.
+
+Its job is to:
+- Preserve LLM session continuity across peripherals (Codex or Claude).
+- Enforce rollover only when necessary, while carrying forward state capsule + summary.
+- Keep transport identifiers (forum thread ids, musn ids) separate from LLM session ids.
+- Minimize noise in user-facing channels (no Agency boilerplate unless explicitly requested).
+
+## Invariants (must always hold)
+
+- `:agent/current-thread-id` stores **LLM session ids only** (Codex or Claude).
+- Forum thread ids are never stored as LLM resume ids.
+- Rollover must produce a new LLM session id and return it to the caller.
+- Forum replies default to the agent’s natural voice (no “Agency completed/rollover” prefixes).
 
 ## Evidence / Findings (as of 2026-01-31)
 
@@ -40,10 +57,10 @@ Align Agency with the intended behavior:
 ## Desired behavior (acceptance criteria)
 
 - Forum dispatch should pass **forum-thread-id** separately from **codex-resume-id**.
-- Agency should only update `:agent/current-thread-id` with **Codex** session ids returned by the runner.
+- Agency should only update `:agent/current-thread-id` with **LLM session ids** (Codex or Claude) returned by the runner.
 - On context overflow, Agency should:
   1. Summarize and save state capsule,
-  2. Start a **new Codex session**, and
+  2. Start a **new LLM session** (Codex or Claude), and
   3. Return the new `:agent/current-thread-id` to the caller.
 - Forum replies should contain only the assistant response (no “Agency completed” prefix).
 - `AGENCY_CODEX_BIN` should default to `codex` (or explicitly require setting).

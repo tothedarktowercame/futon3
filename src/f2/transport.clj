@@ -64,6 +64,53 @@
 (defn- now-stamp [state]
   (clock/stamp (clock-instant state)))
 
+(defn- service-name
+  [service-key]
+  (case service-key
+    :transport "Transport"
+    :ui "UI"
+    :forum-ws "Forum WS"
+    :musn-http "MUSN HTTP"
+    :irc-bridge "IRC"
+    :futon1-api "Futon1 API"
+    :agency "Agency"
+    (-> (name service-key)
+        (str/replace "-" " ")
+        (str/capitalize))))
+
+(defn- port-open?
+  [port]
+  (when (pos? (long (or port 0)))
+    (try
+      (let [socket (java.net.Socket.)]
+        (try
+          (.connect socket (java.net.InetSocketAddress. "127.0.0.1" (int port)) 200)
+          true
+          (finally
+            (try (.close socket) (catch Exception _ nil)))))
+      (catch Exception _ false))))
+
+(defn- live-status
+  [ports services]
+  (let [host (try
+               (.getHostName (java.net.InetAddress/getLocalHost))
+               (catch Exception _ "127.0.0.1"))
+        service-order [:transport :ui :forum-ws :musn-http :irc-bridge :futon1-api]
+        service-entries (->> service-order
+                             (map (fn [svc]
+                                    (let [port (get ports svc)
+                                          enabled? (get services svc)]
+                                      {:id (name svc)
+                                       :name (service-name svc)
+                                       :port port
+                                       :status (cond
+                                                 (false? enabled?) "disabled"
+                                                 (port-open? port) "up"
+                                                 :else "down")})))
+                             vec)]
+    {:host host
+     :services service-entries}))
+
 (defn- ensure-run-id-counter! [state]
   (let [config-atom (:config state)
         config @config-atom]
@@ -1432,7 +1479,7 @@
                     :musn-http (get-in config [:musn-http :enabled?] true)
                     :irc-bridge (get-in config [:irc-bridge :enabled?] true)
                     :futon1-api (get-in config [:futon1-api :enabled?] true)}
-          status (phoebe/live-status ports services)]
+          status (live-status ports services)]
       (json-response 200 {:ok true
                           :stack status
                           :app {:name "f2.musn"}}))

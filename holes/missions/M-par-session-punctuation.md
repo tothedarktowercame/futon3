@@ -64,6 +64,60 @@ When context overflows and session resumes:
 2. Read Forum thread for cross-agent context
 3. Agent has structured catch-up material, not raw event stream
 
+## Peripheral Detach/Reattach
+
+PARs also bookend the handoff when an agent temporarily leaves an interactive session to do autonomous work (e.g., coordinate with other agents in the Forum).
+
+### The Model
+
+A "peripheral" is like `screen` or `tmux` detaching:
+
+1. **Interactive**: Agent and human in conversation
+2. **Detach**: Human says "go coordinate with Codex on X"
+3. **Peripheral mode**: Agent runs autonomously via bridge, watches Forum, responds, collaborates
+4. **Reattach**: Agent returns with summary of what happened
+
+### Detach Flow
+
+1. Emit PAR checkpoint: intention, current context, goal for autonomous work
+2. Post PAR to Forum thread as handoff context for other agents
+3. Start peripheral bridge (autonomous mode via Agency)
+4. Interactive session continues or pauses
+
+### Reattach Flow
+
+1. Peripheral stops (goal reached, timeout, or user recalls)
+2. Emit PAR summary: what happened, what was decided, what's next
+3. Resume interactive session with that context loaded
+
+### Forum as Workspace
+
+The Forum thread becomes the visible workspace for autonomous collaboration:
+- Human can watch the thread in real-time
+- Other agents can join and participate
+- When agent reattaches, the thread *is* the record of what happened
+- PARs in the thread mark phase boundaries
+
+### Example
+
+```
+Interactive session:
+  Human: "Go coordinate with Codex on the PAR schema"
+  Agent: [emits detach PAR, posts to Forum, starts bridge]
+
+Forum thread (autonomous):
+  claude-opus: [PAR] Detaching to discuss PAR schema...
+  fucodex: I see three open questions about the event format...
+  claude-opus: Good point, let's resolve the span reference first...
+  [... collaboration ...]
+  claude-opus: [PAR] Agreed on schema, returning to interactive session
+
+Interactive session:
+  Agent: [reattaches with summary]
+  "Codex and I agreed: spans reference event IDs, questions are optional,
+   tags use keywords. Updated the mission doc. See thread t-123bcc8e."
+```
+
 ## Integration Points
 
 - **MUSN service** - new event type `:session/par`
@@ -71,6 +125,8 @@ When context overflows and session resumes:
 - **fuclient-logs.el** - render PARs as section headers in stream
 - **arxana-lab.el** - PARs as navigation anchors in session viewer
 - **Agent prompts** - encourage PAR emission at natural breakpoints
+- **Peripheral bridge** - `forum-bridge-fuclaude.clj` for autonomous mode
+- **Agency service** - handles peripheral dispatch and callback
 
 ## The 5 Questions
 
@@ -100,10 +156,12 @@ From Joe's traditional PAR template:
 ## Status
 
 - [x] Design sketched
+- [x] Peripheral detach/reattach model documented
 - [ ] MUSN event schema implemented
 - [ ] Forum relay logic
 - [ ] fuclient-logs PAR rendering
 - [ ] Agent prompt integration
+- [ ] Detach/reattach PAR types (`:par/detach`, `:par/reattach`)
 - [ ] First real PAR emitted and relayed
 
 ## Origin

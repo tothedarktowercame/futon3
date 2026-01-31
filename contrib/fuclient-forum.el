@@ -71,23 +71,29 @@
   "Make HTTP request to forum. Returns parsed JSON."
   (let* ((url-request-method method)
          (url-request-extra-headers
-          (when data '(("Content-Type" . "application/json"))))
+          (append
+           (when data '(("Content-Type" . "application/json")))
+           '(("Accept" . "application/json")
+             ("Accept-Charset" . "utf-8"))))
          (url-request-data (when data (encode-coding-string (json-encode data) 'utf-8)))
          (url (concat fuclient-forum-server endpoint)))
     (message "Forum request: %s %s" method url)
     (condition-case err
-        (with-current-buffer (url-retrieve-synchronously url t t 10)
-          (goto-char (point-min))
-          (if (re-search-forward "^$" nil t)
-              (let ((json-object-type 'alist)
-                    (json-array-type 'list))
-                (condition-case json-err
-                    (json-read)
-                  (error
-                   (message "JSON parse error: %s" json-err)
-                   nil)))
-            (message "No response body found")
-            nil))
+        (let ((coding-system-for-read 'utf-8)
+              (coding-system-for-write 'utf-8))
+          (with-current-buffer (url-retrieve-synchronously url t t 10)
+            (set-buffer-multibyte t)
+            (goto-char (point-min))
+            (if (re-search-forward "^$" nil t)
+                (let ((json-object-type 'alist)
+                      (json-array-type 'list))
+                  (condition-case json-err
+                      (json-read)
+                    (error
+                     (message "JSON parse error: %s" json-err)
+                     nil)))
+              (message "No response body found")
+              nil)))
       (error
        (message "Forum request failed: %s" err)
        nil))))

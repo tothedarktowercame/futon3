@@ -1136,6 +1136,72 @@
     (catch Exception e
       (json-response 500 {:ok false :err "scan-failed" :detail (.getMessage e)}))))
 
+;; =============================================================================
+;; Encyclopedia endpoints (PlanetMath etc.)
+;; =============================================================================
+
+(defonce encyclopedia-cache (atom {}))
+
+(defn- load-encyclopedia-corpus [corpus-name]
+  "Load an encyclopedia corpus from EDN file, with caching."
+  (let [path (str "/home/joe/code/planetmath/" corpus-name ".edn")]
+    (if-let [cached (get @encyclopedia-cache corpus-name)]
+      cached
+      (when (.exists (io/file path))
+        (let [entries (clojure.edn/read-string (slurp path))]
+          (swap! encyclopedia-cache assoc corpus-name entries)
+          entries)))))
+
+(defn- handle-encyclopedia-corpuses
+  "List available encyclopedia corpuses."
+  [_state _request]
+  (let [pm-dir (io/file "/home/joe/code/planetmath")
+        corpuses (when (.exists pm-dir)
+                   (->> (.listFiles pm-dir)
+                        (filter #(str/ends-with? (.getName %) ".edn"))
+                        (map (fn [f]
+                               (let [name (str/replace (.getName f) #"\.edn$" "")
+                                     entries (load-encyclopedia-corpus name)]
+                                 {:corpus/id name
+                                  :corpus/count (count entries)
+                                  :corpus/source "planetmath"})))
+                        vec))]
+    (json-response 200 {:ok true :corpuses (or corpuses [])})))
+
+(defn- handle-encyclopedia-entries
+  "List entries in a corpus."
+  [_state request corpus-name]
+  (let [params (or (:query-params request)
+                   (parse-query-string (:query-string request))
+                   {})
+        limit (or (some-> (get params "limit") Integer/parseInt) 100)
+        offset (or (some-> (get params "offset") Integer/parseInt) 0)
+        entries (load-encyclopedia-corpus corpus-name)]
+    (if entries
+      (let [page (->> entries
+                      (drop offset)
+                      (take limit)
+                      (map #(select-keys % [:entry/id :entry/title :entry/type
+                                            :entry/msc-codes :entry/related])))]
+        (json-response 200 {:ok true
+                            :corpus corpus-name
+                            :total (count entries)
+                            :offset offset
+                            :limit limit
+                            :entries (vec page)}))
+      (json-response 404 {:ok false :err "corpus-not-found" :corpus corpus-name}))))
+
+(defn- handle-encyclopedia-entry
+  "Get a single entry by ID."
+  [_state _request corpus-name entry-id]
+  (let [entries (load-encyclopedia-corpus corpus-name)
+        entry (when entries
+                (first (filter #(= (:entry/id %) entry-id) entries)))]
+    (if entry
+      (json-response 200 {:ok true :entry entry})
+      (json-response 404 {:ok false :err "entry-not-found"
+                          :corpus corpus-name :entry-id entry-id}))))
+
 (defn- handle-claude-stream-ws
   "WebSocket endpoint for streaming Claude Code JSONL file changes.
    Query params:
@@ -1400,6 +1466,18 @@
                               :sessions (vec (sort-by :modified #(compare %2 %1) all))}))
         (catch Exception e
           (json-response 500 {:ok false :err "scan-failed" :detail (.getMessage e)})))
+
+      ;; Encyclopedia endpoints
+      (and (= method :get) (= uri "/fulab/encyclopedia/corpuses"))
+      (handle-encyclopedia-corpuses state request)
+
+      (and (= method :get) (re-matches #"/fulab/encyclopedia/([^/]+)/entries" uri))
+      (let [corpus (second (re-find #"/fulab/encyclopedia/([^/]+)/entries" uri))]
+        (handle-encyclopedia-entries state request corpus))
+
+      (and (= method :get) (re-matches #"/fulab/encyclopedia/([^/]+)/entry/(.+)" uri))
+      (let [[_ corpus entry-id] (re-find #"/fulab/encyclopedia/([^/]+)/entry/(.+)" uri)]
+        (handle-encyclopedia-entry state request corpus entry-id))
 
       ;; Notebook viewer routes
       (and (= method :get) (re-matches #"/fulab/notebook/[^/]+/stream" uri))

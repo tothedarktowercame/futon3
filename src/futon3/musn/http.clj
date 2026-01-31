@@ -458,6 +458,7 @@
     "/musn/scribe/native-plan"
                           (let [{:keys [session/id tasks note]} body]
                             (svc/record-native-plan! id tasks :note note))
+    "/musn/par"           (svc/par! body)
     "/musn/activity/log"  (svc/activity-log! body)
     nil))
 

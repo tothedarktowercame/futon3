@@ -116,6 +116,11 @@
   "Face for plan events."
   :group 'fuclient-logs)
 
+(defface fuclient-logs-par-face
+  '((t :foreground "deep sky blue" :weight bold))
+  "Face for PAR section headers."
+  :group 'fuclient-logs)
+
 (defface fuclient-logs-hint-face
   '((t :foreground "gold" :slant italic))
   "Face for MUSN hints."
@@ -342,6 +347,35 @@
        ((string-prefix-p "turn/plan" event-type)
         (when-let ((diagram (plist-get payload :diagram)))
           (push (propertize "  [Plan diagram available]" 'face 'fuclient-logs-plan-face) lines)))
+
+       ;; PAR events (session punctuation)
+       ((string= event-type "session/par")
+        (let* ((seq (or (plist-get event :par/sequence) "?"))
+               (tags (plist-get event :par/tags))
+               (tags-str (when tags
+                           (mapconcat (lambda (tag)
+                                        (if (keywordp tag)
+                                            (substring (symbol-name tag) 0)
+                                          (format "%s" tag)))
+                                      tags
+                                      ", ")))
+               (span (plist-get event :par/span))
+               (span-from (plist-get span :from-eid))
+               (span-to (plist-get span :to-eid))
+               (questions (plist-get event :par/questions)))
+          (push (propertize (format "  [PAR #%s]" seq) 'face 'fuclient-logs-par-face) lines)
+          (when tags-str
+            (push (format "  Tags: %s" tags-str) lines))
+          (when (or span-from span-to)
+            (push (format "  Span: %s → %s" (or span-from "?") (or span-to "?")) lines))
+          (dolist (pair '((:intention . "Intention")
+                          (:happening . "Happening")
+                          (:perspectives . "Perspectives")
+                          (:learned . "Learned")
+                          (:forward . "Forward")))
+            (let ((value (plist-get questions (car pair))))
+              (when (and (stringp value) (not (string-empty-p value)))
+                (push (format "  %s: %s" (cdr pair) value) lines))))))
 
        ;; Tool results
        ((and tool (plist-get payload :result))

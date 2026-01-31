@@ -273,6 +273,46 @@
    [:events [:vector map?]]
    [:cursor int?]])
 
+;; PAR (Post-Action Review)
+
+(def ParQuestions
+  [:map
+   [:intention {:optional true} string?]
+   [:happening {:optional true} string?]
+   [:perspectives {:optional true} string?]
+   [:learned {:optional true} string?]
+   [:forward {:optional true} string?]])
+
+(def ParSpan
+  [:map
+   [:from-eid {:optional true} string?]
+   [:to-eid {:optional true} string?]])
+
+(def ParTags [:vector [:or keyword? string?]])
+
+(def ParForum
+  [:map
+   [:thread-id {:optional true} string?]
+   [:title {:optional true} string?]
+   [:goal {:optional true} string?]
+   [:author {:optional true} string?]
+   [:tags {:optional true} ParTags]
+   [:pinned? {:optional true} boolean?]])
+
+(def ParCreateReq
+  [:map
+   [:session/id string?]
+   [:par/span {:optional true} ParSpan]
+   [:par/questions {:optional true} ParQuestions]
+   [:par/tags {:optional true} ParTags]
+   [:forum {:optional true} ParForum]])
+
+(def ParCreateResp
+  [:map
+   [:ok boolean?]
+   [:par {:optional true} map?]
+   [:forum {:optional true} map?]])
+
 ;; Convenient registry for validation lookup.
 (def registry
   {:pattern/id PatternId
@@ -303,7 +343,9 @@
    :chat/unlatch-req ChatUnlatchReq
    :chat/unlatch-resp ChatUnlatchResp
    :chat/state-req ChatStateReq
-   :chat/state-resp ChatStateResp})
+   :chat/state-resp ChatStateResp
+   :par/create-req ParCreateReq
+   :par/create-resp ParCreateResp})
 
 (defn validator
   "Build a malli validator for the named schema keyword in registry."

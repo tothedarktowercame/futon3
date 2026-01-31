@@ -709,6 +709,18 @@
 (defn- compact [m]
   (into {} (remove (comp nil? val)) m))
 
+(defn- normalize-tags
+  [tags]
+  (->> (or tags [])
+       (map (fn [tag]
+              (cond
+                (keyword? tag) tag
+                (string? tag) (keyword tag)
+                (nil? tag) nil
+                :else (keyword (str tag)))))
+       (remove nil?)
+       vec))
+
 (defn- candidate-id [candidate]
   (cond
     (map? candidate) (recur (or (:id candidate) (:pattern/id candidate)))
@@ -1565,7 +1577,7 @@
     (->> @(:lab-session entry)
          :events
          (filter #(#{:turn/user :turn/agent :turn/plan :planning/native-detected
-                     :arxana/anchor-created :arxana/link-created} (:event/type %)))
+                     :arxana/anchor-created :arxana/link-created :session/par} (:event/type %)))
          vec)))
 
 (defn recent-scribe-events
@@ -2030,6 +2042,80 @@
 ;; PAR (Post-Action Review) events
 ;; =============================================================================
 
+(defn- par-question-line [label value]
+  (when (and (string? value) (not (str/blank? value)))
+    (format "%s: %s" label value)))
+
+(defn- par->forum-body [par-event]
+  (let [tags (->> (:par/tags par-event) (map name) (remove str/blank?) vec)
+        span (:par/span par-event)
+        span-line (when (or (:from-eid span) (:to-eid span))
+                    (format "Span: %s → %s"
+                            (or (:from-eid span) "?")
+                            (or (:to-eid span) "?")))
+        questions (:par/questions par-event)
+        lines (->> [(format "PAR #%s" (:par/sequence par-event))
+                    (format "Session: %s" (:session/id par-event))
+                    (when (seq tags) (format "Tags: %s" (str/join ", " tags)))
+                    span-line
+                    ""
+                    (par-question-line "Intention" (get questions :intention))
+                    (par-question-line "Happening" (get questions :happening))
+                    (par-question-line "Perspectives" (get questions :perspectives))
+                    (par-question-line "Learned" (get questions :learned))
+                    (par-question-line "Forward" (get questions :forward))]
+                   (remove nil?))]
+    (str/join "\n" lines)))
+
+(defn- ensure-forum-thread!
+  [entry forum par-event]
+  (let [existing (get entry :forum/thread-id)
+        thread-id (or (:thread-id forum) existing)
+        forum (or forum {})
+        author (or (:author forum) (some-> (:client-id entry) str) "musn")
+        title (or (:title forum)
+                  (format "Session %s PARs" (:id entry)))
+        goal (:goal forum)
+        tags (normalize-tags (concat (:tags forum) [:session/par]))]
+    (if thread-id
+      {:thread-id thread-id :author author}
+      (try
+        (require 'futon3.forum.service)
+        (when-let [create-thread (resolve 'futon3.forum.service/create-thread!)]
+          (let [body (format "Auto-created PAR thread for session %s." (:id entry))
+                result (create-thread {:title title
+                                       :author author
+                                       :body body
+                                       :goal goal
+                                       :tags tags})
+                new-thread-id (get-in result [:thread :thread/id])]
+            (when new-thread-id
+              (swap! sessions assoc (:id entry) (assoc entry :forum/thread-id new-thread-id))
+              {:thread-id new-thread-id :author author})))
+        (catch Throwable t
+          (binding [*out* *err*]
+            (println "[musn] forum thread creation failed:" (.getMessage t))))
+        nil))))
+
+(defn- relay-par-to-forum!
+  [entry forum par-event]
+  (when (or forum (:forum/thread-id entry))
+    (try
+      (require 'futon3.forum.service)
+      (when-let [create-post (resolve 'futon3.forum.service/create-post!)]
+        (when-let [{:keys [thread-id author]} (ensure-forum-thread! entry forum par-event)]
+          (create-post {:thread-id thread-id
+                        :author author
+                        :body (par->forum-body par-event)
+                        :claim-type :step
+                        :pattern-applied "session/par"
+                        :tags (normalize-tags (concat (:par/tags par-event) [:par]))})
+          {:thread-id thread-id}))
+      (catch Throwable t
+        (binding [*out* *err*]
+          (println "[musn] forum relay failed:" (.getMessage t)))))
+    nil))
+
 (defn create-par!
   "Create a Post-Action Review event for session punctuation.
 
@@ -2043,27 +2129,41 @@
    - forward: what else should we change
 
    Returns the PAR event."
-  [session-id & {:keys [span-from span-to questions tags]
+  [session-id & {:keys [span-from span-to questions tags forum]
                  :or {tags [:checkpoint]}}]
   (when-let [entry (get-session session-id)]
     (let [par-id (str "par-" (subs (str (java.util.UUID/randomUUID)) 0 8))
           events (:events entry)
           sequence (inc (count (filter #(= :session/par (:event/type %)) events)))
           now (fulab-musn/now-inst)
+          from-ts (when span-from
+                    (:at (first (filter #(= span-from (:event/id %)) events))))
           par-event {:event/type :session/par
                      :at now
                      :par/id par-id
                      :par/sequence sequence
-                     :par/span {:from-eid span-from
-                                :to-eid span-to
-                                :from-ts (when span-from
-                                           (:at (first (filter #(= span-from (:event/id %)) events))))
-                                :to-ts now}
+                     :par/span (compact {:from-eid span-from
+                                         :to-eid span-to
+                                         :from-ts from-ts
+                                         :to-ts now})
                      :par/questions (or questions {})
-                     :par/tags (vec tags)
+                     :par/tags (normalize-tags tags)
                      :session/id session-id}]
       (append-lab-event! entry par-event)
-      {:ok true :par par-event})))
+      (let [forum-result (relay-par-to-forum! entry forum par-event)]
+        {:ok true :par par-event :forum forum-result}))))
+
+(defn par!
+  "HTTP entrypoint for PAR creation."
+  [req]
+  (validate! :par/create-req req)
+  (let [span (:par/span req)]
+    (create-par! (:session/id req)
+                 :span-from (:from-eid span)
+                 :span-to (:to-eid span)
+                 :questions (:par/questions req)
+                 :tags (:par/tags req)
+                 :forum (:forum req))))
 
 (defn get-pars
   "Get all PAR events for a session."

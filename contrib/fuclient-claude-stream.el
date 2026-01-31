@@ -276,6 +276,7 @@
            (url (format "%s?path=%s"
                         fuclient-claude-stream-server
                         encoded-path)))
+      (message "[claude-stream] Connecting to: %s" url)
 
       ;; Clear buffer
       (with-current-buffer (fuclient-claude-stream--get-buffer)

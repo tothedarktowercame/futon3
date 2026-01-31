@@ -71,6 +71,11 @@
   "Face for timestamps."
   :group 'fuclient-claude-stream)
 
+(defface fuclient-claude-stream-par-face
+  '((t :foreground "#ebcb8b" :weight bold))
+  "Face for PAR (Post-Action Review) events."
+  :group 'fuclient-claude-stream)
+
 (defvar fuclient-claude-stream--websocket nil
   "Current WebSocket connection.")
 
@@ -142,6 +147,9 @@
        ("summary"
         (propertize "[CONTEXT COMPACTED]"
                     'face 'font-lock-comment-face))
+       ("par"
+        (concat (propertize "PAR: " 'face 'fuclient-claude-stream-par-face)
+                "\n" text))
        (_
         (format "[%s]" type)))
      "\n")))
@@ -177,10 +185,11 @@
         (pcase msg-type
           ("init"
            (let ((events (cdr (assq 'events data)))
-                 (line-count (cdr (assq 'line-count data))))
+                 (line-count (cdr (assq 'line-count data)))
+                 (par-count (cdr (assq 'par-count data))))
              (fuclient-claude-stream--append
-              (format "--- Connected: %d lines in file, showing last %d events ---\n\n"
-                      (or line-count 0) (length events)))
+              (format "--- Connected: %d lines, %d events, %d PARs ---\n\n"
+                      (or line-count 0) (length events) (or par-count 0)))
              (dolist (event events)
                (fuclient-claude-stream--append
                 (fuclient-claude-stream--format-event event)))))

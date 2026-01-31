@@ -3,6 +3,7 @@
   (:require [cheshire.core :as json]
             [clojure.java.io :as io]
             [clojure.walk :as walk]
+            [clojure.edn :as edn]
             [org.httpkit.server :as http]
             [org.httpkit.client :as http-client]
             [clojure.string :as str]
@@ -425,6 +426,95 @@
     (catch Throwable _
       nil)))
 
+;; =============================================================================
+;; RAP: Retrieve All PARs (distilled learning from past sessions)
+;; =============================================================================
+
+(defn- scan-par-sidecars
+  "Scan ~/.claude/projects/ for all .par.edn sidecar files.
+   Returns a sequence of {:path :session-id :pars}."
+  []
+  (let [claude-dir (io/file (System/getProperty "user.home") ".claude" "projects")]
+    (when (.exists claude-dir)
+      (->> (file-seq claude-dir)
+           (filter #(and (.isFile %)
+                         (str/ends-with? (.getName %) ".par.edn")))
+           (map (fn [f]
+                  (try
+                    (let [content (slurp f)
+                          pars (edn/read-string content)
+                          session-id (-> (.getName f)
+                                         (str/replace ".par.edn" ""))]
+                      {:path (.getAbsolutePath f)
+                       :session-id session-id
+                       :pars (if (vector? pars) pars [pars])})
+                    (catch Exception _ nil))))
+           (filter some?)))))
+
+(defn- format-par-for-context
+  "Format a single PAR for injection into session context."
+  [par session-id]
+  (let [q (:questions par)]
+    (str "## " (or (:title par) "Session Review") "\n"
+         "*Session: " session-id " | " (:timestamp par) "*\n"
+         (when (:tags par)
+           (str "*Tags: " (str/join ", " (map name (:tags par))) "*\n"))
+         "\n"
+         "**Intention:** " (:intention q) "\n\n"
+         "**What happened:** " (:happening q) "\n\n"
+         "**Perspectives:** " (:perspectives q) "\n\n"
+         "**Learned:** " (:learned q) "\n\n"
+         "**Forward:** " (:forward q) "\n")))
+
+(defn- rap-request
+  "Handle /rap endpoint - retrieve PARs for context injection.
+   Options (via query params):
+     limit - max number of PARs (default 10)
+     tags - comma-separated tag filter
+     since - ISO date filter (YYYY-MM-DD)"
+  [params]
+  (let [limit (or (some-> (get params "limit") parse-long) 10)
+        tag-filter (when-let [t (get params "tags")]
+                     (set (map keyword (str/split t #","))))
+        since-filter (get params "since")
+        all-sidecars (scan-par-sidecars)
+        all-pars (->> all-sidecars
+                      (mapcat (fn [{:keys [session-id pars]}]
+                                (map #(assoc % :session-id session-id) pars)))
+                      ;; Filter by tags if specified
+                      (filter (fn [par]
+                                (if tag-filter
+                                  (some tag-filter (:tags par))
+                                  true)))
+                      ;; Filter by date if specified
+                      (filter (fn [par]
+                                (if since-filter
+                                  (and (:timestamp par)
+                                       (>= (compare (:timestamp par) since-filter) 0))
+                                  true)))
+                      ;; Sort by timestamp descending (most recent first)
+                      (sort-by :timestamp #(compare %2 %1))
+                      ;; Apply limit
+                      (take limit)
+                      vec)
+        ;; Format for context
+        context-block (when (seq all-pars)
+                        (str "# Prior Learning (from " (count all-pars) " PARs)\n\n"
+                             (str/join "\n---\n\n"
+                                       (map #(format-par-for-context % (:session-id %))
+                                            all-pars))))]
+    {:ok true
+     :count (count all-pars)
+     :pars (mapv (fn [par]
+                   {:id (:id par)
+                    :session-id (:session-id par)
+                    :title (:title par)
+                    :timestamp (:timestamp par)
+                    :tags (:tags par)
+                    :learned (get-in par [:questions :learned])})
+                 all-pars)
+     :context context-block}))
+
 (defn- dispatch [uri body]
   (case uri
     "/musn/session/create" (svc/create-session! body)
@@ -520,6 +610,15 @@
               limit (some-> (get params "limit") parse-long)
               entries (svc/activity-log-entries {:limit (or limit 20)})]
           (json-response {:ok true :entries (vec entries)}))
+
+        ;; GET endpoint for RAP (Retrieve All PARs) - distilled learning
+        (and (= uri "/rap") (= method :get))
+        (let [params (some-> (:query-string req)
+                             (java.net.URLDecoder/decode "UTF-8")
+                             (clojure.string/split #"&")
+                             (->> (map #(clojure.string/split % #"=" 2))
+                                  (into {})))]
+          (json-response (rap-request (or params {}))))
 
         ;; GET endpoint for vitality scan data (futon + personal + interface + stack learning)
         (and (= uri "/musn/vitality") (= method :get))

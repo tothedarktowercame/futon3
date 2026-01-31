@@ -1,8 +1,11 @@
 (ns futon3.lab.ws
   "WebSocket server for Lab session streaming using Java-WebSocket library.
-   Runs on separate port (default 5056) to avoid http-kit WebSocket masking issues."
+   Runs on separate port (default 5056) to avoid http-kit WebSocket masking issues.
+
+   Merges Claude Code JSONL with PAR sidecar files for unified session view."
   (:require [cheshire.core :as json]
             [clojure.java.io :as io]
+            [clojure.edn :as edn]
             [clojure.string :as str])
   (:import (org.java_websocket WebSocket)
            (org.java_websocket.handshake ClientHandshake)
@@ -73,19 +76,60 @@
         nil))
     (catch Exception _ nil)))
 
+(defn- par-sidecar-path
+  "Compute PAR sidecar path from JSONL path.
+   /path/to/session.jsonl -> /path/to/session.par.edn"
+  [jsonl-path]
+  (str/replace jsonl-path #"\.jsonl$" ".par.edn"))
+
+(defn- read-par-sidecar
+  "Read PAR events from sidecar file. Returns vector of PAR events."
+  [sidecar-path]
+  (when (.exists (io/file sidecar-path))
+    (try
+      (let [content (slurp sidecar-path)
+            pars (edn/read-string content)]
+        (mapv (fn [par]
+                {:type "par"
+                 :timestamp (:timestamp par)
+                 :text (str "## PAR: " (or (:title par) "Session Review") "\n\n"
+                            (when-let [q (:questions par)]
+                              (str "**Intention:** " (:intention q) "\n\n"
+                                   "**Happening:** " (:happening q) "\n\n"
+                                   "**Perspectives:** " (:perspectives q) "\n\n"
+                                   "**Learned:** " (:learned q) "\n\n"
+                                   "**Forward:** " (:forward q))))
+                 :par-id (:id par)
+                 :tags (:tags par)})
+              (if (vector? pars) pars [pars])))
+      (catch Exception e
+        (println "[lab-ws] Error reading PAR sidecar:" (.getMessage e))
+        []))))
+
+(defn- merge-events-by-timestamp
+  "Merge two event vectors, sorted by timestamp."
+  [events1 events2]
+  (->> (concat events1 events2)
+       (sort-by :timestamp)
+       vec))
+
 (defn- read-session-history
-  "Read and parse full session history from JSONL file."
+  "Read and parse full session history from JSONL file, merged with PAR sidecar."
   [path]
   (when (.exists (io/file path))
     (with-open [rdr (io/reader path)]
       (let [all-lines (vec (line-seq rdr))
-            events (->> all-lines
-                        (map parse-claude-jsonl-line)
-                        (filter some?)
-                        (filter #(seq (:text %)))
-                        vec)]
+            jsonl-events (->> all-lines
+                              (map parse-claude-jsonl-line)
+                              (filter some?)
+                              (filter #(seq (:text %)))
+                              vec)
+            sidecar-path (par-sidecar-path path)
+            par-events (read-par-sidecar sidecar-path)
+            merged-events (merge-events-by-timestamp jsonl-events par-events)]
         {:line-count (count all-lines)
-         :events events}))))
+         :par-count (count par-events)
+         :events merged-events}))))
 
 (defn- start-file-watcher!
   "Start watching a JSONL file for changes, sending new events to conn."
@@ -132,10 +176,11 @@
                   history (read-session-history path)]
               (swap! clients assoc conn {:path path :stop-flag stop-flag})
 
-              ;; Send full history
+              ;; Send full history (JSONL + PARs merged)
               (send-json! conn {:type "init"
                                 :path path
                                 :line-count (:line-count history)
+                                :par-count (:par-count history 0)
                                 :events (:events history)})
 
               ;; Start watching for new events

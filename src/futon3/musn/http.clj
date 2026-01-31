@@ -460,12 +460,6 @@
                             (svc/record-native-plan! id tasks :note note))
     "/musn/par"           (svc/par! body)
     "/musn/activity/log"  (svc/activity-log! body)
-    "/musn/par"           (let [{:keys [session/id questions tags span-from span-to]} body]
-                            (svc/create-par! id
-                                             :questions questions
-                                             :tags (or tags [:checkpoint])
-                                             :span-from span-from
-                                             :span-to span-to))
     nil))
 
 (defn- handle-activity-ws

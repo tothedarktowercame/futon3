@@ -174,12 +174,30 @@ Codex peripheral wrapper is at `scripts/fucodex-peripheral.ts`.
 ./scripts/fucodex-peripheral.ts                    # fresh session
 ./scripts/fucodex-peripheral.ts --resume <id>      # continue session
 ./scripts/fucodex-peripheral.ts --no-agency        # human-only mode
+./scripts/fucodex-peripheral.ts --simple           # codex exec (no lab stream)
 ```
 
 **Notes:**
 - Uses `fucodex --live` so lab streams are persisted.
 - `--approval-policy` defaults to `never` unless overridden.
 - Avoids `--prompt` to preserve `--resume` behavior in `fucodex`.
+ - `--simple` uses `codex exec` directly (no FULAB summaries / lab stream).
+
+## Plugin Demonstrators (Claude)
+
+Claude has a split plugin demonstrator in `plugins/` that interoperates with the
+peripheral hop workflow:
+
+- **Interactive** plugin: `plugins/futon`
+  - Commands: `/futon:psr`, `/futon:pur`
+  - Uses Claude Code UI (AskUserQuestion) for selection
+- **Hop** plugin: `plugins/peripherals`
+  - Commands: `/peripherals:par`, `/peripherals:hop`
+  - Detaches to a peripheral (e.g., Emacs) and returns with the same session
+- **Combined** plugin (legacy): `plugins/futon-peripherals`
+
+**Session continuity:** The same `--resume` ID works before and after a hop, so
+context is preserved across the round trip.
 
 ## Implementation Gotchas (IMPORTANT for Codex)
 

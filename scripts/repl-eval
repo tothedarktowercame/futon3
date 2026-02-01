@@ -6,6 +6,10 @@
 #   ./scripts/repl-eval '(require '\''my.ns)'
 #   echo '(+ 1 2)' | ./scripts/repl-eval
 #
+# Hot reload a namespace (use load-file for full reload):
+#   ./scripts/repl-eval '(load-file "src/f2/transport.clj")'
+#   ./scripts/repl-eval '(load-file "src/futon3/lab/ws.clj")'
+#
 # Environment:
 #   ADMIN_TOKEN       - Auth token (default: from .admintoken or 'change-me')
 #   DRAWBRIDGE_HOST   - Host (default: 127.0.0.1)

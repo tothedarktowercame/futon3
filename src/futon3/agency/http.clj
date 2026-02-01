@@ -94,8 +94,17 @@
         (and (= uri "/agency/mirror/status") (= method :get))
         (json-response (codex-mirror/status))
 
+        ;; Secret retrieval (GET /agency/secret/:id)
+        (and (= method :get) (str/starts-with? uri "/agency/secret/"))
+        (let [secret-id (subs uri (count "/agency/secret/"))]
+          (json-response (handle-get-secret secret-id)))
+
         (not= :post method)
         (json-response 405 {:ok false :err "method not allowed"})
+
+        ;; Secret creation (POST /agency/secret)
+        (= uri "/agency/secret")
+        (json-response (handle-create-secret (parse-json-body req)))
 
         (= uri "/agency/run")
         (json-response (handle-run (parse-json-body req)))
@@ -109,6 +118,33 @@
       (log! "handler error" {:err (.getMessage t)
                              :trace (mapv str (.getStackTrace t))})
       (json-response 400 {:ok false :err (.getMessage t)}))))
+
+;; Secret storage for test-bell-ack peripheral
+(defonce ^:private secrets (atom {}))
+
+(defn- generate-secret-id []
+  (str "sec-" (subs (str (java.util.UUID/randomUUID)) 0 8)))
+
+(defn- handle-create-secret [body]
+  (let [secret-id (generate-secret-id)
+        value (or (:value body) (str (java.util.UUID/randomUUID)))
+        ttl-ms (or (:ttl-ms body) 300000)] ; 5 min default
+    (swap! secrets assoc secret-id {:value value
+                                    :created (System/currentTimeMillis)
+                                    :ttl-ms ttl-ms})
+    ;; Schedule cleanup
+    (future
+      (Thread/sleep ttl-ms)
+      (swap! secrets dissoc secret-id))
+    {:ok true :secret-id secret-id :value value}))
+
+(defn- handle-get-secret [secret-id]
+  (if-let [entry (get @secrets secret-id)]
+    (do
+      ;; One-time retrieval - delete after fetch
+      (swap! secrets dissoc secret-id)
+      {:ok true :value (:value entry)})
+    {:ok false :err "secret not found or expired"}))
 
 (defonce ^:private server-state (atom nil))
 

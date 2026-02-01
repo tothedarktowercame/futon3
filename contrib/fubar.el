@@ -978,6 +978,148 @@ Displays results in *Test Bell* buffer as responses arrive."
          (setf (alist-get agent fubar-test-bell--pending nil nil #'equal) result)
          (fubar-test-bell--update-buffer-safe))))))
 
+;;; Test Bell V2 - with secret verification
+
+(defvar fubar-test-bell-v2--pending nil
+  "Alist of (agent . (secret-id secret-value status)) for v2 test-bell.")
+
+(defvar fubar-test-bell-v2--buffer "*Test Bell V2*"
+  "Buffer for v2 test-bell results.")
+
+(defun fubar-test-bell-v2--create-secret (callback)
+  "Create a secret via Agency, call CALLBACK with (secret-id . secret-value)."
+  (let* ((url-request-method "POST")
+         (url-request-extra-headers
+          '(("Content-Type" . "application/json")))
+         (url-request-data (encode-coding-string (json-encode '((ttl-ms . 60000))) 'utf-8))
+         (url (concat (string-trim-right fubar-agency-url "/") "/agency/secret")))
+    (url-retrieve
+     url
+     (lambda (status callback)
+       (let ((result
+              (if (plist-get status :error)
+                  nil
+                (goto-char (point-min))
+                (when (re-search-forward "\n\n" nil t)
+                  (condition-case nil
+                      (let* ((json-object-type 'plist)
+                             (resp (json-read)))
+                        (when (plist-get resp :ok)
+                          (cons (plist-get resp :secret-id)
+                                (plist-get resp :value))))
+                    (error nil))))))
+         (kill-buffer (current-buffer))
+         (funcall callback result)))
+     (list callback)
+     t t)))
+
+(defun fubar-test-bell-v2--summon-agent (agent secret-id secret-value callback)
+  "Summon AGENT with SECRET-ID, expecting them to return SECRET-VALUE."
+  (let* ((url-request-method "POST")
+         (url-request-extra-headers
+          '(("Content-Type" . "application/json")
+            ("Accept" . "application/json")))
+         (timestamp (format-time-string "%Y-%m-%dT%H:%M:%SZ" nil t))
+         (payload `((agent-id . ,agent)
+                    (peripheral . "test-bell-ack")
+                    (prompt . ,(format "Fetch secret %s from %s/agency/secret/%s and return its value."
+                                       secret-id fubar-agency-url secret-id))))
+         (url-request-data (encode-coding-string (json-encode payload) 'utf-8))
+         (url (concat (string-trim-right fubar-agency-url "/") "/agency/run")))
+    (url-retrieve
+     url
+     (lambda (status agent secret-value callback)
+       (let ((result
+              (if (plist-get status :error)
+                  (cons 'error (format "%s" (plist-get status :error)))
+                (goto-char (point-min))
+                (if (re-search-forward "\n\n" nil t)
+                    (condition-case err
+                        (let* ((json-object-type 'plist)
+                               (resp (json-read))
+                               (response (or (plist-get resp :response) "")))
+                          (if (plist-get resp :ok)
+                              (if (string-match-p (regexp-quote secret-value) response)
+                                  (cons 'verified response)
+                                (cons 'mismatch response))
+                            (cons 'error (or (plist-get resp :error) "unknown"))))
+                      (error (cons 'error (format "parse: %s" err))))
+                  (cons 'error "no response body")))))
+         (kill-buffer (current-buffer))
+         (funcall callback agent result)))
+     (list agent secret-value callback)
+     t t)))
+
+(defun fubar-test-bell-v2--update-buffer ()
+  "Update the v2 test-bell buffer."
+  (with-current-buffer (get-buffer-create fubar-test-bell-v2--buffer)
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (insert "=== Test Bell V2 (Secret Verification) ===\n\n")
+      (dolist (entry fubar-test-bell-v2--pending)
+        (let* ((agent (car entry))
+               (data (cdr entry))
+               (secret-id (nth 0 data))
+               (secret-value (nth 1 data))
+               (status (nth 2 data)))
+          (insert (format "  %-12s  [%s]\n" agent (or secret-id "no-secret")))
+          (insert (format "                Expected: %s\n" (or secret-value "?")))
+          (cond
+           ((eq status 'pending)
+            (insert "                Status: ⏳ waiting...\n"))
+           ((and (consp status) (eq (car status) 'verified))
+            (insert (format "                Status: ✓ VERIFIED - %s\n"
+                            (truncate-string-to-width (cdr status) 40))))
+           ((and (consp status) (eq (car status) 'mismatch))
+            (insert (format "                Status: ⚠ MISMATCH - got: %s\n"
+                            (truncate-string-to-width (cdr status) 40))))
+           ((and (consp status) (eq (car status) 'error))
+            (insert (format "                Status: ✗ ERROR - %s\n" (cdr status))))
+           (t
+            (insert (format "                Status: ? %s\n" status))))
+          (insert "\n")))
+      (let ((verified (seq-count (lambda (e)
+                                   (and (consp (nth 2 (cdr e)))
+                                        (eq (car (nth 2 (cdr e))) 'verified)))
+                                 fubar-test-bell-v2--pending))
+            (total (length fubar-test-bell-v2--pending)))
+        (insert (format "Verified: %d/%d\n" verified total))))))
+
+(defun fubar-test-bell-v2--update-buffer-safe ()
+  "Schedule v2 buffer update on main event loop."
+  (run-at-time 0 nil #'fubar-test-bell-v2--update-buffer))
+
+(defun fubar-test-bell-v2 (&optional agents)
+  "Ring test bell v2 with secret verification for AGENTS.
+Creates a unique secret per agent, summons them to retrieve it,
+and verifies they return the correct value."
+  (interactive)
+  (let ((agents (or agents fubar-test-bell-agents)))
+    (setq fubar-test-bell-v2--pending nil)
+    (pop-to-buffer (get-buffer-create fubar-test-bell-v2--buffer))
+    (erase-buffer)
+    (insert "=== Test Bell V2 ===\n\nCreating secrets...\n")
+    ;; Create secrets and summon agents
+    (dolist (agent agents)
+      (fubar-test-bell-v2--create-secret
+       (lambda (secret-pair)
+         (if secret-pair
+             (let ((secret-id (car secret-pair))
+                   (secret-value (cdr secret-pair)))
+               (push (list agent secret-id secret-value 'pending)
+                     fubar-test-bell-v2--pending)
+               (fubar-test-bell-v2--update-buffer-safe)
+               (fubar-test-bell-v2--summon-agent
+                agent secret-id secret-value
+                (lambda (agent result)
+                  (let ((entry (assoc agent fubar-test-bell-v2--pending)))
+                    (when entry
+                      (setf (nth 3 entry) result)))
+                  (fubar-test-bell-v2--update-buffer-safe))))
+           (push (list agent nil nil '(error . "failed to create secret"))
+                 fubar-test-bell-v2--pending)
+           (fubar-test-bell-v2--update-buffer-safe)))))))
+
 (provide 'fubar)
 
 (fubar-modeline-mode 1)

@@ -1,0 +1,10 @@
+;; Agent registry for Agency routing
+;; :local  -> handle via local /agency/run
+;; :remote -> POST to remote Agency at :url
+
+{:fucodex {:location :remote
+           :url "http://LAPTOP_TAILSCALE_IP:7070"
+           :note "Codex on laptop - update IP after Tailscale setup"}
+
+ :fuclaude {:location :local
+            :note "Claude on server - runs locally"}}

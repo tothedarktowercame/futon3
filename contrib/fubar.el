@@ -836,6 +836,139 @@ Useful when C-c doesn't propagate through EAT or other terminal emulators."
 (defalias 'eat-kill-fuclaude 'fubar-kill-fuclaude
   "Alias for `fubar-kill-fuclaude' for discoverability.")
 
+;;; PAR (Post-Action Review) integration
+
+(defun fubar-par-buffers ()
+  "Return a list of active PAR buffers (buffers matching *PAR: *)."
+  (seq-filter
+   (lambda (buf)
+     (string-prefix-p "*PAR: " (buffer-name buf)))
+   (buffer-list)))
+
+(defun fubar-par-jump ()
+  "Jump to an active PAR buffer, prompting if multiple exist."
+  (interactive)
+  (let ((par-bufs (fubar-par-buffers)))
+    (cond
+     ((null par-bufs)
+      (message "[fubar] No active PAR buffers"))
+     ((= 1 (length par-bufs))
+      (pop-to-buffer (car par-bufs)))
+     (t
+      (let* ((names (mapcar #'buffer-name par-bufs))
+             (chosen (completing-read "PAR buffer: " names nil t)))
+        (pop-to-buffer chosen))))))
+
+(defun fubar-par-bell (title &optional agents)
+  "Ring the PAR bell for TITLE, summoning AGENTS (default: fucodex,fuclaude).
+This calls the par-bell.sh script to create a collaborative PAR session."
+  (interactive "sPAR title: ")
+  (let* ((agents (or agents "fucodex,fuclaude"))
+         (script (expand-file-name "scripts/par-bell.sh"
+                                   (locate-dominating-file default-directory ".git"))))
+    (if (file-executable-p script)
+        (async-shell-command
+         (format "%s --title %s --agents %s"
+                 (shell-quote-argument script)
+                 (shell-quote-argument title)
+                 (shell-quote-argument agents))
+         "*PAR Bell*")
+      (message "[fubar] par-bell.sh not found"))))
+
+;;; Test Bell - simple ACK from agents
+
+(defcustom fubar-agency-url "http://localhost:7070"
+  "Base URL for the Agency service."
+  :type 'string
+  :group 'fubar)
+
+(defcustom fubar-test-bell-agents '("fucodex" "fuclaude")
+  "Agents to ping with test-bell."
+  :type '(repeat string)
+  :group 'fubar)
+
+(defvar fubar-test-bell--pending nil
+  "Alist of (agent . status) for pending test-bell requests.")
+
+(defvar fubar-test-bell--buffer "*Test Bell*"
+  "Buffer for test-bell results.")
+
+(defun fubar-test-bell--post-async (agent callback)
+  "POST ACK request to AGENT via Agency, call CALLBACK with (agent . result)."
+  (let* ((url-request-method "POST")
+         (url-request-extra-headers
+          '(("Content-Type" . "application/json")
+            ("Accept" . "application/json")))
+         (payload `((agent-id . ,agent)
+                    (peripheral . "chat")
+                    (prompt . "ACK? Reply with just 'ACK' to confirm you're connected.")))
+         (url-request-data (encode-coding-string (json-encode payload) 'utf-8))
+         (url (concat (string-trim-right fubar-agency-url "/") "/agency/run")))
+    (url-retrieve
+     url
+     (lambda (status agent callback)
+       (let ((result
+              (if (plist-get status :error)
+                  (cons 'error (format "%s" (plist-get status :error)))
+                (goto-char (point-min))
+                (if (re-search-forward "\n\n" nil t)
+                    (condition-case err
+                        (let* ((json-object-type 'plist)
+                               (resp (json-read)))
+                          (if (plist-get resp :ok)
+                              (cons 'ok (or (plist-get resp :response)
+                                            (plist-get resp :result)
+                                            "ACK"))
+                            (cons 'error (or (plist-get resp :error) "unknown"))))
+                      (error (cons 'error (format "parse: %s" err))))
+                  (cons 'error "no response body")))))
+         (funcall callback agent result)))
+     (list agent callback)
+     t t)))
+
+(defun fubar-test-bell--update-buffer ()
+  "Update the test-bell buffer with current status."
+  (with-current-buffer (get-buffer-create fubar-test-bell--buffer)
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (insert "=== Test Bell ===\n\n")
+      (dolist (entry fubar-test-bell--pending)
+        (let ((agent (car entry))
+              (status (cdr entry)))
+          (insert (format "  %-12s  " agent))
+          (cond
+           ((eq status 'pending)
+            (insert "⏳ waiting...\n"))
+           ((and (consp status) (eq (car status) 'ok))
+            (insert (format "✓ %s\n" (cdr status))))
+           ((and (consp status) (eq (car status) 'error))
+            (insert (format "✗ %s\n" (cdr status))))
+           (t
+            (insert (format "? %s\n" status))))))
+      (insert "\n")
+      (let ((done (seq-count (lambda (e) (not (eq (cdr e) 'pending)))
+                             fubar-test-bell--pending))
+            (total (length fubar-test-bell--pending)))
+        (insert (format "Progress: %d/%d\n" done total))
+        (when (= done total)
+          (insert "\nDone."))))))
+
+(defun fubar-test-bell (&optional agents)
+  "Ring a test bell to get ACK from AGENTS (default: `fubar-test-bell-agents').
+Displays results in *Test Bell* buffer as responses arrive."
+  (interactive)
+  (let ((agents (or agents fubar-test-bell-agents)))
+    (setq fubar-test-bell--pending
+          (mapcar (lambda (a) (cons a 'pending)) agents))
+    (pop-to-buffer (get-buffer-create fubar-test-bell--buffer))
+    (fubar-test-bell--update-buffer)
+    (dolist (agent agents)
+      (fubar-test-bell--post-async
+       agent
+       (lambda (agent result)
+         (setf (alist-get agent fubar-test-bell--pending nil nil #'equal) result)
+         (fubar-test-bell--update-buffer))))))
+
 (provide 'fubar)
 
 (fubar-modeline-mode 1)

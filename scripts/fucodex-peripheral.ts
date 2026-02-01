@@ -22,6 +22,7 @@
  *   FUCODEX_APPROVAL_POLICY  - Approval policy (default: never)
  *   FUCODEX_NO_SANDBOX       - Set to 1/true to pass --no-sandbox
  *   FUCODEX_PRINT_AGENT_OUTPUT - Set to 0/false to suppress agent output
+ *   FUCODEX_IDLE_TIMEOUT_MS  - Kill fucodex after N ms of no output (default: 15000)
  */
 
 import { spawn } from "child_process";
@@ -46,6 +47,10 @@ const FUCODEX_NO_SANDBOX = ["1", "true", "yes"].includes(
 );
 const FUCODEX_PRINT_AGENT_OUTPUT = !["0", "false", "no"].includes(
   (process.env.FUCODEX_PRINT_AGENT_OUTPUT || "").toLowerCase()
+);
+const FUCODEX_IDLE_TIMEOUT_MS = Number.parseInt(
+  process.env.FUCODEX_IDLE_TIMEOUT_MS || "15000",
+  10
 );
 
 // ============================================================================
@@ -133,9 +138,31 @@ class FucodexWrapper {
     env.FULAB_PRINT_AGENT_OUTPUT = printOutput ? "1" : "0";
 
     const child = spawn(this.fucodexBin, args, { cwd: REPO_ROOT, env });
-    child.stdout.on("data", (data) => this.onOutput(data.toString()));
-    child.stderr.on("data", (data) => process.stderr.write(data.toString()));
+    let lastOutput = Date.now();
+    const recordOutput = (text: string, isErr = false) => {
+      lastOutput = Date.now();
+      if (isErr) {
+        process.stderr.write(text);
+      } else {
+        this.onOutput(text);
+      }
+    };
+
+    const idleTimer = setInterval(() => {
+      if (FUCODEX_IDLE_TIMEOUT_MS <= 0) {
+        return;
+      }
+      if (Date.now() - lastOutput > FUCODEX_IDLE_TIMEOUT_MS) {
+        console.error(`[fucodex] Idle timeout after ${FUCODEX_IDLE_TIMEOUT_MS}ms; terminating child`);
+        child.kill("SIGTERM");
+        clearInterval(idleTimer);
+      }
+    }, 1000);
+
+    child.stdout.on("data", (data) => recordOutput(data.toString(), false));
+    child.stderr.on("data", (data) => recordOutput(data.toString(), true));
     child.on("close", (code) => {
+      clearInterval(idleTimer);
       if (code && code !== 0) {
         console.error(`[fucodex] Error: exited with ${code}`);
       }
@@ -361,7 +388,8 @@ Options:
 
 Environment:
   AGENCY_WS_URL, AGENCY_HTTP_URL, FUCODEX_AGENT_ID, FUCODEX_BIN,
-  FUCODEX_APPROVAL_POLICY, FUCODEX_NO_SANDBOX, FUCODEX_PRINT_AGENT_OUTPUT
+  FUCODEX_APPROVAL_POLICY, FUCODEX_NO_SANDBOX, FUCODEX_PRINT_AGENT_OUTPUT,
+  FUCODEX_IDLE_TIMEOUT_MS
 `);
         process.exit(0);
     }

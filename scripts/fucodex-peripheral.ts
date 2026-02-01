@@ -19,10 +19,12 @@
  *   AGENCY_HTTP_URL          - Agency HTTP URL (default: http://localhost:7070)
  *   FUCODEX_AGENT_ID         - Agent identifier (default: fucodex)
  *   FUCODEX_BIN              - Path to fucodex script (default: ../fucodex)
+ *   FUCODEX_CODEX_BIN        - Path to codex binary (default: codex in PATH)
  *   FUCODEX_APPROVAL_POLICY  - Approval policy (default: never)
  *   FUCODEX_NO_SANDBOX       - Set to 1/true to pass --no-sandbox
  *   FUCODEX_PRINT_AGENT_OUTPUT - Set to 0/false to suppress agent output
  *   FUCODEX_IDLE_TIMEOUT_MS  - Kill fucodex after N ms of no output (default: 60000)
+ *   FUCODEX_SIMPLE_MODE      - Set to 1/true to use codex exec directly (no lab stream)
  */
 
 import { spawn } from "child_process";
@@ -41,6 +43,7 @@ const AGENCY_HTTP_URL = process.env.AGENCY_HTTP_URL || "http://localhost:7070";
 const scriptDir = path.dirname(process.argv[1] || ".");
 const REPO_ROOT = path.resolve(scriptDir, "..");
 const FUCODEX_BIN = process.env.FUCODEX_BIN || path.resolve(REPO_ROOT, "fucodex");
+const FUCODEX_CODEX_BIN = process.env.FUCODEX_CODEX_BIN || "codex";
 const FUCODEX_APPROVAL_POLICY = process.env.FUCODEX_APPROVAL_POLICY || "never";
 const FUCODEX_NO_SANDBOX = ["1", "true", "yes"].includes(
   (process.env.FUCODEX_NO_SANDBOX || "").toLowerCase()
@@ -51,6 +54,9 @@ const FUCODEX_PRINT_AGENT_OUTPUT = !["0", "false", "no"].includes(
 const FUCODEX_IDLE_TIMEOUT_MS = Number.parseInt(
   process.env.FUCODEX_IDLE_TIMEOUT_MS || "60000",
   10
+);
+const FUCODEX_SIMPLE_MODE = ["1", "true", "yes"].includes(
+  (process.env.FUCODEX_SIMPLE_MODE || "").toLowerCase()
 );
 
 // ============================================================================
@@ -76,23 +82,28 @@ class FucodexWrapper {
   private approvalPolicy: string;
   private noSandbox: boolean;
   private fucodexBin: string;
+  private codexBin: string;
   private disableHud: boolean;
   private printAgentOutput: boolean;
+  private simpleMode: boolean;
 
   constructor(
     resumeId?: string,
     onOutput?: (text: string) => void,
     approvalPolicy?: string,
     noSandbox?: boolean,
-    fucodexBin?: string
+    fucodexBin?: string,
+    codexBin?: string
   ) {
     this.resumeId = resumeId;
     this.onOutput = onOutput || ((text) => process.stdout.write(text));
     this.approvalPolicy = approvalPolicy || FUCODEX_APPROVAL_POLICY;
     this.noSandbox = noSandbox ?? FUCODEX_NO_SANDBOX;
     this.fucodexBin = fucodexBin || FUCODEX_BIN;
+    this.codexBin = codexBin || FUCODEX_CODEX_BIN;
     this.disableHud = true;
     this.printAgentOutput = true;
+    this.simpleMode = FUCODEX_SIMPLE_MODE;
   }
 
   setDisableHud(value: boolean): void {
@@ -103,13 +114,47 @@ class FucodexWrapper {
     this.printAgentOutput = value;
   }
 
+  setSimpleMode(value: boolean): void {
+    this.simpleMode = value;
+  }
+
   private processNext(): void {
     if (this.isProcessing || this.inputQueue.length === 0) {
       return;
     }
 
     const input = this.inputQueue.shift()!;
-    this.runFucodex(input, this.disableHud, this.printAgentOutput);
+    if (this.simpleMode) {
+      this.runCodexSimple(input);
+    } else {
+      this.runFucodex(input, this.disableHud, this.printAgentOutput);
+    }
+  }
+
+  private runCodexSimple(input: string): void {
+    const args: string[] = ["exec", "--skip-git-repo-check"];
+    if (this.approvalPolicy) {
+      args.push("-c", `approval_policy="${this.approvalPolicy}"`);
+    }
+    if (this.noSandbox) {
+      args.push("--dangerously-bypass-approvals-and-sandbox");
+    }
+    args.push(input);
+
+    console.error(`[codex] Running: ${this.codexBin} ${args.slice(0, 6).join(" ")}...`);
+    this.isProcessing = true;
+
+    const child = spawn(this.codexBin, args, { cwd: REPO_ROOT, env: { ...process.env } });
+    child.stdout.on("data", (data) => this.onOutput(data.toString()));
+    child.stderr.on("data", (data) => process.stderr.write(data.toString()));
+    child.on("close", (code) => {
+      if (code && code !== 0) {
+        console.error(`[codex] Error: exited with ${code}`);
+      }
+      console.error(`[codex] Completed`);
+      this.isProcessing = false;
+      this.processNext();
+    });
   }
 
   private runFucodex(input: string, disableHud: boolean, printOutput: boolean): void {
@@ -388,8 +433,10 @@ async function main() {
   let approvalPolicy = FUCODEX_APPROVAL_POLICY;
   let noSandbox = FUCODEX_NO_SANDBOX;
   let fucodexBin = FUCODEX_BIN;
+  let codexBin = FUCODEX_CODEX_BIN;
   let disableHud = true;
   let printAgentOutput = FUCODEX_PRINT_AGENT_OUTPUT;
+  let simpleMode = FUCODEX_SIMPLE_MODE;
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
@@ -411,11 +458,20 @@ async function main() {
       case "--fucodex-bin":
         fucodexBin = args[++i];
         break;
+      case "--codex-bin":
+        codexBin = args[++i];
+        break;
       case "--hud":
         disableHud = false;
         break;
       case "--no-hud":
         disableHud = true;
+        break;
+      case "--simple":
+        simpleMode = true;
+        break;
+      case "--live":
+        simpleMode = false;
         break;
       case "--print-output":
         printAgentOutput = true;
@@ -438,32 +494,38 @@ Options:
   --no-sandbox            Pass --no-sandbox to fucodex
   --hud                   Enable fucodex HUD (default: disabled)
   --no-hud                Disable fucodex HUD (default)
+  --simple                Use codex exec directly (no lab stream)
+  --live                  Use fucodex --live (default)
   --print-output          Print agent output (default)
   --no-print-output       Suppress agent output
   --fucodex-bin <path>    Path to fucodex script (default: ../fucodex)
+  --codex-bin <path>      Path to codex binary (default: codex)
   --help                  Show this help
 
 Environment:
   AGENCY_WS_URL, AGENCY_HTTP_URL, FUCODEX_AGENT_ID, FUCODEX_BIN,
-  FUCODEX_APPROVAL_POLICY, FUCODEX_NO_SANDBOX, FUCODEX_PRINT_AGENT_OUTPUT,
-  FUCODEX_IDLE_TIMEOUT_MS
+  FUCODEX_CODEX_BIN, FUCODEX_APPROVAL_POLICY, FUCODEX_NO_SANDBOX,
+  FUCODEX_PRINT_AGENT_OUTPUT, FUCODEX_IDLE_TIMEOUT_MS, FUCODEX_SIMPLE_MODE
 `);
         process.exit(0);
     }
   }
 
-  const fucodex = new FucodexWrapper(resumeId, undefined, approvalPolicy, noSandbox, fucodexBin);
+  const fucodex = new FucodexWrapper(resumeId, undefined, approvalPolicy, noSandbox, fucodexBin, codexBin);
   fucodex.setDisableHud(disableHud);
   fucodex.setPrintAgentOutput(printAgentOutput);
+  fucodex.setSimpleMode(simpleMode);
 
   console.error(`[peripheral] Agent ID: ${AGENT_ID}`);
   console.error(`[peripheral] Resume: ${resumeId || "(new session)"}`);
   console.error(`[peripheral] fucodex: ${fucodexBin}`);
+  console.error(`[peripheral] codex: ${codexBin}`);
   console.error(`[peripheral] repo root: ${REPO_ROOT}`);
   console.error(`[peripheral] Approval: ${approvalPolicy || "(default)"}`);
   console.error(`[peripheral] Sandbox: ${noSandbox ? "disabled" : "default"}`);
   console.error(`[peripheral] HUD: ${disableHud ? "disabled" : "enabled"}`);
   console.error(`[peripheral] Print output: ${printAgentOutput ? "enabled" : "disabled"}`);
+  console.error(`[peripheral] Mode: ${simpleMode ? "simple" : "live"}`);
   console.error(`[peripheral] Agency WS: ${enableAgency ? agencyWsUrl : "disabled"}`);
   console.error(`[peripheral] Ready for multiplexed input`);
   console.error("");

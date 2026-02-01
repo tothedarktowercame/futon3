@@ -17,6 +17,7 @@
             [f2.transport :as transport]
             [f2.ui :as ui]
             [futon3.musn.http :as musn-http]
+            [futon3.lab.ws :as lab-ws]
             [phoebe.runtime :as phoebe]
             [scripts.musn-irc-bridge :as irc-bridge]
             [scripts.musn-chat-supervisor :as chat-supervisor]
@@ -88,7 +89,9 @@
                      :approval-policy nil}
    :futon1-api {:enabled? futon1-api-enabled?
                 :port 8080
-                :profile (or futon1-profile "default")}})
+                :profile (or futon1-profile "default")}
+   :lab-ws {:enabled? true
+            :port 5056}})
 
 (defn- build-state [config]
   {:config (atom config)
@@ -161,6 +164,14 @@
       ;; Return a stop function
       (fn [] (futon1-api/stop!)))))
 
+(defn- start-lab-ws! [{:keys [lab-ws]}]
+  (when (:enabled? lab-ws)
+    (println (format "[f2.musn] Starting Lab WebSocket on port %d..." (:port lab-ws)))
+    (let [server (lab-ws/start! {:port (:port lab-ws)})]
+      (println "[f2.musn] Lab WebSocket started")
+      ;; Return a stop function
+      (fn [] (lab-ws/stop!)))))
+
 (defn start!
   ([] (start! {}))
   ([opts]
@@ -214,6 +225,8 @@
                chat-supervisor-stop (start-chat-supervisor! config)
                _ (flush)
                futon1-api-stop (start-futon1-api! config)
+               _ (flush)
+               lab-ws-stop (start-lab-ws! config)
                _ (flush)]
            (reset! runtime {:state state
                             :transport transport-stop
@@ -222,12 +235,16 @@
                             :musn-http musn-http-stop
                             :irc-bridge irc-bridge-stop
                             :chat-supervisor chat-supervisor-stop
-                            :futon1-api futon1-api-stop})
+                            :futon1-api futon1-api-stop
+                            :lab-ws lab-ws-stop})
            state))))))
 
 (defn stop! []
-  (when-let [{:keys [transport ui drawbridge musn-http irc-bridge chat-supervisor futon1-api]} @runtime]
+  (when-let [{:keys [transport ui drawbridge musn-http irc-bridge chat-supervisor futon1-api lab-ws]} @runtime]
     ;; Stop in reverse order of startup
+    (when lab-ws
+      (println "Stopping Lab WebSocket...")
+      (lab-ws))
     (when futon1-api
       (println "Stopping Futon1 API...")
       (futon1-api))

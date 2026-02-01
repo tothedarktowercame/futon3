@@ -118,22 +118,52 @@ Responses are normalized so callers don’t care where execution happened.
 
 No forum snapshot/merge is required for the minimal viable path.
 
-## Implementation: fuclaude-peripheral.ts
+## Implementation: fuclaude-peripheral.ts (Demo)
 
-A working multiplexed peripheral wrapper is at `scripts/fuclaude-peripheral.ts`.
+A **demo implementation** of a multiplexed peripheral is at `scripts/fuclaude-peripheral.ts`.
+This is a working proof-of-concept that demonstrates the peripheral architecture with
+a "backpack" metaphor - the agent carries items that provide capabilities:
+
+**Backpack Items:**
+- **Walkie-talkie** (Agency WebSocket) - receives bells, summons from other agents
+- **ID card** (session persistence) - memory across restarts via `--resume`
+- **Forum notebook** (Forum WebSocket) - joins threads, auto-replies to posts
+- **PAR notebook** (PAR bells) - contributes to Post-Action Reviews
+- **Pattern card** (PSR/PUR) - selects patterns to guide work, records outcomes
 
 **Architecture:**
 - Connects to Agency via WebSocket at `/agency/ws`
 - Multiplexes human input (readline) with Agency events (bells, summons)
 - Invokes `claude` CLI for each input, preserving session via `--resume`
 - All inputs feed into one conversation thread
+- PSR/PUR records are logged to MUSN activity stream
 
 **Usage:**
 ```bash
 ./scripts/fuclaude-peripheral.ts                    # fresh session
 ./scripts/fuclaude-peripheral.ts --resume <id>      # continue session
 ./scripts/fuclaude-peripheral.ts --no-agency        # human-only mode
+./scripts/fuclaude-peripheral.ts --forum-thread t-abc123  # join forum thread
 ```
+
+**Backpack Commands:**
+```bash
+/psr <query>      # Pattern Selection Record - search, select, carry
+/pur [outcome]    # Pattern Use Record - record outcome, clear pattern
+/pattern          # Show active pattern in backpack
+```
+
+**Demo Limitations:**
+- Single-threaded blocking (execSync) - one input at a time
+- Pattern selection uses Claude to pick best match (could be local scoring)
+- No streaming output during Claude invocation
+- Session detection relies on file modification times
+
+This demo validates the peripheral concept. Production implementations might use:
+- Async subprocess handling with proper signal management
+- Direct pattern scoring without LLM round-trip for PSR
+- Streaming responses for better UX
+- More robust session tracking
 
 ## Implementation: fucodex-peripheral.ts
 

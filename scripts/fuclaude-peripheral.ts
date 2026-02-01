@@ -38,6 +38,8 @@ const AGENCY_WS_URL = process.env.AGENCY_WS_URL || "ws://localhost:7070/agency/w
 const AGENCY_HTTP_URL = process.env.AGENCY_HTTP_URL || "http://localhost:7070";
 const FORUM_WS_URL = process.env.FORUM_WS_URL || "ws://localhost:5055";
 const FORUM_HTTP_URL = process.env.FORUM_HTTP_URL || "http://localhost:5050";
+const MUSN_HTTP_URL = process.env.MUSN_HTTP_URL || "http://localhost:6065";
+const PATTERN_CATALOG_PATH = process.env.PATTERN_CATALOG_PATH || "resources/sigils/patterns-index.tsv";
 
 // ============================================================================
 // Types
@@ -48,6 +50,92 @@ interface InputEvent {
   type: string;
   payload: any;
   timestamp: string;
+}
+
+interface Pattern {
+  id: string;           // e.g., "agent/pause-is-not-failure"
+  tokipona: string;     // e.g., "lape"
+  sigil: string;        // e.g., "不"
+  rationale: string;    // Why/when to use
+  hotwords: string[];   // Search terms
+}
+
+interface ActivePattern {
+  pattern: Pattern;
+  query: string;
+  candidates: string[];
+  selectedAt: string;
+  confidence: "low" | "medium" | "high";
+  rationale: string;
+}
+
+// ============================================================================
+// Pattern Catalog
+// ============================================================================
+
+class PatternCatalog {
+  private patterns: Pattern[] = [];
+  private loaded = false;
+
+  load(catalogPath: string = PATTERN_CATALOG_PATH): void {
+    if (this.loaded) return;
+    try {
+      const content = fs.readFileSync(catalogPath, "utf-8");
+      const lines = content.split("\n").slice(1); // Skip header
+
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        const [id, tokipona, sigil, rationale, hotwordsStr] = line.split("\t");
+        if (!id) continue;
+
+        this.patterns.push({
+          id: id.trim(),
+          tokipona: tokipona?.trim() || "",
+          sigil: sigil?.trim() || "",
+          rationale: rationale?.trim() || "",
+          hotwords: (hotwordsStr || "").split(",").map(h => h.trim().toLowerCase()),
+        });
+      }
+
+      this.loaded = true;
+      console.error(`[patterns] Loaded ${this.patterns.length} patterns from ${catalogPath}`);
+    } catch (e) {
+      console.error(`[patterns] Failed to load catalog: ${e}`);
+    }
+  }
+
+  search(query: string, limit: number = 5): Pattern[] {
+    if (!this.loaded) this.load();
+
+    const terms = query.toLowerCase().split(/\s+/);
+
+    // Score each pattern by how many query terms match
+    const scored = this.patterns.map(p => {
+      let score = 0;
+      const searchText = `${p.id} ${p.rationale} ${p.hotwords.join(" ")}`.toLowerCase();
+
+      for (const term of terms) {
+        if (searchText.includes(term)) score += 1;
+        // Bonus for hotword exact match
+        if (p.hotwords.includes(term)) score += 2;
+        // Bonus for pattern name match
+        if (p.id.toLowerCase().includes(term)) score += 3;
+      }
+
+      return { pattern: p, score };
+    });
+
+    return scored
+      .filter(s => s.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit)
+      .map(s => s.pattern);
+  }
+
+  getById(id: string): Pattern | undefined {
+    if (!this.loaded) this.load();
+    return this.patterns.find(p => p.id === id);
+  }
 }
 
 // ============================================================================
@@ -68,8 +156,12 @@ class ClaudeCodeWrapper {
   private sessionId: string | undefined;
   private statePath: string;
   private firstRun = true;
+  private patternCatalog = new PatternCatalog();
+  private activePattern: ActivePattern | null = null;
 
   constructor(resumeId?: string, statePath?: string) {
+    // Load pattern catalog at startup
+    this.patternCatalog.load();
     this.statePath = statePath || path.join(SESSION_DIR, `peripheral-${AGENT_ID}-state.json`);
 
     if (resumeId) {
@@ -183,6 +275,36 @@ class ClaudeCodeWrapper {
     const prefix = `[${event.source}${event.type ? ` ${event.type}` : ""}]`;
     let message: string;
 
+    // Check for PSR/PUR commands from human input
+    if (event.source === "human") {
+      const input = String(event.payload).trim();
+
+      // /psr <query> - Pattern Selection Record
+      if (input.startsWith("/psr ")) {
+        const query = input.slice(5).trim();
+        return this.handlePsrRequest(query);
+      }
+      if (input === "/psr") {
+        return "Usage: /psr <query>\nExample: /psr stuck on testing";
+      }
+
+      // /pur [outcome] - Pattern Use Record
+      if (input.startsWith("/pur")) {
+        const outcomeHint = input.slice(4).trim() || undefined;
+        return this.handlePurRequest(outcomeHint);
+      }
+
+      // /pattern - Show active pattern
+      if (input === "/pattern" || input === "/backpack") {
+        const active = this.getActivePattern();
+        if (active) {
+          return `Active pattern: ${active.pattern.id} [${active.pattern.sigil}]\nSelected for: ${active.query}\nConfidence: ${active.confidence}`;
+        } else {
+          return "No active pattern. Use /psr <query> to select one.";
+        }
+      }
+    }
+
     if (event.source === "agency" && event.type === "bell") {
       const bellData = event.payload;
       const bellType = bellData["bell-type"] || bellData.bellType || "unknown";
@@ -190,6 +312,18 @@ class ClaudeCodeWrapper {
       // Special handling for PAR bells
       if (bellType === "par-summon") {
         return this.handleParBell(bellData);
+      }
+
+      // Special handling for PSR bells
+      if (bellType === "psr-request") {
+        const query = bellData.payload?.query || bellData.query || "general guidance";
+        return this.handlePsrRequest(query);
+      }
+
+      // Special handling for PUR bells
+      if (bellType === "pur-request") {
+        const outcomeHint = bellData.payload?.outcome || bellData.outcome;
+        return this.handlePurRequest(outcomeHint);
       }
 
       // Regular bell - format nicely
@@ -284,6 +418,241 @@ ${sections[2] ? `## ${sections[2]}\n[Your contribution]` : ""}
       }
     } catch (e) {
       console.error(`[par] Error posting contributions: ${e}`);
+    }
+  }
+
+  // ===========================================================================
+  // PSR/PUR - Pattern Selection and Use Records (Pattern Card in Backpack)
+  // ===========================================================================
+
+  getActivePattern(): ActivePattern | null {
+    return this.activePattern;
+  }
+
+  handlePsrRequest(query: string): string {
+    console.error(`[psr] Searching patterns for: ${query}`);
+
+    const candidates = this.patternCatalog.search(query, 5);
+
+    if (candidates.length === 0) {
+      return `No patterns found matching "${query}". Try different keywords.`;
+    }
+
+    // Format candidates for display
+    const candidateList = candidates.map((p, i) =>
+      `${i + 1}. **${p.id}** [${p.sigil}]\n   ${p.rationale}\n   Hotwords: ${p.hotwords.slice(0, 5).join(", ")}`
+    ).join("\n\n");
+
+    // Build prompt for Claude to help select
+    const prompt = `[psr] Pattern Selection Record
+
+You're selecting a pattern to guide your current work. Query: "${query}"
+
+## Pattern Candidates
+
+${candidateList}
+
+## Your Task
+
+Review these patterns and select the one that best fits the query "${query}".
+Explain briefly why this pattern is the best fit (2-3 sentences).
+Rate your confidence: low, medium, or high.
+
+Format your response as:
+SELECTED: <pattern id>
+CONFIDENCE: <low/medium/high>
+RATIONALE: <why this pattern fits>`;
+
+    const response = this.runClaude(prompt);
+
+    // Parse the response to extract selection
+    const selectedMatch = response.match(/SELECTED:\s*(\S+)/i);
+    const confidenceMatch = response.match(/CONFIDENCE:\s*(low|medium|high)/i);
+    const rationaleMatch = response.match(/RATIONALE:\s*(.+?)(?:\n|$)/is);
+
+    if (selectedMatch) {
+      const selectedId = selectedMatch[1];
+      const pattern = this.patternCatalog.getById(selectedId) || candidates[0];
+      const confidence = (confidenceMatch?.[1] as "low" | "medium" | "high") || "medium";
+      const rationale = rationaleMatch?.[1]?.trim() || "Selected as best match";
+
+      // Store active pattern
+      this.activePattern = {
+        pattern,
+        query,
+        candidates: candidates.map(c => c.id),
+        selectedAt: new Date().toISOString(),
+        confidence,
+        rationale,
+      };
+
+      // Log to activity stream
+      this.logPsrToActivity();
+
+      console.error(`[psr] Selected: ${pattern.id} [${pattern.sigil}] (${confidence})`);
+
+      return `## PSR (Pattern Selection Record)
+- **Cycle**: ${this.activePattern ? 1 : 0}
+- **Query**: ${query}
+- **Pattern chosen**: ${pattern.id}
+- **Sigil**: ${pattern.sigil}
+- **Candidates considered**: ${candidates.map(c => c.id).join(", ")}
+- **Rationale**: ${rationale}
+- **Confidence**: ${confidence}
+
+---
+${pattern.sigil} Pattern **${pattern.id}** is now in your backpack.
+
+${pattern.rationale}
+
+Use /pur when your work is complete to record the outcome.`;
+    }
+
+    return response;
+  }
+
+  handlePurRequest(outcomeHint?: string): string {
+    if (!this.activePattern) {
+      return `No active pattern in backpack. Use /psr <query> to select a pattern first.`;
+    }
+
+    const { pattern, query, selectedAt, confidence } = this.activePattern;
+
+    console.error(`[pur] Recording outcome for: ${pattern.id}`);
+
+    // Build prompt for Claude to assess outcome
+    const prompt = `[pur] Pattern Use Record
+
+You applied pattern **${pattern.id}** [${pattern.sigil}] to the query "${query}".
+Selected at: ${selectedAt}
+Confidence was: ${confidence}
+${outcomeHint ? `Outcome hint: ${outcomeHint}` : ""}
+
+Pattern rationale: ${pattern.rationale}
+
+## Your Task
+
+Reflect on how well this pattern served the work:
+1. What actions did you take guided by this pattern?
+2. What was the outcome? (success / partial / failed / pivoted / deferred)
+3. Compare expected vs actual - what was the prediction error? (low / medium / high)
+4. Any notes or learnings?
+
+Format your response as:
+ACTIONS: <brief summary of actions>
+OUTCOME: <success/partial/failed/pivoted/deferred>
+EXPECTED: <what you expected>
+ACTUAL: <what actually happened>
+PREDICTION_ERROR: <low/medium/high>
+NOTES: <any additional learnings>`;
+
+    const response = this.runClaude(prompt);
+
+    // Parse the response
+    const actionsMatch = response.match(/ACTIONS:\s*(.+?)(?:\n|$)/is);
+    const outcomeMatch = response.match(/OUTCOME:\s*(success|partial|failed|pivoted|deferred)/i);
+    const expectedMatch = response.match(/EXPECTED:\s*(.+?)(?:\n|$)/is);
+    const actualMatch = response.match(/ACTUAL:\s*(.+?)(?:\n|$)/is);
+    const errorMatch = response.match(/PREDICTION_ERROR:\s*(low|medium|high)/i);
+    const notesMatch = response.match(/NOTES:\s*(.+?)(?:\n|$)/is);
+
+    const outcome = outcomeMatch?.[1] || outcomeHint || "unknown";
+    const actions = actionsMatch?.[1]?.trim() || "Not specified";
+    const expected = expectedMatch?.[1]?.trim() || "Not specified";
+    const actual = actualMatch?.[1]?.trim() || "Not specified";
+    const predictionError = errorMatch?.[1] || "medium";
+    const notes = notesMatch?.[1]?.trim() || "";
+
+    // Log to activity stream
+    this.logPurToActivity(outcome, actions, expected, actual, predictionError, notes);
+
+    // Clear active pattern
+    const clearedPattern = this.activePattern;
+    this.activePattern = null;
+
+    console.error(`[pur] Recorded: ${outcome}, prediction error: ${predictionError}`);
+
+    return `## PUR (Pattern Use Record)
+- **Pattern**: ${clearedPattern.pattern.id}
+- **Sigil**: ${clearedPattern.pattern.sigil}
+- **Actions taken**: ${actions}
+- **Outcome**: ${outcome}
+- **Expected**: ${expected}
+- **Actual**: ${actual}
+- **Prediction error**: ${predictionError}
+- **Notes**: ${notes}
+
+---
+Pattern [${clearedPattern.pattern.sigil}] cleared from backpack. Ready for next /psr.`;
+  }
+
+  private async logPsrToActivity(): Promise<void> {
+    if (!this.activePattern) return;
+
+    const { pattern, query, candidates, confidence, rationale } = this.activePattern;
+
+    try {
+      const resp = await fetch(`${MUSN_HTTP_URL}/musn/activity/log`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          "event/type": "pattern/psr",
+          agent: AGENT_ID,
+          source: "peripheral",
+          "session/id": this.sessionId,
+          "pattern/selected": pattern.id,
+          "pattern/sigil": pattern.sigil,
+          "pattern/candidates": candidates,
+          "pattern/query": query,
+          "pattern/confidence": confidence,
+          "pattern/rationale": rationale,
+        }),
+      });
+      if (resp.ok) {
+        console.error(`[psr] Logged to activity stream`);
+      }
+    } catch (e) {
+      console.error(`[psr] Failed to log to activity: ${e}`);
+    }
+  }
+
+  private async logPurToActivity(
+    outcome: string,
+    actions: string,
+    expected: string,
+    actual: string,
+    predictionError: string,
+    notes: string
+  ): Promise<void> {
+    if (!this.activePattern) return;
+
+    const { pattern, query } = this.activePattern;
+
+    try {
+      const resp = await fetch(`${MUSN_HTTP_URL}/musn/activity/log`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          "event/type": "pattern/pur",
+          agent: AGENT_ID,
+          source: "peripheral",
+          "session/id": this.sessionId,
+          "pattern/id": pattern.id,
+          "pattern/sigil": pattern.sigil,
+          "pattern/query": query,
+          "pattern/outcome": outcome,
+          "pattern/actions": actions,
+          "pattern/expected": expected,
+          "pattern/actual": actual,
+          "pattern/prediction-error": predictionError,
+          "pattern/notes": notes,
+        }),
+      });
+      if (resp.ok) {
+        console.error(`[pur] Logged to activity stream`);
+      }
+    } catch (e) {
+      console.error(`[pur] Failed to log to activity: ${e}`);
     }
   }
 }
@@ -583,6 +952,12 @@ This wrapper multiplexes human input, Agency events, and Forum posts into a sing
 Claude Code session. Sessions are automatically persisted to a state file and
 resumed on restart - the agent remembers previous interactions.
 
+Backpack Commands:
+  /psr <query>    Search patterns, select one to carry (Pattern Selection Record)
+  /pur [outcome]  Record outcome of pattern application (Pattern Use Record)
+  /pattern        Show the currently active pattern
+  /backpack       Alias for /pattern
+
 Example:
   # Start fresh session connected to Agency (auto-persists)
   ./fuclaude-peripheral.ts
@@ -595,6 +970,12 @@ Example:
 
   # Explicitly resume a specific session
   ./fuclaude-peripheral.ts --resume 973b4921-7efc-4d15-bb0e-3eabfe652a17
+
+  # Select a pattern to guide work
+  /psr stuck on testing
+
+  # Record outcome when done
+  /pur success
 `);
         process.exit(0);
     }
@@ -607,8 +988,11 @@ Example:
   console.error(`[peripheral] Session: ${claude.getSessionId() || "(will detect on first run)"}`);
   console.error(`[peripheral] Agency WS: ${enableAgency ? agencyWsUrl : "disabled"}`);
   console.error(`[peripheral] Forum: ${forumThread || "disabled"}`);
+  console.error(`[peripheral] Patterns: loaded from ${PATTERN_CATALOG_PATH}`);
   console.error(`[peripheral] State: lab/agency/sessions/peripheral-${AGENT_ID}-state.json`);
+  console.error(`[peripheral] Backpack: walkie-talkie, ID card, pattern card`);
   console.error(`[peripheral] Ready for multiplexed input`);
+  console.error(`[peripheral] Commands: /psr <query>, /pur [outcome], /pattern`);
   console.error("");
 
   // Create input sources

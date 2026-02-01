@@ -51,6 +51,41 @@ Generate Post-Action Review at session close.
 - CANNOT: Edit code, run commands
 - OUTPUT: Structured PAR for learning capture
 
+## PSR/PUR (Pattern Selection/Use Records)
+
+Pattern-guided work with learning feedback:
+
+```
+/psr <query>     # Search patterns, select one to carry
+/pur [outcome]   # Record outcome of pattern application
+```
+
+### PSR Flow
+
+1. Search pattern catalog by keyword/problem
+2. Review 3-5 candidates with rationales
+3. Select pattern to guide work
+4. Pattern goes in "backpack" for session
+
+### PUR Flow
+
+1. Reference active pattern from PSR
+2. Record actions taken
+3. Capture outcome (success/partial/failed/pivoted)
+4. Note prediction error (expected vs actual)
+5. Clear pattern from backpack
+
+### Pattern Catalog
+
+Patterns live in `resources/sigils/patterns-index.tsv` with columns:
+- `pattern` - namespaced ID (e.g., `agent/pause-is-not-failure`)
+- `tokipona` - toki pona mapping
+- `truth` - sigil character
+- `rationale` - when/why to use
+- `hotwords` - relevance signals
+
+Key namespaces: `agent/*`, `aif/*`, `ants/*`, `code-coherence/*`, `stack-coherence/*`
+
 ## PAR (Post-Action Review)
 
 The `/par` command generates structured reflection:

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "futon3",
+  "description": "Futon project plugins for peripheral workflows, patterns, and structured agent collaboration",
+  "owner": {
+    "name": "Futon Project",
+    "email": "jcorneli@brookes.ac.uk"
+  },
+  "plugins": [
+    {
+      "name": "futon-peripherals",
+      "description": "Peripheral mode switching for structured agent workflows (explore, edit, reflect, PSR/PUR)",
+      "version": "0.1.0",
+      "author": {
+        "name": "Futon Project",
+        "email": "jcorneli@brookes.ac.uk"
+      },
+      "source": "./futon-peripherals",
+      "category": "productivity"
+    }
+  ]
+}

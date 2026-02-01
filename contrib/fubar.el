@@ -1126,6 +1126,68 @@ and verifies they return the correct value."
                  fubar-test-bell-v2--pending)
            (fubar-test-bell-v2--update-buffer-safe)))))))
 
+;;; Test Bell WS - ring connected agents via WebSocket
+
+(defun fubar-test-bell-ws (&optional agent-id)
+  "Ring the bell to connected agents via WebSocket.
+If AGENT-ID is nil, rings all connected agents.
+The bell creates a secret and pushes it to agents via WebSocket."
+  (interactive "sAgent ID (blank for all): ")
+  (let* ((url-request-method "POST")
+         (url-request-extra-headers
+          '(("Content-Type" . "application/json")))
+         (payload (if (and agent-id (not (string-empty-p agent-id)))
+                      `((agent-id . ,agent-id)
+                        (type . "test-bell")
+                        (payload . ((message . "Ring ring! Fetch the secret."))))
+                    `((agent-id . "all")
+                      (type . "test-bell")
+                      (payload . ((message . "Ring ring! Fetch the secret."))))))
+         (url-request-data (encode-coding-string (json-encode payload) 'utf-8))
+         (url (concat (string-trim-right fubar-agency-url "/") "/agency/bell")))
+    (url-retrieve
+     url
+     (lambda (status)
+       (if (plist-get status :error)
+           (message "[fubar] Bell failed: %s" (plist-get status :error))
+         (goto-char (point-min))
+         (when (re-search-forward "\n\n" nil t)
+           (condition-case err
+               (let* ((json-object-type 'plist)
+                      (resp (json-read)))
+                 (if (plist-get resp :ok)
+                     (message "[fubar] Bell rang! Secret: %s, Agents: %s"
+                              (plist-get resp :secret-value)
+                              (or (plist-get resp :agents)
+                                  (plist-get resp :agent-id)))
+                   (message "[fubar] Bell failed: %s" (plist-get resp :error))))
+             (error (message "[fubar] Parse error: %s" err)))))
+       (kill-buffer (current-buffer)))
+     nil t t)))
+
+(defun fubar-agency-connected ()
+  "Show currently connected agents."
+  (interactive)
+  (let* ((url-request-method "GET")
+         (url (concat (string-trim-right fubar-agency-url "/") "/agency/connected")))
+    (url-retrieve
+     url
+     (lambda (status)
+       (if (plist-get status :error)
+           (message "[fubar] Failed: %s" (plist-get status :error))
+         (goto-char (point-min))
+         (when (re-search-forward "\n\n" nil t)
+           (condition-case err
+               (let* ((json-object-type 'plist)
+                      (resp (json-read))
+                      (agents (plist-get resp :agents)))
+                 (if agents
+                     (message "[fubar] Connected agents: %s" (mapconcat #'identity agents ", "))
+                   (message "[fubar] No agents connected")))
+             (error (message "[fubar] Parse error: %s" err)))))
+       (kill-buffer (current-buffer)))
+     nil t t)))
+
 (provide 'fubar)
 
 (fubar-modeline-mode 1)

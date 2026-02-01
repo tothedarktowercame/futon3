@@ -94,6 +94,14 @@
         (and (= uri "/agency/mirror/status") (= method :get))
         (json-response (codex-mirror/status))
 
+        ;; WebSocket endpoint for agent walkie-talkie
+        (= uri "/agency/ws")
+        (handle-agency-ws req)
+
+        ;; Connected agents list
+        (and (= uri "/agency/connected") (= method :get))
+        (json-response {:ok true :agents (connected-agent-ids)})
+
         ;; Secret retrieval (GET /agency/secret/:id)
         (and (= method :get) (str/starts-with? uri "/agency/secret/"))
         (let [secret-id (subs uri (count "/agency/secret/"))]
@@ -105,6 +113,10 @@
         ;; Secret creation (POST /agency/secret)
         (= uri "/agency/secret")
         (json-response (handle-create-secret (parse-json-body req)))
+
+        ;; Ring bell to connected agents
+        (= uri "/agency/bell")
+        (json-response (handle-ring-bell (parse-json-body req)))
 
         (= uri "/agency/run")
         (json-response (handle-run (parse-json-body req)))
@@ -145,6 +157,110 @@
       (swap! secrets dissoc secret-id)
       {:ok true :value (:value entry)})
     {:ok false :err "secret not found or expired"}))
+
+;; =============================================================================
+;; WebSocket - Agent walkie-talkie
+;; =============================================================================
+
+(defonce ^:private connected-agents (atom {}))
+;; {agent-id -> {:channel ch :registered-at inst :last-ping inst}}
+
+(defn- ws-send! [channel msg]
+  (when (http/open? channel)
+    (http/send! channel (json/generate-string msg))))
+
+(defn send-to-agent!
+  "Send a message to a connected agent. Returns true if sent, false if not connected."
+  [agent-id msg]
+  (if-let [entry (get @connected-agents (name agent-id))]
+    (do
+      (ws-send! (:channel entry) msg)
+      (log! "ws-send" {:agent-id agent-id :type (:type msg)})
+      true)
+    (do
+      (log! "ws-send-failed" {:agent-id agent-id :reason "not-connected"})
+      false)))
+
+(defn connected-agent-ids
+  "Return list of currently connected agent IDs."
+  []
+  (keys @connected-agents))
+
+(defn- handle-ws-message [agent-id channel raw]
+  (try
+    (let [msg (json/parse-string raw true)]
+      (log! "ws-recv" {:agent-id agent-id :type (:type msg)})
+      (case (:type msg)
+        "register"
+        (do
+          (swap! connected-agents assoc (name agent-id)
+                 {:channel channel
+                  :registered-at (java.time.Instant/now)
+                  :last-ping (java.time.Instant/now)})
+          (ws-send! channel {:type "registered" :agent-id agent-id}))
+
+        "ping"
+        (do
+          (swap! connected-agents update (name agent-id)
+                 assoc :last-ping (java.time.Instant/now))
+          (ws-send! channel {:type "pong" :at (str (java.time.Instant/now))}))
+
+        "ack"
+        (log! "ws-ack" {:agent-id agent-id :payload (:payload msg)})
+
+        ;; Default: log unknown
+        (log! "ws-unknown" {:agent-id agent-id :msg msg})))
+    (catch Exception e
+      (log! "ws-parse-error" {:agent-id agent-id :error (.getMessage e)}))))
+
+(defn- handle-agency-ws [req]
+  (let [params (parse-query (:query-string req))
+        agent-id (or (get params "agent-id") "unknown")]
+    (http/with-channel req channel
+      (log! "ws-connect" {:agent-id agent-id})
+
+      ;; Auto-register on connect
+      (swap! connected-agents assoc (name agent-id)
+             {:channel channel
+              :registered-at (java.time.Instant/now)
+              :last-ping (java.time.Instant/now)})
+      (ws-send! channel {:type "connected" :agent-id agent-id})
+
+      (http/on-receive channel
+        (fn [raw]
+          (handle-ws-message agent-id channel raw)))
+
+      (http/on-close channel
+        (fn [_status]
+          (log! "ws-disconnect" {:agent-id agent-id})
+          (swap! connected-agents dissoc (name agent-id)))))))
+
+;; =============================================================================
+;; Bell endpoint - ring connected agents
+;; =============================================================================
+
+(defn- handle-ring-bell [body]
+  (let [{:keys [agent-id type payload]} body
+        agent-id (or agent-id "all")
+        bell-type (or type "test-bell")
+        secret-result (handle-create-secret {:ttl-ms 60000})
+        bell-msg {:type "bell"
+                  :bell-type bell-type
+                  :secret-id (:secret-id secret-result)
+                  :payload payload
+                  :timestamp (str (java.time.Instant/now))}]
+    (if (= agent-id "all")
+      ;; Ring all connected agents
+      (let [agents (connected-agent-ids)
+            results (mapv (fn [aid] {:agent-id aid :sent (send-to-agent! aid bell-msg)}) agents)]
+        {:ok true :bell bell-msg :agents results :secret-value (:value secret-result)})
+      ;; Ring specific agent
+      (let [sent (send-to-agent! agent-id bell-msg)]
+        {:ok sent
+         :bell bell-msg
+         :agent-id agent-id
+         :secret-value (:value secret-result)
+         :error (when-not sent "agent not connected")}))))
 
 (defonce ^:private server-state (atom nil))
 

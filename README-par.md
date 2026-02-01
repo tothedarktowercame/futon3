@@ -95,6 +95,19 @@ During or after a session, use the CRDT-based collaborative PAR editor:
 
 Or create the sidecar file directly alongside the session JSONL.
 
+#### Local sidecar write (Codex JSONL)
+
+For Codex sessions stored as JSONL (e.g., `~/.codex/sessions/...`), you can
+write the PAR sidecar locally without relying on MUSN sidecar resolution:
+
+```elisp
+(futon-par-set-jsonl-path "/home/joe/.codex/sessions/2026/02/01/<session>.jsonl")
+(futon-par-submit)
+```
+
+This writes `<session>.par.edn` next to the JSONL file and enables live PAR
+streaming via lab-ws when a watcher is active.
+
 ### Retrieving PARs: The `/rap` Endpoint
 
 The `/rap` endpoint (port 6065) scans all `.par.edn` sidecars and returns distilled learning:

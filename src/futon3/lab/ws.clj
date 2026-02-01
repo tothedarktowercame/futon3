@@ -434,3 +434,49 @@
      :port port
      :clients (count @clients)}
     {:running false}))
+
+(defn- port-listening?
+  "Check if the given port is actually accepting connections."
+  [port]
+  (try
+    (with-open [sock (java.net.Socket.)]
+      (.connect sock (java.net.InetSocketAddress. "127.0.0.1" port) 100)
+      true)
+    (catch Exception _ false)))
+
+(defonce ^:private supervisor-state (atom nil))
+
+(defn start-supervisor!
+  "Start a supervisor that auto-restarts lab-ws if it dies.
+   Checks every 10 seconds and restarts if port is not listening."
+  [{:keys [port check-interval-ms] :or {port 5056 check-interval-ms 10000}}]
+  ;; Stop existing supervisor
+  (when-let [{:keys [stop-flag]} @supervisor-state]
+    (reset! stop-flag true))
+
+  (let [stop-flag (atom false)]
+    (reset! supervisor-state {:stop-flag stop-flag :port port})
+    (future
+      (println "[lab-ws-supervisor] Started, monitoring port" port)
+      (loop []
+        (Thread/sleep check-interval-ms)
+        (when-not @stop-flag
+          (when-not (port-listening? port)
+            (println "[lab-ws-supervisor]" (now-iso) "Port" port "not listening, restarting...")
+            (try
+              (start! {:port port})
+              (if (port-listening? port)
+                (println "[lab-ws-supervisor] Restart successful")
+                (println "[lab-ws-supervisor] Restart failed - port still not listening"))
+              (catch Exception e
+                (println "[lab-ws-supervisor] Restart error:" (.getMessage e)))))
+          (recur))))
+    (println "[lab-ws-supervisor] Supervisor started for port" port)))
+
+(defn stop-supervisor!
+  "Stop the supervisor."
+  []
+  (when-let [{:keys [stop-flag]} @supervisor-state]
+    (reset! stop-flag true)
+    (reset! supervisor-state nil)
+    (println "[lab-ws-supervisor] Stopped")))

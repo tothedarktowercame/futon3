@@ -71,6 +71,7 @@ class FucodexWrapper {
   private approvalPolicy: string;
   private noSandbox: boolean;
   private fucodexBin: string;
+  private disableHud: boolean;
 
   constructor(
     resumeId?: string,
@@ -84,6 +85,11 @@ class FucodexWrapper {
     this.approvalPolicy = approvalPolicy || FUCODEX_APPROVAL_POLICY;
     this.noSandbox = noSandbox ?? FUCODEX_NO_SANDBOX;
     this.fucodexBin = fucodexBin || FUCODEX_BIN;
+    this.disableHud = true;
+  }
+
+  setDisableHud(value: boolean): void {
+    this.disableHud = value;
   }
 
   private processNext(): void {
@@ -92,10 +98,10 @@ class FucodexWrapper {
     }
 
     const input = this.inputQueue.shift()!;
-    this.runFucodex(input);
+    this.runFucodex(input, this.disableHud);
   }
 
-  private runFucodex(input: string): void {
+  private runFucodex(input: string, disableHud: boolean): void {
     const escapedInput = shellQuote(input);
     let cmd = `${shellQuote(this.fucodexBin)} --live`;
 
@@ -115,7 +121,11 @@ class FucodexWrapper {
     console.error(`[fucodex] Running: ${cmd.slice(0, 100)}...`);
     this.isProcessing = true;
 
-    exec(cmd, { maxBuffer: 20 * 1024 * 1024, cwd: REPO_ROOT }, (error, stdout, stderr) => {
+    const env = { ...process.env };
+    if (disableHud) {
+      env.FUCODEX_HUD = "0";
+    }
+    exec(cmd, { maxBuffer: 20 * 1024 * 1024, cwd: REPO_ROOT, env }, (error, stdout, stderr) => {
       if (error) {
         console.error(`[fucodex] Error: ${error.message}`);
       }
@@ -291,6 +301,7 @@ async function main() {
   let approvalPolicy = FUCODEX_APPROVAL_POLICY;
   let noSandbox = FUCODEX_NO_SANDBOX;
   let fucodexBin = FUCODEX_BIN;
+  let disableHud = true;
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
@@ -312,6 +323,12 @@ async function main() {
       case "--fucodex-bin":
         fucodexBin = args[++i];
         break;
+      case "--hud":
+        disableHud = false;
+        break;
+      case "--no-hud":
+        disableHud = true;
+        break;
       case "--help":
         console.log(`
 fucodex-peripheral - Multiplexed Codex wrapper with backpack & walkie-talkie
@@ -325,6 +342,8 @@ Options:
   --no-agency             Disable Agency connection (human-only mode)
   --approval-policy <p>   fucodex approval policy (default: never)
   --no-sandbox            Pass --no-sandbox to fucodex
+  --hud                   Enable fucodex HUD (default: disabled)
+  --no-hud                Disable fucodex HUD (default)
   --fucodex-bin <path>    Path to fucodex script (default: ../fucodex)
   --help                  Show this help
 
@@ -337,6 +356,7 @@ Environment:
   }
 
   const fucodex = new FucodexWrapper(resumeId, undefined, approvalPolicy, noSandbox, fucodexBin);
+  fucodex.setDisableHud(disableHud);
 
   console.error(`[peripheral] Agent ID: ${AGENT_ID}`);
   console.error(`[peripheral] Resume: ${resumeId || "(new session)"}`);
@@ -344,6 +364,7 @@ Environment:
   console.error(`[peripheral] repo root: ${REPO_ROOT}`);
   console.error(`[peripheral] Approval: ${approvalPolicy || "(default)"}`);
   console.error(`[peripheral] Sandbox: ${noSandbox ? "disabled" : "default"}`);
+  console.error(`[peripheral] HUD: ${disableHud ? "disabled" : "enabled"}`);
   console.error(`[peripheral] Agency WS: ${enableAgency ? agencyWsUrl : "disabled"}`);
   console.error(`[peripheral] Ready for multiplexed input`);
   console.error("");

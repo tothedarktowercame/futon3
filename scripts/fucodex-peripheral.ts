@@ -141,6 +141,27 @@ class FucodexWrapper {
     let lastOutput = Date.now();
     let summarySeen = false;
     let summaryTimer: NodeJS.Timeout | null = null;
+    let forceTimer: NodeJS.Timeout | null = null;
+    let completed = false;
+
+    const finish = (code?: number | null) => {
+      if (completed) {
+        return;
+      }
+      completed = true;
+      if (summaryTimer) {
+        clearTimeout(summaryTimer);
+      }
+      if (forceTimer) {
+        clearTimeout(forceTimer);
+      }
+      if (code && code !== 0) {
+        console.error(`[fucodex] Error: exited with ${code}`);
+      }
+      console.error(`[fucodex] Completed`);
+      this.isProcessing = false;
+      this.processNext();
+    };
 
     const scheduleSummaryKill = () => {
       if (summaryTimer) {
@@ -150,6 +171,17 @@ class FucodexWrapper {
         if (!child.killed) {
           console.error("[fucodex] Summary seen; terminating child to advance queue");
           child.kill("SIGTERM");
+          if (!forceTimer) {
+            forceTimer = setTimeout(() => {
+              console.error("[fucodex] Forcing completion after summary timeout");
+              try {
+                child.kill("SIGKILL");
+              } catch (_) {
+                // ignore
+              }
+              finish(null);
+            }, 3000);
+          }
         }
       }, 1500);
     };
@@ -175,6 +207,17 @@ class FucodexWrapper {
         console.error(`[fucodex] Idle timeout after ${FUCODEX_IDLE_TIMEOUT_MS}ms; terminating child`);
         child.kill("SIGTERM");
         clearInterval(idleTimer);
+        if (!forceTimer) {
+          forceTimer = setTimeout(() => {
+            console.error("[fucodex] Forcing completion after idle timeout");
+            try {
+              child.kill("SIGKILL");
+            } catch (_) {
+              // ignore
+            }
+            finish(null);
+          }, 3000);
+        }
       }
     }, 1000);
 
@@ -182,15 +225,7 @@ class FucodexWrapper {
     child.stderr.on("data", (data) => recordOutput(data.toString(), true));
     child.on("close", (code) => {
       clearInterval(idleTimer);
-      if (summaryTimer) {
-        clearTimeout(summaryTimer);
-      }
-      if (code && code !== 0) {
-        console.error(`[fucodex] Error: exited with ${code}`);
-      }
-      console.error(`[fucodex] Completed`);
-      this.isProcessing = false;
-      this.processNext();
+      finish(code);
     });
   }
 

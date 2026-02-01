@@ -73,6 +73,16 @@
          :timestamp timestamp
          :text (or (:summary entry) "")}
 
+        "par"
+        {:type "par"
+         :timestamp timestamp
+         :text (or (:text entry)
+                   (:summary entry)
+                   (get-in entry [:message :content])
+                   "")
+         :par-id (:par-id entry)
+         :tags (:tags entry)}
+
         nil))
     (catch Exception _ nil)))
 

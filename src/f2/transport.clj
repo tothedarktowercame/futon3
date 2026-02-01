@@ -1098,6 +1098,16 @@
          :timestamp timestamp
          :text "[Context compacted]"}
 
+        "par"
+        {:type "par"
+         :timestamp timestamp
+         :text (or (:text entry)
+                   (:summary entry)
+                   (get-in entry [:message :content])
+                   "") 
+         :par-id (:par-id entry)
+         :tags (:tags entry)}
+
         ;; Default - include raw for debugging
         {:type msg-type
          :timestamp timestamp
@@ -1200,6 +1210,101 @@
                      :originator originator})))
            (sort-by :modified #(compare %2 %1))))))
 
+(defn- upload-root
+  "Return root directory for uploaded sessions."
+  [state]
+  (let [config (config! state)
+        root (or (:lab-upload-root config)
+                 (get-in config [:lab :upload-root])
+                 (io/file "lab" "remote"))]
+    (if (instance? java.io.File root)
+      root
+      (io/file root))))
+
+(defn- safe-session-id
+  "Sanitize session id for filesystem use."
+  [session-id]
+  (-> (str session-id)
+      (str/replace #"[^A-Za-z0-9._-]" "_")
+      (str/replace #"__+" "_")))
+
+(defn- upload-session-path
+  "Return JSONL path for uploaded SESSION-ID."
+  [state session-id]
+  (let [root (upload-root state)
+        safe-id (safe-session-id session-id)]
+    (io/file root (str safe-id ".jsonl"))))
+
+(defn- upload-meta-path
+  [state session-id]
+  (let [root (upload-root state)
+        safe-id (safe-session-id session-id)]
+    (io/file root (str safe-id ".meta.edn"))))
+
+(defn- write-upload-meta!
+  [state session-id meta]
+  (let [path (upload-meta-path state session-id)
+        merged (merge {:session-id session-id
+                       :created-at (clock/->iso-string)}
+                      meta)]
+    (io/make-parents path)
+    (spit path (pr-str merged))))
+
+(defn- update-upload-meta!
+  [state session-id meta]
+  (let [path (upload-meta-path state session-id)
+        merged (merge (or (read-upload-meta state session-id) {})
+                      meta
+                      {:session-id session-id
+                       :updated-at (clock/->iso-string)})]
+    (io/make-parents path)
+    (spit path (pr-str merged))))
+
+(defn- read-upload-meta
+  [state session-id]
+  (let [path (upload-meta-path state session-id)]
+    (when (.exists path)
+      (try
+        (edn/read-string (slurp path))
+        (catch Exception _ nil)))))
+
+(defn- append-upload-line!
+  [state session-id line]
+  (let [path (upload-session-path state session-id)]
+    (io/make-parents path)
+    (spit path (str line "\n") :append true)))
+
+(defn- append-upload-event!
+  [state session-id event]
+  (cond
+    (string? event) (append-upload-line! state session-id event)
+    (map? event) (append-upload-line! state session-id (json/encode event))
+    :else nil))
+
+(defn- scan-uploaded-sessions
+  "Scan lab/remote/ for uploaded JSONL session files."
+  [state]
+  (let [root (upload-root state)]
+    (when (.exists root)
+      (->> (file-seq root)
+           (filter #(and (.isFile %)
+                         (str/ends-with? (.getName %) ".jsonl")))
+           (map (fn [f]
+                  (let [path (.getAbsolutePath f)
+                        modified (.lastModified f)
+                        size (.length f)
+                        session-id (str/replace (.getName f) #"\.jsonl$" "")
+                        meta (read-upload-meta state session-id)]
+                    (merge {:id session-id
+                            :project (or (:project meta) "upload")
+                            :path path
+                            :modified (str (java.time.Instant/ofEpochMilli modified))
+                            :size-kb (quot size 1024)
+                            :active (> modified (- (System/currentTimeMillis) 3600000))
+                            :source "upload"}
+                           (select-keys meta [:originator :cwd :remote-source])))))
+           (sort-by :modified #(compare %2 %1))))))
+
 (defn- scan-lab-raw
   "Scan lab/raw/ for archived session JSON files.
    Returns list of session maps sorted by modification time (newest first)."
@@ -1261,10 +1366,11 @@
 
 (defn- handle-lab-sessions-active
   "List active Codex/Claude sessions, including remote sources."
-  [_state _request]
+  [state _request]
   (try
     (let [local-sessions (concat (or (scan-claude-projects) [])
-                                  (or (scan-codex-sessions) []))
+                                  (or (scan-codex-sessions) [])
+                                  (or (scan-uploaded-sessions state) []))
           remote-sources (parse-remote-sources)
           remote-sessions (when (seq remote-sources)
                             (->> remote-sources
@@ -1443,6 +1549,59 @@
             (fn [_status]
               (reset! stop-flag true)
               (swap! claude-stream-watchers dissoc watcher-id))))))))
+
+;; =============================================================================
+;; Lab Upload WebSocket - ingest remote Codex/Claude JSONL
+;; =============================================================================
+
+(defn- handle-lab-upload-ws
+  "WebSocket endpoint for ingesting JSONL sessions from remote clients."
+  [state request]
+  (http/with-channel request channel
+    (let [session (atom {:id nil})]
+      (http/on-receive channel
+        (fn [raw]
+          (try
+            (let [msg (json/parse-string raw true)
+                  msg-type (:type msg)]
+              (case msg-type
+                "ping"
+                (http/send! channel (json/encode {:type "pong" :at (now-iso state)}) false)
+
+                "init"
+                (let [session-id (or (:session-id msg) (:session/id msg) (:id msg))]
+                  (when-not (seq session-id)
+                    (throw (ex-info "missing-session-id" {:err "missing-session-id"})))
+                  (reset! session {:id session-id})
+                  (write-upload-meta! state session-id
+                                      (select-keys msg [:project :source :originator :cwd :remote-source]))
+                  (doseq [event (:events msg)]
+                    (append-upload-event! state session-id event))
+                  (update-upload-meta! state session-id {})
+                  (http/send! channel (json/encode {:type "ack" :session-id session-id}) false))
+
+                "event"
+                (let [session-id (or (:session-id msg) (:session/id msg) (:id msg) (:id @session))
+                      event (:event msg)]
+                  (when-not (seq session-id)
+                    (throw (ex-info "missing-session-id" {:err "missing-session-id"})))
+                  (append-upload-event! state session-id event)
+                  (update-upload-meta! state session-id {})
+                  (http/send! channel (json/encode {:type "ack" :session-id session-id}) false))
+
+                "par"
+                (let [session-id (or (:session-id msg) (:session/id msg) (:id msg) (:id @session))
+                      par (:par msg)]
+                  (when-not (seq session-id)
+                    (throw (ex-info "missing-session-id" {:err "missing-session-id"})))
+                  (append-upload-event! state session-id (merge {:type "par"} par))
+                  (update-upload-meta! state session-id {})
+                  (http/send! channel (json/encode {:type "ack" :session-id session-id}) false))
+                nil))
+            (catch Exception e
+              (http/send! channel (json/encode {:type "error"
+                                                :err (.getMessage e)}) false)))))
+      (http/on-close channel (fn [_] nil)))))
 
 (defn- extract-session-from-path [uri]
   (when-let [match (re-find #"/fulab/notebook/([^/]+)" uri)]
@@ -1633,6 +1792,10 @@
       (and (= method :get) (= uri "/fulab/claude-stream/ws"))
       (handle-claude-stream-ws state request)
 
+      ;; Lab upload stream (remote JSONL ingestion)
+      (and (= method :get) (= uri "/fulab/lab/upload/ws"))
+      (handle-lab-upload-ws state request)
+
       ;; Lab sessions listing
       (and (= method :get) (= uri "/fulab/lab/sessions/active"))
       (handle-lab-sessions-active state request)
@@ -1644,7 +1807,8 @@
       ;; Combined: active + archived
       (try
         (let [active (concat (or (scan-claude-projects) [])
-                             (or (scan-codex-sessions) []))
+                             (or (scan-codex-sessions) [])
+                             (or (scan-uploaded-sessions state) []))
               archived (or (scan-lab-raw state) [])
               all (concat (map #(assoc % :source "active") active)
                           (map #(assoc % :source "archived") archived))]

@@ -178,14 +178,31 @@
       (throw (ex-info "unknown peripheral" {:peripheral peripheral-id})))
     entry))
 
+(defn- template-bindings [ctx]
+  (reduce-kv
+   (fn [acc k v]
+     (cond
+       (keyword? k)
+       (let [n (name k)
+             ns (namespace k)
+             acc (assoc acc n v)]
+         (if ns
+           (assoc acc (str ns "/" n) v)
+           acc))
+       (string? k)
+       (assoc acc k v)
+       :else acc))
+   {}
+   ctx))
+
 (defn- render-template [template ctx]
   (reduce-kv
    (fn [text k v]
      (str/replace text
-                  (re-pattern (str "\\{\\{" (name k) "\\}\\}"))
+                  (re-pattern (str "\\{\\{" (java.util.regex.Pattern/quote (str k)) "\\}\\}"))
                   (str v)))
    (or template "")
-   ctx))
+   (template-bindings ctx)))
 
 (defn- format-state-capsule [capsule]
   (when (seq capsule)
@@ -205,26 +222,30 @@
          (str/join "\n"))))
 
 (defn- build-run-prompt
-  [peripheral {:keys [agent/summary agent/state-capsule agent/recent-messages]} {:keys [prompt musn agent-id]}]
+  [peripheral {:keys [agent/summary agent/state-capsule agent/recent-messages]} {:keys [prompt inputs musn agent-id]}]
   (let [summary-block (format-summary summary)
         capsule-block (format-state-capsule state-capsule)
         recent-block (format-recent-messages recent-messages)
-        ctx {:agent-id (name agent-id)
-             :prompt prompt
-             :summary (or summary "")
-             :state (pr-str (or state-capsule {}))
-             :musn-session-id (get musn :session-id "")
-             :musn-url (get musn :url "")
-             :recent (or recent-block "")}
+        input-ctx (or inputs {})
+        ctx (merge input-ctx
+                   {:agent-id (name agent-id)
+                    :prompt prompt
+                    :summary (or summary "")
+                    :state (pr-str (or state-capsule {}))
+                    :musn-session-id (get musn :session-id "")
+                    :musn-url (get musn :url "")
+                    :recent (or recent-block "")})
         entry (render-template (:entry peripheral) ctx)
         postlude (render-template (:postlude peripheral) ctx)
-        body (render-template (:prompt peripheral) ctx)
+        body-template (or (:prompt-template peripheral) (:prompt peripheral))
+        body (render-template body-template ctx)
         blocks (->> [(when summary-block summary-block)
                      (when capsule-block capsule-block)
                      (when recent-block (str "Recent messages:\n" recent-block))
                      (when (seq entry) entry)
                      (when (seq body) body)
-                     (str "User request:\n" prompt)
+                     (when (seq (str/trim (or prompt "")))
+                       (str "User request:\n" prompt))
                      (when (seq postlude) postlude)]
                     (remove nil?))]
     (str/join "\n\n" blocks)))
@@ -604,7 +625,7 @@
     (assoc state :agent/recent-messages messages)))
 
 (defn run-peripheral!
-  [{:keys [agent-id peripheral prompt musn forum resume-id thread-id cwd approval-policy no-sandbox]}]
+  [{:keys [agent-id peripheral prompt inputs musn forum resume-id thread-id cwd approval-policy no-sandbox]}]
   (with-agent-lock
    agent-id
    (fn []
@@ -623,8 +644,13 @@
            state (ensure-agent-state! agent-id)
            peripheral (get-peripheral peripheral-id)
            prompt-text (build-run-prompt peripheral state {:prompt prompt
+                                                           :inputs inputs
                                                            :musn musn
                                                            :agent-id agent-id})
+           user-text (if (seq (str/trim (or prompt "")))
+                       prompt
+                       (when (seq inputs)
+                         (str "inputs: " (pr-str inputs))))
            run-opts {:prompt prompt-text
                      :resume-id (:agent/current-thread-id state)
                      :cwd (or cwd (:workdir (config)))
@@ -635,7 +661,7 @@
                             (get musn :url) (assoc "FUTON3_MUSN_URL" (get musn :url))
                             (get musn :session-id) (assoc "FUTON3_MUSN_SESSION_ID" (get musn :session-id)))}]
        (if (= :pattern-search (:runner peripheral))
-         (let [result (run-pattern-search! {:agent-id agent-id
+           (let [result (run-pattern-search! {:agent-id agent-id
                                             :prompt prompt
                                             :musn musn
                                             :peripheral peripheral})]
@@ -644,7 +670,7 @@
             (fn [st]
               (-> st
                   (assoc :agent/last-active (now-inst))
-                  (append-recent-message {:role :user :author "user" :text prompt})
+                  (append-recent-message {:role :user :author "user" :text (or user-text "")})
                   (append-recent-message {:role :assistant
                                           :author (name agent-id)
                                           :text (:response result)}))))
@@ -667,6 +693,7 @@
            (if (and context-err? retry?)
              (let [state (ensure-agent-state! agent-id)
                    retry-prompt (build-run-prompt peripheral state {:prompt prompt
+                                                                    :inputs inputs
                                                                     :musn musn
                                                                     :agent-id agent-id})
                    retry-result (run-codex! (assoc run-opts
@@ -681,7 +708,7 @@
                           (assoc :agent/current-thread-id next-thread
                                  :agent/token-usage (:usage retry-result)
                                  :agent/last-active (now-inst))
-                          (append-recent-message {:role :user :author "user" :text prompt})
+                          (append-recent-message {:role :user :author "user" :text (or user-text "")})
                           (append-recent-message {:role :assistant :author (name agent-id)
                                                   :text (or (:response retry-result) "")}))))
                    (when-let [thread-id (forum-thread-id forum)]
@@ -704,14 +731,14 @@
                      updated (update-agent-state!
                               agent-id
                               (fn [st]
-                                (-> st
-                                    (assoc :agent/current-thread-id next-thread
-                                           :agent/token-usage (:usage result)
-                                           :agent/last-active (now-inst))
-                                    (append-recent-message {:role :user :author "user" :text prompt})
-                                    (append-recent-message {:role :assistant
-                                                            :author (name agent-id)
-                                                            :text (or (:response result) "")}))))
+                     (-> st
+                         (assoc :agent/current-thread-id next-thread
+                                :agent/token-usage (:usage result)
+                                :agent/last-active (now-inst))
+                        (append-recent-message {:role :user :author "user" :text (or user-text "")})
+                        (append-recent-message {:role :assistant
+                                                :author (name agent-id)
+                                                :text (or (:response result) "")}))))
                      rollover? (usage-rollover? (:agent/token-usage updated))]
                  (when rollover?
                    (update-agent-state!

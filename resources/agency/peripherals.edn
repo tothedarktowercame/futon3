@@ -28,5 +28,6 @@
 
   :par-participant
   {:entry "Join PAR and contribute a concise perspective."
-   :prompt "PAR: {{par/title}}\nCRDT: {{par/crdt-host}}:{{par/crdt-port}}\nSession: {{session/id}}\n\nInstructions: Provide 2-4 sentences per section you can answer."
+   :inputs [:par/title :par/crdt-host :par/crdt-port :session/id]
+   :prompt-template "PAR: {{par/title}}\nCRDT: {{par/crdt-host}}:{{par/crdt-port}}\nSession: {{session/id}}\n\nInstructions: Provide 2-4 sentences per section you can answer."
    :postlude ""}}}

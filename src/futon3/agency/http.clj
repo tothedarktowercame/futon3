@@ -39,17 +39,19 @@
          (into {}))))
 
 (defn- handle-run [body]
-  (let [{:keys [agent-id peripheral prompt musn forum resume-id thread-id cwd approval-policy no-sandbox]} body
+  (let [{:keys [agent-id peripheral prompt inputs musn forum resume-id thread-id cwd approval-policy no-sandbox]} body
         resume-id (or resume-id
                       (when (and thread-id (nil? forum))
-                        thread-id))]
+                        thread-id))
+        prompt (or prompt "")]
     (if (or (str/blank? (str agent-id))
             (str/blank? (str peripheral))
-            (str/blank? (str prompt)))
-      {:ok false :err "missing required fields: agent-id, peripheral, prompt"}
+            (and (str/blank? (str prompt)) (empty? inputs)))
+      {:ok false :err "missing required fields: agent-id, peripheral, prompt or inputs"}
       (svc/run-peripheral! {:agent-id agent-id
                             :peripheral peripheral
                             :prompt prompt
+                            :inputs inputs
                             :musn musn
                             :forum forum
                             :resume-id resume-id

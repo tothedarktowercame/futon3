@@ -12,12 +12,12 @@
  *
  * Usage:
  *   ./fuclaude-peripheral.ts
- *   ./fuclaude-peripheral.ts --agency-ws ws://localhost:7070/ws
+ *   ./fuclaude-peripheral.ts --agency-ws ws://localhost:7070/agency/ws
  *   ./fuclaude-peripheral.ts --resume <session-id>
  *
  * Env:
  *   ANTHROPIC_API_KEY    - Required
- *   AGENCY_WS_URL        - Agency WebSocket URL (default: ws://localhost:7070/ws)
+ *   AGENCY_WS_URL        - Agency WebSocket URL (default: ws://localhost:7070/agency/ws)
  *   AGENCY_HTTP_URL      - Agency HTTP URL (default: http://localhost:7070)
  *   FORUM_WS_URL         - Forum WebSocket URL (optional)
  *   FUCLAUDE_SESSION_DIR - Session storage (default: lab/agency/sessions)
@@ -36,7 +36,7 @@ import WebSocket from "ws";
 
 const AGENT_ID = process.env.FUCLAUDE_AGENT_ID || "fuclaude";
 const SESSION_DIR = process.env.FUCLAUDE_SESSION_DIR || "lab/agency/sessions";
-const AGENCY_WS_URL = process.env.AGENCY_WS_URL || "ws://localhost:7070/ws";
+const AGENCY_WS_URL = process.env.AGENCY_WS_URL || "ws://localhost:7070/agency/ws";
 const AGENCY_HTTP_URL = process.env.AGENCY_HTTP_URL || "http://localhost:7070";
 const FORUM_WS_URL = process.env.FORUM_WS_URL || "";
 const MODEL = process.env.FUCLAUDE_MODEL || "claude-sonnet-4-20250514";

@@ -922,9 +922,14 @@ This calls the par-bell.sh script to create a collaborative PAR session."
                             (cons 'error (or (plist-get resp :error) "unknown"))))
                       (error (cons 'error (format "parse: %s" err))))
                   (cons 'error "no response body")))))
+         (kill-buffer (current-buffer))  ; clean up url buffer
          (funcall callback agent result)))
      (list agent callback)
      t t)))
+
+(defun fubar-test-bell--update-buffer-safe ()
+  "Schedule buffer update on main event loop (safe from async callbacks)."
+  (run-at-time 0 nil #'fubar-test-bell--update-buffer))
 
 (defun fubar-test-bell--update-buffer ()
   "Update the test-bell buffer with current status."
@@ -967,7 +972,7 @@ Displays results in *Test Bell* buffer as responses arrive."
        agent
        (lambda (agent result)
          (setf (alist-get agent fubar-test-bell--pending nil nil #'equal) result)
-         (fubar-test-bell--update-buffer))))))
+         (fubar-test-bell--update-buffer-safe))))))
 
 (provide 'fubar)
 

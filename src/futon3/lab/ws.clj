@@ -14,7 +14,7 @@
            (java.time Instant)))
 
 (defonce ^:private server-state (atom nil))
-(defonce ^:private clients (atom {})) ; WebSocket -> {:path :stop-flag}
+(defonce ^:private clients (atom {})) ; WebSocket -> {:path :stop-flag :mode}
 
 (defn- now-iso []
   (str (Instant/now)))
@@ -29,6 +29,61 @@
              (map (fn [[k v]] [(keyword k) (java.net.URLDecoder/decode (or v "") "UTF-8")]))
              (into {}))))
     (catch Exception _ {})))
+
+(defn- upload-root []
+  (let [root (or (System/getenv "LAB_UPLOAD_ROOT")
+                 (System/getenv "AGENCY_LAB_UPLOAD_ROOT")
+                 "lab/remote")]
+    (io/file root)))
+
+(defn- safe-session-id [session-id]
+  (-> (str session-id)
+      (str/replace #"[^A-Za-z0-9._-]" "_")
+      (str/replace #"__+" "_")))
+
+(defn- upload-session-path [session-id]
+  (io/file (upload-root) (str (safe-session-id session-id) ".jsonl")))
+
+(defn- upload-meta-path [session-id]
+  (io/file (upload-root) (str (safe-session-id session-id) ".meta.edn")))
+
+(defn- read-upload-meta [session-id]
+  (let [path (upload-meta-path session-id)]
+    (when (.exists path)
+      (try
+        (edn/read-string (slurp path))
+        (catch Exception _ nil)))))
+
+(defn- write-upload-meta! [session-id meta]
+  (let [path (upload-meta-path session-id)
+        merged (merge {:session-id session-id
+                       :created-at (now-iso)}
+                      meta)]
+    (io/make-parents path)
+    (spit path (pr-str merged))))
+
+(defn- update-upload-meta! [session-id meta]
+  (let [path (upload-meta-path session-id)
+        merged (merge (or (read-upload-meta session-id) {})
+                      meta
+                      {:session-id session-id
+                       :updated-at (now-iso)})]
+    (io/make-parents path)
+    (spit path (pr-str merged))))
+
+(defn- upload-init-complete? [session-id]
+  (true? (:init/complete (read-upload-meta session-id))))
+
+(defn- append-upload-line! [session-id line]
+  (let [path (upload-session-path session-id)]
+    (io/make-parents path)
+    (spit path (str line "\n") :append true)))
+
+(defn- append-upload-event! [session-id event]
+  (cond
+    (string? event) (append-upload-line! session-id event)
+    (map? event) (append-upload-line! session-id (json/encode event))
+    :else nil))
 
 (defn- send-json! [^WebSocket conn data]
   (when (.isOpen conn)
@@ -239,14 +294,16 @@
 
       (onOpen [^WebSocket conn ^ClientHandshake handshake]
         (let [uri (.getResourceDescriptor handshake)
+              path-only (first (str/split uri #"\?"))
               params (parse-query-params uri)
               path (:path params)]
-          (println "[lab-ws] Client connected:" (.getRemoteSocketAddress conn) "path:" path)
+          (println "[lab-ws] Client connected:" (.getRemoteSocketAddress conn) "path:" path "uri:" path-only)
 
-          (if (and path (.exists (io/file path)))
+          (cond
+            (and path (.exists (io/file path)))
             (let [stop-flag (atom false)
                   history (read-session-history path)]
-              (swap! clients assoc conn {:path path :stop-flag stop-flag})
+              (swap! clients assoc conn {:path path :stop-flag stop-flag :mode :stream})
 
               ;; Send full history (JSONL + PARs merged)
               (send-json! conn {:type "init"
@@ -258,7 +315,10 @@
               ;; Start watching for new events
               (start-file-watcher! conn path stop-flag))
 
-            ;; Invalid path
+            (= path-only "/fulab/lab/upload/ws")
+            (swap! clients assoc conn {:mode :upload})
+
+            :else
             (do
               (send-json! conn {:type "error" :err "invalid-path" :path path})
               (.close conn)))))
@@ -271,10 +331,38 @@
 
       (onMessage [^WebSocket conn ^String message]
         (try
-          (let [msg (json/parse-string message true)]
-            (case (:type msg)
-              "ping" (send-json! conn {:type "pong" :at (now-iso)})
-              nil))
+          (let [msg (json/parse-string message true)
+                {:keys [mode]} (get @clients conn)]
+            (cond
+              (= (:type msg) "ping")
+              (send-json! conn {:type "pong" :at (now-iso)})
+
+              (= mode :upload)
+              (case (:type msg)
+                "init" (let [session-id (or (:session-id msg) (:session/id msg) (:id msg))]
+                         (when session-id
+                           (write-upload-meta! session-id
+                                               (select-keys msg [:project :source :originator :cwd :remote-source]))
+                           (if (upload-init-complete? session-id)
+                             (send-json! conn {:type "ack" :session-id session-id :dedup true})
+                             (do
+                               (doseq [event (:events msg)]
+                                 (append-upload-event! session-id event))
+                               (update-upload-meta! session-id {:init/complete true
+                                                                :init/event-count (count (:events msg))})
+                               (send-json! conn {:type "ack" :session-id session-id})))))
+                "event" (let [session-id (or (:session-id msg) (:session/id msg) (:id msg))]
+                          (when session-id
+                            (append-upload-event! session-id (:event msg))
+                            (update-upload-meta! session-id {})
+                            (send-json! conn {:type "ack" :session-id session-id})))
+                "par" (let [session-id (or (:session-id msg) (:session/id msg) (:id msg))]
+                        (when session-id
+                          (append-upload-event! session-id (merge {:type "par"} (:par msg)))
+                          (update-upload-meta! session-id {})
+                          (send-json! conn {:type "ack" :session-id session-id})))
+                nil)
+              :else nil))
           (catch Exception e
             (println "[lab-ws] Message parse error:" (.getMessage e)))))
 

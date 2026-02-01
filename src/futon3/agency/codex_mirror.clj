@@ -119,7 +119,7 @@
 (defn- start-watcher! [cfg session]
   (let [{:keys [upload-url originator]} cfg
         stop-flag (atom false)
-        state (atom {:last-count 0 :ws nil})]
+        state (atom {:last-count 0 :ws nil :last-error nil})]
     (future
       (while (not @stop-flag)
         (try
@@ -147,10 +147,12 @@
                 (swap! state assoc :last-count current-count))))
 
           (Thread/sleep 500)
-          (catch Exception _
-            (swap! state assoc :ws nil)
+          (catch Exception e
+            (swap! state assoc :ws nil :last-error (.getMessage e))
             (Thread/sleep 1000)))))
-    {:stop stop-flag}))
+    {:stop stop-flag
+     :state state
+     :session session}))
 
 (defn- reconcile-watchers! [cfg]
   (let [active (scan-codex-sessions (:active-window-ms cfg))
@@ -178,15 +180,32 @@
    (let [cfg (merge default-config cfg)]
      (if-not (and (:enabled? cfg) (seq (:upload-url cfg)))
        (fn [] nil)
-       (do
-         (swap! !state assoc :running? true)
-         (let [runner (future
-                        (while (:running? @!state)
-                          (reconcile-watchers! cfg)
-                          (Thread/sleep (:scan-interval-ms cfg))))]
-           (fn []
-             (swap! !state assoc :running? false)
-             (doseq [[_ {:keys [stop]}] (:watchers @!state)]
-               (reset! stop true))
-             (when (future? runner)
-               (future-cancel runner)))))))))
+        (do
+          (swap! !state assoc :running? true)
+          (let [runner (future
+                         (while (:running? @!state)
+                           (reconcile-watchers! cfg)
+                           (Thread/sleep (:scan-interval-ms cfg))))]
+            (fn []
+              (swap! !state assoc :running? false)
+              (doseq [[_ {:keys [stop]}] (:watchers @!state)]
+                (reset! stop true))
+              (when (future? runner)
+                (future-cancel runner)))))))))
+
+(defn status []
+  (let [{:keys [running? watchers]} @!state]
+    {:enabled? (:enabled? default-config)
+     :upload-url (:upload-url default-config)
+     :running? running?
+     :watchers (->> watchers
+                    (map (fn [[sid {:keys [state session]}]]
+                           {:session-id sid
+                            :path (:path session)
+                            :project (:project session)
+                            :cwd (:cwd session)
+                            :last-count (:last-count @state)
+                            :connected? (boolean (:ws @state))
+                            :last-error (:last-error @state)}))
+                    (sort-by :session-id)
+                    vec)}))

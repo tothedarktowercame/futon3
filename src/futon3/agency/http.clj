@@ -91,6 +91,9 @@
         (and (= uri "/agency/threads") (= method :get))
         (json-response (handle-threads))
 
+        (and (= uri "/agency/mirror/status") (= method :get))
+        (json-response (codex-mirror/status))
+
         (not= :post method)
         (json-response 405 {:ok false :err "method not allowed"})
 

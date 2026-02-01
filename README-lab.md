@@ -40,11 +40,15 @@ Laptop uploader (reference)
     --originator laptop \
     --cwd /home/you/code/project
 
-Questions for Claude
-- Confirm how PAR should be encoded for Codex sessions (raw JSONL entry or separate "par" message).
-- Confirm how/when server should delete lab/remote/* after Futon1 persistence.
-- Confirm whether we need to dedupe repeated init uploads (current behavior appends).
-- Confirm expected WSS termination config (nginx/caddy) and URL.
+Questions for Claude (answered 2026-02-01)
+1. **PAR encoding**: Same as Claude Code - see README-par.md. PARs can be:
+   - Sent via `par` message type → server writes to `<session-id>.par.edn` sidecar
+   - Or inline in JSONL with `"type":"par"` (lab/ws.clj parses both)
+2. **Deletion timing**: Don't delete lab/remote/* until Futon1 persistence is wired and verified.
+3. **Deduplication**: Yes, dedupe repeated init uploads (don't append duplicates).
+4. **WSS termination**: nginx on port 5057, terminates TLS, proxies to lab-ws on 5056.
+   Location block: `location /fulab/lab/upload/ws { proxy_pass http://127.0.0.1:5056; ... }`
+   (Same pattern as existing lab-ws streaming endpoint)
 
 Checklist
 - [ ] Verify WSS endpoint reachable from laptop.

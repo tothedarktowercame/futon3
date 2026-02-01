@@ -135,6 +135,22 @@ A working multiplexed peripheral wrapper is at `scripts/fuclaude-peripheral.ts`.
 ./scripts/fuclaude-peripheral.ts --no-agency        # human-only mode
 ```
 
+## Implementation: fucodex-peripheral.ts
+
+Codex peripheral wrapper is at `scripts/fucodex-peripheral.ts`.
+
+**Usage:**
+```bash
+./scripts/fucodex-peripheral.ts                    # fresh session
+./scripts/fucodex-peripheral.ts --resume <id>      # continue session
+./scripts/fucodex-peripheral.ts --no-agency        # human-only mode
+```
+
+**Notes:**
+- Uses `fucodex --live` so lab streams are persisted.
+- `--approval-policy` defaults to `never` unless overridden.
+- Avoids `--prompt` to preserve `--resume` behavior in `fucodex`.
+
 ## Implementation Gotchas (IMPORTANT for Codex)
 
 These are hard-won lessons from implementing `fuclaude-peripheral.ts`:

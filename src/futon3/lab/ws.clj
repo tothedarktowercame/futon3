@@ -296,7 +296,10 @@
         (let [uri (.getResourceDescriptor handshake)
               path-only (first (str/split uri #"\?"))
               params (parse-query-params uri)
-              path (:path params)]
+              path (:path params)
+              upload-path? (or (= path-only "/fulab/lab/upload/ws")
+                               (= path-only "/upload/ws")
+                               (str/ends-with? path-only "/lab/upload/ws"))]
           (println "[lab-ws] Client connected:" (.getRemoteSocketAddress conn) "path:" path "uri:" path-only)
 
           (cond
@@ -315,7 +318,7 @@
               ;; Start watching for new events
               (start-file-watcher! conn path stop-flag))
 
-            (= path-only "/fulab/lab/upload/ws")
+            upload-path?
             (swap! clients assoc conn {:mode :upload})
 
             :else

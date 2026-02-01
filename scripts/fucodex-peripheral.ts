@@ -27,6 +27,8 @@
  *   FUCODEX_SIMPLE_MODE      - Set to 1/true to use codex exec directly (no lab stream)
  *   MUSN_HTTP_URL            - MUSN activity log URL (default: http://localhost:6065)
  *   PATTERN_CATALOG_PATH     - Path to patterns-index.tsv
+ *   FORUM_WS_URL             - Forum WebSocket URL (optional)
+ *   FORUM_HTTP_URL           - Forum HTTP URL (optional)
  */
 
 import { spawn, spawnSync } from "child_process";
@@ -43,6 +45,8 @@ import WebSocket from "ws";
 const AGENT_ID = process.env.FUCODEX_AGENT_ID || "fucodex";
 const AGENCY_WS_URL = process.env.AGENCY_WS_URL || "ws://localhost:7070/agency/ws";
 const AGENCY_HTTP_URL = process.env.AGENCY_HTTP_URL || "http://localhost:7070";
+const FORUM_WS_URL = process.env.FORUM_WS_URL || "";
+const FORUM_HTTP_URL = process.env.FORUM_HTTP_URL || "http://localhost:5050";
 const MUSN_HTTP_URL = process.env.MUSN_HTTP_URL || "http://localhost:6065";
 const PATTERN_CATALOG_PATH = process.env.PATTERN_CATALOG_PATH || "resources/sigils/patterns-index.tsv";
 const scriptDir = path.dirname(process.argv[1] || ".");
@@ -69,7 +73,7 @@ const FUCODEX_SIMPLE_MODE = ["1", "true", "yes"].includes(
 // ============================================================================
 
 interface InputEvent {
-  source: "human" | "agency";
+  source: "human" | "agency" | "forum";
   type: string;
   payload: any;
   timestamp: string;
@@ -799,6 +803,9 @@ ${sections[2] ? `## ${sections[2]}\n[Your contribution]` : ""}
         `Secret ID: ${bellData["secret-id"] || bellData.secretId || "none"}\n` +
         `To verify receipt, fetch: curl ${AGENCY_HTTP_URL}/agency/secret/${bellData["secret-id"] || bellData.secretId}\n` +
         `Payload: ${JSON.stringify(bellData.payload || {})}`;
+    } else if (event.source === "forum" && event.type === "post") {
+      const { author, body } = event.payload || {};
+      message = `${prefix} Post from ${author}:\n${body}\n\nRespond helpfully and concisely.`;
     } else if (typeof event.payload === "object") {
       message = `${prefix} ${JSON.stringify(event.payload)}`;
     } else {
@@ -905,6 +912,79 @@ function createAgencyInput(url: string, agentId: string): AsyncGenerator<InputEv
   })();
 }
 
+function createForumInput(url: string, agentId: string): AsyncGenerator<InputEvent> {
+  const seenPosts = new Set<string>();
+
+  return (async function* () {
+    let ws: any = null;
+    const queue: InputEvent[] = [];
+    let resolver: ((value: InputEvent) => void) | null = null;
+
+    const connect = () => {
+      console.error(`[forum-ws] Connecting to ${url}...`);
+      const socket: any = new WebSocket(url);
+      ws = socket;
+
+      socket.on("open", () => {
+        console.error(`[forum-ws] Connected`);
+        socket.send(JSON.stringify({ type: "register", agentId }));
+      });
+
+      socket.on("message", (data: any) => {
+        try {
+          const msg = JSON.parse(data.toString());
+          if (msg.type === "connected" || msg.type === "registered" || msg.type === "pong") {
+            return;
+          }
+          if (msg.type === "post" && msg.post?.id) {
+            if (seenPosts.has(msg.post.id)) {
+              return;
+            }
+            seenPosts.add(msg.post.id);
+          }
+
+          const event: InputEvent = {
+            source: "forum",
+            type: msg.type || "message",
+            payload: msg.post || msg,
+            timestamp: new Date().toISOString(),
+          };
+
+          if (resolver) {
+            resolver(event);
+            resolver = null;
+          } else {
+            queue.push(event);
+          }
+        } catch (err) {
+          console.error(`[forum-ws] Parse error: ${err}`);
+        }
+      });
+
+      socket.on("close", () => {
+        console.error(`[forum-ws] Disconnected, reconnecting in 5s...`);
+        setTimeout(connect, 5000);
+      });
+
+      socket.on("error", (err: any) => {
+        console.error(`[forum-ws] Error: ${err}`);
+      });
+    };
+
+    connect();
+
+    while (true) {
+      if (queue.length > 0) {
+        yield queue.shift()!;
+      } else {
+        yield await new Promise<InputEvent>((resolve) => {
+          resolver = resolve;
+        });
+      }
+    }
+  })();
+}
+
 // ============================================================================
 // Multiplexer
 // ============================================================================
@@ -951,6 +1031,8 @@ async function main() {
   let disableHud = true;
   let printAgentOutput = FUCODEX_PRINT_AGENT_OUTPUT;
   let simpleMode = FUCODEX_SIMPLE_MODE;
+  let forumWsUrl = FORUM_WS_URL;
+  let enableForum = Boolean(FORUM_WS_URL);
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
@@ -993,6 +1075,13 @@ async function main() {
       case "--no-print-output":
         printAgentOutput = false;
         break;
+      case "--forum-ws":
+        forumWsUrl = args[++i];
+        enableForum = true;
+        break;
+      case "--no-forum":
+        enableForum = false;
+        break;
       case "--help":
         console.log(`
 fucodex-peripheral - Multiplexed Codex wrapper with backpack & walkie-talkie
@@ -1012,6 +1101,8 @@ Options:
   --live                  Use fucodex --live (default)
   --print-output          Print agent output (default)
   --no-print-output       Suppress agent output
+  --forum-ws <url>        Forum WebSocket URL (optional)
+  --no-forum              Disable Forum connection
   --fucodex-bin <path>    Path to fucodex script (default: ../fucodex)
   --codex-bin <path>      Path to codex binary (default: codex)
   --help                  Show this help
@@ -1020,7 +1111,7 @@ Environment:
   AGENCY_WS_URL, AGENCY_HTTP_URL, FUCODEX_AGENT_ID, FUCODEX_BIN,
   FUCODEX_CODEX_BIN, FUCODEX_APPROVAL_POLICY, FUCODEX_NO_SANDBOX,
   FUCODEX_PRINT_AGENT_OUTPUT, FUCODEX_IDLE_TIMEOUT_MS, FUCODEX_SIMPLE_MODE,
-  MUSN_HTTP_URL, PATTERN_CATALOG_PATH
+  MUSN_HTTP_URL, PATTERN_CATALOG_PATH, FORUM_WS_URL, FORUM_HTTP_URL
 `);
         process.exit(0);
     }
@@ -1042,6 +1133,7 @@ Environment:
   console.error(`[peripheral] Print output: ${printAgentOutput ? "enabled" : "disabled"}`);
   console.error(`[peripheral] Mode: ${simpleMode ? "simple" : "live"}`);
   console.error(`[peripheral] Agency WS: ${enableAgency ? agencyWsUrl : "disabled"}`);
+  console.error(`[peripheral] Forum WS: ${enableForum ? forumWsUrl : "disabled"}`);
   console.error(`[peripheral] Ready for multiplexed input`);
   console.error("");
 
@@ -1049,6 +1141,9 @@ Environment:
 
   if (enableAgency) {
     sources.push(createAgencyInput(agencyWsUrl, AGENT_ID));
+  }
+  if (enableForum && forumWsUrl) {
+    sources.push(createForumInput(forumWsUrl, AGENT_ID));
   }
 
   for await (const event of multiplex(...sources)) {

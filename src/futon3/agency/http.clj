@@ -282,13 +282,23 @@
                            :mirror-stop mirror-stop
                            :port port})
      (log! (format "agency http server on %d" port))
+     (println (format "[agency] listening on %d" port))
      (fn []
+       (println "[agency] stopping")
+       (log! "agency stopping")
        (when-let [stop (:stop-fn @server-state)]
          (stop))
        (when-let [stop-mirror (:mirror-stop @server-state)]
          (stop-mirror))
-       (reset! server-state nil)))))
+       (reset! server-state nil)
+       (println "[agency] stopped")
+       (log! "agency stopped")))))
 
 (defn -main [& _args]
-  (start! {})
+  (let [stop-fn (start! {})]
+    (.addShutdownHook (Runtime/getRuntime)
+                      (Thread. (fn []
+                                 (try
+                                   (stop-fn)
+                                   (catch Throwable _))))))
   @(promise))

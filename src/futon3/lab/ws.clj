@@ -37,17 +37,30 @@
       (catch Exception e
         (println "[lab-ws] Send failed:" (.getMessage e))))))
 
+(defn- codex-content-text
+  [content]
+  (cond
+    (string? content) content
+    (sequential? content) (->> content
+                               (map :text)
+                               (filter some?)
+                               (str/join "\n"))
+    :else nil))
+
 (defn- parse-claude-jsonl-line
-  "Parse a single JSONL line from Claude Code transcript."
+  "Parse a single JSONL line from Claude/Codex transcript."
   [line]
   (try
     (let [entry (json/parse-string line true)
-          msg-type (:type entry)
-          message (:message entry)
+          entry-type (:type entry)
+          payload (:payload entry)
           timestamp (:timestamp entry)]
-      (case msg-type
+      (case entry-type
+        ;; Claude JSONL
         "user"
-        (let [content (or (:content message) (when (string? message) message) "")]
+        (let [content (or (:content (:message entry))
+                          (when (string? (:message entry)) (:message entry))
+                          "")]
           {:type "user"
            :timestamp timestamp
            :text (if (string? content)
@@ -58,7 +71,9 @@
                         (str/join "\n")))})
 
         "assistant"
-        (let [content (or (:content message) (when (string? message) message) "")]
+        (let [content (or (:content (:message entry))
+                          (when (string? (:message entry)) (:message entry))
+                          "")]
           {:type "assistant"
            :timestamp timestamp
            :text (if (string? content)
@@ -82,6 +97,53 @@
                    "")
          :par-id (:par-id entry)
          :tags (:tags entry)}
+
+        ;; Codex JSONL
+        "response_item"
+        (let [payload-type (:type payload)]
+          (case payload-type
+            "message"
+            (let [role (:role payload)
+                  text (codex-content-text (:content payload))
+                  role-type (case role
+                              "user" "user"
+                              "assistant" "assistant"
+                              "system" "summary"
+                              "developer" "summary"
+                              (or role "summary"))]
+              (when (seq text)
+                {:type role-type
+                 :timestamp timestamp
+                 :text text}))
+
+            "function_call"
+            {:type "tool_use"
+             :timestamp timestamp
+             :tool-name (or (:name payload) "unknown")
+             :input (or (:arguments payload) "")}
+
+            "custom_tool_call"
+            {:type "tool_use"
+             :timestamp timestamp
+             :tool-name (or (:name payload) "unknown")
+             :input (or (:arguments payload) "")}
+
+            "function_call_output"
+            {:type "tool_result"
+             :timestamp timestamp
+             :content (str (or (:output payload) ""))}
+
+            "custom_tool_call_output"
+            {:type "tool_result"
+             :timestamp timestamp
+             :content (str (or (:output payload) ""))}
+
+            nil))
+
+        "event_msg"
+        ;; Codex JSONL duplicates user/agent text in response_item messages.
+        ;; Ignore event_msg text to avoid double-rendering.
+        nil
 
         nil))
     (catch Exception _ nil)))

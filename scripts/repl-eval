@@ -58,27 +58,44 @@ if [[ ! -f "$COOKIES" ]]; then
   exit 1
 fi
 
-# Second call actually clones the session
-CLONE_RESP=$(curl -s -c "$COOKIES" -b "$COOKIES" "$URL" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "op=clone" 2>&1)
+clone_session() {
+  local resp session
+  resp=$(curl -s -c "$COOKIES" -b "$COOKIES" "$URL" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "op=clone" 2>&1)
 
-# Check for auth errors
-if [[ "$CLONE_RESP" == "forbidden" ]]; then
-  echo "Error: Authentication failed (check ADMIN_TOKEN)" >&2
-  exit 1
-fi
+  # Check for auth errors
+  if [[ "$resp" == "forbidden" ]]; then
+    echo "Error: Authentication failed (check ADMIN_TOKEN)" >&2
+    exit 1
+  fi
 
-# Extract session ID
-if command -v jq &>/dev/null; then
-  SESSION=$(echo "$CLONE_RESP" | jq -r '.[0]["new-session"] // empty')
-else
-  SESSION=$(echo "$CLONE_RESP" | grep -o '"new-session":"[^"]*"' | cut -d'"' -f4)
-fi
+  if command -v jq &>/dev/null; then
+    session=$(echo "$resp" | jq -r '.[0]["new-session"] // empty')
+  else
+    session=$(echo "$resp" | grep -o '"new-session":"[^"]*"' | cut -d'"' -f4)
+  fi
+
+  if [[ -n "$session" ]]; then
+    echo "$session"
+    return 0
+  fi
+
+  return 1
+}
+
+# First clone sometimes already returns a session; retry if empty.
+SESSION=""
+for _ in 1 2 3; do
+  SESSION="$(clone_session)" || true
+  if [[ -n "$SESSION" ]]; then
+    break
+  fi
+  sleep 0.1
+done
 
 if [[ -z "$SESSION" ]]; then
   echo "Error: Failed to create nREPL session" >&2
-  echo "Response: $CLONE_RESP" >&2
   exit 1
 fi
 

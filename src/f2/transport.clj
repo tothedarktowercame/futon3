@@ -2,6 +2,7 @@
   "HTTP/WebSocket transport exposing a multi-user, capability-aware REPL."
   (:require [cheshire.core :as json]
             [clojure.core.async :as async]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.java.shell :as shell]
             [clojure.string :as str]
@@ -1050,29 +1051,43 @@
 
 (defonce claude-stream-watchers (atom {}))
 
+(defn- codex-content-text
+  [content]
+  (cond
+    (string? content) content
+    (sequential? content) (->> content
+                               (map :text)
+                               (filter some?)
+                               (str/join "\n"))
+    :else nil))
+
 (defn- parse-claude-jsonl-line
-  "Parse a single JSONL line from Claude Code transcript."
+  "Parse a single JSONL line from Claude/Codex transcript."
   [line]
   (try
     (let [entry (json/parse-string line true)
-          msg-type (:type entry)
-          message (:message entry)
+          entry-type (:type entry)
+          payload (:payload entry)
           timestamp (:timestamp entry)]
-      (case msg-type
+      (case entry-type
+        ;; Claude JSONL
         "user"
-        (let [content (or (:content message) (when (string? message) message) "")]
+        (let [content (or (:content (:message entry))
+                          (when (string? (:message entry)) (:message entry))
+                          "")]
           {:type "user"
            :timestamp timestamp
            :text (if (string? content)
                    content
-                   ;; Handle array content
                    (->> content
                         (filter #(= "text" (:type %)))
                         (map :text)
                         (str/join "\n")))})
 
         "assistant"
-        (let [content (or (:content message) (when (string? message) message) "")]
+        (let [content (or (:content (:message entry))
+                          (when (string? (:message entry)) (:message entry))
+                          "")]
           {:type "assistant"
            :timestamp timestamp
            :text (if (string? content)
@@ -1085,13 +1100,13 @@
         "tool_use"
         {:type "tool_use"
          :timestamp timestamp
-         :tool-name (or (:name message) "unknown")
-         :input (pr-str (or (:input message) {}))}
+         :tool-name (or (:name (:message entry)) "unknown")
+         :input (pr-str (or (:input (:message entry)) {}))}
 
         "tool_result"
         {:type "tool_result"
          :timestamp timestamp
-         :content (str (or (:content message) ""))}
+         :content (str (or (:content (:message entry)) ""))}
 
         "summary"
         {:type "summary"
@@ -1104,14 +1119,58 @@
          :text (or (:text entry)
                    (:summary entry)
                    (get-in entry [:message :content])
-                   "") 
+                   "")
          :par-id (:par-id entry)
          :tags (:tags entry)}
 
-        ;; Default - include raw for debugging
-        {:type msg-type
-         :timestamp timestamp
-         :raw entry}))
+        ;; Codex JSONL
+        "response_item"
+        (let [payload-type (:type payload)]
+          (case payload-type
+            "message"
+            (let [role (:role payload)
+                  text (codex-content-text (:content payload))
+                  role-type (case role
+                              "user" "user"
+                              "assistant" "assistant"
+                              "system" "summary"
+                              "developer" "summary"
+                              (or role "summary"))]
+              (when (seq text)
+                {:type role-type
+                 :timestamp timestamp
+                 :text text}))
+
+            "function_call"
+            {:type "tool_use"
+             :timestamp timestamp
+             :tool-name (or (:name payload) "unknown")
+             :input (or (:arguments payload) "")}
+
+            "custom_tool_call"
+            {:type "tool_use"
+             :timestamp timestamp
+             :tool-name (or (:name payload) "unknown")
+             :input (or (:arguments payload) "")}
+
+            "function_call_output"
+            {:type "tool_result"
+             :timestamp timestamp
+             :content (str (or (:output payload) ""))}
+
+            "custom_tool_call_output"
+            {:type "tool_result"
+             :timestamp timestamp
+             :content (str (or (:output payload) ""))}
+
+            nil))
+
+        "event_msg"
+        ;; Codex JSONL duplicates user/agent text in response_item messages.
+        ;; Ignore event_msg text to avoid double-rendering.
+        nil
+
+        nil))
     (catch Exception _
       nil)))
 
@@ -1241,6 +1300,14 @@
         safe-id (safe-session-id session-id)]
     (io/file root (str safe-id ".meta.edn"))))
 
+(defn- read-upload-meta
+  [state session-id]
+  (let [path (upload-meta-path state session-id)]
+    (when (.exists path)
+      (try
+        (edn/read-string (slurp path))
+        (catch Exception _ nil)))))
+
 (defn- write-upload-meta!
   [state session-id meta]
   (let [path (upload-meta-path state session-id)
@@ -1259,14 +1326,6 @@
                        :updated-at (clock/->iso-string)})]
     (io/make-parents path)
     (spit path (pr-str merged))))
-
-(defn- read-upload-meta
-  [state session-id]
-  (let [path (upload-meta-path state session-id)]
-    (when (.exists path)
-      (try
-        (edn/read-string (slurp path))
-        (catch Exception _ nil)))))
 
 (defn- append-upload-line!
   [state session-id line]

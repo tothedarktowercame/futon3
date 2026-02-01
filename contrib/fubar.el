@@ -1054,7 +1054,7 @@ Then respond with ONLY the secret value from the JSON response."
          (kill-buffer (current-buffer))
          (funcall callback agent result)))
      (list agent secret-value callback)
-     t t)))
+     t t))
 
 (defun fubar-test-bell-v2--update-buffer ()
   "Update the v2 test-bell buffer."

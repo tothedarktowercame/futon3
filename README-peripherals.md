@@ -118,6 +118,111 @@ Responses are normalized so callers don’t care where execution happened.
 
 No forum snapshot/merge is required for the minimal viable path.
 
+## Implementation: fuclaude-peripheral.ts
+
+A working multiplexed peripheral wrapper is at `scripts/fuclaude-peripheral.ts`.
+
+**Architecture:**
+- Connects to Agency via WebSocket at `/agency/ws`
+- Multiplexes human input (readline) with Agency events (bells, summons)
+- Invokes `claude` CLI for each input, preserving session via `--resume`
+- All inputs feed into one conversation thread
+
+**Usage:**
+```bash
+./scripts/fuclaude-peripheral.ts                    # fresh session
+./scripts/fuclaude-peripheral.ts --resume <id>      # continue session
+./scripts/fuclaude-peripheral.ts --no-agency        # human-only mode
+```
+
+## Implementation Gotchas (IMPORTANT for Codex)
+
+These are hard-won lessons from implementing `fuclaude-peripheral.ts`:
+
+### 1. Node spawn() vs exec() for Claude CLI
+
+**GOTCHA:** Using `spawn("claude", args)` hangs indefinitely even though running
+the same command in a terminal works fine.
+
+**Cause:** Claude CLI detects non-TTY environment and behaves differently when
+spawned as a subprocess without a shell.
+
+**Solution:** Use `exec()` instead of `spawn()`:
+```typescript
+// BAD - hangs forever
+spawn("claude", ["--permission-mode", "bypassPermissions", "-p", input]);
+
+// GOOD - works
+exec(`claude --permission-mode bypassPermissions -p '${escapedInput}'`, callback);
+```
+
+### 2. Permission mode for non-interactive use
+
+**GOTCHA:** `--dangerously-skip-permissions` doesn't work reliably in subprocess.
+
+**Solution:** Use `--permission-mode bypassPermissions` instead:
+```bash
+claude --permission-mode bypassPermissions -p "prompt"
+```
+
+### 3. WebSocket endpoint path
+
+**GOTCHA:** Easy to mismatch the URL path between server and client.
+
+Agency WebSocket is at `/agency/ws`, not `/ws`:
+```typescript
+// BAD
+ws://localhost:7070/ws
+
+// GOOD
+ws://localhost:7070/agency/ws
+```
+
+### 4. Clojure forward declarations
+
+**GOTCHA:** Functions used in the request handler but defined later in the file
+cause "Unresolved symbol" errors.
+
+**Solution:** Add `(declare ...)` near the top of the file:
+```clojure
+(declare handle-agency-ws connected-agent-ids handle-get-secret)
+```
+
+### 5. http-kit WebSocket with clj-kondo
+
+**GOTCHA:** `http/with-channel` macro introduces bindings that clj-kondo doesn't
+recognize, causing false "Unresolved symbol: channel" errors.
+
+**Solution:** Add ignore comment:
+```clojure
+#_{:clj-kondo/ignore [:unresolved-symbol]}
+(http/with-channel req channel ...)
+```
+
+### 6. Shebang for npx ts-node
+
+**GOTCHA:** `#!/usr/bin/env npx ts-node` fails because env treats it as one arg.
+
+**Solution:** Use `-S` flag to split:
+```bash
+#!/usr/bin/env -S npx ts-node
+```
+
+### 7. Shell escaping for prompts
+
+**GOTCHA:** Prompts with quotes or special chars break when passed to shell.
+
+**Solution:** Escape single quotes properly:
+```typescript
+const escapedInput = input.replace(/'/g, "'\\''");
+const cmd = `claude -p '${escapedInput}'`;
+```
+
+### 8. Agency server must be restarted for new routes
+
+**GOTCHA:** Adding new HTTP/WebSocket routes requires server restart - the JVM
+doesn't hot-reload the handler.
+
 ## Future Extensions
 
 - **Fanout**: dispatch multiple agents in parallel with aggregate responses.

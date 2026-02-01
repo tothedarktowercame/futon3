@@ -8,6 +8,9 @@
 
 (def ^:private log-path (or (System/getenv "AGENCY_LOG") "/tmp/agency_http.log"))
 
+;; Forward declarations for functions used in handler
+(declare handle-agency-ws connected-agent-ids handle-get-secret handle-create-secret handle-ring-bell)
+
 (defn- log! [msg & [ctx]]
   (try
     (spit log-path
@@ -218,6 +221,7 @@
 (defn- handle-agency-ws [req]
   (let [params (parse-query (:query-string req))
         agent-id (or (get params "agent-id") "unknown")]
+    #_{:clj-kondo/ignore [:unresolved-symbol]}
     (http/with-channel req channel
       (log! "ws-connect" {:agent-id agent-id})
 

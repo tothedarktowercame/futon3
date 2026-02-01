@@ -1,13 +1,13 @@
-#!/usr/bin/env npx ts-node
+#!/usr/bin/env -S npx ts-node
 /**
- * fuclaude-peripheral.ts - Multiplexed Claude agent with backpack & walkie-talkie
+ * fuclaude-peripheral.ts - Multiplexed Claude Code wrapper with backpack & walkie-talkie
  *
  * A peripheral wrapper that receives input from multiple sources:
  * - Human (stdin / readline)
  * - Agency (WebSocket for bells, summons)
  * - Forum (WebSocket for mentions) [optional]
  *
- * All inputs feed into a single conversation thread, giving the agent
+ * All inputs feed into a single Claude Code session, giving the agent
  * unified awareness of all interactions.
  *
  * Usage:
@@ -16,18 +16,14 @@
  *   ./fuclaude-peripheral.ts --resume <session-id>
  *
  * Env:
- *   ANTHROPIC_API_KEY    - Required
  *   AGENCY_WS_URL        - Agency WebSocket URL (default: ws://localhost:7070/agency/ws)
  *   AGENCY_HTTP_URL      - Agency HTTP URL (default: http://localhost:7070)
  *   FORUM_WS_URL         - Forum WebSocket URL (optional)
- *   FUCLAUDE_SESSION_DIR - Session storage (default: lab/agency/sessions)
  *   FUCLAUDE_AGENT_ID    - Agent identifier (default: fuclaude)
  */
 
-import Anthropic from "@anthropic-ai/sdk";
+import { exec } from "child_process";
 import * as readline from "readline";
-import * as fs from "fs";
-import * as path from "path";
 import WebSocket from "ws";
 
 // ============================================================================
@@ -35,31 +31,12 @@ import WebSocket from "ws";
 // ============================================================================
 
 const AGENT_ID = process.env.FUCLAUDE_AGENT_ID || "fuclaude";
-const SESSION_DIR = process.env.FUCLAUDE_SESSION_DIR || "lab/agency/sessions";
 const AGENCY_WS_URL = process.env.AGENCY_WS_URL || "ws://localhost:7070/agency/ws";
 const AGENCY_HTTP_URL = process.env.AGENCY_HTTP_URL || "http://localhost:7070";
-const FORUM_WS_URL = process.env.FORUM_WS_URL || "";
-const MODEL = process.env.FUCLAUDE_MODEL || "claude-sonnet-4-20250514";
-const MAX_TOKENS = 4096;
 
 // ============================================================================
 // Types
 // ============================================================================
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
-
-interface SessionState {
-  id: string;
-  messages: Message[];
-  systemPrompt: string;
-  model: string;
-  createdAt: string;
-  lastActive: string;
-  bellsAnswered: string[];  // Track bells we've answered
-}
 
 interface InputEvent {
   source: "human" | "agency" | "forum";
@@ -69,153 +46,82 @@ interface InputEvent {
 }
 
 // ============================================================================
-// Session Management
+// Claude Code Process
 // ============================================================================
 
-function ensureDir(dir: string): void {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+class ClaudeCodeWrapper {
+  private resumeId: string | undefined;
+  private inputQueue: string[] = [];
+  private isProcessing = false;
+  private onOutput: (text: string) => void;
+
+  constructor(resumeId?: string, onOutput?: (text: string) => void) {
+    this.resumeId = resumeId;
+    this.onOutput = onOutput || ((text) => process.stdout.write(text));
   }
-}
 
-function sessionPath(sessionId: string): string {
-  return path.join(SESSION_DIR, `${sessionId}.json`);
-}
-
-function loadSession(sessionId: string): SessionState | null {
-  const p = sessionPath(sessionId);
-  if (fs.existsSync(p)) {
-    return JSON.parse(fs.readFileSync(p, "utf-8"));
-  }
-  return null;
-}
-
-function saveSession(session: SessionState): void {
-  ensureDir(SESSION_DIR);
-  session.lastActive = new Date().toISOString();
-  fs.writeFileSync(sessionPath(session.id), JSON.stringify(session, null, 2));
-}
-
-function createSession(resumeId?: string): SessionState {
-  if (resumeId) {
-    const existing = loadSession(resumeId);
-    if (existing) {
-      console.error(`[peripheral] Resuming session: ${resumeId}`);
-      return existing;
+  private processNext(): void {
+    if (this.isProcessing || this.inputQueue.length === 0) {
+      return;
     }
+
+    const input = this.inputQueue.shift()!;
+    this.runClaude(input);
   }
 
-  const id = resumeId || `${AGENT_ID}-${Date.now()}`;
-  console.error(`[peripheral] Creating new session: ${id}`);
-
-  return {
-    id,
-    messages: [],
-    systemPrompt: defaultSystemPrompt(id),
-    model: MODEL,
-    createdAt: new Date().toISOString(),
-    lastActive: new Date().toISOString(),
-    bellsAnswered: [],
-  };
-}
-
-function defaultSystemPrompt(sessionId: string): string {
-  return `You are ${AGENT_ID}, a Claude agent running as a multiplexed peripheral.
-
-## Input Sources
-You receive input from multiple sources, all feeding into this conversation:
-- **[human]**: Direct human interaction via terminal
-- **[agency]**: Agency summons, bells, and coordination messages
-- **[forum]**: Forum thread mentions and posts (if connected)
-
-When you see a message like "[agency bell] ...", that's an Agency event you should respond to.
-When you see "[human]: ...", that's your human operator.
-
-## Capabilities
-You have access to tools via the Anthropic API. You can:
-- Execute bash commands
-- Read and write files
-- Search code
-- Make HTTP requests
-
-## Memory
-- Session ID: ${sessionId}
-- All inputs are part of this single conversation
-- You remember everything across all input sources
-- When you answer a bell, you KNOW you answered it
-
-## Bells and Acknowledgments
-When you receive a bell (e.g., test-bell with a secret), you should:
-1. Fetch the secret using the provided curl command
-2. Return the secret value as requested
-3. Remember that you answered this bell
-
-Be helpful, take action, and maintain awareness across all your input channels.`;
-}
-
-// ============================================================================
-// Claude API
-// ============================================================================
-
-class ClaudeAgent {
-  private anthropic: Anthropic;
-  private session: SessionState;
-
-  constructor(session: SessionState) {
-    this.anthropic = new Anthropic();
-    this.session = session;
-  }
-
-  async handleInput(event: InputEvent): Promise<string> {
-    const prefix = `[${event.source}${event.type ? ` ${event.type}` : ""}]`;
-    const userMessage = `${prefix} ${event.payload}`;
-
-    console.error(`[agent] Received: ${userMessage.slice(0, 100)}...`);
-
-    this.session.messages.push({ role: "user", content: userMessage });
-
-    try {
-      // For now, using basic messages API
-      // TODO: Add tool use for full Claude Code experience
-      const response = await this.anthropic.messages.create({
-        model: this.session.model,
-        max_tokens: MAX_TOKENS,
-        system: this.session.systemPrompt,
-        messages: this.session.messages,
-      });
-
-      const content = response.content[0];
-      const assistantMessage = content.type === "text" ? content.text : "(no response)";
-
-      this.session.messages.push({ role: "assistant", content: assistantMessage });
-      saveSession(this.session);
-
-      return assistantMessage;
-    } catch (err) {
-      console.error(`[agent] Error: ${err}`);
-      return `Error: ${err}`;
+  private runClaude(input: string): void {
+    // Escape the input for shell
+    const escapedInput = input.replace(/'/g, "'\\''");
+    let cmd = `claude --permission-mode bypassPermissions -p '${escapedInput}'`;
+    if (this.resumeId) {
+      cmd = `claude --resume '${this.resumeId}' --permission-mode bypassPermissions -p '${escapedInput}'`;
     }
-  }
 
-  async handleBell(bellData: any): Promise<string> {
-    // Special handling for bells - track that we answered
-    const response = await this.handleInput({
-      source: "agency",
-      type: "bell",
-      payload: JSON.stringify(bellData),
-      timestamp: new Date().toISOString(),
+    console.error(`[claude] Running: ${cmd.slice(0, 80)}...`);
+    this.isProcessing = true;
+
+    exec(cmd, { maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`[claude] Error: ${error.message}`);
+      }
+      if (stderr) {
+        process.stderr.write(stderr);
+      }
+      if (stdout) {
+        this.onOutput(stdout);
+        this.onOutput("\n");
+      }
+      console.error(`[claude] Completed`);
+      this.isProcessing = false;
+      this.processNext();
     });
-
-    if (bellData.secretId) {
-      this.session.bellsAnswered.push(bellData.secretId);
-      saveSession(this.session);
-    }
-
-    return response;
   }
 
-  getSession(): SessionState {
-    return this.session;
+  async handleInput(event: InputEvent): Promise<void> {
+    const prefix = `[${event.source}${event.type ? ` ${event.type}` : ""}]`;
+    let message: string;
+
+    if (event.source === "agency" && event.type === "bell") {
+      // Format bell data nicely
+      const bellData = event.payload;
+      message = `${prefix} Bell received!\n` +
+        `Type: ${bellData["bell-type"] || bellData.bellType || "unknown"}\n` +
+        `Secret ID: ${bellData["secret-id"] || bellData.secretId || "none"}\n` +
+        `To verify receipt, fetch: curl ${AGENCY_HTTP_URL}/agency/secret/${bellData["secret-id"] || bellData.secretId}\n` +
+        `Payload: ${JSON.stringify(bellData.payload || {})}`;
+    } else if (typeof event.payload === "object") {
+      message = `${prefix} ${JSON.stringify(event.payload)}`;
+    } else {
+      message = `${prefix} ${event.payload}`;
+    }
+
+    console.error(`[peripheral] Queuing: ${message.slice(0, 80)}...`);
+    this.inputQueue.push(message);
+    this.processNext();
+  }
+
+  getResumeId(): string | undefined {
+    return this.resumeId;
   }
 }
 
@@ -258,7 +164,6 @@ function createAgencyInput(url: string, agentId: string): AsyncGenerator<InputEv
 
       ws.on("open", () => {
         console.error(`[agency-ws] Connected`);
-        // Register as available
         ws?.send(JSON.stringify({ type: "register", agentId }));
       });
 
@@ -266,6 +171,11 @@ function createAgencyInput(url: string, agentId: string): AsyncGenerator<InputEv
         try {
           const msg = JSON.parse(data.toString());
           console.error(`[agency-ws] Received: ${msg.type}`);
+
+          // Skip connection confirmations
+          if (msg.type === "connected" || msg.type === "registered" || msg.type === "pong") {
+            return;
+          }
 
           const event: InputEvent = {
             source: "agency",
@@ -314,11 +224,9 @@ function createAgencyInput(url: string, agentId: string): AsyncGenerator<InputEv
 // ============================================================================
 
 async function* multiplex(...sources: AsyncGenerator<InputEvent>[]): AsyncGenerator<InputEvent> {
-  // Create promises for each source
   const iterators = sources.map((s) => s[Symbol.asyncIterator]());
   const pending = new Map<number, Promise<{ index: number; result: IteratorResult<InputEvent> }>>();
 
-  // Initialize all sources
   for (let i = 0; i < iterators.length; i++) {
     pending.set(
       i,
@@ -327,14 +235,12 @@ async function* multiplex(...sources: AsyncGenerator<InputEvent>[]): AsyncGenera
   }
 
   while (pending.size > 0) {
-    // Wait for any source to produce
     const { index, result } = await Promise.race(pending.values());
 
     if (result.done) {
       pending.delete(index);
     } else {
       yield result.value;
-      // Queue next from this source
       pending.set(
         index,
         iterators[index].next().then((result) => ({ index, result }))
@@ -366,40 +272,45 @@ async function main() {
         break;
       case "--help":
         console.log(`
-fuclaude-peripheral - Multiplexed Claude agent with backpack & walkie-talkie
+fuclaude-peripheral - Multiplexed Claude Code wrapper with backpack & walkie-talkie
 
 Usage:
   ./fuclaude-peripheral.ts [options]
 
 Options:
-  --resume <id>       Resume existing session
-  --agency-ws <url>   Agency WebSocket URL (default: ws://localhost:7070/ws)
+  --resume <id>       Resume existing Claude Code session
+  --agency-ws <url>   Agency WebSocket URL (default: ws://localhost:7070/agency/ws)
   --no-agency         Disable Agency connection (human-only mode)
   --help              Show this help
 
 Environment:
-  ANTHROPIC_API_KEY   Required
   AGENCY_WS_URL       Agency WebSocket URL
   FUCLAUDE_AGENT_ID   Agent identifier (default: fuclaude)
-  FUCLAUDE_MODEL      Claude model (default: claude-sonnet-4-20250514)
+
+This wrapper multiplexes human input and Agency events into a single Claude Code
+session. Use --resume to continue an existing session (keeping memory and context).
+
+Example:
+  # Start fresh session connected to Agency
+  ./fuclaude-peripheral.ts
+
+  # Resume existing session
+  ./fuclaude-peripheral.ts --resume 973b4921-7efc-4d15-bb0e-3eabfe652a17
+
+  # Human-only mode (no Agency connection)
+  ./fuclaude-peripheral.ts --no-agency
 `);
         process.exit(0);
     }
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("[peripheral] Error: ANTHROPIC_API_KEY not set");
-    process.exit(1);
-  }
+  // Create Claude Code wrapper
+  const claude = new ClaudeCodeWrapper(resumeId);
 
-  // Create session and agent
-  const session = createSession(resumeId);
-  const agent = new ClaudeAgent(session);
-
-  console.error(`[peripheral] Session: ${session.id}`);
-  console.error(`[peripheral] Model: ${session.model}`);
+  console.error(`[peripheral] Agent ID: ${AGENT_ID}`);
+  console.error(`[peripheral] Resume: ${resumeId || "(new session)"}`);
   console.error(`[peripheral] Agency WS: ${enableAgency ? agencyWsUrl : "disabled"}`);
-  console.error(`[peripheral] Ready for input from multiple sources`);
+  console.error(`[peripheral] Ready for multiplexed input`);
   console.error("");
 
   // Create input sources
@@ -411,17 +322,8 @@ Environment:
 
   // Process multiplexed input
   for await (const event of multiplex(...sources)) {
-    console.error(`\n[${event.source}] Processing...`);
-
-    let response: string;
-    if (event.source === "agency" && event.type === "bell") {
-      response = await agent.handleBell(event.payload);
-    } else {
-      response = await agent.handleInput(event);
-    }
-
-    // Output response
-    console.log(`\n${response}\n`);
+    console.error(`\n[${event.source}] Processing ${event.type || "input"}...`);
+    await claude.handleInput(event);
   }
 }
 

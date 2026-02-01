@@ -139,12 +139,31 @@ class FucodexWrapper {
 
     const child = spawn(this.fucodexBin, args, { cwd: REPO_ROOT, env });
     let lastOutput = Date.now();
+    let summarySeen = false;
+    let summaryTimer: NodeJS.Timeout | null = null;
+
+    const scheduleSummaryKill = () => {
+      if (summaryTimer) {
+        return;
+      }
+      summaryTimer = setTimeout(() => {
+        if (!child.killed) {
+          console.error("[fucodex] Summary seen; terminating child to advance queue");
+          child.kill("SIGTERM");
+        }
+      }, 1500);
+    };
+
     const recordOutput = (text: string, isErr = false) => {
       lastOutput = Date.now();
       if (isErr) {
         process.stderr.write(text);
       } else {
         this.onOutput(text);
+      }
+      if (!summarySeen && text.includes("[/FULAB-SUMMARY]")) {
+        summarySeen = true;
+        scheduleSummaryKill();
       }
     };
 
@@ -163,6 +182,9 @@ class FucodexWrapper {
     child.stderr.on("data", (data) => recordOutput(data.toString(), true));
     child.on("close", (code) => {
       clearInterval(idleTimer);
+      if (summaryTimer) {
+        clearTimeout(summaryTimer);
+      }
       if (code && code !== 0) {
         console.error(`[fucodex] Error: exited with ${code}`);
       }

@@ -1327,6 +1327,10 @@
     (io/make-parents path)
     (spit path (pr-str merged))))
 
+(defn- upload-init-complete?
+  [state session-id]
+  (true? (:init/complete (read-upload-meta state session-id))))
+
 (defn- append-upload-line!
   [state session-id line]
   (let [path (upload-session-path state session-id)]
@@ -1634,10 +1638,19 @@
                   (reset! session {:id session-id})
                   (write-upload-meta! state session-id
                                       (select-keys msg [:project :source :originator :cwd :remote-source]))
-                  (doseq [event (:events msg)]
-                    (append-upload-event! state session-id event))
-                  (update-upload-meta! state session-id {})
-                  (http/send! channel (json/encode {:type "ack" :session-id session-id}) false))
+                  (if (upload-init-complete? state session-id)
+                    (http/send! channel (json/encode {:type "ack"
+                                                      :session-id session-id
+                                                      :dedup true})
+                                false)
+                    (do
+                      (doseq [event (:events msg)]
+                        (append-upload-event! state session-id event))
+                      (update-upload-meta! state session-id {:init/complete true
+                                                             :init/event-count (count (:events msg))})
+                      (http/send! channel (json/encode {:type "ack"
+                                                        :session-id session-id})
+                                  false))))
 
                 "event"
                 (let [session-id (or (:session-id msg) (:session/id msg) (:id msg) (:id @session))

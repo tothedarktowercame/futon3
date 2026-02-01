@@ -1020,10 +1020,16 @@ Displays results in *Test Bell* buffer as responses arrive."
           '(("Content-Type" . "application/json")
             ("Accept" . "application/json")))
          (timestamp (format-time-string "%Y-%m-%dT%H:%M:%SZ" nil t))
+         (agency-base (string-trim-right fubar-agency-url "/"))
          (payload `((agent-id . ,agent)
                     (peripheral . "test-bell-ack")
-                    (prompt . ,(format "Fetch secret %s from %s/agency/secret/%s and return its value."
-                                       secret-id fubar-agency-url secret-id))))
+                    (prompt . ,(format "Test bell at %s. Secret ID: %s
+
+Run this command to fetch the secret:
+  curl -s %s/agency/secret/%s
+
+Then respond with ONLY the secret value from the JSON response."
+                                       timestamp secret-id agency-base secret-id)))))
          (url-request-data (encode-coding-string (json-encode payload) 'utf-8))
          (url (concat (string-trim-right fubar-agency-url "/") "/agency/run")))
     (url-retrieve

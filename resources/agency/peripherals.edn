@@ -22,9 +22,9 @@
    :forum-auto-reply false}
 
   :test-bell-ack
-  {:entry "Acknowledge test bell by retrieving and returning the secret."
-   :prompt "You have been summoned by test-bell at {{bell/timestamp}}.\n\nTo prove you received this summon, fetch the secret:\n  curl {{agency/url}}/agency/secret/{{bell/secret-id}}\n\nRespond with the secret value to confirm receipt."
-   :postlude ""}
+  {:entry "You are responding to a test-bell summon. Your task is to fetch a secret and return its value to prove you received the message."
+   :prompt ""
+   :postlude "Return ONLY the secret value, nothing else. This verifies the closed-loop communication."}
 
   :par-participant
   {:entry "Join PAR and contribute a concise perspective."

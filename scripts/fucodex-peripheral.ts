@@ -23,7 +23,7 @@
  *   FUCODEX_NO_SANDBOX       - Set to 1/true to pass --no-sandbox
  */
 
-import { exec } from "child_process";
+import { spawn } from "child_process";
 import * as path from "path";
 import * as readline from "readline";
 // @ts-ignore - runtime module is available, but typings may be missing in this repo
@@ -58,10 +58,6 @@ interface InputEvent {
 // ============================================================================
 // fucodex Process
 // ============================================================================
-
-function shellQuote(value: string): string {
-  return `'${value.replace(/'/g, "'\\''")}'`;
-}
 
 class FucodexWrapper {
   private resumeId: string | undefined;
@@ -102,39 +98,35 @@ class FucodexWrapper {
   }
 
   private runFucodex(input: string, disableHud: boolean): void {
-    const escapedInput = shellQuote(input);
-    let cmd = `${shellQuote(this.fucodexBin)} --live`;
+    const args: string[] = ["--live"];
 
     if (this.approvalPolicy) {
-      cmd += ` --approval-policy ${shellQuote(this.approvalPolicy)}`;
+      args.push("--approval-policy", this.approvalPolicy);
     }
     if (this.noSandbox) {
-      cmd += " --no-sandbox";
+      args.push("--no-sandbox");
     }
     if (this.resumeId) {
-      cmd += ` --resume ${shellQuote(this.resumeId)}`;
+      args.push("--resume", this.resumeId);
     }
 
     // NOTE: do not use --prompt here; resume relies on passing a bare prompt string.
-    cmd += ` ${escapedInput}`;
+    args.push(input);
 
-    console.error(`[fucodex] Running: ${cmd.slice(0, 100)}...`);
+    console.error(`[fucodex] Running: ${this.fucodexBin} ${args.slice(0, 6).join(" ")}...`);
     this.isProcessing = true;
 
     const env = { ...process.env };
     if (disableHud) {
       env.FUCODEX_HUD = "0";
     }
-    exec(cmd, { maxBuffer: 20 * 1024 * 1024, cwd: REPO_ROOT, env }, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`[fucodex] Error: ${error.message}`);
-      }
-      if (stderr) {
-        process.stderr.write(stderr);
-      }
-      if (stdout) {
-        this.onOutput(stdout);
-        this.onOutput("\n");
+
+    const child = spawn(this.fucodexBin, args, { cwd: REPO_ROOT, env });
+    child.stdout.on("data", (data) => this.onOutput(data.toString()));
+    child.stderr.on("data", (data) => process.stderr.write(data.toString()));
+    child.on("close", (code) => {
+      if (code && code !== 0) {
+        console.error(`[fucodex] Error: exited with ${code}`);
       }
       console.error(`[fucodex] Completed`);
       this.isProcessing = false;

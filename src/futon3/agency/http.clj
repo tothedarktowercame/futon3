@@ -3,6 +3,7 @@
   (:require [cheshire.core :as json]
             [clojure.string :as str]
             [org.httpkit.server :as http]
+            [futon3.agency.codex-mirror :as codex-mirror]
             [futon3.agency.service :as svc]))
 
 (def ^:private log-path (or (System/getenv "AGENCY_LOG") "/tmp/agency_http.log"))
@@ -114,13 +115,18 @@
    (let [port (or port
                   (some-> (System/getenv "AGENCY_PORT") Long/parseLong)
                   7070)
-         stop-fn (http/run-server #'handler {:port port})]
-     (reset! server-state {:stop-fn stop-fn :port port})
+         stop-fn (http/run-server #'handler {:port port})
+         mirror-stop (codex-mirror/start!)]
+     (reset! server-state {:stop-fn stop-fn
+                           :mirror-stop mirror-stop
+                           :port port})
      (log! (format "agency http server on %d" port))
      (fn []
        (when-let [stop (:stop-fn @server-state)]
-         (stop)
-         (reset! server-state nil))))))
+         (stop))
+       (when-let [stop-mirror (:mirror-stop @server-state)]
+         (stop-mirror))
+       (reset! server-state nil)))))
 
 (defn -main [& _args]
   (start! {})

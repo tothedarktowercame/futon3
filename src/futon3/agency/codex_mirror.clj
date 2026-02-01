@@ -4,7 +4,8 @@
             [clojure.java.io :as io]
             [clojure.string :as str])
   (:import (java.net URI)
-           (java.net.http HttpClient WebSocket WebSocket$Listener)
+           (java.net.http HttpClient HttpClient$Version WebSocket WebSocket$Listener WebSocketHandshakeException)
+           (java.util.concurrent ExecutionException)
            (java.util.concurrent CompletableFuture TimeUnit)))
 
 (defn- env-int [key default]
@@ -34,6 +35,9 @@
 
 (defn- now-ms []
   (System/currentTimeMillis))
+
+(defn- now-iso []
+  (str (java.time.Instant/ofEpochMilli (now-ms))))
 
 (defn- normalize-project-path [path]
   (let [home (System/getProperty "user.home")]
@@ -100,12 +104,25 @@
     (onError [_ _ws _err] nil)))
 
 (defn- open-websocket [url]
-  (let [client (HttpClient/newHttpClient)
+  (let [client (-> (HttpClient/newBuilder)
+                   (.version HttpClient$Version/HTTP_1_1)
+                   (.build))
         listener (ws-listener)
         fut (-> client
                 (.newWebSocketBuilder)
                 (.buildAsync (URI/create url) listener))]
     (.get ^CompletableFuture fut 10 TimeUnit/SECONDS)))
+
+(defn- describe-handshake-error [^Throwable err]
+  (let [cause (if (instance? ExecutionException err) (.getCause ^ExecutionException err) err)]
+    (if (instance? WebSocketHandshakeException cause)
+      (let [resp (.getResponse ^WebSocketHandshakeException cause)
+            status (when resp (.statusCode resp))
+            headers (when resp (.map (.headers resp)))]
+        (str (.getName (class cause)) ": " (.getMessage cause)
+             (when status (str " status=" status))
+             (when (seq headers) (str " headers=" headers))))
+      (str (.getName (class err)) ": " (.getMessage err)))))
 
 (defn- send-json! [^WebSocket ws payload]
   (let [text (json/encode payload)
@@ -119,14 +136,25 @@
 (defn- start-watcher! [cfg session]
   (let [{:keys [upload-url originator]} cfg
         stop-flag (atom false)
-        state (atom {:last-count 0 :ws nil :last-error nil})]
+        state (atom {:last-count 0
+                     :ws nil
+                     :last-error nil
+                     :last-attempt nil
+                     :last-connected nil})]
     (future
       (while (not @stop-flag)
         (try
           (when (and (nil? (:ws @state)) (seq upload-url))
+            (swap! state assoc :last-attempt (now-iso))
+            (println "[agency.codex-mirror] connecting" {:session-id (:id session)
+                                                         :url upload-url})
             (let [ws (open-websocket upload-url)
                   lines (read-lines (:path session))]
-              (reset! state {:last-count (count lines) :ws ws})
+              (reset! state {:last-count (count lines)
+                             :ws ws
+                             :last-error nil
+                             :last-attempt (:last-attempt @state)
+                             :last-connected (now-iso)})
               (send-json! ws {:type "init"
                               :session-id (:id session)
                               :project (:project session)
@@ -148,7 +176,10 @@
 
           (Thread/sleep 500)
           (catch Exception e
-            (swap! state assoc :ws nil :last-error (.getMessage e))
+            (let [err (describe-handshake-error e)]
+              (println "[agency.codex-mirror] watcher error" {:session-id (:id session)
+                                                              :err err})
+              (swap! state assoc :ws nil :last-error err))
             (Thread/sleep 1000)))))
     {:stop stop-flag
      :state state
@@ -206,6 +237,8 @@
                             :cwd (:cwd session)
                             :last-count (:last-count @state)
                             :connected? (boolean (:ws @state))
-                            :last-error (:last-error @state)}))
+                            :last-error (:last-error @state)
+                            :last-attempt (:last-attempt @state)
+                            :last-connected (:last-connected @state)}))
                     (sort-by :session-id)
                     vec)}))

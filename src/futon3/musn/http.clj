@@ -515,6 +515,71 @@
                  all-pars)
      :context context-block}))
 
+;; =============================================================================
+;; Multi-Session PAR (Nexus Point)
+;; =============================================================================
+
+(defn- session-id->sidecar-path
+  "Convert a session ID to its .par.edn sidecar path.
+   Searches ~/.claude/projects/ for matching .jsonl file."
+  [session-id]
+  (let [claude-dir (io/file (System/getProperty "user.home") ".claude" "projects")]
+    (when (.exists claude-dir)
+      (->> (file-seq claude-dir)
+           (filter #(and (.isFile %)
+                         (str/ends-with? (.getName %) ".jsonl")
+                         (str/includes? (.getName %) session-id)))
+           first
+           (#(when % (str/replace (.getAbsolutePath %) ".jsonl" ".par.edn")))))))
+
+(defn- write-par-to-sidecar!
+  "Write or append a PAR to a session's .par.edn sidecar file."
+  [sidecar-path par]
+  (try
+    (let [existing (when (.exists (io/file sidecar-path))
+                     (edn/read-string (slurp sidecar-path)))
+          pars (if (vector? existing) existing (if existing [existing] []))
+          updated (conj pars par)]
+      (spit sidecar-path (pr-str updated))
+      {:ok true :path sidecar-path})
+    (catch Exception e
+      {:ok false :err (.getMessage e) :path sidecar-path})))
+
+(defn- par-multi!
+  "Write a PAR to multiple session sidecars as a nexus point.
+   Expected body keys:
+     par/id - unique PAR identifier
+     par/timestamp - ISO timestamp
+     par/sessions - vector of session IDs
+     par/participants - vector of participant keywords
+     par/questions - the 5 PAR questions
+     par/tags - tags like [:joint :nexus]"
+  [body]
+  (let [par-id (or (:par/id body) (str "par-joint-" (subs (str (java.util.UUID/randomUUID)) 0 8)))
+        timestamp (or (:par/timestamp body) (str (java.time.Instant/now)))
+        sessions (:par/sessions body)
+        participants (:par/participants body)
+        questions (:par/questions body)
+        tags (or (:par/tags body) [:joint :nexus])]
+    (if (empty? sessions)
+      {:ok false :err "No sessions specified"}
+      (let [par {:id par-id
+                 :timestamp timestamp
+                 :title (or (:par/title body) "Joint PAR")
+                 :sessions sessions
+                 :participants participants
+                 :questions questions
+                 :tags tags}
+            results (for [session-id sessions]
+                      (if-let [path (session-id->sidecar-path session-id)]
+                        (assoc (write-par-to-sidecar! path par) :session-id session-id)
+                        {:ok false :err "Session not found" :session-id session-id}))]
+        {:ok (every? :ok results)
+         :par-id par-id
+         :results (vec results)
+         :sessions-written (count (filter :ok results))
+         :sessions-total (count sessions)}))))
+
 (defn- dispatch [uri body]
   (case uri
     "/musn/session/create" (svc/create-session! body)
@@ -549,6 +614,7 @@
                           (let [{:keys [session/id tasks note]} body]
                             (svc/record-native-plan! id tasks :note note))
     "/musn/par"           (svc/par! body)
+    "/musn/par/multi"     (par-multi! body)
     "/musn/activity/log"  (svc/activity-log! body)
     nil))
 

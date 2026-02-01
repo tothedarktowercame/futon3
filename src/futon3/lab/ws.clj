@@ -384,10 +384,25 @@
                   5056)]
      (try
        (let [server (create-server port)]
+         (.setReuseAddr server true)  ; Allow quick restarts
          (.start server)
-         (reset! server-state {:server server :port port})
-         (println "[lab-ws] Lab WebSocket server running on port" port)
-         server)
+         ;; Wait briefly for server thread to bind
+         (Thread/sleep 100)
+         ;; Verify the port is actually listening
+         (let [bound? (try
+                        (with-open [sock (java.net.Socket.)]
+                          (.connect sock (java.net.InetSocketAddress. "127.0.0.1" port) 100)
+                          true)
+                        (catch Exception _ false))]
+           (if bound?
+             (do
+               (reset! server-state {:server server :port port})
+               (println "[lab-ws] Lab WebSocket server running on port" port)
+               server)
+             (do
+               (println "[lab-ws] ERROR: Server started but port" port "not listening")
+               (.stop server 0)
+               nil))))
        (catch Exception e
          (println "[lab-ws] ERROR: Failed to start WebSocket server on port" port)
          (println "[lab-ws] Exception:" (.getMessage e))
@@ -396,10 +411,14 @@
 
 (defn stop! []
   (when-let [{:keys [server]} @server-state]
-    ;; Stop all watchers
+    ;; Stop all watchers (safely handle nil stop-flags)
     (doseq [[_ {:keys [stop-flag]}] @clients]
-      (reset! stop-flag true))
-    (.stop server 1000)
+      (when stop-flag
+        (reset! stop-flag true)))
+    (try
+      (.stop server 1000)
+      (catch Exception e
+        (println "[lab-ws] Error stopping server:" (.getMessage e))))
     (reset! server-state nil)
     (reset! clients {})
     (println "[lab-ws] Lab WebSocket server stopped")))

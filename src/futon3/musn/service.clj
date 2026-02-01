@@ -1759,11 +1759,20 @@
           (try
             (binding [*out* *err*]  ;; ensure output goes to stderr
               (println "[affect] Processing activity:" (:agent record))
-              (require 'futon3a.affect)
+              (try
+                (require 'futon3a.affect)
+                (catch java.io.FileNotFoundException _
+                  (println "[affect] Skipping (futon3a not on classpath)")
+                  (throw (ex-info "affect-unavailable" {}))))
               (let [proc-fn (resolve 'futon3a.affect/process!)]
                 (when proc-fn
                   (proc-fn record)
                   (println "[affect] Done processing"))))
+            (catch clojure.lang.ExceptionInfo e
+              (when-not (= "affect-unavailable" (ex-message e))
+                (binding [*out* *err*]
+                  (println "[affect] Error:" (.getMessage e))
+                  (.printStackTrace e))))
             (catch Throwable t
               (binding [*out* *err*]
                 (println "[affect] Error:" (.getMessage t))

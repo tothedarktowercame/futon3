@@ -84,6 +84,45 @@ Questions for Claude (answered 2026-02-01)
    Location block: `location /fulab/lab/upload/ws { proxy_pass http://127.0.0.1:5056; ... }`
    (Same pattern as existing lab-ws streaming endpoint)
 
+Troubleshooting
+
+**Diagnostics (run on Linode):**
+```bash
+# 1. Check lab-ws is listening
+ss -ltnp | grep 5056
+# Expected: LISTEN 0 50 *:5056 *:* users:(("java",...))
+
+# 2. Check nginx is listening
+ss -ltnp | grep 5057
+# Expected: LISTEN 0 511 0.0.0.0:5057 0.0.0.0:*
+
+# 3. Test direct backend
+python3 -c "
+import socket
+s = socket.socket()
+s.settimeout(2)
+s.connect(('127.0.0.1', 5056))
+s.send(b'GET /fulab/lab/upload/ws HTTP/1.1\r\nHost: localhost\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: test==\r\nSec-WebSocket-Version: 13\r\n\r\n')
+print(s.recv(200).decode()[:100])
+"
+# Expected: HTTP/1.1 101 Web Socket Protocol Handshake
+
+# 4. Check lab-ws status via REPL
+./scripts/repl-eval '(futon3.lab.ws/status)'
+# Expected: {:running true, :port 5056, :clients N}
+```
+
+**If lab-ws keeps dying:**
+The server has a supervisor that auto-restarts it every 10 seconds. Start it with:
+```clojure
+(futon3.lab.ws/start-supervisor! {:port 5056})
+```
+
+**Common issues:**
+- 502 from nginx: lab-ws not running or not accepting connections
+- Handshake timeout: Check `ss -ltnp | grep 5056` shows LISTEN with low queue (not 40+)
+- Path mismatch: Server accepts `/fulab/lab/upload/ws`, `/upload/ws`, or paths ending in `/lab/upload/ws`
+
 Checklist
 - [ ] Verify WSS endpoint reachable from laptop.
 - [ ] Upload one Codex session and confirm file appears in lab/remote.

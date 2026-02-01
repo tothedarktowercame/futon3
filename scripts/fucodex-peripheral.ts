@@ -26,7 +26,8 @@
 import { exec } from "child_process";
 import * as path from "path";
 import * as readline from "readline";
-const WebSocket = require("ws");
+// @ts-ignore - runtime module is available, but typings may be missing in this repo
+import WebSocket from "ws";
 
 // ============================================================================
 // Configuration
@@ -35,7 +36,8 @@ const WebSocket = require("ws");
 const AGENT_ID = process.env.FUCODEX_AGENT_ID || "fucodex";
 const AGENCY_WS_URL = process.env.AGENCY_WS_URL || "ws://localhost:7070/agency/ws";
 const AGENCY_HTTP_URL = process.env.AGENCY_HTTP_URL || "http://localhost:7070";
-const FUCODEX_BIN = process.env.FUCODEX_BIN || path.resolve(__dirname, "..", "fucodex");
+const scriptDir = path.dirname(process.argv[1] || ".");
+const FUCODEX_BIN = process.env.FUCODEX_BIN || path.resolve(scriptDir, "..", "fucodex");
 const FUCODEX_APPROVAL_POLICY = process.env.FUCODEX_APPROVAL_POLICY || "never";
 const FUCODEX_NO_SANDBOX = ["1", "true", "yes"].includes(
   (process.env.FUCODEX_NO_SANDBOX || "").toLowerCase()
@@ -181,20 +183,21 @@ function createHumanInput(): AsyncGenerator<InputEvent> {
 
 function createAgencyInput(url: string, agentId: string): AsyncGenerator<InputEvent> {
   return (async function* () {
-    let ws: WebSocket | null = null;
+    let ws: any = null;
     const queue: InputEvent[] = [];
     let resolver: ((value: InputEvent) => void) | null = null;
 
     const connect = () => {
       console.error(`[agency-ws] Connecting to ${url}...`);
-      ws = new WebSocket(`${url}?agent-id=${agentId}`);
+      const socket: any = new WebSocket(`${url}?agent-id=${agentId}`);
+      ws = socket;
 
-      ws.on("open", () => {
+      socket.on("open", () => {
         console.error(`[agency-ws] Connected`);
-        ws?.send(JSON.stringify({ type: "register", agentId }));
+        socket.send(JSON.stringify({ type: "register", agentId }));
       });
 
-      ws.on("message", (data: any) => {
+      socket.on("message", (data: any) => {
         try {
           const msg = JSON.parse(data.toString());
           console.error(`[agency-ws] Received: ${msg.type}`);
@@ -221,12 +224,12 @@ function createAgencyInput(url: string, agentId: string): AsyncGenerator<InputEv
         }
       });
 
-      ws.on("close", () => {
+      socket.on("close", () => {
         console.error(`[agency-ws] Disconnected, reconnecting in 5s...`);
         setTimeout(connect, 5000);
       });
 
-      ws.on("error", (err: any) => {
+      socket.on("error", (err: any) => {
         console.error(`[agency-ws] Error: ${err}`);
       });
     };

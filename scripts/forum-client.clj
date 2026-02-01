@@ -11,6 +11,10 @@
 ;;   bb scripts/forum-client.clj pin <thread-id> [true|false]
 ;;   bb scripts/forum-client.clj stream                      - Live stream
 ;;
+;; Body helpers:
+;;   --body-file PATH    - Read body from file
+;;   <body> = "-"        - Read body from stdin
+;;
 ;; Environment:
 ;;   FORUM_SERVER - server URL (default: http://localhost:5050)
 ;;   FORUM_AUTHOR - author name (default: cli)
@@ -18,6 +22,7 @@
 (require '[babashka.http-client :as http]
          '[babashka.http-client.websocket :as ws]
          '[cheshire.core :as json]
+         '[clojure.java.io :as io]
          '[clojure.string :as str])
 
 (def server (or (System/getenv "FORUM_SERVER") "http://localhost:5050"))
@@ -72,6 +77,12 @@
          (map keyword)
          vec)))
 
+(defn read-body [{:keys [body-file body]}]
+  (cond
+    body-file (slurp (io/file body-file))
+    (= body "-") (slurp *in*)
+    :else body))
+
 (defn cmd-list [args]
   (let [[tag args] (parse-flag args "--tag")
         [pinned? args] (parse-switch args "--pinned")
@@ -117,8 +128,10 @@
 (defn cmd-create [args]
   (let [[goal args] (parse-flag args "--goal")
         [tags args] (parse-flag args "--tags")
+        [body-file args] (parse-flag args "--body-file")
         [pinned? args] (parse-switch args "--pinned")
         [title body & _] args
+        body (read-body {:body-file body-file :body body})
         data {:title title
               :author author
               :body body}
@@ -132,7 +145,9 @@
 
 (defn cmd-reply [args]
   (let [[tags args] (parse-flag args "--tags")
+        [body-file args] (parse-flag args "--body-file")
         [thread-id body & [pattern]] args
+        body (read-body {:body-file body-file :body body})
         data {:author author
               :body body}
         data (if pattern (assoc data :pattern-applied pattern) data)
@@ -200,10 +215,10 @@
              (println "Usage: forum-client.clj read <thread-id>"))
     "create" (if (>= (count args) 2)
                (cmd-create args)
-               (println "Usage: forum-client.clj create <title> <body> [--goal GOAL] [--tags TAG1,TAG2] [--pinned]"))
+               (println "Usage: forum-client.clj create <title> <body> [--body-file PATH] [--goal GOAL] [--tags TAG1,TAG2] [--pinned]"))
     "reply" (if (>= (count args) 2)
               (cmd-reply args)
-              (println "Usage: forum-client.clj reply <thread-id> <body> [pattern] [--tags TAG1,TAG2]"))
+              (println "Usage: forum-client.clj reply <thread-id> <body> [pattern] [--body-file PATH] [--tags TAG1,TAG2]"))
     "pin" (if (>= (count args) 1)
             (cmd-pin args)
             (println "Usage: forum-client.clj pin <thread-id> [true|false]"))
@@ -216,6 +231,8 @@
       (println "  read <thread-id>            - Read a thread")
       (println "  create <title> <body>       - Create thread")
       (println "  reply <thread-id> <body>    - Reply to thread")
+      (println "  --body-file PATH            - Read body from file (create/reply)")
+      (println "  <body> = \"-\"                - Read body from stdin (create/reply)")
       (println "  stream                      - Live stream")
       (println)
       (println "Environment:")

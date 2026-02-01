@@ -21,6 +21,7 @@
  *   FUCODEX_BIN              - Path to fucodex script (default: ../fucodex)
  *   FUCODEX_APPROVAL_POLICY  - Approval policy (default: never)
  *   FUCODEX_NO_SANDBOX       - Set to 1/true to pass --no-sandbox
+ *   FUCODEX_PRINT_AGENT_OUTPUT - Set to 0/false to suppress agent output
  */
 
 import { spawn } from "child_process";
@@ -42,6 +43,9 @@ const FUCODEX_BIN = process.env.FUCODEX_BIN || path.resolve(REPO_ROOT, "fucodex"
 const FUCODEX_APPROVAL_POLICY = process.env.FUCODEX_APPROVAL_POLICY || "never";
 const FUCODEX_NO_SANDBOX = ["1", "true", "yes"].includes(
   (process.env.FUCODEX_NO_SANDBOX || "").toLowerCase()
+);
+const FUCODEX_PRINT_AGENT_OUTPUT = !["0", "false", "no"].includes(
+  (process.env.FUCODEX_PRINT_AGENT_OUTPUT || "").toLowerCase()
 );
 
 // ============================================================================
@@ -68,6 +72,7 @@ class FucodexWrapper {
   private noSandbox: boolean;
   private fucodexBin: string;
   private disableHud: boolean;
+  private printAgentOutput: boolean;
 
   constructor(
     resumeId?: string,
@@ -82,10 +87,15 @@ class FucodexWrapper {
     this.noSandbox = noSandbox ?? FUCODEX_NO_SANDBOX;
     this.fucodexBin = fucodexBin || FUCODEX_BIN;
     this.disableHud = true;
+    this.printAgentOutput = true;
   }
 
   setDisableHud(value: boolean): void {
     this.disableHud = value;
+  }
+
+  setPrintAgentOutput(value: boolean): void {
+    this.printAgentOutput = value;
   }
 
   private processNext(): void {
@@ -94,10 +104,10 @@ class FucodexWrapper {
     }
 
     const input = this.inputQueue.shift()!;
-    this.runFucodex(input, this.disableHud);
+    this.runFucodex(input, this.disableHud, this.printAgentOutput);
   }
 
-  private runFucodex(input: string, disableHud: boolean): void {
+  private runFucodex(input: string, disableHud: boolean, printOutput: boolean): void {
     const args: string[] = ["--live"];
 
     if (this.approvalPolicy) {
@@ -120,6 +130,7 @@ class FucodexWrapper {
     if (disableHud) {
       env.FUCODEX_HUD = "0";
     }
+    env.FULAB_PRINT_AGENT_OUTPUT = printOutput ? "1" : "0";
 
     const child = spawn(this.fucodexBin, args, { cwd: REPO_ROOT, env });
     child.stdout.on("data", (data) => this.onOutput(data.toString()));
@@ -294,6 +305,7 @@ async function main() {
   let noSandbox = FUCODEX_NO_SANDBOX;
   let fucodexBin = FUCODEX_BIN;
   let disableHud = true;
+  let printAgentOutput = FUCODEX_PRINT_AGENT_OUTPUT;
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
@@ -321,6 +333,12 @@ async function main() {
       case "--no-hud":
         disableHud = true;
         break;
+      case "--print-output":
+        printAgentOutput = true;
+        break;
+      case "--no-print-output":
+        printAgentOutput = false;
+        break;
       case "--help":
         console.log(`
 fucodex-peripheral - Multiplexed Codex wrapper with backpack & walkie-talkie
@@ -336,12 +354,14 @@ Options:
   --no-sandbox            Pass --no-sandbox to fucodex
   --hud                   Enable fucodex HUD (default: disabled)
   --no-hud                Disable fucodex HUD (default)
+  --print-output          Print agent output (default)
+  --no-print-output       Suppress agent output
   --fucodex-bin <path>    Path to fucodex script (default: ../fucodex)
   --help                  Show this help
 
 Environment:
   AGENCY_WS_URL, AGENCY_HTTP_URL, FUCODEX_AGENT_ID, FUCODEX_BIN,
-  FUCODEX_APPROVAL_POLICY, FUCODEX_NO_SANDBOX
+  FUCODEX_APPROVAL_POLICY, FUCODEX_NO_SANDBOX, FUCODEX_PRINT_AGENT_OUTPUT
 `);
         process.exit(0);
     }
@@ -349,6 +369,7 @@ Environment:
 
   const fucodex = new FucodexWrapper(resumeId, undefined, approvalPolicy, noSandbox, fucodexBin);
   fucodex.setDisableHud(disableHud);
+  fucodex.setPrintAgentOutput(printAgentOutput);
 
   console.error(`[peripheral] Agent ID: ${AGENT_ID}`);
   console.error(`[peripheral] Resume: ${resumeId || "(new session)"}`);
@@ -357,6 +378,7 @@ Environment:
   console.error(`[peripheral] Approval: ${approvalPolicy || "(default)"}`);
   console.error(`[peripheral] Sandbox: ${noSandbox ? "disabled" : "default"}`);
   console.error(`[peripheral] HUD: ${disableHud ? "disabled" : "enabled"}`);
+  console.error(`[peripheral] Print output: ${printAgentOutput ? "enabled" : "disabled"}`);
   console.error(`[peripheral] Agency WS: ${enableAgency ? agencyWsUrl : "disabled"}`);
   console.error(`[peripheral] Ready for multiplexed input`);
   console.error("");

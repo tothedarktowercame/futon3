@@ -24,6 +24,12 @@
   {:free 3
    :ratio 0.5
    :action "off-trail"})
+(def ^:private print-agent-output?
+  (let [flag (some-> (or (System/getenv "FULAB_PRINT_AGENT_OUTPUT")
+                         (System/getenv "FUCODEX_PRINT_AGENT_OUTPUT"))
+                     str
+                     str/lower-case)]
+    (or (= flag "1") (= flag "true"))))
 
 (declare log-pattern-action! handle-pattern-action! maybe-log-aif-event! fmt-num emit-pur!)
 
@@ -1276,6 +1282,9 @@
                     (let [text (get-in event [:item :text])
                           report (when (string? text)
                                    (hud/parse-agent-report text))]
+                      (when (and print-agent-output? (string? text) (not (str/blank? text)))
+                        (println text)
+                        (flush))
                       (note-plan-seen! state text)
                       (when report
                         (swap! state assoc :last-agent-report report))))

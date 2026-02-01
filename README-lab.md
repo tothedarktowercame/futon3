@@ -30,6 +30,40 @@ Notes
 - Session id is sanitized for filesystem usage.
 - Upload storage is temporary; can be deleted once Futon1 persistence is wired.
 
+Connection Details
+- **WSS endpoint**: `wss://<hostname>:5057/fulab/lab/upload/ws`
+- **Backend**: `http://127.0.0.1:5056/fulab/lab/upload/ws`
+- **TLS termination**: nginx on port 5057
+- **Required client headers**: None special - standard WebSocket upgrade headers suffice
+
+nginx config (add to existing 5057 server block):
+```nginx
+server {
+    listen 5057 ssl;
+    server_name <hostname>;
+
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+
+    # Lab WebSocket (streaming + upload)
+    location /fulab/lab/ {
+        proxy_pass http://127.0.0.1:5056;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 86400;  # 24h for long-lived connections
+    }
+}
+```
+
+The same 5056 backend handles both endpoints:
+- `/fulab/lab/upload/ws` - laptop → server upload
+- `/?path=...` - server → client streaming
+
 Laptop uploader (reference)
 - Script: dev/codex_upload_ws.clj
 - Example:

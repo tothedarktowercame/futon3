@@ -67,6 +67,16 @@ Agency is invoked with a uniform payload so routing is transparent.
 }
 ```
 
+### Inputs vs Prompt
+
+`/agency/run` accepts either:
+
+- `inputs` (preferred): values used to render `:prompt-template`
+- `prompt`: raw user prompt (used when no structured inputs are available)
+
+If both are provided, `inputs` populate the template and `prompt` is appended as
+the "User request" block.
+
 ### Expected Response
 
 ```json

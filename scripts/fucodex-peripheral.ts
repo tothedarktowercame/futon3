@@ -22,7 +22,7 @@
  *   FUCODEX_APPROVAL_POLICY  - Approval policy (default: never)
  *   FUCODEX_NO_SANDBOX       - Set to 1/true to pass --no-sandbox
  *   FUCODEX_PRINT_AGENT_OUTPUT - Set to 0/false to suppress agent output
- *   FUCODEX_IDLE_TIMEOUT_MS  - Kill fucodex after N ms of no output (default: 15000)
+ *   FUCODEX_IDLE_TIMEOUT_MS  - Kill fucodex after N ms of no output (default: 60000)
  */
 
 import { spawn } from "child_process";
@@ -49,7 +49,7 @@ const FUCODEX_PRINT_AGENT_OUTPUT = !["0", "false", "no"].includes(
   (process.env.FUCODEX_PRINT_AGENT_OUTPUT || "").toLowerCase()
 );
 const FUCODEX_IDLE_TIMEOUT_MS = Number.parseInt(
-  process.env.FUCODEX_IDLE_TIMEOUT_MS || "15000",
+  process.env.FUCODEX_IDLE_TIMEOUT_MS || "60000",
   10
 );
 

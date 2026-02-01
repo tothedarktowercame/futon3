@@ -22,7 +22,10 @@
  *   FUCLAUDE_AGENT_ID    - Agent identifier (default: fuclaude)
  */
 
-import { exec } from "child_process";
+import { execSync } from "child_process";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 import * as readline from "readline";
 import WebSocket from "ws";
 
@@ -72,29 +75,40 @@ class ClaudeCodeWrapper {
   private runClaude(input: string): void {
     // Escape the input for shell
     const escapedInput = input.replace(/'/g, "'\\''");
-    let cmd = `claude --permission-mode bypassPermissions -p '${escapedInput}'`;
+    const tmpFile = path.join(os.tmpdir(), `claude-out-${Date.now()}.txt`);
+
+    let cmd = `claude --permission-mode bypassPermissions -p '${escapedInput}' > '${tmpFile}' 2>&1`;
     if (this.resumeId) {
-      cmd = `claude --resume '${this.resumeId}' --permission-mode bypassPermissions -p '${escapedInput}'`;
+      cmd = `claude --resume '${this.resumeId}' --permission-mode bypassPermissions -p '${escapedInput}' > '${tmpFile}' 2>&1`;
     }
 
     console.error(`[claude] Running: ${cmd.slice(0, 80)}...`);
     this.isProcessing = true;
 
-    exec(cmd, { maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`[claude] Error: ${error.message}`);
-      }
-      if (stderr) {
-        process.stderr.write(stderr);
-      }
-      if (stdout) {
-        this.onOutput(stdout);
+    try {
+      execSync(cmd, { timeout: 120000 }); // 2 minute timeout
+      const output = fs.readFileSync(tmpFile, "utf-8");
+      if (output) {
+        this.onOutput(output);
         this.onOutput("\n");
       }
       console.error(`[claude] Completed`);
+    } catch (error: any) {
+      console.error(`[claude] Error: ${error.message}`);
+      // Try to read partial output
+      try {
+        const output = fs.readFileSync(tmpFile, "utf-8");
+        if (output) {
+          this.onOutput(output);
+          this.onOutput("\n");
+        }
+      } catch {}
+    } finally {
+      // Cleanup temp file
+      try { fs.unlinkSync(tmpFile); } catch {}
       this.isProcessing = false;
       this.processNext();
-    });
+    }
   }
 
   async handleInput(event: InputEvent): Promise<void> {

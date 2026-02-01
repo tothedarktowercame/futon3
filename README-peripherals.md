@@ -155,22 +155,29 @@ Codex peripheral wrapper is at `scripts/fucodex-peripheral.ts`.
 
 These are hard-won lessons from implementing `fuclaude-peripheral.ts`:
 
-### 1. Node spawn() vs exec() for Claude CLI
+### 1. Node spawn()/exec() vs execSync for Claude CLI
 
-**GOTCHA:** Using `spawn("claude", args)` hangs indefinitely even though running
-the same command in a terminal works fine.
+**GOTCHA:** Both `spawn()` and async `exec()` hang indefinitely when piping
+stdout/stderr, even though running the same command in a terminal works fine.
 
-**Cause:** Claude CLI detects non-TTY environment and behaves differently when
-spawned as a subprocess without a shell.
+**Cause:** Claude CLI does something with piped stdio that prevents the normal
+completion signals from firing. The callback/events never trigger.
 
-**Solution:** Use `exec()` instead of `spawn()`:
+**Solution:** Use `execSync()` with shell redirection to a temp file:
 ```typescript
-// BAD - hangs forever
-spawn("claude", ["--permission-mode", "bypassPermissions", "-p", input]);
+// BAD - hangs forever (callback never fires)
+exec(`claude -p '${input}'`, (err, stdout) => { ... });
 
-// GOOD - works
-exec(`claude --permission-mode bypassPermissions -p '${escapedInput}'`, callback);
+// BAD - also hangs
+spawn("claude", ["-p", input], { stdio: ["pipe", "pipe", "pipe"] });
+
+// GOOD - works with file redirection
+const tmpFile = `/tmp/claude-out-${Date.now()}.txt`;
+execSync(`claude --permission-mode bypassPermissions -p '${input}' > ${tmpFile} 2>&1`);
+const output = fs.readFileSync(tmpFile, "utf-8");
 ```
+
+Note: `spawn()` with `stdio: "inherit"` also works but you can't capture output.
 
 ### 2. Permission mode for non-interactive use
 

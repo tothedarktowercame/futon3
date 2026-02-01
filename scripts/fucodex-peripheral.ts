@@ -26,7 +26,7 @@
 import { exec } from "child_process";
 import * as path from "path";
 import * as readline from "readline";
-import WebSocket from "ws";
+const WebSocket = require("ws");
 
 // ============================================================================
 // Configuration
@@ -194,7 +194,7 @@ function createAgencyInput(url: string, agentId: string): AsyncGenerator<InputEv
         ws?.send(JSON.stringify({ type: "register", agentId }));
       });
 
-      ws.on("message", (data) => {
+      ws.on("message", (data: any) => {
         try {
           const msg = JSON.parse(data.toString());
           console.error(`[agency-ws] Received: ${msg.type}`);
@@ -226,7 +226,7 @@ function createAgencyInput(url: string, agentId: string): AsyncGenerator<InputEv
         setTimeout(connect, 5000);
       });
 
-      ws.on("error", (err) => {
+      ws.on("error", (err: any) => {
         console.error(`[agency-ws] Error: ${err}`);
       });
     };

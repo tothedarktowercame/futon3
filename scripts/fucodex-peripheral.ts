@@ -45,7 +45,7 @@ import WebSocket from "ws";
 const AGENT_ID = process.env.FUCODEX_AGENT_ID || "fucodex";
 const AGENCY_WS_URL = process.env.AGENCY_WS_URL || "ws://localhost:7070/agency/ws";
 const AGENCY_HTTP_URL = process.env.AGENCY_HTTP_URL || "http://localhost:7070";
-const FORUM_WS_URL = process.env.FORUM_WS_URL || "";
+const FORUM_WS_URL = process.env.FORUM_WS_URL || "wss://172-236-28-208.ip.linodeusercontent.com:5051/forum/stream/ws";
 const FORUM_HTTP_URL = process.env.FORUM_HTTP_URL || "http://localhost:5050";
 const MUSN_HTTP_URL = process.env.MUSN_HTTP_URL || "http://localhost:6065";
 const PATTERN_CATALOG_PATH = process.env.PATTERN_CATALOG_PATH || "resources/sigils/patterns-index.tsv";

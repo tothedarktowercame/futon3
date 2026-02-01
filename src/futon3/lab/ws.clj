@@ -329,7 +329,8 @@
       (onClose [^WebSocket conn code reason remote]
         (println "[lab-ws] Client disconnected:" (.getRemoteSocketAddress conn) "code:" code)
         (when-let [{:keys [stop-flag]} (get @clients conn)]
-          (reset! stop-flag true))
+          (when stop-flag  ; upload-mode clients don't have stop-flag
+            (reset! stop-flag true)))
         (swap! clients dissoc conn))
 
       (onMessage [^WebSocket conn ^String message]
@@ -373,7 +374,8 @@
         (println "[lab-ws] WebSocket error:" (.getMessage ex))
         (when conn
           (when-let [{:keys [stop-flag]} (get @clients conn)]
-            (reset! stop-flag true))
+            (when stop-flag  ; upload-mode clients don't have stop-flag
+              (reset! stop-flag true)))
           (swap! clients dissoc conn)))
 
       (onStart []

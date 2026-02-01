@@ -37,7 +37,8 @@ const AGENT_ID = process.env.FUCODEX_AGENT_ID || "fucodex";
 const AGENCY_WS_URL = process.env.AGENCY_WS_URL || "ws://localhost:7070/agency/ws";
 const AGENCY_HTTP_URL = process.env.AGENCY_HTTP_URL || "http://localhost:7070";
 const scriptDir = path.dirname(process.argv[1] || ".");
-const FUCODEX_BIN = process.env.FUCODEX_BIN || path.resolve(scriptDir, "..", "fucodex");
+const REPO_ROOT = path.resolve(scriptDir, "..");
+const FUCODEX_BIN = process.env.FUCODEX_BIN || path.resolve(REPO_ROOT, "fucodex");
 const FUCODEX_APPROVAL_POLICY = process.env.FUCODEX_APPROVAL_POLICY || "never";
 const FUCODEX_NO_SANDBOX = ["1", "true", "yes"].includes(
   (process.env.FUCODEX_NO_SANDBOX || "").toLowerCase()
@@ -114,7 +115,7 @@ class FucodexWrapper {
     console.error(`[fucodex] Running: ${cmd.slice(0, 100)}...`);
     this.isProcessing = true;
 
-    exec(cmd, { maxBuffer: 20 * 1024 * 1024 }, (error, stdout, stderr) => {
+    exec(cmd, { maxBuffer: 20 * 1024 * 1024, cwd: REPO_ROOT }, (error, stdout, stderr) => {
       if (error) {
         console.error(`[fucodex] Error: ${error.message}`);
       }
@@ -340,6 +341,7 @@ Environment:
   console.error(`[peripheral] Agent ID: ${AGENT_ID}`);
   console.error(`[peripheral] Resume: ${resumeId || "(new session)"}`);
   console.error(`[peripheral] fucodex: ${fucodexBin}`);
+  console.error(`[peripheral] repo root: ${REPO_ROOT}`);
   console.error(`[peripheral] Approval: ${approvalPolicy || "(default)"}`);
   console.error(`[peripheral] Sandbox: ${noSandbox ? "disabled" : "default"}`);
   console.error(`[peripheral] Agency WS: ${enableAgency ? agencyWsUrl : "disabled"}`);

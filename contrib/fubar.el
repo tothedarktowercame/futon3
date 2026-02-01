@@ -859,13 +859,17 @@ Useful when C-c doesn't propagate through EAT or other terminal emulators."
              (chosen (completing-read "PAR buffer: " names nil t)))
         (pop-to-buffer chosen))))))
 
+(defcustom fubar-futon3-root "~/code/futon3"
+  "Root directory of the futon3 repository."
+  :type 'directory
+  :group 'fubar)
+
 (defun fubar-par-bell (title &optional agents)
   "Ring the PAR bell for TITLE, summoning AGENTS (default: fucodex,fuclaude).
 This calls the par-bell.sh script to create a collaborative PAR session."
   (interactive "sPAR title: ")
   (let* ((agents (or agents "fucodex,fuclaude"))
-         (script (expand-file-name "scripts/par-bell.sh"
-                                   (locate-dominating-file default-directory ".git"))))
+         (script (expand-file-name "scripts/par-bell.sh" fubar-futon3-root)))
     (if (file-executable-p script)
         (async-shell-command
          (format "%s --title %s --agents %s"

@@ -3,6 +3,20 @@
 This document defines a **minimal, machine-readable contract** for Futon3
 peripherals so Agency can route summons across machines reliably (server ↔ laptop).
 
+## What Is a Peripheral?
+
+A **peripheral** is a *constrained capability envelope* for an agent.
+It represents a specific task mode with explicit inputs, tools, and expected output,
+so it can be invoked locally or routed remotely with predictable behavior.
+
+Key properties:
+
+- **Task-scoped**: designed for a specific intent (e.g., PAR contribution).
+- **Explicit I/O**: declared inputs and normalized outputs.
+- **Capability-bound**: tool access and context are constrained by spec.
+- **Routable**: the same peripheral can run on server or laptop via Agency.
+- **Composable**: peripherals can be chained or swapped without changing callers.
+
 ## Goals
 
 - **Portable**: same peripheral can run locally or via remote Agency.

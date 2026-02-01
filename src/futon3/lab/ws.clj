@@ -233,6 +233,11 @@
         (println "[lab-ws] Error reading PAR sidecar:" (.getMessage e))
         []))))
 
+(defn- par-event-key
+  [event]
+  (or (:par-id event)
+      (str (:timestamp event) "|" (:text event))))
+
 (defn- merge-events-by-timestamp
   "Merge two event vectors, sorted by timestamp."
   [events1 events2]
@@ -288,6 +293,34 @@
       (catch Exception e
         (println "[lab-ws] Watcher error:" (.getMessage e))))))
 
+(defn- start-par-watcher!
+  "Start watching a PAR sidecar for changes, sending new PAR events to conn."
+  [^WebSocket conn jsonl-path stop-flag]
+  (future
+    (try
+      (let [sidecar-path (par-sidecar-path jsonl-path)
+            file (io/file sidecar-path)
+            last-modified (atom 0)
+            last-keys (atom #{})]
+        (while (and (.isOpen conn) (not @stop-flag))
+          (Thread/sleep 500)
+          (when (.exists file)
+            (let [modified (.lastModified file)]
+              (when (> modified @last-modified)
+                (try
+                  (let [par-events (read-par-sidecar sidecar-path)
+                        new-events (remove (fn [event]
+                                             (contains? @last-keys (par-event-key event)))
+                                           par-events)]
+                    (doseq [event new-events]
+                      (send-json! conn {:type "event" :event event}))
+                    (reset! last-keys (set (map par-event-key par-events)))
+                    (reset! last-modified modified))
+                  (catch Exception e
+                    (println "[lab-ws] PAR watcher error:" (.getMessage e)))))))))
+      (catch Exception e
+        (println "[lab-ws] PAR watcher error:" (.getMessage e))))))
+
 (defn- create-server [port]
   (let [addr (InetSocketAddress. port)]
     (proxy [WebSocketServer] [addr]
@@ -316,7 +349,8 @@
                                 :events (:events history)})
 
               ;; Start watching for new events
-              (start-file-watcher! conn path stop-flag))
+              (start-file-watcher! conn path stop-flag)
+              (start-par-watcher! conn path stop-flag))
 
             upload-path?
             (swap! clients assoc conn {:mode :upload})

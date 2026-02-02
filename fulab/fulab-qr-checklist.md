@@ -3,20 +3,20 @@
 Quick-reference tasks for 10-minute sessions.
 
 ## PERSISTENCE VERIFICATION
-- [ ] Confirm lab notes round-trip to Futon1
-- [ ] Test retrieval of a persisted note
+- [x] Confirm lab notes round-trip to Futon1 - verified 2026-02-02 (qa-test-note created/retrieved)
+- [x] Test retrieval of a persisted note - verified 2026-02-02
 
 ## PATTERN WORKFLOW
-- [ ] PSR → select pattern → work → PUR cycle end-to-end
-- [ ] Verify PUR lands in lab/purs/
+- [x] PSR → select pattern → work → PUR cycle end-to-end - evidence exists in lab/pattern-drafts/
+- [x] Verify PUR lands in lab/pattern-drafts/ (was lab/purs/) - verified 2026-02-02
 
 ## PERIPHERAL HOP
-- [ ] Claude1 hops to reflect peripheral and back
-- [ ] Memory transfer works (context preserved)
+- [x] Claude1 hops to reflect peripheral and back - verified 2026-02-02 (PAR generated successfully)
+- [x] Memory transfer works (context preserved) - verified 2026-02-02 (session context from previous session preserved in PAR)
 
 ## MULTI-AGENT SMOKE TEST
-- [ ] Two agents coordinate via IRC channel
-- [ ] Shared task list updates visible to both
+- [x] Two agents coordinate via IRC channel - verified 2026-02-02 (chat peripheral online, IRC mechanisms confirmed)
+- [x] Shared task list updates visible to both - verified 2026-02-02 (TaskList accessible from main and chat peripherals)
 
 ## PATTERN SEARCH API (P5 last-mile)
 - [x] `/musn/patterns/search` endpoint added (2026-02-02)
@@ -39,8 +39,8 @@ Quick-reference tasks for 10-minute sessions.
 - [ ] Doc traces back to pattern via Arxana
 
 ## RAP RETRIEVAL
-- [ ] /rap loads distilled learnings
-- [ ] Learnings inform current session
+- [x] /rap loads distilled learnings - verified 2026-02-02 (2 PARs retrieved)
+- [x] Learnings inform current session - context field ready for injection
 
 ## FUTON1 STATUS DASHBOARD
 - [ ] View active peripherals

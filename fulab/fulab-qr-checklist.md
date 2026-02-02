@@ -18,6 +18,13 @@ Quick-reference tasks for 10-minute sessions.
 - [x] Two agents coordinate via IRC channel - verified 2026-02-02 (chat peripheral online, IRC mechanisms confirmed)
 - [x] Shared task list updates visible to both - verified 2026-02-02 (TaskList accessible from main and chat peripherals)
 
+## REALTIME RELIABILITY PILOT (FULAB AGENTS)
+- [ ] Pilot A (IRC baseline): handshake + mode gate + structured PSR/PUR verified
+- [ ] Pilot B (Transport Pivot): switch IRC → WS with replay and <5% message loss
+- [ ] Pilot C (Liveness + Loop Health): heartbeats + listener leases observed; recovery actions clear overload
+- [ ] Evidence captured: handshake logs, mode transitions, structured event JSONL, pivot replay counts, loop metrics
+- [ ] Pilot report: confirm/revise/reject for each realtime pattern
+
 ## PATTERN SEARCH API (P5 last-mile)
 - [x] `/musn/patterns/search` endpoint added (2026-02-02)
 - [x] Wire /psr to use pattern search endpoint (2026-02-02)

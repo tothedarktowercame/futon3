@@ -1,0 +1,21 @@
+@flexiarg library-coherence/from-argument-to-pilot
+@title Turn Library Arguments Into Pilots
+@sigils [☝️/义]
+@audience pattern curators, reviewers
+@tone technical
+@style pattern
+
+! conclusion: Convert a coherent library argument into a pilot that tests its main claims.
+  + context: You can read the library as a plausible argument but you do not yet trust its empirical validity.
+  + IF:
+    The argument sounds coherent, yet the claims have not been tested in practice.
+  + HOWEVER:
+    A persuasive narrative can hide weak assumptions or untested dependencies.
+  + THEN:
+    Design a pilot that exercises the argument’s main claims end-to-end and capture evidence for each constituent pattern so the argument can be confirmed, revised, or narrowed.
+  + BECAUSE:
+    Empirical evidence trumps rhetorical flourish for pattern quality, and pilots expose which claims hold under real conditions.
+  + NEXT-STEPS:
+    - evidence: a pilot plan that lists the argument’s claims and maps each to a measurable test.
+    - evidence: a pilot report that flags at least one claim as confirmed, revised, or rejected.
+    - evidence-shape: {:library :string, :argument :string, :claims [:string], :pilot-plan :string, :evidence [:string], :results {:confirm [:string] :revise [:string] :reject [:string]}}

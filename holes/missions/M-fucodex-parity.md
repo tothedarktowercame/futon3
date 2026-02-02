@@ -115,12 +115,21 @@ curl -s "http://localhost:6065/rap" | jq '.pars[] | select(.["session-id"] | con
 
 ## Success Criteria
 
-- [ ] `fucodex-peripheral.ts` starts without errors
-- [ ] Fucodex creates session via MUSN
-- [ ] Fucodex creates anchor that persists to `lab/anchors/index.edn`
-- [ ] Fucodex creates cross-agent link to Claude's anchor
-- [ ] Fucodex generates PAR visible in RAP
-- [ ] Claude can query all artifacts created by fucodex
+- [x] `fucodex-peripheral.ts` starts without errors (2026-02-02)
+- [x] Fucodex creates session via MUSN (session: fucodex-parity-test)
+- [x] Fucodex creates anchor that persists to `lab/anchors/index.edn` (2 anchors created)
+- [x] Fucodex creates cross-agent link to Claude's anchor (link-0596ad55, link-6e7d8191)
+- [x] Fucodex generates PAR visible in RAP (par-9e255cc4, par-636b4a99)
+- [x] Claude can query all artifacts created by fucodex (verified via /lab/anchors, /lab/links)
+
+## Required Environment Variables
+
+For the fucodex peripheral to reach the network from inside Codex sandbox:
+
+```bash
+FUCODEX_NO_SANDBOX=1      # Allow network access
+FUCODEX_SIMPLE_MODE=1     # Simplified execution mode
+```
 
 ## Debugging
 

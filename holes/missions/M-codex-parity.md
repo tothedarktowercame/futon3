@@ -129,11 +129,11 @@ Test chat peripheral:
 
 ## Success Criteria
 
-- [ ] Codex's anchor appears in `lab/anchors/index.edn`
-- [ ] Claude can query Codex's anchor via API
-- [ ] Cross-agent link exists in `lab/links/graph.edn`
-- [ ] Codex's PAR appears in RAP results
-- [ ] Both agents see consistent state
+- [x] Codex's anchor appears in `lab/anchors/index.edn` (codex-parity-20260202T211454Z)
+- [x] Claude can query Codex's anchor via API (verified 2026-02-02)
+- [x] Cross-agent link exists in `lab/links/graph.edn` (verified via fucodex-parity-test)
+- [x] Codex's PAR appears in RAP results (par-9e255cc4, par-636b4a99)
+- [x] Both agents see consistent state (verified 2026-02-02)
 
 ## Debugging
 

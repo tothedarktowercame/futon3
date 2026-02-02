@@ -1,0 +1,22 @@
+@flexiarg pattern-coherence/causal-clarity
+@title Make the Causal Chain Explicit
+@sigils [🌂/允]
+@audience pattern authors, reviewers
+@tone technical
+@style pattern
+
+! conclusion: A good pattern states the causal chain that links context to the proposed action and expected outcome.
+  + context: Patterns are accepted as “nice ideas” but fail when applied because the cause-and-effect path is implicit.
+  + IF:
+    The solution seems reasonable but the mechanism is not stated or testable.
+  + HOWEVER:
+    Some domains rely on tacit practice and the mechanism may be partially inferred.
+  + THEN:
+    Write the causal steps explicitly: what condition triggers the action, what changes, and why that change yields the outcome.
+    Include a short counterfactual (“If we did X instead, we would likely see Y”) to show why the action matters.
+  + BECAUSE:
+    Patterns are decisions under uncertainty; an explicit mechanism makes them inspectable and improvable.
+  + NEXT-STEPS:
+    - evidence: a concrete example where the stated mechanism predicts the outcome.
+    - evidence: a counterexample where the mechanism fails and the pattern should not be used.
+    - evidence-shape: {:context :string, :trigger :string, :action :string, :mechanism :string, :expected/outcome :string, :counterfactual :string}

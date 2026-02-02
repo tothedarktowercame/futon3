@@ -10,13 +10,14 @@
   Build only the minimal linking feature and test it with one or two tightly
   scoped pilots.
 
-  + context: You are defining a tightly scoped build-and-test phase that focuses only on core linking actions, so pilots can answer whether collective sense-making improves with these features.
+  + context: You are defining a tightly scoped build-and-test phase that focuses only on core linking actions, so pilots can answer whether collective sense-making improves with these features. This does not apply when the linking loop is already validated for the
   + IF:
     Budget is small and the linking concept is unproven with real groups.
 
   + HOWEVER:
     Shipping broader features before testing risks consuming funds without
     answering the central question.
+    target cohort.
 
   + THEN:
     Implement only propose/confirm/view links and run short pilots with carefully
@@ -32,3 +33,4 @@
 
   + NEXT-STEPS:
     next[Pick 1–2 partners and co-design a lightweight pilot plan documenting observations.]
+    next[Define a decision threshold (e.g., pilots report new shared insights) that gates broader feature build-out.]

@@ -1,0 +1,22 @@
+@flexiarg pattern-coherence/applicability-signals
+@title Provide Applicability Signals and Decision Criteria
+@sigils [🌀/内]
+@audience pattern authors, reviewers
+@tone technical
+@style pattern
+
+! conclusion: A good pattern includes simple signals that tell a reader when to apply it now.
+  + context: Readers recognize the general idea but lack a concrete decision rule for adoption.
+  + IF:
+    The pattern is conceptually sound but hard to operationalize in the moment.
+  + HOWEVER:
+    Overly rigid rules can miss nuanced cases.
+  + THEN:
+    Provide lightweight decision criteria (signals, thresholds, or checks) that indicate the pattern is appropriate.
+    Prefer observable cues over internal states, and include at least one “do not apply yet” signal.
+  + BECAUSE:
+    Patterns are used under time pressure; decision signals reduce hesitation and misuse.
+  + NEXT-STEPS:
+    - evidence: a case where the signals would have triggered correct use.
+    - evidence: a case where the “do not apply” signal prevented a bad use.
+    - evidence-shape: {:signals/apply [:string], :signals/avoid [:string], :decision/thresholds [:string], :example/trigger :string, :example/avoid :string}

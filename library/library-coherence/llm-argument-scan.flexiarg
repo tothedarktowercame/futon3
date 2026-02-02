@@ -1,0 +1,21 @@
+@flexiarg library-coherence/llm-argument-scan
+@title Assemble Library Arguments via Summary Scan
+@sigils [☝️/支]
+@audience pattern curators, reviewers
+@tone technical
+@style pattern
+
+! conclusion: Use an LLM to assemble a coherent argument from pattern summaries when library ordering is unclear.
+  + context: You are reviewing a library where patterns should scaffold a coherent argument but the ordering is implicit or missing.
+  + IF:
+    The library’s argument exists in fragments across pattern summaries (!conclusion or devmap instantiated-by lines).
+  + HOWEVER:
+    Readers may not infer the argument without an explicit narrative flow.
+  + THEN:
+    Use an LLM to scan the summary fields, cluster related claims, order them into a draft argument, and read it back for coherence and gaps.
+  + BECAUSE:
+    LLMs are strong at structuring and critiquing text, which helps surface missing links and redundancies.
+  + NEXT-STEPS:
+    - evidence: a generated argument draft that cites the contributing pattern summaries.
+    - evidence: a reviewer note listing at least one missing link or redundancy found by the LLM pass.
+    - evidence-shape: {:library :string, :summaries [:string], :draft-argument :string, :gaps [:string], :redundancies [:string]}

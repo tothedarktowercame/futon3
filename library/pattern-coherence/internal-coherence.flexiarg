@@ -1,0 +1,22 @@
+@flexiarg pattern-coherence/internal-coherence
+@title Align Problem, Action, and Outcome
+@sigils [🌊/介]
+@audience pattern authors, reviewers
+@tone technical
+@style pattern
+
+! conclusion: A good pattern maintains internal coherence: the proposed action directly addresses the stated problem and yields the stated outcome.
+  + context: Patterns sometimes mix a real problem with a fashionable solution, leaving a mismatch between cause and effect.
+  + IF:
+    The action seems adjacent to the problem rather than addressing its core constraints.
+  + HOWEVER:
+    Some patterns intentionally trade off one goal to achieve another.
+  + THEN:
+    Check that each element maps: problem → constraint, action → constraint relief, outcome → constraint lifted.
+    If trade-offs exist, state them and show why the action still fits the problem.
+  + BECAUSE:
+    Coherence is what turns a pattern from advice into a dependable decision rule.
+  + NEXT-STEPS:
+    - evidence: a trace that shows how the action changes the constraint.
+    - evidence: a trade-off note with a reason it is acceptable.
+    - evidence-shape: {:problem :string, :constraint :string, :action :string, :outcome :string, :trade-offs [:string], :trace :string}

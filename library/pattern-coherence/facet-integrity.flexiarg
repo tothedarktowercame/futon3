@@ -1,0 +1,21 @@
+@flexiarg pattern-coherence/facet-integrity
+@title Ensure Each Required Facet Is Coherent and Complete
+@sigils [⚡️/予]
+@audience pattern authors, reviewers
+@tone technical
+@style pattern
+
+! conclusion: A good pattern has one clear statement for each required facet (context, IF, HOWEVER, THEN, BECAUSE, NEXT-STEPS) and each facet does real work.
+  + context: You are reviewing or drafting a pattern that meets the structural template but feels vague or repetitive.
+  + IF:
+    Each facet exists but overlaps or restates another facet instead of adding new meaning.
+  + HOWEVER:
+    Some patterns are short and may not need long prose in every facet.
+  + THEN:
+    Check each facet for a single, purpose-fit statement: context scopes where the pattern applies; IF states the trigger; HOWEVER names the tension or risk; THEN specifies the action; BECAUSE explains the mechanism or rationale; NEXT-STEPS names concrete evidence or follow-up actions. Remove duplicates and move scoping constraints into context.
+  + BECAUSE:
+    Facet integrity keeps patterns readable, testable, and reusable across contexts.
+  + NEXT-STEPS:
+    - evidence: annotate one pattern with a brief note explaining what each facet contributes.
+    - evidence: identify one facet that can be shortened or clarified without losing meaning.
+    - evidence-shape: {:pattern/id :string, :context :string, :if :string, :however :string, :then :string, :because :string, :next-steps [:string], :reviewer :string}

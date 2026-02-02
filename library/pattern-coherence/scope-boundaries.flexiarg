@@ -1,0 +1,22 @@
+@flexiarg pattern-coherence/scope-boundaries
+@title Declare Scope Boundaries and Non-Goals
+@sigils [📐/仁]
+@audience pattern authors, reviewers
+@tone technical
+@style pattern
+
+! conclusion: A good pattern defines where it applies and where it should not be used.
+  + context: Patterns drift into slogans when boundaries are missing, leading to misuse outside their intended domain.
+  + IF:
+    The pattern reads as universally true or lacks explicit limits.
+  + HOWEVER:
+    Overly narrow boundaries can make a useful pattern seem irrelevant.
+  + THEN:
+    State at least one inclusion boundary (when it applies) and one exclusion boundary (when it does not).
+    Name the assumptions the pattern relies on (constraints, environment, actors, or scale).
+  + BECAUSE:
+    Clear boundaries prevent category errors and let readers decide quickly whether to apply the pattern.
+  + NEXT-STEPS:
+    - evidence: an application within the stated scope that succeeds.
+    - evidence: a near-scope case that fails and justifies the exclusion boundary.
+    - evidence-shape: {:applies-when [:string], :does-not-apply-when [:string], :assumptions [:string], :scope/example :string, :anti-scope/example :string}

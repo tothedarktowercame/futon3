@@ -1,0 +1,22 @@
+@flexiarg pattern-coherence/evidence-alignment
+@title Align Evidence With the Claim
+@sigils [✂️/卜]
+@audience pattern authors, reviewers
+@tone technical
+@style pattern
+
+! conclusion: A good pattern specifies evidence that would actually confirm or refute its claim.
+  + context: Evidence sections often list artifacts without showing how they bear on the pattern’s conclusion.
+  + IF:
+    Evidence is present but does not map to the claim or mechanism.
+  + HOWEVER:
+    Early patterns may only have partial evidence.
+  + THEN:
+    State what observation would increase or decrease confidence in the pattern and why.
+    Prefer evidence that targets the mechanism, not just the existence of a system or feature.
+  + BECAUSE:
+    Evidence is only useful when it discriminates between a true and false pattern.
+  + NEXT-STEPS:
+    - evidence: a metric, log, or experiment that tests the mechanism.
+    - evidence: a falsifying observation that would trigger revision or retirement.
+    - evidence-shape: {:claim :string, :mechanism :string, :confirming-evidence [:string], :disconfirming-evidence [:string], :decision/rule :string}

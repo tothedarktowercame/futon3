@@ -21,7 +21,7 @@ Quick-reference tasks for 10-minute sessions.
 ## PATTERN SEARCH API (P5 last-mile)
 - [x] `/musn/patterns/search` endpoint added (2026-02-02)
 - [x] Wire /psr to use pattern search endpoint (2026-02-02)
-- [ ] Test with portal running (MiniLM semantic search)
+- [x] Test with portal running (MiniLM semantic search) - verified with @keywords enrichment (2026-02-02)
 - [x] Test fallback (GloVe local embeddings) - verified working
 
 ## BUGS TO FIX

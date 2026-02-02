@@ -2008,6 +2008,44 @@
            (map :link/from)
            vec))))
 
+(defn get-pattern-backlinks
+  "Get all links pointing TO a pattern (pattern:namespace/name).
+   Scans all known lab roots for links.
+   Returns {:pattern-id :links [{:link/from :link/type :session :anchor-content}...]}"
+  [pattern-id]
+  (let [pattern-anchor (str "pattern:" pattern-id)
+        lab-root (io/file default-lab-root)
+        links-file (io/file lab-root "links" "graph.edn")
+        anchors-file (io/file lab-root "anchors" "index.edn")]
+    (when (.exists links-file)
+      (let [all-links (->> (slurp links-file)
+                           str/split-lines
+                           (remove str/blank?)
+                           (map edn/read-string))
+            matching-links (filter #(= pattern-anchor (:link/to %)) all-links)
+            ;; Enrich with anchor content
+            anchors (when (.exists anchors-file)
+                      (->> (slurp anchors-file)
+                           str/split-lines
+                           (remove str/blank?)
+                           (map edn/read-string)))
+            anchor-map (into {} (map (juxt :anchor/id identity) anchors))]
+        {:pattern-id pattern-id
+         :pattern-anchor pattern-anchor
+         :count (count matching-links)
+         :links (mapv (fn [link]
+                        (let [from-anchor (get anchor-map (:link/from link))]
+                          {:link/id (:link/id link)
+                           :link/from (:link/from link)
+                           :link/type (:link/type link)
+                           :link/created (:link/created link)
+                           :link/note (:link/note link)
+                           :anchor/session (:anchor/session from-anchor)
+                           :anchor/turn (:anchor/turn from-anchor)
+                           :anchor/type (:anchor/type from-anchor)
+                           :anchor/content (:anchor/content from-anchor)}))
+                      matching-links)}))))
+
 ;; =============================================================================
 ;; Semantic Anchor Linking (futon3a integration)
 ;; =============================================================================

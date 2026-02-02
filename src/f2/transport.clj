@@ -1822,6 +1822,17 @@
         (catch Exception e
           (json-response 500 {:ok false :err "auto-link-failed" :detail (.getMessage e)})))
 
+      ;; Pattern backlinks: GET /arxana/pattern-backlinks/{pattern-id}
+      (and (= method :get) (re-matches #"/arxana/pattern-backlinks/.+" uri))
+      (try
+        (let [pattern-id (second (re-find #"/arxana/pattern-backlinks/(.+)" uri))
+              result (musn-svc/get-pattern-backlinks pattern-id)]
+          (if result
+            (json-response 200 {:ok true :data result})
+            (json-response 200 {:ok true :data {:pattern-id pattern-id :count 0 :links []}})))
+        (catch Exception e
+          (json-response 500 {:ok false :err "pattern-backlinks-failed" :detail (.getMessage e)})))
+
       ;; Lab enrichment endpoint - enrich content with patterns + embeddings
       (and (= method :post) (= uri "/lab/enrich"))
       (try

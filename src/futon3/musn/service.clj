@@ -5,6 +5,7 @@
    and be replayed or resumed. Logs are EDN lines under lab/musn/, keyed by session id."
   (:require [cheshire.core :as json]
             [clojure.string :as str]
+            [clojure.set :as set]
             [clojure.java.io :as io]
             [clojure.java.shell :as shell]
             [clojure.edn :as edn]
@@ -31,7 +32,7 @@
 
 (defonce sessions (atom {}))
 (defonce rooms (atom {}))
-(declare get-session append-lab-event! restored? note-restore! apply-mana! mana-config turn-event plan-eval-config link-psr-to-pattern!)
+(declare get-session append-lab-event! restored? note-restore! apply-mana! mana-config turn-event plan-eval-config link-psr-to-pattern! link-pur-to-pattern!)
 (defonce aif-tap-installed? (atom false))
 
 (defonce fulab-adapter
@@ -2074,8 +2075,8 @@
               scored (->> other-anchors
                           (map (fn [anchor]
                                  (let [anchor-words (set (str/split (str/lower-case (anchor-text anchor)) #"\s+"))
-                                       intersection (clojure.set/intersection target-words anchor-words)
-                                       union (clojure.set/union target-words anchor-words)
+                                       intersection (set/intersection target-words anchor-words)
+                                       union (set/union target-words anchor-words)
                                        jaccard (if (empty? union) 0.0
                                                    (/ (count intersection) (double (count union))))]
                                    {:anchor/id (:anchor/id anchor)

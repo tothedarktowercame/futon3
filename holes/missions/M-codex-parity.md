@@ -18,7 +18,25 @@ Codex ran `scripts/parity-check.sh` which reported PASS, but:
 - Claude's identical run DID persist the anchor
 - Session file showed `:arxana/anchor-created` event but anchor wasn't in global index
 
-Root cause unclear - possibly server state, timing, or environment mismatch.
+**Root cause identified**: Codex was using `localhost` URLs, which hit a local server on Codex's cloud environment, not the shared remote server.
+
+## Server URLs (CRITICAL)
+
+Codex must use the remote server URLs, NOT localhost. Configure these environment variables:
+
+```bash
+# Get actual URLs from Joe or check Emacs config
+export ARXANA_URL="$FUTON3_REMOTE_ARXANA_URL"   # Remote Arxana/Transport endpoint
+export MUSN_URL="$FUTON3_REMOTE_MUSN_URL"       # Remote MUSN HTTP endpoint
+export FORUM_WS_URL="$FUTON3_REMOTE_FORUM_WS"   # Remote Forum WebSocket
+```
+
+The parity script accepts these as env vars:
+```bash
+ARXANA_URL="..." MUSN_URL="..." ./scripts/parity-check.sh
+```
+
+Reference: Check Emacs config for actual values (`my-chatgpt-shell-musn-url`, `arxana-forum-server`, etc.)
 
 ## Parity Test Protocol
 

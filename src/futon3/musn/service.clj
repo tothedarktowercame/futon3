@@ -1012,7 +1012,9 @@
                                 :payload {:psr psr}})
       (swap! (:fulab entry) assoc
              :psr psr
-             :psr-emitted? true))
+             :psr-emitted? true)
+      ;; Arxana: Link PSR to selected pattern
+      (link-psr-to-pattern! sid turn psr))
     (when selection
       (tap-aif-context! {:event :select
                          :session/id sid
@@ -1177,6 +1179,8 @@
     (append-lab-event! entry {:event/type :pattern/use-claimed
                               :at (fulab-musn/now-inst)
                               :payload {:pur pur}})
+    ;; Arxana: Link PUR to used pattern
+    (link-pur-to-pattern! sid turn pur)
     (when belief-update
       (append-lab-event! entry (fulab-musn/summary-event sid :pur belief-update)))
     (swap! (:fulab entry) assoc
@@ -1922,6 +1926,55 @@
         (if (or from-exists? to-exists?)
           {:ok true :link link}
           {:ok false :err "no-anchor-exists" :from from-anchor :to to-anchor})))))
+
+;; =============================================================================
+;; PSR/PUR → Pattern Arxana Linking
+;; =============================================================================
+
+(defn link-psr-to-pattern!
+  "Create an Arxana anchor for a PSR and link it to the selected pattern.
+   Returns {:ok true :anchor ... :link ...} or nil if linking fails."
+  [session-id turn psr]
+  (when-let [pattern-id (:chosen psr)]
+    (let [content (format "PSR: Selected pattern '%s' from candidates %s"
+                          pattern-id
+                          (pr-str (:candidates psr)))
+          anchor-result (record-anchor! session-id turn :decision content
+                                        :note (str "PSR " (:psr/id psr))
+                                        :author "musn")]
+      (when (:ok anchor-result)
+        (let [anchor-id (get-in anchor-result [:anchor :anchor/id])
+              ;; Create a pattern anchor ID (virtual - patterns don't have sessions)
+              pattern-anchor-id (str "pattern:" pattern-id)
+              link-result (create-link! anchor-id pattern-anchor-id :applies-pattern
+                                        :note (format "PSR selected %s" pattern-id)
+                                        :author "musn")]
+          {:ok true
+           :anchor (:anchor anchor-result)
+           :link (:link link-result)
+           :pattern-id pattern-id})))))
+
+(defn link-pur-to-pattern!
+  "Create an Arxana anchor for a PUR and link it to the used pattern.
+   Returns {:ok true :anchor ... :link ...} or nil if linking fails."
+  [session-id turn pur]
+  (when-let [pattern-id (:pattern/id pur)]
+    (let [content (format "PUR: Used pattern '%s' - %s"
+                          pattern-id
+                          (or (:use/reason pur) ""))
+          anchor-result (record-anchor! session-id turn :artifact content
+                                        :note (str "PUR " (:pur/id pur))
+                                        :author "musn")]
+      (when (:ok anchor-result)
+        (let [anchor-id (get-in anchor-result [:anchor :anchor/id])
+              pattern-anchor-id (str "pattern:" pattern-id)
+              link-result (create-link! anchor-id pattern-anchor-id :implements
+                                        :note (format "PUR used %s" pattern-id)
+                                        :author "musn")]
+          {:ok true
+           :anchor (:anchor anchor-result)
+           :link (:link link-result)
+           :pattern-id pattern-id})))))
 
 (defn get-anchors
   "Get anchors for a session, optionally filtered by turn."

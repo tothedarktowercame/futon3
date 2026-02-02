@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import re
@@ -31,6 +32,24 @@ def tokenize(text: str) -> List[str]:
         tok for tok in re.findall(r"[a-z0-9]+", text.lower())
         if tok not in STOPWORDS
     ]
+
+
+def pattern_hash(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def load_cache(path: Path) -> Dict[str, Dict[str, Dict[str, List[float]]]]:
+    if not path.exists():
+        return {"model": "", "items": {}}
+    try:
+        return json.loads(path.read_text())
+    except json.JSONDecodeError:
+        return {"model": "", "items": {}}
+
+
+def save_cache(path: Path, data: Dict[str, Dict[str, Dict[str, List[float]]]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2))
 
 
 def split_arg_blocks(text: str) -> List[str]:
@@ -171,20 +190,55 @@ def main() -> None:
     parser.add_argument("--glove", required=True, help="Path to GloVe vectors (e.g. glove.6B.50d.txt)")
     parser.add_argument("--report", default="resources/embeddings/glove_pattern_neighbors.json",
                         help="Output report path (JSON).")
+    parser.add_argument("--incremental", action="store_true",
+                        help="Only re-embed patterns that changed since last run.")
+    parser.add_argument("--cache", default="data/pattern-embedding-glove-cache.json",
+                        help="Cache file for incremental embedding.")
     parser.add_argument("--top", type=int, default=6, help="Number of neighbors per pattern.")
     args = parser.parse_args()
 
     patterns = parse_flexiargs() + parse_devmaps()
-    tokens = collect_tokens(patterns)
-    vectors = load_glove(Path(args.glove), tokens)
+    cache_path = Path(args.cache)
+    cache = load_cache(cache_path)
+    model_changed = cache.get("model") != str(args.glove)
+
+    items = cache.get("items", {})
+    changed = []
+    unchanged_ids = set()
+    for pattern in patterns:
+        pid = pattern["id"]
+        phash = pattern_hash(pattern.get("text", ""))
+        cached = items.get(pid)
+        if args.incremental and (not model_changed) and cached and cached.get("hash") == phash:
+            unchanged_ids.add(pid)
+        else:
+            changed.append((pattern, phash))
+
+    if args.incremental and not changed and not model_changed:
+        print("No pattern changes detected; skipping GloVe embeddings.")
+        return
 
     embeds: Dict[str, List[float]] = {}
     meta: Dict[str, Dict[str, str]] = {}
+
+    if args.incremental and not model_changed and items:
+        for pid, entry in items.items():
+            if pid in unchanged_ids and "vector" in entry:
+                embeds[pid] = entry["vector"]
+    if changed or model_changed:
+        patterns_to_embed = [p for p, _ in changed] if not model_changed else patterns
+        tokens = collect_tokens(patterns_to_embed)
+        vectors = load_glove(Path(args.glove), tokens)
+        for pattern in patterns_to_embed:
+            toks = tokenize(pattern.get("text", ""))
+            vec = mean_vector(toks, vectors)
+            if vec:
+                embeds[pattern["id"]] = normalize(vec)
+            else:
+                embeds.pop(pattern["id"], None)
+
     for pattern in patterns:
-        toks = tokenize(pattern.get("text", ""))
-        vec = mean_vector(toks, vectors)
-        if vec:
-            embeds[pattern["id"]] = normalize(vec)
+        if pattern["id"] in embeds:
             meta[pattern["id"]] = {
                 "title": pattern["title"],
                 "source": pattern["source"],
@@ -217,6 +271,16 @@ def main() -> None:
     out_path = Path(args.report)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(report, indent=2, ensure_ascii=False))
+    new_items = {}
+    for pattern in patterns:
+        pid = pattern["id"]
+        if pid in embeds:
+            new_items[pid] = {
+                "hash": pattern_hash(pattern.get("text", "")),
+                "vector": embeds[pid],
+            }
+    cache = {"model": str(args.glove), "items": new_items}
+    save_cache(cache_path, cache)
     print(f"Wrote {len(report)} entries to {out_path}")
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import re
@@ -31,6 +32,24 @@ def tokenize(text: str) -> List[str]:
         tok for tok in re.findall(r"[a-z0-9]+", text.lower())
         if tok not in STOPWORDS
     ]
+
+
+def pattern_hash(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def load_cache(path: Path) -> Dict[str, Dict[str, Dict[str, str]]]:
+    if not path.exists():
+        return {"model": "", "items": {}}
+    try:
+        return json.loads(path.read_text())
+    except json.JSONDecodeError:
+        return {"model": "", "items": {}}
+
+
+def save_cache(path: Path, data: Dict[str, Dict[str, Dict[str, str]]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2))
 
 
 def split_arg_blocks(text: str) -> List[str]:
@@ -176,40 +195,97 @@ def main() -> None:
     parser.add_argument("--fasttext", required=True, help="Path to fastText .vec or .bin file.")
     parser.add_argument("--out", default="resources/embeddings/fasttext_pattern_embeddings.json",
                         help="Output embeddings JSON.")
+    parser.add_argument("--incremental", action="store_true",
+                        help="Only re-embed patterns that changed since last run.")
+    parser.add_argument("--cache", default="data/pattern-embedding-fasttext-cache.json",
+                        help="Cache file for incremental embedding.")
     parser.add_argument("--no-normalize", action="store_true",
                         help="Disable unit-length normalization.")
     args = parser.parse_args()
 
     patterns = parse_flexiargs() + parse_devmaps()
-    texts = {p["id"]: tokenize(p.get("text", "")) for p in patterns}
-    needed_tokens = sorted({tok for toks in texts.values() for tok in toks})
-
     fasttext_path = Path(args.fasttext)
-    if fasttext_path.suffix == ".bin":
-        model = _load_fasttext_bin(fasttext_path)
-        token_vectors = {tok: model.get_word_vector(tok).tolist() for tok in needed_tokens}
-    else:
-        token_vectors = _iter_fasttext_text(fasttext_path, needed_tokens)
+    cache_path = Path(args.cache)
+    cache = load_cache(cache_path)
+    model_changed = cache.get("model") != str(fasttext_path)
 
-    output = []
+    items = cache.get("items", {})
+    changed = []
+    unchanged_ids = set()
+    current_ids = set()
+    texts = {}
     for pattern in patterns:
+        pid = pattern["id"]
+        current_ids.add(pid)
+        text = pattern.get("text", "")
+        texts[pid] = tokenize(text)
+        phash = pattern_hash(text)
+        cached = items.get(pid)
+        if args.incremental and (not model_changed) and cached and cached.get("hash") == phash:
+            unchanged_ids.add(pid)
+        else:
+            changed.append((pattern, phash))
+
+    if args.incremental and not changed and not model_changed:
+        print("No pattern changes detected; skipping fastText embeddings.")
+        return
+
+    needed_tokens = set()
+    if model_changed:
+        for toks in texts.values():
+            needed_tokens.update(toks)
+    else:
+        for pattern, _ in changed:
+            needed_tokens.update(texts.get(pattern["id"], []))
+    needed_tokens = sorted(needed_tokens)
+
+    token_vectors = {}
+    if needed_tokens:
+        if fasttext_path.suffix == ".bin":
+            model = _load_fasttext_bin(fasttext_path)
+            token_vectors = {tok: model.get_word_vector(tok).tolist() for tok in needed_tokens}
+        else:
+            token_vectors = _iter_fasttext_text(fasttext_path, needed_tokens)
+
+    existing = {}
+    out_path = Path(args.out)
+    if out_path.exists():
+        try:
+            existing = {item["id"]: item for item in json.loads(out_path.read_text())}
+        except json.JSONDecodeError:
+            existing = {}
+
+    output = {}
+    if model_changed:
+        existing = {}
+
+    output.update(existing)
+    for pattern, _ in changed:
         toks = texts.get(pattern["id"], [])
         vecs = [token_vectors[tok] for tok in toks if tok in token_vectors]
         vec = mean_vector(vecs)
         if not vec:
+            output.pop(pattern["id"], None)
             continue
         if not args.no_normalize:
             vec = normalize(vec)
-        output.append({
+        output[pattern["id"]] = {
             "id": pattern["id"],
             "title": pattern["title"],
             "source": pattern["source"],
             "vector": vec,
-        })
+        }
 
-    out_path = Path(args.out)
+    output = {pid: val for pid, val in output.items() if pid in current_ids}
+    new_items = {}
+    for pattern in patterns:
+        pid = pattern["id"]
+        new_items[pid] = {"hash": pattern_hash(pattern.get("text", ""))}
+
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(output, indent=2))
+    out_path.write_text(json.dumps(list(output.values()), indent=2))
+    cache = {"model": str(fasttext_path), "items": new_items}
+    save_cache(cache_path, cache)
     print(f"Wrote {len(output)} embeddings to {out_path}")
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -106,12 +107,34 @@ def parse_devmaps() -> List[Dict[str, str]]:
     return patterns
 
 
+def pattern_hash(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def load_cache(path: Path) -> Dict[str, Dict[str, str]]:
+    if not path.exists():
+        return {"model": "", "items": {}}
+    try:
+        return json.loads(path.read_text())
+    except json.JSONDecodeError:
+        return {"model": "", "items": {}}
+
+
+def save_cache(path: Path, data: Dict[str, Dict[str, str]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Embed patterns with MiniLM.")
     parser.add_argument("--model", default="sentence-transformers/all-MiniLM-L6-v2",
                         help="SentenceTransformer model name or path.")
     parser.add_argument("--out", default="resources/embeddings/minilm_pattern_embeddings.json",
                         help="Output embeddings JSON.")
+    parser.add_argument("--incremental", action="store_true",
+                        help="Only embed patterns that changed since last run.")
+    parser.add_argument("--cache", default="data/pattern-embedding-minilm-cache.json",
+                        help="Cache file for incremental embedding.")
     parser.add_argument("--batch-size", type=int, default=32, help="Embedding batch size.")
     parser.add_argument("--no-normalize", action="store_true",
                         help="Disable unit-length normalization.")
@@ -123,22 +146,75 @@ def main() -> None:
         raise SystemExit("sentence-transformers is required for MiniLM embeddings") from exc
 
     patterns = parse_flexiargs() + parse_devmaps()
-    texts = [p.get("text", "") for p in patterns]
+    cache_path = Path(args.cache)
+    cache = load_cache(cache_path)
+
+    items = cache.get("items", {})
+    model_changed = cache.get("model") != args.model
+
+    changed = []
+    unchanged_ids = set()
+    current_ids = set()
+    for pattern in patterns:
+        pid = pattern["id"]
+        current_ids.add(pid)
+        phash = pattern_hash(pattern.get("text", ""))
+        cached = items.get(pid)
+        if args.incremental and (not model_changed) and cached and cached.get("hash") == phash:
+            unchanged_ids.add(pid)
+        else:
+            changed.append((pattern, phash))
+
+    if args.incremental and not changed and not model_changed:
+        print("No pattern changes detected; skipping MiniLM embeddings.")
+        return
+
     model = SentenceTransformer(args.model)
-    vectors = model.encode(texts, batch_size=args.batch_size, normalize_embeddings=not args.no_normalize)
+    vectors = []
+    if changed or model_changed:
+        texts = [p.get("text", "") for p, _ in changed] if not model_changed else [p.get("text", "") for p in patterns]
+        vectors = model.encode(texts, batch_size=args.batch_size, normalize_embeddings=not args.no_normalize)
 
-    output = []
-    for pattern, vec in zip(patterns, vectors):
-        output.append({
-            "id": pattern["id"],
-            "title": pattern["title"],
-            "source": pattern["source"],
-            "vector": [float(x) for x in vec],
-        })
-
+    existing = {}
     out_path = Path(args.out)
+    if out_path.exists():
+        try:
+            existing = {item["id"]: item for item in json.loads(out_path.read_text())}
+        except json.JSONDecodeError:
+            existing = {}
+
+    output = {}
+    if model_changed:
+        for pattern, vec in zip(patterns, vectors):
+            output[pattern["id"]] = {
+                "id": pattern["id"],
+                "title": pattern["title"],
+                "source": pattern["source"],
+                "vector": [float(x) for x in vec],
+            }
+    else:
+        output.update(existing)
+        for (pattern, phash), vec in zip(changed, vectors):
+            output[pattern["id"]] = {
+                "id": pattern["id"],
+                "title": pattern["title"],
+                "source": pattern["source"],
+                "vector": [float(x) for x in vec],
+            }
+
+    # Drop removed patterns
+    output = {pid: val for pid, val in output.items() if pid in current_ids}
+
+    # Update cache
+    new_items = {}
+    for pattern in patterns:
+        pid = pattern["id"]
+        new_items[pid] = {"hash": pattern_hash(pattern.get("text", ""))}
+    cache = {"model": args.model, "items": new_items}
+
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(output, indent=2))
+    out_path.write_text(json.dumps(list(output.values()), indent=2))
+    save_cache(cache_path, cache)
     print(f"Wrote {len(output)} embeddings to {out_path}")
 
 

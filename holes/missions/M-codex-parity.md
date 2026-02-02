@@ -18,7 +18,28 @@ Codex ran `scripts/parity-check.sh` which reported PASS, but:
 - Claude's identical run DID persist the anchor
 - Session file showed `:arxana/anchor-created` event but anchor wasn't in global index
 
-Root cause unclear - possibly server state, timing, or environment mismatch.
+**Root cause identified**: Codex was using `localhost` URLs, which hit a local server on Codex's machine (OpenAI cloud), not the shared server on Joe's Linode.
+
+## Server URLs (CRITICAL)
+
+Codex must use the public Linode URLs, NOT localhost:
+
+```bash
+# Arxana/Transport
+ARXANA_URL="https://172-236-28-208.ip.linodeusercontent.com:5051"
+
+# MUSN HTTP
+MUSN_URL="https://172.236.28.208:6065"
+
+# Forum WebSocket
+FORUM_WS_URL="wss://172-236-28-208.ip.linodeusercontent.com:5051/forum/stream/ws"
+
+# Stack HUD
+STACK_HUD_URL="https://172.236.28.208:6066"
+
+# Futon1 API
+FUTON1_API="https://172.236.28.208:8080/api/alpha"
+```
 
 ## Parity Test Protocol
 
@@ -28,7 +49,7 @@ Both agents must hit the same running MUSN server.
 
 ```bash
 # Codex runs:
-curl -s "http://localhost:5050/arxana/anchors/claude-parity-20260202T202200Z" | jq .
+curl -s "https://172-236-28-208.ip.linodeusercontent.com:5051/arxana/anchors/claude-parity-20260202T202200Z" | jq .
 
 # Should return Claude's anchor (not empty)
 ```
@@ -41,14 +62,14 @@ Codex should create an anchor as an *agent action*, not a curl probe:
 
 1. Create a MUSN session:
 ```bash
-curl -X POST http://localhost:6065/musn/session/create \
+curl -X POST https://172.236.28.208:6065/musn/session/create \
   -H "Content-Type: application/json" \
   -d '{"session/id":"codex-parity-live","session/source":"codex","session/project":"futon3"}'
 ```
 
 2. Create an anchor:
 ```bash
-curl -X POST http://localhost:5050/arxana/anchor/create \
+curl -X POST https://172-236-28-208.ip.linodeusercontent.com:5051/arxana/anchor/create \
   -H "Content-Type: application/json" \
   -d '{"session-id":"codex-parity-live","turn":1,"type":"insight","content":"Codex parity test - this anchor should be visible to Claude","author":"codex","note":"M-codex-parity Phase 2"}'
 ```
@@ -62,7 +83,7 @@ grep "codex-parity-live" lab/anchors/index.edn
 
 Claude queries for Codex's anchor:
 ```bash
-curl -s "http://localhost:5050/arxana/anchors/codex-parity-live" | jq .
+curl -s "https://172-236-28-208.ip.linodeusercontent.com:5051/arxana/anchors/codex-parity-live" | jq .
 ```
 
 Should return the anchor Codex created.
@@ -73,28 +94,28 @@ Create a link between Claude's anchor and Codex's anchor:
 
 ```bash
 # Either agent can do this
-curl -X POST http://localhost:5050/arxana/link/create \
+curl -X POST https://172-236-28-208.ip.linodeusercontent.com:5051/arxana/link/create \
   -H "Content-Type: application/json" \
   -d '{"from":"codex-parity-live:turn-1:insight-1","to":"claude-parity-20260202T202200Z:turn-1:artifact-1","type":"extends","author":"codex","note":"Codex extends Claude anchor - parity proven"}'
 ```
 
 Verify:
 ```bash
-curl -s "http://localhost:5050/arxana/links/codex-parity-live:turn-1:insight-1" | jq .
+curl -s "https://172-236-28-208.ip.linodeusercontent.com:5051/arxana/links/codex-parity-live:turn-1:insight-1" | jq .
 ```
 
 ### Phase 5: PAR Generation
 
 Codex generates a PAR:
 ```bash
-curl -X POST http://localhost:6065/musn/par \
+curl -X POST https://172.236.28.208:6065/musn/par \
   -H "Content-Type: application/json" \
   -d '{"session/id":"codex-parity-live","par/questions":{"intention":"verify parity","happening":"created anchor and link","learned":"parity confirmed"},"par/tags":["parity","codex"]}'
 ```
 
 Verify via RAP:
 ```bash
-curl -s "http://localhost:6065/rap" | jq '.pars[-1]'
+curl -s "https://172.236.28.208:6065/rap" | jq '.pars[-1]'
 ```
 
 ### Phase 6: Peripheral Test (Optional)
@@ -121,7 +142,7 @@ Test chat peripheral:
 
 If anchors don't persist:
 
-1. Check server is running: `curl -s http://localhost:5050/arxana/anchors/test`
+1. Check server is running: `curl -s https://172-236-28-208.ip.linodeusercontent.com:5051/arxana/anchors/test`
 2. Check server working directory: should be `/home/joe/code/futon3`
 3. Check for write errors in `*server*` buffer
 4. Verify `lab/anchors/` directory exists and is writable

@@ -60,7 +60,7 @@ From the futon3 directory:
 
 Or with explicit config:
 ```bash
-MUSN_HTTP_URL=http://localhost:6065 \
+MUSN_HTTP_URL=https://172.236.28.208:6065 \
 AGENCY_WS_URL=ws://localhost:7070/agency/ws \
 ./scripts/fucodex-peripheral.ts
 ```
@@ -110,7 +110,7 @@ grep "fucodex-parity-test" lab/anchors/index.edn
 grep "fucodex-parity-test" lab/links/graph.edn
 
 # Check PAR via API
-curl -s "http://localhost:6065/rap" | jq '.pars[] | select(.["session-id"] | contains("fucodex"))'
+curl -s "https://172.236.28.208:6065/rap" | jq '.pars[] | select(.["session-id"] | contains("fucodex"))'
 ```
 
 ## Success Criteria
@@ -141,8 +141,8 @@ DEBUG=* ./scripts/fucodex-peripheral.ts
 
 Inside fucodex, verify connectivity:
 ```bash
-curl -s http://localhost:5050/arxana/anchors/test
-curl -s http://localhost:6065/musn/dashboard | jq .
+curl -s https://172-236-28-208.ip.linodeusercontent.com:5051/arxana/anchors/test
+curl -s https://172.236.28.208:6065/musn/dashboard | jq .
 ```
 
 If these fail, the peripheral can't reach MUSN.

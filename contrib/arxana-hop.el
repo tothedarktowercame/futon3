@@ -1,6 +1,14 @@
 ;;; arxana-hop.el --- Hop between linked Arxana anchors -*- lexical-binding: t; -*-
 
+;;; Commentary:
+;; Provides navigation between Arxana-linked regions and integration with
+;; the futon4 pattern browser for showing session backlinks (PSR/PUR usage).
+
 ;;; Code:
+
+(require 'cl-lib)
+(require 'json)
+(require 'subr-x)
 
 (defface arxana-source-face
   '((t :background "#2d3a2d" :box (:line-width 1 :color "#7dba84")))
@@ -92,42 +100,135 @@
   "Set up keybindings for arxana hop in current buffer."
   (local-set-key (kbd "C-c a h") #'my-arxana-highlight-links)
   (local-set-key (kbd "C-c a n") #'my-arxana-hop-to-link)
-  (local-set-key (kbd "C-c a c") #'my-arxana-clear-link-highlights))
+  (local-set-key (kbd "C-c a c") #'my-arxana-clear-link-highlights)
+  (local-set-key (kbd "C-c a b") #'arxana-hop-pattern-backlinks)
+  (local-set-key (kbd "C-c a s") #'arxana-hop-insert-session-backlinks))
 
 ;;; Pattern Backlinks
 
 (defvar arxana-hop-server-url "http://localhost:5050"
   "URL for Arxana transport server.")
 
-(defun arxana-hop-pattern-backlinks (pattern-id)
-  "Show sessions that used PATTERN-ID via PSR/PUR links."
-  (interactive "sPattern ID: ")
+(defun arxana-hop--fetch-pattern-backlinks (pattern-id)
+  "Fetch backlinks for PATTERN-ID from futon3 transport, return list of plists."
   (let ((url (format "%s/arxana/pattern-backlinks/%s" arxana-hop-server-url pattern-id)))
     (with-temp-buffer
       (call-process "curl" nil t nil "-sS" url)
       (goto-char (point-min))
       (let* ((json (ignore-errors (json-parse-buffer :object-type 'plist)))
              (data (plist-get json :data))
-             (links (plist-get data :links))
-             (count (plist-get data :count)))
-        (if (and links (> (length links) 0))
-            (let ((buf (get-buffer-create "*Pattern Backlinks*")))
-              (with-current-buffer buf
-                (let ((inhibit-read-only t))
-                  (erase-buffer)
-                  (insert (format "Pattern: %s\nBacklinks: %d\n\n" pattern-id count))
-                  (dolist (link links)
-                    (insert (format "Session: %s (turn %s)\n"
-                                    (plist-get link :anchor/session)
-                                    (plist-get link :anchor/turn)))
-                    (insert (format "  Type: %s → %s\n"
-                                    (plist-get link :anchor/type)
-                                    (plist-get link :link/type)))
-                    (insert (format "  %s\n\n"
-                                    (or (plist-get link :anchor/content) ""))))
-                  (special-mode))
-                (pop-to-buffer buf)))
-          (message "No backlinks found for %s" pattern-id))))))
+             (links (plist-get data :links)))
+        (when (and links (> (length links) 0))
+          (mapcar (lambda (link)
+                    (list :session (plist-get link :anchor/session)
+                          :turn (plist-get link :anchor/turn)
+                          :type (plist-get link :anchor/type)
+                          :link-type (plist-get link :link/type)
+                          :content (plist-get link :anchor/content)
+                          :note (plist-get link :link/note)))
+                  links))))))
+
+(defun arxana-hop-pattern-backlinks (pattern-id)
+  "Show sessions that used PATTERN-ID via PSR/PUR links."
+  (interactive "sPattern ID: ")
+  (let ((links (arxana-hop--fetch-pattern-backlinks pattern-id)))
+    (if links
+        (let ((buf (get-buffer-create "*Pattern Backlinks*")))
+          (with-current-buffer buf
+            (let ((inhibit-read-only t))
+              (erase-buffer)
+              (insert (format "Pattern: %s\nBacklinks: %d\n\n" pattern-id (length links)))
+              (dolist (link links)
+                (insert (format "Session: %s (turn %s)\n"
+                                (plist-get link :session)
+                                (plist-get link :turn)))
+                (insert (format "  Type: %s → %s\n"
+                                (plist-get link :type)
+                                (plist-get link :link-type)))
+                (insert (format "  %s\n\n"
+                                (or (plist-get link :content) ""))))
+              (special-mode))
+            (pop-to-buffer buf)))
+      (message "No backlinks found for %s" pattern-id))))
+
+;;; Integration with futon4 pattern browser
+
+(defun arxana-hop--insert-session-backlinks (backlinks indent)
+  "Insert BACKLINKS as an ARXANA-SESSIONS block with INDENT."
+  (when backlinks
+    (insert (format "%s+ ARXANA-SESSIONS:\n" indent))
+    (dolist (link backlinks)
+      (let ((session (plist-get link :session))
+            (turn (plist-get link :turn))
+            (link-type (plist-get link :link-type))
+            (content (plist-get link :content)))
+        (insert (format "%s    - [%s] %s turn-%s"
+                        indent
+                        (or link-type "link")
+                        (or session "?")
+                        (or turn "?")))
+        (when (and content (not (string-empty-p content)))
+          (insert (format " — %s"
+                          (truncate-string-to-width content 60 nil nil "…"))))
+        (insert "\n")))
+    (insert "\n")))
+
+(defun arxana-hop--pattern-name-from-buffer ()
+  "Extract pattern name from current buffer (futon4 pattern format)."
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^#\\+PATTERN:\\s-*\\(.+\\)$" nil t)
+      (string-trim (match-string 1)))))
+
+(defun arxana-hop-insert-session-backlinks ()
+  "Insert Arxana session backlinks for the current pattern buffer."
+  (interactive)
+  (let ((pattern-name (arxana-hop--pattern-name-from-buffer)))
+    (unless pattern-name
+      (user-error "Cannot determine pattern name from buffer"))
+    (let ((backlinks (arxana-hop--fetch-pattern-backlinks pattern-name)))
+      (if backlinks
+          (save-excursion
+            ;; Find insertion point (after ORG-TODOS or NEXT-STEPS)
+            (goto-char (point-min))
+            (let ((insert-pos nil)
+                  (indent "  "))
+              (cond
+               ;; After ORG-TODOS block if present
+               ((re-search-forward "^\\([ \t]*\\)\\+ ORG-TODOS:" nil t)
+                (setq indent (match-string 1))
+                (forward-line 1)
+                (while (and (not (eobp))
+                            (looking-at "^[ \t]*\\(- \\|$\\)"))
+                  (forward-line 1))
+                (setq insert-pos (point)))
+               ;; After NEXT-STEPS block if present
+               ((progn (goto-char (point-min))
+                       (re-search-forward "^\\([ \t]*\\)\\+ NEXT-STEPS:" nil t))
+                (setq indent (match-string 1))
+                (forward-line 1)
+                (while (and (not (eobp))
+                            (looking-at "^[ \t]+"))
+                  (forward-line 1))
+                (setq insert-pos (point)))
+               ;; At end of buffer
+               (t (setq insert-pos (point-max))))
+              (goto-char insert-pos)
+              (let ((inhibit-read-only t))
+                (arxana-hop--insert-session-backlinks backlinks indent))
+              (message "Inserted %d session backlinks" (length backlinks))))
+        (message "No session backlinks found for %s" pattern-name)))))
+
+(defun arxana-hop--after-pattern-render (&rest _)
+  "Hook to add session backlinks after futon4 pattern render."
+  (when (and (derived-mode-p 'org-mode)
+             (arxana-hop--pattern-name-from-buffer))
+    (arxana-hop-insert-session-backlinks)))
+
+;; Advice for futon4 integration (activate when arxana-browser-patterns loads)
+(with-eval-after-load 'arxana-browser-patterns
+  (advice-add 'arxana-browser-patterns--render-pattern
+              :after #'arxana-hop--after-pattern-render))
 
 (provide 'arxana-hop)
 ;;; arxana-hop.el ends here

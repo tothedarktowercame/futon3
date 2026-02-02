@@ -94,5 +94,40 @@
   (local-set-key (kbd "C-c a n") #'my-arxana-hop-to-link)
   (local-set-key (kbd "C-c a c") #'my-arxana-clear-link-highlights))
 
+;;; Pattern Backlinks
+
+(defvar arxana-hop-server-url "http://localhost:5050"
+  "URL for Arxana transport server.")
+
+(defun arxana-hop-pattern-backlinks (pattern-id)
+  "Show sessions that used PATTERN-ID via PSR/PUR links."
+  (interactive "sPattern ID: ")
+  (let ((url (format "%s/arxana/pattern-backlinks/%s" arxana-hop-server-url pattern-id)))
+    (with-temp-buffer
+      (call-process "curl" nil t nil "-sS" url)
+      (goto-char (point-min))
+      (let* ((json (ignore-errors (json-parse-buffer :object-type 'plist)))
+             (data (plist-get json :data))
+             (links (plist-get data :links))
+             (count (plist-get data :count)))
+        (if (and links (> (length links) 0))
+            (let ((buf (get-buffer-create "*Pattern Backlinks*")))
+              (with-current-buffer buf
+                (let ((inhibit-read-only t))
+                  (erase-buffer)
+                  (insert (format "Pattern: %s\nBacklinks: %d\n\n" pattern-id count))
+                  (dolist (link links)
+                    (insert (format "Session: %s (turn %s)\n"
+                                    (plist-get link :anchor/session)
+                                    (plist-get link :anchor/turn)))
+                    (insert (format "  Type: %s → %s\n"
+                                    (plist-get link :anchor/type)
+                                    (plist-get link :link/type)))
+                    (insert (format "  %s\n\n"
+                                    (or (plist-get link :anchor/content) ""))))
+                  (special-mode))
+                (pop-to-buffer buf)))
+          (message "No backlinks found for %s" pattern-id))))))
+
 (provide 'arxana-hop)
 ;;; arxana-hop.el ends here

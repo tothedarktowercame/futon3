@@ -30,14 +30,21 @@ The `/psr` command helps you:
 
 2. **Search Pattern Catalog**
 
-   Read the pattern catalog from `resources/sigils/patterns-index.tsv` and search:
-   - Pattern name (first column, e.g., `agent/budget-bounds-exploration`)
-   - Rationale (fourth column - explains when/why to use)
-   - Hotwords (fifth column - terms that signal relevance)
-
-   Use grep or direct search. Example:
+   Call the pattern search API for semantic + sigil-based matching:
    ```bash
-   grep -i "hunger\|precision\|coupling" resources/sigils/patterns-index.tsv
+   curl -s -X POST http://localhost:6065/musn/patterns/search \
+     -H "Content-Type: application/json" \
+     -d '{"intent": "<query>", "limit": 5}'
+   ```
+
+   The API returns ranked candidates using:
+   - MiniLM semantic embeddings (when portal running)
+   - GloVe embeddings (local fallback)
+   - Sigil distance matching
+
+   **Fallback**: If the API fails, grep the TSV directly:
+   ```bash
+   grep -i "<keywords>" resources/sigils/patterns-index.tsv
    ```
 
 3. **Present Candidates**

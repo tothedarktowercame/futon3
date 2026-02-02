@@ -10,6 +10,8 @@
             [futon3.aif.viz :as aif-viz]
             [futon3.musn.service :as svc]
             [futon3.fulab.hud :as hud]
+            [futon3.pattern-hints :as hints]
+            [futon3.portal :as portal]
             [futon.compass :as compass]))
 
 (def log-path (or (System/getenv "MUSN_LOG") "/tmp/musn_http.log"))
@@ -96,6 +98,58 @@
                               :namespaces namespaces})}
         (catch Throwable t
           {:ok false :err (.getMessage t)})))))
+
+(defn- pattern-search-request
+  "Search patterns by intent text. Returns ranked candidates for PSR selection.
+   Tries MiniLM semantic search first, falls back to GloVe + sigil matching."
+  [body]
+  (let [intent (or (:intent body) (:query body) (:text body))
+        limit (or (:limit body) 8)
+        namespace (:namespace body)
+        sigils (:sigils body)]
+    (if (and (str/blank? intent) (empty? sigils))
+      {:ok false :err "missing intent or sigils"}
+      (try
+        (let [;; Try MiniLM semantic search first (best quality)
+              minilm-results (when (seq intent)
+                               (portal/minilm-suggest {:intent intent :limit limit}))
+              ;; Also get hints (GloVe + sigil) for comparison/fallback
+              hint-result (hints/hints {:intent intent
+                                        :sigils sigils
+                                        :pattern-limit limit
+                                        :portal-limit limit
+                                        :portal-namespace namespace})
+              glove-patterns (:glove-patterns hint-result)
+              ;; Enrich MiniLM results with pattern metadata
+              minilm-enriched (mapv (fn [entry]
+                                      (let [meta (hints/pattern-entry (:id entry))]
+                                        (merge entry
+                                               (select-keys meta [:summary :sigils
+                                                                  :maturity/phase :precision/prior
+                                                                  :source/path]))))
+                                    minilm-results)
+              ;; Use MiniLM if available, else fall back to hints
+              patterns (if (seq minilm-enriched)
+                         minilm-enriched
+                         (:patterns hint-result))
+              method (cond
+                       (seq minilm-enriched) :minilm
+                       (seq (:patterns hint-result)) (or (some-> (first (:patterns hint-result)) :score-source) :combined)
+                       (seq glove-patterns) :glove
+                       :else :none)]
+          {:ok true
+           :method method
+           :minilm-available (portal/minilm-available?)
+           :portal-available (portal/available?)
+           :patterns (vec patterns)
+           :minilm-patterns (vec minilm-enriched)
+           :glove-patterns (vec glove-patterns)
+           :fruits (:fruits hint-result)
+           :paramitas (:paramitas hint-result)})
+        (catch Throwable t
+          {:ok false
+           :err (.getMessage t)
+           :type (.getSimpleName (class t))})))))
 
 (def ^:private personal-api-base
   (or (System/getenv "PERSONAL_API_URL") "http://127.0.0.1:7778"))
@@ -598,6 +652,7 @@
     "/musn/chat/state"    (svc/chat-state! body)
     "/musn/compass"       (compass-request body)
     "/musn/hud/build"     (hud-build-request body)
+    "/musn/patterns/search" (pattern-search-request body)
     "/musn/scribe/turn"   (let [{:keys [session/id role content]} body]
                             (svc/record-turn! id (keyword role) content))
     "/musn/scribe/plan"   (let [{:keys [session/id note diagram]} body]

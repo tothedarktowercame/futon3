@@ -30,11 +30,16 @@ This is the interactive version - use `/peripherals:psr` for autonomous/peripher
 
 2. **Search Pattern Catalog**
 
-   Read the pattern catalog from `resources/sigils/patterns-index.tsv` and search:
-   - Pattern name (first column)
-   - Rationale (fourth column)
-   - Hotwords (fifth column)
+   Call the pattern search API for semantic + sigil-based matching:
+   ```bash
+   curl -s -X POST http://localhost:6065/musn/patterns/search \
+     -H "Content-Type: application/json" \
+     -d '{"intent": "<query>", "limit": 5}'
+   ```
 
+   The API returns ranked candidates with metadata (title, summary, sigils, maturity).
+
+   **Fallback**: If the API fails, grep the TSV:
    ```bash
    grep -i "<query terms>" resources/sigils/patterns-index.tsv | head -5
    ```

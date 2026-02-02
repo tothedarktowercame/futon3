@@ -70,10 +70,21 @@ while IFS=$'\t' read -r pattern_id okipona truth rationale hotwords; do
 
   rel_result=$(curl -s -X POST "$API_URL/api/alpha/relation" \
     -H 'Content-Type: application/json' \
+    -H 'X-Penholder: api' \
     -d "$rel_payload")
 
   if ! echo "$rel_result" | jq -e '.relation.id // .result.relation.id // .relation // .result.relation' > /dev/null 2>&1; then
-    echo "WARN: Failed to ensure relation $lang_name -> $pattern_id: $rel_result"
+    echo ""
+    echo "=========================================="
+    echo "FATAL: Failed to create relation"
+    echo "=========================================="
+    echo "Relation: $lang_name -> $pattern_id"
+    echo ""
+    echo "Full response:"
+    echo "$rel_result" | jq .
+    echo ""
+    echo "Stopping the line. Fix the invariant issue before continuing."
+    exit 1
   fi
 
   # Create entity payload
@@ -96,17 +107,26 @@ while IFS=$'\t' read -r pattern_id okipona truth rationale hotwords; do
   # POST to futon1
   result=$(curl -s -X POST "$API_URL/api/alpha/entity" \
     -H 'Content-Type: application/json' \
+    -H 'X-Penholder: api' \
     -d "$payload")
 
-  # Check result
+  # Check result - FAIL FAST on first error
   if echo "$result" | jq -e '.id // .entity.id' > /dev/null 2>&1; then
     count=$((count + 1))
     cache["$pattern_id"]="$row_hash"
     echo "[$count] Ingested: $pattern_id"
   else
-    echo "WARN: Failed to ingest $pattern_id: $result"
-    echo "      Check docbook invariants if this is unexpected:"
-    echo "      ${VERIFY_URL}"
+    echo ""
+    echo "=========================================="
+    echo "FATAL: Invariant failure on $pattern_id"
+    echo "=========================================="
+    echo ""
+    echo "Full response:"
+    echo "$result" | jq .
+    echo ""
+    echo "Stopping the line. Fix the invariant issue before continuing."
+    echo "Check: ${VERIFY_URL}"
+    exit 1
   fi
 done < <(tail -n +2 "$TSV_FILE")
 

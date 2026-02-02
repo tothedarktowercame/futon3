@@ -1978,27 +1978,30 @@
            :pattern-id pattern-id})))))
 
 (defn get-anchors
-  "Get anchors for a session, optionally filtered by turn."
+  "Get anchors for a session, optionally filtered by turn.
+   Reads from global anchor index - does not require active session."
   [session-id & {:keys [turn]}]
-  (when-let [entry (get-session session-id)]
-    (let [lab-root (:lab-root entry)
-          anchors (or (read-anchors-index lab-root) [])
-          session-anchors (filter #(= session-id (:anchor/session %)) anchors)]
-      (if turn
-        (let [turn (normalize-turn turn)]
-          (filter #(= turn (:anchor/turn %)) session-anchors))
-        session-anchors))))
+  (let [lab-root (if-let [entry (get-session session-id)]
+                   (:lab-root entry)
+                   default-lab-root)
+        anchors (or (read-anchors-index lab-root) [])
+        session-anchors (filter #(= session-id (:anchor/session %)) anchors)]
+    (if turn
+      (let [turn (normalize-turn turn)]
+        (filter #(= turn (:anchor/turn %)) session-anchors))
+      session-anchors)))
 
 (defn get-links
-  "Get links for an anchor (outgoing and incoming)."
+  "Get links for an anchor (outgoing and incoming).
+   Reads from global link graph - does not require active session."
   [anchor-id]
   (let [session-id (first (str/split anchor-id #":"))
-        entry (get-session session-id)]
-    (when entry
-      (let [lab-root (:lab-root entry)
-            links (or (read-links-graph lab-root) [])]
-        {:outgoing (filter #(= anchor-id (:link/from %)) links)
-         :incoming (filter #(= anchor-id (:link/to %)) links)}))))
+        lab-root (if-let [entry (get-session session-id)]
+                   (:lab-root entry)
+                   default-lab-root)
+        links (or (read-links-graph lab-root) [])]
+    {:outgoing (filter #(= anchor-id (:link/from %)) links)
+     :incoming (filter #(= anchor-id (:link/to %)) links)}))
 
 (defn get-backlinks
   "Get all anchors that link TO the given anchor."

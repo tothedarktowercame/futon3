@@ -223,11 +223,11 @@ The `make dev` script automatically loads `.admintoken` and sets `ADMIN_TOKEN`.
 The `scripts/repl-eval` script is the preferred way to hot-reload code:
 
 ```bash
-# Reload a namespace after editing
-./scripts/repl-eval '(require '\''f2.transport :reload)'
-
-# Or use load-file for guaranteed re-read from disk
+# Reload a file after editing (preferred - guarantees re-read from disk)
 ./scripts/repl-eval '(load-file "src/f2/transport.clj")'
+
+# Alternative: require with :reload (may not pick up all changes)
+./scripts/repl-eval '(require '\''f2.transport :reload)'
 
 # Evaluate any Clojure expression
 ./scripts/repl-eval '(+ 1 2)'
@@ -240,12 +240,12 @@ The `scripts/repl-eval` script is the preferred way to hot-reload code:
 
 | File | Reload command |
 |------|----------------|
-| Transport (port 5050) | `(require 'f2.transport :reload)` |
-| MUSN HTTP (port 6065) | `(require 'futon3.musn.http :reload)` |
-| MUSN service | `(require 'futon3.musn.service :reload)` |
-| Lab WebSocket (port 5056) | `(require 'futon3.lab.ws :reload)` |
-| Futon1 invariants | `(require 'app.invariants :reload)` |
-| Futon1 graph handlers | `(require 'api.handlers.graph :reload)` |
+| Transport (port 5050) | `(load-file "src/f2/transport.clj")` |
+| MUSN HTTP (port 6065) | `(load-file "src/futon3/musn/http.clj")` |
+| MUSN service | `(load-file "src/futon3/musn/service.clj")` |
+| Lab WebSocket (port 5056) | `(load-file "src/futon3/lab/ws.clj")` |
+| Futon1 invariants | `(load-file "src/app/invariants.clj")` |
+| Futon1 graph handlers | `(load-file "src/api/handlers/graph.clj")` |
 
 **Note**: Futon1 namespaces run in the same JVM when using `make dev`, so they can be hot-reloaded via Drawbridge.
 

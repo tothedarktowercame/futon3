@@ -193,12 +193,17 @@ make test   # unit + replay tests
 
 ### Prerequisites
 
-Drawbridge requires `ADMIN_TOKEN` to be set. The `make dev` script automatically loads it from `.admintoken` if present:
+Drawbridge requires `ADMIN_TOKEN` to be set. The token is stored in `.admintoken` in the futon3 root:
 
 ```bash
-# Create token file (one-time setup)
+# The token file location (already exists)
+cat ~/code/futon3/.admintoken
+
+# If missing, create it (one-time setup)
 echo "your-secret-token" > .admintoken
 ```
+
+The `make dev` script automatically loads `.admintoken` and sets `ADMIN_TOKEN`.
 
 ### Using the repl-eval helper
 
@@ -226,21 +231,65 @@ The `scripts/repl-eval` script is the preferred way to hot-reload code:
 | MUSN HTTP (port 6065) | `(require 'futon3.musn.http :reload)` |
 | MUSN service | `(require 'futon3.musn.service :reload)` |
 | Lab WebSocket (port 5056) | `(require 'futon3.lab.ws :reload)` |
+| Futon1 invariants | `(require 'app.invariants :reload)` |
+| Futon1 graph handlers | `(require 'api.handlers.graph :reload)` |
+
+**Note**: Futon1 namespaces run in the same JVM when using `make dev`, so they can be hot-reloaded via Drawbridge.
 
 ### Verifying Drawbridge is running
 
 ```bash
-# Should return a result, not "connection refused"
-./scripts/repl-eval '(+ 1 2)'
+# Should return "6", not empty or "connection refused"
+./scripts/repl-eval '(+ 1 2 3)'
 
 # Check listening ports
 ss -tlnp | grep 6767
 ```
 
 If Drawbridge isn't running, check:
-1. `ADMIN_TOKEN` is set (or `.admintoken` file exists)
+1. `.admintoken` file exists in futon3 root
 2. `FUTON3_DRAWBRIDGE` is not set to `0`
 3. Restart `make dev` to pick up changes
+
+### Troubleshooting
+
+**Empty response `[]` from repl-eval:**
+The first nREPL call creates a session (returns empty). The `repl-eval` script handles this automatically by making multiple calls. If you're using curl directly, you need to:
+1. First call with `op=clone` to get a session cookie
+2. Second call with `op=clone` returns `new-session` ID
+3. Third call with `op=eval` + session ID to evaluate code
+4. Fourth call polls for the result
+
+**Direct curl for debugging:**
+```bash
+TOKEN=$(cat .admintoken)
+COOKIES=$(mktemp)
+
+# Setup session
+curl -s -c "$COOKIES" "http://localhost:6767/repl?token=$TOKEN" \
+  -d "op=clone" >/dev/null
+
+# Get session ID
+SESSION=$(curl -s -c "$COOKIES" -b "$COOKIES" \
+  "http://localhost:6767/repl?token=$TOKEN" \
+  -d "op=clone" | jq -r '.[0]["new-session"]')
+
+# Eval
+curl -s -c "$COOKIES" -b "$COOKIES" \
+  "http://localhost:6767/repl?token=$TOKEN" \
+  --data-urlencode "op=eval" \
+  --data-urlencode "code=(+ 1 2)" \
+  --data-urlencode "session=$SESSION" >/dev/null
+
+# Get result
+curl -s -b "$COOKIES" "http://localhost:6767/repl?token=$TOKEN" \
+  -d "op=clone" | jq '.[].value'
+
+rm "$COOKIES"
+```
+
+**"forbidden" response:**
+Token mismatch. Check that `.admintoken` matches what the server loaded at startup.
 
 ### When to restart instead
 
@@ -249,6 +298,7 @@ Some changes still require a full server restart:
 - Changes to startup/initialization code in `f2.musn`
 - Modifications to atoms/state that are initialized with `defonce`
 - Adding new Java-WebSocket servers (forum-ws, lab-ws)
+- **Ring middleware changes** - middleware is compiled into handler chains at startup; reloading the namespace doesn't re-wire the middleware stack
 
 ## Realtime pattern checking
 

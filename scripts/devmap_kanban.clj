@@ -118,7 +118,7 @@
       (or emoji-text token))))
 
 (defn- futon-id [path]
-  (when-let [m (re-find #"futon(\d+)" (fs/file-name path))]
+  (when-let [m (re-find #"futon(\d+[A-Za-z0-9]*)" (fs/file-name path))]
     (str "f" (second m))))
 
 (defn- strip-sigils [title]
@@ -311,8 +311,9 @@
        vec))
 
 (defn- futon-sort-key [fid]
-  (when-let [m (re-find #"f(\\d+)" (str fid))]
-    (Long/parseLong (second m))))
+  (if-let [m (re-matches #"f(\d+)([A-Za-z0-9]*)" (str fid))]
+    [(Long/parseLong (second m)) (str/lower-case (nth m 2 ""))]
+    [Long/MAX_VALUE (str fid)]))
 
 (defn- ruler-line [width]
   (apply str (map #(char (+ (int \0) (mod % 10))) (range 1 (inc width)))))
@@ -350,7 +351,7 @@
                 files)
         cards (->> files
                    (mapcat parse-devmap)
-                   (sort-by (juxt :futon :number))
+                   (sort-by (juxt (comp futon-sort-key :futon) :number))
                    (vec))
         cards (if (and max-cards (pos? max-cards))
                 (->> cards

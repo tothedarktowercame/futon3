@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ARXANA_URL="${ARXANA_URL:-http://localhost:5050}"
+LAB_URL="${LAB_URL:-http://localhost:5050}"
 MUSN_URL="${MUSN_URL:-http://localhost:6065}"
 SESSION_TS="$(date -u +%Y%m%dT%H%M%SZ)"
 SESSION_ID="${SESSION_ID:-codex-parity-${SESSION_TS}}"
@@ -71,9 +71,9 @@ sys.exit(1)
 PY
 }
 
-echo "Parity check: ARXANA_URL=$ARXANA_URL MUSN_URL=$MUSN_URL"
+echo "Parity check: LAB_URL=$LAB_URL MUSN_URL=$MUSN_URL"
 
-read -r code body < <(request GET "$ARXANA_URL/arxana/anchors/qa-arxana-test-2026-02-02")
+read -r code body < <(request GET "$LAB_URL/lab/anchors/qa-arxana-test-2026-02-02")
 check_status "arxana anchors (existing)" 200 "$code" "$body" || true
 
 read -r code body < <(request POST "$MUSN_URL/musn/session/create" \
@@ -98,12 +98,12 @@ else
   failures=$((failures + 1))
 fi
 
-read -r code body < <(request POST "$ARXANA_URL/arxana/anchor/create" \
+read -r code body < <(request POST "$LAB_URL/lab/anchor/create" \
   "{\"session-id\":\"$SESSION_ID\",\"turn\":1,\"type\":\"artifact\",\"content\":\"codex parity anchor\",\"author\":\"codex\",\"note\":\"parity-check\"}")
 check_status "arxana anchor create" 200 "$code" "$body" || true
 check_ok_field "arxana anchor create" "$body" || failures=$((failures + 1))
 
-read -r code body < <(request GET "$ARXANA_URL/arxana/anchors/$SESSION_ID")
+read -r code body < <(request GET "$LAB_URL/lab/anchors/$SESSION_ID")
 check_status "arxana anchors (new)" 200 "$code" "$body" || true
 
 read -r code body < <(request GET "$MUSN_URL/rap")

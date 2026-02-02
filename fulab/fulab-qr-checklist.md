@@ -38,7 +38,7 @@ Quick-reference tasks for 10-minute sessions.
 ## ARXANA LINKING
 - [x] Create anchor for a pattern - verified 2026-02-02 (anchor qa-arxana-test-2026-02-02:turn-1:artifact-2 created)
 - [x] Link anchor → session → commit - verified 2026-02-02 (link-d84dd590 applies-pattern type, commit ref in note)
-- [x] Query: "what came from pattern X?" - verified 2026-02-02 (GET /arxana/links/:id returns outgoing/incoming)
+- [x] Query: "what came from pattern X?" - verified 2026-02-02 (GET /lab/links/:id returns outgoing/incoming)
 
 ## DOCS CYCLE
 - [x] Session produces code change - verified 2026-02-02 (commits fb18f4c, a715ddb for @keywords enrichment)

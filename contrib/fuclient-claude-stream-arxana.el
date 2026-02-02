@@ -17,7 +17,7 @@
   :group 'fuclient-claude-stream)
 
 (defcustom fuclient-claude-stream-arxana-server "http://localhost:5050"
-  "Arxana server URL (transport port)."
+  "Lab server URL (transport port) for MUSN data layer."
   :type 'string
   :group 'fuclient-claude-stream-arxana)
 
@@ -51,7 +51,7 @@ TYPE is one of: insight, decision, question, artifact."
     (setq fuclient-claude-stream-arxana--session-id
           (format "claude-stream-%s" (format-time-string "%Y%m%d-%H%M%S"))))
   (let* ((turn (or (get-text-property start 'turn-number) 1))
-         (url (format "%s/arxana/anchor/create" fuclient-claude-stream-arxana-server))
+         (url (format "%s/lab/anchor/create" fuclient-claude-stream-arxana-server))
          (payload (json-encode
                    `(:session-id ,fuclient-claude-stream-arxana--session-id
                      :turn ,turn
@@ -82,8 +82,8 @@ TYPE is one of: insight, decision, question, artifact."
 ;;; Link Display
 
 (defun fuclient-claude-stream-arxana--fetch-links (anchor-id)
-  "Fetch links for ANCHOR-ID from Arxana server."
-  (let ((url (format "%s/arxana/links/%s"
+  "Fetch links for ANCHOR-ID from lab server."
+  (let ((url (format "%s/lab/links/%s"
                      fuclient-claude-stream-arxana-server
                      (url-hexify-string anchor-id))))
     (with-temp-buffer

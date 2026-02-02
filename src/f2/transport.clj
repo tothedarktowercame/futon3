@@ -1779,24 +1779,24 @@
       (= [:get "/stack/status"] [method uri])
       (handle-stack-status state request)
 
-      ;; Arxana anchor/link routes
-      (and (= method :post) (= uri "/arxana/anchor/create"))
+      ;; Lab anchor/link routes (data layer - Arxana reads from here)
+      (and (= method :post) (= uri "/lab/anchor/create"))
       (handle-anchor-create state request)
 
-      (and (= method :post) (= uri "/arxana/link/create"))
+      (and (= method :post) (= uri "/lab/link/create"))
       (handle-link-create state request)
 
-      (and (= method :get) (re-matches #"/arxana/anchors/[^/]+" uri))
-      (let [session-id (second (re-find #"/arxana/anchors/([^/]+)" uri))
+      (and (= method :get) (re-matches #"/lab/anchors/[^/]+" uri))
+      (let [session-id (second (re-find #"/lab/anchors/([^/]+)" uri))
             turn (get (:query-params request) "turn")]
         (handle-anchors-get state session-id turn))
 
-      (and (= method :get) (re-matches #"/arxana/links/.*" uri))
-      (let [anchor-id (second (re-find #"/arxana/links/(.+)" uri))]
+      (and (= method :get) (re-matches #"/lab/links/.*" uri))
+      (let [anchor-id (second (re-find #"/lab/links/(.+)" uri))]
         (handle-links-get state anchor-id))
 
       ;; Semantic anchor linking (POST to handle complex anchor IDs)
-      (and (= method :post) (= uri "/arxana/suggest-links"))
+      (and (= method :post) (= uri "/lab/suggest-links"))
       (try
         (let [payload (or (parse-json-body request) {})
               session-id (:session-id payload)
@@ -1809,7 +1809,7 @@
         (catch Exception e
           (json-response 500 {:ok false :err "suggest-links-failed" :detail (.getMessage e)})))
 
-      (and (= method :post) (= uri "/arxana/auto-link"))
+      (and (= method :post) (= uri "/lab/auto-link"))
       (try
         (let [payload (or (parse-json-body request) {})
               session-id (:session-id payload)
@@ -1822,10 +1822,10 @@
         (catch Exception e
           (json-response 500 {:ok false :err "auto-link-failed" :detail (.getMessage e)})))
 
-      ;; Pattern backlinks: GET /arxana/pattern-backlinks/{pattern-id}
-      (and (= method :get) (re-matches #"/arxana/pattern-backlinks/.+" uri))
+      ;; Pattern backlinks: GET /lab/pattern-backlinks/{pattern-id}
+      (and (= method :get) (re-matches #"/lab/pattern-backlinks/.+" uri))
       (try
-        (let [pattern-id (second (re-find #"/arxana/pattern-backlinks/(.+)" uri))
+        (let [pattern-id (second (re-find #"/lab/pattern-backlinks/(.+)" uri))
               result (musn-svc/get-pattern-backlinks pattern-id)]
           (if result
             (json-response 200 {:ok true :data result})

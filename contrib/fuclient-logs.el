@@ -223,7 +223,7 @@
   "Show backlinks for the anchor at point."
   (interactive)
   (if-let ((anchor-id (get-text-property (point) 'fuclient-logs-anchor)))
-      (let ((url (format "%s/arxana/links/%s" fuclient-logs-server-url anchor-id)))
+      (let ((url (format "%s/lab/links/%s" fuclient-logs-server-url anchor-id)))
         (message "Fetching backlinks for %s..." anchor-id)
         ;; Simple HTTP fetch - could use url-retrieve for async
         (condition-case err
@@ -244,7 +244,7 @@
   (interactive)
   (if-let ((anchor-id (get-text-property (point) 'fuclient-logs-anchor)))
       (let* ((session-id fuclient-logs--session-id)
-             (url (format "%s/arxana/suggest-links" fuclient-logs-server-url))
+             (url (format "%s/lab/suggest-links" fuclient-logs-server-url))
              (payload (json-encode `(:session-id ,session-id :anchor-id ,anchor-id :limit 5))))
         (message "Finding similar anchors for %s..." anchor-id)
         (condition-case err
@@ -279,7 +279,7 @@
   (interactive)
   (unless fuclient-logs--session-id
     (user-error "Not connected to a session"))
-  (let* ((url (format "%s/arxana/auto-link" fuclient-logs-server-url))
+  (let* ((url (format "%s/lab/auto-link" fuclient-logs-server-url))
          (payload (json-encode `(:session-id ,fuclient-logs--session-id :threshold 0.25))))
     (message "Auto-linking anchors in %s..." fuclient-logs--session-id)
     (condition-case err

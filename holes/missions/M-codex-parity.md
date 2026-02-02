@@ -26,14 +26,14 @@ Codex must use the remote server URLs, NOT localhost. Configure these environmen
 
 ```bash
 # Get actual URLs from Joe or check Emacs config
-export ARXANA_URL="$FUTON3_REMOTE_ARXANA_URL"   # Remote Arxana/Transport endpoint
+export LAB_URL="$FUTON3_REMOTE_LAB_URL"         # Remote lab/transport endpoint (data layer)
 export MUSN_URL="$FUTON3_REMOTE_MUSN_URL"       # Remote MUSN HTTP endpoint
 export FORUM_WS_URL="$FUTON3_REMOTE_FORUM_WS"   # Remote Forum WebSocket
 ```
 
 The parity script accepts these as env vars:
 ```bash
-ARXANA_URL="..." MUSN_URL="..." ./scripts/parity-check.sh
+LAB_URL="..." MUSN_URL="..." ./scripts/parity-check.sh
 ```
 
 Reference: Check Emacs config for actual values (`my-chatgpt-shell-musn-url`, `arxana-forum-server`, etc.)
@@ -46,7 +46,7 @@ Both agents must hit the same running MUSN server.
 
 ```bash
 # Codex runs:
-curl -s "http://localhost:5050/arxana/anchors/claude-parity-20260202T202200Z" | jq .
+curl -s "http://localhost:5050/lab/anchors/claude-parity-20260202T202200Z" | jq .
 
 # Should return Claude's anchor (not empty)
 ```
@@ -66,7 +66,7 @@ curl -X POST http://localhost:6065/musn/session/create \
 
 2. Create an anchor:
 ```bash
-curl -X POST http://localhost:5050/arxana/anchor/create \
+curl -X POST http://localhost:5050/lab/anchor/create \
   -H "Content-Type: application/json" \
   -d '{"session-id":"codex-parity-live","turn":1,"type":"insight","content":"Codex parity test - this anchor should be visible to Claude","author":"codex","note":"M-codex-parity Phase 2"}'
 ```
@@ -80,7 +80,7 @@ grep "codex-parity-live" lab/anchors/index.edn
 
 Claude queries for Codex's anchor:
 ```bash
-curl -s "http://localhost:5050/arxana/anchors/codex-parity-live" | jq .
+curl -s "http://localhost:5050/lab/anchors/codex-parity-live" | jq .
 ```
 
 Should return the anchor Codex created.
@@ -91,14 +91,14 @@ Create a link between Claude's anchor and Codex's anchor:
 
 ```bash
 # Either agent can do this
-curl -X POST http://localhost:5050/arxana/link/create \
+curl -X POST http://localhost:5050/lab/link/create \
   -H "Content-Type: application/json" \
   -d '{"from":"codex-parity-live:turn-1:insight-1","to":"claude-parity-20260202T202200Z:turn-1:artifact-1","type":"extends","author":"codex","note":"Codex extends Claude anchor - parity proven"}'
 ```
 
 Verify:
 ```bash
-curl -s "http://localhost:5050/arxana/links/codex-parity-live:turn-1:insight-1" | jq .
+curl -s "http://localhost:5050/lab/links/codex-parity-live:turn-1:insight-1" | jq .
 ```
 
 ### Phase 5: PAR Generation
@@ -139,7 +139,7 @@ Test chat peripheral:
 
 If anchors don't persist:
 
-1. Check server is running: `curl -s http://localhost:5050/arxana/anchors/test`
+1. Check server is running: `curl -s http://localhost:5050/lab/anchors/test`
 2. Check server working directory: should be `/home/joe/code/futon3`
 3. Check for write errors in `*server*` buffer
 4. Verify `lab/anchors/` directory exists and is writable

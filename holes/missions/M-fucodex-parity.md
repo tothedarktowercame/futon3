@@ -75,7 +75,7 @@ Create a MUSN session called "fucodex-parity-test" and an Arxana anchor to prove
 
 Fucodex should:
 1. Call `POST /musn/session/create` with session-id `fucodex-parity-test`
-2. Call `POST /arxana/anchor/create` with an insight anchor
+2. Call `POST /lab/anchor/create` with an insight anchor
 3. Verify the anchor was written to `lab/anchors/index.edn`
 
 ### Step 3: Inside Peripheral - Create Cross-Agent Link
@@ -141,7 +141,7 @@ DEBUG=* ./scripts/fucodex-peripheral.ts
 
 Inside fucodex, verify connectivity:
 ```bash
-curl -s http://localhost:5050/arxana/anchors/test
+curl -s http://localhost:5050/lab/anchors/test
 curl -s http://localhost:6065/musn/dashboard | jq .
 ```
 

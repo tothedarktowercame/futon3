@@ -55,7 +55,7 @@
   (my-arxana-clear-link-highlights)
   (when-let ((anchor-id (get-text-property (point) 'arxana-anchor)))
     (message "Finding links for %s..." anchor-id)
-    (let ((url (format "http://localhost:5050/arxana/links/%s"
+    (let ((url (format "http://localhost:5050/lab/links/%s"
                        (url-hexify-string anchor-id))))
       (with-temp-buffer
         (call-process "curl" nil t nil "-sS" url)
@@ -107,11 +107,11 @@
 ;;; Pattern Backlinks
 
 (defvar arxana-hop-server-url "http://localhost:5050"
-  "URL for Arxana transport server.")
+  "URL for lab/transport server (MUSN data layer).")
 
 (defun arxana-hop--fetch-pattern-backlinks (pattern-id)
   "Fetch backlinks for PATTERN-ID from futon3 transport, return list of plists."
-  (let ((url (format "%s/arxana/pattern-backlinks/%s" arxana-hop-server-url pattern-id)))
+  (let ((url (format "%s/lab/pattern-backlinks/%s" arxana-hop-server-url pattern-id)))
     (with-temp-buffer
       (call-process "curl" nil t nil "-sS" url)
       (goto-char (point-min))

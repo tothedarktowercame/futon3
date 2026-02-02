@@ -634,6 +634,86 @@
          :sessions-written (count (filter :ok results))
          :sessions-total (count sessions)}))))
 
+;; =============================================================================
+;; Dashboard: Unified Status View
+;; =============================================================================
+
+(defn- compute-active-peripherals
+  "Extract active peripherals from recent activity.
+   Returns list of {:agent :source :last-seen :event-count}."
+  [activity-entries]
+  (let [by-agent (group-by (fn [e] [(:agent e) (:source e)]) activity-entries)]
+    (->> by-agent
+         (map (fn [[[agent source] events]]
+                {:agent agent
+                 :source source
+                 :last-seen (:at (first events))
+                 :event-count (count events)}))
+         (sort-by :last-seen #(compare %2 %1))
+         vec)))
+
+(defn- compute-recent-purs
+  "Extract recent PUR (Pattern Use Record) events from activity."
+  [activity-entries]
+  (->> activity-entries
+       (filter #(or (= "pur" (:event/type %))
+                    (= "session/pur" (:event/type %))
+                    (str/includes? (str (:event/type %)) "pur")))
+       (take 10)
+       (mapv (fn [e]
+               {:pattern (or (:pattern/id e) (:pattern e))
+                :outcome (:outcome e)
+                :prediction-error (:prediction-error e)
+                :at (:at e)
+                :session (:session/id e)}))))
+
+(defn- count-lab-files
+  "Count files in lab directories for persistence status."
+  []
+  (let [lab-root (io/file (or (System/getenv "FUTON3_ROOT") ".") "lab")]
+    (if (.exists lab-root)
+      (let [count-in (fn [subdir]
+                       (let [d (io/file lab-root subdir)]
+                         (if (.exists d)
+                           (count (filter #(.isFile %) (file-seq d)))
+                           0)))]
+        {:sessions (count-in "sessions")
+         :anchors (let [f (io/file lab-root "anchors" "index.edn")]
+                    (if (.exists f)
+                      (count (str/split-lines (slurp f)))
+                      0))
+         :links (let [f (io/file lab-root "links" "graph.edn")]
+                  (if (.exists f)
+                    (count (str/split-lines (slurp f)))
+                    0))
+         :remote (count-in "remote")
+         :pattern-drafts (count-in "pattern-drafts")})
+      {:sessions 0 :anchors 0 :links 0 :remote 0 :pattern-drafts 0})))
+
+(defn- dashboard-request
+  "Build unified dashboard view.
+   Aggregates: active peripherals, recent PURs/PARs, persistence status."
+  []
+  (try
+    (let [activity-entries (try (svc/activity-log-entries {:limit 100}) (catch Throwable _ []))
+          peripherals (compute-active-peripherals activity-entries)
+          recent-purs (compute-recent-purs activity-entries)
+          recent-pars (-> (rap-request {"limit" "5"}) :pars)
+          lab-counts (count-lab-files)]
+      {:ok true
+       :timestamp (str (java.time.Instant/now))
+       :peripherals {:active (take 10 peripherals)
+                     :total-agents (count (distinct (map :agent peripherals)))}
+       :learning {:recent-purs recent-purs
+                  :recent-pars recent-pars
+                  :pur-count (count recent-purs)
+                  :par-count (count recent-pars)}
+       :persistence {:lab-counts lab-counts
+                     :total-anchors (:anchors lab-counts)
+                     :total-links (:links lab-counts)}})
+    (catch Throwable t
+      {:ok false :err (.getMessage t)})))
+
 (defn- dispatch [uri body]
   (case uri
     "/musn/session/create" (svc/create-session! body)
@@ -759,6 +839,10 @@
                                       personal-data (assoc :personal_vitality personal-data)
                                       interface-data (assoc :interface_coverage interface-data)
                                       stack-data (assoc :stack_learning stack-data))}))
+
+        ;; GET endpoint for unified dashboard view
+        (and (= uri "/musn/dashboard") (= method :get))
+        (json-response (dashboard-request))
 
         (not= :post method) (json-response 405 {:ok false :err "method not allowed"})
         :else

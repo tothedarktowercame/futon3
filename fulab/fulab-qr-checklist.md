@@ -34,15 +34,16 @@ Quick-reference tasks for 10-minute sessions.
 - [x] Query: "what came from pattern X?" - verified 2026-02-02 (GET /arxana/links/:id returns outgoing/incoming)
 
 ## DOCS CYCLE
-- [ ] Session produces code change
-- [ ] Change documented (auto or manual)
-- [ ] Doc traces back to pattern via Arxana
+- [x] Session produces code change - verified 2026-02-02 (commits fb18f4c, a715ddb for @keywords enrichment)
+- [x] Change documented (auto or manual) - verified 2026-02-02 (docs/changes/2026-02-02-keywords-enrichment.md)
+- [x] Doc traces back to pattern via Arxana - verified 2026-02-02 (link-5a3c7412 documents→pattern anchor)
 
 ## RAP RETRIEVAL
 - [x] /rap loads distilled learnings - verified 2026-02-02 (2 PARs retrieved)
 - [x] Learnings inform current session - context field ready for injection
 
 ## FUTON1 STATUS DASHBOARD
-- [ ] View active peripherals
-- [ ] View recent PURs/PARs
-- [ ] View persistence queue
+- [x] View active peripherals - implemented 2026-02-02 (GET /musn/dashboard returns peripherals.active)
+- [x] View recent PURs/PARs - implemented 2026-02-02 (GET /musn/dashboard returns learning.recent-purs/pars)
+- [x] View persistence queue - implemented 2026-02-02 (GET /musn/dashboard returns persistence.lab-counts)
+NOTE: Dashboard endpoint added to musn/http.clj - requires server reload to activate

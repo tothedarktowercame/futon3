@@ -176,13 +176,14 @@
        distinct
        vec))
 
-(defn- derive-hotwords [{:keys [title id rationale summary]}]
-  (->> (concat (hotwords-from-text title)
+(defn- derive-hotwords [{:keys [title id rationale summary keywords]}]
+  (->> (concat (hotwords-from-text keywords)  ;; keywords first for priority
+               (hotwords-from-text title)
                (hotwords-from-text id)
                (hotwords-from-text rationale)
                (hotwords-from-text summary))
        distinct
-       (take 10)
+       (take 20)
        vec))
 
 (defn- derive-rationale [{:keys [title tokipona hanzi because]}]
@@ -204,6 +205,7 @@
                 (extract-meta block "flexiarg")
                 (extract-meta block "multiarg"))
         title (extract-meta block "title")
+        keywords (extract-meta block "keywords")
         source (str (.getPath (io/file file)) (when arg (str ":" arg)))
         sigils-meta (some-> (extract-meta block "sigils")
                             (parse-inline-sigils source emoji-set hanzi-set))
@@ -231,7 +233,8 @@
        :hotwords (derive-hotwords {:title title
                                    :id arg
                                    :rationale because
-                                   :summary summary})})))
+                                   :summary summary
+                                   :keywords keywords})})))
 
 (defn- flexiarg-files []
   (let [ext-of (fn [^java.io.File file]
@@ -287,6 +290,7 @@
         components (parse-components (str body))
         by-label (into {} (map (fn [{:keys [label text]}] [label text]) components))
         because (get by-label "because")
+        keywords (get by-label "keywords")
         summary (or (get by-label "then")
                     (get by-label "context")
                     (get by-label "if")
@@ -304,7 +308,8 @@
      :hotwords (derive-hotwords {:title title
                                  :id (format "%s/p%s" futon-id proto)
                                  :rationale because
-                                 :summary summary})}))
+                                 :summary summary
+                                 :keywords keywords})}))
 
 (defn- devmap-files []
   (->> (file-seq (io/file "holes"))
@@ -386,7 +391,7 @@
         (assoc :entries entries-map)
         (assoc-in [:files path] file-info))))
 
-(defn- process-files [files cache parse-fn]
+(defn- process-files [cache files parse-fn]
   (reduce
    (fn [state file]
      (let [path (.getPath (io/file file))

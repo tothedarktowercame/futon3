@@ -31,7 +31,7 @@
 
 (defonce sessions (atom {}))
 (defonce rooms (atom {}))
-(declare get-session append-lab-event! restored? note-restore! apply-mana! mana-config turn-event plan-eval-config)
+(declare get-session append-lab-event! restored? note-restore! apply-mana! mana-config turn-event plan-eval-config link-psr-to-pattern!)
 (defonce aif-tap-installed? (atom false))
 
 (defonce fulab-adapter

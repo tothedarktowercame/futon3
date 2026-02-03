@@ -19,16 +19,20 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [cheshire.core :as json]
+            [clj-http.client :as httpc]
             [org.httpkit.server :as http]
             [ring.middleware.params :as ring-params]
             [ring.util.codec :as codec])
   (:import (org.java_websocket WebSocket)
            (org.java_websocket.handshake ClientHandshake)
            (org.java_websocket.server WebSocketServer)
-           (java.net InetSocketAddress)))
+           (java.net InetSocketAddress URI)
+           (java.net.http HttpClient HttpClient$Version WebSocket$Listener)
+           (java.util.concurrent CompletableFuture TimeUnit)))
 
 ;; Forward declarations
-(declare broadcast-to-ws-clients! ws-clients irc-connected? send-to-irc!)
+(declare broadcast-to-ws-clients! ws-clients irc-connected? send-to-irc!
+         handle-agency-message stop-agency-ws-client! ack-test-bell!)
 
 ;; =============================================================================
 ;; Agent State
@@ -39,6 +43,7 @@
          :last-active nil
          :agent-id nil
          :invoke-fn nil  ; Agent-specific invocation function
+         :agency-http-url nil
          :output-subscribers #{}}))
 
 (defn session-id
@@ -67,6 +72,20 @@
 
 (defonce ^:private ws-server-state (atom nil))
 (defonce ^:private ws-clients (atom #{}))
+
+(defonce ^:private agency-ws-state
+  (atom {:running? false
+         :stop nil
+         :state (atom {:ws nil
+                       :last-error nil
+                       :last-attempt nil
+                       :last-connected nil
+                       :last-closed nil
+                       :last-ping nil})
+         :url nil
+         :agent-id nil
+         :reconnect-ms 5000
+         :ping-ms 15000}))
 
 (defn- send-to-ws-client! [^WebSocket conn data]
   (when (.isOpen conn)
@@ -163,6 +182,21 @@
          :headers {"content-type" "application/json"}
          :body "{\"ok\":true}"}))))
 
+(defn- handle-bell [request]
+  (let [body (some-> request :body slurp str/trim)]
+    (if (str/blank? body)
+      {:status 400 :body "empty input"}
+      (try
+        (let [msg (json/parse-string body true)]
+          (future (handle-agency-message msg))
+          {:status 200
+           :headers {"content-type" "application/json"}
+           :body "{\"ok\":true}"})
+        (catch Exception e
+          {:status 400
+           :headers {"content-type" "application/json"}
+           :body (json/encode {:ok false :error (.getMessage e)})})))))
+
 (defn- handle-status [_request]
   {:status 200
    :headers {"content-type" "application/json"}
@@ -225,10 +259,14 @@
     (let [uri (:uri request)
           method (:request-method request)
           send-path (str "/" endpoint-prefix)
+          bell-path (str "/" endpoint-prefix "/bell")
           status-path (str "/" endpoint-prefix "/status")]
       (cond
         (and (= method :post) (= uri send-path))
         (handle-send request)
+
+        (and (= method :post) (= uri bell-path))
+        (handle-bell request)
 
         (and (= method :get) (= uri status-path))
         (handle-status request)
@@ -252,10 +290,169 @@
             prompt (format "[Agency Bell: %s] %s"
                            bell-type
                            (or (:message payload) (pr-str payload)))]
-        (future (send-input! prompt)))
+        (println (format "[drawbridge] Bell type=%s" bell-type))
+        (if (= bell-type "test-bell")
+          (future (ack-test-bell! msg))
+          (future (send-input! prompt))))
 
       ;; Default: send as-is
       (future (send-input! (format "[Agency: %s] %s" msg-type (pr-str msg)))))))
+
+(defn- agency-http-base-from-ws [ws-url]
+  (when (seq ws-url)
+    (let [u (URI/create ws-url)
+          scheme (case (.getScheme u) "ws" "http" "wss" "https" (.getScheme u))
+          host (.getHost u)
+          port (.getPort u)
+          port-str (if (neg? port) "" (str ":" port))]
+      (when (and scheme host)
+        (str scheme "://" host port-str)))))
+
+(defn- ack-test-bell! [{:keys [secret-id]}]
+  (let [base (or (:agency-http-url @agent-state)
+                 (agency-http-base-from-ws (:url @agency-ws-state)))]
+    (when (and base secret-id)
+      (try
+        (println (format "[drawbridge] test-bell ack: fetching secret %s" secret-id))
+        (let [secret-resp (httpc/get (str base "/agency/secret/" secret-id)
+                                     {:as :json :throw-exceptions false})
+              secret-body (:body secret-resp)
+              secret-value (or (get secret-body :value)
+                               (get secret-body "value"))]
+          (if secret-value
+            (let [ack-resp (httpc/post (str base "/agency/ack")
+                                       {:content-type :json
+                                        :accept :json
+                                        :throw-exceptions false
+                                        :body (json/encode {:secret-id secret-id
+                                                            :value secret-value
+                                                            :agent-id (:agent-id @agent-state)})})]
+              (println (format "[drawbridge] test-bell ack sent (status=%s)"
+                               (:status ack-resp))))
+            (println "[drawbridge] test-bell ack: secret missing in response")))
+        (catch Exception e
+          (println "[drawbridge] test-bell ack failed:" (.getMessage e)))))))
+
+(defn- agency-ws-listener [state agent-id]
+  (reify WebSocket$Listener
+    (onOpen [_ ws]
+      (swap! state assoc
+             :ws ws
+             :last-connected (str (java.time.Instant/now))
+             :last-error nil)
+      (try
+        (.sendText ^java.net.http.WebSocket ws
+                   (json/encode {:type "register" :agent-id agent-id})
+                   true)
+        (catch Exception e
+          (swap! state assoc :last-error (.getMessage e))))
+      (.request ^java.net.http.WebSocket ws 1))
+
+    (onText [_ ws data last]
+      (.request ^java.net.http.WebSocket ws 1)
+      (when last
+        (let [text (str data)]
+          (try
+            (let [msg (json/parse-string text true)
+                  msg-type (:type msg)]
+              (case msg-type
+                "bell" (handle-agency-message msg)
+                (println (format "[drawbridge] Agency WS message: %s" msg-type))))
+            (catch Exception e
+              (println "[drawbridge] Agency WS parse error:" (.getMessage e))))))
+      nil)
+
+    (onClose [_ _ws status reason]
+      (swap! state assoc
+             :ws nil
+             :last-closed (str (java.time.Instant/now)))
+      (println (format "[drawbridge] Agency WS closed: %s %s" status reason)))
+
+    (onError [_ _ws err]
+      (swap! state assoc :ws nil :last-error (.getMessage err))
+      (println "[drawbridge] Agency WS error:" (.getMessage err)))))
+
+(defn- open-agency-ws! [url agent-id state]
+  (let [client (-> (HttpClient/newBuilder)
+                   (.version HttpClient$Version/HTTP_1_1)
+                   (.build))
+        listener (agency-ws-listener state agent-id)
+        fut (-> client
+                (.newWebSocketBuilder)
+                (.buildAsync (URI/create url) listener))]
+    (.get ^CompletableFuture fut 10 TimeUnit/SECONDS)))
+
+(defn start-agency-ws-client!
+  "Start a WebSocket client to Agency (/agency/ws)."
+  [{:keys [url agent-id reconnect-ms ping-ms]}]
+  (let [url (some-> url str/trim not-empty)
+        agent-id (or (some-> agent-id str/trim not-empty)
+                     (:agent-id @agent-state)
+                     "agent")
+        reconnect-ms (or reconnect-ms 5000)
+        ping-ms (or ping-ms 15000)]
+    (when url
+      (stop-agency-ws-client!)
+      (let [stop-flag (atom false)
+            state (atom {:ws nil
+                         :last-error nil
+                         :last-attempt nil
+                         :last-connected nil
+                         :last-closed nil
+                         :last-ping nil})]
+        (reset! agency-ws-state {:running? true
+                                 :stop stop-flag
+                                 :state state
+                                 :url url
+                                 :agent-id agent-id
+                                 :reconnect-ms reconnect-ms
+                                 :ping-ms ping-ms})
+        (future
+          (while (not @stop-flag)
+            (if (nil? (:ws @state))
+              (try
+                (swap! state assoc :last-attempt (str (java.time.Instant/now)))
+                (println (format "[drawbridge] Agency WS connecting to %s as %s" url agent-id))
+                (open-agency-ws! url agent-id state)
+                (catch Exception e
+                  (swap! state assoc :last-error (.getMessage e))
+                  (println "[drawbridge] Agency WS connect failed:" (.getMessage e))
+                  (Thread/sleep reconnect-ms)))
+              (Thread/sleep 1000))))
+        (future
+          (while (not @stop-flag)
+            (when-let [ws (:ws @state)]
+              (try
+                (.sendText ^java.net.http.WebSocket ws
+                           (json/encode {:type "ping"})
+                           true)
+                (swap! state assoc :last-ping (str (java.time.Instant/now)))
+                (catch Exception e
+                  (swap! state assoc :last-error (.getMessage e)))))
+            (Thread/sleep ping-ms)))
+        true))))
+
+(defn stop-agency-ws-client!
+  "Stop the Agency WebSocket client."
+  []
+  (when-let [{:keys [stop state]} @agency-ws-state]
+    (when stop
+      (reset! stop true))
+    (when-let [ws (:ws @state)]
+      (try
+        (.sendClose ^java.net.http.WebSocket ws 1000 "drawbridge stop")
+        (catch Exception _)))
+    (reset! agency-ws-state {:running? false
+                             :stop nil
+                             :state (atom {:ws nil
+                                           :last-error nil
+                                           :last-attempt nil
+                                           :last-connected nil
+                                           :last-closed nil})
+                             :url nil
+                             :agent-id nil
+                             :reconnect-ms 5000})
+    true))
 
 (defn register-with-agency!
   "Register this Drawbridge instance with Agency."
@@ -407,13 +604,22 @@
      :token           - Auth token (default from .admintoken or 'change-me')
      :invoke-fn       - REQUIRED. Function (fn [text session-id] -> {:result :session-id :exit-code})
      :endpoint-prefix - URL prefix (default 'agent', e.g. POST /agent)
+     :agency-ws-url   - WebSocket URL for Agency (/agency/ws) (optional)
+     :agency-http-url - HTTP base URL for Agency (optional)
+     :agency-ws-agent-id - Agent id to use when connecting to Agency WS (optional)
+     :agency-ws-reconnect-ms - Reconnect delay for Agency WS (default 5000)
+     :agency-ws-ping-ms - Ping interval for Agency WS (default 15000)
+     :register-local? - Register local handler with Agency (default true)
      :resume-id       - Initial session ID (optional)
      :agent-id        - Agent ID to register with Agency (optional)"
-  [{:keys [http-port ws-port bind token invoke-fn endpoint-prefix resume-id agent-id]
+  [{:keys [http-port ws-port bind token invoke-fn endpoint-prefix resume-id agent-id
+           agency-ws-url agency-ws-agent-id agency-ws-reconnect-ms agency-ws-ping-ms register-local?
+           agency-http-url]
     :or {http-port 6768
          ws-port 6770
          bind "127.0.0.1"
-         endpoint-prefix "agent"}}]
+         endpoint-prefix "agent"
+         register-local? true}}]
   (when-not invoke-fn
     (throw (ex-info "invoke-fn is required" {})))
 
@@ -426,7 +632,10 @@
   (swap! agent-state assoc
          :invoke-fn invoke-fn
          :session-id resume-id
-         :agent-id agent-id)
+         :agent-id agent-id
+         :agency-http-url (or agency-http-url
+                              (:agency-http-url @agent-state)
+                              (agency-http-base-from-ws agency-ws-url)))
 
   ;; Load token from file if not provided
   (let [token (or token
@@ -445,13 +654,20 @@
     ;; Start input processor
     (start-input-processor!)
 
-    ;; Register with Agency if agent-id provided
-    (when agent-id
+    ;; Register with Agency (local handler) if agent-id provided
+    (when (and agent-id register-local?)
       (register-with-agency! agent-id))
+
+    ;; Start Agency WS client if URL provided
+    (when agency-ws-url
+      (start-agency-ws-client! {:url agency-ws-url
+                                :agent-id (or agency-ws-agent-id agent-id)
+                                :reconnect-ms agency-ws-reconnect-ms
+                                :ping-ms agency-ws-ping-ms}))
 
     (println (format "[drawbridge] HTTP API on http://%s:%s/%s" bind http-port endpoint-prefix))
     (println (format "[drawbridge] WebSocket on ws://%s:%s" bind ws-port))
-    (when agent-id
+    (when (and agent-id register-local?)
       (println (format "[drawbridge] Registered with Agency as '%s'" agent-id)))
 
     {:http-stop stop :ws-port ws-port :http-port http-port :agent-id agent-id}))
@@ -461,6 +677,7 @@
   []
   (when-let [agent-id (:agent-id @agent-state)]
     (unregister-from-agency! agent-id))
+  (stop-agency-ws-client!)
   (clear-state!)
   (stop-ws-server!)
   (when-let [stop-fn @server]

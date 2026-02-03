@@ -29,17 +29,17 @@
 
    Uses:
    - codex exec for non-interactive mode
-   - --json --output-last-message for structured output
+   - --json for structured output
    - --full-auto for autonomous operation (no approval prompts)
    - codex exec resume <session-id> for session continuity
 
    Unlike Claude, Codex takes the prompt as an argument, not stdin."
   [text session-id]
-  (let [;; Build command: codex exec [resume <id>] --json --output-last-message --full-auto "prompt"
+  (let [;; Build command: codex exec [resume <id>] --json --full-auto "prompt"
         base-cmd (if session-id
                    ["codex" "exec" "resume" session-id]
                    ["codex" "exec"])
-        cmd (into base-cmd ["--json" "--output-last-message" "--full-auto" text])
+        cmd (into base-cmd ["--json" "--full-auto" text])
         _ (println (format "[codex-bridge] Executing: codex exec%s (prompt: %s)"
                            (if session-id (str " resume " session-id) "")
                            (subs text 0 (min 50 (count text)))))
@@ -62,17 +62,24 @@
         (if (zero? exit-code)
           (try
             ;; Codex --json outputs newline-delimited JSON events
-            ;; The last line with type "result" contains the final output
             (let [lines (str/split-lines out-str)
                   json-lines (keep #(try (json/parse-string % true) (catch Exception _ nil)) lines)
-                  ;; Find the result event or last message
-                  result-event (last (filter #(= (:type %) "result") json-lines))
-                  last-message (or (:message result-event)
+                  ;; Find the last agent message item
+                  last-agent-message (->> json-lines
+                                          (filter #(= (:type %) "item.completed"))
+                                          (map :item)
+                                          (filter #(= (:type %) "agent_message"))
+                                          (map #(or (:text %) (:content %)))
+                                          (remove nil?)
+                                          last)
+                  last-message (or last-agent-message
+                                   (:message (last (filter :message json-lines)))
                                    (:content (last (filter :content json-lines)))
                                    out-str)
-                  ;; Session ID is in the session event
-                  session-event (first (filter #(= (:type %) "session") json-lines))
-                  new-session-id (:session_id session-event)]
+                  ;; Session ID is in the thread.started event
+                  thread-event (first (filter #(= (:type %) "thread.started") json-lines))
+                  new-session-id (or (:thread_id thread-event)
+                                     (:session_id thread-event))]
               (println (format "[codex-bridge] Session: %s" new-session-id))
               {:result last-message
                :session-id new-session-id
@@ -98,8 +105,15 @@
      :bind       - Bind address (default 127.0.0.1)
      :token      - Auth token (default from .admintoken or 'change-me')
      :resume-id  - Codex session ID to resume (optional)
-     :agent-id   - Agent ID to register with Agency (optional)"
-  [{:keys [http-port ws-port bind token resume-id agent-id]
+     :agent-id   - Agent ID to register with Agency (optional)
+     :agency-ws-url - Agency WS URL (optional)
+     :agency-http-url - Agency HTTP base URL (optional)
+     :agency-ws-agent-id - Agent id to use when connecting to Agency WS (optional)
+     :agency-ws-reconnect-ms - Reconnect delay for Agency WS (optional)
+     :agency-ws-ping-ms - Ping interval for Agency WS (optional)
+     :register-local? - Register local handler with Agency (default true)"
+  [{:keys [http-port ws-port bind token resume-id agent-id
+           agency-ws-url agency-http-url agency-ws-agent-id agency-ws-reconnect-ms agency-ws-ping-ms register-local?]
     :or {http-port 6769
          ws-port 6771
          bind "127.0.0.1"}}]
@@ -110,7 +124,13 @@
                 :invoke-fn invoke-codex
                 :endpoint-prefix "codex"
                 :resume-id resume-id
-                :agent-id agent-id}))
+                :agent-id agent-id
+                :agency-ws-url agency-ws-url
+                :agency-http-url agency-http-url
+                :agency-ws-agent-id agency-ws-agent-id
+                :agency-ws-reconnect-ms agency-ws-reconnect-ms
+                :agency-ws-ping-ms agency-ws-ping-ms
+                :register-local? (if (nil? register-local?) true register-local?)}))
 
 (defn stop!
   "Stop the Codex Drawbridge."

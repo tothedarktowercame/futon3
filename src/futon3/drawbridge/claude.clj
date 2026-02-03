@@ -87,8 +87,15 @@
      :bind       - Bind address (default 127.0.0.1)
      :token      - Auth token (default from .admintoken or 'change-me')
      :resume-id  - Claude session ID to resume (optional)
-     :agent-id   - Agent ID to register with Agency (optional)"
-  [{:keys [http-port ws-port bind token resume-id agent-id]
+     :agent-id   - Agent ID to register with Agency (optional)
+     :agency-ws-url - Agency WS URL (optional)
+     :agency-http-url - Agency HTTP base URL (optional)
+     :agency-ws-agent-id - Agent id to use when connecting to Agency WS (optional)
+     :agency-ws-reconnect-ms - Reconnect delay for Agency WS (optional)
+     :agency-ws-ping-ms - Ping interval for Agency WS (optional)
+     :register-local? - Register local handler with Agency (default true)"
+  [{:keys [http-port ws-port bind token resume-id agent-id
+           agency-ws-url agency-http-url agency-ws-agent-id agency-ws-reconnect-ms agency-ws-ping-ms register-local?]
     :or {http-port 6768
          ws-port 6770
          bind "127.0.0.1"}}]
@@ -99,7 +106,13 @@
                 :invoke-fn invoke-claude
                 :endpoint-prefix "claude"
                 :resume-id resume-id
-                :agent-id agent-id}))
+                :agent-id agent-id
+                :agency-ws-url agency-ws-url
+                :agency-http-url agency-http-url
+                :agency-ws-agent-id agency-ws-agent-id
+                :agency-ws-reconnect-ms agency-ws-reconnect-ms
+                :agency-ws-ping-ms agency-ws-ping-ms
+                :register-local? (if (nil? register-local?) true register-local?)}))
 
 (defn stop!
   "Stop the Claude Drawbridge."

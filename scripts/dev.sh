@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+  RED="\033[0;31m"
+  YELLOW="\033[0;33m"
+  GREEN="\033[0;32m"
+  BLUE="\033[0;34m"
+  RESET="\033[0m"
+else
+  RED=""
+  YELLOW=""
+  GREEN=""
+  BLUE=""
+  RESET=""
+fi
+
+info() { printf "%b\n" "${BLUE}$*${RESET}"; }
+warn() { printf "%b\n" "${YELLOW}$*${RESET}" >&2; }
+err()  { printf "%b\n" "${RED}$*${RESET}" >&2; }
+
 # Futon3 consolidated dev server
 #
 # All services now run in a single JVM via f2.musn:
@@ -20,6 +38,8 @@ set -euo pipefail
 #   FUTON3_CHAT_SUPERVISOR=0 - disable chat supervisor
 #   FUTON3_AGENCY=0          - disable Agency HTTP service
 #   FUTON3_DRAWBRIDGE=0      - disable Drawbridge REPL (enabled by default)
+#   FUTON3_CODEX_DRAWBRIDGE=0 - disable Codex drawbridge (enabled by default on laptop)
+#   FUTON3_CODEX_SESSION_ID   - optional Codex resume id for drawbridge
 #
 # Drawbridge runs on port 6767 for hot-reloading code:
 #   ./scripts/repl-eval '(require '\''f2.transport :reload)'
@@ -32,10 +52,10 @@ cd "$(dirname "$0")/.."
 # Load environment defaults
 # Priority: existing env vars > .env.local > .env.dev
 if [[ -f .env.local ]]; then
-  echo "[dev] Loading .env.local"
+  info "[dev] Loading .env.local"
   set -a; source .env.local; set +a
 elif [[ -f .env.dev ]]; then
-  echo "[dev] Loading .env.dev"
+  info "[dev] Loading .env.dev"
   set -a; source .env.dev; set +a
 fi
 
@@ -61,6 +81,7 @@ fi
 
 # Enable Drawbridge by default for dev (hot-reloading on port 6767)
 export FUTON3_DRAWBRIDGE="${FUTON3_DRAWBRIDGE:-1}"
+export FUTON3_CODEX_DRAWBRIDGE="${FUTON3_CODEX_DRAWBRIDGE:-1}"
 
 # Load ADMIN_TOKEN from .admintoken if not already set (required for Drawbridge)
 if [[ -z "${ADMIN_TOKEN:-}" && -f .admintoken ]]; then
@@ -95,11 +116,12 @@ port_open() {
 }
 
 agency_pid=""
+codex_drawbridge_pid=""
 if [[ "${FUTON3_AGENCY:-1}" != "0" ]]; then
   if port_open 7070; then
-    echo "[dev] Agency already running on port 7070."
+    warn "[dev] Agency already running on port 7070."
   else
-    echo "[dev] Starting Agency on port 7070..."
+    info "[dev] Starting Agency on port 7070..."
     (cd "${ROOT}" && ./scripts/agency) &
     agency_pid="$!"
   fi
@@ -109,8 +131,34 @@ cleanup() {
   if [[ -n "${agency_pid}" ]]; then
     kill "${agency_pid}" >/dev/null 2>&1 || true
   fi
+  if [[ -n "${codex_drawbridge_pid}" ]]; then
+    kill "${codex_drawbridge_pid}" >/dev/null 2>&1 || true
+  fi
 }
 trap cleanup EXIT
+
+if [[ "${FUTON3_CODEX_DRAWBRIDGE:-1}" != "0" ]]; then
+  if port_open 6769; then
+    warn "[dev] Codex drawbridge already running on port 6769."
+  else
+    info "[dev] Starting Codex drawbridge on ports 6769/6771..."
+    cat > /tmp/codex-drawbridge.sh <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+cd /home/joe/code/futon3
+resume_id="${FUTON3_CODEX_SESSION_ID:-}"
+if [[ -n "${resume_id}" ]]; then
+  resume_form=":resume-id \"${resume_id}\""
+else
+  resume_form=""
+fi
+exec clojure -M -e "(require (quote futon3.drawbridge.codex)) (futon3.drawbridge.codex/start! {:http-port 6769 :ws-port 6771 :agent-id \"codex\" ${resume_form} :agency-ws-url \"ws://localhost:7070/agency/ws?agent-id=codex\" :register-local? false}) (Thread/sleep 1000000000)"
+EOF
+    chmod +x /tmp/codex-drawbridge.sh
+    setsid /tmp/codex-drawbridge.sh >/tmp/codex-drawbridge.log 2>&1 </dev/null &
+    codex_drawbridge_pid="$!"
+  fi
+fi
 
 if [[ -n "${JAVA_OPTS:-}" ]]; then
   clojure $JAVA_OPTS -M:dev "$@"

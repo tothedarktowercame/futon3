@@ -9,7 +9,8 @@
 (def ^:private log-path (or (System/getenv "AGENCY_LOG") "/tmp/agency_http.log"))
 
 ;; Forward declarations for functions used in handler
-(declare handle-agency-ws connected-agent-ids handle-get-secret handle-create-secret handle-ring-bell)
+(declare handle-agency-ws connected-agent-ids handle-get-secret handle-create-secret
+         handle-ack handle-ack-status handle-ring-bell)
 
 (defn- log! [msg & [ctx]]
   (try
@@ -112,12 +113,21 @@
         (let [secret-id (subs uri (count "/agency/secret/"))]
           (json-response (handle-get-secret secret-id)))
 
+        ;; Secret acknowledgement status (GET /agency/ack/:id)
+        (and (= method :get) (str/starts-with? uri "/agency/ack/"))
+        (let [secret-id (subs uri (count "/agency/ack/"))]
+          (json-response (handle-ack-status secret-id)))
+
         (not= :post method)
         (json-response 405 {:ok false :err "method not allowed"})
 
         ;; Secret creation (POST /agency/secret)
         (= uri "/agency/secret")
         (json-response (handle-create-secret (parse-json-body req)))
+
+        ;; Secret acknowledgement (POST /agency/ack)
+        (= uri "/agency/ack")
+        (json-response (handle-ack (parse-json-body req)))
 
         ;; Ring bell to connected agents
         (= uri "/agency/bell")
@@ -138,6 +148,7 @@
 
 ;; Secret storage for test-bell-ack peripheral
 (defonce ^:private secrets (atom {}))
+(defonce ^:private acks (atom {}))
 
 (defn- generate-secret-id []
   (str "sec-" (subs (str (java.util.UUID/randomUUID)) 0 8)))
@@ -155,12 +166,39 @@
       (swap! secrets dissoc secret-id))
     {:ok true :secret-id secret-id :value value}))
 
+(defn- handle-ack [body]
+  (let [{:keys [secret-id value agent-id]} body
+        secret-id (some-> secret-id str)
+        value (some-> value str)
+        secret (get @secrets secret-id)]
+    (cond
+      (str/blank? secret-id)
+      {:ok false :err "missing secret-id"}
+
+      (str/blank? value)
+      {:ok false :err "missing value"}
+
+      (nil? secret)
+      {:ok false :err "unknown secret"}
+
+      (not= value (:value secret))
+      {:ok false :err "value mismatch"}
+
+      :else
+      (let [ack {:agent-id (some-> agent-id str)
+                 :value value
+                 :timestamp (str (java.time.Instant/now))}]
+        (swap! acks assoc secret-id ack)
+        {:ok true :secret-id secret-id :ack ack}))))
+
+(defn- handle-ack-status [secret-id]
+  (if-let [ack (get @acks (some-> secret-id str))]
+    {:ok true :secret-id secret-id :ack ack}
+    {:ok false :err "ack not found" :secret-id secret-id}))
+
 (defn- handle-get-secret [secret-id]
   (if-let [entry (get @secrets secret-id)]
-    (do
-      ;; One-time retrieval - delete after fetch
-      (swap! secrets dissoc secret-id)
-      {:ok true :value (:value entry)})
+    {:ok true :value (:value entry)}
     {:ok false :err "secret not found or expired"}))
 
 ;; =============================================================================

@@ -2011,7 +2011,6 @@
    (forum-svc/init!)
    ;; Start Java-WebSocket servers (avoids http-kit masking/compression issues)
    (forum-ws/start!)
-   (lab-ws/start!)
    (let [port (or port (get-in state [:config :transport-port] 5050))
          stop-fn (http/run-server #'reloadable-handler {:port port})]
      (swap! (:config state) assoc :transport-port port)

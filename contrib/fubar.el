@@ -887,7 +887,12 @@ This calls the par-bell.sh script to create a collaborative PAR session."
   :group 'fubar)
 
 (defcustom fubar-test-bell-agents '("fucodex" "fuclaude")
-  "Agents to ping with test-bell."
+  "Fallback agents to ping when no connected agents are discovered."
+  :type '(repeat string)
+  :group 'fubar)
+
+(defcustom fubar-agency-global-urls '("http://localhost:7070")
+  "Agency base URLs to use for global test bells."
   :type '(repeat string)
   :group 'fubar)
 
@@ -948,10 +953,16 @@ This calls the par-bell.sh script to create a collaborative PAR session."
           (cond
            ((eq status 'pending)
             (insert "⏳ waiting...\n"))
+           ((and (consp status) (eq (car status) 'verified))
+            (insert (propertize "✓ VERIFIED\n" 'face 'success)))
+           ((and (consp status) (eq (car status) 'mismatch))
+            (insert (propertize (format "⚠ MISMATCH (%s)\n" (cdr status))
+                                'face 'warning)))
            ((and (consp status) (eq (car status) 'ok))
             (insert (format "✓ %s\n" (cdr status))))
            ((and (consp status) (eq (car status) 'error))
-            (insert (format "✗ %s\n" (cdr status))))
+            (insert (propertize (format "✗ %s\n" (cdr status))
+                                'face 'error)))
            (t
             (insert (format "? %s\n" status))))))
       (insert "\n")
@@ -986,13 +997,14 @@ Displays results in *Test Bell* buffer as responses arrive."
 (defvar fubar-test-bell-v2--buffer "*Test Bell V2*"
   "Buffer for v2 test-bell results.")
 
-(defun fubar-test-bell-v2--create-secret (callback)
+(defun fubar-test-bell-v2--create-secret (callback &optional base-url)
   "Create a secret via Agency, call CALLBACK with (secret-id . secret-value)."
   (let* ((url-request-method "POST")
          (url-request-extra-headers
           '(("Content-Type" . "application/json")))
          (url-request-data (encode-coding-string (json-encode '((ttl-ms . 60000))) 'utf-8))
-         (url (concat (string-trim-right fubar-agency-url "/") "/agency/secret")))
+         (agency-base (string-trim-right (or base-url fubar-agency-url) "/"))
+         (url (concat agency-base "/agency/secret")))
     (url-retrieve
      url
      (lambda (status callback)
@@ -1013,14 +1025,14 @@ Displays results in *Test Bell* buffer as responses arrive."
      (list callback)
      t t)))
 
-(defun fubar-test-bell-v2--summon-agent (agent secret-id secret-value callback)
+(defun fubar-test-bell-v2--summon-agent (agent secret-id secret-value callback &optional base-url)
   "Summon AGENT with SECRET-ID, expecting them to return SECRET-VALUE."
   (let* ((url-request-method "POST")
          (url-request-extra-headers
           '(("Content-Type" . "application/json")
             ("Accept" . "application/json")))
          (timestamp (format-time-string "%Y-%m-%dT%H:%M:%SZ" nil t))
-         (agency-base (string-trim-right fubar-agency-url "/"))
+         (agency-base (string-trim-right (or base-url fubar-agency-url) "/"))
          (payload `((agent-id . ,agent)
                     (peripheral . "test-bell-ack")
                     (prompt . ,(format "Test bell at %s. Secret ID: %s
@@ -1029,9 +1041,9 @@ Run this command to fetch the secret:
   curl -s %s/agency/secret/%s
 
 Then respond with ONLY the secret value from the JSON response."
-                                       timestamp secret-id agency-base secret-id)))))
+                                       timestamp secret-id agency-base secret-id))))
          (url-request-data (encode-coding-string (json-encode payload) 'utf-8))
-         (url (concat (string-trim-right fubar-agency-url "/") "/agency/run")))
+         (url (concat agency-base "/agency/run")))
     (url-retrieve
      url
      (lambda (status agent secret-value callback)
@@ -1054,7 +1066,7 @@ Then respond with ONLY the secret value from the JSON response."
          (kill-buffer (current-buffer))
          (funcall callback agent result)))
      (list agent secret-value callback)
-     t t))
+     t t)))
 
 (defun fubar-test-bell-v2--update-buffer ()
   "Update the v2 test-bell buffer."
@@ -1095,12 +1107,15 @@ Then respond with ONLY the secret value from the JSON response."
   "Schedule v2 buffer update on main event loop."
   (run-at-time 0 nil #'fubar-test-bell-v2--update-buffer))
 
-(defun fubar-test-bell-v2 (&optional agents)
+(defun fubar-test-bell-v2 (&optional agents base-url buffer-name)
   "Ring test bell v2 with secret verification for AGENTS.
 Creates a unique secret per agent, summons them to retrieve it,
 and verifies they return the correct value."
   (interactive)
-  (let ((agents (or agents fubar-test-bell-agents)))
+  (let* ((agents (or agents fubar-test-bell-agents))
+         (base-url (or base-url fubar-agency-url))
+         (buffer-name (or buffer-name fubar-test-bell-v2--buffer)))
+    (setq fubar-test-bell-v2--buffer buffer-name)
     (setq fubar-test-bell-v2--pending nil)
     (pop-to-buffer (get-buffer-create fubar-test-bell-v2--buffer))
     (erase-buffer)
@@ -1124,7 +1139,230 @@ and verifies they return the correct value."
                   (fubar-test-bell-v2--update-buffer-safe))))
            (push (list agent nil nil '(error . "failed to create secret"))
                  fubar-test-bell-v2--pending)
-           (fubar-test-bell-v2--update-buffer-safe)))))))
+           (fubar-test-bell-v2--update-buffer-safe)))
+       base-url))))
+
+(defun fubar--test-bell-v2-run (agents base-url buffer-name)
+  "Run a v2 test bell with local state and BUFFER-NAME."
+  (let ((pending nil))
+    (with-current-buffer (get-buffer-create buffer-name)
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (insert (format "=== Test Bell V2 (%s) ===\n\nCreating secrets...\n" base-url))))
+    (dolist (agent agents)
+      (fubar-test-bell-v2--create-secret
+       (lambda (secret-pair)
+         (if secret-pair
+             (let ((secret-id (car secret-pair))
+                   (secret-value (cdr secret-pair)))
+               (push (list agent secret-id secret-value 'pending) pending)
+               (fubar--test-bell-v2-update buffer-name pending)
+               (fubar-test-bell-v2--summon-agent
+                agent secret-id secret-value
+                (lambda (_agent result)
+                  (let ((entry (assoc agent pending)))
+                    (when entry
+                      (setf (nth 3 entry) result)))
+                  (fubar--test-bell-v2-update buffer-name pending))
+                base-url))
+           (push (list agent nil nil '(error . "failed to create secret")) pending)
+           (fubar--test-bell-v2-update buffer-name pending)))
+       base-url))))
+
+(defun fubar--test-bell-v2-update (buffer-name pending)
+  "Update BUFFER-NAME with PENDING v2 state."
+  (run-at-time
+   0 nil
+   (lambda ()
+     (with-current-buffer (get-buffer-create buffer-name)
+       (let ((inhibit-read-only t))
+         (erase-buffer)
+         (insert (format "=== Test Bell V2 (%s) ===\n\n" buffer-name))
+         (dolist (entry pending)
+           (let* ((agent (car entry))
+                  (data (cdr entry))
+                  (secret-id (nth 0 data))
+                  (secret-value (nth 1 data))
+                  (status (nth 2 data)))
+             (insert (format "  %-12s  [%s]\n" agent (or secret-id "no-secret")))
+             (insert (format "                Expected: %s\n" (or secret-value "?")))
+             (cond
+              ((eq status 'pending)
+               (insert "                Status: ⏳ waiting...\n"))
+              ((and (consp status) (eq (car status) 'verified))
+               (insert (format "                Status: ✓ VERIFIED - %s\n"
+                               (truncate-string-to-width (cdr status) 40))))
+              ((and (consp status) (eq (car status) 'mismatch))
+               (insert (format "                Status: ⚠ MISMATCH - got: %s\n"
+                               (truncate-string-to-width (cdr status) 40))))
+              ((and (consp status) (eq (car status) 'error))
+               (insert (format "                Status: ✗ ERROR - %s\n" (cdr status))))
+              (t
+               (insert (format "                Status: ? %s\n" status))))
+             (insert "\n")))
+         (let ((verified (seq-count (lambda (e)
+                                      (and (consp (nth 2 (cdr e)))
+                                           (eq (car (nth 2 (cdr e))) 'verified)))
+                                    pending))
+               (total (length pending)))
+           (insert (format "Verified: %d/%d\n" verified total))))))))
+
+;;; Local/Global test bells (connected-agent ACKs)
+
+(defun fubar--agency-connected-async (base-url callback)
+  "Fetch connected agents from Agency at BASE-URL, call CALLBACK with list."
+  (let* ((url-request-method "GET")
+         (url (concat (string-trim-right base-url "/") "/agency/connected")))
+    (url-retrieve
+     url
+     (lambda (status callback)
+       (let ((agents
+              (if (plist-get status :error)
+                  nil
+                (goto-char (point-min))
+                (when (re-search-forward "\n\n" nil t)
+                  (condition-case nil
+                      (let* ((json-object-type 'plist)
+                             (json-array-type 'list)
+                             (resp (json-read)))
+                        (when (plist-get resp :ok)
+                          (let ((vals (plist-get resp :agents)))
+                            (and (seq vals) vals))))
+                    (error nil))))))
+         (kill-buffer (current-buffer))
+         (funcall callback agents)))
+     (list callback)
+     t t)))
+
+(defcustom fubar-test-bell-timeout-seconds 20
+  "Seconds to wait for test-bell ACK before marking timeout."
+  :type 'integer
+  :group 'fubar)
+
+(defun fubar--bell-ack-status-async (base-url secret-id callback)
+  "Fetch ack status for SECRET-ID from Agency at BASE-URL."
+  (let* ((url-request-method "GET")
+         (url (concat (string-trim-right base-url "/") "/agency/ack/" secret-id)))
+    (url-retrieve
+     url
+     (lambda (_status callback)
+       (let ((result nil))
+         (goto-char (point-min))
+         (when (re-search-forward "\n\n" nil t)
+           (condition-case nil
+               (let* ((json-object-type 'plist)
+                      (json-array-type 'list)
+                      (resp (json-read)))
+                 (setq result resp))
+             (error nil)))
+         (kill-buffer (current-buffer))
+         (funcall callback result)))
+     (list callback)
+     t t)))
+
+(defun fubar--bell-test-async (agent base-url callback)
+  "Send a test bell to AGENT via BASE-URL, then poll for ack."
+  (let* ((url-request-method "POST")
+         (url-request-extra-headers
+          '(("Content-Type" . "application/json")
+            ("Accept" . "application/json")))
+         (payload `((agent-id . ,agent)
+                    (type . "test-bell")
+                    (payload . ((message . "ACK: fetch secret and reply")))))
+         (url-request-data (encode-coding-string (json-encode payload) 'utf-8))
+         (url (concat (string-trim-right base-url "/") "/agency/bell"))
+         (start (float-time)))
+    (url-retrieve
+     url
+     (lambda (status agent base-url callback start)
+       (let ((secret-id nil)
+             (secret-value nil))
+         (if (plist-get status :error)
+             (funcall callback agent (cons 'error (format "%s" (plist-get status :error))))
+           (goto-char (point-min))
+           (when (re-search-forward "\n\n" nil t)
+             (condition-case nil
+                 (let* ((json-object-type 'plist)
+                        (json-array-type 'list)
+                        (resp (json-read)))
+                   (setq secret-id (plist-get (plist-get resp :bell) :secret-id))
+                   (setq secret-value (plist-get resp :secret-value)))
+               (error nil)))
+           (if (or (null secret-id) (null secret-value))
+               (funcall callback agent (cons 'error "no secret in bell response"))
+             (fubar--bell-ack-poll agent base-url secret-id secret-value callback start))))
+       (kill-buffer (current-buffer)))
+     (list agent base-url callback start)
+     t t)))
+
+(defun fubar--bell-ack-poll (agent base-url secret-id secret-value callback start-time)
+  "Poll Agency for ack until timeout."
+  (fubar--bell-ack-status-async
+   base-url secret-id
+   (lambda (resp)
+     (let ((ok (plist-get resp :ok))
+           (ack (plist-get resp :ack)))
+       (cond
+        ((and ok ack)
+         (let ((value (plist-get ack :value)))
+           (if (string= value secret-value)
+               (funcall callback agent (cons 'verified value))
+             (funcall callback agent (cons 'mismatch (or value ""))))))
+        ((> (- (float-time) start-time) fubar-test-bell-timeout-seconds)
+         (funcall callback agent (cons 'error "timeout")))
+        (t
+         (run-at-time 0.5 nil #'fubar--bell-ack-poll
+                      agent base-url secret-id secret-value callback start-time)))))))
+
+(defun fubar-test-local ()
+  "Test local Agency by ACKing only connected agents via bell+ack."
+  (interactive)
+  (let ((base-url fubar-agency-url))
+    (fubar--agency-connected-async
+     base-url
+     (lambda (agents)
+       (let ((agents (or agents fubar-test-bell-agents)))
+         (if (null agents)
+             (message "[fubar] No connected agents at %s" base-url)
+           (setq fubar-test-bell--pending
+                 (mapcar (lambda (a) (cons a 'pending)) agents))
+           (setq fubar-test-bell--buffer "*Test Local*")
+           (pop-to-buffer (get-buffer-create fubar-test-bell--buffer))
+           (fubar-test-bell--update-buffer)
+           (dolist (agent agents)
+             (fubar--bell-test-async
+              agent base-url
+              (lambda (agent result)
+                (setf (alist-get agent fubar-test-bell--pending nil nil #'equal) result)
+                (fubar-test-bell--update-buffer-safe))))))))))
+
+(defun fubar-test-global ()
+  "Test all Agency URLs by ACKing connected agents at each.
+ Runs a separate buffer per Agency."
+  (interactive)
+  (dolist (base-url fubar-agency-global-urls)
+    (let ((base-url (string-trim-right base-url "/")))
+      (fubar--agency-connected-async
+       base-url
+       (lambda (agents)
+         (let* ((agents (or agents fubar-test-bell-agents))
+                (buf (format "*Test Global: %s*" base-url)))
+           (if (null agents)
+               (message "[fubar] No connected agents at %s" base-url)
+             (setq fubar-test-bell--pending
+                   (mapcar (lambda (a) (cons a 'pending)) agents))
+             (setq fubar-test-bell--buffer buf)
+             (pop-to-buffer (get-buffer-create fubar-test-bell--buffer))
+             (fubar-test-bell--update-buffer)
+             (dolist (agent agents)
+               (fubar--bell-test-async
+                agent base-url
+                (lambda (agent result)
+                  (setf (alist-get agent fubar-test-bell--pending nil nil #'equal) result)
+                  (fubar-test-bell--update-buffer-safe)))))))))))
+
+;; Backwards-compatible aliases
+(defalias 'fubar-test-bell 'fubar-test-local)
 
 ;;; Test Bell WS - ring connected agents via WebSocket
 

@@ -123,9 +123,11 @@
                   ;; Broadcast result line-by-line for nice display
                   (doseq [line (str/split-lines (or result ""))]
                     (broadcast-to-ws-clients! {:type "stdout" :line line}))
-                  ;; Also send to IRC if connected
+                  ;; Also send to IRC if connected (line by line for IRC limits)
                   (when (irc-connected?)
-                    (send-to-irc! (or result "")))
+                    (doseq [line (str/split-lines (or result ""))]
+                      (when-not (str/blank? line)
+                        (send-to-irc! line))))
                   (println (format "[claude-bridge] Session: %s" new-session-id)))
                 (catch Exception e
                   (println "[claude-bridge] JSON parse error:" (.getMessage e))

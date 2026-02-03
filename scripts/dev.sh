@@ -30,7 +30,7 @@ err()  { printf "%b\n" "${RED}$*${RESET}" >&2; }
 #   - Lab WebSocket on port 5056
 #   - Drawbridge REPL on port 6767
 #   - Chat supervisor (polling)
-#   - Agency HTTP on port 7070 (separate process)
+#   - Agency HTTP on port 7070
 #
 # Environment variables to disable services:
 #   FUTON3_MUSN_HTTP=0       - disable MUSN HTTP service
@@ -115,22 +115,11 @@ port_open() {
   (echo > "/dev/tcp/127.0.0.1/${port}") >/dev/null 2>&1
 }
 
-agency_pid=""
 codex_drawbridge_pid=""
-if [[ "${FUTON3_AGENCY:-1}" != "0" ]]; then
-  if port_open 7070; then
-    warn "[dev] Agency already running on port 7070."
-  else
-    info "[dev] Starting Agency on port 7070..."
-    (cd "${ROOT}" && ./scripts/agency) &
-    agency_pid="$!"
-  fi
-fi
+# Agency now runs inside MUSN JVM (see f2.musn/start-agency!)
+# Set FUTON3_AGENCY=0 to disable it
 
 cleanup() {
-  if [[ -n "${agency_pid}" ]]; then
-    kill "${agency_pid}" >/dev/null 2>&1 || true
-  fi
   if [[ -n "${codex_drawbridge_pid}" ]]; then
     kill "${codex_drawbridge_pid}" >/dev/null 2>&1 || true
   fi

@@ -16,6 +16,7 @@
             [f2.adapters.mock :as mock]
             [f2.transport :as transport]
             [f2.ui :as ui]
+            [futon3.agency.http :as agency]
             [futon3.musn.http :as musn-http]
             [futon3.lab.ws :as lab-ws]
             [phoebe.runtime :as phoebe]
@@ -46,6 +47,8 @@
   (not= "0" (env-trim "FUTON3_CHAT_SUPERVISOR")))
 (def ^:private futon1-api-enabled?
   (not= "0" (env-trim "FUTON1_API")))
+(def ^:private agency-enabled?
+  (not= "0" (env-trim "FUTON3_AGENCY")))
 
 ;; IRC bridge config (override via env)
 (def ^:private irc-bridge-host (or (env-trim "FUTON3_IRC_HOST") "127.0.0.1"))
@@ -91,7 +94,9 @@
                 :port 8080
                 :profile (or futon1-profile "default")}
    :lab-ws {:enabled? true
-            :port 5056}})
+            :port 5056}
+   :agency {:enabled? agency-enabled?
+            :port 7070}})
 
 (defn- build-state [config]
   {:config (atom config)
@@ -172,6 +177,13 @@
       ;; Return a stop function
       (fn [] (lab-ws/stop!)))))
 
+(defn- start-agency! [{:keys [agency]}]
+  (when (:enabled? agency)
+    (println (format "[f2.musn] Starting Agency on port %d..." (:port agency)))
+    (let [stop-fn (agency/start! {:port (:port agency)})]
+      (println "[f2.musn] Agency started")
+      stop-fn)))
+
 (defn start!
   ([] (start! {}))
   ([opts]
@@ -227,6 +239,8 @@
                futon1-api-stop (start-futon1-api! config)
                _ (flush)
                lab-ws-stop (start-lab-ws! config)
+               _ (flush)
+               agency-stop (start-agency! config)
                _ (flush)]
            (reset! runtime {:state state
                             :transport transport-stop
@@ -236,12 +250,16 @@
                             :irc-bridge irc-bridge-stop
                             :chat-supervisor chat-supervisor-stop
                             :futon1-api futon1-api-stop
-                            :lab-ws lab-ws-stop})
+                            :lab-ws lab-ws-stop
+                            :agency agency-stop})
            state))))))
 
 (defn stop! []
-  (when-let [{:keys [transport ui drawbridge musn-http irc-bridge chat-supervisor futon1-api lab-ws]} @runtime]
+  (when-let [{:keys [transport ui drawbridge musn-http irc-bridge chat-supervisor futon1-api lab-ws agency]} @runtime]
     ;; Stop in reverse order of startup
+    (when agency
+      (println "Stopping Agency...")
+      (agency))
     (when lab-ws
       (println "Stopping Lab WebSocket...")
       (lab-ws))

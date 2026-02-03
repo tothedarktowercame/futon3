@@ -25,7 +25,8 @@
            (java.net InetSocketAddress)))
 
 ;; Forward declarations
-(declare broadcast-to-ws-clients! ws-clients register-with-agency! unregister-from-agency!)
+(declare broadcast-to-ws-clients! ws-clients register-with-agency! unregister-from-agency!
+         irc-connected? send-to-irc!)
 
 ;; =============================================================================
 ;; Agent Process Management
@@ -122,6 +123,9 @@
                   ;; Broadcast result line-by-line for nice display
                   (doseq [line (str/split-lines (or result ""))]
                     (broadcast-to-ws-clients! {:type "stdout" :line line}))
+                  ;; Also send to IRC if connected
+                  (when (irc-connected?)
+                    (send-to-irc! (or result "")))
                   (println (format "[claude-bridge] Session: %s" new-session-id)))
                 (catch Exception e
                   (println "[claude-bridge] JSON parse error:" (.getMessage e))
@@ -399,6 +403,127 @@
         (unregister-fn agent-id)
         (println "[claude-bridge] Unregistered from Agency")))
     (catch Exception _)))
+
+;; =============================================================================
+;; IRC Chat Integration (for peripheral hops)
+;; =============================================================================
+
+(defonce ^:private irc-state
+  (atom {:socket nil
+         :reader nil
+         :writer nil
+         :room nil
+         :nick nil
+         :transcript []
+         :active false}))
+
+(defn- irc-send! [msg]
+  (when-let [writer (:writer @irc-state)]
+    (doto writer
+      (.write (str msg "\r\n"))
+      (.flush))))
+
+(defn- parse-irc-message [line]
+  (when line
+    (let [[_ prefix command params] (re-matches #"(?::(\S+)\s+)?(\S+)\s*(.*)" line)]
+      {:prefix prefix
+       :command command
+       :params params})))
+
+(defn- handle-irc-privmsg [prefix params]
+  (let [[target & text-parts] (str/split params #"\s+" 2)
+        text (str/replace (first text-parts) #"^:" "")
+        nick (first (str/split (or prefix "") #"!"))]
+    (when (and nick text (not= nick (:nick @irc-state)))
+      ;; Add to transcript
+      (swap! irc-state update :transcript conj
+             {:from nick :text text :at (str (java.time.Instant/now))})
+      ;; Send to Claude
+      (let [prompt (format "[IRC %s] <%s> %s" (:room @irc-state) nick text)]
+        (println (format "[claude-irc] %s: %s" nick text))
+        (future (send-input! prompt))))))
+
+(defn- irc-reader-loop []
+  (future
+    (try
+      (let [reader (:reader @irc-state)]
+        (loop []
+          (when-let [line (try (.readLine reader) (catch Exception _ nil))]
+            (let [{:keys [command params prefix]} (parse-irc-message line)]
+              (case command
+                "PING" (irc-send! (str "PONG " params))
+                "PRIVMSG" (handle-irc-privmsg prefix params)
+                nil))
+            (when (:active @irc-state)
+              (recur)))))
+      (catch Exception e
+        (println "[claude-irc] Reader error:" (.getMessage e))))))
+
+(defn connect-irc!
+  "Connect to IRC and join a room.
+   Options:
+     :host - IRC server (default localhost)
+     :port - IRC port (default 6667)
+     :nick - Nickname (default claude-bridge)
+     :room - Room to join
+     :password - IRC password (optional)"
+  [{:keys [host port nick room password]
+    :or {host "localhost" port 6667 nick "claude-bridge"}}]
+  (try
+    (let [socket (java.net.Socket. host port)
+          reader (io/reader socket)
+          writer (io/writer socket)]
+      (reset! irc-state {:socket socket
+                         :reader reader
+                         :writer writer
+                         :room room
+                         :nick nick
+                         :transcript []
+                         :active true})
+      ;; IRC handshake
+      (when password
+        (irc-send! (str "PASS " password)))
+      (irc-send! (str "NICK " nick))
+      (irc-send! (str "USER " nick " 0 * :" nick))
+      (Thread/sleep 1000)
+      (when room
+        (irc-send! (str "JOIN #" (str/replace room #"^#" ""))))
+      ;; Start reader loop
+      (irc-reader-loop)
+      (println (format "[claude-irc] Connected to %s:%d as %s, joined #%s" host port nick room))
+      true)
+    (catch Exception e
+      (println "[claude-irc] Connect failed:" (.getMessage e))
+      false)))
+
+(defn disconnect-irc!
+  "Disconnect from IRC and return transcript."
+  []
+  (when (:active @irc-state)
+    (swap! irc-state assoc :active false)
+    (try
+      (irc-send! "QUIT :Hop complete")
+      (Thread/sleep 200)
+      (.close (:socket @irc-state))
+      (catch Exception _))
+    (let [transcript (:transcript @irc-state)]
+      (reset! irc-state {:socket nil :reader nil :writer nil
+                         :room nil :nick nil :transcript [] :active false})
+      (println "[claude-irc] Disconnected")
+      transcript)))
+
+(defn send-to-irc!
+  "Send a message to the current IRC room."
+  [text]
+  (when-let [room (:room @irc-state)]
+    (let [target (str "#" (str/replace room #"^#" ""))]
+      (irc-send! (str "PRIVMSG " target " :" text))
+      ;; Add to transcript
+      (swap! irc-state update :transcript conj
+             {:from (:nick @irc-state) :text text :at (str (java.time.Instant/now))}))))
+
+(defn irc-connected? []
+  (:active @irc-state))
 
 (comment
   ;; Development / REPL usage

@@ -1321,7 +1321,7 @@ Optional TYPE can be \"local\" or \"remote\" to filter agents."
                       agent base-url secret-id secret-value callback start-time)))))))
 
 (defun fubar-test-local ()
-  "Test local (in-JVM) agents at local Agency via bell+ack."
+  "Test agents connected to the local Agency via bell+ack."
   (interactive)
   (let ((base-url fubar-agency-url))
     (fubar--agency-connected-async
@@ -1341,7 +1341,7 @@ Optional TYPE can be \"local\" or \"remote\" to filter agents."
               (lambda (agent result)
                 (setf (alist-get agent fubar-test-bell--pending nil nil #'equal) result)
                 (fubar-test-bell--update-buffer-safe)))))))
-     "local")))
+     nil)))
 
 (defun fubar-test-global ()
   "Test all Agency URLs by ACKing connected agents at each.

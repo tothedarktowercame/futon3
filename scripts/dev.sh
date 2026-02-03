@@ -40,6 +40,7 @@ err()  { printf "%b\n" "${RED}$*${RESET}" >&2; }
 #   FUTON3_DRAWBRIDGE=0      - disable Drawbridge REPL (enabled by default)
 #   FUTON3_CODEX_DRAWBRIDGE=0 - disable Codex drawbridge (enabled by default on laptop)
 #   FUTON3_CODEX_SESSION_ID   - optional Codex resume id for drawbridge
+#   FUTON3_CODEX_AGENT_ID     - agent id for Codex drawbridge (default: codex)
 #
 # Drawbridge runs on port 6767 for hot-reloading code:
 #   ./scripts/repl-eval '(require '\''f2.transport :reload)'
@@ -136,12 +137,14 @@ if [[ "${FUTON3_CODEX_DRAWBRIDGE:-1}" != "0" ]]; then
 set -euo pipefail
 cd /home/joe/code/futon3
 resume_id="${FUTON3_CODEX_SESSION_ID:-}"
+agent_id="${FUTON3_CODEX_AGENT_ID:-codex}"
 if [[ -n "${resume_id}" ]]; then
   resume_form=":resume-id \"${resume_id}\""
 else
   resume_form=""
 fi
-exec clojure -M -e "(require (quote futon3.drawbridge.codex)) (futon3.drawbridge.codex/start! {:http-port 6769 :ws-port 6771 :agent-id \"codex\" ${resume_form} :agency-ws-url \"ws://localhost:7070/agency/ws?agent-id=codex\" :register-local? false}) (Thread/sleep 1000000000)"
+expr='(require (quote futon3.drawbridge.codex)) (futon3.drawbridge.codex/start! {:http-port 6769 :ws-port 6771 :agent-id "'"${agent_id}"'" '"${resume_form}"' :agency-ws-url "ws://localhost:7070/agency/ws?agent-id='"${agent_id}"'" :register-local? false}) (Thread/sleep 1000000000)'
+exec clojure -M -e "${expr}"
 EOF
     chmod +x /tmp/codex-drawbridge.sh
     setsid /tmp/codex-drawbridge.sh >/tmp/codex-drawbridge.log 2>&1 </dev/null &

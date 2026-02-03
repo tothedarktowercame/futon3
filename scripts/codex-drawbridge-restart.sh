@@ -9,16 +9,22 @@ set -euo pipefail
 #
 # Optional:
 #   FUTON3_CODEX_AGENCY_WS=ws://host:7070/agency/ws?agent-id=codex
+#   FUTON3_CODEX_AGENT_ID=codex
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 SESSION_ID="${FUTON3_CODEX_SESSION_ID:-}"
-AGENCY_WS="${FUTON3_CODEX_AGENCY_WS:-ws://localhost:7070/agency/ws?agent-id=codex}"
+AGENT_ID="${FUTON3_CODEX_AGENT_ID:-codex}"
+AGENCY_WS="${FUTON3_CODEX_AGENCY_WS:-}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --session-id)
       SESSION_ID="${2:-}"
+      shift 2
+      ;;
+    --agent-id)
+      AGENT_ID="${2:-}"
       shift 2
       ;;
     *)
@@ -33,13 +39,18 @@ if [[ -z "${SESSION_ID}" ]]; then
   exit 1
 fi
 
+if [[ -z "${AGENCY_WS}" ]]; then
+  AGENCY_WS="ws://localhost:7070/agency/ws?agent-id=${AGENT_ID}"
+fi
+
 pgrep -f "drawbridge.codex" | xargs -r kill || true
 
 cat > /tmp/codex-drawbridge.sh <<EOF
 #!/usr/bin/env bash
 set -euo pipefail
 cd "${ROOT}"
-exec clojure -M -e "(require (quote futon3.drawbridge.codex)) (futon3.drawbridge.codex/start! {:http-port 6769 :ws-port 6771 :agent-id \\\"codex\\\" :resume-id \\\"${SESSION_ID}\\\" :agency-ws-url \\\"${AGENCY_WS}\\\" :register-local? false}) (Thread/sleep 1000000000)"
+expr='(require (quote futon3.drawbridge.codex)) (futon3.drawbridge.codex/start! {:http-port 6769 :ws-port 6771 :agent-id "'"${AGENT_ID}"'" :resume-id "'"${SESSION_ID}"'" :agency-ws-url "'"${AGENCY_WS}"'" :register-local? false}) (Thread/sleep 1000000000)'
+exec clojure -M -e "\${expr}"
 EOF
 chmod +x /tmp/codex-drawbridge.sh
 

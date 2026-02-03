@@ -9,7 +9,7 @@
 #   CRDT_HOST       CRDT server host (default: localhost)
 #   CRDT_PORT       CRDT server port (default: 6530)
 #   AGENCY_URL      Agency server URL (default: http://localhost:7070)
-#   PAR_AGENTS      Comma-separated agent IDs (default: fucodex,fuclaude)
+#   PAR_AGENTS      Comma-separated agent IDs (default: query Agency)
 
 set -euo pipefail
 
@@ -21,7 +21,7 @@ Ring the bell for a collaborative PAR session.
 
 Options:
   --title <title>     PAR session title (or pass as first positional arg)
-  --agents <list>     Comma-separated agent IDs (default: fucodex,fuclaude)
+  --agents <list>     Comma-separated agent IDs (default: all from Agency)
   --no-agents         Don't start agent peripherals (human-only PAR)
   --emacs-socket <s>  Emacs server socket name (default: server)
   -h, --help          Show this help
@@ -40,7 +40,7 @@ USAGE
 
 # Defaults
 title=""
-agents="${PAR_AGENTS:-fucodex,fuclaude}"
+agents=""  # Will be populated from Agency if not specified
 start_agents=1
 emacs_socket="${EMACS_SOCKET:-server}"
 crdt_host="${CRDT_HOST:-localhost}"
@@ -87,6 +87,18 @@ if [[ -z "$title" ]]; then
   echo "Error: PAR title is required" >&2
   usage
   exit 2
+fi
+
+# If no agents specified, query Agency for connected agents
+if [[ -z "$agents" ]]; then
+  echo "[bell] Querying Agency for connected agents..."
+  agents=$(curl -s "$agency_url/agency/connected" | jq -r '.agents // [] | join(",")')
+  if [[ -z "$agents" || "$agents" == "null" ]]; then
+    echo "Warning: No agents connected to Agency" >&2
+    agents=""
+  else
+    echo "[bell] Found agents: $agents"
+  fi
 fi
 
 # Convert agents to array

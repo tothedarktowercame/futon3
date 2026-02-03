@@ -865,17 +865,21 @@ Useful when C-c doesn't propagate through EAT or other terminal emulators."
   :group 'fubar)
 
 (defun fubar-par-bell (title &optional agents)
-  "Ring the PAR bell for TITLE, summoning AGENTS (default: fucodex,fuclaude).
+  "Ring the PAR bell for TITLE, summoning AGENTS.
+If AGENTS is nil, queries Agency for all connected agents.
 This calls the par-bell.sh script to create a collaborative PAR session."
   (interactive "sPAR title: ")
-  (let* ((agents (or agents "fucodex,fuclaude"))
-         (script (expand-file-name "scripts/par-bell.sh" fubar-futon3-root)))
+  (let ((script (expand-file-name "scripts/par-bell.sh" fubar-futon3-root)))
     (if (file-executable-p script)
         (async-shell-command
-         (format "%s --title %s --agents %s"
-                 (shell-quote-argument script)
-                 (shell-quote-argument title)
-                 (shell-quote-argument agents))
+         (if agents
+             (format "%s --title %s --agents %s"
+                     (shell-quote-argument script)
+                     (shell-quote-argument title)
+                     (shell-quote-argument agents))
+           (format "%s --title %s"
+                   (shell-quote-argument script)
+                   (shell-quote-argument title)))
          "*PAR Bell*")
       (message "[fubar] par-bell.sh not found"))))
 

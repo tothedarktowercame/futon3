@@ -37,6 +37,8 @@
                            (if session-id (str " --resume " session-id) "")
                            (subs text 0 (min 50 (count text)))))
         pb (ProcessBuilder. ^java.util.List cmd)
+        ;; Set working directory to user home for session lookup
+        _ (.directory pb (java.io.File. (System/getProperty "user.home")))
         _ (.redirectErrorStream pb true)
         proc (.start pb)
         stdin (io/writer (.getOutputStream proc))

@@ -11,7 +11,8 @@
 ;; Forward declarations for functions used in handler
 (declare handle-agency-ws connected-agent-ids local-agent-ids remote-agent-ids
          handle-get-secret handle-create-secret
-         handle-ack handle-ack-status handle-ring-bell)
+         handle-ack handle-ack-status handle-ring-bell
+         handle-page handle-page-response)
 
 (defn- log! [msg & [ctx]]
   (try
@@ -140,9 +141,17 @@
         (= uri "/agency/ack")
         (json-response (handle-ack (parse-json-body req)))
 
-        ;; Ring bell to connected agents
+        ;; Ring bell to connected agents (async fire-and-forget)
         (= uri "/agency/bell")
         (json-response (handle-ring-bell (parse-json-body req)))
+
+        ;; Page a connected agent (sync - wait for response)
+        (= uri "/agency/page")
+        (json-response (handle-page (parse-json-body req)))
+
+        ;; Spawn CLI process (exec is alias for run)
+        (= uri "/agency/exec")
+        (json-response (handle-run (parse-json-body req)))
 
         (= uri "/agency/run")
         (json-response (handle-run (parse-json-body req)))
@@ -301,6 +310,12 @@
         "ack"
         (log! "ws-ack" {:agent-id agent-id :payload (:payload msg)})
 
+        "page-response"
+        (let [{:keys [request-id response]} msg]
+          (if request-id
+            (handle-page-response request-id response)
+            (log! "ws-page-response-missing-id" {:agent-id agent-id})))
+
         ;; Default: log unknown
         (log! "ws-unknown" {:agent-id agent-id :msg msg})))
     (catch Exception e
@@ -355,6 +370,78 @@
          :agent-id agent-id
          :secret-value (:value secret-result)
          :error (when-not sent "agent not connected")}))))
+
+;; =============================================================================
+;; Page endpoint - synchronous request to connected agent
+;; =============================================================================
+
+(defonce ^:private pending-pages (atom {}))
+;; {request-id -> {:promise p :agent-id aid :created-at inst}}
+
+(defn- generate-request-id []
+  (str "req-" (subs (str (java.util.UUID/randomUUID)) 0 12)))
+
+(defn handle-page-response
+  "Called by agents (local handlers or via WS) to deliver a page response.
+   Returns true if the response was delivered, false if request not found/expired."
+  [request-id response]
+  (if-let [entry (get @pending-pages request-id)]
+    (do
+      (deliver (:promise entry) response)
+      (swap! pending-pages dissoc request-id)
+      (log! "page-response-delivered" {:request-id request-id})
+      true)
+    (do
+      (log! "page-response-orphaned" {:request-id request-id})
+      false)))
+
+(defn- handle-page [body]
+  (let [{:keys [agent-id prompt timeout-ms]} body
+        timeout-ms (or timeout-ms 30000)]
+    (cond
+      (str/blank? (str agent-id))
+      {:ok false :err "missing agent-id"}
+
+      (str/blank? (str prompt))
+      {:ok false :err "missing prompt"}
+
+      ;; Check agent is connected
+      (not (or (get @local-handlers (name agent-id))
+               (get @connected-agents (name agent-id))))
+      {:ok false :err "agent not connected"}
+
+      :else
+      (let [request-id (generate-request-id)
+            response-promise (promise)
+            page-msg {:type "page"
+                      :request-id request-id
+                      :prompt prompt
+                      :timestamp (str (java.time.Instant/now))}]
+        ;; Register pending request
+        (swap! pending-pages assoc request-id
+               {:promise response-promise
+                :agent-id agent-id
+                :created-at (System/currentTimeMillis)})
+
+        ;; Schedule cleanup on timeout
+        (future
+          (Thread/sleep (+ timeout-ms 1000))
+          (when (get @pending-pages request-id)
+            (swap! pending-pages dissoc request-id)
+            (log! "page-timeout-cleanup" {:request-id request-id})))
+
+        ;; Send page to agent
+        (let [sent (send-to-agent! agent-id page-msg)]
+          (if-not sent
+            (do
+              (swap! pending-pages dissoc request-id)
+              {:ok false :err "failed to send page to agent"})
+            ;; Wait for response
+            (let [result (deref response-promise timeout-ms :timeout)]
+              (swap! pending-pages dissoc request-id)
+              (if (= result :timeout)
+                {:ok false :err "timeout waiting for agent response" :request-id request-id}
+                {:ok true :response result :request-id request-id}))))))))
 
 (defonce ^:private server-state (atom nil))
 

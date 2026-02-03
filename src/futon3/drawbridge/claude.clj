@@ -25,7 +25,7 @@
            (java.net InetSocketAddress)))
 
 ;; Forward declarations
-(declare broadcast-to-ws-clients! ws-clients)
+(declare broadcast-to-ws-clients! ws-clients register-with-agency! unregister-from-agency!)
 
 ;; =============================================================================
 ;; Agent Process Management
@@ -277,8 +277,9 @@
      :bind       - Bind address (default 127.0.0.1)
      :token      - Auth token (default from .admintoken or 'change-me')
      :resume-id  - Claude session ID to resume (optional)
-     :auto-spawn - Spawn Claude process on start (default true)"
-  [{:keys [http-port ws-port bind token resume-id auto-spawn]
+     :auto-spawn - Spawn Claude process on start (default true)
+     :agent-id   - Agent ID to register with Agency (default nil, no registration)"
+  [{:keys [http-port ws-port bind token resume-id auto-spawn agent-id]
     :or {http-port 6768
          ws-port 6770
          bind "127.0.0.1"
@@ -309,13 +310,23 @@
     (when auto-spawn
       (spawn-agent! {:resume-id resume-id}))
 
+    ;; Register with Agency if agent-id provided
+    (when agent-id
+      (register-with-agency! agent-id)
+      (swap! agent-state assoc :agent-id agent-id))
+
     (println (format "[claude-bridge] HTTP API on http://%s:%s/claude" bind http-port))
     (println (format "[claude-bridge] WebSocket on ws://%s:%s" bind ws-port))
-    {:http-stop stop :ws-port ws-port :http-port http-port}))
+    (when agent-id
+      (println (format "[claude-bridge] Registered with Agency as '%s'" agent-id)))
+    {:http-stop stop :ws-port ws-port :http-port http-port :agent-id agent-id}))
 
 (defn stop!
   "Stop the Claude Drawbridge and kill the agent."
   []
+  ;; Unregister from Agency if we were registered
+  (when-let [agent-id (:agent-id @agent-state)]
+    (unregister-from-agency! agent-id))
   (kill-agent!)
   (stop-ws-server!)
   (when-let [stop-fn @server]
@@ -327,16 +338,47 @@
 ;; Agency Integration
 ;; =============================================================================
 
-(defn push-agency-event!
-  "Push an Agency event (bell, summon, etc.) to Claude.
-   Called directly from Agency service - no WebSocket needed."
-  [event]
-  (enqueue-input! :agency (pr-str event)))
+(defn- handle-agency-message
+  "Handle a message from Agency (bell, etc.). Called by Agency's local handler mechanism."
+  [msg]
+  (let [msg-type (:type msg)]
+    (println (format "[claude-bridge] Received Agency message: %s" msg-type))
+    (case msg-type
+      "bell"
+      (let [bell-type (:bell-type msg)
+            payload (:payload msg)
+            prompt (format "[Agency Bell: %s] %s"
+                           bell-type
+                           (or (:message payload) (pr-str payload)))]
+        (future (send-input! prompt)))
 
-(defn push-forum-post!
-  "Push a Forum post to Claude."
-  [{:keys [author body]}]
-  (enqueue-input! :forum (format "Post from %s: %s" author body)))
+      ;; Default: send as-is
+      (future (send-input! (format "[Agency: %s] %s" msg-type (pr-str msg)))))))
+
+(defn register-with-agency!
+  "Register this Drawbridge instance with Agency to receive bells and messages.
+   Requires Agency to be running in the same JVM."
+  [agent-id]
+  (try
+    (require 'futon3.agency.http)
+    (let [register-fn (ns-resolve 'futon3.agency.http 'register-local-handler!)]
+      (when register-fn
+        (register-fn agent-id handle-agency-message)
+        (println (format "[claude-bridge] Registered with Agency as '%s'" agent-id))
+        true))
+    (catch Exception e
+      (println (format "[claude-bridge] Failed to register with Agency: %s" (.getMessage e)))
+      false)))
+
+(defn unregister-from-agency!
+  "Unregister from Agency."
+  [agent-id]
+  (try
+    (let [unregister-fn (ns-resolve 'futon3.agency.http 'unregister-local-handler!)]
+      (when unregister-fn
+        (unregister-fn agent-id)
+        (println "[claude-bridge] Unregistered from Agency")))
+    (catch Exception _)))
 
 (comment
   ;; Development / REPL usage

@@ -170,26 +170,55 @@
 (defonce ^:private connected-agents (atom {}))
 ;; {agent-id -> {:channel ch :registered-at inst :last-ping inst}}
 
+;; Local (in-JVM) agent handlers - for Drawbridge etc
+(defonce ^:private local-handlers (atom {}))
+;; {agent-id -> handler-fn}
+
+(defn register-local-handler!
+  "Register a local (in-JVM) handler for an agent. Handler receives messages directly."
+  [agent-id handler-fn]
+  (swap! local-handlers assoc (name agent-id) handler-fn)
+  (log! "local-handler-registered" {:agent-id agent-id}))
+
+(defn unregister-local-handler!
+  "Unregister a local handler."
+  [agent-id]
+  (swap! local-handlers dissoc (name agent-id))
+  (log! "local-handler-unregistered" {:agent-id agent-id}))
+
 (defn- ws-send! [channel msg]
   (when (http/open? channel)
     (http/send! channel (json/generate-string msg))))
 
 (defn send-to-agent!
-  "Send a message to a connected agent. Returns true if sent, false if not connected."
+  "Send a message to a connected agent. Returns true if sent, false if not connected.
+   Checks local handlers first, then WebSocket connections."
   [agent-id msg]
-  (if-let [entry (get @connected-agents (name agent-id))]
-    (do
-      (ws-send! (:channel entry) msg)
-      (log! "ws-send" {:agent-id agent-id :type (:type msg)})
-      true)
-    (do
-      (log! "ws-send-failed" {:agent-id agent-id :reason "not-connected"})
-      false)))
+  (let [aid (name agent-id)]
+    (if-let [handler (get @local-handlers aid)]
+      ;; Local handler (in-JVM, like Drawbridge)
+      (do
+        (try
+          (handler msg)
+          (log! "local-send" {:agent-id agent-id :type (:type msg)})
+          true
+          (catch Exception e
+            (log! "local-send-error" {:agent-id agent-id :error (.getMessage e)})
+            false)))
+      ;; WebSocket connection
+      (if-let [entry (get @connected-agents aid)]
+        (do
+          (ws-send! (:channel entry) msg)
+          (log! "ws-send" {:agent-id agent-id :type (:type msg)})
+          true)
+        (do
+          (log! "ws-send-failed" {:agent-id agent-id :reason "not-connected"})
+          false)))))
 
 (defn connected-agent-ids
-  "Return list of currently connected agent IDs."
+  "Return list of currently connected agent IDs (including local handlers)."
   []
-  (keys @connected-agents))
+  (vec (distinct (concat (keys @local-handlers) (keys @connected-agents)))))
 
 (defn- handle-ws-message [agent-id channel raw]
   (try

@@ -32,8 +32,23 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# Auto-derive session ID if not provided
 if [[ -z "${SESSION_ID}" ]]; then
-  echo "Missing session id. Use --session-id or set FUTON3_CLAUDE_SESSION_ID." >&2
+  SESSION_ID_SCRIPT="${ROOT}/scripts/claude-session-id.sh"
+  if [[ -x "${SESSION_ID_SCRIPT}" ]]; then
+    SESSION_ID=$("${SESSION_ID_SCRIPT}" "${PROJECT_PATH:-/home/joe}" 2>/dev/null || true)
+  fi
+  if [[ -z "${SESSION_ID}" ]]; then
+    # Fallback: find most recent .jsonl in current project
+    CLAUDE_DIR="$HOME/.claude/projects/-home-joe"
+    if [[ -d "${CLAUDE_DIR}" ]]; then
+      SESSION_ID=$(ls -t "${CLAUDE_DIR}"/*.jsonl 2>/dev/null | head -1 | xargs -r basename 2>/dev/null | sed 's/.jsonl$//')
+    fi
+  fi
+fi
+
+if [[ -z "${SESSION_ID}" ]]; then
+  echo "Could not derive session id. Use --session-id or set FUTON3_CLAUDE_SESSION_ID." >&2
   exit 1
 fi
 

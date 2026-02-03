@@ -118,6 +118,51 @@ Responses are normalized so callers don’t care where execution happened.
 
 No forum snapshot/merge is required for the minimal viable path.
 
+## Implementation: Claude Drawbridge (In-JVM)
+
+The **Claude Drawbridge** (`src/futon3/drawbridge/claude.clj`) is an in-JVM peripheral
+infrastructure that runs inside MUSN. It provides a multi-headed interface to Claude:
+
+**Architecture:**
+- **HTTP API** (port 6768): POST `/claude` to send messages
+- **Java-WebSocket** (port 6770): streaming output (http-kit WebSockets are unreliable)
+- **Session persistence**: `--resume <session-id>` for thread-safe continuity
+- **Agency integration**: local handler registration (no WebSocket needed, same JVM)
+- **IRC client**: connect to MUSN IRC bridge for chat hops
+
+**Key Insight:** Uses `claude --print --output-format json` for one-shot invocations,
+capturing `session_id` from the response for subsequent `--resume` calls. This is
+thread-safe (unlike `--continue` which is directory-based).
+
+**Usage:**
+```clojure
+;; Start Drawbridge with Agency registration
+(futon3.drawbridge.claude/start!
+  {:http-port 6768
+   :ws-port 6770
+   :agent-id "drawbridge"})
+
+;; Send a message (via REPL, HTTP, or Agency bell)
+(futon3.drawbridge.claude/send-input! "Hello Claude")
+
+;; Connect to IRC for chat hop
+(futon3.drawbridge.claude/connect-irc! {:room "lab" :nick "claude"})
+;; ... chat happens, messages flow both ways ...
+(futon3.drawbridge.claude/disconnect-irc!)
+;; => transcript
+```
+
+**Chat Hop Flow:**
+1. `connect-irc!` joins IRC room
+2. IRC messages → Claude via `send-input!` (prefixed with `[IRC #room] <nick>`)
+3. Claude responses → IRC via `send-to-irc!` (automatic)
+4. `disconnect-irc!` returns transcript
+5. Session continues with full memory of the conversation
+
+**Why Java-WebSocket?** http-kit's WebSocket implementation has reliability issues
+(masking problems, connection drops). Java-WebSocket (org.java-websocket) on a
+separate port provides reliable streaming.
+
 ## Implementation: fuclaude-peripheral.ts (Demo)
 
 A **demo implementation** of a multiplexed peripheral is at `scripts/fuclaude-peripheral.ts`.
@@ -294,9 +339,99 @@ const cmd = `claude -p '${escapedInput}'`;
 **GOTCHA:** Adding new HTTP/WebSocket routes requires server restart - the JVM
 doesn't hot-reload the handler.
 
+### 9. Claude --print requires stdin, not CLI argument
+
+**GOTCHA:** Passing the prompt as a CLI argument to `claude --print` causes the
+process to hang. Using stdin works reliably.
+
+**Solution:** Pipe the prompt via stdin:
+```clojure
+;; BAD - hangs
+(ProcessBuilder. ["claude" "--print" "Hello"])
+
+;; GOOD - works
+(let [pb (ProcessBuilder. ["claude" "--print"])
+      proc (.start pb)
+      stdin (io/writer (.getOutputStream proc))]
+  (doto stdin (.write "Hello") (.flush) (.close))
+  ;; read stdout...
+  )
+```
+
+### 10. --resume vs --continue for session persistence
+
+**GOTCHA:** `--continue` uses the most recent conversation *in the current directory*,
+which is not thread-safe if multiple processes share a directory.
+
+**Solution:** Use `--resume <session-id>` with explicit session IDs:
+```clojure
+;; First call - no resume, capture session_id from JSON output
+["claude" "--print" "--output-format" "json"]
+;; Response includes: {"session_id": "abc-123", ...}
+
+;; Subsequent calls - use --resume
+["claude" "--print" "--output-format" "json" "--resume" "abc-123"]
+```
+
+### 11. http-kit WebSockets are unreliable
+
+**GOTCHA:** http-kit's WebSocket implementation has issues with masking, frame
+handling, and connection stability. Connections drop unexpectedly.
+
+**Solution:** Use Java-WebSocket library on a separate port:
+```clojure
+(:import (org.java_websocket.server WebSocketServer))
+;; Run on dedicated port (e.g., 6770 for streaming, separate from HTTP on 6768)
+```
+
 ## Future Extensions
 
+### Infrastructure
 - **Fanout**: dispatch multiple agents in parallel with aggregate responses.
 - **Routing overrides**: allow per-request `:route` for ad-hoc targeting.
 - **Context fetchers**: e.g. auto-inject last N turns or lab session context.
 - **Timeout envelopes**: per-peripheral timeouts and retry policies.
+
+### Exciting Peripheral Explorations
+
+**1. CLJ Ant in futon1**
+Put Claude into an ant agent in the Active Inference ant simulation. The ant would:
+- Receive sensory observations (food gradients, pheromones, nest direction)
+- Use Claude to decide actions based on beliefs and goals
+- Update beliefs via AIF free energy minimization
+- Communicate with other ants through pheromone signals
+
+This would test whether Claude can operate as a "brain" for an embodied AIF agent,
+making decisions under uncertainty with continuous sensory streams.
+
+**2. Smart Cursor in Emacs**
+A Claude peripheral that lives in Emacs as an intelligent cursor companion:
+- Watches buffer context (current file, cursor position, recent edits)
+- Offers contextual suggestions without being asked
+- Can be summoned with a keybinding for inline assistance
+- Maintains session continuity across Emacs restarts
+- Uses eldoc-style hints or overlay suggestions
+
+Implementation: Emacs Lisp client → Drawbridge HTTP API, with buffer state
+sent as context.
+
+**3. Claude Driving Codex as "User"**
+Invert the typical relationship: Claude acts as the human operator for Codex:
+- Claude formulates high-level goals
+- Codex executes with its tool-use capabilities
+- Claude reviews Codex output and provides feedback
+- Creates an interesting dynamic of LLM-to-LLM collaboration
+
+Use case: Claude explores a problem space by directing Codex to investigate,
+then synthesizes findings across multiple Codex sessions.
+
+**4. Pattern Space Explorer (futon3a)**
+A peripheral for navigating the pattern library through conversation:
+- Claude browses `resources/sigils/patterns-index.tsv`
+- Explores pattern relationships (hotwords, namespaces, connections)
+- Proposes new patterns based on gaps discovered in practice
+- Records PSR/PUR evidence as exploration progresses
+- Uses futon3a's pattern engine for embedding-based similarity
+
+This would help grow the pattern library organically through use, with Claude
+as an active participant in pattern discovery and refinement.

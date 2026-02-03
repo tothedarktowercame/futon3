@@ -9,7 +9,8 @@
 (def ^:private log-path (or (System/getenv "AGENCY_LOG") "/tmp/agency_http.log"))
 
 ;; Forward declarations for functions used in handler
-(declare handle-agency-ws connected-agent-ids handle-get-secret handle-create-secret
+(declare handle-agency-ws connected-agent-ids local-agent-ids remote-agent-ids
+         handle-get-secret handle-create-secret
          handle-ack handle-ack-status handle-ring-bell)
 
 (defn- log! [msg & [ctx]]
@@ -106,7 +107,17 @@
 
         ;; Connected agents list
         (and (= uri "/agency/connected") (= method :get))
-        (json-response {:ok true :agents (connected-agent-ids)})
+        (let [params (parse-query (:query-string req))
+              type-filter (get params "type")]
+          (json-response
+           (case type-filter
+             "local" {:ok true :agents (local-agent-ids)}
+             "remote" {:ok true :agents (remote-agent-ids)}
+             ;; Default: return all with breakdown
+             {:ok true
+              :agents (connected-agent-ids)
+              :local (local-agent-ids)
+              :remote (remote-agent-ids)})))
 
         ;; Secret retrieval (GET /agency/secret/:id)
         (and (= method :get) (str/starts-with? uri "/agency/secret/"))
@@ -257,6 +268,16 @@
   "Return list of currently connected agent IDs (including local handlers)."
   []
   (vec (distinct (concat (keys @local-handlers) (keys @connected-agents)))))
+
+(defn local-agent-ids
+  "Return list of locally registered agent IDs (in-JVM handlers only)."
+  []
+  (vec (keys @local-handlers)))
+
+(defn remote-agent-ids
+  "Return list of remotely connected agent IDs (WebSocket only)."
+  []
+  (vec (keys @connected-agents)))
 
 (defn- handle-ws-message [agent-id channel raw]
   (try

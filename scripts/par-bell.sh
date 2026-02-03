@@ -46,6 +46,7 @@ emacs_socket="${EMACS_SOCKET:-server}"
 crdt_host="${CRDT_HOST:-127.0.0.1}"
 crdt_port="${CRDT_PORT:-6530}"
 agency_url="${AGENCY_URL:-http://localhost:7070}"
+agent_timeout="${PAR_AGENT_TIMEOUT:-240}"
 
 # Parse args
 while [[ $# -gt 0 ]]; do
@@ -130,20 +131,38 @@ if [[ "$start_agents" == "1" ]]; then
     echo "[bell] === Starting peripheral for $agent ==="
 
     set +e
-    CRDT_HOST="$crdt_host" \
-    CRDT_PORT="$crdt_port" \
-    AGENT_ID="$agent" \
-    PAR_TITLE="$title" \
-    AGENCY_URL="$agency_url" \
-    emacs --batch -Q \
-      -l ~/.emacs.d/elpa/crdt-*/crdt.el \
-      -l ~/code/futon0/contrib/futon-par-peripheral.el \
-      2>&1 | sed "s/^/[$agent] /"
-    exit_code="${PIPESTATUS[0]}"
+    if command -v timeout >/dev/null 2>&1; then
+      CRDT_HOST="$crdt_host" \
+      CRDT_PORT="$crdt_port" \
+      AGENT_ID="$agent" \
+      PAR_TITLE="$title" \
+      AGENCY_URL="$agency_url" \
+      timeout "${agent_timeout}" \
+      emacs --batch -Q \
+        -l ~/.emacs.d/elpa/crdt-*/crdt.el \
+        -l ~/code/futon0/contrib/futon-par-peripheral.el \
+        2>&1 | sed "s/^/[$agent] /"
+      exit_code="${PIPESTATUS[0]}"
+    else
+      CRDT_HOST="$crdt_host" \
+      CRDT_PORT="$crdt_port" \
+      AGENT_ID="$agent" \
+      PAR_TITLE="$title" \
+      AGENCY_URL="$agency_url" \
+      emacs --batch -Q \
+        -l ~/.emacs.d/elpa/crdt-*/crdt.el \
+        -l ~/code/futon0/contrib/futon-par-peripheral.el \
+        2>&1 | sed "s/^/[$agent] /"
+      exit_code="${PIPESTATUS[0]}"
+    fi
     set -e
 
     if [[ "$exit_code" -ne 0 ]]; then
-      echo "[bell] $agent FAILED (exit $exit_code) - continuing to next agent"
+      if [[ "$exit_code" -eq 124 ]]; then
+        echo "[bell] $agent TIMEOUT after ${agent_timeout}s - continuing to next agent"
+      else
+        echo "[bell] $agent FAILED (exit $exit_code) - continuing to next agent"
+      fi
     else
       echo "[bell] $agent finished"
     fi

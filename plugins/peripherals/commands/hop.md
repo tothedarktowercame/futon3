@@ -46,12 +46,24 @@ The `/peripherals:hop` command provides a unified interface for peripheral hops:
 
 3. **Dispatch to Peripheral**
 
-   Each peripheral has its own spawn mechanism:
+   Each peripheral has its own mechanism:
 
    - **par**: `emacsclient --create-frame <par-file>`
    - **explore**: `./scripts/fuclaude-peripheral.ts --no-agency --explore <path>`
-   - **chat**: `./scripts/fuclaude-chat-bridge.ts --room <room>`
+   - **chat**: Drawbridge IRC integration (in-JVM, no subprocess)
    - **test**: `./scripts/test-runner.sh <args>`
+
+   For **chat**, use the Drawbridge's IRC functions via REPL:
+   ```clojure
+   ;; Connect to IRC
+   (futon3.drawbridge.claude/connect-irc! {:room "lab" :nick "claude"})
+
+   ;; Send messages (or let Claude respond to IRC messages automatically)
+   (futon3.drawbridge.claude/send-to-irc! "Hello!")
+
+   ;; When done, disconnect and get transcript
+   (futon3.drawbridge.claude/disconnect-irc!)
+   ```
 
 4. **Wait for Completion**
 
@@ -115,6 +127,41 @@ The key property of a hop is **session continuity**:
 - Memory of what happened before the hop
 
 This differs from starting a new session - hops are round trips.
+
+## Chat Hop via Drawbridge
+
+The **chat** peripheral uses the Claude Drawbridge's built-in IRC integration:
+
+1. **Connect**: `(futon3.drawbridge.claude/connect-irc! {:room "lab" :nick "claude"})`
+2. **Messages flow automatically**: IRC → Claude → IRC (responses echo back)
+3. **Disconnect**: `(futon3.drawbridge.claude/disconnect-irc!)` returns transcript
+
+The Drawbridge maintains the same Claude session (via `--resume`), so memory persists
+throughout the hop. When you return, you have full context of the IRC conversation.
+
+### Chat Hop Example
+
+```
+> /peripherals:hop chat lab
+
+Connecting to IRC #lab...
+
+[In IRC]
+<joe> Hey Claude, what do you think about the new Drawbridge?
+<claude> The Drawbridge architecture is clean - HTTP API for input,
+         Java-WebSocket for streaming, --resume for session persistence.
+<joe> Can you explain the Agency integration?
+<claude> Agency registers local handlers for in-JVM agents...
+<joe> /hop-done
+
+Hop complete. Transcript captured.
+
+## Hop Summary
+- Room: #lab
+- Duration: 3m 42s
+- Messages: 6
+- Transcript available in context.
+```
 
 ## Creating Custom Peripherals
 

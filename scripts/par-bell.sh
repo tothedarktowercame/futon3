@@ -47,6 +47,9 @@ crdt_host="${CRDT_HOST:-127.0.0.1}"
 crdt_port="${CRDT_PORT:-6530}"
 agency_url="${AGENCY_URL:-http://localhost:7070}"
 agent_timeout="${PAR_AGENT_TIMEOUT:-240}"
+crdt_el_path="${CRDT_EL_PATH:-}"
+lang="${PAR_LANG:-${LANG:-en_US.UTF-8}}"
+lc_all="${PAR_LC_ALL:-${LC_ALL:-en_US.UTF-8}}"
 
 # Parse args
 while [[ $# -gt 0 ]]; do
@@ -88,6 +91,15 @@ if [[ -z "$title" ]]; then
   echo "Error: PAR title is required" >&2
   usage
   exit 2
+fi
+
+if [[ -z "$crdt_el_path" ]]; then
+  crdt_el_path="$(ls -d ~/.emacs.d/elpa/crdt-*/crdt.el 2>/dev/null | head -n 1 || true)"
+fi
+
+if [[ -z "$crdt_el_path" || ! -f "$crdt_el_path" ]]; then
+  echo "Error: crdt.el not found. Set CRDT_EL_PATH or install crdt.el in ~/.emacs.d/elpa/." >&2
+  exit 1
 fi
 
 # If no agents specified, query Agency for connected agents
@@ -137,9 +149,11 @@ if [[ "$start_agents" == "1" ]]; then
       AGENT_ID="$agent" \
       PAR_TITLE="$title" \
       AGENCY_URL="$agency_url" \
+      LANG="$lang" \
+      LC_ALL="$lc_all" \
       timeout "${agent_timeout}" \
       emacs --batch -Q \
-        -l ~/.emacs.d/elpa/crdt-*/crdt.el \
+        -l "$crdt_el_path" \
         -l ~/code/futon0/contrib/futon-par-peripheral.el \
         2>&1 | sed "s/^/[$agent] /"
       exit_code="${PIPESTATUS[0]}"
@@ -149,8 +163,10 @@ if [[ "$start_agents" == "1" ]]; then
       AGENT_ID="$agent" \
       PAR_TITLE="$title" \
       AGENCY_URL="$agency_url" \
+      LANG="$lang" \
+      LC_ALL="$lc_all" \
       emacs --batch -Q \
-        -l ~/.emacs.d/elpa/crdt-*/crdt.el \
+        -l "$crdt_el_path" \
         -l ~/code/futon0/contrib/futon-par-peripheral.el \
         2>&1 | sed "s/^/[$agent] /"
       exit_code="${PIPESTATUS[0]}"

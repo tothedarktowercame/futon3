@@ -43,7 +43,7 @@ title=""
 agents=""  # Will be populated from Agency if not specified
 start_agents=1
 emacs_socket="${EMACS_SOCKET:-server}"
-crdt_host="${CRDT_HOST:-localhost}"
+crdt_host="${CRDT_HOST:-127.0.0.1}"
 crdt_port="${CRDT_PORT:-6530}"
 agency_url="${AGENCY_URL:-http://localhost:7070}"
 

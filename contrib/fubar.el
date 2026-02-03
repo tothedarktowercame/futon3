@@ -1209,10 +1209,12 @@ and verifies they return the correct value."
 
 ;;; Local/Global test bells (connected-agent ACKs)
 
-(defun fubar--agency-connected-async (base-url callback)
-  "Fetch connected agents from Agency at BASE-URL, call CALLBACK with list."
+(defun fubar--agency-connected-async (base-url callback &optional type)
+  "Fetch connected agents from Agency at BASE-URL, call CALLBACK with list.
+Optional TYPE can be \"local\" or \"remote\" to filter agents."
   (let* ((url-request-method "GET")
-         (url (concat (string-trim-right base-url "/") "/agency/connected")))
+         (url (concat (string-trim-right base-url "/") "/agency/connected"
+                      (if type (concat "?type=" type) ""))))
     (url-retrieve
      url
      (lambda (status callback)
@@ -1315,7 +1317,7 @@ and verifies they return the correct value."
                       agent base-url secret-id secret-value callback start-time)))))))
 
 (defun fubar-test-local ()
-  "Test local Agency by ACKing only connected agents via bell+ack."
+  "Test local (in-JVM) agents at local Agency via bell+ack."
   (interactive)
   (let ((base-url fubar-agency-url))
     (fubar--agency-connected-async
@@ -1323,7 +1325,7 @@ and verifies they return the correct value."
      (lambda (agents)
        (let ((agents (or agents fubar-test-bell-agents)))
          (if (null agents)
-             (message "[fubar] No connected agents at %s" base-url)
+             (message "[fubar] No local agents at %s" base-url)
            (setq fubar-test-bell--pending
                  (mapcar (lambda (a) (cons a 'pending)) agents))
            (setq fubar-test-bell--buffer "*Test Local*")
@@ -1334,7 +1336,8 @@ and verifies they return the correct value."
               agent base-url
               (lambda (agent result)
                 (setf (alist-get agent fubar-test-bell--pending nil nil #'equal) result)
-                (fubar-test-bell--update-buffer-safe))))))))))
+                (fubar-test-bell--update-buffer-safe)))))))
+     "local")))
 
 (defun fubar-test-global ()
   "Test all Agency URLs by ACKing connected agents at each.

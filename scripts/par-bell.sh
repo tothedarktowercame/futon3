@@ -129,6 +129,7 @@ if [[ "$start_agents" == "1" ]]; then
   for agent in "${agent_list[@]}"; do
     echo "[bell] === Starting peripheral for $agent ==="
 
+    set +e
     CRDT_HOST="$crdt_host" \
     CRDT_PORT="$crdt_port" \
     AGENT_ID="$agent" \
@@ -138,8 +139,14 @@ if [[ "$start_agents" == "1" ]]; then
       -l ~/.emacs.d/elpa/crdt-*/crdt.el \
       -l ~/code/futon0/contrib/futon-par-peripheral.el \
       2>&1 | sed "s/^/[$agent] /"
+    exit_code="${PIPESTATUS[0]}"
+    set -e
 
-    echo "[bell] $agent finished"
+    if [[ "$exit_code" -ne 0 ]]; then
+      echo "[bell] $agent FAILED (exit $exit_code) - continuing to next agent"
+    else
+      echo "[bell] $agent finished"
+    fi
     echo ""
     sleep 3  # Give CRDT time to sync before next agent
   done

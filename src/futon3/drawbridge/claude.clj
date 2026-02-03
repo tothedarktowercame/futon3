@@ -36,25 +36,28 @@
          :stdin nil
          :stdout nil
          :stderr nil
-         :session-id nil
-         :has-interacted false  ; true after first message (enables --continue)
+         :session-id nil      ; Claude session ID for --resume
          :last-active nil
+         :agent-id nil        ; Agency agent ID if registered
          :output-subscribers #{}}))
 
 (defn spawn-agent!
   "Initialize the Claude agent state.
    No persistent process is spawned - each message spawns a one-shot --print process.
-   Uses --continue for session persistence after first message."
-  [{:keys [_resume-id] :as _opts}]
+   Uses --resume with session-id for thread-safe persistence.
+
+   Options:
+     :resume-id - Optional session ID to resume an existing conversation"
+  [{:keys [resume-id] :as _opts}]
   (swap! agent-state assoc
-         :session-id nil  ; Will be populated from Claude's response
-         :has-interacted false
+         :session-id resume-id  ; nil = new session, or resume existing
          :last-active nil
          :process nil
          :stdin nil
          :stdout nil
          :stderr nil)
-  (println "[claude-bridge] Initialized Claude session (uses --continue for persistence)")
+  (println (format "[claude-bridge] Initialized Claude session%s"
+                   (if resume-id (str " (resuming: " resume-id ")") " (new)")))
   @agent-state)
 
 (defn kill-agent!
@@ -64,23 +67,24 @@
   (println "[claude-bridge] Cleared Claude agent state"))
 
 (defn agent-alive?
-  "Check if Claude agent has had at least one interaction."
+  "Check if Claude agent has an active session."
   []
-  (:has-interacted @agent-state))
+  (some? (:session-id @agent-state)))
 
 (defn send-input!
   "Send a message to Claude. Spawns a one-shot --print process per message.
    Output streams to WebSocket clients.
-   Uses --continue to maintain conversation context across messages."
+   Uses --resume with session-id for thread-safe conversation persistence."
   [text]
-  (let [use-continue? (:has-interacted @agent-state)
-        cmd (cond-> ["claude" "--print" "--permission-mode" "bypassPermissions"]
-              use-continue? (conj "--continue"))
-        _ (println (format "[claude-bridge] Executing: %s (stdin: %s)"
-                           (if use-continue? "claude --print --continue" "claude --print")
+  (let [session-id (:session-id @agent-state)
+        cmd (cond-> ["claude" "--print" "--output-format" "json"
+                     "--permission-mode" "bypassPermissions"]
+              session-id (into ["--resume" session-id]))
+        _ (println (format "[claude-bridge] Executing: claude --print%s (stdin: %s)"
+                           (if session-id (str " --resume " session-id) "")
                            (subs text 0 (min 50 (count text)))))
         pb (ProcessBuilder. ^java.util.List cmd)
-        _ (.redirectErrorStream pb true)  ; Merge stderr into stdout
+        _ (.redirectErrorStream pb true)
         proc (.start pb)
         stdin (io/writer (.getOutputStream proc))
         stdout (io/reader (.getInputStream proc))]
@@ -94,25 +98,41 @@
       (.flush)
       (.close))
 
-    ;; Stream output to WebSocket clients
+    ;; Read JSON output and broadcast result
     (future
       (try
-        (println "[claude-bridge] Starting output reader...")
-        (loop []
-          (when-let [line (.readLine ^java.io.BufferedReader stdout)]
-            (println "[claude-bridge] Got line:" line)
-            (broadcast-to-ws-clients! {:type "stdout" :line line})
-            (recur)))
-        (catch Exception e
-          (println "[claude-bridge] Reader error:" (.getMessage e)))
-        (finally
-          (println "[claude-bridge] Process finished")
+        (println "[claude-bridge] Reading JSON response...")
+        (let [output (StringBuilder.)]
+          ;; Read all output
+          (loop []
+            (when-let [line (.readLine ^java.io.BufferedReader stdout)]
+              (.append output line)
+              (recur)))
           (.waitFor proc)
-          (let [exit-code (.exitValue proc)]
-            ;; Mark as interacted on success (enables --continue for next message)
-            (when (zero? exit-code)
-              (swap! agent-state assoc :has-interacted true))
-            (broadcast-to-ws-clients! {:type "done" :exit-code exit-code})))))
+          (let [exit-code (.exitValue proc)
+                out-str (str output)]
+            (if (zero? exit-code)
+              (try
+                (let [parsed (json/parse-string out-str true)
+                      result (:result parsed)
+                      new-session-id (:session_id parsed)]
+                  ;; Store session-id for future calls
+                  (when new-session-id
+                    (swap! agent-state assoc :session-id new-session-id))
+                  ;; Broadcast result line-by-line for nice display
+                  (doseq [line (str/split-lines (or result ""))]
+                    (broadcast-to-ws-clients! {:type "stdout" :line line}))
+                  (println (format "[claude-bridge] Session: %s" new-session-id)))
+                (catch Exception e
+                  (println "[claude-bridge] JSON parse error:" (.getMessage e))
+                  ;; Fall back to raw output
+                  (broadcast-to-ws-clients! {:type "stdout" :line out-str})))
+              (do
+                (println "[claude-bridge] Process failed:" out-str)
+                (broadcast-to-ws-clients! {:type "error" :message out-str})))
+            (broadcast-to-ws-clients! {:type "done" :exit-code exit-code})))
+        (catch Exception e
+          (println "[claude-bridge] Reader error:" (.getMessage e)))))
     true))
 
 (defn subscribe-output!
@@ -178,7 +198,7 @@
   {:status 200
    :headers {"content-type" "application/json"}
    :body (pr-str {:alive (agent-alive?)
-                  :has-interacted (:has-interacted @agent-state)
+                  :session-id (:session-id @agent-state)
                   :last-active (str (:last-active @agent-state))
                   :ws-clients (count @ws-clients)})})
 

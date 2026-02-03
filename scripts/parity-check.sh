@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_URL="${LAB_URL:-http://localhost:5050}"
 MUSN_URL="${MUSN_URL:-http://localhost:6065}"
+REMOTE_MODE="${REMOTE_MODE:-0}"
 SESSION_TS="$(date -u +%Y%m%dT%H%M%SZ)"
 SESSION_ID="${SESSION_ID:-codex-parity-${SESSION_TS}}"
 
@@ -85,17 +86,21 @@ read -r code body < <(request POST "$MUSN_URL/musn/par" \
   "{\"session/id\":\"$SESSION_ID\",\"par/questions\":{\"intention\":\"reflect parity test\",\"happening\":\"par endpoint\",\"learned\":\"ok\"},\"par/tags\":[\"test\",\"par\"]}")
 check_status "musn par" 200 "$code" "$body" || true
 check_ok_field "musn par" "$body" || failures=$((failures + 1))
-SESSION_FILE="${ROOT}/lab/sessions/${SESSION_ID}.edn"
-if [[ -f "$SESSION_FILE" ]]; then
-  if rg -q "session/par" "$SESSION_FILE"; then
-    echo "OK   musn par appended"
+if [[ "$REMOTE_MODE" == "1" ]]; then
+  echo "SKIP musn par appended (remote mode)"
+else
+  SESSION_FILE="${ROOT}/lab/sessions/${SESSION_ID}.edn"
+  if [[ -f "$SESSION_FILE" ]]; then
+    if rg -q "session/par" "$SESSION_FILE"; then
+      echo "OK   musn par appended"
+    else
+      echo "FAIL musn par appended: no session/par event"
+      failures=$((failures + 1))
+    fi
   else
-    echo "FAIL musn par appended: no session/par event"
+    echo "FAIL musn par appended: session file not found at ${SESSION_FILE}"
     failures=$((failures + 1))
   fi
-else
-  echo "FAIL musn par appended: session file not found at ${SESSION_FILE}"
-  failures=$((failures + 1))
 fi
 
 read -r code body < <(request POST "$LAB_URL/lab/anchor/create" \

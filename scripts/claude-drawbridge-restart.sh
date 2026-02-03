@@ -54,17 +54,21 @@ fi
 
 cd "${ROOT}"
 
+# Create session-qualified agent ID (first 8 chars of session UUID)
+SESSION_SHORT="${SESSION_ID:0:8}"
+AGENT_ID="claude-${SESSION_SHORT}"
+
 # Restart via REPL (runs in MUSN JVM)
 cat <<EOF | ./scripts/repl-eval
 (do
   (require '[futon3.drawbridge.claude :as claude])
   (claude/stop!)
-  (claude/start! {:agent-id "claude"
+  (claude/start! {:agent-id "${AGENT_ID}"
                   :agency-http-url "${AGENCY_URL}"
                   :resume-id "${SESSION_ID}"})
-  (println "[claude-drawbridge] resumed session: ${SESSION_ID}"))
+  (println "[claude-drawbridge] agent: ${AGENT_ID}, session: ${SESSION_ID}"))
 EOF
 
 echo ""
-echo "[claude-drawbridge] resumed session: ${SESSION_ID}"
+echo "[claude-drawbridge] agent: ${AGENT_ID}, session: ${SESSION_ID}"
 curl -s "http://127.0.0.1:7070/agency/connected" | jq -r '.local // []' || true

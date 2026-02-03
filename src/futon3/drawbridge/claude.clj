@@ -12,7 +12,7 @@
      (start! {:http-port 6768 :ws-port 6770 :resume-id \"abc123\"})
      ;; POST /claude with body to send input
      ;; WS ws://localhost:6770 for streaming output + push"
-  (:require [clojure.core.async :as async :refer [go go-loop <! >! chan close!]]
+  (:require [clojure.core.async :as async :refer [go-loop <! chan close!]]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [cheshire.core :as json]
@@ -25,7 +25,7 @@
            (java.net InetSocketAddress)))
 
 ;; Forward declarations
-(declare broadcast-to-ws-clients!)
+(declare broadcast-to-ws-clients! ws-clients)
 
 ;; =============================================================================
 ;; Agent Process Management
@@ -37,28 +37,24 @@
          :stdout nil
          :stderr nil
          :session-id nil
+         :has-interacted false  ; true after first message (enables --continue)
+         :last-active nil
          :output-subscribers #{}}))
 
-(defn- build-claude-cmd
-  "Build the claude command with appropriate flags."
-  [{:keys [resume-id permission-mode output-format]
-    :or {permission-mode "bypassPermissions"
-         output-format "stream-json"}}]
-  (cond-> ["claude" "--print" "--output-format" output-format
-           "--permission-mode" permission-mode]
-    resume-id (into ["--resume" resume-id])))
-
 (defn spawn-agent!
-  "Initialize the Claude agent state with a session ID.
-   No persistent process is spawned - each message spawns a one-shot --print process."
-  [{:keys [resume-id] :as _opts}]
+  "Initialize the Claude agent state.
+   No persistent process is spawned - each message spawns a one-shot --print process.
+   Uses --continue for session persistence after first message."
+  [{:keys [_resume-id] :as _opts}]
   (swap! agent-state assoc
-         :session-id resume-id
+         :session-id nil  ; Will be populated from Claude's response
+         :has-interacted false
+         :last-active nil
          :process nil
          :stdin nil
          :stdout nil
          :stderr nil)
-  (println (format "[claude-bridge] Initialized Claude session (resume: %s)" resume-id))
+  (println "[claude-bridge] Initialized Claude session (uses --continue for persistence)")
   @agent-state)
 
 (defn kill-agent!
@@ -68,24 +64,29 @@
   (println "[claude-bridge] Cleared Claude agent state"))
 
 (defn agent-alive?
-  "Check if Claude agent is initialized (has a session-id)."
+  "Check if Claude agent has had at least one interaction."
   []
-  (some? (:session-id @agent-state)))
+  (:has-interacted @agent-state))
 
 (defn send-input!
   "Send a message to Claude. Spawns a one-shot --print process per message.
    Output streams to WebSocket clients.
-   Note: --resume with --print doesn't work (different session storage),
-   so each message is independent for now."
+   Uses --continue to maintain conversation context across messages."
   [text]
-  (let [cmd ["claude" "--print" "--permission-mode" "bypassPermissions"]
-        _ (println (format "[claude-bridge] Executing: claude --print (stdin: %s)"
+  (let [use-continue? (:has-interacted @agent-state)
+        cmd (cond-> ["claude" "--print" "--permission-mode" "bypassPermissions"]
+              use-continue? (conj "--continue"))
+        _ (println (format "[claude-bridge] Executing: %s (stdin: %s)"
+                           (if use-continue? "claude --print --continue" "claude --print")
                            (subs text 0 (min 50 (count text)))))
         pb (ProcessBuilder. ^java.util.List cmd)
         _ (.redirectErrorStream pb true)  ; Merge stderr into stdout
         proc (.start pb)
         stdin (io/writer (.getOutputStream proc))
         stdout (io/reader (.getInputStream proc))]
+
+    ;; Update last-active timestamp
+    (swap! agent-state assoc :last-active (java.time.Instant/now))
 
     ;; Send prompt via stdin
     (doto stdin
@@ -107,7 +108,11 @@
         (finally
           (println "[claude-bridge] Process finished")
           (.waitFor proc)
-          (broadcast-to-ws-clients! {:type "done" :exit-code (.exitValue proc)}))))
+          (let [exit-code (.exitValue proc)]
+            ;; Mark as interacted on success (enables --continue for next message)
+            (when (zero? exit-code)
+              (swap! agent-state assoc :has-interacted true))
+            (broadcast-to-ws-clients! {:type "done" :exit-code exit-code})))))
     true))
 
 (defn subscribe-output!
@@ -173,7 +178,8 @@
   {:status 200
    :headers {"content-type" "application/json"}
    :body (pr-str {:alive (agent-alive?)
-                  :session-id (:session-id @agent-state)
+                  :has-interacted (:has-interacted @agent-state)
+                  :last-active (str (:last-active @agent-state))
                   :ws-clients (count @ws-clients)})})
 
 ;; =============================================================================

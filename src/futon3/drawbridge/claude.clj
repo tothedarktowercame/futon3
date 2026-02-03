@@ -1,0 +1,349 @@
+(ns futon3.drawbridge.claude
+  "Drawbridge for Claude Code - multi-headed REPL routing to Claude subprocess.
+
+   Like cemerick/drawbridge routes HTTP to nREPL, this routes HTTP/WebSocket
+   to a Claude Code subprocess. Supports:
+   - Multiple input heads (HTTP, WebSocket, Agency direct)
+   - Streaming output via WebSocket (Java-WebSocket, not http-kit)
+   - Session resume via Claude's --resume flag
+   - Hot-reloadable (lives in the JVM with MUSN)
+
+   Usage:
+     (start! {:http-port 6768 :ws-port 6770 :resume-id \"abc123\"})
+     ;; POST /claude with body to send input
+     ;; WS ws://localhost:6770 for streaming output + push"
+  (:require [clojure.core.async :as async :refer [go go-loop <! >! chan close!]]
+            [clojure.java.io :as io]
+            [clojure.string :as str]
+            [cheshire.core :as json]
+            [org.httpkit.server :as http]
+            [ring.middleware.params :as ring-params]
+            [ring.util.codec :as codec])
+  (:import (org.java_websocket WebSocket)
+           (org.java_websocket.handshake ClientHandshake)
+           (org.java_websocket.server WebSocketServer)
+           (java.net InetSocketAddress)))
+
+;; Forward declarations
+(declare broadcast-to-ws-clients!)
+
+;; =============================================================================
+;; Agent Process Management
+;; =============================================================================
+
+(defonce ^:private agent-state
+  (atom {:process nil
+         :stdin nil
+         :stdout nil
+         :stderr nil
+         :session-id nil
+         :output-subscribers #{}}))
+
+(defn- build-claude-cmd
+  "Build the claude command with appropriate flags."
+  [{:keys [resume-id permission-mode output-format]
+    :or {permission-mode "bypassPermissions"
+         output-format "stream-json"}}]
+  (cond-> ["claude" "--print" "--output-format" output-format
+           "--permission-mode" permission-mode]
+    resume-id (into ["--resume" resume-id])))
+
+(defn spawn-agent!
+  "Initialize the Claude agent state with a session ID.
+   No persistent process is spawned - each message spawns a one-shot --print process."
+  [{:keys [resume-id] :as _opts}]
+  (swap! agent-state assoc
+         :session-id resume-id
+         :process nil
+         :stdin nil
+         :stdout nil
+         :stderr nil)
+  (println (format "[claude-bridge] Initialized Claude session (resume: %s)" resume-id))
+  @agent-state)
+
+(defn kill-agent!
+  "Clear the Claude agent state."
+  []
+  (swap! agent-state assoc :process nil :stdin nil :stdout nil :stderr nil :session-id nil)
+  (println "[claude-bridge] Cleared Claude agent state"))
+
+(defn agent-alive?
+  "Check if Claude agent is initialized (has a session-id)."
+  []
+  (some? (:session-id @agent-state)))
+
+(defn send-input!
+  "Send a message to Claude. Spawns a one-shot --print process per message.
+   Output streams to WebSocket clients.
+   Note: --resume with --print doesn't work (different session storage),
+   so each message is independent for now."
+  [text]
+  (let [cmd ["claude" "--print" "--permission-mode" "bypassPermissions"]
+        _ (println (format "[claude-bridge] Executing: claude --print (stdin: %s)"
+                           (subs text 0 (min 50 (count text)))))
+        pb (ProcessBuilder. ^java.util.List cmd)
+        _ (.redirectErrorStream pb true)  ; Merge stderr into stdout
+        proc (.start pb)
+        stdin (io/writer (.getOutputStream proc))
+        stdout (io/reader (.getInputStream proc))]
+
+    ;; Send prompt via stdin
+    (doto stdin
+      (.write text)
+      (.flush)
+      (.close))
+
+    ;; Stream output to WebSocket clients
+    (future
+      (try
+        (println "[claude-bridge] Starting output reader...")
+        (loop []
+          (when-let [line (.readLine ^java.io.BufferedReader stdout)]
+            (println "[claude-bridge] Got line:" line)
+            (broadcast-to-ws-clients! {:type "stdout" :line line})
+            (recur)))
+        (catch Exception e
+          (println "[claude-bridge] Reader error:" (.getMessage e)))
+        (finally
+          (println "[claude-bridge] Process finished")
+          (.waitFor proc)
+          (broadcast-to-ws-clients! {:type "done" :exit-code (.exitValue proc)}))))
+    true))
+
+(defn subscribe-output!
+  "Subscribe a channel to receive output events."
+  [ch]
+  (swap! agent-state update :output-subscribers conj ch)
+  ch)
+
+(defn unsubscribe-output!
+  "Unsubscribe a channel from output events."
+  [ch]
+  (swap! agent-state update :output-subscribers disj ch)
+  (close! ch))
+
+;; =============================================================================
+;; Input Multiplexing
+;; =============================================================================
+
+(defonce ^:private input-chan (chan 100))
+
+(defn enqueue-input!
+  "Enqueue input from any source (HTTP, WebSocket, Agency, etc.)"
+  [source payload]
+  (async/put! input-chan {:source source :payload payload :timestamp (java.time.Instant/now)}))
+
+(defn- start-input-processor!
+  "Process the input queue, sending to Claude."
+  []
+  (go-loop []
+    (when-let [{:keys [_source payload]} (<! input-chan)]
+      ;; Just pass the payload directly for now
+      (send-input! payload)
+      (recur))))
+
+;; =============================================================================
+;; HTTP Handler
+;; =============================================================================
+
+(defn- wrap-token [handler token]
+  (fn [request]
+    (let [supplied (or (get-in request [:headers "x-admin-token"])
+                       (some-> (:query-string request)
+                               (codec/form-decode "UTF-8")
+                               (get "token")))
+          supplied (some-> supplied str/trim)
+          expected (some-> token str/trim)]
+      (if (= supplied expected)
+        (handler request)
+        {:status 403 :body "forbidden"}))))
+
+(defn- handle-send [request]
+  (let [body (some-> request :body slurp str/trim)]
+    (if (str/blank? body)
+      {:status 400 :body "empty input"}
+      (do
+        ;; Bypass queue, call send-input! directly for now
+        (future (send-input! body))
+        {:status 200
+         :headers {"content-type" "application/json"}
+         :body "{\"ok\":true}"}))))
+
+(defn- handle-status [_request]
+  {:status 200
+   :headers {"content-type" "application/json"}
+   :body (pr-str {:alive (agent-alive?)
+                  :session-id (:session-id @agent-state)
+                  :ws-clients (count @ws-clients)})})
+
+;; =============================================================================
+;; Java-WebSocket Server (separate port, reliable)
+;; =============================================================================
+
+(defonce ^:private ws-server-state (atom nil))
+(defonce ^:private ws-clients (atom #{}))
+
+(defn- send-to-ws-client! [^WebSocket conn data]
+  (when (.isOpen conn)
+    (try
+      (.send conn (json/encode data))
+      (catch Exception e
+        (println "[claude-ws] Send failed:" (.getMessage e))))))
+
+(defn- broadcast-to-ws-clients! [data]
+  (doseq [client @ws-clients]
+    (send-to-ws-client! client data)))
+
+(defn- create-ws-server [port]
+  (let [addr (InetSocketAddress. port)]
+    (proxy [WebSocketServer] [addr]
+
+      (onOpen [^WebSocket conn ^ClientHandshake handshake]
+        (println "[claude-ws] Client connected:" (.getRemoteSocketAddress conn))
+        (swap! ws-clients conj conn)
+        (send-to-ws-client! conn {:type "connected"
+                                   :session-id (:session-id @agent-state)
+                                   :alive (agent-alive?)}))
+
+      (onClose [^WebSocket conn code reason remote]
+        (println "[claude-ws] Client disconnected:" code reason)
+        (swap! ws-clients disj conn))
+
+      (onMessage [^WebSocket conn ^String message]
+        (println "[claude-ws] Received:" message)
+        ;; Treat incoming WebSocket messages as input
+        (enqueue-input! :websocket message))
+
+      (onError [^WebSocket conn ^Exception ex]
+        (println "[claude-ws] Error:" (.getMessage ex))
+        (when conn
+          (swap! ws-clients disj conn)))
+
+      (onStart []
+        (println "[claude-ws] WebSocket server started on port" port)))))
+
+(defn start-ws-server! [port]
+  (when-let [{:keys [server]} @ws-server-state]
+    (try (.stop server 1000) (catch Exception _)))
+  (let [server (create-ws-server port)]
+    (.setReuseAddr server true)
+    (.start server)
+    (Thread/sleep 100)
+    (reset! ws-server-state {:server server :port port})
+    (println "[claude-ws] WebSocket server running on port" port)
+    server))
+
+(defn stop-ws-server! []
+  (when-let [{:keys [server]} @ws-server-state]
+    (try (.stop server 1000) (catch Exception _))
+    (reset! ws-server-state nil)
+    (reset! ws-clients #{})
+    (println "[claude-ws] WebSocket server stopped")))
+
+(defn- ring-handler [token]
+  (fn [request]
+    (let [uri (:uri request)
+          method (:request-method request)]
+      (cond
+        ;; POST /claude - send input
+        (and (= method :post) (= uri "/claude"))
+        (handle-send request)
+
+        ;; GET /claude/status - check status
+        (and (= method :get) (= uri "/claude/status"))
+        (handle-status request)
+
+        :else
+        {:status 404 :body "not found"}))))
+
+;; =============================================================================
+;; Server Lifecycle
+;; =============================================================================
+
+(defonce ^:private server (atom nil))
+
+(defn start!
+  "Start the Claude Drawbridge.
+
+   Options:
+     :http-port  - HTTP port for REST API (default 6768)
+     :ws-port    - WebSocket port for streaming (default 6770)
+     :bind       - Bind address (default 127.0.0.1)
+     :token      - Auth token (default from .admintoken or 'change-me')
+     :resume-id  - Claude session ID to resume (optional)
+     :auto-spawn - Spawn Claude process on start (default true)"
+  [{:keys [http-port ws-port bind token resume-id auto-spawn]
+    :or {http-port 6768
+         ws-port 6770
+         bind "127.0.0.1"
+         auto-spawn true}}]
+  ;; Stop existing servers
+  (when-let [stop-fn @server]
+    (stop-fn))
+  (stop-ws-server!)
+
+  ;; Load token from file if not provided
+  (let [token (or token
+                  (try (str/trim (slurp ".admintoken")) (catch Exception _ nil))
+                  "change-me")
+        handler (-> (ring-handler token)
+                    ring-params/wrap-params
+                    (wrap-token token))
+        stop (http/run-server handler {:ip bind :port http-port})]
+
+    (reset! server stop)
+
+    ;; Start WebSocket server on separate port
+    (start-ws-server! ws-port)
+
+    ;; Start input processor
+    (start-input-processor!)
+
+    ;; Optionally spawn Claude
+    (when auto-spawn
+      (spawn-agent! {:resume-id resume-id}))
+
+    (println (format "[claude-bridge] HTTP API on http://%s:%s/claude" bind http-port))
+    (println (format "[claude-bridge] WebSocket on ws://%s:%s" bind ws-port))
+    {:http-stop stop :ws-port ws-port :http-port http-port}))
+
+(defn stop!
+  "Stop the Claude Drawbridge and kill the agent."
+  []
+  (kill-agent!)
+  (stop-ws-server!)
+  (when-let [stop-fn @server]
+    (stop-fn)
+    (reset! server nil))
+  (println "[claude-bridge] Stopped"))
+
+;; =============================================================================
+;; Agency Integration
+;; =============================================================================
+
+(defn push-agency-event!
+  "Push an Agency event (bell, summon, etc.) to Claude.
+   Called directly from Agency service - no WebSocket needed."
+  [event]
+  (enqueue-input! :agency (pr-str event)))
+
+(defn push-forum-post!
+  "Push a Forum post to Claude."
+  [{:keys [author body]}]
+  (enqueue-input! :forum (format "Post from %s: %s" author body)))
+
+(comment
+  ;; Development / REPL usage
+  (start! {:http-port 6768
+           :ws-port 6770
+           :resume-id "64570417-4354-40b8-b6a5-db804f69a1d0"})
+  (stop!)
+
+  (agent-alive?)
+  (send-input! "Hello from the REPL!")
+  (enqueue-input! :agency {:type :bell :bell-type :ping})
+
+  ;; From another process:
+  ;; HTTP: curl -X POST http://localhost:6768/claude -d "Hello" -H "X-Admin-Token: your-token" -H "Content-Type: text/plain"
+  ;; WebSocket: bb ws-client connecting to ws://localhost:6770
+  )

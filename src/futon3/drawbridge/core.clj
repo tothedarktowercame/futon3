@@ -400,10 +400,13 @@
         peripheral-el (or (System/getenv "FUTON_PAR_PERIPHERAL_EL")
                           (str (System/getProperty "user.home")
                                "/code/futon0/contrib/futon-par-peripheral.el"))
+        home (System/getProperty "user.home")
         crdt-el (or (System/getenv "CRDT_EL_PATH")
                     (first (filter #(.exists (io/file %))
-                                   [(str (System/getProperty "user.home")
-                                         "/.emacs.d/elpa/crdt-0.3.5/crdt.el")
+                                   [(str home "/.emacs.d/elpa/crdt-0.3.5/crdt.el")
+                                    (str home "/.emacs.d/lisp/crdt.el")
+                                    (str home "/.emacs-graph/straight/build/crdt/crdt.el")
+                                    (str home "/.emacs-graph/straight/repos/crdt/crdt.el")
                                     "/usr/share/emacs/site-lisp/crdt.el"])))]
     (if (and par-title crdt-host crdt-port agent-id crdt-el)
       (do

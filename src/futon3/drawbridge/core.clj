@@ -344,8 +344,10 @@
                            bell-type
                            (or (:message payload) (pr-str payload)))]
         (println (format "[drawbridge] Bell type=%s" bell-type))
-        (if (= bell-type "test-bell")
-          (future (ack-test-bell! msg))
+        (case bell-type
+          "test-bell" (future (ack-test-bell! msg))
+          "par" (future (handle-par-bell! msg))
+          ;; Default: send prompt to agent
           (future (send-input! prompt))))
 
       "page"
@@ -389,6 +391,55 @@
             (println "[drawbridge] test-bell ack: secret missing in response")))
         (catch Exception e
           (println "[drawbridge] test-bell ack failed:" (.getMessage e)))))))
+
+(defn- handle-par-bell!
+  "Handle a PAR bell by spawning a local peripheral to contribute to the PAR."
+  [{:keys [payload]}]
+  (let [{:keys [par-title crdt-host crdt-port agency-url]} payload
+        agent-id (:agent-id @agent-state)
+        peripheral-el (or (System/getenv "FUTON_PAR_PERIPHERAL_EL")
+                          (str (System/getProperty "user.home")
+                               "/code/futon0/contrib/futon-par-peripheral.el"))
+        crdt-el (or (System/getenv "CRDT_EL_PATH")
+                    (first (filter #(.exists (io/file %))
+                                   [(str (System/getProperty "user.home")
+                                         "/.emacs.d/elpa/crdt-0.3.5/crdt.el")
+                                    "/usr/share/emacs/site-lisp/crdt.el"])))]
+    (if (and par-title crdt-host crdt-port agent-id crdt-el)
+      (do
+        (println (format "[drawbridge] PAR bell: spawning peripheral for %s, PAR='%s'"
+                         agent-id par-title))
+        (let [env {"CRDT_HOST" (str crdt-host)
+                   "CRDT_PORT" (str crdt-port)
+                   "AGENT_ID" (str agent-id)
+                   "PAR_TITLE" (str par-title)
+                   "AGENCY_URL" (or agency-url "http://localhost:7070")
+                   "LANG" "en_US.UTF-8"
+                   "LC_ALL" "en_US.UTF-8"}
+              cmd ["emacs" "--batch" "-Q" "-l" crdt-el "-l" peripheral-el]
+              pb (ProcessBuilder. ^java.util.List cmd)]
+          ;; Set environment
+          (let [pb-env (.environment pb)]
+            (doseq [[k v] env]
+              (.put pb-env k v)))
+          ;; Redirect stderr to stdout
+          (.redirectErrorStream pb true)
+          ;; Start process asynchronously
+          (future
+            (try
+              (let [proc (.start pb)
+                    reader (io/reader (.getInputStream proc))]
+                ;; Log output
+                (doseq [line (line-seq reader)]
+                  (println (format "[par-peripheral:%s] %s" agent-id line)))
+                ;; Wait for completion
+                (let [exit-code (.waitFor proc)]
+                  (println (format "[drawbridge] PAR peripheral for %s exited with code %d"
+                                   agent-id exit-code))))
+              (catch Exception e
+                (println (format "[drawbridge] PAR peripheral error: %s" (.getMessage e))))))))
+      (println (format "[drawbridge] PAR bell missing params: par-title=%s crdt-host=%s crdt-port=%s agent-id=%s crdt-el=%s"
+                       par-title crdt-host crdt-port agent-id crdt-el)))))
 
 (defn- agency-ws-listener [state agent-id]
   (reify WebSocket$Listener

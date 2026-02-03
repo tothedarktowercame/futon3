@@ -43,7 +43,10 @@ title=""
 agents=""  # Will be populated from Agency if not specified
 start_agents=1
 emacs_socket="${EMACS_SOCKET:-server}"
+# CRDT_HOST for local use (server Emacs)
 crdt_host="${CRDT_HOST:-127.0.0.1}"
+# CRDT_PUBLIC_HOST for remote agents - must be server's external IP/hostname
+crdt_public_host="${CRDT_PUBLIC_HOST:-${crdt_host}}"
 crdt_port="${CRDT_PORT:-6530}"
 agency_url="${AGENCY_URL:-http://localhost:7070}"
 agent_timeout="${PAR_AGENT_TIMEOUT:-240}"
@@ -134,59 +137,45 @@ emacsclient -s "$emacs_socket" -e "
 echo "[bell] PAR buffer created: *PAR: $title*"
 echo ""
 
-# Step 2: Start agent peripherals (sequentially so they read each other's answers)
+# Step 2: Ring bell for each agent via Agency
+# Each agent's Drawbridge will spawn a local peripheral
 if [[ "$start_agents" == "1" ]]; then
-  echo "[bell] Running agents sequentially so they can read each other's contributions..."
+  echo "[bell] Ringing PAR bell for agents via Agency..."
   echo ""
 
+  # Build the PAR payload - note: crdt_host should be server's external IP for remote agents
+  par_payload=$(cat <<EOF
+{
+  "par-title": "$title",
+  "crdt-host": "$crdt_public_host",
+  "crdt-port": $crdt_port,
+  "agency-url": "$agency_url"
+}
+EOF
+)
+
   for agent in "${agent_list[@]}"; do
-    echo "[bell] === Starting peripheral for $agent ==="
+    echo "[bell] === Ringing bell for $agent ==="
 
-    set +e
-    if command -v timeout >/dev/null 2>&1; then
-      CRDT_HOST="$crdt_host" \
-      CRDT_PORT="$crdt_port" \
-      AGENT_ID="$agent" \
-      PAR_TITLE="$title" \
-      AGENCY_URL="$agency_url" \
-      LANG="$lang" \
-      LC_ALL="$lc_all" \
-      timeout "${agent_timeout}" \
-      emacs --batch -Q \
-        -l "$crdt_el_path" \
-        -l ~/code/futon0/contrib/futon-par-peripheral.el \
-        2>&1 | sed "s/^/[$agent] /"
-      exit_code="${PIPESTATUS[0]}"
-    else
-      CRDT_HOST="$crdt_host" \
-      CRDT_PORT="$crdt_port" \
-      AGENT_ID="$agent" \
-      PAR_TITLE="$title" \
-      AGENCY_URL="$agency_url" \
-      LANG="$lang" \
-      LC_ALL="$lc_all" \
-      emacs --batch -Q \
-        -l "$crdt_el_path" \
-        -l ~/code/futon0/contrib/futon-par-peripheral.el \
-        2>&1 | sed "s/^/[$agent] /"
-      exit_code="${PIPESTATUS[0]}"
-    fi
-    set -e
+    # Send PAR bell to this specific agent
+    bell_response=$(curl -s -X POST "$agency_url/agency/bell" \
+      -H "Content-Type: application/json" \
+      -d "{\"agent-id\": \"$agent\", \"type\": \"par\", \"payload\": $par_payload}")
 
-    if [[ "$exit_code" -ne 0 ]]; then
-      if [[ "$exit_code" -eq 124 ]]; then
-        echo "[bell] $agent TIMEOUT after ${agent_timeout}s - continuing to next agent"
-      else
-        echo "[bell] $agent FAILED (exit $exit_code) - continuing to next agent"
-      fi
+    if echo "$bell_response" | jq -e '.ok' >/dev/null 2>&1; then
+      echo "[bell] Bell sent to $agent"
     else
-      echo "[bell] $agent finished"
+      echo "[bell] Failed to ring bell for $agent: $bell_response"
     fi
-    echo ""
-    sleep 3  # Give CRDT time to sync before next agent
+
+    # Stagger bells slightly
+    sleep 1
   done
 
-  echo "[bell] All agents have contributed."
+  echo ""
+  echo "[bell] PAR bells sent to all agents."
+  echo "[bell] Agents will spawn local peripherals and contribute via CRDT."
+  echo "[bell] Watch the PAR buffer for contributions..."
 fi
 
 echo ""

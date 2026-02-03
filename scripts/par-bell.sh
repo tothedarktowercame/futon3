@@ -121,12 +121,13 @@ emacsclient -s "$emacs_socket" -e "
 echo "[bell] PAR buffer created: *PAR: $title*"
 echo ""
 
-# Step 2: Start agent peripherals
+# Step 2: Start agent peripherals (sequentially so they read each other's answers)
 if [[ "$start_agents" == "1" ]]; then
-  pids=()
+  echo "[bell] Running agents sequentially so they can read each other's contributions..."
+  echo ""
 
   for agent in "${agent_list[@]}"; do
-    echo "[bell] Starting peripheral for $agent..."
+    echo "[bell] === Starting peripheral for $agent ==="
 
     CRDT_HOST="$crdt_host" \
     CRDT_PORT="$crdt_port" \
@@ -136,23 +137,13 @@ if [[ "$start_agents" == "1" ]]; then
     emacs --batch -Q \
       -l ~/.emacs.d/elpa/crdt-*/crdt.el \
       -l ~/code/futon0/contrib/futon-par-peripheral.el \
-      2>&1 | sed "s/^/[$agent] /" &
+      2>&1 | sed "s/^/[$agent] /"
 
-    pids+=($!)
-    sleep 2  # Stagger agent starts
+    echo "[bell] $agent finished"
+    echo ""
+    sleep 3  # Give CRDT time to sync before next agent
   done
 
-  echo ""
-  echo "[bell] Agent peripherals started. PIDs: ${pids[*]}"
-  echo "[bell] Waiting for agents to contribute..."
-  echo ""
-
-  # Wait for all agents to finish
-  for pid in "${pids[@]}"; do
-    wait "$pid" 2>/dev/null || true
-  done
-
-  echo ""
   echo "[bell] All agents have contributed."
 fi
 

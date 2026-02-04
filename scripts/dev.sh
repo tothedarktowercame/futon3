@@ -42,6 +42,13 @@ err()  { printf "%b\n" "${RED}$*${RESET}" >&2; }
 #   FUTON3_CODEX_SESSION_ID   - optional Codex resume id for drawbridge
 #   FUTON3_CODEX_AGENT_ID     - agent id for Codex drawbridge (default: codex)
 #   FUTON3_MUSN_PAGE=0        - disable MUSN chat -> Agency page bridge (enabled by default)
+#   --musn-page-room ROOM     - override MUSN_PAGE_ROOM
+#   --musn-page-agent ID      - override MUSN_PAGE_AGENT
+#   --musn-page-ignore CSV    - override MUSN_PAGE_IGNORE
+#   --musn-page-poll SECS     - override MUSN_PAGE_POLL
+#   --musn-page-timeout MS    - override MUSN_PAGE_TIMEOUT
+#   --musn-page-disable       - set FUTON3_MUSN_PAGE=0
+#   --musn-page-enable        - set FUTON3_MUSN_PAGE=1
 #
 # Drawbridge runs on port 6767 for hot-reloading code:
 #   ./scripts/repl-eval '(require '\''f2.transport :reload)'
@@ -80,6 +87,22 @@ fi
 if [[ "${SKIP_CHAT_SUPERVISOR:-}" == "1" ]]; then
   export FUTON3_CHAT_SUPERVISOR=0
 fi
+
+# CLI overrides for MUSN page bridge
+dev_args=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --musn-page-room) export MUSN_PAGE_ROOM="$2"; shift 2 ;;
+    --musn-page-agent) export MUSN_PAGE_AGENT="$2"; shift 2 ;;
+    --musn-page-ignore) export MUSN_PAGE_IGNORE="$2"; shift 2 ;;
+    --musn-page-poll) export MUSN_PAGE_POLL="$2"; shift 2 ;;
+    --musn-page-timeout) export MUSN_PAGE_TIMEOUT="$2"; shift 2 ;;
+    --musn-page-disable) export FUTON3_MUSN_PAGE=0; shift ;;
+    --musn-page-enable) export FUTON3_MUSN_PAGE=1; shift ;;
+    *) dev_args+=("$1"); shift ;;
+  esac
+done
+set -- "${dev_args[@]}"
 
 # Enable Drawbridge by default for dev (hot-reloading on port 6767)
 export FUTON3_DRAWBRIDGE="${FUTON3_DRAWBRIDGE:-1}"

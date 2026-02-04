@@ -37,12 +37,22 @@
                :timeout-ms (Long/parseLong (env "MUSN_PAGE_TIMEOUT" "30000"))
                :ignore-nicks (env "MUSN_PAGE_IGNORE" "")}]
     (if (empty? args)
-      (update opts :ignore-nicks
-              (fn [s]
-                (->> (str/split (or s "") #",")
-                     (map str/trim)
-                     (remove str/blank?)
-                     set)))
+      (let [opts (update opts :ignore-nicks
+                         (fn [s]
+                           (->> (str/split (or s "") #",")
+                                (map str/trim)
+                                (remove str/blank?)
+                                set)))]
+        ;; Default: ignore the agent's own nick unless explicitly overridden.
+        (cond
+          (contains? (:ignore-nicks opts) "none")
+          (update opts :ignore-nicks disj "none")
+
+          (str/blank? (:agent-id opts))
+          opts
+
+          :else
+          (update opts :ignore-nicks conj (:agent-id opts))))
       (let [[flag val & rest] args]
         (case flag
           "--musn-url" (recur rest (assoc opts :musn-url val))

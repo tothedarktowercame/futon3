@@ -17,7 +17,8 @@
 (ns musn-chat-page
   (:require [cheshire.core :as json]
             [clj-http.client :as http]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clojure.set :as set])
   (:import [java.lang ProcessHandle]))
 
 (defn env
@@ -214,6 +215,29 @@
     (map? response) (or (:result response) (:text response) (:response response))
     :else nil))
 
+(defn- event-key [event]
+  (or (:seq event)
+      (get-in event [:payload :msg-id])
+      (let [payload (:payload event)
+            author (get-in payload [:author :id])
+            name (get-in payload [:author :name])
+            text (:text payload)
+            at (:at payload)]
+        (hash [author name text at]))))
+
+(defn- seen-contains? [seen-set k]
+  (and k (contains? seen-set k)))
+
+(defn- seen-add [seen-queue seen-set k]
+  (if (or (nil? k) (contains? seen-set k))
+    {:queue seen-queue :set seen-set}
+    (let [queue (conj seen-queue k)
+          queue (if (> (count queue) 200) (subvec queue 1) queue)
+          set' (if (> (count seen-set) 400)
+                 (set queue)
+                 (conj seen-set k))]
+      {:queue queue :set set'})))
+
 ;; Rate limiting state
 (def ^:private last-page-time (atom 0))
 (def ^:private min-page-interval-ms
@@ -259,7 +283,9 @@
     (println (format "[musn-chat-page] room=%s agent=%s musn=%s agency=%s cursor=%s"
                      room agent-id musn-url agency-url start-cursor))
     (loop [cursor start-cursor
-           error-count 0]
+           error-count 0
+           seen-queue []
+           seen-set #{}]
       (let [result (try
                      {:ok true
                       :data (musn-state! musn-url room cursor poll-timeout-ms)}
@@ -270,7 +296,8 @@
             poll-ok? (and (:ok result) (= 200 status) (:ok body))
             next-cursor (if poll-ok? (or (:cursor body) cursor) cursor)
             events (if poll-ok? (:events body) [])
-            new-error-count (if (:ok result) 0 (inc error-count))]
+            new-error-count (if (:ok result) 0 (inc error-count))
+            seen-state (atom {:queue seen-queue :set seen-set})]
         ;; Log errors but don't crash
         (when-not (:ok result)
           (println (format "[musn-chat-page] poll error (count=%d): %s" new-error-count (:error result))))
@@ -280,8 +307,11 @@
                   etype (cond
                           (keyword? etype) (name etype)
                           (string? etype) etype
-                          :else "")]
-              (when (= "chat/message" etype)
+                          :else "")
+                  k (event-key event)]
+              (when (and (= "chat/message" etype)
+                         (not (seen-contains? (:set @seen-state) k)))
+                (swap! seen-state #(merge % (seen-add (:queue %) (:set %) k)))
                 (let [{:keys [nick text prompt]} (event->prompt room event)
                       mention (addressed-to? text)]
                   (when (and (seq text)
@@ -304,6 +334,7 @@
         (when poll-ok?
           (write-cursor! cursor-file next-cursor))
         (Thread/sleep (long (* 1000 poll-interval)))
-        (recur next-cursor new-error-count)))))
+        (let [{:keys [queue set]} @seen-state]
+          (recur next-cursor new-error-count queue set))))))
 
 (apply -main *command-line-args*)

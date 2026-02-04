@@ -106,6 +106,17 @@
    :adapters (atom (mock/adapters))
    :router (atom nil)})
 
+(defmacro safe-start
+  "Wrap service start in try-catch. Returns stop-fn on success, nil on failure.
+   Logs errors but doesn't crash the JVM."
+  [service-name & body]
+  `(try
+     ~@body
+     (catch Throwable ex#
+       (println (format "[f2.musn] %s failed to start: %s" ~service-name (.getMessage ex#)))
+       (.printStackTrace ex#)
+       nil)))
+
 (defn- start-drawbridge! [{:keys [drawbridge]}]
   (when (:enabled? drawbridge)
     (try
@@ -129,17 +140,19 @@
 
 (defn- start-musn-http! [{:keys [musn-http]}]
   (when (:enabled? musn-http)
-    (println (format "[f2.musn] Starting MUSN HTTP on port %d..." (:port musn-http)))
-    (let [stop-fn (musn-http/start! musn-http)]
-      (println "[f2.musn] MUSN HTTP started")
-      stop-fn)))
+    (safe-start "MUSN HTTP"
+      (println (format "[f2.musn] Starting MUSN HTTP on port %d..." (:port musn-http)))
+      (let [stop-fn (musn-http/start! musn-http)]
+        (println "[f2.musn] MUSN HTTP started")
+        stop-fn))))
 
 (defn- start-irc-bridge! [{:keys [irc-bridge]}]
   (when (:enabled? irc-bridge)
-    (println (format "[f2.musn] Starting IRC bridge on %s:%d..." (:host irc-bridge) (:port irc-bridge)))
-    (let [stop-fn (irc-bridge/start! (dissoc irc-bridge :enabled?))]
-      (println "[f2.musn] IRC bridge started")
-      stop-fn)))
+    (safe-start "IRC bridge"
+      (println (format "[f2.musn] Starting IRC bridge on %s:%d..." (:host irc-bridge) (:port irc-bridge)))
+      (let [stop-fn (irc-bridge/start! (dissoc irc-bridge :enabled?))]
+        (println "[f2.musn] IRC bridge started")
+        stop-fn))))
 
 (defn- detect-agent-cmd []
   (let [cwd (System/getProperty "user.dir")]
@@ -150,39 +163,43 @@
 
 (defn- start-chat-supervisor! [{:keys [chat-supervisor]}]
   (when (:enabled? chat-supervisor)
-    (let [agent-cmd (or (:agent chat-supervisor) (detect-agent-cmd))
-          opts (-> chat-supervisor
-                   (dissoc :enabled?)
-                   (assoc :agent agent-cmd))]
-      (println (format "[f2.musn] Starting chat supervisor (room=%s, agent=%s)..."
-                       (:room opts) agent-cmd))
-      (let [stop-fn (chat-supervisor/start! opts)]
-        (println "[f2.musn] Chat supervisor started")
-        stop-fn))))
+    (safe-start "Chat supervisor"
+      (let [agent-cmd (or (:agent chat-supervisor) (detect-agent-cmd))
+            opts (-> chat-supervisor
+                     (dissoc :enabled?)
+                     (assoc :agent agent-cmd))]
+        (println (format "[f2.musn] Starting chat supervisor (room=%s, agent=%s)..."
+                         (:room opts) agent-cmd))
+        (let [stop-fn (chat-supervisor/start! opts)]
+          (println "[f2.musn] Chat supervisor started")
+          stop-fn)))))
 
 (defn- start-futon1-api! [{:keys [futon1-api]}]
   (when (:enabled? futon1-api)
-    (println (format "[f2.musn] Starting Futon1 API on port %d..." (:port futon1-api)))
-    (let [result (futon1-api/start! {:port (:port futon1-api)
-                                     :default-profile (:profile futon1-api)})]
-      (println "[f2.musn] Futon1 API started")
-      ;; Return a stop function
-      (fn [] (futon1-api/stop!)))))
+    (safe-start "Futon1 API"
+      (println (format "[f2.musn] Starting Futon1 API on port %d..." (:port futon1-api)))
+      (let [result (futon1-api/start! {:port (:port futon1-api)
+                                       :default-profile (:profile futon1-api)})]
+        (println "[f2.musn] Futon1 API started")
+        ;; Return a stop function
+        (fn [] (futon1-api/stop!))))))
 
 (defn- start-lab-ws! [{:keys [lab-ws]}]
   (when (:enabled? lab-ws)
-    (println (format "[f2.musn] Starting Lab WebSocket on port %d..." (:port lab-ws)))
-    (let [server (lab-ws/start! {:port (:port lab-ws)})]
-      (println "[f2.musn] Lab WebSocket started")
-      ;; Return a stop function
-      (fn [] (lab-ws/stop!)))))
+    (safe-start "Lab WebSocket"
+      (println (format "[f2.musn] Starting Lab WebSocket on port %d..." (:port lab-ws)))
+      (let [server (lab-ws/start! {:port (:port lab-ws)})]
+        (println "[f2.musn] Lab WebSocket started")
+        ;; Return a stop function
+        (fn [] (lab-ws/stop!))))))
 
 (defn- start-agency! [{:keys [agency]}]
   (when (:enabled? agency)
-    (println (format "[f2.musn] Starting Agency on port %d..." (:port agency)))
-    (let [stop-fn (agency/start! {:port (:port agency)})]
-      (println "[f2.musn] Agency started")
-      stop-fn)))
+    (safe-start "Agency"
+      (println (format "[f2.musn] Starting Agency on port %d..." (:port agency)))
+      (let [stop-fn (agency/start! {:port (:port agency)})]
+        (println "[f2.musn] Agency started")
+        stop-fn))))
 
 (defn start!
   ([] (start! {}))
@@ -242,7 +259,8 @@
                _ (flush)
                agency-stop (start-agency! config)
                _ (flush)]
-           (reset! runtime {:state state
+           (reset! runtime {:config config
+                            :state state
                             :transport transport-stop
                             :ui ui-stop
                             :drawbridge drawbridge-stop
@@ -279,6 +297,64 @@
     (ui/stop! ui)
     (transport/stop! transport)
     (reset! runtime nil)))
+
+;; --- Individual service restart functions (callable via Drawbridge) ---
+
+(defn restart-agency!
+  "Restart the Agency service. Call via Drawbridge: (f2.musn/restart-agency!)"
+  []
+  (when-let [{:keys [config agency]} @runtime]
+    (when agency
+      (println "[f2.musn] Stopping Agency...")
+      (try (agency) (catch Throwable _ nil)))
+    (println "[f2.musn] Starting Agency...")
+    (let [new-stop (start-agency! config)]
+      (swap! runtime assoc :agency new-stop)
+      (if new-stop
+        (println "[f2.musn] Agency restarted successfully")
+        (println "[f2.musn] Agency failed to restart")))))
+
+(defn restart-irc-bridge!
+  "Restart the IRC bridge. Call via Drawbridge: (f2.musn/restart-irc-bridge!)"
+  []
+  (when-let [{:keys [config irc-bridge]} @runtime]
+    (when irc-bridge
+      (println "[f2.musn] Stopping IRC bridge...")
+      (try (irc-bridge) (catch Throwable _ nil)))
+    (println "[f2.musn] Starting IRC bridge...")
+    (let [new-stop (start-irc-bridge! config)]
+      (swap! runtime assoc :irc-bridge new-stop)
+      (if new-stop
+        (println "[f2.musn] IRC bridge restarted successfully")
+        (println "[f2.musn] IRC bridge failed to restart")))))
+
+(defn restart-musn-http!
+  "Restart MUSN HTTP. Call via Drawbridge: (f2.musn/restart-musn-http!)"
+  []
+  (when-let [{:keys [config musn-http]} @runtime]
+    (when musn-http
+      (println "[f2.musn] Stopping MUSN HTTP...")
+      (try (musn-http) (catch Throwable _ nil)))
+    (println "[f2.musn] Starting MUSN HTTP...")
+    (let [new-stop (start-musn-http! config)]
+      (swap! runtime assoc :musn-http new-stop)
+      (if new-stop
+        (println "[f2.musn] MUSN HTTP restarted successfully")
+        (println "[f2.musn] MUSN HTTP failed to restart")))))
+
+(defn service-status
+  "Return status of all services. Call via Drawbridge: (f2.musn/service-status)"
+  []
+  (when-let [rt @runtime]
+    {:agency (some? (:agency rt))
+     :irc-bridge (some? (:irc-bridge rt))
+     :musn-http (some? (:musn-http rt))
+     :chat-supervisor (some? (:chat-supervisor rt))
+     :futon1-api (some? (:futon1-api rt))
+     :lab-ws (some? (:lab-ws rt))
+     :drawbridge (some? (:drawbridge rt))
+     :transport (some? (:transport rt))
+     :ui (some? (:ui rt))}))
 
 (defn ingest-demo! [state]
   (let [path "dev/demo_events.ndjson"]

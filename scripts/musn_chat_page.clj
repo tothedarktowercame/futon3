@@ -17,7 +17,8 @@
 (ns musn-chat-page
   (:require [cheshire.core :as json]
             [clj-http.client :as http]
-            [clojure.string :as str]))
+            [clojure.string :as str])
+  (:import [java.lang ProcessHandle]))
 
 (defn env
   "Return first non-blank env var value, or default.
@@ -46,6 +47,7 @@
                :poll-interval (Double/parseDouble (env "MUSN_PAGE_POLL" "2.0"))
                :timeout-ms (Long/parseLong (env "MUSN_PAGE_TIMEOUT" "30000"))
                :ignore-nicks (env "MUSN_PAGE_IGNORE" "")
+               :from-latest? (not= "0" (env "MUSN_PAGE_FROM_LATEST" "1"))
                :cursor-file (env "MUSN_PAGE_CURSOR_FILE" "")}]
     (if (empty? args)
       (let [opts (update opts :ignore-nicks
@@ -81,6 +83,11 @@
         agent-id (or agent-id "agent")]
     (str "/tmp/musn-chat-page.cursor." room "." agent-id)))
 
+(defn- default-lock-file [room agent-id]
+  (let [room (or room "room")
+        agent-id (or agent-id "agent")]
+    (str "/tmp/musn-chat-page.lock." room "." agent-id)))
+
 (defn- read-cursor [path]
   (try
     (when (seq path)
@@ -93,6 +100,21 @@
       (spit path (str cursor)))
     (catch Exception e
       (println (format "[musn-chat-page] cursor write failed: %s" (.getMessage e))))))
+
+(defn- running-pid? [pid]
+  (try
+    (when pid
+      (let [opt (ProcessHandle/of (long pid))]
+        (and (.isPresent opt) (.isAlive (.get opt)))))
+    (catch Exception _ false)))
+
+(defn- acquire-lock! [path]
+  (when (seq path)
+    (let [existing (read-cursor path)]
+      (when (and existing (running-pid? existing))
+        (println (format "[musn-chat-page] already running (pid=%s) - exiting" existing))
+        (System/exit 0))
+      (spit path (str (.. ProcessHandle current pid))))))
 
 (defn- addressed-to? [text]
   (when-let [m (re-find #"(?i)^\s*@([A-Za-z0-9_-]+)" (or text ""))]
@@ -141,15 +163,29 @@
      :prompt (str "IRC #" room " <" name "> " text "\n" "(ts " ts ")")}))
 
 (defn -main [& args]
-  (let [{:keys [musn-url agency-url room agent-id poll-interval timeout-ms ignore-nicks cursor-file]} (parse-args args)
+  (let [{:keys [musn-url agency-url room agent-id poll-interval timeout-ms ignore-nicks cursor-file from-latest?]} (parse-args args)
         cursor-file (if (seq cursor-file)
                       cursor-file
                       (default-cursor-file room agent-id))
-        start-cursor (or (read-cursor cursor-file) 0)
+        lock-file (default-lock-file room agent-id)
+        existing-cursor (read-cursor cursor-file)
+        latest-cursor (when (and (nil? existing-cursor) from-latest?)
+                        (try
+                          (let [{:keys [status body]} (musn-state! musn-url room 0)]
+                            (when (and (= 200 status) (:ok body))
+                              (:cursor body)))
+                          (catch Exception e
+                            (println (format "[musn-chat-page] init cursor fetch failed: %s" (.getMessage e)))
+                            nil)))
+        start-cursor (or existing-cursor latest-cursor 0)
         agent-id-lc (str/lower-case agent-id)]
     (when (str/blank? agent-id)
       (println "Error: --agent-id required (or set MUSN_PAGE_AGENT)")
       (System/exit 1))
+    (acquire-lock! lock-file)
+    (when (and (nil? existing-cursor) (number? latest-cursor))
+      (write-cursor! cursor-file latest-cursor)
+      (println (format "[musn-chat-page] init cursor=%s (from latest)" latest-cursor)))
     (println (format "[musn-chat-page] room=%s agent=%s musn=%s agency=%s cursor=%s"
                      room agent-id musn-url agency-url start-cursor))
     (loop [cursor start-cursor

@@ -402,7 +402,9 @@
                                "/code/futon0/contrib/futon-par-peripheral.el"))
         home (System/getProperty "user.home")
         crdt-el (or (System/getenv "CRDT_EL_PATH")
-                    (first (filter #(.exists (io/file %))
+                    (first (filter (fn [p]
+                                     (let [f (io/file p)]
+                                       (and (.exists f) (.isFile f))))
                                    [(str home "/.emacs.d/elpa/crdt-0.3.5/crdt.el")
                                     (str home "/.emacs.d/lisp/crdt.el")
                                     (str home "/.emacs-graph/straight/build/crdt/crdt.el")

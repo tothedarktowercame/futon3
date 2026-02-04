@@ -146,14 +146,18 @@
         (send-line! client line)))))
 
 (defn- room-clients [room-id]
-  "Get IRC clients in a room."
+  "Get IRC clients in a room. Supports both :room (single) and :rooms (set)."
   (let [clients (vals (:clients @server-state))]
-    (filter #(= room-id (:room %)) clients)))
+    (filter #(or (= room-id (:room %))
+                 (contains? (:rooms %) room-id))
+            clients)))
 
 (defn- ws-room-clients [room-id]
-  "Get WebSocket clients in a room."
+  "Get WebSocket clients in a room. Supports both :room (single) and :rooms (set)."
   (let [clients (vals (:ws-clients @server-state))]
-    (filter #(= room-id (:room %)) clients)))
+    (filter #(or (= room-id (:room %))
+                 (contains? (:rooms %) room-id))
+            clients)))
 
 (defn- send-ws! [client data]
   "Send JSON data to a WebSocket client."
@@ -276,7 +280,8 @@
 
 (defn- join-room! [client room-id musn-url poll-interval]
   (let [room-id (str/replace room-id #"^#" "")]
-    (swap! server-state assoc-in [:clients (:id client) :room] room-id)
+    ;; Add room to :rooms set (supports multi-room)
+    (swap! server-state update-in [:clients (:id client) :rooms] (fnil conj #{}) room-id)
     (ensure-room-poller! musn-url room-id poll-interval)
     (note-room-nick! room-id (:nick client))
     (send-line! client (format ":%s!%s@musn JOIN #%s" (:nick client) (:user client) room-id))
@@ -287,11 +292,16 @@
                                (str/join " " (sort (room-nicks room-id)))))
     (send-line! client (format ":musn 366 %s #%s :End of /NAMES list." (:nick client) room-id))))
 
+(defn- client-in-room? [client room-id]
+  "Check if client is in the given room (supports both :room and :rooms)."
+  (or (= room-id (:room client))
+      (contains? (:rooms client) room-id)))
+
 (defn- handle-privmsg! [client target text musn-url]
   (let [room-id (str/replace target #"^#" "")]
-    (if (and (:room client) (not= room-id (:room client)))
-      (send-line! client (format ":musn NOTICE %s :Unknown room #%s" (:nick client) room-id))
-      (let [room-id (or (:room client) room-id)
+    (if (and (seq (:rooms client)) (not (client-in-room? client room-id)))
+      (send-line! client (format ":musn NOTICE %s :You're not in #%s" (:nick client) room-id))
+      (let [room-id room-id
             payload {:room room-id
                      :msg-id (str (UUID/randomUUID))
                      :author {:id (:nick client) :name (:nick client)}
@@ -338,7 +348,7 @@
         (swap! server-state assoc-in [:clients (:id client) :nick] (str/trim nick))
         (when (welcome! (get-in @server-state [:clients (:id client)]))
           (swap! server-state assoc-in [:clients (:id client) :registered?] true))
-        (when (and default-room (:user client) (nil? (:room client)) (:authed? client))
+        (when (and default-room (:user client) (empty? (:rooms client)) (:authed? client))
           (join-room! (get-in @server-state [:clients (:id client)]) default-room musn-url poll-interval)))
 
       (str/starts-with? line "USER ")
@@ -346,7 +356,7 @@
         (swap! server-state assoc-in [:clients (:id client) :user] (str/trim user))
         (when (welcome! (get-in @server-state [:clients (:id client)]))
           (swap! server-state assoc-in [:clients (:id client) :registered?] true))
-        (when (and default-room (:nick client) (nil? (:room client)) (:authed? client))
+        (when (and default-room (:nick client) (empty? (:rooms client)) (:authed? client))
           (join-room! (get-in @server-state [:clients (:id client)]) default-room musn-url poll-interval)))
 
       (str/starts-with? line "JOIN ")
@@ -377,7 +387,7 @@
       (str/starts-with? line "NAMES")
       (let [parts (str/split line #"\s+")
             room (some-> (second parts) (str/replace #"^#" ""))
-            room (or room (:room client))]
+            room (or room (first (:rooms client)) (:room client))]
         (when (and room (:nick client))
           (send-line! client (format ":musn 353 %s = #%s :%s"
                                      (:nick client)
@@ -388,7 +398,7 @@
       (str/starts-with? line "WHO ")
       (let [room (second (str/split line #"\s+" 2))
             room (str/replace room #"^#" "")
-            room (or room (:room client))]
+            room (or room (first (:rooms client)) (:room client))]
         (when (and room (:nick client))
           (send-line! client (format ":musn 315 %s #%s :End of /WHO list." (:nick client) room))))
 
@@ -458,7 +468,7 @@
       (case msg-type
         "message"
         (let [client (get-in @server-state [:ws-clients client-id])
-              room-id (:room client)
+              room-id (or (:room data) (first (:rooms client)) (:room client))
               nick (:nick client)
               msg-text (:text data)]
           (when (and room-id nick (seq msg-text))
@@ -471,7 +481,8 @@
         "join"
         (let [room-id (str/replace (or (:room data) "") #"^#" "")]
           (when (seq room-id)
-            (swap! server-state assoc-in [:ws-clients client-id :room] room-id)
+            ;; Add room to :rooms set (supports multi-room)
+            (swap! server-state update-in [:ws-clients client-id :rooms] (fnil conj #{}) room-id)
             (let [client (get-in @server-state [:ws-clients client-id])]
               (ensure-room-poller! musn-url room-id poll-interval)
               (note-room-nick! room-id (:nick client))

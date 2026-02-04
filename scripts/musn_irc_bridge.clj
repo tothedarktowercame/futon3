@@ -429,7 +429,7 @@
             (catch Throwable t
               (log! (format "handler error for %s: %s" id (.getMessage t)))
               (when (= "auth-failed" (.getMessage t))
-                (throw t)))))
+                (throw t))))
           (recur)))
       (catch Exception e
         (log! (format "client %s read error: %s" id (.getMessage e))))

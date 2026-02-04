@@ -330,12 +330,13 @@
       (log! "ws-recv" {:agent-id agent-id :type (:type msg)})
       (case (:type msg)
         "register"
-        (let [session-id (:session-id msg)]
-          (swap! connected-agents assoc (name agent-id)
-                 (cond-> {:channel channel
-                          :registered-at (java.time.Instant/now)
-                          :last-ping (java.time.Instant/now)}
-                   session-id (assoc :session-id session-id)))
+        (do
+          (let [session-id (:session-id msg)]
+            (swap! connected-agents assoc (name agent-id)
+                   (cond-> {:channel channel
+                            :registered-at (java.time.Instant/now)
+                            :last-ping (java.time.Instant/now)}
+                     session-id (assoc :session-id session-id))))
           (ws-send! channel {:type "registered" :agent-id agent-id}))
 
         "ping"

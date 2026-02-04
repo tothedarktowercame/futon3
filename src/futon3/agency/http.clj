@@ -435,9 +435,13 @@
       (log! "page-response-orphaned" {:request-id request-id})
       false)))
 
+(def ^:private default-page-timeout-ms
+  (or (some-> (System/getenv "AGENCY_PAGE_TIMEOUT_MS") Long/parseLong)
+      60000)) ; 1 minute default
+
 (defn- handle-page [body]
   (let [{:keys [agent-id prompt timeout-ms]} body
-        timeout-ms (or timeout-ms 30000)]
+        timeout-ms (or timeout-ms default-page-timeout-ms)]
     (cond
       (str/blank? (str agent-id))
       {:ok false :err "missing agent-id"}

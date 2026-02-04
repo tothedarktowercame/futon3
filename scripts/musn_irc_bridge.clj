@@ -519,6 +519,7 @@
         {:status 400 :body "Bad Request: nick parameter required"}
 
         :else
+        #_{:clj-kondo/ignore [:unresolved-symbol]}
         (httpkit/with-channel req channel
           (let [client-id (str (UUID/randomUUID))
                 room-id (str/replace (or room "") #"^#" "")

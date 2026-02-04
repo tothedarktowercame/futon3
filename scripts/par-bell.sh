@@ -43,10 +43,6 @@ title=""
 agents=""  # Will be populated from Agency if not specified
 start_agents=1
 emacs_socket="${EMACS_SOCKET:-server}"
-# CRDT_HOST for local use (server Emacs)
-crdt_host="${CRDT_HOST:-127.0.0.1}"
-# CRDT_PUBLIC_HOST for remote agents - must be server's external IP/hostname
-crdt_public_host="${CRDT_PUBLIC_HOST:-${crdt_host}}"
 crdt_port="${CRDT_PORT:-6530}"
 agency_url="${AGENCY_URL:-http://localhost:7070}"
 agent_timeout="${PAR_AGENT_TIMEOUT:-240}"
@@ -143,11 +139,10 @@ if [[ "$start_agents" == "1" ]]; then
   echo "[bell] Ringing PAR bell for agents via Agency..."
   echo ""
 
-  # Build the PAR payload - note: crdt_host should be server's external IP for remote agents
+  # Build the PAR payload - CRDT host is resolved by each agent locally
   par_payload=$(cat <<EOF
 {
   "par-title": "$title",
-  "crdt-host": "$crdt_public_host",
   "crdt-port": $crdt_port,
   "agency-url": "$agency_url"
 }

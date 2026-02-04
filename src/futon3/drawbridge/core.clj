@@ -393,9 +393,11 @@
           (println "[drawbridge] test-bell ack failed:" (.getMessage e)))))))
 
 (defn- handle-par-bell!
-  "Handle a PAR bell by spawning a local peripheral to contribute to the PAR."
+  "Handle a PAR bell by spawning a local peripheral to contribute to the PAR.
+  CRDT host is resolved locally via CRDT_HOST env (fallback 127.0.0.1)."
   [{:keys [payload]}]
-  (let [{:keys [par-title crdt-host crdt-port agency-url]} payload
+  (let [{:keys [par-title crdt-port agency-url]} payload
+        crdt-host (or (System/getenv "CRDT_HOST") "127.0.0.1")
         agent-id (:agent-id @agent-state)
         peripheral-el (or (System/getenv "FUTON_PAR_PERIPHERAL_EL")
                           (str (System/getProperty "user.home")

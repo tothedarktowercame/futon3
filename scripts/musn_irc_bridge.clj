@@ -184,6 +184,8 @@
   (let [resp (http/post (str (str/replace musn-url #"/+$" "") path)
                         {:content-type :json
                          :accept :json
+                         :conn-timeout 3000
+                         :socket-timeout 5000
                          :throw-exceptions false
                          :body (json/generate-string payload)})
         body (when-let [raw (:body resp)]
@@ -247,7 +249,9 @@
              state
              (let [stop-flag (atom false)
                    poller (future (poll-room! musn-url room-id stop-flag poll-interval))]
-               (assoc-in state [:rooms room-id] {:stop? stop-flag :poller poller}))))))
+               (update state :rooms assoc room-id
+                       (merge {:stop? stop-flag :poller poller}
+                              (get-in state [:rooms room-id] {}))))))))
 
 (defn- stop-room-poller! [room-id]
   (when-let [stop-flag (get-in @server-state [:rooms room-id :stop?])]
@@ -423,7 +427,9 @@
           (try
             (handle-line! (get-in @server-state [:clients id]) line musn-url poll-interval default-room password)
             (catch Throwable t
-              (log! (format "handler error for %s: %s" id (.getMessage t)))))
+              (log! (format "handler error for %s: %s" id (.getMessage t)))
+              (when (= "auth-failed" (.getMessage t))
+                (throw t)))))
           (recur)))
       (catch Exception e
         (log! (format "client %s read error: %s" id (.getMessage e))))

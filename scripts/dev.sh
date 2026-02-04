@@ -182,12 +182,16 @@ fi
 
 # Bridge MUSN chat -> Agency pages (enabled by default)
 if [[ "${FUTON3_MUSN_PAGE:-1}" == "1" ]]; then
-  page_agent="${MUSN_PAGE_AGENT:-${FUTON3_CODEX_AGENT_ID:-}}"
-  if [[ -z "${page_agent}" ]]; then
-    warn "[dev] FUTON3_MUSN_PAGE=1 but MUSN_PAGE_AGENT not set; skipping."
+  page_agents="${MUSN_PAGE_AGENTS:-${MUSN_PAGE_AGENT:-${FUTON3_CODEX_AGENT_ID:-}}}"
+  if [[ -z "${page_agents}" ]]; then
+    warn "[dev] FUTON3_MUSN_PAGE=1 but MUSN_PAGE_AGENTS/MUSN_PAGE_AGENT not set; skipping."
   else
-    info "[dev] Starting MUSN chat pager for agent=${page_agent}..."
-    cat > /tmp/musn-chat-page.sh <<'EOF'
+    for page_agent in ${page_agents//,/ }; do
+      if [[ -z "${page_agent}" ]]; then
+        continue
+      fi
+      info "[dev] Starting MUSN chat pager for agent=${page_agent}..."
+      cat > "/tmp/musn-chat-page.${page_agent}.sh" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 cd /home/joe/code/futon3
@@ -215,9 +219,9 @@ exec ./scripts/musn-chat-page \
   --timeout-ms "${timeout_ms}" \
   --ignore-nicks "${ignore}"
 EOF
-    chmod +x /tmp/musn-chat-page.sh
-    setsid /tmp/musn-chat-page.sh >/tmp/musn-chat-page.log 2>&1 </dev/null &
-    musn_page_pid="$!"
+      chmod +x "/tmp/musn-chat-page.${page_agent}.sh"
+      MUSN_PAGE_AGENT="${page_agent}" setsid "/tmp/musn-chat-page.${page_agent}.sh" >/tmp/musn-chat-page."${page_agent}".log 2>&1 </dev/null &
+    done
   fi
 fi
 

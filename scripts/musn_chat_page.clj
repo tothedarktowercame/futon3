@@ -142,6 +142,21 @@
                 (json/parse-string raw true)
                 (catch Exception _ nil)))})))
 
+(defn- get-json!
+  "GET JSON with configurable socket timeout (default 5s)."
+  ([url] (get-json! url 5000))
+  ([url socket-timeout-ms]
+   (let [resp (http/get url
+                        {:accept :json
+                         :conn-timeout 3000
+                         :socket-timeout socket-timeout-ms
+                         :throw-exceptions false})]
+     {:status (:status resp)
+      :body (when-let [raw (:body resp)]
+              (try
+                (json/parse-string raw true)
+                (catch Exception _ nil)))})))
+
 (defn- musn-state! [musn-url room cursor poll-timeout-ms]
   (let [payload (cond-> {:room room}
                   (pos? cursor) (assoc :since cursor))
@@ -149,6 +164,20 @@
                                           payload
                                           poll-timeout-ms)]
     {:status status :body body}))
+
+(defn- agency-connected! [agency-url]
+  (get-json! (str (str/replace agency-url #"/+$" "") "/agency/connected") 5000))
+
+(defn- resolve-agent-id [agency-url agent-base]
+  (try
+    (let [{:keys [status body]} (agency-connected! agency-url)
+          agents (when (and (= 200 status) (:ok body))
+                   (vec (:agents body)))
+          exact (when (some #(= % agent-base) agents) agent-base)
+          pref (when (seq agents)
+                 (some #(when (str/starts-with? % (str agent-base "-")) %) agents))]
+      (or exact pref))
+    (catch Exception _ nil)))
 
 (defn- page-agent! [agency-url agent-id prompt timeout-ms]
   ;; Socket timeout should exceed page timeout to allow Agency to complete
@@ -256,14 +285,16 @@
                              (or (nil? mention) (= mention agent-id-lc))
                              (not (rate-limited?)))
                     (try
-                      (let [{:keys [status body]} (page-agent! agency-url agent-id prompt timeout-ms)]
-                        (if (or (not= 200 status) (not (:ok body)))
-                          (println (format "[musn-chat-page] page failed status=%s body=%s" status body))
-                          (when (and auto-reply? (= mention agent-id-lc))
-                            (let [reply (response->text (:response body))]
-                              (println (format "[musn-chat-page] page ok reply=%s" (pr-str reply)))
-                              (when (seq reply)
-                                (musn-send! musn-url room agent-id reply))))))
+                      (if-let [resolved-agent (resolve-agent-id agency-url agent-id)]
+                        (let [{:keys [status body]} (page-agent! agency-url resolved-agent prompt timeout-ms)]
+                          (if (or (not= 200 status) (not (:ok body)))
+                            (println (format "[musn-chat-page] page failed status=%s body=%s" status body))
+                            (when (and auto-reply? (= mention agent-id-lc))
+                              (let [reply (response->text (:response body))]
+                                (println (format "[musn-chat-page] page ok reply=%s" (pr-str reply)))
+                                (when (seq reply)
+                                  (musn-send! musn-url room agent-id reply))))))
+                        (println (format "[musn-chat-page] agent not connected: %s" agent-id)))
                       (catch Exception e
                         (println (format "[musn-chat-page] page error: %s" (.getMessage e)))))))))))
         (when poll-ok?

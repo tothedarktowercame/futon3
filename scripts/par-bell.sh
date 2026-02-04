@@ -118,7 +118,7 @@ IFS=',' read -ra agent_list <<< "$agents"
 
 echo "=== PAR Bell ==="
 echo "Title: $title"
-echo "CRDT: $crdt_host:$crdt_port"
+echo "CRDT port: $crdt_port"
 echo "Agents: ${agent_list[*]}"
 echo ""
 

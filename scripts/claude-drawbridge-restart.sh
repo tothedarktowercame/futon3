@@ -58,6 +58,10 @@ cd "${ROOT}"
 SESSION_SHORT="${SESSION_ID:0:8}"
 AGENT_ID="claude-${SESSION_SHORT}"
 
+# Derive WebSocket URL from HTTP URL
+AGENCY_WS_URL="${AGENCY_URL/http:/ws:}/agency/ws"
+AGENCY_WS_URL="${AGENCY_WS_URL/https:/wss:}"
+
 # Restart via REPL (runs in MUSN JVM)
 cat <<EOF | ./scripts/repl-eval
 (do
@@ -65,6 +69,7 @@ cat <<EOF | ./scripts/repl-eval
   (claude/stop!)
   (claude/start! {:agent-id "${AGENT_ID}"
                   :agency-http-url "${AGENCY_URL}"
+                  :agency-ws-url "${AGENCY_WS_URL}"
                   :resume-id "${SESSION_ID}"})
   (println "[claude-drawbridge] agent: ${AGENT_ID}, session: ${SESSION_ID}"))
 EOF

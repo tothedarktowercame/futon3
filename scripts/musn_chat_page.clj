@@ -181,6 +181,24 @@
     (map? response) (or (:result response) (:text response) (:response response))
     :else nil))
 
+;; Rate limiting state
+(def ^:private last-page-time (atom 0))
+(def ^:private min-page-interval-ms
+  (Long/parseLong (or (System/getenv "MUSN_PAGE_MIN_INTERVAL") "5000")))
+
+(defn- rate-limited?
+  "Returns true if we should skip this page due to rate limiting."
+  []
+  (let [now (System/currentTimeMillis)
+        elapsed (- now @last-page-time)]
+    (if (< elapsed min-page-interval-ms)
+      (do
+        (println (format "[musn-chat-page] rate limit: skipping (only %dms since last page)" elapsed))
+        true)
+      (do
+        (reset! last-page-time now)
+        false))))
+
 (defn -main [& args]
   (let [{:keys [musn-url agency-url room agent-id poll-interval poll-timeout-ms timeout-ms ignore-nicks cursor-file from-latest? auto-reply?]} (parse-args args)
         cursor-file (if (seq cursor-file)
@@ -235,7 +253,8 @@
                       mention (addressed-to? text)]
                   (when (and (seq text)
                              (not (contains? ignore-nicks nick))
-                             (or (nil? mention) (= mention agent-id-lc)))
+                             (or (nil? mention) (= mention agent-id-lc))
+                             (not (rate-limited?)))
                     (try
                       (let [{:keys [status body]} (page-agent! agency-url agent-id prompt timeout-ms)]
                         (if (or (not= 200 status) (not (:ok body)))

@@ -489,23 +489,29 @@
       (swap! state assoc :ws nil :last-error (.getMessage err))
       (println "[drawbridge] Agency WS error:" (.getMessage err)))))
 
-(defn- open-agency-ws! [url agent-id state]
-  (let [client (-> (HttpClient/newBuilder)
+(defn- open-agency-ws! [url agent-id session-id state]
+  (let [;; Append agent-id and session-id as query params
+        sep (if (str/includes? url "?") "&" "?")
+        full-url (cond-> (str url sep "agent-id=" (java.net.URLEncoder/encode (str agent-id) "UTF-8"))
+                   session-id (str "&session-id=" (java.net.URLEncoder/encode (str session-id) "UTF-8")))
+        client (-> (HttpClient/newBuilder)
                    (.version HttpClient$Version/HTTP_1_1)
                    (.build))
         listener (agency-ws-listener state agent-id)
         fut (-> client
                 (.newWebSocketBuilder)
-                (.buildAsync (URI/create url) listener))]
+                (.buildAsync (URI/create full-url) listener))]
     (.get ^CompletableFuture fut 10 TimeUnit/SECONDS)))
 
 (defn start-agency-ws-client!
   "Start a WebSocket client to Agency (/agency/ws)."
-  [{:keys [url agent-id reconnect-ms ping-ms]}]
+  [{:keys [url agent-id session-id reconnect-ms ping-ms]}]
   (let [url (some-> url str/trim not-empty)
         agent-id (or (some-> agent-id str/trim not-empty)
                      (:agent-id @agent-state)
                      "agent")
+        session-id (or (some-> session-id str/trim not-empty)
+                       (:session-id @agent-state))
         reconnect-ms (or reconnect-ms 5000)
         ping-ms (or ping-ms 15000)]
     (when url
@@ -522,6 +528,7 @@
                                  :state state
                                  :url url
                                  :agent-id agent-id
+                                 :session-id session-id
                                  :reconnect-ms reconnect-ms
                                  :ping-ms ping-ms})
         (future
@@ -529,8 +536,8 @@
             (if (nil? (:ws @state))
               (try
                 (swap! state assoc :last-attempt (str (java.time.Instant/now)))
-                (println (format "[drawbridge] Agency WS connecting to %s as %s" url agent-id))
-                (open-agency-ws! url agent-id state)
+                (println (format "[drawbridge] Agency WS connecting to %s as %s (session: %s)" url agent-id session-id))
+                (open-agency-ws! url agent-id session-id state)
                 (catch Exception e
                   (swap! state assoc :last-error (.getMessage e))
                   (println "[drawbridge] Agency WS connect failed:" (.getMessage e))
@@ -779,6 +786,7 @@
     (when agency-ws-url
       (start-agency-ws-client! {:url agency-ws-url
                                 :agent-id (or agency-ws-agent-id agent-id)
+                                :session-id resume-id
                                 :reconnect-ms agency-ws-reconnect-ms
                                 :ping-ms agency-ws-ping-ms}))
 

@@ -118,7 +118,8 @@
              {:ok true
               :agents (connected-agent-ids)
               :local (local-agent-ids)
-              :remote (remote-agent-ids)})))
+              :remote (remote-agent-ids)
+              :sessions (agent-sessions)})))
 
         ;; Kick (disconnect) an agent
         (and (str/starts-with? uri "/agency/kick/") (= method :post))
@@ -307,6 +308,14 @@
   []
   (vec (keys @connected-agents)))
 
+(defn agent-sessions
+  "Return map of agent-id -> session-id for agents that reported session IDs."
+  []
+  (into {}
+        (for [[aid entry] @connected-agents
+              :when (:session-id entry)]
+          [aid (:session-id entry)])))
+
 (defn- handle-ws-message [agent-id channel raw]
   (try
     (let [msg (json/parse-string raw true)]
@@ -342,17 +351,19 @@
 
 (defn- handle-agency-ws [req]
   (let [params (parse-query (:query-string req))
-        agent-id (or (get params "agent-id") "unknown")]
+        agent-id (or (get params "agent-id") "unknown")
+        session-id (get params "session-id")]
     #_{:clj-kondo/ignore [:unresolved-symbol]}
     (http/with-channel req channel
-      (log! "ws-connect" {:agent-id agent-id})
+      (log! "ws-connect" {:agent-id agent-id :session-id session-id})
 
-      ;; Auto-register on connect
+      ;; Auto-register on connect (with optional session-id)
       (swap! connected-agents assoc (name agent-id)
-             {:channel channel
-              :registered-at (java.time.Instant/now)
-              :last-ping (java.time.Instant/now)})
-      (ws-send! channel {:type "connected" :agent-id agent-id})
+             (cond-> {:channel channel
+                      :registered-at (java.time.Instant/now)
+                      :last-ping (java.time.Instant/now)}
+               session-id (assoc :session-id session-id)))
+      (ws-send! channel {:type "connected" :agent-id agent-id :session-id session-id})
 
       (http/on-receive channel
         (fn [raw]

@@ -33,7 +33,7 @@
 ;; Forward declarations
 (declare broadcast-to-ws-clients! ws-clients irc-connected? send-to-irc!
          handle-agency-message stop-agency-ws-client! ack-test-bell!
-         handle-page-sync)
+         handle-page-sync handle-par-bell!)
 
 ;; =============================================================================
 ;; Agent State

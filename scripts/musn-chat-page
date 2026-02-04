@@ -4,9 +4,11 @@
 ;; Usage:
 ;;   ./scripts/musn-chat-page --room futon --agent-id codex
 ;;
-;; Env:
-;;   MUSN_URL          (default http://localhost:6065)
-;;   AGENCY_URL        (default http://localhost:7070)
+;; Env (infrastructure - shared):
+;;   FUTON3_MUSN_URL / MUSN_URL  (default http://localhost:6065)
+;;   AGENCY_URL                  (default http://localhost:7070)
+;;
+;; Env (per-instance - typically passed via CLI):
 ;;   MUSN_PAGE_ROOM    (default lab)
 ;;   MUSN_PAGE_AGENT   (required if not passed)
 ;;   MUSN_PAGE_POLL    (default 2.0 seconds)
@@ -17,19 +19,23 @@
             [clj-http.client :as http]
             [clojure.string :as str]))
 
-(defn env [name default]
-  (or (System/getenv name) default))
+(defn env
+  "Return first non-blank env var value, or default."
+  ([name default] (or (System/getenv name) default))
+  ([name1 name2 default]
+   (or (not-empty (System/getenv name1))
+       (not-empty (System/getenv name2))
+       default)))
 
 (defn parse-args [args]
   (loop [args args
-         opts {:musn-url (env "MUSN_URL" "http://localhost:6065")
+         opts {:musn-url (env "FUTON3_MUSN_URL" "MUSN_URL" "http://localhost:6065")
                :agency-url (env "AGENCY_URL" "http://localhost:7070")
                :room (env "MUSN_PAGE_ROOM" "lab")
                :agent-id (env "MUSN_PAGE_AGENT" "")
                :poll-interval (Double/parseDouble (env "MUSN_PAGE_POLL" "2.0"))
                :timeout-ms (Long/parseLong (env "MUSN_PAGE_TIMEOUT" "30000"))
-               :ignore-nicks (env "MUSN_PAGE_IGNORE" "")}
-         ]
+               :ignore-nicks (env "MUSN_PAGE_IGNORE" "")}]
     (if (empty? args)
       (update opts :ignore-nicks
               (fn [s]
@@ -48,19 +54,22 @@
           "--ignore-nicks" (recur rest (assoc opts :ignore-nicks val))
           (recur rest opts))))))
 
-(defn- post-json! [url payload]
-  (let [resp (http/post url
-                        {:content-type :json
-                         :accept :json
-                         :conn-timeout 3000
-                         :socket-timeout 5000
-                         :throw-exceptions false
-                         :body (json/generate-string payload)})]
-    {:status (:status resp)
-     :body (when-let [raw (:body resp)]
-             (try
-               (json/parse-string raw true)
-               (catch Exception _ nil)))}))
+(defn- post-json!
+  "POST JSON with configurable socket timeout (default 5s for polling)."
+  ([url payload] (post-json! url payload 5000))
+  ([url payload socket-timeout-ms]
+   (let [resp (http/post url
+                         {:content-type :json
+                          :accept :json
+                          :conn-timeout 3000
+                          :socket-timeout socket-timeout-ms
+                          :throw-exceptions false
+                          :body (json/generate-string payload)})]
+     {:status (:status resp)
+      :body (when-let [raw (:body resp)]
+              (try
+                (json/parse-string raw true)
+                (catch Exception _ nil)))})))
 
 (defn- musn-state! [musn-url room cursor]
   (let [payload (cond-> {:room room}
@@ -70,10 +79,12 @@
     {:status status :body body}))
 
 (defn- page-agent! [agency-url agent-id prompt timeout-ms]
+  ;; Socket timeout should exceed page timeout to allow Agency to complete
   (post-json! (str (str/replace agency-url #"/+$" "") "/agency/page")
               {:agent-id agent-id
                :prompt prompt
-               :timeout-ms timeout-ms}))
+               :timeout-ms timeout-ms}
+              (+ timeout-ms 5000)))
 
 (defn- event->prompt [room event]
   (let [payload (:payload event)
@@ -91,12 +102,23 @@
       (println "Error: --agent-id required (or set MUSN_PAGE_AGENT)")
       (System/exit 1))
     (println (format "[musn-chat-page] room=%s agent=%s musn=%s agency=%s" room agent-id musn-url agency-url))
-    (loop [cursor 0]
-      (let [{:keys [status body]} (musn-state! musn-url room cursor)
-            ok? (and (= 200 status) (:ok body))
-            next-cursor (if ok? (or (:cursor body) cursor) cursor)
-            events (if ok? (:events body) [])]
-        (when (and ok? (vector? events))
+    (loop [cursor 0
+           error-count 0]
+      (let [result (try
+                     {:ok true
+                      :data (musn-state! musn-url room cursor)}
+                     (catch Exception e
+                       {:ok false
+                        :error (.getMessage e)}))
+            {:keys [status body]} (get-in result [:data])
+            poll-ok? (and (:ok result) (= 200 status) (:ok body))
+            next-cursor (if poll-ok? (or (:cursor body) cursor) cursor)
+            events (if poll-ok? (:events body) [])
+            new-error-count (if (:ok result) 0 (inc error-count))]
+        ;; Log errors but don't crash
+        (when-not (:ok result)
+          (println (format "[musn-chat-page] poll error (count=%d): %s" new-error-count (:error result))))
+        (when (and poll-ok? (vector? events))
           (doseq [event events]
             (let [etype (:event/type event)
                   etype (cond
@@ -106,10 +128,13 @@
               (when (= "chat/message" etype)
                 (let [{:keys [nick text prompt]} (event->prompt room event)]
                   (when (and (seq text) (not (contains? ignore-nicks nick)))
-                    (let [{:keys [status body]} (page-agent! agency-url agent-id prompt timeout-ms)]
-                      (when (or (not= 200 status) (not (:ok body)))
-                        (println (format "[musn-chat-page] page failed status=%s body=%s" status body))))))))))
+                    (try
+                      (let [{:keys [status body]} (page-agent! agency-url agent-id prompt timeout-ms)]
+                        (when (or (not= 200 status) (not (:ok body)))
+                          (println (format "[musn-chat-page] page failed status=%s body=%s" status body))))
+                      (catch Exception e
+                        (println (format "[musn-chat-page] page error: %s" (.getMessage e)))))))))))
         (Thread/sleep (long (* 1000 poll-interval)))
-        (recur next-cursor)))))
+        (recur next-cursor new-error-count)))))
 
 (apply -main *command-line-args*)

@@ -360,8 +360,11 @@
             text (cond
                    (str/starts-with? rest ":") (subs rest 1)
                    (str/includes? rest " :") (or (second (str/split rest #" :" 2)) "")
-                   :else rest)]
+                   :else rest)
+            room-id (str/replace target #"^#" "")]
         (when (and target (:nick client))
+          ;; Ensure poller is running (may have stopped if other clients disconnected)
+          (ensure-room-poller! musn-url room-id poll-interval)
           (handle-privmsg! (get-in @server-state [:clients (:id client)]) target text musn-url)))
 
       (str/starts-with? line "MODE ")

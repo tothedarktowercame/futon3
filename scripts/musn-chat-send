@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Post a message to MUSN chat (which IRC bridge relays to IRC)
+set -euo pipefail
+
+musn_url="${FUTON3_MUSN_URL:-${MUSN_URL:-http://localhost:6065}}"
+room="${MUSN_CHAT_ROOM:-futon}"
+author="${MUSN_CHAT_AUTHOR:-claude}"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --room) room="$2"; shift 2 ;;
+    --author) author="$2"; shift 2 ;;
+    --url) musn_url="$2"; shift 2 ;;
+    --) shift; break ;;
+    -*) echo "Unknown option: $1" >&2; exit 1 ;;
+    *) break ;;
+  esac
+done
+
+if [[ $# -gt 0 ]]; then
+  text="$*"
+elif [[ ! -t 0 ]]; then
+  text="$(cat)"
+else
+  echo "Usage: musn-chat-send [--room ROOM] [--author NAME] MESSAGE" >&2
+  exit 1
+fi
+
+[[ -z "$text" ]] && { echo "Error: empty message" >&2; exit 1; }
+
+curl -sS -X POST "${musn_url}/musn/chat/message" \
+  -H "Content-Type: application/json" \
+  -d "$(jq -n --arg room "$room" --arg author "$author" --arg text "$text" \
+    '{room: $room, author: {id: $author, name: $author}, text: $text}')" \
+  | jq -e '.ok == true' >/dev/null

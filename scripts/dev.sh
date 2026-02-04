@@ -41,7 +41,7 @@ err()  { printf "%b\n" "${RED}$*${RESET}" >&2; }
 #   FUTON3_CODEX_DRAWBRIDGE=0 - disable Codex drawbridge (enabled by default on laptop)
 #   FUTON3_CODEX_SESSION_ID   - optional Codex resume id for drawbridge
 #   FUTON3_CODEX_AGENT_ID     - agent id for Codex drawbridge (default: codex)
-#   FUTON3_MUSN_PAGE=1        - enable MUSN chat -> Agency page bridge
+#   FUTON3_MUSN_PAGE=0        - disable MUSN chat -> Agency page bridge (enabled by default)
 #
 # Drawbridge runs on port 6767 for hot-reloading code:
 #   ./scripts/repl-eval '(require '\''f2.transport :reload)'
@@ -157,8 +157,8 @@ EOF
   fi
 fi
 
-# Optional: bridge MUSN chat -> Agency pages
-if [[ "${FUTON3_MUSN_PAGE:-0}" == "1" ]]; then
+# Bridge MUSN chat -> Agency pages (enabled by default)
+if [[ "${FUTON3_MUSN_PAGE:-1}" == "1" ]]; then
   page_agent="${MUSN_PAGE_AGENT:-${FUTON3_CODEX_AGENT_ID:-}}"
   if [[ -z "${page_agent}" ]]; then
     warn "[dev] FUTON3_MUSN_PAGE=1 but MUSN_PAGE_AGENT not set; skipping."

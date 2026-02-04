@@ -212,6 +212,20 @@
     (map? response) (or (:result response) (:text response) (:response response))
     :else nil))
 
+(defn- sanitize-reply [reply]
+  (when (string? reply)
+    (let [text (str/trim reply)
+          lower (str/lower-case text)]
+      (cond
+        (or (str/blank? text)
+            (str/includes? lower "can't post")
+            (str/includes? lower "cannot post")
+            (str/includes? lower "emacsclient")
+            (str/includes? lower "pager log"))
+        "Codex here — received. Say the word if you want me to act."
+        :else
+        text))))
+
 ;; Rate limiting state
 (def ^:private last-page-time (atom 0))
 (def ^:private min-page-interval-ms
@@ -292,7 +306,7 @@
                           (if (or (not= 200 status) (not (:ok body)))
                             (println (format "[musn-chat-page] page failed status=%s body=%s" status body))
                             (when (and auto-reply? (= mention agent-id-lc))
-                              (let [reply (response->text (:response body))]
+                              (let [reply (sanitize-reply (response->text (:response body)))]
                                 (println (format "[musn-chat-page] page ok reply=%s" (pr-str reply)))
                                 (when (seq reply)
                                   (musn-send! musn-url room agent-id reply))))))

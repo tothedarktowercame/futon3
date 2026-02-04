@@ -45,6 +45,7 @@
                :room (env "MUSN_PAGE_ROOM" "lab")
                :agent-id (env "MUSN_PAGE_AGENT" "")
                :poll-interval (Double/parseDouble (env "MUSN_PAGE_POLL" "2.0"))
+               :poll-timeout-ms (Long/parseLong (env "MUSN_PAGE_POLL_TIMEOUT" "15000"))
                :timeout-ms (Long/parseLong (env "MUSN_PAGE_TIMEOUT" "30000"))
                :ignore-nicks (env "MUSN_PAGE_IGNORE" "")
                :auto-reply? (not= "0" (env "MUSN_PAGE_AUTO_REPLY" "1"))
@@ -74,6 +75,7 @@
           "--room" (recur rest (assoc opts :room val))
           "--agent-id" (recur rest (assoc opts :agent-id val))
           "--poll-interval" (recur rest (assoc opts :poll-interval (Double/parseDouble val)))
+          "--poll-timeout-ms" (recur rest (assoc opts :poll-timeout-ms (Long/parseLong val)))
           "--timeout-ms" (recur rest (assoc opts :timeout-ms (Long/parseLong val)))
           "--ignore-nicks" (recur rest (assoc opts :ignore-nicks val))
           "--auto-reply" (recur rest (assoc opts :auto-reply? true))
@@ -140,11 +142,12 @@
                 (json/parse-string raw true)
                 (catch Exception _ nil)))})))
 
-(defn- musn-state! [musn-url room cursor]
+(defn- musn-state! [musn-url room cursor poll-timeout-ms]
   (let [payload (cond-> {:room room}
                   (pos? cursor) (assoc :since cursor))
         {:keys [status body]} (post-json! (str (str/replace musn-url #"/+$" "") "/musn/chat/state")
-                                          payload)]
+                                          payload
+                                          poll-timeout-ms)]
     {:status status :body body}))
 
 (defn- page-agent! [agency-url agent-id prompt timeout-ms]
@@ -179,7 +182,7 @@
     :else nil))
 
 (defn -main [& args]
-  (let [{:keys [musn-url agency-url room agent-id poll-interval timeout-ms ignore-nicks cursor-file from-latest? auto-reply?]} (parse-args args)
+  (let [{:keys [musn-url agency-url room agent-id poll-interval poll-timeout-ms timeout-ms ignore-nicks cursor-file from-latest? auto-reply?]} (parse-args args)
         cursor-file (if (seq cursor-file)
                       cursor-file
                       (default-cursor-file room agent-id))
@@ -187,7 +190,7 @@
         existing-cursor (read-cursor cursor-file)
         latest-cursor (when (and (nil? existing-cursor) from-latest?)
                         (try
-                          (let [{:keys [status body]} (musn-state! musn-url room 0)]
+                          (let [{:keys [status body]} (musn-state! musn-url room 0 poll-timeout-ms)]
                             (when (and (= 200 status) (:ok body))
                               (:cursor body)))
                           (catch Exception e
@@ -208,7 +211,7 @@
            error-count 0]
       (let [result (try
                      {:ok true
-                      :data (musn-state! musn-url room cursor)}
+                      :data (musn-state! musn-url room cursor poll-timeout-ms)}
                      (catch Exception e
                        {:ok false
                         :error (.getMessage e)}))
@@ -238,8 +241,10 @@
                         (if (or (not= 200 status) (not (:ok body)))
                           (println (format "[musn-chat-page] page failed status=%s body=%s" status body))
                           (when (and auto-reply? (= mention agent-id-lc))
-                            (when-let [reply (response->text (:response body))]
-                              (musn-send! musn-url room agent-id reply)))))
+                            (let [reply (response->text (:response body))]
+                              (println (format "[musn-chat-page] page ok reply=%s" (pr-str reply)))
+                              (when (seq reply)
+                                (musn-send! musn-url room agent-id reply))))))
                       (catch Exception e
                         (println (format "[musn-chat-page] page error: %s" (.getMessage e)))))))))))
         (when poll-ok?

@@ -202,7 +202,9 @@
         ts (or (:at event) (str (java.time.Instant/now)))]
     {:nick name
      :text text
-     :prompt (str "IRC #" room " <" name "> " text "\n" "(ts " ts ")")}))
+     :prompt (str "IRC #" room " <" name "> " text "\n"
+                  "(ts " ts ")\n"
+                  "Reply briefly for IRC. Your response will be posted to the room.")}))
 
 (defn- response->text [response]
   (cond

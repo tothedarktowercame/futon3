@@ -9,7 +9,7 @@
 (def ^:private log-path (or (System/getenv "AGENCY_LOG") "/tmp/agency_http.log"))
 
 ;; Forward declarations for functions used in handler
-(declare handle-agency-ws connected-agent-ids local-agent-ids remote-agent-ids agent-sessions
+(declare handle-agency-ws connected-agent-ids local-agent-ids remote-agent-ids agent-sessions kick-agent!
          handle-get-secret handle-create-secret
          handle-ack handle-ack-status handle-ring-bell
          handle-page handle-page-response)

@@ -23,7 +23,6 @@ Options:
   --title <title>     PAR session title (or pass as first positional arg)
   --agents <list>     Comma-separated agent IDs (default: all from Agency)
   --no-agents         Don't start agent peripherals (human-only PAR)
-  --clean             Disconnect CRDT sessions before creating PAR buffer
   --emacs-socket <s>  Emacs server socket name (default: server)
   -h, --help          Show this help
 
@@ -43,7 +42,6 @@ USAGE
 title=""
 agents=""  # Will be populated from Agency if not specified
 start_agents=1
-clean_crdt=0
 emacs_socket="${EMACS_SOCKET:-server}"
 crdt_port="${CRDT_PORT:-6530}"
 agency_url="${AGENCY_URL:-http://localhost:7070}"
@@ -65,10 +63,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     --no-agents)
       start_agents=0
-      shift
-      ;;
-    --clean)
-      clean_crdt=1
       shift
       ;;
     --emacs-socket)
@@ -133,7 +127,7 @@ echo "[bell] Creating PAR buffer..."
 emacsclient -s "$emacs_socket" -e "
 (progn
   (require 'futon-crdt-par)
-  (when (and ${clean_crdt} crdt--session-list)
+  (when crdt--session-list
     (message \"[par-bell] Cleaning %d CRDT session(s)...\" (length crdt--session-list))
     (dolist (session crdt--session-list)
       (ignore-errors (crdt-disconnect session))))

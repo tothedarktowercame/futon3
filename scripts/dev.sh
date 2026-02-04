@@ -152,6 +152,23 @@ EOF
   fi
 fi
 
+# Lint recently changed Clojure files before starting JVM
+if command -v clj-kondo >/dev/null 2>&1; then
+  changed_files=$(git diff --name-only HEAD~5 -- '*.clj' '*.cljs' '*.cljc' 2>/dev/null | head -20)
+  if [[ -n "$changed_files" ]]; then
+    info "[dev] Linting recently changed files..."
+    # shellcheck disable=SC2086
+    if ! clj-kondo --lint $changed_files 2>&1 | grep -E "^.*(error|warning):"; then
+      info "[dev] Lint OK"
+    else
+      if clj-kondo --lint $changed_files 2>&1 | grep -q "error:"; then
+        err "[dev] clj-kondo found errors in changed files. Fix before starting."
+        exit 1
+      fi
+    fi
+  fi
+fi
+
 if [[ -n "${JAVA_OPTS:-}" ]]; then
   clojure $JAVA_OPTS -M:dev "$@"
 else

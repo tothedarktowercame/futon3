@@ -120,6 +120,14 @@
               :local (local-agent-ids)
               :remote (remote-agent-ids)})))
 
+        ;; Kick (disconnect) an agent
+        (and (str/starts-with? uri "/agency/kick/") (= method :post))
+        (let [agent-id (subs uri (count "/agency/kick/"))]
+          (json-response
+           (if (kick-agent! agent-id)
+             {:ok true :kicked agent-id}
+             {:ok false :err "agent not found"})))
+
         ;; Secret retrieval (GET /agency/secret/:id)
         (and (= method :get) (str/starts-with? uri "/agency/secret/"))
         (let [secret-id (subs uri (count "/agency/secret/"))]
@@ -243,6 +251,17 @@
   [agent-id]
   (swap! local-handlers dissoc (name agent-id))
   (log! "local-handler-unregistered" {:agent-id agent-id}))
+
+(defn kick-agent!
+  "Disconnect an agent by closing its WebSocket and removing from registry."
+  [agent-id]
+  (let [aid (name agent-id)]
+    (when-let [entry (get @connected-agents aid)]
+      (when-let [channel (:channel entry)]
+        (http/close channel))
+      (swap! connected-agents dissoc aid)
+      (log! "agent-kicked" {:agent-id agent-id})
+      true)))
 
 (defn- ws-send! [channel msg]
   (when (http/open? channel)

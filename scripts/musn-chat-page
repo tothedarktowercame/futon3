@@ -1,0 +1,115 @@
+#!/usr/bin/env clojure
+;; Poll MUSN chat and page an agent via Agency for each new chat message.
+;;
+;; Usage:
+;;   ./scripts/musn-chat-page --room futon --agent-id codex
+;;
+;; Env:
+;;   MUSN_URL          (default http://localhost:6065)
+;;   AGENCY_URL        (default http://localhost:7070)
+;;   MUSN_PAGE_ROOM    (default lab)
+;;   MUSN_PAGE_AGENT   (required if not passed)
+;;   MUSN_PAGE_POLL    (default 2.0 seconds)
+;;   MUSN_PAGE_TIMEOUT (default 30000 ms)
+;;   MUSN_PAGE_IGNORE  (comma-separated nicks to ignore)
+(ns musn-chat-page
+  (:require [cheshire.core :as json]
+            [clj-http.client :as http]
+            [clojure.string :as str]))
+
+(defn env [name default]
+  (or (System/getenv name) default))
+
+(defn parse-args [args]
+  (loop [args args
+         opts {:musn-url (env "MUSN_URL" "http://localhost:6065")
+               :agency-url (env "AGENCY_URL" "http://localhost:7070")
+               :room (env "MUSN_PAGE_ROOM" "lab")
+               :agent-id (env "MUSN_PAGE_AGENT" "")
+               :poll-interval (Double/parseDouble (env "MUSN_PAGE_POLL" "2.0"))
+               :timeout-ms (Long/parseLong (env "MUSN_PAGE_TIMEOUT" "30000"))
+               :ignore-nicks (env "MUSN_PAGE_IGNORE" "")}
+         ]
+    (if (empty? args)
+      (update opts :ignore-nicks
+              (fn [s]
+                (->> (str/split (or s "") #",")
+                     (map str/trim)
+                     (remove str/blank?)
+                     set)))
+      (let [[flag val & rest] args]
+        (case flag
+          "--musn-url" (recur rest (assoc opts :musn-url val))
+          "--agency-url" (recur rest (assoc opts :agency-url val))
+          "--room" (recur rest (assoc opts :room val))
+          "--agent-id" (recur rest (assoc opts :agent-id val))
+          "--poll-interval" (recur rest (assoc opts :poll-interval (Double/parseDouble val)))
+          "--timeout-ms" (recur rest (assoc opts :timeout-ms (Long/parseLong val)))
+          "--ignore-nicks" (recur rest (assoc opts :ignore-nicks val))
+          (recur rest opts))))))
+
+(defn- post-json! [url payload]
+  (let [resp (http/post url
+                        {:content-type :json
+                         :accept :json
+                         :conn-timeout 3000
+                         :socket-timeout 5000
+                         :throw-exceptions false
+                         :body (json/generate-string payload)})]
+    {:status (:status resp)
+     :body (when-let [raw (:body resp)]
+             (try
+               (json/parse-string raw true)
+               (catch Exception _ nil)))}))
+
+(defn- musn-state! [musn-url room cursor]
+  (let [payload (cond-> {:room room}
+                  (pos? cursor) (assoc :since cursor))
+        {:keys [status body]} (post-json! (str (str/replace musn-url #"/+$" "") "/musn/chat/state")
+                                          payload)]
+    {:status status :body body}))
+
+(defn- page-agent! [agency-url agent-id prompt timeout-ms]
+  (post-json! (str (str/replace agency-url #"/+$" "") "/agency/page")
+              {:agent-id agent-id
+               :prompt prompt
+               :timeout-ms timeout-ms}))
+
+(defn- event->prompt [room event]
+  (let [payload (:payload event)
+        author (:author payload)
+        name (or (:name author) (:id author) "anon")
+        text (or (:text payload) "")
+        ts (or (:at event) (str (java.time.Instant/now)))]
+    {:nick name
+     :text text
+     :prompt (str "IRC #" room " <" name "> " text "\n" "(ts " ts ")")}))
+
+(defn -main [& args]
+  (let [{:keys [musn-url agency-url room agent-id poll-interval timeout-ms ignore-nicks]} (parse-args args)]
+    (when (str/blank? agent-id)
+      (println "Error: --agent-id required (or set MUSN_PAGE_AGENT)")
+      (System/exit 1))
+    (println (format "[musn-chat-page] room=%s agent=%s musn=%s agency=%s" room agent-id musn-url agency-url))
+    (loop [cursor 0]
+      (let [{:keys [status body]} (musn-state! musn-url room cursor)
+            ok? (and (= 200 status) (:ok body))
+            next-cursor (if ok? (or (:cursor body) cursor) cursor)
+            events (if ok? (:events body) [])]
+        (when (and ok? (vector? events))
+          (doseq [event events]
+            (let [etype (:event/type event)
+                  etype (cond
+                          (keyword? etype) (name etype)
+                          (string? etype) etype
+                          :else "")]
+              (when (= "chat/message" etype)
+                (let [{:keys [nick text prompt]} (event->prompt room event)]
+                  (when (and (seq text) (not (contains? ignore-nicks nick)))
+                    (let [{:keys [status body]} (page-agent! agency-url agent-id prompt timeout-ms)]
+                      (when (or (not= 200 status) (not (:ok body)))
+                        (println (format "[musn-chat-page] page failed status=%s body=%s" status body))))))))))
+        (Thread/sleep (long (* 1000 poll-interval)))
+        (recur next-cursor)))))
+
+(apply -main *command-line-args*)

@@ -41,6 +41,7 @@ err()  { printf "%b\n" "${RED}$*${RESET}" >&2; }
 #   FUTON3_CODEX_DRAWBRIDGE=0 - disable Codex drawbridge (enabled by default on laptop)
 #   FUTON3_CODEX_SESSION_ID   - optional Codex resume id for drawbridge
 #   FUTON3_CODEX_AGENT_ID     - agent id for Codex drawbridge (default: codex)
+#   FUTON3_MUSN_PAGE=1        - enable MUSN chat -> Agency page bridge
 #
 # Drawbridge runs on port 6767 for hot-reloading code:
 #   ./scripts/repl-eval '(require '\''f2.transport :reload)'
@@ -117,12 +118,16 @@ port_open() {
 }
 
 codex_drawbridge_pid=""
+musn_page_pid=""
 # Agency now runs inside MUSN JVM (see f2.musn/start-agency!)
 # Set FUTON3_AGENCY=0 to disable it
 
 cleanup() {
   if [[ -n "${codex_drawbridge_pid}" ]]; then
     kill "${codex_drawbridge_pid}" >/dev/null 2>&1 || true
+  fi
+  if [[ -n "${musn_page_pid}" ]]; then
+    kill "${musn_page_pid}" >/dev/null 2>&1 || true
   fi
 }
 trap cleanup EXIT
@@ -149,6 +154,47 @@ EOF
     chmod +x /tmp/codex-drawbridge.sh
     setsid /tmp/codex-drawbridge.sh >/tmp/codex-drawbridge.log 2>&1 </dev/null &
     codex_drawbridge_pid="$!"
+  fi
+fi
+
+# Optional: bridge MUSN chat -> Agency pages
+if [[ "${FUTON3_MUSN_PAGE:-0}" == "1" ]]; then
+  page_agent="${MUSN_PAGE_AGENT:-${FUTON3_CODEX_AGENT_ID:-}}"
+  if [[ -z "${page_agent}" ]]; then
+    warn "[dev] FUTON3_MUSN_PAGE=1 but MUSN_PAGE_AGENT not set; skipping."
+  else
+    info "[dev] Starting MUSN chat pager for agent=${page_agent}..."
+    cat > /tmp/musn-chat-page.sh <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+cd /home/joe/code/futon3
+musn_url="${MUSN_URL:-http://localhost:6065}"
+agency_url="${AGENCY_URL:-http://localhost:7070}"
+room="${MUSN_PAGE_ROOM:-lab}"
+agent="${MUSN_PAGE_AGENT}"
+poll="${MUSN_PAGE_POLL:-2.0}"
+timeout_ms="${MUSN_PAGE_TIMEOUT:-30000}"
+ignore="${MUSN_PAGE_IGNORE:-}"
+
+until curl -fsS "${musn_url}/health" >/dev/null 2>&1; do
+  sleep 1
+done
+until curl -fsS "${agency_url}/health" >/dev/null 2>&1; do
+  sleep 1
+done
+
+exec ./scripts/musn-chat-page \
+  --musn-url "${musn_url}" \
+  --agency-url "${agency_url}" \
+  --room "${room}" \
+  --agent-id "${agent}" \
+  --poll-interval "${poll}" \
+  --timeout-ms "${timeout_ms}" \
+  --ignore-nicks "${ignore}"
+EOF
+    chmod +x /tmp/musn-chat-page.sh
+    setsid /tmp/musn-chat-page.sh >/tmp/musn-chat-page.log 2>&1 </dev/null &
+    musn_page_pid="$!"
   fi
 fi
 

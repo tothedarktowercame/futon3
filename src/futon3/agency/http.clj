@@ -44,6 +44,14 @@
                  (java.net.URLDecoder/decode (or v "") "UTF-8")]))
          (into {}))))
 
+(defn- req-query-string
+  "Extract a query string from an http-kit request, even for WS upgrades
+   where :query-string may be missing. Falls back to parsing :request-uri."
+  [req]
+  (or (:query-string req)
+      (when-let [request-uri (:request-uri req)]
+        (second (str/split request-uri #"\?" 2)))))
+
 (defn- handle-run [body]
   (let [{:keys [agent-id peripheral prompt inputs musn forum resume-id thread-id cwd approval-policy no-sandbox]} body
         resume-id (or resume-id
@@ -322,11 +330,12 @@
       (log! "ws-recv" {:agent-id agent-id :type (:type msg)})
       (case (:type msg)
         "register"
-        (do
+        (let [session-id (:session-id msg)]
           (swap! connected-agents assoc (name agent-id)
-                 {:channel channel
-                  :registered-at (java.time.Instant/now)
-                  :last-ping (java.time.Instant/now)})
+                 (cond-> {:channel channel
+                          :registered-at (java.time.Instant/now)
+                          :last-ping (java.time.Instant/now)}
+                   session-id (assoc :session-id session-id)))
           (ws-send! channel {:type "registered" :agent-id agent-id}))
 
         "ping"
@@ -350,7 +359,7 @@
       (log! "ws-parse-error" {:agent-id agent-id :error (.getMessage e)}))))
 
 (defn- handle-agency-ws [req]
-  (let [params (parse-query (:query-string req))
+  (let [params (parse-query (req-query-string req))
         agent-id (or (get params "agent-id") "unknown")
         session-id (get params "session-id")]
     #_{:clj-kondo/ignore [:unresolved-symbol]}

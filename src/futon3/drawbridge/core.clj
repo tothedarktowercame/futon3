@@ -394,10 +394,11 @@
 
 (defn- handle-par-bell!
   "Handle a PAR bell by spawning a local peripheral to contribute to the PAR.
-  CRDT host is resolved locally via CRDT_HOST env (fallback 127.0.0.1)."
+  CRDT_HOST and AGENCY_URL are resolved locally from env (not from payload)."
   [{:keys [payload]}]
-  (let [{:keys [par-title crdt-port agency-url]} payload
+  (let [{:keys [par-title crdt-port]} payload
         crdt-host (or (System/getenv "CRDT_HOST") "127.0.0.1")
+        agency-url (or (System/getenv "AGENCY_URL") "http://localhost:7070")
         agent-id (:agent-id @agent-state)
         peripheral-el (or (System/getenv "FUTON_PAR_PERIPHERAL_EL")
                           (str (System/getProperty "user.home")
@@ -420,7 +421,7 @@
                    "CRDT_PORT" (str crdt-port)
                    "AGENT_ID" (str agent-id)
                    "PAR_TITLE" (str par-title)
-                   "AGENCY_URL" (or agency-url "http://localhost:7070")
+                   "AGENCY_URL" agency-url
                    "LANG" "en_US.UTF-8"
                    "LC_ALL" "en_US.UTF-8"}
               cmd ["emacs" "--batch" "-Q" "-l" crdt-el "-l" peripheral-el]

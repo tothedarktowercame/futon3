@@ -139,12 +139,11 @@ if [[ "$start_agents" == "1" ]]; then
   echo "[bell] Ringing PAR bell for agents via Agency..."
   echo ""
 
-  # Build the PAR payload - CRDT host is resolved by each agent locally
+  # Build the PAR payload - CRDT host and Agency URL resolved by each agent locally
   par_payload=$(cat <<EOF
 {
   "par-title": "$title",
-  "crdt-port": $crdt_port,
-  "agency-url": "$agency_url"
+  "crdt-port": $crdt_port
 }
 EOF
 )

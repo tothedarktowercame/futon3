@@ -14,6 +14,7 @@
 ;;   MUSN_PAGE_POLL    (default 2.0 seconds)
 ;;   MUSN_PAGE_TIMEOUT (default 30000 ms)
 ;;   MUSN_PAGE_IGNORE  (comma-separated nicks to ignore)
+;;   MUSN_PAGE_SKIP_PREFIX (comma-separated prefixes to skip, e.g. "@Codex,@codex")
 (ns musn-chat-page
   (:require [cheshire.core :as json]
             [clj-http.client :as http]
@@ -35,14 +36,22 @@
                :agent-id (env "MUSN_PAGE_AGENT" "")
                :poll-interval (Double/parseDouble (env "MUSN_PAGE_POLL" "2.0"))
                :timeout-ms (Long/parseLong (env "MUSN_PAGE_TIMEOUT" "30000"))
-               :ignore-nicks (env "MUSN_PAGE_IGNORE" "")}]
+               :ignore-nicks (env "MUSN_PAGE_IGNORE" "")
+               :skip-prefixes (env "MUSN_PAGE_SKIP_PREFIX" "")}]
     (if (empty? args)
-      (let [opts (update opts :ignore-nicks
-                         (fn [s]
-                           (->> (str/split (or s "") #",")
-                                (map str/trim)
-                                (remove str/blank?)
-                                set)))]
+      (let [opts (-> opts
+                     (update :ignore-nicks
+                             (fn [s]
+                               (->> (str/split (or s "") #",")
+                                    (map str/trim)
+                                    (remove str/blank?)
+                                    set)))
+                     (update :skip-prefixes
+                             (fn [s]
+                               (->> (str/split (or s "") #",")
+                                    (map str/trim)
+                                    (remove str/blank?)
+                                    vec))))]
         ;; Default: ignore the agent's own nick unless explicitly overridden.
         (cond
           (contains? (:ignore-nicks opts) "none")
@@ -62,6 +71,7 @@
           "--poll-interval" (recur rest (assoc opts :poll-interval (Double/parseDouble val)))
           "--timeout-ms" (recur rest (assoc opts :timeout-ms (Long/parseLong val)))
           "--ignore-nicks" (recur rest (assoc opts :ignore-nicks val))
+          "--skip-prefixes" (recur rest (assoc opts :skip-prefixes val))
           (recur rest opts))))))
 
 (defn- post-json!
@@ -106,8 +116,13 @@
      :text text
      :prompt (str "IRC #" room " <" name "> " text "\n" "(ts " ts ")")}))
 
+(defn- skip-by-prefix?
+  "Return true if text starts with any of the skip-prefixes."
+  [text skip-prefixes]
+  (some #(str/starts-with? text %) skip-prefixes))
+
 (defn -main [& args]
-  (let [{:keys [musn-url agency-url room agent-id poll-interval timeout-ms ignore-nicks]} (parse-args args)]
+  (let [{:keys [musn-url agency-url room agent-id poll-interval timeout-ms ignore-nicks skip-prefixes]} (parse-args args)]
     (when (str/blank? agent-id)
       (println "Error: --agent-id required (or set MUSN_PAGE_AGENT)")
       (System/exit 1))
@@ -137,7 +152,9 @@
                           :else "")]
               (when (= "chat/message" etype)
                 (let [{:keys [nick text prompt]} (event->prompt room event)]
-                  (when (and (seq text) (not (contains? ignore-nicks nick)))
+                  (when (and (seq text)
+                             (not (contains? ignore-nicks nick))
+                             (not (skip-by-prefix? text skip-prefixes)))
                     (try
                       (let [{:keys [status body]} (page-agent! agency-url agent-id prompt timeout-ms)]
                         (when (or (not= 200 status) (not (:ok body)))

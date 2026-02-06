@@ -12,6 +12,7 @@
             [org.httpkit.server :as http]
             [futon2.aif.engine :as aif-engine]
             [futon3.fulab.pattern-competence :as pc]
+            [futon3.futon1-bridge :as f1-bridge]
             [futon3.logic-audit :as logic-audit]
             [futon3.musn.fulab :as fulab-musn]
             [futon3.musn.router :as router]
@@ -34,6 +35,16 @@
 (defonce rooms (atom {}))
 (declare get-session append-lab-event! restored? note-restore! apply-mana! mana-config turn-event plan-eval-config link-psr-to-pattern! link-pur-to-pattern!)
 (defonce aif-tap-installed? (atom false))
+
+;; Futon1 Lab persistence config
+;; Set via configure-futon1! or environment variables
+(defonce futon1-config
+  (atom {:enabled? (boolean (System/getenv "FUTON1_LAB_ENABLED"))
+         :api-base (or (System/getenv "FUTON1_API_BASE") "http://localhost:8080")
+         :profile (System/getenv "FUTON1_PROFILE")
+         :timeout-ms 5000}))
+
+(defonce lab-save-scheduler (atom nil))
 
 (defonce fulab-adapter
   (delay
@@ -1524,13 +1535,29 @@
     (let [truncated (if (> (count content) 500)
                       (str (subs content 0 500) "...")
                       content)
+          ts (fulab-musn/now-inst)
           event {:event/type (case role
                                :user :turn/user
                                :agent :turn/agent
                                :turn/unknown)
-                 :at (fulab-musn/now-inst)
+                 :at ts
                  :payload {:role role :content truncated}}]
       (append-lab-event! entry event)
+      ;; Process for affect signals (async, fire-and-forget)
+      (future
+        (try
+          (binding [*out* *err*]
+            (println "[affect] Processing turn:" role)
+            (require 'futon3a.affect)
+            (when-let [proc-fn (resolve 'futon3a.affect/process!)]
+              (proc-fn {:agent (keyword role)
+                        :text content
+                        :at (str ts)
+                        :session/id session-id})
+              (println "[affect] Done processing turn")))
+          (catch Exception e
+            (binding [*out* *err*]
+              (println "[affect] Error in turn processing:" (.getMessage e))))))
       {:ok true :event/type (:event/type event)})))
 
 (defn record-plan!
@@ -2220,6 +2247,19 @@
           (println "[musn] forum relay failed:" (.getMessage t)))))
     nil))
 
+(defn- persist-lab-to-futon1!
+  "Persist lab session to Futon1 XTDB if enabled.
+   Trigger can be :par, :context-compacted, or :periodic."
+  [entry trigger]
+  (when (:enabled? @futon1-config)
+    (try
+      (let [session @(:lab-session entry)
+            session-id (:id entry)]
+        (f1-bridge/record-lab-session! @futon1-config session-id session trigger))
+      (catch Throwable t
+        (binding [*out* *err*]
+          (println "[musn] futon1 lab persist failed:" (.getMessage t)))))))
+
 (defn create-par!
   "Create a Post-Action Review event for session punctuation.
 
@@ -2237,7 +2277,7 @@
                  :or {tags [:checkpoint]}}]
   (when-let [entry (get-session session-id)]
     (let [par-id (str "par-" (subs (str (java.util.UUID/randomUUID)) 0 8))
-          events (:events entry)
+          events (:events @(:lab-session entry))
           sequence (inc (count (filter #(= :session/par (:event/type %)) events)))
           now (fulab-musn/now-inst)
           from-ts (when span-from
@@ -2254,6 +2294,8 @@
                      :par/tags (normalize-tags tags)
                      :session/id session-id}]
       (append-lab-event! entry par-event)
+      ;; Persist to Futon1 on PAR checkpoint
+      (persist-lab-to-futon1! entry :par)
       (let [forum-result (relay-par-to-forum! entry forum par-event)]
         {:ok true :par par-event :forum forum-result}))))
 
@@ -2282,3 +2324,76 @@
   "Get the most recent PAR for a session."
   [session-id]
   (last (get-pars session-id)))
+
+;; =============================================================================
+;; Futon1 Lab Persistence - Configuration and Scheduling
+;; =============================================================================
+
+(defn configure-futon1!
+  "Configure Futon1 lab persistence.
+
+   Options:
+   - :enabled? - enable/disable persistence (default: false)
+   - :api-base - Futon1 API base URL (default: http://localhost:8080)
+   - :profile - optional profile header
+   - :timeout-ms - HTTP timeout (default: 5000)"
+  [opts]
+  (swap! futon1-config merge opts)
+  @futon1-config)
+
+(defn futon1-status
+  "Get current Futon1 lab persistence status."
+  []
+  (let [config @futon1-config]
+    {:enabled? (:enabled? config)
+     :api-base (:api-base config)
+     :active-sessions (count @sessions)
+     :last-saves (into {} (for [[sid _] @sessions]
+                            [sid (f1-bridge/lab-save-status sid)]))}))
+
+(defn on-context-compacted!
+  "Handle a context compaction event from Claude Code/Codex.
+   Triggers lab persistence for the specified session."
+  [session-id & {:keys [summary]}]
+  (when-let [entry (get-session session-id)]
+    ;; Log the compaction event
+    (append-lab-event! entry {:event/type :context/compacted
+                              :at (fulab-musn/now-inst)
+                              :session/id session-id
+                              :summary summary})
+    ;; Persist to Futon1
+    (persist-lab-to-futon1! entry :context-compacted)
+    {:ok true :session-id session-id :trigger :context-compacted}))
+
+(defn- periodic-save-tick! []
+  "Run periodic save for all active sessions."
+  (doseq [[sid entry] @sessions]
+    (try
+      (persist-lab-to-futon1! entry :periodic)
+      (catch Throwable t
+        (binding [*out* *err*]
+          (println "[musn] periodic save failed for" sid ":" (.getMessage t)))))))
+
+(defn start-periodic-saves!
+  "Start the periodic lab save scheduler (every 20 minutes)."
+  []
+  (when-not @lab-save-scheduler
+    (let [interval-ms (* 20 60 1000)
+          scheduler (java.util.concurrent.Executors/newSingleThreadScheduledExecutor)]
+      (.scheduleAtFixedRate scheduler
+                            (fn [] (periodic-save-tick!))
+                            interval-ms
+                            interval-ms
+                            java.util.concurrent.TimeUnit/MILLISECONDS)
+      (reset! lab-save-scheduler scheduler)
+      (println "[musn] periodic lab saves started (every 20 min)")
+      {:ok true :interval-ms interval-ms})))
+
+(defn stop-periodic-saves!
+  "Stop the periodic lab save scheduler."
+  []
+  (when-let [scheduler @lab-save-scheduler]
+    (.shutdown scheduler)
+    (reset! lab-save-scheduler nil)
+    (println "[musn] periodic lab saves stopped")
+    {:ok true}))

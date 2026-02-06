@@ -33,6 +33,7 @@
 
 (def ^:private futon1-api-base (env-trim "FUTON1_API_BASE"))
 (def ^:private futon1-profile (env-trim "FUTON1_PROFILE"))
+(def ^:private futon1-lab-enabled? (= "true" (env-trim "FUTON1_LAB_ENABLED")))
 (def ^:private drawbridge-enabled? (boolean (env-trim "FUTON3_DRAWBRIDGE")))
 (def ^:private drawbridge-port
   (some-> (env-trim "FUTON3_DRAWBRIDGE_PORT") Long/parseLong))
@@ -96,7 +97,11 @@
    :lab-ws {:enabled? true
             :port 5056}
    :agency {:enabled? agency-enabled?
-            :port 7070}})
+            :port 7070}
+   :futon1-lab {:enabled? futon1-lab-enabled?
+                :api-base (or futon1-api-base "http://localhost:8080")
+                :profile futon1-profile
+                :timeout-ms 5000}})
 
 (defn- build-state [config]
   {:config (atom config)
@@ -201,6 +206,27 @@
         (println "[f2.musn] Agency started")
         stop-fn))))
 
+(defn- start-lab-persistence! [{:keys [futon1-lab]}]
+  (when (:enabled? futon1-lab)
+    (safe-start "Lab persistence"
+      (require 'futon3.musn.service)
+      (let [configure! (resolve 'futon3.musn.service/configure-futon1!)
+            start-saves! (resolve 'futon3.musn.service/start-periodic-saves!)
+            stop-saves! (resolve 'futon3.musn.service/stop-periodic-saves!)]
+        (when configure!
+          (configure! {:enabled? true
+                       :api-base (:api-base futon1-lab)
+                       :profile (:profile futon1-lab)
+                       :timeout-ms (or (:timeout-ms futon1-lab) 5000)})
+          (println (format "[f2.musn] Lab persistence configured (api-base=%s)" (:api-base futon1-lab))))
+        (when start-saves!
+          (start-saves!)
+          (println "[f2.musn] Lab persistence started (PAR + periodic saves)"))
+        ;; Return stop function
+        (fn []
+          (when stop-saves!
+            (stop-saves!)))))))
+
 (defn start!
   ([] (start! {}))
   ([opts]
@@ -258,6 +284,8 @@
                lab-ws-stop (start-lab-ws! config)
                _ (flush)
                agency-stop (start-agency! config)
+               _ (flush)
+               lab-persistence-stop (start-lab-persistence! config)
                _ (flush)]
            (reset! runtime {:config config
                             :state state
@@ -266,6 +294,7 @@
                             :drawbridge drawbridge-stop
                             :musn-http musn-http-stop
                             :irc-bridge irc-bridge-stop
+                            :lab-persistence lab-persistence-stop
                             :chat-supervisor chat-supervisor-stop
                             :futon1-api futon1-api-stop
                             :lab-ws lab-ws-stop
@@ -273,8 +302,11 @@
            state))))))
 
 (defn stop! []
-  (when-let [{:keys [transport ui drawbridge musn-http irc-bridge chat-supervisor futon1-api lab-ws agency]} @runtime]
+  (when-let [{:keys [transport ui drawbridge musn-http irc-bridge chat-supervisor futon1-api lab-ws agency lab-persistence]} @runtime]
     ;; Stop in reverse order of startup
+    (when lab-persistence
+      (println "Stopping Lab persistence...")
+      (lab-persistence))
     (when agency
       (println "Stopping Agency...")
       (agency))
@@ -352,6 +384,7 @@
      :chat-supervisor (some? (:chat-supervisor rt))
      :futon1-api (some? (:futon1-api rt))
      :lab-ws (some? (:lab-ws rt))
+     :lab-persistence (some? (:lab-persistence rt))
      :drawbridge (some? (:drawbridge rt))
      :transport (some? (:transport rt))
      :ui (some? (:ui rt))}))

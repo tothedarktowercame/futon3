@@ -102,3 +102,80 @@
                        :dst (name missing)})))
       (catch Exception ex
         (println "[futon1-bridge] check error" (.getMessage ex))))))
+
+;; =============================================================================
+;; Lab Session Persistence
+;; =============================================================================
+
+(def ^:private lab-save-timestamps (atom {}))
+(def ^:private lab-save-interval-ms (* 20 60 1000)) ;; 20 minutes
+
+(defn- should-save? [session-id trigger]
+  "Determine if we should save based on trigger type and last save time."
+  (case trigger
+    :par true  ;; Always save on PAR
+    :context-compacted true  ;; Always save on context compaction
+    :periodic
+    (let [last-save (get @lab-save-timestamps session-id 0)
+          now (System/currentTimeMillis)]
+      (> (- now last-save) lab-save-interval-ms))
+    ;; default
+    false))
+
+(defn- mark-saved! [session-id]
+  (swap! lab-save-timestamps assoc session-id (System/currentTimeMillis)))
+
+(defn- extract-session-summary [session]
+  "Extract key metrics from session for the lab doc."
+  (let [events (:events session)
+        turns (filter #(#{:turn/user :turn/agent} (:event/type %)) events)
+        pars (filter #(= :session/par (:event/type %)) events)
+        psrs (filter #(= :pattern/selection-claimed (:event/type %)) events)
+        purs (filter #(= :pattern/use-claimed (:event/type %)) events)
+        affects (filter #(= :affect/transition (:event/type %)) events)
+        timestamps (->> events (keep :at) sort)]
+    {:turn-count (count turns)
+     :par-count (count pars)
+     :psr-count (count psrs)
+     :pur-count (count purs)
+     :affect-count (count affects)
+     :event-count (count events)
+     :timestamp-start (first timestamps)
+     :timestamp-end (last timestamps)}))
+
+(defn record-lab-session!
+  "Persist a lab session checkpoint to Futon1 XTDB.
+
+   Trigger can be:
+   - :par - PAR submission checkpoint
+   - :context-compacted - Claude Code context compaction
+   - :periodic - 20-minute interval save
+
+   Returns {:ok true} on success or {:ok false :error ...} on failure."
+  [config session-id session trigger]
+  (when (and (enabled? config) (should-save? session-id trigger))
+    (try
+      (let [summary (extract-session-summary session)
+            doc (merge
+                 {:lab/session-id session-id
+                  :session/id session-id
+                  :session/agent (:session/agent session)
+                  :lab/trigger (name trigger)
+                  :lab/saved-at (java.util.Date.)
+                  :lab/timestamp-start (:timestamp-start summary)
+                  :lab/timestamp-end (:timestamp-end summary)}
+                 (dissoc summary :timestamp-start :timestamp-end)
+                 ;; Include events for full replay capability
+                 {:events (:events session)})]
+        (post-json! config "/api/alpha/lab/session" doc)
+        (mark-saved! session-id)
+        (println "[futon1-bridge] lab session saved:" session-id "trigger:" trigger)
+        {:ok true :session-id session-id :trigger trigger})
+      (catch Exception ex
+        (println "[futon1-bridge] lab session error:" (.getMessage ex))
+        {:ok false :error (.getMessage ex)}))))
+
+(defn lab-save-status
+  "Get the last save timestamp for a session."
+  [session-id]
+  (get @lab-save-timestamps session-id))

@@ -235,10 +235,13 @@ MSG-ID is used to associate the enrichment with its message."
   "Build the lab/raw JSON structure from accumulated data."
   (let ((base `((lab/session-id . ,futon4-lab-bridge--session-id)
                 (lab/repo-root . ,(locate-dominating-file default-directory ".git"))
+                (lab/source . "musn/futon3")
                 (lab/timestamp-start . ,futon4-lab-bridge--timestamp-start)
                 (lab/timestamp-end . ,futon4-lab-bridge--timestamp-end)
                 (lab/user-messages . ,(vconcat (nreverse (copy-sequence futon4-lab-bridge--user-messages))))
                 (lab/assistant-messages . ,(vconcat (nreverse (copy-sequence futon4-lab-bridge--assistant-messages))))
+                ;; Include all events in chronological order for MUSN timeline
+                (lab/all-events . ,(vconcat (nreverse (copy-sequence futon4-lab-bridge--events))))
                 (lab/files-touched . ,(vconcat (sort (copy-sequence futon4-lab-bridge--files-touched) #'string<)))
                 (lab/trace-path . ,(futon4-lab-bridge--trace-path))
                 (lab/doc-draft-path . ,(format "lab/doc-drafts/%s.json" futon4-lab-bridge--session-id))

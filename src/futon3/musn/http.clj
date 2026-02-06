@@ -751,6 +751,14 @@
     "/musn/par"           (svc/par! body)
     "/musn/par/multi"     (par-multi! body)
     "/musn/activity/log"  (svc/activity-log! body)
+    ;; Context compaction checkpoint - triggered by Claude Code/Codex
+    "/musn/context/compacted"
+                          (let [{:keys [session/id summary]} body]
+                            (svc/on-context-compacted! id :summary summary))
+    ;; Futon1 lab persistence config
+    "/musn/futon1/configure"
+                          (svc/configure-futon1! body)
+    "/musn/futon1/status" (svc/futon1-status)
     nil))
 
 (defn- handle-activity-ws
@@ -843,6 +851,16 @@
         ;; GET endpoint for unified dashboard view
         (and (= uri "/musn/dashboard") (= method :get))
         (json-response (dashboard-request))
+
+        ;; GET endpoint for affect processor state
+        (and (= uri "/musn/affect/state") (= method :get))
+        (try
+          (require 'futon3a.affect)
+          (if-let [state-fn (resolve 'futon3a.affect/state)]
+            (json-response (assoc (state-fn) :ok true))
+            (json-response {:ok false :err "affect module not loaded"}))
+          (catch Throwable t
+            (json-response {:ok false :err (.getMessage t)})))
 
         (not= :post method) (json-response 405 {:ok false :err "method not allowed"})
         :else

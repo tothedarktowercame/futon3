@@ -30,6 +30,12 @@
              (into {}))))
     (catch Exception _ {})))
 
+(defn- parse-long [s]
+  (when (and s (string? s))
+    (try
+      (Long/parseLong (str/trim s))
+      (catch Exception _ nil))))
+
 (defn- upload-root []
   (let [root (or (System/getenv "LAB_UPLOAD_ROOT")
                  (System/getenv "AGENCY_LAB_UPLOAD_ROOT")
@@ -246,22 +252,39 @@
        vec))
 
 (defn- read-session-history
-  "Read and parse full session history from JSONL file, merged with PAR sidecar."
-  [path]
-  (when (.exists (io/file path))
-    (with-open [rdr (io/reader path)]
-      (let [all-lines (vec (line-seq rdr))
-            jsonl-events (->> all-lines
-                              (map parse-claude-jsonl-line)
-                              (filter some?)
-                              (filter #(seq (:text %)))
-                              vec)
-            sidecar-path (par-sidecar-path path)
-            par-events (read-par-sidecar sidecar-path)
-            merged-events (merge-events-by-timestamp jsonl-events par-events)]
-        {:line-count (count all-lines)
-         :par-count (count par-events)
-         :events merged-events}))))
+  "Read and parse full session history from JSONL file, merged with PAR sidecar.
+   If offset is provided, skip that many JSONL lines (for incremental streaming).
+   If par-offset is provided, skip that many PARs from the sidecar."
+  ([path] (read-session-history path nil nil))
+  ([path offset] (read-session-history path offset nil))
+  ([path offset par-offset]
+   (when (.exists (io/file path))
+     (with-open [rdr (io/reader path)]
+       (let [all-lines (vec (line-seq rdr))
+             total-lines (count all-lines)
+             offset (or offset 0)
+             par-offset (or par-offset 0)
+             lines-to-parse (if (pos? offset)
+                              (subvec all-lines (min offset total-lines))
+                              all-lines)
+             jsonl-events (->> lines-to-parse
+                               (map parse-claude-jsonl-line)
+                               (filter some?)
+                               (filter #(seq (:text %)))
+                               vec)
+             sidecar-path (par-sidecar-path path)
+             all-par-events (read-par-sidecar sidecar-path)
+             ;; Skip par-offset PARs (already in cache)
+             par-events (if (pos? par-offset)
+                          (drop par-offset all-par-events)
+                          all-par-events)
+             merged-events (merge-events-by-timestamp jsonl-events par-events)]
+         {:line-count total-lines
+          :offset offset
+          :par-offset par-offset
+          :par-count (count all-par-events)
+          :new-par-count (count par-events)
+          :events merged-events})))))
 
 (defn- start-file-watcher!
   "Start watching a JSONL file for changes, sending new events to conn."
@@ -330,26 +353,32 @@
               path-only (first (str/split uri #"\?"))
               params (parse-query-params uri)
               path (:path params)
+              offset (some-> (:offset params) parse-long)
+              par-offset (some-> (:par_offset params) parse-long)
               upload-path? (or (= path-only "/fulab/lab/upload/ws")
                                (= path-only "/upload/ws")
                                (str/ends-with? path-only "/lab/upload/ws"))]
-          (println "[lab-ws] Client connected:" (.getRemoteSocketAddress conn) "path:" path "uri:" path-only)
+          (println "[lab-ws] Client connected:" (.getRemoteSocketAddress conn)
+                   "path:" path "offset:" offset "par_offset:" par-offset "uri:" path-only)
 
           (cond
             (and path (.exists (io/file path)))
             (let [stop-flag (atom false)
-                  history (read-session-history path)]
+                  history (read-session-history path offset par-offset)]
               (swap! clients assoc conn {:path path :stop-flag stop-flag :mode :stream})
 
-              ;; Send full history (JSONL + PARs merged)
-              (send-json! conn {:type "init"
+              ;; Send history (full or incremental based on offset)
+              (send-json! conn {:type (if (and offset (pos? offset)) "delta" "init")
                                 :path path
                                 :line-count (:line-count history)
+                                :offset (or offset 0)
                                 :par-count (:par-count history 0)
+                                :new-par-count (:new-par-count history 0)
                                 :events (:events history)})
 
               ;; Start watching for new events
               (start-file-watcher! conn path stop-flag)
+              ;; Always watch PAR sidecar - new PARs can arrive anytime
               (start-par-watcher! conn path stop-flag))
 
             upload-path?

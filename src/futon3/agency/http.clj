@@ -4,6 +4,7 @@
             [clojure.string :as str]
             [org.httpkit.server :as http]
             [futon3.agency.codex-mirror :as codex-mirror]
+            [futon3.agency.registry :as reg]
             [futon3.agency.service :as svc]))
 
 (def ^:private log-path (or (System/getenv "AGENCY_LOG") "/tmp/agency_http.log"))
@@ -110,6 +111,10 @@
         (and (= uri "/agency/mirror/status") (= method :get))
         (json-response (codex-mirror/status))
 
+        ;; Agent registry status (M-agency-unified-routing)
+        (and (= uri "/agency/registry") (= method :get))
+        (json-response {:ok true :registry (reg/registry-status)})
+
         ;; WebSocket endpoint for agent walkie-talkie
         (= uri "/agency/ws")
         (handle-agency-ws req)
@@ -122,9 +127,11 @@
            (case type-filter
              "local" {:ok true :agents (local-agent-ids)}
              "remote" {:ok true :agents (remote-agent-ids)}
+             "registry" {:ok true :agents (reg/registered-agents)}
              ;; Default: return all with breakdown
              {:ok true
               :agents (connected-agent-ids)
+              :registry (reg/registered-agents)
               :local (local-agent-ids)
               :remote (remote-agent-ids)
               :sessions (agent-sessions)})))
@@ -302,9 +309,11 @@
           false)))))
 
 (defn connected-agent-ids
-  "Return list of currently connected agent IDs (including local handlers)."
+  "Return list of currently connected agent IDs (registry + local handlers + WebSocket)."
   []
-  (vec (distinct (concat (keys @local-handlers) (keys @connected-agents)))))
+  (vec (distinct (concat (reg/registered-agents)
+                         (keys @local-handlers)
+                         (keys @connected-agents)))))
 
 (defn local-agent-ids
   "Return list of locally registered agent IDs (in-JVM handlers only)."
@@ -441,7 +450,8 @@
 
 (defn- handle-page [body]
   (let [{:keys [agent-id prompt timeout-ms]} body
-        timeout-ms (or timeout-ms default-page-timeout-ms)]
+        timeout-ms (or timeout-ms default-page-timeout-ms)
+        aid (some-> agent-id name)]
     (cond
       (str/blank? (str agent-id))
       {:ok false :err "missing agent-id"}
@@ -449,43 +459,71 @@
       (str/blank? (str prompt))
       {:ok false :err "missing prompt"}
 
-      ;; Check agent is connected
-      (not (or (get @local-handlers (name agent-id))
-               (get @connected-agents (name agent-id))))
-      {:ok false :err "agent not connected"}
+      ;; Priority 1: Check agent-registry for direct invocation (M-agency-unified-routing)
+      (reg/agent-registered? aid)
+      (let [{:keys [ok result error session-id]} (reg/invoke-agent! aid prompt)]
+        (if ok
+          {:ok true :response result :session-id session-id :source :registry}
+          {:ok false :err (or error "invoke failed") :source :registry}))
 
-      :else
+      ;; Priority 2: Check local-handlers (backwards compat with existing Drawbridge)
+      (get @local-handlers aid)
       (let [request-id (generate-request-id)
             response-promise (promise)
             page-msg {:type "page"
                       :request-id request-id
                       :prompt prompt
                       :timestamp (str (java.time.Instant/now))}]
-        ;; Register pending request
         (swap! pending-pages assoc request-id
                {:promise response-promise
                 :agent-id agent-id
                 :created-at (System/currentTimeMillis)})
-
-        ;; Schedule cleanup on timeout
         (future
           (Thread/sleep (+ timeout-ms 1000))
           (when (get @pending-pages request-id)
             (swap! pending-pages dissoc request-id)
             (log! "page-timeout-cleanup" {:request-id request-id})))
-
-        ;; Send page to agent
         (let [sent (send-to-agent! agent-id page-msg)]
           (if-not sent
             (do
               (swap! pending-pages dissoc request-id)
               {:ok false :err "failed to send page to agent"})
-            ;; Wait for response
             (let [result (deref response-promise timeout-ms :timeout)]
               (swap! pending-pages dissoc request-id)
               (if (= result :timeout)
                 {:ok false :err "timeout waiting for agent response" :request-id request-id}
-                {:ok true :response result :request-id request-id}))))))))
+                {:ok true :response result :request-id request-id :source :local-handler})))))
+
+      ;; Priority 3: Check WebSocket connected agents
+      (get @connected-agents aid)
+      (let [request-id (generate-request-id)
+            response-promise (promise)
+            page-msg {:type "page"
+                      :request-id request-id
+                      :prompt prompt
+                      :timestamp (str (java.time.Instant/now))}]
+        (swap! pending-pages assoc request-id
+               {:promise response-promise
+                :agent-id agent-id
+                :created-at (System/currentTimeMillis)})
+        (future
+          (Thread/sleep (+ timeout-ms 1000))
+          (when (get @pending-pages request-id)
+            (swap! pending-pages dissoc request-id)
+            (log! "page-timeout-cleanup" {:request-id request-id})))
+        (let [sent (send-to-agent! agent-id page-msg)]
+          (if-not sent
+            (do
+              (swap! pending-pages dissoc request-id)
+              {:ok false :err "failed to send page to agent"})
+            (let [result (deref response-promise timeout-ms :timeout)]
+              (swap! pending-pages dissoc request-id)
+              (if (= result :timeout)
+                {:ok false :err "timeout waiting for agent response" :request-id request-id}
+                {:ok true :response result :request-id request-id :source :websocket})))))
+
+      :else
+      {:ok false :err "agent not connected"})))
 
 (defonce ^:private server-state (atom nil))
 

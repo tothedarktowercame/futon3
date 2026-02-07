@@ -108,6 +108,32 @@ Every coding session on futon1a produces:
 Labs records are stored in futon1 during the build (bootstrapping), then
 migrated to futon1a when ready.
 
+### 1.3.1 Start Checklist (Before Any Code)
+
+Minimum artifacts required to begin implementation:
+
+1. Evidence document exists and is reviewed: `holes/missions/M-futon1a-evidence.md`.
+2. Pattern set is canonical and indexed: `library/storage/` + `library/futon-theory/`.
+3. Initial module map exists (see 1.2) and includes a target repo layout.
+4. A minimal test harness exists (even a placeholder test suite).
+5. At least one PSR and one PUR exemplar are created (see 1.3.2).
+
+### 1.3.2 PSR/PUR Storage and Naming
+
+Operational conventions for session records:
+
+1. Location: `holes/labs/futon1a/psr/` and `holes/labs/futon1a/pur/`.
+2. Filename convention: `YYYY-MM-DD__<module>__<pattern>.md`.
+3. Required fields:
+   - context
+   - pattern
+   - decision
+   - alternatives
+   - outcome
+   - evidence link (e.g., commit or test)
+
+Example PSR filename: `2026-02-07__core-xtdb__storage-durability-first.md`.
+
 ### 1.4 Documentation as First-Class
 
 Not comments explaining code, but docs explaining *design*:
@@ -137,6 +163,16 @@ Doc: README.md#layer-0-durability
   ↓ errors surfaced as
 Error: 503 STORAGE_UNAVAILABLE
 ```
+
+### 1.6 Part I Gate (Process Acceptance)
+
+Do not begin Part II until all items are satisfied:
+
+1. Evidence doc complete and reviewed.
+2. Pattern library canonicalized and indexed.
+3. Module map with target repo layout exists.
+4. At least one PSR + PUR exemplar exists.
+5. Traceability example present (devmap → pattern → code → test → doc → error).
 
 ---
 
@@ -264,6 +300,22 @@ These design decisions resolve the tensions observed in futon1 history:
 | Schema evolution vs stability | Formalize migrations, version descriptors | `storage/schema-evolution-stability` |
 | Determinism vs expansion | Isolate new features behind gates | `storage/determinism-vs-expansion` |
 
+#### 2.3.1 Tension → Module → Test Mapping (Required)
+
+Each tension must map to at least one module and one test:
+
+| Tension | Module(s) | Test(s) |
+|---------|-----------|---------|
+| Persistence vs speed | `core/xtdb.clj`, `core/mirror.clj` | `test/mirror_equivalence_test.clj` |
+| Throughput vs durability | `core/xtdb.clj` | `test/durability_gate_test.clj` |
+| Availability vs integrity | `core/rehydrate.clj` | `test/startup_gate_test.clj` |
+| Flexible ID vs uniqueness | `core/identity.clj` | `test/identity_uniqueness_test.clj` |
+| Ingest velocity vs validation | `ingest/open_world.clj` | `test/open_world_validation_test.clj` |
+| Guardrails vs internal tools | `auth/penholder.clj`, `scripts/*` | `test/internal_guardrails_test.clj` |
+| Invariants vs repair | `core/invariants.clj`, `scripts/repair/*` | `test/repair_compliance_test.clj` |
+| Schema evolution vs stability | `model/registry.clj` | `test/schema_migration_test.clj` |
+| Determinism vs expansion | `pipeline/*` | `test/determinism_gate_test.clj` |
+
 ### 2.4 Layered Architecture
 
 ```
@@ -338,6 +390,14 @@ or explicitly removed. No ghost capabilities.
 **Invariant proofs**:
 - Tests that *prove* each invariant holds, not just exercise code paths
 
+#### 2.7.1 Test Rollout Phases (Operational)
+
+1. Phase 0 (Harness): one placeholder test file per layer, all green.
+2. Phase 1 (Layer tests): Layer 0–2 tests passing locally.
+3. Phase 2 (Cross-layer tests): error propagation tests across layers.
+4. Phase 3 (End-to-end tests): API → durable storage → restart.
+5. Phase 4 (Migration rehearsal): data export/import with checksums.
+
 ### 2.8 Synthetic Data Mocks
 
 Build with realistic data shapes from the start:
@@ -359,6 +419,14 @@ This validates the schema handles real workloads, not just toy examples.
 6. **Retire futon1** when all clients migrated
 
 futon1a's first dataset is its own creation story.
+
+#### 2.9.1 Migration Validation Checklist
+
+1. Snapshot + XTDB export checksum matches after import.
+2. Invariant proofs pass on futon1a after import.
+3. API compatibility smoke tests pass (same inputs → same outputs).
+4. Restart cycle preserves identical world state.
+5. Rollback plan documented (switch clients back to futon1).
 
 ---
 

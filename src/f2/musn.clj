@@ -11,7 +11,8 @@
    - Futon1 API on port 8080 (pattern registry, graph memory, etc.)
 
    Each service can be enabled/disabled via config."
-  (:require [clojure.java.io :as io]
+  (:require [app.store-manager :as store-manager]
+            [clojure.java.io :as io]
             [clojure.string :as str]
             [f2.adapters.mock :as mock]
             [f2.transport :as transport]
@@ -264,42 +265,56 @@
                         (get-in config [:futon1-api :enabled?]) (assoc "FUTON1_API" "1"))})
      (println "[f2.musn] Starting core services...")
      (flush)
-     ;; Core services (always started)
-     (let [transport-stop (transport/start! state {:port (:transport-port config)})]
-       (println (format "[f2.musn] Transport (HUD) started on port %d" (:transport-port config)))
-       (flush)
-       (let [ui-stop (ui/start! state {:port (:ui-port config)})]
-         (println (format "[f2.musn] UI started on port %d" (:ui-port config)))
-         (flush)
-         (let [drawbridge-stop (start-drawbridge! config)
-               ;; Consolidated services (optional)
-               musn-http-stop (start-musn-http! config)
-               _ (flush)
-               irc-bridge-stop (start-irc-bridge! config)
-               _ (flush)
-               chat-supervisor-stop (start-chat-supervisor! config)
-               _ (flush)
-               futon1-api-stop (start-futon1-api! config)
-               _ (flush)
-               lab-ws-stop (start-lab-ws! config)
-               _ (flush)
-               agency-stop (start-agency! config)
-               _ (flush)
-               lab-persistence-stop (start-lab-persistence! config)
-               _ (flush)]
+     ;; Start drawbridge + Futon1 first so invariant failures stop the line early.
+     (let [drawbridge-stop (start-drawbridge! config)
+           futon1-api-stop (start-futon1-api! config)
+           inv-result (when (and (get-in config [:futon1-api :enabled?])
+                                 futon1-api-stop)
+                        (:invariants (store-manager/current)))]
+       (if (and (get-in config [:futon1-api :enabled?])
+                (or (nil? futon1-api-stop)
+                    (and inv-result (not (:ok? inv-result)))))
+         (do
+           (println "[f2.musn] STOP: Futon1 API invariants failed; skipping other services.")
            (reset! runtime {:config config
                             :state state
-                            :transport transport-stop
-                            :ui ui-stop
                             :drawbridge drawbridge-stop
-                            :musn-http musn-http-stop
-                            :irc-bridge irc-bridge-stop
-                            :lab-persistence lab-persistence-stop
-                            :chat-supervisor chat-supervisor-stop
                             :futon1-api futon1-api-stop
-                            :lab-ws lab-ws-stop
-                            :agency agency-stop})
-           state))))))
+                            :invariants inv-result})
+           state)
+         ;; Core services (always started if we pass invariant gate)
+         (let [transport-stop (transport/start! state {:port (:transport-port config)})]
+           (println (format "[f2.musn] Transport (HUD) started on port %d" (:transport-port config)))
+           (flush)
+           (let [ui-stop (ui/start! state {:port (:ui-port config)})]
+             (println (format "[f2.musn] UI started on port %d" (:ui-port config)))
+             (flush)
+             (let [;; Consolidated services (optional)
+                   musn-http-stop (start-musn-http! config)
+                   _ (flush)
+                   irc-bridge-stop (start-irc-bridge! config)
+                   _ (flush)
+                   chat-supervisor-stop (start-chat-supervisor! config)
+                   _ (flush)
+                   lab-ws-stop (start-lab-ws! config)
+                   _ (flush)
+                   agency-stop (start-agency! config)
+                   _ (flush)
+                   lab-persistence-stop (start-lab-persistence! config)
+                   _ (flush)]
+               (reset! runtime {:config config
+                                :state state
+                                :transport transport-stop
+                                :ui ui-stop
+                                :drawbridge drawbridge-stop
+                                :musn-http musn-http-stop
+                                :irc-bridge irc-bridge-stop
+                                :chat-supervisor chat-supervisor-stop
+                                :futon1-api futon1-api-stop
+                                :lab-ws lab-ws-stop
+                                :agency agency-stop
+                                :lab-persistence lab-persistence-stop})
+               state))))))))
 
 (defn stop! []
   (when-let [{:keys [transport ui drawbridge musn-http irc-bridge chat-supervisor futon1-api lab-ws agency lab-persistence]} @runtime]

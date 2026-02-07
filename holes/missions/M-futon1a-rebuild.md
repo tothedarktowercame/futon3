@@ -108,6 +108,15 @@ Every coding session on futon1a produces:
 Labs records are stored in futon1 during the build (bootstrapping), then
 migrated to futon1a when ready.
 
+**Traceability example (required in session notes):**
+
+```
+devmap → pattern → module → test → doc → error
+futon1.devmap:P2 → storage/durability-first → core/xtdb.clj →
+test/invariants/durability_test.clj → README.md#layer-0-durability →
+503 STORAGE_UNAVAILABLE
+```
+
 ### 1.3.1 Start Checklist (Before Any Code)
 
 Minimum artifacts required to begin implementation:

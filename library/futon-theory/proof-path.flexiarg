@@ -1,0 +1,50 @@
+@flexiarg futon-theory/proof-path
+@title Proof Path
+@sigils [A1 A2 A3]
+@keywords proof, evidence, chain, intent, operation, verification, claim, commit
+@audience futon developers, stack maintainers, agent implementers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/event-protocol futon-theory/symbolic-geodesic futon-theory/retrospective-stability]
+
+! conclusion:
+  Every change in the FUTON stack follows a proof path: an auditable event chain
+  linking intent to operation to change to verification to durable proof commit.
+
+  + context: The proof path is the core unit of work in futon theory. It embodies
+    the Curry-Howard correspondence: programs are proofs of their specifications.
+
+  + AXIOM-GROUNDING:
+    A1 (Auditability): Every proof path is fully traceable from intent to outcome.
+    A2 (Attributability): Each event in the path has a clear source and owner.
+    A3 (Evidence-driven): Progression requires verified evidence, not assertion.
+
+  + STRUCTURE:
+    A proof path consists of these phases:
+    1. CLOCK_IN - Session begins, agent declares intent
+    2. OBSERVE - Read state, gather evidence
+    3. PROPOSE_CLAIM - Agent proposes what will change
+    4. APPLY_CHANGE - Execute the change
+    5. VERIFY - Confirm change matches claim
+    6. INVARIANT_CHECK - All invariants must pass
+    7. PROOF_COMMIT - Durable commit with evidence chain
+    8. CLOCK_OUT - Session ends, proof path complete
+
+  + INVARIANTS:
+    - No change commits without passing all invariant checks
+    - Every commit references its evidence chain
+    - Proof paths are append-only; errors spawn new paths, not mutations
+
+  + BECAUSE:
+    Without proof paths, changes are unauditable. With them, any bug can be
+    traced from symptom to cause through the evidence chain. The spec mediates
+    future state into present; the proof path is how we get there defensibly.
+
+  + IMPLEMENTATION:
+    `futon3/lab/session.clj`: Session lifecycle wraps proof paths
+    `futon1/core/xtdb.clj`: Durable commits implement PROOF_COMMIT phase
+    `futon3/checks/`: Check DSL verifies claims against evidence
+
+  + NEXT-STEPS:
+    next[Implement proof path logging in futon1a Layer 0]
+    next[Add proof path visualization to Tatami HUD]

@@ -1,0 +1,65 @@
+@flexiarg futon-theory/counter-ratchet
+@title Counter-Ratchet (Invariant I2)
+@sigils [I2 A4]
+@keywords count, drop, ratchet, monotonic, regression, detection, baseline
+@audience futon developers, invariant enforcers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/all-or-nothing futon-theory/stop-the-line futon-theory/durability-first]
+
+! conclusion:
+  Key counts must not drop unexpectedly. If lyrics count goes from 14 to 4,
+  that's an invariant violation requiring investigation. The counter-ratchet
+  detects regressions before they become silent data loss.
+
+  + context: Data loss often manifests as count drops: entities that existed
+    no longer exist. The counter-ratchet maintains baselines for critical
+    counts and alerts when they decrease without explanation.
+
+  + INVARIANT-STATEMENT:
+    I2 (extended): Key counts are monotonically non-decreasing unless
+    explicitly acknowledged deletion occurs.
+
+  + MECHANISM:
+    1. Establish baselines for critical entity types
+    2. After each operation, compare current counts to baselines
+    3. If count drops without matching deletion record: VIOLATION
+    4. If count drops with valid deletion: Update baseline
+
+  + CRITICAL-COUNTS:
+    - Entity counts by type (songs, lyrics, relations)
+    - Relation counts by type
+    - User/penholder counts
+    - Lab session event counts
+
+  + DETECTION-FLOW:
+    1. Pre-operation: Record baseline counts
+    2. Operation: Execute change
+    3. Post-operation: Check counts against baselines
+    4. If drop detected: Check for valid deletion record
+    5. If no valid deletion: Stop-the-line, report violation
+
+  + FAILURE-MODES:
+    Silent data loss -> Detected by count drop
+    Corrupt rehydration -> Detected by startup count check
+    Accidental deletion -> Detected before commit
+
+  + ANTI-PATTERNS:
+    - Ignoring count drops as "probably fine"
+    - Resetting baselines after every operation
+    - Only counting totals, not per-type
+    - Checking counts after commit (too late)
+
+  + IMPLEMENTATION:
+    `futon1/core/invariants.clj`: Count verification
+    `futon1/startup.clj`: Baseline establishment
+    `futon1/api/middleware.clj`: Pre/post operation checks
+
+  + BECAUSE:
+    Data loss is often gradual and silent. 14 -> 13 -> 12 -> ... -> 4.
+    Each small loss seems like noise. The ratchet makes every drop visible
+    and requires explanation. No unexplained regressions.
+
+  + NEXT-STEPS:
+    next[Implement count baseline tracking in futon1a]
+    next[Add count verification to rehydration checks]

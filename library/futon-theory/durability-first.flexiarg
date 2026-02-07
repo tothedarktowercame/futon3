@@ -1,0 +1,52 @@
+@flexiarg futon-theory/durability-first
+@title Durability First (Invariant 0)
+@sigils [I0 A1]
+@keywords persist, save, write, durable, xtdb, storage, confirm, success
+@audience futon developers, storage layer maintainers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/proof-path futon-theory/error-hierarchy stack-coherence/futon1-storage-coherence]
+
+! conclusion:
+  Persistence is the zeroth invariant: what you save is what you get back.
+  Writes return success ONLY after durable storage confirms. No fire-and-forget.
+
+  + context: Without reliable persistence, all higher-layer invariants are
+    meaningless. If we can't save lyrics, we can't save hypergraphs or lab
+    notebooks. Durability is the diamond in the record player.
+
+  + INVARIANT-STATEMENT:
+    I0: What you save is what you get back.
+
+  + REQUIREMENTS:
+    - Writes return success ONLY after XTDB confirms durability
+    - Reads return ONLY data that is durably stored
+    - No async-without-callback, no fire-and-forget
+    - All failures throw, no silent logging
+
+  + ENFORCEMENT:
+    Layer 0 (core/xtdb.clj) gates all writes:
+    - `tx-sync!` blocks until XTDB confirms
+    - Success returns the tx-id as proof
+    - Failure throws with error context, never returns false
+
+  + FAILURE-MODES:
+    XTDB unavailable -> 503 STORAGE_UNAVAILABLE
+    Write timeout -> 503 WRITE_TIMEOUT
+    Corruption detected -> 500 STORAGE_CORRUPT (blocks startup)
+
+  + ANTI-PATTERNS:
+    - "Write succeeded" before confirmation (async leak)
+    - Catching write errors and returning partial success
+    - Datascript optimistic writes without XTDB sync
+
+  + BECAUSE:
+    The system's core purpose is to persist data. A storage layer that can't
+    reliably store is not just buggy - it's violating its reason for existence.
+    Layer 0 errors must surface as Layer 0 errors, not masked by auth failures.
+
+  + LAYER-POSITION: 0 (lowest, no dependencies)
+
+  + NEXT-STEPS:
+    next[Implement single write chokepoint in futon1a]
+    next[Add write confirmation logging: "started -> confirmed -> done"]

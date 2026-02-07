@@ -1,0 +1,62 @@
+@flexiarg futon-theory/minimum-viable-events
+@title Minimum Viable Events (Axiom A5)
+@sigils [A5 A1]
+@keywords minimal, events, audit, trail, sufficient, overhead, lightweight
+@audience futon developers, event system designers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/event-protocol futon-theory/proof-path futon-theory/symbolic-geodesic]
+
+! conclusion:
+  Log the minimum events required for full auditability. Not every keystroke,
+  but every decision point. The goal is defensibility, not surveillance.
+
+  + context: Event logging has overhead. Too few events lose audit trail;
+    too many create noise and performance drag. A5 defines the threshold:
+    log what's needed for proof paths, no more.
+
+  + AXIOM-STATEMENT:
+    A5: Log the minimum events required for full auditability.
+
+  + MINIMUM-VIABLE-SET:
+    - Session boundaries (CLOCK_IN, CLOCK_OUT)
+    - State changes (APPLY_CHANGE, PROOF_COMMIT)
+    - Decision points (PROPOSE_CLAIM, pattern selection)
+    - Failures (invariant violations, verification failures)
+    - Observations that led to changes (evidence links)
+
+  + NOT-REQUIRED:
+    - Intermediate edits before commit
+    - Keystroke-level interactions
+    - Read operations that don't influence changes
+    - Internal system state transitions
+
+  + SUFFICIENCY-TEST:
+    Given only the logged events, can you:
+    1. Reconstruct what was intended? (intent from PROPOSE_CLAIM)
+    2. Verify what was done? (action from APPLY_CHANGE)
+    3. Confirm the outcome? (result from PROOF_COMMIT)
+    4. Attribute responsibility? (agent from session)
+    5. Diagnose failures? (error context from failures)
+
+    If yes to all: sufficient events.
+    If no to any: add the missing event type.
+
+  + OVERHEAD-BALANCE:
+    - Storage: Events are append-only, grow linearly
+    - Performance: Event logging should not block operations
+    - Noise: More events = harder to find signal
+    - Pruning: Old events can be archived after audit period
+
+  + RELATIONSHIP-TO-GEODESIC:
+    The minimum viable event set is the geodesic of logging.
+    Extra events are exploration; viable events are the proof.
+
+  + BECAUSE:
+    Auditability is a requirement, not an option. But bloated logs are
+    unreadable logs. A5 threads the needle: enough for proof, no more
+    for comfort.
+
+  + NEXT-STEPS:
+    next[Define canonical event types for futon1a]
+    next[Implement event pruning for archived sessions]

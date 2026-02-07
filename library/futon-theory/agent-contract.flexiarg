@@ -1,0 +1,71 @@
+@flexiarg futon-theory/agent-contract
+@title Agent Contract
+@sigils [A2 A1 A5]
+@keywords agent, behavior, requirements, clock, observe, commit, attribute
+@audience agent implementers, futon developers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/event-protocol futon-theory/proof-path futon-theory/stop-the-line]
+
+! conclusion:
+  Every agent operating in the FUTON stack must follow the agent contract:
+  clock in, observe before acting, attribute all changes, respect invariants,
+  and clock out with a proof trail.
+
+  + context: Agents (human or AI) interact with futon systems. The contract
+    ensures that all agents produce auditable, attributable work that respects
+    system invariants. Agents that violate the contract produce unverifiable
+    changes.
+
+  + CONTRACT-REQUIREMENTS:
+
+    1. CLOCK-IN/CLOCK-OUT:
+       - Every session explicitly starts and ends
+       - Session ID assigned at clock-in
+       - Duration and outcome recorded at clock-out
+
+    2. OBSERVE-BEFORE-ACT:
+       - Read state before proposing changes
+       - Log observations as evidence
+       - Never apply changes without observation phase
+
+    3. ATTRIBUTE-ALL-CHANGES:
+       - Every change linked to agent identity
+       - No anonymous mutations
+       - Changes reference the observation that motivated them
+
+    4. RESPECT-INVARIANTS:
+       - Check invariants before commit
+       - On violation: stop-the-line, do not force through
+       - Report invariant failures, do not hide them
+
+    5. PRODUCE-PROOF:
+       - Every committed change has evidence chain
+       - Proof path is replayable
+       - Failed attempts also logged (for learning)
+
+  + AGENT-TYPES:
+    - Human agents: Follow contract via tools (CLI, IDE integration)
+    - AI agents: Follow contract via prompts and guardrails
+    - Automated agents: Follow contract via code structure
+
+  + CONTRACT-VIOLATIONS:
+    - Anonymous change: Mutation without agent attribution
+    - Blind change: Mutation without observation
+    - Forced commit: Pushing through invariant violation
+    - Ghost session: Changes without clock-in/clock-out
+
+  + ENFORCEMENT:
+    - Session middleware rejects unclocked changes
+    - Commit hooks verify agent attribution
+    - Invariant checks block non-compliant commits
+    - Audit logs flag contract violations
+
+  + BECAUSE:
+    Unattributed changes are unauditable. Unobserved changes are reckless.
+    Forced commits corrupt the system. The contract ensures that every
+    agent, regardless of type, produces trustworthy work.
+
+  + NEXT-STEPS:
+    next[Implement contract enforcement middleware]
+    next[Add contract violation detection to PAR analysis]

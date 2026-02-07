@@ -1,0 +1,53 @@
+@flexiarg futon-theory/single-source-of-truth
+@title Single Source of Truth (Invariant 1)
+@sigils [I1 A2]
+@keywords identity, uuid, external-id, unique, duplicate, ambiguous, lookup
+@audience futon developers, identity layer maintainers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/durability-first futon-theory/error-hierarchy futon-theory/counter-ratchet]
+
+! conclusion:
+  One entity per identity, no ambiguity. Every entity has exactly one UUID,
+  and (source, external-id) maps to exactly one UUID. Duplicates rejected,
+  ambiguous lookups throw.
+
+  + context: Identity confusion causes cascading errors. When one external-id
+    maps to two UUIDs, which one is correct? The answer must be: this cannot
+    happen. Identity invariants are enforced BEFORE write, not discovered after.
+
+  + INVARIANT-STATEMENT:
+    I1: One entity per identity, no ambiguity.
+
+  + REQUIREMENTS:
+    - Every entity has exactly one UUID
+    - (source, external-id) tuple maps to exactly one UUID
+    - Duplicate external IDs rejected BEFORE write (not after)
+    - Lookups with ambiguous matches throw, never silently pick one
+
+  + ENFORCEMENT:
+    Layer 1 (core/identity.clj) validates before Layer 0 writes:
+    - `ensure-unique!` checks for existing (source, external-id) mapping
+    - On conflict: 409 DUPLICATE_EXTERNAL_ID with existing entity reference
+    - On ambiguous lookup: 409 AMBIGUOUS_IDENTITY with all matches listed
+
+  + FAILURE-MODES:
+    Duplicate external-id -> 409 DUPLICATE_EXTERNAL_ID
+    Ambiguous lookup -> 409 AMBIGUOUS_IDENTITY
+    Missing required identity -> 400 IDENTITY_REQUIRED
+
+  + ANTI-PATTERNS:
+    - Silently picking first match on ambiguous lookup
+    - Creating new UUID when external-id already exists
+    - Using external-id as UUID (they serve different purposes)
+
+  + BECAUSE:
+    Identity is the foundation of relations. If entity A relates to entity B,
+    we must know exactly which entities those are. Ambiguity in identity
+    propagates to ambiguity in relations, making the entire graph unreliable.
+
+  + LAYER-POSITION: 1 (depends on Layer 0: durability)
+
+  + NEXT-STEPS:
+    next[Implement pre-write uniqueness check in futon1a]
+    next[Add ambiguity detection on all lookup paths]

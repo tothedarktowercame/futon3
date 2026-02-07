@@ -1,0 +1,64 @@
+@flexiarg futon-theory/error-hierarchy
+@title Error Hierarchy (Invariant 3)
+@sigils [I3 A4]
+@keywords error, layer, surface, mask, propagate, status, http
+@audience futon developers, api layer maintainers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/durability-first futon-theory/single-source-of-truth futon-theory/all-or-nothing futon-theory/rapid-debugging]
+
+! conclusion:
+  Errors surface at the layer that caused them. No penholder errors when the
+  real problem is durability. Each layer is a gate; lower-layer failures
+  prevent higher-layer code from running.
+
+  + context: When errors surface at the wrong layer, debugging takes hours
+    instead of minutes. An auth error that masks a storage failure sends you
+    hunting in the wrong codebase. Layer hierarchy ensures the true cause
+    surfaces first.
+
+  + INVARIANT-STATEMENT:
+    I3: Errors surface at the layer that caused them.
+
+  + LAYER-ERROR-MAPPING:
+    Layer 0 (durability) -> 503 Service Unavailable
+    Layer 1 (identity) -> 409 Conflict
+    Layer 2 (integrity) -> 500 Internal Server Error
+    Layer 3 (auth) -> 403 Forbidden
+    Layer 4 (validation) -> 400 Bad Request
+
+  + REQUIREMENTS:
+    - Each layer is a gate; failure stops propagation
+    - Lower layers run before higher layers
+    - Layer N errors must not be masked by Layer N+1 handling
+    - Error context includes: layer, operation, entity ID, expected vs actual
+
+  + ENFORCEMENT:
+    Middleware orders layer checks from 0 to 4:
+    1. Can we reach storage? (Layer 0)
+    2. Is identity valid? (Layer 1)
+    3. Is data integrity intact? (Layer 2)
+    4. Is requester authorized? (Layer 3)
+    5. Is input valid? (Layer 4)
+
+  + FAILURE-MODES:
+    Masked error: Auth failure hides storage failure -> bug takes hours to find
+    Wrong layer: 400 when 503 is correct -> client retries uselessly
+    Missing context: "Error" without layer/operation/id -> blind debugging
+
+  + ANTI-PATTERNS:
+    - Catching storage errors and returning auth errors
+    - Running all validations before checking storage health
+    - Generic error handlers that lose layer context
+    - "Something went wrong" without layer identification
+
+  + BECAUSE:
+    Debugging is O(layers * complexity) when errors surface at wrong layer,
+    O(1) when they surface at correct layer. The first clue should point to
+    the right file, not send you on a wild goose chase.
+
+  + LAYER-POSITION: Cross-cutting (enforces all layers)
+
+  + NEXT-STEPS:
+    next[Implement layer-ordered middleware in futon1a]
+    next[Create error catalog mapping every error code to its layer]

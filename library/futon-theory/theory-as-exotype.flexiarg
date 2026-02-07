@@ -1,0 +1,96 @@
+@flexiarg futon-theory/theory-as-exotype
+@title Theory as Exotype
+@sigils [異 型 A3]
+@keywords theory, exotype, meta, constraint, domain, pattern, recursive, level
+@audience futon developers, pattern theorists, stack architects
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/four-types futon-theory/xenotype-portability futon-theory/interface-loop futon-theory/baldwin-cycle]
+
+! conclusion:
+  Futon-theory itself acts as an exotype: the interface constraint that shapes
+  how domain-specific patterns (storage, network, simulation) emerge. Those
+  domain patterns become genotypes for concrete implementations.
+
+  + context: The four-types framework applies recursively. At the meta-level,
+    theory constrains pattern development just as patterns constrain code.
+    This recursive structure is what makes the framework self-applicable.
+
+  + RECURSIVE-STRUCTURE:
+    Level 0 (Meta-theory):
+      xenotype: The process of deriving patterns from theory
+      exotype:  Futon-theory patterns (axioms, invariants, protocols)
+
+    Level 1 (Domain patterns):
+      genotype: Storage patterns, network patterns, simulation patterns
+      exotype:  Domain-specific interfaces (Layer 0↔1, message protocols)
+
+    Level 2 (Implementations):
+      genotype: futon1a code, futon3 code, futon5 code
+      phenotype: Observable system behavior
+
+  + FUTON-THEORY-AS-EXOTYPE:
+    The theory patterns define allowable shapes for domain patterns:
+    - proof-path constrains: All domain operations must be auditable
+    - durability-first constrains: Storage patterns must confirm before success
+    - error-hierarchy constrains: Domain errors must surface at correct layer
+    - baldwin-cycle constrains: Improvements must persist or be deleted
+
+    A storage pattern that violates these constraints doesn't "type check"
+    against the theory exotype.
+
+  + STORAGE-PATTERNS-AS-GENOTYPE:
+    Domain patterns that emerge within theory constraints:
+    - Write-through-with-verification (from durability-first + proof-path)
+    - Unique-external-id-enforcement (from single-source-of-truth)
+    - Blocking-rehydration (from all-or-nothing)
+    - Layer-ordered-middleware (from error-hierarchy)
+
+    These patterns are the genotype that futon1a code instantiates.
+
+  + XENOTYPE-FOR-DOMAIN-DERIVATION:
+    The process of deriving domain patterns from theory is itself portable:
+
+    1. IDENTIFY domain (storage, network, simulation, coordination)
+    2. MAP theory patterns to domain concerns
+    3. DERIVE domain-specific patterns within constraints
+    4. VERIFY derived patterns satisfy theory exotype
+    5. INSTANTIATE as code (phenotype)
+
+    This xenotype applies to futon1, futon2, futon3, futon4, futon5...
+
+  + EXAMPLE-DERIVATIONS:
+    From futon-theory → storage patterns (futon1a):
+      durability-first → write-through-with-sync
+      single-source-of-truth → unique-constraint-on-external-id
+      rapid-debugging → single-write-chokepoint
+
+    From futon-theory → network patterns (futon3):
+      proof-path → message-with-receipt
+      error-hierarchy → transport-layer-errors-first
+      agent-contract → session-bracketed-messages
+
+    From futon-theory → simulation patterns (futon5):
+      baldwin-cycle → explore-then-fix-rules
+      interface-loop → layer-boundary-adaptation
+      local-gain-persistence → rule-changes-must-commit
+
+  + TYPE-CHECKING-AT-META-LEVEL:
+    A proposed domain pattern P is valid iff:
+    - P respects all axioms (A1-A5)
+    - P maintains all invariants (I0-I4)
+    - P follows event protocol phases
+    - P enables proof-path reconstruction
+
+    Invalid patterns fail to "connect" - they don't fit the exotype shape.
+
+  + BECAUSE:
+    Without theory-as-exotype, each domain reinvents constraints ad-hoc.
+    With it, all domains share the same foundational guarantees while
+    developing domain-specific structure. The theory is the common interface
+    that makes the stack coherent.
+
+  + NEXT-STEPS:
+    next[Define storage-patterns library derived from futon-theory]
+    next[Define network-patterns library derived from futon-theory]
+    next[Document derivation xenotype as reusable process]

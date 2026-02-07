@@ -1,0 +1,68 @@
+@flexiarg futon-theory/baldwin-cycle
+@title Baldwin Cycle
+@sigils [循 A3 A4]
+@keywords learn, assimilate, canalize, explore, compress, evolve, adapt, fix
+@audience futon developers, pattern theorists, stack architects
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/four-types futon-theory/interface-loop futon-theory/proof-path futon-theory/retrospective-stability]
+
+! conclusion:
+  The Baldwin cycle is the engineered form of evolutionary learning:
+  explore (learn within constraints), assimilate (fix successful adaptations
+  into genotype), canalize (remove unnecessary freedom, make success cheap).
+
+  + context: Named after James Mark Baldwin's insight that learned behaviors
+    can become genetically fixed. In engineering: what starts as runtime
+    adaptation becomes compile-time structure. This is how systems accumulate
+    capability without losing auditability.
+
+  + PHASE 1: EXPLORATION (Learning)
+    Within fixed exotype constraints, allow phenotype plasticity.
+    - Search, adapt, try variants
+    - Measure outcomes against success criteria
+    - Preserve evidence of what was tried
+    Operations: OBSERVE, PROPOSE_CLAIM, experimental APPLY_CHANGE
+
+  + PHASE 2: ASSIMILATION (固化 / Fixation)
+    Compress successful learned behavior back into genotype.
+    - Make replayable, auditable internal representation
+    - Generate pattern, update rule table, extract replayable patch
+    - Attach evidence chain (what worked, why, proof)
+    Operations: VERIFY, PROOF_COMMIT (packaging success as artifact)
+
+  + PHASE 3: CANALIZATION (壓縮 / Compression)
+    Remove unnecessary degrees of freedom.
+    - Tighten invariants around success region
+    - Make success cheaper and more reliable
+    - What once required learning now works by default
+    Operations: Strengthen INVARIANT_CHECK, narrow exotype
+
+  + CYCLE-OUTCOME:
+    Before: System reaches goal through search
+    After: System reaches goal structurally (no search needed)
+    Evidence: Captured in genotype + invariants + proof trail
+
+  + FUNCTIONAL-GAIN:
+    1. Local learning reduces global search cost (divide and conquer)
+    2. Assimilation converts exploration into structural capability (cumulative)
+    3. Canalization makes repeated success automatic (efficiency)
+
+  + ANTI-PATTERNS:
+    - Learning without assimilating (ghost capabilities, unreplayable)
+    - Assimilating without canalizing (complexity creep, unstable)
+    - Canalizing prematurely (lock-in before exploration complete)
+
+  + RELATIONSHIP-TO-FUTON-THEORY:
+    Baldwin exploration maps to: OBSERVE → PROPOSE_CLAIM
+    Baldwin assimilation maps to: APPLY_CHANGE → VERIFY → PROOF_COMMIT
+    Baldwin canalization maps to: Strengthen invariants, tighten exotype
+
+  + BECAUSE:
+    Systems that only execute (no learning) cannot adapt. Systems that only
+    learn (no fixation) cannot accumulate. Systems that only fix (no compression)
+    become brittle. The Baldwin cycle integrates all three.
+
+  + NEXT-STEPS:
+    next[Implement Baldwin engine as reusable component for layer interfaces]
+    next[Define metrics for exploration cost vs. canalization benefit]

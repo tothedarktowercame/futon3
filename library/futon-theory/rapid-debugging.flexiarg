@@ -1,0 +1,63 @@
+@flexiarg futon-theory/rapid-debugging
+@title Rapid Debugging (Invariant 4)
+@sigils [I4 A5]
+@keywords debug, diagnose, trace, minutes, context, source, operation, log
+@audience futon developers, stack maintainers, on-call engineers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/error-hierarchy futon-theory/proof-path stack-coherence/evidence-ledger]
+
+! conclusion:
+  Any bug diagnosable in under 10 minutes. Errors name their source: layer,
+  operation, entity ID, expected vs actual. One write path to trace, not six.
+  State inspectable at any moment.
+
+  + context: Debugging hours instead of minutes is not just inconvenient -
+    it's a sign of architectural failure. If you can't find the bug, you can't
+    fix it. Rapid debugging is a first-class design concern, not an afterthought.
+
+  + INVARIANT-STATEMENT:
+    I4: Any bug diagnosable in under 10 minutes.
+
+  + REQUIREMENTS:
+    - Errors include: layer, operation, entity ID, expected vs actual
+    - Single write path (chokepoint) to trace, not multiple paths
+    - State inspectable at any moment via REPL or API
+    - Logs tell a story: "write started -> confirmed -> done" or "started -> failed at X"
+
+  + DEBUGGING-PRIMITIVES:
+    1. Error message names source layer
+    2. Entity ID links to exact record
+    3. Expected vs actual shows the discrepancy
+    4. Operation name maps to one function
+    5. Timestamp + tx-id allows timeline reconstruction
+
+  + ENFORCEMENT:
+    - All errors use structured format with required fields
+    - Write path is single chokepoint (one function to trace)
+    - State query API available without restart
+    - Logs structured, not prose
+
+  + FAILURE-MODES:
+    Missing layer -> search all layers (hours)
+    Missing entity ID -> search all entities (hours)
+    Multiple write paths -> trace all paths (hours)
+    Unstructured logs -> grep randomly (hours)
+
+  + ANTI-PATTERNS:
+    - "Error occurred" without context
+    - Six different write functions
+    - State only visible after restart
+    - Logs that require human interpretation to correlate
+
+  + BECAUSE:
+    Time-to-diagnosis determines time-to-fix. A system where bugs take hours
+    to find will have more bugs, because the feedback loop is slow. Fast
+    debugging is a multiplier on all other engineering work.
+
+  + LAYER-POSITION: 4 (highest, depends on all others)
+
+  + NEXT-STEPS:
+    next[Implement single write chokepoint in futon1a]
+    next[Add structured error format with required fields]
+    next[Create state inspection API for live debugging]

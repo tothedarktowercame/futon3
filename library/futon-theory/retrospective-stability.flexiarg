@@ -1,0 +1,56 @@
+@flexiarg futon-theory/retrospective-stability
+@title Retrospective Stability
+@sigils [A3 A4]
+@keywords stable, relabel, rewrite, future, proof, robust, invariant
+@audience futon developers, pattern theorists
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/symbolic-geodesic futon-theory/proof-path futon-theory/counter-ratchet]
+
+! conclusion:
+  A proof path is retrospectively stable if, after introducing any subsequent
+  pattern, invariant, or evidence, it doesn't need to be rewritten - only
+  relabeled. Stable proofs survive future refinement.
+
+  + context: Systems evolve. New patterns get added, invariants get stronger,
+    better evidence becomes available. Retrospective stability asks: will the
+    work we do today survive tomorrow's improvements?
+
+  + DEFINITION:
+    A proof path P is retrospectively stable if:
+    1. For any future pattern F, P remains valid (may be relabeled with F)
+    2. For any stronger invariant I', P still satisfies I'
+    3. For any new evidence E, P is consistent with E
+
+    Stability means: the structure holds, only the labels may change.
+
+  + STABILITY-LEVELS:
+    - Unstable: New pattern/invariant invalidates the proof, must rewrite
+    - Semi-stable: Proof valid but now inefficient, geodesic changed
+    - Stable: Proof remains valid and geodesic, may get new labels
+
+  + INDICATORS-OF-INSTABILITY:
+    - Hardcoded assumptions that may not hold
+    - Implicit invariants not formally stated
+    - Edge cases handled by special logic
+    - Paths that rely on current system limitations
+
+  + DESIGNING-FOR-STABILITY:
+    - Make all invariants explicit and testable
+    - Use patterns that generalize beyond current needs
+    - Document assumptions that might change
+    - Prefer simple paths over clever optimizations
+
+  + RELATIONSHIP-TO-REFACTORING:
+    Unstable paths require refactoring when the system evolves.
+    Stable paths require only annotation/relabeling.
+    The cost of instability is paid later, with interest.
+
+  + BECAUSE:
+    Engineering time is finite. Work that must be redone is wasted work.
+    Retrospective stability is an investment: pay slightly more now for
+    paths that remain valid as the system grows.
+
+  + NEXT-STEPS:
+    next[Add stability analysis to pattern selection criteria]
+    next[Track stability violations in PAR records]

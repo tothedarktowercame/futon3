@@ -142,11 +142,42 @@ Error: 503 STORAGE_UNAVAILABLE
 
 ## Part II: futon1a Technical Specification
 
-The actual storage layer, built around core invariants.
+The actual storage layer, built around core invariants. Part II is constrained
+by `futon-theory/` (the exotype) and instantiates `storage/` patterns (the
+genotype) as working code (the phenotype).
 
-### 2.1 Core Invariants
+### 2.1 Theory Grounding
 
-These are non-negotiable. If any fails, the system is broken.
+futon1a implements the futon-theory axioms and event protocol:
+
+| Axiom | Requirement | futon1a Implementation |
+|-------|-------------|------------------------|
+| A1: Auditability | Every operation traceable | Proof-path logging on all writes |
+| A2: Attributable | Changes have clear source | Session/penholder on every tx |
+| A3: Evidence-driven | Progression requires proof | Invariant check before commit |
+| A4: Degradation detectable | Failures surface early | Counter-ratchet on key counts |
+| A5: Minimum events | Log what's needed | Structured events, not verbose logs |
+
+Every write operation follows the **proof-path** event protocol:
+
+```
+CLOCK_IN (session start)
+  → OBSERVE (read current state)
+  → PROPOSE_CLAIM (declare intended change)
+  → APPLY_CHANGE (execute)
+  → VERIFY (confirm matches claim)
+  → INVARIANT_CHECK (all invariants pass)
+  → PROOF_COMMIT (durable with tx-id)
+  → CLOCK_OUT (session end)
+```
+
+Theory patterns: `futon-theory/proof-path`, `futon-theory/event-protocol`,
+`futon-theory/agent-contract`
+
+### 2.2 Core Invariants
+
+These are non-negotiable. If any fails, the system is broken. Each invariant
+has a theory pattern (abstract) and a storage pattern (concrete).
 
 #### Invariant 0: Persistence
 
@@ -157,6 +188,10 @@ These are non-negotiable. If any fails, the system is broken.
 - No fire-and-forget, no async-without-callback
 - All failures throw, no silent logging
 
+Theory: `futon-theory/durability-first`
+Storage: `storage/durability-first`, `storage/durability-throughput-gate`
+Evidence: commits 0e2b3a5, 5c51506, 5227d75
+
 #### Invariant 1: Identity
 
 > **One entity per identity, no ambiguity.**
@@ -166,6 +201,10 @@ These are non-negotiable. If any fails, the system is broken.
 - Duplicate external IDs rejected BEFORE write
 - Lookups with ambiguous matches throw, not silently pick one
 
+Theory: `futon-theory/single-source-of-truth`
+Storage: `storage/identity-uniqueness`, `storage/identity-flex-uniqueness`
+Evidence: commits d1d447d, 1bda8f7
+
 #### Invariant 2: Integrity
 
 > **Startup succeeds completely or fails loudly.**
@@ -174,6 +213,11 @@ These are non-negotiable. If any fails, the system is broken.
 - No silent stubs, no partial loads
 - Failure reports exactly what failed and why
 - Relations verified to have valid endpoints
+- Key counts must not drop (counter-ratchet)
+
+Theory: `futon-theory/all-or-nothing`, `futon-theory/counter-ratchet`
+Storage: `storage/all-or-nothing-startup`, `storage/startup-integrity-gate`
+Evidence: commits 884df26, c5ffd75
 
 #### Invariant 3: Hierarchy
 
@@ -187,6 +231,10 @@ These are non-negotiable. If any fails, the system is broken.
 
 No penholder errors when the real problem is durability.
 
+Theory: `futon-theory/error-hierarchy`, `futon-theory/stop-the-line`
+Storage: `storage/error-layer-hierarchy`, `storage/guardrails-vs-tooling`
+Evidence: commits 7efbef7, e1e2c9d, a525acb
+
 #### Invariant 4: Rapid Debugging
 
 > **Any bug diagnosable in under 10 minutes.**
@@ -196,25 +244,69 @@ No penholder errors when the real problem is durability.
 - State inspectable at any moment
 - Logs tell a story: "write started → confirmed → done" or "started → failed at X"
 
-### 2.2 Layered Architecture
+Theory: `futon-theory/rapid-debugging`
+Storage: `storage/rapid-debugging`
+Evidence: commits 884df26, 50383dd
+
+### 2.3 Tension Resolutions
+
+These design decisions resolve the tensions observed in futon1 history:
+
+| Tension | Resolution | Pattern |
+|---------|------------|---------|
+| Persistence vs speed | Mirror XTDB→Datascript, mirroring is invariant | `storage/persistence-speed-mirroring` |
+| Throughput vs durability | Gate success on durable commit | `storage/durability-throughput-gate` |
+| Availability vs integrity | Gate startup on full rehydration | `storage/startup-integrity-gate` |
+| Flexible ID vs uniqueness | Enforce UUID, reject duplicate external-id | `storage/identity-flex-uniqueness` |
+| Ingest velocity vs validation | Validate aggressively + repair tooling | `storage/open-world-velocity-validation` |
+| Guardrails vs internal tools | Internal writers obey same auth | `storage/guardrails-vs-tooling` |
+| Invariants vs repair | Pair enforcement with explicit repair paths | `storage/invariants-vs-repair` |
+| Schema evolution vs stability | Formalize migrations, version descriptors | `storage/schema-evolution-stability` |
+| Determinism vs expansion | Isolate new features behind gates | `storage/determinism-vs-expansion` |
+
+### 2.4 Layered Architecture
 
 ```
-Layer 0: Durability (core/xtdb.clj)
-   ↓ depends on nothing
-Layer 1: Identity (core/identity.clj)
-   ↓ depends on Layer 0
-Layer 2: Integrity (core/entity.clj, core/relation.clj, core/rehydrate.clj)
-   ↓ depends on Layers 0, 1
-Layer 3: Authorization (auth/penholder.clj)
-   ↓ depends on Layers 0, 1, 2
-Layer 4: Model Validation (model/*.clj)
-   ↓ depends on Layers 0, 1, 2, 3
+Layer 4: Model Validation (model/*.clj)           ─── 400 Bad Request
+    ↑ depends on
+Layer 3: Authorization (auth/penholder.clj)       ─── 403 Forbidden
+    ↑ depends on
+Layer 2: Integrity (entity.clj, relation.clj, rehydrate.clj) ─── 500 Internal
+    ↑ depends on
+Layer 1: Identity (core/identity.clj)             ─── 409 Conflict
+    ↑ depends on
+Layer 0: Durability (core/xtdb.clj)               ─── 503 Unavailable
+    ↑ depends on nothing
 ```
 
 Each layer is a gate. If Layer 0 fails, you get a Layer 0 error. Layer 3 never
 runs if Layer 1 failed.
 
-### 2.3 What's Different from futon1
+### 2.5 Interface Loops (Evolutionary Mechanism)
+
+Each layer boundary hosts an **interface loop** for adaptation and improvement:
+
+```
+Interface I01 (L0↔L1): Durability→Identity
+  - Exotype: tx-id required before identity assignment
+  - Baldwin cycle: explore identity schemes → assimilate working patterns → canalize
+
+Interface I12 (L1↔L2): Identity→Integrity
+  - Exotype: UUID required before entity/relation creation
+  - Baldwin cycle: explore relation validation → assimilate → canalize
+
+Interface I23 (L2↔L3): Integrity→Authorization
+  - Exotype: Valid entity required before auth check
+  - Baldwin cycle: explore penholder schemes → assimilate → canalize
+```
+
+Theory patterns: `futon-theory/interface-loop`, `futon-theory/baldwin-cycle`,
+`futon-theory/local-gain-persistence`
+
+**Invariant**: Any improvement at an interface must be captured in code/patterns
+or explicitly removed. No ghost capabilities.
+
+### 2.6 What's Different from futon1
 
 | Aspect | futon1 | futon1a |
 |--------|--------|---------|
@@ -226,7 +318,7 @@ runs if Layer 1 failed.
 | Write paths | Multiple exist | Single chokepoint |
 | Debugging | Hours | Minutes |
 
-### 2.4 Testing Strategy
+### 2.7 Testing Strategy
 
 **Layer tests** (fast, isolated):
 - Does Layer 0 block until XTDB confirms?
@@ -246,7 +338,7 @@ runs if Layer 1 failed.
 **Invariant proofs**:
 - Tests that *prove* each invariant holds, not just exercise code paths
 
-### 2.5 Synthetic Data Mocks
+### 2.8 Synthetic Data Mocks
 
 Build with realistic data shapes from the start:
 
@@ -257,7 +349,7 @@ Build with realistic data shapes from the start:
 
 This validates the schema handles real workloads, not just toy examples.
 
-### 2.6 Migration Path
+### 2.9 Migration Path
 
 1. **Build futon1a** with passing invariant tests
 2. **Run both** in parallel (different ports)
@@ -290,6 +382,11 @@ futon1a's first dataset is its own creation story.
 
 ### Part II (Product)
 - [ ] All 5 core invariants pass their proof tests
+- [ ] Each invariant traces to both futon-theory/ and storage/ patterns
+- [ ] All 9 tension resolutions implemented and tested
+- [ ] Interface loops defined at each layer boundary
+- [ ] Proof-path event logging on all write operations
+- [ ] Counter-ratchet detects unexpected count drops
 - [ ] Any bug diagnosable in under 10 minutes
 - [ ] Synthetic data mocks exercise realistic workloads
 - [ ] Migration from futon1 succeeds without data loss

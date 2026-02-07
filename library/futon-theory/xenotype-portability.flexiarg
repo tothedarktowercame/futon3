@@ -1,0 +1,75 @@
+@flexiarg futon-theory/xenotype-portability
+@title Xenotype Portability
+@sigils [異 A3]
+@keywords xenotype, portable, transfer, reuse, skeleton, generator, selector
+@audience futon developers, pattern theorists, stack architects
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/four-types futon-theory/baldwin-cycle futon-theory/interface-loop]
+
+! conclusion:
+  The xenotype makes Baldwin cycles themselves portable. The same
+  generate-select-compress skeleton can be reused at different interfaces,
+  turning cross-layer gain from accidental tuning into replicable structure.
+
+  + context: If we only have genotype↔phenotype, we get one-off engineering
+    history. Introducing xenotype means the Baldwin cycle itself becomes a
+    transplantable structure, applicable across different substrates.
+
+  + XENOTYPE-COMPONENTS:
+    A xenotype provides three portable mechanisms:
+
+    1. GENERATOR: Proposes variants within constraints
+       - Given exotype, produce candidate genotype changes
+       - Examples: mutation operators, variation samplers, rule combiners
+
+    2. SELECTOR: Scores variants against evidence/invariants
+       - Given phenotype outcomes, rank candidates
+       - Examples: fitness functions, invariant checkers, metric comparers
+
+    3. COMPRESSOR: Extracts rules/patterns from success
+       - Given successful variants, produce minimal genotype
+       - Examples: pattern miners, rule simplifiers, invariant tighteners
+
+  + PORTABILITY-ACROSS-LAYERS:
+    Same adapt→assimilate→canalize module works at:
+    - CA rule layer (generate rule variants, select by behavior, compress)
+    - Message bus layer (generate routing variants, select by throughput)
+    - Data schema layer (generate schema variants, select by query perf)
+    - UI/command layer (generate interaction variants, select by usability)
+
+  + TRANSPLANTATION-PROTOCOL:
+    To apply xenotype X at interface I:
+    1. Instantiate X.generator with I's exotype constraints
+    2. Bind X.selector to I's success metrics
+    3. Connect X.compressor to I's genotype representation
+    4. Run Baldwin cycle with X driving generate-select-compress
+
+  + WHY-XENOTYPE-MATTERS:
+    Without xenotype: Each interface reinvents adaptation machinery
+    With xenotype: One adaptation skeleton, many instantiations
+
+    The xenotype is why "learning to learn" is possible - the learning
+    mechanism itself becomes portable structure.
+
+  + RELATIONSHIP-TO-FUTON-THEORY:
+    - Xenotype portability enables: Same patterns drive different layers
+    - Evidence accumulation: Xenotype improvements benefit all interfaces
+    - Proof paths: Xenotype instantiation is itself a traceable operation
+
+  + EXAMPLE-XENOTYPE:
+    VariationalSearch xenotype:
+    - Generator: Sample from prior, apply variation operator
+    - Selector: Score against loss function + invariant checks
+    - Compressor: Gradient-based or symbolic simplification
+
+    Applicable to: CA rules, API parameters, schema migrations, etc.
+
+  + BECAUSE:
+    The xenotype names why cross-layer gains compound. Without it, each
+    layer's improvements are isolated. With it, improvements to the
+    adaptation mechanism benefit all layers that use it.
+
+  + NEXT-STEPS:
+    next[Catalog reusable xenotypes from existing futon5 work]
+    next[Define xenotype interface specification for futon stack]

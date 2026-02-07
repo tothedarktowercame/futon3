@@ -1,0 +1,60 @@
+@flexiarg futon-theory/curry-howard-operational
+@title Curry-Howard Operational Principle
+@sigils [A3 A1]
+@keywords spec, proof, program, type, mediate, future, present, correspondence
+@audience futon developers, pattern theorists
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/proof-path futon-theory/symbolic-geodesic futon-theory/retrospective-stability]
+
+! conclusion:
+  Programs are proofs of their specifications. The spec mediates future state
+  into present. In futon theory, every operation is a proof that the intended
+  state is achievable and achieved.
+
+  + context: The Curry-Howard correspondence reveals that types are theorems
+    and programs are proofs. Futon theory operationalizes this: specifications
+    are claims about future state, and proof paths demonstrate those claims.
+
+  + OPERATIONAL-INTERPRETATION:
+    - Spec: A claim about what the future state should be
+    - Program: A proof that the spec can be satisfied
+    - Execution: Verification that the proof is valid
+    - Result: The spec-mediated future state, now present
+
+  + SPEC-AS-CONTRACT:
+    When we write: "Entity X will have property P after operation O"
+    We are claiming: There exists a proof path from current state to (X has P)
+    The code is that proof. The test verifies the proof.
+
+  + MEDIATING-FUTURE-INTO-PRESENT:
+    1. Declare intent (what future state do we want?)
+    2. Write spec (formal claim about that state)
+    3. Implement (construct the proof)
+    4. Verify (check the proof is valid)
+    5. Commit (the future state becomes present)
+
+  + TYPE-SYSTEM-ANALOGY:
+    - Types = Invariants (what must hold)
+    - Functions = Operations (how to maintain invariants)
+    - Type checking = Invariant verification (before commit)
+    - Runtime = Execution (proof in action)
+
+  + IMPLICATIONS:
+    - Untyped code = claims without proof (risky)
+    - Type errors = invariant violations (stop-the-line)
+    - Passing types = verified claims (commit allowed)
+
+  + RELATIONSHIP-TO-PROOFWORK:
+    Proofwork is the labor of constructing proofs. The Curry-Howard principle
+    says that labor is meaningful: each proof demonstrates something real
+    about the system's state and capabilities.
+
+  + BECAUSE:
+    Without this correspondence, code is arbitrary text and specs are wishful
+    thinking. With it, code and specs are two views of the same truth. The
+    program proves the spec; the spec justifies the program.
+
+  + NEXT-STEPS:
+    next[Formalize spec language for futon1a invariants]
+    next[Connect type-level claims to runtime verification]

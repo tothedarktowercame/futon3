@@ -1,0 +1,73 @@
+@flexiarg futon-theory/local-gain-persistence
+@title Local Gain Persistence Invariant
+@sigils [I+ A4 A1]
+@keywords gain, persist, delete, ghost, capability, accumulate, audit
+@audience futon developers, stack architects
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/interface-loop futon-theory/baldwin-cycle futon-theory/counter-ratchet futon-theory/stop-the-line]
+
+! conclusion:
+  Any functional gain introduced at an interface must either be assimilated
+  into genotype (replayable, auditable) or explicitly deleted. No ghost
+  capabilities allowed.
+
+  + context: Interface loops produce functional gains - adaptations that
+    work better than before. Without this invariant, gains can exist in
+    runtime state but never be captured, creating "ghost capabilities"
+    that work but cannot be audited, replayed, or trusted.
+
+  + INVARIANT-STATEMENT:
+    LocalGainMustEitherPersistOrBeDeleted:
+    For any interface loop that produces gain G:
+    - Either G is assimilated (genotype updated, PROOF_COMMIT with evidence)
+    - Or G is explicitly deleted (REMOVE_GAIN with reason)
+    - Never: G exists only in runtime/phenotype
+
+  + GHOST-CAPABILITY-PROBLEM:
+    Without this invariant:
+    - System works better but nobody knows why
+    - Restart loses the improvement
+    - Can't replicate success in other environments
+    - Can't audit what changed
+    - Can't roll back if it causes problems later
+
+  + ENFORCEMENT:
+    1. LOOP_END event requires disposition field: {persisted, deleted}
+    2. If persisted: genotype diff + proof commit must exist
+    3. If deleted: reason + timestamp recorded
+    4. If neither: INVARIANT_CHECK fails, stop-the-line
+
+  + PERSISTENCE-REQUIREMENTS:
+    To count as "persisted", gain must have:
+    - Genotype change (replayable representation)
+    - Evidence chain (what problem it solved)
+    - Proof commit (durable, with tx-id)
+    - Test coverage (verifies gain still works)
+
+  + DELETION-REQUIREMENTS:
+    To count as "deleted", gain must have:
+    - Explicit REMOVE_GAIN event
+    - Reason (why not persisting: not worth it, superseded, etc.)
+    - Cleanup verification (no residual effects)
+
+  + RELATIONSHIP-TO-COUNTER-RATCHET:
+    Counter-ratchet: Key counts must not drop
+    Local gain persistence: Capabilities must not silently appear/disappear
+    Both prevent "drift" - unexplained changes in system state
+
+  + ANTI-PATTERNS:
+    - "It just started working" (ghost gain, no genotype)
+    - "We'll capture it later" (procrastinated persistence)
+    - "Nobody uses that anymore" (orphaned gain, not deleted)
+    - Runtime-only optimizations that survive restart
+
+  + BECAUSE:
+    Accumulated capability is the product of engineering. If capabilities
+    exist but aren't captured, the product is ephemeral. This invariant
+    ensures that every gain either becomes permanent structure or is
+    acknowledged as temporary and removed.
+
+  + NEXT-STEPS:
+    next[Add gain disposition field to LOOP_END event schema]
+    next[Implement persistence check in interface loop middleware]

@@ -1,0 +1,33 @@
+@flexiarg storage/determinism-vs-expansion
+@title Determinism vs Feature Expansion
+@sigils [🌏/万]
+@keywords determinism, features, expansion, gates
+@audience storage maintainers, futon1a builders
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger storage/deterministic-substrate]
+
+! conclusion:
+  if you want new features but also deterministic behavior, isolate expansions behind determinism gates and tests
+
+  + context: futon1 fixed determinism gate baselines while adding ingestion features.
+  + IF:
+    you want to add new ingestion or modeling features
+
+  + HOWEVER:
+    determinism must remain intact across environments
+
+  + THEN:
+    require determinism gates and regression tests for any feature expansion
+
+  + BECAUSE:
+    un-gated expansion breaks reproducibility and undermines the storage substrate
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/missions/M-futon1a-evidence.md#L126]
+    evidence[holes/missions/M-futon1a-evidence.md#L142]
+
+  + NEXT-STEPS:
+    next[Define determinism gates for each ingest or model pipeline.]
+    next[Add fixtures that must remain invariant across versions.]

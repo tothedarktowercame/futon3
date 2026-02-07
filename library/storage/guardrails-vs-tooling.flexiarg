@@ -1,0 +1,33 @@
+@flexiarg storage/guardrails-vs-tooling
+@title Guardrails vs Internal Tooling
+@sigils [🔸/予]
+@keywords authorization, penholder, guardrails, internal tools
+@audience storage maintainers, futon1a builders
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger storage/error-layer-hierarchy]
+
+! conclusion:
+  if you want internal tooling but also strong guardrails, force internal writers through the same authorization and invariant checks
+
+  + context: futon1 hardened penholder checks and charon guards after internal writer bypass risks.
+  + IF:
+    you want convenient internal scripts and writers
+
+  + HOWEVER:
+    you also need authorization and invariant enforcement to be universal
+
+  + THEN:
+    route internal writers through the same guardrails as external API calls
+
+  + BECAUSE:
+    bypass vectors appear when internal tooling skips guards
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/missions/M-futon1a-evidence.md#L111]
+    evidence[holes/missions/M-futon1a-evidence.md#L139]
+
+  + NEXT-STEPS:
+    next[Add guard enforcement tests for internal scripts and batch ingests.]
+    next[Document required penholder context for every writer entry point.]

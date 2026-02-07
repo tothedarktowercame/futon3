@@ -1,0 +1,33 @@
+@flexiarg storage/canonical-interface
+@title Canonical Interface
+@sigils [📤/及]
+@keywords http, api, canonical, interface, stable
+@audience futon1a builders, API maintainers
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger]
+
+! conclusion:
+  expose a minimal, stable HTTP interface as the canonical way to query and update the persistent store without internal coupling
+
+  + context: futon1’s devmap defines the HTTP API as the canonical interface for external tools.
+  + IF:
+    external tools must query/update storage without embedding internals
+
+  + HOWEVER:
+    unstable interfaces force clients to copy internal assumptions or scrape CLI output
+
+  + THEN:
+    keep a documented HTTP surface as the primary contract for persistence operations
+
+  + BECAUSE:
+    canonical interfaces let higher futons depend on storage without tight coupling
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/futon1.devmap#L29]
+    evidence[holes/futon1.devmap#L33]
+
+  + NEXT-STEPS:
+    next[Define the minimal API surface for futon1a and its evolution protocol.]
+    next[Add compatibility tests to ensure response stability across versions.]

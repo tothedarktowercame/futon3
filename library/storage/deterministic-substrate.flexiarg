@@ -1,0 +1,33 @@
+@flexiarg storage/deterministic-substrate
+@title Deterministic Storage Substrate
+@sigils [🌏/万]
+@keywords deterministic, storage, substrate, coherent graph, persistence
+@audience futon1a builders, storage maintainers
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger]
+
+! conclusion:
+  provide a deterministic, storage-oriented substrate that maintains a coherent graph of facts across sessions
+
+  + context: futon1’s devmap defines the substrate as deterministic and storage-first, not a session cache.
+  + IF:
+    storage is required to outlive sessions and remain consistent across restarts
+
+  + HOWEVER:
+    without a deterministic substrate, the graph drifts across runs and environments
+
+  + THEN:
+    treat persistence + determinism as the defining product, not a secondary feature
+
+  + BECAUSE:
+    the futon1 series exists to make the same world state appear reliably across sessions
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/futon1.devmap#L1]
+    evidence[holes/futon1.devmap#L9]
+
+  + NEXT-STEPS:
+    next[Define determinism tests that compare world state across restart cycles.]
+    next[Document the minimal substrate contract that other futons depend on.]

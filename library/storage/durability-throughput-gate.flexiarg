@@ -1,0 +1,33 @@
+@flexiarg storage/durability-throughput-gate
+@title Durability Throughput Gate
+@sigils [💎/石]
+@keywords durability, throughput, watchdog, gate
+@audience storage maintainers, futon1a builders
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger storage/durability-first]
+
+! conclusion:
+  if you want throughput but also durable truth, gate responses on durable commit and instrument watchdogs with deterministic ordering
+
+  + context: futon1 added durable proof and watchdogs, then fixed ordering to avoid false confidence.
+  + IF:
+    you want throughput and responsive writes
+
+  + HOWEVER:
+    you also need durable confirmation and watchdog safety
+
+  + THEN:
+    block success responses on durable commit and treat watchdog ordering as an invariant
+
+  + BECAUSE:
+    durability drift and watchdog misordering caused repeated fixes and risked silent corruption
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/missions/M-futon1a-evidence.md#L86]
+    evidence[holes/missions/M-futon1a-evidence.md#L133]
+
+  + NEXT-STEPS:
+    next[Specify watchdog ordering rules and test for stalled XTDB detection.]
+    next[Record durable proof events in write audit logs.]

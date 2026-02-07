@@ -1,0 +1,33 @@
+@flexiarg storage/deterministic-ingest-pipeline
+@title Deterministic Ingest Pipeline
+@sigils [📁/义]
+@keywords nlp, ingest, tokenise, tag, chunk, recognise, deterministic
+@audience futon1a builders, ingest maintainers
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger]
+
+! conclusion:
+  provide deterministic ingestion (tokenise → tag → chunk → recognise) so graph construction is reproducible
+
+  + context: futon1’s devmap defines a deterministic NLP interface as the foundation for ingest.
+  + IF:
+    ingest depends on text processing and recognition stages
+
+  + HOWEVER:
+    non-deterministic NLP yields irreproducible graph states
+
+  + THEN:
+    formalize the pipeline stages and require deterministic outputs in tests
+
+  + BECAUSE:
+    reproducible ingest is required for a deterministic storage substrate
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/futon1.devmap#L40]
+    evidence[holes/futon1.devmap#L89]
+
+  + NEXT-STEPS:
+    next[Document the pipeline as a public API with input/output shapes.]
+    next[Add fixtures that must pass identically across environments.]

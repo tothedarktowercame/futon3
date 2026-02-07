@@ -1,0 +1,33 @@
+@flexiarg storage/open-world-continuity
+@title Open-World Continuity
+@sigils [📥/入]
+@keywords open-world, background ingest, continuity, persistent store
+@audience futon1a builders, ingest maintainers
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger]
+
+! conclusion:
+  allow background knowledge ingest to accumulate in the same persistent store outside interactive sessions
+
+  + context: futon1’s devmap positions open-world ingest as a core way to build shared knowledge.
+  + IF:
+    knowledge needs to accumulate beyond interactive sessions
+
+  + HOWEVER:
+    separate stores or session-only ingestion fragment the graph
+
+  + THEN:
+    ingest open-world data into the same persistent store with the same invariants
+
+  + BECAUSE:
+    background knowledge must remain queryable and coherent with session data
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/futon1.devmap#L44]
+    evidence[holes/futon1.devmap#L100]
+
+  + NEXT-STEPS:
+    next[Define open-world ingest contracts and validation rules for futon1a.]
+    next[Add tests verifying open-world data survives restart and is queryable.]

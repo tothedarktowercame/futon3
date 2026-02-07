@@ -1,0 +1,33 @@
+@flexiarg storage/all-or-nothing-startup
+@title All-Or-Nothing Startup
+@sigils [🌅/久]
+@keywords startup, rehydrate, integrity, gating, diagnostics
+@audience storage maintainers, futon1a builders
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger]
+
+! conclusion:
+  require full rehydration and integrity checks to pass before the system starts serving
+
+  + context: futon1 needed startup diagnostics and integrity checks to prevent partial or inconsistent state.
+  + IF:
+    rehydration can proceed partially or with silent warnings
+
+  + HOWEVER:
+    hidden inconsistencies surface later and require reactive repairs
+
+  + THEN:
+    gate startup on full rehydration success and emit precise diagnostics on failure
+
+  + BECAUSE:
+    futon1 fixes show partial startup is a recurring source of drift
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/missions/M-futon1a-evidence.md#L53]
+    evidence[holes/missions/M-futon1a-evidence.md#L33]
+
+  + NEXT-STEPS:
+    next[Define the exact rehydration checklist and failure modes for futon1a.]
+    next[Add a startup test that fails fast on incomplete rehydration.]

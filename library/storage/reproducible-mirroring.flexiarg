@@ -1,0 +1,33 @@
+@flexiarg storage/reproducible-mirroring
+@title Reproducible Mirroring
+@sigils [🍵/文]
+@keywords datascript, xtdb, mirroring, reproducible, alignment
+@audience futon1a builders, storage maintainers
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger]
+
+! conclusion:
+  keep Datascript (fast) and XTDB (persistent) in reproducible alignment so the same world state appears across restarts
+
+  + context: futon1’s devmap requires reproducible alignment between Datascript and XTDB.
+  + IF:
+    two storage representations exist for speed and durability
+
+  + HOWEVER:
+    misalignment yields drift and nondeterministic query results
+
+  + THEN:
+    define and test mirroring rules so Datascript and XTDB represent the same state
+
+  + BECAUSE:
+    futon1’s coherence relies on consistent mirroring across restarts and environments
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/futon1.devmap#L1]
+    evidence[holes/futon1.devmap#L12]
+
+  + NEXT-STEPS:
+    next[Document the mirroring contract and which fields must align.]
+    next[Add restart-cycle tests asserting mirror equivalence.]

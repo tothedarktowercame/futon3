@@ -1,0 +1,33 @@
+@flexiarg storage/startup-integrity-gate
+@title Startup Integrity Gate
+@sigils [🌅/久]
+@keywords startup, integrity, availability, diagnostics
+@audience storage maintainers, futon1a builders
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger storage/all-or-nothing-startup]
+
+! conclusion:
+  if you want fast availability but also integrity, gate startup on full rehydration and explicit diagnostics
+
+  + context: futon1 added XTDB sync and startup diagnostics to prevent stale state from serving.
+  + IF:
+    you want the system to start quickly
+
+  + HOWEVER:
+    you also need integrity and full rehydration correctness
+
+  + THEN:
+    block startup until rehydration and invariant checks pass, and emit precise diagnostics on failure
+
+  + BECAUSE:
+    partial startup created hidden inconsistencies and required repairs
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/missions/M-futon1a-evidence.md#L91]
+    evidence[holes/missions/M-futon1a-evidence.md#L137]
+
+  + NEXT-STEPS:
+    next[Define the rehydration checklist and required diagnostics output.]
+    next[Add failure-mode tests for incomplete rehydration.]

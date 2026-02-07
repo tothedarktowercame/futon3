@@ -1,0 +1,33 @@
+@flexiarg storage/durability-first
+@title Durability First
+@sigils [💎/石]
+@keywords durability, xtdb, commit, write, storage
+@audience storage maintainers, futon1a builders
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger stack-coherence/futon1-storage-coherence]
+
+! conclusion:
+  block success responses on durable storage confirmation; fail loudly when durability cannot be verified
+
+  + context: futon1 repeatedly needed explicit durability enforcement and watchdog ordering fixes.
+  + IF:
+    writes can return before XTDB durability is confirmed
+
+  + HOWEVER:
+    the system accumulates repair debt and inconsistent reads after restarts
+
+  + THEN:
+    make Layer 0 a hard gate: acknowledge writes only after durable commit and raise a clear error otherwise
+
+  + BECAUSE:
+    durability drift caused repeated fixes and remains a root invariant for futon1a
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/missions/M-futon1a-evidence.md#L43]
+    evidence[holes/missions/M-futon1a-evidence.md#L7]
+
+  + NEXT-STEPS:
+    next[Define the exact XTDB durability wait/timeout semantics for futon1a Layer 0.]
+    next[Add a proof test that a write is not acknowledged before the durable commit.]

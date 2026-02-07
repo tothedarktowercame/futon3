@@ -1,0 +1,34 @@
+@flexiarg storage/persistence-speed-mirroring
+@title Persistence-Speed Mirroring
+@sigils [🍵/文]
+@keywords persistence, speed, datascript, xtdb, mirroring
+@audience storage maintainers, futon1a builders
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger storage/reproducible-mirroring]
+
+! conclusion:
+  if you want durability but also fast access, mirror XTDB into Datascript and enforce reproducible alignment as a hard contract
+
+  + context: futon1 repeatedly fixed XTDB mirroring to prevent drift and metadata loss.
+  + IF:
+    you want the database to be persistent
+
+  + HOWEVER:
+    you also want access to be fast
+
+  + THEN:
+    mirror XTDB into Datascript with explicit mirroring rules and tests
+
+  + BECAUSE:
+    mirroring without enforcement creates drift across restarts and environments
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/futon1.devmap#L1]
+    evidence[holes/missions/M-futon1a-evidence.md#L106]
+    evidence[holes/missions/M-futon1a-evidence.md#L138]
+
+  + NEXT-STEPS:
+    next[Define the mirror invariants and verify them on every restart cycle.]
+    next[Add tests that assert metadata parity between XTDB and Datascript.]

@@ -1,0 +1,33 @@
+@flexiarg storage/identity-uniqueness
+@title Identity Uniqueness
+@sigils [🐚/之]
+@keywords identity, uuid, external-id, uniqueness, mapping
+@audience storage maintainers, futon1a builders
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger]
+
+! conclusion:
+  enforce a single UUID per entity and a unique (source, external-id) mapping before any write
+
+  + context: duplicate entities emerged from ambiguous external IDs and non-UUID identifiers.
+  + IF:
+    the system permits duplicate external-id mappings or accepts non-UUID identifiers
+
+  + HOWEVER:
+    entity graphs drift and require expensive cleanup or repair scripts
+
+  + THEN:
+    validate identity pre-write: reject duplicates and enforce UUIDs as the only entity IDs
+
+  + BECAUSE:
+    futon1 required explicit commits to prevent duplicate entities and enforce UUID/external-id uniqueness
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/missions/M-futon1a-evidence.md#L48]
+    evidence[holes/missions/M-futon1a-evidence.md#L11]
+
+  + NEXT-STEPS:
+    next[Specify the canonical external-id schema and its uniqueness constraint.]
+    next[Add a proof test that duplicate (source, external-id) writes are rejected.]

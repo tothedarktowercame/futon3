@@ -1,0 +1,33 @@
+@flexiarg storage/schema-evolution-stability
+@title Schema Evolution vs Contract Stability
+@sigils [📁/义]
+@keywords schema, evolution, contract, compatibility
+@audience storage maintainers, futon1a builders
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger storage/graph-memory-contract]
+
+! conclusion:
+  if you want schema evolution but also stable contracts, formalize migration rules and versioned descriptors
+
+  + context: futon1 introduced model registries and open-world invariants to stabilize schema evolution.
+  + IF:
+    you need to evolve the graph schema over time
+
+  + HOWEVER:
+    downstream tools require stable contracts and predictable migrations
+
+  + THEN:
+    define explicit migration protocols and versioned model descriptors
+
+  + BECAUSE:
+    unmanaged schema change causes compatibility drift and broken clients
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/missions/M-futon1a-evidence.md#L121]
+    evidence[holes/missions/M-futon1a-evidence.md#L141]
+
+  + NEXT-STEPS:
+    next[Define schema versioning rules and migration checklists.]
+    next[Add tests that assert compatibility across descriptor versions.]

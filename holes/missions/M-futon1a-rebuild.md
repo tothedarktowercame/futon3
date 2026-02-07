@@ -5,6 +5,58 @@ practices. The mission has two parts: the *process* (pattern-based design with
 full documentation) and the *product* (a storage layer with unbreakable core
 invariants).
 
+## Argument (Pattern-Backed)
+
+futon1a exists to provide a deterministic, storage‑oriented substrate that
+maintains a coherent graph of facts across sessions, with a canonical HTTP
+interface and a documented graph‑memory contract that downstream tools can
+depend on. It keeps Datascript (fast) and XTDB (persistent) in reproducible
+alignment so the same world state appears across restarts, and it provides a
+deterministic ingest pipeline so graph construction is reproducible. It also
+supports open‑world continuity by letting background knowledge accumulate in
+the same persistent store outside interactive sessions.
+
+This purpose must survive the core tensions observed in futon1’s history. If
+you want persistence but also speed, futon1a mirrors XTDB into Datascript and
+treats mirroring as an invariant. If you want throughput but also durable
+truth, futon1a gates success responses on durable commit and treats watchdog
+ordering as a first‑class invariant. If you want fast availability but also
+integrity, futon1a gates startup on full rehydration and explicit diagnostics.
+If you want flexible external identifiers but also unique identity, futon1a
+enforces UUID identity and rejects duplicate external‑id mappings before write.
+If you want rapid open‑world ingest but also coherent state, futon1a validates
+aggressively and provides repair tooling. If you want internal tooling but also
+strong guardrails, futon1a forces internal writers through the same
+authorization and invariant checks. If you want strict invariants but also
+operational resilience, futon1a pairs enforcement with explicit
+repair/backfill pathways. If you want schema evolution but also stable
+contracts, futon1a formalizes migration rules and versioned descriptors. If you
+want feature expansion but also determinism, futon1a isolates new features
+behind determinism gates and regression tests.
+
+Pointers to the patterns that specify these claims:
+
+- Purpose patterns: `library/storage/deterministic-substrate.flexiarg`,
+  `library/storage/canonical-interface.flexiarg`,
+  `library/storage/reproducible-mirroring.flexiarg`,
+  `library/storage/graph-memory-contract.flexiarg`,
+  `library/storage/deterministic-ingest-pipeline.flexiarg`,
+  `library/storage/open-world-continuity.flexiarg`
+- Enforcement patterns: `library/storage/durability-first.flexiarg`,
+  `library/storage/identity-uniqueness.flexiarg`,
+  `library/storage/all-or-nothing-startup.flexiarg`,
+  `library/storage/error-layer-hierarchy.flexiarg`,
+  `library/storage/rapid-debugging.flexiarg`
+- Tension patterns: `library/storage/persistence-speed-mirroring.flexiarg`,
+  `library/storage/durability-throughput-gate.flexiarg`,
+  `library/storage/startup-integrity-gate.flexiarg`,
+  `library/storage/identity-flex-uniqueness.flexiarg`,
+  `library/storage/open-world-velocity-validation.flexiarg`,
+  `library/storage/guardrails-vs-tooling.flexiarg`,
+  `library/storage/invariants-vs-repair.flexiarg`,
+  `library/storage/schema-evolution-stability.flexiarg`,
+  `library/storage/determinism-vs-expansion.flexiarg`
+
 ## Part I: Pattern-Based Design Process
 
 futon1a will be built as a **demonstration** of the futon methodology, not just

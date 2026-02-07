@@ -1,0 +1,33 @@
+@flexiarg storage/open-world-velocity-validation
+@title Open-World Velocity vs Validation
+@sigils [📥/入]
+@keywords open-world, ingest, validation, repair
+@audience storage maintainers, futon1a builders
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger storage/open-world-continuity]
+
+! conclusion:
+  if you want rapid open-world ingest but also coherent state, validate aggressively and provide repair tooling
+
+  + context: futon1 hardened open-world ingest and added repair scripts after ingest drift.
+  + IF:
+    you want to ingest background knowledge quickly
+
+  + HOWEVER:
+    you also need open-world data to remain coherent and mirrorable
+
+  + THEN:
+    enforce strict validation on ingest and supply repair/backfill scripts for recovery
+
+  + BECAUSE:
+    unvalidated open-world ingest caused drift and required repair pathways
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/missions/M-futon1a-evidence.md#L101]
+    evidence[holes/missions/M-futon1a-evidence.md#L135]
+
+  + NEXT-STEPS:
+    next[Define open-world validation rules and error reporting.]
+    next[Add tests that assert open-world fields are mirrored into XTDB.]

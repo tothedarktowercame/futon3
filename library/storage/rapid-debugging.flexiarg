@@ -1,0 +1,33 @@
+@flexiarg storage/rapid-debugging
+@title Rapid Debugging
+@sigils [🎶/口]
+@keywords diagnostics, traceability, tests, debugging
+@audience storage maintainers, futon1a builders
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger]
+
+! conclusion:
+  make storage failures diagnosable in minutes through explicit diagnostics and proof tests
+
+  + context: futon1 repeatedly needed diagnostics and tests to keep storage behavior legible.
+  + IF:
+    failures lack traceable context (layer, operation, entity, expected vs actual)
+
+  + HOWEVER:
+    debugging requires ad hoc spelunking and slow recovery cycles
+
+  + THEN:
+    attach explicit diagnostics to all storage errors and prove invariants with targeted tests
+
+  + BECAUSE:
+    futon1 fixes show that diagnostics and tests reduced drift and clarified failures
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/missions/M-futon1a-evidence.md#L63]
+    evidence[holes/missions/M-futon1a-evidence.md#L33]
+
+  + NEXT-STEPS:
+    next[Define the diagnostic payload shape required on all storage errors.]
+    next[Add proof tests for each core invariant and store them in a dedicated suite.]

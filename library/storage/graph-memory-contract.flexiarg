@@ -1,0 +1,33 @@
+@flexiarg storage/graph-memory-contract
+@title Graph-Memory Contract
+@sigils [🐚/文]
+@keywords schema, entities, relations, salience, contract
+@audience futon1a builders, storage maintainers
+@tone formal-analytic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger]
+
+! conclusion:
+  define a documented entity/relation schema and salience contract that downstream tools can depend on
+
+  + context: futon1’s devmap frames graph-memory as the core data model and interface.
+  + IF:
+    storage is the substrate for multiple futons and external tools
+
+  + HOWEVER:
+    without a schema contract, queries and ingest drift and become brittle
+
+  + THEN:
+    publish and enforce a graph-memory schema and salience metadata contract
+
+  + BECAUSE:
+    downstream tools require stable shapes and semantics to rely on stored facts
+
+  + STATUS:
+    status[proposed]
+    evidence[holes/futon1.devmap#L36]
+    evidence[holes/futon1.devmap#L65]
+
+  + NEXT-STEPS:
+    next[Extract the graph-memory schema into a dedicated reference doc.]
+    next[Add schema-mirroring tests for entities, relations, and salience fields.]

@@ -1,0 +1,71 @@
+@flexiarg futon-theory/mission-dependency
+@title Mission Dependency Graph
+@sigil 〰️/双
+@tokipona linja kin
+@truth 双
+
++ CONTEXT:
+    Missions rarely exist in isolation. They block and enable each other,
+    share prerequisites, and compete for resources. Without explicit
+    dependency tracking, agents work on blocked missions or miss
+    opportunities to unblock others.
+
++ IF:
+    You are planning work across multiple missions or diagnosing why
+    a mission is stuck.
+
++ HOWEVER:
+    Dependencies can be circular (requiring negotiation), soft (preferred
+    but not required), or discovered late. The graph must be maintainable.
+
++ THEN:
+    Model missions as a directed acyclic graph (DAG):
+
+    RELATIONSHIP-TYPES:
+    - blocks: Mission A must complete before Mission B can start
+    - enables: Mission A completion makes Mission B easier (soft)
+    - shares: Missions A and B share a resource or decision
+    - parent-child: Mission A spawned Mission B (split)
+
+    REPRESENTATION:
+    In mission docs:
+    ```
+    Blocked-by: M-other-mission.md
+    Enables: M-downstream.md
+    ```
+
+    CONSTRAINTS:
+    - No orphan missions (every mission linked to at least one other or to root)
+    - No cycles in "blocks" relationships
+    - Blocked missions must cite specific blocker
+    - When blocker completes, blocked mission notified
+
+    PRIORITY-INFERENCE:
+    - Missions that unblock many others have higher priority
+    - Leaf missions (no blockers) can proceed immediately
+    - Root missions (no dependents) may be deprioritized
+
++ BECAUSE:
+    - Explicit dependencies prevent wasted work on blocked missions
+    - Graph structure enables priority inference
+    - Unblock propagation accelerates overall progress
+    - Shared resources surface coordination needs
+
++ VISUALIZATION:
+    The mission graph can be rendered:
+    ```
+    M-futon1a-rebuild
+        ├── blocks → M-futon1a-migration
+        └── enables → M-pattern-inference-engine
+
+    M-make-agency-work-properly
+        └── blocks → M-codex-parity
+    ```
+
++ NEXT-STEPS:
+    - Audit mission docs for dependency declarations
+    - Build mission graph from declarations
+    - Identify leaf missions (unblocked, can work now)
+    - Identify high-value unblock targets
+
+@related futon-theory/mission-lifecycle, futon-theory/mission-scoping

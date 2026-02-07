@@ -1,0 +1,76 @@
+@flexiarg futon-theory/coordination-protocol
+@title Coordination Protocol (Multi-Agent Handoff)
+@sigil 🎎/人
+@tokipona kulupu jan
+@truth 人
+
++ CONTEXT:
+    When multiple agents work on related missions, they need coordination.
+    Without explicit handoff protocols, work is duplicated, reviews are
+    skipped, and context is lost between sessions.
+
++ IF:
+    Multiple agents are assigned to a mission, or a mission requires
+    review by another agent.
+
++ HOWEVER:
+    Agents may be asynchronous (different sessions), have different
+    capabilities (Claude vs Codex), or use different communication
+    channels (Agency, git, files).
+
++ THEN:
+    Apply the ping-pong coordination protocol:
+
+    HANDOFF-CYCLE:
+    ```
+    1. Primary: Complete milestone, emit PUR
+    2. Primary: Commit + push + notify reviewer
+    3. Reviewer: Pull + review + emit PSR for review
+    4. Reviewer: Document findings (approve or request changes)
+    5. Reviewer: Emit PUR for review outcome
+    6. If changes needed: handoff back to primary
+    7. If approved: proceed to next milestone
+    ```
+
+    NOTIFICATION-CHANNELS (in priority order):
+    1. Agency page (sync, immediate response expected)
+    2. Agency bell (async, notification only)
+    3. Git commit message with [handoff: agent-id]
+    4. File-based message (AGENCY-CODEX-BRIEF.md pattern)
+    5. MUSN chat room
+
+    HANDOFF-MESSAGE-REQUIREMENTS:
+    - What was completed
+    - What needs review or action
+    - Where to find the changes (commit hash, file paths)
+    - Expected response (approve, review, implement)
+
+    ESCALATION:
+    - If blocked > 30 minutes: document blocker, notify human
+    - If no response > 1 hour: try alternate channel
+    - If channel broken: fall back to file-based communication
+
++ BECAUSE:
+    - Explicit handoffs prevent work from falling through cracks
+    - Review gates ensure quality
+    - Multiple channels provide resilience
+    - Escalation prevents infinite waiting
+
++ AGENCY-INTEGRATION:
+    When Agency is available:
+    - Register with agent-id via WebSocket
+    - Respond to pages with invoke-fn
+    - Bell for async notifications
+    - Page for sync requests
+
+    When Agency unavailable:
+    - Use git-based ping-pong
+    - Leave messages in designated files
+    - Poll for changes
+
++ NEXT-STEPS:
+    - Verify communication channel is working
+    - Establish handoff protocol with collaborating agent
+    - Document current milestone and next expected action
+
+@related futon-theory/agent-contract, futon-theory/mission-lifecycle

@@ -1,0 +1,64 @@
+@flexiarg futon-theory/mission-scoping
+@title Mission Scoping (Bounded Ownership)
+@sigil 🎒/王
+@tokipona pi lawa
+@truth 王
+
++ CONTEXT:
+    Unbounded missions never complete. Without clear scope, work expands
+    to fill available context, agents duplicate effort, and success
+    cannot be verified. Every mission needs explicit boundaries.
+
++ IF:
+    You are defining a new mission or reviewing an existing one.
+
++ HOWEVER:
+    Scope may need revision as work progresses. Discovery during :active
+    phase may reveal the mission is too large or too small.
+
++ THEN:
+    Every mission document must specify:
+
+    1. SUCCESS-CRITERIA
+       - Concrete, verifiable outcomes
+       - "Done when X is true" not "improve Y"
+       - Minimum 1, maximum 5 criteria
+
+    2. SCOPE-IN
+       - What is explicitly included
+       - Files, modules, features affected
+       - Decisions this mission makes
+
+    3. SCOPE-OUT
+       - What is explicitly excluded
+       - "Not addressing X in this mission"
+       - Future work deferred
+
+    4. OWNER
+       - Single agent responsible at any time
+       - Handoff requires explicit transfer
+       - Owner can delegate but retains accountability
+
+    5. DEPENDENCIES
+       - What must be true before this mission can complete
+       - Links to blocking missions or external requirements
+
++ BECAUSE:
+    - Bounded scope enables completion
+    - Explicit exclusions prevent scope creep
+    - Single owner prevents diffusion of responsibility
+    - Dependencies surface the mission graph
+
++ SPLIT-MERGE-RULES:
+    - SPLIT when success criteria exceed 5
+    - SPLIT when multiple unrelated concerns emerge
+    - MERGE when two missions share >50% scope
+    - On split: create child missions, link to parent
+    - On merge: archive one, expand the other
+
++ NEXT-STEPS:
+    - Review mission doc for all 5 elements
+    - Add missing scope elements
+    - If scope unclear, mark mission :blocked with "scope-undefined"
+
+@related futon-theory/mission-lifecycle, futon-theory/mission-dependency

@@ -130,6 +130,39 @@ The same derivation xenotype applies to all domains:
 
 See: [theory-as-exotype.flexiarg](theory-as-exotype.flexiarg)
 
+## Mission Control Patterns
+
+Patterns for governing missions at the project level.
+
+### Mission Lifecycle
+
+Missions progress through defined states with evidence requirements:
+
+```
+:greenfield → :scoped → :active → :blocked → :review → :done
+```
+
+See: [mission-lifecycle.flexiarg](mission-lifecycle.flexiarg)
+
+### Mission Control Patterns
+
+| Pattern | Sigil | Purpose |
+|---------|-------|---------|
+| mission-lifecycle | 🔃/马 | State machine for mission progression |
+| mission-scoping | 🎒/王 | Bounded ownership and success criteria |
+| mission-dependency | 〰️/双 | DAG of mission relationships |
+| coordination-protocol | 🎎/人 | Multi-agent handoff and review |
+| progress-signal | ✌️/门 | Evidence accumulation and health tracking |
+
+### Four Types Applied to Missions
+
+| Type | Mission Application |
+|------|---------------------|
+| Genotype | Mission template (required fields, state machine) |
+| Phenotype | Actual mission work (commits, artifacts) |
+| Exotype | Work plan structure (phases, gates, handoffs) |
+| Xenotype | Ping-pong review cycle (reusable across missions) |
+
 ## Layered Architecture
 
 ```

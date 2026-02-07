@@ -1,0 +1,79 @@
+@flexiarg futon-theory/progress-signal
+@title Progress Signal (Evidence Accumulation)
+@sigil ✌️/门
+@tokipona nanpa mute
+@truth 门
+
++ CONTEXT:
+    Missions can feel stuck even when progress is happening. Without
+    explicit progress signals, agents lose motivation, humans lose
+    visibility, and dead missions aren't detected. Counter-ratchet
+    applies to code; this pattern applies to missions.
+
++ IF:
+    You need to assess whether a mission is progressing, stalled, or dead.
+
++ HOWEVER:
+    Progress isn't always linear. Research phases may produce no artifacts.
+    Blocked missions may have zero commits but active waiting. The signal
+    must distinguish stalled from legitimately waiting.
+
++ THEN:
+    Track progress via evidence accumulation:
+
+    EVIDENCE-TYPES (in order of strength):
+    1. SUCCESS-CRITERIA-MET: Criterion checked off with proof
+    2. ARTIFACT-CREATED: Code, doc, test added (commit hash)
+    3. DECISION-MADE: Choice recorded in mission doc
+    4. BLOCKER-RESOLVED: Dependency cleared
+    5. REVIEW-COMPLETED: Milestone reviewed and approved
+    6. SESSION-LOGGED: PSR/PUR pair recorded (weakest signal)
+
+    PROGRESS-METRICS:
+    ```
+    velocity = evidence_count / time_elapsed
+    momentum = recent_evidence (last 7 days) / total_evidence
+    completion = criteria_met / total_criteria
+    ```
+
+    HEALTH-STATES:
+    - PROGRESSING: velocity > 0, momentum > 0.3
+    - SLOWING: velocity > 0, momentum < 0.3
+    - STALLED: velocity = 0 for > 7 days, not :blocked
+    - BLOCKED: explicitly marked :blocked with blocker
+    - DEAD: stalled > 30 days, no activity
+
+    INTERVENTION-TRIGGERS:
+    - SLOWING: Review scope, consider split
+    - STALLED: Diagnose cause, reassign or close
+    - DEAD: Archive with post-mortem
+
++ BECAUSE:
+    - Evidence accumulation makes progress visible
+    - Metrics enable early intervention
+    - Health states trigger appropriate responses
+    - Dead mission detection prevents zombie work
+
++ COUNTER-RATCHET-FOR-MISSIONS:
+    Like code counts, mission evidence should not decrease:
+    - Criteria met stays met (unless scope changes)
+    - Artifacts created persist
+    - Sessions logged accumulate
+
+    If evidence decreases (reverted commit, criterion unmarked):
+    - Flag for investigation
+    - Require explicit justification
+
++ VITALITY-INTEGRATION:
+    Mission progress feeds into stack vitality metrics:
+    - Active missions with evidence = healthy
+    - Many stalled missions = unhealthy
+    - High completion rate = velocity
+
++ NEXT-STEPS:
+    - Audit mission for evidence types present
+    - Calculate current health state
+    - If stalled, diagnose and intervene
+    - Log progress signal to MUSN activity stream
+
+@related futon-theory/counter-ratchet, futon-theory/mission-lifecycle, futon-theory/minimum-viable-events

@@ -1,0 +1,63 @@
+@flexiarg futon-theory/mission-lifecycle
+@title Mission Lifecycle (State Machine)
+@sigil 🔃/马
+@tokipona sike pali
+@truth 马
+
++ CONTEXT:
+    Missions progress through defined states. Without a formal lifecycle,
+    missions drift indefinitely or are abandoned without evidence. The
+    proof-path pattern governs individual changes; this pattern governs
+    the mission as a whole.
+
++ IF:
+    You are defining, tracking, or transitioning a mission.
+
++ HOWEVER:
+    Missions may be blocked by dependencies, split into sub-missions,
+    or merged when scope overlaps. The lifecycle must accommodate these.
+
++ THEN:
+    Apply the mission state machine:
+
+    ```
+    :greenfield → :scoped → :active → :blocked → :review → :done
+                     ↑          ↓         ↓
+                     └──────────┴─────────┘ (can regress)
+    ```
+
+    State definitions:
+    - :greenfield - Idea captured, no work plan
+    - :scoped - Success criteria, boundaries, dependencies defined
+    - :active - Work in progress, owner assigned
+    - :blocked - Waiting on dependency (cite blocker)
+    - :review - Work complete, awaiting verification
+    - :done - Success criteria met, evidence recorded
+
+    Transition requirements:
+    - greenfield → scoped: Mission doc has success criteria + scope
+    - scoped → active: Owner assigned, dependencies clear
+    - active → blocked: Blocker cited with link to blocking mission
+    - active → review: All success criteria addressed
+    - review → done: Evidence verified by reviewer
+    - Any → :abandoned: Explicit decision with rationale
+
++ BECAUSE:
+    - Explicit states prevent invisible drift
+    - Transition requirements create evidence trail
+    - Blocked states surface dependency graphs
+    - Review gates ensure verification before closure
+
++ GOVERNANCE:
+    Mission state transitions should be recorded:
+    - In mission doc header (Status field)
+    - Optionally in MUSN activity stream
+    - With timestamp and agent attribution
+
++ NEXT-STEPS:
+    - Check current mission state
+    - Verify transition requirements are met
+    - Update mission doc with new state
+    - If blocked, link to blocker mission
+
+@related futon-theory/proof-path, futon-theory/mission-scoping, futon-theory/mission-dependency

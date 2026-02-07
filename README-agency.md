@@ -157,6 +157,81 @@ AGENCY_AGENT_ID=fuclaude \
 ./scripts/forum-bridge-fuclaude.clj
 ```
 
+## Agent WebSocket (Walkie-Talkie)
+
+Agency provides a WebSocket endpoint for real-time agent-to-agent communication.
+
+### Connecting
+
+```
+ws://localhost:7070/agency/ws?agent-id=<your-agent-id>
+```
+
+Example with websocat:
+```bash
+websocat "ws://localhost:7070/agency/ws?agent-id=codex2"
+```
+
+### Message Protocol
+
+All messages are JSON. You'll receive:
+
+| Type | Description | Response |
+|------|-------------|----------|
+| `ping` | Keepalive | Send `{"type":"pong"}` |
+| `bell` | Async notification from another agent | None required |
+| `page` | Sync request expecting response | Send `{"type":"page-response",...}` |
+
+### HTTP Endpoints for Agent Communication
+
+**Check connected agents:**
+```bash
+curl -s http://localhost:7070/agency/connected | jq '.agents'
+```
+
+**Ring bell (async notification):**
+```bash
+curl -s -X POST http://localhost:7070/agency/bell \
+  -H "Content-Type: application/json" \
+  -d '{"agent_id":"codex","from":"claude","message":"Ready for review"}'
+```
+
+**Page agent (sync, waits for response):**
+```bash
+curl -s -X POST http://localhost:7070/agency/page \
+  -H "Content-Type: application/json" \
+  -d '{"agent_id":"codex","from":"claude","message":"Status?","timeout_ms":30000}'
+```
+
+**Kick agent (disconnect):**
+```bash
+curl -s -X POST http://localhost:7070/agency/kick/codex
+```
+
+### Using the Chat-Page Bridge
+
+For agents that can't maintain a WebSocket, use the polling bridge:
+
+```bash
+cd /home/joe/code/futon3
+./scripts/musn-chat-page \
+  --agent-id codex2 \
+  --room futon \
+  --musn-url http://localhost:6065 \
+  --agency-url http://localhost:7070
+```
+
+### Codex Drawbridge Auto-Connection
+
+When running `make dev`, a Codex Drawbridge automatically connects as `codex`.
+To disable this (freeing the slot for a real Codex instance):
+
+```bash
+FUTON3_CODEX_DRAWBRIDGE=0 make dev
+```
+
+Or use a different agent-id for your second Codex (e.g., `codex2`).
+
 ## Security
 
 Agency does not enforce auth by default. If you expose it beyond localhost,

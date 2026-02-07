@@ -193,14 +193,14 @@ curl -s http://localhost:7070/agency/connected | jq '.agents'
 ```bash
 curl -s -X POST http://localhost:7070/agency/bell \
   -H "Content-Type: application/json" \
-  -d '{"agent_id":"codex","from":"claude","message":"Ready for review"}'
+  -d '{"agent-id":"codex","type":"handoff","payload":{"from":"claude","message":"Ready for review"}}'
 ```
 
 **Page agent (sync, waits for response):**
 ```bash
 curl -s -X POST http://localhost:7070/agency/page \
   -H "Content-Type: application/json" \
-  -d '{"agent_id":"codex","from":"claude","message":"Status?","timeout_ms":30000}'
+  -d '{"agent-id":"codex","prompt":"Status?","timeout-ms":30000}'
 ```
 
 **Kick agent (disconnect):**

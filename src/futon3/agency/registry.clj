@@ -20,8 +20,7 @@
 ;; Agent Registry
 ;; =============================================================================
 
-(defonce agent-registry
-  "Registry of local agents.
+(defonce ^{:doc "Registry of local agents.
 
    Structure: {agent-id -> agent-record}
 
@@ -33,7 +32,8 @@
     :registered-at Instant
     :last-active   Instant
     :subprocess    Process (for Claude persistent subprocess, nil for Codex)
-    :metadata      map (arbitrary agent metadata)}"
+    :metadata      map (arbitrary agent metadata)}"}
+  agent-registry
   (atom {}))
 
 ;; =============================================================================

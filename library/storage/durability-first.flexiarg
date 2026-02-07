@@ -31,3 +31,6 @@
   + NEXT-STEPS:
     next[Define the exact XTDB durability wait/timeout semantics for futon1a Layer 0.]
     next[Add a proof test that a write is not acknowledged before the durable commit.]
+
+  + EVIDENCE:
+    evidence[futon1a/src/futon1a/core/xtdb.clj:durable-write! requires non-nil write-fn unless allow-noop?]

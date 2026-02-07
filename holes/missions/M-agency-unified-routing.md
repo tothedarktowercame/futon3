@@ -180,26 +180,27 @@ Update `handle-page` to use registry:
 
 ## Implementation Plan
 
-### Part 1: Foundation (Claude primary)
+### Part 1: Foundation (Claude primary) ✓
 
-1. [ ] Create `agency/registry.clj` with agent-registry atom
-2. [ ] Define agent record structure
-3. [ ] Implement `register-agent!` / `unregister-agent!`
-4. [ ] Add registry introspection endpoints
+1. [x] Create `agency/registry.clj` with agent-registry atom
+2. [x] Define agent record structure
+3. [x] Implement `register-agent!` / `unregister-agent!`
+4. [x] Add registry introspection endpoints (GET /agency/registry)
 
-### Part 2: Invoke Extraction (Claude primary)
+### Part 2: Invoke Extraction (Claude primary) ✓
 
-5. [ ] Extract `make-claude-invoke-fn` from drawbridge/claude.clj
-6. [ ] Extract `make-codex-invoke-fn` from drawbridge/codex.clj
-7. [ ] Preserve f24b55a improvements (stdin, JSONL parsing)
+5. [x] Extract `make-claude-invoke-fn` from drawbridge/claude.clj
+6. [x] Extract `make-codex-invoke-fn` from drawbridge/codex.clj
+7. [x] Preserve f24b55a improvements (stdin, JSONL parsing)
 8. [ ] Test invoke functions independently
 
-### Part 3: Integration (Claude primary, Codex review)
+### Part 3: Integration (Claude primary, Codex review) ✓
 
-9. [ ] Update `handle-page` to check registry first
-10. [ ] Update `send-to-agent!` to use registry
-11. [ ] Maintain backwards compatibility with WebSocket agents
-12. [ ] Add startup registration for configured agents
+9. [x] Update `handle-page` to check registry first
+10. [x] Update `connected-agent-ids` to include registry
+11. [x] Maintain backwards compatibility with WebSocket agents
+12. [x] Add `agency/agents.clj` convenience module for registration
+    - `register-codex!` / `register-claude!` / `register-mock!`
 
 ### Part 4: Validation (Both)
 

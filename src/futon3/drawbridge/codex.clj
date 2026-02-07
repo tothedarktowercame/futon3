@@ -33,28 +33,69 @@
    - --full-auto for autonomous operation (no approval prompts)
    - codex exec resume <session-id> for session continuity
 
-   Unlike Claude, Codex takes the prompt as an argument, not stdin."
+   NOTE: We pass the prompt via stdin (`-`), not argv, to avoid shell quoting
+   hazards and length limits, and to keep parity with Codex CLI behavior:
+   `codex exec -` and `codex exec resume <id> -`."
   [text session-id]
   (let [;; Build command: codex exec [resume <id>] --json --full-auto "prompt"
         base-cmd (if session-id
                    ["codex" "exec" "resume" session-id]
                    ["codex" "exec"])
-        cmd (into base-cmd ["--json" "--full-auto" text])
+        ;; Use "-" so Codex reads the prompt from stdin.
+        cmd (into base-cmd ["--json" "--full-auto" "-"])
         _ (println (format "[codex-bridge] Executing: codex exec%s (prompt: %s)"
                            (if session-id (str " resume " session-id) "")
                            (subs text 0 (min 50 (count text)))))
         pb (ProcessBuilder. ^java.util.List cmd)
         _ (.redirectErrorStream pb true)
         proc (.start pb)
+        stdin (io/writer (.getOutputStream proc))
         stdout (io/reader (.getInputStream proc))]
+
+    ;; Write prompt to stdin then close (Codex reads the whole prompt).
+    (try
+      (locking stdin
+        (.write ^java.io.Writer stdin (str text "\n"))
+        (.flush ^java.io.Writer stdin))
+      (catch Exception e
+        (println "[codex-bridge] Failed writing prompt to stdin:" (.getMessage e))))
+    (try (.close ^java.io.Writer stdin) (catch Exception _))
 
     ;; Read JSON output
     (println "[codex-bridge] Reading JSON response...")
-    (let [output (StringBuilder.)]
+    (let [output (StringBuilder.)
+          ;; Track session/thread id from events.
+          session-id* (atom nil)
+          ;; Accumulate agent text across events (Codex can emit multiple agent messages).
+          agent-texts* (atom [])]
       (loop []
         (when-let [line (.readLine ^java.io.BufferedReader stdout)]
           (.append output line)
           (.append output "\n")
+          ;; Best-effort parse each JSONL event as it arrives.
+          (when-not (str/blank? line)
+            (try
+              (let [evt (json/parse-string line true)
+                    t (:type evt)]
+                (when (and (= t "thread.started") (nil? @session-id*))
+                  (reset! session-id* (or (:thread_id evt) (:session_id evt))))
+
+                (when (= t "item.completed")
+                  (let [item (:item evt)
+                        item-type (:type item)]
+                    (when (= item-type "agent_message")
+                      (let [content (or (:text item) (:content item))
+                            text-content (cond
+                                           (string? content) content
+                                           (sequential? content) (->> content
+                                                                     (filter #(= (:type %) "text"))
+                                                                     (map :text)
+                                                                     (remove nil?)
+                                                                     (str/join ""))
+                                           :else nil)]
+                        (when (seq text-content)
+                          (swap! agent-texts* conj text-content)))))))
+              (catch Exception _)))
           (recur)))
       (.waitFor proc)
       (let [exit-code (.exitValue proc)
@@ -73,13 +114,15 @@
                                           (remove nil?)
                                           last)
                   last-message (or last-agent-message
+                                   (last @agent-texts*)
                                    (:message (last (filter :message json-lines)))
                                    (:content (last (filter :content json-lines)))
                                    out-str)
                   ;; Session ID is in the thread.started event
                   thread-event (first (filter #(= (:type %) "thread.started") json-lines))
                   new-session-id (or (:thread_id thread-event)
-                                     (:session_id thread-event))]
+                                     (:session_id thread-event)
+                                     @session-id*)]
               (println (format "[codex-bridge] Session: %s" new-session-id))
               {:result last-message
                :session-id new-session-id

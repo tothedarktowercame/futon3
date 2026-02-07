@@ -7,6 +7,7 @@
 | Validate sigil | `futon3.chops` | `(chops/validate-sigil "🐜/予")` |
 | Stamp pattern | `futon3.chops` | `(chops/stamp {:id "x"} ["🐜/予"])` |
 | Audit all sigils | `scripts/audit-sigils` | `./scripts/audit-sigils` |
+| Lint Clojure | `clj-kondo` | `clj-kondo --lint src/ test/` |
 | Hot reload | Drawbridge | See "Drawbridge hot reloading" below |
 | Pattern check | `futon3.pattern-check.integration` | See "Realtime pattern checking" below |
 

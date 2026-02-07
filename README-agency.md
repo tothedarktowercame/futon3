@@ -232,6 +232,104 @@ FUTON3_CODEX_DRAWBRIDGE=0 make dev
 
 Or use a different agent-id for your second Codex (e.g., `codex2`).
 
+## Agent Registry (Unified Routing)
+
+Agency supports registering multiple Claude and Codex agents in a single JVM
+via the unified agent registry. This eliminates the need for separate Drawbridge
+processes per agent.
+
+### Registering Agents (REPL)
+
+```clojure
+(require '[futon3.agency.agents :as agents])
+
+;; Register a Codex agent (one-shot exec)
+(agents/register-codex! "codex-1")
+
+;; Register a Claude agent (persistent subprocess)
+(agents/register-claude! "claude-1")
+
+;; Register with session resume
+(agents/register-codex! "codex-2" {:session-id "thread_abc123"})
+
+;; Register a mock agent for testing
+(agents/register-mock! "test-echo")
+```
+
+### Invoking Registered Agents
+
+Registered agents can be invoked via HTTP:
+
+```bash
+curl -s -X POST http://localhost:7070/agency/page \
+  -H "Content-Type: application/json" \
+  -d '{"agent-id":"codex-1","prompt":"Say hello in 5 words"}'
+```
+
+Response includes the source:
+```json
+{"ok":true,"response":"Hello there, nice to meet!","session-id":"thread_xyz","source":"registry"}
+```
+
+### Registry Status
+
+```bash
+# List all connected agents (registry + WebSocket)
+curl -s http://localhost:7070/agency/connected | jq
+
+# Registry agents only
+curl -s http://localhost:7070/agency/connected?type=registry | jq
+
+# Full registry status
+curl -s http://localhost:7070/agency/registry | jq
+```
+
+### Priority Order
+
+When paging an agent, Agency checks in order:
+1. **Registry** - Direct invocation via `invoke-agent!` (fastest)
+2. **Local handlers** - Legacy Drawbridge handlers
+3. **WebSocket** - Remote agents connected via WS
+
+### Codex Quickstart
+
+To register multiple Codex agents in Agency:
+
+```clojure
+;; In Agency REPL (scripts/agency-repl or nrepl)
+(require '[futon3.agency.agents :as agents])
+
+;; Register multiple Codex instances
+(agents/register-codex! "codex-review")
+(agents/register-codex! "codex-build")
+(agents/register-codex! "codex-test")
+
+;; Check they're registered
+(agents/list-agents)
+;; => ("codex-review" "codex-build" "codex-test")
+
+;; Page one of them
+(agents/invoke! "codex-review" "Review the latest commit")
+```
+
+From the command line:
+```bash
+# Page a specific Codex
+curl -s -X POST http://localhost:7070/agency/page \
+  -H "Content-Type: application/json" \
+  -d '{"agent-id":"codex-review","prompt":"Review src/foo.clj for bugs"}'
+```
+
+### Cleanup
+
+```clojure
+;; Unregister a single agent
+(agents/unregister! "codex-review")
+
+;; Shutdown all registered agents
+(agents/shutdown-all!)
+```
+
 ## Security
 
 Agency does not enforce auth by default. If you expose it beyond localhost,

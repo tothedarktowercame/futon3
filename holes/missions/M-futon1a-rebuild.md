@@ -384,10 +384,16 @@ futon1a's first dataset is its own creation story.
 - [ ] All 5 core invariants pass their proof tests
 - [ ] Each invariant traces to both futon-theory/ and storage/ patterns
 - [ ] All 9 tension resolutions implemented and tested
-- [ ] Interface loops defined at each layer boundary
+- [ ] Interface loops defined at each layer boundary with PSR/PUR governance
 - [ ] Proof-path event logging on all write operations
 - [ ] Counter-ratchet detects unexpected count drops
 - [ ] Any bug diagnosable in under 10 minutes
 - [ ] Synthetic data mocks exercise realistic workloads
 - [ ] Migration from futon1 succeeds without data loss
 - [ ] futon1a runs in production for 30 days without silent failures
+
+### Derivation Requirements
+Every new domain pattern must demonstrate:
+- [ ] Cite at least one futon-theory axiom (A1-A5) or invariant (I0-I4)
+- [ ] Reference a tension resolution from git evidence
+- [ ] Trace: theory pattern → domain pattern → code module → test

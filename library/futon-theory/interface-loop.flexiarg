@@ -73,11 +73,17 @@
     - L2↔L3: Integrity/auth interface
     - Any future layer boundary
 
+  + GOVERNANCE:
+    Interface loops are recorded via lab protocol:
+    - PSR at LOOP_START: Why this interface? What pattern guides exploration?
+    - PUR at LOOP_END: What worked? What was the gain? Prediction error?
+    - Session tags: Mark sessions that run interface loops for later analysis
+    The loop runner may be human (refactoring session) or automated (search).
+
   + BECAUSE:
     Global optimization is expensive and opaque. Local optimization at
     interfaces is tractable and auditable. The interface loop converts
     every boundary into a learning/accumulation opportunity.
 
-  + NEXT-STEPS:
-    next[Implement InterfaceLoop as first-class object in futon3]
-    next[Define standard exotype specifications for each layer boundary]
+  + DOMAIN-INSTANTIATION:
+    See mission docs for concrete interface loop definitions at each boundary.

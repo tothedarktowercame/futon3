@@ -35,16 +35,27 @@
     - Every commit references its evidence chain
     - Proof paths are append-only; errors spawn new paths, not mutations
 
+  + CONCURRENCY-AND-PARTIAL-FAILURE:
+    This protocol assumes a single-writer linear chain. Open constraints:
+    - Concurrent writers: Requires conflict detection at APPLY_CHANGE or
+      serialization at PROOF_COMMIT. Domain patterns must specify strategy.
+    - Partial apply: If APPLY_CHANGE partially succeeds, VERIFY must detect
+      and the path must either complete rollback or spawn a repair path.
+    - Retries: Failed paths may be retried from OBSERVE, not mid-path.
+    Future: A "concurrency protocol" pattern may extend this for multi-writer.
+
   + BECAUSE:
     Without proof paths, changes are unauditable. With them, any bug can be
     traced from symptom to cause through the evidence chain. The spec mediates
     future state into present; the proof path is how we get there defensibly.
 
-  + IMPLEMENTATION:
-    `futon3/lab/session.clj`: Session lifecycle wraps proof paths
-    `futon1/core/xtdb.clj`: Durable commits implement PROOF_COMMIT phase
-    `futon3/checks/`: Check DSL verifies claims against evidence
+  + DOMAIN-INSTANTIATION:
+    Domain patterns specify how proof paths are implemented:
+    - Storage: `storage/durability-first` for PROOF_COMMIT
+    - Lab sessions: Session lifecycle wraps proof paths
+    - Checks: Verification DSL for VERIFY phase
 
-  + NEXT-STEPS:
-    next[Implement proof path logging in futon1a Layer 0]
-    next[Add proof path visualization to Tatami HUD]
+  + GOVERNANCE:
+    Each proof path should be recorded via PSR/PUR:
+    - PSR at PROPOSE_CLAIM: Why this pattern for this change?
+    - PUR at CLOCK_OUT: What happened, prediction error?

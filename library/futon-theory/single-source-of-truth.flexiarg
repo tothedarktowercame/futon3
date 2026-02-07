@@ -26,15 +26,15 @@
     - Lookups with ambiguous matches throw, never silently pick one
 
   + ENFORCEMENT:
-    Layer 1 (core/identity.clj) validates before Layer 0 writes:
-    - `ensure-unique!` checks for existing (source, external-id) mapping
-    - On conflict: 409 DUPLICATE_EXTERNAL_ID with existing entity reference
-    - On ambiguous lookup: 409 AMBIGUOUS_IDENTITY with all matches listed
+    Layer 1 validates before Layer 0 writes:
+    - Uniqueness check for existing (source, external-id) mapping
+    - On conflict: 409 with existing entity reference
+    - On ambiguous lookup: 409 with all matches listed
 
   + FAILURE-MODES:
-    Duplicate external-id -> 409 DUPLICATE_EXTERNAL_ID
-    Ambiguous lookup -> 409 AMBIGUOUS_IDENTITY
-    Missing required identity -> 400 IDENTITY_REQUIRED
+    Duplicate external-id -> 409 (conflict)
+    Ambiguous lookup -> 409 (conflict)
+    Missing required identity -> 400 (bad request)
 
   + ANTI-PATTERNS:
     - Silently picking first match on ambiguous lookup
@@ -48,6 +48,5 @@
 
   + LAYER-POSITION: 1 (depends on Layer 0: durability)
 
-  + NEXT-STEPS:
-    next[Implement pre-write uniqueness check in futon1a]
-    next[Add ambiguity detection on all lookup paths]
+  + DOMAIN-INSTANTIATION:
+    See `storage/identity-uniqueness` for concrete implementation patterns.

@@ -3,6 +3,19 @@
 Design patterns that specify futon theory with sufficient generality to drive
 development of the entire FUTON stack.
 
+## Design Principle: Abstract Theory, Concrete Domains
+
+These patterns are **abstract** - they define constraints and structures without
+implementation-specific language. Domain-specific instantiations live elsewhere:
+
+- `library/storage/` - Storage layer patterns (XTDB, Datascript specifics)
+- `library/network/` - Network layer patterns (future)
+- `library/simulation/` - Simulation patterns (future)
+
+**Durability is enforced via invariants (I0), not axioms.** The axioms (A1-A5)
+are operational (how work proceeds); invariants (I0-I4) are structural (what
+must hold). This separation keeps theory portable across domains.
+
 ## Core Concepts
 
 ### The Proof Path

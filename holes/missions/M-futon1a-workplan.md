@@ -12,9 +12,9 @@ Dual goals:
 | PSR/PUR plugins | ✅ Ready | Log to MUSN activity stream |
 | Evidence doc | ✅ Done | M-futon1a-evidence.md |
 | Pattern library | ✅ Done | futon-theory/ + storage/ |
-| Labs directory | ❌ TODO | Create holes/labs/futon1a/{psr,pur}/ |
-| PSR/PUR exemplars | ❌ TODO | Need at least one of each |
-| futon1a repo | ❌ TODO | Create or designate target repo |
+| Labs directory | ✅ Done | holes/labs/futon1a/{psr,pur,sessions}/ |
+| PSR/PUR exemplars | ✅ Done | See psr/pur directories |
+| futon1a repo | ✅ Done | ~/code/futon1a/ (new repo) |
 
 ---
 
@@ -45,9 +45,11 @@ holes/labs/futon1a/
 
 ### 0.4 Designate futon1a Repo
 **Owner**: Joe (decision)
-- Option A: New repo `futon1a/` as fresh start
-- Option B: Branch in `futon1/` for comparison
-- Option C: Subdirectory in `futon3/` (futon3a exists)
+**Status**: ✅ Done
+
+Decision: New repo at `~/code/futon1a/`
+- Initialized with directory structure matching work plan
+- Initial commit: 501d0b6
 
 ### 0.5 Establish Ping-Pong Protocol
 **Owner**: Both

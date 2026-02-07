@@ -209,6 +209,35 @@ Update `handle-page` to use registry:
 15. [ ] Test: Multiple agents simultaneously
 16. [ ] Test: WebSocket agents still work
 
+#### Validation Status
+
+**REPL Unit Test (2026-02-07):** Mock agent registration and invocation verified:
+```clojure
+(agents/register-mock! "test-echo")
+;; => {:agent-id "test-echo", :type :codex, ...}
+
+(agents/invoke! "test-echo" "Hello!")
+;; => {:ok true, :result "Mock response to: Hello!", :session-id nil}
+
+(agents/status)
+;; => {:agents {"test-echo" {:type :codex, :has-subprocess false}}, :count 1}
+```
+
+**Integration Test Procedure (requires running Agency):**
+```clojure
+;; In Agency REPL:
+(require '[futon3.agency.agents :as agents])
+
+;; Register a mock agent
+(agents/register-mock! "test-mock")
+
+;; From shell:
+;; curl -X POST localhost:7070/agency/page -H "Content-Type: application/json" \
+;;   -d '{"agent-id":"test-mock","prompt":"Hello!"}'
+
+;; Expected: {"ok":true,"response":"Mock response to: Hello!","source":"registry"}
+```
+
 ## Notes
 
 - Clojure's atoms provide safe concurrent access to registry

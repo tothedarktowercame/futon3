@@ -243,9 +243,9 @@ reusable in other knowledge domains.
 
 
 ! instantiated-by: Prototype 7 — StackExchange Import [🙅/叉 💤/久]
-  :maturity :greenfield
+  :maturity :active
   :depends-on [f6/P0]
-  :evidence-for-active [Q&A pairs imported; mapped to dictionary schema]
+  :evidence-for-active [114K physics QA pairs processed; NER kernel built; superpod job ready]
 
   + context: StackExchange has thousands of mathematical Q&A pairs.
   + IF: You want to seed the dictionary with real content
@@ -256,12 +256,20 @@ reusable in other knowledge domains.
   + EVIDENCE:
     evidence[StackExchange Math data available]
     evidence[Schema defined for entries]
+    evidence[Streaming two-pass XML parser: constant-memory, handles multi-GB dumps on 4GB machines]
+    evidence[physics.stackexchange processed: 114,562 QA pairs, 894 tags, 1.2M LaTeX fragments]
+    evidence[Superpod batch job (scripts/superpod-job.py): 4-stage pipeline — parse, embeddings, LLM pattern tagging, clustering]
+    evidence[NER kernel built: 19,236 terms from full PlanetMath (63 MSC repos, 9,477 .tex files) + SE tags]
+    evidence[Classical term spotter (scripts/spot-terms.bb): 100% SE coverage, 22 terms/entity mean]
+    evidence[Negative-space analysis validates NER/pattern duality: terms cover formal scaffolding, patterns cover informal reasoning]
+    evidence[Scope-detection patterns defined: Let/Define/Assume/Consider/where openers for local binding extraction]
 
   + NEXT-STEPS:
-    next[Build StackExchange parser]
-    next[Map Q&A to entry schema]
-    next[Tag with patterns]
-    next[Review imported content]
+    next[Process math.stackexchange on superpod (3.4GB dump, Llama-3)]
+    next[Add Stage 5 to superpod job: NER term spotting + scope detection]
+    next[Bootstrap loop: absorb math.SE tags into kernel, re-spot, iterate]
+    next[Design binding type classification for GPU (Tier 2 NER)]
+    next[Arxiv processing: extend pipeline to research papers]
 
   :success-criteria
     pass[Q&A pairs import correctly]

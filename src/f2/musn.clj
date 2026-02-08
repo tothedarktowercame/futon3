@@ -32,6 +32,35 @@
     (let [trimmed (str/trim raw)]
       (when (seq trimmed) trimmed))))
 
+(defn- uri-host-port
+  "Return {:host, :port} parsed from a URL string (defaults ports for http/https).
+   Returns nil when parsing fails."
+  [s]
+  (when (and (string? s) (seq (str/trim s)))
+    (try
+      (let [u (java.net.URI. s)
+            host (or (.getHost u) "127.0.0.1")
+            port (.getPort u)
+            port (if (neg? port)
+                   (case (.getScheme u)
+                     "https" 443
+                     "http" 80
+                     80)
+                   port)]
+        {:host host :port port})
+      (catch Throwable _ nil))))
+
+(defn- futon1-target-open?
+  "Report whether the configured external Futon1 API base appears reachable (port open)."
+  [config]
+  (when-let [api-base (get-in config [:futon1 :api-base])]
+    (when-let [{:keys [host port]} (uri-host-port api-base)]
+      (phoebe/port-open? host port))))
+
+(defn- futon1a-replacement?
+  []
+  (= "1" (some-> (System/getenv "FUTON3_USE_FUTON1A") str/trim)))
+
 (def ^:private futon1-api-base (env-trim "FUTON1_API_BASE"))
 (def ^:private futon1-profile (env-trim "FUTON1_PROFILE"))
 (def ^:private futon1-lab-enabled? (= "true" (env-trim "FUTON1_LAB_ENABLED")))
@@ -247,18 +276,49 @@
                :musn-http (get-in config [:musn-http :port])
                :irc-bridge (get-in config [:irc-bridge :port])
                :drawbridge (get-in config [:drawbridge :port])
-               :futon1-api (get-in config [:futon1-api :port])}
+               ;; NOTE: In futon1a replacement mode, port 8080 is typically futon1a,
+               ;; not the embedded futon1-api service.
+               :futon1-api (get-in config [:futon1-api :port])
+               :futon1-target (some-> (get-in config [:futon1 :api-base]) uri-host-port :port)}
        :services {:transport true
                   :ui true
                   :drawbridge (get-in config [:drawbridge :enabled?])
                   :musn-http (get-in config [:musn-http :enabled?])
                   :irc-bridge (get-in config [:irc-bridge :enabled?])
                   :chat-supervisor (get-in config [:chat-supervisor :enabled?])
-                  :futon1-api (get-in config [:futon1-api :enabled?])}
+                  ;; Embedded Futon1 API (legacy); disabled when FUTON1_API=0.
+                  :futon1-api (get-in config [:futon1-api :enabled?])
+                  ;; External Futon1 API target (often futon1a replacement).
+                  :futon1 (get-in config [:futon1 :enabled?])
+                  :futon1-target-open? (boolean (futon1-target-open? config))
+                  :futon1a-replacement (futon1a-replacement?)}
        :config {:futon1 (:futon1 config)
                 :futon1-api (select-keys (:futon1-api config) [:enabled? :profile])
                 :drawbridge (select-keys (:drawbridge config) [:enabled? :bind :port])
                 :chat-supervisor (select-keys (:chat-supervisor config) [:enabled? :room :agent :mode])}
+       :env-keys ["BASIC_CHAT_DATA_DIR"
+                  "ALPHA_PROFILE"
+                  "ALPHA_PORT"
+                  "FUTON1_API"
+                  "FUTON1_API_BASE"
+                  "FUTON1_PROFILE"
+                  "XTDB_CONFIG"
+                  "FUTON3_ROOT"
+                  "FUTON5_ROOT"
+                  "FUTON3_USE_FUTON1A"
+                  "FUTON1A_DATA_DIR"
+                  "FUTON1A_PORT"
+                  "FUTON1A_ALLOWED_PENHOLDERS"
+                  "FUTON1A_COMPAT_PENHOLDER"
+                  "NONSTARTER_DB"
+                  "MUSN_DANA_ENABLED"
+                  "MUSN_DANA_CMD"
+                  "MUSN_PORT"
+                  "MUSN_SSL_PORT"
+                  "MUSN_SSL_DOMAIN"
+                  "FUTON3_DRAWBRIDGE"
+                  "ADMIN_TOKEN"
+                  "JAVA_HOME"]
        :env-overrides (cond-> {"FUTON3_ROOT" (get-in (phoebe/snapshot) [:git :root])}
                         profile (assoc "FUTON1_PROFILE" profile)
                         (get-in config [:futon1-api :port]) (assoc "ALPHA_PORT" (str (get-in config [:futon1-api :port])))

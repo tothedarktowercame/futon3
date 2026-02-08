@@ -2,6 +2,33 @@
 
 Agency currently behaves opposite to the intended "keep the same Codex thread until it won't fit" rule. This mission isolates the broken behavior and defines concrete fixes so we can coordinate with Claude without relying on Agency itself.
 
+## Owner
+
+Codex
+
+## Scope
+
+### Scope In
+
+- Fix identifier separation (forum thread id vs LLM resume id) and state field semantics.
+- Fix rollover/resurrection semantics so Agency returns a valid new LLM session id and persists it.
+- Fix runner defaults so Codex/Claude bins are correct and explicit.
+- Remove default user-facing boilerplate prefixes in forum replies.
+
+### Scope Out
+
+- Long-term subprocess cleanup and supervision wiring (split into follow-up).
+- New peripheral features unrelated to core session continuity.
+
+## Time Box
+
+1 day to land correctness fixes + tests; split if additional concerns emerge.
+
+## Exit Conditions
+
+- Acceptance criteria are met and exercised via a real forum dispatch + rollover.
+- If the fix set expands beyond core continuity invariants, stop and split into narrower missions.
+
 ## Goal
 
 Align Agency with the intended behavior:

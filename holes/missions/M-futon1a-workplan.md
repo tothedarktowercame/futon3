@@ -4,6 +4,32 @@ Dual goals:
 1. Build a great futon1a (product)
 2. Demonstrate futonic best practices (process)
 
+## Owner
+
+Joe
+
+## Scope
+
+### Scope In
+
+- Maintain the collaboration protocol (ping-pong ownership, review handoffs, escalation rules).
+- Track readiness and Part I/Part II gates with explicit owners per checklist item.
+- Keep the work plan consistent with `holes/missions/M-futon1a-rebuild.md` as the source-of-truth mission.
+
+### Scope Out
+
+- Implementing futon1a code (belongs in the futon1a repo and its dedicated missions).
+- Redesigning mission goals (belongs in the mission doc, not the work plan).
+
+## Time Box
+
+2-4 hours to keep this plan accurate through Part I gate; after that, treat updates as lightweight maintenance during handoffs.
+
+## Exit Conditions
+
+- The plan has been exercised in at least one real handoff cycle (commit/push/review/PUR).
+- If the plan grows beyond a lightweight coordinator, split out operational checklists into dedicated docs.
+
 ## Base Camp Status
 
 | Item | Status | Notes |

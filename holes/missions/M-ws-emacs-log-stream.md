@@ -6,6 +6,32 @@
 
 ---
 
+## Owner
+
+Codex
+
+## Scope
+
+### Scope In
+
+- Add a WebSocket endpoint that streams structured MUSN session events/log lines.
+- Define the minimal JSON payload fields required for span navigation and jump-to-file behavior.
+- Provide an Emacs client (minor mode) that connects, displays logs, and supports basic filtering.
+
+### Scope Out
+
+- Full bidirectional control plane from Emacs (send commands) beyond minimal connection management.
+- Rich visualization of span trees beyond basic filtering/navigation.
+
+## Time Box
+
+1-2 days for a working vertical slice (WS endpoint + Emacs client receiving events).
+
+## Exit Conditions
+
+- WebSocket endpoint streams events reliably and Emacs renders them in `*FuLogs*`.
+- If span metadata is missing upstream, stop after defining the upstream changes and split into a prerequisite mission.
+
 ## Objective
 
 Stream MUSN session events to Emacs via WebSocket, enabling:

@@ -2,6 +2,32 @@
 
 This document captures recurring bug patterns, fix patterns, implicit invariants, and anti-patterns observed in futon1 history. It is the evidence base for futon1a’s pattern-driven design.
 
+## Owner
+
+Codex
+
+## Scope
+
+### Scope In
+
+- Extract recurring bug patterns, fix patterns, implicit invariants, and anti-patterns from futon1 history.
+- Record concrete evidence (commit hashes + short diff notes) that informs futon1a design.
+- Produce a pattern-evidence map usable for PSR/PUR traceability.
+
+### Scope Out
+
+- Implementing futon1a itself (covered by `M-futon1a-rebuild.md`).
+- Exhaustive archaeology of every futon1 commit (focus on load-bearing clusters).
+
+## Time Box
+
+1 day (bounded extraction; split if it expands).
+
+## Exit Conditions
+
+- Evidence doc is complete enough to drive futon1a Part I mapping and has been reviewed by the other agent/human.
+- If additional archaeology is needed, stop and create a follow-up mission with a narrower target (specific subsystem or timeframe).
+
 ## Recurring Bug Patterns (Observed)
 
 - **Durability drift and watchdog ordering**

@@ -1,5 +1,31 @@
 # Mission: PAR as Session Punctuation
 
+## Owner
+
+TBD (assign single owner before implementation; likely Claude for UX/flow + Codex for MUSN/Forum plumbing).
+
+## Scope
+
+### Scope In
+
+- Define PAR as a first-class MUSN event type and its payload schema.
+- Implement PAR creation and persistence in MUSN service.
+- Relay PAR events to Forum threads and render PARs as structure in streams/viewers.
+
+### Scope Out
+
+- Full prompt/behavioral changes across all agents beyond minimal encouragement.
+- Rich analytics/visualization beyond basic rendering and navigation.
+
+## Time Box
+
+2 days for schema + service + basic relay/rendering prototype.
+
+## Exit Conditions
+
+- PAR events are emitted, persisted, and visible in both the log stream and forum relay.
+- If implementation branches into too many integrations, stop and split into sub-missions (schema, relay, rendering).
+
 ## Problem
 
 Long-running sessions suffer from context drift. The session ID persists but the effective working memory shifts - both agent and human forget what they set out to do days ago.

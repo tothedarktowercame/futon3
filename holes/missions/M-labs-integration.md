@@ -1,5 +1,31 @@
 # Mission: Labs Integration Improvements
 
+## Owner
+
+TBD (this document mixes completed work and open follow-ups; assign an owner for the remaining open items before continuing).
+
+## Scope
+
+### Scope In
+
+- Track and prioritize remaining Labs integration gaps (PAR workflow validation, overlay persistence, Arxana navigation bugs).
+- Ensure "implemented" items remain stable (lab persistence to futon1, smart streaming).
+- Split large buckets into smaller missions when they become actionable.
+
+### Scope Out
+
+- New major features (e.g., affect heatmap) unless promoted into a dedicated mission.
+- Rewriting the entire labs pipeline (focus on incremental fixes).
+
+## Time Box
+
+4-8 hours to triage and split open items into bounded child missions with explicit owners.
+
+## Exit Conditions
+
+- Open unchecked items are either completed or moved into dedicated missions with owners/time boxes.
+- This mission doc becomes an index/status page rather than an ever-growing backlog.
+
 ## Context
 
 Labs provides session capture and browsing via Arxana overlays. The core streaming

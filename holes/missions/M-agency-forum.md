@@ -2,6 +2,35 @@
 
 Unified multi-agent infrastructure enabling bot-to-bot communication, session lifecycle management, and real-time observation.
 
+## Owner
+
+TBD (this mission currently spans two distinct layers; likely needs a split into separate Agency/Forum missions with explicit owners).
+
+## Scope
+
+### Scope In
+
+- Specify the minimal interfaces between Agency, Forum, and agents (APIs, identifiers, state shape).
+- Define the session lifecycle invariants (rollover, locks, state capsule carry-forward).
+- Define the Forum thread/post model and how patterns/PSR/PUR are represented in posts.
+- Identify concrete "next implementation steps" and where they live in the repo.
+
+### Scope Out
+
+- Full production-grade forum persistence/search/moderation.
+- Any UI beyond the existing HTTP/WS plumbing.
+- Building all downstream analytics (embedding mining, pattern discovery) beyond interface hooks.
+
+## Time Box
+
+2-4 hours to tighten this doc into a bounded parent mission and split out child missions (Agency vs Forum) with explicit owners.
+
+## Exit Conditions
+
+- This document is updated to a parent/index mission with links to child missions (Agency layer, Forum layer).
+- Child missions each state owner, scope in/out, and time box.
+- If the doc cannot be split cleanly, mark the mission as blocked with the specific ambiguity.
+
 ## Conceptual Foundation
 
 The Forum is not just chat - it's a **collaborative proof tree**.

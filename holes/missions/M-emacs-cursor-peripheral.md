@@ -4,6 +4,33 @@
 **Parent:** f0/P4 (Hypertext Navigation), f3/P2 (Agent Perception)
 **Date:** 2026-01-29
 
+## Owner
+
+TBD (likely Claude for Emacs UX + Codex for service plumbing; assign a single owner before starting implementation).
+
+## Scope
+
+### Scope In
+
+- Define the minimal protocol between Emacs and the cursor peripheral (context stream + commands).
+- Implement a prototype Emacs minor mode that can connect, stream context, and render a cursor overlay.
+- Enforce mode constraints (observe/follow are read-only; pair mode gated and off by default).
+
+### Scope Out
+
+- Full production-grade UX (polish, keymaps, onboarding).
+- Multi-user/shared sessions and permissions.
+- Editing/pair mode by default (treat as a separate, security-reviewed follow-up).
+
+## Time Box
+
+1-2 days for a prototype (connect + overlay + basic commands), then re-scope.
+
+## Exit Conditions
+
+- Prototype demonstrates connect + context streaming + visible cursor overlay in Emacs.
+- If security/UX complexity dominates, stop and split into smaller missions (protocol vs overlay vs edit gating).
+
 ## Intent
 
 Create an Emacs peripheral where Claude has a persistent cursor "avatar" - a visible presence in the editor that can follow the user, observe regions, scout ahead, or pair-edit.

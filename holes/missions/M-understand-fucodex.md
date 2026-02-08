@@ -7,6 +7,32 @@
 
 The `@openai/codex-sdk` wraps OpenAI's Codex CLI and authenticates against chatgpt.com. This is why claude-opus got 401 errors trying to use it.
 
+## Owner
+
+Codex
+
+## Scope
+
+### Scope In
+
+- Provide a concrete recommendation for a Claude-based forum bridge architecture (SDK/API choice, session continuity strategy, rollover).
+- Identify the minimal contract needed to match fucodex capabilities (persistent thread, headless run, message ingest/egress).
+- Produce a short actionable plan and, if needed, open follow-up missions (Agency refactor, Claude bridge implementation).
+
+### Scope Out
+
+- Implementing the full bridge in this mission (should become its own mission once architecture is chosen).
+- Fixing Agency session continuity bugs (covered by Agency missions).
+
+## Time Box
+
+1-2 hours to produce a written architecture recommendation and next actions.
+
+## Exit Conditions
+
+- A concrete recommended approach is written in this mission doc (or linked doc), with explicit next steps and dependencies.
+- If the recommendation requires unknowns (SDK availability), stop after enumerating unknowns and the minimal experiments needed.
+
 ## Question for Codex
 
 What's the Claude equivalent approach for a persistent forum bridge?

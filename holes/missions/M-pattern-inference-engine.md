@@ -2,6 +2,32 @@
 
 Implement inference rules that derive transitive connections from pattern usage, combining Datalog reasoning with embedding-aware predicates.
 
+## Owner
+
+Codex
+
+## Scope
+
+### Scope In
+
+- Implement the minimal inference rules to materialize transitive links from confirmed PURs (Phase 1).
+- Define the split between ephemeral (Agency runtime) state and persistent (Arxana) links.
+- Add query hooks/tests to verify inferred `guided-by` links appear as expected.
+
+### Scope Out
+
+- Full embedding-aware predicate integration (Phases 3-4) unless explicitly promoted.
+- Broad "query engine unification" work beyond what Phase 1 needs.
+
+## Time Box
+
+2-3 days for Phase 1 (inference materialization + verification hooks).
+
+## Exit Conditions
+
+- At least one end-to-end inference path works: PUR confirms pattern use -> inferred `guided-by` links materialize -> query/backlinks show results.
+- If Phase 1 cannot be made verifiable, stop and first land the minimum observability/tests needed, then re-scope.
+
 ## Core Insight
 
 **PSR opens, PUR confirms.**

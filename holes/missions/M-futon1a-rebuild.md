@@ -5,6 +5,33 @@ practices. The mission has two parts: the *process* (pattern-based design with
 full documentation) and the *product* (a storage layer with unbreakable core
 invariants).
 
+## Owner
+
+Codex (with Claude as primary reviewer for Part I process artifacts).
+
+## Scope
+
+### Scope In
+
+- Part I: Evidence-backed design + pattern-to-module mapping + PSR/PUR exemplars + traceability gates.
+- Part II: Specify and implement futon1a as a deterministic storage substrate with durable invariants and a canonical HTTP interface.
+- Produce the minimum docs/tests needed to make invariants verifiable (error catalog, invariant catalog, core test harness).
+
+### Scope Out
+
+- Any UI beyond the canonical HTTP interface.
+- Non-storage features (inference, agent orchestration) outside the "thin waist" substrate.
+- Unlimited expansion: if success criteria exceed 5 in a child mission, split (per mission-scoping).
+
+## Time Box
+
+2 weeks to complete Part I gates and begin Part II with at least one invariant implemented end-to-end (code + test + doc).
+
+## Exit Conditions
+
+- Part I gate is satisfied and verified with concrete artifacts (evidence doc, module map, test harness, PSR/PUR exemplars, traceability example).
+- Part II is either underway with a validated first invariant, or the mission is split into smaller layer missions with explicit owners.
+
 ## Argument (Pattern-Backed)
 
 futon1a exists to provide a deterministic, storage‑oriented substrate that

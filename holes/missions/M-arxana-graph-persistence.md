@@ -7,6 +7,34 @@
 
 ---
 
+## Owner
+
+Claude (implementation already landed; this section exists for scoping hygiene and future follow-ups).
+
+## Scope
+
+### Scope In
+
+- Persist anchors and typed links for lab notebook turns (append-only registries).
+- Expose HTTP endpoints for anchor/link create + query.
+- Emit anchor/link events on the stream and support Emacs navigation/backlinks.
+- Provide a similarity-based link suggestion path (fallback OK when embeddings unavailable).
+
+### Scope Out
+
+- Full embedding-backed semantic linking via futon3a portal (explicitly future enhancement).
+- Garbage collection or deletion semantics for sessions/anchors/links.
+- Strong link validation workflows (e.g., approval, moderation, provenance review).
+
+## Time Box
+
+Already completed (Phases 1-4). Further work should be split into follow-up missions with explicit time boxes.
+
+## Exit Conditions
+
+- Success criteria remain satisfied in CI and during normal usage.
+- Any new follow-ups (embedding portal integration, GC, validation) are split into separate missions.
+
 ## Objective
 
 Extend lab notebook persistence with graph-structured storage, enabling:

@@ -2,6 +2,32 @@
 
 Verify that the `fucodex-peripheral.ts` wrapper can perform the same MUSN/Arxana operations as Claude Code, proving the peripheral infrastructure supports full agent capabilities.
 
+## Owner
+
+Codex
+
+## Scope
+
+### Scope In
+
+- Run the parity protocol through `./scripts/fucodex-peripheral.ts` (not manual curl).
+- Verify end-to-end connectivity from within the peripheral: MUSN session create, anchor create, link create, PAR generation.
+- Document required environment variables for sandbox/networking so the peripheral can reach MUSN/Lab.
+
+### Scope Out
+
+- Improving the MUSN/Lab APIs themselves (treat failures as evidence to open follow-up missions).
+- Re-architecting Agency (covered by Agency missions).
+
+## Time Box
+
+2-4 hours.
+
+## Exit Conditions
+
+- Success criteria are all checked with concrete IDs and on-disk evidence (`lab/anchors/index.edn`, `lab/links/graph.edn`, RAP PAR ids).
+- If the peripheral cannot reach MUSN/Lab, stop after documenting the exact connectivity failure and required env/config.
+
 ## Why This Matters
 
 Running curl commands manually proves the APIs work. Running through `fucodex-peripheral.ts` proves:

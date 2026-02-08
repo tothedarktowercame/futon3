@@ -6,6 +6,32 @@
 
 ---
 
+## Owner
+
+Codex
+
+## Scope
+
+### Scope In
+
+- Implement `plan->mermaid` conversion for plan wiring EDN.
+- Add a minimal HTTP endpoint to render the latest plan as Mermaid in the notebook viewer.
+- Render inline diagrams for `:turn/plan` events with basic styling.
+
+### Scope Out
+
+- Production-grade frontend polish and advanced interactions (click-to-jump, caching, perf tuning).
+- External CDN dependency decisions (treat as separate decision if it becomes contentious).
+
+## Time Box
+
+1 day for a working prototype (conversion + endpoint + basic viewer integration).
+
+## Exit Conditions
+
+- Standalone endpoint renders a real plan correctly, and notebook viewer shows inline diagrams for plan turns.
+- If integration requires major viewer refactors, stop and split into conversion-only and viewer-only missions.
+
 ## Objective
 
 Render MUSN plan wiring diagrams as Mermaid flowcharts in the HTTP notebook viewer, providing visual feedback on plan structure before execution.

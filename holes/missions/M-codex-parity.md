@@ -2,6 +2,32 @@
 
 Verify that Codex can perform the same MUSN/Arxana operations as Claude, operating as a full agent (not just HTTP probes).
 
+## Owner
+
+Codex
+
+## Scope
+
+### Scope In
+
+- Ensure Codex is hitting the shared MUSN/Lab endpoints (no accidental localhost-to-wrong-host).
+- Run parity protocol end-to-end: create session, create anchor, create link, generate PAR, verify via RAP.
+- Document the required environment variables / URLs for parity runs.
+
+### Scope Out
+
+- Improving the underlying APIs (this mission is verification, not feature work).
+- Peripheral-level parity (covered by `M-fucodex-parity.md`).
+
+## Time Box
+
+2-4 hours.
+
+## Exit Conditions
+
+- All success criteria are checked with concrete evidence (session ids, anchor ids, link ids, PAR ids).
+- If parity fails due to environment mismatch, stop after documenting the mismatch and the required configuration.
+
 ## Definition of Parity
 
 "Parity" means Codex can:

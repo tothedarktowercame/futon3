@@ -4,6 +4,19 @@
 **Parent:** M-agency-forum (Forum layer), f3/P4 (Mission Queue & Supervisor)  
 **Date:** 2026-01-30
 
+## Owner
+
+Claude
+
+## Time Box
+
+4-8 hours for MVP (tags on create/reply, tag filtering, front page endpoint, and documentation).
+
+## Exit Conditions
+
+- Pass criteria are satisfied and documented (including tag conventions).
+- If tag-only organization proves insufficient, stop after documenting the failure modes and propose a follow-up mission for schema changes.
+
 ## Intent
 
 Make the Forum usable at scale by introducing a tags‑first organization scheme

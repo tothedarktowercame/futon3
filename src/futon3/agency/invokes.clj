@@ -53,13 +53,14 @@
    (invoke-codex text session-id default-invoke-timeout-ms))
   ([text session-id timeout-ms]
    (let [timeout-ms (long (or timeout-ms default-invoke-timeout-ms))
-         base-cmd (if session-id
-                    [codex-bin "exec" "resume" session-id]
-                    [codex-bin "exec"])
-         cmd (into base-cmd ["--json"
-                             "--sandbox" "workspace-write"
-                             "-c" "approval_policy=\"never\""
-                             "-"])
+         ;; IMPORTANT: `resume` is a subcommand of `codex exec`, so exec-level opts must
+         ;; come before the subcommand (otherwise they are parsed as resume args).
+         exec-opts ["--json"
+                    "--sandbox" "workspace-write"
+                    "-c" "approval_policy=\"never\""]
+         cmd (if session-id
+               (into [codex-bin "exec"] (concat exec-opts ["resume" session-id "-"]))
+               (into [codex-bin "exec"] (concat exec-opts ["-"])))
          _ (println (format "[invoke-codex] Executing: %s exec%s (timeout=%sms, prompt: %.50s...)"
                             codex-bin
                             (if session-id (str " resume " session-id) "")

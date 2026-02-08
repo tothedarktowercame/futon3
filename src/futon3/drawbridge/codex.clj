@@ -39,15 +39,15 @@
    hazards and length limits, and to keep parity with Codex CLI behavior:
    `codex exec -` and `codex exec resume <id> -`."
   [text session-id]
-  (let [;; Build command: codex exec [resume <id>] --json ... "-" (prompt via stdin)
-        base-cmd (if session-id
-                   ["codex" "exec" "resume" session-id]
-                   ["codex" "exec"])
+  (let [;; IMPORTANT: `resume` is a subcommand of `codex exec`, so exec-level opts must
+        ;; come before the subcommand (otherwise they are parsed as resume args).
+        exec-opts ["--json"
+                   "--sandbox" "workspace-write"
+                   "-c" "approval_policy=\"never\""]
         ;; Use "-" so Codex reads the prompt from stdin.
-        cmd (into base-cmd ["--json"
-                            "--sandbox" "workspace-write"
-                            "-c" "approval_policy=\"never\""
-                            "-"])
+        cmd (if session-id
+              (into ["codex" "exec"] (concat exec-opts ["resume" session-id "-"]))
+              (into ["codex" "exec"] (concat exec-opts ["-"])))
         _ (println (format "[codex-bridge] Executing: codex exec%s (prompt: %s)"
                            (if session-id (str " resume " session-id) "")
                            (subs text 0 (min 50 (count text)))))

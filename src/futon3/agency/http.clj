@@ -562,15 +562,19 @@
 
 (defn- post-to-musn-room! [room agent-id text]
   (try
-    (http-client/post (str musn-url "/musn/chat/message")
-      {:content-type :json
-       :throw-exceptions false
-       :body (json/generate-string
-              {:room room
-               :msg-id (str (java.util.UUID/randomUUID))
-               :author {:id agent-id :name agent-id}
-               :text text})})
-    (log! "musn-post" {:room room :agent-id agent-id})
+    (let [resp
+          (http-client/post (str musn-url "/musn/chat/message")
+            {:content-type :json
+             :throw-exceptions false
+             :body (json/generate-string
+                    {:room room
+                     :msg-id (str (java.util.UUID/randomUUID))
+                     :author {:id agent-id :name agent-id}
+                     :text text})})
+          status (:status resp)]
+      (if (and status (>= (long status) 400))
+        (log! "musn-post-failed" {:room room :agent-id agent-id :status status})
+        (log! "musn-post" {:room room :agent-id agent-id :status status})))
     (catch Exception e
       (log! "musn-post-error" {:room room :agent-id agent-id :error (.getMessage e)}))))
 

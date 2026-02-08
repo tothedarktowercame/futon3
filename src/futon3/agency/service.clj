@@ -12,13 +12,13 @@
 (defn- env-int [key default]
   (or (try
         (some-> (System/getenv key) str/trim not-empty Long/parseLong)
-        (catch Exception _ nil))
+        (catch Exception _e nil))
       default))
 
 (defn- env-float [key default]
   (or (try
         (some-> (System/getenv key) str/trim not-empty Double/parseDouble)
-        (catch Exception _ nil))
+        (catch Exception _e nil))
       default))
 
 (defn- env-bool [key default]
@@ -72,7 +72,7 @@
     (when (.exists path)
       (try
         (edn/read-string (slurp path))
-        (catch Exception _ nil)))))
+        (catch Exception _e nil)))))
 
 (defn- default-agent-state [agent-id]
   {:agent/id (name agent-id)
@@ -270,12 +270,12 @@
 (defn- parse-json-line [line]
   (try
     (json/parse-string line true)
-    (catch Exception _ nil)))
+    (catch Exception _e nil)))
 
 (defn- parse-json [value]
   (try
     (json/parse-string value true)
-    (catch Exception _ nil)))
+    (catch Exception _e nil)))
 
 (defn- run-command!
   [{:keys [args cwd env]}]
@@ -338,18 +338,24 @@
   [{:keys [server token author]} thread-id body pattern]
   (when (and server thread-id (seq (str body)))
     (try
-      (http/post (str (str/replace server #"/+$" "")
-                      "/forum/thread/" thread-id "/reply")
-                 {:content-type :json
-                  :accept :json
-                  :throw-exceptions false
-                  :headers (cond-> {"Content-Type" "application/json"}
-                             token (assoc "X-Agency-Token" token))
-                  :body (json/generate-string
-                         (cond-> {:author author
-                                  :body body}
-                           pattern (assoc :pattern-applied pattern)))})
-      (catch Exception _ nil))))
+      (let [resp
+            (http/post (str (str/replace server #"/+$" "")
+                            "/forum/thread/" thread-id "/reply")
+                       {:content-type :json
+                        :accept :json
+                        :throw-exceptions false
+                        :headers (cond-> {"Content-Type" "application/json"}
+                                   token (assoc "X-Agency-Token" token))
+                        :body (json/generate-string
+                               (cond-> {:author author
+                                        :body body}
+                                 pattern (assoc :pattern-applied pattern)))})
+            status (:status resp)]
+        (if (and status (>= (long status) 400))
+          {:ok false :error (str "forum reply failed with status " status) :status status}
+          {:ok true :status status}))
+      (catch Exception e
+        {:ok false :error (.getMessage e)}))))
 
 (defn- parse-usage [usage]
   (when (map? usage)
@@ -566,17 +572,23 @@
   [{:keys [musn-url session-id]} payload]
   (when (and musn-url session-id)
     (try
-      (http/post (str (str/replace musn-url #"/+$" "") "/musn/activity/log")
-                 {:content-type :json
-                  :accept :json
-                  :throw-exceptions false
-                  :body (json/generate-string
-                         {:agent "codex"
-                          :source "agency"
-                          :session/id session-id
-                          :event/type :session/rollover
-                          :metadata payload})})
-      (catch Exception _ nil))))
+      (let [resp
+            (http/post (str (str/replace musn-url #"/+$" "") "/musn/activity/log")
+                       {:content-type :json
+                        :accept :json
+                        :throw-exceptions false
+                        :body (json/generate-string
+                               {:agent "codex"
+                                :source "agency"
+                                :session/id session-id
+                                :event/type :session/rollover
+                                :metadata payload})})
+            status (:status resp)]
+        (if (and status (>= (long status) 400))
+          {:ok false :error (str "musn activity log failed with status " status) :status status}
+          {:ok true :status status}))
+      (catch Exception e
+        {:ok false :error (.getMessage e)}))))
 
 (defn- roll-over-state!
   [agent-id reason {:keys [musn forum]}]

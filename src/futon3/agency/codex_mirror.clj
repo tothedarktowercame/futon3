@@ -11,7 +11,7 @@
 (defn- env-int [key default]
   (or (try
         (some-> (System/getenv key) str/trim not-empty Long/parseLong)
-        (catch Exception _ nil))
+        (catch Exception _e nil))
       default))
 
 (defn- env-bool [key default]
@@ -54,11 +54,11 @@
             (recur)
             (let [parsed (try
                            (json/parse-string line true)
-                           (catch Exception _ ::invalid))]
+                           (catch Exception _e ::invalid))]
               (if (identical? parsed ::invalid)
                 (recur)
                 parsed))))))
-    (catch Exception _
+    (catch Exception _e
       nil)))
 
 (defn- codex-root []

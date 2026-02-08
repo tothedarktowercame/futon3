@@ -13,7 +13,7 @@
 (declare handle-agency-ws connected-agent-ids local-agent-ids remote-agent-ids agent-sessions kick-agent!
          handle-get-secret handle-create-secret
          handle-ack handle-ack-status handle-ring-bell
-         handle-page handle-page-response)
+         handle-whistle handle-whistle-response)
 
 (defn- log! [msg & [ctx]]
   (try
@@ -169,9 +169,10 @@
         (= uri "/agency/bell")
         (json-response (handle-ring-bell (parse-json-body req)))
 
-        ;; Page a connected agent (sync - wait for response)
-        (= uri "/agency/page")
-        (json-response (handle-page (parse-json-body req)))
+        ;; Whistle a connected agent (sync - wait for response)
+        ;; "Bells and whistles" - bell is async, whistle is sync
+        (or (= uri "/agency/whistle") (= uri "/agency/page"))
+        (json-response (handle-whistle (parse-json-body req)))
 
         ;; Spawn CLI process (exec is alias for run)
         (= uri "/agency/exec")
@@ -357,11 +358,12 @@
         "ack"
         (log! "ws-ack" {:agent-id agent-id :payload (:payload msg)})
 
-        "page-response"
+        ;; Accept both "whistle-response" and "page-response" (backwards compat)
+        ("whistle-response" "page-response")
         (let [{:keys [request-id response]} msg]
           (if request-id
-            (handle-page-response request-id response)
-            (log! "ws-page-response-missing-id" {:agent-id agent-id})))
+            (handle-whistle-response request-id response)
+            (log! "ws-whistle-response-missing-id" {:agent-id agent-id})))
 
         ;; Default: log unknown
         (log! "ws-unknown" {:agent-id agent-id :msg msg})))
@@ -421,36 +423,38 @@
          :error (when-not sent "agent not connected")}))))
 
 ;; =============================================================================
-;; Page endpoint - synchronous request to connected agent
+;; Whistle endpoint - synchronous request to connected agent
+;; ("Bells and whistles" - bell is async fire-and-forget, whistle is sync)
 ;; =============================================================================
 
-(defonce ^:private pending-pages (atom {}))
+(defonce ^:private pending-whistles (atom {}))
 ;; {request-id -> {:promise p :agent-id aid :created-at inst}}
 
 (defn- generate-request-id []
   (str "req-" (subs (str (java.util.UUID/randomUUID)) 0 12)))
 
-(defn handle-page-response
-  "Called by agents (local handlers or via WS) to deliver a page response.
+(defn handle-whistle-response
+  "Called by agents (local handlers or via WS) to deliver a whistle response.
    Returns true if the response was delivered, false if request not found/expired."
   [request-id response]
-  (if-let [entry (get @pending-pages request-id)]
+  (if-let [entry (get @pending-whistles request-id)]
     (do
       (deliver (:promise entry) response)
-      (swap! pending-pages dissoc request-id)
-      (log! "page-response-delivered" {:request-id request-id})
+      (swap! pending-whistles dissoc request-id)
+      (log! "whistle-response-delivered" {:request-id request-id})
       true)
     (do
-      (log! "page-response-orphaned" {:request-id request-id})
+      (log! "whistle-response-orphaned" {:request-id request-id})
       false)))
 
-(def ^:private default-page-timeout-ms
-  (or (some-> (System/getenv "AGENCY_PAGE_TIMEOUT_MS") Long/parseLong)
+(def ^:private default-whistle-timeout-ms
+  (or (some-> (System/getenv "AGENCY_WHISTLE_TIMEOUT_MS")  Long/parseLong)
+      (some-> (System/getenv "AGENCY_PAGE_TIMEOUT_MS") Long/parseLong) ; backwards compat
       60000)) ; 1 minute default
 
-(defn- handle-page [body]
+(defn- handle-whistle [body]
   (let [{:keys [agent-id prompt timeout-ms]} body
-        timeout-ms (or timeout-ms default-page-timeout-ms)
+        timeout-ms (or timeout-ms default-whistle-timeout-ms)
         aid (some-> agent-id name)]
     (cond
       (str/blank? (str agent-id))
@@ -470,26 +474,26 @@
       (get @local-handlers aid)
       (let [request-id (generate-request-id)
             response-promise (promise)
-            page-msg {:type "page"
+            whistle-msg {:type "whistle"
                       :request-id request-id
                       :prompt prompt
                       :timestamp (str (java.time.Instant/now))}]
-        (swap! pending-pages assoc request-id
+        (swap! pending-whistles assoc request-id
                {:promise response-promise
                 :agent-id agent-id
                 :created-at (System/currentTimeMillis)})
         (future
           (Thread/sleep (+ timeout-ms 1000))
-          (when (get @pending-pages request-id)
-            (swap! pending-pages dissoc request-id)
-            (log! "page-timeout-cleanup" {:request-id request-id})))
-        (let [sent (send-to-agent! agent-id page-msg)]
+          (when (get @pending-whistles request-id)
+            (swap! pending-whistles dissoc request-id)
+            (log! "whistle-timeout-cleanup" {:request-id request-id})))
+        (let [sent (send-to-agent! agent-id whistle-msg)]
           (if-not sent
             (do
-              (swap! pending-pages dissoc request-id)
-              {:ok false :err "failed to send page to agent"})
+              (swap! pending-whistles dissoc request-id)
+              {:ok false :err "failed to send whistle to agent"})
             (let [result (deref response-promise timeout-ms :timeout)]
-              (swap! pending-pages dissoc request-id)
+              (swap! pending-whistles dissoc request-id)
               (if (= result :timeout)
                 {:ok false :err "timeout waiting for agent response" :request-id request-id}
                 {:ok true :response result :request-id request-id :source :local-handler})))))
@@ -498,26 +502,26 @@
       (get @connected-agents aid)
       (let [request-id (generate-request-id)
             response-promise (promise)
-            page-msg {:type "page"
+            whistle-msg {:type "whistle"
                       :request-id request-id
                       :prompt prompt
                       :timestamp (str (java.time.Instant/now))}]
-        (swap! pending-pages assoc request-id
+        (swap! pending-whistles assoc request-id
                {:promise response-promise
                 :agent-id agent-id
                 :created-at (System/currentTimeMillis)})
         (future
           (Thread/sleep (+ timeout-ms 1000))
-          (when (get @pending-pages request-id)
-            (swap! pending-pages dissoc request-id)
-            (log! "page-timeout-cleanup" {:request-id request-id})))
-        (let [sent (send-to-agent! agent-id page-msg)]
+          (when (get @pending-whistles request-id)
+            (swap! pending-whistles dissoc request-id)
+            (log! "whistle-timeout-cleanup" {:request-id request-id})))
+        (let [sent (send-to-agent! agent-id whistle-msg)]
           (if-not sent
             (do
-              (swap! pending-pages dissoc request-id)
-              {:ok false :err "failed to send page to agent"})
+              (swap! pending-whistles dissoc request-id)
+              {:ok false :err "failed to send whistle to agent"})
             (let [result (deref response-promise timeout-ms :timeout)]
-              (swap! pending-pages dissoc request-id)
+              (swap! pending-whistles dissoc request-id)
               (if (= result :timeout)
                 {:ok false :err "timeout waiting for agent response" :request-id request-id}
                 {:ok true :response result :request-id request-id :source :websocket})))))

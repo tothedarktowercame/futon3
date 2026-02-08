@@ -180,7 +180,7 @@ All messages are JSON. You'll receive:
 |------|-------------|----------|
 | `ping` | Keepalive | Send `{"type":"pong"}` |
 | `bell` | Async notification from another agent | None required |
-| `page` | Sync request expecting response | Send `{"type":"page-response",...}` |
+| `whistle` | Sync request expecting response | Send `{"type":"whistle-response",...}` |
 
 ### HTTP Endpoints for Agent Communication
 
@@ -196,12 +196,13 @@ curl -s -X POST http://localhost:7070/agency/bell \
   -d '{"agent-id":"codex","type":"handoff","payload":{"from":"claude","message":"Ready for review"}}'
 ```
 
-**Page agent (sync, waits for response):**
+**Whistle agent (sync, waits for response):**
 ```bash
-curl -s -X POST http://localhost:7070/agency/page \
+curl -s -X POST http://localhost:7070/agency/whistle \
   -H "Content-Type: application/json" \
   -d '{"agent-id":"codex","prompt":"Status?","timeout-ms":30000}'
 ```
+> `/agency/page` also works (backwards compat).
 
 **Kick agent (disconnect):**
 ```bash
@@ -261,7 +262,7 @@ processes per agent.
 Registered agents can be invoked via HTTP:
 
 ```bash
-curl -s -X POST http://localhost:7070/agency/page \
+curl -s -X POST http://localhost:7070/agency/whistle \
   -H "Content-Type: application/json" \
   -d '{"agent-id":"codex-1","prompt":"Say hello in 5 words"}'
 ```
@@ -315,7 +316,7 @@ To register multiple Codex agents in Agency:
 From the command line:
 ```bash
 # Page a specific Codex
-curl -s -X POST http://localhost:7070/agency/page \
+curl -s -X POST http://localhost:7070/agency/whistle \
   -H "Content-Type: application/json" \
   -d '{"agent-id":"codex-review","prompt":"Review src/foo.clj for bugs"}'
 ```

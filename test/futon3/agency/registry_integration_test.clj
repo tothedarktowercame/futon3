@@ -48,8 +48,8 @@
         (agents/register-mock! "test-registry-agent")
         (is (reg/agent-registered? "test-registry-agent")))
 
-      (testing "Page mock agent via HTTP - should use registry path"
-        (let [{:keys [status body]} (http-post (str base-url "/agency/page")
+      (testing "Whistle mock agent via HTTP - should use registry path"
+        (let [{:keys [status body]} (http-post (str base-url "/agency/whistle")
                                                {:agent-id "test-registry-agent"
                                                 :prompt "Hello from integration test"
                                                 :timeout-ms 5000})]
@@ -76,9 +76,9 @@
         (is (= 3 (:count (reg/registry-status))))
 
         ;; Page both
-        (let [r1 (http-post (str base-url "/agency/page")
+        (let [r1 (http-post (str base-url "/agency/whistle")
                            {:agent-id "test-agent-2" :prompt "test2" :timeout-ms 5000})
-              r2 (http-post (str base-url "/agency/page")
+              r2 (http-post (str base-url "/agency/whistle")
                            {:agent-id "test-agent-3" :prompt "test3" :timeout-ms 5000})]
           (is (:ok (:body r1)))
           (is (:ok (:body r2)))

@@ -125,8 +125,9 @@
      (lambda (buf)
        (with-current-buffer buf
          (and (derived-mode-p 'erc-mode)
-              (string-equal-ignore-case
-               (erc-default-target) chan))))
+              (let ((target (erc-default-target)))
+                (and target
+                     (string-equal-ignore-case target chan))))))
      (buffer-list))))
 
 (defun fubar-agency--ensure-erc ()

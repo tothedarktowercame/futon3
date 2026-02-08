@@ -159,10 +159,24 @@
     ```
 
 + VERIFICATION:
-    At each checkpoint, verify:
+    At each checkpoint, verify both manually and by machine.
+
+    Manual:
     - Every output port in code has a spec section reference
     - Every output port in spec has at least one test
     - No unspecified output ports exist in code
+
+    Machine (futon5.ct.mission):
+    - Maintain an EDN mission diagram alongside the mermaid diagram
+      (see futon1a/docs/mission-diagram.edn for the reference exemplar)
+    - Components are morphisms: declare :accepts (domain) and :produces
+      (codomain), not just :type (identity)
+    - Run `(futon5.ct.mission/validate diagram)` at every prototype gate
+    - All five checks must pass: completeness, coverage, no orphan inputs,
+      type safety, spec coverage
+    - `(futon5.ct.mission/diagram->mermaid diagram)` regenerates the
+      human-readable mermaid from the EDN; keep them in sync
+
     If verification fails, the checkpoint is blocked until the spec
     catches up with the code.
 

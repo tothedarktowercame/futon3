@@ -145,28 +145,53 @@ class PatternCatalog {
 // Session state for persistence across restarts
 interface SessionState {
   sessionId: string;
+  projectDir: string;   // Full path to Claude sessions directory (path-independent)
   createdAt: string;
   lastActive: string;
 }
 
-const SESSION_DIR = "lab/agency/sessions";
-const CLAUDE_SESSIONS_DIR = path.join(os.homedir(), ".claude/projects/-home-joe-code-futon3");
+const SESSION_DIR = path.join(os.homedir(), "lab/agency/sessions");
+// Derive Claude sessions directory from current working directory (matches Claude CLI behavior)
+function getClaudeSessionsDir(): string {
+  const cwd = process.cwd();
+  const projectSlug = cwd.replace(/\//g, "-");
+  return path.join(os.homedir(), ".claude/projects", projectSlug);
+}
+const CLAUDE_SESSIONS_DIR = getClaudeSessionsDir();
 
 class ClaudeCodeWrapper {
   private sessionId: string | undefined;
   private statePath: string;
+  private claudeSessionsDir: string;  // Path-independent: stored in state file
   private firstRun = true;
+  private needsPeripheralContext = true; // Inject context on first interaction
   private patternCatalog = new PatternCatalog();
   private activePattern: ActivePattern | null = null;
+
+  // Context injected on first interaction so Claude knows it's in the peripheral
+  private static PERIPHERAL_CONTEXT = `
+[PERIPHERAL CONTEXT] You have hopped into the peripheral body (${AGENT_ID}).
+
+You now have access to:
+- **Walkie-talkie**: Messages prefixed [agency] come from the Agency WebSocket. You can coordinate with other agents.
+- **Pattern card**: Use /psr <query> to search and select a guiding pattern, /pur to record outcome, /pattern to see active pattern.
+- **Forum**: If enabled, messages prefixed [forum] are posts from a discussion thread.
+
+You are no longer in the classic CLI. You're in a multiplexed environment receiving input from human + agency + forum.
+Respond concisely. When you see [agency] messages, engage with the multi-agent coordination.
+`.trim();
 
   constructor(resumeId?: string, statePath?: string) {
     // Load pattern catalog at startup
     this.patternCatalog.load();
     this.statePath = statePath || path.join(SESSION_DIR, `peripheral-${AGENT_ID}-state.json`);
+    // Default to cwd-based sessions dir; may be overridden by loadState()
+    this.claudeSessionsDir = getClaudeSessionsDir();
 
     if (resumeId) {
-      // Explicit resume ID provided
+      // Explicit resume ID provided - sticky, don't re-detect
       this.sessionId = resumeId;
+      this.firstRun = false;
       console.error(`[session] Using provided session: ${resumeId}`);
     } else {
       // Try to load from state file
@@ -179,6 +204,11 @@ class ClaudeCodeWrapper {
       if (fs.existsSync(this.statePath)) {
         const data = JSON.parse(fs.readFileSync(this.statePath, "utf-8")) as SessionState;
         this.sessionId = data.sessionId;
+        // Use stored projectDir if available (path-independent resume)
+        if (data.projectDir) {
+          this.claudeSessionsDir = data.projectDir;
+          console.error(`[session] Using stored project dir: ${data.projectDir}`);
+        }
         this.firstRun = false;
         console.error(`[session] Resumed from state: ${this.sessionId}`);
       }
@@ -193,6 +223,7 @@ class ClaudeCodeWrapper {
       fs.mkdirSync(path.dirname(this.statePath), { recursive: true });
       const state: SessionState = {
         sessionId: this.sessionId,
+        projectDir: this.claudeSessionsDir,  // Store for path-independent resume
         createdAt: this.firstRun ? new Date().toISOString() : "",
         lastActive: new Date().toISOString(),
       };
@@ -205,14 +236,14 @@ class ClaudeCodeWrapper {
   private detectSessionId(): void {
     // Find the most recently modified session file
     try {
-      if (!fs.existsSync(CLAUDE_SESSIONS_DIR)) return;
+      if (!fs.existsSync(this.claudeSessionsDir)) return;
 
-      const files = fs.readdirSync(CLAUDE_SESSIONS_DIR)
+      const files = fs.readdirSync(this.claudeSessionsDir)
         .filter(f => f.endsWith(".jsonl"))
         .map(f => ({
           name: f,
-          path: path.join(CLAUDE_SESSIONS_DIR, f),
-          mtime: fs.statSync(path.join(CLAUDE_SESSIONS_DIR, f)).mtime.getTime()
+          path: path.join(this.claudeSessionsDir, f),
+          mtime: fs.statSync(path.join(this.claudeSessionsDir, f)).mtime.getTime()
         }))
         .sort((a, b) => b.mtime - a.mtime);
 
@@ -232,6 +263,10 @@ class ClaudeCodeWrapper {
 
   getSessionId(): string | undefined {
     return this.sessionId;
+  }
+
+  getSessionsDir(): string {
+    return this.claudeSessionsDir;
   }
 
   runClaude(input: string): string {
@@ -264,6 +299,16 @@ class ClaudeCodeWrapper {
       try {
         output = fs.readFileSync(tmpFile, "utf-8");
       } catch {}
+
+      // If resume failed (session not found), clear sessionId and retry fresh
+      if (output.includes("No conversation found with session ID") && this.sessionId) {
+        console.error(`[claude] Session not found, starting fresh...`);
+        this.sessionId = undefined;
+        this.firstRun = true;
+        // Cleanup temp file before retry
+        try { fs.unlinkSync(tmpFile); } catch {}
+        return this.runClaude(input); // Recursive retry without --resume
+      }
     } finally {
       // Cleanup temp file
       try { fs.unlinkSync(tmpFile); } catch {}
@@ -340,6 +385,12 @@ class ClaudeCodeWrapper {
       message = `${prefix} ${JSON.stringify(event.payload)}`;
     } else {
       message = `${prefix} ${event.payload}`;
+    }
+
+    // Inject peripheral context on first interaction
+    if (this.needsPeripheralContext) {
+      message = `${ClaudeCodeWrapper.PERIPHERAL_CONTEXT}\n\n---\n\n${message}`;
+      this.needsPeripheralContext = false;
     }
 
     console.error(`[peripheral] Processing: ${message.slice(0, 80)}...`);
@@ -994,10 +1045,11 @@ Example:
 
   console.error(`[peripheral] Agent ID: ${AGENT_ID}`);
   console.error(`[peripheral] Session: ${claude.getSessionId() || "(will detect on first run)"}`);
+  console.error(`[peripheral] Sessions dir: ${claude.getSessionsDir()}`);
   console.error(`[peripheral] Agency WS: ${enableAgency ? agencyWsUrl : "disabled"}`);
   console.error(`[peripheral] Forum: ${forumThread || "disabled"}`);
   console.error(`[peripheral] Patterns: loaded from ${PATTERN_CATALOG_PATH}`);
-  console.error(`[peripheral] State: lab/agency/sessions/peripheral-${AGENT_ID}-state.json`);
+  console.error(`[peripheral] State: ${SESSION_DIR}/peripheral-${AGENT_ID}-state.json`);
   console.error(`[peripheral] Backpack: walkie-talkie, ID card, pattern card`);
   console.error(`[peripheral] Ready for multiplexed input`);
   console.error(`[peripheral] Commands: /psr <query>, /pur [outcome], /pattern`);

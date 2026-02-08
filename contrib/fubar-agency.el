@@ -297,8 +297,30 @@ If no ERC server is connected, logs an error."
                      fubar-agency-ping-interval
                      #'fubar-agency--ping)))
 
+(defun fubar-agency--schedule-reconnect ()
+  "Schedule a reconnect attempt with exponential backoff."
+  (let* ((delay (or fubar-agency--reconnect-delay
+                    fubar-agency-reconnect-initial-delay))
+         (next (min (* 2 delay) fubar-agency-reconnect-max-delay)))
+    (setq fubar-agency--reconnect-delay next)
+    (when fubar-agency--reconnect-timer
+      (cancel-timer fubar-agency--reconnect-timer))
+    (fubar-agency--log "[reconnect] scheduled in %ds" delay)
+    (message "[fubar-agency] Reconnecting in %ds..." delay)
+    (setq fubar-agency--reconnect-timer
+          (run-at-time
+           delay nil
+           (lambda ()
+             (setq fubar-agency--reconnect-timer nil)
+             (fubar-agency--log "[reconnect] attempting (delay=%ds)" delay)
+             (condition-case err
+                 (fubar-agency-connect)
+               (error
+                (fubar-agency--log "[reconnect-error] %s" err))))))))
+
 (defun fubar-agency--on-close (_ws)
-  "Called when WebSocket connection closes."
+  "Called when WebSocket connection closes.
+Auto-reconnects with exponential backoff unless the user called `fubar-agency-disconnect'."
   (setq fubar-agency--connected nil
         fubar-agency--ws nil)
   (when fubar-agency--ping-timer
@@ -306,24 +328,8 @@ If no ERC server is connected, logs an error."
     (setq fubar-agency--ping-timer nil))
   (fubar-agency--log "[closed] disconnected")
   (message "[fubar-agency] Disconnected")
-  ;; Phase 3a: reconnect-with-backoff (unless user manually disconnected).
   (when (and fubar-agency-auto-reconnect (not fubar-agency--manual-disconnect))
-    (let* ((delay (or fubar-agency--reconnect-delay
-                      fubar-agency-reconnect-initial-delay))
-           (next (min (* 2 delay) fubar-agency-reconnect-max-delay)))
-      (setq fubar-agency--reconnect-delay next)
-      (when fubar-agency--reconnect-timer
-        (cancel-timer fubar-agency--reconnect-timer))
-      (setq fubar-agency--reconnect-timer
-            (run-at-time
-             delay nil
-             (lambda ()
-               (setq fubar-agency--reconnect-timer nil)
-               (fubar-agency--log "[reconnect] attempting (delay=%ss)" delay)
-               (condition-case err
-                   (fubar-agency-connect)
-                 (error
-                  (fubar-agency--log "[reconnect-error] %s" err)))))))))
+    (fubar-agency--schedule-reconnect))
   (when fubar-agency--manual-disconnect
     ;; Manual disconnect consumed; future disconnects should reconnect again.
     (setq fubar-agency--manual-disconnect nil)))
@@ -349,6 +355,7 @@ If no ERC server is connected, logs an error."
   (when (and fubar-agency--ws
              (websocket-openp fubar-agency--ws))
     (fubar-agency-disconnect))
+  (setq fubar-agency--manual-disconnect nil)
   (let ((url (format "%s?agent-id=%s"
                      fubar-agency-ws-url fubar-agency-agent-id)))
     (fubar-agency--log "[connecting] %s" url)
@@ -362,7 +369,12 @@ If no ERC server is connected, logs an error."
                :on-error   #'fubar-agency--on-error))
       (error
        (fubar-agency--log "[connect-error] %s" err)
-       (message "[fubar-agency] Failed to connect: %s" err)))))
+       (message "[fubar-agency] Failed to connect: %s" err)
+       ;; Schedule retry — websocket-open failed synchronously, so
+       ;; on-close won't fire; we must schedule reconnect here.
+       (when (and fubar-agency-auto-reconnect
+                  (not fubar-agency--manual-disconnect))
+         (fubar-agency--schedule-reconnect))))))
 
 ;;;###autoload
 (defun fubar-agency-disconnect ()

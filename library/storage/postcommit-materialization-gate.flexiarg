@@ -1,0 +1,36 @@
+@flexiarg storage/postcommit-materialization-gate
+@title Postcommit Materialization Gate
+@sigils [💎/石]
+@keywords durability, materialization, read-your-write, event-log, ack, storage
+@audience storage maintainers, futon1a builders
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger storage/durability-first storage/canonical-interface]
+
+! conclusion:
+  acknowledge writes only after the canonical store is durably committed and the written documents are queryable (read-your-write)
+
+  + context: interactive QA found items (lyrics) present in futon1’s durable event log while missing from the queryable XTDB materialization; the user experience was “it was saved” but reads returned nothing.
+  + IF:
+    a write can be accepted/recorded without guaranteeing it becomes queryable in the canonical store
+
+  + HOWEVER:
+    event-log truth can diverge from canonical truth and the system will behave as if data is missing (often discovered only in interactive QA)
+
+  + THEN:
+    gate success responses on both:
+    1) durable commit confirmation
+    2) postcommit materialization verification (the put docs can be read back by id)
+
+  + BECAUSE:
+    without a postcommit read-your-write gate, “accepted but not ingested/materialized” becomes a silent failure mode that accumulates repair debt and erodes trust in the storage contract
+
+  + STATUS:
+    status[proposed]
+    evidence[futon1a/src/futon1a/core/xtdb.clj:verify-materialized! enforces postcommit read-back for :xtdb.api/put docs]
+    evidence[futon1a/src/futon1a/core/pipeline.clj:run-write! rejects non-xtdb-shaped tx-ops early at Layer 4]
+
+  + NEXT-STEPS:
+    next[Add an end-to-end QA checklist item: write -> immediate read-by-id -> restart -> read-by-id.]
+    next[If an event log exists, specify it as audit-only unless a catch-up invariant proves “caught up” with canonical state.]
+

@@ -5,6 +5,7 @@ This folder hosts storage-layer patterns with traceable evidence, especially for
 ## Index
 
 - storage/durability-first
+- storage/postcommit-materialization-gate
 - storage/identity-uniqueness
 - storage/all-or-nothing-startup
 - storage/error-layer-hierarchy

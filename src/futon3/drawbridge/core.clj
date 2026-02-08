@@ -33,7 +33,7 @@
 ;; Forward declarations
 (declare broadcast-to-ws-clients! ws-clients irc-connected? send-to-irc!
          handle-agency-message stop-agency-ws-client! ack-test-bell!
-         handle-page-sync handle-par-bell! handle-standup-bell!)
+         handle-page-sync handle-whistle-sync handle-par-bell! handle-standup-bell!)
 
 ;; =============================================================================
 ;; Agent State
@@ -304,6 +304,31 @@
           (catch Exception e
             (println "[drawbridge] Failed to send page response via WS:" (.getMessage e))))))))
 
+(defn- send-whistle-response!
+  "Send a whistle response back to Agency.
+   Uses local handler if available, otherwise sends via WebSocket."
+  [request-id response]
+  ;; Try local handler first (in-JVM Agency)
+  (let [local-sent (try
+                     (require 'futon3.agency.http)
+                     (let [respond-fn (ns-resolve 'futon3.agency.http 'handle-whistle-response)]
+                       (when respond-fn
+                         (respond-fn request-id response)))
+                     (catch Exception _
+                       false))]
+    ;; If not local, send via WebSocket
+    (when-not local-sent
+      (when-let [ws (:ws @(:state @agency-ws-state))]
+        (try
+          (.sendText ^java.net.http.WebSocket ws
+                     (json/encode {:type "whistle-response"
+                                   :request-id request-id
+                                   :response response})
+                     true)
+          (println "[drawbridge] Whistle response sent via WS:" request-id)
+          (catch Exception e
+            (println "[drawbridge] Failed to send whistle response via WS:" (.getMessage e))))))))
+
 (defn- handle-page-sync
   "Handle a page request synchronously - invoke agent and return response."
   [msg]
@@ -331,6 +356,33 @@
                            {:error "no invoke-fn registered"
                             :agent-id (:agent-id @agent-state)}))))
 
+(defn- handle-whistle-sync
+  "Handle a whistle request synchronously - invoke agent and return response."
+  [msg]
+  (let [{:keys [request-id prompt]} msg]
+    (println (format "[drawbridge] Handling whistle request %s" request-id))
+    (if-let [invoke-fn (:invoke-fn @agent-state)]
+      (try
+        (let [session-id (:session-id @agent-state)
+              {:keys [result session-id exit-code error]} (invoke-fn prompt session-id)]
+          ;; Update session ID if returned
+          (when session-id
+            (swap! agent-state assoc :session-id session-id))
+          ;; Send response back
+          (send-whistle-response! request-id
+                                  {:result result
+                                   :exit-code (or exit-code 0)
+                                   :error error
+                                   :agent-id (:agent-id @agent-state)}))
+        (catch Exception e
+          (println "[drawbridge] Whistle invoke error:" (.getMessage e))
+          (send-whistle-response! request-id
+                                  {:error (.getMessage e)
+                                   :agent-id (:agent-id @agent-state)})))
+      (send-whistle-response! request-id
+                              {:error "no invoke-fn registered"
+                               :agent-id (:agent-id @agent-state)}))))
+
 (defn- handle-agency-message
   "Handle a message from Agency (bell, page, etc.)."
   [msg]
@@ -351,9 +403,13 @@
           ;; Default: send prompt to agent
           (future (send-input! prompt))))
 
-      ("page" "whistle")
-      ;; Page/whistle is synchronous - invoke agent and return response
+      "page"
+      ;; Page is synchronous - invoke agent and return response
       (future (handle-page-sync msg))
+
+      "whistle"
+      ;; Whistle is synchronous - invoke agent and return response
+      (future (handle-whistle-sync msg))
 
       ;; Default: send as-is
       (future (send-input! (format "[Agency: %s] %s" msg-type (pr-str msg)))))))

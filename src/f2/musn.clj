@@ -50,12 +50,24 @@
         {:host host :port port})
       (catch Throwable _ nil))))
 
+(defn- port-open?
+  [host port]
+  (when (and (string? host) (pos? (long (or port 0))))
+    (try
+      (let [socket (java.net.Socket.)]
+        (try
+          (.connect socket (java.net.InetSocketAddress. host (int port)) 200)
+          true
+          (finally
+            (try (.close socket) (catch Exception _ nil)))))
+      (catch Exception _ false))))
+
 (defn- futon1-target-open?
   "Report whether the configured external Futon1 API base appears reachable (port open)."
   [config]
   (when-let [api-base (get-in config [:futon1 :api-base])]
     (when-let [{:keys [host port]} (uri-host-port api-base)]
-      (phoebe/port-open? host port))))
+      (port-open? host port))))
 
 (defn- futon1a-replacement?
   []
@@ -214,20 +226,20 @@
   (when (:enabled? futon1-api)
     (safe-start "Futon1 API"
       (println (format "[f2.musn] Starting Futon1 API on port %d..." (:port futon1-api)))
-      (let [result (futon1-api/start! {:port (:port futon1-api)
-                                       :default-profile (:profile futon1-api)})]
-        (println "[f2.musn] Futon1 API started")
-        ;; Return a stop function
-        (fn [] (futon1-api/stop!))))))
+      (futon1-api/start! {:port (:port futon1-api)
+                          :default-profile (:profile futon1-api)})
+      (println "[f2.musn] Futon1 API started")
+      ;; Return a stop function
+      (fn [] (futon1-api/stop!)))))
 
 (defn- start-lab-ws! [{:keys [lab-ws]}]
   (when (:enabled? lab-ws)
     (safe-start "Lab WebSocket"
       (println (format "[f2.musn] Starting Lab WebSocket on port %d..." (:port lab-ws)))
-      (let [server (lab-ws/start! {:port (:port lab-ws)})]
-        (println "[f2.musn] Lab WebSocket started")
-        ;; Return a stop function
-        (fn [] (lab-ws/stop!))))))
+      (lab-ws/start! {:port (:port lab-ws)})
+      (println "[f2.musn] Lab WebSocket started")
+      ;; Return a stop function
+      (fn [] (lab-ws/stop!)))))
 
 (defn- start-agency! [{:keys [agency]}]
   (when (:enabled? agency)

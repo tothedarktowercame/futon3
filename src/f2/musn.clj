@@ -79,6 +79,7 @@
    :irc-bridge {:enabled? irc-bridge-enabled?
                 :host irc-bridge-host
                 :port irc-bridge-port
+                :ws-port (or (some-> (env-trim "FUTON3_IRC_WS_PORT") Long/parseLong) 6668)
                 :password irc-bridge-password
                 :musn-url "http://localhost:6065"
                 :poll-interval 2.0

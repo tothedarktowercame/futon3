@@ -610,3 +610,23 @@ repair) and new tests; Claude reviewed twice and fixed all issues.
 - Pipeline ordering verified by dedicated test
 - XTDB integration test passing with in-memory store
 - All 5 previously missing modules landed with tests
+
+### Checkpoint 3 — 2026-02-08
+
+**What was done:**
+
+- Added pattern/invariant/theory references to all 12 module ns docstrings
+  (entity, penholder, validation, pipeline, mirror, health, open-world,
+  registry, repair, invariants, errors, routes). Every module now traces to
+  its invariant (I0-I4), pattern, and theory.
+- Created `README-best-practice.md` documenting the Claude + Codex collaborative
+  workflow, futonic discipline (layered gates, error shapes, proof-path protocol,
+  PSR/PUR discipline), checkpointing, common pitfalls, and file layout.
+- Traceability chain is complete: evidence → pattern → PSR → module → test → doc → error.
+- Part I gate is satisfied: evidence doc, module map, PSR/PUR exemplars,
+  traceability document, and module headers all cross-reference each other.
+
+**Test state:** 66 tests, 569 assertions, 0 failures
+**Next:** Part II remaining work — expansion gates, tooling auth, open-world
+pipeline (Codex has begun landing these). Then: HTTP ring adapter, XTDB real
+node integration, and stress/integration hardening.

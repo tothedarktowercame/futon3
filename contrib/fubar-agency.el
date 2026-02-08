@@ -9,10 +9,9 @@
 ;;   (fubar-agency-disconnect)  ; Disconnect
 ;;   (fubar-agency-status)      ; Show connection status
 ;;
-;; When connected, incoming whistles pull you into the ERC channel
-;; so you can participate in the standup alongside agents.  The
-;; whistle prompt is posted to the channel and your ERC buffer is
-;; raised.  Bells appear as notifications.
+;; When a bell arrives (e.g. standup), you are pulled into the ERC
+;; channel for the standup room.  Whistles get a simple minibuffer
+;; prompt or auto-response.
 
 ;;; Code:
 
@@ -43,32 +42,12 @@
   :group 'fubar-agency)
 
 (defcustom fubar-agency-auto-respond nil
-  "When non-nil, auto-respond to whistles with this string instead of prompting."
-  :type '(choice (const nil) string)
-  :group 'fubar-agency)
-
-(defcustom fubar-agency-whistle-timeout 60
-  "Seconds to wait for user to respond to a whistle before timing out."
-  :type 'integer
-  :group 'fubar-agency)
-
-(defcustom fubar-agency-irc-host "localhost"
-  "IRC bridge hostname."
-  :type 'string
-  :group 'fubar-agency)
-
-(defcustom fubar-agency-irc-port 6667
-  "IRC bridge port."
-  :type 'integer
-  :group 'fubar-agency)
-
-(defcustom fubar-agency-irc-password nil
-  "IRC bridge password (nil if no auth required)."
+  "When non-nil, auto-respond to whistles with this string."
   :type '(choice (const nil) string)
   :group 'fubar-agency)
 
 (defcustom fubar-agency-irc-room "standup"
-  "Default ERC channel to join on whistle/standup."
+  "Default ERC channel to join on standup bell."
   :type 'string
   :group 'fubar-agency)
 
@@ -86,9 +65,6 @@
 (defvar fubar-agency--connected nil
   "Non-nil when connected to Agency.")
 
-(defvar fubar-agency--pending-whistle nil
-  "Plist of the current pending whistle, or nil.")
-
 ;;; Logging
 
 (defun fubar-agency--log (fmt &rest args)
@@ -105,22 +81,20 @@
 ;;; ERC integration
 
 (defun fubar-agency--erc-server-buffer ()
-  "Find an existing ERC server buffer connected to the IRC bridge, or nil."
+  "Find any live ERC server buffer, or nil.
+Looks for any ERC buffer with a live server process."
   (seq-find
    (lambda (buf)
      (with-current-buffer buf
        (and (derived-mode-p 'erc-mode)
             (erc-server-buffer-p)
-            (erc-server-process-alive)
-            (boundp 'erc-session-server)
-            (stringp erc-session-server)
-            (string-match-p (regexp-quote fubar-agency-irc-host)
-                            erc-session-server))))
+            (erc-server-process-alive))))
    (buffer-list)))
 
 (defun fubar-agency--erc-channel-buffer (room)
   "Find the ERC buffer for #ROOM, or nil."
-  (let ((chan (if (string-prefix-p "#" room) room (concat "#" room))))
+  (let ((chan (if (string-prefix-p "#" room) room
+               (concat "#" room))))
     (seq-find
      (lambda (buf)
        (with-current-buffer buf
@@ -130,49 +104,44 @@
                      (string-equal-ignore-case target chan))))))
      (buffer-list))))
 
-(defun fubar-agency--ensure-erc ()
-  "Ensure ERC is connected to the IRC bridge. Returns the server buffer."
-  (or (fubar-agency--erc-server-buffer)
-      (progn
-        (fubar-agency--log "[erc] Connecting to %s:%d as %s"
-                           fubar-agency-irc-host
-                           fubar-agency-irc-port
-                           fubar-agency-agent-id)
-        (erc :server fubar-agency-irc-host
-             :port fubar-agency-irc-port
-             :nick fubar-agency-agent-id
-             :password fubar-agency-irc-password)
-        ;; Give ERC a moment to connect
-        (sit-for 1)
-        (fubar-agency--erc-server-buffer))))
-
 (defun fubar-agency--join-and-show-erc (room)
-  "Ensure ERC is connected, join #ROOM, and raise the channel buffer."
-  (let ((chan (if (string-prefix-p "#" room) room (concat "#" room))))
-    (fubar-agency--ensure-erc)
-    ;; Join the channel if not already in it
-    (unless (fubar-agency--erc-channel-buffer room)
-      (let ((server-buf (fubar-agency--erc-server-buffer)))
-        (when server-buf
-          (with-current-buffer server-buf
-            (erc-join-channel chan)))))
-    ;; Wait briefly for the channel buffer to appear
-    (let ((attempts 0)
-          (buf nil))
-      (while (and (< attempts 10) (null buf))
-        (setq buf (fubar-agency--erc-channel-buffer room))
-        (unless buf
-          (sit-for 0.3)
-          (setq attempts (1+ attempts))))
-      (when buf
+  "Join #ROOM via the existing ERC connection and raise the buffer.
+If no ERC server is connected, logs an error."
+  (let ((chan (if (string-prefix-p "#" room) room
+               (concat "#" room)))
+        (server-buf (fubar-agency--erc-server-buffer)))
+    (cond
+     ;; Already in the room — just raise it
+     ((fubar-agency--erc-channel-buffer room)
+      (let ((buf (fubar-agency--erc-channel-buffer room)))
         (pop-to-buffer buf)
-        (fubar-agency--log "[erc] Joined and raised %s" chan))
-      buf)))
+        (fubar-agency--log "[erc] Raised %s" chan)
+        buf))
+     ;; Have a server connection — join
+     (server-buf
+      (with-current-buffer server-buf
+        (erc-join-channel chan))
+      ;; Wait for the channel buffer to appear
+      (let ((attempts 0) (buf nil))
+        (while (and (< attempts 15) (null buf))
+          (setq buf (fubar-agency--erc-channel-buffer room))
+          (unless buf
+            (sit-for 0.2)
+            (setq attempts (1+ attempts))))
+        (when buf
+          (pop-to-buffer buf)
+          (fubar-agency--log "[erc] Joined and raised %s" chan))
+        buf))
+     ;; No ERC at all
+     (t
+      (fubar-agency--log "[erc] No ERC server buffer found!")
+      (message "[fubar-agency] No ERC connection — connect to IRC first")
+      nil))))
 
 ;;; WebSocket message handling
 
 (defun fubar-agency--send (msg)
-  "Send MSG (a plist or alist) as JSON over the WebSocket."
+  "Send MSG as JSON over the WebSocket."
   (when (and fubar-agency--ws
              (websocket-openp fubar-agency--ws))
     (websocket-send-text
@@ -180,53 +149,54 @@
      (json-encode msg))))
 
 (defun fubar-agency--handle-whistle (msg)
-  "Handle an incoming whistle by pulling the user into the ERC standup room."
+  "Handle a whistle with minibuffer prompt or auto-response."
   (let* ((request-id (plist-get msg :request-id))
-         (prompt (plist-get msg :prompt))
-         (display-prompt (or prompt "Agency standup check-in"))
-         (room fubar-agency-irc-room))
-    (fubar-agency--log "[whistle] request=%s prompt=%s"
-                       request-id
-                       (truncate-string-to-width display-prompt 60 nil nil "..."))
+         (prompt (or (plist-get msg :prompt) "ping"))
+         (short (truncate-string-to-width prompt 60 nil nil "...")))
+    (fubar-agency--log "[whistle] id=%s prompt=%s" request-id short)
     (if fubar-agency-auto-respond
-        ;; Auto-respond mode (no ERC)
         (progn
           (fubar-agency--send
            `((type . "whistle-response")
              (request-id . ,request-id)
              (response . ,fubar-agency-auto-respond)))
-          (fubar-agency--log "[whistle] auto-responded: %s" fubar-agency-auto-respond))
-      ;; Interactive mode - pull user into ERC
-      (setq fubar-agency--pending-whistle
-            (list :request-id request-id :prompt display-prompt :room room))
-      ;; Respond immediately so the standup doesn't time out
-      (fubar-agency--send
-       `((type . "whistle-response")
-         (request-id . ,request-id)
-         (response . ,(format "Joining #%s" room))))
-      ;; Use run-at-time to avoid blocking the WS handler
-      (run-at-time 0 nil #'fubar-agency--pull-into-erc
-                   room display-prompt))))
-
-(defun fubar-agency--pull-into-erc (room prompt)
-  "Join ERC ROOM and post the standup PROMPT there."
-  (let ((chan-buf (fubar-agency--join-and-show-erc room)))
-    (when chan-buf
-      ;; Post the prompt into the channel so it's visible
-      (with-current-buffer chan-buf
-        (erc-send-message
-         (format "[standup] %s" (truncate-string-to-width prompt 200 nil nil "..."))))))
-  (setq fubar-agency--pending-whistle nil))
+          (fubar-agency--log "[whistle] auto-responded"))
+      ;; Prompt in minibuffer (deferred so we don't block the WS)
+      (run-at-time
+       0 nil
+       (lambda ()
+         (let ((response (read-string
+                          (format "[Agency whistle] %s\nReply: " prompt))))
+           (fubar-agency--send
+            `((type . "whistle-response")
+              (request-id . ,request-id)
+              (response . ,response)))
+           (fubar-agency--log "[whistle] replied: %s" response)))))))
 
 (defun fubar-agency--handle-bell (msg)
-  "Handle an incoming bell MSG as a notification."
+  "Handle a bell by joining the ERC standup room."
   (let* ((bell-type (or (plist-get msg :bell-type) "bell"))
          (payload (plist-get msg :payload))
-         (bell-msg (if payload
-                       (or (plist-get payload :message) (format "%s" payload))
-                     bell-type)))
-    (fubar-agency--log "[bell] type=%s msg=%s" bell-type bell-msg)
-    (message "[Agency Bell] %s" bell-msg)))
+         (room (or (and payload (plist-get payload :room))
+                   fubar-agency-irc-room))
+         (bell-msg (and payload
+                        (or (plist-get payload :message)
+                            (format "%s" payload)))))
+    (fubar-agency--log "[bell] type=%s room=%s msg=%s"
+                       bell-type room (or bell-msg ""))
+    ;; Pull the user into the ERC room
+    (run-at-time 0 nil #'fubar-agency--pull-into-erc
+                 room bell-msg)))
+
+(defun fubar-agency--pull-into-erc (room &optional prompt)
+  "Join ERC ROOM and optionally post PROMPT there."
+  (let ((chan-buf (fubar-agency--join-and-show-erc room)))
+    (when (and chan-buf prompt
+               (not (string-empty-p prompt)))
+      (with-current-buffer chan-buf
+        (erc-send-message
+         (format "[standup] %s"
+                 (truncate-string-to-width prompt 200 nil nil "...")))))))
 
 (defun fubar-agency--on-message (_ws frame)
   "Handle incoming WebSocket FRAME."
@@ -241,11 +211,12 @@
       (let ((type (plist-get msg :type)))
         (cond
          ((string= type "connected")
-          (fubar-agency--log "[connected] agent-id=%s" (plist-get msg :agent-id)))
+          (fubar-agency--log "[connected] agent-id=%s"
+                             (plist-get msg :agent-id)))
          ((string= type "registered")
-          (fubar-agency--log "[registered] agent-id=%s" (plist-get msg :agent-id)))
-         ((string= type "pong")
-          nil) ; silent keepalive
+          (fubar-agency--log "[registered] agent-id=%s"
+                             (plist-get msg :agent-id)))
+         ((string= type "pong") nil)
          ((string= type "whistle")
           (fubar-agency--handle-whistle msg))
          ((string= type "bell")
@@ -256,9 +227,8 @@
 (defun fubar-agency--on-open (_ws)
   "Called when WebSocket connection opens."
   (setq fubar-agency--connected t)
-  (fubar-agency--log "[open] connected to Agency as %s" fubar-agency-agent-id)
-  (message "[fubar-agency] Connected to Agency as %s" fubar-agency-agent-id)
-  ;; Start keepalive pings
+  (fubar-agency--log "[open] connected as %s" fubar-agency-agent-id)
+  (message "[fubar-agency] Connected as %s" fubar-agency-agent-id)
   (when fubar-agency--ping-timer
     (cancel-timer fubar-agency--ping-timer))
   (setq fubar-agency--ping-timer
@@ -268,18 +238,18 @@
 
 (defun fubar-agency--on-close (_ws)
   "Called when WebSocket connection closes."
-  (setq fubar-agency--connected nil)
-  (setq fubar-agency--ws nil)
+  (setq fubar-agency--connected nil
+        fubar-agency--ws nil)
   (when fubar-agency--ping-timer
     (cancel-timer fubar-agency--ping-timer)
     (setq fubar-agency--ping-timer nil))
-  (fubar-agency--log "[closed] disconnected from Agency")
-  (message "[fubar-agency] Disconnected from Agency"))
+  (fubar-agency--log "[closed] disconnected")
+  (message "[fubar-agency] Disconnected"))
 
 (defun fubar-agency--on-error (_ws _type err)
   "Called on WebSocket error."
   (fubar-agency--log "[error] %s" err)
-  (message "[fubar-agency] WebSocket error: %s" err))
+  (message "[fubar-agency] Error: %s" err))
 
 (defun fubar-agency--ping ()
   "Send a keepalive ping."
@@ -296,7 +266,8 @@
   (when (and fubar-agency--ws
              (websocket-openp fubar-agency--ws))
     (fubar-agency-disconnect))
-  (let ((url (format "%s?agent-id=%s" fubar-agency-ws-url fubar-agency-agent-id)))
+  (let ((url (format "%s?agent-id=%s"
+                     fubar-agency-ws-url fubar-agency-agent-id)))
     (fubar-agency--log "[connecting] %s" url)
     (condition-case err
         (setq fubar-agency--ws
@@ -320,8 +291,8 @@
   (when (and fubar-agency--ws
              (websocket-openp fubar-agency--ws))
     (websocket-close fubar-agency--ws))
-  (setq fubar-agency--ws nil)
-  (setq fubar-agency--connected nil))
+  (setq fubar-agency--ws nil
+        fubar-agency--connected nil))
 
 ;;;###autoload
 (defun fubar-agency-status ()
@@ -339,9 +310,10 @@
 
 ;;;###autoload
 (defun fubar-agency-join (&optional room)
-  "Connect to the IRC bridge via ERC and join ROOM."
+  "Join an ERC channel via the IRC bridge."
   (interactive "sRoom (blank for default): ")
-  (let ((room (if (and room (not (string-empty-p room))) room fubar-agency-irc-room)))
+  (let ((room (if (and room (not (string-empty-p room)))
+                  room fubar-agency-irc-room)))
     (fubar-agency--join-and-show-erc room)))
 
 (provide 'fubar-agency)

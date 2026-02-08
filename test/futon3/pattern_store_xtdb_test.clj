@@ -46,9 +46,21 @@
   (let [rel (:relation row)]
     (cond
       (keyword? rel) rel
+      (symbol? rel) (keyword (str rel))
       (string? rel) (keyword rel)
       (map? rel) (keyword (or (:type rel) (:relation/type rel)))
       :else nil)))
+
+(defn- entity-type
+  "Normalize entity :type field (string/keyword/symbol) into a keyword.
+
+   Some Futon1-compatible APIs return types as strings (e.g. \"pattern/library\")."
+  [v]
+  (cond
+    (keyword? v) v
+    (symbol? v) (keyword (str v))
+    (string? v) (keyword (str/replace v #"^:" ""))
+    :else nil))
 
 (defn- ensure-futon1! []
   (when-not (futon1-base)
@@ -85,7 +97,7 @@
             sigils (filter #(= :pattern/has-sigil (relation-type %)) outgoing)]
         (is (= 200 status))
         (is (= pattern-id (:name entity)))
-        (is (= :pattern/library (:type entity)))
+        (is (= :pattern/library (entity-type (:type entity))))
         (is (seq includes))
         (is (seq sigils))
         (doseq [row includes]

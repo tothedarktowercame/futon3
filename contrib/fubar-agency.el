@@ -332,7 +332,7 @@ Auto-reconnects with exponential backoff unless the user called `fubar-agency-di
     (fubar-agency--schedule-reconnect))
   (when fubar-agency--manual-disconnect
     ;; Manual disconnect consumed; future disconnects should reconnect again.
-    (setq fubar-agency--manual-disconnect nil)))
+    (setq fubar-agency--manual-disconnect nil))
 
 (defun fubar-agency--on-error (_ws _type err)
   "Called on WebSocket error."

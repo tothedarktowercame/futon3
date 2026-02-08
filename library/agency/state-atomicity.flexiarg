@@ -1,0 +1,43 @@
+@flexiarg agency/state-atomicity
+@title State Transitions Are All-or-Nothing
+@sigils [🔒/全]
+@keywords state, atomicity, rollover, session, corruption, persistence
+@audience agency maintainers, futon developers
+@tone analytic-foundational
+@style pattern
+@references [storage/durability-first futon-theory/agent-contract]
+
+! conclusion: Agent state transitions (registration, rollover, session update) must complete fully or fail without partial effects; corrupted or partial state must be detected and rejected, not silently accepted.
+  + context: Agency persists agent state to .edn files. Rollover clears session-id to nil (documented bug). State loading silently returns defaults on parse error. Registration can succeed in one tier while failing to clean up another. These are all partial-state failures: the system is left in an inconsistent state with no signal.
+  + IF:
+    An agent's state must change — new session, rollover, registration, disconnect.
+  + HOWEVER:
+    Multi-step state transitions can fail midway. Rollover currently: (1) summarizes context, (2) clears session-id to nil, (3) should create new session but doesn't. If step 1 succeeds and step 3 fails, the agent has lost its session with no recovery. State file corruption is treated as "no state" rather than "corrupted state."
+  + THEN:
+    Apply all-or-nothing semantics to every state transition:
+    1. Rollover: summarize → create new session → update state atomically. If any step fails, restore previous state and emit error.
+    2. Registration: register in authority → confirm registration → begin routing. If confirmation fails, remove registration.
+    3. State persistence: write to temp file → fsync → rename to target. If rename fails, temp file is evidence of interrupted write.
+    4. State loading: validate structure on read. If validation fails, emit integrity error with file path and content hash. Do not silently fall back to defaults.
+    5. Session-id updates: swap! with compare-and-set semantics. If the agent-id has been evicted between read and write, the update fails explicitly.
+  + BECAUSE:
+    Partial state transitions are the hardest bugs to diagnose because the system looks almost correct. A session-id of nil is not "no session" — it is "corrupted state from failed rollover." Silently loading defaults after corruption masks data loss. A database that silently returns empty on corruption is worse than one that refuses to start.
+
+  + INVARIANT-STATEMENT:
+    A2-atomicity: Every agent state transition either completes fully (all fields updated, persisted, and confirmed) or reverts to the prior state with an explicit error. No transition may leave state in a partially-updated condition.
+
+  + FAILURE-MODES:
+    - Nil session: rollover clears session-id but doesn't create new one; agent loses all context
+    - Silent corruption: state file has truncated EDN; load returns nil; agent starts fresh with no warning
+    - Tier desync: agent registered in authority but connection handle is stale; messages route to dead handle
+
+  + ANTI-PATTERNS:
+    - (swap! state assoc :session-id nil) as "clear" — nil is not a valid session state
+    - (catch Exception _ nil) on state load — corruption becomes invisible
+    - Multi-step registration without rollback — register in tier A, fail to clean tier B
+
+  + NEXT-STEPS:
+    - evidence: audit rollover path for atomicity; trace each swap! and verify all-or-nothing
+    - evidence: inject corrupted .edn file and verify system behavior (should fail loud, not silent)
+    - evidence: count nil session-ids in production state files
+    - evidence-shape: {:transition/type :keyword, :transition/agent-id :string, :transition/started-at :string, :transition/completed? :boolean, :transition/rolled-back? :boolean, :state/before :map, :state/after :map, :error/cause :string}

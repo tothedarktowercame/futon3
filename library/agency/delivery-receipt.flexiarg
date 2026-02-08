@@ -1,0 +1,44 @@
+@flexiarg agency/delivery-receipt
+@title Every Message Gets a Receipt or an Explicit Failure
+@sigils [📬/送]
+@keywords delivery, receipt, ack, bell, whistle, message, guarantee
+@audience agency maintainers, futon developers
+@tone analytic-foundational
+@style pattern
+@references [realtime/rendezvous-handshake storage/durability-first]
+
+! conclusion: Every message sent through Agency must produce either a delivery receipt or an explicit failure; silent send-and-hope is not acceptable.
+  + context: Agency routes messages (bells, whistles, pages) to agents via three tiers: registry, local handlers, and WebSocket. Callers currently receive a boolean or a best-effort result with no delivery guarantee.
+  + IF:
+    You send a message to an agent and need to know whether it arrived, was processed, or failed.
+  + HOWEVER:
+    send-to-agent! returns false on failure but callers often ignore it; bell to "all" returns {:ok true} even if zero agents received it; MUSN posts use throw-exceptions false and never check HTTP status; ack HTTP calls don't verify response codes. The system treats "sent" as "delivered" and "no error" as "success."
+  + THEN:
+    Require a delivery receipt for every message type:
+    1. Bell: secret-based ack proves reception. If no ack within deadline, emit explicit failure event with agent-id and reason.
+    2. Whistle: response proves delivery. Timeout produces explicit {:ok false :err "timeout" :agent-id aid} with no silent fallthrough.
+    3. HTTP posts (MUSN, forum): check response status. Non-2xx is a failure, not silence.
+    4. send-to-agent! must return a result type, not a boolean. Callers must handle the failure path.
+    The delivery receipt is the analogue of a database write acknowledgment: the operation is not complete until the receipt is in hand.
+  + BECAUSE:
+    Without delivery receipts, the system confuses "sent" with "delivered" and "no exception" with "success." This makes failures invisible and debugging impossible. A telephone system without ring/busy/unreachable signals is not a telephone system.
+
+  + INVARIANT-STATEMENT:
+    A0-delivery: No message send operation returns success unless the recipient has acknowledged receipt or the send has been confirmed at the transport layer. Failure to deliver produces an explicit error with agent-id, transport, and reason.
+
+  + FAILURE-MODES:
+    - Silent drop: message sent over WS but agent disconnected between send and receive
+    - False success: HTTP post returns 503 but caller sees no error because exceptions are suppressed
+    - Orphaned promise: whistle promise created but agent crashes before responding; promise leaks
+
+  + ANTI-PATTERNS:
+    - {:throw-exceptions false} without status check
+    - (catch Exception _ nil) in send paths
+    - Returning boolean from send operations (true/false is not enough context)
+
+  + NEXT-STEPS:
+    - evidence: audit every call to send-to-agent! and classify caller handling of false return
+    - evidence: audit every HTTP post with :throw-exceptions false and verify status checks
+    - evidence: measure delivery failure rate (bells sent vs acks received) per transport
+    - evidence: track orphaned promises in pending-whistles atom over time
+    - evidence-shape: {:message/id :string, :message/type :keyword, :agent/id :string, :transport :keyword, :sent/ts :string, :receipt/ts :string, :receipt/type :keyword, :failure/reason :string, :failure/ts :string, :latency-ms :int}

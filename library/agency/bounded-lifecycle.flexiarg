@@ -1,0 +1,44 @@
+@flexiarg agency/bounded-lifecycle
+@title Every Resource Has a Bounded Lifecycle
+@sigils [⏳/终]
+@keywords atom, state, cleanup, leak, ttl, lifecycle, resource
+@audience agency maintainers, futon developers
+@tone technical
+@style pattern
+@references [realtime/listener-leases realtime/liveness-heartbeats]
+
+! conclusion: Every entry in an Agency state atom must have a defined lifecycle with explicit creation, bounded retention, and guaranteed cleanup; fire-and-forget futures are not cleanup.
+  + context: Agency maintains six state atoms: secrets, acks, rendezvous-state, connected-agents, local-handlers, and pending-whistles. Most use future-based TTL cleanup that races with concurrent operations. The acks atom has no cleanup at all and grows without bound.
+  + IF:
+    You store transient state (secrets, promises, connection entries, rendezvous tracking) in an in-memory atom.
+  + HOWEVER:
+    Future-based cleanup (future (Thread/sleep ttl) (swap! atom dissoc key)) races with concurrent reads and writes. Between the sleep ending and the swap! executing, a concurrent operation may read the entry, begin work, and then find the entry gone. The acks atom is never cleaned. pending-whistles entries can be orphaned if the agent disconnects mid-flight.
+  + THEN:
+    Every atom entry must have:
+    1. Created-at timestamp: when the entry was created.
+    2. TTL or expiry: maximum lifetime, after which the entry is invalid.
+    3. Cleanup mechanism: either (a) lazy cleanup on read (check TTL before returning), or (b) periodic sweep (scheduled task that removes expired entries), or (c) cascaded cleanup (when parent resource is removed, dependents are removed).
+    4. Bounded size: maximum number of entries, with eviction policy for overflow.
+    5. No fire-and-forget futures for cleanup: cleanup must be deterministic, not scheduled in a separate thread that races with operations.
+    Specifically:
+    - acks: clean up when the corresponding secret expires.
+    - pending-whistles: clean up on agent disconnect cascade, not just on timeout.
+    - rendezvous-state: clean up when all expected agents have acked or deadline passes, not deadline + arbitrary delay.
+    - connected-agents: clean up triggers cascade to pending-whistles and rendezvous-state.
+  + BECAUSE:
+    Unbounded state atoms are memory leaks. Race-prone cleanup creates intermittent failures that are impossible to reproduce. A database table without a retention policy eventually fills the disk; an atom without cleanup eventually fills the heap.
+
+  + INVARIANT-STATEMENT:
+    A5-bounded: Every entry in every Agency state atom has a defined maximum lifetime. No atom may grow without bound during normal operation. Cleanup is deterministic: either lazy-on-read, periodic-sweep, or cascaded-on-parent-removal.
+
+  + FAILURE-MODES:
+    - Unbounded growth: acks atom accumulates 10k entries/day with no cleanup
+    - Race cleanup: secret TTL future fires during concurrent ack validation; ack fails with "unknown secret"
+    - Orphaned promise: agent disconnects; pending-whistle entry sits until timeout future fires (or forever if future was GC'd)
+    - Late ack: rendezvous cleaned up; agent sends ack after cleanup; ack recorded in acks atom but not in rendezvous
+
+  + NEXT-STEPS:
+    - evidence: measure atom sizes under sustained load (entries per hour per atom)
+    - evidence: count orphaned entries (entries past TTL still in atom)
+    - evidence: reproduce race between TTL cleanup future and concurrent operation
+    - evidence-shape: {:atom/name :keyword, :entry/count :int, :entry/oldest-ms :int, :entry/ttl-ms :int, :cleanup/mechanism :keyword, :cleanup/race-window-ms :int, :orphan/count :int}

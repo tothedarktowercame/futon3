@@ -1,0 +1,43 @@
+@flexiarg agency/single-routing-authority
+@title One Agent, One Routing Path, One Source of Truth
+@sigils [🔑/一]
+@keywords identity, routing, registry, tier, agent, session, authority
+@audience agency maintainers, futon developers
+@tone analytic-foundational
+@style pattern
+@references [futon-theory/agent-contract realtime/listener-leases]
+
+! conclusion: Each agent-id must resolve to exactly one routing path at any given time; the routing authority must be a single source of truth, not a priority cascade across independent stores.
+  + context: Agency routes messages through three tiers: agent-registry (subprocess invocation), local-handlers (in-JVM Drawbridge), and connected-agents (WebSocket). These are independent atoms checked in priority order. An agent can exist in multiple tiers simultaneously with different session-ids, capabilities, and liveness states.
+  + IF:
+    You need to send a message to an agent and expect consistent behavior regardless of which tier handles it.
+  + HOWEVER:
+    The same agent-id can appear in registry (session-id "S1"), local-handlers (no session-id), and connected-agents (session-id "S2") simultaneously. Whistle routing picks the first match (registry > local > WS) but the others aren't consulted or cleaned up. Disconnect from WS doesn't remove registry or local-handler entries. The result: stale routing, session-id divergence, and messages going to dead tiers while live ones are ignored.
+  + THEN:
+    Establish a single routing registry that is the sole authority for agent resolution:
+    1. One atom, one entry per agent-id. The entry specifies: transport type (registry/local/ws), connection handle, session-id, registered-at, last-active, capabilities.
+    2. Registration replaces: when an agent registers via any transport, it evicts any existing entry for that agent-id. No silent coexistence.
+    3. Disconnect cascades: when a transport drops, the entry is removed. If a whistle is in flight, it gets an explicit failure.
+    4. Session-id is authoritative: one session-id per agent-id at any time. Updated atomically on registration or invocation.
+    5. connected-agent-ids returns only agents from the single registry, not a concat of three stores.
+  + BECAUSE:
+    Multiple independent stores for the same identity create split-brain: each store has a partial, potentially stale view. Priority cascading hides the conflict rather than resolving it. A database with three independent indexes that disagree on which row is current is a broken database.
+
+  + INVARIANT-STATEMENT:
+    A1-identity: For any agent-id, at most one routing entry exists at any time. The entry specifies the authoritative transport, session-id, and connection handle. No other store may independently claim to route messages for that agent-id.
+
+  + FAILURE-MODES:
+    - Session split: registry has session S1, WS has session S2; whistle goes to S1 (stale)
+    - Ghost routing: agent disconnected from WS but still in registry; messages invoke dead subprocess
+    - Duplicate delivery: agent in both local-handlers and WS; bell sent via local handler AND WS
+
+  + ANTI-PATTERNS:
+    - (distinct (concat registry local ws)) as the agent list — hides conflicts
+    - Priority cascade without eviction — checking tiers in order without ensuring mutual exclusion
+    - Disconnect that only cleans one tier — WS on-close that ignores registry and local-handlers
+
+  + NEXT-STEPS:
+    - evidence: count agents that exist in multiple tiers simultaneously during normal operation
+    - evidence: track session-id divergence across tiers for the same agent-id
+    - evidence: measure time between WS disconnect and registry/local cleanup (currently: infinite)
+    - evidence-shape: {:agent/id :string, :routing/transport :keyword, :routing/session-id :string, :routing/registered-at :string, :routing/last-active :string, :conflict/tiers [:keyword], :conflict/session-ids [:string]}

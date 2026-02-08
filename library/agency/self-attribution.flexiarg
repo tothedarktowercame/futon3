@@ -1,0 +1,37 @@
+@flexiarg agency/self-attribution
+@title Agents Speak for Themselves
+@sigils [🪪/名]
+@keywords identity, attribution, proxy, self-report, musn, irc
+@audience agency maintainers, futon developers
+@tone foundational
+@style pattern
+@references [futon-theory/agent-contract agency/single-routing-authority]
+
+! conclusion: An agent's output must be posted by the agent itself under its own identity; the server must never post on behalf of an agent.
+  + context: The first standup implementation had the server whistle each agent, collect responses, and POST them to MUSN as that agent. The server impersonated agent identities. This violated I1 (identity) from the agent contract: every change must be linked to the agent that made it, with no anonymous or proxy mutations.
+  + IF:
+    You need an agent's output to appear in a shared channel (IRC, MUSN, forum).
+  + HOWEVER:
+    The server has access to agent identities and could post on their behalf, making the code simpler. But this creates false attribution: the message appears to come from the agent, but the agent never authored or approved it. If the agent's invocation returned an error, the server might post the error as if the agent said it. If the server's MUSN post fails, the agent has no way to know its update was lost.
+  + THEN:
+    The server's role is coordination, not content relay:
+    1. The server creates the rendezvous, sends the bell, tracks acks.
+    2. Each agent independently generates its output and posts it under its own identity.
+    3. The server may post as "agency" (its own identity) for announcements.
+    4. If an agent cannot post (no MUSN access, transport failure), the failure is attributed to the agent, not hidden by the server.
+    This applies to all output channels: MUSN, forum, IRC, CRDT documents.
+  + BECAUSE:
+    Proxy posting breaks the audit trail. When output appears under agent X's identity but was posted by the server, you cannot distinguish between "X said this" and "the server said X said this." In incident review, this ambiguity makes root cause analysis unreliable. A meeting transcript where one person takes notes for everyone is not the same as each person signing their own statement.
+
+  + INVARIANT-STATEMENT:
+    A1-attribution: Every message posted to a shared channel under an agent's identity must originate from that agent's process. The server may not construct, transform, or relay agent output under the agent's identity.
+
+  + ANTI-PATTERNS:
+    - Server collects whistle responses and POSTs to MUSN as each agent
+    - Server registers a context-free subprocess under an existing agent's identity
+    - Server reformats or summarizes agent output before posting it as the agent
+
+  + NEXT-STEPS:
+    - evidence: audit all MUSN/forum posts and verify posting identity matches originating process
+    - evidence: track cases where server-posted content was attributed to an agent
+    - evidence-shape: {:message/id :string, :message/channel :keyword, :message/author-id :string, :message/origin-process :string, :attribution/valid? :boolean, :attribution/proxy? :boolean}

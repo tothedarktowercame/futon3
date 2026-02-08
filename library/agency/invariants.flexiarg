@@ -1,0 +1,78 @@
+@flexiarg agency/invariants
+@title Agency Invariant Set
+@sigils [🏛/律]
+@keywords invariant, specification, agency, guarantee, contract
+@audience agency maintainers, futon developers, pattern reviewers
+@tone formal-analytic
+@style pattern
+@references [futon-theory/agent-contract futon-theory/error-hierarchy storage/durability-first realtime/rendezvous-handshake realtime/liveness-heartbeats realtime/listener-leases]
+
+! conclusion: Agency must uphold six invariants — delivery, identity, atomicity, error hierarchy, debugging, and bounded resources — analogous to the I0-I4 framework in futon1a; every feature built on Agency inherits these guarantees or is built on sand.
+  + context: Agency is the messaging and coordination backbone for all futon agents (human and AI). It routes bells (async), whistles (sync), manages agent registration, and bridges to IRC/MUSN/forum. An audit revealed: 20+ silent error catches, three independent routing tiers with no consistency, unbounded state atoms, no delivery guarantees, and no specification. Features built on Agency (standup, PAR sessions, pair programming) inherit all of these deficiencies.
+
+  + INVARIANT-SET:
+
+    A0-delivery (agency/delivery-receipt):
+      Every message send operation returns either a delivery receipt or an explicit failure.
+      No send may return success without confirmation from the transport layer.
+      Proof: for every bell sent, an ack arrives or a timeout error is emitted.
+
+    A1-identity (agency/single-routing-authority, agency/self-attribution):
+      For any agent-id, exactly one routing entry exists at any time.
+      Agents speak for themselves; the server never posts under an agent's identity.
+      Proof: at no point do two tiers claim authority for the same agent-id.
+
+    A2-atomicity (agency/state-atomicity):
+      Every state transition completes fully or reverts with an explicit error.
+      No transition may leave state partially updated.
+      Proof: rollover never produces a nil session-id; corrupted state files are rejected, not silently defaulted.
+
+    A3-hierarchy (agency/loud-failure):
+      Every error surfaces at the layer that caused it with agent-id, operation, and cause.
+      No exception handler may discard an error without propagation or explicit recovery.
+      Proof: zero instances of (catch Exception _ nil) in the codebase.
+
+    A4-debugging:
+      Any failure in Agency is diagnosable from logs within 10 minutes.
+      Every error includes enough context (layer, agent-id, operation, timestamp, cause) for diagnosis.
+      Proof: given a failure scenario, an operator can trace the cause using only Agency logs.
+
+    A5-bounded (agency/bounded-lifecycle):
+      Every entry in every state atom has a maximum lifetime.
+      No atom grows without bound during normal operation.
+      Proof: atom sizes remain stable under sustained load; no orphaned entries accumulate.
+
+  + TRACEABILITY:
+    Each invariant traces to a pattern (abstract) and must trace to:
+    - Implementation: specific function(s) that enforce it
+    - Test: specific test(s) that prove it
+    - Evidence: specific metric(s) that monitor it
+
+    Current traceability (to be filled as implementation proceeds):
+
+    | Invariant | Pattern | Implementation | Test | Evidence |
+    | A0 | agency/delivery-receipt | TBD | TBD | TBD |
+    | A1 | agency/single-routing-authority | TBD | TBD | TBD |
+    | A2 | agency/state-atomicity | TBD | TBD | TBD |
+    | A3 | agency/loud-failure | TBD | TBD | TBD |
+    | A4 | (derived from A3) | TBD | TBD | TBD |
+    | A5 | agency/bounded-lifecycle | TBD | TBD | TBD |
+
+  + RELATIONSHIP-TO-FUTON1A:
+    futon1a defines I0 (persistence), I1 (identity), I2 (integrity), I3 (hierarchy), I4 (debugging).
+    Agency's A0-A5 are the inter-process analogue:
+    - I0 (persistence) maps to A0 (delivery) and A2 (atomicity): messages and state are durable.
+    - I1 (identity) maps to A1 (identity): one agent, one routing path, self-attributed output.
+    - I2 (integrity) maps to A2 (atomicity) and A5 (bounded): state transitions and resource lifetimes are consistent.
+    - I3 (hierarchy) maps to A3 (hierarchy): errors surface at the correct layer.
+    - I4 (debugging) maps to A4 (debugging): failures are diagnosable.
+
+  + BECAUSE:
+    Agency is not different from a database just because it uses WebSockets instead of disk. A message that might arrive is not a message. A session-id that might be correct is not an identity. An error that might be logged is not an error. The invariants make these guarantees concrete and testable.
+
+  + NEXT-STEPS:
+    - Fill traceability table as each invariant is implemented and tested.
+    - Write proof tests for each invariant in test/futon3/agency/invariants/.
+    - Add A0-A5 health checks to Agency startup (analogous to futon1a startup integrity gate).
+    - Monitor invariant violations in production via evidence-shape metrics.
+    - evidence-shape: {:invariant/id :keyword, :invariant/status :keyword, :proof/test-path :string, :proof/last-run :string, :proof/passed? :boolean, :implementation/files [:string], :violation/count :int, :violation/last :string}

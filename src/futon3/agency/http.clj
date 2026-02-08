@@ -496,7 +496,8 @@
       (get @local-handlers aid)
       (let [request-id (generate-request-id)
             response-promise (promise)
-            whistle-msg {:type "page"
+            ;; Wire type is "whistle"; receive-side accepts "page" as backwards-compat alias.
+            whistle-msg {:type "whistle"
                       :request-id request-id
                       :prompt prompt
                       :timestamp (str (java.time.Instant/now))}]
@@ -524,7 +525,8 @@
       (get @connected-agents aid)
       (let [request-id (generate-request-id)
             response-promise (promise)
-            whistle-msg {:type "page"
+            ;; Wire type is "whistle"; receive-side accepts "page" as backwards-compat alias.
+            whistle-msg {:type "whistle"
                       :request-id request-id
                       :prompt prompt
                       :timestamp (str (java.time.Instant/now))}]

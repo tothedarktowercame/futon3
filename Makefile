@@ -1,6 +1,6 @@
 CLOJURE=clojure
 
-.PHONY: dev test demo repl lint sync-patterns
+.PHONY: dev test test-real demo repl lint sync-patterns
 
 dev:
 	./scripts/dev.sh
@@ -8,6 +8,10 @@ dev:
 test:
 	$(CLOJURE) -M:test
 	./scripts/test-elisp.sh
+
+# Integration test suite that hits a running Futon1 API (usually futon1a via `make dev`)
+test-real:
+	FUTON3_REAL_DATA_TESTS=1 FUTON1_API_BASE=$${FUTON1_API_BASE:-http://localhost:8080} $(CLOJURE) -X:test :nses '[futon3.real-client-interfaces-test]'
 
 demo:
 	$(CLOJURE) -M:demo

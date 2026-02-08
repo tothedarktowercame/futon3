@@ -478,6 +478,22 @@ futon1a's first dataset is its own creation story.
 4. Restart cycle preserves identical world state.
 5. Rollback plan documented (switch clients back to futon1).
 
+#### Checkpoint 2026-02-08: Storage Migration Complete (API Gap Remains)
+
+**Completed:**
+- Futon1 (LMDB XTDB) storage previously used by `futon3` dev was retired:
+  moved from `~/code/futon3/data/default` to
+  `~/code/storage/futon1-retired/futon3-data-default-20260208T120722Z`.
+- Futon1a storage now lives at `~/code/storage/futon1a/default` (RocksDB XTDB).
+- Logical export/import migration completed with stable checksum match:
+  `17564` docs copied from the retired LMDB store into the futon1a store.
+
+**Remaining gap (explicit):**
+- The Futon1 HTTP API was *not* ported as part of the storage rebuild.
+  Futon1a currently provides only a minimal compatibility surface sufficient for
+  futon3 bridging writes (e.g. entity/relation writes and lab session save/load),
+  plus Prototype 1 endpoints. Full `/api/alpha/*` parity remains Phase II work.
+
 ---
 
 ## Open Questions

@@ -58,22 +58,16 @@ err()  { printf "%b\n" "${RED}$*${RESET}" >&2; }
 
 cd "$(dirname "$0")/.."
 
-# Load environment defaults
-# Priority: existing env vars > .env.local > .env.dev
-if [[ -f .env.local ]]; then
-  info "[dev] Loading .env.local"
-  set -a; source .env.local; set +a
-elif [[ -f .env.dev ]]; then
-  info "[dev] Loading .env.dev"
-  set -a; source .env.dev; set +a
-fi
-
 touch /tmp/musn_stream.log
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-# Load .env if present (avoid nounset errors while sourcing).
+# Load env defaults.
+# Priority: existing env vars > .env.local > .env.dev > .env
+#
+# Note: `.env.local` must override `.env`. (Previously `.env` was sourced last
+# and clobbered `.env.local`.)
 if [[ -f "${ROOT}/.env" ]]; then
   set +u
   set -a
@@ -82,10 +76,26 @@ if [[ -f "${ROOT}/.env" ]]; then
   set +a
   set -u
 fi
+if [[ -f .env.dev ]]; then
+  info "[dev] Loading .env.dev"
+  set -a; source .env.dev; set +a
+fi
+if [[ -f .env.local ]]; then
+  info "[dev] Loading .env.local"
+  set -a; source .env.local; set +a
+fi
 
 # Legacy env var support
 if [[ "${SKIP_CHAT_SUPERVISOR:-}" == "1" ]]; then
   export FUTON3_CHAT_SUPERVISOR=0
+fi
+
+# If requested, run Futon1a as the Futon1 replacement API and disable Futon1's embedded API.
+# This keeps the Futon3 runtime pointed at an API on port 8080, but backed by Futon1a storage.
+if [[ "${FUTON3_USE_FUTON1A:-0}" == "1" ]]; then
+  export FUTON1_API=0
+  export FUTON1A_PORT="${FUTON1A_PORT:-8080}"
+  export FUTON1_API_BASE="http://localhost:${FUTON1A_PORT}"
 fi
 
 # CLI overrides for MUSN page bridge
@@ -142,6 +152,7 @@ port_open() {
 
 codex_drawbridge_pid=""
 musn_page_pid=""
+futon1a_pid=""
 # Agency now runs inside MUSN JVM (see f2.musn/start-agency!)
 # Set FUTON3_AGENCY=0 to disable it
 
@@ -152,8 +163,32 @@ cleanup() {
   if [[ -n "${musn_page_pid}" ]]; then
     kill "${musn_page_pid}" >/dev/null 2>&1 || true
   fi
+  if [[ -n "${futon1a_pid}" ]]; then
+    kill "${futon1a_pid}" >/dev/null 2>&1 || true
+  fi
 }
 trap cleanup EXIT
+
+if [[ "${FUTON3_USE_FUTON1A:-0}" == "1" ]]; then
+  if port_open "${FUTON1A_PORT}"; then
+    warn "[dev] Futon1a already running on port ${FUTON1A_PORT}."
+  else
+    info "[dev] Starting Futon1a (replacement API) on port ${FUTON1A_PORT}..."
+    cat > /tmp/futon1a-dev.sh <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+cd /home/joe/code/futon1a
+export FUTON1A_DATA_DIR="${FUTON1A_DATA_DIR:-/home/joe/code/storage/futon1a/default}"
+export FUTON1A_PORT="${FUTON1A_PORT:-8080}"
+export FUTON1A_ALLOWED_PENHOLDERS="${FUTON1A_ALLOWED_PENHOLDERS:-${USER:-cli},futon3}"
+export FUTON1A_COMPAT_PENHOLDER="${FUTON1A_COMPAT_PENHOLDER:-${MODEL_PENHOLDER:-${USER:-cli}}}"
+exec clojure -M -m futon1a.system
+EOF
+    chmod +x /tmp/futon1a-dev.sh
+    setsid /tmp/futon1a-dev.sh >/tmp/futon1a-dev.log 2>&1 </dev/null &
+    futon1a_pid="$!"
+  fi
+fi
 
 if [[ "${FUTON3_CODEX_DRAWBRIDGE:-1}" != "0" ]]; then
   if port_open 6769; then

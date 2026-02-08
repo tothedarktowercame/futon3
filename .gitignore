@@ -49,3 +49,8 @@ node_modules/
 # Local environment overrides
 .env.local
 .venv/
+
+# Local XTDB artifacts (should live under a data root, not the repo root)
+doc-store/
+index-store/
+tx-log/

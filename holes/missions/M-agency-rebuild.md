@@ -1,6 +1,6 @@
 # Mission: Agency Rebuild (A0-A5 Invariants)
 
-**Status:** :scoped
+**Status:** :in-progress (Phase 2 complete, Phase 3 in progress)
 **Date:** 2026-02-08
 **Owner:** Joe (handoff requires explicit update to this header)
 **Primary:** Codex
@@ -212,15 +212,68 @@ Acceptance results:
 Notes:
 - A full `clj -X:test` run still reports failures/errors outside Agency (golden transcript drift, fulab harness JSON encoding, similarity determinism, library coherence). These are not treated as Agency rebuild blockers unless causally linked.
 
+#### Agent Compatibility Audit (2026-02-08, between Phase 2 and Phase 3)
+
+Phase 2 enforced A0-A5 on the server side. Before Phase 3 validation can exercise the full path, the four agent types that connect to Agency need review against the new semantics.
+
+**Agents audited:**
+- Drawbridge (`src/futon3/drawbridge/core.clj`) — in-JVM Clojure agent runtime
+- fubar-agency.el (`contrib/fubar-agency.el`) — Emacs human agent via WS
+- fucodex-peripheral.ts (`scripts/fucodex-peripheral.ts`) — TypeScript Codex wrapper
+- fuclaude-peripheral.ts (`scripts/fuclaude-peripheral.ts`) — TypeScript Claude wrapper
+
+**Findings:**
+
+| Agent | Severity | Issue | Detail |
+|---|---|---|---|
+| Drawbridge | LOW | Redundant dual registration | `start!` registers both locally (`register-local-handler!`) and via WS (`{:type "register"}`). A1 watch correctly resolves this (WS wins, local evicted), but the local registration is wasted work and the startup log is misleading ("Registered with Agency" for a registration immediately evicted). |
+| fubar-agency.el | HIGH | No reconnect on WS disconnect | `fubar-agency--on-close` sets state to nil and logs. No reconnect loop, no backoff. Server restart or network blip silently loses the human agent. Combined with A5 disconnect cascades (pending whistles cleaned up), a brief disconnect means lost messages with no recovery path. |
+| fucodex-peripheral.ts | LOW | Ack errors swallowed | Auto-reconnect (5s backoff) works. Structurally compatible with Phase 2 changes. Ack fetch/post errors are caught-and-logged but not retried. |
+| fuclaude-peripheral.ts | LOW | Same as fucodex | Same structure, same minor gap. |
+| All | GAP | No agent integration tests | All invariant proof tests mock the routing layer. No test exercises the actual agent→Agency→agent path. |
+
+**Disposition:**
+- Drawbridge dual registration: fix in Phase 3 (skip local registration when WS URL is configured).
+- fubar-agency.el reconnect: fix in Phase 3 (add reconnect-with-backoff to `on-close`). This is in scope because A0 (delivery) assumes agents are reachable; a permanently-disconnected human agent silently violates that assumption.
+- TypeScript peripheral ack handling: out of scope for this mission (low severity, existing retry via reconnect is sufficient).
+- Agent integration tests: add in Phase 3 as part of validation.
+
 ### Phase 3: Validation + Evidence (1 day)
 
-- Run a “soak” style test (bounded time) that sends bells/whistles repeatedly and asserts bounded growth and deterministic cleanup.
-- Exercise standup rendezvous flow (bell + ack + self-report) end-to-end and assert:
-  - delivery receipts recorded,
-  - self-attribution preserved,
-  - explicit failure on missing ack/timeout.
-- Record evidence pointers (logs, metrics, test runs) that directly support the invariant claims.
+#### 3a. Pre-validation fixes
+
+- **Drawbridge**: In `start!`, skip `register-with-agency!` when `agency-ws-url` is provided. The WS path becomes the single routing authority; local registration is redundant when WS is configured.
+- **fubar-agency.el**: Add reconnect-with-backoff to `fubar-agency--on-close`. On disconnect, schedule reconnect attempt after 5s, doubling to 60s max. On successful reconnect, re-register and re-send ping timer. Without this, the human agent silently disappears on any server restart.
+
+#### 3b. Soak test
+
+- `test/futon3/agency/invariants/soak_test.clj`: sustained bell/whistle traffic over bounded time, assert atom sizes remain stable and cleanup is deterministic. (Codex — in progress.)
+
+#### 3c. Agent integration tests
+
+- Test registry registration → `send-to-agent!` → handler receives message (local path).
+- Test WS registration → `send-to-agent!` → WS receives message.
+- Test A1 enforcement end-to-end: register in local-handlers, then register via WS for same agent-id, verify local evicted and only WS entry remains.
+- These can be unit-level tests using the real atoms (not mocked), added to `test/futon3/agency/integration_test.clj`.
+
+#### 3d. Standup end-to-end (live system)
+
+- Fire `POST /agency/standup` with at least one AI agent and the human agent connected.
+- Assert: delivery receipts recorded, rendezvous ack tracking correct, agents self-post to MUSN, explicit failure on missing ack/timeout.
+
+#### 3e. Evidence pointers
+
+- Fill the Evidence column in the traceability table (`library/agency/invariants.flexiarg`).
+- Record test run outputs, atom size observations, and log traces as concrete evidence.
+
+#### 3f. A4 diagnosability proof
+
+- Inject a known failure scenario (e.g., agent disconnects mid-whistle, corrupted state file, bell to nonexistent agent).
+- Trace the failure from Agency logs alone within 10 minutes.
+- Document the trace as evidence for A4.
 
 ## Notes: Scope Check (against futon-theory/mission-scoping)
 
 This mission explicitly declares owner, scope in/out, success criteria, time box, and exit conditions. If the rebuild work expands into Forum or MUSN redesign, that is a scope breach and must be split into a new mission rather than absorbed here.
+
+The Phase 3 agent compatibility fixes (Drawbridge dual-registration cleanup, fubar-agency.el reconnect) are in scope because they are required to validate A0/A1 across the agent boundary. They do not expand Agency's interface or add new features — they fix agents to correctly participate in the invariant contracts that Phase 2 established on the server side.

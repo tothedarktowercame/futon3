@@ -639,6 +639,122 @@ futon1a's first dataset is its own creation story.
   futon3 bridging writes (e.g. entity/relation writes and lab session save/load),
   plus Prototype 1 endpoints. Full `/api/alpha/*` parity remains Phase II work.
 
+### 2.11 Model Descriptor System (Self-Describing Layer)
+
+futon1 had a rich model descriptor system that made the system self-describing:
+model descriptors defined entity shapes, the type registry tracked all types in
+use, and `/api/α/meta/model/*` endpoints served the descriptors back. This was
+not a convenience — it was the mechanism by which the system knew what it
+contained and could verify its own integrity.
+
+futon1a must rebuild this capability. The current model registry
+(`{:fields [...] :required #{...}}`) is a stub that cannot represent the actual
+complexity of futon1's descriptors.
+
+Pattern: `storage/schema-evolution-stability`
+Theory: `futon-theory/all-or-nothing`, `futon-theory/counter-ratchet`
+
+#### 2.11.1 Model Descriptor Format
+
+Each model descriptor is a self-contained specification:
+
+```clojure
+{:model/scope       :media               ; domain identifier (keyword)
+ :schema/version    "0.1.2"              ; semver
+ :schema/certificate {:penholder "..."   ; who certified this version
+                      :issued-at ...}
+ :entities
+ {:arxana/media-track
+  {:required [:entity/name :entity/external-id]
+   :id-strategy :custom}                 ; or :uuid
+  :arxana/media-lyrics
+  {:required [:entity/name :entity/external-id :entity/source :media/sha256]
+   :id-strategy :custom}}
+ :operations
+ {:media/ingest {:inputs [:filesystem :editor]
+                 :outputs [:xtdb]}}
+ :stores
+ {:canonical :xtdb
+  :cache :datascript}
+ :invariants
+ [:media/track-required
+  :media/source-content
+  :media/lyrics-required
+  :media/lyrics-linked]}
+```
+
+**Key fields:**
+- `:model/scope` — domain namespace (patterns, media, docbook, open-world, etc.)
+- `:schema/version` — semver; migrations reference from/to versions
+- `:schema/certificate` — who certified this descriptor and when (A2: Attributable)
+- `:entities` — map of entity-type keyword → `{:required [...] :id-strategy ...}`
+- `:operations` — what I/O this model supports
+- `:invariants` — named constraints that `/verify` checks against live data
+
+#### 2.11.2 futon1's Descriptors (Reference)
+
+These are the descriptors futon1 shipped. futon1a must be able to represent and
+ingest all of them:
+
+| Scope | Entity Types | Invariants | Source |
+|-------|-------------|------------|--------|
+| `:patterns` | pattern/language, pattern/library, pattern/component, sigil, + 3 more | 6 (language-has-source, sigils-allowlisted, etc.) | `app/model.clj` |
+| `:media` | arxana/media-track, arxana/media-lyrics | 6 (track-required, lyrics-linked, etc.) | `app/model_media.clj` |
+| `:docbook` | docbook/heading, docbook/entry, docbook/toc | 8 (heading-required, toc-covers-headings, etc.) | `app/model_docbook.clj` |
+| `:open-world-ingest` | open-world/entity, relation, mention, utterance, type | 3+ (entity-required, kind-valid, etc.) | `app/model_open_world.clj` |
+| `:meta-model` | model/descriptor | 5 (descriptor-source-present, has-certificate, etc.) | `app/model_meta.clj` |
+| `:penholder-registry` | model/penholder | 2 (entry-required, entry-schema) | `app/model_penholder.clj` |
+
+#### 2.11.3 Type Registry
+
+The type registry is a persistent (XTDB-stored) catalog of all entity, relation,
+and intent types in use. It supports:
+
+- **Auto-registration** — new types recorded on first encounter
+- **Parent inference** — `project/chapter` infers parent `:project`
+- **Aliases** — multiple names for the same canonical type
+- **Three kinds** — `:entity`, `:relation`, `:intent`
+
+Type documents:
+```clojure
+{:type/id       :person
+ :type/kind     :entity
+ :type/parent   nil          ; or inferred from namespace
+ :type/aliases  [:human]}
+```
+
+#### 2.11.4 Meta/Model API Surface
+
+Endpoints that make the system self-describing:
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| GET | `/meta/model` | All registered model descriptors |
+| GET | `/meta/model/:scope` | Single descriptor by scope |
+| GET | `/meta/model/:scope/verify` | Run invariants against live data |
+| GET | `/types` | All registered types with parents and aliases |
+| POST | `/types/parent` | Override a type's parent |
+| POST | `/types/merge` | Merge type aliases |
+
+The `/verify` endpoint is critical: it proves the live data matches the
+descriptor's invariants. This is the runtime counterpart of the test suite —
+the system checking itself.
+
+#### 2.11.5 First Ingest: futon1's Descriptors as Graph Data
+
+The model descriptors themselves are structured graph data:
+
+- Each **descriptor** is an entity (`{:entity/type :model/descriptor, ...}`)
+- Each **entity-type definition** within a descriptor is an entity
+  (`{:entity/type :model/entity-type, :model/scope :media, :type-id :arxana/media-track, ...}`)
+- Each **invariant** is a relation between a descriptor and a constraint
+- The **meta-model** describes the other models (self-reference)
+
+Ingesting futon1's 6 descriptors through `run-open-world!` is the first real
+test of the system's ability to manage structured, cross-referenced data. This
+replaces the "synthetic data mocks" success criterion with something concrete:
+the system's own specification is its first dataset.
+
 ---
 
 ## Open Questions
@@ -653,24 +769,27 @@ futon1a's first dataset is its own creation story.
 ## Success Criteria
 
 ### Part I (Process)
-- [ ] Evidence document from futon1 git history
-- [ ] PSR/PUR records for each coding session
-- [ ] Module headers explain pattern and rationale
-- [ ] README teaches architecture, not just usage
-- [ ] Traceability from devmap → pattern → code → test → doc
+- [x] Evidence document from futon1 git history
+- [x] PSR/PUR records for each coding session
+- [x] Module headers explain pattern and rationale
+- [x] README teaches architecture, not just usage
+- [x] Traceability from devmap → pattern → code → test → doc
 
 ### Part II (Product)
-- [ ] All 5 core invariants pass their proof tests
-- [ ] Each invariant traces to both futon-theory/ and storage/ patterns
-- [ ] All 9 tension resolutions implemented and tested
-- [ ] Interface loops defined at each layer boundary with PSR/PUR governance
+- [x] All 5 core invariants pass their proof tests (Prototype 0, 82 tests)
+- [x] Each invariant traces to both futon-theory/ and storage/ patterns
+- [x] All 9 tension resolutions implemented and tested
+- [x] Interface loops defined at each layer boundary with PSR/PUR governance
 - [x] Canonical HTTP API specified in Section 2.6 (endpoints, shapes, error contract)
-- [ ] API serves over HTTP with system context injection (Prototype 1)
-- [ ] Read path specified and implemented (entity by UUID, lookup by external-id)
+- [x] API serves over HTTP with system context injection (Prototype 1, f8beb11)
+- [x] Read path: entity by UUID (`GET /entity/:id`) (Prototype 1, f8beb11)
+- [ ] Read path: lookup by external-id (`GET /entity?source=S&external-id=E`)
 - [ ] Proof-path event logging on all write operations
 - [ ] Counter-ratchet detects unexpected count drops
 - [ ] Any bug diagnosable in under 10 minutes
-- [ ] Synthetic data mocks exercise realistic workloads
+- [ ] Model descriptor system rebuilt (Section 2.11) — rich descriptors, type registry
+- [ ] Meta/model API serves descriptors and runs verify (Section 2.11.4)
+- [ ] futon1's 6 model descriptors ingested as first dataset (Section 2.11.5)
 - [x] Migration from futon1 succeeds without data loss (17564 docs, checksum match)
 - [ ] futon1a runs in production for 30 days without silent failures
 
@@ -877,3 +996,61 @@ All of the following must be true:
    Any reason to prefer otherwise?
 3. **XTDB node type**: Embedded with RocksDB, or in-memory with tx-log on
    disk? (Recommendation: embedded with RocksDB for real persistence proof.)
+
+---
+
+## Prototype 2 Gate
+
+**Goal:** A self-describing system — futon1a knows what it contains, can serve
+its own specifications, and can verify its data against those specifications.
+The system's first real dataset is its own model descriptors.
+
+### Exit Conditions
+
+All of the following must be true:
+
+1. **Model descriptor format** — futon1a can store and retrieve model descriptors
+   matching the format in Section 2.11.1: scope, version, certificate, entity
+   definitions (with required fields and id-strategy), operations, invariants.
+   The current `{:fields [...] :required #{...}}` registry is replaced or
+   extended to handle the full descriptor shape.
+
+2. **Type registry** — Entity, relation, and intent types are tracked in XTDB
+   (not just an in-memory atom). Auto-registration on first encounter. Parent
+   inference from namespaces. Alias support.
+
+3. **Meta/model API** — `GET /meta/model` returns all registered descriptors.
+   `GET /meta/model/:scope` returns a single descriptor. `GET /types` returns
+   the type registry. These are read endpoints, not write-only.
+
+4. **Verify endpoint** — `GET /meta/model/:scope/verify` runs the descriptor's
+   named invariants against live XTDB data and returns pass/fail per invariant.
+   At least one descriptor has at least one working verify check.
+
+5. **First ingest** — futon1's 6 model descriptors (patterns, media, docbook,
+   open-world, meta-model, penholder) are ingested as entities and relations
+   through `run-open-world!`. Each descriptor becomes an entity. Each entity-type
+   definition becomes an entity. Each invariant becomes a relation. The meta-model
+   describes the other models.
+
+6. **Compat surface specified** — The futon1-compat endpoints currently in
+   `http/app.clj` (`/entity`, `/relation`, `/api/alpha/lab/session`) are added
+   to Section 2.6 of the spec. No unspecified code.
+
+7. **All existing tests still pass** — No regressions.
+
+### Scope In
+
+- Model descriptor storage (XTDB documents, not just in-memory atom)
+- Type registry (XTDB-backed, with auto-registration and parent inference)
+- `GET /meta/model`, `GET /meta/model/:scope`, `GET /types` endpoints
+- `GET /meta/model/:scope/verify` with at least one working invariant check
+- Ingest pipeline for futon1 model descriptors as graph data
+- Spec update for compat endpoints
+
+### Scope Out
+
+- Full invariant verification for all 6 descriptors (one working is enough)
+- Datascript mirror (still XTDB-only)
+- StackExchange or PlanetMath ingest (that's futon6 territory)
+- Production hardening

@@ -32,6 +32,46 @@ Codex (with Claude as primary reviewer for Part I process artifacts).
 - Part I gate is satisfied and verified with concrete artifacts (evidence doc, module map, test harness, PSR/PUR exemplars, traceability example).
 - Part II is either underway with a validated first invariant, or the mission is split into smaller layer missions with explicit owners.
 
+## Interface Signature (Retrofit)
+
+> **Note:** This section was added retroactively after discovering that the
+> mission specified internal correctness (invariants, layers, proof-paths) but
+> not boundary types (what the system exposes). In wiring diagram terms, the
+> internal morphisms were well-composed but the output ports were unspecified.
+> This is now a required section for all missions — see futon0/mission-sop.md.
+
+### Input Ports
+
+| Port | Type | Source | Description |
+|------|------|--------|-------------|
+| `futon1-data` | `XTDB-store` | futon1 LMDB export | 17,564 documents to migrate |
+| `write-request` | `{penholder, model, identity, tx-ops}` | HTTP client | External write operations |
+| `ingest-batch` | `{entities, relations}` | Bulk ingest client | Open-world entity/relation batches |
+| `model-descriptor` | `{scope, version, entities, invariants, ...}` | futon1 app/model*.clj | 6 domain model specifications |
+
+### Output Ports
+
+| Port | Type | Consumer | Description |
+|------|------|----------|-------------|
+| `http-api` | Section 2.6 contract | Any HTTP client | Canonical write/read/health surface |
+| `meta-model-api` | Section 2.11.4 contract | Self / agents | Descriptors, types, verify endpoints |
+| `error-shape` | `{layer, reason, context}` | Any HTTP client | Non-negotiable error contract (I3) |
+| `proof-path` | `{path/id, events [...]}` | Audit log | Traceable write provenance (A1) |
+| `entity-read` | `{entity ...}` | Any HTTP client | Entity retrieval by UUID or external-id |
+| `type-registry` | `{type/id, kind, parent, aliases}` | Self / agents | Persistent type catalog |
+| `health-status` | `{status, checks}` | Ops / monitoring | System diagnostics |
+
+### Composition Constraint
+
+Every output port must be:
+1. **Specified** in Part II (section reference)
+2. **Implemented** in code (module reference)
+3. **Tested** (at least one test exercises the port)
+4. **Documented** (in the spec, not just in code comments)
+
+If an output port exists in code but not in the spec, that is a stop-the-line
+violation (Section 2.11.5 of futon0/CLAUDE.md: Pattern-Theoretic Specification).
+
 ## Argument (Pattern-Backed)
 
 futon1a exists to provide a deterministic, storage‑oriented substrate that

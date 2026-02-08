@@ -1,0 +1,121 @@
+@flexiarg futon-theory/mission-interface-signature
+@title Mission Interface Signature (Boundary Types)
+@sigils [🔌/口]
+@tokipona nasin open
+@truth 口
+
++ CONTEXT:
+    Missions that specify internal correctness (invariants, gates, proofs)
+    but not boundary types (what the system exposes) will produce systems
+    that work internally but cannot be composed with anything. The futon1a
+    rebuild demonstrated this failure mode: 5 invariants, 9 tension
+    resolutions, 82 tests — but the API contract was never specified.
+    The system verified itself but couldn't describe what it offered.
+
+    In wiring diagram terms: the internal morphisms were well-composed
+    but the output ports were unspecified. A box with no typed ports
+    cannot participate in composition.
+
++ IF:
+    You are writing a mission document, or reviewing one that has reached
+    the :scoped or :active state.
+
++ HOWEVER:
+    Not all output ports are known at mission start. Discovery during
+    implementation may reveal new boundary types. The signature should be
+    updated when this happens — but it must never be empty.
+
++ THEN:
+    Every mission document must include an Interface Signature section
+    with typed input and output ports:
+
+    1. INPUT-PORTS
+       Each port specifies:
+       - Name: what the input is called
+       - Type: the shape of the data (schema, format, contract)
+       - Source: where it comes from (another system, user, file)
+       - Description: what it carries
+
+    2. OUTPUT-PORTS
+       Each port specifies:
+       - Name: what the output is called
+       - Type: the shape of the data (contract reference or inline)
+       - Consumer: who uses this output
+       - Description: what it provides
+
+    3. COMPOSITION-CONSTRAINT
+       Every output port must be:
+       (a) Specified in the mission's technical specification (section ref)
+       (b) Implemented in code (module reference)
+       (c) Tested (at least one test exercises the port)
+       (d) Documented (in the spec, not just in code comments)
+
+       If an output port exists in code but not in the spec, that is a
+       stop-the-line violation (futon-theory/stop-the-line).
+
++ BECAUSE:
+    - Internal correctness without boundary specification produces systems
+      that cannot be composed, integrated, or replaced
+    - Typed ports force the mission author to think about what the system
+      *presents*, not just what it *does internally*
+    - The composition constraint catches the exact failure mode observed
+      in futon1a: code that exists without specification
+    - Wiring diagrams require typed interfaces at every boundary; missions
+      are the organizational equivalent
+
++ EVIDENCE:
+    futon1a rebuild (M-futon1a-rebuild.md):
+    - Prototype 0 (82 tests) specified internal layers but no API contract
+    - Prototype 1 delivered HTTP serving, but the compat endpoints and
+      model descriptor system were unspecified
+    - The gap was discovered only when attempting to hand off to Codex
+    - Retrofit required: Section 2.6 (API spec), Section 2.11 (model
+      descriptor system), Prototype 2 Gate, interface signature section
+
++ RELATIONSHIP-TO-OTHER-PATTERNS:
+    - mission-scoping says WHAT is in/out
+    - mission-lifecycle says what STATE it's in
+    - mission-dependency says what BLOCKS what
+    - mission-interface-signature says what the system EXPOSES
+    These four together form the complete mission specification.
+
++ TEMPLATE:
+    ```markdown
+    ## Interface Signature
+
+    ### Input Ports
+
+    | Port | Type | Source | Description |
+    |------|------|--------|-------------|
+    | ... | ... | ... | ... |
+
+    ### Output Ports
+
+    | Port | Type | Consumer | Description |
+    |------|------|----------|-------------|
+    | ... | ... | ... | ... |
+
+    ### Composition Constraint
+
+    Every output port must be:
+    1. Specified in the technical specification (section reference)
+    2. Implemented in code (module reference)
+    3. Tested (at least one test exercises the port)
+    4. Documented (in the spec, not just code comments)
+    ```
+
++ VERIFICATION:
+    At each checkpoint, verify:
+    - Every output port in code has a spec section reference
+    - Every output port in spec has at least one test
+    - No unspecified output ports exist in code
+    If verification fails, the checkpoint is blocked until the spec
+    catches up with the code.
+
++ NEXT-STEPS:
+    - Add Interface Signature section to current mission doc
+    - Enumerate input and output ports from existing code
+    - Cross-reference output ports against spec sections
+    - Flag any unspecified ports as stop-the-line
+
+@related futon-theory/mission-scoping, futon-theory/mission-lifecycle, futon-theory/mission-dependency, futon-theory/stop-the-line

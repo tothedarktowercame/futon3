@@ -30,19 +30,24 @@
    Uses:
    - codex exec for non-interactive mode
    - --json for structured output
-   - --full-auto for autonomous operation (no approval prompts)
+   - config override approval_policy=\"never\" to prevent interactive approval prompts
+     (important for paging/HTTP invocation where no human can approve)
+   - --sandbox workspace-write to keep a safe default execution policy
    - codex exec resume <session-id> for session continuity
 
    NOTE: We pass the prompt via stdin (`-`), not argv, to avoid shell quoting
    hazards and length limits, and to keep parity with Codex CLI behavior:
    `codex exec -` and `codex exec resume <id> -`."
   [text session-id]
-  (let [;; Build command: codex exec [resume <id>] --json --full-auto "prompt"
+  (let [;; Build command: codex exec [resume <id>] --json ... "-" (prompt via stdin)
         base-cmd (if session-id
                    ["codex" "exec" "resume" session-id]
                    ["codex" "exec"])
         ;; Use "-" so Codex reads the prompt from stdin.
-        cmd (into base-cmd ["--json" "--full-auto" "-"])
+        cmd (into base-cmd ["--json"
+                            "--sandbox" "workspace-write"
+                            "-c" "approval_policy=\"never\""
+                            "-"])
         _ (println (format "[codex-bridge] Executing: codex exec%s (prompt: %s)"
                            (if session-id (str " resume " session-id) "")
                            (subs text 0 (min 50 (count text)))))

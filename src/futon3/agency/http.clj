@@ -279,6 +279,66 @@
 (defonce ^:private local-handlers (atom {}))
 ;; {agent-id -> handler-fn}
 
+(defonce ^:private routing-eviction-guard (atom false))
+
+(defn- with-routing-eviction-guard
+  "Prevent re-entrant cross-store eviction loops."
+  [f]
+  (when (compare-and-set! routing-eviction-guard false true)
+    (try
+      (f)
+      (finally
+        (reset! routing-eviction-guard false)))))
+
+(defn- evict-from-registry!
+  [agent-id]
+  (when (reg/agent-registered? agent-id)
+    (reg/unregister-agent! agent-id)))
+
+(defn- enforce-single-routing-authority!
+  "A1: an agent-id must not exist in multiple routing stores simultaneously.
+
+  This runs as a watch on each routing store atom and evicts the agent-id from
+  the other stores whenever a new entry appears."
+  [source old new]
+  (let [old-ids (set (keys old))
+        new-ids (set (keys new))
+        added (cset/difference new-ids old-ids)]
+    (when (seq added)
+      (with-routing-eviction-guard
+        (fn []
+          (doseq [aid added]
+            (case source
+              :registry
+              (do
+                (swap! local-handlers dissoc aid)
+                (swap! connected-agents dissoc aid))
+
+              :local
+              (do
+                (swap! connected-agents dissoc aid)
+                (evict-from-registry! aid))
+
+              :ws
+              (do
+                (swap! local-handlers dissoc aid)
+                (evict-from-registry! aid))
+
+              nil)))))))
+
+(defonce ^:private routing-watches-installed?
+  (do
+    (add-watch reg/agent-registry ::single-authority-registry
+               (fn [_ _ old new]
+                 (enforce-single-routing-authority! :registry old new)))
+    (add-watch local-handlers ::single-authority-local
+               (fn [_ _ old new]
+                 (enforce-single-routing-authority! :local old new)))
+    (add-watch connected-agents ::single-authority-ws
+               (fn [_ _ old new]
+                 (enforce-single-routing-authority! :ws old new)))
+    true))
+
 (defn register-local-handler!
   "Register a local (in-JVM) handler for an agent. Handler receives messages directly."
   [agent-id handler-fn]

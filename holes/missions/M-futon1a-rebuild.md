@@ -627,6 +627,89 @@ repair) and new tests; Claude reviewed twice and fixed all issues.
   traceability document, and module headers all cross-reference each other.
 
 **Test state:** 66 tests, 569 assertions, 0 failures
-**Next:** Part II remaining work — expansion gates, tooling auth, open-world
-pipeline (Codex has begun landing these). Then: HTTP ring adapter, XTDB real
-node integration, and stress/integration hardening.
+
+### Checkpoint 4 — Prototype 0 (2026-02-08)
+
+**What was done:**
+
+Codex closed the remaining tension gates (T4, T6, T8, T9):
+
+| Module | Purpose | Tension |
+|--------|---------|---------|
+| `model/expansion.clj` | Feature expansion allowlist gate (L4) | T9: Determinism vs expansion |
+| `model/migration.clj` | Schema migration registry with version steps | T8: Schema evolution vs stability |
+| `auth/penholder.clj` + `authorize-tooling!` | Tooling auth (L3 extension) | T6: Guardrails vs internal tooling |
+| `core/pipeline.clj` + `run-open-world!` | Dedicated open-world ingest pipeline | T4: Open-world velocity vs validation |
+| `cross_layer/interface_loop_test.clj` | Proves every layer returns actionable error context | I4: Rapid Debugging |
+| `invariants/rapid_debugging_test.clj` | Proves health degradation surfaces correctly | I4: Rapid Debugging |
+
+Claude reviewed — no critical or significant issues. Codex fixed two
+docstring inaccuracies (84a7cef).
+
+**Prototype 0 state:**
+- 19 source modules, all with pattern/invariant header references
+- 82 tests, 601 assertions, 0 failures
+- All 5 invariants (I0-I4) implemented and tested
+- All 9 tension resolutions have modules and tests
+- Part I gate fully satisfied (traceability, PSR/PUR, evidence, module map)
+- Expansion gates, tooling auth, open-world pipeline landed
+- Interface loop test proves actionable error context at every layer boundary
+
+**What Prototype 0 is:** A provably-correct scaffold. Every invariant holds,
+every gate fires in the right order, every error carries the right context.
+But the system cannot serve HTTP or persist to a real XTDB node.
+
+---
+
+## Prototype 1 Gate
+
+**Goal:** A runnable system — futon1a starts, serves HTTP, persists to XTDB,
+and survives a restart cycle with data intact.
+
+### Exit Conditions
+
+All of the following must be true:
+
+1. **XTDB node lifecycle** — futon1a can start an embedded XTDB node, write
+   to it, and shut it down cleanly. Node configuration is explicit (data dir,
+   tx log). `system.clj` or equivalent owns the lifecycle.
+
+2. **HTTP ring adapter** — The API surface in `routes.clj` is served over
+   HTTP via Ring. A request to `/health` returns 200. A request to
+   `/write` with a valid payload returns a `tx-id`.
+
+3. **Restart cycle** — Start the system, write an entity through the HTTP API,
+   stop the system, restart it, and read the entity back. Data survives the
+   restart. This is the I0 (Persistence) invariant proven end-to-end, not
+   just at the protocol level.
+
+4. **Integration test** — An automated test exercises the full start → write →
+   stop → restart → read cycle. This test uses a real (embedded) XTDB node,
+   not a stub.
+
+5. **All existing tests still pass** — No regressions. Prototype 0's 82 tests
+   remain green.
+
+### Scope In
+
+- `system.clj` — XTDB node lifecycle + Ring server wiring
+- Ring/Jetty HTTP adapter (dependency addition)
+- `routes.clj` updates — Ring-compatible request/response handlers
+- Integration test — full restart cycle
+- Health check wired to real XTDB node status
+
+### Scope Out
+
+- Datascript mirror backend (deferred — XTDB-only for Prototype 1)
+- Authentication middleware (penholder is passed in the request body for now)
+- TLS, CORS, or production HTTP hardening
+- Migration from futon1 data
+
+### Open Questions (Resolve Before Implementation)
+
+1. **Datascript**: Start XTDB-only, add Datascript read cache in Prototype 2?
+   (Recommendation: yes, per Open Questions above.)
+2. **Ring vs HTTP Kit**: Ring + Jetty is the standard choice for Clojure HTTP.
+   Any reason to prefer otherwise?
+3. **XTDB node type**: Embedded with RocksDB, or in-memory with tx-log on
+   disk? (Recommendation: embedded with RocksDB for real persistence proof.)

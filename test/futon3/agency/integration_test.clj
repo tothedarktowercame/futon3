@@ -5,7 +5,8 @@
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
             [futon3.agency.invariants.util :as u]
             [futon3.agency.registry :as reg]
-            [cheshire.core :as json]))
+            [cheshire.core :as json]
+            [futon3.agency.http :as agency-http]))
 
 (use-fixtures
   :each
@@ -90,3 +91,46 @@
                                     :uri (str "/agency/rendezvous/" rv-id)}))
             acked2 (set (get-in status2 [:rendezvous :acked]))]
         (is (contains? acked2 "rv-agent"))))))
+
+(deftest agent-local-handler-send-to-agent-delivers
+  (testing "local handler path: send-to-agent! delivers message to handler"
+    (let [register-local-handler! @(ns-resolve 'futon3.agency.http 'register-local-handler!)
+          unregister-local-handler! @(ns-resolve 'futon3.agency.http 'unregister-local-handler!)
+          send-to-agent! @(ns-resolve 'futon3.agency.http 'send-to-agent!)
+          recv (atom [])]
+      (try
+        (register-local-handler! "itest-local" (fn [msg] (swap! recv conj msg)))
+        (let [receipt (send-to-agent! "itest-local" {:type "bell" :payload {:msg "hi"}})]
+          (is (= true (:ok receipt)))
+          (is (= :local-handler (:transport receipt)))
+          (is (= "bell" (get-in (first @recv) [:type]))))
+        (finally
+          (unregister-local-handler! "itest-local"))))))
+
+(deftest agent-ws-send-to-agent-invokes-ws-send
+  (testing "ws path: send-to-agent! calls ws-send! and returns explicit receipt"
+    (let [send-to-agent! @(ns-resolve 'futon3.agency.http 'send-to-agent!)
+          connected-agents @(ns-resolve 'futon3.agency.http 'connected-agents)
+          called (atom [])]
+      (with-redefs [agency-http/ws-send! (fn [ch msg] (swap! called conj {:ch ch :msg msg}) true)]
+        (swap! connected-agents assoc "itest-ws" {:channel ::dummy})
+        (let [receipt (send-to-agent! "itest-ws" {:type "bell" :payload {:msg "hi"}})]
+          (is (= true (:ok receipt)))
+          (is (= :websocket (:transport receipt)))
+          (is (= 1 (count @called))))))))
+
+(deftest a1-local-then-ws-evicts-local
+  (testing "A1 end-to-end: local handler registration is evicted when WS registers same agent-id"
+    (let [register-local-handler! @(ns-resolve 'futon3.agency.http 'register-local-handler!)
+          unregister-local-handler! @(ns-resolve 'futon3.agency.http 'unregister-local-handler!)
+          local-handlers @(ns-resolve 'futon3.agency.http 'local-handlers)
+          connected-agents @(ns-resolve 'futon3.agency.http 'connected-agents)]
+      (try
+        (register-local-handler! "itest-a1" (fn [_] nil))
+        (is (contains? @local-handlers "itest-a1"))
+        (swap! connected-agents assoc "itest-a1" {:channel nil})
+        (is (contains? @connected-agents "itest-a1"))
+        ;; A1 watch should evict local immediately.
+        (is (not (contains? @local-handlers "itest-a1")))
+        (finally
+          (unregister-local-handler! "itest-a1"))))))

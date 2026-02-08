@@ -41,6 +41,21 @@
   :type 'integer
   :group 'fubar-agency)
 
+(defcustom fubar-agency-auto-reconnect t
+  "When non-nil, reconnect automatically after WebSocket disconnect."
+  :type 'boolean
+  :group 'fubar-agency)
+
+(defcustom fubar-agency-reconnect-initial-delay 5
+  "Initial reconnect delay in seconds."
+  :type 'integer
+  :group 'fubar-agency)
+
+(defcustom fubar-agency-reconnect-max-delay 60
+  "Maximum reconnect delay in seconds."
+  :type 'integer
+  :group 'fubar-agency)
+
 (defcustom fubar-agency-auto-respond nil
   "When non-nil, auto-respond to whistles with this string."
   :type '(choice (const nil) string)
@@ -58,6 +73,15 @@
 
 (defvar fubar-agency--ping-timer nil
   "Timer for keepalive pings.")
+
+(defvar fubar-agency--reconnect-timer nil
+  "Timer for scheduled reconnect attempts.")
+
+(defvar fubar-agency--reconnect-delay nil
+  "Current reconnect delay in seconds (exponential backoff).")
+
+(defvar fubar-agency--manual-disconnect nil
+  "Non-nil when the user requested disconnect; suppresses auto-reconnect.")
 
 (defvar fubar-agency--buffer-name "*fubar-agency*"
   "Buffer name for Agency event log.")
@@ -259,6 +283,11 @@ If no ERC server is connected, logs an error."
 (defun fubar-agency--on-open (_ws)
   "Called when WebSocket connection opens."
   (setq fubar-agency--connected t)
+  (setq fubar-agency--manual-disconnect nil)
+  (setq fubar-agency--reconnect-delay fubar-agency-reconnect-initial-delay)
+  (when fubar-agency--reconnect-timer
+    (cancel-timer fubar-agency--reconnect-timer)
+    (setq fubar-agency--reconnect-timer nil))
   (fubar-agency--log "[open] connected as %s" fubar-agency-agent-id)
   (message "[fubar-agency] Connected as %s" fubar-agency-agent-id)
   (when fubar-agency--ping-timer
@@ -276,7 +305,28 @@ If no ERC server is connected, logs an error."
     (cancel-timer fubar-agency--ping-timer)
     (setq fubar-agency--ping-timer nil))
   (fubar-agency--log "[closed] disconnected")
-  (message "[fubar-agency] Disconnected"))
+  (message "[fubar-agency] Disconnected")
+  ;; Phase 3a: reconnect-with-backoff (unless user manually disconnected).
+  (when (and fubar-agency-auto-reconnect (not fubar-agency--manual-disconnect))
+    (let* ((delay (or fubar-agency--reconnect-delay
+                      fubar-agency-reconnect-initial-delay))
+           (next (min (* 2 delay) fubar-agency-reconnect-max-delay)))
+      (setq fubar-agency--reconnect-delay next)
+      (when fubar-agency--reconnect-timer
+        (cancel-timer fubar-agency--reconnect-timer))
+      (setq fubar-agency--reconnect-timer
+            (run-at-time
+             delay nil
+             (lambda ()
+               (setq fubar-agency--reconnect-timer nil)
+               (fubar-agency--log "[reconnect] attempting (delay=%ss)" delay)
+               (condition-case err
+                   (fubar-agency-connect)
+                 (error
+                  (fubar-agency--log "[reconnect-error] %s" err)))))))))
+  (when fubar-agency--manual-disconnect
+    ;; Manual disconnect consumed; future disconnects should reconnect again.
+    (setq fubar-agency--manual-disconnect nil)))
 
 (defun fubar-agency--on-error (_ws _type err)
   "Called on WebSocket error."
@@ -295,6 +345,7 @@ If no ERC server is connected, logs an error."
 (defun fubar-agency-connect ()
   "Connect to Agency via WebSocket."
   (interactive)
+  (setq fubar-agency--manual-disconnect nil)
   (when (and fubar-agency--ws
              (websocket-openp fubar-agency--ws))
     (fubar-agency-disconnect))
@@ -317,6 +368,10 @@ If no ERC server is connected, logs an error."
 (defun fubar-agency-disconnect ()
   "Disconnect from Agency."
   (interactive)
+  (setq fubar-agency--manual-disconnect t)
+  (when fubar-agency--reconnect-timer
+    (cancel-timer fubar-agency--reconnect-timer)
+    (setq fubar-agency--reconnect-timer nil))
   (when fubar-agency--ping-timer
     (cancel-timer fubar-agency--ping-timer)
     (setq fubar-agency--ping-timer nil))

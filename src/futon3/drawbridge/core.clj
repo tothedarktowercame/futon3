@@ -869,8 +869,11 @@
     ;; Start input processor
     (start-input-processor!)
 
-    ;; Register with Agency (local handler) if agent-id provided
-    (when (and agent-id register-local?)
+    ;; Register with Agency (local handler) if agent-id provided.
+    ;; Phase 3a: if an Agency WS URL is configured, WS becomes the single routing
+    ;; authority; local registration would be redundant and immediately evicted
+    ;; by the server-side A1 enforcement.
+    (when (and agent-id register-local? (not agency-ws-url))
       (register-with-agency! agent-id))
 
     ;; Start Agency WS client if URL provided
@@ -883,7 +886,7 @@
 
     (println (format "[drawbridge] HTTP API on http://%s:%s/%s" bind http-port endpoint-prefix))
     (println (format "[drawbridge] WebSocket on ws://%s:%s" bind ws-port))
-    (when (and agent-id register-local?)
+    (when (and agent-id register-local? (not agency-ws-url))
       (println (format "[drawbridge] Registered with Agency as '%s'" agent-id)))
 
     {:http-stop stop :ws-port ws-port :http-port http-port :agent-id agent-id}))

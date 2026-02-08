@@ -1,6 +1,8 @@
 (ns futon3.agency.http
   "HTTP adapter for Agency service."
   (:require [cheshire.core :as json]
+            [clj-http.client :as http-client]
+            [clojure.set :as cset]
             [clojure.string :as str]
             [org.httpkit.server :as http]
             [futon3.agency.codex-mirror :as codex-mirror]
@@ -14,7 +16,7 @@
          handle-get-secret handle-create-secret
          handle-ack handle-ack-status handle-ring-bell
          handle-whistle handle-whistle-response
-         handle-standup)
+         handle-standup handle-rendezvous-status)
 
 (defn- log! [msg & [ctx]]
   (try
@@ -155,6 +157,11 @@
         (let [secret-id (subs uri (count "/agency/ack/"))]
           (json-response (handle-ack-status secret-id)))
 
+        ;; Rendezvous status (GET /agency/rendezvous/:id)
+        (and (= method :get) (str/starts-with? uri "/agency/rendezvous/"))
+        (let [rendezvous-id (subs uri (count "/agency/rendezvous/"))]
+          (json-response (handle-rendezvous-status rendezvous-id)))
+
         (not= :post method)
         (json-response 405 {:ok false :err "method not allowed"})
 
@@ -200,6 +207,12 @@
 (defonce ^:private secrets (atom {}))
 (defonce ^:private acks (atom {}))
 
+;; Rendezvous state - tracks multi-agent handshake completion
+;; {secret-id -> {:room :prompt :deadline-ms :expected-agents
+;;                :acks {agent-id -> {:timestamp :value}}
+;;                :created-at}}
+(defonce ^:private rendezvous-state (atom {}))
+
 (defn- generate-secret-id []
   (str "sec-" (subs (str (java.util.UUID/randomUUID)) 0 8)))
 
@@ -239,6 +252,10 @@
                  :value value
                  :timestamp (str (java.time.Instant/now))}]
         (swap! acks assoc secret-id ack)
+        ;; If this secret belongs to a rendezvous, record agent-specific ack
+        (when (get @rendezvous-state secret-id)
+          (swap! rendezvous-state update-in [secret-id :acks]
+                 assoc (some-> agent-id str) ack))
         {:ok true :secret-id secret-id :ack ack}))))
 
 (defn- handle-ack-status [secret-id]
@@ -479,7 +496,7 @@
       (get @local-handlers aid)
       (let [request-id (generate-request-id)
             response-promise (promise)
-            whistle-msg {:type "whistle"
+            whistle-msg {:type "page"
                       :request-id request-id
                       :prompt prompt
                       :timestamp (str (java.time.Instant/now))}]
@@ -507,7 +524,7 @@
       (get @connected-agents aid)
       (let [request-id (generate-request-id)
             response-promise (promise)
-            whistle-msg {:type "whistle"
+            whistle-msg {:type "page"
                       :request-id request-id
                       :prompt prompt
                       :timestamp (str (java.time.Instant/now))}]
@@ -535,66 +552,103 @@
       {:ok false :err "agent not connected"})))
 
 ;; =============================================================================
-;; Standup endpoint - timed multi-agent check-in
+;; MUSN chat posting (for IRC bridge integration)
 ;; =============================================================================
 
-(def ^:private default-standup-timeout-ms
-  (or (some-> (System/getenv "AGENCY_STANDUP_TIMEOUT_MS") Long/parseLong)
-      120000)) ; 2 minutes default
+(def ^:private musn-url
+  (or (System/getenv "FUTON3_MUSN_URL") "http://localhost:6065"))
+
+(defn- post-to-musn-room! [room agent-id text]
+  (try
+    (http-client/post (str musn-url "/musn/chat/message")
+      {:content-type :json
+       :throw-exceptions false
+       :body (json/generate-string
+              {:room room
+               :msg-id (str (java.util.UUID/randomUUID))
+               :author {:id agent-id :name agent-id}
+               :text text})})
+    (log! "musn-post" {:room room :agent-id agent-id})
+    (catch Exception e
+      (log! "musn-post-error" {:room room :agent-id agent-id :error (.getMessage e)}))))
+
+;; =============================================================================
+;; Rendezvous - multi-agent handshake coordination
+;; =============================================================================
+
+(defn- handle-rendezvous-status [rendezvous-id]
+  (if-let [rv (get @rendezvous-state rendezvous-id)]
+    (let [acked (set (keys (:acks rv)))
+          expected (set (:expected-agents rv))
+          missing (vec (cset/difference expected acked))
+          elapsed (- (System/currentTimeMillis) (:created-at rv))]
+      {:ok true
+       :rendezvous {:id rendezvous-id
+                    :room (:room rv)
+                    :expected (vec expected)
+                    :acked (vec acked)
+                    :missing missing
+                    :complete (empty? missing)
+                    :elapsed-ms elapsed
+                    :deadline-ms (:deadline-ms rv)}})
+    {:ok false :err "rendezvous not found"}))
+
+;; =============================================================================
+;; Standup endpoint - rendezvous-based multi-agent check-in
+;; =============================================================================
 
 (defn- handle-standup
-  "Run a timed standup. Whistles all connected agents in parallel,
-   collects responses within the time limit.
+  "Start a rendezvous-based standup. Bells all agents with standup info,
+   returns immediately with a rendezvous-id for status polling.
+
+   Each agent independently:
+   1. Acks the bell (proves reception)
+   2. Generates its own standup update
+   3. Posts to MUSN room as itself (self-attribution)
 
    Request body:
-     :prompt     - Question to ask each agent (default: status check-in)
-     :timeout-ms - Total standup duration in ms (default: 120000 = 2 min)
-     :agents     - Optional list of agent-ids (default: all connected)"
+     :prompt      - Standup prompt (default: status check-in)
+     :deadline-ms - Ack deadline in ms (default: 120000 = 2 min)
+     :agents      - Optional list of agent-ids (default: all connected)
+     :room        - MUSN/IRC room name (default: \"standup\")"
   [body]
-  (let [timeout-ms (or (:timeout-ms body) default-standup-timeout-ms)
-        prompt (or (:prompt body) "Standup check-in: What are you working on? Any blockers? Keep it to 2-3 sentences.")
+  (let [room (or (:room body) "standup")
+        prompt (or (:prompt body) "Standup: What are you working on? Any blockers? 2-3 sentences.")
+        deadline-ms (or (:deadline-ms body) 120000)
         agent-ids (or (:agents body) (connected-agent-ids))
-        start-time (System/currentTimeMillis)
-        per-agent-timeout (max 10000 (- timeout-ms 2000))]
+        ;; Create the rendezvous
+        secret-result (handle-create-secret {:ttl-ms (+ deadline-ms 60000)})
+        secret-id (:secret-id secret-result)]
     (if (empty? agent-ids)
       {:ok false :err "no agents connected"}
-      (let [;; Whistle all agents in parallel
-            futures (into {}
-                         (map (fn [aid]
-                                [aid (future
-                                       (try
-                                         (let [result (handle-whistle {:agent-id aid
-                                                                       :prompt prompt
-                                                                       :timeout-ms per-agent-timeout})]
-                                           (if (:ok result)
-                                             {:status :responded
-                                              :response (or (get-in result [:response :result])
-                                                            (:response result))
-                                              :source (:source result)}
-                                             {:status :error :error (:err result)}))
-                                         (catch Exception e
-                                           {:status :error :error (.getMessage e)})))]))
-                         agent-ids)
-            ;; Collect responses, respecting overall timeout
-            responses (into {}
-                            (map (fn [[aid fut]]
-                                   (let [remaining (- timeout-ms (- (System/currentTimeMillis) start-time))
-                                         result (if (pos? remaining)
-                                                  (deref fut remaining {:status :timeout})
-                                                  {:status :timeout})]
-                                     [aid result])))
-                            futures)
-            elapsed-ms (- (System/currentTimeMillis) start-time)
-            responded (count (filter #(= :responded (:status (val %))) responses))
-            timed-out (count (filter #(= :timeout (:status (val %))) responses))]
-        {:ok true
-         :standup {:prompt prompt
-                   :agents (count agent-ids)
-                   :responded responded
-                   :timed-out timed-out
-                   :elapsed-ms elapsed-ms
-                   :timeout-ms timeout-ms}
-         :responses responses}))))
+      (do
+        ;; Record rendezvous state
+        (swap! rendezvous-state assoc secret-id
+               {:room room :prompt prompt :deadline-ms deadline-ms
+                :expected-agents (vec (map name agent-ids))
+                :acks {} :created-at (System/currentTimeMillis)})
+        ;; Schedule cleanup
+        (future
+          (Thread/sleep (+ deadline-ms 120000))
+          (swap! rendezvous-state dissoc secret-id))
+        ;; Bell all agents with rendezvous info
+        (let [bell-msg {:type "bell"
+                        :bell-type "standup"
+                        :secret-id secret-id
+                        :payload {:room room :prompt prompt
+                                  :musn-url musn-url
+                                  :deadline-ms deadline-ms}}
+              results (mapv (fn [aid]
+                              {:agent-id aid :sent (send-to-agent! aid bell-msg)})
+                            agent-ids)]
+          ;; Post announcement to MUSN as "agency"
+          (future (post-to-musn-room! room "agency" "Standup started. Awaiting check-ins."))
+          {:ok true
+           :rendezvous-id secret-id
+           :secret-value (:value secret-result)
+           :room room
+           :deadline-ms deadline-ms
+           :agents results})))))
 
 (defonce ^:private server-state (atom nil))
 

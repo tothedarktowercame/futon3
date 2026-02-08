@@ -684,22 +684,29 @@ function createHumanInput(): AsyncGenerator<InputEvent> {
   })();
 }
 
+let agencyWs: WebSocket | null = null;
+
+function sendAgencyMessage(msg: any): void {
+  if (agencyWs && agencyWs.readyState === WebSocket.OPEN) {
+    agencyWs.send(JSON.stringify(msg));
+  }
+}
+
 function createAgencyInput(url: string, agentId: string): AsyncGenerator<InputEvent> {
   return (async function* () {
-    let ws: WebSocket | null = null;
     const queue: InputEvent[] = [];
     let resolver: ((value: InputEvent) => void) | null = null;
 
     const connect = () => {
       console.error(`[agency-ws] Connecting to ${url}...`);
-      ws = new WebSocket(`${url}?agent-id=${agentId}`);
+      agencyWs = new WebSocket(`${url}?agent-id=${agentId}`);
 
-      ws.on("open", () => {
+      agencyWs.on("open", () => {
         console.error(`[agency-ws] Connected`);
-        ws?.send(JSON.stringify({ type: "register", agentId }));
+        agencyWs?.send(JSON.stringify({ type: "register", agentId }));
       });
 
-      ws.on("message", (data) => {
+      agencyWs.on("message", (data) => {
         try {
           const msg = JSON.parse(data.toString());
           console.error(`[agency-ws] Received: ${msg.type}`);
@@ -727,12 +734,13 @@ function createAgencyInput(url: string, agentId: string): AsyncGenerator<InputEv
         }
       });
 
-      ws.on("close", () => {
+      agencyWs.on("close", () => {
         console.error(`[agency-ws] Disconnected, reconnecting in 5s...`);
+        agencyWs = null;
         setTimeout(connect, 5000);
       });
 
-      ws.on("error", (err) => {
+      agencyWs.on("error", (err) => {
         console.error(`[agency-ws] Error: ${err}`);
       });
     };
@@ -1009,6 +1017,82 @@ Example:
   // Process multiplexed input
   for await (const event of multiplex(...sources)) {
     console.error(`\n[${event.source}] Processing ${event.type || "input"}...`);
+
+    // Standup bell: ack + self-report to MUSN (rendezvous handshake)
+    if (event.source === "agency" && event.type === "bell"
+        && (event.payload["bell-type"] || event.payload.bellType) === "standup") {
+      const bellData = event.payload;
+      const secretId = bellData["secret-id"] || bellData.secretId;
+      const payload = bellData.payload || {};
+      const room = payload.room || "standup";
+      const prompt = payload.prompt || "Standup: What are you working on? Any blockers? 2-3 sentences.";
+      const musnUrl = payload["musn-url"] || payload.musnUrl || MUSN_HTTP_URL;
+      console.error(`[standup] Bell received. room=${room} secret=${secretId}`);
+
+      // Step 1: Ack the bell (proves reception)
+      if (secretId) {
+        try {
+          const secretResp = await fetch(`${AGENCY_HTTP_URL}/agency/secret/${secretId}`);
+          const secretData = await secretResp.json();
+          if (secretData.value) {
+            await fetch(`${AGENCY_HTTP_URL}/agency/ack`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                "secret-id": secretId,
+                value: secretData.value,
+                "agent-id": AGENT_ID,
+              }),
+            });
+            console.error(`[standup] Acked bell ${secretId}`);
+          }
+        } catch (e) { console.error(`[standup] Ack error: ${e}`); }
+      }
+
+      // Step 2: Generate standup update
+      try {
+        const result = claude.runClaude(prompt);
+        // Step 3: Post to MUSN as self
+        await fetch(`${musnUrl}/musn/chat/message`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            room,
+            "msg-id": `standup-${AGENT_ID}-${Date.now()}`,
+            author: { id: AGENT_ID, name: AGENT_ID },
+            text: result,
+          }),
+        });
+        console.error(`[standup] Posted to #${room} (${result.length} chars)`);
+      } catch (e) { console.error(`[standup] Error: ${e}`); }
+      continue;
+    }
+
+    // Whistle/page: synchronous request-response back over WebSocket
+    if (event.source === "agency" && (event.type === "whistle" || event.type === "page")) {
+      const msg = event.payload;
+      const requestId = msg["request-id"] || msg.requestId;
+      const prompt = msg.prompt || "What are you working on?";
+      console.error(`[whistle] request-id=${requestId}, prompt=${prompt.slice(0, 60)}...`);
+      try {
+        const result = claude.runClaude(prompt);
+        sendAgencyMessage({
+          type: "whistle-response",
+          "request-id": requestId,
+          response: { result },
+        });
+        console.error(`[whistle] Response sent (${result.length} chars)`);
+      } catch (e) {
+        console.error(`[whistle] Error: ${e}`);
+        sendAgencyMessage({
+          type: "whistle-response",
+          "request-id": requestId,
+          response: { error: String(e) },
+        });
+      }
+      continue;
+    }
+
     const response = claude.handleInput(event);
 
     // Output response

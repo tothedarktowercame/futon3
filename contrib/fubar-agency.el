@@ -173,17 +173,49 @@ If no ERC server is connected, logs an error."
               (response . ,response)))
            (fubar-agency--log "[whistle] replied: %s" response)))))))
 
+(defun fubar-agency--ack-bell (secret-id)
+  "Fetch secret value and POST ack to Agency for rendezvous handshake."
+  (let* ((agency-base (replace-regexp-in-string
+                       "/agency/ws$" ""
+                       (replace-regexp-in-string "^ws" "http" fubar-agency-ws-url)))
+         (secret-url (format "%s/agency/secret/%s" agency-base secret-id)))
+    (url-retrieve
+     secret-url
+     (lambda (status)
+       (unless (plist-get status :error)
+         (goto-char url-http-end-of-headers)
+         (let* ((json-object-type 'plist)
+                (json-key-type 'keyword)
+                (resp (ignore-errors (json-read)))
+                (value (and resp (plist-get resp :value))))
+           (when value
+             (let ((url-request-method "POST")
+                   (url-request-extra-headers
+                    '(("Content-Type" . "application/json")))
+                   (url-request-data
+                    (json-encode `((secret-id . ,secret-id)
+                                  (value . ,value)
+                                  (agent-id . ,fubar-agency-agent-id)))))
+               (url-retrieve-synchronously
+                (format "%s/agency/ack" agency-base))
+               (fubar-agency--log "[ack] Acked bell %s" secret-id)))))))))
+
 (defun fubar-agency--handle-bell (msg)
-  "Handle a bell by joining the ERC standup room."
+  "Handle a bell by acking (if secret present) and joining the ERC standup room."
   (let* ((bell-type (or (plist-get msg :bell-type) "bell"))
+         (secret-id (plist-get msg :secret-id))
          (payload (plist-get msg :payload))
          (room (or (and payload (plist-get payload :room))
                    fubar-agency-irc-room))
          (bell-msg (and payload
                         (or (plist-get payload :message)
+                            (plist-get payload :prompt)
                             (format "%s" payload)))))
     (fubar-agency--log "[bell] type=%s room=%s msg=%s"
                        bell-type room (or bell-msg ""))
+    ;; Ack the bell if it has a secret (rendezvous handshake)
+    (when secret-id
+      (fubar-agency--ack-bell secret-id))
     ;; Pull the user into the ERC room
     (run-at-time 0 nil #'fubar-agency--pull-into-erc
                  room bell-msg)))

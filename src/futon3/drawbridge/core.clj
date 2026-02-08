@@ -33,7 +33,7 @@
 ;; Forward declarations
 (declare broadcast-to-ws-clients! ws-clients irc-connected? send-to-irc!
          handle-agency-message stop-agency-ws-client! ack-test-bell!
-         handle-page-sync handle-par-bell!)
+         handle-page-sync handle-par-bell! handle-standup-bell!)
 
 ;; =============================================================================
 ;; Agent State
@@ -347,11 +347,12 @@
         (case bell-type
           "test-bell" (future (ack-test-bell! msg))
           "par" (future (handle-par-bell! msg))
+          "standup" (future (handle-standup-bell! msg))
           ;; Default: send prompt to agent
           (future (send-input! prompt))))
 
-      "page"
-      ;; Page is synchronous - invoke agent and return response
+      ("page" "whistle")
+      ;; Page/whistle is synchronous - invoke agent and return response
       (future (handle-page-sync msg))
 
       ;; Default: send as-is
@@ -391,6 +392,40 @@
             (println "[drawbridge] test-bell ack: secret missing in response")))
         (catch Exception e
           (println "[drawbridge] test-bell ack failed:" (.getMessage e)))))))
+
+(defn- handle-standup-bell!
+  "Handle a standup bell: ack, invoke agent, post result to MUSN as self."
+  [{:keys [secret-id payload]}]
+  (let [base (or (:agency-http-url @agent-state)
+                 (agency-http-base-from-ws (:url @agency-ws-state)))
+        musn-url (or (:musn-url payload) "http://localhost:6065")
+        room (or (:room payload) "standup")
+        prompt (or (:prompt payload) "Standup: What are you working on?")
+        agent-id (:agent-id @agent-state)]
+    ;; Step 1: Ack the bell (proves reception)
+    (ack-test-bell! {:secret-id secret-id})
+    ;; Step 2: Invoke agent for standup update
+    (when-let [invoke-fn (:invoke-fn @agent-state)]
+      (try
+        (let [session-id (:session-id @agent-state)
+              result-map (invoke-fn prompt session-id)
+              result (:result result-map)
+              new-session-id (:session-id result-map)]
+          (when new-session-id
+            (swap! agent-state assoc :session-id new-session-id))
+          ;; Step 3: Post to MUSN as self
+          (when (and result (not (str/blank? result)))
+            (println (format "[drawbridge] Standup: posting to #%s as %s (%d chars)"
+                             room agent-id (count result)))
+            (httpc/post (str musn-url "/musn/chat/message")
+              {:content-type :json
+               :throw-exceptions false
+               :body (json/encode {:room room
+                                   :msg-id (str (java.util.UUID/randomUUID))
+                                   :author {:id agent-id :name agent-id}
+                                   :text result})})))
+        (catch Exception e
+          (println (format "[drawbridge] Standup error: %s" (.getMessage e))))))))
 
 (defn- handle-par-bell!
   "Handle a PAR bell by spawning a local peripheral to contribute to the PAR.
@@ -473,7 +508,7 @@
                   msg-type (:type msg)]
               (case msg-type
                 "bell" (handle-agency-message msg)
-                "page" (handle-agency-message msg)
+                ("page" "whistle") (handle-agency-message msg)
                 (println (format "[drawbridge] Agency WS message: %s" msg-type))))
             (catch Exception e
               (println "[drawbridge] Agency WS parse error:" (.getMessage e))))))

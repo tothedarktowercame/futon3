@@ -193,11 +193,11 @@ Passing Agency integration coverage (sanity checks):
 #### Phase 2 Results (2026-02-08)
 
 Phase 2 implementation landed in these commits:
-- A3 loud failure status checks + eliminate catch `_ nil`: `5057c38`
-- A1 enforce single routing authority (cross-store eviction watches): `290b0e9`
-- A0 explicit delivery receipts for `send-to-agent!` + whistle error attribution: `ea73e0a`
-- A5 bounded lifecycle (acks bounded, deterministic secret TTL on read, disconnect cascades): `798481b`
-- A2 atomic state (corruption loud, atomic state writes, continuity non-nil): `67cabf4`
+- A3 loud failure status checks + eliminate catch `_ nil`: `3f0aa3a`
+- A1 enforce single routing authority (cross-store eviction watches): `c5b5929`
+- A0 explicit delivery receipts for `send-to-agent!` + whistle error attribution: `5f85287`
+- A5 bounded lifecycle (acks bounded, deterministic secret TTL on read, disconnect cascades): `5dcb28b`
+- A2 atomic state (corruption loud, atomic state writes, continuity non-nil): `804fe8f`
 
 Acceptance results:
 - Agency invariant proof tests are now green:

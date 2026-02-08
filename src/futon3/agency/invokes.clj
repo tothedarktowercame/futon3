@@ -16,15 +16,17 @@
   (:import [java.util.concurrent LinkedBlockingQueue TimeUnit]))
 
 ;; =============================================================================
-;; Binary paths (configurable via env vars, fix #3)
+;; Configuration
 ;; =============================================================================
 
+(def ^:private default-invoke-timeout-ms
+  (or (some-> (System/getenv "AGENCY_INVOKE_TIMEOUT_MS") Long/parseLong)
+      60000))
+
 (def ^:private codex-bin
-  "Codex binary path. Override with AGENCY_CODEX_BIN env var."
   (or (System/getenv "AGENCY_CODEX_BIN") "codex"))
 
 (def ^:private claude-bin
-  "Claude binary path. Override with AGENCY_CLAUDE_BIN env var."
   (or (System/getenv "AGENCY_CLAUDE_BIN") "claude"))
 
 ;; =============================================================================
@@ -38,81 +40,109 @@
    Uses:
    - codex exec for non-interactive mode
    - --json for structured output
-   - --full-auto for autonomous operation (no approval prompts)
+   - config override approval_policy=\"never\" to prevent interactive approval prompts
+     (important for paging/HTTP invocation where no human can approve)
+   - --sandbox workspace-write to keep a safe default execution policy
    - codex exec resume <session-id> for session continuity
 
    Binary path configurable via AGENCY_CODEX_BIN env var.
 
    NOTE: We pass the prompt via stdin (`-`), not argv, to avoid shell quoting
    hazards and length limits (from f24b55a)."
-  [text session-id]
-  (let [base-cmd (if session-id
-                   [codex-bin "exec" "resume" session-id]
-                   [codex-bin "exec"])
-        cmd (into base-cmd ["--json" "--full-auto" "-"])
-        _ (println (format "[invoke-codex] Executing: codex exec%s (prompt: %.50s...)"
-                           (if session-id (str " resume " session-id) "")
-                           text))
-        pb (ProcessBuilder. ^java.util.List cmd)
-        _ (.redirectErrorStream pb true)
-        proc (.start pb)
-        stdin (io/writer (.getOutputStream proc))
-        stdout (io/reader (.getInputStream proc))]
+  ([text session-id]
+   (invoke-codex text session-id default-invoke-timeout-ms))
+  ([text session-id timeout-ms]
+   (let [timeout-ms (long (or timeout-ms default-invoke-timeout-ms))
+         base-cmd (if session-id
+                    [codex-bin "exec" "resume" session-id]
+                    [codex-bin "exec"])
+         cmd (into base-cmd ["--json"
+                             "--sandbox" "workspace-write"
+                             "-c" "approval_policy=\"never\""
+                             "-"])
+         _ (println (format "[invoke-codex] Executing: %s exec%s (timeout=%sms, prompt: %.50s...)"
+                            codex-bin
+                            (if session-id (str " resume " session-id) "")
+                            timeout-ms
+                            text))
+         pb (ProcessBuilder. ^java.util.List cmd)
+         _ (.redirectErrorStream pb true)
+         proc (.start pb)
+         stdin (io/writer (.getOutputStream proc))
+         stdout (io/reader (.getInputStream proc))
+         output (StringBuilder.)
+         session-id* (atom nil)
+         agent-texts* (atom [])]
 
-    ;; Write prompt to stdin then close
-    (try
-      (locking stdin
-        (.write ^java.io.Writer stdin (str text "\n"))
-        (.flush ^java.io.Writer stdin))
-      (catch Exception e
-        (println "[invoke-codex] Failed writing prompt to stdin:" (.getMessage e))))
-    (try (.close ^java.io.Writer stdin) (catch Exception _))
+     ;; Write prompt to stdin then close.
+     (try
+       (locking stdin
+         (.write ^java.io.Writer stdin (str text "\n"))
+         (.flush ^java.io.Writer stdin))
+       (catch Exception e
+         (println "[invoke-codex] Failed writing prompt to stdin:" (.getMessage e))))
+     (try (.close ^java.io.Writer stdin) (catch Exception _))
 
-    ;; Read JSON output with streaming parse (from f24b55a)
-    (println "[invoke-codex] Reading JSON response...")
-    (let [output (StringBuilder.)
-          session-id* (atom nil)
-          agent-texts* (atom [])]
-      (loop []
-        (when-let [line (.readLine ^java.io.BufferedReader stdout)]
-          (.append output line)
-          (.append output "\n")
-          (when-not (str/blank? line)
-            (try
-              (let [evt (json/parse-string line true)
-                    t (:type evt)]
-                (when (and (= t "thread.started") (nil? @session-id*))
-                  (reset! session-id* (or (:thread_id evt) (:session_id evt))))
-                (when (= t "item.completed")
-                  (let [item (:item evt)]
-                    (when (= (:type item) "agent_message")
-                      (let [content (or (:text item) (:content item))
-                            text-content (cond
-                                           (string? content) content
-                                           (sequential? content)
-                                           (->> content
-                                                (filter #(= (:type %) "text"))
-                                                (map :text)
-                                                (remove nil?)
-                                                (str/join ""))
-                                           :else nil)]
-                        (when (seq text-content)
-                          (swap! agent-texts* conj text-content)))))))
-              (catch Exception _)))
-          (recur)))
-      (.waitFor proc)
-      (let [exit-code (.exitValue proc)
-            out-str (str output)]
-        (if (zero? exit-code)
-          (let [last-message (or (last @agent-texts*) out-str)
-                new-session-id @session-id*]
-            (println (format "[invoke-codex] Session: %s" new-session-id))
-            {:result last-message
-             :session-id new-session-id
-             :exit-code 0})
-          (do
-            (println "[invoke-codex] Process failed:" out-str)
-            {:error out-str :exit-code exit-code}))))))
+     ;; Read output asynchronously so we can enforce a process timeout.
+     (let [reader-fut
+           (future
+             (try
+               (loop []
+                 (when-let [line (.readLine ^java.io.BufferedReader stdout)]
+                   (.append output line)
+                   (.append output "\n")
+                   (when-not (str/blank? line)
+                     (try
+                       (let [evt (json/parse-string line true)
+                             t (:type evt)]
+                         (when (and (= t "thread.started") (nil? @session-id*))
+                           (reset! session-id* (or (:thread_id evt) (:session_id evt))))
+                         (when (= t "item.completed")
+                           (let [item (:item evt)]
+                             (when (= (:type item) "agent_message")
+                               (let [content (or (:text item) (:content item))
+                                     text-content (cond
+                                                    (string? content) content
+                                                    (sequential? content)
+                                                    (->> content
+                                                         (filter #(= (:type %) "text"))
+                                                         (map :text)
+                                                         (remove nil?)
+                                                         (str/join ""))
+                                                    :else nil)]
+                                 (when (seq text-content)
+                                   (swap! agent-texts* conj text-content)))))))
+                       (catch Exception _)))
+                   (recur)))
+               (catch Exception _
+                 nil)))]
+
+       (println "[invoke-codex] Reading JSON response...")
+       (let [finished? (.waitFor proc timeout-ms TimeUnit/MILLISECONDS)]
+         (when-not finished?
+           (println (format "[invoke-codex] Timeout after %sms; killing process" timeout-ms))
+           (try (.destroy ^Process proc) (catch Exception _))
+           (try (.waitFor ^Process proc 1000 TimeUnit/MILLISECONDS) (catch Exception _))
+           (when (.isAlive ^Process proc)
+             (try (.destroyForcibly ^Process proc) (catch Exception _))))
+
+         ;; Best effort: let the reader drain/exit.
+         (deref reader-fut 2000 nil)
+
+         (let [out-str (str output)]
+           (if-not finished?
+             {:error "timeout" :exit-code -1}
+             (let [exit-code (.exitValue proc)]
+               (if (zero? exit-code)
+                 (let [last-message (or (last @agent-texts*) out-str)
+                       new-session-id @session-id*]
+                   (println (format "[invoke-codex] Session: %s" new-session-id))
+                   {:result last-message
+                    :session-id new-session-id
+                    :exit-code 0})
+                 (do
+                   (println "[invoke-codex] Process failed:" out-str)
+                   {:error out-str :exit-code exit-code}))))))))))
 
 (defn make-codex-invoke-fn
   "Factory: Create a Codex invoke function.
@@ -253,15 +283,18 @@
     (reset! subprocess (start-claude-subprocess! initial-session-id))
     (if @subprocess
       ;; Return invoke-fn and subprocess state
-      [(fn invoke-claude [text session-id]
-         ;; Restart if dead
-         (when (or (nil? @subprocess)
-                   (not (.isAlive ^Process (:process @subprocess))))
-           (println "[invoke-claude] Subprocess dead, restarting...")
-           (reset! subprocess (start-claude-subprocess! session-id)))
-         (if @subprocess
-           (send-to-claude! @subprocess text 60000)
-           {:error "failed to start subprocess" :exit-code -1}))
+      [(fn invoke-claude
+         ([text session-id]
+          (invoke-claude text session-id default-invoke-timeout-ms))
+         ([text session-id timeout-ms]
+          ;; Restart if dead
+          (when (or (nil? @subprocess)
+                    (not (.isAlive ^Process (:process @subprocess))))
+            (println "[invoke-claude] Subprocess dead, restarting...")
+            (reset! subprocess (start-claude-subprocess! session-id)))
+          (if @subprocess
+            (send-to-claude! @subprocess text (or timeout-ms default-invoke-timeout-ms))
+            {:error "failed to start subprocess" :exit-code -1})))
        @subprocess]
       ;; Failed to start
       [nil nil])))

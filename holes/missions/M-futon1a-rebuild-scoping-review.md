@@ -94,4 +94,3 @@ Stop this mission when any of the following is true:
 - Present: `success_criteria` (strong, verifiable), partial `exit_conditions` via Part I gate.
 - Missing: `owner`, explicit `scope in/out`, explicit `time_box`, explicit mission-level `exit_conditions`.
 - Recommended next step: add short sections for Owner/Scope/Time Box/Exit Conditions near the top of `holes/missions/M-futon1a-rebuild.md` so the mission has bounded ownership and a clear finish line.
-

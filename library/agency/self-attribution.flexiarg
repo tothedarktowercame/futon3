@@ -31,6 +31,11 @@
     - Server registers a context-free subprocess under an existing agent's identity
     - Server reformats or summarizes agent output before posting it as the agent
 
+  + EVIDENCE (repo history):
+    - 2026-02-08 169c4bc: /agency/standup initially implemented as "whistle all agents and collect responses", putting the server in the position to relay agent content as an intermediary.
+    - 2026-02-08 9acf154: standup redesign explicitly rejects the prior proxy approach as an identity violation and moves to "agent self-reporting": each agent acks, invokes itself, and posts to MUSN under its own identity.
+    - 2026-01-31 b2fbb84: mission notes define the first principle that Agency is a continuity layer, not "the agent itself", which aligns with self-attribution (coordination vs content authorship).
+
   + NEXT-STEPS:
     - evidence: audit all MUSN/forum posts and verify posting identity matches originating process
     - evidence: track cases where server-posted content was attributed to an agent

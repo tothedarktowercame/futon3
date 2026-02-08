@@ -31,6 +31,12 @@
     - Ghost routing: agent disconnected from WS but still in registry; messages invoke dead subprocess
     - Duplicate delivery: agent in both local-handlers and WS; bell sent via local handler AND WS
 
+  + EVIDENCE (repo history):
+    - 2026-02-07 fac9efb: "memory bifurcation" brief documents WS-delivered messages that never reach the live terminal session, because "connected" is not the same as "invokable".
+    - 2026-02-07 84ac0e0: unified agent registry introduced explicitly to address multi-tier routing and bring invocation under one authority.
+    - 2026-02-04 9a73783: /agency/kick endpoint added to disconnect stale agents, indicating stale routing entries were a recurring operational failure mode.
+    - 2026-02-04 92fe6a1 and 2026-02-04 bb2e3a7: session-id tracking for WS connections added and then fixed, highlighting that session identity was drifting outside a single source of truth.
+
   + ANTI-PATTERNS:
     - (distinct (concat registry local ws)) as the agent list — hides conflicts
     - Priority cascade without eviction — checking tiers in order without ensuring mutual exclusion

@@ -1,0 +1,41 @@
+@flexiarg agency/identifier-separation
+@title Keep Transport Identifiers Separate From LLM Session Identifiers
+@sigils [🏷/别]
+@keywords identity, identifier, thread-id, resume-id, session-id, routing, transport, forum, musn
+@audience agency maintainers, futon developers
+@tone analytic-foundational
+@style pattern
+@references [p4ng/identifier-garden futon-theory/agent-contract agency/state-atomicity agency/single-routing-authority]
+
+! conclusion: Never overload identifiers across layers; transport IDs (forum thread, MUSN session, WS connection) must not be stored or used as LLM resume/session IDs, and LLM session IDs must not be treated as transport addresses.
+  + context: Futon3 passes many identifiers through Agency and peripherals: agent-id, forum thread-id, MUSN session-id, WebSocket session-id, LLM resume/thread id, bell secret-id, whistle request-id. Early Agency code used the same key (thread-id) for different meanings depending on call site.
+  + IF:
+    You add a new endpoint, peripheral, or bridge that must preserve continuity across tools and transports.
+  + HOWEVER:
+    Overloaded IDs create "accidental continuity" (resuming the wrong thing) and "accidental routing" (sending to the wrong destination). Silent corruption follows: state appears valid but refers to the wrong layer. Debugging is hard because logs show an ID but not its type.
+  + THEN:
+    1. Define and enforce a typed identifier vocabulary:
+       - transport: forum-thread-id, musn-session-id, ws-connection-id
+       - LLM continuity: resume-id (Codex/Claude thread), llm-session-id
+       - protocol: secret-id, request-id, rendezvous-id
+    2. Store only LLM continuity identifiers in continuity state (e.g., :agent/current-thread-id).
+    3. Accept transport IDs only inside transport-specific payloads (e.g., under :forum or :musn), never as top-level "thread-id" that can be misread.
+    4. Log IDs with their type (key name) and the layer emitting them (transport/identity/invocation), so traces can be interpreted without guesswork.
+  + BECAUSE:
+    Identity in a distributed system is a graph of references; if edges are mislabeled, the system becomes internally consistent but externally wrong. This is an Identifier Garden problem: without stewardship, identifiers drift and get repurposed, breaking provenance and continuity.
+
+  + FAILURE-MODES:
+    - Resume-id clobbered: forum thread-id overwrites LLM resume id, causing "resume" to start a new LLM context every time.
+    - Ghost continuity: a WS session-id is treated as an LLM session and stored, creating persistent but meaningless state.
+    - Debugging dead-end: logs show "thread-id=..." but you cannot tell whether it is a forum thread, an LLM thread, or a MUSN session.
+
+  + EVIDENCE (repo history):
+    - 2026-01-31 466bc73 and 2026-01-31 b2fbb84: mission documents the concrete break: forum thread ids were used as LLM resume ids.
+    - 2026-01-31 17c87b7: introduces :resume-id as distinct from forum thread-id in the payload and state update path, an explicit fix for identifier overloading.
+    - 2026-01-29 0879d1f: peripheral spec draft makes "session-id transfer" a first-class hop mechanic, increasing the cost of ID confusion.
+
+  + NEXT-STEPS:
+    - evidence: audit Agency endpoints for the presence of ambiguous keys like thread-id used in multiple meanings; target is zero ambiguous keys.
+    - evidence: add a property test that generates payloads with forum-thread-id and resume-id and asserts they never swap or overwrite one another.
+    - evidence-shape: {:id/type :keyword, :id/value :string, :layer :keyword, :operation :string, :agent/id :string, :ts :string}
+

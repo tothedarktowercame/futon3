@@ -37,6 +37,11 @@
     - Orphaned promise: agent disconnects; pending-whistle entry sits until timeout future fires (or forever if future was GC'd)
     - Late ack: rendezvous cleaned up; agent sends ack after cleanup; ack recorded in acks atom but not in rendezvous
 
+  + EVIDENCE (repo history):
+    - 2026-02-01 9ea1b06: secret storage endpoints introduced with TTL-driven cleanup, establishing the "fire-and-forget future" cleanup pattern for transient state.
+    - 2026-02-08 b14c9de: pending-whistles introduced as an atom with timeout cleanup via future (sleep + dissoc), creating an explicit orphan/timeout lifecycle that can race with in-flight operations.
+    - 2026-02-08 9acf154: rendezvous-state introduced alongside acks recording; the design makes acks meaningful, but also increases the need for deterministic cleanup (acks, rendezvous, and pending requests must not leak or race).
+
   + NEXT-STEPS:
     - evidence: measure atom sizes under sustained load (entries per hour per atom)
     - evidence: count orphaned entries (entries past TTL still in atom)

@@ -31,6 +31,11 @@
     - Silent corruption: state file has truncated EDN; load returns nil; agent starts fresh with no warning
     - Tier desync: agent registered in authority but connection handle is stale; messages route to dead handle
 
+  + EVIDENCE (repo history):
+    - 2026-01-31 466bc73: mission "Make Agency Work Properly" documents two atomicity breaks: rollover wiping the active session id, and forum thread ids overwriting LLM resume ids.
+    - 2026-01-31 17c87b7: code change introduces :resume-id as distinct from forum thread-id and removes "Agency completed" prefixes; it also adds rollover pending flags, indicating state transitions were previously leaving the system in partial/inconsistent states.
+    - current src/futon3/agency/service.clj: load-agent-state catches parse errors and returns nil, which is silent corruption acceptance rather than an integrity failure.
+
   + ANTI-PATTERNS:
     - (swap! state assoc :session-id nil) as "clear" — nil is not a valid session state
     - (catch Exception _ nil) on state load — corruption becomes invisible

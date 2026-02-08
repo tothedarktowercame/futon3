@@ -40,6 +40,11 @@
     - (catch Exception e (log! "error" {:err (.getMessage e)}) false) — logged but not propagated
     - {:throw-exceptions false} without (when-not (= 200 (:status resp)) ...) — HTTP error suppression
 
+  + EVIDENCE (repo history):
+    - 2026-01-31 466bc73 and 2026-01-31 b2fbb84: the "Make Agency Work Properly" mission is, in effect, a loud-failure postmortem: multiple user-visible failures were traced back to swallowed/blurred errors and identifier confusion that did not surface at the right layer.
+    - 2026-02-08 9acf154: standup redesign calls out the prior approach as lacking a reception guarantee; that is a loud-failure requirement (explicit failure when reception is not proven), not just a protocol preference.
+    - current src/futon3/agency/service.clj: load-agent-state catches EDN parse errors and returns nil, which collapses integrity failures into "empty state" with no operator-visible signal.
+
   + NEXT-STEPS:
     - evidence: count all silent catch blocks in agency/ directory; target is zero
     - evidence: classify each catch block by layer (transport, identity, integrity, invocation, validation)

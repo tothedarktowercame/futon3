@@ -31,6 +31,12 @@
     - False success: HTTP post returns 503 but caller sees no error because exceptions are suppressed
     - Orphaned promise: whistle promise created but agent crashes before responding; promise leaks
 
+  + EVIDENCE (repo history):
+    - 2026-02-01 9ea1b06: "test-bell-v2 with secret verification" adds a closed-loop receipt mechanism (secret retrieval + verification) explicitly to prove message reception rather than assuming it.
+    - 2026-02-03 ad6bea1: "bell ack flow" extends the closed-loop idea into a broader bell/ack workflow, reinforcing that "sent" needed to become "verified".
+    - 2026-02-08 b14c9de: rename page -> whistle to clarify the sync request/response contract and introduce an explicit timeout knob (AGENCY_WHISTLE_TIMEOUT_MS), pushing toward explicit failure over silent waiting.
+    - 2026-02-08 9acf154: standup redesign notes "no reception guarantee" as a defect of the prior approach, and replaces it with a rendezvous + ack handshake.
+
   + ANTI-PATTERNS:
     - {:throw-exceptions false} without status check
     - (catch Exception _ nil) in send paths

@@ -5,10 +5,17 @@
 @audience agency maintainers, futon developers, pattern reviewers
 @tone formal-analytic
 @style pattern
-@references [futon-theory/agent-contract futon-theory/error-hierarchy storage/durability-first realtime/rendezvous-handshake realtime/liveness-heartbeats realtime/listener-leases]
+@references [futon-theory/agent-contract futon-theory/error-hierarchy storage/durability-first realtime/rendezvous-handshake realtime/liveness-heartbeats realtime/listener-leases p4ng/identifier-garden]
 
 ! conclusion: Agency must uphold six invariants — delivery, identity, atomicity, error hierarchy, debugging, and bounded resources — analogous to the I0-I4 framework in futon1a; every feature built on Agency inherits these guarantees or is built on sand.
   + context: Agency is the messaging and coordination backbone for all futon agents (human and AI). It routes bells (async), whistles (sync), manages agent registration, and bridges to IRC/MUSN/forum. An audit revealed: 20+ silent error catches, three independent routing tiers with no consistency, unbounded state atoms, no delivery guarantees, and no specification. Features built on Agency (standup, PAR sessions, pair programming) inherit all of these deficiencies.
+
+  + EVIDENCE (repo history, why this spec exists):
+    - 2026-01-29 0879d1f and 2026-02-01 9a0f28d: peripheral specs and contract notes push toward routable, machine-readable invocation with explicit I/O and session continuity, which forces Agency to get identity/delivery/atomicity right.
+    - 2026-01-31 466bc73 and 2026-01-31 b2fbb84: mission and invariants for session continuity document real failures: identifier conflation (forum thread-id vs LLM resume id) and rollover semantics that erase session identity.
+    - 2026-02-07 fac9efb: "memory bifurcation" brief shows the split-brain failure mode when routing says "connected" but invocation says "no invoke-fn registered".
+    - 2026-02-03 ad6bea1 and 2026-02-01 9ea1b06: bell/secret verification work is direct evidence that "sent" needed to become "receipt-proven".
+    - 2026-02-08 169c4bc then 2026-02-08 9acf154: standup evolves from proxy collection to rendezvous + self-reporting, surfacing the identity and delivery invariants as practical necessities, not theory.
 
   + INVARIANT-SET:
 
@@ -21,11 +28,13 @@
       For any agent-id, exactly one routing entry exists at any time.
       Agents speak for themselves; the server never posts under an agent's identity.
       Proof: at no point do two tiers claim authority for the same agent-id.
+      Support: agency/identifier-separation (typed IDs prevent routing/identity drift across layers).
 
     A2-atomicity (agency/state-atomicity):
       Every state transition completes fully or reverts with an explicit error.
       No transition may leave state partially updated.
       Proof: rollover never produces a nil session-id; corrupted state files are rejected, not silently defaulted.
+      Support: agency/identifier-separation (continuity state stores LLM session IDs only; transport IDs cannot clobber them).
 
     A3-hierarchy (agency/loud-failure):
       Every error surfaces at the layer that caused it with agent-id, operation, and cause.
@@ -47,6 +56,9 @@
     - Implementation: specific function(s) that enforce it
     - Test: specific test(s) that prove it
     - Evidence: specific metric(s) that monitor it
+
+    Supporting patterns (non-invariants) that reduce common failure modes:
+    - agency/identifier-separation supports A1 (identity) and A2 (atomicity) by preventing identifier overloading across layers.
 
     Current traceability (to be filled as implementation proceeds):
 

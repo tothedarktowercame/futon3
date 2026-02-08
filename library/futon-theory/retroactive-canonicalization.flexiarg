@@ -1,0 +1,158 @@
+@flexiarg futon-theory/retroactive-canonicalization
+@title Specification Emerges by Retroactive Canonicalization of Ancestors
+@sigils [🔄/溯]
+@keywords canonicalization, ancestor, retroactive, lineage, genealogy, emergence, baldwin
+@audience futon developers, pattern theorists, library maintainers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/baldwin-cycle futon-theory/theory-as-exotype futon-theory/local-gain-persistence futon-theory/four-types]
+
+! conclusion:
+  Futon theory specifications are not a priori axiom systems. They are the
+  result of retroactive canonicalization: taking patterns that emerged from
+  practice (ancestors), recognizing which ones are structurally necessary,
+  and promoting them to invariants and constraints. Events do not change;
+  their symbolic coordinates change — from "incidental fix" to "necessary
+  constraint." This process must itself be auditable.
+
+  + context: A persistent question in the futon stack is: where does the
+    specification come from? If you treat it as an axiom system that existed
+    before the code, you cannot explain how it was derived. If you treat it
+    as code-first, you have no theory. The answer is neither: specification
+    emerges from practice through a specific, identifiable, auditable process
+    that this pattern describes.
+
+  + THE-ANCESTOR-SET:
+    The futon3 pattern library contains ~843 patterns. Of these, ~23 are
+    in futon-theory/ (the "specification"). The rest are the ancestor set:
+    patterns written under immediate pressure — data recovery failures,
+    persistence bugs, counter ratchet needs, agent coordination breakdowns.
+
+    These ancestors are:
+    - Genotype material: replicable, mutable, selectable symbol fragments
+    - Local adaptation history: each written to solve a specific failure
+    - Uncanonized rule fragments: they work but haven't been placed in a
+      unified constraint system
+
+    The specification is NOT the ancestor set. The specification is what
+    you get when you compress, standardize, and constrain the ancestor
+    set into an exotype (contract).
+
+  + THE-THREE-ACTIONS-OF-CANONICALIZATION:
+    The process from ancestor to specification has three identifiable
+    actions that recur:
+
+    1. NAMING (命名):
+       Taking a recurring difficulty and its repair pattern and giving it
+       a citable name. Before naming, the fix is tacit knowledge. After
+       naming, it can be referenced, debated, and selected for or against.
+       Example: "counter-ratchet" names the pattern of "key counts must
+       not drop unexpectedly" — a problem that existed in practice long
+       before it had a name.
+
+    2. SELECTION (選擇):
+       Among multiple viable fixes, preferring those that are auditable,
+       replayable, and encapsulable as events and invariants. Not all
+       fixes are equally suitable for canonicalization — selection favors
+       those with proof-path-compatible structure.
+       Example: spit-with-append vs. write-through-with-sync — both fix
+       persistence, but only the latter is auditable and crash-safe.
+
+    3. CANALIZATION (固化):
+       Promoting a selected pattern from "what worked once" to "what must
+       always hold." The pattern becomes an invariant, an event type, or
+       a stop-the-line condition. Future agents don't need to learn this
+       lesson — the system enforces it.
+       Example: "always fsync after write" promoted from a fix for data
+       loss to I0 (Persistence invariant): what you save is what you get
+       back.
+
+    These three actions are the Baldwin cycle applied to theory itself:
+    NAMING = exploration (giving structure to experience),
+    SELECTION = assimilation (fixing successful adaptations),
+    CANALIZATION = canalization (removing freedom, making success cheap).
+
+  + RETROACTIVITY:
+    The key insight: when a pattern is canonized, its past instances are
+    retroactively reclassified. The event that prompted delivery-receipt
+    was, at the time, just a bug fix for silent message drops. After
+    canonicalization, it becomes evidence that G1 (mandatory-pur / delivery
+    receipt guarantee) was always structurally necessary.
+
+    What changes: the pattern's role (from incidental to necessary)
+    What does NOT change: the events themselves (commits, bug reports, fixes)
+
+    This is why "future elements manifesting in the present" is not
+    mystical — it is the retroactive recognition that a pattern which
+    seemed contingent was actually structurally required. The structure
+    was always there; the naming capacity to see it was not.
+
+    Formally:
+    > A newly formed specification retroactively rewrites the role of old
+    > patterns (from contingent repair to necessary constraint) without
+    > rewriting the old events themselves.
+
+  + THE-CANONIZATION-EVENT:
+    Each act of canonicalization should produce a durable record:
+
+    {:canonization/id :string
+     :canonization/ancestor-pattern :string    ; e.g. "agency/delivery-receipt"
+     :canonization/target-spec :string         ; e.g. "coordination/mandatory-pur"
+     :canonization/evidence [:string]          ; commits, incidents, PURs
+     :canonization/old-role :string            ; "ad-hoc fix for silent drops"
+     :canonization/new-role :string            ; "ancestral evidence for G1"
+     :canonization/rationale :string           ; why this promotion
+     :canonization/ts :string}
+
+    Without canonization events, the lineage from ancestor to specification
+    is invisible. With them, anyone can ask: "why does this invariant exist?"
+    and trace it back through the ancestor that demonstrated its necessity.
+
+  + THE-GENEALOGY-GRAPH:
+    For each specification entry (invariant, event type, gate pattern),
+    the genealogy traces:
+    - Which ancestor pattern(s) demonstrated its necessity
+    - What incident(s) or failure(s) provided the evidence
+    - When and how it was promoted (canonization event)
+    - What compression rules applied (why this ancestor, not another)
+
+    This graph is the auditable generation narrative that connects
+    practice to theory without treating theory as either a priori or
+    arbitrary.
+
+  + COMPRESSION-RULES:
+    When is canonicalization warranted? A pattern is a candidate when:
+    - Frequency: it has been applied across multiple tasks/missions
+    - Risk: its absence caused or would cause a detectable failure
+    - Reusability: it applies across domains, not just one context
+    - Failure cost: the consequence of ignoring it is high
+    - Machine-checkability: it can be enforced by code, not just convention
+
+    These rules correspond to the theory-as-exotype type-check:
+    a pattern that satisfies these criteria "type-checks" against the
+    theory exotype and is eligible for promotion.
+
+  + RELATIONSHIP-TO-INVARIANCE-FIRST:
+    ChatGPT's formulation is precise:
+    > When sustained creative effort cannot advance the system, the problem
+    > is not lack of ideas but unidentified invariants that need canalization.
+
+    In this pattern's terms: the system is stuck in the NAMING phase
+    (creating more ancestor patterns) when it needs to enter the SELECTION
+    and CANALIZATION phases (promoting patterns to invariants). More
+    ancestors won't help; recognizing which ancestors are necessary will.
+
+  + BECAUSE:
+    Without auditable canonicalization, specifications appear to be imposed
+    from outside — "the theory says X" with no explanation of why. This
+    makes theory fragile: it can be ignored because its authority is
+    unexplained. With canonicalization, theory authority traces back to
+    practice: "the theory says X because incidents A, B, C demonstrated
+    that X is structurally necessary." This is not a priori authority
+    but empirical authority — the same kind the ancestors have, but
+    compressed and formalized.
+
+  + NEXT-STEPS:
+    next[Produce canonization events for the 12 coordination patterns]
+    next[Build genealogy graph for I0-I4 invariants back to futon3 incidents]
+    next[Define the spec extraction pipeline as a repeatable process]

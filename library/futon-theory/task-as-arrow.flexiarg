@@ -1,0 +1,121 @@
+@flexiarg futon-theory/task-as-arrow
+@title A Task Is a BHK Arrow: Constructive Transformation with Proof
+@sigils [⇒/箭]
+@keywords task, arrow, bhk, constructive, proof, composition, gate, pipeline
+@audience futon developers, pattern theorists, gate implementers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/curry-howard-operational futon-theory/proof-path futon-theory/four-types]
+
+! conclusion:
+  A task in the futon stack is not a work description — it is a BHK arrow.
+  It is valid if and only if it constructively transforms a proven start
+  state into a proven goal state. The proof path record IS the proof of
+  that arrow. Gates are arrows; the pipeline is their composition.
+
+  + context: The Curry-Howard operational principle says programs are proofs
+    of their specifications. The BHK (Brouwer-Heyting-Kolmogorov) interpretation
+    makes this more precise: a proof of A -> B is not a truth judgment but a
+    METHOD — give me any proof of A, and I construct a proof of B. This is
+    not analogy. It is structural identity between tasks and arrows.
+
+  + BHK-ARROW-SEMANTICS:
+    In BHK proof theory:
+    - A proof of A -> B is a constructive transformation
+    - It takes a proof of A as input (not just a proposition)
+    - It produces a proof of B as output (not just an artifact)
+    - The transformation itself is the proof
+
+    In futon:
+    - A is the start state (spec, invariants hold, baseline)
+    - B is the goal state (code exists, tests pass, invariants hold)
+    - A proof of A is the current workspace + evidence
+    - A proof of B is code + tests + VERIFY + PROOF_COMMIT
+    - The task is the constructive transformation A -> B
+    - The proof path record IS the proof of the arrow
+
+    Therefore: a task is valid iff it genuinely constructs a proof of B
+    from a proof of A. Writing code is not enough — writing code is
+    constructing an artifact, not a proof. The proof requires verification,
+    invariant checking, and durable commitment.
+
+  + GATES-AS-ARROWS:
+    Each gate in the coordination pipeline is itself an arrow:
+
+    G5: (raw-request) -> (validated-task)
+        Proof: task has shape (mission-ref, scope, typed-io, criteria, intent)
+
+    G4: (validated-task) -> (authorized-task)
+        Proof: agent is registered, capable, and assigned
+
+    G3: (authorized-task) -> (pattern-guided-task)
+        Proof: PSR exists (selection or gap)
+
+    G2: (pattern-guided-task) -> (executed-task)
+        Proof: artifacts registered, budget respected
+
+    G1: (executed-task) -> (validated-output)
+        Proof: PUR confirms criteria, cross-validation if critical
+
+    G0: (validated-output) -> (durable-evidence)
+        Proof: session reconstructable, PAR exists
+
+  + COMPOSITION:
+    The full pipeline is arrow composition:
+    (raw-request) -> (durable-evidence) = G0 . G1 . G2 . G3 . G4 . G5
+
+    Arrow composition in BHK: if you have proofs of A -> B and B -> C,
+    you can compose them into a proof of A -> C.
+
+    In futon: if G5 proves the task is valid and G4 proves the agent is
+    authorized, then G5;G4 proves the task is valid AND the agent is
+    authorized. The full composition proves the entire chain.
+
+    This is why gates must be sequential and each must produce a proof:
+    if any gate produces only an artifact (not a proof), the composition
+    breaks — downstream gates receive unproven input.
+
+  + CONSEQUENCES:
+    1. TASK PRECONDITIONS MUST BE PROVEN (not assumed):
+       In BHK, you cannot say "assume A" — you must have A's proof.
+       In futon: a task cannot start from a vague state. The start state
+       must have evidence (baseline refs, OBSERVE results). Without proven
+       input, the arrow has no domain.
+
+    2. TASK OUTPUT MUST BE A PROOF (not just an artifact):
+       In BHK, B is not the proposition but B's proof.
+       In futon: writing code is not completing a task. The task is complete
+       when code + tests + VERIFY + PROOF_COMMIT exist. Without proof,
+       the arrow has no codomain.
+
+    3. TASKS ARE COMPOSABLE (because arrows compose):
+       In BHK, A -> B and B -> C compose to A -> C.
+       In futon: tasks compose IF each task delivers a proof of its goal
+       state. If a task delivers only an artifact (code without tests),
+       the next task's precondition is unproven and composition fails.
+
+    4. CREATIVITY IS UNCONSTRAINED (only the boundary is checked):
+       In BHK, the arrow proof may use ANY constructive method internally.
+       In futon: agents may explore, try, fail, backtrack — but the final
+       path must compress into a replayable proof. Creativity is not the
+       problem. Unauditability is the problem.
+
+  + WHAT-THIS-ADDS-TO-CURRY-HOWARD-OPERATIONAL:
+    The existing curry-howard-operational pattern says: programs are proofs
+    of specs. This pattern adds three things:
+    1. The arrow structure: inputs and outputs are PROOFS, not propositions
+    2. Composition: gates/tasks compose because arrows compose
+    3. The BHK constructivity requirement: no classical existence proofs —
+       you must actually build the thing, not just show it could exist
+
+  + BECAUSE:
+    Without arrow semantics, tasks are described as "do X" and evaluated as
+    "was X done?" — which is descriptive, not constructive. With arrow
+    semantics, tasks are "construct a proof that B holds given proof that A
+    holds" — which is constructive, composable, and auditable. The proof
+    path is not documentation of work; it IS the proof.
+
+  + NEXT-STEPS:
+    next[Rewrite 2-3 common task types as explicit A -> B arrows]
+    next[Verify that gate evidence-shapes satisfy arrow output requirements]
+    next[Check which existing tasks fail the "output is a proof" test]

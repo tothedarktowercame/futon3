@@ -1,0 +1,533 @@
+@flexiarg coordination/ARGUMENT
+@title Argument for a Futon3 Coordination Rewrite
+@sigils [⇒/论]
+@keywords argument, proof, rewrite, coordination, graph, convergence, gates
+@audience futon developers, decision-makers, theory reviewers
+@tone analytic-foundational
+@style argument
+@references [coordination/INDEX futon-theory/task-as-arrow futon-theory/retroactive-canonicalization futon-theory/structural-tension-as-observation futon-theory/curry-howard-operational futon3/devmap]
+
+! argument:
+
+  This is a flexiformal argument — an informal proof composed from the
+  !conclusions of the coordination and theory patterns, grounded in the
+  current state of the futon3 and futon3a systems. It is not yet a BHK
+  arrow (that requires implementation), but it is what must be valid
+  BEFORE an arrow can be constructed.
+
+  == PART 0: Context — What Futon3 Is and Where It Stands ==
+
+  The futon3 devmap's IFR states:
+
+    "FUTON3 turns messy activity into organised knowledge by checking
+    work against shared patterns and producing auditable records that
+    other futons can use to learn, improve, and act."
+
+  This is the optative condition. The current reality:
+
+  WHAT WORKS IN FUTON3 (P0-P5, active):
+  - P0 MUSN Transport: running 90+ days, event logging operational,
+    transport contracts frozen.
+  - P1 Pattern Canon: pattern store operational in futon1, ingest
+    working, ~843 patterns catalogued.
+  - P2 Check DSL: check! API operational, schema validation working,
+    checks logged as proof-state records.
+  - P3 Trail & Proof-State: tatami sessions captured, trail schema
+    operational, cue embedding tested.
+  - P4 Workday Instrumentation: workday/submit endpoint operational,
+    aob-chatgpt bridge working.
+  - P5 Similarity Field: GloVe/fastText/MiniLM embeddings available,
+    portal queries operational.
+
+  WHAT DOES NOT WORK IN FUTON3 (P6-P11, greenfield):
+  - P6 Intent Embedding: not implemented (proof steps untyped)
+  - P7 Pattern Workbench: not implemented (pattern creation manual)
+  - P8 Joy Metrics: not implemented (empowerment unmeasured)
+  - P9 Proof Hooks: bespoke scripts, not standardised
+  - P10 Training Ground: not packaged
+  - P11 System Self-Description: not built
+
+  WHAT THE DEVMAP DOES NOT ADDRESS:
+  - No gate pipeline — work enters the system without validation
+  - No mandatory pattern use — PSRs are optional
+  - No agent authorization model — any agent can attempt any task
+  - No artifact registration requirement — changes can be phantoms
+  - No cross-validation — self-certification is the norm
+  - No mandatory PUR/PAR — pattern use produces no feedback loop
+  - No pattern phylogeny — the library is flat, no derivation structure
+
+  WHAT FUTON3A ALREADY PROVIDES:
+  futon3a was written as a lightweight sidecar and portal system out of
+  frustration with futon3's structural limitations. It provides much of
+  the infrastructure our argument requires, under different names:
+
+  - Typed arrow graph (meme.arrow): Eight arrow modes (translation,
+    abstraction, specialization, derivation, construction, analogy,
+    metonymy, untyped) with confidence 0.0-1.0, status lifecycle
+    (draft -> active -> retired), and queryable traversal (arrows-from,
+    arrows-to, find-arrow). The opening comment: "In the BHK interpretation,
+    an arrow A -> B is a construction that transforms any proof of A
+    into a proof of B." This is the pattern phylogeny graph.
+
+  - Proposal -> promotion -> fact pipeline (sidecar.store): Fuzzy
+    outputs (proposals) cannot become authoritative facts without
+    explicit promotion with rationale. This is a gate pipeline with
+    validation enforcement at each transition. Core invariant:
+    "Similarity results never write to facts directly; they only seed
+    proposals."
+
+  - Chain scoring with softness accounting (meme.arrow/chain-score):
+    Chains of typed arrows scored by construction quality — typed arrow
+    with construction: base +3, softness +0; typed arrow without:
+    base +2, softness +1; untyped: base +1, softness +2. This is
+    proof path quality measurement.
+
+  - Validation schema (sidecar.validation): Strict schema enforcement
+    for proposals, promotions, evidence, facts, and chains with
+    referential integrity (promotions must reference valid proposals,
+    evidence must reference valid targets).
+
+  - Compass demonstrator (futon.compass): GFE-inspired policy
+    navigation using preferences extracted from flexiarg pattern
+    blocks (IF/HOWEVER/THEN/BECAUSE), with eight-gate energy dynamics
+    and pragmatic/epistemic scoring. This is pattern-guided navigation.
+
+  - Notions search (futon.notions): Pattern retrieval via keyword +
+    embedding search with fallback, flexiarg parsing, TSV index.
+    This is the pattern search protocol.
+
+  - Tri-store separation: Facts (XTDB) / Memes (SQLite) / Notions
+    (ANN) with enforced boundaries between trust levels. This is a
+    disciplined version of the store separation problem — futon3a
+    already recognises that different stores need explicit bridges.
+
+  If patterns are lemmas (established results), futon3a provides the
+  inference rules: typed arrows specifying how you get from one result
+  to another, with a construction (proof) and confidence score. The
+  chain-score function scores proof paths by how much is constructed
+  vs. asserted. This is the BHK infrastructure, already built.
+
+  == PART I: Why the Active Prototypes Stall ==
+
+  E1. [from devmap P1 + static analysis futon3-agent-loop.edn]
+  The pattern store (P1) holds ~843 patterns as flat entities with no
+  derivation structure. futon3a's meme.arrow provides typed derivation
+  edges — but they live in a separate SQLite database, disconnected
+  from the pattern store. The phylogeny exists in futon3a; the patterns
+  exist in futon3. Neither system has both.
+
+  E2. [from devmap P2 + coordination/mandatory-psr]
+  The check DSL (P2) can evaluate "does this pattern apply?" But it
+  cannot enforce "a pattern MUST be selected before work begins."
+  futon3a's sidecar enforces that proposals require evidence and
+  promotions require proposals — but this pipeline governs knowledge
+  claims, not agent tasks.
+
+  E3. [from devmap P3 + coordination/par-as-obligation]
+  Trails (P3) capture what happened in sessions. But trails are
+  append-only logs, not typed evidence linked to PSRs, PURs, and
+  PARs. futon3a's sidecar.store has the right shape (validated events
+  with referential integrity) but stores different things (proposals,
+  not session evidence).
+
+  E4. [from devmap P4 + coordination/task-shape-validation]
+  Workday instrumentation (P4) bridges user interactions into the
+  check pipeline. But the interactions arrive as unvalidated claims.
+  futon3a's validation schema enforces shape — but on proposals, not
+  task requests.
+
+  E5. [from devmap P5 + coordination/pattern-search-protocol]
+  The similarity field (P5) can find neighbouring patterns by
+  embedding distance. futon3a's notions module provides the same
+  capability with keyword + embedding search. But neither is wired
+  into a gate pipeline — both are standalone query tools.
+
+  E6. [from devmap P6-P11, all greenfield]
+  The six greenfield prototypes all depend on infrastructure that
+  the active prototypes do not provide. futon3a has pieces of that
+  infrastructure (typed arrows, validation, chains) but they are
+  built for a different use case (knowledge governance) not
+  coordination governance.
+
+  E7. [synthesis of E1-E6]
+  The active prototypes (P0-P5) provide the components. futon3a
+  provides the inference rules and validation infrastructure. But
+  the two systems are disconnected: futon3's components don't flow
+  through futon3a's pipeline, and futon3a's pipeline doesn't govern
+  futon3's agents. The greenfield prototypes (P6-P11) are greenfield
+  because they need both systems working together, and neither can
+  reach the other.
+
+  == PART II: What the Gate Patterns Require ==
+
+  P1. [from coordination/task-shape-validation]
+  Tasks must have a well-defined shape — mission reference, typed
+  I/O, success criteria, scope — before any gate evaluates them.
+
+  P2. [from coordination/intent-to-mission-binding]
+  Tasks must bind to an active mission. Mission binding is validated,
+  not declared.
+
+  P3. [from coordination/capability-gate]
+  Agent capabilities must match task requirements. Mismatch is a
+  rejection.
+
+  P4. [from coordination/assignment-binding]
+  Agents must be explicitly assigned. One task, one agent.
+
+  P5. [from coordination/mandatory-psr]
+  Every task must carry a PSR or declare a gap. Pattern use is
+  mandatory.
+
+  P6. [from coordination/pattern-search-protocol]
+  Pattern search follows a logged protocol. Gaps must show search
+  effort.
+
+  P7. [from coordination/bounded-execution]
+  Execution has budgets. Exceeding them pauses, not crashes.
+
+  P8. [from coordination/artifact-registration]
+  Artifacts must be registered. Unregistered artifacts are phantom
+  changes.
+
+  P9. [from coordination/mandatory-pur]
+  Every PSR must produce a PUR. Orphaned PSRs are a violation.
+
+  P10. [from coordination/cross-validation-protocol]
+  Critical tasks require independent validation by a second agent.
+
+  P11. [from coordination/session-durability-check]
+  Sessions must be reconstructable from persisted events alone.
+
+  P12. [from coordination/par-as-obligation]
+  Every proof path must produce a PAR. PARs drive library evolution.
+
+  == PART III: What the Theory Demands ==
+
+  P13. [from futon-theory/task-as-arrow]
+  A task is a BHK arrow: valid iff it constructively transforms a
+  proven start state into a proven goal state. Gates are arrows;
+  the pipeline is their composition. The proof path IS the proof.
+
+  P14. [from futon-theory/retroactive-canonicalization]
+  Specifications emerge from ancestors through retroactive
+  canonicalization. The canonicalization must be auditable — which
+  requires traversable derivation structure.
+
+  P15. [from futon-theory/structural-tension-as-observation]
+  The coordination system operates as two nested AIF loops. The fast
+  loop (task execution) and the glacial loop (library evolution) share
+  the same boundary (the gate pipeline). Structural tension — recurring
+  problem shapes, pre-symbolic pressure, trans-situational reappearance
+  — is the observation vector for the glacial loop. The AIF wiring
+  diagram is not a metaphor for the rewrite but its direct structural
+  specification.
+
+  == PART IV: The Convergence ==
+
+  C1. [from P1-P12]
+  The gate patterns require six kinds of records that reference each
+  other. These references are typed edges in a graph.
+
+  C2. [from P5-P6, P9, P12, P14]
+  Pattern use creates a subgraph: derivation, application, evaluation,
+  feedback. This is the pattern phylogeny.
+
+  C3. [from P4, P7, P10]
+  Agent coordination creates a subgraph: assignment, execution,
+  cross-validation, conversation. This is the development history.
+
+  C4. [from P8, P11]
+  Artifacts and evidence create a subgraph: registration, validation,
+  reconstruction. This is the evidence trail.
+
+  C5. [from C1-C4]
+  These three subgraphs share nodes and edge types. They are one
+  structure, not three.
+
+  C6. [from P13, C5]
+  If gates are arrows and the pipeline is composition, then proofs
+  reference each other across gates. A system that stores proofs in
+  disconnected subsystems cannot verify composition.
+
+  C7. [from P14, C5]
+  Retroactive canonicalization requires graph traversal. A flat
+  library cannot answer "what are the ancestors of this invariant?"
+
+  C8. [from P15, C2, C3, C4]
+  The graph convergence (C5) is not coincidental. The three subgraphs
+  are generated by the same AIF diagram at different timescales: the
+  pattern phylogeny is the glacial loop's model evolution, the
+  development history is the fast loop's action record, and the
+  conversation graph is inter-agent coordination within the fast loop.
+  They converge because they are produced by one system, not three.
+
+  C9. [from E7, C5]
+  futon3 has the components (P0-P5). futon3a has the inference rules
+  (typed arrows, validation pipeline, chain scoring). But they are
+  separate systems. The components don't flow through the pipeline,
+  and the pipeline doesn't govern the components. This is WHY P6-P11
+  are greenfield: they need both, working as one.
+
+  == THESIS ==
+
+  T. [from C5, C6, C7, C8, C9]
+
+  When agents work on tasks, they produce records that reference each
+  other — the validation record points back to the pattern selection,
+  the reflection points to the validation, and so on. Meanwhile,
+  patterns themselves have ancestry — each one emerged from earlier
+  patterns and real incidents. And conversations between agents form
+  a web of responses, critiques, and revisions. These three webs share
+  the same nodes and the same kinds of links. Right now futon3 stores
+  them in four separate places, and futon3a provides the typed-arrow
+  infrastructure but in a fifth separate place. Because they're
+  separate, you can't ask questions that cross them. The rewrite case
+  is: these aren't five different things. They're one graph of linked,
+  typed, verifiable records that should be stored in one place, written
+  through the gate pipeline, and queryable as a whole.
+
+  Moreover, the convergence is not coincidental. The coordination system
+  is a two-level AIF wiring diagram: a fast loop governing task execution
+  and a glacial loop governing library evolution, sharing the same boundary.
+  The three webs are three views of one diagram operating at different
+  timescales. The AIF framework provides six checkable invariants (I1-I6)
+  that the rewrite must satisfy at both levels — structural certification
+  criteria, not just engineering aspirations.
+
+  This is not a rewrite prompted by code quality. It is a rewrite
+  prompted by a data model mismatch. The devmap's IFR says futon3
+  should "turn messy activity into organised knowledge." The current
+  architecture cannot do this because its knowledge is scattered across
+  disconnected stores. The theory demands a graph; the gates demand a
+  pipeline; the existing system provides neither — though futon3a has
+  already built much of the graph and pipeline infrastructure under
+  different names.
+
+  == WHAT THE REWRITE COMPOSES ==
+
+  The rewrite is not replacement. It is composition of three existing
+  bodies of work through a unified pipeline into a single graph.
+
+  FROM FUTON3 (components):
+  - P0 Transport -> gate pipeline IO layer
+  - P1 Pattern store -> phylogeny subgraph (patterns as nodes)
+  - P2 Check DSL -> G3 pattern search engine
+  - P3 Trails -> evidence subgraph
+  - P4 Workday bridge -> G5 task entry point
+  - P5 Similarity field -> G3 ranking engine
+
+  FROM FUTON3A (inference rules):
+  - meme.arrow -> typed edges in the phylogeny (derivation, construction,
+    abstraction...) with confidence and status lifecycle
+  - sidecar.store -> the proposal -> promotion -> fact pipeline becomes
+    the validation model for the gate pipeline (draft -> validated ->
+    committed evidence)
+  - sidecar.validation -> evidence-shape validation at each gate
+  - meme.arrow/chain-score -> proof path quality scoring (how much of
+    the path is constructed vs. asserted)
+  - futon.compass -> G3 pattern navigation with GFE-inspired scoring
+  - futon.notions -> G3 pattern search (keyword + embedding)
+  - Tri-store architecture -> the disciplined separation between
+    queryable graph (facts), working store (memes), and fuzzy search
+    (notions) provides the trust-level model for the unified graph
+
+  FROM COORDINATION PATTERNS (specification):
+  - 12 gate patterns -> what each gate checks and what evidence it
+    produces
+  - Evidence shapes -> the typed records that flow between gates
+  - Duality table -> each gate mediates between agent concerns and
+    pattern concerns
+
+  The six greenfield prototypes (P6-P11) fall out as consequences:
+  - P6 Intent Embedding = the gate type system (evidence-shapes)
+  - P7 Pattern Workbench = graph query on gap-PSRs + PAR evidence
+  - P8 Joy Metrics = aggregates of PAR data
+  - P9 Proof Hooks = subgraph projection to futon1/futon2
+  - P10 Training Ground = replaying reference proof paths
+  - P11 Self-Description = graph querying itself
+
+  All twelve prototypes land in one system — not because we redesigned
+  twelve things, but because they were always twelve views of one
+  structure. The rewrite composes futon3's components through futon3a's
+  inference rules, governed by the coordination patterns, into a single
+  typed graph with a gate pipeline.
+
+  == VERIFICATION ==
+
+  The argument was verified by translating the coordination patterns
+  into an abstract wiring diagram (coordination-exotype.edn) and
+  running it through the ct/mission.clj validator. This is not
+  verification by authority or by inspection — it is verification by
+  translation into a checkable structure.
+
+  V1. [method]
+  The abstract diagram encodes the two-loop AIF structure as a typed
+  directed graph with 6 inputs, 6 outputs, 9 components, and 35 edges.
+  It was validated against 8 machine checks: completeness, coverage,
+  no orphan inputs, type safety, spec coverage, timescale ordering
+  (I3), exogeneity (I4), and compositional closure (I6).
+
+  V2. [result: all checks pass]
+  The exotype diagram passes all 8 checks. The two-loop structure is
+  well-formed: all outputs reachable, no dead components, no orphan
+  inputs, all types safe, all outputs spec'd, timescale ordering
+  respected, no wireheading paths, no single points of failure.
+
+  V3. [finding: Level 1 gap in concrete diagram]
+  The concrete futon3-coordination.edn covers all 7 Level 0 roles
+  (G5-G0 + default mode) but is missing both Level 1 roles: the
+  tension observer (L1-observe) and the canonicalizer (L1-canon).
+  The concrete diagram can execute tasks through patterns but cannot
+  evolve the patterns. This is the structural gap the rewrite must
+  close.
+
+  V4. [finding: composability confirms feedback path]
+  The concrete diagram's outputs (O-evidence, O-events, O-artifacts)
+  type-match the exotype's I-tensions input. Level 0's evidence can
+  feed Level 1's observation. The two loops compose naturally: run
+  tasks, accumulate evidence as tensions, feed them into the glacial
+  loop.
+
+  V5. [finding: I4 passes but with a noted blind spot]
+  L1-canon writes to I-patterns (a constraint input, glacial). I4
+  passes because no output port reaches I-patterns — the ancestors
+  are {I-patterns, I-tensions, L1-canon, L1-observe}, all inputs or
+  internal components. The feedback from Level 0 to Level 1 passes
+  through the external environment (evidence store), not through
+  internal wiring. However, the I4 check only looks at output→constraint
+  paths, not component→constraint paths. This is a validator limitation:
+  for multi-loop diagrams, a timescale-qualified component→constraint
+  check should be added.
+
+  V6. [finding: I3 governs the glacial loop closure]
+  The L1-canon → I-patterns edge is a glacial component writing to a
+  glacial constraint. I3 allows same-timescale writes. This is the
+  structural equivalent of constitutional amendment: the library CAN
+  be changed, but only by a process as slow as the library itself.
+  Fast dynamics (task execution) cannot reach this path.
+
+  V7. [finding: the exotype diagram IS the specification]
+  The verification step did not just check the argument — it produced
+  a machine-checkable artifact (coordination-exotype.edn) that IS the
+  abstract specification. Any concrete coordination system is valid
+  iff it projects onto this diagram while preserving structure, types,
+  timescale separations, and invariants. The diagram is the 門 through
+  which concrete missions must pass.
+
+  == EMPIRICAL VERIFICATION ==
+
+  The argument was also verified empirically by tracing the git history
+  of futon3 (~200 commits) and futon3a (~30 commits) to check whether
+  the theoretical tensions (E1-E7) match the actual tensions from
+  development. This is the manual version of what L1-observe would do
+  from the pattern graph in the future.
+
+  H1. [E1 confirmed: flat pattern store]
+  Repeated canonicalization passes — Migrate invalid sigils, Normalize
+  futon-theory sigil metadata, Canonicalize futon-theory sigils —
+  show a pattern store that requires external normalization because it
+  has no internal derivation structure. Add pattern backlinks API
+  endpoint and Add automatic Arxana linking for PSR/PUR → patterns
+  show derivation relationships bolted on externally.
+
+  H2. [E2 confirmed: no mandatory pattern selection]
+  Two dedicated feature branches (feat/pattern-check-core, feat/
+  pattern-check-integration) exist for pattern checking. It was
+  significant enough to need branches because it was not built in.
+  Phase 2: A3 — loud failure status checks + eliminate catch _ nil
+  reveals that checks were previously silent failures, not gates.
+
+  H3. [E3 confirmed: trails as logs, not typed evidence]
+  MUSN off-trail warning shows the system detects deviation but the
+  trail itself is just a log. Trails need condensation (too verbose,
+  too flat). Proof trees are a separate Forum service, not integrated.
+  Evidence is manually attached to missions and devmaps — it lives
+  outside the trail system.
+
+  H4. [E4 confirmed: unvalidated inputs]
+  Add certificate validation for pattern claims — validation added
+  after the fact. Repeated IRC/MUSN bridge hardening (Improve IRC-MUSN
+  bridge stability, Fix multi-room support, Sanitize pager replies,
+  Harden musn chat pager). Failures were being swallowed silently.
+
+  H5. [E5 confirmed: similarity not wired to pipeline]
+  MiniLM semantic search exists as a search tool. Pattern enrichment
+  (Add @keywords for semantic search) is for discovery, not gating.
+  No commit wires similarity scores into a go/no-go decision.
+
+  H6. [E6 confirmed: greenfield stalled]
+  futon3a's trajectory: ambitious prototypes (Kolmogorov arrows, GFE
+  compass, exotype bridges) → stalling (up to date commits) → retreat
+  (Remove library patterns, moved to futon3). Content absorbed back
+  without structural innovations. GFE abstraction layer and compass-
+  exotype bridge are sketches reaching toward infrastructure they lack.
+
+  H7. [E7 confirmed: disconnected systems]
+  Separate git histories, no shared commits, futon3a has only main
+  (no branches — scratchpad, not peer). One-way migration:
+  Consolidate pattern library from futon3a, Add futon3a devmap as
+  reference implementation. futon3a not in the agent topology.
+
+  H8. [emergent finding: the structural cycle]
+  The git history reveals a recurring pattern not predicted by any
+  single tension but visible in their combination:
+  (a) futon3 grows runtime infrastructure (Agency, bridges, MUSN)
+      but stays structurally flat
+  (b) futon3a is created as an escape valve for richer structure
+      (typed arrows, validation pipeline, chain scoring)
+  (c) Content flows one way back — futon3a's patterns absorbed,
+      but its structural innovations do not transfer
+  (d) Validation is bolted on after the fact (feature branches,
+      certificate validation, sigil migration passes)
+  This cycle is precisely what retroactive canonicalization predicts:
+  the system creates ancestors (ad-hoc fixes) but cannot canonicalize
+  them (promote to invariants) because it lacks the derivation graph
+  needed to trace which ancestors are structurally necessary.
+
+  H9. [note on method: git vs pattern graph]
+  This verification was done by manual archaeology of a linear git
+  log. In the future, the same verification should be traceable from
+  the pattern phylogeny graph — asking not "what commits exist?" but
+  "which ancestors were canonized, and does the genealogy trace back
+  to real structural tensions?" The git log tells a morphogenetic
+  story (how the code evolved) but without theoretical salience. The
+  pattern graph, if built carefully, would tell the same story with
+  typed derivation edges, confidence scores, and construction proofs.
+  This is the difference between Level 0 archaeology and Level 1
+  observation.
+
+  == STATUS ==
+
+  Derivation xenotype complete: IDENTIFY → MAP → DERIVE → ARGUE → VERIFY → INSTANTIATE.
+
+  This argument is flexiformal and doubly verified:
+  - Structurally: the exotype diagram passes all 8 invariant checks
+  - Empirically: all 7 tensions confirmed in the git history, plus
+    an emergent finding (the structural cycle) that the individual
+    tensions predict but only the combination reveals
+
+  The verification produced a machine-checkable abstract diagram
+  (coordination-exotype.edn) that serves as the structural
+  specification. The INSTANTIATE step produced a Futonic mission
+  document (holes/missions/M-coordination-rewrite.md) following the
+  futon1a exemplar — dual representation, typed I/O, explicit
+  governance, cross-agent review, pattern citations, composition plan,
+  prototype gates, and traceability chains.
+
+  The BHK arrow A → B:
+
+  - A: the current state (futon3 P0-P5 active but disconnected,
+    futon3a has graph+pipeline infrastructure but separate, P6-P11
+    greenfield because they need both, Level 1 loop absent)
+  - B: the target state (typed graph, gate pipeline, futon3 components
+    + futon3a inference rules composed into one system, all twelve
+    prototypes resolved, both AIF loops operational)
+  - The proof: implementation that constructively transforms A to B
+
+  The argument establishes that B is the right target. The verification
+  confirms the target is structurally coherent. The mission specifies
+  the implementation path — three parts with gates, composition map,
+  and reviewer protocol. The materials for A → B already exist across
+  two codebases. The implementation will establish that composition
+  is achievable.

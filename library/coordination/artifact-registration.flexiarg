@@ -1,0 +1,69 @@
+@flexiarg coordination/artifact-registration
+@title Unregistered Artifacts Are Invisible to Validation
+@sigils [G2/录]
+@keywords artifact, registration, hx, traceability, execution, gate
+@audience futon3 gate implementers, HX maintainers, agent developers
+@tone analytic-foundational
+@style pattern
+@gate G2
+@references [futon-theory/proof-path futon-theory/agent-contract futon-theory/counter-ratchet coordination/mandatory-pur]
+
+! conclusion: Every artifact produced during G2 execution — code changes, documents, configuration modifications, test results — must be registered in the hypertext exchange (HX) before the task leaves G2. Unregistered artifacts are invisible to G1 validation and G0 evidence, making them unauditable phantom changes.
+  + context: G2 is the only gate that touches the environment. It reads the codebase, modifies files, creates documents, runs tests. Each of these actions produces artifacts. The proof-path requires that APPLY_CHANGE is traceable — you must be able to enumerate exactly what changed. HX (the hypertext exchange) is futon3's artifact registry. If an artifact is not in HX, it does not exist for the purposes of validation and evidence.
+  + IF:
+    An agent at G2 produces changes to the environment — files modified, documents created, tests run, configurations updated.
+  + HOWEVER:
+    Currently, artifact registration in HX is optional and after-the-fact. Agents modify files and sometimes register them in HX, sometimes not. Code gets committed without corresponding HX entries. Documents are created but not linked to the task that produced them. The gap between "what the agent did" and "what HX knows about" grows silently.
+  + THEN:
+    G2 enforces artifact registration:
+    1. **Registration-before-exit**: No task transitions from G2 to G1 without a manifest of registered artifacts. The manifest lists every artifact produced, its HX ID, its type, and its relationship to the task.
+    2. **Artifact types**: Each artifact has a type from a defined vocabulary:
+       - :code-change (file path, diff summary, lines changed)
+       - :document (file path, format, size)
+       - :test-result (test namespace, pass/fail counts, duration)
+       - :configuration (key path, old value, new value)
+       - :evidence (PSR, PUR, PAR, or other evidence records)
+    3. **Provenance chain**: Each registered artifact links back to:
+       - task-id (which task produced it)
+       - agent-id (which agent produced it)
+       - psr-id (which pattern guided the production)
+       - timestamp (when it was produced)
+    4. **Counter-ratchet**: The artifact count for a task can only increase during G2. Artifacts cannot be unregistered — if an artifact is produced and then found to be wrong, a correction artifact is registered, not a deletion.
+    5. **Zero-artifact tasks**: If G2 completes with zero registered artifacts, this is flagged (not rejected) — some tasks are legitimately observational. But the flag ensures G1 knows that there is nothing to validate against.
+  + BECAUSE:
+    The proof-path says APPLY_CHANGE must be traceable. Traceability requires registration. Without it, the audit trail has gaps — you can see the before state and after state but not what happened in between. The agent-contract says ATTRIBUTE-ALL-CHANGES — attribution requires knowing what the changes are. Registration is the mechanism.
+
+  + INVARIANT-STATEMENT:
+    G2-artifacts: Every artifact produced during G2 is registered in HX with type, provenance, and task linkage before the task transitions to G1. The artifact manifest is forwarded to G1 for validation.
+
+  + FAILURE-MODES:
+    - Phantom change: File modified but not registered, invisible to validation
+    - Orphaned artifact: Artifact registered but not linked to any task
+    - Stale manifest: Manifest lists artifacts that were subsequently modified without re-registration
+    - Over-registration: Agent registers artifacts not actually produced (padding — detectable by diff verification)
+
+  + ANCESTORS:
+    - futon3.hx.api (HX component — the artifact registry exists but registration is optional)
+    - fulab/devmap-xref (cross-referencing to devmap — traceability exists informally)
+    - fulab/proof-commit (commit constrained to verified paths — artifact registration feeds this)
+    - fulab/notebook-cell (persist prompt/response — a form of artifact registration for conversations)
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - proof-path (APPLY_CHANGE): changes must be traceable -> registration provides traceability
+    - agent-contract (ATTRIBUTE-ALL-CHANGES): attribution requires enumeration -> manifest enumerates
+    - counter-ratchet: artifact counts don't drop -> append-only registration
+
+  + EVIDENCE-SHAPE:
+    {:gate "G2"
+     :task/id :string
+     :manifest/artifacts [{:hx/id :string
+                           :artifact/type :keyword
+                           :artifact/path :string
+                           :artifact/summary :string
+                           :artifact/agent-id :string
+                           :artifact/psr-id :string
+                           :artifact/ts :string}]
+     :manifest/count :int
+     :manifest/zero-artifact? :boolean
+     :manifest/ts :string}

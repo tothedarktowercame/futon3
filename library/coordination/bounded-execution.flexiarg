@@ -1,0 +1,76 @@
+@flexiarg coordination/bounded-execution
+@title Execution Has a Budget, Exceeding It Is a Pause Not a Crash
+@sigils [G2/限]
+@keywords execution, budget, bounded, timeout, pause, resource, gate
+@audience futon3 gate implementers, agent developers
+@tone analytic-foundational
+@style pattern
+@gate G2
+@references [futon-theory/minimum-viable-events futon-theory/agent-contract futon-theory/proof-path agent/budget-bounds-exploration agent/pause-is-not-failure coordination/mandatory-psr]
+
+! conclusion: Agent execution at G2 operates within a declared budget — time, token count, tool invocations, or scope units. When the budget is reached, execution pauses and emits a checkpoint rather than continuing unbounded or crashing. The pause produces enough evidence for the task to be resumed, reassigned, or terminated.
+  + context: G2 is the interior of the pipeline — the only gate where the agent touches the environment (codebase, files, running services). It is where work happens. Without bounds, an agent can run indefinitely, consume unbounded resources, and produce artifacts that exceed the scope validated at G5. The budget is the runtime constraint that keeps execution within the boundaries the outer gates established.
+  + IF:
+    An agent has passed G5 (valid task), G4 (authorized and assigned), G3 (PSR created), and begins execution.
+  + HOWEVER:
+    Currently, agent execution has no structural budget. Claude Code sessions run until they finish or the human interrupts. Token consumption is tracked for billing but not for coordination. Tool invocations are unlimited. There is no mechanism for an agent to say "I've used half my budget, checkpoint and continue" — it either finishes or doesn't.
+  + THEN:
+    G2 enforces execution budgets:
+    1. **Budget declaration**: At G2 entry, the task carries a budget derived from the mission spec and PSR confidence:
+       - time-limit: maximum wall-clock time for execution
+       - token-limit: maximum tokens consumed (input + output)
+       - tool-limit: maximum tool invocations
+       - scope-limit: maximum files/entities modified
+       These limits are configurable per mission and scaled by PSR confidence (low confidence = tighter budget).
+    2. **Checkpoint protocol**: When any budget dimension reaches 80%, emit a checkpoint event containing:
+       - work completed so far (artifacts registered, files modified)
+       - work remaining (agent's estimate)
+       - budget consumed vs. remaining
+       - recommendation: :continue, :pause, or :handoff
+    3. **Pause on limit**: When any budget dimension reaches 100%, execution pauses. The pause is NOT a failure — it is a structured transition that:
+       - Registers all artifacts produced so far
+       - Emits a partial-completion event
+       - Preserves agent state for resumption
+       - Returns control to the coordination pipeline
+    4. **Resume or reassign**: A paused task can be resumed (same agent, extended budget), reassigned (different agent, assignment-binding handoff), or terminated (with partial evidence committed at G0).
+    5. **Event emission**: During execution, emit minimum-viable-events per the theory pattern — enough for reconstruction, not a firehose.
+  + BECAUSE:
+    Unbounded execution is the coordination equivalent of an unbounded loop. It consumes shared resources without limit, blocks other tasks, and produces work that may exceed the validated scope. The budget is the runtime counterpart of the scope validated at G5 — scope says WHAT is allowed, budget says HOW MUCH is allowed.
+
+  + INVARIANT-STATEMENT:
+    G2-budget: Every executing task has a declared budget. Execution pauses (not crashes) when any budget dimension is exhausted. Paused tasks emit checkpoint events sufficient for resumption or reassignment.
+
+  + FAILURE-MODES:
+    - Budget-free execution: Agent runs without limits (violates invariant)
+    - Hard crash on limit: Agent killed instead of paused, losing in-progress work
+    - Checkpoint-free pause: Agent pauses but doesn't emit state, making resumption impossible
+    - Budget gaming: Agent declares enormous budget to effectively bypass limits (detectable by mission-level budget caps)
+
+  + ANCESTORS:
+    - agent/budget-bounds-exploration (budgets convert open-ended search into bounded decisions)
+    - agent/pause-is-not-failure (pausing surfaces uncertainty, doesn't equal failing)
+    - musn/expensive-move-consent (expensive operations require consent — budget is automated consent)
+    - agent/escalation-cost-vs-risk (speed on low-stakes, protection on high-stakes — budget scales with risk)
+    These ancestors describe the principle. This pattern provides the mechanism.
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - minimum-viable-events: emit enough for reconstruction -> checkpoint protocol
+    - agent-contract (all 5 requirements): contract applies during execution -> bounded execution is a contract term
+    - proof-path (APPLY_CHANGE): execution is one phase, not the whole path -> budget scopes it
+
+  + EVIDENCE-SHAPE:
+    {:gate "G2"
+     :task/id :string
+     :budget/time-limit-ms :int
+     :budget/token-limit :int
+     :budget/tool-limit :int
+     :budget/scope-limit :int
+     :budget/time-consumed-ms :int
+     :budget/tokens-consumed :int
+     :budget/tools-invoked :int
+     :budget/scope-touched :int
+     :execution/state :keyword  ; :running :checkpoint :paused :complete
+     :execution/artifacts-registered :int
+     :execution/recommendation :keyword  ; :continue :pause :handoff
+     :execution/ts :string}

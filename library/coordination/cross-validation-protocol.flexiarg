@@ -1,0 +1,73 @@
+@flexiarg coordination/cross-validation-protocol
+@title Two Pairs of Eyes on Non-Trivial Work
+@sigils [G1/校]
+@keywords cross-validation, review, two-agent, signoff, coordination, gate
+@audience futon3 gate implementers, mission authors, agent developers
+@tone analytic-foundational
+@style pattern
+@gate G1
+@references [futon-theory/coordination-protocol futon-theory/retrospective-stability futon-theory/agent-contract coordination/mandatory-pur coordination/assignment-binding]
+
+! conclusion: For tasks above a trivial threshold, G1 validation includes cross-validation by a second agent. The validator is distinct from the executor — a different agent reviews the artifacts against the PSR criteria and co-signs (or disputes) the PUR. This is the coordination-domain equivalent of futon1a's two-agent signoff, which was the most effective quality mechanism in that build.
+  + context: The futon1a rebuild demonstrated that two-agent signoff — where one agent writes code and another validates it against the pattern — produced dramatically higher quality than single-agent work. This wasn't a happy accident; it was a structural enforcement of retrospective-stability: a proof path that has been independently verified is more robust than one that's self-certified.
+  + IF:
+    A task has completed execution (G2) and the primary PUR has been created at G1.
+  + HOWEVER:
+    Currently, cross-validation is a social convention — sometimes one agent reviews another's work, sometimes not. There is no structural mechanism for requesting, assigning, or tracking cross-validation. When it happens, it happens informally. When it doesn't, nobody notices.
+  + THEN:
+    G1 applies cross-validation based on task classification:
+    1. **Threshold check**: Tasks are classified by the mission spec as:
+       - :trivial — single-agent PUR is sufficient (typo fixes, config tweaks)
+       - :standard — cross-validation recommended but not blocking
+       - :critical — cross-validation mandatory, task cannot proceed to G0 without it
+       Default classification for unspecified tasks: :standard.
+    2. **Validator selection**: The cross-validator must be:
+       - A different agent than the executor (distinct agent-id)
+       - Capable of the task's required capabilities (passes capability-gate)
+       - Not currently assigned to a conflicting task
+       Selection is via the coordination pipeline — a validation sub-task is created, going through G5-G4 for the validator.
+    3. **Cross-validation record**: The validator reviews the artifact manifest against the PSR criteria and produces a cross-validation record:
+       - validator-agent-id
+       - agreement: :agree (co-signs PUR), :dispute (disagrees with PUR outcome), :partial (agrees with some criteria)
+       - dispute-details: if disagreeing, which criteria and why
+       - additional-evidence: anything the validator found that the executor missed
+    4. **Dispute resolution**: If the validator disputes the PUR:
+       - The dispute is recorded as evidence (not hidden)
+       - The task enters :review state for human or senior agent adjudication
+       - The task does not proceed to G0 until the dispute is resolved
+    5. **Lightweight for :standard**: For standard tasks, cross-validation is async — the task can proceed to G0 with the primary PUR while cross-validation happens in parallel. Disputes trigger retroactive review.
+  + BECAUSE:
+    Self-certification is the coordination anti-pattern that makes multi-agent systems fragile. An agent that writes code and validates it against its own PSR is marking its own homework. Cross-validation breaks this circularity. The futon1a precedent: every module that was cross-validated passed stress testing on the first attempt.
+
+  + INVARIANT-STATEMENT:
+    G1-cross: Tasks classified as :critical require cross-validation by a distinct agent before proceeding to G0. The cross-validation record includes agreement/dispute status and references specific criteria and artifacts.
+
+  + FAILURE-MODES:
+    - Self-validation: Executor and validator are the same agent (violates distinctness)
+    - Rubber-stamp validation: Validator co-signs without examining artifacts (detectable by empty additional-evidence and fast turnaround)
+    - Dispute burial: Dispute recorded but task proceeds to G0 anyway (violates dispute resolution)
+    - Validator unavailability: No second agent available, task blocks indefinitely (mitigated by :standard classification allowing async)
+
+  + ANCESTORS:
+    - futon-theory/coordination-protocol (ping-pong handoff — the review is a handoff to the validator)
+    - futon1a two-agent signoff (empirical evidence that cross-validation works — the most effective quality mechanism in the build)
+    - agent/evidence-over-assertion (validator provides independent evidence)
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - coordination-protocol: multi-agent handoff and review -> cross-validation is structured handoff
+    - retrospective-stability: independently verified proofs are more robust -> two-agent verification
+    - agent-contract (ATTRIBUTE-ALL-CHANGES): validation is itself a change (to the evidence record) and must be attributed -> distinct validator identity
+
+  + EVIDENCE-SHAPE:
+    {:gate "G1"
+     :task/id :string
+     :cross-validation/id :string
+     :cross-validation/executor-agent-id :string
+     :cross-validation/validator-agent-id :string
+     :cross-validation/task-classification :keyword  ; :trivial :standard :critical
+     :cross-validation/agreement :keyword  ; :agree :dispute :partial
+     :cross-validation/dispute-details :string
+     :cross-validation/additional-evidence [:string]
+     :cross-validation/pur-id :string
+     :cross-validation/ts :string}

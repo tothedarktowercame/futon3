@@ -1,0 +1,63 @@
+@flexiarg coordination/pattern-search-protocol
+@title Pattern Search Is Structured, Not Guesswork
+@sigils [G3/搜]
+@keywords pattern, search, library, hotword, sigil, namespace, triage, gate
+@audience futon3 gate implementers, pattern-hints developers
+@tone analytic-foundational
+@style pattern
+@gate G3
+@references [futon-theory/theory-as-exotype futon-theory/symbolic-geodesic coordination/mandatory-psr]
+
+! conclusion: Pattern search at G3 follows a defined protocol: extract keywords from the task, query the pattern index, filter by namespace relevance, rank by hotword overlap and sigil match, and return candidates with confidence scores. The search is logged so that gap declarations are grounded in actual search effort, not assertion.
+  + context: The pattern library has ~843 patterns across ~40 namespaces. Without a search protocol, pattern selection degenerates into "I know a pattern called X" — agents use familiar patterns regardless of fit, and the long tail of the library goes unused. The search protocol ensures that G3's mandatory-psr requirement is backed by genuine engagement with the library, not perfunctory compliance.
+  + IF:
+    An agent at G3 needs to find a pattern for a validated, authorized task.
+  + HOWEVER:
+    Current pattern search is ad-hoc. The patterns-index.tsv exists with hotwords and sigils, but there is no standard query protocol. Agents search by memory (what patterns they've seen before), by namespace (scanning a known directory), or by keyword (grep through the library). There is no ranking, no confidence scoring, and no record of what was searched vs. what was found.
+  + THEN:
+    G3 pattern search follows this protocol:
+    1. **Keyword extraction**: From the task's intent, scope, success-criteria, and mission context, extract search keywords. Include both explicit terms and derived terms (e.g., "durability" derives "persist", "commit", "sync").
+    2. **Index query**: Search patterns-index.tsv for hotword overlap. Each pattern gets a match score = |task_keywords INTERSECT pattern_hotwords| / |pattern_hotwords|. Patterns with score > 0 are candidates.
+    3. **Namespace filtering**: Prioritize namespaces relevant to the task's domain. A storage task prioritizes futon-theory/ and agency/. A pattern governance task prioritizes library-coherence/ and fulab/. Namespace relevance is derived from the mission-ref.
+    4. **Sigil check**: If the task context includes sigil references (from previous PSRs or mission specs), boost patterns sharing those sigils.
+    5. **Confidence scoring**: Candidates ranked by: hotword overlap (0.4), namespace relevance (0.3), sigil match (0.1), recency of pattern use (0.1), pattern maturity (0.1). Top-N candidates (N=5) returned.
+    6. **Search record**: The full search — keywords used, index hits, namespace filter, ranked candidates — is logged as part of the PSR. A gap declaration must show that this protocol was followed and produced no adequate candidates.
+    The search record is what distinguishes "I looked and nothing fit" from "I didn't look."
+  + BECAUSE:
+    Theory-as-exotype says patterns must satisfy theory constraints. The search protocol is the mechanism by which theory constraints are applied: only patterns in the library (which are theory-validated) can be selected. The search is the type-checking step — it ensures the selected pattern is in the constraint set.
+
+  + INVARIANT-STATEMENT:
+    G3-search: Every PSR (selection or gap) includes a search record documenting: keywords extracted, index entries matched, namespaces filtered, candidates ranked. PSRs without search records are rejected at G3.
+
+  + FAILURE-MODES:
+    - Keyword poverty: Task intent too vague to extract meaningful search terms (should have been caught at G5)
+    - Index staleness: patterns-index.tsv out of sync with actual library files (detectable by library-coherence/library-staleness-scan)
+    - Namespace blindness: Search restricted to familiar namespaces, missing relevant patterns elsewhere
+    - Score gaming: Agent crafts keywords to match a predetermined pattern (detectable by cross-referencing task intent with search terms)
+
+  + ANCESTORS:
+    - futon3.pattern-hints (C-pattern-search component — the existing implementation, informal)
+    - agent/sense-deliberate-act phase 2 (deliberation includes pattern matching)
+    - library-coherence/library-staleness-scan (keeping the index trustworthy)
+    These ancestors provide the machinery. This pattern provides the protocol.
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - theory-as-exotype (type-checking at meta-level): search is the type check
+    - symbolic-geodesic: shortest defensible path -> ranking selects the most relevant pattern
+    - baldwin-cycle (EXPLORE): exploration within constraints -> search constrained to library
+
+  + EVIDENCE-SHAPE:
+    {:gate "G3"
+     :task/id :string
+     :search/keywords [:string]
+     :search/derived-keywords [:string]
+     :search/index-hits :int
+     :search/namespace-filter [:string]
+     :search/candidates [{:pattern-id :string
+                          :hotword-score :double
+                          :namespace-score :double
+                          :sigil-score :double
+                          :total-score :double}]
+     :search/top-n :int
+     :search/ts :string}

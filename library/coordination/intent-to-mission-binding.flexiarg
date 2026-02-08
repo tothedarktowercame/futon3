@@ -1,0 +1,57 @@
+@flexiarg coordination/intent-to-mission-binding
+@title Tasks Must Bind to the Mission That Authorizes Them
+@sigils [G5/绑]
+@keywords mission, binding, authorization, scope, task, traceability, gate
+@audience futon3 gate implementers, mission authors
+@tone analytic-foundational
+@style pattern
+@gate G5
+@references [futon-theory/mission-scoping futon-theory/agent-contract futon-theory/mission-lifecycle coordination/task-shape-validation]
+
+! conclusion: Every task that passes G5 must bind to a specific mission that authorizes it. The binding is validated: the mission must exist, be in an active state, and the task's scope must fall within the mission's declared boundaries. Tasks that cannot bind to a mission are rejected.
+  + context: Missions are the unit of authorization in futon3. They define what work is legitimate, what scope is allowed, and what "done" means. Without mission binding, tasks are free-floating — they have no authorization source, no scope anchor, and their evidence cannot be attributed to any goal. This pattern works alongside task-shape-validation: shape ensures the task has a mission-ref field, this pattern ensures that reference is valid.
+  + IF:
+    A task request has passed shape validation (has a mission-ref field) and needs to be checked against the actual mission specification.
+  + HOWEVER:
+    Currently, mission references are informal — agents mention mission names in PSRs but there is no validation that the mission exists, is active, or that the task falls within its scope. An agent can claim to be working on M-futon3-rebuild while actually modifying unrelated code. The mission-ref is decorative, not structural.
+  + THEN:
+    G5 validates the mission binding:
+    1. **Existence**: The referenced mission spec (M-*.md or mission-diagram.edn) must exist and be parseable.
+    2. **Active state**: The mission must be in an active lifecycle state (:scoped, :active, or :blocked). Tasks cannot bind to :greenfield (not yet scoped), :review (read-only), or :done (closed) missions.
+    3. **Scope containment**: The task's declared scope must be a subset of the mission's scope. A task claiming to modify futon2 code cannot bind to a mission scoped to futon3.
+    4. **Dependency check**: If the mission has unsatisfied dependencies (mission-dependency pattern), warn but do not reject — blocked dependencies are informational at G5.
+    On successful binding, G5 attaches the mission context (scope boundaries, success criteria, typed I/O) to the task for downstream gates.
+  + BECAUSE:
+    Without mission binding, the coordination system cannot answer "why is this agent doing this work?" Every action must trace back to a mission that authorized it — this is the agent-contract requirement (ATTRIBUTE-ALL-CHANGES) applied at the task level rather than the change level.
+
+  + INVARIANT-STATEMENT:
+    G5-binding: Every task that passes G5 carries a validated mission binding. The binding confirms: mission exists, mission is active, task scope is contained within mission scope. Invalid bindings produce :error-response at G5.
+
+  + FAILURE-MODES:
+    - Ghost mission: Task references M-nonexistent.md, nobody notices until audit
+    - Stale mission: Task binds to a :done mission, producing orphaned evidence
+    - Scope escape: Task claims mission M-futon3-rebuild but modifies futon1a code
+    - Dependency blindness: Task proceeds on a blocked mission without awareness
+
+  + ANCESTORS:
+    - fulab/devmap-xref (cross-referencing patterns to devmap prototypes — the informal precursor)
+    - agent/scope-before-action (scope declaration, but without mission validation)
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - mission-scoping: bounded ownership and success criteria -> scope containment check
+    - agent-contract (OBSERVE-BEFORE-ACT): read mission state before acting -> existence and active-state checks
+    - mission-lifecycle: state machine for mission progression -> active-state validation
+    - mission-dependency: DAG of mission relationships -> dependency check
+
+  + EVIDENCE-SHAPE:
+    {:gate "G5"
+     :task/id :string
+     :binding/mission-ref :string
+     :binding/mission-state :keyword
+     :binding/scope-contained? :boolean
+     :binding/dependencies-satisfied? :boolean
+     :binding/unsatisfied-deps [:string]
+     :binding/result :keyword  ; :bound or :rejected
+     :binding/rejection-reason :string
+     :binding/ts :string}

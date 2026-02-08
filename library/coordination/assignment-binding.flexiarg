@@ -1,0 +1,58 @@
+@flexiarg coordination/assignment-binding
+@title Work Requires Assignment, Not Just Capability
+@sigils [G4/派]
+@keywords assignment, binding, agent, task, penholder, authorization, gate
+@audience futon3 gate implementers, agency maintainers
+@tone analytic-foundational
+@style pattern
+@gate G4
+@references [futon-theory/coordination-protocol futon-theory/agent-contract agency/self-attribution coordination/capability-gate]
+
+! conclusion: Having the capability to do a task is necessary but not sufficient. An agent must be explicitly assigned to a task before executing it. Assignment is the coordination-domain equivalent of futon1a's penholder authorization — only the assigned agent may proceed through G3-G0 for that task.
+  + context: Capability-gate ensures agents CAN do the work. Assignment-binding ensures agents are SUPPOSED to do the work. Without assignment, multiple capable agents might simultaneously attempt the same task, or an agent might pick up work that another agent has already started. The penholder analogy: in futon1a, only one writer holds the pen for a given entity at a time. In futon3, only one agent holds the assignment for a given task at a time.
+  + IF:
+    An agent has passed capability-gate (G4, first check) and wants to proceed with a task.
+  + HOWEVER:
+    Currently, agent dispatch is first-come-first-served with no exclusion. If two agents are capable, both might start the same task. If an agent crashes mid-task, the assignment is not released — the task becomes stuck. There is no structural mechanism for handoff, reassignment, or exclusion.
+  + THEN:
+    G4 validates and creates the assignment:
+    1. **Exclusion check**: Is another agent already assigned to this task? If yes, reject with :error-response identifying the current assignee. One task, one agent.
+    2. **Assignment creation**: If no current assignee, create an assignment record binding agent-id to task-id with a timestamp. This record is durable (persisted, not just in-memory).
+    3. **Assignment scope**: The assignment is scoped to the task's lifecycle. It starts at G4 and ends at G0 (evidence committed) or on explicit release (agent crash, timeout, handoff).
+    4. **Handoff protocol**: Assignment can be transferred via the coordination-protocol (ping-pong handoff). The outgoing agent releases, the incoming agent acquires. There is never a moment with two assignees or zero assignees for an in-progress task.
+    5. **Timeout release**: If an assigned agent does not produce G0 evidence within a deadline, the assignment is released and the task returns to the queue. The timeout is configurable per mission.
+  + BECAUSE:
+    Assignment prevents the coordination anti-patterns that destroy multi-agent systems: duplicate work (two agents doing the same thing), orphaned work (task stuck because assigned agent crashed), and invisible contention (agents competing without knowing it). The penholder model is proven in futon1a — one writer at a time, explicit handoff.
+
+  + INVARIANT-STATEMENT:
+    G4-assignment: Every task in G3-G0 has exactly one assigned agent. Assignment is exclusive, durable, and released only by completion (G0), explicit handoff, or timeout. No task proceeds past G4 without an assignment record.
+
+  + FAILURE-MODES:
+    - Double assignment: Two agents assigned to same task (violates exclusion)
+    - Zombie assignment: Agent crashes, assignment never released (requires timeout)
+    - Assignment without capability: Agent assigned but lacks capability (ordering: capability-gate must run first)
+    - Handoff gap: Between release and re-acquire, task has no assignee (must be atomic)
+
+  + ANCESTORS:
+    - agency/self-attribution (agents act under own identity — but doesn't prevent multiple agents on same task)
+    - futon-theory/coordination-protocol (ping-pong handoff — the assignment transfer mechanism)
+    - agent/handoff-preserves-context (session state to persistent state at handoff — context during transfer)
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - coordination-protocol: multi-agent handoff -> assignment transfer mechanism
+    - agent-contract (ATTRIBUTE-ALL-CHANGES): attribution requires knowing WHO is assigned -> exclusive assignment
+    - self-attribution: agents post under own identity -> assignment binds identity to task
+    - proof-path (PROPOSE_CLAIM): agent proposes change -> proposal requires assignment
+
+  + EVIDENCE-SHAPE:
+    {:gate "G4"
+     :task/id :string
+     :agent/id :string
+     :assignment/id :string
+     :assignment/created-at :string
+     :assignment/previous-assignee :string  ; nil if first assignment
+     :assignment/exclusion-checked? :boolean
+     :assignment/result :keyword  ; :assigned or :rejected
+     :assignment/rejection-reason :string
+     :assignment/ts :string}

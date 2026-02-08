@@ -1,0 +1,58 @@
+@flexiarg coordination/capability-gate
+@title Agents Act Within Declared Capabilities
+@sigils [G4/能]
+@keywords capability, authorization, agent, registration, gate, mismatch
+@audience futon3 gate implementers, agency maintainers
+@tone analytic-foundational
+@style pattern
+@gate G4
+@references [futon-theory/agent-contract futon-theory/error-hierarchy agency/single-routing-authority agency/invariants coordination/task-shape-validation]
+
+! conclusion: An agent must have capabilities declared at registration that match the task's requirements. G4 checks this match before the agent proceeds. Capability mismatch is a 403 rejection, not a runtime surprise.
+  + context: G4 is the second gate: after the task is validated (G5), we check whether the requesting agent is authorized to do it. This corresponds to the PROPOSE_CLAIM phase of the proof path — the agent proposes what it will do, and the system checks whether this agent is allowed to do it. The analogy to futon1a is Layer 3 (authorization / penholder check).
+  + IF:
+    A validated task (passed G5) arrives at G4, carried by an agent that wants to execute it.
+  + HOWEVER:
+    Currently, any registered agent can attempt any task. A Claude agent scoped for code review could be dispatched to modify infrastructure. A Codex agent with no forum access could be asked to post to a discussion thread. There is no structural check between what an agent CAN do and what the task REQUIRES.
+  + THEN:
+    G4 validates the capability match:
+    1. **Registration check**: The agent must be registered in the agency registry. Unregistered agents are rejected immediately.
+    2. **Capability declaration**: At registration, each agent declares its capabilities as a set of keywords (e.g., #{:code-read :code-write :forum-post :pattern-search :test-run}). These are the agent's authorized operations.
+    3. **Task requirement extraction**: From the task's typed-io (validated at G5), extract the required capabilities. A task that produces :xtdb-entity via code changes requires :code-write. A task that reads patterns requires :pattern-search.
+    4. **Match check**: The agent's declared capabilities must be a superset of the task's required capabilities. Missing capabilities produce a 403-semantics :error-response listing specifically which capabilities are missing.
+    5. **No self-promotion**: Agents cannot add capabilities after registration. Capability changes require re-registration, which is an administrative action.
+  + BECAUSE:
+    The agent-contract requires ATTRIBUTE-ALL-CHANGES. Attribution is meaningless if agents can do things they're not declared to do — you know WHO did it but not WHETHER they were supposed to. Capability gating ensures that every action is not only attributed but authorized.
+
+  + INVARIANT-STATEMENT:
+    G4-capability: No agent proceeds past G4 unless its declared capabilities are a superset of the task's required capabilities. Capability mismatch produces :error-response with 403 semantics listing missing capabilities.
+
+  + FAILURE-MODES:
+    - Over-scoped agent: Agent registered with all capabilities, gate becomes no-op (violation of principle of least privilege)
+    - Implicit capability: Task requires an operation not in the capability vocabulary, so the check silently passes
+    - Stale registration: Agent's capabilities change (e.g., forum access revoked) but registration not updated
+
+  + ANCESTORS:
+    - agency/single-routing-authority (one routing entry per agent-id — registration exists)
+    - agency/invariants A1-identity (one entity per ID — agent identity is structural)
+    - agency/self-attribution (agents post under own identity — attribution exists)
+    These ancestors provide identity and attribution. This pattern adds capability.
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - agent-contract (ATTRIBUTE-ALL-CHANGES): attribution requires authorization -> capability check
+    - error-hierarchy (Layer 3 = 403 Forbidden): authorization errors surface at correct layer -> 403 semantics
+    - single-routing-authority: one entry per agent -> registration as capability carrier
+    - stop-the-line: unauthorized agents blocked, not degraded -> hard rejection
+
+  + EVIDENCE-SHAPE:
+    {:gate "G4"
+     :task/id :string
+     :agent/id :string
+     :agent/registered? :boolean
+     :agent/capabilities #{:keyword}
+     :task/required-capabilities #{:keyword}
+     :capability/match? :boolean
+     :capability/missing #{:keyword}
+     :authorization/result :keyword  ; :authorized or :rejected
+     :authorization/ts :string}

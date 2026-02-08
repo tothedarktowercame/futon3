@@ -1,0 +1,74 @@
+@flexiarg coordination/mandatory-psr
+@title No Execution Without a Pattern Selection Record
+@sigils [G3/选]
+@keywords psr, pattern, selection, mandatory, gap, gate, reference
+@audience futon3 gate implementers, agent developers, pattern authors
+@tone analytic-foundational
+@style pattern
+@gate G3
+@references [futon-theory/baldwin-cycle futon-theory/symbolic-geodesic futon-theory/four-types fulab/pattern-dep coordination/pattern-search-protocol]
+
+! conclusion: Every task entering G2 (execution) must carry a PSR — a Pattern Selection Record documenting which pattern was selected and why, or explicitly declaring a gap (no pattern fits). The absence of a PSR is a gate rejection, not a silent pass-through. This is what makes patterns mandatory rather than optional.
+  + context: G3 is unique to the coordination domain — it has no analogue in futon1a's L0-L4 or the proof path's eight phases. It exists because futon3's distinctive contribution is pattern-guided work: agents don't just do things, they do things guided by patterns and produce evidence of that guidance. Without G3, pattern use is a social convention that agents can ignore. With G3, it is a structural requirement enforced by the pipeline.
+  + IF:
+    A task has passed G5 (well-defined) and G4 (authorized agent assigned) and is ready for execution.
+  + HOWEVER:
+    Currently, PSR creation is completely optional. An agent can execute a task, produce artifacts, and commit evidence without ever selecting a pattern. When PSRs are created, they are informal text blocks — not structured records that G1 can validate against. The pattern library has ~843 patterns but no mechanism to ensure any of them are actually used.
+  + THEN:
+    G3 requires a PSR before the task proceeds to G2:
+    1. **Pattern search**: The agent (or an automated search) queries the pattern library using the task's keywords, scope, and mission context. This search is logged regardless of outcome.
+    2. **Pattern selection**: If one or more patterns match, the agent selects one and creates a PSR containing:
+       - pattern-id (namespaced, e.g., coordination/mandatory-psr)
+       - candidates-considered (other patterns evaluated)
+       - rationale (why this pattern for this task)
+       - confidence (high/medium/low)
+       - success-criteria (what the pattern says "done" looks like — this feeds G1)
+    3. **Gap declaration**: If no pattern matches, the agent creates a gap-PSR:
+       - search-terms used
+       - namespaces searched
+       - reason no pattern fits
+       - confidence: none
+       - proposed-pattern (optional sketch of what's needed)
+       A gap-PSR is a legitimate outcome — it means the pattern library has a blind spot. The task still proceeds to G2, but G1 will validate against the gap-PSR's stated criteria.
+    4. **PSR attachment**: The PSR is attached to the task record and forwarded to both G2 (to guide execution) and G1 (to define validation criteria).
+    A task without a PSR (neither selection nor gap) is rejected at G3.
+  + BECAUSE:
+    The Baldwin cycle says: exploration happens within exotype constraints. The pattern library is the constraint set. G3 is the gate that enforces the constraint — you must engage with the library, even if the outcome is "nothing fits." This engagement is what turns ad-hoc work into pattern-accumulating work. Every gap-PSR is a signal that the library needs to grow. Every selection-PSR is evidence that the library is useful. Without G3, neither signal is produced.
+
+  + INVARIANT-STATEMENT:
+    G3-psr: Every task in G2-G0 carries a PSR (selection or gap). The PSR contains pattern-id or gap-declaration, candidates-considered, rationale, confidence, and success-criteria. Tasks without PSRs are rejected at G3.
+
+  + FAILURE-MODES:
+    - Rubber-stamp PSR: Agent always selects the same generic pattern to pass the gate (detectable by PSR diversity analysis)
+    - Gap inflation: Agent declares gaps for tasks that have matching patterns (detectable by cross-referencing search terms against library)
+    - Criteria mismatch: PSR success-criteria don't match what the pattern actually specifies (detectable at G1)
+    - Search-free selection: Agent names a pattern without searching (detectable by empty candidates-considered)
+
+  + ANCESTORS:
+    - fulab/pattern-dep (make reasoning dependencies explicit — the informal precursor to structured PSRs)
+    - fulab/pattern-propose (if no pattern fits, propose one — the gap declaration ancestor)
+    - agent/sense-deliberate-act phase 2 (deliberation phase = pattern selection)
+    - agent/commitment-varies-with-confidence (PSR confidence level drives approach)
+    These ancestors document the intention. This pattern provides the enforcement.
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - baldwin-cycle (EXPLORE phase): pattern selection is constrained exploration -> search-then-select
+    - symbolic-geodesic: shortest defensible path -> pattern provides defensibility, PSR documents it
+    - four-types (genotype): PSR captures the pattern-as-genotype for this specific task
+    - theory-as-exotype (type-checking): patterns must satisfy theory constraints -> search validates against library
+
+  + EVIDENCE-SHAPE:
+    {:gate "G3"
+     :task/id :string
+     :psr/id :string
+     :psr/type :keyword  ; :selection or :gap
+     :psr/pattern-id :string  ; nil for gaps
+     :psr/candidates-considered [:string]
+     :psr/search-terms [:string]
+     :psr/namespaces-searched [:string]
+     :psr/rationale :string
+     :psr/confidence :keyword  ; :high :medium :low :none
+     :psr/success-criteria :string
+     :psr/proposed-pattern :string  ; optional, for gaps
+     :psr/ts :string}

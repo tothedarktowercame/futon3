@@ -61,6 +61,9 @@ See: [proof-path.flexiarg](proof-path.flexiarg)
 | counter-ratchet | Key counts must not drop unexpectedly |
 | stop-the-line | Block changes when invariants fail |
 | curry-howard-operational | Specs mediate future state into present |
+| task-as-arrow | Tasks are BHK arrows; gates compose into proof paths |
+| retroactive-canonicalization | Specs emerge from ancestors via naming, selection, canalization |
+| structural-tension-as-observation | Structural tension is the observation vector for library evolution; two nested AIF loops |
 
 ## Evolutionary Patterns (from futon5)
 
@@ -98,6 +101,7 @@ See: [baldwin-cycle.flexiarg](baldwin-cycle.flexiarg)
 | interface-loop | Baldwin cycle at each layer boundary |
 | local-gain-persistence | Gains must persist or be explicitly deleted |
 | xenotype-portability | Same adaptation skeleton, many instantiations |
+| retroactive-canonicalization | How ancestors become theory via naming/selection/canalization |
 
 ### Key Invariant
 

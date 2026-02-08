@@ -1,0 +1,196 @@
+@flexiarg futon-theory/structural-tension-as-observation
+@title Structural Tension Is the Observation Vector for Library Evolution
+@sigils [🔬/张]
+@keywords tension, observation, aif, free-energy, ancestor, canonicalization, nested, timescale
+@audience futon developers, pattern theorists, AIF implementers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/retroactive-canonicalization futon-theory/task-as-arrow futon-theory/baldwin-cycle futon-theory/four-types coordination/ARGUMENT]
+
+! conclusion:
+  The coordination system operates as two nested AIF loops sharing the same
+  boundary (the gate pipeline). The fast loop governs task execution; the
+  glacial loop governs pattern library evolution. Structural tension — the
+  gap between what the library can express and what coordination needs — is
+  the observation vector for the glacial loop. This makes the AIF wiring
+  diagram framework not a metaphor for the coordination rewrite but its
+  direct structural specification.
+
+  + context: Chapter 0 (AIF as a wiring diagram) establishes that AIF is
+    the first member of a diagram family, characterised by six invariants
+    (I1-I6). The futon3-coordination.edn wiring diagram already satisfies
+    these invariants at the task execution timescale: I1 (gate pipeline is
+    the boundary), I2 (observation of environment + action via artifacts),
+    I3 (patterns glacial, missions slow, gates fast), I4 (agents cannot
+    rewrite patterns or missions), I5 (library must be adequate to guide
+    work), I6 (default mode provides parallel path). But this covers only
+    one timescale. The retroactive canonicalization pattern describes a
+    second process — library evolution — that operates at a glacial
+    timescale and has its own observation-inference-action structure. The
+    question is: what does this second process observe?
+
+  + THE-TWO-LOOPS:
+    The coordination system contains two AIF loops at different timescales:
+
+    LEVEL 0 — Task Execution (fast):
+    - Observe: read environment (codebase, project state)
+    - Perceive: extract task requirements, match against capabilities
+    - Policy: select pattern (PSR), plan execution
+    - Act: execute through gates, produce artifacts
+    - Generative model: current pattern selections
+    - Free energy: task failure, gap declarations, PUR prediction errors
+
+    LEVEL 1 — Library Evolution (glacial):
+    - Observe: accumulate structural tensions across many task executions
+    - Perceive: recognise recurring tensions as candidate ancestors
+    - Policy: select candidates for canonicalization (NAMING → SELECTION)
+    - Act: canonicalize — promote pattern to invariant (CANALIZATION)
+    - Generative model: the pattern library itself
+    - Free energy: accumulated structural irritation
+
+    These loops share the same boundary: the gate pipeline. Level 0
+    operates within the pipeline (one task at a time). Level 1 operates
+    on the pipeline (reshaping the patterns that govern future tasks).
+    This is VSM-style nesting (Chapter 0 §3.2): the glacial loop contains
+    and constrains the fast loop.
+
+  + THE-OBSERVATION-VECTOR:
+    What does the glacial loop observe? Three kinds of structural tension
+    serve as its observation vector:
+
+    1. STRUCTURAL IRRITATION (结构刺激):
+       A recurring problem shape that the current symbol system cannot
+       cleanly express. The same difficulty appears across multiple tasks,
+       but no existing pattern addresses it directly. Agents work around it
+       with ad-hoc fixes. Each workaround is a prediction error: the
+       generative model (library) predicted its patterns would cover the
+       work, but reality produced a gap.
+
+       Detection: gap-PSRs accumulating around the same structural theme.
+       Frequency across tasks. Multiple agents hitting the same wall.
+
+    2. PRE-SYMBOLIC PRESSURE (前符号压力):
+       A force that pushes the symbol system to expand before the expansion
+       has a name. The pressure is felt as difficulty — not the difficulty
+       of a hard task, but the difficulty of expressing what the task IS.
+       The existing vocabulary is insufficient. This is the force that
+       drives NAMING: giving structure to experience that currently has
+       none.
+
+       Detection: tasks that are hard to scope (G5 struggles), hard to
+       match to patterns (G3 produces low-confidence PSRs), hard to
+       validate (G1 criteria feel arbitrary). The difficulty is not in
+       the work but in the coordination of the work.
+
+    3. TRANS-SITUATIONAL REAPPEARANCE (跨情境复现):
+       The same structural role showing up across unrelated contexts.
+       A pattern that was written for storage reappears in coordination.
+       A fix that was ad-hoc in futon1a turns out to be necessary in
+       futon3. The reappearance is evidence that the pattern is not
+       contingent but structurally required — the prediction error is
+       systematic, not noise. The model needs a structural update
+       (canonicalization), not a parameter tweak (one more ad-hoc fix).
+
+       Detection: patterns or fixes independently discovered in different
+       repos, missions, or agent contexts. futon3a's meme.arrow typed
+       edges appearing in different subgraphs. The same gate pattern
+       solving problems in both the agency reading and the pattern reading.
+
+  + FREE-ENERGY-AND-CANONICALIZATION:
+    In AIF, free energy is the divergence between the agent's model and
+    reality. In library evolution:
+
+    - Free energy = accumulated structural irritation. The gap between
+      what the library says should work and what actually works in
+      practice.
+    - Perception = NAMING. Giving an irritation a citable name compresses
+      raw tension into a representable observation. Before naming, the
+      tension is sub-symbolic. After naming, it can be scored and compared.
+    - Inference = SELECTION. Among named tensions, selecting those that
+      are auditable, replayable, and machine-checkable. This updates
+      the model (library) by choosing which observations to take
+      seriously.
+    - Action = CANALIZATION. Promoting a selected pattern to invariant
+      status. This changes the world — future tasks are now governed by
+      the new invariant. The free energy should decrease: the irritation
+      that prompted canonicalization should stop recurring.
+
+    The Baldwin cycle IS the policy for the glacial AIF loop. And the
+    canonization event (from retroactive-canonicalization) is the proof
+    path record for that policy — the evidence that the action was taken
+    and why.
+
+  + THE-DIRECT-AIF-CONNECTION:
+    The coordination rewrite argument (coordination/ARGUMENT) concludes
+    that pattern phylogeny, development history, and conversation graphs
+    are one structure. The AIF connection explains WHY they converge:
+
+    - The pattern phylogeny is the glacial loop's model evolution —
+      how the generative model (library) changes over time.
+    - The development history is the fast loop's action record —
+      what the agent did at each step.
+    - The conversation graph is the inter-agent coordination record —
+      how multiple agents running the fast loop exchange observations
+      and negotiate policies.
+
+    These three records are generated by the same diagram at different
+    timescales and between different components. They converge because
+    they are produced by one system, not three.
+
+    The AIF wiring diagram is therefore not an organizational metaphor
+    for the coordination rewrite. It is the structural specification.
+    The futon3-coordination.edn diagram IS the Level 0 loop. The
+    retroactive canonicalization process IS the Level 1 loop. The gate
+    pipeline IS the shared boundary. The pattern library IS the
+    generative model. And structural tension IS free energy.
+
+  + INVARIANT-MAPPING:
+    The six Chapter 0 invariants apply to both loops:
+
+    | Invariant | Level 0 (Task) | Level 1 (Library) |
+    | I1 Boundary | Gate pipeline | Library publish/promote boundary |
+    | I2 Obs-Action | Read env / produce artifacts | Observe tensions / canonicalize |
+    | I3 Timescale | Gates fast, patterns glacial | Tasks fast, canonicalization glacial |
+    | I4 Exogeneity | Agents can't rewrite patterns | Fast tensions can't force canonicalization |
+    | I5 Adequacy | Library must guide tasks | Library must track recurring tensions |
+    | I6 Closure | Default mode sustains agents | Gap-PSRs sustain library evolution |
+
+    I4 is critical for both loops. At Level 0: agents cannot rewrite the
+    patterns that guide them (wireheading prevention). At Level 1: the
+    accumulation of structural tensions cannot force canonicalization
+    without the deliberate three-step process (NAMING → SELECTION →
+    CANALIZATION). If tensions could directly modify the library, the
+    library would overfit to noise — the glacial equivalent of
+    wireheading.
+
+  + WHAT-THIS-ADDS:
+    Previous patterns established:
+    - Tasks are BHK arrows (task-as-arrow)
+    - Specs emerge from ancestors (retroactive-canonicalization)
+    - The rewrite composes components through a pipeline into a graph
+      (coordination/ARGUMENT)
+
+    This pattern adds:
+    - The two-loop structure is not analogy but direct AIF specification
+    - Structural tension has three identifiable components that serve as
+      the glacial loop's observation vector
+    - The graph convergence follows from the diagram structure, not from
+      coincidence
+    - The six Chapter 0 invariants constrain both loops, providing
+      checkable certification criteria for the rewrite
+
+  + BECAUSE:
+    Without this connection, the AIF wiring diagram framework and the
+    coordination rewrite are parallel projects — one theoretical, one
+    engineering. With it, they are the same project. The wiring diagram
+    specifies what to build. The coordination patterns specify how each
+    component works. The argument establishes why it must be one system.
+    And the structural tension criteria tell you when the library needs
+    to evolve — which is the question that retroactive canonicalization
+    answers but does not itself pose.
+
+  + NEXT-STEPS:
+    next[Add structural tension observation vector to futon3-coordination.edn as Level 1 inputs]
+    next[Map the three tension criteria to gate pipeline telemetry (which gates detect which tensions)]
+    next[Verify I4 exogeneity in Level 1: trace all paths from fast-loop outputs to library-write]
+    next[Write futon5 ct/agent.clj with two-loop validation: check both timescales against I1-I6]

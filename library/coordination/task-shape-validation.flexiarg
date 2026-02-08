@@ -1,0 +1,62 @@
+@flexiarg coordination/task-shape-validation
+@title Every Task Must Have Shape Before It Has Permission
+@sigils [G5/形]
+@keywords task, shape, validation, mission, typed, scope, specification, gate
+@audience futon3 gate implementers, agent developers
+@tone analytic-foundational
+@style pattern
+@gate G5
+@references [futon-theory/mission-interface-signature futon-theory/curry-howard-operational futon-theory/proof-path agent/scope-before-action agent/intent-handshake-is-binding]
+
+! conclusion: A task request entering the coordination pipeline must have a well-defined shape — mission reference, typed I/O declaration, success criteria, and scope boundaries — before any other gate evaluates it. Malformed tasks are rejected at G5, cheaply, before authorization or pattern search are attempted.
+  + context: G5 is the outermost gate: the first check in the pipeline G5 -> G4 -> G3 -> G2 -> G1 -> G0. It corresponds to the CLOCK_IN + OBSERVE phases of the proof path. Its purpose is structural: does this task request have the minimum information needed for the rest of the pipeline to operate?
+  + IF:
+    A task request arrives at the coordination pipeline (from human, mission queue, or peer agent).
+  + HOWEVER:
+    Without shape validation, malformed tasks propagate into expensive inner gates. An agent gets authorized (G4) for a task that has no success criteria. A pattern gets selected (G3) for a task whose scope is undefined. Execution begins (G2) on a task nobody can validate (G1) because nobody specified what "done" means.
+  + THEN:
+    G5 validates the following fields before passing the task inward:
+    1. **mission-ref**: Which mission authorizes this task? Must reference an existing mission spec (M-*.md or mission-diagram.edn). Tasks without mission context are rejected.
+    2. **scope**: What is in-bounds, out-of-bounds, and what is the exit condition? Inherits from mission-scoping. An empty scope is a rejection.
+    3. **typed-io**: What inputs does the task consume and what outputs does it produce? Types must be from the coordination vocabulary (:http-request, :xtdb-entity, :config, :error-response, :proof-path). Untyped tasks are rejected.
+    4. **success-criteria**: What observable condition constitutes "done"? Must be verifiable at G1. "Make it better" is not a success criterion.
+    5. **intent**: Natural language statement of what the agent intends to do. This becomes the CLOCK_IN record.
+    These five fields constitute the task shape. If any is missing, G5 emits an :error-response with HTTP 400 semantics and the task does not proceed.
+  + BECAUSE:
+    The Curry-Howard correspondence says: code without spec is proof without theorem. A task without shape is work without a goal. G5 is the gate that enforces this — it turns "do something" into "do this specific thing that we can later verify." Cheap rejection here prevents expensive failure later.
+
+  + INVARIANT-STATEMENT:
+    G5-shape: No task passes G5 without mission-ref, scope, typed-io, success-criteria, and intent. Missing any field produces an :error-response at G5 with field-level diagnostics.
+
+  + FAILURE-MODES:
+    - Scope drift: Task starts without boundaries, agent wanders into unrelated code
+    - Phantom success: Task completes but nobody can verify because success criteria were never stated
+    - Orphan task: Task has no mission reference, so its evidence cannot be attributed to any goal
+    - Type mismatch: Task produces :xtdb-entity but downstream expects :http-request, caught too late
+
+  + ANCESTORS:
+    This pattern subsumes and organizes:
+    - agent/intent-handshake-is-binding (intent field requirement)
+    - agent/scope-before-action (scope field requirement)
+    - musn/declare-scope (in-bounds/out-of-bounds/exit)
+    - fulab/clock-in (intent -> CLOCK_IN record)
+    These ancestors remain in the library as evidence. This pattern provides the enforcement structure.
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - mission-interface-signature: typed I/O ports with wiring diagram -> typed-io field
+    - curry-howard-operational: spec mediates future into present -> success-criteria field
+    - proof-path (CLOCK_IN + OBSERVE): session begins with declared intent -> intent field
+    - mission-scoping: bounded ownership -> scope field, mission-ref field
+
+  + EVIDENCE-SHAPE:
+    {:gate "G5"
+     :task/id :string
+     :task/mission-ref :string
+     :task/scope {:in-bounds :string :out-of-bounds :string :exit-condition :string}
+     :task/typed-io {:inputs [{:id :keyword :type :keyword}] :outputs [{:id :keyword :type :keyword}]}
+     :task/success-criteria :string
+     :task/intent :string
+     :validation/result :keyword  ; :pass or :reject
+     :validation/missing-fields [:keyword]
+     :validation/ts :string}

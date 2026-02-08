@@ -1,0 +1,71 @@
+@flexiarg coordination/mandatory-pur
+@title Every PSR Must Produce a Matching PUR
+@sigils [G1/验]
+@keywords pur, validation, psr, pattern, evidence, criteria, gate
+@audience futon3 gate implementers, agent developers, pattern authors
+@tone analytic-foundational
+@style pattern
+@gate G1
+@references [futon-theory/proof-path futon-theory/retrospective-stability agency/delivery-receipt coordination/mandatory-psr coordination/artifact-registration]
+
+! conclusion: Every PSR created at G3 must produce a matching PUR (Pattern Use Record) at G1. The PUR documents whether the pattern's success criteria were met, what prediction errors occurred, and what was learned. Orphaned PSRs — selections without outcomes — are a detectable violation. The PSR-PUR pair is the coordination-domain equivalent of a delivery receipt: the work is not done until the receipt is in hand.
+  + context: G1 is the validation gate. It receives the task's artifact manifest from G2 and the PSR from G3, and checks whether the work satisfies the pattern's stated criteria. The PUR is the validation record — it closes the loop opened by the PSR. Without it, pattern selection is a one-way annotation with no feedback. The library cannot learn from its use because there is no record of outcomes.
+  + IF:
+    A task has completed execution (G2) and carries both an artifact manifest and a PSR.
+  + HOWEVER:
+    Currently, PUR creation is sporadic. Many PSRs have no matching PUR. When PURs are created, they are unstructured text with no link back to the PSR's success-criteria. There is no mechanism to detect orphaned PSRs. The pattern library accumulates selections without outcomes, making it impossible to know which patterns actually work.
+  + THEN:
+    G1 creates a PUR for every PSR:
+    1. **PSR-PUR binding**: The PUR references the PSR by ID. One PSR, one PUR. The binding is structural, not textual.
+    2. **Criteria evaluation**: The PUR evaluates the PSR's success-criteria against the artifact manifest:
+       - criteria-met: boolean (were all criteria satisfied?)
+       - criteria-details: for each criterion, what evidence supports or contradicts it
+       - artifacts-referenced: which HX artifacts are evidence for each criterion
+    3. **Prediction error**: The PUR records the gap between what the PSR predicted and what actually happened:
+       - prediction-error: high/medium/low/none
+       - error-description: what was surprising or different from expectations
+       - This is the learning signal — high prediction error means the pattern's guidance was wrong or the task was misjudged
+    4. **Outcome classification**:
+       - :success — criteria met, prediction error low
+       - :partial — some criteria met, prediction error medium
+       - :failure — criteria not met, prediction error high
+       - :gap-validated — PSR was a gap declaration, execution proceeded without pattern guidance, outcome documents the gap
+    5. **PUR as gate check**: If the PUR outcome is :failure and the PSR confidence was :high, G1 flags this for review but does not reject — the work is done, the evidence is what it is. G1's job is to document the truth, not to undo completed work.
+  + BECAUSE:
+    The proof-path says VERIFY must confirm that the change matches the claim. The PSR is the claim ("I will do this guided by this pattern"). The PUR is the verification ("here is what actually happened"). Without the PUR, the proof path has a gap at VERIFY — the change exists but its relationship to the pattern is unrecorded. The delivery-receipt ancestor says: no operation is complete until the receipt is in hand. The PSR is the send; the PUR is the receipt.
+
+  + INVARIANT-STATEMENT:
+    G1-pur: Every PSR produces exactly one matching PUR. The PUR evaluates success-criteria against the artifact manifest, records prediction error, and classifies the outcome. Orphaned PSRs (PSR without PUR) are a detectable violation flagged at G1.
+
+  + FAILURE-MODES:
+    - Orphaned PSR: PSR created at G3 but no PUR at G1 (most common current failure)
+    - Rubber-stamp PUR: PUR says "success" without referencing specific criteria or artifacts
+    - Criteria drift: PUR evaluates different criteria than the PSR stated (detectable by structural binding)
+    - Missing prediction error: PUR omits the learning signal, reducing value to the library
+
+  + ANCESTORS:
+    - agency/delivery-receipt (every message gets a receipt — PSR-PUR is the pattern-level receipt)
+    - agent/evidence-over-assertion (claims require grounding — PUR grounds the PSR's claim)
+    - fulab/proof-commit (commit constrained to verified paths — PUR is the verification)
+    - sidecar/validation-enforcement-gate (centralized validation — G1 is the coordination-level gate)
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - proof-path (VERIFY): confirm change matches claim -> PUR confirms PSR criteria
+    - retrospective-stability: proofs survive future refinement -> PUR is durable evidence
+    - delivery-receipt: operation incomplete without receipt -> PSR incomplete without PUR
+    - all-or-nothing: validation succeeds completely or flags -> PUR outcome is definitive
+
+  + EVIDENCE-SHAPE:
+    {:gate "G1"
+     :task/id :string
+     :pur/id :string
+     :pur/psr-id :string
+     :pur/criteria-met? :boolean
+     :pur/criteria-details [{:criterion :string
+                             :satisfied? :boolean
+                             :evidence-artifacts [:string]}]
+     :pur/prediction-error :keyword  ; :high :medium :low :none
+     :pur/error-description :string
+     :pur/outcome :keyword  ; :success :partial :failure :gap-validated
+     :pur/ts :string}

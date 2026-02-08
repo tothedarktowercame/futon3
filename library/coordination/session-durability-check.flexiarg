@@ -1,0 +1,69 @@
+@flexiarg coordination/session-durability-check
+@title The Session Must Be Reconstructable from Persisted Events Alone
+@sigils [G0/固]
+@keywords durability, session, persistence, events, reconstruction, gate
+@audience futon3 gate implementers, MUSN maintainers, evidence pipeline developers
+@tone analytic-foundational
+@style pattern
+@gate G0
+@references [futon-theory/durability-first futon-theory/event-protocol futon-theory/proof-path agency/state-atomicity fulab/session-resume coordination/par-as-obligation]
+
+! conclusion: Before G0 completes, it verifies that the session can be reconstructed from persisted events alone. If the persisted record is incomplete — missing PSR, PUR, artifact manifest, or session events — G0 rejects. The durability check is the coordination-domain equivalent of futon1a's L0: what you save is what you get back. If you can't get the session back from what was saved, it wasn't durable.
+  + context: G0 is the innermost gate — the last check before the proof path is sealed. It corresponds to PROOF_COMMIT + CLOCK_OUT in the proof path. Its purpose is to ensure that everything that happened in G5-G1 is durably recorded. If the system crashes after G0 completes, the session is fully recoverable. If G0 has not completed, the session may be partially recoverable (from checkpoint events at G2) but is not guaranteed.
+  + IF:
+    A task has passed all gates (G5-G1) and is ready to commit its evidence and close the session.
+  + HOWEVER:
+    Currently, session persistence is best-effort. Events are emitted to MUSN but there is no verification that they were durably stored. Session state lives in atoms (in-memory) with periodic file writes — but file writes use spit-with-append and have no sync guarantee. If the process crashes between event emission and file write, events are lost. There is no reconstruction check — nobody verifies that the persisted record is sufficient to rebuild the session.
+  + THEN:
+    G0 performs a durability check before sealing the proof path:
+    1. **Completeness check**: Verify that the following records exist in durable storage (not just in memory):
+       - Task shape record (from G5)
+       - Assignment record (from G4)
+       - PSR (from G3)
+       - Artifact manifest (from G2)
+       - PUR (from G1)
+       - Cross-validation record (from G1, if task was :critical)
+       If any record is missing, G0 rejects with a specific diagnostic identifying the missing piece.
+    2. **Event sequence check**: Verify that the session's event log contains the canonical event protocol sequence. Events must be ordered and complete — no gaps in the sequence from CLOCK_IN to PROOF_COMMIT.
+    3. **Sync guarantee**: After all records are confirmed, perform a durable sync (fsync or equivalent) to ensure the records survive a crash. This is the coordination equivalent of futon1a's write-through-with-sync.
+    4. **Reconstruction test** (optional, for :critical tasks): Actually attempt to reconstruct the session summary from persisted events alone. If the reconstruction diverges from the in-memory state, flag the divergence.
+    5. **Seal**: After all checks pass, emit PROOF_COMMIT and CLOCK_OUT events. The proof path is now sealed and immutable.
+  + BECAUSE:
+    Durability-first says: what you save is what you get back. Without the durability check, "what you saved" is unknown — events may have been emitted but not persisted, records may be in memory but not on disk, the session may be irrecoverable after a crash. The check is cheap (verify existence of N records) but its absence is catastrophic (lost sessions, orphaned evidence, broken audit trails).
+
+  + INVARIANT-STATEMENT:
+    G0-durability: The proof path is sealed only after verifying that all gate records (G5 task shape, G4 assignment, G3 PSR, G2 manifest, G1 PUR) exist in durable storage and the event sequence is complete. Missing records produce :error-response at G0.
+
+  + FAILURE-MODES:
+    - Memory-only session: All records in atoms, none persisted — process crash loses everything
+    - Partial persistence: PSR persisted but PUR not — session is reconstructable but validation gap exists
+    - Unsynchronized write: Records written to file but not fsynced — OS crash loses recent writes
+    - Split record: Some records in XTDB, some in files, some in MUSN — no single reconstruction source
+
+  + ANCESTORS:
+    - agency/state-atomicity (state transitions complete fully or fail — atomic persistence)
+    - fulab/session-resume (audit continuity across conversations — reconstructability)
+    - fulab/clock-out (seal proof path with summary — the informal version of G0)
+    - fulab/changelog-trail (manual records as temporary proof — stopgap for missing durability)
+    - agency/bounded-lifecycle (transient state cleaned up — no dangling records)
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - durability-first (I0): what you save is what you get back -> reconstruction check
+    - event-protocol: canonical event sequence -> event sequence check
+    - proof-path (PROOF_COMMIT + CLOCK_OUT): durable commit + session close -> seal after check
+    - retrospective-stability: evidence survives refinement -> sync guarantee
+
+  + EVIDENCE-SHAPE:
+    {:gate "G0"
+     :task/id :string
+     :durability/records-checked [:keyword]  ; [:g5-shape :g4-assignment :g3-psr :g2-manifest :g1-pur]
+     :durability/records-present [:keyword]
+     :durability/records-missing [:keyword]
+     :durability/event-sequence-complete? :boolean
+     :durability/event-count :int
+     :durability/sync-confirmed? :boolean
+     :durability/reconstruction-tested? :boolean
+     :durability/reconstruction-divergence? :boolean
+     :durability/result :keyword  ; :durable or :rejected
+     :durability/ts :string}

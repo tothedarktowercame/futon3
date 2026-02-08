@@ -1,0 +1,75 @@
+@flexiarg coordination/par-as-obligation
+@title Every Proof Path Must Produce a Post-Action Review
+@sigils [G0/省]
+@keywords par, post-action-review, reflection, learning, obligation, gate
+@audience futon3 gate implementers, agent developers, fulab maintainers
+@tone analytic-foundational
+@style pattern
+@gate G0
+@references [futon-theory/proof-path futon-theory/local-gain-persistence futon-theory/baldwin-cycle coordination/mandatory-pur coordination/session-durability-check]
+
+! conclusion: Every completed proof path must produce a PAR (Post-Action Review) before CLOCK_OUT. The PAR is not optional reflection — it is the evidence that the system learns from its actions. Without PARs, the same mistakes repeat because there is no record of what worked, what didn't, and what was surprising. The PAR closes the Baldwin cycle: the prediction errors it records are the signal that drives pattern library evolution.
+  + context: G0 is responsible for evidence durability — making sure everything is persisted and the session is reconstructable. The PAR is the final record: a structured summary of the entire proof path from G5 to G1, capturing what was expected vs. what happened. It is the learning artifact. The PSR says "I will do X guided by pattern Y." The PUR says "X was done, criteria Z were met/not met." The PAR says "Here is what I learned from the whole experience."
+  + IF:
+    A task has passed all gates (G5-G1), the durability check has confirmed all records are persisted, and the proof path is ready to be sealed.
+  + HOWEVER:
+    Currently, PARs are rare. Most sessions end without a structured reflection. When PARs are produced, they are free-form text — not linked to PSRs, PURs, or specific prediction errors. There is no mechanism to detect sessions that ended without PARs, and no feedback loop from PARs to the pattern library.
+  + THEN:
+    G0 requires a PAR before sealing the proof path:
+    1. **PAR structure**: The PAR contains:
+       - session-id: which session this PAR covers
+       - psr-id: the PSR that guided the work
+       - pur-id: the PUR that validated the outcome
+       - prediction-errors: list of things that were surprising or different from expectations (from the PUR, plus any additional observations)
+       - what-worked: specific actions or pattern applications that produced good results
+       - what-didn't: specific actions or pattern applications that failed or were suboptimal
+       - pattern-feedback: recommendations for the pattern that was used (e.g., "success-criteria too vague", "hotwords should include X", "pattern doesn't cover Y scenario")
+       - proposed-patterns: if the session revealed a need for a new pattern, sketch it here
+       - time-spent: actual vs. budgeted
+    2. **Learning signal**: The PAR's prediction-errors field is the primary learning signal. High prediction error on a pattern that was selected with high confidence is a strong signal that the pattern needs revision. Low prediction error confirms the pattern is well-calibrated.
+    3. **Library feedback loop**: PARs with pattern-feedback or proposed-patterns are queued for library review. This is how the pattern library evolves — not through top-down design but through bottom-up evidence from actual use.
+    4. **PAR as obligation**: The proof path cannot be sealed (PROOF_COMMIT + CLOCK_OUT) until the PAR exists. A session without a PAR is like a proof without a QED — it may have done everything right, but it didn't close.
+    5. **Lightweight PARs**: For :trivial tasks, the PAR can be minimal — prediction-error: :none, what-worked: "completed as expected." The obligation is structural (PAR must exist), not bureaucratic (PAR must be long).
+  + BECAUSE:
+    Local-gain-persistence says: functional gains must either persist or be explicitly deleted. A session's learning is a functional gain. Without a PAR, learning evaporates — the agent that did the work might "remember" but no other agent and no future session has access to that knowledge. The PAR persists the learning. The Baldwin cycle requires evidence of what worked and what didn't to drive the explore -> assimilate -> canalize loop. PARs are that evidence.
+
+  + INVARIANT-STATEMENT:
+    G0-par: Every proof path produces a PAR before CLOCK_OUT. The PAR references the PSR and PUR by ID, records prediction errors, and provides pattern feedback. Proof paths without PARs cannot be sealed.
+
+  + FAILURE-MODES:
+    - Missing PAR: Session ends without reflection — most common current failure
+    - Detached PAR: PAR exists but doesn't reference PSR/PUR — learning cannot be attributed
+    - Empty PAR: PAR created but with no substantive content — obligation met but value lost
+    - Feedback black hole: PAR contains pattern-feedback but nobody reads it (requires library feedback loop)
+
+  + ANCESTORS:
+    - fulab/clock-out (seal proof path with completion summary — informal PAR)
+    - fulab/proof-commit (commit constrained to verified paths — PAR is pre-commit evidence)
+    - fulab/tradeoff-record (decision record shape — PAR captures decisions)
+    - fulab/blast-radius (rollback risk scope — PAR documents actual risk realized)
+    - agent/trail-enables-return (trails enable learning, debugging, recovery — PAR is the trail)
+    These ancestors describe aspects of reflection. This pattern makes reflection obligatory and structural.
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - proof-path (CLOCK_OUT): session ends with proof trail complete -> PAR is the trail summary
+    - local-gain-persistence: learning must persist or be deleted -> PAR persists learning
+    - baldwin-cycle: explore -> assimilate -> canalize requires evidence -> PAR is the evidence
+    - retrospective-stability: evidence survives refinement -> PAR is durable
+
+  + EVIDENCE-SHAPE:
+    {:gate "G0"
+     :task/id :string
+     :par/id :string
+     :par/session-id :string
+     :par/psr-id :string
+     :par/pur-id :string
+     :par/prediction-errors [{:description :string :severity :keyword}]
+     :par/what-worked [:string]
+     :par/what-didnt [:string]
+     :par/pattern-feedback {:pattern-id :string
+                            :recommendations [:string]}
+     :par/proposed-patterns [{:name :string :rationale :string}]
+     :par/time-budgeted-ms :int
+     :par/time-spent-ms :int
+     :par/ts :string}

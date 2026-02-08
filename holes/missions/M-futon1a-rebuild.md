@@ -408,7 +408,127 @@ Theory patterns: `futon-theory/interface-loop`, `futon-theory/baldwin-cycle`,
 **Invariant**: Any improvement at an interface must be captured in code/patterns
 or explicitly removed. No ghost capabilities.
 
-### 2.6 What's Different from futon1
+### 2.6 Canonical HTTP API
+
+The API is the single write chokepoint: every mutation (entity creation, ingest,
+repair) passes through one pipeline that enforces all 5 layer gates. This
+section specifies the contract.
+
+Pattern: `storage/canonical-interface`
+Theory: `futon-theory/error-hierarchy`, `futon-theory/proof-path`
+
+#### 2.6.1 API Principles
+
+1. **Single chokepoint.** All writes go through `pipeline/run-write!` or
+   `pipeline/run-open-world!`. No backdoor paths.
+2. **Layer gate ordering.** Every request traverses L4→L3→L2→L1→L0.
+   The first gate that fails determines the error. Higher layers never run.
+3. **Error shape is non-negotiable.** Every error response has the shape:
+   ```json
+   {"error": {"layer": N, "reason": "keyword", "context": {...}}}
+   ```
+   HTTP status is determined by the layer, not chosen ad hoc (see I3).
+4. **Proof-path on every write.** Successful writes return a `path/id` that
+   traces the full proof-path event sequence (A1: Auditability).
+5. **Penholder in body.** For Prototype 1, the caller passes `penholder` in
+   the request body. Authentication middleware is deferred.
+
+#### 2.6.2 Endpoints
+
+| Method | Path | Purpose | Request Shape | Success Response | Error Codes |
+|--------|------|---------|---------------|------------------|-------------|
+| GET | `/health` | System diagnostics | (none) | `200 {:status :ok, :checks {...}}` | `503` (degraded) |
+| POST | `/write` | Write with layer gating | See 2.6.3 | `200 {:tx-id T, :path/id P}` | 400, 403, 409, 500, 503 |
+| POST | `/ingest` | Open-world entity/relation ingest | See 2.6.4 | `200 {:counts {:entities N, :relations N}}` | 400, 403, 500, 503 |
+| POST | `/models` | Register model descriptor | `{:id K, :descriptor M}` | `200 {:id K, ...}` | 400 |
+| GET | `/models` | List registered models | (none) | `200 {:models [...]}` | — |
+| POST | `/repair` | Repair entities | `{:entities [...], :dry-run? bool}` | `200 {:repaired N, :skipped N}` | 400, 500 |
+| POST | `/repair/verify` | Verify repair outcomes | `{:prev M, :next M, :label S}` | `200 {:ok? bool}` | 400, 500 |
+
+#### 2.6.3 Write Request Shape
+
+```clojure
+{:store          <Store>              ; injected by system (not caller-supplied in HTTP)
+ :penholder      "agent-name"         ; who is writing (L3 gate)
+ :allowed-penholders #{"agent-name"}  ; injected by system config
+ :model          :model-id            ; model descriptor for validation (L4 gate)
+ :required-keys  #{:entity/type}      ; field requirements from model
+ :identity       {:source "s"         ; external identity for dedup (L1 gate)
+                  :external-id "eid"}
+ :tx-ops         [[:xtdb.api/put {...}]] ; XTDB transaction operations
+ }
+```
+
+**Notes:**
+- `:store` and `:allowed-penholders` are system-injected. HTTP callers provide
+  only `:penholder`, `:model`, `:identity`, and `:tx-ops`.
+- When served over HTTP, `routes.clj` must hydrate the system-injected fields
+  from the running system context before passing to `pipeline/run-write!`.
+
+#### 2.6.4 Ingest Request Shape
+
+```clojure
+{:store              <Store>
+ :penholder          "agent-name"
+ :allowed-penholders #{"agent-name"}
+ :entities           [{:entity/type "T" :entity/id "..." ...}]
+ :relations          [{:relation/type "R" :from "..." :to "..." ...}]
+ :tx-ops             [...]               ; generated from entities/relations
+ :require-model?     false               ; optional: skip model validation
+ }
+```
+
+#### 2.6.5 Error Response Shape (Non-Negotiable)
+
+Every error response:
+
+```json
+{
+  "status": <http-code>,
+  "body": {
+    "error": {
+      "layer": <0-4>,
+      "reason": "<keyword>",
+      "context": { ... }
+    }
+  }
+}
+```
+
+HTTP status mapping (from I3: Hierarchy):
+
+| Layer | Gate | HTTP Status | Meaning |
+|-------|------|-------------|---------|
+| 4 | Validation | 400 | Bad request (schema, missing fields) |
+| 3 | Authorization | 403 | Penholder not allowed |
+| 2 | Integrity | 500 | Entity/relation structural error |
+| 1 | Identity | 409 | Duplicate external-id conflict |
+| 0 | Durability | 503 | XTDB unavailable or tx failed |
+
+Unexpected exceptions (non-ExceptionInfo) return `500 {:reason :exception, :message "..."}`.
+
+#### 2.6.6 Read Path (Prototype 1 Gap — To Be Specified)
+
+The current API has no read endpoints. Prototype 1 must add at minimum:
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| GET | `/entity/:id` | Read entity by UUID |
+| GET | `/entity?source=S&external-id=E` | Lookup by external identity |
+
+The read path is required for the restart cycle test (write → restart → read
+back). It must return entities as written, proving I0 (Persistence) end-to-end.
+
+#### 2.6.7 System Context Injection (Prototype 1 Requirement)
+
+When routes are served over HTTP, the system must inject:
+- `:store` — the live XTDB store handle
+- `:allowed-penholders` — from system configuration
+- Health checks bound to real XTDB node status
+
+This is the job of `system.clj` (see Prototype 1 Gate).
+
+### 2.7 What's Different from futon1
 
 | Aspect | futon1 | futon1a |
 |--------|--------|---------|
@@ -420,7 +540,7 @@ or explicitly removed. No ghost capabilities.
 | Write paths | Multiple exist | Single chokepoint |
 | Debugging | Hours | Minutes |
 
-### 2.7 Testing Strategy
+### 2.8 Testing Strategy
 
 **Layer tests** (fast, isolated):
 - Does Layer 0 block until XTDB confirms?
@@ -440,7 +560,7 @@ or explicitly removed. No ghost capabilities.
 **Invariant proofs**:
 - Tests that *prove* each invariant holds, not just exercise code paths
 
-#### 2.7.1 Test Rollout Phases (Operational)
+#### 2.8.1 Test Rollout Phases (Operational)
 
 1. Phase 0 (Harness): one placeholder test file per layer, all green.
 2. Phase 1 (Layer tests): Layer 0–2 tests passing locally.
@@ -448,7 +568,7 @@ or explicitly removed. No ghost capabilities.
 4. Phase 3 (End-to-end tests): API → durable storage → restart.
 5. Phase 4 (Migration rehearsal): data export/import with checksums.
 
-### 2.8 Synthetic Data Mocks
+### 2.9 Synthetic Data Mocks
 
 Build with realistic data shapes from the start:
 
@@ -459,7 +579,7 @@ Build with realistic data shapes from the start:
 
 This validates the schema handles real workloads, not just toy examples.
 
-### 2.9 Migration Path
+### 2.10 Migration Path
 
 1. **Build futon1a** with passing invariant tests
 2. **Run both** in parallel (different ports)
@@ -470,7 +590,7 @@ This validates the schema handles real workloads, not just toy examples.
 
 futon1a's first dataset is its own creation story.
 
-#### 2.9.1 Migration Validation Checklist
+#### 2.10.1 Migration Validation Checklist
 
 1. Snapshot + XTDB export checksum matches after import.
 2. Invariant proofs pass on futon1a after import.
@@ -519,11 +639,14 @@ futon1a's first dataset is its own creation story.
 - [ ] Each invariant traces to both futon-theory/ and storage/ patterns
 - [ ] All 9 tension resolutions implemented and tested
 - [ ] Interface loops defined at each layer boundary with PSR/PUR governance
+- [x] Canonical HTTP API specified in Section 2.6 (endpoints, shapes, error contract)
+- [ ] API serves over HTTP with system context injection (Prototype 1)
+- [ ] Read path specified and implemented (entity by UUID, lookup by external-id)
 - [ ] Proof-path event logging on all write operations
 - [ ] Counter-ratchet detects unexpected count drops
 - [ ] Any bug diagnosable in under 10 minutes
 - [ ] Synthetic data mocks exercise realistic workloads
-- [ ] Migration from futon1 succeeds without data loss
+- [x] Migration from futon1 succeeds without data loss (17564 docs, checksum match)
 - [ ] futon1a runs in production for 30 days without silent failures
 
 ### Derivation Requirements

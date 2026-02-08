@@ -30,6 +30,33 @@
                        (format "%s:%d: %s" file line (str/trim text)))
                      violations)))))))
 
+(deftest no-log-and-forget
+  (testing "no catch blocks that log an error and then return false/nil (needs-conversion pattern)"
+    ;; EXPECTED FAIL (A3): several catch blocks log but return false/nil without propagating.
+    ;; These are multiline: (catch Exception e\n  (log! ...)\n  false)
+    ;; Scan with a sliding window: find (catch lines, then check if within the next 5 lines
+    ;; there is a (log!/println AND a bare false/nil return.
+    (let [files (u/clj-files-under agency-src-dir)
+          violations
+          (mapcat
+           (fn [^java.io.File f]
+             (let [lines (vec (str/split-lines (slurp f)))]
+               (for [i (range (count lines))
+                     :when (re-find #"\(catch\s+(?:Exception|Throwable)\s+\w+" (nth lines i))
+                     :let [window (subvec lines i (min (+ i 6) (count lines)))
+                           has-log? (some #(re-find #"\(log!|\(println" %) window)
+                           has-falsy-return? (some #(re-find #"^\s*(?:false|nil)\)?\.?\)?\s*$" %) (rest window))]
+                     :when (and has-log? has-falsy-return?)]
+                 {:file (.getPath f) :line (inc i) :text (str/trim (nth lines i))})))
+           files)]
+      (is (empty? violations)
+          (str "log-and-forget catch sites:\n"
+               (str/join
+                "\n"
+                (map (fn [{:keys [file line text]}]
+                       (format "%s:%d: %s" file line text))
+                     violations)))))))
+
 (deftest throw-exceptions-false-must-check-status
   (testing "every :throw-exceptions false must have an explicit status check nearby"
     ;; EXPECTED FAIL (A3): current code uses :throw-exceptions false without checking :status.

@@ -64,7 +64,7 @@
     (reg/register-agent!
      {:agent-id "rv-agent"
       :type :codex
-      :invoke-fn (fn [_ s] {:result "ok" :session-id s :exit-code 0})})
+      :invoke-fn (fn [_prompt session-id _timeout-ms] {:result "ok" :session-id session-id :exit-code 0})})
     (let [standup-resp (call-handler (u/ring-json-request :post "/agency/standup"
                                                          {:room "standup"
                                                           :deadline-ms 2000}))

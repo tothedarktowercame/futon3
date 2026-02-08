@@ -24,7 +24,7 @@
     (reg/register-agent!
      {:agent-id "a1-reg-agent"
       :type :codex
-      :invoke-fn (fn [_ s] {:result "ok" :session-id s :exit-code 0})})
+      :invoke-fn (fn [_prompt session-id _timeout-ms] {:result "ok" :session-id session-id :exit-code 0})})
     (let [connected-agent-ids @(ns-resolve 'futon3.agency.http 'connected-agent-ids)]
       (is (some #{"a1-reg-agent"} (connected-agent-ids))))))
 
@@ -34,7 +34,7 @@
     (reg/register-agent!
      {:agent-id "dual-agent"
       :type :codex
-      :invoke-fn (fn [_ s] {:result "ok" :session-id s :exit-code 0})})
+      :invoke-fn (fn [_prompt session-id _timeout-ms] {:result "ok" :session-id session-id :exit-code 0})})
     ((ns-resolve 'futon3.agency.http 'register-local-handler!)
      "dual-agent" (fn [_msg] nil))
     (let [local-handlers @(ns-resolve 'futon3.agency.http 'local-handlers)
@@ -51,7 +51,7 @@
     (reg/register-agent!
      {:agent-id "tri-agent"
       :type :codex
-      :invoke-fn (fn [_ s] {:result "ok" :session-id s :exit-code 0})})
+      :invoke-fn (fn [_prompt session-id _timeout-ms] {:result "ok" :session-id session-id :exit-code 0})})
     ((ns-resolve 'futon3.agency.http 'register-local-handler!)
      "tri-agent" (fn [_msg] nil))
     (swap! @(ns-resolve 'futon3.agency.http 'connected-agents)

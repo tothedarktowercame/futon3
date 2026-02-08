@@ -63,6 +63,16 @@
       (is (string? (:err resp)))
       (is (= "missing-agent" (:agent-id resp))))))
 
+(deftest bell-broadcast-false-success
+  (testing "bell to 'all' with zero agents connected must return :ok false"
+    ;; EXPECTED FAIL (A0): handle-ring-bell returns {:ok true} even when no agents receive the bell.
+    (let [handle-ring-bell @(ns-resolve 'futon3.agency.http 'handle-ring-bell)
+          resp (handle-ring-bell {:agent-id "all"
+                                  :type "test-bell"
+                                  :payload {:message "nobody home"}})]
+      (is (= false (:ok resp))
+          (str "broadcast to zero agents should fail, got: " resp)))))
+
 (deftest throw-exceptions-false-must-check-status
   (testing ":throw-exceptions false must be followed by an HTTP status check"
     ;; EXPECTED FAIL (A0): current code uses :throw-exceptions false without checking :status.

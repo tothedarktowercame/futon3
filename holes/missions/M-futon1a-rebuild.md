@@ -515,3 +515,98 @@ Every new domain pattern must demonstrate:
 - [ ] Cite at least one futon-theory axiom (A1-A5) or invariant (I0-I4)
 - [ ] Reference a tension resolution from git evidence
 - [ ] Trace: theory pattern → domain pattern → code module → test
+
+---
+
+## Checkpoints
+
+### Checkpoint 1: Concurrency Stress Tests (2026-02-08)
+
+Added stress tests exercising concurrent `durable-write!` and `validate-identity`
+under load. These target the Layer 0 and Layer 1 hot paths that had no
+concurrency coverage.
+
+**Files changed:**
+
+| File | Change |
+|------|--------|
+| `deps.edn` | Added `:test` alias (cognitect test-runner v0.5.1) |
+| `test/futon1a/stress/durability_stress_test.clj` | **New** — 3 stress tests |
+| `test/futon1a/stress/identity_stress_test.clj` | **New** — 1 stress test |
+
+**Tests added:**
+
+| Test | What it exercises | Result |
+|------|-------------------|--------|
+| (a) `concurrent-durable-write-no-append` | 50 threads call `durable-write!` with StubStore, no file append. Asserts valid proof-paths, tx-ids, no exceptions. | PASS |
+| (b) `concurrent-durable-write-edn-append` | 50 threads write to a shared proof-log temp file. Asserts line count == 50, every line is valid EDN, unique `:path/id` values. | PASS |
+| (c) `concurrent-durable-write-with-contention` | Same as (b) but with `SlowStore` adding 5ms latency in `tx-sync!` to widen the race window. | PASS |
+| (d) `concurrent-identity-validation` | 50 threads call `validate-identity` with same external-id, alternating conflict/no-conflict. Asserts correct success/error shapes. | PASS |
+
+**Verification:**
+- `clj-kondo --lint src/ test/` — 0 errors, 0 warnings
+- `clj -X:test` — 19 tests, 458 assertions, 0 failures, 0 errors
+
+**Note on test (b):** `append-edn!` uses `spit :append true` with no locking.
+The test passed because the EDN lines are short enough that OS-level writes are
+effectively atomic. The race condition is still latent — it will surface under
+heavier load, longer lines, or slower filesystems. A locking fix to `append-edn!`
+is still warranted.
+
+### Checkpoint 2: Full Layer Stack + Two Review Rounds (2026-02-08)
+
+Two review-and-fix cycles brought Layers 0–4, pipeline, and API to a clean
+state. Codex landed the missing modules (mirror, health, open-world, registry,
+repair) and new tests; Claude reviewed twice and fixed all issues.
+
+**Review round 1 (critical fixes, applied by Claude):**
+
+| ID | Issue | Fix |
+|----|-------|-----|
+| C1 | Pipeline ordering was L3→L4→L1→L2→L0 | Reordered to L4→L3→L2→L1→L0 |
+| C2 | `tx-ops` check threw L0 error (503) instead of L4 (400) | Changed to `mv/layer4-error` |
+| C3 | Cross-layer error hierarchy test didn't verify L0 fields; omitted L3/L4 | Added field assertions for all 5 layers |
+
+**Review round 1 (S/M items, applied by Codex):**
+
+- S1: `routes/write` now catches `Exception` (not just `ExceptionInfo`)
+- S2: `error->response` returns `{:reason :unknown}` on nil error
+- S3: `durable-write!` catch re-throws exceptions that already carry layer info
+- S4: `layer2-error` consolidated into `invariants.clj`; entity.clj and rehydrate.clj require it
+- S5: `counter-ratchet` rejects non-numeric inputs
+- M1: Module map updated (validation.clj, pipeline.clj, new modules)
+- M2: Edge-case tests added (whitespace penholder, nil model, nil entity, etc.)
+- M3: Placeholder test files deleted
+
+**New modules landed by Codex:**
+
+| Module | Purpose |
+|--------|---------|
+| `core/mirror.clj` | In-memory mirror store with mismatch detection |
+| `diag/health.clj` | Health report with pluggable check functions |
+| `ingest/open_world.clj` | Entity/relation ingest with optional model validation |
+| `model/registry.clj` | Model descriptor registry with field/required validation |
+| `scripts/repair.clj` | Repair/backfill with dry-run and counter-ratchet verification |
+
+**Review round 2 (fixes applied by Claude):**
+
+| ID | Issue | Fix |
+|----|-------|-----|
+| B1 | Phantom `xtdb-mem-kv` dep broke the build | Removed by Codex |
+| S1 | Integration test called `tx-sync!` with a map | Changed to pass string only |
+| S2 | `xtdb_node.clj` `tx-sync!` overloaded protocol | Simplified to string-only with Long parse fallback |
+| S3 | New API handlers only caught `ExceptionInfo` | Extracted `with-error-handling` macro; all handlers now catch `Exception` |
+| S5 | Registry global atom with no test isolation | Added `use-fixtures :each` to registry/ingest/routes tests |
+| S6 | Test name "wins over" misleading | Renamed to "preempts" |
+| M1 | Module map missing registry, repair, and new test suites | Added |
+| M2 | Write response dropped proof-path | Now includes `:path/id` |
+| M3 | Health always returned 200 | Returns 503 when degraded |
+
+**Final state:**
+- `clj-kondo --lint src/ test/` — 0 errors, 0 warnings
+- `clj -X:test` — 66 tests, 569 assertions, 0 failures, 0 errors
+- All 5 layers implemented with tests
+- Cross-layer error propagation tested end-to-end through the API
+- Pipeline ordering verified by dedicated test
+- XTDB integration test passing with in-memory store
+- All 5 previously missing modules landed with tests

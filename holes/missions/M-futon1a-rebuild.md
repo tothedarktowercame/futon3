@@ -143,6 +143,20 @@ Operational conventions for session records:
 
 Example PSR filename: `2026-02-07__core-xtdb__storage-durability-first.md`.
 
+Current exemplars (2026-02-07):
+- PSR: `holes/labs/futon1a/psr/2026-02-07__layer0-xtdb__durability-gate.md`
+- PSR: `holes/labs/futon1a/psr/2026-02-07__layer1-identity__uuid-uniqueness.md`
+- PSR: `holes/labs/futon1a/psr/2026-02-07__layer2-integrity__rehydrate-entity.md`
+- PSR: `holes/labs/futon1a/psr/2026-02-07__layer3-4__auth-validation.md`
+- PSR: `holes/labs/futon1a/psr/2026-02-07__pipeline-api__write-surface.md`
+- PSR: `holes/labs/futon1a/psr/2026-02-07__invariants__counter-ratchet.md`
+- PUR: `holes/labs/futon1a/pur/2026-02-07__layer0-xtdb__durability-gate.md`
+- PUR: `holes/labs/futon1a/pur/2026-02-07__layer1-identity__uuid-uniqueness.md`
+- PUR: `holes/labs/futon1a/pur/2026-02-07__layer2-integrity__rehydrate-entity.md`
+- PUR: `holes/labs/futon1a/pur/2026-02-07__layer3-4__auth-validation.md`
+- PUR: `holes/labs/futon1a/pur/2026-02-07__pipeline-api__write-surface.md`
+- PUR: `holes/labs/futon1a/pur/2026-02-07__invariants__counter-ratchet.md`
+
 ### 1.4 Documentation as First-Class
 
 Not comments explaining code, but docs explaining *design*:

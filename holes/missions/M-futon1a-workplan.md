@@ -67,10 +67,10 @@ Decision: New repo at `~/code/futon1a/`
 |------|-------|--------|
 | Evidence doc complete | Codex | ✅ Done |
 | Pattern library canonicalized | Claude + Codex | ✅ Done |
-| Module map with repo layout | Codex | TODO |
-| Test harness placeholder | Claude | TODO |
-| PSR + PUR exemplar exists | Claude | TODO |
-| Traceability example | Both | TODO |
+| Module map with repo layout | Codex | ✅ Done |
+| Test harness placeholder | Claude | ✅ Done |
+| PSR + PUR exemplar exists | Claude | ✅ Done |
+| Traceability example | Both | ✅ Done |
 
 ### 1.1 Module Map with Repo Layout
 **Owner**: Codex

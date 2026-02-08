@@ -79,9 +79,63 @@
     - mission-interface-signature says what the system EXPOSES
     These four together form the complete mission specification.
 
++ MISSION-DIAGRAM:
+    Every mission must include a wiring diagram (mermaid) alongside the
+    port tables. The diagram is the primary artifact — the tables are
+    the machine-readable shadow.
+
+    The diagram shows:
+    - Input ports on the left (what enters the system)
+    - Internal composition in the center (how components connect)
+    - Output ports on the right (what the system exposes)
+    - Typed edges (what flows along each wire)
+
+    The diagram catches gaps that tables miss. A box with no outgoing
+    wires to the output region is visibly incomplete. A table row is
+    easy to forget; a blank region in a diagram is hard to ignore.
+
+    The diagram should be created at mission :scoped state and updated
+    at each prototype gate. Each prototype may add new output ports
+    or refine internal composition — the diagram tracks this evolution.
+
+    DIAGRAM-DISCIPLINE:
+    - Draw the output ports FIRST. What does the system expose?
+      If you cannot name the output ports, the mission is not scoped.
+    - Then draw the input ports. What does the system consume?
+    - Then draw the internal composition. How do inputs become outputs?
+    - Every output port must have at least one path from an input port
+      through internal components. Orphan outputs are unimplementable.
+    - Every internal component that has no path to an output port is
+      either dead code or a missing output port. Both are bugs.
+
 + TEMPLATE:
     ```markdown
     ## Interface Signature
+
+    ### Mission Diagram
+
+    ```mermaid
+    graph LR
+        subgraph inputs
+            I1[input-name<br/>type]
+            I2[input-name<br/>type]
+        end
+
+        subgraph system-name
+            C1[Component] --> C2[Component]
+            C2 --> C3[Component]
+        end
+
+        subgraph outputs
+            O1[output-name<br/>type / spec-section]
+            O2[output-name<br/>type / spec-section]
+        end
+
+        I1 --> C1
+        I2 --> C1
+        C3 --> O1
+        C3 --> O2
+    ```
 
     ### Input Ports
 

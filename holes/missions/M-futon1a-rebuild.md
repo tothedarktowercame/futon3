@@ -38,7 +38,58 @@ Codex (with Claude as primary reviewer for Part I process artifacts).
 > mission specified internal correctness (invariants, layers, proof-paths) but
 > not boundary types (what the system exposes). In wiring diagram terms, the
 > internal morphisms were well-composed but the output ports were unspecified.
-> This is now a required section for all missions — see futon0/mission-sop.md.
+> This is now a required section for all missions — see
+> `futon-theory/mission-interface-signature`.
+
+### Mission Diagram
+
+```mermaid
+graph LR
+    subgraph inputs
+        F1[futon1-data<br/>XTDB-store]
+        WR[write-request<br/>penholder + model + tx-ops]
+        IB[ingest-batch<br/>entities + relations]
+        MD[model-descriptors<br/>scope + version + entities + invariants]
+    end
+
+    subgraph futon1a
+        L4[L4 Validation<br/>model/validation.clj] --> L3[L3 Authorization<br/>auth/penholder.clj]
+        L3 --> L2[L2 Integrity<br/>core/entity.clj]
+        L2 --> L1[L1 Identity<br/>core/identity.clj]
+        L1 --> L0[L0 Durability<br/>core/xtdb.clj]
+        L0 --> XTDB[(XTDB<br/>RocksDB)]
+        XTDB --> TR[Type Registry<br/>§2.11.3]
+        XTDB --> MR[Model Registry<br/>§2.11.1]
+        L0 --> PP[Proof Path<br/>§2.1]
+    end
+
+    subgraph outputs
+        API[http-api<br/>§2.6]
+        META[meta-model-api<br/>§2.11.4]
+        ERR[error-shape<br/>layer + reason + context]
+        PPO[proof-path<br/>path/id + events]
+        ER[entity-read<br/>§2.6.6]
+        TYP[type-registry<br/>§2.11.3]
+        HS[health-status<br/>status + checks]
+    end
+
+    WR --> L4
+    IB --> L4
+    MD --> MR
+    F1 --> L0
+
+    XTDB --> ER
+    XTDB --> API
+    MR --> META
+    TR --> TYP
+    PP --> PPO
+    L4 --> ERR
+    L3 --> ERR
+    L2 --> ERR
+    L1 --> ERR
+    L0 --> ERR
+    XTDB --> HS
+```
 
 ### Input Ports
 

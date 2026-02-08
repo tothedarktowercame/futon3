@@ -1,6 +1,6 @@
 # Mission: Agency Unified Routing
 
-**Status:** :review
+**Status:** :done
 **Primary:** Claude
 **Reviewer:** Codex
 **Date:** 2026-02-07
@@ -242,6 +242,20 @@ curl -s -X POST http://localhost:7070/agency/page \
 {:error "...permission denied...", :exit-code 1}
 ```
 Code path validated; CLI permissions need fixing separately.
+
+### Codex Review (2026-02-08)
+
+Codex reviewed the implementation and identified 7 issues. All fixed in commit 7b2aea7:
+
+| Issue | Severity | Fix |
+|-------|----------|-----|
+| Registry invoke ignores timeout-ms | Critical | invoke-agent! now accepts timeout, uses future+deref |
+| Race can resurrect unregistered agent | Critical | Only update if agent exists with :invoke-fn |
+| Hardcoded binary paths | High | Added AGENCY_CODEX_BIN / AGENCY_CLAUDE_BIN env vars |
+| Incomplete subprocess cleanup | High | Added cleanup-fn, waitFor+destroyForcibly |
+| Overwrite without cleanup | High | register-agent! cleans up existing agent first |
+| Session-id return inconsistent | Medium | Returns effective session (new-or-current) |
+| Unused requires | Medium | Removed clojure.string from registry.clj |
 
 ## Notes
 

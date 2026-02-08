@@ -4,7 +4,9 @@
             [futon3.fulab.harness :as harness]))
 
 (deftest regime-sweep-smoke
-  (let [out-dir (-> (java.nio.file.Files/createTempDirectory "fulab-harness")
+  (let [out-dir (-> (java.nio.file.Files/createTempDirectory
+                     "fulab-harness"
+                     (make-array java.nio.file.attribute.FileAttribute 0))
                     (.toFile)
                     (.getPath))
         result (harness/run-sweep {:seed 7 :max-steps 12 :out-dir out-dir})

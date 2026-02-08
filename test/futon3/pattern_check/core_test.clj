@@ -66,7 +66,7 @@
       (spit f2 "🐜/予")
       (let [index (core/build-duplicate-index [pattern] 0)]
         (is (contains? (:duplicate-sigils index) "🐜/予"))
-        (is (<= 2 (count (get (:sigil->locations index) "🐜/予")))))))))
+        (is (<= 2 (count (get (:sigil->locations index) "🐜/予"))))))))
 
 (deftest duplicate-index-dir-path
   (testing "accepts directory paths"
@@ -76,4 +76,4 @@
       (spit f1 "🐜/予")
       (spit f2 "🐜/予")
       (let [index (core/build-duplicate-index [(.getPath (.toFile dir))] 0)]
-        (is (contains? (:duplicate-sigils index) "🐜/予")))))))
+        (is (contains? (:duplicate-sigils index) "🐜/予"))))))

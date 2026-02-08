@@ -63,12 +63,12 @@
     Current traceability (to be filled as implementation proceeds):
 
     | Invariant | Pattern | Implementation | Test | Evidence |
-    | A0 | agency/delivery-receipt | TBD | TBD | TBD |
-    | A1 | agency/single-routing-authority | TBD | TBD | TBD |
-    | A2 | agency/state-atomicity | TBD | TBD | TBD |
-    | A3 | agency/loud-failure | TBD | TBD | TBD |
-    | A4 | (derived from A3) | TBD | TBD | TBD |
-    | A5 | agency/bounded-lifecycle | TBD | TBD | TBD |
+    | A0 | agency/delivery-receipt | TBD | test/futon3/agency/invariants/a0_delivery_test.clj | TBD |
+    | A1 | agency/single-routing-authority | TBD | test/futon3/agency/invariants/a1_identity_test.clj | TBD |
+    | A2 | agency/state-atomicity | TBD | test/futon3/agency/invariants/a2_atomicity_test.clj | TBD |
+    | A3 | agency/loud-failure | TBD | test/futon3/agency/invariants/a3_loud_failure_test.clj | TBD |
+    | A4 | (derived from A3) | TBD | test/futon3/agency/invariants/a3_loud_failure_test.clj | TBD |
+    | A5 | agency/bounded-lifecycle | TBD | test/futon3/agency/invariants/a5_bounded_test.clj | TBD |
 
   + RELATIONSHIP-TO-FUTON1A:
     futon1a defines I0 (persistence), I1 (identity), I2 (integrity), I3 (hierarchy), I4 (debugging).

@@ -157,6 +157,31 @@ Note: Agency also has a local agent registry atom (`futon3.agency.registry/agent
   - WS connect + register + whistle roundtrip.
   - Local/in-JVM agent invocation path (registry).
 
+#### Phase 1 Results (2026-02-08)
+
+Test run command:
+- `clj -X:test`
+
+Result summary:
+- `Ran 134 tests containing 365 assertions.`
+- `18 failures, 1 errors.`
+
+Notes:
+- The Phase 1 deliverable landed as invariant proof tests under `test/futon3/agency/invariants/` plus `test/futon3/agency/integration_test.clj`.
+- Several failures/errors are pre-existing outside the Agency invariant work (e.g., golden transcript drift, fulab harness JSON encoding, similarity determinism, library coherence); Phase 2 should not treat these as Agency rebuild blockers unless they are causally linked.
+
+Agency rebuild gaps now explicitly documented as failing tests (expected):
+- A0: `send-to-agent!` returns boolean rather than explicit receipt/failure; whistle failure omits `:agent-id`; `:throw-exceptions false` call sites lack status checks.
+- A1: the same `agent-id` can exist in multiple routing stores simultaneously (registry + local-handlers + ws), violating single-routing-authority semantics.
+- A2: corrupted agent state loads as nil; continuity id can be set to nil; persistence write path is not atomic (no temp+rename).
+- A3: silent catch-and-return-nil sites exist; `:throw-exceptions false` call sites lack explicit status checks.
+- A5: `acks` is unbounded; disconnect does not cascade cleanup to pending whistles; secrets rely on async cleanup (TTL is not enforced lazily-on-read).
+
+Passing Agency integration coverage (sanity checks):
+- Registry whistle roundtrip via HTTP handler passes: `test/futon3/agency/integration_test.clj`
+- Bell + ack roundtrip passes: `test/futon3/agency/integration_test.clj`
+- Rendezvous ack tracking passes: `test/futon3/agency/integration_test.clj`
+
 ### Phase 2: Implementation (2 days)
 
 - A1: unify routing resolution into a single authority and remove multi-tier “distinct concat” behavior.

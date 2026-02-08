@@ -2,7 +2,7 @@
   "Core batcher + matchers for realtime pattern-check loop.
 
    This namespace is pure and side-effect free except for optional timestamps.
-   Integration should handle IO (IRC ingest, JSONL output).")
+   Integration should handle IO (IRC ingest, JSONL output)."
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
@@ -158,7 +158,7 @@
         matcher (.getPathMatcher (java.nio.file.FileSystems/getDefault)
                                  (str "glob:" pattern))]
     (when (java.nio.file.Files/exists root-path (make-array java.nio.file.LinkOption 0))
-      (with-open [stream (java.nio.file.Files/walk root-path)]
+      (with-open [stream (java.nio.file.Files/walk root-path (make-array java.nio.file.FileVisitOption 0))]
         (->> (iterator-seq (.iterator stream))
              (filter #(java.nio.file.Files/isRegularFile % (make-array java.nio.file.LinkOption 0)))
              (map (fn [p]
@@ -173,7 +173,7 @@
   [dir]
   (let [path (.toPath (io/file dir))]
     (when (java.nio.file.Files/exists path (make-array java.nio.file.LinkOption 0))
-      (with-open [stream (java.nio.file.Files/walk path)]
+      (with-open [stream (java.nio.file.Files/walk path (make-array java.nio.file.FileVisitOption 0))]
         (->> (iterator-seq (.iterator stream))
              (filter #(java.nio.file.Files/isRegularFile % (make-array java.nio.file.LinkOption 0)))
              (map #(.toString %))

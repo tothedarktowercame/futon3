@@ -41,6 +41,9 @@ err()  { printf "%b\n" "${RED}$*${RESET}" >&2; }
 #   FUTON3_CODEX_DRAWBRIDGE=0 - disable Codex drawbridge (enabled by default on laptop)
 #   FUTON3_CODEX_SESSION_ID   - optional Codex resume id for drawbridge
 #   FUTON3_CODEX_AGENT_ID     - agent id for Codex drawbridge (default: codex)
+#   FUTON3_CLAUDE_DRAWBRIDGE=0 - disable Claude drawbridge (enabled by default)
+#   FUTON3_CLAUDE_SESSION_ID  - optional Claude resume id for drawbridge
+#   FUTON3_CLAUDE_AGENT_ID    - agent id for Claude drawbridge (default: claude)
 #   FUTON3_MUSN_PAGE=0        - disable MUSN chat -> Agency page bridge (enabled by default)
 #   --musn-page-room ROOM     - override MUSN_PAGE_ROOM
 #   --musn-page-agent ID      - override MUSN_PAGE_AGENT
@@ -117,6 +120,7 @@ set -- "${dev_args[@]}"
 # Enable Drawbridge by default for dev (hot-reloading on port 6767)
 export FUTON3_DRAWBRIDGE="${FUTON3_DRAWBRIDGE:-1}"
 export FUTON3_CODEX_DRAWBRIDGE="${FUTON3_CODEX_DRAWBRIDGE:-1}"
+export FUTON3_CLAUDE_DRAWBRIDGE="${FUTON3_CLAUDE_DRAWBRIDGE:-1}"
 
 # Load ADMIN_TOKEN from .admintoken if not already set (required for Drawbridge)
 if [[ -z "${ADMIN_TOKEN:-}" && -f .admintoken ]]; then
@@ -151,6 +155,7 @@ port_open() {
 }
 
 codex_drawbridge_pid=""
+claude_drawbridge_pid=""
 musn_page_pid=""
 futon1a_pid=""
 # Agency now runs inside MUSN JVM (see f2.musn/start-agency!)
@@ -159,6 +164,9 @@ futon1a_pid=""
 cleanup() {
   if [[ -n "${codex_drawbridge_pid}" ]]; then
     kill "${codex_drawbridge_pid}" >/dev/null 2>&1 || true
+  fi
+  if [[ -n "${claude_drawbridge_pid}" ]]; then
+    kill "${claude_drawbridge_pid}" >/dev/null 2>&1 || true
   fi
   if [[ -n "${musn_page_pid}" ]]; then
     kill "${musn_page_pid}" >/dev/null 2>&1 || true
@@ -212,6 +220,31 @@ EOF
     chmod +x /tmp/codex-drawbridge.sh
     setsid /tmp/codex-drawbridge.sh >/tmp/codex-drawbridge.log 2>&1 </dev/null &
     codex_drawbridge_pid="$!"
+  fi
+fi
+
+if [[ "${FUTON3_CLAUDE_DRAWBRIDGE:-1}" != "0" ]]; then
+  if port_open 6768; then
+    warn "[dev] Claude drawbridge already running on port 6768."
+  else
+    info "[dev] Starting Claude drawbridge on ports 6768/6770..."
+    cat > /tmp/claude-drawbridge.sh <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+cd /home/joe/code/futon3
+resume_id="${FUTON3_CLAUDE_SESSION_ID:-}"
+agent_id="${FUTON3_CLAUDE_AGENT_ID:-claude}"
+if [[ -n "${resume_id}" ]]; then
+  resume_form=":resume-id \"${resume_id}\""
+else
+  resume_form=""
+fi
+expr='(require (quote futon3.drawbridge.claude)) (futon3.drawbridge.claude/start! {:http-port 6768 :ws-port 6770 :agent-id "'"${agent_id}"'" '"${resume_form}"' :agency-ws-url "ws://localhost:7070/agency/ws?agent-id='"${agent_id}"'" :register-local? false}) (Thread/sleep 1000000000)'
+exec clojure -M -e "${expr}"
+EOF
+    chmod +x /tmp/claude-drawbridge.sh
+    setsid /tmp/claude-drawbridge.sh >/tmp/claude-drawbridge.log 2>&1 </dev/null &
+    claude_drawbridge_pid="$!"
   fi
 fi
 

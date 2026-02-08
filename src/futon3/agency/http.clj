@@ -754,23 +754,34 @@
 ;; =============================================================================
 
 (defn- handle-standup
-  "Start a rendezvous-based standup. Bells all agents with standup info,
-   returns immediately with a rendezvous-id for status polling.
+  "Start a rendezvous-based standup. Bells all agents to join an IRC room
+   for a real-time co-present conversation.
+
+   A standup is NOT a broadcast — it's a time-boxed conversation where all
+   participants are co-present in the same IRC room, share updates, ask
+   questions, and respond to each other in real time.
 
    Each agent independently:
-   1. Acks the bell (proves reception)
-   2. Generates its own standup update
-   3. Posts to MUSN room as itself (self-attribution)
+   1. Acks the bell (proves reception / rendezvous handshake)
+   2. Joins the IRC room
+   3. Participates in the conversation for the duration
+   4. Carries the conversation forward in their own context
+
+   The human joins via ERC (fubar-agency.el handles the bell by joining the room).
 
    Request body:
-     :prompt      - Standup prompt (default: status check-in)
+     :prompt      - Opening prompt for agents (default: status check-in)
      :deadline-ms - Ack deadline in ms (default: 120000 = 2 min)
      :agents      - Optional list of agent-ids (default: all connected)
-     :room        - MUSN/IRC room name (default: \"standup\")"
+     :room        - IRC room name (default: \"standup\")
+     :irc-host    - IRC server host for agents to connect to (default: localhost)
+     :irc-port    - IRC server port (default: 6667)"
   [body]
   (let [room (or (:room body) "standup")
-        prompt (or (:prompt body) "Standup: What are you working on? Any blockers? 2-3 sentences.")
+        prompt (or (:prompt body) "Standup: Share what you're working on, any blockers, and what's next. Keep it concise.")
         deadline-ms (or (:deadline-ms body) 120000)
+        irc-host (or (:irc-host body) "localhost")
+        irc-port (or (:irc-port body) 6667)
         agent-ids (or (:agents body) (connected-agent-ids))
         ;; Create the rendezvous
         secret-result (handle-create-secret {:ttl-ms (+ deadline-ms 60000)})
@@ -787,22 +798,26 @@
         (future
           (Thread/sleep (+ deadline-ms 120000))
           (swap! rendezvous-state dissoc secret-id))
-        ;; Bell all agents with rendezvous info
+        ;; Bell all agents with standup info (IRC connection details + prompt)
         (let [bell-msg {:type "bell"
                         :bell-type "standup"
                         :secret-id secret-id
                         :payload {:room room :prompt prompt
-                                  :musn-url musn-url
+                                  :irc-host irc-host :irc-port irc-port
                                   :deadline-ms deadline-ms}}
               results (mapv (fn [aid]
                               {:agent-id aid :sent (send-to-agent! aid bell-msg)})
                             agent-ids)]
-          ;; Post announcement to MUSN as "agency"
-          (future (post-to-musn-room! room "agency" "Standup started. Awaiting check-ins."))
+          ;; Post announcement to MUSN/IRC as "agency"
+          (future (post-to-musn-room! room "agency"
+                    (format "Standup started (%ds). All participants: join #%s."
+                            (/ deadline-ms 1000) room)))
           {:ok true
            :rendezvous-id secret-id
            :secret-value (:value secret-result)
            :room room
+           :irc-host irc-host
+           :irc-port irc-port
            :deadline-ms deadline-ms
            :agents results})))))
 

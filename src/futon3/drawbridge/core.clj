@@ -450,38 +450,37 @@
           (println "[drawbridge] test-bell ack failed:" (.getMessage e)))))))
 
 (defn- handle-standup-bell!
-  "Handle a standup bell: ack, invoke agent, post result to MUSN as self."
+  "Handle a standup bell: ack, join IRC room, participate in real-time conversation.
+
+   A standup is a co-present conversation, not a broadcast. The agent:
+   1. Acks the bell (proves reception / rendezvous handshake)
+   2. Joins the IRC room specified in the bell payload
+   3. Sends an opening prompt to the agent subprocess (which responds via IRC)
+   4. Stays in the room for the duration — the IRC reader loop handles
+      ongoing conversation automatically (other participants' messages
+      are fed to the subprocess as inputs, responses go back to IRC)."
   [{:keys [secret-id payload]}]
-  (let [base (or (:agency-http-url @agent-state)
-                 (agency-http-base-from-ws (:url @agency-ws-state)))
-        musn-url (or (:musn-url payload) "http://localhost:6065")
+  (let [irc-host (or (:irc-host payload) "localhost")
+        irc-port (or (:irc-port payload) 6667)
         room (or (:room payload) "standup")
-        prompt (or (:prompt payload) "Standup: What are you working on?")
+        prompt (or (:prompt payload)
+                   "Standup: Share what you're working on, any blockers, and what's next. Keep it concise.")
         agent-id (:agent-id @agent-state)]
     ;; Step 1: Ack the bell (proves reception)
     (ack-test-bell! {:secret-id secret-id})
-    ;; Step 2: Invoke agent for standup update
-    (when-let [invoke-fn (:invoke-fn @agent-state)]
+    ;; Step 2: Join IRC (if not already in the room)
+    (when-not (irc-connected?)
       (try
-        (let [session-id (:session-id @agent-state)
-              result-map (invoke-fn prompt session-id)
-              result (:result result-map)
-              new-session-id (:session-id result-map)]
-          (when new-session-id
-            (swap! agent-state assoc :session-id new-session-id))
-          ;; Step 3: Post to MUSN as self
-          (when (and result (not (str/blank? result)))
-            (println (format "[drawbridge] Standup: posting to #%s as %s (%d chars)"
-                             room agent-id (count result)))
-            (httpc/post (str musn-url "/musn/chat/message")
-              {:content-type :json
-               :throw-exceptions false
-               :body (json/encode {:room room
-                                   :msg-id (str (java.util.UUID/randomUUID))
-                                   :author {:id agent-id :name agent-id}
-                                   :text result})})))
+        (connect-irc! {:host irc-host :port irc-port
+                       :nick agent-id :room room})
+        (println (format "[drawbridge] Standup: joined #%s on %s:%d as %s"
+                         room irc-host irc-port agent-id))
         (catch Exception e
-          (println (format "[drawbridge] Standup error: %s" (.getMessage e))))))))
+          (println (format "[drawbridge] Standup: IRC connect failed: %s" (.getMessage e))))))
+    ;; Step 3: Send opening prompt — the subprocess generates its update,
+    ;; which flows to IRC via send-to-irc!. The IRC reader loop then handles
+    ;; the ongoing conversation (other messages → subprocess → IRC responses).
+    (future (send-input! prompt))))
 
 (defn- handle-par-bell!
   "Handle a PAR bell by spawning a local peripheral to contribute to the PAR.

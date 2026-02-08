@@ -56,7 +56,11 @@ Even basic integration tests (create thread, post, subscribe via WS, receive) wo
 
 20k LOC across 3 files, no tests, prototype status since Dec-Jan. Either: (a) commit to it — add tests, integrate with futon1, (b) extract what's useful and archive the rest. Currently the largest untested surface in the repo.
 
-### 5. Scripts Consolidation
+### 5. Multi-Agency Registration
+
+The architecture diagram (`docs/agency.mm`) shows drawbridges connecting to both local and remote Agency instances. Currently Drawbridge only supports a single `agency-ws-url`. Needs: either (a) multi-URL support in Drawbridge so agents register with multiple Agencies simultaneously, or (b) Agency-to-Agency federation so agents register locally and their Agency forwards to peers. The choice affects how standup and bells work across laptop/server boundary. Discovered during Phase 3 validation: Codex drawbridge on laptop only connects to laptop Agency, not Linode Agency, so cross-host standup doesn't work.
+
+### 6. Scripts Consolidation
 
 Document canonical versions of duplicated tooling. Add a tooling matrix to README or a new doc. Remove orphaned scripts.
 

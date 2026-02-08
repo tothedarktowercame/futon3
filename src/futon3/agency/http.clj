@@ -364,32 +364,54 @@
 
 (defn- ws-send! [channel msg]
   (when (http/open? channel)
-    (http/send! channel (json/generate-string msg))))
+    (http/send! channel (json/generate-string msg))
+    true))
 
 (defn send-to-agent!
-  "Send a message to a connected agent. Returns true if sent, false if not connected.
-   Checks local handlers first, then WebSocket connections."
+  "Send a message to a connected agent.
+
+  A0: always return an explicit receipt map.
+  - Success: {:ok true ...}
+  - Failure: {:ok false :err ... :agent-id ...}
+
+  Checks local handlers first, then WebSocket connections."
   [agent-id msg]
   (let [aid (name agent-id)]
     (if-let [handler (get @local-handlers aid)]
       ;; Local handler (in-JVM, like Drawbridge)
-      (do
-        (try
-          (handler msg)
-          (log! "local-send" {:agent-id agent-id :type (:type msg)})
-          true
-          (catch Exception e
-            (log! "local-send-error" {:agent-id agent-id :error (.getMessage e)})
-            false)))
+      (try
+        (handler msg)
+        (log! "local-send" {:agent-id agent-id :type (:type msg)})
+        {:ok true
+         :agent-id aid
+         :transport :local-handler}
+        (catch Exception e
+          (log! "local-send-error" {:agent-id agent-id :error (.getMessage e)})
+          {:ok false
+           :agent-id aid
+           :transport :local-handler
+           :err "local handler send failed"
+           :error (.getMessage e)}))
       ;; WebSocket connection
       (if-let [entry (get @connected-agents aid)]
-        (do
-          (ws-send! (:channel entry) msg)
-          (log! "ws-send" {:agent-id agent-id :type (:type msg)})
-          true)
+        (let [channel (:channel entry)]
+          (if (ws-send! channel msg)
+            (do
+              (log! "ws-send" {:agent-id agent-id :type (:type msg)})
+              {:ok true
+               :agent-id aid
+               :transport :websocket})
+            (do
+              (log! "ws-send-failed" {:agent-id agent-id :reason "ws-not-open"})
+              {:ok false
+               :agent-id aid
+               :transport :websocket
+               :err "websocket not open"})))
         (do
           (log! "ws-send-failed" {:agent-id agent-id :reason "not-connected"})
-          false)))))
+          {:ok false
+           :agent-id aid
+           :err "agent not connected"})))))
 
 (defn connected-agent-ids
   "Return list of currently connected agent IDs (registry + local handlers + WebSocket)."
@@ -494,15 +516,19 @@
     (if (= agent-id "all")
       ;; Ring all connected agents
       (let [agents (connected-agent-ids)
-            results (mapv (fn [aid] {:agent-id aid :sent (send-to-agent! aid bell-msg)}) agents)]
+            results (mapv (fn [aid]
+                            (let [r (send-to-agent! aid bell-msg)]
+                              {:agent-id aid :sent (:ok r) :receipt r}))
+                          agents)]
         {:ok true :bell bell-msg :agents results :secret-value (:value secret-result)})
       ;; Ring specific agent
-      (let [sent (send-to-agent! agent-id bell-msg)]
-        {:ok sent
+      (let [r (send-to-agent! agent-id bell-msg)]
+        {:ok (:ok r)
          :bell bell-msg
          :agent-id agent-id
          :secret-value (:value secret-result)
-         :error (when-not sent "agent not connected")}))))
+         :error (when-not (:ok r) (:err r))
+         :receipt r}))))
 
 ;; =============================================================================
 ;; Whistle endpoint - synchronous request to connected agent
@@ -570,15 +596,18 @@
           (when (get @pending-whistles request-id)
             (swap! pending-whistles dissoc request-id)
             (log! "whistle-timeout-cleanup" {:request-id request-id})))
-        (let [sent (send-to-agent! agent-id whistle-msg)]
-          (if-not sent
+        (let [send-resp (send-to-agent! agent-id whistle-msg)]
+          (if-not (:ok send-resp)
             (do
               (swap! pending-whistles dissoc request-id)
-              {:ok false :err "failed to send whistle to agent"})
+              {:ok false
+               :err (or (:err send-resp) "failed to send whistle to agent")
+               :agent-id aid
+               :receipt send-resp})
             (let [result (deref response-promise timeout-ms :timeout)]
               (swap! pending-whistles dissoc request-id)
               (if (= result :timeout)
-                {:ok false :err "timeout waiting for agent response" :request-id request-id}
+                {:ok false :err "timeout waiting for agent response" :request-id request-id :agent-id aid}
                 {:ok true :response result :request-id request-id :source :local-handler})))))
 
       ;; Priority 3: Check WebSocket connected agents
@@ -599,19 +628,22 @@
           (when (get @pending-whistles request-id)
             (swap! pending-whistles dissoc request-id)
             (log! "whistle-timeout-cleanup" {:request-id request-id})))
-        (let [sent (send-to-agent! agent-id whistle-msg)]
-          (if-not sent
+        (let [send-resp (send-to-agent! agent-id whistle-msg)]
+          (if-not (:ok send-resp)
             (do
               (swap! pending-whistles dissoc request-id)
-              {:ok false :err "failed to send whistle to agent"})
+              {:ok false
+               :err (or (:err send-resp) "failed to send whistle to agent")
+               :agent-id aid
+               :receipt send-resp})
             (let [result (deref response-promise timeout-ms :timeout)]
               (swap! pending-whistles dissoc request-id)
               (if (= result :timeout)
-                {:ok false :err "timeout waiting for agent response" :request-id request-id}
+                {:ok false :err "timeout waiting for agent response" :request-id request-id :agent-id aid}
                 {:ok true :response result :request-id request-id :source :websocket})))))
 
       :else
-      {:ok false :err "agent not connected"})))
+      {:ok false :err "agent not connected" :agent-id aid})))
 
 ;; =============================================================================
 ;; MUSN chat posting (for IRC bridge integration)

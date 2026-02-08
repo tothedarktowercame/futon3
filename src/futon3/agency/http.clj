@@ -13,7 +13,8 @@
 (declare handle-agency-ws connected-agent-ids local-agent-ids remote-agent-ids agent-sessions kick-agent!
          handle-get-secret handle-create-secret
          handle-ack handle-ack-status handle-ring-bell
-         handle-whistle handle-whistle-response)
+         handle-whistle handle-whistle-response
+         handle-standup)
 
 (defn- log! [msg & [ctx]]
   (try
@@ -173,6 +174,10 @@
         ;; "Bells and whistles" - bell is async, whistle is sync
         (or (= uri "/agency/whistle") (= uri "/agency/page"))
         (json-response (handle-whistle (parse-json-body req)))
+
+        ;; Timed standup - whistle all agents, collect responses
+        (= uri "/agency/standup")
+        (json-response (handle-standup (parse-json-body req)))
 
         ;; Spawn CLI process (exec is alias for run)
         (= uri "/agency/exec")
@@ -528,6 +533,68 @@
 
       :else
       {:ok false :err "agent not connected"})))
+
+;; =============================================================================
+;; Standup endpoint - timed multi-agent check-in
+;; =============================================================================
+
+(def ^:private default-standup-timeout-ms
+  (or (some-> (System/getenv "AGENCY_STANDUP_TIMEOUT_MS") Long/parseLong)
+      120000)) ; 2 minutes default
+
+(defn- handle-standup
+  "Run a timed standup. Whistles all connected agents in parallel,
+   collects responses within the time limit.
+
+   Request body:
+     :prompt     - Question to ask each agent (default: status check-in)
+     :timeout-ms - Total standup duration in ms (default: 120000 = 2 min)
+     :agents     - Optional list of agent-ids (default: all connected)"
+  [body]
+  (let [timeout-ms (or (:timeout-ms body) default-standup-timeout-ms)
+        prompt (or (:prompt body) "Standup check-in: What are you working on? Any blockers? Keep it to 2-3 sentences.")
+        agent-ids (or (:agents body) (connected-agent-ids))
+        start-time (System/currentTimeMillis)
+        per-agent-timeout (max 10000 (- timeout-ms 2000))]
+    (if (empty? agent-ids)
+      {:ok false :err "no agents connected"}
+      (let [;; Whistle all agents in parallel
+            futures (into {}
+                         (map (fn [aid]
+                                [aid (future
+                                       (try
+                                         (let [result (handle-whistle {:agent-id aid
+                                                                       :prompt prompt
+                                                                       :timeout-ms per-agent-timeout})]
+                                           (if (:ok result)
+                                             {:status :responded
+                                              :response (or (get-in result [:response :result])
+                                                            (:response result))
+                                              :source (:source result)}
+                                             {:status :error :error (:err result)}))
+                                         (catch Exception e
+                                           {:status :error :error (.getMessage e)})))]))
+                         agent-ids)
+            ;; Collect responses, respecting overall timeout
+            responses (into {}
+                            (map (fn [[aid fut]]
+                                   (let [remaining (- timeout-ms (- (System/currentTimeMillis) start-time))
+                                         result (if (pos? remaining)
+                                                  (deref fut remaining {:status :timeout})
+                                                  {:status :timeout})]
+                                     [aid result])))
+                            futures)
+            elapsed-ms (- (System/currentTimeMillis) start-time)
+            responded (count (filter #(= :responded (:status (val %))) responses))
+            timed-out (count (filter #(= :timeout (:status (val %))) responses))]
+        {:ok true
+         :standup {:prompt prompt
+                   :agents (count agent-ids)
+                   :responded responded
+                   :timed-out timed-out
+                   :elapsed-ms elapsed-ms
+                   :timeout-ms timeout-ms}
+         :responses responses}))))
 
 (defonce ^:private server-state (atom nil))
 

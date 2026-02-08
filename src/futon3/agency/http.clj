@@ -15,7 +15,7 @@
 (declare handle-agency-ws connected-agent-ids local-agent-ids remote-agent-ids agent-sessions kick-agent!
          handle-get-secret handle-create-secret
          handle-ack handle-ack-status handle-ring-bell
-         handle-whistle handle-whistle-response
+         handle-whistle handle-whistle-response pending-whistles
          handle-standup handle-rendezvous-status)
 
 (defn- log! [msg & [ctx]]
@@ -206,6 +206,7 @@
 ;; Secret storage for test-bell-ack peripheral
 (defonce ^:private secrets (atom {}))
 (defonce ^:private acks (atom {}))
+(def ^:private max-acks 10)
 
 ;; Rendezvous state - tracks multi-agent handshake completion
 ;; {secret-id -> {:room :prompt :deadline-ms :expected-agents
@@ -226,8 +227,23 @@
     ;; Schedule cleanup
     (future
       (Thread/sleep ttl-ms)
-      (swap! secrets dissoc secret-id))
+      (swap! secrets dissoc secret-id)
+      ;; Cascade cleanup (A5): receipts and rendezvous state must not leak.
+      (swap! acks dissoc secret-id)
+      (swap! rendezvous-state dissoc secret-id))
     {:ok true :secret-id secret-id :value value}))
+
+(defn- prune-acks
+  "Keep at most `max-acks` acknowledgements by evicting oldest first."
+  [m]
+  (if (<= (count m) max-acks)
+    m
+    (let [sorted-ids (->> m
+                          (sort-by (fn [[_ v]] (long (or (:at-ms v) 0))))
+                          (map first))
+          drop-n (- (count m) max-acks)
+          evict-ids (take drop-n sorted-ids)]
+      (apply dissoc m evict-ids))))
 
 (defn- handle-ack [body]
   (let [{:keys [secret-id value agent-id]} body
@@ -250,8 +266,10 @@
       :else
       (let [ack {:agent-id (some-> agent-id str)
                  :value value
+                 :at-ms (System/currentTimeMillis)
                  :timestamp (str (java.time.Instant/now))}]
-        (swap! acks assoc secret-id ack)
+        ;; A5: acks must remain bounded even under sustained usage.
+        (swap! acks (fn [m] (prune-acks (assoc m secret-id ack))))
         ;; If this secret belongs to a rendezvous, record agent-specific ack
         (when (get @rendezvous-state secret-id)
           (swap! rendezvous-state update-in [secret-id :acks]
@@ -264,8 +282,19 @@
     {:ok false :err "ack not found" :secret-id secret-id}))
 
 (defn- handle-get-secret [secret-id]
-  (if-let [entry (get @secrets secret-id)]
-    {:ok true :value (:value entry)}
+  (if-let [{:keys [value created ttl-ms] :as entry} (get @secrets secret-id)]
+    (let [now (System/currentTimeMillis)
+          ttl-ms (long (or ttl-ms 0))
+          created (long (or created 0))
+          expired? (and (pos? ttl-ms) (>= (- now created) ttl-ms))]
+      (if expired?
+        (do
+          ;; Deterministic expiry on read (A5): do not depend on async cleanup.
+          (swap! secrets dissoc secret-id)
+          (swap! acks dissoc secret-id)
+          (swap! rendezvous-state dissoc secret-id)
+          {:ok false :err "secret expired"})
+        {:ok true :value value}))
     {:ok false :err "secret not found or expired"}))
 
 ;; =============================================================================
@@ -359,6 +388,20 @@
       (when-let [channel (:channel entry)]
         (http/close channel))
       (swap! connected-agents dissoc aid)
+      ;; A5: bounded lifecycle cleanup must cascade on disconnect.
+      (let [entries @pending-whistles
+            req-ids (->> entries
+                         (filter (fn [[_ {:keys [agent-id]}]]
+                                   (= (name (or agent-id "")) aid)))
+                         (map first)
+                         vec)]
+        (doseq [rid req-ids
+                :let [p (get-in entries [rid :promise])]
+                :when p]
+          (deliver p :timeout))
+        (when (seq req-ids)
+          (swap! pending-whistles #(apply dissoc % req-ids))))
+      (swap! local-handlers dissoc aid)
       (log! "agent-kicked" {:agent-id agent-id})
       true)))
 
@@ -497,7 +540,22 @@
       (http/on-close channel
         (fn [_status]
           (log! "ws-disconnect" {:agent-id agent-id})
-          (swap! connected-agents dissoc (name agent-id)))))))
+          (swap! connected-agents dissoc (name agent-id))
+          ;; A5: cascade disconnect cleanup.
+          (let [aid (name agent-id)
+                entries @pending-whistles
+                req-ids (->> entries
+                             (filter (fn [[_ {:keys [agent-id]}]]
+                                       (= (name (or agent-id "")) aid)))
+                             (map first)
+                             vec)]
+            (doseq [rid req-ids
+                    :let [p (get-in entries [rid :promise])]
+                    :when p]
+              (deliver p :timeout))
+            (when (seq req-ids)
+              (swap! pending-whistles #(apply dissoc % req-ids))))
+          (swap! local-handlers dissoc (name agent-id)))))))
 
 ;; =============================================================================
 ;; Bell endpoint - ring connected agents
@@ -589,7 +647,7 @@
                       :timestamp (str (java.time.Instant/now))}]
         (swap! pending-whistles assoc request-id
                {:promise response-promise
-                :agent-id agent-id
+                :agent-id aid
                 :created-at (System/currentTimeMillis)})
         (future
           (Thread/sleep (+ timeout-ms 1000))
@@ -621,7 +679,7 @@
                       :timestamp (str (java.time.Instant/now))}]
         (swap! pending-whistles assoc request-id
                {:promise response-promise
-                :agent-id agent-id
+                :agent-id aid
                 :created-at (System/currentTimeMillis)})
         (future
           (Thread/sleep (+ timeout-ms 1000))

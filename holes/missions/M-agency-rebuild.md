@@ -190,6 +190,28 @@ Passing Agency integration coverage (sanity checks):
 - A2 + identifier separation: make continuity state update rules explicit and enforced (LLM resume IDs only in continuity slots).
 - A3: remove silent catches, return typed errors with layer attribution.
 
+#### Phase 2 Results (2026-02-08)
+
+Phase 2 implementation landed in these commits:
+- A3 loud failure status checks + eliminate catch `_ nil`: `5057c38`
+- A1 enforce single routing authority (cross-store eviction watches): `290b0e9`
+- A0 explicit delivery receipts for `send-to-agent!` + whistle error attribution: `ea73e0a`
+- A5 bounded lifecycle (acks bounded, deterministic secret TTL on read, disconnect cascades): `798481b`
+- A2 atomic state (corruption loud, atomic state writes, continuity non-nil): `67cabf4`
+
+Acceptance results:
+- Agency invariant proof tests are now green:
+  - `test/futon3/agency/invariants/a0_delivery_test.clj`
+  - `test/futon3/agency/invariants/a1_identity_test.clj`
+  - `test/futon3/agency/invariants/a2_atomicity_test.clj`
+  - `test/futon3/agency/invariants/a3_loud_failure_test.clj`
+  - `test/futon3/agency/invariants/a5_bounded_test.clj`
+- Agency integration tests remain green:
+  - `test/futon3/agency/integration_test.clj`
+
+Notes:
+- A full `clj -X:test` run still reports failures/errors outside Agency (golden transcript drift, fulab harness JSON encoding, similarity determinism, library coherence). These are not treated as Agency rebuild blockers unless causally linked.
+
 ### Phase 3: Validation + Evidence (1 day)
 
 - Run a “soak” style test (bounded time) that sends bells/whistles repeatedly and asserts bounded growth and deterministic cleanup.

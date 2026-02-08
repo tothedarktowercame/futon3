@@ -63,12 +63,12 @@
     Current traceability (to be filled as implementation proceeds):
 
     | Invariant | Pattern | Implementation | Test | Evidence |
-    | A0 | agency/delivery-receipt | TBD | test/futon3/agency/invariants/a0_delivery_test.clj | TBD |
-    | A1 | agency/single-routing-authority | TBD | test/futon3/agency/invariants/a1_identity_test.clj | TBD |
-    | A2 | agency/state-atomicity | TBD | test/futon3/agency/invariants/a2_atomicity_test.clj | TBD |
-    | A3 | agency/loud-failure | TBD | test/futon3/agency/invariants/a3_loud_failure_test.clj | TBD |
-    | A4 | (derived from A3) | TBD | test/futon3/agency/invariants/a3_loud_failure_test.clj | TBD |
-    | A5 | agency/bounded-lifecycle | TBD | test/futon3/agency/invariants/a5_bounded_test.clj | TBD |
+    | A0 | agency/delivery-receipt | src/futon3/agency/http.clj: send-to-agent!, handle-ring-bell, handle-whistle | test/futon3/agency/invariants/a0_delivery_test.clj | TBD |
+    | A1 | agency/single-routing-authority | src/futon3/agency/http.clj: enforce-single-routing-authority! (watches over registry/local/ws stores) | test/futon3/agency/invariants/a1_identity_test.clj | TBD |
+    | A2 | agency/state-atomicity | src/futon3/agency/service.clj: load-agent-state, save-agent-state!, update-agent-state!, roll-over-state! | test/futon3/agency/invariants/a2_atomicity_test.clj | TBD |
+    | A3 | agency/loud-failure | src/futon3/agency/service.clj + src/futon3/agency/http.clj: status checks on :throw-exceptions false + elimination of (catch Exception _ nil) sites | test/futon3/agency/invariants/a3_loud_failure_test.clj | TBD |
+    | A4 | (derived from A3) | (derived) A3 enforcement + log context conventions in http/service layers | test/futon3/agency/invariants/a3_loud_failure_test.clj | TBD |
+    | A5 | agency/bounded-lifecycle | src/futon3/agency/http.clj: prune-acks/handle-ack; handle-get-secret TTL; kick-agent!/ws on-close cascades; secret cleanup cascades | test/futon3/agency/invariants/a5_bounded_test.clj | TBD |
 
   + RELATIONSHIP-TO-FUTON1A:
     futon1a defines I0 (persistence), I1 (identity), I2 (integrity), I3 (hierarchy), I4 (debugging).

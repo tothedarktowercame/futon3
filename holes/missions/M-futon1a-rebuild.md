@@ -507,9 +507,10 @@ HTTP status mapping (from I3: Hierarchy):
 
 Unexpected exceptions (non-ExceptionInfo) return `500 {:reason :exception, :message "..."}`.
 
-#### 2.6.6 Read Path (Prototype 1 Gap — To Be Specified)
+#### 2.6.6 Read Path (Prototype 1 Requirement)
 
-The current API has no read endpoints. Prototype 1 must add at minimum:
+Prototype 1 requires a minimal read surface for restart-cycle verification.
+The current API read surface is incomplete. Prototype 1 must include at minimum:
 
 | Method | Path | Purpose |
 |--------|------|---------|
@@ -527,6 +528,30 @@ When routes are served over HTTP, the system must inject:
 - Health checks bound to real XTDB node status
 
 This is the job of `system.clj` (see Prototype 1 Gate).
+
+#### 2.6.8 Futon1 Compatibility Surface (Required by futon3)
+
+futon3 currently depends on a small Futon1-shaped JSON surface for bridging
+writes (workday/check artifacts, and lab session persistence). This compatibility
+surface is real product behavior and must be specified (not left as ungrounded
+code).
+
+Endpoints (JSON):
+- `GET /healthz` → health probe alias (parity with existing callers)
+- `POST /entity` and `POST /api/alpha/entity` → Futon1-shaped entity upsert (compat write)
+  required keys: `name`, `type`; optional: `external-id`, `notes`, `payload`
+- `POST /relation` and `POST /api/alpha/relation` → Futon1-shaped relation upsert (compat write)
+  required keys: `type`, `src`, `dst`; optional: `external-id`, `notes`, `payload`
+- `POST /api/alpha/lab/session` → lab session checkpoint save (compat write)
+  required keys: `lab/session-id` or `session/id` (plus lab payload)
+- `GET /api/alpha/lab/session/:id` → lab session fetch by id (compat read)
+
+Stop-the-line gap:
+- `GET /entity?source=S&external-id=E` is specified in 2.6.6 but not yet implemented.
+
+Invariant note (review item):
+- The compat endpoints must conform to I3 (strict layer hierarchy) error shapes.
+  In particular, they must not introduce ad-hoc exception-to-response mappings.
 
 ### 2.7 What's Different from futon1
 

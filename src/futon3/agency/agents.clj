@@ -57,6 +57,8 @@
          :invoke-fn invoke-fn
          :session-id session-id
          :subprocess (:process subprocess)
+         ;; Wire cleanup-fn to stop-claude-subprocess! (fix #4)
+         :cleanup-fn (fn [] (invokes/stop-claude-subprocess! subprocess))
          :metadata (merge {:registered-via :register-claude!
                            :subprocess-state subprocess}
                           metadata)})

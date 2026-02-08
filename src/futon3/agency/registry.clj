@@ -13,8 +13,8 @@
    - Session-tracked: Session-ids updated atomically with responses
 
    See: M-agency-unified-routing.md"
-  (:require [clojure.string :as str])
-  (:import [java.time Instant]))
+  (:import [java.time Instant]
+           [java.util.concurrent TimeUnit]))
 
 ;; =============================================================================
 ;; Agent Registry
@@ -64,42 +64,70 @@
      :invoke-fn  - Required. Function (fn [prompt session-id] -> result-map)
      :session-id - Optional. Initial session ID to resume.
      :subprocess - Optional. Process handle for persistent subprocess (Claude).
+     :cleanup-fn - Optional. Function to call on unregister (for subprocess cleanup).
      :metadata   - Optional. Arbitrary metadata map.
 
+   If an agent with the same ID exists, it will be unregistered first (with cleanup).
    Returns the registered agent record."
-  [{:keys [agent-id type invoke-fn session-id subprocess metadata]
-    :as opts}]
+  [{:keys [agent-id type invoke-fn session-id subprocess cleanup-fn metadata]}]
   {:pre [(some? agent-id)
          (#{:claude :codex} type)
          (fn? invoke-fn)]}
-  (let [now (Instant/now)
-        agent-record {:agent-id (name agent-id)
-                      :type type
-                      :invoke-fn invoke-fn
-                      :session-id session-id
-                      :registered-at now
-                      :last-active now
-                      :subprocess subprocess
-                      :metadata (or metadata {})}]
-    (swap! agent-registry assoc (name agent-id) agent-record)
-    (println (format "[registry] Agent registered: %s (type=%s, session=%s)"
-                     agent-id (name type) session-id))
-    agent-record))
+  (let [aid (name agent-id)
+        now (Instant/now)]
+    ;; Clean up existing agent if present (fix #5: guard against overwrite without cleanup)
+    (when-let [existing (get @agent-registry aid)]
+      (println (format "[registry] Replacing existing agent: %s" aid))
+      (when-let [cleanup (:cleanup-fn existing)]
+        (try (cleanup) (catch Exception e
+                         (println (format "[registry] Cleanup error: %s" (.getMessage e))))))
+      (when-let [proc (:subprocess existing)]
+        (try
+          (.destroy ^Process proc)
+          (.waitFor ^Process proc 5 TimeUnit/SECONDS)
+          (when (.isAlive ^Process proc)
+            (.destroyForcibly ^Process proc))
+          (catch Exception e
+            (println (format "[registry] Subprocess cleanup error: %s" (.getMessage e)))))))
+    (let [agent-record {:agent-id aid
+                        :type type
+                        :invoke-fn invoke-fn
+                        :session-id session-id
+                        :registered-at now
+                        :last-active now
+                        :subprocess subprocess
+                        :cleanup-fn cleanup-fn
+                        :metadata (or metadata {})}]
+      (swap! agent-registry assoc aid agent-record)
+      (println (format "[registry] Agent registered: %s (type=%s, session=%s)"
+                       agent-id (name type) session-id))
+      agent-record)))
 
 (defn unregister-agent!
   "Unregister an agent and clean up resources.
 
-   For Claude agents with subprocess, attempts graceful shutdown.
+   Calls cleanup-fn if provided, then stops subprocess with proper shutdown sequence.
    Returns true if agent was registered, false otherwise."
   [agent-id]
   (let [aid (name agent-id)]
     (if-let [agent (get @agent-registry aid)]
       (do
-        ;; Clean up subprocess if present (Claude)
+        ;; Call cleanup-fn first (fix #4: use richer cleanup)
+        (when-let [cleanup (:cleanup-fn agent)]
+          (println (format "[registry] Running cleanup for %s" aid))
+          (try
+            (cleanup)
+            (catch Exception e
+              (println (format "[registry] Cleanup error: %s" (.getMessage e))))))
+        ;; Stop subprocess with proper shutdown sequence
         (when-let [proc (:subprocess agent)]
           (println (format "[registry] Stopping subprocess for %s" aid))
           (try
             (.destroy ^Process proc)
+            (.waitFor ^Process proc 5 TimeUnit/SECONDS)
+            (when (.isAlive ^Process proc)
+              (println (format "[registry] Force-killing subprocess for %s" aid))
+              (.destroyForcibly ^Process proc))
             (catch Exception e
               (println (format "[registry] Error stopping subprocess: %s" (.getMessage e))))))
         ;; Remove from registry
@@ -135,29 +163,45 @@
    Looks up the agent in the registry, calls its invoke-fn, updates
    session-id and last-active atomically.
 
+   Options:
+     timeout-ms - Optional timeout in milliseconds (default: no timeout)
+
    Returns:
      {:ok true :result ... :session-id ...} on success
      {:ok false :error ...} on failure"
-  [agent-id prompt]
-  (let [aid (name agent-id)]
-    (if-let [agent (get @agent-registry aid)]
-      (let [invoke-fn (:invoke-fn agent)
-            current-session (:session-id agent)]
-        (try
-          (println (format "[registry] Invoking %s (session=%s, prompt=%.50s...)"
-                           aid current-session prompt))
-          (let [{:keys [result session-id exit-code error]} (invoke-fn prompt current-session)]
-            ;; Update session-id and last-active atomically
-            (swap! agent-registry update aid merge
-                   {:session-id (or session-id current-session)
-                    :last-active (Instant/now)})
-            (if error
-              {:ok false :error error :exit-code exit-code}
-              {:ok true :result result :session-id session-id}))
-          (catch Exception e
-            (println (format "[registry] Invoke error for %s: %s" aid (.getMessage e)))
-            {:ok false :error (.getMessage e)})))
-      {:ok false :error (str "Agent not registered: " aid)})))
+  ([agent-id prompt] (invoke-agent! agent-id prompt nil))
+  ([agent-id prompt timeout-ms]
+   (let [aid (name agent-id)]
+     (if-let [agent (get @agent-registry aid)]
+       (let [invoke-fn (:invoke-fn agent)
+             current-session (:session-id agent)]
+         (try
+           (println (format "[registry] Invoking %s (session=%s, prompt=%.50s...)"
+                            aid current-session prompt))
+           (let [;; Run invoke in a future if timeout specified (fix #1: timeout enforcement)
+                 invoke-future (future (invoke-fn prompt current-session))
+                 {:keys [result session-id exit-code error]}
+                 (if timeout-ms
+                   (deref invoke-future timeout-ms {:error "timeout" :exit-code -1})
+                   @invoke-future)
+                 effective-session (or session-id current-session)]
+             ;; Fix #2: Only update if agent still exists with full record
+             (swap! agent-registry
+                    (fn [reg]
+                      (if (and (contains? reg aid)
+                               (:invoke-fn (get reg aid)))
+                        (update reg aid assoc
+                                :session-id effective-session
+                                :last-active (Instant/now))
+                        reg)))
+             (if error
+               {:ok false :error error :exit-code exit-code}
+               ;; Fix #6: Return effective session-id, not just new one
+               {:ok true :result result :session-id effective-session}))
+           (catch Exception e
+             (println (format "[registry] Invoke error for %s: %s" aid (.getMessage e)))
+             {:ok false :error (.getMessage e)})))
+       {:ok false :error (str "Agent not registered: " aid)}))))
 
 ;; =============================================================================
 ;; Introspection

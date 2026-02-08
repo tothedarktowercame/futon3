@@ -16,6 +16,18 @@
   (:import [java.util.concurrent LinkedBlockingQueue TimeUnit]))
 
 ;; =============================================================================
+;; Binary paths (configurable via env vars, fix #3)
+;; =============================================================================
+
+(def ^:private codex-bin
+  "Codex binary path. Override with AGENCY_CODEX_BIN env var."
+  (or (System/getenv "AGENCY_CODEX_BIN") "codex"))
+
+(def ^:private claude-bin
+  "Claude binary path. Override with AGENCY_CLAUDE_BIN env var."
+  (or (System/getenv "AGENCY_CLAUDE_BIN") "claude"))
+
+;; =============================================================================
 ;; Codex Invocation (one-shot exec)
 ;; Extracted from drawbridge/codex.clj with improvements from f24b55a
 ;; =============================================================================
@@ -29,12 +41,14 @@
    - --full-auto for autonomous operation (no approval prompts)
    - codex exec resume <session-id> for session continuity
 
+   Binary path configurable via AGENCY_CODEX_BIN env var.
+
    NOTE: We pass the prompt via stdin (`-`), not argv, to avoid shell quoting
    hazards and length limits (from f24b55a)."
   [text session-id]
   (let [base-cmd (if session-id
-                   ["codex" "exec" "resume" session-id]
-                   ["codex" "exec"])
+                   [codex-bin "exec" "resume" session-id]
+                   [codex-bin "exec"])
         cmd (into base-cmd ["--json" "--full-auto" "-"])
         _ (println (format "[invoke-codex] Executing: codex exec%s (prompt: %.50s...)"
                            (if session-id (str " resume " session-id) "")
@@ -116,9 +130,10 @@
 (defn start-claude-subprocess!
   "Start a persistent Claude subprocess with streaming JSON I/O.
 
+   Binary path configurable via AGENCY_CLAUDE_BIN env var.
    Returns {:process :stdin :stdout :queue :reader-thread} or nil on failure."
   [session-id]
-  (let [cmd (cond-> ["claude"
+  (let [cmd (cond-> [claude-bin
                      "--input-format" "stream-json"
                      "--output-format" "stream-json"
                      "--permission-mode" "bypassPermissions"

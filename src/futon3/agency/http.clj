@@ -461,7 +461,7 @@
 
       ;; Priority 1: Check agent-registry for direct invocation (M-agency-unified-routing)
       (reg/agent-registered? aid)
-      (let [{:keys [ok result error session-id]} (reg/invoke-agent! aid prompt)]
+      (let [{:keys [ok result error session-id]} (reg/invoke-agent! aid prompt timeout-ms)]
         (if ok
           {:ok true :response result :session-id session-id :source :registry}
           {:ok false :err (or error "invoke failed") :source :registry}))

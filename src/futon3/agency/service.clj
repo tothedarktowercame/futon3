@@ -70,13 +70,13 @@
 (defn- load-agent-state [agent-id]
   (let [path (state-path agent-id)]
     (when (.exists path)
-      (try
-        (edn/read-string (slurp path))
-        (catch Exception _e nil)))))
+      ;; A2: do not silently swallow corruption; let the parse error surface.
+      (edn/read-string (slurp path)))))
 
 (defn- default-agent-state [agent-id]
   {:agent/id (name agent-id)
-   :agent/current-thread-id nil
+   ;; A2: continuity id must never be nil; blank means "no active thread yet".
+   :agent/current-thread-id ""
    :agent/ancestor-chain []
    :agent/state-capsule {}
    :agent/summary ""
@@ -98,12 +98,32 @@
 (defn- save-agent-state! [agent-id state]
   (let [path (state-path agent-id)]
     (io/make-parents path)
-    (spit path (pr-str state)))
+    ;; A2: atomic write: temp + fsync + rename/move.
+    (let [dir (.getParentFile ^java.io.File path)
+          tmp (io/file dir (str (.getName ^java.io.File path) ".tmp." (System/nanoTime)))
+          text (pr-str state)]
+      (with-open [out (java.io.FileOutputStream. ^java.io.File tmp)
+                  w (java.io.OutputStreamWriter. out "UTF-8")]
+        (.write ^java.io.Writer w text)
+        (.flush ^java.io.Writer w)
+        (.sync (.getFD ^java.io.FileOutputStream out)))
+      (java.nio.file.Files/move
+       (.toPath ^java.io.File tmp)
+       (.toPath ^java.io.File path)
+       (into-array java.nio.file.CopyOption
+                   [java.nio.file.StandardCopyOption/ATOMIC_MOVE
+                    java.nio.file.StandardCopyOption/REPLACE_EXISTING]))))
   state)
 
 (defn- update-agent-state! [agent-id f & args]
   (let [agent-id (name agent-id)]
-    (let [next-state (apply f (ensure-agent-state! agent-id) args)]
+    (let [prev (ensure-agent-state! agent-id)
+          next-state (apply f prev args)
+          ;; A2: continuity slot may never be nil; preserve previous or use blank.
+          next-state (if (nil? (:agent/current-thread-id next-state))
+                       (assoc next-state :agent/current-thread-id
+                              (or (:agent/current-thread-id prev) ""))
+                       next-state)]
       (swap! !state assoc agent-id next-state)
       (save-agent-state! agent-id next-state))))
 
@@ -598,13 +618,13 @@
             (update-summary! agent-id state reason))
         current-thread (:agent/current-thread-id (ensure-agent-state! agent-id))
         next-chain (cond-> (vec (or (:agent/ancestor-chain state) []))
-                     current-thread (conj current-thread))]
+                     (seq (str/trim (or current-thread ""))) (conj current-thread))]
     (update-agent-state!
      agent-id
      (fn [st]
        (-> st
            (assoc :agent/ancestor-chain next-chain
-                  :agent/current-thread-id nil
+                  :agent/current-thread-id ""
                   :agent/recent-messages []
                   :agent/rollover-required false
                   :agent/rollover-reason nil
@@ -712,7 +732,7 @@
                                                   :prompt retry-prompt
                                                   :resume-id (:agent/current-thread-id state)))]
                (if (:ok retry-result)
-                 (let [next-thread (or (:thread-id retry-result) (:agent/current-thread-id state))]
+                 (let [next-thread (or (:thread-id retry-result) (:agent/current-thread-id state) "")]
                    (update-agent-state!
                     agent-id
                     (fn [st]
@@ -739,7 +759,7 @@
                   :agent-id (name agent-id)
                   :error (:error retry-result)}))
              (if (:ok result)
-               (let [next-thread (or (:thread-id result) (:agent/current-thread-id state))
+               (let [next-thread (or (:thread-id result) (:agent/current-thread-id state) "")
                      updated (update-agent-state!
                               agent-id
                               (fn [st]

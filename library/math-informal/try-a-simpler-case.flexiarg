@@ -1,0 +1,33 @@
+@flexiarg math-informal/try-a-simpler-case
+@title Try a Simpler Case
+@sigils [🔸/小]
+@keywords simplify, reduce, special-case, small, base-case, n-equals-1, finite, low-dimension, toy-problem
+@audience mathematicians, students, problem-solvers
+@tone heuristic
+@factor Discernment (paññā)
+
+! conclusion:
+  When a problem resists direct attack, try a simpler or smaller version first.
+
+  + context: You are stuck on a problem whose generality or size makes it hard to see what is going on.
+  + IF:
+      The problem involves parameters (dimension, cardinality, degree, number of variables) and no
+      direct approach is working.
+
+  + HOWEVER:
+      Jumping to the simplest case can miss structure that only appears at intermediate complexity,
+      and results for small cases do not always generalise.
+
+  + THEN:
+      Reduce one or more parameters to the smallest non-trivial value. Solve that case. Examine what
+      made it work and what would break if the parameter grew. Use the insight to guide the general
+      argument.
+
+  + BECAUSE:
+      Simpler cases reveal the essential mechanism while hiding accidental complexity. Most successful
+      general proofs were found by someone who first understood n=2 or dimension 1.
+
+  + NEXT-STEPS:
+    next[Identify which parameter to reduce.]
+    next[Solve the reduced case completely.]
+    next[Articulate what generalises and what does not.]

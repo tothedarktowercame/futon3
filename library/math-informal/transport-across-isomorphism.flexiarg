@@ -1,0 +1,36 @@
+@flexiarg math-informal/transport-across-isomorphism
+@title Transport Across an Isomorphism
+@sigils [🐲/乃]
+@keywords isomorphism, transport, transfer, equivalent, identify, same, canonical, natural
+@audience mathematicians, researchers
+@tone heuristic
+@factor Discernment (paññā)
+
+! conclusion:
+  Prove something in one setting, then transport the result to an isomorphic setting for free.
+
+  + context: You need to prove a property of an object X, and there is an isomorphic object Y
+    where the property is already known or easier to establish.
+  + IF:
+      X and Y are connected by an isomorphism (or equivalence) in the relevant category, and
+      the property you care about is invariant under isomorphism.
+
+  + HOWEVER:
+      You must verify that the property is indeed isomorphism-invariant. Not all properties
+      transfer: a specific element, an embedding into a particular ambient space, or a
+      computational representation may not survive transport.
+
+  + THEN:
+      Establish the isomorphism between X and Y. Prove the property for whichever side is
+      easier. Invoke isomorphism-invariance to conclude for the other side. For structured
+      settings, use the naturality of the isomorphism.
+
+  + BECAUSE:
+      "Isomorphic objects are the same for all mathematical purposes" is the fundamental
+      principle of abstract mathematics. Transport lets you work in whichever representation
+      is most convenient.
+
+  + NEXT-STEPS:
+    next[Establish the isomorphism or equivalence.]
+    next[Verify the property is invariant under it.]
+    next[Prove in the easier setting and transport.]

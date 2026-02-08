@@ -1,0 +1,34 @@
+@flexiarg math-informal/argue-by-contradiction
+@title Argue by Contradiction
+@sigils [🔺/今]
+@keywords contradiction, assume, suppose-not, absurd, reductio, negation, impossible, contrary
+@audience mathematicians, students, proof-writers
+@tone heuristic
+@factor Determination (adhiṭṭhāna)
+
+! conclusion:
+  Assume the negation of what you want to prove and derive an absurdity.
+
+  + context: You want to prove a statement P and no direct construction or chain of implications is apparent.
+  + IF:
+      The conclusion P is existential ("there exists..."), uniqueness ("at most one..."), or
+      impossibility ("no X satisfies..."), and direct proof routes are blocked.
+
+  + HOWEVER:
+      Proofs by contradiction can obscure the constructive content of a result, making it harder to
+      extract algorithms or explicit witnesses. Some mathematical communities prefer direct proofs
+      when available.
+
+  + THEN:
+      Assume not-P. Use the assumed structure to build or derive objects, then show these objects
+      violate a known fact. The contradiction forces P.
+
+  + BECAUSE:
+      Contradiction proofs gain traction by giving you an extra hypothesis (not-P) to work with.
+      Many fundamental results (irrationality of sqrt(2), uncountability of the reals, infinitude
+      of primes) were first proved this way.
+
+  + NEXT-STEPS:
+    next[Write down the precise negation of P.]
+    next[Identify what new objects or properties not-P gives you.]
+    next[Find the known fact that these objects violate.]

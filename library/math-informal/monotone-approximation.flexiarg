@@ -1,0 +1,36 @@
+@flexiarg math-informal/monotone-approximation
+@title Monotone Approximation
+@sigils [🌀/习]
+@keywords approximate, monotone, sequence, increasing, decreasing, limit, converge, truncate, smooth
+@audience mathematicians, analysts, probabilists
+@tone heuristic
+@factor Endurance (khanti)
+
+! conclusion:
+  Approximate a complicated object by a monotone sequence of simpler objects and pass to the limit.
+
+  + context: You want to prove a result for a general object (general measurable function,
+    arbitrary open set, general measure) but your tools only work for simple ones.
+  + IF:
+      Your general object can be approximated from below (or above) by a monotone sequence of
+      simpler objects, and the property you care about is preserved under monotone limits.
+
+  + HOWEVER:
+      Not all approximations are monotone, and not all properties survive limits. You must
+      choose the right notion of approximation and verify that the limit argument is valid
+      (monotone convergence theorem, continuity from below, directed completeness).
+
+  + THEN:
+      Construct a monotone sequence of simple objects converging to your target. Prove the
+      result for each element of the sequence. Apply a monotone convergence or limit theorem
+      to conclude for the general object.
+
+  + BECAUSE:
+      This is the fundamental technique of measure theory and integration. Simple functions
+      approximate measurable functions, compact sets approximate open sets, finite sums
+      approximate series. The monotone convergence theorem makes the passage rigorous.
+
+  + NEXT-STEPS:
+    next[Construct the monotone approximating sequence.]
+    next[Prove the result for each element of the sequence.]
+    next[Identify and apply the appropriate limit theorem.]

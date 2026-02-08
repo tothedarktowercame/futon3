@@ -1,0 +1,34 @@
+@flexiarg math-informal/quotient-by-irrelevance
+@title Quotient by Irrelevance
+@sigils [🙅/无]
+@keywords quotient, equivalence, identify, collapse, mod-out, canonical, well-defined, representative
+@audience mathematicians, researchers
+@tone heuristic
+@factor Renunciation (nekkhamma)
+
+! conclusion:
+  Identify what does not matter for your problem and collapse it away.
+
+  + context: You are working with objects that carry more structure than your problem needs.
+  + IF:
+      Different-looking objects behave identically for your purposes, and keeping track of the
+      differences creates bookkeeping overhead or case splits.
+
+  + HOWEVER:
+      Quotienting loses information. You must verify that the operations and properties you care
+      about are well-defined on equivalence classes, not just on representatives.
+
+  + THEN:
+      Define an equivalence relation that identifies objects agreeing on what matters. Pass to the
+      quotient. Verify well-definedness. Work in the quotient where the irrelevant distinctions
+      are gone.
+
+  + BECAUSE:
+      Quotient constructions are one of the most universal moves in mathematics: integers from
+      naturals, rationals from integers, homology from chains, projective space from vector space.
+      Recognising when to quotient is recognising what the problem is really about.
+
+  + NEXT-STEPS:
+    next[Identify which distinctions between your objects are irrelevant.]
+    next[Define the equivalence relation precisely.]
+    next[Check that your operations respect the equivalence.]

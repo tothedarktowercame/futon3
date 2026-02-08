@@ -1,0 +1,35 @@
+@flexiarg math-informal/induction-and-well-ordering
+@title Induction and Well-Ordering
+@sigils [🔺/今]
+@keywords induction, base-case, inductive-step, strong-induction, transfinite, well-order, minimal, descent
+@audience mathematicians, students, proof-writers
+@tone heuristic
+@factor Determination (adhiṭṭhāna)
+
+! conclusion:
+  When objects are indexed by a well-ordered set, prove the base case and the step.
+
+  + context: You want to prove a statement P(n) for all n in some well-ordered domain
+    (natural numbers, ordinals, well-founded trees).
+  + IF:
+      The statement involves a natural number, a finite structure with a size parameter, or more
+      generally any well-ordered or well-founded index.
+
+  + HOWEVER:
+      The inductive step can be harder than it looks — it requires proving P(n+1) from P(n)
+      (or from all P(k) with k<n for strong induction). Choosing the wrong induction variable
+      makes the step impossible even when the theorem is true.
+
+  + THEN:
+      Choose the right quantity to induct on. Verify the base case. For the inductive step,
+      assume P holds for smaller values and show it holds for the current value. Consider strong
+      induction if simple induction is too weak.
+
+  + BECAUSE:
+      Induction is the fundamental proof method for discrete mathematics and much of algebra.
+      Choosing the right induction variable is often the key creative step.
+
+  + NEXT-STEPS:
+    next[Identify the right quantity to induct on.]
+    next[Verify the base case.]
+    next[Prove the inductive step, being explicit about where the hypothesis is used.]

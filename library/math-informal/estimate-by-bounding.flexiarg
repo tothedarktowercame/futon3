@@ -1,0 +1,38 @@
+@flexiarg math-informal/estimate-by-bounding
+@title Estimate by Bounding
+@sigils [🔸/小]
+@keywords bound, estimate, inequality, upper, lower, dominate, majorise, triangle, Cauchy-Schwarz, Jensen
+@audience mathematicians, analysts, probabilists
+@tone heuristic
+@factor Endurance (khanti)
+
+! conclusion:
+  Replace a complicated quantity with a simpler bound that is good enough.
+
+  + context: You need to control a quantity (an integral, a sum, a probability, a norm) but
+    exact computation is infeasible or unnecessary.
+  + IF:
+      You need an upper bound (or lower bound) rather than an exact value, and standard
+      inequalities (triangle, Cauchy-Schwarz, Jensen, Markov, Chebyshev, AM-GM) are
+      available.
+
+  + HOWEVER:
+      Bounds lose information. A bound that is too loose is useless. The art is in choosing
+      the tightest bound that remains tractable. Chaining too many inequalities can
+      accumulate slack to the point of triviality.
+
+  + THEN:
+      Identify which direction you need (upper or lower). Apply the most appropriate
+      standard inequality. Check that the resulting bound is tight enough for your
+      purposes. If not, try a different inequality or a more refined decomposition
+      before bounding.
+
+  + BECAUSE:
+      Estimation is the engine of analysis and probability. Most theorems in these fields
+      are proved by chains of inequalities, each replacing something complicated with
+      something simpler. Knowing which inequality to reach for is a core skill.
+
+  + NEXT-STEPS:
+    next[Determine whether you need an upper or lower bound.]
+    next[Identify candidate inequalities from your toolbox.]
+    next[Apply and check tightness — is the bound strong enough?]

@@ -1,0 +1,38 @@
+@flexiarg math-informal/verify-universal-property
+@title Verify the Universal Property
+@sigils [💬/才]
+@keywords universal, property, unique, morphism, initial, terminal, adjoint, representable, Yoneda
+@audience mathematicians, category-theorists, algebraists
+@tone heuristic
+@factor Discernment (paññā)
+
+! conclusion:
+  To show an object is "the right one", show it satisfies the relevant universal property.
+
+  + context: You want to prove that an explicit construction actually gives the correct
+    categorical object (product, coproduct, limit, free algebra, tensor product, adjoint).
+  + IF:
+      The object you have constructed should be characterised by a universal mapping property:
+      for every object of a certain kind, there exists a unique morphism through yours.
+
+  + HOWEVER:
+      Universal properties require checking both existence and uniqueness of the mediating
+      morphism. Existence is usually the construction; uniqueness is often the harder part
+      and is where most proof errors occur.
+
+  + THEN:
+      State the universal property precisely. For existence: given an arbitrary test object
+      and compatible data, construct the required morphism. For uniqueness: assume two
+      morphisms work and show they are equal, typically by checking on generators or using
+      a cancellation argument.
+
+  + BECAUSE:
+      Universal properties are the categorical way of saying "this is the canonical
+      construction". Once verified, they give you all morphisms for free and make
+      diagram-chasing arguments possible. They also guarantee that the construction is
+      unique up to unique isomorphism.
+
+  + NEXT-STEPS:
+    next[State the universal property precisely.]
+    next[Construct the mediating morphism (existence).]
+    next[Prove the mediating morphism is unique.]

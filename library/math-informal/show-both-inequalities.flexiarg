@@ -1,0 +1,36 @@
+@flexiarg math-informal/show-both-inequalities
+@title Show Both Inequalities
+@sigils [🔺/今]
+@keywords equality, sandwich, squeeze, both-directions, inclusion, subset, superset, le, ge
+@audience mathematicians, students, proof-writers
+@tone heuristic
+@factor Determination (adhiṭṭhāna)
+
+! conclusion:
+  To prove equality, prove inequality in both directions.
+
+  + context: You want to show A = B (where A, B are numbers, sets, or objects in an ordered structure)
+    and no direct computation yields both sides at once.
+  + IF:
+      Direct computation of A or B is infeasible, but you can bound A from above by B and
+      from below by B (or equivalently, show A is a subset of B and B is a subset of A).
+
+  + HOWEVER:
+      The two directions may require completely different techniques. One direction is often
+      trivial while the other requires the bulk of the work. Identifying which is which
+      saves effort.
+
+  + THEN:
+      Prove A <= B and B <= A separately (or A is a subset of B and B is a subset of A).
+      Combine to conclude A = B. For the squeeze/sandwich variant: bound A from above and
+      below by quantities that both converge to the same limit.
+
+  + BECAUSE:
+      This is one of the most common proof structures in analysis (sandwich theorem, integral
+      bounds), set theory (Cantor-Bernstein), and algebra (showing ideals or subgroups are
+      equal). It reduces equality to two often-simpler one-directional claims.
+
+  + NEXT-STEPS:
+    next[Determine which direction is easier.]
+    next[Prove the easy direction first to build intuition.]
+    next[Prove the hard direction.]

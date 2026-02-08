@@ -1,0 +1,34 @@
+@flexiarg math-informal/construct-an-explicit-witness
+@title Construct an Explicit Witness
+@sigils [🐜/予]
+@keywords construct, exhibit, witness, example, counterexample, explicit, build, produce, existence
+@audience mathematicians, students, proof-writers
+@tone heuristic
+@factor Persistence (viriya)
+
+! conclusion:
+  When you need to prove existence, build the object.
+
+  + context: You need to show that an object with certain properties exists.
+  + IF:
+      The existence statement is concrete enough that you can describe what the object would look
+      like, and abstract existence arguments (Zorn's lemma, compactness, probabilistic method)
+      either do not apply or would leave you without a usable object.
+
+  + HOWEVER:
+      Explicit constructions can be intricate and may obscure *why* the object exists. Sometimes
+      a non-constructive proof reveals more about the landscape than a single explicit example.
+
+  + THEN:
+      Build the object step by step. Define it concretely. Verify each required property. If the
+      construction is complex, build intermediate objects and compose them.
+
+  + BECAUSE:
+      An explicit witness is the gold standard of existence proofs: it gives you something to
+      compute with, to test, and to modify. Many of mathematics' most valued results are
+      constructions (Cantor's diagonal, Weierstrass's nowhere-differentiable function, Vitali sets).
+
+  + NEXT-STEPS:
+    next[List the properties the witness must satisfy.]
+    next[Attempt to build an object satisfying them one at a time.]
+    next[If stuck, relax a property and see what you can build.]

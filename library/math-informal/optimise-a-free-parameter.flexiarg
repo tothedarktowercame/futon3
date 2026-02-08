@@ -1,0 +1,36 @@
+@flexiarg math-informal/optimise-a-free-parameter
+@title Optimise a Free Parameter
+@sigils [🔸/小]
+@keywords optimise, parameter, choose, best, minimise, maximise, sup, inf, epsilon, delta, t
+@audience mathematicians, analysts, probabilists
+@tone heuristic
+@factor Discernment (paññā)
+
+! conclusion:
+  When a bound depends on a free parameter, choose the parameter value that gives the best result.
+
+  + context: You have established a bound or inequality that contains a free parameter
+    (epsilon, delta, t, lambda) and want the sharpest possible conclusion.
+  + IF:
+      The bound is valid for all (or a range of) parameter values, and different choices
+      yield different strengths of conclusion.
+
+  + HOWEVER:
+      The optimisation may be analytically intractable. In that case, a sub-optimal but
+      explicit choice (often guided by dimensional analysis or balancing terms) is better
+      than an opaque optimal one.
+
+  + THEN:
+      Differentiate (or otherwise optimise) with respect to the free parameter. If the
+      optimum has a clean closed form, use it. If not, choose a value that balances the
+      dominant terms — this typically gives the right order of magnitude.
+
+  + BECAUSE:
+      This pattern is the workhorse of concentration inequalities, moment methods, and
+      approximation theory. The Chernoff bound, Bernstein inequalities, and Laplace method
+      all follow by introducing an exponential parameter and optimising.
+
+  + NEXT-STEPS:
+    next[Identify the free parameter and its valid range.]
+    next[Optimise or balance terms.]
+    next[Substitute back and simplify the resulting bound.]

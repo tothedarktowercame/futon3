@@ -1,0 +1,34 @@
+@flexiarg math-informal/reduce-to-known-result
+@title Reduce to a Known Result
+@sigils [🗝️/门]
+@keywords reduce, apply, invoke, known, theorem, lemma, standard, classical, well-known, by
+@audience mathematicians, students, proof-writers
+@tone heuristic
+@factor Discernment (paññā)
+
+! conclusion:
+  Transform your problem until it matches the hypothesis of a known theorem, then invoke it.
+
+  + context: You want to prove a result and suspect it follows from something already established.
+  + IF:
+      The conclusion you need resembles the conclusion of a known theorem, but the hypotheses
+      do not quite match your setup.
+
+  + HOWEVER:
+      Forcing a reduction to the wrong theorem produces fragile, unenlightening proofs. The
+      reduction step must be natural, not a contortion.
+
+  + THEN:
+      Identify the candidate theorem. Compare its hypotheses to your situation. Bridge the gap:
+      verify missing hypotheses, apply a change of variables, restrict to a subcase, or
+      reformulate to match. Then invoke the theorem.
+
+  + BECAUSE:
+      Mathematics is cumulative. The power of a proof is proportional to the depth of the results
+      it can invoke. "By Theorem X" is the most efficient move in mathematics when X genuinely
+      applies.
+
+  + NEXT-STEPS:
+    next[Identify which known result has the conclusion you need.]
+    next[Compare hypotheses: what is missing or different?]
+    next[Bridge the gap or choose a different target theorem.]

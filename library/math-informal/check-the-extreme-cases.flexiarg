@@ -1,0 +1,33 @@
+@flexiarg math-informal/check-the-extreme-cases
+@title Check the Extreme Cases
+@sigils [🌀/习]
+@keywords boundary, extreme, degenerate, limit, edge-case, zero, infinity, empty, trivial, vacuous
+@audience mathematicians, students, problem-solvers
+@tone heuristic
+@factor Keen investigation (dhammavicaya)
+
+! conclusion:
+  Test your conjecture at the boundaries: zero, infinity, the empty set, the trivial case.
+
+  + context: You have a general statement and want to know if it is plausible before investing in a proof.
+  + IF:
+      The statement involves a parameter, a set, or a structure that can take degenerate or
+      extreme values.
+
+  + HOWEVER:
+      Extreme cases can be vacuously true or pathologically special, giving false confidence.
+      Passing extreme-case checks is necessary but not sufficient.
+
+  + THEN:
+      Instantiate the statement at every extreme: n=0, n=1, the empty set, the one-point space,
+      the trivial group, infinite dimension, the identity morphism. Check whether the statement
+      is true, vacuously true, or false. A failure at an extreme case is a cheap disproof.
+
+  + BECAUSE:
+      Extreme cases are the cheapest tests available. Many false conjectures die at n=0. Many
+      correct theorems reveal their essential content at the boundary.
+
+  + NEXT-STEPS:
+    next[List all parameters and identify their extreme values.]
+    next[Evaluate the statement at each extreme.]
+    next[Record which extremes are informative vs vacuous.]

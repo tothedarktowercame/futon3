@@ -29,9 +29,9 @@ reusable in other knowledge domains.
 
 
 ! instantiated-by: Prototype 0 — Informal Argument Support [👎/已 🍍/双]
-  :maturity :greenfield
+  :maturity :active
   :depends-on [f3/P1, f3/P2]
-  :evidence-for-active [Informal arguments import from F3; metadata attached]
+  :evidence-for-active [25 math-informal patterns created; 496/535 PlanetMath entries tagged; classical recognition validated]
 
   + context: F3 manages everyday reasoning patterns like "look for an easier problem".
   + IF: Mathematics should include informal reasoning alongside formal proofs
@@ -42,11 +42,18 @@ reusable in other knowledge domains.
   + EVIDENCE:
     evidence[F3 pattern canon exists]
     evidence[F3 check DSL operational]
+    evidence[25 math-informal/*.flexiarg patterns authored — Polya-style heuristics + PlanetMath-derived]
+    evidence[patterns-index.tsv extended: 819→844 rows with math-informal hotwords]
+    evidence[LLM scan of 535 PlanetMath .tex files across 3 MSC domains identified 22 recurring reasoning moves]
+    evidence[bb tagger (scripts/tag-patterns.bb) matches patterns to entries via classical hotword scoring]
+    evidence[496/535 entries tagged; all 25 patterns fire (27-291 hits each); spot-checks sensible]
+    evidence[Closed loop validated: LLM extracts → flexiarg+TSV formalises → classical keyword re-recognises]
 
   + NEXT-STEPS:
-    next[Define import contract from F3]
-    next[Attach math metadata to imported arguments]
-    next[Test informal/formal coexistence]
+    next[Tune hotword lists to reduce false positives (construct-auxiliary-object too broad)]
+    next[Integrate pattern-tags.edn into F6 entity/relation graph]
+    next[Connect tagged entries to F3 check DSL for live validation]
+    next[Expand to additional MSC domains as PlanetMath data grows]
 
   :success-criteria
     pass[Informal arguments import correctly]

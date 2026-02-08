@@ -1,0 +1,37 @@
+@flexiarg math-informal/use-probabilistic-method
+@title The Probabilistic Method
+@sigils [🐊/十]
+@keywords probabilistic, random, expectation, counting, existence, Erdos, random-variable, expected-value
+@audience mathematicians, combinatorialists, researchers
+@tone heuristic
+@factor Keen investigation (dhammavicaya)
+
+! conclusion:
+  Prove existence by showing a random object has the desired property with positive probability.
+
+  + context: You want to show that an object with certain combinatorial properties exists, but
+    explicit construction seems intractable.
+  + IF:
+      The desired property can be expressed as an event in a probability space on the set of
+      candidate objects, and you can estimate the probability of failure.
+
+  + HOWEVER:
+      The probabilistic method typically does not produce an explicit object. It proves existence
+      without construction. For applications requiring an actual witness, derandomisation
+      techniques may be needed.
+
+  + THEN:
+      Define a probability distribution on candidate objects. Show that the probability of
+      having the desired property is positive (by union bound, expectation argument, Lovász
+      local lemma, or second moment method). Conclude existence.
+
+  + BECAUSE:
+      Erdős's probabilistic method revolutionised combinatorics by proving the existence of
+      objects (Ramsey graphs, codes, expanders) that no one could construct explicitly. The
+      expected value alone often suffices: if the expected number of bad events is less than 1,
+      a good object exists.
+
+  + NEXT-STEPS:
+    next[Define the probability space on candidate objects.]
+    next[Estimate the probability of failure.]
+    next[Apply the appropriate probabilistic tool (union bound, expectation, LLL).]

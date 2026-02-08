@@ -1,0 +1,38 @@
+@flexiarg math-informal/construct-auxiliary-object
+@title Construct an Auxiliary Object
+@sigils [🐜/予]
+@keywords auxiliary, helper, introduce, define, let, set, function, sequence, truncation, mollifier
+@audience mathematicians, researchers, proof-writers
+@tone heuristic
+@factor Persistence (viriya)
+
+! conclusion:
+  Introduce a purpose-built object that mediates between what you have and what you need.
+
+  + context: You have a hypothesis and a conclusion, but no direct path between them.
+  + IF:
+      The gap between hypothesis and conclusion is structural: you need an intermediate
+      object (a function, a sequence, a set, a morphism) that does not appear in the
+      problem statement but whose existence would bridge the gap.
+
+  + HOWEVER:
+      Auxiliary objects can feel like magic when encountered for the first time. The skill
+      is in recognising which construction is needed: truncation, mollification, partition
+      of unity, Hahn-Banach extension, free object on generators, approximating sequence.
+
+  + THEN:
+      Identify the gap. Ask: what kind of object would connect my hypothesis to my
+      conclusion? Construct it explicitly. Verify it has the properties needed on both
+      sides. Common auxiliary objects include: truncated random variables, bump functions,
+      test morphisms, approximating sequences, and free resolutions.
+
+  + BECAUSE:
+      Many of the most important proofs in mathematics turn on a single clever auxiliary
+      construction. The Radon-Nikodym derivative, the partition of unity, the resolvent
+      operator — these are all auxiliary objects that became standard tools precisely
+      because they bridge common structural gaps.
+
+  + NEXT-STEPS:
+    next[Identify the structural gap between hypothesis and conclusion.]
+    next[Survey known auxiliary constructions in your domain.]
+    next[Build the object and verify it bridges the gap.]

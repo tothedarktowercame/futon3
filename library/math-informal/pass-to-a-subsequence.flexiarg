@@ -1,0 +1,35 @@
+@flexiarg math-informal/pass-to-a-subsequence
+@title Pass to a Subsequence or Subnet
+@sigils [🌀/习]
+@keywords subsequence, subnet, extract, compactness, convergent, limit, accumulation, Bolzano-Weierstrass
+@audience mathematicians, analysts, topologists
+@tone heuristic
+@factor Endurance (khanti)
+
+! conclusion:
+  When a sequence does not converge, extract a convergent subsequence and argue from there.
+
+  + context: You need convergence or a limit, but the full sequence or net may not cooperate.
+  + IF:
+      You are working in a compact space (or a setting with a compactness hypothesis), and the
+      sequence or net is bounded but not necessarily convergent.
+
+  + HOWEVER:
+      The subsequence may converge to something unwanted. You must verify that the limit has
+      the properties you need, and that the argument does not depend on the specific subsequence
+      chosen.
+
+  + THEN:
+      Invoke compactness (Bolzano-Weierstrass, Alaoglu, Tychonoff, sequential compactness) to
+      extract a convergent subsequence. Pass to it. Argue that the limit has the desired property.
+      If necessary, show the limit is unique so the full sequence converges.
+
+  + BECAUSE:
+      Compactness arguments are the engine of analysis. "Pass to a subsequence" converts a
+      possibly wild sequence into a tame one at the cost of losing control over indices — a
+      trade-off that is almost always worth making.
+
+  + NEXT-STEPS:
+    next[Verify the compactness hypothesis that justifies extraction.]
+    next[Extract the convergent subsequence and identify the limit.]
+    next[Check that the limit has the properties you need.]

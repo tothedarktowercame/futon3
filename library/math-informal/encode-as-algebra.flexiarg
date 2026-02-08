@@ -1,0 +1,38 @@
+@flexiarg math-informal/encode-as-algebra
+@title Encode as Algebra
+@sigils [💬/才]
+@keywords algebra, encode, translate, homomorphism, representation, structure, ring, module, group-ring
+@audience mathematicians, researchers
+@tone heuristic
+@factor Discernment (paññā)
+
+! conclusion:
+  Translate a combinatorial, geometric, or analytic problem into algebraic language and solve it there.
+
+  + context: You have a problem in geometry, combinatorics, topology, or analysis that resists direct methods.
+  + IF:
+      The objects in your problem carry algebraic structure (composition, addition, multiplication)
+      that direct methods are not exploiting, or there is a known algebraic invariant that
+      captures the property you care about.
+
+  + HOWEVER:
+      The algebraic translation may lose geometric or combinatorial information. The algebra may
+      be harder to compute with than the original objects. Not every problem benefits from
+      algebraisation.
+
+  + THEN:
+      Assign algebraic objects to your problem's ingredients: groups to symmetries, rings to
+      coordinate systems, modules to representations, homology groups to topological spaces.
+      Reformulate the problem as an algebraic question. Solve using algebraic tools (exact
+      sequences, spectral sequences, Groebner bases, character theory).
+
+  + BECAUSE:
+      Algebraic encoding has been one of the most successful strategies in mathematics:
+      Galois theory encodes field extensions as groups, algebraic topology encodes spaces as
+      groups, algebraic geometry encodes varieties as rings. The algebra often reveals structure
+      that was invisible in the original setting.
+
+  + NEXT-STEPS:
+    next[Identify what algebraic structure your objects carry.]
+    next[Choose the right algebraic invariant or encoding.]
+    next[Translate the problem and solve algebraically.]

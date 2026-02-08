@@ -1,0 +1,36 @@
+@flexiarg math-informal/the-diagonal-argument
+@title The Diagonal Argument
+@sigils [🐲/乃]
+@keywords diagonal, diagonalise, enumerate, surjection, cardinality, self-reference, Cantor, Goedel, fixed-point
+@audience mathematicians, logicians, students
+@tone heuristic
+@factor Keen investigation (dhammavicaya)
+
+! conclusion:
+  Defeat any purported enumeration by constructing an object that differs from every item on the list.
+
+  + context: You want to show that a collection is too large to be listed, or that a certain
+    map cannot be surjective.
+  + IF:
+      Someone claims a surjection or enumeration exists from a countable (or smaller) set onto
+      a larger one, and the objects in the target can be defined pointwise.
+
+  + HOWEVER:
+      The diagonal construction requires the ability to "flip" or modify the diagonal entry. Not
+      all settings admit this. The argument also only gives non-existence; it does not say how
+      much larger the target is.
+
+  + THEN:
+      Given the purported list f(1), f(2), ..., construct an object d that differs from f(n) at
+      position n for every n. Since d differs from every listed item, d is not on the list,
+      contradicting surjectivity.
+
+  + BECAUSE:
+      Cantor's diagonal argument is one of the most fertile ideas in mathematics, spawning
+      Goedel's incompleteness theorems, Turing's halting problem, Russell's paradox, and the
+      Lawvere fixed-point theorem. The same pattern recurs whenever self-reference meets totality.
+
+  + NEXT-STEPS:
+    next[Identify the purported enumeration or surjection.]
+    next[Construct the diagonal object.]
+    next[Verify it genuinely differs from every listed item.]

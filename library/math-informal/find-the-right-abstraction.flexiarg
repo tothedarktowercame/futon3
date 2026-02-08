@@ -1,0 +1,36 @@
+@flexiarg math-informal/find-the-right-abstraction
+@title Find the Right Abstraction
+@sigils [💬/才]
+@keywords abstract, generalise, reformulate, natural, category, functor, structure-preserving, level, framework
+@audience mathematicians, researchers
+@tone heuristic
+@factor Discernment (paññā)
+
+! conclusion:
+  When a proof is ugly or a pattern recurs, seek a higher-level framework where it becomes natural.
+
+  + context: You have a proof that works but feels ad hoc, or you see the same argument repeated in several settings.
+  + IF:
+      The proof involves case splits, coordinate choices, or auxiliary constructions that seem to
+      serve no conceptual purpose, or the same lemma keeps reappearing in different guises across
+      different domains.
+
+  + HOWEVER:
+      Premature abstraction obscures rather than clarifies: abstracting before you have enough
+      examples risks building a framework that fits nothing well. The right abstraction is found,
+      not prescribed.
+
+  + THEN:
+      Identify the minimal structural assumptions your argument actually uses. Reformulate in terms
+      of those assumptions alone. If a known framework (group, category, topological space, measure
+      space) fits, use it; if not, you may have discovered a new one.
+
+  + BECAUSE:
+      The right abstraction turns a difficult proof into a trivial one. Much of 20th-century
+      mathematics consisted of finding the right level of generality (e.g., Grothendieck's schemes,
+      Eilenberg-Mac Lane's categories).
+
+  + NEXT-STEPS:
+    next[List the properties your proof actually uses.]
+    next[Search for existing frameworks that axiomatise those properties.]
+    next[Reformulate and check whether the proof simplifies.]

@@ -1,0 +1,36 @@
+@flexiarg math-informal/split-into-cases
+@title Split into Cases
+@sigils [👉/田]
+@keywords cases, split, decompose, partition, dichotomy, trichotomy, either, or, exhaust
+@audience mathematicians, students, proof-writers
+@tone heuristic
+@factor Keen investigation (dhammavicaya)
+
+! conclusion:
+  When a single argument cannot handle all situations, partition into cases and handle each one.
+
+  + context: You are trying to prove a statement that behaves differently depending on some
+    condition or parameter value.
+  + IF:
+      The objects or hypotheses fall into a finite number of qualitatively different types,
+      and the proof technique that works for one type fails for another.
+
+  + HOWEVER:
+      Too many cases make a proof unreadable and suggest you are missing a unifying idea.
+      If you find yourself with more than 3-4 cases, consider whether a different approach
+      (symmetry, abstraction, contradiction) would eliminate the case split entirely.
+
+  + THEN:
+      Identify the exhaustive partition. Prove the result separately for each case. Verify
+      the cases are exhaustive (no gaps) and handle any overlap. Common splits: positive/
+      negative/zero, finite/infinite, convergent/divergent, trivial/non-trivial.
+
+  + BECAUSE:
+      Case analysis is often the simplest proof strategy available, even if not the most
+      elegant. Many results in combinatorics, number theory, and real analysis require it
+      because the underlying structure genuinely behaves differently in different regimes.
+
+  + NEXT-STEPS:
+    next[Identify the natural partition of your domain or hypothesis.]
+    next[Verify the cases are exhaustive.]
+    next[Prove each case, noting where the proof differs.]

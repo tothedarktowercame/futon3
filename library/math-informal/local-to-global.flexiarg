@@ -1,0 +1,35 @@
+@flexiarg math-informal/local-to-global
+@title Local-to-Global Argument
+@sigils [👉/田]
+@keywords local, global, sheaf, patching, gluing, cover, partition-of-unity, extension, localisation
+@audience mathematicians, researchers
+@tone heuristic
+@factor Discernment (paññā)
+
+! conclusion:
+  Prove something locally (on small pieces) and then assemble the local results into a global one.
+
+  + context: You want to establish a property of a large or complicated object.
+  + IF:
+      The object admits a decomposition into simpler pieces (open cover, partition, filtration,
+      localisation at primes), and the property you want can be checked on pieces.
+
+  + HOWEVER:
+      Not every property is local. You must verify that local data can be patched: the pieces
+      must be compatible on overlaps, and the patching procedure must not introduce new problems.
+
+  + THEN:
+      Cover the object with pieces where the property is manageable. Prove it on each piece.
+      Check compatibility on overlaps. Glue the local results into a global one, using
+      partitions of unity, sheaf conditions, or patching lemmas as appropriate.
+
+  + BECAUSE:
+      Local-to-global is one of the deepest recurring themes in mathematics: sheaf theory,
+      Mayer-Vietoris, local-global principles in number theory, partitions of unity in
+      differential geometry. The power comes from reducing a hard global problem to many
+      easy local ones.
+
+  + NEXT-STEPS:
+    next[Decompose the object into local pieces.]
+    next[Verify the property on each piece.]
+    next[Check compatibility and assemble the global result.]

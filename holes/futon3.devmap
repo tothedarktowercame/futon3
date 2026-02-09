@@ -7,14 +7,16 @@
 @IFR: FUTON3 turns messy activity into organised knowledge by checking work
 against shared patterns and producing auditable records that other futons can
 use to learn, improve, and act.
-@state MUSN transport runs reliably, pattern canon operational in futon1 storage,
-check DSL exercised end-to-end, trails capture tatami sessions, workday
-instrumentation bridges aob-chatgpt. Gaps: similarity field not wired into APIs;
-intent embedding designed but not implemented; joy metrics not yet flowing to
-futon0; proof hooks still bespoke scripts.
-@next Wire similarity field into pattern search API; implement intent embedding
-pipeline; standardise proof→graph and proof→energy exports; land joy metrics
-as futon0 service.
+@state (2026-02-09) FUTON3 is now split across three repos: futon3 (MUSN transport
+and canonical pattern library), futon3a (query + similarity field), futon3b
+(coordination gate pipeline + proof-path store + Level 1 glacial loop), futon3c
+(real-time social coordination). The split is recorded in holes/war-room.md.
+Gate pipeline + glacial loop are implemented and test-verified in futon3b.
+The social pattern-set for futon3c is now specified as library/realtime/*.flexiarg.
+@next Wire futon3 transport/entrypoints to the futon3b gate pipeline; integrate
+futon3a similarity/portal search into G3 pattern selection; bring futon3c social
+patterns + war-room into the evidence chain; standardise proof-path → graph/energy
+exports across futon1/futon2.
 
 ## The Argument
 
@@ -22,22 +24,36 @@ FUTON3 turns messy activity into organised knowledge by checking work against
 shared patterns and producing auditable records. The MUSN transport provides
 stable IO contracts for pattern-related checking with deterministic transcripts.
 The pattern canon stores patterns with metadata and devmap links in futon1
-storage. The check DSL evaluates pattern applicability and logs every check as
-a proof-state record. Trails capture proof obligations and how sessions
-discharged them. Workday instrumentation bridges aob-chatgpt and fubar.el so
-user interactions flow into the check pipeline. The similarity field enables
-pattern suggestions via sigil-distance and GloVe embeddings. Intent embedding
-types each proof step as (fruit, orb) pairs for Kolmogorov-style constructive
-proofs. The pattern workbench drafts candidate flexiargs from accumulated proof
-states. Joy metrics track empowerment—time-to-proof, obligations cleared,
-commitments enabled—and are provided to futon0. Proof hooks export checks to
-futon1 (graph) and futon2 (viriya). The training ground packages tutorials so
-humans and agents can practice flexiformal checks. System self-description makes
-stack components queryable entities in the hypergraph.
+storage (with the authoritative filesystem library living in futon3). The
+primary "check DSL" is now a coordination gate pipeline (G5→G0) operating over
+typed evidence records, producing a proof-path that is durable and queryable.
+Level 1 (glacial) observes accumulated proof-paths for tensions and canonizes
+new patterns back into the library (Baldwin cycle). The similarity field (futon3a)
+enables pattern suggestions and is a pending integration into G3. Joy metrics,
+proof hooks, training ground, and system self-description remain as downstream
+prototypes, now distributed across the split.
+
+## Three-Futon Split (Evidence-Based)
+
+As of 2026-02-09 the original "futon3" scope is implemented as:
+
+- futon3a = query + similarity field (pattern indexing / portal / compass)
+- futon3b = task coordination boundary (G5→G0) + glacial loop (L1 observe/canon)
+- futon3c = social/realtime coordination layer (pattern set in library/realtime; implementation repo may be separate)
+
+  + EVIDENCE:
+    evidence[holes/war-room.md (WR-1/WR-2 define the split and canonical library location)]
+    evidence[library/coordination/ARGUMENT.flexiarg (gate pipeline argument)]
+    evidence[library/realtime/*.flexiarg (social/realtime pattern set for futon3c)]
+    evidence[futon3b/AGENTS.md Phase 0-3 verification + test tables]
+    evidence[futon3b: clojure -X:test passes (31 tests, 109 assertions) in current main]
+    evidence[futon3c repo may have local copies for tests but should not diverge from futon3/library per WR-2]
 
 
 ! instantiated-by: Prototype 0 — MUSN Transport Baseline [➰/双 🎑/了]
   :maturity :active
+  :owner :futon3
+  :actual-status :active
   :depends-on []
   :evidence-for-active [Transport running 90+ days; event logging operational; pattern checks flow through router]
 
@@ -73,6 +89,8 @@ stack components queryable entities in the hypergraph.
 
 ! instantiated-by: Prototype 1 — Pattern Canon & Standard Library [🐺/本 ➰/世]
   :maturity :active
+  :owner :futon3
+  :actual-status :active
   :depends-on [f1/P0]
   :evidence-for-active [Pattern store operational in futon1; ingest working; tests pass]
 
@@ -87,6 +105,8 @@ stack components queryable entities in the hypergraph.
     evidence[resources/pattern_store.edn maintains catalog]
     evidence[src/futon3/pattern_store.clj implements store API]
     evidence[test/pattern_store_test.clj verifies sync with README references]
+    evidence[library/coordination/*.flexiarg is the authoritative coordination library (consumed by futon3b)]
+    evidence[futon3b/src/futon3/gate/canon.clj writes new patterns from evidence (glacial loop)]
 
   + NEXT-STEPS:
     next[Add golden test proving store loads and enumerates all pattern IDs]
@@ -103,80 +123,95 @@ stack components queryable entities in the hypergraph.
   :pur-template "Pattern {{id}} loaded, clauses: {{count}}, tags: {{tags}}"
 
 
-! instantiated-by: Prototype 2 — Check DSL & Applicability Engine [🌽/末 ➰/广]
+! instantiated-by: Prototype 2 — Coordination Gate Pipeline (G5→G0) [🌽/末 ➰/广]
   :maturity :active
+  :owner :futon3b
+  :actual-status :active
   :depends-on [f3/P0, f3/P1]
-  :evidence-for-active [check! API operational; schema validation working; checks logged]
+  :implemented-as [futon3.gate.* (in futon3b)]
+  :evidence-for-active [Gate pipeline (G5→G0) enforces PSR→exec→PUR→durability; typed evidence + structured rejections; futon3b test suite passes]
 
-  + context: FUTON3 answers "can this pattern apply?" and "what obligations arise?"
-  + IF: You want a declarative DSL for posing check contexts and receiving structured verdicts
-  + HOWEVER: Without executable checks, patterns remain narrative rather than flexiformal
-  + THEN: Define check! API (inputs: pattern ID, context EDN, evidence refs; outputs: status, missing fields, derived tasks); enforce schema validation; log every check as proof-state record
-  + BECAUSE: Turning patterns into executable checks is what makes FUTON3 flexiformal
+  + context: FUTON3’s former "check DSL" role is now the coordination boundary: all task execution is routed through mandatory gates that emit typed evidence.
+  + IF: You want a declarative, enforceable boundary that turns messy tasks into auditable records
+  + HOWEVER: When pattern selection, execution, validation, and persistence are scattered, the system cannot enforce "no work runs without PSR" or "no success before durability"
+  + THEN: Implement the six-gate pipeline (G5→G0) as the primary coordination/check mechanism:
+    - G5 validates TaskSpec and binds intent to mission + success criteria
+    - G4 authorizes an agent and records Assignment
+    - G3 requires PSR (or gap declaration) and checks pattern existence
+    - G2 runs bounded execution (or passthrough) and registers Artifact
+    - G1 produces PUR by evaluating success criteria
+    - G0 gates success on durability and requires PAR; emits a proof-path
+  + BECAUSE: This is the minimal checkable structure that produces auditable, replayable proof-paths that other futons can learn from
 
   + EVIDENCE:
-    evidence[src/futon3/checks.clj implements check DSL]
-    evidence[src/f2/router.clj routes check requests]
-    evidence[src/futon3/futon1_bridge.clj wires to futon1]
-    evidence[src/futon3/futon2_bridge.clj logs viriya deltas for checks]
-    evidence[src/f2/transport.clj exposes /musn/check HTTP endpoint]
-    evidence[docs/api/musn.yaml documents /musn/check]
-    evidence[test/transport_test.clj covers workday/check forwarding]
+    evidence[library/coordination/ARGUMENT.flexiarg (gate pipeline argument)]
+    evidence[futon3b/src/futon3/gate/pipeline.clj composes G5→G0]
+    evidence[futon3b/src/futon3/gate/shapes.clj defines typed evidence boundary]
+    evidence[futon3b/src/futon3/gate/errors.clj defines structured rejections]
+    evidence[futon3b/test/futon3/gate/pipeline_test.clj verifies gate behavior + durable proof-paths]
+    evidence[futon3b/AGENTS.md records verification results and acceptance checklists]
+    evidence[src/futon3/checks.clj remains as legacy check! DSL (superseded by gate pipeline)]
 
   + NEXT-STEPS:
-    next[Add check latency instrumentation]
+    next[Wire futon3 transport/entrypoints to futon3b gate pipeline without weakening "first failing gate wins"]
+    next[Integrate futon3a similarity/portal search into G3 pattern selection]
 
   :success-criteria
-    pass[check! returns structured verdicts (applies/blocked/missing)]
-    pass[Every check logged as proof-state record]
-    pass[Schema validation enforced on inputs]
-    fail[Checks proceed without logging]
+    pass[Every task either produces a durable proof-path or a structured rejection]
+    pass[G3 enforces PSR (or gap) before execution]
+    pass[G1 enforces PUR (criteria evaluation) before acknowledging success]
+    pass[G0 enforces durability (proof-path persisted)]
+    fail[Work runs without PSR/PUR or without a durable audit trail]
 
-  :psr-example "Selected check DSL for pattern evaluation because executable checks enable automation"
-  :pur-template "Check {{pattern}}, context: {{ctx}}, result: {{status}}"
+  :psr-example "Selected gate pipeline for coordination because mandatory, typed gates make proof obligations enforceable"
+  :pur-template "Gate run {{task}}, result: {{ok|reject}}, proof-path: {{path-id}}"
 
 
-! instantiated-by: Prototype 3 — Trail & Proof-State Journal [➰/双]
+! instantiated-by: Prototype 3 — Proof-Path Store (Durable Journal) [➰/双]
   :maturity :active
+  :owner :futon3b
+  :actual-status :active
   :depends-on [f3/P2]
-  :evidence-for-active [Tatami sessions captured; trail schema operational; cue embedding tested]
+  :implemented-as [futon3b.query.relations/append-proof-path! + data/proof-paths/*.edn]
+  :evidence-for-active [Proof-path EDN files persisted per run; load + query supported; L1 observes proof-paths for tensions; rejections also persisted]
 
-  + context: Wisdom trails document proof obligations and how work sessions discharged them.
-  + IF: You want every check, dismissal, and pattern idea to leave an auditable trail
-  + HOWEVER: Without proof-state schema, trails are general exploration logs
-  + THEN: Extend trail schema with :pattern/id, :obligation/id, :action/tags, :delta/joy; add rollups showing which devmap clauses advanced per day; expose /musn/trails/proof export
-  + BECAUSE: The whole point is to measure how daily practice advances the devmaps
+  + context: FUTON3 needs an auditable, replayable journal of what happened at the coordination boundary.
+  + IF: You want every accepted run (and key early rejections) to leave a durable, typed audit trail
+  + HOWEVER: Trails/tatami logs are not a typed boundary and are hard to query as evidence
+  + THEN: Persist a proof-path as a typed sequence of gate events (TaskSpec, Assignment, PSR, Artifact, PUR, PAR, plus L1 observations/canonizations and structured rejections) and store it durably as EDN
+  + BECAUSE: Proof-paths are the minimum unit of auditability and the input to glacial library evolution
 
   + EVIDENCE:
-    evidence[resources/tatami-events.edn captures live tatami sessions]
-    evidence[resources/tatami-context.edn logs FROM-CHATGPT-EDN payloads]
-    evidence[test/futon3/cue_embedding_test.clj proves keyword payloads round-trip]
-    evidence[Tatami HUD mirrors entries through /musn/cues]
+    evidence[futon3b/src/futon3b/query/relations.clj implements append-proof-path! + load/search]
+    evidence[futon3b/data/proof-paths/ durable proof-path store (EDN files)]
+    evidence[futon3b/test/futon3/gate/pipeline_test.clj durable sink writes proof-paths]
+    evidence[futon3b/test/futon3/gate/level1_test.clj L1 observes pressures from persisted rejections]
+    evidence[resources/tatami-events.edn remains as legacy session capture (not the primary typed journal)]
 
   + NEXT-STEPS:
-    next[Persist cue annotations into trail export]
-    next[Add proof artifacts (HUD screenshots or /musn/cues transcripts)]
-    next[Implement daily rollups of clause advancement]
+    next[Standardise proof-path → futon1 (graph) and futon2 (viriya) exports on top of the typed store]
 
   :success-criteria
-    pass[Trails include pattern/obligation IDs]
-    pass[Rollups show devmap clause progress per day]
-    pass[Proof export available for futon4 archives]
-    fail[Proof states not captured in trails]
+    pass[Proof-path persisted durably for each successful run]
+    pass[Key early-gate rejections are persisted as typed GateRejection records]
+    pass[Proof-paths queryable (load + search)]
+    fail[Work cannot be replayed/audited from durable evidence]
 
-  :psr-example "Selected trails for proof journaling because auditable records enable reflection"
-  :pur-template "Trail {{session}}, patterns: {{count}}, obligations cleared: {{cleared}}"
+  :psr-example "Selected proof-path store because a typed, durable journal enables audit and glacial learning"
+  :pur-template "Proof-path {{path-id}}, events: {{count}}, persisted: {{yes|no}}"
 
 
 ! instantiated-by: Prototype 4 — Workday Instrumentation [➰/止 ⌛️/了]
   :maturity :active
+  :owner :futon3
+  :actual-status :active
   :depends-on [f3/P2]
   :evidence-for-active [workday/submit endpoint operational; aob-chatgpt bridge working]
 
   + context: aob-chatgpt and fubar.el instrument user interactions for pattern checking.
   + IF: You want FUTON3 to serve as backend for daily reflections
   + HOWEVER: Without official API, workday claims cannot flow through check pipeline
-  + THEN: Publish workday/submit endpoint (timestamp, activity, evidence links); run through check DSL + embedding; respond with pattern hits/misses and follow-up obligations
+  + THEN: Publish workday/submit endpoint (timestamp, activity, evidence links); run through the coordination boundary (gate pipeline) + embedding; respond with pattern hits/misses and follow-up obligations
   + BECAUSE: This is how empowered action becomes measurable proof progress
 
   + EVIDENCE:
@@ -202,6 +237,8 @@ stack components queryable entities in the hypergraph.
 
 ! instantiated-by: Prototype 5 — Similarity Field [🌂/甲 👂/归]
   :maturity :active
+  :owner :futon3a
+  :actual-status :active
   :depends-on [f3/P1]
   :evidence-for-active [futon3a provides pattern indexing with GloVe/fastText/MiniLM embeddings; portal queries operational]
 
@@ -239,6 +276,8 @@ stack components queryable entities in the hypergraph.
 
 ! instantiated-by: Prototype 6 — Intent Embedding & Proof Typing [➰/双 🍍/办]
   :maturity :greenfield
+  :owner :futon3a
+  :actual-status :greenfield
   :depends-on [f3/P3]
   :evidence-for-active [Intent→vec pipeline operational; fruit/orb types assigned to proof steps]
 
@@ -269,25 +308,27 @@ stack components queryable entities in the hypergraph.
 
 
 ! instantiated-by: Prototype 7 — Pattern Creation Workbench [👍/已]
-  :maturity :greenfield
-  :depends-on [f3/P3, f3/P6]
-  :evidence-for-active [Summariser clusters trails; draft flexiargs emitted with readiness criteria]
+  :maturity :active
+  :owner :futon3b
+  :actual-status :partial
+  :depends-on [f3/P3]
+  :evidence-for-active [Minimal workbench implemented as L1 canonicalizer (tension → canonization → .flexiarg write); full clustering/summariser still pending]
 
-  + context: New patterns emerge from trails and devmap edits but capture is manual.
-  + IF: You want FUTON3 to draft candidate patterns from accumulated proof states
-  + HOWEVER: Manual backlog creates tension; no readiness criteria for handoff
-  + THEN: Build summariser that clusters trails, extracts hooks, emits draft flexiarg blocks (IF/HOWEVER/THEN/BECAUSE) with suggested pāramitā; declare readiness criteria (N supporting checks + steward review)
-  + BECAUSE: FUTON3 should propose expansions grounded in lived work
+  + context: New patterns emerge from accumulated proof-path evidence; manual capture creates backlog and stalls convergence.
+  + IF: You want FUTON3 to draft and land candidate patterns from accumulated evidence
+  + HOWEVER: Without a glacial "canonicalizer" loop, pattern gaps remain narrative and do not become constraints
+  + THEN: Use L1 canonicalization (Baldwin cycle) to write minimal flexiargs from recurring tensions, and treat richer clustering/summariser output as a later enhancement
+  + BECAUSE: Library evolution must be evidence-driven and must close the constraint loop (glacial → glacial)
 
   + EVIDENCE:
-    evidence[Trail data available for clustering]
+    evidence[futon3b/src/futon3/gate/observe.clj observes tensions from proof-paths]
+    evidence[futon3b/src/futon3/gate/canon.clj writes new .flexiarg patterns (and refuses overwrite)]
+    evidence[futon3b/test/futon3/gate/level1_test.clj full-loop-round-trip proves canonization produces a usable pattern]
     evidence[Flexiarg format documented]
 
   + NEXT-STEPS:
-    next[Build trail clustering summariser]
-    next[Emit draft flexiarg blocks with pāramitā tags]
-    next[Define readiness criteria for handoff to futon4]
-    next[Add steward review workflow]
+    next[Add richer pattern drafts (titles/keywords/examples) without weakening typed evidence boundary]
+    next[Add readiness criteria + steward review workflow for promoting drafts]
 
   :success-criteria
     pass[Summariser emits draft flexiargs from trails]
@@ -301,6 +342,8 @@ stack components queryable entities in the hypergraph.
 
 ! instantiated-by: Prototype 8 — Joy Metrics [⌛️/力 ⚡️/二]
   :maturity :greenfield
+  :owner :futon3c
+  :actual-status :greenfield
   :depends-on [f3/P3, f3/P4]
   :evidence-for-active [Joy metrics computed per session; provided to futon0]
 
@@ -313,6 +356,7 @@ stack components queryable entities in the hypergraph.
   + EVIDENCE:
     evidence[Session data available from trails]
     evidence[Obligation tracking in check DSL]
+    evidence[library/realtime/*.flexiarg specifies the social/realtime loop that joy metrics should be surfaced into]
 
   + NEXT-STEPS:
     next[Define joy metric formulas]
@@ -332,6 +376,8 @@ stack components queryable entities in the hypergraph.
 
 ! instantiated-by: Prototype 9 — Proof Hooks (futon1/futon2 Export) [⚡️/二 🙅/乃]
   :maturity :greenfield
+  :owner :futon3b
+  :actual-status :greenfield
   :depends-on [f3/P2, f1/P0, f2/P6]
   :evidence-for-active [proof→graph materialises relations; proof→energy emits viriya deltas]
 
@@ -364,6 +410,8 @@ stack components queryable entities in the hypergraph.
 
 ! instantiated-by: Prototype 10 — Flexiformal Training Ground [🚢/氏 🚴/未]
   :maturity :greenfield
+  :owner :futon3c
+  :actual-status :greenfield
   :depends-on [f3/P2, f3/P3]
   :evidence-for-active [Training ground packaged; tutorials complete; simulator recorded]
 
@@ -376,6 +424,7 @@ stack components queryable entities in the hypergraph.
   + EVIDENCE:
     evidence[Check DSL operational for training]
     evidence[Trail capture available for transcripts]
+    evidence[library/realtime/*.flexiarg defines the realtime patterns future trainees will encounter (social loop)]
 
   + NEXT-STEPS:
     next[Write tutorials referencing t4r/ patterns]
@@ -395,6 +444,8 @@ stack components queryable entities in the hypergraph.
 
 ! instantiated-by: Prototype 11 — System Self-Description [🔃/本]
   :maturity :greenfield
+  :owner :futon5
+  :actual-status :partial
   :depends-on [f3/P1, f1/P0]
   :evidence-for-active [Manifest schema defined; stack components queryable in futon1]
 

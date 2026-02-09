@@ -82,7 +82,19 @@
                      :name "One Paper"
                      :status :ready
                      :depends []
-                     :notes "Parse one Arxiv paper overlapping with physics.SE. Test LaTeX parser, NER coverage, scope chains, bridge concepts."}}]
+                     :notes "Parse one Arxiv paper overlapping with physics.SE. Test LaTeX parser, NER coverage, scope chains, bridge concepts."}}
+
+  {:mission/id "M-f6-recursive"
+   :mission/name "F6 Recursive — Applying the Pipeline to Code"
+   :mission/type :research
+   :mission/depends ["M-f6-agents"]
+   :mission/spec "M-f6-recursive.md"
+   :mission/status :blocked
+   :mission/outpost {:id "O-5"
+                     :name "One Repo, One Session"
+                     :status :ready
+                     :depends []
+                     :notes "Pattern-tag one futon repo + one session transcript. Build minimal code knowledge graph. Test graph-enhanced code reasoning."}}]
 
  ;; Outpost dependency graph (can run ahead of mission dependencies):
  ;;
@@ -93,8 +105,9 @@
  ;;  (pipeline dry run)         eval)    one question)
  ;;
  ;; O-4 (independent — one Arxiv paper)
+ ;; O-5 (independent — one futon repo + one session)
  ;;
- ;; O-0, O-1, O-4 can run in parallel with zero dependencies.
+ ;; O-0, O-1, O-4, O-5 can run in parallel with zero dependencies.
  ;; O-2 needs O-1's pipeline output.
  ;; O-3 needs O-2's protocol and prompt template.
  }

@@ -1,0 +1,56 @@
+@flexiarg f6/learning-event-detection
+@title Learning Event Detection
+@sigils [📈/学]
+@keywords learning, event, term, new, edit, history, treatment, outcome, Ornstein-Uhlenbeck, impulse, damping
+@audience futon6 developers, computational social scientists
+@tone methodological
+@factor Keen investigation (dhammavicaya)
+@references [f6/bootstrap-loop f6/self-play-loop f6/graph-enhanced-evaluation]
+
+! conclusion:
+  Detect learning events by tracking when new technical terms appear in a user's
+  contributions, then measure the causal effect of social interactions (answers,
+  comments, corrections) on these events using an impulse-damping model.
+
+  + context: You are measuring whether mathematical Q&A interactions cause learning,
+    using the same method Corneli (2014, Chapter 6) applied to PlanetMath edit histories
+    — now scaled to all of Stack Exchange using the 19,236-term NER kernel.
+  + IF:
+      Stack Exchange data dumps include full revision histories for every post, with
+      timestamps. Each user has an observable vocabulary trajectory: the set of NER
+      kernel terms they have used, growing over time. Social interactions (receiving
+      an answer, a comment, an edit to one's question) are timestamped treatment events.
+      A "learning event" is any post edit or new post in which a user introduces a
+      technical term they have never used before.
+
+  + HOWEVER:
+      A new term in a user's output may be exposition (copying from a textbook) rather
+      than genuine learning. The Ornstein-Uhlenbeck model cannot distinguish these.
+      High-frequency posters will show more "learning events" by volume alone. The
+      method requires careful per-user normalization and distinguishing treatment from
+      confound (did the user learn from the SE interaction, or from an external source
+      between posts?).
+
+  + THEN:
+      For each SE user with sufficient history (N posts > threshold): extract their
+      term vocabulary trajectory using the NER kernel. Identify learning events (first
+      use of each term). Identify treatment events (answers received, comments received,
+      accepted answers on their questions). Fit the Ornstein-Uhlenbeck impulse-damping
+      model: does a treatment event produce a detectable impulse in learning-event rate,
+      and how quickly does it damp? Compare across difficulty strata and topic clusters.
+
+  + BECAUSE:
+      Corneli (2014) demonstrated this method on 445 PlanetMath users over 9 years
+      (8,051 forum posts, 14,064 corrections, 3,867 learning-event edits). The method
+      is classical — no GPU, no LLM — and scales linearly with corpus size. SE has
+      orders of magnitude more data. If the same impulse-damping dynamics appear in
+      SE that appeared in PlanetMath, it validates the thesis's model of peer-produced
+      peer learning at scale. The fitted parameters then become a baseline for the
+      Artificial Stack Exchange: do agent interactions produce the same learning
+      dynamics as human interactions?
+
+  + NEXT-STEPS:
+    next[Extract user edit histories from math.SE data dump (available after M-f6-ingest).]
+    next[Run NER kernel term spotting per-user to build vocabulary trajectories.]
+    next[Fit Ornstein-Uhlenbeck model to treatment→learning-event sequences; compare parameters with Corneli (2014) Table.]
+    next[Use fitted human-learning parameters as a benchmark for M-f6-agents: do artificial agents exhibit similar impulse-damping dynamics?]

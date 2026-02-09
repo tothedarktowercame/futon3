@@ -1,0 +1,47 @@
+@flexiarg f6/proof-as-social-process
+@title Proof as Social Process
+@sigils [🤝/証]
+@keywords proof, social, process, coding, context, feedback, quality, structure, heuristic, Gowers, paragogy
+@audience futon6 developers, mathematical reasoning researchers
+@tone theoretical
+@factor Keen investigation (dhammavicaya)
+@references [f6/pattern-as-strategy f6/q-turnstile-a ai4ci/dual-layer-proof-patterns]
+
+! conclusion:
+  A mathematical proof is a sequence of social-computational moves that can
+  be coded along five dimensions: context, feedback, quality, structure, and
+  heuristic. This coding bridges human reasoning and agent behavior.
+
+  + context: You are validating that the pattern tagger and agent system can
+    analyse proofs in the same way the Corneli (2014) thesis Appendix B analyses
+    them by hand.
+  + IF:
+      Appendix B of the thesis codes two proofs (Gowers & Ganesalingam, 2012) using
+      a 5-category scheme: (1) context — expand definitions, scope the problem;
+      (2) feedback — generate examples, try instances; (3) quality — form conjectures,
+      build models; (4) structure — change descriptions, apply deductions;
+      (5) heuristic — restrict to known, certify results.
+
+  + HOWEVER:
+      The thesis coding was done by hand on two proofs. Scaling to corpus-level
+      requires automation. The 25 math-informal patterns partially cover the 5
+      categories but were not designed to partition cleanly into them. Some patterns
+      span multiple categories; some categories lack dedicated patterns.
+
+  + THEN:
+      Map each of the 25 math-informal patterns to one or more of the 5 thesis
+      categories. Identify coverage gaps: categories where no pattern fires
+      reliably. Use the Appendix B worked examples as test cases for the pattern
+      tagger — do the automatically assigned patterns match the hand-coded categories?
+      This is a unit test for the entire pattern-tagging enterprise.
+
+  + BECAUSE:
+      If the pattern tagger's output aligns with the hand-coded proof analysis, it
+      validates both the tagger and the thesis's claim that proofs are structured
+      social-computational processes. If it doesn't align, the gap tells us exactly
+      which reasoning moves the tagger misses.
+
+  + NEXT-STEPS:
+    next[Create a 25×5 mapping matrix: each pattern assigned to thesis categories (1)-(5).]
+    next[Run pattern tagger on the two Appendix B proofs (if available in corpus) and compare with hand coding.]
+    next[Identify thesis categories with thin pattern coverage; consider whether new patterns are needed.]

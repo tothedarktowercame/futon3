@@ -135,6 +135,39 @@ Start with papers we can validate against existing knowledge:
 Target: 500-1000 papers for pilot, selected for maximum overlap with
 existing graph.
 
+## Outpost
+
+### Outpost O-4: One Paper
+
+Before building the full Arxiv pipeline, test the approach on a single paper
+whose topic overlaps with existing physics.SE data.
+
+**Data**: One Arxiv paper selected for: (a) LaTeX source available, (b) topic
+covered in physics.SE, (c) moderate length (10-20 pages), (d) standard
+structure (theorems, proofs, definitions). A paper cited in a physics.SE
+answer is ideal.
+**Method**:
+1. Download LaTeX source, extract sections and theorem/proof environments
+2. Run NER kernel term spotting on each section
+3. Run scope detection on theorem/proof pairs
+4. Count pattern tag matches per section
+5. Identify bridge concepts: NER terms shared with physics.SE entities
+
+**Validates**:
+- [ ] LaTeX parser handles at least this paper's structure without crashing
+- [ ] NER kernel achieves reasonable coverage (>50% of sections have term hits)
+- [ ] Scope chains are detectable across theorem→proof boundaries
+- [ ] At least 5 bridge concepts connecting this paper to physics.SE entities
+- [ ] Pattern distribution differs visibly from SE (more formal, fewer heuristic)
+
+**Depends on**: NER kernel, pattern tagger, one Arxiv paper (manual selection)
+**Feeds**: Feasibility signal for the full Arxiv pipeline; identifies LaTeX
+parsing issues before investing in bulk processing
+
+**Pattern references**: `f6/stratum-bridge`, `f6/scope-chain-tracking`
+
+---
+
 ## Implementation Sketch
 
 ### Phase 1: LaTeX parser for Arxiv

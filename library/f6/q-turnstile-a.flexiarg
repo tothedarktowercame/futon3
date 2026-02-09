@@ -1,0 +1,46 @@
+@flexiarg f6/q-turnstile-a
+@title Q Turnstile A
+@sigils [⊢/問]
+@keywords question, answer, Kolmogorov, problem, construction, proof, adequacy, constraint, posing
+@audience futon6 developers, agent designers
+@tone theoretical
+@factor Keen investigation (dhammavicaya)
+@references [f6/self-play-loop ai4ci/collective-intelligence-evaluation]
+
+! conclusion:
+  A well-posed question constrains its answer. Agents that identify what they
+  don't know and formulate the right question are doing mathematics, not retrieval.
+
+  + context: You are designing agents that interact through mathematical question-answering,
+    following Kolmogorov's calculus of problems where Q⊢A means "question Q is resolved
+    by answer A."
+  + IF:
+      In Kolmogorov's framework, a problem is solved by a construction; a compound
+      problem (A ∧ B) is solved by solving both parts; a conditional problem (A → B)
+      is solved by a method transforming any solution of A into a solution of B.
+
+  + HOWEVER:
+      Most Q&A systems treat questions as retrieval queries and answers as information
+      dumps. This ignores the constructive content: a good question doesn't just ask
+      for information, it specifies what kind of construction would count as adequate.
+      An answer to the wrong question is not mathematics.
+
+  + THEN:
+      Design the Asker agent to generate questions that constrain their answers: each
+      question should specify what kind of construction (proof, example, counterexample,
+      algorithm) would resolve it. The Critic evaluates not just whether the answer is
+      correct, but whether it constitutes an adequate construction for the question posed.
+      Stack Exchange voting is the social proof system; the Artificial Stack Exchange
+      replaces social voting with agent-based evaluation.
+
+  + BECAUSE:
+      The Corneli (2014) thesis (§10.6) identifies problem posing as "the essence of
+      pattern-making." The EPSRC LEAPQA proposal formalised this as Q⊢A. The SFI
+      proposal framed it as the Artificial Stock Market applied to knowledge. All three
+      point to the same insight: generating questions is harder and more valuable than
+      generating answers.
+
+  + NEXT-STEPS:
+    next[Implement question-type annotation in the Asker: proof-question, example-question, counterexample-question, algorithm-question.]
+    next[Evaluate Critic against human judgement of answer adequacy, not just correctness.]
+    next[Measure whether Asker-generated questions are more constraining (fewer adequate answers) than random SE questions.]

@@ -1,0 +1,44 @@
+@flexiarg f6/negative-space-duality
+@title Negative Space Duality
+@sigils [🌑/空]
+@keywords NER, pattern, informal, formal, scaffolding, complement, mask, coverage, token, negative-space
+@audience futon6 developers, mathematical NLP researchers
+@tone architectural
+@factor Discernment (paññā)
+@references [math-informal/* ai4ci/dual-layer-proof-patterns hdm/bootstrap-kernel]
+
+! conclusion:
+  What NER covers is formal scaffolding; what NER leaves behind is where
+  informal reasoning patterns live. The two are complementary masks over
+  the same text, not competing annotations.
+
+  + context: You are annotating mathematical text with both named entities (terms,
+    definitions, symbols) and informal reasoning patterns (heuristics, strategies).
+  + IF:
+      NER term spotting identifies formal mathematical objects (named theorems,
+      defined terms, variable bindings) and pattern tagging identifies informal
+      reasoning moves (argue-by-contradiction, try-a-simpler-case, etc.).
+
+  + HOWEVER:
+      It is tempting to treat these as independent annotation layers applied to
+      different documents or different classes of text. In fact, both systems fire
+      on the same documents: high-term entities also have more patterns, not fewer.
+      The duality is spatial within text, not across documents.
+
+  + THEN:
+      Run both NER and pattern tagging on every document. Treat the NER-covered
+      tokens as "formal figure" and the remaining tokens as "informal ground."
+      Measure negative-space percentage (typically 87-99% of tokens). Use the
+      ratio as a document-level feature: low negative-space means dense formal
+      content; high negative-space means discursive reasoning.
+
+  + BECAUSE:
+      The Corneli (2014) thesis codes proofs as alternating formal steps (definition
+      expansion, deduction) and informal moves (conjecture, heuristic selection).
+      NER captures the former; the 25 math-informal patterns capture the latter.
+      Together they give an agent structured understanding that flat text cannot.
+
+  + NEXT-STEPS:
+    next[Validate duality on math.SE data after M-f6-ingest superpod run.]
+    next[Use negative-space ratio as a feature in M-f6-eval stratified sampling.]
+    next[Feed both layers to Agent B in M-f6-eval to test whether dual annotation outperforms either alone.]

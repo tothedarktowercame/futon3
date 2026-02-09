@@ -1,0 +1,45 @@
+@flexiarg f6/self-play-loop
+@title Self-Play Loop
+@sigils [♻️/遊]
+@keywords self-play, agent, asker, answerer, critic, evaluate, iterate, improve, graph, update
+@audience futon6 developers, agent designers
+@tone architectural
+@factor Persistence (viriya)
+@references [f6/q-turnstile-a f6/negative-space-duality ai4ci/collective-intelligence-evaluation]
+
+! conclusion:
+  Three agents — Asker, Answerer, Critic — form a self-play loop where each
+  iteration improves the knowledge graph and the agents' own performance.
+
+  + context: You are building the Artificial Stack Exchange: agents that ask, answer,
+    evaluate, and learn from mathematical questions using a shared knowledge graph.
+  + IF:
+      The Asker finds gaps in the knowledge graph (isolated nodes, missing inter-cluster
+      links, ungrounded pattern annotations). The Answerer uses graph context to construct
+      answers. The Critic evaluates QA pairs using the M-f6-eval scoring protocol.
+
+  + HOWEVER:
+      Self-play can degenerate: the Asker may generate trivial questions, the Answerer
+      may ignore graph context, the Critic may be unreliable, and graph updates may
+      introduce noise rather than signal. Without quality control, the loop amplifies
+      errors rather than correcting them.
+
+  + THEN:
+      Gate each iteration: Critic scores must exceed a threshold before graph updates
+      are committed. Track evaluation scores over iterations — if scores plateau or
+      decline, pause and diagnose. The Critic's evaluations should be periodically
+      calibrated against human judgement (spot-checks from M-f6-eval). The Asker
+      should be measured on question non-triviality, not just question volume.
+
+  + BECAUSE:
+      The Corneli (2014) thesis (§10.5) identified "simulation work with artificial
+      agents" as the key missing piece. The SFI Complexity Postdoc proposal modelled
+      this on the Artificial Stock Market: agents that trade create a market; agents
+      that ask and answer create a knowledge commons. The loop works only if the
+      commons improves — measurable via graph density, evaluation scores, and gap
+      reduction.
+
+  + NEXT-STEPS:
+    next[Implement Phase 1 of M-f6-agents: single-turn QA with graph context, baseline measurement.]
+    next[Define quality gates: minimum Critic score for graph update, minimum question novelty for Asker.]
+    next[Run 100-iteration pilot and measure graph growth (new relations, confidence scores, gap markers).]

@@ -1,0 +1,47 @@
+@flexiarg f6/stratum-bridge
+@title Stratum Bridge
+@sigils [🌉/通]
+@keywords bridge, stratum, SE, Arxiv, learning, research, channel, Thurston, concept, shared
+@audience futon6 developers, mathematical knowledge architects
+@tone architectural
+@factor Equanimity (upekkhā)
+@references [f6/bootstrap-loop f6/graph-enhanced-evaluation hdm/deep-storage-to-active-graph]
+
+! conclusion:
+  Stack Exchange is the learning stratum; Arxiv is the research stratum.
+  Bridge concepts — terms, patterns, and clusters that appear in both —
+  create Thurston's "channels for communication between the strata."
+
+  + context: You are connecting two corpora that represent different modes of
+    mathematical activity: people helping each other understand (SE) and people
+    creating new knowledge (Arxiv).
+  + IF:
+      The same mathematical concepts appear in both SE questions and Arxiv proofs,
+      but in different registers: informal and pedagogical in SE, formal and terse
+      in Arxiv. The NER kernel and pattern tagger provide a shared vocabulary for
+      detecting these overlaps.
+
+  + HOWEVER:
+      Naive term matching will over-connect: "group" appears in both corpora but
+      with different senses and scopes. Embedding similarity alone may conflate
+      superficially similar but mathematically distinct concepts. The bridge must
+      be precise enough to be useful and loose enough to discover non-obvious
+      connections.
+
+  + THEN:
+      Define bridge concepts as entities that appear in both corpora with (a) shared
+      NER terms from the kernel, (b) shared pattern tags, AND (c) embedding similarity
+      above a threshold. Rank bridges by information gain: a bridge that connects
+      otherwise-disconnected clusters is more valuable than one that reinforces an
+      existing connection. Feed high-value bridges to the Asker as question seeds.
+
+  + BECAUSE:
+      Thurston (1990) called for "the creation of channels for communication between
+      the strata." The Corneli (2014) thesis (§10.3) cited this as a goal for PlanetMath.
+      F6 realizes it computationally: the knowledge graph IS the channel, and bridge
+      concepts are the points where learning and research illuminate each other.
+
+  + NEXT-STEPS:
+    next[After M-f6-arxiv pilot: count bridge concepts between SE and Arxiv graphs.]
+    next[Rank bridges by information gain and present top-20 to Asker for question generation.]
+    next[Validate that bridge-seeded questions produce higher-quality QA pairs than gap-seeded questions.]

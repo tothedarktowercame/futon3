@@ -1,0 +1,42 @@
+@flexiarg f6/bootstrap-loop
+@title Bootstrap Loop
+@sigils [🔄/回]
+@keywords bootstrap, iterate, kernel, expand, absorb, coverage, dictionary, seed, loop
+@audience futon6 developers, corpus linguists
+@tone architectural
+@factor Persistence (viriya)
+@references [hdm/bootstrap-kernel f6/negative-space-duality]
+
+! conclusion:
+  Seed a term dictionary from a curated source, apply it to a messier corpus,
+  absorb new terms from that corpus, and iterate. Each pass through the loop
+  expands coverage and improves precision.
+
+  + context: You are building a mathematical NER kernel that must cover terminology
+    from multiple sources with different levels of structure.
+  + IF:
+      PlanetMath provides curated, structured term definitions (pmdefines, pmsynonym,
+      pmtitle) and Stack Exchange provides folksonomy tags and body-extracted terms
+      from a much larger but noisier corpus.
+
+  + HOWEVER:
+      Starting from SE alone produces a noisy dictionary full of common English words.
+      Starting from PlanetMath alone misses contemporary terminology and informal usage.
+      Neither source alone provides adequate coverage.
+
+  + THEN:
+      Bootstrap: PlanetMath seeds the kernel (high precision, limited recall) → apply
+      to SE (discover gaps) → absorb SE tags and body-extracted terms (expand recall)
+      → filter and merge → re-apply to SE (measure improvement) → iterate. Each cycle
+      expands the kernel while maintaining the curated core's precision.
+
+  + BECAUSE:
+      The NNexus system (Ginev, 2014) demonstrated that PlanetMath terms alone provide
+      useful auto-linking. The bootstrap loop extends NNexus's approach by using SE as
+      both a test corpus and a term source. Evidence: 3 PlanetMath repos → 2,731 terms;
+      all 63 repos → 19,236 terms; SE integration pending.
+
+  + NEXT-STEPS:
+    next[Run full bootstrap after M-f6-ingest: absorb math.SE tags into kernel, re-run spotter, measure coverage delta.]
+    next[Track precision/recall at each loop iteration to detect diminishing returns.]
+    next[Apply same loop pattern to Arxiv in M-f6-arxiv: SE-expanded kernel → Arxiv → absorb Arxiv terms.]

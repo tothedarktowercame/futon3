@@ -1,0 +1,46 @@
+@flexiarg f6/pattern-as-strategy
+@title Pattern as Strategy
+@sigils [🎯/策]
+@keywords pattern, strategy, agent, heuristic, Polya, operational, flexiarg, reasoning, move
+@audience futon6 developers, agent designers
+@tone architectural
+@factor Keen investigation (dhammavicaya)
+@references [math-informal/* f6/self-play-loop f6/q-turnstile-a]
+
+! conclusion:
+  The 25 math-informal patterns are not just annotations — they are operational
+  agent strategies. Each pattern tells an agent what to do next when reasoning
+  about a mathematical problem.
+
+  + context: You are designing agents that use the math-informal pattern library
+    as a repertoire of reasoning moves, following Pólya's tradition of heuristic
+    problem solving.
+  + IF:
+      The 25 math-informal patterns each have a conclusion (what the pattern achieves),
+      an IF/HOWEVER/THEN/BECAUSE structure (when and how to apply it), keywords
+      (for recognition in text), and next-steps (what follows from applying it).
+
+  + HOWEVER:
+      Patterns as written describe human reasoning strategies. An LLM agent may apply
+      them differently: it cannot truly "try a simpler case" the way a human does, but
+      it can decompose a question and generate a simpler sub-question. The mapping from
+      human heuristic to agent action is not always one-to-one.
+
+  + THEN:
+      For each of the 25 patterns, define an agent-operational interpretation: what
+      the Asker does with this pattern (generate a question), what the Answerer does
+      (construct an answer step), what the Critic does (check a condition). Include
+      the pattern's flexiarg keywords in the agent's prompt so it can name the pattern
+      it is using. Track which patterns the agents actually use via PSR/PUR records.
+
+  + BECAUSE:
+      The Corneli (2014) thesis (§10.6) calls for agents that can "apply standard and
+      social problem solving heuristics." The thesis Appendix B demonstrates that proofs
+      can be coded as sequences of pattern applications. The 25 flexiarg patterns are
+      the operational vocabulary for this coding. If agents can name and apply them,
+      the thesis's computational vision is realized.
+
+  + NEXT-STEPS:
+    next[Write agent-operational interpretation for at least 8 high-use patterns (the ones in M-f6-agents Table).]
+    next[Include pattern keywords in Agent B prompt template for M-f6-eval.]
+    next[After M-f6-agents Phase 1: measure which patterns agents cite most and whether citations are accurate.]

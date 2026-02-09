@@ -1,0 +1,47 @@
+@flexiarg f6/scope-chain-tracking
+@title Scope Chain Tracking
+@sigils [🔗/域]
+@keywords scope, variable, binding, Let, Define, Assume, local, global, chain, nesting
+@audience futon6 developers, mathematical NLP researchers
+@tone architectural
+@factor Discernment (paññā)
+@references [f6/negative-space-duality f6/bootstrap-loop]
+
+! conclusion:
+  Mathematical text introduces variables through scoped bindings (Let, Define,
+  Assume) that create nested contexts. Tracking these scope chains gives agents
+  awareness of what is "in play" at each point in a proof.
+
+  + context: You are building scope detection for mathematical NER, distinguishing
+    global entities (named theorems, definitions) from local bindings (variables
+    introduced for a specific proof or argument).
+  + IF:
+      Mathematical reasoning relies on Let-binding chains: "Let X be a topological
+      space. Let f: X → Y be continuous. Assume X is compact." Each binding
+      narrows the context and introduces variables that are meaningful only within
+      that scope.
+
+  + HOWEVER:
+      Scope detection via regex (7 patterns for Let/Define/Assume/Consider/where/
+      for-any/set-notation openers) captures the syntactic signal but not the
+      semantic nesting. A "Let" inside a proof inherits the scope of the theorem
+      statement. Arxiv papers have scope chains crossing section boundaries.
+
+  + THEN:
+      Implement in tiers. Tier 1 (classical, no GPU): regex scope-opener detection
+      with position tracking — enough for M-f6-ingest. Tier 2 (small model): classify
+      binding types (variable intro, function intro, assumption) and detect scope
+      closure. Tier 3 (LLM): full dependency graphs across proof/theorem/section
+      boundaries — needed for M-f6-arxiv.
+
+  + BECAUSE:
+      The Corneli (2014) thesis Appendix B notes that "variables can be introduced as
+      examples, which can have either 'global' or 'local' significance" (p.197).
+      The entity taxonomy (GlobalEntity vs LocalBinding) makes this distinction
+      computational. Scope awareness is what separates a term spotter from a
+      mathematical reasoner.
+
+  + NEXT-STEPS:
+    next[Integrate Tier 1 scope detection into superpod-job.py as Stage 5 of M-f6-ingest.]
+    next[Validate scope detection on physics.SE subset: expect >30% of answers contain Let/Define openers.]
+    next[Design Tier 2 binding classifier for post-ingest enrichment.]

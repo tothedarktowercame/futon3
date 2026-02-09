@@ -1,5 +1,5 @@
 {:queue/version "0.1"
- :queue/updated #inst "2026-02-08T22:00:00Z"
+ :queue/updated #inst "2026-02-09T00:00:00Z"
  :missions
  [{:mission/id "M1"
    :mission/name "Smoke Test + H1-Lite"
@@ -36,7 +36,11 @@
    :mission/depends ["f6/P0" "f6/P7"]
    :mission/spec "M-f6-ingest.md"
    :mission/status :ready
-   :mission/notes "Process math.SE through the full NLP pipeline on Rob's superpod. Prerequisites: Stage 5 integration, math.SE dump, superpod access."}
+   :mission/outpost {:id "O-1"
+                     :name "Pipeline Dry Run"
+                     :status :ready
+                     :depends []
+                     :notes "Run 5-stage pipeline locally on physics.SE subset (1K pairs, --skip-embeddings --skip-llm). No external dependencies."}}
 
   {:mission/id "M-f6-eval"
    :mission/name "F6 Evaluation — Graph-Enhanced Mathematical Q&A"
@@ -44,7 +48,17 @@
    :mission/depends ["M-f6-ingest"]
    :mission/spec "M-f6-eval.md"
    :mission/status :blocked
-   :mission/notes "Prove graph-enhanced QA outperforms bare LLM. Blocked on M-f6-ingest producing the annotated corpus."}
+   :mission/outposts
+   [{:id "O-0"
+     :name "Classical Baseline (Chapter 6 at SE Scale)"
+     :status :ready
+     :depends []
+     :notes "Run Corneli (2014) learning-event detection on physics.SE using NER kernel. O-U model fit. No GPU, no LLM. Standalone research result."}
+    {:id "O-2"
+     :name "Tiny Eval (20 Questions)"
+     :status :ready
+     :depends ["O-1"]
+     :notes "Micro-evaluation: Agent A vs Agent B on 20 physics.SE questions. Tests protocol and graph query interface."}]}
 
   {:mission/id "M-f6-agents"
    :mission/name "F6 Artificial Stack Exchange"
@@ -52,7 +66,11 @@
    :mission/depends ["M-f6-ingest" "M-f6-eval"]
    :mission/spec "M-f6-agents.md"
    :mission/status :blocked
-   :mission/notes "Asker/Answerer/Critic self-play loop. Blocked on both ingest and eval."}
+   :mission/outpost {:id "O-3"
+                     :name "One Agent, One Question"
+                     :status :blocked
+                     :depends ["O-2"]
+                     :notes "Single Answerer agent with full graph context on one physics.SE question. Can it name patterns and cite graph entities?"}}
 
   {:mission/id "M-f6-arxiv"
    :mission/name "F6 Arxiv Ingest — Scaling to Research Mathematics"
@@ -60,4 +78,23 @@
    :mission/depends ["M-f6-ingest" "M-f6-eval" "M-f6-agents"]
    :mission/spec "M-f6-arxiv.md"
    :mission/status :blocked
-   :mission/notes "Extend the SE pipeline to Arxiv papers. Blocked on all three prior F6 missions."}]}
+   :mission/outpost {:id "O-4"
+                     :name "One Paper"
+                     :status :ready
+                     :depends []
+                     :notes "Parse one Arxiv paper overlapping with physics.SE. Test LaTeX parser, NER coverage, scope chains, bridge concepts."}}]
+
+ ;; Outpost dependency graph (can run ahead of mission dependencies):
+ ;;
+ ;; O-0 ──────────────────┐
+ ;;  (classical baseline)  │
+ ;;                        ├──→ O-2 ──→ O-3
+ ;; O-1 ──────────────────┘    (tiny    (one agent
+ ;;  (pipeline dry run)         eval)    one question)
+ ;;
+ ;; O-4 (independent — one Arxiv paper)
+ ;;
+ ;; O-0, O-1, O-4 can run in parallel with zero dependencies.
+ ;; O-2 needs O-1's pipeline output.
+ ;; O-3 needs O-2's protocol and prompt template.
+ }

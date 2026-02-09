@@ -1,0 +1,43 @@
+@flexiarg f6/graph-enhanced-evaluation
+@title Graph-Enhanced Evaluation
+@sigils [📊/比]
+@keywords evaluation, graph, bare, enhanced, agent, comparison, blind, stratified, judge
+@audience futon6 developers, evaluation designers
+@tone methodological
+@factor Keen investigation (dhammavicaya)
+@references [f6/negative-space-duality ai4ci/collective-intelligence-evaluation]
+
+! conclusion:
+  Two agents, same questions, one has the graph. The difference measures
+  the value of structured mathematical knowledge representation.
+
+  + context: You are proving that the knowledge graph from M-f6-ingest makes
+    mathematical question answering measurably better.
+  + IF:
+      Agent A (bare) receives only raw question text. Agent B (graph-enhanced)
+      receives the question plus NER term annotations, pattern tags, scope records,
+      cluster context, and related entities via graph queries.
+
+  + HOWEVER:
+      Graph context might be distracting on easy questions where the answer is
+      obvious. The judge LLM's scores might not correlate with human judgement.
+      Agent B might simply be longer-winded rather than more accurate.
+
+  + THEN:
+      Stratify the evaluation by difficulty (easy/medium/hard). Use blind scoring
+      (judge sees both answers in randomised order). Measure multiple dimensions:
+      accuracy, completeness, coherence, depth. Spot-check judge scores against
+      human ratings. Hypothesis: improvement is largest on hard questions where
+      structure matters most.
+
+  + BECAUSE:
+      The AI4CI proposal designed this evaluation but never ran it. The thesis
+      (§10.6) called for "actionable semantic domain and user models" — the graph
+      IS the domain model. If structured representation doesn't measurably help,
+      the decade-long thesis is wrong. If it does help, we know exactly what kind
+      of structure matters and can scale to Arxiv.
+
+  + NEXT-STEPS:
+    next[Build MathKnowledgeGraph query interface as specified in M-f6-eval.]
+    next[Sample 200 questions stratified by difficulty from math.SE processed corpus.]
+    next[Run paired evaluation and compute significance tests.]

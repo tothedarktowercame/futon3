@@ -136,6 +136,38 @@ In Kolmogorov's calculus of problems:
 The Asker generates problems. The Answerer constructs solutions.
 The Critic verifies the construction.
 
+## Outpost
+
+### Outpost O-3: One Agent, One Question
+
+Before building the full self-play loop, test whether a single Answerer agent
+can meaningfully consume graph context on one physics.SE question.
+
+**Data**: One physics.SE question selected for richness — multiple NER terms,
+at least 2 pattern tags, scope bindings present, related QA available.
+**Method**:
+1. Assemble full graph context for the question: NER terms with definitions,
+   pattern tags, scope records, 5 most similar QA pairs
+2. Give the Answerer the question + graph context
+3. Ask the Answerer to: (a) answer the question, (b) name the reasoning
+   patterns it uses, (c) cite specific graph entities it drew on
+4. Manually evaluate: Did the agent actually use the graph? Are the pattern
+   citations accurate? Would the answer be worse without the graph?
+
+**Validates**:
+- [ ] Agent can parse and use the graph context format
+- [ ] Agent names patterns from the math-informal library (not hallucinated ones)
+- [ ] Agent cites specific NER terms or related QA pairs in its reasoning
+- [ ] Answer quality is noticeably different from bare-LLM answer to same question
+
+**Depends on**: O-2 (the graph query interface and prompt template from Tiny Eval)
+**Feeds**: Confidence that agents can consume the graph; prompt refinement
+before building the multi-agent loop
+
+**Pattern references**: `f6/pattern-as-strategy`, `f6/q-turnstile-a`
+
+---
+
 ## Implementation Sketch
 
 ### Phase 1: Single-turn Q&A with graph context

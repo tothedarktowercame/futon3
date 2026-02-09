@@ -87,6 +87,67 @@ Pattern recall against tagger labels for Task 4.
 - Medium: multi-step reasoning with 2-3 concepts
 - Hard: proof-based answers with scope chains and multiple patterns
 
+## Outposts
+
+### Outpost O-0: The Classical Baseline
+
+Before running any LLM evaluation, reproduce the Corneli (2014) Chapter 6
+method on physics.SE data using the NER kernel. This is a standalone research
+result that also creates the human-learning baseline for agent comparison.
+
+**Data**: physics.SE (`data/se-physics.json`, 114K pairs) — edit histories
+available in the SE data dump's PostHistory table
+**Method**:
+1. For each SE user with sufficient history: extract their term vocabulary
+   trajectory using the NER kernel (19,236 terms)
+2. Identify learning events: first use of each technical term by that user
+3. Identify treatment events: answers received, comments received, accepted
+   answers on their questions (all timestamped)
+4. Fit the Ornstein-Uhlenbeck impulse-damping model: does a treatment event
+   produce a detectable impulse in learning-event rate?
+
+**Validates**:
+- [ ] NER kernel produces meaningful vocabulary trajectories on SE data
+- [ ] Learning events are detectable (non-zero rate of new term adoption)
+- [ ] O-U model fits with plausible parameters (positive impulse, finite damping)
+- [ ] Results are comparable to Corneli (2014) PlanetMath findings (445 users)
+
+**Depends on**: NER kernel (already built), physics.SE data (already have),
+SE PostHistory table (need to extract from data dump)
+**Feeds**: Human-learning baseline for M-f6-agents agent comparison;
+validation that term spotting measures something real
+
+**Pattern references**: `f6/learning-event-detection`, `f6/bootstrap-loop`
+
+### Outpost O-2: Tiny Eval
+
+Before the full 200-question evaluation, run a micro-evaluation on 20
+physics.SE questions to test the protocol and graph query interface.
+
+**Data**: 20 physics.SE questions hand-selected for difficulty spread
+(7 easy, 7 medium, 6 hard)
+**Method**:
+1. Build a minimal MathKnowledgeGraph from existing NER annotations
+   (term hits from spot-terms.bb output, pattern tags from tag-patterns.bb)
+2. Agent A: Claude answers each question with raw text only
+3. Agent B: Claude answers with raw text + graph context (terms, patterns,
+   scope, related QA)
+4. Judge: Claude scores both answers blind, randomised order
+
+**Validates**:
+- [ ] Graph query interface works and returns useful context
+- [ ] Agent B prompt template produces coherent responses
+- [ ] Judge can distinguish answer quality (non-random scores)
+- [ ] At least a trend showing Agent B advantage on harder questions
+
+**Depends on**: NER kernel, pattern tags on physics.SE, spot-terms output
+**Feeds**: Protocol refinement before the full 200-question run;
+early signal on whether graph enhancement helps at all
+
+**Pattern references**: `f6/graph-enhanced-evaluation`, `f6/negative-space-duality`
+
+---
+
 ## Implementation Sketch
 
 ### Graph Query Interface

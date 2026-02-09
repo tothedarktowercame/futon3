@@ -41,6 +41,27 @@ Post-processing: 1 session.
 
 ## Work Plan
 
+### Outpost O-1: Pipeline Dry Run
+
+Run the full 5-stage pipeline locally on existing physics.SE data before
+touching the superpod. This proves the pipeline works end-to-end and
+validates Stage 5 (NER + scope detection) on real data.
+
+**Data**: physics.SE subset (first 1K pairs from `data/se-physics.json`)
+**Flags**: `--skip-embeddings --skip-llm` (CPU-only stages)
+**Validates**:
+- [ ] Stage 5 NER term spotting produces `ner-terms.json` with >95% entity coverage
+- [ ] Stage 5 scope detection finds Let/Define openers in >30% of answers
+- [ ] Output manifest.json is well-formed and matches expected entity count
+- [ ] Pipeline completes in <10 minutes on local hardware
+
+**Depends on**: Nothing beyond what already exists (physics.SE data + NER kernel)
+**Feeds**: Confidence to ship to Rob; bug fixes before they cost superpod time
+
+**Pattern references**: `f6/bootstrap-loop`, `f6/scope-chain-tracking`
+
+---
+
 ### Phase 1: Pre-flight (before superpod access)
 
 1. **Add Stage 5** to superpod-job.py: classical NER + scope detection

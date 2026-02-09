@@ -1,0 +1,450 @@
+@flexiarg social/ARGUMENT
+@title Argument for a Futon3c Social Coordination Layer
+@keywords argument, proof, social, realtime, coordination, agency, forum, peripheral, AIF
+@audience futon developers, decision-makers, theory reviewers
+@tone analytic-foundational
+@style argument
+@references [coordination/ARGUMENT futon-theory/four-types futon-theory/baldwin-cycle futon-theory/interface-loop futon-theory/structural-tension-as-observation futon-theory/retroactive-canonicalization futon-theory/mission-lifecycle futon-theory/event-protocol futon-theory/proof-path futon-theory/agent-contract social/verify-before-compose social/tension-before-code social/explicit-exit-over-abandonment]
+
+! argument:
+
+  This is a flexiformal argument for the futon3c social coordination
+  layer — the third AIF loop in the futon stack, operating at the
+  social/real-time timescale. It builds on the completed coordination
+  argument (coordination/ARGUMENT.flexiarg), which established the
+  task-timescale gate pipeline (futon3b) and the glacial-timescale
+  library evolution loop (L1). This argument establishes what the
+  social loop requires, why previous attempts failed, and what a
+  futonic implementation must look like.
+
+  The coordination argument was verified by implementation: futon3b
+  has 31 tests, 109 assertions, and an 8/8 machine-checked wiring
+  diagram. This argument is pre-implementation — it is what must be
+  valid BEFORE futon3c missions can be scoped.
+
+  == PART 0: Context — What Changed Since the Coordination Argument ==
+
+  The coordination argument (coordination/ARGUMENT.flexiarg) established:
+
+  - futon3 is split into three repos (war-room.md WR-1):
+    futon3a (query), futon3b (task+glacial), futon3c (social/realtime)
+  - The gate pipeline (G5→G0) is implemented and test-verified
+  - The glacial loop (L1-observe → L1-canon) is implemented and
+    test-verified, including the round-trip proof
+  - The concrete wiring diagram passes all 8 categorical checks
+
+  The devmap (futon3.devmap, updated 2026-02-09) now reflects this:
+  - P2 (Check DSL) is the gate pipeline, owned by futon3b
+  - P3 (Proof-State Journal) is the proof-path store, owned by futon3b
+  - P7 (Pattern Workbench) is partially implemented as L1 canonicalizer
+  - P8 (Joy Metrics), P10 (Training Ground) are assigned to futon3c
+  - P11 (Self-Description) is assigned to futon5
+
+  WHAT THE DEVMAP DOES NOT ADDRESS (social layer):
+  - No agent lifecycle management with formal invariants
+  - No real-time message routing with delivery guarantees
+  - No session persistence or continuity model
+  - No forum or collaborative proof-tree infrastructure
+  - No peripheral model (detach/reattach, capability envelopes)
+  - No standup or co-presence ceremony
+  - No PAR as first-class session event
+
+  These are precisely the concerns that futon3 attempted to address
+  with Agency, Forum, Drawbridge, and the bridge scripts — and that
+  failed. The question is: why did they fail, and what must be
+  different?
+
+  == PART I: Why the Social Layer Attempts Failed ==
+
+  Three empirical tensions, each grounded in the futon3 git log
+  with specific commit evidence. These are documented as standalone
+  patterns in library/social/.
+
+  S1. [from social/verify-before-compose]
+  Agency and Drawbridge code was written as architectural design
+  documents, not tested incrementally. Five forward-declaration
+  fix commits (f3044aa, adc8d67, 2da227e, 1542b0a, 6010d79) across
+  two subsystems demonstrate that namespaces were composed before
+  individual functions were verified to load. This is a systematic
+  violation of the event-protocol pattern (futon-theory): PROPOSE_CLAIM
+  preceded OBSERVE. The cost was multiplicative debugging at
+  integration time rather than additive debugging at definition time.
+
+  S2. [from social/tension-before-code]
+  Agency went through three generations before its invariants were
+  named. Generation 1-2 built four major features (bells, pages,
+  registry, session tracking) without any A0-A5 proof tests. Phase 1
+  (commit 588a468) wrote the invariant tests and found 18 failures.
+  Phase 2 (commits 5f85287, c5b5929, 3f0aa3a, 804fe8f, 5dcb28b)
+  fixed all five invariants — each commit message is a retroactive
+  confession: "eliminate catch _ nil" (A3), "no silent corruption"
+  (A2), "non-nil continuity" (A2), "bounded lifecycle" (A5),
+  "delivery receipts" (A0). The tension-observation loop
+  (futon-theory/structural-tension-as-observation) was not running.
+
+  S3. [from social/explicit-exit-over-abandonment]
+  Three subsystems were silently abandoned:
+  - Forum: 8 commits (4846339 through a346d27), ClassCastException
+    on first WebSocket test, last commit is bare "save", no mission
+    status update, 9 success criteria in M-agency-forum.md none
+    completed or marked blocked.
+  - PAR bell: designed for parallelism (9d76e88), forced sequential
+    (7fda538), 6 subsequent workaround commits, M-par-session-
+    punctuation.md has 1 of 8 checkboxes completed.
+  - IRC/MUSN bridge: 14+ fix commits (auth, timeouts, multi-room,
+    sanitizer on/off, prompt tightening, rate limiting), no exit
+    criteria, no convergence milestone.
+  Each abandonment violated the mission-lifecycle pattern
+  (futon-theory): no :active → :blocked transition, no recorded
+  blocker, no tension observation.
+
+  S4. [synthesis of S1-S3]
+  The three tensions are not independent. S1 (untested composition)
+  produces S2 (retroactive invariant discovery) because untested code
+  accumulates latent violations. S2 produces S3 (abandonment) because
+  retroactive invariant discovery is demoralizing — each rebuild
+  reveals more violations, and eventually the developer shifts
+  attention to a different subsystem. The cycle is:
+
+    build without tests → discover violations → confess invariants →
+    rebuild → discover more violations → abandon → start new subsystem
+
+  This is the structural cycle identified in the coordination
+  argument (H8), but operating at the social timescale rather than
+  the task timescale. The coordination argument broke this cycle for
+  the task loop by specifying invariants first (the gate patterns)
+  and verifying them categorically (the wiring diagram). The social
+  loop needs the same treatment.
+
+  S5. [from agency pattern library: 8 patterns]
+  The Agency pattern library documents the consequences of S1-S3 in
+  domain-specific terms. Eight patterns name specific failure modes:
+  - delivery-receipt: "sent" confused with "delivered"
+  - single-routing-authority: three routing tiers with conflicting state
+  - state-atomicity: transitions leave nil state on failure
+  - loud-failure: 20+ instances of (catch Exception _ nil)
+  - bounded-lifecycle: atoms grow unbounded, cleanup races
+  - identifier-separation: transport IDs overload LLM session IDs
+  - self-attribution: server posts on behalf of agents
+  - invariants (A0-A5): formal spec written after two generations
+
+  These patterns are empirically validated — the Phase 2 commits
+  confirm every failure mode. But they are post-mortems, not
+  specifications: they were induced from failures, not derived from
+  futon-theory. They document what went wrong without grounding
+  WHY in a theoretical framework that would predict the failure
+  class in advance.
+
+  S6. [from realtime pattern library: 13 patterns]
+  The realtime pattern library documents the consequences of S1-S3
+  in the bridge/transport domain. Thirteen patterns name failure
+  modes clustered around one theme: presence is not coherence.
+  - authoritative-transcript: multiple transcripts disagree
+  - listener-leases: phantom presence from old listeners
+  - liveness-heartbeats: pings don't distinguish quiet from partitioned
+  - rendezvous-handshake: "connected" confused with "coherent"
+  - transport-pivot: switching mid-stream creates split-brain
+  - mode-gate: mixing talk with action collapses accountability
+  - single-line-transport: IRC splits multi-line messages
+  - structured-events-only: free-text doesn't parse reliably
+
+  Like the agency patterns, these are post-mortems — induced from
+  the IRC bridge fix-cycle (14+ commits), not derived from
+  futon-theory.
+
+  S7. [from devmap P8, P10: orphaned greenfield prototypes]
+  Joy Metrics (P8) and Training Ground (P10) were assigned to
+  futon3c in the devmap update but have no implementation, no
+  mission documents, and no evidence. They are downstream of the
+  social coordination layer — they cannot be built until the layer
+  they depend on exists. Their greenfield status is a symptom of
+  S3 (abandonment): the infrastructure they need was attempted and
+  abandoned.
+
+  == PART II: What the Agency/Realtime Patterns Require ==
+
+  The agency and realtime patterns, despite being post-mortems, do
+  contain valid requirements. Reformulated as requirements (not
+  patterns), grounded in futon-theory:
+
+  R1. [from agency/delivery-receipt + futon-theory/proof-path]
+  Every message sent between agents must produce a delivery receipt
+  or an explicit failure. "No error" is not "success." The proof-path
+  pattern requires auditable chains; unreceipted messages are
+  unverifiable links.
+
+  R2. [from agency/single-routing-authority + futon-theory/single-source-of-truth]
+  For any agent-id, exactly one routing authority exists at a time.
+  Multiple routing tiers with conflicting state are a violation of
+  single-source-of-truth (I1).
+
+  R3. [from agency/state-atomicity + futon-theory/all-or-nothing]
+  State transitions are atomic: they succeed completely or fail
+  loudly with rollback. Partial transitions that leave nil state
+  violate all-or-nothing (I2).
+
+  R4. [from agency/loud-failure + futon-theory/error-hierarchy]
+  Errors surface at the layer that caused them. Silent catch-and-
+  swallow (catch _ nil) is a violation of error-hierarchy (I3).
+
+  R5. [from agency/bounded-lifecycle + futon-theory/agent-contract]
+  All transient resources have deterministic lifecycle bounds.
+  Fire-and-forget cleanup violates agent-contract (agents must
+  respect invariants).
+
+  R6. [from agency/identifier-separation + futon-theory/single-source-of-truth]
+  Transport IDs, continuity IDs, and protocol IDs are typed and
+  distinct. Overloading violates single-source-of-truth because
+  the same identifier means different things at different layers.
+
+  R7. [from realtime/rendezvous-handshake + futon-theory/event-protocol]
+  Connection must be followed by an explicit readiness handshake
+  before coordination can begin. The event-protocol requires
+  OBSERVE before PROPOSE_CLAIM; presence without readiness
+  assessment is unobserved action.
+
+  R8. [from realtime/authoritative-transcript + futon-theory/durability-first]
+  One transcript is authoritative. Multiple conflicting transcripts
+  violate durability-first (I0): what you save is not what you get
+  back if you're reading from the wrong transcript.
+
+  R9. [from realtime/structured-events-only + futon-theory/minimum-viable-events]
+  Events must be structured and machine-parseable. Free-text PSR/PUR
+  that don't parse reliably cannot be minimum viable events because
+  they cannot be reliably processed.
+
+  R10. [from realtime/mode-gate + futon-theory/agent-contract]
+  Coordination talk and action talk must be distinguishable. The
+  agent-contract requires agents to "observe before act"; mixing
+  the two modes collapses the observation/action boundary.
+
+  == PART III: What the Theory Demands ==
+
+  T1. [from futon-theory/four-types + futon-theory/interface-loop]
+  The futon stack operates at three timescales (war-room.md):
+  - Social (seconds): agents coordinate, hand off work, maintain
+    shared awareness
+  - Task (minutes): gate pipeline validates, executes, persists
+  - Glacial (weeks): library evolves through tension observation
+    and canonicalization
+
+  The interface-loop pattern says: at each layer boundary, a Baldwin
+  cycle (EXPLORE → ASSIMILATE → CANALIZE) must operate for cumulative
+  functional gain. futon3b implements this at the task/glacial
+  boundary (L1). The social/task boundary needs the same treatment:
+  a loop that observes coordination outcomes and feeds them into
+  the task pipeline.
+
+  T2. [from futon-theory/structural-tension-as-observation]
+  The social loop's observation vector is coordination failure:
+  dropped messages (R1), routing conflicts (R2), partial state (R3),
+  silent errors (R4), resource leaks (R5), identity confusion (R6).
+  These are the structural irritations, pre-symbolic pressures, and
+  trans-situational reappearances that the glacial loop should
+  eventually canonize — but they must first be observable at the
+  social timescale.
+
+  T3. [from futon-theory/mission-lifecycle + futon-theory/mission-scoping]
+  The social layer must be built as bounded missions with explicit
+  lifecycle transitions. S3 demonstrated that unbounded missions
+  with implicit abandonment create false affordances and archaeology
+  tax. Each futon3c mission must have: single owner, scope in/out,
+  success criteria, exit conditions, and explicit :blocked/:parked
+  transitions.
+
+  T4. [from futon-theory/event-protocol + futon-theory/proof-path]
+  Social-timescale events (agent connection, message exchange,
+  session handoff, peripheral hop) must produce typed records that
+  compose into proof paths. The coordination argument established
+  that proof paths are the minimum unit of auditability. The social
+  loop produces the fastest proof paths — they must be typed from
+  the start, not retroactively.
+
+  T5. [from futon-theory/retroactive-canonicalization]
+  The agency and realtime patterns ARE retroactive canonicalizations
+  — they were induced from failure. But they were not canonicalized
+  through the Baldwin cycle: they were not NAMED from recurring
+  tensions (they were named from post-mortems), not SELECTED by
+  threshold (they were all included regardless of recurrence), and
+  not CANALIZED into constraints (they exist as patterns but
+  constrain nothing). For futon3c, the canonicalization must be
+  genuine: patterns that pass through naming, selection, and
+  canalization via L1.
+
+  == PART IV: The Convergence ==
+
+  C1. [from S4, S5, S6]
+  The agency patterns (8) and realtime patterns (13) describe
+  different symptoms of the same disease: building distributed
+  coordination without the theoretical grounding that makes the
+  invariants predictable. The agency patterns focus on state/routing/
+  lifecycle; the realtime patterns focus on transport/presence/
+  coherence. But the three recurring failure modes are identical
+  across both:
+  - Silent failures (agency/loud-failure ↔ realtime/loop-failure-signals)
+  - Identity collapse (agency/identifier-separation ↔ realtime/listener-leases)
+  - Missing proof (agency/delivery-receipt ↔ realtime/rendezvous-handshake)
+
+  C2. [from R1-R10, T1]
+  The ten requirements (R1-R10) are not a grab-bag. They decompose
+  into three layers that correspond to the three AIF loop boundaries:
+  - Transport layer (R1, R7, R8, R9): delivery, readiness, transcript,
+    structure — the social→social boundary
+  - Routing layer (R2, R5, R6, R10): authority, lifecycle, identity,
+    mode separation — the social→task boundary
+  - State layer (R3, R4): atomicity, error propagation — the
+    task→task boundary (already enforced by futon3b gates)
+  R3 and R4 are already satisfied by the gate pipeline. The social
+  layer's job is R1-R2 and R5-R10: the requirements that operate
+  at the social timescale.
+
+  C3. [from T2, T4, T5]
+  The social loop must produce typed events that feed into the same
+  proof-path store that the task loop writes to. This is how the
+  three timescales compose:
+  - Social loop produces coordination events (connections, messages,
+    handoffs) as typed proof-path entries
+  - Task loop produces execution events (gate traversals) as typed
+    proof-path entries
+  - Glacial loop observes ALL proof-path entries for tensions and
+    canonizes new patterns
+
+  The L1 observer already has the three scan functions
+  (structural-irritation, pre-symbolic-pressure, trans-situational-
+  reappearance). If the social loop emits typed events into the
+  proof-path store, L1 can observe social-timescale tensions without
+  modification. The glacial loop is timescale-agnostic — it observes
+  structural patterns, not timescale-specific ones.
+
+  C4. [from S1-S3, T3]
+  The social layer must be built differently from how futon3 built
+  Agency/Forum/Drawbridge. Specifically:
+  - Verify before compose (S1): each namespace loads and passes
+    smoke tests before integration
+  - Tension before code (S2): invariant proof tests before
+    implementation
+  - Explicit exit (S3): mission lifecycle transitions, not silent
+    abandonment
+
+  These are development-process patterns, not runtime patterns.
+  They constrain HOW futon3c is built, not WHAT it builds. The
+  coordination argument did not need to state this because futon3b
+  was built futonic from the start (the gate patterns existed before
+  the code). futon3c must learn from the futon3 experience.
+
+  C5. [from C1, C2, C3, C4]
+  The social loop is not a separate system. It is the third
+  timescale of the same AIF diagram. The coordination argument
+  established two loops (task + glacial) sharing one boundary (the
+  gate pipeline). The social loop adds the fastest timescale:
+
+    social (seconds) → task (minutes) → glacial (weeks)
+        ↑                                     |
+        └─────── library constrains ──────────┘
+
+  Agents coordinate in real-time (social), submit work through
+  gates (task), accumulate evidence that evolves the library
+  (glacial), and the evolved library constrains future coordination
+  (social). This is the full AIF cycle across three timescales.
+  I3 (timescale ordering) governs all three boundaries.
+
+  == THESIS ==
+
+  Th. [from C1-C5]
+
+  futon3 attempted to build real-time agent coordination (Agency,
+  Forum, Drawbridge, bridges) without the theoretical grounding
+  that makes distributed invariants predictable. The result was
+  three generations of build-confess-rebuild for Agency, silent
+  abandonment of Forum, and a perpetual fix-cycle for bridges.
+  Twenty-one patterns (8 agency + 13 realtime) document the
+  symptoms; three social patterns (verify-before-compose,
+  tension-before-code, explicit-exit-over-abandonment) diagnose
+  the cause: the development process itself violated the same
+  invariants the system was trying to enforce.
+
+  futon3c must break this cycle by:
+
+  1. Deriving its invariants from futon-theory BEFORE writing code,
+     not inducing them from failures afterward (T5, S2)
+  2. Emitting typed events into the shared proof-path store so the
+     existing glacial loop can observe social-timescale tensions (C3)
+  3. Building as bounded missions with explicit lifecycle transitions,
+     verified incrementally (T3, C4)
+  4. Treating the agency and realtime patterns as evidence of
+     tensions, not as the architectural specification (C1)
+
+  The social loop is the fastest timescale in a three-level AIF
+  diagram. Its outputs feed the task loop (gate pipeline), whose
+  outputs feed the glacial loop (library evolution), whose outputs
+  constrain the social loop. The architecture is not three separate
+  systems — it is one system operating at three timescales, sharing
+  one typed evidence store and one categorical verification framework.
+
+  == WHAT FUTON3C MUST BUILD ==
+
+  FROM FUTON3 (failed attempts, as evidence):
+  - Agency A0-A5 invariants → validated in Phase 2, need porting
+    to a clean implementation with tests-first discipline
+  - Forum proof-tree concept → valid idea, failed execution;
+    needs mission-scoped retry with explicit exit conditions
+  - Drawbridge multi-agent routing → OOM-motivated redesign;
+    registration-based, not subprocess-based
+  - Peripheral model → concept drifted through 3 definitions;
+    needs grounding in futon-theory/agent-contract
+  - PAR session punctuation → elegant design, zero implementation;
+    needs bounded first milestone
+
+  FROM FUTON3B (proven infrastructure, as foundation):
+  - Gate pipeline (G5→G0) → social loop submits work through gates
+  - Proof-path store → social events written as typed records
+  - L1 observer → detects social-timescale tensions automatically
+  - L1 canonicalizer → promotes recurring social tensions to patterns
+  - Malli evidence shapes → social events must validate against shapes
+  - ct/mission.clj → social-loop wiring diagram must pass 8 checks
+
+  FROM FUTON-THEORY (constraints):
+  - event-protocol: social events follow OBSERVE → VERIFY sequence
+  - proof-path: social coordination produces auditable chains
+  - agent-contract: agents clock in, observe, attribute, respect
+    invariants
+  - interface-loop: Baldwin cycle at social→task boundary
+  - mission-lifecycle: bounded missions with explicit transitions
+
+  == VERIFICATION (PENDING) ==
+
+  V1. [required: social-exotype diagram]
+  A social-exotype.edn must be written and validated against
+  ct/mission.clj, analogous to coordination-exotype.edn. It must
+  encode the social-timescale components (Agency, Forum, peripherals)
+  and their edges, and pass all 8 checks including I3 (timescale
+  ordering: social→social and social→task edges only) and I4
+  (exogeneity: no social output reaches glacial constraints directly).
+
+  V2. [required: concrete diagram update]
+  futon3-coordination.edn must be extended with social-timescale
+  components and edges, and the combined diagram must still pass
+  all 8 checks. The existing Level 0 and Level 1 edges must remain
+  valid.
+
+  V3. [required: round-trip proof]
+  Analogous to futon3b's full-loop-round-trip test: a social
+  coordination event → typed proof-path entry → L1 observes tension →
+  L1 canonizes pattern → pattern constrains future social
+  coordination. This proves the three-timescale AIF cycle closes.
+
+  == STATUS ==
+
+  This argument is pre-implementation. It establishes:
+  - WHY previous social-layer attempts failed (S1-S7)
+  - WHAT the agency/realtime patterns require when reformulated as
+    futon-theory-derived requirements (R1-R10)
+  - HOW the social loop fits into the existing AIF diagram (C1-C5)
+  - WHAT must be verified before the implementation is accepted (V1-V3)
+
+  The next step is to scope bounded missions from this argument.
+  Each mission must cite specific requirements (R1-R10), specific
+  tensions (S1-S7), and specific verification criteria (V1-V3).
+  The social patterns (verify-before-compose, tension-before-code,
+  explicit-exit-over-abandonment) constrain how the missions are
+  executed, not just what they build.

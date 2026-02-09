@@ -1,0 +1,56 @@
+@flexiarg social/explicit-exit-over-abandonment
+@title Exit Subsystems Through the Lifecycle State Machine, Not Silent Abandonment
+@keywords abandonment, lifecycle, mission, exit, blocked, forum, PAR, state-machine
+@audience futon3c mission owners, coordination architects
+@tone analytic-foundational
+@style pattern
+@references [futon-theory/mission-lifecycle futon-theory/mission-scoping futon-theory/loud-failure futon-theory/minimum-viable-events]
+
+! conclusion: When a subsystem hits a blocking failure, transition it through the mission lifecycle state machine (:active -> :blocked with explicit blocker) rather than letting attention drift to a different subsystem. Silent abandonment is the project-management equivalent of catch _ nil — it suppresses a signal that downstream decisions depend on.
+  + context: You are building an ambitious multi-subsystem project (proof-tree forum, parallel agent execution, real-time bridges, session punctuation) where each subsystem has dependencies on others and where multiple agents or developers may pick up work based on stated mission status.
+  + IF:
+    A subsystem encounters its first serious integration failure — a ClassCastException in the WebSocket layer, an OOM when running a sidecar process, a race condition in parallel execution — and the developer's attention shifts to a different subsystem that seems more tractable or more urgent.
+  + HOWEVER:
+    Silent abandonment leaves the codebase in an inconsistent state. Partially built subsystems create false affordances: APIs that exist but don't work, mission documents that list success criteria for capabilities that were never completed, pattern libraries that reference subsystems that were tried and failed. The next developer (human or agent) cannot distinguish "not yet built" from "tried and failed" without git archaeology — and the git archaeology itself takes longer than building the thing would have, because abandoned code has no exit narrative.
+  + THEN:
+    When a subsystem hits a blocking failure, record three things: (1) the specific failure and its commit, (2) the mission lifecycle transition (:active -> :blocked, with blocker reference), and (3) what downstream missions are affected. If the subsystem is being deliberately deprioritized rather than blocked, transition to :parked with a rationale. Never leave a mission in :active status when no one is working on it.
+  + BECAUSE:
+    The mission-lifecycle pattern (futon-theory/mission-lifecycle) defines a state machine (:greenfield -> :scoped -> :active -> :blocked -> :review -> :done) precisely to make project state legible. Each transition produces a minimum viable event (futon-theory/minimum-viable-events) that downstream consumers can reason about. Abandonment without state transition violates both: it suppresses the event and makes the state illegible. The loud-failure pattern (futon-theory/loud-failure) applies identically — errors must surface at the layer that caused them, whether that layer is a runtime process or a development project.
+
+  + FAILURE-MODES:
+    - False affordance: an API exists, is referenced in mission docs and pattern libraries, but does not work; downstream agents build against it and fail at integration time
+    - Zombie mission: mission document says :in-progress but has no commits for weeks; another developer assumes it's being worked on and does not pick it up
+    - Archaeology tax: understanding why a subsystem was abandoned requires reading the full git log, cross-referencing with IRC logs, and guessing at context that was never recorded
+    - Perpetual fix cycle: rather than declaring a subsystem blocked and redesigning, the developer applies an unbounded series of point fixes that never converge on stability
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - mission-lifecycle: explicit state transitions -> abandoned subsystems must transition to :blocked or :parked
+    - mission-scoping: bounded ownership with exit conditions -> exit conditions must be evaluated, not ignored
+    - loud-failure: errors surface at the causing layer -> project-level failures must be as visible as runtime failures
+    - minimum-viable-events: log decision points, not surveillance -> a blocking failure is a decision point
+
+  + EVIDENCE:
+    futon3 git log, three subsystems:
+
+    Forum (built and abandoned):
+    - 4846339: "Implement Forum service for multi-agent proof trees" (initial build)
+    - 02b5257: "Fix forum WebSocket ClassCastException" (first integration failure)
+    - 17c87b7: "Fix Agency session handling and forum dispatch" (second fix)
+    - a346d27: "save" (final commit — bare save with no context)
+    8 total commits. No mission status update. No PAR. No :blocked transition.
+    M-agency-forum.md lists 9 success criteria including "Proof structure: Threads form valid proof trees" — none completed, none marked blocked.
+
+    PAR bell (parallel-to-sequential retreat):
+    - 9d76e88: "feat(par): Bell-based PAR architecture for remote agents" (designed for parallelism)
+    - 7fda538: "fix(par-bell): Run agents sequentially for cross-reading" (forced sequential)
+    - 6 subsequent fix commits (IPv6, hardcoded agents, failure tolerance, timeouts, CRDT cleanup)
+    M-par-session-punctuation.md: 1 of 8 checkboxes completed. No :blocked transition for the remaining 7.
+
+    IRC/MUSN bridge (perpetual fix cycle):
+    - 270061d: "Improve IRC-MUSN bridge stability" (stability grind begins)
+    - 14+ subsequent fix commits: auth handling, polling timeouts, multi-room support, sanitizer added then removed, prompt tightened, rate limiting, deduplication
+    No exit criteria defined. No mission document. No convergence milestone.
+
+  + NEXT-STEPS:
+    Audit futon3c missions monthly. Any subsystem with no commits for 2+ weeks and no :blocked or :parked status transition indicates the pattern is not holding. Record violations as tension observations for the L1 glacial loop.

@@ -1,0 +1,54 @@
+@flexiarg social/tension-before-code
+@title Specify Invariants Before Writing the Code They Constrain
+@keywords invariants, proof-tests, tension, observation, retroactive, confession, rebuild
+@audience futon3c implementers, coordination system architects
+@tone analytic-foundational
+@style pattern
+@references [futon-theory/structural-tension-as-observation futon-theory/retroactive-canonicalization futon-theory/proof-path futon-theory/stop-the-line]
+
+! conclusion: Invariant proof tests must be written before the implementation they constrain. Invariants discovered during a rebuild are evidence that the tension-observation loop was not running — they have the same information content as proactive specifications, but the retroactive path pays the cost of building, debugging, and discarding code that violates them.
+  + context: You are building a coordination layer that must uphold distributed-system guarantees: delivery receipts, single routing authority, atomic state transitions, loud failure propagation, and bounded resource lifecycles.
+  + IF:
+    The system is built feature-first — bells, pages, registries, kick endpoints, session tracking — with correctness properties assumed to hold implicitly through careful coding.
+  + HOWEVER:
+    Without explicit invariants specified upfront, each successive generation discovers violations that were present from the start. The "rebuild" that fixes them is a confession that retroactively names what should have been preconditions. This turns development into an unbounded cycle: build features -> discover violations -> confess invariants -> rebuild -> discover new violations. Agency went through three generations of this cycle before achieving invariant coverage.
+  + THEN:
+    Write invariant proof tests first, as failing tests that define the boundary conditions. Derive the implementation from what the tests require. Treat any invariant discovered during implementation (rather than before it) as a tension observation: record it, but also ask why the structural-tension-as-observation loop did not detect it earlier.
+  + BECAUSE:
+    The structural-tension-as-observation pattern (futon-theory) defines three detection criteria: structural irritation (recurring gaps), pre-symbolic pressure (repeated early failures), and trans-situational reappearance (same pattern across contexts). All five Agency invariant violations (A0-A5) exhibited all three criteria across two generations of code before they were named. The observation loop existed in theory; it was not running in practice. Writing tests first forces the loop to run.
+
+  + FAILURE-MODES:
+    - Confession-driven rebuild: each generation's commit messages explicitly name the bugs of the previous ("eliminate catch _ nil", "no silent corruption", "non-nil continuity"), but only after the buggy code has been built and deployed
+    - Invariant debt compounding: A0 (delivery) violations mask A3 (loud failure) violations which mask A5 (bounded lifecycle) violations; fixing one reveals the next, extending the rebuild indefinitely
+    - False completion: a subsystem is declared "done" (M-agency-unified-routing) but the done state hides invariant violations that the next mission (M-agency-rebuild) must discover from scratch
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - structural-tension-as-observation: the three criteria (irritation, pressure, reappearance) detect invariant gaps if the loop is running -> write tests that embody the criteria before code
+    - retroactive-canonicalization: the Baldwin cycle (NAMING -> SELECTION -> CANALIZATION) applies to invariants: name them, select the ones that recur, canalize them as tests -> but doing this retroactively means you already paid the build cost
+    - stop-the-line: when invariants fail, block APPLY_CHANGE -> tests-first is stop-the-line applied to development, not just runtime
+
+  + EVIDENCE:
+    futon3 git log, Agency subsystem, three generations:
+
+    Generation 1-2 (no invariant tests):
+    - ad6bea1: "feat(agency): bell ack flow + stable codex drawbridge"
+    - 01d0d93: "feat(agency): Add /agency/page endpoint for sync agent requests"
+    - 84ac0e0: "Add unified agent registry for Agency"
+    - 92fe6a1: "feat(agency): Track session IDs for connected agents"
+    4 major features built without A0-A5 proof tests.
+
+    Phase 1 (invariants named, tests written):
+    - 588a468: "Phase 1: invariant proof tests (A0-A5) + integration tests"
+    Result: 18 test failures documented. All five invariants violated.
+
+    Phase 2 (confessions):
+    - 5f85287: "Phase 2: A0 — explicit delivery receipts for bells/whistles"
+    - c5b5929: "Phase 2: A1 — enforce single routing authority across stores"
+    - 3f0aa3a: "Phase 2: A3 — loud failure status checks + eliminate catch _ nil"
+    - 804fe8f: "Phase 2: A2 — atomic state (no silent corruption, atomic writes, non-nil continuity)"
+    - 5dcb28b: "Phase 2: A5 — bounded lifecycle (acks bound, TTL enforced, disconnect cascades)"
+    5 commits, one per invariant. Each commit message is a confession: the feature it fixes was built without the property it enforces.
+
+  + NEXT-STEPS:
+    For each futon3c subsystem, track whether invariant proof tests were committed before or after the implementation they constrain. A ratio below 0.5 (tests-first / total invariant tests) indicates the pattern is not holding.

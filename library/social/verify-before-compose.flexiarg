@@ -1,0 +1,41 @@
+@flexiarg social/verify-before-compose
+@title Verify Each Component Before Composing It With Others
+@keywords incremental, verification, composition, forward-declaration, load-order, namespace
+@audience futon3c implementers, multi-agent system builders
+@tone analytic-foundational
+@style pattern
+@references [futon-theory/event-protocol futon-theory/proof-path futon-theory/agent-contract]
+
+! conclusion: Each namespace in a multi-agent coordination system must load cleanly and pass its own proof tests before being composed with others. The proof-path discipline (OBSERVE -> VERIFY at each step) applies to the development process itself, not only to runtime evidence.
+  + context: You are building a real-time coordination system with multiple interoperating subsystems (agent registry, message routing, session management, bridge scripts) that will be composed into a single running process.
+  + IF:
+    Components are designed as coherent architectural units — a registry, a proof-tree forum, a bell/whistle protocol — and written to match a design specification.
+  + HOWEVER:
+    Code written to match a design document without incremental load-and-test accumulates latent errors (unresolved forward declarations, namespace ordering, type mismatches) that only surface when integration is attempted. At that point the debugging cost is multiplicative: each broken dependency interacts with every other, and the developer cannot tell whether a failure is in their code or in a dependency they assumed worked.
+  + THEN:
+    Require each namespace to compile and load before adding the next dependency. Write a minimal smoke test (can I call each public function without exception?) before composing namespaces. Treat a forward-declaration fix as a bug report against the development process, not a normal commit.
+  + BECAUSE:
+    The event-protocol pattern (futon-theory/event-protocol) requires OBSERVE before PROPOSE_CLAIM and VERIFY before the next step; applying this same discipline to development means you cannot claim a namespace works (PROPOSE_CLAIM) without first loading it (OBSERVE) and checking its public API (VERIFY). Forward declarations are evidence that PROPOSE_CLAIM preceded OBSERVE.
+
+  + FAILURE-MODES:
+    - Load-order cascade: namespace A requires B which requires C, but C was never loaded independently; a typo in C surfaces only when A is loaded, and the error message points at A
+    - Forward-declaration debt: 5+ forward-declaration fix commits indicate a systematic habit of writing code as design documents rather than testable units
+    - Integration surprise: components that individually appear complete fail on first real composition because internal assumptions (atom state, protocol shape, identifier semantics) were never checked across boundaries
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - event-protocol: OBSERVE -> VERIFY at each step -> verify each namespace at each step
+    - proof-path: auditable chain from intent to proof -> development commits form a proof path; untested code is an unverified link
+    - agent-contract: "observe before act" -> load before compose
+
+  + EVIDENCE:
+    futon3 git log, agency and drawbridge subsystems:
+    - f3044aa: "fix(agency): Add forward declaration for agent-sessions"
+    - adc8d67: "fix(agency): Add forward declaration for kick-agent!"
+    - 2da227e: "Fix defonce syntax in registry.clj"
+    - 1542b0a: "fix(drawbridge): Add forward declaration for handle-par-bell!"
+    - 6010d79: "Fix: add connect-irc! to forward declarations in drawbridge"
+    5 instances across 2 subsystems. Each commit fixes a function that was called before it was defined, meaning the namespace was never loaded between writing the call site and writing the function. This is systematic, not incidental.
+
+  + NEXT-STEPS:
+    Count forward-declaration fixes in futon3c's git history after the first 30 commits. If the count exceeds 1, the pattern is not being followed and should be discussed in the next PAR.

@@ -1,5 +1,5 @@
 {:queue/version "0.1"
- :queue/updated #inst "2026-01-23T17:10:00Z"
+ :queue/updated #inst "2026-02-08T22:00:00Z"
  :missions
  [{:mission/id "M1"
    :mission/name "Smoke Test + H1-Lite"
@@ -28,4 +28,36 @@
       :timestamps-inst {:status :pass :evidence "#inst format, not #object"}}
      :run/artifacts
      ["/home/joe/code/futon3a/log/musn-8bb79fd6.edn"]
-     :run/notes "Fixed timestamp serialization from #object to #inst. Shell escaping of ! handled by wrapper scripts."}]}]}
+     :run/notes "Fixed timestamp serialization from #object to #inst. Shell escaping of ! handled by wrapper scripts."}]}
+
+  {:mission/id "M-f6-ingest"
+   :mission/name "F6 Exploration and Ingest (Superpod Run)"
+   :mission/type :infrastructure
+   :mission/depends ["f6/P0" "f6/P7"]
+   :mission/spec "M-f6-ingest.md"
+   :mission/status :ready
+   :mission/notes "Process math.SE through the full NLP pipeline on Rob's superpod. Prerequisites: Stage 5 integration, math.SE dump, superpod access."}
+
+  {:mission/id "M-f6-eval"
+   :mission/name "F6 Evaluation — Graph-Enhanced Mathematical Q&A"
+   :mission/type :evaluation
+   :mission/depends ["M-f6-ingest"]
+   :mission/spec "M-f6-eval.md"
+   :mission/status :blocked
+   :mission/notes "Prove graph-enhanced QA outperforms bare LLM. Blocked on M-f6-ingest producing the annotated corpus."}
+
+  {:mission/id "M-f6-agents"
+   :mission/name "F6 Artificial Stack Exchange"
+   :mission/type :research
+   :mission/depends ["M-f6-ingest" "M-f6-eval"]
+   :mission/spec "M-f6-agents.md"
+   :mission/status :blocked
+   :mission/notes "Asker/Answerer/Critic self-play loop. Blocked on both ingest and eval."}
+
+  {:mission/id "M-f6-arxiv"
+   :mission/name "F6 Arxiv Ingest — Scaling to Research Mathematics"
+   :mission/type :infrastructure
+   :mission/depends ["M-f6-ingest" "M-f6-eval" "M-f6-agents"]
+   :mission/spec "M-f6-arxiv.md"
+   :mission/status :blocked
+   :mission/notes "Extend the SE pipeline to Arxiv papers. Blocked on all three prior F6 missions."}]}

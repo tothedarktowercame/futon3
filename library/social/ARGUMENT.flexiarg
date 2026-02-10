@@ -502,16 +502,22 @@ event can flow through all three timescales and return as a library constraint.
 
   == STATUS ==
 
-  This argument is pre-implementation. It establishes:
-  - WHY previous social-layer attempts failed (S1-S7)
-  - WHAT the agency/realtime patterns require when reformulated as
-    futon-theory-derived requirements (R1-R10)
-  - HOW the social loop fits into the existing AIF diagram (C1-C5)
-  - WHAT must be verified before the implementation is accepted (V1-V3)
+  This argument is at the VERIFY step of the derivation xenotype.
 
-  The next step is to scope bounded missions from this argument.
-  Each mission must cite specific requirements (R1-R10), specific
-  tensions (S1-S7), and specific verification criteria (V1-V3).
-  The social patterns (verify-before-compose, tension-before-code,
-  explicit-exit-over-abandonment) constrain how the missions are
-  executed, not just what they build.
+  COMPLETE:
+  - IDENTIFY: futon3 git archaeology (social-layer failures)
+  - MAP: Three social patterns (verify-before-compose, tension-before-code,
+    explicit-exit-over-abandonment)
+  - DERIVE: Ten requirements (R1-R10) from agency/realtime patterns via
+    futon-theory
+  - ARGUE: This document (S1-S7, R1-R10, T1-T5, C1-C6, thesis)
+
+  ACTIVE:
+  - VERIFY: M-social-exotype (futon3c/holes/missions/M-social-exotype.md)
+    - V1: social-exotype.edn — standalone diagram validation
+    - V2: three-diagram composition — cross-diagram I3, I4, I6 checks
+    - V3 requires implementation (subsequent mission)
+
+  PENDING:
+  - INSTANTIATE: M-agency-refactor, M-forum-refactor, M-peripheral-model
+    (blocked on M-social-exotype — cannot scope until exotype exists)

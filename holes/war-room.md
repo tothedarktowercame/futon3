@@ -52,19 +52,26 @@ futon3c (social)  →  futon3b (task)  →  futon3b L1 (glacial)
 - Pattern search (notions/compass), meme store, typed arrows.
 
 ### futon3b
-- **M-coordination-rewrite** [ACTIVE] — Gate pipeline + library evolution
-  - Phase 0 (search): DONE
-  - Phase 1 (gate scaffold): DONE
-  - Phase 2 (store integration): CURRENT
-  - Phase 3 (Level 1): PLANNED
-- Tracked in: `futon3b/AGENTS.md`
+- **M-coordination-rewrite** [DONE] — Gate pipeline + library evolution
+  - Part I (composition plan): DONE (CP-0)
+  - Part II (gate pipeline): DONE (CP-1, CP-2, CP-2b, CP-3)
+  - Part III (Level 1 glacial loop): DONE (CP-4)
+  - 31 tests, 109 assertions, ct/mission.clj 8/8 checks
+- Tracked in: `futon3b/AGENTS.md`, `futon3b/holes/missions/M-coordination-rewrite.md`
 
-### futon3c (new)
-- **M-agency-refactor** [PLANNED] — Port + refactor Agency from futon3
-- **M-forum-refactor** [PLANNED] — Port + refactor Forum from futon3
-- **M-peripheral-model** [PLANNED] — Formalize peripheral spec, implement hop
+### futon3c
+- **M-social-exotype** [ACTIVE] — Social exotype diagram + nested composition
+  - VERIFY step of derivation xenotype (IDENTIFY through ARGUE complete)
+  - Part I: social-exotype.edn (standalone validation)
+  - Part II: nested composition framework (futon5 contribution)
+  - Part III: gate-governed build (Prototype 0 — bootstrap closure)
+  - Argument: `futon3/library/social/ARGUMENT.flexiarg`
+  - Tracked in: `futon3c/holes/missions/M-social-exotype.md`
+- **M-agency-refactor** [BLOCKED on M-social-exotype] — Port + refactor Agency
+- **M-forum-refactor** [BLOCKED on M-social-exotype] — Port + refactor Forum
+- **M-peripheral-model** [BLOCKED on M-social-exotype] — Formalize peripheral spec
 - Source missions in futon3: M-drawbridge-multi-agent, M-par-session-punctuation,
-  M-agency-rebuild, M-agency-forum
+  M-agency-rebuild, M-agency-forum (evidence of tensions, not specifications)
 
 ### Cross-Futon
 - **futon5** — Wiring diagrams, CT DSL, tensor math. Provides the formal
@@ -105,6 +112,26 @@ source.
 **BECAUSE:** The library is the shared slow variable (I3). Multiple copies
 with independent evolution would violate I4 (preference exogeneity) — fast
 loops would be able to modify their own constraints.
+
+### WR-3: Social exotype before implementation (2026-02-09)
+
+**IF:** futon3c needs to implement Agency, Forum, peripherals, and bridges
+**HOWEVER:** Three previous attempts at social-layer code failed (Agency 3
+generations, Forum abandoned, bridge perpetual fix-cycle) because invariants
+were discovered retroactively instead of specified proactively
+**THEN:** Write the social exotype diagram and validate it before writing any
+futon3c implementation code. Extend futon5's composition framework to validate
+the three-diagram stack (futon3a + futon3b + futon3c) as one system.
+**BECAUSE:** The derivation xenotype requires VERIFY before INSTANTIATE. The
+coordination rewrite succeeded because the exotype existed before the gates.
+The social loop must follow the same path. Additionally, the composition
+framework is isomorphic to pheno-geno-exo stacking in futon5 — building it
+earns the theoretical readiness (mana) that unblocks gated futon5 missions.
+
+**Evidence:**
+- `library/social/ARGUMENT.flexiarg` establishes S1-S3, R1-R10, C1-C6
+- futon3b succeeded with exotype-first approach (8/8 checks, 31 tests)
+- futon5 missions gated on mana are gated on composition validation capability
 
 ## Coordination Protocol
 

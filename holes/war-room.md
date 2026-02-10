@@ -62,9 +62,11 @@ futon3c (social)  →  futon3b (task)  →  futon3b L1 (glacial)
 ### futon3c
 - **M-social-exotype** [ACTIVE] — Social exotype diagram + nested composition
   - VERIFY step of derivation xenotype (IDENTIFY through ARGUE complete)
-  - Part I: social-exotype.edn (standalone validation)
-  - Part II: nested composition framework (futon5 contribution)
-  - Part III: gate-governed build (Prototype 0 — bootstrap closure)
+  - Part I: social-exotype.edn (standalone 8/8 validation) [DONE]
+  - Part II: nested composition framework (futon5 contribution, Codex issue #2) [IN PROGRESS]
+  - Part III: gate-governed build (Prototype 0 — bootstrap closure) [DONE]
+    - 3 proof-paths in futon3b/data/proof-paths/ (Part I, II, III)
+    - `futon3b/src/futon3b/bootstrap.clj` — REPL helper
   - Argument: `futon3/library/social/ARGUMENT.flexiarg`
   - Tracked in: `futon3c/holes/missions/M-social-exotype.md`
 - **M-agency-refactor** [BLOCKED on M-social-exotype] — Port + refactor Agency

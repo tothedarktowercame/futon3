@@ -270,6 +270,7 @@ reusable in other knowledge domains.
     next[Bootstrap loop: absorb math.SE tags into kernel, re-spot, iterate]
     next[Design binding type classification for GPU (Tier 2 NER)]
     next[Arxiv processing: extend pipeline to research papers]
+    next[Feed processed math.SE into P10 wiring diagram LLM training pipeline]
 
   :success-criteria
     pass[Q&A pairs import correctly]
@@ -340,3 +341,96 @@ reusable in other knowledge domains.
 
   :psr-example "Selected reusable models for transfer because general models should work elsewhere"
   :pur-template "Model {{id}}, domain: {{F6|other}}, reused: {{yes|no}}"
+
+
+! instantiated-by: Prototype 10 — Wiring Diagram LLM [🔸/小 🐲/乃]
+  :maturity :design
+  :depends-on [f6/P0, f6/P7]
+  :evidence-for-active [Metatheory v3.0 defines 78-type schema; CT validation baseline; local topology metrics operational]
+
+  + context: The wiring diagram metatheory (v3.0) defines mathematical text as a
+    colored operad with 30 component types, 11 port types, 5 wire types, and 32
+    wire labels. Classical regex detection finds components and wires individually
+    but cannot wire endpoints (50% orphan rate). LLM extraction fills this gap
+    but is expensive at scale. Training a dedicated model enables batch processing.
+
+  + IF: You want to extract wiring diagrams from all of math.SE (~500K-1.5M QA pairs)
+  + HOWEVER: API-based LLM extraction is too expensive at that scale
+  + THEN: Train a dedicated wiring diagram LLM on the superpod using distillation
+    from Claude labels, with math.SE as bulk training data
+  + BECAUSE: The task decomposes into two learnable functions that LLMs natively
+    understand: text→wiring (extraction) and wiring→wiring (Q→A reasoning)
+
+  + ARCHITECTURE:
+
+    Task 1 — Text → Wiring Diagram (extraction):
+      Input: mathematical text (SE answer, PM definition, nLab article)
+      Output: {components: [...], ports: [...], wires: [...]} (78-type JSON)
+      Training: distill from Claude on seed labels → fine-tune on bulk
+
+    Task 2 — Wiring Diagram → Wiring Diagram (reasoning):
+      Input: question wiring diagram (open ports, missing conclusion)
+      Output: answer wiring diagram (filled ports, added wires, conclusion)
+      Training: every math.SE Q→A pair provides one (Q_wiring, A_wiring) example
+      Insight: Q→A is native to LLM pretraining; wiring diagrams make the
+        reasoning structure explicit rather than implicit in surface text
+
+    Validation loop:
+      answer_wd = Task2(question_wd)
+      answer_text = render(answer_wd)
+      recovered_wd = Task1(answer_text)
+      assert similar(answer_wd, recovered_wd)  # round-trip consistency
+
+    Quality signal (free, no human labels):
+      Local topology metrics as reward model —
+        orphan rate, sink property, reachability, CAR/arity match
+      The classical baseline provides negative examples (high orphan rate)
+      Claude-labeled provides positive examples (well-formed wiring)
+
+  + DATA INVENTORY:
+    data[PlanetMath: 9,451 entries — gold standard definitions with CAR, arity, pmrelated graph]
+    data[nLab: ~20,000 articles — cross-referenced, 137 bridge concepts to PM CT]
+    data[Math.SE: ~500K-1.5M QA pairs — bulk reasoning data, native Q→A structure]
+    data[Physics.SE: 114K QA pairs — already processed, cross-domain validation]
+    data[NER kernel: 19,236 terms — domain vocabulary for typed slots]
+    data[Golden-20 CT entries: pre-baked wiring prompts for seed labeling]
+
+  + TRAINING PIPELINE:
+    stage[1. Seed: Claude labels 200 entries with full wiring JSON (golden + bridge concepts)]
+    stage[2. Bootstrap: LoRA fine-tune Llama-3-8B on seed labels for Task 1]
+    stage[3. Scale: Run bootstrap model on math.SE via superpod (new Stage 3b)]
+    stage[4. Filter: Keep extractions with low orphan rate + correct sink property]
+    stage[5. Train: Full fine-tune on filtered math.SE wiring pairs for Task 1 + Task 2]
+    stage[6. Validate: Check against PM gold standard — CAR match, arity match, topology improvement]
+    stage[7. Curriculum: Use in-link stratification for curriculum learning — train on foundational concepts first]
+
+  + EVIDENCE:
+    evidence[Wiring diagram metatheory v3.0: 78 types (30 component + 11 port + 5 wire + 32 label)]
+    evidence[CT validation: 313 PM entries, classical baseline (3.93 comp/entry, 3.60 wire/entry)]
+    evidence[Local topology: 21% well-formed by classical (50% orphan rate = the gap LLM fills)]
+    evidence[PM↔nLab bridge: 137 concept pairs for cross-corpus validation]
+    evidence[PM in-link stratification: 9,451 entries, 18,326 links, power-law distribution]
+    evidence[Component:wire ratio encodes style: PM 2:1 (reference) vs nLab 1:3 (tutorial)]
+    evidence[Rewiring morphism: structured transformation preserving content, changing pedagogy]
+    evidence[Colored operad structure: meta/domain/informal sorts with typed port constraints]
+    evidence[Quotient functor tower: curriculum = sequence of coarsenings over the operad]
+    evidence[Technote: technote-colored-operad-curriculum.md]
+
+  + NEXT-STEPS:
+    next[Download math.SE dump and estimate actual corpus size]
+    next[Generate 200 Claude-labeled wiring diagrams from golden + bridge entries]
+    next[Build LoRA training script for Task 1 (text → wiring JSON)]
+    next[Design wiring diagram serialization format for Task 2 (compact, tokenizer-friendly)]
+    next[Add Stage 3b to superpod-job.py: wiring extraction via fine-tuned model]
+    next[Build Blockly prototype for visualization of extracted wiring diagrams]
+
+  :success-criteria
+    pass[Task 1 extracts wiring diagrams with <20% orphan rate on PM gold standard]
+    pass[Task 2 generates answer wirings that round-trip through Task 1]
+    pass[Model runs on superpod at >100 entries/minute]
+    pass[Extracted wirings match classical baseline on component/wire counts (±20%)]
+    fail[Model hallucinates component types not in the 78-type schema]
+    fail[Orphan rate worse than classical baseline (>50%)]
+
+  :psr-example "Selected wiring diagram LLM because API extraction doesn't scale to math.SE"
+  :pur-template "Training run {{id}}, task: {{T1|T2}}, data: {{count}}, orphan_rate: {{rate}}"

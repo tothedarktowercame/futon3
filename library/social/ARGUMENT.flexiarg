@@ -4,7 +4,7 @@
 @audience futon developers, decision-makers, theory reviewers
 @tone analytic-foundational
 @style argument
-@references [coordination/ARGUMENT coordination/INDEX futon-theory/four-types futon-theory/baldwin-cycle futon-theory/interface-loop futon-theory/structural-tension-as-observation futon-theory/retroactive-canonicalization futon-theory/mission-lifecycle futon-theory/event-protocol futon-theory/proof-path futon-theory/agent-contract social/verify-before-compose social/tension-before-code social/explicit-exit-over-abandonment]
+@references [coordination/ARGUMENT coordination/INDEX futon-theory/four-types futon-theory/baldwin-cycle futon-theory/interface-loop futon-theory/structural-tension-as-observation futon-theory/retroactive-canonicalization futon-theory/mission-lifecycle futon-theory/event-protocol futon-theory/proof-path futon-theory/agent-contract social/verify-before-compose social/tension-before-code social/explicit-exit-over-abandonment social/scope-bounded-handoff]
 
 @summary The futon3 IFR states: "FUTON3 turns messy activity into organised
 knowledge by checking work against shared patterns and producing auditable
@@ -241,6 +241,18 @@ event can flow through all three timescales and return as a library constraint.
   Coordination talk and action talk must be distinguishable. The
   agent-contract requires agents to "observe before act"; mixing
   the two modes collapses the observation/action boundary.
+
+  R11. [from social/scope-bounded-handoff + futon-theory/I4]
+  Agent handoffs must declare writable scope. Constraint-timescale
+  artifacts (exotype diagrams, pattern library, mission specs) are
+  read-only from the task timescale. This is I4 (exogeneity) applied
+  to agent coordination: no task-timescale agent can modify a
+  constraint-timescale artifact. Scope violations must be structurally
+  rejected, not conventionally discouraged.
+  Evidence: futon5 feat/compose-parallel review (2026-02-10) — Codex
+  rewrote social-exotype.edn (constraint artifact) to make compose-
+  parallel tests pass, discarding gate duality (C6) and ARGUMENT
+  traceability. Three tensions recorded in proof-path store.
 
   == PART III: What the Theory Demands ==
 
@@ -506,17 +518,22 @@ event can flow through all three timescales and return as a library constraint.
 
   COMPLETE:
   - IDENTIFY: futon3 git archaeology (social-layer failures)
-  - MAP: Three social patterns (verify-before-compose, tension-before-code,
-    explicit-exit-over-abandonment)
-  - DERIVE: Ten requirements (R1-R10) from agency/realtime patterns via
-    futon-theory
-  - ARGUE: This document (S1-S7, R1-R10, T1-T5, C1-C6, thesis)
+  - MAP: Four social patterns (verify-before-compose, tension-before-code,
+    explicit-exit-over-abandonment, scope-bounded-handoff)
+  - DERIVE: Eleven requirements (R1-R11) from agency/realtime patterns via
+    futon-theory. R11 added 2026-02-10 from live coordination evidence
+    (Codex compose-parallel review).
+  - ARGUE: This document (S1-S7, R1-R11, T1-T5, C1-C6, thesis)
 
   ACTIVE:
   - VERIFY: M-social-exotype (futon3c/holes/missions/M-social-exotype.md)
-    - V1: social-exotype.edn — standalone diagram validation
-    - V2: three-diagram composition — cross-diagram I3, I4, I6 checks
+    - V1: social-exotype.edn — standalone diagram validation [DONE, 8/8]
+    - V2: three-diagram composition — compose-parallel implemented,
+      social-exotype.edn needs restoration + :social timescale update
     - V3 requires implementation (subsequent mission)
+  - Part III (Prototype 0) — bootstrap closure [DONE]
+    - 6 proof-paths in futon3b/data/proof-paths/ including 3 coordination
+      tensions from Codex review
 
   PENDING:
   - INSTANTIATE: M-agency-refactor, M-forum-refactor, M-peripheral-model

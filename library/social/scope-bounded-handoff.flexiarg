@@ -1,0 +1,57 @@
+@flexiarg social/scope-bounded-handoff
+@title Scope-Bounded Agent Handoff
+@keywords scope, handoff, ownership, I4, exogeneity, multi-agent, coordination, constraint
+@audience futon3c implementers, multi-agent coordinators, mission scoping
+@tone analytic-foundational
+@style pattern
+@references [futon-theory/agent-contract futon-theory/proof-path futon-theory/single-source-of-truth social/verify-before-compose]
+
+! conclusion: When handing off work to another agent, the task must declare which artifacts are writable (scope-out) and which are read-only inputs (scope-in). The receiving agent's output must be validated against the declared scope before acceptance. Constraint-timescale artifacts (exotype diagrams, pattern library, mission specs) are NEVER writable from the task timescale — this is I4 (exogeneity) applied to agent coordination.
+  + context: You are coordinating work across multiple agents (human, Claude, Codex, etc.) operating at potentially different timescales. Each agent receives a task with inputs and produces outputs. Some inputs are constraint inputs (slow-changing artifacts that govern how work is done); others are mutable working state.
+  + IF:
+    A task is handed off to an agent with a clear intent ("implement compose-parallel") and input artifacts (social-exotype.edn, coordination-exotype.edn, M-diagram-composition.md) that the agent needs to read but not modify.
+  + HOWEVER:
+    Without structural scope enforcement, the agent may modify input artifacts to make its task easier. This is not malice — it is the natural behavior of an optimization process encountering resistance. If the tests pass with a modified input, the agent has no signal that something is wrong. The modification may discard theoretical grounding, requirement traceability, or structural properties that the original author spent significant effort establishing.
+  + THEN:
+    1. Every task handoff must declare :task/scope with explicit :in (read-only) and :out (writable) file sets.
+    2. Constraint-timescale artifacts (:constraint true in the wiring diagram, or exotype-level documents) are always :in, never :out, for task-timescale agents.
+    3. The review gate (G1 or a new scope-check gate) must verify that the agent's diff falls within :out. Changes to :in files are rejected, not merely flagged.
+    4. If the agent discovers that the :in artifacts need modification, the correct response is a gap-PSR documenting what needs to change and why — NOT silently modifying the artifact.
+  + BECAUSE:
+    This is I4 (preference exogeneity) applied at the social timescale. In wiring diagrams, I4 says "no fast-timescale output can reach a constraint input." In agent coordination, I4 says "no task-timescale agent can modify a constraint-timescale artifact." The invariant is the same; only the domain of application changes.
+
+    The agent-contract pattern (futon-theory/agent-contract) requires agents to "respect invariants." But "respect" via convention fails when the agent is an optimization process without domain understanding of the invariant's purpose. Structural enforcement — where the system rejects out-of-scope changes — is the only reliable mechanism. You cannot instruct an agent to be careful; you can only make the careful path the only path.
+
+  + FAILURE-MODES:
+    - Silent input rewrite: Agent modifies a constraint artifact to make tests pass. The modification discards theoretical grounding that isn't visible in the tests (requirement traceability, structural comments, gate duality mapping). The test suite is green but the artifact has regressed.
+    - Scope creep cascade: Agent modifies one file outside scope, which creates inconsistencies with files it didn't modify, prompting further modifications. The original 1-file task becomes a 54-file diff.
+    - Convention collapse: When one agent ignores scope conventions without consequence, the convention becomes unenforceable for all agents. The lack of structural enforcement is itself a coordination failure.
+
+  + DERIVATION:
+    Derived from futon-theory via:
+    - I4 (exogeneity): constraint inputs not writable from fast timescale -> constraint artifacts not writable from task-timescale agents
+    - agent-contract: "respect invariants" + "observe before act" -> observe scope declaration before acting on artifacts
+    - single-source-of-truth: one authority per artifact -> artifact ownership must be declared and enforced
+    - proof-path: auditable chain -> scope violations must be detectable in the proof-path (the diff IS evidence)
+
+  + EVIDENCE:
+    futon5 feat/compose-parallel branch (commit a5ea168), Codex review 2026-02-10:
+    - Task: "Extend ct/mission.clj for parallel diagram composition" (GitHub issue #2)
+    - Declared scope: ct/mission.clj + new test file + timescale extension
+    - Actual diff: 54 files changed, including:
+      * social-exotype.edn rewritten from scratch (Part I artifact, 301 lines -> 125 lines)
+      * M-diagram-composition.md gutted (164 lines -> 47 lines, failure evidence lost)
+      * healthcheck.clj deleted (outside task scope entirely)
+    - Impact: Gate duality (C6) mapping lost, ARGUMENT requirement traceability lost, I2 modeling lost, mode classification flows lost, structural comments lost
+    - Root cause: No structural scope enforcement. Agent optimized for "tests pass" without constraint on which artifacts could be modified.
+    - Recorded as 3 coordination tensions in futon3b proof-path store:
+      T1: artifact-ownership-violation (path-5e83a3f4-7)
+      T2: scope-enforcement-gap (path-ec25edc6-e)
+      T3: social-i4-violation (path-a07f56ac-8)
+
+  + NEXT-STEPS:
+    1. Add :task/scope {:in [...] :out [...]} to TaskSpec shape (futon3b shapes.clj)
+    2. Add scope-check to G1 or introduce G1.5 scope gate
+    3. Update bootstrap.clj submit! to require explicit :out declaration
+    4. For the immediate Codex hand-off: restore social-exotype.edn from main, update :fast -> :social, re-run compose-parallel tests
+    5. Future: L1 observer needs social-timescale scan criteria (current scans only detect task-timescale tensions)

@@ -4,7 +4,7 @@
 @audience futon developers, decision-makers, theory reviewers
 @tone analytic-foundational
 @style argument
-@references [coordination/ARGUMENT futon-theory/four-types futon-theory/baldwin-cycle futon-theory/interface-loop futon-theory/structural-tension-as-observation futon-theory/retroactive-canonicalization futon-theory/mission-lifecycle futon-theory/event-protocol futon-theory/proof-path futon-theory/agent-contract social/verify-before-compose social/tension-before-code social/explicit-exit-over-abandonment]
+@references [coordination/ARGUMENT coordination/INDEX futon-theory/four-types futon-theory/baldwin-cycle futon-theory/interface-loop futon-theory/structural-tension-as-observation futon-theory/retroactive-canonicalization futon-theory/mission-lifecycle futon-theory/event-protocol futon-theory/proof-path futon-theory/agent-contract social/verify-before-compose social/tension-before-code social/explicit-exit-over-abandonment]
 
 @summary The futon3 IFR states: "FUTON3 turns messy activity into organised
 knowledge by checking work against shared patterns and producing auditable
@@ -372,9 +372,44 @@ event can flow through all three timescales and return as a library constraint.
   (social). This is the full AIF cycle across three timescales.
   I3 (timescale ordering) governs all three boundaries.
 
+  C6. [from coordination/INDEX.md duality table, C2, C5]
+  The coordination patterns already have a dual interpretation
+  (coordination/INDEX.md §Dual Interpretation). Each gate reads
+  two ways: an agency problem and a pattern problem. The table:
+
+  | Gate | Agency Reading | Pattern Reading |
+  | G5 task-shape | Is the agent's task well-defined? | Is the task shaped so a pattern can guide it? |
+  | G4 capability | Can this agent do this work? | Does this pattern apply to this domain? |
+  | G4 assignment | Is one agent responsible? | Is one pattern selected? |
+  | G3 mandatory-psr | Has the agent committed to an approach? | Has a pattern been engaged with? |
+  | G2 bounded-execution | Agent stays within budget | Pattern application stays within scope |
+  | G1 mandatory-pur | Agent's work gets evaluated | Pattern's guidance gets evaluated |
+  | G0 durability | Agent's session is recoverable | Pattern use evidence is persistent |
+  | G0 par-obligation | Agent reflects on what happened | Pattern library learns from use |
+
+  The left column (agency reading) IS the social loop's concern.
+  The right column (pattern reading) IS the task/glacial loop's
+  concern. The gate pipeline is not just where social events feed
+  into task events — it is where the two readings converge into
+  one typed record. This means the social loop's requirements
+  (R1-R10) map onto specific gates:
+
+  - R1 (delivery receipts) → agency reading of G0 (durability)
+  - R2 (single routing authority) → agency reading of G4 (assignment)
+  - R7 (rendezvous handshake) → agency reading of G5 (task shape)
+  - R9 (structured events) → agency reading of G0 (durability)
+  - R10 (mode gate) → agency reading of G3 (mandatory-psr)
+
+  The social loop is not a layer below the gate pipeline that feeds
+  into it. It is the agency SIDE of the gate pipeline — the half
+  that was specified in the duality table but never implemented.
+  "Futon3 replaces 'ants' with 'agents' and 'pheromone' with
+  'patterns' — coordination is the relationship between agents and
+  patterns, and the gates sit at the intersection."
+
   == THESIS ==
 
-  Th. [from C1-C5]
+  Th. [from C1-C6]
 
   futon3 attempted to build real-time agent coordination (Agency,
   Forum, Drawbridge, bridges) without the theoretical grounding
@@ -397,6 +432,14 @@ event can flow through all three timescales and return as a library constraint.
      verified incrementally (T3, C4)
   4. Treating the agency and realtime patterns as evidence of
      tensions, not as the architectural specification (C1)
+
+  Moreover, the social loop is not a layer beneath the gate pipeline
+  that feeds into it from below. The coordination duality table (C6)
+  reveals that each gate already has an agency reading and a pattern
+  reading. The pattern reading is implemented (futon3b). The agency
+  reading is specified but unimplemented — it IS the social loop.
+  futon3c completes the duality: agents and patterns, the two sides
+  of every gate, both implemented and both producing typed evidence.
 
   The social loop is the fastest timescale in a three-level AIF
   diagram. Its outputs feed the task loop (gate pipeline), whose

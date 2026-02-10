@@ -336,6 +336,50 @@
   not working. The result was 非死非活: systems responsive but not self-
   sustaining, eventually abandoned without exit.
 
+  == 8. BOUNDARY RULE: 味→未@0 ==
+
+  When evaluation approaches a boundary, it collapses into uncertainty.
+  The correct response is containment, not force.
+
+  (rule-card 味→未@0
+    (when (approach boundary))
+    (then
+      (collapse (味 → 未))
+      (bias-toward (戒 圍 包)))
+    (therefore
+      (prefer (small reversible moves))
+      (avoid (irreversible commits))))
+
+  Vocabulary for the bias targets:
+  - 戒 (jiè): precept, restraint — the discipline of not-acting
+  - 圍 (wéi): enclosure, surround — contain the blast radius
+  - 包 (bāo): wrap, contain — package the uncertainty for later
+
+  This rule governs the transition from the futonic loop's "evaluate"
+  phase to the "else" branch. When 味 (embodied evaluation) reaches the
+  edge of what can be evaluated with confidence, the system does not
+  push through — it recognizes it has entered 未知 (non-equilibrium)
+  and shifts to containment mode.
+
+  Grounding in practice:
+
+  | Context | Boundary | 味→未 collapse | 戒/圍/包 response |
+  | Sospeso | p drops below 0.95 | Evaluation becomes uncertain | Rescope-to-safety, blast radius note, reversible action only |
+  | Gate rejection | G3 can't find pattern | Evaluation of approach is impossible | Typed rejection with gate attribution; don't execute |
+  | Mission parking | Subsystem hits blocking failure | Evaluation of progress becomes 非死非活 | :active → :blocked with recorded blocker; don't abandon silently |
+  | L1 canonicalizer | Tension below threshold | Evaluation of pattern candidacy is premature | Record but do not canonicalize; wait for more evidence |
+  | Context compaction | Context window approaches limit | Full evaluation of history is no longer possible | Compress to summary; preserve actionable structure, release detail |
+
+  The rule card is the futonic dual of the sospeso protocol. The sospeso
+  protocol is operational (confidence bins, mana accounting, blast radius
+  notes). The rule card is structural: it says WHEN the transition happens
+  (味 approaches boundary) and WHAT the bias should be (戒/圍/包), without
+  prescribing HOW (that's domain-specific).
+
+  A7 says: composition requires perceiving both 鹵 and 皿.
+  味→未@0 says: when you can no longer perceive clearly, stop composing
+  and start containing. A7 opens the door; 味→未@0 knows when to close it.
+
   + NEXT-STEPS:
     next[Extend the vocabulary as new symbols emerge from practice — this specification is open, not closed]
     next[Verify that A7 is consistent with A1-A5 (no contradiction, complementary scope)]

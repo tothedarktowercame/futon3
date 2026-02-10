@@ -51,14 +51,19 @@
    :mission/outposts
    [{:id "O-0"
      :name "Classical Baseline (Chapter 6 at SE Scale)"
-     :status :ready
+     :status :complete
      :depends []
-     :notes "Run Corneli (2014) learning-event detection on physics.SE using NER kernel. O-U model fit. No GPU, no LLM. Standalone research result."}
+     :notes "91,738 users, 2.2M learning events, 12,445 O-U fits. 73% positive impulse (alpha>0). Median theta=0.26. All V13-V15 pass. Commit futon6@8654ecb."}
+    {:id "O-2a"
+     :name "Graph Query Adapter"
+     :status :ready
+     :depends ["O-1"]
+     :notes "Compose futon3a/3b query primitives + futon6 entity/NER/embedding outputs into MathKnowledgeGraph interface. Adapter, not new research. Excursion point: KGQA literature survey."}
     {:id "O-2"
      :name "Tiny Eval (20 Questions)"
      :status :ready
-     :depends ["O-1"]
-     :notes "Micro-evaluation: Agent A vs Agent B on 20 physics.SE questions. Tests protocol and graph query interface."}]}
+     :depends ["O-2a"]
+     :notes "Micro-evaluation: Agent A vs Agent B on 20 physics.SE questions. Tests end-to-end pipeline from entity → graph context → agent prompt → answer."}]}
 
   {:mission/id "M-f6-agents"
    :mission/name "F6 Artificial Stack Exchange"
@@ -100,14 +105,19 @@
  ;;
  ;; O-0 ──────────────────┐
  ;;  (classical baseline)  │
- ;;                        ├──→ O-2 ──→ O-3
- ;; O-1 ──────────────────┘    (tiny    (one agent
- ;;  (pipeline dry run)         eval)    one question)
+ ;;                        │
+ ;; O-1 ──────────────────┼──→ O-2a ──→ O-2 ──→ O-3
+ ;;  (pipeline dry run)    │   (query    (tiny    (one agent
+ ;;                        │    adapter)  eval)    one question)
+ ;;                        │
+ ;;                        │   [Excursion: KGQA literature survey]
+ ;;                        │    ↑ natural fit at O-2a
  ;;
  ;; O-4 (independent — one Arxiv paper)
  ;; O-5 (independent — one futon repo + one session)
  ;;
  ;; O-0, O-1, O-4, O-5 can run in parallel with zero dependencies.
- ;; O-2 needs O-1's pipeline output.
+ ;; O-2a needs O-1's pipeline output.
+ ;; O-2 needs O-2a's query interface.
  ;; O-3 needs O-2's protocol and prompt template.
  }

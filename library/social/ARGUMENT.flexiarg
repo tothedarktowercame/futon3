@@ -6,6 +6,30 @@
 @style argument
 @references [coordination/ARGUMENT futon-theory/four-types futon-theory/baldwin-cycle futon-theory/interface-loop futon-theory/structural-tension-as-observation futon-theory/retroactive-canonicalization futon-theory/mission-lifecycle futon-theory/event-protocol futon-theory/proof-path futon-theory/agent-contract social/verify-before-compose social/tension-before-code social/explicit-exit-over-abandonment]
 
+@summary The futon3 IFR states: "FUTON3 turns messy activity into organised
+knowledge by checking work against shared patterns and producing auditable
+records." The messiest activity in the stack is real-time multi-agent
+coordination — and it is precisely the activity that has so far produced no
+auditable records at all. futon3 attempted real-time agent coordination three
+times — Agency went through three generations of build-confess-rebuild before
+its invariants were named, Forum was built in eight commits and silently
+abandoned after a ClassCastException, and the IRC bridge entered a perpetual
+fix-cycle of fourteen patches with no exit criteria. Twenty-one patterns (8
+agency, 13 realtime) document the symptoms; three new social patterns diagnose
+the cause: code was composed before it was verified, invariants were discovered
+retroactively instead of specified proactively, and subsystems were abandoned
+without lifecycle transitions. The argument reformulates these post-mortems as
+ten futon-theory-derived requirements and shows that the social loop is not a
+separate system but the third timescale of the AIF diagram already proven at
+the task and glacial levels in futon3b. Social-timescale events (connections,
+messages, handoffs) must emit typed records into the same proof-path store that
+the glacial loop already observes, closing the three-level cycle: agents
+coordinate in real-time, submit work through gates, accumulate evidence that
+evolves the library, and the evolved library constrains future coordination.
+Verification requires a social exotype diagram passing the same eight
+categorical checks, and a round-trip test proving that a social coordination
+event can flow through all three timescales and return as a library constraint.
+
 ! argument:
 
   This is a flexiformal argument for the futon3c social coordination

@@ -1,0 +1,343 @@
+@flexiarg futon-theory/futonic-logic
+@title Futonic Logic: Vocabulary, Composition, and the Recognition Loop
+@sigils [🧂/鹽]
+@keywords futonic, logic, composition, articulation, salience, evaluation, regulator, individuation, s-expression
+@audience futon developers, pattern theorists, war room
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@style specification
+@references [futon-theory/symbolic-individuation futon-theory/four-types futon-theory/theory-as-exotype futon-theory/structural-tension-as-observation futon-theory/retroactive-canonicalization futon-theory/baldwin-cycle futon-theory/proof-path futon-theory/agent-contract]
+
+! conclusion:
+  Futonic logic specifies the vocabulary, composition rules, and recognition
+  loop that futon-theory patterns presuppose. It does not replace the patterns;
+  it makes explicit the symbolic operations they perform implicitly. The
+  central insight: composition (鹽) is not concatenation but the recognition
+  that latent potential (鹵) and stabilizing interface (皿) are available
+  under the same decomposition regime (部). The futonic loop — input, decompose,
+  articulate, compose, sense, regulate, act, evaluate — is the abstract form
+  of the PSR→PUR cycle and the derivation xenotype alike.
+
+  == 0. META-SYNTAX ==
+
+  ⿱ denotes top-bottom composition in glyph space. Futonically, it
+  corresponds to a binary articulation whose abstract form is (CAR . CDR):
+
+  (meta-syntax
+    (⿱
+      (role layout-operator)
+      (maps-to cons)
+      (explanation
+        "⿱ denotes top-bottom composition in glyph space;
+         futonically, it corresponds to a binary articulation
+         whose abstract form is (CAR . CDR).")))
+
+  This does NOT assert that all composition is binary. It asserts only: when
+  ⿱ appears, interpret it as a historically successful binary articulation,
+  abstractable as a cons pair. Triads, polycentric forms, and n-ary
+  decompositions operate under other 部.
+
+  == 1. VOCABULARY ==
+
+  Core symbols declared as roles, not definitions. Premature semantic collapse
+  is the vocabulary equivalent of forward-declaration debt (social/verify-
+  before-compose): fixing meaning before structure is verified produces
+  symbols that cannot compose.
+
+  (vocabulary
+    (象  (role configuration)
+         (note "A structured whole that can be referenced without full
+                expansion. First-class, carryable, transformable."))
+    (部  (role decomposition-regime)
+         (note "A chosen regime of articulation, not an ontological given.
+                Arity-variable: binary, triadic, polycentric."))
+    (咅  (role articulation)
+         (note "The act of making a decomposition explicit. Not analysis
+                (which presumes correctness) but perception of structure
+                already present."))
+    (香  (role embodied-salience)
+         (note "Cross-layer perception that signals without full
+                formalization. Agent-relative. Defeasible."))
+    (味  (role embodied-evaluation)
+         (note "Selection by felt difference rather than proof. The
+                evaluative counterpart of 香."))
+    (鹽  (role generative-composition)
+         (note "Composition that generates: not mere juxtaposition but
+                the recognition that potential and container are available
+                under the same 部."))
+    (鹵  (role latent-substrate)
+         (note "Manipulable potential. What can be transformed if a 皿
+                is available to receive the result."))
+    (皿  (role stabilizing-container)
+         (note "Interface, vessel, boundary. What receives and stabilizes
+                the product of transformation."))
+    (未知 (role non-equilibrium-interval)
+         (note "Actionable but not predictable. Three-valued logic:
+                the system is neither in its prior state nor in its
+                successor state."))
+    (非死非活 (role non-terminal-state)
+         (note "System is responsive but not self-sustaining. Equivalent
+                to 未知 at the lifecycle level."))
+    (🔮  (role regulator)
+         (note "Capacity to act within 未知 while modulating action
+                amplitude. Components: 能 (capacity) + 捨 (setting-down).")))
+
+  == 2. COMPOSITIONAL STRUCTURE ==
+
+  2.1 象 and 部:
+
+  (象
+    (status first-class)
+    (properties (carryable transformable))
+    (note "A structured whole that can be referenced without full expansion."))
+
+  (部
+    (function bounded-decomposition)
+    (arity-variable true)
+    (examples (binary triadic polycentric))
+    (note "A chosen regime of articulation, not an ontological given."))
+
+  2.2 鹽 as composition:
+
+  (鹽
+    (structure (⿱ 鹵 皿))
+    (abstract-form (cons 鹵 皿))
+    (interpretation
+      (鹵 (latent manipulable potential))
+      (皿 (interface container stabilizer)))
+    (constraint
+      "Generativity requires both terms to be available under the same 部."))
+
+  2.3 Salience as the appearance of 鹽:
+
+  (compositional-salience
+    (depends-on 鹽)
+    (definition
+      "Agent-relative perception that a (鹵 . 皿) decomposition
+       is presently actionable."))
+
+  (A7
+    (if (exists (鹽 (⿱ 鹵 皿))))
+    (and (perceivable 鹵) (perceivable 皿))
+    (then (salience emerges))
+    (else (generativity remains inert)))
+
+  2.4 香 and 味:
+
+  (香
+    (role cross-layer-perception)
+    (function "Signals salience without full formalization."))
+
+  (味
+    (role embodied-selection)
+    (function "Evaluates articulations by felt difference rather than proof."))
+
+  2.5 🔮 and 捨:
+
+  (🔮
+    (components (能 捨))
+    (function regulator)
+    (definition
+      "Capacity to act within 未知 while modulating action amplitude."))
+
+  (捨
+    (operation set-down)
+    (precondition (has 🔮))
+    (effect
+      "Reduce deployed capacity to limit harm while preserving
+       reversibility."))
+
+  2.6 未知 and 非死非活:
+
+  (未知
+    (state non-equilibrium)
+    (logic three-valued)
+    (properties (actionable not-predictable)))
+
+  (非死非活
+    (equivalence 未知)
+    (note "System is responsive but not self-sustaining."))
+
+  == 3. THE FUTONIC LOOP ==
+
+  (futonic-loop
+    (input 象)
+    (choose 部)
+    (articulate 咅)
+    (if (forms (鹽 (⿱ 鹵 皿))))
+    (and (sense 香) (regulate 🔮))
+    (then
+      (act-within 未知)
+      (evaluate 味))
+    (else
+      (apply 捨)))
+
+  == 4. GROUNDING IN ACTUAL USAGE ==
+
+  Every symbol in the vocabulary has been used (implicitly or explicitly)
+  across futon missions. This section makes those uses explicit. The logic
+  is practical because we have been practising it.
+
+  4.1 象 — Configuration
+
+  | Context | 象 instance | Evidence |
+  | Wiring diagram | coordination-exotype.edn | A structured whole: 6 inputs, 6 outputs, 10 components, 30 edges. Referenceable as ":coordination-exotype" without expansion. |
+  | Flexiarg pattern | mandatory-psr.flexiarg | A structured whole: conclusion, context, IF/HOWEVER/THEN/BECAUSE. Carryable by pattern-id. |
+  | Proof path | gate pipeline output | A structured whole: linked PSR→PUR→PAR chain. Transformable (L1 scans it for tensions). |
+  | Session | Claude Code session | A structured whole: context, tools, history. Compresses (compaction) but remains referenceable. |
+
+  4.2 部 — Decomposition Regime
+
+  | Context | 部 instance | Evidence |
+  | Three-futon split | timescale decomposition | 部 = timescale boundaries (social/task/glacial). Not chosen but perceived (symbolic-individuation). |
+  | Gate pipeline | six-gate decomposition | 部 = the six gates G5→G0. Binary at each gate (pass/reject), hexadic in composition. |
+  | Derivation xenotype | six-step decomposition | 部 = IDENTIFY→MAP→DERIVE→ARGUE→VERIFY→INSTANTIATE. Sequential, not arbitrary. |
+  | Baldwin cycle | triadic decomposition | 部 = NAMING→SELECTION→CANALIZATION. Three phases, not two or four. |
+
+  4.3 咅 — Articulation
+
+  | Context | 咅 instance | Evidence |
+  | PSR | pattern selection | The agent makes a decomposition explicit: "I will use this pattern for this task." |
+  | ARGUMENT.flexiarg | claim composition | Each S/R/T/C section articulates: makes a claim's structure visible. |
+  | Mission scoping | scope in/out | The mission author articulates: what's inside, what's outside. |
+  | Git commit | change articulation | The commit message articulates: what changed and why. |
+
+  4.4 鹽 — Generative Composition (鹵 + 皿)
+
+  | Context | 鹵 (potential) | 皿 (container) | 鹽 (composition) |
+  | Gate pipeline | Pattern library (potential approaches) | Gate shapes (Malli schemas) | Validated proof-path (generative: produces evidence) |
+  | L1 canonicalizer | Observed tensions (potential patterns) | Library format (flexiarg structure) | New pattern in library (generative: constrains future work) |
+  | Social exotype | Agency/realtime patterns (potential requirements) | Wiring diagram format (edn structure) | Validated social-exotype.edn (generative: enables implementation) |
+  | Session | Prior knowledge + context | PSR/PUR protocol (recording structure) | Auditable session (generative: feeds glacial loop) |
+
+  4.5 香 — Embodied Salience
+
+  | Context | 香 instance | Evidence |
+  | Pattern search | futon3a notions/compass | Signals "this pattern might apply" without proving it. ANN + GloVe similarity, not logical implication. |
+  | Hotword matching | patterns-index.tsv hotwords | "deliver" fires on "delivery-receipt" — salience signal, not identification. |
+  | Tension scanning | L1-observe structural-irritation | "This gap-PSR has appeared 3 times" — cross-layer perception that something recurs, without naming what. |
+  | Git archaeology | commit pattern recognition | "These 5 commits all fix forward-declarations" — perceiving a pattern before it has a name. |
+
+  4.6 味 — Embodied Evaluation
+
+  | Context | 味 instance | Evidence |
+  | PUR | pattern use record | Evaluates by outcome (prediction-error), not by proof. "Did using this pattern help?" is 味, not formal verification. |
+  | Mana bins | sospeso confidence bins | p ∈ {0.3, 0.6, 0.8, 0.95} — discrete bins to "reduce self-deception." Evaluation by felt confidence, not computed probability. |
+  | ct/mission.clj | 8/8 checks pass | Evaluation by structural test, not semantic proof. The diagram is well-formed; whether it's the right diagram is 味. |
+  | Code review | Codex review comments | "This could be more defensive" — evaluative judgement, not provable claim. |
+
+  4.7 🔮 — Regulator (能 + 捨)
+
+  | Context | 能 (capacity) | 捨 (setting-down) | 🔮 (regulation) |
+  | Sospeso protocol | Confidence p · C spent on action | (1-p) · C donated to pool + blast radius note | Proceed at lower confidence with bounded harm |
+  | Gate rejection | Pipeline can process the request | Gate rejects with typed error + gate attribution | Fail fast, preserve reversibility |
+  | Mission parking | Team could continue the subsystem | :active → :blocked with recorded blocker | Explicit exit over silent abandonment |
+  | Context compaction | LLM has N tokens of context | Older context compressed to summary | Continue operating with reduced but sufficient state |
+
+  4.8 未知 / 非死非活
+
+  | Context | Instance | Evidence |
+  | Abandoned missions | Forum: 8 commits, no exit, no :blocked | Neither done (:done) nor explicitly blocked (:blocked). Responsive to git log but not self-sustaining. |
+  | Sospeso interval | Between action and verification | The action has been taken (at p < 0.95) but outcome is not yet verified. System is in 未知. |
+  | futon3c pre-implementation | ARGUMENT written, exotype validated, no code | The social loop is specified but not instantiated. Non-equilibrium: the argument creates obligations the code hasn't satisfied. |
+  | Context boundary | Between session compaction and new turn | The LLM has lost detailed context but retains summary. Actionable but not fully predictable. |
+
+  == 5. THE FUTONIC LOOP IN PRACTICE ==
+
+  The abstract loop (§3) maps onto three concrete cycles:
+
+  5.1 PSR→PUR cycle (per-task):
+
+  (futonic-loop
+    (input   象  := task request entering the gate pipeline)
+    (choose  部  := select decomposition: which gate, which timescale)
+    (articulate 咅 := write PSR: choose a pattern, commit to an approach)
+    (if (forms 鹽) := pattern (鹵) + evidence shape (皿) compose)
+    (and (sense 香) := during execution, perceive whether it's working)
+    (and (regulate 🔮) := stay within budget, reject if budget exceeded)
+    (then
+      (act-within 未知 := execute under uncertainty)
+      (evaluate 味 := write PUR: evaluate outcome by felt difference))
+    (else
+      (apply 捨 := reject at gate, park mission, write PAR)))
+
+  5.2 Derivation xenotype (per-mission):
+
+  (futonic-loop
+    (input   象  := domain to be derived: "social coordination")
+    (choose  部  := IDENTIFY the decomposition regime: git archaeology,
+                    pattern audit, devmap review)
+    (articulate 咅 := MAP + DERIVE: articulate patterns and requirements
+                    from the evidence)
+    (if (forms 鹽) := ARGUE: requirements (鹵) + argument structure (皿)
+                    compose into a valid case)
+    (and (sense 香) := during argument construction, perceive convergences)
+    (and (regulate 🔮) := VERIFY: check invariants, validate diagrams)
+    (then
+      (act-within 未知 := INSTANTIATE: build the code)
+      (evaluate 味 := tests pass, 8/8 checks, round-trip proof))
+    (else
+      (apply 捨 := park mission, record blocker, explicit exit)))
+
+  5.3 Glacial loop (per-library-evolution):
+
+  (futonic-loop
+    (input   象  := accumulated proof paths from many tasks)
+    (choose  部  := L1-observe: which tension criterion to scan?
+                    structural-irritation / pre-symbolic-pressure /
+                    trans-situational-reappearance)
+    (articulate 咅 := name the tension: a recurring pattern emerges)
+    (if (forms 鹽) := tension observation (鹵) + flexiarg format (皿)
+                    compose into a candidate pattern)
+    (and (sense 香) := does this tension appear across contexts?)
+    (and (regulate 🔮) := does it meet the canonicalization threshold?
+                    frequency >= 3, contexts >= 2)
+    (then
+      (act-within 未知 := write new flexiarg to library)
+      (evaluate 味 := subsequent G3 accepts the new pattern))
+    (else
+      (apply 捨 := tension does not meet threshold, record but do not
+                    canonicalize)))
+
+  == 6. RELATIONSHIP TO EXISTING PATTERNS ==
+
+  | This specification | Existing pattern | Relationship |
+  | 象 as first-class configuration | symbolic-geodesic | 象 IS the structured whole that geodesics traverse |
+  | 部 as decomposition regime | symbolic-individuation | 部 IS the regime under which compound symbols individuate |
+  | 鹽 = (⿱ 鹵 皿) | symbolic-individuation §THE-FUTONIC-VIEW | Same structural analysis, now formalized as composition rule |
+  | 香 as cross-layer perception | structural-tension-as-observation | 香 IS the pre-symbolic pressure before tension is named |
+  | 味 as embodied evaluation | retroactive-canonicalization | 味 IS the selection criterion in the Baldwin cycle |
+  | 🔮 = (能 . 捨) | sospeso protocol (futon5/AGENTS.md) | 🔮 IS the regulator that the sospeso protocol implements |
+  | 未知 / 非死非活 | explicit-exit-over-abandonment | 非死非活 IS the zombie-mission state that the pattern diagnoses |
+  | futonic-loop | proof-path event-protocol | The loop IS the abstract form of CLOCK_IN → ... → CLOCK_OUT |
+
+  == 7. AXIOM A7: COMPOSITIONAL SALIENCE ==
+
+  The existing axioms (A1-A5) are operational. A7 is perceptual:
+
+  (A7
+    (if (exists (鹽 (⿱ 鹵 皿))))
+    (and (perceivable 鹵) (perceivable 皿))
+    (then (salience emerges))
+    (else (generativity remains inert)))
+
+  In operational terms: a pattern library (鹵) and a recording protocol (皿)
+  may both exist without generating anything — until an agent perceives that
+  they compose under the current decomposition regime (部). Salience is the
+  moment of that perception. The gate pipeline does not create salience;
+  it provides the 皿 that makes 鹵's potential actionable. The agent's PSR
+  is the 咅 that recognizes the composition.
+
+  This axiom explains why Agency/Forum/Drawbridge failed: the components
+  existed (鹵 was present) but the recording protocol did not (皿 was absent
+  — no typed evidence shapes, no proof-path store). Without 皿, composition
+  could not form. Without composition, salience could not emerge. Without
+  salience, the agents could not perceive when their coordination was or was
+  not working. The result was 非死非活: systems responsive but not self-
+  sustaining, eventually abandoned without exit.
+
+  + NEXT-STEPS:
+    next[Extend the vocabulary as new symbols emerge from practice — this specification is open, not closed]
+    next[Verify that A7 is consistent with A1-A5 (no contradiction, complementary scope)]
+    next[Test whether the futonic loop can serve as a template for AGENTS.md instructions]
+    next[Connect to futon3a search: 香 operations map to notions/compass similarity queries]

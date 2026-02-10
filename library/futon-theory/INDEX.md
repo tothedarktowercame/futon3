@@ -65,6 +65,29 @@ See: [proof-path.flexiarg](proof-path.flexiarg)
 | retroactive-canonicalization | Specs emerge from ancestors via naming, selection, canalization |
 | structural-tension-as-observation | Structural tension is the observation vector for library evolution; two nested AIF loops |
 
+## Futonic Logic
+
+The formal vocabulary, composition rules, and recognition loop that the
+patterns above presuppose. Not a replacement for the patterns but a
+specification of the symbolic operations they perform.
+
+| Symbol | Role | In Practice |
+|--------|------|-------------|
+| 象 | configuration | Wiring diagrams, flexiarg patterns, proof paths, sessions |
+| 部 | decomposition-regime | Timescale split, gate pipeline, derivation xenotype, Baldwin cycle |
+| 咅 | articulation | PSR, argument claims, mission scoping, git commits |
+| 鹽 = (⿱ 鹵 皿) | generative-composition | Pattern library (鹵) + evidence shapes (皿) → validated proof-path |
+| 香 | embodied-salience | Pattern search, hotword matching, tension scanning |
+| 味 | embodied-evaluation | PUR, mana confidence bins, structural checks |
+| 🔮 = (能 . 捨) | regulator | Sospeso protocol, gate rejection, mission parking |
+| 未知 / 非死非活 | non-equilibrium-interval | Abandoned missions, sospeso interval, pre-implementation state |
+
+Axiom A7 (compositional salience): generativity requires both 鹵 and 皿
+perceivable under the same 部. Agency/Forum/Drawbridge had 鹵 (potential)
+but no 皿 (recording protocol) — composition could not form.
+
+See: [futonic-logic.flexiarg](futonic-logic.flexiarg)
+
 ## Evolutionary Patterns (from futon5)
 
 How the stack evolves while maintaining auditability.

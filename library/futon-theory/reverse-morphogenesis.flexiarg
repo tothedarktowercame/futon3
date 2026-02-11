@@ -1,0 +1,267 @@
+@flexiarg futon-theory/reverse-morphogenesis
+@title Reverse Morphogenesis: Constraint Inference from Form and Fruit
+@sigils [←]
+@keywords reverse-morphogenesis, speculative-history, anaphora, reframe, constraint-inference, question-asking
+@audience futon developers, pattern theorists, futon6 mathematics dictionary
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@style specification
+@references [futon-theory/futonic-logic futon-theory/symbolic-individuation futon-theory/structural-tension-as-observation futon-theory/retroactive-canonicalization]
+
+! conclusion:
+  This specification extends the futonic vocabulary (futonic-logic.flexiarg) with
+  four operators that were implicit in practice but unnamed: ref (anaphora), reframe
+  (discourse redirection), reverse-morphogenesis (constraint-from-fruit), and ←
+  (speculative history). The central insight: asking a good question IS reverse
+  morphogenesis — given a formed artifact and a sense of what matters, infer the
+  constraints that would make the form yield what matters. The ← operator names
+  the speculative-history reading: 象 ← 香 means "given this form (象) and this
+  salience (香), what constraints made the form stable?"
+
+  These operators connect the futonic loop to futon6's mathematical dictionary:
+  the flexiformal pathway (EXPLORE → ASSIMILATE → CANALIZE) is reverse
+  morphogenesis applied to mathematical content at increasing formality.
+
+  == 0. RELATIONSHIP TO FUTONIC LOGIC ==
+
+  futonic-logic.flexiarg defines the vocabulary (象, 部, 咅, 香, 味, 鹽, 鹵, 皿,
+  未知, 非死非活, 🔮) and the futonic loop. This specification adds four operators
+  that act ON that vocabulary:
+
+  | Operator | Acts on | Does what |
+  | ref | 象, evidence entries | Points to existing meaning without creating new |
+  | reframe | ref edges | Redirects reference ("but actually, the relevant thing is...") |
+  | reverse-morphogenesis | 象 + fruit | Infers constraints from observed form and desired yield |
+  | ← (speculative history) | 象 + 香 | Reads backwards: what constraints induced by 香 made 象 stable? |
+
+  None of these replace existing vocabulary. They are higher-order operations
+  that the futonic loop performs but did not previously name.
+
+  == 1. ANAPHORA: REF VS BIND ==
+
+  (vocabulary-extension
+    (ref  (role reference)
+          (note "Points to an existing binder/artifact without creating meaning.
+                 Discourse trigger: 'this', 'that', 'the above', 'it'."))
+    (bind (role creation)
+          (note "Creates a new entry in a scope. An append!, a definition,
+                 a new evidence entry.")))
+
+  A binding lives in exactly one scope:
+
+  (A8-scope-discipline
+    (forall b (implies (bind? b) (exists-unique s (in-scope b s))))
+    (forall s1 s2 (implies (parent s2 s1) (scope? s1) (scope? s2))))
+
+  A ref does not create meaning; it points to an existing binder:
+
+  (A9-anaphora
+    (forall r (implies (ref? r) (exists t (targets r t))))
+    (note "Every ref edge has a target. Dangling refs are structural errors."))
+
+  Grounding in futon3c:
+  - ArtifactRef is a ref edge: {:ref/type :mission :ref/id "M-forum-refactor"}
+  - :evidence/in-reply-to is a ref edge: points to parent entry
+  - :evidence/fork-of is a ref edge: points to branch point
+  - append! is a bind: creates a new entry in the evidence store scope
+  - get-entry is a ref resolution: given an ID, return what it points to
+
+  The evidence landscape's append-only discipline means: binds are permanent,
+  refs are navigable, and the difference is structural, not accidental.
+
+  == 2. REFRAME: DISCOURSE REDIRECTION ==
+
+  (vocabulary-extension
+    (reframe (role discourse-redirection)
+             (note "Higher-order edge that retargets a ref. 'But actually'
+                    changes what 'it' refers to.")))
+
+  (A10-reframe
+    (forall u r t1 t2
+      (implies
+        (edge reframe u)
+        (edge ref r)
+        (targets r t1)
+        (retargeted-by r u t2)
+        (prefer-target r t2)))
+    (note "A reframe can override the default target of a ref edge.
+           The original target is not destroyed; the preference changes."))
+
+  Grounding in futon3c:
+  - ClaimType :correction is a reframe operator
+  - EvidenceType :correction is a reframe operator
+  - thread-conjectures returns :refuted when a correction references a conjecture
+    — this is reframe in action: the conjecture's target (expected outcome) is
+    redirected to the correction's finding
+
+  Grounding in futonic practice:
+  - IF/HOWEVER/THEN/BECAUSE: HOWEVER is a reframe. It says "the obvious ref
+    (IF implies THEN directly) is wrong; actually, this obstacle changes the
+    target."
+  - PUR prediction error: "what surprised you" is a detected reframe — the
+    expected target of the action was different from the actual target.
+
+  == 3. REVERSE MORPHOGENESIS ==
+
+  (vocabulary-extension
+    (reverse-morphogenesis
+      (role constraint-inference)
+      (note "Given a formed artifact A and a salient yield/fruit F,
+             infer constraints C such that C would make A-with-F stable.")))
+
+  (A11-reverse-morphogenesis
+    (forall A F C
+      (implies
+        (formed A)
+        (fruit-of A F)
+        (infer C (reverse-morphogenesis A F))
+        (constrain C A)))
+    (note "The constraints are not known in advance; they are inferred from
+           the conjunction of form and desired fruit. This is design."))
+
+  (corollary-design-as-reverse-morphogenesis
+    (forall A F
+      (implies
+        (intended-fruit A F)
+        (design-step A (reverse-morphogenesis A F))))
+    (note "Design is the deliberate application of reverse morphogenesis:
+           you know the fruit you want, you infer the constraints that
+           produce it from the given form."))
+
+  Grounding in futon practice:
+
+  | Context | A (form) | F (fruit) | C (inferred constraints) |
+  | L1 observer | Completed thread | Successful conclusion | Patterns that made it work |
+  | Gate pipeline | Task submission | Validated proof path | Gate criteria that ensure quality |
+  | Derivation xenotype | Domain (social coordination) | Working exotype | Requirements R1-R11 |
+  | Question-asking | Mathematical object | Desired understanding | The question that would produce it |
+
+  The last row is the key connection to futon6: asking a good mathematical
+  question is reverse morphogenesis. You have a mathematical form (象). You
+  have a sense of what understanding would be fruitful (香). The question is
+  the constraint you infer: what would I need to know/prove/construct such
+  that this form yields that understanding?
+
+  == 4. ← AS SPECULATIVE HISTORY ==
+
+  (vocabulary-extension
+    (← (role speculative-history)
+       (note "Reads backwards: given a stabilized form and a pre-individual
+              field, infer the constraints that made the form stable under
+              that field. 象 ← 香.")))
+
+  (A12-speculative-history
+    (← 象 香)
+    (expansion
+      (exists C
+        (and (constrain C 象)
+             (induced-by C 香)
+             (realize 象 C))))
+    (note "象 is realized under constraints induced by 香. The ← operator
+           reads this relationship backwards: from the stabilized form,
+           recover the constraint-from-taste."))
+
+  ← is reverse-morphogenesis applied to the core vocabulary:
+  - A = 象 (the stabilized form, configuration)
+  - F = the stability itself (the form persists, couples to its environment)
+  - 香 = the pre-individual field that induces the constraints
+  - C = what ← infers
+
+  This is NOT teleology. The form was not designed to satisfy 香. The reading
+  is: 香 (as a difference field / gradient / taste) constrains which forms
+  become stable. 象 is one such stable form. ← recovers that relationship.
+
+  == 5. INSTRUMENTS AS ANTENNAS ==
+
+  (corollary-antenna
+    (forall I X
+      (implies
+        (instrument I) (field X)
+        (detect I X) (not (creates I X))))
+    (note "Artifacts can detect fields they do not create. A peripheral
+           detects coordination patterns in the evidence landscape; it
+           does not create the coordination."))
+
+  Grounding:
+  - Peripherals (explore/edit/test/deploy/reflect) are antennas: they have
+    structural envelopes (tools, scope) that select from the evidence flow
+    but do not generate it.
+  - futon3a's pattern search (notions/compass) is an antenna: it detects
+    salience (香) in the pattern library without creating patterns.
+  - A mathematical dictionary entry (futon6) is an antenna: it stabilizes
+    and selects from latent mathematical structure, it does not create the
+    mathematics.
+
+  The banjo-drum example from the source axioms:
+  (latent (spectral-decomposition drum))
+  (realize banjo (constraint (stabilize pitch) (select modes)))
+  (reverse-morphogenesis banjo melody
+    (requires (latent (spectral-decomposition drum))))
+
+  The drum already carries the spectrum. The banjo stabilizes/selects.
+  The melody is not teleology — it is the fruit that reverse morphogenesis
+  reads backwards. "Why does the banjo make this melody?" ← "Because the
+  drum's latent spectrum, under the banjo's structural constraints, yields
+  these stable modes." That is ←.
+
+  == 6. THE CIRCLE ← GROUP EXAMPLE ==
+
+  (example-circle-group
+    (← circle group)
+    (reading "Circle is a stabilized 'return' phenomenon. Group is a
+             closure/composition constraint that makes the return coherent.")
+    (constraint-schema group (closure composition identity inverse))
+    (note "Non-Platonic: 'group' here is a constraint-schema, not a
+           realm-object. The group axioms are what ← infers when you
+           ask: what constraints make circular return stable?"))
+
+  This is the bridge to futon6's mathematical dictionary: the dictionary
+  does not catalog mathematical objects (Platonic reading). It catalogs
+  constraint-schemas (← reading): for each mathematical form, what
+  constraints make it stable? The five dimensions from Corneli (2014)
+  — Context, Feedback, Quality, Structure, Heuristic — are decomposition
+  regimes (部) for reading ← across mathematical practice.
+
+  == 7. CONNECTION TO FUTON6: QUESTION-ASKING AS ← ==
+
+  The core claim for futon6:
+
+  (claim
+    (asking-good-question A)
+    (equals (reverse-morphogenesis A understanding))
+    (where
+      (A := mathematical-form)
+      (understanding := intended-fruit)
+      (question := inferred-constraint)))
+
+  A good mathematical question is: given this form (象), and this sense of
+  what understanding would be valuable (香), what constraint (question) would
+  make the form yield that understanding?
+
+  Bad questions fail at one of three points:
+  1. Wrong 象: the form is not well-specified (asking about "infinity" without
+     saying which infinity)
+  2. Wrong 香: the salience signal is not grounded (asking "why is this
+     important?" without a context that makes importance detectable)
+  3. Wrong ←: the constraint inference is broken (asking a question whose
+     answer would not actually yield the intended understanding)
+
+  The flexiformal pathway (EXPLORE → ASSIMILATE → CANALIZE) maps:
+  - EXPLORE = detect 香 (sense what matters, without formalizing)
+  - ASSIMILATE = apply ← (infer constraints from form + salience)
+  - CANALIZE = stabilize 象 (the constraints become structural, not effortful)
+
+  == 8. GROUNDING TABLE ==
+
+  | Axiom | Symbol | futonic-logic.flexiarg connection | futon3c evidence |
+  | A8 (scope) | bind, scope | R11 scope-bounded-handoff | :in/:out file boundaries on issues |
+  | A9 (anaphora) | ref | 象 as first-class referenceable configuration | ArtifactRef, :evidence/in-reply-to, :evidence/fork-of |
+  | A10 (reframe) | reframe | HOWEVER in IF/HOWEVER/THEN/BECAUSE | :correction claim-type, thread-conjectures :refuted |
+  | A11 (reverse morphogenesis) | reverse-morphogenesis | L1 observer pattern mining | thread-patterns on closed threads |
+  | A12 (speculative history) | ← | 香 constraining 象 stability | Evidence landscape as 香; shapes/pipeline as 象 |
+
+  + NEXT-STEPS:
+    next[Verify A8-A12 consistency with A1-A7 (no contradiction, complementary scope)]
+    next[Futon6 prototype: question-asking as reverse morphogenesis applied to P0 pattern-tagged entries]
+    next[Connect ← operator to futon3a search: notions/compass as ← resolution engine]
+    next[Test whether the reframe operator captures all correction/retargeting patterns in the evidence landscape]

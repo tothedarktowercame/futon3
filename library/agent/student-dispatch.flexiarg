@@ -1,0 +1,85 @@
+@flexiarg agent/student-dispatch
+@title Student Dispatch
+@sigils [🎓/令]
+@keywords dispatch, explore, student, grad, investigate, try, report, handoff, negative-knowledge, dead-end, direction, structured, findings
+@audience proof engineers, research coordinators, multi-agent orchestrators
+@tone collegial
+@factor Right effort (sammā vāyāma)
+@references [agent/handoff-preserves-context agent/scope-before-action math-informal/structural-obstruction-as-theorem]
+
+! conclusion:
+  Dispatch an agent as a student-explorer, not a junior-developer-verifier. Give them the
+  problem context, what's been tried and why it failed, candidate directions to explore,
+  and a structured report format. Let them discover rather than confirm.
+
+  + context: You have a research problem with multiple unexplored directions. You could
+    hand each direction to an agent (Codex, another Claude instance, a human collaborator)
+    for parallel exploration. The temptation is to specify exactly what to compute and what
+    answer to expect — but this discards the agent's ability to discover surprises.
+
+  + IF:
+      The remaining work involves genuine exploration (multiple approaches, unknown outcomes)
+      rather than rote verification (check that X equals Y). The dispatched agent has the
+      capability to reason about the problem, not just execute a script.
+
+  + HOWEVER:
+      Unrestricted exploration wastes time. "Go think about this problem" is too vague.
+      The student needs: (1) what's known, (2) what's been tried and failed with explicit
+      reasons, (3) candidate directions with rationale, (4) what NOT to try, and (5) a
+      report format. The negative knowledge (what not to try) is as important as the
+      positive — it prevents the student from repeating dead ends that took the advisor
+      hours to discover.
+
+  + THEN:
+      Structure the dispatch as:
+
+      1. **Context**: The problem statement and what's been proved so far. Enough for the
+         student to understand the landscape without reading every prior document.
+
+      2. **Dead ends with reasons**: Approaches that were tried and WHY they failed.
+         Not just "SOS didn't work" but "SOS is structurally blocked because the interior
+         zero forces all multipliers to vanish." This is where structural-obstruction-as-
+         theorem and exhaustion-as-theorem pay off — they compress dead ends into
+         transmissible theorems.
+
+      3. **Directions to explore**: 2-4 candidate approaches, each with a sentence on why
+         it might work. The student may pivot based on findings — that's fine.
+
+      4. **Report format**: What to come back with. Not pass/fail but structured findings:
+         what was tried, what happened, what surprised, what new dead ends were discovered,
+         what partial results were obtained.
+
+      5. **Success criteria**: What would constitute progress. "Find a universal c_0 >= 0.01"
+         is better than "prove the theorem." Partial success is success.
+
+  + BECAUSE:
+      A verification dispatch ("confirm X") caps the return at 1 bit: yes or no. An
+      exploration dispatch ("investigate X") can return discoveries, new dead ends,
+      partial results, unexpected connections, and reformulations. The student may find
+      something the advisor didn't think to look for. The negative-knowledge transfer
+      prevents wasted work while the open-ended framing permits serendipity.
+
+  + FAILURE-MODES:
+      - Too little context: student wastes time rediscovering known results.
+      - Too much prescription: student confirms rather than explores.
+      - No report format: student returns unstructured prose that's hard to integrate.
+      - Missing dead ends: student repeats the advisor's failed approaches.
+      - Overloaded dispatch: giving 10 directions when 2-3 is the right scope per agent.
+
+  + EVIDENCE:
+      P4 n=4 Stam inequality (futon6, Feb 2026): Codex was dispatched in verification
+      mode ("confirm these eigenvalues, verify this identity"). Returned pass/fail.
+      Separately, Codex was dispatched in exploration mode for PHCpack — "find all critical
+      points of this system" — and returned 12 in-domain CPs with full case classification,
+      discovering the mixed_volume=0 issue independently. The exploration dispatch produced
+      richer results per unit of effort.
+
+      P6 epsilon-light subsets: the Claude→Codex handoff note contained dead ends
+      (6 technique failures with reasons) and candidate directions (BSS greedy, expander
+      decomposition, structural analysis). This is the right format for student dispatch;
+      the missing piece was framing it as "go explore these" rather than "verify my claims."
+
+  + NEXT-STEPS:
+    next[Write the dispatch note: context, dead ends, directions, report format.]
+    next[Send one direction per agent if parallelizing.]
+    next[On return: integrate findings, update the dead-end list, re-dispatch if needed.]

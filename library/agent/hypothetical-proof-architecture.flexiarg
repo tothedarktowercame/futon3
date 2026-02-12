@@ -1,0 +1,70 @@
+@flexiarg agent/hypothetical-proof-architecture
+@title Hypothetical Proof Architecture
+@sigils [🏗/乾]
+@keywords hypothetical, architecture, wiring, diagram, triage, path, blocked, open, solid, proof, kill, sequential, parallel, obstacle
+@audience proof engineers, mathematical agents, research coordinators
+@tone strategic
+@factor Keen investigation (dhammavicaya)
+@references [math-informal/split-into-cases math-informal/technique-landscape-map]
+
+! conclusion:
+  Before investing effort in a proof path, sketch multiple complete proof architectures as
+  wiring diagrams with explicit node status (solid/open/blocked). Triage immediately to
+  focus effort on the most promising path.
+
+  + context: You have a theorem to prove with multiple plausible approaches. Each approach
+    has several steps, some established and some open. The temptation is to start with the
+    "obvious" or "natural" approach and push until stuck.
+
+  + IF:
+      There are 3+ plausible proof paths, each with multiple steps. Some steps are
+      established results, some are open problems, and some may be blocked by known
+      obstructions. The risk profile of each path (number of open steps, their independence,
+      known difficulties) varies significantly.
+
+  + HOWEVER:
+      Sketching architectures is upfront cost. For problems with one clear approach, it's
+      overkill. Only invest in this when the proof landscape is genuinely multi-path and the
+      cost of pursuing a dead end is high (weeks of work, not hours).
+
+  + THEN:
+      1. For each plausible proof path, draw a complete wiring diagram from hypotheses to
+         conclusion.
+      2. Mark each node as: solid (established), open (needs work), or blocked (known
+         obstruction).
+      3. Kill blocked paths immediately.
+      4. Compare open paths on: (a) number of open nodes, (b) whether open nodes are
+         sequential (each depends on the previous) or parallel (independent), (c) whether
+         any open node is a known hard problem.
+      5. Prioritize paths with fewer open nodes, parallel structure, and no known-hard
+         sub-problems.
+
+  + BECAUSE:
+      Sequential open obstacles multiply risk (if any one fails, the entire path fails).
+      Parallel open sub-goals reduce risk (any one success may suffice). A path with one
+      open node is strictly better than a path with three sequential open nodes, even if
+      the single node is harder, because success is binary: one hard question has the same
+      risk profile as three easy questions in series but is easier to focus on.
+
+  + FAILURE-MODES:
+      - Architecture bias: sketching only 2-3 paths and missing the best one. Cast the
+        net wide initially; narrow after triage.
+      - False "blocked" assessment: marking a path as blocked based on a surface reading
+        of an obstruction, when the obstruction has a workaround. Verify blocks carefully.
+      - Triage paralysis: spending too long comparing paths instead of working on the
+        best one. The triage should take hours, not days.
+
+  + EVIDENCE:
+      P7 lattices with 2-torsion (futon6, Feb 2026): 5 hypothetical proof architectures
+      (H1-H5) were sketched for the S obligation. Two (H3, H5) were immediately killed
+      (codim-2 gap fails for reflections; Gauss-Bonnet kills Fowler in odd dim). One (H2)
+      was deprioritized (3 sequential obstacles with structural headwinds). The winner (H1,
+      rotation route) was not the "obvious" continuation but had the best risk profile:
+      one open question (lattice existence) with no known blocker, plus two parallel
+      S-branch options.
+
+  + NEXT-STEPS:
+    next[Sketch 3-5 complete proof architectures as wiring diagrams.]
+    next[Mark node status: solid, open, blocked.]
+    next[Kill blocked paths, deprioritize sequential-obstacle paths.]
+    next[Focus on the path with fewest independent open nodes.]

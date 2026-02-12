@@ -1,0 +1,66 @@
+@flexiarg math-informal/parametric-tension-dissolution
+@title Parametric Tension Dissolution
+@sigils [🔀/巽]
+@keywords tension, conflict, parameter, parity, dimension, codimension, construction, dissolve, structural, constraint, even, odd
+@audience mathematicians, topologists, proof architects
+@tone analytic
+@factor Discernment (paññā)
+@references [math-informal/split-into-cases math-informal/find-the-right-abstraction]
+
+! conclusion:
+  When two parts of a proof have conflicting requirements on a parameter, recognize the
+  tension as a structural constraint and seek a construction that dissolves it by changing
+  the underlying geometric or algebraic setup.
+
+  + context: Your proof has two logically independent obligations. Each constrains a shared
+    parameter (dimension, degree, codimension, rank, etc.) in conflicting directions. The
+    natural construction satisfies one obligation perfectly but creates headwinds for the
+    other.
+
+  + IF:
+      Obligation A requires parameter p to have property X (e.g., n even), while
+      obligation B benefits from property Y (e.g., n odd), and X and Y are incompatible.
+      The conflict is not a matter of insufficient technique but of the parameter itself.
+
+  + HOWEVER:
+      Not every difficulty is a tension. If obligation B merely "prefers" Y but can be
+      completed with X, the tension is aesthetic, not structural. Only apply this pattern
+      when the conflict genuinely blocks or severely impedes completion. Also: the
+      alternative construction that dissolves the tension must exist — don't assume it does
+      without checking.
+
+  + THEN:
+      1. State the tension precisely: which obligations conflict on which parameter.
+      2. Ask: is there a different construction where both obligations want the same
+         parameter value? This often means replacing the initial geometric or algebraic
+         object (reflection → rotation, codim-1 → codim-2, etc.).
+      3. Check that the new construction still satisfies both obligations (it may make
+         the previously-easy obligation slightly harder).
+      4. If the tension dissolves, record the resolution as a structural insight.
+
+  + BECAUSE:
+      Parametric tensions are theorems about the approach, not the problem. They reveal that
+      the initial construction, however natural, is suboptimal for the full proof. Dissolving
+      the tension often simplifies the entire proof architecture by removing structural
+      headwinds that would otherwise require heavy machinery to overcome.
+
+  + FAILURE-MODES:
+      - The alternative construction may not exist (the tension may be intrinsic to the
+        problem, not just the approach).
+      - The alternative may dissolve one tension but create another. Map all obligations
+        before committing.
+
+  + EVIDENCE:
+      P7 lattices with 2-torsion (futon6, Feb 2026): E2 obligation (place Γ in FH(Q))
+      requires even n (so fixed set has odd dimension and χ = 0 by topology). S obligation
+      (upgrade to manifold) benefits from odd n (favorable L-theory parity, equivariant
+      surgery available). Tension is structural for the reflection construction. Resolution:
+      replace codimension-1 reflection with codimension-2 rotation in odd dimension. Both
+      obligations then want odd n. The rotation route dissolves the tension and opens two
+      parallel S-branch options (Wall surgery with favorable parity, or equivariant surgery
+      with satisfied gap hypothesis).
+
+  + NEXT-STEPS:
+    next[Identify which obligations conflict on which parameters.]
+    next[Search for alternative constructions where the conflict dissolves.]
+    next[Verify the alternative satisfies all obligations, even if less cleanly.]

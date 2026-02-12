@@ -1,0 +1,76 @@
+@flexiarg agent/reduction-to-kernel
+@title Reduction to Kernel
+@sigils [🎯/坤]
+@keywords reduce, kernel, lemma, conjecture, formalize, hypotheses, bridge, named, handoff, minimal, explicit, GPL, L2
+@audience proof engineers, mathematical agents, research coordinators
+@tone strategic
+@factor Keen investigation (dhammavicaya)
+@references [math-informal/structural-obstruction-as-theorem math-informal/exhaustion-as-theorem]
+
+! conclusion:
+  Reduce a complex open problem to the smallest possible missing lemma with explicit
+  hypotheses, then record it as a named conjecture. The reduction itself is proved work;
+  the named conjecture becomes a precise handoff target.
+
+  + context: You have been working on a proof and have closed most cases or steps. The
+    remaining gap is hard but may be expressible as a single statement with clear
+    hypotheses and conclusion.
+
+  + IF:
+      The proof is mostly complete: the structure is understood, most cases are closed,
+      and the remaining difficulty is localizable to a specific mathematical statement.
+      The statement can be formulated with explicit hypotheses that are already proved
+      or assumed from the problem setup.
+
+  + HOWEVER:
+      The reduction must be rigorous. "It would be enough to prove X" is not a reduction
+      unless you have proved that X actually implies the desired conclusion. Also: the
+      kernel should be genuinely minimal — if it contains unnecessary hypotheses or can
+      be split into independent parts, simplify further.
+
+  + THEN:
+      1. Formulate the missing lemma with numbered hypotheses (H1, H2, ...) and a
+         conclusion.
+      2. Prove the reduction: show that the hypotheses are satisfiable from the problem
+         setup and that the conclusion implies the target theorem.
+      3. Check each hypothesis: is it already proved, or does it need work? Mark status.
+      4. Give the conjecture a name (GPL-H, L2*, etc.) and record it in the proof status
+         document.
+      5. Include any numerical evidence that supports the conjecture.
+
+  + BECAUSE:
+      A named conjecture with explicit hypotheses is qualitatively different from "the
+      proof is stuck." It converts an open problem into a precise target that can be:
+      (a) worked on by a different agent with fresh perspective, (b) recognized by someone
+      who knows the relevant technique, (c) connected to existing results via the explicit
+      hypotheses, (d) empirically tested. The reduce phase (all the work that leads to
+      the kernel) is always tractable; the kernel phase may not be — but the reduce phase
+      is still valuable because it converts "hard problem" into "hard problem minus
+      everything tractable."
+
+  + FAILURE-MODES:
+      - False reduction: the kernel doesn't actually imply the conclusion. Prove the
+        reduction rigorously.
+      - Over-specified kernel: too many hypotheses, some unnecessary. Simplify until each
+        hypothesis is used in the reduction proof.
+      - Under-specified kernel: the kernel is true but insufficient. Check that the
+        reduction covers all cases.
+
+  + EVIDENCE:
+      P6 epsilon-light subsets (futon6, Feb 2026): the full proof (650+ lines) was reduced
+      to GPL-H — a single operator-valued averaging statement with 4 explicit hypotheses
+      (H1: light edges, H2: core regularity, H3: barrier-valid prefix, H4: residual size)
+      and one conclusion (min_v ‖Y_t(v)‖ ≤ θ). A sharper reduction showed that L2* alone
+      (score control) implies the theorem, without needing L3 (drift control). Named
+      conjecture + proved reduction + 2353 trajectory numerical evidence.
+
+      P7 lattices with 2-torsion (futon6, Feb 2026): the S obligation was reduced to a
+      single lattice-existence question: do arithmetic uniform lattices in Isom(H^{2k+1})
+      contain order-2 rotational involutions? This is a number-theoretic question
+      independent of the topology/surgery machinery.
+
+  + NEXT-STEPS:
+    next[Formulate the missing lemma with explicit hypotheses.]
+    next[Prove the reduction (hypotheses → target theorem).]
+    next[Name the conjecture and record in proof status.]
+    next[Gather numerical evidence for or against.]

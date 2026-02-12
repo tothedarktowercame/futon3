@@ -1,0 +1,63 @@
+@flexiarg math-informal/exhaustion-as-theorem
+@title Exhaustion as Theorem
+@sigils [🧱/艮]
+@keywords exhaust, technique, class, wall, barrier, fundamental, ceiling, quadratic, linear, scaling, sublinear, impossible, family
+@audience mathematicians, proof engineers, optimization theorists
+@tone analytic
+@factor Discernment (paññā)
+@references [math-informal/structural-obstruction-as-theorem math-informal/split-into-cases]
+
+! conclusion:
+  When multiple approaches to the same proof step all fail at the same quantitative barrier,
+  prove that the barrier is fundamental to the technique class, not an artifact of any
+  individual approach.
+
+  + context: You have tried several methods for a proof step (concentration inequalities,
+    subsampling arguments, spectral bounds, etc.) and each gives a bound that is too weak
+    by the same qualitative amount. The failure pattern is suspiciously consistent.
+
+  + IF:
+      Three or more techniques from the same family (e.g., "subsample and concentrate,"
+      "bound trace then convert to operator norm," "linearize the quadratic term") all
+      fail at the same quantitative step, producing bounds with the same scaling deficiency.
+
+  + HOWEVER:
+      Consistent failure might be coincidence rather than structure. Before declaring the
+      barrier fundamental, verify that the techniques genuinely span the family — not just
+      three variants of the same idea. Also check whether a technique outside the family
+      avoids the barrier entirely.
+
+  + THEN:
+      1. Identify the common quantitative step where all techniques fail.
+      2. Formulate the barrier as a theorem: "any technique in class C that proceeds via
+         step X produces a bound of at most f(n)" where f(n) is weaker than the target.
+      3. Prove the ceiling theorem (often by exhibiting a worst case for step X).
+      4. Record the ceiling as a lemma. It eliminates the technique class and redirects
+         effort toward techniques outside the class.
+
+  + BECAUSE:
+      A proved ceiling theorem is qualitatively different from "we tried 6 things and they
+      didn't work." It converts empirical failure into structural understanding: the barrier
+      is not a failure of ingenuity but a consequence of the technique class's structure.
+      This prevents future revisitation ("maybe if we try the 7th variant...") and focuses
+      effort on genuinely different approaches.
+
+  + FAILURE-MODES:
+      - Premature exhaustion claim: the family is not actually exhausted. Check that new
+        techniques outside the family avoid the barrier.
+      - Overgeneralization: "no concentration argument can work" when the ceiling only
+        applies to trace-based certification. Scope the barrier precisely.
+
+  + EVIDENCE:
+      P6 epsilon-light subsets (futon6, Feb 2026): 6 subsample-and-concentrate techniques
+      (trace/Markov, star domination, decoupling+MSS 1-shot, decoupling+MSS recursive,
+      greedy/chromatic, rank spreading) all hit the quadratic-vs-linear scaling wall:
+      spectral contribution scales as q² while set size scales as q. The trace-only ceiling
+      was proved as a lemma (Step 1), eliminating the entire technique class and redirecting
+      toward operator-norm-aware barrier greedy (a technique outside the class).
+
+  + NEXT-STEPS:
+    next[List all techniques tried and their failure points.]
+    next[Identify the common quantitative step.]
+    next[Prove the ceiling theorem for the technique class.]
+    next[Search for techniques outside the class that avoid the ceiling.]

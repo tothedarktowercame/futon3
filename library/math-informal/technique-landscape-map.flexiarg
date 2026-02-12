@@ -1,0 +1,63 @@
+@flexiarg math-informal/technique-landscape-map
+@title Technique Landscape Map
+@sigils [🗺/震]
+@keywords technique, landscape, library, wiring, method, survey, bridge, gap, decomposition, mechanism, certificate, partial
+@audience mathematicians, proof engineers, spectral graph theorists
+@tone strategic
+@factor Keen investigation (dhammavicaya)
+@references [math-informal/numerical-scout math-informal/reduce-to-known-result]
+
+! conclusion:
+  When a problem sits at the intersection of multiple standard techniques, build a typed
+  library of those techniques before attempting the proof. The library reveals the exact
+  structural gap between existing methods and the target.
+
+  + context: You have a theorem to prove that resembles results in several papers, but no
+    single paper's method directly applies. The temptation is to pick the "closest" method
+    and adapt it. But without mapping the full landscape, you may miss that the gap is
+    structural rather than parametric.
+
+  + IF:
+      Multiple published techniques (3+) partially address your problem — they prove related
+      results with similar objects but different outputs, or the same output under stronger
+      hypotheses.
+
+  + HOWEVER:
+      Building the library is upfront investment that may feel premature. Not every problem
+      needs it — only problems where the mismatch between existing methods and the target
+      is non-obvious. If one method clearly applies modulo a minor adaptation, just adapt it.
+
+  + THEN:
+      1. For each related method, construct a typed wiring diagram with nodes:
+         Q (objective), D (decomposition), M (mechanism), C (certificate), O (output).
+      2. Add a bridge node B assessing the match to your target: direct, partial, or none.
+      3. For each B = partial, write down the exact structural mismatch.
+      4. Look for patterns across mismatches — they often share a common structural feature.
+      5. The common feature is the gap. Target it directly.
+
+  + BECAUSE:
+      The library converts vague intuition ("these papers are related") into a typed
+      structural comparison. The bridge-status classification surfaces whether the gap is
+      parametric (same structure, different bounds) or structural (different output type).
+      Structural gaps require new ideas; parametric gaps require optimization. Knowing which
+      you face changes the approach entirely.
+
+  + FAILURE-MODES:
+      - Over-investment: building an exhaustive library when the problem only needs one
+        adaptation. Start with 3-4 methods; expand only if the gap remains unclear.
+      - False bridge: classifying a method as "partial" when the gap is actually fundamental.
+        Be honest about bridge status — partial means the core technique transfers; none
+        means only the vocabulary transfers.
+
+  + EVIDENCE:
+      P6 epsilon-light subsets (futon6, Feb 2026): a library of 10 methods (D1-D10) was
+      constructed with typed wiring diagrams. All 10 had bridge status partial or none.
+      The common mismatch: all methods produce edge-weighted sparsifiers, not vertex-induced
+      subsets. This structural gap — not visible from any single paper — directed the proof
+      toward leverage-based vertex selection (a new technique) rather than adapting any
+      existing method.
+
+  + NEXT-STEPS:
+    next[Survey 3-5 related methods with typed wiring diagrams.]
+    next[Classify bridge status for each: direct, partial, or none.]
+    next[Identify the common structural mismatch across partial bridges.]

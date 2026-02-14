@@ -1,8 +1,30 @@
 # War Room — Inter-Mission / Inter-Futon Coordination
 
+> *Victory begets enmity; the defeated dwell in pain.*
+> *Happily the peaceful live, discarding both victory and defeat.*
+> — Dhammapada 201 (trans. Buddharakkhita)
+
+> *Hatred is never appeased by hatred in this world.*
+> *By non-hatred alone is hatred appeased. This is a law eternal.*
+> — Dhammapada 5 (trans. Buddharakkhita)
+
+> *Happy indeed we live, friendly amidst the hostile.*
+> *Among those who hate, we dwell free from hatred.*
+> — Dhammapada 197 (trans. Buddharakkhita)
+
 This document sits one level above mission control. Individual missions
 (M-coordination-rewrite, M-drawbridge-multi-agent, etc.) operate within
 a single futon. The War Room coordinates across futons and across missions.
+
+## War Bulletins
+
+Strategic assessments with cross-futon implications. Each bulletin captures
+findings from a significant effort and their impact on the stack. The war room
+summarises; the bulletins provide evidence and argument.
+
+| # | Date | Title | Key Findings |
+|---|------|-------|-------------|
+| [1](war-bulletin-1.md) | 2026-02-14 | What First Proof Proved About the Stack | Wiring diagrams operational (not decorative); AIF+ I1-I6 validated; depth frontier = domain knowledge; nLab validation path before superpod |
 
 ## The Three-Futon Refactoring
 
@@ -72,15 +94,28 @@ futon3c (social)  →  futon3b (task)  →  futon3b L1 (glacial)
 - **M-agency-refactor** [BLOCKED on M-social-exotype] — Port + refactor Agency
 - **M-forum-refactor** [BLOCKED on M-social-exotype] — Port + refactor Forum
 - **M-peripheral-model** [BLOCKED on M-social-exotype] — Formalize peripheral spec
+- **Proof peripheral** [COMMITTED] — 6th peripheral (:proof) with DAG backend,
+  canonical forms, cycle detection, ledger ops. Commit `7d1a5d0`. Codex alleycat
+  testing pending. See [Bulletin 1](war-bulletin-1.md) §2 for AIF+ alignment.
 - Source missions in futon3: M-drawbridge-multi-agent, M-par-session-punctuation,
   M-agency-rebuild, M-agency-forum (evidence of tensions, not specifications)
 
 ### Cross-Futon
 - **futon5** — Wiring diagrams, CT DSL, tensor math. Provides the formal
-  specification language for all AIF loops.
-- **futon6** — Mathematics dictionary. Uses futon3's patterns and futon3a's
-  search. Independent development track.
+  specification language for all AIF loops. F6 mission wiring diagrams
+  validated (f6-ingest.edn, f6-eval.edn). Spring Break target: JAX-based
+  CA + differentiable eigendecomposition on wiring diagram tensors.
+  See [Bulletin 1](war-bulletin-1.md) for strategic assessment.
+- **futon6** — Mathematics dictionary + First Proof sprint (6/10 correct,
+  70 typed wiring diagrams, AIF+ audit). nLab validation path: 20K pages
+  already available, `hyperreal.py` builds free category, wiring diagram
+  extraction in progress. Superpod deferred to post-Spring-Break.
+  See [Bulletin 1](war-bulletin-1.md) for full findings.
+- **futon4** — Arxana hypertext layer. Scholium-based annotation provides
+  edge-level critique infrastructure validated by First Proof. Integration
+  with nLab via hyperreal dictionary + link-graph persistence.
 - **futon1a** — Durable store. Shared infrastructure for evidence persistence.
+  Must preserve negative knowledge (failed routes with structural obstructions).
 
 ## War Room Decisions
 

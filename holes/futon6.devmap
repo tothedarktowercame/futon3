@@ -263,14 +263,21 @@ reusable in other knowledge domains.
     evidence[Classical term spotter (scripts/spot-terms.bb): 100% SE coverage, 22 terms/entity mean]
     evidence[Negative-space analysis validates NER/pattern duality: terms cover formal scaffolding, patterns cover informal reasoning]
     evidence[Scope-detection patterns defined: Let/Define/Assume/Consider/where openers for local binding extraction]
+    evidence[Superpod handoff runbook: Entangled literate program (data/first-proof/superpod-handoff-rob.lit.md) tangles 3 scripts]
+    evidence[200-thread pilot: wiring diagrams for 4 corpora (math.SE, MO, physics.SE, PlanetMath); CT discrimination 81-89% vs 18-34%]
+    evidence[NNexus Glasses demo: thread #633512 rendered with NER, scopes, wiring, categorical badges, expression surfaces]
+    evidence[Expression surface parsing: curated s-exp parses for ~30 LaTeX expressions; every $...$ a typed surface]
+    evidence[Structured scope map: hx/ends decomposition (symbol : description) for Let-bindings, ∀-quantifiers, where-constraints]
 
   + NEXT-STEPS:
     next[Process math.stackexchange on superpod (3.4GB dump, Llama-3)]
     next[Add Stage 5 to superpod job: NER term spotting + scope detection]
+    next[Add Stage 8: LaTeX → s-exp expression surface parsing (CPU-only, 128 cores)]
     next[Bootstrap loop: absorb math.SE tags into kernel, re-spot, iterate]
     next[Design binding type classification for GPU (Tier 2 NER)]
     next[Arxiv processing: extend pipeline to research papers]
     next[Feed processed math.SE into P10 wiring diagram LLM training pipeline]
+    next[Feed expression surfaces into P11 hypergraph assembly + embedding]
 
   :success-criteria
     pass[Q&A pairs import correctly]
@@ -434,3 +441,120 @@ reusable in other knowledge domains.
 
   :psr-example "Selected wiring diagram LLM because API extraction doesn't scale to math.SE"
   :pur-template "Training run {{id}}, task: {{T1|T2}}, data: {{count}}, orphan_rate: {{rate}}"
+
+
+! instantiated-by: Prototype 11 — Structural Hypergraph Embeddings (LWGM) [🔸/小 🐲/乃]
+  :maturity :design
+  :depends-on [f6/P7, f6/P10]
+  :evidence-for-active [NNexus Glasses demo validates all annotation layers on thread #633512; s-exp surface parsing curated]
+
+  + context: The pipeline produces rich per-thread annotations — NER terms, scope
+    bindings, wiring edges, categorical detections, expression surfaces — but these
+    remain local to each thread. There is no global structure connecting threads by
+    the *shape* of their mathematical arguments. Text embeddings (Stage 2) capture
+    lexical similarity but not structural similarity: two threads using different
+    words for the same pattern of reasoning land far apart.
+
+  + IF: You want "related questions" to mean "structurally analogous reasoning"
+    (e.g. a thread about sheaf cohomology and one about group extensions share the
+    same universal-property + Let-binding + diagram-chase shape)
+  + HOWEVER: Text embeddings encode surface form, not argument structure
+  + THEN: Assemble a typed hypergraph per thread from all annotation layers, then
+    embed hypergraphs into a vector space using graph neural networks; index for
+    structural similarity search
+  + BECAUSE: The annotation layers already decompose mathematical arguments into
+    typed components — the hypergraph makes this structure explicit and the
+    embedding makes it searchable
+
+  + ARCHITECTURE:
+
+    Stage 8 — Expression Surface Parsing (CPU x128):
+      Input: thread wiring JSON + raw LaTeX from body_html
+      Output: s-exp parse tree per expression, typed by scope context
+      Method: deterministic LaTeX parser (recursive descent, ~150 LOC Python)
+      Evidence: curated s-exp parses for 30 expressions in thread #633512
+
+    Stage 9a — Thread Hypergraph Assembly (CPU):
+      Input: NER terms + scope bindings + wiring edges + categorical labels + s-exp surfaces
+      Output: one typed hypergraph per thread, format: {nodes: [...], hyperedges: [...], types: [...]}
+      Node types: expression-surface, ner-term, scope-binding, post
+      Hyperedge types: wiring-edge (assert/clarify/challenge/...),
+        scope-binds (which scope governs which expressions),
+        categorical-span (which cat concept covers which subgraph),
+        term-occurrence (which NER term appears in which expression surface)
+      The hypergraph is the thread's *structural signature*.
+
+    Stage 9b — Hypergraph Embedding (GPU):
+      Input: typed hypergraphs (batch of ~2M threads)
+      Output: fixed-dimensional embedding vector per thread (e.g. d=768)
+      Model candidates:
+        - Graphormer (Microsoft): graph transformer, handles typed edges
+        - GPS (General Powerful Scalable): hybrid message-passing + transformer
+        - HGNN+ (Hypergraph Neural Networks): native hyperedge support
+        - HyperSAGE: inductive, handles unseen node types
+      Training signal (free, no human labels):
+        - Contrastive: threads sharing tags should embed nearby
+        - Contrastive: threads linked by SE "related questions" should embed nearby
+        - Contrastive: threads firing same categorical detections should embed nearby
+        - Negative: random thread pairs from different tag clusters
+      Could also distill: use Claude to judge structural similarity on 1K pairs
+        as gold supervision, then train the GNN to match.
+
+    Stage 10 — Structural Similarity Index (CPU):
+      Input: embedding vectors for all threads
+      Output: FAISS index + k-NN similarity graph
+      Enables: "find me threads with the same argument shape as this one"
+      The similarity graph itself becomes a new annotation layer:
+        structural neighbours are candidates for cross-domain pattern discovery (P2)
+
+  + THE LWGM VISION:
+    A Large Wiring Graph Model is not an LLM — it embeds *argument structure*,
+    not token sequences. The embedding space has dimensions corresponding to
+    mathematical reasoning patterns, not word frequencies. Querying it asks
+    "what other threads reason like this one?" — a question no text-based
+    retrieval system can answer well.
+
+    Downstream uses:
+    - Structural search: find threads by argument shape, not keywords
+    - Pattern discovery: clusters in embedding space = recurring reasoning patterns
+    - Curriculum generation: path through embedding space = learning trajectory
+    - Anomaly detection: threads far from all clusters = novel reasoning
+    - Cross-domain transfer: "this algebra thread has the same shape as that topology thread"
+
+  + DATA REQUIREMENTS:
+    data[Thread wiring JSON: ~2M threads from math.SE + MathOverflow (from P7 superpod run)]
+    data[Expression surfaces: s-exp parse of every LaTeX expression (from Stage 8)]
+    data[NER terms + scopes: from existing pipeline stages 3-5]
+    data[Categorical detections: from nlab-ct-reference.json (ships with repo)]
+    data[Tag co-occurrence matrix: from SE metadata (free training signal)]
+    data[SE "related questions" links: from Posts.xml RelatedPostIds (free training signal)]
+
+  + EVIDENCE:
+    evidence[NNexus Glasses demo: all 5 annotation layers rendered for thread #633512 (data/first-proof/nnexus-glasses-demo.html)]
+    evidence[Expression surfaces: s-exp parses for ~30 expressions including display math diagrams]
+    evidence[Scope maps: structured hx/ends decomposition (Let Γ : directed-graph, ∀ e ∈ E, where U(−) : forgetful-functor)]
+    evidence[200-thread pilot: wiring + NER + scopes + categorical for 4 corpora confirms annotation layers are producible at scale]
+    evidence[CT discrimination: 81-89% true positive on category-theory threads vs 18-34% on non-CT — the typing works]
+
+  + NEXT-STEPS:
+    next[Build LaTeX → s-exp parser (Python, recursive descent, handle common math constructs)]
+    next[Define hypergraph JSON schema for thread structural signatures]
+    next[Assemble hypergraphs for 200-thread pilot set (validate schema on real data)]
+    next[Survey graph embedding models: Graphormer vs GPS vs HGNN+ for typed hypergraphs]
+    next[Build contrastive training dataset from SE tag co-occurrence + related-questions links]
+    next[Train prototype on 200-thread pilot, evaluate on held-out tag prediction]
+    next[Scale to full math.SE corpus on superpod (GPU stage after P7/P10 pipeline)]
+    next[Build FAISS index and structural search demo]
+
+  :success-criteria
+    pass[Hypergraph assembly produces valid typed graphs for >95% of threads]
+    pass[Embedding model trained on 2M threads converges]
+    pass[Structural neighbours share tags at >2x rate of text-embedding neighbours]
+    pass[Cross-domain structural matches validated by human review (>60% agreement)]
+    pass[FAISS index supports <100ms query time for structural search]
+    fail[Embeddings degenerate (all threads map to same region)]
+    fail[Structural similarity no better than tag co-occurrence baseline]
+    fail[Hypergraph assembly crashes on >5% of threads due to malformed annotations]
+
+  :psr-example "Selected hypergraph embeddings because text embeddings cannot capture argument structure"
+  :pur-template "Embedding run {{id}}, threads: {{count}}, model: {{arch}}, tag-pred-accuracy: {{acc}}"

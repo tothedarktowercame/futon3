@@ -39,6 +39,84 @@ Post-processing: 1 session.
 - [ ] math.stackexchange dump (3.4GB) accessible
 - [ ] Rob confirms superpod availability and Llama-3 access
 
+## Architecture
+
+Machine-checkable wiring diagram: `futon5/data/missions/f6-ingest.edn`
+Validated by `futon5.ct.mission/validate` — all 8 checks pass.
+
+```mermaid
+graph LR
+    subgraph inputs
+        I-se-dump["Math.SE XML dump<br/>xml-corpus"]
+        I-ner-kernel["NER kernel<br/>ner-kernel"]
+        I-scope-patterns["Scope patterns<br/>config"]
+        I-pattern-lib["Pattern library<br/>config"]
+        I-embed-model["Embedding model<br/>config"]
+        I-llm-model["LLM model<br/>config"]
+    end
+
+    subgraph f6-ingest
+        C-parse[Parse — XML streaming]
+        C-embed[Embed — bge-large-en-v1.5]
+        C-tag[Tag — LLM pattern classification]
+        C-cluster[Cluster — HDBSCAN]
+        C-ner[NER — classical term spotting]
+        C-scope[Scope — Let/Define/Assume detection]
+        C-bootstrap[Bootstrap — kernel expansion]
+        C-manifest[Manifest — validation + stats]
+        C-parse --> C-embed
+        C-parse --> C-tag
+        C-embed --> C-cluster
+        C-parse --> C-ner
+        C-parse --> C-scope
+        C-ner --> C-bootstrap
+        C-parse --> C-bootstrap
+        C-parse --> C-manifest
+        C-embed --> C-manifest
+        C-tag --> C-manifest
+        C-ner --> C-manifest
+        C-scope --> C-manifest
+        C-cluster --> C-manifest
+    end
+
+    subgraph outputs
+        O-entities["Entities<br/>json-corpus"]
+        O-relations["Relations<br/>json-corpus"]
+        O-embeddings["Embeddings<br/>embedding-tensor"]
+        O-pattern-tags["Pattern tags<br/>json-corpus"]
+        O-clusters["Clusters<br/>json-corpus"]
+        O-ner-terms["NER term hits<br/>json-corpus"]
+        O-scopes["Scope records<br/>json-corpus"]
+        O-manifest["Manifest<br/>json-corpus"]
+        O-expanded-kernel["Expanded NER kernel<br/>ner-kernel"]
+    end
+
+    I-se-dump --> C-parse
+    I-embed-model --> C-embed
+    I-pattern-lib --> C-tag
+    I-llm-model --> C-tag
+    I-ner-kernel --> C-ner
+    I-scope-patterns --> C-scope
+    I-ner-kernel --> C-bootstrap
+    C-parse --> O-entities
+    C-parse --> O-relations
+    C-embed --> O-embeddings
+    C-tag --> O-pattern-tags
+    C-cluster --> O-clusters
+    C-ner --> O-ner-terms
+    C-scope --> O-scopes
+    C-manifest --> O-manifest
+    C-bootstrap --> O-expanded-kernel
+```
+
+**Structural properties**: After C-parse, stages 2–5 run in parallel (C-embed,
+C-tag, C-ner, C-scope all consume parsed entities independently). C-cluster
+depends on C-embed; C-bootstrap depends on C-ner. C-manifest aggregates all
+stages. No single component is a SPOF — removing any one disconnects only its
+own output channel(s). Three glacial constraints (pattern library, embedding
+model, LLM model) flow strictly downward into fast processing; no I4
+exogeneity violations.
+
 ## Work Plan
 
 ### Outpost O-1: Pipeline Dry Run

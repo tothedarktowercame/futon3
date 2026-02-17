@@ -525,16 +525,17 @@ event can flow through all three timescales and return as a library constraint.
     (Codex compose-parallel review).
   - ARGUE: This document (S1-S7, R1-R11, T1-T5, C1-C6, thesis)
 
-  ACTIVE:
+  COMPLETE (continued):
   - VERIFY: M-social-exotype (futon3c/holes/missions/M-social-exotype.md)
     - V1: social-exotype.edn — standalone diagram validation [DONE, 8/8]
-    - V2: three-diagram composition — compose-parallel implemented,
-      social-exotype.edn needs restoration + :social timescale update
-    - V3 requires implementation (subsequent mission)
+    - V2: three-diagram composition — compose-parallel merged to futon5 main
+      (d5ae681). social-exotype.edn restored with :social timescale. Composed
+      diagram: 5 inputs, 7 outputs, 16 components, 69 edges, 8/8 checks.
+    - V3: round-trip proof deferred to INSTANTIATE (by design)
   - Part III (Prototype 0) — bootstrap closure [DONE]
     - 6 proof-paths in futon3b/data/proof-paths/ including 3 coordination
       tensions from Codex review
 
-  PENDING:
+  ACTIVE:
   - INSTANTIATE: M-agency-refactor, M-forum-refactor, M-peripheral-model
-    (blocked on M-social-exotype — cannot scope until exotype exists)
+    Exotype exists and is validated. Implementation missions can now be scoped.

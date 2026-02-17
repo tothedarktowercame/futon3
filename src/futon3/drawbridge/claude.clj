@@ -1,18 +1,18 @@
 (ns futon3.drawbridge.claude
-  "Drawbridge for Claude Code - multi-headed REPL routing to Claude subprocess.
+  "Claude agent registration for the multi-agent Drawbridge router.
 
-   Like cemerick/drawbridge routes HTTP to nREPL, this routes HTTP/WebSocket
-   to a Claude Code subprocess. Supports:
-   - Multiple input heads (HTTP, WebSocket, Agency direct)
-   - Streaming output via WebSocket (Java-WebSocket, not http-kit)
-   - Persistent subprocess with streaming I/O (one process, many inputs)
-   - Session resume via Claude's --resume flag
-   - Hot-reloadable (lives in the JVM with MUSN)
+   Manages persistent Claude Code subprocesses (streaming mode) and registers
+   them with the Drawbridge for Agency routing. Multiple Claude agents can run
+   simultaneously with different agent-ids and session-ids.
 
    Usage:
-     (start! {:http-port 6768 :ws-port 6770 :resume-id \"abc123\"})
-     ;; POST /claude with body to send input
-     ;; WS ws://localhost:6770 for streaming output + push"
+     ;; Register a new Claude agent:
+     (register! \"claude-agency\" {:session-id \"abc123\"})
+
+     ;; Or use backwards-compat start! for remote agent mode:
+     (start! {:http-port 6768 :ws-port 6770 :agent-id \"claude\" :resume-id \"abc123\"})
+
+   Each registered agent gets its own persistent subprocess."
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [cheshire.core :as json]
@@ -20,170 +20,192 @@
   (:import [java.util.concurrent LinkedBlockingQueue TimeUnit]))
 
 ;; =============================================================================
-;; Persistent Claude Subprocess (streaming mode)
+;; Per-Agent Claude Subprocess Management
 ;; =============================================================================
 
-(defonce ^:private claude-process (atom nil))
-(defonce ^:private claude-stdin (atom nil))
-(defonce ^:private claude-stdout (atom nil))
-(defonce ^:private response-queue (atom nil))
-(defonce ^:private reader-thread (atom nil))
-(defonce ^:private current-session-id (atom nil))
+(defonce ^:private claude-processes
+  (atom {}))
+;; {agent-id -> {:process Process
+;;               :stdin Writer
+;;               :stdout Reader
+;;               :queue LinkedBlockingQueue
+;;               :reader-thread Thread
+;;               :session-id str}}
 
 (defn- start-claude-process!
-  "Start a persistent Claude subprocess with streaming JSON I/O.
+  "Start a persistent Claude subprocess for a specific agent.
    Returns true if started successfully."
-  [session-id]
-  (when @claude-process
-    (println "[claude-bridge] Stopping existing process...")
-    (try (.destroy ^Process @claude-process) (catch Exception _)))
+  [agent-id session-id]
+  (let [aid (name agent-id)]
+    ;; Stop existing process for this agent if any
+    (when-let [existing (get @claude-processes aid)]
+      (println (format "[claude-bridge:%s] Stopping existing process..." aid))
+      (try (.destroy ^Process (:process existing)) (catch Exception _)))
 
-  (let [cmd (cond-> ["claude"
-                     "--input-format" "stream-json"
-                     "--output-format" "stream-json"
-                     "--permission-mode" "bypassPermissions"
-                     "--verbose"]
-              session-id (into ["--resume" session-id]))
-        _ (println (format "[claude-bridge] Starting persistent subprocess: %s"
-                           (str/join " " cmd)))
-        pb (ProcessBuilder. ^java.util.List cmd)
-        _ (.directory pb (java.io.File. (System/getProperty "user.home")))
-        proc (.start pb)
-        stdin (io/writer (.getOutputStream proc))
-        stdout (io/reader (.getInputStream proc))
-        queue (LinkedBlockingQueue.)]
+    (let [cmd (cond-> ["claude"
+                       "--input-format" "stream-json"
+                       "--output-format" "stream-json"
+                       "--permission-mode" "bypassPermissions"
+                       "--verbose"]
+                session-id (into ["--resume" session-id]))
+          _ (println (format "[claude-bridge:%s] Starting persistent subprocess: %s"
+                             aid (str/join " " cmd)))
+          pb (ProcessBuilder. ^java.util.List cmd)
+          _ (.directory pb (java.io.File. (System/getProperty "user.home")))
+          proc (.start pb)
+          stdin (io/writer (.getOutputStream proc))
+          stdout (io/reader (.getInputStream proc))
+          queue (LinkedBlockingQueue.)
+          reader-thread
+          (Thread.
+           (fn []
+             (println (format "[claude-bridge:%s] Reader thread started" aid))
+             (try
+               (loop []
+                 (when-let [line (.readLine ^java.io.BufferedReader stdout)]
+                   (println (format "[claude-bridge:%s] Got line: %.100s..." aid line))
+                   (try
+                     (let [parsed (json/parse-string line true)]
+                       (.put queue parsed))
+                     (catch Exception e
+                       (println (format "[claude-bridge:%s] Parse error: %s" aid (.getMessage e)))))
+                   (when (.isAlive proc)
+                     (recur))))
+               (catch Exception e
+                 (println (format "[claude-bridge:%s] Reader error: %s" aid (.getMessage e)))))
+             (println (format "[claude-bridge:%s] Reader thread exiting" aid))))]
 
-    (reset! claude-process proc)
-    (reset! claude-stdin stdin)
-    (reset! claude-stdout stdout)
-    (reset! response-queue queue)
-    (reset! current-session-id session-id)
+      (swap! claude-processes assoc aid
+             {:process proc
+              :stdin stdin
+              :stdout stdout
+              :queue queue
+              :reader-thread reader-thread
+              :session-id session-id})
 
-    ;; Start reader thread to consume stdout
-    (reset! reader-thread
-            (Thread.
-             (fn []
-               (println "[claude-bridge] Reader thread started")
-               (try
-                 (loop []
-                   (when-let [line (.readLine ^java.io.BufferedReader stdout)]
-                     (println (format "[claude-bridge] Got line: %.100s..." line))
-                     (try
-                       (let [parsed (json/parse-string line true)]
-                         (.put queue parsed))
-                       (catch Exception e
-                         (println (format "[claude-bridge] Parse error: %s" (.getMessage e)))))
-                     (when (.isAlive proc)
-                       (recur))))
-                 (catch Exception e
-                   (println (format "[claude-bridge] Reader error: %s" (.getMessage e)))))
-               (println "[claude-bridge] Reader thread exiting"))))
-    (.start ^Thread @reader-thread)
-
-    (println "[claude-bridge] Persistent subprocess started")
-    true))
+      (.start reader-thread)
+      (println (format "[claude-bridge:%s] Persistent subprocess started" aid))
+      true)))
 
 (defn- stop-claude-process!
-  "Stop the persistent Claude subprocess."
-  []
-  (when-let [proc @claude-process]
-    (println "[claude-bridge] Stopping subprocess...")
-    (try
-      (when-let [stdin @claude-stdin]
-        (.close stdin))
-      (.destroy ^Process proc)
-      (.waitFor ^Process proc 5 TimeUnit/SECONDS)
-      (when (.isAlive proc)
-        (.destroyForcibly proc))
-      (catch Exception e
-        (println (format "[claude-bridge] Stop error: %s" (.getMessage e)))))
-    (reset! claude-process nil)
-    (reset! claude-stdin nil)
-    (reset! claude-stdout nil)
-    (reset! response-queue nil)
-    (reset! current-session-id nil)))
+  "Stop the persistent Claude subprocess for a specific agent."
+  [agent-id]
+  (let [aid (name agent-id)]
+    (when-let [{:keys [process stdin]} (get @claude-processes aid)]
+      (println (format "[claude-bridge:%s] Stopping subprocess..." aid))
+      (try
+        (when stdin (.close stdin))
+        (.destroy ^Process process)
+        (.waitFor ^Process process 5 TimeUnit/SECONDS)
+        (when (.isAlive process)
+          (.destroyForcibly process))
+        (catch Exception e
+          (println (format "[claude-bridge:%s] Stop error: %s" aid (.getMessage e)))))
+      (swap! claude-processes dissoc aid))))
 
 (defn- send-to-claude!
-  "Send a message to the persistent Claude subprocess.
-   Returns the response or nil on timeout."
-  [text timeout-ms]
-  (if-let [proc @claude-process]
-    (if (.isAlive proc)
-      (let [stdin @claude-stdin
-            queue @response-queue
-            msg {:type "user"
-                 :message {:role "user"
-                           :content text}}]
-        (try
-          ;; Send JSON message
-          (println (format "[claude-bridge] Sending: %.50s..." text))
-          (locking stdin
-            (.write ^java.io.Writer stdin (json/generate-string msg))
-            (.write ^java.io.Writer stdin "\n")
-            (.flush ^java.io.Writer stdin))
+  "Send a message to a specific agent's Claude subprocess.
+   Returns the response or error on timeout."
+  [agent-id text timeout-ms]
+  (let [aid (name agent-id)]
+    (if-let [{:keys [process stdin queue session-id]} (get @claude-processes aid)]
+      (if (.isAlive ^Process process)
+        (let [msg {:type "user"
+                   :message {:role "user"
+                             :content text}}]
+          (try
+            (println (format "[claude-bridge:%s] Sending: %.50s..." aid text))
+            (locking stdin
+              (.write ^java.io.Writer stdin (json/generate-string msg))
+              (.write ^java.io.Writer stdin "\n")
+              (.flush ^java.io.Writer stdin))
 
-          ;; Wait for response
-          (loop [deadline (+ (System/currentTimeMillis) timeout-ms)
-                 result nil]
-            (if (> (System/currentTimeMillis) deadline)
-              (do
-                (println "[claude-bridge] Timeout waiting for response")
-                {:error "timeout" :exit-code -1})
-              (if-let [resp (.poll ^LinkedBlockingQueue queue 100 TimeUnit/MILLISECONDS)]
-                (let [msg-type (:type resp)]
-                  (cond
-                    ;; Final result
-                    (= msg-type "result")
-                    (do
-                      (println (format "[claude-bridge] Got result"))
-                      {:result (:result resp)
-                       :session-id (:session_id resp)
-                       :exit-code 0})
+            (loop [deadline (+ (System/currentTimeMillis) timeout-ms)
+                   result nil]
+              (if (> (System/currentTimeMillis) deadline)
+                (do
+                  (println (format "[claude-bridge:%s] Timeout waiting for response" aid))
+                  {:error "timeout" :exit-code -1})
+                (if-let [resp (.poll ^LinkedBlockingQueue queue 100 TimeUnit/MILLISECONDS)]
+                  (let [msg-type (:type resp)]
+                    (cond
+                      (= msg-type "result")
+                      (do
+                        (println (format "[claude-bridge:%s] Got result" aid))
+                        {:result (:result resp)
+                         :session-id (:session_id resp)
+                         :exit-code 0})
 
-                    ;; Assistant message (accumulate)
-                    (= msg-type "assistant")
-                    (let [content (get-in resp [:message :content])
-                          text-content (when (sequential? content)
-                                         (->> content
-                                              (filter #(= (:type %) "text"))
-                                              (map :text)
-                                              (str/join "")))]
-                      (recur deadline (or text-content result)))
+                      (= msg-type "assistant")
+                      (let [content (get-in resp [:message :content])
+                            text-content (when (sequential? content)
+                                           (->> content
+                                                (filter #(= (:type %) "text"))
+                                                (map :text)
+                                                (str/join "")))]
+                        (recur deadline (or text-content result)))
 
-                    ;; Other message types - keep waiting
-                    :else
-                    (recur deadline result)))
-                (recur deadline result))))
-          (catch Exception e
-            (println (format "[claude-bridge] Send error: %s" (.getMessage e)))
-            {:error (.getMessage e) :exit-code -1})))
-      (do
-        (println "[claude-bridge] Process not alive, restarting...")
-        (start-claude-process! @current-session-id)
-        {:error "process restarted, retry" :exit-code -1}))
-    {:error "no process" :exit-code -1}))
-
-;; =============================================================================
-;; Invoke function for core (uses persistent subprocess)
-;; =============================================================================
+                      :else
+                      (recur deadline result)))
+                  (recur deadline result))))
+            (catch Exception e
+              (println (format "[claude-bridge:%s] Send error: %s" aid (.getMessage e)))
+              {:error (.getMessage e) :exit-code -1})))
+        (do
+          (println (format "[claude-bridge:%s] Process not alive, restarting..." aid))
+          (start-claude-process! aid session-id)
+          {:error "process restarted, retry" :exit-code -1}))
+      {:error "no process" :exit-code -1})))
 
 (defn- invoke-claude
-  "Send text to the persistent Claude subprocess."
-  [text session-id]
-  ;; Start process if not running
-  (when (or (nil? @claude-process)
-            (not (.isAlive ^Process @claude-process)))
-    (start-claude-process! session-id))
-
-  ;; Send and get response
-  (send-to-claude! text 60000))
+  "Send text to a specific agent's persistent Claude subprocess."
+  [agent-id text session-id]
+  (let [aid (name agent-id)]
+    ;; Start process if not running
+    (when (or (nil? (get @claude-processes aid))
+              (not (.isAlive ^Process (:process (get @claude-processes aid)))))
+      (start-claude-process! aid session-id))
+    (send-to-claude! aid text 60000)))
 
 ;; =============================================================================
-;; Public API (wraps core with Claude defaults)
+;; Public API — Registration
+;; =============================================================================
+
+(defn register!
+  "Register a Claude agent with the Drawbridge router.
+   Starts a persistent Claude subprocess and registers its invoke-fn.
+
+   Options:
+     :session-id      - Claude session ID to resume (optional)
+     :irc-nick        - IRC nickname (defaults to agent-id)
+     :agency-http-url - Agency HTTP base URL (optional)"
+  [agent-id {:keys [session-id irc-nick agency-http-url]}]
+  (let [aid (name agent-id)]
+    (start-claude-process! aid session-id)
+    (core/register-agent! aid
+      {:invoke-fn (fn [text sid] (invoke-claude aid text sid))
+       :session-id session-id
+       :irc-nick irc-nick
+       :agency-http-url agency-http-url})
+    (println (format "[claude-bridge:%s] Registered with Drawbridge" aid))
+    aid))
+
+(defn deregister!
+  "Deregister a Claude agent. Stops its subprocess."
+  [agent-id]
+  (let [aid (name agent-id)]
+    (stop-claude-process! aid)
+    (core/deregister-agent! aid)
+    (println (format "[claude-bridge:%s] Deregistered" aid))))
+
+;; =============================================================================
+;; Backwards-Compatible API (wraps core with Claude defaults)
 ;; =============================================================================
 
 (defn start!
-  "Start the Claude Drawbridge.
+  "Start the Claude Drawbridge (backwards-compat).
+
+   For multi-agent mode, use register! instead.
 
    Options:
      :http-port  - HTTP port for REST API (default 6768)
@@ -203,25 +225,31 @@
     :or {http-port 6768
          ws-port 6770
          bind "127.0.0.1"}}]
-  (core/start! {:http-port http-port
-                :ws-port ws-port
-                :bind bind
-                :token token
-                :invoke-fn invoke-claude
-                :endpoint-prefix "claude"
-                :resume-id resume-id
-                :agent-id agent-id
-                :agency-ws-url agency-ws-url
-                :agency-http-url agency-http-url
-                :agency-ws-agent-id agency-ws-agent-id
-                :agency-ws-reconnect-ms agency-ws-reconnect-ms
-                :agency-ws-ping-ms agency-ws-ping-ms
-                :register-local? (if (nil? register-local?) true register-local?)}))
+  (let [aid (or agent-id "claude")]
+    ;; Start the subprocess
+    (start-claude-process! aid resume-id)
+    ;; Start the drawbridge (HTTP/WS + registration)
+    (core/start! {:http-port http-port
+                  :ws-port ws-port
+                  :bind bind
+                  :token token
+                  :invoke-fn (fn [text sid] (invoke-claude aid text sid))
+                  :endpoint-prefix "claude"
+                  :resume-id resume-id
+                  :agent-id aid
+                  :agency-ws-url agency-ws-url
+                  :agency-http-url agency-http-url
+                  :agency-ws-agent-id agency-ws-agent-id
+                  :agency-ws-reconnect-ms agency-ws-reconnect-ms
+                  :agency-ws-ping-ms agency-ws-ping-ms
+                  :register-local? (if (nil? register-local?) true register-local?)})))
 
 (defn stop!
-  "Stop the Claude Drawbridge and persistent subprocess."
+  "Stop the Claude Drawbridge and all Claude subprocesses."
   []
-  (stop-claude-process!)
+  ;; Stop all Claude subprocesses
+  (doseq [aid (keys @claude-processes)]
+    (stop-claude-process! aid))
   (core/stop!))
 
 ;; Re-export useful functions from core
@@ -233,51 +261,60 @@
 (def send-to-irc! core/send-to-irc!)
 (def irc-connected? core/irc-connected?)
 
-;; Persistent subprocess management
+;; Per-agent exports
+(def register-agent! core/register-agent!)
+(def deregister-agent! core/deregister-agent!)
+(def registered-agents core/registered-agents)
+(def send-input-to! core/send-input-to!)
+(def connect-irc-for! core/connect-irc-for!)
+(def disconnect-irc-for! core/disconnect-irc-for!)
+(def send-to-irc-for! core/send-to-irc-for!)
+(def irc-connected-for? core/irc-connected-for?)
+
+;; Claude-specific subprocess management
 (defn subprocess-alive?
-  "Check if the persistent Claude subprocess is alive."
-  []
-  (and @claude-process (.isAlive ^Process @claude-process)))
+  "Check if a Claude subprocess is alive."
+  ([] (some (fn [[_ p]] (.isAlive ^Process (:process p))) @claude-processes))
+  ([agent-id]
+   (when-let [{:keys [process]} (get @claude-processes (name agent-id))]
+     (.isAlive ^Process process))))
 
 (defn subprocess-session
-  "Get the session ID of the persistent subprocess."
-  []
-  @current-session-id)
+  "Get the session ID of a Claude subprocess."
+  ([] (some-> (first @claude-processes) val :session-id))
+  ([agent-id] (:session-id (get @claude-processes (name agent-id)))))
 
 (defn release-session!
-  "Stop the persistent subprocess and release the session for CLI takeover.
+  "Stop a Claude subprocess and release the session for CLI takeover.
    Returns the session ID so you can resume it elsewhere."
-  []
-  (let [sid @current-session-id]
-    (stop-claude-process!)
-    (println (format "[claude-bridge] Session released: %s" sid))
-    (println (format "[claude-bridge] Resume with: claude --resume %s" sid))
+  [agent-id]
+  (let [aid (name agent-id)
+        sid (:session-id (get @claude-processes aid))]
+    (stop-claude-process! aid)
+    (println (format "[claude-bridge:%s] Session released: %s" aid sid))
+    (println (format "[claude-bridge:%s] Resume with: claude --resume %s" aid sid))
     sid))
 
 (comment
-  ;; Development / REPL usage
-  (start! {:http-port 6768
-           :ws-port 6770
-           :resume-id "64570417-4354-40b8-b6a5-db804f69a1d0"})
-  (stop!)
+  ;; === Multi-agent usage ===
+  (register! "claude-agency" {:session-id "64570417-4354-40b8-b6a5-db804f69a1d0"})
+  (register! "claude-forum" {})
 
-  (agent-alive?)
-  (subprocess-alive?)
-  (subprocess-session)
-  (send-input! "Hello from the REPL!")
+  (registered-agents)
+  (subprocess-alive? "claude-agency")
+  (subprocess-session "claude-agency")
+
+  (send-input-to! "claude-agency" "Hello from the REPL!")
 
   ;; Release session for CLI takeover
-  (release-session!)
+  (release-session! "claude-agency")
   ;; Then run: claude --resume <session-id>
 
-  ;; From another process:
-  ;; HTTP: curl -X POST http://localhost:6768/claude -d "Hello" -H "X-Admin-Token: your-token"
-  ;; WebSocket: connect to ws://localhost:6770
+  (deregister! "claude-forum")
 
-  ;; Workflow:
-  ;; 1. Start drawbridge with resume-id -> persistent subprocess owns session
-  ;; 2. IRC/HTTP/WS pages flow into subprocess
-  ;; 3. (release-session!) -> subprocess stops, session released
-  ;; 4. claude --resume <id> -> CLI takes over same session
-  ;; 5. Exit CLI, restart drawbridge -> back to multi-input mode
-  )
+  ;; === Backwards-compat ===
+  (start! {:http-port 6768
+           :ws-port 6770
+           :agent-id "claude"
+           :resume-id "64570417-4354-40b8-b6a5-db804f69a1d0"})
+  (stop!))

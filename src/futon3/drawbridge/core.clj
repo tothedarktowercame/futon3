@@ -1,22 +1,19 @@
 (ns futon3.drawbridge.core
-  "Shared Drawbridge infrastructure for agent wrappers.
+  "Multi-agent Drawbridge router for Agency.
 
-   Provides:
-   - HTTP API for input
-   - Java-WebSocket for streaming output
-   - Input multiplexing
-   - Agency integration (local handler registration)
-   - IRC chat integration
+   Routes messages between Agency (bells, whistles, pages) and registered agent
+   sessions. Multiple agents can register simultaneously — each with its own
+   invoke-fn, session-id, and IRC connection.
 
-   Usage:
-     (start! {:http-port 6768
-              :ws-port 6770
-              :invoke-fn (fn [text session-id] {:result \"...\" :session-id \"...\" :exit-code 0})
-              :agent-id \"my-agent\"})
+   Agents register with:
+     (register-agent! \"claude-agency\" {:invoke-fn f :session-id s})
 
-   The invoke-fn is agent-specific (Claude, Codex, etc.) and handles CLI invocation."
-  (:require [clojure.core.async :as async :refer [go-loop <! chan close!]]
-            [clojure.java.io :as io]
+   The router does not spawn or own agent processes. They exist independently
+   and register/deregister at will.
+
+   For remote agents, start! provides backwards-compatible HTTP/WS + Agency WS
+   client mode."
+  (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [cheshire.core :as json]
             [clj-http.client :as httpc]
@@ -31,50 +28,57 @@
            (java.util.concurrent CompletableFuture TimeUnit)))
 
 ;; Forward declarations
-(declare broadcast-to-ws-clients! ws-clients irc-connected? send-to-irc!
-         handle-agency-message stop-agency-ws-client! ack-test-bell!
-         handle-page-sync handle-whistle-sync handle-par-bell! handle-standup-bell!
-         connect-irc!)
+(declare broadcast-to-ws-clients! ws-clients
+         handle-agency-message-for stop-agency-ws-client!
+         irc-connected-for? send-to-irc-for! connect-irc-for! disconnect-irc-for!)
 
 ;; =============================================================================
-;; Agent State
+;; Multi-Agent Registry
 ;; =============================================================================
 
-(defonce ^:private agent-state
-  (atom {:session-id nil
-         :last-active nil
-         :agent-id nil
-         :invoke-fn nil  ; Agent-specific invocation function
-         :agency-http-url nil
-         :output-subscribers #{}}))
+(defonce ^:private agents-registry
+  (atom {}))
+;; {agent-id-str -> {:invoke-fn    (fn [text session-id] -> {:result :session-id :exit-code})
+;;                   :session-id   str
+;;                   :irc-nick     str
+;;                   :irc-state    atom  ;; {:socket :reader :writer :room :nick :transcript :active}
+;;                   :last-active  Instant
+;;                   :agency-http-url str}}
 
-(defn session-id
-  "Get current session ID."
+(defn- get-agent
+  "Look up an agent's state in the registry."
+  [agent-id]
+  (get @agents-registry (name agent-id)))
+
+(defn registered-agents
+  "Return list of registered agent-ids."
   []
-  (:session-id @agent-state))
+  (vec (keys @agents-registry)))
 
-(defn set-session-id!
-  "Set session ID (used by invoke functions)."
-  [id]
-  (swap! agent-state assoc :session-id id))
+(defn session-id-for
+  "Get session ID for a specific agent."
+  [agent-id]
+  (:session-id (get-agent agent-id)))
 
 (defn agent-alive?
-  "Check if agent has an active session."
-  []
-  (some? (:session-id @agent-state)))
+  "Check if an agent is registered (or any agent, for backwards compat)."
+  ([] (boolean (seq @agents-registry)))
+  ([agent-id] (some? (get-agent agent-id))))
 
-(defn clear-state!
-  "Clear agent state."
+(defn session-id
+  "Get session ID. In multi-agent mode, returns first agent's session-id."
   []
-  (swap! agent-state assoc :session-id nil :last-active nil :invoke-fn nil))
+  (when-let [[_aid agent] (first @agents-registry)]
+    (:session-id agent)))
 
 ;; =============================================================================
-;; Output Broadcasting
+;; Output Broadcasting (shared infrastructure)
 ;; =============================================================================
 
 (defonce ^:private ws-server-state (atom nil))
 (defonce ^:private ws-clients (atom #{}))
 
+;; Agency WS state (for remote agents connecting to a remote Agency)
 (defonce ^:private agency-ws-state
   (atom {:running? false
          :stop nil
@@ -102,61 +106,51 @@
   (doseq [client @ws-clients]
     (send-to-ws-client! client data)))
 
-(defn broadcast-result!
-  "Broadcast a result from an agent invocation. Handles line splitting for display."
-  [result]
-  (doseq [line (str/split-lines (or result ""))]
-    (broadcast-to-ws-clients! {:type "stdout" :line line}))
-  ;; Also send to IRC if connected
-  (when (irc-connected?)
+(defn- broadcast-result-for!
+  "Broadcast a result from an agent invocation. Tags output with agent-id."
+  [agent-id result]
+  (let [aid (name agent-id)]
     (doseq [line (str/split-lines (or result ""))]
-      (when-not (str/blank? line)
-        (send-to-irc! line)))))
+      (broadcast-to-ws-clients! {:type "stdout" :agent-id aid :line line}))
+    (when (irc-connected-for? aid)
+      (doseq [line (str/split-lines (or result ""))]
+        (when-not (str/blank? line)
+          (send-to-irc-for! aid line))))))
 
 ;; =============================================================================
-;; Input Processing
+;; Per-Agent Input Processing
 ;; =============================================================================
+
+(defn send-input-to!
+  "Send input to a specific agent. Uses the agent's registered invoke-fn."
+  [agent-id text]
+  (let [aid (name agent-id)]
+    (if-let [{:keys [invoke-fn session-id]} (get-agent aid)]
+      (do
+        (swap! agents-registry update aid assoc :last-active (java.time.Instant/now))
+        (future
+          (try
+            (let [{:keys [result session-id exit-code error]} (invoke-fn text session-id)]
+              (when session-id
+                (swap! agents-registry update aid assoc :session-id session-id))
+              (if (and (zero? (or exit-code 0)) (not error))
+                (broadcast-result-for! aid result)
+                (broadcast-to-ws-clients! {:type "error" :agent-id aid :message (or error result)}))
+              (broadcast-to-ws-clients! {:type "done" :agent-id aid :exit-code (or exit-code 0)}))
+            (catch Exception e
+              (println (format "[drawbridge:%s] Invoke error: %s" aid (.getMessage e)))
+              (broadcast-to-ws-clients! {:type "error" :agent-id aid :message (.getMessage e)}))))
+        true)
+      (do
+        (println (format "[drawbridge] No agent '%s' registered" aid))
+        false))))
 
 (defn send-input!
-  "Send input to the agent. Uses the registered invoke-fn."
+  "Send input to the first registered agent (backwards-compat)."
   [text]
-  (if-let [invoke-fn (:invoke-fn @agent-state)]
-    (do
-      (swap! agent-state assoc :last-active (java.time.Instant/now))
-      (future
-        (try
-          (let [session-id (:session-id @agent-state)
-                {:keys [result session-id exit-code error]} (invoke-fn text session-id)]
-            ;; Update session ID if returned
-            (when session-id
-              (swap! agent-state assoc :session-id session-id))
-            ;; Broadcast result
-            (if (and (zero? (or exit-code 0)) (not error))
-              (broadcast-result! result)
-              (broadcast-to-ws-clients! {:type "error" :message (or error result)}))
-            (broadcast-to-ws-clients! {:type "done" :exit-code (or exit-code 0)}))
-          (catch Exception e
-            (println "[drawbridge] Invoke error:" (.getMessage e))
-            (broadcast-to-ws-clients! {:type "error" :message (.getMessage e)}))))
-      true)
-    (do
-      (println "[drawbridge] No invoke-fn registered!")
-      false)))
-
-(defonce ^:private input-chan (chan 100))
-
-(defn enqueue-input!
-  "Enqueue input from any source (HTTP, WebSocket, Agency, etc.)"
-  [source payload]
-  (async/put! input-chan {:source source :payload payload :timestamp (java.time.Instant/now)}))
-
-(defn- start-input-processor!
-  "Process the input queue."
-  []
-  (go-loop []
-    (when-let [{:keys [_source payload]} (<! input-chan)]
-      (send-input! payload)
-      (recur))))
+  (if-let [[aid _] (first @agents-registry)]
+    (send-input-to! aid text)
+    (do (println "[drawbridge] No agents registered!") false)))
 
 ;; =============================================================================
 ;; HTTP Handler
@@ -174,23 +168,27 @@
         (handler request)
         {:status 403 :body "forbidden"}))))
 
-(defn- handle-send [request]
+(defn- handle-send-for
+  "Handle a send request for a specific agent."
+  [agent-id request]
   (let [body (some-> request :body slurp str/trim)]
     (if (str/blank? body)
       {:status 400 :body "empty input"}
       (do
-        (future (send-input! body))
+        (future (send-input-to! agent-id body))
         {:status 200
          :headers {"content-type" "application/json"}
-         :body "{\"ok\":true}"}))))
+         :body (json/encode {:ok true :agent-id agent-id})}))))
 
-(defn- handle-bell [request]
+(defn- handle-bell-for
+  "Handle a bell request for a specific agent."
+  [agent-id request]
   (let [body (some-> request :body slurp str/trim)]
     (if (str/blank? body)
       {:status 400 :body "empty input"}
       (try
         (let [msg (json/parse-string body true)]
-          (future (handle-agency-message msg))
+          (future (handle-agency-message-for agent-id msg))
           {:status 200
            :headers {"content-type" "application/json"}
            :body "{\"ok\":true}"})
@@ -199,42 +197,66 @@
            :headers {"content-type" "application/json"}
            :body (json/encode {:ok false :error (.getMessage e)})})))))
 
-(defn- handle-status [_request]
+(defn- handle-status-for
+  "Handle a status request for a specific agent."
+  [agent-id]
+  (if-let [agent (get-agent agent-id)]
+    {:status 200
+     :headers {"content-type" "application/json"}
+     :body (json/encode {:ok true
+                         :agent-id agent-id
+                         :session-id (:session-id agent)
+                         :last-active (str (:last-active agent))
+                         :irc-connected (boolean (irc-connected-for? agent-id))})}
+    {:status 404
+     :headers {"content-type" "application/json"}
+     :body (json/encode {:ok false :error "agent not found"})}))
+
+(defn- handle-status-all
+  "Handle a status request for all agents."
+  []
   {:status 200
    :headers {"content-type" "application/json"}
-   :body (pr-str {:alive (agent-alive?)
-                  :session-id (:session-id @agent-state)
-                  :last-active (str (:last-active @agent-state))
-                  :ws-clients (count @ws-clients)})})
+   :body (json/encode {:ok true
+                       :agents (into {}
+                                 (map (fn [[aid agent]]
+                                        [aid {:session-id (:session-id agent)
+                                              :last-active (str (:last-active agent))
+                                              :irc-connected (boolean (irc-connected-for? aid))}])
+                                      @agents-registry))
+                       :ws-clients (count @ws-clients)})})
 
 ;; =============================================================================
-;; Java-WebSocket Server
+;; Java-WebSocket Server (shared)
 ;; =============================================================================
 
 (defn- create-ws-server [port]
   (let [addr (InetSocketAddress. port)]
     (proxy [WebSocketServer] [addr]
-
       (onOpen [^WebSocket conn ^ClientHandshake _handshake]
         (println "[drawbridge-ws] Client connected:" (.getRemoteSocketAddress conn))
         (swap! ws-clients conj conn)
         (send-to-ws-client! conn {:type "connected"
-                                   :session-id (:session-id @agent-state)
-                                   :alive (agent-alive?)}))
-
+                                   :agents (registered-agents)}))
       (onClose [^WebSocket conn code reason _remote]
         (println "[drawbridge-ws] Client disconnected:" code reason)
         (swap! ws-clients disj conn))
-
       (onMessage [^WebSocket _conn ^String message]
         (println "[drawbridge-ws] Received:" message)
-        (enqueue-input! :websocket message))
-
+        ;; Try to parse as JSON with agent-id, fall back to first agent
+        (try
+          (let [parsed (json/parse-string message true)
+                agent-id (or (:agent-id parsed) (first (registered-agents)))]
+            (when agent-id
+              (send-input-to! agent-id (or (:text parsed) message))))
+          (catch Exception _
+            ;; Plain text: route to first agent
+            (when-let [[aid _] (first @agents-registry)]
+              (send-input-to! aid message)))))
       (onError [^WebSocket conn ^Exception ex]
         (println "[drawbridge-ws] Error:" (.getMessage ex))
         (when conn
           (swap! ws-clients disj conn)))
-
       (onStart []
         (println "[drawbridge-ws] WebSocket server started on port" port)))))
 
@@ -256,35 +278,59 @@
     (reset! ws-clients #{})
     (println "[drawbridge-ws] WebSocket server stopped")))
 
-(defn- ring-handler [token endpoint-prefix]
+(defn- ring-handler [_token]
   (fn [request]
     (let [uri (:uri request)
           method (:request-method request)
-          send-path (str "/" endpoint-prefix)
-          bell-path (str "/" endpoint-prefix "/bell")
-          status-path (str "/" endpoint-prefix "/status")]
+          ;; Parse: /drawbridge/:agent-id[/action]
+          [_ db-prefix agent-id action] (re-matches #"/drawbridge(?:/([^/]+))?(?:/(bell|status))?" uri)]
       (cond
-        (and (= method :post) (= uri send-path))
-        (handle-send request)
+        ;; GET /drawbridge/status — all agents
+        (and (= method :get) (= uri "/drawbridge/status"))
+        (handle-status-all)
 
-        (and (= method :post) (= uri bell-path))
-        (handle-bell request)
+        ;; POST /drawbridge/:agent-id — send input
+        (and (= method :post) db-prefix agent-id (nil? action))
+        (if (get-agent agent-id)
+          (handle-send-for agent-id request)
+          {:status 404 :body (str "agent '" agent-id "' not registered")})
 
-        (and (= method :get) (= uri status-path))
-        (handle-status request)
+        ;; POST /drawbridge/:agent-id/bell — forward bell
+        (and (= method :post) db-prefix agent-id (= action "bell"))
+        (if (get-agent agent-id)
+          (handle-bell-for agent-id request)
+          {:status 404 :body (str "agent '" agent-id "' not registered")})
+
+        ;; GET /drawbridge/:agent-id/status — agent status
+        (and (= method :get) db-prefix agent-id (= action "status"))
+        (handle-status-for agent-id)
+
+        ;; Legacy: POST /:prefix — try as agent-id, then first registered
+        (and (= method :post) (re-matches #"/[^/]+" uri))
+        (let [prefix (subs uri 1)]
+          (if (get-agent prefix)
+            (handle-send-for prefix request)
+            (if-let [[aid _] (first @agents-registry)]
+              (handle-send-for aid request)
+              {:status 503 :body "no agents registered"})))
+
+        ;; Legacy: GET /:prefix/status
+        (and (= method :get) (re-matches #"/[^/]+/status" uri))
+        (let [prefix (second (re-matches #"/([^/]+)/status" uri))]
+          (if (get-agent prefix)
+            (handle-status-for prefix)
+            (handle-status-all)))
 
         :else
         {:status 404 :body "not found"}))))
 
 ;; =============================================================================
-;; Agency Integration
+;; Agency Integration — Per-Agent Message Handlers
 ;; =============================================================================
 
 (defn- send-page-response!
-  "Send a page response back to Agency.
-   Uses local handler if available, otherwise sends via WebSocket."
+  "Send a page response back to Agency."
   [request-id response]
-  ;; Try local handler first (in-JVM Agency)
   (let [local-sent (try
                      (require 'futon3.agency.http)
                      (let [respond-fn (ns-resolve 'futon3.agency.http 'handle-page-response)]
@@ -292,7 +338,6 @@
                          (respond-fn request-id response)))
                      (catch Exception _
                        false))]
-    ;; If not local, send via WebSocket
     (when-not local-sent
       (when-let [ws (:ws @(:state @agency-ws-state))]
         (try
@@ -306,10 +351,8 @@
             (println "[drawbridge] Failed to send page response via WS:" (.getMessage e))))))))
 
 (defn- send-whistle-response!
-  "Send a whistle response back to Agency.
-   Uses local handler if available, otherwise sends via WebSocket."
+  "Send a whistle response back to Agency."
   [request-id response]
-  ;; Try local handler first (in-JVM Agency)
   (let [local-sent (try
                      (require 'futon3.agency.http)
                      (let [respond-fn (ns-resolve 'futon3.agency.http 'handle-whistle-response)]
@@ -317,7 +360,6 @@
                          (respond-fn request-id response)))
                      (catch Exception _
                        false))]
-    ;; If not local, send via WebSocket
     (when-not local-sent
       (when-let [ws (:ws @(:state @agency-ws-state))]
         (try
@@ -330,90 +372,53 @@
           (catch Exception e
             (println "[drawbridge] Failed to send whistle response via WS:" (.getMessage e))))))))
 
-(defn- handle-page-sync
-  "Handle a page request synchronously - invoke agent and return response."
-  [msg]
-  (let [{:keys [request-id prompt]} msg]
-    (println (format "[drawbridge] Handling page request %s" request-id))
-    (if-let [invoke-fn (:invoke-fn @agent-state)]
+(defn- handle-page-sync-for
+  "Handle a page request for a specific agent."
+  [agent-id msg]
+  (let [{:keys [request-id prompt]} msg
+        aid (name agent-id)]
+    (println (format "[drawbridge:%s] Handling page request %s" aid request-id))
+    (if-let [{:keys [invoke-fn session-id]} (get-agent aid)]
       (try
-        (let [session-id (:session-id @agent-state)
-              {:keys [result session-id exit-code error]} (invoke-fn prompt session-id)]
-          ;; Update session ID if returned
+        (let [{:keys [result session-id exit-code error]} (invoke-fn prompt session-id)]
           (when session-id
-            (swap! agent-state assoc :session-id session-id))
-          ;; Send response back
+            (swap! agents-registry update aid assoc :session-id session-id))
           (send-page-response! request-id
                                {:result result
                                 :exit-code (or exit-code 0)
                                 :error error
-                                :agent-id (:agent-id @agent-state)}))
+                                :agent-id aid}))
         (catch Exception e
-          (println "[drawbridge] Page invoke error:" (.getMessage e))
+          (println (format "[drawbridge:%s] Page invoke error: %s" aid (.getMessage e)))
           (send-page-response! request-id
-                               {:error (.getMessage e)
-                                :agent-id (:agent-id @agent-state)})))
+                               {:error (.getMessage e) :agent-id aid})))
       (send-page-response! request-id
-                           {:error "no invoke-fn registered"
-                            :agent-id (:agent-id @agent-state)}))))
+                           {:error (str "agent '" aid "' not registered")
+                            :agent-id aid}))))
 
-(defn- handle-whistle-sync
-  "Handle a whistle request synchronously - invoke agent and return response."
-  [msg]
-  (let [{:keys [request-id prompt]} msg]
-    (println (format "[drawbridge] Handling whistle request %s" request-id))
-    (if-let [invoke-fn (:invoke-fn @agent-state)]
+(defn- handle-whistle-sync-for
+  "Handle a whistle request for a specific agent."
+  [agent-id msg]
+  (let [{:keys [request-id prompt]} msg
+        aid (name agent-id)]
+    (println (format "[drawbridge:%s] Handling whistle request %s" aid request-id))
+    (if-let [{:keys [invoke-fn session-id]} (get-agent aid)]
       (try
-        (let [session-id (:session-id @agent-state)
-              {:keys [result session-id exit-code error]} (invoke-fn prompt session-id)]
-          ;; Update session ID if returned
+        (let [{:keys [result session-id exit-code error]} (invoke-fn prompt session-id)]
           (when session-id
-            (swap! agent-state assoc :session-id session-id))
-          ;; Send response back
+            (swap! agents-registry update aid assoc :session-id session-id))
           (send-whistle-response! request-id
                                   {:result result
                                    :exit-code (or exit-code 0)
                                    :error error
-                                   :agent-id (:agent-id @agent-state)}))
+                                   :agent-id aid}))
         (catch Exception e
-          (println "[drawbridge] Whistle invoke error:" (.getMessage e))
+          (println (format "[drawbridge:%s] Whistle invoke error: %s" aid (.getMessage e)))
           (send-whistle-response! request-id
-                                  {:error (.getMessage e)
-                                   :agent-id (:agent-id @agent-state)})))
+                                  {:error (.getMessage e) :agent-id aid})))
       (send-whistle-response! request-id
-                              {:error "no invoke-fn registered"
-                               :agent-id (:agent-id @agent-state)}))))
-
-(defn- handle-agency-message
-  "Handle a message from Agency (bell, page, etc.)."
-  [msg]
-  (let [msg-type (:type msg)]
-    (println (format "[drawbridge] Received Agency message: %s" msg-type))
-    (case msg-type
-      "bell"
-      (let [bell-type (:bell-type msg)
-            payload (:payload msg)
-            prompt (format "[Agency Bell: %s] %s"
-                           bell-type
-                           (or (:message payload) (pr-str payload)))]
-        (println (format "[drawbridge] Bell type=%s" bell-type))
-        (case bell-type
-          "test-bell" (future (ack-test-bell! msg))
-          "par" (future (handle-par-bell! msg))
-          "standup" (future (handle-standup-bell! msg))
-          ;; Default: send prompt to agent
-          (future (send-input! prompt))))
-
-      "page"
-      ;; Page is synchronous - invoke agent and return response
-      (future (handle-page-sync msg))
-
-      "whistle"
-      ;; Whistle is synchronous - invoke agent and return response
-      (future (handle-whistle-sync msg))
-
-      ;; Default: send as-is
-      (future (send-input! (format "[Agency: %s] %s" msg-type (pr-str msg)))))))
+                              {:error (str "agent '" aid "' not registered")
+                               :agent-id aid}))))
 
 (defn- agency-http-base-from-ws [ws-url]
   (when (seq ws-url)
@@ -425,12 +430,16 @@
       (when (and scheme host)
         (str scheme "://" host port-str)))))
 
-(defn- ack-test-bell! [{:keys [secret-id]}]
-  (let [base (or (:agency-http-url @agent-state)
+(defn- ack-bell-for!
+  "Ack a bell for a specific agent (fetch secret + POST ack)."
+  [agent-id {:keys [secret-id]}]
+  (let [aid (name agent-id)
+        agent (get-agent aid)
+        base (or (:agency-http-url agent)
                  (agency-http-base-from-ws (:url @agency-ws-state)))]
     (when (and base secret-id)
       (try
-        (println (format "[drawbridge] test-bell ack: fetching secret %s" secret-id))
+        (println (format "[drawbridge:%s] Acking bell: fetching secret %s" aid secret-id))
         (let [secret-resp (httpc/get (str base "/agency/secret/" secret-id)
                                      {:as :json :throw-exceptions false})
               secret-body (:body secret-resp)
@@ -443,54 +452,46 @@
                                         :throw-exceptions false
                                         :body (json/encode {:secret-id secret-id
                                                             :value secret-value
-                                                            :agent-id (:agent-id @agent-state)})})]
-              (println (format "[drawbridge] test-bell ack sent (status=%s)"
-                               (:status ack-resp))))
-            (println "[drawbridge] test-bell ack: secret missing in response")))
+                                                            :agent-id aid})})]
+              (println (format "[drawbridge:%s] Bell ack sent (status=%s)"
+                               aid (:status ack-resp))))
+            (println (format "[drawbridge:%s] Bell ack: secret missing in response" aid))))
         (catch Exception e
-          (println "[drawbridge] test-bell ack failed:" (.getMessage e)))))))
+          (println (format "[drawbridge:%s] Bell ack failed: %s" aid (.getMessage e))))))))
 
-(defn- handle-standup-bell!
-  "Handle a standup bell: ack, join IRC room, participate in real-time conversation.
+(defn- handle-standup-bell-for!
+  "Handle a standup bell for a specific agent: ack, join IRC, participate.
 
    A standup is a co-present conversation, not a broadcast. The agent:
    1. Acks the bell (proves reception / rendezvous handshake)
    2. Joins the IRC room specified in the bell payload
-   3. Sends an opening prompt to the agent subprocess (which responds via IRC)
-   4. Stays in the room for the duration — the IRC reader loop handles
-      ongoing conversation automatically (other participants' messages
-      are fed to the subprocess as inputs, responses go back to IRC)."
-  [{:keys [secret-id payload]}]
-  (let [irc-host (or (:irc-host payload) "localhost")
+   3. Sends an opening prompt to the agent (which responds via IRC)
+   4. Stays in the room — the IRC reader loop handles ongoing conversation."
+  [agent-id {:keys [secret-id payload]}]
+  (let [aid (name agent-id)
+        irc-host (or (:irc-host payload) "localhost")
         irc-port (or (:irc-port payload) 6667)
         room (or (:room payload) "standup")
         prompt (or (:prompt payload)
-                   "Standup: Share what you're working on, any blockers, and what's next. Keep it concise.")
-        agent-id (:agent-id @agent-state)]
-    ;; Step 1: Ack the bell (proves reception)
-    (ack-test-bell! {:secret-id secret-id})
-    ;; Step 2: Join IRC (if not already in the room)
-    (when-not (irc-connected?)
+                   "Standup: Share what you're working on, any blockers, and what's next. Keep it concise.")]
+    (ack-bell-for! aid {:secret-id secret-id})
+    (when-not (irc-connected-for? aid)
       (try
-        (connect-irc! {:host irc-host :port irc-port
-                       :nick agent-id :room room})
-        (println (format "[drawbridge] Standup: joined #%s on %s:%d as %s"
-                         room irc-host irc-port agent-id))
+        (let [nick (or (:irc-nick (get-agent aid)) aid)]
+          (connect-irc-for! aid {:host irc-host :port irc-port
+                                 :nick nick :room room}))
+        (println (format "[drawbridge:%s] Standup: joined #%s on %s:%d" aid room irc-host irc-port))
         (catch Exception e
-          (println (format "[drawbridge] Standup: IRC connect failed: %s" (.getMessage e))))))
-    ;; Step 3: Send opening prompt — the subprocess generates its update,
-    ;; which flows to IRC via send-to-irc!. The IRC reader loop then handles
-    ;; the ongoing conversation (other messages → subprocess → IRC responses).
-    (future (send-input! prompt))))
+          (println (format "[drawbridge:%s] Standup: IRC connect failed: %s" aid (.getMessage e))))))
+    (future (send-input-to! aid prompt))))
 
-(defn- handle-par-bell!
-  "Handle a PAR bell by spawning a local peripheral to contribute to the PAR.
-  CRDT_HOST and AGENCY_URL are resolved locally from env (not from payload)."
-  [{:keys [payload]}]
-  (let [{:keys [par-title crdt-port]} payload
+(defn- handle-par-bell-for!
+  "Handle a PAR bell for a specific agent."
+  [agent-id {:keys [payload]}]
+  (let [aid (name agent-id)
+        {:keys [par-title crdt-port]} payload
         crdt-host (or (System/getenv "CRDT_HOST") "127.0.0.1")
         agency-url (or (System/getenv "AGENCY_URL") "http://localhost:7070")
-        agent-id (:agent-id @agent-state)
         peripheral-el (or (System/getenv "FUTON_PAR_PERIPHERAL_EL")
                           (str (System/getProperty "user.home")
                                "/code/futon0/contrib/futon-par-peripheral.el"))
@@ -504,41 +505,68 @@
                                     (str home "/.emacs-graph/straight/build/crdt/crdt.el")
                                     (str home "/.emacs-graph/straight/repos/crdt/crdt.el")
                                     "/usr/share/emacs/site-lisp/crdt.el"])))]
-    (if (and par-title crdt-host crdt-port agent-id crdt-el)
+    (if (and par-title crdt-host crdt-port aid crdt-el)
       (do
-        (println (format "[drawbridge] PAR bell: spawning peripheral for %s, PAR='%s'"
-                         agent-id par-title))
+        (println (format "[drawbridge:%s] PAR bell: spawning peripheral, PAR='%s'" aid par-title))
         (let [env {"CRDT_HOST" (str crdt-host)
                    "CRDT_PORT" (str crdt-port)
-                   "AGENT_ID" (str agent-id)
+                   "AGENT_ID" (str aid)
                    "PAR_TITLE" (str par-title)
                    "AGENCY_URL" agency-url
                    "LANG" "en_US.UTF-8"
                    "LC_ALL" "en_US.UTF-8"}
               cmd ["emacs" "--batch" "-Q" "-l" crdt-el "-l" peripheral-el]
               pb (ProcessBuilder. ^java.util.List cmd)]
-          ;; Set environment
           (let [pb-env (.environment pb)]
             (doseq [[k v] env]
               (.put pb-env k v)))
-          ;; Redirect stderr to stdout
           (.redirectErrorStream pb true)
-          ;; Start process asynchronously
           (future
             (try
               (let [proc (.start pb)
                     reader (io/reader (.getInputStream proc))]
-                ;; Log output
                 (doseq [line (line-seq reader)]
-                  (println (format "[par-peripheral:%s] %s" agent-id line)))
-                ;; Wait for completion
+                  (println (format "[par-peripheral:%s] %s" aid line)))
                 (let [exit-code (.waitFor proc)]
-                  (println (format "[drawbridge] PAR peripheral for %s exited with code %d"
-                                   agent-id exit-code))))
+                  (println (format "[drawbridge:%s] PAR peripheral exited with code %d" aid exit-code))))
               (catch Exception e
-                (println (format "[drawbridge] PAR peripheral error: %s" (.getMessage e))))))))
-      (println (format "[drawbridge] PAR bell missing params: par-title=%s crdt-host=%s crdt-port=%s agent-id=%s crdt-el=%s"
-                       par-title crdt-host crdt-port agent-id crdt-el)))))
+                (println (format "[drawbridge:%s] PAR peripheral error: %s" aid (.getMessage e))))))))
+      (println (format "[drawbridge:%s] PAR bell missing params: par-title=%s crdt-host=%s crdt-port=%s crdt-el=%s"
+                       aid par-title crdt-host crdt-port crdt-el)))))
+
+(defn- handle-agency-message-for
+  "Handle a message from Agency for a specific agent."
+  [agent-id msg]
+  (let [aid (name agent-id)
+        msg-type (:type msg)]
+    (println (format "[drawbridge:%s] Agency message: %s" aid msg-type))
+    (case msg-type
+      "bell"
+      (let [bell-type (:bell-type msg)
+            payload (:payload msg)
+            prompt (format "[Agency Bell: %s] %s"
+                           bell-type
+                           (or (:message payload) (pr-str payload)))]
+        (println (format "[drawbridge:%s] Bell type=%s" aid bell-type))
+        (case bell-type
+          "test-bell" (future (ack-bell-for! aid msg))
+          "par" (future (handle-par-bell-for! aid msg))
+          "standup" (future (handle-standup-bell-for! aid msg))
+          ;; Default: send prompt to agent
+          (future (send-input-to! aid prompt))))
+
+      "page"
+      (future (handle-page-sync-for aid msg))
+
+      "whistle"
+      (future (handle-whistle-sync-for aid msg))
+
+      ;; Default
+      (future (send-input-to! aid (format "[Agency: %s] %s" msg-type (pr-str msg)))))))
+
+;; =============================================================================
+;; Agency WebSocket Client (for remote agents)
+;; =============================================================================
 
 (defn- agency-ws-listener [state agent-id]
   (reify WebSocket$Listener
@@ -563,8 +591,8 @@
             (let [msg (json/parse-string text true)
                   msg-type (:type msg)]
               (case msg-type
-                "bell" (handle-agency-message msg)
-                ("page" "whistle") (handle-agency-message msg)
+                "bell" (handle-agency-message-for agent-id msg)
+                ("page" "whistle") (handle-agency-message-for agent-id msg)
                 (println (format "[drawbridge] Agency WS message: %s" msg-type))))
             (catch Exception e
               (println "[drawbridge] Agency WS parse error:" (.getMessage e))))))
@@ -581,8 +609,7 @@
       (println "[drawbridge] Agency WS error:" (.getMessage err)))))
 
 (defn- open-agency-ws! [url agent-id session-id state]
-  (let [;; Append agent-id and session-id as query params
-        sep (if (str/includes? url "?") "&" "?")
+  (let [sep (if (str/includes? url "?") "&" "?")
         full-url (cond-> (str url sep "agent-id=" (java.net.URLEncoder/encode (str agent-id) "UTF-8"))
                    session-id (str "&session-id=" (java.net.URLEncoder/encode (str session-id) "UTF-8")))
         client (-> (HttpClient/newBuilder)
@@ -598,11 +625,9 @@
   "Start a WebSocket client to Agency (/agency/ws)."
   [{:keys [url agent-id session-id reconnect-ms ping-ms]}]
   (let [url (some-> url str/trim not-empty)
-        agent-id (or (some-> agent-id str/trim not-empty)
-                     (:agent-id @agent-state)
-                     "agent")
+        agent-id (or (some-> agent-id str/trim not-empty) "agent")
         session-id (or (some-> session-id str/trim not-empty)
-                       (:session-id @agent-state))
+                       (session-id-for agent-id))
         reconnect-ms (or reconnect-ms 5000)
         ping-ms (or ping-ms 15000)]
     (when url
@@ -669,48 +694,71 @@
                              :reconnect-ms 5000})
     true))
 
-(defn register-with-agency!
-  "Register this Drawbridge instance with Agency."
-  [agent-id]
-  (try
-    (require 'futon3.agency.http)
-    (let [register-fn (ns-resolve 'futon3.agency.http 'register-local-handler!)]
-      (when register-fn
-        (register-fn agent-id handle-agency-message)
-        (println (format "[drawbridge] Registered with Agency as '%s'" agent-id))
-        true))
-    (catch Exception e
-      (println (format "[drawbridge] Failed to register with Agency: %s" (.getMessage e)))
-      false)))
-
-(defn unregister-from-agency!
-  "Unregister from Agency."
-  [agent-id]
-  (try
-    (let [unregister-fn (ns-resolve 'futon3.agency.http 'unregister-local-handler!)]
-      (when unregister-fn
-        (unregister-fn agent-id)
-        (println "[drawbridge] Unregistered from Agency")))
-    (catch Exception _)))
-
 ;; =============================================================================
-;; IRC Chat Integration
+;; Registration API
 ;; =============================================================================
 
-(defonce ^:private irc-state
-  (atom {:socket nil
-         :reader nil
-         :writer nil
-         :room nil
-         :nick nil
-         :transcript []
-         :active false}))
+(defn register-agent!
+  "Register an agent with the drawbridge router.
 
-(defn- irc-send! [msg]
-  (when-let [writer (:writer @irc-state)]
-    (doto writer
-      (.write (str msg "\r\n"))
-      (.flush))))
+   The agent must provide an invoke-fn; everything else is optional.
+   Registers a local handler with Agency so the agent receives bells,
+   whistles, and pages routed by agent-id.
+
+   Options:
+     :invoke-fn       - REQUIRED. (fn [text session-id] -> {:result :session-id :exit-code})
+     :session-id      - Initial session ID (optional)
+     :irc-nick        - IRC nickname (defaults to agent-id)
+     :agency-http-url - Agency HTTP base URL (optional, for acking bells)"
+  [agent-id {:keys [invoke-fn session-id irc-nick agency-http-url]}]
+  (when-not invoke-fn
+    (throw (ex-info "invoke-fn is required" {:agent-id agent-id})))
+  (let [aid (name agent-id)]
+    (swap! agents-registry assoc aid
+           {:invoke-fn invoke-fn
+            :session-id session-id
+            :irc-nick (or irc-nick aid)
+            :irc-state (atom {:socket nil :reader nil :writer nil
+                              :room nil :nick nil :transcript [] :active false})
+            :last-active nil
+            :agency-http-url agency-http-url})
+    ;; Register local handler with Agency
+    (try
+      (require 'futon3.agency.http)
+      (when-let [reg-fn (ns-resolve 'futon3.agency.http 'register-local-handler!)]
+        (reg-fn aid (fn [msg] (handle-agency-message-for aid msg)))
+        (println (format "[drawbridge] Registered agent '%s' with Agency" aid)))
+      (catch Exception e
+        (println (format "[drawbridge] Failed to register '%s' with Agency: %s" aid (.getMessage e)))))
+    aid))
+
+(defn deregister-agent!
+  "Deregister an agent. Disconnects IRC, unregisters from Agency, removes from registry."
+  [agent-id]
+  (let [aid (name agent-id)]
+    (when (get-agent aid)
+      (disconnect-irc-for! aid)
+      (try
+        (require 'futon3.agency.http)
+        (when-let [unreg-fn (ns-resolve 'futon3.agency.http 'unregister-local-handler!)]
+          (unreg-fn aid))
+        (catch Exception _))
+      (swap! agents-registry dissoc aid)
+      (println (format "[drawbridge] Deregistered agent '%s'" aid))
+      true)))
+
+;; =============================================================================
+;; Per-Agent IRC Chat Integration
+;; =============================================================================
+
+(defn- irc-send-for!
+  "Send a raw IRC message for a specific agent."
+  [agent-id msg]
+  (when-let [agent (get-agent agent-id)]
+    (when-let [writer (:writer @(:irc-state agent))]
+      (doto writer
+        (.write (str msg "\r\n"))
+        (.flush)))))
 
 (defn- parse-irc-message [line]
   (when line
@@ -719,89 +767,117 @@
        :command command
        :params params})))
 
-(defn- handle-irc-privmsg [prefix params]
-  (let [[_target & text-parts] (str/split params #"\s+" 2)
-        text (str/replace (first text-parts) #"^:" "")
-        nick (first (str/split (or prefix "") #"!"))]
-    (when (and nick text (not= nick (:nick @irc-state)))
-      (swap! irc-state update :transcript conj
-             {:from nick :text text :at (str (java.time.Instant/now))})
-      (let [prompt (format "[IRC %s] <%s> %s" (:room @irc-state) nick text)]
-        (println (format "[drawbridge-irc] %s: %s" nick text))
-        (future (send-input! prompt))))))
+(defn- handle-irc-privmsg-for
+  "Handle an IRC PRIVMSG for a specific agent."
+  [agent-id prefix params]
+  (when-let [agent (get-agent agent-id)]
+    (let [irc-st @(:irc-state agent)
+          [_target & text-parts] (str/split params #"\s+" 2)
+          text (str/replace (first text-parts) #"^:" "")
+          nick (first (str/split (or prefix "") #"!"))]
+      (when (and nick text (not= nick (:nick irc-st)))
+        (swap! (:irc-state agent) update :transcript conj
+               {:from nick :text text :at (str (java.time.Instant/now))})
+        (let [prompt (format "[IRC %s] <%s> %s" (:room irc-st) nick text)]
+          (println (format "[drawbridge-irc:%s] %s: %s" agent-id nick text))
+          (future (send-input-to! agent-id prompt)))))))
 
-(defn- irc-reader-loop []
+(defn- irc-reader-loop-for
+  "Start an IRC reader loop for a specific agent."
+  [agent-id]
   (future
     (try
-      (let [reader (:reader @irc-state)]
-        (loop []
-          (when-let [line (try (.readLine reader) (catch Exception _ nil))]
-            (let [{:keys [command params prefix]} (parse-irc-message line)]
-              (case command
-                "PING" (irc-send! (str "PONG " params))
-                "PRIVMSG" (handle-irc-privmsg prefix params)
-                nil))
-            (when (:active @irc-state)
-              (recur)))))
+      (when-let [agent (get-agent agent-id)]
+        (let [reader (:reader @(:irc-state agent))]
+          (loop []
+            (when-let [line (try (.readLine reader) (catch Exception _ nil))]
+              (let [{:keys [command params prefix]} (parse-irc-message line)]
+                (case command
+                  "PING" (irc-send-for! agent-id (str "PONG " params))
+                  "PRIVMSG" (handle-irc-privmsg-for agent-id prefix params)
+                  nil))
+              (when-let [a (get-agent agent-id)]
+                (when (:active @(:irc-state a))
+                  (recur)))))))
       (catch Exception e
-        (println "[drawbridge-irc] Reader error:" (.getMessage e))))))
+        (println (format "[drawbridge-irc:%s] Reader error: %s" agent-id (.getMessage e)))))))
 
-(defn connect-irc!
-  "Connect to IRC and join a room."
-  [{:keys [host port nick room password]
-    :or {host "localhost" port 6667 nick "drawbridge"}}]
-  (try
-    (let [socket (java.net.Socket. ^String host ^int port)
-          reader (io/reader socket)
-          writer (io/writer socket)]
-      (reset! irc-state {:socket socket
-                         :reader reader
-                         :writer writer
-                         :room room
-                         :nick nick
-                         :transcript []
-                         :active true})
-      (when password
-        (irc-send! (str "PASS " password)))
-      (irc-send! (str "NICK " nick))
-      (irc-send! (str "USER " nick " 0 * :" nick))
-      (Thread/sleep 1000)
-      (when room
-        (irc-send! (str "JOIN #" (str/replace room #"^#" ""))))
-      (irc-reader-loop)
-      (println (format "[drawbridge-irc] Connected to %s:%d as %s, joined #%s" host port nick room))
-      true)
-    (catch Exception e
-      (println "[drawbridge-irc] Connect failed:" (.getMessage e))
-      false)))
-
-(defn disconnect-irc!
-  "Disconnect from IRC and return transcript."
-  []
-  (when (:active @irc-state)
-    (swap! irc-state assoc :active false)
+(defn connect-irc-for!
+  "Connect a specific agent to IRC and join a room."
+  [agent-id {:keys [host port nick room password]
+             :or {host "localhost" port 6667 nick "drawbridge"}}]
+  (when-let [agent (get-agent agent-id)]
     (try
-      (irc-send! "QUIT :Hop complete")
-      (Thread/sleep 200)
-      (.close ^java.net.Socket (:socket @irc-state))
-      (catch Exception _))
-    (let [transcript (:transcript @irc-state)]
-      (reset! irc-state {:socket nil :reader nil :writer nil
-                         :room nil :nick nil :transcript [] :active false})
-      (println "[drawbridge-irc] Disconnected")
-      transcript)))
+      (let [socket (java.net.Socket. ^String host ^int port)
+            reader (io/reader socket)
+            writer (io/writer socket)]
+        (reset! (:irc-state agent)
+                {:socket socket :reader reader :writer writer
+                 :room room :nick nick :transcript [] :active true})
+        (when password
+          (irc-send-for! agent-id (str "PASS " password)))
+        (irc-send-for! agent-id (str "NICK " nick))
+        (irc-send-for! agent-id (str "USER " nick " 0 * :" nick))
+        (Thread/sleep 1000)
+        (when room
+          (irc-send-for! agent-id (str "JOIN #" (str/replace room #"^#" ""))))
+        (irc-reader-loop-for agent-id)
+        (println (format "[drawbridge-irc:%s] Connected to %s:%d as %s, joined #%s"
+                         agent-id host port nick room))
+        true)
+      (catch Exception e
+        (println (format "[drawbridge-irc:%s] Connect failed: %s" agent-id (.getMessage e)))
+        false))))
 
-(defn send-to-irc!
-  "Send a message to the current IRC room."
-  [text]
-  (when-let [room (:room @irc-state)]
-    (let [target (str "#" (str/replace room #"^#" ""))]
-      (irc-send! (str "PRIVMSG " target " :" text))
-      (swap! irc-state update :transcript conj
-             {:from (:nick @irc-state) :text text :at (str (java.time.Instant/now))}))))
+(defn disconnect-irc-for!
+  "Disconnect a specific agent from IRC and return transcript."
+  [agent-id]
+  (when-let [agent (get-agent agent-id)]
+    (let [irc-st @(:irc-state agent)]
+      (when (:active irc-st)
+        (swap! (:irc-state agent) assoc :active false)
+        (try
+          (irc-send-for! agent-id "QUIT :Hop complete")
+          (Thread/sleep 200)
+          (.close ^java.net.Socket (:socket irc-st))
+          (catch Exception _))
+        (let [transcript (:transcript irc-st)]
+          (reset! (:irc-state agent)
+                  {:socket nil :reader nil :writer nil
+                   :room nil :nick nil :transcript [] :active false})
+          (println (format "[drawbridge-irc:%s] Disconnected" agent-id))
+          transcript)))))
 
+(defn send-to-irc-for!
+  "Send a message to a specific agent's IRC room."
+  [agent-id text]
+  (when-let [agent (get-agent agent-id)]
+    (let [irc-st @(:irc-state agent)]
+      (when-let [room (:room irc-st)]
+        (let [target (str "#" (str/replace room #"^#" ""))]
+          (irc-send-for! agent-id (str "PRIVMSG " target " :" text))
+          (swap! (:irc-state agent) update :transcript conj
+                 {:from (:nick irc-st) :text text :at (str (java.time.Instant/now))}))))))
+
+(defn irc-connected-for?
+  "Check if a specific agent is connected to IRC."
+  [agent-id]
+  (when-let [agent (get-agent agent-id)]
+    (:active @(:irc-state agent))))
+
+;; Backwards-compat wrappers (operate on first registered agent)
+(defn connect-irc! [opts]
+  (when-let [[aid _] (first @agents-registry)]
+    (connect-irc-for! aid opts)))
+(defn disconnect-irc! []
+  (when-let [[aid _] (first @agents-registry)]
+    (disconnect-irc-for! aid)))
+(defn send-to-irc! [text]
+  (when-let [[aid _] (first @agents-registry)]
+    (send-to-irc-for! aid text)))
 (defn irc-connected? []
-  (:active @irc-state))
+  (when-let [[aid _] (first @agents-registry)]
+    (irc-connected-for? aid)))
 
 ;; =============================================================================
 ;; Server Lifecycle
@@ -810,7 +886,11 @@
 (defonce ^:private server (atom nil))
 
 (defn start!
-  "Start the Drawbridge with a given invoke function.
+  "Start the Drawbridge.
+
+   In multi-agent mode: call register-agent! directly instead.
+   start! is retained for backwards compatibility and for remote agents that
+   need their own HTTP/WS server + Agency WS client.
 
    Options:
      :http-port       - HTTP port for REST API (default 6768)
@@ -818,23 +898,21 @@
      :bind            - Bind address (default 127.0.0.1)
      :token           - Auth token (default from .admintoken or 'change-me')
      :invoke-fn       - REQUIRED. Function (fn [text session-id] -> {:result :session-id :exit-code})
-     :endpoint-prefix - URL prefix (default 'agent', e.g. POST /agent)
+     :endpoint-prefix - URL prefix (legacy, ignored in multi-agent routing)
      :agency-ws-url   - WebSocket URL for Agency (/agency/ws) (optional)
      :agency-http-url - HTTP base URL for Agency (optional)
-     :agency-ws-agent-id - Agent id to use when connecting to Agency WS (optional)
+     :agency-ws-agent-id - Agent id for Agency WS (optional)
      :agency-ws-reconnect-ms - Reconnect delay for Agency WS (default 5000)
      :agency-ws-ping-ms - Ping interval for Agency WS (default 15000)
      :register-local? - Register local handler with Agency (default true)
      :resume-id       - Initial session ID (optional)
-     :agent-id        - Agent ID to register with Agency (optional)"
-  [{:keys [http-port ws-port bind token invoke-fn endpoint-prefix resume-id agent-id
-           agency-ws-url agency-ws-agent-id agency-ws-reconnect-ms agency-ws-ping-ms register-local?
+     :agent-id        - Agent ID (optional)"
+  [{:keys [http-port ws-port bind token invoke-fn _endpoint-prefix resume-id agent-id
+           agency-ws-url agency-ws-agent-id agency-ws-reconnect-ms agency-ws-ping-ms _register-local?
            agency-http-url]
     :or {http-port 6768
          ws-port 6770
-         bind "127.0.0.1"
-         endpoint-prefix "agent"
-         register-local? true}}]
+         bind "127.0.0.1"}}]
   (when-not invoke-fn
     (throw (ex-info "invoke-fn is required" {})))
 
@@ -843,20 +921,19 @@
     (stop-fn))
   (stop-ws-server!)
 
-  ;; Set up state
-  (swap! agent-state assoc
-         :invoke-fn invoke-fn
-         :session-id resume-id
-         :agent-id agent-id
-         :agency-http-url (or agency-http-url
-                              (:agency-http-url @agent-state)
-                              (agency-http-base-from-ws agency-ws-url)))
+  ;; Register the agent
+  (when agent-id
+    (register-agent! agent-id
+                     {:invoke-fn invoke-fn
+                      :session-id resume-id
+                      :agency-http-url (or agency-http-url
+                                           (agency-http-base-from-ws agency-ws-url))}))
 
   ;; Load token from file if not provided
   (let [token (or token
                   (try (str/trim (slurp ".admintoken")) (catch Exception _ nil))
                   "change-me")
-        handler (-> (ring-handler token endpoint-prefix)
+        handler (-> (ring-handler token)
                     ring-params/wrap-params
                     (wrap-token token))
         stop (http/run-server handler {:ip bind :port http-port})]
@@ -866,40 +943,68 @@
     ;; Start WebSocket server
     (start-ws-server! ws-port)
 
-    ;; Start input processor
-    (start-input-processor!)
-
-    ;; Register with Agency (local handler) if agent-id provided.
-    ;; Phase 3a: if an Agency WS URL is configured, WS becomes the single routing
-    ;; authority; local registration would be redundant and immediately evicted
-    ;; by the server-side A1 enforcement.
-    (when (and agent-id register-local? (not agency-ws-url))
-      (register-with-agency! agent-id))
-
-    ;; Start Agency WS client if URL provided
+    ;; Phase 3a: if Agency WS URL is configured, WS is the single routing
+    ;; authority; deregister the local handler to avoid A1 eviction.
     (when agency-ws-url
+      (when agent-id
+        (try
+          (require 'futon3.agency.http)
+          (when-let [unreg-fn (ns-resolve 'futon3.agency.http 'unregister-local-handler!)]
+            (unreg-fn (name agent-id)))
+          (catch Exception _)))
       (start-agency-ws-client! {:url agency-ws-url
                                 :agent-id (or agency-ws-agent-id agent-id)
                                 :session-id resume-id
                                 :reconnect-ms agency-ws-reconnect-ms
                                 :ping-ms agency-ws-ping-ms}))
 
-    (println (format "[drawbridge] HTTP API on http://%s:%s/%s" bind http-port endpoint-prefix))
+    (println (format "[drawbridge] HTTP API on http://%s:%s/drawbridge/:agent-id" bind http-port))
     (println (format "[drawbridge] WebSocket on ws://%s:%s" bind ws-port))
-    (when (and agent-id register-local? (not agency-ws-url))
-      (println (format "[drawbridge] Registered with Agency as '%s'" agent-id)))
+    (println (format "[drawbridge] Registered agents: %s" (registered-agents)))
 
     {:http-stop stop :ws-port ws-port :http-port http-port :agent-id agent-id}))
 
 (defn stop!
-  "Stop the Drawbridge."
+  "Stop the Drawbridge. Deregisters all agents, stops servers."
   []
-  (when-let [agent-id (:agent-id @agent-state)]
-    (unregister-from-agency! agent-id))
+  (doseq [aid (registered-agents)]
+    (deregister-agent! aid))
   (stop-agency-ws-client!)
-  (clear-state!)
   (stop-ws-server!)
   (when-let [stop-fn @server]
     (stop-fn)
     (reset! server nil))
   (println "[drawbridge] Stopped"))
+
+(comment
+  ;; === Multi-agent usage ===
+
+  ;; Register agents directly (preferred for local/same-JVM agents):
+  (register-agent! "claude-agency"
+    {:invoke-fn (fn [text sid] {:result (str "echo: " text) :session-id sid :exit-code 0})
+     :session-id "abc123"})
+
+  (register-agent! "claude-forum"
+    {:invoke-fn (fn [text sid] {:result (str "forum: " text) :session-id sid :exit-code 0})})
+
+  (registered-agents)
+  ;; => ["claude-agency" "claude-forum"]
+
+  ;; Send input to specific agent:
+  (send-input-to! "claude-agency" "Hello!")
+
+  ;; IRC for specific agent:
+  (connect-irc-for! "claude-agency" {:host "localhost" :port 6667 :nick "claude-agency" :room "standup"})
+  (irc-connected-for? "claude-agency")
+  (disconnect-irc-for! "claude-agency")
+
+  ;; Deregister:
+  (deregister-agent! "claude-forum")
+
+  ;; === Backwards-compat (remote agent with HTTP/WS) ===
+  (start! {:http-port 6768
+           :ws-port 6770
+           :invoke-fn (fn [text sid] {:result text :session-id sid :exit-code 0})
+           :agent-id "codex"
+           :agency-ws-url "ws://linode:7070/agency/ws"})
+  (stop!))

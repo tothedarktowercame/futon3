@@ -1,16 +1,15 @@
 (ns futon3.drawbridge.codex
-  "Drawbridge for OpenAI Codex - multi-headed REPL routing to Codex subprocess.
+  "Codex agent registration for the multi-agent Drawbridge router.
 
-   Routes HTTP/WebSocket to Codex CLI subprocess. Supports:
-   - Multiple input heads (HTTP, WebSocket, Agency direct)
-   - Streaming output via WebSocket (Java-WebSocket)
-   - Session resume via Codex's resume subcommand
-   - Hot-reloadable (lives in the JVM with MUSN)
+   Routes HTTP/WebSocket to Codex CLI subprocess. Each invocation spawns
+   a new `codex exec` process (stateless per-invocation model).
 
    Usage:
-     (start! {:http-port 6769 :ws-port 6771 :resume-id \"abc123\"})
-     ;; POST /codex with body to send input
-     ;; WS ws://localhost:6771 for streaming output
+     ;; Register a new Codex agent:
+     (register! \"codex\" {:session-id \"thread_abc123\"})
+
+     ;; Or use backwards-compat start! for remote agent mode:
+     (start! {:http-port 6769 :ws-port 6771 :agent-id \"codex\"})
 
    References:
    - https://developers.openai.com/codex/cli/reference/
@@ -141,11 +140,36 @@
             {:error out-str :exit-code exit-code}))))))
 
 ;; =============================================================================
-;; Public API (wraps core with Codex defaults)
+;; Public API — Registration
+;; =============================================================================
+
+(defn register!
+  "Register a Codex agent with the Drawbridge router.
+
+   Options:
+     :session-id      - Codex thread ID to resume (optional)
+     :irc-nick        - IRC nickname (defaults to agent-id)
+     :agency-http-url - Agency HTTP base URL (optional)"
+  [agent-id {:keys [session-id irc-nick agency-http-url]}]
+  (core/register-agent! agent-id
+    {:invoke-fn invoke-codex
+     :session-id session-id
+     :irc-nick irc-nick
+     :agency-http-url agency-http-url}))
+
+(defn deregister!
+  "Deregister a Codex agent."
+  [agent-id]
+  (core/deregister-agent! agent-id))
+
+;; =============================================================================
+;; Backwards-Compatible API (wraps core with Codex defaults)
 ;; =============================================================================
 
 (defn start!
-  "Start the Codex Drawbridge.
+  "Start the Codex Drawbridge (backwards-compat).
+
+   For multi-agent mode, use register! instead.
 
    Options:
      :http-port  - HTTP port for REST API (default 6769)
@@ -194,15 +218,28 @@
 (def send-to-irc! core/send-to-irc!)
 (def irc-connected? core/irc-connected?)
 
+;; Per-agent exports
+(def register-agent! core/register-agent!)
+(def deregister-agent! core/deregister-agent!)
+(def registered-agents core/registered-agents)
+(def send-input-to! core/send-input-to!)
+(def connect-irc-for! core/connect-irc-for!)
+(def disconnect-irc-for! core/disconnect-irc-for!)
+(def send-to-irc-for! core/send-to-irc-for!)
+(def irc-connected-for? core/irc-connected-for?)
+
 (comment
-  ;; Development / REPL usage
+  ;; === Multi-agent usage ===
+  (register! "codex" {:session-id "thread_abc123"})
+  (registered-agents)
+  (send-input-to! "codex" "Hello from the REPL!")
+  (deregister! "codex")
+
+  ;; === Backwards-compat ===
   (start! {:http-port 6769
            :ws-port 6771
            :agent-id "codex"})
   (stop!)
-
-  (agent-alive?)
-  (send-input! "Hello from the REPL!")
 
   ;; From another process:
   ;; HTTP: curl -X POST http://localhost:6769/codex -d "Hello" -H "X-Admin-Token: your-token"

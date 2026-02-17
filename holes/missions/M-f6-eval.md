@@ -119,28 +119,71 @@ validation that term spotting measures something real
 
 **Pattern references**: `f6/learning-event-detection`, `f6/bootstrap-loop`
 
-### Outpost O-2: Tiny Eval
+### Outpost O-2a: Graph Query Adapter
+
+Build the MathKnowledgeGraph query layer that Agent B needs. This is an
+adapter composing existing futon3a/3b query infrastructure with futon6's
+entity/NER/embedding outputs into a single interface.
+
+**Existing pieces** (nothing to build from scratch):
+- `futon3b/query/relations.clj` — federated text search, pattern queries,
+  proof-path store (core.logic relations)
+- `futon3a/sidecar/store.clj` — entity state machine, audit log
+- `futon3a/futon/notions.clj` — keyword + embedding pattern search (MiniLM)
+- `futon6/similarity.py` — embedding-based entity similarity
+- `futon6/stackexchange.py` — entity/relation extraction
+
+**Method**:
+1. Define the MathKnowledgeGraph interface (see Implementation Sketch below)
+2. Wire `lookup_terms` to spot-terms.bb output (ner-terms.json)
+3. Wire `lookup_patterns` to tag-patterns.bb output (pattern-tags.json)
+4. Wire `lookup_scopes` to scope detection output (scopes.json)
+5. Wire `similar_qa` to futon6 embedding similarity
+6. Wire `term_definition` to NER kernel (terms.tsv)
+7. Test on 5 physics.SE entities: does the interface return coherent context?
+
+**Validates**:
+- [ ] Single interface composes futon3a/3b/6 query primitives
+- [ ] lookup_terms returns real NER hits for a given entity
+- [ ] similar_qa returns semantically related QA pairs
+- [ ] Context bundle is LLM-consumable (fits in prompt, well-structured)
+
+**Depends on**: O-1 (needs pipeline output to query against)
+**Feeds**: O-2 (provides the query interface that Agent B uses)
+
+**Pattern references**: `f6/graph-enhanced-evaluation`, `f6/negative-space-duality`
+
+> **Excursion opportunity**: The graph query layer is where F6 meets the
+> broader literature on knowledge-graph-enhanced QA (KGQA). This would be
+> a natural point to survey related work — e.g. how do systems like
+> QA-GNN, GreaseLM, or KagNet compose graph context with LLM prompts?
+> Where does the negative-space duality (formal scaffolding vs informal
+> reasoning) differ from standard entity-linking approaches? A short
+> survey here could become a standalone paper positioning F6's approach
+> within the KGQA literature, and would sharpen the design of the adapter
+> before committing to it.
+
+### Outpost O-2: Tiny Eval (20 Questions)
 
 Before the full 200-question evaluation, run a micro-evaluation on 20
-physics.SE questions to test the protocol and graph query interface.
+physics.SE questions to test the protocol end-to-end.
 
 **Data**: 20 physics.SE questions hand-selected for difficulty spread
 (7 easy, 7 medium, 6 hard)
 **Method**:
-1. Build a minimal MathKnowledgeGraph from existing NER annotations
-   (term hits from spot-terms.bb output, pattern tags from tag-patterns.bb)
+1. Use the MathKnowledgeGraph from O-2a to assemble graph context per question
 2. Agent A: Claude answers each question with raw text only
 3. Agent B: Claude answers with raw text + graph context (terms, patterns,
    scope, related QA)
 4. Judge: Claude scores both answers blind, randomised order
 
 **Validates**:
-- [ ] Graph query interface works and returns useful context
+- [ ] End-to-end pipeline from entity → graph context → agent prompt → answer
 - [ ] Agent B prompt template produces coherent responses
 - [ ] Judge can distinguish answer quality (non-random scores)
 - [ ] At least a trend showing Agent B advantage on harder questions
 
-**Depends on**: NER kernel, pattern tags on physics.SE, spot-terms output
+**Depends on**: O-2a (needs the graph query interface)
 **Feeds**: Protocol refinement before the full 200-question run;
 early signal on whether graph enhancement helps at all
 

@@ -1,5 +1,5 @@
 (ns futon3.chops
-  "印章 (yìnzhāng) — Sigil validation service.
+  "印章 (yìnzhāng) — Sigil validation and assignment service.
 
    Ensures sigils are canonical before they propagate through the stack.
    The canonical mapping lives in resources/tokizh/tokizh.org.
@@ -16,7 +16,14 @@
 
    Sigil formats:
    - emoji/hanzi (used in devmaps): e.g., 🐜/予 = lili/e
-   - tokipona/hanzi (used in patterns): e.g., lili/予"
+   - tokipona/hanzi (used in patterns): e.g., lili/予
+
+   Bridge-derived assignment:
+   - `assign-sigil` looks up the informed sigil for a pattern-id
+   - The bridge chains: pattern → MiniLM embedding → PCA+Ridge → 8-bit
+     exotype → truth-table-8 hanzi → tokizh emoji (where available)
+   - Loaded from resources/sigils/bridge-assignments.edn
+   - See scripts/update_sigils_from_bridge.clj to update flexiarg files"
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.edn :as edn]))
@@ -369,6 +376,65 @@
   [tp]
   (:hanzi (get @tokipona->entry tp)))
 
+;; --- Bridge-derived sigil assignments ---
+
+(def ^:private bridge-assignments-path "sigils/bridge-assignments.edn")
+(def ^:private bridge-cache (atom nil))
+
+(defn- load-bridge-assignments []
+  "Load bridge-derived sigil assignments from resources."
+  (let [resource (io/resource bridge-assignments-path)]
+    (when resource
+      (let [data (edn/read-string (slurp resource))]
+        {:meta (:meta data)
+         :by-id (into {} (map (juxt :pattern-id identity)
+                              (:assignments data)))}))))
+
+(defn bridge-assignments
+  "Return the bridge-derived sigil assignments. Cached after first load."
+  []
+  (or @bridge-cache
+      (let [data (load-bridge-assignments)]
+        (reset! bridge-cache data)
+        data)))
+
+(defn reload-bridge!
+  "Force reload of bridge assignments."
+  []
+  (reset! bridge-cache nil)
+  (bridge-assignments))
+
+(defn assign-sigil
+  "Look up the bridge-derived sigil for a pattern-id.
+   Returns {:pattern-id :bits :hanzi :sigil :emoji :tokipona :confidence}
+   or nil if not found.
+
+   The sigil is grounded: pattern → MiniLM embedding → PCA+Ridge → 8-bit →
+   truth-table-8 hanzi → tokizh emoji (where available)."
+  [pattern-id]
+  (get (:by-id (bridge-assignments)) pattern-id))
+
+(defn assign-sigil-str
+  "Return just the sigil string for a pattern-id (e.g., '🎎/公' or '允').
+   Returns nil if pattern not found."
+  [pattern-id]
+  (:sigil (assign-sigil pattern-id)))
+
+(defn bits->sigil
+  "Given an 8-bit string, return the corresponding sigil.
+   Uses truth-table-8 for hanzi and tokizh for optional emoji."
+  [bits]
+  (let [tt-entry (first (filter #(= bits (:binary %)) (hanzi-256)))
+        hanzi (:hanzi tt-entry)
+        tok (when hanzi (get @hanzi->tokizh hanzi))]
+    (when hanzi
+      (cond-> {:bits bits
+               :hanzi hanzi
+               :sigil hanzi}
+        tok (assoc :emoji (:emoji tok)
+                   :tokipona (:tokipona tok)
+                   :sigil (str (:emoji tok) "/" hanzi))))))
+
 ;; --- Reporting ---
 
 (defn list-canonical
@@ -428,5 +494,20 @@
   ;; Report
   (print-validation-report
    (validate-sigils ["🐜/予" "🎑/勺" "pana/支"]))
+
+  ;; Bridge-derived assignment (grounded sigils)
+  (assign-sigil "ants/cargo-return-discipline")
+  ;; => {:pattern-id "ants/cargo-return-discipline" :bits "10101000"
+  ;;     :hanzi "允" :sigil "允" :confidence 0.66}
+  ;; (no emoji because 允 isn't in tokizh)
+
+  (assign-sigil "agent/scope-before-action")
+  ;; => {:pattern-id "agent/scope-before-action" :bits "10001000"
+  ;;     :hanzi "公" :emoji "🎎" :tokipona "kulupu" :sigil "🎎/公"
+  ;;     :confidence 0.68}
+
+  ;; Direct 8-bit → sigil lookup
+  (bits->sigil "10001000")  ;; => {:bits "10001000" :hanzi "公" :emoji "🎎" ...}
+  (bits->sigil "10101000")  ;; => {:bits "10101000" :hanzi "允" :sigil "允"}
 
   )

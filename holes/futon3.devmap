@@ -7,47 +7,61 @@
 @IFR: FUTON3 turns messy activity into organised knowledge by checking work
 against shared patterns and producing auditable records that other futons can
 use to learn, improve, and act.
-@state (2026-02-09) FUTON3 is now split across three repos: futon3 (MUSN transport
-and canonical pattern library), futon3a (query + similarity field), futon3b
-(coordination gate pipeline + proof-path store + Level 1 glacial loop), futon3c
-(real-time social coordination). The split is recorded in holes/war-room.md.
-Gate pipeline + glacial loop are implemented and test-verified in futon3b.
-The social pattern-set for futon3c is now specified as library/realtime/*.flexiarg.
-@next Wire futon3 transport/entrypoints to the futon3b gate pipeline; integrate
-futon3a similarity/portal search into G3 pattern selection; bring futon3c social
-patterns + war-room into the evidence chain; standardise proof-path → graph/energy
-exports across futon1/futon2.
+@state (2026-02-18) FUTON3 is split across three repos: futon3 (MUSN transport
+and canonical pattern library — legacy, mostly stable), futon3a (query +
+similarity field), futon3b (coordination gate pipeline + proof-path store +
+Level 1 glacial loop), futon3c (real-time social coordination — now the most
+active repo). The split is recorded in holes/war-room.md.
+futon3c is now a substantial operational system: 614 tests, 11 peripherals
+(10 wired), complete social pipeline (5 stages), evidence landscape with XTDB
+persistence, agency/dispatch, transport layer (HTTP+WS+IRC with F1-F6 stability),
+mission lifecycle (cycle machine), and mission control (portfolio management).
+futon3b has L1 canonicalizer operational with typed rejection proof-paths and
+bootstrap closure (M-social-exotype Part III). futon3a unchanged.
+@next Integrate futon3a similarity search into G3 pattern selection; connect
+futon3b gate pipeline to futon3c evidence landscape (proof-paths as evidence);
+build out the Emacs UI (sliding blackboard, evidence browser); advance
+M-peripheral-gauntlet (real-time multi-peripheral scenarios); complete
+M-forum-refactor Parts II-III.
 
 ## The Argument
 
 FUTON3 turns messy activity into organised knowledge by checking work against
-shared patterns and producing auditable records. The MUSN transport provides
-stable IO contracts for pattern-related checking with deterministic transcripts.
-The pattern canon stores patterns with metadata and devmap links in futon1
-storage (with the authoritative filesystem library living in futon3). The
-primary "check DSL" is now a coordination gate pipeline (G5→G0) operating over
-typed evidence records, producing a proof-path that is durable and queryable.
-Level 1 (glacial) observes accumulated proof-paths for tensions and canonizes
-new patterns back into the library (Baldwin cycle). The similarity field (futon3a)
-enables pattern suggestions and is a pending integration into G3. Joy metrics,
-proof hooks, training ground, and system self-description remain as downstream
-prototypes, now distributed across the split.
+shared patterns and producing auditable records. The system now operates across
+four repos at three timescales:
+
+- **Social (real-time)**: futon3c — agency, peripherals, evidence landscape,
+  transport. 614 tests. 11 peripherals route agents through capability envelopes
+  with hop-based transitions and evidence emission at every step.
+- **Task (fast)**: futon3b — gate pipeline (G5→G0) produces typed proof-paths;
+  Level 1 canonicalizer observes tensions and writes new patterns (Baldwin cycle).
+- **Glacial (slow)**: futon3a — pattern similarity field (GloVe/fastText/MiniLM
+  embeddings). Pending integration into G3 pattern selection.
+
+The canonical pattern library lives in futon3/library/. The evidence landscape
+(futon3c + futon1a XTDB backend) is the shared medium: social coordination
+events, mission snapshots, PSR/PUR/PAR records, and portfolio observations all
+flow into queryable evidence entries with reply chains and thread projections.
 
 ## Three-Futon Split (Evidence-Based)
 
-As of 2026-02-09 the original "futon3" scope is implemented as:
+As of 2026-02-18 the original "futon3" scope is implemented as:
 
+- futon3  = canonical pattern library + legacy MUSN transport (stable, mostly frozen)
 - futon3a = query + similarity field (pattern indexing / portal / compass)
 - futon3b = task coordination boundary (G5→G0) + glacial loop (L1 observe/canon)
-- futon3c = social/realtime coordination layer (pattern set in library/realtime; implementation repo may be separate)
+- futon3c = social/realtime coordination layer (the most active repo: 614 tests,
+  11 peripherals, evidence landscape, agency, transport, mission system)
 
   + EVIDENCE:
     evidence[holes/war-room.md (WR-1/WR-2 define the split and canonical library location)]
     evidence[library/coordination/ARGUMENT.flexiarg (gate pipeline argument)]
     evidence[library/realtime/*.flexiarg (social/realtime pattern set for futon3c)]
     evidence[futon3b/AGENTS.md Phase 0-3 verification + test tables]
-    evidence[futon3b: clojure -X:test passes (31 tests, 109 assertions) in current main]
-    evidence[futon3c repo may have local copies for tests but should not diverge from futon3/library per WR-2]
+    evidence[futon3b: L1 canonicalizer operational; rejection proof-paths typed; bootstrap closure complete]
+    evidence[futon3c: 614 tests, 1996 assertions; 11 peripherals (10 wired); evidence landscape with XTDB]
+    evidence[futon3c: alleycat verification 4/5 gates PASS (P-4 inhabitation, P-6 structural closure)]
+    evidence[futon3c/holes/qa/implementation-inventory.md tracks component status]
 
 
 ! instantiated-by: Prototype 0 — MUSN Transport Baseline [➰/双 🎑/了]
@@ -129,7 +143,7 @@ As of 2026-02-09 the original "futon3" scope is implemented as:
   :actual-status :active
   :depends-on [f3/P0, f3/P1]
   :implemented-as [futon3.gate.* (in futon3b)]
-  :evidence-for-active [Gate pipeline (G5→G0) enforces PSR→exec→PUR→durability; typed evidence + structured rejections; futon3b test suite passes]
+  :evidence-for-active [Gate pipeline (G5→G0) enforces PSR→exec→PUR→durability; typed evidence + structured rejections; L1 canonicalizer operational; rejection proof-paths typed and persisted; bootstrap closure complete (M-social-exotype Part III)]
 
   + context: FUTON3’s former "check DSL" role is now the coordination boundary: all task execution is routed through mandatory gates that emit typed evidence.
   + IF: You want a declarative, enforceable boundary that turns messy tasks into auditable records
@@ -173,7 +187,7 @@ As of 2026-02-09 the original "futon3" scope is implemented as:
   :actual-status :active
   :depends-on [f3/P2]
   :implemented-as [futon3b.query.relations/append-proof-path! + data/proof-paths/*.edn]
-  :evidence-for-active [Proof-path EDN files persisted per run; load + query supported; L1 observes proof-paths for tensions; rejections also persisted]
+  :evidence-for-active [Proof-path EDN files persisted per run; load + query supported; L1 observes proof-paths for tensions; typed rejection proof-paths persisted; canonicalizer writes .flexiarg with overwrite guard]
 
   + context: FUTON3 needs an auditable, replayable journal of what happened at the coordination boundary.
   + IF: You want every accepted run (and key early rejections) to leave a durable, typed audit trail
@@ -310,9 +324,9 @@ As of 2026-02-09 the original "futon3" scope is implemented as:
 ! instantiated-by: Prototype 7 — Pattern Creation Workbench [👍/已]
   :maturity :active
   :owner :futon3b
-  :actual-status :partial
+  :actual-status :active
   :depends-on [f3/P3]
-  :evidence-for-active [Minimal workbench implemented as L1 canonicalizer (tension → canonization → .flexiarg write); full clustering/summariser still pending]
+  :evidence-for-active [L1 canonicalizer operational: tension observer + canonizer with overwrite guard; typed rejection events flow into proof-paths; PSR/PUR exemplars added; bootstrap closure complete; full clustering/summariser still pending]
 
   + context: New patterns emerge from accumulated proof-path evidence; manual capture creates backlog and stalls convergence.
   + IF: You want FUTON3 to draft and land candidate patterns from accumulated evidence
@@ -447,7 +461,7 @@ As of 2026-02-09 the original "futon3" scope is implemented as:
   :owner :futon5
   :actual-status :partial
   :depends-on [f3/P1, f1/P0]
-  :evidence-for-active [Manifest schema defined; stack components queryable in futon1]
+  :evidence-for-active [9 EDN wiring diagrams in futon5/data/missions/ define component structure; 2 grounding functors map port types to nLab categories; futon3c mission-control peripheral can query devmaps and compute coverage programmatically]
 
   + context: Documentation and APIs exist as separate artifacts that humans must correlate.
   + IF: You want agents to query the system about its own capabilities
@@ -457,6 +471,9 @@ As of 2026-02-09 the original "futon3" scope is implemented as:
 
   + EVIDENCE:
     evidence[futon4/docs/evidence/rc-1.1-evidence.edn seeds machine-readable claim map]
+    evidence[futon5/data/missions/*.edn: 9 wiring diagrams with typed ports, components, edges, invariants]
+    evidence[futon5/data/missions/f3c-grounding-functor.edn + f6-grounding-functor.edn map to nLab categories]
+    evidence[futon3c mission-control peripheral: mc-devmaps + mc-coverage tools query structure programmatically]
 
   + NEXT-STEPS:
     next[Expand evidence map into manifest schema (components, interfaces, invariants)]
@@ -472,3 +489,189 @@ As of 2026-02-09 the original "futon3" scope is implemented as:
 
   :psr-example "Selected self-description for reflexivity because queryable structure enables agent reasoning"
   :pur-template "Manifest query {{component}}, interfaces: {{count}}, verified: {{yes|no}}"
+
+
+## futon3c Buildout (P12–P16)
+
+The following prototypes capture the major futon3c systems that were built
+after the three-futon split. They are recorded here for cross-repo visibility
+since the original devmap predates them.
+
+
+! instantiated-by: Prototype 12 — Social Pipeline & Agency [➰/双 🌽/末]
+  :maturity :active
+  :owner :futon3c
+  :actual-status :active
+  :depends-on []
+  :implemented-as [futon3c/src/futon3c/social/*.clj + futon3c/src/futon3c/agency/*.clj]
+  :evidence-for-active [5-stage pipeline wired and tested; agency registry operational; alleycat P-4 inhabitation race 20/20; all tech debt resolved (I3, coerce-prompt, hop exit inference)]
+
+  + context: futon3c's core is the social pipeline: the real-time coordination path that agents traverse on every interaction.
+  + IF: You want structured, typed coordination with evidence emission at every step
+  + HOWEVER: Without a pipeline, agent interactions are ad-hoc function calls with no audit trail
+  + THEN: Implement a 5-stage pipeline (S-presence → S-authenticate → S-mode → S-dispatch → S-persist) with Malli shape validation, agency registry with session lifecycle, and evidence emission on coordination events
+  + BECAUSE: The pipeline is the social-timescale AIF loop: sense agent presence, validate credentials, resolve mode, dispatch to capability envelope, persist coordination evidence
+
+  + EVIDENCE:
+    evidence[futon3c/src/futon3c/social/shapes.clj: ~550 lines, Malli shapes for all social types]
+    evidence[futon3c/src/futon3c/social/{presence,authenticate,mode,dispatch,persist,validate}.clj: 5 pipeline stages]
+    evidence[futon3c/src/futon3c/social/bells.clj: bell dispatcher (standup bell + test bell, 12 tests)]
+    evidence[futon3c/src/futon3c/agency/registry.clj: multi-agent registry, session lifecycle]
+    evidence[futon3c/src/futon3c/runtime/agents.clj: runtime API]
+    evidence[futon3c alleycat P-4: peripheral inhabitation race 20/20 + 4 checkpoints]
+    evidence[futon3c alleycat P-6: structural closure 479+ tests]
+    evidence[futon3c: all social pipeline tech debt resolved (I3 snapshot, lossy coerce-prompt, hop exit inference)]
+
+  + NEXT-STEPS:
+    next[Connect social pipeline evidence to futon3b gate pipeline (proof-paths as evidence entries)]
+
+  :success-criteria
+    pass[5-stage pipeline operational with typed evidence emission]
+    pass[Agency registry tracks agent capabilities and sessions]
+    pass[Alleycat inhabitation race passes (20/20)]
+    fail[Agent interactions bypass pipeline or produce no audit trail]
+
+
+! instantiated-by: Prototype 13 — Evidence Landscape [➰/双 🍍/办]
+  :maturity :active
+  :owner :futon3c
+  :actual-status :active
+  :depends-on [f3/P12]
+  :implemented-as [futon3c/src/futon3c/evidence/*.clj + futon1a HTTP API]
+  :evidence-for-active [Evidence store operational with AtomBackend (ephemeral) and XtdbBackend (durable via futon1a); thread projection via reply chains; 7 evidence types; HTTP API for write/query/chain]
+
+  + context: The evidence landscape is the shared medium for all three timescales. Social coordination events, mission snapshots, PSR/PUR/PAR records, and portfolio observations all flow into queryable evidence entries.
+  + IF: You want a unified, typed, queryable record of everything that happens across the stack
+  + HOWEVER: Without a shared evidence store, coordination events are scattered across atoms, logs, and markdown files
+  + THEN: Implement EvidenceBackend protocol with pluggable backends (AtomBackend for tests, XtdbBackend for production via futon1a); provide append/query/reply-chain/fork APIs; support 7 evidence types and reply-chain threading
+  + BECAUSE: The evidence landscape supersedes both the forum service and the war room — all coordination artifacts become queryable evidence entries with typed subjects, claims, and tags
+
+  + EVIDENCE:
+    evidence[futon3c/src/futon3c/evidence/backend.clj: EvidenceBackend protocol + AtomBackend]
+    evidence[futon3c/src/futon3c/evidence/store.clj: append/query/reply-chain/fork API (~300 lines)]
+    evidence[futon3c/src/futon3c/evidence/threads.clj: thread projection from reply chains]
+    evidence[futon3c/src/futon3c/evidence/xtdb_backend.clj: XTDB persistence via futon1a]
+    evidence[futon1a HTTP API: POST/GET /api/alpha/evidence, GET /evidence/:id, GET /evidence/:id/chain]
+    evidence[EvidenceEntry shape: id, subject (ArtifactRef), type, claim-type, author, at, body, tags, reply-chain, forks]
+    evidence[7 evidence types: pattern-selection, pattern-outcome, reflection, coordination, gate-traversal, forum-post, conjecture]
+    evidence[Forum service OBSOLETE — superseded by evidence landscape]
+
+  + NEXT-STEPS:
+    next[Add :query/subject-type filter to EvidenceQuery (gap G4 from mission-control VERIFY)]
+    next[Connect futon3b proof-paths as evidence entries]
+    next[Wire Arxana Lab viewer (futon4) to evidence endpoints]
+
+  :success-criteria
+    pass[Evidence entries appendable and queryable with typed subjects and claims]
+    pass[Reply chains and thread projections operational]
+    pass[XTDB backend provides durable persistence via futon1a]
+    pass[Forum service obsoleted — evidence landscape handles all coordination artifacts]
+    fail[Coordination events are unstructured or unqueryable]
+
+
+! instantiated-by: Prototype 14 — Peripheral Runtime [🌽/末 ➰/广]
+  :maturity :active
+  :owner :futon3c
+  :actual-status :active
+  :depends-on [f3/P12, f3/P13]
+  :implemented-as [futon3c/src/futon3c/peripheral/*.clj]
+  :evidence-for-active [11 peripherals (10 wired, 1 shaped); PeripheralRunner protocol with start/step/stop lifecycle; hop-based transitions with explicit exit conditions; chain orchestration; evidence emission at every step; backward verification framework]
+
+  + context: Peripherals are capability envelopes — each constrains what an agent can do and emits evidence of what it did.
+  + IF: You want agents to operate within structured, auditable capability boundaries
+  + HOWEVER: Without capability envelopes, agents have unrestricted access and produce no structured audit trail
+  + THEN: Implement PeripheralRunner protocol (start/step/stop) with tool-set enforcement, hop-based transitions between peripherals, chain orchestration for multi-peripheral sequences, and evidence emission on every tool invocation
+  + BECAUSE: Peripherals are the enforcement mechanism for the social AIF loop — they constrain agent actions to declared tool sets while producing linked evidence chains
+
+  + EVIDENCE:
+    evidence[futon3c/src/futon3c/peripheral/runner.clj: PeripheralRunner protocol]
+    evidence[futon3c/src/futon3c/peripheral/tools.clj: ToolBackend protocol + dispatch]
+    evidence[futon3c/src/futon3c/peripheral/common.clj: shared helpers (action validation, spec loading)]
+    evidence[futon3c/src/futon3c/peripheral/evidence.clj: evidence emission helpers]
+    evidence[futon3c/src/futon3c/peripheral/registry.clj: factory dispatch + chain orchestration]
+    evidence[futon3c/src/futon3c/peripheral/round_trip.clj: backward verification (←) framework]
+    evidence[futon3c/resources/peripherals.edn: 11 peripheral specs with tools, scope, entry/exit]
+    evidence[10 wired: explore, edit, test, deploy, reflect, proof, discipline, mission, mission-control, alfworld]
+    evidence[1 shaped: chat (IRC bridge fills role in practice)]
+
+  + NEXT-STEPS:
+    next[M-peripheral-gauntlet: real-time multi-peripheral scenarios]
+    next[Wire chat peripheral implementation (or confirm IRC bridge suffices)]
+
+  :success-criteria
+    pass[11 peripheral specs defined with tool sets, scope, entry/exit conditions]
+    pass[10 peripherals wired with PeripheralRunner implementations]
+    pass[Hop transitions validated with explicit exit conditions]
+    pass[Chain orchestration runs multi-peripheral sequences with evidence threading]
+    pass[Backward verification framework validates structural invariants]
+    fail[Agents bypass tool-set constraints or produce no evidence]
+
+
+! instantiated-by: Prototype 15 — Transport Layer [➰/止 🌂/甲]
+  :maturity :active
+  :owner :futon3c
+  :actual-status :active
+  :depends-on [f3/P12]
+  :implemented-as [futon3c/src/futon3c/transport/*.clj]
+  :evidence-for-active [HTTP + WebSocket + IRC transport adapters; 112 transport tests; IRC F1-F6 stability compliance; bidirectional joe+claude shared sessions through Emacs+IRC]
+
+  + context: futon3c needs its own transport layer for real-time agent coordination, independent of the legacy futon3 MUSN transport.
+  + IF: You want real-time agent coordination across multiple transports (HTTP, WebSocket, IRC)
+  + HOWEVER: The legacy futon3 MUSN transport is a monolith that bundles pattern checking with transport
+  + THEN: Implement independent transport adapters (HTTP, WebSocket, IRC) with a shared protocol layer, health endpoints, and event routing across transport boundaries
+  + BECAUSE: Transport independence lets futon3c evolve its real-time coordination without depending on the legacy MUSN codebase
+
+  + EVIDENCE:
+    evidence[futon3c/src/futon3c/transport/protocol.clj: wire protocol shapes (~500 lines, 31 tests)]
+    evidence[futon3c/src/futon3c/transport/http.clj: HTTP adapter (15 tests)]
+    evidence[futon3c/src/futon3c/transport/ws.clj: WebSocket adapter (16 tests)]
+    evidence[futon3c/src/futon3c/transport/irc.clj: IRC bridge with F1-F6 stability (~850 lines, 40 tests)]
+    evidence[futon3c/test/futon3c/transport/integration_test.clj: multi-transport coordination (10 tests)]
+    evidence[112 transport tests total, 0 failures]
+
+  + NEXT-STEPS:
+    next[M-sliding-blackboard: Emacs UI integration with transport]
+
+  :success-criteria
+    pass[HTTP, WebSocket, IRC adapters operational]
+    pass[IRC bridge passes F1-F6 stability tests]
+    pass[Multi-transport event routing works across boundaries]
+    fail[Transport is coupled to legacy MUSN or requires futon3 dependency]
+
+
+! instantiated-by: Prototype 16 — Mission System [🔃/本 🌽/末]
+  :maturity :active
+  :owner :futon3c
+  :actual-status :active
+  :depends-on [f3/P13, f3/P14]
+  :implemented-as [futon3c/src/futon3c/peripheral/{mission,mission_control,mission_control_backend,mission_control_shapes}.clj]
+  :evidence-for-active [Mission peripheral: cycle machine with 9 phases, obligation tracking, evidence snapshots; Mission control: portfolio observation with cross-repo inventory, devmap coverage, mana queries; 35 mission-control tests + mission tests; full derivation xenotype complete for both]
+
+  + context: Individual missions follow a development cycle (observe → propose → execute → validate); the portfolio of missions needs observation and prioritization.
+  + IF: You want structured mission lifecycle management and portfolio-level visibility
+  + HOWEVER: Without mission tooling, mission state lives in prose headers and hand-maintained inventories
+  + THEN: Implement two peripherals: (1) mission peripheral — 9-phase cycle machine with obligation tracking, evidence emission on state changes, and phase gate enforcement; (2) mission-control peripheral — flat tool dispatch for cross-repo inventory scanning, devmap structural summaries, coverage analysis, mana queries, and portfolio review
+  + BECAUSE: The mission peripheral makes individual mission state structural and evidence-backed; mission control makes portfolio state queryable and computable
+
+  + EVIDENCE:
+    evidence[futon3c/src/futon3c/peripheral/mission.clj: cycle machine, phase gates, obligation tracking]
+    evidence[futon3c/src/futon3c/peripheral/mission_control.clj: portfolio observation peripheral]
+    evidence[futon3c/src/futon3c/peripheral/mission_control_backend.clj: inventory, devmaps, coverage, mana, backfill]
+    evidence[futon3c/holes/missions/M-mission-peripheral.md: INSTANTIATE complete]
+    evidence[futon3c/holes/missions/M-mission-control.md: INSTANTIATE complete (35 tests, 614 suite)]
+    evidence[Cross-repo scanning: 25 missions across futon3c (15 .md), futon3b (1 .md), futon5 (9 EDN devmaps)]
+    evidence[Devmap coverage: heuristic name-matching (gap G1 documented, proper annotations future work)]
+    evidence[D7 backfill: legacy missions convertible to evidence entries]
+
+  + NEXT-STEPS:
+    next[Run first real portfolio review and emit as evidence]
+    next[Backfill legacy missions into evidence landscape]
+    next[Add :query/subject-type filter to evidence store for "all missions" queries (gap G4)]
+    next[Improve coverage heuristic with explicit devmap-to-mission annotations (gap G1)]
+
+  :success-criteria
+    pass[Mission peripheral manages lifecycle with phase gates and obligation tracking]
+    pass[Mission control scans 4 repos and produces coherent portfolio review]
+    pass[Portfolio reviews emittable as evidence entries]
+    pass[Devmap coverage computable (even if heuristic)]
+    fail[Mission state requires manual parsing of markdown headers]

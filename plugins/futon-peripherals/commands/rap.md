@@ -31,18 +31,27 @@ RAP is the "open paren" to PAR's "close paren":
 
 ## Process
 
-1. **Fetch from /rap endpoint**
+1. **Fetch from Evidence Landscape**
 
-   Use curl to fetch from the MUSN HTTP service:
+   Query the evidence landscape for PAR entries (type=reflection):
 
    ```bash
-   curl -s "http://localhost:6065/rap" | jq .
+   curl -sf "http://localhost:${FUTON1A_PORT:-7071}/api/alpha/evidence?type=reflection&limit=10" \
+     | jq '.entries'
    ```
 
    With filters:
    ```bash
-   curl -s "http://localhost:6065/rap?tags=websocket&limit=5" | jq .
+   # By session
+   curl -sf "http://localhost:${FUTON1A_PORT:-7071}/api/alpha/evidence?type=reflection&session-id=<sid>&limit=5"
+   # By author
+   curl -sf "http://localhost:${FUTON1A_PORT:-7071}/api/alpha/evidence?type=reflection&author=claude&limit=5"
+   # Since date
+   curl -sf "http://localhost:${FUTON1A_PORT:-7071}/api/alpha/evidence?type=reflection&since=2026-01-30&limit=10"
    ```
+
+   If the evidence landscape is not running, fall back to scanning `.par.edn` sidecar
+   files in `~/.claude/projects/`.
 
 2. **Present the Learning**
 

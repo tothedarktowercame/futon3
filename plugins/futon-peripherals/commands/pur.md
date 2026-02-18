@@ -69,29 +69,36 @@ The `/pur` command completes the pattern learning cycle:
 
    Remove the pattern from the "backpack" - ready for next /psr cycle.
 
-7. **Log to Lab Stream**
+7. **Persist to Evidence Landscape**
 
-   After recording the PUR, log it to the activity stream using curl:
+   After recording the PUR, persist it to the evidence landscape using curl.
+   Link it to the PSR evidence entry via `in-reply-to` (using the evidence ID
+   saved from the /psr step).
 
    ```bash
-   curl -s -X POST http://localhost:6065/musn/activity/log \
+   curl -sf -X POST http://localhost:${FUTON1A_PORT:-7071}/api/alpha/evidence \
      -H "Content-Type: application/json" \
      -d '{
-       "event/type": "pattern/pur",
-       "agent": "claude",
-       "source": "slash-command",
-       "pattern/id": "<pattern id from PSR>",
-       "pattern/sigil": "<sigil character>",
-       "pattern/outcome": "<success/partial/failed/pivoted/deferred>",
-       "pattern/prediction-error": "<low/medium/high>",
-       "pattern/actions": "<summary of actions taken>",
-       "pattern/expected": "<what was expected>",
-       "pattern/actual": "<what actually happened>",
-       "pattern/notes": "<additional context>"
+       "type": "pattern-outcome",
+       "claim-type": "conclusion",
+       "author": "claude",
+       "session-id": "<session-id>",
+       "pattern-id": "<pattern id from PSR>",
+       "in-reply-to": "<evidence/id from the PSR entry>",
+       "subject": {"subject/type": "pattern", "subject/id": "<pattern id>"},
+       "body": {
+         "outcome": "<success/partial/failed/pivoted/deferred>",
+         "actions": "<summary of actions taken>",
+         "expected": "<what was expected>",
+         "actual": "<what actually happened>",
+         "prediction-error": "<low/medium/high>",
+         "notes": "<additional context>"
+       },
+       "tags": ["pur"]
      }'
    ```
 
-   Run this command via Bash. If the server isn't running, the curl will fail silently - that's fine.
+   Run this command via Bash. If the server isn't running, the curl will fail silently — that's fine.
 
 8. **Update Pattern Quality** (future)
 

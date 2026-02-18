@@ -94,27 +94,36 @@ The `/psr` command helps you:
    - Note the pattern is now "in backpack"
    - The pattern context is available for /pur when work completes
 
-7. **Log to Lab Stream**
+7. **Persist to Evidence Landscape**
 
-   After recording the PSR, log it to the activity stream using curl:
+   After recording the PSR, persist it to the evidence landscape using curl.
+   Generate a UUID for the evidence entry and remember it — the /pur will
+   link back to it via `in-reply-to`.
 
    ```bash
-   curl -s -X POST http://localhost:6065/musn/activity/log \
+   curl -sf -X POST http://localhost:${FUTON1A_PORT:-7071}/api/alpha/evidence \
      -H "Content-Type: application/json" \
      -d '{
-       "event/type": "pattern/psr",
-       "agent": "claude",
-       "source": "slash-command",
-       "pattern/selected": "<selected pattern id>",
-       "pattern/sigil": "<sigil character>",
-       "pattern/candidates": ["<candidate1>", "<candidate2>", ...],
-       "pattern/query": "<original query>",
-       "pattern/confidence": "<low/medium/high>",
-       "pattern/rationale": "<why this pattern fits>"
+       "type": "pattern-selection",
+       "claim-type": "observation",
+       "author": "claude",
+       "session-id": "<session-id from $CLAUDE_SESSION_ID or conversation>",
+       "pattern-id": "<selected pattern id>",
+       "subject": {"subject/type": "pattern", "subject/id": "<selected pattern id>"},
+       "body": {
+         "query": "<original query>",
+         "selected": "<selected pattern id>",
+         "sigil": "<sigil character>",
+         "candidates": ["<candidate1>", "<candidate2>"],
+         "confidence": "<low/medium/high>",
+         "rationale": "<why this pattern fits>"
+       },
+       "tags": ["psr"]
      }'
    ```
 
-   Run this command via Bash. If the server isn't running, the curl will fail silently - that's fine.
+   Run this command via Bash. If the server isn't running, the curl will fail silently — that's fine.
+   Save the returned `evidence/id` — the /pur will reference it.
 
 ## Pattern Catalog Columns
 

@@ -48,12 +48,34 @@ The `/par` command invokes the **reflect** peripheral agent to:
 
    Show the generated PAR to the user in a readable format.
 
-4. **Offer to Log**
+4. **Persist to Evidence Landscape**
 
-   Ask if the user wants to:
-   - Log the PAR to MUSN activity stream
-   - Save to a local file
-   - Just view it (no persistence)
+   After generating the PAR, persist it automatically (don't ask — always persist):
+
+   ```bash
+   curl -sf -X POST http://localhost:${FUTON1A_PORT:-7071}/api/alpha/evidence \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "reflection",
+       "claim-type": "observation",
+       "author": "claude",
+       "session-id": "<session-id>",
+       "subject": {"subject/type": "session", "subject/id": "<session-id>"},
+       "body": {
+         "patterns_used": [{"pattern": "<id>", "count": 1}],
+         "what_went_well": ["<specific success>"],
+         "what_could_improve": ["<specific improvement>"],
+         "prediction_errors": [{"expected": "...", "actual": "...", "magnitude": 0.5}],
+         "suggestions": ["<actionable suggestion>"],
+         "commits": ["<hash>"],
+         "files_touched": ["<path>"]
+       },
+       "tags": ["par"]
+     }'
+   ```
+
+   Run this via Bash. If the server isn't running, fall back to saving the PAR as a
+   `.par.edn` sidecar file alongside the session `.jsonl` (existing behavior).
 
 ## PAR Structure
 

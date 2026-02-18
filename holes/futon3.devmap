@@ -7,11 +7,12 @@
 @IFR: FUTON3 turns messy activity into organised knowledge by checking work
 against shared patterns and producing auditable records that other futons can
 use to learn, improve, and act.
-@state (2026-02-18) FUTON3 is split across three repos: futon3 (MUSN transport
-and canonical pattern library — legacy, mostly stable), futon3a (query +
-similarity field), futon3b (coordination gate pipeline + proof-path store +
-Level 1 glacial loop), futon3c (real-time social coordination — now the most
-active repo). The split is recorded in holes/war-room.md.
+@state (2026-02-18) FUTON3 is split across four repos: futon3 (canonical
+pattern library + devmaps; storage dependency), futon3a (query + similarity
+field), futon3b (coordination gate pipeline + proof-path store + Level 1
+glacial loop), futon3c (real-time social coordination + evidence landscape +
+mission control — now the most active repo). The split is recorded in
+holes/war-room.md.
 futon3c is now a substantial operational system: 614 tests, 11 peripherals
 (10 wired), complete social pipeline (5 stages), evidence landscape with XTDB
 persistence, agency/dispatch, transport layer (HTTP+WS+IRC with F1-F6 stability),
@@ -43,15 +44,15 @@ The canonical pattern library lives in futon3/library/. The evidence landscape
 events, mission snapshots, PSR/PUR/PAR records, and portfolio observations all
 flow into queryable evidence entries with reply chains and thread projections.
 
-## Three-Futon Split (Evidence-Based)
+## Four-Repo Split (Evidence-Based)
 
 As of 2026-02-18 the original "futon3" scope is implemented as:
 
-- futon3  = canonical pattern library + legacy MUSN transport (stable, mostly frozen)
+- futon3  = canonical pattern library + devmaps (storage dependency; legacy runtime code mostly frozen)
 - futon3a = query + similarity field (pattern indexing / portal / compass)
 - futon3b = task coordination boundary (G5→G0) + glacial loop (L1 observe/canon)
 - futon3c = social/realtime coordination layer (the most active repo: 614 tests,
-  11 peripherals, evidence landscape, agency, transport, mission system)
+  11 peripherals, evidence landscape, agency, transport, mission + mission-control systems)
 
   + EVIDENCE:
     evidence[holes/war-room.md (WR-1/WR-2 define the split and canonical library location)]
@@ -64,41 +65,40 @@ As of 2026-02-18 the original "futon3" scope is implemented as:
     evidence[futon3c/holes/qa/implementation-inventory.md tracks component status]
 
 
-! instantiated-by: Prototype 0 — MUSN Transport Baseline [➰/双 🎑/了]
+! instantiated-by: Prototype 0 — MUSN Coordination Substrate [➰/双 🎑/了]
   :maturity :active
-  :owner :futon3
+  :owner :futon3c
   :actual-status :active
   :depends-on []
-  :evidence-for-active [Transport running 90+ days; event logging operational; pattern checks flow through router]
+  :evidence-for-active [Unified futon3c startup now runs evidence API + mission-control service + Drawbridge with persistent session snapshots and agent-dispatch integration]
 
-  + context: FUTON3 rides the MUSN transport (WS+HTTP bus, SAFE/ADMIN REPL, NDJSON ingest) for pattern-related checking.
-  + IF: You want an execution substrate where pattern obligations can be posed, evaluated, and recorded with deterministic transcripts
-  + HOWEVER: Without frozen contracts, check jobs cannot rely on stable log formats
-  + THEN: Freeze the transport contract for pattern-apply, gap-report, and trail-capture; provide golden transcripts; version the sandbox profile as the canonical proofwork runtime
-  + BECAUSE: Flexiformal checking needs a stable log format before any higher-layer reasoning can rely on it
+  + context: MUSN now lives as the shared coordination substrate in futon3c (transport + evidence + mission-control), with futon1a as durable evidence backend and futon3 as canonical library/devmap storage.
+  + IF: You want humans and agents to coordinate through one continuously running medium with queryable history and resumable sessions
+  + HOWEVER: One-off CLI sessions and ad-hoc logs do not provide durable shared state or portfolio-level visibility
+  + THEN: Run futon3c as the always-on substrate: transport adapters, evidence API, mission-control service, and Drawbridge REPL endpoint over the same backend
+  + BECAUSE: This gives a single operational MUSN where coordination, review, and evidence accumulation happen in one place
 
   + EVIDENCE:
-    evidence[docs/protocol.md documents transport contracts]
-    evidence[docs/protocol/transport-contract-v1.md freezes check-job contract]
-    evidence[docs/protocol/golden-transcripts.md lists golden transcript fixtures]
-    evidence[src/f2/router.clj implements event routing]
-    evidence[test/f2/router_test.clj has 100-event idempotency + acceptance tests]
-    evidence[test/f2/transport_golden_test.clj replays golden transcripts]
-    evidence[test/fixtures/transport/golden-check-request.ndjson anchors deterministic transcripts]
-    evidence[test/transport_test.clj covers per-client disconnect logging]
+    evidence[futon3c/dev/futon3c/dev.clj starts evidence API + mission-control service and Drawbridge by default]
+    evidence[futon3c/src/futon3c/mission_control/service.clj provides start/resume/step/stop with snapshot persistence]
+    evidence[futon3c/src/repl/http.clj provides token/allowlist guarded Drawbridge endpoint]
+    evidence[futon3c/src/futon3c/social/dispatch.clj routes mission-control actions and defaults to mc-review]
+    evidence[futon3c/test/futon3c/mission_control/service_test.clj verifies lifecycle, run-review, and reload]
+    evidence[futon3c/test/futon3c/social/dispatch_test.clj verifies default mc-review and payload action override]
+    evidence[futon3c/README.md documents mission-control + Drawbridge startup/usage]
 
   + NEXT-STEPS:
-    next[Wire golden transcript replay into CI]
-    next[Document sandbox profile as canonical proofwork runtime]
+    next[Add explicit evidence thread projection in Arxana for mission-control sessions]
+    next[Backfill legacy mission activity into evidence chains where possible]
 
   :success-criteria
-    pass[Transport contract frozen and versioned]
-    pass[Golden transcripts reproducible from sandbox profile]
-    pass[Check jobs have stable log formats]
-    fail[Contract changes break downstream consumers]
+    pass[Unified server startup exposes transport + evidence API + mission control without extra process startup]
+    pass[Mission-control sessions are persisted and resumable]
+    pass[Agents can trigger mission-control review through dispatch tooling]
+    fail[Coordination state is fragmented across ephemeral logs or per-tool silos]
 
-  :psr-example "Selected MUSN transport for check jobs because stable IO contracts enable reproducible proofwork"
-  :pur-template "Transport event {{type}}, client: {{client}}, logged: {{yes|no}}"
+  :psr-example "Selected futon3c unified substrate as MUSN because shared evidence + mission-control sessions make coordination durable and inspectable"
+  :pur-template "Session {{id}}, review {{tool}}, evidence entries appended: {{count}}"
 
 
 ! instantiated-by: Prototype 1 — Pattern Canon & Standard Library [🐺/本 ➰/世]

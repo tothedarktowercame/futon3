@@ -25,6 +25,7 @@ summarises; the bulletins provide evidence and argument.
 | # | Date | Title | Key Findings |
 |---|------|-------|-------------|
 | [1](war-bulletin-1.md) | 2026-02-14 | What First Proof Proved About the Stack | Wiring diagrams operational (not decorative); AIF+ I1-I6 validated; depth frontier = domain knowledge; nLab validation path before superpod |
+| [2](war-bulletin-2.md) | 2026-02-18 | The Evidence Landscape Takes Shape | futon3c operational (614 tests, 11 peripherals); evidence supersedes war artifacts; mission control makes portfolio computable; devmap updated (P12-P16); WR-3 validated (zero structural rewrites) |
 
 ## The Three-Futon Refactoring
 
@@ -81,30 +82,35 @@ futon3c (social)  →  futon3b (task)  →  futon3b L1 (glacial)
   - 31 tests, 109 assertions, ct/mission.clj 8/8 checks
 - Tracked in: `futon3b/AGENTS.md`, `futon3b/holes/missions/M-coordination-rewrite.md`
 
-### futon3c
-- **M-social-exotype** [ACTIVE] — Social exotype diagram + nested composition
-  - VERIFY step of derivation xenotype (IDENTIFY through ARGUE complete)
-  - Part I: social-exotype.edn (standalone 8/8 validation) [DONE]
-  - Part II: nested composition framework (futon5 contribution, Codex issue #2) [IN PROGRESS]
-  - Part III: gate-governed build (Prototype 0 — bootstrap closure) [DONE]
-    - 3 proof-paths in futon3b/data/proof-paths/ (Part I, II, III)
-    - `futon3b/src/futon3b/bootstrap.clj` — REPL helper
-  - Argument: `futon3/library/social/ARGUMENT.flexiarg`
-  - Tracked in: `futon3c/holes/missions/M-social-exotype.md`
-- **M-agency-refactor** [BLOCKED on M-social-exotype] — Port + refactor Agency
-- **M-forum-refactor** [BLOCKED on M-social-exotype] — Port + refactor Forum
-- **M-peripheral-model** [BLOCKED on M-social-exotype] — Formalize peripheral spec
-- **Proof peripheral** [COMMITTED] — 6th peripheral (:proof) with DAG backend,
-  canonical forms, cycle detection, ledger ops. Commit `7d1a5d0`. Codex alleycat
-  testing pending. See [Bulletin 1](war-bulletin-1.md) §2 for AIF+ alignment.
-- Source missions in futon3: M-drawbridge-multi-agent, M-par-session-punctuation,
-  M-agency-rebuild, M-agency-forum (evidence of tensions, not specifications)
+### futon3c (614 tests, 11 peripherals — see [Bulletin 2](war-bulletin-2.md))
+
+**Complete:**
+- **M-social-exotype** — Social exotype diagram + nested composition + bootstrap closure
+- **M-agency-refactor** — Agency registry, session lifecycle, multi-agent dispatch
+- **M-peripheral-model** — Hop protocol, exit conditions, peripheral chain orchestration
+- **M-peripheral-behavior** — Peripheral lifecycle (start/step/stop), tool-set enforcement
+- **M-dispatch-peripheral-bridge** — S-dispatch → peripheral routing
+- **M-transport-adapters** — HTTP, WebSocket, IRC (F1-F6 stability), 112 tests
+- **M-mission-peripheral** — 9-phase cycle machine, obligation tracking, evidence snapshots
+- **M-mission-control** — Portfolio observation: cross-repo inventory, devmap coverage, mana queries, backfill (35 tests)
+- **M-IRC-stability** — F1-F6 compliance, standup bell
+
+**Active:**
+- **M-peripheral-gauntlet** — Real-time multi-peripheral scenarios (alleycat 4/5 gates PASS)
+- **M-forum-refactor** — Part I complete (evidence landscape supersedes forum); Parts II-III pending
+- **M-sliding-blackboard** — Emacs UI + code blocks for IDE integration
+- **M-psr-pur-mesh-peripheral** — Discipline peripheral (PSR/PUR mesh, wired)
+
+**Infrastructure:** Evidence landscape (store + XTDB backend + HTTP API via futon1a),
+social pipeline (5 stages), proof peripheral (DAG backend, canonical forms, cycle
+detection, ledger ops). All tech debt resolved (I3 snapshot, lossy coercion, hop
+exit inference). See [Bulletin 2](war-bulletin-2.md) for full assessment.
 
 ### Cross-Futon
-- **futon5** — Wiring diagrams, CT DSL, tensor math. Provides the formal
-  specification language for all AIF loops. F6 mission wiring diagrams
-  validated (f6-ingest.edn, f6-eval.edn). Spring Break target: JAX-based
-  CA + differentiable eigendecomposition on wiring diagram tensors.
+- **futon5** — Wiring diagrams (9 EDN devmaps + 2 grounding functors), CT DSL,
+  tensor math. Now readable from futon3c via mission control (`mc-devmaps`,
+  `mc-coverage`). futon5 mission integration into mission control inventory in
+  progress. Spring Break target: JAX-based CA + differentiable eigendecomposition.
   See [Bulletin 1](war-bulletin-1.md) for strategic assessment.
 - **futon6** — Mathematics dictionary + First Proof sprint (6/10 correct,
   70 typed wiring diagrams, AIF+ audit). nLab validation path: 20K pages
@@ -112,10 +118,14 @@ futon3c (social)  →  futon3b (task)  →  futon3b L1 (glacial)
   extraction in progress. Superpod deferred to post-Spring-Break.
   See [Bulletin 1](war-bulletin-1.md) for full findings.
 - **futon4** — Arxana hypertext layer. Scholium-based annotation provides
-  edge-level critique infrastructure validated by First Proof. Integration
-  with nLab via hyperreal dictionary + link-graph persistence.
-- **futon1a** — Durable store. Shared infrastructure for evidence persistence.
-  Must preserve negative knowledge (failed routes with structural obstructions).
+  edge-level critique infrastructure validated by First Proof. Evidence
+  landscape viewer planned (read from `GET /api/alpha/evidence` endpoints).
+- **futon1a** — Durable store. XTDB backend operational for evidence landscape.
+  HTTP API: POST/GET evidence, single entry, reply chains. Must preserve
+  negative knowledge (failed routes with structural obstructions).
+- **Pending bridge: futon3b → futon3c** — Gate pipeline proof-paths should
+  emit evidence entries on G0 success. This connects task-timescale validation
+  to social-timescale observation. See [Bulletin 2](war-bulletin-2.md) §6.
 
 ## War Room Decisions
 

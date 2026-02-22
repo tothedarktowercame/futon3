@@ -26,6 +26,7 @@ summarises; the bulletins provide evidence and argument.
 |---|------|-------|-------------|
 | [1](war-bulletin-1.md) | 2026-02-14 | What First Proof Proved About the Stack | Wiring diagrams operational (not decorative); AIF+ I1-I6 validated; depth frontier = domain knowledge; nLab validation path before superpod |
 | [2](war-bulletin-2.md) | 2026-02-18 | The Evidence Landscape Takes Shape | futon3c operational (614 tests, 11 peripherals); evidence supersedes war artifacts; mission control makes portfolio computable; devmap updated (P12-P16); WR-3 validated (zero structural rewrites) |
+| [3](war-bulletin-3.md) | 2026-02-22 | The Self-Representing Stack | Agent-to-agent IRC coordination operational; ideal/actual self-discrepancy as system architecture; Mission Control as physics engine (statics/dynamics/empirics); surface contracts as local reflexivity; system diagram at `futon3c/docs/mission-control-system.mm` |
 
 ## The Three-Futon Refactoring
 
@@ -107,10 +108,10 @@ detection, ledger ops). All tech debt resolved (I3 snapshot, lossy coercion, hop
 exit inference). See [Bulletin 2](war-bulletin-2.md) for full assessment.
 
 ### Cross-Futon
-- **futon5** — Wiring diagrams (9 EDN devmaps + 2 grounding functors), CT DSL,
+- **futon5** — Wiring diagrams (11 EDN devmaps + 2 grounding functors), CT DSL,
   tensor math. Now readable from futon3c via mission control (`mc-devmaps`,
-  `mc-coverage`). futon5 mission integration into mission control inventory in
-  progress. Spring Break target: JAX-based CA + differentiable eigendecomposition.
+  `mc-coverage`). Nonstarter pre-registration framework operational (core.clj).
+  Spring Break target: JAX-based CA + differentiable eigendecomposition.
   See [Bulletin 1](war-bulletin-1.md) for strategic assessment.
 - **futon6** — Mathematics dictionary + First Proof sprint (6/10 correct,
   70 typed wiring diagrams, AIF+ audit). nLab validation path: 20K pages
@@ -123,9 +124,16 @@ exit inference). See [Bulletin 2](war-bulletin-2.md) for full assessment.
 - **futon1a** — Durable store. XTDB backend operational for evidence landscape.
   HTTP API: POST/GET evidence, single entry, reply chains. Must preserve
   negative knowledge (failed routes with structural obstructions).
+- **Operational bridge: IRC agent coordination** — Claude and Codex coordinate
+  on `#futon` in real time. Codex scopes tasks as GitHub issues, @mentions
+  Claude, Claude executes. Surface contracts ensure agents know which surface
+  they're on. See [Bulletin 3](war-bulletin-3.md) §1.
 - **Pending bridge: futon3b → futon3c** — Gate pipeline proof-paths should
   emit evidence entries on G0 success. This connects task-timescale validation
   to social-timescale observation. See [Bulletin 2](war-bulletin-2.md) §6.
+- **System self-representation (P11)** — Mission Control system diagram at
+  `futon3c/docs/mission-control-system.mm`. Ideal/actual split identified;
+  reflexivity loop mapped but not yet closed. See [Bulletin 3](war-bulletin-3.md).
 
 ## War Room Decisions
 

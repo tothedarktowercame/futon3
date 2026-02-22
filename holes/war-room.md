@@ -120,7 +120,10 @@ exit inference). See [Bulletin 2](war-bulletin-2.md) for full assessment.
   See [Bulletin 1](war-bulletin-1.md) for full findings.
 - **futon4** — Arxana hypertext layer. Scholium-based annotation provides
   edge-level critique infrastructure validated by First Proof. Evidence
-  landscape viewer planned (read from `GET /api/alpha/evidence` endpoints).
+  landscape viewer operational (reads from futon1a). **First futon4 mission:**
+  [M-self-representing-stack](../../futon4/holes/missions/M-self-representing-stack.md)
+  — make MC artifacts, devmap prototypes, and evidence trails navigable as
+  hyperedges in Arxana. See [Bulletin 3](war-bulletin-3.md) §2.
 - **futon1a** — Durable store. XTDB backend operational for evidence landscape.
   HTTP API: POST/GET evidence, single entry, reply chains. Must preserve
   negative knowledge (failed routes with structural obstructions).
@@ -132,8 +135,11 @@ exit inference). See [Bulletin 2](war-bulletin-2.md) for full assessment.
   emit evidence entries on G0 success. This connects task-timescale validation
   to social-timescale observation. See [Bulletin 2](war-bulletin-2.md) §6.
 - **System self-representation (P11)** — Mission Control system diagram at
-  `futon3c/docs/mission-control-system.mm`. Ideal/actual split identified;
-  reflexivity loop mapped but not yet closed. See [Bulletin 3](war-bulletin-3.md).
+  `futon3c/docs/mission-control-system.md`. Ideal/actual split identified;
+  first futon4 mission (M-self-representing-stack) makes MC artifacts
+  navigable as Arxana hyperedges. Closes the reflexivity loop at the
+  navigation layer, not just the data layer.
+  See [Bulletin 3](war-bulletin-3.md).
 
 ## War Room Decisions
 

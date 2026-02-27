@@ -27,6 +27,7 @@ summarises; the bulletins provide evidence and argument.
 | [1](war-bulletin-1.md) | 2026-02-14 | What First Proof Proved About the Stack | Wiring diagrams operational (not decorative); AIF+ I1-I6 validated; depth frontier = domain knowledge; nLab validation path before superpod |
 | [2](war-bulletin-2.md) | 2026-02-18 | The Evidence Landscape Takes Shape | futon3c operational (614 tests, 11 peripherals); evidence supersedes war artifacts; mission control makes portfolio computable; devmap updated (P12-P16); WR-3 validated (zero structural rewrites) |
 | [3](war-bulletin-3.md) | 2026-02-22 | The Self-Representing Stack | Agent-to-agent IRC coordination operational; ideal/actual self-discrepancy as system architecture; Mission Control as physics engine (statics/dynamics/empirics); surface contracts as local reflexivity; system diagram at `futon3c/docs/mission-control-system.mm` |
+| [4](war-bulletin-4.md) | 2026-02-27 | The Portfolio Becomes Legible | Portfolio inference live (CONSOLIDATE + "review"); observation surface was half-blind (4/7 repos, 0% coverage, 3 saturated channels) — now calibrated; 73 missions triaged into 7 salience buckets; M-self-representing-stack visible as next priority; AIF loop validated itself (recommended review → found broken sensors → fixed them) |
 
 ## The Three-Futon Refactoring
 
@@ -83,7 +84,7 @@ futon3c (social)  →  futon3b (task)  →  futon3b L1 (glacial)
   - 31 tests, 109 assertions, ct/mission.clj 8/8 checks
 - Tracked in: `futon3b/AGENTS.md`, `futon3b/holes/missions/M-coordination-rewrite.md`
 
-### futon3c (614 tests, 11 peripherals — see [Bulletin 2](war-bulletin-2.md))
+### futon3c (938 tests, 3285 assertions — see [Bulletin 4](war-bulletin-4.md))
 
 **Complete:**
 - **M-social-exotype** — Social exotype diagram + nested composition + bootstrap closure
@@ -93,19 +94,23 @@ futon3c (social)  →  futon3b (task)  →  futon3b L1 (glacial)
 - **M-dispatch-peripheral-bridge** — S-dispatch → peripheral routing
 - **M-transport-adapters** — HTTP, WebSocket, IRC (F1-F6 stability), 112 tests
 - **M-mission-peripheral** — 9-phase cycle machine, obligation tracking, evidence snapshots
-- **M-mission-control** — Portfolio observation: cross-repo inventory, devmap coverage, mana queries, backfill (35 tests)
+- **M-mission-control** — Portfolio observation: cross-repo inventory (7 repos, 73 missions), devmap coverage (curated annotations + heuristic), mana queries, backfill, audit correspondence
 - **M-IRC-stability** — F1-F6 compliance, standup bell
+- **M-portfolio-inference** — INSTANTIATE complete (938 tests, 3285 assertions). AIF loop: 15-channel observe → perceive (3 micro-steps, α=0.55) → affect (BUILD/MAINTAIN/CONSOLIDATE with hysteresis) → EFE policy. First live scan recommended CONSOLIDATE + "review." See [Bulletin 4](war-bulletin-4.md).
+- **M-psr-pur-mesh-peripheral** — Discipline peripheral (PSR/PUR mesh, wired). DONE-NEEDS-RETRO.
 
 **Active:**
 - **M-peripheral-gauntlet** — Real-time multi-peripheral scenarios (alleycat 4/5 gates PASS)
 - **M-forum-refactor** — Part I complete (evidence landscape supersedes forum); Parts II-III pending
 - **M-sliding-blackboard** — Emacs UI + code blocks for IDE integration
-- **M-psr-pur-mesh-peripheral** — Discipline peripheral (PSR/PUR mesh, wired)
 
 **Infrastructure:** Evidence landscape (store + XTDB backend + HTTP API via futon1a),
 social pipeline (5 stages), proof peripheral (DAG backend, canonical forms, cycle
-detection, ledger ops). All tech debt resolved (I3 snapshot, lossy coercion, hop
-exit inference). See [Bulletin 2](war-bulletin-2.md) for full assessment.
+detection, ledger ops). Portfolio inference observation surface calibrated: 7 repos
+scanned (was 4), curated component→mission annotations (14 entries), recalibrated
+priors (gap-cap 120, spinoff-cap 40, max-chain-cap 10). Machine audit via
+`audit-coverage-correspondence`. See [Bulletin 2](war-bulletin-2.md) for earlier
+assessment, [Bulletin 4](war-bulletin-4.md) for current state.
 
 ### Cross-Futon
 - **futon5** — Wiring diagrams (11 EDN devmaps + 2 grounding functors), CT DSL,
@@ -120,10 +125,13 @@ exit inference). See [Bulletin 2](war-bulletin-2.md) for full assessment.
   See [Bulletin 1](war-bulletin-1.md) for full findings.
 - **futon4** — Arxana hypertext layer. Scholium-based annotation provides
   edge-level critique infrastructure validated by First Proof. Evidence
-  landscape viewer operational (reads from futon1a). **First futon4 mission:**
+  landscape viewer operational (reads from futon1a). **Priority mission:**
   [M-self-representing-stack](../../futon4/holes/missions/M-self-representing-stack.md)
   — make MC artifacts, devmap prototypes, and evidence trails navigable as
-  hyperedges in Arxana. See [Bulletin 3](war-bulletin-3.md) §2.
+  hyperedges in Arxana. DERIVE+ARGUE complete; VERIFY next. Now visible to
+  portfolio inference (futon4 added to MC repo scan). Sensor-grounding
+  section specifies how tension hyperedges feed back into MC's 15 observation
+  channels. See [Bulletin 3](war-bulletin-3.md) §2, [Bulletin 4](war-bulletin-4.md) §3.
 - **futon1a** — Durable store. XTDB backend operational for evidence landscape.
   HTTP API: POST/GET evidence, single entry, reply chains. Must preserve
   negative knowledge (failed routes with structural obstructions).
@@ -136,10 +144,14 @@ exit inference). See [Bulletin 2](war-bulletin-2.md) for full assessment.
   to social-timescale observation. See [Bulletin 2](war-bulletin-2.md) §6.
 - **System self-representation (P11)** — Mission Control system diagram at
   `futon3c/docs/mission-control-system.md`. Ideal/actual split identified;
-  first futon4 mission (M-self-representing-stack) makes MC artifacts
-  navigable as Arxana hyperedges. Closes the reflexivity loop at the
-  navigation layer, not just the data layer.
+  M-self-representing-stack makes MC artifacts navigable as Arxana hyperedges.
+  Closes the reflexivity loop at the navigation layer, not just the data layer.
   See [Bulletin 3](war-bulletin-3.md).
+- **Portfolio legibility** — 73 missions across 7 repos triaged into 7 salience
+  buckets: 20 anchored (complete), 9 active, 5 ready, 10 superseded by
+  Three-Futon refactoring, 7 embryonic, 7 detritus (process artifacts), 5
+  domain-specific (f6-* → futon6). Mission triage is a Human Intelligence
+  Task supported by `audit-coverage-correspondence`. See [Bulletin 4](war-bulletin-4.md) §2.
 
 ## War Room Decisions
 

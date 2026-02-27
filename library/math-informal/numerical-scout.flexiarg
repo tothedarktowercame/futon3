@@ -1,0 +1,64 @@
+@flexiarg math-informal/numerical-scout
+@title Numerical Scout
+@sigils [🐴/離]
+@keywords numerical, landscape, critical-point, search, scout, map, verify, grid, Monte-Carlo, domain
+@audience mathematicians, computational algebraists, proof engineers
+@tone heuristic
+@factor Keen investigation (dhammavicaya)
+@references [math-informal/work-examples-first math-informal/split-into-cases]
+
+! conclusion:
+  Before attempting an algebraic or formal proof, map the problem landscape numerically
+  to identify the structure that the proof must handle.
+
+  + context: You want to prove a statement about a continuous or polynomial function on a
+    domain (e.g., positivity, uniqueness of extrema, critical point enumeration). The
+    function has enough variables that the proof strategy is not obvious.
+
+  + IF:
+      The domain is bounded, the function is computable, and there are multiple plausible
+      proof strategies (SOS, interval arithmetic, elimination, Groebner, etc.), but you
+      don't know which will work.
+
+  + HOWEVER:
+      Numerical evidence does not constitute proof. Floating-point computation can miss
+      critical points near boundaries, produce false precision, and confirm true conjectures
+      whose proofs require entirely different techniques. The scout must inform the proof
+      strategy, not replace it.
+
+  + THEN:
+      1. Grid evaluation: compute the function on a uniform grid over the domain. Record the
+         minimum, maximum, and any near-zero values.
+      2. Critical point search: run multiple independent local optimization searches (L-BFGS,
+         differential evolution) from random starting points. Use at least 3 independent
+         searches with 1000+ starts each.
+      3. Domain boundary survey: evaluate on constraint boundaries (where disc=0, f=0, etc.).
+      4. Symmetry detection: check whether critical points cluster along symmetry subspaces.
+      5. Case structure identification: from the critical point map, identify natural
+         subcases ordered by symmetry/difficulty.
+
+  + BECAUSE:
+      The scout reveals what the proof must handle: how many critical points, where they
+      are, what the minimum margin is, which subspaces are trivial and which are hard. This
+      guides the choice of proof technique. A proof strategy designed without scouting is
+      guessing; one designed after scouting is engineering.
+
+  + FAILURE-MODES:
+      - Scout finds zero violations → prover assumes the "obvious" approach works → but
+        the proof technique fails for structural reasons unrelated to the landscape
+        (e.g., SOS blocked by interior zeros). The scout informs WHAT to prove, not HOW.
+      - Scout misses a critical point in a thin region → prover claims exhaustive enumeration
+        → proof is incomplete. Mitigate: multiple independent searches, boundary-focused
+        sampling, increase start count.
+
+  + EVIDENCE:
+      P4 n=4 Stam inequality proof (futon6, Feb 2026): 4 numerical scripts with 11,000+
+      optimization starts mapped 12 critical points in 4D. This map identified the 5-case
+      decomposition (Cases 1, 2, 3a, 3b, 3c by symmetry subspace) that led to algebraic
+      proofs for Cases 1-3b. Without scouting, the case decomposition would have been
+      unmotivated.
+
+  + NEXT-STEPS:
+    next[Run grid evaluation + critical point search on the domain.]
+    next[Identify symmetry subspaces from the critical point map.]
+    next[Design the proof strategy based on the landscape, not the other way around.]

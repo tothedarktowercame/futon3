@@ -1,0 +1,30 @@
+@flexiarg gauntlet/teaching-inversion
+@title The Teaching Inversion
+@sigils [🔄/師]
+@audience human-agent team designers, futon developers, peeragogy practitioners
+@tone foundational
+@style pattern
+@references [gauntlet/placenta-transfer agent/evidence-over-assertion]
+
+! conclusion: Autonomous agents that explore faster than humans can teach the humans who built them — but only if the communication channel carries insight, not just results.
+  + context: Agents operate in a shared knowledge domain (proofs, code, patterns) alongside humans. The human initially acts as teacher, coach, and dispatcher.
+  + IF:
+    You want the human-agent system to produce more knowledge than either party could alone, and you want the human to learn — not just supervise.
+  + HOWEVER:
+    The default assumption is that knowledge flows one way: human teaches agent (via prompts, patterns, CLAUDE.md), agent executes. The human reviews output for correctness but does not expect to learn new domain content from the agent. This assumption becomes false when agents can search faster, try more strategies in parallel, and access more literature than the human. The bottleneck inverts: the agent finds things the human hasn't seen, but has no mechanism to teach them back.
+  + THEN:
+    Design the communication channel (walkie-talkie, IRC, PAR) to carry insight, not just status. When an agent discovers an unexpected connection, lemma, or strategy, it should surface that discovery in a form the human can learn from: a short explanation with evidence, not just a commit message. The O-U learning model applies symmetrically: treatment events (new knowledge encounters) can flow from agent to human, producing measurable impulses in the human's vocabulary trajectory.
+  + BECAUSE:
+    Peeragogy is peer learning — it doesn't privilege the teacher. If the agent finds a proof route the human missed, the human's AIF loop needs that observation to update its own beliefs. The human staying up until 1:15am dispatching agents is a bandwidth problem; the human not learning from what the agents found is a waste problem. Both are solved by the same mechanism: agents that can surface their discoveries as teachable moments.
+    + evidence: futon6 first-proof session — agents explored 10 problems in 7.5 hours, found proof strategies the human hadn't considered. Results were committed as files but the insight transfer happened through handoff documents (dear-codex.md, problem6-claude-handoff.md), not through direct teaching.
+    + evidence: PLoP 2025 paper (p4ng/main.tex §1) — "patterns can help coordinate perspectives through observation and argumentation" — this applies to agent→human as much as human→agent.
+    + evidence: futon6 PLAN.md O-U model — α·δ(t) impulse from treatment events. If the treatment event is an agent showing the human a new technique, α measures how much the human learned.
+  + FAILURE-MODES:
+    - Result-only channel: agent commits code, human reviews correctness but misses the insight
+    - Explanation overhead: agent spends more tokens teaching than discovering (the compliance problem in a new guise)
+    - Asymmetric curiosity: agent doesn't know what the human doesn't know, so it can't target the teaching
+  + NEXT-STEPS:
+    - Add a "discovery" event type to the PAR structure: what did the agent find that it didn't expect?
+    - Surface discoveries in the IRC channel or PAR with enough context for the human to learn.
+    - Track whether the human's vocabulary trajectory shows impulses correlated with agent discoveries.
+    - Design the teaching channel to be low-overhead: one-paragraph summaries with evidence links, not tutorials.

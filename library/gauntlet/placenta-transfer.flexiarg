@@ -1,0 +1,34 @@
+@flexiarg gauntlet/placenta-transfer
+@title Transfer Placental Functions to Infrastructure
+@sigils [🫀/胎]
+@audience system architects, futon developers, anyone designing human-agent handoff
+@tone foundational
+@style pattern
+@references [agent/pause-is-not-failure agent/evidence-over-assertion]
+
+! conclusion: Identify which functions the human is performing as a surrogate for missing infrastructure, and transfer them one at a time to the system.
+  + context: A human operator is coordinating multiple agents, routing tasks, calibrating confidence, correcting course, and providing the feedback loop that agents cannot yet provide for themselves.
+  + IF:
+    You want agents to operate autonomously for extended periods (overnight, across sessions) without human intervention for routine decisions.
+  + HOWEVER:
+    The human is currently performing multiple AIF functions simultaneously: sensory gating (directing attention), belief correction (updating the model), policy selection (choosing actions), confidence calibration (setting τ), and free energy signaling (pushing back when things go wrong). These functions are bundled in the human's judgment and feel like "just coaching" — but each is a distinct infrastructure capability that doesn't exist yet. Removing the human without transferring these functions produces unsupervised agents that drift, stall, or overcommit.
+  + THEN:
+    Enumerate the placental functions the human currently provides. For each one, identify what infrastructure would replace it: peripherals for sensory gating, AIF modeline for confidence calibration, Drawbridge for inter-agent coordination, liveness-heartbeats for stall detection. Transfer one function at a time, validate that agents self-regulate on that dimension, then transfer the next. The human remains as the slow-timescale preference layer (what matters, what's worth doing) while fast-loop functions migrate to infrastructure.
+  + BECAUSE:
+    A placenta is a temporary organ. Its functions must transfer to the embryo's own systems for the organism to survive independently. Attempting to remove the placenta all at once (fully autonomous agents with no infrastructure) kills the embryo. Attempting to keep the placenta forever (human always in the loop) limits the organism to the human's bandwidth, attention span, and sleep schedule.
+    + evidence: futon6 first-proof session (2026-02-11) — 89 commits, 10 problems, 7.5 hours, 3 agents. Human performed all routing, dispatch, confidence calibration. Agents were faster at proof search but bottlenecked on human attention. Human stayed up until 01:15.
+    + evidence: futon3c ALFWorld session (2026-02-13) — human identified "that's delegation not inhabitation" (belief correction), directed attention to Drawbridge code (sensory gating), chose ALFWorld as next step (policy selection). Each intervention was a placental function.
+  + PLACENTAL-FUNCTIONS:
+    - Sensory gating: "look at X" → transfer to: peripheral design (what surfaces are in the umwelt)
+    - Belief correction: "no, that's wrong" → transfer to: verification loops, test suites, evidence requirements
+    - Policy selection: "try this approach" → transfer to: AIF-as-environment, pattern catalog priors
+    - Confidence calibration: "that's close" / "that's way off" → transfer to: τ coupling, free energy modeline
+    - Free energy signal: "push back" → transfer to: prediction error computation, stall detection
+    - Inter-agent routing: "ask Codex about this" → transfer to: Agency whistle protocol, IRC coordination
+    - Stall detection: "you've been stuck for 20 minutes" → transfer to: Tickle agent, liveness heartbeats
+  + NEXT-STEPS:
+    - Audit a recent multi-agent session: tag each human intervention with its placental function.
+    - Rank functions by frequency and transfer difficulty.
+    - Implement the easiest transfer first (likely stall detection → Tickle agent).
+    - Validate: run a session with that function transferred. Does the agent self-regulate on that dimension?
+    - Iterate until the human's role converges to slow-timescale preferences only.

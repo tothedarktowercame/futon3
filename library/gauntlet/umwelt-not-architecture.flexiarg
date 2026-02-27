@@ -1,0 +1,24 @@
+@flexiarg gauntlet/umwelt-not-architecture
+@title Draw the Umwelt, Not the Architecture
+@sigils [👁/覚]
+@audience peripheral designers, agent architects, wiring diagram authors
+@tone foundational
+@style pattern
+
+! conclusion: Design from the agent's sensory perspective inward, not from the system topology downward.
+  + context: You are building or documenting a multi-agent system with peripherals, coordination, and shared state.
+  + IF:
+    You want agents to behave naturally in their environment rather than executing remote procedure calls against an architecture diagram.
+  + HOWEVER:
+    The default instinct is to draw the God's-eye view: boxes for services, arrows for connections, the architect looking down. This produces plumbing diagrams that tell you what's connected but not what any agent actually perceives. Agents designed from architecture diagrams become RPC clients, not inhabitants.
+  + THEN:
+    Start by drawing what the agent sees: its sensory surfaces (what observations arrive), its active surfaces (what actions are available), and the darkness beyond (what it cannot perceive). The architecture follows from the union of all agents' umwelts, not the other way around. Each new surface added to an agent's world should be justified by what behavior it enables, not by what infrastructure exists.
+  + BECAUSE:
+    The peripheral's job is to constitute the agent's world (P-1), not to expose the system's internals. An agent that sees "Codex is examining the microwave" inhabits a shared world. An agent that calls GET /agency/agents/{codex}/status queries a database. Same information, different phenomenology, different behavior.
+    + evidence: ALFWorld session (2026-02-13) — when observations were room descriptions and available actions, first-person navigation language emerged naturally. Blackboard wiring diagram of futon stack produced correct topology but zero insight into agent experience until redrawn as umwelt.
+  + NEXT-STEPS:
+    - For each agent type, draw the umwelt diagram before the architecture diagram.
+    - Enumerate sensory surfaces: what streams does this agent receive?
+    - Enumerate active surfaces: what actions can this agent take?
+    - Map the darkness: what exists in the system that this agent cannot perceive? Is that darkness intentional or accidental?
+    - When adding infrastructure, ask "what does this change in the agent's umwelt?" not "what does this connect to?"

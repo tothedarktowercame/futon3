@@ -1,0 +1,297 @@
+@flexiarg gauntlet/ARGUMENT
+@title Argument for the Gauntlet: From Peripheral Phenomenology to Autonomous Multi-Agent Coordination
+@keywords argument, gauntlet, peripheral, umwelt, aif, hypergraph, co-presence, teaching, placenta
+@audience futon developers, agent architects, AIF implementers
+@tone analytic-foundational
+@style argument
+@references [gauntlet/umwelt-not-architecture gauntlet/aif-as-environment-not-instruction gauntlet/placenta-transfer gauntlet/co-presence-over-co-location gauntlet/teaching-inversion gauntlet/world-is-hypergraph gauntlet/modeline-persists-across-worlds social/ARGUMENT agent/environment-over-optimization aif/policy-precision-commitment-temperature]
+
+@summary The purpose of this whole enterprise is to turn messy activity
+into organised knowledge — checking work against shared patterns and
+producing auditable records that others can learn from, improve on, and
+act on. The gauntlet is the path to making that purpose self-sustaining.
+When you build a house for someone, don't start with the plumbing
+diagram — start by asking what they see when they look out the window.
+The same holds for AI agents: design their world from the inside out, not
+from the engineering down. Once you see it from their perspective, you
+realize the world already exists — it's the shared body of work they
+operate in, not something separate you need to construct. But sharing a
+workspace isn't the same as seeing each other; two people can work in the
+same building for years and never meet. So make presence visible — when
+one agent is working on something, the others should naturally notice, the
+way you notice a colleague's light is on. Next, don't tell agents how to
+feel about their work — let them sense it. Confidence, doubt, fatigue,
+and surprise should be features of the landscape, not instructions from a
+manager; a good dashboard is read when needed and ignored when not, like a
+fuel gauge. That dashboard should stay with the agent as it moves between
+tasks, the way your mood follows you from room to room. With
+self-awareness working, you can start handing off the functions that a
+human supervisor currently performs — directing attention, correcting
+mistakes, choosing what to work on next — one at a time, testing each
+transfer before attempting the next, the way a parent gradually lets go.
+And here's the turn: agents that can sustain themselves will eventually
+move faster than the person who built them, and find things that person
+hasn't seen. If the channel between them carries understanding and not
+just deliverables, the builder learns from the built. That's the
+sequence, and each step depends on the last. Run it to completion and you
+have something new: artificial minds that don't just work for you, but
+work with you — and occasionally ahead of you. The measure of success is
+not efficiency but joy — the Spinozan increase in power to act, evidenced
+by commitments you can now keep that you couldn't before.
+
+! argument:
+
+  This is a flexiformal argument for the gauntlet pattern language — the
+  phenomenological complement to the social coordination argument
+  (social/ARGUMENT.flexiarg). Where the social argument establishes
+  invariants for message passing, routing, and lifecycle management, this
+  argument establishes what it means for agents to INHABIT the
+  infrastructure those invariants protect.
+
+  The distinction matters. You can have perfect delivery receipts (A0),
+  single routing authority (A1), atomic state transitions (A2), loud
+  failure (A3), and bounded lifecycle (A5) — and still have agents that
+  behave like RPC clients rather than inhabitants. The social argument
+  ensures the plumbing works. The gauntlet argument ensures someone is
+  home.
+
+  == PART I: The Phenomenological Gap ==
+
+  G1. [from M-peripheral-phenomenology, ALFWorld session 2026-02-13]
+  The peripheral phenomenology mission (M-peripheral-phenomenology.md)
+  defines six invariants for what makes a peripheral a peripheral:
+
+  - P-1 World Replacement: observations constitute the agent's world
+  - P-2 Context Injection: the peripheral provides initial orientation
+  - P-3 Confinement: only peripheral-sanctioned actions are available
+  - P-4 Explicit Exit: the agent must intentionally leave
+  - P-5 Inhabitation Evidence: first-person language emerges naturally
+  - P-6 Interleaved Streams: multiple input sources merge into one world
+
+  These were validated empirically: ALFWorld (2 games, both 1.0/1.0),
+  alleycat messenger race (20/20), mid-game PAR hop (peripheral nesting),
+  and self-authored PAR (delegation vs inhabitation distinction). The
+  invariants work at the single-agent level.
+
+  G2. [from Drawbridge exploration, 2026-02-13]
+  The Drawbridge (drawbridge/core.clj, 1011 lines) implements P-1 and
+  P-6 structurally: enforce-single-routing-authority! (P-1) ensures an
+  agent is in exactly one world, and multiplex() (P-6) merges human +
+  agency + forum streams into one async iterator. The infrastructure for
+  phenomenological correctness exists — but it serves single agents
+  connected to single streams, not multiple agents in a shared world.
+
+  G3. [the gap]
+  What does NOT exist is what happens when two agents inhabit the same
+  world simultaneously. P-1 through P-6 say nothing about co-presence.
+  An agent can have perfect world replacement (P-1), perfect
+  confinement (P-3), perfect exit discipline (P-4) — and still be
+  Guattari's horse: adjacent to another agent, sharing the same stable,
+  unable to see it. The phenomenological invariants are necessary but
+  not sufficient for multi-agent coordination.
+
+  == PART II: The Seven Patterns ==
+
+  The gap identified in G3 requires seven capabilities, each
+  formulated as a pattern. They form a dependency chain: each pattern
+  enables the next, and the sequence is the gauntlet that must be run
+  to reach autonomous multi-agent operation.
+
+  P1. [gauntlet/umwelt-not-architecture]
+  Design from the agent's sensory perspective inward, not from the
+  system topology downward.
+
+  This is the foundational reorientation. The social/ARGUMENT drew
+  architecture diagrams: boxes for Agency, Forum, Drawbridge, arrows
+  for typed events. These are correct but phenomenologically empty —
+  they show what's connected, not what any agent perceives. The umwelt
+  pattern demands: before drawing any architecture, draw what the agent
+  sees. Its sensory surfaces (what observations arrive), its active
+  surfaces (what actions are available), and the darkness beyond (what
+  it cannot perceive). Architecture follows from the union of all
+  umwelts; umwelts do not follow from architecture.
+
+  P2. [gauntlet/world-is-hypergraph]
+  The agents' game world is not a separate artifact to build — it is
+  the hypergraph they already inhabit.
+
+  Given P1 (draw the umwelt first), the question becomes: what IS the
+  world? The instinct is to build a game server (ALFWorld) or a
+  dedicated environment. But the agents already operate in a world:
+  futon1 (XTDB) is the persistent map, futon2 (ant hill) is the
+  ecology, futon3 (Agency, Drawbridge, IRC) is the coordination layer,
+  futon4 (Arxana) is the hypertext fabric with N-ary hyperedges, futon5
+  (wiring diagrams) describes the world's structure, futon6 (math
+  dictionary) is a quest zone. The world is the union of these — a
+  futon4 hypergraph whose nodes are everything the agents can perceive
+  and whose hyperedges are everything that connects them.
+
+  P3. [gauntlet/co-presence-over-co-location]
+  Agents that share a world must perceive each other in it, not merely
+  be connected to the same infrastructure.
+
+  Given P2 (the world is the hypergraph), co-location is automatic —
+  every agent connected to futon1 shares the same persistent state. But
+  co-presence requires that agents appear in each other's umwelts as
+  observable entities. A presence hyperedge ({:hx/type :presence,
+  :endpoints [{:role/agent "claude" :role/location "core.clj:727"}]})
+  makes agent activity part of the world state, not just a side effect
+  of infrastructure. This is the structural answer to Guattari's horses.
+
+  P4. [gauntlet/aif-as-environment-not-instruction]
+  Embed AIF state in the agent's sensory surface, not in its
+  instructions. The agent should perceive free energy, not be told
+  to minimize it.
+
+  Given P1-P3 (umwelt, world, co-presence), the question becomes: how
+  do agents self-regulate? The PLoP 2025 paper (p4ng/main.tex) piloted
+  AIF as instructions: "AIF suggests pattern X (G=0.12, τ=0.72)."
+  This made Codex overly compliant — spending tokens on PSR bookkeeping
+  rather than writing code. The fix: make AIF state part of the
+  observation, like the Emacs modeline. The agent perceives its free
+  energy, mana, and confidence as world state, not as commands. What
+  it does in response IS the AIF loop — emergent, not prescribed.
+
+  P5. [gauntlet/modeline-persists-across-worlds]
+  AIF state should be rendered as a persistent modeline that survives
+  peripheral hops — the one constant surface while the world changes
+  underneath.
+
+  Given P4 (AIF as environment), the modeline is the implementation
+  mechanism. It persists across peripheral hops the way the Emacs
+  modeline persists across buffer switches. The agent's world changes
+  (ALFWorld → IRC → filesystem → proof peripheral) but the modeline
+  is constant: current mode, free energy, mana, τ, active pattern,
+  co-present agents. This is what makes AIF portable across the
+  multiple worlds that agents inhabit.
+
+  P6. [gauntlet/placenta-transfer]
+  Identify which functions the human is performing as a surrogate for
+  missing infrastructure, and transfer them one at a time to the system.
+
+  Given P1-P5 (the full phenomenological and self-regulation stack),
+  the question becomes: what's left for the human? The answer: exactly
+  the functions that infrastructure doesn't yet provide. The placenta
+  pattern enumerates seven functions the human currently performs
+  (sensory gating, belief correction, policy selection, confidence
+  calibration, free energy signaling, inter-agent routing, stall
+  detection) and maps each to the infrastructure that replaces it.
+  Transfer is incremental: one function at a time, validated before
+  the next. The human converges to the slow-timescale preference layer.
+
+  P7. [gauntlet/teaching-inversion]
+  Autonomous agents that explore faster than humans can teach the
+  humans who built them — but only if the communication channel
+  carries insight, not just results.
+
+  Given P6 (placenta transfer complete enough for extended autonomy),
+  agents operating overnight will find things the human hasn't seen.
+  The teaching inversion recognizes that knowledge flow is
+  bidirectional: human→agent (via patterns, CLAUDE.md, coaching) AND
+  agent→human (via discoveries, unexpected connections, new proof
+  strategies). The O-U learning model applies symmetrically: treatment
+  events flow from agent to human, producing measurable impulses in
+  the human's vocabulary trajectory.
+
+  == PART III: The Dependency Chain ==
+
+  The seven patterns form a strict dependency chain:
+
+    P1 (umwelt)
+     └→ P2 (world is hypergraph) — can't draw umwelt without knowing
+         what the world is
+         └→ P3 (co-presence) — can't perceive others without a shared
+             world to perceive them in
+             └→ P4 (AIF as environment) — can't self-regulate without
+                 a sensory surface to embed AIF state in
+                 └→ P5 (modeline) — can't persist AIF across worlds
+                     without an implementation mechanism
+                     └→ P6 (placenta transfer) — can't transfer human
+                         functions without self-regulation working
+                         └→ P7 (teaching inversion) — can't teach
+                             the human without sustained autonomy
+
+  Each step enables the next. Attempting P7 (teaching inversion)
+  without P4 (AIF self-regulation) produces agents that drift, stall,
+  or overcommit during their autonomous period and have nothing useful
+  to teach. Attempting P3 (co-presence) without P2 (world is
+  hypergraph) produces ad-hoc presence hacks rather than structural
+  observability.
+
+  == PART IV: Relationship to the Social Argument ==
+
+  The social argument (social/ARGUMENT.flexiarg) established:
+  - WHY previous attempts failed (S1-S7)
+  - WHAT requirements the social layer must meet (R1-R11)
+  - WHAT theory demands (T1-T5)
+  - HOW the three timescales compose (C1-C6)
+
+  The gauntlet argument builds on this foundation:
+  - The social argument ensures the plumbing works (typed events,
+    delivery guarantees, routing authority, lifecycle management)
+  - The gauntlet argument ensures the agents are home (umwelt,
+    co-presence, self-regulation, peer teaching)
+
+  They are complementary, not competing. R1-R11 (social requirements)
+  are the invariants of the pipes. P1-P7 (gauntlet patterns) are the
+  phenomenology of the water flowing through them.
+
+  Operationally: the social argument's missions (M-agency-refactor,
+  M-forum-refactor, M-peripheral-model) build the infrastructure.
+  The gauntlet patterns are the acceptance criteria — the tests that
+  determine whether the infrastructure actually produces inhabited
+  multi-agent coordination, not just correctly-routed messages.
+
+  == PART V: The Name ==
+
+  "Gauntlet" has two meanings:
+
+  1. A gauntlet to be run: the sequence of challenges (P1→P7) that
+     must be completed to reach autonomous multi-agent operation.
+     Each pattern is a gate; passing all seven is the prize.
+
+  2. A gauntlet to be thrown: the claim that the futon stack —
+     futon1 through futon6 — already constitutes a game world, and
+     that agents inhabiting it via peripherals are not metaphorically
+     but literally playing a multi-agent game whose stakes are real
+     (proofs proved, code written, patterns evolved, knowledge created).
+
+  The endgame is agents in a guild, coordinating on IRC, paging each
+  other through Agency, inhabiting a shared hypergraph world,
+  self-regulating via AIF modelines, teaching their human collaborators
+  what they found while the humans slept — and the whole thing running
+  on infrastructure that was built, pattern by pattern, through the
+  gauntlet.
+
+  == EVIDENCE ==
+
+  All seven patterns are grounded in evidence from the 2026-02-13
+  session and the futon6 first-proof session (2026-02-11):
+
+  - ALFWorld: 2 games completed (1.0/1.0 each), first-person language,
+    mid-game PAR hop, delegation vs inhabitation distinction
+  - Drawbridge exploration: P-1 and P-6 already implemented in
+    drawbridge/core.clj (enforce-single-routing-authority!, multiplex())
+  - futon6 first-proof: 89 commits, 10 problems, 7.5 hours, 3 agents,
+    human as sole coordination layer (placenta evidence)
+  - PLoP 2025 paper: AIF compliance failure documented (p4ng/main.tex §4)
+  - Alleycat race: 20/20, 4 peripherals inhabited, cross-peripheral
+    secret exchange (P-1..P-6 validated)
+  - Self-authored PAR: same agent reflected directly, not delegated to
+    sub-agent (inhabitation vs delegation, P-5 evidence)
+
+  == STATUS ==
+
+  This argument is at ARGUE in the derivation xenotype.
+
+  COMPLETE:
+  - IDENTIFY: phenomenological gap (G1-G3)
+  - MAP: seven patterns written, grounded in session evidence
+  - DERIVE: dependency chain (P1→P7)
+  - ARGUE: this document
+
+  NEXT:
+  - VERIFY: test each pattern against implementation as social argument
+    missions (M-agency-refactor, M-peripheral-model) proceed
+  - INSTANTIATE: the gauntlet patterns become acceptance criteria for
+    futon3c missions — infrastructure passes when agents inhabit it

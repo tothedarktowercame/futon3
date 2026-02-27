@@ -1,0 +1,29 @@
+@flexiarg gauntlet/co-presence-over-co-location
+@title Co-Presence Over Co-Location
+@sigils [👻/在]
+@audience multi-agent system designers, drawbridge implementers, peripheral architects
+@tone foundational
+@style pattern
+@references [gauntlet/umwelt-not-architecture social/explicit-exit-over-abandonment]
+
+! conclusion: Agents that share a world must perceive each other in it, not merely be connected to the same infrastructure.
+  + context: Multiple agents operate on the same codebase, database, or environment. They can communicate via messaging (IRC, whistles) and share persistent state (XTDB, filesystem).
+  + IF:
+    You want agents to coordinate naturally — dividing work, avoiding conflicts, building on each other's results — rather than duplicating effort or working at cross-purposes.
+  + HOWEVER:
+    Co-location (both agents connected to the same services) does not produce co-presence (each agent aware of the other's position and activity in the shared world). Two agents can both read the same file without either knowing the other is there. This is Guattari's horses: adjacent stalls, shared stable, no line of sight. Or Pac-Man's ghosts: same maze, no coordination, occasionally cornering the player by accident.
+  + THEN:
+    Add presence as a first-class observable in each agent's umwelt. When agent A is working on a file, agent B's observation should include that fact — not as a message ("FYI I'm on core.clj") but as part of the world state ("core.clj [Claude editing, 3 min ago]"). Implement presence as hyperedges in the shared graph: {:hx/type :presence, :endpoints [{:role/agent "claude" :role/location "core.clj:727"}]}, visible to all participants. The Drawbridge's connected-agent-ids already knows who's online; the missing piece is projecting that into each agent's sensory surface.
+  + BECAUSE:
+    Co-presence enables emergent coordination without explicit messaging. If I can see that Codex is working on problem 6, I naturally start on problem 7. If I can see that Claude just annotated the mission document, I read the annotation before duplicating the work. IRC narration is voluntary and lossy; structural presence is automatic and complete.
+    + evidence: futon6 first-proof session — 3 agents, 10 problems, coordinated entirely by human routing. Agents could not see each other's activity; human was the sole co-presence layer.
+    + evidence: futon3 drawbridge/core.clj — connected-agent-ids (line 459) returns who's online. register-agent! tracks agent state. The server knows who's where; agents don't.
+  + FAILURE-MODES:
+    - Presence spam: every file read, every cursor move becomes a presence event, drowning signal in noise
+    - Stale presence: agent disconnects but presence hyperedge persists, creating phantom co-occupants
+    - Asymmetric presence: agent A sees agent B but not vice versa (one-way mirrors)
+  + NEXT-STEPS:
+    - Define presence granularity: file-level, function-level, or task-level? Start coarse (task-level).
+    - Implement presence hyperedges in futon1 with TTL (auto-expire after inactivity).
+    - Add presence to peripheral sensory surface: agent's observation includes other agents' current locations.
+    - Test with two agents on the same codebase: does co-presence reduce duplicate work compared to co-location alone?

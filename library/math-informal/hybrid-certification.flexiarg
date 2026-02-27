@@ -1,0 +1,65 @@
+@flexiarg math-informal/hybrid-certification
+@title Hybrid Certification
+@sigils [⚡/兌]
+@keywords hybrid, numerical, exact, certification, roots, sign, Sturm, interval, rigorous, fast
+@audience computational algebraists, proof engineers, CAS users
+@tone analytic
+@factor Keen investigation (dhammavicaya)
+@references [math-informal/estimate-by-bounding math-informal/numerical-scout]
+
+! conclusion:
+  When a pure algebraic method is too slow and a pure numerical method isn't rigorous,
+  combine them: use numerical computation to locate, exact arithmetic to certify.
+
+  + context: You need a rigorous result about a polynomial or algebraic system (root count,
+    sign determination, bound verification) but the standard exact methods (Sturm sequences,
+    Groebner bases, cylindrical algebraic decomposition) are computationally infeasible for
+    the problem size, while purely numerical methods lack rigour.
+
+  + IF:
+      The exact method's bottleneck is a specific subroutine (polynomial GCD, resultant,
+      matrix factorization) that scales badly with coefficient size or degree, but the
+      qualitative structure of the answer (number of roots, sign pattern) can be determined
+      cheaply by approximate computation.
+
+  + HOWEVER:
+      The hybrid method must be provably correct. The numerical step identifies candidates;
+      the exact step certifies them. If the certification step fails (e.g., the approximate
+      root is too far from the true root for sign determination), the method must detect this
+      and fall back rather than produce a wrong answer.
+
+  + THEN:
+      1. Use fast numerical computation (numpy, LAPACK, floating-point) to compute approximate
+         answers: root locations, eigenvalues, sign patterns.
+      2. Design an exact verification step that checks the numerical answer: evaluate the
+         polynomial at rational test points, verify sign conditions, count roots by IVT.
+      3. The exact step should be O(n) in the problem size (not O(n³) like the numerical step),
+         since it's certifying known answers, not discovering them.
+      4. If the exact step disagrees with the numerical step, investigate rather than trust either.
+
+  + BECAUSE:
+      Exact symbolic computation has enormous constant factors (arbitrary-precision integer
+      arithmetic, polynomial GCD over Z[x] with 100+ digit coefficients). Numerical computation
+      is fast but approximate. The hybrid avoids the worst of both: fast location + cheap
+      certification = rigorous result at numerical speed.
+
+  + FAILURE-MODES:
+      - Double roots: if two roots are very close, the numerical step may merge them and the
+        sign-change count will be wrong. Mitigation: compare numerical root count with exact
+        Sturm count on a COARSE interval first.
+      - Coefficient explosion: the exact evaluation at a rational test point may involve very
+        large integers. Mitigation: choose simple test points (small-denominator rationals).
+      - False separation: numerical noise places a test point on the wrong side of a root.
+        Mitigation: use exact arithmetic for the test point evaluation, not floating-point.
+
+  + EVIDENCE:
+      P4 n=4 Case 2 (futon6, Feb 2026): Sturm's theorem on a degree-70 polynomial with
+      100+ digit integer coefficients ran for 4 hours without completing (polynomial GCD
+      bottleneck). The hybrid method: numpy.roots for approximate root locations (O(n³),
+      milliseconds), then exact sympy.Rational evaluation at midpoints between consecutive
+      roots (O(n) evaluations, 0.2s total). Same rigour as Sturm. 72,000x speedup.
+
+  + NEXT-STEPS:
+    next[Identify the bottleneck in the exact method.]
+    next[Design a numerical locator + exact certifier pipeline.]
+    next[Validate: compare hybrid result with exact method on a smaller instance.]

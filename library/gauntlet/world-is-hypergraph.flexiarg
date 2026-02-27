@@ -1,0 +1,26 @@
+@flexiarg gauntlet/world-is-hypergraph
+@title The World Is the Hypergraph
+@sigils [🌐/界]
+@audience futon architects, game world designers, peripheral implementers
+@tone foundational
+@style pattern
+@references [gauntlet/umwelt-not-architecture gauntlet/co-presence-over-co-location]
+
+! conclusion: The agents' game world is not a separate artifact to build — it is the hypergraph they already inhabit. Documents, code, scholia, patterns, missions, and presence are all nodes and hyperedges in the same structure.
+  + context: You are designing the shared environment for multi-agent coordination in the futon ecosystem.
+  + IF:
+    You want agents to inhabit a rich, shared, mutable world where they can perceive objects, other agents, and the consequences of actions — rather than operating as isolated processes that happen to share a filesystem.
+  + HOWEVER:
+    The instinct is to build a game world as a separate layer: a dedicated server with game state, turn ordering, observation endpoints. This is how ALFWorld works (HTTP server wrapping TextWorld), and it produces a clean but isolated experience. The real work happens in the codebase, the database, the mission documents — but those feel like "infrastructure" rather than "world." Agents treat them as APIs to query, not as places to be.
+  + THEN:
+    Recognize that the futon stack IS the game world. futon1 (XTDB) is the persistent map. futon2 (ant hill) is the ecology. futon3 (Agency, Drawbridge, IRC, peripherals) is the coordination layer. futon4 (Arxana) is the hypertext fabric — hyperedges with typed roles connecting documents, code, annotations, and agents. futon5 (wiring diagrams) describes the world's structure. futon6 (math dictionary / proof engine) is a quest zone. The agents are already in the game; the task is making the game legible, not building a separate one.
+  + BECAUSE:
+    ALFWorld taught us that text descriptions of rooms and objects naturally produce first-person inhabitation language. But the futon hypergraph has the same structure: nodes are locations (files, functions, missions), hyperedges are relationships (scholia, dependencies, presence), and traversal is navigation. "I found the multiplex function in drawbridge/core.clj" is phenomenologically identical to "I found the vase on the dresser." The difference is that the hypergraph is real and mutable — agents can add nodes, create hyperedges, annotate each other's work. The game world writes itself.
+    + evidence: futon4 hyperedge model (arxana-store.el:565) — {:hx/type, :hx/endpoints [{:role/source, :role/target, :role/passage}]} — N-ary typed relations stored in XTDB.
+    + evidence: ALFWorld session (2026-02-13) — 2 games completed with first-person language ("I found the vase", "I'm at the fridge"). Same phenomenology emerged when exploring Drawbridge code ("P-1 and P-6 are already implemented").
+    + evidence: futon3 agency.mm — Mermaid diagram showing Agency topology. Describes one subgraph of the world; the full world is the union of all futon repos as a hypergraph.
+  + NEXT-STEPS:
+    - Draft the futon stack as a futon4 hypergraph: repos as nodes, inter-repo connections as hyperedges with typed roles.
+    - Identify which hyperedges exist (code dependencies, mission references) and which are missing (presence, activity traces).
+    - Make the hypergraph queryable from within agent peripherals: "what's connected to this node?" as a sensory surface.
+    - Test whether agents navigate the hypergraph differently when it's presented as a world (traversable nodes and edges) vs. as an API (query endpoints).

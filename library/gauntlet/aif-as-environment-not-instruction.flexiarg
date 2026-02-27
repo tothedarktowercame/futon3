@@ -1,0 +1,29 @@
+@flexiarg gauntlet/aif-as-environment-not-instruction
+@title AIF as Environment, Not Instruction
+@sigils [🌡/環]
+@audience aif implementers, peripheral designers, agent workflow designers
+@tone foundational
+@style pattern
+@references [agent/environment-over-optimization aif/policy-precision-commitment-temperature]
+
+! conclusion: Embed AIF state in the agent's sensory surface, not in its instructions. The agent should perceive free energy, not be told to minimize it.
+  + context: You are integrating Active Inference with agent workflows to enable self-regulation (confidence sensing, exploration-exploitation, backoff-when-stuck).
+  + IF:
+    You want agents to self-regulate — sensing when a strategy is failing, adjusting exploration, backing off to planning mode when confidence drops — without requiring human intervention.
+  + HOWEVER:
+    The naive implementation adds AIF as instructions: "here is your suggested pattern (G=0.12, τ=0.72, p=68%), please select it or justify deviation." This makes compliant agents worse at their actual job. Codex, told to produce PSRs and follow pattern suggestions, became overly compliant rather than writing code — which is what Codex is good at. The AIF layer became an RPC that the agent dutifully served, not an environment it inhabited.
+  + THEN:
+    Make AIF state part of the observation, not the prompt. The modeline shows free energy, confidence, mana, active pattern — but the agent is never asked to "comply" with it. The agent does what it naturally does in its peripheral; the AIF state is simply part of what it perceives. If the agent's free energy is rising (strategy failing), that shows up as a change in the world, not as an instruction to change strategy. What the agent does in response IS the AIF loop — emergent, not prescribed.
+  + BECAUSE:
+    The Emacs modeline doesn't tell you to save your file. It shows ** and you notice. The information is in the world, not in a command. AIF-as-instruction produces compliance; AIF-as-environment produces adaptation. The peripheral's sensory surface is the right place for AIF state because it's already the mechanism for constituting the agent's world.
+    + evidence: PLoP 2025 paper (p4ng/main.tex §4) documents the compliance failure: fucodex runs showing PSR/PUR discipline but degraded code quality. Commented-out text acknowledges "the current implementation does not yet feed back into G computation across sessions." The feedback loop was instructions-shaped, not world-shaped.
+    + evidence: ALFWorld session — game observations (room descriptions, available actions) naturally shaped agent behavior without instructions about how to play. First-person language emerged from world structure, not from prompts.
+  + FAILURE-MODES:
+    - Compliance capture: agent spends more tokens on AIF bookkeeping than on its actual task
+    - Instruction-shaped feedback: "your τ is 0.72, consider exploring" is an instruction wearing an AIF hat
+    - Modeline blindness: agent ignores the modeline entirely because it has no affordance (information present but not actionable)
+  + NEXT-STEPS:
+    - Redesign the fulab HUD to present AIF state as observation, not suggestion.
+    - Remove "AIF suggests:" prompts from agent context; replace with modeline-style status in the peripheral's sensory stream.
+    - Test whether agents naturally adjust behavior when AIF state changes in their observation (free energy rising → strategy shift) without being told to.
+    - Measure code quality / task completion with AIF-as-instruction vs AIF-as-environment on matched tasks.

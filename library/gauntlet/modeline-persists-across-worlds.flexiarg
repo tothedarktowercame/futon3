@@ -1,0 +1,27 @@
+@flexiarg gauntlet/modeline-persists-across-worlds
+@title The Modeline Persists Across Worlds
+@sigils [📊/常]
+@audience peripheral designers, aif implementers, HUD designers
+@tone technical
+@style pattern
+@references [gauntlet/aif-as-environment-not-instruction gauntlet/umwelt-not-architecture aif/policy-precision-commitment-temperature]
+
+! conclusion: AIF state should be rendered as a persistent modeline that survives peripheral hops — the one constant surface while the world changes underneath.
+  + context: An agent moves between peripheral modes (exploration, coding, IRC, proof, ALFWorld) and each mode constitutes a different world with different observations and capabilities.
+  + IF:
+    You want the agent to maintain continuity of self-regulation across world changes — carrying its confidence, mana, active pattern, and free energy state from one peripheral to the next.
+  + HOWEVER:
+    Each peripheral hop replaces the agent's world (P-1). Without a persistent surface, AIF state resets at each transition: the agent enters a new peripheral with no memory of how confident it was, how much budget remains, or what pattern it was carrying. The backpack metaphor preserves some items (pattern card, walkie-talkie) but not the dynamic state (how am I doing?).
+  + THEN:
+    Implement the AIF modeline as a persistent status surface that renders in every peripheral mode, like the Emacs modeline that persists across buffers. The modeline carries: current peripheral mode, free energy (am I surprised?), mana/budget remaining, active pattern and its sigil, τ (commitment temperature), and optionally co-present agents. The modeline is part of the observation — not a separate channel — so the agent perceives it naturally. When the agent hops from ALFWorld to a PAR reflection, the modeline updates (P:alfworld → P:reflect) but the AIF state is continuous.
+  + BECAUSE:
+    The Emacs modeline works because it's always there. You don't think about it until you need it (file modified? what mode am I in? what line?). It's the lowest-cost, highest-availability status surface. For agents, the equivalent is: you don't process the modeline until something changes — free energy spikes, mana drops below threshold, τ hits abstention range. Then it's there, in the observation, without requiring a separate query. It already works for ants (futon2) whose lives are simple. For fulab agents whose lives span multiple worlds, the modeline is what makes AIF portable.
+    + evidence: futon2 ant simulation — AIF modeline equivalent (hunger, pheromone strength, nest distance) persists across ant behavioral modes (forage, return, rest). Simple but demonstrates the principle.
+    + evidence: fucodex-peripheral.ts --hud/--no-hud flags — HUD concept exists but carries task status, not AIF state. The infrastructure for a modeline is present; the content needs upgrading.
+    + evidence: ALFWorld mid-game PAR hop (2026-02-13) — game state survived the hop but AIF state (if it existed) would have been lost. The modeline would have carried it across.
+  + NEXT-STEPS:
+    - Define the modeline schema: {peripheral, free-energy, mana, τ, pattern-sigil, co-present-agents}.
+    - Implement modeline rendering in fuclaude-peripheral.ts and fucodex-peripheral.ts HUD.
+    - Ensure modeline state persists across peripheral hops (stored in backpack, rendered by each peripheral).
+    - Test: does the agent reference modeline state in its reasoning? Does behavior change when free energy rises?
+    - Add modeline to the MUSN activity stream so human observers see the same status.

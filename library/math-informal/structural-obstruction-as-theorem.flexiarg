@@ -1,0 +1,63 @@
+@flexiarg math-informal/structural-obstruction-as-theorem
+@title Structural Obstruction as Theorem
+@sigils [🛡/坎]
+@keywords obstruction, infeasible, impossible, structural, failure, blocked, certificate, SOS, barrier
+@audience mathematicians, proof engineers, computational algebraists
+@tone analytic
+@factor Discernment (paññā)
+@references [math-informal/argue-by-contradiction math-informal/dualise-the-problem]
+
+! conclusion:
+  When a proof method fails, characterize the failure as a theorem about the problem's
+  structure rather than discarding the approach silently.
+
+  + context: You have tried a standard proof technique (SOS certificate, Groebner basis,
+    spectral method, induction scheme, etc.) and it has failed — not due to insufficient
+    computation, but apparently due to a structural feature of the problem.
+
+  + IF:
+      The failure is reproducible across multiple parameter settings (different degrees,
+      different multiplier sets, different starting points) and the failure pattern
+      suggests a structural reason rather than a computational limitation.
+
+  + HOWEVER:
+      Not every failure is structural. Computational failures (memory, time, numerical
+      instability) look like structural failures when resources are insufficient. Before
+      claiming a structural obstruction, verify that increasing resources (degree, precision,
+      time) does not help, or identify the algebraic reason for the failure.
+
+  + THEN:
+      1. State the obstruction precisely: what property of the problem blocks what method.
+      2. Prove the obstruction (even informally): show that the method CANNOT work, not
+         just that it HASN'T worked.
+      3. Record the obstruction as a theorem or remark in the proof status document.
+      4. Use the obstruction to redirect: if method A is blocked, what does the obstruction
+         tell you about which methods might succeed?
+
+  + BECAUSE:
+      A proved obstruction is as valuable as a successful certificate. It eliminates an
+      entire proof strategy from consideration and often reveals structural information
+      (interior zeros, indefiniteness, topological obstructions) that constrains the
+      space of viable approaches. The alternative — silently trying the next method —
+      wastes effort and loses information.
+
+  + FAILURE-MODES:
+      - Premature declaration: calling a failure "structural" when it's actually computational.
+        One failed SOS attempt doesn't prove structural infeasibility — but infeasibility at
+        degrees 10, 12, AND 14 with multiple solver backends, plus an algebraic explanation,
+        does.
+      - Overgeneralization: concluding "no algebraic certificate exists" when only Putinar-type
+        certificates are blocked. The obstruction is specific to the method, not to all methods.
+
+  + EVIDENCE:
+      P4 n=4 Stam inequality (futon6, Feb 2026): 7 SOS scripts at degrees 10, 12, 14 all
+      infeasible. The obstruction: -N has an interior zero at x₀ where all constraint
+      polynomials are strictly positive, forcing σ₀(x₀) = 0 in any Putinar decomposition.
+      But σ₀ is SOS and vanishing at a point with positive constraints creates algebraic
+      contradictions. This theorem immediately eliminated SOS as a strategy and redirected
+      effort toward algebraic elimination, which succeeded.
+
+  + NEXT-STEPS:
+    next[State the obstruction precisely.]
+    next[Verify it's structural, not computational (try multiple settings).]
+    next[Record it and use it to constrain the viable approach space.]

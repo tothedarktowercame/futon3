@@ -134,8 +134,8 @@ The script regenerates `holes/artifacts/devmaps.tex` via `scripts/make_devmaps_t
 
 For focused views, generate per-futon zoomed artifacts:
 ```bash
-scripts/build_devmaps_zoom.sh          # builds futon0..futon7 focused PDFs
-scripts/build_devmaps_zoom.sh 3 f5     # builds futon3 + futon5 only
+scripts/build_devmaps_zoomed.sh          # builds futon0..futon7 focused PDFs
+scripts/build_devmaps_zoomed.sh 3 f5     # builds futon3 + futon5 only
 ```
 This writes `holes/artifacts/devmaps-futonN.pdf` plus per-view dependency graphs.
 

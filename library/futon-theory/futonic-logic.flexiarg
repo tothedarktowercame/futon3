@@ -71,6 +71,13 @@
     (皿  (role stabilizing-container)
          (note "Interface, vessel, boundary. What receives and stabilizes
                 the product of transformation."))
+    (間  (role honest-interval)
+         (note "The structured space between components, perceived
+                without premature filling. 間 is not emptiness —
+                it is the topological fact that an interval exists
+                and has properties that must be read, not generated.
+                Hallucinating content into 間 produces false salience
+                and brittle composition."))
     (未知 (role non-equilibrium-interval)
          (note "Actionable but not predictable. Three-valued logic:
                 the system is neither in its prior state nor in its
@@ -116,7 +123,14 @@
       "Agent-relative perception that a (鹵 . 皿) decomposition
        is presently actionable."))
 
+  (A7-precondition
+    (if (perceives-間 agent interval))
+    (then (A7 may proceed: test for 鹵 and 皿))
+    (else (composition is premature: the interval has not
+           been honestly observed)))
+
   (A7
+    (precondition A7-precondition)
     (if (exists (鹽 (⿱ 鹵 皿))))
     (and (perceivable 鹵) (perceivable 皿))
     (then (salience emerges))
@@ -315,7 +329,14 @@
 
   The existing axioms (A1-A5) are operational. A7 is perceptual:
 
+  (A7-precondition
+    (if (perceives-間 agent interval))
+    (then (A7 may proceed: test for 鹵 and 皿))
+    (else (composition is premature: the interval has not
+           been honestly observed)))
+
   (A7
+    (precondition A7-precondition)
     (if (exists (鹽 (⿱ 鹵 皿))))
     (and (perceivable 鹵) (perceivable 皿))
     (then (salience emerges))

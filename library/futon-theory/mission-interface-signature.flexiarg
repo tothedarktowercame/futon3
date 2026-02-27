@@ -53,6 +53,24 @@
        If an output port exists in code but not in the spec, that is a
        stop-the-line violation (futon-theory/stop-the-line).
 
+    4. FIDELITY-CONTRACT (required for all missions)
+       Every mission must declare a baseline and track fidelity against it:
+       (a) Baseline capability inventory:
+           - donor missions: donor behavior (feature, shape, known consumers)
+           - greenfield missions: declared spec commitments (ports, behavior,
+             and semantic/query layer)
+       (b) Preservation contract: `preserve`, `adapt`, or `drop` per feature
+       (c) Tripwire tests for each `preserve` feature:
+           - must fail on pre-implementation target state
+           - must pass after implementation
+       (d) Latent dependency/omission probe:
+           - donor missions: static call-sites + runtime traces
+           - greenfield missions: consumer scenario probes against declared spec
+           unresolved findings converted into explicit preserve/drop decisions
+
+       If a baseline feature is neither preserved nor explicitly dropped, this is
+       a stop-the-line violation.
+
 + BECAUSE:
     - Internal correctness without boundary specification produces systems
       that cannot be composed, integrated, or replaced
@@ -62,6 +80,9 @@
       in futon1a: code that exists without specification
     - Wiring diagrams require typed interfaces at every boundary; missions
       are the organizational equivalent
+    - Fidelity contracts prevent "compat surface passes while behavior
+      silently drops" failures during ports
+    - The same discipline prevents spec omissions in greenfield missions
 
 + EVIDENCE:
     futon1a rebuild (M-futon1a-rebuild.md):
@@ -156,6 +177,12 @@
     2. Implemented in code (module reference)
     3. Tested (at least one test exercises the port)
     4. Documented (in the spec, not just code comments)
+
+    ### Fidelity Contract (all missions)
+
+    | Capability | Baseline Ref (donor/spec) | Contract | Tripwire Test | Notes |
+    |------------|-----------------------------|----------|---------------|-------|
+    | ... | ... | preserve/adapt/drop | test id/path | ... |
     ```
 
 + VERIFICATION:
@@ -165,6 +192,9 @@
     - Every output port in code has a spec section reference
     - Every output port in spec has at least one test
     - No unspecified output ports exist in code
+    - No uncategorized baseline capabilities
+    - Every `preserve` capability has a tripwire test
+    - Data-shape, behavior, and semantic/query layers are all tracked
 
     Machine (futon5.ct.mission):
     - Maintain an EDN mission diagram alongside the mermaid diagram
@@ -176,6 +206,11 @@
       type safety, spec coverage
     - `(futon5.ct.mission/diagram->mermaid diagram)` regenerates the
       human-readable mermaid from the EDN; keep them in sync
+    - Fidelity check must fail when:
+      - capability inventory contains uncategorized entries
+      - a `preserve` entry has no linked failing-then-passing test
+      - latent dependency findings are unresolved
+      - semantic/query fidelity for an exposed capability is unspecified
 
     If verification fails, the checkpoint is blocked until the spec
     catches up with the code.
@@ -185,5 +220,7 @@
     - Enumerate input and output ports from existing code
     - Cross-reference output ports against spec sections
     - Flag any unspecified ports as stop-the-line
+    - Build the baseline capability inventory before DERIVE
+    - Add tripwire tests before implementation starts
 
 @related futon-theory/mission-scoping, futon-theory/mission-lifecycle, futon-theory/mission-dependency, futon-theory/stop-the-line

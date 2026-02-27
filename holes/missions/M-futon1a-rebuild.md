@@ -93,12 +93,15 @@ graph LR
 
 ### Input Ports
 
-| Port | Type | Source | Description |
-|------|------|--------|-------------|
-| `futon1-data` | `XTDB-store` | futon1 LMDB export | 17,564 documents to migrate |
-| `write-request` | `{penholder, model, identity, tx-ops}` | HTTP client | External write operations |
-| `ingest-batch` | `{entities, relations}` | Bulk ingest client | Open-world entity/relation batches |
-| `model-descriptor` | `{scope, version, entities, invariants, ...}` | futon1 app/model*.clj | 6 domain model specifications |
+| Port | Type | Source | Description | Status |
+|------|------|--------|-------------|--------|
+| `futon1-data` | `XTDB-store` | futon1 LMDB export | 17,564 documents to migrate | migrated (checksum matched) |
+| `write-request` | `{penholder, model, identity, tx-ops}` | HTTP client | External write operations | implemented |
+| `ingest-batch` | `{entities, relations}` | Bulk ingest client | Open-world entity/relation batches | implemented |
+| `model-descriptor` | `{scope, version, entities, invariants, ...}` | futon1 app/model*.clj | 6 donor model descriptors that must be represented for full parity | deferred (not ported in Prototype 1) |
+
+Note: `model-descriptor` parity remains open work under Section 2.11 and is
+tracked as incomplete in Success Criteria.
 
 ### Output Ports
 

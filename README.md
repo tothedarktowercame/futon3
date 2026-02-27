@@ -132,6 +132,13 @@ scripts/build_devmaps.sh
 ```
 The script regenerates `holes/artifacts/devmaps.tex` via `scripts/make_devmaps_tex.py`, then runs lualatex inside `holes/`.
 
+For focused views, generate per-futon zoomed artifacts:
+```bash
+scripts/build_devmaps_zoom.sh          # builds futon0..futon7 focused PDFs
+scripts/build_devmaps_zoom.sh 3 f5     # builds futon3 + futon5 only
+```
+This writes `holes/artifacts/devmaps-futonN.pdf` plus per-view dependency graphs.
+
 ## Vitality Feeds (git activity)
 
 FUTON0 collects raw git stats via `scripts/git_activity.py`. Futon3 then converts that JSON into a HUD-friendly EDN snapshot:

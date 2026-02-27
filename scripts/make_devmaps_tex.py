@@ -49,6 +49,38 @@ SPECIALS = {
 CODE_BREAK_CHARS = {",", ";", ":", "|", "/", "\\", "_", "-", "=", "+", "?", "&"}
 
 
+def parse_futons(spec: str) -> list[int]:
+    """Parse a futon selector string like '0-7', '3', or 'f0,f3,f5'."""
+    selected: set[int] = set()
+    tokens = [t for t in re.split(r"[,\s]+", spec.strip()) if t]
+    if not tokens:
+        raise ValueError("Empty futon selector")
+
+    def parse_single(raw: str) -> int:
+        token = raw.strip().lower()
+        token = re.sub(r"^(?:futon|f)", "", token)
+        if not token.isdigit():
+            raise ValueError(f"Invalid futon id: {raw!r}")
+        fid = int(token)
+        if fid < 0 or fid > 7:
+            raise ValueError(f"Futon id out of range (0-7): {raw!r}")
+        return fid
+
+    for token in tokens:
+        if "-" in token:
+            start_raw, end_raw = token.split("-", 1)
+            start = parse_single(start_raw)
+            end = parse_single(end_raw)
+            lo, hi = sorted((start, end))
+            selected.update(range(lo, hi + 1))
+        else:
+            selected.add(parse_single(token))
+
+    if not selected:
+        raise ValueError("No futons selected")
+    return sorted(selected)
+
+
 def normalize_quotes(text: str) -> str:
     result: list[str] = []
     backtick_open = False
@@ -381,10 +413,26 @@ def main() -> None:
         default=default_output,
         help=f"Path to write the LaTeX file (default: {default_output})",
     )
+    parser.add_argument(
+        "--futons",
+        default="0-7",
+        help="Futon IDs to include (examples: '0-7', '3', 'f0,f3,f5').",
+    )
+    parser.add_argument(
+        "--mermaid-output",
+        type=Path,
+        default=None,
+        help="Optional Mermaid output path. Defaults to devmap-deps.mmd for devmaps.tex, otherwise <stem>-deps.mmd.",
+    )
     args = parser.parse_args()
 
+    try:
+        futon_ids = parse_futons(args.futons)
+    except ValueError as exc:
+        raise SystemExit(str(exc))
+
     holes_dir = root / "holes"
-    devmap_paths = [holes_dir / f"futon{i}.devmap" for i in range(0, 8)]
+    devmap_paths = [holes_dir / f"futon{i}.devmap" for i in futon_ids]
     missing = [str(p) for p in devmap_paths if not p.exists()]
     if missing:
         raise SystemExit("Missing devmap(s): " + ", ".join(missing))
@@ -482,12 +530,20 @@ def main() -> None:
     for ch, repl in extra_unicode:
         emoji_lines.append(f"\\newunicodechar{{{ch}}}{{{repl}}}")
 
-    body_intro = "\\begin{document}\n\\scriptsize\\sffamily\n\\begin{paracol}{8}\n"
-    footer = "\\end{paracol}\n\\end{document}\n"
+    column_count = len(blocks)
+    if column_count > 1:
+        body_intro = (
+            "\\begin{document}\n\\scriptsize\\sffamily\n"
+            f"\\begin{{paracol}}{{{column_count}}}\n"
+        )
+        footer = "\\end{paracol}\n\\end{document}\n"
+    else:
+        body_intro = "\\begin{document}\n\\scriptsize\\sffamily\n"
+        footer = "\\end{document}\n"
 
     body_lines: list[str] = []
     for idx, block in enumerate(blocks):
-        if idx:
+        if idx and column_count > 1:
             body_lines.append("\\switchcolumn")
         body_lines.append(block)
 
@@ -500,7 +556,12 @@ def main() -> None:
     output_path.write_text(content)
     print(f"Wrote {output_path} (emoji entries: {len(emoji_lines)})")
 
-    mermaid_path = output_path.parent / "devmap-deps.mmd"
+    if args.mermaid_output is not None:
+        mermaid_path = args.mermaid_output
+    elif output_path.stem == "devmaps":
+        mermaid_path = output_path.parent / "devmap-deps.mmd"
+    else:
+        mermaid_path = output_path.parent / f"{output_path.stem}-deps.mmd"
     write_mermaid(node_labels, edge_map, mermaid_path)
 
 

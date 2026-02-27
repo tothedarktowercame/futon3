@@ -223,6 +223,9 @@ FUTON0 is the interface through which the system extends human capability to rea
   + NEXT-STEPS:\\
     next[Surface document context in Stack HUD] next[Show related documents and annotations] next[Enable quick navigation to linked fragments]\\
 \par
+  + RELATED-MISSIONS:\\
+    mission[M-emacs-cursor-peripheral: Claude cursor avatar in Emacs (:greenfield)]\\
+\par
   \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
     pass[Human can see document relationships from HUD] pass[Navigation between related documents is fluid] fail[Document relationships require manual search]\\
 \par
@@ -896,23 +899,53 @@ FUTON2 provides a narratable Active Inference engine with the ant war-game as it
 \textbf{@IFR: FUTON3 turns messy activity into organised knowledge by checking work}\\
 \textbf{against shared patterns and producing auditable records that other futons can}\\
 \textbf{use to learn, improve, and act.}\\
-\textbf{@state MUSN transport runs reliably, pattern canon operational in futon1 storage,}\\
-\textbf{check DSL exercised end-to-end, trails capture tatami sessions, workday}\\
-\textbf{instrumentation bridges aob-chatgpt. Gaps: similarity field not wired into APIs;}\\
-\textbf{intent embedding designed but not implemented; joy metrics not yet flowing to}\\
-\textbf{futon0; proof hooks still bespoke scripts.}\\
-\textbf{@next Wire similarity field into pattern search API; implement intent embedding}\\
-\textbf{pipeline; standardise proof→graph and proof→energy exports; land joy metrics}\\
-\textbf{as futon0 service.}\\
+\textbf{@state (2026-02-18) FUTON3 is split across three repos: futon3 (MUSN transport}\\
+\textbf{and canonical pattern library — legacy, mostly stable), futon3a (query +}\\
+\textbf{similarity field), futon3b (coordination gate pipeline + proof-path store +}\\
+\textbf{Level 1 glacial loop), futon3c (real-time social coordination — now the most}\\
+\textbf{active repo). The split is recorded in holes/war-room.md.}\\
+\textbf{futon3c is now a substantial operational system: 614 tests, 11 peripherals}\\
+\textbf{(10 wired), complete social pipeline (5 stages), evidence landscape with XTDB}\\
+\textbf{persistence, agency/dispatch, transport layer (HTTP+WS+IRC with F1-F6 stability),}\\
+\textbf{mission lifecycle (cycle machine), and mission control (portfolio management).}\\
+\textbf{futon3b has L1 canonicalizer operational with typed rejection proof-paths and}\\
+\textbf{bootstrap closure (M-social-exotype Part III). futon3a unchanged.}\\
+\textbf{@next Integrate futon3a similarity search into G3 pattern selection; connect}\\
+\textbf{futon3b gate pipeline to futon3c evidence landscape (proof-paths as evidence);}\\
+\textbf{build out the Emacs UI (sliding blackboard, evidence browser); advance}\\
+\textbf{M-peripheral-gauntlet (real-time multi-peripheral scenarios); complete}\\
+\textbf{M-forum-refactor Parts II-III.}\\
 \par
 \textbf{The Argument}\par
 \par
-FUTON3 turns messy activity into organised knowledge by checking work against shared patterns and producing auditable records. The MUSN transport provides stable IO contracts for pattern-related checking with deterministic transcripts. The pattern canon stores patterns with metadata and devmap links in futon1 storage. The check DSL evaluates pattern applicability and logs every check as a proof-state record. Trails capture proof obligations and how sessions discharged them. Workday instrumentation bridges aob-chatgpt and fubar.el so user interactions flow into the check pipeline. The similarity field enables pattern suggestions via sigil-distance and GloVe embeddings. Intent embedding types each proof step as (fruit, orb) pairs for Kolmogorov-style constructive proofs. The pattern workbench drafts candidate flexiargs from accumulated proof states. Joy metrics track empowerment—time-to-proof, obligations cleared, commitments enabled—and are provided to futon0. Proof hooks export checks to futon1 (graph) and futon2 (viriya). The training ground packages tutorials so humans and agents can practice flexiformal checks. System self-description makes stack components queryable entities in the hypergraph.\\
+FUTON3 turns messy activity into organised knowledge by checking work against shared patterns and producing auditable records. The system now operates across four repos at three timescales:\\
+\par
+- **Social (real-time)**: futon3c — agency, peripherals, evidence landscape,\\
+  transport. 614 tests. 11 peripherals route agents through capability envelopes with hop-based transitions and evidence emission at every step.\\
+- **Task (fast)**: futon3b — gate pipeline (G5→G0) produces typed proof-paths;\\
+  Level 1 canonicalizer observes tensions and writes new patterns (Baldwin cycle).\\
+- **Glacial (slow)**: futon3a — pattern similarity field (GloVe/fastText/MiniLM\\
+  embeddings). Pending integration into G3 pattern selection.\\
+\par
+The canonical pattern library lives in futon3/library/. The evidence landscape (futon3c + futon1a XTDB backend) is the shared medium: social coordination events, mission snapshots, PSR/PUR/PAR records, and portfolio observations all flow into queryable evidence entries with reply chains and thread projections.\\
+\par
+\textbf{Three-Futon Split (Evidence-Based)}\par
+\par
+As of 2026-02-18 the original "futon3" scope is implemented as:\\
+\par
+- futon3  = canonical pattern library + legacy MUSN transport (stable, mostly frozen)\\
+- futon3a = query + similarity field (pattern indexing / portal / compass)\\
+- futon3b = task coordination boundary (G5→G0) + glacial loop (L1 observe/canon)\\
+- futon3c = social/realtime coordination layer (the most active repo: 614 tests,\\
+  11 peripherals, evidence landscape, agency, transport, mission system)\\
+  \flexitag{+evidence:} evidence[holes/war-room.md (WR-1/WR-2 define the split and canonical library location)] evidence[library/coordination/ARGUMENT.flexiarg (gate pipeline argument)] evidence[library/realtime/*.flexiarg (social/realtime pattern set for futon3c)] evidence[futon3b/AGENTS.md Phase 0-3 verification + test tables] evidence[futon3b: L1 canonicalizer operational; rejection proof-paths typed; bootstrap closure complete] evidence[futon3c: 614 tests, 1996 assertions; 11 peripherals (10 wired); evidence landscape with XTDB] evidence[futon3c: alleycat verification 4/5 gates PASS (P-4 inhabitation, P-6 structural closure)] evidence[futon3c/holes/qa/implementation-inventory.md tracks component status]\\
 \par
 \par
 \begin{devmapactive}
 \textbf{! instantiated-by: Prototype 0 — MUSN Transport Baseline [➰/双 🎑/了]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on []}\\
   \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Transport running 90+\allowbreak{} days;\allowbreak{} event logging operational;\allowbreak{} pattern checks flow through router]}\\
   \flexitag{+context:}FUTON3 rides the MUSN transport (WS+HTTP bus, SAFE/ADMIN REPL, NDJSON ingest) for pattern-related checking.\\
@@ -936,6 +969,8 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
 \begin{devmapactive}
 \textbf{! instantiated-by: Prototype 1 — Pattern Canon \& Standard Library [🐺/本 ➰/世]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f1/\allowbreak{}P0]}\\
   \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Pattern store operational in futon1;\allowbreak{} ingest working;\allowbreak{} tests pass]}\\
   \flexitag{+context:}A flexiarg/pattern library exists but was scattered across files.\\
@@ -943,7 +978,7 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
   \flexitag{+however:}Without a canonical store, the checker has nothing trustworthy to compare against\\
   \flexitag{+then:}Stand up f3.patterns store (ID, clauses, references, pāramitā tags, fruits/orbs weights) in futon1 storage; keep in sync with filesystem devmaps as "checked out working copy"\\
   \flexitag{+because:}Pattern-based inference requires stable, addressable patterns that can be inspected and edited across the stack\\
-  \flexitag{+evidence:} evidence[Pattern store working in futon1 with ingest] evidence[resources/pattern\_store.edn maintains catalog] evidence[src/futon3/pattern\_store.clj implements store API] evidence[test/pattern\_store\_test.clj verifies sync with README references]\\
+  \flexitag{+evidence:} evidence[Pattern store working in futon1 with ingest] evidence[resources/pattern\_store.edn maintains catalog] evidence[src/futon3/pattern\_store.clj implements store API] evidence[test/pattern\_store\_test.clj verifies sync with README references] evidence[library/coordination/*.flexiarg is the authoritative coordination library (consumed by futon3b)] evidence[futon3b/src/futon3/gate/canon.clj writes new patterns from evidence (glacial loop)]\\
 \par
   + NEXT-STEPS:\\
     next[Add golden test proving store loads and enumerates all pattern IDs] next[Add golden test asserting metadata completeness (ID, clauses, refs, tags, weights)] next[Verify pattern store matches standard library with no omissions]\\
@@ -957,60 +992,74 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
 \par
 \end{devmapactive}
 \begin{devmapactive}
-\textbf{! instantiated-by: Prototype 2 — Check DSL \& Applicability Engine [🌽/末 ➰/广]}\\
+\textbf{! instantiated-by: Prototype 2 — Coordination Gate Pipeline (G5→G0) [🌽/末 ➰/广]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3b}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P0,\allowbreak{} f3/\allowbreak{}P1]}\\
-  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [check! API operational;\allowbreak{} schema validation working;\allowbreak{} checks logged]}\\
-  \flexitag{+context:}FUTON3 answers "can this pattern apply?" and "what obligations arise?"\\
-  \flexitag{+if:}You want a declarative DSL for posing check contexts and receiving structured verdicts\\
-  \flexitag{+however:}Without executable checks, patterns remain narrative rather than flexiformal\\
-  \flexitag{+then:}Define check! API (inputs: pattern ID, context EDN, evidence refs; outputs: status, missing fields, derived tasks); enforce schema validation; log every check as proof-state record\\
-  \flexitag{+because:}Turning patterns into executable checks is what makes FUTON3 flexiformal\\
-  \flexitag{+evidence:} evidence[src/futon3/checks.clj implements check DSL] evidence[src/f2/router.clj routes check requests] evidence[src/futon3/futon1\_bridge.clj wires to futon1] evidence[src/futon3/futon2\_bridge.clj logs viriya deltas for checks] evidence[src/f2/transport.clj exposes /musn/check HTTP endpoint] evidence[docs/api/musn.yaml documents /musn/check] evidence[test/transport\_test.clj covers workday/check forwarding]\\
+  \texttt{:\allowbreak{}implemented-\allowbreak{}as [futon3.gate.* (in futon3b)]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Gate pipeline (G5→G0) enforces PSR→exec→PUR→durability;\allowbreak{} typed evidence +\allowbreak{} structured rejections;\allowbreak{} L1 canonicalizer operational;\allowbreak{} rejection proof-\allowbreak{}paths typed and persisted;\allowbreak{} bootstrap closure complete (M-\allowbreak{}social-\allowbreak{}exotype Part III)]}\\
+  \flexitag{+context:}FUTON3’s former "check DSL" role is now the coordination boundary: all task execution is routed through mandatory gates that emit typed evidence.\\
+  \flexitag{+if:}You want a declarative, enforceable boundary that turns messy tasks into auditable records\\
+  \flexitag{+however:}When pattern selection, execution, validation, and persistence are scattered, the system cannot enforce "no work runs without PSR" or "no success before durability"\\
+  \flexitag{+then:}Implement the six-gate pipeline (G5→G0) as the primary coordination/check mechanism:\\
+    - G5 validates TaskSpec and binds intent to mission + success criteria\\
+    - G4 authorizes an agent and records Assignment\\
+    - G3 requires PSR (or gap declaration) and checks pattern existence\\
+    - G2 runs bounded execution (or passthrough) and registers Artifact\\
+    - G1 produces PUR by evaluating success criteria\\
+    - G0 gates success on durability and requires PAR; emits a proof-path\\
+  \flexitag{+because:}This is the minimal checkable structure that produces auditable, replayable proof-paths that other futons can learn from\\
+  \flexitag{+evidence:} evidence[library/coordination/ARGUMENT.flexiarg (gate pipeline argument)] evidence[futon3b/src/futon3/gate/pipeline.clj composes G5→G0] evidence[futon3b/src/futon3/gate/shapes.clj defines typed evidence boundary] evidence[futon3b/src/futon3/gate/errors.clj defines structured rejections] evidence[futon3b/test/futon3/gate/pipeline\_test.clj verifies gate behavior + durable proof-paths] evidence[futon3b/AGENTS.md records verification results and acceptance checklists] evidence[src/futon3/checks.clj remains as legacy check! DSL (superseded by gate pipeline)]\\
 \par
   + NEXT-STEPS:\\
-    next[Add check latency instrumentation]\\
+    next[Wire futon3 transport/entrypoints to futon3b gate pipeline without weakening "first failing gate wins"] next[Integrate futon3a similarity/portal search into G3 pattern selection]\\
 \par
   \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
-    pass[check! returns structured verdicts (applies/blocked/missing)] pass[Every check logged as proof-state record] pass[Schema validation enforced on inputs] fail[Checks proceed without logging]\\
+    pass[Every task either produces a durable proof-path or a structured rejection] pass[G3 enforces PSR (or gap) before execution] pass[G1 enforces PUR (criteria evaluation) before acknowledging success] pass[G0 enforces durability (proof-path persisted)] fail[Work runs without PSR/PUR or without a durable audit trail]\\
 \par
-  \texttt{:\allowbreak{}psr-\allowbreak{}example "Selected check DSL for pattern evaluation because executable checks enable automation"}\\
-  \texttt{:\allowbreak{}pur-\allowbreak{}template "Check \{\{pattern\}\},\allowbreak{} context:\allowbreak{} \{\{ctx\}\},\allowbreak{} result:\allowbreak{} \{\{status\}\}"}\\
+  \texttt{:\allowbreak{}psr-\allowbreak{}example "Selected gate pipeline for coordination because mandatory,\allowbreak{} typed gates make proof obligations enforceable"}\\
+  \texttt{:\allowbreak{}pur-\allowbreak{}template "Gate run \{\{task\}\},\allowbreak{} result:\allowbreak{} \{\{ok|\allowbreak{}reject\}\},\allowbreak{} proof-\allowbreak{}path:\allowbreak{} \{\{path-\allowbreak{}id\}\}"}\\
 \par
 \par
 \end{devmapactive}
 \begin{devmapactive}
-\textbf{! instantiated-by: Prototype 3 — Trail \& Proof-State Journal [➰/双]}\\
+\textbf{! instantiated-by: Prototype 3 — Proof-Path Store (Durable Journal) [➰/双]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3b}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P2]}\\
-  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Tatami sessions captured;\allowbreak{} trail schema operational;\allowbreak{} cue embedding tested]}\\
-  \flexitag{+context:}Wisdom trails document proof obligations and how work sessions discharged them.\\
-  \flexitag{+if:}You want every check, dismissal, and pattern idea to leave an auditable trail\\
-  \flexitag{+however:}Without proof-state schema, trails are general exploration logs\\
-  \flexitag{+then:}Extend trail schema with :pattern/id, :obligation/id, :action/tags, :delta/joy; add rollups showing which devmap clauses advanced per day; expose /musn/trails/proof export\\
-  \flexitag{+because:}The whole point is to measure how daily practice advances the devmaps\\
-  \flexitag{+evidence:} evidence[resources/tatami-events.edn captures live tatami sessions] evidence[resources/tatami-context.edn logs FROM-CHATGPT-EDN payloads] evidence[test/futon3/cue\_embedding\_test.clj proves keyword payloads round-trip] evidence[Tatami HUD mirrors entries through /musn/cues]\\
+  \texttt{:\allowbreak{}implemented-\allowbreak{}as [futon3b.query.relations/\allowbreak{}append-\allowbreak{}proof-\allowbreak{}path! +\allowbreak{} data/\allowbreak{}proof-\allowbreak{}paths/\allowbreak{}*.edn]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Proof-\allowbreak{}path EDN files persisted per run;\allowbreak{} load +\allowbreak{} query supported;\allowbreak{} L1 observes proof-\allowbreak{}paths for tensions;\allowbreak{} typed rejection proof-\allowbreak{}paths persisted;\allowbreak{} canonicalizer writes .flexiarg with overwrite guard]}\\
+  \flexitag{+context:}FUTON3 needs an auditable, replayable journal of what happened at the coordination boundary.\\
+  \flexitag{+if:}You want every accepted run (and key early rejections) to leave a durable, typed audit trail\\
+  \flexitag{+however:}Trails/tatami logs are not a typed boundary and are hard to query as evidence\\
+  \flexitag{+then:}Persist a proof-path as a typed sequence of gate events (TaskSpec, Assignment, PSR, Artifact, PUR, PAR, plus L1 observations/canonizations and structured rejections) and store it durably as EDN\\
+  \flexitag{+because:}Proof-paths are the minimum unit of auditability and the input to glacial library evolution\\
+  \flexitag{+evidence:} evidence[futon3b/src/futon3b/query/relations.clj implements append-proof-path! + load/search] evidence[futon3b/data/proof-paths/ durable proof-path store (EDN files)] evidence[futon3b/test/futon3/gate/pipeline\_test.clj durable sink writes proof-paths] evidence[futon3b/test/futon3/gate/level1\_test.clj L1 observes pressures from persisted rejections] evidence[resources/tatami-events.edn remains as legacy session capture (not the primary typed journal)]\\
 \par
   + NEXT-STEPS:\\
-    next[Persist cue annotations into trail export] next[Add proof artifacts (HUD screenshots or /musn/cues transcripts)] next[Implement daily rollups of clause advancement]\\
+    next[Standardise proof-path → futon1 (graph) and futon2 (viriya) exports on top of the typed store]\\
 \par
   \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
-    pass[Trails include pattern/obligation IDs] pass[Rollups show devmap clause progress per day] pass[Proof export available for futon4 archives] fail[Proof states not captured in trails]\\
+    pass[Proof-path persisted durably for each successful run] pass[Key early-gate rejections are persisted as typed GateRejection records] pass[Proof-paths queryable (load + search)] fail[Work cannot be replayed/audited from durable evidence]\\
 \par
-  \texttt{:\allowbreak{}psr-\allowbreak{}example "Selected trails for proof journaling because auditable records enable reflection"}\\
-  \texttt{:\allowbreak{}pur-\allowbreak{}template "Trail \{\{session\}\},\allowbreak{} patterns:\allowbreak{} \{\{count\}\},\allowbreak{} obligations cleared:\allowbreak{} \{\{cleared\}\}"}\\
+  \texttt{:\allowbreak{}psr-\allowbreak{}example "Selected proof-\allowbreak{}path store because a typed,\allowbreak{} durable journal enables audit and glacial learning"}\\
+  \texttt{:\allowbreak{}pur-\allowbreak{}template "Proof-\allowbreak{}path \{\{path-\allowbreak{}id\}\},\allowbreak{} events:\allowbreak{} \{\{count\}\},\allowbreak{} persisted:\allowbreak{} \{\{yes|\allowbreak{}no\}\}"}\\
 \par
 \par
 \end{devmapactive}
 \begin{devmapactive}
 \textbf{! instantiated-by: Prototype 4 — Workday Instrumentation [➰/止 ⌛️/了]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P2]}\\
   \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [workday/\allowbreak{}submit endpoint operational;\allowbreak{} aob-\allowbreak{}chatgpt bridge working]}\\
   \flexitag{+context:}aob-chatgpt and fubar.el instrument user interactions for pattern checking.\\
   \flexitag{+if:}You want FUTON3 to serve as backend for daily reflections\\
   \flexitag{+however:}Without official API, workday claims cannot flow through check pipeline\\
-  \flexitag{+then:}Publish workday/submit endpoint (timestamp, activity, evidence links); run through check DSL + embedding; respond with pattern hits/misses and follow-up obligations\\
+  \flexitag{+then:}Publish workday/submit endpoint (timestamp, activity, evidence links); run through the coordination boundary (gate pipeline) + embedding; respond with pattern hits/misses and follow-up obligations\\
   \flexitag{+because:}This is how empowered action becomes measurable proof progress\\
   \flexitag{+evidence:} evidence[src/futon3/workday.clj implements workday intake] evidence[src/f2/transport.clj exposes /musn/workday/submit HTTP endpoint] evidence[docs/api/musn.yaml documents /musn/workday/submit] evidence[test/transport\_test.clj covers workday submission] evidence[README documents workday API]\\
 \par
@@ -1028,6 +1077,8 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
 \begin{devmapactive}
 \textbf{! instantiated-by: Prototype 5 — Similarity Field [🌂/甲 👂/归]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3a}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P1]}\\
   \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [futon3a provides pattern indexing with GloVe/\allowbreak{}fastText/\allowbreak{}MiniLM embeddings;\allowbreak{} portal queries operational]}\\
   \flexitag{+context:}Sigil-distance and GloVe embeddings enable pattern suggestions.\\
@@ -1051,6 +1102,8 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
 \begin{devmapgreenfield}
 \textbf{! instantiated-by: Prototype 6 — Intent Embedding \& Proof Typing [➰/双 🍍/办]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}greenfield}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3a}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}greenfield}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P3]}\\
   \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Intent→vec pipeline operational;\allowbreak{} fruit/\allowbreak{}orb types assigned to proof steps]}\\
   \flexitag{+context:}Trails record patterns but don’t type proof steps as constructive operations.\\
@@ -1071,20 +1124,22 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
 \par
 \par
 \end{devmapgreenfield}
-\begin{devmapgreenfield}
+\begin{devmapactive}
 \textbf{! instantiated-by: Prototype 7 — Pattern Creation Workbench [👍/已]}\\
-  \texttt{:\allowbreak{}maturity :\allowbreak{}greenfield}\\
-  \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P3,\allowbreak{} f3/\allowbreak{}P6]}\\
-  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Summariser clusters trails;\allowbreak{} draft flexiargs emitted with readiness criteria]}\\
-  \flexitag{+context:}New patterns emerge from trails and devmap edits but capture is manual.\\
-  \flexitag{+if:}You want FUTON3 to draft candidate patterns from accumulated proof states\\
-  \flexitag{+however:}Manual backlog creates tension; no readiness criteria for handoff\\
-  \flexitag{+then:}Build summariser that clusters trails, extracts hooks, emits draft flexiarg blocks (IF/HOWEVER/THEN/BECAUSE) with suggested pāramitā; declare readiness criteria (N supporting checks + steward review)\\
-  \flexitag{+because:}FUTON3 should propose expansions grounded in lived work\\
-  \flexitag{+evidence:} evidence[Trail data available for clustering] evidence[Flexiarg format documented]\\
+  \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3b}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P3]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [L1 canonicalizer operational:\allowbreak{} tension observer +\allowbreak{} canonizer with overwrite guard;\allowbreak{} typed rejection events flow into proof-\allowbreak{}paths;\allowbreak{} PSR/\allowbreak{}PUR exemplars added;\allowbreak{} bootstrap closure complete;\allowbreak{} full clustering/\allowbreak{}summariser still pending]}\\
+  \flexitag{+context:}New patterns emerge from accumulated proof-path evidence; manual capture creates backlog and stalls convergence.\\
+  \flexitag{+if:}You want FUTON3 to draft and land candidate patterns from accumulated evidence\\
+  \flexitag{+however:}Without a glacial "canonicalizer" loop, pattern gaps remain narrative and do not become constraints\\
+  \flexitag{+then:}Use L1 canonicalization (Baldwin cycle) to write minimal flexiargs from recurring tensions, and treat richer clustering/summariser output as a later enhancement\\
+  \flexitag{+because:}Library evolution must be evidence-driven and must close the constraint loop (glacial → glacial)\\
+  \flexitag{+evidence:} evidence[futon3b/src/futon3/gate/observe.clj observes tensions from proof-paths] evidence[futon3b/src/futon3/gate/canon.clj writes new .flexiarg patterns (and refuses overwrite)] evidence[futon3b/test/futon3/gate/level1\_test.clj full-loop-round-trip proves canonization produces a usable pattern] evidence[Flexiarg format documented]\\
 \par
   + NEXT-STEPS:\\
-    next[Build trail clustering summariser] next[Emit draft flexiarg blocks with pāramitā tags] next[Define readiness criteria for handoff to futon4] next[Add steward review workflow]\\
+    next[Add richer pattern drafts (titles/keywords/examples) without weakening typed evidence boundary] next[Add readiness criteria + steward review workflow for promoting drafts]\\
 \par
   \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
     pass[Summariser emits draft flexiargs from trails] pass[Drafts tagged with suggested pāramitā] pass[Readiness criteria declared and enforced] fail[Pattern creation remains fully manual]\\
@@ -1093,10 +1148,12 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
   \texttt{:\allowbreak{}pur-\allowbreak{}template "Workbench draft \{\{id\}\},\allowbreak{} sources:\allowbreak{} \{\{trail\_\allowbreak{}count\}\},\allowbreak{} readiness:\allowbreak{} \{\{status\}\}"}\\
 \par
 \par
-\end{devmapgreenfield}
+\end{devmapactive}
 \begin{devmapgreenfield}
 \textbf{! instantiated-by: Prototype 8 — Joy Metrics [⌛️/力 ⚡️/二]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}greenfield}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3c}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}greenfield}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P3,\allowbreak{} f3/\allowbreak{}P4]}\\
   \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Joy metrics computed per session;\allowbreak{} provided to futon0]}\\
   \flexitag{+context:}Joy = Spinozan increase in power to act, evidenced by commitments you can now keep.\\
@@ -1104,7 +1161,7 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
   \flexitag{+however:}Current metrics counted UI friction, not proofs discharged\\
   \flexitag{+then:}Track time-to-proof, obligations-cleared, follow-on commitments, viriya linkages per session; visualise alongside subjective notes; provide to futon0\\
   \flexitag{+because:}Empowered action is the KPI for this futon\\
-  \flexitag{+evidence:} evidence[Session data available from trails] evidence[Obligation tracking in check DSL]\\
+  \flexitag{+evidence:} evidence[Session data available from trails] evidence[Obligation tracking in check DSL] evidence[library/realtime/*.flexiarg specifies the social/realtime loop that joy metrics should be surfaced into]\\
 \par
   + NEXT-STEPS:\\
     next[Define joy metric formulas] next[Implement per-session computation] next[Wire metrics to futon0] next[Add visualization alongside subjective notes]\\
@@ -1120,6 +1177,8 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
 \begin{devmapgreenfield}
 \textbf{! instantiated-by: Prototype 9 — Proof Hooks (futon1/futon2 Export) [⚡️/二 🙅/乃]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}greenfield}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3b}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}greenfield}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P2,\allowbreak{} f1/\allowbreak{}P0,\allowbreak{} f2/\allowbreak{}P6]}\\
   \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [proof→graph materialises relations;\allowbreak{} proof→energy emits viriya deltas]}\\
   \flexitag{+context:}FUTON3 generates proof states; futon1 (graph) and futon2 (viriya) need them as fuel.\\
@@ -1143,6 +1202,8 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
 \begin{devmapgreenfield}
 \textbf{! instantiated-by: Prototype 10 — Flexiformal Training Ground [🚢/氏 🚴/未]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}greenfield}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3c}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}greenfield}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P2,\allowbreak{} f3/\allowbreak{}P3]}\\
   \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Training ground packaged;\allowbreak{} tutorials complete;\allowbreak{} simulator recorded]}\\
   \flexitag{+context:}FUTON3 needs a reproducible training ground for flexiformal practice.\\
@@ -1150,7 +1211,7 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
   \flexitag{+however:}No packaged simulator/tutorial bundle exists\\
   \flexitag{+then:}Package "Flexiformal Training Ground" release: tutorials referencing t4r/ patterns, sample check sessions, minimal simulator feeding FUTON6’s Hyperreal entries; name facilitators and consumers; publish readiness criteria\\
   \flexitag{+because:}Training ground turns FUTON3 into a reproducible service for upstream layers\\
-  \flexitag{+evidence:} evidence[Check DSL operational for training] evidence[Trail capture available for transcripts]\\
+  \flexitag{+evidence:} evidence[Check DSL operational for training] evidence[Trail capture available for transcripts] evidence[library/realtime/*.flexiarg defines the realtime patterns future trainees will encounter (social loop)]\\
 \par
   + NEXT-STEPS:\\
     next[Write tutorials referencing t4r/ patterns] next[Record sample check sessions] next[Build minimal simulator for FUTON6] next[Aggregate proof events into proof-chain.edn]\\
@@ -1166,14 +1227,16 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
 \begin{devmapgreenfield}
 \textbf{! instantiated-by: Prototype 11 — System Self-Description [🔃/本]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}greenfield}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon5}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}partial}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P1,\allowbreak{} f1/\allowbreak{}P0]}\\
-  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Manifest schema defined;\allowbreak{} stack components queryable in futon1]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [9 EDN wiring diagrams in futon5/\allowbreak{}data/\allowbreak{}missions/\allowbreak{} define component structure;\allowbreak{} 2 grounding functors map port types to nLab categories;\allowbreak{} futon3c mission-\allowbreak{}control peripheral can query devmaps and compute coverage programmatically]}\\
   \flexitag{+context:}Documentation and APIs exist as separate artifacts that humans must correlate.\\
   \flexitag{+if:}You want agents to query the system about its own capabilities\\
   \flexitag{+however:}No machine-readable manifest makes components first-class entities\\
   \flexitag{+then:}Unify documentation and APIs into machine-readable manifest; make stack components first-class entities in futon1; enable agents to query capabilities and self-verify structure\\
   \flexitag{+because:}This closes the reflexivity loop—a semantic network that includes a model of itself\\
-  \flexitag{+evidence:} evidence[futon4/docs/evidence/rc-1.1-evidence.edn seeds machine-readable claim map]\\
+  \flexitag{+evidence:} evidence[futon4/docs/evidence/rc-1.1-evidence.edn seeds machine-readable claim map] evidence[futon5/data/missions/*.edn: 9 wiring diagrams with typed ports, components, edges, invariants] evidence[futon5/data/missions/f3c-grounding-functor.edn + f6-grounding-functor.edn map to nLab categories] evidence[futon3c mission-control peripheral: mc-devmaps + mc-coverage tools query structure programmatically]\\
 \par
   + NEXT-STEPS:\\
     next[Expand evidence map into manifest schema (components, interfaces, invariants)] next[Ingest manifest into futon1] next[Enable agents to query stack capabilities] next[Add self-verification of running system vs declared structure]\\
@@ -1183,7 +1246,127 @@ FUTON3 turns messy activity into organised knowledge by checking work against sh
 \par
   \texttt{:\allowbreak{}psr-\allowbreak{}example "Selected self-\allowbreak{}description for reflexivity because queryable structure enables agent reasoning"}\\
   \texttt{:\allowbreak{}pur-\allowbreak{}template "Manifest query \{\{component\}\},\allowbreak{} interfaces:\allowbreak{} \{\{count\}\},\allowbreak{} verified:\allowbreak{} \{\{yes|\allowbreak{}no\}\}"}\\
+\par
+\par
+\textbf{futon3c Buildout (P12–P16)}\par
+\par
+The following prototypes capture the major futon3c systems that were built after the three-futon split. They are recorded here for cross-repo visibility since the original devmap predates them.\\
+\par
+\par
 \end{devmapgreenfield}
+\begin{devmapactive}
+\textbf{! instantiated-by: Prototype 12 — Social Pipeline \& Agency [➰/双 🌽/末]}\\
+  \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3c}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}depends-\allowbreak{}on []}\\
+  \texttt{:\allowbreak{}implemented-\allowbreak{}as [futon3c/\allowbreak{}src/\allowbreak{}futon3c/\allowbreak{}social/\allowbreak{}*.clj +\allowbreak{} futon3c/\allowbreak{}src/\allowbreak{}futon3c/\allowbreak{}agency/\allowbreak{}*.clj]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [5-\allowbreak{}stage pipeline wired and tested;\allowbreak{} agency registry operational;\allowbreak{} alleycat P-\allowbreak{}4 inhabitation race 20/\allowbreak{}20;\allowbreak{} all tech debt resolved (I3,\allowbreak{} coerce-\allowbreak{}prompt,\allowbreak{} hop exit inference)]}\\
+  \flexitag{+context:}futon3c’s core is the social pipeline: the real-time coordination path that agents traverse on every interaction.\\
+  \flexitag{+if:}You want structured, typed coordination with evidence emission at every step\\
+  \flexitag{+however:}Without a pipeline, agent interactions are ad-hoc function calls with no audit trail\\
+  \flexitag{+then:}Implement a 5-stage pipeline (S-presence → S-authenticate → S-mode → S-dispatch → S-persist) with Malli shape validation, agency registry with session lifecycle, and evidence emission on coordination events\\
+  \flexitag{+because:}The pipeline is the social-timescale AIF loop: sense agent presence, validate credentials, resolve mode, dispatch to capability envelope, persist coordination evidence\\
+  \flexitag{+evidence:} evidence[futon3c/src/futon3c/social/shapes.clj: \textasciitilde{}550 lines, Malli shapes for all social types] evidence[futon3c/src/futon3c/social/\{presence,authenticate,mode,dispatch,persist,validate\}.clj: 5 pipeline stages] evidence[futon3c/src/futon3c/social/bells.clj: bell dispatcher (standup bell + test bell, 12 tests)] evidence[futon3c/src/futon3c/agency/registry.clj: multi-agent registry, session lifecycle] evidence[futon3c/src/futon3c/runtime/agents.clj: runtime API] evidence[futon3c alleycat P-4: peripheral inhabitation race 20/20 + 4 checkpoints] evidence[futon3c alleycat P-6: structural closure 479+ tests] evidence[futon3c: all social pipeline tech debt resolved (I3 snapshot, lossy coerce-prompt, hop exit inference)]\\
+\par
+  + NEXT-STEPS:\\
+    next[Connect social pipeline evidence to futon3b gate pipeline (proof-paths as evidence entries)]\\
+\par
+  \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
+    pass[5-stage pipeline operational with typed evidence emission] pass[Agency registry tracks agent capabilities and sessions] pass[Alleycat inhabitation race passes (20/20)] fail[Agent interactions bypass pipeline or produce no audit trail]\\
+\par
+\par
+\end{devmapactive}
+\begin{devmapactive}
+\textbf{! instantiated-by: Prototype 13 — Evidence Landscape [➰/双 🍍/办]}\\
+  \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3c}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P12]}\\
+  \texttt{:\allowbreak{}implemented-\allowbreak{}as [futon3c/\allowbreak{}src/\allowbreak{}futon3c/\allowbreak{}evidence/\allowbreak{}*.clj +\allowbreak{} futon1a HTTP API]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Evidence store operational with AtomBackend (ephemeral) and XtdbBackend (durable via futon1a);\allowbreak{} thread projection via reply chains;\allowbreak{} 7 evidence types;\allowbreak{} HTTP API for write/\allowbreak{}query/\allowbreak{}chain]}\\
+  \flexitag{+context:}The evidence landscape is the shared medium for all three timescales. Social coordination events, mission snapshots, PSR/PUR/PAR records, and portfolio observations all flow into queryable evidence entries.\\
+  \flexitag{+if:}You want a unified, typed, queryable record of everything that happens across the stack\\
+  \flexitag{+however:}Without a shared evidence store, coordination events are scattered across atoms, logs, and markdown files\\
+  \flexitag{+then:}Implement EvidenceBackend protocol with pluggable backends (AtomBackend for tests, XtdbBackend for production via futon1a); provide append/query/reply-chain/fork APIs; support 7 evidence types and reply-chain threading\\
+  \flexitag{+because:}The evidence landscape supersedes both the forum service and the war room — all coordination artifacts become queryable evidence entries with typed subjects, claims, and tags\\
+  \flexitag{+evidence:} evidence[futon3c/src/futon3c/evidence/backend.clj: EvidenceBackend protocol + AtomBackend] evidence[futon3c/src/futon3c/evidence/store.clj: append/query/reply-chain/fork API (\textasciitilde{}300 lines)] evidence[futon3c/src/futon3c/evidence/threads.clj: thread projection from reply chains] evidence[futon3c/src/futon3c/evidence/xtdb\_backend.clj: XTDB persistence via futon1a] evidence[futon1a HTTP API: POST/GET /api/alpha/evidence, GET /evidence/:id, GET /evidence/:id/chain] evidence[EvidenceEntry shape: id, subject (ArtifactRef), type, claim-type, author, at, body, tags, reply-chain, forks] evidence[7 evidence types: pattern-selection, pattern-outcome, reflection, coordination, gate-traversal, forum-post, conjecture] evidence[Forum service OBSOLETE — superseded by evidence landscape]\\
+\par
+  + NEXT-STEPS:\\
+    next[Add :query/subject-type filter to EvidenceQuery (gap G4 from mission-control VERIFY)] next[Connect futon3b proof-paths as evidence entries] next[Wire Arxana Lab viewer (futon4) to evidence endpoints]\\
+\par
+  \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
+    pass[Evidence entries appendable and queryable with typed subjects and claims] pass[Reply chains and thread projections operational] pass[XTDB backend provides durable persistence via futon1a] pass[Forum service obsoleted — evidence landscape handles all coordination artifacts] fail[Coordination events are unstructured or unqueryable]\\
+\par
+\par
+\end{devmapactive}
+\begin{devmapactive}
+\textbf{! instantiated-by: Prototype 14 — Peripheral Runtime [🌽/末 ➰/广]}\\
+  \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3c}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P12,\allowbreak{} f3/\allowbreak{}P13]}\\
+  \texttt{:\allowbreak{}implemented-\allowbreak{}as [futon3c/\allowbreak{}src/\allowbreak{}futon3c/\allowbreak{}peripheral/\allowbreak{}*.clj]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [11 peripherals (10 wired,\allowbreak{} 1 shaped);\allowbreak{} PeripheralRunner protocol with start/\allowbreak{}step/\allowbreak{}stop lifecycle;\allowbreak{} hop-\allowbreak{}based transitions with explicit exit conditions;\allowbreak{} chain orchestration;\allowbreak{} evidence emission at every step;\allowbreak{} backward verification framework]}\\
+  \flexitag{+context:}Peripherals are capability envelopes — each constrains what an agent can do and emits evidence of what it did.\\
+  \flexitag{+if:}You want agents to operate within structured, auditable capability boundaries\\
+  \flexitag{+however:}Without capability envelopes, agents have unrestricted access and produce no structured audit trail\\
+  \flexitag{+then:}Implement PeripheralRunner protocol (start/step/stop) with tool-set enforcement, hop-based transitions between peripherals, chain orchestration for multi-peripheral sequences, and evidence emission on every tool invocation\\
+  \flexitag{+because:}Peripherals are the enforcement mechanism for the social AIF loop — they constrain agent actions to declared tool sets while producing linked evidence chains\\
+  \flexitag{+evidence:} evidence[futon3c/src/futon3c/peripheral/runner.clj: PeripheralRunner protocol] evidence[futon3c/src/futon3c/peripheral/tools.clj: ToolBackend protocol + dispatch] evidence[futon3c/src/futon3c/peripheral/common.clj: shared helpers (action validation, spec loading)] evidence[futon3c/src/futon3c/peripheral/evidence.clj: evidence emission helpers] evidence[futon3c/src/futon3c/peripheral/registry.clj: factory dispatch + chain orchestration] evidence[futon3c/src/futon3c/peripheral/round\_trip.clj: backward verification (←) framework] evidence[futon3c/resources/peripherals.edn: 11 peripheral specs with tools, scope, entry/exit] evidence[10 wired: explore, edit, test, deploy, reflect, proof, discipline, mission, mission-control, alfworld] evidence[1 shaped: chat (IRC bridge fills role in practice)]\\
+\par
+  + NEXT-STEPS:\\
+    next[M-peripheral-gauntlet: real-time multi-peripheral scenarios] next[Wire chat peripheral implementation (or confirm IRC bridge suffices)]\\
+\par
+  \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
+    pass[11 peripheral specs defined with tool sets, scope, entry/exit conditions] pass[10 peripherals wired with PeripheralRunner implementations] pass[Hop transitions validated with explicit exit conditions] pass[Chain orchestration runs multi-peripheral sequences with evidence threading] pass[Backward verification framework validates structural invariants] fail[Agents bypass tool-set constraints or produce no evidence]\\
+\par
+\par
+\end{devmapactive}
+\begin{devmapactive}
+\textbf{! instantiated-by: Prototype 15 — Transport Layer [➰/止 🌂/甲]}\\
+  \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3c}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P12]}\\
+  \texttt{:\allowbreak{}implemented-\allowbreak{}as [futon3c/\allowbreak{}src/\allowbreak{}futon3c/\allowbreak{}transport/\allowbreak{}*.clj]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [HTTP +\allowbreak{} WebSocket +\allowbreak{} IRC transport adapters;\allowbreak{} 112 transport tests;\allowbreak{} IRC F1-\allowbreak{}F6 stability compliance;\allowbreak{} bidirectional joe+\allowbreak{}claude shared sessions through Emacs+\allowbreak{}IRC]}\\
+  \flexitag{+context:}futon3c needs its own transport layer for real-time agent coordination, independent of the legacy futon3 MUSN transport.\\
+  \flexitag{+if:}You want real-time agent coordination across multiple transports (HTTP, WebSocket, IRC)\\
+  \flexitag{+however:}The legacy futon3 MUSN transport is a monolith that bundles pattern checking with transport\\
+  \flexitag{+then:}Implement independent transport adapters (HTTP, WebSocket, IRC) with a shared protocol layer, health endpoints, and event routing across transport boundaries\\
+  \flexitag{+because:}Transport independence lets futon3c evolve its real-time coordination without depending on the legacy MUSN codebase\\
+  \flexitag{+evidence:} evidence[futon3c/src/futon3c/transport/protocol.clj: wire protocol shapes (\textasciitilde{}500 lines, 31 tests)] evidence[futon3c/src/futon3c/transport/http.clj: HTTP adapter (15 tests)] evidence[futon3c/src/futon3c/transport/ws.clj: WebSocket adapter (16 tests)] evidence[futon3c/src/futon3c/transport/irc.clj: IRC bridge with F1-F6 stability (\textasciitilde{}850 lines, 40 tests)] evidence[futon3c/test/futon3c/transport/integration\_test.clj: multi-transport coordination (10 tests)] evidence[112 transport tests total, 0 failures]\\
+\par
+  + NEXT-STEPS:\\
+    next[M-sliding-blackboard: Emacs UI integration with transport]\\
+\par
+  \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
+    pass[HTTP, WebSocket, IRC adapters operational] pass[IRC bridge passes F1-F6 stability tests] pass[Multi-transport event routing works across boundaries] fail[Transport is coupled to legacy MUSN or requires futon3 dependency]\\
+\par
+\par
+\end{devmapactive}
+\begin{devmapactive}
+\textbf{! instantiated-by: Prototype 16 — Mission System [🔃/本 🌽/末]}\\
+  \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}owner :\allowbreak{}futon3c}\\
+  \texttt{:\allowbreak{}actual-\allowbreak{}status :\allowbreak{}active}\\
+  \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P13,\allowbreak{} f3/\allowbreak{}P14]}\\
+  \texttt{:\allowbreak{}implemented-\allowbreak{}as [futon3c/\allowbreak{}src/\allowbreak{}futon3c/\allowbreak{}peripheral/\allowbreak{}\{mission,\allowbreak{}mission\_\allowbreak{}control,\allowbreak{}mission\_\allowbreak{}control\_\allowbreak{}backend,\allowbreak{}mission\_\allowbreak{}control\_\allowbreak{}shapes\}.clj]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Mission peripheral:\allowbreak{} cycle machine with 9 phases,\allowbreak{} obligation tracking,\allowbreak{} evidence snapshots;\allowbreak{} Mission control:\allowbreak{} portfolio observation with cross-\allowbreak{}repo inventory,\allowbreak{} devmap coverage,\allowbreak{} mana queries;\allowbreak{} 35 mission-\allowbreak{}control tests +\allowbreak{} mission tests;\allowbreak{} full derivation xenotype complete for both]}\\
+  \flexitag{+context:}Individual missions follow a development cycle (observe → propose → execute → validate); the portfolio of missions needs observation and prioritization.\\
+  \flexitag{+if:}You want structured mission lifecycle management and portfolio-level visibility\\
+  \flexitag{+however:}Without mission tooling, mission state lives in prose headers and hand-maintained inventories\\
+  \flexitag{+then:}Implement two peripherals: (1) mission peripheral — 9-phase cycle machine with obligation tracking, evidence emission on state changes, and phase gate enforcement; (2) mission-control peripheral — flat tool dispatch for cross-repo inventory scanning, devmap structural summaries, coverage analysis, mana queries, and portfolio review\\
+  \flexitag{+because:}The mission peripheral makes individual mission state structural and evidence-backed; mission control makes portfolio state queryable and computable\\
+  \flexitag{+evidence:} evidence[futon3c/src/futon3c/peripheral/mission.clj: cycle machine, phase gates, obligation tracking] evidence[futon3c/src/futon3c/peripheral/mission\_control.clj: portfolio observation peripheral] evidence[futon3c/src/futon3c/peripheral/mission\_control\_backend.clj: inventory, devmaps, coverage, mana, backfill] evidence[futon3c/holes/missions/M-mission-peripheral.md: INSTANTIATE complete] evidence[futon3c/holes/missions/M-mission-control.md: INSTANTIATE complete (35 tests, 614 suite)] evidence[Cross-repo scanning: 25 missions across futon3c (15 .md), futon3b (1 .md), futon5 (9 EDN devmaps)] evidence[Devmap coverage: heuristic name-matching (gap G1 documented, proper annotations future work)] evidence[D7 backfill: legacy missions convertible to evidence entries]\\
+\par
+  + NEXT-STEPS:\\
+    next[Run first real portfolio review and emit as evidence] next[Backfill legacy missions into evidence landscape] next[Add :query/subject-type filter to evidence store for "all missions" queries (gap G4)] next[Improve coverage heuristic with explicit devmap-to-mission annotations (gap G1)]\\
+\par
+  \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
+    pass[Mission peripheral manages lifecycle with phase gates and obligation tracking] pass[Mission control scans 4 repos and produces coherent portfolio review] pass[Portfolio reviews emittable as evidence entries] pass[Devmap coverage computable (even if heuristic)] fail[Mission state requires manual parsing of markdown headers]\\
+\end{devmapactive}
 \switchcolumn
 % FUTON4
 \textbf{FUTON4}\par
@@ -1572,20 +1755,20 @@ FUTON5 builds and collects general-purpose design patterns for improvisation, wi
 FUTON6 is a comprehensive mathematics dictionary. Informal arguments from F3 are supported alongside formal proofs—F3 manages everyday reasoning patterns like "look for an easier problem" or "fully work a set of relevant examples". A seed domain provides the first concrete entries: definitions, examples, small proofs. Cross-domain reasoning patterns name moves like quotient constructions that work across many fields. Domain-specific patterns name constructs like ultrafilters that are particular to one area. A reasoning map shows how informal, cross-domain, and domain-specific patterns fit together to make mathematics work. Interactive tutorials let people practice by working through problems. Landscape mode shows how entries connect to neighbours. StackExchange import seeds the dictionary with Q\&A pairs. An agent protocol defines what queries and edits are permitted. General purpose mathematical models are used to describe the growth and development of futon6 and are presented in a way that will make them reusable in other knowledge domains.\\
 \par
 \par
-\begin{devmapgreenfield}
+\begin{devmapactive}
 \textbf{! instantiated-by: Prototype 0 — Informal Argument Support [👎/已 🍍/双]}\\
-  \texttt{:\allowbreak{}maturity :\allowbreak{}greenfield}\\
+  \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f3/\allowbreak{}P1,\allowbreak{} f3/\allowbreak{}P2]}\\
-  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Informal arguments import from F3;\allowbreak{} metadata attached]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [25 math-\allowbreak{}informal patterns created;\allowbreak{} 496/\allowbreak{}535 PlanetMath entries tagged;\allowbreak{} classical recognition validated]}\\
   \flexitag{+context:}F3 manages everyday reasoning patterns like "look for an easier problem".\\
   \flexitag{+if:}Mathematics should include informal reasoning alongside formal proofs\\
   \flexitag{+however:}Traditional dictionaries separate informal and formal content\\
   \flexitag{+then:}Import checked arguments from F3 with metadata; support both informal and formal entries\\
   \flexitag{+because:}Real mathematical practice uses informal reasoning patterns\\
-  \flexitag{+evidence:} evidence[F3 pattern canon exists] evidence[F3 check DSL operational]\\
+  \flexitag{+evidence:} evidence[F3 pattern canon exists] evidence[F3 check DSL operational] evidence[25 math-informal/*.flexiarg patterns authored — Polya-style heuristics + PlanetMath-derived] evidence[patterns-index.tsv extended: 819→844 rows with math-informal hotwords] evidence[LLM scan of 535 PlanetMath .tex files across 3 MSC domains identified 22 recurring reasoning moves] evidence[bb tagger (scripts/tag-patterns.bb) matches patterns to entries via classical hotword scoring] evidence[496/535 entries tagged; all 25 patterns fire (27-291 hits each); spot-checks sensible] evidence[Closed loop validated: LLM extracts → flexiarg+TSV formalises → classical keyword re-recognises]\\
 \par
   + NEXT-STEPS:\\
-    next[Define import contract from F3] next[Attach math metadata to imported arguments] next[Test informal/formal coexistence]\\
+    next[Tune hotword lists to reduce false positives (construct-auxiliary-object too broad)] next[Integrate pattern-tags.edn into F6 entity/relation graph] next[Connect tagged entries to F3 check DSL for live validation] next[Expand to additional MSC domains as PlanetMath data grows]\\
 \par
   \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
     pass[Informal arguments import correctly] pass[Metadata preserved] pass[Both types navigable together] fail[Informal content rejected or lost]\\
@@ -1594,7 +1777,7 @@ FUTON6 is a comprehensive mathematics dictionary. Informal arguments from F3 are
   \texttt{:\allowbreak{}pur-\allowbreak{}template "Import \{\{argument\}\},\allowbreak{} type:\allowbreak{} \{\{informal|\allowbreak{}formal\}\},\allowbreak{} metadata:\allowbreak{} \{\{attached\}\}"}\\
 \par
 \par
-\end{devmapgreenfield}
+\end{devmapactive}
 \begin{devmapgreenfield}
 \textbf{! instantiated-by: Prototype 1 — Seed Domain [🔸/小 💬/才]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}greenfield}\\
@@ -1733,20 +1916,20 @@ FUTON6 is a comprehensive mathematics dictionary. Informal arguments from F3 are
 \par
 \par
 \end{devmapgreenfield}
-\begin{devmapgreenfield}
+\begin{devmapactive}
 \textbf{! instantiated-by: Prototype 7 — StackExchange Import [🙅/叉 💤/久]}\\
-  \texttt{:\allowbreak{}maturity :\allowbreak{}greenfield}\\
+  \texttt{:\allowbreak{}maturity :\allowbreak{}active}\\
   \texttt{:\allowbreak{}depends-\allowbreak{}on [f6/\allowbreak{}P0]}\\
-  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Q\&\allowbreak{}A pairs imported;\allowbreak{} mapped to dictionary schema]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [114K physics QA pairs processed;\allowbreak{} NER kernel built;\allowbreak{} superpod job ready]}\\
   \flexitag{+context:}StackExchange has thousands of mathematical Q\&A pairs.\\
   \flexitag{+if:}You want to seed the dictionary with real content\\
   \flexitag{+however:}External content needs mapping to our schema\\
   \flexitag{+then:}Build importer that maps StackExchange Q\&A to dictionary entries with pattern tags\\
   \flexitag{+because:}Curated Q\&A provides initial density\\
-  \flexitag{+evidence:} evidence[StackExchange Math data available] evidence[Schema defined for entries]\\
+  \flexitag{+evidence:} evidence[StackExchange Math data available] evidence[Schema defined for entries] evidence[Streaming two-pass XML parser: constant-memory, handles multi-GB dumps on 4GB machines] evidence[physics.stackexchange processed: 114,562 QA pairs, 894 tags, 1.2M LaTeX fragments] evidence[Superpod batch job (scripts/superpod-job.py): 4-stage pipeline — parse, embeddings, LLM pattern tagging, clustering] evidence[NER kernel built: 19,236 terms from full PlanetMath (63 MSC repos, 9,477 .tex files) + SE tags] evidence[Classical term spotter (scripts/spot-terms.bb): 100\% SE coverage, 22 terms/entity mean] evidence[Negative-space analysis validates NER/pattern duality: terms cover formal scaffolding, patterns cover informal reasoning] evidence[Scope-detection patterns defined: Let/Define/Assume/Consider/where openers for local binding extraction] evidence[Superpod handoff runbook: Entangled literate program (data/first-proof/superpod-handoff-rob.lit.md) tangles 3 scripts] evidence[200-thread pilot: wiring diagrams for 4 corpora (math.SE, MO, physics.SE, PlanetMath); CT discrimination 81-89\% vs 18-34\%] evidence[NNexus Glasses demo: thread \#633512 rendered with NER, scopes, wiring, categorical badges, expression surfaces] evidence[Expression surface parsing: curated s-exp parses for \textasciitilde{}30 LaTeX expressions; every \$...\$ a typed surface] evidence[Structured scope map: hx/ends decomposition (symbol : description) for Let-bindings, ∀-quantifiers, where-constraints]\\
 \par
   + NEXT-STEPS:\\
-    next[Build StackExchange parser] next[Map Q\&A to entry schema] next[Tag with patterns] next[Review imported content]\\
+    next[Process math.stackexchange on superpod (3.4GB dump, Llama-3)] next[Add Stage 5 to superpod job: NER term spotting + scope detection] next[Add Stage 8: LaTeX → s-exp expression surface parsing (CPU-only, 128 cores)] next[Bootstrap loop: absorb math.SE tags into kernel, re-spot, iterate] next[Design binding type classification for GPU (Tier 2 NER)] next[Arxiv processing: extend pipeline to research papers] next[Feed processed math.SE into P10 wiring diagram LLM training pipeline] next[Feed expression surfaces into P11 hypergraph assembly + embedding]\\
 \par
   \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
     pass[Q\&A pairs import correctly] pass[Mapped to dictionary schema] pass[Pattern tags applied] fail[Import corrupts or loses content]\\
@@ -1755,7 +1938,7 @@ FUTON6 is a comprehensive mathematics dictionary. Informal arguments from F3 are
   \texttt{:\allowbreak{}pur-\allowbreak{}template "Import batch \{\{id\}\},\allowbreak{} questions:\allowbreak{} \{\{count\}\},\allowbreak{} tagged:\allowbreak{} \{\{tagged\}\}"}\\
 \par
 \par
-\end{devmapgreenfield}
+\end{devmapactive}
 \begin{devmapgreenfield}
 \textbf{! instantiated-by: Prototype 8 — Agent Protocol [🙅/无 🍍/工]}\\
   \texttt{:\allowbreak{}maturity :\allowbreak{}greenfield}\\
@@ -1799,7 +1982,101 @@ FUTON6 is a comprehensive mathematics dictionary. Informal arguments from F3 are
 \par
   \texttt{:\allowbreak{}psr-\allowbreak{}example "Selected reusable models for transfer because general models should work elsewhere"}\\
   \texttt{:\allowbreak{}pur-\allowbreak{}template "Model \{\{id\}\},\allowbreak{} domain:\allowbreak{} \{\{F6|\allowbreak{}other\}\},\allowbreak{} reused:\allowbreak{} \{\{yes|\allowbreak{}no\}\}"}\\
+\par
+\par
 \end{devmapgreenfield}
+\textbf{! instantiated-by: Prototype 10 — Wiring Diagram LLM [🔸/小 🐲/乃]}\\
+  \texttt{:\allowbreak{}maturity :\allowbreak{}design}\\
+  \texttt{:\allowbreak{}depends-\allowbreak{}on [f6/\allowbreak{}P0,\allowbreak{} f6/\allowbreak{}P7]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [Metatheory v3.0 defines 78-\allowbreak{}type schema;\allowbreak{} CT validation baseline;\allowbreak{} local topology metrics operational]}\\
+  \flexitag{+context:}The wiring diagram metatheory (v3.0) defines mathematical text as a\\
+    colored operad with 30 component types, 11 port types, 5 wire types, and 32 wire labels. Classical regex detection finds components and wires individually but cannot wire endpoints (50\% orphan rate). LLM extraction fills this gap but is expensive at scale. Training a dedicated model enables batch processing.\\
+  \flexitag{+if:}You want to extract wiring diagrams from all of math.SE (\textasciitilde{}500K-1.5M QA pairs)\\
+  \flexitag{+however:}API-based LLM extraction is too expensive at that scale\\
+  \flexitag{+then:}Train a dedicated wiring diagram LLM on the superpod using distillation\\
+    from Claude labels, with math.SE as bulk training data\\
+  \flexitag{+because:}The task decomposes into two learnable functions that LLMs natively\\
+    understand: text→wiring (extraction) and wiring→wiring (Q→A reasoning)\\
+\par
+  + ARCHITECTURE:\\
+\par
+    Task 1 — Text → Wiring Diagram (extraction): Input: mathematical text (SE answer, PM definition, nLab article) Output: \{components: [...], ports: [...], wires: [...]\} (78-type JSON) Training: distill from Claude on seed labels → fine-tune on bulk\\
+\par
+    Task 2 — Wiring Diagram → Wiring Diagram (reasoning): Input: question wiring diagram (open ports, missing conclusion) Output: answer wiring diagram (filled ports, added wires, conclusion) Training: every math.SE Q→A pair provides one (Q\_wiring, A\_wiring) example Insight: Q→A is native to LLM pretraining; wiring diagrams make the reasoning structure explicit rather than implicit in surface text\\
+\par
+    Validation loop: answer\_wd = Task2(question\_wd) answer\_text = render(answer\_wd) recovered\_wd = Task1(answer\_text) assert similar(answer\_wd, recovered\_wd)  \# round-trip consistency\\
+\par
+    Quality signal (free, no human labels): Local topology metrics as reward model — orphan rate, sink property, reachability, CAR/arity match The classical baseline provides negative examples (high orphan rate) Claude-labeled provides positive examples (well-formed wiring)\\
+\par
+  + DATA INVENTORY: data[PlanetMath: 9,451 entries — gold standard definitions with CAR, arity, pmrelated graph] data[nLab: \textasciitilde{}20,000 articles — cross-referenced, 137 bridge concepts to PM CT] data[Math.SE: \textasciitilde{}500K-1.5M QA pairs — bulk reasoning data, native Q→A structure] data[Physics.SE: 114K QA pairs — already processed, cross-domain validation] data[NER kernel: 19,236 terms — domain vocabulary for typed slots] data[Golden-20 CT entries: pre-baked wiring prompts for seed labeling]\\
+\par
+  + TRAINING PIPELINE: stage[1. Seed: Claude labels 200 entries with full wiring JSON (golden + bridge concepts)] stage[2. Bootstrap: LoRA fine-tune Llama-3-8B on seed labels for Task 1] stage[3. Scale: Run bootstrap model on math.SE via superpod (new Stage 3b)] stage[4. Filter: Keep extractions with low orphan rate + correct sink property] stage[5. Train: Full fine-tune on filtered math.SE wiring pairs for Task 1 + Task 2] stage[6. Validate: Check against PM gold standard — CAR match, arity match, topology improvement] stage[7. Curriculum: Use in-link stratification for curriculum learning — train on foundational concepts first]\\
+  \flexitag{+evidence:} evidence[Wiring diagram metatheory v3.0: 78 types (30 component + 11 port + 5 wire + 32 label)] evidence[CT validation: 313 PM entries, classical baseline (3.93 comp/entry, 3.60 wire/entry)] evidence[Local topology: 21\% well-formed by classical (50\% orphan rate = the gap LLM fills)] evidence[PM↔nLab bridge: 137 concept pairs for cross-corpus validation] evidence[PM in-link stratification: 9,451 entries, 18,326 links, power-law distribution] evidence[Component:wire ratio encodes style: PM 2:1 (reference) vs nLab 1:3 (tutorial)] evidence[Rewiring morphism: structured transformation preserving content, changing pedagogy] evidence[Colored operad structure: meta/domain/informal sorts with typed port constraints] evidence[Quotient functor tower: curriculum = sequence of coarsenings over the operad] evidence[Technote: technote-colored-operad-curriculum.md]\\
+\par
+  + NEXT-STEPS:\\
+    next[Download math.SE dump and estimate actual corpus size] next[Generate 200 Claude-labeled wiring diagrams from golden + bridge entries] next[Build LoRA training script for Task 1 (text → wiring JSON)] next[Design wiring diagram serialization format for Task 2 (compact, tokenizer-friendly)] next[Add Stage 3b to superpod-job.py: wiring extraction via fine-tuned model] next[Build Blockly prototype for visualization of extracted wiring diagrams]\\
+\par
+  \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
+    pass[Task 1 extracts wiring diagrams with <20\% orphan rate on PM gold standard] pass[Task 2 generates answer wirings that round-trip through Task 1] pass[Model runs on superpod at >100 entries/minute] pass[Extracted wirings match classical baseline on component/wire counts (±20\%)] fail[Model hallucinates component types not in the 78-type schema] fail[Orphan rate worse than classical baseline (>50\%)]\\
+\par
+  \texttt{:\allowbreak{}psr-\allowbreak{}example "Selected wiring diagram LLM because API extraction doesn't scale to math.SE"}\\
+  \texttt{:\allowbreak{}pur-\allowbreak{}template "Training run \{\{id\}\},\allowbreak{} task:\allowbreak{} \{\{T1|\allowbreak{}T2\}\},\allowbreak{} data:\allowbreak{} \{\{count\}\},\allowbreak{} orphan\_\allowbreak{}rate:\allowbreak{} \{\{rate\}\}"}\\
+\par
+\par
+\textbf{! instantiated-by: Prototype 11 — Structural Hypergraph Embeddings (LWGM) [🔸/小 🐲/乃]}\\
+  \texttt{:\allowbreak{}maturity :\allowbreak{}design}\\
+  \texttt{:\allowbreak{}depends-\allowbreak{}on [f6/\allowbreak{}P7,\allowbreak{} f6/\allowbreak{}P10]}\\
+  \texttt{:\allowbreak{}evidence-\allowbreak{}for-\allowbreak{}active [NNexus Glasses demo validates all annotation layers on thread \#633512;\allowbreak{} s-\allowbreak{}exp surface parsing curated]}\\
+  \flexitag{+context:}The pipeline produces rich per-thread annotations — NER terms, scope\\
+    bindings, wiring edges, categorical detections, expression surfaces — but these remain local to each thread. There is no global structure connecting threads by the *shape* of their mathematical arguments. Text embeddings (Stage 2) capture lexical similarity but not structural similarity: two threads using different words for the same pattern of reasoning land far apart.\\
+  \flexitag{+if:}You want "related questions" to mean "structurally analogous reasoning"\\
+    (e.g. a thread about sheaf cohomology and one about group extensions share the same universal-property + Let-binding + diagram-chase shape)\\
+  \flexitag{+however:}Text embeddings encode surface form, not argument structure\\
+  \flexitag{+then:}Assemble a typed hypergraph per thread from all annotation layers, then\\
+    embed hypergraphs into a vector space using graph neural networks; index for structural similarity search\\
+  \flexitag{+because:}The annotation layers already decompose mathematical arguments into\\
+    typed components — the hypergraph makes this structure explicit and the embedding makes it searchable\\
+\par
+  + ARCHITECTURE:\\
+\par
+    Stage 8 — Expression Surface Parsing (CPU x128): Input: thread wiring JSON + raw LaTeX from body\_html Output: s-exp parse tree per expression, typed by scope context Method: deterministic LaTeX parser (recursive descent, \textasciitilde{}150 LOC Python) Evidence: curated s-exp parses for 30 expressions in thread \#633512\\
+\par
+    Stage 9a — Thread Hypergraph Assembly (CPU): Input: NER terms + scope bindings + wiring edges + categorical labels + s-exp surfaces Output: one typed hypergraph per thread, format: \{nodes: [...], hyperedges: [...], types: [...]\} Node types: expression-surface, ner-term, scope-binding, post Hyperedge types: wiring-edge (assert/clarify/challenge/...), scope-binds (which scope governs which expressions), categorical-span (which cat concept covers which subgraph), term-occurrence (which NER term appears in which expression surface) The hypergraph is the thread’s *structural signature*.\\
+\par
+    Stage 9b — Hypergraph Embedding (GPU): Input: typed hypergraphs (batch of \textasciitilde{}2M threads) Output: fixed-dimensional embedding vector per thread (e.g. d=768) Model candidates:\\
+        - Graphormer (Microsoft): graph transformer, handles typed edges\\
+        - GPS (General Powerful Scalable): hybrid message-passing + transformer\\
+        - HGNN+ (Hypergraph Neural Networks): native hyperedge support\\
+        - HyperSAGE: inductive, handles unseen node types\\
+      Training signal (free, no human labels):\\
+        - Contrastive: threads sharing tags should embed nearby\\
+        - Contrastive: threads linked by SE "related questions" should embed nearby\\
+        - Contrastive: threads firing same categorical detections should embed nearby\\
+        - Negative: random thread pairs from different tag clusters\\
+      Could also distill: use Claude to judge structural similarity on 1K pairs as gold supervision, then train the GNN to match.\\
+\par
+    Stage 10 — Structural Similarity Index (CPU): Input: embedding vectors for all threads Output: FAISS index + k-NN similarity graph Enables: "find me threads with the same argument shape as this one" The similarity graph itself becomes a new annotation layer: structural neighbours are candidates for cross-domain pattern discovery (P2)\\
+\par
+  + THE LWGM VISION: A Large Wiring Graph Model is not an LLM — it embeds *argument structure*, not token sequences. The embedding space has dimensions corresponding to mathematical reasoning patterns, not word frequencies. Querying it asks "what other threads reason like this one?" — a question no text-based retrieval system can answer well.\\
+\par
+    Downstream uses:\\
+    - Structural search: find threads by argument shape, not keywords\\
+    - Pattern discovery: clusters in embedding space = recurring reasoning patterns\\
+    - Curriculum generation: path through embedding space = learning trajectory\\
+    - Anomaly detection: threads far from all clusters = novel reasoning\\
+    - Cross-domain transfer: "this algebra thread has the same shape as that topology thread"\\
+\par
+  + DATA REQUIREMENTS: data[Thread wiring JSON: \textasciitilde{}2M threads from math.SE + MathOverflow (from P7 superpod run)] data[Expression surfaces: s-exp parse of every LaTeX expression (from Stage 8)] data[NER terms + scopes: from existing pipeline stages 3-5] data[Categorical detections: from nlab-ct-reference.json (ships with repo)] data[Tag co-occurrence matrix: from SE metadata (free training signal)] data[SE "related questions" links: from Posts.xml RelatedPostIds (free training signal)]\\
+  \flexitag{+evidence:} evidence[NNexus Glasses demo: all 5 annotation layers rendered for thread \#633512 (data/first-proof/nnexus-glasses-demo.html)] evidence[Expression surfaces: s-exp parses for \textasciitilde{}30 expressions including display math diagrams] evidence[Scope maps: structured hx/ends decomposition (Let Γ : directed-graph, ∀ e ∈ E, where U(−) : forgetful-functor)] evidence[200-thread pilot: wiring + NER + scopes + categorical for 4 corpora confirms annotation layers are producible at scale] evidence[CT discrimination: 81-89\% true positive on category-theory threads vs 18-34\% on non-CT — the typing works]\\
+\par
+  + NEXT-STEPS:\\
+    next[Build LaTeX → s-exp parser (Python, recursive descent, handle common math constructs)] next[Define hypergraph JSON schema for thread structural signatures] next[Assemble hypergraphs for 200-thread pilot set (validate schema on real data)] next[Survey graph embedding models: Graphormer vs GPS vs HGNN+ for typed hypergraphs] next[Build contrastive training dataset from SE tag co-occurrence + related-questions links] next[Train prototype on 200-thread pilot, evaluate on held-out tag prediction] next[Scale to full math.SE corpus on superpod (GPU stage after P7/P10 pipeline)] next[Build FAISS index and structural search demo]\\
+\par
+  \texttt{:\allowbreak{}success-\allowbreak{}criteria}\\
+    pass[Hypergraph assembly produces valid typed graphs for >95\% of threads] pass[Embedding model trained on 2M threads converges] pass[Structural neighbours share tags at >2x rate of text-embedding neighbours] pass[Cross-domain structural matches validated by human review (>60\% agreement)] pass[FAISS index supports <100ms query time for structural search] fail[Embeddings degenerate (all threads map to same region)] fail[Structural similarity no better than tag co-occurrence baseline] fail[Hypergraph assembly crashes on >5\% of threads due to malformed annotations]\\
+\par
+  \texttt{:\allowbreak{}psr-\allowbreak{}example "Selected hypergraph embeddings because text embeddings cannot capture argument structure"}\\
+  \texttt{:\allowbreak{}pur-\allowbreak{}template "Embedding run \{\{id\}\},\allowbreak{} threads:\allowbreak{} \{\{count\}\},\allowbreak{} model:\allowbreak{} \{\{arch\}\},\allowbreak{} tag-\allowbreak{}pred-\allowbreak{}accuracy:\allowbreak{} \{\{acc\}\}"}\\
 \switchcolumn
 % FUTON7
 \textbf{FUTON7}\par

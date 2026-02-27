@@ -78,6 +78,17 @@
                 and has properties that must be read, not generated.
                 Hallucinating content into 間 produces false salience
                 and brittle composition."))
+    (関  (role gate-relation)
+         (note "Barrier, gate, typed connection. 関 is the structural
+                fact that components are related through constraints,
+                not mere adjacency. A gate pipeline is a chain of 関;
+                a core.logic relation is 関 made evaluable; a typed
+                port (mission-interface-signature) is 関 at a boundary.
+                関 formalizes what 間 perceives: the interval has
+                structure, and that structure can be traversed or
+                blocked. 間 reads the gap; 関 names the gate.
+                Together (無門関): the gate that dissolves when
+                honestly perceived — tension discovery as navigation."))
     (未知 (role non-equilibrium-interval)
          (note "Actionable but not predictable. Three-valued logic:
                 the system is neither in its prior state nor in its
@@ -256,6 +267,39 @@
   | futon3c pre-implementation | ARGUMENT written, exotype validated, no code | The social loop is specified but not instantiated. Non-equilibrium: the argument creates obligations the code hasn't satisfied. |
   | Context boundary | Between session compaction and new turn | The LLM has lost detailed context but retains summary. Actionable but not fully predictable. |
 
+  4.9 間 — Honest Interval
+
+  | Context | 間 instance | Evidence |
+  | Tension discovery | gap between devmap component and mission inventory | Tension browser reads 間: "peripheral-gauntlet/C-arena has no mission." The gap is structural, not empty — it has a devmap, a gate position, dependencies. Reading it honestly (not filling it) produces the correct next action. |
+  | futon1→futon1a porting | gap between declared invariants and implementations | "entity-lifecycle and referential-integrity were not ported." 間 perceived too late: the gap was filled with the assumption "it was ported" — false salience from hallucinated content. |
+  | A7-precondition | interval between 鹵 (potential) and 皿 (container) | Before composing, perceive whether the interval actually exists. A pattern library and a recording protocol may be adjacent without composing — 間 is the honest observation that composition hasn't happened yet. |
+  | Code→docs hypergraph | gap between computed links and persisted links | futon4's finder strategies compute links in Emacs hash tables. 間 is the honest observation that the links are not persisted — the gap between working model and durable fact. |
+
+  4.10 関 — Gate / Relation
+
+  | Context | 関 instance | Evidence |
+  | Peripheral gauntlet | G0→G7 gate pipeline | Each gate is a 関: a typed barrier with acceptance criteria. C-arena (Gate 0) must pass before C-umwelt (Gate 1) can begin. The chain of 関 IS the peripheral gauntlet. |
+  | core.logic relations | `coverso`, `componento`, `invarianto` | Each pldb/db-rel is a 関: a typed connection between facts. `(coverso mid comp-id)` IS the gate between "component exists" and "component is addressed." |
+  | mission-interface-signature | typed input/output ports | Every port is a 関 at a boundary: what the system exposes, typed, constrained. A box with no typed ports cannot participate in composition — missing 関. |
+  | Hyperedge endpoints | `devmap:X`, `component:X/Y`, `mission:Z` | Each endpoint is a 関 connecting the hyperedge to the entities it relates. Queryable: "find all 関 that touch component C-arena." |
+  | Tension→path trace | claim → mission → evidence → var → source | The full path is a chain of 関: each step is a typed gate. When all gates pass (can be traversed), the claim is grounded. When a gate blocks, that's a tension. |
+
+  4.11 間 + 関 → 無門関 (The Gateless Gate)
+
+  Tension discovery is 間 + 関 composed: read the gap honestly (間), then
+  traverse the gate structure (関) to find what the gap implies. The "gateless
+  gate" is not the absence of gates — it is the perception that the gate
+  dissolves when the interval is honestly read. The tension "C-arena has no
+  mission" IS the gate: traversing it (proposing the mission, tracing the
+  path) is how it opens. The barrier and the path are the same structure
+  seen from different sides of 間.
+
+  In operational terms: `query-uncovered-components` (core.logic) reads 間
+  relationally; `trace-tension-path` (futon3c) traverses the chain of 関
+  from tension to source. The composition of these two operations IS the
+  self-representing stack's discovery loop — and it should be invocable
+  on demand, not performed ad hoc.
+
   == 5. THE FUTONIC LOOP IN PRACTICE ==
 
   The abstract loop (§3) maps onto three concrete cycles:
@@ -323,6 +367,9 @@
   | 味 as embodied evaluation | retroactive-canonicalization | 味 IS the selection criterion in the Baldwin cycle |
   | 🔮 = (能 . 捨) | sospeso protocol (futon5/AGENTS.md) | 🔮 IS the regulator that the sospeso protocol implements |
   | 未知 / 非死非活 | explicit-exit-over-abandonment | 非死非活 IS the zombie-mission state that the pattern diagnoses |
+  | 間 as honest-interval | structural-tension-as-observation | 間 IS the perception that a gap has structure, before naming what fills it |
+  | 関 as gate-relation | mission-interface-signature | 関 IS the typed boundary that mission ports formalize; core.logic relations are evaluable 関 |
+  | 間 + 関 = 無門関 | tension discovery loop (M-self-representing-stack) | The discovery loop IS 間-reading composed with 関-traversal: perceive gap, navigate gate chain |
   | futonic-loop | proof-path event-protocol | The loop IS the abstract form of CLOCK_IN → ... → CLOCK_OUT |
 
   == 7. AXIOM A7: COMPOSITIONAL SALIENCE ==

@@ -4,6 +4,25 @@ Dual goals:
 1. Build a great futon1a (product)
 2. Demonstrate futonic best practices (process)
 
+## Plan Refresh (2026-03-01)
+
+This document now tracks finish-line execution rather than base-camp setup.
+The source-of-truth success criteria and gate state remain in
+`M-futon1a-rebuild.md`.
+
+Current operational state:
+- System is usable and test suite is green.
+- Mission is still incomplete due to parity/coverage gaps:
+  - proof-path coverage on all mutating endpoints
+  - global counter-ratchet enforcement
+  - 30-day production soak evidence
+
+Execution phases (ordered):
+1. **F1 Docbook parity** (completed 2026-03-01; `/api/alpha/docs/:book/*` + integration coverage landed)
+2. **F2 Proof-path completeness** (remove direct-write bypasses)
+3. **F3 Counter-ratchet promotion** (global guard, not repair-only)
+4. **F4 Soak + evidence** (operational completion criteria)
+
 ## Owner
 
 Joe
@@ -251,23 +270,25 @@ If blocked > 30 minutes:
 ## Success Metrics
 
 ### Process Metrics (Dual Goal: Best Practices)
-- [ ] Every module has PSR + PUR pair
-- [ ] Every layer has traceability chain
-- [ ] No orphaned PSRs (all have matching PURs)
-- [ ] Ping-pong handoffs documented
+- [x] Every module has PSR + PUR pair
+- [x] Every layer has traceability chain
+- [ ] No orphaned PSRs (all have matching PURs) — re-audit after F1-F3
+- [ ] Ping-pong handoffs documented for finish phases F1-F4
 
 ### Product Metrics (Dual Goal: Great futon1a)
-- [ ] All 5 invariants pass proof tests
+- [x] All 5 invariants pass proof tests
 - [ ] Any bug diagnosable in < 10 minutes
-- [ ] Migration succeeds without data loss
+- [x] Migration succeeds without data loss
 - [ ] 30 days production without silent failures
+- [x] Docbook API parity complete and verified by futon4 workflows
+- [ ] All mutating endpoints emit proof-path (`:path/id`)
+- [ ] Counter-ratchet is globally enforced on protected write classes
 
 ---
 
 ## Next Actions
 
-1. **Claude**: Create labs directory + PSR/PUR exemplars (Phase 0.1, 0.2)
-2. **Joe**: Decide on futon1a repo location (Phase 0.4)
-3. **Codex**: Create module map with repo layout (Phase 1.1)
-4. **Both**: Verify PSR/PUR emission works (Phase 0.3)
-5. **Gate check**: Confirm Part I complete before Part II
+1. **Claude/Codex**: review all mutating HTTP handlers; route any direct XTDB write through canonical pipeline and require `:path/id` in success payload.
+2. **Codex**: promote counter-ratchet to a global guard for protected write classes, with regression tests per class.
+3. **Joe + agents**: start soak log (daily checks + incident ledger) once F2-F3 land.
+4. **Gate check**: update `M-futon1a-rebuild.md` checkboxes only after objective evidence (tests + logs) is attached.

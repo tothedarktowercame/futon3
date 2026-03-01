@@ -877,15 +877,47 @@ the system's own specification is its first dataset.
 - [x] Canonical HTTP API specified in Section 2.6 (endpoints, shapes, error contract)
 - [x] API serves over HTTP with system context injection (Prototype 1, f8beb11)
 - [x] Read path: entity by UUID (`GET /entity/:id`) (Prototype 1, f8beb11)
-- [ ] Read path: lookup by external-id (`GET /entity?source=S&external-id=E`)
-- [ ] Proof-path event logging on all write operations
-- [ ] Counter-ratchet detects unexpected count drops
+- [x] Read path: lookup by external-id (`GET /entity?source=S&external-id=E`)
+- [x] Proof-path emitted on canonical pipeline writes (`run-write!` / `run-open-world!`)
+- [ ] Proof-path event logging on all write operations (including aux/compat endpoints)
+- [x] Counter-ratchet invariant function + tests exist
+- [ ] Counter-ratchet wired as a global write-path guard (not only repair/verify paths)
 - [ ] Any bug diagnosable in under 10 minutes
-- [ ] Model descriptor system rebuilt (Section 2.11) — rich descriptors, type registry
-- [ ] Meta/model API serves descriptors and runs verify (Section 2.11.4)
-- [ ] futon1's 6 model descriptors ingested as first dataset (Section 2.11.5)
+- [x] Model descriptor system rebuilt (Section 2.11) — rich descriptors, type registry
+- [x] Meta/model API serves descriptors and runs verify (Section 2.11.4)
+- [x] futon1's 6 model descriptors ingested as first dataset (Section 2.11.5)
 - [x] Migration from futon1 succeeds without data loss (17564 docs, checksum match)
 - [ ] futon1a runs in production for 30 days without silent failures
+- [x] Docbook API parity: `/api/alpha/docs/:book/*` implemented in futon1a (required by futon4 docbook sync/checkout)
+
+### Finish Plan Refresh (2026-03-01)
+
+The product is usable, but feature parity is still incomplete. Finish work is
+now organized into four phases:
+
+1. **P-F1: Docbook parity (completed 2026-03-01)**
+   - Implement `/api/alpha/docs/:book/*` surface in futon1a:
+     `contents`, `toc`, `entry`, `entries`, `heading/:doc-id`, `recent`,
+     `contents/order`, `doc/:doc-id`, `toc/:doc-id`.
+   - Add integration tests that prove futon4 docbook browse + checkout + sync
+     can run against futon1a only.
+2. **P-F2: Proof-path completeness**
+   - Route remaining write endpoints through `pipeline/run-write!` or
+     `pipeline/run-open-world!`, including aux endpoints that currently perform
+     direct XTDB writes.
+   - Add a test gate: every mutating HTTP endpoint returns `:path/id`.
+3. **P-F3: Counter-ratchet promotion**
+   - Promote counter-ratchet from helper/repair checks to an always-on guard for
+     protected write classes (entity, relation, descriptor, docbook).
+   - Add regression tests for unexpected count drops on each protected class.
+4. **P-F4: Operational sign-off**
+   - Establish a 30-day soak checklist (daily health + error-shape audit +
+     proof-path audit + restart-cycle spot checks).
+   - Keep mission open until soak evidence is archived.
+
+Definition of done for this mission refresh:
+- P-F1 through P-F3 merged and green in CI/local full test run.
+- P-F4 evidence log started, with explicit end date and owner.
 
 ### Derivation Requirements
 Every new domain pattern must demonstrate:

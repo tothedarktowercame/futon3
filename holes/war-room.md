@@ -28,6 +28,7 @@ summarises; the bulletins provide evidence and argument.
 | [2](war-bulletin-2.md) | 2026-02-18 | The Evidence Landscape Takes Shape | futon3c operational (614 tests, 11 peripherals); evidence supersedes war artifacts; mission control makes portfolio computable; devmap updated (P12-P16); WR-3 validated (zero structural rewrites) |
 | [3](war-bulletin-3.md) | 2026-02-22 | The Self-Representing Stack | Agent-to-agent IRC coordination operational; ideal/actual self-discrepancy as system architecture; Mission Control as physics engine (statics/dynamics/empirics); surface contracts as local reflexivity; system diagram at `futon3c/docs/mission-control-system.mm` |
 | [4](war-bulletin-4.md) | 2026-02-27 | The Portfolio Becomes Legible | Portfolio inference live (CONSOLIDATE + "review"); observation surface was half-blind (4/7 repos, 0% coverage, 3 saturated channels) — now calibrated; 73 missions triaged into 7 salience buckets; M-self-representing-stack visible as next priority; AIF loop validated itself (recommended review → found broken sensors → fixed them) |
+| [5](war-bulletin-5.md) | 2026-03-01 | The Tickle Experiment | Multi-agent CT review pipeline: 17 PRs, ~85 proposals assessed, ~60 entries merged; quality feedback loop validated (approval rate improved across batches); infrastructure bottlenecks identified (merge gap, stateless orchestrator, silent failures); surface contracts (I-1/I-2/I-3) held under sustained load; format evolved organically; experiment closed, M-self-representing-stack resumes |
 
 ## The Three-Futon Refactoring
 

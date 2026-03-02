@@ -879,9 +879,9 @@ the system's own specification is its first dataset.
 - [x] Read path: entity by UUID (`GET /entity/:id`) (Prototype 1, f8beb11)
 - [x] Read path: lookup by external-id (`GET /entity?source=S&external-id=E`)
 - [x] Proof-path emitted on canonical pipeline writes (`run-write!` / `run-open-world!`)
-- [ ] Proof-path event logging on all write operations (including aux/compat endpoints)
+- [x] Proof-path event logging on all write operations (including aux/compat endpoints) — `futon1a` commit `0ee5a9e`
 - [x] Counter-ratchet invariant function + tests exist
-- [ ] Counter-ratchet wired as a global write-path guard (not only repair/verify paths)
+- [x] Counter-ratchet wired as a global write-path guard (not only repair/verify paths) — `futon1a` commit `479a14c`
 - [ ] Any bug diagnosable in under 10 minutes
 - [x] Model descriptor system rebuilt (Section 2.11) — rich descriptors, type registry
 - [x] Meta/model API serves descriptors and runs verify (Section 2.11.4)
@@ -918,6 +918,12 @@ now organized into four phases:
 Definition of done for this mission refresh:
 - P-F1 through P-F3 merged and green in CI/local full test run.
 - P-F4 evidence log started, with explicit end date and owner.
+
+Status update (2026-03-02):
+- P-F2 completed (`futon1a` `0ee5a9e`)
+- P-F3 completed (`futon1a` `479a14c`)
+- P-F4 started; soak log created:
+  `futon1a/docs/evidence/soak-2026-03-02-to-2026-04-01.md`
 
 ### Derivation Requirements
 Every new domain pattern must demonstrate:

@@ -13,14 +13,12 @@ The source-of-truth success criteria and gate state remain in
 Current operational state:
 - System is usable and test suite is green.
 - Mission is still incomplete due to parity/coverage gaps:
-  - proof-path coverage on all mutating endpoints
-  - global counter-ratchet enforcement
   - 30-day production soak evidence
 
 Execution phases (ordered):
 1. **F1 Docbook parity** (completed 2026-03-01; `/api/alpha/docs/:book/*` + integration coverage landed)
-2. **F2 Proof-path completeness** (remove direct-write bypasses)
-3. **F3 Counter-ratchet promotion** (global guard, not repair-only)
+2. **F2 Proof-path completeness** (completed 2026-03-02; `futon1a` `0ee5a9e`)
+3. **F3 Counter-ratchet promotion** (completed 2026-03-02; `futon1a` `479a14c`)
 4. **F4 Soak + evidence** (operational completion criteria)
 
 ## Owner
@@ -281,14 +279,14 @@ If blocked > 30 minutes:
 - [x] Migration succeeds without data loss
 - [ ] 30 days production without silent failures
 - [x] Docbook API parity complete and verified by futon4 workflows
-- [ ] All mutating endpoints emit proof-path (`:path/id`)
-- [ ] Counter-ratchet is globally enforced on protected write classes
+- [x] All mutating endpoints emit proof-path (`:path/id`)
+- [x] Counter-ratchet is globally enforced on protected write classes
 
 ---
 
 ## Next Actions
 
-1. **Claude/Codex**: review all mutating HTTP handlers; route any direct XTDB write through canonical pipeline and require `:path/id` in success payload.
-2. **Codex**: promote counter-ratchet to a global guard for protected write classes, with regression tests per class.
-3. **Joe + agents**: start soak log (daily checks + incident ledger) once F2-F3 land.
-4. **Gate check**: update `M-futon1a-rebuild.md` checkboxes only after objective evidence (tests + logs) is attached.
+1. **Joe + agents**: continue daily soak entries through 2026-04-01 using `futon1a/docs/soak-operations.md`.
+2. **Joe + agents**: run restart spot check at least twice per week and log outcomes in soak evidence.
+3. **Claude/Codex**: keep incident ledger current (impact, mitigation, verification, MTTR).
+4. **Gate check**: close mission only after 30-day soak evidence is archived and remaining product/process metrics are explicitly adjudicated.

@@ -124,6 +124,53 @@ operating across agents: the format that survived review pressure was the
 format that stuck. The intermediate proposal stage was a scaffold that the
 pipeline outgrew.
 
+## Finding 6: "Codex Code" Worked, But Only as a Partial Control Layer
+
+During this run we effectively created a "Codex Code" layer: not a new model,
+but a runtime contract around Codex invocation (session continuity, surface
+instructions, evidence-aware guards, and transport wiring).
+
+### What We Built
+
+1. **Session continuity lane** shared across IRC and Emacs via one session id.
+2. **Surface contract prompts** ("you are on IRC, keep concise, report artifacts").
+3. **Execution guardrails** that rewrite unsupported "starting now" claims into
+   planning-only language when no tool/command evidence appears in the turn.
+4. **WS invoke bridge + HTTP invoke endpoint** so Codex could be addressed as
+   `codex-1` from orchestrator traffic.
+5. **Bridge-side timeout handling improvements** (busy checks, status queries,
+   and explicit timeout/busy messages instead of opaque failures).
+
+### What Worked
+
+- Codex could repeatedly produce real `.tex` artifacts, push branches, and
+  open PRs in the target repo.
+- Shared session continuity preserved task context across surfaces often enough
+  to resume after interruptions.
+- The execution guard reduced false progress claims and made status messages
+  more honest under degraded conditions.
+- Human + agent coordination still converged: PR #53 landed after repeated
+  orchestration turbulence.
+
+### What Did Not Fully Work
+
+- **Request/response timing broke under long turns.** We saw repeated
+  `WS invoke timeout` failures while work may still have continued in the
+  background, creating controller/worker desynchronization.
+- **Task-id handshake drifted.** Codex emitted `DONE #8` / `DONE #54` while
+  Tickle treated them as unknown tasks; completion protocol was not enforced
+  end-to-end.
+- **Liveness remained inference-based.** We still lacked a robust heartbeat +
+  in-flight lease model, so "is Codex dead or still working?" required manual
+  inspection.
+- **State remained split-brain.** Session/thread state, task queue state, and
+  IRC-visible state could diverge during retries/resets.
+
+The net result: "Codex Code" was good enough to generate significant output,
+but not yet good enough to guarantee deterministic orchestration behavior.
+It increased throughput and reduced some classes of failure, but did not close
+the control-loop reliability gap.
+
 ## Strategic Assessment: What the Social Loop Needs
 
 The experiment proved the social AIF loop can produce real work. What it
@@ -164,6 +211,10 @@ needs to scale:
 8. **Review → evidence pipeline** — Claude's review verdicts should emit
    evidence entries in the futon1a store, not just GitHub comments. This
    connects the CT review loop to the portfolio inference observation surface.
+
+9. **DONE protocol hardening** — Assign task ids centrally and require strict
+   completion schema validation (`DONE #<issued-id> :: <artifact-url>`),
+   rejecting non-issued ids before they hit mission state.
 
 ## War Room Implications
 

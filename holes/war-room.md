@@ -16,6 +16,15 @@ This document sits one level above mission control. Individual missions
 (M-coordination-rewrite, M-drawbridge-multi-agent, etc.) operate within
 a single futon. The War Room coordinates across futons and across missions.
 
+## The Holistic Argument
+
+**[holistic-argument-sketch.md](holistic-argument-sketch.md)** — Sketch of the
+third-order self-representation: the stack arguing for its own existence and
+next steps. Synthesizes devmaps, missions, patterns, evidence, and commercial
+analysis (futon7) into a navigable case with explicit support/attack relations.
+The bulletins below provide evidence; the holistic argument composes it. A
+focused "prover" pass will solidify the argument later.
+
 ## War Bulletins
 
 Strategic assessments with cross-futon implications. Each bulletin captures

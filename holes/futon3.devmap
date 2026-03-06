@@ -159,6 +159,7 @@ As of 2026-02-18 the original "futon3" scope is implemented as:
 
   + EVIDENCE:
     evidence[library/coordination/ARGUMENT.flexiarg (gate pipeline argument)]
+    evidence[holes/completed-mission-summaries.md: M-social-exotype — social/task/glacial composition verified; bootstrap closure evidence for gate pipeline integration]
     evidence[futon3b/src/futon3/gate/pipeline.clj composes G5→G0]
     evidence[futon3b/src/futon3/gate/shapes.clj defines typed evidence boundary]
     evidence[futon3b/src/futon3/gate/errors.clj defines structured rejections]
@@ -514,6 +515,8 @@ since the original devmap predates them.
 
   + EVIDENCE:
     evidence[futon3c/src/futon3c/social/shapes.clj: ~550 lines, Malli shapes for all social types]
+    evidence[holes/completed-mission-summaries.md: M-agency-unified-routing — single-JVM agent routing baseline that this pipeline operationalizes]
+    evidence[holes/completed-mission-summaries.md: M-social-exotype — verified social loop + composition constraints that anchor this prototype]
     evidence[futon3c/src/futon3c/social/{presence,authenticate,mode,dispatch,persist,validate}.clj: 5 pipeline stages]
     evidence[futon3c/src/futon3c/social/bells.clj: bell dispatcher (standup bell + test bell, 12 tests)]
     evidence[futon3c/src/futon3c/agency/registry.clj: multi-agent registry, session lifecycle]
@@ -557,6 +560,8 @@ since the original devmap predates them.
     evidence[Forum service OBSOLETE — superseded by evidence landscape]
 
   + NEXT-STEPS:
+    next[M-forum-refactor: complete Parts II-IV for evidence-store invariants, thread projection, and S-validate integration]
+    next[holes/non-completed-mission-summaries.md: M-forum-refactor - evidence landscape mission remains active (Part I ready; Parts II-IV blocked)]
     next[Add :query/subject-type filter to EvidenceQuery (gap G4 from mission-control VERIFY)]
     next[Connect futon3b proof-paths as evidence entries]
     next[Wire Arxana Lab viewer (futon4) to evidence endpoints]
@@ -585,6 +590,8 @@ since the original devmap predates them.
 
   + EVIDENCE:
     evidence[futon3c/src/futon3c/peripheral/runner.clj: PeripheralRunner protocol]
+    evidence[holes/completed-mission-summaries.md: M-psr-pur-mesh-peripheral — discipline envelope with PSR/PUR hop semantics]
+    evidence[holes/completed-mission-summaries.md: M-alfworld-pattern-discovery — ALFWorld loop produced reusable patterns via peripheral execution]
     evidence[futon3c/src/futon3c/peripheral/tools.clj: ToolBackend protocol + dispatch]
     evidence[futon3c/src/futon3c/peripheral/common.clj: shared helpers (action validation, spec loading)]
     evidence[futon3c/src/futon3c/peripheral/evidence.clj: evidence emission helpers]
@@ -595,7 +602,8 @@ since the original devmap predates them.
     evidence[1 shaped: chat (IRC bridge fills role in practice)]
 
   + NEXT-STEPS:
-    next[M-peripheral-gauntlet: real-time multi-peripheral scenarios]
+    next[M-peripheral-gauntlet: execute real-time multi-peripheral scenarios across the 8-gate gauntlet; VERIFY work still pending]
+    next[holes/non-completed-mission-summaries.md: M-peripheral-gauntlet - ARGUE complete, VERIFY pending with outstanding gate demonstrations]
     next[Wire chat peripheral implementation (or confirm IRC bridge suffices)]
 
   :success-criteria
@@ -623,6 +631,7 @@ since the original devmap predates them.
 
   + EVIDENCE:
     evidence[futon3c/src/futon3c/transport/protocol.clj: wire protocol shapes (~500 lines, 31 tests)]
+    evidence[holes/completed-mission-summaries.md: M-IRC-stability — six failure-mode hardening pass that stabilized always-on IRC transport]
     evidence[futon3c/src/futon3c/transport/http.clj: HTTP adapter (15 tests)]
     evidence[futon3c/src/futon3c/transport/ws.clj: WebSocket adapter (16 tests)]
     evidence[futon3c/src/futon3c/transport/irc.clj: IRC bridge with F1-F6 stability (~850 lines, 40 tests)]
@@ -630,7 +639,8 @@ since the original devmap predates them.
     evidence[112 transport tests total, 0 failures]
 
   + NEXT-STEPS:
-    next[M-sliding-blackboard: Emacs UI integration with transport]
+    next[M-sliding-blackboard: implement Emacs UI integration with transport via extracted side-panel code blocks]
+    next[holes/non-completed-mission-summaries.md: M-sliding-blackboard - mission captured as design only, not yet implemented]
 
   :success-criteria
     pass[HTTP, WebSocket, IRC adapters operational]
@@ -655,6 +665,10 @@ since the original devmap predates them.
 
   + EVIDENCE:
     evidence[futon3c/src/futon3c/peripheral/mission.clj: cycle machine, phase gates, obligation tracking]
+    evidence[holes/completed-mission-summaries.md: M-mission-peripheral — generalized mission cycle machine (9 phases, obligation ledger, snapshots)]
+    evidence[holes/completed-mission-summaries.md: M-mission-control — portfolio observation layer (inventory, coverage, review/backfill tooling)]
+    evidence[holes/completed-mission-summaries.md: M-operational-readiness — overnight reliability gates for unattended mission execution]
+    evidence[holes/completed-mission-summaries.md: M-portfolio-inference — AIF-style portfolio inference on top of mission-control observations]
     evidence[futon3c/src/futon3c/peripheral/mission_control.clj: portfolio observation peripheral]
     evidence[futon3c/src/futon3c/peripheral/mission_control_backend.clj: inventory, devmaps, coverage, mana, backfill]
     evidence[futon3c/holes/missions/M-mission-peripheral.md: INSTANTIATE complete]

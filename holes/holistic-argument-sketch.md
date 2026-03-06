@@ -18,6 +18,38 @@ proposition: the infrastructure exists and runs daily. What's missing
 is the synthesis — the coherent, queryable case that composes all of
 these into a single navigable argument.
 
+## Demonstration: Thesis-First Paragraph (Draft)
+
+The thesis is that software development should be self-explaining and
+self-correcting: every important action should carry a clear intent,
+produce observable results, leave a durable evidence trail, and feed
+back into better future decisions. In this stack, that means combining
+a human-facing control surface (so a person can see and steer work),
+reliable storage that survives restarts, an experimentation engine for
+testing adaptive behavior, a live coordination layer for people and
+agents working together, and a mission workflow that turns tasks into
+checkable records instead of chat history. It also includes a curated
+pattern library that captures what has worked before, a memory workspace
+that links documents, code, and evidence in one navigable graph, and a
+transfer layer that tests whether useful structures found in one domain
+can be reused in another. Completed work already shows this is practical:
+real-time coordination is stable, mission tracking and evidence viewing
+are operational, and cross-domain pattern tooling is running. Current
+work focuses on closing the remaining gap: making the whole system
+legible as one connected argument, enriching code with mission and
+evidence context, and finishing multi-agent operational routines that
+are still partly manual. In short, the claim is not just "build software,"
+but "build software that can justify itself."
+
+## Current Limitation (Known, Not Fixed Here)
+
+The stronger FUTON thesis reaches beyond software process into a general
+theory of applied, evidence-backed coordination in the world. In practice,
+that stronger claim currently depends on FUTON7, which is still under-
+specified. So this sketch focuses on what is already well-instantiated
+in the stack, while treating FUTON7 as the most important open framing
+gap for the fuller thesis.
+
 ---
 
 ## What Actually Exists (The Evidential Base)

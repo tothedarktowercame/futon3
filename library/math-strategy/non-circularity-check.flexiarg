@@ -1,0 +1,52 @@
+@flexiarg math-strategy/non-circularity-check
+@title Non-Circularity Check
+@sigils [🔄/非]
+@keywords nontrivial, circular, independence, construction, target, bootstrap, witness
+@audience mathematicians, proof-writers
+@tone heuristic
+@factor Persistence (viriya)
+
+! conclusion:
+  When you construct an object to witness an existence claim, verify that the
+  construction does not secretly depend on the thing you are trying to prove exists.
+
+  + context: You are proving "there exists X with property P" by exhibiting a
+    concrete X. The construction uses ingredients (parameters, formulas, prior
+    results) that might implicitly assume P already holds.
+
+  + IF:
+      Your construction involves the same mathematical objects that appear in the
+      target property (e.g., building a Markov chain whose stationary distribution
+      involves certain polynomials, using transition rates that might depend on
+      those same polynomials).
+
+  + HOWEVER:
+      Not all apparent circularity is real. A construction may use the same
+      *notation* as the target without logical dependence — the transition rates
+      may be defined purely from combinatorial data, even though the stationary
+      distribution involves special functions. The check must be precise about
+      what "depends on" means.
+
+  + THEN:
+      (a) List every ingredient of the construction (parameters, rates, rules).
+      (b) For each ingredient, trace its definition: does it reference the
+          target property or the objects whose existence you claim?
+      (c) If yes: either restructure the construction to remove the dependence,
+          or prove that the dependence is only apparent (e.g., the formula
+          simplifies to something independent).
+      (d) State the non-circularity explicitly in the proof ("note that the
+          transition rates depend only on x, t, and the current configuration,
+          not on values of F*_μ").
+
+  + BECAUSE:
+      Circularity in existence proofs is subtle and common. The most dangerous
+      form is a construction that "works" only because it smuggles the
+      conclusion into the premises. Reviewers trained in constructive mathematics
+      will spot this; the rest will be misled. An explicit non-circularity
+      statement inoculates the proof.
+
+  + NEXT-STEPS:
+    next[List all ingredients of the construction.]
+    next[Trace each ingredient to its definition.]
+    next[Flag any that reference the target property.]
+    next[Resolve or state the independence explicitly.]

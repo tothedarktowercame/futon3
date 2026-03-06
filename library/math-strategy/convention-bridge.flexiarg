@@ -1,0 +1,48 @@
+@flexiarg math-strategy/convention-bridge
+@title Convention Bridge
+@sigils [🌉/桥]
+@keywords notation, convention, normalization, starred, unstarred, identify, bridge, factor, cancel, ratio
+@audience mathematicians, proof-writers
+@tone heuristic
+@factor Discernment (paññā)
+
+! conclusion:
+  When two notational conventions refer to the same mathematical object (or differ
+  by a known factor), make the identification explicit and prove it.
+
+  + context: Your argument needs to connect results stated in different notational
+    conventions — e.g., starred vs unstarred polynomials, different normalization
+    choices, author-specific definitions of the same concept.
+
+  + IF:
+      Two sources use different notation for what you believe is the same object,
+      and your conclusion depends on equating them (or showing their ratio cancels).
+
+  + HOWEVER:
+      Convention differences are a common source of silent errors. What looks like
+      "the same thing with different notation" may hide a genuine mathematical
+      difference — a constant factor, a domain restriction, or an implicit
+      specialization that does not always hold. Asserting equivalence without proof
+      is precisely where reviewers find gaps.
+
+  + THEN:
+      (a) State both conventions precisely, with citations.
+      (b) Write the explicit relationship: A* = c · A, or A* = f(A), giving the
+          transformation.
+      (c) Prove the relationship holds in your parameter regime (e.g., q=1, x_i>0).
+      (d) If the relationship is well-known, cite the specific proposition — do not
+          write "it is well known that."
+      (e) If only cancellation in a ratio matters, prove that the bridging factor
+          is state-independent.
+
+  + BECAUSE:
+      Notation bridges that seem trivial to the author are the #1 source of
+      reviewer objections in proofs that invoke external results. The five minutes
+      spent making the bridge explicit saves weeks of back-and-forth. The bridge
+      itself may reveal constraints you missed.
+
+  + NEXT-STEPS:
+    next[Write both conventions side by side.]
+    next[Identify the bridging factor or transformation.]
+    next[Prove or cite the relationship in your parameter regime.]
+    next[Check that the bridge holds at boundary cases (t→0, t→1, n=2).]

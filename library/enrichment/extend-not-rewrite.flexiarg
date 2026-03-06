@@ -1,0 +1,33 @@
+@flexiarg enrichment/extend-not-rewrite
+@title Extend, Don't Rewrite
+@sigils [节/本]
+@keywords extend, rewrite, reuse, existing, script, I-4, read-before-write
+@audience futon developers, enrichment operators
+@tone pragmatic
+@factor Keen investigation (dhammavicaya)
+@references [stack-coherence/evidence-ledger enrichment/ARGUMENT]
+
+! conclusion:
+  When 80% of the required functionality already exists in a tested script,
+  add to it rather than writing a replacement.
+
+  + context: Layer 0 of M-futon-enrichment requires namespace topology, git
+    churn, and indentation complexity ingested as hyperedges. The existing
+    ingest-three-columns.py already handles namespace/var/requires ingestion
+    with tested HTTP helpers and error handling.
+  + IF:
+    The existing ingestion script handles the hard infrastructure (HTTP POST,
+    error handling, count verification, EDN parsing) and 80% of the data.
+  + HOWEVER:
+    It lacks git churn and indentation complexity functions.
+  + THEN:
+    Add a --layer0 flag and two new functions (~65 lines) to the existing
+    script rather than writing a new enrichment-specific script.
+  + BECAUSE:
+    I-4 (Read Before You Write) — the existing code embeds design decisions
+    about endpoint format, penholder auth, error recovery, and verification
+    that would need to be re-discovered in a new script. Extension preserves
+    these decisions; rewriting discards them.
+  + NEXT-STEPS:
+    - evidence: diff of ingest-three-columns.py before/after Layer 0 addition
+    - evidence: --layer0 --count output showing new hyperedge types

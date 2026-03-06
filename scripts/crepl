@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# crepl: Claude REPL with readline support
+# Convenience wrapper around claude-repl that adds rlwrap for history + editing
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+HISTFILE="${HOME}/.claude-repl-history"
+
+exec rlwrap -H "$HISTFILE" -s 1000 -c -b '(){}[].,+' "$SCRIPT_DIR/claude-repl" "$@"

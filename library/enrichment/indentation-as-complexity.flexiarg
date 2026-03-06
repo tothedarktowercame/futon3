@@ -1,0 +1,41 @@
+@flexiarg enrichment/indentation-as-complexity
+@title Indentation as Universal Complexity Proxy
+@sigils [引/节]
+@keywords indentation, complexity, nesting, depth, universal, proxy, bootstrap
+@audience futon developers, enrichment operators
+@tone pragmatic
+@factor Keen investigation (dhammavicaya)
+@references [iching/hexagram-53-jian p4ng/reflect-in-layers enrichment/ARGUMENT]
+
+! conclusion:
+  Use mean/max indentation depth as a cheap, language-agnostic complexity
+  bootstrap; refine with language-specific analysis in later layers.
+
+  + context: The reflection API provides rich structural metadata for Clojure
+    (arglists, protocols, dispatch). But .el, .py, .edn, and .js files have
+    no reflection endpoint. A universal complexity signal is needed for the
+    cross-repo hotspot analysis in Layer 0.
+  + IF:
+    We need a complexity metric that works for .clj, .el, .py, .js, and .edn
+    files — all languages in the futon stack.
+  + HOWEVER:
+    Indentation depth correlates with nesting but misses semantic complexity
+    (a deeply-nested but simple cond vs. a flat but algorithmically dense
+    function). It's crude.
+  + THEN:
+    Ingest mean-depth, max-depth, and line-count per file as
+    code/indentation-complexity hyperedges. Treat this as a bootstrap signal
+    — good enough to identify outliers ("why is this file nested 12 levels
+    deep?"), refined in later layers with AST analysis or treesit.
+  + BECAUSE:
+    A crude universal metric that exists NOW is more useful than a precise
+    language-specific metric that doesn't exist yet. Giugliano validated
+    this at multi-million-line scale: "Indentation is good enough to apply
+    in general. Even Lisp gets formatted in a standard way." The key is
+    using it to FIND weird things, not to MEASURE exact complexity.
+  + NEXT-STEPS:
+    - evidence: outlier report — files with max-depth > 10 or mean-depth > 5
+    - evidence: comparison with reflection-based complexity for Clojure files
+      (do indentation outliers match protocol/multimethod complexity?)
+    - falsifying-observation: if top-indentation files are all auto-generated
+      or data files, the metric is noise — exclude those file patterns.

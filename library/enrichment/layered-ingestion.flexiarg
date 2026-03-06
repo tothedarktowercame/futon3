@@ -1,0 +1,44 @@
+@flexiarg enrichment/layered-ingestion
+@title Layered Ingestion Architecture
+@sigils [节/引]
+@keywords layer, ingestion, topology, provenance, evidence, tension, dependency, phase
+@audience futon developers, enrichment operators
+@tone technical
+@factor Keen investigation (dhammavicaya)
+@references [p4ng/reflect-in-layers iching/hexagram-53-jian enrichment/ARGUMENT]
+
+! conclusion:
+  Structure enrichment as six layers (L0-L5) where each layer addresses one
+  enrichment concern and depends on the previous layer being verified.
+
+  + context: The code browser needs six kinds of enrichment data: docs
+    (existing), mission provenance, pattern provenance, evidence binding,
+    tension surface, and cross-futon dependencies. Ingesting all six at once
+    would be fragile (errors in topology corrupt provenance) and unverifiable
+    (too many moving parts to check).
+  + IF:
+    Six enrichment concerns need to be ingested into the hyperedge store,
+    each with different data sources and validation criteria.
+  + HOWEVER:
+    Later layers depend on earlier layers being correct (mission provenance
+    references namespaces from L0; evidence binding references missions from
+    L1). Ingesting them simultaneously means errors cascade silently.
+  + THEN:
+    Six layers, each verified before the next:
+    L0: Namespace topology + complexity + churn (structural ground truth)
+    L1: Mission provenance (var → mission, from mission docs + git blame)
+    L2: Pattern provenance (var → pattern, from PSR/PUR evidence)
+    L3: Evidence binding (var → evidence entries)
+    L4: Tension surface (var → invariant violations)
+    L5: Cross-futon dependencies (var → var across repos)
+  + BECAUSE:
+    The reflect-in-layers [节] pattern says layered reflection builds shared
+    understanding. Each layer is a checkpoint: verify L0 topology before
+    attempting L1 provenance. Hexagram-53 [引] says durable change is built
+    incrementally. The dependency chain (L0→L1→...→L5) makes each step
+    small enough to review and correct independently.
+  + NEXT-STEPS:
+    - evidence: Layer 0 verified (namespace count matches reflection API)
+    - evidence: Layer 1 verified (every var→mission edge traceable to a
+      mission doc or git blame commit)
+    - evidence: replay query showing L0→L1 growth in XTDB

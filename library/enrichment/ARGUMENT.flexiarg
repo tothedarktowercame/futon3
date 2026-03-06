@@ -1,0 +1,212 @@
+@flexiarg enrichment/ARGUMENT
+@title Argument for Futon Enrichment: Rational Reconstruction of Cross-Column Connective Tissue
+@keywords enrichment, rational-reconstruction, layer, hyperedge, evidence, topology, provenance, tension, replay
+@audience futon developers, Arxana users, mission operators
+@tone analytic-foundational
+@style argument
+@references [enrichment/layered-ingestion enrichment/rational-reconstruction enrichment/churn-as-signal enrichment/extend-not-rewrite enrichment/layer-as-evidence p4ng/reflect-in-layers iching/hexagram-53-jian agent/evidence-over-assertion stack-coherence/evidence-ledger realtime/learn-as-you-go]
+
+@summary The futon stack has 1,500+ hyperedges in XTDB but the cross-column
+connective tissue is missing — the edges that say "this function was created
+by this mission, applies this pattern, and participates in these tensions."
+Rather than a one-shot static analysis dump, we build this connective tissue
+through rational reconstruction: layered, timestamped, replayable ingestion
+where each layer is itself an evidence entry. Five carried patterns govern
+five concerns: reflect-in-layers (architecture), hexagram-53 (incrementality),
+evidence-over-assertion (grounding), evidence-ledger (auditability),
+learn-as-you-go (learning capture). The existing ingest-three-columns.py
+already handles 80% of Layer 0; the remaining 20% (git churn, indentation
+complexity) extends it with two functions, not a new script. The endgame is
+a code browser where every function shows its mission, patterns, evidence,
+tensions, and cross-futon dependencies — static analysis as documentation
+for bots, maintained per-mission, replayable through XTDB bitemporality.
+
+! argument:
+
+  == PART I: The Connective Tissue Gap ==
+
+  E1. [from M-three-column-stack, complete 2026-03-04]
+  The three-column stack established the schema: code, project, and math
+  columns with typed hyperedges and cross-column invariants (INV-1 through
+  INV-4). The plumbing works — 1,500+ hyperedges round-trip through XTDB.
+
+  E2. [from M-self-representing-stack, complete 2026-03-04]
+  Tensions trace through 6 gates, reflection envelopes ground strategic
+  claims to source code. The navigable self-representation exists in
+  principle.
+
+  E3. [the gap]
+  The columns are mostly empty of cross-references. The code column has
+  namespaces and vars. The project column has devmaps and tensions. But
+  there are no edges saying "build-portfolio-review was created by
+  M-mission-control, uses learn-as-you-go, has 3 evidence entries, and
+  every time it changes, transport/http.clj also changes." The browser
+  shows docbook matches. It could show the system's actual history.
+
+  == PART II: Five Patterns, Five Concerns ==
+
+  The mission carries five patterns from the PSR. Each governs a distinct
+  concern of the enrichment process:
+
+  P1. [p4ng/reflect-in-layers 节]
+  "Layered reflection builds shared understanding and adaptive capacity."
+
+  CONCERN: Architecture. Enrichment is structured as numbered layers
+  (L0-L5), each a timestamped batch of hyperedges. Layer 0 is namespace
+  topology. Layer 1 is mission provenance. Each layer builds on the last.
+  The layer structure IS the architecture — not a deployment convenience
+  but a reflective scaffold that evolves with system maturity.
+
+  P2. [iching/hexagram-53-jian 引]
+  "Durable change is built incrementally."
+
+  CONCERN: Incrementality. No big-bang import. Each layer is small enough
+  to review, verify, and correct before the next. Layer 0 adds topology
+  and complexity signals. Only after L0 is verified do we attempt L1
+  (mission provenance). The rational reconstruction proceeds gradually —
+  each step is durable before the next begins.
+
+  P3. [agent/evidence-over-assertion 示]
+  "Evidence transforms agent output from 'trust me' to 'check this.'"
+
+  CONCERN: Grounding. Every enrichment layer produces verifiable
+  artifacts: hyperedge counts (before/after), anomaly lists, and an
+  evidence entry summarizing what was found. The enrichment is not a
+  claim about the codebase — it is a checkable record of what was
+  observed. If the reflection API says a namespace has no docstring,
+  that's a fact recorded as an invariant violation, not an opinion.
+
+  P4. [stack-coherence/evidence-ledger 本]
+  "Claims must cite reproducible proofs or they drift into fiction."
+
+  CONCERN: Auditability. Each layer is a ledger entry:
+  meta/enrichment-layer hyperedge with timestamp, counts, anomalies.
+  Re-running the same layer produces the same edges (idempotent).
+  XTDB bitemporality means the ledger is append-only — corrections
+  in later layers don't erase earlier layers, they supersede them.
+  The audit trail is the enrichment history itself.
+
+  P5. [realtime/learn-as-you-go 日]
+  "Explicit learnings reduce repeated mistakes and speed calibration."
+
+  CONCERN: Learning capture. The rational reconstruction framing means
+  each layer records not just what was found but what was SURPRISING.
+  "3 orphan namespaces" is a finding. "Orphan namespace X was expected
+  to be dead code but is actually the main entry point for the IRC
+  bridge" is a learning. Learnings feed back into the enrichment
+  discipline for subsequent layers and future missions.
+
+  == PART III: Key Design Decisions ==
+
+  D1. Extend, don't rewrite.
+  [see enrichment/extend-not-rewrite]
+  IF: ingest-three-columns.py already ingests code/namespace, code/var,
+      code/requires — 80% of Layer 0.
+  HOWEVER: It lacks git churn and indentation complexity.
+  THEN: Add --layer0 flag with two new functions to the existing script.
+  BECAUSE: I-4 (Read Before You Write) — writing a new script when the
+  existing one handles the hard parts (HTTP helpers, hyperedge format,
+  error handling, verification) wastes effort and ignores hard-won
+  design decisions embedded in the existing code.
+
+  D2. Git churn as behavioral signal.
+  [see enrichment/churn-as-signal]
+  IF: We want hotspot analysis (Tornhill) — files that change often AND
+      are complex are likely sources of bugs.
+  HOWEVER: Git history is noisy (formatting commits, mass renames).
+  THEN: Ingest raw commit counts per file as code/file-churn hyperedges
+      and let downstream analysis filter noise. Store commits-all-time,
+      commits-last-90d, and last-touch date.
+  BECAUSE: Behavioral signals (what DID change) complement structural
+  signals (what IS complex). Keeping them separate preserves the ability
+  to compose them differently later.
+
+  D3. Indentation as universal complexity proxy.
+  [see enrichment/indentation-as-complexity]
+  IF: The reflection API provides rich metadata for Clojure but nothing
+      for Elisp, Python, or EDN.
+  HOWEVER: Indentation-as-complexity is crude — it correlates with
+      nesting depth but misses semantic complexity.
+  THEN: Ingest mean/max indentation depth per file as a cheap, universal
+      bootstrap signal. Refine later with language-specific analysis.
+  BECAUSE: A crude universal metric that exists NOW is more useful than a
+  precise language-specific metric that doesn't exist yet. (Giugliano
+  demonstrated this works at multi-million-line scale.)
+
+  D4. Layer metadata as first-class evidence.
+  [see enrichment/layer-as-evidence]
+  IF: Each layer produces hyperedges.
+  HOWEVER: Without metadata, we can't distinguish "layer 0 ingested at
+      10:00" from "layer 0 re-run at 14:00 after fixing a bug."
+  THEN: Each layer run produces a meta/enrichment-layer hyperedge with
+      timestamp, before/after counts, anomalies, and a human-readable
+      summary.
+  BECAUSE: The layer record IS evidence in the evidence-over-assertion
+  sense. It lets future agents and humans ask "what did we know as of
+  layer N?" and get a precise, timestamped answer.
+
+  D5. Rational reconstruction over bulk import.
+  [see enrichment/rational-reconstruction]
+  IF: The codebase has 5+ years of history that could be bulk-analyzed.
+  HOWEVER: A bulk import produces edges with no provenance — you know
+      what the codebase looks like but not how the understanding was built.
+  THEN: Replay enrichment as layered rational reconstruction, where each
+      layer is a timestamped snapshot with its own evidence trail.
+  BECAUSE: The reconstruction process is transferable (works on any
+  codebase). The replay is valuable (XTDB bitemporality makes the growth
+  of understanding queryable). And the corrections between layers are
+  themselves informative — they show where the codebase's self-image
+  was wrong.
+
+  == PART IV: What Layer 0 Specifically Produces ==
+
+  Layer 0 is the bootstrap layer. It produces:
+
+  1. Namespace entities (code/namespace) — already exists in script
+  2. Var entities (code/var) — already exists in script
+  3. Dependency edges (code/requires) — already exists in script
+  4. File churn metrics (code/file-churn) — NEW
+  5. Indentation complexity (code/indentation-complexity) — NEW
+  6. Layer metadata (meta/enrichment-layer) — NEW
+  7. Cross-column invariants (invariant/*) — already exists in script
+
+  Items 1-3 and 7 are the existing --code + --invariants pipeline.
+  Items 4-6 are ~65 lines of new Python.
+
+  == PART V: Success Criteria ==
+
+  Layer 0 succeeds when:
+  - All futon-prefixed namespaces appear as code/namespace hyperedges
+  - All futon-internal require edges appear as code/requires hyperedges
+  - Every .clj and .el file in futon3c, futon1a, futon4 has a
+    code/file-churn and code/indentation-complexity hyperedge
+  - A meta/enrichment-layer hyperedge records the run with counts
+  - Hotspot ranking (high churn + high complexity) identifies at least
+    3 files that warrant attention
+  - The count is verifiable: --count reports the new types
+
+  == EVIDENCE ==
+
+  - M-three-column-stack complete: 1,500+ hyperedges in XTDB (2026-03-04)
+  - M-self-representing-stack complete: tension traces work (2026-03-04)
+  - ingest-three-columns.py tested: code column ingestion operational
+  - Reflection API live: /reflect/namespaces returns metadata
+  - Giugliano EmacsConf 2020: indentation-as-complexity validated at
+    multi-million-line scale
+  - Tornhill "Code as a Crime Scene": git churn × complexity = hotspots,
+    validated commercially (CodeScene product)
+
+  == STATUS ==
+
+  This argument is at ARGUE in the derivation xenotype.
+
+  COMPLETE:
+  - IDENTIFY: connective tissue gap (E1-E3)
+  - MAP: existing infrastructure surveyed (ingest script, reflection API,
+    hyperedge API, MC tensions)
+  - DERIVE: Layer 0 designed (extend existing script with 3 new functions)
+  - ARGUE: this document (5 patterns carried, 5 decisions argued)
+
+  NEXT:
+  - VERIFY: test Layer 0 against live APIs
+  - INSTANTIATE: run Layer 0, record evidence, update mission status

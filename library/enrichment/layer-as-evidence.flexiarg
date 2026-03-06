@@ -1,0 +1,40 @@
+@flexiarg enrichment/layer-as-evidence
+@title Each Layer Is an Evidence Entry
+@sigils [示/本]
+@keywords layer, evidence, metadata, timestamp, idempotent, bitemporal, ledger
+@audience futon developers, enrichment operators
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [agent/evidence-over-assertion stack-coherence/evidence-ledger enrichment/ARGUMENT]
+
+! conclusion:
+  Each enrichment layer run produces a meta/enrichment-layer hyperedge that
+  records what was ingested, when, and what was surprising — making the
+  enrichment process itself auditable evidence.
+
+  + context: Enrichment layers produce hyperedges about the codebase. Without
+    layer metadata, we cannot distinguish "layer 0 ingested at 10:00" from
+    "layer 0 re-run at 14:00 after fixing a bug." The enrichment history
+    becomes opaque — exactly the opacity enrichment is meant to resolve.
+  + IF:
+    Each layer produces hyperedges (namespace topology, churn, complexity).
+  + HOWEVER:
+    Without a record of the layer itself, the enrichment has no provenance.
+    Was this the first run? A correction? What changed since last time?
+  + THEN:
+    Each layer run POSTs a meta/enrichment-layer hyperedge containing:
+    layer number, ISO-8601 timestamp, hyperedge counts (before/after by type),
+    anomaly list (unexpected findings), and a human-readable summary.
+    Layers are idempotent — re-running updates edges, not duplicates them.
+    XTDB bitemporality preserves ALL runs regardless.
+  + BECAUSE:
+    The layer record IS evidence in the evidence-over-assertion [示] sense.
+    It answers "what did we know as of layer N?" with a precise, timestamped,
+    verifiable answer. The evidence-ledger [本] pattern demands that claims
+    cite reproducible proofs — the layer metadata is the proof that the
+    enrichment actually happened and produced specific, countable artifacts.
+  + NEXT-STEPS:
+    - evidence: meta/enrichment-layer hyperedge for Layer 0 with actual counts
+    - evidence: diff between two runs of the same layer (idempotency check)
+    - evidence-shape: {:layer :int, :timestamp :string, :before {:type :count},
+      :after {:type :count}, :anomalies [:string], :summary :string}

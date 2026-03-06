@@ -1,0 +1,54 @@
+@flexiarg enrichment/rational-reconstruction
+@title Rational Reconstruction Over Bulk Import
+@sigils [日/引]
+@keywords rational, reconstruction, replay, bitemporal, incremental, correction, history, provenance
+@audience futon developers, enrichment operators, methodology designers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [realtime/learn-as-you-go iching/hexagram-53-jian enrichment/ARGUMENT enrichment/layer-as-evidence]
+
+! conclusion:
+  Build the codebase's self-representation through layered rational
+  reconstruction — replaying enrichment as if discipline had been maintained
+  all along — rather than a one-shot static analysis dump.
+
+  + context: The futon stack has 5+ years of development history across 8+
+    repos. A bulk static analysis could produce a comprehensive snapshot, but
+    it would have no provenance (when was this edge discovered?), no
+    correction trail (which early assumptions were wrong?), and no
+    transferable methodology (how would someone else do this for their
+    codebase?).
+  + IF:
+    We want enrichment that is replayable, correctable, and transferable
+    to other codebases.
+  + HOWEVER:
+    Rational reconstruction is slower than bulk import — each layer must be
+    verified before the next begins, and corrections between layers require
+    additional ingestion runs.
+  + THEN:
+    Structure enrichment as numbered layers (L0-L5), each a timestamped
+    batch of hyperedges with its own evidence entry. XTDB bitemporality
+    makes each layer queryable as-of its ingestion time. Corrections in
+    later layers supersede but don't erase earlier layers. The growth of
+    understanding is itself navigable.
+  + BECAUSE:
+    Three advantages compound:
+    (1) REPLAYABILITY — "what did we know about futon3c.peripheral as of
+    layer 3?" is answerable via bitemporal query. This is impossible with
+    a one-shot dump.
+    (2) INCREMENTAL CORRECTION — early layers WILL have errors (orphan
+    namespaces that are actually entry points, churn spikes from mass
+    renames). Later layers fix them. The correction history shows where
+    the codebase's self-image was wrong — itself valuable knowledge.
+    (3) METHODOLOGY TRANSFER — the discipline of "enrich incrementally,
+    record what you find, correct as you go" is the discipline we'd want
+    any team to adopt. Building it on our own code first validates the
+    process. The learn-as-you-go [日] pattern ensures each layer captures
+    not just findings but surprises and learnings.
+  + NEXT-STEPS:
+    - evidence: Layer 0 run with meta/enrichment-layer record
+    - evidence: Layer 1 run that corrects at least one Layer 0 anomaly
+    - evidence: bitemporal query showing enrichment growth between layers
+    - falsifying-observation: if Layer 0→L1 correction rate is < 5%, the
+      rational reconstruction overhead may not justify itself over bulk
+      import — reassess at that point.

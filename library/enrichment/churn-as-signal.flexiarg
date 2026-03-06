@@ -1,0 +1,38 @@
+@flexiarg enrichment/churn-as-signal
+@title Git Churn as Behavioral Signal
+@sigils [日/示]
+@keywords churn, git, hotspot, behavioral, signal, frequency, coupling, temporal
+@audience futon developers, enrichment operators
+@tone analytic-neutral
+@factor Keen investigation (dhammavicaya)
+@references [agent/evidence-over-assertion realtime/learn-as-you-go enrichment/ARGUMENT]
+
+! conclusion:
+  Ingest raw git commit counts per file as a behavioral complement to
+  structural complexity, keeping them separate so they compose freely.
+
+  + context: Tornhill's "Code as a Crime Scene" showed that files which change
+    frequently AND are complex are "hotspots" — likely sources of bugs. Files
+    that always change together have "temporal coupling" — hidden dependencies.
+    Giugliano demonstrated this at multi-million-line scale from Emacs.
+  + IF:
+    We want to identify hotspots (high risk), temporal coupling (hidden deps),
+    and knowledge concentration ("who knows this file?").
+  + HOWEVER:
+    Git history is noisy — formatting commits, mass renames, and merge commits
+    inflate change counts without indicating real complexity growth.
+  + THEN:
+    Ingest raw commit counts as code/file-churn hyperedges (commits-all-time,
+    commits-last-90d, last-touch). Store behavioral and structural signals
+    separately so downstream analysis can compose them (churn x complexity =
+    hotspot) or filter noise (exclude merge commits) without re-ingesting.
+  + BECAUSE:
+    Behavioral signals (what DID change) complement structural signals (what
+    IS complex). A file with high complexity but zero churn is stable. A file
+    with low complexity but high churn is volatile. Neither signal alone
+    identifies the hotspot — only their composition does.
+  + NEXT-STEPS:
+    - evidence: hotspot ranking (top 10 files by churn x complexity)
+    - evidence: temporal coupling pairs (files that change together > 5 times)
+    - falsifying-observation: if top hotspots are all test files or configs,
+      the metric is capturing noise not signal — recalibrate.

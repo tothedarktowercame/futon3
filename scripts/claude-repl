@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# claude-repl: Thin CLI client that routes through the Claude Drawbridge
+#
+# Instead of running `claude --resume <id>` (which bifurcates the session),
+# this connects to the existing subprocess via Agency page endpoint,
+# allowing multiple inputs (IRC, CLI, HTTP) to share the same running
+# Claude "image".
+#
+# Usage: ./scripts/claude-repl [agent-id]
+#        rlwrap ./scripts/claude-repl [agent-id]  # for readline + history
+#
+# The subprocess must already be running via drawbridge.
+
+set -euo pipefail
+
+AGENCY_URL="${CLAUDE_AGENCY_URL:-http://localhost:7070}"
+AGENT_ID="${1:-claude-64570417}"
+
+# Colors (disabled if not interactive or piped through rlwrap)
+if [[ -t 1 ]]; then
+    CYAN='\033[0;36m'
+    GREEN='\033[0;32m'
+    YELLOW='\033[0;33m'
+    BOLD='\033[1m'
+    NC='\033[0m'
+else
+    CYAN='' GREEN='' YELLOW='' BOLD='' NC=''
+fi
+
+# Check if drawbridge is reachable
+if ! curl -s --max-time 2 "$AGENCY_URL/agency/connected" >/dev/null 2>&1; then
+    echo "Error: Cannot reach Agency at $AGENCY_URL" >&2
+    echo "Make sure the drawbridge is running." >&2
+    exit 1
+fi
+
+echo -e "${BOLD}Claude REPL${NC} (routed through Agency → Drawbridge → Subprocess)"
+echo -e "Agent: ${CYAN}$AGENT_ID${NC}"
+echo -e "Tip: Use ${GREEN}rlwrap ./scripts/claude-repl${NC} for readline + history"
+echo -e "Type your message, press Enter to send. Ctrl+D to exit.\n"
+
+send_message() {
+    local input="$1"
+
+    response=$(curl -s -X POST "$AGENCY_URL/agency/page" \
+        -H "Content-Type: application/json" \
+        -d "$(jq -n --arg agent "$AGENT_ID" --arg prompt "$input" \
+              '{"agent-id": $agent, "prompt": $prompt}')" \
+        --max-time 120 \
+        2>&1)
+
+    if echo "$response" | jq -e '.ok' >/dev/null 2>&1; then
+        echo "$response" | jq -r '.response.result // .response.error // "no response"'
+    else
+        echo -e "${YELLOW}Error:${NC} $response" >&2
+        return 1
+    fi
+}
+
+while true; do
+    # Prompt
+    echo -en "${GREEN}you>${NC} "
+
+    # Read input
+    if ! read -r input; then
+        echo -e "\nGoodbye!"
+        break
+    fi
+
+    # Skip empty input
+    [[ -z "$input" ]] && continue
+
+    # Special commands
+    case "$input" in
+        /quit|/exit|/q)
+            echo "Goodbye!"
+            break
+            ;;
+        /status)
+            curl -s "$AGENCY_URL/agency/connected" | jq .
+            continue
+            ;;
+        /help)
+            echo "Commands: /quit /status /help"
+            echo "Everything else is sent to Claude."
+            continue
+            ;;
+    esac
+
+    # Send and display response
+    echo -en "${CYAN}claude>${NC} "
+    send_message "$input"
+    echo ""
+done

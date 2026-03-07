@@ -1,5 +1,7 @@
 # Mission: Make Agency Work Properly
 
+**Status:** COMPLETE (SUPERSEDED) — Identifier separation and runner defaults implemented in futon3c agency layer (2026-03)
+
 Agency currently behaves opposite to the intended "keep the same Codex thread until it won't fit" rule. This mission isolates the broken behavior and defines concrete fixes so we can coordinate with Claude without relying on Agency itself.
 
 ## Owner

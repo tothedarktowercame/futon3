@@ -1,6 +1,6 @@
 # Mission: Multi-Agent Drawbridge
 
-**Status:** :in-progress
+**Status:** COMPLETE (SUPERSEDED) — N:1 shared agent registry in futon3c replaces per-agent JVM model (2026-03)
 **Date:** 2026-02-08
 **Owner:** Joe
 **Primary:** TBD

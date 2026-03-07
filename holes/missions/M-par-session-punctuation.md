@@ -1,5 +1,7 @@
 # Mission: PAR as Session Punctuation
 
+**Status:** COMPLETE (SUPERSEDED) — PAR emission via futon3c peripheral/reflect.clj; detach/reattach via peripheral adapter model (2026-03)
+
 ## Owner
 
 TBD (assign single owner before implementation; likely Claude for UX/flow + Codex for MUSN/Forum plumbing).

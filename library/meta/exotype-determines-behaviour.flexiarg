@@ -1,0 +1,65 @@
+@flexiarg meta/exotype-determines-behaviour
+@title Exotype Determines Behaviour
+@sigils [🌏/甲 🔃/今]
+@audience pattern users, mission designers, proof architects, AI collaborators
+@tone foundational-analytic
+@allow-new-claims false
+@references [meta/designing-thoughts-not-text meta/layering-design-into-argument]
+@keywords exotype, genotype, wiring diagram, context, underdetermination, specification, pattern, mission, proof
+
+! conclusion:
+  A design pattern's genotype (the structural move it prescribes) is
+  underdetermined until the exotype (the environment it operates in) is
+  specified. The wiring diagram is what pins the exotype. Without it,
+  behaviour is designed in a vacuum and will drift from reality.
+
+  + context: You are applying a pattern, designing a mission, or constructing a proof.
+  + IF:
+    A pattern says "in such-and-such a context, resolve the tension by doing X."
+    The genotype (X) is clear. The context clause describes forces, constraints,
+    and environmental conditions.
+
+  + HOWEVER:
+    The context clause is typically left implicit or described in prose. When the
+    environment is not formally specified, the same genotype can produce different
+    behaviours depending on which exotype it actually encounters — surfaces,
+    timescales, constraint inputs, categories, conventions. The design is
+    underdetermined relative to reality.
+
+  + THEN:
+    Specify the exotype explicitly before applying the genotype. In the futon
+    ecosystem this means: write the wiring diagram (futon5) that names the ports,
+    components, edges, timescales, and invariants the design must satisfy. In a
+    proof this means: state the category, the conventions, and the hypotheses
+    before invoking a theorem. In a mission this means: complete MAP (exotype
+    discovery) before DERIVE (genotype design).
+
+  + BECAUSE:
+    When exotype is specified, the genotype's behaviour is determined — you can
+    verify whether the pattern's resolution actually holds in the given
+    environment. When exotype is missing, verification is impossible: the design
+    may work in the designer's mental model but fail where it is deployed.
+
+    Evidence across domains:
+    - Software: Codex-over-IRC produced confabulation because the invoke contract
+      had no exotype specification (no persistent job store, no evidence gate, no
+      surface-independent execution truth). The genotype (invoke API + bridge relay)
+      was built against an implicit exotype.
+    - Proof: The universal triad (convention-bridge, hypothesis-category-check,
+      compose-independent-lemmas) catches exactly the cases where a proof's
+      genotype is underdetermined relative to its exotype — wrong category,
+      unverified conventions, unproved composition steps.
+    - Missions: The MAP phase exists to discover the exotype before DERIVE designs
+      the genotype. Skip MAP and you design in a vacuum.
+
+    The wiring diagram is the artifact that makes exotype explicit and checkable.
+    A pattern without a wiring diagram is a suggestion. A pattern with a wiring
+    diagram is a specification.
+
+  + STATUS:
+    status[ready]
+    evidence[M-codex-irc-execution exotype gap; P3/P7/P8 rational reconstructions; futon5 wiring diagram formalism]
+
+  + NEXT-STEPS:
+    next[Enforce wiring diagram existence as a mission checkpoint: no DERIVE without a wiring diagram that pins the exotype.]
+    next[Cross-reference from math-strategy patterns (convention-bridge, hypothesis-category-check) which are instances of this meta-pattern.]

@@ -110,8 +110,8 @@
   :pur-template "Used compass on {{narrative}}, top policy: {{policy-id}} (G={{score}}), human-aligned: {{yes|no|unclear}}"
 
 
-! instantiated-by: Prototype 3 — Meme Layer (ANN Search) [🐲/忆 👓/见]
-  :maturity :stub
+! instantiated-by: Prototype 3 — Meme Layer (Concept Store + Federated Search) [🐲/忆 👓/见]
+  :maturity :active
   :depends-on [futon3a/P0]
   :evidence-for-greenfield [ANN index built from library patterns, query latency <50ms]
   :evidence-for-active [Semantic search outperforms keyword search on blind test set]
@@ -125,9 +125,13 @@
   + EVIDENCE:
     evidence[futon3a/docs/pattern-indexing.md documents embedding options]
     evidence[scripts/index_patterns.sh exists but needs integration]
+    evidence[M-futon3x-e2e L1: meme.db bootstrapped from patterns-index.tsv — 432 concepts, 788 patterns, 4495 derivation arrows, 721 analogy arrows (1221 entities, 5216 arrows total)]
+    evidence[futon3a/scripts/bootstrap_meme.clj: hotword frequency band filter (5-200), stop words, co-occurrence ≥3]
+    evidence[futon3a/data/bootstrap-filter-report.edn: which hotwords kept/dropped and why]
+    evidence[M-futon3x-e2e L2: memeo core.logic relation in futon3b queries meme.db entities via SQL LIKE; federated search extended with fair-share allocation (limit/3 per source)]
+    evidence[M-futon3x-e2e L4: futon3c GET /api/alpha/concepts?q=... serves meme entities + arrows as JSON]
 
   + NEXT-STEPS:
-    next[Build notions index from library patterns using existing embedding scripts]
     next[Add ANN query endpoint to Portal (fallback to keyword search if ANN unavailable)]
     next[Blind test: compare ANN retrieval vs keyword retrieval on 20 known-good pattern-task pairs]
     next[If ANN wins: promote to default; if keyword wins: keep as optional enhancement]

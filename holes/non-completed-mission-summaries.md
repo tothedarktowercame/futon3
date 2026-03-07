@@ -13,8 +13,14 @@ that are not yet complete.
 
 - `M-emacs-cursor-peripheral` - Specifies a greenfield Emacs cursor/avatar peripheral with follow/observe/scout/pair modes; implementation has not started pending prerequisites. (Devmap: `futon0/P4`)
 
-## futon4
+## futon4 (updated)
 
-- `M-self-representing-stack` - Re-opened after an initial complete pass; stack self-representation is operational but requires further closure on durability and cross-column structure. (Devmap: `futon4/P5`)
-- `M-three-column-stack` - In ARGUE phase; formalizes three coordinated columns (math, project, code) with machine-checkable cross-column invariants. (Devmap: `futon4/P5`)
-- `M-futon-enrichment` - In INSTANTIATE phase; layered rational reconstruction is live-tested and now needs API/browser wiring to expose cross-column provenance in Arxana. (Devmap: `futon4/P5`)
+- `M-futon-enrichment` - In INSTANTIATE phase (Phase 2 API live-tested 2026-03-06); layered rational reconstruction is live, now needs browser wiring and QA to expose cross-column provenance in Arxana. (Devmap: `futon4/P5`)
+
+## futon3
+
+- `M-futon3x-e2e` - In VERIFY phase (2026-03-07); end-to-end demonstration through all four futon3x layers (futon3/3a/3b/3c) plus futon7. Six pieces (L1-L6) implemented: meme.db bootstrap (1,221 entities, 5,216 arrows), federated search with meme bridge, live gate pipeline traversal, concept API in futon3c, probe generation from concept graph, namespace hyperedge enrichment in futon1a. (Devmap: `futon3/P2`, `futon3/P5`, `futon3a/P3`)
+
+## futon6
+
+- `M-P3-rational-reconstruction` - In IDENTIFY phase; replays Problem 3 proof development with pattern discipline to capture decision traces and bridge reviewer gaps. (Devmap: `futon6`)

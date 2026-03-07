@@ -58,19 +58,26 @@ gap for the fuller thesis.
 
 | Layer | What it does | Status |
 |-------|-------------|--------|
-| F0 | Human-system interface (HUD, voice, keyboard) | Core operational, layer stubs |
+| F0 | Human-system interface (HUD, voice, keyboard) | Core operational, capability monitor complete |
 | F1 | Deterministic storage (Datascript + XTDB) | Daily use 90+ days, invariant enforcement active |
 | F2 | Active Inference engine + ant demonstrators | Running 90+ days, 440+ property tests, 6 golden sequences |
-| F3 | Flexiformal proofwork: social (3c), task (3b), glacial (3a) | 614 tests, 11 peripherals, gate pipeline, evidence landscape |
-| F4 | Memory atelier (Arxana hypertext, scholium mode) | Reanimated, 80+ tests, storage bridge operational |
+| F3 | Flexiformal proofwork: social (3c), task (3b), glacial (3a) | 614 tests, 11 peripherals, gate pipeline, evidence landscape, **e2e demo** |
+| F4 | Memory atelier (Arxana hypertext, scholium mode) | Reanimated, 80+ tests, self-representing stack + three-column invariants complete |
 | F5 | Design patterns for improvisation (wiring diagrams, MetaCA) | Transfer proven (MetaCA→ants), 256 exotypes |
 | F6 | Mathematics dictionary (patterns, StackExchange corpus) | 25 math-informal patterns, 496/535 PlanetMath tagged, 114K physics QA |
-| F7 | Landscape intelligence (commercial signal detection) | First run complete, 10 probes across 3 proximity levels |
+| F7 | Landscape intelligence (commercial signal detection) | Lead report complete, concept-graph probes from meme.db |
 
 **853 patterns** in a living library across 49 namespaces.
-**40+ missions** with evidence-backed completion records. Three
+**45+ missions** with evidence-backed completion records. Three
 timescales of coordination (social/real-time, task/fast,
 glacial/slow). Evidence replication from laptop to server.
+
+**New: M-futon3x-e2e** demonstrates end-to-end integration across all
+four futon3x repos: meme.db (1,221 entities, 5,216 arrows) bootstrapped
+from the pattern library, federated search bridging patterns/memes/transcripts,
+live gate pipeline traversal with real PSR, concept API in futon3c, probe
+generation from the concept graph, and namespace-to-mission hyperedges in
+futon1a. This is the first through-line from patterns to commercial leads.
 
 This is not vapourware. It runs, it tests, it self-observes.
 
@@ -119,9 +126,10 @@ That question requires composing across all the layers:
 
 **S1: The evidence discipline works.**
 853 patterns, PSR/PUR records, evidence replication, gate enforcement.
-This is not theoretical — it's a daily practice that produces
-auditable records of what was tried and what happened. Most software
-teams would kill for this level of traceability.
+The M-futon3x-e2e demo proves it end-to-end: a pattern-backed concept
+graph feeds federated search, gate traversal, and commercial probes in
+one connected pipeline. Most software teams would kill for this level
+of traceability.
 
 **S2: The Active Inference framing is generative.**
 The same formalism (observe → infer → act → evaluate) operates at
@@ -141,8 +149,8 @@ domain compose into others.
 F7's landscape intelligence shows active commercial extraction in
 knowledge graphs, multi-agent coordination, pattern/rule systems, and
 formal methods — all spaces where the futon stack has working code.
-The intersection analysis identifies specific opportunity gaps where
-demand is high but commercial supply is absent.
+The lead report (M-f7-lead-report) and concept-graph probes now
+generate actionable leads automatically from the stack's own knowledge.
 
 **S5: The reflexive architecture is rare.**
 Systems that observe their own development process, produce evidence

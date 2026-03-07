@@ -18,12 +18,22 @@ This index captures missions with an explicit top-level `Status` marked
 - `M-psr-pur-mesh-peripheral` — Delivered the `:discipline` PSR/PUR mesh peripheral with explicit hop semantics; Gate A/B pass and Gate C infra complete. (Devmap: `futon3/P14`)
 - `M-social-exotype` — Verified the social exotype plus composition extension so social/task/glacial diagrams can be validated as one composed system. (Devmap: `futon3/P2`, `futon3/P12`)
 
+## futon0
+
+- `M-futonzero-capability` — Capability monitor for the self-representing stack grounded in Amartya Sen's capability approach; measures whether system capabilities are real and exercisable. (Devmap: `futon0/P0`)
+
 ## futon4
 
 - `M-evidence-viewer-refinements` — Upgraded the evidence viewer from debug table to operator console (live-tail controls, context cards, presets, theme alignment). (Devmap: `futon4/P2`)
+- `M-self-representing-stack` — Bridged the futon stack's aspirational self (devmaps/missions) with its actual self (code/tests/evidence) via navigable structure in Arxana. (Devmap: `futon4/P5`)
+- `M-three-column-stack` — Proved futon stack coherence via machine-checkable invariants spanning code, project, and math columns. (Devmap: `futon4/P5`)
 
 ## futon5
 
 - `M-diagram-composition` — Extended `ct/mission.clj` to validate composed multi-diagram systems with shared constraints (futon3 timescale stack validated). (Devmap: `futon5/P2`)
 - `M-pattern-exotype-bridge` — Embedded 791 futon3 patterns into 8-bit exotype space via hexagram-anchored regression, enabling executable cross-domain mapping. (Devmap: `futon5/P2`, `futon5/P4`)
 - `M-sci-detection-pipeline` — Built an 8-component SCI detector for MMCA runs to classify Wolfram classes from spacetime/particle/information dynamics. (Devmap: `futon5/P3`)
+
+## futon7
+
+- `M-f7-lead-report` — Generated human-readable consulting leads report from futon7 probe data with commercial signal scoring across 3 proximity levels. (Devmap: `futon7/P2`)

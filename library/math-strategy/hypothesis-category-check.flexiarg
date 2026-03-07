@@ -1,0 +1,51 @@
+@flexiarg math-strategy/hypothesis-category-check
+@title Hypothesis Category Check
+@sigils [🔬/类]
+@keywords category, smooth, PL, topological, algebraic, scheme, variety, hypothesis, mismatch, regularity, bridge
+@audience mathematicians, proof-writers
+@tone heuristic
+@factor Discernment (panna)
+
+! conclusion:
+  When invoking a theorem, verify that your objects live in the category
+  (smooth, PL, topological, algebraic, measurable, ...) that the theorem
+  is stated for.
+
+  + context: You want to apply a known result to objects in your proof,
+    and the result's statement specifies regularity or categorical
+    hypotheses on its inputs.
+
+  + IF:
+      The theorem you want to invoke is stated for objects in category C
+      (e.g., smooth manifolds, algebraic varieties, measurable functions),
+      and your objects live in a different category C' (e.g., PL complexes,
+      schemes, continuous functions).
+
+  + HOWEVER:
+      Category mismatches are a common source of silent errors in proofs
+      that cross domain boundaries. A theorem about smooth Lagrangian
+      intersections does not apply to polyhedral creases. A result about
+      algebraic varieties may fail for general schemes. The mismatch may
+      be bridgeable (via a smoothing lemma, GAGA, regularity bootstrap)
+      but the bridge itself requires proof.
+
+  + THEN:
+      (a) State the category of the theorem's hypotheses explicitly.
+      (b) State the category of your objects explicitly.
+      (c) If they differ, provide a bridge: a smoothing lemma, a
+          regularity result, a comparison theorem, or a specialization
+          argument that places your objects in the required category.
+      (d) If no bridge exists, the theorem does not apply -- find an
+          alternative or prove a new version in your category.
+
+  + BECAUSE:
+      Cross-category theorem application is one of the most common gaps
+      in proofs that invoke external results. The fix is mechanical:
+      check the fine print. The cost of checking is minutes; the cost
+      of not checking is a critical reviewer finding.
+
+  + NEXT-STEPS:
+    next[State the theorem's category explicitly.]
+    next[State your objects' category explicitly.]
+    next[If they differ: prove a bridge or find an alternative.]
+    next[Check boundary cases where category differences bite hardest.]

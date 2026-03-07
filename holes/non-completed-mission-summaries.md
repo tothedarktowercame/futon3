@@ -22,7 +22,9 @@ DEFERRED (parked — scope right, timing wrong), READY (not yet started).
 - `M-peripheral-gauntlet` [IN-PROGRESS] - DERIVE phase (active); seven-pattern dependency chain for peripheral phenomenology; futon1a integration spec with write pipeline (L4->L0). (Devmap: `futon3/P14`)
 - `M-sliding-blackboard` [DEFERRED] - IDENTIFY phase (parked); Emacs sliding side-panels for extracted chat code blocks; design captured, implementation not started. (Devmap: `futon3/P15`)
 - `M-stepper-calibration` [IN-PROGRESS] - VERIFY phase (active 2026-02-18); P1 and P7 calibration complete (RED); P3 next target for claim-typing validation. (Devmap: `futon3c`)
+- `M-cyder` [IN-PROGRESS] - Phase 0 done (audit + registration, 17 tests); Phase 1 ops surface scoped but not started; cybernetic ops surface for peripherals, daemons, servers, background tasks, state machines. (Devmap: `futon3c`)
 - `M-codex-irc-execution` [IN-PROGRESS] - DERIVE phase; guaranteed IRC execution contract for Codex — job state machine, evidence gating, durable job records.
+- `M-walkie-talkie` [IN-PROGRESS] - IDENTIFY phase; universal agent tool surface building on cyder process registry and peripheral backpack metaphor. (Devmap: `futon3c`)
 
 ## futon3
 

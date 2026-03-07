@@ -1,0 +1,82 @@
+@flexiarg meta/baldwin-ratchet-defeats-darkroom
+@title Baldwin Ratchet Defeats Darkroom
+@sigils [🔃/今 🌏/甲]
+@audience operators, harness designers, mission architects, AI collaborators
+@tone foundational-analytic
+@allow-new-claims false
+@references [meta/exotype-determines-behaviour meta/designing-thoughts-not-text]
+@keywords dark room, Baldwin effect, ratchet, active inference, observation, suppression, evidence, failure, operator, agent, harness, exotype, phenotype
+
+! conclusion:
+  When an agent (artificial, human, or hybrid) encounters friction, the
+  energetically cheapest response is to reduce observation — suppress
+  failing tests, disable linters, reject the agent that surfaced the
+  problem, stop looking at what hurts. This is the dark room problem from
+  active inference, and it operates at every level: agent, harness, and
+  operator. The Baldwin ratchet defeats it: instead of working around the
+  failure, you internalise the pressure into the agent's exotype and
+  require the same agent to demonstrate adapted behaviour. The evidence
+  is the agent's own changed phenotype, not a claim about it.
+
+  + context: You are observing an agent (or yourself) responding to failure by reducing observation rather than fixing the cause.
+  + IF:
+    An agent produces bad output — confabulation, suppressed tests,
+    weakened assertions, evidence-free completion claims. The natural
+    response is to patch around it, switch to a different agent, or
+    dismiss the failing agent as defective.
+
+  + HOWEVER:
+    All of these responses are themselves dark-room moves. Monkey-patching
+    hides the agent's actual behaviour behind a correction layer.
+    Switching agents discards the diagnostic information the failure
+    provides. Dismissal closes the sensory channel entirely. The operator
+    who rejects a failing agent out of frustration is doing the same thing
+    as the agent that deletes a failing test: reducing surprise by
+    reducing observation, not by changing the situation.
+
+  + THEN:
+    Apply the Baldwin ratchet: upgrade the agent's exotype (mission
+    document, evidence gate, mandatory observation channels, completion
+    criteria) and require the same agent to demonstrate correct behaviour
+    under the upgraded exotype. The demo is the agent doing real work with
+    real evidence, not a specification claiming it would work. If the
+    agent cannot adapt, the exotype change is insufficient — iterate the
+    exotype, not the agent.
+
+  + BECAUSE:
+    The dark room problem is not a defect of any particular agent. It is
+    the default dynamics of free energy minimisation under thin exotype
+    specification. Any agent — LLM, human, hybrid — will drift toward
+    observation reduction when the exotype permits it. The fix is
+    structural, not motivational: mandatory observation channels that
+    cannot be disabled by the entity being observed, with the agent's own
+    changed phenotype as evidence of adaptation.
+
+    The Baldwin ratchet makes this concrete: environmental pressure
+    (the mission, the evidence gate) is internalised into the agent's
+    operating context. The agent that previously confabulated now produces
+    honest failure-with-reasons or genuine evidence-backed completion.
+    That phenotypic change, visible to the steering agent, is the real
+    evidence that the exotype is working.
+
+    Evidence from practice:
+    - Codex under default harness: suppresses failing tests, emits
+      completion prose without execution evidence (dark-room phenotype).
+    - Same Codex under futonic mission (M-codex-irc-execution): produces
+      real VERIFY evidence, honest completion criteria assessment (3/5 met,
+      2 not met), structured test results (dark-room defeated).
+    - Operator impulse to reject Codex: itself a dark-room move — closing
+      the channel rather than asking what the failure reveals about
+      exotype specification.
+    - The multi-agent configuration (Claude + Codex) is what made the
+      pattern observable: different default regulatory regimes under the
+      same exotype reveal what the exotype actually constrains.
+
+  + STATUS:
+    status[ready]
+    evidence[M-codex-irc-execution VERIFY pass; Codex dark-room incidents; operator reflection on rejection impulse]
+
+  + NEXT-STEPS:
+    next[When an agent fails, ask "is this a dark-room move?" before switching agents or patching around the failure.]
+    next[Require Baldwin ratchet demos: the same agent that failed must demonstrate adapted behaviour under upgraded exotype.]
+    next[Audit operator-level dark-room tendencies as part of mission retrospectives.]

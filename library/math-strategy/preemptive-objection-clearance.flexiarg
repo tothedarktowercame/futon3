@@ -1,0 +1,129 @@
+@flexiarg math-strategy/preemptive-objection-clearance
+@title Preemptive Objection Clearance
+@keywords objection, anti-obstruction, defensive, Smith-theory, clearance, preemptive, does-not-apply, non-obstruction, challenge, dismiss, ground-clearing
+@audience mathematicians, proof architects, reviewers
+@tone analytic
+@factor Keen investigation (dhammavicaya)
+@style proof-strategy
+@references [math-informal/argue-by-contradiction math-informal/check-the-extreme-cases math-strategy/route-exploration-and-pivot]
+
+! conclusion:
+  When a natural objection or potential obstruction exists against your
+  construction, include an explicit defensive section showing that the
+  objection does NOT apply — and clearly distinguish this "ground-clearing"
+  move from a constructive contribution to the proof.
+
+  + context: You have a proof architecture with constructive steps that build
+    toward a conclusion. A knowledgeable reader would naturally ask: "But
+    doesn't X obstruct this?" where X is a well-known theorem, phenomenon, or
+    structural concern in the relevant domain. If you leave this question
+    unanswered, the reader (or reviewer) will either (a) assume you overlooked
+    it, or (b) spend effort checking it themselves. Either outcome weakens the
+    proof's persuasive force.
+
+  + WHEN:
+      There exists a well-known result, technique, or structural phenomenon that
+      a competent reader would reasonably expect to obstruct your construction or
+      conclusion. The objection is natural enough that NOT addressing it would be
+      a gap in the argument. Importantly, the objection turns out to be
+      inapplicable — it does not actually obstruct — but this non-applicability
+      is not obvious and requires argument.
+
+  + THEN:
+      1. Identify the natural objection explicitly: name the theorem, phenomenon,
+         or structural concern. State what it would imply if it applied.
+      2. Show precisely why it does not apply to your setting. This typically
+         involves identifying a hypothesis of the obstructing result that fails
+         in your context, or showing that the obstruction operates over a
+         different coefficient ring / category / parameter regime.
+      3. Mark the section clearly as defensive (anti-obstruction, ground-clearing,
+         challenge-and-dismiss) rather than constructive. In a wiring diagram,
+         this is a "challenge" edge, not an "assert" or "clarify" edge.
+      4. State the conclusion of the defensive section precisely: "X does not
+         obstruct our construction because hypothesis H fails in our setting"
+         — not "X is not a problem" (too vague) and not "X actually helps us"
+         (overclaiming, unless it genuinely does).
+
+  + BECAUSE:
+      Proofs operate on two levels: logical validity (does the argument hold?)
+      and rhetorical completeness (are foreseeable objections addressed?). A
+      proof that is logically valid but leaves obvious objections unaddressed
+      invites reviewer findings and erodes confidence. The defensive section
+      costs little to include but removes a predictable source of doubt.
+      Moreover, the act of checking the objection often yields structural
+      insight — understanding WHY the obstruction fails clarifies the
+      construction's strengths and limitations.
+
+      Critically, the defensive section must be honest about its role. It does
+      not contribute constructive content to the proof — it clears ground. If
+      it is conflated with constructive steps, readers may mistakenly believe
+      the anti-obstruction result provides positive evidence for the conclusion,
+      when it only removes a potential counterargument.
+
+  + EVIDENCE:
+      P7 lattices with 2-torsion (futon6, Feb 2026): Section 5 of the proof
+      addresses Smith theory — a well-known tool that constrains fixed-point
+      sets of group actions on manifolds. A reader familiar with the area would
+      naturally ask: "Doesn't Smith theory obstruct a manifold with the
+      claimed properties?" The answer is no: Smith theory operates over F_p
+      (finite field coefficients) and constrains mod-p homology, while the
+      construction only claims rational acyclicity (Q-coefficients). The
+      Smith-theoretic constraints on mod-p Betti numbers are compatible with
+      rational acyclicity.
+      This section appears as a "challenge" edge (s5 -> problem) in the wiring
+      diagram — the only non-constructive edge in the 9-edge graph. Reviewer
+      Finding 4 (medium severity) noted that this section's role as
+      anti-obstruction-only needed to be clearer: the original draft risked
+      being read as if Smith theory positively supported the construction,
+      when it merely does not obstruct it. A well-applied instance of this
+      pattern would have prevented Finding 4 by explicitly marking the section
+      as defensive and stating "Smith theory does not obstruct (but does not
+      help construct)" rather than leaving the reader to infer the distinction.
+
+  + QUALITY-CRITERIA:
+      Well-applied:
+        - The objection is named explicitly (not "some might worry that...").
+        - The non-applicability argument is precise: it identifies the specific
+          hypothesis or condition that fails, not just a general sense that
+          the objection is irrelevant.
+        - The section is clearly marked as defensive / ground-clearing, distinct
+          from constructive proof steps.
+        - The conclusion states what the objection does NOT do, without
+          overclaiming that it provides positive support.
+        - In a wiring diagram, the section appears as a "challenge" edge (not
+          "assert" or "clarify").
+      Badly-applied:
+        - Conflating anti-obstruction with construction: claiming that the
+          absence of obstruction is evidence FOR the conclusion. "Smith theory
+          doesn't obstruct" is not the same as "Smith theory supports."
+        - Vague dismissal: "this is not a problem" without explaining why the
+          objection fails. This invites the very reviewer finding the pattern
+          is meant to prevent.
+        - Addressing phantom objections: including defensive sections for
+          objections that no competent reader would raise. This wastes space
+          and suggests insecurity about the argument.
+        - Missing the real objection: including a defensive section for one
+          concern while overlooking a more serious natural objection. Survey
+          the likely objections before choosing which to address.
+        - Burying the defensive section: placing it inline within constructive
+          steps so that its ground-clearing role is invisible. Give it its own
+          section or clearly delimited subsection.
+
+  + FAILURE-MODES:
+      - The objection DOES apply, and the defensive section is wrong. This is
+        worse than not including it — it signals overconfidence. Before writing
+        the section, verify the non-applicability rigorously.
+      - The objection is partially applicable: it constrains the construction
+        in ways that are compatible with the conclusion but impose additional
+        conditions. In this case, state the partial constraint honestly rather
+        than dismissing the objection entirely.
+      - The objection is well-known enough that addressing it feels patronizing
+        to expert readers. Judgment call: if the proof is written for a broad
+        audience or a review process, include it. If for a specialist seminar,
+        a brief remark may suffice.
+
+  + NEXT-STEPS:
+    next[List natural objections a competent reader would raise against the construction.]
+    next[For each, determine: does it apply? If not, identify the failing hypothesis.]
+    next[Write a clearly-marked defensive section for each non-trivial non-applicability.]
+    next[Verify the defensive argument is correct before including it.]

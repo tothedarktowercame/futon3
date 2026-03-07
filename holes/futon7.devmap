@@ -7,10 +7,12 @@
 @IFR: FUTON7 is a new form of knowledge economy that adds transparency to the
 regular economy by tracking costs, relationships, and externalities that current
 systems obscure.
-@state Design-only narratives; Hyperreal operates as informal seed institution;
-Gravpad conceptualised but not implemented; scenario work not yet structured.
+@state Landscape intelligence operational: 10 probes across 3 proximity levels;
+lead report generated (M-f7-lead-report COMPLETE); probe generation from
+futon3a concept graph (M-futon3x-e2e L5). Hyperreal operates as informal seed
+institution; Gravpad conceptualised but not implemented.
 @next Define Gravpad MVP; structure first scenario simulation; document Hyperreal
-as explicit F7 prototype.
+as explicit F7 prototype; integrate concept-graph probes into regular landscape scans.
 
 ## The Argument
 
@@ -113,3 +115,36 @@ into scenario simulations that test future structures before implementation.
 
   :psr-example "Selected scenario simulations for testing because future structures need prototyping"
   :pur-template "Scenario {{name}}, model: {{model}}, result: {{outcome}}"
+
+
+! instantiated-by: Prototype 3 — Landscape Intelligence (Probes + Lead Report) [👓/见 🌏/门]
+  :maturity :active
+  :depends-on []
+  :evidence-for-active [10 probes across 3 proximity levels run; lead report generated; concept-graph probe generation operational]
+
+  + context: F7 needs concrete market intelligence, not just theory.
+  + IF: You want to know where the futon stack intersects commercial demand
+  + HOWEVER: Manual market research is episodic and subjective
+  + THEN: Build automated landscape probes (GitHub search + scoring), generate consulting lead reports, and generate new probes from the concept graph (futon3a meme.db)
+  + BECAUSE: Evidence-based market intelligence grounds F7's transparency thesis in real demand signals
+
+  + EVIDENCE:
+    evidence[futon7/src/f7/probes.clj: 10 hand-crafted probes across domain/adjacent/orthogonal proximity]
+    evidence[futon7/src/f7/probe_gen.clj: generates probes from futon3a concept graph (M-futon3x-e2e L5)]
+    evidence[futon7/data/results/generated-probes.edn: 7 concept-graph probes across 7 areas]
+    evidence[M-f7-lead-report COMPLETE: human-readable lead report with commercial signal scoring]
+    evidence[futon7/bb.edn: probe-gen task added for babashka execution]
+
+  + NEXT-STEPS:
+    next[Integrate concept-graph probes into regular landscape scan schedule]
+    next[Add probe result persistence and trend tracking]
+    next[Generate second lead report and compare evolution]
+
+  :success-criteria
+    pass[Probes generate actionable leads with commercial scoring]
+    pass[Concept-graph probes cover areas hand-crafted probes miss]
+    pass[Lead report readable by non-technical audience]
+    fail[Probes return noise or lead report is not actionable]
+
+  :psr-example "Selected landscape probes for market intelligence because evidence-based signals beat intuition"
+  :pur-template "Probe run {{name}}, results: {{count}}, leads: {{leads}}, proximity: {{level}}"

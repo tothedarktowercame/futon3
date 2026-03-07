@@ -19,10 +19,11 @@ persistence, agency/dispatch, transport layer (HTTP+WS+IRC with F1-F6 stability)
 mission lifecycle (cycle machine), and mission control (portfolio management).
 futon3b has L1 canonicalizer operational with typed rejection proof-paths and
 bootstrap closure (M-social-exotype Part III). futon3a unchanged.
-@next Integrate futon3a similarity search into G3 pattern selection; connect
-futon3b gate pipeline to futon3c evidence landscape (proof-paths as evidence);
-build out the Emacs UI (sliding blackboard, evidence browser); advance
-M-peripheral-gauntlet (real-time multi-peripheral scenarios); complete
+@next Complete M-futon3x-e2e INSTANTIATE (futon3c restart with MEME_DB_PATH,
+docbook entries for futon3a/3b, reproducibility check); integrate futon3a
+similarity search into G3 pattern selection; connect futon3b gate pipeline to
+futon3c evidence landscape (proof-paths as evidence); build out the Emacs UI
+(sliding blackboard, evidence browser); advance M-peripheral-gauntlet; complete
 M-forum-refactor Parts II-III.
 
 ## The Argument
@@ -166,6 +167,10 @@ As of 2026-02-18 the original "futon3" scope is implemented as:
     evidence[futon3b/test/futon3/gate/pipeline_test.clj verifies gate behavior + durable proof-paths]
     evidence[futon3b/AGENTS.md records verification results and acceptance checklists]
     evidence[src/futon3/checks.clj remains as legacy check! DSL (superseded by gate pipeline)]
+
+  + EVIDENCE (M-futon3x-e2e):
+    evidence[M-futon3x-e2e L3: live gate pipeline traversal with real pattern library (829 patterns), real PSR (compose-independent-lemmas), 6-event proof-path produced]
+    evidence[futon3b/scripts/live_gate_run.clj: live gate run script with mission ref M-futon3x-e2e]
 
   + NEXT-STEPS:
     next[Wire futon3 transport/entrypoints to futon3b gate pipeline without weakening "first failing gate wins"]

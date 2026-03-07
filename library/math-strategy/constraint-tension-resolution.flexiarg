@@ -1,0 +1,125 @@
+@flexiarg math-strategy/constraint-tension-resolution
+@title Constraint Tension Resolution
+@keywords constraint, tension, conflict, parameter, parity, dimension, resolution, dissolve, construction, obligation, trade-off, structural, incompatible
+@audience mathematicians, proof architects, geometric topologists
+@tone analytic
+@factor Discernment (panna)
+@style proof-strategy
+@references [math-informal/parametric-tension-dissolution math-informal/find-the-right-abstraction math-strategy/route-exploration-and-pivot]
+
+! conclusion:
+  When two parts of a proof impose conflicting requirements on a shared parameter,
+  recognize the conflict as a first-class structural constraint and search for a
+  construction that satisfies both requirements simultaneously — typically by
+  changing the underlying geometric or algebraic object rather than trying to
+  force compatibility within the existing setup.
+
+  + context: Your proof decomposes into two or more obligations that share a
+    parameter (dimension, codimension, degree, rank, characteristic, etc.). You
+    have found a construction that cleanly discharges one obligation but discover
+    that the parameter choice it forces creates genuine obstacles for the other.
+    The obstacles are not failures of technique but consequences of the parameter
+    value itself.
+
+  + WHEN:
+      Obligation A requires parameter p to have property X (e.g., n even for
+      Euler characteristic vanishing), while obligation B requires property Y
+      (e.g., n odd for favorable L-theory parity or equivariant surgery
+      availability), and X and Y are incompatible for the current construction.
+      The conflict is not aesthetic preference but a genuine blockage: at least
+      one obligation cannot be completed with the wrong parity/value.
+
+  + THEN:
+      1. State the tension precisely: name both obligations, the shared parameter,
+         and the conflicting requirements. Write it as a proposition: "For
+         construction C, obligations A and B cannot both be satisfied because
+         A needs p in X and B needs p in Y."
+      2. Determine whether the tension is intrinsic to the problem or specific
+         to the construction. Ask: does every construction that satisfies A
+         necessarily impose X on p? Or is X an artifact of this particular
+         approach?
+      3. Search for an alternative construction C' where both obligations are
+         compatible — where they both want the same parameter value, or where
+         the parameter is no longer constrained. This typically means replacing
+         the underlying geometric/algebraic object (e.g., reflection with
+         rotation, codimension-1 with codimension-2).
+      4. Verify that C' actually satisfies both obligations. The new construction
+         may make the previously-easy obligation harder (a legitimate trade-off)
+         or may introduce new constraints. Map all obligations against C' before
+         committing.
+      5. If the tension is intrinsic (no C' exists), record this as a structural
+         impossibility result — it constrains the solution space and may redirect
+         the entire proof strategy.
+
+  + BECAUSE:
+      Parametric tensions are theorems about the approach, not the problem. When
+      an initial construction discharges one obligation "too perfectly" by locking
+      in a parameter value, the resulting structural headwinds for other
+      obligations are predictable consequences, not bad luck. Recognizing the
+      tension early — before investing in heavy machinery to overcome the
+      headwinds — saves effort and often reveals a simpler proof architecture.
+      The alternative construction that dissolves the tension frequently simplifies
+      the entire proof by removing the need for workarounds.
+
+  + EVIDENCE:
+      P7 lattices with 2-torsion (futon6, Feb 2026): The proof splits into two
+      obligations — E2 (place Gamma in FH(Q) via a finite CW complex with
+      rationally acyclic universal cover) and S (upgrade the finite CW complex
+      to a closed manifold). The reflection construction in even dimension n
+      discharges E2 perfectly: the codimension-1 fixed set has odd dimension,
+      so its Euler characteristic vanishes (required by Fowler's criterion).
+      But this forces n even, which creates three headwinds for S:
+        (a) Equivariant surgery is BLOCKED (Costenoble-Waner gap hypothesis
+            fails for codimension-1 fixed sets).
+        (b) Wall surgery faces unfavorable even-dimensional L-theory parity.
+        (c) No orbifold resolution technique is known.
+      The tension statement: "For the reflection construction, E2 needs n even
+      and S needs n odd; these are incompatible."
+      Resolution: replace the codimension-1 reflection with a codimension-2
+      rotation in odd dimension n. The fixed set now has codimension 2 (so the
+      equivariant surgery gap hypothesis is satisfied) and odd dimension (so
+      L-theory parity is favorable). Both E2 and S want odd n. The tension
+      dissolves entirely, and the problem reduces to a single lattice-existence
+      question in number theory.
+
+  + QUALITY-CRITERIA:
+      Well-applied:
+        - The tension is stated as a precise proposition with named obligations,
+          named parameter, and named conflicting requirements.
+        - The investigation distinguishes intrinsic tensions (problem-level) from
+          approach-specific tensions (construction-level).
+        - The alternative construction is verified against ALL obligations, not
+          just the two that were in tension.
+        - The resolution is recorded as a structural insight that informs future
+          proof design.
+      Badly-applied:
+        - Declaring tension when the conflict is merely inconvenient, not
+          blocking. If obligation B can still be completed with property X
+          (just with more work), the tension is a preference, not a structural
+          constraint. Do not pivot constructions for preferences.
+        - Replacing the construction without checking that the new one actually
+          satisfies the previously-easy obligation. The trade-off must be mapped.
+        - Tunnel vision: finding an alternative construction that dissolves one
+          tension but creates a worse one elsewhere.
+        - Treating the tension as a dead end rather than information. Even if no
+          resolution exists, the tension statement constrains the solution space
+          and is worth recording.
+
+  + FAILURE-MODES:
+      - The tension is intrinsic: every construction that satisfies A forces X.
+        This is a structural impossibility result — record it.
+      - The alternative construction dissolves the original tension but
+        introduces a new one. Iterate: apply the pattern again to the new
+        tension, or recognize that the problem may require a fundamentally
+        different decomposition.
+      - The alternative construction exists in principle but no concrete instance
+        is known (e.g., "a lattice with an order-2 rotation in Isom(H^n)"
+        exists if and only if a number-theoretic condition holds). The pattern
+        has done its job — it has reduced the proof to a well-posed existence
+        question — but the question remains open.
+
+  + NEXT-STEPS:
+    next[State the tension as a precise proposition.]
+    next[Determine if the tension is intrinsic or construction-specific.]
+    next[Search for alternative constructions where conflicting requirements align.]
+    next[Verify the alternative against all obligations before committing.]

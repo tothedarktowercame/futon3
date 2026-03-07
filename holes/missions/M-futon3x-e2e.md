@@ -59,12 +59,18 @@ via all four futon3x layers.**
    Entity count > 100, arrow count > 200.
 2. A federated query for a concept (e.g., "provenance") returns results from
    at least two stores (pattern library + meme store).
-3. A coordinated action traverses all 6 gates (G5→G0) with a real PSR
-   referencing a real pattern, producing a proof-path EDN file.
+3. A coordinated action traverses futon3b's full gate pipeline (G5→G0) with
+   a real PSR referencing a real pattern, producing a proof-path EDN file.
 4. A concept graph query is servable via futon3c (HTTP endpoint or Drawbridge).
 5. futon7 generates at least 3 probes derived from the concept graph (not
    hand-crafted), and those probes return results.
-6. The full demo is reproducible from the mission doc by a new agent.
+6. Every futon3x namespace (futon3, futon3a, futon3b, futon3c) that
+   participates in the e2e demo is documented in both:
+   (a) futon4 docbook entries (navigable via `M-x arxana-browse`)
+   (b) futon1a hypergraph metadata (enrichment layers, entrypoints, deps)
+   This makes the futon3x series itself the worked example for
+   M-futon-enrichment — the demo subject is also the demo.
+7. The full demo is reproducible from the mission doc by a new agent.
 
 ### Relationship to Other Missions
 
@@ -76,6 +82,11 @@ via all four futon3x layers.**
   on mathematical content. This demonstrates it on code infrastructure.
 - **M-coordination-rewrite** (futon3): Built the gate pipeline (futon3b).
   This is the first end-to-end exercise of that pipeline with real data.
+- **M-self-representing-stack**: The futon3x series should be its own
+  best-documented example. By ensuring all participating namespaces have
+  docbook entries and hypergraph metadata, this mission makes the demo
+  subject and the enrichment subject the same thing. The stack explains
+  itself by running itself.
 
 ### Source Material
 
@@ -140,6 +151,15 @@ Q5. Can futon3c serve futon3a data today, or is new wiring needed?
 
 Q6. What would futon7's `probe_gen.clj` need as input? What's the
     minimum viable concept graph that produces useful probes?
+
+Q7. What is the current enrichment coverage for futon3x namespaces?
+    Which namespaces appear in futon1a's hypergraph (L0-L5 layers)?
+    Which are missing? What docbook entries exist in futon4 for
+    futon3/3a/3b/3c?
+
+Q8. What are the key entrypoints (public API functions, HTTP handlers,
+    CLI commands) across the futon3x series? Are they documented in
+    a way that a new agent could discover them by browsing?
 
 ### Ready vs Missing
 

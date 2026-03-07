@@ -1,5 +1,5 @@
 @flexiarg meta/exotype-determines-behaviour
-@title Exotype Determines Behaviour
+@title Exotype + Genotype Determines Behaviour
 @sigils [🌏/甲 🔃/今]
 @audience pattern users, mission designers, proof architects, AI collaborators
 @tone foundational-analytic
@@ -8,10 +8,11 @@
 @keywords exotype, genotype, wiring diagram, context, underdetermination, specification, pattern, mission, proof
 
 ! conclusion:
-  A design pattern's genotype (the structural move it prescribes) is
-  underdetermined until the exotype (the environment it operates in) is
-  specified. The wiring diagram is what pins the exotype. Without it,
-  behaviour is designed in a vacuum and will drift from reality.
+  Behaviour is determined by the combination of genotype (the structural
+  move a pattern prescribes) and exotype (the environment it operates in).
+  Neither alone is sufficient. The wiring diagram specifies both and makes
+  their composition explicit. Without the exotype, the genotype is
+  underdetermined; without the genotype, the exotype is inert.
 
   + context: You are applying a pattern, designing a mission, or constructing a proof.
   + IF:

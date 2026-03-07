@@ -9,7 +9,6 @@ DEFERRED (parked — scope right, timing wrong), READY (not yet started).
 ## futon6
 
 - `M-distributed-frontiermath` [IN-PROGRESS] - MAP phase (active 2026-03-07); stress-tests distributed agent coordination on FM-001 (Ramsey/Book Graphs) using Lakatos dialectical proof with 4-role architecture (Prover/Critic/Mentor/Tickle). (Devmap: `futon6`)
-- `M-tickle-driven-ct` [IN-PROGRESS] - INSTANTIATE phase (in progress); overnight batch wiring diagram extraction from PlanetMath (313 entries done) + arXiv math.CT (~5000 articles); Tickle orchestrates Codex+Claude pipeline. (Devmap: `futon6`)
 
 ## futon4
 
@@ -23,7 +22,6 @@ DEFERRED (parked — scope right, timing wrong), READY (not yet started).
 - `M-peripheral-gauntlet` [IN-PROGRESS] - DERIVE phase (active); seven-pattern dependency chain for peripheral phenomenology; futon1a integration spec with write pipeline (L4->L0). (Devmap: `futon3/P14`)
 - `M-sliding-blackboard` [DEFERRED] - IDENTIFY phase (parked); Emacs sliding side-panels for extracted chat code blocks; design captured, implementation not started. (Devmap: `futon3/P15`)
 - `M-stepper-calibration` [IN-PROGRESS] - VERIFY phase (active 2026-02-18); P1 and P7 calibration complete (RED); P3 next target for claim-typing validation. (Devmap: `futon3c`)
-- `M-tickle-overnight` [IN-PROGRESS] - INSTANTIATE phase (active 2026-02-26); CT work queue (313 entries) with escalation/restart loop; integration tests (960 tests, 3418 assertions); next: overnight batch validation. (Devmap: `futon3c`)
 - `M-codex-irc-execution` [IN-PROGRESS] - DERIVE phase; guaranteed IRC execution contract for Codex — job state machine, evidence gating, durable job records.
 
 ## futon3

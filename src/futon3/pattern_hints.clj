@@ -360,7 +360,7 @@
                         :score/sigil-distance d
                         :score d
                         :score-source :sigil-distance))))
-       (sort-by :score)
+       (sort-by (juxt :score :id))
        (take limit)
        vec))
 

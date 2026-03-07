@@ -1,0 +1,49 @@
+@flexiarg math-strategy/compose-independent-lemmas
+@title Compose Independent Lemmas
+@sigils [🧩/合]
+@keywords compose, assemble, combine, independent, lemma, modular, convergent, conclusion
+@audience mathematicians, proof-writers
+@tone heuristic
+@factor Concentration (samādhi)
+
+! conclusion:
+  When a proof requires multiple independent pieces, establish each piece
+  separately and then compose them in a final step that adds nothing new.
+
+  + context: Your main result follows from several sub-results that can be
+    proved independently. The conclusion is a logical composition (conjunction,
+    chain of implications, or substitution) of the pieces.
+
+  + IF:
+      The sub-results address different concerns (existence, uniqueness,
+      nontriviality, notation compatibility, etc.) and no sub-result's proof
+      depends on another sub-result being true.
+
+  + HOWEVER:
+      Independence must be genuine, not assumed. If lemma B uses lemma A as
+      a hypothesis, they are not independent — B depends on A. The composition
+      step must also be checked: it is tempting to wave hands at "combining"
+      results when the combination itself requires a non-trivial argument
+      (e.g., that two constructions refer to the same object, or that
+      hypotheses of one result are satisfied by another).
+
+  + THEN:
+      (a) Identify the independent pieces. Draw the dependency graph.
+      (b) For each piece, verify it is self-contained: its proof uses only its
+          own hypotheses and prior results, not sibling lemmas.
+      (c) Write the composition step as a separate, explicit argument. It
+          should be short — if it is long, one of the pieces is incomplete.
+      (d) Check that the composition step does not silently introduce new
+          claims. Every assertion in the composition must trace to a piece.
+
+  + BECAUSE:
+      Modular proofs are easier to review, easier to repair, and easier to
+      generalize. When a reviewer finds a gap, modular structure localizes
+      the damage: you know which piece is broken and which are unaffected.
+      A monolithic proof hides dependencies and makes gaps contagious.
+
+  + NEXT-STEPS:
+    next[List the pieces and draw the dependency graph.]
+    next[Verify each piece is self-contained.]
+    next[Write the composition step. Keep it short.]
+    next[Trace every assertion in the composition to its source piece.]

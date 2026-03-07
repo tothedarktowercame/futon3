@@ -161,13 +161,116 @@ Q8. What are the key entrypoints (public API functions, HTTP handlers,
     CLI commands) across the futon3x series? Are they documented in
     a way that a new agent could discover them by browsing?
 
-### Ready vs Missing
+### MAP Answers
 
-*(To be filled in during MAP phase)*
+**Q1. futon3a meme store state.**
+Schema is current. `meme.db` did not exist — created successfully during MAP
+by calling `(s/ensure-db!)`. All tables created. CRUD works: created a test
+entity, read it back, confirmed round-trip. Entity/arrow/bridge counts all 0
+(empty DB). **Important**: meme store requires JVM (`next.jdbc` + SQLite JDBC),
+not babashka. Bootstrap script must use `clj -M`, not `bb`.
+
+**Q2. futon3b federated search.**
+Works from REPL. `(r/search "provenance")` returns results from both
+`:pattern` and `:transcript` sources. Pattern count: 829. Session count: 2132.
+Search for "provenance" found 8 pattern matches (coordination/artifact-registration,
+enrichment/rational-reconstruction, etc.) Search for "landscape" found 5
+transcript matches. The federated search infrastructure is operational.
+
+**Q3. Gate pipeline test coverage.**
+Yes — `pipeline_test.clj` has 12 tests covering all 6 gates plus store
+integration. The `happy-path-produces-proof-path` test confirms: full G5→G0
+traversal producing a 6-event proof path with real PSR, PAR, exec function,
+and evidence sink. Store integration tests confirm: real pattern library
+lookup (G3), mission registry lookup (G5), durable proof-path write + read-back,
+and passthrough artifacts. **The pipeline has been fully exercised in tests
+with hermetic fixtures.** What's missing is a run against the live system
+with non-fixture data.
+
+**Q4. Hotword vocabulary.**
+4,391 unique hotwords across 852 patterns. However, ~260 of these are
+dominated by iiching patterns (257 entries sharing common words like
+"explicit", "make", "knowledge", "inspectable"). The semantically meaningful
+vocabulary (freq 10-200) includes: evidence (146), pattern (91), coherence
+(64), agent (34), action (32), proof (25), layer (28). Co-occurrence structure:
+patterns within a namespace share many keywords; cross-namespace co-occurrence
+is sparser and more informative (e.g., "evidence" + "agent" in different
+namespaces signals a real conceptual link).
+
+**Q5. futon3c → futon3a path.**
+futon3c already calls futon3a via `notions_search.py` — a Python script that
+does cosine similarity against pre-computed embeddings. The path goes through
+`mission_backend.clj` (line 730) which shells out to the Python script.
+For meme store access (entities/arrows/bridges), no path exists yet. futon3c
+has futon3b on its classpath (via futon3b's `:local/root` to futon3a), so
+in theory the JVM can call meme.core directly. But no HTTP endpoint or
+Drawbridge command exposes this.
+
+**Q6. Minimum viable concept graph for probe generation.**
+futon7's current `report.clj` uses 28 hand-crafted keywords in
+`stack-alignment-keywords`. To replace this with the entity graph, we need:
+(a) entities tagged by stack-relevance area (knowledge-store, multi-agent,
+formal-math, etc.), (b) a way to map entities to GitHub search terms, and
+(c) a walk function that discovers adjacent concepts. Minimum: ~50 entities
+covering the 7 alignment areas, with arrows connecting related concepts.
+The existing pattern index has the raw material; the question is filtering
+the 4,391 hotwords down to the ~200 that are semantically meaningful for
+landscape probing.
+
+**Q7. Enrichment coverage for futon3x.**
+
+*Hypergraph (futon1a)*: 75 futon3x namespaces in the code column (of 102 total).
+Coverage by repo:
+- futon3c: 62 namespaces (good — all key modules present)
+- futon3b: 2 namespaces (futon3b.query.relations, futon3b.query.transcript)
+- futon3 gate: 10 namespaces (futon3.gate.*)
+- futon3a: 0 namespaces (not in reflection API — separate JVM)
+
+Mission provenance: 142 mission→namespace edges touching futon3x.
+Covers M-agency-rebuild, M-agency-refactor, M-IRC-stability, etc.
+
+*Docbook (futon4)*: Two relevant books exist:
+- `futon3x` book: 31 entries covering The Split, Mission Control, Portfolio
+  Inference, Self-Representing Stack, API Reference. Good conceptual coverage
+  but no per-namespace entries for futon3a or futon3b.
+- `futon3` book: 41 entries covering Core, Transport, Tatami, HX, Patterns.
+  Includes per-file dev docs for legacy futon3 (musn, f2, hx, tatami) but
+  nothing for the split repos (futon3a, futon3b).
+
+**Gap**: futon3a and futon3b have zero docbook entries and zero hypergraph
+namespace nodes. They're invisible to the self-representing stack.
+
+**Q8. Key entrypoints.**
+
+| Repo | Type | Count | Examples |
+|------|------|-------|---------|
+| futon3 | flexiarg patterns | 739 | library/**/*.flexiarg |
+| futon3a | meme CRUD functions | 41 | core/{create,get,list}-{entity,artifact,arrow,bridge} |
+| futon3a | notions search (Python) | 1 | scripts/notions_search.py |
+| futon3b | query relations | 21 | patterno, search-texto, patterns, search, proof-patho |
+| futon3b | gate pipeline | 1 | pipeline/run (composes G5→G0) |
+| futon3c | HTTP handlers | 48 | handle-{dispatch,health,reflect-*,enrich-file,...} |
+
+Discovery: A new agent can find futon3c endpoints via the handler list in
+http.clj (lines 9-29 have a comment-based API index). futon3b's query API
+is discoverable via `(r/patterns)` and `(r/search ...)`. futon3a's meme
+store API requires reading schema.clj + core.clj. No unified discovery
+surface exists across all four repos.
+
+### Ready vs Missing
 
 | Ready (no new code) | Missing (the actual work) |
 |---------------------|--------------------------|
-| | |
+| Pattern library (852 patterns, hotwords) | futon3a meme.db population |
+| Pattern embeddings (FastText/GloVe/MiniLM) | Entity extraction from hotwords |
+| Meme store schema + CRUD (JVM) | Arrow generation from co-occurrence |
+| Federated search (patterns + transcripts) | Meme store query in federated search |
+| Gate pipeline (12 tests passing) | Live system gate traversal (not just fixtures) |
+| futon3c → futon3a ANN search (Python) | futon3c → futon3a meme store (JVM) |
+| futon7 probe infrastructure + report | Probe generation from entity graph |
+| 75 futon3x namespaces in hypergraph | futon3a namespaces in hypergraph (0 today) |
+| futon3x docbook (31 entries, conceptual) | Per-namespace docbook for futon3a/3b |
+| 48 HTTP handlers documented in-code | Unified entrypoint discovery surface |
 
 ---
 

@@ -12,7 +12,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout futon3
+        uses: actions/checkout@v4
+        with:
+          path: repo/futon3
+
+      - name: Checkout futon2
+        uses: actions/checkout@v4
+        with:
+          repository: tothedarktowercame/futon2
+          path: repo/futon2
+
+      - name: Checkout futon3a
+        uses: actions/checkout@v4
+        with:
+          repository: tothedarktowercame/futon3a
+          path: repo/futon3a
+
+      - name: Checkout futon1
+        uses: actions/checkout@v4
+        with:
+          repository: tothedarktowercame/futon1
+          path: repo/futon1
 
       - name: Setup Clojure
         uses: DeLaGuardo/setup-clojure@12.5
@@ -22,15 +43,17 @@ jobs:
       - name: Cache Maven dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('deps.edn') }}
+          path: repo/futon3/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('repo/futon3/deps.edn') }}
           restore-keys: |
             ${{ runner.os }}-maven-
 
       - name: Run tests
+        working-directory: repo/futon3
         run: clojure -M:test -m cognitect.test-runner
 
       - name: Verify golden transcripts
+        working-directory: repo/futon3
         run: |
           echo "Golden transcript tests included in test suite"
           echo "See test/f2/transport_golden_test.clj"

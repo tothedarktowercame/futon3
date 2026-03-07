@@ -290,6 +290,18 @@
   [base controller-id regime-id task-id]
   (long (+ (or base 0) (hash [controller-id regime-id task-id]))))
 
+(defn- json-safe
+  [value]
+  (cond
+    (instance? java.time.Instant value) (str value)
+    (map? value) (into (empty value)
+                       (map (fn [[k v]] [k (json-safe v)]))
+                       value)
+    (vector? value) (mapv json-safe value)
+    (set? value) (mapv json-safe value)
+    (seq? value) (mapv json-safe value)
+    :else value))
+
 (defn run-sweep
   [{:keys [seed max-steps out-dir diagram]
     :or {seed 43 max-steps 24 out-dir "dev/fulab-regime" diagram sample-diagram}}]
@@ -313,9 +325,10 @@
         _ (.mkdirs out-dir)
         edn-path (io/file out-dir "fulab-regime-sweep.edn")
         json-path (io/file out-dir "fulab-regime-sweep.json")
+        json-results (json-safe results)
         md-path (io/file out-dir "fulab-regime-sweep.md")]
     (spit edn-path (with-out-str (pprint/pprint results)))
-    (spit json-path (json/generate-string results {:pretty true}))
+    (spit json-path (json/generate-string json-results {:pretty true}))
     (spit md-path
           (with-out-str
             (println "# Fulab Regime Sweep")

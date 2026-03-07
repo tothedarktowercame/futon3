@@ -3,7 +3,9 @@
   (:require [cheshire.core :as json]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [futon3.agency.registry])
+            [futon3.agency.http]
+            [futon3.agency.registry]
+            [futon3.agency.service])
   (:import (java.io ByteArrayInputStream)
            (java.nio.charset StandardCharsets)
            (java.util UUID)))

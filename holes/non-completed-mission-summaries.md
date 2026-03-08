@@ -1,7 +1,7 @@
 # Mission Inventory (Non-Completed)
 
 This index captures missions referenced by active FUTON devmap prototypes
-that are not yet complete. Updated 2026-03-07.
+that are not yet complete. Updated 2026-03-08.
 
 Status key: IN-PROGRESS (actively worked), BLOCKED (waiting on dependency),
 DEFERRED (parked — scope right, timing wrong), READY (not yet started).
@@ -18,14 +18,14 @@ DEFERRED (parked — scope right, timing wrong), READY (not yet started).
 
 ## futon3c
 
-- `M-forum-refactor` [IN-PROGRESS] - INSTANTIATE phase (active); evidence landscape design from PlanetMath corpus; EvidenceEntry schema and store with proof-tree projections. (Devmap: `futon3/P13`)
+- `M-forum-refactor` [DONE] - Completed 2026-03-08; all four parts delivered: evidence shapes, evidence store (pluggable backend), thread projection (proof trees, forks, conjectures), S-validate integration. HTTP surface delivered by M-walkie-talkie. (Devmap: `futon3/P13`)
 - `M-peripheral-gauntlet` [IN-PROGRESS] - DERIVE phase (active); seven-pattern dependency chain for peripheral phenomenology; futon1a integration spec with write pipeline (L4->L0). (Devmap: `futon3/P14`)
 - `M-sliding-blackboard` [DEFERRED] - IDENTIFY phase (parked); Emacs sliding side-panels for extracted chat code blocks; design captured, implementation not started. (Devmap: `futon3/P15`)
 - `M-stepper-calibration` [IN-PROGRESS] - VERIFY phase (active 2026-02-18); P1 and P7 calibration complete (RED); P3 next target for claim-typing validation. (Devmap: `futon3c`)
 - `M-cyder` [IN-PROGRESS] - Phase 0 done (audit + registration, 17 tests); Phase 1 ops surface scoped but not started; cybernetic ops surface for peripherals, daemons, servers, background tasks, state machines. (Devmap: `futon3c`)
 - `M-codex-irc-execution` [DONE] - Completed 2026-03-08; job state machine, evidence gating, durable job records, duplicate job fix, stale reaper.
-- `M-codex-agent-behaviour` [IN-PROGRESS] - IDENTIFY phase (active 2026-03-08); sequel to M-codex-irc-execution — enforcement retry logic doesn't run via WS bridge path, so codex plans instead of executing. Side-by-side comparison with claude-1 done; handoff to laptop-side claude. (Devmap: `futon3c`)
-- `M-walkie-talkie` [IN-PROGRESS] - IDENTIFY phase; universal agent tool surface building on cyder process registry and peripheral backpack metaphor. (Devmap: `futon3c`)
+- `M-codex-agent-behaviour` [DONE] - Completed 2026-03-08; enforcement retry logic fixed for WS bridge path. (Devmap: `futon3c`)
+- `M-walkie-talkie` [DONE] - Completed 2026-03-08; HTTP endpoints for PSR/PUR/PAR/ArSE, persistent backpacks, pattern search, IRC commands. Gates A+D pass, B+C deferred. (Devmap: `futon3c`)
 
 ## futon3
 

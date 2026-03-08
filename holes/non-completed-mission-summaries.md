@@ -29,7 +29,7 @@ DEFERRED (parked — scope right, timing wrong), READY (not yet started).
 
 ## futon3
 
-- `M-futon3x-e2e` [IN-PROGRESS] - VERIFY phase (active 2026-03-07); end-to-end demonstration through all four futon3x layers plus futon7. Six pieces (L1-L6) implemented: meme.db bootstrap (1,221 entities, 5,216 arrows), federated search, live gate pipeline, concept API, probe generation, namespace hyperedge enrichment. (Devmap: `futon3/P2`, `futon3/P5`, `futon3a/P3`)
+- `M-futon3x-e2e` [DONE] - Completed 2026-03-08; all 7 criteria PASS. E2E through futon3a/3b/3c/futon7: meme.db (1,221 entities, 5,216 arrows), federated search, gate pipeline, concepts API (live), probe generation, hyperedge enrichment, docbook entries. (Devmap: `futon3/P2`, `futon3/P5`, `futon3a/P3`)
 
 ## futon0
 

@@ -695,6 +695,18 @@ Results:
   needed to prevent transcripts from dominating results.
 - L6: penholder "api" required (not "joe") for futon1a hyperedge writes.
 
+### Dogfooding Observation (2026-03-08)
+
+While working on M-codex-agent-behaviour, observed that the Claude agent
+assigned to investigate codex issues was searching the pattern library with
+standard CLI tools (grep, find) rather than futon3a's federated search or
+concept API. This is exactly the gap M-futon3x-e2e exists to close: even
+our own agents don't use the knowledge infrastructure we're building. The
+futon3a tooling needs to be available as agent tools so that legacy CLI
+agents (Claude Code, Codex) can query the pattern library, meme store, and
+concept graph without custom integration. This is the "last mile" that
+makes the e2e pipeline actually useful rather than a demo artifact.
+
 ## 7. DOCUMENT
 
 *(Deferred until INSTANTIATE is complete.)*

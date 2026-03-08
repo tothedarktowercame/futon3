@@ -23,7 +23,8 @@ DEFERRED (parked — scope right, timing wrong), READY (not yet started).
 - `M-sliding-blackboard` [DEFERRED] - IDENTIFY phase (parked); Emacs sliding side-panels for extracted chat code blocks; design captured, implementation not started. (Devmap: `futon3/P15`)
 - `M-stepper-calibration` [IN-PROGRESS] - VERIFY phase (active 2026-02-18); P1 and P7 calibration complete (RED); P3 next target for claim-typing validation. (Devmap: `futon3c`)
 - `M-cyder` [IN-PROGRESS] - Phase 0 done (audit + registration, 17 tests); Phase 1 ops surface scoped but not started; cybernetic ops surface for peripherals, daemons, servers, background tasks, state machines. (Devmap: `futon3c`)
-- `M-codex-irc-execution` [IN-PROGRESS] - DERIVE phase; guaranteed IRC execution contract for Codex — job state machine, evidence gating, durable job records.
+- `M-codex-irc-execution` [DONE] - Completed 2026-03-08; job state machine, evidence gating, durable job records, duplicate job fix, stale reaper.
+- `M-codex-agent-behaviour` [IN-PROGRESS] - IDENTIFY phase (active 2026-03-08); sequel to M-codex-irc-execution — enforcement retry logic doesn't run via WS bridge path, so codex plans instead of executing. Side-by-side comparison with claude-1 done; handoff to laptop-side claude. (Devmap: `futon3c`)
 - `M-walkie-talkie` [IN-PROGRESS] - IDENTIFY phase; universal agent tool surface building on cyder process registry and peripheral backpack metaphor. (Devmap: `futon3c`)
 
 ## futon3

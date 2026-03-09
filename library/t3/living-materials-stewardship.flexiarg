@@ -1,0 +1,37 @@
+@flexiarg t3/living-materials-stewardship
+@title Shared Maintenance
+@sigils [🌱/料]
+@audience maintainers, curriculum-owners, trainers
+@tone formal-analytic
+@style design-pattern
+@part Open Research Training
+@up t3/intervention-triad
+@see t3/expectation-scaffold, t3/adaptive-delivery-spine
+@next t3/co-ownership-engine
+@tier intervention
+@confidence high
+@npt-domain 3.2 Relational Integration, 3.4 Contextual Integration
+@length 180-260
+@allow-new-claims false
+
+! conclusion:
+  Materials stay current because stewardship is distributed, not individual. Where maintenance falls to whoever happens to notice a problem, content drifts from practice, local rework multiplies, and trust in the programme's resources erodes.
+
+  + context: The Carpentries lessons are frequently cited as a "gold standard," but trainers rework content locally without a shared process for maintaining or contributing changes.
+  + if: You want materials to remain credible and easy to use across contexts.
+  + however: Static resources drift from practice; updating is ad hoc, and trainers bear the cost of reworking content alone, adding to the workload burden that is already the most prevalent theme (25% of annotated turns).
+  + then: Treat materials as a living product: assign stewards, publish update cadence, and provide a lightweight change log. Add an adaptation log so local changes can be upstreamed or documented.
+  + because: Named stewardship and cadence reduce drift and enable safe reuse, so trainers spend less time reinventing updates and more time delivering.
+      + mechanism: Stewardship distributes maintenance work and creates a feedback channel between local adaptation and central content.
+      + counterfactual: If updates remain ad hoc, content trust declines, local rework multiplies, and the programme's "gold standard" erodes.
+      + applies-when: Trainers report outdated sections or make repeated local edits that are not shared.
+      + does-not-apply: Content that is intentionally static or time-bound with no expected revisions.
+      + signals: Recurrent comments that modules are out of date, or multiple divergent local versions exist.
+      + evidence: "You'll see like a gold standard of how to run an intro to reproducible research session" (T1); "every time I've done it, I haven't given enough time" (T1); COM-B: "policies, procedures, and resource allocation are appropriate" M=3.78.
+  + next-steps:
+      - Create a quarterly update rhythm with named maintainers.
+      - Add a one-page adaptation log template to each module.
+      - Prioritise updates for sections flagged as outdated by trainers.
+  + governance:
+      - practice: run a short "materials health" review each quarter.
+      - metric: time since last update for each module.

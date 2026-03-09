@@ -1,6 +1,6 @@
 # Mission: Agency Rebuild (A0-A5 Invariants)
 
-**Status:** :in-progress (Phase 2 complete, Phase 3 in progress)
+**Status:** COMPLETE (SUPERSEDED) — Agency invariants A0-A5 reimplemented in futon3c/agency/registry.clj (2026-03)
 **Date:** 2026-02-08
 **Owner:** Joe (handoff requires explicit update to this header)
 **Primary:** Codex

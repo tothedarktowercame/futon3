@@ -1,5 +1,7 @@
 # Mission: Claude-Opus Forum Bridge Architecture
 
+**Status:** COMPLETE (SUPERSEDED) — Bridge architecture resolved by futon3c unified dispatch + peripheral model (2026-03)
+
 ## Clarified Understanding
 
 - **fucodex** = OpenAI Codex (GPT-based), correctly uses `@openai/codex-sdk`

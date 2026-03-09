@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+FUTON0_CONTRIB="${ROOT_DIR}/../futon0/contrib"
 EMACS_BIN="${EMACS:-emacs}"
 ERT_SELECTOR="${ERT_SELECTOR:-t}"
 ELISP_TEST_FILES="${ELISP_TEST_FILES:-}"
@@ -24,8 +25,14 @@ for file in "${LOAD_FILES[@]}"; do
   LOAD_ARGS+=(-l "${ROOT_DIR}/test/elisp/${file}")
 done
 
-${EMACS_BIN} -Q --batch \
+EXTRA_LOAD_ARGS=()
+if [[ -d "${FUTON0_CONTRIB}" ]]; then
+  EXTRA_LOAD_ARGS+=(-L "${FUTON0_CONTRIB}")
+fi
+
+"${EMACS_BIN}" -Q --batch \
   -L "${ROOT_DIR}/test/elisp" \
   -L "${ROOT_DIR}/contrib" \
+  "${EXTRA_LOAD_ARGS[@]}" \
   "${LOAD_ARGS[@]}" \
   --eval "(ert-run-tests-batch-and-exit ${SELECTOR_EXPR})"

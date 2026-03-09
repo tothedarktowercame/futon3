@@ -49,7 +49,11 @@
      (let ((my-chatgpt-shell-context-buffer-name "*Tatami Context Test*")
            ;; The real Tatami context log can be huge, so tests disable it
            ;; by default and rebind explicitly when persistence is required.
-           (my-chatgpt-shell-edn-log-file nil))
+           (my-chatgpt-shell-edn-log-file nil)
+           ;; Batch tests also disable hints logging so Windows runs do not
+           ;; prompt for an interactive coding-system choice when appending
+           ;; debug fixtures to disk.
+           (my-chatgpt-shell-hints-log-file nil))
        (cl-letf (((symbol-function 'my-chatgpt-shell--maybe-render-context)
                   (lambda (&rest _) (my-chatgpt-shell--render-context t)))
                  ((symbol-function 'my-futon3-running-p) (lambda () nil))
@@ -232,6 +236,8 @@
                  (lambda (_name _buffer cmd)
                    (push cmd commands)
                    'fubar-hud-test-proc))
+                ((symbol-function 'process-put)
+                 (lambda (&rest _) nil))
                 ((symbol-function 'set-process-sentinel)
                  (lambda (&rest _) nil))
                 ((symbol-function 'display-buffer)
@@ -239,7 +245,10 @@
         (fubar-hud-resume-session "Hello" "sid with space")
         (let ((cmd (car commands)))
           (should (string-match-p "--resume" cmd))
-          (should (string-match-p "--resume 'sid with space'" cmd)))
+          (should (string-match-p
+                   (regexp-quote (concat "--resume "
+                                         (shell-quote-argument "sid with space")))
+                   cmd)))
         (setq commands nil)
         (fubar-hud-resume-session "Hello" "")
         (let ((cmd (car commands)))
@@ -373,7 +382,8 @@
   (let ((chat (generate-new-buffer "*hud-refresh-chat*"))
         (hud-name "*Tatami Context HUD Test*")
         (hud nil)
-        (my-chatgpt-shell--hud-state-registry (make-hash-table :test 'eq)))
+        (my-chatgpt-shell--hud-state-registry (make-hash-table :test 'eq))
+        (my-chatgpt-shell-hints-log-file nil))
     (unwind-protect
         (progn
           (with-current-buffer chat
@@ -513,7 +523,10 @@
                    (should snippet)
                    (should (string-match-p (regexp-quote snippet) contents))))
                 ((or :chatgpt :empty)
-                 (let ((msg (my-chatgpt-shell--cue-guidance status reason)))
+                 (let* ((guidance (my-chatgpt-shell--cue-guidance status reason))
+                        (msg (if (listp guidance)
+                                 (plist-get guidance :text)
+                               guidance)))
                    (should msg)
                    (should (string-match-p (regexp-quote msg) contents))))
                 (_ (should status))))))))))

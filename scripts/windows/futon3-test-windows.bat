@@ -28,6 +28,9 @@ call :epoch_now RUN_START_SECONDS
 
 set "CMD_TEST=%RUNNER_PATH% %*"
 
+echo [futon3-test-windows] mode=workflow-receipt
+echo [futon3-test-windows] scope=local reproduction of .github/workflows/test.yml
+
 echo [futon3-test-windows] START %WF_JOB_TEST%
 call :utc_now_iso START_TEST_ISO
 call :epoch_now START_TEST_SECONDS

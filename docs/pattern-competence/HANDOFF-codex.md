@@ -104,12 +104,12 @@ After implementation, this should work:
 
 ```bash
 # 1. Import a real Claude session
-./fulab-session-import --jsonl ~/.claude/sessions/abc123.jsonl \
+./bin/fulab-session-import --jsonl ~/.claude/sessions/abc123.jsonl \
                        --session-id demo-test-001 \
                        --pattern-id "fulab/clock-in"
 
 # 2. Add a PUR claim (could be manual or auto-generated)
-./fulab-pattern-claim --session-id demo-test-001 --kind pur --stdin <<'EOF'
+./bin/fulab-pattern-claim --session-id demo-test-001 --kind pur --stdin <<'EOF'
 {:pur/id "pur-demo-1"
  :session/id "demo-test-001"
  :pattern/id "fulab/clock-in"
@@ -126,11 +126,11 @@ After implementation, this should work:
 EOF
 
 # 3. Validate - anchors should resolve to imported events
-./fulab-pattern-check --session-id demo-test-001 --dry-run
+./bin/fulab-pattern-check --session-id demo-test-001 --dry-run
 # Expected: [lab-pattern-check] :pattern/use-claimed pur-demo-1 -> pass
 
 # 4. Report
-./fulab-pattern-report --session-id demo-test-001
+./bin/fulab-pattern-report --session-id demo-test-001
 ```
 
 ## Reference Files

@@ -15,7 +15,7 @@ Produce a complete, checkable lab session that:
 - Session store (target): `futon3/lab/sessions/`
 - Fubar event log (source): `futon3/resources/fubar-events.edn`
 - Pattern catalog: `futon3/resources/sigils/patterns-index.tsv`
-- Pattern competence tools: `futon3/fulab-pattern-claim`, `futon3/fulab-pattern-check`, `futon3/fulab-pattern-report`
+- Pattern competence tools: `futon3/bin/fulab-pattern-claim`, `futon3/bin/fulab-pattern-check`, `futon3/bin/fulab-pattern-report`
 - Example session shape: `futon3/lab/sessions/claude-2026-01-01-001.edn`
 
 ## P0 — Minimal viable session (import + anchors)
@@ -50,7 +50,7 @@ anchors can resolve against those events.
 
 ### 2) Create a CLI wrapper
 
-**File:** `futon3/fulab-session-import-fubar`
+**File:** `futon3/bin/fulab-session-import-fubar`
 
 ```bash
 #!/usr/bin/env bash
@@ -83,9 +83,9 @@ Example (manual) PUR:
 
 Commands:
 ```bash
-futon3/fulab-pattern-claim --session-id demo-fucodex-001 --kind pur --stdin < pur.edn
-futon3/fulab-pattern-check --session-id demo-fucodex-001 --dry-run
-futon3/fulab-pattern-report --session-id demo-fucodex-001
+futon3/bin/fulab-pattern-claim --session-id demo-fucodex-001 --kind pur --stdin < pur.edn
+futon3/bin/fulab-pattern-check --session-id demo-fucodex-001 --dry-run
+futon3/bin/fulab-pattern-report --session-id demo-fucodex-001
 ```
 
 ## P1 — Enrich anchors with file-level evidence
@@ -108,7 +108,7 @@ This enables anchors like:
 
 1) Draft PSR with explicit alternatives and forecast loci:
 ```bash
-futon3/fulab-pattern-claim --session-id demo-fucodex-001 --kind psr --decision-id decision-1
+futon3/bin/fulab-pattern-claim --session-id demo-fucodex-001 --kind psr --decision-id decision-1
 ```
 
 2) Edit the PSR to include `:context/anchors` and forecast `:locus` anchors.
@@ -117,8 +117,8 @@ futon3/fulab-pattern-claim --session-id demo-fucodex-001 --kind psr --decision-i
 
 4) Verify and report:
 ```bash
-futon3/fulab-pattern-check --session-id demo-fucodex-001
-futon3/fulab-pattern-report --session-id demo-fucodex-001
+futon3/bin/fulab-pattern-check --session-id demo-fucodex-001
+futon3/bin/fulab-pattern-report --session-id demo-fucodex-001
 ```
 
 ## P3 — Optional real-time capture (future)

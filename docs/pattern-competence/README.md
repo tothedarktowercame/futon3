@@ -93,26 +93,26 @@ fuclaude do not need to guess file formats.
 
 ```bash
 # Write a PUR template
-futon3/fulab-pattern-claim --session-id claude-2026-01-01-001 --kind pur
+futon3/bin/fulab-pattern-claim --session-id claude-2026-01-01-001 --kind pur
 
 # Write a PSR template
-futon3/fulab-pattern-claim --session-id claude-2026-01-01-001 --kind psr --decision-id decision-1
+futon3/bin/fulab-pattern-claim --session-id claude-2026-01-01-001 --kind psr --decision-id decision-1
 
 # Write a PUR template with a git commit certificate
-futon3/fulab-pattern-claim --session-id claude-2026-01-01-001 --kind pur \
+futon3/bin/fulab-pattern-claim --session-id claude-2026-01-01-001 --kind pur \
   --certify-commit --repo-root /home/joe/code/futon3
 
 # Validate claims and append verification events
-futon3/fulab-pattern-check --session-id claude-2026-01-01-001
+futon3/bin/fulab-pattern-check --session-id claude-2026-01-01-001
 
 # Report coverage
-futon3/fulab-pattern-report --session-id claude-2026-01-01-001
+futon3/bin/fulab-pattern-report --session-id claude-2026-01-01-001
 ```
 
 Optional PSR draft helper (unverified):
 
 ```bash
-futon3/fulab-pattern-suggest --session-id claude-2026-01-01-001 --decision-id decision-1
+futon3/bin/fulab-pattern-suggest --session-id claude-2026-01-01-001 --decision-id decision-1
 ```
 
 ## hx.logic integration

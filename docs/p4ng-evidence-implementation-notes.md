@@ -5,11 +5,11 @@ It keeps the original plan intact while documenting corrections, risks, and prac
 
 ## Command Corrections (Tickets E04, E08)
 
-- E04 uses `./fulab-pattern-check --session lab/sessions/SESSION_ID.edn --verbose`, but the CLI expects
+- E04 uses `./bin/fulab-pattern-check --session lab/sessions/SESSION_ID.edn --verbose`, but the CLI expects
   `--session-id` or `--session-file` and does not support `--verbose`.
   - Correct forms:
-    - `./fulab-pattern-check --session-id SESSION_ID`
-    - `./fulab-pattern-check --session-file lab/sessions/SESSION_ID.edn`
+    - `./bin/fulab-pattern-check --session-id SESSION_ID`
+    - `./bin/fulab-pattern-check --session-file lab/sessions/SESSION_ID.edn`
 - E08 uses `clojure -Sdeps "$LAB_DEPS" -M dev/lab-session-report.clj --session "$session"`.
   The report tool expects `--session-id` (not a file path) and optional `--lab-root`.
   - Correct forms:

@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# fulab-export-check: Dry-run export + validate lab artifacts for a session.
+# Usage:
+#   fulab-export-check --session-id ID [--lab-root PATH] [--repo-root PATH]
+#   fulab-export-check --session-file PATH [--lab-root PATH] [--repo-root PATH]
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
+
+SESSION_ID=""
+SESSION_FILE=""
+LAB_ROOT="$ROOT/lab"
+REPO_ROOT="$(pwd)"
+
+usage() {
+  echo "Usage: fulab-export-check --session-id ID [--lab-root PATH] [--repo-root PATH]"
+  echo "       fulab-export-check --session-file PATH [--lab-root PATH] [--repo-root PATH]"
+  echo ""
+  echo "Runs dev/lab-export.clj in --dry-run and validates expected artifacts."
+}
+
+require_value() {
+  local flag="$1"
+  local value="${2:-}"
+  if [[ -z "$value" ]]; then
+    echo "[fulab-export-check] Missing value for $flag" >&2
+    usage
+    exit 1
+  fi
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --session-id)
+      require_value "$1" "${2:-}"
+      SESSION_ID="$2"
+      shift 2
+      ;;
+    --session-file)
+      require_value "$1" "${2:-}"
+      SESSION_FILE="$2"
+      shift 2
+      ;;
+    --lab-root)
+      require_value "$1" "${2:-}"
+      LAB_ROOT="$2"
+      shift 2
+      ;;
+    --repo-root)
+      require_value "$1" "${2:-}"
+      REPO_ROOT="$2"
+      shift 2
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "[fulab-export-check] Unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+if [[ -z "$SESSION_FILE" ]]; then
+  if [[ -z "$SESSION_ID" ]]; then
+    echo "[fulab-export-check] Provide --session-id or --session-file" >&2
+    usage
+    exit 1
+  fi
+
+  candidate="$LAB_ROOT/raw-stream/${SESSION_ID}.jsonl"
+  if [[ -f "$candidate" ]]; then
+    SESSION_FILE="$candidate"
+  else
+    echo "[fulab-export-check] Session file not found: $candidate" >&2
+    echo "[fulab-export-check] Provide --session-file to override." >&2
+    exit 1
+  fi
+fi
+
+ARGS=(--session-file "$SESSION_FILE" --repo-root "$REPO_ROOT" --lab-root "$LAB_ROOT" --dry-run)
+[[ -n "$SESSION_ID" ]] && ARGS+=(--session-id "$SESSION_ID")
+
+if ! output="$(clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-export.clj" "${ARGS[@]}" 2>&1)"; then
+  echo "$output" >&2
+  exit 1
+fi
+
+session_id="$(echo "$output" | sed -n 's/^\[lab-export\] session=//p' | head -n 1)"
+raw_path="$(echo "$output" | sed -n 's/^\[lab-export\] raw=//p' | head -n 1)"
+stub_path="$(echo "$output" | sed -n 's/^\[lab-export\] stub=//p' | head -n 1)"
+trace_path="$(echo "$output" | sed -n 's/^\[lab-export\] trace=//p' | head -n 1)"
+
+if [[ -z "$session_id" ]]; then
+  session_id="$SESSION_ID"
+fi
+if [[ -z "$session_id" ]]; then
+  session_id="$(basename "$SESSION_FILE" .jsonl)"
+fi
+
+missing=0
+
+echo "session: $session_id"
+
+check_path() {
+  local label="$1"
+  local path="$2"
+  local required="${3:-false}"
+  if [[ -z "$path" ]]; then
+    if [[ "$required" == "true" ]]; then
+      echo "$label: (missing)"
+      missing=1
+    else
+      echo "$label: (not requested)"
+    fi
+    return 0
+  fi
+  if [[ -f "$path" ]]; then
+    echo "$label: $path"
+  else
+    echo "$label: $path (missing)"
+    missing=1
+  fi
+}
+
+check_presence() {
+  local label="$1"
+  local path="$2"
+  if [[ -f "$path" ]]; then
+    echo "$label: present ($path)"
+  else
+    echo "$label: missing ($path)"
+    missing=1
+  fi
+}
+
+check_path "raw" "$raw_path" true
+check_path "stub" "$stub_path" true
+check_path "trace" "$trace_path" true
+
+check_presence "aif" "$LAB_ROOT/aif/${session_id}.edn"
+check_presence "psr" "$LAB_ROOT/pattern-drafts/${session_id}-psr.edn"
+check_presence "pur" "$LAB_ROOT/pattern-drafts/${session_id}-pur.edn"
+
+exit "$missing"

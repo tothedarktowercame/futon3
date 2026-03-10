@@ -688,7 +688,8 @@ METADATA is an optional alist of extra data."
 
 (defun my-chatgpt-shell--clock-out-applicable-p ()
   "Return non-nil when the current buffer should run a clock-out sequence."
-  (and (derived-mode-p 'chatgpt-shell-mode)
+  (and (not noninteractive)
+       (derived-mode-p 'chatgpt-shell-mode)
        (or (string= my-chatgpt-shell-profile "General")
            my-chatgpt-shell--clock-out-pending)))
 
@@ -2626,6 +2627,19 @@ LABEL is a human-friendly tag describing the captured scenario."
         (when (and fruits (not (seq-empty-p fruits)))
           (my-chatgpt-shell--debug "[HUD] /musn/hints fruits=%S" fruits))))
     (setq updated (my-chatgpt-shell--enrich-with-cues updated))
+    ;; Once hints land, recompute sigils against the enriched context so
+    ;; pattern-derived sigils can replace prototype/default placeholders.
+    (let* ((current-sigils (plist-get updated :intent-sigils))
+           (current-origin (plist-get updated :intent-sigils-source)))
+      (when (or (null current-sigils)
+                (eq current-origin :prototype))
+        (let ((after-hints (my-chatgpt-shell--sigils-from-intent updated target-intent)))
+          (when after-hints
+            (setq updated (plist-put updated :intent-sigils after-hints))
+            (setq updated (plist-put updated :intent-sigils-source
+                                     (or my-chatgpt-shell--last-intent-sigil-origin
+                                         :embedded)))
+            (setq updated (plist-put updated :intent-sigils-intent target-intent))))))
     (setq my-chatgpt-shell-last-inbound-edn updated)
     (setq my-chatgpt-shell--last-replay-tatami-edn (and updated (cl-copy-list updated)))
     (setq my-chatgpt-shell-last-edn (or context my-chatgpt-shell-last-edn))
@@ -2657,7 +2671,9 @@ LABEL is a human-friendly tag describing the captured scenario."
                           (cl-copy-list my-chatgpt-shell-last-inbound-edn))
                      (and context (cl-copy-list context))
                      nil))
-           (updated (or base (list :intent target-intent))))
+           (updated (or base (list :intent target-intent)))
+           (use-async (and my-chatgpt-shell-hints-async
+                           (not noninteractive))))
       (setq updated (plist-put updated :intent target-intent))
       (when (and my-chatgpt-shell-last-inbound-edn
                  (not (string= (my-chatgpt-shell--normalize-intent-string
@@ -2675,15 +2691,6 @@ LABEL is a human-friendly tag describing the captured scenario."
         (setq updated (plist-put updated :intent-sigils sigils))
         (setq updated (plist-put updated :intent-sigils-source sigil-origin))
         (setq updated (plist-put updated :intent-sigils-intent target-intent)))
-      (when (or (null (plist-get updated :intent-sigils))
-                (eq sigil-origin :prototype))
-        (let ((after-hints (my-chatgpt-shell--sigils-from-intent updated target-intent)))
-          (when after-hints
-            (setq sigils after-hints
-                  sigil-origin (or my-chatgpt-shell--last-intent-sigil-origin :embedded))
-            (setq updated (plist-put updated :intent-sigils sigils))
-            (setq updated (plist-put updated :intent-sigils-source sigil-origin))
-            (setq updated (plist-put updated :intent-sigils-intent target-intent)))))
       (setq my-chatgpt-shell-last-inbound-edn updated)
       (setq my-chatgpt-shell--last-replay-tatami-edn (and updated (cl-copy-list updated)))
       (setq my-chatgpt-shell-last-edn (or context my-chatgpt-shell-last-edn))
@@ -2691,27 +2698,29 @@ LABEL is a human-friendly tag describing the captured scenario."
       (my-chatgpt-shell--log-hud-manifest
        (my-chatgpt-shell--build-hud-manifest updated context my-chatgpt-shell-last-pattern-outcome))
       (setq my-chatgpt-shell--hints-pending t)
-      (my-chatgpt-shell--render-context t)
+      (when use-async
+        (my-chatgpt-shell--render-context t))
       (cl-incf my-chatgpt-shell--hints-request-id)
       (let* ((request-id my-chatgpt-shell--hints-request-id)
              (payload (if my-chatgpt-shell-hints-async-skip-intent
                           (let ((copy (cl-copy-list request)))
                             (plist-put copy :intent nil))
                         request)))
-        (if my-chatgpt-shell-hints-async
+        (if use-async
             (my-futon3-fetch-hints-async
              payload
              (lambda (hints err)
                (when (and (= request-id my-chatgpt-shell--hints-request-id)
                           (buffer-live-p (my-chatgpt-shell--state-buffer)))
                  (my-chatgpt-shell--with-state-buffer
-                   (setq my-chatgpt-shell--hints-pending nil)
-                   (when hints
+                  (setq my-chatgpt-shell--hints-pending nil)
+                  (when hints
                      (my-chatgpt-shell--apply-hints-response hints payload target-intent context))))))
           (let ((hints (my-futon3-fetch-hints request)))
             (setq my-chatgpt-shell--hints-pending nil)
-            (when hints
-              (my-chatgpt-shell--apply-hints-response hints request target-intent context)))))
+            (if hints
+                (my-chatgpt-shell--apply-hints-response hints request target-intent context)
+              (my-chatgpt-shell--render-context t)))))
       updated)))
 
 (defun my-chatgpt-shell-refresh-context-hints (&optional intent)

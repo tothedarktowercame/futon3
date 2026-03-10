@@ -578,7 +578,16 @@
                             (let [r (send-to-agent! aid bell-msg)]
                               {:agent-id aid :sent (:ok r) :receipt r}))
                           agents)]
-        {:ok true :bell bell-msg :agents results :secret-value (:value secret-result)})
+        (if (seq agents)
+          {:ok true
+           :bell bell-msg
+           :agents results
+           :secret-value (:value secret-result)}
+          {:ok false
+           :bell bell-msg
+           :agents []
+           :secret-value (:value secret-result)
+           :error "no connected agents"}))
       ;; Ring specific agent
       (let [r (send-to-agent! agent-id bell-msg)]
         {:ok (:ok r)

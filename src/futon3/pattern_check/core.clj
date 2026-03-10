@@ -132,38 +132,79 @@
   [s]
   (boolean (re-find #"[\*\?\[]" (str s))))
 
+(defn- normalize-path-separators
+  [path]
+  (-> (str path)
+      (str/replace #"[\\/]+" "/")))
+
+(defn- strip-glob-root
+  [pattern root]
+  (let [pattern (normalize-path-separators pattern)
+        root (normalize-path-separators root)
+        prefix (cond
+                 (= root ".") ""
+                 (str/ends-with? root "/") root
+                 :else (str root "/"))]
+    (cond
+      (= root ".") pattern
+      (= pattern root) "*"
+      (str/starts-with? pattern prefix) (subs pattern (count prefix))
+      :else pattern)))
+
 (defn- glob-root
   "Return a base directory for a glob pattern."
   [pattern]
-  (let [pattern (str pattern)
-        abs? (str/starts-with? pattern "/")
-        parts (->> (str/split pattern #"/") (remove empty?))
-        idx (first (keep-indexed (fn [i part] (when (wildcard? part) i)) parts))
+  (let [pattern (normalize-path-separators pattern)
+        parts (str/split pattern #"/")
+        [prefix tail] (cond
+                        (str/starts-with? pattern "//")
+                        ["//" (vec (remove empty? parts))]
+
+                        (re-find #"(?i)^[A-Z]:/" pattern)
+                        [(first parts) (vec (rest parts))]
+
+                        (str/starts-with? pattern "/")
+                        ["/" (vec (remove empty? parts))]
+
+                        :else
+                        [nil (vec (remove empty? parts))])
+        idx (first (keep-indexed (fn [i part] (when (wildcard? part) i)) tail))
         root-parts (cond
-                     (nil? idx) (butlast parts)
+                     (nil? idx) (vec (butlast tail))
                      (zero? idx) []
-                     :else (take idx parts))
-        root (str (when abs? "/") (str/join "/" root-parts))]
-    (if (str/blank? root) "." root)))
+                     :else (vec (take idx tail)))
+        joined (str/join "/" root-parts)]
+    (cond
+      (= prefix "/") (if (str/blank? joined) "/" (str "/" joined))
+      (= prefix "//") (if (str/blank? joined) "//" (str "//" joined))
+      prefix (if (str/blank? joined) (str prefix "/") (str prefix "/" joined))
+      :else (if (str/blank? joined) "." joined))))
 
 (defn- expand-glob
   "Expand a glob pattern by walking from its base directory."
   [pattern]
-  (let [pattern (str pattern)
-        abs? (str/starts-with? pattern "/")
+  (let [pattern (normalize-path-separators pattern)
+        abs? (.isAbsolute (io/file pattern))
         cwd (.toAbsolutePath (java.nio.file.Paths/get "" (make-array String 0)))
         root-str (glob-root pattern)
-        root-path (let [p (java.nio.file.Paths/get root-str (make-array String 0))]
-                    (if abs? p (.resolve cwd p)))
+        relative-pattern (strip-glob-root pattern root-str)
+        root-path (.toPath (if abs?
+                             (io/file root-str)
+                             (io/file (.toString cwd) root-str)))
         matcher (.getPathMatcher (java.nio.file.FileSystems/getDefault)
-                                 (str "glob:" pattern))]
+                                 (str "glob:" relative-pattern))
+        root-file-matcher (when (str/starts-with? relative-pattern "**/")
+                            (.getPathMatcher (java.nio.file.FileSystems/getDefault)
+                                             (str "glob:" (subs relative-pattern 3))))]
     (when (java.nio.file.Files/exists root-path (make-array java.nio.file.LinkOption 0))
       (with-open [stream (java.nio.file.Files/walk root-path (make-array java.nio.file.FileVisitOption 0))]
         (->> (iterator-seq (.iterator stream))
              (filter #(java.nio.file.Files/isRegularFile % (make-array java.nio.file.LinkOption 0)))
              (map (fn [p]
-                    (let [candidate (if abs? p (.relativize cwd p))]
-                      (when (.matches matcher candidate)
+                    (let [candidate (.relativize root-path p)]
+                      (when (or (.matches matcher candidate)
+                                (and root-file-matcher
+                                     (.matches root-file-matcher candidate)))
                         (.toString p)))))
              (remove nil?)
              vec)))))
@@ -216,8 +257,8 @@
                                  expanded)
         duplicate-sigils (->> sigil->locations
                               (filter #(> (count (val %)) 1))
-                              (map key)
-                              set)]
+                             (map key)
+                             set)]
     {:source-paths input
      :paths expanded
      :built-at now-ms

@@ -13,11 +13,11 @@
     (is (= expected actual))))
 
 (deftest sigil-neighbors-deterministic
-  (let [expected ["musn/tool-name-hygiene"
+  (let [expected ["exotic/immutable-vision-mutable-plan"
                   "musn/plan-before-tool"
-                  "exotic/immutable-vision-mutable-plan"
+                  "musn/tool-name-hygiene"
                   "agent/state-is-hypothesis"
-                  "meta/scaffolding-emergent-clarity"]
+                  "or/expectation-scaffold"]
         actual (mapv :id (hints/nearest-patterns "musn/plan-before-tool"
                                                  {:limit 5 :method :sigil}))]
     (is (= expected actual))))

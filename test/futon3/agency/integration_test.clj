@@ -40,25 +40,34 @@
 
 (deftest bell-and-ack-roundtrip
   (testing "bell + secret + ack records receipt"
-    (let [bell-resp (call-handler (u/ring-json-request :post "/agency/bell"
-                                                       {:agent-id "all"
-                                                        :type "test-bell"
-                                                        :payload {:message "ack me"}}))
-          bell-body (u/parse-json-response bell-resp)
-          bell (get bell-body :bell)
-          secret-id (:secret-id bell)
-          secret-value (:secret-value bell-body)
-          ack-resp (call-handler (u/ring-json-request :post "/agency/ack"
-                                                      {:secret-id secret-id
-                                                       :value secret-value
-                                                       :agent-id "itest"}))
-          ack-body (u/parse-json-response ack-resp)]
-      (is (= 200 (:status bell-resp)))
-      (is (= true (:ok bell-body)))
-      (is (string? secret-id))
-      (is (string? secret-value))
-      (is (= 200 (:status ack-resp)))
-      (is (= true (:ok ack-body))))))
+    (let [register-local-handler! @(ns-resolve 'futon3.agency.http 'register-local-handler!)
+          unregister-local-handler! @(ns-resolve 'futon3.agency.http 'unregister-local-handler!)
+          recv (atom [])]
+      (try
+        (register-local-handler! "itest" (fn [msg] (swap! recv conj msg)))
+        (let [bell-resp (call-handler (u/ring-json-request :post "/agency/bell"
+                                                           {:agent-id "all"
+                                                            :type "test-bell"
+                                                            :payload {:message "ack me"}}))
+              bell-body (u/parse-json-response bell-resp)
+              bell (get bell-body :bell)
+              secret-id (:secret-id bell)
+              secret-value (:secret-value bell-body)
+              ack-resp (call-handler (u/ring-json-request :post "/agency/ack"
+                                                          {:secret-id secret-id
+                                                           :value secret-value
+                                                           :agent-id "itest"}))
+              ack-body (u/parse-json-response ack-resp)]
+          (is (= 200 (:status bell-resp)))
+          (is (= true (:ok bell-body)))
+          (is (= 1 (count @recv)))
+          (is (= "bell" (get-in (first @recv) [:type])))
+          (is (string? secret-id))
+          (is (string? secret-value))
+          (is (= 200 (:status ack-resp)))
+          (is (= true (:ok ack-body))))
+        (finally
+          (unregister-local-handler! "itest"))))))
 
 (deftest rendezvous-ack-tracking
   (testing "standup rendezvous status reflects acks"

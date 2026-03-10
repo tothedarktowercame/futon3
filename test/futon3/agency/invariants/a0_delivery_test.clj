@@ -65,7 +65,6 @@
 
 (deftest bell-broadcast-false-success
   (testing "bell to 'all' with zero agents connected must return :ok false"
-    ;; EXPECTED FAIL (A0): handle-ring-bell returns {:ok true} even when no agents receive the bell.
     (let [handle-ring-bell @(ns-resolve 'futon3.agency.http 'handle-ring-bell)
           resp (handle-ring-bell {:agent-id "all"
                                   :type "test-bell"

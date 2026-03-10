@@ -1,0 +1,39 @@
+(:label "inbound-cues"
+ :timestamp "2026-03-09T08:30:00Z"
+ :expect :inbound
+ :inbound (:intent "demo inbound"
+           :fruits [(:fruit/id "viriya" :emoji "🍊" :score 0.61)]
+           :paramitas []
+           :events [])
+ :chatgpt (:intent "demo inbound"
+           :events [(:kind :note :pattern "foo" :notes "bar")])
+ :hints-error nil
+ :cues-error nil)
+
+(:label "fallback-cues"
+ :timestamp "2026-03-09T08:30:01Z"
+ :expect :fallback
+ :inbound (:intent "demo fallback"
+           :fruits []
+           :paramitas []
+           :events [])
+ :chatgpt (:intent "demo fallback"
+           :fruits [(:fruit/id "dana" :emoji "🍉" :score 0.42)]
+           :paramitas []
+           :events [(:kind :note :pattern "foo" :notes "cached cue fallback")])
+ :hints-error "cached fallback"
+ :cues-error nil)
+
+(:label "missing-cues"
+ :timestamp "2026-03-09T08:30:02Z"
+ :expect :missing
+ :inbound (:intent "demo missing"
+           :fruits []
+           :paramitas []
+           :events [])
+ :chatgpt (:intent "demo missing"
+           :fruits []
+           :paramitas []
+           :events [])
+ :hints-error nil
+ :cues-error nil)

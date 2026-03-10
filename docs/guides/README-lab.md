@@ -75,7 +75,7 @@ Laptop uploader (reference)
     --cwd /home/you/code/project
 
 Questions for Claude (answered 2026-02-01)
-1. **PAR encoding**: Same as Claude Code - see README-par.md. PARs can be:
+1. **PAR encoding**: Same as Claude Code - see docs/guides/README-par.md. PARs can be:
    - Sent via `par` message type → server writes to `<session-id>.par.edn` sidecar
    - Or inline in JSONL with `"type":"par"` (lab/ws.clj parses both)
 2. **Deletion timing**: Don't delete lab/remote/* until Futon1 persistence is wired and verified.

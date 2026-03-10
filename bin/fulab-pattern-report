@@ -5,7 +5,7 @@ set -euo pipefail
 # Usage:
 #   fulab-pattern-report --session-id ID
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_DEPS='{}'
 
 usage() {

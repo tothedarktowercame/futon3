@@ -9,7 +9,7 @@ set -euo pipefail
 #   fulab-export --all              # export all sessions
 #   fulab-export --ingest           # export + POST to Futon1
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
 CLAUDE_DIR="$HOME/.claude/projects"
 API_BASE="http://localhost:8080/api/alpha"

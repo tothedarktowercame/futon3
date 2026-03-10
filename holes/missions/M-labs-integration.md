@@ -115,7 +115,7 @@ Persistence is triggered by:
       pending count decremented but enrichment not stored; no user feedback.
       File: `futon3/contrib/futon4-lab-bridge.el` lines 110-135
 
-- [ ] **Session deduplication** - README-lab.md mentions dedupe needed but
+- [ ] **Session deduplication** - docs/guides/README-lab.md mentions dedupe needed but
       implementation not found. May have duplicate raw files if upload interrupted.
 
 ## Affect Events Integration (New Feature)
@@ -202,5 +202,5 @@ new PARs. The PAR watcher remains active for live updates.
 ## Related Documentation
 
 - `futon3/docs/fulab-plumbing.org` - Architecture notes
-- `futon3/README-lab.md` - Lab upload and processing
-- `futon3/README-affect.md` - Affect signal processing
+- `futon3/docs/guides/README-lab.md` - Lab upload and processing
+- `futon3/docs/guides/README-affect.md` - Affect signal processing

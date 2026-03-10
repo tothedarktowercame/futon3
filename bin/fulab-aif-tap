@@ -5,7 +5,7 @@ set -euo pipefail
 # Usage:
 #   fulab-aif-tap --session-id ID [--duration-ms N] [--lab-root PATH]
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_DEPS='{}'
 
 usage() {

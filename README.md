@@ -1,9 +1,9 @@
-# futon3 — Interface Layer
+# futon3 — Canon + Legacy Interface Layer
 
-futon3 is the central coordination layer of the futon stack. It hosts MUSN
-(the session/transport protocol), the canonical pattern library (flexiargs +
-sigils), and Agency (multi-agent coordination). All other futons route through
-futon3 for pattern lookup, session management, and inter-agent communication.
+futon3 is the canonical home of the Futon pattern library, holes, and a large
+slice of the stack's historical interface/tooling surface. It still contains
+MUSN, HUD, Drawbridge, and the fuclaude/fucodex wrappers, but the newer
+real-time coordination center of gravity is now in `futon3c`.
 
 > **Stack context**: futon0/1/2 provide data and experiments -> **futon3
 > coordinates** -> futon4/5 consume patterns and scholia. See
@@ -11,11 +11,26 @@ futon3 for pattern lookup, session management, and inter-agent communication.
 
 ---
 
-A modern Clojure rewrite of the vintage Monster Mountain / MUSN server. The transport provides a battle-tested ingest path plus an **optional** multi-user REPL (SAFE via SCI, ADMIN via tokenized unsafe eval) while we wait to slot in an external persistence layer. Futon3 is also the canonical interface layer: shared ChatGPT/tatami shims (e.g. `contrib/aob-chatgpt.el`), pattern libraries, and sigil tooling live here so every other futon, including Futon1 storage, depends on a single point of integration.
+A modern Clojure rewrite of the vintage Monster Mountain / MUSN server. The
+transport provides a battle-tested ingest path plus an optional multi-user REPL
+(SAFE via SCI, ADMIN via tokenized unsafe eval). Futon3 also remains the
+canonical interface layer for shared pattern/sigil material and assorted Emacs
+and bridge tooling, even though some older runtime surfaces here are now
+better understood as retained or legacy interfaces rather than the strategic
+center of the stack.
 
 ## Prerequisites
 - JDK 11+ and `clojure` CLI tools (`brew install clojure/tools-deps` or similar)
 - Network access the first time you run `make test`/`make dev` so dependencies can be cached into the repo-local `.m2/` directory
+
+## Repo Shape
+- `holes/` and `library/` are the canonical strategic core.
+- `src/`, `scripts/`, `contrib/`, and `fuclaude` / `fucodex` hold the retained runtime and bridge surface.
+- `bin/` contains the Fulab helper wrappers that used to clutter the repo root.
+- `docs/guides/` contains subsystem/operator guides moved out of the root.
+- `docs/notes/` contains briefings and checklists.
+- `docs/fulab/` contains Fulab-specific planning and changelog material.
+- `lab/`, `logs/`, `data/`, `doc-store/`, `index-store/`, and `tx-log/` are working-state directories, not the canonical self-description of the repo.
 
 ## Layout Highlights
 - `src/f2/transport.clj` – WebSocket/HTTP bus, async back-pressure, optional REPL wiring
@@ -167,11 +182,13 @@ For detailed documentation on specific subsystems, see:
 
 | Document | Topics |
 |----------|--------|
-| `README-musn-transport.md` | IRC Bridge, Chat Supervisor, WebSocket protocol, Drawbridge, HTTP ingest, UI routes |
-| `README-tatami.md` | Tatami HUD, cue embeddings, intent sigil lifecycle, paramitas |
-| `README-patterns.md` | Sigil adjacency builder, pattern embeddings CLI, Futon1 ingestion |
-| `README-proofwork.md` | Transport contract, pattern canon, check DSL, trail instrumentation, workday bridge |
-| `README-drawbridge.md` | Detailed nREPL-over-HTTP setup and remote access |
+| `docs/guides/README-musn-transport.md` | IRC Bridge, Chat Supervisor, WebSocket protocol, Drawbridge, HTTP ingest, UI routes |
+| `docs/guides/README-tatami.md` | Tatami HUD, cue embeddings, intent sigil lifecycle, paramitas |
+| `docs/guides/README-patterns.md` | Sigil adjacency builder, pattern embeddings CLI, Futon1 ingestion |
+| `docs/guides/README-proofwork.md` | Transport contract, pattern canon, check DSL, trail instrumentation, workday bridge |
+| `docs/guides/README-drawbridge.md` | Detailed nREPL-over-HTTP setup and remote access |
+| `docs/notes/AGENCY-CODEX-BRIEF.md` | Agency/Codex integration problem statement |
+| `docs/fulab/fulab-experiments.md` | Fulab workbench notes and follow-up ideas |
 
 ## Next Steps
 - Swap the Datascript placeholder with the upcoming external graph/persistence package

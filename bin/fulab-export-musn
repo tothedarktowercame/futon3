@@ -3,7 +3,7 @@ set -euo pipefail
 
 # fulab-export-musn: Wrapper for dev/lab-export-musn.clj
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
 
 LAB_ROOT="./lab"

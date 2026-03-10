@@ -8,7 +8,7 @@ set -euo pipefail
 #   fulab-pattern-claim --session-id ID --stdin < record.edn
 #   fulab-pattern-claim --session-id ID --kind pur --certify-commit --repo-root "$PWD"
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_DEPS='{}'
 
 usage() {

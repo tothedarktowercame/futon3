@@ -26,7 +26,7 @@ ADMIN_TOKEN=$(cat .admintoken) clojure -M -e "
   (doall (nrepl/message client {:op \"eval\" :code \"(load-file \\\"src/futon3/fulab/hud.clj\\\")\"})))
 "
 ```
-See `README-drawbridge.md` for more details.
+See `docs/guides/README-drawbridge.md` for more details.
 
 ## Fucodex I Ching Demo
 

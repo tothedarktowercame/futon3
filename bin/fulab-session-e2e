@@ -5,7 +5,7 @@ set -euo pipefail
 # Usage:
 #   fulab-session-e2e --session-id ID --file PATH [--desc "..."] [--decision-id ID] [--pattern-id ID] [--alt-pattern-id ID]
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_ROOT="$ROOT/lab"
 SESSION_ID=""
 FILE_PATH=""
@@ -58,7 +58,7 @@ cat > "$SESSION_EDN" <<EOF_SESSION
            :at #inst "$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")"}]}
 EOF_SESSION
 
-"$ROOT/fulab-pattern-demo" --session-id "$SESSION_ID" --decision-id "$DECISION_ID" \
+"$ROOT/bin/fulab-pattern-demo" --session-id "$SESSION_ID" --decision-id "$DECISION_ID" \
   ${PATTERN_ID:+--pattern-id "$PATTERN_ID"} \
   ${ALT_PATTERN_ID:+--alt-pattern-id "$ALT_PATTERN_ID"}
 
@@ -72,13 +72,13 @@ perl -pi -e 's/psr-demo-1/psr-demo-2/g; s/pur-demo-1/pur-demo-2/g; s/pur-demo-1-
   "$LAB_ROOT/pattern-drafts/${SESSION_ID}-psr.edn" \
   "$LAB_ROOT/pattern-drafts/${SESSION_ID}-pur.edn"
 
-"$ROOT/fulab-pattern-claim" --session-id "$SESSION_ID" --certify-commit --repo-root "$ROOT" \
+"$ROOT/bin/fulab-pattern-claim" --session-id "$SESSION_ID" --certify-commit --repo-root "$ROOT" \
   --stdin < "$LAB_ROOT/pattern-drafts/${SESSION_ID}-pur.edn"
-"$ROOT/fulab-pattern-claim" --session-id "$SESSION_ID" --certify-commit --repo-root "$ROOT" \
+"$ROOT/bin/fulab-pattern-claim" --session-id "$SESSION_ID" --certify-commit --repo-root "$ROOT" \
   --stdin < "$LAB_ROOT/pattern-drafts/${SESSION_ID}-psr.edn"
 
-"$ROOT/fulab-pattern-check" --session-id "$SESSION_ID"
+"$ROOT/bin/fulab-pattern-check" --session-id "$SESSION_ID"
 
 clojure -Sdeps '{:deps {futon2/futon2 {:local/root "../futon2"}}}' -M "$ROOT/dev/lab-aif-evaluate.clj" --session-id "$SESSION_ID"
 
-"$ROOT/fulab-session-report" --session-id "$SESSION_ID"
+"$ROOT/bin/fulab-session-report" --session-id "$SESSION_ID"

@@ -5,7 +5,7 @@ set -euo pipefail
 # Usage:
 #   fulab-session-report --session-id ID [--lab-root PATH] [--format md] [--print]
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
 
 usage() {

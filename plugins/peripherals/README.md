@@ -153,4 +153,4 @@ This means you can:
 - `/futon:*` - Interactive pattern commands
 - `/futon-peripherals:*` - Original combined plugin
 - `scripts/fuclaude-peripheral.ts` - Autonomous peripheral wrapper
-- `README-peripherals.md` - Peripheral architecture docs
+- `docs/guides/README-peripherals.md` - Peripheral architecture docs

@@ -1,24 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# fulab-pattern-suggest: Draft a PSR from session context
+# fulab-pattern-check: Verify PUR/PSR claims and append verification events
 # Usage:
-#   fulab-pattern-suggest --session-id ID --decision-id DECISION
+#   fulab-pattern-check --session-id ID
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_DEPS='{}'
 
 usage() {
-  echo "Usage: fulab-pattern-suggest --session-id ID --decision-id DECISION [--print-only]"
-  echo "Writes an unverified PSR draft event based on session context."
+  echo "Usage: fulab-pattern-check --session-id ID [--dry-run]"
+  echo "Validates PUR/PSR claim events for a session and appends verification events."
 }
 
 SESSION_ID=""
 SESSION_FILE=""
 LAB_ROOT="$ROOT/lab"
 REPO_ROOT="$ROOT"
-DECISION_ID=""
-PRINT_ONLY=false
+DRY_RUN=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -30,10 +29,8 @@ while [[ $# -gt 0 ]]; do
       LAB_ROOT="$2"; shift 2;;
     --repo-root)
       REPO_ROOT="$2"; shift 2;;
-    --decision-id)
-      DECISION_ID="$2"; shift 2;;
-    --print-only)
-      PRINT_ONLY=true; shift;;
+    --dry-run)
+      DRY_RUN=true; shift;;
     --help|-h)
       usage; exit 0;;
     *)
@@ -42,10 +39,9 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-pattern-suggest.clj" \
+clojure -Sdeps "$LAB_DEPS" -M "$ROOT/dev/lab-pattern-check.clj" \
   ${SESSION_ID:+--session-id "$SESSION_ID"} \
   ${SESSION_FILE:+--session-file "$SESSION_FILE"} \
   --lab-root "$LAB_ROOT" \
   --repo-root "$REPO_ROOT" \
-  ${DECISION_ID:+--decision-id "$DECISION_ID"} \
-  $(if $PRINT_ONLY; then echo --print-only; fi)
+  $(if $DRY_RUN; then echo --dry-run; fi)

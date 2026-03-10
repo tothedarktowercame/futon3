@@ -69,8 +69,8 @@
        --list (print available lab/musn/*.edn sessions, newest first)
      Default lab-root should be ./lab.
 
-  2) Update README-reading-lab-notes.md to mention the wrapper and that Arxana can read
+  2) Update docs/guides/README-reading-lab-notes.md to mention the wrapper and that Arxana can read
      futon3/lab.
 
-  Keep scope to the new script + README-reading-lab-notes.md. No repo-wide search.
+  Keep scope to the new script + docs/guides/README-reading-lab-notes.md. No repo-wide search.
   ```

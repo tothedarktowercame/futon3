@@ -4,7 +4,7 @@ set -euo pipefail
 # fulab-narrative: Generate AI-powered narrative summaries of sessions
 # Like a society paper abstract - substantive and engaging
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
 LAB_ROOT="$ROOT/lab"
 

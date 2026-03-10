@@ -5,7 +5,7 @@ set -euo pipefail
 # Usage:
 #   fulab-pattern-demo [--session-id ID] [--decision-id ID] [--pattern-id ID] [--alt-pattern-id ID] [--lab-root PATH]
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_DEPS='{}'
 
 usage() {

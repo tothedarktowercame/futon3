@@ -5,7 +5,7 @@ set -euo pipefail
 # Usage:
 #   fulab-session-import --jsonl PATH --session-id ID [--pattern-id PID] [--intent TEXT]
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 usage() {
   echo "Usage: fulab-session-import --jsonl PATH --session-id ID [OPTIONS]"

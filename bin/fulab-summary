@@ -8,7 +8,7 @@ set -euo pipefail
 #   fulab-summary <session-id>        # summarize specific session
 #   fulab-summary --save              # save summary to lab/summaries/
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_DEPS='{:deps {org.clojure/data.json {:mvn/version "2.5.0"}}}'
 LAB_ROOT="$ROOT/lab"
 

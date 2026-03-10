@@ -270,5 +270,5 @@ Codex reviewed the implementation and identified 7 issues. All fixed in commit 7
 - `src/futon3/agency/service.clj` - Agency service
 - `src/futon3/drawbridge/claude.clj` - Claude invoke pattern
 - `src/futon3/drawbridge/codex.clj` - Codex invoke pattern (f24b55a)
-- `AGENCY-CODEX-BRIEF.md` - Problem statement (fac9efb)
+- `docs/notes/AGENCY-CODEX-BRIEF.md` - Problem statement (fac9efb)
 - `library/futon-theory/coordination-protocol.flexiarg` - Handoff pattern

@@ -5,7 +5,7 @@ set -euo pipefail
 # Usage:
 #   fulab-session-import-fubar --session-id ID [--lab-root PATH] [--events-path PATH]
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LAB_DEPS='{}'
 
 usage() {

@@ -92,4 +92,4 @@ curl -X POST http://localhost:7070/agency/page \
 ```
 
 ---
-*This file is at `/home/joe/code/futon3/AGENCY-CODEX-BRIEF.md` - edit with findings*
+*This file is at `/home/joe/code/futon3/docs/notes/AGENCY-CODEX-BRIEF.md` - edit with findings*

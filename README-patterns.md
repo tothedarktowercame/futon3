@@ -117,3 +117,19 @@ FUTON1_API=http://localhost:8080 ./scripts/ingest_patterns.sh
 Notes:
 - `scripts/ingest_patterns.sh` writes an EDN hash cache at `data/pattern-ingest-cache.edn` to skip unchanged rows on subsequent runs.
 - Set `PATTERN_INGEST_CACHE` to override the cache path.
+
+## Pulling Only Patterns Mentioned In A File
+
+When you have a text or markdown file that names a subset of patterns, use `scripts/pattern_pull.clj` in mention-scan mode:
+
+```bash
+clojure -M -m scripts.pattern-pull \
+  --root /home/joe/code/futon3 \
+  --mentions-file /home/joe/code/futon0/JOE.md \
+  --copy-to /tmp/joe-patterns
+```
+
+Notes:
+- Bare names like `mission-lifecycle` resolve only when they map to exactly one library file.
+- Explicit references such as `library/agent/handoff-preserves-context.flexiarg` fail loudly if the file does not exist.
+- Omit `--copy-to` to print the matched library-relative paths without copying.

@@ -1,5 +1,6 @@
 (ns scripts.pattern-pull
-  "Pull patterns from Futon1/XTDB into the filesystem working copy."
+  "Pull patterns from Futon1/XTDB into the filesystem working copy, or
+   resolve and copy locally-mentioned library patterns from a text file."
   (:require [cheshire.core :as json]
             [clojure.java.io :as io]
             [clojure.string :as str]
@@ -8,32 +9,44 @@
            (java.net URLEncoder)))
 
 (def ^:private default-timeout-ms 4000)
+(def ^:private pattern-extension-pattern #"\.(flexiarg|multiarg)$")
+(def ^:private generic-extension-pattern #"\.[A-Za-z0-9]+$")
+(def ^:private mention-token-pattern #"[A-Za-z0-9][A-Za-z0-9./-]*")
 
 (defn- usage []
   (str/join
    "\n"
    ["Usage: clj -M -m scripts.pattern-pull [--root PATH] --pattern NAME [--pattern NAME]"
     "                                     [--all] [--api-base URL] [--profile NAME] [--dry-run]"
+    "   or: clj -M -m scripts.pattern-pull [--root FUTON3_DIR] --mentions-file FILE [--copy-to DIR] [--dry-run]"
     "Environment variables:"
     "  FUTON1_API_BASE   Base URL for Futon1 API (e.g. http://localhost:8080/api/alpha)"
     "  FUTON1_PROFILE    Optional profile header"
     "  FUTON3_ROOT       Default root if --root not provided"]))
+
+(defn- require-value [flag remaining]
+  (or (second remaining)
+      (throw (ex-info (str flag " requires a value") {:flag flag}))))
 
 (defn- parse-args [args]
   (loop [opts {:root (or (some-> (System/getenv "FUTON3_ROOT") str/trim not-empty) ".")
                :patterns []
                :all? false
                :dry-run? false
+               :mentions-file nil
+               :copy-to nil
                :api-base nil
                :profile nil}
          remaining args]
     (if-let [arg (first remaining)]
       (case arg
-        "--root" (recur (assoc opts :root (second remaining)) (nnext remaining))
-        "--pattern" (recur (update opts :patterns conj (second remaining)) (nnext remaining))
+        "--root" (recur (assoc opts :root (require-value arg remaining)) (nnext remaining))
+        "--pattern" (recur (update opts :patterns conj (require-value arg remaining)) (nnext remaining))
         "--all" (recur (assoc opts :all? true) (rest remaining))
-        "--api-base" (recur (assoc opts :api-base (second remaining)) (nnext remaining))
-        "--profile" (recur (assoc opts :profile (second remaining)) (nnext remaining))
+        "--api-base" (recur (assoc opts :api-base (require-value arg remaining)) (nnext remaining))
+        "--profile" (recur (assoc opts :profile (require-value arg remaining)) (nnext remaining))
+        "--mentions-file" (recur (assoc opts :mentions-file (require-value arg remaining)) (nnext remaining))
+        "--copy-to" (recur (assoc opts :copy-to (require-value arg remaining)) (nnext remaining))
         "--dry-run" (recur (assoc opts :dry-run? true) (rest remaining))
         "-h" (recur (assoc opts :help? true) (rest remaining))
         "--help" (recur (assoc opts :help? true) (rest remaining))
@@ -194,18 +207,156 @@
          (remove str/blank?)
          vec)))
 
+(defn- pattern-file? [^File file]
+  (and (.isFile file)
+       (boolean (re-find pattern-extension-pattern (.getName file)))))
+
+(defn- normalize-relpath [path]
+  (-> (str path)
+      (str/replace "\\" "/")
+      (str/replace #"^\./" "")))
+
+(defn- remove-pattern-extension [path]
+  (str/replace path pattern-extension-pattern ""))
+
+(defn pattern-library-index [root]
+  (let [library-root (io/file root "library")
+        root-path (.toPath library-root)
+        entries (->> (file-seq library-root)
+                     (filter pattern-file?)
+                     (map (fn [^File file]
+                            (let [relative-path (-> (.relativize root-path (.toPath file))
+                                                    str
+                                                    normalize-relpath)
+                                  id (remove-pattern-extension relative-path)]
+                              {:id id
+                               :basename (last (str/split id #"/"))
+                               :relative-path relative-path
+                               :file file})))
+                     (sort-by :id)
+                     vec)
+        by-basename (reduce (fn [acc entry]
+                              (update acc (:basename entry) (fnil conj []) entry))
+                            {}
+                            entries)]
+    {:library-root library-root
+     :entries entries
+     :by-id (into {} (map (juxt :id identity) entries))
+     :by-basename by-basename
+     :top-level-dirs (->> entries
+                          (map :id)
+                          (map #(first (str/split % #"/")))
+                          set)}))
+
+(defn extract-mention-tokens [text]
+  (->> (re-seq mention-token-pattern (or text ""))
+       (filter (fn [token]
+                 (or (str/includes? token "/")
+                     (str/includes? token "-")
+                     (re-find pattern-extension-pattern token))))
+       vec))
+
+(defn- normalize-mentioned-token [token]
+  (-> token
+      (str/replace #"^library/" "")
+      remove-pattern-extension))
+
+(defn- explicit-library-token? [index token normalized]
+  (let [first-segment (first (str/split normalized #"/"))]
+    (and (not (and (re-find generic-extension-pattern token)
+                   (not (re-find pattern-extension-pattern token))))
+         (or (str/starts-with? token "library/")
+             (boolean (re-find pattern-extension-pattern token))
+             (and (str/includes? normalized "/")
+                  (contains? (:top-level-dirs index) first-segment))))))
+
+(defn- dedupe-patterns [patterns]
+  (->> patterns
+       (reduce (fn [{:keys [seen ordered]} pattern]
+                 (if (contains? seen (:id pattern))
+                   {:seen seen :ordered ordered}
+                   {:seen (conj seen (:id pattern))
+                    :ordered (conj ordered pattern)}))
+               {:seen #{} :ordered []})
+       :ordered))
+
+(defn- resolve-mentioned-token [index token]
+  (let [normalized (normalize-mentioned-token token)
+        exact-match (get (:by-id index) normalized)
+        basename-matches (get (:by-basename index) normalized)
+        explicit? (explicit-library-token? index token normalized)]
+    (cond
+      exact-match {:pattern exact-match}
+      explicit? {:error (format "Missing explicit library pattern reference: %s" token)}
+      (= 1 (count basename-matches)) {:pattern (first basename-matches)}
+      (> (count basename-matches) 1) {:error (format "Ambiguous pattern mention %s; matches %s"
+                                                     token
+                                                     (str/join ", " (map :id basename-matches)))}
+      :else nil)))
+
+(defn resolve-mentioned-patterns [index text]
+  (let [results (->> (extract-mention-tokens text)
+                     (map #(resolve-mentioned-token index %)))
+        patterns (->> results
+                      (keep :pattern)
+                      dedupe-patterns)
+        errors (->> results
+                    (keep :error)
+                    distinct
+                    vec)]
+    {:patterns patterns
+     :errors errors}))
+
+(defn copy-patterns! [patterns destination-root dry-run?]
+  (doseq [{:keys [relative-path file]} patterns]
+    (let [target (io/file destination-root relative-path)]
+      (if dry-run?
+        (println (format "Would copy %s -> %s" (.getPath file) (.getPath target)))
+        (do
+          (ensure-parent! target)
+          (io/copy file target)
+          (println (format "Copied %s -> %s" (.getPath file) (.getPath target))))))))
+
+(defn- run-mentions-mode! [opts]
+  (let [index (pattern-library-index (:root opts))
+        source-file (io/file (:mentions-file opts))
+        {:keys [patterns errors]} (resolve-mentioned-patterns index (slurp source-file))]
+    (when (seq errors)
+      (throw (ex-info "Could not resolve mentioned patterns"
+                      {:file (.getPath source-file)
+                       :errors errors})))
+    (when-not (seq patterns)
+      (throw (ex-info "No library patterns found in mentions file"
+                      {:file (.getPath source-file)})))
+    (println (format "Matched %d patterns from %s" (count patterns) (.getPath source-file)))
+    (if-let [destination (:copy-to opts)]
+      (copy-patterns! patterns destination (:dry-run? opts))
+      (doseq [{:keys [relative-path]} patterns]
+        (println relative-path)))))
+
+(defn- validate-opts! [opts]
+  (when (and (:mentions-file opts)
+             (or (:all? opts) (seq (:patterns opts))))
+    (throw (ex-info "Use either API pull mode or --mentions-file mode, not both" {})))
+  (when (and (:copy-to opts) (not (:mentions-file opts)))
+    (throw (ex-info "--copy-to requires --mentions-file" {}))))
+
 (defn -main [& args]
   (let [opts (parse-args args)]
     (when (:help? opts)
       (println (usage))
       (System/exit 0))
-    (when-not (api-root opts)
-      (throw (ex-info "FUTON1_API_BASE is required" {:help (usage)})))
-    (let [patterns (cond
-                     (seq (:patterns opts)) (:patterns opts)
-                     (:all? opts) (list-patterns opts)
-                     :else nil)]
-      (when-not (seq patterns)
-        (throw (ex-info "No patterns requested" {:help (usage)})))
-      (doseq [name patterns]
-        (pull-pattern opts name)))))
+    (validate-opts! opts)
+    (if (:mentions-file opts)
+      (run-mentions-mode! opts)
+      (do
+        (when-not (api-root opts)
+          (throw (ex-info "FUTON1_API_BASE is required" {:help (usage)})))
+        (let [patterns (cond
+                         (seq (:patterns opts)) (:patterns opts)
+                         (:all? opts) (list-patterns opts)
+                         :else nil)]
+          (when-not (seq patterns)
+            (throw (ex-info "No patterns requested" {:help (usage)})))
+          (doseq [name patterns]
+            (pull-pattern opts name)))))))

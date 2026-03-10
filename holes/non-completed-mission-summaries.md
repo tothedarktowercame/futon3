@@ -1,7 +1,7 @@
 # Mission Inventory (Non-Completed)
 
 This index captures missions referenced by active FUTON devmap prototypes
-that are not yet complete. Updated 2026-03-08.
+that are not yet complete. Updated 2026-03-09.
 
 Status key: IN-PROGRESS (actively worked), BLOCKED (waiting on dependency),
 DEFERRED (parked — scope right, timing wrong), READY (not yet started).
@@ -26,6 +26,7 @@ DEFERRED (parked — scope right, timing wrong), READY (not yet started).
 - `M-codex-irc-execution` [DONE] - Completed 2026-03-08; job state machine, evidence gating, durable job records, duplicate job fix, stale reaper.
 - `M-codex-agent-behaviour` [DONE] - Completed 2026-03-08; enforcement retry logic fixed for WS bridge path. (Devmap: `futon3c`)
 - `M-walkie-talkie` [DONE] - Completed 2026-03-08; HTTP endpoints for PSR/PUR/PAR/ArSE, persistent backpacks, pattern search, IRC commands. Gates A+D pass, B+C deferred. (Devmap: `futon3c`)
+- `M-autonomous-pattern-lifecycle` [READY] - IDENTIFY phase; agents autonomously manage PSR/PUR cycle using AIF-guided pattern selection, precision priors, and cross-session learning. Three phases: prompt integration, AIF scoring, cross-session prior update. (Devmap: `futon3c`)
 
 ## futon3
 

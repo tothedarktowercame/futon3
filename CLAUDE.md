@@ -1,158 +1,119 @@
 # Claude Code Instructions for Futon3
 
-## Exploratory Pattern Mode
+## What This Repository Is Now
 
-When asked to explore or improve the codebase using patterns, operate in
-**exploratory mode** rather than waiting for directive instructions.
+Futon3 was the original monolithic repository. Its code has been
+refactored into three focused repos:
 
-### Pattern Catalog
+| Repo | Concern | Timescale |
+|------|---------|-----------|
+| futon3a | Pattern search + querying | fast (query) |
+| futon3b | Pattern-driven development | task + glacial |
+| futon3c | Real-time coordination | social (real-time) |
 
-The pattern library is at `resources/sigils/patterns-index.tsv`. Each row has:
-- `pattern` - namespaced pattern ID (e.g., `ants/white-space-scout`)
-- `tokipona` - optional toki pona mapping
-- `truth` - sigil character
-- `rationale` - what the pattern is for and why it matters
-- `hotwords` - terms that signal the pattern may be relevant
+**Futon3 is no longer a running codebase.** Nothing here should be on
+a classpath or treated as importable code. Instead, futon3 serves
+three purposes:
 
-Key pattern namespaces:
-- `ants/*` - AIF behavioral patterns from the ant simulation
-- `code-coherence/*` - code quality and hygiene patterns
-- `stack-coherence/*` - cross-repo and devmap integrity patterns
-- `devmap-coherence/*` - task tracking and progress patterns
-- `contributing/*` - contribution workflow patterns
+### 1. The Pattern Library
 
-### The Exploration Loop
+`library/` contains 853+ flexiarg patterns across 50 namespaces. This
+is the canonical pattern library for the entire futon ecosystem. When
+agents select patterns (PSR), they search here. When missions ground
+their ARGUE decisions in existing patterns, they reference paths like
+`library/aif/structured-observation-vector.flexiarg`.
 
-When in exploratory mode:
+Key namespaces:
+- `aif/` — Active Inference patterns (observation vectors, EFE, precision, belief state)
+- `realtime/` — 13 coordination patterns (authoritative-transcript, liveness-heartbeats, etc.)
+- `futon-theory/` — structural theory (stop-the-line, structural-tension-as-observation)
+- `agent/` — agent behavioral patterns (sense-deliberate-act, state-is-hypothesis)
+- `gauntlet/` — peripheral gauntlet patterns (aif-as-environment-not-instruction)
+- `social/` — social coordination (scope-bounded-handoff)
+- `code-coherence/`, `stack-coherence/`, `devmap-coherence/` — quality patterns
 
-1. **OBSERVE**: Read relevant patterns from the catalog. Examine the codebase
-   scope. Note what's unclear or could be improved.
+### 2. Devmaps and the Holistic Argument
 
-2. **SELECT**: Pick a pattern that fits the current context. Prefer patterns
-   where:
-   - The rationale aligns with the objective
-   - The hotwords match what you're seeing in the code
-   - You haven't already applied this pattern recently
+`holes/` contains:
+- **9 devmaps** (`futon0.devmap` through `futon7.devmap`, plus `futon3a.devmap`)
+  — one per repository, describing what each futon aspires to be.
+- **The original holistic argument** (`holistic-argument-sketch.md` + `.sexp`)
+  — the pre-three-pillars version, preserved as historical record.
+  The updated argument lives in `futon3c/docs/holistic-argument.md`.
+- **Mission source material** (`holes/missions/`) — the original mission
+  documents from before the split. Many are superseded by futon3c versions
+  but remain as design documentation.
 
-3. **APPLY**: Make a small, bounded change guided by the pattern. Don't
-   over-reach—one logical change per cycle.
+### 3. Code as Design Documentation
 
-4. **LOG**: After each change, emit a PSR/PUR pair:
+`src/` and `scripts/` contain the original implementations. These are
+**source material for porting, not running infrastructure.** When
+porting code to futon3a/3b/3c, the existing code documents what worked
+and what failed — read it as design documentation, not as code to copy
+blindly. See futon3c's CLAUDE.md invariant I-5.
 
-   ```
-   ## PSR (Pattern Selection Record)
-   - **Cycle**: 1
-   - **Pattern chosen**: `code-coherence/dead-code-hygiene`
-   - **Candidates considered**: dead-code-hygiene, test-before-commit
-   - **Rationale**: Found unused helper in pattern_sense.clj
-   - **Confidence**: medium (haven't traced all call sites yet)
-   ```
+## The Three-Pillar Connection
 
-   ```
-   ## PUR (Pattern Use Record)
-   - **Pattern**: `code-coherence/dead-code-hygiene`
-   - **Actions taken**: Removed `unused-helper-fn` from pattern_sense.clj
-   - **Outcome**: success
-   - **Prediction error**: low (no callers as expected)
-   - **Notes**: Simpler than expected
-   ```
+The futon stack is organized around three pillars (see
+`futon3c/docs/three-pillars.md`):
 
-5. **CONTINUE or EXIT**:
-   - If more patterns apply and you have ideas, go to step 2
-   - If you've found a gap (situation where no pattern fits), propose a new one
-   - If you're out of ideas, summarize and stop
+| Pillar | What lives here | What lives elsewhere |
+|--------|----------------|---------------------|
+| **The Argument** | Original sketch (`holes/holistic-argument-sketch.md`) | Updated version in `futon3c/docs/holistic-argument.md` |
+| **The Invariants** | Pattern library grounds many invariants | Inventory in `futon3c/docs/structural-law-inventory.sexp` |
+| **The Missions** | Original mission docs, devmaps | Active missions in `futon3c/holes/`, methodology in `futon3c/docs/futonic-missions.md` |
 
-### Evidence Format
+## Working with the Pattern Library
 
-Keep a running log of PSR/PUR pairs. At session end, provide:
+### Reading patterns
 
+Each `.flexiarg` file is a structured argument with fields like
+`:claim`, `:ground`, `:warrant`, `:backing`, `:qualifier`, `:rebuttal`.
+To understand a pattern, read the `:claim` and `:ground` first.
+
+### Searching patterns
+
+`resources/sigils/patterns-index.tsv` is the index. Each row has
+`pattern`, `tokipona`, `truth` (sigil), `rationale`, and `hotwords`.
+Search by hotwords to find relevant patterns.
+
+### Referencing patterns in missions
+
+When grounding ARGUE decisions in patterns, use the library path:
 ```
-## Session Summary
-- **Cycles completed**: 3
-- **Patterns applied**: dead-code-hygiene, test-before-commit, commit-intent-alignment
-- **Changes made**: [list files/changes]
-- **Patterns that didn't fit**: [any gaps found]
-- **Proposed patterns**: [if any]
-```
-
-### Pattern Proposal
-
-When you encounter a situation that no existing pattern covers well:
-
-```
-## Pattern Proposal
-- **Proposed name**: `aif/evidence-chain-integrity`
-- **Rationale**: PSR/PUR pairs can become orphaned when cycles are interrupted.
-  No existing pattern addresses evidence continuity.
-- **Suggested preconditions**: PSR exists without matching PUR
-- **Suggested actions**: Scan for orphaned PSRs, complete or mark abandoned
-- **Evidence from this session**: [what you observed]
+Pattern grounding: A-1 (library/agent/sense-deliberate-act,
+                        library/gauntlet/aif-as-environment-not-instruction)
 ```
 
-### Scope Boundaries
+## PSR/PUR/PAR Discipline
 
-Unless told otherwise:
-- Stay within the directory/files mentioned in the objective
-- Prefer edits over new files
-- Don't refactor unrelated code
-- Run tests if unsure about impact
+The exploratory pattern mode (observe → select → apply → log) still
+applies when working with the pattern library. See the PSR/PUR format
+in the sections below.
 
-### Exit Conditions
+### Pattern Selection Record (PSR)
 
-Stop exploring when:
-1. You've tried all applicable patterns and have no new ideas
-2. You've hit a cycle limit (if specified)
-3. You've found a significant gap worth discussing before continuing
-4. The changes are getting speculative rather than grounded
+```
+## PSR
+- **Pattern chosen**: `code-coherence/dead-code-hygiene`
+- **Candidates considered**: dead-code-hygiene, test-before-commit
+- **Rationale**: Found unused helper in pattern_sense.clj
+- **Confidence**: medium
+```
 
-### Example Invocation
+### Pattern Use Record (PUR)
 
-User: "Explore the AIF implementation in src/ants/aif and look for improvements"
+```
+## PUR
+- **Pattern**: `code-coherence/dead-code-hygiene`
+- **Actions taken**: Removed `unused-helper-fn`
+- **Outcome**: success
+- **Prediction error**: low
+```
 
-Response approach:
-1. Read patterns-index.tsv, filter to `ants/*` and `code-coherence/*`
-2. Read the files in src/ants/aif
-3. Pick first pattern (e.g., `ants/hunger-precision-coupling`)
-4. Check if implementation matches pattern rationale
-5. Make small fix or note alignment
-6. Log PSR/PUR
-7. Pick next pattern
-8. Continue until done or gap found
+## What Does NOT Belong Here
 
-## Forum Participation
-
-When participating in Forum threads for multi-agent coordination:
-
-**DO NOT** use `sleep` + `curl` polling. This defeats the purpose of the
-real-time WebSocket infrastructure.
-
-**DO** use the peripheral model:
-
-1. Start the forum bridge for your thread:
-   ```bash
-   FORUM_THREAD=t-xxxxx \
-   AGENCY_AGENT_ID=your-agent-id \
-   bb scripts/forum-bridge-fuclaude.clj
-   ```
-
-2. The bridge connects via WebSocket to port 5055 (Java-WebSocket, no compression issues)
-
-3. Posts trigger Agency dispatch → autonomous response → post back to Forum
-
-For interactive sessions where you need to coordinate with other agents:
-- **Detach**: Start the bridge peripheral, let it run autonomously
-- **Reattach**: Stop the bridge, summarize what happened
-
-See `holes/missions/M-par-session-punctuation.md` for the full detach/reattach
-model with PAR checkpoints.
-
-## Other Guidelines
-
-- See `docs/aif-pattern-engine.md` for the architectural vision
-- See `docs/aif-exploratory-mode.md` for the full exploration loop design
-- See `AGENTS.md` for Codex-specific instructions (devmap coherence, MUSN)
-- The `futon2/` repo contains the reference AIF implementation for ants
-
-## Tickets
-
-- Validate `fuclaude` CLI flags so `--resume` and `--continue` cannot be used together (warn or error).
+- New running code (goes to futon3a, futon3b, or futon3c)
+- New mission documents (go to the relevant repo's `holes/`)
+- Infrastructure or deployment config (goes to the relevant repo)
+- Dependencies on futon3 being importable (invariant I-5 in futon3c)

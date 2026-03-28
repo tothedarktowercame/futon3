@@ -1,0 +1,49 @@
+@flexiarg vsatelier/federated-cosmoses
+@title Federated Cosmoses
+@audience platform architects, network organisers, digital library architects
+@tone analytic
+@style design-pattern
+@sigils [🌐/宇]
+@references [vsatlatarium/anthology-as-filter vsatlas/open-progression-ecosystem vsatlas/open-infrastructure-expert-practice]
+
+! conclusion:
+  Multiple independent constellations should be able to federate — each
+  visible as a node in a meta-level view — so that separate organisations,
+  programmes, or communities can maintain sovereignty while discovering
+  cross-boundary patterns.
+
+  + context: You are designing for a network of organisations that each run their own story worlds but want selective interoperability. This does not apply to single-organisation deployments with no external connections.
+  + IF:
+    Several organisations each maintain their own VSAT/VSATLAS
+    installations — a university, a community group, an NGO, a
+    farming cooperative.
+
+  + HOWEVER:
+    Isolated installations cannot reveal patterns that span organisational
+    boundaries. A migrant story in one installation and a policy story in
+    another may describe the same systemic failure, but neither community
+    sees the connection.
+
+  + THEN:
+    Define a federation protocol: each installation publishes a summary
+    (story count, cluster structure, link types, anthology list) without
+    exposing raw content. A meta-constellation renders each installation
+    as a single node — click to enter that cosmos. Opt-in cross-boundary
+    links allow specific stories to bridge cosmoses when both parties
+    consent.
+
+  + BECAUSE:
+    Federation preserves sovereignty (each community owns its data and
+    governance) while enabling the emergent patterns that only appear
+    at scale. This is the digital-library equivalent of inter-library
+    loan: you do not merge the libraries; you create a protocol for
+    sharing what each is willing to share.
+
+  + STATUS:
+    status[sketch]
+
+  + NEXT-STEPS:
+    next[Define the minimal federation summary schema (what an installation publishes about itself).]
+    next[Prototype the meta-constellation view with two synthetic installations.]
+    next[Design the consent workflow for cross-boundary linking (both stewards must approve).]
+    next[Evaluate whether existing protocols (ActivityPub, Solid, IIIF) could carry the federation data.]

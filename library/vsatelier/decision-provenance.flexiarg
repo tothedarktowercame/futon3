@@ -1,0 +1,43 @@
+@flexiarg vsatelier/decision-provenance
+@title Decision Provenance
+@audience governance designers, stewards, programme evaluators
+@tone analytic
+@style design-pattern
+@sigils [🔗/溯]
+@references [vsatlas/three-layer-architecture vsatlas/stewardship-layer vsatelier/cluster-as-agenda]
+
+! conclusion:
+  Every decision that emerges from deliberation should trace back to the
+  stories, links, and flagged patterns that motivated it, creating an
+  auditable chain from lived experience to collective action.
+
+  + context: You are designing accountability into a system where community stories inform real decisions. This does not apply to purely exploratory or artistic uses of the constellation.
+  + IF:
+    A facilitated session produces a decision — fund a programme, change
+    a policy, allocate resources, create a new pilot.
+
+  + HOWEVER:
+    If the decision is recorded without its evidential context, it
+    becomes an assertion rather than a conclusion. Participants who
+    were not present cannot verify the reasoning. Future stewards
+    cannot learn from the process.
+
+  + THEN:
+    Link each decision record to the agenda flag that prompted it, the
+    stories and arcs that constituted the evidence, the session notes,
+    and the participants involved. Store this chain as a first-class
+    object alongside stories and links.
+
+  + BECAUSE:
+    Provenance is how deliberation becomes trustworthy. Communities
+    that can trace "we decided X because stories A, B, C showed
+    pattern P" are better equipped to revisit, revise, and defend
+    their choices.
+
+  + STATUS:
+    status[sketch]
+
+  + NEXT-STEPS:
+    next[Define the decision record schema (decision text, linked flags, session ID, participants, date).]
+    next[Sketch how decision records appear in the constellation — a new node type? an annotation on existing arcs?]
+    next[Identify one real deliberation case to model retroactively as a provenance chain.]

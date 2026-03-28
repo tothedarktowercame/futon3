@@ -1,0 +1,46 @@
+@flexiarg vsatelier/projection-independence
+@title Projection Independence
+@audience platform architects, pattern library maintainers
+@tone analytic
+@style design-pattern
+@sigils [🪞/映]
+@references [vsatlatarium/dome-projection vsatlatarium/embodied-browsing vsatlatarium/sky-disk-continuum]
+
+! conclusion:
+  Deliberation patterns should be defined independently of any specific
+  rendering technology so the same structures work across VR domes,
+  AR overlays, 2D graphs, hypertext pages, and terminal interfaces.
+
+  + context: You are designing for longevity across hardware generations and interaction paradigms. This does not apply when the system is permanently bound to a single platform.
+  + IF:
+    The patterns of connection, clustering, anthology, and deliberation
+    outlive the specific technology used to render them.
+
+  + HOWEVER:
+    Coupling patterns to a particular renderer (A-Frame, Three.js, a
+    specific headset SDK) means they die when the technology does. The
+    Quest 2 is already dated; the Steam Frame is not yet shipping; AR
+    glasses are nascent; Nelsonian hypertext requires no 3D at all.
+
+  + THEN:
+    Define the deliberation layer (flags, decisions, commitments, return
+    loops) as data structures and interaction contracts, not as rendering
+    code. Each projection surface implements the contract:
+    — VR dome: flag by pointing, decision appears as a glowing node
+    — AR glasses: flag by gaze, decision pins to a physical wall
+    — 2D web: flag by click, decision appears in a sidebar
+    — Terminal: flag by command, decision appears in a ledger
+    The pattern library describes the contract; implementations vary.
+
+  + BECAUSE:
+    Projection independence is how a pattern library outlives its first
+    implementation. The VSATLATARIUM flexiargs describe one projection;
+    the VSATELIER flexiargs describe what must be true across all of them.
+
+  + STATUS:
+    status[sketch]
+
+  + NEXT-STEPS:
+    next[Extract the interaction contracts from the VSATLATARIUM patterns into projection-neutral specs.]
+    next[Prototype one deliberation pattern (cluster-as-agenda) in two different projections to verify independence.]
+    next[Evaluate futon4 (Nelsonian hypertext) as a second projection surface for the same pattern set.]

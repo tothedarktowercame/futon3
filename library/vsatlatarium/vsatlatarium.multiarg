@@ -1,0 +1,95 @@
+@arg vsatlatarium/dome-projection
+@title Dome Projection as Reading Frame
+@sigils [🔭/天]
+
+! conclusion: Project story constellations onto a dome surface so the viewer occupies a privileged interior position — reading outward rather than inspecting from above.
+  + context: You are choosing a spatial metaphor for browsing a connected story world. This does not apply when the corpus is small enough that a flat list suffices.
+  + IF: A collection of linked stories needs a spatial reading frame that communicates immersion and equal proximity.
+  + HOWEVER: Flat graphs or tree views impose implicit hierarchies and lose the sense of being surrounded by a world.
+  + THEN: Map story clusters onto the inner surface of a sphere (planetarium model) so the viewer looks outward at the constellation from its centre.
+  + BECAUSE: The dome equalises distance — every story is the same radius away, and orientation replaces ranking as the primary navigation axis.
+  + STATUS: status[ready]
+
+@arg vsatlatarium/cluster-as-story
+@title Cluster as Story, Node as Scene
+@sigils [🌌/文]
+
+! conclusion: Represent each story as a spatial cluster of scene nodes so internal narrative structure is visible alongside inter-story connections.
+  + context: You are designing a visualisation that must convey both within-story structure and between-story relationships at a glance.
+  + IF: Viewers need to grasp both the shape of individual stories and how they relate to one another.
+  + HOWEVER: Collapsing stories to single points hides internal richness; flattening all scenes to one level hides story boundaries.
+  + THEN: Use a two-level layout: stories are clusters positioned on the dome via golden-spiral distribution, and scenes within each cluster are arranged by force-directed simulation.
+  + BECAUSE: Two-level clustering preserves the part-whole relationship that makes a story more than a bag of scenes.
+  + STATUS: status[ready]
+
+@arg vsatlatarium/arc-as-typed-relation
+@title Arc as Typed Relation
+@sigils [🌈/弧]
+
+! conclusion: Render inter-story links as coloured, curved arcs with type, status, and rationale so relational meaning is visible geometry, not hidden metadata.
+  + context: You are making the interpretive layer legible as spatial form.
+  + IF: Viewers need to see why stories are connected — not just that they are.
+  + HOWEVER: Undifferentiated lines flatten thematic, causal, adjacency, and contrast links into a single "related" signal.
+  + THEN: Colour arcs by link type, modulate opacity by status, bow arcs to read as spatial bridges. Provide legend toggles to show/hide types independently.
+  + BECAUSE: Typed arcs externalise the interpretive grammar that contributors use when proposing connections.
+  + STATUS: status[ready]
+
+@arg vsatlatarium/anthology-as-filter
+@title Anthology as Constellation Filter
+@sigils [📚/选]
+
+! conclusion: Use pilot-defined story subsets as anthology filters that reshape the constellation to a focused sub-world.
+  + context: You are curating viewing experiences for different audiences or sessions from the same corpus.
+  + IF: A facilitator, exhibition, or course module needs a focused subset of the full story world.
+  + HOWEVER: Showing everything overwhelms; building separate installations duplicates effort.
+  + THEN: Reuse the pilot model to filter stories at query time. The dome re-projects around fewer clusters with clamped vertical spread.
+  + BECAUSE: Filtering is cheaper than forking. The same infrastructure serves multiple curatorial frames.
+  + STATUS: status[ready]
+
+@arg vsatlatarium/sky-disk-continuum
+@title Sky-Disk Continuum (Immersion ↔ Overview)
+@sigils [🔭/盘]
+
+! conclusion: Allow continuous zoom from immersive dome interior to external sky-disk overview so viewers can shift between situated reading and structural comprehension.
+  + context: You are designing navigation that spans close-reading and bird's-eye analysis within a single interaction.
+  + IF: Viewers need to alternate between exploring a neighbourhood and surveying the whole constellation.
+  + HOWEVER: Discrete mode switches break flow and lose spatial orientation.
+  + THEN: Let scroll-back move the camera past the dome origin so the surrounding sphere contracts into a visible disk, with arcs smoothly straightening.
+  + BECAUSE: Continuous zoom preserves the viewer's mental model. The transition from "inside looking out" to "outside looking in" is a zoom, not a teleport.
+  + STATUS: status[ready]
+
+@arg vsatlatarium/embodied-browsing
+@title Embodied Browsing (VR as First-Class Navigation)
+@sigils [🥽/体]
+
+! conclusion: Treat VR headset navigation as a first-class mode where the viewer's body replaces mouse and scroll as the primary interface.
+  + context: You are designing for immersive hardware where the viewer is physically inside the dome.
+  + IF: The planetarium metaphor maps naturally to VR — the viewer is literally inside a sphere of stories.
+  + HOWEVER: Porting mouse interactions to VR produces clumsy, imprecise pointing.
+  + THEN: Add generous hit volumes, controller buttons for structural navigation, and keep the viewer inside the scene via overlay architecture.
+  + BECAUSE: Embodied interfaces reward spatial memory — viewers remember where a story is and reach for it.
+  + STATUS: status[ready]
+
+@arg vsatlatarium/vapor-as-affect
+@title Vapor as Affective Dimension
+@sigils [🌸/气]
+
+! conclusion: Use a continuous vapor slider to control atmospheric intensity so viewers can modulate the affective register without changing structure.
+  + context: You are designing an interface where emotional tone is a parameter alongside structural navigation.
+  + IF: The same constellation serves both analytical review and evocative exhibition.
+  + HOWEVER: A fixed aesthetic either feels too clinical for exhibition or too decorative for analysis.
+  + THEN: Provide a single slider that blends from minimal (dark, precise) to maximal (glow, bloom, particles). The data stays identical.
+  + BECAUSE: Separating affect from structure lets the same tool serve a workshop and a gallery wall.
+  + STATUS: status[ready]
+
+@arg vsatlatarium/cached-layout-computation
+@title Cached Layout Computation
+@sigils [⚡/缓]
+
+! conclusion: Cache the O(N²) force-directed layout across requests so the planetarium loads instantly when data has not changed.
+  + context: You are serving a 3D visualisation from SSR where layout is the bottleneck.
+  + IF: The force-directed simulation runs on every request, consuming CPU proportional to scene count squared.
+  + HOWEVER: Story data changes rarely — most requests see the same constellation.
+  + THEN: Fingerprint inputs and cache the layout in a globalThis-backed store. Invalidate when the fingerprint changes.
+  + BECAUSE: First-load computes; subsequent loads return instantly.
+  + STATUS: status[ready]

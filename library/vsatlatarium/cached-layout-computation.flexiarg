@@ -1,0 +1,37 @@
+@flexiarg vsatlatarium/cached-layout-computation
+@title Cached Layout Computation
+@audience platform engineers, digital library architects
+@tone plain-analytic
+@style design-pattern
+@sigils [⚡/缓]
+@references [vsatlatarium/cluster-as-story vsatlas/proof-of-concept-scope]
+
+! conclusion:
+  Cache the O(N²) force-directed layout across requests so the planetarium
+  loads instantly when story data has not changed.
+
+  + context: You are serving a 3D visualisation from SSR where layout computation is the bottleneck. This does not apply to client-side-only visualisations where the cost is borne by the browser.
+  + IF:
+    The force-directed simulation (spring forces, repulsion, centering)
+    runs on every request, consuming CPU proportional to scene count
+    squared.
+
+  + HOWEVER:
+    Story data changes rarely — most requests see the same constellation.
+
+  + THEN:
+    Fingerprint the inputs (story IDs, scene counts, link IDs, view mode,
+    pilot filter) and cache the computed layout in a globalThis-backed
+    in-memory store. Invalidate automatically when the fingerprint changes.
+
+  + BECAUSE:
+    First-load computes; subsequent loads return instantly. This turned a
+    200% CPU incident on a 2-CPU host into sub-millisecond cache hits.
+
+  + STATUS:
+    status[ready]
+    evidence[layoutCache.ts — globalThis store surviving Vite SSR module re-evaluation]
+
+  + NEXT-STEPS:
+    next[Add cache-hit/miss logging to measure real-world hit rate.]
+    next[Consider persisting the cache to disk for cold-start performance after server restart.]

@@ -1,0 +1,40 @@
+@flexiarg vsatlatarium/cluster-as-story
+@title Cluster as Story, Node as Scene
+@audience narrative system designers, digital library architects
+@tone analytic
+@style design-pattern
+@sigils [🌌/文]
+@references [vsatlas/connected-story-world vsatlas/non-destructive-relational-layers]
+
+! conclusion:
+  Represent each story as a spatial cluster of scene nodes so internal
+  narrative structure is visible alongside inter-story connections.
+
+  + context: You are designing a visualisation that must convey both within-story structure and between-story relationships at a glance. This does not apply to single-story views where internal navigation is sufficient.
+  + IF:
+    Viewers need to grasp both the shape of individual stories and how
+    they relate to one another.
+
+  + HOWEVER:
+    Collapsing stories to single points hides internal richness;
+    flattening all scenes to one level hides story boundaries.
+
+  + THEN:
+    Use a two-level layout: stories are clusters positioned on the dome
+    via golden-spiral distribution, and scenes within each cluster are
+    arranged by force-directed simulation around the cluster centre.
+    Narrative arcs (within) and interpretive links (between) are drawn
+    as distinct arc types.
+
+  + BECAUSE:
+    Two-level clustering preserves the part-whole relationship that
+    makes a story more than a bag of scenes, while still exposing the
+    relational fabric that VSATLAS adds across stories.
+
+  + STATUS:
+    status[ready]
+    evidence[VSATLATARIUM two-level constellation — golden spiral + spring layout]
+
+  + NEXT-STEPS:
+    next[Test legibility with 50+ stories to find the threshold where clusters overlap.]
+    next[Experiment with alternative intra-cluster layouts (radial, timeline) for stories with strong sequence.]

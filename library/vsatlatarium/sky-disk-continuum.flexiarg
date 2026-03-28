@@ -1,0 +1,41 @@
+@flexiarg vsatlatarium/sky-disk-continuum
+@title Sky-Disk Continuum (Immersion ↔ Overview)
+@audience interaction designers, digital library architects
+@tone analytic
+@style design-pattern
+@sigils [🔭/盘]
+@references [vsatlatarium/dome-projection vsatlas/interpretive-views]
+
+! conclusion:
+  Allow continuous zoom from immersive dome interior to external sky-disk
+  overview so viewers can shift between situated reading and structural
+  comprehension without changing mode.
+
+  + context: You are designing navigation that spans close-reading and bird's-eye analysis within a single interaction. This does not apply when the corpus has no spatial projection (e.g., pure list views).
+  + IF:
+    Viewers need to alternate between exploring a neighbourhood of stories
+    and surveying the whole constellation.
+
+  + HOWEVER:
+    Discrete mode switches (planetarium button vs geomview button) break
+    flow and lose spatial orientation.
+
+  + THEN:
+    Let scroll-back move the camera past the dome origin so the
+    surrounding sphere contracts into a visible disk. As the camera
+    retreats, dome-projected arcs smoothly straighten to their natural
+    bezier paths via debounced redraw at blended dome radius.
+
+  + BECAUSE:
+    Continuous zoom preserves the viewer's mental model of where they are
+    in the constellation. The transition from "inside looking out" to
+    "outside looking in" is a zoom, not a teleport.
+
+  + STATUS:
+    status[ready]
+    evidence[VSATLATARIUM scroll-back with arc redraw — quantised blend, 20 steps]
+
+  + NEXT-STEPS:
+    next[Animate node positions to match arc straightening (currently nodes stay dome-projected).]
+    next[Test whether the sky-disk view is useful for facilitators projecting to a group.]
+    next[Explore whether the continuum works in VR (headset zoom via thumbstick push/pull).]

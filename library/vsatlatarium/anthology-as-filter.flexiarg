@@ -1,0 +1,40 @@
+@flexiarg vsatlatarium/anthology-as-filter
+@title Anthology as Constellation Filter
+@audience curators, facilitators, digital library architects
+@tone analytic
+@style design-pattern
+@sigils [📚/选]
+@references [vsatlas/minimal-linking-pilot vsatlas/facilitation-scaffolds vsatlas/interpretive-views]
+
+! conclusion:
+  Use pilot-defined story subsets as anthology filters that reshape the
+  constellation to a focused sub-world, preserving all spatial and
+  relational affordances.
+
+  + context: You are curating viewing experiences for different audiences or sessions from the same corpus. This does not apply when all stories are always relevant to all viewers.
+  + IF:
+    A facilitator, exhibition, or course module needs a focused subset of
+    the full story world.
+
+  + HOWEVER:
+    Showing everything overwhelms; building separate installations
+    duplicates effort.
+
+  + THEN:
+    Reuse the pilot (anthology) model to filter stories at query time
+    (?pilot=N). The dome re-projects around fewer clusters, vertical
+    spread is clamped for small collections, and all navigation
+    (planetarium, geomview, VR) works on the filtered set.
+
+  + BECAUSE:
+    Filtering is cheaper than forking. The same relational infrastructure
+    serves multiple curatorial frames without duplicating data or code.
+
+  + STATUS:
+    status[ready]
+    evidence[VSATLATARIUM ?pilot= filtering — pilot chips, view-toggle preservation]
+
+  + NEXT-STEPS:
+    next[Test whether small anthologies (2–4 stories) feel spatially coherent or sparse.]
+    next[Explore nested anthologies (pilot within pilot) for multi-session programmes.]
+    next[Add anthology selection to the VR interface (controller menu or gaze-based selector).]

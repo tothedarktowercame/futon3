@@ -1,0 +1,39 @@
+@flexiarg vsatlatarium/arc-as-typed-relation
+@title Arc as Typed Relation
+@audience narrative system designers, knowledge graph practitioners
+@tone analytic
+@style design-pattern
+@sigils [🌈/弧]
+@references [vsatlas/non-destructive-relational-layers vsatlas/three-layer-architecture]
+
+! conclusion:
+  Render inter-story links as coloured, curved arcs with type, status, and
+  rationale so relational meaning is visible geometry, not hidden metadata.
+
+  + context: You are making the interpretive layer legible as spatial form. This does not apply when link volume is so high that arcs would become visual noise.
+  + IF:
+    Viewers need to see why stories are connected — not just that they are.
+
+  + HOWEVER:
+    Undifferentiated lines flatten thematic, causal, adjacency, and contrast
+    links into a single "related" signal.
+
+  + THEN:
+    Colour arcs by link type, modulate opacity by status (accepted bright,
+    proposed mid, retired faint), and bow arcs inward (planetarium) or
+    outward (geomview) so they read as spatial bridges rather than flat
+    edges. Provide legend toggles to show/hide types independently.
+
+  + BECAUSE:
+    Typed arcs externalise the interpretive grammar that VSATLAS
+    contributors use when proposing connections, making review and
+    discussion concrete rather than abstract.
+
+  + STATUS:
+    status[ready]
+    evidence[VSATLATARIUM arc rendering — colour by type, opacity by status, legend toggles]
+
+  + NEXT-STEPS:
+    next[Add arc hover interaction showing link rationale text in-scene.]
+    next[Measure whether typed arcs improve participants' ability to articulate connection reasons.]
+    next[Define a visual-noise threshold (arc count) where filtering or aggregation becomes necessary.]

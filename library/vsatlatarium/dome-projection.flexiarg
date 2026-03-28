@@ -1,0 +1,38 @@
+@flexiarg vsatlatarium/dome-projection
+@title Dome Projection as Reading Frame
+@audience narrative system designers, VSAT collaborators
+@tone analytic
+@style design-pattern
+@sigils [🔭/天]
+@references [vsatlas/connected-story-world vsatlas/interpretive-views]
+
+! conclusion:
+  Project story constellations onto a dome surface so the viewer occupies a
+  privileged interior position — reading outward rather than inspecting
+  from above.
+
+  + context: You are choosing a spatial metaphor for browsing a connected story world. This does not apply when the corpus is small enough that a flat list suffices.
+  + IF:
+    A collection of linked stories needs a spatial reading frame that
+    communicates immersion and equal proximity.
+
+  + HOWEVER:
+    Flat graphs or tree views impose implicit hierarchies and lose the
+    sense of being surrounded by a world.
+
+  + THEN:
+    Map story clusters onto the inner surface of a sphere (planetarium
+    model) so the viewer looks outward at the constellation from its
+    centre, with drag-to-rotate giving access to the full sky.
+
+  + BECAUSE:
+    The dome equalises distance — every story is the same radius away,
+    and orientation replaces ranking as the primary navigation axis.
+
+  + STATUS:
+    status[ready]
+    evidence[VSATLATARIUM planetarium mode — implemented and tested on Quest 2]
+
+  + NEXT-STEPS:
+    next[Measure whether dome vs flat-list affects exploration breadth (stories visited per session).]
+    next[Test with screen-reader users to define a non-visual equivalent of dome orientation.]

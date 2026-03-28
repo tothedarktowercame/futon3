@@ -1,0 +1,41 @@
+@flexiarg vsatlatarium/embodied-browsing
+@title Embodied Browsing (VR as First-Class Navigation)
+@audience VR interaction designers, digital library architects
+@tone analytic
+@style design-pattern
+@sigils [🥽/体]
+@references [vsatlatarium/dome-projection vsatlas/community-engagement]
+
+! conclusion:
+  Treat VR headset navigation as a first-class mode where the viewer's body
+  (head orientation, hand pointing, controller buttons) replaces mouse and
+  scroll as the primary interface to the constellation.
+
+  + context: You are designing for immersive hardware (Quest 2/3, future AR) where the viewer is physically inside the dome. This does not apply to desktop-only deployments.
+  + IF:
+    The planetarium metaphor maps naturally to VR — the viewer is literally
+    inside a sphere of stories.
+
+  + HOWEVER:
+    Porting mouse interactions to VR produces clumsy, imprecise pointing
+    at small targets with no tactile feedback.
+
+  + THEN:
+    Add generous invisible hit volumes around nodes and labels, use
+    controller buttons for structural navigation (B = back to
+    planetarium), and keep the viewer inside the scene rather than
+    navigating away (overlay architecture for story reading).
+
+  + BECAUSE:
+    Embodied interfaces reward spatial memory — viewers remember where a
+    story is in the dome and reach for it, building familiarity through
+    physical gesture rather than text search.
+
+  + STATUS:
+    status[ready]
+    evidence[VSATLATARIUM Quest 2 support — hit spheres, B-button back-nav, laser-controls]
+
+  + NEXT-STEPS:
+    next[Prototype the overlay architecture so story-reading stays inside the planetarium scene.]
+    next[Test with AR passthrough to see if the dome works as a mixed-reality installation.]
+    next[Measure whether VR visitors explore more stories than desktop visitors (spatial memory effect).]

@@ -1,0 +1,67 @@
+@flexiarg math-formalization/coercion-bridge
+@title Coercion Bridge Between Type Universes
+@sigils [🌉/渡]
+@keywords coercion, cast, lift, ENNReal, NNReal, Real, embedding, transport, directed
+@audience lean-provers, analysis-students
+@tone heuristic
+@difficulty hard
+@subjects analysis applied
+@instantiates math-informal/transport-across-isomorphism
+@examples a00J01
+
+! conclusion:
+  When the mathematical proof lives in one type (ℝ) but the Mathlib API
+  operates in another (ℝ≥0∞), wire through the directed coercion chain
+  rather than trying to isomorphism-transport.
+
+  + context: You have proved a key lemma in ℝ (e.g., a limit, an inequality).
+    The theorem you need to close operates on eLpNorm, which lives in ℝ≥0∞.
+    There is a canonical coercion chain ℝ → ℝ≥0 → ℝ≥0∞ but it is NOT an
+    isomorphism — it loses information at each step (negativity at ℝ→ℝ≥0,
+    finiteness at ℝ≥0→ℝ≥0∞).
+
+  + IF:
+      Your real-valued result needs to be used in an ENNReal/NNReal context,
+      and the coercion chain applies (the quantities are nonneg and finite).
+
+  + HOWEVER:
+      Unlike transport-across-isomorphism, you cannot freely move results
+      back and forth. The coercion is directed. ENNReal.toReal loses ⊤ → 0.
+      NNReal.coe is injective but NNReal.mk requires a proof of nonnegativity.
+      Each step requires an explicit compatibility hypothesis.
+
+  + THEN:
+      (a) Prove the core mathematical content in ℝ where the API is richest.
+      (b) Identify the coercion path: which coe/toReal/ofReal lemmas connect
+          your ℝ result to the ℝ≥0∞ goal?
+      (c) For each coercion step, discharge the compatibility side-condition
+          (nonnegativity, finiteness, ne_top).
+      (d) If the bridge is >5 steps, consider whether the lemma can be proved
+          directly in ℝ≥0∞ instead. Sometimes the Mathlib API has a parallel
+          version (e.g., ENNReal.rpow vs Real.rpow) that avoids the bridge.
+
+  + BECAUSE:
+      Lean's type system enforces the distinction between ℝ, ℝ≥0, and ℝ≥0∞
+      that informal mathematics elides. The coercion bridge is the price of
+      rigour. But the bridge is mechanical — once you know the path, each
+      step is a named lemma (ENNReal.ofReal_le_ofReal, NNReal.coe_le_coe,
+      ENNReal.toReal_le_toReal). The mathematical insight is in ℝ; the
+      engineering is in the bridge.
+
+  + TENSION:
+      The informal pattern (transport-across-isomorphism) says "prove in the
+      easy setting and transport." But the coercion chain is not an isomorphism,
+      so transport is not free. The tension: mathematical convenience (work in ℝ)
+      vs API reality (goal is in ℝ≥0∞). The amelioration: make the bridge a
+      named, reusable tactic sequence, not a per-proof ad-hoc construction.
+
+  + LEAN:
+    api[ENNReal.ofReal] api[ENNReal.toReal] api[NNReal.coe_le_coe]
+    api[ENNReal.ofReal_le_ofReal] api[ENNReal.toReal_le_toReal]
+    tactic[rw [ENNReal.ofReal...] → exact ... → simp [ne_top_of_lt]]
+
+  + NEXT-STEPS:
+    next[Identify which type the mathematical proof lives in.]
+    next[Map the coercion path to the goal's type.]
+    next[Discharge compatibility side-conditions at each step.]
+    next[If bridge is long, check for a parallel API in the target type.]

@@ -1,0 +1,74 @@
+@flexiarg math-formalization/construction-cost-asymmetry
+@title Construction Cost Asymmetry
+@sigils [🏗️/造]
+@keywords construction, witness, explicit, piecewise, engineering, asymmetry, trivial-hard
+@audience lean-provers, analysis-students, topology-students
+@tone heuristic
+@difficulty hard
+@subjects analysis topology algebra
+@instantiates math-informal/construct-an-explicit-witness
+@examples a96J01
+
+! conclusion:
+  When the mathematical insight is trivial but the Lean construction is
+  ~50+ lines of engineering, use witness templates rather than building
+  from scratch each time.
+
+  + context: The proof requires constructing an explicit mathematical
+    object (a family of functions, a counterexample, a partition of
+    unity). On paper, the construction is "obvious" — tent functions on
+    disjoint intervals, bump functions with prescribed support, etc.
+    In Lean, the construction requires defining the object, proving
+    continuity, verifying bounds, checking support properties, etc.
+
+  + IF:
+      The goal is existential (∃ f, P f) or requires producing an
+      explicit mathematical object, and the object belongs to a common
+      family (piecewise-linear, bump, indicator, characteristic function).
+
+  + HOWEVER:
+      The Lean engineering cost for common constructions is high because
+      Mathlib provides the *pieces* (Continuous.piecewise, indicator,
+      Set.Icc) but not the *assembled objects* (tent function family on
+      disjoint intervals with prescribed heights). Each proof rebuilds
+      the assembly from scratch.
+
+  + THEN:
+      (a) Check if a witness template exists in ApmCanaries/Local/.
+      (b) If not, build the construction once, prove its properties
+          once, and add it to Local/ as a reusable module.
+      (c) Future proofs that need the same construction import it
+          rather than rebuilding.
+      (d) The template becomes a formalization pattern entry — the
+          construction IS the pattern.
+
+  + BECAUSE:
+      The mathematical insight ("use tent functions") is the easy part.
+      The Lean engineering ("define tent, prove continuous, prove
+      nonneg, prove support disjoint, prove height") is the hard part.
+      Amortizing the engineering across problems is the only way to
+      make the 15-minute budget realistic for construction-heavy proofs.
+
+  + TENSION:
+      Informal math: "let f_n be tent functions with height 1/n" (1 line).
+      Lean: define f_n, prove Continuous f_n, prove 0 ≤ f_n x, prove
+      support ⊆ I_n, prove sup f_n = 1/n (50+ lines). The asymmetry is
+      intrinsic — Lean demands proofs that paper elides. The amelioration
+      is not to make Lean easier but to make the engineering reusable.
+
+  + WITNESS-TEMPLATES:
+    template[tent function family on disjoint intervals]
+    template[bump function with prescribed support and integral]
+    template[partition of unity subordinate to a cover]
+    template[indicator function of a measurable set]
+    template[piecewise-linear interpolation]
+
+  + LEAN:
+    api[Continuous.piecewise] api[Set.indicator] api[MeasurableSet.indicator]
+    tactic[refine ⟨fun n => ..., ?_, ?_, ?_⟩ → constructor → intro → simp]
+
+  + NEXT-STEPS:
+    next[Identify which common family the witness belongs to.]
+    next[Check ApmCanaries/Local/ for existing templates.]
+    next[If missing, build once, prove once, add to Local/.]
+    next[Future proofs import and instantiate.]

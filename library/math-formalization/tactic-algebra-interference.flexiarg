@@ -1,0 +1,69 @@
+@flexiarg math-formalization/tactic-algebra-interference
+@title Tactic-Algebra Interference in Rewriting
+@sigils [⚡/衝]
+@keywords rewrite, rw, convert, simp, Tendsto, filter, goal-shape, interference
+@audience lean-provers, analysis-students
+@tone heuristic
+@difficulty moderate
+@subjects analysis topology applied
+@instantiates math-strategy/constraint-tension-resolution
+@examples a93A03 a00J01
+
+! conclusion:
+  When an algebraic identity is correct but `rw` disrupts the goal's
+  type structure (filter, Tendsto, Set.mem), use `convert` or `simp_rw`
+  to rewrite within the structure rather than replacing the whole goal.
+
+  + context: You know the algebraic identity (e.g., ⟨h,h⟩ = ‖h‖²) and
+    the goal is a Tendsto/Filter/Set statement that contains the LHS.
+    Applying `rw` replaces the LHS but may change the goal shape in ways
+    that break subsequent tactic application.
+
+  + IF:
+      The goal has the form `Tendsto (fun n => f n) l (𝓝 target)` and
+      you want to rewrite something inside `f n` or `target`, but `rw`
+      at the top level changes the Tendsto structure.
+
+  + HOWEVER:
+      `rw` is greedy — it replaces ALL occurrences, including ones inside
+      binders (fun n => ...) where the rewrite may not be valid or may
+      change the function identity. `simp_rw` rewrites under binders
+      safely. `convert` changes the goal and leaves the mismatch as a
+      subgoal. `show` can manually restate the goal in the desired form.
+
+  + THEN:
+      (a) If the rewrite is inside a binder (fun n => ...): use `simp_rw`.
+      (b) If the rewrite is in the target (𝓝 value): use `convert` to
+          replace the target and close the algebraic identity separately.
+      (c) If the rewrite is structural (changing Tendsto to Filter.Tendsto
+          or vice versa): use `show` to restate, then proceed.
+      (d) Last resort: break the Tendsto into pieces using `have` lemmas
+          for each convergent component, then reassemble with Tendsto
+          arithmetic (Tendsto.add, Tendsto.sub, Tendsto.mul).
+
+  + BECAUSE:
+      The tension is between algebraic truth (the identity holds) and
+      tactic mechanics (the rewrite changes the goal shape). The informal
+      mathematician doesn't see this tension because "substitute equals
+      for equals" is seamless on paper. In Lean, the substitution must
+      respect the term structure, and `rw` doesn't always do what the
+      mathematician intends.
+
+  + TENSION:
+      Obligation A: rewrite the algebraic term (rw fires correctly).
+      Obligation B: preserve the goal's filter/Tendsto structure for
+      subsequent tactics. These conflict when `rw` changes the goal
+      shape. The constraint-tension-resolution pattern says: name both
+      obligations, find a tactic that satisfies both. `convert` and
+      `simp_rw` are the alternative constructions that dissolve the
+      tension.
+
+  + LEAN:
+    api[real_inner_self_eq_norm_sq] api[real_inner_self_eq_norm_mul_norm]
+    tactic[simp_rw [...] → convert ... using 1 → ring]
+    tactic[have h1 := ... → have h2 := ... → exact h1.sub h2 |>.add ...]
+
+  + NEXT-STEPS:
+    next[Determine if the rewrite is inside a binder, in the target, or structural.]
+    next[Choose simp_rw (binder), convert (target), or show (structural).]
+    next[If all fail, decompose into have lemmas and use Tendsto arithmetic.]

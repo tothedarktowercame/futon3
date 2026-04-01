@@ -1,0 +1,22 @@
+@flexiarg math-formalization/field-simp-reciprocal
+@title Field Simplification for Reciprocal Goals
+@sigils [÷/逆]
+@keywords field-simp, reciprocal, division, ne_of_gt, cancel
+@audience lean-provers, analysis-students
+@tone heuristic
+@difficulty routine
+@subjects analysis applied
+@instantiates math-informal/unfold-the-definition
+@examples a02J04
+
+! conclusion:
+  Close reciprocal/division identities with field_simp + ne_of_gt for nonzero denominators.
+
+  + IF: Goal involves x * (1/x) = 1 or similar reciprocal cancellation.
+  + HOWEVER: Lean needs a proof that the denominator is nonzero.
+  + THEN: Supply ne_of_gt from a positivity hypothesis, then field_simp closes the algebra.
+  + BECAUSE: field_simp normalizes all division to a common denominator and cancels.
+
+  + LEAN:
+    api[ne_of_gt]
+    tactic[field_simp → nlinarith]

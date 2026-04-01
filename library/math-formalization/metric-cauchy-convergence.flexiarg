@@ -1,0 +1,22 @@
+@flexiarg math-formalization/metric-cauchy-convergence
+@title Cauchy Sequence Convergence in Metric Spaces
+@sigils [🌀/収]
+@keywords Cauchy, convergence, metric, tendsto, triangle-inequality, epsilon-delta
+@audience lean-provers, analysis-students
+@tone heuristic
+@difficulty moderate
+@subjects analysis topology
+@instantiates math-informal/estimate-by-bounding
+@examples a97A04
+
+! conclusion:
+  Prove convergence by showing Cauchy via Metric.cauchySeq_iff + triangle inequality chains.
+
+  + IF: Goal is Tendsto or convergence of a sequence in a metric/normed space.
+  + HOWEVER: Direct epsilon-delta may require long calc chains.
+  + THEN: Use Metric.cauchySeq_iff to reduce to pairwise distance bounds, then calc + nlinarith.
+  + BECAUSE: Cauchy in a complete space gives convergence; the iff lemma handles the quantifiers.
+
+  + LEAN:
+    api[Metric.cauchySeq_iff] api[Metric.tendsto_atTop] api[Real.dist_eq]
+    tactic[have → intro → calc → nlinarith → ring]

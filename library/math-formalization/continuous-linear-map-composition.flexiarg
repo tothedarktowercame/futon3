@@ -1,0 +1,22 @@
+@flexiarg math-formalization/continuous-linear-map-composition
+@title Continuous Linear Map Composition Properties
+@sigils [🔗/合]
+@keywords ContinuousLinearMap, composition, operator, bounded, apply
+@audience lean-provers, functional-analysis-students
+@tone heuristic
+@difficulty routine
+@subjects applied
+@instantiates math-informal/compose-independent-lemmas
+@examples m98J03
+
+! conclusion:
+  Prove properties of composed bounded operators via ContinuousLinearMap API.
+
+  + IF: Goal involves composition of bounded linear operators.
+  + HOWEVER: Operator composition in Lean is Module.End.mul, not function composition.
+  + THEN: Use ContinuousLinearMap.comp_apply to unfold, then simp.
+  + BECAUSE: The bundled operator API needs explicit unfolding before standard tactics work.
+
+  + LEAN:
+    api[ContinuousLinearMap.comp_apply]
+    tactic[simp [ContinuousLinearMap.comp_apply]]

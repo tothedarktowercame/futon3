@@ -1,0 +1,22 @@
+@flexiarg math-formalization/rpow-exponent-limit
+@title Limit of t^{1/n} → 1 via Continuity
+@sigils [🎯/極]
+@keywords rpow, limit, continuity, exponent, tendsto, const_rpow
+@audience lean-provers, analysis-students
+@tone heuristic
+@difficulty moderate
+@subjects analysis
+@instantiates math-informal/reduce-to-known-result
+@examples a00J01
+
+! conclusion:
+  Prove t^{1/n} → 1 as n → ∞ by composing Real.continuousAt_const_rpow with 1/n → 0.
+
+  + IF: Goal involves a limit of a^{f(n)} where f(n) → 0 and a > 0.
+  + HOWEVER: ENNReal rpow continuity is incomplete in Mathlib; must work in ℝ.
+  + THEN: Use Real.continuousAt_const_rpow (a ≠ 0) composed with tendsto_const_div_atTop_nhds_zero_nat.
+  + BECAUSE: Continuity at 0 gives a^0 = 1 as the limit; the composition handles the filter.
+
+  + LEAN:
+    api[Real.continuousAt_const_rpow] api[Real.rpow_zero] api[tendsto_const_div_atTop_nhds_zero_nat]
+    tactic[have hcont := ... → have hlim := ... → exact hcont.tendsto.comp hlim]

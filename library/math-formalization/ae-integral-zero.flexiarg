@@ -1,0 +1,22 @@
+@flexiarg math-formalization/ae-integral-zero
+@title Integral Vanishes from A.E. Zero Integrand
+@sigils [∅/零]
+@keywords integral, ae, zero, ae_restrict_mem, filter_upwards
+@audience lean-provers, analysis-students
+@tone heuristic
+@difficulty routine
+@subjects analysis
+@instantiates math-informal/unfold-the-definition
+@examples a02J04
+
+! conclusion:
+  Show ∫_A f = 0 when f = 0 a.e. on A via integral_eq_zero_of_ae + filter_upwards.
+
+  + IF: Goal is an integral vanishing over a set where the integrand is a.e. zero.
+  + HOWEVER: Need to bridge between set membership and ae filtering.
+  + THEN: Use integral_eq_zero_of_ae with ae_restrict_mem and filter_upwards for the witness.
+  + BECAUSE: The ae_restrict_mem bridge converts "f = 0 on A" to the filter statement Lean needs.
+
+  + LEAN:
+    api[integral_eq_zero_of_ae] api[ae_restrict_mem] api[filter_upwards]
+    tactic[exact integral_eq_zero_of_ae → filter_upwards [...] with x hx]

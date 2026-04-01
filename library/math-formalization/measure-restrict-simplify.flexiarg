@@ -1,0 +1,22 @@
+@flexiarg math-formalization/measure-restrict-simplify
+@title Simplify Restricted Measure on [0,1]
+@sigils [📊/測]
+@keywords measure, restrict, volume, Icc, one_rpow, finite-measure
+@audience lean-provers, analysis-students
+@tone heuristic
+@difficulty routine
+@subjects analysis
+@instantiates math-informal/reduce-to-known-result
+@examples a00J01
+
+! conclusion:
+  Collapse μ(univ) for volume.restrict (Icc 0 1) to 1, simplifying rpow and mul terms.
+
+  + IF: Working with eLpNorm or integrals over volume.restrict (Icc 0 1).
+  + HOWEVER: Lean doesn't auto-simplify μ(univ) = volume(Icc 0 1) = 1.
+  + THEN: Chain: Measure.restrict_apply → Real.volume_Icc → ofReal_one → one_rpow → mul_one.
+  + BECAUSE: On probability-like spaces, μ(univ) = 1 collapses most comparison lemma outputs.
+
+  + LEAN:
+    api[Measure.restrict_apply] api[Real.volume_Icc] api[ENNReal.ofReal_one] api[one_rpow]
+    tactic[rw [...] → rw [...] → exact h]

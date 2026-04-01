@@ -1,0 +1,22 @@
+@flexiarg math-formalization/complex-polynomial-bound
+@title Complex Polynomial Norm Estimates on Balls
+@sigils [⭕/球]
+@keywords complex, polynomial, norm, ball, closedBall, frontier, estimate
+@audience lean-provers, analysis-students
+@tone heuristic
+@difficulty moderate
+@subjects analysis
+@instantiates math-informal/estimate-by-bounding
+@examples a99J07
+
+! conclusion:
+  Bound polynomials or analytic functions on disks using Complex.norm_eq_abs + Metric.ball API.
+
+  + IF: Goal involves bounding |f(z)| on a disk or circle in ℂ.
+  + HOWEVER: Need to carefully distinguish open ball, closed ball, and frontier (sphere).
+  + THEN: Use Metric.ball/closedBall for the domain, Metric.frontier_ball for the boundary, Complex.norm_eq_abs for the norm.
+  + BECAUSE: Mathlib's metric space API provides the topological scaffolding; the complex norm is just abs.
+
+  + LEAN:
+    api[Complex.norm_eq_abs] api[Metric.ball] api[Metric.closedBall] api[Polynomial.eval]
+    tactic[have → calc → mul_comm → classical]

@@ -1,0 +1,22 @@
+@flexiarg math-formalization/lp-norm-comparison
+@title Lp Norm Comparison on Finite Measure Spaces
+@sigils [⚖️/比]
+@keywords Lp, eLpNorm, comparison, finite-measure, embedding
+@audience lean-provers, analysis-students
+@tone heuristic
+@difficulty moderate
+@subjects analysis
+@instantiates math-informal/estimate-by-bounding
+@examples a00J01
+
+! conclusion:
+  Compare ‖f‖_p across exponents on finite measure via eLpNorm_le_eLpNorm_mul_rpow_measure_univ.
+
+  + IF: Goal is eLpNorm f p μ ≤ eLpNorm f q μ for p ≤ q on finite measure.
+  + HOWEVER: The Mathlib lemma has a μ(univ)^{1/p - 1/q} factor that needs simplification.
+  + THEN: Apply eLpNorm_le_eLpNorm_mul_rpow_measure_univ, then simplify μ(univ) (see measure-restrict-simplify).
+  + BECAUSE: This is the standard Lp embedding on finite measure spaces.
+
+  + LEAN:
+    api[eLpNorm_le_eLpNorm_mul_rpow_measure_univ] api[le_eLpNorm_of_bddBelow]
+    tactic[have h := eLpNorm_le_eLpNorm_mul_rpow_measure_univ → rw [...] → exact h]

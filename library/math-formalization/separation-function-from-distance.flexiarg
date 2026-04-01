@@ -1,0 +1,22 @@
+@flexiarg math-formalization/separation-function-from-distance
+@title Continuous Separation Function from Distance
+@sigils [📏/距]
+@keywords separation, distance, Urysohn, continuous, infDist, division
+@audience lean-provers, topology-students
+@tone heuristic
+@difficulty moderate
+@subjects topology
+@instantiates math-informal/construct-an-explicit-witness
+@examples t94A02
+
+! conclusion:
+  Separate disjoint closed sets by d(x,A)/(d(x,A)+d(x,B)) with empty-set guard.
+
+  + IF: Goal is a continuous [0,1]-valued function separating closed sets.
+  + HOWEVER: The naive formula has a zero-denominator risk when sets are empty.
+  + THEN: Guard the empty case (force distance=1), then use Metric.continuous_infDist_pt + Continuous.div.
+  + BECAUSE: Mathlib's infDist API handles the metric computation; you supply the nonvanishing denominator proof.
+
+  + LEAN:
+    api[Metric.continuous_infDist_pt] api[Metric.infDist_nonneg] api[Continuous.div]
+    tactic[have → exact → simp → ext → classical]

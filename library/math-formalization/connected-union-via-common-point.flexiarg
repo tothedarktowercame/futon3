@@ -1,0 +1,43 @@
+@flexiarg math-formalization/connected-union-via-common-point
+@title Connected Union via Common Point
+@sigils [🔗/連]
+@keywords connected, union, common-point, separation, isPreconnected, sUnion
+@audience lean-provers, topology-students
+@tone heuristic
+@factor Determination (adhiṭṭhāna)
+@instantiates math-informal/argue-by-contradiction
+@difficulty routine
+@subjects topology
+@examples t92J01
+
+! conclusion:
+  When proving a union of connected sets sharing a common point is connected,
+  argue by contradiction via open separations.
+
+  + context: You have a family of connected sets {C_α} and a common point
+    x ∈ ∩ C_α, and you need to show ⋃ C_α is connected.
+
+  + IF:
+      The goal involves IsConnected or IsPreconnected applied to a union,
+      and the hypothesis provides a common point in all components.
+
+  + HOWEVER:
+      "Union of connected sets is connected" is false in general — the
+      common point hypothesis is essential. Without it, disjoint connected
+      sets are a trivial counterexample.
+
+  + THEN:
+      Use isPreconnected_sUnion from Mathlib. The key step: rewrite the
+      indexed union as a set-indexed union via sUnion_range, then apply
+      the combinator with the common point and individual connectedness.
+
+  + BECAUSE:
+      Mathlib's isPreconnected_sUnion handles the separation argument
+      internally — you supply the common point and the per-component
+      connectedness, and it composes the contradiction.
+
+  + LEAN:
+    api[isPreconnected_sUnion]
+    api[Set.range]
+    api[Set.not_nonempty_iff]
+    tactic[classical → by_cases → simpa [sUnion_range]]

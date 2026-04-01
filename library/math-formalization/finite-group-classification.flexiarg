@@ -1,0 +1,22 @@
+@flexiarg math-formalization/finite-group-classification
+@title Finite Group Classification and Counterexamples
+@sigils [🏷️/群]
+@keywords finite-group, classification, cyclic, abelian, order, Fintype, ZMod
+@audience lean-provers, algebra-students
+@tone heuristic
+@difficulty routine
+@subjects algebra
+@instantiates math-informal/split-into-cases
+@examples b93J01 b93J02
+
+! conclusion:
+  Classify or produce counterexamples for finite groups using Fintype.card and ZMod.card.
+
+  + IF: Goal involves group order, cyclicity, or commutativity of specific finite groups.
+  + HOWEVER: Abstract group theory lemmas may not compute; need concrete Fintype instances.
+  + THEN: Use Fintype.card_perm, ZMod.card, IsCyclic.isCommutative, decide tactic.
+  + BECAUSE: Lean's decide tactic closes concrete finite-group goals by computation.
+
+  + LEAN:
+    api[Fintype.card] api[ZMod.card] api[IsCyclic.isCommutative] api[Equiv.swap]
+    tactic[decide → exact → classical]

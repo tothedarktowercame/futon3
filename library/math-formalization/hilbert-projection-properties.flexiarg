@@ -1,0 +1,22 @@
+@flexiarg math-formalization/hilbert-projection-properties
+@title Hilbert Space Orthogonal Projection Properties
+@sigils [📐/射]
+@keywords projection, self-adjoint, idempotent, orthogonal, Submodule, Hilbert
+@audience lean-provers, functional-analysis-students
+@tone heuristic
+@difficulty routine
+@subjects applied
+@instantiates math-informal/unfold-the-definition
+@examples m96J01 m98J03
+
+! conclusion:
+  Prove projection properties (self-adjointness, idempotency, norm-one) via Submodule.starProjection API.
+
+  + IF: Goal involves orthogonal projection in a Hilbert space.
+  + HOWEVER: Abstract operator theory may be overkill; Mathlib has concrete projection API.
+  + THEN: Use Submodule.starProjection_apply_mem, starProjection_eq_self_iff, norm_starProjection.
+  + BECAUSE: The starProjection API bundles self-adjointness and idempotency into the definition.
+
+  + LEAN:
+    api[Submodule.starProjection_apply_mem] api[Submodule.norm_starProjection]
+    tactic[constructor → intro → ext → simp]

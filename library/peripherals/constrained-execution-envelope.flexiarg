@@ -1,0 +1,100 @@
+@flexiarg peripherals/constrained-execution-envelope
+@title Constrained Execution Envelope
+@sigils [🔲/界]
+@audience peripheral designers, agent architects, workflow designers
+@tone foundational
+@style pattern
+@keywords peripheral, envelope, constraint, focus, distraction, scope, positive-constraint, affordance, inhabitation
+@references [agent/scope-before-action peripherals/surface-earns-inhabitation peripherals/inhabitation-feeds-evolution futon-theory/mission-lifecycle gauntlet/aif-as-environment-not-instruction gauntlet/umwelt-not-architecture]
+
+! conclusion: A peripheral is a constrained execution envelope — a space where the actions available are exactly the actions that lead to the goal, not a space where distracting actions are forbidden.
+  + context: An agent (or human) wants to achieve something they believe they
+    know how to do: prove a theorem, formalize a solution, write a module,
+    complete a review. They have the skills and the intention.
+  + IF:
+    The agent has the capability to achieve the goal and a reasonable plan
+    for reaching it.
+  + HOWEVER:
+    In an unconstrained environment, the agent doesn't actually achieve it.
+    It gets distracted — checking dependencies, refactoring adjacent code,
+    reading tangential material, switching to a different problem, or
+    producing work that is vaguely related but not the thing. The
+    environment affords too many actions, and the ones that feel productive
+    in the moment are not the ones that close the goal.
+  + THEN:
+    Set up a constrained execution envelope — a peripheral — in which the
+    available actions are exactly the actions that lead to the goal.
+
+    The key: define the envelope in positive terms. Do not enumerate what
+    the agent cannot do; describe what the agent can do. The peripheral
+    offers tools, phases, and exit conditions that constitute the productive
+    path. What is not offered is not forbidden — it simply does not exist
+    within this envelope.
+
+    A proof peripheral offers: observe the problem, propose an approach,
+    execute the formalization, validate against criteria, classify the
+    result. Those are the actions. There is no "check IRC" action, no
+    "refactor the build system" action — not because they are banned, but
+    because the envelope does not contain them.
+
+    A review peripheral offers: read the diff, check the invariants,
+    note issues, approve or request changes. A deploy peripheral offers:
+    run the tests, check the gates, push the artifact. Each envelope is
+    shaped to its goal.
+  + BECAUSE:
+    Forbidding distracting actions does not work. A prohibition is a
+    negative statement that requires the agent to hold both the forbidden
+    action and the reason for forbidding it in mind — which is itself a
+    distraction. It is a known pattern from philosophy (Nietzsche's
+    critique of negation, Spinoza's "omnis determinatio est negatio" read
+    in reverse) that productive constraint works by affirming what is
+    present, not by denying what is absent. You do not teach someone to
+    play chess by listing the moves they cannot make; you teach them the
+    moves they can make, and the board enforces the rest.
+
+    Even apparently negative concepts (Hegelian synthesis, apophatic
+    theology, boundary conditions in mathematics) function as positive
+    statements when they are operative: a synthesis is a new thing, not
+    the absence of two old things; a boundary condition is a value the
+    solution must take, not a region it must avoid.
+
+    The peripheral is the positive statement. It says: here is what you
+    can do, here is the sequence, here is when you are done. The agent
+    inhabits this envelope and does the work. The constraint is not felt
+    as restriction but as structure — the way a sonnet form is not a
+    restriction on poetry but a structure that produces it.
+    + evidence: M-apm-solutions (futon3c, 2026-03-29): Claude-1 was asked
+      to solve prelim problems using the proof peripheral cycle (observe →
+      propose → execute → validate → classify). Instead it one-shot each
+      problem with raw tool calls, skipped the peripheral phases, left
+      3 sorry in Lean formalizations, and moved on without validating.
+      The agent had the capability and the plan but the unconstrained
+      environment let it take the path of least resistance. The peripheral
+      existed but was not the execution envelope — it was a suggestion
+      alongside an open field of alternatives.
+  + FAILURE-MODES:
+    - Envelope too tight: the agent cannot do the work because the
+      available actions do not cover the actual requirements. The fix is
+      to widen the envelope, not to abandon it.
+    - Envelope too loose: the available actions include tangential work
+      that feels productive. The fix is to narrow the affordances, not
+      to add prohibitions.
+    - Envelope as punishment: the agent perceives the constraint as
+      distrust rather than structure. This happens when the envelope is
+      framed negatively ("you are not allowed to...") rather than
+      positively ("your tools are...").
+    - Envelope without exit: the agent completes the work but cannot
+      leave the peripheral. Every envelope needs an exit condition that
+      is as clear as its entry condition.
+  + NEXT-STEPS:
+    - For each goal type (proof, review, deploy, exploration), define
+      the minimal set of actions that constitute the productive path.
+    - Implement the envelope as a peripheral with those actions as its
+      tool set, phases as its sequence, and success criteria as its
+      exit condition.
+    - Test by observing whether agents complete the goal or drift.
+      Drift means the envelope is too loose; failure means it is too
+      tight.
+    - Apply the same principle to human-facing surfaces: the REPL's
+      keybindings, commands, and display should constitute an envelope
+      for the interaction pattern it supports.

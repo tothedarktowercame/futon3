@@ -1,0 +1,141 @@
+@flexiarg peripherals/inhabitation-feeds-evolution
+@title Inhabitation Feeds Evolution
+@sigils [🧬/化]
+@audience peripheral designers, AIF architects, futon theorists
+@tone theoretical
+@style pattern
+@keywords Baldwin-effect, inhabitation, learning-loop, peripheral, evolution, transport, representation, action-arena, Ostrom, AIF, upsampling, glacial, social
+@references [peripherals/surface-earns-inhabitation peripherals/constrained-execution-envelope aif/structured-observation-vector futon-theory/mission-lifecycle meta/baldwin-ratchet-defeats-darkroom futon-theory/baldwin-cycle ants/baseline-cyber-ant gauntlet/aif-as-environment-not-instruction math-informal/transport-across-isomorphism]
+
+! conclusion: A peripheral is not just a constrained action space — it is a representational space that enables a learning loop. Inhabiting the peripheral generates the data that evolves the peripheral. If the peripheral is not inhabited, the loop is dead and the peripheral cannot improve.
+  + context: You have an interface — an action arena in Ostrom's sense — where
+    agents (or humans) do work. The work produces outcomes. You want both the
+    work and the interface to get better over time.
+  + IF:
+    The interface is more than a passive display: it is a space where actions
+    happen, outcomes are observed, and the relationship between action and
+    outcome can be recorded.
+  + HOWEVER:
+    Effective action is not just "doing things in a space." It requires a
+    learning loop: the agent acts, observes the result, and the observation
+    feeds back into future action. This is a transport problem — experience
+    must move from the action space into a representation that can reshape
+    future behavior. Without this transport, the agent acts but does not
+    learn, and the interface affords but does not evolve.
+  + THEN:
+    Recognize that a peripheral is exactly the representational space where
+    this transport happens. The peripheral is not merely a constrained
+    execution envelope (though it is that too). It is a parallel space that
+    mirrors the agent's actions in structured form — phases, events, frames,
+    evidence — creating a representation that is legible to both the agent
+    and the designer.
+
+    This is the Baldwin effect operating on interfaces. In biology, the
+    Baldwin effect describes how learned behaviors (phenotype) can guide
+    the evolution of innate structure (genotype): organisms that can learn
+    to exploit an environmental niche survive long enough for genetic
+    changes that hardwire the adaptation. The learning happens fast; the
+    structural change happens slow; but the learning is what makes the
+    structural change possible.
+
+    In the futon stack, the same dynamic operates at two timescales:
+
+    - **Social loop (fast):** The agent inhabits the peripheral, acts
+      within its phases, produces evidence, encounters friction or flow.
+      This is the "learning" — the agent's experience within the
+      representational space.
+    - **Glacial loop (slow):** The peripheral designer reads the evidence,
+      observes where agents drift or succeed, and reshapes the peripheral's
+      phases, tools, and exit conditions. This is the "genetic change" —
+      the structural evolution of the interface.
+
+    The Baldwin insight: the fast loop generates the data that makes the
+    slow loop possible. Without inhabitation, there is no data. Without
+    data, there is no evolution. Without evolution, the peripheral stays
+    misshapen. And a misshapen peripheral is not inhabited — completing
+    the death spiral.
+
+    The transport from futon2's AIF ants is the right analogy: cyberant
+    programs represent ant foraging strategies in a parallel computational
+    space. The ants act in the world; the programs represent those actions
+    in a form that can be evaluated, compared, and evolved. The peripheral
+    does the same thing for agent work: the agent acts in the problem
+    domain; the peripheral represents those actions as phases, frames,
+    and evidence entries in a form that can be inspected, compared, and
+    used to reshape the envelope.
+
+    The upsampling possibility: there is no fundamental reason the glacial
+    loop must stay glacial. If the peripheral captures enough structured
+    data in the social loop (rich frames, tool event sequences, outcome
+    classifications), then the peripheral itself could be reshaped on the
+    fly — adding phases, adjusting affordances, tightening or loosening
+    the envelope — within the same session. This dissolves the boundary
+    between learning and evolution. The agent's inhabitation of the
+    peripheral generates the data that reshapes the peripheral that the
+    agent is inhabiting.
+
+    But — and this is the crux — none of this is possible if the agent
+    does not enter the peripheral in the first place. The surface must
+    earn inhabitation (see: peripherals/surface-earns-inhabitation) or the
+    entire Baldwin loop is starved of data at the source.
+  + BECAUSE:
+    The symmetry between agents and humans reveals the pattern. When
+    Claude bypasses the proof peripheral to one-shot tool calls, and when
+    Joe bypasses the REPL to type in a terminal, they are both starving
+    the same learning loop for the same reason: the primitive path has
+    less friction. The consequence is the same in both cases: no
+    structured data is generated, no evidence accumulates, no peripheral
+    evolution is possible, and the gap between the primitive path and the
+    infrastructure path never closes.
+
+    The Baldwin effect is subtle because it requires seeing the peripheral
+    as a representational space, not just a constraint. A constraint that
+    is not inhabited is merely a rule. A representational space that is
+    inhabited is a learning engine. The difference is whether the
+    peripheral generates data that feeds back into its own design.
+
+    This is why surface usability is not cosmetic. It is the entry
+    condition for the Baldwin loop. A peripheral with perfect design but
+    poor surface is like a genotype with perfect fitness in a niche that
+    the organism never enters: theoretically optimal, actually inert.
+    + evidence: M-repl-wins-over-cli (futon3c, 2026-03-29): interrupt
+      did not work, tool calls were opaque, streaming hijacked the cursor.
+      Joe used the CLI instead. No evidence was logged, no frames were
+      captured, no data was available to improve the REPL. Fixing the
+      basics was not UI work — it was reopening the Baldwin loop by making
+      inhabitation possible.
+    + evidence: M-apm-solutions (futon3c, 2026-03-29): Claude-1 was given
+      the proof peripheral but one-shot every problem without entering the
+      cycle. No phase transitions were recorded, no validation occurred,
+      no evidence accumulated for improving the cycle. The peripheral
+      existed but generated no data because it was not inhabited.
+    + evidence: futon2 AIF ants: cyberant programs evolved foraging
+      strategies in a parallel representation space. The ants had to
+      actually forage (inhabit the environment) for the programs to have
+      data to evolve against. Ants that did not forage contributed nothing
+      to the evolutionary loop.
+  + FAILURE-MODES:
+    - Data-starved loop: the peripheral exists but nobody uses it, so no
+      evidence accumulates and the designer has nothing to work with.
+      This is the most common failure and the hardest to diagnose because
+      the peripheral looks correct on paper.
+    - Representation without transport: the peripheral captures data but
+      the data never reaches the designer (or the glacial loop). Frames
+      accumulate in SQLite but nobody queries them. Evidence is logged
+      but never reviewed.
+    - Evolution without inhabitation feedback: the designer changes the
+      peripheral based on theory rather than usage data. The changes may
+      be correct but are ungrounded — they solve imagined problems rather
+      than observed ones.
+    - Upsampling instability: the peripheral reshapes itself faster than
+      the agent can adapt, creating a moving target. The learning loop
+      needs damping, not just speed.
+  + NEXT-STEPS:
+    - Ensure every peripheral captures structured data (frames, events,
+      evidence) as a side effect of inhabitation, not as an extra step.
+    - Build review surfaces that make peripheral usage data visible to
+      the designer (frame inspector, evidence queries, session replay).
+    - Identify peripherals with low inhabitation rates and treat the
+      surface friction as the primary diagnosis, not the peripheral design.
+    - Experiment with social-loop peripheral adaptation: can the envelope
+      tighten or loosen based on observed drift within a single session?

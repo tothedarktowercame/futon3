@@ -1,0 +1,177 @@
+@flexiarg peripherals/pattern-becomes-peripheral
+@title Pattern Becomes Peripheral
+@sigils [🌱/生]
+@audience pattern library maintainers, peripheral designers, programme architects, futon theorists
+@tone theoretical
+@style pattern
+@keywords pattern-theory, peripheral-theory, bridge, instantiation, inhabitation, capability, joy, affirmation, absorbed-input, institution-creation, Spinoza, Sen, Ostrom, Nietzsche
+@references [peripherals/constrained-execution-envelope peripherals/surface-earns-inhabitation peripherals/inhabitation-feeds-evolution meta/baldwin-ratchet-defeats-darkroom futon-theory/baldwin-cycle equity/shared-maintenance gauntlet/aif-as-environment-not-instruction]
+
+! conclusion: A pattern that remains documentation has not yet become a peripheral. The transition from pattern to peripheral is the transition from describing what works to being the space in which the working happens — and that transition is what creates new capability, not merely new knowledge.
+  + context: You have a well-articulated pattern — or a library of them. The
+    patterns accurately describe what works under what conditions. They have
+    been grounded in evidence, stress-tested, cross-referenced. They are
+    correct. But the situation they describe has not improved.
+  + IF:
+    The patterns are correct and the problem they address is real: there
+    exists a productive way of working that is not being practiced.
+  + HOWEVER:
+    Correctness does not produce inhabitation. A pattern describes the right
+    envelope but does not address whether anyone enters it or whether it
+    evolves through use. The pattern sits in the library (or the programme
+    design document, or the mission file) as a description of what would
+    work — and the world continues not to work that way.
+
+    This is not a failure of the pattern. It is a category gap. Pattern
+    theory gives you the vocabulary for describing *what works under what
+    conditions*. What it does not give you is the space in which the
+    working happens, the surface that earns entry into that space, or the
+    loop through which the space improves. Those are peripheral-theoretic
+    concerns.
+
+    The gap shows up identically across scales:
+
+    - A developer has 800 patterns in a library but reaches for the CLI
+      because the REPL (which instantiates the patterns as a working
+      environment) has too much friction.
+    - An AI agent has a proof peripheral defined with phases and exit
+      conditions but one-shots every problem because entering the
+      peripheral is harder than not entering it.
+    - A national programme has five well-grounded design patterns but the
+      institutional architecture that would instantiate them as lived
+      practice is largely absent.
+
+    In all three cases, the patterns are correct. In none of them is the
+    pattern doing work. The pattern is a description; it has not yet
+    become a space.
+  + THEN:
+    Recognise that pattern theory is necessary but not self-completing.
+    The bridge from pattern to practice is *instantiation as peripheral*:
+    the pattern must become a constrained execution envelope (what the
+    space contains), with a surface that earns inhabitation (why anyone
+    enters), feeding a Baldwin loop (how the space evolves from use).
+
+    This bridge has a distinctive character that distinguishes it from
+    both commandment and prohibition. The pattern-as-documentation says
+    "here is what works" — a descriptive claim. A commandment ("thou
+    shalt use the proof peripheral") tries to force entry through
+    obligation. A prohibition ("thou shalt not use the CLI") tries to
+    force entry by blocking alternatives. Neither works, for reasons the
+    philosophical tradition has long understood:
+
+    - Spinoza: joy (laetitia) is an increase in the power to act.
+      A peripheral that earns inhabitation produces joy — the
+      inhabitant finds their power to act increased by being inside it.
+      A commandment produces obedience, which is not joy. A prohibition
+      produces resentment or evasion, which is the opposite.
+    - Nietzsche: affirmation is the only durable motivation. The
+      peripheral must be affirmed — chosen because it is good, not
+      endured because it is required.
+    - Sen: capability is freedom, not functioning. The peripheral must
+      create real freedom to act — conversion factors that turn nominal
+      access into durable capability. A programme that provides access
+      without conversion factors provides a pattern without a peripheral.
+
+    The transition from pattern to peripheral is therefore not an
+    implementation step ("now deploy the pattern"). It is a creative act:
+    the construction of a space that is *worth inhabiting*, that increases
+    the inhabitant's power to act, and that generates the data needed to
+    evolve itself.
+
+    Crucially, this means the moral weight falls on the *space*, not on
+    the *inhabitant*. When a trainer doesn't embed the programme, or an
+    agent doesn't use the peripheral, or a developer doesn't use the REPL,
+    the diagnosis is not "the inhabitant is deficient" but "the space has
+    not yet earned inhabitation." This is not moral grayness — it is a
+    precise structural claim: the conditions for productive action have
+    not been met, and the responsibility lies with whoever designs and
+    maintains the conditions, not with whoever fails to thrive within
+    inadequate ones.
+  + BECAUSE:
+    The absorbed-input mode reveals why this matters. In the absorbed
+    case, an individual gains something — skills, experience, CV lines,
+    working code — but the system gains nothing. The trainer leaves and
+    takes the knowledge with them. The agent writes code but no
+    institutional learning accumulates. The developer uses Stack Overflow
+    and gets a working function but no understanding of why it works.
+
+    What doesn't happen in the absorbed case is the creation of new
+    institutions (Ostrom). The trainer doesn't create a community of
+    practice at their institution. The agent doesn't produce evidence
+    that improves the proof peripheral. The developer doesn't contribute
+    a pattern back to the library. The individual transacts with the
+    system but the system does not change.
+
+    This is the "programming by Stack Exchange" failure mode applied
+    universally. An interaction that produces output without producing
+    capability is an interaction that has been *absorbed* rather than
+    *institutionalised*. The output is real — the code works, the
+    training was delivered, the problem was solved — but it is
+    non-generative. Nothing was learned at the system level. No new
+    institution was created. No peripheral evolved.
+
+    The pattern-to-peripheral bridge is what converts absorbed input
+    into institutional creation. When a pattern becomes a peripheral:
+
+    1. The envelope defines a positive action space (not a prohibition).
+    2. The surface earns entry (not commands it).
+    3. Inhabitation generates data (not just output).
+    4. The data feeds back into the peripheral's design (Baldwin loop).
+    5. The improved peripheral earns further inhabitation (virtuous cycle).
+
+    At step 5, something new exists that didn't exist before: an
+    institution in Ostrom's sense — a set of rules-in-use that govern
+    a shared resource (the action space) and that evolve through the
+    participation of their inhabitants. This is what the absorbed-input
+    mode fails to produce, and it is what the pattern-to-peripheral
+    transition is for.
+
+    The Spinozan frame is the deepest one: the question is not "did the
+    agent obey the pattern?" but "did the agent's power to act increase?"
+    If it did, the pattern has become a peripheral. If it didn't — if
+    the agent merely transacted and moved on — the pattern remains
+    documentation, however correct it may be.
+    + evidence: M-repl-wins-over-cli (futon3c, 2026-03-29): the pattern
+      library contained patterns for evidence logging, frame persistence,
+      and coordination. None were operative until the REPL surface was
+      made inhabitable. The patterns became peripherals only when the
+      basics (interrupt, tool visibility, cursor stability) were fixed.
+    + evidence: M-apm-solutions (futon3c, 2026-03-29): the proof
+      peripheral defined phases, criteria, and exit conditions. Claude-1
+      one-shot every problem. The pattern was correct; the peripheral
+      was not inhabited.
+    + evidence: UKRN ORP T3 programme (paper_v2.4): five well-grounded
+      design patterns, backed by NPT coding and transcript evidence.
+      The patterns accurately described what would work. The
+      institutional architecture that would instantiate them as lived
+      practice was largely absent. Absorbed-input mode: trainers gained
+      individual skills but no new institutions were created.
+  + FAILURE-MODES:
+    - Pattern-as-commandment: "you must use the proof peripheral"
+      produces compliance, not inhabitation. The agent enters the space
+      under obligation and exits at the first opportunity.
+    - Pattern-as-prohibition: "you must not use the CLI" blocks the
+      alternative without making the peripheral attractive. Produces
+      resentment and workarounds.
+    - Absorbed input mistaken for success: the trainer delivered, the
+      code was written, the problem was solved. But nothing was learned
+      at the system level. Output without capability is the most
+      common and least visible failure.
+    - Blame allocated to inhabitants: "the trainers didn't embed the
+      programme" / "the agent didn't use the peripheral" / "the
+      developer didn't use the REPL." The diagnostic should be: the
+      space didn't earn inhabitation, the surface had too much friction,
+      or the Baldwin loop was starved.
+  + NEXT-STEPS:
+    - For each pattern in the library that is "known but not practiced,"
+      ask: has this pattern been instantiated as a peripheral? If not,
+      the gap is not knowledge but infrastructure.
+    - For each peripheral that exists but is underused, ask: does the
+      surface earn inhabitation? If not, the gap is not design but UX.
+    - For each peripheral that is inhabited but not improving, ask: is
+      the Baldwin loop running? If not, the gap is not usage but
+      feedback transport.
+    - Treat the absorbed-input mode as a diagnostic, not a verdict.
+      It tells you that individual transactions are happening but
+      institutional creation is not. The fix is to build the bridge —
+      envelope, surface, loop — not to blame the transactors.

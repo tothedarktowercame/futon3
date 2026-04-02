@@ -1,0 +1,73 @@
+@flexiarg peripherals/surface-earns-inhabitation
+@title Surface Earns Inhabitation
+@sigils [🏠/居]
+@audience peripheral designers, surface builders, agent architects
+@tone foundational
+@style pattern
+@keywords surface, peripheral, inhabitation, friction, UX, interface, trust, adoption, CLI, REPL, usability
+@references [agent/scope-before-action agent/evidence-over-assertion peripherals/constrained-execution-envelope peripherals/inhabitation-feeds-evolution futon-theory/mission-lifecycle equity/shared-maintenance coordination/par-as-obligation]
+
+! conclusion: A productive interface that nobody uses is dead infrastructure; the surface must earn inhabitation by being less friction than the alternative.
+  + context: You have built a peripheral or surface with genuine capabilities —
+    evidence logging, frame persistence, coordination, structured tool visibility —
+    that the primitive alternative (a CLI, a one-shot API call, an ad hoc script)
+    lacks.
+  + IF:
+    The surface offers real infrastructure advantages over the primitive path, and
+    you want agents or humans to actually inhabit it rather than bypass it.
+  + HOWEVER:
+    The surface is cluttered, difficult to enter, or tedious to operate. Basic
+    operations that work effortlessly in the primitive path (interrupt, inspect,
+    navigate) are broken or awkward. The inhabitant spends their energy fighting
+    the interface rather than doing the work the interface was built to support.
+    So they don't use it. They reach for the primitive path because it has less
+    friction, even though it has less capability.
+  + THEN:
+    Treat surface usability as load-bearing infrastructure, not cosmetic polish.
+    Close every friction gap between the surface and the primitive alternative
+    before adding new capabilities. The surface must be strictly better at the
+    basics — responsiveness, interruptibility, visibility, stability — so that
+    inhabitation is the natural choice, not a discipline exercise.
+    Concretely:
+    - Every operation the primitive path supports must work at least as well.
+    - The surface's unique capabilities (evidence, frames, coordination) come
+      free with inhabitation, not as extra steps.
+    - If the inhabitant has to fight the surface, the surface is broken, not
+      the inhabitant.
+  + BECAUSE:
+    Uninhabited infrastructure is dead infrastructure. The value of a peripheral
+    is not what it *can* do but what it *does* do — and it does nothing if nobody
+    is inside it. I-3 says peripherals are inhabited, not delegated. But
+    inhabitation is not commanded; it is earned. The surface earns it by being
+    the path of least resistance to productive work.
+    This applies symmetrically to agents and humans. An agent that bypasses the
+    proof peripheral to one-shot tool calls, and a human who bypasses the REPL
+    to type in a terminal, are exhibiting the same behavior for the same reason:
+    the primitive path has less friction. The fix is the same in both cases —
+    not to block the primitive path, but to make the infrastructure path
+    frictionless enough that it becomes the natural choice.
+    + evidence: M-repl-wins-over-cli (futon3c, 2026-03-29): the Claude REPL had
+      evidence logging, frame persistence, agent coordination, and structured
+      tool visibility — but interrupt didn't kill the server process, tool calls
+      showed only opaque markers, streaming text hijacked the cursor, and port
+      discovery was fragile. The CLI had none of the capabilities but all of the
+      basics. Joe reached for Alacritty every time. Fixing the basics (interrupt,
+      tool detail, cursor stability) was not UI polish — it was the work that
+      made the infrastructure inhabitable.
+  + FAILURE-MODES:
+    - Building capabilities before basics: the surface can do amazing things but
+      can't be interrupted, so nobody trusts it with long-running work.
+    - Treating UX as separate from architecture: "we'll polish the UI later"
+      means the UI never gets polished because the architecture was designed
+      without considering the inhabitant's experience.
+    - Blocking the primitive path instead of earning preference: disabling the
+      CLI doesn't make the REPL better; it just makes the user resentful.
+    - Confusing feature count with inhabitability: adding more capabilities to
+      an already-cluttered surface makes it worse, not better.
+  + NEXT-STEPS:
+    - Audit every surface for friction gaps against its primitive alternative.
+    - Prioritize closing friction gaps over adding new capabilities.
+    - Measure inhabitation (do agents/humans actually use the surface?) not
+      capability (could they theoretically use it?).
+    - Apply the same standard to agent-facing surfaces (peripherals) and
+      human-facing surfaces (REPLs, dashboards, inspectors).

@@ -1,0 +1,40 @@
+*  upstream-patch-signal
+** Pattern: Upstream Patches as Consulting Signal
+   + CONTEXT:
+     A practitioner wants to signal expertise to potential
+     clients or employers but dislikes self-promotion. Blog
+     posts, talks, and social media feel performative.
+   + IF:
+     The practitioner uses open-source dependencies deeply
+     enough to find bugs, missing features, or design
+     improvements.
+   + HOWEVER:
+     Sending one patch to one project is invisible. Writing
+     blog posts about capabilities feels hollow without
+     evidence.
+   + THEN:
+     Systematically identify patch opportunities in the
+     upstream dependency network. Prioritise patches to
+     projects with commercial ecosystems (XTDB, Datahike,
+     Logseq) or active communities (Reagent, Malli). Each
+     merged patch is a permanent, verifiable signal that
+     says "I understand your codebase well enough to
+     improve it."
+   + BECAUSE:
+     A merged PR is the strongest possible consulting signal.
+     It is not self-promotion — it is demonstrated competence,
+     publicly verifiable, attached to a real codebase the
+     client cares about. The practitioner's dependency graph
+     IS their professional network; patches are introductions.
+   + NOTE:
+     The Drawbridge CIDER adapter is the prototype instance:
+     a real gap (no existing adapter), deep expertise (daily
+     use of Drawbridge in the stack), and high visibility
+     (every CIDER user would benefit). Estimated effort:
+     2-3 days. Signal value: permanent.
+   + RELATED:
+     - depositing/scan-talk-frame (scan identifies patch targets)
+     - depositing/grant-to-pitch (patches demonstrate the same
+       capability that grants propose)
+     - war-machine/cardinal-directions (patches are depositing
+       in the open-source economy)

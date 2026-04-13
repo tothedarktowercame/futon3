@@ -12,6 +12,11 @@
 > *Among those who hate, we dwell free from hatred.*
 > — Dhammapada 197 (trans. Buddharakkhita)
 
+> *War is a crime against humanity.*
+> *I am therefore determined not to support any kind of war,*
+> *and to strive for the removal of all causes of war.*
+> — War Resisters International
+
 This document sits one level above mission control. Individual missions
 (M-coordination-rewrite, M-drawbridge-multi-agent, etc.) operate within
 a single futon. The War Room coordinates across futons and across missions.
@@ -38,6 +43,8 @@ summarises; the bulletins provide evidence and argument.
 | [3](war-bulletin-3.md) | 2026-02-22 | The Self-Representing Stack | Agent-to-agent IRC coordination operational; ideal/actual self-discrepancy as system architecture; Mission Control as physics engine (statics/dynamics/empirics); surface contracts as local reflexivity; system diagram at `futon3c/docs/mission-control-system.mm` |
 | [4](war-bulletin-4.md) | 2026-02-27 | The Portfolio Becomes Legible | Portfolio inference live (CONSOLIDATE + "review"); observation surface was half-blind (4/7 repos, 0% coverage, 3 saturated channels) — now calibrated; 73 missions triaged into 7 salience buckets; M-self-representing-stack visible as next priority; AIF loop validated itself (recommended review → found broken sensors → fixed them) |
 | [5](war-bulletin-5.md) | 2026-03-01 | The Tickle Experiment | Multi-agent CT review pipeline: 17 PRs, ~85 proposals assessed, ~60 entries merged; quality feedback loop validated (approval rate improved across batches); infrastructure bottlenecks identified (merge gap, stateless orchestrator, silent failures); surface contracts (I-1/I-2/I-3) held under sustained load; format evolved organically; experiment closed, M-self-representing-stack resumes |
+| [6](../futon3c/holes/war-bulletin-6.md) | 2026-04-10 | The Inhabitation Threshold | REPL entry ceremony fixed (4 bugs); ghost reclamation; evidence pipeline operational; futon3a semantic context retrieval per turn; Arxana evidence browser wired; JSDQ hypergraph aligned; M-stack-inhabitation opened as umbrella mission; WR-4: inhabit before building |
+| [7](war-bulletin-7.md) | 2026-04-13 | The War Machine Is Operational | War Machine runs 10 scans + frame reader; WebArxana multi-focus canvas (49 commits); frame schema (hives, ants, instruments, cardinal directions); M-daily-scan Day 1 (15 probes, 5 leads); depositing signal non-zero for first time; 3 depositing patterns; WR-5: War Machine is infrastructure not a mission; WR-6: daily scan is the depositing heartbeat; WR-7: missing model ports are sorrys |
 
 ## The Three-Futon Refactoring
 
@@ -80,88 +87,47 @@ futon3c (social)  →  futon3b (task)  →  futon3b L1 (glacial)
           searches across all stores
 ```
 
-## Active Missions by Futon
+## Mission Portfolio
 
-### futon3a (stable, operational)
-- No active missions. Query infrastructure works.
-- Pattern search (notions/compass), meme store, typed arrows.
+> **Note:** The authoritative mission inventory is computed by Mission Control
+> (futon3c `mc-inventory`, `mc-coverage`). This section records strategic
+> framing, not an exhaustive list. See each repo's `holes/missions/` directory
+> and `arxana://view/missions` for the live state.
 
-### futon3b
-- **M-coordination-rewrite** [DONE] — Gate pipeline + library evolution
-  - Part I (composition plan): DONE (CP-0)
-  - Part II (gate pipeline): DONE (CP-1, CP-2, CP-2b, CP-3)
-  - Part III (Level 1 glacial loop): DONE (CP-4)
-  - 31 tests, 109 assertions, ct/mission.clj 8/8 checks
-- Tracked in: `futon3b/AGENTS.md`, `futon3b/holes/missions/M-coordination-rewrite.md`
+### Umbrella Missions (active, cross-futon)
 
-### futon3c (938 tests, 3285 assertions — see [Bulletin 4](war-bulletin-4.md))
+| Mission | Repo | Status | Bulletin |
+|---------|------|--------|----------|
+| **M-stack-inhabitation** | futon3c | IDENTIFY | [6](../futon3c/holes/war-bulletin-6.md) |
+| **M-self-representing-stack** | futon4 | VERIFY | [3](war-bulletin-3.md), [4](war-bulletin-4.md) |
 
-**Complete:**
-- **M-social-exotype** — Social exotype diagram + nested composition + bootstrap closure
-- **M-agency-refactor** — Agency registry, session lifecycle, multi-agent dispatch
-- **M-peripheral-model** — Hop protocol, exit conditions, peripheral chain orchestration
-- **M-peripheral-behavior** — Peripheral lifecycle (start/step/stop), tool-set enforcement
-- **M-dispatch-peripheral-bridge** — S-dispatch → peripheral routing
-- **M-transport-adapters** — HTTP, WebSocket, IRC (F1-F6 stability), 112 tests
-- **M-mission-peripheral** — 9-phase cycle machine, obligation tracking, evidence snapshots
-- **M-mission-control** — Portfolio observation: cross-repo inventory (7 repos, 73 missions), devmap coverage (curated annotations + heuristic), mana queries, backfill, audit correspondence
-- **M-IRC-stability** — F1-F6 compliance, standup bell
-- **M-portfolio-inference** — INSTANTIATE complete (938 tests, 3285 assertions). AIF loop: 15-channel observe → perceive (3 micro-steps, α=0.55) → affect (BUILD/MAINTAIN/CONSOLIDATE with hysteresis) → EFE policy. First live scan recommended CONSOLIDATE + "review." See [Bulletin 4](war-bulletin-4.md).
-- **M-psr-pur-mesh-peripheral** — Discipline peripheral (PSR/PUR mesh, wired). DONE-NEEDS-RETRO.
+M-stack-inhabitation is the current priority: inhabit the surfaces that exist
+rather than building new ones. Sub-missions: M-repl-wins-over-cli (TESTING),
+M-hypergraph-operator (futon5a, IDENTIFY), candidate invariant triage (65 items),
+excursion pipeline triage (6 items).
 
-**Active:**
-- **M-peripheral-gauntlet** — Real-time multi-peripheral scenarios (alleycat 4/5 gates PASS)
-- **M-forum-refactor** — Part I complete (evidence landscape supersedes forum); Parts II-III pending
-- **M-sliding-blackboard** — Emacs UI + code blocks for IDE integration
+### Completed Infrastructure (load-bearing, not actively developed)
 
-**Infrastructure:** Evidence landscape (store + XTDB backend + HTTP API via futon1a),
-social pipeline (5 stages), proof peripheral (DAG backend, canonical forms, cycle
-detection, ledger ops). Portfolio inference observation surface calibrated: 7 repos
-scanned (was 4), curated component→mission annotations (14 entries), recalibrated
-priors (gap-cap 120, spinoff-cap 40, max-chain-cap 10). Machine audit via
-`audit-coverage-correspondence`. See [Bulletin 2](war-bulletin-2.md) for earlier
-assessment, [Bulletin 4](war-bulletin-4.md) for current state.
+- **futon3a:** Pattern search, meme store, semantic retrieval (MiniLM embeddings)
+- **futon3b:** Gate pipeline, library evolution (31 tests, 109 assertions)
+- **futon3c Agency:** Registry, dispatch, evidence store, blackboard, invoke
+- **futon1a:** Durable XTDB evidence backend, HTTP API
+- **futon4 Arxana:** Hypergraph browser, evidence viewer, docbook navigation
 
-### Cross-Futon
-- **futon5** — Wiring diagrams (11 EDN devmaps + 2 grounding functors), CT DSL,
-  tensor math. Now readable from futon3c via mission control (`mc-devmaps`,
-  `mc-coverage`). Nonstarter pre-registration framework operational (core.clj).
-  Spring Break target: JAX-based CA + differentiable eigendecomposition.
-  See [Bulletin 1](war-bulletin-1.md) for strategic assessment.
-- **futon6** — Mathematics dictionary + First Proof sprint (6/10 correct,
-  70 typed wiring diagrams, AIF+ audit). nLab validation path: 20K pages
-  already available, `hyperreal.py` builds free category, wiring diagram
-  extraction in progress. Superpod deferred to post-Spring-Break.
-  See [Bulletin 1](war-bulletin-1.md) for full findings.
-- **futon4** — Arxana hypertext layer. Scholium-based annotation provides
-  edge-level critique infrastructure validated by First Proof. Evidence
-  landscape viewer operational (reads from futon1a). **Priority mission:**
-  [M-self-representing-stack](../../futon4/holes/missions/M-self-representing-stack.md)
-  — make MC artifacts, devmap prototypes, and evidence trails navigable as
-  hyperedges in Arxana. DERIVE+ARGUE complete; VERIFY next. Now visible to
-  portfolio inference (futon4 added to MC repo scan). Sensor-grounding
-  section specifies how tension hyperedges feed back into MC's 15 observation
-  channels. See [Bulletin 3](war-bulletin-3.md) §2, [Bulletin 4](war-bulletin-4.md) §3.
-- **futon1a** — Durable store. XTDB backend operational for evidence landscape.
-  HTTP API: POST/GET evidence, single entry, reply chains. Must preserve
-  negative knowledge (failed routes with structural obstructions).
-- **Operational bridge: IRC agent coordination** — Claude and Codex coordinate
-  on `#futon` in real time. Codex scopes tasks as GitHub issues, @mentions
-  Claude, Claude executes. Surface contracts ensure agents know which surface
-  they're on. See [Bulletin 3](war-bulletin-3.md) §1.
-- **Pending bridge: futon3b → futon3c** — Gate pipeline proof-paths should
-  emit evidence entries on G0 success. This connects task-timescale validation
-  to social-timescale observation. See [Bulletin 2](war-bulletin-2.md) §6.
-- **System self-representation (P11)** — Mission Control system diagram at
-  `futon3c/docs/mission-control-system.md`. Ideal/actual split identified;
-  M-self-representing-stack makes MC artifacts navigable as Arxana hyperedges.
-  Closes the reflexivity loop at the navigation layer, not just the data layer.
-  See [Bulletin 3](war-bulletin-3.md).
-- **Portfolio legibility** — 73 missions across 7 repos triaged into 7 salience
-  buckets: 20 anchored (complete), 9 active, 5 ready, 10 superseded by
-  Three-Futon refactoring, 7 embryonic, 7 detritus (process artifacts), 5
-  domain-specific (f6-* → futon6). Mission triage is a Human Intelligence
-  Task supported by `audit-coverage-correspondence`. See [Bulletin 4](war-bulletin-4.md) §2.
+### Joe's Three Workstreams
+
+Per WR-4, Joe's work divides into three mutually-reinforcing streams.
+Stack inhabitation is valuable only insofar as it serves the other two:
+
+| Stream | What it produces | Stack surface |
+|--------|-----------------|---------------|
+| **Mathematics** (futon6) | Prelim solutions, proof sprints, nLab validation | REPL + evidence |
+| **Day job + consulting** (JSDQ) | UKRN-S, Eric/VSAT, Bristol May 12th | Hypergraph operator |
+| **Stack inhabitation** (futon0-5) | Working REPL, evidence pipeline, pattern retrieval | All surfaces |
+
+The danger (per JSDQ diagnosis): stack work becomes pi-hermit (build alone,
+never deposit). WR-4 constrains this: stack work must demonstrably serve
+mathematics or consulting, or it is foraging when it should be depositing.
 
 ## War Room Decisions
 
@@ -215,6 +181,39 @@ earns the theoretical readiness (mana) that unblocks gated futon5 missions.
 - `library/social/ARGUMENT.flexiarg` establishes S1-S3, R1-R10, C1-C6
 - futon3b succeeded with exotype-first approach (8/8 checks, 31 tests)
 - futon5 missions gated on mana are gated on composition validation capability
+
+### WR-4: Inhabit before building (2026-04-10)
+
+**IF:** The stack has extensive infrastructure (Agency, evidence stores, pattern
+libraries, Arxana browser, candidate invariant queues, mission documents,
+excursion logs, Bayesian models, context retrieval)
+**HOWEVER:** Most of this infrastructure is uninhabited — the Candidate Invariant
+queue has 65 entries with no processing pipeline, the evidence browser was
+disconnected, excursions are explorations without missions, and the primary coding
+surface (CLI) generated no evidence until today
+**THEN:** The next phase is inhabitation, not construction. New infrastructure is
+justified only when it directly serves inhabitation of existing surfaces. The
+three workstreams (mathematics, consulting/JSDQ, stack inhabitation) must be
+mutually reinforcing: stack work that doesn't serve math or consulting is
+pi-hermit mode (build alone, never deposit) and violates the cargo-implies-depositing
+constraint.
+**BECAUSE:** `surface-earns-inhabitation` — uninhabited infrastructure is dead
+infrastructure. `inhabitation-feeds-evolution` — without inhabitation the Baldwin
+loop starves. The JSDQ diagnosis shows the same pattern at the personal level:
+high cargo, low reserves, mode stuck on :foraging. Bristol is the external
+depositing action; stack inhabitation is the internal one. Both require the same
+policy transition: pi-scholar -> pi-consultant -> pi-free-solo.
+
+**Evidence:**
+- [Bulletin 6](../futon3c/holes/war-bulletin-6.md): evidence loop was 90% built,
+  last 10% was wiring and friction reduction
+- JSDQ terminal vocabulary: three constraint violations (cargo-implies-depositing,
+  signal-implies-follow-up, deadline-implies-urgency) all point at depositing
+- M-stack-inhabitation portfolio: 10 surfaces, most uninhabited
+
+**Test:** Before starting any new infrastructure mission, ask: "Which existing
+surface does this make more inhabitable?" If the answer is "none," defer the
+mission until WR-4 is satisfied.
 
 ## Coordination Protocol
 

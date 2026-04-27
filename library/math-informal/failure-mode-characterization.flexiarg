@@ -1,0 +1,57 @@
+@flexiarg math-informal/failure-mode-characterization
+@title Failure-Mode Characterization
+@sigils [⚠/隅]
+@keywords failure, regime, boundary, where-fails, breakdown, applicability, edge-case
+@audience mathematicians, applied-analysts
+@tone analytic
+@factor Discernment (paññā)
+@family math-strategy/characterization-result
+@references [math-informal/structural-obstruction-as-theorem math-informal/check-the-extreme-cases math-informal/argue-by-contradiction]
+
+! conclusion:
+  Characterize the regime where a known result FAILS, rather than only
+  characterizing where it holds.
+
+  + context: A theorem T is known under hypotheses H. It is natural to ask
+    whether T extends to a broader class. Rather than producing yet another
+    sufficient condition, the paper instead pins down the *boundary of
+    applicability*: it identifies exactly the regime where T is no longer
+    valid, often with quantitative or structural sharpness.
+
+  + IF:
+      You have a theorem T with hypotheses H and you want to articulate the
+      *failure regime* — typically (a) examples that violate T outside H,
+      (b) a structural reason the failure occurs, (c) a sharp boundary
+      between holds-here and fails-here.
+
+  + HOWEVER:
+      Failure-mode characterization is structurally distinct from a *negative
+      result* (T is false in this case). A negative result asserts something
+      doesn't hold; failure-mode-characterization specifies the *regime* where
+      it doesn't hold and the *structural reason* it doesn't. The latter is
+      stronger — it tells the reader where the theorem still works, where it
+      fails, and *why*.
+
+  + THEN:
+      1. Construct an explicit counterexample or family of counterexamples
+         that lie just outside H.
+      2. Identify the structural feature of the counterexamples that makes
+         T fail — the "failure mechanism."
+      3. State the boundary as a theorem: "T fails iff [structural
+         condition]."
+      4. Optional: re-prove T with a refined hypothesis H' that excludes
+         the failure regime.
+
+  + BECAUSE:
+      Failure-mode characterization is information-dense: it tells the
+      community both where to apply T and where to stop. It also exposes
+      the structural feature that drives validity, which often illuminates
+      analogous theorems in adjacent settings. This pattern is closely
+      related to `structural-obstruction-as-theorem` but distinct: that
+      pattern is about a *method* failing on a problem, this pattern is
+      about a *theorem* failing in a regime.
+
+  + NEXT-STEPS:
+      next[Construct an explicit counterexample and verify it fails T.]
+      next[Identify the structural feature that drives the failure.]
+      next[State the boundary theorem precisely; check it is sharp.]

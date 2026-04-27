@@ -1,0 +1,58 @@
+@flexiarg math-informal/structural-equivalence
+@title Structural Equivalence
+@sigils [≅/同]
+@keywords equivalence, isomorphism, equivalent-categories, biduality, structural-identification
+@audience mathematicians, category-theorists, structuralists
+@tone analytic
+@factor Wisdom (paññā)
+@family math-strategy/structural-relation-result
+@references [math-informal/transport-across-isomorphism math-informal/find-the-right-abstraction math-informal/verify-universal-property]
+
+! conclusion:
+  Establish that two structures are structurally identical at the level of
+  the relevant invariants — typically by exhibiting a bidirectional map (an
+  isomorphism, an equivalence of categories, or a biduality) and verifying
+  that the relevant operations transport across.
+
+  + context: Two structures X and Y are in view, often arising from
+    different definitions or different settings (e.g., a cohomology
+    constructed combinatorially and one constructed algebraically; a
+    representation-theoretic invariant and a topological invariant). The
+    paper's contribution is to show *they are the same thing*, in a
+    structural sense.
+
+  + HOWEVER:
+      Structural equivalence is symmetric. It differs from
+      `transport-across-isomorphism`: that pattern *uses* a known
+      isomorphism to transfer a result; this pattern *establishes* a new
+      structural identity. It also differs from `structural-inclusion`:
+      that is directional; this is bidirectional. Use this leaf when the
+      paper's contribution is a new equivalence.
+
+  + IF:
+      You can construct maps X → Y and Y → X and verify they are mutually
+      inverse, *and* both maps preserve the operations / morphisms / metrics
+      that the equivalence is supposed to preserve.
+
+  + THEN:
+      1. Construct both directions of the equivalence.
+      2. Verify they are mutually inverse (or mutually quasi-inverse, in the
+         categorical case).
+      3. Verify preservation of the structural features of interest.
+      4. State the equivalence as a theorem; identify what consequences
+         follow (since X and Y are structurally the same, anything proved
+         about either is now available for both).
+
+  + BECAUSE:
+      A structural equivalence is the strongest possible relation between
+      two objects: it says they are interchangeable for the purpose at hand.
+      Proving such an equivalence often requires deep structural insight
+      because the two sides typically arise from different traditions
+      (combinatorial vs algebraic, topological vs representation-theoretic).
+      The payoff is enormous: every result on either side is now available
+      for both.
+
+  + NEXT-STEPS:
+      next[Construct both directions of the equivalence map.]
+      next[Verify mutual inverse / quasi-inverse status.]
+      next[Verify preservation of the relevant structural operations.]

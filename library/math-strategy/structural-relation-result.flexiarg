@@ -1,0 +1,64 @@
+@flexiarg math-strategy/structural-relation-result
+@title Structural-Relation-Result Family
+@sigils [⇌/連]
+@keywords relation, equivalence, inclusion, transfer, generalization, bridge, family-parent
+@audience mathematicians, paper-writers, pattern-classifiers
+@tone classification / heuristic
+@factor Wisdom (paññā)
+@references [math-informal/transport-across-isomorphism math-informal/find-the-right-abstraction math-informal/reduce-to-known-result math-strategy/convention-bridge]
+
+! conclusion:
+  Your paper relates two structures — by equivalence, by inclusion, by
+  theorem-transfer to a new class, or by extending a theory's scope.
+
+  + context: Two structures (or one structure and a theory) are in view; the
+    question is how they correspond. The paper does not (primarily) describe a
+    single structure or assert existence; it builds a bridge.
+
+  + IF:
+      The paper's main contribution can be expressed as "X and Y are equivalent",
+      or "X is contained in Y" (with a directional structural argument), or
+      "the theorem T holds for the new class C", or "we extend theory T to a
+      broader setting".
+
+  + HOWEVER:
+      Structural-relation papers are the second-most-populous family in our
+      pilot (≈ 25 % — see `futon3/holes/excursions/E-math-prototype-pilot.md`
+      Phase 2). The leaves diverge: equivalence is symmetric, inclusion is
+      directional, transfer is "we re-prove T in setting C", generalization is
+      "we extend T's framework to admit new objects". They share a *bridge-
+      building* shape but the proof obligations differ.
+
+  + THEN:
+      1. Decide whether the relation is symmetric (equivalence), directional
+         (inclusion / monotonicity), a theorem-transfer (re-proving in a new
+         class), or a theory-extension (generalising the framework).
+      2. Pick the matching leaf member-pattern.
+      3. Identify the *witness* of the relation: a map, an embedding, a
+         re-proof, a strict containment of a parameter family.
+
+  + BECAUSE:
+      Bridge-building is structurally different from describing or asserting
+      existence. The "tension" being relieved is the *gap between two formerly
+      separate structures*; the "move" is a constructed correspondence; the
+      "witness" is the correspondence itself plus its preserved-property
+      checks. Per the BHK framing of M-pattern-application-diagnostic, this
+      family includes the most structurally rich BHK arrows in the corpus.
+
+  + MEMBER-PATTERNS:
+      member[math-informal/transport-across-isomorphism]      # equivalence / transfer
+      member[math-informal/find-the-right-abstraction]        # generalization
+      member[math-informal/reduce-to-known-result]            # cross-domain bridge
+      member[math-informal/structural-inclusion]              # inclusion / monotonicity (new leaf)
+
+  + EXEMPLAR-PAPERS:
+      exemplar[arxiv-2604.20808v1]   # Coxeter cohomology equivalence
+      exemplar[arxiv-2604.20785v1]   # Thurston norm inclusion
+      exemplar[arxiv-2604.20818v1]   # Coburn → edge-modes bridge
+      exemplar[arxiv-2604.20778v1]   # Infinite matroid generalization
+      exemplar[arxiv-math/0603598v1] # Noether to fractional control
+
+  + NEXT-STEPS:
+      next[Decide whether the relation is equivalence, inclusion, transfer, or generalization.]
+      next[Identify the bridge object: map, embedding, re-proof, or framework extension.]
+      next[Cross-check: does the relation *preserve* the properties of interest, or only *correspond on a subset*?]

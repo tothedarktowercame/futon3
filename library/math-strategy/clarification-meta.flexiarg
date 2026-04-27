@@ -1,0 +1,72 @@
+@flexiarg math-strategy/clarification-meta
+@title Clarification (Meta-Tag, not a Pattern)
+@sigils [○/明]
+@keywords clarification, meta, single-axis, collapsed-triple, extraction-failure, family-parent
+@audience pattern-classifiers, prompt-engineers, pipeline-designers
+@tone meta / diagnostic
+@factor Patience (kṣānti)
+@references [math-strategy/non-circularity-check math-strategy/hypothesis-category-check]
+
+! conclusion:
+  This is a meta-tag, not a strategic pattern. It marks papers (or pattern
+  applications) where the `(context, tension, move)` triple cannot be
+  meaningfully decomposed: either the paper is genuinely single-axis (its
+  contribution is one observation), or the slot extraction failed.
+
+  + context: Pattern-classification has been attempted on a paper's
+    reverse-morphogenesis output (see
+    `futon3/holes/missions/M-pattern-application-diagnostic.md`); the three
+    slots `situation_S`, `xiang_salience`, `arrow_constraint` are paraphrases
+    of one description, with no substantive distinction.
+
+  + IF:
+      The three slots collapse into a single description; their pairwise
+      semantic overlap is ≥ ~80 %.
+
+  + HOWEVER:
+      Collapsed triples are *informative*, not failures. Two distinct cases:
+      (a) The paper is single-axis — clarifies one principle, extends an
+          existing definition, surveys a body of work, or otherwise contributes
+          a single observation rather than a multi-step move. This is fine.
+          It must be *declared* as such, with the reason stated, rather than
+          passing the slot-quality check silently.
+      (b) The slot-extraction prompt failed — the LLM was unable to
+          differentiate the slots. This is a producer bug, not a paper
+          property.
+
+      The classifier MUST distinguish (a) from (b). A clarification-meta tag
+      with no reason is treated as a producer bug to fix; one with a stated
+      reason is a valid mark of single-axis content.
+
+  + THEN:
+      1. If the paper is genuinely single-axis, attach a `:reason
+         <enum>` field — e.g. `:single-axis-clarification`,
+         `:survey`, `:definition-extension`.
+      2. If the slot-extraction failed, re-run the slot-extraction
+         (per M-superpod-mark3 R-1 / slot-distinctness enforcement).
+      3. Do NOT lump (a) and (b) together as "clarification."
+
+  + BECAUSE:
+      Per the IFR's "well-specified" property in
+      `M-pattern-application-diagnostic.md`, distinct slots are required by
+      construction. A collapsed triple either *reveals* that the paper is
+      single-axis (a structural fact about the corpus) or *reveals* that the
+      slot extractor failed (a structural fact about the pipeline). Treating
+      both as the same hides both signals.
+
+  + MEMBER-PATTERNS:
+      # No member patterns; this is a meta-tag, not a family of strategic
+      # moves. Papers tagged `clarification-meta:single-axis` are *not*
+      # exemplars of a strategic pattern; they are exemplars of a paper-shape.
+      # If a paper genuinely fits a leaf in another family, it should be
+      # tagged there, not here.
+
+  + EXEMPLAR-PAPERS:
+      exemplar[arxiv-2604.20820v1]   # S-Prime principle (collapsed in pilot)
+      exemplar[arxiv-2604.20788v1]   # E-measure (collapsed in pilot)
+      exemplar[arxiv-math/0603594v1] # Galois group rings (collapsed in pilot)
+
+  + NEXT-STEPS:
+      next[Determine whether the collapse is single-axis (declare reason) or extraction failure (re-run).]
+      next[If single-axis, do not lookup a strategic family — accept the meta-tag.]
+      next[If extraction failure, route to slot-distinctness enforcement.]

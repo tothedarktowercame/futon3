@@ -1,0 +1,55 @@
+@flexiarg math-informal/structural-characterization
+@title Structural Characterization
+@sigils [▦/形]
+@keywords characterization, structure, complete-description, intrinsic, taxonomy
+@audience mathematicians, algebraists, structuralists
+@tone analytic
+@factor Wisdom (paññā)
+@family math-strategy/characterization-result
+@references [math-informal/exhaustion-as-theorem math-informal/find-the-right-abstraction math-informal/unfold-the-definition]
+
+! conclusion:
+  Give a complete intrinsic description of an object — what it is, in terms of
+  simpler structures or invariants — rather than asserting properties about
+  it.
+
+  + context: An object (an algebra, a representation, a measure, a group
+    action, a category) has been defined or is the focus of attention. The
+    paper's contribution is to *say what the object is* in a complete sense:
+    as a quotient, as a fibration, as a tensor product, as a module over a
+    smaller object, etc. — typically with a uniqueness or universality
+    statement.
+
+  + IF:
+      You have an object X about which existing results give partial
+      information (some properties, some bounds, some examples), and you can
+      identify a description of X that is *complete*: another object Y plus a
+      construction such that X is exactly built from Y by that construction.
+
+  + HOWEVER:
+      Structural characterization differs from `find-the-right-abstraction` in
+      direction: that pattern abstracts from many examples to a unifying
+      framework; this pattern starts with one object and resolves it into
+      simpler components. It also differs from `exhaustion-as-theorem`: that
+      lists all instances of a type, this describes one instance fully. Choose
+      this leaf when the deliverable is *one* full description, not a list.
+
+  + THEN:
+      1. Identify the simpler components from which X can be built (Y plus a
+         construction).
+      2. Establish the construction rigorously, with whatever
+         uniqueness / universality clauses are appropriate.
+      3. Verify the structural identification by re-deriving known
+         properties of X from the new description.
+
+  + BECAUSE:
+      A complete structural description of an object is the strongest
+      possible characterization: it lets every property of X be derived from
+      properties of Y plus the construction. When such a description exists,
+      it is essentially always more useful than a list of properties, because
+      it tells you why the properties hold.
+
+  + NEXT-STEPS:
+      next[Identify the simpler structure Y and the construction that yields X.]
+      next[State the structural identity precisely (with uniqueness / universal property).]
+      next[Re-derive known properties of X from the identification.]

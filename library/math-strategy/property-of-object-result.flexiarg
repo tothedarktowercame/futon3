@@ -1,0 +1,66 @@
+@flexiarg math-strategy/property-of-object-result
+@title Property-of-Object-Result Family
+@sigils [▣/質]
+@keywords property, regularity, rigidity, bound, asymptotic, family-parent, domain-specific
+@audience mathematicians, paper-writers, pattern-classifiers
+@tone classification / heuristic
+@factor Discernment (paññā)
+@references [math-informal/estimate-by-bounding math-informal/monotone-approximation math-informal/pass-to-a-subsequence]
+
+! conclusion:
+  Your paper establishes a property of a *fixed* object — its regularity, its
+  rigidity, an asymptotic, a bound, a stability estimate — rather than asserting
+  the object exists or relating it to another.
+
+  + context: An object is given (a PDE solution, a measure, a representation,
+    a numerical scheme, a physical state); the question is what it does. The
+    object's existence is taken for granted (or established earlier); the
+    paper's contribution is properties that follow.
+
+  + IF:
+      The paper's main contribution can be expressed as "the solution has
+      such-and-such regularity", or "any solution with property P must vanish",
+      or "the asymptotic behaviour is X", or "we bound this quantity by Y".
+
+  + HOWEVER:
+      Property-of-object is the *smaller and more domain-specific family* in
+      our pilot (≈ 8 % of papers — see
+      `futon3/holes/excursions/E-math-prototype-pilot.md` Phase 2). Many of its
+      leaves are domain-tied (PDE regularity, measure-theoretic decay, group-
+      action rigidity). The family parent serves as the umbrella; the
+      domain-specific leaves accrete as we tag more papers.
+
+  + THEN:
+      1. Identify the property class — regularity / asymptotic / rigidity /
+         bound / decay / stability.
+      2. Locate or note the absence of a domain-specific leaf for that class.
+         (If absent, this is the seed for a new leaf flexiarg.)
+      3. Identify the *witness* of the property — explicit estimate, decay
+         rate, regularity exponent, vanishing condition.
+
+  + BECAUSE:
+      Property-of-object papers do "what-it-does work" rather than asserting
+      existence or relating structures. They are heavily domain-shaped — a
+      PDE-regularity result and a measure-theoretic-rigidity result share the
+      family form but almost no analytic technique. The family parent gives
+      the coarse classifier; *domain-specific leaves are expected to grow over
+      time*, and their accretion is itself a signal of corpus coverage.
+
+  + MEMBER-PATTERNS:
+      member[math-informal/estimate-by-bounding]              # general bounds
+      member[math-informal/monotone-approximation]            # asymptotic
+      member[math-informal/pass-to-a-subsequence]             # convergence / asymptotic
+      # Domain-specific leaves (to be authored as the corpus grows):
+      # math-informal/regularity-and-asymptotics (PDE-flavoured)
+      # math-informal/rigidity-from-decay-conditions  (analytic-rigidity-flavoured)
+
+  + EXEMPLAR-PAPERS:
+      exemplar[arxiv-2604.20798v1]   # PDE solution regularity + edge singularity
+      exemplar[arxiv-2604.20794v1]   # Hardy-uncertainty / rigidity
+      # The pilot only saw 2 papers in this family; the leaves are placeholder
+      # until the next ≈ 25-paper extension expands the tail.
+
+  + NEXT-STEPS:
+      next[Identify the property class and check for a domain-specific leaf.]
+      next[If no leaf fits, note the gap as a candidate new flexiarg.]
+      next[Cross-check: is the property quantitative (with a number / rate) or qualitative (with / without)?]

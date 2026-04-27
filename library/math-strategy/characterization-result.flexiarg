@@ -1,0 +1,66 @@
+@flexiarg math-strategy/characterization-result
+@title Characterization-Result Family
+@sigils [◇/相]
+@keywords characterization, classification, dichotomy, structure, full-description, taxonomic, family-parent
+@audience mathematicians, paper-writers, pattern-classifiers
+@tone classification / heuristic
+@factor Discernment (paññā)
+@references [math-informal/exhaustion-as-theorem math-informal/structural-obstruction-as-theorem math-informal/split-into-cases math-strategy/hypothesis-category-check]
+
+! conclusion:
+  Your paper describes what some object or class of objects *is* — not whether
+  one exists, not how it relates to another, but its intrinsic structure.
+
+  + context: An object or class has been singled out, and the question is
+    "what does it look like?" — exhaustively (full structural description),
+    partially (where it fails some property), in cases (classification), or in
+    a sharp regime split (dichotomy).
+
+  + IF:
+      The paper's main contribution can be expressed as "we describe completely
+      the structure of X", or "we classify all instances of X", or "we exhibit
+      the regime where X fails property P", or "we show X belongs to one of
+      two regimes".
+
+  + HOWEVER:
+      Characterization is the most populous family in mathematical literature
+      (≈ 33 % of papers in our pilot — see
+      `futon3/holes/excursions/E-math-prototype-pilot.md` Phase 2). Within it,
+      the leaves diverge sharply: full-characterization is positive structural
+      content; failure-mode is "where this fails"; classification lists cases;
+      dichotomy is the special case of classification with two regimes. The
+      analytic moves needed for each leaf are different.
+
+  + THEN:
+      1. Decide whether the paper aims at full description, partial / failure
+         description, an enumeration of cases, or a binary regime split.
+      2. Pick the matching leaf member-pattern.
+      3. Identify the *witness* of the characterization: what theorem,
+         equivalence, or list constitutes the description?
+
+  + BECAUSE:
+      Characterization papers do "describing-work" rather than "proving-X-exists"
+      or "showing-X-relates-to-Y" work. The family parent serves as a coarse
+      classifier; the leaves carry the analytic differences (e.g. dichotomy
+      proofs almost always need a phase-transition argument; classification
+      proofs need exhaustion).
+
+  + MEMBER-PATTERNS:
+      member[math-informal/exhaustion-as-theorem]                 # full / classification
+      member[math-informal/structural-obstruction-as-theorem]     # failure-mode
+      member[math-informal/split-into-cases]                      # dichotomy / classification
+      member[math-informal/structural-characterization]           # full description (new leaf)
+      member[math-informal/failure-mode-characterization]         # failure-regime (new leaf)
+      member[math-informal/complexity-classification]             # specific subtype (new leaf)
+
+  + EXEMPLAR-PAPERS:
+      exemplar[arxiv-2604.20815v1]   # Zarankiewicz sharp dichotomy
+      exemplar[arxiv-2604.20827v1]   # Entropic OT failure-mode
+      exemplar[arxiv-2604.20787v1]   # Exchange-number complexity
+      exemplar[arxiv-math/0603592v1] # KMS classification
+      exemplar[arxiv-math/0603593v1] # AFD outer-actions classification
+
+  + NEXT-STEPS:
+      next[Decide whether the characterization is full, partial / failure-mode, classification, or dichotomy.]
+      next[Identify the witness — list, theorem, equivalence — that constitutes the description.]
+      next[Cross-check: does the paper *prove the characterization is exhaustive*, or only *exhibit examples*?]

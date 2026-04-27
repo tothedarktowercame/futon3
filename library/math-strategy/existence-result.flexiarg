@@ -1,0 +1,63 @@
+@flexiarg math-strategy/existence-result
+@title Existence-Result Family
+@sigils [✶/有]
+@keywords existence, exhibit, construction, realisation, demonstration, witness, family-parent
+@audience mathematicians, paper-writers, pattern-classifiers
+@tone classification / heuristic
+@factor Generosity (dāna)
+@references [math-informal/construct-an-explicit-witness math-informal/construct-auxiliary-object math-informal/use-probabilistic-method math-informal/numerical-scout]
+
+! conclusion:
+  Your paper shows that an object of a desired class exists.
+
+  + context: A class of objects has been defined or implied; whether the class
+    is non-empty (or contains an instance with specified properties) is the
+    salient question of the paper.
+
+  + IF:
+      The paper's main contribution can be expressed as "we show there is an
+      X satisfying Y", or "we construct an X satisfying Y", or "for every
+      precondition P there is an X with property Q".
+
+  + HOWEVER:
+      "Existence" admits many depths: pure-classical (object exists by an
+      abstract argument), constructive (an explicit witness is exhibited),
+      with-error-bounds (a witness is exhibited with quantitative tolerance),
+      via-cross-domain-bridge (existence transferred from a different domain).
+      The depth determines downstream usefulness — a theorem prover wants a
+      constructive witness, an applied mathematician may need error bounds, a
+      structuralist may accept abstract existence. Pick the leaf that matches
+      the depth your paper actually reaches.
+
+  + THEN:
+      1. Identify the depth: pure-classical / constructive / with-error-bounds /
+         via-bridge.
+      2. Locate the leaf member-pattern that matches the depth.
+      3. Identify the witness that the paper exhibits (or argues exists).
+      4. State explicitly what the witness shows and which preconditions
+         determine it.
+
+  + BECAUSE:
+      Existence claims are the load-bearing skeleton of much of mathematical
+      research, but they vary enormously in their constructive content. Putting
+      the family parent above its members lets pattern-classification (manual
+      or automated) recognise an existence-paper at family granularity even
+      when the leaf depth is uncertain, then refine to the leaf when more
+      detail is available. The family is the *useful coarse classifier*; the
+      leaf is the *precise depth*.
+
+  + MEMBER-PATTERNS:
+      member[math-informal/construct-an-explicit-witness]      # constructive
+      member[math-informal/construct-auxiliary-object]         # constructive (indirect)
+      member[math-informal/use-probabilistic-method]           # pure-classical / non-constructive
+      member[math-informal/numerical-scout]                    # with-error-bounds (hint of construction)
+
+  + EXEMPLAR-PAPERS:
+      exemplar[arxiv-2604.21888v1]   # Kneser graph Hamilton cycle exists
+      exemplar[arxiv-math/0603597v1] # Gevrey ultardistribution algebras (constructive)
+      exemplar[arxiv-2604.20840v1]   # Z/2-harmonic forms via 4-polytopes (constructive)
+
+  + NEXT-STEPS:
+      next[Determine the existence depth and pick the matching leaf.]
+      next[Identify the witness explicitly (object + precondition for it).]
+      next[Cross-check: does the paper *exhibit* the witness, or only *argue* one exists?]

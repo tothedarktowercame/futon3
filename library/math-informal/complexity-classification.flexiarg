@@ -1,0 +1,55 @@
+@flexiarg math-informal/complexity-classification
+@title Complexity Classification
+@sigils [⊞/階]
+@keywords complexity, NP-complete, hardness, reduction, computability, classification
+@audience theoretical-CS, combinatorics, logic
+@tone analytic
+@factor Discernment (paññā)
+@family math-strategy/characterization-result
+@references [math-informal/reduce-to-known-result math-informal/exhaustion-as-theorem math-informal/transport-across-isomorphism]
+
+! conclusion:
+  Place a decision problem (or a class of problems) in a specific complexity
+  class — typically by exhibiting a reduction from a problem already in that
+  class, or by proving membership constructively.
+
+  + context: A computational problem P has been defined, and its complexity
+    is unknown or only roughly known. The paper's contribution is to classify
+    P at a known level of the complexity hierarchy: P, NP-complete, PSPACE,
+    decidable, undecidable, ETH-hard, and so on.
+
+  + IF:
+      You can construct a polynomial-time (or appropriate) reduction from a
+      complexity-class-complete problem to P, or vice versa, establishing
+      membership / hardness with a sharp boundary.
+
+  + HOWEVER:
+      Complexity-classification is *one specific subtype* of
+      `characterization-result` — its analogue in non-computational settings
+      is `classification-result` (e.g., classifying KMS states or AFD outer
+      actions). The reasoning shape is "list-the-cases-and-show-exhaustion"
+      but the deliverable is "the problem belongs to class C" rather than
+      "the structure has these instances." Use this leaf only when the result
+      is genuinely complexity-theoretic.
+
+  + THEN:
+      1. Construct the reduction (typically polynomial-time many-one or
+         Turing) from a complexity-class-complete problem to P (for
+         hardness) or from P to a problem already in C (for membership).
+      2. Verify the reduction is correct and within the resource bounds for
+         the target class.
+      3. State the classification theorem: P is C-complete (or C-hard, or
+         in C, as appropriate).
+
+  + BECAUSE:
+      Complexity classification is structurally a *one-shot characterization*
+      that places a problem at a precise location in a known hierarchy. It
+      depends on the existence of a complete problem for the target class
+      (Cook-Levin, etc.); reductions are the workhorse construction. The
+      family parent is characterization-result; this leaf is the
+      complexity-theoretic specialisation.
+
+  + NEXT-STEPS:
+      next[Identify the target complexity class and a complete / canonical problem in it.]
+      next[Construct the reduction; verify resource bounds.]
+      next[State the classification with the appropriate complete / hard / member language.]

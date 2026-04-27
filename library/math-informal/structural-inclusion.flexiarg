@@ -1,0 +1,53 @@
+@flexiarg math-informal/structural-inclusion
+@title Structural Inclusion / Monotonicity
+@sigils [⊆/包]
+@keywords inclusion, containment, monotonicity, embedding, sub-structure, ordering
+@audience mathematicians, algebraists, geometers
+@tone analytic
+@factor Wisdom (paññā)
+@family math-strategy/structural-relation-result
+@references [math-informal/transport-across-isomorphism math-informal/pass-to-a-subsequence math-informal/find-the-right-abstraction]
+
+! conclusion:
+  Show that one structure contains, embeds into, or is dominated by another —
+  with directional preservation of the relevant invariants. Strictly weaker
+  than equivalence; strictly stronger than mere correlation.
+
+  + context: Two structures X and Y are in view, and the paper's contribution
+    is to establish that X is contained in Y (in some structural sense), or
+    that an invariant on X is dominated by the analogous invariant on Y, or
+    that X embeds as a sub-object of Y.
+
+  + IF:
+      You can construct an order-preserving / structure-preserving map
+      X → Y, or argue that the unit ball / minimal class / norm of X is
+      contained in that of Y, with directional rather than symmetric
+      content.
+
+  + HOWEVER:
+      Structural inclusion differs from `transport-across-isomorphism`: that
+      pattern is symmetric (X ≅ Y); this pattern is directional (X ⊆ Y but
+      not necessarily Y ⊆ X). Inclusion alone is weaker but often more
+      useful in practice — many monotonicity results carry strict inclusion
+      that no equivalence can replicate. Use this leaf when the relation is
+      genuinely one-way.
+
+  + THEN:
+      1. Identify the inclusion / embedding / domination map and verify it
+         preserves the structural feature of interest.
+      2. Verify that the inclusion is strict (or note explicitly when it is
+         tight / non-strict).
+      3. Identify the consequence: what holds for X because it holds for Y,
+         or what fails to hold because the reverse inclusion does not.
+
+  + BECAUSE:
+      Inclusion / monotonicity statements are the workhorses of comparison:
+      they let one transfer results from a well-understood object to a less-
+      understood one, or rule out behaviour by appeal to a containing
+      structure. Cobordism, norm-domination, lattice-embedding, and
+      sub-representation arguments all live here.
+
+  + NEXT-STEPS:
+      next[Construct the structural map and verify directional preservation.]
+      next[Determine whether the inclusion is strict or tight.]
+      next[Identify the property of X that this inclusion gives access to.]

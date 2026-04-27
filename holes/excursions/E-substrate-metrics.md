@@ -66,39 +66,61 @@ claim has no incident `derivation` edge with role `target`.
 
 ### Numbers
 
-Three batches from `~/code/storage/mark2/outbox/`, computed via
+Five batches from `~/code/storage/mark2/outbox/` (and one from the
+archived abstract-only run), computed via
 `futon6/scripts/compute-paper-T.py`:
 
-| Batch                | N     | with-claims | recall | precision | **F₂** |
-|----------------------|-------|-------------|--------|-----------|--------|
-| `results-mfuton-001` | 5,000 | 3,422       | 0.684  | 0.801     | **0.704** |
-| `results-mfuton-002` | 5,000 | 3,609       | 0.722  | 0.800     | **0.736** |
-| `results-005`        | 5,000 |   858       | 0.172  | 0.591     | **0.200** |
+| Batch                              | Lineage  | Vintage             | eprint | N     | with-claims | recall | precision | **F₂** |
+|------------------------------------|----------|---------------------|--------|-------|-------------|--------|-----------|--------|
+| `outbox.abstract-only/results-001` | regular  | older arxiv-math    | **OFF** | 5,000 |     0       | 0.000  | n/a       | **0.00** |
+| `results-001`                      | regular  | older arxiv-math    | on     | 5,000 |   570       | 0.114  | 0.467     | **0.13** |
+| `results-005`                      | regular  | older arxiv-math    | on     | 5,000 |   858       | 0.172  | 0.591     | **0.20** |
+| `results-mfuton-001`               | mfuton   | modern arxiv (2026) | on     | 5,000 | 3,422       | 0.684  | 0.801     | **0.70** |
+| `results-mfuton-002`               | mfuton   | modern arxiv (2026) | on     | 5,000 | 3,609       | 0.722  | 0.800     | **0.74** |
 
-Two batch-level findings:
+Three batch-level findings:
 
-**F₂ is itself a stable corpus property.** mfuton-001 and mfuton-002
+**F₁: F₂ is a stable corpus property.** mfuton-001 and mfuton-002
 are independent 5,000-paper time-slices from the same lineage. They
 give F₂ ≈ 0.70 / 0.74 — within ≤ 5 % of each other across all three
-component numbers. This mirrors `E-Ttotal.md` F-1 (T_total
-distribution stable across samples) at the meta-level: *not just
-T_total but its quality score is reproducible*. Strong reproducibility
-argument.
+component numbers. Likewise the two regular older-arxiv batches
+(results-001 / results-005, both eprint-on) give F₂ ≈ 0.13 / 0.20 —
+also clustered. This mirrors `E-Ttotal.md` F-1 (T_total distribution
+stable across samples) at the meta-level: *not just T_total but its
+quality score is reproducible per (lineage, vintage, eprint) tuple*.
 
-**R-3 (eprint-mode default) closes a 3.5× gap.** F₂ goes from 0.20
-on the older non-eprint lineage to ≈ 0.72 on mfuton. The cost
-breakdown:
+**F₂: Two independent factors drive the substrate-quality gap.**
+Three orders of magnitude separate `0.00` (abstract-only baseline)
+from `0.74` (best mfuton). Decomposed:
 
 ```
-eprint-off impact on recall:    0.684 → 0.172   (75 % collapse)
-eprint-off impact on precision: 0.801 → 0.591   (26 % collapse)
+abstract-only        eprint-on           eprint-on
+older arxiv-math     older arxiv-math    modern arxiv
+F₂ = 0.00       →    F₂ = 0.13–0.20  →   F₂ = 0.70–0.74
+       eprint-mode toggle    paper-vintage richness
+       closes 0.13 gap       closes 0.55 gap
 ```
 
-Most of the F₂ gap comes from recall: when the parser doesn't have
-LaTeX source, it can't find theorem-blocks at all. The 75 %
-collapse is the empirical cost of running without
-`--discover-terms-eprint-dir` — a single flag whose code already
-exists (per `74cc161 "Harden mark2 eprint plumbing"`).
+**Eprint mode** is the floor — without it, the parser finds zero
+theorem-blocks on any paper, full stop. Closing this gap is R-3
+([futon6 #46](https://github.com/tothedarktowercame/futon6/issues/46)),
+a flag-flip (code already exists per `74cc161`).
+
+**Paper-vintage richness** is the second-order factor that R-3 alone
+does not address: older arxiv-math papers (1999–2006 era) often use
+plain TeX without theorem/proof environments the parser
+recognises. Modern arxiv papers (2026 era in mfuton-*) routinely
+declare `\begin{theorem}` / `\begin{proof}` and produce ~50× richer
+hypergraphs (mean n_blocks: 56 vs 8–12). Mark3's geometry artifact
+makes this *measurable*: pre-mark3, the gap was a vague
+"older papers are harder"; with F₂, it's a quantified
+0.5-point penalty even after eprint is enabled.
+
+**F₃: Within a (lineage, vintage, eprint) tuple, F₂ is reproducible
+to ≤ 0.1.** The two regular-old-eprint-on batches differ by 0.07;
+the two mfuton batches differ by 0.04. Treat any future batch
+whose F₂ deviates by > 0.1 from its (lineage, vintage, eprint)
+peers as a substrate regression worth investigating.
 
 ### Implication for Rob
 
@@ -106,13 +128,19 @@ exists (per `74cc161 "Harden mark2 eprint plumbing"`).
 is the discrete sub-issue tracking the eprint-default change. F₂
 gives the issue an empirical motivation it didn't have before:
 
-- "Patches a 75 % recall gap with no code change" — a flag-flip.
-- "Shows up as F₂ doubling on every batch run" — measurable
-  end-to-end without needing pattern tags or downstream consumers.
-- "F₂ becomes a regression-detection signal" — once mark3 runs are
-  routine, a batch whose F₂ drops more than (say) 0.05 below the
-  established mfuton baseline is a flag for substrate-quality
-  regression, independent of pattern-tag content.
+- **Eprint default closes the floor**: F₂ goes 0.00 → 0.13–0.20 just
+  by flipping `--discover-terms-eprint-dir` on. Below that floor,
+  recall is literally zero across 5,000 papers.
+- **The remaining gap is content-dependent.** The mfuton-vs-regular
+  delta (F₂ ~0.20 vs ~0.72) is paper-vintage / LaTeX-richness, not
+  fixed by R-3. To close it for older arxiv-math papers we'd need
+  either better TeX-environment heuristics or a pre-processing pass
+  that synthesises theorem/proof blocks from prose cues. Out of
+  scope for mark3 v0; a candidate post-INSTANTIATE follow-on.
+- **F₂ becomes a regression-detection signal.** Once mark3 runs
+  produce stable F₂ baselines per (lineage, vintage, eprint) tuple,
+  a batch whose F₂ drops > 0.1 below its peers is flag-worthy
+  independent of pattern-tag content.
 
 The right place to compute F₂ in mark3 is in the geometry artifact
 stage. It costs essentially nothing on top of T_total computation

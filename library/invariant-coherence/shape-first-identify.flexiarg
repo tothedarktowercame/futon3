@@ -1,0 +1,51 @@
+@flexiarg invariant-coherence/shape-first-identify
+@title Shape-First IDENTIFY: Find the Family Before the Instance
+@sigils [🔱/形]
+@keywords identify, shape, family, protocol, namespace, generalisation, instance
+@audience mission stewards, invariant-queue maintainers
+@tone analytic-foundational
+@style methodology
+@references [invariant-coherence/subsumption-witness invariant-coherence/protocol-family-naming]
+
+! conclusion: When the IDENTIFY phase of a mission names a candidate invariant, ask "what shape is this one instance of?" before progressing to MAP. Do not progress to MAP until at least 2-3 candidate instances of the shape are visible. If only one instance ever surfaces, record it as a special case explicitly — that absence of generalisation is itself a finding.
+
+  + context: A candidate invariant arrives in the inventory as a single sentence ("Superseded autostashes do not remain in the live queue once equivalent commits have landed"). Implementing the literal sentence would yield a one-off check tied to a specific artifact-class. But many candidate invariants — especially in `archaeology-control`, `single-boundary`, `family-canary`-shaped families — are *instances of a more general protocol* that admits multiple implementations. Naming the protocol explicitly during IDENTIFY produces a sibling-namespace of invariants rather than a one-off; subsequent missions reuse the shape rather than rederiving it.
+
+  + IF:
+    A mission's IDENTIFY phase names a single candidate invariant and the team is about to move into MAP.
+
+  + HOWEVER:
+    Many invariants are not atomic — they are one slice of a protocol that recurs across artifact-classes. If the mission ships only the literal slice, the family stays narrow; the next agent reaching for "obsolescence-recognition for branches" rederives subsumption-test logic from scratch, possibly inconsistently. The pattern of "find the family, then exhibit instances" needs to be a methodological move, not an accidental discovery.
+
+  + THEN:
+    During IDENTIFY, after naming the candidate invariant:
+    1. Ask: "what shape is this one instance of?" Write the protocol signature as a check-fn or predicate.
+    2. Enumerate at least 2-3 plausible instances of the shape. Each should be a named artifact-class with its own subsumption / verification / boundary test.
+    3. Only progress to MAP if a shape with multiple instances is visible. If only one instance can be named, record this explicitly as `:special-case true` in the mission doc — its absence of generalisation is a finding worth keeping.
+    4. Adopt namespace IDs (`<shape>/<artifact-class>`) for the sibling invariants. This avoids inventing "subfamily" as a structural element; the existing `family → invariants` shape supports namespace-discriminated siblings naturally.
+
+  + BECAUSE:
+    Shape-first IDENTIFY is descriptive of what well-formed invariants look like in the futon stack already — `single-boundary` admits multiple write-class instances, `family-canary` admits multiple per-family check-fn registrations, `evidence-per-turn` admits per-write-source instances. Naming the move makes it repeatable and lets future agents stand on the shape rather than rederive it. It also surfaces special cases: when only one instance exists, that's a discovery worth recording, not a defect to paper over.
+
+  + INVARIANT-STATEMENT:
+    IC-shape-first: For each candidate invariant entering MAP, the mission record contains either (a) a named protocol shape with ≥2 enumerated instances, or (b) an explicit `:special-case true` annotation with reasoning. Drift into MAP without one of these is itself a coherence violation.
+
+  + RELATED-MOVES:
+    - `protocol-family-naming` — how to name the shape
+    - `subsumption-witness` — one concrete shape (used by `archaeology-control/obsolescence-recognition/*`)
+    - `library-coherence/family-as-protocol` — the structural read of inventory families
+
+  + EXAMPLES:
+    - `archaeology-control/obsolescence-recognition/{autostash,deferred-stub,pipeline-tracer,branch-merged,...}` — shape: subsumption-witness; instances: per-artifact-class.
+    - `single-boundary/{evidence,bell-receipt,agent-registration,gate-traversal,mission-state-transition}` — shape: "all writes of class W traverse one boundary B"; instances: per-write-class.
+    - `family-canary/{agency,tickle,portfolio,substrate-2-phase-1,war-machine-aif}` — shape: "every operational family has a recurrent live-fire signal"; instances: per-family check-fn.
+
+  + ANTI-PATTERNS:
+    - Implementing only the literal sentence of the candidate invariant when an obvious shape generalisation is at hand. Result: narrow, brittle, unreusable.
+    - Inventing "subfamily" as a new structural element when namespace IDs (`shape/instance`) suffice. Result: inventory schema bloat for no semantic gain.
+    - Forcing generalisation on a true special case. Result: phantom siblings that never get implemented and clutter the queue.
+
+  + NEXT-STEPS:
+    - evidence: count missions whose IDENTIFY phase named a shape with ≥2 instances vs literal-only; trend over time.
+    - evidence: count namespace-discriminated invariant IDs in `structural-law-inventory.sexp`; trend over time.
+    - tooling: extend mission-lifecycle.md's IDENTIFY guidance with a one-paragraph pointer to this pattern.

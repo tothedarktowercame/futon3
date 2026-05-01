@@ -1,0 +1,67 @@
+@flexiarg invariant-coherence/bounded-disposition
+@title Bounded-Disposition: Per-Artifact Triage + Population Bound
+@sigils [⚖️/裁]
+@keywords disposition, classification, bound, threshold, lifecycle, triage, archaeology, retire, kept, parked, dropped, awaiting
+@audience archaeology-control maintainers, lifecycle stewards
+@tone analytic-foundational
+@style pattern
+@references [invariant-coherence/shape-first-identify invariant-coherence/subsumption-witness invariant-coherence/protocol-family-naming]
+
+! conclusion: A population of latent-work artifacts A satisfies bounded-disposition iff every member carries a disposition record drawn from a fixed vocabulary D AND the unresolved subset stays bounded — either by count (|undecided| ≤ N) or by age (every artifact older than threshold T must have a non-default disposition). Two obligations per artifact-class, both part of the same invariant. Distinct from subsumption-witness, which is a binary fired-once predicate.
+
+  + context: The futon stack accumulates artifacts whose lifecycle is not naturally captured by "subsumed yes/no". A stash is not obsolete just because HEAD includes its content — it might be intentionally kept as a checkpoint. A branch is not obsolete because its commits merged — it might be a long-lived release branch. A mission doc is not obsolete because it's old — it might be a parked archive. What such artifacts need is a *disposition*: a deliberate classification distinguishing "in-flight / undecided" from "kept / parked / dropped / archived." The bound is what keeps the undecided subset from growing into invisible debt.
+
+  + IF:
+    A class of latent-work artifacts has a non-trivial lifecycle (more than just exists/doesn't-exist) and accumulating undecided members is operationally costly.
+
+  + HOWEVER:
+    A simple count cap is too crude — it treats long-lived intentional artifacts the same as forgotten ones, forcing the operator to either accept a growing population or to delete things that should stay. A simple per-artifact discipline (every artifact must be classified) is also incomplete — without a population bound, the operator is permitted to leave a thousand stashes as long as each is dutifully marked "awaiting decision."
+
+    The right shape combines both. Each artifact carries a classification; the unclassified or default-classified subset is bounded. As pressure rises (count of undecided exceeds threshold, or age exceeds some duration), the operator is forced to make decisions. As decisions are made, the population stays healthy without artificial cap.
+
+  + THEN:
+    Build sibling invariants under the relevant family (typically `archaeology-control` for stash/branch/mission-doc, but the shape generalizes) with namespace IDs of the form `bounded-disposition/<artifact-class>`. Each sibling specifies four components:
+
+      1. **A** — enumerate-population: produce the current set of artifacts of this class (e.g. `git stash list`, `git for-each-ref refs/heads/*`, `holes/missions/M-*.md`).
+      2. **D** — disposition-vocabulary: a fixed enum of deliberate categories (e.g. `{:kept :parked-on-branch :dropped :awaiting-decision}`). One element is the *default* — the implicit classification for a freshly-created artifact carrying no explicit tag.
+      3. **classify** — `(fn [artifact] disposition)`: a parser that reads each artifact's metadata (stash message, branch description, file front-matter, etc.) and returns one of D. Returns the default when no tag is present.
+      4. **bound** — a predicate over (|undecided| (= count of artifacts at default disposition), maximum-age-of-undecided). Typical form: `|undecided| ≤ N OR (∀ a ∈ undecided, age(a) ≤ T)`.
+
+    Wire the resulting check-fn through `futon3c.logic.probe/register-family-check!` returning `:outcome :ok` (no violations) or `:outcome :violation :detail {:undecided-count :unclassified-old [...]}`. Probes + canary apparatus surface violations; the operator decides via tooling (e.g. `futon0/scripts/futon-sync.clj` for stashes).
+
+    Provide a strong-mode binding (pre-commit hook) for at least one sibling — the stash slice is the natural one — to give a real computational guarantee: a commit that would push the undecided count past the bound is refused, forcing the operator to either classify or drop.
+
+  + BECAUSE:
+    Bounded-disposition is the right shape for any artifact whose existence isn't a binary subsumption test but whose accumulation is operationally costly. By making both per-artifact classification and aggregate bounds first-class, the invariant captures *operator intent* (each artifact is here for a reason) without forbidding long-lived artifacts. The bound's disjunctive form (count OR age) gives the operator latitude — small populations don't need careful labeling, but as pressure rises, classification becomes mandatory. Together these are the conditions under which a population of latent-work artifacts is healthy.
+
+  + INVARIANT-STATEMENT:
+    IC-bounded-disposition: For each registered `bounded-disposition/<class>` sibling, the live system carries no artifact of class `<class>` whose accumulated population either exceeds the count bound at default disposition, or contains artifacts older than the age threshold without a non-default disposition. Violations surface as `:family-fired :outcome :violation` evidence enumerating the offenders.
+
+  + EXEMPLAR INSTANCES:
+    | Sibling | A (population) | D (disposition vocab) | bound |
+    |---|---|---|---|
+    | `bounded-disposition/stash` | `git stash list` per repo | `{:kept :parked-on-branch :dropped :awaiting-decision}` | `|undecided| ≤ 5` per repo AND `∀a ∈ population, age(a) > 14d → disposition(a) ≠ :awaiting-decision` |
+    | `bounded-disposition/branch` | `git for-each-ref refs/heads/*` minus protected | `{:active :merged-not-yet-deleted :parked :long-lived-release :abandoned}` | `|undecided| ≤ 10` per repo AND `age > 30d → disposition ≠ :active` (i.e. age forces a deliberate kept-or-killed call) |
+    | `bounded-disposition/mission-doc` | `holes/missions/M-*.md` per mission-bearing repo | `{:open :closed :parked :archived}` | `|undecided| ≤ 10` per repo AND every mission file has a `Status:` line in the first 3 lines |
+    | `bounded-disposition/pr` *(deferred — out of scope until cross-repo PR pressure surfaces)* | `gh pr list --state open` | `{:active :awaiting-review :draft :stalled}` | tbd |
+
+  + RELATED-MOVES:
+    - `shape-first-identify` — methodological move that produces this shape.
+    - `subsumption-witness` — companion shape under the same family; subsumption is binary (A is in P or not), bounded-disposition is per-member triage + aggregate. The two shapes coexist.
+    - `protocol-family-naming` — naming convention for the namespace siblings.
+    - `code-coherence/dead-code-hygiene` — adjacent pattern (cleanup of dead code) but without the disposition + bound discipline.
+
+  + ANTI-PATTERNS:
+    - **Count-cap-only.** Forbidding more than N stashes treats deliberate parked stashes the same as forgotten autostashes; forces operator to choose between accepting clutter and deleting wanted work.
+    - **Per-artifact-classification-only.** Allowing infinite population as long as each is tagged means operator can satisfy the rule by labelling every stash "awaiting" forever. Bound is what makes the rule meaningful.
+    - **Vocabulary creep.** Adding new disposition values per-instance ("uncertain", "maybe-keep", "to-revisit") undermines the discipline. Vocabulary should be small, fixed, and meaningful per artifact-class.
+    - **No default disposition.** Leaving "untagged" outside the vocabulary forces immediate classification on new artifacts; usually too aggressive. Pick a default (typically `:awaiting-decision`) and let the bound apply pressure when the population grows.
+    - **Auto-classifying.** A heuristic that auto-tags freshly-created artifacts ("if branch matches wip-* mark active") collapses the discipline back into the count-cap-only failure mode. Disposition records should reflect *operator intent*, not parser heuristics.
+
+  + NEXT-STEPS:
+    - evidence: count of artifacts per disposition per repo per artifact-class; trend.
+    - evidence: count of unclassified-old artifacts per artifact-class; should stay near zero.
+    - evidence-shape: `{:family-id :keyword, :outcome :ok|:violation, :detail {:per-repo {repo-path {:total int :by-disposition {kw int} :unclassified-old [...] :undecided-count int}} :violations [...]}}`
+    - tooling: stash classification tag convention (e.g. `[disposition: kept] WIP message`) — adopt across ~/code/futon* repos.
+    - tooling: pre-commit hook wrapper that runs both `obsolescence-recognition/autostash` AND `bounded-disposition/stash` checks per repo (the two shapes overlap operationally — both watch stashes, but witness different latent-work failure modes).
+    - mission: `M-bounded-disposition` (futon3c/holes/missions/) opens with stash slice as worked example, with branch and mission-doc siblings as Codex handoffs.

@@ -1,0 +1,74 @@
+@flexiarg invariant-coherence/reachable-from-boot
+@title Reachable-From-Boot: Long-Lived State Has a Construction Path Rooted at Bootstrap
+@sigils [⚓/根]
+@keywords boot, reload, durability, registry, atom, defonce, reachable, structural, stop-the-line, hot-fix, foundation
+@audience inventory maintainers, durability stewards, bootstrap owners
+@tone analytic-foundational
+@style pattern
+@references [invariant-coherence/shape-first-identify invariant-coherence/single-locus agency/single-routing-authority feedback_reload_safety]
+
+! conclusion: For every long-lived runtime state container in the system (defonce atoms, registries, caches that authoritative code reads), the construction path that produces that container's authoritative value is reachable from `bootstrap.clj` (or equivalent boot entry point) AND no code outside that path may mutate the container into a state a fresh restart wouldn't produce. The invariant is *structural* — grep-verifiable + pre-commit-blocking — not a runtime watchdog. A watchdog asks "did someone follow the discipline?"; this invariant makes the discipline impossible to violate.
+
+  + context: Two failure classes diagnosed across the futon3c stack: (1) the Evidence Landscape `@futon3c.evidence.store/!store` was reset to an in-memory `{:entries :order}` map and silently lost ~2 weeks of evidence — no static or runtime barrier prevented the reset; (2) `@futon3c.logic.probe/family-check-fns` was populated only at operator-driven activation time, so JVM restart wiped the registry leaving the apparatus silently inert. Both are instances of "state lives in an atom; no boot-replay path; nothing prevents reset to a substrate-stripped state." Joe's framing (2026-05-01): leaving an atom open to direct `reset!` is "a loaded gun on Chekhov's desk" — the system's structure invites the failure mode rather than precluding it.
+
+  + IF:
+    A piece of long-lived runtime state (state code reads after the moment it was originally written) is held in an atom, ref, var, or other mutable container.
+
+  + HOWEVER:
+    Without a structural construction-path discipline:
+    1. **Mutation is unbounded.** Any namespace can `reset!` or `swap!` the container, including reverting it to an ephemeral substrate (e.g. swapping `XtdbBackend` for `{:entries :order}`).
+    2. **Restart silently truncates state.** State that was populated by activation-time code disappears on JVM restart with no signal.
+    3. **Reload of a protocol-defining namespace orphans extensions.** Live class instances stay bound to old protocol vars; the system enters a state no fresh startup could produce. (Cf. `feedback_reload_safety`.)
+
+    A runtime "did someone follow the discipline?" check is a watchdog, not an invariant — it surfaces the failure after it occurs but doesn't make the failure impossible.
+
+  + THEN:
+    Build sibling invariants under family `layered-error-hierarchy` (I0) with namespace IDs `reachable-from-boot/<state-class>`. Each sibling implements the *structural* discipline:
+
+      1. **Identify the long-lived state container.** Typically a `defonce` atom holding either a backend instance, a registry map, or a configuration record.
+      2. **Trace the construction path.** The function or expression that produces the container's authoritative value. Confirm it's reachable from `bootstrap.clj`'s `start-futon3c!` (or equivalent boot entry point).
+      3. **Audit mutation surface.** Grep for every `reset!` / `swap!` / `alter-var-root!` call against the container. Each call site must be either (a) inside the boot-time construction path, OR (b) explicitly marked as ephemeral cache-invalidation (with `:cache` metadata), OR (c) an ENFORCEMENT violation that the pre-commit hook refuses.
+      4. **Mark non-ephemeral containers structurally.** Container declarations carry `^:durable` or `^:cache` metadata; the audit grep distinguishes the two.
+      5. **Pre-commit hook (strong-mode binding).** Refuses any commit that introduces a `reset!`/`swap!` on a `^:durable` container outside `bootstrap.clj`. This is the invariant's actual enforcement — no human "should follow"; the commit literally cannot land.
+
+    The check pattern mirrors the existing `I-single-boundary` audit (futon3c's evidence-write boundary): grep-verifiable static check + pre-commit refusal, no runtime policy.
+
+  + BECAUSE:
+    A watchdog is hope. An invariant is structure. Joe's evidence-bag analogy (2026-05-01): "Did you put the money in the evidence bag? Yes. Did you seal the evidence bag? No." The watchdog tells you the bag is unsealed; the invariant makes it impossible to put the money anywhere else.
+
+    Reachable-from-boot is the structural form of `feedback_reload_safety` ("reload-safety = reconstructibility from disk"). State lives in an atom only when the atom is reconstructible-from-disk by the boot path; mutations outside that path produce a state a fresh restart wouldn't produce, which is exactly the symptom both the Evidence-Landscape and family-check-fns failures exhibited.
+
+  + INVARIANT-STATEMENT:
+    IC-reachable-from-boot: For each registered `reachable-from-boot/<state-class>` sibling, every mutation of the state container's authoritative value originates from a function reachable from `bootstrap.clj`. Mutations from elsewhere are forbidden by the static check + pre-commit hook. Containers that are intentionally ephemeral are marked `^:cache` and excluded from the check.
+
+  + EXEMPLAR INSTANCES:
+    | Sibling | Container | Construction path | Pre-commit grep |
+    |---|---|---|---|
+    | `reachable-from-boot/evidence-store` | `@futon3c.evidence.store/!store` | `bootstrap/start-futon3c! → make-evidence-store → XtdbBackend` | refuse `(reset! .*!store ...)` outside `bootstrap.clj` |
+    | `reachable-from-boot/family-check-fns` | `@futon3c.logic.probe/family-check-fns` | `bootstrap → register-archaeology-control-taps! / register-locus-taps! / register-default-taps! / register-deferred-taps!` | refuse `register-family-check!` calls outside the registrar set |
+    | `reachable-from-boot/agent-registry` | `@futon3c.agency.registry/!registry` | `bootstrap → make-agent-registry`; mutations only via `register-agent!` / `unregister-agent!` whose call graph is bootstrap-rooted | refuse direct `reset!`/`swap!` on `!registry` |
+    | `reachable-from-boot/!evidence-store` *(bootstrap atom)* | `@futon3c.dev/!evidence-store` | reset by bootstrap; no other resets allowed | refuse |
+    | `reachable-from-boot/peripheral-state` *(speculative — depends on whether peripheral state is durable)* | `@futon3c.peripheral.state/!state` (if it exists) | tbd | tbd |
+
+  + RELATED-MOVES:
+    - `shape-first-identify` — methodological move that produces this shape.
+    - `single-locus` — companion shape (cardinality-1 per (I, A)). Reachable-from-boot is on a different axis (substrate); the two compose: "exactly one durable record per (I, A)" combines both.
+    - `agency/single-routing-authority` — older instance of the same structural-discipline pattern.
+    - `single-boundary` — same enforcement style (grep-verifiable + boundary discipline). Reachable-from-boot is single-boundary applied to "construction paths for state containers" rather than "writes to the evidence store."
+    - `feedback_reload_safety` — the principle this invariant operationalizes.
+
+  + ANTI-PATTERNS:
+    - **Runtime check that the store is durable.** That's a watchdog; the gun's already loaded. The invariant is the *static* prevention.
+    - **Trusting that whoever wrote the code did the right thing.** Trust is not invariant. If the path exists, someone will eventually take it.
+    - **Allowing `reset!` on a long-lived container with no marker distinguishing durable from ephemeral.** Loaded gun.
+    - **Auto-detection without auto-prevention.** Pre-commit refusal is the binding mode; probe-tap surfacing is at best complementary, never sufficient on its own.
+    - **Conflating "the apparatus knows" with "the apparatus prevents."** The apparatus must prevent.
+
+  + STOP-THE-LINE TRIGGER:
+    This invariant family is foundational: every other invariant in the queue silently relies on `!store` being durable AND the registry being repopulated on boot. Failure of `reachable-from-boot/*` means the queue's promise of forward motion is unreliable. When the HUD widget reports STUCK or a recurring data-loss incident is diagnosed, this invariant family has primary responsibility — open as a hot-fix mission outside the normal queue cadence per `~/code/algorithms/next-invariant.md` § "Stop-the-line discipline."
+
+  + NEXT-STEPS:
+    - tooling: `^:durable` / `^:cache` metadata convention adopted across futon3c defonces.
+    - tooling: pre-commit script `scripts/check-reachable-from-boot.sh` mirroring `check-autostash-obsolescence.sh` and `check-coverage-ratchet.sh`.
+    - mission: `M-reachable-from-boot` (futon3c/holes/missions/) opens with `reachable-from-boot/evidence-store` as worked example; remaining siblings (`family-check-fns`, `agent-registry`, etc.) handed to Codex.
+    - evidence-shape: `{:invariant :reachable-from-boot/<class> :violations [{:file :line :call :container} ...]}`.

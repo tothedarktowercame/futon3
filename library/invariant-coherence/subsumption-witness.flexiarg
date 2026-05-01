@@ -1,0 +1,68 @@
+@flexiarg invariant-coherence/subsumption-witness
+@title Subsumption-Witness: A is Obsolete Relative to a Stronger Record P
+@sigils [🪞/影]
+@keywords obsolescence, archaeology, subsumption, witness, latent, stash, deferred, retire, redundancy
+@audience archaeology-control maintainers, invariant-queue stewards
+@tone analytic-foundational
+@style pattern
+@references [invariant-coherence/shape-first-identify code-coherence/dead-code-hygiene archaeology-control/* (futon3c/structural-law-inventory.sexp)]
+
+! conclusion: A latent artifact A is obsolete relative to a stronger record P when A's information content is subsumed by P, and A occupies a parallel/transient position while P is in the canonical/durable position. The subsumption test is per-artifact-class; the shape (A vs P, witnessed by a subsumption predicate) is universal. Each artifact-class is a sibling invariant under family `archaeology-control` with namespace ID `obsolescence-recognition/<artifact-class>`.
+
+  + context: The futon stack accumulates latent-work artifacts: git stashes after `pull --rebase --autostash`, deferred-stub probe registrations, open branches with cherry-picked commits, `.skip` markers on now-passing tests, `TODO: remove once X` comments where X has happened, pipeline-tracer items whose target work has landed but the close emit was never made. Each is invisible operational debt — present on disk, invisible in normal operation, occasionally rediscovered as confusion or duplicated work. Manual cleanup tools exist (e.g. `futon0/scripts/futon-sync.clj park`) but only run when an operator gets around to it. The invariant form converts "true when Joe gets around to cleaning up" into "the system continuously knows when it's not true."
+
+  + IF:
+    You need to bound the accumulation of a class of latent-work artifacts and the stronger-record exists in a canonical position you can compare against.
+
+  + HOWEVER:
+    The subsumption test is fundamentally per-artifact-class — there is no universal `is-obsolete?` predicate. Each artifact-class needs:
+      - **A** — a way to enumerate latent artifacts of this class
+      - **P** — what the canonical/durable record is
+      - **subsumption test** — `is-A-subsumed-by-P?(artifact, record)` returning bool
+
+    Trying to wrap them under one check-fn produces a god-function; trying to keep them separate without a shared shape produces inconsistent semantics across siblings.
+
+  + THEN:
+    Build sibling invariants under family `archaeology-control` with namespace IDs of the form `obsolescence-recognition/<artifact-class>`. Each sibling implements three components:
+
+      1. **Enumerate-A**: produce the current set of latent artifacts of this class (e.g. `git stash list`, registry of deferred-stub families, set of open branches).
+      2. **Locate-P**: for each A, find the canonical record P that might subsume it (e.g. the commit graph reachable from HEAD; the live `family-check-fns` registry; the merged-PR list).
+      3. **Subsumption-test**: a predicate `(is-obsolete? A P)` that returns true when A's content is fully present in P.
+
+    Wire each sibling as a probe check-fn through `futon3c.logic.probe/register-family-check!`, returning `:outcome :ok` (no obsolete artifacts) or `:outcome :violation :detail {:obsolete-artifacts [...]}`. The probe-canary apparatus (M-invariant-queue-unstuck) already surfaces these via `:family-fired` evidence, the HUD widget, and the operational-families view.
+
+    Provide a strong-mode binding (pre-commit hook) for at least one sibling — the autostash slice is the natural one — to give a real computational guarantee: a commit that would leave obsolete artifacts behind is refused.
+
+  + BECAUSE:
+    Subsumption-witness is the right level of abstraction for the entire `archaeology-control` family. It is a special case of `shape-first-identify`: the family name (`archaeology-control`, "Latent work should not accumulate as invisible operational debt") is the shape; the subsumption predicate is the protocol; each artifact-class is an implementation. Namespace-discriminated siblings give discovery, dogfood, and computational guarantee without inventing new structural elements in the inventory.
+
+  + INVARIANT-STATEMENT:
+    IC-subsumption: For each registered `obsolescence-recognition/<class>` sibling, the live system carries no artifact of class `<class>` whose content is subsumed by a canonical record. Violations surface as `:family-fired :outcome :violation` evidence with the obsolete artifacts enumerated.
+
+  + EXEMPLAR INSTANCES:
+    | Sibling | A (artifact) | P (record) | Subsumption test |
+    |---|---|---|---|
+    | `obsolescence-recognition/autostash` | `git stash list` | reachable from HEAD | `git stash show -p N \| git apply --reverse --check` clean |
+    | `obsolescence-recognition/deferred-stub` | `register-deferred-taps!` registrations | live `family-check-fns` | `(get @family-check-fns family-id)` returns non-deferred fn |
+    | `obsolescence-recognition/pipeline-tracer` | open `:pipeline-tracer-item` | `:pipeline-tracer-closed` evidence | matching close-emit exists for `:track-id` |
+    | `obsolescence-recognition/branch-merged` | `git for-each-ref refs/heads` | merged PRs / cherry-picked commits | `git cherry main <branch>` empty AND `gh pr list --state merged` includes branch |
+    | `obsolescence-recognition/test-skip` | `.skip` markers in test files | passing-test set | run with skip removed; passes? |
+    | `obsolescence-recognition/conditional-todo` | `TODO: remove once X` | grep / state of X | X-clause grep-checkable; X currently true? |
+    | `obsolescence-recognition/dead-shim` | `// removed-X` aliases / shims | usage grep | zero usages outside the shim itself |
+
+  + RELATED-MOVES:
+    - `shape-first-identify` — the methodological move that produces this shape
+    - `code-coherence/dead-code-hygiene` — adjacent (cleanup of dead code) but operator-scheduled rather than continuously-bound
+    - `library-coherence/family-as-protocol` — the structural read
+
+  + ANTI-PATTERNS:
+    - Building a single `is-obsolete?` god-function. Each artifact-class needs its own subsumption test; pretending otherwise hides class-specific edge cases.
+    - Conflating detection with cleanup. The probe is read-only; cleanup is destructive and stays operator-driven (`futon-sync.clj`, etc.).
+    - Auto-running a destructive sweeper on detection. Race conditions; loss of operator judgement on edge cases.
+    - Adding "subfamily" as a structural element. Namespace IDs (`shape/instance`) suffice.
+
+  + NEXT-STEPS:
+    - evidence: count of registered `obsolescence-recognition/*` siblings; trend.
+    - evidence: per-sibling, count of obsolete artifacts detected per run; trend.
+    - tooling: `M-archaeology-control` mission (futon3c/holes/missions/) scopes the first three siblings (autostash, deferred-stub, pipeline-tracer).
+    - evidence-shape: `{:family-id :keyword, :outcome :ok|:violation, :detail {:obsolete-artifacts [{:class :keyword, :id :string, :superseded-by :string} ...]}}`.

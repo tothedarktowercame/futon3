@@ -1,0 +1,63 @@
+@flexiarg invariant-coherence/single-locus
+@title Single-Locus: Uniqueness of Attribute per Identity
+@sigils [📍/處]
+@keywords identity, locus, uniqueness, canonical, home-repo, routing, single-source-of-truth, atomic-inspectable-units
+@audience inventory maintainers, identity-discipline stewards
+@tone analytic-foundational
+@style pattern
+@references [invariant-coherence/shape-first-identify invariant-coherence/protocol-family-naming agency/single-routing-authority]
+
+! conclusion: For an identity I and an attribute A, the system carries exactly one record `(I, A) → R`. The shape is uniqueness-of-mapping per (identity, attribute) pair: no two simultaneously-active records may exist for the same (I, A). Each artifact-class is a sibling invariant under the relevant family with namespace ID `single-locus/<artifact-class>`.
+
+  + context: Many invariants in the futon stack are uniqueness claims: every agent-id resolves to ONE routing entry; every active work item has ONE home repo; every artifact has ONE live copy; every write-class has ONE boundary. These look distinct on the surface (different identities, different attributes, different value spaces) but share a structural shape: cardinality bound = 1 per (I, A) pair. Naming the shape produces a sibling family of invariants and lets check-fns share an enforcement vocabulary instead of being rederived per artifact-class.
+
+  + IF:
+    A class of artifacts has a uniquely-determined attribute (home, owner, canonical version, primary boundary) that the system depends on being unambiguous.
+
+  + HOWEVER:
+    Without explicit single-locus discipline, multiple records for the same (I, A) accumulate quietly: two open mission docs claiming to track the same work in different repos; two transport tiers both carrying the same agent-id; two `boundary/append!` aliases both writing to evidence; two branches each claiming to be the "live" branch for a feature. The collision is invisible until cross-record divergence produces downstream confusion.
+
+    A simple per-attribute check ("does this artifact have a home?") is incomplete — it doesn't bound the OTHER direction (does the home appear ELSEWHERE too?). The shape needs both halves: every artifact has a record AND the record is unique.
+
+  + THEN:
+    Build sibling invariants under the relevant family with namespace IDs of the form `single-locus/<artifact-class>`. Each sibling specifies four components:
+
+      1. **Enumerate-I**: produce the current set of identities of this class (e.g. `holes/missions/M-*.md`, `family-check-fns` registry, `git for-each-ref` output, agent-id set).
+      2. **Project-(I, A)**: for each I, extract A — its claim about the attribute. The projection may be implicit (the artifact's own location IS the answer) or explicit (an annotation in the artifact records it).
+      3. **Cardinality-test**: for each (I, A), assert |records| ≤ 1 in the system. Violations enumerate (I, A) pairs with multiple R values.
+      4. **Default-handling**: an artifact carrying no explicit annotation may use an implicit-default (e.g., a mission file's home-repo defaults to its own filesystem repo). Implicit defaults are part of the cardinality-1 set; an explicit annotation overrides without violating, so long as it's the only annotation.
+
+    Wire each sibling as a probe check-fn through `futon3c.logic.probe/register-family-check!` returning the standard probe-result shape with `:detail {:identities-with-multiple-loci [{:identity :records [...]}]}` on violation.
+
+  + BECAUSE:
+    Single-locus is the right level of abstraction for the stack's many uniqueness claims. The shape is descriptive of patterns ALREADY operational (`agency/single-routing-authority`, `single-boundary` as a write-class single-locus) — naming it makes the move repeatable across new artifact-classes, with shared check-fn vocabulary. The cardinality test is universal; the per-class enumerator and projector are the actual work.
+
+  + INVARIANT-STATEMENT:
+    IC-single-locus: For each registered `single-locus/<class>` sibling, no identity I exists in the live system for which the system carries simultaneous conflicting records `(I, A) → R1` and `(I, A) → R2` with R1 ≠ R2. Violations surface as `:family-fired :outcome :violation` evidence enumerating the offending identities.
+
+  + EXEMPLAR INSTANCES:
+    | Sibling | I (identity) | A (attribute) | R (record) | Default for missing record |
+    |---|---|---|---|---|
+    | `single-locus/mission-home` | active mission file path | home-repo | one repo path (annotated `Home-repo:` line OR implicit = mission file's repo) | implicit-home = mission file's own repo |
+    | `single-locus/agent-routing` *(prior op exemplar via futon3/library/agency/single-routing-authority)* | agent-id | routing entry | `{:transport :session-id :handle :registered-at}` | (no default — agents either route or don't exist) |
+    | `single-locus/artifact-live-copy` *(absorbs single-live-copy)* | artifact identity (e.g. tool / pattern / config file) | live copy location | one `<repo>:<path>` | implicit = canonical repo per pattern-library convention |
+    | `single-locus/write-class-boundary` *(equivalent reframe of single-boundary)* | write-class | boundary-fn | one fn-var | (no default — every write-class must have an explicit boundary) |
+
+  + RELATED-MOVES:
+    - `shape-first-identify` — the methodological move that produces this shape.
+    - `subsumption-witness` — companion shape (binary witness vs uniqueness count). They coexist in the same family in some cases (e.g. `archaeology-control` carries both subsumption-witness siblings AND would carry single-locus siblings for the artifact-identity slice).
+    - `bounded-disposition` — companion shape (per-artifact triage + bound vs uniqueness). Different obligations.
+    - `protocol-family-naming` — naming convention.
+    - `agency/single-routing-authority` (futon3) — the original-stock pattern that was a single-locus instance ahead of the shape's naming. Backwards-applied here.
+
+  + ANTI-PATTERNS:
+    - **Implicit-only default with no explicit-override path.** An artifact whose home is only ever inferred from its filesystem position can't express deliberate cross-repo work. The `Home-repo:` annotation provides the override; missing it isn't the violation, contradiction is.
+    - **Multiple-record warnings without identity scoping.** "Two records named X exist" is a meaningless message without naming the (I, A) pair the conflict applies to.
+    - **Single-locus as enforcement of zero-cross-repo-references.** Cross-repo references are normal and useful. The invariant is about the AUTHORITATIVE record, not about whether other repos may reference it.
+    - **Auto-fixing on violation.** Single-locus violations often involve substantive operator decisions (which copy is canonical?). Auto-deletion is destructive; surfacing + operator triage is the safe path.
+
+  + NEXT-STEPS:
+    - evidence-shape: `{:family-id :keyword :outcome :ok|:violation :detail {:scanned-identities int :violations [{:identity ... :records [...] :class kw}]}}`.
+    - tooling: `Home-repo: <repo>` annotation convention for mission files (parse from front-matter; case-insensitive).
+    - mission: `M-single-locus` (futon3c/holes/missions/) opens with mission-home slice as worked example, with agent-routing + artifact-live-copy as Codex handoffs.
+    - back-application: tag `agency/single-routing-authority` as a prior single-locus exemplar in the futon3 library cross-reference table; no rename of the existing pattern needed, only a flexiarg note.

@@ -1,0 +1,64 @@
+@flexiarg invariant-coherence/protocol-family-naming
+@title Protocol-Family Naming: Family is the Shape, Invariants are the Implementations
+@sigils [📛/族]
+@keywords family, namespace, protocol, naming, schema, sibling, invariant, inventory
+@audience inventory maintainers, mission stewards
+@tone analytic-foundational
+@style methodology
+@references [invariant-coherence/shape-first-identify invariant-coherence/subsumption-witness library-coherence/*]
+
+! conclusion: When a family-shape admits multiple implementations across artifact-classes, name the siblings with namespace IDs of the form `<family-shape>/<artifact-class>` rather than introducing "subfamily" as a new structural element. The inventory's existing `family → invariants` shape supports this; namespace discrimination is sufficient to express "siblings of one shape" without schema changes.
+
+  + context: As the `archaeology-control` work showed, an invariant-family often corresponds to a *protocol* in the Clojure-protocol sense: one shape (signature), many implementations (per-artifact-class). The instinct is to introduce a new structural element ("subfamily") to express the relationship. But the inventory's schema already has `family` and `invariant` as nested concepts — a family contains many invariants. Naming the siblings with namespaced IDs (`obsolescence-recognition/autostash`, `.../deferred-stub`, etc.) carries the relationship without schema changes.
+
+  + IF:
+    A mission's IDENTIFY phase has surfaced a shape with multiple instances (per `shape-first-identify`), and you need to write the siblings into the structural-law inventory.
+
+  + HOWEVER:
+    Three temptations to resist:
+      1. **Inventing a new element** — "subfamily", "shape-group", "protocol-family" — that the inventory's schema doesn't have. This requires schema migration, all consumers (arxana view, priority queue, ratchet) updating in lockstep, and the ratchet recording a structural-change event. Heavy for what is essentially a naming choice.
+      2. **Flattening into one big family** — treating `obsolescence-recognition` as a single invariant whose implementation lists multiple artifact-classes. This makes the per-class subsumption tests invisible to the probe, the canary, and the priority queue.
+      3. **Splitting into separate families** — `archaeology-control-autostash`, `archaeology-control-deferred-stub`, etc. This duplicates the family-level concept and breaks the "one shape, many instances" relationship.
+
+  + THEN:
+    Use namespace IDs:
+
+      ```
+      family archaeology-control
+        :status :candidate
+        :summary "Latent work should not accumulate as invisible operational debt."
+        :candidate-invariants
+          (invariant :id obsolescence-recognition/autostash      ...)
+          (invariant :id obsolescence-recognition/deferred-stub  ...)
+          (invariant :id obsolescence-recognition/pipeline-tracer ...)
+          (invariant :id obsolescence-recognition/branch-merged   ...)
+      ```
+
+    The `:id` is a slash-discriminated symbol; the `<shape>/<artifact-class>` convention reads naturally and survives the inventory's existing parsers. Probe-tap registration uses the same ID as keyword: `:obsolescence-recognition/autostash`. Tag-based queries (`[:invariant-queue :family-canary :family-fired :obsolescence-recognition/autostash]`) work without modification.
+
+    Recommended naming conventions:
+      - Slash separator: `<shape>/<instance>`. Hyphens within a segment as needed.
+      - Shape segment is the protocol concept (`obsolescence-recognition`, `single-boundary`, `coverage-monotone`).
+      - Instance segment is the artifact-class (`autostash`, `deferred-stub`, `evidence-write`, `bell-receipt`).
+      - Multiple shapes per family are fine if the family-summary names a broader concept (e.g. `archaeology-control` covers both subsumption-witness shape and stash-debt-bounded shape).
+
+  + BECAUSE:
+    The inventory's schema is the result of evidence-backed design choices and is touched by many tools (parser, priority-queue ranker, arxana renderer, ratchet, probe). Adding a structural element to express what naming already expresses is the wrong direction — schema bloat for no semantic gain. Conversely, flattening hides per-instance semantics that the apparatus already knows how to render. Namespace-discriminated siblings are the minimum-viable expression of "one shape, many instances" that survives every existing tool.
+
+  + INVARIANT-STATEMENT:
+    IC-namespace: Sibling invariants under a single shape use namespace IDs `<shape>/<artifact-class>`; no new structural element ("subfamily") is introduced unless and until the schema has at least three independent shapes that *also* need cross-shape grouping.
+
+  + EXAMPLES:
+    - `archaeology-control / obsolescence-recognition/{autostash,deferred-stub,pipeline-tracer,...}` — one shape, many instances.
+    - `single-boundary / single-boundary/{evidence,bell-receipt,gate-traversal,...}` (when Track 3 of M-invariant-queue-extend lands) — same.
+    - Counter-example (a true single instance): `coverage-ratchet` currently has one instance (inventory-status). Its shape ("monotone-modulo-recorded-exceptions") admits other instances (test-count, doc-coverage, evidence-density). When a second instance arrives, the rename to namespace-discriminated IDs (`coverage-ratchet/{inventory-status, test-count}`) is recorded as a ratchet event because the original ID changes.
+
+  + ANTI-PATTERNS:
+    - Inventing "subfamily" / "shape-group" before three independent shapes need cross-shape grouping.
+    - Multiple families that share a summary string ("Latent work should not accumulate..." duplicated). Symptom of split-when-namespace-would-do.
+    - Hyphen-only IDs (`obsolescence-recognition-autostash`). Loses the structural read; greppable but not parseable.
+
+  + NEXT-STEPS:
+    - tooling: arxana row-renderer could render the shape-prefix in a different column ("shape" + "instance") for namespace-discriminated invariants. Optional polish.
+    - tooling: `register-deferred-taps!` / `register-default-taps!` could emit warnings if the same shape-prefix has both deferred-stub and real registrations (this is the dogfood case for `obsolescence-recognition/deferred-stub`).
+    - evidence: count of namespace-discriminated invariant IDs in the inventory; trend.

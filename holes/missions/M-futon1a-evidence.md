@@ -1,4 +1,5 @@
 # Evidence: futon1 Git History Lessons for futon1a
+Status: archived
 
 This document captures recurring bug patterns, fix patterns, implicit invariants, and anti-patterns observed in futon1 history. It is the evidence base for futon1a’s pattern-driven design.
 

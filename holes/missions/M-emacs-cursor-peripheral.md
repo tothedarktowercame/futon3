@@ -1,4 +1,5 @@
 # Mission: Emacs Cursor Peripheral
+Status: archived
 
 **Status:** :greenfield
 **Parent:** f0/P4 (Hypertext Navigation), f3/P2 (Agent Perception)

@@ -1,4 +1,5 @@
 # Mission: Pattern Inference Engine (PSR/PUR → Transitive Links)
+Status: archived
 
 Implement inference rules that derive transitive connections from pattern usage, combining Datalog reasoning with embedding-aware predicates.
 

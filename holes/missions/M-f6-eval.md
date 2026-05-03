@@ -1,4 +1,5 @@
 # Mission: F6 Evaluation — Graph-Enhanced Mathematical Q&A
+Status: archived
 
 Prove that the structured knowledge graph from M-f6-ingest makes mathematical
 question answering measurably better. Two agents, same questions, one has the

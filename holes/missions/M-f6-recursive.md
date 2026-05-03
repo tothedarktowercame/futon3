@@ -1,4 +1,5 @@
 # Mission: F6 Recursive — Applying the Pipeline to Code
+Status: archived
 
 Everything from Missions 1-4 applied recursively: not to mathematical text
 but to computer programming, and specifically to the futon codebase that

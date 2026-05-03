@@ -1,4 +1,5 @@
 # Mission: F6 Arxiv Ingest — Scaling to Research Mathematics
+Status: archived
 
 Extend the math.SE pipeline to process Arxiv papers. Different beast:
 longer documents, deeper proof structures, citation networks, and the

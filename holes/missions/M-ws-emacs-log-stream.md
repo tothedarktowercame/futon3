@@ -1,4 +1,5 @@
 # M-WS: WebSocket Log Stream to Emacs
+Status: archived
 
 **Type**: Feature (Future)
 **Depends**: SSE notebook viewer (current), MUSN session events

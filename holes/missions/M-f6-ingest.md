@@ -1,4 +1,5 @@
 # Mission: F6 Exploration and Ingest (Superpod Run)
+Status: archived
 
 Process math.stackexchange through the full NLP pipeline on Rob's superpod,
 producing the annotated corpus that feeds all subsequent stages.

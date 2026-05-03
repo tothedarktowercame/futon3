@@ -1,4 +1,5 @@
 # Mission: Graph Unification (Forum + Lab + Patterns + Code)
+Status: archived
 
 Persist forum threads, lab notes, and patterns into futon1's graph-memory/XTDB, creating a unified queryable graph that connects:
 

@@ -1,4 +1,5 @@
 # Mission: Codex Parity with Claude
+Status: archived
 
 Verify that Codex can perform the same MUSN/Arxana operations as Claude, operating as a full agent (not just HTTP probes).
 

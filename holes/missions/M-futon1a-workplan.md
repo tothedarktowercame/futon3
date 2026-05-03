@@ -1,4 +1,5 @@
 # futon1a Work Plan: Codex + Claude Collaboration
+Status: archived
 
 Dual goals:
 1. Build a great futon1a (product)

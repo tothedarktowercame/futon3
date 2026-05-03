@@ -1,4 +1,5 @@
 # Mission: Coordination Rewrite
+Status: archived
 
 Rewrite futon3's coordination layer as a six-gate pipeline operating over a
 unified typed graph, composing futon3's active components (P0-P5) with

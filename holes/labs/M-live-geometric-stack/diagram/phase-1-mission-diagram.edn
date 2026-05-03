@@ -1,0 +1,102 @@
+;; Phase-1 mission diagram for substrate-2.
+;; Validates with futon5.ct.mission/validate.
+;; Components are morphisms: each declares :accepts (domain) and :produces (codomain).
+{:mission/id  :substrate-2-phase-1
+ :mission/name "Edge Taxonomy Lift to futon1a"
+ :mission/parent :M-live-geometric-stack
+ :mission/owner "Joe + claude-7"
+ :mission/version "0.1"
+
+ :inputs
+ [{:port/id     :clj-source-tree
+   :port/produces :file-tree/clj
+   :port/source  "futon2/src + futon2/test"}
+  {:port/id     :vocab-doc-set
+   :port/produces :file-set/markdown
+   :port/source  "futon5/docs/*-terminal-vocabulary.md"}
+  {:port/id     :git-state
+   :port/produces :git/HEAD
+   :port/source  "futon2 .git"}]
+
+ :components
+ [{:component/id :form-reader
+   :component/accepts  :file-tree/clj
+   :component/produces :seq/top-level-forms
+   :component/notes    "babashka.fs walk + edamame read; tolerates :read-cond and unknown reader-tags"}
+
+  {:component/id :ns-extractor
+   :component/accepts  :seq/top-level-forms
+   :component/produces #{:vertex/var :vertex/test :vertex/namespace}
+   :component/notes    "Extracts (ns ...) → :namespace; defn/def/... → :var with :var/has-doc; deftest → :test"}
+
+  {:component/id :body-symbol-resolver
+   :component/accepts  #{:vertex/var :vertex/test :ns-aliases}
+   :component/produces #{:edge/calls :edge/coverage}
+   :component/notes    "Resolves body symbols via same-ns / alias-qualified / fully-qualified; emits :calls (var→var) and :coverage (test→var)"}
+
+  {:component/id :vocab-term-extractor
+   :component/accepts  :file-set/markdown
+   :component/produces #{:vertex/term :edge/term-defines}
+   :component/notes    "Extracts terms from headings / **bold** / *italic*; filters by length+stopword; emits :term vertex + :term-defines (doc→term) edge"}
+
+  {:component/id :vocab-use-scanner
+   :component/accepts  #{:file-tree/clj :vertex/term}
+   :component/produces :edge/vocabulary-use
+   :component/notes    "Case-folded whole-token regex scan; emits :vocabulary-use (namespace→term) edge"}
+
+  {:component/id :hyperedge-marshaller
+   :component/accepts  #{:vertex/* :edge/*}
+   :component/produces :hyperedge/payload
+   :component/notes    "Wraps each vertex/edge as {:hx/type, :hx/endpoints, :hx/labels {:repo, :phase}}"}
+
+  {:component/id :futon1a-writer
+   :component/accepts  :hyperedge/payload
+   :component/produces :hyperedge/persisted
+   :component/notes    "POST /api/alpha/hyperedge with X-Penholder; writes go through pipeline.run-write! L4→L0; returns tx-id or layered error"}
+
+  {:component/id :invariant-checker
+   :component/accepts  :hyperedge/persisted
+   :component/produces :invariant/result
+   :component/notes    "Per-phase invariants: L1 stable ID, L1 idempotency, L2 endpoint-resolution, counter-ratchet"}]
+
+ :wires
+ [{:from :clj-source-tree   :to :form-reader               :type :file-tree/clj}
+  {:from :form-reader        :to :ns-extractor             :type :seq/top-level-forms}
+  {:from :ns-extractor       :to :body-symbol-resolver     :type #{:vertex/var :vertex/test}}
+  {:from :vocab-doc-set      :to :vocab-term-extractor     :type :file-set/markdown}
+  {:from :vocab-term-extractor :to :vocab-use-scanner      :type :vertex/term}
+  {:from :clj-source-tree    :to :vocab-use-scanner        :type :file-tree/clj}
+  {:from :ns-extractor       :to :hyperedge-marshaller     :type #{:vertex/var :vertex/test :vertex/namespace}}
+  {:from :body-symbol-resolver :to :hyperedge-marshaller   :type #{:edge/calls :edge/coverage}}
+  {:from :vocab-term-extractor :to :hyperedge-marshaller   :type #{:vertex/term :edge/term-defines}}
+  {:from :vocab-use-scanner  :to :hyperedge-marshaller     :type :edge/vocabulary-use}
+  {:from :hyperedge-marshaller :to :futon1a-writer         :type :hyperedge/payload}
+  {:from :futon1a-writer     :to :invariant-checker        :type :hyperedge/persisted}]
+
+ :outputs
+ [{:port/id      :hyperedges-in-store
+   :port/accepts :hyperedge/persisted
+   :port/sink    "futon1a XTDB"}
+  {:port/id      :invariant-report
+   :port/accepts :invariant/result
+   :port/sink    "stdout + futon3/holes/labs/M-live-geometric-stack/pur/"}]
+
+ :invariants
+ [{:invariant/id :L1-stable-id
+   :invariant/check "every emitted hyperedge has :hx/id of form hx:{type}:{sorted-endpoints-hash}"
+   :invariant/layer 1}
+  {:invariant/id :L1-idempotency
+   :invariant/check "running the pipeline twice on same source state produces no new hyperedges"
+   :invariant/layer 1}
+  {:invariant/id :L2-endpoint-resolution
+   :invariant/check "every :code/v05/calls edge has both endpoints present as :code/v05/var hyperedges before the edge is written"
+   :invariant/layer 2}
+  {:invariant/id :L2-vocab-target-resolution
+   :invariant/check "every :code/v05/vocabulary-use edge target is a :code/v05/term hyperedge present at the same valid-time"
+   :invariant/layer 2}
+  {:invariant/id :L2-counter-ratchet
+   :invariant/check "for each :hx/type, hyperedge count never decreases between runs; equal-or-greater"
+   :invariant/layer 2}
+  {:invariant/id :regression-vs-bb-v05
+   :invariant/check "XTDB query for {paired-vars, coverage-edges, call-edges, vocab-edges} matches v0_codebase_hypergraph.clj output for futon2 within 0 tolerance"
+   :invariant/layer 4}]}

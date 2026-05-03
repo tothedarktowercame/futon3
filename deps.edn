@@ -5,9 +5,11 @@
  :deps {org.clojure/clojure {:mvn/version "1.11.3"}
         org.clojure/core.async {:mvn/version "1.6.681"}
         http-kit/http-kit {:mvn/version "2.7.0"}
+        babashka/fs {:mvn/version "0.5.25"}
         datascript/datascript {:mvn/version "1.6.5"}
         cheshire/cheshire {:mvn/version "5.11.0"}
         clj-http/clj-http {:mvn/version "3.12.3"}
+        org.babashka/http-client {:mvn/version "0.4.23"}
         org.babashka/sci {:mvn/version "0.10.49"}
         nrepl/nrepl {:mvn/version "1.1.0"}
         org.clojure/tools.nrepl {:mvn/version "0.2.13"}

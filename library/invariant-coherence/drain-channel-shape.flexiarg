@@ -1,0 +1,151 @@
+@flexiarg invariant-coherence/drain-channel-shape
+@title Drain Channels Are Voices in One Harmonic Structure
+@sigils [🎻/和]
+@keywords drain, harmolodic, voices, faculty, bounded-disposition, mana-allostasis, lifecycle
+@audience pattern theorists, mission operators reasoning across siblings
+@tone analytic-foundational
+@factor Discernment (vipassanā) — seeing one shape across many instances
+@style pattern
+@references [structure/mana-allostasis structure/block-as-futonic-revolution structure/cook-ting invariant-coherence/state-snapshot-witness invariant-coherence/subsumption-witness]
+
+! conclusion:
+  The bounded-disposition siblings (branch, mission-doc, stash) and
+  the new bounded-in-flight-state sibling are *voices in a single
+  harmonic structure*. They share a faculty — *metabolic-balance* —
+  and each is a drain channel under that faculty. bounded-disposition
+  siblings are single-tier (binary bound); bounded-in-flight-state
+  is graduated-tier (continuous drive). The invariant for the family
+  is net mana balance, not any single channel's bound. The unified
+  read does not require structural change to existing operational
+  siblings.
+
+  + context:
+    Harmolodics (Ornette Coleman, mid-1970s onward) holds that
+    harmony, melody, and rhythm are equally weighted; no single line
+    dominates the texture. Voices coordinate without subordination.
+    The futonic invariant family has the same structure. Branches
+    drift slowly; mission-docs slower; working trees fast. Different
+    voices, same harmonic structure, same key signature
+    (mana-allostasis).
+
+    Reading the invariants harmolodically reveals what reading them
+    sequentially or hierarchically obscures: they are not a stack
+    where one sits above another. They co-define metabolic balance.
+    When several drain channels rise at once, the strain is systemic
+    even if no single channel has crossed its bound.
+
+  + IF:
+    Multiple sibling invariants in the futonic skeleton track an
+    accumulation pattern (something rises; something must close).
+
+  + HOWEVER:
+    The artifact-classes are not identical:
+
+      | Sibling                 | Cadence  | Bound shape     | Disposition surface              |
+      |-------------------------|----------|-----------------|----------------------------------|
+      | bounded-disposition/branch     | slow-discrete  | binary (count + age) | git config branch.<n>.description |
+      | bounded-disposition/mission-doc| medium-discrete| binary (count + age) | Status: line in file head     |
+      | bounded-disposition/stash      | slow-discrete  | binary (count + age) | git stash message               |
+      | bounded-in-flight-state        | fast-continuous| graduated (count × age × size, eligibility-filtered) | .futon-disposition.edn |
+
+    Forcing a single shape across all of them would require change
+    to the existing operational siblings (e.g., adding graduated
+    tiers to branch-disposition). Forcing different shapes would
+    lose the harmonic structure. Both extremes are wrong.
+
+  + THEN:
+    Reread the existing siblings as **single-tier drain channels**
+    under metabolic-balance. Their bounds are preserved (count ≤ N,
+    age ≤ D); the *shape* is now "drain channel" rather than
+    "stand-alone bounded-disposition family." The new sibling adds
+    a graduated-tier channel under the same faculty. The unified
+    read does not require structural change to existing operational
+    siblings, but it does enable cross-channel diagnosis: the
+    operator and the apparatus can ask "what is the system's
+    metabolic balance?" rather than "is each individual channel
+    under bound?"
+
+  + BECAUSE:
+    The cognitive faculty is the same — *commitment-tracking* /
+    *metabolic-balance* / *allostatic homeostasis*. The faculty
+    expresses through different artifact-classes at different
+    timescales. Harmolodics says: don't reduce to one voice; let the
+    voices coordinate, and let the listener (operator) hear the
+    composition rather than just the loudest line.
+
+  + DRAIN-CHANNEL-SCHEMA:
+    Each drain channel has these slots:
+      - **artifact-class**: branches | mission-docs | stashes | working-tree-edits | sessions | PRs | …
+      - **cadence**: slow-discrete | medium-discrete | fast-continuous
+      - **tier-shape**: binary | graduated-N-tier
+      - **disposition-vocabulary**: per-class
+      - **resolution-action**: per-class (commit, tag, archive,
+        merge-and-delete, etc.)
+      - **block-binding**: how a closure on this channel relates
+        to the block lifecycle (structure/block-as-futonic-revolution).
+    The *faculty* is shared. The *channel-specific schema* differs.
+
+  + ON-FIVE-PHASE-LIFECYCLE-AS-UNIVERSAL:
+    The block-closure lifecycle (structure/block-as-futonic-
+    revolution) has five phases:
+      1. Identification — operator perceives the hinge.
+      2. Specification — names what closes.
+      3. Elaboration — articulates structure (commit message,
+         wiring diagram, paired test, lab note).
+      4. Passion — does the work.
+      5. Closure — 鹽 forms.
+    These phases are universal across drain channels. Different
+    channels parameterise them — branch-merge-and-delete looks
+    different from working-tree-commit-closure looks different
+    from mission-status-archived-closure — but the lifecycle is
+    the same. This is what allows them to compose harmolodically:
+    they share a structure even when they have different
+    artifact-content.
+
+  + DIAGNOSTIC:
+    - **Multiple channels firing simultaneously**: not separate
+      problems. Look for systemic strain (operator-tiredness,
+      mission-overload, substrate-coherence threat). The harmonic
+      reading: a chord is dissonant, not just one note.
+    - **One channel firing while others quiet**: sibling-specific
+      issue; address at that channel's hinge. The harmonic reading:
+      a single voice is the soloist for now; the others rest.
+    - **All channels quiet but no awards landing**: closure is
+      happening somewhere off-channel (out of band) — investigate
+      where the mana is leaking or where blocks are closing
+      counterfeit-ly without registering.
+    - **One channel suspiciously stable while related channels
+      churn**: possibly a channel that should be measured isn't —
+      e.g., session-sprawl drains while only working-tree is being
+      tracked. Widen the drain-channel inventory.
+
+  + ANTI-PATTERNS:
+    - **Channel-merge**: forcing all siblings into the same shape
+      (e.g., "all bounds become graduated tiers"). Loses the
+      harmolodic structure; over-engineers slow-discrete classes.
+    - **Channel-isolation**: treating each channel as its own
+      family with no shared faculty. Loses the cross-channel
+      diagnosis; each invariant becomes a hermit.
+    - **Single-channel pressure**: weighting only one drain (e.g.,
+      working-tree dirt) while ignoring others. Mana balance is
+      multi-voice; the operator's experience is multi-voice; the
+      apparatus must be too.
+    - **Hierarchical-listening**: treating one channel as "the
+      important one" and the others as background. Subordinates
+      voices that should be co-equal; misses systemic patterns.
+
+  + ON-EXTENSIBILITY:
+    The drain-channel-shape is open. New artifact-classes that
+    accumulate and must close can be added as new voices: PR
+    in-flight, untriaged-evidence-accumulation, attention-budget-
+    on-open-tabs, etc. Each fills the schema slots. The faculty
+    accommodates them; the harmonic structure absorbs them as
+    new voices. The mission's first INSTANTIATE adds the working-
+    tree voice; subsequent siblings can be opened as separate
+    sub-missions when their channel-specific work warrants.
+
+  + REFERENCES:
+    - structure/mana-allostasis — the faculty all channels share.
+    - structure/block-as-futonic-revolution — the unit that awards across all channels.
+    - structure/cook-ting — perception of cleavages, not channel-by-channel imposition.
+    - invariant-coherence/state-snapshot-witness, invariant-coherence/subsumption-witness — adjacent invariants in the same library that may also reread under this shape.

@@ -3,11 +3,11 @@
 This document covers the transport contract, pattern canon, check DSL, trail instrumentation, and workday bridge.
 For the overview and quickstart, see `README.md`.
 
-The full prototype roadmap lives in `holes/futon3.devmap` (it continues beyond Prototype 5); the sections below highlight the evidence already landed.
+The full prototype roadmap lives in `holes/features/futon3.devmap` (it continues beyond Prototype 5); the sections below highlight the evidence already landed.
 
 ## Transport Contract & Golden Transcripts
 
-Prototype 0 in `holes/futon3.devmap` now has a frozen check-job transport contract plus a sandbox profile for deterministic replays. The specs in:
+Prototype 0 in `holes/features/futon3.devmap` now has a frozen check-job transport contract plus a sandbox profile for deterministic replays. The specs in:
 - `docs/protocol/transport-contract-v1.md`
 - `docs/protocol/golden-transcripts.md`
 - `docs/sandbox/README.md`
@@ -16,7 +16,7 @@ Prototype 0 in `holes/futon3.devmap` now has a frozen check-job transport contra
 
 ## Pattern Canon & Similarity Field
 
-Prototype 1 + Prototype 2 in `holes/futon3.devmap` describe the canonical pattern store, sigil metadata, and fake embedding that turn FUTON3 into the "pattern library of record."
+Prototype 1 + Prototype 2 in `holes/features/futon3.devmap` describe the canonical pattern store, sigil metadata, and fake embedding that turn FUTON3 into the "pattern library of record."
 
 - The library already lives under `library/` (e.g., the devmap-coherence IFR set + prototype-alignment checks) and comes with sigil indices in `resources/sigils/{index.edn,patterns-index.tsv}` plus density visualisations.
 - `scripts/pattern_index.py`, `scripts/reembed_devmap_tfidf.py`, and the `:sigils` alias wire those EDN/CSV files into TF-IDF + sigil matrices so DEV/CI can rebuild the fake embedding whenever new flexiargs land. This is the evidence for "pattern canon with embeddings," not just prose.
@@ -33,13 +33,13 @@ The canonical store now lives in Futon1 (XTDB) and the filesystem is treated as 
 
 ## Check DSL & Devmap Coherence Runs
 
-Prototype 3 in `holes/futon3.devmap` + the `ifr-f3-piti.flexiarg` clause spell out the `check!` interface (pattern id, context EDN, evidence refs -> proof state + follow-on obligations). `library/devmap-coherence/*.flexiarg` and the shared `library/library-coherence/*.flexiarg` meta patterns are the actual DSL-ready specs, not hypotheticals.
+Prototype 3 in `holes/features/futon3.devmap` + the `ifr-f3-piti.flexiarg` clause spell out the `check!` interface (pattern id, context EDN, evidence refs -> proof state + follow-on obligations). `library/devmap-coherence/*.flexiarg` and the shared `library/library-coherence/*.flexiarg` meta patterns are the actual DSL-ready specs, not hypotheticals.
 
 `holes/AGENTS.md` turns that intent into a concrete plan: obligation extraction from the devmaps, sigil-driven candidate narrowing, `check!` evaluation, and proof exports back into FUTON1/FUTON2. This document is the evidence that the check DSL is wired into the daily "devmap coherence" cadence.
 
 ### CYOA Devmap Refinement
 
-A CYOA runner now drives per-pattern interviews, Evidence Engineer prompts, and deterministic patching for `holes/futon*.devmap` entries:
+A CYOA runner now drives per-pattern interviews, Evidence Engineer prompts, and deterministic patching for `holes/features/futon*.devmap` entries:
 - See `scripts/cyoa_room.clj` and logs under `holes/logs/cyoa`
 - Skip rules in `resources/cyoa/skip_rules.edn` prevent re-running evidence generation when a block already has `+ next-evidence:`
 - Pattern Critic runs as a separate turn, emits inline `@question:` prompts for ambiguous clauses, and can apply them directly to the devmap (`--apply-critic`)
@@ -47,7 +47,7 @@ A CYOA runner now drives per-pattern interviews, Evidence Engineer prompts, and 
 
 ## Trail Instrumentation & Proof-State Journal
 
-Prototype 4 in `holes/futon3.devmap` plus the IFR patterns (e.g., `library/devmap-coherence/ifr-f5-samadhi.flexiarg`) demand that proof trails record `:pattern/id`, `:obligation/id`, tags, and joy deltas.
+Prototype 4 in `holes/features/futon3.devmap` plus the IFR patterns (e.g., `library/devmap-coherence/ifr-f5-samadhi.flexiarg`) demand that proof trails record `:pattern/id`, `:obligation/id`, tags, and joy deltas.
 
 These instructions are backed by:
 - `resources/tatami-events.edn` - current session-trail fixtures used by Tatami/Tatami-monitor
@@ -58,7 +58,7 @@ AIF episode summaries can now be attached as `:aif-trace` evidence so Futon2 exp
 
 ## Workday Instrumentation & ChatGPT/Tatami Bridge
 
-Prototype 5 in `holes/futon3.devmap` calls for a `workday/submit` endpoint plus bridges into tooling.
+Prototype 5 in `holes/features/futon3.devmap` calls for a `workday/submit` endpoint plus bridges into tooling.
 
 ### Emacs Integration
 
@@ -80,7 +80,7 @@ Reopen the review via `M-x my-chatgpt-shell-open-last-focus-review` if you dismi
 ### Boundary Scans
 
 Boundary scans now track the "negative space" around every futon layer:
-- Run `scripts/devmap_readiness.py` to lint `holes/futon*.devmap` files and write `resources/boundary.edn` with last-touch timestamps, TODO counts, and evidence gaps for F0-F7
+- Run `scripts/devmap_readiness.py` to lint `holes/features/futon*.devmap` files and write `resources/boundary.edn` with last-touch timestamps, TODO counts, and evidence gaps for F0-F7
 - This snapshot, together with the git vitality summary and Futon0's scanner output, now feeds the Stack HUD block inside the Tatami context so readiness drift (e.g., "f4 missing evidence for 13 prototypes") appears alongside the Tai Chi/curfew reminders
 - Load `scripts/boundary_hud.el` in Emacs and run `M-x futon-boundary-hud` to see a Magit-style table for F0-F7: each row shows the orb (based on missing evidence ratio), last devmap touch, and outstanding TODOs
 - Need a copy/paste briefing for agents? Run `python3 scripts/futon_summary.py futon0` (or any `fX`) to print the devmap's `@state` block plus the latest boundary entry from `resources/boundary.edn`

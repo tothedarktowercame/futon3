@@ -234,7 +234,7 @@ much work Stages 2-4 require.
 
 ## Related Documents
 
-- `holes/futon3.devmap` — Full prototype definitions
+- `holes/features/futon3.devmap` — Full prototype definitions
 - `futon3a/README.md` — Portal and sidecar architecture
 - `futon3a/docs/pattern-indexing.md` — Embedding pipeline
 - `docs/protocol.md` — Current transport documentation

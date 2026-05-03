@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DEV_DIR = ROOT / "holes"
+DEV_DIR = ROOT / "holes" / "features"
 BOUNDARY_FILE = ROOT / "resources" / "boundary.edn"
 
 

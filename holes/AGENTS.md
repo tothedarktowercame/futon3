@@ -4,7 +4,7 @@
 Run routine flexiformal checks that show how the current standard library of patterns (living under `futon3/library/`) advances every FUTON devmap. Use FUTON3 as the check engine (pīti layer) and FUTON2 to translate results into viriya/energy metrics.
 
 ### Inputs
-- Devmap corpus (`holes/futon[1-7].devmap`) with IFR + prototypes + bojjhaṅga metadata.
+- Devmap corpus (`holes/features/futon[1-7].devmap`) with IFR + prototypes + bojjhaṅga metadata.
 - Standard library patterns (`futon3/library/**/*.flexiarg` plus sigil embeddings in `resources/sigils`).
 - Workday events / proof trails emitted through FUTON3 APIs.
 

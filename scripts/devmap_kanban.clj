@@ -14,7 +14,7 @@
     "Examples:"
     "  bb scripts/devmap_kanban.clj"
     "  bb scripts/devmap_kanban.clj --futon f5 --cols 2 --width 44"
-    "  bb scripts/devmap_kanban.clj --dir holes --max 12"
+    "  bb scripts/devmap_kanban.clj --dir holes/features --max 12"
     ""
     "Notes:"
     "  --max limits cards per futon column."
@@ -31,7 +31,7 @@
     (catch Exception _ nil)))
 
 (defn- parse-args [args]
-  (loop [opts {:dir "holes"
+  (loop [opts {:dir "holes/features"
                :futon nil
                :cols nil
                :width default-width

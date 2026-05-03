@@ -21,7 +21,7 @@
 (declare-function my-futon3--suggest-intent-text "futon3-sessions" (prototypes))
 (declare-function my-futon3--tatami-request "futon3-bridge" (method path payload))
 
-(defvar my-futon3-devmap-directory (expand-file-name "holes" my-futon3--repo-root))
+(defvar my-futon3-devmap-directory (expand-file-name "holes/features" my-futon3--repo-root))
 
 (defvar my-futon3--cached-prototype-display nil)
 (defvar my-futon3--cached-prototype-display-mtime nil)

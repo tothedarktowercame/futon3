@@ -86,7 +86,7 @@ Per `prototype-structure-checklist`, every devmap prototype should include:
 
 ## Checking Workflow
 
-1. Extract obligations from `holes/futon*.devmap` (IFR + prototypes)
+1. Extract obligations from `holes/features/futon*.devmap` (IFR + prototypes)
 2. Load devmap-coherence patterns into FUTON3 pattern store
 3. For each obligation:
    - Run similarity search to shortlist candidate patterns

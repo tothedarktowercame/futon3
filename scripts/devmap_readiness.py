@@ -11,7 +11,7 @@ from typing import Dict, List, Any
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_OUTPUT = ROOT / "resources" / "boundary.edn"
-DEV_DIR = ROOT / "holes"
+DEV_DIR = ROOT / "holes" / "features"
 FUTON_IDS = [f"f{i}" for i in range(8)]
 PROTOTYPE_RE = re.compile(r"^!\s")
 PROTOTYPE_HEADER_RE = re.compile(r"^!\s+instantiated-by:\s+Prototype\s+(\d+)\b", re.IGNORECASE)

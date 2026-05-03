@@ -112,7 +112,7 @@ because devmap component names can be matched against the devmaps' own
 
 ## Finding 4: The Devmap Reflects Reality
 
-The futon3/holes/futon3.devmap was frozen at Feb 9 — the date of the three-futon
+The futon3/holes/features/futon3.devmap was frozen at Feb 9 — the date of the three-futon
 split. It had 12 prototypes (P0-P11) covering the original futon3 scope.
 Everything built in futon3c since then was invisible to the devmap.
 

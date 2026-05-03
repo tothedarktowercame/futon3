@@ -9,7 +9,7 @@
   (:import (java.time LocalDate LocalDateTime)
            (java.time.format DateTimeFormatter)))
 
-(def default-devmap "holes/futon3.devmap")
+(def default-devmap "holes/features/futon3.devmap")
 (def default-output-dir "holes/logs/cyoa")
 (def default-relay-root "../futon5")
 (def default-prompt "resources/prompts/evidence_engineer.prompt")
@@ -448,7 +448,7 @@
 (defn usage []
   (println "Usage: clj -M -m scripts.cyoa-room --list|--index N [options]")
   (println "Options:")
-  (println "  --devmap PATH        Devmap file (default holes/futon3.devmap)")
+  (println "  --devmap PATH        Devmap file (default holes/features/futon3.devmap)")
   (println "  --output-dir PATH    Log/output directory (default holes/logs/cyoa)")
   (println "  --relay-root PATH    Futon5 repo root (default ../futon5)")
   (println "  --prompt PATH        Prompt path relative to relay root")

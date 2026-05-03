@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate holes/artifacts/devmaps.tex from futon*.devmap sources."""
+"""Generate holes/artifacts/devmaps.tex from holes/features/futon*.devmap sources."""
 
 from __future__ import annotations
 
@@ -431,8 +431,8 @@ def main() -> None:
     except ValueError as exc:
         raise SystemExit(str(exc))
 
-    holes_dir = root / "holes"
-    devmap_paths = [holes_dir / f"futon{i}.devmap" for i in futon_ids]
+    features_dir = root / "holes" / "features"
+    devmap_paths = [features_dir / f"futon{i}.devmap" for i in futon_ids]
     missing = [str(p) for p in devmap_paths if not p.exists()]
     if missing:
         raise SystemExit("Missing devmap(s): " + ", ".join(missing))

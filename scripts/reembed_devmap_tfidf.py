@@ -13,7 +13,7 @@ HANZI_FILE = ROOT / "holes" / "256ca.el"
 PATTERN_INDEX = ROOT / "resources" / "sigils" / "patterns-index.tsv"
 TOKI_GLOSS_FILE = ROOT / "resources" / "tokipona_gloss.json"
 HANZI_GLOSS_FILE = ROOT / "resources" / "hanzi_gloss.json"
-DEVMAP_DIR = ROOT / "holes"
+DEVMAP_DIR = ROOT / "holes" / "features"
 
 DEV_MAP_GLOB = "futon*.devmap"
 STOPWORDS = {

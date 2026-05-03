@@ -260,7 +260,7 @@ Register key files:
 ```
 futon3/src/f2/*.clj           ;; transport, router, ui, semantics, codex
 futon3/src/futon3/*.clj       ;; checks, workday, pattern_store, gap_store, etc.
-futon3/holes/*.devmap         ;; futon0-7 devmaps
+futon3/holes/features/*.devmap         ;; futon0-7 devmaps
 futon3/docs/*.md              ;; planning docs
 ```
 

@@ -16,7 +16,7 @@ clojure -M -m scripts.register-stack
 ```
 
 ## Step 2: Extract devmap anchors
-Extract anchors from `futon3/holes/*.devmap` (instantiated-by blocks only).
+Extract anchors from `futon3/holes/features/*.devmap` (instantiated-by blocks only).
 
 ```
 clojure -M -m scripts.extract-anchors

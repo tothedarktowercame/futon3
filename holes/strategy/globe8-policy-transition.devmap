@@ -1,0 +1,195 @@
+@multiarg strategy/globe8-policy-transition-devmap
+@title Strategy Development Map — `globe8-policy-transition` / `SORRY-policy-transition`
+@audience futon-devs, war-machine-operators, future-you
+@tone formal-analytic
+@style roadmap
+@factor Equanimity / Regime-Shift (upekkhā)
+@IFR: `SORRY-policy-transition` closes when Joe's governing policy genuinely
+shifts from `:pi-scholar` toward `:pi-free-solo` via `:pi-consultant`, with the
+shift visible in workstream allocation, evidence topics, and repeatable
+depositing behaviour.
+@state (2026-04-25) The transition is named and partly enacted but not yet
+stable. Bristol is still the load-bearing Ji point, stack share remains heavy,
+and the system can describe the transition more easily than it can prove it has
+entered a new regime.
+@next Instrument the shift, perform the Ji move explicitly, and ratchet the
+result into a balanced depositing regime that survives beyond one event.
+
+## The Argument
+
+This is broader than `SORRY-mode-violation`.
+
+- `SORRY-mode-violation` asks whether the constraint fires and clears
+- `SORRY-policy-transition` asks whether the whole governing policy has changed
+
+So the closure object here is a regime:
+
+- the policy moves outward
+- workstream ratios rebalance
+- evidence topics move from discussing transition to enacting it
+- the new policy remains available on subsequent passes
+
+
+! instantiated-by: Prototype 0 — Transition Instrumentation [📏/测 🧭/态]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P0 f3c/P0]
+  :evidence-for-active [The transition is already named in alignment, but the proof surface is still too narrative]
+
+  + context: A regime shift cannot be demonstrated if the relevant ratios and topic signals are not explicitly tracked.
+  + IF: You want to know whether the policy is actually changing
+  + HOWEVER: Without instrumentation, every outward move can be reabsorbed as anecdote
+  + THEN: Track the minimal policy-transition signals: workstream shares, evidence-topic shares, and depositing indicators
+  + BECAUSE: A policy shift becomes falsifiable only when its traces are explicit
+
+  + EVIDENCE:
+    evidence[futon5a/data/alignment.edn defines `SORRY-policy-transition` as `:pi-scholar -> :pi-free-solo` via `:pi-consultant`]
+    evidence[futon5a/holes/missions/M-a-sorry-enterprise.md proposes observable signals for this sorry: commit ratio, topic counts, maturity movement]
+    evidence[futon0/scripts/futon0/report/war_machine.clj already computes strategic mode from workstream and depositing observations]
+
+  + NEXT-STEPS:
+    next[Choose the canonical ratio windows for judging transition movement]
+    next[Expose the transition counters in the strategic surface]
+    next[Record a baseline before the next Ji-point event]
+
+  :success-criteria
+    pass[The minimal transition counters are explicit and queryable]
+    pass[A pre-transition baseline is recorded]
+    pass[The War Machine can point to current transition state from counters]
+    fail[The transition still depends mainly on remembered feeling]
+
+  :psr-example "Selected transition instrumentation because a regime shift needs observable traces before it can be argued honestly"
+  :pur-template "Policy-transition baseline {{baseline-id}} records stack {{stack-pct}}, consulting {{consulting-pct}}, portfolio {{portfolio-pct}}"
+
+
+! instantiated-by: Prototype 1 — Ji Point Performed [🪜/机 🚪/出]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f7/P0]
+  :evidence-for-active [Alignment and A Sorry Enterprise both treat Bristol as the Ji point where the outward regime becomes live]
+
+  + context: The transition remains speculative until the outward move is actually performed.
+  + IF: You want to move from scholar-default to consultant-mediated free-solo
+  + HOWEVER: A transition that is only prepared and not enacted cannot change the governing policy
+  + THEN: Perform the concrete Ji-point move that tests the outward policy in public
+  + BECAUSE: Regime shifts begin with an event that makes the previous default harder to return to unchanged
+
+  + EVIDENCE:
+    evidence[futon5a/data/alignment.edn notes Bristol as the Ji point after which balanced becomes available]
+    evidence[futon5a/holes/missions/M-a-sorry-enterprise.md identifies Bristol as the live test for market and transition sorrys]
+    evidence[futon3/library/corps/five-arrows.flexiarg constrains outward posture changes to embodied, visible moves]
+
+  + NEXT-STEPS:
+    next[Identify the exact Ji-point event and the outward commitments it contains]
+    next[Record the event as durable evidence]
+    next[Capture the immediate policy consequences rather than only the event itself]
+
+  :success-criteria
+    pass[The Ji-point event actually occurs]
+    pass[The event contains an outward professional commitment, not just attendance]
+    pass[There is durable evidence linking the event to the transition counters]
+    fail[The transition remains permanently preparatory]
+
+  :psr-example "Selected Ji point because policy transitions need a real threshold event"
+  :pur-template "Ji-point {{event-id}} recorded outward commitment {{commitment-id}} with transition link {{link-id}}"
+
+
+! instantiated-by: Prototype 2 — Balance Shift Observed [⚖️/衡 📊/移]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P3 f3c/P0]
+  :evidence-for-active [The transition is only real if the measured shares begin to move]
+
+  + context: A threshold event does not by itself prove that the everyday regime has changed.
+  + IF: You want to claim the transition is underway in behaviour, not only in intention
+  + HOWEVER: If stack-heavy allocation remains dominant, the old policy is still effectively governing
+  + THEN: Show a real shift in workstream and evidence-topic shares over a bounded period after the Ji point
+  + BECAUSE: Regime change is visible as changed distribution, not just changed self-description
+
+  + EVIDENCE:
+    evidence[futon5a/holes/missions/M-a-sorry-enterprise.md defines the signal as commit ratio shifting away from >70% stack]
+    evidence[futon0/scripts/futon0/report/war_machine.clj already models hermit / depositing / scanning / multiplied modes from observed shares]
+    evidence[futon3/library/workflow-coherence/sphere-equilibrium.flexiarg constrains balance claims to actual allocation patterns]
+
+  + NEXT-STEPS:
+    next[Choose the post-event observation window]
+    next[Record the ratio deltas over that window]
+    next[Flag whether the shift is temporary spike or sustained movement]
+
+  :success-criteria
+    pass[Workstream shares move away from stack dominance]
+    pass[Evidence-topic shares move toward portfolio / consulting enactment]
+    pass[The shift is visible over a defined window, not one anomalous day]
+    fail[The transition produces no measurable behavioural rebalance]
+
+  :psr-example "Selected balance shift because policy is only real when it reallocates behaviour"
+  :pur-template "Transition window {{window-id}} moved stack share by {{delta-stack}} and outward share by {{delta-outward}}"
+
+
+! instantiated-by: Prototype 3 — Policy Ratchet [🪛/固 🔄/续]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P2 f3c/P0]
+  :evidence-for-active [The strategic risk is snapping back to scholar-default after one outward push]
+
+  + context: Even a visible balance shift can decay if the next decision cycle restores the old default.
+  + IF: You want the new regime to persist
+  + HOWEVER: A one-window shift without a ratchet still leaves policy selection unstable
+  + THEN: Bind the transition to repeatable depositing decisions, review surfaces, and response rules that favour the new policy on the next pass
+  + BECAUSE: A regime shift becomes operational only when subsequent cycles inherit it
+
+  + EVIDENCE:
+    evidence[futon3/library/futon-theory/local-gain-persistence.flexiarg constrains gains to persist beyond one cycle]
+    evidence[futon3/library/realtime/loop-recovery-actions.flexiarg describes how loops remain in a healthy regime after perturbation]
+    evidence[futon5a/data/alignment.edn says balanced becomes available after Bristol, which implies a ratchet rather than a single event]
+
+  + NEXT-STEPS:
+    next[Define the minimum repeating depositing actions that demonstrate policy persistence]
+    next[Bind those actions to review or recommendation surfaces]
+    next[Track whether subsequent cycles reselect the new regime]
+
+  :success-criteria
+    pass[At least one subsequent cycle reselects the outward/balanced policy]
+    pass[Depositing actions repeat without re-deriving the whole transition from scratch]
+    pass[The War Machine can describe why the new policy remained selected]
+    fail[The transition collapses back into scholar-default after one pass]
+
+  :psr-example "Selected policy ratchet because regime change without persistence is performance, not control"
+  :pur-template "Policy ratchet {{ratchet-id}} preserved regime {{regime}} across cycle {{cycle-id}}"
+
+
+! instantiated-by: Prototype 4 — Closed-for-Now Regime [🧘/稳 🌤️/成]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P3 f3c/P0]
+  :evidence-for-active [The topology's steady-state claim requires critical sorry closure plus no active constraint violations]
+
+  + context: The strongest available closure is not finality but a stable local regime.
+  + IF: You want to say `SORRY-policy-transition` has closed for now
+  + HOWEVER: Without a stable local regime, every claim of transition remains provisional in the weak sense
+  + THEN: Show a bounded period in which the new policy remains selected, ratios stay out of avoided ranges, and the coupled critical violation pressure weakens
+  + BECAUSE: That is the first honest sense in which the transition can be called complete in the current epoch
+
+  + EVIDENCE:
+    evidence[futon5a/data/alignment.edn defines steady state as critical sorrys closed and constraints no longer violated]
+    evidence[futon3/library/futon-theory/retrospective-stability.flexiarg constrains closure claims to survival over time]
+    evidence[futon3/library/workflow-coherence/weekly-rhythm.flexiarg provides the right timescale intuition for regime stability]
+
+  + NEXT-STEPS:
+    next[Choose the minimum stability window for calling the regime closed-for-now]
+    next[Track coupled critical constraint pressure during that window]
+    next[Emit the closed-for-now condition from a strategic surface]
+
+  :success-criteria
+    pass[The new regime persists over the chosen stability window]
+    pass[Coupled violation pressure weakens during that window]
+    pass[The system can explain the closure in terms of counters and repeated selections]
+    fail[Closure still depends on optimistic narration]
+
+  :psr-example "Selected closed-for-now regime because strategic closure is perennial and must be time-bounded rather than absolute"
+  :pur-template "Policy-transition reached closed-for-now over window {{window-id}} with regime {{regime}}"

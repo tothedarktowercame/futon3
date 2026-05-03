@@ -45,6 +45,7 @@ summarises; the bulletins provide evidence and argument.
 | [5](war-bulletin-5.md) | 2026-03-01 | The Tickle Experiment | Multi-agent CT review pipeline: 17 PRs, ~85 proposals assessed, ~60 entries merged; quality feedback loop validated (approval rate improved across batches); infrastructure bottlenecks identified (merge gap, stateless orchestrator, silent failures); surface contracts (I-1/I-2/I-3) held under sustained load; format evolved organically; experiment closed, M-self-representing-stack resumes |
 | [6](../futon3c/holes/war-bulletin-6.md) | 2026-04-10 | The Inhabitation Threshold | REPL entry ceremony fixed (4 bugs); ghost reclamation; evidence pipeline operational; futon3a semantic context retrieval per turn; Arxana evidence browser wired; JSDQ hypergraph aligned; M-stack-inhabitation opened as umbrella mission; WR-4: inhabit before building |
 | [7](war-bulletin-7.md) | 2026-04-13 | The War Machine Is Operational | War Machine runs 10 scans + frame reader; WebArxana multi-focus canvas (49 commits); frame schema (hives, ants, instruments, cardinal directions); M-daily-scan Day 1 (15 probes, 5 leads); depositing signal non-zero for first time; 3 depositing patterns; WR-5: War Machine is infrastructure not a mission; WR-6: daily scan is the depositing heartbeat; WR-7: missing model ports are sorrys |
+| [8](war-bulletin-8.md) | 2026-04-24 | The Stack Argues With Itself, Then Demands Evidence | Holistic argument now machine-readable (16 leaf + 1 stack AIF+ files); compression algorithm picks its own successor (next-move = step PI); live `/api/alpha/aif-stack/live` endpoint with mission overlay; Web War Machine gains :aif-stack view + Recommended Next Move tile + Audacity-style waveform + HUD tethered to playhead; **empirical session→spine→bite upsample turns C1's bites from logical to measurable** (1/3 of C1 bites observed in 14d window — the inhabitation gap is now visible); 17 e2e tests; WR-8: AIF+ files are sources of truth, prose is regenerated; WR-9: bites must be empirically tested or marked logical; WR-10: the next-move surface IS the recursive closure |
 
 ## The Three-Futon Refactoring
 
@@ -214,6 +215,83 @@ policy transition: pi-scholar -> pi-consultant -> pi-free-solo.
 **Test:** Before starting any new infrastructure mission, ask: "Which existing
 surface does this make more inhabitable?" If the answer is "none," defer the
 mission until WR-4 is satisfied.
+
+### WR-8: AIF+ files are sources of truth, prose is regenerated (2026-04-24)
+
+**IF:** The holistic argument was historically maintained as prose
+(`holistic-argument-sketch.md`, `holistic-argument-aif2.md`)
+**HOWEVER:** Prose drifted from intent because there was no machine-readable
+intent it had to track — every re-render was an editorial interpretation
+**THEN:** The 16 leaf-level + 1 stack-level `*.aif.edn` files at
+`futon5a/holes/stories/` are the canonical self-model. Prose deliverables
+are *generated* by Babashka renderers (`render_aif2_prose.clj`,
+`render_leaf_prose.clj`, `render_external_prompt.clj`) and re-rendered when
+the drift detector (`detect_drift.clj`) reports source-mtime change.
+Editing prose in place is a defect.
+**BECAUSE:** The AIF+ format carries typed argumentative structure (claims,
+supports, attacks, falsifiability, conflicts) that prose flattens. If the
+typed structure is canonical, drift between argument and document becomes
+detectable instead of perennial.
+
+**Evidence:**
+- 16 leaf files + THE-STACK.aif.edn (307 lines) encode all argumentative
+  structure that prose was previously asserting informally
+- Live endpoint `/api/alpha/aif-stack/live` projects this structure with
+  mission overlay; same data feeds the Web War Machine demo
+- Bulletin 8 documents the encoding effort and the prose-as-derived contract
+
+### WR-9: Bites must be empirically tested or marked logical (2026-04-24)
+
+**IF:** Conflict bites in the AIF+ model assert "this conflict damages this
+part of the stack"
+**HOWEVER:** Such claims are formal until session evidence supports them —
+the cached weight on a conflict is a hypothesis, not a measurement
+**THEN:** The Web War Machine's empirical join (`aif_join.cljs`) walks
+session steps → repos → `devmap-<repo>` leaves → spine-ids and renders C→S
+bite edges as **solid red** (with width/opacity scaling on hit count) when
+the bitten spine has empirical activity in the visible window, and
+**dashed grey** when the bite is still purely logical. Conflicts whose
+bites remain grey-dashed across multiple windows are candidates for weight
+reduction or removal.
+**BECAUSE:** I1 (evidence supersedes assertion) applies inside the
+self-model itself. A conflict whose damage cannot be observed is not yet
+a conflict, only a worry. The visual distinction (red vs grey-dashed) makes
+the inhabitation gap measurable without requiring the operator to query
+anything — it stares back from the demo.
+
+**Evidence:**
+- C1 bites [S6, S8, S4] in the cached model; in today's 14d window only S8
+  is empirically observed → 1/3 empirical coverage. The grey-dashed S6/S4
+  edges are the inhabitation gap, made visible.
+- 17 e2e tests gate the empirical-bite plumbing including
+  `tests/empirical-bites.spec.ts`
+
+### WR-10: The next-move surface is the recursive closure (2026-04-24)
+
+**IF:** Joe asked for a hierarchical compression algorithm that names what's
+been built, names THE next thing to work on, and collapses repeated structure
+**HOWEVER:** A one-off prose document that does this collapses back into
+drift the moment the stack moves
+**THEN:** The Recommended Next Move tile in the Web War Machine reads
+`:reading :next-move` directly off the live endpoint. As long as the AIF+
+files are kept current (drift detector + re-render + WR-8), the tile always
+recommends the move that the stack itself argues is highest expected value,
+with full provenance (rationale, feeding-input, alternatives-considered) and
+a click-through to the conflict it dis-bites.
+**BECAUSE:** The tool that picks next-moves IS the next-move. Stepping the
+Portfolio Inference AIF loop (the current recommendation) converts this from
+a hand-crafted recommender into a continuously running EFE-ranker. When the
+recommendation flips off "step PI," it will be because PI has been stepped
+and the stack's own evidence said so. This is the recursive closure: the
+compression algorithm becomes a peripheral instead of a document.
+
+**Evidence:**
+- THE-STACK.aif.edn `:reading :next-move` field (lines 268-292) encodes the
+  3-criterion ranking (direct leverage / unlock cascade / self-referential
+  closure) that produced "step PI" as the winner over 16 leaf-level
+  candidate moves
+- Live endpoint serves it; tile renders it; Show↔Hide button drives the
+  conflict detail box
 
 ## Coordination Protocol
 

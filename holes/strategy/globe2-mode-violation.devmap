@@ -1,0 +1,158 @@
+@multiarg strategy/globe2-mode-violation-devmap
+@title Strategy Development Map — `globe2-mode-violation` / `SORRY-mode-violation`
+@audience futon-devs, war-machine-operators, future-you
+@tone formal-analytic
+@style roadmap
+@factor Truth / Constraint-Clearing (sacca)
+@IFR: `SORRY-mode-violation` closes when the `cargo-implies-depositing`
+constraint is machine-observed, visibly fired, and actually clears because
+depositing actions occur rather than because the warning is ignored.
+@state (2026-04-25) The alignment model marks this as a critical violated
+constraint. Cargo exists, reserves pressure exists, but the system can remain in
+foraging / stack-heavy behaviour without a reliable ratchet into depositing.
+@next Bind cargo to explicit counters, expose the violation tick, and connect it
+to a finite depositing-response surface whose actions can clear the violation.
+
+## The Argument
+
+This is not the whole policy transition. It is the narrower constraint:
+
+- cargo is present
+- the system detects that fact
+- the detection produces a real response pressure
+- the pressure can clear only via depositing behaviour
+
+Without that constraint loop, the terminal vocabulary diagnoses the problem but
+does not govern behaviour.
+
+
+! instantiated-by: Prototype 0 — Cargo Register Bound [📦/记 👀/见]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P3 f3c/P0]
+  :evidence-for-active [Alignment already names cargo as an observable, but the violated constraint is still not bound to a durable register]
+
+  + context: A violated constraint cannot clear if the underlying cargo is only felt, not counted.
+  + IF: You want `cargo-implies-depositing` to be a real constraint
+  + HOWEVER: An unbound cargo field leaves the violation vulnerable to reinterpretation or forgetting
+  + THEN: Define the cargo register explicitly: what artifacts count, where they live, and how they are measured
+  + BECAUSE: The violation can only become machine-actionable once cargo is inspectable
+
+  + EVIDENCE:
+    evidence[futon5a/data/alignment.edn defines cargo as undelivered inter-edge artifacts]
+    evidence[futon5a/holes/missions/M-a-sorry-enterprise.md already names prospectus and working paper as cargo signals]
+    evidence[futon3/library/futon-theory/minimum-viable-events.flexiarg requires explicit event shapes before enforcement claims]
+
+  + NEXT-STEPS:
+    next[Choose the initial cargo set that drives this warning]
+    next[Record cargo presence as durable counters rather than only prose]
+    next[Expose the cargo register to the pocketwatch / War Machine layer]
+
+  :success-criteria
+    pass[The cargo set is finite and explicitly enumerated]
+    pass[Each cargo item has a machine-readable presence signal]
+    pass[The violation can cite the cargo items that caused it]
+    fail[Cargo remains an intuition rather than a register]
+
+  :psr-example "Selected cargo register first because constraint logic cannot act on unspecified cargo"
+  :pur-template "Cargo register {{register-id}} tracks {{count}} items with live presence flags"
+
+
+! instantiated-by: Prototype 1 — Reliable Violation Tick [⏰/警 ⚖️/触]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P0 f3c/P0]
+  :evidence-for-active [The topology already says the constraint is violated; the missing step is a reliable operational tick]
+
+  + context: A constraint that exists only in a model file does not yet shape action.
+  + IF: You want the violation to be operationally real
+  + HOWEVER: A latent warning that does not surface consistently cannot govern behaviour
+  + THEN: Fire a visible tick whenever cargo is present under the configured depositing conditions
+  + BECAUSE: The system must be able to say not just "this matters" but "this is active now"
+
+  + EVIDENCE:
+    evidence[futon5a/data/alignment.edn defines `SORRY-mode-violation` as a critical violated constraint]
+    evidence[futon0/scripts/futon0/report/war_machine.clj already evaluates related pocketwatch ticks in the strategic graph]
+    evidence[futon3/library/realtime/loop-failure-signals.flexiarg constrains failure states to visible loop signals]
+
+  + NEXT-STEPS:
+    next[Implement the specific tick predicate for `cargo-implies-depositing`]
+    next[Show the tick from an operator-facing surface]
+    next[Record when the tick fired and what inputs caused it]
+
+  :success-criteria
+    pass[The violation tick fires deterministically from explicit inputs]
+    pass[The firing event is visible to operators]
+    pass[The tick includes enough detail to explain why it fired]
+    fail[The violation still depends on manual diagnosis]
+
+  :psr-example "Selected reliable violation tick because a non-firing constraint is not yet part of the stack's control surface"
+  :pur-template "Mode-violation tick {{tick-id}} fired with cargo {{cargo-ids}} and context {{context-ref}}"
+
+
+! instantiated-by: Prototype 2 — Depositing Response Surface [➡️/投 🧭/应]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P2 f3c/P0]
+  :evidence-for-active [The live gap is not only detection but the absence of a finite response surface]
+
+  + context: A tick without a response surface becomes shame, not control.
+  + IF: You want the violation to clear through action rather than mere awareness
+  + HOWEVER: If the system cannot answer "what depositing move now?" the warning only accumulates pressure
+  + THEN: Bind the violation to a finite set of depositing actions and target surfaces
+  + BECAUSE: Constraint closure requires a move set, not just a diagnosis
+
+  + EVIDENCE:
+    evidence[futon5a/holes/missions/M-recommendation-bindings.md names finite binding targets as the difference between strategic legibility and operational closure]
+    evidence[futon3/library/musn/pattern-action-helper-command.flexiarg constrains guidance to executable pattern/action surfaces]
+    evidence[futon3/library/depositing/upstream-patch-signal.flexiarg describes concrete depositing signals rather than diffuse urgency]
+
+  + NEXT-STEPS:
+    next[Define the initial depositing action family for this violation]
+    next[Bind each action to one or more cargo items]
+    next[Expose the action set beside the live violation]
+
+  :success-criteria
+    pass[The violation points to a finite depositing-response list]
+    pass[Each response is linked to a cargo item or counter]
+    pass[Operators can select a response without leaving the strategic surface blind]
+    fail[The violation can fire forever without changing behaviour]
+
+  :psr-example "Selected depositing response surface because a constraint only governs when it narrows the action space"
+  :pur-template "Mode-violation response set {{response-id}} binds cargo {{cargo-id}} to action {{action-id}}"
+
+
+! instantiated-by: Prototype 3 — Violation Clears [✅/解 📉/降]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P3 f3c/P0]
+  :evidence-for-active [The strategic point of the devmap is not detecting the violation but clearing it honestly]
+
+  + context: The violation is only closed-for-now when the system can show why it stopped firing.
+  + IF: You want to claim `SORRY-mode-violation` has actually cleared
+  + HOWEVER: A warning that disappears because its inputs were forgotten is not honest closure
+  + THEN: Clear the violation by reducing or depositing the tracked cargo, and record the before/after counters
+  + BECAUSE: The constraint loop is only real if closure can be explained by changed conditions
+
+  + EVIDENCE:
+    evidence[futon3/library/futon-theory/counter-ratchet.flexiarg constrains closure claims to changed counters]
+    evidence[futon3/library/realtime/loop-success-signals.flexiarg requires success states to be explicitly signalled]
+    evidence[futon5a/data/alignment.edn says Joe reaches steady state only when critical sorrys close and constraints no longer violate]
+
+  + NEXT-STEPS:
+    next[Choose the initial counter set whose change would honestly clear the violation]
+    next[Record before/after states for at least one clearing action]
+    next[Show the clearance event on the strategic surface]
+
+  :success-criteria
+    pass[The violation no longer fires because cargo-related counters changed]
+    pass[The clearance event is durable and inspectable]
+    pass[The system can explain why the violation cleared]
+    fail[The warning disappears without a legible causal change]
+
+  :psr-example "Selected violation-clearing because strategic constraints are only credible if they can both fire and clear"
+  :pur-template "Mode-violation cleared at {{ts}} after counter {{counter-id}} changed by {{delta}}"

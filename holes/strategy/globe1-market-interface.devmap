@@ -1,0 +1,161 @@
+@multiarg strategy/globe1-market-interface-devmap
+@title Strategy Development Map — `globe1-market-interface` / `SORRY-market-interface`
+@audience futon-devs, war-machine-operators, future-you
+@tone formal-analytic
+@style roadmap
+@factor Energy / Boundary-Crossing (viriya)
+@IFR: `SORRY-market-interface` closes when the stack has a real incoming line
+for strangers: a packaged external-facing offer, an explicit ask, and at least
+one repeatable path from demonstrated value to formal arrangement.
+@state (2026-04-25) `SORRY-market-interface` is still the load-bearing market
+gap. The Working Paper exists, the prospectus and explicit sentence remain the
+missing cargo, and the interface is still Bristol-shaped rather than yet a
+repeatable channel.
+@next Package the offer, perform the explicit ask, and turn Bristol from a
+one-off opportunity into a durable external interface.
+
+## The Argument
+
+This is the "THE sorry" named in `futon5a/data/alignment.edn`.
+
+The gap is not just "more outreach." It is narrower:
+
+- a stranger-facing packet exists
+- the packet is actually delivered in a real conversation
+- the conversation includes the explicit transition sentence
+- the result leaves evidence that can be reused as an incoming line later
+
+Without that sequence, the stack can produce value but cannot reliably receive
+demand.
+
+
+! instantiated-by: Prototype 0 — Offer Packet Exists [📦/具 🪟/门]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f0/P1 f1/P12 f7/P0]
+  :evidence-for-active [Alignment names Working Paper + prospectus + the sentence as the closure path for the market interface]
+
+  + context: Bristol cannot function as a market interface if the external-facing cargo is incomplete.
+  + IF: You want an incoming line that a stranger can actually receive
+  + HOWEVER: A stack that has value but no packaged offer still relies on Joe's improvisation
+  + THEN: Assemble the minimal market packet: Working Paper, prospectus, and an explicit ask sentence
+  + BECAUSE: External demand cannot couple to the stack until there is something coherent to hand over
+
+  + EVIDENCE:
+    evidence[futon5a/data/alignment.edn defines `SORRY-market-interface` and names Bristol + prospectus + the sentence as closure path]
+    evidence[futon5a/holes/missions/M-a-sorry-enterprise.md identifies the prospectus as the missing artifact sub-sorry]
+    evidence[futon3/library/stack-coherence/evidence-ledger.flexiarg constrains packaging to durable, inspectable cargo]
+
+  + NEXT-STEPS:
+    next[Verify the current Working Paper path and freeze the external packet contents]
+    next[Create or finish the prospectus as a delivery companion]
+    next[Write the one-sentence formal-arrangement ask in reusable form]
+
+  :success-criteria
+    pass[Working Paper exists in the intended delivery path]
+    pass[Prospectus exists as a real artifact, not only as intention]
+    pass[The explicit ask sentence exists in a reusable text form]
+    fail[The market interface still depends on improvised recollection]
+
+  :psr-example "Selected offer packet first because no market interface exists until the stack can hand a coherent packet to a stranger"
+  :pur-template "Market packet {{packet-id}} contains Working Paper {{wp-ref}}, prospectus {{prospectus-ref}}, and ask sentence {{ask-ref}}"
+
+
+! instantiated-by: Prototype 1 — Explicit Ask Performed [🗣️/请 🎯/中]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f7/P0]
+  :evidence-for-active [The closure path in alignment is not complete until the explicit sentence is actually spoken in a real conversation]
+
+  + context: A packet on disk is necessary but not sufficient; the interface is still unopened until a real ask is made.
+  + IF: You want to test whether the external line actually exists
+  + HOWEVER: A packet that is never coupled to a live ask does not generate market evidence
+  + THEN: Deliver the packet and perform the explicit sentence in a real conversation
+  + BECAUSE: The first honest test of the interface is whether the ask can be made without collapsing back into stack-internal explanation
+
+  + EVIDENCE:
+    evidence[futon5a/data/alignment.edn names Bristol May 12th + the sentence as closure path]
+    evidence[futon5a/holes/missions/M-a-sorry-enterprise.md treats Bristol as the live test of market-interface closure]
+    evidence[futon3/library/depositing/scan-talk-frame.flexiarg constrains the move from explanation to real ask]
+
+  + NEXT-STEPS:
+    next[Identify the concrete conversation in which the ask will be made]
+    next[Record the delivery event as durable evidence]
+    next[Capture whether the packet was actually received and discussed]
+
+  :success-criteria
+    pass[The packet is delivered in a real external conversation]
+    pass[The explicit ask sentence is actually used]
+    pass[There is durable evidence of the interaction]
+    fail[The market interface remains hypothetical or only rehearsed]
+
+  :psr-example "Selected explicit ask because a market interface is not proven by draft quality alone"
+  :pur-template "External ask {{interaction-id}} delivered packet {{packet-id}} using ask {{ask-ref}} with recipient {{recipient}}"
+
+
+! instantiated-by: Prototype 2 — Repeatable Incoming Line [🔁/来 🌉/通]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P0 f3c/P0]
+  :evidence-for-active [The current closure path is Bristol-shaped; the deeper issue is whether the interface survives beyond one event]
+
+  + context: One successful ask may close the immediate gap but still leave the interface as a one-off.
+  + IF: You want `SORRY-market-interface` to close for more than a single moment
+  + HOWEVER: A one-off conversation does not yet prove the stack has an incoming line for strangers
+  + THEN: Reuse the packet, ask, and conversation pattern in at least one additional external context
+  + BECAUSE: Repeatability is what distinguishes an interface from an anecdote
+
+  + EVIDENCE:
+    evidence[futon5a/holes/missions/M-a-sorry-enterprise.md frames the sorry enterprise as reusable, not just Bristol-specific]
+    evidence[futon3/library/or2/ukrn-horizon-bridge.flexiarg constrains external bridge moves to generalisable routes]
+    evidence[futon3/library/sidecar/per-id-audit-timeline-linkage.flexiarg requires repeated interactions to remain inspectable as one line of development]
+
+  + NEXT-STEPS:
+    next[Define the second external context that would count as interface reuse]
+    next[Track which parts of the packet/ask are reused unchanged]
+    next[Record whether the second conversation reaches a comparable level of clarity]
+
+  :success-criteria
+    pass[At least one second external interaction reuses the interface]
+    pass[The reused packet remains coherent without major reinvention]
+    pass[The second interaction leaves durable evidence linked to the first]
+    fail[The interface only exists for Bristol-like exceptions]
+
+  :psr-example "Selected repeatable incoming line because the real strategic object is a channel, not a single lucky conversation"
+  :pur-template "Market interface reuse {{interaction-id}} linked to prior packet {{packet-id}} with reuse ratio {{ratio}}"
+
+
+! instantiated-by: Prototype 3 — Conversion Evidence [💷/成 📈/验]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P3 f3c/P0]
+  :evidence-for-active [The sorry is a money-layer hole, so closure must eventually show up as real conversion evidence, not only clarity]
+
+  + context: An interface that never converts remains externally legible but strategically unfinished.
+  + IF: You want to claim the market interface has really closed for now
+  + HOWEVER: External attention without a path to formal arrangement leaves the original money-layer gap mostly intact
+  + THEN: Track the conversion outcomes of the interface: follow-up, formal arrangement, workshop, paid work, or other explicit uptake
+  + BECAUSE: The interface is strategically real only when it changes what can happen next
+
+  + EVIDENCE:
+    evidence[futon5a/data/alignment.edn locates `SORRY-market-interface` at `:V-money`]
+    evidence[futon5a/holes/missions/M-a-sorry-enterprise.md frames the enterprise test in terms of closure trajectories, not only contact]
+    evidence[futon3/library/control/agential-oss-infrastructure.flexiarg constrains strategic claims to observable downstream effects]
+
+  + NEXT-STEPS:
+    next[Define the smallest acceptable conversion event for this sorry]
+    next[Record follow-up and formal-arrangement outcomes as counters]
+    next[Expose those counters to the War Machine recommendation surface]
+
+  :success-criteria
+    pass[At least one explicit follow-up or arrangement counter changes]
+    pass[The interaction history can be linked to the packet and ask that generated it]
+    pass[The market interface can now be monitored by counters, not only narration]
+    fail[The sorry still closes only in prose]
+
+  :psr-example "Selected conversion evidence because the money-layer sorry is not honestly closed by legibility alone"
+  :pur-template "Market interface counter {{counter-id}} moved by {{delta}} after interaction {{interaction-id}}"

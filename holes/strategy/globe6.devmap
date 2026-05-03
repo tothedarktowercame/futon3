@@ -1,0 +1,198 @@
+@multiarg strategy/globe6-devmap
+@title Strategy Development Map — `🌐6` Recursive Substrate Closure
+@audience futon-devs, war-machine-operators, future-you
+@tone formal-analytic
+@style roadmap
+@factor Equanimity / Closure (upekkhā)
+@IFR: `🌐6` turns the stack's self-model from asserted architecture into a
+running, evidence-producing recursive substrate whose recommendations bind to
+real work and feed counter-deltas back into the next pass.
+@state (2026-04-25) `🌐6` is disambiguated from Argument `💼6`, and the closure
+rubric is now explicit. The live gap remains: Portfolio Inference self-step
+count is still zero, downstream binding targets are not yet projected into
+operator handles, and Hypergraph Operator remains spec-only.
+@next Step Portfolio Inference once against `THE-STACK`; emit durable evidence
+for the run; bind the resulting recommendation to finite operational handles;
+show at least one downstream counter delta reflected in the next recommendation
+surface.
+
+## The Argument
+
+`🌐6` is the stack-level recursive substrate:
+
+- Mission Control observes
+- Portfolio Inference chooses
+- Hypergraph Operator generalises
+
+At present, the War Machine can recommend "Close `🌐6`", but the recommendation
+is only strategically legible. It is not yet operationally closed because the
+recursive loop has not been stepped on itself, its outputs are not yet bound to
+finite operator handles, and there is no durable proof that downstream counter
+changes revise the upstream model on the next pass.
+
+This strategy devmap exists to make `🌐6` closure falsifiable.
+
+
+! instantiated-by: Prototype 0 — First Self-Step Witness [🪜/证 🌐/始]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P2 f3/P3 f3c/P0]
+  :evidence-for-active [The closure rubric, stack AIF story, and recommendation-binding mission now agree that "Close 🌐6" requires a real self-step rather than prose]
+
+  + context: The current open claim is that the recursive substrate exists architecturally, but no durable run shows Portfolio Inference consuming the stack's own self-description as input.
+  + IF: You want `🌐6` to mean more than "a recommendation exists"
+  + HOWEVER: A recommendation with `pi_self_step_count = 0` is still upstream-only theatre
+  + THEN: Run Portfolio Inference once against `THE-STACK` / leaf-registry state and persist the resulting self-step as durable evidence
+  + BECAUSE: A first self-step is the minimum event that falsifies the claim that the recursive substrate is still wholly uninhabited
+
+  + EVIDENCE:
+    evidence[futon5a/holes/excursions/E-globe-6-closure-rubric.md defines Open vs Stepped and the first three machine predicates]
+    evidence[futon5a/holes/stories/THE-STACK.aif.edn states the open gap: PI loop step-count = 0; HGO spec-only]
+    evidence[futon5a/holes/missions/M-recommendation-bindings.md identifies the current recommendation surface as asserted rather than operationally bound]
+
+  + NEXT-STEPS:
+    next[Define the durable evidence shape for a `🌐6` self-step: input snapshot ref, ranked actions, selected action, confidence, timestamp]
+    next[Run PI once with `THE-STACK` as the observed substrate and persist the result]
+    next[Expose that evidence ref from the War Machine recommendation surface]
+
+  :success-criteria
+    pass[`pi_self_step_count > 0`]
+    pass[`pi_self_last_run_at != nil`]
+    pass[`pi_self_evidence_ref != nil`]
+    fail[`🌐6` can still be recommended without any durable self-step evidence]
+
+  :psr-example "Selected first self-step witness because the recursive substrate must leave a durable trace before any stronger closure claim is honest"
+  :pur-template "`🌐6` self-step {{run-id}} persisted with input {{snapshot-ref}} and selected action {{action-id}}"
+
+
+! instantiated-by: Prototype 1 — Repeatable Heartbeat [💓/循 🌐/住]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P3 f3c/P0]
+  :evidence-for-active [The rubric distinguishes one-off stepping from an inhabited loop with repeated cycles and live readout]
+
+  + context: One self-step proves executability, but not inhabitation.
+  + IF: You want `🌐6` to be a running substrate rather than a one-off demonstration
+  + HOWEVER: A single step with no second cycle and no prediction-error readout is still demo-ware
+  + THEN: Repeat the self-step across more than one cycle and emit heartbeat / prediction-error evidence visible to operators or agents
+  + BECAUSE: Inhabitation begins when the loop can run again and its state transitions remain visible over time
+
+  + EVIDENCE:
+    evidence[futon5a/holes/excursions/E-globe-6-closure-rubric.md defines Inhabited as repeated cycles plus a live recommendation readout]
+    evidence[futon3/library/realtime/liveness-heartbeats.flexiarg argues that durable loop signals need explicit heartbeat semantics]
+    evidence[futon3/library/futon-theory/progress-signal.flexiarg constrains progress claims to observable signals rather than narration]
+
+  + NEXT-STEPS:
+    next[Define the `🌐6` heartbeat event shape and prediction-error counters]
+    next[Run more than one self-step cycle and append the sequence durably]
+    next[Show the latest `🌐6` cycle status from an operator-facing surface]
+
+  :success-criteria
+    pass[`pi_self_heartbeat_cycles >= 1`]
+    pass[At least two durable `🌐6` self-step records exist]
+    pass[A live operator surface can point at the most recent `🌐6` cycle]
+    fail[`🌐6` still depends on one-off manual narration to claim inhabitation]
+
+  :psr-example "Selected repeatable heartbeat because closure claims require a running loop, not a screenshot of one run"
+  :pur-template "`🌐6` cycle {{run-id}} advanced heartbeat count to {{count}} with prediction error {{delta}}"
+
+
+! instantiated-by: Prototype 2 — Binding Surface [🪢/定 🌐/指]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P2 f3c/P0]
+  :evidence-for-active [The recommendation-bindings mission already names candidate binding targets but they are not yet wired]
+
+  + context: A recommendation becomes actionable only when it projects into a finite list of handles the operator can actually move.
+  + IF: You want "Close `🌐6`" to answer "what do I do next?"
+  + HOWEVER: A recommendation with no downstream handles remains strategically legible but operationally theatrical
+  + THEN: Bind `🌐6` recommendations to concrete targets: candidate invariant families, live violations, `boundary.edn` entries, and mission / prototype handles
+  + BECAUSE: A finite binding surface is what turns a strategy handle into executable work
+
+  + EVIDENCE:
+    evidence[futon5a/holes/missions/M-recommendation-bindings.md identifies boundary tuples, invariant queues, and live violations as the missing downstream handles]
+    evidence[futon5a/holes/excursions/E-globe-6-closure-rubric.md defines Bound in terms of finite operational handles and visible downstream counters]
+    evidence[futon3/scripts/devmap_readiness.py already emits boundary tuples that can anchor strategy bindings]
+
+  + NEXT-STEPS:
+    next[Choose the first bound target family for `🌐6` (boundary tuple, invariant queue, or live violation list)]
+    next[Emit `wm_binding_target_count(🌐6)` from the recommendation surface]
+    next[Let operators click through from `🌐6` to the bound target list]
+
+  :success-criteria
+    pass[`wm_binding_target_count(🌐6) > 0`]
+    pass[The operator can enumerate a finite list of items to advance `🌐6`]
+    pass[At least one visible downstream counter is attached to the recommendation]
+    fail[`🌐6` remains a slogan with no bound operational handles]
+
+  :psr-example "Selected binding surface because a strategy handle without concrete targets cannot participate in the stack's proof path"
+  :pur-template "`🌐6` now binds to {{count}} targets across {{surface}} with visible counter {{counter-id}}"
+
+
+! instantiated-by: Prototype 3 — Counter-Linked Closure [🔁/验 🌐/合]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P3 f3c/P0]
+  :evidence-for-active [The rubric defines Closed-for-now as downstream action producing a counter delta that revises the upstream model]
+
+  + context: Bound recommendations still do not close `🌐6` unless downstream work changes what the upstream model believes on the next pass.
+  + IF: You want the War Machine to learn from whether a `🌐6` recommendation actually moved the stack
+  + HOWEVER: Without counter-linked revision, the loop only points downstream and never closes back upstream
+  + THEN: Take at least one `🌐6`-bound action, observe a real counter delta, and update the upstream recommendation state from that result
+  + BECAUSE: The first honest closure event is recommendation -> action -> counter change -> model revision
+
+  + EVIDENCE:
+    evidence[futon5a/holes/excursions/E-globe-6-closure-rubric.md defines Closed-for-now as all seven predicates becoming true]
+    evidence[futon3/library/futon-theory/counter-ratchet.flexiarg requires closure claims to attach to counter movement rather than narration]
+    evidence[futon3/library/aif/policy-precision-commitment-temperature.flexiarg constrains policy revision to explicit evidence about changed conditions]
+
+  + NEXT-STEPS:
+    next[Select one `🌐6`-bound action and record its before/after counter state]
+    next[Emit `wm_binding_counter_delta_count(🌐6)` and `wm_upstream_update_observed?(🌐6)`]
+    next[Change the next recommendation surface as a function of the observed result]
+
+  :success-criteria
+    pass[`wm_binding_counter_delta_count(🌐6) > 0`]
+    pass[`wm_upstream_update_observed?(🌐6) = true`]
+    pass[The next `🌐6` recommendation changes because of observed downstream results]
+    fail[Operators still have to narrate closure manually]
+
+  :psr-example "Selected counter-linked closure because only an upstream revision proves the substrate is learning from its own recommendations"
+  :pur-template "`🌐6` action {{action-id}} changed counter {{counter-id}} by {{delta}} and revised next recommendation to {{next-id}}"
+
+
+! instantiated-by: Prototype 4 — Hypergraph Generalisation Handoff [🕸️/升 🌐/广]
+  :maturity :greenfield
+  :owner :stack
+  :actual-status :greenfield
+  :depends-on [f3/P1 f3/P2 f3/P3]
+  :evidence-for-active [The THE-STACK gap explicitly says HGO is still spec-only, so the substrate is not fully recursive until generalisation leaves the spec layer]
+
+  + context: `🌐6` names a triad, not just Mission Control plus Portfolio Inference.
+  + IF: You want the full recursive substrate rather than a two-stage observation/selection loop
+  + HOWEVER: As long as Hypergraph Operator remains spec-only, the stack still cannot generalise new strategic structure from its own observed tensions
+  + THEN: Hand durable `🌐6` evidence into a concrete HGO generalisation pass that emits a new candidate pattern, edge, or binding rule
+  + BECAUSE: The recursive substrate is only complete when observed tensions can be generalised back into stack structure
+
+  + EVIDENCE:
+    evidence[futon5a/holes/stories/THE-STACK.aif.edn names HGO spec-only as part of the open `🌐6` gap]
+    evidence[futon3/library/futon-theory/baldwin-cycle.flexiarg describes the stack's generalisation ratchet from evidence back into canon]
+    evidence[futon3/library/sidecar/explicit-promotion-to-facts.flexiarg constrains how fuzzy observations become durable structural updates]
+
+  + NEXT-STEPS:
+    next[Choose the first HGO output shape for `🌐6`: candidate pattern, candidate edge, or candidate binding rule]
+    next[Attach one HGO output to a prior `🌐6` counter-linked closure event]
+    next[Show that the generalised output re-enters the next recommendation cycle]
+
+  :success-criteria
+    pass[At least one HGO artefact is emitted from durable `🌐6` evidence]
+    pass[The HGO artefact is inspectable and linked back to its source run]
+    pass[The generated artefact re-enters the next strategy pass as input]
+    fail[HGO remains prose-only while `🌐6` claims full recursive closure]
+
+  :psr-example "Selected HGO handoff because the recursive substrate is incomplete if it can observe and choose but never generalise"
+  :pur-template "`🌐6` generalised {{artefact-id}} from run {{run-id}} and fed it into the next substrate pass"

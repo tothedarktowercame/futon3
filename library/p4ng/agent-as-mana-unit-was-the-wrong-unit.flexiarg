@@ -1,0 +1,77 @@
+@flexiarg p4ng/agent-as-mana-unit-was-the-wrong-unit
+@title Agent-as-Mana-Unit Was the Wrong Unit (precursor note)
+@sigils [📜/誤]
+@keywords mana, agent, session, unit, precursor, p4ng, attribution
+@audience pattern theorists, anyone reading the mana-allostasis frame and wondering where the unit came from
+@tone analytic-historical
+@factor Discernment (vipassanā) — naming a flawed precursor explicitly so it can be inherited usefully
+@style precursor-note
+@references [structure/mana-allostasis structure/block-as-futonic-revolution invariant-coherence/drain-channel-shape p4ng/p4ng-agents]
+
+! conclusion:
+  Earlier framings — p4ng-era multi-agent simulation, conceptual
+  sketches around mana-as-budget — treated AGENTS as the natural
+  unit of mana accounting. This was wrong, in a way that became
+  visible only after the substrate framing landed. Mana attaches to
+  SESSIONS, not agents. The agent-as-unit reading is preserved here
+  as a flawed precursor — useful to read, useful to point to, not
+  useful to act from.
+
+  + context:
+    p4ng-era pattern work modelled futon agents as semi-autonomous
+    actors whose budget/license could meaningfully be tracked
+    per-actor. The framing made sense in a multi-agent simulation
+    context where each agent ran its own loop. It did not survive
+    contact with operational reality, where:
+      - One operator's session typically routes through multiple
+        agents (Claude REPL, Codex, Tickle, Forum bots) in tight
+        sequence, each contributing partial work to one coherent
+        chunk.
+      - The *felt cost* of allostatic load is borne by the operator,
+        not by any individual agent. An agent has no metabolism
+        beyond its turn.
+      - Block-closure (the source of mana awards per
+        `structure/mana-allostasis`) is an operator-attestable act,
+        not an agent action.
+
+  + WHAT-WENT-WRONG:
+    The precursor framing made three structural assumptions that
+    looked plausible and turned out not to hold:
+      1. *Agent autonomy* — that agents have enough independent
+         continuity to bear a budget across turns. They don't; an
+         agent's continuity lives in the session that hosts it.
+      2. *Unit-of-attestation* — that agents can attest their own
+         work-completion. They can't, in any way that survives the
+         operator's distinct sense of "this is done." Block-closure
+         requires operator attestation (see
+         `structure/block-as-futonic-revolution`).
+      3. *Per-agent metabolic state* — that "this agent is tired"
+         is meaningful. It isn't. The operator is the one who tires;
+         agents are stateless across calls.
+
+  + WHAT-CARRIES-FORWARD:
+    The precursor was right about the *shape* of the problem (some
+    notion of budget/credit/dana is needed; pure unbounded action
+    selection is wrong). It was wrong about the *unit*. The fix is
+    to keep the budget concept and reattach it to sessions:
+      - `nonstarter_mana.clj`'s `--session` parameter is the
+        operational evidence that the corrected unit is already in
+        production code.
+      - `structure/mana-allostasis` formalises balance per session.
+      - The candidate invariant `budgeted-action-selection/mana-gated-work`
+        (futon5a queue run-064) is the family-level expression of
+        the same shape with the corrected unit.
+
+  + DIAGNOSTIC:
+    Whenever discussing budget/license/mana around agents, check the
+    unit. If "agent X is over budget" is the claim, ask: what would
+    the analogous claim about the *session* containing agent X
+    look like? If it loses meaning, the agent-unit framing has
+    snuck in. Restore the session-unit framing.
+
+  + REFERENCES:
+    - structure/mana-allostasis — formalises the balance equation with sessions as the temporal frame.
+    - structure/block-as-futonic-revolution — defines block-closure as operator-attestable.
+    - invariant-coherence/drain-channel-shape — drain channels under the mana-allostasis faculty; sibling pluri-channel framing.
+    - p4ng/p4ng-agents — the precursor multi-agent framing this note corrects.
+    - M-bounded-in-flight-state V-6 — the verification thread that surfaced the unit error and named it.

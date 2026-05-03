@@ -1,0 +1,140 @@
+@flexiarg budgeted-action-selection/mana-gated-work
+@title Mana-Gated Work: action selection bounded by available budget
+@sigils [💰/可]
+@keywords mana, budget, license, action-selection, gating, dana, sospeso
+@audience action selectors, agent dispatch implementers, mission-control operators
+@tone analytic-foundational
+@factor Wise-restraint (saṁyama) — selecting only what budget allows
+@style pattern
+@references [structure/mana-allostasis structure/block-as-futonic-revolution invariant-coherence/drain-channel-shape p4ng/agent-as-mana-unit-was-the-wrong-unit]
+
+! conclusion:
+  Action selection should be constrained by available budget or
+  license, not by priority alone. A proposed action is *gated* —
+  permitted to run — only when the operator's session-level mana
+  balance can sustain its expected cost. Block-closure at hinges
+  awards mana; allostatic-load drains it; the gate is the live
+  intersection of "what does this action cost" and "what does the
+  session have to spend." Without the gate, priority sorting alone
+  recommends everything that is locally desirable, regardless of
+  whether the substrate can sustain its execution. With the gate,
+  the system selects within a budget the operator's metabolic state
+  can actually afford.
+
+  + context:
+    The candidate invariant `mana-gated-work` was named in the
+    futon5a stack-stereolithography queue (`run-064`,
+    `F-budgeted-action-selection`) with the summary: "Action
+    selection should be constrained by available budget or license,
+    not by priority alone. Some proposed work should be selectable
+    only when enough budget is available, but this remains weakly
+    implemented." The mission `M-bounded-in-flight-state` formalises
+    the *balance dynamic* (`structure/mana-allostasis`) the gate
+    operates on; this pattern names the gate itself.
+
+    Production precedent: `futon5/scripts/nonstarter_mana.clj`'s
+    `sospeso` command computes `(1-p)*C` to pool as pure *dana*
+    (Buddhist generosity) when an action of cost C is committed at
+    confidence p. The pool IS the session-level budget; the
+    confidence-weighted cost IS the gating signal.
+
+  + IF:
+    The system is selecting which proposed action to run from a
+    queue (the priority queue, the mission queue, the agent
+    backpack, etc.), and the actions vary in cost.
+
+  + HOWEVER:
+    Pure priority-sorted selection has no metabolic awareness:
+      - High-priority but high-cost actions can be selected even
+        when the session's mana balance is depleted, accelerating
+        substrate corruption.
+      - Low-priority but low-cost actions that would maintain
+        balance never get a turn because higher-priority items
+        always exist.
+      - The operator's felt fatigue has no path into the action-
+        selection loop.
+
+  + THEN:
+    Gate the selector: a candidate action runs if and only if the
+    session's current mana balance can afford its expected cost.
+    Define cost in terms of the channels of `mana-allostasis`:
+    working-tree pressure increment, mission-proliferation increment,
+    session-sprawl increment, untriaged-evidence increment. Define
+    *afford* in terms of the session's running balance + a small
+    safety margin. Reject (with `:reason :insufficient-budget`)
+    rather than execute when the gate fails.
+
+    Selection becomes a two-step process:
+      1. Priority sort the candidate set.
+      2. Walk the sorted list; for each candidate, ask the gate
+         "can the session afford this?" Take the first that
+         passes; defer the rest with explicit reason.
+
+  + BECAUSE:
+    Priority captures what matters in the abstract; budget captures
+    what the system can actually sustain right now. Both readings
+    are needed. A priority-only selector is a recipe for substrate
+    corruption (the operator runs out of capacity to close blocks
+    faster than load accumulates). A budget-only selector is a
+    recipe for stagnation (high-priority work never gets selected
+    because something cheaper always squeezes in). The gate
+    composes them.
+
+  + ON-DANA-AS-COST:
+    The `nonstarter_mana.clj` precursor's *sospeso → dana* pattern
+    is operationally sound. An action committed at confidence p
+    with cost C *gives* `(1-p)*C` to the pool — confidence-
+    discounted cost is the right cost-quantum because low-confidence
+    actions burn budget proportionally more even when they
+    succeed. Dana (generosity) is the right metaphor: an action's
+    cost is given to the future operator who will close the
+    eventual block. The session that takes on cost is the session
+    that owes the closure.
+
+  + ON-UNIT-CORRECTION:
+    Action-selection budgets attach to sessions, not to agents.
+    See `p4ng/agent-as-mana-unit-was-the-wrong-unit` for the
+    precursor reasoning. An agent has no metabolism beyond its
+    turn; the session is the temporal frame in which budgets
+    integrate. A multi-agent session pools its mana economy at
+    the session level, not partitioned per-agent.
+
+  + DIAGNOSTIC:
+    - Selector consistently rejects high-priority items: budget
+      is depleted at session level. Operator should close
+      blocks (any drain channel) before continuing.
+    - Selector consistently accepts everything: gate may not be
+      wired, or budget thresholds may be too generous. Recheck
+      cost-quantum estimates.
+    - Selector accepts one action then immediately rejects the
+      next at apparently equal cost: stochastic gate behaviour
+      points at miscalibrated confidence in the cost estimator.
+
+  + ANTI-PATTERNS:
+    - **Priority-only selection** (no gate): the default broken
+      state this pattern names.
+    - **Hard-cap-only selection** (no priority): everything below
+      a threshold runs in arbitrary order; misses important work.
+    - **Per-agent budgets** (precursor): see
+      `p4ng/agent-as-mana-unit-was-the-wrong-unit`.
+    - **Counterfeit gate-pass**: action declares its cost as
+      lower than it actually is to slip through. Mitigated by
+      cost-confidence weighting (sospeso) and post-hoc
+      reconciliation against actual block-closure cost.
+
+  + RELATION-TO-METABOLIC-BALANCE:
+    `structure/mana-allostasis` describes the *balance dynamic*
+    (the integral of awards − drains over time). This pattern
+    describes the *gate dynamic* (the live decision rule that
+    consults the balance). Together they form the action-selection
+    contract: select what you can afford to act on, and act in a
+    way that closes the block before the next selection. Both
+    voices, harmolodic.
+
+  + REFERENCES:
+    - structure/mana-allostasis — the balance dynamic the gate consults.
+    - structure/block-as-futonic-revolution — the unit whose closure replenishes the budget.
+    - invariant-coherence/drain-channel-shape — the per-channel cost estimators feed the gate.
+    - p4ng/agent-as-mana-unit-was-the-wrong-unit — the precursor unit-error this pattern corrects.
+    - futon5a/holes/stack-stereolithography-runs/run-064-budgeted-action-selection--mana-gated-work.md — the candidate invariant in the queue this pattern formalises.
+    - futon5/scripts/nonstarter_mana.clj — the production-code precursor.

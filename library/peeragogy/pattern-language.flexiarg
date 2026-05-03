@@ -1,0 +1,27 @@
+@flexiarg peeragogy/pattern-language
+@title Treat the Patterns as a Language, Not a Catalogue
+@keywords alexander, pattern-language, composition, vocabulary, generativity, design
+@audience pattern authors, peer-learning designers
+@tone reflective
+@style meta-pattern
+@references [pattern-coherence/internal-coherence peeragogy/discerning-a-pattern peeragogy/creating-a-guide]
+
+! conclusion: A collection of named patterns becomes a *language* when the patterns compose — when one pattern's solution invokes others, when conflicts between patterns are visible, and when a designer can build a peer-learning context by selecting and arranging patterns rather than reasoning from scratch.  Until that compositional structure is present, what looks like a pattern language is a catalogue of independent tips.
+  + context: Christopher Alexander's framing — invoked directly in the handbook — is that a pattern language gives builders enough generative structure to design something coherent without dictating it.  Peeragogy patterns aspire to the same: not a checklist but a vocabulary in which peer-learning experiences can be designed.  This requires the patterns to refer to one another, to share a granularity convention, and to leave room for the designer's choices.
+  + TENSION:
+    Axis: catalogue completeness ↔ generative composition.
+    Real: a thorough catalogue is easy to extend (just add patterns) but does not, by itself, compose.  A composing language requires patterns to be sized, named, and cross-referenced consistently — work that constrains how patterns are added.
+    Irreducible: the same set of named practices cannot be both a freely-extending catalogue and a tight compositional grammar.  Discipline costs additions; additions cost discipline.
+    Active: the pull recurs whenever a new pattern is proposed.  The catalogue impulse welcomes it; the language impulse asks where it sits, what it composes with, and what it excludes.
+  + COMPOSITIONS:
+    (1) Cross-reference discipline: every pattern names which other patterns it builds on, which it composes with, and which it conflicts with.  Composition surfaces become explicit.
+    (2) Granularity convention: patterns at the same level address comparable scopes (group, session, role) so they can be combined without confusion.  Patterns at different levels are explicitly nested.
+    (3) Conflict visibility: where two patterns pull in opposite directions in the same situation, the language names the conflict rather than hiding it.  Designers can then decide which pattern dominates.
+    (4) Generative test: for any peer-learning context the designer wants to support, the language should let them assemble a working design from named patterns plus a small amount of judgement.  If every assembly requires unnamed practices, the language has gaps.
+  + CHECK:
+    Engaged when: a new contributor can use the patterns to design a peer-learning experience by composition, without re-deriving each decision from first principles.  Failing when: each design starts over; patterns are cited individually but never combined.
+  + ABSENCE-SIGNALS:
+    - Catalogue inflation: pattern count grows but composition does not deepen.
+    - Stranded patterns: patterns sit alone, with no other pattern referring to them and no clear context of use.
+    - Granularity mush: a single list mixes patterns about whole projects, individual sessions, and atomic interactions.
+    - Conflict suppression: patterns that disagree are presented as if they harmoniously coexist, leaving the designer to discover the conflict in practice.

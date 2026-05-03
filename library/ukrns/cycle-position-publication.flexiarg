@@ -1,0 +1,54 @@
+@flexiarg ukrns/cycle-position-publication
+@title Cycle Position Publication — Declaring the Current Pareto Composition (Implementation Pattern)
+@keywords implementation-pattern, Pareto-position, openness-governance, cycle-declaration, event-level-costing, composition-publication
+@audience UKRN-S design, participating institutions, funders tracking cycle decisions
+@tone operational
+@style implementation-pattern
+@references [ukrns/ARGUMENT ukrns/open-the-triangle]
+
+! conclusion: The service's current composition on the openness/governance Pareto is not a retrospective characterisation; it is a stated position the service can point to before events run and institutions can contest.  The service states which composition it is running on the axis between cycle-level declaration (one statement per annual cycle, events read through it) and event-level declaration (every service event carries its two-axis costing at the point of commitment).
+  + context: This implementation pattern specifies the publication mechanic behind ukrns/open-the-triangle.  The main pattern's invariant requires every service event to be explicitly costed on two axes and a stopping point stated.  Without a publication discipline, costing happens internally and the stopping point is a post-hoc reading of what the service happened to do.
+  + TENSION:
+    Axis: cycle-level declaration (one position published per cycle, events run under it) ↔ event-level declaration (each event carries its own two-axis costing at the point of commitment).
+    Real: cycle-level costs event-specific flexibility — events within the cycle are constrained by the declared stopping point; event-level costs coherence — the cycle's overall shape is only reconstructible post hoc.
+    Irreducible: cannot be simultaneously maximally event-flexible and maximally cycle-coherent.
+    Active: early in a programme, events are few and cycle-level suffices; as events multiply and become heterogeneous, event-level becomes more accurate.
+  + COMPOSITIONS:
+    (1) Per-cycle declaration: at the start of each annual (or other) cycle, the service publishes its current Pareto composition — which of the three compositions from ukrns/open-the-triangle it is running (low-governance loop / governance-first / subset pilot).  Events run under the declared position.  Gives up within-cycle flexibility.
+    (2) Per-event declaration: every service event (T1 wave, peer-evaluation pilot, scaffold publication) carries its openness gain and governance cost at the point of commitment; the cycle's overall position is the aggregate.  Gives up cycle-level coherence.
+    (3) Both cycle-level + event-level: the cycle declares the stopping position; events reconfirm or flag divergence.  Gives up simplicity.
+    The paper currently describes the pattern and includes a Pareto table (§4) but does not declare an operational composition.
+  + BECAUSE:
+    Contestability before the fact: the purpose of declaration is to allow institutions to engage the composition choice before events run — so network input can shape the position rather than merely observe it.  A post-hoc characterisation cannot be contested.
+
+    Governance-cost as commons good: the governance costs listed in the Pareto table are borne by institutions (consent extensions, data-sharing infrastructure).  Declaration makes those costs visible to the institutions that will pay them, and allows negotiation about who pays and when.
+
+    Two-axis costing is asymmetric: openness gains often accrue to the network; governance costs often accrue to specific institutions.  Declaration exposes this asymmetry so the network can see who is being asked to bear what.
+
+    Coordination with design-state lineage: cycle and event declarations are candidate entries in ukrns/design-state-lineage.  The declaration mechanic feeds the versioning mechanic.
+  + CHECK:
+    Engaged when: the current composition is statable and reference-able at any time; institutions know which composition applies to a given event; contestation is possible before events run.
+    Failing when: composition is a post-hoc characterisation; institutions discover what happened after the fact; events run under no declared position; the paper describes the axis but operational practice ignores it.
+  + NEXT-STEPS:
+    - At each cycle boundary, publish the current composition (low-governance loop / governance-first / subset pilot) and the reasoning
+    - For each event within the cycle, cost it on the two axes and note whether it is consistent with the cycle declaration
+    - Provide a contestation channel: institutions can flag events they think violate the declared position
+    - Cross-reference with ukrns/design-state-lineage (cycle declarations are versioned design-state changes)
+  + INVARIANT-STATEMENT:
+    The current cycle's Pareto composition is publicly declared.  Each event within the cycle carries its two-axis costing.  Institutions have a declared contestation channel.
+  + FAILURE-MODES:
+    - Post-hoc characterisation: the composition is reported as what happened rather than declared as what will happen
+    - Silent events: service events run without costing
+    - Cycle-declared, event-divergent: events within the cycle violate the declared position without announcement
+    - No contestation channel: institutions cannot engage the composition choice before events run
+    - Declaration-as-boilerplate: the declaration is published but carries no specific reasoning
+  + ANCESTORS:
+    - UKRN WP §4 Pareto table (the proto-declaration)
+    - ukrns/open-the-triangle (the main pattern this implements)
+    - ukrns/design-state-lineage (versioning downstream)
+    - ukrns/assumptions-commons (governance-adjacent)
+  + DERIVATION:
+    Mechanic: how the current openness/governance composition is declared and contestable.
+    Serves: open-the-triangle's invariant.
+    Axis: cycle-level ↔ event-level declaration.
+    Without this pattern: the axis exists in the paper but not in operations.

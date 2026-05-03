@@ -1,0 +1,31 @@
+@flexiarg writing-coherence/floating-formalism
+@title Ground the Formalism in Named Instances
+@keywords formalism, typed-flows, categories, quadrants, reality-deficit, grounding, pseudo-rigor, simulacrum
+@audience paper authors, reviewers
+@tone technical
+@style pattern
+@references [writing-coherence/recursion-cheque writing-coherence/missing-mechanism writing-coherence/unearned-essentially]
+
+! conclusion: A formalism — a typed vocabulary, a category system, a quadrant diagram, a symbolic notation — earns its place in an argument by compressing content the writer has.  A formalism that is invented to *replace* content the writer lacks is free-floating: it looks rigorous without doing the work rigour does.  Free-floating formalism is diagnostic of a reality deficit.  When you reach for a typed flow, a capitalised-term taxonomy, or a new symbolic schema, check first: can you name a real instance for each element of the formalism?  If not, what the argument needs is not more formalism but more reality.
+  + context: AI-assisted drafting reaches for formalism reliably.  A paragraph describing "cross-mode evidence flows" feels stronger than a paragraph naming actual flows between specific places.  A table of four quadrants feels stronger than a list of named cases occupying two of them.  The feeling tracks the writer's uncertainty: where reality is thin, the formalism compensates.  But the reader — especially a reader whose domain is the one the formalism invents for — sees the compensation.  Domain experts recognise their own world stripped of its proper nouns and typed into anonymous categories; the formalism reads as signal that the writer did not know the instances.
+  + TENSION:
+    Axis: formal compression ↔ instance grounding.
+    Real: a genuine formalism compresses.  "Voltage drop across this resistor" is shorter than and equivalent to a paragraph describing the specific physical situation the resistor is in.  The formalism earns its compression because the instances are available when needed.  An ungrounded formalism extracts the compression without paying for it: the categories exist only in the paper's own text and the instances are never supplied.
+    Irreducible: the same formal vocabulary cannot simultaneously be (a) load-bearing compression over existing reality and (b) substitute for reality the writer does not have.  At use time it is doing one or the other.
+    Active: the pull recurs every time a writer is describing a domain they know less deeply than the reader — which for AI is most domains that have specific named inhabitants.
+  + COMPOSITIONS:
+    (1) Replace formalism with named instances: if "cross-mode evidence flows" is in the draft, name specific flows between specific places — "external training provided by the Digital Research Academy and the Centre for Open Science", "peer-interview protocols between institutions A and B".  Named instances carry the structural point AND ground it.
+    (2) Cash each type with at least one instance: if the formalism is load-bearing and must stay, for every type / category / quadrant, name at least one real instance that occupies it.  Empty types are the failure mode; every type populated is the pattern engaged.
+    (3) Drop the formalism: if no instances are available now, the argument does not need the formalism now.  State what you can say without it.  The formalism can be introduced later, in a draft that has the reality to ground it.
+  + CHECK:
+    Engaged when: every formal element (type, category, quadrant, symbol, capitalised term) can be paired with a named real-world instance drawn from the paper's domain.  Failing when: (a) the formalism has types that are never populated with instances; (b) the "instances" supplied are themselves further formal categories; (c) a domain expert reading the passage could name three real things that belong in the formalism but the paper names none.
+    **Reality-deficit test:** list the formal elements.  For each, write out the first real instance you can think of from the actual domain.  If you stall on more than a third, the formalism is floating.
+  + FAILURE-MODES:
+    - Typed flows without named instances: arrows labelled "degradation signal", "diagnostic field report", "repair pattern" between boxes labelled "Multiplied", "Absorbed", "Mismatch" — with no named flow of actual information between two actual places.
+    - Empty quadrants: 2×2 diagrams where three of four quadrants are labelled but only one is populated.
+    - Capitalised-term taxonomy: Capitalized Terms of Art appear only in the paper's own text and carry no external referent.
+    - Symbolic notation without reduction: a new notation is introduced but the argument could be stated without it at comparable length.
+    - Over-typed tables: column headers use formal categories (Valence, Modality, Grain) that the body cells then populate with prose — the formalism adds columns but no compression.
+    - Diagrams as decoration: box-and-arrow figures where the boxes are noun phrases from the surrounding paragraph rather than named entities.
+  + INVARIANT-STATEMENT:
+    No formal element is kept in the argument unless at least one named instance from the actual domain populates it.  Formalism that cannot be grounded is either cut or marked as provisional with a note of what grounding would look like.

@@ -1,0 +1,28 @@
+@flexiarg writing-coherence/cross-section-claim-drift
+@title Use One Canonical Wording for the Same Claim
+
+@keywords claim-drift, cross-section, consistency, canonical-wording, inadvertent-paraphrase
+@audience paper authors, reviewers
+@tone technical
+@style pattern
+@references [writing-coherence/paraphrase-drift]
+
+! conclusion: When the same factual claim is made in two sections of a paper using different wording, the reader cannot tell whether the difference is a refinement, a qualification, or an inconsistency.  Reviewers default to inconsistency.  A load-bearing factual claim should have one canonical wording, used verbatim wherever the claim is invoked, with deliberate variation only when the variation is itself doing argumentative work.
+  + context: Section-level rewrites — done at different times, often in response to different reviewer comments — produce drift that the writer doesn't notice because each section locally reads well.  Methods says "X for purposes A, B, C"; Limitations says "X for purposes A, B"; Discussion says "X for purpose A".  Each is plausible in isolation; together they read as the writer not having decided what the claim is.  Distinct from `paraphrase-drift` (intra-paragraph elegant restatement that fails to advance): operates at the section level and concerns *factual* alignment, not rhetorical advancement.
+  + TENSION:
+    Axis: local fluency in each section ↔ factual coherence across the paper.
+    Real: a single canonical wording lets the reader recognise repeat invocation as repeat invocation.  Variation forces the reader to reconcile the variants and decide which is authoritative.
+    Irreducible: a load-bearing factual claim either has a canonical formulation in the paper or it does not.  Drift cannot simultaneously be (a) inadvertent paraphrase and (b) deliberate argumentative variation.
+    Active: the pull recurs in any paper rewritten in passes, especially when different reviewers prompt edits in different sections.
+  + COMPOSITIONS:
+    (1) Establish the canonical wording: in the section where the claim does its primary work, settle on one phrasing.  Treat that phrasing as the load-bearing version.
+    (2) Quote-and-reuse elsewhere: when the same claim is invoked in another section, use the canonical wording verbatim, or refer back to its first statement.
+    (3) Mark deliberate variation: where a section needs to *qualify* the canonical claim ("subject to X", "in the limit of Y"), make the qualification explicit; do not let the variation read as paraphrase.
+    (4) Audit during integration: when finalising a draft, list every load-bearing claim and the sections where it appears; check that each appearance uses the canonical wording or marks its variation.
+  + CHECK:
+    Engaged when: every restatement of a load-bearing claim either uses the canonical wording verbatim or visibly marks its variation as deliberate.  Failing when: the same claim appears in three sections with three subtly different formulations and no signal that any variation is intentional.
+  + FAILURE-MODES:
+    - Inadvertent narrowing: Limitations restates the claim with one element dropped, suggesting (without intending to) that the dropped element doesn't apply there.
+    - Inadvertent widening: Discussion restates the claim with one element added, suggesting a stronger claim than the paper supports.
+    - Stylistic paraphrase: the writer rephrases for variety, treating the claim as prose rather than as a fixed proposition.
+    - Vocabulary drift across sections: the same entity is named differently in different sections ("training input", "the training course", "the T3 programme"), so the reader cannot tell whether they are the same.

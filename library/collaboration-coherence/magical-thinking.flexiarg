@@ -1,0 +1,29 @@
+@flexiarg collaboration-coherence/magical-thinking
+@title Expect Process Cost; Name the Friction
+@keywords magical-thinking, friction-budget, process-cost, ideal-platform, premature-tooling
+@audience peer-learning facilitators, project conveners, tool-builders
+@tone practical
+@style pattern
+@references [peeragogy/use-or-make collaboration-coherence/stasis collaboration-coherence/navel-gazing]
+
+! conclusion: Problem-solving in collaborative work always takes time, attention, and friction; expecting tools, platforms, or processes to come pre-built (or to "just work" once installed) is the failure mode that strips a project of its own learning.  The pattern is to name the magical assumption explicitly, estimate its friction cost, and budget for the work the project will actually have to do — preserving the friction-as-learning property the project depends on.
+  + context: Voluntary peer-learning projects routinely reach for the next tool / framework / process under the implicit hope that adoption will dissolve the underlying problem.  Sometimes adoption helps; often it just relocates the problem (now we have the same coordination issue, plus a new tool to learn).  The deeper failure is that "magical thinking" robs the project of the *process* — the working-through that constitutes much of what a peer-learning project is meant to produce.  If the tooling were truly that good, the handbook wouldn't need to exist.
+  + TENSION:
+    Axis: faith in tooling ↔ attention to process cost.
+    Real: tooling really does matter — a good substrate halves the work.  But the marginal value of tooling is bounded above by the project's actual problem; past that bound, tooling investment is displacement.  Both effects are continuous; the question is whether the project knows which side of the bound it is on.
+    Irreducible: a project cannot simultaneously be working on the underlying problem and waiting for tooling to make the underlying problem disappear.  At any moment one or the other is happening.
+    Active: the pull recurs whenever the project hits a frustration that has a "if only we had X" response, whenever a new tool appears in the discourse, and whenever a contributor proposes adoption rather than configuration of an existing tool.
+  + COMPOSITIONS:
+    (1) Name the magical assumption: when the next tool / process / framework is proposed, write down what specifically is expected to become easier, by how much, and on what timescale.  The act of writing usually changes the proposal.
+    (2) Friction budget: maintain an explicit estimate of the project's available attention.  New adoptions get a friction line item — onboarding, configuration, ongoing maintenance, integration with existing tooling.  When the budget overruns, something gets dropped.
+    (3) Adopt-after-use: try to solve the underlying problem with existing tooling first.  If the existing tooling visibly fails, the diagnostic information is what justifies adoption.  Without that diagnostic, adoption is speculation.
+    (4) Preserve process learning: when a frustration is dissolved by tooling, ask what the project was *learning* from that frustration.  If the answer is something useful, recover it deliberately (e.g. document the now-tooling-handled problem so contributors who need to understand it still can).
+    (5) Magical-thinking audit: periodically review which assumptions about tooling have actually paid off and which have not.  Pattern revision based on evidence beats the next adoption proposal.
+  + CHECK:
+    Engaged when: every tooling adoption decision has a recorded prior expectation and a recorded post-hoc audit.  Failing when: tools accumulate without commensurate progress on the underlying problem, or the project repeatedly proposes the same kind of tooling solution with no acknowledgement of why prior versions didn't deliver.
+  + FAILURE-MODES:
+    - Pre-built fantasy: "the ideal platform would come with X already solved" — said without engagement with whether such a platform exists or could exist.
+    - Adoption cascade: a new tool is adopted, brings a problem, which is solved by adopting another tool, and so on; each round defers rather than discharges the underlying issue.
+    - Friction-blindness: contributors propose adoption without naming the onboarding or maintenance cost; the cost is paid silently by whoever ends up doing it.
+    - Process-stripping: a frustration that was teaching the project something gets dissolved by tooling, and the project later realises the learning is gone with it.
+    - Stress-driven habit shift: under pressure the project falls back on already-trained tools rather than reaching for the most appropriate one (echoing the Science Magazine quote in the source — habit displaces goal-directed choice under stress).

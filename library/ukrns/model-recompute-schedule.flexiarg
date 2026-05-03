@@ -1,0 +1,56 @@
+@flexiarg ukrns/model-recompute-schedule
+@title Model Recompute Schedule — When Computation Runs Operationally (Implementation Pattern)
+@keywords implementation-pattern, recompute, event-driven, cadence-driven, hybrid, trigger, self-application, model-operations
+@audience UKRN-S design, working-paper maintainers, evaluators, trainers receiving design-state updates
+@tone operational
+@style implementation-pattern
+@references [ukrns/ARGUMENT ukrns/self-application ukrns/computation-as-exploration ukrns/design-as-function-of-evidence ukrns/measure-where-least-sure]
+
+! conclusion: A notebook that loads evidence and recomputes the model is inert until someone triggers a rerun.  The service states when and why the model recomputes — on evidence arrival (event-driven), on a calendar (cadence-driven), or in a declared hybrid — and which recomputes produce published design-state changes.  Every rerun output carries a timestamp and an evidence-revision identifier; no output circulates without those.
+  + context: This implementation pattern specifies the operational mechanics behind ukrns/self-application (the paper is a re-runnable notebook) and ukrns/design-as-function-of-evidence (updates trace to evidence).  Without a declared recompute schedule, self-application is a property of the artefact that nobody exercises, and design-state updates happen silently.
+  + TENSION:
+    Axis: event-driven recompute (triggered by evidence arrival or assumptions change) ↔ cadence-driven recompute (triggered on a published calendar).
+    Real: event-driven costs predictability — readers do not know when a change will happen; cadence-driven costs latency — evidence sits unprocessed until the next scheduled rerun.
+    Irreducible: a single policy cannot be both maximally event-responsive and maximally predictable-by-calendar.
+    Active: early in a programme, evidence arrives slowly and cadence suffices; as measurement waves multiply, event-driven becomes more defensible; as the posterior tightens, cadence may again be appropriate.
+  + COMPOSITIONS:
+    (1) Scheduled-only: weekly or monthly recompute on a declared cadence; all evidence arriving between recomputes waits.  Gives up latency.
+    (2) Event-driven: each T1 wave completion and each assumptions-v2.edn change triggers a recompute; no fixed calendar.  Gives up predictability.
+    (3) Hybrid: cadence for routine (monthly baseline recompute); event-driven for major waves (cross-institutional evaluation completion, significant assumption revisions).  Gives up simplicity.
+    The paper currently operates informally — recomputes happen when the author reruns.  Operational use at UKRN-S requires a declared composition.
+  + BECAUSE:
+    Self-application requires rerun: ukrns/self-application's claim is that the artefact instantiates its argument.  Every rerun is a micro-instance of the cycle; a rerun that never happens leaves the claim aspirational.
+
+    Measurement-wave pairing: ukrns/measure-where-least-sure commits to observations whose results will move the model.  If those observations complete but the model does not recompute, the observational commitment is broken.  The recompute schedule is how observations become model updates.
+
+    Design-state versioning: ukrns/design-as-function-of-evidence requires that service changes trace to evidence updates.  Every recompute is a candidate version-event; the schedule determines how the version lineage accrues.
+
+    Predictability as commons good: institutions plan around the design state.  Event-driven changes produce planning friction; cadence-driven changes produce planning predictability.  The schedule is a service commitment to the network.
+  + CHECK:
+    Engaged when: every published recompute output carries a timestamp and evidence-revision identifier; the current schedule (or declared mix) is published; readers can see which evidence triggered the most recent recompute.
+    Failing when: recomputes happen silently; readers cannot tell which version they are looking at; design-state changes propagate without recompute traceability.
+  + NEXT-STEPS:
+    - Declare the current composition in project documentation
+    - Timestamp every notebook output with assumptions-v2.edn revision at point of compute
+    - Publish a recompute log: when the model was rerun, what triggered it, what changed
+    - Cross-reference with ukrns/design-state-lineage (the versioning mechanic downstream)
+    - For paper time: even if informal, record the compute-date and evidence-revision in each published version
+  + INVARIANT-STATEMENT:
+    The current recompute composition is declared.  Every output carries a timestamp and evidence-revision identifier.  A recompute log is maintained.
+  + FAILURE-MODES:
+    - Silent recompute: outputs change without readers being notified
+    - Schedule-only, no events: major evidence waits for cadence; urgency of significant observations is lost
+    - Events-only, no cadence: recomputes only when the author remembers; baseline continuity suffers
+    - Timestamp-missing: outputs circulate without the information that would let readers correlate them with evidence
+    - Log-as-theatre: recompute log exists but is uninformative ("rerun on 2026-05-01")
+  + ANCESTORS:
+    - notebooks/ukrn_population_model.clj (the computation)
+    - ukrns/self-application (the meta-pattern this implements)
+    - ukrns/computation-as-exploration (computation-as-device requirement)
+    - ukrns/design-as-function-of-evidence (update policy)
+    - ukrns/measure-where-least-sure (measurement waves produce the events)
+  + DERIVATION:
+    Mechanic: when and why the model reruns.
+    Serves: self-application, computation-as-exploration, design-as-function-of-evidence, measure-where-least-sure.
+    Axis: event-driven ↔ cadence-driven.
+    Without this pattern: the notebook form is packaging, not method.

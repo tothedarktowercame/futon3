@@ -1,0 +1,61 @@
+@flexiarg ukrns/worked-contrast
+@title Worked Contrast — Paired Concrete Cases That Show the Model Biting Differently (Meta-Pattern)
+@keywords meta-pattern, worked-example, diagnostic-concrete, paired-cases, delivery-gated, multiply-constrained, contrast, abstraction-concreteness, FG2A-P1, FG3-A
+@audience UKRN-S design, working-paper authors, readers who want to see the model work, evaluators
+@tone analytic-foundational
+@style meta-pattern
+@references [ukrns/ARGUMENT ukrns/diagnose-before-prescribing ukrns/computation-as-exploration]
+
+! conclusion: An abstract model states conditional dependencies; a single case instantiates them.  Two contrasting cases that occupy different positions in the model's space — and that therefore fall into different modes — show the model biting differently.  The working paper's FG2A-P1 (delivery-gated) and FG3-A (multiply-constrained) are the paired worked contrast; neither case alone would have produced the same legibility.  The service states which composition it is running on the axis between abstraction-at-population-scale and concreteness-at-case-scale.
+  + context: This meta-pattern is about the rhetoric of the working paper and, by projection, about how UKRN-S could maintain diagnostic anchors in its operational work.  The population model is abstract (D × A, gate/support, mode tree).  The Table 1 ten-profile sweep is intermediate.  The worked examples are concrete.  FG2A-P1 is traced through the model to show delivery-gating; FG3-A is traced through to show multi-constraint.  The pairing is not redundant — each case reveals what the other does not — and the contrast is load-bearing for the diagnose-before-prescribing pattern (ukrns/diagnose-before-prescribing).
+  + TENSION:
+    Axis: abstraction (population-level, model-level statements) ↔ concreteness (case-level, profile-level instantiations).
+    Real: abstraction without concrete leaves the reader unable to see what the model claims means operationally; concreteness without abstraction is anecdote and does not generalise.  Both carry real costs when taken alone.
+    Irreducible: a single statement cannot be simultaneously maximally abstract (covering all cases) and maximally concrete (tracing one case through in full detail).  They answer different reading needs.
+    Active: a reader unfamiliar with the model needs more concrete; a reader deep in the data needs less.  As the paper's audience shifts over time — from authors and peer reviewers to funders, institutional leads, trainers — the right abstraction/concreteness balance shifts.  Early cycles may favour concreteness; later cycles, with trained readers and accumulated evidence, may favour abstraction.
+  + COMPOSITIONS:
+    (1) Paired contrast: two worked cases positioned to show the model biting differently (FG2A-P1 delivery-gated + FG3-A multiply-constrained).  Gives up the depth of a single-case deep dive; gains legibility of the model's differential behaviour.
+    (2) Single deep case: one profile traced through in exhaustive detail — every NPT factor, every lever effect, every mode-probability update.  Gives up the contrast that shows the model's differential behaviour; gains density of evidence for one institution.
+    (3) Population overview + one representative: the ten-profile table + one 'typical' case.  Gives up the contrast and the depth; gains communicative simplicity.
+    These compositions are not ranked; the paper is at Composition (1) deliberately, and the pairing is what makes the multiplicativity claim (ukrns/diagnose-before-prescribing BECAUSE) concrete.
+  + BECAUSE:
+    Contrast reveals the axis: A single worked case illustrates the model's machinery; two contrasting cases illustrate what the model discriminates between.  FG2A-P1 has strong architecture (A = 0.63) but weak delivery (D = 0.46) — the D × A gate is delivery-gated, and a scaffold intervention (Step 0) would move it toward multiplied.  FG3-A has weak both dimensions (D = 0.33, A = 0.21); no single-dimension lever suffices.  The two cases together show WHY diagnosis matters: the same lever bundle would produce different effects on each.  This is the multiplicativity claim made concrete.
+
+    Mode-space legibility: The three modes (Multiplied, Absorbed, Mismatch) are abstract until a case falls into each.  The paired contrast maps concrete profiles to mode-space positions: FG2A-P1 falls closest to mismatch at baseline (low D, architecture stronger than delivery); FG3-A falls deeper in mismatch (both dimensions below threshold).  A reader who has traced both can read the Table 1 profile sweep without further translation.
+
+    Abstraction ladder: The paper's rhetoric uses a three-rung ladder — abstract model (Annex B equations) → intermediate population sweep (Table 1/2) → concrete paired cases.  Each rung supports the next.  Removing the concrete rung collapses the ladder; a reader jumping from Annex B to Table 2 has no handhold.
+
+    Projection into main patterns: UKRN-S's operational diagnostic work could maintain paired anchor cases that represent the span of the profile space.  When a new institution joins the network, matching it against the anchors is the first step; the anchors are the operational instance of ukrns/diagnose-before-prescribing's binding-constraint-signature claim.  The meta-pattern thus projects into service practice, not only paper rhetoric.
+
+    Not every case is worth tracing: The paired contrast's discipline is selective — two cases chosen because they expose different model behaviours.  A paper that traces every case collapses to a catalogue (Composition variant: population overview, but without overview-level claims).  The selection itself is part of the pattern: which two cases, and why this pair.
+  + CHECK:
+    Engaged when: at least two worked cases are traced through the model, and the pair is chosen to show the model biting differently (different binding constraints, different modes, different lever-response profiles).  The selection rationale is explicit.
+    Failing when: a single case is offered as representative without a contrast; all cases are traced without selection (catalogue drift); the paired cases are chosen for political salience rather than to show the model's differential behaviour; the relationship between abstract claims and concrete cases is not made explicit.
+  + NEXT-STEPS:
+    - For each major modelling claim, maintain at least one worked pair that shows the claim biting differently in different profile positions
+    - Choose worked cases to span the model's discriminative dimensions (e.g. delivery-gated vs. multiply-constrained), not to represent 'typical' cases
+    - State the selection rationale: why these two, not two others
+    - For operational use at UKRN-S: maintain a small set of anchor profiles that new institutions can be matched against during diagnosis (ukrns/diagnose-before-prescribing)
+    - Update worked cases as the evidence base updates; stale worked cases are worse than no worked cases (they suggest a diagnosis that no longer holds)
+    - Preserve the abstraction ladder: abstract → intermediate → concrete; do not skip the concrete rung
+  + INVARIANT-STATEMENT:
+    For each major modelling claim in the working paper (and in UKRN-S operational diagnosis), at least one pair of worked cases is traced through the model; the pair is chosen to show the claim biting differently; the selection rationale is explicit; worked cases are updated as evidence updates.
+  + FAILURE-MODES:
+    - Single-case-as-representative: one profile treated as 'the case' without contrast; the reader cannot see what the model discriminates
+    - Catalogue drift: every profile traced without selection; loses the discriminative power of contrast
+    - Politically-chosen cases: worked cases picked because they carry institutional weight rather than because they expose model behaviour
+    - Rhetorical-only concreteness: worked cases present for legibility but not linked explicitly to abstract claims; reader can read either layer but not bridge them
+    - Stale worked cases: cases not updated as evidence base shifts; current claim and worked example contradict
+    - Abstraction-only: claims stated without concrete instantiation; reader without the model in hand cannot follow
+  + ANCESTORS:
+    - UKRN WP draft-16-april §3 'Worked example: FG2A-P1 (with FG3-A contrast)' (the instance of this meta-pattern)
+    - Population model factor scores for FG2A-P1 and FG3-A (the concrete data)
+    - Paired-contrast rhetoric common in Bayesian exposition (prior predictive + worked cases)
+    - ukrns/diagnose-before-prescribing (the main pattern this meta-pattern serves at paper scale and, by projection, at service scale)
+    - ukrns/computation-as-exploration (the epistemic stance within which worked contrast operates)
+  + DERIVATION:
+    Derived from the working paper's use of the FG2A-P1 / FG3-A paired worked example to make the multiplicative-gate claim concrete.
+    Meta-pattern character: describes a rhetorical discipline in the paper and, by projection, an operational discipline for UKRN-S's diagnostic work.
+    Projection into main patterns: ukrns/diagnose-before-prescribing's binding-constraint signature is abstract; anchor cases make it operational.  As a meta-pattern, worked contrast is how the paper teaches the reader to diagnose.
+    Axis framing follows the same Tension / Composition / Check structure as the main patterns.
+    Coordination requirement: Low at paper time; Medium at service time (anchor cases require maintenance as the profile map evolves).

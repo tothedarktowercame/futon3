@@ -1,0 +1,53 @@
+@flexiarg ukrns/exercise-response-capture
+@title Exercise Response Capture — What Happens When Readers Pick Positions (Implementation Pattern)
+@keywords implementation-pattern, reader-exercises, capture, consent, aggregation, feedback, participation, reader-response
+@audience UKRN-S design, working-paper maintainers, readers who respond to exercises, evaluators
+@tone operational
+@style implementation-pattern
+@references [ukrns/ARGUMENT ukrns/reader-as-participant ukrns/assumptions-commons]
+
+! conclusion: A paper that invites readers to pick positions on axes has a choice about what to do when they do.  The service states which composition it is running on the axis between passive exercises (reader picks privately, no capture) and captured responses (positions logged, with consent, and aggregated).  Capture without consent is a privacy failure; capture followed by silence is a trust failure.
+  + context: This implementation pattern specifies the response mechanic behind ukrns/reader-as-participant.  The meta-pattern invites readers into the diagnosis; this pattern addresses the practical question of what happens after they accept the invitation.  Without a declared response-capture policy, exercises are either purely rhetorical (reader picks privately) or covertly data-producing (captured without visible consent).
+  + TENSION:
+    Axis: passive exercises (reader picks privately; no capture mechanism) ↔ captured responses (positions logged with consent; distribution aggregated and fed back).
+    Real: passive costs the aggregate signal readers' responses could produce — the service never learns what distribution of positions its readers hold; captured costs reader friction, privacy risk, and the overhead of maintaining the capture infrastructure.
+    Irreducible: an exercise cannot be both maximally frictionless and maximally data-producing.
+    Active: early in a paper's life, passive suffices; as the exercise set matures, captured responses become informative (and as operational UKRN-S moves from paper to service, capture becomes a natural fit).
+  + COMPOSITIONS:
+    (1) Passive-only: exercises invite but no response mechanism exists; reader picks privately.  Paper's current state.  Gives up aggregate signal.
+    (2) Opt-in capture: invitation to submit responses via a declared channel (form, email, repo issue); responses aggregated and distribution published; consent explicit at point of response.  Gives up universal participation.
+    (3) Embedded capture: interactive notebook (or live HTML with JavaScript) where positions are captured by default; consent must be architected into the interface, not assumed.  Gives up low-tech accessibility; requires privacy infrastructure.
+    The paper currently operates at (1).  Composition (3) is a future state requiring specific infrastructure.
+  + BECAUSE:
+    Consent-first discipline: capture without visible consent is coercive — readers who thought their responses were private discover they have been counted.  Any composition above (1) requires explicit consent architecture, and the consent must be present at the point the response is given.
+
+    Feedback-or-don't: capturing responses and never surfacing them back to readers is a trust failure.  If the service asks readers to respond, the minimal contract is that the service reports what the responses were.  Composition (2) requires aggregated feedback; composition (3) benefits from live visibility.
+
+    Pedagogical vs diagnostic purpose: the exercises serve two purposes in ukrns/reader-as-participant: they teach pattern-reading (pedagogical) and they invite the reader's position (diagnostic).  The pedagogical purpose is served by passive exercises; the diagnostic purpose requires some form of capture.  The composition choice names which purpose is being served.
+
+    Commons-adjacent: if responses are captured, the aggregate distribution is itself a commons artefact.  Governance of that data (who can see it, how it is curated, how long it is retained) mirrors ukrns/assumptions-commons' concerns.
+  + CHECK:
+    Engaged when: the composition is declared; if responses are captured, consent is explicit and responses are fed back in some form; if passive, the exercises make clear that no capture is occurring.
+    Failing when: responses are captured without visible consent; captured responses are never surfaced back; the paper invites participation but there is no channel for responses to land anywhere.
+  + NEXT-STEPS:
+    - Declare the current composition in the paper or project documentation
+    - If (2) or (3): write a consent statement; declare retention policy; set up a feedback mechanism for aggregates
+    - If (1): make it explicit that exercises are for the reader alone
+    - Cross-reference with ukrns/assumptions-commons if responses feed into evidence
+  + INVARIANT-STATEMENT:
+    The current composition on the capture axis is declared.  If responses are captured, consent is explicit and feedback is provided.  Reader privacy is preserved under the declared composition.
+  + FAILURE-MODES:
+    - Covert capture: responses captured without visible consent
+    - Capture without feedback: responses logged but never surfaced; readers contribute to a black box
+    - Passive exercises framed as captured: the paper implies responses matter operationally but has no channel for them to land
+    - Over-engineered capture: interactive infrastructure built but exercises do not produce responses worth capturing
+    - Consent-creep: initial consent is narrow but response use expands silently
+  + ANCESTORS:
+    - UKRN WP reader exercises (the invitations this pattern responds to)
+    - ukrns/reader-as-participant (the meta-pattern this implements)
+    - ukrns/assumptions-commons (parallel governance concerns)
+  + DERIVATION:
+    Mechanic: what happens to reader positions on exercise axes.
+    Serves: reader-as-participant's invitation claim.
+    Axis: passive ↔ captured responses.
+    Without this pattern: invitations are rhetorical, and any capture risks coercion.

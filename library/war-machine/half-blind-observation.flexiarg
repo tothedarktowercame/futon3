@@ -1,0 +1,12 @@
+{:id "war-machine/half-blind-observation"
+ :claim "An observation surface that covers half the system produces worse decisions than no observation surface at all, because it creates false confidence in completeness."
+ :ground "Bulletin 2 (2026-02-18): Evidence store became operational but initially scanned only 4 of 7 repos. Mission control reported coverage statistics that looked reasonable but missed entire repositories. Bulletin 4 confirmed: following the portfolio inference recommendation 'review' exposed that sensors were half-blind — broken channels, saturated priors, missing repos."
+ :warrant "A half-blind observer makes systematic errors: it overweights what it can see and ignores what it cannot. An observer that knows it is blind can at least flag uncertainty. An observer that believes it sees everything makes confident wrong recommendations. The war machine's observation surface must either be complete or explicitly report its gaps."
+ :backing "S2 (evidence as ground). Bulletin 4 finding: 4/7 repos scanned, 0% coverage on 3 channels. M-portfolio-inference first scan."
+ :qualifier "Complete observation is impossible — the point is explicit gap reporting, not omniscience."
+ :rebuttal "Half-blind observation is still better than zero observation, provided the gaps are flagged. The error is not partial coverage but *unacknowledged* partial coverage."
+ :tension "System builds observation infrastructure but doesn't know what it's not observing."
+ :resolution "Every observation channel reports both its findings AND its coverage. Missing data is data. The war machine peripheral must report what it cannot see as prominently as what it can."
+ :bulletin [2 4]
+ :support-relation :S2
+ :attack-relation :A1}

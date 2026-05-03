@@ -1,0 +1,56 @@
+@flexiarg ukrns/anchor-case-maintenance
+@title Anchor Case Maintenance — Stewarding the Worked-Contrast Pair (Implementation Pattern)
+@keywords implementation-pattern, worked-contrast, anchor-cases, FG2A-P1, FG3-A, stewardship, case-currency, rotation, succession
+@audience UKRN-S design, working-paper maintainers, diagnostic practitioners, case-authors
+@tone operational
+@style implementation-pattern
+@references [ukrns/ARGUMENT ukrns/worked-contrast ukrns/diagnose-before-prescribing ukrns/assumptions-commons]
+
+! conclusion: The worked-contrast pair carries the multiplicativity claim concretely; it is load-bearing rhetoric, not illustration.  But the pair ages: the cases chosen when the paper was written may no longer span the model's discriminative dimensions as the evidence base evolves.  The service states which composition it is running on the axis between stable anchors (the current pair persists) and evolving anchors (cases replaced as the profile landscape shifts).
+  + context: This implementation pattern specifies the stewardship mechanic behind ukrns/worked-contrast.  The meta-pattern makes a rhetorical claim about paired cases; this pattern addresses the operational question of how the pair is maintained as the programme evolves.  Without a maintenance discipline, the paper's concrete cases drift into stale illustrations that contradict the current model.
+  + TENSION:
+    Axis: stable anchors (FG2A-P1 and FG3-A remain canonical across cycles) ↔ evolving anchors (pair replaced when no longer best representing the model's extremes).
+    Real: stable costs accuracy — the pair may no longer reflect current evidence; evolving costs comparability — claims made with one pair are not directly comparable to claims made with another.
+    Irreducible: a single pair cannot simultaneously be maximally stable across cycles and maximally accurate under evolving evidence.
+    Active: early, the pair is newly established and stability is load-bearing (the paper's claims rest on it); later, as evidence accrues and new extremes emerge, rotation becomes more honest.
+  + COMPOSITIONS:
+    (1) Fixed pair: FG2A-P1 + FG3-A remain canonical indefinitely; evolution of the profile landscape is described in annotations.  Gives up accuracy over time.
+    (2) Rotating pair: every cycle (or when a significantly better contrast emerges), the pair is updated.  Gives up cross-cycle comparability; claims in different cycles rest on different cases.
+    (3) Canonical + archive: the canonical pair is named with a date ("as of Cycle N, the canonical contrast is FG2A-P1 + FG3-A"); superseded pairs are archived with their cycle for historical comparability.  Gives up simplicity.
+    The paper currently operates at (1) — the pair is named but no stewardship discipline is declared.
+  + BECAUSE:
+    Multiplicativity claim is concrete: ukrns/diagnose-before-prescribing rests on the multiplicative D × A gate.  The worked-contrast pair makes this claim inspectable — FG2A-P1 shows delivery-gating, FG3-A shows multi-constraint.  If the pair no longer represents these extremes, the concrete grounding of the multiplicativity claim degrades.
+
+    Rhetorical continuity vs empirical accuracy: readers returning to the paper across versions expect the same anchor cases; institutions that have built mental models around FG2A-P1 and FG3-A will not appreciate silent replacement.  But the paper's empirical honesty depends on the cases being good contrasts.  The composition choice names this tension.
+
+    Succession planning: even under Composition (1), the pair will eventually become untenable.  The pattern requires that a succession plan exist — when and how replacement happens — even if the current pair is fixed.
+
+    Cross-pattern: the pair is downstream of ukrns/assumptions-commons (pair changes require provenance); upstream of ukrns/design-state-lineage (pair changes are versioned events).
+  + CHECK:
+    Engaged when: the current pair is named with a date and a selection rationale (why these two); a succession plan exists (when and how replacement happens); the pair's continued validity is reviewed each cycle.
+    Failing when: the pair is used without review across cycles; the current pair no longer represents the model's extremes but has not been replaced; replacement happens silently without announcement.
+  + NEXT-STEPS:
+    - Declare the current composition (most likely (1) for paper time, (3) for operational use)
+    - For each cycle, review the current pair's validity against the current evidence base
+    - If replacement is needed, announce it with the rationale (which new pair, why superseded)
+    - Archive superseded pairs with their cycle identifier for historical comparison
+    - Cross-reference with ukrns/assumptions-commons (pair changes are evidence events) and ukrns/design-state-lineage (changes are versioned)
+  + INVARIANT-STATEMENT:
+    The current anchor pair is named with a date and selection rationale.  A succession plan exists.  Each cycle reviews the pair's continued validity.
+  + FAILURE-MODES:
+    - Stale pair: current pair no longer represents the model's extremes but continues to be cited
+    - Silent replacement: the pair changes without announcement; readers trained on the old pair are disoriented
+    - Succession-plan-missing: no stated plan for when replacement happens or how
+    - Rationale-missing: pair is named but the reason for the selection is not explicit
+    - Case-drift: the scores for the named pair shift under evidence updates but the pair's role as representative is not reviewed
+  + ANCESTORS:
+    - UKRN WP §3 worked examples (the current pair FG2A-P1 + FG3-A)
+    - ukrns/worked-contrast (the meta-pattern this implements)
+    - ukrns/diagnose-before-prescribing (the main pattern the pair serves)
+    - ukrns/assumptions-commons (evidence-provenance upstream)
+    - ukrns/design-state-lineage (versioning downstream)
+  + DERIVATION:
+    Mechanic: how the worked-contrast pair is stewarded across cycles.
+    Serves: worked-contrast's concrete-grounding claim.
+    Axis: stable anchors ↔ evolving anchors.
+    Without this pattern: the paper's concrete cases eventually contradict its current claims.

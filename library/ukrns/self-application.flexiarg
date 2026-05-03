@@ -1,0 +1,64 @@
+@flexiarg ukrns/self-application
+@title Self-Application — The Artefact Instantiates Its Claim (Meta-Pattern)
+@keywords meta-pattern, self-application, artefact-as-instance, REPL, notebook-as-paper, form-as-claim, reproducibility, media-theory, recomputable, reflexivity
+@audience UKRN-S design, working-paper authors, readers who want to rerun, futon developers
+@tone analytic-foundational
+@style meta-pattern
+@references [ukrns/ARGUMENT ukrns/design-as-function-of-evidence ukrns/open-the-triangle ukrns/computation-as-exploration]
+
+! conclusion: A paper that argues for 'design as a function of evidence' and is itself a static, frozen PDF undermines its own claim by example.  The working paper is a notebook that loads the evidence file, recomputes the model, and emits the argument — so a reader with updated evidence can see the design shift.  Form instantiates claim.  The service states which composition it is running on the axis between static-artefact and instantiating-artefact.
+  + context: This meta-pattern is about the construction of the working paper and, by projection, about how UKRN-S could publish its own design state.  If the main patterns describe a learning system that updates design as evidence accrues (ukrns/design-as-function-of-evidence), then an artefact that describes such a system without being one makes a weaker argument than an artefact that is one.  The meta-pattern is media-theoretic: medium as message.  The paper can be re-run because the medium supports it.
+  + TENSION:
+    Axis: static artefact (frozen document, snapshot of claims) ↔ instantiating artefact (re-computable, argument emitted from evidence on each run).
+    Real: static artefacts are cheaper to produce, easier to archive, familiar to readers, and survive infrastructural decay; instantiating artefacts require computational infrastructure, active maintenance, and readers (or institutions) with the technical capacity to rerun.  Both carry real cost.
+    Irreducible: a single artefact cannot be maximally static (frozen, universally readable, dependency-free) AND maximally instantiating (re-computable from live data, reflecting evidence-state-of-today).  These are different kinds of object.
+    Active: at publication time, the instantiating form has high production and reader cost; as notebook tooling matures, cost drops and instantiation becomes viable for more artefacts.  A decade from now, the current paper's tooling will likely be obsolete; the static record is the durable one.  The right balance shifts over the lifetime of the medium.
+  + COMPOSITIONS:
+    (1) Notebook-as-paper: the artefact is a live notebook; a reader with the evidence file and the computational environment reruns to see the current design state.  Gives up durability and frictionless reading; requires active tool maintenance.
+    (2) Static paper + declarative EDN: the paper is published as a static document but accompanied by the assumptions file (assumptions-v2.edn) and a reimplementation pointer (Annex B); a motivated reader can reconstruct the computation from first principles.  Gives up the live-rerun experience; keeps the archival property of static papers.
+    (3) Companion repository: a static paper + a separate runnable notebook in a versioned repository, with an explicit mapping from paper sections to notebook cells.  Gives up unified presentation; keeps both audiences served (archival readers + technical rerunners).
+    These compositions are not ranked; the paper's current form is closest to Composition (1) with Composition (2) as fallback.  The choice may shift as tooling and archival norms evolve.
+  + BECAUSE:
+    REPL discipline (linked: t4r/ pattern library): Read-Evaluate-Print-Loop is the computational form the paper borrows.  Each run of the notebook is: read the assumptions; evaluate the model; print the argument; loop back when evidence changes.  This is not decorative: the loop is what makes the design-as-function-of-evidence claim concrete rather than aspirational.
+
+    Ontogenetic accretion (linked: ukrns/open-the-triangle): The working paper is itself a deposit.  Each version captures the design state at a point in time; the notebook lineage traces how the design evolved as evidence accrued.  The artefact IS a growth ring in the programme's architecture.
+
+    Medium as message: The paper does what it says.  A reader who sees the notebook rerunning after an evidence update sees the argument's claim instantiated rather than described.  This is stronger evidence than prose: the claim is demonstrated rather than asserted.
+
+    Projection into main patterns: UKRN-S's design state could be published in the same form.  Institutions could see the current population model, the current diagnosis for their profile, the current service-design cycle, as output of a live computation from the current evidence file.  The update-policy choice (ukrns/design-as-function-of-evidence) becomes visible in the versioning of the artefact: every re-run is a potential update; every skipped re-run is a qualifying absence.
+
+    Pre-empts self-undercutting: A paper arguing for 'services should update as evidence arrives' that is itself a frozen snapshot creates the strongest available objection to its own thesis.  Self-application is the method for dissolving that objection.  The inverse objection (why should anyone trust a moving target?) is real but not symmetric: the trust objection applies to services and artefacts alike and is answered by the update-policy discipline (ukrns/design-as-function-of-evidence).
+  + CHECK:
+    Engaged when: the artefact can be re-run with an updated evidence file and the argument shifts accordingly; the re-run process is documented and reproducible; the relationship between the published version and the live state is itself inspectable (e.g. version history, git log).
+    Failing when: the artefact claims to be a function of evidence but cannot actually be re-run; the evidence file is embedded in the document body rather than separable; re-runs produce the same output regardless of input changes (computation inert); the artefact is published as a static snapshot without a re-runnable lineage.
+  + NEXT-STEPS:
+    - Maintain the working paper as a rerunnable notebook; any published version (PDF, HTML, archive) declares which evidence-file revision it was computed from
+    - When publishing a new version, surface what changed: which evidence updates triggered which argument shifts
+    - Package the notebook and the assumptions file together so a reader can reproduce the computation
+    - For operational use at UKRN-S: consider publishing the design state as a live notebook that updates when measurement waves complete
+    - Maintain a mapping from paper sections to notebook cells (Annex B already partially does this)
+    - Record a deprecation plan: when the current tooling becomes obsolete, how will the artefact's claim survive? (Composition 2 is the standing fallback.)
+  + INVARIANT-STATEMENT:
+    The working paper is re-computable from a declarative evidence file and a documented computational environment.  Every published version states its evidence-file revision.  The artefact's lineage is preserved so a reader can see the history of argument shifts against evidence shifts.
+  + FAILURE-MODES:
+    - Claim-without-instance: argues for evidence-driven design but is itself a frozen document with no re-runnable lineage
+    - Embedded evidence: assumptions hard-coded in the document body; changes require manual editing rather than updating a data file
+    - Inert computation: the notebook runs but its outputs do not depend on the evidence file; reruns produce identical results
+    - Untracked lineage: published versions do not declare which evidence-file revision they were computed from; the reader cannot tell what has changed
+    - Tooling lock-in: the artefact depends on specific infrastructure that will evaporate; no fallback composition is maintained
+    - Performative self-application: the artefact is packaged as runnable but no reader actually reruns; form without function
+  + ANCESTORS:
+    - UKRN WP draft-16-april (The reproducibility self-application section; the paper IS the instance)
+    - UKRN WP Annex B (reimplementation pointer; equations specified enough to reconstruct)
+    - assumptions-v2.edn (the declarative evidence file that the notebook consumes)
+    - notebooks/ukrn_population_model.clj (the computation)
+    - t4r/ REPL pattern library
+    - ukrns/design-as-function-of-evidence (the main pattern this meta-pattern instantiates at the artefact level)
+    - ukrns/open-the-triangle (the deposit character of the artefact)
+    - ukrns/computation-as-exploration (the epistemic stance the artefact carries)
+  + DERIVATION:
+    Derived from the working paper's self-application stance: the notebook form is not a packaging choice but a methodological one.
+    Meta-pattern character: describes how the paper is made and, by projection, how UKRN-S could publish its design state.
+    Projection into main patterns: ukrns/design-as-function-of-evidence specifies that the service updates on evidence; this meta-pattern specifies that the service's artefacts can themselves be instances of that update.  ukrns/open-the-triangle specifies that deposits persist; this meta-pattern specifies the form those deposits take.
+    Axis framing follows the same Tension / Composition / Check structure as the main patterns.
+    Coordination requirement: Medium (single-author team can adopt at paper time; institutional operationalisation requires shared tooling and maintenance).

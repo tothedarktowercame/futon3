@@ -1,0 +1,70 @@
+@flexiarg ukrns/design-as-function-of-evidence
+@title Treat Design as a Function of Evidence
+@keywords update-policy, continuous, threshold, annual, responsiveness, stability, thrash, ossification, design-state, ontogenetic-accretion, REPL, self-application, precision, posterior-tightening
+@audience UKRN-S design, UKRN leadership, Research England, participating institutions, trainer community
+@tone analytic-foundational
+@style pattern
+@references [ukrns/ARGUMENT equity/contribution-pathways equity/visible-impact ukrns/open-the-triangle ukrns/measure-where-least-sure]
+
+! conclusion: Each new evidence observation could update the design; whether it should depends on how much the programme values responsiveness against stability.  The axis between responsiveness (services update with each observation) and stability (services resist updates to avoid thrash) recurs every time evidence accrues; the service states which composition it is running and why.  A service change is traceable to a specific evidence update; the absence of a change is traceable to the absence of a qualifying update.
+  + context: The UKRN WP §5 (draft-16-april) demonstrates that a single observation — communal-specification moving from 0.13 to 0.40 for FG2A-P2 — can shift the model's design state substantially.  Three update policies (continuous, threshold Δ>10pp, annual) turn the same sequence of observations into three different design-state trajectories with different costs.  The equity-domain contribution-pathways pattern names the institutional failure (participants without voice remain recipients); this design pattern closes the loop by making every deposited observation a pathway into the design, and by making the update policy itself visible.  It is the pattern whose failure leaves every other pattern idle: evidence without update is a learning system that does not learn.
+  + TENSION:
+    Axis: responsiveness (services update with each observation) ↔ stability (services resist updates to avoid thrash).
+    Real: each end has a live cost.  Responsiveness produces thrash — services changing more often than institutions can adapt to.  Stability produces ossification — evidence accrues but services do not change.  Neither is free.
+    Irreducible: the same design cannot be maximally responsive and maximally stable.  Any update policy is a chosen position on a spectrum.
+    Active: the appropriate responsiveness changes over the lifetime of the programme.  Early in the learning loop, with wide posteriors, high responsiveness is defensible — the model's prior is the least accurate it will ever be.  Later, as posteriors tighten, stability becomes the more honest position — the evidence supports less movement per observation.  The right axis position is a function of the programme's maturity and the state of the evidence base.
+  + COMPOSITIONS:
+    (1) Threshold rule: update a service when a focal profile's credible interval shifts by more than a specified margin (for example, 10 percentage points), treating smaller shifts as noise to watch.  Gives up attention to close-to-threshold evidence; a shift of 9 pp does not propagate.
+    (2) Annual batching: update annually regardless of evidence within the cycle, accepting that between batches the design is out of date with what has been observed.  Gives up timeliness.
+    (3) Continuous update: propagate each observation to the design state immediately and trust institutions to distinguish signal from noise in what they receive from UKRN-S.  Gives up predictability; five design changes per year.
+    These compositions are not ranked; each gives up something specific.  The working paper's §5 Table shows the trade-off concretely for FG2A-P2 across five hypothetical observations.
+  + BECAUSE:
+    Responsiveness-stability tension (not a preference): Neither continuous nor annual is the right answer in the abstract.  A high-stakes service context with patient institutional stakeholders may favour annual batching; a fast-moving measurement context with engaged trainers may favour threshold.  The point is that the answer is a chosen position the service can defend, not a default.  Naming the tension is the service's way of telling its network what it is choosing and what it is choosing against.
+
+    Active-inference precision (meta-framing): In Active Inference terms, the update policy is a precision parameter — how strongly the service weights new observations against the prior design state.  Continuous = infinite precision on observations.  Annual = near-zero precision outside the annual window.  Threshold = a step function.  Making the policy explicit is making precision explicit.
+
+    Posterior tightening over programme life (active property): Early in the programme, posteriors are wide and every T1 observation shifts the model substantially; high responsiveness is epistemically honest because the prior is under-informed.  As posteriors tighten, a given observation moves the model less, and the cost of each design change rises relative to the informational gain.  The active property of the axis is not incidental — it captures the programme's own maturation.
+
+    Loop closure (equity/contribution-pathways answer): Every trainer or participant who contributes an observation is contributing to the design — but only if the service's update policy makes that pathway operational.  contribution-pathways at institutional scale names the governance standing problem; design-as-function-of-evidence at service scale closes the loop by making contribution structurally consequential.  A contribution log (equity/contribution-pathways) feeds an update policy (this pattern); without both, either piece is idle.
+
+    Evidence-chain answer (equity/visible-impact): The evaluation chain terminates in the update.  A chain that produces observations but does not propagate them into design changes is incomplete.  Visible impact at institutional scale names the 'cannot see its own effects' problem; this pattern names the service's obligation to metabolise those effects into its own shape.
+
+    Ontogenetic accretion (REPL/self-application): The paper's REPL form — loads evidence, computes model, emits argument — instantiates the cycle at the level of the artefact itself.  Each run of the notebook is a micro-instance of the update: the document is re-computed from the current evidence file.  This is what makes the claim 'design as a function of evidence' inspectable: a reader can see the notebook, change the evidence file, and observe the design shift.  Self-application is the demonstration that the pattern is enactable, not merely specified.
+
+    Commons governance (Pareto position): The update policy is a commons decision: institutions have a stake in how fast the service changes and how much it drifts while they plan.  Publishing the policy makes institutions able to contest its cadence or its threshold.  A hidden policy forecloses this governance; a stated policy invites negotiation.
+  + CHECK:
+    Engaged when: a service change can be traced to a specific evidence update; the absence of a service change can be traced to the absence of a qualifying evidence update; the update policy is published and the artefact (notebook, model, document) instantiates the policy by being re-computable.
+    Failing when: services change without an evidential cause (fashion, politics, inertia); apex evidence accrues but services stay frozen; the update policy is not published so updates are indistinguishable from political changes.
+  + NEXT-STEPS:
+    - Publish the current update policy (what counts as qualifying evidence, what threshold triggers a design shift, what the cadence is)
+    - For each service change in the current cycle, publish the evidence update and the policy clause that triggered it
+    - For each potential change that did not happen, publish the evidence that was received and the policy clause that did not trigger
+    - Re-examine the policy at the end of each cycle: did thrash appear? did ossification? is the threshold or cadence right?
+    - Version the working paper so readers can see the design-state trajectory across cycles — the artefact is itself a log
+    - Use this pattern downstream of ukrns/measure-where-least-sure (the measurement produces the observation) and alongside ukrns/open-the-triangle (the update is itself a deposit)
+  + INVARIANT-STATEMENT:
+    The service publishes a current update policy stating what qualifies as evidence, what threshold triggers a design change, and what the cadence of evaluation is.  Every service change traces to a specific evidence update and policy clause.  Every non-change under observed evidence traces to a specific policy clause that was not triggered.  The policy itself is revisable on evidence.
+  + FAILURE-MODES:
+    - Evidence-without-update: observations accumulate but the design state never moves; learning system claim is nominal
+    - Continuous thrash: every observation propagates; institutions cannot plan around a moving target
+    - Annual ossification: design stale for eleven months; service becomes a publisher of annual reports
+    - Hidden policy: updates happen but the triggering criterion is not published; indistinguishable from political change
+    - Policy-without-measurement: update policy specified but ukrns/measure-where-least-sure is absent; nothing qualifies
+    - Frozen policy: policy itself never revised even when thrash or ossification appears
+    - Decoupled artefact: the published design never matches the working paper's current output because the artefact is not version-controlled against evidence
+    - Wrong precision for stage: high responsiveness maintained into a mature programme (over-reactive to narrow-interval observations) or low responsiveness held at the start (missing large shifts in wide-posterior territory)
+  + ANCESTORS:
+    - UKRN WP draft-16-april §5 Pattern (update-policy trajectories table; counterfactual; FG2A-P2 observation example; explicit Tension/Composition/Check)
+    - UKRN WP §5 Conclusions (design as function of evidence as the paper's thesis)
+    - equity/contribution-pathways (the pathway that reaches the design state)
+    - equity/visible-impact (the chain that must terminate in update)
+    - UKRN WP own form (notebook that loads evidence, computes model, emits argument — self-application instance)
+    - Active Inference precision parameter (meta-framing)
+    - t4r/ REPL discipline (Read-Evaluate-Print-Loop, cited in the paper's self-application claim)
+  + DERIVATION:
+    Derived from UKRN WP draft-16-april §5's update-policy analysis, the paper's thesis that design is a function of evidence, and explicit Tension/Composition/Check structure.
+    Answers two equity patterns simultaneously: contribution-pathways (makes the pathway operational) and visible-impact (metabolises the chain's output).
+    Mapped to the learning loop at the 'update' step: the closure of the cycle that diagnose/provision/deposit/measure have been building toward.
+    Deepened via precision / self-application: the update policy is both a design choice (precision parameter) and a demonstration (the artefact instantiates it).
+    Axis framing follows paper-draft-16-april; real / irreducible / active defence and three named compositions are load-bearing; the active property (responsiveness appropriate early, stability appropriate late) is load-bearing and should not be collapsed.
+    Coordination requirement: Very high (the loop is the design; every actor in the network has a stake in the update policy).

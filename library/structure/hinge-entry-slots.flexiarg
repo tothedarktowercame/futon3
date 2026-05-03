@@ -1,0 +1,175 @@
+@flexiarg structure/hinge-entry-slots
+@title Hinge-Log Entry Slot Structure (MVSG-Aligned)
+@sigils [🎰/栏]
+@keywords slot, hinge, entry, MVSG, skandha, fill, template, five-field, aggregate, rūpa, vedanā, saññā
+@audience operators filling hinge-log entries; agents scribing on behalf of operators
+@tone structural-minimal
+@factor Keen investigation (dhammavicaya)
+@references [structure/cook-ting structure/hinge-point structure/backwards-induction structure/whose-question-is-this structure/unresolved-tensions-at-closure]
+
+! conclusion:
+  A hinge-log entry has **five optional fields**, each corresponding
+  to a specific aggregate in the MVSG / five-skandhas mapping. When
+  Q→A is non-empty, these fields are available but not required. The
+  operator fills what is load-bearing for this specific hinge. Empty
+  fields do not invalidate the entry; they record that this
+  particular aggregate did not carry load at this cleavage.
+
+  + context: The journal register (parallel to the ledger/saṅkhāra
+    side) holds the other three aggregates that co-arise around the
+    void. The slot structure is the minimum shape that lets those
+    aggregates be addressed without collapsing them into each other
+    or into saṅkhāra-style ledger content.
+
+  + THE-FIVE-SLOTS:
+
+    **1. Entry state (rūpa — form).** The organisational/operational
+       condition the phase arose in. What was the material-institutional
+       state at the start? Examples: "mission doc drafted but untested",
+       "three missions running in parallel", "operator came off a coach
+       session and a coffee", "the scan cache was empty."
+
+    **2. Dominant tension (saññā — perception/pattern-recognition).**
+       What was pulling against what? Saññā is the pattern-matching
+       aggregate; recognising a tension is saññā doing its work.
+       Examples: "completeness vs speed", "ledger's formalism vs what
+       I actually wanted to say", "agent's framing vs operator's
+       voice", "three warm contacts pulling in different directions."
+
+    **3. Shift (saṅkhāra — fabrication, active reconfiguration).**
+       What was synthesised here that reconfigured the pattern? When
+       saññā's pattern-match changes, saṅkhāra did the work —
+       the shift slot holds the *phenomenological aspect* of that
+       synthesis. Examples: "the mission's purpose snapped into
+       operator-capacity-development frame", "what I thought was
+       about reproducibility turned out to be about building AIQA",
+       "saṅkhāra as register was wrong — saṅkhāra as synthesis
+       step is right."
+
+    **4. Residual unknowns (viññāṇa as preserved void — consciousness
+       as space of co-arising).** What didn't settle, and shouldn't
+       be forced to settle? This is the sorry-preservation field —
+       the void that must remain open. Examples: "whether the hinge-log
+       is training or just recording", "what the B→A model's shape
+       will be once use-data arrives."
+
+    **5. Energy signature (vedanā — feeling, hedonic tone).** The
+       quality of mind in which the phase happened. Pressured, open,
+       flat, locked-in, quietly flowing. Vedanā's gatekeeper work
+       made legible. Not self-report about the operator's general
+       state — specifically about the phase's texture. Examples:
+       "profound but manageable", "crisp, satisfying, small-scale",
+       "tired but the find carried energy."
+
+  + SAṄKHĀRA IS PRESENT — DISTINGUISH CONTENT-SAṄKHĀRA FROM OPERATIONAL-SAṄKHĀRA:
+
+    An earlier version of this pattern claimed "saṅkhāra is NOT among
+    the slots — that's the ledger's territory." That framing was
+    wrong in the way it conflated two distinct things:
+
+    - **Content-saṅkhāra:** ledger-shaped records of what was done
+      in the world (code shipped, mission executed, scan ran, PAR
+      emitted). This belongs in the A→B saṅkhāra register via
+      `reflect.clj` / PAR infrastructure. Smuggling it into the
+      phenomenological slots DOES collapse registers — that
+      anti-pattern stands.
+
+    - **Operational-saṅkhāra:** the term-synthesis step that makes
+      any entry exist at all. Writing a tension is fabrication.
+      Naming a shift is fabrication. Constructing a learning-loop
+      update is fabrication. The synthesis that inhabits the
+      five-field type IS saṅkhāra. It is present in every hinge-log
+      entry — in the shift slot explicitly (as phenomenological
+      reconfiguration), and in the entry's bookkeeping (header,
+      learning-loop-updates section, outcome) as the synthesis that
+      holds the entry together.
+
+    So: the five-field schema covers all five aggregates correctly —
+    four content-aggregates (rūpa, vedanā, saññā, saṅkhāra)
+    co-arising around the viññāṇa void. That is the MVSG structure
+    applied as it should be. Saṅkhāra is inhabited, not excluded.
+
+    The ledger/journal distinction remains: ledger-content is
+    saṅkhāra-dense (verb-side records of what the system did);
+    journal-content is rūpa/vedanā/saññā/saṅkhāra-co-arising-around-void
+    (the phase's texture plus the synthesis that made the texture
+    articulable). The journal is not aggregate-exclusive; it is
+    register-distinct.
+
+  + HOW-TO-FILL:
+
+    1. Pluck zero or more questions from the pool
+       (`futon3/library/structure/`) if any belong to this hinge.
+    2. For each field where the operator has something load-bearing
+       to say, write it in first person (I-1 applied to humans),
+       lightly edited at most if agent-transcribed.
+    3. Leave fields empty where they do not carry load. Empty is
+       structurally valid; performatively-filled is anti-pattern.
+    4. Record which learning-loop channels fired at this hinge
+       (pattern library, operator vocabulary, connection graph,
+       question pool).
+
+  + WHEN-TO-FILL (AND WHEN NOT):
+
+    - **Fill** when the hinge is a natural cleavage (cf. `structure/cook-ting`)
+      and at least one of the five fields has load-bearing content.
+    - **Fill lightly** (one or two fields only) when the hinge is
+      minor and most of the phase's phenomenology doesn't need
+      articulation. The five-field schema is a maximum, not a
+      quota.
+    - **Skip entirely** (empty Q→A, empty fields, just record the
+      crossing) when the hinge passed without any aggregate
+      carrying load. This is the blade-of-no-thickness passing
+      through the cleavage.
+
+  + ANTI-PATTERNS:
+
+    - Filling all five fields performatively → schema becomes
+      checklist; drift toward life-logging.
+    - Writing saṅkhāra-content (what was done, what was produced)
+      into any slot → register collapse.
+    - Paraphrasing first-person articulation into agent-voice → I-1
+      violation.
+    - Summarising across entries → destruction of journal character.
+    - Using the slots as a template for generating synthetic content
+      where no phenomenology was actually present → fabricated
+      phenomenology is worse than empty.
+
+  + BECAUSE:
+
+    The MVSG claim (TN-mvsg.md, TN-halliday-clines.md) is that the
+    mission emerges as a qualitative object when the registers are
+    held distinct without collapse. The five slots give addressable
+    structure to the other-three-aggregates register without
+    forcing content into it. Slot-filler is scaffolding for
+    inhabited articulation, not a survey form.
+
+  + RELATIONSHIP-TO-OTHER-POOL-PATTERNS:
+
+    - `structure/cook-ting` finds WHERE to apply the slot-filler
+      (at natural cleavages, not scheduled gates).
+    - `structure/hinge-point` defines the slot-filler's container
+      (the hinge-slot whose Q→A is emergent).
+    - `structure/whose-question-is-this` gates inhabited filling
+      (checks whose voice is writing into the slots).
+    - `structure/unresolved-tensions-at-closure` uses slot 4
+      (residual unknowns) specifically as its primary output site.
+    - `structure/backwards-induction` operates orthogonally — the
+      backwards pass produces content that can be placed into
+      slots 2 (tension), 3 (shift), or 4 (residual), depending on
+      what the induction yields.
+
+  + NEXT-STEPS:
+
+    next[Record which slots get used most often across the first
+         five missions that adopt the hinge-log format — low-use
+         slots are candidates for simplification]
+    next[Watch for slot-drift (e.g., "dominant tension" accidentally
+         collecting saṅkhāra content) as a signal that slot
+         definitions need sharpening]
+    next[Applied-chaos-theory phase begins once the overt method
+         has been used in ≥3 missions: perturbations (different
+         hinge types, different question plucks, different agent
+         participations) reveal the method's actual attractor
+         basins, and the four-channel learning loop integrates
+         the lessons]

@@ -1,0 +1,61 @@
+@flexiarg ukrns/coding-provenance
+@title Coding Provenance — Traceability of NPT Qualitative Coding (Implementation Pattern)
+@keywords implementation-pattern, NPT-coding, provenance, traceability, qualitative-to-numerical, inter-rater, cache, audit, empirics
+@audience UKRN-S design, working-paper maintainers, reviewers auditing claims, future coders
+@tone operational
+@style implementation-pattern
+@references [ukrns/ARGUMENT ukrns/computation-as-exploration ukrns/assumptions-commons]
+
+! conclusion: The numerical scores in assumptions-v2.edn did not arise spontaneously; they were derived from qualitative NPT coding of focus-group transcripts and then upgraded from textual judgements to [0, 1] values.  Any computational claim in the paper rests on this upgrade.  The service states which composition it is running on the axis between full claim-to-transcript traceability (every numerical claim walks back to specific transcript passages) and aggregate claim-to-score provenance (claims walk back to scored dimensions and coder identity, but not to individual passages).
+  + context: This implementation pattern specifies the empirical-provenance mechanic behind ukrns/computation-as-exploration.  The meta-pattern claims the model makes conditional dependencies inspectable; this pattern addresses the upstream question — are the inputs themselves inspectable back to the qualitative evidence?  Without a provenance discipline, the model's outputs are computable but the inputs are effectively oracle; the claim 'this is what the evidence shows' becomes 'this is what someone coded'.
+  + TENSION:
+    Axis: full traceability (every NPT score walks back to specific transcript passages and coder judgements) ↔ aggregate provenance (scores walk back to scored dimensions and coder identity; specific passages not linked).
+    Real: full traceability costs curation — passages must be cross-linked, coder notes preserved, access maintained; aggregate costs reverse-checkability — a reviewer asking 'how do you know this score is 0.40?' gets a general answer rather than a specific one.
+    Irreducible: provenance cannot be simultaneously maximally detailed AND maximally lightweight to maintain.
+    Active: early, when the scores are newly derived and claims are being actively contested, full traceability is load-bearing; later, when scores have stabilised and been cross-referenced, aggregate provenance may suffice for many readers.
+  + COMPOSITIONS:
+    (1) Full claim-to-transcript traceability: every score in assumptions-v2.edn is linked to specific transcript passages with coder notes.  Gives up lightweight maintenance.
+    (2) Aggregate claim-to-score provenance: assumptions-v2.edn states the score, the coder(s), the date, and the scoring protocol; passages are archived but not linked per score.  Gives up reverse-traceability at passage grain.
+    (3) Differential granularity: indicator-level claims (the paper's specific quantitative points) trace to passages; general claims trace to scored dimensions.  Gives up simplicity.
+    The paper currently operates somewhere between (1) and (2) informally — transcript evidence is cited in prose but the assumptions-v2.edn entries do not carry explicit back-links.  The proposed Annex C would make the operating composition explicit.
+  + BECAUSE:
+    Qualitative-to-numerical is load-bearing: the upgrade from textual NPT codes to [0, 1] values is the single most important epistemic step in the paper's empirical chain.  All downstream computation rests on it.  Provenance is the audit trail for that step.
+
+    Reviewer challenge defence: when a reviewer asks 'how do you know that FG2A-P1 has communal-specification 0.20?', the minimum adequate answer names the transcript passages, the coder, and the protocol.  Without provenance, the answer is 'someone coded it' — which is not a defence.
+
+    Coder-in-the-loop: provenance preserves coder identity and judgements.  This serves two purposes: accountability (coders stand behind their work) and governance (future coders can trace how earlier judgements were made, which informs calibration).
+
+    Commons-adjacent: the provenance record is itself a commons artefact.  Its governance (who can add, who can audit, how retention works) mirrors ukrns/assumptions-commons.
+
+    Projection into main patterns: without coding provenance, ukrns/diagnose-before-prescribing's profile signatures cannot be contested by institutions.  A profile's classification depends on its NPT scores; an institution challenging its classification needs access to the provenance to mount a defence.
+  + CHECK:
+    Engaged when: any claim in the paper can be walked back to its empirical source at the declared granularity; coder identity and scoring protocol are recorded; the composition is declared.
+    Failing when: a reviewer asks 'how do you know?' and the answer is unstructured; scores exist in assumptions-v2.edn with no linked provenance; the coding protocol is not documented; coder identity is lost.
+  + NEXT-STEPS:
+    - Produce Annex C (proposed in the writing plan) that documents the coding protocol, coder identities, and the qualitative-to-numerical upgrade
+    - Declare the current composition on the traceability axis
+    - Establish the data cache: where are the transcripts, the codebook, the coded passages, the upgrade mapping stored, and who has access
+    - For composition (1) or (3): add back-links in assumptions-v2.edn (via a sidecar file or embedded metadata) pointing to passages
+    - Cross-reference with ukrns/assumptions-commons (provenance is part of evidence governance)
+  + INVARIANT-STATEMENT:
+    The coding protocol is documented.  Coder identities are recorded.  The qualitative-to-numerical upgrade is described at the declared granularity.  The composition on the traceability axis is declared.  The data cache is accessible under a declared policy.
+  + FAILURE-MODES:
+    - Oracle scores: numerical values in assumptions-v2.edn with no traceable derivation
+    - Lost coder identity: who scored what is not recorded
+    - Undocumented protocol: the upgrade from qualitative code to [0, 1] value has no stated rubric
+    - Cache inaccessibility: transcripts or coded passages exist somewhere but cannot be located
+    - Review-request failure: a reviewer asking for provenance receives an unstructured answer
+    - Granularity-confusion: the paper cites passages for some claims but not others with no declared principle
+  + ANCESTORS:
+    - UKRN ORP Train-the-Trainer focus-group transcripts (the empirical base)
+    - NPT coding protocol (currently informal; to be documented in Annex C)
+    - assumptions-v2.edn (the numerical outputs that rest on the coding)
+    - ukrns/computation-as-exploration (the meta-pattern this implements)
+    - ukrns/assumptions-commons (parallel governance concerns)
+    - ukrns/diagnose-before-prescribing (the main pattern whose profile signatures depend on coded scores)
+    - Ethics approval (King's College London, MRA-23/24-42968)
+  + DERIVATION:
+    Mechanic: how the qualitative-to-numerical upgrade is traced.
+    Serves: computation-as-exploration's inspectability claim at the upstream end.
+    Axis: full traceability ↔ aggregate provenance.
+    Without this pattern: the empirical base is oracle, the upgrade is private, and the paper's computational claims rest on unauditable judgements.

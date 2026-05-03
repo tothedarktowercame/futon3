@@ -1,0 +1,160 @@
+@flexiarg structure/backwards-induction
+@title Backwards Induction and Forward Construction
+@sigils [🔙/逆]
+@keywords problem, induction, artefact, situation, reconstruction, forward-pass, capability, heart-of-the-problem
+@audience anyone confronting an artefact (paper, mission, working paper, code body, scan output) and wanting to find the heart of the problem it addresses; anyone with a problem and wanting to propose an artefact shape for it
+@tone structural-generative
+@factor Keen investigation (dhammavicaya)
+@references [structure/cook-ting structure/hinge-point structure/what-problem-is-this-actually-solving realtime/learn-as-you-go enrichment/rational-reconstruction]
+
+! conclusion:
+  The core capability this namespace is trying to make repeatable is
+  a **pair of moves**, not a single question. Given an artefact,
+  induce the problem it solves (**backwards pass**). Given a
+  problem, propose the artefact shape that would solve it (**forward
+  pass**). The pair together is what "finding ways into the heart of
+  a problem" means operationally — as opposed to describing the
+  artefact, reporting its features, or responding to its marketing.
+
+  The backwards pass is diagnostic and interpretive. The forward pass
+  is generative and commercial. Both are required for the capability
+  to be useful; backwards alone is criticism, forward alone is guessing.
+
+  + context: The move shows up under different names across the
+    futon stack:
+    - **M-superpod-mark2** (futon6) — backwards: reconstruct a
+      paper's problem-class from its technique vocabulary and
+      argumentative skeleton, disregarding the author's stated
+      framing where it diverges. Forward: forward model that takes
+      a novel problem and proposes techniques + patterns + sketched
+      construction. Four-layer output schema: stated problem,
+      techniques deployed, reconstructed problem-class,
+      stated-vs-reconstructed gap.
+    - **M-ukrns-wp** — backwards: what problem does a working paper
+      on training reproducibility actually solve? (Making training
+      impact legible to institutions and regulators.) Forward: a WP
+      that performs that legibility-production for the reader,
+      rather than describing training impact as a topic.
+    - **M-trip-journal** — backwards: what is the mission concept
+      failing to do that the current apparatus addresses? (It
+      doesn't guarantee operator-capacity development.) Forward:
+      the hinge-log + question-pool + sidecar apparatus is
+      structurally shaped to fill that specific gap.
+    The pattern is the same; the domain and the artefact type change.
+
+  + THE-TWO-PASSES:
+    **Backwards pass.** Given an artefact, derive the problem-class
+    it actually solves — not the one it claims to solve. For papers
+    this means reading technique vocabulary as a constraint on the
+    solvability envelope. For missions it means reading the
+    apparatus (code, structure, outputs) as a constraint on what
+    is actually being addressed. For working papers it means reading
+    the shape of the argument for what a reader could carry away.
+    The backwards pass is done well when the induced problem
+    constrains the artefact more tightly than the stated framing
+    does.
+
+    **Forward pass.** Given a problem-class, propose an artefact
+    that would solve it. For papers this is the forward model:
+    novel problem → proposed techniques → sketched construction.
+    For missions it is: given the gap named at IDENTIFY, what
+    apparatus has the shape that would close it? For working
+    papers it is: given the legibility-production required, what
+    argumentative structure would produce it in a reader?
+
+  + WHY-THE-PAIR-HAS-MARKET-VALUE:
+    The backwards pass yields a specification that is not the
+    artefact's own self-description. The forward pass can then
+    produce new artefacts against that specification. Clients pay
+    for the forward pass when their own forward pass is blocked —
+    they have a problem but the artefact-space they can imagine
+    is too narrow. What they cannot do is run the backwards pass
+    on their own situation to generate a better specification;
+    that's the skill. Selling the pair = selling the capacity to
+    move between problem and artefact fluently in either direction.
+
+  + WHEN-TO-PLUCK:
+    - At any hinge where an artefact is in hand and the operator
+      is tempted to respond to the artefact's self-description
+      rather than to what it actually does.
+    - At any hinge where a problem is in hand and the operator
+      is tempted to propose what comes to mind first rather than
+      to specify the problem carefully before proposing.
+    - At any hinge where two superficially-disjoint artefacts are
+      sitting in the operator's work at once — check whether they
+      actually solve the same problem under the backwards pass.
+      This is how M-superpod-mark2 and M-trip-journal and
+      M-ukrns-wp got recognised as sharing a core move on
+      2026-04-17.
+
+  + HOW-TO-APPLY:
+    **Backwards:**
+    1. List what the artefact actually contains — techniques,
+       vocabulary, argumentative moves, what it rejects, what it
+       emphasises. Evidence loci, not summary.
+    2. Induce the problem these contents would tightly constrain.
+       Prefer tighter constraint to broader accommodation.
+    3. Compare the induced problem to the artefact's stated
+       framing. The gap is diagnostic — the sharper the gap, the
+       more likely the real contribution differs from the stated
+       one.
+
+    **Forward:**
+    1. Take the problem-class (from the backwards pass, or from
+       the operator's own situation) as the specification.
+    2. Propose an artefact shape whose contents would constrain
+       to this problem-class under the backwards pass.
+    3. Check: would a reader doing the backwards pass on the
+       proposed artefact arrive at the same problem-class? If
+       not, the forward proposal is underspecified.
+
+  + ANTI-PATTERNS:
+    - Running only the backwards pass. This is criticism, not
+      capability. Joe is not selling criticism.
+    - Running only the forward pass. This is guessing at solutions
+      without understanding the problem's actual shape. Produces
+      artefacts that collapse under the reader's own backwards
+      pass.
+    - Taking the artefact's self-description as the problem. This
+      is what M-superpod-mark2 explicitly refuses: "the paper is
+      evidence, not testimony."
+    - Treating the pair as a procedure. The pair is a capability,
+      which means it has to be inhabited and developed, not
+      executed. Cook Ting's blade, not the ordinary carver's.
+
+  + RELATIONSHIP-TO-OTHER-POOL-PATTERNS:
+    - `structure/what-problem-is-this-actually-solving` is the
+      question form of the backwards pass at a single hinge. That
+      pattern is diagnostic (guards against drift). This pattern
+      is the full move (generative, paired).
+    - `structure/cook-ting` is the recognition-of-natural-cleavages
+      move that lets the operator find the right hinge to apply
+      the pair at. Cook Ting finds where to cut; backwards-forward
+      is what the cut is *for*.
+    - `structure/whose-question-is-this` gates inhabited answering
+      of pool questions. For backwards-induction specifically: the
+      backwards pass must be done in the operator's own voice;
+      an agent-drafted backwards pass usually produces the
+      artefact's self-description with extra steps.
+
+  + BECAUSE:
+    Making thinking legible-enough-to-teach requires making the
+    moves explicit. This pair is the move the operator performs
+    when the work goes well — in consulting pitches, in reviewing
+    papers, in designing missions, in reading the stack's own
+    artefacts. Naming the pair converts an implicit capability
+    into a repeatable one. The operator-capacity-development loop
+    M-trip-journal targets depends on having named moves to
+    practise; this is one of them, and probably the most general.
+
+  + NEXT-STEPS:
+    next[Apply the pair to at least one non-mission artefact
+         (e.g., a paper, a competitor product, a client situation)
+         and record the backwards/forward outputs in the relevant
+         mission's sidecar]
+    next[Watch for cases where the backwards pass finds the same
+         problem across superficially disjoint artefacts — those
+         are the edges to log in the connection graph]
+    next[Track whether the forward pass, when run, actually
+         produces artefacts that survive a second-party backwards
+         pass. That is the capability's validation criterion.]

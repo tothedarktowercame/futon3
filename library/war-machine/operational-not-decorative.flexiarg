@@ -1,0 +1,11 @@
+{:id "war-machine/operational-not-decorative"
+ :claim "Infrastructure that validates is operational; infrastructure that only documents is decorative. The test: does the artifact change behavior when it fails?"
+ :ground "Bulletin 1 (2026-02-14): Wiring diagrams were assumed decorative until First Proof showed they could catch structural errors at scale. The diagrams became operational when edge-level critique was possible — when a wrong arrow produced a detectable failure, not just a stale document."
+ :warrant "The distinction between operational and decorative infrastructure is whether failure is observable. A test suite is operational (failure stops the build). A README is decorative (staleness is invisible). The war machine requires that its instruments be operational — otherwise it is flying blind."
+ :backing "S1 (evidence discipline works). futon5 wiring diagrams. M-futon3x-e2e demo."
+ :qualifier "Decorative infrastructure is not worthless — it aids comprehension. But it must not be confused with operational infrastructure, which aids correction."
+ :rebuttal "Some infrastructure is deliberately decorative (devmaps as aspirational sketches). The danger is when decorative infrastructure is *relied upon* as if it were operational — e.g., trusting a mission doc's status field without checking the evidence."
+ :tension "System builds extensive documentation but cannot tell when it diverges from reality."
+ :resolution "Make documentation testable: wiring diagrams that validate, mission status derived from evidence, devmaps that can be compared against actual code."
+ :bulletin 1
+ :support-relation :S1}

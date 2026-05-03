@@ -1,0 +1,57 @@
+@flexiarg ukrns/design-state-lineage
+@title Design-State Lineage — Versioned Service-Design Changes (Implementation Pattern)
+@keywords implementation-pattern, versioning, design-state, lineage, traceability, change-history, evidence-trace, fine-grained, coarse-grained
+@audience UKRN-S design, working-paper maintainers, institutions tracking service-state changes, funders auditing design history
+@tone operational
+@style implementation-pattern
+@references [ukrns/ARGUMENT ukrns/design-as-function-of-evidence ukrns/assumptions-commons ukrns/model-recompute-schedule ukrns/publication-cadence]
+
+! conclusion: A service that claims design updates as a function of evidence must be able to show, for any point in time, (a) the design state that was active then, (b) the evidence that produced it, and (c) the update-policy clause that authorised the update.  The service states which composition it is running on the axis between fine-grained versioning (every change versioned) and coarse-grained versioning (changes batched into versioned releases).
+  + context: This implementation pattern specifies the versioning mechanic behind ukrns/design-as-function-of-evidence.  The pattern's invariant-statement requires every service change to trace to an evidence update and policy clause; without a lineage mechanism, that requirement is unverifiable.  Design-state lineage is what makes the main pattern's traceability claim operational.
+  + TENSION:
+    Axis: fine-grained versioning (every change versioned separately, full evidence-trace per change) ↔ coarse-grained versioning (changes batched into periodic releases).
+    Real: fine-grained costs overhead — more version tags, more release noise; coarse-grained costs traceability — readers cannot see individual changes within a release.
+    Irreducible: a single versioning strategy cannot simultaneously maximise per-change traceability and minimise release noise.
+    Active: early in a programme, changes are few and coarse-grained suffices; as update cadence rises (under a continuous or threshold policy from ukrns/design-as-function-of-evidence), fine-grained becomes more informative.
+  + COMPOSITIONS:
+    (1) Per-change versioning: every update gets its own version tag and evidence-trace.  Gives up version-count simplicity; highest traceability.
+    (2) Per-cycle versioning: quarterly or per-T1-wave releases batch internal changes into a single version tag; internal changes logged separately but not versioned.  Gives up per-change traceability.
+    (3) Dual-track: canonical versions (per-cycle, citable) + internal log (per-change, for reconstruction).  Gives up simplicity; both audiences served.
+    The paper currently operates informally through git history; operational use at UKRN-S requires a declared composition.
+  + BECAUSE:
+    Traceability is the main pattern's invariant: ukrns/design-as-function-of-evidence requires every service change to trace to evidence + policy clause.  Lineage makes this trace constructible for any historical moment, not only the present.
+
+    Lineage vs log: a log records changes; a lineage preserves the ability to reconstruct the state at any past point.  Institutions that planned around the design state at time T need to be able to retrieve that state, not just read the change log.
+
+    Cross-pattern coordination: this pattern operates downstream of ukrns/assumptions-commons (evidence provenance) and ukrns/model-recompute-schedule (rerun events); it operates upstream of ukrns/publication-cadence (which versions get canonicalised).  A coherent lineage mechanism is the backbone of the implementation-pattern stack.
+
+    Commons accountability: institutions contributing evidence should be able to see their observation's effect on the design state.  Without lineage, the contribution-pathway (equity/contribution-pathways) terminates in opacity.
+  + CHECK:
+    Engaged when: the design state at any past date is reconstructible; every change traces to an evidence update identifier and an update-policy clause; the chosen composition (fine / coarse / dual) is declared.
+    Failing when: past design states cannot be reconstructed; changes trace to "updated 2026-05" with no evidence identifier; the policy clause that authorised each change is not recorded.
+  + NEXT-STEPS:
+    - Declare the current composition in project documentation
+    - Make each design-state change carry: version identifier, evidence revision, policy clause, date
+    - Expose the lineage as a queryable history (even a simple chronological log is better than none)
+    - Cross-reference with ukrns/assumptions-commons (evidence provenance) and ukrns/publication-cadence (which versions are canonical)
+    - Provide a reconstruction example: "here is how to retrieve the design state as of 2026-Q1"
+  + INVARIANT-STATEMENT:
+    Every design-state change is versioned and traces to (evidence update identifier, policy clause).  The composition on the versioning axis is declared.  Past design states are reconstructible.
+  + FAILURE-MODES:
+    - Untraced change: design state updates without a recorded reason
+    - Policy-clause-missing: change traces to evidence but not to the policy clause that authorised it
+    - Reconstruction-impossible: past design states cannot be recovered from the lineage
+    - Fine-grained-overload: every recompute gets a version; release noise overwhelms readers
+    - Coarse-grained-opaque: cycle-release rolls up so many changes that nothing specific is traceable
+    - Ad hoc versioning: version numbers exist but carry no consistent meaning
+  + ANCESTORS:
+    - ukrns/design-as-function-of-evidence (the main pattern this implements)
+    - ukrns/assumptions-commons (evidence provenance upstream)
+    - ukrns/model-recompute-schedule (rerun events upstream)
+    - ukrns/publication-cadence (canonical versions downstream)
+    - equity/contribution-pathways (commons accountability rationale)
+  + DERIVATION:
+    Mechanic: how design-state changes are versioned and traced.
+    Serves: design-as-function-of-evidence's traceability invariant.
+    Axis: fine-grained ↔ coarse-grained.
+    Without this pattern: the main pattern's invariant cannot be checked.

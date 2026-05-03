@@ -1,0 +1,29 @@
+@flexiarg collaboration-coherence/isolation
+@title Stay Coupled to the Surrounding Field
+@keywords isolation, not-invented-here, transversality, exposure, cross-pollination, blinkers
+@audience peer-learning facilitators, project conveners, distributed-team leads
+@tone practical
+@style pattern
+@references [collaboration-coherence/navel-gazing peeragogy/wrapper peeragogy/newcomer]
+
+! conclusion: Collaborative work needs deliberate, recurring coupling to its surrounding field — adjacent projects, external readers, prior art — or it accretes its own private vocabulary, repeats solved problems, and rejects useful inputs as foreign.  The pattern is to schedule and structure the coupling, not to hope it happens; the surface form to detect ("Not Invented Here," fenced field, blinkered horse) is named in Guattari's transversality framing as the absence of a coefficient that has to be set.
+  + context: Distributed peer-learning projects and small teams default to inward attention.  In-group vocabulary tightens; in-group references stack; the project becomes legible to itself faster than it becomes legible to anyone else.  Without counter-pressure, the same dynamics that produce focus produce isolation.  Adjacent projects solve overlapping problems independently and never compose.  External readers find no entry path.  The "transversality coefficient" — the rate of permitted exposure — has to be set deliberately or it sets itself to zero.
+  + TENSION:
+    Axis: focus ↔ exposure.
+    Real: deep focus is what lets a small group make progress on hard problems.  Sustained focus without exposure is what makes that progress invisible to (and unusable by) anyone outside it.  Both effects are continuous; the question is whether the coupling rate is named.
+    Irreducible: a project cannot simultaneously be at maximum inward attention and maximum outward porosity.  Each unit of coupling work costs focus; each unit of unbroken focus costs coupling.
+    Active: the pull recurs whenever a deadline tightens, when a project encounters its first internal vocabulary that wasn't there before, and when a newcomer arrives and finds the entry-cost prohibitive.
+  + COMPOSITIONS:
+    (1) Scheduled exposure: name a recurring slot — monthly external review, periodic prior-art audit, regular cross-project show-and-tell — where the project deliberately steps outside its own frame.  Cadence matters more than depth.
+    (2) Adjacent-project mapping: maintain a list of projects working on overlapping problems, with current state and one-line interface.  The list is a wrapper artefact; the maintenance is the coupling.
+    (3) NIH-detection: when the group reaches for a custom build, ask explicitly what existing artefact was considered and rejected.  Make reuse the default branch; force "make" to justify itself.
+    (4) Newcomer-as-probe: treat each newcomer's stuck moment as evidence that the coupling rate is too low — the entry path measures the project's exposure surface.
+    (5) Friendly external readers: maintain at least one named external reader who isn't a contributor but knows the project well enough to flag in-group drift.
+  + CHECK:
+    Engaged when: the project's vocabulary, references, and design choices are recognisably composed with its surrounding field, and at least one structured exposure surface is current.  Failing when: project vocabulary has diverged from any neighbouring usage, contributors cannot name the closest adjacent project, or the project's own reuse-vs-make decisions never include explicit reuse-search.
+  + FAILURE-MODES:
+    - Not-invented-here build: the group writes a custom version of a tool / framework / vocabulary that already exists, without recording why the existing artefact was rejected.
+    - Vocabulary drift: in-group terms calcify with no equivalent in adjacent fields; the project becomes harder to explain over time, not easier.
+    - Newcomer rejection: arrivals consistently bounce off; the group attributes it to the newcomer rather than reading it as exposure-surface failure.
+    - Cross-project blindness: another project solves the same problem in parallel and the group doesn't notice for months or years.
+    - Defensive overfocus: criticism from outside is reflexively rejected as "they don't understand the context"; the rejection is the symptom, not the response.

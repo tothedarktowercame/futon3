@@ -1,0 +1,29 @@
+@flexiarg collaboration-coherence/messy-with-lurkers
+@title Design for the Participation Gradient
+@keywords lurking, partial-participation, completion-rate, mooc-attrition, participation-floor
+@audience peer-learning facilitators, MOOC organisers, online-community hosts
+@tone practical
+@style pattern
+@references [peeragogy/newcomer peeragogy/carrying-capacity collaboration-coherence/misunderstanding-power-laws]
+
+! conclusion: Voluntary collaborative learning produces a continuous gradient of participation — from full completion through partial engagement to silent observation — and that gradient is structural, not pathological.  The pattern is to design for the gradient: separate metrics per participation tier, low-cost partial-participation paths, low-cost re-entry, and explicit acceptance that "lurker" and "non-completer" are valid project states rather than failures to be eliminated.
+  + context: Online peer-learning groups (MOOCs the canonical case, but the dynamic is general) attract orders of magnitude more lurkers than completers.  Stanford's MOOC AI class started with 100,000+ and finished with 12%; that ratio is structural to voluntary, low-entry-cost, asynchronous learning.  The failure mode named "messy with lurkers" is not the participation gradient itself but the *misreading* of it as broken — applying completion-rate metrics borrowed from compulsory education, designing as if the gradient should be flat, or treating lurkers as a defect to be filtered.  The mess is real; the misreading is the antipattern.
+  + TENSION:
+    Axis: completion-rate metrics ↔ participation-gradient design.
+    Real: completion is a real outcome and metric.  Designing only for completion truncates the project's reach to the small minority that completes.  Designing for the gradient accepts attrition as a feature and instruments accordingly.
+    Irreducible: a single metric cannot simultaneously honour the value of completion and the value of partial participation — they answer different questions.  The choice is which question the project's design optimises.
+    Active: the pull recurs whenever the project reports its statistics, whenever onboarding is redesigned, and whenever a funder asks about completion rates.
+  + COMPOSITIONS:
+    (1) Multi-tier metrics: separately track completion, partial completion (named milestones), active engagement (visible contribution), and reach (lurker count, content access).  Each tier has its own success criterion.
+    (2) Low-cost partial paths: explicit value at each gradient level — a lurker who never contributes still gets something; a partial-participant who quits at week three has done something useful; the completer is the highest tier but not the only tier.
+    (3) Low-cost re-entry: attrition is reversible.  Someone who dropped at week three can rejoin at week eight without restarting.  The infrastructure for re-entry (tagged checkpoints, durable artefacts, async-friendly content) is the design move.
+    (4) Acknowledge dissipation: name the participation gradient explicitly in the project's self-description.  This converts attrition from embarrassment to design feature.
+    (5) Pair with carrying-capacity: the same participants who lurk in one phase may contribute in another; the same group's carrying capacity is bounded; treating lurkers as inactive contributors-in-waiting respects both.
+  + CHECK:
+    Engaged when: project reports separately track lurkers, partial participants, and completers; design decisions visibly accommodate all three.  Failing when: a single completion-rate number is the headline metric, or onboarding makes partial participation unavailable.
+  + FAILURE-MODES:
+    - Completion-only metric: project reports its success as completion percentage, treating attrition as universal failure.
+    - Hidden gradient: partial participation has no recognised value, so partial participants leave invisibly and the project is surprised by the resulting headcount.
+    - High-cost re-entry: someone who lurked for a month finds the cost of joining mid-stream prohibitive; the lurking phase that should produce participants instead produces departures.
+    - Lurker-shaming: project communications treat lurkers as a problem to be solved rather than a tier to be designed for.
+    - Cohort-only thinking: the project assumes a fixed cohort, then reads the gradient (which is what voluntary participation actually is) as cohort failure.

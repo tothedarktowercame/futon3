@@ -1,0 +1,70 @@
+@flexiarg ukrns/distributed-coverage
+@title Distributed Coverage — Coverage as a Network Property, Not an Individual Requirement (Sixth Main Pattern)
+@keywords main-pattern, distributed-coverage, delivery-profile, breadth-overload, impostor-syndrome, network-property, curriculum-triage, coverage-register
+@audience UKRN-S design, Training Project, Institutional Leads, individual trainers, Research England
+@tone analytic-foundational
+@style pattern
+@references [ukrns/ARGUMENT equity/protected-interaction ukrns/provision-at-network-scale ukrns/scale-register ukrns/diagnose-before-prescribing]
+
+! conclusion: The breadth of open-research topics exceeds what any single trainer can confidently cover.  A programme that requires uniform coverage from every trainer produces breadth overload, impostor syndrome, and absorbed-mode delivery.  A programme that treats coverage as a network property — each trainer declaring the modules they will own, each institution committing an explicit coverage profile, the programme maintaining an aggregate view — converts the same breadth from an individual burden into a distributed responsibility.  The service states which composition it is running on the axis between uniform-coverage-per-trainer and distributed-coverage-across-the-network.
+  + context: This pattern addresses the hole (H5) that the five main design patterns left open: protected-interaction (breadth overload) is only partially answered by network-scale provisioning of coordination support (ukrns/provision-at-network-scale).  Network-scale coordination helps trainers find each other but does not itself distribute the coverage burden.  The equity-domain protected-interaction pattern diagnoses the institutional failure (trainers silently absorb a coordination problem that extends beyond their remit); this design pattern specifies a service-level response that makes coverage distribution explicit.  The paper-v2.3 resolution for protected-interaction — declared delivery profiles, institutional coverage commitments, coverage as network property — is formalised here as its own design pattern.
+  + TENSION:
+    Axis: uniform coverage per trainer (every trainer expected to cover all topics) ↔ distributed coverage across the network (each trainer owns a subset, the network guarantees totality).
+    Real: uniform is communicatively simple ('all our trainers deliver the full open-research curriculum') and requires no coordination infrastructure; distributed requires declaration, aggregation, institutional commitment, and active maintenance of the coverage map.  Both carry real costs.
+    Irreducible: coverage cannot be simultaneously uniform-per-trainer and distributed-across-network.  The same module either is expected of every trainer or is owned by a declared subset.
+    Active: the right position shifts with the territory.  A narrow curriculum favours uniform; the wide, evolving territory of open-research favours distributed.  As the territory grows (AI for research, new replication methods, new data-governance requirements), the case for distributed strengthens.
+  + COMPOSITIONS:
+    (1) Declared delivery profiles: each trainer declares the modules they will own; each participating institution commits an explicit coverage profile with resourcing; the programme maintains an aggregate coverage view.  Coverage is a network property; gaps are visible.  Gives up communicative simplicity; demands declaration infrastructure.
+    (2) Uniform expectation: every trainer expected to cover the full curriculum; breadth overload and impostor syndrome become individual problems; absorbed-mode delivery is the predictable outcome.  Gives up the distributed trainer experience; easy to describe to funders.
+    (3) Curriculum triage per institution: each institution picks which subset to deliver based on its profile; coverage gaps are flagged rather than hidden; the programme does not guarantee totality at the network level.  Gives up network-level totality; gains institution-level honesty about what is delivered.
+    These compositions are not ranked; the paper-v2.3 (companion journal article) resolution for protected-interaction favours Composition (1) with institutional coverage commitments.  Composition (3) is a realistic fallback when institutional capacity is uneven.
+  + BECAUSE:
+    Breadth-vs-depth tension (equity/protected-interaction link): the equity-domain pattern names the tension at institutional scale: the territory is wider than any single trainer's expertise, so uniform expectation produces either superficial coverage or impostor-mode delivery.  Distributed coverage resolves the tension structurally rather than by asking individuals to work harder.
+
+    Network-property framing: coverage as a network property is the move that reframes the problem.  Under uniform expectation, a gap in a trainer's competence is a trainer problem.  Under distributed coverage, the same gap is a network problem ('this module is owned by trainers X, Y, Z; the network needs to ensure their resourcing') — which locates the problem where the resources exist to resolve it.
+
+    Absorbed-mode signature: absorbed input (companion paper) is the implementation mode where individuals carry what the architecture should distribute.  Breadth overload is a specific absorbed-mode signature; distributed coverage is the architectural response.
+
+    Profile-contingency: institutions differ in what they can resource.  Composition (1) presumes institutional commitment; Composition (3) acknowledges that some institutions cannot commit to full modules.  The choice is itself a profile-contingent decision (linked: ukrns/diagnose-before-prescribing).
+
+    Cross-pattern: the coverage map is a specific instance of ukrns/scale-register — coverage is a capability whose scale is 'distributed across declared trainers/institutions'.  Maintaining the map is an operational act governed by the scale-register mechanics.
+  + CHECK:
+    Engaged when: every trainer can point to their declared module subset; each participating institution has a committed coverage profile; the programme maintains a current aggregate coverage map; coverage gaps (modules not owned by anyone at sufficient depth) are visible.
+    Failing when: individual trainers silently absorb breadth overload; no institutional coverage commitment exists; coverage is described uniformly ('our trainers deliver the full curriculum') without distribution evidence; impostor syndrome is widespread and its structural cause is not named.
+  + EVIDENCE:
+    Observation (2026-04, UKRN Services recruitment): UKRN Services issued a call for expressions of interest seeking trainers to deliver 'open research and related topics to the wider sector and beyond'.  Despite addressing a population of recently-trained, motivated open-research trainers (the ORP Training Community of Practice, ~200-strong), the response rate was disappointingly low.  UKRN-S itself has acknowledged the finding and wants to understand why the transition from 'trainer on open research within your institution' to 'providing training to others via UKRN Services' has not happened at the rate they hoped.
+
+    Reading through the pattern: the call asks candidates to volunteer for delivery of an unspecified subset of a wide territory, without a scaffold for what the service will deliver (confident-adaptation, at UKRN-S scale) and without a mechanism for declaring which modules a trainer will own (distributed-coverage, at trainer scale).  The pattern predicts that breadth-overload and impostor effects — already documented at ORP delivery stage — will recur at the recruitment stage.  Observed low response is consistent with this prediction.
+
+    Implication for operational use: adoption of the pattern's discipline — declared delivery profiles, institutional (or trainer-level) coverage commitments, a network-level coverage map, and an explicit expectation scaffold for UKRN-S delivery — would be expected to reduce this transition friction.  The argument generalises the paper's ORP-era findings into UKRN-S's own recruitment experience; the same architectural gap produces the same absorbed-mode signature at a different point in the pipeline.
+  + NEXT-STEPS:
+    - Ask each participating trainer to declare the modules they will own
+    - Ask each participating institution to commit an explicit coverage profile with resourcing
+    - Maintain an aggregate network-level coverage map (linked: ukrns/scale-register)
+    - Audit the map for gaps (modules without owners or with only under-resourced owners)
+    - Where Composition (3) applies: flag coverage gaps as institutional honesty rather than hiding them
+    - Use this pattern alongside ukrns/diagnose-before-prescribing (which profile can commit to which composition?) and ukrns/provision-at-network-scale (what coordination does distributed coverage require?)
+  + INVARIANT-STATEMENT:
+    Each trainer has a declared module subset.  Each participating institution has a committed coverage profile.  The programme maintains a current network-level coverage map.  Coverage gaps are visible; institutional commitments are contestable.
+  + FAILURE-MODES:
+    - Breadth overload: trainers silently cover topics outside their primary expertise without team support
+    - Impostor-driven delivery: session held while trainer under-prepared because declaration infrastructure was absent
+    - Un-profiled institution: institution participates without naming what it covers or what it resources
+    - Uniform-communication with distributed-reality: programme is described as if coverage is uniform but actually absorbed by a subset of trainers
+    - Coverage-map drift: declared profiles exist but the aggregate map is stale
+    - Institutional-refusal unacknowledged: some institutions cannot commit but Composition (3)'s honesty is not declared; gaps are hidden
+    - Absorbed-mode as individual failure: breadth overload read as trainer motivation problem rather than architectural absence
+  + ANCESTORS:
+    - paper-v2.3 Pattern 2 (Protected Interaction) resolution: declared delivery profiles; institutional coverage as a network property
+    - equity/protected-interaction (the diagnostic pattern this answers)
+    - equity/protected-interaction-as-published.flexiarg (the paper-aligned variant)
+    - UKRN T3 transcripts: T1 ("give it more time than you expect"); T2A ("I didn't feel prepared to talk about all the areas"); T3 ("There's a little bit of impostor syndrome")
+    - Focus-group codes: FG1.15, FG2A.13 (impostor); FG3.13, FG2A.4 (professional-staff preparation)
+    - Role codebook: breadth overload as absorbed-mode signature
+  + DERIVATION:
+    Derived from paper-v2.3 protected-interaction resolution (declared delivery profiles, institutional coverage as network property) and from the hole (H5) in the original five-pattern set where ukrns/provision-at-network-scale answered equity/protected-interaction only partially.
+    Answers equity/protected-interaction fully at service scale: network provisioning of coordination (ukrns/provision-at-network-scale) + distributed coverage (this pattern) + declared delivery profiles (trainer-level declaration).
+    Mapped to the learning loop: this pattern operates alongside provision-at-network-scale during the 'provision' step.  Once diagnosis (ukrns/diagnose-before-prescribing) has named a profile, both scale choice (ukrns/provision-at-network-scale) and coverage distribution (this pattern) are chosen.
+    Axis framing follows the paper-draft-16-april Tension / Composition / Check structure.
+    Coordination requirement: Medium (trainer + institution + programme) to High (network-scale coverage map maintenance).
+    Sixth main pattern: the original five covered the openness, diagnostic, scale, measurement, and update disciplines; this sixth pattern covers the coverage-distribution discipline that completes the response to equity/protected-interaction.

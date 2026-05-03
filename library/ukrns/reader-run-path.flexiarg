@@ -1,0 +1,57 @@
+@flexiarg ukrns/reader-run-path
+@title Reader Run Path — Minimum Reproducibility Infrastructure (Implementation Pattern)
+@keywords implementation-pattern, reproducibility, reader-rerun, containerisation, reimplementation, degradation-path, accessibility, compute-environment
+@audience UKRN-S design, working-paper maintainers, readers attempting to rerun, peer reviewers, archivists
+@tone operational
+@style implementation-pattern
+@references [ukrns/ARGUMENT ukrns/self-application ukrns/computation-as-exploration ukrns/publication-cadence]
+
+! conclusion: A paper that claims self-application is only as strong as the infrastructure an actual reader needs to rerun it.  The service states which composition it is running on the axis between full reproducibility (a reader runs the notebook and reproduces the current outputs) and accessible readout (the paper declares enough in an annex for a reader to reimplement the computation in any language).  Both endpoints serve different readers; neither alone is sufficient for long-horizon reproducibility.
+  + context: This implementation pattern specifies the reader-facing reproducibility mechanic behind ukrns/self-application.  The meta-pattern claims the artefact is re-computable; this pattern addresses the practical question of what infrastructure a reader needs.  Without a declared reader-run path, the self-application claim is aspirational for most readers and will decay as the compute environment ages.
+  + TENSION:
+    Axis: full reproducibility (reader runs the notebook in a declared environment) ↔ accessible readout (the paper's annex contains enough equations, data, and protocols for first-principles reconstruction in any language).
+    Real: reproducibility costs tooling maintenance — a declared environment will decay as dependencies age; readout costs rerun fidelity — a reader reconstructing from first principles may reproduce the approach but not bit-for-bit match.
+    Irreducible: a single infrastructure cannot simultaneously be maximally one-click-runnable in today's tooling AND maximally independent of any specific tooling for long-term preservation.
+    Active: technical readers in the near term appreciate reproducibility; non-technical readers need readout; archival readers in the far future need readout (tooling will have changed).
+  + COMPOSITIONS:
+    (1) Notebook + environment: fully-reproducible containerised environment (Docker, Nix, or similar) that locks dependencies; reader runs the notebook and reproduces current outputs.  Gives up low-barrier access.
+    (2) Static + reimplementation annex: the paper publishes equations, levers, uncertainty model, sampling protocol, and declarative assumptions file in enough detail that a reader can reconstruct the computation in any language.  Gives up one-click rerun.
+    (3) Both: containerised environment for near-term rerun + reimplementation annex for long-term preservation and first-principles access.  Gives up simplicity; double maintenance.
+    The paper-draft-16-april has Annex B, which satisfies Composition (2); the notebook (Clojure/Clay) satisfies Composition (1) partially.  Operational use would benefit from declaring the composition as (3) with both paths declared.
+  + BECAUSE:
+    Near-term vs long-term reproducibility: ukrns/self-application wants re-computability.  Near-term: readers today want to rerun.  Long-term: readers in 20 years want to reconstruct when the current tooling is obsolete.  These are different audiences served by different compositions.
+
+    Reader posture differentiation: technical readers can use a containerised environment; non-technical readers cannot but may want to understand what the computation does.  Composition (2) is accessible to any reader who reads mathematics; Composition (1) is accessible only to readers with the tooling.
+
+    Graceful degradation: the compute environment will eventually decay.  When Docker images stop building, what happens?  Composition (2) is the standing fallback: the reimplementation annex remains readable even when the environment is obsolete.  Projects with only Composition (1) lose their self-application property when tooling decays.
+
+    Declared access level: readers should know before attempting what level of reproducibility the paper supports.  A paper that claims self-application but whose rerun fails on first attempt undermines trust.  Declaration manages expectation.
+  + CHECK:
+    Engaged when: the composition is declared; at least one of the rerun paths works for the declared audience; the fallback composition (typically readout) is maintained even if the primary is available.
+    Failing when: the paper claims self-application but no reader can actually rerun; the notebook runs but only in an undeclared environment; the annex is missing details needed for reconstruction; there is no fallback for when the primary path decays.
+  + NEXT-STEPS:
+    - Declare the current composition in the paper or project documentation
+    - If (1): specify the environment (Docker image, Nix flake, or equivalent); test the rerun from scratch periodically
+    - If (2): ensure Annex B is complete enough for reimplementation (equations, factor lists, lever definitions, uncertainty model, sampling protocol)
+    - If (3): maintain both paths; declare which is primary and which is fallback
+    - Invite reader feedback: someone who tries to rerun and fails should have a channel
+    - Cross-reference with ukrns/publication-cadence (snapshots need rerun-path documentation at snapshot time)
+  + INVARIANT-STATEMENT:
+    The current reader-run composition is declared.  At least one path works for its declared audience.  A fallback for tooling decay is maintained.
+  + FAILURE-MODES:
+    - Unspecified environment: reader attempts to rerun, discovers dependencies are not declared, gives up
+    - Environment-decay: the Docker image stops building; the rerun path is broken and nobody notices
+    - Annex-incomplete: readout is claimed but the annex is missing details needed for first-principles reconstruction
+    - Fallback-missing: primary path depends on specific tooling; when tooling decays, self-application is lost
+    - No reader-feedback channel: failures are unreported; the maintainer never learns the rerun is broken
+  + ANCESTORS:
+    - UKRN WP Annex B (reimplementation pointer — satisfies Composition (2))
+    - notebooks/ukrn_population_model.clj (the computation — Composition (1) target)
+    - ukrns/self-application (the meta-pattern this implements)
+    - ukrns/computation-as-exploration (declarative-assumptions requirement)
+    - ukrns/publication-cadence (snapshots and rerun-path documentation)
+  + DERIVATION:
+    Mechanic: what infrastructure a reader needs to rerun or reconstruct the computation.
+    Serves: self-application's re-computability claim.
+    Axis: full reproducibility ↔ accessible readout.
+    Without this pattern: self-application is aspirational and decays with the compute environment.

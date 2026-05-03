@@ -1,0 +1,27 @@
+@flexiarg writing-coherence/first-mention-undischarged
+@title Discharge the Term at First Mention
+
+@keywords first-mention, definition, named-entity, acronym, undefined-term, deferred-introduction
+@audience paper authors, reviewers
+@tone technical
+@style pattern
+@references [writing-coherence/floating-formalism, writing-coherence/plain-language-thesis]
+
+! conclusion: A domain-specific named entity — an acronym, a programme name, a role title, a coined term — must be introduced at its first mention, even when a fuller treatment is reserved for a later section.  When the term first appears unintroduced, the reader carries an unresolved name across paragraphs and sections, hoping that the deferred definition will eventually arrive.  This is not the same as preserving suspense; it is forcing the reader to read in low resolution while the writer waits for the right moment to switch on the lights.
+  + context: Acronyms (ORP, ORCA, T3), programme names (the Open Research Programme), role titles ("stewards", "evaluators"), and coined terms ("receiving structure", "logic-model gates") all tend to leak into the introduction or background sections of a paper before they have been introduced.  The writer knows what they mean; the reader does not.  Distinct from `floating-formalism` (typed vocabulary without grounded named instances) and from `plain-language-thesis` (jargon-reliance at thesis position): here the term *will* be defined later, but the cost is paid now.
+  + TENSION:
+    Axis: local economy of prose ↔ continuous reader comprehension.
+    Real: deferring a definition is sometimes the correct choice — when the term is used only ornamentally at first mention and a full definition would derail the paragraph.  But ornamental use is rare; load-bearing use is common, and load-bearing terms must be introduced when first invoked.
+    Irreducible: the reader either knows what the term means at the point of first use, or does not.  No amount of later discharge retroactively closes the comprehension gap during the intervening pages.
+    Active: the pull recurs whenever the writer is deep enough in the material to forget that the reader is meeting the term for the first time.
+  + COMPOSITIONS:
+    (1) Discharge in plain language: introduce the entity in one phrase at first mention, even if a fuller treatment lives later.  "the UKRN Open Research Programme — a distributed five-work-package programme operating across 24 UK higher-education institutions".
+    (2) Demote to ornamental: if first mention is genuinely ornamental, rephrase to avoid invoking the named entity at all, and reserve the term for the section where it earns introduction.
+    (3) Promote the definition: move the full definition to the location of first mention.  Subsequent sections then become second-mentions, not first-mentions, and read accordingly.
+  + CHECK:
+    Engaged when: at every named-entity first mention, the reader can state what the entity is from the text adjacent to that first mention.  Failing when: the reader has to scan ahead, look up an acronym table, or carry an unresolved name through subsequent paragraphs.
+  + FAILURE-MODES:
+    - Acronym leak: the acronym appears in the introduction; the expansion is parked in the methods section.
+    - Cast member implied: a role ("stewards", "ORCAs") is invoked as if the reader already knows who fills it.
+    - Programme-as-given: a programme or initiative is named without a one-phrase gloss of what it consists of.
+    - Coined-term seeding: a coined term is dropped into the prose with the implicit promise that it will be explained later — and the explanation, when it arrives, no longer fits the contexts in which the term has already done work.

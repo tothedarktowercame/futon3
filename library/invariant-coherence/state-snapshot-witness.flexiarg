@@ -1,0 +1,63 @@
+@flexiarg invariant-coherence/state-snapshot-witness
+@title State-Snapshot-Witness: Periodic Point-in-Time Projection as Queryable Evidence
+@sigils [📸/影]
+@keywords snapshot, witness, projection, inventory, registry, observability, evidence, time-travel
+@audience observability stewards, evidence landscape maintainers
+@tone analytic-foundational
+@style pattern
+@references [invariant-coherence/shape-first-identify invariant-coherence/reachable-from-boot]
+
+! conclusion: For each long-lived runtime state container worth observing over time, the system periodically records a point-in-time projection of its full state as an evidence entry of shape `:event :state-snapshot` (or namespace-discriminated subtype). The snapshot is queryable after the fact, lets time-travel reconstruction work, and gives the apparatus a per-cycle witness of "what was true at boot N" without bespoke logging per inspectable subsystem.
+
+  + context: The futon3c apparatus emits `:family-fired` evidence per family per probe sweep, carrying per-family `:detail`. Useful for "did family X fire just now?" but useless for "what was the operational-families inventory yesterday?" The Evidence Landscape stores per-event observations, not full-state snapshots. Reconstructing the inventory's state at a past moment requires walking every operational family's history and inferring; it isn't directly queryable. State-snapshot-witness fills that gap with one evidence entry per cycle that contains the full state projection.
+
+  + IF:
+    A long-lived state container's history is operationally meaningful (you'd want to ask "what was X at time T?" and have a direct answer).
+
+  + HOWEVER:
+    Existing per-event evidence (`:family-fired`, `:family-demoted`, `:pipeline-tracer-item`) records *deltas* and *individual checks*, not full-state. Reconstructing state at a past moment requires aggregating deltas, which loses precision when intermediate state isn't recorded. A snapshot evidence entry is direct: the entry's body contains the full state at the snapshot moment.
+
+    A naive "log the state at every event" approach is wasteful (most events don't change state meaningfully). A naive "log the state never" approach is opaque. The right shape is periodic snapshots at construction time (boot) and on operator demand, with deltas in between.
+
+  + THEN:
+    Build sibling invariants under the relevant family with namespace IDs of the form `state-snapshot-witness/<container>`. Each sibling specifies four components:
+
+      1. **Container** — what long-lived state is being snapshotted (e.g. structural-law-inventory.sexp parsed; family-check-fns registry; git refs for ~/code/futon* repos; HUD widget last-render).
+      2. **Projection-fn** — `(fn [container]) → snapshot-data`. Produces a flat, EDN-serialisable map. Drops noisy fields; keeps semantically-meaningful state.
+      3. **Cadence** — at minimum boot-time (reachable-from-boot discipline) and on-demand. Optionally periodic via the canary apparatus.
+      4. **Emit-fn** — `(emit-snapshot! evidence-store snapshot-data)` writes one evidence entry through the boundary, tagged `[:invariant-queue :state-snapshot <container-id>]` with `:event :state-snapshot` (or namespaced subtype `:event :inventory-snapshot` etc.) carrying the full projection in `:body`.
+
+    Wire each sibling at boot via `bootstrap.clj` (reachable-from-boot discipline — snapshot creation belongs in the construction path). Operator-on-demand variants live as `(snapshot-X-now! evidence-store)`.
+
+  + BECAUSE:
+    State-snapshot-witness is the right shape for any state whose history matters. The shape complements the per-event evidence the apparatus already emits — together, snapshots-at-cycle-boundaries + deltas-between-cycles give reconstructible full history.
+
+    The shape is also recursive: the apparatus's own state (families registered, probes active, tracers open) is exactly the kind of state worth snapshotting. The first sibling (inventory snapshot) ships this self-witness.
+
+  + INVARIANT-STATEMENT:
+    IC-state-snapshot-witness: For each registered `state-snapshot-witness/<container>` sibling, the durable evidence store carries at least one `:event :state-snapshot` (or namespaced subtype) entry per JVM boot, containing the full projection of the container's state at boot time. Reconstructing past state never requires evidence-aggregation gymnastics; one query returns one snapshot.
+
+  + EXEMPLAR INSTANCES:
+    | Sibling | Container | Projection-fn |
+    |---|---|---|
+    | `state-snapshot-witness/inventory` | structural-law-inventory.sexp parsed | flatten families + scope-stack invariants to `[{:family-id :status :siblings [{:invariant-id :status :implemented-in}]}]` |
+    | `state-snapshot-witness/registry` | `@futon3c.logic.probe/family-check-fns` | `(keys @registry)` plus per-family deferred?-flag |
+    | `state-snapshot-witness/repo-refs` | `~/code/futon*/.git/HEAD` + active-branch | `[{:repo :branch :HEAD-sha :ahead-of-origin}]` |
+    | `state-snapshot-witness/hud-render` | last HUD widget render | `{:widget-id :rendered-at :counts :motion-flag}` |
+
+  + RELATED-MOVES:
+    - `shape-first-identify` — methodological move that produces this shape.
+    - `reachable-from-boot` — companion shape: snapshot creation belongs in the construction path. The two compose: snapshots ARE the structural witness that boot-time-construction worked.
+    - `family-canary` — adjacent: per-family-fire evidence is the delta; the snapshot is the cycle-boundary state. Together they reconstruct full history.
+
+  + ANTI-PATTERNS:
+    - **Snapshotting inside per-event evidence.** Wastes storage; confuses the deltas/state distinction. Snapshots are their own event type.
+    - **Snapshotting volatile state without filtering.** A snapshot of a counter that increments per second is not a snapshot, it's noise. Project to semantically-meaningful state only.
+    - **Per-tick snapshots without cadence discipline.** Hourly+boot+on-demand is enough for most containers; per-second wastes XTDB.
+    - **Per-event computed snapshot.** Some apparatus emit a "snapshot" alongside every event-fire. Defeats the cycle-boundary purpose. Snapshots are timed, not event-coupled.
+
+  + NEXT-STEPS:
+    - mission: `M-state-snapshot-witness` (futon3c/holes/missions/) opens with inventory-snapshot as worked example; remaining siblings handed to Codex.
+    - tooling: snapshot evidence shape standardised — `:event :state-snapshot` body has `:container :state :emitted-at :probe-run-id?`.
+    - integration: HUD widget extension — render last-snapshot timestamps as part of the canary fires section.
+    - resolution: closes `track-4-2-snapshot-as-evidence` (tracer #4.2) — the original ask is satisfied by `:event :inventory-snapshot` and a worked first-sibling implementation.

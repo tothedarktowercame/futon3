@@ -1,0 +1,28 @@
+@flexiarg writing-coherence/structural-style-inconsistency
+@title Normalise Heading Conventions Across Logical Depths
+
+@keywords heading-style, structural-style, hierarchy, formatting-drift, run-in-bold, capitalisation
+@audience paper authors, reviewers
+@tone technical
+@style pattern
+@references [writing-coherence/subheading-without-paragraph]
+
+! conclusion: Headings, sub-headings, and run-in bold labels carry the document's hierarchy.  When their format drifts within the document — level-3 hashes in one section, run-in bold in another, sentence case here, title case there, terminating period sometimes and not others — the reader scanning the table of contents or skim-reading cannot infer which subheadings carry equal weight.  The hierarchy that the writer has in mind is not the hierarchy the reader can see.  Distinct from `subheading-without-paragraph` (about whether the body discharges the subheading's promise): here the body is fine but the *form* of the subheading drifts.
+  + context: Documents written in passes, or assembled from multiple authors' contributions, accumulate heading-style inconsistency the way they accumulate citation-style inconsistency — locally invisible, globally distracting.  Run-in bold for some level-3s and hashes for others; sentence case here and title case there; sometimes "Methods.", sometimes "Methods", sometimes "Methods:".  Reviewers read the inconsistency as a sign that the document has not been edited as a whole.
+  + TENSION:
+    Axis: local readability of each section ↔ document-level legibility of the hierarchy.
+    Real: the convention chosen at each logical depth is a small thing.  Choosing inconsistently is also a small thing per-occurrence.  Across a 30-page document, the cumulative effect is that no reader can use the heading hierarchy as a navigation aid.
+    Irreducible: a heading at logical depth N either follows the same format as other headings at depth N, or it doesn't.  The reader has no other channel for inferring depth.
+    Active: the pull recurs whenever the document grows, and especially when content is moved between sections without re-styling its headings.
+  + COMPOSITIONS:
+    (1) Choose one convention per depth: at each logical depth, pick a single format (hash level, capitalisation, terminating punctuation, bold/italic) and apply it everywhere at that depth.
+    (2) Audit top-to-bottom: in one pass, read the document looking only at headings — ignore body text — and normalise to the chosen conventions.
+    (3) Demote run-in bold to bold paragraph leads only where they are doing genuinely different work from a subheading: a run-in bold "Logic model composition." that introduces a multi-paragraph subsection should be promoted to a subheading; a run-in bold that introduces a single-sentence note should be left as run-in bold.
+    (4) Decide the punctuation rule once: terminating period or no, colon or no, sentence or title case — and apply it.
+  + CHECK:
+    Engaged when: a reader scrolling the document or scanning the table of contents can correctly infer logical depth from formatting alone.  Failing when: two headings at the same logical depth are formatted differently, or two headings at different logical depths look the same.
+  + FAILURE-MODES:
+    - Mixed levels: some level-3s use hashes, others use run-in bold; the table of contents gives the reader a misleading skeleton.
+    - Capitalisation drift: title case ("Logic Model Composition") and sentence case ("Logic model composition") both appear at the same depth.
+    - Punctuation drift: some headings end with a period, some with a colon, some with neither.
+    - Inherited formatting: a section copied from another document carries that document's heading style and was never normalised.

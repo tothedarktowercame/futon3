@@ -1,0 +1,54 @@
+@flexiarg ukrns/assumptions-commons
+@title Assumptions Commons — Governance of the Shared Evidence File (Implementation Pattern)
+@keywords implementation-pattern, assumptions-v2.edn, commons-governance, contributor-rights, rollback, traceability, Ostrom, declarative-data
+@audience UKRN-S design, working-paper maintainers, contributors to assumptions-v2.edn, futon developers
+@tone operational
+@style implementation-pattern
+@references [ukrns/ARGUMENT ukrns/self-application ukrns/computation-as-exploration ukrns/design-as-function-of-evidence]
+
+! conclusion: The file assumptions-v2.edn is not a configuration file; it is the declarative record of the programme's evidence state and the input to every computational claim the paper makes.  Its governance is a commons-governance decision: who can change what, who reviews, how versions are tracked, and how contributors earn recognised standing.  The service states which composition it is running on the axis between governed-commons and open-editable.
+  + context: This implementation pattern specifies the mechanics behind ukrns/self-application and ukrns/computation-as-exploration.  Both meta-patterns require assumptions-v2.edn to be declarative, inspectable, and re-runnable; neither specifies who is allowed to change it.  Without an assumptions-commons discipline, the meta-patterns are stances without operational reality.
+  + TENSION:
+    Axis: governed-commons (formal change process with review) ↔ open-editable (low-friction contribution with post-hoc audit).
+    Real: governed costs contribution speed and lowers the friction-gradient that invites participation; open-editable costs integrity of the shared record and risks silent divergence.
+    Irreducible: a single file cannot be simultaneously maximally low-friction to contribute to AND maximally integrity-preserving.
+    Active: early, when contributors are few and the evidence base is small, open-editable suffices; as the network grows and the file becomes consequential for operational decisions, governed-commons becomes more load-bearing.
+  + COMPOSITIONS:
+    (1) Single maintainer + pull-request review: one named maintainer owns the file; contributors open PRs; maintainer reviews and merges.  Gives up contributor autonomy; simplest to operate.
+    (2) Working-group review: a small committee reviews all proposals; changes announced on merge.  Gives up speed; distributes authority.
+    (3) Open-editable with audit: anyone may edit; every change logged with contributor identity and rationale; rollback on challenge by any participant.  Gives up veto; places trust in transparency + rollback.
+    These compositions are not ranked; the paper currently operates as (1).  Scaling to network operations may require (2) or (3).
+  + BECAUSE:
+    Ostrom collective-choice principle: those who sustain the commons earn recognised rights to shape it.  Assumptions-v2.edn is a commons in Ostrom's sense — its maintenance benefits the whole network, its governance decides whose evidence counts.  Per equity/contribution-pathways, governance standing follows contribution, not the reverse.
+
+    Integrity of self-application: if the paper recomputes from assumptions-v2.edn, then uncaptured changes to the file produce argument changes that readers cannot trace.  ukrns/self-application's claim depends on the file's integrity; the commons governance protects that claim.
+
+    Projection into main patterns: ukrns/design-as-function-of-evidence requires that service changes trace to evidence updates.  If the evidence file itself has no update trace, design-state changes cannot be explained.  The commons governance is the precondition for that traceability.
+  + CHECK:
+    Engaged when: every value in assumptions-v2.edn traces to an identifiable proposal or log entry; contributors can see the change history; rollback is possible.
+    Failing when: assumptions change with no traceable provenance; contributors cannot audit recent changes; the file drifts silently between publications.
+  + NEXT-STEPS:
+    - Declare the current composition (most likely (1) single maintainer + PR review) in the project README
+    - Ensure every commit to assumptions-v2.edn carries a rationale message (not just a numeric diff)
+    - Announce scale transitions: if the commons moves from (1) to (2) as the network grows, publish the change-of-governance
+    - Cross-reference with equity/contribution-pathways: contributors to the assumptions file earn recognised standing
+  + INVARIANT-STATEMENT:
+    Every value in assumptions-v2.edn has a traceable provenance (commit, rationale, reviewer if applicable).  The current composition on the governance axis is declared publicly.  Rollback is supported.
+  + FAILURE-MODES:
+    - Silent drift: values change without a rationale message; readers cannot reconstruct the change's purpose
+    - Governance opacity: the current composition is not declared; contributors do not know what process applies
+    - Rollback unavailable: changes are made via live-edit without version history; bad changes cannot be reverted
+    - Commit-message theatre: every change has a message but the messages are uninformative
+    - Contributor invisibility: contributors not credited; their standing in the commons not recognised
+  + ANCESTORS:
+    - assumptions-v2.edn (the artefact)
+    - ukrns/self-application (the meta-pattern this implementation serves)
+    - ukrns/computation-as-exploration (declarative-assumptions requirement)
+    - ukrns/design-as-function-of-evidence (traceability requirement)
+    - equity/contribution-pathways (governance-follows-contribution principle)
+    - Ostrom (1990) collective-choice principle
+  + DERIVATION:
+    Mechanic: who can change what in assumptions-v2.edn, under what process.
+    Serves: ukrns/self-application, ukrns/computation-as-exploration, ukrns/design-as-function-of-evidence.
+    Axis: governed-commons ↔ open-editable.
+    Without this pattern: the meta-patterns' integrity claims are aspirational.

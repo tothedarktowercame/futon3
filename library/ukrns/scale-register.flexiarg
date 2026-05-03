@@ -1,0 +1,55 @@
+@flexiarg ukrns/scale-register
+@title Scale Register — Publishing Capability Scale Choices (Implementation Pattern)
+@keywords implementation-pattern, capability-register, scale-decisions, central-register, distributed-docs, findability, subsidiarity
+@audience UKRN-S design, institutional leads, capability owners, auditors
+@tone operational
+@style implementation-pattern
+@references [ukrns/ARGUMENT ukrns/provision-at-network-scale]
+
+! conclusion: Every capability the network could provide — evaluation analysis, coordination/liaison, scaffold maintenance, any future addition — has a scale choice (per-institution vs network-scale) that must be inspectable.  The service maintains a register of these choices with rationale, date, and revision history, and states which composition it is running on the axis between central register and distributed per-capability documentation.
+  + context: This implementation pattern specifies the publication mechanic behind ukrns/provision-at-network-scale.  The main pattern's invariant requires scale choices to be published and revisable; without a register, those choices exist in project-memory rather than as public artefacts institutions can contest.
+  + TENSION:
+    Axis: central register (one maintained document listing every capability and its scale decision) ↔ distributed per-capability documentation (each capability described in its own document, with scale decision inline).
+    Real: central costs coherence maintenance — keeping the register aligned with reality — and creates a single point of obsolescence; distributed costs findability — readers may not know every capability exists or may not find its scale decision easily.
+    Irreducible: a single documentation strategy cannot simultaneously maximise centralised coherence and distributed depth.
+    Active: small capability sets favour central; large sets favour distributed; mixed strategies become attractive as the set grows past roughly 10 capabilities.
+  + COMPOSITIONS:
+    (1) Central register: a single artefact (markdown, EDN, or similar) listing every capability with scale, rationale, date, revision history.  Gives up per-capability depth.
+    (2) Capability-by-capability docs: each capability has its own document including scale decision and rationale.  Gives up single-point findability.
+    (3) Both — central index + per-capability deep docs: index lists names and current scale; each entry links to the capability's own doc.  Gives up simplicity; doubles maintenance.
+    The paper currently operates at a proto-(1) level via the capability trade-off table in §2; operational use requires a living register.
+  + BECAUSE:
+    Contestability: ukrns/provision-at-network-scale's invariant requires institutions to be able to contest scale choices.  Contestation is only possible if the choice is findable and its rationale inspectable.  The register is the publication mechanic that makes contestation possible.
+
+    Asymmetric trade-offs: the main pattern is built on the observation that capabilities have different trade-off shapes.  The register is where those shapes are compared side by side; losing the register collapses the asymmetry argument.
+
+    Revision history: as the network grows, scale choices may shift — a capability viable at one scale today may shift tomorrow.  The register's revision history is the mechanism that makes scale evolution legible rather than silent.
+
+    Cross-pattern: the register is a particular kind of deposit (ukrns/open-the-triangle); it is itself a service-event with openness gain (institutions can see the current provisioning map) and governance cost (someone must maintain it).
+  + CHECK:
+    Engaged when: every current capability is findable in the register (or via the index); each entry has scale, rationale, date, revision history; institutions can contest choices via a declared channel.
+    Failing when: some capabilities exist but are not in the register; entries have scale without rationale; rationale exists but is dated years ago without revision; contestation has no channel.
+  + NEXT-STEPS:
+    - Declare the current composition (most likely (1) central register at start) in project documentation
+    - Create the register as an artefact (not merely a table inside the working paper); make it findable from the project root
+    - Every entry: name, current scale, rationale, date, revision history, contestation channel
+    - Cross-reference from the working paper's §3 capability trade-off table to the register
+    - At network scale: allow institutions to flag capabilities they think are mis-scaled
+  + INVARIANT-STATEMENT:
+    The register lists every capability the network could provide.  Each entry has scale, rationale, date, revision history.  Contestation channel is declared.
+  + FAILURE-MODES:
+    - Incomplete register: capabilities exist operationally but are not registered
+    - Rationale absence: scale stated without reasoning; choice appears arbitrary
+    - Stale revision: rationale dated years ago; reality has moved
+    - No contestation channel: institutions have no declared way to flag mis-scaling
+    - Register-as-table-only: the capability trade-off table in the paper is treated as the register; the table is a snapshot, a register is a living artefact
+  + ANCESTORS:
+    - UKRN WP §2 capability trade-off table (the proto-register)
+    - ukrns/provision-at-network-scale (the main pattern this implements)
+    - ukrns/open-the-triangle (the register as a deposit)
+    - ukrns/design-state-lineage (revision history downstream)
+  + DERIVATION:
+    Mechanic: how capability scale choices are published and revised.
+    Serves: provision-at-network-scale's invariant.
+    Axis: central register ↔ distributed per-capability docs.
+    Without this pattern: scale choices exist in project memory, not as contestable public artefacts.

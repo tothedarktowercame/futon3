@@ -1,0 +1,11 @@
+{:id "war-machine/coordination-bottleneck"
+ :claim "Multi-agent coordination fails at infrastructure seams, not at intelligence boundaries. The bottleneck is merge permissions, liveness signals, and orchestration state — not agent capability."
+ :ground "Bulletin 5 (2026-03-01): The Tickle Experiment ran a multi-agent CT review pipeline — 17 PRs, ~85 proposals, ~60 merged. Quality improved across batches (approval rate rose). But 40% rework was caused by infrastructure: merge gap (agent can review but not merge), stateless orchestrator (loses track of what's been assigned), silent failures (no liveness heartbeat). The agents were competent; the plumbing leaked."
+ :warrant "When coordination fails, the instinct is to improve the agents (more capable, more context, better prompts). But coordination is a system property, not an agent property. D&G: the war machine's power is not the sum of its parts but the relations between them. Improving the parts while ignoring the relations produces more capable agents that still can't coordinate."
+ :backing "S3 (agent coordination at scale). S5 (social loop operational). Surface contracts (I-1/I-2/I-3) held under load."
+ :qualifier "Some failures ARE agent-level (wrong tool use, hallucinated assertions). The pattern applies when the failure is reproducible across different agents — that's an infrastructure signal, not an intelligence signal."
+ :rebuttal "Infrastructure investment has diminishing returns. At some point the bottleneck shifts back to agent capability. The Tickle Experiment was short enough that this shift wasn't observed — a longer run might reveal agent-level limits."
+ :tension "Multi-agent system works at the agent level but fails at the infrastructure level."
+ :resolution "Invest in liveness heartbeats, stateful orchestration, and merge automation before investing in agent capability. The war machine's power is in its plumbing."
+ :bulletin 5
+ :support-relation [:S3 :S5]}

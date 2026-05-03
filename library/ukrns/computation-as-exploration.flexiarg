@@ -1,0 +1,70 @@
+@flexiarg ukrns/computation-as-exploration
+@title Computational Modelling as Tension Exploration (Meta-Pattern)
+@keywords meta-pattern, computational-modelling, inspectability, prior-not-posterior, exploration, exploration-vs-prediction, conditional-dependencies, live-table, declarative-assumptions, population-model
+@audience UKRN-S design, working-paper authors, evaluators, futon developers, readers of the WP
+@tone analytic-foundational
+@style meta-pattern
+@references [ukrns/ARGUMENT ukrns/diagnose-before-prescribing ukrns/measure-where-least-sure ukrns/design-as-function-of-evidence ukrns/self-application]
+
+! conclusion: The working paper's population model and its figures, tables, and counterfactuals are not ends in themselves.  They are a device for making conditional dependencies between programme design, institutional context, and implementation outcome inspectable — so that the tensions in the five design patterns become visible, not hidden behind prose or folded into a single recommendation.  The service states which composition it is running on the axis between computation-as-exploration and computation-as-prediction, and for what reasons.
+  + context: This is a meta-pattern: it describes how the working paper is constructed and why, and it also projects down into the service-design patterns because UKRN-S, like the paper, can use computation as an exploration device rather than a prediction engine.  In the paper, the population model is explicitly "a prior, not a posterior"; it does not predict what will happen but makes the conditional dependencies inspectable.  At the service scale, the same model re-runs operationally as new observations arrive (linked: ukrns/design-as-function-of-evidence).  The meta-pattern answers a common misreading: that the paper's computational apparatus is the paper's claim, when in fact it is the paper's method.
+  + TENSION:
+    Axis: computation-as-exploration (model used to make dependencies inspectable) ↔ computation-as-prediction (model used to produce forecasts on which policy rests).
+    Real: a model used purely for exploration gives up the aggregated authority of predictive claims; a model used for prediction gives up the transparency that lets a reader see why the axes matter.  Both uses are legitimate in different contexts.  Both cost something real.
+    Irreducible: the same model cannot simultaneously be maximally inspectable (showing every conditional dependency as adjustable) and maximally predictive (closed-form enough to fund a decision on).  Inspectability requires the dependencies to be open for revision; prediction requires them to be closed.
+    Active: early in a programme's evidence cycle, exploration is the epistemically honest use because the prior is thin and posteriors are wide; as the evidence base thickens and posteriors tighten, predictive claims become defensible.  The right position on the axis shifts as the programme matures.
+  + COMPOSITIONS:
+    (1) Explore-only: computation used exclusively to make tensions inspectable; no predictive claims offered; all figures serve the argument.  This is the paper's current position.  Gives up the aggregated authority of forecast-style claims.
+    (2) Explore-now-predict-later: exploration in the current cycle, with predictive claims deferred to later cycles once the posterior has tightened sufficiently.  Gives up early predictive commitments that might have supported the funding case.
+    (3) Parallel lines: an exploratory model for internal design deliberation and a separate predictive reporting line for funder and public communication.  Gives up the unity of the argument; carries the risk that the two lines drift apart.
+    These compositions are not ranked; the paper is deliberately at Composition (1) and says so.  The choice recurs each time a new cycle of evidence is summarised.
+  + BECAUSE:
+    Prior-not-posterior as method: The model is explicitly declared a prior throughout the paper.  This is not a hedge; it is a method.  The claim 'this is what the landscape looks like at Stage 1 given Cycle-0 coding' is a claim about conditional dependencies, not about aggregate outcomes.  The value of information targeting (ukrns/measure-where-least-sure) depends on this stance: if the model were posterior, VoI targeting would already be exhausted.
+
+    Declarative assumptions: The population model is specified in assumptions-v2.edn, a declarative data file.  Readers can change its values and rerun; they can audit its inputs separately from the computation that consumes them.  The separation of data from computation makes exploration a first-class operation.  (Contrast: a model whose assumptions are embedded in code — the same model in spirit, but no longer exploratory in this sense.)
+
+    Sensitivity as humility: The sensitivity table (variant gate aggregation; variant support headroom) shows which claims are robust to modelling choices (direction: stages advance viability) and which are not (precise point estimates).  This is the exploratory stance made visible: the paper reports what the exploration recovers and what it does not.
+
+    Reimplementable engine: Annex B specifies the pattern-strength equations, mode probabilities, lever definitions, and uncertainty model in enough detail that a reader could reimplement the model in any language.  This reimplementability is the exploration stance's strongest evidence: the computational claim is that the conditional dependencies matter, not that any particular implementation does.
+
+    Multi-dimensional trade-off display (exemplar: vsat.wiki/analysis-demo): A strong instance of the exploration stance is the vsat business-models demo, which displays three named scenarios (services-first, hybrid, software-first) scored on multiple dimensions (financial surplus, local capability formation, network growth, public spillover) without ranking them.  Software-first wins on surplus (GBP 87k) but loses on local capability (9 stewards) and network growth (1 link); services-first loses on surplus (GBP 16k) but wins on local capability (24 stewards) and network growth (4 links); hybrid sits between.  No single scalar collapses the dimensions.  A reader picks the dimension that matters to them and sees which scenario does best on it.  The design principle this pattern inherits: any computational result that functions as a recommendation has collapsed too much of the trade-off surface.  The working paper's intervention-variance figure (three bundles × ten profiles), capability trade-off table (§3), openness/governance Pareto table (§4), and update-policy table (§5) are in this spirit.  The D × A mode probabilities deserve care — P(multiplied) as a single number risks becoming an implicit target if presented without its multi-dimensional context; the paired worked contrast (ukrns/worked-contrast) is one way the WP keeps that context visible.
+
+    Projection into main patterns: if UKRN-S is a learning system that updates design as a function of evidence (ukrns/design-as-function-of-evidence), computation is one way — arguably the most inspectable way — to do that.  The service can use the same model operationally: as diagnoses update, as measurement waves complete, as update policies fire, the model recomputes and re-emits its argument.  The meta-pattern projects into the main patterns: the design patterns are service-design decisions; this meta-pattern is a description of one medium through which those decisions can be made inspectable.
+  + CHECK:
+    Engaged when: every computational artefact in the paper (figure, table, counterfactual) is traced to the axis or tension it is making visible; no figure exists as decoration; the model's inputs are inspectable and re-runnable; predictive claims, if made at all, are explicitly labelled as such.
+    Failing when: the model's outputs are cited as if they were observations; figures exist for aesthetic or evidentiary weight rather than to make a tension visible; assumptions are embedded in code rather than declared; predictive claims are made without acknowledging the shift from prior to posterior.
+  + NEXT-STEPS:
+    - For each figure/table/counterfactual in the working paper, state which axis or tension it is making visible; excise any that cannot be so traced
+    - Maintain assumptions-v2.edn as a declarative artefact readers can inspect and rerun
+    - Maintain the reimplementation pointer (Annex B equations) so the computational claim is not locked to any one implementation
+    - For operational use at UKRN-S: rerun the model after each measurement wave (ukrns/measure-where-least-sure) and publish what changed in the inspectable view
+    - Report sensitivity variants whenever a claim depends on a specific modelling choice; distinguish robust direction from non-robust point estimates
+    - Label any predictive claims explicitly and state the posterior evidence they rest on
+  + INVARIANT-STATEMENT:
+    Every computational artefact in the working paper (and in the UKRN-S operational model, if operationalised) has a stated role in making a tension inspectable.  Assumptions are declarative and separable from computation.  Sensitivity to modelling choices is reported.  Predictive claims, if made, are explicitly distinguished from exploratory claims.
+  + FAILURE-MODES:
+    - Computation-as-authority: figures cited as if observations; the model treated as oracle rather than device
+    - Assumption opacity: inputs embedded in code; reader cannot separate data from computation
+    - Sensitivity-blindness: claims reported without testing alternative modelling choices
+    - Implicit prediction: claims slide from prior-framed to posterior-framed without the shift being marked
+    - Aesthetic computation: figures exist for evidentiary weight rather than for making a specific tension visible
+    - Reimplementation-blindness: model described only operationally, not in terms re-implementable from first principles
+    - Exploration-frozen: the exploratory stance is adopted at paper time but never revisited; as the evidence base matures, predictive claims never become explicit even when they would be defensible
+    - Single-scalar collapse: the trade-off surface is reduced to one number that functions as an implicit recommendation; reader loses the ability to see the dimensions the scalar averaged over.  'P(multiplied) = 0.61 for this profile' risks becoming 'a score to raise' rather than 'a position on a D × A surface whose dimensions are in tension'
+    - Single-recommendation framing: a multi-dimensional result is narrated with a preferred direction, quietly foreclosing the reader's freedom to weight dimensions differently
+  + ANCESTORS:
+    - UKRN WP draft-16-april (whole): the paper is the instance of this meta-pattern
+    - UKRN WP §3 Limitations of the model ('the model is a prior, not a posterior')
+    - UKRN WP Annex B (pattern strength, mode probabilities, levers, uncertainty model — reimplementable from first principles)
+    - assumptions-v2.edn (declarative-assumptions artefact)
+    - Sensitivity table (WP §3; gate aggregation variants, support headroom variants)
+    - vsat.wiki/analysis-demo (business-models demo; three named scenarios × multiple dimensions; no ranking; an external exemplar of computation-as-exploration in practice — 'less dependent on a single abstract score', 'inspectable and open to revision in a way that a hidden scalar is not')
+    - equity/ARGUMENT (the theoretical framing; computation is one medium through which that theory becomes inspectable at service scale)
+    - ukrns/design-as-function-of-evidence (the operational projection of this meta-pattern)
+    - ukrns/measure-where-least-sure (VoI targeting requires the prior stance)
+  + DERIVATION:
+    Derived from the working paper's consistent epistemic stance: the model is a prior used to make conditional dependencies inspectable, not a posterior used to forecast.
+    Meta-pattern character: describes how the working paper is constructed and why, and also projects into the service-design patterns as an implementation hint.
+    Projection into main patterns: ukrns/design-as-function-of-evidence specifies that the service updates on evidence; this meta-pattern names one medium (computational modelling) for doing so inspectably.  ukrns/measure-where-least-sure depends on the prior-stance; ukrns/diagnose-before-prescribing uses the computed D × A factorisation as its diagnostic engine.
+    Axis framing follows the same Tension / Composition / Check structure as the main patterns.  Real / irreducible / active defence of the axis is load-bearing.
+    Coordination requirement: Low at paper time (single author team can adopt the stance); Medium to High at service time (network-scale operationalisation requires shared access to the model and its assumptions).

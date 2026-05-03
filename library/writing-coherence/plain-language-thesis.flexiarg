@@ -1,0 +1,29 @@
+@flexiarg writing-coherence/plain-language-thesis
+@title State Top-Level Claims in Plain Language
+@keywords thesis, lemma, top-level-claim, jargon, standalone-reader, readability, shibboleth
+@audience paper authors, reviewers
+@tone technical
+@style pattern
+@references [writing-coherence/meta-lede writing-coherence/missing-mechanism writing-coherence/unearned-essentially]
+
+! conclusion: A top-level claim — the paper's thesis, a section's "lemma"-style opening assertion, an exec-summary proposition — must be readable standalone, by a reader who has not read the rest of the work.  This means: no load-bearing jargon (terms that require prior definition from the paper to resolve), and no syntactic contortion (subjects buried behind referring expressions the reader has to unpack).  Body paragraphs can lean on technical vocabulary the paper earns as it goes; top-level claims cannot, because they are the first thing the reader meets and the last thing the reader remembers.
+  + context: AI-assisted drafting routinely produces top-level claims that sound precise to the writer — who has the whole paper loaded — but require the paper-internal context to parse.  "UKRN-S's core function is to hold the evidence apex" reads cleanly if §1 is in head; reads as an impenetrable noun phrase otherwise.  Similarly "the service bearing it accepts five design disciplines" forces the reader to reconstruct what "the service bearing it" refers to, which introduces a small but repeating friction with every re-read.  The claim may be correct; it is not *landing* as a claim.
+  + TENSION:
+    Axis: precision ↔ standalone readability.
+    Real: technical vocabulary earns compression.  The same sentence with jargon can encode more than its plain-language sibling.  But at the thesis position, the compression is paid by readers who don't have the prior context — which, for a thesis, is every reader on first encounter and every skimming reader on every encounter.
+    Irreducible: the same sentence cannot simultaneously be maximally precise (using the paper's earned terms) and maximally standalone (using terms any reader already carries).  At thesis position, standalone wins; at body position, precision can win.
+    Active: the pull recurs every time the writer states a claim at the paper or section top — because the writer has the context and the reader, at that position, provably does not.
+  + COMPOSITIONS:
+    (1) Strip the jargon: name the referent directly using a term the reader already carries.  "Evidence apex" → "the kind of cross-institutional evidence that makes local success conditions legible to others".  Longer, but readable cold.
+    (2) Unbury the subject: the sentence's actor and verb should be first-hit parseable.  "The service bearing it accepts five disciplines" has subject "the service bearing it" — a three-word referring expression before the main verb.  "A centrally-administered training programme becomes a learning system when..." leads with a concrete subject.
+    (3) Define-and-use in the same sentence: if a technical term is genuinely load-bearing and cannot be unstripped, define it in the sentence before invoking it — "UKRN-S's core function is to hold the evidence apex — the shareable, translatable evidence of what works locally".  Rare; costs length; paid only when the term earns it.
+    (4) Two-sentence decompression: one sentence states the claim in plain language; the next promotes the technical term.  "UKRN-S becomes a learning system when it inhabits the design tensions the programme has named.  In the paper's geometric terms, UKRN-S holds the evidence apex relative to three mode-tetrahedra."  The plain version is the thesis; the technical version is the operational sharpening.
+  + CHECK:
+    Engaged when: the top-level claim is comprehensible to a reader who has not read the paper, with no forward-reference to section content, and parses on first read without mental contortion.  Failing when: (a) a term in the claim requires prior paper content to resolve (jargon-reliance), or (b) the subject-verb-object structure requires the reader to re-parse to locate what acts on what (syntactic displacement), or (c) the claim reads as signal of membership in the paper's argument community rather than as a claim (shibboleth).
+    **Standalone-reader test:** paste the sentence alone into a message to someone unfamiliar with the work.  Can they tell what is being claimed, even roughly?  If not, the pattern is not engaged.
+  + FAILURE-MODES:
+    - Jargon-reliance: "UKRN-S's core function is to hold the evidence apex that the ORP could not" — "evidence apex" requires §1; "ORP" requires prior-knowledge acronym expansion.
+    - Syntactic displacement: "the service bearing it accepts five design disciplines" — "it" resolves to something the sentence does not carry; "the service bearing it" puts the real subject three words in.
+    - Shibboleth: "We operationalise five coherence patterns under NPT sub-construct ratings in a prior-predictive framework" — parses only for readers inside the paper's community.
+    - Nested-clause thesis: "The claim, which rests on the observation that X, when Y, is Z" — correct but unparseable cold.
+    - Capitalised-concept overload: "The Sustainability Tetrahedron's Evidence Apex coordinates the Three Mode-Sub-Tetrahedra" — internal capitalisation does not compensate for missing definitions.

@@ -1,0 +1,55 @@
+@flexiarg ukrns/publication-cadence
+@title Publication Cadence — Canonical vs Snapshot Artefacts (Implementation Pattern)
+@keywords implementation-pattern, publication, canonical-version, snapshot, DOI, archival, living-document, citation
+@audience UKRN-S design, working-paper maintainers, readers citing the paper, archivists
+@tone operational
+@style implementation-pattern
+@references [ukrns/ARGUMENT ukrns/self-application ukrns/design-state-lineage]
+
+! conclusion: A paper that is re-computable from evidence can be published in two forms: the living document (continuously updated, reflecting the current evidence state) and the snapshot (frozen at a moment, citable, DOI-bearing).  The service states which composition it is running on the axis between living-only, snapshot-only, and both, and resolves the citation ambiguity that arises when a paper has multiple states.
+  + context: This implementation pattern specifies the artefact-publication mechanic behind ukrns/self-application.  The meta-pattern claims the artefact instantiates its argument; this pattern addresses the practical question of how that artefact is published — as a moving target, a series of frozen snapshots, or both.  Without a declared cadence, "which version am I reading" becomes unanswerable.
+  + TENSION:
+    Axis: living document (continuously-updated canonical version) ↔ frozen snapshots (versioned fixed publications with citable identifiers).
+    Real: living costs archival durability — a snapshot citable today may differ from the same URL tomorrow; frozen costs currency — citable versions drift further from the current evidence state over time.
+    Irreducible: a single publication cannot be simultaneously maximally current AND maximally citable as a fixed object.
+    Active: early drafts favour living (claims are forming); as claims stabilise, snapshots become appropriate; archival norms for academic work favour snapshots.
+  + COMPOSITIONS:
+    (1) Living-only: current HTML (or notebook) with visible revision history; no frozen snapshots.  Gives up archival citability.
+    (2) Snapshot-only: versioned PDFs or archived HTML with DOIs at each publication event; intermediate states not published.  Gives up currency.
+    (3) Both: living current version + periodic frozen snapshots, each snapshot declaring its evidence-file revision and compute-date.  Gives up simplicity; serves both readerships.
+    Working papers typically need (3); the paper-draft-16-april is an instance of an intermediate snapshot (marked by date in filename).
+  + BECAUSE:
+    Citation integrity: an academic artefact that readers cite must be citable as a specific object.  Snapshots give citation integrity; living documents do not.  A paper that is both a living document AND cited in grant applications requires snapshots for the citation paths.
+
+    Currency integrity: a paper that argues for design-as-function-of-evidence and is five years out of date undercuts its own argument.  The living document is what demonstrates the self-application claim.
+
+    Reader-need differentiation: different readers want different things.  A funder reviewing a proposal wants the current state; a peer reviewer citing the work in a rebuttal wants a fixed target.  Composition (3) serves both.
+
+    Cross-pattern: publication-cadence is downstream of ukrns/design-state-lineage (snapshots are checkpoints in the lineage) and a sibling of ukrns/cycle-position-publication (both publish design states at chosen intervals).
+  + CHECK:
+    Engaged when: readers can find both the current state and the most recent citable snapshot; each snapshot declares its evidence-file revision and compute-date; the composition is declared.
+    Failing when: "the paper" is ambiguous — readers citing different URLs think they are citing the same document; snapshots exist but do not declare their evidence-revision; the living document drifts without visible history.
+  + NEXT-STEPS:
+    - Declare the current composition (likely (3) living + periodic snapshots)
+    - Each snapshot carries: compute-date, assumptions-v2.edn revision, DOI or equivalent identifier
+    - Living version carries a visible "current compute-date" and "current assumptions revision"
+    - A clear statement: "to cite this paper in academic work, cite [snapshot DOI]; to read the current state, see [living URL]"
+    - Cross-reference with ukrns/design-state-lineage and ukrns/cycle-position-publication
+  + INVARIANT-STATEMENT:
+    The publication composition is declared.  Readers can find both the current state and a citable snapshot.  Each snapshot declares its evidence-revision and compute-date.  Citation paths are explicit.
+  + FAILURE-MODES:
+    - Ambiguous citation: "the paper" cited by URL changes silently; citing reader sees different content than intended
+    - Living-without-history: current version has no revision history; prior states irrecoverable
+    - Snapshots-without-revisions: snapshots exist but do not declare their evidence-revision; cannot be reproduced
+    - Stale-snapshot-only: the most recent snapshot is years old; the self-application claim is unverifiable
+    - Citation-ambiguity-unowned: the project has not decided what readers should cite; different citations proliferate
+  + ANCESTORS:
+    - The paper itself (currently in multiple versions across multiple locations)
+    - ukrns/self-application (the meta-pattern this implements)
+    - ukrns/design-state-lineage (snapshots as checkpoints)
+    - ukrns/cycle-position-publication (related publication mechanic)
+  + DERIVATION:
+    Mechanic: how the artefact is published (living, snapshot, both).
+    Serves: self-application's artefact-instantiation claim.
+    Axis: living document ↔ frozen snapshots.
+    Without this pattern: "which paper" is ambiguous; self-application cannot be demonstrated.

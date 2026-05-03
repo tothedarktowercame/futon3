@@ -1,0 +1,61 @@
+@flexiarg ukrns/diagnose-before-prescribing
+@title Diagnose Before Prescribing
+@keywords diagnosis, binding-constraint, population-model, D-times-A, multiplicative-gate, intervention-variance, prior-not-posterior, profile-signature, universal-vs-diagnosed
+@audience UKRN-S design, programme commissioners, Research England, institutional leads
+@tone analytic-foundational
+@style pattern
+@references [ukrns/ARGUMENT equity/confident-adaptation ukrns/provision-at-network-scale ukrns/measure-where-least-sure]
+
+! conclusion: A universal service offering is cheap to produce, easy to communicate, and wrong for a visible fraction of the network.  A diagnosed offering names the binding constraint — whether the bottleneck is delivery viability, architectural sustainability, or both — before selecting a service response.  The service states, for any profile, which composition on the universal-vs-diagnosed axis it is running and why.
+  + context: The UKRN WP §1 (draft-16-april) derives a two-dimensional factorisation from the Cycle-0 focus groups: delivery viability (D, from Confident Adaptation + Protected Interaction) and architectural sustainability (A, from Shared Maintenance + Contribution Pathways + Visible Impact), related multiplicatively (P(multiplied) = D × A).  The intervention-variance figure (Figure 2) shows empirically that the same lever bundle moves P(multiplied) very differently across profiles.  The equity-domain confident-adaptation pattern diagnoses the informational gap at institutional scale; this design pattern asks, at service scale, whether the programme has identified the binding constraint before choosing a response.
+  + TENSION:
+    Axis: universal service offering ↔ diagnosed service offering.
+    Real: a universal offering is cheap to produce, easy to communicate, and — as Figure 2 shows — wrong for a visible fraction of the network; a diagnosed offering, naming each profile's binding constraint before acting, is more costly to produce, harder to explain, and matched to what each profile actually needs.  Both endpoints carry genuine cost.
+    Irreducible: diagnosis and uniformity cannot both be maximised in the same service offering.  A single bundle cannot be simultaneously the lowest-cost-to-run-and-communicate option AND the best-matched option for every profile on the constraint map.
+    Active: the axis recurs every time a new cohort arrives, every time an institution joins, every time UKRN-S is asked what it supports.  The right position may drift as the network grows and as the profile map updates with evidence.
+  + COMPOSITIONS:
+    (1) Diagnostic-first: run the first T1 wave as a diagnostic pass and let the observed binding-constraint signatures drive subsequent service differentiation.  Gives up early time-to-service.
+    (2) Universal bundle: keep the universal service cheap and accept the across-profile variance as the cost of reach.  Gives up per-profile fit.
+    (3) Two-tier: a universal baseline for profiles that fall well under the model, and a diagnostic overlay for profiles that flag as multi-constrained.  Gives up single-narrative uniformity; complicates communication.
+    These compositions are not ranked; the WP does not prefer one over the others, but does make the axis visible.
+  + BECAUSE:
+    Multiplicative gate (D × A): The factorisation is the mathematical reason diagnosis matters.  If D and A were additive, a universal bundle would average out across profiles.  Because they multiply, a constraint on either dimension bounds the whole; no amount of lift on the non-binding dimension closes the gap.  This is why 'blame trainer effort' is a systematic misreading: trainers are often the very actors whose dimension is fine, while the binding constraint is elsewhere.
+
+    Cycle-0 empirical evidence: The role-codebook analysis (4/4 transcripts show EV_analyse absent) is a profile-level claim about where the architecture is weak.  The intervention-variance figure makes the per-profile sensitivity to lever choice visible.  The claim is not that diagnosis produces certainty; it is that diagnosis converts an invisible variance into a stated position.
+
+    Prior-not-posterior: The population model is explicit about its epistemic status.  It does not predict what will happen; it makes conditional dependencies inspectable.  The diagnostic move works on priors — and the first T1 wave is the act that begins converting priors to posteriors for the widest-interval profiles (linked: ukrns/measure-where-least-sure).
+
+    Confidence in the diagnosis (equity/confident-adaptation link): The equity pattern's concern at the institutional level — that trainers cannot adapt confidently without knowing what is fixed — has a structural counterpart at the service level.  The service cannot prescribe confidently without knowing what is binding.  Both patterns are specification problems at their own scale.
+
+    Commons governance: An institution assigned to a profile has a stake in whether that assignment is correct.  Publishing the diagnostic reasoning invites the institution into the profiling itself.  A service that assigns profiles without showing reasoning forecloses governance; a service that shows reasoning invites negotiation.
+  + CHECK:
+    Engaged when: the programme can point to the binding-constraint signature of any profile before prescribing an intervention; profile assignments are published with the D × A evidence that supports them; institutions can contest their assignment.
+    Failing when: observed variance in outcomes is explained by trainer effort rather than by the profile's constraint structure; every institution receives the same offering regardless of diagnosis; profile signatures are never revised despite new observations.
+  + NEXT-STEPS:
+    - Maintain a current profile-signature for each participating institution in the population model
+    - Publish the intervention-variance chart for each service cycle so profile assignment is inspectable
+    - Before committing a lever bundle to any profile, state the binding constraint and the D × A evidence that supports it
+    - Allow institutions to contest their profile signature; revise on evidence, not on complaint
+    - Use this pattern upstream of ukrns/provision-at-network-scale (which decides capability scale) and ukrns/measure-where-least-sure (which targets the next observation)
+  + INVARIANT-STATEMENT:
+    No lever bundle is prescribed to any profile without a stated binding-constraint signature and an appeal to the D × A evidence.  The service's current composition on the universal-vs-diagnosed axis is published.  Profile assignments are revisable in light of new observations.
+  + FAILURE-MODES:
+    - Universal offering: one bundle for all profiles; right for some, wrong for the rest
+    - Variance-as-effort: attributing across-profile variance to trainer motivation rather than profile structure
+    - Cheap diagnosis: profiles assigned without reference to the D × A evidence
+    - Frozen diagnosis: profile signature never revised despite new observations
+    - Hidden diagnosis: assignment made internally; institutions see only the lever bundle
+    - Politically-convenient diagnosis: profile chosen to justify a preferred lever bundle rather than the other way round
+  + ANCESTORS:
+    - UKRN WP draft-16-april §1 Pattern (intervention-variance figure; D × A derivation; explicit Tension/Composition/Check)
+    - UKRN WP §3 (Table 1 baseline; worked examples FG2A-P1 delivery-gated, FG3-A multiply-constrained; Table 2 credible intervals)
+    - Role-codebook analysis: EV_analyse absent 4/4 transcripts; coordination under-provisioned
+    - equity/confident-adaptation (diagnoses the institutional specification failure this design pattern answers at service scale)
+    - NPT mode tree: P(multiplied) = D × A; P(absorbed) = D × (1-A); P(mismatch) = 1-D
+  + DERIVATION:
+    Derived from UKRN WP draft-16-april §1's factorisation, intervention-variance analysis, and explicit Tension/Composition/Check structure.
+    Answers equity/confident-adaptation at service scale: the institutional 'know what is fixed' has a service-level counterpart, 'know what is binding'.
+    Mapped to the learning loop at the 'diagnose' step: upstream of provisioning and measurement.
+    Deepened via the multiplicative-gate structure: diagnosis is mathematically necessary, not a nicety.
+    Axis framing follows paper-draft-16-april; real / irreducible / active defence and three named compositions are load-bearing.
+    Coordination requirement: Low for the service (internal analytical act) but requires Medium participation from institutions (profile contestation).

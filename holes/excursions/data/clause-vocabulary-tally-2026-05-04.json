@@ -1,0 +1,2025 @@
+{
+  "files_seen": 919,
+  "total_clauses": 8239,
+  "distinct_keys": 251,
+  "clauses": [
+    {
+      "key": "because",
+      "count": 1031,
+      "files": 862,
+      "variants": {
+        "BECAUSE": 869,
+        "because": 162
+      }
+    },
+    {
+      "key": "context",
+      "count": 1021,
+      "files": 882,
+      "variants": {
+        "context": 1012,
+        "CONTEXT": 9
+      }
+    },
+    {
+      "key": "conclusion",
+      "count": 985,
+      "files": 890,
+      "variants": {
+        "conclusion": 985
+      }
+    },
+    {
+      "key": "then",
+      "count": 946,
+      "files": 802,
+      "variants": {
+        "THEN": 817,
+        "then": 129
+      }
+    },
+    {
+      "key": "if",
+      "count": 943,
+      "files": 799,
+      "variants": {
+        "IF": 815,
+        "if": 128
+      }
+    },
+    {
+      "key": "however",
+      "count": 943,
+      "files": 799,
+      "variants": {
+        "HOWEVER": 815,
+        "however": 128
+      }
+    },
+    {
+      "key": "next-steps",
+      "count": 934,
+      "files": 811,
+      "variants": {
+        "NEXT-STEPS": 806,
+        "next-steps": 128
+      }
+    },
+    {
+      "key": "evidence",
+      "count": 165,
+      "files": 147,
+      "variants": {
+        "EVIDENCE": 32,
+        "evidence": 133
+      }
+    },
+    {
+      "key": "status",
+      "count": 109,
+      "files": 68,
+      "variants": {
+        "STATUS": 97,
+        "status": 12
+      }
+    },
+    {
+      "key": "failure-modes",
+      "count": 94,
+      "files": 94,
+      "variants": {
+        "FAILURE-MODES": 94
+      }
+    },
+    {
+      "key": "instantiated-by",
+      "count": 64,
+      "files": 9,
+      "variants": {
+        "instantiated-by": 64
+      }
+    },
+    {
+      "key": "tension",
+      "count": 63,
+      "files": 63,
+      "variants": {
+        "TENSION": 63
+      }
+    },
+    {
+      "key": "check",
+      "count": 63,
+      "files": 63,
+      "variants": {
+        "CHECK": 63
+      }
+    },
+    {
+      "key": "compositions",
+      "count": 60,
+      "files": 60,
+      "variants": {
+        "COMPOSITIONS": 60
+      }
+    },
+    {
+      "key": "invariant-statement",
+      "count": 56,
+      "files": 56,
+      "variants": {
+        "INVARIANT-STATEMENT": 56
+      }
+    },
+    {
+      "key": "governance",
+      "count": 41,
+      "files": 16,
+      "variants": {
+        "GOVERNANCE": 3,
+        "governance": 38
+      }
+    },
+    {
+      "key": "derivation",
+      "count": 39,
+      "files": 39,
+      "variants": {
+        "DERIVATION": 39
+      }
+    },
+    {
+      "key": "therefore",
+      "count": 38,
+      "files": 8,
+      "variants": {
+        "therefore": 38
+      }
+    },
+    {
+      "key": "ancestors",
+      "count": 35,
+      "files": 35,
+      "variants": {
+        "ANCESTORS": 35
+      }
+    },
+    {
+      "key": "related-patterns",
+      "count": 32,
+      "files": 32,
+      "variants": {
+        "RELATED-PATTERNS": 32
+      }
+    },
+    {
+      "key": "evidence-base",
+      "count": 32,
+      "files": 4,
+      "variants": {
+        "evidence-base": 32
+      }
+    },
+    {
+      "key": "anti-patterns",
+      "count": 29,
+      "files": 29,
+      "variants": {
+        "ANTI-PATTERNS": 29
+      }
+    },
+    {
+      "key": "because->evidence",
+      "count": 28,
+      "files": 12,
+      "variants": {
+        "BECAUSE->EVIDENCE": 28
+      }
+    },
+    {
+      "key": "illustrates",
+      "count": 23,
+      "files": 6,
+      "variants": {
+        "illustrates": 23
+      }
+    },
+    {
+      "key": "absence-signals",
+      "count": 16,
+      "files": 16,
+      "variants": {
+        "ABSENCE-SIGNALS": 16
+      }
+    },
+    {
+      "key": "lean",
+      "count": 15,
+      "files": 15,
+      "variants": {
+        "LEAN": 15
+      }
+    },
+    {
+      "key": "mechanism",
+      "count": 13,
+      "files": 13,
+      "variants": {
+        "MECHANISM": 1,
+        "mechanism": 12
+      }
+    },
+    {
+      "key": "counterfactual",
+      "count": 12,
+      "files": 12,
+      "variants": {
+        "counterfactual": 12
+      }
+    },
+    {
+      "key": "applies-when",
+      "count": 12,
+      "files": 12,
+      "variants": {
+        "applies-when": 12
+      }
+    },
+    {
+      "key": "does-not-apply",
+      "count": 12,
+      "files": 12,
+      "variants": {
+        "does-not-apply": 12
+      }
+    },
+    {
+      "key": "signals",
+      "count": 12,
+      "files": 12,
+      "variants": {
+        "signals": 12
+      }
+    },
+    {
+      "key": "use",
+      "count": 12,
+      "files": 10,
+      "variants": {
+        "use": 12
+      }
+    },
+    {
+      "key": "lemma",
+      "count": 10,
+      "files": 2,
+      "variants": {
+        "lemma": 10
+      }
+    },
+    {
+      "key": "indicator",
+      "count": 9,
+      "files": 1,
+      "variants": {
+        "indicator": 9
+      }
+    },
+    {
+      "key": "mundane-content",
+      "count": 8,
+      "files": 8,
+      "variants": {
+        "MUNDANE-CONTENT": 8
+      }
+    },
+    {
+      "key": "ripens-in",
+      "count": 8,
+      "files": 8,
+      "variants": {
+        "RIPENS-IN": 8
+      }
+    },
+    {
+      "key": "transcendent-quality",
+      "count": 8,
+      "files": 8,
+      "variants": {
+        "TRANSCENDENT-QUALITY": 8
+      }
+    },
+    {
+      "key": "distinguishing-from-mundane",
+      "count": 8,
+      "files": 8,
+      "variants": {
+        "DISTINGUISHING-FROM-MUNDANE": 8
+      }
+    },
+    {
+      "key": "worn-away",
+      "count": 8,
+      "files": 8,
+      "variants": {
+        "WORN-AWAY": 8
+      }
+    },
+    {
+      "key": "enforcement",
+      "count": 8,
+      "files": 8,
+      "variants": {
+        "ENFORCEMENT": 8
+      }
+    },
+    {
+      "key": "the-running-circle",
+      "count": 7,
+      "files": 7,
+      "variants": {
+        "THE-RUNNING-CIRCLE": 7
+      }
+    },
+    {
+      "key": "evidence-(repo-history)",
+      "count": 7,
+      "files": 7,
+      "variants": {
+        "EVIDENCE (repo history)": 7
+      }
+    },
+    {
+      "key": "diagnostic",
+      "count": 6,
+      "files": 6,
+      "variants": {
+        "DIAGNOSTIC": 6
+      }
+    },
+    {
+      "key": "related-moves",
+      "count": 6,
+      "files": 6,
+      "variants": {
+        "RELATED-MOVES": 6
+      }
+    },
+    {
+      "key": "requirements",
+      "count": 5,
+      "files": 5,
+      "variants": {
+        "REQUIREMENTS": 5
+      }
+    },
+    {
+      "key": "layer-position",
+      "count": 5,
+      "files": 5,
+      "variants": {
+        "LAYER-POSITION": 5
+      }
+    },
+    {
+      "key": "references",
+      "count": 5,
+      "files": 5,
+      "variants": {
+        "REFERENCES": 5
+      }
+    },
+    {
+      "key": "argument",
+      "count": 5,
+      "files": 5,
+      "variants": {
+        "argument": 5
+      }
+    },
+    {
+      "key": "member-patterns",
+      "count": 5,
+      "files": 5,
+      "variants": {
+        "MEMBER-PATTERNS": 5
+      }
+    },
+    {
+      "key": "exemplar-papers",
+      "count": 5,
+      "files": 5,
+      "variants": {
+        "EXEMPLAR-PAPERS": 5
+      }
+    },
+    {
+      "key": "exemplar-instances",
+      "count": 5,
+      "files": 5,
+      "variants": {
+        "EXEMPLAR INSTANCES": 5
+      }
+    },
+    {
+      "key": "note",
+      "count": 4,
+      "files": 4,
+      "variants": {
+        "NOTE": 4
+      }
+    },
+    {
+      "key": "domain-instantiation",
+      "count": 4,
+      "files": 4,
+      "variants": {
+        "DOMAIN-INSTANTIATION": 4
+      }
+    },
+    {
+      "key": "implementation",
+      "count": 3,
+      "files": 3,
+      "variants": {
+        "IMPLEMENTATION": 3
+      }
+    },
+    {
+      "key": "specifies",
+      "count": 3,
+      "files": 1,
+      "variants": {
+        "specifies": 3
+      }
+    },
+    {
+      "key": "when-to-pluck",
+      "count": 3,
+      "files": 3,
+      "variants": {
+        "WHEN-TO-PLUCK": 3
+      }
+    },
+    {
+      "key": "how-to-answer",
+      "count": 3,
+      "files": 3,
+      "variants": {
+        "HOW-TO-ANSWER": 3
+      }
+    },
+    {
+      "key": "what-it-guards-against",
+      "count": 3,
+      "files": 3,
+      "variants": {
+        "WHAT-IT-GUARDS-AGAINST": 3
+      }
+    },
+    {
+      "key": "anti-patterns-in-answers",
+      "count": 3,
+      "files": 3,
+      "variants": {
+        "ANTI-PATTERNS-IN-ANSWERS": 3
+      }
+    },
+    {
+      "key": "when",
+      "count": 3,
+      "files": 3,
+      "variants": {
+        "WHEN": 3
+      }
+    },
+    {
+      "key": "quality-criteria",
+      "count": 3,
+      "files": 3,
+      "variants": {
+        "QUALITY-CRITERIA": 3
+      }
+    },
+    {
+      "key": "related",
+      "count": 3,
+      "files": 3,
+      "variants": {
+        "RELATED": 3
+      }
+    },
+    {
+      "key": "enables",
+      "count": 2,
+      "files": 1,
+      "variants": {
+        "enables": 2
+      }
+    },
+    {
+      "key": "relationship-to-futon-theory",
+      "count": 2,
+      "files": 2,
+      "variants": {
+        "RELATIONSHIP-TO-FUTON-THEORY": 2
+      }
+    },
+    {
+      "key": "definition",
+      "count": 2,
+      "files": 2,
+      "variants": {
+        "DEFINITION": 2
+      }
+    },
+    {
+      "key": "relationship-to-other-patterns",
+      "count": 2,
+      "files": 2,
+      "variants": {
+        "RELATIONSHIP-TO-OTHER-PATTERNS": 2
+      }
+    },
+    {
+      "key": "provenance",
+      "count": 2,
+      "files": 2,
+      "variants": {
+        "provenance": 2
+      }
+    },
+    {
+      "key": "relationship-to-other-pool-patterns",
+      "count": 2,
+      "files": 2,
+      "variants": {
+        "RELATIONSHIP-TO-OTHER-POOL-PATTERNS": 2
+      }
+    },
+    {
+      "key": "application-to-missions",
+      "count": 2,
+      "files": 2,
+      "variants": {
+        "APPLICATION-TO-MISSIONS": 2
+      }
+    },
+    {
+      "key": "examples",
+      "count": 2,
+      "files": 2,
+      "variants": {
+        "EXAMPLES": 2
+      }
+    },
+    {
+      "key": "test-procedure",
+      "count": 2,
+      "files": 2,
+      "variants": {
+        "TEST-PROCEDURE": 2
+      }
+    },
+    {
+      "key": "optional-extension",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "optional-extension": 1
+      }
+    },
+    {
+      "key": "distinguishing-from-wrong-view",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DISTINGUISHING-FROM-WRONG-VIEW": 1
+      }
+    },
+    {
+      "key": "distinguishing-from-wrong-mindfulness",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DISTINGUISHING-FROM-WRONG-MINDFULNESS": 1
+      }
+    },
+    {
+      "key": "distinguishing-from-wrong-livelihood",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DISTINGUISHING-FROM-WRONG-LIVELIHOOD": 1
+      }
+    },
+    {
+      "key": "distinguishing-from-wrong-concentration",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DISTINGUISHING-FROM-WRONG-CONCENTRATION": 1
+      }
+    },
+    {
+      "key": "distinguishing-from-wrong-speech",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DISTINGUISHING-FROM-WRONG-SPEECH": 1
+      }
+    },
+    {
+      "key": "distinguishing-from-wrong-action",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DISTINGUISHING-FROM-WRONG-ACTION": 1
+      }
+    },
+    {
+      "key": "distinguishing-from-wrong-effort",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DISTINGUISHING-FROM-WRONG-EFFORT": 1
+      }
+    },
+    {
+      "key": "distinguishing-from-wrong-intention",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DISTINGUISHING-FROM-WRONG-INTENTION": 1
+      }
+    },
+    {
+      "key": "the-great-forty",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-GREAT-FORTY": 1
+      }
+    },
+    {
+      "key": "beyond-the-eight",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "BEYOND-THE-EIGHT": 1
+      }
+    },
+    {
+      "key": "`update-hunger`-+-`hunger->tau`-feed-into-`modulate-precisions`-and-`update-tau`,-including-reserve-pressure-and-depot/risk-contributions.-+-context",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "`update-hunger` + `hunger->tau` feed into `modulate-precisions` and\n  `update-tau`, including reserve pressure and depot/risk contributions.\n\n  + context": 1
+      }
+    },
+    {
+      "key": "witness-templates",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WITNESS-TEMPLATES": 1
+      }
+    },
+    {
+      "key": "evidence-(repo-history,-why-this-spec-exists)",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "EVIDENCE (repo history, why this spec exists)": 1
+      }
+    },
+    {
+      "key": "invariant-set",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "INVARIANT-SET": 1
+      }
+    },
+    {
+      "key": "traceability",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "TRACEABILITY": 1
+      }
+    },
+    {
+      "key": "relationship-to-futon1a",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIP-TO-FUTON1A": 1
+      }
+    },
+    {
+      "key": "xenotype-components",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "XENOTYPE-COMPONENTS": 1
+      }
+    },
+    {
+      "key": "portability-across-layers",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PORTABILITY-ACROSS-LAYERS": 1
+      }
+    },
+    {
+      "key": "transplantation-protocol",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "TRANSPLANTATION-PROTOCOL": 1
+      }
+    },
+    {
+      "key": "why-xenotype-matters",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WHY-XENOTYPE-MATTERS": 1
+      }
+    },
+    {
+      "key": "example-xenotype",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "EXAMPLE-XENOTYPE": 1
+      }
+    },
+    {
+      "key": "operational-interpretation",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "OPERATIONAL-INTERPRETATION": 1
+      }
+    },
+    {
+      "key": "spec-as-contract",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "SPEC-AS-CONTRACT": 1
+      }
+    },
+    {
+      "key": "mediating-future-into-present",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "MEDIATING-FUTURE-INTO-PRESENT": 1
+      }
+    },
+    {
+      "key": "type-system-analogy",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "TYPE-SYSTEM-ANALOGY": 1
+      }
+    },
+    {
+      "key": "implications",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "IMPLICATIONS": 1
+      }
+    },
+    {
+      "key": "relationship-to-proofwork",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIP-TO-PROOFWORK": 1
+      }
+    },
+    {
+      "key": "the-two-loops",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-TWO-LOOPS": 1
+      }
+    },
+    {
+      "key": "the-observation-vector",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-OBSERVATION-VECTOR": 1
+      }
+    },
+    {
+      "key": "free-energy-and-canonicalization",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "FREE-ENERGY-AND-CANONICALIZATION": 1
+      }
+    },
+    {
+      "key": "the-direct-aif-connection",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-DIRECT-AIF-CONNECTION": 1
+      }
+    },
+    {
+      "key": "invariant-mapping",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "INVARIANT-MAPPING": 1
+      }
+    },
+    {
+      "key": "what-this-adds",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WHAT-THIS-ADDS": 1
+      }
+    },
+    {
+      "key": "critical-counts",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "CRITICAL-COUNTS": 1
+      }
+    },
+    {
+      "key": "detection-flow",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DETECTION-FLOW": 1
+      }
+    },
+    {
+      "key": "properties",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PROPERTIES": 1
+      }
+    },
+    {
+      "key": "geodesic-vs-actual",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "GEODESIC-VS-ACTUAL": 1
+      }
+    },
+    {
+      "key": "application",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "APPLICATION": 1
+      }
+    },
+    {
+      "key": "relationship-to-curry-howard",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIP-TO-CURRY-HOWARD": 1
+      }
+    },
+    {
+      "key": "debugging-primitives",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DEBUGGING-PRIMITIVES": 1
+      }
+    },
+    {
+      "key": "agency-integration",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "AGENCY-INTEGRATION": 1
+      }
+    },
+    {
+      "key": "contract-requirements",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "CONTRACT-REQUIREMENTS": 1
+      }
+    },
+    {
+      "key": "agent-types",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "AGENT-TYPES": 1
+      }
+    },
+    {
+      "key": "contract-violations",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "CONTRACT-VIOLATIONS": 1
+      }
+    },
+    {
+      "key": "axiom-grounding",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "AXIOM-GROUNDING": 1
+      }
+    },
+    {
+      "key": "structure",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "STRUCTURE": 1
+      }
+    },
+    {
+      "key": "invariants",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "INVARIANTS": 1
+      }
+    },
+    {
+      "key": "concurrency-and-partial-failure",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "CONCURRENCY-AND-PARTIAL-FAILURE": 1
+      }
+    },
+    {
+      "key": "mission-diagram",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "MISSION-DIAGRAM": 1
+      }
+    },
+    {
+      "key": "template",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "TEMPLATE": 1
+      }
+    },
+    {
+      "key": "verification",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "VERIFICATION": 1
+      }
+    },
+    {
+      "key": "ghost-capability-problem",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "GHOST-CAPABILITY-PROBLEM": 1
+      }
+    },
+    {
+      "key": "persistence-requirements",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PERSISTENCE-REQUIREMENTS": 1
+      }
+    },
+    {
+      "key": "deletion-requirements",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DELETION-REQUIREMENTS": 1
+      }
+    },
+    {
+      "key": "relationship-to-counter-ratchet",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIP-TO-COUNTER-RATCHET": 1
+      }
+    },
+    {
+      "key": "bhk-arrow-semantics",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "BHK-ARROW-SEMANTICS": 1
+      }
+    },
+    {
+      "key": "gates-as-arrows",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "GATES-AS-ARROWS": 1
+      }
+    },
+    {
+      "key": "composition",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "COMPOSITION": 1
+      }
+    },
+    {
+      "key": "consequences",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "CONSEQUENCES": 1
+      }
+    },
+    {
+      "key": "what-this-adds-to-curry-howard-operational",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WHAT-THIS-ADDS-TO-CURRY-HOWARD-OPERATIONAL": 1
+      }
+    },
+    {
+      "key": "interface-as-double-role",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "INTERFACE-AS-DOUBLE-ROLE": 1
+      }
+    },
+    {
+      "key": "loop-structure",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "LOOP-STRUCTURE": 1
+      }
+    },
+    {
+      "key": "evidence-package",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "EVIDENCE-PACKAGE": 1
+      }
+    },
+    {
+      "key": "minimum-event-sequence",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "MINIMUM-EVENT-SEQUENCE": 1
+      }
+    },
+    {
+      "key": "gain-calculation",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "GAIN-CALCULATION": 1
+      }
+    },
+    {
+      "key": "composability",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "COMPOSABILITY": 1
+      }
+    },
+    {
+      "key": "genotype-(基因型)",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "GENOTYPE (基因型)": 1
+      }
+    },
+    {
+      "key": "phenotype-(表型)",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PHENOTYPE (表型)": 1
+      }
+    },
+    {
+      "key": "exotype-(外顯子型)",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "EXOTYPE (外顯子型)": 1
+      }
+    },
+    {
+      "key": "xenotype-(異種型)",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "XENOTYPE (異種型)": 1
+      }
+    },
+    {
+      "key": "relationships",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIPS": 1
+      }
+    },
+    {
+      "key": "application-to-futon",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "APPLICATION-TO-FUTON": 1
+      }
+    },
+    {
+      "key": "event-sequence",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "EVENT-SEQUENCE": 1
+      }
+    },
+    {
+      "key": "branching",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "BRANCHING": 1
+      }
+    },
+    {
+      "key": "minimum-viable",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "MINIMUM-VIABLE": 1
+      }
+    },
+    {
+      "key": "split-merge-rules",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "SPLIT-MERGE-RULES": 1
+      }
+    },
+    {
+      "key": "layer-error-mapping",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "LAYER-ERROR-MAPPING": 1
+      }
+    },
+    {
+      "key": "phase-1",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PHASE 1": 1
+      }
+    },
+    {
+      "key": "phase-2",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PHASE 2": 1
+      }
+    },
+    {
+      "key": "phase-3",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PHASE 3": 1
+      }
+    },
+    {
+      "key": "cycle-outcome",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "CYCLE-OUTCOME": 1
+      }
+    },
+    {
+      "key": "functional-gain",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "FUNCTIONAL-GAIN": 1
+      }
+    },
+    {
+      "key": "the-consensus-view",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-CONSENSUS-VIEW": 1
+      }
+    },
+    {
+      "key": "the-futonic-view",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-FUTONIC-VIEW": 1
+      }
+    },
+    {
+      "key": "symbolic-geodesics-and-interactions",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "SYMBOLIC-GEODESICS-AND-INTERACTIONS": 1
+      }
+    },
+    {
+      "key": "what-individuation-preserves",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WHAT-INDIVIDUATION-PRESERVES": 1
+      }
+    },
+    {
+      "key": "perceiving-future-interactions",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PERCEIVING-FUTURE-INTERACTIONS": 1
+      }
+    },
+    {
+      "key": "holding-capacity-as-timescale",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "HOLDING-CAPACITY-AS-TIMESCALE": 1
+      }
+    },
+    {
+      "key": "visualization",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "VISUALIZATION": 1
+      }
+    },
+    {
+      "key": "recursive-structure",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RECURSIVE-STRUCTURE": 1
+      }
+    },
+    {
+      "key": "futon-theory-as-exotype",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "FUTON-THEORY-AS-EXOTYPE": 1
+      }
+    },
+    {
+      "key": "storage-patterns-as-genotype",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "STORAGE-PATTERNS-AS-GENOTYPE": 1
+      }
+    },
+    {
+      "key": "xenotype-for-domain-derivation",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "XENOTYPE-FOR-DOMAIN-DERIVATION": 1
+      }
+    },
+    {
+      "key": "example-derivations",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "EXAMPLE-DERIVATIONS": 1
+      }
+    },
+    {
+      "key": "type-checking-at-meta-level",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "TYPE-CHECKING-AT-META-LEVEL": 1
+      }
+    },
+    {
+      "key": "axiom-statement",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "AXIOM-STATEMENT": 1
+      }
+    },
+    {
+      "key": "minimum-viable-set",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "MINIMUM-VIABLE-SET": 1
+      }
+    },
+    {
+      "key": "not-required",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "NOT-REQUIRED": 1
+      }
+    },
+    {
+      "key": "sufficiency-test",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "SUFFICIENCY-TEST": 1
+      }
+    },
+    {
+      "key": "overhead-balance",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "OVERHEAD-BALANCE": 1
+      }
+    },
+    {
+      "key": "relationship-to-geodesic",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIP-TO-GEODESIC": 1
+      }
+    },
+    {
+      "key": "stability-levels",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "STABILITY-LEVELS": 1
+      }
+    },
+    {
+      "key": "indicators-of-instability",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "INDICATORS-OF-INSTABILITY": 1
+      }
+    },
+    {
+      "key": "designing-for-stability",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DESIGNING-FOR-STABILITY": 1
+      }
+    },
+    {
+      "key": "relationship-to-refactoring",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIP-TO-REFACTORING": 1
+      }
+    },
+    {
+      "key": "the-ancestor-set",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-ANCESTOR-SET": 1
+      }
+    },
+    {
+      "key": "the-three-actions-of-canonicalization",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-THREE-ACTIONS-OF-CANONICALIZATION": 1
+      }
+    },
+    {
+      "key": "retroactivity",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RETROACTIVITY": 1
+      }
+    },
+    {
+      "key": "the-canonization-event",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-CANONIZATION-EVENT": 1
+      }
+    },
+    {
+      "key": "the-genealogy-graph",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-GENEALOGY-GRAPH": 1
+      }
+    },
+    {
+      "key": "compression-rules",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "COMPRESSION-RULES": 1
+      }
+    },
+    {
+      "key": "relationship-to-invariance-first",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIP-TO-INVARIANCE-FIRST": 1
+      }
+    },
+    {
+      "key": "protocol",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PROTOCOL": 1
+      }
+    },
+    {
+      "key": "stopped-state-behavior",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "STOPPED-STATE-BEHAVIOR": 1
+      }
+    },
+    {
+      "key": "notifications",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "NOTIFICATIONS": 1
+      }
+    },
+    {
+      "key": "recovery",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RECOVERY": 1
+      }
+    },
+    {
+      "key": "relationship-to-kaizen",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIP-TO-KAIZEN": 1
+      }
+    },
+    {
+      "key": "counter-ratchet-for-missions",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "COUNTER-RATCHET-FOR-MISSIONS": 1
+      }
+    },
+    {
+      "key": "vitality-integration",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "VITALITY-INTEGRATION": 1
+      }
+    },
+    {
+      "key": "underpinned-by",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "underpinned-by": 1
+      }
+    },
+    {
+      "key": "clarifies",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "clarifies": 1
+      }
+    },
+    {
+      "key": "relationship-to-halliday-layer",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIP-TO-HALLIDAY-LAYER": 1
+      }
+    },
+    {
+      "key": "the-two-passes",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-TWO-PASSES": 1
+      }
+    },
+    {
+      "key": "why-the-pair-has-market-value",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WHY-THE-PAIR-HAS-MARKET-VALUE": 1
+      }
+    },
+    {
+      "key": "how-to-apply",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "HOW-TO-APPLY": 1
+      }
+    },
+    {
+      "key": "on-dissonance-as-precursor",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "ON-DISSONANCE-AS-PRECURSOR": 1
+      }
+    },
+    {
+      "key": "on-passion-as-a-phase",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "ON-PASSION-AS-A-PHASE": 1
+      }
+    },
+    {
+      "key": "on-pluri-channel-harmolodics",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "ON-PLURI-CHANNEL-HARMOLODICS": 1
+      }
+    },
+    {
+      "key": "when-to-pluck-this-question",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WHEN-TO-PLUCK-THIS-QUESTION": 1
+      }
+    },
+    {
+      "key": "relationship-to-other-pool-questions",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIP-TO-OTHER-POOL-QUESTIONS": 1
+      }
+    },
+    {
+      "key": "the-five-slots",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-FIVE-SLOTS": 1
+      }
+    },
+    {
+      "key": "saṅkhāra-is-present-—-distinguish-content-saṅkhāra-from-operational-saṅkhāra",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "SAṄKHĀRA IS PRESENT — DISTINGUISH CONTENT-SAṄKHĀRA FROM OPERATIONAL-SAṄKHĀRA": 1
+      }
+    },
+    {
+      "key": "how-to-fill",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "HOW-TO-FILL": 1
+      }
+    },
+    {
+      "key": "when-to-fill-(and-when-not)",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WHEN-TO-FILL (AND WHEN NOT)": 1
+      }
+    },
+    {
+      "key": "structural-analogy-to-turn-tagging",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "STRUCTURAL-ANALOGY-TO-TURN-TAGGING": 1
+      }
+    },
+    {
+      "key": "what-makes-a-hinge",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WHAT-MAKES-A-HINGE": 1
+      }
+    },
+    {
+      "key": "what-is-not-a-hinge",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WHAT-IS-NOT-A-HINGE": 1
+      }
+    },
+    {
+      "key": "the-q→a-convention",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-Q→A-CONVENTION": 1
+      }
+    },
+    {
+      "key": "protection-against-life-logging-drift",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PROTECTION-AGAINST-LIFE-LOGGING-DRIFT": 1
+      }
+    },
+    {
+      "key": "the-parable-(abridged)",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "THE-PARABLE (abridged)": 1
+      }
+    },
+    {
+      "key": "relationship-to-the-skandhas",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATIONSHIP-TO-THE-SKANDHAS": 1
+      }
+    },
+    {
+      "key": "application-to-working-tree",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "APPLICATION-TO-WORKING-TREE": 1
+      }
+    },
+    {
+      "key": "application-to-agent-evidence",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "APPLICATION-TO-AGENT-EVIDENCE": 1
+      }
+    },
+    {
+      "key": "composition-with-siblings",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "COMPOSITION-WITH-SIBLINGS": 1
+      }
+    },
+    {
+      "key": "maturity-levels",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "MATURITY-LEVELS": 1
+      }
+    },
+    {
+      "key": "promotion-criteria",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PROMOTION-CRITERIA": 1
+      }
+    },
+    {
+      "key": "demotion-triggers",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DEMOTION-TRIGGERS": 1
+      }
+    },
+    {
+      "key": "required-fields",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "REQUIRED-FIELDS": 1
+      }
+    },
+    {
+      "key": "optional-fields",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "OPTIONAL-FIELDS": 1
+      }
+    },
+    {
+      "key": "design",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "design": 1
+      }
+    },
+    {
+      "key": "status-mapping",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "STATUS-MAPPING": 1
+      }
+    },
+    {
+      "key": "interpretation",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "INTERPRETATION": 1
+      }
+    },
+    {
+      "key": "settings",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "SETTINGS": 1
+      }
+    },
+    {
+      "key": "bridge-inventory",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "BRIDGE-INVENTORY": 1
+      }
+    },
+    {
+      "key": "audit-criteria",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "AUDIT-CRITERIA": 1
+      }
+    },
+    {
+      "key": "mismatch-actions",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "MISMATCH-ACTIONS": 1
+      }
+    },
+    {
+      "key": "what-went-wrong",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WHAT-WENT-WRONG": 1
+      }
+    },
+    {
+      "key": "what-carries-forward",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WHAT-CARRIES-FORWARD": 1
+      }
+    },
+    {
+      "key": "placental-functions",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "PLACENTAL-FUNCTIONS": 1
+      }
+    },
+    {
+      "key": "stop-the-line-trigger",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "STOP-THE-LINE TRIGGER": 1
+      }
+    },
+    {
+      "key": "drain-channel-schema",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "DRAIN-CHANNEL-SCHEMA": 1
+      }
+    },
+    {
+      "key": "on-five-phase-lifecycle-as-universal",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "ON-FIVE-PHASE-LIFECYCLE-AS-UNIVERSAL": 1
+      }
+    },
+    {
+      "key": "on-extensibility",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "ON-EXTENSIBILITY": 1
+      }
+    },
+    {
+      "key": "commitment-procedure",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "COMMITMENT-PROCEDURE": 1
+      }
+    },
+    {
+      "key": "reversal-conditions",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "REVERSAL-CONDITIONS": 1
+      }
+    },
+    {
+      "key": "warrant-test",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "WARRANT-TEST": 1
+      }
+    },
+    {
+      "key": "ahimsa-definition",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "AHIMSA-DEFINITION": 1
+      }
+    },
+    {
+      "key": "intervention-procedure",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "INTERVENTION-PROCEDURE": 1
+      }
+    },
+    {
+      "key": "escalation-triggers",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "ESCALATION-TRIGGERS": 1
+      }
+    },
+    {
+      "key": "mechanism-test",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "MECHANISM-TEST": 1
+      }
+    },
+    {
+      "key": "escalation-from",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "ESCALATION-FROM": 1
+      }
+    },
+    {
+      "key": "escalation-to",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "ESCALATION-TO": 1
+      }
+    },
+    {
+      "key": "tripwires",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "TRIPWIRES": 1
+      }
+    },
+    {
+      "key": "isolation-procedure",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "ISOLATION-PROCEDURE": 1
+      }
+    },
+    {
+      "key": "extraction-procedure",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "EXTRACTION-PROCEDURE": 1
+      }
+    },
+    {
+      "key": "on-dana-as-cost",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "ON-DANA-AS-COST": 1
+      }
+    },
+    {
+      "key": "on-unit-correction",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "ON-UNIT-CORRECTION": 1
+      }
+    },
+    {
+      "key": "relation-to-metabolic-balance",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "RELATION-TO-METABOLIC-BALANCE": 1
+      }
+    },
+    {
+      "key": "bridges",
+      "count": 1,
+      "files": 1,
+      "variants": {
+        "BRIDGES": 1
+      }
+    }
+  ]
+}

@@ -91,6 +91,24 @@ schema-sharing.
   same scaffold. See §"Inside-out invariant scaffolding"
   below.
 
+## Cross-mission back-reference: M-bounded-in-flight-state (2026-05-03)
+
+M-bounded-in-flight-state is **prerequisite-for** this mission's
+substrate semantics. Its `metabolic-balance/working-tree` invariant
+guarantees that uncommitted state across the substrate stays bounded
+in count + age + size. Without that bound, the manifold over which
+this mission computes Δ and drift carries half-finished transactions,
+and the geometric readings would be corrupted by the operator's
+in-flight work appearing indistinguishably from intentional
+authoring.
+
+The tenth cognitive-faculty shape (`metabolic-balance`, see
+`futon3c/holes/missions/M-bounded-in-flight-state.md` and
+`futon4/docs/docbook/futon3x/futon3x-mbi05031b8c.org`) is the
+edit-time counterpart of this mission's read-time substrate
+discipline; together they specify a substrate that is *both*
+transactionally-coherent and geometrically-readable.
+
 ## IFR (inherited and sharpened)
 
 > **The futon stack is one living object whose geometric

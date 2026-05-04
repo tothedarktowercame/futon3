@@ -14,6 +14,9 @@
 
 
 
+
+! conclusion: Every mission must declare a non-empty interface signature - typed inputs, typed outputs, and their wiring - so internally correct work can actually compose with the rest of the stack.
+
   + CONTEXT:
     Missions that specify internal correctness (invariants, gates, proofs)
     but not boundary types (what the system exposes) will produce systems

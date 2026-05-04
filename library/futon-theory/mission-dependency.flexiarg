@@ -13,6 +13,9 @@
 
 
 
+
+! conclusion: Represent missions as an explicit dependency graph so blocked work, leaf work, and high-value unblocks are visible before agents spend effort in the wrong place.
+
   + CONTEXT:
     Missions rarely exist in isolation. They block and enable each other,
     share prerequisites, and compete for resources. Without explicit

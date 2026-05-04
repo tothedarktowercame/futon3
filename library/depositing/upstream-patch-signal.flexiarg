@@ -1,56 +1,26 @@
-*  upstream-patch-signal
-** Pattern: Upstream Patches as Consulting Signal
+@flexiarg depositing/upstream-patch-signal
+@title Upstream Patches as Consulting Signal
+@references-extra ["depositing/scan-talk-frame (scan identifies patch targets)" "depositing/grant-to-pitch (patches demonstrate the same capability that grants propose)" "war-machine/cardinal-directions (patches are depositing in the open-source economy)"]
 
-
-
-
-
-
-@references-extra ["depositing/scan-talk-frame (scan identifies patch targets)" "depositing/grant-to-pitch (patches demonstrate the same" "capability that grants propose)" "war-machine/cardinal-directions (patches are depositing" "in the open-source economy)"]
-
-
-
-
-
-
-
-
-
+! conclusion: Treat merged upstream patches as consulting signal: a public change to a codebase the client already cares about says more than self-promotion ever can.
 
   + CONTEXT:
-     A practitioner wants to signal expertise to potential
-     clients or employers but dislikes self-promotion. Blog
-     posts, talks, and social media feel performative.
+     A practitioner wants to signal expertise to potential clients or employers but dislikes self-promotion. Blog posts, talks, and social media feel performative.
 
   + IF:
-     The practitioner uses open-source dependencies deeply
-     enough to find bugs, missing features, or design
-     improvements.
+     The practitioner uses open-source dependencies deeply enough to find bugs, missing features, or design improvements.
 
   + HOWEVER:
-     Sending one patch to one project is invisible. Writing
-     blog posts about capabilities feels hollow without
-     evidence.
+     Sending one patch to one project is invisible. Writing blog posts about capabilities feels hollow without evidence.
 
   + THEN:
-     Systematically identify patch opportunities in the
-     upstream dependency network. Prioritise patches to
-     projects with commercial ecosystems (XTDB, Datahike,
-     Logseq) or active communities (Reagent, Malli). Each
-     merged patch is a permanent, verifiable signal that
-     says "I understand your codebase well enough to
-     improve it."
+     Systematically identify patch opportunities in the upstream dependency network. Prioritise patches to projects with commercial ecosystems (XTDB, Datahike, Logseq) or active communities (Reagent, Malli). Each merged patch is a permanent, verifiable signal that says "I understand your codebase well enough to improve it."
 
     + NOTE:
-       The Drawbridge CIDER adapter is the prototype instance:
-       a real gap (no existing adapter), deep expertise (daily
-       use of Drawbridge in the stack), and high visibility
-       (every CIDER user would benefit). Estimated effort:
-       2-3 days. Signal value: permanent.
+       The Drawbridge CIDER adapter is the prototype instance: a real gap (no existing adapter), deep expertise (daily use of Drawbridge in the stack), and high visibility (every CIDER user would benefit). Estimated effort: 2-3 days. Signal value: permanent.
 
   + BECAUSE:
-     A merged PR is the strongest possible consulting signal.
-     It is not self-promotion — it is demonstrated competence,
-     publicly verifiable, attached to a real codebase the
-     client cares about. The practitioner's dependency graph
-     IS their professional network; patches are introductions.
+     A merged PR is the strongest possible consulting signal. It is not self-promotion - it is demonstrated competence, publicly verifiable, attached to a real codebase the client cares about. The practitioner's dependency graph IS their professional network; patches are introductions.
+
+  + NEXT-STEPS:
+    next[Maintain a ranked patch target list drawn from the dependency graph and treat each merged upstream contribution as both depositing and lead-generation evidence.]

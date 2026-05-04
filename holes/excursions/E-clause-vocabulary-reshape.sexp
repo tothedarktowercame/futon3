@@ -52,8 +52,21 @@
  :reshape-spec/canonical
  {:conclusion {:role  "top-level claim of the pattern"
                :form  "! conclusion: <one-paragraph claim>"
+               :aliases  ;; Syntactic sugar — all four normalise to :conclusion
+                         ;; in `:pattern/conclusion` / `:pattern/has-conclusion`.
+                 #{:conclusion :claim :summary :instantiated-by}
+               :required? true   ;; the only mandatory canonical slot;
+                                  ;; verified by
+                                  ;; futon1a invariant-pattern-has-conclusion
                :note  "Authorial declaration. Folds in INVARIANT-STATEMENT
-                       when present; the conclusion IS the invariant."}
+                       when present; the conclusion IS the invariant.
+                       `! summary:` and `! instantiated-by:` are
+                       sugar (devmap-prototype headings use the
+                       latter); `! claim:` is the historical Toulmin
+                       form. The canonical parser
+                       (futon3a/src/futon/flexiarg/projection.clj)
+                       and the futon1a ingest both normalise the
+                       four to the same conclusion slot."}
   :context    {:role  "the pattern's domain of discourse"
                :form  "+ context: <prose>"
                :note  "What world does this pattern live in?"}

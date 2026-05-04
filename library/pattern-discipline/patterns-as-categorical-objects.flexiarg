@@ -1,0 +1,29 @@
+@flexiarg pattern-discipline/patterns-as-categorical-objects
+@title Patterns As Categorical Objects, Not Isolated Text
+@keywords categorical, functor, morphism, composition, wiring-diagram, pattern-language, level-3, futon5
+@audience pattern theorists, futon5 ct-dsl implementers, M-patterns-done-right
+@tone analytic-research
+@references [pattern-discipline/peripheral-as-sokoban pattern-discipline/conclusion-required-others-recommended]
+
+! conclusion: Patterns are not isolated text artifacts but objects in a category whose morphisms include the canonical components (context / if / however / then / because) treated as required edges; a new pattern is admitted as a new object iff its morphisms compose cleanly with the category's existing structure. Composition is what makes a pattern library a *language* rather than a flat catalog — paths through the morphism graph are design moves.
+
+  + context: futon5/src/futon5/ct/dsl.clj already implements Functor / Diagram / Category / NaturalTransformation records, plus a design-pattern-category whose morphisms are :kernel-step / :frame / :justify / :synthesize. futon5/scripts/pattern_to_wiring.clj turns sigil-pattern-registry entries into wiring diagrams under resources/xenotype-wirings/. The categorical substrate exists and is reachable; what's missing is the bridge from the canonical seven (Level 1's text-shape) to the morphism predicate (Level 3's admission test).
+
+  + IF: A new pattern is being submitted to the peripheral and the operator wants admission to depend on more than text-shape — they want admission to verify the pattern's morphisms compose with the existing pattern-category.
+
+  + HOWEVER: Functorial admission is genuinely research, not just engineering. Decisions outstanding: which canonical components are *required* morphisms vs *optional*; which categorical laws must hold (associativity is straightforward; naturality of :tension ↔ :move is harder); how the futon3a pattern library and futon5's categorical infrastructure rendezvous concretely. Premature commitment to a wrong predicate would refuse honest patterns or admit incoherent ones.
+
+  + THEN: Treat each canonical-seven component as a typed edge from the pattern-object: `:pattern/has-context`, `:pattern/has-if`, etc. (Level 1 already emits these into futon1a XTDB.) Build the admission predicate as: (a) the new pattern's edges yield a sub-diagram in the design-pattern-category; (b) the sub-diagram composes with sibling patterns' diagrams without violating the category's laws; (c) on success, the pattern lands AND a wiring diagram is generated under resources/xenotype-wirings/ alongside the canonical .flexiarg.
+    + COMPOSITIONS:
+      Kernel-step composition (linear): pattern A's THEN feeds into pattern B's CONTEXT — chain A→B as a path in the morphism graph.
+      Frame composition (parallel): pattern A and pattern B share an IF — they apply in the same scope with different moves; tensor-diagrams is the right operator.
+      Naturality: when patterns at one abstraction level have natural transformations to patterns at another (instantiated-by relationships), the transformations should commute with the morphisms.
+    + EVIDENCE: futon5's compose-diagrams and tensor-diagrams already exist as primitives; design-pattern-category names :kernel-step / :frame / :justify / :synthesize as morphism families. The substrate is concrete, not aspirational.
+
+  + BECAUSE: A pattern library is more than the sum of its parts when its patterns *compose* — when invoking pattern A leads naturally to invoking pattern B because their morphisms chain. That's how Alexander's pattern languages were supposed to work; that's what most software pattern catalogs lost when they collapsed pattern-language into a flat list. The categorical framing recovers compositionality structurally: admission requires the new pattern fit the category, and the category's laws ensure the moves chain cleanly. The "more than sum of parts" payoff is operational, not metaphorical: an agent following pattern A is *guided* into pattern B because the morphism is computed, not asserted.
+
+  + NEXT-STEPS:
+    - Decide which canonical seven are required morphisms (probably context as object-type; if/however as morphism-source/target predicates; then as morphism realisation; because as morphism justification; conclusion as morphism identity; next-steps as composition-with-future-morphisms).
+    - Spike the admission predicate on 5 patterns from library/futon-theory/ — the most theoretically structured namespace. See whether their morphisms compose without contradiction.
+    - Wire the predicate into the Sokoban's submit-draft! as a graduation from Level 1 to Level 3. Failure feedback names which morphism doesn't compose and with which sibling pattern.
+    - Generate wiring diagrams on admission; surface them in Arxana / Web Arxana so authors can see the categorical neighbourhood the new pattern joined.

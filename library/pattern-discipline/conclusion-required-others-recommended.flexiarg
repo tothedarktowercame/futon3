@@ -1,0 +1,24 @@
+@flexiarg pattern-discipline/conclusion-required-others-recommended
+@title Conclusion Required, Other Canonical Components Recommended
+@keywords conclusion, required-clause, conclusion-aliases, definitional-pattern, operational-pattern, optional-vs-required
+@audience pattern authors, peripheral implementers, M-patterns-done-right
+@tone analytic-foundational
+@references [pattern-discipline/peripheral-as-sokoban futon-theory/single-source-of-truth]
+
+! conclusion: Among the seven canonical components, only the conclusion is structurally required; the other six (context, if, however, then, because, next-steps) are recommended for operational patterns but legitimately absent in definitional ones. The conclusion may be authored under any of four aliases — `! conclusion:`, `! claim:`, `! summary:`, or `! instantiated-by:` — all four are normalised to the same slot.
+
+  + context: The clause-vocabulary survey across 919 patterns showed 96.8% have a conclusion (under one of the four aliases) but only 86.9% have an IF/HOWEVER pair. The 13% gap is real authorial signal: definitional patterns ("a task IS a BHK arrow") legitimately lack operational tension and so legitimately lack IF/HOWEVER. Forcing all seven would refuse those patterns or push authors into fabricating tension where none exists.
+
+  + IF: A peripheral or verify invariant is deciding whether to admit/refuse a draft pattern based on which canonical components are present.
+
+  + HOWEVER: Requiring all seven refuses honest definitional patterns; requiring fewer than one (zero) admits anonymous artifacts with no claim. The conclusion is the only component every pattern MUST have because the conclusion IS the pattern's claim — its identity as an act of design.
+
+  + THEN: Require the conclusion (any alias). Recommend the other six with a soft-warn discipline that surfaces "this pattern would benefit from explicit IF/HOWEVER" as advisory feedback, not refusal. For operational patterns the surface contract should encourage the central five (context/if/however/then/because) so the pattern lands in the categorical-admission shape; for definitional patterns the conclusion plus context plus references is enough.
+    + CHECK: Engaged when the peripheral admits a draft iff a clause with name-key in #{conclusion claim summary instantiated-by} is present, regardless of which other components appear; advisory feedback names missing-recommended components without refusing. Failing when the peripheral refuses definitional patterns lacking IF/HOWEVER, OR admits patterns with no conclusion.
+
+  + BECAUSE: A pattern is a unit of *claim*. Without a conclusion, an artifact is just structured prose — there is nothing to recommend, nothing to dispute, nothing to apply. With a conclusion plus any subset of the other six, the pattern can still be a meaningful act of design: a definition (conclusion + context + references), a tension-named pattern (conclusion + if + however), a procedure (conclusion + then), or a fully-shaped operational pattern (all seven). The four conclusion-aliases reflect that authors come to the same structural slot from different directions — `! conclusion:` from analytic-foundational tradition, `! claim:` from the Toulmin-extended canon, `! summary:` from informal documentation practice, `! instantiated-by:` from devmap-prototype headers. All four name the same load-bearing slot; the parser unifies them.
+
+  + NEXT-STEPS:
+    - Encode the discipline in the verify invariant invariant-pattern-has-conclusion (already done; futon1a/src/futon1a/model/verify.clj).
+    - Wire advisory-warn for missing-recommended components into the Sokoban's response shape (admit + violations[soft-warn]).
+    - Decide which definitional-pattern shapes should still get IF/HOWEVER added authorially as the categorical-admission research matures.

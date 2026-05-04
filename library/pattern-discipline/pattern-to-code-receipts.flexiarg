@@ -1,0 +1,29 @@
+@flexiarg pattern-discipline/pattern-to-code-receipts
+@title Pattern-to-Code Receipts — Structural Link Between Claim And Witness
+@keywords pattern-receipt, code-witness, level-4, demonstrable-value, commit-footer, geometric-witness, IFR
+@audience pattern theorists, M-pattern-application-diagnostic, M-patterns-done-right
+@tone operational
+@references [pattern-discipline/peripheral-as-sokoban pattern-discipline/patterns-as-categorical-objects]
+
+! conclusion: A pattern is honestly applied when there is a verifiable receipt linking the code that was built using it back to the pattern's claim. Per-turn evidence (mining, Haiku-rationale) is one register; per-commit pattern-citation receipts are the structural other. Together they triangulate which patterns the codebase actually embodies vs which are well-intentioned text.
+
+  + context: Today the pattern-to-code link is via PSR/PUR notes (pattern-coherence) plus per-turn evidence-mining (M-pattern-mining, M-pattern-retrieval-calibration); both are advisory. The IFR property "demonstrable value" (M-pattern-application-diagnostic §IFR) is structurally a witness check: applying a pattern's move should produce a measurable Δ in the geometric (T, ∇, Δ) substrate. Without commit-time receipts, the witness is asserted but not measured.
+
+  + IF: An agent commits code in a region where one or more patterns have been claimed as the design substrate (PSR exists; mining attests; the operator has authorial intent for that region).
+
+  + HOWEVER: There is no enforced structural link between the commit and the patterns it claims to apply. PSR notes are reflexive ("I plan to apply X"); PUR notes are retrospective ("I applied X"); neither is checkable against the code that landed. Mining is per-turn, not per-commit. The claim "this commit applied pattern X" has no verifiable witness today.
+
+  + THEN: Adopt a receipts discipline: every commit that touches code in a pattern-claimed region carries a `Pattern: <ns>/<name>` footer (zero or more — multiple patterns are common). The footer joins the canonical parser + the geometric substrate: the receipt names the pattern's `:witness-shape`, the commit's region of effect, and the implicit T-before / T-after pair. Emit `pattern-receipt` evidence per commit; the verify invariant `invariant-pattern-receipts-resolve` checks every receipt's pattern-ref resolves and every claimed witness can be re-derived from current code state.
+    + EVIDENCE: M-bounded-in-flight-state already shipped a commit-footer parser for `Block: <kind>-<date>-<slug>$` (last occurrence wins). The same shape applies — `^Pattern: <ns>/<name>$` parser, idempotent emission, evidence record per commit.
+    + MECHANISM: The receipt structurally links three things: (1) the commit's diff, locating it in the codebase hypergraph; (2) the claimed pattern, locating it in the design-pattern-category; (3) the geometric witness, computing T-before / T-after at the commit's region. Together they say "this code embodies that pattern's move, by this measure."
+    + COUNTERFACTUAL: Without receipts, the operator has no way to ask "which patterns does this region of the codebase actually embody?" — only "which patterns were claimed." Per-turn evidence accumulates but doesn't aggregate to per-region truth. Receipts are the structural denominator.
+
+  + BECAUSE: M-pattern-application-diagnostic's IFR demands "demonstrable value" — that the pattern's claim be verifiable against codebase state. Receipts are the operational form of that demand. Without them, the substrate's claim about pattern application is "an agent said so"; with them, the substrate's claim is "the geometric witness corroborates." Per-turn evidence (mining, Haiku) is fast and noisy; per-commit receipts are slow and load-bearing — together they form a triangulation that catches both honest claims and gaming. The receipts discipline is also the structural form of the homeostatic agent's self-check on its own design vocabulary: when a pattern's receipts consistently fail the witness check, the pattern is wrong-shaped or never honestly applied; the agent learns about its own design language by reading its receipts.
+
+  + NEXT-STEPS:
+    - Footer parser: `^Pattern: <ns>/<name>$`, last occurrence wins, mirrored on the M-bounded-in-flight-state Block-id parser.
+    - Pre-commit advisory: warn when committing in a region with no Pattern footer; do not block (advisory phase).
+    - Evidence emission: emit `pattern-receipt` evidence per commit with {commit-sha, patterns: [...], regions: [...]}.
+    - Verify invariant: `invariant-pattern-receipts-resolve` — every receipt's pattern-ref resolves; every claimed pattern's witness can be re-derived.
+    - Geometric witness wiring: integrate with M-pattern-application-diagnostic's (T, ∇, Δ) computation so receipts include T-before/T-after deltas.
+    - Cutover discipline: receipts from this date forward; historical commits stay as they are.

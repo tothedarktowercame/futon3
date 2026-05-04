@@ -1,0 +1,25 @@
+@flexiarg pattern-discipline/peripheral-as-sokoban
+@title Peripheral As Sokoban — Pre-write Capability Envelope, Not Post-write Validator
+@keywords peripheral, sokoban, pre-write, capability-envelope, write-time-invariant, no-leakage, pattern-authoring
+@audience pattern authors, futon3c peripheral implementers, M-patterns-done-right
+@tone analytic-operational
+@references [futon-theory/single-source-of-truth pattern-coherence/internal-coherence]
+
+! conclusion: A peripheral that constrains pattern authoring is a pre-write capability envelope, not a post-write validator. An agent inside the surface can submit a draft and either it lands as a canonical artifact OR the surface refuses with structured feedback and writes nothing. No leakage — non-canonical drafts cannot be emitted from inside the peripheral.
+
+  + context: When agents are asked to "create a new library pattern" without a constrained surface, they reach for free-form Edit/Write tools and produce drafts that drift from the canonical shape. Drift accumulates: each individual draft looks reasonable but the library as a whole loses coherence. Post-write validation can detect drift but cannot prevent the agent from having already split their attention across the wrong shape — by then the authorial intent has settled in the wrong frame.
+
+  + IF: An agent is authoring a pattern (or any artifact whose typed shape must hold across a corpus), and the operator wants the canonical-shape invariant to bind at write time rather than detect drift retrospectively.
+
+  + HOWEVER: Free-form Edit/Write tools cannot enforce shape; an agent can always emit a non-canonical draft and a downstream validator can only detect it after the fact. Even with strict validation, the authorial intent has already been shaped by the wrong frame; the validator's refusal is felt as friction rather than as guidance.
+
+  + THEN: Provide a peripheral that exposes only a single bound action — submit-draft. Inside the peripheral, Edit/Write are constrained for the typed-artifact paths. The submit action validates against the canonical shape, runs reshape rules where they apply deterministically, and either lands the canonical form or refuses with structured feedback naming what is missing or non-canonical. The agent stays in the peripheral until the draft canonicalises (Sokoban — only legal moves available); on success, evidence is emitted recording the admission.
+    + CHECK: Engaged when the agent's only legal write-path inside the peripheral is the submit action; refusals carry structured violations with kind/detail/where and a pointer to the rulebook so re-drafting is informed; nothing lands on disk unless every required check passes (no-leakage). Failing when an agent can bypass via direct Edit/Write; refusal feedback is unstructured prose; partial drafts land on disk.
+
+  + BECAUSE: The canonical-shape invariant must be enforced at write time, not detected later. Detection-after-the-fact (post-write validation) is necessary but not sufficient — by the time the validator fires, the agent's authorial intent has already been shaped by the wrong frame and the corpus has been silently degraded. Pre-write enforcement is the structural form of the intent: the surface itself disallows the bad move, so the agent's attention never splits across non-canonical shapes. This is the same shape as Curry-Howard — the type system constrains expressible programs; the peripheral constrains expressible drafts.
+
+  + NEXT-STEPS:
+    - Wire the peripheral into futon3c's session-mode dispatch so an agent enters pattern-author mode and has Edit/Write constrained for library/**.flexiarg.
+    - Surface contract on entry: the agent's session prompt names the peripheral and the only legal write path.
+    - Refusal-feedback links to the rulebook + the algorithm + the canonical parser so an agent can self-correct from the violation alone.
+    - Generalise the pattern: peripherals for other typed artifacts (mission docs, dispositions, commit-block-ids) get the same Sokoban discipline.

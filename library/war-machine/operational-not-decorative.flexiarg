@@ -1,19 +1,22 @@
-{:id "war-machine/operational-not-decorative"
- :claim "Infrastructure that validates is operational; infrastructure that only documents is decorative. The test: does the artifact change behavior when it fails?"
- :ground "Bulletin 1 (2026-02-14): Wiring diagrams were assumed decorative until First Proof showed they could catch structural errors at scale. The diagrams became operational when edge-level critique was possible — when a wrong arrow produced a detectable failure, not just a stale document."
- :warrant "The distinction between operational and decorative infrastructure is whether failure is observable. A test suite is operational (failure stops the build). A README is decorative (staleness is invisible). The war machine requires that its instruments be operational — otherwise it is flying blind."
- :backing "S1 (evidence discipline works). futon5 wiring diagrams. M-futon3x-e2e demo."
- :qualifier "Decorative infrastructure is not worthless — it aids comprehension. But it must not be confused with operational infrastructure, which aids correction."
- :rebuttal "Some infrastructure is deliberately decorative (devmaps as aspirational sketches). The danger is when decorative infrastructure is *relied upon* as if it were operational — e.g., trusting a mission doc's status field without checking the evidence."
- :tension "System builds extensive documentation but cannot tell when it diverges from reality."
- :resolution "Make documentation testable: wiring diagrams that validate, mission status derived from evidence, devmaps that can be compared against actual code."
- :bulletin 1
- :support-relation :S1}
+@flexiarg war-machine/operational-not-decorative
+@title Operational Not Decorative
 
+! conclusion: Infrastructure that validates is operational; infrastructure that only documents is decorative. The test is whether the artifact changes behaviour when it fails.
 
+  + CONTEXT:
+    Wiring diagrams were assumed decorative until they began catching structural errors at scale. Once a wrong arrow produced a detectable failure, the diagram stopped being mere documentation.
 
+  + IF:
+    The system is relying on a document, diagram, or status surface to steer or validate work.
 
+  + HOWEVER:
+    Decorative infrastructure can still aid comprehension, and some sketches are intentionally aspirational. The failure comes when decorative artifacts are trusted as if they were operational.
 
+  + THEN:
+    Make the artifact testable: derive status from evidence, validate diagrams, and wire failures so they force correction instead of silently going stale.
 
+  + BECAUSE:
+    Operational infrastructure is defined by observable failure. A README can drift forever; a validator, gate, or checked diagram changes behaviour when reality diverges.
 
-
+  + NEXT-STEPS:
+    next[For each strategic artifact, name the failure condition that would force correction; if none exists, treat it as decorative until one is built.]

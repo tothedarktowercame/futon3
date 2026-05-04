@@ -1,17 +1,22 @@
-{:id "war-machine/spatial-over-tabular"
- :claim "A spatial display that shows state as shape and colour earns inhabitation; a tabular display that encodes state as numbers in rows becomes wallpaper."
- :ground "The futon2 ant war visualiser is watched. The futon0 joe-hud markdown tables are invoked on demand but require line-by-line reading and mental synthesis. A brain MRI shows which regions are active at a glance — no one reads a table of voxel intensities. The same information, presented spatially, becomes obvious; presented tabularly, becomes homework."
- :warrant "Human vision processes spatial layout pre-attentively: colour, size, position, and motion are perceived before conscious reading begins. Tables require serial processing — left to right, row by row. For a strategic overview that must be grasped quickly and revisited often, spatial layout earns repeated use because the cost of comprehension is lower on every visit."
- :backing "The ant war grid shows colony health, foraging efficiency, and territorial control without reading a single number. Churchill's war room used maps with pins, not spreadsheets. Air traffic control uses radar displays, not flight tables."
- :qualifier "Tables are better for precise lookup (exact commit counts, specific dates). The spatial view supplements rather than replaces tabular data — the table is the fallback renderer."
- :rebuttal "A spatial display can be misleading if the layout algorithm distorts relationships. Force-directed graphs can make unrelated nodes appear close. The layout must be semantically grounded (workstream clusters, sorry gravity) not arbitrary."
- :tension "Strategic information is available but encoded in tables that require effortful reading."
- :resolution "Present the same data spatially — active regions glow, neglected regions dim, imbalances are visible as asymmetric shapes. Tables remain available as drill-down."}
+@flexiarg war-machine/spatial-over-tabular
+@title Spatial Over Tabular
 
+! conclusion: A spatial display that shows state as shape and colour earns inhabitation; a tabular display that encodes state as numbers in rows becomes wallpaper.
 
+  + CONTEXT:
+    The ant war visualiser is watched at a glance, while markdown tables require deliberate reading and synthesis. The same information becomes obvious when presented spatially and becomes homework when presented only as rows.
 
+  + IF:
+    Strategic state needs to be grasped quickly and revisited often rather than read line by line on demand.
 
+  + HOWEVER:
+    Tables are still better for precise lookup, and spatial layouts can mislead if they are visually active but semantically arbitrary.
 
+  + THEN:
+    Render the same state spatially - active regions glow, neglected regions dim, imbalances show as asymmetric shape - while keeping the table as a precise drill-down fallback.
 
+  + BECAUSE:
+    Human vision processes colour, size, position, and motion pre-attentively. Strategic overviews need repeated comprehension at low cost, and spatial layout lowers that cost every time.
 
-
+  + NEXT-STEPS:
+    next[Prefer semantically grounded spatial layouts for strategic overviews, then keep exact counts and dates available as tabular drill-down.]

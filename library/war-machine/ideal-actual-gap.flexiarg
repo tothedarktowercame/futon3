@@ -1,20 +1,22 @@
-{:id "war-machine/ideal-actual-gap"
- :claim "A self-representing system needs two images — what it aspires to be (devmaps, mission specs) and what it actually is (evidence, code) — and a computable comparison between them."
- :ground "Bulletin 3 (2026-02-22): The self-representing stack thesis identified that the system maintains ideal self-images (devmaps) and actual state (evidence store) but the comparison between them is manual. Joe reads both and synthesises in his head. No computation bridges the gap."
- :warrant "Self-representation without self-comparison is self-portraiture — flattering but not corrective. The Deleuzian distinction: striated space (the ideal, gridded, planned) vs smooth space (the actual, flowing, situational). The war machine operates in smooth space but must periodically compare against striated space to detect drift. The comparison itself must be computable, not manual, because manual comparison doesn't scale and doesn't repeat."
- :backing "S4 (reflexive architecture). M-self-representing-stack (DERIVE+ARGUE complete). Bulletin 3 system diagram."
- :qualifier "Not all comparisons need to be automated — some require judgment. But the raw discrepancy (ideal says X, actual shows Y) should be machine-detectable."
- :rebuttal "Computing the ideal/actual gap risks reducing the ideal to only what is measurable. Aspirations that cannot be operationalised are still valuable — they set direction even when they can't be tested."
- :tension "System has both aspirational and actual self-images but cannot compute the discrepancy between them."
- :resolution "Mission Control computes coverage (devmap components → mission inventory). Sorry topology computes gaps (typed holes with known types). The War Machine synthesises both into a discrepancy report."
- :bulletin 3
- :support-relation :S4
- :attack-relation :A2}
+@flexiarg war-machine/ideal-actual-gap
+@title Ideal Actual Gap
 
+! conclusion: A self-representing system needs two images - what it aspires to be and what it actually is - plus a computable comparison between them.
 
+  + CONTEXT:
+    The stack already maintains ideal self-images in devmaps and actual state in evidence and code, but the comparison between them is still manual. Joe reads both and synthesises the discrepancy in his head.
 
+  + IF:
+    The system maintains both aspirational specifications and evidence about its current implementation and coverage.
 
+  + HOWEVER:
+    Self-representation without self-comparison turns into portraiture rather than correction. Some ideals remain only partly measurable, but the raw discrepancy still needs to be machine-detectable.
 
+  + THEN:
+    Compute the ideal/actual gap: compare devmap components against mission inventory, compare sorry topology against implementation state, and surface the discrepancy as a first-class report.
 
+  + BECAUSE:
+    The war machine operates in smooth space but periodically needs a computable comparison against its striated self-image to detect drift at scale.
 
-
+  + NEXT-STEPS:
+    next[Build a discrepancy report that pairs each ideal component with current evidence and flags the gaps that still require human judgment.]

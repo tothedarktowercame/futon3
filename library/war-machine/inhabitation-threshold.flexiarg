@@ -1,20 +1,22 @@
-{:id "war-machine/inhabitation-threshold"
- :claim "Infrastructure that is 90% built and 0% inhabited produces zero value. The last 10% — entry friction reduction — produces all the value, because it crosses the inhabitation threshold."
- :ground "Bulletin 6 (2026-04-10): The evidence pipeline, pattern retrieval, Arxana browser, and HUD operator panel were all built before this session. None were inhabited. Four bugs in the entry ceremony (heredoc quoting, emacsclient -t hang, missing Agency auto-start, wrong cwd on ProcessBuilder) blocked all of it. Fixing the four bugs — the last 10% — produced immediate evidence flow, context retrieval, sorry topology visibility, and browsable conversation history. No new infrastructure was built; existing infrastructure became inhabited."
- :warrant "D&G's ambulant scientist follows the flow of matter rather than theorising from outside. Inhabitation is the ambulant mode: you enter the material (the surface), and the material reveals its properties (the evidence). Building without inhabiting is royal science — reproducing ideal forms (mission specs, architecture docs) without testing them against the flow. The war machine exists only when it is inhabited."
- :backing "WR-4 (inhabit before building). surface-earns-inhabitation pattern. inhabitation-feeds-evolution pattern. Baldwin effect: no inhabitation → no data → no learning."
- :qualifier "Building is sometimes necessary before inhabitation is possible. The 90% was not wasted — it was prerequisite. The pattern applies when infrastructure exists and could be inhabited but isn't, due to entry friction."
- :rebuttal "Inhabitation can become its own trap — the hermit who inhabits the stack but never deposits externally. Inhabitation is necessary but not sufficient; it must produce evidence that serves external goals (WR-4)."
- :tension "Extensive infrastructure exists but produces no value because nobody uses it."
- :resolution "Measure inhabitation (evidence flow, turn counts, usage signals) as a first-class metric alongside infrastructure completeness. Entry friction is a severity-critical bug, not a UX polish task."
- :bulletin 6
- :war-room-decision :WR-4
- :attack-relation [:A1 :A2]}
+@flexiarg war-machine/inhabitation-threshold
+@title Inhabitation Threshold
 
+! conclusion: Infrastructure that is 90% built and 0% inhabited produces zero value; the last 10% that reduces entry friction is what creates the value because it crosses the inhabitation threshold.
 
+  + CONTEXT:
+    The evidence pipeline, pattern retrieval, browser surfaces, and HUD were all built before the session that finally fixed the entry ceremony. Once the friction bugs were removed, the already-built infrastructure became inhabited immediately.
 
+  + IF:
+    A stack surface is largely built but still too awkward, brittle, or ritual-heavy to enter during ordinary work.
 
+  + HOWEVER:
+    Prerequisite build-out is real, and inhabitation alone can also become a trap if it never deposits externally. The failure mode here is not building, but infrastructure that exists without being used.
 
+  + THEN:
+    Treat entry friction as severity-critical. Measure inhabitation as a first-class metric and prioritise the fixes that let ordinary work actually pass through the surface.
 
+  + BECAUSE:
+    The war machine exists only when it is inhabited. No new capability was required once the entry bugs were fixed; the same infrastructure started producing evidence as soon as the threshold was crossed.
 
-
+  + NEXT-STEPS:
+    next[Audit every major surface for the exact bug or ritual that still blocks ordinary entry, and fix those before adding new capability.]

@@ -1,0 +1,36 @@
+@flexiarg system-coherence/argue-empirically-not-persuasively
+@title Argue Empirically, Not Persuasively
+@keywords argue-phase, empirical-claim, must-follow, reasonable-assumptions, bootstrap-discipline, futon-mission-lifecycle, may-fostering
+@audience system designers, mission authors, working-paper drafters, ARGUE-phase reviewers
+@tone technical
+@style pattern
+@references [futon-theory/futonic-logic, futon-theory/mission-lifecycle, writing-coherence/unearned-essentially, writing-coherence/hedged-lift]
+
+
+! conclusion: At any stage where claims are first being put on the record — bootstrap stages of a system, ARGUE-phase missions, foundational sections of papers — claims must be derived from reasonable assumptions and present-tense observations, not speculated forward as downstream effects.  "May foster X" is not a claim; it is a hope dressed as one.  The discipline is: a claim belongs at the bootstrap if it follows from the bootstrap's own action under reasonable assumptions, not if it depends on a chain of effects the bootstrap has not yet produced.  The remedy when such a claim is detected is to delete it (most often), demote it to an open question or future-work note (sometimes), or replace it with the what-must-follow restatement it was gesturing at (rarely — usually the speculation was masking the absence of any derivable claim).
+
+  + context: AI drafts and human first-drafts both tend to dress speculation as claim.  The hedge "may", the modifier "potentially", the verb "foster" or "could lead to" — each does argumentative work without paying for it.  In ARGUE-phase missions and in bootstrap-stage system descriptions, speculative claims pile up because the writer is working at the edge of what the system has done so far, and the speculation is filling space that empirical claim cannot yet fill.  Distinct from `unearned-essentially` (about unsupported strength claims) and `hedged-lift` (about hedging that does the lifting): here the failure is *temporal* — the claim depends on stages the document has not yet brought into being.
+
+  + IF:
+    The pattern operates on the axis: claim ambition ↔ what the action under reasonable assumptions actually delivers.
+    Irreducible: a claim either follows from the action under reasonable assumptions, or it depends on a chain the document has not yet built.  No amount of hedging changes which of these is true.
+
+  + HOWEVER:
+    Real costs: a strong document may say less in early sections than the writer wants — empirically derivable claims at bootstrap are often modest and obvious.  Restraining the claim to the empirical scope at hand can feel anticlimactic; permitting speculation feels generous, but creates load-bearing reliance on claims the document has not paid for.
+    Active dynamic: the temptation grows whenever the writer wants the early section to feel weighty.  The cure for the section feeling thin is not speculation; it is moving more empirically derivable content into the early section, or accepting that the section is short.
+
+    + FAILURE-MODES:
+      - May-fostering: "may foster" / "could lead to" / "has the potential to" — each is the present participle of a verb the document has not earned.
+      - Downstream borrowing: claims at stage N depend on stages N+1 or N+2 having occurred; when challenged, the writer points forward rather than at what the action has produced.
+      - Hedge as warrant: a hedge ("perhaps", "in principle") is doing the work an argument would do — the reader is supposed to read the hedge as care rather than as the absence of derivation.
+      - Persuasion-by-aspiration: the claim is rhetorically attractive and the writer treats this attractiveness as warrant.
+
+  + THEN: Delete or restrict the claim; replace with what must follow; or demote to open question.
+    + COMPOSITIONS:
+      (1) Delete and stop: the simplest move.  If the claim does not follow from what the action does, remove it.  The remaining sentence is often short and sufficient.  "This produces trainer-level visibility." is an entire claim.
+      (2) Restate what must follow: replace "may foster X" with the empirical claim it was reaching for.  If sharing evidence "may foster ground-up demand for community infrastructure", what *must* follow under reasonable assumptions is that trainers see findings; the demand-for-infrastructure claim depends on additional unbuilt machinery and should not be made here.
+      (3) Demote to open question: if the speculation flags a genuine downstream variable the work needs to track, move it to a separate "open questions" or "what we will be watching" section.  The demotion preserves the writer's intuition without letting the speculation pose as a derived claim.
+      (4) Audit by must-follow test: read the claim and ask, "what would have to be the case for this to follow from the action just described, under reasonable assumptions?"  If the answer requires additional steps the document has not specified, the claim is speculative.  If the answer is "only the action just described, and nothing more", the claim is empirical and stays.
+
+    + CHECK:
+      Engaged when every claim in the section can be derived from the action just described, under reasonable assumptions, with no appeal to stages or machinery the document has not yet built.  Failing when claims use "may", "could", "has the potential to", or "may foster" as warrant, or when the writer would, if challenged, defend the claim by pointing forward rather than by pointing at what the action makes inevitable.

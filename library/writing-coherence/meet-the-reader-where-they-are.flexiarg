@@ -1,0 +1,36 @@
+@flexiarg writing-coherence/meet-the-reader-where-they-are
+@title Meet the Reader Where They Are
+@keywords register-mismatch, operational-anchors, calendar-tags, applicability-flags, abstraction-protection
+@audience paper authors, working-paper drafters, designers writing for mixed audiences
+@tone technical
+@style pattern
+@references [writing-coherence/meta-lede, writing-coherence/floating-formalism, writing-coherence/plain-language-thesis]
+
+
+! conclusion: A document grounded in one register (strategic, theoretical, architectural) often has a reader grounded in another (operational, calendar-based, decision-driven).  When the registers do not meet, the document looks evasive even when it is principled.  The remedy is not to rewrite in the reader's register, which sacrifices the rigour the abstraction was protecting; nor to leave the document unanchored, which forces the reader to translate every passage.  The remedy is to insert minimal anchors — calendar tags, cost bands, decision dates, applicability flags — that let the operational reader land without disturbing the document's stance.  The move is additive: anchors are parenthetical, italicised, and elidable; the original disclaimer that protects the abstraction's openness must be restated nearby, in the same eyeshot as the anchors.
+
+  + context: Common in interdisciplinary writing where one document serves planning audiences and theoretical ones at once.  Strategic frameworks are deliberately abstract because they hold open future-decision space; operational readers experience that abstraction as refusal.  The diagnostic shows up when an operational reviewer reports that the document "doesn't tell me what to do" while a theoretical reviewer reports that the same document is "appropriately principled".  Distinct from `meta-lede` (about opening sentences, not register-mismatch across the document), `floating-formalism` (about an unanchored formalism, not an unanchored reader), and `plain-language-thesis` (about thesis legibility, not register accommodation).
+
+  + IF:
+    The pattern operates on the axis: principled abstraction ↔ reader's operational frame.
+    Irreducible: rewriting the document into the operational register sacrifices the rigour the abstraction was protecting; leaving the document fully abstract sacrifices the operational reader.
+
+  + HOWEVER:
+    Real costs: an unanchored strategic document forces the operational reader to translate every passage and creates the impression of evasion; an over-anchored document loses the future-space the abstraction was holding and starts to read like a project plan.
+    Active dynamic: the temptation to "soften" the abstraction grows whenever the operational reader pushes back; the temptation to "purify" the abstraction grows whenever a theoretical reader objects to clutter.  The pattern recurs at every interface between strategic and operational registers in the document.
+
+    + FAILURE-MODES:
+      - Capitulation: rewrite in the operational register and lose the rigour.  The strategic frame becomes a project plan.
+      - Refusal: leave the document unanchored and let the reader translate.  The operational reader concludes the document is evasive.
+      - Over-anchoring: insert so many anchors that the abstraction's openness collapses.  The reader can no longer tell which positions the document is holding open.
+      - Disclaimer drift: anchors are inserted without a nearby restatement of the abstraction's openness; the anchors get read as commitments.
+
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + COMPOSITIONS:
+      (1) Insert minimal italicised anchors at the points of register interface: `*(≤3 mo)*`, `*(governance-gated)*`, `*[ORP-only]*`, `*(decision binds at Stage 1)*`.  Anchors must be parenthetical and visually distinct from the running argument.
+      (2) Restate disclaimers verbatim within the same paragraph or the immediately following one: "These brackets reflect a plausible quickstart calendar; the disclaimer about effort ranges still holds."  The anchor and the disclaimer must be in the same eyeshot.
+      (3) Direct the operational reader to a companion document: "the operational addendum names the actions, time horizons, and resource bands required for the framework to become operative."  This preserves the main document's register while serving the operational frame elsewhere.
+      (4) Audit by elision: re-read the section without the anchors.  The argument should still hold and the disclaimer should still protect openness.  If removing the anchors changes the argument, the pattern has been over-applied.
+
+    + CHECK:
+      Engaged when anchors are present, parenthetical, and elidable; the original disclaimer is restated in the same eyeshot; and the argument runs the same with or without the anchors.  Failing when anchors carry argumentative weight (the reader cannot elide them), or no nearby disclaimer protects the abstraction's openness, or the document has been rewritten in the operational register entirely.

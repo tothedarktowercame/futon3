@@ -183,6 +183,9 @@
 @title Pattern Dependency Declaration
 @sigils [➰/才]
 
+
+! conclusion: Declare pattern dependencies explicitly so each session's proof path can be checked for cycles and justified against trace evidence.
+
   + next-steps:
     - Run DAG checks on dependency graphs per session (no cycles); sample dependency edges to confirm the reason is supported in cell/trace evidence.
     - Capture dependency reasons with channel tags (e.g., code/doc/test) so audits can map dependencies back to evidence inputs (align with aif/term-to-channel-traceability).
@@ -191,12 +194,18 @@
 @title Agent Clock-Out
 @sigils [🌽/才]
 
+
+! conclusion: Clock out by leaving a reconstructable trail from clock-in through dependencies and artifacts so the session can be audited and resumed without guesswork.
+
   + next-steps:
     - Verify that the clock-out pattern trail can be reconstructed from the session's clock-in + pattern-dep events; confirm artifacts match the actual change set.
 
 @arg fulab/proof-commit
 @title Proof-Conformant Commit
 @sigils [➰/双]
+
+
+! conclusion: Allow commits only when they conform to a verified proof path, so repository history reflects validated reasoning rather than ungrounded drift.
 
   + next-steps:
     - Implement the MUSN commit gate that rejects commits without a verified proof path.
@@ -206,6 +215,9 @@
 @title Live Notebook Cell
 @sigils [〰️/亡]
 
+
+! conclusion: Treat each live notebook cell as a traceable proof event whose side effects can be compared against the actual session history.
+
   + next-steps:
     - Wire real-time cell capture into the session event pipeline.
     - Sample-compare cell side effects with actual system events (file changes, command logs); test whether cells can reconstruct a simplified proof path.
@@ -213,6 +225,9 @@
 @arg fulab/session-resume
 @title Session Resume
 @sigils [🌽/才]
+
+
+! conclusion: Resume a session by extending the existing proof-path lineage rather than spawning a disconnected branch of work.
 
   + next-steps:
     - Define whether resume allows switching the primary pattern key; test that the proof path ancestor chain remains consistently reconstructable after multiple resumes.
@@ -225,6 +240,9 @@
 @title Changelog-as-Trail
 @sigils [🌽/才]
 
+
+! conclusion: Use the changelog as a compact trail of clock-in, dependency, artifact, and clock-out events that can be rolled up into proof evidence.
+
   + next-steps:
     - Add a fixed template per entry (clock-in, deps, artifacts, clock-out) and schedule a periodic backfill into XTDB once proof events land.
 
@@ -236,12 +254,18 @@
 @title Blast Radius Control
 @sigils [📎/化]
 
+
+! conclusion: Record blast radius explicitly for cross-futon changes so rollback scope and downstream risk stay inspectable.
+
   + next-steps:
     - Require blast-radius events for cross-futon changes; audit that the rollback scope matches actual artifacts.
 
 @arg fulab/tradeoff-record
 @title Trade-off Record
 @sigils [🌏/化]
+
+
+! conclusion: Require an explicit trade-off record whenever scope or risk shifts so decisions remain auditable instead of dissolving into tacit judgment.
 
   + next-steps:
     - Require at least one tradeoff-record when a scope or risk change is accepted.

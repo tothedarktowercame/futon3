@@ -4,6 +4,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
+            [futon.flexiarg.projection :as projection]
             [scripts.sigil-allowlist :as allow]))
 
 (def ^:private default-output "resources/sigils/patterns-index.tsv")
@@ -16,8 +17,6 @@
     "are" "as" "that" "this" "be" "an" "or" "it" "at" "from"
     "not" "have" "has" "but" "if" "you" "your" "we" "our" "their"
     "they" "them" "into" "about" "can" "will" "may" "must" "should"})
-
-(def ^:private flexiarg-exts #{".flexiarg" ".multiarg"})
 
 (def ^:private sigil-block-re #"\[[^\]]+\]")
 (def ^:private sigil-token-re #"[^\s\[\]]+/[^\s\[\]]+")
@@ -106,69 +105,8 @@
                          nil)))))))
        vec))
 
-(defn- extract-meta [text key]
-  (some->> (re-find (re-pattern (str "@" key "\\s+(.*)")) text)
-           second
-           str/trim
-           not-empty))
-
-(defn- split-arg-blocks [text]
-  (let [lines (str/split-lines text)]
-    (loop [remaining lines
-           current []
-           has-arg? false
-           blocks []]
-      (if-let [line (first remaining)]
-        (let [rest-lines (rest remaining)
-              starts-arg? (str/starts-with? line "@arg ")]
-          (cond
-            (and starts-arg? has-arg?)
-            (recur rest-lines
-                   [line]
-                   true
-                   (conj blocks (str/join "\n" current)))
-
-            starts-arg?
-            (recur rest-lines
-                   (conj current line)
-                   true
-                   blocks)
-
-            :else
-            (recur rest-lines
-                   (conj current line)
-                   has-arg?
-                   blocks)))
-        (if has-arg?
-          (conj blocks (str/join "\n" current))
-          [text])))))
-
-(defn- parse-components [block]
-  (let [lines (str/split-lines block)
-        header-re (re-pattern "^\\s*[!+]\\s+([^:]+):\\s*(.*)$")]
-    (loop [remaining lines
-           current nil
-           sections []]
-      (if-let [line (first remaining)]
-        (if-let [[_ label trailing] (re-matches header-re line)]
-          (let [next-section (when current
-                               {:label (:label current)
-                                :text (str/trim (str/join "\n" (:lines current)))})
-                new-lines (cond-> []
-                            (and trailing (not (str/blank? trailing)))
-                            (conj trailing))]
-            (recur (rest remaining)
-                   {:label (str/lower-case (str/trim label)) :lines new-lines}
-                   (cond-> sections next-section (conj next-section))))
-          (recur (rest remaining)
-                 (if current
-                   (update current :lines conj line)
-                   current)
-                 sections))
-        (let [final-section (when current
-                              {:label (:label current)
-                               :text (str/trim (str/join "\n" (:lines current)))})]
-          (cond-> sections final-section (conj final-section)))))))
+(defn- clauses-by-key [packet]
+  (into {} (map (juxt :name-key :text) (:pattern/clauses packet))))
 
 (defn- hotwords-from-text [text]
   (->> (re-seq #"[a-z0-9]+" (str/lower-case (or text "")))
@@ -200,20 +138,17 @@
                    (or (str/blank? emoji) (str/blank? hanzi)))
                  sigils)))
 
-(defn- flexiarg-entry [tok-map emoji-set hanzi-set file block]
-  (let [arg (or (extract-meta block "arg")
-                (extract-meta block "flexiarg")
-                (extract-meta block "multiarg"))
-        title (extract-meta block "title")
-        keywords (extract-meta block "keywords")
-        source (str (.getPath (io/file file)) (when arg (str ":" arg)))
-        sigils-meta (some-> (extract-meta block "sigils")
-                            (parse-inline-sigils source emoji-set hanzi-set))
-        sigils-block (parse-sigils block source emoji-set hanzi-set)
-        sigils (vec (distinct (concat sigils-meta sigils-block)))
+(defn- flexiarg-entry [tok-map emoji-set hanzi-set packet]
+  (let [arg (:pattern/id packet)
+        title (:pattern/title packet)
+        keywords (str/join ", " (:pattern/keywords packet))
+        source (str (:pattern/source-path packet) (when arg (str ":" arg)))
+        sigils (parse-inline-sigils (str/join " " (:pattern/sigils packet))
+                                    source
+                                    emoji-set
+                                    hanzi-set)
         primary (choose-primary-sigil sigils)
-        components (parse-components block)
-        by-label (into {} (map (fn [{:keys [label text]}] [label text]) components))
+        by-label (clauses-by-key packet)
         summary (or (get by-label "conclusion")
                     (get by-label "claim")
                     (get by-label "then")
@@ -237,24 +172,13 @@
                                    :keywords keywords})})))
 
 (defn- flexiarg-files []
-  (let [ext-of (fn [^java.io.File file]
-                 (let [name (.getName file)
-                       match (re-find #"\.[^.]+$" name)]
-                   (when match
-                     (str/lower-case match))))]
-    (->> ["library" "holes"]
-         (map io/file)
-         (filter #(.exists %))
-         (mapcat file-seq)
-         (filter #(.isFile ^java.io.File %))
-         (filter (fn [file]
-                   (contains? flexiarg-exts (ext-of file)))))))
+  (projection/source-files "." ["library" "holes"]))
 
 (defn- flexiarg-entries-from-file [tok-map emoji-set hanzi-set file]
-  (let [text (slurp file)]
-    (->> (split-arg-blocks text)
-         (keep #(flexiarg-entry tok-map emoji-set hanzi-set file %))
-         vec)))
+  (->> (projection/parse-file file {:futon3-root "."})
+       (keep #(when (= :ok (:pattern/status %))
+                (flexiarg-entry tok-map emoji-set hanzi-set %)))
+       vec))
 
 (defn- futon-number [name]
   (some->> (re-find #"futon(\d+)" name)
@@ -287,8 +211,7 @@
   (let [source (str (.getPath (io/file file)) ":p" proto)
         sigil-list (parse-inline-sigils sigils source emoji-set hanzi-set)
         primary (choose-primary-sigil sigil-list)
-        components (parse-components (str body))
-        by-label (into {} (map (fn [{:keys [label text]}] [label text]) components))
+        by-label (into {} (map (juxt :name-key :text) (projection/parse-components (str body))))
         because (get by-label "because")
         keywords (get by-label "keywords")
         summary (or (get by-label "then")

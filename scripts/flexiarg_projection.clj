@@ -4,77 +4,71 @@
    plus optional `@title`, `! conclusion:`, and the Toulmin-style
    slot fields (IF, HOWEVER, THEN, BECAUSE) as props. v0 emits one
    :var (kind=flexiarg) per file."
-  (:require [babashka.fs :as fs]
-            [clojure.java.io :as io]
-            [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [futon.flexiarg.projection :as projection]))
 
-(def src-exts #{"flexiarg"})
+(def src-exts #{"flexiarg" "multiarg"})
 
-(defn- read-text [path]
-  (try (slurp path) (catch Exception _ "")))
+(defn- packet->header
+  [packet]
+  (when-let [pattern-id (:pattern/id packet)]
+    (when-let [i (str/last-index-of pattern-id "/")]
+      (let [ns-part (subs pattern-id 0 i)
+            nm (subs pattern-id (inc i))]
+        {:ns (str "flexiarg." (str/replace ns-part "/" "."))
+         :name nm
+         :qname (str "flexiarg." (str/replace ns-part "/" ".") "/" nm)}))))
 
-(defn- parse-header
-  "Reads the @flexiarg header. Returns {:ns :name :qname} or nil."
-  [text]
-  (when-let [m (re-find #"(?m)^@flexiarg\s+([\w./_-]+)/([\w._-]+)\s*$" text)]
-    (let [[_ ns nm] m]
-      {:ns (str "flexiarg." (str/replace ns "/" "."))
-       :name nm
-       :qname (str "flexiarg." (str/replace ns "/" ".") "/" nm)})))
-
-(defn- extract-directive [text key]
-  (when-let [m (re-find (re-pattern (str "(?m)^@" key "\\s+(.+?)\\s*$")) text)]
-    (str/trim (second m))))
-
-(defn- extract-conclusion [text]
-  (when-let [m (re-find #"(?m)^!\s*conclusion:\s*(.+?)\s*$" text)]
-    (str/trim (second m))))
-
-(defn- has-toulmin-slots? [text]
+(defn- has-toulmin-slots? [packet]
   ;; A "well-formed" flexiarg uses Toulmin slots IF/HOWEVER/THEN/BECAUSE.
   ;; Treat presence of all four as the doc-discipline signal.
-  (and (re-find #"(?m)^\s*\+\s*IF:" text)
-       (re-find #"(?m)^\s*\+\s*HOWEVER:" text)
-       (re-find #"(?m)^\s*\+\s*THEN:" text)
-       (re-find #"(?m)^\s*\+\s*BECAUSE:" text)))
+  (let [keys (into #{} (map :name-key) (:pattern/clauses packet))]
+    (every? keys ["if" "however" "then" "because"])))
 
 (defn- collect-symbols
   "v0: collect explicit pattern references from `library/<ns>/<name>`
    path-shaped strings inside the body. These are the closest analogue
    to body-syms in clj/el — pattern→pattern citations."
-  [text]
-  (->> (re-seq #"library/[\w./_-]+/[\w._-]+" text)
-       (map (fn [s]
-              (let [s (str/replace s #"^library/" "flexiarg.")
-                    [ns nm] (let [i (str/last-index-of s "/")]
-                              [(subs s 0 i) (subs s (inc i))])
-                    qname (str (str/replace ns "/" ".") "/" nm)]
-                (symbol qname))))
-       (into #{})))
+  [packet]
+  (let [body-text (str/join "\n\n" (map :text (:pattern/clauses packet)))
+        inline-refs (re-seq #"library/[\w./_-]+/[\w._-]+" body-text)
+        explicit-refs (:pattern/references packet)]
+    (into #{}
+          (keep (fn [s]
+                  (let [ref (str/replace s #"^library/" "")
+                        i (str/last-index-of ref "/")]
+                    (when i
+                      (let [ns (subs ref 0 i)
+                            nm (subs ref (inc i))]
+                        (symbol (str "flexiarg."
+                                     (str/replace ns "/" ".")
+                                     "/"
+                                     nm)))))))
+          (concat explicit-refs inline-refs))))
 
 (defn collect-file
   "Project one .flexiarg file into the substrate-2 metadata shape."
   [path]
-  (let [text (read-text path)
-        header (parse-header text)]
-    (when header
-      (let [title (extract-directive text "title")
-            conclusion (extract-conclusion text)
-            sigils (extract-directive text "sigils")
-            tone (extract-directive text "tone")
-            audience (extract-directive text "audience")
-            doc-quality (has-toulmin-slots? text)
-            body-syms (collect-symbols text)]
-        {:ns (:ns header)
-         :aliases {}
-         :is-test? false
-         :tests []
-         :vars [{:vertex/type :var
-                 :var/ns (:ns header)
-                 :var/name (:name header)
-                 :var/qname (:qname header)
-                 :var/kind "flexiarg"
-                 :var/has-doc (or (some? title)
-                                   (some? conclusion)
-                                   doc-quality)
-                 :var/syms body-syms}]}))))
+  (let [packets (projection/parse-file path)
+        ok-packets (filter #(= :ok (:pattern/status %)) packets)
+        headers (keep packet->header ok-packets)
+        first-header (first headers)]
+    (when first-header
+      {:ns (:ns first-header)
+       :aliases {}
+       :is-test? false
+       :tests []
+       :vars (mapv (fn [packet]
+                     (let [header (packet->header packet)
+                           doc-quality (has-toulmin-slots? packet)
+                           body-syms (collect-symbols packet)]
+                       {:vertex/type :var
+                        :var/ns (:ns header)
+                        :var/name (:name header)
+                        :var/qname (:qname header)
+                        :var/kind "flexiarg"
+                        :var/has-doc (or (some? (:pattern/title packet))
+                                         (some? (:pattern/conclusion packet))
+                                         doc-quality)
+                        :var/syms body-syms}))
+                   ok-packets)})))

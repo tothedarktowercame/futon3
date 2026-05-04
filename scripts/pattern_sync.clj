@@ -3,6 +3,7 @@
   (:require [cheshire.core :as json]
             [clojure.java.io :as io]
             [clojure.string :as str]
+            [futon.flexiarg.projection :as projection]
             [org.httpkit.client :as http])
   (:import (java.io File)
            (java.net URLEncoder)))
@@ -398,91 +399,18 @@
         trimmed-end (reverse (drop-while #(re-matches #"\s*" %) (reverse trimmed-start)))]
     trimmed-end))
 
-(defn- parse-section [label lines]
-  (let [clean (trim-empty-lines (reverse lines))
-        text (str/trimr (str/join "\n" clean))]
-    {:label label
-     :slug (slugify label)
-     :text text}))
-
-(defn- extract-meta [text key]
-  (some->> (re-find (re-pattern (str "@" key "\\s+(.*)")) text)
-           second
-           str/trim
-           not-empty))
-
-(defn- derive-name-from-path [^File file]
-  (let [path (.getPath file)
-        stripped (str/replace path #"\.[^.]+$" "")
-        relative (second (re-find #"/library/(.*)$" stripped))
-        base (.getName (io/file stripped))
-        dir (.getParent (io/file stripped))
-        parent (when dir (.getName (io/file dir)))]
-    (or relative
-        (when (and parent (not (str/blank? parent)))
-          (str parent "/" base))
-        base)))
-
-(defn- split-arg-blocks [text]
-  (let [lines (str/split-lines text)]
-    (loop [remaining lines
-           current []
-           has-arg? false
-           blocks []]
-      (if-let [line (first remaining)]
-        (let [rest-lines (rest remaining)
-              starts-arg? (str/starts-with? line "@arg ")]
-          (cond
-            (and starts-arg? has-arg?)
-            (recur rest-lines [line] true (conj blocks (str/join "\n" current)))
-
-            starts-arg?
-            (recur rest-lines (conj current line) true blocks)
-
-            :else
-            (recur rest-lines (conj current line) has-arg? blocks)))
-        (if has-arg?
-          (conj blocks (str/join "\n" current))
-          [text])))))
-
-(defn- parse-components [block]
-  (let [lines (str/split-lines block)
-        header-re (re-pattern "^\\s*[!+]\\s+([^:]+):\\s*(.*)$")]
-    (loop [remaining lines
-           current nil
-           sections []]
-      (if-let [line (first remaining)]
-        (if-let [[_ label trailing] (re-matches header-re line)]
-          (let [next-section (when current
-                               (parse-section (:label current) (:lines current)))
-                new-lines (cond-> []
-                            (and trailing (not (str/blank? trailing)))
-                            (conj trailing))]
-            (recur (rest remaining)
-                   {:label (str/trim label) :lines new-lines}
-                   (cond-> sections next-section (conj next-section))))
-          (recur (rest remaining)
-                 (if current
-                   (update current :lines conj line)
-                   current)
-                 sections))
-        (let [final-section (when current
-                              (parse-section (:label current) (:lines current)))]
-          (cond-> sections final-section (conj final-section)))))))
-
-(defn- parse-block [^File file block]
-  (let [title (extract-meta block "title")
-        arg (extract-meta block "arg")
-        flexiarg (extract-meta block "flexiarg")
-        multiarg (extract-meta block "multiarg")
-        name (or arg flexiarg multiarg (extract-meta block "name") (derive-name-from-path file))
-        components (parse-components block)
+(defn- parse-block [packet]
+  (let [components (mapv (fn [{:keys [name slug text]}]
+                           {:label name
+                            :slug slug
+                            :text text})
+                         (:pattern/clauses packet))
         summary (:text (first components))]
-    {:name name
-     :title title
+    {:name (:pattern/id packet)
+     :title (:pattern/title packet)
      :summary (or summary "")
      :components components
-     :file file}))
+     :file (io/file (:pattern/source-path packet))}))
 
 (defn- pattern-file? [^File file]
   (let [name (.getName file)]
@@ -496,10 +424,11 @@
        (sort-by #(.lastModified ^File %) >)))
 
 (defn- parse-patterns [^File root]
-  (mapcat (fn [file]
-            (let [text (slurp file)]
-              (map #(parse-block file %) (split-arg-blocks text))))
-          (pattern-files root)))
+  (->> (pattern-files root)
+       (mapcat #(projection/parse-file % {:futon3-root "."}))
+       (keep (fn [packet]
+               (when (= :ok (:pattern/status packet))
+                 (parse-block packet))))))
 
 (defn- canonical-directory? [root ^File dir]
   (let [path (.getCanonicalPath dir)

@@ -4,6 +4,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
+            [futon.flexiarg.projection :as projection]
             [futon3.portal :as portal]))
 
 (defn- read-edn [path]
@@ -126,12 +127,6 @@
      :maturity/phase phase
      :precision/prior precision}))
 
-(defn- extract-meta [text key]
-  (some->> (re-find (re-pattern (str "@" key "\\s+(.*)")) text)
-           second
-           str/trim))
-
-
 (defn- extra-pattern-roots []
   (let [raw (or (System/getenv "MUSN_PATTERN_ROOTS")
                 (System/getenv "FUTON_PATTERN_ROOTS"))]
@@ -150,49 +145,16 @@
     (or (str/ends-with? name ".flexiarg")
         (str/ends-with? name ".multiarg"))))
 
-(defn- split-arg-blocks [text]
-  (let [lines (str/split-lines text)]
-    (loop [remaining lines
-           current []
-           has-arg? false
-           blocks []]
-      (if-let [line (first remaining)]
-        (let [rest-lines (rest remaining)
-              starts-arg? (str/starts-with? line "@arg ")]
-          (cond
-            (and starts-arg? has-arg?)
-            (recur rest-lines
-                   [line]
-                   true
-                   (conj blocks (str/join "\n" current)))
-
-            starts-arg?
-            (recur rest-lines
-                   (conj current line)
-                   true
-                   blocks)
-
-            :else
-            (recur rest-lines
-                   (conj current line)
-                   has-arg?
-                   blocks)))
-        (if has-arg?
-          (conj blocks (str/join "\n" current))
-          [text])))))
-
-(defn- block-pattern-id [block]
-  (or (extract-meta block "flexiarg")
-      (extract-meta block "arg")))
-
 (defn pattern-blocks
   "Return a map of pattern-id -> block text for a flexiarg/multiarg file."
   [text]
   (into {}
         (keep (fn [block]
-                (when-let [pid (block-pattern-id block)]
+                (when-let [pid (or (projection/extract-meta block "flexiarg")
+                                   (projection/extract-meta block "arg")
+                                   (projection/extract-meta block "multiarg"))]
                   [pid block])))
-        (split-arg-blocks text)))
+        (projection/split-arg-blocks text)))
 
 (defn maturity-for-pattern-text
   "Return maturity info for PATTERN-ID inside TEXT, or nil if not found."
@@ -218,22 +180,20 @@
         file (file-seq root)
         :when (and (.isFile file)
                    (flexiarg-file? file))
-        :let [text (slurp file)]
-        block (split-arg-blocks text)
-        :let [title (extract-meta block "title")
-              arg (or (extract-meta block "flexiarg")
-                      (extract-meta block "arg"))
-              meta-sigils (some-> (extract-meta block "sigils") split-sigils)
-              pattern-ref (extract-meta block "pattern-ref")
-              clause-match (re-find clause-re block)
-              summary (or (some-> clause-match second)
-                          (some-> (re-find conclusion-re block) second))
-              maturity (maturity-info block)
-              sigils (or (when clause-match
-                           (split-sigils (nth clause-match 2)))
-                         meta-sigils)]
-        :when summary]
-    {:id (or arg (.getName file))
+        :let [text (slurp file)
+              blocks (pattern-blocks text)]
+        packet (projection/parse-file file {:futon3-root "."})
+        :when (= :ok (:pattern/status packet))
+        :let [pattern-id (:pattern/id packet)
+              block (get blocks pattern-id)
+              title (:pattern/title packet)
+              pattern-ref (get-in packet [:pattern/directives :pattern-ref])
+              summary (or (:pattern/conclusion packet)
+                          (:text (first (:pattern/clauses packet))))
+              maturity (when block (maturity-info block))
+              sigils (split-sigils (str/join " " (:pattern/sigils packet)))]
+        :when (seq summary)]
+    {:id (or pattern-id (.getName file))
      :title title
      :summary (str/trim summary)
      :sigils sigils

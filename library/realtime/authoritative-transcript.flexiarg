@@ -6,15 +6,21 @@
 @style pattern
 
 ! conclusion: Use one authoritative event log with replay so late joiners and transport switches share context.
+
   + context: People re-join #lab and the transcript repeats, while agents drift on what they saw.
+
   + IF:
     You need consistent shared state across reconnects, multiple transports, and late joiners.
+
   + HOWEVER:
     IRC history, bridge logs, and WS streams can disagree; repeated partial transcripts create confusion and duplicated work.
+
   + THEN:
     Designate an append-only event log (F1 or JSONL if that is the backing store) as authority; require clients (IRC bridge, WS clients) to be projections of that log; on join, clients replay from a checkpoint; during transport pivots, announce a pivot-id + checkpoint-id, reaffirm that log as source of truth, and replay from the latest checkpoint. Transport pivot covers cutover mechanics; this pattern defines the log-of-record.
+
   + BECAUSE:
     Realtime coordination needs a single source of truth; otherwise shared context is imaginary.
+
   + NEXT-STEPS:
     - evidence: compare discrepancies between projections.
     - evidence: measure how often replay resolves confusion.

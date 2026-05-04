@@ -15,12 +15,22 @@
                  :ambiguity 0.4}}  ;; tolerate uncertainty
 }
 
-! conclusion:
+@status [status[ready] evidence[futon2/src/ants/aif/policy.clj#L640]]
+
+
+
+
+
+
+
+
+! conclusion: 
   Cyber-ants inherit the “white space” doctrine: when food + pheromones slump
   below the epsilon bands and novelty is high, anneal tau upward, penalise
   foraging, and gently bias toward pheromone laying or scouting returns.
 
   + context: You are declaring the white-space heuristic so cyber-ants can mirror Futon2 behavior.
+
   + IF:
     Observations satisfy the Futon2 `white?` detector — food trace, pheromone
     trace, and recent gather are all low, and the ant is off-nest.
@@ -37,10 +47,6 @@
   + BECAUSE:
     Futon5 needs the declarative rule (“white space implies scout stance”) so it
     can flash cyber-ants or future agents with the same homing instinct.
-
-  + STATUS:
-    status[ready]
-    evidence[futon2/src/ants/aif/policy.clj#L640]
 
   + NEXT-STEPS:
     next[Link this pattern to the cyber-ant operator so Futon5 emits the

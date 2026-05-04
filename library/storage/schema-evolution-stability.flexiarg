@@ -6,11 +6,13 @@
 @tone formal-analytic
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/evidence-ledger storage/graph-memory-contract]
+@status [status[proposed] evidence[holes/missions/M-futon1a-evidence.md#L121] evidence[holes/missions/M-futon1a-evidence.md#L141]]
 
-! conclusion:
+! conclusion: 
   if you want schema evolution but also stable contracts, formalize migration rules and versioned descriptors
 
   + context: futon1 introduced model registries and open-world invariants to stabilize schema evolution.
+
   + IF:
     you need to evolve the graph schema over time
 
@@ -22,11 +24,6 @@
 
   + BECAUSE:
     unmanaged schema change causes compatibility drift and broken clients
-
-  + STATUS:
-    status[proposed]
-    evidence[holes/missions/M-futon1a-evidence.md#L121]
-    evidence[holes/missions/M-futon1a-evidence.md#L141]
 
   + NEXT-STEPS:
     next[Define schema versioning rules and migration checklists.]

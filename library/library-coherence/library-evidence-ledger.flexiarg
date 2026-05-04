@@ -4,10 +4,11 @@
 @keywords evidence, ledger, citation, proof, artifact, namespace, test, verify, CI, backfill
 @references [stack-coherence/evidence-ledger]
 
-! conclusion:
+! conclusion: 
   mirror the stack-coherence evidence-ledger practice inside the library: require each pattern entry to list concrete namespaces/docs/tests, add CI checks that fail when fields are blank, and update the ledger whenever new proofs land; store the citations next to the pattern IDs so the `check!` DSL can surface them
 
   + context: You are ensuring every pattern claim has auditable, concrete evidence.
+
   + IF:
     the pattern store (`resources/pattern_store.edn`) declares which devmap clauses are blocked, in-progress, or done
 

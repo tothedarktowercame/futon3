@@ -5,7 +5,7 @@
 @style design-pattern
 @sigils [👘/井 📥/示]
 
-! conclusion:
+! conclusion: 
   Make the pipeline explicit: intent parsing emits Commands, a SchedulingStrategy selects the next move, and decorators (logging, timing, synchronisation, permission checks, orb tracking) wrap each command before worker threads call `execute!`. Document this flow with diagrams and a toy agent lab so newcomers can trace how intent, policy, and meta-behaviour interact.
 
   + context: You are teaching the command/strategy/decorator triad for agent systems.

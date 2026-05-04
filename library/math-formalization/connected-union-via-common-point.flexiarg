@@ -10,7 +10,7 @@
 @subjects topology
 @examples t92J01
 
-! conclusion:
+! conclusion: 
   When proving a union of connected sets sharing a common point is connected,
   argue by contradiction via open separations.
 
@@ -31,13 +31,13 @@
       indexed union as a set-indexed union via sUnion_range, then apply
       the combinator with the common point and individual connectedness.
 
+    + LEAN:
+      api[isPreconnected_sUnion]
+      api[Set.range]
+      api[Set.not_nonempty_iff]
+      tactic[classical → by_cases → simpa [sUnion_range]]
+
   + BECAUSE:
       Mathlib's isPreconnected_sUnion handles the separation argument
       internally — you supply the common point and the per-component
       connectedness, and it composes the contradiction.
-
-  + LEAN:
-    api[isPreconnected_sUnion]
-    api[Set.range]
-    api[Set.not_nonempty_iff]
-    tactic[classical → by_cases → simpa [sUnion_range]]

@@ -6,11 +6,12 @@
 @tone heuristic
 @factor Endurance (khanti)
 
-! conclusion:
+! conclusion: 
   Approximate a complicated object by a monotone sequence of simpler objects and pass to the limit.
 
   + context: You want to prove a result for a general object (general measurable function,
     arbitrary open set, general measure) but your tools only work for simple ones.
+
   + IF:
       Your general object can be approximated from below (or above) by a monotone sequence of
       simpler objects, and the property you care about is preserved under monotone limits.

@@ -6,11 +6,13 @@
 @tone formal-analytic
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/evidence-ledger]
+@status [status[proposed] evidence[holes/features/futon1.devmap#L1] evidence[holes/features/futon1.devmap#L12]]
 
-! conclusion:
+! conclusion: 
   keep Datascript (fast) and XTDB (persistent) in reproducible alignment so the same world state appears across restarts
 
   + context: futon1’s devmap requires reproducible alignment between Datascript and XTDB.
+
   + IF:
     two storage representations exist for speed and durability
 
@@ -22,11 +24,6 @@
 
   + BECAUSE:
     futon1’s coherence relies on consistent mirroring across restarts and environments
-
-  + STATUS:
-    status[proposed]
-    evidence[holes/features/futon1.devmap#L1]
-    evidence[holes/features/futon1.devmap#L12]
 
   + NEXT-STEPS:
     next[Document the mirroring contract and which fields must align.]

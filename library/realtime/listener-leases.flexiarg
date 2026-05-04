@@ -6,15 +6,21 @@
 @style pattern
 
 ! conclusion: Prevent phantom listeners by versioning identities and expiring old instances.
+
   + context: Multiple listener instances (fucodex_listen, fucodex_listen2, babashka, etc.) can be active without clarity.
+
   + IF:
     You spin up or restart listeners and bridges during a live session.
+
   + HOWEVER:
     Old listeners can remain connected, duplicated, or partially functioning, producing misleading partial visibility.
+
   + THEN:
     Use listener leases keyed by role+room: each instance has a unique instance-id, TTL, and renew interval; only the freshest lease per role+room is authoritative; non-authoritative instances must stay silent except for shutdown notice; if renewals are missed beyond N or the grace window, mark the instance stale, emit a stale notice, and expire it.
+
   + BECAUSE:
     Unversioned listeners create ambiguous reception semantics and lead to repeated "can you see this?" loops.
+
   + NEXT-STEPS:
     - evidence: audit logs for multiple active instances per role.
     - evidence: track incidents where the wrong listener responded.

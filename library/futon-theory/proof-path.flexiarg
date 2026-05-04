@@ -6,56 +6,54 @@
 @tone analytic-foundational
 @factor Keen investigation (dhammavicaya)
 @references [futon-theory/event-protocol futon-theory/symbolic-geodesic futon-theory/retrospective-stability]
+@governance ["Each proof path should be recorded via PSR/PUR:" "PSR at PROPOSE_CLAIM: Why this pattern for this change?" "PUR at CLOCK_OUT: What happened, prediction error?"]
 
-! conclusion:
+! conclusion: 
   Every change in the FUTON stack follows a proof path: an auditable event chain
   linking intent to operation to change to verification to durable proof commit.
 
   + context: The proof path is the core unit of work in futon theory. It embodies
     the Curry-Howard correspondence: programs are proofs of their specifications.
 
-  + AXIOM-GROUNDING:
-    A1 (Auditability): Every proof path is fully traceable from intent to outcome.
-    A2 (Attributability): Each event in the path has a clear source and owner.
-    A3 (Evidence-driven): Progression requires verified evidence, not assertion.
+  + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
+    + CONCURRENCY-AND-PARTIAL-FAILURE:
+      This protocol assumes a single-writer linear chain. Open constraints:
+      - Concurrent writers: Requires conflict detection at APPLY_CHANGE or
+        serialization at PROOF_COMMIT. Domain patterns must specify strategy.
+      - Partial apply: If APPLY_CHANGE partially succeeds, VERIFY must detect
+        and the path must either complete rollback or spawn a repair path.
+      - Retries: Failed paths may be retried from OBSERVE, not mid-path.
+      Future: A "concurrency protocol" pattern may extend this for multi-writer.
 
-  + STRUCTURE:
-    A proof path consists of these phases:
-    1. CLOCK_IN - Session begins, agent declares intent
-    2. OBSERVE - Read state, gather evidence
-    3. PROPOSE_CLAIM - Agent proposes what will change
-    4. APPLY_CHANGE - Execute the change
-    5. VERIFY - Confirm change matches claim
-    6. INVARIANT_CHECK - All invariants must pass
-    7. PROOF_COMMIT - Durable commit with evidence chain
-    8. CLOCK_OUT - Session ends, proof path complete
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + AXIOM-GROUNDING:
+      A1 (Auditability): Every proof path is fully traceable from intent to outcome.
+      A2 (Attributability): Each event in the path has a clear source and owner.
+      A3 (Evidence-driven): Progression requires verified evidence, not assertion.
 
-  + INVARIANTS:
-    - No change commits without passing all invariant checks
-    - Every commit references its evidence chain
-    - Proof paths are append-only; errors spawn new paths, not mutations
+    + DOMAIN-INSTANTIATION:
+      Domain patterns specify how proof paths are implemented:
+      - Storage: `storage/durability-first` for PROOF_COMMIT
+      - Lab sessions: Session lifecycle wraps proof paths
+      - Checks: Verification DSL for VERIFY phase
 
-  + CONCURRENCY-AND-PARTIAL-FAILURE:
-    This protocol assumes a single-writer linear chain. Open constraints:
-    - Concurrent writers: Requires conflict detection at APPLY_CHANGE or
-      serialization at PROOF_COMMIT. Domain patterns must specify strategy.
-    - Partial apply: If APPLY_CHANGE partially succeeds, VERIFY must detect
-      and the path must either complete rollback or spawn a repair path.
-    - Retries: Failed paths may be retried from OBSERVE, not mid-path.
-    Future: A "concurrency protocol" pattern may extend this for multi-writer.
+    + INVARIANTS:
+      - No change commits without passing all invariant checks
+      - Every commit references its evidence chain
+      - Proof paths are append-only; errors spawn new paths, not mutations
+
+    + STRUCTURE:
+      A proof path consists of these phases:
+      1. CLOCK_IN - Session begins, agent declares intent
+      2. OBSERVE - Read state, gather evidence
+      3. PROPOSE_CLAIM - Agent proposes what will change
+      4. APPLY_CHANGE - Execute the change
+      5. VERIFY - Confirm change matches claim
+      6. INVARIANT_CHECK - All invariants must pass
+      7. PROOF_COMMIT - Durable commit with evidence chain
+      8. CLOCK_OUT - Session ends, proof path complete
 
   + BECAUSE:
     Without proof paths, changes are unauditable. With them, any bug can be
     traced from symptom to cause through the evidence chain. The spec mediates
     future state into present; the proof path is how we get there defensibly.
-
-  + DOMAIN-INSTANTIATION:
-    Domain patterns specify how proof paths are implemented:
-    - Storage: `storage/durability-first` for PROOF_COMMIT
-    - Lab sessions: Session lifecycle wraps proof paths
-    - Checks: Verification DSL for VERIFY phase
-
-  + GOVERNANCE:
-    Each proof path should be recorded via PSR/PUR:
-    - PSR at PROPOSE_CLAIM: Why this pattern for this change?
-    - PUR at CLOCK_OUT: What happened, prediction error?

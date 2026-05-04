@@ -7,7 +7,7 @@
 @factor Right effort (sammā vāyāma)
 @references [agent/handoff-preserves-context agent/scope-before-action math-informal/structural-obstruction-as-theorem]
 
-! conclusion:
+! conclusion: 
   Dispatch an agent as a student-explorer, not a junior-developer-verifier. Give them the
   problem context, what's been tried and why it failed, candidate directions to explore,
   and a structured report format. Let them discover rather than confirm.
@@ -29,6 +29,13 @@
       report format. The negative knowledge (what not to try) is as important as the
       positive — it prevents the student from repeating dead ends that took the advisor
       hours to discover.
+
+    + FAILURE-MODES:
+        - Too little context: student wastes time rediscovering known results.
+        - Too much prescription: student confirms rather than explores.
+        - No report format: student returns unstructured prose that's hard to integrate.
+        - Missing dead ends: student repeats the advisor's failed approaches.
+        - Overloaded dispatch: giving 10 directions when 2-3 is the right scope per agent.
 
   + THEN:
       Structure the dispatch as:
@@ -59,25 +66,18 @@
       something the advisor didn't think to look for. The negative-knowledge transfer
       prevents wasted work while the open-ended framing permits serendipity.
 
-  + FAILURE-MODES:
-      - Too little context: student wastes time rediscovering known results.
-      - Too much prescription: student confirms rather than explores.
-      - No report format: student returns unstructured prose that's hard to integrate.
-      - Missing dead ends: student repeats the advisor's failed approaches.
-      - Overloaded dispatch: giving 10 directions when 2-3 is the right scope per agent.
+    + EVIDENCE:
+        P4 n=4 Stam inequality (futon6, Feb 2026): Codex was dispatched in verification
+        mode ("confirm these eigenvalues, verify this identity"). Returned pass/fail.
+        Separately, Codex was dispatched in exploration mode for PHCpack — "find all critical
+        points of this system" — and returned 12 in-domain CPs with full case classification,
+        discovering the mixed_volume=0 issue independently. The exploration dispatch produced
+        richer results per unit of effort.
 
-  + EVIDENCE:
-      P4 n=4 Stam inequality (futon6, Feb 2026): Codex was dispatched in verification
-      mode ("confirm these eigenvalues, verify this identity"). Returned pass/fail.
-      Separately, Codex was dispatched in exploration mode for PHCpack — "find all critical
-      points of this system" — and returned 12 in-domain CPs with full case classification,
-      discovering the mixed_volume=0 issue independently. The exploration dispatch produced
-      richer results per unit of effort.
-
-      P6 epsilon-light subsets: the Claude→Codex handoff note contained dead ends
-      (6 technique failures with reasons) and candidate directions (BSS greedy, expander
-      decomposition, structural analysis). This is the right format for student dispatch;
-      the missing piece was framing it as "go explore these" rather than "verify my claims."
+        P6 epsilon-light subsets: the Claude→Codex handoff note contained dead ends
+        (6 technique failures with reasons) and candidate directions (BSS greedy, expander
+        decomposition, structural analysis). This is the right format for student dispatch;
+        the missing piece was framing it as "go explore these" rather than "verify my claims."
 
   + NEXT-STEPS:
     next[Write the dispatch note: context, dead ends, directions, report format.]

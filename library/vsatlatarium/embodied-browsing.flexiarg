@@ -5,13 +5,15 @@
 @style design-pattern
 @sigils [🥽/体]
 @references [vsatlatarium/dome-projection vsatlas/community-engagement]
+@status [status[ready] "evidence[VSATLATARIUM Quest 2 support — hit spheres, B-button back-nav, laser-controls]"]
 
-! conclusion:
+! conclusion: 
   Treat VR headset navigation as a first-class mode where the viewer's body
   (head orientation, hand pointing, controller buttons) replaces mouse and
   scroll as the primary interface to the constellation.
 
   + context: You are designing for immersive hardware (Quest 2/3, future AR) where the viewer is physically inside the dome. This does not apply to desktop-only deployments.
+
   + IF:
     The planetarium metaphor maps naturally to VR — the viewer is literally
     inside a sphere of stories.
@@ -30,10 +32,6 @@
     Embodied interfaces reward spatial memory — viewers remember where a
     story is in the dome and reach for it, building familiarity through
     physical gesture rather than text search.
-
-  + STATUS:
-    status[ready]
-    evidence[VSATLATARIUM Quest 2 support — hit spheres, B-button back-nav, laser-controls]
 
   + NEXT-STEPS:
     next[Prototype the overlay architecture so story-reading stays inside the planetarium scene.]

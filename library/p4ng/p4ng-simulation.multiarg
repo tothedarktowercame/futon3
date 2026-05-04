@@ -11,92 +11,113 @@
 @up p4ng/simulation
 @next p4ng/outcome-synthesizer
 
-! instantiated-by: Timebox the Core (Agent-Facing)'
+! conclusion: Co-Design Partners Agent
+
   + context: An agent is operating within fixed-duration collaborative sessions.
-  + if: The agent attempts to complete a full inquiry loop.
-  + however: Feedback indicates saturation or overload before completion.
-  + then: Re-focus dynamically on the core loop, complete a concise iteration, and earmark unresolved deeper insights for a follow-up session.
-  + because: Efficiency in the moment and depth deferred preserves flow without sacrificing insight.
-  + next-steps:
-    - Log one concrete instance of this pattern in the futon3 ledger.
-  + evidence-base:
-    - Timebox variants in agile software recognise deferred deep-dive cycles as a productivity safeguard.
-    - Workshop simulations show that capturing “carryover insights” improves longitudinal learning.
 
-
-@arg p4ng/outcome-synthesizer
-@sigils [🚞/末]
-@title Outcome Synthesizer
-@audience MAS designers, AI researchers, workshop simulation architects
-@tone formal-analytic
-@style design-pattern
-@length 150-250
-@ban cutting-edge, state-of-the-art, leveraging synergies, paradigm shift, game-changing, innovative solutions, world-leading, at scale, stakeholder engagement
-@allow-new-claims false
-@max-iterations 1
-@up p4ng/simulation
-@next p4ng/call-a-synthesizer
-
-! instantiated-by: Outcome Synthesizer
   + context: Multiple agents contribute diverse insights during collaborative problem solving.
-  + if: Contributions remain fragmented or unintegrated.
-  + however: A coherent output is required to proceed or conclude.
-  + then: Activate a synthesis process (role or subroutine) that converges inputs into a cohesive narrative, solution, or plan.
-  + because: Divergence without convergence produces noise instead of actionable outcomes.
-  + next-steps:
-    - Log one concrete instance of this pattern in the futon3 ledger.
-  + evidence-base:
-    - Collective intelligence research emphasises explicit synthesis stages.
-    - Facilitation literature highlights the role of summarisation and convergence tools.
 
-
-@arg p4ng/call-a-synthesizer
-@sigils [🚴/了]
-@title Call a Synthesizer
-@audience MAS designers, AI researchers, workshop simulation architects
-@tone formal-analytic
-@style design-pattern
-@length 150-250
-@ban cutting-edge, state-of-the-art, leveraging synergies, paradigm shift, game-changing, innovative solutions, world-leading, at scale, stakeholder engagement
-@allow-new-claims false
-@max-iterations 1
-@up p4ng/simulation
-@next p4ng/co-design-partners-agent
-
-! instantiated-by: Call a Synthesizer
   + context: A team needs to understand or reuse the output of a prior collaborative phase.
-  + if: No member has full fluency in the previous material.
-  + however: Manual parsing is slow, uneven, or error-prone.
-  + then: Introduce a Synthesizer agent or role to digest, integrate, and report back the key takeaways, tensions, and open questions.
-  + because: Forward motion requires shared grounding in existing work.
-  + next-steps:
-    - Log one concrete instance of this pattern in the futon3 ledger.
-  + evidence-base:
-    - Knowledge-curation roles in research projects prevent reinvention and fragmentation.
-    - Systems that re-enter complex state rely on summarisation agents for reinitialisation.
 
-
-@arg p4ng/co-design-partners-agent
-@sigils [🚴/了]
-@title Co-Design Partners Agent
-@audience MAS designers, AI researchers, workshop simulation architects
-@tone formal-analytic
-@style design-pattern
-@length 170-260
-@ban cutting-edge, state-of-the-art, leveraging synergies, paradigm shift, game-changing, innovative solutions, world-leading, at scale, stakeholder engagement
-@allow-new-claims false
-@max-iterations 1
-@up p4ng/simulation
-@next p4ng/END
-
-! instantiated-by: Co-Design Partners Agent
   + context: You are developing a collective research program or infrastructural system with multiple overlapping stakeholder value-systems.
+
+  + if: The agent attempts to complete a full inquiry loop.
+
+  + if: Contributions remain fragmented or unintegrated.
+
+  + if: No member has full fluency in the previous material.
+
   + if: Decisions are happening top-down or bottom-up, but not in synchrony.
+
+  + however: Feedback indicates saturation or overload before completion.
+
+  + however: A coherent output is required to proceed or conclude.
+
+  + however: Manual parsing is slow, uneven, or error-prone.
+
   + however: Neither consultation nor output publication alone ensures genuine co-design.
+
+  + then: Re-focus dynamically on the core loop, complete a concise iteration, and earmark unresolved deeper insights for a follow-up session.
+
+  + then: Activate a synthesis process (role or subroutine) that converges inputs into a cohesive narrative, solution, or plan.
+
+  + then: Introduce a Synthesizer agent or role to digest, integrate, and report back the key takeaways, tensions, and open questions.
+
   + then: Introduce a Co-Design Partners Agent that maintains explicit shared purpose, navigates tensions, and keeps alive a dynamic map of mutual commitments.
+
+  + because: Efficiency in the moment and depth deferred preserves flow without sacrificing insight.
+    + EVIDENCE:
+      - Timebox variants in agile software recognise deferred deep-dive cycles as a productivity safeguard.
+      - Workshop simulations show that capturing “carryover insights” improves longitudinal learning.
+
+
+  @arg p4ng/outcome-synthesizer
+  @sigils [🚞/末]
+  @title Outcome Synthesizer
+  @audience MAS designers, AI researchers, workshop simulation architects
+  @tone formal-analytic
+  @style design-pattern
+  @length 150-250
+  @ban cutting-edge, state-of-the-art, leveraging synergies, paradigm shift, game-changing, innovative solutions, world-leading, at scale, stakeholder engagement
+  @allow-new-claims false
+  @max-iterations 1
+  @up p4ng/simulation
+  @next p4ng/call-a-synthesizer
+
+    + EVIDENCE:
+      - Collective intelligence research emphasises explicit synthesis stages.
+      - Facilitation literature highlights the role of summarisation and convergence tools.
+
+
+  @arg p4ng/call-a-synthesizer
+  @sigils [🚴/了]
+  @title Call a Synthesizer
+  @audience MAS designers, AI researchers, workshop simulation architects
+  @tone formal-analytic
+  @style design-pattern
+  @length 150-250
+  @ban cutting-edge, state-of-the-art, leveraging synergies, paradigm shift, game-changing, innovative solutions, world-leading, at scale, stakeholder engagement
+  @allow-new-claims false
+  @max-iterations 1
+  @up p4ng/simulation
+  @next p4ng/co-design-partners-agent
+
+    + EVIDENCE:
+      - Knowledge-curation roles in research projects prevent reinvention and fragmentation.
+      - Systems that re-enter complex state rely on summarisation agents for reinitialisation.
+
+
+  @arg p4ng/co-design-partners-agent
+  @sigils [🚴/了]
+  @title Co-Design Partners Agent
+  @audience MAS designers, AI researchers, workshop simulation architects
+  @tone formal-analytic
+  @style design-pattern
+  @length 170-260
+  @ban cutting-edge, state-of-the-art, leveraging synergies, paradigm shift, game-changing, innovative solutions, world-leading, at scale, stakeholder engagement
+  @allow-new-claims false
+  @max-iterations 1
+  @up p4ng/simulation
+  @next p4ng/END
+
+    + EVIDENCE:
+      - Participatory design stresses embedded, ongoing co-design rather than episodic feedback.
+      - Value-sensitive design frameworks emphasise maintaining alignment between plural value systems through dialogic processes.
+
+  + because: Divergence without convergence produces noise instead of actionable outcomes.
+
+  + because: Forward motion requires shared grounding in existing work.
+
   + because: Trustworthy systems emerge through reciprocal design, not fiat.
+
   + next-steps:
     - Log one concrete instance of this pattern in the futon3 ledger.
-  + evidence-base:
-    - Participatory design stresses embedded, ongoing co-design rather than episodic feedback.
-    - Value-sensitive design frameworks emphasise maintaining alignment between plural value systems through dialogic processes.
+
+  + next-steps:
+    - Log one concrete instance of this pattern in the futon3 ledger.
+
+  + next-steps:
+    - Log one concrete instance of this pattern in the futon3 ledger.
+
+  + next-steps:
+    - Log one concrete instance of this pattern in the futon3 ledger.

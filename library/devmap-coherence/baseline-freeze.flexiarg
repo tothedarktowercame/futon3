@@ -7,10 +7,11 @@
 @factor Keen investigation (dhammavicaya)
 @references [devmap-coherence/ifr-state-convergence devmap-coherence/prototype-maturity-lifecycle]
 
-! conclusion:
+! conclusion: 
   declare a baseline freeze window, capture canonical transcripts/configs/seed graphs, and wire audit hooks (`check!`, graph exports, viriya deltas) so every new change proves it still matches the frozen reference
 
   + context: You should implement a baseline freeze to maintain integrity by capturing key configurations and setting up audit hooks.
+
   + IF:
     a futon layer claims to offer a "known-good" transport or memory baseline that downstream futons rely on
 

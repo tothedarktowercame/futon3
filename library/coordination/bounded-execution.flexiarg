@@ -6,10 +6,11 @@
 @references [futon-theory/error-hierarchy futon-theory/stop-the-line]
 @theory-grounding [A4(Degradation-detectable) I2(Observation-action-asymmetry)]
 
-! conclusion:
+! conclusion: 
   If you want safe and predictable coordination, execute tasks under explicit budgets (time, tokens, side effects) and reject when budgets are exceeded.
 
   + context: Coordination must treat execution as a resource-consuming action with a defined budget.
+
   + IF:
     you want an execution gate that cannot run away or wedge the system
 
@@ -21,4 +22,3 @@
 
   + BECAUSE:
     budgets create selection pressure and prevent hidden coordination costs
-

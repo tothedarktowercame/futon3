@@ -13,16 +13,22 @@
 @futon5-lift-path futon5/resources/exotype-xenotype-lift.edn
 
 ! conclusion: Exotype 093 is encoded; program/params mapped from futon5; lift mapping not yet in registry.
+
   + context: Canonical 8-bit encoding for exotype 093.
+
   + IF:
     You need an explicit, searchable exotype record.
+
   + HOWEVER:
     The lift registry has no mapping for this exotype yet.
+
   + THEN:
     Use the encoding fields for identification and the futon5 manifest for
     program/params until lift mappings land.
+
   + BECAUSE:
     Explicit encodings make exotype knowledge inspectable and comparable.
+
   + NEXT-STEPS:
     - blocked-by[futon5-exotype-lift]
 

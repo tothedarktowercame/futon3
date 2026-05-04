@@ -7,7 +7,7 @@
 @style proof-strategy
 @references [math-informal/argue-by-contradiction math-informal/check-the-extreme-cases math-strategy/route-exploration-and-pivot]
 
-! conclusion:
+! conclusion: 
   When a natural objection or potential obstruction exists against your
   construction, include an explicit defensive section showing that the
   objection does NOT apply — and clearly distinguish this "ground-clearing"
@@ -21,13 +21,19 @@
     it, or (b) spend effort checking it themselves. Either outcome weakens the
     proof's persuasive force.
 
-  + WHEN:
-      There exists a well-known result, technique, or structural phenomenon that
-      a competent reader would reasonably expect to obstruct your construction or
-      conclusion. The objection is natural enough that NOT addressing it would be
-      a gap in the argument. Importantly, the objection turns out to be
-      inapplicable — it does not actually obstruct — but this non-applicability
-      is not obvious and requires argument.
+  + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
+    + FAILURE-MODES:
+        - The objection DOES apply, and the defensive section is wrong. This is
+          worse than not including it — it signals overconfidence. Before writing
+          the section, verify the non-applicability rigorously.
+        - The objection is partially applicable: it constrains the construction
+          in ways that are compatible with the conclusion but impose additional
+          conditions. In this case, state the partial constraint honestly rather
+          than dismissing the objection entirely.
+        - The objection is well-known enough that addressing it feels patronizing
+          to expert readers. Judgment call: if the proof is written for a broad
+          audience or a review process, include it. If for a specialist seminar,
+          a brief remark may suffice.
 
   + THEN:
       1. Identify the natural objection explicitly: name the theorem, phenomenon,
@@ -43,6 +49,43 @@
          obstruct our construction because hypothesis H fails in our setting"
          — not "X is not a problem" (too vague) and not "X actually helps us"
          (overclaiming, unless it genuinely does).
+
+    + QUALITY-CRITERIA:
+        Well-applied:
+          - The objection is named explicitly (not "some might worry that...").
+          - The non-applicability argument is precise: it identifies the specific
+            hypothesis or condition that fails, not just a general sense that
+            the objection is irrelevant.
+          - The section is clearly marked as defensive / ground-clearing, distinct
+            from constructive proof steps.
+          - The conclusion states what the objection does NOT do, without
+            overclaiming that it provides positive support.
+          - In a wiring diagram, the section appears as a "challenge" edge (not
+            "assert" or "clarify").
+        Badly-applied:
+          - Conflating anti-obstruction with construction: claiming that the
+            absence of obstruction is evidence FOR the conclusion. "Smith theory
+            doesn't obstruct" is not the same as "Smith theory supports."
+          - Vague dismissal: "this is not a problem" without explaining why the
+            objection fails. This invites the very reviewer finding the pattern
+            is meant to prevent.
+          - Addressing phantom objections: including defensive sections for
+            objections that no competent reader would raise. This wastes space
+            and suggests insecurity about the argument.
+          - Missing the real objection: including a defensive section for one
+            concern while overlooking a more serious natural objection. Survey
+            the likely objections before choosing which to address.
+          - Burying the defensive section: placing it inline within constructive
+            steps so that its ground-clearing role is invisible. Give it its own
+            section or clearly delimited subsection.
+
+    + WHEN:
+        There exists a well-known result, technique, or structural phenomenon that
+        a competent reader would reasonably expect to obstruct your construction or
+        conclusion. The objection is natural enough that NOT addressing it would be
+        a gap in the argument. Importantly, the objection turns out to be
+        inapplicable — it does not actually obstruct — but this non-applicability
+        is not obvious and requires argument.
 
   + BECAUSE:
       Proofs operate on two levels: logical validity (does the argument hold?)
@@ -60,67 +103,25 @@
       the anti-obstruction result provides positive evidence for the conclusion,
       when it only removes a potential counterargument.
 
-  + EVIDENCE:
-      P7 lattices with 2-torsion (futon6, Feb 2026): Section 5 of the proof
-      addresses Smith theory — a well-known tool that constrains fixed-point
-      sets of group actions on manifolds. A reader familiar with the area would
-      naturally ask: "Doesn't Smith theory obstruct a manifold with the
-      claimed properties?" The answer is no: Smith theory operates over F_p
-      (finite field coefficients) and constrains mod-p homology, while the
-      construction only claims rational acyclicity (Q-coefficients). The
-      Smith-theoretic constraints on mod-p Betti numbers are compatible with
-      rational acyclicity.
-      This section appears as a "challenge" edge (s5 -> problem) in the wiring
-      diagram — the only non-constructive edge in the 9-edge graph. Reviewer
-      Finding 4 (medium severity) noted that this section's role as
-      anti-obstruction-only needed to be clearer: the original draft risked
-      being read as if Smith theory positively supported the construction,
-      when it merely does not obstruct it. A well-applied instance of this
-      pattern would have prevented Finding 4 by explicitly marking the section
-      as defensive and stating "Smith theory does not obstruct (but does not
-      help construct)" rather than leaving the reader to infer the distinction.
-
-  + QUALITY-CRITERIA:
-      Well-applied:
-        - The objection is named explicitly (not "some might worry that...").
-        - The non-applicability argument is precise: it identifies the specific
-          hypothesis or condition that fails, not just a general sense that
-          the objection is irrelevant.
-        - The section is clearly marked as defensive / ground-clearing, distinct
-          from constructive proof steps.
-        - The conclusion states what the objection does NOT do, without
-          overclaiming that it provides positive support.
-        - In a wiring diagram, the section appears as a "challenge" edge (not
-          "assert" or "clarify").
-      Badly-applied:
-        - Conflating anti-obstruction with construction: claiming that the
-          absence of obstruction is evidence FOR the conclusion. "Smith theory
-          doesn't obstruct" is not the same as "Smith theory supports."
-        - Vague dismissal: "this is not a problem" without explaining why the
-          objection fails. This invites the very reviewer finding the pattern
-          is meant to prevent.
-        - Addressing phantom objections: including defensive sections for
-          objections that no competent reader would raise. This wastes space
-          and suggests insecurity about the argument.
-        - Missing the real objection: including a defensive section for one
-          concern while overlooking a more serious natural objection. Survey
-          the likely objections before choosing which to address.
-        - Burying the defensive section: placing it inline within constructive
-          steps so that its ground-clearing role is invisible. Give it its own
-          section or clearly delimited subsection.
-
-  + FAILURE-MODES:
-      - The objection DOES apply, and the defensive section is wrong. This is
-        worse than not including it — it signals overconfidence. Before writing
-        the section, verify the non-applicability rigorously.
-      - The objection is partially applicable: it constrains the construction
-        in ways that are compatible with the conclusion but impose additional
-        conditions. In this case, state the partial constraint honestly rather
-        than dismissing the objection entirely.
-      - The objection is well-known enough that addressing it feels patronizing
-        to expert readers. Judgment call: if the proof is written for a broad
-        audience or a review process, include it. If for a specialist seminar,
-        a brief remark may suffice.
+    + EVIDENCE:
+        P7 lattices with 2-torsion (futon6, Feb 2026): Section 5 of the proof
+        addresses Smith theory — a well-known tool that constrains fixed-point
+        sets of group actions on manifolds. A reader familiar with the area would
+        naturally ask: "Doesn't Smith theory obstruct a manifold with the
+        claimed properties?" The answer is no: Smith theory operates over F_p
+        (finite field coefficients) and constrains mod-p homology, while the
+        construction only claims rational acyclicity (Q-coefficients). The
+        Smith-theoretic constraints on mod-p Betti numbers are compatible with
+        rational acyclicity.
+        This section appears as a "challenge" edge (s5 -> problem) in the wiring
+        diagram — the only non-constructive edge in the 9-edge graph. Reviewer
+        Finding 4 (medium severity) noted that this section's role as
+        anti-obstruction-only needed to be clearer: the original draft risked
+        being read as if Smith theory positively supported the construction,
+        when it merely does not obstruct it. A well-applied instance of this
+        pattern would have prevented Finding 4 by explicitly marking the section
+        as defensive and stating "Smith theory does not obstruct (but does not
+        help construct)" rather than leaving the reader to infer the distinction.
 
   + NEXT-STEPS:
     next[List natural objections a competent reader would raise against the construction.]

@@ -1,86 +1,284 @@
 @arg vsat/360-story-container
 @title 360° Storytelling Container
 @sigils [🍵/氏]
+@status [status[ready]]
+@status [status[ready]]
+@status [status[blocked] blocked-by[vsat/reflection-evidence]]
+@status [status[ready]]
+@status [status[ready]]
+@status [status[blocked] blocked-by[vsat-next/ai-helper-spec]]
+@status [status[ready] evidence[https://github.com/BrookesUniversityLearningResources/vsat/issues/207]]
+@status [status[blocked] blocked-by[vsatlas/link-layer-pilot] status[blocked] blocked-by[vsatlas/role-model] status[blocked] blocked-by[vsatlas/learning-module] status[blocked] blocked-by[vsatlas/community-pilot] status[blocked] blocked-by[vsatlas/pathway-design] status[blocked] blocked-by[vsatlas/view-library] status[blocked] blocked-by[vsatlas/facilitator-kit] status[blocked] blocked-by[vsatlas/pathway-design] status[blocked] blocked-by[vsatlas/offer-sheet] status[blocked] blocked-by[vsatlas/interpretation-brief] status[blocked] blocked-by[vsatlas/capacity-plan]]
 
-! conclusion: VSAT grounds stories in linked 360° scenes so contributors can express lived spaces without advanced tooling.
+! conclusion: Ensure VSATLAS engagements include capacity-building plans so partners can sustain the practice after pilots.
+
   + context: You are helping contributors share immersive narratives without requiring specialized tooling. This does not apply when 360 capture is not feasible or too costly.
+
+  + context: You are keeping context local so viewers do not lose the scene. This does not apply when annotations would overload already dense scenes.
+
+  + context: You are supporting reflective practice in workshop settings. This does not apply to sessions that explicitly avoid reflective practice.
+
+  + context: You are building confidence with narrative tools through practice. This does not apply to advanced cohorts needing full production tooling.
+
+  + context: You are enabling lightweight participatory media for community orgs. This does not apply when there is no local facilitation capacity.
+
+  + context: You are helping professionals iterate faster without losing authorial control. This does not apply to novice authors where professional pacing is not the goal.
+
+  + context: You are giving mentors a quick visual read on story pacing and structure. This does not apply when mentors already have time for full review.
+
+  + context: You are extending existing VSAT stories into a shared world without rewriting the originals. This does not apply when there is no existing corpus to link.
+
+  + context: You are defining governance layers so linking can stay open while still accountable. This does not apply when link volume and sensitivity are low or when linking features are not yet available to test governance.
+
+  + context: You are shaping VSATLAS as a learning environment that teaches collaborative sensemaking. This does not apply when the programme is intentionally solo-authored.
+
+  + context: You are helping a community move from isolated testimony to coordinated action.
+
+  + context: You are designing explicit progression so contributors can grow into co-governance roles. This does not apply to short-lived cohorts without maintenance needs.
+
+  + context: You are serving diverse stakeholders who need different lenses on the same story world.
+
+  + context: You are running live sessions where facilitators need consistent guidance. This does not apply to fully asynchronous use with no live sessions.
+
+  + context: You are defining a post-story pathway so contributors can stay engaged and grow into stewardship. This does not apply when contributors explicitly want one-off participation only.
+
+  + context: You are defining a paired offer so partners get infrastructure plus guided practice. This does not apply when a partner explicitly wants only consulting or only software.
+
+  + context: You are translating linked story insights into actions with guided interpretation and positioning this as one rung in a broader offer ladder. This does not apply when partners already have internal analysis capacity.
+
+  + context: You are preventing pilot drop-off by planning partner capacity from day one. This does not apply to one-off engagements with no long-term partnership.
+
   + IF: Contributors need an accessible medium for immersive narratives.
+
+  + IF: Contributors need to explain details without breaking immersion.
+
+  + IF: Workshops want participants to articulate significance, not just events.
+
+  + IF: Programmes aim to build confidence with storytelling tools.
+
+  + IF: Organisations want participatory media but lack capacity.
+
+  + IF:
+    Expert storytellers want faster iteration.
+
+  + IF:
+    Mentors need to review many stories quickly.
+
+  + IF:
+    VSAT stories already exist.
+
+  + IF:
+    Linking must protect narrative sovereignty.
+
+  + IF:
+    Current programmes emphasise solo creation.
+
+  + IF:
+    Communities face shared challenges expressed in stories.
+
+  + IF:
+    VSAT already supports expressive entry.
+
+  + IF:
+    Participants and partners need different cuts.
+
+  + IF:
+    Live work needs guidance.
+
+  + IF:
+    People want to stay involved post-story.
+
+  + IF:
+    Partners need both tech and practice.
+
+  + IF:
+    Clients need help interpreting patterns.
+
+  + IF:
+    Short proofs risk dependency.
+
   + HOWEVER: Linear video or text either demand expertise or constrain exploration.
+
+  + HOWEVER: Big external text blocks overwhelm viewers.
+
+  + HOWEVER: Unstructured tools yield diffuse, shallow narratives.
+
+  + HOWEVER: Learners often lack prior experience and feel intimidated.
+
+  + HOWEVER: Traditional production demands equipment and staff.
+
+  + HOWEVER:
+    Generic AI outputs ignore VSAT’s spatial grammar.
+
+  + HOWEVER:
+    Reading each scene graph manually is slow.
+
+  + HOWEVER:
+    Collections do not reveal shared patterns.
+
+  + HOWEVER:
+    Free-form linking risks chaos and harm.
+
+  + HOWEVER:
+    Parallel work teaches little about shared meaning.
+
+  + HOWEVER:
+    Isolated testimonies hide common structures.
+
+  + HOWEVER:
+    There is no path toward co-governance.
+
+  + HOWEVER:
+    One canonical view cannot serve all.
+
+  + HOWEVER:
+    Raw linking tools leave facilitators improvising.
+
+  + HOWEVER:
+    There is no visible pathway.
+
+  + HOWEVER:
+    Selling only software or only consulting leaves gaps.
+
+  + HOWEVER:
+    Raw dashboards won’t drive change.
+
+  + HOWEVER:
+    Without training, the platform stalls post-consultancy.
+
   + THEN: Provide a navigable 360° scene graph where each node is an image and links form the backbone of the story.
+
+  + THEN: Allow concise, clickable annotations tied to scene coordinates.
+
+  + THEN: Use VSAT’s scaffolds to sequence key moments and their interpretations.
+
+  + THEN: Offer a bounded authoring space where they practice arcs, pacing, and composition by doing.
+
+  + THEN: Use VSAT as a ready-made engagement surface where contributors build immersive stories with minimal setup.
+
+  + THEN:
+    Train helpers on VSAT story structures so they can suggest arcs, annotations, or pacing adjustments while authors stay in control.
+
+  + THEN:
+    Auto-generate arc diagrams (tension, pacing, scene types) from the story graph.
+
+  + THEN:
+    Layer linking + annotation across stories so participants can see how experiences relate.
+
+  + THEN:
+    Separate reading, proposing, and governing roles with clear criteria.
+
+  + THEN:
+    Add learner-facing tools + roles for proposing links and stewarding discussions.
+
+  + THEN:
+    Link stories around harms, resources, and solutions so patterns become visible for deliberation.
+
+  + THEN:
+    Define roles, rituals, and contribution ladders that move people deeper into care for the manifold.
+
+  + THEN:
+    Provide small, composable queries/visuals that emphasise varied relationships.
+
+  + THEN:
+    Bundle scaffolds (questions, timing cues, status dashboards) keyed to the story world.
+
+  + THEN:
+    Describe progression steps (author → linker → steward → maintainer) with signals for readiness.
+
+  + THEN:
+    Offer an intertwined model—hosted infrastructure plus expert facilitation packages.
+
+  + THEN:
+    Provide facilitated interpretation sessions plus artefacts as a named offer within the ladder.
+
+  + THEN:
+    Bake mentoring, documentation, and progression ladders into every offer.
+
   + BECAUSE: Spatial anchors keep attention steady and let audiences traverse at their pace.
-  + STATUS: status[ready]
+
+  + BECAUSE: Tethered text helps viewers follow meaning and emotional cues.
+
+  + BECAUSE: Reflection improves coherence and depth.
+
+  + BECAUSE: Structured play reduces cognitive load while transmitting narrative principles.
+
+  + BECAUSE: Lowering the barrier increases representation and involvement.
+
+  + BECAUSE:
+    Purpose-built assistance keeps workflows humane and efficient.
+
+  + BECAUSE:
+    Visual summaries surface strengths and gaps without flattening the work.
+
+  + BECAUSE:
+    Connected worlds enable recognition and collaboration.
+
+  + BECAUSE:
+    Layered governance balances openness with care.
+
+  + BECAUSE:
+    Cooperation turns VSATLAS into a social learning space.
+
+  + BECAUSE:
+    Shared maps enable mutual diagnosis and strategy.
+
+  + BECAUSE:
+    Open ecosystems thrive when progression is explicit.
+
+  + BECAUSE:
+    Multi-view reading keeps the world inclusive and useful.
+
+  + BECAUSE:
+    Facilitation quality determines whether linking becomes meaningful.
+
+  + BECAUSE:
+    Explicit pathways sustain communities and fairness.
+
+  + BECAUSE:
+    This pairing speeds adoption and keeps governance healthy.
+
+  + BECAUSE:
+    Interpretation is the bridge between stories and decisions.
+
+  + BECAUSE:
+    Sustainability proves value and aligns with open ecosystem goals.
+
   + NEXT-STEPS: next[Capture 2–3 exemplar stories plus screenshots for the futon3 ledger.]
     next[Define an apply signal (e.g., access to 360 capture) and a fallback when that signal is absent.]
 
 @arg vsat/embedded-annotation
 @title Embedded Hypertext Annotations
 @sigils [🔹/大]
-! conclusion: VSAT lets authors place small hypertext notes directly inside scenes so context stays local.
-  + context: You are keeping context local so viewers do not lose the scene. This does not apply when annotations would overload already dense scenes.
-  + IF: Contributors need to explain details without breaking immersion.
-  + HOWEVER: Big external text blocks overwhelm viewers.
-  + THEN: Allow concise, clickable annotations tied to scene coordinates.
-  + BECAUSE: Tethered text helps viewers follow meaning and emotional cues.
-  + STATUS: status[ready]
+
   + NEXT-STEPS: next[Record viewer feedback showing how annotations improved clarity.]
     next[Define an evidence metric (e.g., comprehension scores before/after annotations).]
 
 @arg vsat/reflective-container
 @title Structured Reflective Container
 @sigils [🍵/了]
-! conclusion: VSAT’s scene + annotation structure doubles as a reflective container that nudges contributors toward meaning-making.
-  + context: You are supporting reflective practice in workshop settings. This does not apply to sessions that explicitly avoid reflective practice.
-  + IF: Workshops want participants to articulate significance, not just events.
-  + HOWEVER: Unstructured tools yield diffuse, shallow narratives.
-  + THEN: Use VSAT’s scaffolds to sequence key moments and their interpretations.
-  + BECAUSE: Reflection improves coherence and depth.
-  + STATUS: status[blocked]
-    blocked-by[vsat/reflection-evidence]
+
   + NEXT-STEPS: next[Collect workshop notes showing reflection gains and log them in futon3.]
     next[Define a reflection-gain signal (e.g., pre/post reflection quality rubric).]
 
 @arg vsat/media-narrative-skills
 @title Media & Narrative Skill Development
 @sigils [🍯/只]
-! conclusion: Authoring in VSAT teaches basic media literacy and narrative pacing inside a constrained sandbox.
-  + context: You are building confidence with narrative tools through practice. This does not apply to advanced cohorts needing full production tooling.
-  + IF: Programmes aim to build confidence with storytelling tools.
-  + HOWEVER: Learners often lack prior experience and feel intimidated.
-  + THEN: Offer a bounded authoring space where they practice arcs, pacing, and composition by doing.
-  + BECAUSE: Structured play reduces cognitive load while transmitting narrative principles.
-  + STATUS: status[ready]
+
   + NEXT-STEPS: next[Document before/after learner reflections to evidence the skill gains.]
     next[Define a skill-gain metric (e.g., rubric on narrative pacing and composition).]
 
 @arg vsat/community-engagement
 @title Community Engagement Platform
 @sigils [🚴/节]
-! conclusion: VSAT supplies community orgs with a lightweight way to convene and publish participant stories.
-  + context: You are enabling lightweight participatory media for community orgs. This does not apply when there is no local facilitation capacity.
-  + IF: Organisations want participatory media but lack capacity.
-  + HOWEVER: Traditional production demands equipment and staff.
-  + THEN: Use VSAT as a ready-made engagement surface where contributors build immersive stories with minimal setup.
-  + BECAUSE: Lowering the barrier increases representation and involvement.
-  + STATUS: status[ready]
+
   + NEXT-STEPS: next[Log participation stats from ACMi or similar partners.]
     next[Define participation signals (e.g., % of invited contributors who publish) and a failure case (e.g., drop-off after first session).]
 
 @arg vsat-next/ai-assisted-professional-storycrafting
 @title AI-Assisted Professional Storycrafting
 @sigils [👯/未]
-! conclusion: Future VSAT work should pair professionals with AI helpers to accelerate scene planning and narrative polish without overriding authorship.
-  + context: You are helping professionals iterate faster without losing authorial control. This does not apply to novice authors where professional pacing is not the goal.
-  + IF:
-    Expert storytellers want faster iteration.
-  + HOWEVER:
-    Generic AI outputs ignore VSAT’s spatial grammar.
-  + THEN:
-    Train helpers on VSAT story structures so they can suggest arcs, annotations, or pacing adjustments while authors stay in control.
-  + BECAUSE:
-    Purpose-built assistance keeps workflows humane and efficient.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsat-next/ai-helper-spec]
+
   + NEXT-STEPS:
     next[Draft the helper requirements and cite pilot transcripts when available.]
     next[Define an evidence signal (e.g., time-to-outline reduced without loss of authorial control).]
@@ -88,19 +286,7 @@
 @arg vsat-next/narrative-arc-infographics
 @title Narrative Arc Infographics
 @sigils [👓/只]
-! conclusion: Add lightweight infographics that visualise how a VSAT story moves through beats, enabling rapid critique or coaching.
-  + context: You are giving mentors a quick visual read on story pacing and structure. This does not apply when mentors already have time for full review.
-  + IF:
-    Mentors need to review many stories quickly.
-  + HOWEVER:
-    Reading each scene graph manually is slow.
-  + THEN:
-    Auto-generate arc diagrams (tension, pacing, scene types) from the story graph.
-  + BECAUSE:
-    Visual summaries surface strengths and gaps without flattening the work.
-  + STATUS:
-    status[ready]
-    evidence[https://github.com/BrookesUniversityLearningResources/vsat/issues/207]
+
   + NEXT-STEPS:
     next[Capture a short before/after walkthrough showing how facilitators use the generated arc view.]
     next[Define a success signal (e.g., mentor review time cut by half) and a falsifier (e.g., arc view misleads critiques).]
@@ -108,19 +294,7 @@
 @arg vsatlas/connected-story-world
 @title Connected Story World
 @sigils [🎑/书]
-! conclusion: VSATLAS should turn isolated VSAT artifacts into a connected world where relationships are explicit without altering originals.
-  + context: You are extending existing VSAT stories into a shared world without rewriting the originals. This does not apply when there is no existing corpus to link.
-  + IF:
-    VSAT stories already exist.
-  + HOWEVER:
-    Collections do not reveal shared patterns.
-  + THEN:
-    Layer linking + annotation across stories so participants can see how experiences relate.
-  + BECAUSE:
-    Connected worlds enable recognition and collaboration.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsatlas/link-layer-pilot]
+
   + NEXT-STEPS:
     next[Prototype links over an existing cohort and log participant feedback.]
     next[Define a success metric (e.g., % of stories with at least one meaningful link adopted by participants).]
@@ -128,19 +302,7 @@
 @arg vsatlas/three-layer-architecture
 @title Three-Layer Architecture
 @sigils [🙇/几]
-! conclusion: Specify VSATLAS as viewing, interpretation, and stewardship layers so relational meaning can emerge while stories stay trustworthy.
-  + context: You are defining governance layers so linking can stay open while still accountable. This does not apply when link volume and sensitivity are low or when linking features are not yet available to test governance.
-  + IF:
-    Linking must protect narrative sovereignty.
-  + HOWEVER:
-    Free-form linking risks chaos and harm.
-  + THEN:
-    Separate reading, proposing, and governing roles with clear criteria.
-  + BECAUSE:
-    Layered governance balances openness with care.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsatlas/role-model]
+
   + NEXT-STEPS:
     next[Draft the minimal role/data model and test against a use case.]
     next[Define an apply signal (e.g., link volume or sensitivity threshold) and a governance failure test case.]
@@ -149,19 +311,7 @@
 @arg vsatlas/cooperative-learning-environment
 @title Cooperative Learning Environment
 @sigils [📤/人]
-! conclusion: VSATLAS should teach contributors to connect and steward each other’s stories, not just make their own.
-  + context: You are shaping VSATLAS as a learning environment that teaches collaborative sensemaking. This does not apply when the programme is intentionally solo-authored.
-  + IF:
-    Current programmes emphasise solo creation.
-  + HOWEVER:
-    Parallel work teaches little about shared meaning.
-  + THEN:
-    Add learner-facing tools + roles for proposing links and stewarding discussions.
-  + BECAUSE:
-    Cooperation turns VSATLAS into a social learning space.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsatlas/learning-module]
+
   + NEXT-STEPS:
     next[Design a small teaching module that grades link proposals and discussions.]
     next[Define evidence signals (e.g., improved collaboration scores or shared decision logs).]
@@ -169,19 +319,7 @@
 @arg vsatlas/community-problem-solving-substrate
 @title Community Problem-Solving Substrate
 @sigils [📥/井]
-! conclusion: Use VSATLAS to surface patterns across lived experiences so communities can coordinate action.
-  + context: You are helping a community move from isolated testimony to coordinated action.
-  + IF:
-    Communities face shared challenges expressed in stories.
-  + HOWEVER:
-    Isolated testimonies hide common structures.
-  + THEN:
-    Link stories around harms, resources, and solutions so patterns become visible for deliberation.
-  + BECAUSE:
-    Shared maps enable mutual diagnosis and strategy.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsatlas/community-pilot]
+
   + NEXT-STEPS:
     next[Select a community use case and plan facilitation around the linked view.]
     next[Define a decision workflow that turns linked patterns into actions, and record a success/failure case.]
@@ -189,19 +327,7 @@
 @arg vsatlas/open-progression-ecosystem
 @title Open Progression Ecosystem
 @sigils [🔦/门]
-! conclusion: Build VSATLAS so contributors can progress from authors to stewards to maintainers in an open ecosystem.
-  + context: You are designing explicit progression so contributors can grow into co-governance roles. This does not apply to short-lived cohorts without maintenance needs.
-  + IF:
-    VSAT already supports expressive entry.
-  + HOWEVER:
-    There is no path toward co-governance.
-  + THEN:
-    Define roles, rituals, and contribution ladders that move people deeper into care for the manifold.
-  + BECAUSE:
-    Open ecosystems thrive when progression is explicit.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsatlas/pathway-design]
+
   + NEXT-STEPS:
     next[Map a sample contributor journey with checkpoints and cite it in futon3.]
     next[Define progression signals (e.g., % of contributors advancing) and a failure signal (e.g., drop-off after first checkpoint).]
@@ -209,19 +335,7 @@
 @arg vsatlas/interpretive-views
 @title Interpretive Views
 @sigils [💢/几]
-! conclusion: Offer multiple interpretive views (themes, timelines, geography) so different stakeholders can read the same story world.
-  + context: You are serving diverse stakeholders who need different lenses on the same story world.
-  + IF:
-    Participants and partners need different cuts.
-  + HOWEVER:
-    One canonical view cannot serve all.
-  + THEN:
-    Provide small, composable queries/visuals that emphasise varied relationships.
-  + BECAUSE:
-    Multi-view reading keeps the world inclusive and useful.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsatlas/view-library]
+
   + NEXT-STEPS:
     next[Prototype two contrasting views against the same dataset.]
     next[Define which two views to build first (based on stakeholder need) and measure whether interpretations diverge.]
@@ -229,19 +343,7 @@
 @arg vsatlas/facilitation-scaffolds
 @title Facilitation Scaffolds
 @sigils [👘/几]
-! conclusion: Equip facilitators with prompts, checklists, and dashboards tied to VSATLAS views so sessions stay structured.
-  + context: You are running live sessions where facilitators need consistent guidance. This does not apply to fully asynchronous use with no live sessions.
-  + IF:
-    Live work needs guidance.
-  + HOWEVER:
-    Raw linking tools leave facilitators improvising.
-  + THEN:
-    Bundle scaffolds (questions, timing cues, status dashboards) keyed to the story world.
-  + BECAUSE:
-    Facilitation quality determines whether linking becomes meaningful.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsatlas/facilitator-kit]
+
   + NEXT-STEPS:
     next[Draft the facilitator kit outline and attach it to the ledger.]
     next[Define evidence signals (e.g., facilitator consistency or reduced session drift).]
@@ -249,19 +351,7 @@
 @arg vsatlas/contributor-pathways
 @title Contributor Pathways
 @sigils [👥/只]
-! conclusion: Clarify how participants move from single story authorship to ongoing contribution and stewardship roles.
-  + context: You are defining a post-story pathway so contributors can stay engaged and grow into stewardship. This does not apply when contributors explicitly want one-off participation only.
-  + IF:
-    People want to stay involved post-story.
-  + HOWEVER:
-    There is no visible pathway.
-  + THEN:
-    Describe progression steps (author → linker → steward → maintainer) with signals for readiness.
-  + BECAUSE:
-    Explicit pathways sustain communities and fairness.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsatlas/pathway-design]
+
   + NEXT-STEPS:
     next[Publish the draft pathway map alongside open-progression work.]
     next[Define readiness signals for each rung and a failure signal (e.g., pathways unused).]
@@ -269,19 +359,7 @@
 @arg vsatlas/open-infrastructure-expert-practice
 @title Open Infrastructure + Expert Practice
 @sigils [🚴/也]
-! conclusion: Combine open infrastructure (VSATLAS) with expert practice layers so organisations can adopt the platform with guidance.
-  + context: You are defining a paired offer so partners get infrastructure plus guided practice. This does not apply when a partner explicitly wants only consulting or only software.
-  + IF:
-    Partners need both tech and practice.
-  + HOWEVER:
-    Selling only software or only consulting leaves gaps.
-  + THEN:
-    Offer an intertwined model—hosted infrastructure plus expert facilitation packages.
-  + BECAUSE:
-    This pairing speeds adoption and keeps governance healthy.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsatlas/offer-sheet]
+
   + NEXT-STEPS:
     next[Translate pilot learnings into a two-layer offer doc.]
     next[Define evidence signals (e.g., higher adoption vs infrastructure-only offers).]
@@ -289,19 +367,7 @@
 @arg vsatlas/interpretation-offering
 @title Interpretation Offering
 @sigils [🙇/几]
-! conclusion: Package interpretation as one offer within the broader VSATLAS offer ladder.
-  + context: You are translating linked story insights into actions with guided interpretation and positioning this as one rung in a broader offer ladder. This does not apply when partners already have internal analysis capacity.
-  + IF:
-    Clients need help interpreting patterns.
-  + HOWEVER:
-    Raw dashboards won’t drive change.
-  + THEN:
-    Provide facilitated interpretation sessions plus artefacts as a named offer within the ladder.
-  + BECAUSE:
-    Interpretation is the bridge between stories and decisions.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsatlas/interpretation-brief]
+
   + NEXT-STEPS:
     next[Draft the session format and log who will pilot it.]
     next[Define evidence signals (e.g., actions taken after interpretation sessions).]
@@ -309,19 +375,7 @@
 @arg vsatlas/capacity-building-sustainability
 @title Capacity Building + Sustainability
 @sigils [🚴/以]
-! conclusion: Ensure VSATLAS engagements include capacity-building plans so partners can sustain the practice after pilots.
-  + context: You are preventing pilot drop-off by planning partner capacity from day one. This does not apply to one-off engagements with no long-term partnership.
-  + IF:
-    Short proofs risk dependency.
-  + HOWEVER:
-    Without training, the platform stalls post-consultancy.
-  + THEN:
-    Bake mentoring, documentation, and progression ladders into every offer.
-  + BECAUSE:
-    Sustainability proves value and aligns with open ecosystem goals.
-  + STATUS:
-    status[blocked]
-    blocked-by[vsatlas/capacity-plan]
+
   + NEXT-STEPS:
     next[Outline the capacity-building package and cite supporting pilots.]
     next[Define evidence signals (e.g., partner runs sessions without external support).]

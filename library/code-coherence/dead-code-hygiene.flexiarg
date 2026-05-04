@@ -6,12 +6,14 @@
 @tone analytic-neutral
 @factor Keen investigation (dhammavicaya)
 @references [repository-transition/diagnostics repository-transition/strawman stack-coherence/staleness-scan stack-coherence/evidence-ledger]
+@status [status[blocked] evidence[library/repository-transition/diagnostics.flexiarg:1] blocked-by[code-coherence/dead-code-audit]]
 
-! conclusion:
+! conclusion: 
   Keep MUSN behaviour legible by pruning experiments, deprecated flows, and
   orphaned namespaces before they are mistaken for supported features.
 
   + context: You are aligning the codebase with the devmap so only supported paths remain visible.
+
   + IF:
     Repository-transition diagnostics already insist on tracking code paths to
     explicit obligations.
@@ -28,11 +30,6 @@
   + BECAUSE:
     Dhammavicaya requires that “what the system does” and “what the devmap
     claims” match; dead code collapses that link.
-
-  + STATUS:
-    status[blocked]
-    evidence[library/repository-transition/diagnostics.flexiarg:1]
-    blocked-by[code-coherence/dead-code-audit]
 
   + NEXT-STEPS:
     next[Run `clojure -M:test` with namespace coverage and flag modules unused outside tests.]

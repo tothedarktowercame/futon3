@@ -7,7 +7,7 @@
 @factor Wisdom (paññā)
 @references [math-informal/transport-across-isomorphism math-informal/find-the-right-abstraction math-informal/reduce-to-known-result math-strategy/convention-bridge]
 
-! conclusion:
+! conclusion: 
   Your paper relates two structures — by equivalence, by inclusion, by
   theorem-transfer to a new class, or by extending a theory's scope.
 
@@ -37,6 +37,19 @@
       3. Identify the *witness* of the relation: a map, an embedding, a
          re-proof, a strict containment of a parameter family.
 
+    + EXEMPLAR-PAPERS:
+        exemplar[arxiv-2604.20808v1]   # Coxeter cohomology equivalence
+        exemplar[arxiv-2604.20785v1]   # Thurston norm inclusion
+        exemplar[arxiv-2604.20818v1]   # Coburn → edge-modes bridge
+        exemplar[arxiv-2604.20778v1]   # Infinite matroid generalization
+        exemplar[arxiv-math/0603598v1] # Noether to fractional control
+
+    + MEMBER-PATTERNS:
+        member[math-informal/transport-across-isomorphism]      # equivalence / transfer
+        member[math-informal/find-the-right-abstraction]        # generalization
+        member[math-informal/reduce-to-known-result]            # cross-domain bridge
+        member[math-informal/structural-inclusion]              # inclusion / monotonicity (new leaf)
+
   + BECAUSE:
       Bridge-building is structurally different from describing or asserting
       existence. The "tension" being relieved is the *gap between two formerly
@@ -44,19 +57,6 @@
       "witness" is the correspondence itself plus its preserved-property
       checks. Per the BHK framing of M-pattern-application-diagnostic, this
       family includes the most structurally rich BHK arrows in the corpus.
-
-  + MEMBER-PATTERNS:
-      member[math-informal/transport-across-isomorphism]      # equivalence / transfer
-      member[math-informal/find-the-right-abstraction]        # generalization
-      member[math-informal/reduce-to-known-result]            # cross-domain bridge
-      member[math-informal/structural-inclusion]              # inclusion / monotonicity (new leaf)
-
-  + EXEMPLAR-PAPERS:
-      exemplar[arxiv-2604.20808v1]   # Coxeter cohomology equivalence
-      exemplar[arxiv-2604.20785v1]   # Thurston norm inclusion
-      exemplar[arxiv-2604.20818v1]   # Coburn → edge-modes bridge
-      exemplar[arxiv-2604.20778v1]   # Infinite matroid generalization
-      exemplar[arxiv-math/0603598v1] # Noether to fractional control
 
   + NEXT-STEPS:
       next[Decide whether the relation is equivalence, inclusion, transfer, or generalization.]

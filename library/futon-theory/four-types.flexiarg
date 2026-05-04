@@ -7,7 +7,7 @@
 @factor Keen investigation (dhammavicaya)
 @references [futon-theory/baldwin-cycle futon-theory/interface-loop futon-theory/proof-path]
 
-! conclusion:
+! conclusion: 
   Four interrelated types describe how structure becomes behavior becomes
   interface becomes portable pattern: genotype (internal), phenotype (observable),
   exotype (connectable), xenotype (transplantable).
@@ -16,48 +16,49 @@
     types represent different facets of the same transformable system. Each
     provides a distinct lens for understanding how capability evolves.
 
-  + GENOTYPE (基因型):
-    The replicable, persistable, versionable internal representation.
-    - Rule sets, programs, pattern DAGs, DSL fragments
-    - Parameter priors, replayable generators
-    - What can be stored and version-controlled
-    - The "recipe" that generates behavior
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + APPLICATION-TO-FUTON:
+      - genotype: Pattern definitions, DSL specs, rule configurations
+      - phenotype: System behavior, test results, API responses
+      - exotype: Layer interfaces (L0↔L1, L1↔L2), event protocol shapes
+      - xenotype: Baldwin cycle itself, applicable at any interface
 
-  + PHENOTYPE (表型):
-    Observable behavior and performance in environment.
-    - Actual outputs, interaction behavior
-    - Test metrics, performance curves
-    - What can be measured and compared
-    - The "result" of executing the genotype
+    + EXOTYPE (外顯子型):
+      Externally visible type/interface shape.
+      - Interface contracts, data formats, APIs
+      - Signal/control surfaces, I/O types, event protocols
+      - Not behavior itself, but the shape through which behavior connects
+      - What makes components composable
 
-  + EXOTYPE (外顯子型):
-    Externally visible type/interface shape.
-    - Interface contracts, data formats, APIs
-    - Signal/control surfaces, I/O types, event protocols
-    - Not behavior itself, but the shape through which behavior connects
-    - What makes components composable
+    + GENOTYPE (基因型):
+      The replicable, persistable, versionable internal representation.
+      - Rule sets, programs, pattern DAGs, DSL fragments
+      - Parameter priors, replayable generators
+      - What can be stored and version-controlled
+      - The "recipe" that generates behavior
 
-  + XENOTYPE (異種型):
-    Cross-domain portable control/generation structure.
-    - Meta-CA rules, variational search structures
-    - Categorical wiring, portable generator+selector combinations
-    - A transplantable higher-order embryo
-    - Can be projected onto different genotype forms
+    + PHENOTYPE (表型):
+      Observable behavior and performance in environment.
+      - Actual outputs, interaction behavior
+      - Test metrics, performance curves
+      - What can be measured and compared
+      - The "result" of executing the genotype
 
-  + RELATIONSHIPS:
-    xenotype: Cross-domain "generate—select" skeleton
-        ↓ projects to
-    genotype: Concrete instantiation (language/DSL/rule table)
-        ↓ executes as
-    phenotype: Observable performance (measurable)
-        ↔ connects via
-    exotype: Interface shape (wireable)
+    + RELATIONSHIPS:
+      xenotype: Cross-domain "generate—select" skeleton
+          ↓ projects to
+      genotype: Concrete instantiation (language/DSL/rule table)
+          ↓ executes as
+      phenotype: Observable performance (measurable)
+          ↔ connects via
+      exotype: Interface shape (wireable)
 
-  + APPLICATION-TO-FUTON:
-    - genotype: Pattern definitions, DSL specs, rule configurations
-    - phenotype: System behavior, test results, API responses
-    - exotype: Layer interfaces (L0↔L1, L1↔L2), event protocol shapes
-    - xenotype: Baldwin cycle itself, applicable at any interface
+    + XENOTYPE (異種型):
+      Cross-domain portable control/generation structure.
+      - Meta-CA rules, variational search structures
+      - Categorical wiring, portable generator+selector combinations
+      - A transplantable higher-order embryo
+      - Can be projected onto different genotype forms
 
   + BECAUSE:
     Conflating these types leads to confusion: optimizing behavior (phenotype)

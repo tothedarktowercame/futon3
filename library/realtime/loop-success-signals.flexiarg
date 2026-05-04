@@ -6,15 +6,21 @@
 @style pattern
 
 ! conclusion: Treat the loop as healthy when batches stay small, latency stays low, and JSONL output is continuous.
+
   + context: The realtime loop must stay responsive under bursty chat traffic.
+
   + IF:
     Batch latency stays under target, dropped_lines stay near zero, and JSONL records are continuous.
+
   + HOWEVER:
     Short bursts may spike latency or trigger small drops.
+
   + THEN:
     Keep current settings; focus on integration coverage and matcher quality, not tuning.
+
   + BECAUSE:
     Stable throughput and low loss indicate the core loop is doing its job.
+
   + NEXT-STEPS:
     - evidence: batch latency histogram stays below target (e.g., <200ms).
     - evidence: dropped_lines == 0 for most batches.

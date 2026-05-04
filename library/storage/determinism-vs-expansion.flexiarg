@@ -6,11 +6,13 @@
 @tone formal-analytic
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/evidence-ledger storage/deterministic-substrate]
+@status [status[proposed] evidence[holes/missions/M-futon1a-evidence.md#L126] evidence[holes/missions/M-futon1a-evidence.md#L142]]
 
-! conclusion:
+! conclusion: 
   if you want new features but also deterministic behavior, isolate expansions behind determinism gates and tests
 
   + context: futon1 fixed determinism gate baselines while adding ingestion features.
+
   + IF:
     you want to add new ingestion or modeling features
 
@@ -22,11 +24,6 @@
 
   + BECAUSE:
     un-gated expansion breaks reproducibility and undermines the storage substrate
-
-  + STATUS:
-    status[proposed]
-    evidence[holes/missions/M-futon1a-evidence.md#L126]
-    evidence[holes/missions/M-futon1a-evidence.md#L142]
 
   + NEXT-STEPS:
     next[Define determinism gates for each ingest or model pipeline.]

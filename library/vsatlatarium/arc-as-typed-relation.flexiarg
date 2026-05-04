@@ -5,12 +5,14 @@
 @style design-pattern
 @sigils [🌈/弧]
 @references [vsatlas/non-destructive-relational-layers vsatlas/three-layer-architecture]
+@status [status[ready] "evidence[VSATLATARIUM arc rendering — colour by type, opacity by status, legend toggles]"]
 
-! conclusion:
+! conclusion: 
   Render inter-story links as coloured, curved arcs with type, status, and
   rationale so relational meaning is visible geometry, not hidden metadata.
 
   + context: You are making the interpretive layer legible as spatial form. This does not apply when link volume is so high that arcs would become visual noise.
+
   + IF:
     Viewers need to see why stories are connected — not just that they are.
 
@@ -28,10 +30,6 @@
     Typed arcs externalise the interpretive grammar that VSATLAS
     contributors use when proposing connections, making review and
     discussion concrete rather than abstract.
-
-  + STATUS:
-    status[ready]
-    evidence[VSATLATARIUM arc rendering — colour by type, opacity by status, legend toggles]
 
   + NEXT-STEPS:
     next[Add arc hover interaction showing link rationale text in-scene.]

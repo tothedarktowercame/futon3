@@ -14,12 +14,22 @@
   :efe {:lambda {:survival 1.4}}  ;; amplify survival cost when hungry
 }
 
-! conclusion:
+@status [status[ready] evidence[futon2/test/resources/goldens/hunger_tau.edn]]
+
+
+
+
+
+
+
+
+! conclusion: 
   Hunger drives precision: cyber-ants honour Futon2’s goldens so that `tick-hunger`
   + `update-hunger` + `hunger->tau` feed into `modulate-precisions` and
   `update-tau`, including reserve pressure and depot/risk contributions.
 
   + context: You are exporting hunger-to-tau coupling so Futon5 can flash faithful agents.
+
   + IF:
     The affect layer reports hunger trends (`dhdt`), ingest shortfalls, and
     colony reserves matching the six golden scenarios (normal, starvation,
@@ -38,10 +48,6 @@
     Futon5 needs those declarative mappings to export a faithful cyber-ant
     affect config; otherwise the new agents would drift away from the proven
     hunger dynamics.
-
-  + STATUS:
-    status[ready]
-    evidence[futon2/test/resources/goldens/hunger_tau.edn]
 
   + NEXT-STEPS:
     next[Expose this coupling as metadata in the cyber-ant operator so Futon2

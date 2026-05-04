@@ -7,10 +7,11 @@
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/ready-blocked-triage devmap-coherence/ifr-state-convergence devmap-coherence/prototype-maturity-lifecycle]
 
-! conclusion:
+! conclusion: 
   scan READMEs, git logs, and test artifacts for references to that clause; if none exist, mark the clause `unsupported` and emit a TODO to capture the evidence; otherwise record `evidence[link]`
 
   + context: You need to ensure that any planned work that is claimed to be done is sufficiently evidenced by concrete artifacts, or revered to a non-done state if they can't be found.
+
   + IF:
     a devmap clause (any futon) claims a prototype is “done” or “stable”
 
@@ -22,5 +23,6 @@
 
   + BECAUSE:
     dhammavicaya isn’t vibes—claims must cite reproducible proofs or they drift into fiction
+
   + NEXT-STEPS:
     next[Anchor the codebook/transcripts task in traceable artifacts and evidence links.]

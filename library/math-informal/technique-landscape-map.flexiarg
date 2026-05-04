@@ -7,7 +7,7 @@
 @factor Keen investigation (dhammavicaya)
 @references [math-informal/numerical-scout math-informal/reduce-to-known-result]
 
-! conclusion:
+! conclusion: 
   When a problem sits at the intersection of multiple standard techniques, build a typed
   library of those techniques before attempting the proof. The library reveals the exact
   structural gap between existing methods and the target.
@@ -27,6 +27,13 @@
       needs it — only problems where the mismatch between existing methods and the target
       is non-obvious. If one method clearly applies modulo a minor adaptation, just adapt it.
 
+    + FAILURE-MODES:
+        - Over-investment: building an exhaustive library when the problem only needs one
+          adaptation. Start with 3-4 methods; expand only if the gap remains unclear.
+        - False bridge: classifying a method as "partial" when the gap is actually fundamental.
+          Be honest about bridge status — partial means the core technique transfers; none
+          means only the vocabulary transfers.
+
   + THEN:
       1. For each related method, construct a typed wiring diagram with nodes:
          Q (objective), D (decomposition), M (mechanism), C (certificate), O (output).
@@ -42,20 +49,13 @@
       Structural gaps require new ideas; parametric gaps require optimization. Knowing which
       you face changes the approach entirely.
 
-  + FAILURE-MODES:
-      - Over-investment: building an exhaustive library when the problem only needs one
-        adaptation. Start with 3-4 methods; expand only if the gap remains unclear.
-      - False bridge: classifying a method as "partial" when the gap is actually fundamental.
-        Be honest about bridge status — partial means the core technique transfers; none
-        means only the vocabulary transfers.
-
-  + EVIDENCE:
-      P6 epsilon-light subsets (futon6, Feb 2026): a library of 10 methods (D1-D10) was
-      constructed with typed wiring diagrams. All 10 had bridge status partial or none.
-      The common mismatch: all methods produce edge-weighted sparsifiers, not vertex-induced
-      subsets. This structural gap — not visible from any single paper — directed the proof
-      toward leverage-based vertex selection (a new technique) rather than adapting any
-      existing method.
+    + EVIDENCE:
+        P6 epsilon-light subsets (futon6, Feb 2026): a library of 10 methods (D1-D10) was
+        constructed with typed wiring diagrams. All 10 had bridge status partial or none.
+        The common mismatch: all methods produce edge-weighted sparsifiers, not vertex-induced
+        subsets. This structural gap — not visible from any single paper — directed the proof
+        toward leverage-based vertex selection (a new technique) rather than adapting any
+        existing method.
 
   + NEXT-STEPS:
     next[Survey 3-5 related methods with typed wiring diagrams.]

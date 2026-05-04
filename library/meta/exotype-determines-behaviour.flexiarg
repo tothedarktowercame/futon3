@@ -6,8 +6,9 @@
 @allow-new-claims false
 @references [meta/designing-thoughts-not-text meta/layering-design-into-argument]
 @keywords exotype, genotype, wiring diagram, context, underdetermination, specification, pattern, mission, proof
+@status [status[ready] "evidence[M-codex-irc-execution exotype gap; P3/P7/P8 rational reconstructions; futon5 wiring diagram formalism]"]
 
-! conclusion:
+! conclusion: 
   Behaviour is determined by the combination of genotype (the structural
   move a pattern prescribes) and exotype (the environment it operates in).
   Neither alone is sufficient. The wiring diagram specifies both and makes
@@ -15,6 +16,7 @@
   underdetermined; without the genotype, the exotype is inert.
 
   + context: You are applying a pattern, designing a mission, or constructing a proof.
+
   + IF:
     A pattern says "in such-and-such a context, resolve the tension by doing X."
     The genotype (X) is clear. The context clause describes forces, constraints,
@@ -56,10 +58,6 @@
     The wiring diagram is the artifact that makes exotype explicit and checkable.
     A pattern without a wiring diagram is a suggestion. A pattern with a wiring
     diagram is a specification.
-
-  + STATUS:
-    status[ready]
-    evidence[M-codex-irc-execution exotype gap; P3/P7/P8 rational reconstructions; futon5 wiring diagram formalism]
 
   + NEXT-STEPS:
     next[Enforce wiring diagram existence as a mission checkpoint: no DERIVE without a wiring diagram that pins the exotype.]

@@ -6,10 +6,11 @@
 @factor Keen investigation (dhammavicaya)
 @references [devmap-coherence/baseline-freeze devmap-coherence/ifr-f1-dhammavicaya stack-coherence/evidence-ledger]
 
-! conclusion:
+! conclusion: 
   rely on the `Futon1 Deterministic Stack` GitHub Action (`futon1/.github/workflows/futon1-stack-tests.yml`) or run the suites manually (`cd futon1/apps/client && clojure -M:test`, `cd apps/graph-memory && clojure -M:test -m cognitect.test-runner`, `cd apps/nlp-interface && clojure -M:test`). When any leg fails, regenerate `resources/baseline/demo_session.edn` via `clojure -M:baseline/snapshot --write ...` or fix the regression before advancing futons that depend on storage/NLP determinism
 
   + context: You want CI assured enforcement that client, storage, and NLP components remain deterministic under shared test and baseline suites.
+
   + IF:
     FUTON1’s Prototype 0–1 guarantees hinge on `apps/client` emitting the canonical Willie/Jane focus-header + XTDB mirrors
 

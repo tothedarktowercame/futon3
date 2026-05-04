@@ -6,11 +6,13 @@
 @tone formal-analytic
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/evidence-ledger storage/all-or-nothing-startup]
+@status [status[proposed] evidence[holes/missions/M-futon1a-evidence.md#L91] evidence[holes/missions/M-futon1a-evidence.md#L137]]
 
-! conclusion:
+! conclusion: 
   if you want fast availability but also integrity, gate startup on full rehydration and explicit diagnostics
 
   + context: futon1 added XTDB sync and startup diagnostics to prevent stale state from serving.
+
   + IF:
     you want the system to start quickly
 
@@ -22,11 +24,6 @@
 
   + BECAUSE:
     partial startup created hidden inconsistencies and required repairs
-
-  + STATUS:
-    status[proposed]
-    evidence[holes/missions/M-futon1a-evidence.md#L91]
-    evidence[holes/missions/M-futon1a-evidence.md#L137]
 
   + NEXT-STEPS:
     next[Define the rehydration checklist and required diagnostics output.]

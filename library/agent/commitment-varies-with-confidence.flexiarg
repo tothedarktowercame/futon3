@@ -6,16 +6,23 @@
 @style pattern
 
 ! conclusion: How strongly to commit to a choice should depend on how certain the agent is.
+
   + context: An agent must choose among options with varying degrees of uncertainty.
+
   + IF:
     The agent wants to balance exploiting known-good options against exploring uncertain alternatives.
+
   + HOWEVER:
     Fixed commitment strength fails both ways: always committing hard misses better options; always hedging prevents progress.
+
   + THEN:
     Maintain a commitment parameter (temperature, precision, confidence threshold) that modulates how decisively the agent acts. Couple it to uncertainty signals with explicit thresholds: low confidence -> explore or pause; medium confidence -> hedge or seek confirmation; high confidence -> commit and execute.
+
   + BECAUSE:
     Variable commitment adapts behavior to epistemic state. The agent exploits when it knows enough and explores (or asks) when it doesn't.
+
     + evidence: `src/futon3/fulab/hud.clj` computes `tau` from candidate spread and `precision/prior`, and `dev/lab-session-report.clj` logs tau/prediction-error updates.
+
   + NEXT-STEPS:
     - Identify how your agent currently commits to choices (is it always the same strength?).
     - Add uncertainty tracking that can modulate commitment and log threshold crossings.

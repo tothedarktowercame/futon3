@@ -8,13 +8,16 @@
 @references [peripherals/constrained-execution-envelope peripherals/surface-earns-inhabitation peripherals/inhabitation-feeds-evolution meta/baldwin-ratchet-defeats-darkroom futon-theory/baldwin-cycle equity/shared-maintenance gauntlet/aif-as-environment-not-instruction]
 
 ! conclusion: A pattern that remains documentation has not yet become a peripheral. The transition from pattern to peripheral is the transition from describing what works to being the space in which the working happens — and that transition is what creates new capability, not merely new knowledge.
+
   + context: You have a well-articulated pattern — or a library of them. The
     patterns accurately describe what works under what conditions. They have
     been grounded in evidence, stress-tested, cross-referenced. They are
     correct. But the situation they describe has not improved.
+
   + IF:
     The patterns are correct and the problem they address is real: there
     exists a productive way of working that is not being practiced.
+
   + HOWEVER:
     Correctness does not produce inhabitation. A pattern describes the right
     envelope but does not address whether anyone enters it or whether it
@@ -44,6 +47,24 @@
     In all three cases, the patterns are correct. In none of them is the
     pattern doing work. The pattern is a description; it has not yet
     become a space.
+
+    + FAILURE-MODES:
+      - Pattern-as-commandment: "you must use the proof peripheral"
+        produces compliance, not inhabitation. The agent enters the space
+        under obligation and exits at the first opportunity.
+      - Pattern-as-prohibition: "you must not use the CLI" blocks the
+        alternative without making the peripheral attractive. Produces
+        resentment and workarounds.
+      - Absorbed input mistaken for success: the trainer delivered, the
+        code was written, the problem was solved. But nothing was learned
+        at the system level. Output without capability is the most
+        common and least visible failure.
+      - Blame allocated to inhabitants: "the trainers didn't embed the
+        programme" / "the agent didn't use the peripheral" / "the
+        developer didn't use the REPL." The diagnostic should be: the
+        space didn't earn inhabitation, the surface had too much friction,
+        or the Baldwin loop was starved.
+
   + THEN:
     Recognise that pattern theory is necessary but not self-completing.
     The bridge from pattern to practice is *instantiation as peripheral*:
@@ -87,6 +108,7 @@
     not been met, and the responsibility lies with whoever designs and
     maintains the conditions, not with whoever fails to thrive within
     inadequate ones.
+
   + BECAUSE:
     The absorbed-input mode reveals why this matters. In the absorbed
     case, an individual gains something — skills, experience, CV lines,
@@ -131,37 +153,25 @@
     If it did, the pattern has become a peripheral. If it didn't — if
     the agent merely transacted and moved on — the pattern remains
     documentation, however correct it may be.
+
     + evidence: M-repl-wins-over-cli (futon3c, 2026-03-29): the pattern
       library contained patterns for evidence logging, frame persistence,
       and coordination. None were operative until the REPL surface was
       made inhabitable. The patterns became peripherals only when the
       basics (interrupt, tool visibility, cursor stability) were fixed.
+
     + evidence: M-apm-solutions (futon3c, 2026-03-29): the proof
-      peripheral defined phases, criteria, and exit conditions. Claude-1
-      one-shot every problem. The pattern was correct; the peripheral
-      was not inhabited.
+        peripheral defined phases, criteria, and exit conditions. Claude-1
+        one-shot every problem. The pattern was correct; the peripheral
+        was not inhabited.
+
     + evidence: UKRN ORP T3 programme (paper_v2.4): five well-grounded
-      design patterns, backed by NPT coding and transcript evidence.
-      The patterns accurately described what would work. The
-      institutional architecture that would instantiate them as lived
-      practice was largely absent. Absorbed-input mode: trainers gained
-      individual skills but no new institutions were created.
-  + FAILURE-MODES:
-    - Pattern-as-commandment: "you must use the proof peripheral"
-      produces compliance, not inhabitation. The agent enters the space
-      under obligation and exits at the first opportunity.
-    - Pattern-as-prohibition: "you must not use the CLI" blocks the
-      alternative without making the peripheral attractive. Produces
-      resentment and workarounds.
-    - Absorbed input mistaken for success: the trainer delivered, the
-      code was written, the problem was solved. But nothing was learned
-      at the system level. Output without capability is the most
-      common and least visible failure.
-    - Blame allocated to inhabitants: "the trainers didn't embed the
-      programme" / "the agent didn't use the peripheral" / "the
-      developer didn't use the REPL." The diagnostic should be: the
-      space didn't earn inhabitation, the surface had too much friction,
-      or the Baldwin loop was starved.
+        design patterns, backed by NPT coding and transcript evidence.
+        The patterns accurately described what would work. The
+        institutional architecture that would instantiate them as lived
+        practice was largely absent. Absorbed-input mode: trainers gained
+        individual skills but no new institutions were created.
+
   + NEXT-STEPS:
     - For each pattern in the library that is "known but not practiced,"
       ask: has this pattern been instantiated as a peripheral? If not,

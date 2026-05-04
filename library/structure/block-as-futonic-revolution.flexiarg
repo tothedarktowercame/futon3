@@ -8,7 +8,7 @@
 @style pattern
 @references [futon-theory/futonic-logic futon-theory/proof-path structure/cook-ting structure/hinge-point structure/mana-allostasis invariant-coherence/drain-channel-shape]
 
-! conclusion:
+! conclusion: 
   A block is one full revolution of the futonic loop:
   象 (input) → 部 (choose decomposition regime) → 咅 (articulate) →
   鹽 (compose; ⿱ 鹵 皿) → 香 (sense) + 🔮 (regulate) →
@@ -63,12 +63,76 @@
     (cook-ting). All five phases must be present for the revolution
     to count as one block.
 
+    + ANTI-PATTERNS:
+      - **jj-style auto-commit**: every working-tree state is a
+        change-id. Defeats the operator-attestation that defines a
+        block. The operator's commit message — the 咅 — is what makes
+        a block one block.
+      - **"Commit early, commit often" as a rule**: a discipline-style
+        injunction that forces cuts at non-hinges. Dulls the blade
+        when applied uniformly; useful only when phrased as
+        "perceive hinges actively, do not let blocks grow indefinite."
+      - **One-commit-per-file**: each commit becomes a half-block;
+        metrical structure breaks. The bar disappears.
+      - **Closure without passion**: closing a block without the
+        work-phase (rubber-stamp commits, automated formatters as
+        "blocks", squash-merges of unfinished branches). Awards
+        counterfeit mana; produces hollow consonance.
+
   + THEN:
     Treat the block as the unit the system records. Pressure
     dissipates at block-closure, not at file-level commits. The
     operator's task is to perceive when a block is approaching
     completion through the five phases — not to manage individual
     file changes.
+
+    + APPLICATION-TO-MISSIONS:
+      A mission-phase transition (IDENTIFY → MAP, MAP → DERIVE, etc.)
+      is a block closure. The phase output (the new section in the
+      mission doc) is the 鹽 of that revolution. Mission docs across
+      the stack already follow this rhythm; naming it "block-shaped"
+      lets the invariant family reason about it uniformly.
+
+    + APPLICATION-TO-WORKING-TREE:
+      A working-tree block is the set of file changes the operator
+      includes in `git commit -m "..."`. The commit message IS the
+      block header. A block may produce 1+N commits if the operator
+      splits its scope for clarity (e.g., the futon3c sweep on
+      2026-05-03 produced 9 commits inside what was conceptually one
+      "clear all WIP" block); the block-id (in commit footer or git
+      notes) binds the commits.
+
+    + COMPOSITION-WITH-SIBLINGS:
+      Blocks compose with PSR/PUR cycles, mission-phase blocks,
+      session-blocks, day-blocks, excursion-blocks. A single revolution
+      of the futonic loop may be wholly contained within (e.g.) a
+      session-block, or may span multiple session-blocks if the work
+      is genuinely large. The block-id (when assigned) is the binding
+      that holds the revolution coherent across its containers.
+
+    + DIAGNOSTIC:
+      - Commits are large and infrequent: hinges have been missed.
+        Pressure rises; eventually a stop-the-line forces an awkward
+        multi-block close. The "504 file commit" pattern.
+      - Commits are tiny and constant: the operator is over-committing
+        at non-hinges. Each commit is a half-formed 鹽; cumulative
+        attention cost rises (mana drains via the *committing-itself*
+        channel).
+      - Commit messages are vague ("WIP", "fixes", "stuff"): 咅
+        (articulation) didn't form cleanly. The block isn't really
+        one block — it's an in-flight transaction the operator hasn't
+        finished perceiving.
+      - The operator's hand is hovering over `git commit`: blade in
+        wrong place. Step back. Look for the cleavage. Do not force.
+        (cook-ting)
+
+    + REFERENCES:
+      - futon-theory/futonic-logic — formal definition of 象/部/咅/鹽/香/🔮/未知/味.
+      - futon-theory/proof-path — the 8-phase auditable event chain that a block manifests at the substrate layer.
+      - structure/cook-ting — hinge-recognition; perceive cleavages, do not force.
+      - structure/hinge-point — the structural slot where a block can close.
+      - structure/mana-allostasis — the dynamic the block sits inside (each block-close is a mana award).
+      - invariant-coherence/drain-channel-shape — how the new working-tree drain channel and existing bounded-disposition siblings cohere under one faculty.
 
   + BECAUSE:
     Without a coherent unit, every dirty file is its own anxiety.
@@ -78,73 +142,9 @@
     structure; "block" is the operational name for one of its
     revolutions.
 
-  + APPLICATION-TO-WORKING-TREE:
-    A working-tree block is the set of file changes the operator
-    includes in `git commit -m "..."`. The commit message IS the
-    block header. A block may produce 1+N commits if the operator
-    splits its scope for clarity (e.g., the futon3c sweep on
-    2026-05-03 produced 9 commits inside what was conceptually one
-    "clear all WIP" block); the block-id (in commit footer or git
-    notes) binds the commits.
-
-  + APPLICATION-TO-MISSIONS:
-    A mission-phase transition (IDENTIFY → MAP, MAP → DERIVE, etc.)
-    is a block closure. The phase output (the new section in the
-    mission doc) is the 鹽 of that revolution. Mission docs across
-    the stack already follow this rhythm; naming it "block-shaped"
-    lets the invariant family reason about it uniformly.
-
-  + APPLICATION-TO-AGENT-EVIDENCE:
-    Each agent chat turn is automatically one block — evidence-per-
-    turn is the *automatic* form of block-discipline. The unit is
-    the same as a working-tree block; the recording cadence differs
-    (turn-based vs hinge-based). This makes block-discipline
-    symmetric across agent and operator activity.
-
-  + DIAGNOSTIC:
-    - Commits are large and infrequent: hinges have been missed.
-      Pressure rises; eventually a stop-the-line forces an awkward
-      multi-block close. The "504 file commit" pattern.
-    - Commits are tiny and constant: the operator is over-committing
-      at non-hinges. Each commit is a half-formed 鹽; cumulative
-      attention cost rises (mana drains via the *committing-itself*
-      channel).
-    - Commit messages are vague ("WIP", "fixes", "stuff"): 咅
-      (articulation) didn't form cleanly. The block isn't really
-      one block — it's an in-flight transaction the operator hasn't
-      finished perceiving.
-    - The operator's hand is hovering over `git commit`: blade in
-      wrong place. Step back. Look for the cleavage. Do not force.
-      (cook-ting)
-
-  + ANTI-PATTERNS:
-    - **jj-style auto-commit**: every working-tree state is a
-      change-id. Defeats the operator-attestation that defines a
-      block. The operator's commit message — the 咅 — is what makes
-      a block one block.
-    - **"Commit early, commit often" as a rule**: a discipline-style
-      injunction that forces cuts at non-hinges. Dulls the blade
-      when applied uniformly; useful only when phrased as
-      "perceive hinges actively, do not let blocks grow indefinite."
-    - **One-commit-per-file**: each commit becomes a half-block;
-      metrical structure breaks. The bar disappears.
-    - **Closure without passion**: closing a block without the
-      work-phase (rubber-stamp commits, automated formatters as
-      "blocks", squash-merges of unfinished branches). Awards
-      counterfeit mana; produces hollow consonance.
-
-  + COMPOSITION-WITH-SIBLINGS:
-    Blocks compose with PSR/PUR cycles, mission-phase blocks,
-    session-blocks, day-blocks, excursion-blocks. A single revolution
-    of the futonic loop may be wholly contained within (e.g.) a
-    session-block, or may span multiple session-blocks if the work
-    is genuinely large. The block-id (when assigned) is the binding
-    that holds the revolution coherent across its containers.
-
-  + REFERENCES:
-    - futon-theory/futonic-logic — formal definition of 象/部/咅/鹽/香/🔮/未知/味.
-    - futon-theory/proof-path — the 8-phase auditable event chain that a block manifests at the substrate layer.
-    - structure/cook-ting — hinge-recognition; perceive cleavages, do not force.
-    - structure/hinge-point — the structural slot where a block can close.
-    - structure/mana-allostasis — the dynamic the block sits inside (each block-close is a mana award).
-    - invariant-coherence/drain-channel-shape — how the new working-tree drain channel and existing bounded-disposition siblings cohere under one faculty.
+    + APPLICATION-TO-AGENT-EVIDENCE:
+      Each agent chat turn is automatically one block — evidence-per-
+      turn is the *automatic* form of block-discipline. The unit is
+      the same as a working-tree block; the recording cadence differs
+      (turn-based vs hinge-based). This makes block-discipline
+      symmetric across agent and operator activity.

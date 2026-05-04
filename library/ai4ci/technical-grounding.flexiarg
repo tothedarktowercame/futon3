@@ -6,13 +6,15 @@
 @allow-new-claims false
 @factor Keen investigation (dhammavicaya)
 @references [docs/protocol.md src/f2/router.clj library/ai4ci/project-summary-core]
+@status [status[ready] evidence[docs/protocol.md:1] evidence[src/f2/router.clj:1]]
 
-! conclusion:
+! conclusion: 
   Existing math-aware NLP tools can anchor the extraction of reasoning cues
   by identifying objects and relations, but they cannot determine which
   informal phrases convey tactic or motivation without human judgement.
 
   + context: You are grounding the pipeline in existing NER/RE outputs while clarifying what still requires human review.
+
   + IF:
     Baseline tools can already parse mathematical text, tag entities and
     relations, and suggest step boundaries that point to where explanations
@@ -35,11 +37,6 @@
     reasoning structure can be recovered from exposition—from the underlying
     engineering, avoiding overclaim about what current NLP can deliver on its
     own.
-
-  + STATUS:
-    status[ready]
-    evidence[docs/protocol.md:1]
-    evidence[src/f2/router.clj:1]
 
   + NEXT-STEPS:
     next[Prototype the anchor-plus-cue method on a small proof sample and record success/failure for each hypothesised reasoning cue.]

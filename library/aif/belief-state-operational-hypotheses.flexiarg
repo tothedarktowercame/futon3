@@ -6,15 +6,21 @@
 @style pattern
 
 ! conclusion: Maintain a compact belief map of operational hypotheses that is updated each step.
+
   + context: The agent needs an internal state about what it is doing and why, beyond the raw trace.
+
   + IF:
     You want decisions to depend on tractable hypotheses (progress, blockers, pattern fit, uncertainty) rather than raw conversation history.
+
   + HOWEVER:
     If the belief state is just the conversation, the agent cannot cleanly update, compare, or falsify its own assumptions.
+
   + THEN:
     Represent (mu) as a belief map of operational hypotheses (for example: :goal, :subgoals, :current-hypothesis, :blockers, :pattern-fit, :expected-next-observation, :uncertainty), updated at each step using observation and outcomes.
+
   + BECAUSE:
     A compact belief state makes predict -> observe -> update implementable and testable.
+
   + NEXT-STEPS:
     - Define :aif/belief-state schema in tatami_schema.clj with keys [:goal :subgoals :current-hypothesis :blockers :pattern-fit :expected-next-observation :uncertainty].
     - Extend aif_bridge/aif-step->event to validate mu against the schema before emitting :aif/tick events.

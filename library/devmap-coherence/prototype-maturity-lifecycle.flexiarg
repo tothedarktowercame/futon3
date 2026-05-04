@@ -7,10 +7,11 @@
 @factor Keen investigation (dhammavicaya)
 @references [devmap-coherence/ifr-state-convergence devmap-coherence/next-steps-to-done devmap-coherence/prototype-alignment-tension]
 
-! conclusion:
+! conclusion: 
   tag every prototype with a maturity level (:stub, :greenfield, :active, :settled) and define evidence-based promotion criteria; demote when evidence contradicts the claimed level
 
   + context: Prototypes evolve through stages. Without explicit maturity tracking, readers cannot tell which are speculative vs. battle-tested.
+
   + IF:
     devmap prototypes progress from initial idea through implementation to stable operation
 
@@ -20,24 +21,24 @@
   + THEN:
     tag every prototype with a maturity level (:stub, :greenfield, :active, :settled) and define evidence-based promotion criteria; demote when evidence contradicts the claimed level
 
+    + DEMOTION-TRIGGERS:
+      - Success rate drops below 50% over 10 uses → demote one level
+      - Breaking change without migration path → demote to :greenfield
+      - Abandoned >3 months without maintenance → demote to :stub
+
+    + MATURITY-LEVELS:
+      :stub - idea captured, no implementation yet
+      :greenfield - implementation begun, not yet testable end-to-end
+      :active - runs end-to-end, actively used but not yet battle-tested
+      :settled - battle-tested, stable, ready for downstream dependents
+
+    + PROMOTION-CRITERIA:
+      :stub → :greenfield - code exists, can be invoked (even if incomplete)
+      :greenfield → :active - runs end-to-end in at least 3 sessions with PSR/PUR logs
+      :active → :settled - 10+ successful uses, >80% success rate, no regressions in 2 weeks
+
   + BECAUSE:
     dhammavicaya requires knowing what you're investigating; maturity tags make the epistemic status of each prototype explicit and auditable
-
-  + MATURITY-LEVELS:
-    :stub - idea captured, no implementation yet
-    :greenfield - implementation begun, not yet testable end-to-end
-    :active - runs end-to-end, actively used but not yet battle-tested
-    :settled - battle-tested, stable, ready for downstream dependents
-
-  + PROMOTION-CRITERIA:
-    :stub → :greenfield - code exists, can be invoked (even if incomplete)
-    :greenfield → :active - runs end-to-end in at least 3 sessions with PSR/PUR logs
-    :active → :settled - 10+ successful uses, >80% success rate, no regressions in 2 weeks
-
-  + DEMOTION-TRIGGERS:
-    - Success rate drops below 50% over 10 uses → demote one level
-    - Breaking change without migration path → demote to :greenfield
-    - Abandoned >3 months without maintenance → demote to :stub
 
   + NEXT-STEPS:
     next[Audit all devmap prototypes and add :maturity tags where missing.]

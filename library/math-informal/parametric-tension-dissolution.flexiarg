@@ -7,7 +7,7 @@
 @factor Discernment (paññā)
 @references [math-informal/split-into-cases math-informal/find-the-right-abstraction]
 
-! conclusion:
+! conclusion: 
   When two parts of a proof have conflicting requirements on a parameter, recognize the
   tension as a structural constraint and seek a construction that dissolves it by changing
   the underlying geometric or algebraic setup.
@@ -29,6 +29,12 @@
       alternative construction that dissolves the tension must exist — don't assume it does
       without checking.
 
+    + FAILURE-MODES:
+        - The alternative construction may not exist (the tension may be intrinsic to the
+          problem, not just the approach).
+        - The alternative may dissolve one tension but create another. Map all obligations
+          before committing.
+
   + THEN:
       1. State the tension precisely: which obligations conflict on which parameter.
       2. Ask: is there a different construction where both obligations want the same
@@ -44,21 +50,15 @@
       the tension often simplifies the entire proof architecture by removing structural
       headwinds that would otherwise require heavy machinery to overcome.
 
-  + FAILURE-MODES:
-      - The alternative construction may not exist (the tension may be intrinsic to the
-        problem, not just the approach).
-      - The alternative may dissolve one tension but create another. Map all obligations
-        before committing.
-
-  + EVIDENCE:
-      P7 lattices with 2-torsion (futon6, Feb 2026): E2 obligation (place Γ in FH(Q))
-      requires even n (so fixed set has odd dimension and χ = 0 by topology). S obligation
-      (upgrade to manifold) benefits from odd n (favorable L-theory parity, equivariant
-      surgery available). Tension is structural for the reflection construction. Resolution:
-      replace codimension-1 reflection with codimension-2 rotation in odd dimension. Both
-      obligations then want odd n. The rotation route dissolves the tension and opens two
-      parallel S-branch options (Wall surgery with favorable parity, or equivariant surgery
-      with satisfied gap hypothesis).
+    + EVIDENCE:
+        P7 lattices with 2-torsion (futon6, Feb 2026): E2 obligation (place Γ in FH(Q))
+        requires even n (so fixed set has odd dimension and χ = 0 by topology). S obligation
+        (upgrade to manifold) benefits from odd n (favorable L-theory parity, equivariant
+        surgery available). Tension is structural for the reflection construction. Resolution:
+        replace codimension-1 reflection with codimension-2 rotation in odd dimension. Both
+        obligations then want odd n. The rotation route dissolves the tension and opens two
+        parallel S-branch options (Wall surgery with favorable parity, or equivariant surgery
+        with satisfied gap hypothesis).
 
   + NEXT-STEPS:
     next[Identify which obligations conflict on which parameters.]

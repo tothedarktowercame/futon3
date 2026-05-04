@@ -6,16 +6,23 @@
 @style pattern
 
 ! conclusion: Leave traces that allow backtracking; an agent that can't retrace its path can't recover from mistakes.
+
   + context: An agent navigates through states, decisions, or locations over time.
+
   + IF:
     The agent may need to undo actions, revisit prior states, or learn from dead ends.
+
   + HOWEVER:
     Without a trail, the agent cannot distinguish "unexplored" from "explored and rejected," leading to repeated mistakes or inability to recover.
+
   + THEN:
     Record a trail of moves, decisions, and state transitions with minimal fields (time, state snapshot, decision, action, evidence, reversibility). Make the trail queryable so the agent (or its successors) can backtrack, detect loops, and learn from history.
+
   + BECAUSE:
     Trails convert ephemeral navigation into persistent structure. They enable learning, debugging, and graceful recovery.
+
     + evidence: Fulab session exports write `lab/trace/<session-id>.org` and `lab/raw` (`dev/lab-export-claude.clj`), and `fuclaude` supports `--resume`/`--continue` runs.
+
   + NEXT-STEPS:
     - Decide what granularity of trail your agent needs (every step? key decisions only?).
     - Implement trail storage that survives across sessions if work spans multiple runs.

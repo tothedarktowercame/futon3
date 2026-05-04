@@ -8,7 +8,7 @@
 @family math-strategy/structural-relation-result
 @references [math-informal/transport-across-isomorphism math-informal/find-the-right-abstraction math-informal/verify-universal-property]
 
-! conclusion:
+! conclusion: 
   Establish that two structures are structurally identical at the level of
   the relevant invariants — typically by exhibiting a bidirectional map (an
   isomorphism, an equivalence of categories, or a biduality) and verifying
@@ -21,6 +21,11 @@
     paper's contribution is to show *they are the same thing*, in a
     structural sense.
 
+  + IF:
+      You can construct maps X → Y and Y → X and verify they are mutually
+      inverse, *and* both maps preserve the operations / morphisms / metrics
+      that the equivalence is supposed to preserve.
+
   + HOWEVER:
       Structural equivalence is symmetric. It differs from
       `transport-across-isomorphism`: that pattern *uses* a known
@@ -28,11 +33,6 @@
       structural identity. It also differs from `structural-inclusion`:
       that is directional; this is bidirectional. Use this leaf when the
       paper's contribution is a new equivalence.
-
-  + IF:
-      You can construct maps X → Y and Y → X and verify they are mutually
-      inverse, *and* both maps preserve the operations / morphisms / metrics
-      that the equivalence is supposed to preserve.
 
   + THEN:
       1. Construct both directions of the equivalence.

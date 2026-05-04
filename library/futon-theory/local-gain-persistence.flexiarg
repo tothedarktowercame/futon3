@@ -6,8 +6,9 @@
 @tone analytic-foundational
 @factor Keen investigation (dhammavicaya)
 @references [futon-theory/interface-loop futon-theory/baldwin-cycle futon-theory/counter-ratchet futon-theory/stop-the-line]
+@references-extra ["Counter-ratchet: Key counts must not drop" "Local gain persistence: Capabilities must not silently appear/disappear" "Both prevent \"drift\" - unexplained changes in system state"]
 
-! conclusion:
+! conclusion: LocalGainMustEitherPersistOrBeDeleted: For any interface loop that produces gain G: - Either G is assimilated (genotype updated, PROOF_COMMIT with evidence) - Or G is explicitly deleted (REMOVE_GAIN with reason) - Never: G exists only in runtime/phenotype
   Any functional gain introduced at an interface must either be assimilated
   into genotype (replayable, auditable) or explicitly deleted. No ghost
   capabilities allowed.
@@ -17,50 +18,41 @@
     runtime state but never be captured, creating "ghost capabilities"
     that work but cannot be audited, replayed, or trusted.
 
-  + INVARIANT-STATEMENT:
-    LocalGainMustEitherPersistOrBeDeleted:
-    For any interface loop that produces gain G:
-    - Either G is assimilated (genotype updated, PROOF_COMMIT with evidence)
-    - Or G is explicitly deleted (REMOVE_GAIN with reason)
-    - Never: G exists only in runtime/phenotype
+  + IF: The applicability scope of the pattern (see substructure).
+    + DELETION-REQUIREMENTS:
+      To count as "deleted", gain must have:
+      - Explicit REMOVE_GAIN event
+      - Reason (why not persisting: not worth it, superseded, etc.)
+      - Cleanup verification (no residual effects)
 
-  + GHOST-CAPABILITY-PROBLEM:
-    Without this invariant:
-    - System works better but nobody knows why
-    - Restart loses the improvement
-    - Can't replicate success in other environments
-    - Can't audit what changed
-    - Can't roll back if it causes problems later
+    + PERSISTENCE-REQUIREMENTS:
+      To count as "persisted", gain must have:
+      - Genotype change (replayable representation)
+      - Evidence chain (what problem it solved)
+      - Proof commit (durable, with tx-id)
+      - Test coverage (verifies gain still works)
 
-  + ENFORCEMENT:
-    1. LOOP_END event requires disposition field: {persisted, deleted}
-    2. If persisted: genotype diff + proof commit must exist
-    3. If deleted: reason + timestamp recorded
-    4. If neither: INVARIANT_CHECK fails, stop-the-line
+  + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
+    + ANTI-PATTERNS:
+      - "It just started working" (ghost gain, no genotype)
+      - "We'll capture it later" (procrastinated persistence)
+      - "Nobody uses that anymore" (orphaned gain, not deleted)
+      - Runtime-only optimizations that survive restart
 
-  + PERSISTENCE-REQUIREMENTS:
-    To count as "persisted", gain must have:
-    - Genotype change (replayable representation)
-    - Evidence chain (what problem it solved)
-    - Proof commit (durable, with tx-id)
-    - Test coverage (verifies gain still works)
+    + GHOST-CAPABILITY-PROBLEM:
+      Without this invariant:
+      - System works better but nobody knows why
+      - Restart loses the improvement
+      - Can't replicate success in other environments
+      - Can't audit what changed
+      - Can't roll back if it causes problems later
 
-  + DELETION-REQUIREMENTS:
-    To count as "deleted", gain must have:
-    - Explicit REMOVE_GAIN event
-    - Reason (why not persisting: not worth it, superseded, etc.)
-    - Cleanup verification (no residual effects)
-
-  + RELATIONSHIP-TO-COUNTER-RATCHET:
-    Counter-ratchet: Key counts must not drop
-    Local gain persistence: Capabilities must not silently appear/disappear
-    Both prevent "drift" - unexplained changes in system state
-
-  + ANTI-PATTERNS:
-    - "It just started working" (ghost gain, no genotype)
-    - "We'll capture it later" (procrastinated persistence)
-    - "Nobody uses that anymore" (orphaned gain, not deleted)
-    - Runtime-only optimizations that survive restart
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + ENFORCEMENT:
+      1. LOOP_END event requires disposition field: {persisted, deleted}
+      2. If persisted: genotype diff + proof commit must exist
+      3. If deleted: reason + timestamp recorded
+      4. If neither: INVARIANT_CHECK fails, stop-the-line
 
   + BECAUSE:
     Accumulated capability is the product of engineering. If capabilities

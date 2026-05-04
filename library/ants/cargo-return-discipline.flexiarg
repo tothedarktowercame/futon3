@@ -13,12 +13,22 @@
                      :empty-home-pen 1.1}}
 }
 
-! conclusion:
+@status [status[ready] evidence[futon2/test/resources/goldens/policy_harness.edn]]
+
+
+
+
+
+
+
+
+! conclusion: 
   When an AIF agent carries significant cargo yet keeps returning without
   depositing, clamp tau, penalise reuse of :return, and prioritise deposit
   completion. The pattern generalises to any delivery/return loop.
 
   + context: You are preventing cargo return thrash in cyber-ant policy.
+
   + IF:
     The agent has cargo ≥ 0.05, repeatedly chooses :return while `:dep` = 0,
     or stalls near the nest.
@@ -36,10 +46,6 @@
   + BECAUSE:
     The same logic applies to graph walkers (deliver package, reward commit) or
     any pattern that alternates gather/deliver phases.
-
-  + STATUS:
-    status[ready]
-    evidence[futon2/test/resources/goldens/policy_harness.edn]
 
   + NEXT-STEPS:
     next[Bind this pattern to Futon5’s uplift so cyber-ants (and future courier

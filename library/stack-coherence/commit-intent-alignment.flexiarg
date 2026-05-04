@@ -7,11 +7,11 @@
 @factor Energy (viriya)
 @references [stack-coherence/staleness-scan stack-coherence/ready-blocked-triage devmap-coherence/next-steps-to-done]
 
-! conclusion:
+! conclusion: 
   correlate commit messages/PRs with devmap IDs; for each match, update the clause status + evidence ledger; if a clause stays marked “planned” despite recent commits, flag it as `drift` and prompt someone to reconcile
 
   + context: You need to ensure that actual development work reflected in commits and PRs stays aligned with work plans as both code and plans evolve.
-  
+
   + IF:
     git commits reference a prototype or futon clause (“Prototype 4 done”, “stack blocker cleared”) while the devmap still lists it as planned/blocked
 

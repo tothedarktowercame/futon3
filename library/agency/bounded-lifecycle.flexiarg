@@ -7,12 +7,22 @@
 @style pattern
 @references [realtime/listener-leases realtime/liveness-heartbeats]
 
-! conclusion: Every entry in an Agency state atom must have a defined lifecycle with explicit creation, bounded retention, and guaranteed cleanup; fire-and-forget futures are not cleanup.
+! conclusion: Every entry in an Agency state atom must have a defined lifecycle with explicit creation, bounded retention, and guaranteed cleanup; fire-and-forget futures are not cleanup.  A5-bounded: Every entry in every Agency state atom has a defined maximum lifetime. No atom may grow without bound during normal operation. Cleanup is deterministic: either lazy-on-read, periodic-sweep, or cascaded-on-parent-removal.
+
   + context: Agency maintains six state atoms: secrets, acks, rendezvous-state, connected-agents, local-handlers, and pending-whistles. Most use future-based TTL cleanup that races with concurrent operations. The acks atom has no cleanup at all and grows without bound.
+
   + IF:
     You store transient state (secrets, promises, connection entries, rendezvous tracking) in an in-memory atom.
+
   + HOWEVER:
     Future-based cleanup (future (Thread/sleep ttl) (swap! atom dissoc key)) races with concurrent reads and writes. Between the sleep ending and the swap! executing, a concurrent operation may read the entry, begin work, and then find the entry gone. The acks atom is never cleaned. pending-whistles entries can be orphaned if the agent disconnects mid-flight.
+
+    + FAILURE-MODES:
+      - Unbounded growth: acks atom accumulates 10k entries/day with no cleanup
+      - Race cleanup: secret TTL future fires during concurrent ack validation; ack fails with "unknown secret"
+      - Orphaned promise: agent disconnects; pending-whistle entry sits until timeout future fires (or forever if future was GC'd)
+      - Late ack: rendezvous cleaned up; agent sends ack after cleanup; ack recorded in acks atom but not in rendezvous
+
   + THEN:
     Every atom entry must have:
     1. Created-at timestamp: when the entry was created.
@@ -25,22 +35,14 @@
     - pending-whistles: clean up on agent disconnect cascade, not just on timeout.
     - rendezvous-state: clean up when all expected agents have acked or deadline passes, not deadline + arbitrary delay.
     - connected-agents: clean up triggers cascade to pending-whistles and rendezvous-state.
+
   + BECAUSE:
     Unbounded state atoms are memory leaks. Race-prone cleanup creates intermittent failures that are impossible to reproduce. A database table without a retention policy eventually fills the disk; an atom without cleanup eventually fills the heap.
 
-  + INVARIANT-STATEMENT:
-    A5-bounded: Every entry in every Agency state atom has a defined maximum lifetime. No atom may grow without bound during normal operation. Cleanup is deterministic: either lazy-on-read, periodic-sweep, or cascaded-on-parent-removal.
-
-  + FAILURE-MODES:
-    - Unbounded growth: acks atom accumulates 10k entries/day with no cleanup
-    - Race cleanup: secret TTL future fires during concurrent ack validation; ack fails with "unknown secret"
-    - Orphaned promise: agent disconnects; pending-whistle entry sits until timeout future fires (or forever if future was GC'd)
-    - Late ack: rendezvous cleaned up; agent sends ack after cleanup; ack recorded in acks atom but not in rendezvous
-
-  + EVIDENCE (repo history):
-    - 2026-02-01 9ea1b06: secret storage endpoints introduced with TTL-driven cleanup, establishing the "fire-and-forget future" cleanup pattern for transient state.
-    - 2026-02-08 b14c9de: pending-whistles introduced as an atom with timeout cleanup via future (sleep + dissoc), creating an explicit orphan/timeout lifecycle that can race with in-flight operations.
-    - 2026-02-08 9acf154: rendezvous-state introduced alongside acks recording; the design makes acks meaningful, but also increases the need for deterministic cleanup (acks, rendezvous, and pending requests must not leak or race).
+    + EVIDENCE (repo history):
+      - 2026-02-01 9ea1b06: secret storage endpoints introduced with TTL-driven cleanup, establishing the "fire-and-forget future" cleanup pattern for transient state.
+      - 2026-02-08 b14c9de: pending-whistles introduced as an atom with timeout cleanup via future (sleep + dissoc), creating an explicit orphan/timeout lifecycle that can race with in-flight operations.
+      - 2026-02-08 9acf154: rendezvous-state introduced alongside acks recording; the design makes acks meaningful, but also increases the need for deterministic cleanup (acks, rendezvous, and pending requests must not leak or race).
 
   + NEXT-STEPS:
     - evidence: measure atom sizes under sustained load (entries per hour per atom)

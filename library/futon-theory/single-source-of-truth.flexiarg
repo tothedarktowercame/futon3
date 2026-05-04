@@ -6,8 +6,9 @@
 @tone analytic-foundational
 @factor Keen investigation (dhammavicaya)
 @references [futon-theory/durability-first futon-theory/error-hierarchy futon-theory/counter-ratchet]
+@layer-position "1 (depends on Layer 0: durability)"
 
-! conclusion:
+! conclusion: I1: One entity per identity, no ambiguity.
   One entity per identity, no ambiguity. Every entity has exactly one UUID,
   and (source, external-id) maps to exactly one UUID. Duplicates rejected,
   ambiguous lookups throw.
@@ -16,37 +17,35 @@
     maps to two UUIDs, which one is correct? The answer must be: this cannot
     happen. Identity invariants are enforced BEFORE write, not discovered after.
 
-  + INVARIANT-STATEMENT:
-    I1: One entity per identity, no ambiguity.
+  + IF: The applicability scope of the pattern (see substructure).
+    + REQUIREMENTS:
+      - Every entity has exactly one UUID
+      - (source, external-id) tuple maps to exactly one UUID
+      - Duplicate external IDs rejected BEFORE write (not after)
+      - Lookups with ambiguous matches throw, never silently pick one
 
-  + REQUIREMENTS:
-    - Every entity has exactly one UUID
-    - (source, external-id) tuple maps to exactly one UUID
-    - Duplicate external IDs rejected BEFORE write (not after)
-    - Lookups with ambiguous matches throw, never silently pick one
+  + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
+    + FAILURE-MODES:
+      Duplicate external-id -> 409 (conflict)
+      Ambiguous lookup -> 409 (conflict)
+      Missing required identity -> 400 (bad request)
 
-  + ENFORCEMENT:
-    Layer 1 validates before Layer 0 writes:
-    - Uniqueness check for existing (source, external-id) mapping
-    - On conflict: 409 with existing entity reference
-    - On ambiguous lookup: 409 with all matches listed
+    + ANTI-PATTERNS:
+      - Silently picking first match on ambiguous lookup
+      - Creating new UUID when external-id already exists
+      - Using external-id as UUID (they serve different purposes)
 
-  + FAILURE-MODES:
-    Duplicate external-id -> 409 (conflict)
-    Ambiguous lookup -> 409 (conflict)
-    Missing required identity -> 400 (bad request)
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + ENFORCEMENT:
+      Layer 1 validates before Layer 0 writes:
+      - Uniqueness check for existing (source, external-id) mapping
+      - On conflict: 409 with existing entity reference
+      - On ambiguous lookup: 409 with all matches listed
 
-  + ANTI-PATTERNS:
-    - Silently picking first match on ambiguous lookup
-    - Creating new UUID when external-id already exists
-    - Using external-id as UUID (they serve different purposes)
+    + DOMAIN-INSTANTIATION:
+      See `storage/identity-uniqueness` for concrete implementation patterns.
 
   + BECAUSE:
     Identity is the foundation of relations. If entity A relates to entity B,
     we must know exactly which entities those are. Ambiguity in identity
     propagates to ambiguity in relations, making the entire graph unreliable.
-
-  + LAYER-POSITION: 1 (depends on Layer 0: durability)
-
-  + DOMAIN-INSTANTIATION:
-    See `storage/identity-uniqueness` for concrete implementation patterns.

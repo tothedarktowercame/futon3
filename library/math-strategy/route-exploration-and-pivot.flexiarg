@@ -7,7 +7,7 @@
 @style proof-strategy
 @references [math-informal/technique-landscape-map math-informal/split-into-cases math-informal/exhaustion-as-theorem]
 
-! conclusion:
+! conclusion: 
   When a proof admits multiple candidate approaches, explore them as lightweight
   wiring diagrams with explicit status (solid/open/blocked) before investing
   deeply. Abandon blocked routes promptly, record why they fail, and pivot to
@@ -19,11 +19,18 @@
     first approach until it either works or exhausts your patience — but this
     ignores structural information that a quick survey would reveal.
 
-  + WHEN:
-      A proof step has two or more candidate approaches, and at least one approach
-      has non-trivial obstacles (unverified hypotheses, unfavorable parameter
-      regimes, missing intermediate results). The obligation is significant enough
-      that choosing the wrong approach wastes substantial effort.
+  + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
+    + FAILURE-MODES:
+        - All approaches are blocked. This is a legitimate outcome — the pattern
+          then outputs "no known approach works" as a structural result (see
+          exhaustion-as-theorem).
+        - The surviving approach is only marginally better than the others. In
+          this case, the triage has low signal; consider whether a fundamentally
+          different construction is needed rather than choosing among mediocre
+          options.
+        - The "best" approach has an open node that turns out to be as hard as
+          the original problem (reduction to an equally hard problem). Set
+          checkpoints to detect this early.
 
   + THEN:
       1. Sketch each candidate approach as a lightweight proof architecture: list
@@ -41,6 +48,31 @@
          open node proves harder than expected, re-evaluate the triage rather
          than sinking further.
 
+    + QUALITY-CRITERIA:
+        Well-applied:
+          - Each candidate approach is sketched with explicit node status, not just
+            named ("try surgery" is insufficient; "Wall surgery: need normal map
+            [open], need obstruction vanishing [open], need L-theory parity
+            [unfavorable]" is correct).
+          - Abandoned approaches have specific, documented failure points.
+          - The pivot rationale is structural, not just "this one looks easier."
+          - A checkpoint is set for re-evaluating the chosen approach.
+        Badly-applied:
+          - Premature abandonment: killing an approach because one step is hard,
+            when the step is actually routine. Verify blockages before triaging.
+          - Sunk-cost pursuit: refusing to abandon an approach after investing
+            effort, despite blocked nodes.
+          - Phantom triage: listing approaches without assessing node status,
+            then "choosing" based on familiarity rather than structure.
+          - Failure to record: abandoning an approach without documenting why,
+            losing the constraint information for future work.
+
+    + WHEN:
+        A proof step has two or more candidate approaches, and at least one approach
+        has non-trivial obstacles (unverified hypotheses, unfavorable parameter
+        regimes, missing intermediate results). The obligation is significant enough
+        that choosing the wrong approach wastes substantial effort.
+
   + BECAUSE:
       Multi-approach proof problems have a branching search structure. Investing
       deeply in the first approach encountered is a depth-first strategy that
@@ -50,55 +82,24 @@
       "refuted lemmas" — they don't prove the theorem, but they prove something
       about the problem's structure.
 
-  + EVIDENCE:
-      P7 lattices with 2-torsion (futon6, Feb 2026): the manifold-upgrade
-      obligation (S) admitted four candidate approaches:
-        I.   Wall surgery (reflection route) — 3 sequential open obstacles,
-             unfavorable even-dimensional L-theory parity.
-        II.  Equivariant surgery — BLOCKED (Costenoble-Waner codimension-2 gap
-             hypothesis fails for codimension-1 fixed sets of reflections).
-        III. Orbifold resolution — UNEXPLORED, no known technique applies.
-        IV.  Rotation route (codimension-2, odd dimension) — dissolves the
-             dimension-parity tension, equivariant surgery becomes available,
-             reduces to a single lattice-existence question.
-      Triage killed Approach II immediately, deprioritized I and III, and
-      identified IV as most promising — despite IV not being the "obvious"
-      continuation of the reflection construction that had discharged E2.
-      Without the survey, the default path would have been Approach I (3
-      sequential obstacles, structural headwinds). The triage took one sketch
-      session; pursuing Approach I would have consumed days before hitting the
-      parity wall.
-
-  + QUALITY-CRITERIA:
-      Well-applied:
-        - Each candidate approach is sketched with explicit node status, not just
-          named ("try surgery" is insufficient; "Wall surgery: need normal map
-          [open], need obstruction vanishing [open], need L-theory parity
-          [unfavorable]" is correct).
-        - Abandoned approaches have specific, documented failure points.
-        - The pivot rationale is structural, not just "this one looks easier."
-        - A checkpoint is set for re-evaluating the chosen approach.
-      Badly-applied:
-        - Premature abandonment: killing an approach because one step is hard,
-          when the step is actually routine. Verify blockages before triaging.
-        - Sunk-cost pursuit: refusing to abandon an approach after investing
-          effort, despite blocked nodes.
-        - Phantom triage: listing approaches without assessing node status,
-          then "choosing" based on familiarity rather than structure.
-        - Failure to record: abandoning an approach without documenting why,
-          losing the constraint information for future work.
-
-  + FAILURE-MODES:
-      - All approaches are blocked. This is a legitimate outcome — the pattern
-        then outputs "no known approach works" as a structural result (see
-        exhaustion-as-theorem).
-      - The surviving approach is only marginally better than the others. In
-        this case, the triage has low signal; consider whether a fundamentally
-        different construction is needed rather than choosing among mediocre
-        options.
-      - The "best" approach has an open node that turns out to be as hard as
-        the original problem (reduction to an equally hard problem). Set
-        checkpoints to detect this early.
+    + EVIDENCE:
+        P7 lattices with 2-torsion (futon6, Feb 2026): the manifold-upgrade
+        obligation (S) admitted four candidate approaches:
+          I.   Wall surgery (reflection route) — 3 sequential open obstacles,
+               unfavorable even-dimensional L-theory parity.
+          II.  Equivariant surgery — BLOCKED (Costenoble-Waner codimension-2 gap
+               hypothesis fails for codimension-1 fixed sets of reflections).
+          III. Orbifold resolution — UNEXPLORED, no known technique applies.
+          IV.  Rotation route (codimension-2, odd dimension) — dissolves the
+               dimension-parity tension, equivariant surgery becomes available,
+               reduces to a single lattice-existence question.
+        Triage killed Approach II immediately, deprioritized I and III, and
+        identified IV as most promising — despite IV not being the "obvious"
+        continuation of the reflection construction that had discharged E2.
+        Without the survey, the default path would have been Approach I (3
+        sequential obstacles, structural headwinds). The triage took one sketch
+        session; pursuing Approach I would have consumed days before hitting the
+        parity wall.
 
   + NEXT-STEPS:
     next[Sketch all candidate approaches with explicit node status.]

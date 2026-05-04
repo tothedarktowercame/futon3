@@ -6,11 +6,13 @@
 @tone formal-analytic
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/evidence-ledger]
+@status [status[proposed] evidence[holes/features/futon1.devmap#L29] evidence[holes/features/futon1.devmap#L33]]
 
-! conclusion:
+! conclusion: 
   expose a minimal, stable HTTP interface as the canonical way to query and update the persistent store without internal coupling
 
   + context: futon1’s devmap defines the HTTP API as the canonical interface for external tools.
+
   + IF:
     external tools must query/update storage without embedding internals
 
@@ -22,11 +24,6 @@
 
   + BECAUSE:
     canonical interfaces let higher futons depend on storage without tight coupling
-
-  + STATUS:
-    status[proposed]
-    evidence[holes/features/futon1.devmap#L29]
-    evidence[holes/features/futon1.devmap#L33]
 
   + NEXT-STEPS:
     next[Define the minimal API surface for futon1a and its evolution protocol.]

@@ -6,11 +6,13 @@
 @tone analytic-neutral
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/evidence-ledger stack-coherence/futon1-storage-coherence]
+@status [status[proposed] evidence[holes/missions/M-futon1a-evidence.md#L43] evidence[holes/missions/M-futon1a-evidence.md#L7]]
 
-! conclusion:
+! conclusion: 
   block success responses on durable storage confirmation; fail loudly when durability cannot be verified
 
   + context: futon1 repeatedly needed explicit durability enforcement and watchdog ordering fixes.
+
   + IF:
     writes can return before XTDB durability is confirmed
 
@@ -23,14 +25,9 @@
   + BECAUSE:
     durability drift caused repeated fixes and remains a root invariant for futon1a
 
-  + STATUS:
-    status[proposed]
-    evidence[holes/missions/M-futon1a-evidence.md#L43]
-    evidence[holes/missions/M-futon1a-evidence.md#L7]
+    + EVIDENCE:
+      evidence[futon1a/src/futon1a/core/xtdb.clj:durable-write! requires non-nil write-fn unless allow-noop?]
 
   + NEXT-STEPS:
     next[Define the exact XTDB durability wait/timeout semantics for futon1a Layer 0.]
     next[Add a proof test that a write is not acknowledged before the durable commit.]
-
-  + EVIDENCE:
-    evidence[futon1a/src/futon1a/core/xtdb.clj:durable-write! requires non-nil write-fn unless allow-noop?]

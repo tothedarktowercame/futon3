@@ -6,10 +6,11 @@
 @references [futon-theory/error-hierarchy futon-theory/stop-the-line]
 @theory-grounding [A2(Attributable) A4(Degradation-detectable)]
 
-! conclusion:
+! conclusion: 
   If you want reliable coordination, gate task execution on an explicit capability match between the task requirements and the registered agent.
 
   + context: "Agent can do it" must be checked, not assumed.
+
   + IF:
     you want to route tasks to heterogeneous agents (humans, Codex, Claude, services)
 
@@ -21,4 +22,3 @@
 
   + BECAUSE:
     otherwise failures are silent and attribution is unclear (who was supposed to do what?)
-

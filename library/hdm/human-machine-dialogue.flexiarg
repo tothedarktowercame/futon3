@@ -2,10 +2,11 @@
 @title HDM - Human<->Machine Dialogue
 @sigils [💬/口]
 
-! conclusion:
+! conclusion: 
   make human-machine dialogue a core HDM workflow so ambiguous material can be clarified and formalised reliably.
 
   + context: You are embedding clarification dialogues as part of HDM ingestion and retrieval.
+
   + IF:
     Automated parsing/formalisation of mathematical text is brittle: ambiguous notation, implicit steps,
     and missing context routinely break fully automatic tooling.
@@ -22,6 +23,7 @@
   + BECAUSE:
       Dialogue is already how humans learn/teach mathematics; embedding it in HDM aligns with practice and leverages LLM
       strengths instead of fighting them.
+
   + NEXT-STEPS:
     next[Store clarification dialogues alongside affected entries.]
     next[Build dialogue agents that turn conversations into updated flexiarg or metadata.]

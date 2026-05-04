@@ -7,10 +7,11 @@
 @factor Keen investigation (dhammavicaya)
 @references [p4ng/pattern-activation p4ng/identifier-garden devmap-coherence/baseline-freeze]
 
-! conclusion:
+! conclusion: 
   maintain a canonical `patterns-index` (Tokipona section, truth-table Hanzi, rationale) and a compression log (`resources/sigils/compressions.edn`); any new pattern addition or mapping change must append to the log and update the index before regenerating CSVs
 
   + context: Maintain an up-to-date patterns-index and compression log to ensure reproducible and reliable semantic embeddings.
+
   + IF:
     FUTON3 relies on a “fake embedding” (sigil distances + Tokipona/Hanzi mappings) to suggest patterns
 

@@ -7,7 +7,7 @@
 @factor Keen investigation (dhammavicaya)
 @references [futon-theory/event-protocol futon-theory/proof-path futon-theory/stop-the-line]
 
-! conclusion:
+! conclusion: 
   Every agent operating in the FUTON stack must follow the agent contract:
   clock in, observe before acting, attribute all changes, respect invariants,
   and clock out with a proof trail.
@@ -17,49 +17,52 @@
     system invariants. Agents that violate the contract produce unverifiable
     changes.
 
-  + CONTRACT-REQUIREMENTS:
+  + IF: The applicability scope of the pattern (see substructure).
+    + AGENT-TYPES:
+      - Human agents: Follow contract via tools (CLI, IDE integration)
+      - AI agents: Follow contract via prompts and guardrails
+      - Automated agents: Follow contract via code structure
 
-    1. CLOCK-IN/CLOCK-OUT:
-       - Every session explicitly starts and ends
-       - Session ID assigned at clock-in
-       - Duration and outcome recorded at clock-out
+    + CONTRACT-REQUIREMENTS:
 
-    2. OBSERVE-BEFORE-ACT:
-       - Read state before proposing changes
-       - Log observations as evidence
-       - Never apply changes without observation phase
+      1. CLOCK-IN/CLOCK-OUT:
+         - Every session explicitly starts and ends
+         - Session ID assigned at clock-in
+         - Duration and outcome recorded at clock-out
 
-    3. ATTRIBUTE-ALL-CHANGES:
-       - Every change linked to agent identity
-       - No anonymous mutations
-       - Changes reference the observation that motivated them
+      2. OBSERVE-BEFORE-ACT:
+         - Read state before proposing changes
+         - Log observations as evidence
+         - Never apply changes without observation phase
 
-    4. RESPECT-INVARIANTS:
-       - Check invariants before commit
-       - On violation: stop-the-line, do not force through
-       - Report invariant failures, do not hide them
+      3. ATTRIBUTE-ALL-CHANGES:
+         - Every change linked to agent identity
+         - No anonymous mutations
+         - Changes reference the observation that motivated them
 
-    5. PRODUCE-PROOF:
-       - Every committed change has evidence chain
-       - Proof path is replayable
-       - Failed attempts also logged (for learning)
+      4. RESPECT-INVARIANTS:
+         - Check invariants before commit
+         - On violation: stop-the-line, do not force through
+         - Report invariant failures, do not hide them
 
-  + AGENT-TYPES:
-    - Human agents: Follow contract via tools (CLI, IDE integration)
-    - AI agents: Follow contract via prompts and guardrails
-    - Automated agents: Follow contract via code structure
+      5. PRODUCE-PROOF:
+         - Every committed change has evidence chain
+         - Proof path is replayable
+         - Failed attempts also logged (for learning)
 
-  + CONTRACT-VIOLATIONS:
-    - Anonymous change: Mutation without agent attribution
-    - Blind change: Mutation without observation
-    - Forced commit: Pushing through invariant violation
-    - Ghost session: Changes without clock-in/clock-out
+  + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
+    + CONTRACT-VIOLATIONS:
+      - Anonymous change: Mutation without agent attribution
+      - Blind change: Mutation without observation
+      - Forced commit: Pushing through invariant violation
+      - Ghost session: Changes without clock-in/clock-out
 
-  + ENFORCEMENT:
-    - Session middleware rejects unclocked changes
-    - Commit hooks verify agent attribution
-    - Invariant checks block non-compliant commits
-    - Audit logs flag contract violations
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + ENFORCEMENT:
+      - Session middleware rejects unclocked changes
+      - Commit hooks verify agent attribution
+      - Invariant checks block non-compliant commits
+      - Audit logs flag contract violations
 
   + BECAUSE:
     Unattributed changes are unauditable. Unobserved changes are reckless.

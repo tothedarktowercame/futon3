@@ -14,11 +14,21 @@
                         :hunger-mult 0.08}}
 }
 
-! conclusion:
+@status [status[ready] evidence[futon2/src/ants/aif/policy.clj]]
+
+
+
+
+
+
+
+
+! conclusion: 
   Regulate pheromone laying by coupling trail gradients to hunger, novelty, and
   reserve pressure so trails serve as communicative signals rather than noise.
 
   + context: You are tuning pheromone output so trails carry useful signal.
+
   + IF:
     The local pheromone signal is weak, novelty high, or reserves deficit, while
     the agent is outbound or maintaining a corridor.
@@ -36,10 +46,6 @@
   + BECAUSE:
     The same principle applies to graph walkers emitting hints or proofs: you
     want signaling to adapt to novelty and resource pressure.
-
-  + STATUS:
-    status[ready]
-    evidence[futon2/src/ants/aif/policy.clj]
 
   + NEXT-STEPS:
     next[Expose the trail-tuner knobs via Futon5 so cyber-ants (and future graph

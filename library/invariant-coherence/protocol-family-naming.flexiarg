@@ -7,7 +7,7 @@
 @style methodology
 @references [invariant-coherence/shape-first-identify invariant-coherence/subsumption-witness library-coherence/*]
 
-! conclusion: When a family-shape admits multiple implementations across artifact-classes, name the siblings with namespace IDs of the form `<family-shape>/<artifact-class>` rather than introducing "subfamily" as a new structural element. The inventory's existing `family → invariants` shape supports this; namespace discrimination is sufficient to express "siblings of one shape" without schema changes.
+! conclusion: When a family-shape admits multiple implementations across artifact-classes, name the siblings with namespace IDs of the form `<family-shape>/<artifact-class>` rather than introducing "subfamily" as a new structural element. The inventory's existing `family → invariants` shape supports this; namespace discrimination is sufficient to express "siblings of one shape" without schema changes.  IC-namespace: Sibling invariants under a single shape use namespace IDs `<shape>/<artifact-class>`; no new structural element ("subfamily") is introduced unless and until the schema has at least three independent shapes that *also* need cross-shape grouping.
 
   + context: As the `archaeology-control` work showed, an invariant-family often corresponds to a *protocol* in the Clojure-protocol sense: one shape (signature), many implementations (per-artifact-class). The instinct is to introduce a new structural element ("subfamily") to express the relationship. But the inventory's schema already has `family` and `invariant` as nested concepts — a family contains many invariants. Naming the siblings with namespaced IDs (`obsolescence-recognition/autostash`, `.../deferred-stub`, etc.) carries the relationship without schema changes.
 
@@ -19,6 +19,11 @@
       1. **Inventing a new element** — "subfamily", "shape-group", "protocol-family" — that the inventory's schema doesn't have. This requires schema migration, all consumers (arxana view, priority queue, ratchet) updating in lockstep, and the ratchet recording a structural-change event. Heavy for what is essentially a naming choice.
       2. **Flattening into one big family** — treating `obsolescence-recognition` as a single invariant whose implementation lists multiple artifact-classes. This makes the per-class subsumption tests invisible to the probe, the canary, and the priority queue.
       3. **Splitting into separate families** — `archaeology-control-autostash`, `archaeology-control-deferred-stub`, etc. This duplicates the family-level concept and breaks the "one shape, many instances" relationship.
+
+    + ANTI-PATTERNS:
+      - Inventing "subfamily" / "shape-group" before three independent shapes need cross-shape grouping.
+      - Multiple families that share a summary string ("Latent work should not accumulate..." duplicated). Symptom of split-when-namespace-would-do.
+      - Hyphen-only IDs (`obsolescence-recognition-autostash`). Loses the structural read; greppable but not parseable.
 
   + THEN:
     Use namespace IDs:
@@ -42,21 +47,13 @@
       - Instance segment is the artifact-class (`autostash`, `deferred-stub`, `evidence-write`, `bell-receipt`).
       - Multiple shapes per family are fine if the family-summary names a broader concept (e.g. `archaeology-control` covers both subsumption-witness shape and stash-debt-bounded shape).
 
+    + EXAMPLES:
+      - `archaeology-control / obsolescence-recognition/{autostash,deferred-stub,pipeline-tracer,...}` — one shape, many instances.
+      - `single-boundary / single-boundary/{evidence,bell-receipt,gate-traversal,...}` (when Track 3 of M-invariant-queue-extend lands) — same.
+      - Counter-example (a true single instance): `coverage-ratchet` currently has one instance (inventory-status). Its shape ("monotone-modulo-recorded-exceptions") admits other instances (test-count, doc-coverage, evidence-density). When a second instance arrives, the rename to namespace-discriminated IDs (`coverage-ratchet/{inventory-status, test-count}`) is recorded as a ratchet event because the original ID changes.
+
   + BECAUSE:
     The inventory's schema is the result of evidence-backed design choices and is touched by many tools (parser, priority-queue ranker, arxana renderer, ratchet, probe). Adding a structural element to express what naming already expresses is the wrong direction — schema bloat for no semantic gain. Conversely, flattening hides per-instance semantics that the apparatus already knows how to render. Namespace-discriminated siblings are the minimum-viable expression of "one shape, many instances" that survives every existing tool.
-
-  + INVARIANT-STATEMENT:
-    IC-namespace: Sibling invariants under a single shape use namespace IDs `<shape>/<artifact-class>`; no new structural element ("subfamily") is introduced unless and until the schema has at least three independent shapes that *also* need cross-shape grouping.
-
-  + EXAMPLES:
-    - `archaeology-control / obsolescence-recognition/{autostash,deferred-stub,pipeline-tracer,...}` — one shape, many instances.
-    - `single-boundary / single-boundary/{evidence,bell-receipt,gate-traversal,...}` (when Track 3 of M-invariant-queue-extend lands) — same.
-    - Counter-example (a true single instance): `coverage-ratchet` currently has one instance (inventory-status). Its shape ("monotone-modulo-recorded-exceptions") admits other instances (test-count, doc-coverage, evidence-density). When a second instance arrives, the rename to namespace-discriminated IDs (`coverage-ratchet/{inventory-status, test-count}`) is recorded as a ratchet event because the original ID changes.
-
-  + ANTI-PATTERNS:
-    - Inventing "subfamily" / "shape-group" before three independent shapes need cross-shape grouping.
-    - Multiple families that share a summary string ("Latent work should not accumulate..." duplicated). Symptom of split-when-namespace-would-do.
-    - Hyphen-only IDs (`obsolescence-recognition-autostash`). Loses the structural read; greppable but not parseable.
 
   + NEXT-STEPS:
     - tooling: arxana row-renderer could render the shape-prefix in a different column ("shape" + "instance") for namespace-discriminated invariants. Optional polish.

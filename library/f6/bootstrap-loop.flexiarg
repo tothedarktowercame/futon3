@@ -7,13 +7,14 @@
 @factor Persistence (viriya)
 @references [hdm/bootstrap-kernel f6/negative-space-duality]
 
-! conclusion:
+! conclusion: 
   Seed a term dictionary from a curated source, apply it to a messier corpus,
   absorb new terms from that corpus, and iterate. Each pass through the loop
   expands coverage and improves precision.
 
   + context: You are building a mathematical NER kernel that must cover terminology
     from multiple sources with different levels of structure.
+
   + IF:
       PlanetMath provides curated, structured term definitions (pmdefines, pmsynonym,
       pmtitle) and Stack Exchange provides folksonomy tags and body-extracted terms

@@ -6,8 +6,10 @@
 @tone analytic-foundational
 @factor Keen investigation (dhammavicaya)
 @references [futon-theory/proof-path futon-theory/retrospective-stability futon-theory/event-protocol]
+@definition "A symbolic geodesic is a proof path that: 1. Starts from a well-defined intent 2. Proceeds through minimal required operations 3. Ends at a verified claim with durable proof 4. Contains no redundant steps 5. Remains fully auditable throughout"
+@references-extra ["Programs are proofs of their specifications. The geodesic is the most" "elegant proof - the one a mathematician would publish. Longer proofs" "work, but the geodesic demonstrates mastery."]
 
-! conclusion:
+! conclusion: 
   The symbolic geodesic is the shortest defensible path in symbolic state
   space - the minimal proof path from intent to verified claim. It is not
   about speed but about eliminating unnecessary complexity.
@@ -17,36 +19,24 @@
     the minimal sequence of operations that moves from intent to verified
     outcome while maintaining auditability.
 
-  + DEFINITION:
-    A symbolic geodesic is a proof path that:
-    1. Starts from a well-defined intent
-    2. Proceeds through minimal required operations
-    3. Ends at a verified claim with durable proof
-    4. Contains no redundant steps
-    5. Remains fully auditable throughout
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + APPLICATION:
+      - Pattern selection: Choose patterns that shorten the geodesic
+      - Refactoring: Identify steps that can be eliminated
+      - Learning: Compare actual paths to geodesics for prediction improvement
+      - Review: Is this the shortest defensible path, or are there detours?
 
-  + PROPERTIES:
-    - Minimal: No operation can be removed without breaking the proof
-    - Direct: Each step advances toward the goal
-    - Defensible: Every step has explicit justification
-    - Verifiable: The path can be replayed and checked
+    + GEODESIC-VS-ACTUAL:
+      Real sessions may deviate from the geodesic (exploration, false starts).
+      The geodesic is the retrospective "ideal path" that could have achieved
+      the same outcome with minimal steps. Session logs capture actual paths;
+      analysis can extract geodesics for learning.
 
-  + GEODESIC-VS-ACTUAL:
-    Real sessions may deviate from the geodesic (exploration, false starts).
-    The geodesic is the retrospective "ideal path" that could have achieved
-    the same outcome with minimal steps. Session logs capture actual paths;
-    analysis can extract geodesics for learning.
-
-  + APPLICATION:
-    - Pattern selection: Choose patterns that shorten the geodesic
-    - Refactoring: Identify steps that can be eliminated
-    - Learning: Compare actual paths to geodesics for prediction improvement
-    - Review: Is this the shortest defensible path, or are there detours?
-
-  + RELATIONSHIP-TO-CURRY-HOWARD:
-    Programs are proofs of their specifications. The geodesic is the most
-    elegant proof - the one a mathematician would publish. Longer proofs
-    work, but the geodesic demonstrates mastery.
+    + PROPERTIES:
+      - Minimal: No operation can be removed without breaking the proof
+      - Direct: Each step advances toward the goal
+      - Defensible: Every step has explicit justification
+      - Verifiable: The path can be replayed and checked
 
   + BECAUSE:
     Complexity is cost. Every step in a proof path is a potential failure

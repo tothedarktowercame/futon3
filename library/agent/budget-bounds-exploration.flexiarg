@@ -6,16 +6,23 @@
 @style pattern
 
 ! conclusion: Exploration without limits drifts; any search needs a budget that forces commitment or escalation.
+
   + context: An agent explores options—spatial locations, semantic regions, conversation branches, solution candidates.
+
   + IF:
     The agent must balance discovering new possibilities against making progress on known paths.
+
   + HOWEVER:
     Unbounded exploration leads to wander: the agent keeps looking without ever committing, exhausting resources without output.
+
   + THEN:
     Assign explicit budgets (time, steps, tokens, reads) to exploratory phases and define reset rules. When budget nears exhaustion, force a decision: commit to best-so-far, escalate to a supervisor, or explicitly expand scope with justification.
+
   + BECAUSE:
     Budgets convert open-ended search into bounded decisions, making progress measurable and preventing silent resource drain.
+
     + evidence: `fuclaude` enforces `--explore-limit`, and `src/futon3/fulab/hud.clj` caps candidates with `pattern-limit`.
+
   + NEXT-STEPS:
     - Identify unbounded loops in your agent (e.g., "keep searching until found").
     - Add budget parameters with sensible defaults and observable countdowns.

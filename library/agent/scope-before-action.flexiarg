@@ -6,16 +6,23 @@
 @style pattern
 
 ! conclusion: Declare the territory before entering it; unbounded scope makes progress unmeasurable.
+
   + context: An agent is about to begin work on a task that could touch many things.
+
   + IF:
     The agent needs to make progress that can be verified and bounded.
+
   + HOWEVER:
     Without declared scope, "done" is undefined, side effects are unpredictable, and observers cannot tell if the agent is on track or wandering.
+
   + THEN:
     Before substantive action, state the scope: what files, concepts, or regions are in-bounds; what is explicitly out-of-bounds; what the exit condition is. Treat scope violations as requiring explicit expansion, not silent drift. Scope defines the territory; budgets and pauses govern what happens inside it.
+
   + BECAUSE:
     Declared scope makes progress measurable, side effects auditable, and completion definable. It also protects the broader system from unintended changes.
+
     + evidence: Fulab HUD prompts require a pre-action plan (`src/futon3/fulab/hud.clj`), and scope boundaries are spelled out in `CLAUDE.md`.
+
   + NEXT-STEPS:
     - Add scope declaration to your agent's initialization or planning phase.
     - Log scope boundaries and check actions against them.

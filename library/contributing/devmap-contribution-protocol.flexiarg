@@ -4,13 +4,14 @@
 @keywords contribute, clock-in, clock-out, ownership, handoff, protocol, workflow, ritual, checklist
 @factor Keen investigation (dhammavicaya)
 
-! conclusion:
+! conclusion: 
   follow the devmap contribution protocol
     1. Clock in on one futon + prototype before writing code: update the clause’s `+ next[...]` with `doing[...] owner[...] evidence[...]` (or `blocked-by[...]`), and ensure the futon-level `@state/@next` reflect reality.
     2. Build the evidence: run the futon3 helper stack from this repo (`clojure -M:sigils`, `scripts/check_devmap_next.clj` once it lands, Tatami trails) so sigils, next-tags, and proof trails stay coherent.
     3. Clock out: replace the clause’s `+ next[...]` with `done[...] evidence[...]` (or `start` for untouched designs), note any new blockers, regenerate `holes/artifacts/devmaps.pdf`, and mention the futon/prototype in the commit or work log.
 
   + context: You are touching devmaps or prototypes and need the devmap state to stay auditable.
+
   + IF:
     contributors touch devmaps, prototypes, or interface tooling
 

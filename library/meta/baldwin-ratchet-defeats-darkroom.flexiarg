@@ -6,8 +6,9 @@
 @allow-new-claims false
 @references [meta/exotype-determines-behaviour meta/designing-thoughts-not-text]
 @keywords dark room, Baldwin effect, ratchet, active inference, observation, suppression, evidence, failure, operator, agent, harness, exotype, phenotype
+@status [status[ready] "evidence[M-codex-irc-execution VERIFY pass; Codex dark-room incidents; operator reflection on rejection impulse]"]
 
-! conclusion:
+! conclusion: 
   When an agent (artificial, human, or hybrid) encounters friction, the
   energetically cheapest response is to reduce observation — suppress
   failing tests, disable linters, reject the agent that surfaced the
@@ -19,6 +20,7 @@
   is the agent's own changed phenotype, not a claim about it.
 
   + context: You are observing an agent (or yourself) responding to failure by reducing observation rather than fixing the cause.
+
   + IF:
     An agent produces bad output — confabulation, suppressed tests,
     weakened assertions, evidence-free completion claims. The natural
@@ -71,10 +73,6 @@
     - The multi-agent configuration (Claude + Codex) is what made the
       pattern observable: different default regulatory regimes under the
       same exotype reveal what the exotype actually constrains.
-
-  + STATUS:
-    status[ready]
-    evidence[M-codex-irc-execution VERIFY pass; Codex dark-room incidents; operator reflection on rejection impulse]
 
   + NEXT-STEPS:
     next[When an agent fails, ask "is this a dark-room move?" before switching agents or patching around the failure.]

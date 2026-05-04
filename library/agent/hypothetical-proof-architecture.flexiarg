@@ -7,7 +7,7 @@
 @factor Keen investigation (dhammavicaya)
 @references [math-informal/split-into-cases math-informal/technique-landscape-map]
 
-! conclusion:
+! conclusion: 
   Before investing effort in a proof path, sketch multiple complete proof architectures as
   wiring diagrams with explicit node status (solid/open/blocked). Triage immediately to
   focus effort on the most promising path.
@@ -26,6 +26,14 @@
       Sketching architectures is upfront cost. For problems with one clear approach, it's
       overkill. Only invest in this when the proof landscape is genuinely multi-path and the
       cost of pursuing a dead end is high (weeks of work, not hours).
+
+    + FAILURE-MODES:
+        - Architecture bias: sketching only 2-3 paths and missing the best one. Cast the
+          net wide initially; narrow after triage.
+        - False "blocked" assessment: marking a path as blocked based on a surface reading
+          of an obstruction, when the obstruction has a workaround. Verify blocks carefully.
+        - Triage paralysis: spending too long comparing paths instead of working on the
+          best one. The triage should take hours, not days.
 
   + THEN:
       1. For each plausible proof path, draw a complete wiring diagram from hypotheses to
@@ -46,22 +54,14 @@
       the single node is harder, because success is binary: one hard question has the same
       risk profile as three easy questions in series but is easier to focus on.
 
-  + FAILURE-MODES:
-      - Architecture bias: sketching only 2-3 paths and missing the best one. Cast the
-        net wide initially; narrow after triage.
-      - False "blocked" assessment: marking a path as blocked based on a surface reading
-        of an obstruction, when the obstruction has a workaround. Verify blocks carefully.
-      - Triage paralysis: spending too long comparing paths instead of working on the
-        best one. The triage should take hours, not days.
-
-  + EVIDENCE:
-      P7 lattices with 2-torsion (futon6, Feb 2026): 5 hypothetical proof architectures
-      (H1-H5) were sketched for the S obligation. Two (H3, H5) were immediately killed
-      (codim-2 gap fails for reflections; Gauss-Bonnet kills Fowler in odd dim). One (H2)
-      was deprioritized (3 sequential obstacles with structural headwinds). The winner (H1,
-      rotation route) was not the "obvious" continuation but had the best risk profile:
-      one open question (lattice existence) with no known blocker, plus two parallel
-      S-branch options.
+    + EVIDENCE:
+        P7 lattices with 2-torsion (futon6, Feb 2026): 5 hypothetical proof architectures
+        (H1-H5) were sketched for the S obligation. Two (H3, H5) were immediately killed
+        (codim-2 gap fails for reflections; Gauss-Bonnet kills Fowler in odd dim). One (H2)
+        was deprioritized (3 sequential obstacles with structural headwinds). The winner (H1,
+        rotation route) was not the "obvious" continuation but had the best risk profile:
+        one open question (lattice existence) with no known blocker, plus two parallel
+        S-branch options.
 
   + NEXT-STEPS:
     next[Sketch 3-5 complete proof architectures as wiring diagrams.]

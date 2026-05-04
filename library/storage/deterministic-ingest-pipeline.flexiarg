@@ -6,11 +6,13 @@
 @tone formal-analytic
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/evidence-ledger]
+@status [status[proposed] evidence[holes/features/futon1.devmap#L40] evidence[holes/features/futon1.devmap#L89]]
 
-! conclusion:
+! conclusion: 
   provide deterministic ingestion (tokenise → tag → chunk → recognise) so graph construction is reproducible
 
   + context: futon1’s devmap defines a deterministic NLP interface as the foundation for ingest.
+
   + IF:
     ingest depends on text processing and recognition stages
 
@@ -22,11 +24,6 @@
 
   + BECAUSE:
     reproducible ingest is required for a deterministic storage substrate
-
-  + STATUS:
-    status[proposed]
-    evidence[holes/features/futon1.devmap#L40]
-    evidence[holes/features/futon1.devmap#L89]
 
   + NEXT-STEPS:
     next[Document the pipeline as a public API with input/output shapes.]

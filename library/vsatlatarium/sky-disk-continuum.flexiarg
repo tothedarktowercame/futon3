@@ -5,13 +5,15 @@
 @style design-pattern
 @sigils [🔭/盘]
 @references [vsatlatarium/dome-projection vsatlas/interpretive-views]
+@status [status[ready] "evidence[VSATLATARIUM scroll-back with arc redraw — quantised blend, 20 steps]"]
 
-! conclusion:
+! conclusion: 
   Allow continuous zoom from immersive dome interior to external sky-disk
   overview so viewers can shift between situated reading and structural
   comprehension without changing mode.
 
   + context: You are designing navigation that spans close-reading and bird's-eye analysis within a single interaction. This does not apply when the corpus has no spatial projection (e.g., pure list views).
+
   + IF:
     Viewers need to alternate between exploring a neighbourhood of stories
     and surveying the whole constellation.
@@ -30,10 +32,6 @@
     Continuous zoom preserves the viewer's mental model of where they are
     in the constellation. The transition from "inside looking out" to
     "outside looking in" is a zoom, not a teleport.
-
-  + STATUS:
-    status[ready]
-    evidence[VSATLATARIUM scroll-back with arc redraw — quantised blend, 20 steps]
 
   + NEXT-STEPS:
     next[Animate node positions to match arc straightening (currently nodes stay dome-projected).]

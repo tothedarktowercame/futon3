@@ -6,13 +6,15 @@
 @tone analytic-neutral
 @factor Keen investigation (dhammavicaya)
 @references [devmap-coherence/prototype-alignment-bridge stack-coherence/stack-blocker-detection stack-coherence/evidence-ledger]
+@status ["status[blocked] blocked-by[devmap-coherence/scope-audit]"]
 
-! conclusion:
+! conclusion: 
   scrub each clause so it references only the layer’s own mechanisms,
   blockers, exports, and guarantees; move projections into the appropriate futon
   or retire them until evidence exists.
 
   + context: To ensure your devmaps accurately describe a layer's mechanisms, avoid referencing unrelated projections that dilute clarity.
+
   + IF:
     devmaps are supposed to describe the guarantees and mechanisms intrinsic to a
     layer.
@@ -30,11 +32,8 @@
     sharp scope makes layers composable and keeps stack blockers
     observable.
 
-  + STATUS:
-    status[blocked] blocked-by[devmap-coherence/scope-audit]
-
-  + EVIDENCE:
-    evidence[library/devmap-coherence/prototype-alignment-bridge.flexiarg:1]
+    + EVIDENCE:
+      evidence[library/devmap-coherence/prototype-alignment-bridge.flexiarg:1]
 
   + NEXT-STEPS:
     next[Apply this check to FUTON1–4 devmaps; annotate clauses that mention external futons without bridges.]

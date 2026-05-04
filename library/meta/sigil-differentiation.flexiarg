@@ -5,12 +5,14 @@
 @tone reflective-analytic
 @allow-new-claims false
 @references [library-coherence/pattern-differentiation-alarms stack-coherence/stack-blocker-detection meta/scaffolding-emergent-clarity]
+@status [status[ready] evidence[resources/sigils/emoji-adjacency.csv]]
 
-! conclusion:
+! conclusion: 
   Treat repeated sigil pairs as design questions: either reassign the pair or
   refine the overlapping patterns so their scopes stop colliding.
 
   + context: You are maintaining sigil uniqueness so similarity search stays meaningful.
+
   + IF:
     `clojure -M:sigils` reports duplicated pairs (e.g., 🔃/入 across four patterns).
 
@@ -27,10 +29,6 @@
   + BECAUSE:
     Sigils are coordinates; when they overlap, dhammavicaya can’t distinguish
     patterns, so we must either move the coordinate or reshape the terrain.
-
-  + STATUS:
-    status[ready]
-    evidence[resources/sigils/emoji-adjacency.csv]
 
   + NEXT-STEPS:
     next[Create a rolling “sigil collision queue” entry in futon3 and tick off pairs as we reassign or refine them.]

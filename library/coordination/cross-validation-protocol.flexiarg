@@ -6,10 +6,11 @@
 @references [futon-theory/coordination-protocol futon-theory/rapid-debugging]
 @theory-grounding [A3(Evidence-driven) A1(Auditability)]
 
-! conclusion:
+! conclusion: 
   If you want robustness against self-serving validation, define a cross-validation path where another agent (or a deterministic harness) can re-run the validation on the same evidence.
 
   + context: Validation should be replayable by someone other than the executor.
+
   + IF:
     you want to reduce confabulation and improve trust in PUR outcomes
 
@@ -21,4 +22,3 @@
 
   + BECAUSE:
     coordination quality depends on independent verification of claimed progress
-

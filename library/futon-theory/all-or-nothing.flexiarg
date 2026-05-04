@@ -6,8 +6,9 @@
 @tone analytic-foundational
 @factor Keen investigation (dhammavicaya)
 @references [futon-theory/durability-first futon-theory/single-source-of-truth futon-theory/stop-the-line]
+@layer-position "2 (depends on Layers 0, 1: durability, identity)"
 
-! conclusion:
+! conclusion: I2: Startup succeeds completely or fails loudly.
   Startup succeeds completely or fails loudly. Rehydration loads all entities
   or throws. No silent stubs, no partial loads. Failure reports exactly what
   failed and why.
@@ -16,40 +17,38 @@
     refuses to boot. Partial state creates subtle bugs that surface hours
     later, far from their cause. Integrity means: whole and consistent, or not.
 
-  + INVARIANT-STATEMENT:
-    I2: Startup succeeds completely or fails loudly.
+  + IF: The applicability scope of the pattern (see substructure).
+    + REQUIREMENTS:
+      - Rehydration loads all entities or throws
+      - No silent stubs, no placeholder values
+      - No partial loads, no "best effort" recovery
+      - Failure reports: what entity, what field, what was expected, what found
+      - Relations verified to have valid endpoints
 
-  + REQUIREMENTS:
-    - Rehydration loads all entities or throws
-    - No silent stubs, no placeholder values
-    - No partial loads, no "best effort" recovery
-    - Failure reports: what entity, what field, what was expected, what found
-    - Relations verified to have valid endpoints
+  + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
+    + FAILURE-MODES:
+      Corrupt entity -> 500 ENTITY_CORRUPT (details: entity-id, field, error)
+      Dangling relation -> 500 DANGLING_REFERENCE (details: relation-id, missing-target)
+      Schema mismatch -> 500 SCHEMA_MISMATCH (details: entity-id, expected, found)
 
-  + ENFORCEMENT:
-    Layer 2 (core/rehydrate.clj) validates on load:
-    - Every entity must deserialize completely
-    - Every relation must reference existing entities
-    - Missing references -> 500 INTEGRITY_VIOLATION with details
-    - Startup blocked until all data validates
+    + ANTI-PATTERNS:
+      - Loading what we can, logging warnings for the rest
+      - Creating stub entities for missing references
+      - "Recovering" by skipping corrupt data
+      - Async background rehydration that might fail silently
 
-  + FAILURE-MODES:
-    Corrupt entity -> 500 ENTITY_CORRUPT (details: entity-id, field, error)
-    Dangling relation -> 500 DANGLING_REFERENCE (details: relation-id, missing-target)
-    Schema mismatch -> 500 SCHEMA_MISMATCH (details: entity-id, expected, found)
-
-  + ANTI-PATTERNS:
-    - Loading what we can, logging warnings for the rest
-    - Creating stub entities for missing references
-    - "Recovering" by skipping corrupt data
-    - Async background rehydration that might fail silently
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + ENFORCEMENT:
+      Layer 2 (core/rehydrate.clj) validates on load:
+      - Every entity must deserialize completely
+      - Every relation must reference existing entities
+      - Missing references -> 500 INTEGRITY_VIOLATION with details
+      - Startup blocked until all data validates
 
   + BECAUSE:
     Hydration needs similar invariants to ingest. You wouldn't rip a CD that
     didn't have proper 0's and 1's on it. The data must be whole to be trusted.
     Partial data creates partial truth, which is worse than no data.
-
-  + LAYER-POSITION: 2 (depends on Layers 0, 1: durability, identity)
 
   + NEXT-STEPS:
     next[Implement blocking rehydration with validation in futon1a]

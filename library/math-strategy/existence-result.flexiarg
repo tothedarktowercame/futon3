@@ -7,7 +7,7 @@
 @factor Generosity (dāna)
 @references [math-informal/construct-an-explicit-witness math-informal/construct-auxiliary-object math-informal/use-probabilistic-method math-informal/numerical-scout]
 
-! conclusion:
+! conclusion: 
   Your paper shows that an object of a desired class exists.
 
   + context: A class of objects has been defined or implied; whether the class
@@ -37,6 +37,17 @@
       4. State explicitly what the witness shows and which preconditions
          determine it.
 
+    + EXEMPLAR-PAPERS:
+        exemplar[arxiv-2604.21888v1]   # Kneser graph Hamilton cycle exists
+        exemplar[arxiv-math/0603597v1] # Gevrey ultardistribution algebras (constructive)
+        exemplar[arxiv-2604.20840v1]   # Z/2-harmonic forms via 4-polytopes (constructive)
+
+    + MEMBER-PATTERNS:
+        member[math-informal/construct-an-explicit-witness]      # constructive
+        member[math-informal/construct-auxiliary-object]         # constructive (indirect)
+        member[math-informal/use-probabilistic-method]           # pure-classical / non-constructive
+        member[math-informal/numerical-scout]                    # with-error-bounds (hint of construction)
+
   + BECAUSE:
       Existence claims are the load-bearing skeleton of much of mathematical
       research, but they vary enormously in their constructive content. Putting
@@ -45,17 +56,6 @@
       when the leaf depth is uncertain, then refine to the leaf when more
       detail is available. The family is the *useful coarse classifier*; the
       leaf is the *precise depth*.
-
-  + MEMBER-PATTERNS:
-      member[math-informal/construct-an-explicit-witness]      # constructive
-      member[math-informal/construct-auxiliary-object]         # constructive (indirect)
-      member[math-informal/use-probabilistic-method]           # pure-classical / non-constructive
-      member[math-informal/numerical-scout]                    # with-error-bounds (hint of construction)
-
-  + EXEMPLAR-PAPERS:
-      exemplar[arxiv-2604.21888v1]   # Kneser graph Hamilton cycle exists
-      exemplar[arxiv-math/0603597v1] # Gevrey ultardistribution algebras (constructive)
-      exemplar[arxiv-2604.20840v1]   # Z/2-harmonic forms via 4-polytopes (constructive)
 
   + NEXT-STEPS:
       next[Determine the existence depth and pick the matching leaf.]

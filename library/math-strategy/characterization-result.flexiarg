@@ -7,7 +7,7 @@
 @factor Discernment (paññā)
 @references [math-informal/exhaustion-as-theorem math-informal/structural-obstruction-as-theorem math-informal/split-into-cases math-strategy/hypothesis-category-check]
 
-! conclusion:
+! conclusion: 
   Your paper describes what some object or class of objects *is* — not whether
   one exists, not how it relates to another, but its intrinsic structure.
 
@@ -38,27 +38,27 @@
       3. Identify the *witness* of the characterization: what theorem,
          equivalence, or list constitutes the description?
 
+    + EXEMPLAR-PAPERS:
+        exemplar[arxiv-2604.20815v1]   # Zarankiewicz sharp dichotomy
+        exemplar[arxiv-2604.20827v1]   # Entropic OT failure-mode
+        exemplar[arxiv-2604.20787v1]   # Exchange-number complexity
+        exemplar[arxiv-math/0603592v1] # KMS classification
+        exemplar[arxiv-math/0603593v1] # AFD outer-actions classification
+
+    + MEMBER-PATTERNS:
+        member[math-informal/exhaustion-as-theorem]                 # full / classification
+        member[math-informal/structural-obstruction-as-theorem]     # failure-mode
+        member[math-informal/split-into-cases]                      # dichotomy / classification
+        member[math-informal/structural-characterization]           # full description (new leaf)
+        member[math-informal/failure-mode-characterization]         # failure-regime (new leaf)
+        member[math-informal/complexity-classification]             # specific subtype (new leaf)
+
   + BECAUSE:
       Characterization papers do "describing-work" rather than "proving-X-exists"
       or "showing-X-relates-to-Y" work. The family parent serves as a coarse
       classifier; the leaves carry the analytic differences (e.g. dichotomy
       proofs almost always need a phase-transition argument; classification
       proofs need exhaustion).
-
-  + MEMBER-PATTERNS:
-      member[math-informal/exhaustion-as-theorem]                 # full / classification
-      member[math-informal/structural-obstruction-as-theorem]     # failure-mode
-      member[math-informal/split-into-cases]                      # dichotomy / classification
-      member[math-informal/structural-characterization]           # full description (new leaf)
-      member[math-informal/failure-mode-characterization]         # failure-regime (new leaf)
-      member[math-informal/complexity-classification]             # specific subtype (new leaf)
-
-  + EXEMPLAR-PAPERS:
-      exemplar[arxiv-2604.20815v1]   # Zarankiewicz sharp dichotomy
-      exemplar[arxiv-2604.20827v1]   # Entropic OT failure-mode
-      exemplar[arxiv-2604.20787v1]   # Exchange-number complexity
-      exemplar[arxiv-math/0603592v1] # KMS classification
-      exemplar[arxiv-math/0603593v1] # AFD outer-actions classification
 
   + NEXT-STEPS:
       next[Decide whether the characterization is full, partial / failure-mode, classification, or dichotomy.]

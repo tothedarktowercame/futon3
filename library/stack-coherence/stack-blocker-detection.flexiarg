@@ -7,10 +7,11 @@
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/ready-blocked-triage stack-coherence/evidence-ledger devmap-coherence/prototype-alignment-bridge]
 
-! conclusion:
+! conclusion: 
   scan devmaps for declared dependencies, inspect referenced dirs/tests/commits, and emit a blocker report for each clause: `blocked-by[...]`, `evidence[...]`, `status[ready/not-ready]`
 
   + context: You want to be able to track unmet dependencies between projects, prototypes and components by inspecting downstream artifacts, so lack of progress is clearly attributed to specific blockers.
+
   + IF:
     a futon layer or prototype declares prerequisites (“requires futon3 prototype 8”, “needs graph-memory adapter”), yet the downstream directory/README is still empty
 

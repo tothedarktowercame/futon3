@@ -5,7 +5,7 @@
 @style design-pattern
 @sigils [🚞/义]
 
-! conclusion:
+! conclusion: 
   Declare small Strategy protocols (`SummarisationStrategy/summarise`, `SchedulingStrategy/next-command`, `BackoffStrategy/next-delay`) and let the agent inject or swap concrete implementations at runtime. Configuration, prompts, or telemetry choose which strategy runs, and tests exercise strategies in isolation before the agent consumes them.
 
   + context: You are defining how an agent selects policies or moves.

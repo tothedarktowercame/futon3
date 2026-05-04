@@ -7,7 +7,7 @@
 @factor Keen investigation (dhammavicaya)
 @references [f6/bootstrap-loop f6/self-play-loop f6/graph-enhanced-evaluation]
 
-! conclusion:
+! conclusion: 
   Detect learning events by tracking when new technical terms appear in a user's
   contributions, then measure the causal effect of social interactions (answers,
   comments, corrections) on these events using an impulse-damping model.
@@ -15,6 +15,7 @@
   + context: You are measuring whether mathematical Q&A interactions cause learning,
     using the same method Corneli (2014, Chapter 6) applied to PlanetMath edit histories
     — now scaled to all of Stack Exchange using the 19,236-term NER kernel.
+
   + IF:
       Stack Exchange data dumps include full revision histories for every post, with
       timestamps. Each user has an observable vocabulary trajectory: the set of NER

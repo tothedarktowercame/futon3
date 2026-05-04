@@ -8,13 +8,16 @@
 @references [peripherals/surface-earns-inhabitation peripherals/constrained-execution-envelope aif/structured-observation-vector futon-theory/mission-lifecycle meta/baldwin-ratchet-defeats-darkroom futon-theory/baldwin-cycle ants/baseline-cyber-ant gauntlet/aif-as-environment-not-instruction math-informal/transport-across-isomorphism]
 
 ! conclusion: A peripheral is not just a constrained action space — it is a representational space that enables a learning loop. Inhabiting the peripheral generates the data that evolves the peripheral. If the peripheral is not inhabited, the loop is dead and the peripheral cannot improve.
+
   + context: You have an interface — an action arena in Ostrom's sense — where
     agents (or humans) do work. The work produces outcomes. You want both the
     work and the interface to get better over time.
+
   + IF:
     The interface is more than a passive display: it is a space where actions
     happen, outcomes are observed, and the relationship between action and
     outcome can be recorded.
+
   + HOWEVER:
     Effective action is not just "doing things in a space." It requires a
     learning loop: the agent acts, observes the result, and the observation
@@ -22,6 +25,24 @@
     must move from the action space into a representation that can reshape
     future behavior. Without this transport, the agent acts but does not
     learn, and the interface affords but does not evolve.
+
+    + FAILURE-MODES:
+      - Data-starved loop: the peripheral exists but nobody uses it, so no
+        evidence accumulates and the designer has nothing to work with.
+        This is the most common failure and the hardest to diagnose because
+        the peripheral looks correct on paper.
+      - Representation without transport: the peripheral captures data but
+        the data never reaches the designer (or the glacial loop). Frames
+        accumulate in SQLite but nobody queries them. Evidence is logged
+        but never reviewed.
+      - Evolution without inhabitation feedback: the designer changes the
+        peripheral based on theory rather than usage data. The changes may
+        be correct but are ungrounded — they solve imagined problems rather
+        than observed ones.
+      - Upsampling instability: the peripheral reshapes itself faster than
+        the agent can adapt, creating a moving target. The learning loop
+        needs damping, not just speed.
+
   + THEN:
     Recognize that a peripheral is exactly the representational space where
     this transport happens. The peripheral is not merely a constrained
@@ -78,6 +99,7 @@
     does not enter the peripheral in the first place. The surface must
     earn inhabitation (see: peripherals/surface-earns-inhabitation) or the
     entire Baldwin loop is starved of data at the source.
+
   + BECAUSE:
     The symmetry between agents and humans reveals the pattern. When
     Claude bypasses the proof peripheral to one-shot tool calls, and when
@@ -98,38 +120,26 @@
     condition for the Baldwin loop. A peripheral with perfect design but
     poor surface is like a genotype with perfect fitness in a niche that
     the organism never enters: theoretically optimal, actually inert.
+
     + evidence: M-repl-wins-over-cli (futon3c, 2026-03-29): interrupt
       did not work, tool calls were opaque, streaming hijacked the cursor.
       Joe used the CLI instead. No evidence was logged, no frames were
       captured, no data was available to improve the REPL. Fixing the
       basics was not UI work — it was reopening the Baldwin loop by making
       inhabitation possible.
+
     + evidence: M-apm-solutions (futon3c, 2026-03-29): Claude-1 was given
-      the proof peripheral but one-shot every problem without entering the
-      cycle. No phase transitions were recorded, no validation occurred,
-      no evidence accumulated for improving the cycle. The peripheral
-      existed but generated no data because it was not inhabited.
+        the proof peripheral but one-shot every problem without entering the
+        cycle. No phase transitions were recorded, no validation occurred,
+        no evidence accumulated for improving the cycle. The peripheral
+        existed but generated no data because it was not inhabited.
+
     + evidence: futon2 AIF ants: cyberant programs evolved foraging
-      strategies in a parallel representation space. The ants had to
-      actually forage (inhabit the environment) for the programs to have
-      data to evolve against. Ants that did not forage contributed nothing
-      to the evolutionary loop.
-  + FAILURE-MODES:
-    - Data-starved loop: the peripheral exists but nobody uses it, so no
-      evidence accumulates and the designer has nothing to work with.
-      This is the most common failure and the hardest to diagnose because
-      the peripheral looks correct on paper.
-    - Representation without transport: the peripheral captures data but
-      the data never reaches the designer (or the glacial loop). Frames
-      accumulate in SQLite but nobody queries them. Evidence is logged
-      but never reviewed.
-    - Evolution without inhabitation feedback: the designer changes the
-      peripheral based on theory rather than usage data. The changes may
-      be correct but are ungrounded — they solve imagined problems rather
-      than observed ones.
-    - Upsampling instability: the peripheral reshapes itself faster than
-      the agent can adapt, creating a moving target. The learning loop
-      needs damping, not just speed.
+        strategies in a parallel representation space. The ants had to
+        actually forage (inhabit the environment) for the programs to have
+        data to evolve against. Ants that did not forage contributed nothing
+        to the evolutionary loop.
+
   + NEXT-STEPS:
     - Ensure every peripheral captures structured data (frames, events,
       evidence) as a side effect of inhabitation, not as an extra step.

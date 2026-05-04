@@ -11,12 +11,22 @@
   ;; This pattern produces identical behavior to :aif species
 }
 
-! conclusion:
+@status [status[draft] evidence[futon2/doc/stack-baseline.md]]
+
+
+
+
+
+
+
+
+! conclusion: 
   Treat the baseline cyber-ant as a narratable instance of the Futon2 AIF loop:
   its observation ABI, predictive-cycle trace, hunger dynamics, and policy harness
   are all frozen so Futon5 can lift the behaviour into an operator.
 
   + context: You are turning the Futon2 AIF loop into a portable pattern asset for Futon5.
+
   + IF:
     You want a generated agent to behave exactly like today’s handcrafted AIF
     ants, including mode hysteresis, hunger/tau coupling, and softmax tilts.
@@ -35,10 +45,6 @@
     Once the narrative and fixtures exist as pattern assets, Futon5 can attach a
     `:cyber/baseline` operator that emits an AIF config identical to Futon2’s
     defaults, making cyber-ants “pattern flashed” twins of the current species.
-
-  + STATUS:
-    status[draft]
-    evidence[futon2/doc/stack-baseline.md]
 
   + NEXT-STEPS:
     next[Bind this description to a Futon5 operator signature that exports the

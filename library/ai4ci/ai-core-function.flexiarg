@@ -6,13 +6,15 @@
 @allow-new-claims false
 @factor Keen investigation (dhammavicaya)
 @references [hdm/outline-first-detail-later hdm/human-machine-dialogue stack-coherence/evidence-ledger library/ai4ci/project-summary-core]
+@status [status[blocked] evidence[library/hdm/outline-first-detail-later.flexiarg:1] evidence[library/hdm/human-machine-dialogue.flexiarg:1] evidence[library/ai4ci/project-summary-core.flexiarg:1] blocked-by[ai4ci/annotation-pilot]]
 
-! conclusion:
+! conclusion: 
   AI is most useful in this project as a probe for surfacing candidate
   mid-level reasoning cues already present in mathematical exposition, not
   as a generator of new proofs.
 
   + context: You are defining the specific role AI should play in the AI4CI pipeline so it augments human annotation without inventing proofs.
+
   + IF:
     Worked mathematical solutions already mix formal derivations with
     explanatory phrases that gesture toward motivations, subgoals, and
@@ -36,13 +38,6 @@
     that every retained explanation has a traceable record and a human
     steward, turning dispersed expository text into candidate reasoning
     scaffolds that future training-oriented AI could build on.
-
-  + STATUS:
-    status[blocked]
-    evidence[library/hdm/outline-first-detail-later.flexiarg:1]
-    evidence[library/hdm/human-machine-dialogue.flexiarg:1]
-    evidence[library/ai4ci/project-summary-core.flexiarg:1]
-    blocked-by[ai4ci/annotation-pilot]
 
   + NEXT-STEPS:
     next[Stand up the human-in-the-loop annotation pilot that uses AI to propose cue–step links and records reviewer decisions as structured provenance.]

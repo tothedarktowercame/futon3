@@ -6,11 +6,13 @@
 @tone formal-analytic
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/evidence-ledger storage/identity-uniqueness]
+@status [status[proposed] evidence[holes/missions/M-futon1a-evidence.md#L96] evidence[holes/missions/M-futon1a-evidence.md#L134]]
 
-! conclusion:
+! conclusion: 
   if you want flexible external IDs but also unique identity, coerce to UUIDs and reject duplicate external mappings before write
 
   + context: futon1 enforced UUID IDs and external-id uniqueness to prevent duplicates.
+
   + IF:
     you want flexible external identifiers for integration
 
@@ -22,11 +24,6 @@
 
   + BECAUSE:
     ambiguous externals created duplicate entities and long-term drift
-
-  + STATUS:
-    status[proposed]
-    evidence[holes/missions/M-futon1a-evidence.md#L96]
-    evidence[holes/missions/M-futon1a-evidence.md#L134]
 
   + NEXT-STEPS:
     next[Define the external-id namespace rules and conflict handling.]

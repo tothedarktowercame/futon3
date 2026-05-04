@@ -6,11 +6,13 @@
 @tone formal-analytic
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/evidence-ledger storage/rapid-debugging]
+@status [status[proposed] evidence[holes/missions/M-futon1a-evidence.md#L116] evidence[holes/missions/M-futon1a-evidence.md#L140]]
 
-! conclusion:
+! conclusion: 
   if you want strict invariants but also operational resilience, pair enforcement with explicit repair and backfill pathways
 
   + context: futon1 expanded invariant enforcement and later added cleanup/backfill scripts to restore compliance.
+
   + IF:
     you want invariants to halt corruption
 
@@ -22,11 +24,6 @@
 
   + BECAUSE:
     invariants without repair pathways stall operations and increase downtime
-
-  + STATUS:
-    status[proposed]
-    evidence[holes/missions/M-futon1a-evidence.md#L116]
-    evidence[holes/missions/M-futon1a-evidence.md#L140]
 
   + NEXT-STEPS:
     next[Catalog repair scripts as part of the storage contract.]

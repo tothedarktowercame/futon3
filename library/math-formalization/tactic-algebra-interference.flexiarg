@@ -9,7 +9,7 @@
 @instantiates math-strategy/constraint-tension-resolution
 @examples a93A03 a00J01
 
-! conclusion:
+! conclusion: 
   When an algebraic identity is correct but `rw` disrupts the goal's
   type structure (filter, Tendsto, Set.mem), use `convert` or `simp_rw`
   to rewrite within the structure rather than replacing the whole goal.
@@ -20,9 +20,20 @@
     that break subsequent tactic application.
 
   + IF:
+      Obligation A: rewrite the algebraic term (rw fires correctly).
+      Obligation B: preserve the goal's filter/Tendsto structure for
+      subsequent tactics. These conflict when `rw` changes the goal
+      shape. The constraint-tension-resolution pattern says: name both
+      obligations, find a tactic that satisfies both. `convert` and
+      `simp_rw` are the alternative constructions that dissolve the
+      tension.
+
+  + IF:
       The goal has the form `Tendsto (fun n => f n) l (𝓝 target)` and
       you want to rewrite something inside `f n` or `target`, but `rw`
       at the top level changes the Tendsto structure.
+
+  + HOWEVER:
 
   + HOWEVER:
       `rw` is greedy — it replaces ALL occurrences, including ones inside
@@ -41,6 +52,11 @@
           for each convergent component, then reassemble with Tendsto
           arithmetic (Tendsto.add, Tendsto.sub, Tendsto.mul).
 
+    + LEAN:
+      api[real_inner_self_eq_norm_sq] api[real_inner_self_eq_norm_mul_norm]
+      tactic[simp_rw [...] → convert ... using 1 → ring]
+      tactic[have h1 := ... → have h2 := ... → exact h1.sub h2 |>.add ...]
+
   + BECAUSE:
       The tension is between algebraic truth (the identity holds) and
       tactic mechanics (the rewrite changes the goal shape). The informal
@@ -48,20 +64,6 @@
       for equals" is seamless on paper. In Lean, the substitution must
       respect the term structure, and `rw` doesn't always do what the
       mathematician intends.
-
-  + TENSION:
-      Obligation A: rewrite the algebraic term (rw fires correctly).
-      Obligation B: preserve the goal's filter/Tendsto structure for
-      subsequent tactics. These conflict when `rw` changes the goal
-      shape. The constraint-tension-resolution pattern says: name both
-      obligations, find a tactic that satisfies both. `convert` and
-      `simp_rw` are the alternative constructions that dissolve the
-      tension.
-
-  + LEAN:
-    api[real_inner_self_eq_norm_sq] api[real_inner_self_eq_norm_mul_norm]
-    tactic[simp_rw [...] → convert ... using 1 → ring]
-    tactic[have h1 := ... → have h2 := ... → exact h1.sub h2 |>.add ...]
 
   + NEXT-STEPS:
     next[Determine if the rewrite is inside a binder, in the target, or structural.]

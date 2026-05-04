@@ -6,16 +6,23 @@
 @style pattern
 
 ! conclusion: Treat internal state as a working hypothesis about the world, not ground truth.
+
   + context: An agent maintains beliefs about its environment, progress, and goals.
+
   + IF:
     The agent needs to act under uncertainty and update its understanding as new information arrives.
+
   + HOWEVER:
     Treating state as certain leads to brittleness when observations contradict expectations; the agent either ignores evidence or fails catastrophically.
+
   + THEN:
     Represent state as revisable hypotheses with associated confidence. When observations conflict with state, update the hypothesis rather than defending it. Track what would falsify current beliefs.
+
   + BECAUSE:
     Hypothesis-framed state makes the agent self-correcting: surprises trigger learning rather than denial or breakdown.
+
     + evidence: Fulab PSR forecasts in `src/futon3/fulab/pattern_competence.clj` and belief updates in `dev/lab-session-report.clj` treat state as revisable (prediction error, tau updates).
+
   + NEXT-STEPS:
     - Audit your agent's state representation for implicit certainty assumptions.
     - Add a "surprise" signal when observations diverge from expectations.

@@ -7,12 +7,21 @@
 @style pattern
 @references [futon-theory/error-hierarchy storage/error-layer-hierarchy]
 
-! conclusion: Every error in Agency must surface at the layer that caused it with enough context to diagnose; silent catch-and-swallow is never acceptable.
+! conclusion: Every error in Agency must surface at the layer that caused it with enough context to diagnose; silent catch-and-swallow is never acceptable.  A3-hierarchy: No exception handler in Agency may discard an error without either (a) returning an error result to the caller with layer, agent-id, and cause, or (b) executing an explicit recovery action that is logged with the original error context.
+
   + context: Agency code contains 20+ instances of (catch Exception _ nil) or (catch Exception e (log! ...) false) across service.clj, invokes.clj, and http.clj. Corrupted state files load as defaults without warning. Subprocess parsing errors are skipped. Forum and MUSN post failures are swallowed. The log function itself swallows its own errors.
+
   + IF:
     An operation fails — network error, parse error, subprocess crash, file corruption, timeout.
+
   + HOWEVER:
     The current pattern catches exceptions at every boundary and converts them to nil, false, or logged-but-forgotten entries. Callers cannot distinguish "succeeded with empty result" from "failed silently." Operators cannot diagnose issues because the error was absorbed three layers below.
+
+    + ANTI-PATTERNS:
+      - (catch Exception _ nil) — the canonical silent swallow
+      - (catch Exception e (log! "error" {:err (.getMessage e)}) false) — logged but not propagated
+      - {:throw-exceptions false} without (when-not (= 200 (:status resp)) ...) — HTTP error suppression
+
   + THEN:
     Apply the error hierarchy from futon-theory/error-hierarchy to Agency:
     1. Layer 0 (transport/durability): HTTP, WS, and file I/O errors surface as transport failures with status codes.
@@ -24,26 +33,19 @@
     a. Propagate the error with context (layer, agent-id, operation, cause), OR
     b. Handle it with an explicit recovery action that is itself logged.
     Catch-and-ignore is removed from the codebase entirely.
+
+    + ENFORCEMENT:
+      - grep for (catch Exception _) and (catch Throwable _) — zero allowed
+      - grep for {:throw-exceptions false} — each must be followed by status check
+      - grep for (log! ... false) — log-and-return-false is not error handling
+
   + BECAUSE:
     Silent errors make debugging impossible. When a standup fails and no agent responds, the operator has no trail: was the bell not sent? Was it sent but not received? Was it received but the agent crashed? Was the response generated but MUSN was down? Without layer-attributed errors, every failure investigation starts from zero.
 
-  + INVARIANT-STATEMENT:
-    A3-hierarchy: No exception handler in Agency may discard an error without either (a) returning an error result to the caller with layer, agent-id, and cause, or (b) executing an explicit recovery action that is logged with the original error context.
-
-  + ENFORCEMENT:
-    - grep for (catch Exception _) and (catch Throwable _) — zero allowed
-    - grep for {:throw-exceptions false} — each must be followed by status check
-    - grep for (log! ... false) — log-and-return-false is not error handling
-
-  + ANTI-PATTERNS:
-    - (catch Exception _ nil) — the canonical silent swallow
-    - (catch Exception e (log! "error" {:err (.getMessage e)}) false) — logged but not propagated
-    - {:throw-exceptions false} without (when-not (= 200 (:status resp)) ...) — HTTP error suppression
-
-  + EVIDENCE (repo history):
-    - 2026-01-31 466bc73 and 2026-01-31 b2fbb84: the "Make Agency Work Properly" mission is, in effect, a loud-failure postmortem: multiple user-visible failures were traced back to swallowed/blurred errors and identifier confusion that did not surface at the right layer.
-    - 2026-02-08 9acf154: standup redesign calls out the prior approach as lacking a reception guarantee; that is a loud-failure requirement (explicit failure when reception is not proven), not just a protocol preference.
-    - current src/futon3/agency/service.clj: load-agent-state catches EDN parse errors and returns nil, which collapses integrity failures into "empty state" with no operator-visible signal.
+    + EVIDENCE (repo history):
+      - 2026-01-31 466bc73 and 2026-01-31 b2fbb84: the "Make Agency Work Properly" mission is, in effect, a loud-failure postmortem: multiple user-visible failures were traced back to swallowed/blurred errors and identifier confusion that did not surface at the right layer.
+      - 2026-02-08 9acf154: standup redesign calls out the prior approach as lacking a reception guarantee; that is a loud-failure requirement (explicit failure when reception is not proven), not just a protocol preference.
+      - current src/futon3/agency/service.clj: load-agent-state catches EDN parse errors and returns nil, which collapses integrity failures into "empty state" with no operator-visible signal.
 
   + NEXT-STEPS:
     - evidence: count all silent catch blocks in agency/ directory; target is zero

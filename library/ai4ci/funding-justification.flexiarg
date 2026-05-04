@@ -6,14 +6,16 @@
 @allow-new-claims false
 @factor Keen investigation (dhammavicaya)
 @references [repository-transition/job-argument repository-transition/transformation-engine stack-coherence/evidence-ledger]
+@status [status[blocked] evidence[library/repository-transition/job-argument.flexiarg:1] evidence[library/repository-transition/transformation-engine.flexiarg:1] blocked-by[ai4ci/budget-sheet]]
 
-! conclusion:
+! conclusion: 
   A sub-£50k request is proportional because the work is confined to
   methodological evaluation—annotation, AI-assisted suggestion and human
   review, and seminars—built on existing infrastructure rather than new
   platforms.
 
   + context: You are justifying the budget scale by tying spend to concrete, auditable pilot activities.
+
   + IF:
     Job-argument and transformation-engine patterns already describe how to
     cost short bursts of research that leverage existing institutional and
@@ -33,12 +35,6 @@
     Reviewers need to see that the funds unlock a focused test of the
     reasoning-layer hypothesis, not an open-ended attempt to build a new
     platform.
-
-  + STATUS:
-    status[blocked]
-    evidence[library/repository-transition/job-argument.flexiarg:1]
-    evidence[library/repository-transition/transformation-engine.flexiarg:1]
-    blocked-by[ai4ci/budget-sheet]
 
   + NEXT-STEPS:
     next[Draft the budget sheet that links each cost line to a concrete artefact (annotation hours, seminar sessions, reporting) and cite it in the EoI.]

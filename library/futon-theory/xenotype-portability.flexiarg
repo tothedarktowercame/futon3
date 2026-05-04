@@ -6,8 +6,9 @@
 @tone analytic-foundational
 @factor Keen investigation (dhammavicaya)
 @references [futon-theory/four-types futon-theory/baldwin-cycle futon-theory/interface-loop]
+@references-extra ["Xenotype portability enables: Same patterns drive different layers" "Evidence accumulation: Xenotype improvements benefit all interfaces" "Proof paths: Xenotype instantiation is itself a traceable operation"]
 
-! conclusion:
+! conclusion: 
   The xenotype makes Baldwin cycles themselves portable. The same
   generate-select-compress skeleton can be reused at different interfaces,
   turning cross-layer gain from accidental tuning into replicable structure.
@@ -16,54 +17,50 @@
     history. Introducing xenotype means the Baldwin cycle itself becomes a
     transplantable structure, applicable across different substrates.
 
-  + XENOTYPE-COMPONENTS:
-    A xenotype provides three portable mechanisms:
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + EXAMPLE-XENOTYPE:
+      VariationalSearch xenotype:
+      - Generator: Sample from prior, apply variation operator
+      - Selector: Score against loss function + invariant checks
+      - Compressor: Gradient-based or symbolic simplification
 
-    1. GENERATOR: Proposes variants within constraints
-       - Given exotype, produce candidate genotype changes
-       - Examples: mutation operators, variation samplers, rule combiners
+      Applicable to: CA rules, API parameters, schema migrations, etc.
 
-    2. SELECTOR: Scores variants against evidence/invariants
-       - Given phenotype outcomes, rank candidates
-       - Examples: fitness functions, invariant checkers, metric comparers
+    + PORTABILITY-ACROSS-LAYERS:
+      Same adapt→assimilate→canalize module works at:
+      - CA rule layer (generate rule variants, select by behavior, compress)
+      - Message bus layer (generate routing variants, select by throughput)
+      - Data schema layer (generate schema variants, select by query perf)
+      - UI/command layer (generate interaction variants, select by usability)
 
-    3. COMPRESSOR: Extracts rules/patterns from success
-       - Given successful variants, produce minimal genotype
-       - Examples: pattern miners, rule simplifiers, invariant tighteners
+    + TRANSPLANTATION-PROTOCOL:
+      To apply xenotype X at interface I:
+      1. Instantiate X.generator with I's exotype constraints
+      2. Bind X.selector to I's success metrics
+      3. Connect X.compressor to I's genotype representation
+      4. Run Baldwin cycle with X driving generate-select-compress
 
-  + PORTABILITY-ACROSS-LAYERS:
-    Same adapt→assimilate→canalize module works at:
-    - CA rule layer (generate rule variants, select by behavior, compress)
-    - Message bus layer (generate routing variants, select by throughput)
-    - Data schema layer (generate schema variants, select by query perf)
-    - UI/command layer (generate interaction variants, select by usability)
+    + WHY-XENOTYPE-MATTERS:
+      Without xenotype: Each interface reinvents adaptation machinery
+      With xenotype: One adaptation skeleton, many instantiations
 
-  + TRANSPLANTATION-PROTOCOL:
-    To apply xenotype X at interface I:
-    1. Instantiate X.generator with I's exotype constraints
-    2. Bind X.selector to I's success metrics
-    3. Connect X.compressor to I's genotype representation
-    4. Run Baldwin cycle with X driving generate-select-compress
+      The xenotype is why "learning to learn" is possible - the learning
+      mechanism itself becomes portable structure.
 
-  + WHY-XENOTYPE-MATTERS:
-    Without xenotype: Each interface reinvents adaptation machinery
-    With xenotype: One adaptation skeleton, many instantiations
+    + XENOTYPE-COMPONENTS:
+      A xenotype provides three portable mechanisms:
 
-    The xenotype is why "learning to learn" is possible - the learning
-    mechanism itself becomes portable structure.
+      1. GENERATOR: Proposes variants within constraints
+         - Given exotype, produce candidate genotype changes
+         - Examples: mutation operators, variation samplers, rule combiners
 
-  + RELATIONSHIP-TO-FUTON-THEORY:
-    - Xenotype portability enables: Same patterns drive different layers
-    - Evidence accumulation: Xenotype improvements benefit all interfaces
-    - Proof paths: Xenotype instantiation is itself a traceable operation
+      2. SELECTOR: Scores variants against evidence/invariants
+         - Given phenotype outcomes, rank candidates
+         - Examples: fitness functions, invariant checkers, metric comparers
 
-  + EXAMPLE-XENOTYPE:
-    VariationalSearch xenotype:
-    - Generator: Sample from prior, apply variation operator
-    - Selector: Score against loss function + invariant checks
-    - Compressor: Gradient-based or symbolic simplification
-
-    Applicable to: CA rules, API parameters, schema migrations, etc.
+      3. COMPRESSOR: Extracts rules/patterns from success
+         - Given successful variants, produce minimal genotype
+         - Examples: pattern miners, rule simplifiers, invariant tighteners
 
   + BECAUSE:
     The xenotype names why cross-layer gains compound. Without it, each

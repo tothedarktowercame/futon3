@@ -6,10 +6,11 @@
 @references [futon-theory/proof-path futon-theory/stop-the-line]
 @theory-grounding [A1(Auditability) A2(Attributable) I6(Compositional-closure)]
 
-! conclusion:
+! conclusion: 
   If you want validation and durability to be meaningful, require execution to emit a registered artifact record with stable identifiers and provenance.
 
   + context: "Something happened" is not enough; we need an artifact we can point to.
+
   + IF:
     you want later gates to validate outcomes and persist evidence
 
@@ -21,4 +22,3 @@
 
   + BECAUSE:
     artifact identity is the join-key that makes PSR→PUR→PAR compositional
-

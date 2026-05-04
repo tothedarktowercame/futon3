@@ -7,7 +7,7 @@
 @factor Discernment (paññā)
 @references [f6/negative-space-duality f6/bootstrap-loop]
 
-! conclusion:
+! conclusion: 
   Mathematical text introduces variables through scoped bindings (Let, Define,
   Assume) that create nested contexts. Tracking these scope chains gives agents
   awareness of what is "in play" at each point in a proof.
@@ -15,6 +15,7 @@
   + context: You are building scope detection for mathematical NER, distinguishing
     global entities (named theorems, definitions) from local bindings (variables
     introduced for a specific proof or argument).
+
   + IF:
       Mathematical reasoning relies on Let-binding chains: "Let X be a topological
       space. Let f: X → Y be continuous. Assume X is compact." Each binding

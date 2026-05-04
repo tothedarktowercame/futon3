@@ -9,7 +9,7 @@
 @instantiates math-informal/transport-across-isomorphism
 @examples a00J01
 
-! conclusion:
+! conclusion: 
   When the mathematical proof lives in one type (ℝ) but the Mathlib API
   operates in another (ℝ≥0∞), wire through the directed coercion chain
   rather than trying to isomorphism-transport.
@@ -21,8 +21,17 @@
     finiteness at ℝ≥0→ℝ≥0∞).
 
   + IF:
+      The informal pattern (transport-across-isomorphism) says "prove in the
+      easy setting and transport." But the coercion chain is not an isomorphism,
+      so transport is not free. The tension: mathematical convenience (work in ℝ)
+      vs API reality (goal is in ℝ≥0∞). The amelioration: make the bridge a
+      named, reusable tactic sequence, not a per-proof ad-hoc construction.
+
+  + IF:
       Your real-valued result needs to be used in an ENNReal/NNReal context,
       and the coercion chain applies (the quantities are nonneg and finite).
+
+  + HOWEVER:
 
   + HOWEVER:
       Unlike transport-across-isomorphism, you cannot freely move results
@@ -40,6 +49,11 @@
           directly in ℝ≥0∞ instead. Sometimes the Mathlib API has a parallel
           version (e.g., ENNReal.rpow vs Real.rpow) that avoids the bridge.
 
+    + LEAN:
+      api[ENNReal.ofReal] api[ENNReal.toReal] api[NNReal.coe_le_coe]
+      api[ENNReal.ofReal_le_ofReal] api[ENNReal.toReal_le_toReal]
+      tactic[rw [ENNReal.ofReal...] → exact ... → simp [ne_top_of_lt]]
+
   + BECAUSE:
       Lean's type system enforces the distinction between ℝ, ℝ≥0, and ℝ≥0∞
       that informal mathematics elides. The coercion bridge is the price of
@@ -47,18 +61,6 @@
       step is a named lemma (ENNReal.ofReal_le_ofReal, NNReal.coe_le_coe,
       ENNReal.toReal_le_toReal). The mathematical insight is in ℝ; the
       engineering is in the bridge.
-
-  + TENSION:
-      The informal pattern (transport-across-isomorphism) says "prove in the
-      easy setting and transport." But the coercion chain is not an isomorphism,
-      so transport is not free. The tension: mathematical convenience (work in ℝ)
-      vs API reality (goal is in ℝ≥0∞). The amelioration: make the bridge a
-      named, reusable tactic sequence, not a per-proof ad-hoc construction.
-
-  + LEAN:
-    api[ENNReal.ofReal] api[ENNReal.toReal] api[NNReal.coe_le_coe]
-    api[ENNReal.ofReal_le_ofReal] api[ENNReal.toReal_le_toReal]
-    tactic[rw [ENNReal.ofReal...] → exact ... → simp [ne_top_of_lt]]
 
   + NEXT-STEPS:
     next[Identify which type the mathematical proof lives in.]

@@ -7,7 +7,7 @@
 @factor Keen investigation (dhammavicaya)
 @references [math-informal/estimate-by-bounding math-informal/numerical-scout]
 
-! conclusion:
+! conclusion: 
   When a pure algebraic method is too slow and a pure numerical method isn't rigorous,
   combine them: use numerical computation to locate, exact arithmetic to certify.
 
@@ -28,6 +28,15 @@
       root is too far from the true root for sign determination), the method must detect this
       and fall back rather than produce a wrong answer.
 
+    + FAILURE-MODES:
+        - Double roots: if two roots are very close, the numerical step may merge them and the
+          sign-change count will be wrong. Mitigation: compare numerical root count with exact
+          Sturm count on a COARSE interval first.
+        - Coefficient explosion: the exact evaluation at a rational test point may involve very
+          large integers. Mitigation: choose simple test points (small-denominator rationals).
+        - False separation: numerical noise places a test point on the wrong side of a root.
+          Mitigation: use exact arithmetic for the test point evaluation, not floating-point.
+
   + THEN:
       1. Use fast numerical computation (numpy, LAPACK, floating-point) to compute approximate
          answers: root locations, eigenvalues, sign patterns.
@@ -43,21 +52,12 @@
       is fast but approximate. The hybrid avoids the worst of both: fast location + cheap
       certification = rigorous result at numerical speed.
 
-  + FAILURE-MODES:
-      - Double roots: if two roots are very close, the numerical step may merge them and the
-        sign-change count will be wrong. Mitigation: compare numerical root count with exact
-        Sturm count on a COARSE interval first.
-      - Coefficient explosion: the exact evaluation at a rational test point may involve very
-        large integers. Mitigation: choose simple test points (small-denominator rationals).
-      - False separation: numerical noise places a test point on the wrong side of a root.
-        Mitigation: use exact arithmetic for the test point evaluation, not floating-point.
-
-  + EVIDENCE:
-      P4 n=4 Case 2 (futon6, Feb 2026): Sturm's theorem on a degree-70 polynomial with
-      100+ digit integer coefficients ran for 4 hours without completing (polynomial GCD
-      bottleneck). The hybrid method: numpy.roots for approximate root locations (O(n³),
-      milliseconds), then exact sympy.Rational evaluation at midpoints between consecutive
-      roots (O(n) evaluations, 0.2s total). Same rigour as Sturm. 72,000x speedup.
+    + EVIDENCE:
+        P4 n=4 Case 2 (futon6, Feb 2026): Sturm's theorem on a degree-70 polynomial with
+        100+ digit integer coefficients ran for 4 hours without completing (polynomial GCD
+        bottleneck). The hybrid method: numpy.roots for approximate root locations (O(n³),
+        milliseconds), then exact sympy.Rational evaluation at midpoints between consecutive
+        roots (O(n) evaluations, 0.2s total). Same rigour as Sturm. 72,000x speedup.
 
   + NEXT-STEPS:
     next[Identify the bottleneck in the exact method.]

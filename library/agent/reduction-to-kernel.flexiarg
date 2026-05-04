@@ -7,7 +7,7 @@
 @factor Keen investigation (dhammavicaya)
 @references [math-informal/structural-obstruction-as-theorem math-informal/exhaustion-as-theorem]
 
-! conclusion:
+! conclusion: 
   Reduce a complex open problem to the smallest possible missing lemma with explicit
   hypotheses, then record it as a named conjecture. The reduction itself is proved work;
   the named conjecture becomes a precise handoff target.
@@ -27,6 +27,14 @@
       unless you have proved that X actually implies the desired conclusion. Also: the
       kernel should be genuinely minimal — if it contains unnecessary hypotheses or can
       be split into independent parts, simplify further.
+
+    + FAILURE-MODES:
+        - False reduction: the kernel doesn't actually imply the conclusion. Prove the
+          reduction rigorously.
+        - Over-specified kernel: too many hypotheses, some unnecessary. Simplify until each
+          hypothesis is used in the reduction proof.
+        - Under-specified kernel: the kernel is true but insufficient. Check that the
+          reduction covers all cases.
 
   + THEN:
       1. Formulate the missing lemma with numbered hypotheses (H1, H2, ...) and a
@@ -48,26 +56,18 @@
       is still valuable because it converts "hard problem" into "hard problem minus
       everything tractable."
 
-  + FAILURE-MODES:
-      - False reduction: the kernel doesn't actually imply the conclusion. Prove the
-        reduction rigorously.
-      - Over-specified kernel: too many hypotheses, some unnecessary. Simplify until each
-        hypothesis is used in the reduction proof.
-      - Under-specified kernel: the kernel is true but insufficient. Check that the
-        reduction covers all cases.
+    + EVIDENCE:
+        P6 epsilon-light subsets (futon6, Feb 2026): the full proof (650+ lines) was reduced
+        to GPL-H — a single operator-valued averaging statement with 4 explicit hypotheses
+        (H1: light edges, H2: core regularity, H3: barrier-valid prefix, H4: residual size)
+        and one conclusion (min_v ‖Y_t(v)‖ ≤ θ). A sharper reduction showed that L2* alone
+        (score control) implies the theorem, without needing L3 (drift control). Named
+        conjecture + proved reduction + 2353 trajectory numerical evidence.
 
-  + EVIDENCE:
-      P6 epsilon-light subsets (futon6, Feb 2026): the full proof (650+ lines) was reduced
-      to GPL-H — a single operator-valued averaging statement with 4 explicit hypotheses
-      (H1: light edges, H2: core regularity, H3: barrier-valid prefix, H4: residual size)
-      and one conclusion (min_v ‖Y_t(v)‖ ≤ θ). A sharper reduction showed that L2* alone
-      (score control) implies the theorem, without needing L3 (drift control). Named
-      conjecture + proved reduction + 2353 trajectory numerical evidence.
-
-      P7 lattices with 2-torsion (futon6, Feb 2026): the S obligation was reduced to a
-      single lattice-existence question: do arithmetic uniform lattices in Isom(H^{2k+1})
-      contain order-2 rotational involutions? This is a number-theoretic question
-      independent of the topology/surgery machinery.
+        P7 lattices with 2-torsion (futon6, Feb 2026): the S obligation was reduced to a
+        single lattice-existence question: do arithmetic uniform lattices in Isom(H^{2k+1})
+        contain order-2 rotational involutions? This is a number-theoretic question
+        independent of the topology/surgery machinery.
 
   + NEXT-STEPS:
     next[Formulate the missing lemma with explicit hypotheses.]

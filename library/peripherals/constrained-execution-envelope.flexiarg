@@ -8,12 +8,15 @@
 @references [agent/scope-before-action peripherals/surface-earns-inhabitation peripherals/inhabitation-feeds-evolution futon-theory/mission-lifecycle gauntlet/aif-as-environment-not-instruction gauntlet/umwelt-not-architecture]
 
 ! conclusion: A peripheral is a constrained execution envelope — a space where the actions available are exactly the actions that lead to the goal, not a space where distracting actions are forbidden.
+
   + context: An agent (or human) wants to achieve something they believe they
     know how to do: prove a theorem, formalize a solution, write a module,
     complete a review. They have the skills and the intention.
+
   + IF:
     The agent has the capability to achieve the goal and a reasonable plan
     for reaching it.
+
   + HOWEVER:
     In an unconstrained environment, the agent doesn't actually achieve it.
     It gets distracted — checking dependencies, refactoring adjacent code,
@@ -21,6 +24,22 @@
     producing work that is vaguely related but not the thing. The
     environment affords too many actions, and the ones that feel productive
     in the moment are not the ones that close the goal.
+
+    + FAILURE-MODES:
+      - Envelope too tight: the agent cannot do the work because the
+        available actions do not cover the actual requirements. The fix is
+        to widen the envelope, not to abandon it.
+      - Envelope too loose: the available actions include tangential work
+        that feels productive. The fix is to narrow the affordances, not
+        to add prohibitions.
+      - Envelope as punishment: the agent perceives the constraint as
+        distrust rather than structure. This happens when the envelope is
+        framed negatively ("you are not allowed to...") rather than
+        positively ("your tools are...").
+      - Envelope without exit: the agent completes the work but cannot
+        leave the peripheral. Every envelope needs an exit condition that
+        is as clear as its entry condition.
+
   + THEN:
     Set up a constrained execution envelope — a peripheral — in which the
     available actions are exactly the actions that lead to the goal.
@@ -41,6 +60,7 @@
     note issues, approve or request changes. A deploy peripheral offers:
     run the tests, check the gates, push the artifact. Each envelope is
     shaped to its goal.
+
   + BECAUSE:
     Forbidding distracting actions does not work. A prohibition is a
     negative statement that requires the agent to hold both the forbidden
@@ -63,6 +83,7 @@
     inhabits this envelope and does the work. The constraint is not felt
     as restriction but as structure — the way a sonnet form is not a
     restriction on poetry but a structure that produces it.
+
     + evidence: M-apm-solutions (futon3c, 2026-03-29): Claude-1 was asked
       to solve prelim problems using the proof peripheral cycle (observe →
       propose → execute → validate → classify). Instead it one-shot each
@@ -72,20 +93,7 @@
       environment let it take the path of least resistance. The peripheral
       existed but was not the execution envelope — it was a suggestion
       alongside an open field of alternatives.
-  + FAILURE-MODES:
-    - Envelope too tight: the agent cannot do the work because the
-      available actions do not cover the actual requirements. The fix is
-      to widen the envelope, not to abandon it.
-    - Envelope too loose: the available actions include tangential work
-      that feels productive. The fix is to narrow the affordances, not
-      to add prohibitions.
-    - Envelope as punishment: the agent perceives the constraint as
-      distrust rather than structure. This happens when the envelope is
-      framed negatively ("you are not allowed to...") rather than
-      positively ("your tools are...").
-    - Envelope without exit: the agent completes the work but cannot
-      leave the peripheral. Every envelope needs an exit condition that
-      is as clear as its entry condition.
+
   + NEXT-STEPS:
     - For each goal type (proof, review, deploy, exploration), define
       the minimal set of actions that constitute the productive path.

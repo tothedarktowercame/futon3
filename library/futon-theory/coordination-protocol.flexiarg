@@ -4,21 +4,30 @@
 @tokipona kulupu jan
 @truth 人
 
-+ CONTEXT:
+
+
+
+
+
+
+
+
+
+  + CONTEXT:
     When multiple agents work on related missions, they need coordination.
     Without explicit handoff protocols, work is duplicated, reviews are
     skipped, and context is lost between sessions.
 
-+ IF:
+  + IF:
     Multiple agents are assigned to a mission, or a mission requires
     review by another agent.
 
-+ HOWEVER:
+  + HOWEVER:
     Agents may be asynchronous (different sessions), have different
     capabilities (Claude vs Codex), or use different communication
     channels (Agency, git, files).
 
-+ THEN:
+  + THEN:
     Apply the ping-pong coordination protocol:
 
     HANDOFF-CYCLE:
@@ -50,25 +59,25 @@
     - If no response > 1 hour: try alternate channel
     - If channel broken: fall back to file-based communication
 
-+ BECAUSE:
+    + AGENCY-INTEGRATION:
+      When Agency is available:
+      - Register with agent-id via WebSocket
+      - Respond to pages with invoke-fn
+      - Bell for async notifications
+      - Page for sync requests
+
+      When Agency unavailable:
+      - Use git-based ping-pong
+      - Leave messages in designated files
+      - Poll for changes
+
+  + BECAUSE:
     - Explicit handoffs prevent work from falling through cracks
     - Review gates ensure quality
     - Multiple channels provide resilience
     - Escalation prevents infinite waiting
 
-+ AGENCY-INTEGRATION:
-    When Agency is available:
-    - Register with agent-id via WebSocket
-    - Respond to pages with invoke-fn
-    - Bell for async notifications
-    - Page for sync requests
-
-    When Agency unavailable:
-    - Use git-based ping-pong
-    - Leave messages in designated files
-    - Poll for changes
-
-+ NEXT-STEPS:
+  + NEXT-STEPS:
     - Verify communication channel is working
     - Establish handoff protocol with collaborating agent
     - Document current milestone and next expected action

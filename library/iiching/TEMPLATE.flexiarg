@@ -13,16 +13,22 @@
 @futon5-lift-path futon5/resources/exotype-xenotype-lift.edn
 
 ! conclusion: Exotype XYZ is encoded; program and lift semantics pending futon5 mapping.
+
   + context: Canonical 8-bit encoding for exotype XYZ.
+
   + IF:
     You need an explicit, searchable exotype record.
+
   + HOWEVER:
     Program, lift, and parameter mappings are not yet recorded here.
+
   + THEN:
     Use the encoding fields for identification and attach futon5 semantics
     when available.
+
   + BECAUSE:
     Explicit encodings make exotype knowledge inspectable and comparable.
+
   + NEXT-STEPS:
     - blocked-by[futon5-exotypes]
 

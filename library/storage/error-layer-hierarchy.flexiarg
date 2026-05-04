@@ -6,11 +6,13 @@
 @tone analytic-neutral
 @factor Keen investigation (dhammavicaya)
 @references [stack-coherence/evidence-ledger]
+@status [status[proposed] evidence[holes/missions/M-futon1a-evidence.md#L58] evidence[holes/missions/M-futon1a-evidence.md#L19]]
 
-! conclusion:
+! conclusion: 
   surface errors at the layer that caused them; never allow upstream layers to mask lower-layer failures
 
   + context: authorization and invariants needed explicit guards to prevent silent bypass.
+
   + IF:
     errors are raised at a higher layer than the failure source or are generalized
 
@@ -22,11 +24,6 @@
 
   + BECAUSE:
     futon1 fixes show that missing guardrails and mixed error ownership led to drift
-
-  + STATUS:
-    status[proposed]
-    evidence[holes/missions/M-futon1a-evidence.md#L58]
-    evidence[holes/missions/M-futon1a-evidence.md#L19]
 
   + NEXT-STEPS:
     next[Define the layer-to-error-code table for futon1a and require it in API handlers.]

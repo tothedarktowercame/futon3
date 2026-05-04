@@ -7,7 +7,7 @@
 @factor Keen investigation (dhammavicaya)
 @references [futon-theory/proof-path futon-theory/stop-the-line futon-theory/agent-contract]
 
-! conclusion:
+! conclusion: 
   The event protocol defines the canonical sequence of events in a futon
   proof path: CLOCK_IN -> OBSERVE -> PROPOSE_CLAIM -> APPLY_CHANGE ->
   VERIFY -> INVARIANT_CHECK -> PROOF_COMMIT -> CLOCK_OUT.
@@ -16,59 +16,61 @@
     preconditions and postconditions. The protocol ensures every change follows
     the same defensible path from intent to durable proof.
 
-  + EVENT-SEQUENCE:
-    1. CLOCK_IN: Session begins, agent declares identity and intent
-       - Precondition: None
-       - Postcondition: Session ID assigned, timestamp recorded
+  + IF: The applicability scope of the pattern (see substructure).
+    + MINIMUM-VIABLE:
+      Not every session needs all events. A5 (Minimum Viable Events) allows:
+      - Read-only session: CLOCK_IN -> OBSERVE -> CLOCK_OUT
+      - Quick fix: CLOCK_IN -> OBSERVE -> APPLY -> VERIFY -> COMMIT -> CLOCK_OUT
+      The protocol is the maximum; subsets are valid for simpler operations.
 
-    2. OBSERVE: Read state, gather evidence, build understanding
-       - Precondition: Clocked in
-       - Postcondition: Observations logged, state snapshot available
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + BRANCHING:
+      - On VERIFY failure: Return to OBSERVE, spawn correction path
+      - On INVARIANT failure: Return to OBSERVE, stop-the-line protocol
+      - Session can be abandoned at any point before PROOF_COMMIT
 
-    3. PROPOSE_CLAIM: Agent declares what will change and why
-       - Precondition: Observations made
-       - Postcondition: Claim recorded (not yet applied)
+    + EVENT-SEQUENCE:
+      1. CLOCK_IN: Session begins, agent declares identity and intent
+         - Precondition: None
+         - Postcondition: Session ID assigned, timestamp recorded
 
-    4. APPLY_CHANGE: Execute the proposed change
-       - Precondition: Claim proposed, invariants passing
-       - Postcondition: Change applied to staging area
+      2. OBSERVE: Read state, gather evidence, build understanding
+         - Precondition: Clocked in
+         - Postcondition: Observations logged, state snapshot available
 
-    5. VERIFY: Confirm change matches claim
-       - Precondition: Change applied
-       - Postcondition: Verification result recorded
+      3. PROPOSE_CLAIM: Agent declares what will change and why
+         - Precondition: Observations made
+         - Postcondition: Claim recorded (not yet applied)
 
-    6. INVARIANT_CHECK: All invariants must pass
-       - Precondition: Verification passed
-       - Postcondition: All invariants confirmed or violations identified
+      4. APPLY_CHANGE: Execute the proposed change
+         - Precondition: Claim proposed, invariants passing
+         - Postcondition: Change applied to staging area
 
-    7. PROOF_COMMIT: Durable commit with evidence chain
-       - Precondition: All invariants passed
-       - Postcondition: Change durably committed, tx-id assigned
+      5. VERIFY: Confirm change matches claim
+         - Precondition: Change applied
+         - Postcondition: Verification result recorded
 
-    8. CLOCK_OUT: Session ends, proof path complete
-       - Precondition: Proof committed or session abandoned
-       - Postcondition: Session closed, duration recorded
+      6. INVARIANT_CHECK: All invariants must pass
+         - Precondition: Verification passed
+         - Postcondition: All invariants confirmed or violations identified
 
-  + BRANCHING:
-    - On VERIFY failure: Return to OBSERVE, spawn correction path
-    - On INVARIANT failure: Return to OBSERVE, stop-the-line protocol
-    - Session can be abandoned at any point before PROOF_COMMIT
+      7. PROOF_COMMIT: Durable commit with evidence chain
+         - Precondition: All invariants passed
+         - Postcondition: Change durably committed, tx-id assigned
 
-  + MINIMUM-VIABLE:
-    Not every session needs all events. A5 (Minimum Viable Events) allows:
-    - Read-only session: CLOCK_IN -> OBSERVE -> CLOCK_OUT
-    - Quick fix: CLOCK_IN -> OBSERVE -> APPLY -> VERIFY -> COMMIT -> CLOCK_OUT
-    The protocol is the maximum; subsets are valid for simpler operations.
+      8. CLOCK_OUT: Session ends, proof path complete
+         - Precondition: Proof committed or session abandoned
+         - Postcondition: Session closed, duration recorded
+
+    + IMPLEMENTATION:
+      `futon3/lab/session.clj`: Session lifecycle events
+      `futon3/lab/ws.clj`: Event dispatch and logging
+      `futon1/core/`: Layer-specific event handling
 
   + BECAUSE:
     Unstructured change is unauditable change. The protocol ensures that
     every mutation has a traceable path. When something breaks, the event
     log tells the story of how we got here.
-
-  + IMPLEMENTATION:
-    `futon3/lab/session.clj`: Session lifecycle events
-    `futon3/lab/ws.clj`: Event dispatch and logging
-    `futon1/core/`: Layer-specific event handling
 
   + NEXT-STEPS:
     next[Implement event logging for all protocol phases]

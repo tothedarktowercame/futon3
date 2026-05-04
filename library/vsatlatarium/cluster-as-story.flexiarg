@@ -5,12 +5,14 @@
 @style design-pattern
 @sigils [🌌/文]
 @references [vsatlas/connected-story-world vsatlas/non-destructive-relational-layers]
+@status [status[ready] "evidence[VSATLATARIUM two-level constellation — golden spiral + spring layout]"]
 
-! conclusion:
+! conclusion: 
   Represent each story as a spatial cluster of scene nodes so internal
   narrative structure is visible alongside inter-story connections.
 
   + context: You are designing a visualisation that must convey both within-story structure and between-story relationships at a glance. This does not apply to single-story views where internal navigation is sufficient.
+
   + IF:
     Viewers need to grasp both the shape of individual stories and how
     they relate to one another.
@@ -30,10 +32,6 @@
     Two-level clustering preserves the part-whole relationship that
     makes a story more than a bag of scenes, while still exposing the
     relational fabric that VSATLAS adds across stories.
-
-  + STATUS:
-    status[ready]
-    evidence[VSATLATARIUM two-level constellation — golden spiral + spring layout]
 
   + NEXT-STEPS:
     next[Test legibility with 50+ stories to find the threshold where clusters overlap.]

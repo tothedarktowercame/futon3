@@ -1,12 +1,19 @@
 @arg software-design/adapter-pattern
 @title Adapter Pattern
 @sigils [👴/申]
+
 ! conclusion: 以轉接器在不改動既有介面的前提下完成整合。
+
   + context: A component must integrate with a dependency that has an incompatible interface.
+
   + if: You want to avoid rewriting the dependency or polluting core logic with conversions.
+
   + however: Directly sprinkling translation code across callers causes duplication and brittle coupling.
+
   + then: Create a dedicated adapter that translates between the expected interface and the dependency’s interface, and keep the adapter as the only integration boundary.
+
   + because: A single translation boundary isolates change and preserves clean contracts.
+
   + next-steps:
     - Add contract tests around the adapter to prove compatibility and catch upstream changes.
     - evidence-shape: {:adapter/name :string, :adapter/src :string, :adapter/dst :string, :adapter/tests [:string]}

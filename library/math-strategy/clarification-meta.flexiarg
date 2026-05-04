@@ -7,7 +7,7 @@
 @factor Patience (kṣānti)
 @references [math-strategy/non-circularity-check math-strategy/hypothesis-category-check]
 
-! conclusion:
+! conclusion: 
   This is a meta-tag, not a strategic pattern. It marks papers (or pattern
   applications) where the `(context, tension, move)` triple cannot be
   meaningfully decomposed: either the paper is genuinely single-axis (its
@@ -46,6 +46,18 @@
          (per M-superpod-mark3 R-1 / slot-distinctness enforcement).
       3. Do NOT lump (a) and (b) together as "clarification."
 
+    + EXEMPLAR-PAPERS:
+        exemplar[arxiv-2604.20820v1]   # S-Prime principle (collapsed in pilot)
+        exemplar[arxiv-2604.20788v1]   # E-measure (collapsed in pilot)
+        exemplar[arxiv-math/0603594v1] # Galois group rings (collapsed in pilot)
+
+    + MEMBER-PATTERNS:
+        # No member patterns; this is a meta-tag, not a family of strategic
+        # moves. Papers tagged `clarification-meta:single-axis` are *not*
+        # exemplars of a strategic pattern; they are exemplars of a paper-shape.
+        # If a paper genuinely fits a leaf in another family, it should be
+        # tagged there, not here.
+
   + BECAUSE:
       Per the IFR's "well-specified" property in
       `M-pattern-application-diagnostic.md`, distinct slots are required by
@@ -53,18 +65,6 @@
       single-axis (a structural fact about the corpus) or *reveals* that the
       slot extractor failed (a structural fact about the pipeline). Treating
       both as the same hides both signals.
-
-  + MEMBER-PATTERNS:
-      # No member patterns; this is a meta-tag, not a family of strategic
-      # moves. Papers tagged `clarification-meta:single-axis` are *not*
-      # exemplars of a strategic pattern; they are exemplars of a paper-shape.
-      # If a paper genuinely fits a leaf in another family, it should be
-      # tagged there, not here.
-
-  + EXEMPLAR-PAPERS:
-      exemplar[arxiv-2604.20820v1]   # S-Prime principle (collapsed in pilot)
-      exemplar[arxiv-2604.20788v1]   # E-measure (collapsed in pilot)
-      exemplar[arxiv-math/0603594v1] # Galois group rings (collapsed in pilot)
 
   + NEXT-STEPS:
       next[Determine whether the collapse is single-axis (declare reason) or extraction failure (re-run).]

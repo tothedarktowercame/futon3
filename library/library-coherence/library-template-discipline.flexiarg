@@ -4,10 +4,11 @@
 @keywords template, lint, metadata, structure, format, CI, validate, standard, machine-readable
 @references [devmap-coherence/prototype-alignment-embedding stack-coherence/readme-devmap-sync]
 
-! conclusion:
+! conclusion: 
   enforce a canonical template across every `library/**.flexiarg`: lint for required metadata, forbid renaming the clause markers, and add CI that refuses commits lacking `@sigils`, `@references`, or the standard clause order; every pattern added to `resources/pattern_store.edn` must cite the lint status
 
   + context: You are standardising flexiarg structure so tooling can ingest and validate the canon.
+
   + IF:
     devmaps and flexiarg libraries already follow a template (meta tags, IF/HOWEVER/THEN/BECAUSE, sigils)
 

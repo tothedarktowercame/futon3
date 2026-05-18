@@ -1,0 +1,8 @@
+[Unit]
+Description=Run weekly phase-5 satisficing-signature refresh
+ConditionPathExists=%h/code/futon3/scripts/run_phase_5_signatures_all_labels.sh
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/code/futon3
+ExecStart=%h/code/futon3/scripts/run_phase_5_signatures_all_labels.sh

@@ -1,0 +1,11 @@
+[Unit]
+Description=Schedule weekly phase-5 satisficing-signature refresh
+
+[Timer]
+OnCalendar=Sun 03:15
+Persistent=true
+AccuracySec=10m
+Unit=phase-5-signatures-weekly.service
+
+[Install]
+WantedBy=timers.target

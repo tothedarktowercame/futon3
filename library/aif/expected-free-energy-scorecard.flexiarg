@@ -27,3 +27,5 @@
     - DONE: Add :aif/g-terms key to psr-template in pattern_competence.clj. Evidence: src/futon3/fulab/pattern_competence.clj
     - Store term breakdowns in PSR :forecast section.
     - Add (flip-analysis psr) that computes which term delta would have changed the chosen pattern.
+    - DONE (UKRN v3 HO-05, 2026-05-14): four-term scorecard scaffold at notebooks/ukrn_v3_efe.clj score-candidate-belief-aware (lines 102-135). Terms: risk-term-v3, ambiguity-term-v3, pattern-efe (placeholder until HO-06), priority-alignment. Smoke output shows {risk 0.167, ambiguity −4.32, pattern-efe −0.1, priority-alignment 0.030, G −4.28}. Term breakdown emitted as a map, not just a scalar. See companion patterns aif/belief-aware-risk-term and aif/predictive-entropy-as-ambiguity for the term-form specifications. Evidence: handoffs/v3_runner/validation_HO-05.md.
+    - Practice refinement (HO-05): when terms have very different natural scales (e.g. linear-space risk ~0.1 vs log-space ambiguity ~−4), the λ weights in `G = λ_p · risk + λ_e · ambiguity + ...` must be calibrated to balance magnitudes. Surface the scale-asymmetry as a calibration concern, not as a bug.

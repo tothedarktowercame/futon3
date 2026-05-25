@@ -1,0 +1,45 @@
+@flexiarg system-coherence/tag-evidence-by-timescale
+@title Tag Evidence by Timescale When the Section Mixes Rates
+@keywords timescale, evidence, fast, slow, glacial, I3, AIF, synthesis, mixed-undeclared
+@audience system designers, working-paper drafters, reviewers
+@tone technical
+@style pattern
+@references [system-coherence/argument-as-coverage-checklist-vs-system-specification system-coherence/argue-empirically-not-persuasively writing-coherence/meta-lede]
+
+
+! conclusion: Evidence presented in prose has a timescale.  Quarterly returns are fast (the value can move within months); focus-group findings are medium (slow to gather, stable over a year or two); sector surveys are slow (a one-time snapshot, expensive to refresh); institutional identities and funder structures are glacial.  When a section synthesizes evidence from multiple timescales without distinguishing them, the reader cannot tell whether a verdict is fast-changing news that will look different next quarter or long-settled state that has been stable for years.  Synthesis sentences in particular ("this evidence tells us X") are I3 failure sites because they fuse co-equal sentence-level claims across timescales the underlying evidence does not actually treat as co-equal.
+
+  + context: Working papers often draw on evidence from several timescales at once — quarterly delivery counts (fast), a one-time priorities survey (slow), a recent indicators pilot (medium), the sector's standing identity (glacial).  Each is legitimate; together they form the evidence base.  But the prose tends to flatten them, presenting each as one more sentence-level fact alongside the others.  The flattening is most acute in the synthesis paragraph at the end of a section — where the writer needs to draw conclusions and reaches for "in short, this evidence tells us..." or similar, fusing facts that were measured on different timescales into one verdict the reader can't decompose.  This is the section-scope analogue of `argument-as-coverage-checklist`'s timescale-flattening failure mode, but localised to a specific synthesis sentence rather than the argument-spec as a whole.
+
+  + IF:
+    The pattern operates on the axis: synthesis legibility ↔ timescale fidelity.
+    Irreducible: either each evidence claim carries enough timescale context for the reader to know how fast its truth-value moves, or the synthesis fuses incompatible rates into a verdict that hides what it stands on.
+
+  + HOWEVER:
+    Real costs: adding timescale context to every evidence claim is wordy and pedagogical; the reader doesn't need "(fast, quarterly returns, 2024–26)" on every sentence.  The cost is paid where the timescales actually matter — at synthesis points, at moments of cross-timescale comparison, and where a slow-changing fact and a fast-changing fact bear on the same conclusion.
+    Active dynamic: the pull toward flattening is strongest in the synthesis paragraph.  The writer wants to draw a single conclusion ("delivery happened at network scale but didn't settle practice change"); the underlying evidence supports multi-rate sub-conclusions ("delivery, measured fast, happened at scale; measurability of practice change, measured medium, is mixed; further evidence, on a longer horizon, is expected").  The fast verdict is honest about what the fast evidence shows; the synthesis fuses it with medium and longer-horizon notes and the reader can't tell which part is settled and which is still moving.
+
+    + FAILURE-MODES:
+      - Timescale-flatten in synthesis: "this evidence tells us X" where the evidence is multi-rate.
+      - Temporal ambiguity: a finding is named without saying when it was measured ("a final report reports a mixed verdict") so the reader can't tell if it's settled or fresh.
+      - Historical-and-current coordinated by "and": a slow fact and a fast fact joined as if co-equal claims, when they actually belong to different epistemic categories.
+      - Forward-looking promise without timescale: "various efforts are expected to contribute evidence" without saying on what horizon, by when, with what update cadence.
+      - In short opener: "In short" announcing a synthesis without typing the synthesis's evidence — most common failure surface.
+
+  + THEN: Tag evidence by timescale at the points where the timescales matter.  Pick one composition based on the section's structure.
+    + COMPOSITIONS:
+      (1) Inline timescale tags.
+          Augmentation schema: {:tag-locations <list of clauses to tag> :tag-format (:parenthetical | :prefix | :em-dash)}
+          Entity types produced: :timescale-tagged-claim
+          Effect: each relevant claim gains a small parenthetical or prefix tagging its timescale.  Light-touch; preserves the existing structure.
+      (2) Reorder by timescale.
+          Augmentation schema: {:order :fast-first | :slow-first | :recent-first :grouping-style <by-paragraph | by-sentence>}
+          Entity types produced: :timescale-grouped-section
+          Effect: paragraphs (or sentences) reorder so all fast evidence groups together, then medium, then slow.  Heavier rewrite; produces strong visual segregation of timescales.
+      (3) Distinguish in synthesis.
+          Augmentation schema: {:synthesis-target <span-or-entity-id> :timescale-types-distinguished <list of timescales>}
+          Entity types produced: :timescale-tagged-synthesis-claim, optionally :forward-looking-evidence-note (separate sentence for forward-looking content)
+          Effect: the synthesis sentence is rewritten to name each timescale's contribution separately rather than fusing them.  Most appropriate when the body of the section is well-organised but the closing synthesis fuses what the body distinguished.
+
+    + CHECK:
+      Engaged when every synthesis sentence and every cross-evidence comparison names the timescales of the evidence it draws on; a skeptical reader can tell which part of the verdict will look different next quarter and which has been stable for years.  Failing when "this evidence tells us X" or "in short, X" coordinates evidence from incompatible rates without distinguishing them.

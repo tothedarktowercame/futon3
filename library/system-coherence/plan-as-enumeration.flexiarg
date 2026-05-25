@@ -1,0 +1,41 @@
+@flexiarg system-coherence/plan-as-enumeration
+@title A Plan Is Not a List of Activities
+@keywords plan, planning, enumeration, milestone, calendar, decision-point, roadmap, commitment, abandon-condition
+@audience system designers, mission authors, working-paper drafters, programme leads, reviewers
+@tone technical
+@style pattern
+@references [system-coherence/name-the-decision-before-the-framework system-coherence/bind-open-questions-to-closure-mechanisms system-coherence/turn-design-into-checks writing-coherence/triad-inflation writing-coherence/structural-style-inconsistency]
+
+
+! conclusion: A plan must name the commitments that are load-bearing, the decision points that branch the path, the observations that license the next step, and the conditions that would cause abandonment.  A calendar-paginated bullet list ("Q0–Q4", "five-year roadmap", "monthly checkpoints") satisfies the form of a plan because succession-in-time already imposes ordering — but ordering is not planning, it is chronology.  When the count of items becomes the perceptual unit, the decisions inside the plan are hidden in plain sight: five paragraphs of equal weight, of which perhaps two carry the actual branching.
+
+  + context: Plans accumulate calendar granularity because the calendar is the easiest scaffold.  "Q0–Q4" satisfies the demand for a structured forward-look without forcing the writer to identify which moments are commitments and which are operational consequences of earlier commitments.  The compulsion to enumerate every calendar slot reads as planning thoroughness, but it conceals which slots carry the real decisions.  The reader cannot tell what would change if Q1 went badly versus if Q4 went badly — the items look symmetric on the page.  Adjacent surface failure: when several sections in the same document carry counted headings ("Five operational roles", "Three things change each quarter", "Five quarterly milestones", "Five projects, five offer domains"), the rhetorical pattern itself becomes the perceptual unit; see `writing-coherence/triad-inflation` and `writing-coherence/structural-style-inconsistency` for the prose-side surface of the same compulsion.
+
+  + IF:
+    The pattern operates on the axis: activity-enumeration <-/-> decision-structure visibility.
+    Irreducible: either the plan exposes its decision points and commitments as the primary structural units, or it presents activities in temporal order and asks the reader to infer where the decisions sit.
+
+  + HOWEVER:
+    Real costs: exposing the decision structure makes the plan look smaller than the bullet-count suggests.  "Two decisions across a year, with operational consequences in between" reads less impressive than "five quarterly milestones", and stakeholders who expect a roadmap may read the smaller shape as under-planned.  Naming decisions also exposes the gap between commitment and contingency — many "milestones" turn out to be operational consequences of earlier decisions rather than independent commitments — and that exposure is uncomfortable because it concentrates risk into a small number of identifiable moments rather than diffusing it across the calendar.
+    Active dynamic: the pull toward enumeration recurs every time a plan must be presented to a stakeholder, funder, or board that expects a "roadmap"; the calendar grid is a ready-made format and asking "what are the decisions?" is harder than asking "what happens in each quarter?".  The pull also recurs when the writer is themselves uncertain about the decision structure and the calendar offers a way to look planned without having to commit to which moments are the pivots.
+
+    + FAILURE-MODES:
+      - Calendar-imposed granularity: the plan has N items because the year has N quarters or the programme has N months, not because there are N structural beats.  The grid's count, not the design's, sets the item count.
+      - Decision points disguised as milestones: a milestone like "first evaluation wave" hides the actual decision (which instrument; centralised vs distributed configuration; how findings get fed back) inside an activity label.
+      - Activity-not-commitment confusion: each bullet describes what gets *done* in a period without saying what is being *committed to* by doing it, so the reader cannot tell what failing to do it would forfeit.
+      - Symmetric-list flatness: every period gets a paragraph of equal weight, so the reader cannot tell which periods are pivots and which are operational.  This is the form-side analogue of `triad-inflation`'s third-item freeloading, but at the section level.
+      - Abandon-condition silence: no statement of "if X has not happened by Y, we [pause / re-plan / stand down]"; the plan reads as if every step is presumed to succeed.
+      - To-do-list-as-plan: a flat list of items presented as a plan, with no internal structure beyond enumeration — common in "follow-on work", "what we would still need", "future directions" sections.  Distinguishable from a genuine plan by the absence of any decision, observation, or abandon condition attached to any item.
+      - Pre-announced count in heading: a section titled "Five quarterly milestones" or "Seven checks" or "Three walks" tells the reader that the count is what is being delivered, which is a tell that the items are not load-bearing in their own right.
+
+  + THEN: Subordinate the calendar to the decision structure.
+    + COMPOSITIONS:
+      (1) Locate the decision points first: identify the moments where the plan branches (continue / vary / stand down; centralised / distributed; bridge / self-finance) and make those the primary structural units.  The number of decision points sets the plan's shape, not the number of calendar slots.
+      (2) Demote calendar to scaffold: keep dates where they constrain (deadlines, dependencies, evidence-readiness) but stop treating every calendar slot as a planning unit.  Quarters without a decision or commitment can be summarised in a sentence rather than given a paragraph.
+      (3) Distinguish commitments from activities: "we will hire a Training Manager by Q0" is a commitment; "the Training Manager schedules trainers" is an activity that follows from the commitment.  Plans should foreground commitments; activities follow.
+      (4) Couple decisions to closure mechanisms: each decision point names its evidence-input and its possible outcomes.  This is `bind-open-questions-to-closure-mechanisms` operating inside the plan rather than around it.
+      (5) State abandon conditions: each commitment that could plausibly fail names what would trigger reconsideration.  A plan with no abandon conditions is a plan that has not been pressure-tested.
+      (6) Title for the decision, not the count: section headings should name what argumentative or operational work the section does, not how many items follow.  "Quarterly milestones through to the Year-2 decision" beats "Five quarterly milestones".
+
+    + CHECK:
+      Engaged when the plan's decision-and-commitment structure is recoverable in fewer items than the calendar-grid version would suggest, and when each decision point has a named evidence-input, possible outcomes, and an abandon condition.  Failing when the count of bullets matches the count of calendar slots (or, more generally, when the item count is a property of the presentation format rather than of the underlying design).  Diagnostic question: if a reader saw only the section's headings and item counts, could they tell which moments are pivots and which are operational consequences?  If no, the plan is operating as an enumeration.

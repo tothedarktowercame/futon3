@@ -1,0 +1,40 @@
+@flexiarg aif/experimental-comparison-of-EFE-variants
+@title Experimental Comparison of EFE Term Variants
+@sigils [⚖️/由]
+@audience fulab agents, aif implementers, AIF designers facing under-determined term choices
+@tone technical
+@style pattern
+
+! conclusion: When an EFE term admits multiple theoretically defensible formulations, build them all as alternative implementations and let the validation harness select between them empirically. Do not pre-commit to one variant on a priori grounds.
+
+  + context: Some EFE terms (notably pattern-EFE-style terms, info-gain composites, multi-source ambiguity terms) have multiple plausible operationalisations. Each variant is defensible in theory; differences may be small in some operational regimes and large in others. Picking one a priori risks choosing wrong; picking by argument risks rationalising rather than measuring.
+
+  + IF:
+    You want the agent's term implementation to be the one that *demonstrably* discriminates candidates well, recovers known operational outcomes well, and produces traceable comparisons. You want the choice between variants to be a finding, not a stance.
+
+  + HOWEVER:
+    A common failure mode is to implement one variant, get plausible outputs, and ship — never knowing whether a different variant would have produced sharper discrimination or better operational fidelity. Another failure mode is to argue for one variant in committee, ship, and discover months later that an unselected variant would have been substantively different.
+
+  + THEN:
+    Build the competing variants as alternative implementations:
+      - Pure functions with matching signatures: `(variant-A candidate state opts)`, `(variant-B candidate state opts)`, etc.
+      - Selectable via opt: e.g. `:term-variant :a` / `:b` / `:c` in the EFE scorer.
+      - Default variant is whichever is closest to the prior baseline (e.g., the v2 pre-rewrite term form) — preserving backward compat under regression testing.
+    Then run the validation harness against each variant under matched configurations. Named validation properties (recovery-rate, headline-outcome, discrimination-score, computational-cost) constitute the comparison metrics. Pick the winner empirically.
+
+  + BECAUSE:
+    Building both is cheap relative to the operational risk of picking wrong. Building both also forces the architectural seam (dispatch on opt; matching signatures) which is itself a valuable clean-up. And the *delta* between variants — measured per-run, per-config — is a finding worth reporting even after one variant wins.
+
+  + NEXT-STEPS:
+    - Identify the variants. Name them explicitly (R-1, R-2, R-3 in the literature-style; or by characterising principle, e.g. capability-gated vs probabilistic-compound).
+    - Implement each as a pure function with the same signature shape. Add a dispatcher at the EFE scorer (single `:term-variant` opt).
+    - Define comparison metrics in the validation harness:
+      - Recovery-rate against known classifications.
+      - Headline-outcome stability (does the variant change a paper's quantitative claims?).
+      - Candidate discrimination (G-spread across top-K; higher spread = more discriminating).
+      - Trajectory-class behaviour (do simulated trajectories show qualitative patterns correctly under each variant?).
+      - Computational cost (per-EFE-evaluation latency).
+    - Run the harness; pick the winner on the merits.
+    - **Term-set parity**: when comparing variants of one term within a larger EFE that has *other* terms (or other patterns the term aggregates over), preserve the larger term set across variants. If variant-A applies to 5 patterns and variant-B applies to 3 of those 5, the comparison is confounded by term-set drift, not just by variant semantics. Either both variants cover the full term set (extending the smaller variant to handle the missing terms gracefully, e.g. as a no-(D, A)-constraint case) or neither does.
+    - DONE (UKRN v3 HO-06, 2026-05-14): R-1 (capability-gated) and R-3 (compound capability-gate ∩ (D, A)-region) of pattern-EFE implemented at notebooks/ukrn_v3_efe.clj:117-127, 129-151. Dispatched via `:pattern-efe-variant` opt. Smoke comparison on a single high-band candidate: R-1 G = −4.28, R-3 G = −4.28 — meaningful 5% difference in the pattern-EFE component, small G-level difference. Term-set parity preserved: codex extended Joe's 5-pattern mapping to all 8 v2 patterns to keep comparison clean. HO-11 will run the empirical comparison across full headline + lesion configs. Evidence: handoffs/v3_runner/validation_HO-06.md.
+    - Practice: small per-tick differences in a single EFE term can compound across many ticks into large differences in trajectory outcomes — or they can wash out. Empirical comparison settles this; intuition doesn't.

@@ -1,10 +1,11 @@
 @flexiarg ukrns/design-state-lineage
 @title Design-State Lineage — Versioned Service-Design Changes (Implementation Pattern)
+@verdict early
 @keywords implementation-pattern, versioning, design-state, lineage, traceability, change-history, evidence-trace, fine-grained, coarse-grained
 @audience UKRN-S design, working-paper maintainers, institutions tracking service-state changes, funders auditing design history
 @tone operational
 @style implementation-pattern
-@references [ukrns/ARGUMENT ukrns/design-as-function-of-evidence ukrns/assumptions-commons ukrns/model-recompute-schedule ukrns/publication-cadence]
+@references [ukrns/design-as-function-of-evidence ukrns/assumptions-commons ukrns/model-recompute-schedule ukrns/publication-cadence]
 @ancestors ["ukrns/design-as-function-of-evidence (the main pattern this implements)" "ukrns/assumptions-commons (evidence provenance upstream)" "ukrns/model-recompute-schedule (rerun events upstream)" "ukrns/publication-cadence (canonical versions downstream)" "equity/contribution-pathways (commons accountability rationale)"]
 
 ! conclusion: A service that claims design updates as a function of evidence must be able to show, for any point in time, (a) the design state that was active then, (b) the evidence that produced it, and (c) the update-policy clause that authorised the update.  The service states which composition it is running on the axis between fine-grained versioning (every change versioned) and coarse-grained versioning (changes batched into versioned releases).  Every design-state change is versioned and traces to (evidence update identifier, policy clause).  The composition on the versioning axis is declared.  Past design states are reconstructible.

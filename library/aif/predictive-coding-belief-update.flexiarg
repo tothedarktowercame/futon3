@@ -1,0 +1,32 @@
+@flexiarg aif/predictive-coding-belief-update
+@title Predictive-Coding Belief Update with Variance Evolution
+@sigils [🌀/由]
+@audience fulab agents, aif implementers
+@tone technical
+@style pattern
+
+! conclusion: Update beliefs via predictive-coding (μ ← μ + α·Π·ε) and evolve variance with a sensor-variance floor so uncertainty stays meaningful.
+
+  + context: The agent receives an observation each tick and must integrate it into its belief state. The integration rule determines both mean trajectory and uncertainty trajectory.
+
+  + IF:
+    You want belief updates to be principled (Bayesian-shaped under Gaussian approximation), tunable (single learning rate; per-channel precision), and operationally robust (variance doesn't collapse to zero; doesn't blow up).
+
+  + HOWEVER:
+    Without an explicit update rule the agent either slams beliefs to each observation (over-trusts) or never moves them (over-anchors). Variance with no sensor-variance floor decays toward zero under any informative-observation history, killing the predictive-entropy term in EFE for later ticks.
+
+  + THEN:
+    Implement two coupled updates per tick:
+      - Mean: μ ← μ + α · Π · ε, where ε = observation − μ, Π is per-channel precision, α is learning rate.
+      - Variance: var ← (1−α)·var + α·(observation − new-μ)² + σ²_sensor, where σ²_sensor is the sensor's intrinsic variance floor.
+    The residual against the *new* mean (not the old mean) is what informs the variance update — this matches the moment-matched EWMA approximation of Bayesian update under Gaussian likelihood.
+
+  + BECAUSE:
+    The mean rule realises predictive coding (Friston et al.); the variance rule keeps belief uncertainty in a meaningful regime where ambiguity terms in EFE stay informative. σ²_sensor as a *configurable* parameter supports noiseless-mode sanity checks and sensitivity sweeps without recompilation.
+
+  + NEXT-STEPS:
+    - Implement update-mu as a pure function: (mu, observed-state, opts) → BeliefState. Take α, Π, σ²_sensor from opts with named defaults.
+    - Use observation − new-mean (post-update residual) in the variance term, not observation − old-mean. The shorthand can confuse handoff specs; cite the acceptance-criterion hand-calculation as source of truth.
+    - Floor variance at 0 explicitly via (max 0 (...)); under σ²_sensor > 0 the floor is rarely tested in practice but the explicit floor protects against pathological inputs.
+    - DONE (UKRN v3 HO-02, 2026-05-14): update-mu and free-energy implemented at notebooks/ukrn_v3_belief.clj:1-51. α=0.4, Π=1.0, σ²_sensor=0.02 defaults configurable via thresholds map. Verified across 8 hand-computed test cases. Evidence: handoffs/v3_runner/validation_HO-02.md.
+    - Validation: variance should shrink under low-prediction-error observations (test A4: var goes from 0.04 to 0.024 under perfect prediction and σ²=0); grow under surprise (test A3: var goes from 0.04 to 0.080 under ε=0.5 and σ²=0.02). Both tests should be in the validation harness for any new AIF implementation following this pattern.

@@ -1,0 +1,38 @@
+@flexiarg system-coherence/facet-before-aggregating
+@title Facet Before Aggregating
+@keywords facet, aggregation, heterogeneity, unit-of-analysis, comparison, like-with-like, denominator
+@audience system designers, mission authors, working-paper drafters, reviewers
+@tone technical
+@style pattern
+@references [system-coherence/correct-effect-claims-with-relevant-denominators system-coherence/argue-empirically-not-persuasively writing-coherence/scope-mush]
+
+
+! conclusion: When a measure aggregates across substantively different sub-categories — training topic, audience community, discipline, intervention type, recipient role — the aggregate measure conceals the actionable heterogeneity that the design recommendation actually depends on.  Effect claims and design prescriptions should be made at the facet level where the underlying causal story holds, and aggregated only when the aggregation is interpretively defensible.  Aggregating before faceting flatters the weaker case, ranks unlike entities as if they were comparable, and produces uniform recommendations across facets that need different interventions.
+
+  + context: Aggregate measures are easier to gather, easier to present, and easier to compare than facet-level ones.  A single number per institution feels orderly; a vector of numbers per institution feels messy.  But the orderliness is paid for in actionable lift: the design that follows from a flat per-institution number is necessarily blind to within-institution heterogeneity.  Two institutions with the same headline reach can have entirely different facet structures (5% reach in one community with strong uptake vs 40% reach in another with weak uptake), and any recommendation that treats them alike is silently betting that the facet structure does not matter.  When the rest of the document's evidence says it does, that bet is incoherent.
+
+  + IF:
+    The pattern operates on the axis: aggregate convenience <-/-> facet-level fidelity.
+    Irreducible: either the measure is genuinely homogeneous within the aggregate, or the aggregate is concealing facet-level structure that the design recommendation depends on.
+
+  + HOWEVER:
+    Real costs: faceting requires more data structure, more interpretive care, and longer analysis cycles.  It also exposes uncertainty that the aggregate hid.  Writers and analysts often resist faceting because aggregate numbers look cleaner and are easier to put into a slide.  But the cost of *not* faceting is paid downstream as recommendations that don't fit any actual sub-population.
+    Active dynamic: the slippage appears whenever a programme's reporting infrastructure was set up before the design recommendation was sharpened.  The reporting infrastructure produces aggregates because they were what the earlier purpose required.  When the design recommendation later turns on facet-level questions, the aggregates are pressed into service anyway.
+
+    + FAILURE-MODES:
+      - Aggregate-saturation conflation: a strong outcome in one facet plus a weak outcome in another are reported as a single average that flatters the weaker case and misrepresents the stronger.
+      - Like-with-unlike comparison: institutions or interventions are ranked on aggregates without checking whether their underlying facet populations are comparable; the ranking misleads.
+      - Facet-blind recommendation: the design's prescription is uniform across facets that need different interventions, because the aggregate cannot see them.
+      - Reporting-infrastructure inertia: the team continues to report at the aggregate level because that is what the existing template captures, even after the design recommendation has shifted to a facet-level question.
+      - Premature roll-up in dashboards: monitoring tooling collapses facet-level signals into a single index for display purposes, then that index becomes the operational measure.
+
+  + THEN: Facet the measure where the causal story differs; aggregate only after interpretive verification.
+    + COMPOSITIONS:
+      (1) Identify the relevant facets: which sub-categories does the design recommendation actually distinguish between?  Common candidates are intervention type, recipient population, discipline area, organisational sub-unit, or temporal phase.
+      (2) Restructure measurement at the facet level: data capture, reporting templates, and analysis units should carry facet tags from the point of capture.  Retrofitting aggregates after the fact is much harder than tagging at source.
+      (3) Make recommendations at the facet level: when the design's claim is "this works for X but not Y", state that explicitly rather than as a population-level average.  When the claim genuinely is population-level, defend why aggregation is interpretively warranted.
+      (4) Test aggregation defensibility: before rolling facet-level signals up to a single number, ask whether a reader would draw the same operational conclusion from the aggregate as from the facet-level data.  If not, the aggregate is hiding the actionable signal.
+      (5) Compose with denominator-discipline: facet-level reach claims still need facet-level denominators (per audience, per discipline) to carry effect claims.  Facet-before-aggregating and `correct-effect-claims-with-relevant-denominators` operate together: the first asks "what unit", the second asks "what scale".
+
+    + CHECK:
+      Engaged when measurement, reporting, and design recommendations operate at the facet level matching the causal story, and aggregation is reserved for cases where the homogeneity assumption can be defended.  Failing when the document presents aggregate numbers (per-institution reach, programme-wide attendance, sector-level satisfaction) without checking whether the facets within those aggregates would point to different recommendations.

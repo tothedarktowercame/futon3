@@ -1,66 +1,62 @@
 @flexiarg ukrns/measure-where-least-sure
-@title Measure Where You're Least Sure (or Where Attention Lives)
-@keywords value-of-information, VoI, credible-intervals, prior-predictive, saliency, measurement-wave, audit-drift, uncertainty-reduction, posterior, VoI-first, measurement-selection
+@title Measure Where Uncertainty Is Highest
+@verdict revised
+@keywords uncertainty-reduction, stakeholder-attention, indicator-capacity, evaluation-wave, measurement-selection, open-questions, hand-off-decisions
 @audience UKRN-S design, evaluators, Research England, trainer community
 @tone analytic-foundational
 @style pattern
-@references [ukrns/ARGUMENT equity/visible-impact ukrns/open-the-triangle ukrns/design-as-function-of-evidence]
+@references [equity/visible-impact ukrns/open-the-triangle ukrns/design-as-function-of-evidence]
 @ancestors ["UKRN WP draft-16-april §3 Pattern (prior predictive; credible intervals; top VoI targets; VoI vs saliency; explicit Tension/Composition/Check; paper baseline position favouring VoI-first)" "UKRN WP §4 'Where uncertainty lives, where attention lives' (VoI vs saliency contrast)" "T1 instrument (5 behaviour-change indicators; ethics approved)" "equity/visible-impact (monitoring-chain failure this design pattern answers at selection scale)" "Bayesian value-of-information theory (decision-theoretic foundation)" "Ostrom (1990) — monitoring chain across action arenas"]
 
-! conclusion: Value-of-information targets the widest credible intervals — the cells where a new observation would most update the design.  Stakeholder saliency targets profiles where institutional attention, funding scrutiny, or public narrative is already watching.  The axis between VoI and saliency recurs every measurement wave; the service states which principle (or which mix) is selecting the next wave's cells, and why.  No measurement wave is commissioned without an ex ante published statement of the selection principle and the cells chosen.  The principle is named (VoI, saliency, or a stated mix).  The credible-interval table is updated after the wave and used in the next selection.
+! conclusion: A service with limited evaluation capacity should measure where the next observation is most likely to matter.  Sometimes that means measuring where the evidence gap is biggest.  Sometimes it means measuring where board attention, funder attention, or sector attention is already concentrated.  The key discipline is to choose deliberately and to say which principle is selecting the next wave of work.  Measurement should not drift toward whatever is easiest, most flattering, or most familiar.
 
-  + context: The UKRN WP §3 (draft-16-april) prior predictive analysis produces 80% credible intervals across profile × stage cells, revealing where the population model is least sure and where a bounded measurement wave would compress uncertainty fastest.  A plausible alternative principle is saliency: measure where political attention is already focused, because success or failure there carries external validation or damage.  The two principles select overlapping but mostly-different top profiles.  The equity-domain visible-impact pattern diagnoses the monitoring-chain failure at institutional scale; this design pattern specifies the discipline under which service-level measurement is selected.
+  + context: The current paper makes two things clear.  First, some open-research indicators can already be measured reasonably well, while others still cannot.  Second, the wider sector conversation and funder cycle do not attend evenly to every topic, institution type, or signal.  Because evaluation capacity is bounded, UKRN Services cannot treat every possible question as equally urgent.  It needs a rule for deciding where the next piece of measurement effort goes.
 
   + IF:
-    The pattern operates on the axis: value-of-information targeting ↔ stakeholder saliency.
-    Irreducible: a single measurement cannot be simultaneously information-maximising and narrative-maximising at cells where the two rankings disagree.  The VoI top five (widest intervals at Stage 4) and the saliency top five (highest baseline P(multiplied)) overlap at most one profile.
+    The pattern operates on the axis: uncertainty reduction ↔ stakeholder attention.
+    Irreducible: the place where the service is least sure is not always the place where outside attention is already waiting.  A single wave of evaluation often has to choose which question it is trying to answer first.
 
   + HOWEVER:
-    Real costs: the two principles select different cells most of the time; both answer legitimate questions (VoI answers 'where will observation most update the model?'; saliency answers 'where will observation most carry in the institutional and public narrative?').
-    Active dynamic: the saliency map shifts over time (leadership changes, funding cycles, public scrutiny) while the VoI map shifts as the posterior updates.  What was salient last year may not be salient next year; what had a wide interval this cycle may be tight next cycle.  The axis does not resolve once.
+    Real costs: measuring where uncertainty is highest sharpens the design fastest, but it may miss the places where visible accountability is most needed.  Measuring where attention already sits may help with governance, legitimacy, and partnership, but it may tell the service little that it does not broadly know already.
+    Active dynamic: both maps move.  Uncertainty should shrink if the service is learning.  Attention should shift as sector priorities, funder cycles, and public pressures change.  So the selection rule cannot be fixed once and forgotten.
 
     + FAILURE-MODES:
-      - Audit drift: selection on what can be measured cheaply or what reassures (every profile equally)
-      - Success-story drift: selection on profiles where positive results are expected (reassurance)
-      - Convenience drift: same selection pattern cycle after cycle, no re-selection
-      - VoI without saliency: model-rational but politically invisible; insights no one reads
-      - Saliency without VoI: politically legible but model-redundant; nothing the prior didn't already predict
-      - Hidden mix: VoI and saliency mixed in selection but only one principle published; credibility cost when discovered
-      - Frozen prior: model claims never updated because the widest intervals never get measured
+      - Convenience drift: the same easy-to-reach settings are measured repeatedly because they are easy
+      - Reassurance drift: measurement is aimed mainly at places most likely to produce good news
+      - Uncertainty neglect: the service keeps talking confidently about areas it still has weak evidence on
+      - Attention neglect: the service learns things internally but cannot answer the questions external stakeholders actually ask
+      - Hidden mix: a wave is really selected on mixed grounds, but only one reason is published
+      - Measure-everything fiction: a bounded service pretends it can observe everything at once and ends up observing none of it well
 
-  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+  + THEN: Choose the selection principle for each wave before the work starts, and publish it.
     + COMPOSITIONS:
-      (1) Split budget: hold a budget for each principle — a VoI allocation that produces a bounded T1 wave at the widest-interval cells, and a saliency allocation that produces a second smaller wave at the most-watched cells, reporting both with their own logic.  Gives up total measurement reach to run both.
-      (2) VoI-only: choose VoI-only, justify publicly on uncertainty-reduction grounds, and accept the political risk of not measuring where attention sits.  Gives up saliency.
-      (3) Saliency-only: accept that the posterior will not tighten materially but measure where narrative weight is greatest.  Gives up model update.
-      The WP does not rank these, but the paper's own baseline position — as the analysis currently reads — favours VoI-first, because the programme's whole learning-system argument depends on the posterior updating.
+      (1) Uncertainty-first: use the wave mainly to tighten the weakest parts of the evidence base.  Gives up some immediate external legibility.
+      (2) Attention-first: use the wave mainly to answer the question that funders, partners, or member institutions are already pressing on.  Gives up some learning efficiency.
+      (3) Split wave: reserve part of the budget for the biggest evidence gaps and part for the most watched questions.  Gives up some reach in order to do both honestly.
+      These compositions are not ranked in the abstract.  The current paper leans toward uncertainty-first when the aim is to improve the design, but it also makes clear that attention cannot simply be ignored.
 
     + CHECK:
-      Engaged when: every T1 wave carries an explicit justification naming which cells were selected on which principle; the credible-interval table is updated after the wave and used in the next selection.
-      Failing when: measurement drifts toward audit (every profile measured equally, regardless of whether it would update belief); measurement drifts toward reassurance (only the already-succeeding profiles are sampled); selection principle is hidden or post-hoc.
+      Engaged when: each evaluation wave has a stated reason for selection; the service can say which open question or implementation decision the wave is meant to inform; the next wave reflects what the last one learned.
+      Failing when: measurement choices are made post hoc; the same terrain is measured repeatedly for convenience; or no one can explain why this wave happened here rather than somewhere else.
 
   + BECAUSE:
-    Value-of-information (Bayesian rationale): Where credible intervals are widest, the posterior will move most given a single observation.  A bounded budget produces the most model update when it is placed at those cells.  Given a prior predictive distribution and a cost budget, the utility of observation is non-uniform across cells, and VoI targeting is the policy that maximises expected information gain per unit cost.
+    Indicator capacity is uneven: The paper is explicit that some indicators are already tractable and some are not.  That means measurement discipline is not a luxury.  It is how the service avoids promising to demonstrate things it still cannot actually demonstrate.
 
-    Prior-not-posterior (epistemic humility): The population model is explicitly a prior.  VoI is what converts it into the next posterior.  Without directed measurement, the prior stays prior, and the claim 'this is what the landscape looks like' remains forever hypothetical.  The service's own commitments to being a learning system (ukrns/design-as-function-of-evidence) are idle without the measurement discipline that keeps the evidence base current.
+    Learning depends on selective observation: If evidence is supposed to shape design, then the service has to decide where an additional observation will change its judgement most.  Otherwise evaluation becomes diffuse activity rather than decision support.
 
-    Political realism (saliency rationale): Funders pay attention to specific profiles; institutions carry political weight that differs across the network; public narrative concentrates on visible successes and visible failures.  A service that ignores saliency entirely will produce measurement that no one notices; a service that measures only on saliency will produce measurement that no one trusts.  Saliency is legitimate; the point is to state when it is the principle of selection, not to dress it as something else.
+    External attention is real: Member institutions, funders, and partners do not care about all questions equally.  A service that never measures where scrutiny already sits may become internally coherent but externally unpersuasive.
 
-    Ostrom monitoring problem (equity/visible-impact link): The monitoring chain has too many links for the current governance to sustain.  Distributing measurement (cross-institutional peer evaluation, WP §4 Step 3) expands the chain's capacity.  But distribution without selection discipline spreads thinner across the landscape.  VoI concentrates distributed effort on the cells that will most update the model; saliency concentrates it on the cells where collective attention already sits.  Either is a disciplined distribution; unselected distribution is not.
-
-    Self-application: Publishing the selection principle is an act of making the service's own reasoning inspectable.  A reader who sees 'this wave was selected on VoI grounds, and here are the five widest intervals' can audit the reasoning in a way the reader of a post-hoc evaluation report cannot.
+    Governance benefit: Stating the selection principle before fieldwork makes the service's reasoning inspectable.  It allows institutions and partners to challenge not only the findings, but the choice of what was measured in the first place.
 
     Mechanic, in short:
-    Derived from UKRN WP draft-16-april §3's prior predictive analysis, VoI/saliency tension, and explicit Tension/Composition/Check structure.
-    Answers equity/visible-impact at service scale: the institutional 'cannot see its own effects' has a service-level counterpart, 'does not know where to look first'.
-    Mapped to the learning loop at the 'measure' step: after diagnosis and provisioning, the service commits to specific observations whose results will move the design state.
-    Deepened via the VoI vs saliency tension: the principle of selection is made a per-wave governance question rather than a hidden habit.
-    Axis framing follows paper-draft-16-april; real / irreducible / active defence and three named compositions are load-bearing; the paper's baseline VoI-first position is preserved.
-    Coordination requirement: Medium (service + profiles selected) rising to Very high when cross-institutional peer evaluation is the instrument.
+    Derived from the paper's distinction between what can currently be measured, where uncertainty still lives, and where sector attention already sits.
+    Answers the service-level version of the visible-impact problem: not just whether evidence exists, but where the service chooses to look next.
+    Mapped to the learning loop at the measure step: after diagnosis and provisioning, bounded evaluation effort is placed where it will matter most.
+    Coordination requirement: Medium, rising when a wave depends on distributed data collection across institutions.
 
   + NEXT-STEPS:
-    - For each planned measurement wave, publish the selection principle and the cells chosen before fieldwork begins
-    - Maintain the prior-predictive credible-interval table as a living artefact, updated after each wave
-    - State, for each wave, what observation would trigger a design update (link to ukrns/design-as-function-of-evidence)
-    - Where a mix is used, state the mix explicitly — e.g. 'three cells on VoI grounds + two cells on saliency grounds, because of the Research England attention to X'
-    - Allow trainers and institutions to contest the selection before the wave (ex ante contestation rather than ex post complaint)
+    - Publish, for each evaluation wave, whether it is mainly uncertainty-reducing, attention-facing, or a stated mix
+    - Tie each wave explicitly to one of the paper's open questions or implementation decisions
+    - Reassess the selection rule after each wave rather than repeating the same pattern by habit
+    - Keep a visible list of questions the service still cannot yet measure well, so silence is not mistaken for closure
+    - Use this pattern upstream of design revision, where evidence is meant to produce operational consequence

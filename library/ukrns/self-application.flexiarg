@@ -1,10 +1,11 @@
 @flexiarg ukrns/self-application
 @title Self-Application — The Artefact Instantiates Its Claim (Meta-Pattern)
+@verdict stale
 @keywords meta-pattern, self-application, artefact-as-instance, REPL, notebook-as-paper, form-as-claim, reproducibility, media-theory, recomputable, reflexivity
 @audience UKRN-S design, working-paper authors, readers who want to rerun, futon developers
 @tone analytic-foundational
 @style meta-pattern
-@references [ukrns/ARGUMENT ukrns/design-as-function-of-evidence ukrns/open-the-triangle ukrns/computation-as-exploration]
+@references [ukrns/design-as-function-of-evidence ukrns/open-the-triangle ukrns/computation-as-exploration]
 @ancestors ["UKRN WP draft-16-april (The reproducibility self-application section; the paper IS the instance)" "UKRN WP Annex B (reimplementation pointer; equations specified enough to reconstruct)" "assumptions-v2.edn (the declarative evidence file that the notebook consumes)" "notebooks/ukrn_population_model.clj (the computation)" "t4r/ REPL pattern library" "ukrns/design-as-function-of-evidence (the main pattern this meta-pattern instantiates at the artefact level)" "ukrns/open-the-triangle (the deposit character of the artefact)" "ukrns/computation-as-exploration (the epistemic stance the artefact carries)"]
 
 ! conclusion: A paper that argues for 'design as a function of evidence' and is itself a static, frozen PDF undermines its own claim by example.  The working paper is a notebook that loads the evidence file, recomputes the model, and emits the argument — so a reader with updated evidence can see the design shift.  Form instantiates claim.  The service states which composition it is running on the axis between static-artefact and instantiating-artefact.  The working paper is re-computable from a declarative evidence file and a documented computational environment.  Every published version states its evidence-file revision.  The artefact's lineage is preserved so a reader can see the history of argument shifts against evidence shifts.

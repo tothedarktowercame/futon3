@@ -1,0 +1,34 @@
+@flexiarg aif/decomposed-prediction-noise
+@title Decomposed Prediction Noise as Named Variance Contributions
+@sigils [🎨/由]
+@audience fulab agents, aif implementers, designers of predictive forward models
+@tone technical
+@style pattern
+
+! conclusion: Compose predictive-noise variance from named, domain-meaningful contributing sources, not from a single opaque σ². Each source maps to a structural feature of the candidate action.
+
+  + context: The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions. A single hardcoded σ² is operationally inflexible and analytically opaque — there's no way to ask *why* this candidate has high predictive uncertainty.
+
+  + IF:
+    You want predictive noise to be tunable (each source has a calibration constant), auditable (per-candidate variance decomposition emitted in the trace), and operationally meaningful (the agent's uncertainty about a candidate reflects identifiable structural features of that candidate).
+
+  + HOWEVER:
+    A single σ² hardcoded into the noise wrap conflates multiple sources of uncertainty into one knob. Tuning becomes guesswork (which knob should I turn?); diagnostics become impossible (was the high G ambiguity from missing capabilities, off-target facet emphasis, or mode-boundary proximity?).
+
+  + THEN:
+    Decompose the predictive noise σ² into named additive contributions, each driven by a structural feature of the candidate:
+      - Coverage uncertainty: σ² += k_coverage × (1 − fraction-of-capability-portfolio-online). Less of the agent's capability stack is firing → more uncertainty about how the candidate's effects propagate.
+      - Specificity uncertainty: σ² += k_specificity × (1 − facet-emphasis-coverage). The candidate emphasises a narrow vs broad facet of the observation space → off-facet effects less predictable when the emphasis is narrow.
+      - Boundary uncertainty: σ² += k_boundary × 𝟙[predicted-state near classification-mode-boundary]. Near a regime-change threshold, small noise produces large mode-class differences → predictive uncertainty about *what cell the agent ends up in* is high even when uncertainty about (state-coordinates) is low.
+    Each k_* is a configurable constant. Initial values are calibrated against intuitive cases; validation harness can refine via sensitivity sweeps.
+
+  + BECAUSE:
+    Named contributions give every variance increment a domain-meaningful story. Auditing a high-G candidate becomes "this candidate's variance is dominated by coverage uncertainty, because most of the capability portfolio is offline"; tuning becomes "the coverage term is over-weighted, drop k_coverage from 0.01 to 0.005". A single opaque σ² admits neither.
+
+  + NEXT-STEPS:
+    - Identify the 2–4 structural features of your candidate action space that should contribute to predictive uncertainty.
+    - Define a configuration map of k_* constants; thread through the forward model's opts argument.
+    - Emit the variance decomposition (per-source contributions) in the predictive trace alongside the total variance. The decomposition is what diagnostic UIs and validation harnesses consume.
+    - Calibrate: pick initial k_* values that produce intuitive orderings on a handful of test cases. Sweep in validation if outputs aren't behaving.
+    - DONE (UKRN v3 HO-04, 2026-05-14): three-source decomposition implemented in notebooks/ukrn_v3_forward.clj prediction-noise-variance (lines 91-120). Sources: capability portfolio fraction, facet emphasis coverage, mode-threshold proximity. Constants: DEFAULT-K-CAP=0.01, DEFAULT-K-FACET=0.005, DEFAULT-K-THRESHOLD=0.02, DEFAULT-THRESHOLD-EPSILON=0.05. Smoke output shows the threshold-proximity term operationally meaningful: SYN2 with predicted D=0.519 (within 0.05 of threshold 0.5) gets variance 0.029, producing a bimodal mode-probability distribution (50.8% absorbed + 42.4% mismatch) that correctly reflects regime-change ambiguity. Evidence: handoffs/v3_runner/validation_HO-04.md.
+    - Practice: emit the decomposition keys alongside the total variance in the trace record. Consumers (validation harness, UI panels, EFE term computations) can read whichever component they need.

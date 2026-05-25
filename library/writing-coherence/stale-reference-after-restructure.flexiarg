@@ -1,0 +1,41 @@
+@flexiarg writing-coherence/stale-reference-after-restructure
+@title Audit the Downstream After Restructure
+@keywords restructure, stale-reference, dangling-reference, cross-reference, post-edit-audit, referential-drift
+@audience paper authors, reviewers, anyone editing a multi-section document iteratively
+@tone technical
+@style pattern
+@references [writing-coherence/cross-section-claim-drift, writing-coherence/paraphrase-drift]
+
+
+! conclusion: When a paper undergoes a structural change — a section removed, a step renumbered, a definition revised, a term renamed — every downstream reference to the changed element becomes a candidate for staleness.  The drift is referential, not stylistic: the wording is unchanged, but what the wording points at no longer exists or no longer means what it did.  Local re-reading does not catch it because each section reads correctly in isolation.  The remedy is an audit pass at the moment of restructure that lists each affected element and its referents, then updates each referent to reflect the new structure or flags it for deletion.
+
+  + context: Common during late-stage paper revision when the author is making one structural change at a time and not running a full re-read.  Especially common when a section is moved, a numbered step is dropped, or a worked example is replaced.  Distinct from `cross-section-claim-drift` (about wording variation across sections sharing a claim) and from `paraphrase-drift` (about local sentence-level restatement): here the wording is consistent and the semantics has shifted underneath it.  The diagnostic is "the sentence is fine, but its referent is gone."
+
+  + IF:
+    The pattern operates on the axis: local section coherence ↔ post-restructure global coherence.
+    Irreducible: a reference either points at something the document still contains, or it does not.  Local rewording does not change which.
+
+  + HOWEVER:
+    Real costs: a full audit after every micro-edit is expensive and slows iteration; deferring the audit to a final pass risks accumulating drift that becomes hard to untangle.
+    Active dynamic: the temptation to skip the audit grows with the size of the document and the smallness of the edit, even though the failure mode does not depend on edit size — a single removed bullet can leave stale references in three later sections.
+
+    + FAILURE-MODES:
+      - Numbered-step drift: "Step 4" referenced in a downstream pattern composition after Step 4 has been removed from the bootstrap sequence.
+      - Renamed-term shadow: a term renamed in the methods is still referred to by its old name in the discussion.
+      - Cross-reference to vanished section: "see §3.2" remains in the text after §3.2 has been merged into §3.1.
+      - Deleted-figure reference: "as Figure 4 shows" persists after Figure 4 was cut.
+      - Worked-example drift: a worked example revised in §3 is still cited in §5 with the old numbers.
+
+  + THEN: Audit at the moment of restructure; update or delete every downstream reference; verify by grep.
+    + COMPOSITIONS:
+      (1) Audit at the moment of restructure: when removing or renaming an element, immediately grep the document for every reference to the element and decide for each whether to update, delete, or flag.  This is cheaper than deferring.
+      (2) Maintain a restructure log: keep a running list of structural changes during a revision pass; before declaring the pass complete, audit every reference against the log.
+      (3) Use unique tokens for high-risk elements: when a structural element is likely to be referenced (numbered steps, named patterns, figure numbers), keep the token as distinctive as possible so an audit grep is reliable.
+      (4) Audit by elision-test: re-read each section that references an element after the element has been changed; the section should still hold without the reference.  If removing the reference breaks the section, the reference is load-bearing and must be updated, not merely removed.
+
+    + CHECK:
+      Engaged when no downstream reference points at an element that has been removed, renamed, or moved without being updated.  Failing when grepping for a removed element returns hits in sections other than the one where the removal happened.
+
+  + NEXT-STEPS:
+    - Validate the system-level analogue when a documented use-case becomes available.  The principle plausibly extends from documents to systems: when a system is restructured (a service decommissioned, an interface renamed, a role redistributed), every downstream dependency becomes a candidate for staleness, and the same audit discipline applies.  Confirming the analogue requires concrete cases of system restructure and dependency-staleness; without those, the analogue is conjectural and should not be promoted to `system-coherence` on speculation (per `system-coherence/argue-empirically-not-persuasively`: a pattern must follow from a use-case, not be speculated forward).
+    - If the system-level analogue is later validated, draft `system-coherence/audit-downstream-dependencies-after-restructure` with concrete failure-modes drawn from the validating cases.

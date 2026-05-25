@@ -1,0 +1,36 @@
+@flexiarg writing-coherence/name-what-you-drop
+@title Name What You Drop, Not Only What You Inherit
+@keywords inheritance, scope, drop-list, predecessor-project, successor-project, scope-by-omission, negative-scope
+@audience paper authors, working-paper drafters, system designers writing about predecessor projects
+@tone technical
+@style pattern
+@references [writing-coherence/scope-mush, writing-coherence/first-mention-undischarged]
+
+
+! conclusion: When a section describes what a successor project inherits from a predecessor, listing only the inheritance leaves readers to infer the full extent of the inheritance — which they will do generously.  The remedy is to name, alongside what is taken, what is deliberately dropped.  The drop list is short, explicit, and located in the same eyeshot as the inheritance list; without it, scope is implicit-by-omission and readers will silently over-attribute.  The discipline applies symmetrically: when naming what one is doing with a predecessor's work, name what one is leaving behind.
+
+  + context: Common in working papers, successor proposals, derived programmes, replication studies — anywhere a new effort is positioned relative to a prior effort.  The writer knows what they are carrying forward AND what they are letting go; the reader sees only the carrying forward.  This produces the silent failure mode where readers assume continuity in scope decisions where the writer has actually re-decided.  Distinct from `scope-mush` (about hedged enumeration pretending to scope without specifying it): here the failure is the *absence* of the negative list, not the hedging of a list that exists.
+
+  + IF:
+    The pattern operates on the axis: positive scope visible to reader ↔ scope decisions visible to reader.
+    Irreducible: the reader either has the drop list, or fills it in by default with the predecessor's full scope.  Default-fill is generous — the reader assumes inheritance unless told otherwise.
+
+  + HOWEVER:
+    Real costs: the drop list looks negative, and the writer often resists writing it for that reason; producing it forces the writer to re-articulate why each dropped item is dropped, which exposes whether the drop is principled or accidental.
+    Active dynamic: the temptation to omit grows whenever the writer believes the drops are obvious; they rarely are, and obvious-to-the-writer is not obvious-to-the-reader.
+
+    + FAILURE-MODES:
+      - Silent inheritance: list of inheritances published; list of drops withheld; reader infers full scope continuity.
+      - Hidden drop justifications: drop is mentioned somewhere in the document but not co-located with the inheritance, so the reader does not see it as part of the same scope decision.
+      - Apologetic drop: drops are mentioned but qualified ("we cannot do X for resource reasons"), making them feel temporary even when the decision is principled and permanent.
+      - Drop-as-limitation: drops are placed in a Limitations section, where they read as caveats rather than as architectural decisions.
+
+  + THEN: Add an explicit drop list adjacent to the inheritance list; treat each drop as a positive scope decision with its own brief justification.
+    + COMPOSITIONS:
+      (1) Co-locate the drop list: place "what we drop" / "what is out of scope" / "what we leave behind" immediately after or beside the inheritance list.  Eyeshot proximity matters: if the lists are in different sections, the reader will not pair them.
+      (2) Justify the drop, not just name it: each item in the drop list gets a one-clause justification explaining why it is dropped.  "Trainer cascade obligations as a contractual structure: UKRN-S trainers deliver, they do not also recruit and train next-tier trainers."  The justification turns the drop into a scope decision rather than a deficit.
+      (3) Use a positive frame: "what we drop" or "what we leave behind" frames the list as decision; "what we cannot do" or "limitations" frames it as deficit.  Choose decision framing unless deficit is the actual content.
+      (4) Audit by symmetry: read the section listing inheritances; ask "would a reader who saw this list assume we inherit X?" for each candidate drop.  If yes for any, the drop list needs to include X.
+
+    + CHECK:
+      Engaged when the section that lists inheritances is paired with a drop list of comparable visibility, each drop carries its own justification, and the framing presents drops as decisions rather than deficits.  Failing when inheritances are listed without their corresponding drops, or when drops are scattered into footnotes or limitations sections rather than co-located with inheritances.

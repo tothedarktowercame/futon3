@@ -1,0 +1,45 @@
+@flexiarg writing-coherence/one-paragraph-per-typed-claim
+@title One Paragraph Per Typed Claim
+@keywords paragraph, fused-paragraph, structure, claim-count, scenario, prose-figure-alignment, em-dash, semicolon
+@audience paper authors, working-paper drafters, reviewers
+@tone technical
+@style pattern
+@references [writing-coherence/subheading-without-paragraph writing-coherence/structural-style-inconsistency system-coherence/present-graph-topology-not-adjacency-lists]
+
+
+! conclusion: When a paragraph carries multiple structurally distinct claims — two scenarios, three cases, several findings — each fused together by em-dashes and semicolons doing the structural-separation work that paragraph breaks should do, the reader has to recover the claim-count from punctuation rather than from layout.  This is most visible when the prose is meant to correspond to an external visual (a figure with N panels, a table with N rows): if the figure shows four panels but the prose collapses two of them into one paragraph, the prose-figure correspondence breaks at exactly the point a reader scanning between them would expect to find alignment.  The fix is structurally honest: one paragraph per typed claim, or one bullet per claim, or move to a list/table form when the claim-count gets large.
+
+  + context: Prose paragraphs are typed by their structural role — an evidence-presentation paragraph, a synthesis paragraph, a scenario-description paragraph, a counter-claim paragraph.  When a single paragraph carries two scenarios, two findings, or two arguments, it's doing the work of two paragraphs in one — and signalling this only with internal punctuation (em-dashes, semicolons, "and" coordinators).  Readers who skim by paragraph count miss the implicit structure entirely.  Readers cross-referencing to a figure see N panels and N-1 paragraphs and have to figure out where the missing-paragraph's content went.  The fix is to split.
+
+  + IF:
+    The pattern operates on the axis: paragraph-as-structural-unit ↔ paragraph-as-prose-rhythm.
+    Irreducible: either the paragraph count matches the typed-claim count, or the typed-claim count is hidden inside punctuation.
+
+  + HOWEVER:
+    Real costs: splitting a fused paragraph into two paragraphs can lose narrative flow (sometimes the em-dash and semicolon were doing genuine connective work).  Short paragraphs can read as choppy.  And not every multi-claim paragraph is best split — sometimes the claims are genuinely subordinate (a main claim with a parenthetical caveat), and splitting promotes the caveat above its rank.
+    Active dynamic: the pull toward fusion is strongest in synthesis or summary paragraphs (where multiple findings are being assembled), in scenario-bounding paragraphs (where the writer is naming "two scenarios that bracket the envelope" and treating them as a pair), and in evidence-presentation paragraphs (where a primary claim and its supporting detail get rolled together).
+
+    + FAILURE-MODES:
+      - Em-dash structural work: the em-dash is carrying paragraph-break weight (separating two scenarios, two findings, two cases) where a paragraph break is the appropriate structural marker.
+      - Semicolon-stack: three or more semicolons in a paragraph that's actually three or more claims stitched together.
+      - Prose-figure misalignment: a figure has N panels (or a table has N rows); the corresponding prose has fewer paragraphs, with some panels' content fused into others.
+      - "Two scenarios" sentence followed by one paragraph: the writer explicitly says "two scenarios" but writes only one paragraph to cover both — the announce-vs-deliver mismatch.
+      - List collapsed into prose: what should have been a 3-item list ("first, ...; second, ...; third, ...") gets written as one prose paragraph; the reader has to count manually.
+
+  + THEN: Match paragraph structure to typed-claim structure.  Pick one composition.
+    + COMPOSITIONS:
+      (1) Split into one paragraph per claim.
+          Augmentation schema: {:claim-count <n> :paragraph-titles <optional, one per claim>}
+          Entity types produced: :split-paragraph (one per claim)
+          Effect: paragraph count now matches claim count; figure-correspondence (if applicable) becomes legible.
+      (2) Convert to a list or table.
+          Augmentation schema: {:list-or-table :list | :table :columns <if table>}
+          Entity types produced: :structured-list, :typed-row
+          Effect: most appropriate when the claims are short, parallel, and would be served by visual alignment (a 4-row table is more legible than 4 short paragraphs).
+      (3) Subordinate the secondary claim.
+          Augmentation schema: {:primary-claim <id> :subordinate-claim <id> :subordination-form :parenthetical | :footnote | :inline-clause}
+          Entity types produced: :subordinated-claim
+          Effect: when the two claims aren't actually structurally equal (one is the main scenario, one is a caveat), explicitly mark the subordinate as parenthetical rather than fusing as if both were primary.
+
+    + CHECK:
+      Engaged when paragraph count matches typed-claim count (for paragraphs carrying scenarios, findings, or cases) and any prose-figure correspondence is exhibitable by 1:1 alignment.  A skeptical reader can count claims by counting paragraphs.  Failing when a sentence announcing "N scenarios" is followed by fewer than N paragraphs, or when an em-dash inside a paragraph is doing paragraph-break work.

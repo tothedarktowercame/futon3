@@ -1,0 +1,45 @@
+@flexiarg writing-coherence/citation-density-load-bearing-claim
+@title Cash the Citation on Load-Bearing Claims
+@keywords citation, warrant, evidence, comparative-claim, bold-claim, load-bearing, thesis, density
+@audience paper authors, working-paper drafters, reviewers
+@tone technical
+@style pattern
+@references [writing-coherence/floating-formalism writing-coherence/missing-mechanism writing-coherence/hedged-lift system-coherence/argue-empirically-not-persuasively]
+
+
+! conclusion: A load-bearing claim — one the rest of an argument rests on — must exhibit enough on-page evidence for a reader to judge whether it holds.  When a thesis, central finding, or bolded sentence rests on a thin citation (a phrase gesturing at a study, framework, or interview without naming what specifically was found, on what data, with what comparison), the reader is being asked to take the load-bearing move on trust.  Typographic emphasis and structural role expose the claim to challenge; the on-page citation must scale with the exposure.  Cash the citation, soften the claim, or reposition the load — but do not run a bolded comparative claim on a sixteen-word reference.
+
+  + context: Working papers often inherit findings from companion or upstream work and treat them as established by reference.  This is appropriate when the finding is well-known to the audience, when the reference is short and the claim is incidental, or when the working paper is one of several that compose into a single body of evidence.  It fails when the claim is bolded or otherwise typographically marked as load-bearing; the claim makes a comparative or causal assertion ("X matters more than Y", "X drives Z") that requires both sides measured to support directionally; the reference is one phrase rather than a citation with specifics; the companion work's details aren't reproducible from the reference alone.  In these cases, the typographic emphasis or the comparative structure promises more than the citation delivers.  The reader is left with two unattractive options: take the claim on faith (which subverts the paper's argumentative discipline) or chase down the reference (which a working paper should not require for its central claims).
+
+  + IF:
+    The pattern operates on the axis: claim exposure ↔ citation density.
+    Irreducible: a claim's typographic emphasis and structural role expose it to challenge; the on-page citation must give the reader something to judge against, OR the claim must shrink to match what the citation delivers, OR the load must move to a sibling claim that does have on-page support.
+
+  + HOWEVER:
+    Real costs: shoring up a citation means adding sentences that may feel pedagogical, redundant with a companion paper, or off the working paper's central concern.  Softening the claim means giving up directional or comparative strength that the analysis genuinely produced.  Repositioning the load may demote a finding the writer wants to keep prominent.  Each composition gives something up; the pattern's discipline is to choose explicitly rather than to leave the mismatch implicit and hope the reader is generous.
+    Active dynamic: the pull recurs whenever a working paper inherits findings from upstream work.  The inheritance pattern wants to be referential ("see X for details") but the load-bearing claim wants the details on-page.  Bolding amplifies the mismatch: bold tells the reader "this is what I'm asking you to act on," which raises the citation bar.
+
+    + FAILURE-MODES:
+      - Bolded-claim-thin-cite: the claim is typographically marked as load-bearing but the citation is one short phrase.  The bold makes a promise the citation does not keep.
+      - Comparative-without-comparison: "X matters more than Y" without exhibiting both X-side and Y-side measured.  Comparative direction can only be inferred from one side if the comparison frame itself is well-established in the field, which is rarely the case for novel claims.
+      - Framework-as-citation: the claim cites a methodological framework (NPT, AIF, etc.) instead of a finding from analysis using that framework.  Naming the framework does not name the finding.
+      - Reference-only inheritance: the load-bearing claim is established in a companion paper, but the working paper relies on the reader knowing that and chasing it.  Acceptable for incidental claims; not for the paper's thesis.
+      - Hedge-instead-of-cite: instead of shoring up the citation, the writer softens with "with reasonable confidence" or similar — preserving the claim's emphasis while gesturing at uncertainty.  The hedge is doing the work the citation should do.
+
+  + THEN: Match citation density to claim exposure.  Pick one explicit composition.
+    + COMPOSITIONS:
+      (1) Shore up the citation in-line.
+          Augmentation schema: {:claim-form :preserved :evidence-summary <what specifically was found> :method-detail <how it was inferred> :finding-direction <if directional>}
+          Entity types produced: :evidence-summary, :method-detail, :finding-direction-justification
+          Effect: the claim retains its emphasis; the citation grows on-page to support it.  Most appropriate when the directional or comparative content is genuinely supported and the paper has room.
+      (2) Soften the claim to match the citation.
+          Augmentation schema: {:claim-direction-fate :dropped-or-preserved :emphasis-form <foregrounding | named-finding | conditional>}
+          Entity types produced: :foregrounded-claim (replaces comparative with "foregrounded as more consequential"), :named-finding-claim (replaces directional with "the analysis named X as the load-bearing factor"), :conditional-claim (replaces unconditional with "under the conditions analysed, X").
+          Effect: the claim's emphasis shrinks to fit the citation's specificity.  Most appropriate when the directional content cannot be honestly supported on one-sided data, or when the comparative is rhetorical rather than substantive.
+      (3) Move the load-bearing weight elsewhere.
+          Augmentation schema: {:load-shift-target <section-id> :replacement-role <subsidiary | supporting | contextual>}
+          Entity types produced: :reference-to-load-bearing-section (the now-secondary claim cites its sibling that does the load-bearing).
+          Effect: a stronger sibling claim — one with denser on-page support — carries the argumentative weight, and the original load-bearing claim becomes supporting rather than central.  Appropriate when a different finding in the same paper actually deserves the emphasis.
+
+    + CHECK:
+      Engaged when every load-bearing claim either (i) exhibits enough on-page citation for evaluation, (ii) is softened to match the citation's specificity, or (iii) is repositioned so a stronger sibling claim carries the load.  A skeptical reader, finding a bolded or thesis-level claim, can identify the specific evidence on-page that supports its directional or causal content.  Failing when a bolded comparative claim rests on a single-phrase citation and the writer relies on the reader to chase the reference.

@@ -1,0 +1,41 @@
+@flexiarg writing-coherence/meta-title
+@title Title the Section by What It Says, Not What It Discusses
+@keywords title, section-heading, subheading, claim-vs-description, meta-title, scholarly-genre, working-paper
+@audience paper authors, working-paper drafters, anyone writing structured prose with section headings
+@tone technical
+@style pattern
+@references [writing-coherence/meta-lede, writing-coherence/subheading-without-paragraph, writing-coherence/plain-language-thesis]
+
+
+! conclusion: A title — section, sub-section, working-paper, or document — should answer the question "what is this saying" in itself, not invite the reader to ask.  Where a paragraph opening can describe shape without disqualifying itself (the failure named by `meta-lede`), a title that describes shape — "What endorsement commits", "Three concrete commitments", "On the question of X" — fails more sharply, because the reader hits the title and is left needing to read on simply to discover what claim the section makes.  The discipline is therefore sharper for titles than for paragraph leads: a meta paragraph opener is suboptimal; a meta title is broken.  The remedy is to replace the label with the section's actual claim, in plain language, ideally drawn from the section's own load-bearing sentence.
+
+  + context: AI prose and human first-drafts often title sections with descriptions of what the section will do ("What X means", "On Y", "About Z", "Three observations") rather than statements of what the section says.  The reader hits a meta title and is forced to ask "what does X mean? what about Y?" — questions the title itself was supposed to close.  Distinct from `meta-lede` (paragraph-level shape-vs-content failure that the paragraph itself can recover from in subsequent sentences) and from `subheading-without-paragraph` (the paragraph fails to discharge what the subheading promised; meta-title is a related but inverse failure where the heading does not even commit to a claim the paragraph could discharge).  Closely related to `plain-language-thesis`: titles, like top-level claims, must be readable standalone, by a reader who has not read the section yet.
+
+  + IF:
+    The pattern operates on the axis: title as label-for-topic ↔ title as claim-about-content.
+    Irreducible: a title that names the shape of an argument and a title that performs the argument cannot be the same title.
+
+  + HOWEVER:
+    Real costs: a label-style title ("Methods", "Limitations", "Discussion") works in conventional scholarly contexts where the reader knows what each section will contain.  A claim-style title does more work in essays, working papers, and any section that is making an argument.  The right form depends on genre.  Mistaking a working-paper section for a methods section is one source of meta titles; the genre should be diagnosed before the title is set.
+    Active dynamic: meta titles are easier to write because the writer can pull a phrase out of the section's purpose and use it as a label without committing to what the section actually claims.  The pull recurs at every section break, especially when the section is being drafted before its claim has stabilised.
+
+    + FAILURE-MODES:
+      - Topic label: "On X" / "About Y" / "What X commits" — titles that name a topic without making a claim.  Reader is left asking what about X.
+      - Question title: "What does X mean?" — invites the reader to read on for an answer the title should already have provided.
+      - Count-announcement: "Three commitments" / "Four claims" — names a count without naming the content.  Reader is left asking what the three or four are.
+      - Shape-announcement: "Argument structure" / "How the model works" — describes the shape of what is to come rather than what is being said.
+      - Genre-confusion: a working paper section uses scholarly conventional labels ("Methodology", "Background") where a claim-style title would do more work for the reader.
+
+  + THEN: Replace the label with the section's actual claim; use the section's own load-bearing sentence as candidate; audit by question-test.
+    + COMPOSITIONS:
+      (1) Replace label with claim: "What endorsement commits" → "Reproducible research applied to learning system design" (the section's own concluding sentence; performs what the section says).  "Three commitments" → "Three concrete commitments follow from endorsement" (still light, but at least makes the claim).
+      (2) Use the section's load-bearing sentence: if a single sentence in the section captures what the section says, that sentence (or a compressed form of it) is a candidate title.  Often the section's *own concluding line* is the cleanest title for the section.
+      (3) Audit by question-test: read the title; ask "what does the reader still want to know after reading just this title?" If the answer is "what claim the section actually makes", the title is meta.  If the answer is "the details that support the claim the title made", the title is fine.
+      (4) Diagnose the genre: if the document is a working paper or argumentative essay, prefer claim-style titles.  If it is conventional scholarly prose with established section labels, label-style titles are acceptable and do not need to be replaced.
+
+    + CHECK:
+      Engaged when reading the title alone tells the reader what the section claims, in plain language, without further reading.  Failing when the title describes the section's topic, announces a count without naming what is counted, asks a question the section will answer, or labels the section by its conventional role rather than its content.
+
+  + NEXT-STEPS:
+    - In any working paper or argumentative section, audit every subsection heading against this pattern; replace meta titles with their load-bearing claims, often drawn from the section's own concluding line.
+    - Where genre conventions favour label-style titles (Methods, Limitations, References), flag the genre choice as deliberate rather than default.  The pattern is then engaged because the writer has named the choice.

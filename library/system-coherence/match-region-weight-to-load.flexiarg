@@ -1,0 +1,49 @@
+@flexiarg system-coherence/match-region-weight-to-load
+@title Match Region Weight to Argumentative Load
+@keywords region-balance, AIF, preferences, sensory, internal, active-surface, page-weight, overdeveloped, underdeveloped, enumeration
+@audience system designers, working-paper drafters, reviewers
+@tone technical
+@style pattern
+@references [system-coherence/argument-as-coverage-checklist-vs-system-specification system-coherence/plan-as-enumeration writing-coherence/triad-inflation]
+
+
+! conclusion: Each region of an essay's AIF² wiring — outside (reader, decision), sensory (orienting context, evidence), internal (claim-and-evidence structure), active-surface (the operational move the argument licenses), preferences (glacial commitments and sector frame) — should occupy page-weight proportional to its argumentative load.  The internal region (the design's claims and warrants) is typically the most load-bearing and should be the page-weight winner.  When a low-load region — most often preferences (glacial context) or sensory (evidence summary) — runs longer than the internal region, the reader's perceptual unit becomes the heaviest thing on the page rather than the most load-bearing thing.  Compress the over-developed region, shift the load to a sibling, mark it as a digression, or promote the region's status (if it's actually doing more work than the argument acknowledged).
+
+  + context: AIF² treats the essay as a typed open cover by regions, with each region playing a structural role analogous to a part of an Active Inference wiring diagram.  In a well-balanced essay, the internal region (the system specification, claims, evidence-as-warrant) takes the most space because that's where the argument lives.  Preferences (the glacial context that motivates the argument — sector frame, funder identity, audience) should be present but compact; the reader does not need a sector survey to be reminded that an institution is one of many actors.  Sensory (orienting prose, evidence presentation) should scale with its support function — enough to ground the internal claims, not enough to dominate them.  When these proportions invert — when, say, a section establishing "open research is one of many priorities" runs sixteen items of enumeration to land a one-sentence claim — the page-weight inversion confuses the reader about what the paper is actually arguing.
+
+  + IF:
+    The pattern operates on the axis: page-weight ↔ argumentative load.
+    Irreducible: the reader's perceptual unit is what occupies the most page-weight; if the most page-weight is not the most load-bearing, the perceptual unit is misleading.
+
+  + HOWEVER:
+    Real costs: compressing an over-developed region risks losing detail that the argument actually needed.  Shifting load to a footnote or annex moves the content out of the reader's primary scan path.  Marking as digression weakens the section's relationship to the argument.  Promoting a region requires admitting that the argument's scope was larger than declared.  Each composition gives something up; the pattern's discipline is to choose explicitly rather than to leave the imbalance implicit and hope the reader gives the writer credit.
+    Active dynamic: the pull toward over-development is strongest in evidence-citation work (a 2022 survey cited the eight themes; the writer reproduces all eight even though the claim only needs two), and in preferences-region work (the sector frame is invoked to motivate the argument, but the invocation grows into a survey of the frame rather than a brief gesture).  The over-development feels like rigour at writing time; it reads as imbalance at reading time.
+
+    + FAILURE-MODES:
+      - Preferences overrun: glacial context occupies more page-weight than the design region whose claims that context is supposed to motivate.
+      - Sensory inflation: evidence-presentation dominates the claim it supports; the reader spends more time on the data than on what the data shows.
+      - Exhaustive citation for incidental claim: a sub-claim that is genuinely supporting is given a 50-line evidence presentation as if it were load-bearing.
+      - Enumeration without enumerative content: an N-item list is exhibited where the structural claim is that there exist many items, not that any specific item is doing work.  This is `triad-inflation` scaled up — a sixteen-item list where two would suffice.
+      - Meta-lede closing on overweight region: an over-developed region requires a "what this evidence tells us is..." summary at the end (because the reader's perceptual unit has drifted), which is itself a meta-lede failure on top of the imbalance.
+
+  + THEN: Match region weight to argumentative load.  Pick one composition.
+    + COMPOSITIONS:
+      (1) Compress in place.
+          Augmentation schema: {:region <region-name> :compression-target <span-or-entity-id> :compression-ratio <approximate factor> :preserved-content <list>}
+          Entity types produced: :compressed-region (the new tight version), optionally :source-reference-note (citing where the full content can be found if needed)
+          Effect: the over-developed region shrinks to fit its argumentative load.  Specific details that were over-presented are reduced to a sentence or a citation.  Most appropriate when the over-developed content is incidental and the reader can take the structural claim without the enumerated specifics.
+      (2) Shift load to a sibling region.
+          Augmentation schema: {:from-region <overdeveloped-region> :to-region <footnote | annex | references> :shifted-content <list>}
+          Entity types produced: :shifted-content-reference (the residual cross-reference in the original region)
+          Effect: the heavy content moves to a footnote, annex, or references section; the original region retains only a brief gesture with a cross-reference.  Most appropriate when the content has long-term value as reference material but does not belong in the argument's main scan path.
+      (3) Mark as digression.
+          Augmentation schema: {:digression-marker <prefix | sidebar | explicit-disclaimer> :return-point <span-or-entity-id>}
+          Entity types produced: :digression-prefix, :return-marker
+          Effect: the over-developed region is explicitly typed as a digression that the reader can skip without losing the argument.  Weaker than (1) or (2) because the imbalance remains; appropriate when the content is genuinely interesting and the writer wants to keep it visible despite the imbalance.
+      (4) Promote the region.
+          Augmentation schema: {:promotion-target <region> :new-load-justification <claim that justifies the heavier weight>}
+          Entity types produced: :promoted-region-claim (the new claim that makes the region's weight argumentatively load-bearing)
+          Effect: the region's weight is retained, but its role in the argument is upgraded so the weight is justified.  Appropriate when the over-development reveals that the writer was actually trying to make a heavier claim than the argument-spec captured.
+
+    + CHECK:
+      Engaged when each AIF² region's page-weight is proportional to its argumentative load, and when over-developed regions are either compressed, shifted, marked as digression, or promoted.  A skeptical reader scrolling the section can tell from page-weight alone which region carries the most argumentative load.  Failing when a preferences region (or any low-load region) is the heaviest unit on the page and the heaviest unit is not the load-bearing one.

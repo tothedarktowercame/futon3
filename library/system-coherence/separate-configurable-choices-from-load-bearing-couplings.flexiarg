@@ -1,0 +1,36 @@
+@flexiarg system-coherence/separate-configurable-choices-from-load-bearing-couplings
+@title Separate Configurable Choices from Load-Bearing Couplings
+@keywords robustness, coupling, configuration, identity, brittle, variation, invariants
+@audience system designers, mission authors, working-paper drafters, reviewers
+@tone technical
+@style pattern
+@references [system-coherence/turn-design-into-checks system-coherence/argue-empirically-not-persuasively writing-coherence/scope-mush]
+
+
+! conclusion: Robust system arguments distinguish between what may vary and what cannot be broken without changing the system's character.  Configurable choices are not the same as load-bearing couplings.  If the document treats both alike, it cannot tell adaptability from drift or experimentation from self-cancellation.
+
+  + context: Once a design is described, everything in it can look equally optional.  That flattening is attractive because it makes the system seem flexible.  But real flexibility depends on knowing which parts are safely adjustable and which relationships are carrying the design's causal load.  Without that distinction, adaptation becomes indistinguishable from erosion.
+
+  + IF:
+    The pattern operates on the axis: permissible variation <-/-> constitutive coupling.
+    Irreducible: some elements can vary without changing the system's identity, while others are load-bearing enough that breaking them yields a different system, not merely a local variant.
+
+  + HOWEVER:
+    Real costs: declaring couplings to be load-bearing narrows room for local tailoring and invites challenge about whether the system is over-specified.  But failing to declare them shifts the cost into execution, where every local variation can claim legitimacy and no principled line exists between robust adaptation and silent abandonment.
+    Active dynamic: the temptation is strongest when the writer wants the system to look portable across heterogeneous contexts.  The pressure then is to describe everything as configurable.
+
+    + FAILURE-MODES:
+      - Flat optionality: every component is presented as if locally selectable, leaving no visible system identity.
+      - Hidden brittleness: a coupling is in fact essential, but the document only reveals that after failure.
+      - Adaptation laundering: a change that removes a causal dependency is described as context-sensitive tailoring.
+      - Scope mush: the paper blurs core architecture, local implementation choices, and cosmetic differences into one undifferentiated bundle.
+
+  + THEN: Mark the load-bearing couplings and fence the configuration space.
+    + COMPOSITIONS:
+      (1) Name the couplings that make the system the system: these are the relationships whose removal would void the design's logic.
+      (2) Separate them from tunable parameters: delivery cadence, staffing pattern, local framing, or tooling may be adjustable without touching the core coupling.
+      (3) Use checks to police the boundary: if a local variation severs a load-bearing relation, classify it as system change rather than as mere adaptation.
+      (4) Document the reason for each declared coupling: say what causal work it does, so the constraint is legible rather than arbitrary.
+
+    + CHECK:
+      Engaged when the paper clearly distinguishes adjustable design choices from constitutive relations and can explain why the latter matter.  Failing when local variation is celebrated in the abstract but no principled boundary protects the system from dissolving into unrelated local practices.

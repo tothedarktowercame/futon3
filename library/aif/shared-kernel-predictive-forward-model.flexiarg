@@ -1,0 +1,35 @@
+@flexiarg aif/shared-kernel-predictive-forward-model
+@title Shared Kernel for the Predictive Forward Model
+@sigils [⚙️/由]
+@audience fulab agents, aif implementers, simulation-based-AIF designers
+@tone technical
+@style pattern
+
+! conclusion: Extract the deterministic dynamics core into a pure shared kernel; have both the live step and the predictive forward model call into it. One implementation, two callers.
+
+  + context: An AIF agent that scores candidate actions via Expected Free Energy needs a predictive forward model — a function that takes a candidate action and returns the predicted next-state distribution. The naive implementation maintains a separate "shadow" dynamics for the predictive call, which inevitably drifts from the live dynamics as the code evolves.
+
+  + IF:
+    You want the predictive forward model's outputs to be principled (the agent's beliefs about candidate actions match what the live dynamics would actually do under those actions), maintainable (one set of dynamics rules to update), and verifiable (a single regression-test surface that catches accidental divergence).
+
+  + HOWEVER:
+    Two implementations of the same dynamics is two implementations to maintain, two places for bugs to hide, two surfaces where the forward model's predictions can disagree with what the live step actually does. The cost of maintaining bit-equivalent shadows grows quadratically with the dynamics complexity.
+
+  + THEN:
+    Factor the live step into (a) a *pure deterministic kernel* taking explicit (state, action, seed, opts) and returning a next state, and (b) a *thin orchestration wrapper* that threads defaults and calls the kernel. The wrapper preserves the live API; the kernel becomes callable by:
+      - The wrapper, in live operation.
+      - The predictive forward model, for candidate scoring — typically via a second arity that admits supplied candidate actions and skips the live action-selection step.
+    The predictive forward model then becomes a thin probabilistic wrapper around the same kernel: call kernel with candidate, add Gaussian noise (or other principled uncertainty representation), produce next-state distribution.
+
+  + BECAUSE:
+    One implementation of the deterministic dynamics is the only place where the rules live. The kernel is what the live step does *and* what the forward model predicts. Any update to one is automatically reflected in the other. The bit-equivalence test (live-path output unchanged under refactor) is the cheapest catchnet for accidental drift.
+
+  + NEXT-STEPS:
+    - Audit the live step for impurities: I/O calls, atom mutations, time-of-day reads, side-effect emissions. The kernel must be pure; impurities belong in the wrapper.
+    - Define the kernel signature with explicit (state, action, seed, opts) — no implicit context, no defaults inside the kernel itself.
+    - Add a second arity for the forward-model seam: `(kernel state ext seed opts candidate-actions)` — supplied actions skip live action selection.
+    - Document the RNG-consumption divergence: when candidate actions are supplied, the kernel doesn't consume action-selection RNG. The forward model's Gaussian noise wrap is the source of predictive uncertainty, not kernel RNG draws. This must be in the kernel docstring.
+    - Capture a pre-refactor regression baseline. Commit it (e.g. as a CSV fixture). Automated test compares post-refactor output to baseline byte-for-byte.
+    - DONE (UKRN v3 HO-03, 2026-05-14): step-kernel extracted to notebooks/ukrn_v3_kernel.clj:159-193; engagement-step reduced to 8-line wrapper at notebooks/ukrn_v2_engagement.clj:51-58; bit-equivalence regression fixture at test/fixtures/ho03_v11_headline_trajectory_baseline.csv. Evidence: handoffs/v3_runner/validation_HO-03.md.
+    - DONE (UKRN v3 HO-04, 2026-05-14): predict-engagement-step at notebooks/ukrn_v3_forward.clj:122-149 wraps step-kernel 5-arity with Gaussian noise propagation; smoke output shows threshold-proximity behaviour discriminates candidates correctly. Evidence: handoffs/v3_runner/validation_HO-04.md.
+    - Practice: keep the kernel and the forward model in separate namespaces. The kernel is the deterministic shared core; the forward model is the probabilistic wrapper. Separation makes the call surface for downstream EFE consumers clear.

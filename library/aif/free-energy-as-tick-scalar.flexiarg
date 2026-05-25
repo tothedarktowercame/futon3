@@ -1,0 +1,29 @@
+@flexiarg aif/free-energy-as-tick-scalar
+@title Variational Free Energy as a Per-Tick Scalar
+@sigils [🪔/双]
+@audience fulab agents, aif implementers
+@tone technical
+@style pattern
+
+! conclusion: Compute and emit variational free energy F = 0.5 × mean(Π · ε²) per tick as a canonical scalar that summarises agent surprise.
+
+  + context: AIF computes two distinct quantities. **G** (Expected Free Energy) is per-candidate-action, drives policy. **F** (Variational Free Energy) is per-tick, summarises how surprised the agent currently is by its observations. They are different objects; conflating them is a common documentation hazard.
+
+  + IF:
+    You want a single, comparable-across-time scalar that says "how badly is the agent's current belief explaining what it just observed?" — useful for validation (F should decrease on average as the agent learns), diagnostics (F-spikes flag surprise events worth investigating), and operational triggers (F-above-threshold can signal hyperparameter adjustment).
+
+  + HOWEVER:
+    Without an explicit F-per-tick, the agent's belief evolution becomes opaque — there's no scalar to plot, no acceptance criterion to test, no operational alarm to trigger. And G-per-candidate is not a substitute: G is about the future; F is about the present.
+
+  + THEN:
+    Implement F as a pure function (mu, observation, precision-opts) → non-negative scalar, applying the formula F = 0.5 × mean(Π_k · ε_k²) over all observation channels k. Emit it as part of the per-tick trace alongside μ and ε. When μ matches observation exactly, F should be zero by construction.
+
+  + BECAUSE:
+    F is the quantity AIF agents are minimising (variationally); making it observable per tick gives a clean validation target (V3: F decreases on average) and a clean operational signal (sudden F-jumps merit attention). Keeping F distinct from G in vocabulary, file location, and trace schema prevents the cross-stack confusion where one is mistaken for the other.
+
+  + NEXT-STEPS:
+    - Implement free-energy as a pure function in the same namespace as the belief update (canonical pairing: same module owns both rules). Pure function, takes precision options as inputs.
+    - Trace F per tick alongside μ and ε; include in CSV/evidence emissions.
+    - Acceptance: F = 0 when belief matches observation; F ≥ 0 always; F decreases over a run on average. The third property is V3 in the AIF completeness validation harness.
+    - DONE (UKRN v3 HO-02, 2026-05-14): free-energy implemented as pure function in notebooks/ukrn_v3_belief.clj:42-51. Hand-computed test cases pass. Available for the V3 validation property in the planned validation harness.
+    - Practice: when documenting an AIF surface, refer to F as "free energy" or "variational free energy" and G as "expected free energy" or "EFE-per-candidate". Cross-stack vocabulary discipline reduces handoff ambiguity.

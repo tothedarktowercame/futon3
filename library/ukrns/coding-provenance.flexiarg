@@ -1,10 +1,11 @@
 @flexiarg ukrns/coding-provenance
 @title Coding Provenance — Traceability of NPT Qualitative Coding (Implementation Pattern)
+@verdict early
 @keywords implementation-pattern, NPT-coding, provenance, traceability, qualitative-to-numerical, inter-rater, cache, audit, empirics
 @audience UKRN-S design, working-paper maintainers, reviewers auditing claims, future coders
 @tone operational
 @style implementation-pattern
-@references [ukrns/ARGUMENT ukrns/computation-as-exploration ukrns/assumptions-commons]
+@references [ukrns/computation-as-exploration ukrns/assumptions-commons]
 @ancestors ["UKRN ORP Train-the-Trainer focus-group transcripts (the empirical base)" "NPT coding protocol (currently informal; to be documented in Annex C)" "assumptions-v2.edn (the numerical outputs that rest on the coding)" "ukrns/computation-as-exploration (the meta-pattern this implements)" "ukrns/assumptions-commons (parallel governance concerns)" "ukrns/diagnose-before-prescribing (the main pattern whose profile signatures depend on coded scores)" "Ethics approval (King's College London, MRA-23/24-42968)"]
 
 ! conclusion: The numerical scores in assumptions-v2.edn did not arise spontaneously; they were derived from qualitative NPT coding of focus-group transcripts and then upgraded from textual judgements to [0, 1] values.  Any computational claim in the paper rests on this upgrade.  The service states which composition it is running on the axis between full claim-to-transcript traceability (every numerical claim walks back to specific transcript passages) and aggregate claim-to-score provenance (claims walk back to scored dimensions and coder identity, but not to individual passages).  The coding protocol is documented.  Coder identities are recorded.  The qualitative-to-numerical upgrade is described at the declared granularity.  The composition on the traceability axis is declared.  The data cache is accessible under a declared policy.

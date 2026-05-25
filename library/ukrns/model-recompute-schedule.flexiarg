@@ -1,10 +1,11 @@
 @flexiarg ukrns/model-recompute-schedule
 @title Model Recompute Schedule — When Computation Runs Operationally (Implementation Pattern)
+@verdict early
 @keywords implementation-pattern, recompute, event-driven, cadence-driven, hybrid, trigger, self-application, model-operations
 @audience UKRN-S design, working-paper maintainers, evaluators, trainers receiving design-state updates
 @tone operational
 @style implementation-pattern
-@references [ukrns/ARGUMENT ukrns/self-application ukrns/computation-as-exploration ukrns/design-as-function-of-evidence ukrns/measure-where-least-sure]
+@references [ukrns/self-application ukrns/computation-as-exploration ukrns/design-as-function-of-evidence ukrns/measure-where-least-sure]
 @ancestors ["notebooks/ukrn_population_model.clj (the computation)" "ukrns/self-application (the meta-pattern this implements)" "ukrns/computation-as-exploration (computation-as-device requirement)" "ukrns/design-as-function-of-evidence (update policy)" "ukrns/measure-where-least-sure (measurement waves produce the events)"]
 
 ! conclusion: A notebook that loads evidence and recomputes the model is inert until someone triggers a rerun.  The service states when and why the model recomputes — on evidence arrival (event-driven), on a calendar (cadence-driven), or in a declared hybrid — and which recomputes produce published design-state changes.  Every rerun output carries a timestamp and an evidence-revision identifier; no output circulates without those.  The current recompute composition is declared.  Every output carries a timestamp and evidence-revision identifier.  A recompute log is maintained.

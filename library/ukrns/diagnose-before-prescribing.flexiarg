@@ -1,65 +1,62 @@
 @flexiarg ukrns/diagnose-before-prescribing
 @title Diagnose Before Prescribing
-@keywords diagnosis, binding-constraint, population-model, D-times-A, multiplicative-gate, intervention-variance, prior-not-posterior, profile-signature, universal-vs-diagnosed
+@verdict revised
+@keywords diagnosis, binding-constraint, delivery, institutional-architecture, direct-indirect-out-of-scope, universal-vs-diagnosed, service-differentiation
 @audience UKRN-S design, programme commissioners, Research England, institutional leads
 @tone analytic-foundational
 @style pattern
-@references [ukrns/ARGUMENT equity/confident-adaptation ukrns/provision-at-network-scale ukrns/measure-where-least-sure]
+@references [equity/confident-adaptation ukrns/provision-at-network-scale ukrns/measure-where-least-sure]
 @ancestors ["UKRN WP draft-16-april §1 Pattern (intervention-variance figure; D × A derivation; explicit Tension/Composition/Check)" "UKRN WP §3 (Table 1 baseline; worked examples FG2A-P1 delivery-gated, FG3-A multiply-constrained; Table 2 credible intervals)" "Role-codebook analysis: EV_analyse absent 4/4 transcripts; coordination under-provisioned" "equity/confident-adaptation (diagnoses the institutional specification failure this design pattern answers at service scale)" "NPT mode tree: P(multiplied) = D × A; P(absorbed) = D × (1-A); P(mismatch) = 1-D"]
 
-! conclusion: A universal service offering is cheap to produce, easy to communicate, and wrong for a visible fraction of the network.  A diagnosed offering names the binding constraint — whether the bottleneck is delivery viability, architectural sustainability, or both — before selecting a service response.  The service states, for any profile, which composition on the universal-vs-diagnosed axis it is running and why.  No lever bundle is prescribed to any profile without a stated binding-constraint signature and an appeal to the D × A evidence.  The service's current composition on the universal-vs-diagnosed axis is published.  Profile assignments are revisable in light of new observations.
+! conclusion: A training service should diagnose the main constraint before choosing its response.  In the current paper's terms, the important distinction is whether an institution is mainly constrained by delivery, by institutional architecture, by both, or by a substrate problem the service cannot lift within scope.  A single offer for everyone is easy to run and easy to explain, but it misfits a visible part of the network.  A diagnosed offer states what seems to be binding, says what that implies for the service response, and leaves room for revision when later evidence shows the diagnosis was wrong or incomplete.
 
-  + context: The UKRN WP §1 (draft-16-april) derives a two-dimensional factorisation from the Cycle-0 focus groups: delivery viability (D, from Confident Adaptation + Protected Interaction) and architectural sustainability (A, from Shared Maintenance + Contribution Pathways + Visible Impact), related multiplicatively (P(multiplied) = D × A).  The intervention-variance figure (Figure 2) shows empirically that the same lever bundle moves P(multiplied) very differently across profiles.  The equity-domain confident-adaptation pattern diagnoses the informational gap at institutional scale; this design pattern asks, at service scale, whether the programme has identified the binding constraint before choosing a response.
+  + context: The current working paper separates two main dimensions of the problem.  Delivery asks whether training is actually reaching people and being taken up.  Institutional architecture asks whether the setting around the training can hold and use what is being delivered.  The design also distinguishes what it can affect directly, what it can affect only indirectly, and what sits outside its scope.  Verification then shows that institutions do not all sit in the same place: some are mainly delivery-constrained, some mainly architecture-constrained, some constrained on both, and some blocked by wider substrate conditions that the service alone cannot shift.
 
   + IF:
-    The pattern operates on the axis: universal service offering ↔ diagnosed service offering.
-    Irreducible: diagnosis and uniformity cannot both be maximised in the same service offering.  A single bundle cannot be simultaneously the lowest-cost-to-run-and-communicate option AND the best-matched option for every profile on the constraint map.
+    The pattern operates on the axis: universal offer ↔ diagnosed offer.
+    Irreducible: a service cannot maximise both uniformity and fit at the same time.  The more the offer is standardised, the easier it is to communicate and run.  The more it is diagnosed, the more it can respond to real differences across the network.
 
   + HOWEVER:
-    Real costs: a universal offering is cheap to produce, easy to communicate, and — as Figure 2 shows — wrong for a visible fraction of the network; a diagnosed offering, naming each profile's binding constraint before acting, is more costly to produce, harder to explain, and matched to what each profile actually needs.  Both endpoints carry genuine cost.
-    Active dynamic: the axis recurs every time a new cohort arrives, every time an institution joins, every time UKRN-S is asked what it supports.  The right position may drift as the network grows and as the profile map updates with evidence.
+    Real costs: a universal offer is cheaper, simpler, and easier to explain; a diagnosed offer is harder to run, harder to justify quickly, and more exposed to disagreement about the diagnosis itself.  Both ends of the axis carry real cost.
+    Active dynamic: the right position can change over time.  Early in a service cycle, diagnosis may be rough and the case for a common baseline may be stronger.  Later, once evaluation and comparison are in place, the service has more reason to differentiate.
 
     + FAILURE-MODES:
-      - Universal offering: one bundle for all profiles; right for some, wrong for the rest
-      - Variance-as-effort: attributing across-profile variance to trainer motivation rather than profile structure
-      - Cheap diagnosis: profiles assigned without reference to the D × A evidence
-      - Frozen diagnosis: profile signature never revised despite new observations
-      - Hidden diagnosis: assignment made internally; institutions see only the lever bundle
-      - Politically-convenient diagnosis: profile chosen to justify a preferred lever bundle rather than the other way round
+      - One-offer-for-all: every institution receives the same response regardless of what is actually blocking progress
+      - Variance-as-effort: uneven outcomes are explained as trainer quality or local enthusiasm rather than as differences in constraint structure
+      - Boundary-blindness: the service keeps promising lift where the blocking condition is outside its scope
+      - Scope-denial: a substrate problem is treated as if a training-service adjustment can solve it
+      - Frozen diagnosis: the initial judgement is never revised after new evaluation evidence arrives
+      - Hidden diagnosis: the service acts on a diagnosis internally but never states it to the institutions affected by it
 
-  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+  + THEN: Operate an explicit move on the named axis; make the diagnosis inspectable; revise it when evidence warrants.
     + COMPOSITIONS:
-      (1) Diagnostic-first: run the first T1 wave as a diagnostic pass and let the observed binding-constraint signatures drive subsequent service differentiation.  Gives up early time-to-service.
-      (2) Universal bundle: keep the universal service cheap and accept the across-profile variance as the cost of reach.  Gives up per-profile fit.
-      (3) Two-tier: a universal baseline for profiles that fall well under the model, and a diagnostic overlay for profiles that flag as multi-constrained.  Gives up single-narrative uniformity; complicates communication.
-      These compositions are not ranked; the WP does not prefer one over the others, but does make the axis visible.
+      (1) Diagnostic-first: use the early wave of delivery and evaluation to establish what is mainly constraining each institution or cluster before differentiating the response.  Gives up speed at the start.
+      (2) Universal baseline plus selective escalation: begin with a common offer, then add differentiated support where evidence shows a stronger delivery or architecture constraint.  Gives up simplicity of message.
+      (3) Mostly universal offer: keep the service largely standardised and accept that some institutions will be served imperfectly.  Gives up fit for reach and ease.
+      These compositions are not ranked.  The point of the pattern is to make the trade visible and to stop the service pretending that one common offer is automatically the right answer everywhere.
 
     + CHECK:
-      Engaged when: the programme can point to the binding-constraint signature of any profile before prescribing an intervention; profile assignments are published with the D × A evidence that supports them; institutions can contest their assignment.
-      Failing when: observed variance in outcomes is explained by trainer effort rather than by the profile's constraint structure; every institution receives the same offering regardless of diagnosis; profile signatures are never revised despite new observations.
+      Engaged when: the service can say, for any institution or cluster, what seems to be binding and what evidence supports that judgement; the response follows from that judgement; later evidence can revise it.
+      Failing when: every institution gets the same answer by default; differences in outcome are explained away as effort or enthusiasm; no one can say what the service thinks is actually in the way.
 
   + BECAUSE:
-    Multiplicative gate (D × A): The factorisation is the mathematical reason diagnosis matters.  If D and A were additive, a universal bundle would average out across profiles.  Because they multiply, a constraint on either dimension bounds the whole; no amount of lift on the non-binding dimension closes the gap.  This is why 'blame trainer effort' is a systematic misreading: trainers are often the very actors whose dimension is fine, while the binding constraint is elsewhere.
+    Central finding of the paper: The paper's headline claim is that the institutional setting matters at least as much as the training content itself.  That is exactly why diagnosis matters.  If the main problem is not the same everywhere, the same response will not work everywhere.
 
-    Cycle-0 empirical evidence: The role-codebook analysis (4/4 transcripts show EV_analyse absent) is a profile-level claim about where the architecture is weak.  The intervention-variance figure makes the per-profile sensitivity to lever choice visible.  The claim is not that diagnosis produces certainty; it is that diagnosis converts an invisible variance into a stated position.
+    Evidence from the model and verification: The design and verification work distinguish boundary cases, floor cases, and higher-throughput cases rather than treating the whole network as flat.  That difference is what a diagnosed service is trying to respect.  The point is not to claim certainty; it is to stop making undifferentiated promises where the evidence already shows meaningful differences.
 
-    Prior-not-posterior: The population model is explicit about its epistemic status.  It does not predict what will happen; it makes conditional dependencies inspectable.  The diagnostic move works on priors — and the first T1 wave is the act that begins converting priors to posteriors for the widest-interval profiles (linked: ukrns/measure-where-least-sure).
+    Relationship to direct, indirect, and out-of-scope levers: Diagnosis also disciplines ambition.  If the problem looks directly serviceable, the service can act.  If the problem can only be shifted indirectly, the service should say so.  If the main blockage is outside scope, the honest response is not to overclaim.
 
-    Confidence in the diagnosis (equity/confident-adaptation link): The equity pattern's concern at the institutional level — that trainers cannot adapt confidently without knowing what is fixed — has a structural counterpart at the service level.  The service cannot prescribe confidently without knowing what is binding.  Both patterns are specification problems at their own scale.
-
-    Commons governance: An institution assigned to a profile has a stake in whether that assignment is correct.  Publishing the diagnostic reasoning invites the institution into the profiling itself.  A service that assigns profiles without showing reasoning forecloses governance; a service that shows reasoning invites negotiation.
+    Governance value: A stated diagnosis can be challenged.  An unstated diagnosis cannot.  By naming what it thinks is binding, the service gives institutions something they can contest, refine, or confirm with better evidence.
 
     Mechanic, in short:
-    Derived from UKRN WP draft-16-april §1's factorisation, intervention-variance analysis, and explicit Tension/Composition/Check structure.
-    Answers equity/confident-adaptation at service scale: the institutional 'know what is fixed' has a service-level counterpart, 'know what is binding'.
-    Mapped to the learning loop at the 'diagnose' step: upstream of provisioning and measurement.
-    Deepened via the multiplicative-gate structure: diagnosis is mathematically necessary, not a nicety.
-    Axis framing follows paper-draft-16-april; real / irreducible / active defence and three named compositions are load-bearing.
-    Coordination requirement: Low for the service (internal analytical act) but requires Medium participation from institutions (profile contestation).
+    Derived from the paper's distinction between delivery and institutional architecture, the verification work's separation of different institution types, and the later distinction between direct, indirect, and out-of-scope effects.
+    Answers equity/confident-adaptation at service scale: just as trainers need to know what is fixed around them, the service needs to know what is actually blocking progress before prescribing a response.
+    Mapped to the learning loop at the diagnose step: upstream of capability placement, evidence gathering, and operational differentiation.
+    Coordination requirement: Moderate.  The service can make an initial diagnosis centrally, but it needs institutions to contest and refine it.
 
   + NEXT-STEPS:
-    - Maintain a current profile-signature for each participating institution in the population model
-    - Publish the intervention-variance chart for each service cycle so profile assignment is inspectable
-    - Before committing a lever bundle to any profile, state the binding constraint and the D × A evidence that supports it
-    - Allow institutions to contest their profile signature; revise on evidence, not on complaint
-    - Use this pattern upstream of ukrns/provision-at-network-scale (which decides capability scale) and ukrns/measure-where-least-sure (which targets the next observation)
+    - State, for each participating institution or cluster, whether the main current constraint appears to be delivery, institutional architecture, both, or something outside scope
+    - Tie service choices back to that diagnosis rather than treating them as free-standing preferences
+    - Let institutions challenge the diagnosis with their own evidence
+    - Re-run the diagnosis after the first evaluation wave and again at the Year-2 commitment point
+    - Use this pattern upstream of capability placement and evidence-prioritisation decisions

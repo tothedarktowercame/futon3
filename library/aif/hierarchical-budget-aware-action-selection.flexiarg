@@ -1,0 +1,35 @@
+@flexiarg aif/hierarchical-budget-aware-action-selection
+@title Hierarchical Budget-Aware Action Selection
+@sigils [🏛️/双]
+@audience fulab agents, aif implementers, multi-agent-AIF designers, simulation-of-collective-action designers
+@tone technical
+@style pattern
+
+! conclusion: When multiple agents operating over shared state can independently choose actions that share consumable resources, resolve conflicts at multiple budget hierarchy levels: aggregate setup-budget conservation across all agents per tick; per-instance forward projection of each action's downstream resource consumption to detect instances that would predictively exhaust.
+
+  + context: A multi-agent (or multi-band, or hierarchical) AIF setup gives each agent or sub-agent local autonomy: each scores candidate actions and selects via softmax. But the candidates often consume shared resources — setup budget for capability activation, engagement-budget for per-instance participation, attention budget across the agent's responsibility area. A naive *union* of independent selections will violate resource constraints whenever multiple agents simultaneously prefer expensive candidates.
+
+  + IF:
+    You want collective action selection that respects budget constraints at every hierarchy level. You want the agent (a) to never recommend allocations that exceed available aggregate budget per tick, and (b) to factor in *downstream* consequences of each candidate on per-instance budgets so the agent doesn't recommend "great-looking now" candidates that cause instances to exhaust their budgets in the next K ticks.
+
+  + HOWEVER:
+    A naive union-of-selections leaves the budget invariant unenforced — over-subscription happens silently. A naive single-coordinator approach throws away the value of the local-agent factoring, requiring all candidates to compete in one big softmax. Neither is right.
+
+  + THEN:
+    Implement conflict resolution at *each* hierarchy level explicitly:
+    - **Aggregate level**: a coordinator function `resolve-conflicts` that takes per-agent selections, applies them in priority order (e.g. importance band, deadline order, severity rank), debiting shared budget per applied action. Actions that exceed remaining budget are dropped to a no-op baseline or downgraded; trace records which were dropped and why.
+    - **Per-instance level**: a `feasibility-penalty` EFE subterm. For each candidate, project per-instance resource consumption forward over K ticks using a cheap approximation (constant status; only the budget decays). Count instances predicted to fall below their minimum-viable budget threshold. The penalty scales linearly with that count, multiplied by a tunable λ weight.
+    Both layers produce trace fields. The trace fields land in the per-tick record (R8) so the agent's reasoning about resource constraints is auditable.
+
+  + BECAUSE:
+    Conservation at the aggregate level is a *hard* constraint (you literally can't spend more than the budget; violating it makes the simulation incoherent). Forward-projecting per-instance consumption is a *soft* constraint (the agent might be willing to risk some instances exhausting if the candidate's other terms are sufficiently good). Hard constraints belong in the action selector; soft constraints belong in the EFE term. Implementing both gives the agent the right kind of attention to budget at every level.
+
+  + NEXT-STEPS:
+    - Identify the budget hierarchy in your domain: aggregate (per-tick setup or attention budget shared across agents) and per-instance (resource each instance consumes to participate, with a threshold below which the instance disengages).
+    - Implement `resolve-conflicts`: priority-ordered application; per-agent fallback to no-op baseline; trace records.
+    - Implement `feasibility-penalty`: K-tick forward projection; cheap approximation by default (constant non-budget status; only budget decays). Avoid full kernel-replay over K ticks unless the cheap approximation gives wrong answers.
+    - Calibrate the aggregate budget against the actual action-cost distribution: pick a value that admits one expensive action or two cheap actions per tick; tighter than "everything fits", looser than "always blocks".
+    - Calibrate λ_feasibility: should produce a penalty large enough to deter clearly-truncating candidates but not so large that no candidate ever passes it.
+    - DONE (UKRN v3 HO-07, 2026-05-14): `resolve-band-conflicts` at notebooks/ukrn_v3_kernel.clj:30-79 implements aggregate setup-budget conservation in band priority order (high → middle → thin). `budget-feasibility-penalty` at notebooks/ukrn_v3_efe.clj:205-211 implements per-institution K=4 tick projection; λ=0.5 per predicted truncation. Smoke output: a candidate against population with 6 high-band institutions at budget=20 produces feasibility-penalty=3.0 (6 at-risk × 0.5), shifting G from −4.28 to −1.28 (+70% deterrent). Closes V9 (setup-budget conservation) and V11 (per-institution budget feasibility). Evidence: handoffs/v3_runner/validation_HO-07.md.
+    - Practice: duplicate same-tick proposals (two agents proposing the same action) should typically pay the aggregate cost once, not twice — debit on first-occurrence-of-action-id, not per-agent. Mirrors set-semantics of resource activation.
+    - Practice: K-tick forward projection complexity should match operational stakes. Full kernel-replay K times per candidate is expensive; the cheap approximation (status held constant; budget decays linearly) is usually sufficient because the agent's decision is *should I avoid candidates that drain budgets* not *what exactly will happen K ticks from now*. The approximation is fit for purpose.

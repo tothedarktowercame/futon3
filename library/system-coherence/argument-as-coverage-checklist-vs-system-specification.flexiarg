@@ -1,0 +1,50 @@
+@flexiarg system-coherence/argument-as-coverage-checklist-vs-system-specification
+@title Specify the Argument as a System, Not a Coverage Matrix
+@keywords argument, argument-spec, coverage-checklist, system-specification, markov-blanket, active-inference, AIF, AIF-squared, argumentation-interchange, generative-model, active-surface, boundary, closure-path
+@audience system designers, mission authors, working-paper drafters, programme leads, reviewers
+@tone technical
+@style pattern
+@references [system-coherence/plan-as-enumeration system-coherence/name-the-decision-before-the-framework system-coherence/bind-open-questions-to-closure-mechanisms system-coherence/turn-design-into-checks writing-coherence/triad-inflation writing-coherence/meta-title]
+
+
+! conclusion: An argument that supports a decision must be specified as a system: a named outside (the reader and the decision the argument couples to), an inside (the claim+evidence structure), a boundary (what the argument settles versus what it hands off), and an active surface (what action the argument licenses once it has landed).  The antipattern is to specify the argument as a coverage matrix — layered enumeration of open questions, findings, and closure-paths that all point inward at other items in the same enumeration.  An argument with no outside has no decision to couple to; the paper drafted from such a spec inherits the same shape, becoming a section-per-item exercise in internal consistency rather than a coupled support for a live choice.
+
+  + context: An argument-spec is the upstream artifact from which a paper, memo, or recommendation gets drafted.  If the spec is shaped as a layered enumeration — questions inside layers inside argument-layers, each item carrying a `:closure-path` to other items in the same spec — the drafting agent will faithfully reproduce that shape in prose.  The result is the surface failures observed downstream in `plan-as-enumeration` (counted headings, calendar-paginated milestones, lists where the count is the perceptual unit) and `triad-inflation` (rule-of-three padding).  Those are symptoms; the upstream cause is a spec that does not distinguish the regions of a coherent system from items in a checklist.
+
+The positive frame draws on the Active Inference wiring diagram (see `futon5/docs/chapter0-aif-as-wiring-diagram`): a system has five regions — environment, sensory surface, internal states, active surface, preferences — joined by typed interfaces, with timescale separations that prevent fast dynamics from corrupting slow structure.  Applied to argumentation (the AIF-squared move: Active Inference Framework × Argumentation Interchange Framework):
+- Outside (environment): the reader-and-the-decision the argument is addressed to.
+- Sensory surface: what the reader brings in — prior beliefs, sector context, existing commitments.
+- Internal states: the claim+evidence structure; this is what coverage-checklist specs already capture.
+- Active surface: what operational move the argument licenses the reader to make.
+- Preferences/structure: the glacial commitments (audience identity, sector frame, funder identity) that shape what counts as a viable conclusion.
+
+A coverage-checklist spec captures only the third region and treats it as the whole.  Specifying as a system means making the other four explicit.
+
+  + IF:
+    The pattern operates on the axis: internal coverage completeness <-/-> coupling to the external decision.
+    Irreducible: either the argument's structure makes its boundary and active surface visible as named regions, or the structure consists of internal items with closure-paths pointing only inward, and the boundary becomes implicit.
+
+  + HOWEVER:
+    Real costs: specifying the boundary forces the writer to declare what the argument cannot settle — which feels like ceding ground before the argument even starts.  Specifying the active surface forces the writer to name what action the reader should take, which exposes the recommendation to challenge before the warrant has been laid out.  The coverage-checklist form preserves a comfortable ambiguity: every question is "in scope" and every closure-path lands internally, so the argument cannot be charged either with omission or with over-reach.
+    Active dynamic: when the argument-spec is built collaboratively or evolved across drafts, items accumulate.  Each new finding becomes a new layer entry; each new objection becomes a new question.  Without an explicit boundary, there is no principled rule for excluding an item, so the spec keeps growing — and the paper drafted from it keeps growing in proportion.  After-the-fact cut manifests (records of which items were dropped from the prose between drafts) are what an external boundary looks like once it has been imposed retroactively; a boundary specified at spec-time would have prevented most of those items from entering in the first place.
+
+    + FAILURE-MODES:
+      - Layers all the way down: nested layers (questions inside layers inside argument-layers) with no rule for what stops the recursion.
+      - Closure-paths point inward only: every `:closure-path` references other items in the same spec; nothing points at the reader's decision or at an external evidence source the reader could check independently.
+      - Boundary by implicature: what's in scope is named, but what's out of scope is left implicit.  The reader cannot tell what the argument refuses to settle.
+      - Active surface conflated with internal layer: the recommended action is named as another layer item ("year-1 launch") rather than as the system's coupling-to-the-world.
+      - Timescale flattening: fast-changing evidence (quarterly delivery counts) and glacial commitments (sector identity) are treated as co-equal layer items rather than as different-rate inputs to the system.
+      - Coverage-as-warrant: the spec implies that having an item for every question means the argument is sound, when it only means the questions have been listed.
+      - Spec form propagates downstream: when the spec is enumerative, the paper is enumerative; when the spec is system-shaped, the paper has a chance of being system-shaped.  The reverse repair is harder — fixing prose after enumeration has set in is mostly cosmetic; fixing the spec changes what gets drafted from it.
+
+  + THEN: Specify the argument as a five-region wiring diagram before the layered content accumulates.
+    + COMPOSITIONS:
+      (1) Name the outside first: who the argument is addressed to, what decision they face, what they will do with the argument once they have read it.  This is the Markov-blanket cut between argument and world.
+      (2) Name the active surface explicitly: declare what operational moves the argument licenses (e.g., "adopt the five-role design", "fund a three-year bridge", "stand the operation down at Year 2").  The active surface is not a layer item; it is the argument's coupling to the world, and should be named as its own region of the spec.
+      (3) Declare the boundary: what does the argument settle, and what does it hand off to other arguments (companion papers, indicators work, future evidence waves)?  An argument with no declared boundary is an argument that tries to cover everything, which is the spec-level source of Borgesian taxonomic accretion in prose.
+      (4) Separate timescales: tag evidence-inputs by timescale (fast / medium / slow / glacial).  When the argument depends on slow-moving structure (sector frame, funder identity), name that dependency rather than burying it in a layer alongside fast-moving evidence.
+      (5) Let closure-paths point outward where appropriate: some closure-paths land internally (the design closes question Q2 via role configuration), but at least some must land externally (the recipient-level evaluation wave closes Q1 via empirical evidence the reader can independently check).  An argument whose closure-paths point only inward is internally complete but externally suspended.
+      (6) Apply downstream prose-side discipline second: once the spec is system-shaped, patterns like `plan-as-enumeration`, `triad-inflation`, and `name-the-decision-before-the-framework` become much easier to keep clean, because the prose now has a non-list shape to mirror.  Prose-only de-AI-ification passes (see `algorithms/de-ai-ify.md`) cannot recover what the spec form did not provide.
+
+    + CHECK:
+      Engaged when the argument-spec's structure makes the outside, the boundary, and the active surface visible as named regions — not as layer items competing for attention with internal claim-evidence content.  A reader inspecting the spec should be able to answer, without consulting the prose: who is this addressed to, what does it license them to do, what does it refuse to settle.  Failing when the spec consists of layered enumeration with closure-paths pointing inward, and the boundary and active surface are recoverable only by reading the prose drafted from the spec.  Diagnostic question: if a reader saw the argument-spec but not the paper, could they tell what the paper licenses the reader to do?  If the only answer is "ratify the recommendation listed in the spec's `(recommendation-the-paper-supports)` slot", the argument has no active surface — the recommendation is a static label, not a coupling.

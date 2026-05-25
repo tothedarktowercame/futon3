@@ -1,10 +1,11 @@
 @flexiarg ukrns/reader-run-path
 @title Reader Run Path — Minimum Reproducibility Infrastructure (Implementation Pattern)
+@verdict stale
 @keywords implementation-pattern, reproducibility, reader-rerun, containerisation, reimplementation, degradation-path, accessibility, compute-environment
 @audience UKRN-S design, working-paper maintainers, readers attempting to rerun, peer reviewers, archivists
 @tone operational
 @style implementation-pattern
-@references [ukrns/ARGUMENT ukrns/self-application ukrns/computation-as-exploration ukrns/publication-cadence]
+@references [ukrns/self-application ukrns/computation-as-exploration ukrns/publication-cadence]
 @ancestors ["UKRN WP Annex B (reimplementation pointer — satisfies Composition (2))" "notebooks/ukrn_population_model.clj (the computation — Composition (1) target)" "ukrns/self-application (the meta-pattern this implements)" "ukrns/computation-as-exploration (declarative-assumptions requirement)" "ukrns/publication-cadence (snapshots and rerun-path documentation)"]
 
 ! conclusion: A paper that claims self-application is only as strong as the infrastructure an actual reader needs to rerun it.  The service states which composition it is running on the axis between full reproducibility (a reader runs the notebook and reproduces the current outputs) and accessible readout (the paper declares enough in an annex for a reader to reimplement the computation in any language).  Both endpoints serve different readers; neither alone is sufficient for long-horizon reproducibility.  The current reader-run composition is declared.  At least one path works for its declared audience.  A fallback for tooling decay is maintained.

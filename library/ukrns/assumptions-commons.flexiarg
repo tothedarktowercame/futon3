@@ -1,10 +1,11 @@
 @flexiarg ukrns/assumptions-commons
 @title Assumptions Commons — Governance of the Shared Evidence File (Implementation Pattern)
+@verdict early
 @keywords implementation-pattern, assumptions-v2.edn, commons-governance, contributor-rights, rollback, traceability, Ostrom, declarative-data
 @audience UKRN-S design, working-paper maintainers, contributors to assumptions-v2.edn, futon developers
 @tone operational
 @style implementation-pattern
-@references [ukrns/ARGUMENT ukrns/self-application ukrns/computation-as-exploration ukrns/design-as-function-of-evidence]
+@references [ukrns/self-application ukrns/computation-as-exploration ukrns/design-as-function-of-evidence]
 @ancestors ["assumptions-v2.edn (the artefact)" "ukrns/self-application (the meta-pattern this implementation serves)" "ukrns/computation-as-exploration (declarative-assumptions requirement)" "ukrns/design-as-function-of-evidence (traceability requirement)" "equity/contribution-pathways (governance-follows-contribution principle)" "Ostrom (1990) collective-choice principle"]
 
 ! conclusion: The file assumptions-v2.edn is not a configuration file; it is the declarative record of the programme's evidence state and the input to every computational claim the paper makes.  Its governance is a commons-governance decision: who can change what, who reviews, how versions are tracked, and how contributors earn recognised standing.  The service states which composition it is running on the axis between governed-commons and open-editable.  Every value in assumptions-v2.edn has a traceable provenance (commit, rationale, reviewer if applicable).  The current composition on the governance axis is declared publicly.  Rollback is supported.

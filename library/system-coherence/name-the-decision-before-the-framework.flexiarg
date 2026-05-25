@@ -1,0 +1,36 @@
+@flexiarg system-coherence/name-the-decision-before-the-framework
+@title Name the Decision Before the Framework
+@keywords decision-first, framing, operational-choice, framework, warrant, document-architecture
+@audience system designers, mission authors, working-paper drafters, reviewers
+@tone technical
+@style pattern
+@references [system-coherence/argue-empirically-not-persuasively writing-coherence/throat-clearing-close writing-coherence/meta-title]
+
+
+! conclusion: When a document exists to support an operational choice, it must name the choice before it unfolds the framework.  The framework is there to warrant the decision, not to delay it.  A reader who has to reconstruct the decision from pages of apparatus is being asked to do argumentative integration work the document should already have done.
+
+  + context: Writers often begin with models, taxonomies, and framing layers because those are easier to stabilise than a decision.  The result is a document that feels thoughtful but leaves the live question implicit.  This is not neutral ordering.  It changes the reader's task from "evaluate this choice" to "infer what choice is even being proposed".  In operational writing, that inversion is a coherence failure because the reader cannot tell what the framework is for.
+
+  + IF:
+    The pattern operates on the axis: framework-display <-/-> decision-clarity.
+    Irreducible: either the document names the choice early enough for the reader to evaluate the rest as warrant, or it makes the reader infer the choice from surrounding machinery.
+
+  + HOWEVER:
+    Real costs: naming the decision early exposes it to challenge before all the nuances have been introduced.  Writers resist this exposure by prefacing, layering, and framing.  But a delayed decision makes every subsequent section harder to parse because the reader cannot tell which distinctions are load-bearing.
+    Active dynamic: the temptation is strongest in papers that are partly analytical and partly programmatic.  The writer fears sounding too blunt, so the bluntness is postponed until after the reader has already spent effort.
+
+    + FAILURE-MODES:
+      - Framework-first drift: the document opens with layers, views, or distinctions while the operational choice remains unnamed.
+      - Decision-by-implication: the recommendation is only recoverable from accumulations of evidence or from the conclusion.
+      - Apparatus prestige: the framework is displayed as if its mere sophistication were itself a warrant.
+      - Late thesis reveal: the section that finally states the choice reads like a surprise rather than like the point the paper has been prosecuting.
+
+  + THEN: Name the choice, then subordinate the framework to it.
+    + COMPOSITIONS:
+      (1) State the decision in one sentence: say what should be built, adopted, rejected, or handed off.  Do this before the explanatory framework expands.
+      (2) Recast early sections as warrants: after the decision is named, let each framework component answer a visible question about why that choice follows.
+      (3) Title for claim, not furniture: section headings should tell the reader what argumentative work is being done, not merely how many parts are coming.
+      (4) Audit by inversion: ask whether a reader could delete the framework section and still say what choice the paper supports.  If not, the decision has been hidden inside its warrant.
+
+    + CHECK:
+      Engaged when the reader can identify the operational choice in the opening movement and can read the rest of the document as support for that choice.  Failing when the framework is intelligible but its bearing on a specific decision is still implicit until late in the paper.

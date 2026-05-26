@@ -1,0 +1,44 @@
+@flexiarg orchestration/state-in-substrate-deltas-in-messages
+@title Lift State Into Shared Substrate; Keep Messages As Deltas
+@sigils [📁/?]
+@audience futon agents, multi-agent collaborators, distributed-systems designers
+@tone technical
+@style pattern
+
+! conclusion: For fast bounded coordination between two components, lift state into a shared substrate and keep messages as deltas.
+
+  + context: Two components (agents, services, modules) coordinate via message-passing on a bounded task that requires several turns to closure.
+
+  + IF:
+    Coordination requires more than one back-and-forth to reach closure, and each turn references context established in prior turns.
+
+  + HOWEVER:
+    Messages that carry full context grow with each turn, become slow to parse + produce at high cadence, are brittle to single-message loss (recovery requires reconstructing context from scratch), and create attention overhead for whichever side has to re-read the bundled context every turn.
+
+  + THEN:
+    Designate a shared substrate (a markdown scratch file, a key-value store, a typed-event log) as the single locus of state for the coordination. Each message carries only the delta — a Q, an A, a sha, a "proceed" signal. Both sides append; both sides read the substrate before responding rather than re-establishing context inside the message. Close with an explicit marker (e.g., `DONE: <sha>`) so the substrate itself records the coordination's end.
+
+  + BECAUSE:
+    Lifting state out of the message stream decouples message-size from context-size. Coordination latency becomes (substrate-write + small-message-parse) rather than (full-context-parse + response-with-full-context). Single-message loss is recoverable from the substrate. Recoverability + smaller messages + cheaper parse compound across turns; the cadence supports more turns per unit of operator attention.
+
+  + NEXT-STEPS:
+    - evidence: measure message-bytes per turn vs substrate-bytes — substrate-bytes should dominate; ratio < 0.2 implies the substrate is doing its job
+    - evidence: count turns to closure under both protocols (state-in-message vs state-in-substrate) on a comparable task; expect ≥2× turn-throughput for substrate variant
+    - evidence: simulate single-message loss; confirm recovery is possible from substrate alone
+    - evidence: assess substrate-maintenance overhead — when it approaches or exceeds the message-passing savings, the pattern is misapplied (use unbounded-stream protocols instead)
+    - evidence-shape: {:substrate/path :string, :substrate/bytes :int, :message/bytes-mean :int, :turns-to-closure :int, :loss-recovery-possible? :boolean, :substrate-overhead-ms :int, :message-latency-ms :int}
+
+  + DOES-NOT-APPLY:
+    One-shot async handoffs (substrate adds overhead with no coordination benefit). Pure-event-stream protocols (substrate creates an attractor that distorts the protocol toward shared-state assumptions; use event-sourcing patterns instead). Unbounded streams (the closure marker is the structural exit; without bounded scope, the substrate grows without recovery).
+
+  + INSTANCES:
+    - futon3c hop-wiring collab 2026-05-25: scratch at ~/code/storage/hop-wiring-scratch.md + 4 brief whistles → E-pilot-hop-trigger-wiring v1 shipped. Each whistle was a Q or A delta; scratch carried full state.
+    - Shared AST between compiler passes (vs message-passing per transform)
+    - Google Doc + Slack pings (vs reproducing the whole doc in every Slack message)
+    - Microservices with shared cache + small RPC payloads (vs full-payload RPC)
+    - Git as coordination substrate + brief PR comments (vs emailing patches)
+
+  + RELATED:
+    - realtime/authoritative-transcript: also about a single source of truth, but transcript-focused (replay semantics for late joiners); this pattern is about lifting state for active coordination cadence
+    - realtime/structured-events-only: keeps message shape disciplined; complementary
+    - social/scope-bounded-handoff: bounded-task framing is a precondition for this pattern

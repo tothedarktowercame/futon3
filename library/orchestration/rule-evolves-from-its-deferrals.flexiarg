@@ -1,0 +1,45 @@
+@flexiarg orchestration/rule-evolves-from-its-deferrals
+@title Let Rules Evolve From Their Own Deferrals
+@sigils [🌂/?]
+@audience futon agents, classifier maintainers, rule-system designers
+@tone technical
+@style pattern
+
+! conclusion: When a classifier rule defers as well as accepts, route the defers into an explicit typed channel and refine the rule from cluster shape in that channel.
+
+  + context: An active classifier (auto-approve / hard-rule / heuristic) produces both accept and defer outcomes on real traffic.
+
+  + IF:
+    The classifier's outcomes are operator-consequential AND its inputs shift over time (semantics drift, edge cases accumulate, false-positive/false-negative regimes change).
+
+  + HOWEVER:
+    Without explicit failure-tracking, refinement happens by intuition or never. Free-text or unlogged defer reasons cannot be clustered. Continuous reflection burns operator attention; periodic reflection requires a typed substrate to reflect over.
+
+  + THEN:
+    (1) Define defer reasons as a typed enum (closed set, named upfront, kept small). (2) Every defer writes a record `{:reason <enum>, :inputs <hash-or-summary>, :timestamp ...}` to an explicit channel. (3) Periodically (after a sweep, batch, or N events) cluster the channel by `:reason`, by `:reason × <secondary-dim>` (file extension, repo, user-id, whatever the domain offers), and by `:reason × <pattern-suffix>`. (4) Clusters that exceed a threshold (≥3 entries) surface as candidate-rule-refinement proposals: `"N inputs deferred for reason R; consider refinement Y to accept them"`. (5) Operator promotes (with edits), suppresses, or defers each candidate. Promoted refinements are appended to the rule's data-driven invariant set.
+
+  + BECAUSE:
+    The defer queue is a prediction-error signal in the AIF sense — the rule's expected outcome was "accept" but the actual outcome was "defer." Cluster patterns in the defer-reason space surface where the rule is consistently wrong. Each cluster IS a candidate refinement readable directly off the data, without the operator having to invent it. Rules that evolve from their own observed failures stay calibrated against drift; rules without this channel rot.
+
+  + NEXT-STEPS:
+    - evidence: count defers per period, broken down by reason; track distribution shape over time
+    - evidence: count candidate-rule proposals generated per reflection cycle; track promoted-vs-suppressed-vs-deferred ratio
+    - evidence: measure defer-rate reduction in the period following each promoted refinement (success metric: refinement-promoted → next-period defer-reduction)
+    - evidence: detect rule drift via defer-rate trajectory — sustained upward trend on a reason cluster means the rule is losing calibration on that axis
+    - evidence: assert the defer-reason enum stays closed-set (no schema drift); enum-extension is itself an operator decision worth tracking
+    - evidence-shape: {:defer/count :int, :defer/reasons {:keyword :int}, :defer/secondary-cluster {[:keyword :string] :int}, :candidates/proposed :int, :candidates/promoted :int, :candidates/suppressed :int, :defer-reduction-pct :float, :enum-extensions [:keyword]}
+
+  + DOES-NOT-APPLY:
+    Rules applied rarely or with low-consequence outcomes (overhead not justified). Domains where defer reasons cannot be enumerated (the typed channel is impossible). Systems where the operator cannot act on candidates promptly (the channel becomes a pile of unprocessed signals; the rule rots faster than it can evolve).
+
+  + INSTANCES:
+    - futon3c street-sweeper INV-17 v2 reflection 2026-05-25: 142 defers from one sweep → 5 coarse + ~10 fine-grained candidate-INVs; promoting one (INV-18 test-context-paths skip security check) reduced :security-sensitive-diff defers 34 → 3 on next sweep
+    - Spam filter false-positive learning (user "not spam" clicks = defer-channel)
+    - Compiler diagnostic refinement from `// suppress` cluster analysis
+    - Test-coverage gap analysis from skipped-test reasons
+    - Prediction-market resolution-failure mode mining
+
+  + RELATED:
+    - realtime/learn-as-you-go: also about logging what works/fails; this pattern is the structured, typed-channel + clustering variant specific to rule refinement (the prior pattern is freeform learning notes)
+    - aif/prediction-error: the underlying AIF-loop shape this pattern instantiates for rule design specifically (rather than for action selection)
+    - code-coherence/dead-code-hygiene: relates by analogy — also lets a rule's effect (unused-flag) feed back into the rule's evolution

@@ -1,0 +1,132 @@
+@flexiarg peripherals/split-transport-from-embodiment
+@title Split Transport From Embodiment
+@sigils [🚂/載]
+@audience peripheral designers, mission authors, architects
+@tone foundational
+@style pattern
+@keywords transport, embodiment, separation-of-concerns, layering, WS, presence, cursor, editor, multiplexing, peripheral-design
+@references [peripherals/constrained-execution-envelope peripherals/surface-earns-inhabitation peripherals/read-existing-seam-before-implementing peripherals/canonical-typed-event-vs-side-channel]
+
+! conclusion: A peripheral has two distinct concerns — how it moves bytes (transport) and how it manifests as presence (embodiment). Conflating them produces peripherals that cannot be re-transported, re-embodied, or composed.
+
+  + context: You are designing a peripheral that has a perceptible surface:
+    cursor presence in an editor, a notification pop, a streaming display,
+    a chat bubble. The peripheral both moves data and produces a felt
+    presence in some surface.
+
+  + IF:
+    The peripheral has both an "over the wire" dimension (how messages
+    arrive and depart) and an "in the world" dimension (how the agent
+    or operator experiences the peripheral's effect).
+
+  + HOWEVER:
+    Mission authors and first-pass designers typically describe the
+    peripheral as a single thing: "the cursor peripheral broadcasts
+    cursor positions over WebSocket." Read carefully: this sentence
+    fuses three concerns — transport (WebSocket), payload schema
+    (cursor positions), and embodiment (a cursor showing up in someone
+    else's editor). When implemented as a single thing, the peripheral
+    cannot be swapped for a different transport (IRC, drawbridge), cannot
+    be re-embodied (statusline indicator instead of cursor overlay), and
+    cannot be composed with other peripherals that need the same
+    transport but a different embodiment.
+
+    + FAILURE-MODES:
+      - Tight-coupling of WS to overlay: changing the renderer requires
+        touching the transport code; changing the transport requires
+        touching the renderer.
+      - Embodiment without transport contract: the peripheral shows up in
+        the editor but there is no documented event schema another agent
+        could implement against. The peripheral is a closed loop.
+      - Transport without embodiment contract: bytes flow but no agent
+        knows how to render them as presence. The transport is dead.
+      - Embodiment-as-mission-name: naming the mission after the
+        embodiment ("cursor peripheral") narrows the design space and
+        masks the transport question entirely.
+
+  + THEN:
+    Split the design explicitly into two layers and design each on its
+    own terms:
+
+    1. **Transport layer** — answers: what events flow, in what schema,
+       over what channel, with what reliability, with what backpressure,
+       with what consent? The transport must be describable without
+       reference to any specific UI surface. Other agents and other
+       peripherals must be able to participate in the transport without
+       sharing the embodiment.
+
+    2. **Embodiment layer** — answers: how does presence manifest in the
+       surface where the operator/agent perceives it? Cursor overlay?
+       Statusline glyph? Modeline indicator? Posframe? Each embodiment
+       is a distinct rendering of the same transport. The embodiment
+       must be describable as a function of transport events.
+
+    Composition rule: the transport layer never imports from the
+    embodiment layer. The embodiment layer subscribes to transport
+    events. New embodiments are added by writing new subscribers; new
+    transports are added by porting the event schema to a new channel.
+
+    For missions about peripherals with both layers, the mission name
+    should encode both. "Cursor peripheral" becomes "presence transport
+    + cursor embodiment." The two halves can then have their own
+    seam-reads, their own design questions, and their own delivery
+    schedules.
+
+  + BECAUSE:
+    The stack already pays for this split implicitly everywhere it works:
+    drawbridge separates message routing from agent representation; the
+    War Machine separates the AIF engine from the markdown/web UI
+    renderers; the REPL separates the chat protocol from the posframe
+    surface. Where peripherals fail to be portable or composable, it is
+    almost always because the split was elided at design time.
+
+    The deeper reason is that transport and embodiment evolve at
+    different timescales. Transport schemas are slow-changing
+    institutional artefacts (changing them breaks every consumer).
+    Embodiments are fast-changing UX artefacts (a posframe today, an
+    overlay tomorrow). When the two are fused, the embodiment's
+    fast-changing nature contaminates the transport — and the
+    transport's institutional weight ossifies the embodiment.
+
+    This split is also what makes peripherals composable. Two
+    peripherals that share a transport layer can coordinate (cursor
+    presence + selection presence both ride the same "editor presence"
+    event stream). Two peripherals that share an embodiment surface can
+    cooperate (a statusline that shows both build status and presence
+    count). Without the split, every peripheral is a silo.
+
+    + evidence: M-emacs-cursor-peripheral (2026-05-24, codex-8): the
+      original mission described "the cursor peripheral" as a single
+      concept. Codex's seam-read identified that the mission was really
+      proposing a presence transport plus a cursor-overlay embodiment;
+      the rewrite separated them. The transport could then be reused
+      for other presence concerns (selections, viewport ranges) and the
+      embodiment could be swapped (overlay, statusline, posframe).
+
+    + evidence: futon3c War Machine: the AIF backend emits structured
+      events; the markdown renderer (Emacs *War Machine* buffer) and
+      web UI (hex layout) are two embodiments of the same transport.
+      Adding the R-Criterion Status section to the markdown renderer
+      did not require touching the web UI, and vice versa, precisely
+      because the split was honoured.
+
+    + evidence: crdt.el (Emacs CRDT for collaborative editing): the
+      transport is a CRDT-over-TCP protocol; the embodiment is the
+      cursor/region overlays in the buffer. The two are cleanly
+      separated; other embodiments (presence indicators in modeline)
+      could be added without touching the CRDT layer.
+
+  + NEXT-STEPS:
+    - In every peripheral mission, rename concepts so that transport
+      and embodiment have distinct names. "Cursor peripheral" → "presence
+      transport + cursor overlay."
+    - For each layer, do an independent seam-read (see:
+      peripherals/read-existing-seam-before-implementing).
+    - When reviewing peripheral code, the test for split-cleanliness is:
+      could a second embodiment be added without touching the transport
+      module? Could the transport be ported to a different channel
+      without touching the embodiment module?
+    - For M-war-machine-pilot specifically: the WM peripheral's transport
+      (bells, walkie-talkie, whistle, conductor steps) and its
+      embodiment (Emacs *War Machine* buffer, web hex UI, future overlays
+      on operator's editor) must be split-clean before INSTANTIATE.

@@ -1,0 +1,149 @@
+;; eoi-client-meeting-scenario-development.edn — flash profile per ~/code/algorithms/eoi-engine.md
+;;
+;; **Proto-flash status**: first instance of this flash type.  Authored
+;; 2026-05-25 by claude-2 to support Joe's pre-Eric-meeting work for
+;; the VSAT-PoC continuation 2026-Q2-Q3.  Context-handles are the
+;; per-scenario handoff docs at
+;; `~/code/futon5a/holes/missions/M-expressions-of-interest.handoffs/scenario-eoi-handoff-{vsatarcs,vsatlatarium,vsatelier}.md`.
+;;
+;; Why this is its own flash (and not just `eoi-outward`): the prior
+;; outward EoIs were first-contact or one-shot applications.  This case
+;; is qualitatively different — the engagement is *active*, the immediate
+;; reader is *named* (Eric White, VSAT principal), the artefact is one
+;; of a *set* of scenarios meant to be read together, and each scenario
+;; carries an **ehipassiko demo criterion** (what's the minimum live
+;; thing that makes the scenario "real"?).  None of the existing flashes
+;; covers this register cleanly.  Per eoi-engine spec bootstrap-parallel,
+;; this first run captures questions-that-worked into :flash/question-set;
+;; subsequent runs (VSATLATARIUM, VSATELIER) refine.  After ~3 runs
+;; (one per scenario) the proto-flash should stabilise.
+
+{:flash/id            "eoi-client-meeting-scenario-development"
+ :flash/applies-to    "Scenarios developed for an existing consulting client where (a) the engagement is active (not first-contact), (b) the immediate reader is named and known to the operator, (c) the artefact is one of a set meant to be read together as a coherent proposal, and (d) each scenario carries an ehipassiko demo criterion: a minimum live thing that makes the scenario real rather than aspirational."
+ :flash/predicts      {:composite-arrow  [:right-view :right-intention :right-speech :right-mindfulness :right-livelihood]
+                       :round-default    "first-contact"   ; scenarios are first-contact for the *reader-in-fiction* even when the engagement isn't
+                       :round-collapse?  false}            ; allow multi-round refinement; due-date drives natural closure (e.g. Eric meeting tomorrow)
+
+ :flash/question-set
+ [{:q/id   :view
+   :q/path-arrow :right-view
+   :q/round-tag  :essential-round-1
+   :q/prompt     "What would stay true across whatever specific protagonist-shape or audience-shape emerges, that would make this still-be-a-<scenario-module>-scenario rather than drifting into a generic feature-spec or a competitor's framing?  Read the parent EoI's invariance claim from the context-handle and rephrase as your own."
+   :q/style      :invariance-from-parent-eoi
+   :q/branch-on  :substrate-claim-shape
+   :q/first-run-validated  false}
+
+  {:q/id   :intention
+   :q/path-arrow :right-intention
+   :q/round-tag  :essential-round-1
+   :q/prompt     "Which prior <scenario-module> work — your own use, a delivered feature, a documented architecture, a value-chain analysis — does this scenario grow from?  Name the predecessor that gives the scenario its rooted-not-aspirational quality."
+   :q/style      :predecessor-anchor
+   :q/branch-on  :module-implementation-status
+   :q/first-run-validated  false
+   :q/first-run-note       "Status of the module matters: implemented (VSATLAS/VSATLATARIUM/VSATARCS) → name the delivered feature; conceptual-only (VSATELIER) → name the strongest articulated form (scope doc, value-chain analysis, prior session)."}
+
+  {:q/id   :speech
+   :q/path-arrow :right-speech
+   :q/round-tag  :essential-round-1
+   :q/prompt     "How does the scenario read to its three audiences — the protagonist-in-fiction, the immediate-broker (Eric), and your future-self re-reading?  Which voice is dominant, and what's the discipline that keeps the other two visible without crowding the dominant one?"
+   :q/style      :audience-stratification
+   :q/branch-on  :reflexive?
+   :q/first-run-validated  false
+   :q/first-run-note       "Reflexivity is per-scenario; VSATARCS is the explicitly-reflexive one (Joe in the scenario); VSATLATARIUM and VSATELIER may or may not be."}
+
+  {:q/id   :mindfulness
+   :q/path-arrow :right-mindfulness
+   :q/round-tag  :essential-round-1
+   :q/prompt     "What is the **ehipassiko demo criterion** for this scenario — the minimum live thing that lets a reader come-and-see rather than take your word for it?  Options range from concrete (live walkthrough with a real candidate-reader in the room) to recursive (the scenario document IS the demo).  Name yours."
+   :q/style      :runnable-evidence
+   :q/branch-on  :demo-recursivity-vs-concreteness
+   :q/first-run-validated  false
+   :q/first-run-note       "This is the flash's signature question — the other flashes don't ask it.  Distinguish: 'I will run a demo of X' (concrete) vs 'this document, in its reading, IS the demo' (recursive)."}
+
+  {:q/id   :livelihood
+   :q/path-arrow :right-livelihood
+   :q/round-tag  :essential-round-1
+   :q/prompt     "Running this scenario as part of the continuation-PoC commits Hyperreal-time + opportunity-cost.  Which other Hyperreal positions or engagements does it foreclose by being on the table?  Where's the honest cost-test that says 'this scenario buys X by giving up Y'?"
+   :q/style      :foreclosure-mechanics
+   :q/branch-on  nil
+   :q/first-run-validated  false}
+
+  {:q/id   :audience-map
+   :q/path-arrow :scenario-specific
+   :q/round-tag  :essential-round-1
+   :q/prompt     "Confirm or refine the audience map from the context-handle: immediate-reader, scenario-protagonist, protagonist-reader (the 'you' in the scenario), and future-paying-customer (post-PoC).  Which is the load-bearing reader for this scenario's purpose?"
+   :q/style      :audience-table
+   :q/branch-on  nil
+   :q/first-run-validated  false
+   :q/first-run-note       "Scenario-specific question outside the 5-arrow composite: scenarios live or die on whether their audience-map is honest."}
+
+  ;; Predicted tensions (extracted from context-handle = scenario-eoi-handoff-*.md).
+  ;; Each gets one turn during step 6 of the engine loop; Joe tags each address-now /
+  ;; dialogue-debt-defer / decision-debt-defer / rhythm-debt-defer / not-applicable.
+
+  {:q/id   :tension-existing-vs-first-contact
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :speech-act-discipline
+   :q/prompt     "Predicted tension: the engagement is *active* (35.5h delivered, 3 paid invoices) but the scenario reads as if first-contact for the reader-in-fiction.  Does the engagement-history surface inside the scenario, sit alongside, or stay invisible?  address-now or defer?"
+   :q/first-run-validated  false}
+
+  {:q/id   :tension-scenario-set-coherence
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :dialogue-debt
+   :q/prompt     "Predicted tension: each scenario is read alone but lands in a set of (target) three.  What does this scenario assume the reader has already read in the other scenarios — and what does it carry on its own?  address-now or defer to the set-assembly step?"
+   :q/first-run-validated  false}
+
+  {:q/id   :tension-ehipassiko-vs-narrative
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :speech-act-discipline
+   :q/prompt     "Predicted tension: the ehipassiko demo criterion is a *promise of runnable evidence*; the scenario-as-fiction is a *narrative invitation*.  These two registers can collaborate or compete.  Which wins when they pull in different directions?  address-now or defer?"
+   :q/first-run-validated  false}
+
+  {:q/id   :tension-protagonist-voice
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :speech-act-discipline
+   :q/prompt     "Predicted tension (VSATARCS-flagged but possibly broader): the protagonist-in-fiction and the historical-author are not identical.  Where in this scenario does the engine need to disambiguate 'Joe' from 'protagonist-Joe-as-character'?  address-now or defer?"
+   :q/first-run-validated  false
+   :q/first-run-note       "From VSATARCS handoff §2 — may apply only when the scenario is reflexive."}]
+
+ :flash/tension-surface
+ {:source    "context-handle: scenario-eoi-handoff-<module>.md at ~/code/futon5a/holes/missions/M-expressions-of-interest.handoffs/"
+  :extract   "Surface tensions are the asymmetries between the scenario's narrative shape and the engagement's actual contour: existing-engagement-narrated-as-first-contact, single-scenario-in-a-set-of-three, demo-criterion-vs-fiction-register, and protagonist-voice-vs-author-voice when reflexive.  The context-handle's §2 (Flash + adaptation) and §3 (Audience map) name the structural tensions explicitly; §4 (Ehipassiko demo criterion) names the standing demo question for each module."
+  :subtype-enum  #{:dialogue-debt :decision-debt :rhythm-debt :speech-act-discipline}
+  :speech-act-discipline-is-always-round-1?  true}
+
+ :flash/closure
+ {:rule  "all :essential-round-1 questions answered AND :audience-map answered AND all :speech-act-discipline-tagged predicted-tensions addressed (address-now content supplied OR explicitly retagged) AND Joe explicitly closes OR engine detects closure"
+  :soft-floor  6   ; 5 essentials + audience-map before engine considers closing
+  :hard-cap   14}  ; 10 questions + up to 4 follow-ups
+
+ :flash/assembly
+ {:order      "by composite-arrow then by tension-subtype; audience-map surfaces as own section at scenario top"
+  :rule       "ordering and connective tissue AI-written; substantive sentences are Joe's literal answers verbatim per eoi-engine spec invariants (verbatim with voice-preserving copy-edit; paraphrase forbidden; no inline placeholders inside artefact body).  When scenario is reflexive (per :speech response), engine MUST mark each substantive sentence as :voice/historical-joe or :voice/protagonist-joe before assembly."
+  :paraphrase-forbidden?  true
+  :template-pointer  "library/peripherals/head-flash/assembly/eoi-client-meeting-scenario-development.template"
+  :template-status   :proto-flash-pending-assembly-template
+  :output-target     "~/code/futon5a/holes/missions/M-expressions-of-interest.strawmen/hyperreal-current-director.md (append as new §; or per-scenario file at ~/code/futon5a/holes/missions/M-expressions-of-interest.strawmen/scenario-<module>.md per operator preference)"}
+
+ :flash/sniff-paths
+ ["**/M-expressions-of-interest.handoffs/scenario-eoi-handoff-*.md"
+  "**/M-expressions-of-interest.handoffs/vsat-*-eoi-handoff.md"]
+
+ :flash/metadata
+ {:authored-by  "claude-2"
+  :authored-on  "2026-05-25"
+  :first-run    :pending
+  :seed-context "Joe pre-meeting work for VSAT-PoC continuation 2026-Q2-Q3 (Eric White meeting Tue 2026-05-26); three scenarios planned: VSATARCS (reflexive; module exists), VSATLATARIUM (3D/WebXR; module exists), VSATELIER (facilitation; conceptual-only — first implementation)."
+  :predecessor-flash  "eoi-outward (Glasgow shape) — the VSATARCS handoff §2 names eoi-outward as the closest existing fit; this profile is its scenarios-for-existing-client refinement."
+  :related-flashes    ["eoi-outward" "eoi-outward-one-shot" "eoi-inward-operator-foreword"]
+  :open-questions-for-refinement
+  ["After N=3 runs (one per scenario): which predicted-tensions held universally vs scenario-specific?"
+   "Did :audience-map need to be one of the 5 essentials, or is it correctly outside the composite?"
+   "Did the ehipassiko-demo-criterion question (:q/id :mindfulness) generalise across the 3 modules, or did each module need its own phrasing?"
+   "Does the proto-flash composite-arrow [:right-view :right-intention :right-speech :right-mindfulness :right-livelihood] hold, or does scenarios-for-existing-client warrant a different composite (e.g. Right Effort might surface — clarity-probe pattern from inward flashes)?"]
+  :bootstrap-parallel-note "Per eoi-engine spec: this run authors the first proto-flash (this file); subsequent runs (vsatlatarium, vsatelier) refine.  Question phrasing may be revised after each run captures what worked.  After all three scenarios run, consolidate :first-run-notes back into this file."}
+}

@@ -1,0 +1,140 @@
+@flexiarg peripherals/read-only-first-then-extend
+@title Read-Only First, Then Extend
+@sigils [👁/觀]
+@audience peripheral designers, agent implementers, operators
+@tone foundational
+@style pattern
+@keywords read-only, blast-radius, escalation, observer, pair, collaborate, consent-gate, presence, follow, scout, write-permission
+@references [peripherals/constrained-execution-envelope peripherals/inhabitation-feeds-evolution peripherals/surface-earns-inhabitation peripherals/split-transport-from-embodiment]
+
+! conclusion: A new peripheral's first instantiation should be read-only — observing, displaying, not writing. Write capability is added in a separate, later instantiation once observation has revealed what writes actually need to look like.
+
+  + context: You are about to instantiate a new peripheral. The mission
+    describes both observation and action: see other agents' cursors AND
+    move your own cursor visible to them; receive bells AND ring them;
+    watch the War Machine state AND inject judgements.
+
+  + IF:
+    The peripheral, if fully implemented, would both read shared state
+    and write to it — affecting other agents, other operators, or
+    persistent substrate.
+
+  + HOWEVER:
+    Writing is irreversible in ways that observing is not. A misshapen
+    observation produces a confusing display the operator can ignore. A
+    misshapen write corrupts a substrate, surprises a collaborator,
+    triggers downstream cascades, or — in the worst case — competes with
+    another agent for write-ownership the peripheral did not know it
+    was claiming. The full peripheral's blast radius is large; the
+    read-only subset's blast radius is zero.
+
+    + FAILURE-MODES:
+      - Write-before-shape-known: the peripheral writes events whose
+        schema turns out to be wrong because nobody observed what the
+        right schema would be. Now there is committed wire data to
+        migrate.
+      - Bidirectional from day one: the peripheral both reads and writes
+        in v1, so any bug is in the bidirectional interaction surface,
+        which is the hardest possible bug to debug.
+      - Consent-elided: the peripheral's writes cross a consent boundary
+        that nobody noticed because the design was focused on the
+        round-trip experience, not on the per-direction implications.
+      - Read-only as permanent: the converse failure — building the
+        observer and never extending it, so the peripheral never closes
+        its loop and never feeds the Baldwin cycle. Read-only is a
+        first step, not a terminal state.
+
+  + THEN:
+    Instantiate the peripheral in three escalating stages, each with its
+    own checkpoint and consent step:
+
+    1. **Observer stage (read-only)** — the peripheral subscribes to the
+       transport, renders presence/state in the embodiment surface, and
+       writes nothing back. The operator/agent can see what the
+       peripheral does and decide whether the observation is
+       well-shaped. Blast radius: zero. Exit criterion: the observation
+       is informative enough that "what writes should look like" becomes
+       discoverable.
+    2. **Pair stage (consent-gated write)** — the peripheral can propose
+       writes, but each write requires explicit consent (a confirmation
+       step, a key press, a bell-ack roundtrip). Blast radius: bounded
+       by per-write consent. Exit criterion: the writes have shown a
+       stable schema and the consent prompts are no longer surprising.
+    3. **Collaborate stage (envelope-bounded write)** — the peripheral
+       writes autonomously within a documented envelope (specific
+       targets, specific event types, specific time windows). Consent is
+       no longer per-write but per-envelope-grant. Blast radius: bounded
+       by the envelope. Exit criterion: documented stable behaviour
+       under autonomous operation.
+
+    Each stage is a separate landing. You do not ship Pair without first
+    landing Observer; you do not ship Collaborate without first landing
+    Pair. Each stage produces its own evidence and its own Baldwin-loop
+    data that informs the next stage's design.
+
+  + BECAUSE:
+    The escalation matches the natural epistemic order. To know what
+    writes should look like, you need to observe what is being read and
+    where the gaps are. To know what consent should feel like, you need
+    to have made some writes and noticed the friction. To know what
+    envelope is safe, you need to have made consent-gated writes long
+    enough to see the failure modes.
+
+    Skipping stages means designing later stages on speculation rather
+    than observation. Speculative design is exactly what the peripheral
+    framing is meant to displace.
+
+    The pattern also matches the consent-gate-as-locus-of-WM-I4
+    principle: the consent step is a first-class artefact, and the
+    migration from supervised to autonomous is the swap of operator-
+    consent for autopen-consent at a single, documented location. That
+    swap is only safe after the operator has spent enough time
+    consenting to know what they are signing off on. The Pair stage is
+    where that knowledge accumulates.
+
+    Crucially, "read-only first" is not the same as "don't ship anything
+    until you understand everything." Observer is a real shipped
+    peripheral — it has inhabitation, it produces value (the display is
+    used), it generates Baldwin-loop data. It is just a peripheral whose
+    capability is exactly read, no more.
+
+    + evidence: M-emacs-cursor-peripheral (2026-05-24, codex-8): Codex
+      proposed instantiating the cursor peripheral as read-only first
+      (display other agents' cursors without broadcasting own position),
+      then pair (broadcast own position with explicit opt-in), then
+      collaborate (autonomous co-presence). Each stage maps to a
+      separate landing with separate consent semantics.
+
+    + evidence: crdt.el (Emacs CRDT): the canonical workflow has
+      "follow" mode (you observe another user's cursor) as a distinct
+      capability from "share" mode (you broadcast your own state).
+      Follow is strictly safer to enable; share requires more trust.
+
+    + evidence: M-war-machine-pilot (futon3c, DERIVE 2026-05-24): the
+      mission's Pilot-I1 (consent-gated-substantive-action) and its
+      envelope design (direct write within envelope; consent-gate at
+      substantive granularity) implicitly assumes a path from observer
+      to pair to collaborate. Making the stages explicit clarifies
+      what "v0 audit by re-invoked claude-9" actually validates.
+
+    + evidence: futon3c blackboard backpressure
+      (project_blackboard_backpressure, agent memory): hot paths
+      synchronously block on emacsclient. A peripheral that wrote into
+      those paths before observing the backpressure topology would
+      cascade. Observer-first surfaces the backpressure topology BEFORE
+      the peripheral takes a write-position in it.
+
+  + NEXT-STEPS:
+    - For every new peripheral, define the three stages explicitly in
+      the mission's IDENTIFY or MAP phase. Each stage gets its own
+      success criteria and its own bell-ready landing.
+    - When estimating timeline, treat the three stages as three
+      missions' worth of work, not one. Observer alone can ship in
+      hours; Pair takes days; Collaborate takes weeks or months.
+    - For M-war-machine-pilot specifically: the v0 pilot should be the
+      Observer-stage version of the WM peripheral. The audit by
+      claude-9-re-invoked validates Observer shape. Pair and Collaborate
+      stages are follow-on missions.
+    - If an operator asks for "v1 with everything," push back with the
+      stage breakdown. The conversation about which stage maps to which
+      timeline is itself a Baldwin-loop event.

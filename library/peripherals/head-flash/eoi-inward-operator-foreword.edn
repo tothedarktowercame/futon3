@@ -1,0 +1,136 @@
+;; eoi-inward-operator-foreword.edn — flash profile per ~/code/algorithms/eoi-engine.md
+;;
+;; **Proto-flash status**: first instance of this flash type.  Authored
+;; 2026-05-20 to support a simulated run authoring an Operator's
+;; Foreword for the futon stack, with `~/code/futon7a/vsatarcs.html`
+;; as the context-handle.  Per the eoi-engine spec's bootstrap-parallel:
+;; the first simulated run captures questions-that-worked into this
+;; file's `:flash/question-set`; subsequent runs draw from it; ~3-5
+;; runs across the eoi-inward-* family stabilise the proto-flashes.
+;;
+;; Spec deviation noted: this flash is `:eoi-inward-*` but the artefact
+;; isn't a mission HEAD or an institution-object — it's an Operator's
+;; Foreword to an existing apparatus.  Closest sibling in the spec's
+;; enumeration: `eoi-inward-mission` (inward; constituted stance;
+;; clarity-probe replaces diagnostic-probe).  Same shape inherited;
+;; artefact-template-pointer points to a new template.
+
+{:flash/id            "eoi-inward-operator-foreword"
+ :flash/applies-to    "Inward articulation: operator's foreword to an existing apparatus (the futon stack) explaining why the operator is interested in it.  Context-handle is the apparatus's reader-side rendered surface (today: ~/code/futon7a/vsatarcs.html)."
+ :flash/predicts      {:composite-arrow  [:right-view :right-intention :right-speech :right-mindfulness :right-livelihood]
+                       :round-default    "first-contact"
+                       :round-collapse?  false}
+
+ :flash/question-set
+ [{:q/id   :view
+   :q/path-arrow :right-view
+   :q/round-tag  :essential-round-1
+   :q/prompt     "Reading the apparatus as it stands today via the rendered surface — typed belief per entity, per-tick trace, bilateral cross-side observability, consent-gated writer-capability — what does this *discipline* actually buy you, in your own work?"
+   :q/style      :behavioural-proxy
+   :q/branch-on  :substrate-claim-shape
+   :q/first-run-validated  true
+   :q/first-run-note       "Drew substrate-claim shape directly (\"futonic discipline\" + evolutionary-computing framing); no rephrasing needed."}
+  {:q/id   :intention
+   :q/path-arrow :right-intention
+   :q/round-tag  :essential-round-1
+   :q/prompt     "Why this much apparatus rather than direct work on the papers / products / whatever sits downstream?  What's the pull that makes infrastructure-building worth more attention than the artefacts it would generate?"
+   :q/style      :motivation
+   :q/branch-on  :stack-as-infrastructure-vs-target
+   :q/first-run-validated  true
+   :q/first-run-note       "Drew 'apparatus IS downstream' framing in one move; PhD-on-online-communities lineage surfaced as load-bearing."}
+  {:q/id   :speech
+   :q/path-arrow :right-speech
+   :q/round-tag  :essential-round-1
+   :q/prompt     "What does the apparatus *say* outward when someone other than you reads it?  What's the artefact you'd want a reader to leave with — a claim, a posture, a method, an invitation?"
+   :q/style      :reader-facing
+   :q/branch-on  :speech-act-discipline
+   :q/first-run-validated  true
+   :q/first-run-note       "Drew shortest answer of the round (~2 sentences) — register suits a foreword's invitation-shape."}
+  {:q/id   :mindfulness
+   :q/path-arrow :right-mindfulness
+   :q/round-tag  :essential-round-1
+   :q/prompt     "What does the apparatus teach you to attend to that you wouldn't otherwise?  What perception is sharpened by having typed belief surfaces, bilateral evidence, and a trace you can read?"
+   :q/style      :phenomenological
+   :q/branch-on  nil
+   :q/first-run-validated  true
+   :q/first-run-note       "Drew the slow-evolution-paired-with-fast-evolution-of-agentic-coding insight, which is one of the foreword's most distinctive moves."}
+  {:q/id   :livelihood
+   :q/path-arrow :right-livelihood
+   :q/round-tag  :essential-round-1
+   :q/prompt     "How does the apparatus sit in your actual life-shape — the August 2026 free-soloing constraint, the Hyperreal frame, the Right-Livelihood discipline already articulated in adjacent EoIs?  What does it earn its place by?"
+   :q/style      :life-coherence
+   :q/branch-on  nil
+   :q/first-run-validated  true
+   :q/first-run-note       "Reflexive answer (writing-this-essay-via-claude-8-running-eoi) made the apparatus visible in its own use; the inhabited-mode move that the spec's I7 invariant predicts."}
+  {:q/id   :clarity-probe
+   :q/path-arrow :clarity-probe
+   :q/round-tag  :inward-clarity
+   :q/prompt     "What about this whole apparatus *isn't yet clear to you*?  Per the inward clarity-probe pattern: the answer often surfaces a path-arrow the essentials didn't reach."
+   :q/style      :missing-arrow-detector
+   :q/branch-on  :surfaces-missing-arrow
+   :q/first-run-validated  true
+   :q/first-run-note       "Third N=3 case for clarity-probe-as-missing-arrow-detector: surfaced Right Effort / Right Action via 'giving the underlying work a better expression' + AIF² iterative-refinement framing.  Pattern holds."}
+
+  ;; Predicted tensions (from context-handle = vsatarcs.html).  Each gets
+  ;; one turn during step 6 of the engine loop; Joe tags each address-now /
+  ;; dialogue-debt-defer / decision-debt-defer / rhythm-debt-defer / not-applicable.
+
+  {:q/id   :tension-stack-as-meta-infrastructure
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :speech-act-discipline
+   :q/prompt     "Predicted tension surfaced from vsatarcs.html: the apparatus IS meta-infrastructure — substrate for cyborg-grade thinking, not a primary deliverable.  Want to address-now in the artefact, or defer (debt-tagged)?"
+   :q/first-run-validated  true
+   :q/first-run-note       "Phrasing as assertion drew a substantive *correction* rather than agreement — Joe rejected the 'not a primary deliverable' framing.  This is feature-not-bug: tension-as-prompt-inviting-correction may be a better register for speech-act-discipline tensions than tension-as-confirmation-request.  Candidate refinement for the eoi-engine spec: speech-act-discipline tension prompts may legitimately phrase the tension *assertively* to invite refutation."}
+  {:q/id   :tension-multi-agent-coordination
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :decision-debt
+   :q/prompt     "Predicted tension: the stack scaffolds multi-agent coordination (Agency, bells / whistles, bilateral-evidence as typed correspondence).  Why scaffold AI-coordination rather than use single-agent workflows?  address-now or defer?"
+   :q/first-run-validated  true
+   :q/first-run-note       "Drew the 'A First Proof Sprint' / Lakatosian-Prover-Critic exemplar plus the operational pattern (Claude-primary + Codex-via-bells + Gibsonian-Jackpot peripherals).  Useful for outward EoIs that need a concrete multi-agent example."}
+  {:q/id   :tension-reader-before-writer
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :rhythm-debt
+   :q/prompt     "Predicted tension: VSATARCs spent most of its cycle being a reader; only recently became a writer (M-vsatarcs-writer L3+L4 then R4+R6+R5 closure).  Why reader-first-then-writer rather than the inverse?  address-now or defer?"
+   :q/first-run-validated  true
+   :q/first-run-note       "Drew the tightest answer of the run (~2 sentences); the rhythm-debt framing landed because Joe already had the writer-before-reader logic articulated (you need to know what you're documenting before you document)."}
+  {:q/id   :tension-completeness-not-closure
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :speech-act-discipline
+   :q/prompt     "Predicted tension: M-EOI introduced 'completeness-not-closure' as the property the corpus should have.  The futon stack instantiates this — apparatus is complete on R1-R11 but the work is not finalised; closures continue accumulating.  Why this property as the target?  address-now or defer?"
+   :q/first-run-validated  true
+   :q/first-run-note       "Drew the morphogenesis framing + the AI-vs-IA distinction (Joe's primary interest in computer-aided-skill-acquisition over computational-autonomy).  Latter is potentially load-bearing for the wider stack's outward speech act."}]
+
+ :flash/tension-surface {:source    "context-handle: ~/code/futon7a/vsatarcs.html (rendered VSATARCs reader surface)"
+                         :extract   "Surface tensions are the recurring patterns the apparatus exhibits that an outward reader would notice as taking-a-position rather than reporting-facts.  4 named above, derived from the R-criteria walkthrough story + the bilateral-evidence framing + the writer-capability arc."
+                         :subtype-enum  #{:dialogue-debt :decision-debt :rhythm-debt :speech-act-discipline}
+                         :speech-act-discipline-is-always-round-1?  true}
+
+ :flash/closure  {:rule  "all :essential-round-1 questions answered AND :clarity-probe answered AND :speech-act-discipline-tagged predicted-tensions all addressed (address-now content supplied OR explicitly retagged) AND Joe explicitly closes OR engine detects closure"
+                  :soft-floor  6   ; 5 essentials + clarity-probe before engine considers closing
+                  :hard-cap   14}  ; 10 questions + up to 4 follow-ups
+
+ :flash/assembly  {:order      "by composite-arrow then by tension-subtype; clarity-probe surfaces as own section if it named a missing arrow"
+                   :rule       "ordering and connective tissue AI-written; substantive sentences are Joe's literal answers verbatim per eoi-engine spec invariants (verbatim with voice-preserving copy-edit; paraphrase forbidden; no inline placeholders inside artefact body)"
+                   :paraphrase-forbidden?  true
+                   :template-pointer  "library/peripherals/head-flash/assembly/eoi-inward-operator-foreword.template"
+                   :template-status   :proto-flash-pending-assembly-template
+                   :output-target     "~/code/futon4/docs/operator-foreword.md (or operator-curated path)"}
+
+ :flash/sniff-paths  ["**/futon{0,4,7,7a}/docs/operator-foreword*"
+                      "**/futon7a/vsatarcs.html"]
+
+ :flash/metadata    {:authored-by  "claude-4"
+                     :authored-on  "2026-05-20"
+                     :first-run    "completed 2026-05-20 (Joe as interviewee; claude-8 as engine)"
+                     :seed-context "vsatarcs.html v0.5.27 — R1-R11 satisfied on VSATARCs side; 19 bilateral entries; 376 tests; 48 stories; reader-criteria axis 8/8"
+                     :bootstrap-parallel-note "Per eoi-engine spec: this run authors the first proto-flash (this file); subsequent eoi-inward-operator-foreword runs draw from + refine it.  Question phrasing may be revised after the run captures what worked."
+                     :first-run-completed-on "2026-05-20"
+                     :first-run-output       "~/code/futon7a/essays/operator-foreword/operator-foreword.md (loaded into Arxana Essays for annotation-driven rewriting; output-target redirected from profile default ~/code/futon4/docs/operator-foreword.md; relocated 2026-05-21 from ~/npt/operator-foreword/ to canonical ~/code/futonN/essays/ home per M-essay-corpus-substrate)"
+                     :first-run-assembly-target-deviation "Joe redirected step-9 write-back from the profile default to Arxana Essays as a working surface, invoking the eoi-engine spec's open-question candidate 'Arxana-Essays-driven tension surfacing (INSTANTIATE-phase)'.  This is the first live invocation of the inverted flow: assemble first → diagnose emergent tensions via Essays annotations → reassemble.  Profile default kept as fallback; recommend updating :flash/assembly :output-target after this run completes its annotation cycle."
+                     :first-run-summary      "10 substantive turns + closure (5 essentials, 1 clarity-probe, 4 predicted tensions, all address-now content-supplied).  Soft-floor 6 → closure at turn 11 (within soft-floor and well under hard-cap 14).  No emergent closure-tensions named (Joe's closure remark was a making-of meta-note, not a content-tension).  Clarity-probe pattern N=3 confirmed (mission-coherence-patterns, Hyperreal Side A, operator-foreword); candidate missing arrow: Right Effort / Right Action.  Voice-preserving copy-edits applied: callaborations→collaborations, interogate→interrogate, second-order-questions→second-order-question."
+                     :first-run-questions-summary "All 10 questions :q/first-run-validated true.  Per-question notes captured inline.  Notable phrasing observation: speech-act-discipline tension prompts (Q7, Q10) framed as assertions invited substantive correction from Joe — this is plausibly a better register for that subtype than confirmation-shape phrasing.  Candidate eoi-engine spec refinement noted on Q7."}
+}

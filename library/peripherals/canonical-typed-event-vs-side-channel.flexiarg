@@ -1,0 +1,155 @@
+@flexiarg peripherals/canonical-typed-event-vs-side-channel
+@title Canonical Typed Event vs Side Channel
+@sigils [📜/典]
+@audience peripheral designers, transport implementers, event-schema maintainers
+@tone foundational
+@style pattern
+@keywords event-schema, typed-event, side-channel, taxonomy, extension, WS, MUSN, frame, first-class, canonical, drift
+@references [peripherals/read-existing-seam-before-implementing peripherals/split-transport-from-embodiment peripherals/progress-heartbeat-distinct-from-cycle-completion realtime/structured-events-only realtime/single-line-transport]
+
+! conclusion: When a peripheral needs to emit or consume something the canonical event taxonomy does not yet describe, extend the taxonomy with a first-class typed event. Do not invent a side channel that bypasses the taxonomy, even if the side channel is cheaper to ship.
+
+  + context: You are wiring a peripheral that needs to communicate something
+    the existing transport (WS pipeline, drawbridge, MUSN events) does not
+    have an event type for: cursor position, heartbeat, consent ack,
+    bell payload metadata.
+
+  + IF:
+    The canonical transport has a typed event taxonomy — a finite,
+    documented set of event shapes that consumers parse and dispatch on.
+
+  + HOWEVER:
+    Adding a new event type to the canonical taxonomy requires:
+    schema authoring, consumer awareness, documentation, maybe a
+    versioning step. It feels heavy. The lightweight alternative is
+    obvious: open a second channel (a sidecar WebSocket, a polling
+    HTTP endpoint, a file-watch, an out-of-band timer) that carries
+    the new thing, with no need to touch the canonical taxonomy.
+
+    The side channel ships in an hour. The taxonomy extension takes
+    half a day. The temptation is overwhelming.
+
+    + FAILURE-MODES:
+      - Two-channel reality: the peripheral now lives in two places at
+        once. Consumers must subscribe to both to get the full picture.
+        Diagnostics fragment across both. Tooling that knew one channel
+        doesn't know the other.
+      - Schema-drift-by-default: the side channel has no taxonomy
+        discipline, so its payload shape drifts freely. Three months
+        later, no one knows what shapes are emitted on it.
+      - Consent-bypass-by-accident: the canonical transport has consent
+        and write-ownership boundaries baked in. The side channel
+        doesn't. Now the peripheral can write things it never had
+        permission to write, because the permission check lived on the
+        path it bypassed.
+      - Observability-bypass: telemetry, audit logging, and replay
+        tooling instrument the canonical transport. The side channel
+        is invisible to them. When something goes wrong on the side
+        channel, there is no record.
+      - "Temporary"-as-permanent: the side channel was supposed to be
+        moved into the taxonomy "later." Later never comes. The temp
+        is now load-bearing.
+
+  + THEN:
+    When the peripheral needs a new event, extend the taxonomy:
+
+    1. **Author the event schema as a first-class type** in the
+       canonical taxonomy. Give it a name, a payload shape, semantics,
+       and a producer/consumer note. The schema lives in the same
+       place all other event schemas live.
+    2. **Add the producer** (the peripheral emits the event on the
+       canonical transport, not on a sidecar).
+    3. **Document the consumer contract** even if there is only one
+       consumer today. The discipline of writing the contract makes
+       future second consumers possible.
+    4. **Update the taxonomy index/docs** so the next reader can find
+       the event by searching the taxonomy, not by reading the
+       peripheral's source.
+    5. **Consume via the same subscription mechanism** other consumers
+       use — same dispatch, same filtering, same backpressure
+       handling, same audit trail.
+
+    If the taxonomy extension is genuinely too heavy for the change at
+    hand, that is itself a signal: the taxonomy may be over-formalised
+    or under-tooled. Fix THAT (lower the cost of adding a typed event),
+    rather than routing around it.
+
+  + BECAUSE:
+    A taxonomy is an institution in Ostrom's sense — a shared resource
+    governed by rules-in-use. Side channels are tragedy-of-the-commons
+    moves: each one is locally cheap, and each one degrades the
+    institutional value of the taxonomy. Once the taxonomy is no longer
+    a complete description of what flows, it stops being trusted as a
+    contract; once it stops being a contract, every new consumer must
+    discover what flows empirically; once that becomes normal, the
+    taxonomy is dead documentation and the wire is a free-for-all.
+
+    Typed events have non-obvious downstream value: replay tooling can
+    deterministically rebuild state from the event log; new consumers
+    can subscribe without coordination; backpressure and prioritisation
+    can be implemented uniformly. Every side channel forecloses on
+    these capabilities for the data it carries.
+
+    The pattern also closes a peripheral-design loop. Heartbeat
+    (peripherals/progress-heartbeat-distinct-from-cycle-completion) is
+    exactly the case: the watchdog needs a liveness signal distinct
+    from cycle events. The wrong move is a separate ping mechanism.
+    The right move is to add a "heartbeat" typed event to the same
+    transport, so watchdogs subscribe to the same wire as everything
+    else.
+
+    The pattern is also the principled defence against the "lightweight"
+    euphemism (feedback_lightweight_euphemism, agent memory): a
+    "lightweight side channel" is the precise shape of work that
+    appears done but isn't institutionalised. Translation: it is a typed
+    event missing its taxonomy entry.
+
+    + evidence: M-emacs-cursor-peripheral (2026-05-24, codex-8): the
+      original sketch had cursor positions broadcast on a parallel WS
+      channel. Codex identified this as a side-channel against the
+      canonical WS transport, and proposed adding a typed
+      "cursor-position" (and later, full "presence") event to the
+      canonical event taxonomy instead. The WS pipeline already had
+      backpressure, audit, and consent semantics; the side channel
+      would have had none.
+
+    + evidence: realtime/structured-events-only (futon3 pattern
+      library): "All inter-agent communication MUST be structured
+      events with documented schemas." This pattern is the peripheral-
+      design corollary: when extending a stack with new communication,
+      extend the taxonomy.
+
+    + evidence: WM API surface (futon3c, 2026-05-23 consolidation):
+      War Machine surfaces (R-Criterion status, R12 apparatus, etc.)
+      are all served via the canonical /api/alpha/war-machine endpoints
+      on port 7070. The Emacs *War Machine* buffer and the web UI both
+      consume from the same canonical endpoints; no side channel for
+      "Emacs-specific" markdown vs "web-specific" JSON. The single
+      canonical surface enabled both clients without divergence.
+
+    + evidence: bell payload schema standardisation (claude-10's
+      parked substrate-creation thread, 2026-05-23/24): exactly the
+      case where bell payloads were drifting in shape across producers.
+      Standardisation = taxonomy formalisation. The fact that the
+      thread exists is evidence that side-channel-like drift had begun.
+
+  + NEXT-STEPS:
+    - Maintain a single canonical event-taxonomy document per transport.
+      Every typed event lives there.
+    - Make taxonomy extension cheap: a template for new event schemas,
+      a quick-add path that doesn't require ceremony. Cost-of-extension
+      should not be the reason side channels exist.
+    - When reviewing a peripheral mission, ask: "what new events does
+      this peripheral introduce? Where in the taxonomy do they live?"
+      If the answer is "they don't, we just emit them," the mission
+      needs revision.
+    - For M-war-machine-pilot specifically: every event the WM
+      peripheral emits (cycle phase changes, judgement events,
+      heartbeats, consent acks, bell payloads) must have an entry in
+      the canonical event taxonomy. The Pair-stage and Collaborate-
+      stage consent acks especially must be typed events, because
+      consent decisions are exactly the data future audit tools will
+      replay.
+    - Cross-link: peripherals/split-transport-from-embodiment — typed
+      events are how the transport layer stays describable
+      independently of any embodiment.

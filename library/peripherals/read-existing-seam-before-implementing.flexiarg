@@ -1,0 +1,128 @@
+@flexiarg peripherals/read-existing-seam-before-implementing
+@title Read Existing Seam Before Implementing
+@sigils [🪡/縫]
+@audience peripheral designers, mission authors, agent implementers
+@tone foundational
+@style pattern
+@keywords seam, infrastructure-fit, mission-rewrite, fork-avoidance, integration, I-4, canonical-path, peripheral-registry, WS-pipeline, frame-format
+@references [peripherals/constrained-execution-envelope peripherals/pattern-becomes-peripheral peripherals/surface-earns-inhabitation futon-theory/stop-the-line agent/state-is-hypothesis]
+
+! conclusion: When a mission proposes building a peripheral, the first move is not to design the peripheral — it is to locate the canonical seams in the existing stack the peripheral must thread through. If the mission as written would fork those seams, rewrite the mission before writing any code.
+
+  + context: A mission has been authored that calls for a new peripheral —
+    a cursor peripheral, an editor peripheral, a notification peripheral.
+    The mission specifies behaviour, surface, and (often) implementation
+    sketch. The temptation is to read the mission and start building.
+
+  + IF:
+    The stack already has canonical infrastructure for one or more of the
+    concerns the peripheral touches: transport (WS pipeline, drawbridge,
+    agency dispatch), event schema (frame format, MUSN events), registration
+    (peripheral registry, agent identity), or consent (gate pipeline,
+    write-ownership boundaries).
+
+  + HOWEVER:
+    Missions are written from the problem side, not the infrastructure side.
+    The author of the mission knows what the peripheral should DO; they may
+    not know that the stack already has a WS event taxonomy that the new
+    peripheral would either extend or fork. If the mission is implemented as
+    written, the result is a peripheral that works but lives parallel to
+    canonical infra — a second WS channel, a second event schema, a second
+    registration mechanism. Each parallel path is a future migration cost
+    and a present source of drift.
+
+    + FAILURE-MODES:
+      - Mission-as-spec: treating the mission's implementation sketch as
+        authoritative when it was authored before the canonical seam was
+        located. The mission is a description of intent, not a design.
+      - Read-but-not-located: searching for related files but not finding
+        the actual seam the peripheral must thread through. Glob and grep
+        are necessary but not sufficient; the seam may be in a transport
+        contract document, a wiring claim, or a peripheral spec — not in
+        a file whose name contains the peripheral's topic.
+      - Forked-by-default: when the canonical seam is hard to find, the
+        default action is to build parallel rather than extend. This is
+        how the stack accumulates two of everything.
+      - Mission-rewrite-skipped: locating the seam, recognising the
+        mission would fork it, but proceeding anyway because "rewriting
+        the mission feels like scope creep." This is exactly when the
+        rewrite is cheapest — before any code commits the fork.
+
+  + THEN:
+    Before writing any code for the peripheral, do a structured seam-read:
+
+    1. **Transport seam**: how do bytes get to and from the peripheral?
+       Is there a canonical WS pipeline, drawbridge channel, or agency
+       dispatch path the peripheral should use? If yes, extend it. If
+       no, write down why no.
+    2. **Event seam**: what is the event taxonomy on that transport? Are
+       there existing frame shapes that cover (or partially cover) what
+       this peripheral emits/consumes? If yes, extend the taxonomy as
+       first-class events, not as out-of-band messages. (See:
+       peripherals/canonical-typed-event-vs-side-channel.)
+    3. **Registration seam**: how does the peripheral identify itself
+       to the stack and to other agents/peripherals? Is there a registry?
+       If yes, register; do not invent a parallel identity scheme.
+    4. **Consent seam**: where does this peripheral cross from "observing"
+       to "writing"? Does the stack have a consent-gate or
+       write-ownership boundary the peripheral must respect?
+       (See: project_consent_gate in agent memory.)
+    5. **Prior-art seam**: has someone built a structurally-similar
+       peripheral before, in this stack or in adjacent open-source
+       projects (crdt.el for cursor presence; LSP for editor-side
+       capability negotiation; ROS topics for typed transport)? Read it
+       fully before designing.
+
+    If any seam is missing in the mission as written, REWRITE THE MISSION
+    before implementing. Rewriting a paragraph is an order of magnitude
+    cheaper than rewriting committed code. The mission rewrite IS the
+    design work the original mission elided.
+
+  + BECAUSE:
+    Invariant I-4 (Read Before You Write) is usually applied at the level
+    of "before creating a new .clj file, search for existing files." This
+    pattern is I-4 applied at the level of MISSIONS: before authoring code
+    against a mission, locate the canonical seams the mission must thread.
+
+    Missions are authored under time pressure, often by operators who know
+    what they want the peripheral to do but not the full geography of the
+    stack. The first agent to pick up the mission has the responsibility —
+    not the option — to do the seam-read the operator could not do, and to
+    push back into the mission if the seams require it.
+
+    The cost of catching a fork at mission-rewrite time is one paragraph.
+    The cost of catching it after one round of implementation is a refactor.
+    The cost of catching it after a release is a deprecation cycle.
+
+    + evidence: M-emacs-cursor-peripheral (2026-05-24, codex-8): the
+      mission was authored to propose a cursor peripheral. Codex began
+      implementation, then stopped and identified that the mission as
+      written would fork the canonical WS pipeline, invent a parallel
+      event schema, and bypass the peripheral registry. Codex proposed
+      rewriting the mission to use existing seams; Joe agreed. The
+      rewrite happened before any cursor-peripheral code was committed.
+      Forks avoided: one WS channel, one event taxonomy, one registration
+      mechanism, one consent boundary.
+
+    + evidence: futon3c invariant I-4 (Read Before You Write): "Writing
+      new code to solve an already-solved problem wastes time, introduces
+      bugs, and ignores hard-won design decisions embedded in the existing
+      implementation." This pattern extends I-4 from files to seams.
+
+    + evidence: M-war-machine-pilot (futon3c, in DERIVE 2026-05-24): the
+      mission's DERIVE explicitly enumerates conductor candidates,
+      transports, peripheral clone-from sources, and Playwright probes
+      BEFORE choosing — the structure encodes the seam-read at the mission
+      level.
+
+  + NEXT-STEPS:
+    - For every new peripheral mission, the IDENTIFY phase must include
+      a seam-read checklist (transport, event, registration, consent,
+      prior-art).
+    - When a mission is rewritten on seam-read grounds, record the
+      rewrite as a checkpoint with the rationale — it is the highest-
+      leverage design work in the mission.
+    - Build a "canonical seams" index in the stack so that future
+      seam-reads are bounded lookups rather than open-ended searches.
+    - When pairing with another agent on a mission, the seam-read is
+      a first-class deliverable, not a precondition assumed satisfied.

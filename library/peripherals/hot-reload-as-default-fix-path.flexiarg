@@ -1,0 +1,152 @@
+@flexiarg peripherals/hot-reload-as-default-fix-path
+@title Hot-Reload As Default Fix Path
+@sigils [♻/續]
+@audience peripheral developers, agents working inside long-running JVMs, operators
+@tone operational
+@style pattern
+@keywords hot-reload, drawbridge, nREPL, JVM, restart, fix-cycle, blackboard, state-preservation, reconstructibility, I-0
+@references [peripherals/constrained-execution-envelope peripherals/inhabitation-feeds-evolution peripherals/read-existing-seam-before-implementing realtime/single-line-transport]
+
+! conclusion: When fixing a peripheral or any code running inside the serving JVM, hot-reload via Drawbridge nREPL is the default fix path. Restart is the exception, taken only when the change crosses a documented reload-safety boundary.
+
+  + context: A peripheral (or anything else running inside the futon3c JVM)
+    has a bug. You have a fix. You need to deploy the fix to the running
+    process so observation, testing, or operator use can continue.
+
+  + IF:
+    The JVM is currently serving requests, holding session state, hosting
+    other agents' work-in-progress, or simply has expensive warmth (JIT-
+    compiled hot paths, loaded XTDB indexes, established WS connections).
+
+  + HOWEVER:
+    The instinct from non-JVM development is "restart and see." That
+    instinct is exactly wrong here. Restarting the JVM:
+
+    - Kills every in-flight session (operator's REPL, paired agents,
+      WS subscribers, scheduled tasks)
+    - Discards JIT warmth (the first N requests after restart are
+      slow; this slowness propagates as backpressure cascades —
+      see project_blackboard_backpressure)
+    - Forces every peripheral that depends on JVM state to re-bootstrap
+      (atoms reload from disk, caches re-warm, connections re-establish)
+    - Triggers cascading reconnections in clients (Emacs *War Machine*
+      buffers, web UIs, IRC bridges) that were not the target of the fix
+
+    Restart is not a "clean slate" — it is an outage taken so the
+    developer doesn't have to think about reload semantics.
+
+    + FAILURE-MODES:
+      - Restart-by-default: every code change becomes a JVM bounce.
+        Operator and paired agents experience the bounce as cascading
+        disconnects.
+      - Reload-without-reading-protocol: blindly :reloading every
+        changed namespace, including third-party defprotocol namespaces
+        (xtdb.api, drawbridge core protocols). Reload of a protocol-
+        defining ns invalidates every implementer; the cascade poisons
+        the JVM and the only recovery IS a restart. (See:
+        feedback_drawbridge_protocol_reload, agent memory.)
+      - Reload-as-magic: assuming reload "just works" without
+        understanding which namespaces are reload-safe and which are
+        not. Reload safety is a property of the namespace design, not
+        of the reload mechanism.
+      - Hot-fix-without-disk-truth: changing something via REPL eval
+        without writing the change to disk first. The fix is lost on
+        the next restart and is invisible to other agents reading the
+        source. Reload must always follow disk-write, never replace it.
+
+  + THEN:
+    Make hot-reload the default fix path with these disciplines:
+
+    1. **Edit on disk first, then reload**. The disk is the source of
+       truth. Reload propagates disk state into the JVM. Reloads that
+       don't correspond to disk state are non-reconstructible.
+    2. **Reload only your own namespaces**. Third-party namespaces
+       (xtdb.api, anything that defines a protocol used by other code)
+       are off-limits for reload. If you need them reloaded, restart is
+       the honest answer — but it should be a deliberate decision, not
+       a habit.
+    3. **Reload is safe iff it equals a restart**. The test for
+       reload-safety on a namespace: if you replace this namespace's
+       current state with a fresh load from disk, does the JVM continue
+       to behave correctly? If yes (atoms re-bootstrap from disk, no
+       protocol cascade, no orphaned subscribers), the namespace is
+       reload-safe. If no, restart. (See: feedback_reload_safety, agent
+       memory: protocol-defining ns AND atom-without-bootstrap-replay
+       are the unsafe cases.)
+    4. **Use Drawbridge nREPL, not REPL eval over stdin**. Drawbridge
+       provides session-scoped, observable, audit-loggable evaluation.
+       proof-eval.sh and related tooling wrap it. REPL eval over stdin
+       leaves no trace and bypasses the session contract.
+    5. **For changes that DO require restart**, treat it as an event:
+       announce it via bell, give operator and paired agents a chance
+       to checkpoint, and minimize the window. A restart should feel
+       like a deploy, not like a debugger gesture.
+
+  + BECAUSE:
+    Invariant I-0 (One JVM Is Plenty, futon3c CLAUDE.md) is not just
+    about resource budget — it is about treating the JVM as a single,
+    valuable, long-lived process whose continuity has compounding value
+    over time. Every restart resets the compound interest. The JVM is
+    the blackboard; the blackboard is shared infrastructure; bouncing
+    shared infrastructure to deploy a one-line fix is a category error.
+
+    The pattern also follows from the broader peripheral framing:
+    peripherals generate data through inhabitation
+    (inhabitation-feeds-evolution). A restart discards mid-cycle
+    inhabitation data — frames in flight, half-written evidence, partial
+    bell roundtrips. Hot-reload preserves the data the peripheral was
+    just about to commit.
+
+    Drawbridge is the canonical seam for this
+    (peripherals/read-existing-seam-before-implementing): it exists, it
+    is documented (futon3c/README-drawbridge.md), it has tooling
+    (proof-eval.sh), and it is what other agents in the stack use. A
+    fix path that bypasses it forks the canonical seam.
+
+    The contrapositive is also important: hot-reload-as-default does
+    NOT mean "always hot-reload, never restart." It means the choice is
+    deliberate. Some changes require restart (classpath additions, JVM
+    flag changes, irreversible state migrations). Recognising those
+    cases and announcing the restart honestly is part of the discipline.
+
+    + evidence: multi-watcher fix (2026-05-24, codex-8): Codex used
+      proof-eval.sh to apply the multi-watcher fix to the running
+      futon3c JVM without restart. The fix landed in seconds.
+      Operator session, paired agents, scheduled tasks, and WS
+      subscribers continued uninterrupted. The fix's verification
+      happened on a JVM that was already warm.
+
+    + evidence: feedback_no_server_restart (agent memory): "don't kill
+      JVM processes; use Drawbridge nREPL for code reload." The pattern
+      formalises this as the default, not just a preference.
+
+    + evidence: feedback_drawbridge_protocol_reload (agent memory):
+      "never :reload xtdb.api or any third-party defprotocol via
+      Drawbridge; cascade poisons the JVM, recovery needs restart." The
+      pattern names this as the boundary condition — protocol-defining
+      ns is off-limits.
+
+    + evidence: feedback_reload_safety (agent memory): "reload is safe
+      iff it equals a restart." The pattern lifts this from rule into
+      the test for reload-safety.
+
+    + evidence: futon3c CLAUDE.md I-0: "For code reloads inside the
+      futon3c JVM, use Drawbridge nREPL (per README-drawbridge.md); do
+      not kill and restart the serving JVM." The invariant is in the
+      project's CLAUDE.md; this pattern grounds the why.
+
+  + NEXT-STEPS:
+    - For every peripheral that runs inside the futon3c JVM, document
+      which of its namespaces are reload-safe and which are not. The
+      list belongs in the peripheral's own design doc.
+    - When pairing on a fix, name the fix path explicitly: "hot-reload
+      via Drawbridge" or "deliberate restart, here's why." Don't let
+      the choice happen by reflex.
+    - When designing a new peripheral, design for reload-safety from
+      the start: atoms bootstrap from disk; no protocols defined in
+      hot-edit paths; subscribers re-attach on reload rather than
+      depending on JVM-process-identity.
+    - For M-war-machine-pilot specifically: the WM peripheral's own
+      namespaces should be reload-safe by design. The pilot's audit
+      criteria should include "can be hot-reloaded via Drawbridge
+      without disrupting the WM API surface or in-flight cycles."

@@ -1,0 +1,151 @@
+@flexiarg peripherals/progress-heartbeat-distinct-from-cycle-completion
+@title Progress Heartbeat Distinct From Cycle Completion
+@sigils [💓/搏]
+@audience peripheral designers, conductor implementers, watchdog authors
+@tone foundational
+@style pattern
+@keywords heartbeat, watchdog, progress, cycle, silence, liveness, FM-regulator, tickle, multi-watcher, false-positive, false-negative
+@references [peripherals/constrained-execution-envelope peripherals/inhabitation-feeds-evolution peripherals/canonical-typed-event-vs-side-channel realtime/liveness-heartbeats realtime/loop-failure-signals]
+
+! conclusion: A peripheral's "is it alive?" signal must be a progress heartbeat distinct from its cycle completion event. Conflating the two produces watchdogs that fire on healthy long-running cycles (false positives) and watchdogs that fail to fire on wedged cycles still inside their nominal duration (false negatives).
+
+  + context: A peripheral has a cycle — a unit of work it opens, processes,
+    and closes. A watchdog (or supervisor, or conductor, or operator) wants
+    to know whether the peripheral is alive: making progress, or stuck.
+
+  + IF:
+    The peripheral's cycles can vary in legitimate duration (some take
+    seconds, some take minutes), and the watchdog needs to distinguish
+    "still working on it" from "wedged."
+
+  + HOWEVER:
+    The naive implementation uses cycle-open-duration as the liveness
+    signal: if a cycle has been open longer than threshold T, the
+    peripheral is "stuck." This conflates two different things:
+
+    - **Cycle phase** (open / closed) — describes whether a unit of work
+      is currently being processed.
+    - **Progress liveness** — describes whether *anything* is happening
+      inside the peripheral right now.
+
+    A healthy peripheral can have a cycle open for 10 minutes while
+    actively making progress every second. A wedged peripheral can
+    silently freeze 5 seconds after opening a cycle and stay frozen until
+    something kills it. Cycle-open-duration tells you neither.
+
+    + FAILURE-MODES:
+      - False-positive watchdog: long but legitimate cycles trip the
+        watchdog. The watchdog kills healthy work. Operators learn to
+        widen T, which widens the blind spot for real wedges.
+      - False-negative watchdog: a cycle wedges 5 seconds in and stays
+        wedged for the remaining 9:55 of its nominal duration. The
+        watchdog fires "on time" — too late to help.
+      - Heartbeat-as-pulse-without-content: the peripheral emits "I'm
+        alive" pings with no payload. The watchdog can't tell whether
+        the peripheral is alive AND making progress, or alive AND in
+        a tight retry loop, or alive AND deadlocked-on-IO-waking-up.
+      - Conductor-as-watchdog: a conductor that steps the peripheral
+        forward AND watches it for liveness conflates the regulator
+        and the supervisor. When the conductor wedges, the watchdog
+        wedges with it.
+
+  + THEN:
+    Make the heartbeat first-class and distinct from the cycle:
+
+    1. **Emit progress heartbeats from inside the work**, not from cycle
+       boundaries. The heartbeat is "I just did a meaningful unit of
+       work" — a file processed, a frame written, an event handled. The
+       heartbeat is keyed on `:last-progress-at` (or similar) and is
+       updated by the work itself, not by the supervisor.
+    2. **Separate the heartbeat channel from the cycle channel**. Cycle
+       start/end events carry "what work is this" semantics. Heartbeats
+       carry "the work is moving" semantics. A watchdog subscribes to
+       heartbeats; a UI subscribes to cycle events. (See:
+       peripherals/split-transport-from-embodiment — heartbeats are a
+       distinct transport concern.)
+    3. **Watchdog measures real silence**, not cycle-open-duration.
+       The watchdog fires when (now - :last-progress-at) exceeds T,
+       regardless of which cycle is open or how long it has been open.
+       Cycles that legitimately take 10 minutes are fine as long as
+       they emit a heartbeat every few seconds.
+    4. **Heartbeats carry a small payload** describing what just
+       happened ("processed file X," "wrote frame N," "handled event
+       type E"). This converts the heartbeat from a pulse into a
+       diagnostic. When the watchdog fires, the last-heartbeat payload
+       tells you what the peripheral was doing just before it wedged.
+    5. **The regulator (conductor / FM stepper / tickle) is separate
+       from the watchdog**. The regulator paces work forward. The
+       watchdog detects silence. The two should be implemented as
+       distinct processes, ideally with the watchdog supervising the
+       regulator. (See: project_war_machine_as_tm_on_manifold for
+       the regulator-as-head-of-TM framing.)
+
+  + BECAUSE:
+    The problem is fundamentally one of clock alignment. Cycle phase
+    runs on a work-bounded clock (this cycle takes as long as the work
+    takes). Liveness needs to run on a wall-clock or a tick-clock
+    (silence is measured in seconds since something happened). Trying
+    to use one clock for both produces the FM-regulator-vs-watchdog
+    confusion: the regulator wants long cycles for big work; the
+    watchdog wants short cycles for fast detection; they cannot both
+    win on the same axis.
+
+    The fix — separate channels for separate clocks — is the same
+    pattern as feedback_perceived_time_dual_clock (agent memory): two
+    clocks must be bridged through an explicit convolution, not papered
+    over by treating one as the other. Heartbeats and cycle events are
+    two clocks; the convolution is the watchdog's silence calculation.
+
+    The pattern has an institutional reading too: peripheral cycles are
+    glacial-loop events (M-cycle, M-mission, M-cycle-of-cycles). Progress
+    heartbeats are social-loop events (something just happened). The
+    distinction is the same as inhabitation-feeds-evolution's
+    fast/slow split, applied to the liveness question.
+
+    + evidence: multi-watcher fix (2026-05-24, codex-8): the watchdog
+      was firing on healthy long-running cycles and failing to fire on
+      cycles that wedged shortly after opening. Codex added an explicit
+      `:last-progress-at` keyed on per-iteration work events; the
+      watchdog was changed to measure real silence rather than
+      cycle-open-duration. False positives dropped to zero; false
+      negatives became detectable on the watchdog's own timescale.
+
+    + evidence: realtime/liveness-heartbeats (futon3 pattern library):
+      the realtime patterns already articulate the distinction at the
+      transport layer. This pattern lifts the distinction into the
+      peripheral-design layer and makes it a design-time decision, not
+      a runtime emergent.
+
+    + evidence: futon0 cron-jobs.edn (2026-05-23): the
+      pattern-index-rebuild cron entry was added because the main work
+      loop did not heartbeat its progress to a separate channel — the
+      TSV file appeared "stale" because nothing was checking real
+      silence on the index-rebuild work, only cycle-open-duration on
+      the parent multi-watcher.
+
+    + evidence: M-war-machine-pilot (futon3c, DERIVE 2026-05-24): the
+      mission selected "Tickle v2 mechanical FM regulator" over
+      "Tickle v1 watchdog" precisely because v1 conflated regulator and
+      watchdog. v2's mechanical FM regulator paces forward; the
+      watchdog is then layered on top measuring heartbeat silence,
+      not regulator cycle-open-duration. This pattern formalises the
+      reasoning.
+
+  + NEXT-STEPS:
+    - When designing any new peripheral with cycles, add a heartbeat
+      schema to the transport layer at design time, not after the
+      first watchdog false-positive incident.
+    - Heartbeat payloads must be small but informative: at minimum
+      timestamp + work-tag + counter. This is the same shape MUSN
+      events use for tool-call telemetry.
+    - Watchdog implementations must NEVER subscribe to cycle events
+      for liveness. If a watchdog is found doing so, treat it as a
+      latent incident regardless of current symptom status.
+    - For M-war-machine-pilot specifically: the Tickle v2 conductor
+      MUST be specified with a :last-progress-at heartbeat distinct
+      from its cycle. The watchdog (whether bell-based, cron-based, or
+      operator-pinged) subscribes to the heartbeat. This is the v0
+      observer-stage contract.
+    - Cross-link: peripherals/canonical-typed-event-vs-side-channel —
+      the heartbeat should be a first-class event in the transport
+      taxonomy, not a parallel ping channel.

@@ -1,0 +1,33 @@
+@flexiarg aif/predictive-entropy-as-ambiguity
+@title Ambiguity Term as Predictive Entropy of the Observation Distribution
+@sigils [🌫️/由]
+@audience fulab agents, aif implementers, designers of EFE term implementations
+@tone technical
+@style pattern
+
+! conclusion: Compute the epistemic (ambiguity) EFE term as the entropy of the predictive observation distribution under each candidate. For a diagonal-covariance Gaussian, this simplifies to `0.5 × log(σ²_D × σ²_A)` (dropping additive constants that don't affect candidate ranking).
+
+  + context: The epistemic value term in Expected Free Energy is supposed to favour information-gaining actions — candidates that produce *less ambiguous* observations, so the agent can refine its beliefs efficiently. A naïve implementation uses heuristic proxies (capability-portfolio breadth, count of available action branches, action-class diversity). These approximate but don't actually compute the AIF quantity.
+
+  + IF:
+    You want the ambiguity term to be the *true predictive entropy* of the observation distribution under each candidate. Candidates that produce sharper predictions (lower predictive variance) get lower ambiguity; candidates that produce diffuse predictions (high predictive variance, near-threshold predictions, etc.) get higher ambiguity. The agent prefers ambiguity-reducing candidates because they're information-gaining.
+
+  + HOWEVER:
+    Substituting a heuristic for the actual entropy makes the agent's "epistemic" preferences correlated-with-but-not-equal-to information theory. The agent may prefer actions that have many sub-options but produce nothing informative; or avoid actions that look unambiguous in heuristic terms but produce truly precise observations. Heuristic-based epistemic terms are common but not AIF-canonical.
+
+  + THEN:
+    For a candidate action producing predicted observation distribution `o ∼ N(μ, Σ)`, the differential entropy of `o` is:
+      `H[o] = 0.5 × log((2πe)^k × det(Σ))`
+    where k is the dimension of the observation vector. For diagonal-covariance (independent channels), `det(Σ) = Π_k σ²_k`. For comparing across candidates, the additive constants (`0.5 × k × log(2πe)`) drop out, leaving:
+      `ambiguity-comparable(candidate) = 0.5 × log(Π_k σ²_k)`
+    In two dimensions (D, A): `ambiguity-comparable = 0.5 × log(σ²_D × σ²_A)`.
+
+  + BECAUSE:
+    Predictive entropy is the AIF-canonical epistemic quantity. The diagonal-Gaussian simplification is tractable and matches the diagonal-covariance assumption that downstream code (mode-quadrant integration; visualisation) already uses. Dropping constants preserves comparability across candidates while avoiding spurious absolute-entropy precision — a value of `−4.3` in dropped-constants form is comparable to `−4.4` for a different candidate but doesn't claim to be "−4.3 bits".
+
+  + NEXT-STEPS:
+    - Verify your forward model returns predicted variance per observation channel. If not, the entropy isn't computable.
+    - Floor the variance per channel (`max(variance-epsilon, var_k)`) before passing to log, to avoid `log(0)` under near-deterministic candidates. variance-epsilon = 1e-12 or similar.
+    - Decide whether to keep or drop the Gaussian constants. Drop them for comparable-across-candidates output; keep them for absolute-entropy interpretation. Document the choice in the function docstring.
+    - DONE (UKRN v3 HO-05, 2026-05-14): ambiguity-term-v3 implemented at notebooks/ukrn_v3_efe.clj:60-73. Diagonal-Gaussian factorisation; constants dropped; variance-epsilon floor. Smoke output shows value ≈ −4.3 for a representative high-band candidate. Test ambiguity-term-v3-is-monotonic-and-finite verifies monotonicity and finite behaviour under near-zero variance. Evidence: handoffs/v3_runner/validation_HO-05.md.
+    - Practice: when comparing this term against pragmatic and other EFE terms in the final G composition, note the scale difference — the entropy form is in log-space (typically yielding values in the range [-10, 0] for variance in [1e-4, 1]), while pragmatic risk² is in linear coordinate-square space (typically [0, 2] for unit-bounded coordinates). The λ_e weight in `G = λ_p · risk + λ_e · ambiguity + ...` must be calibrated to balance the magnitudes.

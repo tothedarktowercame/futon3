@@ -1,0 +1,35 @@
+@flexiarg aif/belief-aware-risk-term
+@title Risk Term as Squared Deviation Plus Predictive Variance
+@sigils [🎯/双]
+@audience fulab agents, aif implementers, designers of EFE term implementations
+@tone technical
+@style pattern
+
+! conclusion: Compose the pragmatic (risk) EFE term as bias² (squared deviation of predicted mean from preference prior) + variance (predictive uncertainty contribution). Both terms in the same units; both pulling the agent toward predictable closeness to preference.
+
+  + context: The pragmatic value term in Expected Free Energy is supposed to penalise candidates whose predicted outcomes are far from the agent's preferences. A naïve implementation reads only the predicted mean — but AIF is Bayesian, so the *uncertainty* about whether the predicted mean is right also matters.
+
+  + IF:
+    You want the risk term to penalise both:
+      - **bias**: predicted state is far from preferred state (the candidate is unlikely to land near preference)
+      - **variance**: high predictive uncertainty about where the state will land (even if the predicted mean is at preference, the agent isn't confident it'll get there)
+    A candidate with low bias and low variance is preferred over a candidate with low bias and high variance, all else equal.
+
+  + HOWEVER:
+    A risk term that uses only `(mean - prior)²` ignores predictive uncertainty. Two candidates with identical means but different variances rank equal under bias-only risk — which is wrong: the high-variance candidate carries higher operational risk of missing preference even though it has the same expected outcome.
+
+  + THEN:
+    Compute the risk term per institution (or per state-instance) as:
+      `risk[i] = (mean-D[i] - prior-D)² + (mean-A[i] - prior-A)² + var-D[i] + var-A[i]`
+    Both the squared-deviation (bias²) and the predictive variance contribute additively to the per-instance risk. Average over instances in the band for the band-level risk-term. Configurable priors per opts.
+
+  + BECAUSE:
+    Under a Gaussian observation likelihood, the expected squared deviation from preference is `bias² + variance` (the variance-bias decomposition). Including both terms makes the risk match the canonical pragmatic value in AIF. Including only bias is a common implementation shortcut that produces a non-Bayesian agent.
+
+  + NEXT-STEPS:
+    - Confirm your forward model returns predicted variance, not just predicted mean. If only mean is available, you can only compute the bias half — and the agent is not properly belief-aware in its risk scoring.
+    - Read predicted (mean, variance) per state-instance from the forward-model output; compose the per-instance risk as `Σ ((mean_k - prior_k)² + var_k)` over coordinates k.
+    - Average over instances in the relevant scope (band, cohort, agent's responsibility area). Comparable across candidates if the scope is fixed.
+    - Document the priors: which coordinate has which preference value, why, where it lives in config. Priors should be configurable per opts, not hardcoded.
+    - DONE (UKRN v3 HO-05, 2026-05-14): risk-term-v3 implemented at notebooks/ukrn_v3_efe.clj:42-58. Uses both (D, A) coordinates; reads predicted variance from HO-04's forward model; PRIOR-D = PRIOR-A = 0.85 with opts override. Test risk-term-v3-has-prior-and-variance-properties verifies the variance contribution is additive. Closes the materially-incomplete-policy-score finding from codex-6's review of the UKRN scoping note. Evidence: handoffs/v3_runner/validation_HO-05.md.
+    - Practice: ensure the prior is reachable. A prior of (1.0, 1.0) on a coordinate that asymptotes below 1.0 produces a permanent positive bias contribution that nothing can drive to zero — that's interpretable but should be deliberate. Calibrate the prior to a reachable preference, not an aspirational ceiling, unless you specifically want the agent to be perpetually striving.

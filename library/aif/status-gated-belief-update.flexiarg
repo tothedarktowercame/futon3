@@ -1,0 +1,38 @@
+@flexiarg aif/status-gated-belief-update
+@title Status-Gated Belief Update for Multi-Instance Agents
+@sigils [🚪/双]
+@audience fulab agents, aif implementers, hierarchical-AIF designers
+@tone technical
+@style pattern
+
+! conclusion: Update beliefs only for instances the agent is actually observing this tick. Paused, truncated, dropped, or otherwise out-of-loop instances retain their prior belief unchanged.
+
+  + context: When an AIF agent operates over multiple instances (institutions, sessions, processes, conversation threads), each instance has an engagement status that determines whether the agent receives meaningful observations from it. The naive update-everything-every-tick policy is operationally wrong when some instances are not contributing fresh information.
+
+  + IF:
+    You want the belief evolution to faithfully reflect what the agent actually saw — not what it would have seen under unconditional observation. You want paused or truncated instances to retain their last-known belief as a marker for "the agent stopped observing here at this prior", rather than drifting under noise or stale dynamics.
+
+  + HOWEVER:
+    A blanket "update every instance every tick" policy will:
+      - Mistake rollback dynamics (e.g. paused-status state rollback) for genuine observations, eroding the agent's stored belief about non-observed instances.
+      - Cause truncated instances' beliefs to drift toward their frozen-but-decaying state, producing post-truncation noise in trace records.
+      - Make it hard to read trace records, because every instance moves every tick regardless of whether it should.
+
+  + THEN:
+    Gate the belief update on instance status, distinguishing *engagement status* (does the agent act on the instance this tick) from *observation availability* (does the agent see the instance's state this tick):
+      - For status :active — agent is engaging *and* observing. Apply update-mu using the post-step state.
+      - For status :paused — agent is *not engaging* but *is still observing* (the dynamics still computes the instance's (D, A) state; only the engagement-side effects are rolled back). Apply update-mu using the post-step (D, A) as observation.
+      - For status :truncated — the agent's relationship with the instance has ended; no further observations are meaningful for the simulation's purpose. Retain pre-step :mu unchanged.
+    The trace record emits :mu for all instances every tick. The agent's belief about a :paused instance evolves under observation noise (variance grows by sensor-variance per tick) and tracks the post-step (D, A) coordinates; only a :truncated instance shows a frozen belief.
+
+  + BECAUSE:
+    Belief is a record of what the agent learned from observation. Updating it when no observation was made introduces a fiction; preserving it when no observation was made preserves the operational meaning. Status-gating makes the gating decision explicit and auditable.
+
+  + NEXT-STEPS:
+    - Identify the canonical status states in your domain (e.g. :active / :paused / :truncated for engagement-style agents; :running / :blocked / :complete for session-style agents). Document which are observation-bearing.
+    - Implement the gate as a case-dispatch in the per-tick post-processing step, *not* inside update-mu itself. update-mu stays a pure function over (μ, observation, opts); the gate decides whether to call it.
+    - Test: run a population with an instance in non-active status; verify the instance's belief is unchanged across the tick. Run another with the same instance returning to active; verify belief updates resume.
+    - DONE (UKRN v3 HO-02, 2026-05-14): status-gated update first implemented in notebooks/ukrn_v2_engagement.clj. Active gets update-mu; paused and truncated retain pre-step :mu. Test paused-and-truncated-institutions-keep-their-beliefs verified that initial implementation. Evidence: handoffs/v3_runner/validation_HO-02.md.
+    - REFINED (UKRN v3 HO-08b, 2026-05-15): the original "only :active updates beliefs" semantic was over-conservative. Under the v3 integration where most institutions go :paused early (abstain cascade until capabilities come online), the over-conservative gate caused beliefs to never evolve over the run — surfaced as four cascading test failures (belief-movement; noiseless-variance-decay; both lesion-contrasts). The corrected semantic distinguishes engagement (the agent's action) from observation (the agent's perception): :active and :paused both update; only :truncated freezes. Implementation in notebooks/ukrn_v3_kernel.clj postprocess-institution. Test renamed to truncated-institutions-keep-beliefs-paused-institutions-update. Evidence: handoffs/v3_runner/validation_HO-08b.md.
+    - Practice: the gate is a *post-step* decision, applied after the dynamics step has run. The dynamics may still update other state (NPT factors, capabilities) for non-active instances via rollback logic; that's about action, not perception. The agent's belief tracks what the agent observes, which can continue under :paused even when engagement is paused.
+    - Lesson: when defining "the agent isn't observing this instance" for a status-gated update, ask explicitly whether the post-step state still carries the instance's coordinates. If yes (e.g., dynamics computes (D, A) for paused instances and the simulation reports them), then *observation is still happening* and beliefs should update. Reserving the freeze for genuinely-no-more-observations cases (truncated, dropped, deleted) keeps belief evolution coherent across the run.

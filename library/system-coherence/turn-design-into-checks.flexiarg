@@ -1,0 +1,36 @@
+@flexiarg system-coherence/turn-design-into-checks
+@title Turn Design Into Checks
+@keywords design, invariants, checks, indicators, thresholds, operationalisation
+@audience system designers, mission authors, working-paper drafters, reviewers
+@tone technical
+@style pattern
+@references [system-coherence/argue-empirically-not-persuasively system-coherence/bind-open-questions-to-closure-mechanisms writing-coherence/hedged-lift]
+
+
+! conclusion: A design is not operational when it is merely describable.  It becomes operational when it is accompanied by checks that can tell whether it is being upheld, drifting, or failing.  Invariants, indicators, threshold rules, scenario tests, and handoff conditions are not optional implementation detail; they are part of the design's coherence.
+
+  + context: Writers often stop at architecture.  They name roles, flows, and principles, and the design sounds complete because it can be narrated.  But a narrated design without checks cannot distinguish faithful enactment from decorative adoption.  The missing move is from "what the system is supposed to be" to "how we would know whether that remains true in operation".
+
+  + IF:
+    The pattern operates on the axis: described design <-/-> testable design.
+    Irreducible: either the system includes ways to detect whether its critical properties hold, or those properties remain aspirational.
+
+  + HOWEVER:
+    Real costs: checks can feel reductive, can expose the weakness of concepts that sounded rich in prose, and can create obligations to gather evidence.  But without them, the document has no disciplined way to tell robust configuration from ceremonial language.
+    Active dynamic: principles are easier to write than thresholds; roles are easier to name than to validate; handoffs are easier to describe than to monitor.
+
+    + FAILURE-MODES:
+      - Principle without witness: the document states an invariant but gives no observable sign by which it could be checked.
+      - Threshold avoidance: action is said to depend on "sufficient" evidence, uptake, or readiness, but no threshold logic is named.
+      - Scenario fragility: a design sounds coherent in the happy path but has not been pressure-tested against foreseeable failure cases.
+      - Handoff opacity: transitions between phases or roles are described without entry or exit conditions.
+
+  + THEN: Express critical design claims as checks.
+    + COMPOSITIONS:
+      (1) Extract invariants: identify which properties must remain true for the system still to count as itself.
+      (2) Attach observables: for each invariant, specify what evidence, indicator, or event would count as a witness.
+      (3) Define thresholds or triggers where possible: name the conditions under which the system changes phase, escalates, hands off, or revises.
+      (4) Add at least one hostile scenario: show how the checks discriminate success from a plausible failure or mimic configuration.
+
+    + CHECK:
+      Engaged when the design's most important claims have corresponding observables, thresholds, or scenario tests.  Failing when the reader can describe the system elegantly but still cannot tell what evidence would show that it is functioning as intended.

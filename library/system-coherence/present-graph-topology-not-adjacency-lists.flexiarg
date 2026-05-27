@@ -1,0 +1,45 @@
+@flexiarg system-coherence/present-graph-topology-not-adjacency-lists
+@title Present the Graph as Edges, Not Per-Node Adjacency Lists
+@keywords graph, topology, edges, nodes, adjacency, hand-offs, exchanges, presentation, plan-as-enumeration
+@audience system designers, working-paper drafters, reviewers
+@tone technical
+@style pattern
+@references [system-coherence/plan-as-enumeration system-coherence/argument-as-coverage-checklist-vs-system-specification writing-coherence/triad-inflation writing-coherence/structural-style-inconsistency]
+
+
+! conclusion: When the load-bearing structural claim of a section is the *topology* of a small typed graph — the typed exchanges between five roles, the dependency couplings between seven capabilities, the message-passing contract between three layers — the section must exhibit the edges, not list the per-node outgoing-edge stacks.  Per-node adjacency listings ("Node A hands to B; hands to C; hands to D.  Node B hands to A; hands to D.  ...") give the reader N paragraphs from which the graph's E edges must be reconstructed by inference.  The page-weight scales with N (the number of nodes), not with E (the number of edges); the reader's perceptual unit becomes "list of role-paragraphs each ending in a hand-off stack" rather than "graph of typed contracts."  The cure is to exhibit the edges directly — as a table, an explicit edge-list, or a topology paragraph — and let the role descriptions carry only their per-node identity work.
+
+  + context: AIF² and similar wiring-diagram framings treat systems as typed graphs.  When a system has 4–8 nodes and 6–12 typed edges, the topology is genuinely the load-bearing structure: the design's contribution is *which edges exist between which nodes carrying what data*.  Prose has two natural ways to present a small graph: (a) walk the nodes, listing each node's outgoing edges as the node is introduced; (b) introduce the nodes briefly and then exhibit the edge set as its own structural unit.  Mode (a) is locally readable (each role-paragraph stands on its own) but globally illegible (the topology is only recoverable by mental aggregation).  Mode (b) is structurally honest — the edges are visible as edges.  The pattern recurs in role-design sections, layer-architecture sections, and message-passing-contract sections.
+
+  + IF:
+    The pattern operates on the axis: per-node locality ↔ topology visibility.
+    Irreducible: a prose presentation either lists outgoing edges under each source node (and forces the reader to reconstruct the graph), or exhibits the edge set as a structural unit visible at a glance.  The same edges, two presentation modes; the reader's perceptual unit differs.
+
+  + HOWEVER:
+    Real costs: per-node adjacency lists are easier to write — they preserve the natural narrative order ("Here is role A.  Role A does X.  Role A hands to B, C, D.").  Exhibiting the edge set as a unit requires the writer to factor the topology out of the role descriptions, which can read as more abstract or as breaking the role-by-role flow.  Some readers (those who think node-first) find adjacency listings easier to absorb; others (those who think edge-first) find topology exhibits clearer.  The pattern's discipline is to match the presentation to the *claim's* load: if the claim is "the design's contribution is the contracts between roles," exhibit the contracts; if the claim is "each role has its own work," exhibit the roles.
+    Active dynamic: the pull toward adjacency listing is strongest when the role descriptions and the hand-offs are mutually informative — the role's identity partly IS the hand-offs it owns.  The writer reaches for "describe the role; then say what it does in the network" without realising that the topology has now been distributed across N paragraphs.
+
+    + FAILURE-MODES:
+      - Adjacency stacks: each node-paragraph ends in a stack of "hands to X; hands to Y; hands to Z" clauses; the reader sees N stacks, must mentally union them into the edge set.
+      - Page-weight scales with N, not E: if N=5 and E=8, the section has 5 role-paragraphs (page-weight ~5 × paragraph) instead of 5 short role-identities + 1 edge-list (page-weight ~5 × sentence + 1 × short-list).
+      - Redundant edge mention: edge X→Y appears in node X's "outgoing" list, but the reader can't easily verify that Y's "incoming" obligation matches.  Reciprocal edges (X→Y plus Y→X) get listed twice in two different paragraphs.
+      - Topology only inferable, not visible: a skeptical reader cannot answer "how many edges does this design have?" without reading every node-paragraph and aggregating.  This is the structural analogue of `plan-as-enumeration`'s "decision points disguised as milestones" failure.
+      - Triad-on-every-node inflation: each role-paragraph ends in three or four hand-offs even when some roles only have one or two genuine outgoing edges — the writer pads to maintain stylistic parallelism, inflating the apparent edge count.
+
+  + THEN: Match the presentation to the load-bearing claim.  Pick one composition.
+    + COMPOSITIONS:
+      (1) Exhibit edges as a table.
+          Augmentation schema: {:edge-columns <list of column names: From, To, Data-on-wire, etc.> :edge-rows <list of typed exchanges>}
+          Entity types produced: :edge-table, :typed-exchange-row (one per edge)
+          Effect: the topology is visible at a glance.  Per-node descriptions become brief (one sentence each) since the hand-offs no longer live inside the role-paragraphs.  Most appropriate when the edges have multiple typed properties worth showing (data shape, cadence, criticality).
+      (2) Exhibit edges as a labelled list.
+          Augmentation schema: {:edge-format (:source-arrow-target | :pair-symbol-data) :edge-items <list>}
+          Entity types produced: :typed-exchange-item (one per edge)
+          Effect: lighter touch than a table; reads as a focused prose-list rather than a structured display.  Most appropriate when the edges are easy to describe in a phrase each and a table would feel heavy.
+      (3) Exhibit topology in a paragraph.
+          Augmentation schema: {:topology-style :flow-narrative | :coupling-summary :grouping-axis <by-cadence | by-criticality | by-direction>}
+          Entity types produced: :topology-paragraph (one paragraph describing the graph as a whole)
+          Effect: most prose-natural; loses some specificity but preserves narrative flow.  Most appropriate when the edges are few enough to summarise in one paragraph and the writer wants to keep the reading-pace prose-y.
+
+    + CHECK:
+      Engaged when the section's edge set is visible as its own structural unit — a table, a labelled list, or a topology paragraph — and per-node descriptions carry only per-node identity work.  A skeptical reader scrolling the section can answer "how many typed edges does this design have, and what does each edge carry?" without aggregating across multiple paragraphs.  Failing when each node-paragraph ends in a hand-off-stack and the topology is only inferable by union.

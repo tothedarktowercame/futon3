@@ -1,0 +1,36 @@
+@flexiarg system-coherence/bind-open-questions-to-closure-mechanisms
+@title Bind Open Questions to Closure Mechanisms
+@keywords open-question, closure, governance, evidence-wave, role, resolution-path
+@audience system designers, mission authors, working-paper drafters, reviewers
+@tone technical
+@style pattern
+@references [system-coherence/name-the-decision-before-the-framework system-coherence/argue-empirically-not-persuasively writing-coherence/hedged-lift]
+
+
+! conclusion: An open question belongs in a decision-supporting document only if it is bound to a named closure mechanism.  "This remains to be determined" is not enough.  The document must say how the uncertainty closes: by a role, an evidence wave, a governance event, a threshold, or some other explicit mechanism.  Otherwise the question is not being managed; it is being parked.
+
+  + context: Operational writing cannot eliminate uncertainty, but it can type it.  The failure is not that a document contains unresolved questions; the failure is that the reader cannot tell whether those questions are expected to close through ordinary system operation or whether they are simply deferred indefinitely.  Unbound uncertainty accumulates as ambient fog around the decision and makes the design look softer than it is.
+
+  + IF:
+    The pattern operates on the axis: acknowledged uncertainty <-/-> resolvable uncertainty.
+    Irreducible: a question is either attached to a mechanism that can close it, or it is only being named as a gesture of conscientiousness.
+
+  + HOWEVER:
+    Real costs: binding a question to a closure mechanism forces the writer to expose ownership, timing, and evidence standards.  This can reveal that the system does not yet know how it would learn what it claims it needs to know.  Writers often prefer to preserve optionality by leaving the question open-ended.
+    Active dynamic: every "we will need to learn", "future work", or "this depends on context" sentence is a likely site of slippage from typed uncertainty into unmanaged uncertainty.
+
+    + FAILURE-MODES:
+      - Parked uncertainty: a live question is named but no actor or process is assigned to close it.
+      - Future-work haze: the document says the issue will be examined later without saying by whom or through what event.
+      - Governance vacuum: the need for a decision is acknowledged, but no forum or cadence exists in which the decision would actually be made.
+      - Evidence without landing zone: the document calls for data collection but never says what decision that evidence would unlock or revise.
+
+  + THEN: Type the uncertainty and attach it to closure.
+    + COMPOSITIONS:
+      (1) Name the closure mechanism: say "resolved by annual review", "closed by evaluator evidence wave", "owned by the bearer role", or equivalent.
+      (2) Couple question to consequence: make explicit what becomes decidable once the question closes, so the reader sees why the uncertainty matters.
+      (3) State the holding rule: if the question is unresolved now, say what the system does in the meantime rather than leaving action suspended.
+      (4) Delete false openness: if no closure mechanism can be named, either redesign the system so one exists or stop presenting the issue as a managed open question.
+
+    + CHECK:
+      Engaged when every open question in the document is paired with a visible closure path and an interim operating rule.  Failing when uncertainty is acknowledged rhetorically but not wired into any role, cadence, threshold, or decision path.

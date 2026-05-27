@@ -1,0 +1,84 @@
+@flexiarg system-coherence/verified-rewrite-from-diagnostic-annotation
+@title Verified Rewrite from Diagnostic Annotation
+@keywords rewrite, rewriting-system, verification, diagnostic, annotation, invariant-delta, closure, f-of-A-B-equals-C
+@audience system designers, mission authors, working-paper drafters, tool builders
+@tone technical
+@style pattern
+@references [system-coherence/argument-as-coverage-checklist-vs-system-specification system-coherence/turn-design-into-checks system-coherence/bind-open-questions-to-closure-mechanisms system-coherence/plan-as-enumeration]
+
+
+! conclusion: Rewriting a diagnostic annotation into a verified improvement is a typed transformation f:(A, B) → C, not a textual edit.  A is the typed diagnostic; B is the rewrite plan (composition-id chosen from the cited pattern's COMPOSITIONS menu, plus any augmentation for judgment calls); C is the post-rewrite tuple of new prose, updated annotation graph, and invariant-delta.  The rewrite is *verified* iff no invariant in the post-state is weaker than in the pre-state AND the cited pattern's CHECK clause holds on the new span.  Without verification, "fixing the diagnostic" is hope; with verification, the same typed problem cannot recur because the typed precondition that surfaced it no longer holds.
+
+  + context: When a diagnostic survey produces a list of structural problems and a rewriter sets out to address them, the typical move is "read the prose, fix what reads badly, move on."  This works locally but accumulates failure modes: (1) the rewrite may close one diagnostic at the cost of opening another (a fix that compresses a region-balance issue may flatten timescale separation as a side effect); (2) the rewrite's *reason* is not recorded, so when the prose later drifts back toward the original failure, the prior rewrite cannot be cited or built on; (3) the rewriter's choices are not typed against the pattern that motivated the diagnostic, so "good prose" can drift away from the structural property the pattern was guarding.  Typed rewriting solves all three by making the rewrite a function of (diagnostic, composition-choice) with verification against the invariant audit.  The closure trace records the transformation so it can be inspected, reverted, or pattern-mined.
+
+The type signature, concretely:
+
+```
+A : a diagnostic annotation (:hx-type :annotation/comment) carrying
+    {:endpoints [{:annotated <section, passage>}
+                 {:source :pattern-name <flexiarg-path>
+                          :passage <field-from-pattern>}]
+     :severity <level>
+     :status :open}
+
+B : a rewrite plan
+    {:composition-id <id-from-pattern's-COMPOSITIONS-menu>
+     :augmentation   <judgment calls for ambiguity, optional>}
+
+C : a post-rewrite tuple — refined for entity-level discipline (the
+    sheaf-of-rewrite reading; see below)
+    {:prose            <:after text — global section, redundant given operations + glue>
+     :entities-before  [{:id :eN :type <entity-type> :fate <keep|drop|replace|keep-with-glue-adjustment> :span "..."} ...]
+     :operations       [{:op <drop|keep|add|replace|move>
+                         :target :eN
+                         :rationale "..."
+                         :pattern-ref <optional flexiarg path>
+                         :with-entities <list of new entities for :replace and :add>}
+                        ...]
+     :glue-adjustments [{:effect <effect-kind>
+                         :on :eN
+                         :caused-by [:op :target ...]
+                         :note "..."}
+                        ...]
+     :annotations      <new/updated annotations on the new prose>
+     :invariant-delta  {invariant [before-status after-status] ...}
+     :verification     {:check-clause-passes? <bool-or-quantified>
+                        :invariants-weakened []
+                        :invariants-unchanged [...]
+                        :status :verified | :unverified}}
+```
+
+The entity-level decomposition treats the affected paragraph as a typed open cover, each entity carrying its type (`:meta-lede-transition`, `:question`, `:empirical-observation`, `:normative-claim`, `:hedged-closure-mechanism-gesture`, `:parking-closer`, `:closure-owner-reference`, etc.) and its fate under the rewrite.  Each operation is a *local section* — a typed transformation on one entity.  Glue-adjustments are the *compatibility conditions on overlaps* — derived effects on entities adjacent to a local operation (e.g., dropping a meta-lede forces the following clause to capitalize as sentence-initial; dropping a parenthetical hedge forces the preceding clause to grow its own terminal period).  The sheaf-theoretic reading is not metaphor: local sections that satisfy compatibility on overlaps uniquely glue to the global section (the new prose).  A rewrite is *verified* when (i) each operation is well-typed against its target entity's type, (ii) glue-adjustments are exhibited rather than left implicit, (iii) the invariant-delta has no [pass fail] entries, and (iv) the pattern's CHECK clause holds on the new entities at their declared types.
+
+  + IF:
+    The pattern operates on the axis: prose-correctness <-/-> structural-property-preservation.
+    Irreducible: a rewrite either preserves the typed graph the diagnostic was annotating, or it changes the graph in a way that may invalidate other typed properties.  There is no "neutral" textual rewrite — every change to the prose either updates the typed annotation graph or leaves the graph stale.
+
+  + HOWEVER:
+    Real costs: typed rewriting requires that the diagnostic be properly annotated (with a pattern citation, not a free-text complaint), that the cited pattern have explicit COMPOSITIONS, and that the post-state audit be computable.  Each of these prerequisites is itself work.  For one-off prose passes the overhead may exceed the value; the discipline pays off on artifacts that will be rewritten repeatedly, that have evolving structure, or that need to be auditable later.
+    Active dynamic: the pull toward untyped rewriting is the temptation of "just fix it."  Especially in writing work, the rewriter's skill is exactly the ability to fix prose without a spec — typed rewriting can feel like it's slowing the rewriter's strength.  The right framing: typed rewriting doesn't replace the skill; it audits the skill's outputs so they accumulate rather than churn.
+
+    + FAILURE-MODES:
+      - Closure without verification: a :before/:after record with no invariant-delta — looks like typed rewriting, isn't.  Common in hand-rolled sweep logs.
+      - Composition-id implicit: :scaffolding-used recorded too coarsely (e.g., the v6 sweep's `(:pattern :annotation)`) without naming which composition from the pattern's menu was applied.  The choice is not auditable.
+      - Invariant-delta absent: the rewrite changes the prose but the audit block isn't updated.  No way to tell whether the rewrite strengthened the typed graph, weakened it, or left it unchanged.
+      - Pattern-citation absent or wrong: a diagnostic without a `:source.pattern-name`, or one citing a pattern whose COMPOSITIONS don't actually fit the diagnostic, is not actionable by typed rewrite.  The diagnostic is a complaint until a fitting pattern exists.
+      - Verification by self-report: the rewriter declares the rewrite "clean" without an external check (machine-evaluated CHECK clause, or peer review of the invariant-delta).  `:sweep-status :clean` is not by itself a verification result; it's an assertion.
+      - Diagnostic deleted, not closed: the annotation is removed from the graph after the rewrite.  Provenance lost; future drifts back toward the original failure cannot be detected because the typed precondition that surfaced it is no longer in the graph to be re-evaluated.
+      - Blob-rewrite: the closure records a `:before` paragraph and an `:after` paragraph and treats the substitution as atomic, even when the rewrite plan internally names several structural moves.  The typed plan ("drop the hedge, replace the parking-closer with a closure-mechanism reference, capitalize the following clause") is hidden inside a single string swap.  This is the case the entity/operations/glue decomposition exists to refuse.  A blob-rewrite is detectable by the absence of `:entities-before` / `:operations` / `:glue-adjustments` in the closure — even if the textual change is correct, the structural transformation is not exhibited and so cannot be inspected or composed.
+      - Glue-adjustments left implicit: an operation has derived effects on adjacent entities (sentence-initial capitalization, missing terminal period, broken cross-reference) and the rewrite produces the textually-correct result without surfacing these as named adjustments.  The reader cannot tell which textual changes are *operations* (load-bearing) and which are *forced compatibility moves* (consequential).  Under the sheaf reading: the global section appears in the prose but the local sections that produced it are not visible.
+
+  + THEN: Structure each rewrite as f:(A, B) → C with explicit type signature.
+    + COMPOSITIONS:
+      (1) Type the diagnostic at survey time: every `:annotation/comment` cites a pattern.  If no pattern fits, either find one in the library, write a new flexiarg, or downgrade to a typeless complaint so it's clear the diagnostic isn't yet actionable.
+      (2) Make composition-id explicit: the closure block names which item from the pattern's COMPOSITIONS list was applied.  Compositions are stable per-pattern (their numbering survives flexiarg edits); the closure cites by composition number or canonical name.
+      (3) Record the augmentation: any judgment call the composition required (which words to drop, which live misreadings to preserve, which cross-reference to bind to) is captured in :augmentation.  The composition + augmentation together specify the rewrite uniquely.
+      (4) Compute the invariant-delta: snapshot the audit before applying the rewrite, recompute after, record the delta as `{invariant [before-status after-status]}`.  An empty delta means the rewrite was textual only (which may be fine, but should be visible).  A non-empty delta is the rewrite's structural contribution.
+      (5) Verify before closing: check the cited pattern's CHECK clause holds on the new span.  Check no invariant weakened in the audit.  Only then mark `:status :closed` and stamp `:verification :verified`.
+      (6) Retain the diagnostic, don't delete it: closure preserves provenance.  Future drifts back toward the original failure can be detected because the closed annotation is still in the graph, and the typed precondition can be re-evaluated against the (possibly drifted) prose.
+      (7) Decompose the affected paragraph into typed entities before applying operations.  Each entity carries an `:id`, a `:type` from a registered vocabulary (`:meta-lede-transition`, `:question`, `:empirical-observation`, `:normative-claim`, `:hedged-closure-mechanism-gesture`, `:parking-closer`, `:closure-owner-reference`, `:closure-support-reference`, `:closure-event-reference`, etc. — extensible per pattern domain), and a `:span` quoting its verbatim text.  The entity vocabulary is the typed open cover of the paragraph.
+      (8) Express the rewrite as a sequence of operations on entities, not as a blob substitution.  Each operation names one of `{:drop :keep :add :replace :move}`, the target entity id, a rationale, and (for `:replace` and `:add`) the new entities being introduced — each itself typed and id'd.  The augmentation fields from B map 1-to-1 to entity types in the `:with-entities` of `:replace`/`:add` operations (e.g., `:closure-owner` in augmentation produces a `:closure-owner-reference` entity).  The operations list is the sequence of local sections; the global section (the new prose) is recoverable by applying the operations.
+      (9) Surface glue-adjustments as explicit derived effects.  When an operation forces compatibility moves on adjacent entities (capitalization, punctuation, cross-reference repair), record each as a `:glue-adjustment` with the effect kind, the affected entity, and the operation that caused it.  This is the compatibility-on-overlaps condition made first-class; without it, the reader cannot distinguish operations (load-bearing) from glue (consequential), and rewrites cannot be composed cleanly.
+
+    + CHECK:
+      Engaged when every closed diagnostic has a complete f:(A, B) → C trace including composition-id, augmentation if any, invariant-delta, and verification status.  A skeptical reader can inspect any closed annotation and reconstruct (i) what the original typed problem was, (ii) what rewrite plan was applied, (iii) what typed property the rewrite preserved or strengthened.  Failing when closure records the textual change but not the structural transformation — i.e., when "fixed" cannot be distinguished from "fixed in a way that compensates for the cost it imposed elsewhere."

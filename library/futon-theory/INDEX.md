@@ -64,6 +64,7 @@ See: [proof-path.flexiarg](proof-path.flexiarg)
 | task-as-arrow | Tasks are BHK arrows; gates compose into proof paths |
 | retroactive-canonicalization | Specs emerge from ancestors via naming, selection, canalization |
 | structural-tension-as-observation | Structural tension is the observation vector for library evolution; two nested AIF loops |
+| wyrd | Persistent salience across rival containers; Norns as three-times (Urðr/Verðandi/Skuld); Skuld = patron of sorrys.edn; modernism as wyrd-modality, not historical period |
 
 ## Futonic Logic
 
@@ -82,6 +83,10 @@ specification of the symbolic operations they perform.
 | 味 | embodied-evaluation | PUR, mana confidence bins, structural checks |
 | 🔮 = (能 . 捨) | regulator | Sospeso protocol, gate rejection, mission parking |
 | 未知 / 非死非活 | non-equilibrium-interval | Abandoned missions, sospeso interval, pre-implementation state |
+| 既 | earned-past (Urðr) | Proof-path history, HEAD-as-escrow, closure evidence, frozen tape |
+| 化 | becoming-event (Verðandi) | Live writer-action, consent gate firing, loop turn presently composing |
+| 應 . 債 | owed-obligation (Skuld) | sorries.edn (debt registry); 應 = modal "shall"; 債 = substantive debt; cognate English shall/should |
+| 鹽 / 債 ledger | composition-debt pair | Every 鹽 emits worth (salt-pay/salarium) AND debt (Skuld/應/債); see futon-theory/wyrd |
 
 Axiom A7 (compositional salience): generativity requires both 鹵 and 皿
 perceivable under the same 部, and only after perceiving 間 (the honest

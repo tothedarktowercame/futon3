@@ -89,6 +89,35 @@
                 blocked. 間 reads the gap; 関 names the gate.
                 Together (無門関): the gate that dissolves when
                 honestly perceived — tension discovery as navigation."))
+    (既  (role earned-past)
+         (note "Urðr: that-which-has-come-to-pass. Not mere temporal
+                before, but the load-bearing past — closure-evidence,
+                HEAD-as-escrow, the proof-path's earned record.
+                Citeable, structurally available to the present, and
+                rewritable only with traces. (See futon-theory/wyrd.)"))
+    (化  (role becoming-event)
+         (note "Verðandi: in-process-of-happening, the present
+                participle of weorþan ('to come to pass'). The live
+                writer-action, the consent gate firing, the loop
+                presently composing. Distinct from 未知: 未知 is the
+                epistemic three-valuedness of in-flight state, while
+                化 is the temporal becoming itself. Every 化 emits
+                (應 . 債)."))
+    (應  (role modal-obligation)
+         (note "Skuld (modal face): the 'ought / shall / should'
+                voice. Cognate with English shall/should via Germanic
+                *skul-. 應 is what the present says about what the
+                future must do; not yet a debt-record but a modal
+                claim. Sorries are stated in the voice of 應."))
+    (債  (role substantive-debt)
+         (note "Skuld (substantive face): debt incurred. Every act
+                of 鹽 (composition) emits 債 alongside salt-pay
+                (worth, from salarium). sorrys.edn is the registry
+                of 債 at proof-path granularity; mission scope-remaining
+                tracks 債 at mission granularity. 債 outstanding in
+                regime A may be 鹽 generative in regime B — this
+                trans-regime survival is wyrd-salience
+                (futon-theory/wyrd)."))
     (未知 (role non-equilibrium-interval)
          (note "Actionable but not predictable. Three-valued logic:
                 the system is neither in its prior state nor in its
@@ -183,6 +212,84 @@
     (equivalence 未知)
     (note "System is responsive but not self-sustaining."))
 
+  2.7 既 / 化 / 應 / 債 — The Three-Time Decomposition:
+
+  The three Norns (Urðr, Verðandi, Skuld) constitute a three-time
+  projection of every present moment. See futon-theory/wyrd for
+  the etymological grounding (wyrd ← weorþan ← PIE *wert-) and
+  the Skuld≈SORRY identification.
+
+  (three-time-decomposition
+    (frame (Norns Urðr Verðandi Skuld))
+    (glyphs (既 化 (應 . 債)))
+    (note "Decomposes the present moment into already-completed,
+           presently-becoming, and owed-to-the-future aspects.
+           Not a temporal sequence but a simultaneous three-face
+           projection of every loop turn. The Buddhist 三時
+           (過去/現在/未來) is too neutral here; it loses Skuld's
+           owed character, collapsing future-as-debt into
+           future-as-next."))
+
+  (Skuld-pair
+    (structure (⿱ 應 債))
+    (interpretation
+      (應 (modal voice of obligation: ought, shall))
+      (債 (substantive record of debt incurred)))
+    (constraint "Premature collapse to 應 alone is anxiety
+                 (debt voiced but unrecorded); to 債 alone is
+                 bookkeeping (debt without standing modal force).
+                 Both faces are required."))
+
+  (three-time-rule
+    (each (loop-turn t))
+    (projects-onto
+      (既 (closure-evidence-available-at t))
+      (化 (composition-presently-firing-at t))
+      ((應 . 債) (obligations-emitted-by-firing)))
+    (note "No turn is wholly any one face. Collapse to 既 alone
+           is nostalgia (citing past with no present act); to 化
+           alone is amnesia (acting without grounding); to (應 . 債)
+           alone is anxiety/accounting without grounding or act."))
+
+  2.8 鹽 / 債 — The Composition-Debt Ledger:
+
+  Composition has two sides: what it pays (salt, salarium, worth)
+  and what it owes (Skuld, 債, shall). 鹽 (existing §2.2) is the
+  generative side. 債 is the dual obligation side. The pair forms
+  the ledger every loop turn must keep.
+
+  (compositional-ledger
+    (form (⿱ 鹽 債))
+    (credit-side
+      (worth "salt-money: the salt-pay")
+      (provenance "Roman salarium → English salary → 'worth one's salt'"))
+    (debit-side
+      (debt 債)
+      (provenance "Germanic *skul- → Old Norse Skuld → English shall/should"))
+    (rule
+      (every-鹽 emits (worth . 債))
+      (note "No composition completes its bookkeeping in a single
+             部 — the 債 outstanding in regime A may be the 鹽
+             generative in regime B. This trans-regime survival
+             IS wyrd-salience (futon-theory/wyrd)."))
+    (cross-linguistic-triangulation
+      (Latin salarium)
+      (Chinese (鹽 債))
+      (Old-English (wyrd weorþan Skuld-via-Norse))
+      (note "Three independent linguistic registers triangulate
+             the same ledger structure. The triangulation is itself
+             a wyrd-survival test passing: when the same structure
+             is recovered from three unrelated source languages,
+             it is not an artifact of any one language's idioms.")))
+
+  (ledger-anti-collapse
+    (anti-pattern "Collapse the ledger to net.")
+    (reason "Net hides structure: 鹽 in regime A and 債 in regime
+             B do not sum to zero — they are the wyrd-salient
+             configuration that the present must continue to turn
+             (vertere) between regimes to keep legible. Net-bookkeeping
+             is the 'mere X' move applied to the ledger itself."))
+
   == 3. THE FUTONIC LOOP ==
 
   (futonic-loop
@@ -196,6 +303,39 @@
       (evaluate 味))
     (else
       (apply 捨)))
+
+  3.1 Three-Time Projection of the Loop:
+
+  Each loop turn projects onto all three Nornic faces simultaneously.
+  The loop above describes the becoming-firing (化); the three-time
+  projection makes explicit what authorises it (既) and what it
+  emits (應 . 債).
+
+  (loop-three-time-projection
+    (at-every-turn t
+      (既-at-t
+        (proof-path-history-before-t)
+        (earned-evidence-citeable-at-t)
+        (HEAD-as-escrow-at-t))
+      (化-at-t
+        (the-rule-itself §3-futonic-loop)
+        (presently-firing 咅)
+        (presently-composing 鹽))
+      ((應 . 債)-at-t
+        (sorries-registered-during-t)
+        (follow-on-modal-commitments)
+        (discharge-due-by τ))))
+
+  (loop-and-ledger
+    (every-step (or 鹽 捨))
+    (emits ledger-entry
+           (credit (or 香 味-confirms))
+           (debit (應 . 債)))
+    (note "The futonic loop is a Nornic engine: it inherits 既 as
+           authorisation, composes in 化, emits (應 . 債) as
+           consequence. The else-branch (捨) is explicit handling
+           of obligation without further commitment — the modal
+           應 'we ought not act' applied to limit 債 accumulation."))
 
   == 4. GROUNDING IN ACTUAL USAGE ==
 
@@ -300,6 +440,33 @@
   self-representing stack's discovery loop — and it should be invocable
   on demand, not performed ad hoc.
 
+  4.12 既 — Earned Past (Urðr)
+
+  | Context | 既 instance | Evidence |
+  | Proof path | committed PSR→PUR→PAR chain | The chain is 既: citeable as authority, extensible by future loops, rewritable only with explicit trace |
+  | HEAD-as-escrow | git HEAD as held-truth | HEAD is 既 in the most literal sense: what has come to pass, held as the present's grounding |
+  | Closure evidence | mission-close artifact | Closure freezes a 化 into citeable 既; the closure record is the artifact through which future loops cite the closed mission |
+  | Library canonicalization | promoted flexiarg | Promotion turns a candidate-pattern into 既: subsequent loops cite it as ground rather than candidate |
+  | Frozen tape (piano roll) | append-only PSR/PUR/PAR log | The roll IS the Urðr-surface: what cannot be un-done, only added to |
+
+  4.13 化 — Becoming Event (Verðandi)
+
+  | Context | 化 instance | Evidence |
+  | Live writer-action | VSATARCS-writer presently firing | The act of composition is 化: not yet 既, not yet emitting 債, but in the act |
+  | Consent gate firing | gate evaluating an action class | The firing moment IS 化: not the gate's config (genotype) nor its outcome (phenotype), but the becoming-event |
+  | PSR being authored | agent presently choosing a pattern | The choosing is 化; the recorded choice is 既; the verification obligation is (應 . 債) |
+  | Loop turn | one execution of the futonic loop | Each turn IS 化 for the duration of its firing; afterward it has become 既 |
+  | M-live-geometric-stack | the live geometric surface | The Verðandi-surface of the futon stack: live (T, ∇, Δ, drift) |
+
+  4.14 應 / 債 — Owed Obligation (Skuld)
+
+  | Context | 應 instance | 債 instance | Evidence |
+  | sorrys.edn | "we should X" voice in entry text | typed debt record with :kind | 應 is the modal voice; 債 is the structural debt the registry tracks |
+  | Mission scoping | "this mission shall deliver Y" | uncompleted scoped commitments | 應 in scope language; 債 in scope-remaining accounting |
+  | Pattern next-steps | next[…] entries | unfulfilled pattern-promises | Modal commitments (應) become structural debts (債) if not discharged |
+  | Wiring obligations | invariant statement | broken invariant under load | 應 declares what should hold; 債 is what actually breaks |
+  | sorrys.edn :kind | :prototyping-forward vs :technical-debt | distinct debt-classes | 債 typed by :kind; collapse to one class hides regime distinctions |
+
   == 5. THE FUTONIC LOOP IN PRACTICE ==
 
   The abstract loop (§3) maps onto three concrete cycles:
@@ -371,6 +538,8 @@
   | 関 as gate-relation | mission-interface-signature | 関 IS the typed boundary that mission ports formalize; core.logic relations are evaluable 関 |
   | 間 + 関 = 無門関 | tension discovery loop (M-self-representing-stack) | The discovery loop IS 間-reading composed with 関-traversal: perceive gap, navigate gate chain |
   | futonic-loop | proof-path event-protocol | The loop IS the abstract form of CLOCK_IN → ... → CLOCK_OUT |
+  | 既 / 化 / 應-債 | futon-theory/wyrd (the three Norns) | The three-time decomposition IS the Nornic frame; wyrd grounds the modality, futonic-logic formalises the projection |
+  | 鹽 / 債 ledger | sorrys.edn (registry) + futon-theory/wyrd | sorrys.edn IS the 債 side of the ledger; the 鹽/債 pair is the structural fact wyrd names |
 
   == 7. AXIOM A7: COMPOSITIONAL SALIENCE ==
 

@@ -1,0 +1,195 @@
+@flexiarg futon-theory/wyrd
+@title Wyrd: Persistent Salience Across Rival Containers
+@sigils [🜚/奇]
+@keywords wyrd, weird, becoming, modernism, salience, containment, debt, sorry, Norn, three-times, vertere, unresolved-composition, PKD, Heraclitus
+@audience futon developers, pattern theorists, literary theorists, VSATARCS readers
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@references [futon-theory/futonic-logic futon-theory/structural-tension-as-observation futon-theory/retroactive-canonicalization futon-theory/proof-path futon-theory/symbolic-individuation]
+@references-extra ["wyrd ← OE weorþan 'to come to pass, become' ← PIE *wert- 'to twist' → Latin vertere" "Norns: Urðr (that-which-has-come-to-pass), Verðandi (in-process-of-happening, present participle of weorþan), Skuld (debt/owed, from Germanic *skul-, cognate English shall/should)" "Heraclitus DK B54: ἁρμονίη ἀφανὴς φανερῆς κρείττων — the unapparent harmony is stronger than the apparent" "salarium → salary; 'worth one's salt'; 鹽 (composition) ↔ 債 (debt) as dual sides of the same ledger"]
+
+! conclusion:
+  Weirdness is not anomaly, noise, or contradiction. It is the
+  phenomenology of salience that persists across incompatible
+  containment regimes — symbolic configurations that remain
+  actionable even as they migrate between fiction, theology,
+  coincidence, psychiatry, politics, and media, and that no single
+  regime can fully stabilize or dismiss. The etymological identity
+  wyrd = weorþan = vertere = "that which turns, becomes, comes to
+  pass" makes modernism a name for the wyrd-modality itself, not a
+  historical period. The three Norns — Urðr (既/already), Verðandi
+  (化/becoming), Skuld (應 or 債/owed) — are a three-time
+  decomposition where the future is read as debt, providing a futon
+  theory avant la lettre: Skuld is the patron of sorrys.edn.
+
+  + context: Agents operate within overlapping symbolic, institutional,
+    perceptual, and technical regimes — media systems, fiction,
+    theology, bureaucracy, science, memory. Each provides a 部
+    (decomposition regime) and may offer 皿 (stabilizing containers).
+    The English word "weird" descends from Old English wyrd, a noun
+    formed from the verb weorþan ("to come to pass, to become"),
+    itself from PIE *wert- ("to twist"), cognate with Latin vertere
+    ("to turn"). Wyrd is feminine; the Norse cognate urðr is also the
+    name of one of three Norns. The names of the Norns — Urðr ("that
+    which has come to pass"), Verðandi (present participle of the
+    cognate verb — "that which is in the process of happening"), and
+    Skuld ("debt" or "guilt," from Germanic *skul- "to owe," cognate
+    with English shall and should) — constitute a three-time
+    decomposition where the future is owed rather than merely upcoming.
+    Under conditions where 部 multiply faster than 皿 can absorb them,
+    the same symbolic configuration may remain actionable across
+    several incompatible regimes simultaneously: this is wyrd.
+
+  + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
+    + THE-MERE-X-MOVE:
+      Systems frequently attempt premature closure by forcing
+      salience into a single container — "mere delusion," "mere
+      fiction," "mere prophecy," "mere coincidence." This suppresses
+      unresolved composition and hides the 間 (honest interval) where
+      the instability actually resides. The "mere X" reflex is the
+      central anti-pattern. The same discipline appears elsewhere in
+      the library: combining-methods-as-diagnostic (don't collapse to
+      a single retrieval method); the :prototyping-forward vs
+      :technical-debt typing (don't collapse heterogeneous debts into
+      one bucket); the audit against "lightweight" as euphemism
+      (don't let smooth language collapse mechanism). Wyrd names
+      what these disciplines protect.
+
+    + ANTI-PATTERN-INVENTORY:
+      - "mere delusion" — psychiatric reduction
+      - "mere fiction" — literary reduction
+      - "mere coincidence" — statistical reduction
+      - "mere prophecy" — theological reduction
+      - "mere subjective experience" — phenomenological reduction
+      - "mere noise" — signal-processing reduction
+      - "mere relevance score" — retrieval reduction (collapse
+        MiniLM/structural/temporal into one number)
+      - "mere technical debt" — engineering reduction (collapse
+        :prototyping-forward and :technical-debt into one bucket)
+      Each collapses wyrd into a single 部, suppressing 間.
+
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + DIAGNOSTIC-CRITERION:
+      A symbolic configuration is wyrd-salient when it continues
+      generating salience after translation between rival containment
+      regimes — and no single regime can fully stabilize or dismiss
+      it. The operational test: take the configuration, attempt
+      sincere reading under each accessible 部, and observe whether
+      salience survives migration. If it dies in every regime but
+      one, it is anomaly. If it dies in all regimes, it is noise. If
+      it makes every regime locally inconsistent, it is contradiction.
+      If it remains actionable in multiple incompatible regimes
+      simultaneously, it is wyrd.
+
+    + DISTINCTIONS:
+      | Phenomenon | Behavior under regime translation |
+      | Noise | No persistent salience; signal dies under any 部 |
+      | Anomaly | Collapses to a single 部 once that 部 is expanded |
+      | Contradiction | Collapses logic; cannot inhabit any 部 consistently |
+      | Wyrd | Salience SURVIVES translation across incompatible 部, without collapsing to any one |
+
+      The fourth next-step of the original sketch is discharged here,
+      not deferred: wyrd is defined by the survival behavior, not
+      by the affective register.
+
+    + THE-THREE-NORNS-AS-THREE-TIMES:
+      | Norn | Sense | Glyph | Futon counterpart |
+      | Urðr | that-which-has-come-to-pass | 既 | Closure-evidence / HEAD-as-escrow / the proof path's earned past |
+      | Verðandi | in-process-of-happening (present participle of weorþan) | 化 | The live writer-action; the consent gate; the becoming-event |
+      | Skuld | debt/owed (cognate shall/should) | 應 (modal) or 債 (noun) | The sorry: the typed obligation the present incurs that the future must discharge |
+
+      The three Norns are not a temporal sequence but a decomposition
+      of the present moment into its already-completed,
+      presently-becoming, and owed-to-the-future aspects. The future
+      is read as obligation, not as mere temporal-next. This is the
+      move sorrys.edn already makes: a sorry is not "something that
+      didn't get done," it is a debt the present incurred, with
+      :kind typing the debt-class (:prototyping-forward as one class,
+      :technical-debt as another). Skuld is the patron of sorrys.edn.
+      The Buddhist 三時 (過去/現在/未來) is too neutral for this work
+      — it loses Skuld's owed character, collapsing the future-as-debt
+      into future-as-next.
+
+    + THE-DEBT-SALT-PUN:
+      "Worth one's salt" descends from Roman salarium — salt-money,
+      the etymological root of "salary." 鹽 (salt) is futonic-logic's
+      glyph for generative composition: 鹽 = (⿱ 鹵 皿), the
+      recognition that potential and container compose under the
+      same 部. 債 (debt) is Skuld's substantive counterpart. The pun
+      is load-bearing, not decorative: every act of composition (鹽)
+      earns both worth (what-the-salt-pays-for) and debt
+      (what-the-composition-owes-the-future). Sorries are the 債
+      side of the 鹽 ledger. Wyrd-salience is the structural fact
+      that no composition completes its bookkeeping in a single 部 —
+      the 債 outstanding in regime A may be the 鹽 generative in
+      regime B. The Latin/Chinese/Old English pun (salarium / 鹽-債 /
+      Skuld-as-shall) is not adornment; it triangulates the same
+      ledger structure from three independent linguistic registers,
+      which is itself a wyrd-survival test.
+
+    + WYRD-AS-TURNING:
+      PIE *wert- "to twist" and Latin vertere "to turn" foreground
+      that wyrd is not static unresolvedness but operational
+      rotation. The stereolithographic view rotates. The piano roll
+      unrolls. The hairball twists. These are not decorative
+      kinetics — they are enacted wyrd. Being-in-becoming requires
+      turning operations to remain perceptible across regimes. A
+      configuration that cannot be turned between containers has
+      collapsed; it is no longer wyrd-salient, only locally salient
+      in whatever 部 captured it.
+
+    + VSATARCS-AS-WYRD-CHROME:
+      The futon stack decomposes by three-Norn surface:
+      - Piano roll = Urðr-surface (frozen tape, already-come-to-pass)
+      - M-live-geometric-stack = Verðandi-surface (live, becoming)
+      - sorrys.edn = Skuld-surface (typed debt, what's owed)
+
+      VSATARCS is the chrome that lets the operator turn between
+      these surfaces without collapsing into any single one. Its
+      disagreement signal — when MiniLM-cosine, structural retrieval,
+      and closure-evidence return different rankings, the
+      disagreement IS the signal (validated live on "a sorry
+      enterprise") — is wyrd made operationally tractable. The
+      "mere relevance" move (collapse to a single retriever) destroys
+      it. VSATARCS is, in this pattern's terms, a tool for
+      inhabiting 間 across the three Nornic surfaces rather than
+      eliminating it.
+
+    + MODERNISM-AS-WYRD-MODALITY:
+      Under the etymological reading, modernism is not the
+      post-Enlightenment historical period but the condition of
+      being-in-becoming itself — the wyrd-modality. Beowulf is
+      modernist in this sense: wyrd-saturated, structurally
+      continuous with 20th-century modernism in its inhabitation of
+      unresolved composition. The intensification narrative
+      ("modernity multiplies 部 faster than 皿 can absorb them")
+      holds for any high-decomposition-rate regime, not specifically
+      the post-1500 era — pre-modern mystery cults, esoteric
+      traditions, apocalyptic literatures all surface the same
+      structural condition. PKD's mid-20th-century counterfeit-world
+      fiction (anamnesis, Flow My Tears Officer Said, VALIS) is a
+      modern instance of an old modality.
+
+  + BECAUSE:
+    Salience is generated not by isolated symbols but by partial
+    compositions (鹽) that survive migration across incompatible 部.
+    When the rate of regime-multiplication exceeds the rate of
+    container-stabilization, more configurations remain in this
+    trans-regime state. The "mere X" reflex exists because
+    containing wyrd in a single regime is cognitively cheap and
+    politically convenient — but the cost is the destruction of the
+    diagnostic signal the wyrd-salience carried. The Norns name what
+    we already practice: Urðr is the past we cite as evidence,
+    Verðandi is the act we are presently composing, Skuld is the
+    debt that composition incurs. Premature closure into any one
+    Norn — collapsing Skuld into "future work" or Verðandi into
+    "current state" — strips the three-time structure that makes
+    composition legible at all.
+
+  + NEXT-STEPS:
+    next[Extend futon-theory/futonic-logic to handle the three-Norn temporal decomposition explicitly: add Urðr/Verðandi/Skuld as roles alongside 象/部/咅/鹽/間, and articulate the 鹽/債 ledger as a first-class structure]
+    next[Test the wyrd-salience criterion against PKD cases: anamnesis, Flow My Tears Officer Said, VALIS-adjacent counterfeit-world structures — does survival-across-regimes hold as a diagnostic?]
+    next[Map Heraclitus DK B54 (ἁρμονίη ἀφανὴς φανερῆς κρείττων) onto the pattern: latent structure (ἀφανὴς ἁρμονίη) as the precondition of wyrd-salience]
+    next[Apply to distributed-systems and multi-agent ontology drift: when agents operate under incompatible 部, wyrd-salience is the empirical signature of un-merged commitments]
+    next[Design accounting that tracks the 鹽/債 ledger explicitly per composition, rather than collapsing to net — sorries.edn schema v3?]
+    next[Use as foreword frame for VSATARCS: position the chrome as wyrd-inhabiting rather than wyrd-eliminating; the rotation of the stereolithographic view is enacted vertere]

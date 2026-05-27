@@ -1,0 +1,195 @@
+@flexiarg structure/interest-event-vocabulary
+@title What state-transition is this checkpoint asserting against an interest-network entity?
+@sigils [⌒/態]
+@keywords vocabulary, state-transition, checkpoint, interest-network, posterior-update, EoI, event-log, append-only, provenance, state-spawned, state-refined, state-strengthened, state-addressed, state-falsified, state-foreclosed, state-reopened, link-asserted
+@audience operators authoring mission checkpoints that need to update the standing of EoI entities; engine code that emits state-transition events; projection code that derives posterior state from the event log; downstream consumers (substrate-2 sorry-typing, M-a-sorry-enterprise mining-track, :sorry/r3d-per-entity-attribution) that need a shared entity-status vocabulary
+@tone declarative; vocabulary first
+@factor Investigation (dhammavicaya)
+@references [structure/unresolved-tensions-at-closure structure/whose-question-is-this writing-coherence/name-what-you-drop]
+@references-extra ["Mission of origin: ~/code/futon4/holes/missions/M-interest-network-coupling.md (§2.0 checkpoint metadata, §2.1 event vocabulary, §2.2 emission format, §3 ARGUE)" "Sibling prior-art for vocabulary-as-EDN (shape reference; not directly composed): ~/code/futon5a/data/war-machine-strategic-vocabulary.edn + war-machine-terminal-vocabulary.edn" "Corpus the vocabulary operates over: ~/code/atthangika-buckets.json eoi_instances[] + institution_objects[]" "Cross-mission consumers identified in claude-1 downstream finding 2026-05-26: M-action-cost-modelling §3.2 (geometry-track sorry-typing in substrate-2), M-a-sorry-enterprise (mining-track), :sorry/r3d-per-entity-attribution (futon2/data/sorrys.edn)"]
+
+! conclusion:
+  Mission checkpoints update the interest-network not by mutating EoI
+  entities directly but by emitting typed state-transition events
+  that target them. This flexiarg declares the v1 vocabulary: eight
+  event types (seven `state/*` events plus `link/asserted`) and a
+  payload schema. The event log is append-only and
+  provenance-bearing; the posterior projection derives entity
+  standing by replay. The vocabulary is neutral — the same eight
+  events apply to essay annotations, institution-objects, basins,
+  and composite-arrow edges without entity-class-specific slang.
+
+  + context: The EoI corpus declares interests as a prior. Lived
+    evidence from missions (M-interim-director during design
+    2026-05-14 → ~2026-05-28; downstream validation execution
+    ~June–August 2026; EoI engine runs in any session) constitutes
+    the likelihood. The interest-network surface renders the
+    posterior. Without an explicit event vocabulary, mission outputs
+    sit alongside the EoI corpus as parallel documents rather than
+    as posterior updates; the network either ossifies (silent
+    updates) or churns incoherently (overwrites without provenance).
+    The vocabulary closes this gap by giving every state-transition
+    a citable name.
+
+  + HOWEVER: Three design choices the vocabulary makes, and why each
+    beats its alternative.
+
+    + EIGHT-EVENTS-NOT-FREE-FORM:
+      A free-form rationale field per checkpoint would be simpler
+      but loses the structure that lets the projection compute
+      coverage, detect inconsistencies, and render the network
+      without re-parsing prose. Eight types is enough to
+      discriminate (a) entity-lifecycle moves (spawned / refined /
+      strengthened) from (b) closure moves (addressed / falsified /
+      foreclosed / reopened) from (c) relational moves
+      (link/asserted), while staying small enough that an operator
+      can hold them in mind without consulting a sheet.
+
+    + STATE-SLASH-PREFIX-NEUTRAL:
+      Namespace is `state/*` — not `eoi/*`, `essay/*`, `basin/*` —
+      so the same events apply to essay annotations,
+      institution-objects, basins, and composite-arrow edges.
+      Granularity is a separate field (`:target/granularity`), not
+      part of the event-type. Cross-entity-class queries work
+      naturally ("show me every entity that got addressed this
+      week"); per-entity-class queries filter by granularity.
+
+    + LINK-AS-SEPARATE-EVENT:
+      `link/asserted` is its own event type, not a special case of
+      `state/spawned`, because "new relation exists" and "new entity
+      exists" have different downstream uses (relation surfaces as
+      edge in the network view; entity surfaces as node).
+      Overloading `state/spawned` would force the projection to
+      discriminate by `:target/granularity` to know whether to
+      render as node or edge — fine for the projection, opaque to
+      the operator authoring the checkpoint.
+
+  + THEN: The eight event types, the payload schema, and the
+    emission discipline.
+
+    + EVENT-VOCABULARY-V1:
+      - `state/spawned`     — Target entity is newly created.
+      - `state/refined`     — Target entity's framing has been
+        sharpened (re-anchor, scoped).
+      - `state/strengthened` — Target entity's standing has gained
+        support from evidence.
+      - `state/addressed`   — Target entity (typically a tension)
+        has been resolved by evidence; not falsified.
+      - `state/falsified`   — Target entity has been contradicted by
+        evidence.
+      - `state/foreclosed`  — Target entity (typically a basin) has
+        been deliberately closed off.
+      - `state/reopened`    — Target entity that was
+        addressed/falsified/foreclosed has had its standing reset
+        to `:live`. First-class so retraction isn't terminal.
+      - `link/asserted`     — A new cross-essay relation exists.
+        Separate from `state/spawned` to avoid overloading "new
+        target" with "new relation".
+
+    + PAYLOAD-SCHEMA:
+      Each event record carries these fields (EDN, keyword keys):
+      - `:event/id`           — unique within checkpoint
+      - `:event/type`         — keyword; one of the eight above
+      - `:checkpoint/ref`     — back-pointer to the checkpoint
+      - `:target/entity-id`   — the EoI entity this event targets
+      - `:target/granularity` — keyword; one of `:essay`, `:section`,
+        `:annotation`, `:institution-object`, `:basin`,
+        `:composite-arrow`
+      - `:prior-state`        — keyword; standing before this event.
+        Required for `state/*` events; optional/omitted for
+        `link/asserted`.
+      - `:posterior-state`    — keyword; standing after this event.
+        Required for `state/*` events; optional/omitted for
+        `link/asserted`.
+      - `:evidence/refs`      — `[String]`; pointers to evidence
+        artefacts (interview notes, go/nogo memos, plan drafts,
+        EoI strawman sections, etc.)
+      - `:operator/rationale` — `String`; the operator's
+        plain-language reason. This is the load-bearing
+        provenance field; the projection's posterior always
+        traces back to an operator-asserted *because*.
+      - `:link/src`           — `String`; source entity. Only for
+        `link/asserted` events.
+      - `:link/dst`           — `String`; destination entity. Only
+        for `link/asserted` events.
+
+    + EMISSION-DISCIPLINE:
+      - APPEND-ONLY. Events are never edited or deleted. Mistakes
+        are corrected by emitting a new event (typically
+        `state/refined` or `state/reopened`) that updates the
+        target's standing. The log is the authoritative source;
+        the projection derives current state from log replay.
+      - NO-OP DAYS EMIT NO CHECKPOINT. Daily cadence is fine when
+        there's a real state delta — even a single `state/refined`
+        on a single annotation counts. But synthetic checkpoints
+        (an empty `:emitted-events` vector emitted just to satisfy
+        a daily rhythm) are forbidden: they pollute the log with
+        non-events and degrade the projection's signal-to-noise.
+      - OPERATOR-ASSERTED BOUNDARY. Events are emitted at
+        checkpoint boundaries by an operator, not inferred from
+        prose by a processor. The event log is authored, not
+        extracted. (Pre-checkpoint events — interview notes, go/nogo
+        memos as they happen — are out of scope for v1.)
+      - VALIDATION BLOCKS, NOT WARNS. Validation errors against
+        this vocabulary block the checkpoint; the operator fixes
+        the EDN and re-runs. Silent acceptance of malformed events
+        would let drift land in the projection.
+
+  + BECAUSE:
+    Provenance is the load-bearing part of completeness-not-closure
+    (the parent EoI mission's framing: the network becomes more
+    complete under use because evidence accumulates, not because
+    documents multiply). The projection's render answers "what is
+    the standing of every EoI entity right now?", but the trail it
+    carries answers "how did it get there?". Both are needed:
+    without standing, the operator can't act on current state;
+    without trail, the operator can't tell whether progress is real
+    or a confabulation. The eight-event vocabulary fixes a
+    discrimination-shape the projection can compute against; the
+    append-only discipline preserves the trail; the
+    explicit-emission rule keeps the authoring surface honest. The
+    neutral `state/*` namespace makes the vocabulary reusable
+    across entity classes — which is what lets substrate-2's
+    sorry-typing, M-a-sorry-enterprise's mining-track, and
+    `:sorry/r3d-per-entity-attribution` adopt the same vocabulary
+    rather than re-inventing it per consumer.
+
+  + NEXT-STEPS:
+    next[Step (b) commit: this flexiarg IS the deliverable. The
+         vocabulary, payload, and emission discipline are committed
+         here as the canonical design substrate. M-INC's
+         INSTANTIATE step (b) is satisfied by this file's
+         existence.]
+    next[Step (c) projection: derive an EDN schema file from this
+         flexiarg as needed by XTDB validators
+         (`state/<spawned|refined|...>` as a keyword schema, the
+         payload as a `clojure.spec`/`malli` schema, etc.). The
+         flexiarg remains authoritative; EDN is procedural
+         adaptation. War-machine vocabulary EDNs
+         (`futon5a/data/war-machine-*-vocabulary.edn`) are
+         structural references for the EDN form.]
+    next[First emission: M-interim-director CP-1 (futon7) is the
+         first concrete planned emitter, per M-INC §1 IDENTIFY.
+         The EoI engine
+         (`~/code/algorithms/eoi-engine.md`) is a candidate
+         secondary emitter — `eoi_instances[]` writes from engine
+         runs map cleanly onto `state/spawned` + `link/asserted`
+         events (e.g. parent/child instance relations as observed
+         in `vsat-poc-2026-q2-q3-scenario-c-vsatlatarium` 2026-05-25).]
+    next[Cross-mission consumers (per claude-1 downstream finding
+         2026-05-26): substrate-2 sorry-typing
+         (M-action-cost-modelling §3.2) adopts the 7-status
+         `state/*` set as `:sorry`-entity-status vocabulary;
+         M-a-sorry-enterprise mining-track resumes emit-into-substrate
+         using this vocabulary; `:sorry/r3d-per-entity-attribution`
+         (`futon2/data/sorrys.edn`) re-types as
+         `:mission`-scale, consuming this vocabulary as the shared
+         status surface.]
+    next[Granularity-enum extension (deferred to step (c)): EoI
+         engine runs produce carry-forward entries on parent
+         instances that fit closest to `:annotation` but are not
+         text-annotations. Resolution candidates: extend the enum
+         (`:tension`, `:tech-debt-entry`) OR add an
+         `:annotation/subtype` discriminator. Non-blocking for
+         step (b); resolved at projection time when XTDB schemas
+         materialise.]

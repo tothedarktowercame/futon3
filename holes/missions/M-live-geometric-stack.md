@@ -810,3 +810,39 @@ silently again.
 
 Status of THIS mission stays COMPLETE for what was actually built;
 the excursion holds the "live-means-live" follow-up.
+
+---
+
+## Downstream finding (M-action-cost-modelling, 2026-05-26)
+
+Filed by claude-1 during the VERIFY phase of `futon3c/holes/missions/M-action-cost-modelling.md`
+(T8 of §5.1).  **Not a stop-the-line; a friendly cross-reference.**
+
+The geometric formalism shipped here (`T`, `∇T`, `ΔT`, `drift`) — delivered as
+`futon3/scripts/geometric_layer_phase2.clj` per §formalism — operates over
+`code/v05/{var,test,namespace,term}` entities and edges
+`{:calls :coverage :vocabulary-use :term-defines :contains}`.  This is exactly
+the scope this mission claimed and delivered (an earlier read pass by claude-1
+missed the `scripts/` location and erroneously concluded the functions were absent;
+the discipline lesson is saved at `[[feedback_grep_src_and_scripts]]`).
+
+The downstream finding: **the futonic stack's prioritisation problem (M-action-cost-modelling)
+requires extending substrate-2's entity domain to include `:sorry` (and likely
+`:mission`) as first-class types with manifold-end T-semantics**
+(`T(sorry) = 1 if :open else 0`, isomorphic to `T(var) = 1 if no incident
+:coverage edge else 0`).  This is a vocabulary extension that *consumes* the
+existing geometric formalism unchanged.  Authoring tracker:
+`futon3c/holes/missions/M-action-cost-modelling.md` §3.2 + §3.8 (the
+geometry-track, jointly with M-a-sorry-enterprise mining-track downstream of
+M-INC step (b)).  T1 of M-action-cost-modelling's VERIFY has resolved
+provisionally to author this work as the sibling-excursion
+`E-substrate-2-sorry-typing.md`.
+
+Sister-mission reference for the larger synthesis:
+M-action-cost-modelling §3.8 names the aliveness synthesis (Alexander / Salingaros
+/ Mana / Anamnesis / EOI / AIF / T as projections of one quantity).  The
+geometric T over code-structure that this mission shipped is one such projection;
+extending to `:sorry` makes the projection cover the WM's action domain.
+
+No action required on this mission's side; this is a forward-pointer for any
+future cleanup pass that might want to gather follow-on missions referenced here.

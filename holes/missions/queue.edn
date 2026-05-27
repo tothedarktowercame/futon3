@@ -1,5 +1,5 @@
 {:queue/version "0.1"
- :queue/updated #inst "2026-02-09T00:00:00Z"
+ :queue/updated #inst "2026-05-04T11:25:58Z"
  :missions
  [{:mission/id "M1"
    :mission/name "Smoke Test + H1-Lite"
@@ -99,7 +99,30 @@
                      :name "One Repo, One Session"
                      :status :ready
                      :depends []
-                     :notes "Pattern-tag one futon repo + one session transcript. Build minimal code knowledge graph. Test graph-enhanced code reasoning."}}]
+                     :notes "Pattern-tag one futon repo + one session transcript. Build minimal code knowledge graph. Test graph-enhanced code reasoning."}}
+
+  {:mission/id "M-pattern-retrieval-calibration"
+   :mission/name "Pattern Retrieval Calibration"
+   :mission/type :exploration
+   :mission/depends []
+   :mission/spec "M-pattern-retrieval-calibration.md"
+   :mission/status :running
+   :mission/outposts
+   [{:id "O-1"
+     :name "Structural Fidelity Audit"
+     :status :ready
+     :depends []
+     :notes "Verify which pattern surfaces preserve canonical component structure and what minimum projection the retrieval/HIT packet requires."}
+    {:id "O-2"
+     :name "Hybrid Top-3 Baseline"
+     :status :ready
+     :depends ["O-1"]
+     :notes "Combine classical top-3 and embedding top-3 into one deduped candidate packet with deterministic rationale features."}
+    {:id "O-3"
+     :name "HIT + Haiku Packet"
+     :status :blocked
+     :depends ["O-2"]
+     :notes "Optional cheap Haiku comparison layer plus durable HIT logging shape for future calibration and B→A reuse."}]}]
 
  ;; Outpost dependency graph (can run ahead of mission dependencies):
  ;;

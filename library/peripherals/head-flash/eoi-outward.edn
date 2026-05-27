@@ -1,0 +1,195 @@
+;; eoi-outward.edn — flash profile per ~/code/algorithms/eoi-engine.md
+;;
+;; **Proto-flash status**: encoded 2026-05-26 from N=2 source-material instances:
+;;   - glasgow-cogito-neurotech-RA-2026-05-11 (outward first-contact, pre-application
+;;     outreach to Prof Christoph Kelp)
+;;   - anthropic-institute-analyst-2026-05-11 (outward one-shot application
+;;     draft; eoi-outward-one-shot variant, but composite-arrow + question-set
+;;     overlap heavily; included as second source instance)
+;; Plus the eoi-engine.md spec's flash profile schema (§"Flash profile known
+;; at spec-time" + the example in §"Flash profile schema").
+;;
+;; This flash supports BOTH:
+;;   (a) first-contact outreach letters (Glasgow shape: pre-application
+;;       inquiry to surface the institution-object's stance)
+;;   (b) formal applications following prior outreach (Glasgow round-2 shape:
+;;       post-outreach, pre-deadline, building on round-1 essay)
+;;
+;; For one-shot applications where rounds collapse (no later round to defer
+;; tensions to), use eoi-outward-one-shot.edn (to be authored when its first
+;; case runs — Anthropic Institute Analyst send-shape is its seed case).
+;;
+;; For outward-into-self-authored-institution composition (Joe applying to a
+;; Joe-authored institution-object — Hyperreal Side B), use
+;; eoi-outward-into-self-authored-institution.edn (to be authored).
+;;
+;; ;; ----- Source material (per buckets entries) -----
+;; Glasgow proto_flash_outputs (eoi_instances/glasgow-cogito-neurotech-RA-2026-05-11):
+;;   - 4-arrow composite (Right View ∘ Right Speech ∘ Right Mindfulness ∘ Right
+;;     Livelihood) — no Right Intention witness in outreach register (too
+;;     compressed for predecessor-anchoring)
+;;   - diagnostic-probe-as-stance-discriminator pattern
+;;   - tensions: analytic-asymmetry-vs-Lead, funding-proposal-vs-free-solo,
+;;     frame-conventions-vs-linear-output
+;; Anthropic proto_flash_outputs (eoi_instances/anthropic-institute-analyst-2026-05-11):
+;;   - 5-arrow composite (full set including Right Intention)
+;;   - speech-move-as-demonstration-via-artefacts pattern (chosen over
+;;     really?-callout)
+;;   - tensions: foreclosure-cost, free-solo-rule, non-conventional-CV,
+;;     frame-conventions, IP-scope
+
+{:flash/id            "eoi-outward"
+ :flash/applies-to    "Outward first-contact EoI letters AND formal applications following prior outreach. Used for: cold-outreach to PIs / hiring teams; pre-application inquiry letters; formal job applications; round-2 follow-ups against an existing institution-object. NOT for one-shot applications where rounds collapse (use eoi-outward-one-shot). NOT for inward mission HEADs (use eoi-inward-mission)."
+ :flash/predicts      {:composite-arrow  [:right-view :right-intention :right-speech :right-mindfulness :right-livelihood]
+                       :round-default    "first-contact"
+                       :round-collapse?  false                    ; multi-round friendly; tensions can be deferred
+                       :composite-may-be-partial?  true            ; outreach register may compress to 4-arrow (no Right Intention); formal-application register usually uses full 5
+                       :round-2-supported?  true}                  ; for post-outreach formal-application case (Glasgow 2026-05-28 deadline shape)
+
+ :flash/question-set
+ [{:q/id   :view
+   :q/path-arrow :right-view
+   :q/round-tag  :essential-round-1
+   :q/prompt     "What invariance claim does this letter rest on? Stated as a behavioural proxy — what's the through-line in your work that this institution-object's framing engages, and what would make this still-be-that across whatever shape the engagement takes?"
+   :q/style      :behavioural-proxy
+   :q/branch-on  :invariance-claim-developed?
+   :q/branch-rule "if Joe's answer says 'no developed invariance claim available' or equivalent, downgrade rest of Right-View thread to :behavioural-proxy mode for remainder of session"
+   :q/first-run-validated  true
+   :q/first-run-source     "Glasgow outreach (cross-substrate intelligence-augmentation); Anthropic draft (cross-substrate-invariance meta-claim)"}
+
+  {:q/id   :intention
+   :q/path-arrow :right-intention
+   :q/round-tag  :essential-round-1
+   :q/prompt     "What predecessor work does this letter grow from? Name the prior — a delivered artefact, a published paper, a long-running project — that gives this engagement its rooted-not-aspirational quality. The institution-object's framing may help anchor: what part of your prior most rhymes with what they're already doing?"
+   :q/style      :predecessor-anchor
+   :q/branch-on  :register-compression
+   :q/branch-rule "if register is compressed (outreach email, short pre-application inquiry), Right Intention may be deferred to formal-application round; flag and continue. Glasgow outreach demonstrates the 4-arrow composite that drops Right Intention; this is acceptable for first-contact."
+   :q/first-run-validated  true
+   :q/first-run-source     "Anthropic draft (ORCA + Hyperreal duality as cross-cutting capacity)"
+   :q/first-run-note       "Glasgow's outreach skipped this arrow; engine should not force it if register doesn't support it."}
+
+  {:q/id   :speech
+   :q/path-arrow :right-speech
+   :q/round-tag  :essential-round-1
+   :q/prompt     "What's the speech-move this letter performs? Two strong candidates from prior runs: (a) prose-as-debug-trace / glibness-detector calibrated to make the stack legible to a stranger (Glasgow's 'paradoxically harder to trace' move); (b) demonstration-via-artefacts naming concrete prior outputs (Anthropic's choice — Agency, First Proof Sprint, 16y Peeragogy, past-me/future-me coherence). Override with your own move if neither fits."
+   :q/style      :speech-move-choice
+   :q/branch-on  :really?-callout-warranted?
+   :q/branch-rule "engine MAY surface 'really?'-callout opportunities (institution-object framings worth challenging) as candidate speech-moves; Joe rejects or accepts. Anthropic run rejected two seeded 'really?' options (T5, T6) in favour of demonstration-via-artefacts; engine must offer + accept Joe's choice, not assume."
+   :q/first-run-validated  true
+   :q/first-run-source     "Glasgow (prose-as-debug-trace); Anthropic (demonstration-via-artefacts)"}
+
+  {:q/id   :mindfulness
+   :q/path-arrow :right-mindfulness
+   :q/round-tag  :essential-round-1
+   :q/prompt     "How does this letter represent your current stack-state to the reader? Mindfulness here is live self-representation — what's the explicit naming of where-you-are-now that the reader needs to understand the request? Glasgow's outreach used 'main current professional role is... in parallel, I've been working extensively on...'; Anthropic's draft used '600+ flexiargs being used across agent coding missions' as the operationalised self-representation."
+   :q/style      :live-self-representation
+   :q/branch-on  nil
+   :q/first-run-validated  true
+   :q/first-run-source     "Glasgow (parallel-engagements naming); Anthropic (preeminent-user-of-design-patterns)"}
+
+  {:q/id   :livelihood
+   :q/path-arrow :right-livelihood
+   :q/round-tag  :essential-round-1
+   :q/prompt     "What's the honest cost-test for this engagement? Name what's foreclosed if accepted (other engagements, parallel commitments, geographic continuity). For first-contact letters: framed as inquiry-not-availability; for formal applications: explicit foreclosure honesty. Glasgow's outreach used 'before formally applying I wanted to check in with you'; Anthropic's draft opened with 'the only place I can think of where that would actually be guaranteed' (stake-naming, foreclosure implicit)."
+   :q/style      :foreclosure-mechanics
+   :q/branch-on  :first-contact-vs-formal-application
+   :q/branch-rule "round-default 'first-contact' → inquiry-shape; round-2 'formal-application' → explicit foreclosure-honesty content required"
+   :q/first-run-validated  true}
+
+  ;; Predicted tensions — extracted from context-handle's diagnostic notes at
+  ;; runtime; engine asks one-question-per-turn per tension during step 6.
+  ;; The :speech-act-discipline tension is ALWAYS round-1 essential per spec.
+
+  {:q/id   :tension-speech-act-discipline
+   :q/path-arrow :tension
+   :q/round-tag  :essential-round-1
+   :q/subtype    :speech-act-discipline
+   :q/prompt     "Speech-act-discipline tension: what kind of letter is this, exactly? Cold-outreach inquiry, pre-application check-in, formal application body, reply-to-prior-outreach, application-following-outreach. The answer determines what action on the reader's side confirms the speech-act was right (interview offer, reply, advance to next round, etc.)."
+   :q/first-run-validated  true
+   :q/first-run-note       "Glasgow: pre-application check-in invites Kelp to surface his frame. Anthropic: one-shot application; speech-move chosen via Q3."}
+
+  {:q/id   :tension-foreclosure-honesty
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :decision-debt
+   :q/prompt     "Foreclosure-honesty tension: what would be foreclosed by accepting this engagement? Hyperreal-current-form, parallel-projects, geographic continuity, other-engagements, math-since-age-10 work in unconstrained form. The salary or stipend may make foreclosure look like a 'no foreclosure' decision; that appearance is the exact failure mode the mission warns against. address-now (Joe writes verbatim content) / *-defer / not-applicable."
+   :q/first-run-validated  true
+   :q/first-run-source     "Glasgow strawman §diagnostic-notes; Anthropic strawman §7 diagnostic 'Foreclosure cost is real and large'"}
+
+  {:q/id   :tension-free-solo-rule-relevance
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :decision-debt
+   :q/prompt     "August-2026 free-solo-rule tension: this engagement-request may activate the no-grants-VC-job-apps rule. Three-way disjunct: (a) rule was about applications-as-relief-from-uncertainty and a considered MAP-output doesn't count; (b) rule is the rule and this basin is decided-against; (c) rule needs explicit re-examination. Joe MUST tag — load-bearing for the application decision. WEAKER for funding-provided-to-talent shapes (e.g., Anthropic Fellows stipend), STRONGER for grant-proposal-authorship duties (e.g., Glasgow duty 6 + E1)."
+   :q/first-run-validated  true
+   :q/first-run-source     "Glasgow + Anthropic strawmen both flagged"}
+
+  {:q/id   :tension-non-conventional-CV-floor
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :speech-act-discipline
+   :q/prompt     "Non-conventional-CV tension: posting names an experience floor (7+ years think-tank, A1-PhD-plus-emerging-independence, etc.). Joe has substantially more than the floor in a non-conventional shape (Peeragogy co-convening, ORCA, Hyperreal, flexiarg work). The underrepresented-groups paragraph (when present) is doing real work and reads as deliberately calibrated. address-now / not-applicable. Defused by 'regardless of previous experience' postings (Anthropic Fellows)."
+   :q/first-run-validated  true
+   :q/first-run-source     "Anthropic draft T3 placeholder; Glasgow A1 clause"}
+
+  {:q/id   :tension-frame-conventions-rhythm
+   :q/path-arrow :tension
+   :q/round-tag  :predicted-tension
+   :q/subtype    :dialogue-debt
+   :q/prompt     "Frame-conventions / institutional-rhythm tension: does the institution's actual rhythm support the held-space / analytic-asymmetry discipline, or is the held-space framing decorative on a policy-research-factory floor? Asked-not-answered by the EoI itself; reply (or engagement experience) discriminates."
+   :q/first-run-validated  true
+   :q/first-run-source     "Glasgow + Anthropic strawmen both flagged"}
+
+  ;; Diagnostic-probe — outward flashes use the diagnostic-probe slot to
+  ;; invite stance-discrimination. For Glasgow: 'how do you anticipate the
+  ;; project taking shape?' invited Kelp to surface his frame. Joe should
+  ;; supply (or accept default) this probe per engagement.
+
+  {:q/id   :diagnostic-probe
+   :q/path-arrow :diagnostic
+   :q/round-tag  :essential-round-1
+   :q/prompt     "Diagnostic probe inside the letter: what question or invitation will discriminate the institution-object's stance — :tolerates / :tacitly-endorses-without-understanding / :explicitly-values / :unaligned-and-demanding? Glasgow used 'how do you anticipate the project taking shape?'; Anthropic's was implicit via demonstration-via-artefacts. Joe's call."
+   :q/style      :stance-probe
+   :q/first-run-validated  true}]
+
+ :flash/tension-surface
+ {:source    "context-handle: handoff doc at ~/code/futon5a/holes/missions/M-expressions-of-interest.handoffs/; OR strawman at ~/code/futon5a/holes/missions/M-expressions-of-interest.strawmen/ if no handoff exists; OR direct job-posting-text if neither"
+  :extract   "Diagnostic-notes section of the strawman (or handoff) names the predicted tensions. v0.2 candidate: forward-pass against ~/code/atthangika-interest-surface-v1.edn predicts which interest-territories engage AND which tensions activate (e.g., free-solo-rule sharpness depends on whether duties require grant-proposal authorship)."
+  :subtype-enum  #{:dialogue-debt :decision-debt :rhythm-debt :speech-act-discipline}
+  :speech-act-discipline-is-always-round-1?  true}
+
+ :flash/closure
+ {:rule  "all :essential-round-1 questions answered (5 Path-arrows, allowing Right Intention to be skipped for compressed-register outreach AND :tension-speech-act-discipline tagged address-now-with-content) AND :diagnostic-probe answered AND Joe explicitly closes OR engine detects closure"
+  :soft-floor  4   ; allow 4-arrow composite (Glasgow outreach shape) without forcing Right Intention
+  :hard-cap   12}
+
+ :flash/assembly
+ {:order      "by composite-arrow then by tension-subtype; diagnostic-probe surfaces in letter body where natural (typically closing paragraph for outreach, embedded in body for formal application)"
+  :rule       "ordering and connective tissue AI-written; substantive sentences are Joe's literal answers verbatim per eoi-engine spec invariants (verbatim with voice-preserving copy-edit; paraphrase forbidden; no inline placeholders inside artefact body). When Joe tags a tension :address-now and declines to supply content, engine offers retag-:not-applicable OR :dialogue-debt-defer (multi-round-friendly per round-collapse? false); MUST NOT insert AI-written placeholder block inside artefact body."
+  :paraphrase-forbidden?  true
+  :template-pointer  "library/peripherals/head-flash/assembly/eoi-outward.template"
+  :template-status   :pending-assembly-template
+  :output-target     "~/code/futon5a/essays/<institution-slug>/<flow-stage>-v<n>.md OR ~/code/futon5a/holes/missions/M-expressions-of-interest.strawmen/<institution-slug>.md per operator preference; new buckets eoi_instances[] entry required"}
+
+ :flash/sniff-paths
+ ["**/M-expressions-of-interest.strawmen/*.md"
+  "**/M-expressions-of-interest.handoffs/*-formal-application-handoff-*.md"
+  "**/M-expressions-of-interest.handoffs/*-outreach-handoff-*.md"
+  "**/M-expressions-of-interest.handoffs/*-fellows-handoff-*.md"
+  "**/M-expressions-of-interest.handoffs/icarm-*-eoi-handoff*.md"]
+
+ :flash/metadata
+ {:authored-by  "claude-3"
+  :authored-on  "2026-05-26"
+  :first-run    :landed
+  :seed-context "Authored from N=2 source-material instances (Glasgow outreach 2026-05-11 + Anthropic Institute Analyst draft 2026-05-11) plus the eoi-engine.md spec's flash profile schema. Encoded to unblock the parallel-supervised eoi-new experiment 2026-05-26 (Glasgow formal-application + Anthropic Fellows handoffs)."
+  :sibling-flashes ["eoi-outward-one-shot (to be authored from Anthropic-send-shape)" "eoi-outward-into-self-authored-institution (to be authored from Hyperreal Side B)" "eoi-outward-continuation (candidate for continuing-engagement scoping per vsat-poc-continuation-2026-05-26 spec-gap)"]
+  :predecessor-flash  nil
+  :related-flashes    ["eoi-client-meeting-scenario-development" "eoi-inward-operator-foreword" "eoi-inward-mission" "eoi-inward-institution-self-authored"]
+  :open-questions-for-refinement
+  ["Does the round-2 / formal-application case (Glasgow 2026-05-28 deadline) need its own flash, or does this flash's round-collapse? false adequately cover it via round-tag metadata?"
+   "Should the question-set's allow-compressed-register branch (skip Right Intention for outreach) be the default for round-1, or always-on?"
+   "Does the v1.2 interest-territory forward-pass become a first-class input to the tension-surface :extract step (predicting which tensions will activate based on bipartite-graph signal)?"
+   "After N=3 runs (post-Glasgow-formal + post-Anthropic-Fellows + one more), consolidate :first-run-notes back into this file."]
+  :forward-pass-integration "The 2026-05-26 forward-pass apparatus at ~/code/atthangika-interest-surface-v1.edn predicts interest-bearing-ness of candidates pre-interview. Engine instances running this flash SHOULD consume the forward-pass forecast from the handoff (or run it inline if context-handle includes interest-surface ref) and probe Joe's actual answers against the forecast — recording divergences as engine-improvement signal."}
+}

@@ -21,6 +21,8 @@ Examples of NON-orchestration questions (these belong elsewhere):
 
 - [state-in-substrate-deltas-in-messages](state-in-substrate-deltas-in-messages.flexiarg) — for fast bounded coordination between two components, lift state into a shared substrate and keep messages as deltas
 - [rule-evolves-from-its-deferrals](rule-evolves-from-its-deferrals.flexiarg) — when a classifier rule defers as well as accepts, route the defers into an explicit typed channel and refine the rule from cluster shape in that channel
+- [pattern-warranted-choice-point](pattern-warranted-choice-point.flexiarg) — every choice-point carries the pattern(s) that warrant it; a NAG is the fork the patterns can't decide, surfaced with its warrant + the one gap ("your own rule asking for one confirmation")
+- [consent-gate](consent-gate.flexiarg) — don't act unilaterally on outward/irreversible acts; route them through a first-class recorded approval locus so the supervised→autonomous transition is a swap at one seam
 
 ## Provenance
 

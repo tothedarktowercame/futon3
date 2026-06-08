@@ -1,0 +1,40 @@
+@flexiarg orchestration/pattern-warranted-choice-point
+@title Pattern-Warranted Choice-Points (and the NAG as the Undecidable Fork)
+@sigils [🚪/⊢]
+@keywords warrant, fork-warrant, NAG, consent, choice-point, human-in-the-loop, legible-handoff, undecidable, guardrail
+@audience designers of autonomous decision loops (the War Machine), guardrail authors, operators
+@references [orchestration/consent-gate aif/admissibility aif/niche-construction war-machine/advanceability futon-theory/structural-tension-as-observation]
+@tone declarative
+@style pattern
+
+! conclusion: Every choice-point in an autonomous loop should carry the pattern(s) that warrant it; a NAG (operator-gated choice) is precisely the fork the patterns cannot decide, surfaced to the operator WITH its warrant and the one specific gap — turning "the system blocks you" into "your own rule is asking you to confirm one thing."
+
+  + context: An autonomous agent (the WM) ranks and selects actions; some actions are operator-gated (outward/irreversible, self-modifying, off-goal, or not-yet-advanceable). The choice to act-or-defer is governed by a set of patterns/rules the operator signed off on earlier.
+
+  + IF:
+    You have an autonomous decision loop whose choices are operator-consequential AND governed by a known set of signed-off patterns/rules (guardrails, admissibility, consent gates).
+
+  + HOWEVER:
+    A generic "operator confirmation required" block is illegible. The operator cannot tell whether it is their own rule firing or an arbitrary obstruction, so they either rubber-stamp it (the gate erodes to a no-op) or stall on it (the loop wedges). Worse, the patterns that DECIDE the autonomous picks are invisible too — the agent's "warranted" choices look like caprice from outside.
+
+  + THEN:
+    Warrant every choice-point. (1) Each rule/pattern that governs a choice is named and recorded as the choice's **warrant** (reuse the existing `:fork-warrant` channel — frames already record the patterns applied at a fork). (2) An **autonomous** pick carries its warrant (the patterns that decided it) — recorded and auditable, not surfaced. (3) A **NAG** is the dual case: the patterns are silent, conflicting, or genuinely undecidable, so the choice is legitimately the operator's. Surface it with `{the firing pattern + its signed-off rationale, the specific undecidable gap, the minimal unblock}`. The NAG reads: *"Because of pattern P — which you set — I can't decide this one thing; fill the gap and we roll."*
+
+  + BECAUSE:
+    This is how a trusted human-AI handoff actually works in an interactive session: *"I've read your complex spec; I just need your nod on this one small thing."* The warrant makes the block the operator's OWN rule rather than the machine's caprice, so consent is informed, fast, and trust-preserving — sometimes a quick "yeah, let's roll," occasionally a real pause, but always over a legible gap. An unwarranted block is either rubber-stamped (defeating the gate's purpose) or stalls the loop (defeating autonomy). The NAG-as-undecidable-fork is the **dual** of the autonomous-pick-as-decided-fork: one pattern-warrant frame, two faces — decide-and-act vs cannot-decide-so-surface.
+
+  + NEXT-STEPS:
+    - The rule→pattern mapping is DATA, not code branches: a table `{guardrail-rule → {pattern-id, warrant-text, gap, unblock}}`, so warrants stay auditable and editable.
+    - Reuse `:fork-warrant` (futon3c/aif/loop_learning.clj) — a NAG is a fork whose warrant-patterns failed to decide; don't build a parallel channel.
+    - The warrant CITES flexiargs (orchestration/consent-gate, aif/admissibility, aif/niche-construction, war-machine/advanceability), so the operator can read the actual rationale they signed off on.
+    - Render the warrant in the operator view (needs-you / bulletin): pattern + signed-off-reason + the gap + the one unblock action.
+    - evidence: warranted-vs-generic NAG count; operator decision-latency on warranted vs generic NAGs; rubber-stamp rate (approvals with no dwell) as a trust-erosion signal.
+    - evidence-shape: {:nag/warranted :bool, :nag/pattern-id :keyword, :nag/gap :string, :nag/unblock :string, :decision/latency-ms :int, :decision/outcome <:approved|:declined|:edited>}
+
+  + DOES-NOT-APPLY:
+    Low-consequence, fully-reversible choices (the warrant overhead is unjustified — just act). Choices governed by NO pattern: then the right move is not to warrant the block but to author the missing pattern first (the gap is "this case is unspecified," which is itself operator work).
+
+  + INSTANCES:
+    - The WM NAG (`futon3c/data/wm/needs-you.edn`): today carries a generic per-class `:why`; the upgrade attaches the firing guardrail rule's pattern-warrant.
+    - The interactive-session "approve this one thing and we start rolling" dynamic (Joe + claude-1) — the human prototype this pattern makes durable.
+    - The consent-gate on outward/irreversible acts (orchestration/consent-gate) is the warrant for one whole NAG class.

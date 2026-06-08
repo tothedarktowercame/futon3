@@ -1,0 +1,38 @@
+@flexiarg orchestration/consent-gate
+@title The Consent Gate — Don't Act Unilaterally, Act Through a Recorded Approval Locus
+@sigils [✋/🔏]
+@keywords consent, outward-action, irreversible, autopen, supervised-to-autonomous, WM-I4, first-class-artifact
+@audience designers of (partly) unattended autonomous loops, guardrail authors, operators
+@references [orchestration/pattern-warranted-choice-point war-machine/advanceability aif/admissibility]
+@tone declarative
+@style pattern
+
+! conclusion: An autonomous agent must not take an irreversible or outward-facing action unilaterally; route it through a consent-gate — a first-class, recorded operator-approval step at the exact locus where the action would otherwise fire — so the act is auditable and the supervised→autonomous transition is a swap at one seam, not a re-architecture.
+
+  + context: An autonomous loop can produce actions whose effects leave the system (sends, emails/EOIs, payments/invoices, publishes) or otherwise cannot be undone.
+
+  + IF:
+    The agent's action space includes outward or irreversible acts AND it runs partly or fully unattended.
+
+  + HOWEVER:
+    Blanket "ask before everything" wedges the loop — there is no autonomy left. Blanket "act freely" risks irreversible harm — there is no safety. And an approval that is an ad-hoc pause (not a recorded artifact) cannot be audited, replayed, or migrated to automation once trust is earned.
+
+  + THEN:
+    Put a consent-gate at the action's locus. The agent acts autonomously on everything reversible and in-scope; for outward/irreversible acts it NAGs **with warrant** (per pattern-warranted-choice-point) and waits. The consent step emits a first-class `consent-gate-event` with an id that the executing action cites. Then: (a) every outward act is auditable to its approval; (b) supervised→autonomous migration = replacing the operator with an autopen at ONE known location, not rewiring the loop.
+
+  + BECAUSE:
+    WM-I4 is not "the WM doesn't act" — it is "the WM doesn't act UNILATERALLY." The consent-gate is the precise locus of that distinction. Making consent a first-class artifact (rather than an implicit human-in-the-loop pause) is exactly what lets trust be migrated incrementally: the operator's judgment is substituted at a named seam, once and only once it is earned, with the whole history legible. An un-recorded pause cannot be safely automated because there is nothing to point the autopen at.
+
+  + NEXT-STEPS:
+    - The gate emits a typed `consent-gate-event` {:id :action :warrant-pattern :approved-by :approved-at | :declined}; the action cites the id (no orphan outward acts).
+    - Pairs with pattern-warranted-choice-point: the gate's NAG carries the warrant (which signed-off rule made this consent-required).
+    - The migration seam is the deliverable — track which consent classes have moved supervised→autopen and on what earned evidence.
+    - evidence: consent-gate-events per run; approve/decline/edit ratio; outward acts with vs without a cited consent id (the latter = a violation).
+    - evidence-shape: {:consent/events :int, :consent/approved :int, :consent/declined :int, :consent/edited :int, :orphan-outward-acts :int, :autopen-migrated-classes [:keyword]}
+
+  + DOES-NOT-APPLY:
+    Reversible, in-scope, low-blast-radius actions (gating them is pure friction). Internal computations with no outward effect (no consent surface needed).
+
+  + INSTANCES:
+    - The WM guardrails NAG outward/irreversible acts (sends/EOI/invoice) rather than executing them (`futon3c/wm/guardrails.clj` outward-op?).
+    - WM-GUARDRAILS-SPEC.md: the consent-gate / gate-at-merge posture (staging branch; Joe merges = the consent locus for code).

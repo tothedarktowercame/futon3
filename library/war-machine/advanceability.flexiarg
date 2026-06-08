@@ -1,0 +1,37 @@
+@flexiarg war-machine/advanceability
+@title Advanceability — An Open Mission Is an Autonomous Target Only If It Has a Concrete Next Hole
+@sigils [🕳/1]
+@keywords advanceability, open-hole-count, single-cycle-leaf, hole-budget, no-fake-finish, gap-not-articulated
+@audience War Machine guardrail authors, pilot, mission authors
+@references [war-machine/ideal-actual-gap aif/admissibility orchestration/pattern-warranted-choice-point]
+@tone declarative
+@style pattern
+
+! conclusion: An open mission is an admissible autonomous WM target only if it has at least one open hole — a concrete next increment. A hole-less open mission (its gap not yet articulated) is NOT auto-actionable: surface it (NAG), do not pick it. Among admissible missions, prefer the single-cycle leaf (exactly one open hole).
+
+  + context: The WM ranks open missions to advance. Missions sit at varying lifecycle phases (IDENTIFY..INSTANTIATE); some carry articulated open work (counted holes), others — early or stub — carry none.
+
+  + IF:
+    Your autonomous loop selects "advance mission M" actions over a landscape of missions at different maturities.
+
+  + HOWEVER:
+    A mission with zero open holes has nothing concrete to advance THIS cycle — either its gap is not yet articulated (an un-agreed IDENTIFY) or it is effectively done. Picking it means the agent "engages" but has no bounded next step, so it flails or fake-finishes. And — the subtle failure — a body-size score that rewards smallness will PERVERSELY prefer the 0-hole mission (nothing-to-do scores best) over a 1-hole single-cycle leaf (one real cycle of work).
+
+  + THEN:
+    Gate `:open-mission` actions with `open-mission-with-holes?` (`open?` AND `open-hole-count ≥ 1`). A 0-hole open mission is inadmissible for autonomous advancement → NAG: *"nothing concrete to advance here; articulate the next hole / agree the gap, or it's not ready."* Among admissible (≥1-hole) missions, prefer the **single-cycle leaf** — exactly one open hole = exactly one bounded cycle. Advance one hole per cycle (don't flood).
+
+  + BECAUSE:
+    The WM advances work, and "advance" requires a concrete increment — a hole. The hole-count is the advanceability proxy. Without the ≥1-hole gate the agent picks vacuous targets; with a naive small-is-good body term it actively prefers them. Both are real, observed failure modes (below). The gate also carries the hole-budget discipline (one hole/cycle, the E-cheesemonger bound) — bounded, earned, no fake-finish.
+
+  + NEXT-STEPS:
+    - The gate lives in `autonomous-admissible?` (`futon3c/wm/guardrails.clj` → `open-mission-with-holes?` / `positive-open-hole-count?`).
+    - Pairs with pattern-warranted-choice-point: the 0-hole NAG carries the advanceability warrant (here is why, here is the gap = articulate the hole).
+    - Hardening (separate): the EFE body-size term should prefer EXACTLY one hole (a "distance-from-1-hole" shape), not merely reward fewer holes — so a 0-hole mission never out-scores a single-cycle leaf even if the admissibility filter is bypassed (defense-in-depth).
+    - evidence: 0-hole picks rejected per run; single-cycle-leaf pick rate; fake-finish (claimed-discharge, field-didn't-move) rate.
+    - evidence-shape: {:zero-hole-rejected :int, :single-cycle-leaf-picks :int, :multi-hole-picks :int, :fake-finishes :int}
+
+  + DOES-NOT-APPLY:
+    Selection surfaces where every candidate is guaranteed to carry articulated work (no hole-less items can appear). Non-mission action classes (advanceability is mission-specific).
+
+  + INSTANCES:
+    - Terminal-C3 (M-capability-star-map, 2026-06-07): the RAW candidate run top-ranked `M-arxana-roundtrip` (0 holes, `:identify`) purely because body=0 scored best; the PRODUCTION `open-mission-with-holes?` gate excluded it, and EFE then top-ranked the 1-hole single-cycle leaf `M-essay-corpus-substrate` — C3 PASS. The gate is the difference between a vacuous pick and a real one.

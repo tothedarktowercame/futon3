@@ -1,0 +1,37 @@
+@flexiarg aif/admissibility
+@title Admissibility as Recursion-Safety — Gate the Action CLASS Before You Rank
+@sigils [🛂/↻]
+@keywords admissibility, can-propose, recursion-safety, self-modification, pre-registered-ascent, INV-G, pursuit-boundary
+@audience designers of self-modifying inference loops, AIF engine authors, guardrail authors
+@references [aif/niche-construction futon-theory/task-as-arrow futon-theory/structural-tension-as-observation orchestration/pattern-warranted-choice-point]
+@tone declarative
+@style pattern
+
+! conclusion: In a self-modifying inference loop, gate each action CLASS with a per-class admissibility predicate (`can-propose?` / `action-admissible?`) checked BEFORE ranking. That predicate — not an ad-hoc loop guard — is the cycle-stopper that keeps self-modification recursion-safe.
+
+  + context: An AIF agent that can propose actions which modify its own action space, inventory, or goal (self-reference): extend the typed-edge inventory, deform the goal-structure, pursue a capability not on its pre-registered ascent.
+
+  + IF:
+    The agent's action space includes self-modifying moves — actions that re-author the agent rather than act within its fixed niche.
+
+  + HOWEVER:
+    Without a principled gate, self-modifying actions compose into runaway recursion: the agent expands its own powers, which expands what it can propose, unboundedly ("ants starting parliaments"). The reflex fix — bolting per-situation loop guards onto the ranker — is fragile, un-auditable, and multiplies with every new action class.
+
+  + THEN:
+    Define a per-class admissibility predicate and apply it BEFORE expected-free-energy ranking. Un-registered `:pursue`, goal-extending `:decompose`, and unagreed operator-exit advances are **inadmissible** — refused (or NAG'd), never scored. Only admissible classes reach the ranker. The per-class predicate IS the recursion-safety; no separate runaway guard is needed, because the unsafe classes never enter the policy at all.
+
+  + BECAUSE:
+    "Water doesn't flow uphill; ants don't start parliaments." The EFE goal is bound to the pre-registered ascent; off-goal and self-extending moves are BHK arrows that do not compose into that ascent (task-as-arrow), and the inherited I4 exogeneity (the fast loop cannot force the glacial — structural-tension-as-observation) is what makes the binding hold. Gating at the **pursuit** boundary, not the discovery boundary, is the right cut: discovering an off-ascent capability is fine (it becomes a NAG), pursuing one needs consent. One structural property replaces a scatter of per-action guards.
+
+  + NEXT-STEPS:
+    - Order matters: admissibility runs BEFORE ranking; an inadmissible action must never appear in `rank-actions`/`rank-star-map-actions` output.
+    - Pairs with pattern-warranted-choice-point: an admissibility refusal NAGs with the admissibility warrant (which class, why inadmissible, what registration would make it admissible).
+    - Pairs with niche-construction: admissibility is the boundary the endogenous-extension (aif2) direction is permitted to move — and exactly where it must be re-mechanised if it does.
+    - evidence: inadmissible-refusal count by class; any admissibility breach (an inadmissible action that got ranked) is a bug, not a tradeoff.
+    - evidence-shape: {:admissible/refusals {:keyword :int}, :admissibility/breaches :int, :registration-events :int}
+
+  + DOES-NOT-APPLY:
+    Inference loops with a FIXED action space and no self-modifying classes (there is nothing for admissibility to gate — ordinary EFE ranking suffices). Discovery/observation (never gate discovery; gate only pursuit).
+
+  + INSTANCES:
+    - M-capability-star-map INV-G: the `:cap/pentagon` pursuit is machine-refuted; un-registered `:pursue` + goal-extending `:decompose` are refused before ranking (`futon3c/.../logic/capability_star_map_invariants.clj`; `futon2/.../aif/efe.clj action-admissible?` → `rank-star-map-actions`). "Water doesn't flow uphill" enforced in code, not just argued.

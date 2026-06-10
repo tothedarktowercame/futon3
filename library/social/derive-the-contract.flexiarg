@@ -1,0 +1,43 @@
+@flexiarg social/derive-the-contract
+@title Derive the Shared Contract From Structure, Don't Hardcode It on Each Side
+@keywords contract, drift, handshake, multi-agent, derived, witness, namespace, zero-drift, coordination
+@audience multi-agent coordinators, interface designers, mission PMs
+@tone analytic-foundational
+@style pattern
+@references [social/idempotent-handoff social/verify-before-compose futon-theory/single-source-of-truth futon-theory/proof-path]
+
+! conclusion: When two agents must agree on a shared structure (a set of roots, a taxonomy, a schema), each side should DERIVE its view from a common source by construction — not hardcode a copy. A derived contract recovers itself and cannot silently drift; a hardcoded one drifts the moment either side edits independently, and a structural check that counts the right number of things will pass green while the meaning has diverged. Verify the contract semantically (does the behaviour hold?), not just structurally (do the counts match?).
+
+  + context: A producer agent emits an artifact (a move-set, a graph, an index); a consumer agent acts on a contract about that artifact (which entries are roots/axioms, which keys are stable, what a field means). They coordinate across async messages and separate codebases.
+
+  + IF:
+    The two agents agree on a contract — "these 21 entries are the seed roots," "the prior is the policy head" — and each encodes its understanding on its own side.
+
+  + HOWEVER:
+    A hardcoded shared structure is two copies that must be kept equal by discipline, which fails under independent edits and async drift. Worse, the natural verification — a handshake that checks structure (counts, taxonomy, schema shape) — can pass GREEN while the *semantic* contract is violated, because structure is not meaning.
+
+    + FAILURE-MODES:
+      - Hardcoded-list drift: one side ships the 21 roots as a literal; the producer's data changes; the lists diverge; nothing flags it until something downstream breaks far from the cause.
+      - Green-handshake / violated-contract: a zero-drift check confirms "21/3/7/0 roots, exact" and passes, while the consumer is silently recomputing the producer's policy head from a flat field — re-flattening it — so the *structure* matches but the *behaviour* the contract names is gone.
+      - Namespace mismatch: two sides assume different string forms for the same entity; the structural join "succeeds" on the wrong set or silently drops, with no count to betray it.
+
+  + THEN:
+    1. **Derive, don't copy.** The consumer computes the shared structure from the producer's artifact by construction (e.g. `roots = {move.have} \ {move.want}` recovers the seed set from the move-set itself), so it is never a separate literal that can drift.
+    2. **Make the producer's artifact the single source**; the consumer's view is a pure function of it. A re-emit changes both views together.
+    3. **Add a semantic witness, not just a structural one.** A handshake that asserts counts must be paired with an assertion that the *behaviour* holds (the policy head is *consumed*, not recomputed; the join key matches verbatim). A ratified semantic fix needs its own regression witness or it silently regresses.
+    4. **Surface the namespace explicitly** (string-exact, no normalization) so a join can only succeed on identity.
+
+  + BECAUSE:
+    Single-source-of-truth (futon-theory) says a fact should have exactly one authoritative home; a derived contract makes the producer's artifact that home and the consumer's view a projection, so there is nothing to keep in sync. Proof-path discipline (OBSERVE → VERIFY) says a claim isn't done until verified — and structure is the cheap, misleading half of the observation. The expensive, load-bearing half is semantic: a green count is OBSERVE without VERIFY of the thing that matters.
+
+    + EVIDENCE:
+      FutonZero scope-grain seam, 2026-06-09 (claude-3 producer ↔ claude-4 rollout). The roots
+      handshake was made **derived**: claude-4 computed `mission-roots = {move :have} \ {move :want}`,
+      recovering claude-3's 21 mission-entity seeds *by construction* — "drift-free, never
+      hardcoded" — and the end-to-end run asserted them exact (21/3/7/0). Yet the SAME handshake
+      passed green while the consumer was recomputing `:prior` as `softmax(:score)` over a flat
+      field, re-flattening the producer's sharpened policy head before it ever reached PUCT — the
+      structural witness covered the taxonomy, not the semantic contract ("`:prior` IS the policy
+      head, consumed not recomputed"). Caught only on a deliberate re-check; the ratified fix
+      ("consume `:prior` directly") was flagged as needing its own consumption witness. Structure
+      green, meaning drifted — the exact split this pattern names.

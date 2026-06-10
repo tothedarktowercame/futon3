@@ -1,0 +1,42 @@
+@flexiarg social/idempotent-handoff
+@title Make Async Handoffs Idempotent — A Crossed or Re-Sent Bell Must Be a No-Op
+@keywords bell, handoff, idempotent, async, crossed-wires, dedup, multi-agent, coordination, agency
+@audience multi-agent coordinators, agency implementers, mission PMs
+@tone analytic-foundational
+@style pattern
+@references [social/scope-bounded-handoff social/derive-the-contract futon-theory/minimum-viable-events]
+
+! conclusion: An asynchronous handoff between agents (a bell, a whistle, a dispatched job) must be safe to send twice and safe to receive twice. Key each handoff by a stable content identity and have the receiver reconcile-not-redo: a re-sent bell (because the first timed out) and a crossed bell (two agents acting on the same fact in flight) must both resolve to a single effect. Coordination that assumes exactly-once delivery is coordination that breaks the moment the transport doesn't.
+
+  + context: Several agents coordinate over an async bell/whistle transport with real latency, timeouts (e.g. a 5-minute whistle window, a 30-minute job cap), and no global clock. Agents send handoffs, wait, and act on replies that may arrive late, out of order, or after a re-send.
+
+  + IF:
+    An agent sends a handoff and the reply is slow — so it re-sends as an async bell ("my prior whistle timed out") — or two agents independently act on the same just-established fact and their messages cross in flight.
+
+  + HOWEVER:
+    If the handoff is treated as a fresh imperative each time, a re-send re-does the work and a crossed pair does it twice (or worse, each "corrects" the other into a loop). The work is not lost — but the *coordination* is: agents burn round-trips re-confirming, re-deriving, and reconciling duplicates instead of advancing. The transport's imperfection leaks all the way into the task.
+
+    + FAILURE-MODES:
+      - Re-send re-do: a timed-out whistle re-sent as a bell triggers the recipient to recompute an answer it already sent; both replies arrive; the sender must now reconcile two.
+      - Crossed correction: A bells B with a fact; B, mid-reply, bells A the same fact; each reads the other as new and acks, doubling the channel for one decision.
+      - Lost-in-the-cross: a substantive result (a verify, a contract answer) sent while the peer was mid-turn never gets picked up, and the peer re-asks — the result is delivered, then asked-for-again.
+
+  + THEN:
+    1. Give every handoff a **stable identity** derived from its content (the target artifact + the decision, not a fresh timestamp). A re-send carries the same identity.
+    2. The receiver **reconciles, never redoes**: on a handoff whose identity it has already resolved, it returns the existing result (or a pointer to it: "already answered, job …NNN"), not a recomputation.
+    3. State the **idempotency contract in the bell itself** ("this is the headline so it doesn't block you; full detail = job …NNN") so a crossed peer can dedup by reading.
+    4. Prefer **content-addressed artifacts** as the channel (a committed file the peer reads) over imperative messages, when the handoff is a result rather than a request — a file read twice is the same file.
+
+  + BECAUSE:
+    Minimum-viable-events (futon-theory) says each coordination step should emit a typed record a consumer can reason about; an idempotent handoff is that record made re-deliverable. Exactly-once is a property of the *transport*, which here is best-effort; idempotency moves the guarantee into the *protocol*, where the agents control it. This is the social-timescale analogue of an idempotent write: the system stays correct under retries and races because the operation's effect is a function of its identity, not of how many times it arrives.
+
+    + EVIDENCE:
+      Multi-agent FutonZero collaboration, 2026-06-09/10 (claude-3 ↔ claude-1 ↔ claude-4). The
+      bell transport crossed repeatedly: a timed-out whistle re-sent as a bell (claude-4's
+      cascade re-score request arrived *after* the answer had been belled — job …317 already
+      held the result; the fix was a one-line "already answered, headline below, full detail job
+      …317" reconcile, not a recompute). The contract-lock exchange crossed three times
+      (jobs …293/294, …317/318), each resolved by re-stating the stable result rather than
+      re-deriving it. Where the handoff was a *committed file* (`diffsub-moves.edn` consumed by
+      claude-4's rollout), crossing was a non-issue — the file read twice is the same file. The
+      cost was paid only where handoffs were imperative and non-idempotent.

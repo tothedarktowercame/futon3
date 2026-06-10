@@ -1,9 +1,11 @@
 (ns library-coherence-test
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.test :refer :all]))
+            [clojure.test :refer [deftest is]]))
 
 (def pattern-root (io/file "library"))
+
+(def all-pattern-exts #{".flexiarg" ".multiarg"})
 
 (def included-prefixes
   ["library/devmap-coherence"
@@ -11,12 +13,20 @@
    "library/stack-coherence"
    "library/contributing"])
 
+(defn- pattern-file? [^java.io.File file]
+  (let [name (.getName file)]
+    (and (.isFile file)
+         (some #(str/ends-with? name %) all-pattern-exts))))
+
+(defn- all-pattern-files []
+  (->> (file-seq pattern-root)
+       (filter pattern-file?)))
+
 (defn- flexiarg-files []
   (->> (file-seq pattern-root)
        (filter (fn [^java.io.File file]
                  (let [path (str/replace (.getPath file) "\\" "/")]
-                   (and (.isFile file)
-                        (str/ends-with? (.getName file) ".flexiarg")
+                   (and (pattern-file? file)
                         (some (fn [prefix]
                                 (str/starts-with? path prefix))
                               included-prefixes)))))))
@@ -28,6 +38,8 @@
       (str/replace #"\.flexiarg$" "")))
 
 (def required-clauses ["IF:" "HOWEVER:" "THEN:" "BECAUSE:"])
+
+(def canonical-body-clauses #{"context" "if" "however" "then" "because" "next-steps"})
 
 (defn- sigil-tokens [text]
   (->> (str/split-lines text)
@@ -92,6 +104,72 @@
                             (not (str/starts-with? trim "#")))
                    (first (str/split trim #"\t"))))))
        set))
+
+(defn- indented-block-headers [text]
+  (->> (str/split-lines text)
+       (map-indexed vector)
+       (keep (fn [[idx line]]
+               (when (re-find #"^\s+@(arg|flexiarg|multiarg)\s+\S+" line)
+                 (inc idx))))))
+
+(defn- block-start? [line]
+  (boolean (re-find #"^@(arg|flexiarg|multiarg)\s+\S+" line)))
+
+(defn- split-pattern-blocks [text]
+  (let [blocks (reduce (fn [acc line]
+                         (if (block-start? line)
+                           (conj acc [line])
+                           (if (seq acc)
+                             (update acc (dec (count acc)) conj line)
+                             acc)))
+                       []
+                       (str/split-lines text))]
+    (map #(str/join "\n" %) blocks)))
+
+(defn- block-id [block]
+  (some-> (re-find #"(?m)^@(arg|flexiarg|multiarg)\s+(\S+)" block)
+          (nth 2)))
+
+(defn- canonical-clause-counts [block]
+  (reduce (fn [acc [_ clause]]
+            (let [key (str/lower-case (str/trim clause))]
+              (if (contains? canonical-body-clauses key)
+                (update acc key (fnil inc 0))
+                acc)))
+          {}
+          (re-seq #"(?im)^\s*[+!]\s+([^:]+):" block)))
+
+(defn- pooled-canonical-block? [counts]
+  (let [duplicated (filter (fn [[_ n]] (>= n 3)) counts)]
+    (>= (count duplicated) 4)))
+
+(deftest pattern-blocks-do-not-hide-nested-patterns
+  (let [violations (reduce (fn [acc file]
+                             (let [text (slurp file)
+                                   indented (indented-block-headers text)
+                                   pooled (->> (split-pattern-blocks text)
+                                               (keep (fn [block]
+                                                       (let [counts (canonical-clause-counts block)]
+                                                         (when (pooled-canonical-block? counts)
+                                                           (format "%s pools canonical clauses: %s"
+                                                                   (or (block-id block) "<unknown>")
+                                                                   (str/join ", " (map (fn [[k v]]
+                                                                                         (str k "=" v))
+                                                                                       (sort counts)))))))))]
+                               (cond-> acc
+                                 (seq indented)
+                                 (conj (format "%s has indented pattern headers at lines %s"
+                                               (canonical-id file)
+                                               (str/join ", " indented)))
+
+                                 (seq pooled)
+                                 (conj (format "%s has suspicious pooled blocks: %s"
+                                               (canonical-id file)
+                                               (str/join "; " pooled))))))
+                           []
+                           (all-pattern-files))]
+    (is (empty? violations)
+        (str "Pattern block structure violations:\n" (str/join "\n" violations)))))
 
 (deftest flexiargs-follow-template
   (let [violations (reduce (fn [acc file]

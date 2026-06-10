@@ -10,412 +10,698 @@
 @next or/license-as-story
 @length 180-260
 @allow-new-claims false
-@governance ["practice: include licence review in quarterly Tune Audits (“Does this story still ring true?”)." "metric: visible commit history updating rationale, steward, or licence level." "@arg or/license-as-story" "@sigils [💢/只]" "@title License-as-Story" "@audience maintainers, project-leads, legal-liaisons" "@tone formal-analytic" "@style design-pattern" "@part Foundations of Openness" "@up or/foundations-openness" "@see or/license-laddering, or/snapshot-with-story-doi" "@next or/platform-choreography" "@length 180-260" "@allow-new-claims false"]
-@governance ["practice: sample one Licence Story per repo during Tune Audits for tone and clarity." "metric: new contributors correctly reuse and attribute assets without seeking extra permission." "@arg or/platform-choreography" "@sigils [💤/也]" "@title Platform Choreography" "@audience platform-admins, dev-ops, community-maintainers" "@tone formal-analytic" "@style design-pattern" "@part Foundations of Openness" "@up or/foundations-openness" "@see or/tune-audits-quarterly, or/five-p-rhythm-for-impact" "@next or/friction-as-feature" "@length 180-260" "@allow-new-claims false"]
-@governance ["practice: quarterly rhythm review checking alert volume, merge velocity, and perceived “in-sync-ness.”" "metric: contributors report knowing when to show up and how to plug in." "@arg or/friction-as-feature" "@sigils [🔥/石]" "@title Friction-as-Feature" "@audience data-stewards, integration-teams, architects" "@tone formal-analytic" "@style design-pattern" "@part Interoperability & Provenance" "@up or/interoperability-provenance" "@see or/bridge-before-portal, or/method-documentary-split" "@next or/bridge-before-portal" "@length 180-260" "@allow-new-claims false"]
-@governance ["practice: include seam visibility and stewardship status in Tune Audits." "metric: contributors can point to the main seams and explain why they exist." "@arg or/bridge-before-portal" "@sigils [🚴/以]" "@title Bridge-Before-Portal" "@audience infrastructure-leads, product-owners, integration-teams" "@tone formal-analytic" "@style design-pattern" "@part Interoperability & Provenance" "@up or/interoperability-provenance" "@see or/friction-as-feature, or/identifier-garden" "@next or/snapshot-with-story-doi" "@length 180-260" "@allow-new-claims false"]
-@governance ["practice: maintain a Bridge Register with status and reversal-test logs." "metric: proportion of bridges that can be rebuilt within a set time (e.g., two hours)." "@arg or/snapshot-with-story-doi" "@sigils [👓/只]" "@title Snapshot-with-Story DOI" "@audience repository-managers, research-software-engineers, project-leads" "@tone formal-analytic" "@style design-pattern" "@part Interoperability & Provenance" "@up or/interoperability-provenance" "@see or/license-as-story, or/fit-for-use-stars" "@next or/identifier-garden" "@length 180-260" "@allow-new-claims false"]
-@governance ["practice: sample three DOIs per audit and verify the presence and clarity of Release Stories." "metric: fraction of releases with STORY.md and an active workspace link." "@arg or/identifier-garden" "@sigils [🌳/田]" "@title Identifier Garden" "@audience information-specialists, repo-admins, research-office-staff" "@tone formal-analytic" "@style design-pattern" "@part Interoperability & Provenance" "@up or/interoperability-provenance" "@see or/snapshot-with-story-doi, or/two-stage-fidelity" "@next or/two-stage-fidelity" "@length 180-260" "@allow-new-claims false"]
-@governance ["practice: review the ID Map during readiness windows for correctness and minimality." "metric: each ID has an active steward and verified link in the last cycle." "@arg or/two-stage-fidelity" "@sigils [💢/以]" "@title Two-Stage Fidelity (Registered Rhythm)" "@audience methodologists, PIs, registry-admins, trialists" "@tone formal-analytic" "@style design-pattern" "@part Methods & Accountability" "@up or/methods-accountability" "@see or/method-documentary-split, or/overlay-bridges" "@next or/method-documentary-split" "@length 180-260" "@allow-new-claims false" "practice: include Deviation Ledger review in Tune Audits." "metric: proportion of deviations that are logged, justified, and discussed." "@arg or/method-documentary-split" "@sigils [🚴/只]" "@title Method/Documentary Split" "@audience project-leads, lab-heads, qualitative-teams" "@tone formal-analytic" "@style design-pattern" "@part Methods & Accountability" "@up or/methods-accountability" "@see or/two-stage-fidelity, or/friction-as-feature" "@next or/attribution-forward-review" "@length 180-260" "@allow-new-claims false" "practice: audit releases for presence and quality of both artefacts." "metric: logs read as narratives of learning, not just checklists." "@arg or/attribution-forward-review" "@sigils [👓/只]" "@title Attribution-Forward Review" "@audience editors, review-coordinators, programme-committees" "@tone formal-analytic" "@style design-pattern" "@part Methods & Accountability" "@up or/methods-accountability" "@see or/overlay-bridges, or/citizen-co-learning-track" "@next or/overlay-bridges" "@length 180-260" "@allow-new-claims false" "practice: track the proportion of reviews with names or stance notes." "metric: reviewers later cited or thanked in follow-on work." "@arg or/overlay-bridges" "@sigils [💢/也]" "@title Overlay Bridges" "@audience journal-editors, platform-designers, research-office-staff" "@tone formal-analytic" "@style design-pattern" "@part Communities & Pedagogy" "@up or/communities-pedagogy" "@see or/attribution-forward-review, or/bridge-before-portal" "@next or/peripheral-to-core-pathways" "@length 180-260" "@allow-new-claims false" "practice: track open-reviewed submissions that later appear in formal venues." "metric: number of reusable review bundles shared across platforms." "@arg or/peripheral-to-core-pathways" "@sigils [🚴/也]" "@title Peripheral-to-Core Pathways" "@audience community-stewards, network-organisers, programme-leads" "@tone formal-analytic" "@style design-pattern" "@part Communities & Pedagogy" "@up or/communities-pedagogy" "@see or/five-p-rhythm-for-impact, or/maintainer-care" "@next or/quality-by-design-crowd" "@length 180-260" "@allow-new-claims false" "practice: monitor steward rotation and newcomer advancement." "metric: visible movement from periphery to core and back, with gratitude expressed in both directions." "@arg or/quality-by-design-crowd" "@sigils [🎋/工]" "@title Quality-by-Design Crowd" "@audience citizen-science-leads, crowdsourcing-teams, data-stewards" "@tone formal-analytic" "@style design-pattern" "@part Communities & Pedagogy" "@up or/communities-pedagogy" "@see or/citizen-co-learning-track, or/fit-for-use-stars" "@next or/citizen-co-learning-track" "@length 180-260" "@allow-new-claims false" "practice: regularly review calibration pass rates and feedback sentiment." "metric: contributors describe feedback as helpful, and rejection rates fall without quality loss." "@arg or/citizen-co-learning-track" "@sigils [👫/人]" "@title Citizen Co-Learning Track" "@audience engagement-leads, educators, public-participation-officers" "@tone formal-analytic" "@style design-pattern" "@part Communities & Pedagogy" "@up or/communities-pedagogy" "@see or/quality-by-design-crowd, or/peripheral-to-core-pathways" "@next or/five-p-rhythm-for-impact" "@length 180-260" "@allow-new-claims false" "practice: track repeat participation rates and volunteer co-authorship counts." "metric: volunteers initiate learning sessions or produce derivative educational materials." "@arg or/five-p-rhythm-for-impact" "@sigils [➰/以]" "@title Five-P Rhythm for Impact" "@audience meeting-chairs, project-leads, facilitation-teams" "@tone formal-analytic" "@style design-pattern" "@part Communities & Pedagogy" "@up or/communities-pedagogy" "@see or/platform-choreography, or/tune-audits-quarterly" "@next or/fit-for-use-stars" "@length 180-260" "@allow-new-claims false" "practice: check that recurring meetings are documented with Five-P notes and AARs." "metric: observers can infer project rhythm and decisions from meeting records alone." "@arg or/fit-for-use-stars" "@sigils [🚴/以]" "@title Fit-for-Use Stars" "@audience data-stewards, PIs, repository-teams" "@tone formal-analytic" "@style design-pattern" "@part Governance & Care" "@up or/governance-care" "@see or/snapshot-with-story-doi, or/readiness-windows" "@next or/readiness-windows" "@length 180-260" "@allow-new-claims false" "practice: review Use Notes during readiness windows and tune upgrade plans." "metric: datasets show staged improvements rather than long-delayed first releases." "@arg or/readiness-windows" "@sigils [🌄/旦]" "@title Readiness Windows" "@audience maintainers, release-managers, steering-groups" "@tone formal-analytic" "@style design-pattern" "@part Governance & Care" "@up or/governance-care" "@see or/tune-audits-quarterly, or/fit-for-use-stars" "@next or/tune-audits-quarterly" "@length 180-260" "@allow-new-claims false" "practice: monitor frequency of major changes outside declared windows." "metric: declining emergency hotfixes and clearer anticipation of big shifts." "@arg or/tune-audits-quarterly" "@sigils [🎐/节]" "@title Tune Audits (Quarterly)" "@audience pattern-stewards, product-owners, governance-groups" "@tone formal-analytic" "@style design-pattern" "@part Governance & Care" "@up or/governance-care" "@see or/readiness-windows, or/dream-audit-per-release, or/retirement-shelf" "@next or/dream-audit-per-release" "@length 180-260" "@allow-new-claims false" "practice: track participation in Tune Audits and follow-through on decisions." "metric: steady flow of small revisions and occasional dignified retirements." "@arg or/dream-audit-per-release" "@sigils [🚴/只]" "@title DREAM Audit (Per Release)" "@audience core-team, facilitators, ethics-boards" "@tone formal-analytic" "@style design-pattern" "@part Governance & Care" "@up or/governance-care" "@see or/tune-audits-quarterly, or/maintainer-care" "@next or/maintainer-care" "@length 180-260" "@allow-new-claims false" "practice: check each tagged release for a DREAM note." "metric: releases read as letters from a living community rather than only change logs." "@arg or/maintainer-care" "@sigils [🙌/友]" "@title Maintainer Care" "@audience maintainers, sponsors, community-stewards" "@tone formal-analytic" "@style design-pattern" "@part Governance & Care" "@up or/governance-care" "@see or/peripheral-to-core-pathways, or/tune-audits-quarterly" "@next or/retirement-shelf" "@length 180-260" "@allow-new-claims false" "practice: monitor response times, care-pulse responses, and rotation of demanding roles." "metric: maintainers self-report their work as sustainable and often energising." "@arg or/retirement-shelf" "@sigils [💢/只]" "@title Retirement Shelf" "@audience pattern-stewards, archivists, core-team" "@tone formal-analytic" "@style design-pattern" "@part Governance & Care" "@up or/governance-care" "@see or/tune-audits-quarterly, or/readiness-windows" "@next or/license-laddering" "@length 180-260" "@allow-new-claims false" "practice: during Tune Audits, consider retire/replace as valid outcomes and move items accordingly." "metric: a slowly growing shelf with clear successors, signalling a culture that values endings as well as beginnings." "@arg or/expectation-scaffold" "@sigils [🧭/规]" "@title Expectation Scaffold" "@audience programme-leads, trainers, policy-owners" "@tone formal-analytic" "@style design-pattern" "@part Training & Capacity" "@up or/foundations-openness" "@see or/adaptive-delivery-spine, or/feedback-activation-loop" "@next or/adaptive-delivery-spine" "@length 180-260" "@allow-new-claims false" "practice: review and update the scaffold annually with trainer input." "metric: trainers report clarity on requirements before first delivery." "@arg or/adaptive-delivery-spine" "@sigils [🪡/式]" "@title Adaptive Delivery Spine" "@audience trainers, curriculum-designers, cohort-leads" "@tone formal-analytic" "@style design-pattern" "@part Training & Capacity" "@up or/foundations-openness" "@see or/expectation-scaffold, or/living-materials-stewardship" "@next or/living-materials-stewardship" "@length 180-260" "@allow-new-claims false" "practice: collect post-session notes on what was dropped or adapted." "metric: percentage of sessions using a declared spine variant." "@arg or/living-materials-stewardship" "@sigils [🌱/料]" "@title Living Materials Stewardship" "@audience maintainers, curriculum-owners, trainers" "@tone formal-analytic" "@style design-pattern" "@part Training & Capacity" "@up or/foundations-openness" "@see or/adaptive-delivery-spine, or/feedback-activation-loop" "@next or/feedback-activation-loop" "@length 180-260" "@allow-new-claims false" "practice: run a short “materials health” review each quarter." "metric: time since last update for each module." "@arg or/co-ownership-engine" "@sigils [🤝/共]" "@title Co-Ownership Engine" "@audience programme-leads, community-managers, trainers" "@tone formal-analytic" "@style design-pattern" "@part Training & Capacity" "@up or/foundations-openness" "@see or/feedback-activation-loop, or/expectation-scaffold" "@next or/feedback-activation-loop" "@length 180-260" "@allow-new-claims false" "practice: track cohort participation and peer-mentoring activity." "metric: proportion of trainers contributing back within 6 months." "@arg or/feedback-activation-loop" "@sigils [🔁/促]" "@title Feedback-Activation Loop" "@audience programme-leads, evaluators, trainers" "@tone formal-analytic" "@style design-pattern" "@part Training & Capacity" "@up or/foundations-openness" "@see or/living-materials-stewardship, or/co-ownership-engine" "@next or/expectation-scaffold" "@length 180-260" "@allow-new-claims false" "practice: review impact logs in quarterly tune audits." "metric: proportion of trainers submitting at least one impact story per year."]
 
-! conclusion: Feedback-Activation Loop [🔁/促 📊/度]
-
+! conclusion: License Laddering [🔺/工 📐/正]
   + context: Licensing confusion paralyses Open Research teams; drafts stall while contributors fear being “too open” or “not open enough.”
-
-  + context: Standard licence boilerplate rarely communicates intent; badges look official but feel sterile, and newcomers cannot tell how to use work responsibly.
-
-  + context: Open projects accumulate tools — GitHub, drives, Slack, Overleaf, wikis — each with its own rhythm. Notifications multiply; attention fragments; contributors burn out from noise rather than conflict.
-
-  + context: Integration efforts often aim to erase seams via automation and unification; but seamlessness can hide translation work and dilute accountability.
-
-  + context: Faced with fragmented systems, teams dream of one portal that unifies access; portal projects become expensive, slow, and prone to locking teams in.
-
-  + context: Repositories routinely mint DOIs, but deposits often feel opaque; readers see version numbers without understanding intent or trajectory.
-
-  + context: Research ecosystems are dense with identifiers (DOI, ORCID, ROR, grant IDs); unmanaged, they become confusing “ID sprawl.”
-
-  + context: Protocols inevitably evolve; without visibility, analytic flexibility becomes invisible bias and HARKing.
-
-  + context: In most projects, the protocol and the story collapse into a single document; methods are rewritten to match outcomes, hiding uncertainty and adaptation.
-
-  + context: Traditional anonymous peer review hides both power and care; reviewers feel disposable, authors feel judged by invisible forces.
-
-  + context: Academic publishing remains dominated by legacy journals even as Open Research grows; authors still need career-legible outputs.
-
-  + context: Open communities often start with energetic newcomers at the margins, yet core roles ossify; newcomers circle indefinitely while veterans burn out.
-
-  + context: Crowdsourcing and citizen science rely on many contributors whose data quality varies widely; naive policing or rejection erodes trust.
-
-  + context: Many crowdsourcing projects treat volunteers as task workers; once tasks end, engagement collapses and relationships dissolve.
-
-  + context: Open Research meetings drift between chatter and overload; agendas swell, actions blur, and participants leave unsure what was achieved.
-
-  + context: The five-star open data ladder encourages continuous improvement but can paralyse teams who feel they must reach “perfect” before sharing.
-
-  + context: Continuous integration without temporal boundaries can become perpetual churn; major changes land at random, exhausting reviewers and users.
-
-  + context: Libraries and frameworks accumulate noise over time; patterns that once sang drift out of tune, but maintenance focuses on bugs instead of meaning.
-
-  + context: Release notes usually track technical changes, not shifts in desire, relationships, embodiment, autonomy, or multiplicity; inner drift remains invisible.
-
-  + context: Open projects depend on a few steady hands whose labour becomes invisible; burnout or departure can collapse continuity and tone.
-
-  + context: Over time, projects accumulate legacy artefacts that no longer fit current realities; without rituals for letting go, clutter and confusion grow.
-
-  + context: National T3 programmes attract diverse participants with uneven prior knowledge and shifting institutional mandates; ambiguity about what is required versus optional undermines delivery.
-
-  + context: Trainers value interactivity and contextual adaptation, but sessions feel rushed and overstuffed without a clear delivery architecture.
-
-  + context: Trainers praise access to materials, but content quickly ages and requires local adaptation work that is rarely resourced.
-
-  + context: Trainers describe T3 as an entry point into a wider community and a moment of shared ownership; this co-ownership motivates action.
-
-  + context: Trainers note that engagement and feedback are crucial for improving delivery and sustaining motivation, but current feedback mechanisms are thin.
-
   + if: You aim for maximal remixability while preserving dignity and traceable attribution.
-
-  + if: You want reciprocity and lineage, not just formal compliance, and you see licensing as a chance to express relationship, not only ownership.
-
-  + if: You want predictable collaboration rhythms and treat attention as a shared resource to be guarded, not consumed.
-
-  + if: You need interoperability that preserves meaning differences, provenance, and stewardship across systems.
-
-  + if: You seek interoperability and shared visibility quickly while preserving flexibility for future architectures.
-
-  + if: You want releases to be both citable and alive, linking frozen artefacts to ongoing work.
-
-  + if: You value provenance, credit, and discoverability and want identifiers to enhance human understanding rather than burden it.
-
-  + if: You want both transparency and creativity, preserving a clear record of intention while allowing adaptive learning.
-
-  + if: You value honesty, reproducibility, and institutional learning, and want future readers to see how discovery actually unfolded.
-
-  + if: You want review to function as dialogue and mentorship, not merely gatekeeping.
-
-  + if: You want more open practices without severing links to recognised venues.
-
-  + if: You want growth through renewal, with newcomers becoming confident stewards and leaders over time.
-
-  + if: You need reliable data while treating contributors as collaborators rather than expendable labour.
-
-  + if: You want participation that deepens over time, with volunteers becoming co-researchers who can interpret and shape future work.
-
-  + if: You want meetings that reliably generate both concrete outcomes and shared understanding.
-
-  + if: You want data to be genuinely usable — shared early enough to matter, clear enough to trust, and structured enough for others to build on.
-
-  + if: You value both responsiveness and reliability, aiming for deep innovation without undermining trust in shared infrastructure.
-
-  + if: You want your project to remain alive and coherent, not merely operational.
-
-  + if: You want to track how work is changing the people and relationships around it, not just the feature set.
-
-  + if: You want sustainability grounded in care rather than heroism, recognising that bandwidth is finite.
-
-  + if: You want to honour lineage while keeping the system light enough to move.
-
-  + if: You want trainers to act confidently and consistently while still adapting locally.
-
-  + if: You want trainers to tailor content to local needs without losing coherence.
-
-  + if: You want materials to remain credible and easy to use across contexts.
-
-  + if: You want training impact to spread beyond individual sessions and sustain over time.
-
-  + if: You want long-term impact and evidence of cultural change beyond one-off sessions.
-
   + however: Legal anxiety and moral caution pull toward NC/ND restrictions that persist long after their original justification.
-
-  + however: Legal phrasing alienates non-specialists; people skim the code, miss the ethos, and maintainers end up policing misunderstandings.
-
-  + however: Tools are added opportunistically; chats interrupt deep work; issue trackers overflow; volunteers lose track of when and where to contribute.
-
-  + however: Cultural and managerial pressure prizes smooth dashboards and invisible handoffs; when errors appear, no one can see where translation went wrong.
-
-  + however: Institutional incentives reward big launches over modest connectors; monolithic portals over-specify needs, become brittle, and exhaust teams.
-
-  + however: Deposit workflows optimise for compliance, not communication; metadata is perfunctory, and DOIs become cold identifiers rather than narrative anchors.
-
-  + however: When IDs multiply without stewardship, they become bureaucratic weeds: outdated records, broken provenance, mismatched dashboards, and wasted reconciliation effort.
-
-  + however: Preregistration is often treated as bureaucracy; deviations are hidden, and rigid templates discourage exploration.
-
-  + however: Fear of embarrassment or perceived loss of credibility leads teams to conceal deviations; journals reward polished linear narratives.
-
-  + however: Reviewers fear retaliation or reputational harm; editors worry openness will reduce reviewer supply.
-
-  + however: “Open-only” reforms can trigger resistance and duplicate labour; authors fear outcomes that “do not count.”
-
-  + however: Many groups equate “open” with “anyone can join,” without clear developmental routes; invisible hierarchies and extractive labour patterns persist.
-
-  + however: Without embedded structure, volunteers guess expectations, receive late feedback, and become discouraged when work is rejected.
-
-  + however: Infrastructures are optimised for throughput, not growth; lessons and reflection spaces are afterthoughts, and churn is treated as inevitable.
-
-  + however: Teams swing between hyper-productive checklists and unfocused discussion; without scaffolding, every meeting starts from scratch.
-
-  + however: Pressure to hit high star levels delays deposit; ethics constraints and limited resources make full openness unrealistic.
-
-  + however: Uncoordinated change leads to version fatigue; people hesitate to build on unstable foundations, and governance becomes reactive firefighting.
-
-  + however: Audits are often bureaucratic and postponed; “we’ll clean it up later” hides slow decay.
-
-  + however: Under deadline pressure, emotional or ethical reflection feels off-topic; there is no structured space for it.
-
-  + however: Volunteer cultures often glorify self-sacrifice; metrics reward responsiveness, not rest, and burnout is individualised as “failure.”
-
-  + however: Deletion feels disrespectful; founders resist archival moves; newcomers keep tripping over outdated guidance.
-
-  + however: Vague participation rules and undefined completion criteria leave trainers unsure what they can legitimately promise, and delivery fragments across institutions.
-
-  + however: One-size-fits-all agendas create fatigue, reduce interaction, and leave trainers unable to cover core material.
-
-  + however: Static resources drift from practice; updating is ad hoc, and trainers bear the cost of reworking content alone.
-
-  + however: Without explicit structures, community benefits are uneven and some trainers feel isolated after the programme ends.
-
-  + however: Reliance on optional surveys misses signal; trainers lack feedback on impact and cannot easily demonstrate reach.
-
   + then: Begin from a permissive default (e.g., CC BY) and step downward only when a written, reviewable harm model requires it. Assign each restriction a steward, rationale, and review date. Publish a short License Story beside each licence.
-
-  + then: Pair every legal licence with a short, human-readable License Story: “We chose X because… Please do… Please avoid… If unsure…” Optionally record a 60-second audio version spoken by a steward.
-
-  + then: Treat the ecosystem as a dance, not a stack. Map tempos of each channel (daily, weekly, monthly), cap alerts per person, keep one slow “sketch” space and one fast coordination lane, and publish a Dance Card that shows when commits, triage, and reviews happen.
-
-  + then: Treat seams as features, not flaws. Name and document each seam (e.g., metadata crosswalks), maintain a Seam Registry with steward, cadence, rationale, and “what we’d lose if smoothed,” and hold brief, time-boxed Seam Debates to revisit design choices.
-
-  + then: Start with bridges rather than portals: small, reversible connections such as exports, DOI cross-links, citation recipes, or shared notebooks. Each bridge must pass a reversal test: can you reconstruct your data or process if the bridge disappears?
-
-  + then: Pair every DOI with a Release Story (~120 words) explaining what changed, what remains open, and how to cite. Each release bundles (a) immutable archive, (b) STORY.md, (c) link to the active workspace or repo.
-
-  + then: Curate identifiers as a garden. Publish an ID Map listing each identifier type, what it represents, who stewards it, and when it was issued or verified. Adopt a minimal set per project and prune regularly.
-
-  + then: Use a two-stage rhythm. Stage-1 preregisters design, anticipated challenges, and threat models. Stage-2 publishes results plus an adherence audit using a Deviation Ledger that records justified changes as first-class data.
-
-  + then: Publish two living artefacts: PROTOCOL.md (forward-looking intention and checks) and LOG.md (backward-looking account of what happened and what changed). Require both for releases and add a one-minute embodied reflection before signing off logs.
-
-  + then: Shift to attribution-forward models where reviews are named by default (with consensual pseudonymity as an option) and each includes a stance note on expertise, conflicts, and values. Allow reviews to be citable artefacts in their own right.
-
-  + then: Build overlay bridges that route manuscripts through open, community-based review while retaining compatibility with target journals. Publish timelines and handoff packets (cover letter, review bundle) that show how reviews and revisions travel.
-
-  + then: Design explicit pathways: observe → co-do → steward. Each phase includes recognition (badges, micro-credentials), time-bound roles, and options to rotate out. Create a metaboliser process that turns complaints and conflicts into repair actions.
-
-  + then: Build quality into the workflow: use gold-standard screening questions, embed spot-checks and instant feedback, and publish fairness, wage, and recognition policies. Frame correction as coaching.
-
-  + then: Add a parallel co-learning track with short lessons tied to live project data, reflection prompts, and co-authorship opportunities. Maintain learning logs where participants narrate discoveries.
-
-  + then: Use the Five-P rhythm: People (who’s here), Process (what’s working), Plan (what’s next), Product (deliverables), Perspective (what’s been learned). Close with a short After-Action Review and add a sentence to a public changelog.
-
-  + then: Choose openness level by intended use rather than abstract ideal. Document it in a brief Use Note explaining trade-offs and planned upgrades. Treat openness as iterative design with scheduled enhancements.
-
-  + then: Declare Readiness Windows — defined periods (e.g., quarterly) when schema-breaking or major changes are allowed. Outside windows, restrict changes to backward-compatible updates. Align audits, freezes, and celebrations with this schedule.
-
-  + then: Hold quarterly Tune Audits. Randomly sample a small set of artefacts (e.g., three patterns) and ask, “Does this still sing?” Decide to renew, revise, or retire, and log short narrative notes rather than scores.
-
-  + then: Attach a short DREAM Audit to each release: a brief paragraph reflecting on Desire, Relationality, Embodiment, Autonomy, and Multiplicity since the last iteration. Publish these alongside technical notes.
-
-  + then: Embed maintainer care into governance: quiet hours, rotating responsibilities, small stipends or micro-funds for caretaking work, and peer check-ins about energy. Treat maintainership as a shared rhythm, not a permanent identity.
-
-  + then: Create a Retirement Shelf — a visible archive for superseded patterns or components. For each item, publish a Retirement Note explaining why it was useful, why it is no longer active, and what replaces it. Mark retirements with simple ceremonies or reflections.
-
-  + then: Publish a minimal expectation scaffold: required sessions, optional pathways, and a stated “ready-to-deliver” threshold. Provide a short, plain-language briefing on what T3 is and is not, plus a self-check checklist for trainers.
-
-  + then: Define a delivery spine: a minimal core (two to three modules) plus named elective modules and a required co-working block for local adaptation. Provide time budgets and “drop-in” variants for short sessions.
-
-  + then: Treat materials as a living product: assign stewards, publish update cadence, and provide a lightweight change log. Add an adaptation log so local changes can be upstreamed or documented.
-
-  + then: Build co-ownership into the programme: dedicated peer cohorts, shared adaptation reviews, and a visible pathway for trainers to contribute improvements and mentor new cohorts.
-
-  + then: Establish a lightweight feedback loop: short post-session pulse, 3-6 month follow-up, and a visible impact log. Pair this with a rotation of “impact stories” that travel across cohorts.
-
   + because: Evidence from OSS/OER shows permissive licences increase remix, translation, and classroom adoption. Harm models turn vague fear into auditable, time-limited clarity.
-    + evidence: transcript1 t1-1; transcript2A t2a-15; transcript2B t2b-1.
-
-    + evidence: transcript1 t1-15; transcript2A t2a-13; transcript2B t2b-45.
-
-    + evidence: transcript1 t1-9; transcript1 t1-15; transcript2B t2b-9.
-
-    + evidence: transcript1 t1-19; transcript1 t1-25; transcript3 t3-4.
-
-    + evidence: transcript2B t2b-41; transcript2B t2b-39; transcript1 t1-18.
-
-  + because: Narrative licence notes improve contributor understanding, reduce misuse, and spark richer conversations about attribution and reciprocity. The story turns licensing into a living social contract.
-
-  + because: Predictable cadences correlate with contributor retention, fewer orphan branches, and clearer trust. Rhythm becomes a governance instrument instead of background noise.
-
-  + because: Constructive friction clarifies ownership, reduces schema drift, and fosters cross-team understanding. Visible seams are repairable edges rather than brittle failure points.
-
-  + because: Bridges enable staged federation and mutual learning without committing to one architecture. They preserve optionality, lower risk, and turn integrations into negotiable boundary objects.
-
-  + because: Narrative DOIs see more accurate citation, fewer misuse tickets, and clearer reuse; they transform preservation into pedagogy by contextualising the snapshot.
-
-  + because: Explicit ID policies prevent drift, reduce maintenance overhead, and improve automated linking across DOI–ORCID–ROR triples. The garden metaphor frames IDs as living elements needing care.
-
-  + because: Registered Reports show that preregistration reduces bias, and explicit deviation logs preserve interpretability. Together they balance rigour and discovery.
-
-  + because: Separating plan from record normalises adaptation and preserves context. It accelerates troubleshooting, improves mentoring, and turns “failure” into documented learning.
-
-  + because: Open review pilots show higher civility, specificity, and reusability; stance notes help readers contextualise critique. Attribution turns review into a shared scholarly contribution.
-
-  + because: Overlay models shorten time-to-feedback, reuse reviewer effort, and preserve promotion-relevant outputs. They demonstrate coexistence rather than rupture between open and traditional systems.
-
-  + because: Transparent progression paths increase retention and distribute leadership more equitably; metabolising tensions into maintenance preserves trust.
-
-  + because: Embedded calibration improves accuracy and retention better than post-hoc filtering; transparent fairness norms increase commitment and reduce conflict.
-
-  + because: Structured learning increases retention, data quality, and trust. When contributors understand the science and see themselves as co-authors, motivation becomes stewardship.
-
-  + because: Five-P balances efficiency with reflection; AARs and changelogs clarify accountability and make impact visible over time.
-
-  + because: Incremental sharing accelerates collaboration and preserves value; clear use-context prevents misinterpretation and sets realistic expectations for reuse.
-
-  + because: Temporal boundaries transform chaos into cadence. Predictable windows make change intentional, concentrate review effort, and create meaningful release moments.
-
-  + because: Lightweight, regular reflection keeps documentation aligned with practice. Tuning normalises revision and creates a public trail of living decisions.
-
-  + because: DREAM audits keep the project’s inner compass visible, helping teams align ongoing work with founding purpose and relational health.
-
-  + because: Projects that foreground wellbeing retain maintainers longer and sustain clearer, kinder communication; care is infrastructural, not ornamental.
-
-  + because: Dignified endings preserve institutional memory without clutter. Visible lineage supports transparency and helps newcomers understand evolution of practice.
-
-  + because: Clarity lowers cognitive load, reduces mismatch between expectations and capacity, and improves coordination across distributed trainers.
-
-  + because: A spine creates predictable structure while legitimizing adaptation; it protects interaction time and reduces overload.
-
-  + because: Stewardship reduces drift, distributes maintenance work, and increases trust in the materials.
-
-  + because: Co-ownership turns individual participation into collective momentum and reduces drop-off after the initial training wave.
-
-  + because: Regular feedback sustains motivation, reveals adaptation needs, and supports accountability.
-
   + next-steps:
       - Add a Licence Story to this catalogue as a live exemplar.
       - Create one contrasting case where restrictive terms are justified.
       - Link to an “Open Commercialisation” draft pattern for value-capture questions.
+  + governance:
+      - practice: include licence review in quarterly Tune Audits (“Does this story still ring true?”).
+      - metric: visible commit history updating rationale, steward, or licence level.
 
+@arg or/license-as-story
+@sigils [💢/只]
+@title License-as-Story
+@audience maintainers, project-leads, legal-liaisons
+@tone formal-analytic
+@style design-pattern
+@part Foundations of Openness
+@up or/foundations-openness
+@see or/license-laddering, or/snapshot-with-story-doi
+@next or/platform-choreography
+@length 180-260
+@allow-new-claims false
+
+! conclusion: License-as-Story [🎎/口 👄/文]
+  + context: Standard licence boilerplate rarely communicates intent; badges look official but feel sterile, and newcomers cannot tell how to use work responsibly.
+  + if: You want reciprocity and lineage, not just formal compliance, and you see licensing as a chance to express relationship, not only ownership.
+  + however: Legal phrasing alienates non-specialists; people skim the code, miss the ethos, and maintainers end up policing misunderstandings.
+  + then: Pair every legal licence with a short, human-readable License Story: “We chose X because… Please do… Please avoid… If unsure…” Optionally record a 60-second audio version spoken by a steward.
+  + because: Narrative licence notes improve contributor understanding, reduce misuse, and spark richer conversations about attribution and reciprocity. The story turns licensing into a living social contract.
   + next-steps:
       - Record an audio Licence Story for this catalogue.
       - Curate three exemplars (data, code, OER) using this format.
       - Add guidance for awkward cases (mixed authorship, dual licences).
+  + governance:
+      - practice: sample one Licence Story per repo during Tune Audits for tone and clarity.
+      - metric: new contributors correctly reuse and attribute assets without seeking extra permission.
 
+@arg or/platform-choreography
+@sigils [💤/也]
+@title Platform Choreography
+@audience platform-admins, dev-ops, community-maintainers
+@tone formal-analytic
+@style design-pattern
+@part Foundations of Openness
+@up or/foundations-openness
+@see or/tune-audits-quarterly, or/five-p-rhythm-for-impact
+@next or/friction-as-feature
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Platform Choreography [🎶/人 🚴/心]
+  + context: Open projects accumulate tools — GitHub, drives, Slack, Overleaf, wikis — each with its own rhythm. Notifications multiply; attention fragments; contributors burn out from noise rather than conflict.
+  + if: You want predictable collaboration rhythms and treat attention as a shared resource to be guarded, not consumed.
+  + however: Tools are added opportunistically; chats interrupt deep work; issue trackers overflow; volunteers lose track of when and where to contribute.
+  + then: Treat the ecosystem as a dance, not a stack. Map tempos of each channel (daily, weekly, monthly), cap alerts per person, keep one slow “sketch” space and one fast coordination lane, and publish a Dance Card that shows when commits, triage, and reviews happen.
+  + because: Predictable cadences correlate with contributor retention, fewer orphan branches, and clearer trust. Rhythm becomes a governance instrument instead of background noise.
   + next-steps:
       - Publish a Dance Card for this catalogue’s edit and release cycles.
       - Compare metrics (merge rate, retention) before and after cadence changes.
       - Share a choreography map overlaying platforms, tempos, and roles.
+  + governance:
+      - practice: quarterly rhythm review checking alert volume, merge velocity, and perceived “in-sync-ness.”
+      - metric: contributors report knowing when to show up and how to plug in.
 
+@arg or/friction-as-feature
+@sigils [🔥/石]
+@title Friction-as-Feature
+@audience data-stewards, integration-teams, architects
+@tone formal-analytic
+@style design-pattern
+@part Interoperability & Provenance
+@up or/interoperability-provenance
+@see or/bridge-before-portal, or/method-documentary-split
+@next or/bridge-before-portal
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Friction-as-Feature [🔥/石 〰️/反]
+  + context: Integration efforts often aim to erase seams via automation and unification; but seamlessness can hide translation work and dilute accountability.
+  + if: You need interoperability that preserves meaning differences, provenance, and stewardship across systems.
+  + however: Cultural and managerial pressure prizes smooth dashboards and invisible handoffs; when errors appear, no one can see where translation went wrong.
+  + then: Treat seams as features, not flaws. Name and document each seam (e.g., metadata crosswalks), maintain a Seam Registry with steward, cadence, rationale, and “what we’d lose if smoothed,” and hold brief, time-boxed Seam Debates to revisit design choices.
+  + because: Constructive friction clarifies ownership, reduces schema drift, and fosters cross-team understanding. Visible seams are repairable edges rather than brittle failure points.
   + next-steps:
       - Create a public Seam Registry for this catalogue’s pipelines.
       - Document one over-smoothed failure and one seam-preserving success.
       - Publish a 15-minute Seam Debate format with guiding questions.
+  + governance:
+      - practice: include seam visibility and stewardship status in Tune Audits.
+      - metric: contributors can point to the main seams and explain why they exist.
 
+@arg or/bridge-before-portal
+@sigils [🚴/以]
+@title Bridge-Before-Portal
+@audience infrastructure-leads, product-owners, integration-teams
+@tone formal-analytic
+@style design-pattern
+@part Interoperability & Provenance
+@up or/interoperability-provenance
+@see or/friction-as-feature, or/identifier-garden
+@next or/snapshot-with-story-doi
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Bridge-Before-Portal [🌲/门 🚢/川]
+  + context: Faced with fragmented systems, teams dream of one portal that unifies access; portal projects become expensive, slow, and prone to locking teams in.
+  + if: You seek interoperability and shared visibility quickly while preserving flexibility for future architectures.
+  + however: Institutional incentives reward big launches over modest connectors; monolithic portals over-specify needs, become brittle, and exhaust teams.
+  + then: Start with bridges rather than portals: small, reversible connections such as exports, DOI cross-links, citation recipes, or shared notebooks. Each bridge must pass a reversal test: can you reconstruct your data or process if the bridge disappears?
+  + because: Bridges enable staged federation and mutual learning without committing to one architecture. They preserve optionality, lower risk, and turn integrations into negotiable boundary objects.
   + next-steps:
       - Implement a simple bridge between this catalogue and another pattern repository.
       - Create a reversal-test checklist and apply it to existing integrations.
       - Document one failed portal attempt and what a bridge-first approach would have changed.
+  + governance:
+      - practice: maintain a Bridge Register with status and reversal-test logs.
+      - metric: proportion of bridges that can be rebuilt within a set time (e.g., two hours).
 
+@arg or/snapshot-with-story-doi
+@sigils [👓/只]
+@title Snapshot-with-Story DOI
+@audience repository-managers, research-software-engineers, project-leads
+@tone formal-analytic
+@style design-pattern
+@part Interoperability & Provenance
+@up or/interoperability-provenance
+@see or/license-as-story, or/fit-for-use-stars
+@next or/identifier-garden
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Snapshot-with-Story DOI [📥/文 📤/示]
+  + context: Repositories routinely mint DOIs, but deposits often feel opaque; readers see version numbers without understanding intent or trajectory.
+  + if: You want releases to be both citable and alive, linking frozen artefacts to ongoing work.
+  + however: Deposit workflows optimise for compliance, not communication; metadata is perfunctory, and DOIs become cold identifiers rather than narrative anchors.
+  + then: Pair every DOI with a Release Story (~120 words) explaining what changed, what remains open, and how to cite. Each release bundles (a) immutable archive, (b) STORY.md, (c) link to the active workspace or repo.
+  + because: Narrative DOIs see more accurate citation, fewer misuse tickets, and clearer reuse; they transform preservation into pedagogy by contextualising the snapshot.
   + next-steps:
       - Publish this pattern’s own Release Story and link it to its DOI.
       - Curate examples of good Release Stories for data, code, and preprints.
       - Add a CI hook to require STORY.md for each tagged release.
+  + governance:
+      - practice: sample three DOIs per audit and verify the presence and clarity of Release Stories.
+      - metric: fraction of releases with STORY.md and an active workspace link.
 
+@arg or/identifier-garden
+@sigils [🌳/田]
+@title Identifier Garden
+@audience information-specialists, repo-admins, research-office-staff
+@tone formal-analytic
+@style design-pattern
+@part Interoperability & Provenance
+@up or/interoperability-provenance
+@see or/snapshot-with-story-doi, or/two-stage-fidelity
+@next or/two-stage-fidelity
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Identifier Garden [🌳/田 🐞/友]
+  + context: Research ecosystems are dense with identifiers (DOI, ORCID, ROR, grant IDs); unmanaged, they become confusing “ID sprawl.”
+  + if: You value provenance, credit, and discoverability and want identifiers to enhance human understanding rather than burden it.
+  + however: When IDs multiply without stewardship, they become bureaucratic weeds: outdated records, broken provenance, mismatched dashboards, and wasted reconciliation effort.
+  + then: Curate identifiers as a garden. Publish an ID Map listing each identifier type, what it represents, who stewards it, and when it was issued or verified. Adopt a minimal set per project and prune regularly.
+  + because: Explicit ID policies prevent drift, reduce maintenance overhead, and improve automated linking across DOI–ORCID–ROR triples. The garden metaphor frames IDs as living elements needing care.
   + next-steps:
       - Publish an Identifier Garden for this catalogue, with stewards and review dates.
       - Build a simple Garden Check script to flag missing or stale IDs.
       - Share a Garden Companion snippet for READMEs and metadata headers.
+  + governance:
+      - practice: review the ID Map during readiness windows for correctness and minimality.
+      - metric: each ID has an active steward and verified link in the last cycle.
 
+@arg or/two-stage-fidelity
+@sigils [💢/以]
+@title Two-Stage Fidelity (Registered Rhythm)
+@audience methodologists, PIs, registry-admins, trialists
+@tone formal-analytic
+@style design-pattern
+@part Methods & Accountability
+@up or/methods-accountability
+@see or/method-documentary-split, or/overlay-bridges
+@next or/method-documentary-split
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Two-Stage Fidelity (Registered Rhythm) [⌛️/土 ✊/义]
+  + context: Protocols inevitably evolve; without visibility, analytic flexibility becomes invisible bias and HARKing.
+  + if: You want both transparency and creativity, preserving a clear record of intention while allowing adaptive learning.
+  + however: Preregistration is often treated as bureaucracy; deviations are hidden, and rigid templates discourage exploration.
+  + then: Use a two-stage rhythm. Stage-1 preregisters design, anticipated challenges, and threat models. Stage-2 publishes results plus an adherence audit using a Deviation Ledger that records justified changes as first-class data.
+  + because: Registered Reports show that preregistration reduces bias, and explicit deviation logs preserve interpretability. Together they balance rigour and discovery.
   + next-steps:
       - Preregister the next release of this catalogue and maintain a Deviation Ledger.
       - Share ledger examples from both qualitative and quantitative projects.
       - Draft an “Adaptive Protocols” companion pattern and link it here.
+  + governance:
+      - practice: include Deviation Ledger review in Tune Audits.
+      - metric: proportion of deviations that are logged, justified, and discussed.
 
+@arg or/method-documentary-split
+@sigils [🚴/只]
+@title Method/Documentary Split
+@audience project-leads, lab-heads, qualitative-teams
+@tone formal-analytic
+@style design-pattern
+@part Methods & Accountability
+@up or/methods-accountability
+@see or/two-stage-fidelity, or/friction-as-feature
+@next or/attribution-forward-review
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Method/Documentary Split [📁/书 ✂️/分]
+  + context: In most projects, the protocol and the story collapse into a single document; methods are rewritten to match outcomes, hiding uncertainty and adaptation.
+  + if: You value honesty, reproducibility, and institutional learning, and want future readers to see how discovery actually unfolded.
+  + however: Fear of embarrassment or perceived loss of credibility leads teams to conceal deviations; journals reward polished linear narratives.
+  + then: Publish two living artefacts: PROTOCOL.md (forward-looking intention and checks) and LOG.md (backward-looking account of what happened and what changed). Require both for releases and add a one-minute embodied reflection before signing off logs.
+  + because: Separating plan from record normalises adaptation and preserves context. It accelerates troubleshooting, improves mentoring, and turns “failure” into documented learning.
   + next-steps:
       - Implement PROTOCOL.md and LOG.md for this catalogue.
       - Assemble a gallery of split examples from different domains.
       - Prototype a visual diff that overlays protocol and log changes.
+  + governance:
+      - practice: audit releases for presence and quality of both artefacts.
+      - metric: logs read as narratives of learning, not just checklists.
 
+@arg or/attribution-forward-review
+@sigils [👓/只]
+@title Attribution-Forward Review
+@audience editors, review-coordinators, programme-committees
+@tone formal-analytic
+@style design-pattern
+@part Methods & Accountability
+@up or/methods-accountability
+@see or/overlay-bridges, or/citizen-co-learning-track
+@next or/overlay-bridges
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Attribution-Forward Review [👥/文 💬/心]
+  + context: Traditional anonymous peer review hides both power and care; reviewers feel disposable, authors feel judged by invisible forces.
+  + if: You want review to function as dialogue and mentorship, not merely gatekeeping.
+  + however: Reviewers fear retaliation or reputational harm; editors worry openness will reduce reviewer supply.
+  + then: Shift to attribution-forward models where reviews are named by default (with consensual pseudonymity as an option) and each includes a stance note on expertise, conflicts, and values. Allow reviews to be citable artefacts in their own right.
+  + because: Open review pilots show higher civility, specificity, and reusability; stance notes help readers contextualise critique. Attribution turns review into a shared scholarly contribution.
   + next-steps:
       - Publish one named review of this catalogue with stance notes.
       - Share a stance-note mini-form as a reusable template.
       - Compare outcomes from open vs. blind review in one venue and summarise.
+  + governance:
+      - practice: track the proportion of reviews with names or stance notes.
+      - metric: reviewers later cited or thanked in follow-on work.
 
+@arg or/overlay-bridges
+@sigils [💢/也]
+@title Overlay Bridges
+@audience journal-editors, platform-designers, research-office-staff
+@tone formal-analytic
+@style design-pattern
+@part Communities & Pedagogy
+@up or/communities-pedagogy
+@see or/attribution-forward-review, or/bridge-before-portal
+@next or/peripheral-to-core-pathways
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Overlay Bridges [🚢/门 🌈/互]
+  + context: Academic publishing remains dominated by legacy journals even as Open Research grows; authors still need career-legible outputs.
+  + if: You want more open practices without severing links to recognised venues.
+  + however: “Open-only” reforms can trigger resistance and duplicate labour; authors fear outcomes that “do not count.”
+  + then: Build overlay bridges that route manuscripts through open, community-based review while retaining compatibility with target journals. Publish timelines and handoff packets (cover letter, review bundle) that show how reviews and revisions travel.
+  + because: Overlay models shorten time-to-feedback, reuse reviewer effort, and preserve promotion-relevant outputs. They demonstrate coexistence rather than rupture between open and traditional systems.
   + next-steps:
       - Pilot an overlay handoff for this catalogue or a related paper.
       - Publish a generic Overlay SOP and handoff packet template.
       - Document one successful overlay and one failed attempt with lessons learned.
+  + governance:
+      - practice: track open-reviewed submissions that later appear in formal venues.
+      - metric: number of reusable review bundles shared across platforms.
 
+@arg or/peripheral-to-core-pathways
+@sigils [🚴/也]
+@title Peripheral-to-Core Pathways
+@audience community-stewards, network-organisers, programme-leads
+@tone formal-analytic
+@style design-pattern
+@part Communities & Pedagogy
+@up or/communities-pedagogy
+@see or/five-p-rhythm-for-impact, or/maintainer-care
+@next or/quality-by-design-crowd
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Peripheral-to-Core Pathways [🏃/入 👈/中]
+  + context: Open communities often start with energetic newcomers at the margins, yet core roles ossify; newcomers circle indefinitely while veterans burn out.
+  + if: You want growth through renewal, with newcomers becoming confident stewards and leaders over time.
+  + however: Many groups equate “open” with “anyone can join,” without clear developmental routes; invisible hierarchies and extractive labour patterns persist.
+  + then: Design explicit pathways: observe → co-do → steward. Each phase includes recognition (badges, micro-credentials), time-bound roles, and options to rotate out. Create a metaboliser process that turns complaints and conflicts into repair actions.
+  + because: Transparent progression paths increase retention and distribute leadership more equitably; metabolising tensions into maintenance preserves trust.
   + next-steps:
       - Publish a Pathways Map for this catalogue’s contribution roles.
       - Host a metaboliser session using recent tensions and document outcomes.
       - Develop a badge rubric with sunset dates for stewardship roles.
+  + governance:
+      - practice: monitor steward rotation and newcomer advancement.
+      - metric: visible movement from periphery to core and back, with gratitude expressed in both directions.
 
+@arg or/quality-by-design-crowd
+@sigils [🎋/工]
+@title Quality-by-Design Crowd
+@audience citizen-science-leads, crowdsourcing-teams, data-stewards
+@tone formal-analytic
+@style design-pattern
+@part Communities & Pedagogy
+@up or/communities-pedagogy
+@see or/citizen-co-learning-track, or/fit-for-use-stars
+@next or/citizen-co-learning-track
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Quality-by-Design Crowd [🎋/工 👀/正]
+  + context: Crowdsourcing and citizen science rely on many contributors whose data quality varies widely; naive policing or rejection erodes trust.
+  + if: You need reliable data while treating contributors as collaborators rather than expendable labour.
+  + however: Without embedded structure, volunteers guess expectations, receive late feedback, and become discouraged when work is rejected.
+  + then: Build quality into the workflow: use gold-standard screening questions, embed spot-checks and instant feedback, and publish fairness, wage, and recognition policies. Frame correction as coaching.
+  + because: Embedded calibration improves accuracy and retention better than post-hoc filtering; transparent fairness norms increase commitment and reduce conflict.
   + next-steps:
       - Create a Screening Bank template with gold questions and answer keys.
       - Design feedback scripts or UI snippets for immediate, constructive responses.
       - Publish a quality dashboard spec (precision/recall, agreement, retention).
+  + governance:
+      - practice: regularly review calibration pass rates and feedback sentiment.
+      - metric: contributors describe feedback as helpful, and rejection rates fall without quality loss.
 
+@arg or/citizen-co-learning-track
+@sigils [👫/人]
+@title Citizen Co-Learning Track
+@audience engagement-leads, educators, public-participation-officers
+@tone formal-analytic
+@style design-pattern
+@part Communities & Pedagogy
+@up or/communities-pedagogy
+@see or/quality-by-design-crowd, or/peripheral-to-core-pathways
+@next or/five-p-rhythm-for-impact
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Citizen Co-Learning Track [👫/人 🚞/入]
+  + context: Many crowdsourcing projects treat volunteers as task workers; once tasks end, engagement collapses and relationships dissolve.
+  + if: You want participation that deepens over time, with volunteers becoming co-researchers who can interpret and shape future work.
+  + however: Infrastructures are optimised for throughput, not growth; lessons and reflection spaces are afterthoughts, and churn is treated as inevitable.
+  + then: Add a parallel co-learning track with short lessons tied to live project data, reflection prompts, and co-authorship opportunities. Maintain learning logs where participants narrate discoveries.
+  + because: Structured learning increases retention, data quality, and trust. When contributors understand the science and see themselves as co-authors, motivation becomes stewardship.
   + next-steps:
       - Publish a learning track explaining how this catalogue evolves and inviting remix lessons.
       - Curate example projects with strong co-learning components and reference them.
       - Create a reusable reflection prompt bank for different phases of participation.
+  + governance:
+      - practice: track repeat participation rates and volunteer co-authorship counts.
+      - metric: volunteers initiate learning sessions or produce derivative educational materials.
 
+@arg or/five-p-rhythm-for-impact
+@sigils [➰/以]
+@title Five-P Rhythm for Impact
+@audience meeting-chairs, project-leads, facilitation-teams
+@tone formal-analytic
+@style design-pattern
+@part Communities & Pedagogy
+@up or/communities-pedagogy
+@see or/platform-choreography, or/tune-audits-quarterly
+@next or/fit-for-use-stars
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Five-P Rhythm for Impact [🎑/日 ➰/以]
+  + context: Open Research meetings drift between chatter and overload; agendas swell, actions blur, and participants leave unsure what was achieved.
+  + if: You want meetings that reliably generate both concrete outcomes and shared understanding.
+  + however: Teams swing between hyper-productive checklists and unfocused discussion; without scaffolding, every meeting starts from scratch.
+  + then: Use the Five-P rhythm: People (who’s here), Process (what’s working), Plan (what’s next), Product (deliverables), Perspective (what’s been learned). Close with a short After-Action Review and add a sentence to a public changelog.
+  + because: Five-P balances efficiency with reflection; AARs and changelogs clarify accountability and make impact visible over time.
   + next-steps:
       - Run editorial meetings for this catalogue using Five-P and publish the changelog.
       - Produce a printable Five-P agenda/timer card.
       - Collect stories of meetings improved by this pattern and share them.
+  + governance:
+      - practice: check that recurring meetings are documented with Five-P notes and AARs.
+      - metric: observers can infer project rhythm and decisions from meeting records alone.
 
+@arg or/fit-for-use-stars
+@sigils [🚴/以]
+@title Fit-for-Use Stars
+@audience data-stewards, PIs, repository-teams
+@tone formal-analytic
+@style design-pattern
+@part Governance & Care
+@up or/governance-care
+@see or/snapshot-with-story-doi, or/readiness-windows
+@next or/readiness-windows
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Fit-for-Use Stars [🌝/用 💎/正]
+  + context: The five-star open data ladder encourages continuous improvement but can paralyse teams who feel they must reach “perfect” before sharing.
+  + if: You want data to be genuinely usable — shared early enough to matter, clear enough to trust, and structured enough for others to build on.
+  + however: Pressure to hit high star levels delays deposit; ethics constraints and limited resources make full openness unrealistic.
+  + then: Choose openness level by intended use rather than abstract ideal. Document it in a brief Use Note explaining trade-offs and planned upgrades. Treat openness as iterative design with scheduled enhancements.
+  + because: Incremental sharing accelerates collaboration and preserves value; clear use-context prevents misinterpretation and sets realistic expectations for reuse.
   + next-steps:
       - Publish a Use Note for this catalogue’s data, with current star level and roadmap.
       - Create a showcase of 2-, 3-, and 5-star datasets with annotated rationales.
       - Develop a simple “Data Readiness Meter” visual tied to star levels.
+  + governance:
+      - practice: review Use Notes during readiness windows and tune upgrade plans.
+      - metric: datasets show staged improvements rather than long-delayed first releases.
 
+@arg or/readiness-windows
+@sigils [🌄/旦]
+@title Readiness Windows
+@audience maintainers, release-managers, steering-groups
+@tone formal-analytic
+@style design-pattern
+@part Governance & Care
+@up or/governance-care
+@see or/tune-audits-quarterly, or/fit-for-use-stars
+@next or/tune-audits-quarterly
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Readiness Windows [🌄/旦 ⌛️/今]
+  + context: Continuous integration without temporal boundaries can become perpetual churn; major changes land at random, exhausting reviewers and users.
+  + if: You value both responsiveness and reliability, aiming for deep innovation without undermining trust in shared infrastructure.
+  + however: Uncoordinated change leads to version fatigue; people hesitate to build on unstable foundations, and governance becomes reactive firefighting.
+  + then: Declare Readiness Windows — defined periods (e.g., quarterly) when schema-breaking or major changes are allowed. Outside windows, restrict changes to backward-compatible updates. Align audits, freezes, and celebrations with this schedule.
+  + because: Temporal boundaries transform chaos into cadence. Predictable windows make change intentional, concentrate review effort, and create meaningful release moments.
   + next-steps:
       - Publish this catalogue’s change calendar with marked readiness windows.
       - Tag schema-affecting changes with their window in git history.
       - Design a “Window Badge” indicating last passed readiness review.
+  + governance:
+      - practice: monitor frequency of major changes outside declared windows.
+      - metric: declining emergency hotfixes and clearer anticipation of big shifts.
 
+@arg or/tune-audits-quarterly
+@sigils [🎐/节]
+@title Tune Audits (Quarterly)
+@audience pattern-stewards, product-owners, governance-groups
+@tone formal-analytic
+@style design-pattern
+@part Governance & Care
+@up or/governance-care
+@see or/readiness-windows, or/dream-audit-per-release, or/retirement-shelf
+@next or/dream-audit-per-release
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Tune Audits (Quarterly) [🎐/节 💬/公]
+  + context: Libraries and frameworks accumulate noise over time; patterns that once sang drift out of tune, but maintenance focuses on bugs instead of meaning.
+  + if: You want your project to remain alive and coherent, not merely operational.
+  + however: Audits are often bureaucratic and postponed; “we’ll clean it up later” hides slow decay.
+  + then: Hold quarterly Tune Audits. Randomly sample a small set of artefacts (e.g., three patterns) and ask, “Does this still sing?” Decide to renew, revise, or retire, and log short narrative notes rather than scores.
+  + because: Lightweight, regular reflection keeps documentation aligned with practice. Tuning normalises revision and creates a public trail of living decisions.
   + next-steps:
       - Publish Tune Logs for this catalogue showing renew/revise/retire outcomes.
       - Experiment with simple rituals (audio snippets, icons) to mark tuned items.
       - Compare tuned vs. untuned sections for perceived energy and clarity.
+  + governance:
+      - practice: track participation in Tune Audits and follow-through on decisions.
+      - metric: steady flow of small revisions and occasional dignified retirements.
 
+@arg or/dream-audit-per-release
+@sigils [🚴/只]
+@title DREAM Audit (Per Release)
+@audience core-team, facilitators, ethics-boards
+@tone formal-analytic
+@style design-pattern
+@part Governance & Care
+@up or/governance-care
+@see or/tune-audits-quarterly, or/maintainer-care
+@next or/maintainer-care
+@length 180-260
+@allow-new-claims false
+
+! conclusion: DREAM Audit (Per Release) [💫/心 🌜/月]
+  + context: Release notes usually track technical changes, not shifts in desire, relationships, embodiment, autonomy, or multiplicity; inner drift remains invisible.
+  + if: You want to track how work is changing the people and relationships around it, not just the feature set.
+  + however: Under deadline pressure, emotional or ethical reflection feels off-topic; there is no structured space for it.
+  + then: Attach a short DREAM Audit to each release: a brief paragraph reflecting on Desire, Relationality, Embodiment, Autonomy, and Multiplicity since the last iteration. Publish these alongside technical notes.
+  + because: DREAM audits keep the project’s inner compass visible, helping teams align ongoing work with founding purpose and relational health.
   + next-steps:
       - Add DREAM notes to the next release of this catalogue.
       - Link each DREAM audit from the release notes index to keep them findable.
       - Invite individual contributors to contribute micro-audits and aggregate them.
       - Visualise DREAM themes over time as a simple trend or word map.
+  + governance:
+      - practice: check each tagged release for a DREAM note.
+      - metric: releases read as letters from a living community rather than only change logs.
 
+@arg or/maintainer-care
+@sigils [🙌/友]
+@title Maintainer Care
+@audience maintainers, sponsors, community-stewards
+@tone formal-analytic
+@style design-pattern
+@part Governance & Care
+@up or/governance-care
+@see or/peripheral-to-core-pathways, or/tune-audits-quarterly
+@next or/retirement-shelf
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Maintainer Care [🙌/友 🍵/心]
+  + context: Open projects depend on a few steady hands whose labour becomes invisible; burnout or departure can collapse continuity and tone.
+  + if: You want sustainability grounded in care rather than heroism, recognising that bandwidth is finite.
+  + however: Volunteer cultures often glorify self-sacrifice; metrics reward responsiveness, not rest, and burnout is individualised as “failure.”
+  + then: Embed maintainer care into governance: quiet hours, rotating responsibilities, small stipends or micro-funds for caretaking work, and peer check-ins about energy. Treat maintainership as a shared rhythm, not a permanent identity.
+  + because: Projects that foreground wellbeing retain maintainers longer and sustain clearer, kinder communication; care is infrastructural, not ornamental.
   + next-steps:
       - Publish a Maintainer Care Charter for this catalogue.
       - Document at least one care intervention and its observed effects.
       - Add a “Care Pulse” survey item to Tune Audits for maintainers.
+  + governance:
+      - practice: monitor response times, care-pulse responses, and rotation of demanding roles.
+      - metric: maintainers self-report their work as sustainable and often energising.
 
+@arg or/retirement-shelf
+@sigils [💢/只]
+@title Retirement Shelf
+@audience pattern-stewards, archivists, core-team
+@tone formal-analytic
+@style design-pattern
+@part Governance & Care
+@up or/governance-care
+@see or/tune-audits-quarterly, or/readiness-windows
+@next or/license-laddering
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Retirement Shelf [🍂/古 ➰/止]
+  + context: Over time, projects accumulate legacy artefacts that no longer fit current realities; without rituals for letting go, clutter and confusion grow.
+  + if: You want to honour lineage while keeping the system light enough to move.
+  + however: Deletion feels disrespectful; founders resist archival moves; newcomers keep tripping over outdated guidance.
+  + then: Create a Retirement Shelf — a visible archive for superseded patterns or components. For each item, publish a Retirement Note explaining why it was useful, why it is no longer active, and what replaces it. Mark retirements with simple ceremonies or reflections.
+  + because: Dignified endings preserve institutional memory without clutter. Visible lineage supports transparency and helps newcomers understand evolution of practice.
   + next-steps:
       - Initialise a Retirement Shelf for this catalogue and migrate one pattern into it.
       - Record a short retirement reflection for that item.
       - Draw a lineage map linking retired artefacts to their successors.
+  + governance:
+      - practice: during Tune Audits, consider retire/replace as valid outcomes and move items accordingly.
+      - metric: a slowly growing shelf with clear successors, signalling a culture that values endings as well as beginnings.
 
+@arg or/expectation-scaffold
+@sigils [🧭/规]
+@title Expectation Scaffold
+@audience programme-leads, trainers, policy-owners
+@tone formal-analytic
+@style design-pattern
+@part Training & Capacity
+@up or/foundations-openness
+@see or/adaptive-delivery-spine, or/feedback-activation-loop
+@next or/adaptive-delivery-spine
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Expectation Scaffold [🧭/规 📎/文]
+  + context: National T3 programmes attract diverse participants with uneven prior knowledge and shifting institutional mandates; ambiguity about what is required versus optional undermines delivery.
+  + if: You want trainers to act confidently and consistently while still adapting locally.
+  + however: Vague participation rules and undefined completion criteria leave trainers unsure what they can legitimately promise, and delivery fragments across institutions.
+  + then: Publish a minimal expectation scaffold: required sessions, optional pathways, and a stated “ready-to-deliver” threshold. Provide a short, plain-language briefing on what T3 is and is not, plus a self-check checklist for trainers.
+  + because: Clarity lowers cognitive load, reduces mismatch between expectations and capacity, and improves coordination across distributed trainers.
+  + evidence: transcript1 t1-1; transcript2A t2a-15; transcript2B t2b-1.
   + next-steps:
       - Create a one-page “T3 in Brief” with required/optional components.
       - Define a minimal competency checklist with examples of acceptable adaptations.
       - Add an onboarding call focused on expectations and scope.
+  + governance:
+      - practice: review and update the scaffold annually with trainer input.
+      - metric: trainers report clarity on requirements before first delivery.
 
+@arg or/adaptive-delivery-spine
+@sigils [🪡/式]
+@title Adaptive Delivery Spine
+@audience trainers, curriculum-designers, cohort-leads
+@tone formal-analytic
+@style design-pattern
+@part Training & Capacity
+@up or/foundations-openness
+@see or/expectation-scaffold, or/living-materials-stewardship
+@next or/living-materials-stewardship
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Adaptive Delivery Spine [🪡/式 🧩/合]
+  + context: Trainers value interactivity and contextual adaptation, but sessions feel rushed and overstuffed without a clear delivery architecture.
+  + if: You want trainers to tailor content to local needs without losing coherence.
+  + however: One-size-fits-all agendas create fatigue, reduce interaction, and leave trainers unable to cover core material.
+  + then: Define a delivery spine: a minimal core (two to three modules) plus named elective modules and a required co-working block for local adaptation. Provide time budgets and “drop-in” variants for short sessions.
+  + because: A spine creates predictable structure while legitimizing adaptation; it protects interaction time and reduces overload.
+  + evidence: transcript1 t1-15; transcript2A t2a-13; transcript2B t2b-45.
   + next-steps:
       - Publish three spine variants (90-min, half-day, full-day).
       - Add a template for local adaptation notes and decisions.
       - Include a standard Q&A and co-working segment in every variant.
+  + governance:
+      - practice: collect post-session notes on what was dropped or adapted.
+      - metric: percentage of sessions using a declared spine variant.
 
+@arg or/living-materials-stewardship
+@sigils [🌱/料]
+@title Living Materials Stewardship
+@audience maintainers, curriculum-owners, trainers
+@tone formal-analytic
+@style design-pattern
+@part Training & Capacity
+@up or/foundations-openness
+@see or/adaptive-delivery-spine, or/feedback-activation-loop
+@next or/feedback-activation-loop
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Living Materials Stewardship [🌱/料 🔁/修]
+  + context: Trainers praise access to materials, but content quickly ages and requires local adaptation work that is rarely resourced.
+  + if: You want materials to remain credible and easy to use across contexts.
+  + however: Static resources drift from practice; updating is ad hoc, and trainers bear the cost of reworking content alone.
+  + then: Treat materials as a living product: assign stewards, publish update cadence, and provide a lightweight change log. Add an adaptation log so local changes can be upstreamed or documented.
+  + because: Stewardship reduces drift, distributes maintenance work, and increases trust in the materials.
+  + evidence: transcript1 t1-9; transcript1 t1-15; transcript2B t2b-9.
   + next-steps:
       - Create a quarterly update rhythm with named maintainers.
       - Add a one-page adaptation log template to each module.
       - Prioritize updates for sections flagged as outdated by trainers.
+  + governance:
+      - practice: run a short “materials health” review each quarter.
+      - metric: time since last update for each module.
 
+@arg or/co-ownership-engine
+@sigils [🤝/共]
+@title Co-Ownership Engine
+@audience programme-leads, community-managers, trainers
+@tone formal-analytic
+@style design-pattern
+@part Training & Capacity
+@up or/foundations-openness
+@see or/feedback-activation-loop, or/expectation-scaffold
+@next or/feedback-activation-loop
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Co-Ownership Engine [🤝/共 🌍/场]
+  + context: Trainers describe T3 as an entry point into a wider community and a moment of shared ownership; this co-ownership motivates action.
+  + if: You want training impact to spread beyond individual sessions and sustain over time.
+  + however: Without explicit structures, community benefits are uneven and some trainers feel isolated after the programme ends.
+  + then: Build co-ownership into the programme: dedicated peer cohorts, shared adaptation reviews, and a visible pathway for trainers to contribute improvements and mentor new cohorts.
+  + because: Co-ownership turns individual participation into collective momentum and reduces drop-off after the initial training wave.
+  + evidence: transcript1 t1-19; transcript1 t1-25; transcript3 t3-4.
   + next-steps:
       - Establish rotating peer cohorts with monthly check-ins.
       - Create a contribution pathway for trainers to propose updates.
       - Pair new trainers with a local or regional mentor.
+  + governance:
+      - practice: track cohort participation and peer-mentoring activity.
+      - metric: proportion of trainers contributing back within 6 months.
 
+@arg or/feedback-activation-loop
+@sigils [🔁/促]
+@title Feedback-Activation Loop
+@audience programme-leads, evaluators, trainers
+@tone formal-analytic
+@style design-pattern
+@part Training & Capacity
+@up or/foundations-openness
+@see or/living-materials-stewardship, or/co-ownership-engine
+@next or/expectation-scaffold
+@length 180-260
+@allow-new-claims false
+
+! conclusion: Feedback-Activation Loop [🔁/促 📊/度]
+  + context: Trainers note that engagement and feedback are crucial for improving delivery and sustaining motivation, but current feedback mechanisms are thin.
+  + if: You want long-term impact and evidence of cultural change beyond one-off sessions.
+  + however: Reliance on optional surveys misses signal; trainers lack feedback on impact and cannot easily demonstrate reach.
+  + then: Establish a lightweight feedback loop: short post-session pulse, 3-6 month follow-up, and a visible impact log. Pair this with a rotation of “impact stories” that travel across cohorts.
+  + because: Regular feedback sustains motivation, reveals adaptation needs, and supports accountability.
+  + evidence: transcript2B t2b-41; transcript2B t2b-39; transcript1 t1-18.
   + next-steps:
       - Add a two-question pulse survey after each session.
       - Run a quarterly impact story round-up shared across cohorts.
       - Provide a simple template for reporting reach and learning.
+  + governance:
+      - practice: review impact logs in quarterly tune audits.
+      - metric: proportion of trainers submitting at least one impact story per year.

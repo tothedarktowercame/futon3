@@ -1,0 +1,131 @@
+@flexiarg peripherals/pilot-plus-ground-control
+@title Pilot Plus Ground Control
+@sigils [🛰/塔]
+@audience peripheral designers, agent architects, multi-agent operators
+@tone foundational
+@style pattern
+@keywords peripheral, pilot, ground-control, inhabitation, separation-of-powers, live-fix, supervised-autonomy, consent-gate, instrument, envelope
+@references [peripherals/constrained-execution-envelope peripherals/inhabitation-feeds-evolution orchestration/consent-gate coordination/capability-gate realtime/learn-as-you-go]
+
+! conclusion: When an agent inhabits a powerful peripheral whose instrument is itself under repair, split the work into two roles — a PILOT who flies strictly inside the envelope by the instrument's readings, and a GROUND CONTROL who stays outside it, owns the substrate, source-checks the pilot's observations, and fixes the instrument live. Neither role works alone; the pattern is the pair.
+
+  + context: A peripheral (in the constrained-execution-envelope sense) gives
+    an agent real leverage: a War Machine pilot REPL, a proof cockpit, a
+    deploy console. But the instrument behind the envelope — the scorer, the
+    scanner, the registry it reads — is imperfect and under active
+    development. You want the flying to happen AND the instrument to get
+    fixed, without either corrupting the other.
+
+  + IF:
+    An agent can inhabit the peripheral and work it productively, and a
+    second agent has the access and context to repair the substrate the
+    peripheral reads from (live code reload, registries, scoring models).
+
+  + HOWEVER:
+    One agent cannot honestly do both jobs. The inhabitant who hits an
+    instrument defect faces a bad fork: break the envelope to go fix the
+    substrate (abandoning the flight discipline that makes the readings
+    meaningful), or keep flying a broken instrument (laundering bad readings
+    into apparently-earned outcomes). And an agent that authors its own
+    instrument fixes mid-flight reviews nothing — author and reviewer
+    collapse into one seat exactly where the stakes are highest.
+
+    + FAILURE-MODES:
+      - Role bleed: the pilot starts patching the substrate, or ground
+        control starts flying cycles. Both losses are silent — the envelope
+        discipline and the review gate each look intact while meaning
+        nothing.
+      - Diagnosis trust: ground control fixes what the pilot DIAGNOSED
+        instead of what the pilot OBSERVED. Pilots misread root causes
+        routinely (it is not their instrument to open); the contract is
+        observations cross the boundary, diagnoses do not.
+      - Double dispatch: both roles hand work to the same builder pool and
+        the same fix gets built twice. Needs an explicit lane convention
+        (e.g. single-dispatch-per-kind: builds via pilot, substrate fixes
+        via ground control) or a mutual-ack handshake.
+      - Stale-state crossings: the two roles exchange findings
+        asynchronously; each acts on the other's old state. Mitigations:
+        low-latency agent processes, per-recipient FIFO delivery, sequence
+        or as-of fields in the message envelope, and the habit of
+        re-reading live state before acting on a report.
+      - Ground-control paternalism: overriding the pilot's warranted
+        choices instead of source-checking them. Ground control checks the
+        instrument, not the pilot's judgment; the operator, not ground
+        control, decides strategy.
+
+  + THEN:
+    Split the work into two named roles with a hard boundary at the
+    envelope's edge.
+
+    The PILOT inhabits the peripheral and flies strictly by its readings
+    and its disciplines: consent gates before anything outward, earned
+    closure (no discharge claimed that the field did not actually yield),
+    target checks before executing a recommendation, and a turn log that
+    records predicted versus realised. When the instrument looks wrong, the
+    pilot HOLDS and reports the observation — staying in the seat.
+
+    GROUND CONTROL stays outside the envelope and owns everything the
+    envelope reads: source-checks each pilot observation against the actual
+    code before accepting the pilot's framing; fixes the substrate live
+    (hot reload, never restarting the world under the pilot); gates any
+    built artifact (read the diff, re-run the verification, state what was
+    checked); and relays genuinely strategic decisions upward to the
+    operator instead of absorbing them.
+
+    Findings flow pilot → ground control as observations. Fixes flow
+    ground control → substrate, with the pilot re-reading the field to
+    confirm each fix moved it. Strategy flows operator → both, through
+    consent gates that the apparatus surfaces rather than bypasses.
+
+  + BECAUSE:
+    The envelope boundary is exactly where the two kinds of integrity live.
+    The pilot's readings are only evidence if the flight discipline holds —
+    a pilot who also mutates the instrument mid-reading destroys the
+    interpretability of their own log. Ground control's fixes are only
+    trustworthy if made from outside — with the full substrate in view,
+    against source, under review gates the pilot cannot see from the
+    cockpit. Separation of powers here is not bureaucracy; it is what makes
+    either role's output mean anything.
+
+    And the pair error-corrects in both directions. The pilot's discipline
+    catches what the instrument misses (a confidently-scored impossible
+    action). Ground control's source-check catches what the pilot misreads
+    (a plausible wrong root cause). The operator's consent gate catches
+    what both miss (a mechanically-valid move that is strategically wrong).
+    Three layers, each covering the others' blind spots — the same shape as
+    measure-never-target and the other anti-laundering disciplines: no
+    layer certifies itself.
+
+    + evidence: WM pilot go-live, 2026-06-10 (claude-3 pilot, fable-1
+      ground control, Joe operator). Two supervised observer cycles, zero
+      unilateral mutations, and the pair found and fixed: a forward model
+      scoring the spawn of already-existing missions (pilot's earned-closure
+      discipline caught the WM's own #1 recommendation as an un-earnable
+      teleport; ground control traced it to predict-effects and converted
+      the action class); a multi-watcher wedge fixed live mid-flight without
+      disturbing the pilot; a sorry registry that had been silently empty
+      for 16 days (refilled with five provenance-checked holes, after which
+      the field's top five recommendations became the system's own
+      gate-clearing work); and a calibration harness whose first honest
+      verdict was that no admissible evidence existed yet. Both directions
+      of error-correction fired: the pilot mis-diagnosed twice
+      (stale-judgement, scope-tree staleness) and ground control's
+      source-check corrected both; ground control misread once (a
+      timezone comparison) and said so, which surfaced an untimed
+      subprocess wait as a bonus. The operator's consent gate converted a
+      mechanically-valid "advance" into the strategic question it really
+      was (start a new workstream?), answered at a higher level than asked.
+
+  + NEXT-STEPS:
+    - Name the roles explicitly at session start; record the dispatch
+      lanes (who hands work to builders, who touches the substrate).
+    - Give the pilot a HOLD verb and a discipline that makes holding
+      reportable as success, not failure — the most valuable cycle of the
+      validation run was one where nothing executed.
+    - Give ground control a review-gate liturgy: read the diff, re-run the
+      verification, state what was checked, fix small findings yourself.
+    - Put the operator's consent gates in the apparatus (surfaced,
+      fillable), not in the conversation.
+    - Instrument the boundary: out-of-band events (held actions, refused
+      teleports, operator declines) go into a typed channel, because they
+      are the highest-gradient learning signal the pair produces.

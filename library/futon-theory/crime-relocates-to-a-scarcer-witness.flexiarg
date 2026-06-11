@@ -1,0 +1,41 @@
+@flexiarg futon-theory/crime-relocates-to-a-scarcer-witness
+@title The Crime Relocates to a Scarcer Witness (The Witness Ladder)
+@sigils [↥/⌖]
+@keywords laundering, self-certification, witness, ladder, cost-to-fake, pudding prover, three-witness, relocation, scarcity
+@audience anyone hardening a measurement, reward, or certification against gaming
+@tone foundational
+@style pattern
+
+! conclusion: A laundering / self-certification failure is never killed by a single fix — it RELOCATES to a scarcer witness. Each fix that closes one shape exposes the next, harder-to-fake shape. So the defense is not one detector but a LADDER of progressively scarcer witnesses, terminating where the witness is too costly to forge (a witnessed real outcome / multi-witness certificate). Read each fix as "the crime moved up a rung," not "the crime is dead."
+
+  + context: You have just closed a way the system could certify itself or launder a fake win, and
+    it now looks honest.
+
+  + IF:
+      You fix a laundering / circularity / self-certification shape in a measurement or reward channel.
+
+  + HOWEVER:
+      The fix does not abolish the failure — it pushes it into a scarcer witness. Treating any single
+      fix as "now it is honest" reopens the same crime one level up: the cheaper witness is gone, but
+      a more expensive one is still forgeable, and the system will drift toward forging it.
+
+  + THEN:
+      Expect relocation. After each fix ask "where did the crime go? — what is the next-scarcest
+      witness it can still hide behind?" Build the ladder explicitly: each rung a scarcer, harder-to-
+      fake referent. Stop only where the witness is genuinely too expensive to fake — a witnessed real
+      outcome, a three-witness certificate. Treat each relocation as progress: it costs the launderer
+      more every rung.
+
+  + BECAUSE:
+      This is the Pudding-Prover rationale, derived from below: "the proof is in the pudding" means the
+      only un-fakeable witness is the realized outcome; everything cheaper can be gamed. So the
+      discipline is to keep raising the cost-to-fake until only the real thing passes — which is why a
+      reward channel must end at a witnessed-outcome gate (`[[aif/two-layer-calibration]]` L2,
+      pudding-G1), not at any cheaper internal check.
+
+  + canonical-instance:
+      The FutonZero calibration arc, three rungs each forced by catching the one below: the constant
+      model's *state-blindness* exposed → made state-sensitive → the scaled model's
+      *increment-circularity* exposed → the realised's *lack of external grounding* exposed → next
+      witness is the outcome itself (pudding-G1). The forensic framing is `[[M-the-perfect-crime]]`;
+      the structural half is `[[aif/no-self-certification]]`. Distilled WM-pilot 2026-06-11.

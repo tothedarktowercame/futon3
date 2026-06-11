@@ -1,0 +1,52 @@
+@flexiarg code-coherence/subsumption-claim-discipline
+@title Subsumption-Claim Discipline (Both Sides Live, or Both Flagged)
+@sigils [⊇/∅]
+@keywords subsumption, chained claim, becomes-free, falls-out-of, double absence, live-check, perfect crime, authoring discipline, we-do-discipline
+@audience mission authors, reviewers, anyone writing "X subsumes Y" in a design doc
+@tone corrective
+@style pattern
+
+! conclusion: When prose claims "X subsumes Y" / "Y becomes free given X" / "Y falls out of X", REQUIRE that BOTH X and the subsumed Y are actually live (implemented + verified), or BOTH are explicitly flagged deferred. A chained-claim verb standing between two absent things papers over a DOUBLE absence — and reads as rigorous while doing it.
+
+  + context: A mission or design doc asserts a derivation chain — "subsumes", "becomes free",
+    "falls out of", "for free", "as a (free) bonus", "layer-0 byproduct" — between a subsumer X
+    and a subsumed Y. The sentence is well-cited, internally consistent, structured. It looks done.
+
+  + IF:
+      A doc asserts a subsumption / derivation between X and Y using a chained-claim verb, and a
+      reader (or the author) is about to treat the relationship as established.
+
+  + HOWEVER:
+      The verb's rhetorical force makes the claim read as rigorous even when NEITHER X nor Y is
+      live — high-definition prose substituting for the reality (the perfect-crime failure mode,
+      `[[M-the-perfect-crime]]`). Checking only one side is not enough: the crime is specifically
+      "X subsumes Y with neither X nor Y actually live." A one-sided check passes the half that
+      happens to exist and waves the absent half through.
+
+  + THEN:
+      Gate the claim with a TWO-SIDED live-check. Is the subsumer X implemented and verified? Is
+      the subsumed Y implemented and verified? If BOTH live → the claim is checkable; proceed and
+      cite the evidence. If EITHER is absent → do one of: (a) make it live, or (b) FLAG it deferred
+      explicitly ("X will subsume Y once both land; neither is live yet"). Never let the verb stand
+      unqualified between two absences.
+
+  + BECAUSE:
+      A subsumption claim is a promise that one live thing absorbs another live thing's work. With
+      both absent, the promise has no referents — it is the high-definition map of a territory that
+      does not exist. This is the sharper sibling of we-do-discipline (`[[feedback_we_do_discipline]]`):
+      we-do guards aspirational capability claims in general; this guards the specific, seductive
+      shape where a *relation verb* between two absences inherits the credibility of a verified
+      derivation. The forensic target is the authoring practice, not the code.
+
+  + canonical-instance:
+      The corpus-wide "Tornhill's hotspots become free" / "subsumes code-maat" claims audited in
+      `[[M-the-perfect-crime]]` — chained-claim verbs asserting subsumption where neither the
+      Tornhill instrument nor its downstream consumer was live (84 raw hits / 74 candidates across
+      38 files). The verb made each read as a settled derivation; the two-sided live-check is what
+      separates the real ones from the crime.
+
+  + how-to-apply:
+      In review, grep changed docs for the verb-set above; for each hit, name X and Y and ask "is
+      each live?" Promote confirmed-both-absent hits to the perfect-crime register (sorrys-on-
+      authoring, distinct from `sorrys.edn`). Graduated from `[[feedback_subsumption_claim_discipline]]`
+      (memory) to library-grade on 2026-06-11 per M-the-perfect-crime's carried-forward item.

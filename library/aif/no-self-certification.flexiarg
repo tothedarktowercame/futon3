@@ -1,0 +1,53 @@
+@flexiarg aif/no-self-certification
+@title No Self-Certification (A Verdict Moves Only on Evidence Its Maker Did Not Manufacture)
+@sigils [⊘/⟲]
+@keywords self-certification, circular evidence, prior-equals-value, independence tag, censored observation, calibration, verdict, structural enforcement, untagged-never-counts
+@audience anyone building a measurement, calibration, gate, certifier, or reward channel
+@tone foundational
+@style pattern
+
+! conclusion: A measurement / verdict apparatus must never be moveable by evidence it manufactured itself. Enforce this STRUCTURALLY — with tags the apparatus cannot fake (independence, measured-vs-fallback, settled-vs-transient) and a verdict that counts only those tags — not by vigilance.
+
+  + context: You are building an instrument that issues a verdict — "calibrated", "passed",
+    "admissible", "rewardable" — from evidence that the same system also produces, stages, or
+    scores. The verdict will look earned long before it is.
+
+  + IF:
+      An instrument issues a verdict from evidence it also produces or stages (a calibrator over
+      its own predictions, a gate over its own outputs, a reward channel over its own scores).
+
+  + HOWEVER:
+      On first contact with reality, every layer tries to certify ITSELF, and each attempt looks
+      rigorous: the forward model scores its own constants (`prior == value`); the evidence reader
+      eats its own staging files; the realised channel copies predicted on success (a censored
+      0.0); the calibration clears on degenerate volume. Vigilance cannot catch these — an
+      instrument's *first* catches are about itself, and no human watches every path.
+
+  + THEN:
+      Require that a verdict may be moved ONLY by evidence the verdict-maker did not manufacture.
+      Tag every evidence record at birth with the properties the apparatus cannot fake —
+      `:independent?` (was there an out-of-band witness?), source (`:measured` vs
+      `:target-absent-fallback`), settledness (`:settled` vs `:transient`) — and have the verdict
+      count ONLY the records whose tags clear. Strictness default: **untagged never counts**.
+
+  + BECAUSE:
+      Circularity is invisible from inside the loop precisely because every internal reading is
+      consistent with every other — that is what `prior == value` means. The only thing that breaks
+      it is a referent the maker had no hand in: an external witness, a settled re-read of a world
+      it does not control, a tag it cannot forge. Structure survives where vigilance fails, and it
+      converts "be careful" (unauditable) into "the tag is absent, so it does not count" (checkable).
+
+  + canonical-instance:
+      The FutonZero G-SIM calibration arc (WM-pilot, 2026-06-11): four distinct self-certification
+      attempts surfaced live — censored fallback, transient spike, `prior == value`, and
+      operator-gate-as-fruit — each caught only because an independence/source/settled tag existed
+      to exclude it, and each then encoded as a permanent structural guard. See
+      `[[M-the-perfect-crime]]` (the forensic framing: the crime relocates to a scarcer witness;
+      this pattern is the structural half of that ladder) and the reward-red-team fixture
+      (the executable suite of the shapes).
+
+  + how-to-apply:
+      Before trusting any "it passed", ask: did this verdict move on evidence the system made?
+      If yes, find the un-manufactured referent (external witness / settled read / out-of-band
+      tag) and gate the verdict on it. If there is none, the verdict is decoration. Minted from the
+      arc that learned it, WM-pilot 2026-06-11 (arc-2 cycle 13).

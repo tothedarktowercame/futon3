@@ -1,0 +1,84 @@
+@flexiarg orchestration/recorded-handoff
+@title The Recorded Handoff — dispatch as a modeled object
+@keywords handoff, orchestration, traceability, bell, mission, commit-trailer, review-gate, multi-agent
+@audience multi-agent coordinators, mission authors, futon3c implementers
+@tone analytic-foundational
+@style pattern
+@references [social/scope-bounded-handoff futon-theory/agent-contract futon-theory/proof-path mission-coherence/logic-model-before-code]
+
+! conclusion: A coding handoff to a worker agent is not a message; it is a MODELED OBJECT with a lifecycle, recorded in the mission document that owns it: spec + acceptance bar + gates at dispatch, job-id on send, bell-back summary + commit shas on return, review verdict at the gate — and the worker's commits carry a Mission: trailer so the output tape (code/v05/commit→mission) attributes the work mechanically. The record makes the handoff auditable by the same scope instruments that audit everything else in the mission.
+
+  + context: One operator orchestrates several coding agents (Claude-family
+    reviewers/authors, Codex workers) under a subscription-runtime rebalance:
+    substantial coding flows to workers, the orchestrator holds review.
+    The dispatch volume is high (nine handoffs on 2026-06-11 alone) and the
+    mission documents are typed, scope-detected objects.
+
+  + IF:
+    Handoffs are working well as messages — bells with goal, files,
+    acceptance bar, gates, and a bell-back contract (the CLAUDE.md
+    coding-handoff protocol, adopted 2026-06-03 to rebalance runtime).
+
+  + HOWEVER:
+    A handoff that lives only in the message channel is invisible to the
+    mission it serves. Six months later the mission doc says a thing was
+    built but not who built it, under what spec, against what acceptance
+    bar, or which commits answered it. The dispatch→result chain exists
+    only in job stores and chat scrollback — exactly the
+    logging-without-propagating trap. And the audit instruments
+    (scope detector, Skolem binding audit, the commit→mission output tape)
+    cannot see objects that were never written down.
+
+  + THEN:
+    1. The mission INSTANTIATE section carries one record per handoff:
+       spec summary, acceptance one-liner, worker, Job: <job-id> stamped at
+       dispatch, Bell-back: filled on return (summary + commit shas +
+       review verdict).
+    2. The bell instructs the worker to include a "Mission: <mission-id>"
+       trailer in its commit messages, so commit→mission attribution is
+       declared, not inferred (provenance "trailer" beats
+       "session-heuristic" in the transducer's edge ranking).
+    3. The bell-back is reviewed at a real gate (author ≠ reviewer; re-run
+       the stated gates; findings fixed by the reviewer, not re-belled) and
+       the verdict enters the record.
+    4. Records use a stable textual form so the scope detector can bind
+       them (candidate binder: handoff, with job-id and bell-back state as
+       ends — a chip that turns from amber to green when the bell-back
+       lands).
+
+  + BECAUSE:
+    The pattern earns its place twice. From the COORDINATION standpoint it
+    extends social/scope-bounded-handoff: that pattern constrains what a
+    worker may touch; this one makes the whole exchange a first-class
+    object in the artifact that owns it. From the MODELING standpoint
+    (the deeper reason): a recorded handoff joins the mission's scope tree,
+    the Skolem audit's binding flow, and the commit→mission output tape —
+    the orchestration layer stops being exhaust and becomes part of the
+    system's model of its own work. What is recorded can be audited;
+    what is attributed can be queried; what is typed can be rendered.
+
+    + EVIDENCE:
+      M-smart-emacs-cursor §6 (futon3c, 2026-06-11) — first full instance,
+      conducted by voice:
+      - H1 (completion-bubble subscriber → codex-1): spoken directive →
+        record typed into the mission by the agent cursor → bell
+        invoke-1781178866343-683-497c41fe (typed bell, kind request) →
+        bell-back ~25 min with commit bfdb482 — "Mission:
+        M-smart-emacs-cursor" trailer VERIFIED in the commit object, the
+        first mission-attributed commit in the stack's history → review
+        gate (check-parens OK, ert 4/4) → verdict typed back into the
+        record. Chain complete, every link on disk.
+      - H2 (watcher scope lane → codex-2): same form, job
+        invoke-1781178866664-684-b47bd48f, in flight at time of writing.
+      - Origin: runtime rebalancing experiment (Codex gets runtime when the
+        Claude subscription is the binding constraint), CLAUDE.md protocol
+        2026-06-03; ~9 dispatches on 2026-06-11 under it.
+
+  + NEXT-STEPS:
+    1. Mint the handoff binder (15th) in mission_scope_detect.py once the
+       record form stabilizes; verdict-style coloring per bell-back state.
+    2. Join records to the transducer lane: a recorded job-id plus a
+       trailer-attributed commit should reconcile mechanically; flag
+       records whose commits never arrive (the undischarged-handoff smell).
+    3. Backfill records for the 2026-06-11 dispatch wave where the missions
+       they served still lack them.

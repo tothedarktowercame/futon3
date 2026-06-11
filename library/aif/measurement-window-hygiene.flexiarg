@@ -1,0 +1,44 @@
+@flexiarg aif/measurement-window-hygiene
+@title Measurement-Window Hygiene (Tight Baseline, Settled Readback, Drop the Confounded)
+@sigils [⊢⊣/≈]
+@keywords measurement, baseline, settled read, transient spike, stale begin, drift, before-after, eventual consistency, prediction error, confound
+@audience anyone measuring an action's effect on a drifting, settling system
+@tone practical
+@style pattern
+
+! conclusion: To measure an action's effect on a system that drifts and settles over time, capture the BASELINE tight — right before the action, not before the preparatory work — and read the EFFECT settled — after the state stabilizes (≥2 consecutive reads agree within ε) — and EXCLUDE any pair where drift or transience confounds the window. A before/after number is only as good as the window it brackets.
+
+  + context: You measure `effect = after − before` around an action, in a system whose state
+    propagates asynchronously (scans, caches, eventual consistency, a live field other agents touch).
+
+  + IF:
+      You record a predicted/realised (or before/after) pair to score an action's effect on such a
+      system.
+
+  + HOWEVER:
+      Two window failures inflate or fabricate the number, and both look clean:
+      (a) STALE BASELINE — you captured "before" *early* (e.g. before minting the artifact the action
+      commits), and the system drifted in between; the measured Δ is mostly that drift, not the action.
+      (b) TRANSIENT READBACK — you read "after" at the first post-action sample, catching an in-flight
+      spike that decays to baseline; the measured Δ is a scan-timing artifact.
+
+  + THEN:
+      Bracket the window tightly. BEFORE: capture the baseline immediately prior to the field-visible
+      action — do the preparatory work first, *then* baseline, *then* commit. AFTER: read at the
+      settled state — require ≥2 consecutive reads agreeing within ε; tag `:settled` vs `:transient`
+      and exclude transient. And if the system drifted independently inside the window, DROP the pair
+      (untagged / proposal-mode) rather than attribute the drift to the action.
+
+  + BECAUSE:
+      A measurement's validity lives in its window, not its arithmetic. The durable effect is what
+      persists between a tight baseline and a settled readback; everything else — drift, spikes — is
+      the window leaking. Excluding a confounded pair keeps the dataset honest; recording it launders
+      noise as signal. (The two failures, caught live: a 0.277 "move" that was a transient spike
+      (retracted on settled re-read); and a 0.277 "move" that was field drift during artifact-minting
+      (excluded, proposal-mode) — same magnitude, both fake, both caught by tightening the window.)
+
+  + how-to-apply:
+      Order operations: prepare → baseline → act → settle → read → (exclude if confounded). Never
+      baseline before the slow part; never read before the fast part settles; never attribute a
+      window's drift to the action inside it. Distilled from the FutonZero G-SIM calibration arc
+      (WM-pilot, 2026-06-11). Sibling of `[[aif/no-self-certification]]`.

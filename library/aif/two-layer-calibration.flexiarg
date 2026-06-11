@@ -1,0 +1,42 @@
+@flexiarg aif/two-layer-calibration
+@title Two-Layer Calibration (Dynamics-Consistency vs Witnessed-Outcome)
+@sigils [L1/L2]
+@keywords calibration, prior-equals-value, dynamics, value, witnessed outcome, three-witness, self-reference, G-vs-G, reward gating
+@audience anyone calibrating a value/forward model against a field the model helps compose
+@tone architectural
+@style pattern
+
+! conclusion: When you calibrate a model whose own outputs compose the field it is scored against, split the calibration into TWO layers and never let one stand in for the other. L1 — dynamics/consistency (does the field respond to measured state?): cheap, accrues every cycle, and is NEVER value evidence. L2 — outcome-vs-prediction (did real functioning result?): scarce, witnessed, gated, and is the ONLY value clearance.
+
+  + context: You are calibrating a forward/value model against a live field, and the field's value
+    function is computed from the same effects the model predicts with (`prior == value` risk).
+
+  + IF:
+      Predicted-vs-realised pairs are your evidence that the model is "calibrated".
+
+  + HOWEVER:
+      On such a field the comparison is largely self-referential: it tests dynamics-consistency
+      (did the world move as the model's state-response said?), NOT whether the model's VALUE is
+      right — because the realised IS the model's own output. A model can pass this layer forever
+      while being worthless at predicting real outcomes. Worse, fixing the obvious circularity
+      (making predict-effects state-sensitive) RELOCATES it rather than removing it: state-blindness
+      breaks, but the error *magnitude* stays model-priced.
+
+  + THEN:
+      Name and keep both layers explicitly. **L1 = G-vs-G dynamics**: cheap, every cycle, labelled
+      never-value-evidence; it earns its keep as a consistency/sanity layer. **L2 =
+      outcome-vs-prediction** against WITNESSED outcomes the model did not produce — closure-folds,
+      three-witness certificates, attested real functioning — scarce, gated behind the reward
+      discipline. Only L2 clears value. Forbid L1's cheap pass from being reported as L2 clearance.
+
+  + BECAUSE:
+      The only thing that escapes `prior == value` is a referent the model had no hand in. L1's
+      referent (the field) is the model's own output, so L1 can only ever measure internal
+      consistency. L2's referent (a witnessed outcome) is external, so it is the only layer that can
+      be WRONG about value — which is exactly why it is the gate, not an enhancement.
+
+  + canonical-instance:
+      FutonZero G-SIM (WM-pilot, 2026-06-11): L1 dynamics live — the state-sensitive model is 2.55×
+      better than the constant counterfactual at predicting no-move — while L2 stays gated behind
+      pudding-G1's binding of the arrow-witness to witnessed affect/outcome. The split was forced by
+      discovering the calibration was self-certifying (`[[aif/no-self-certification]]`).

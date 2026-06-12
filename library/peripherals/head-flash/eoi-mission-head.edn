@@ -1,0 +1,93 @@
+;; eoi-mission-head.edn — flash profile per ~/code/algorithms/eoi-engine.md
+;;
+;; The "eoi new head" variant. Scaffolds a NEW mission with its HEAD's Right View
+;; written in Joe's verbatim words, logs the HEAD as an inward self-authored EoI,
+;; and lays down the full futonic-derivation phase outline (IDENTIFY..DOCUMENT) as
+;; stubs — with a cross-reference to the target repo's holes/mission-lifecycle.md so
+;; a future agent keeps futonic discipline post-HEAD.
+;;
+;; Scoped deliberately to Right View ONLY (the invariance claim) — the lightest HEAD
+;; that still pins what the mission is and isn't. Other Path-arrows and phases are
+;; authored later, per mission-lifecycle.md. The HEAD escrows intent (HEAD-as-escrow
+;; pattern); :round-collapse? false so deferrals are allowed.
+;;
+;; Invocation: `eoi-new head [<slug>]` (short alias) or
+;;             `eoi-new eoi-mission-head [<slug>]`.
+;;   <slug> is an optional 2nd positional, e.g. `eoi-new head M-web-arxana-ui-improvements`.
+;;   If omitted, the engine asks. The engine CONFIRMS the target repo/dir with Joe
+;;   (futon4/holes/missions/ is the common case) before writing.
+
+{:flash/id        "eoi-mission-head"
+ :flash/aliases   ["head"]
+ :flash/applies-to "New mission creation: author the HEAD's Right View (invariance claim) in the operator's verbatim words, log it as an inward self-authored EoI, and emit a phase-outlined mission doc to grow post-HEAD. Right-View-only; the lightest HEAD scaffold."
+ :flash/predicts  {:composite-arrow [:right-view]
+                   :round-default   "head-escrow"
+                   :round-collapse? false}
+
+ :flash/question-set
+ [{:q/id :view
+   :q/path-arrow :right-view
+   :q/round-tag :essential-round-1
+   :q/prompt "Right View — the invariance claim. What must stay true across everything this mission does (every artefact, decision, checkpoint) for the work to count as THIS mission and not drift into something else? In your own words; this is the HEAD that pins what the mission is — and isn't."
+   :q/style :behavioural-proxy
+   :q/branch-on :invariance-claim-shape}
+  {:q/id :clarity-probe
+   :q/path-arrow :clarity-probe
+   :q/round-tag :inward-clarity
+   :q/prompt "What about this mission isn't yet clear to you? (Inward clarity-probe: the answer often names the phase to work next or a Path-arrow the Right View didn't reach — captured as carry-forward, not forced into the HEAD.)"
+   :q/style :missing-arrow-detector
+   :q/branch-on :surfaces-missing-arrow}]
+
+ :flash/tension-surface
+ {:source "context-handle (optional): a 'prior' — a prior mission, note, or proposal text giving minimal background. Default: none (the HEAD is mostly fresh intent)."
+  :extract "If a prior is supplied, surface at most 1-2 predicted tensions as one-per-turn prompts; otherwise skip. Minimal by design."
+  :subtype-enum #{:dialogue-debt :decision-debt :rhythm-debt :speech-act-discipline}
+  :speech-act-discipline-is-always-round-1? false}
+
+ :flash/closure
+ {:rule "Right View answered AND clarity-probe answered AND Joe explicitly closes OR engine detects closure. No outward speech-act-discipline gate — this is an inward HEAD, not a letter."
+  :soft-floor 2     ; Right View + clarity-probe
+  :hard-cap   5}    ; + up to ~3 prior-derived tensions
+
+ :flash/assembly
+ {:order "structural header -> §1 IDENTIFY (Right View filled, other arrows stubbed) -> §2..§6 phase stubs per the futonic derivation xenotype -> cross-ref to mission-lifecycle.md -> Carry-forward block"
+  :rule "Right View prose is Joe's literal verbatim answer (voice-preserving copy-edits only; paraphrase forbidden; no inline placeholders). The engine writes ONLY: section labels, the one-line orienting italics, the phase-stub markers, and the mission-lifecycle cross-reference."
+  :paraphrase-forbidden? true
+  :slug-handling "Mission slug from the optional 2nd positional arg, else ask Joe. The engine CONFIRMS the target repo/dir with Joe before writing (e.g. futon4/holes/missions/M-<slug>.md). Mission title derived from the slug unless Joe overrides."
+  :head-skeleton
+  {:structural-header
+   ["# Mission: <title>"
+    "**Date:** <ISO>"
+    "**Status:** HEAD authored — Right View only (via eoi-mission-head). MAP onward: to be authored."
+    "**Owner:** <repo> (Joe)"
+    "**Lifecycle:** follows the futonic derivation in `holes/mission-lifecycle.md` — IDENTIFY -> MAP -> DERIVE -> ARGUE -> VERIFY -> INSTANTIATE -> DOCUMENT. This doc has only the HEAD's Right View; grow the rest per that discipline."]
+   :sections
+   ["## 1. IDENTIFY"
+    "### 1.1 Right View — invariance claim   [FILLED — Joe verbatim]"
+    "### 1.2 Right Intention — _to be authored_"
+    "### 1.3 Right Speech — _to be authored_"
+    "### 1.4 Right Mindfulness — _to be authored_"
+    "### 1.5 Right Livelihood — _to be authored_"
+    "## 2. MAP — DERIVE — _to be authored_"
+    "## 3. ARGUE — _to be authored_"
+    "## 4. VERIFY — _to be authored_"
+    "## 5. INSTANTIATE — _to be authored_"
+    "## 6. DOCUMENT — _pending_"]
+   :carry-forward "clarity-probe answer + any prior-derived deferred tensions -> a `## Carry-forward (from HEAD)` block AND the eoi_instances[].tech_debt_carried_forward[]."}
+  :eoi-log
+  {:type "inward-mission-head-self-authored"
+   :institution-object {:id ":node/M-<slug>" :subtype "self-authored" :xenotype_stance "constituted"}
+   :arrow_components "[Right View only] — record the verbatim answer_anchor_quote; other arrows absent by design (HEAD-only)."
+   :status "HEAD authored (Right-View only) via eoi-mission-head"
+   :note "This inward EoI is what feeds the interest-network and the live WM-AIF coupling: a new mission's HEAD emits interest signals as it is born."}
+  :template-status :proto-flash-pending-assembly-template
+  :output-target "<target-repo>/holes/missions/M-<slug>.md (operator-confirmed; futon4 is the common case)"}
+
+ :flash/sniff-paths ["**/holes/missions/" "**/holes/"]
+
+ :flash/metadata
+ {:authored-by "claude-3"
+  :authored-on "2026-05-29"
+  :status "proto-flash; first run validates the question-set + captures what worked"
+  :purpose "Precursor to M-web-arxana-ui-improvements. Operationalises Joe's 'new missions authored via eoi-new head' vision so each mission HEAD emits interest signals into the WM-AIF coupling (M-interest-network-coupling)."
+  :essays-landing "Per the eoi-new launcher rules: also emit Arxana Essays companions (.el) + the structured-finalisation annotations.edn sidecar."}}

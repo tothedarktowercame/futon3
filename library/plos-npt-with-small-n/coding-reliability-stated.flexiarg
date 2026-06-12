@@ -1,0 +1,37 @@
+@flexiarg plos-npt-with-small-n/coding-reliability-stated
+@title State the Coding Reliability Procedure
+@keywords coding, reliability, inter-coder, adjudication, rigour, deductive, qualitative
+@audience paper authors, qualitative researchers, PLOS ONE drafters
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0255564 10.1371/journal.pone.0192224 10.1371/journal.pone.0282612]
+@references [plos-npt-with-small-n/framework-spine-with-empirical-ribs plos-npt-with-small-n/small-n-is-a-design-feature]
+
+! conclusion: A deductive, team-coded qualitative analysis should state its coding-reliability procedure explicitly: how many coders worked independently, how disagreements were adjudicated, and what role any third reviewer played.  This is the procedural guardrail that distinguishes systematic analysis from "thematic vibes", and reviewers at a soundness venue expect to see it named, not assumed.
+
+  + context: Across the NPT exemplar set, methods sections state that coding was conducted independently by two or more researchers, with discrepancies resolved by adjudication or team discussion.  The presence of an explicit reliability procedure is a rigour signal; its absence is a standard reviewer objection, regardless of how careful the actual analysis was.
+
+  + IF:
+    The pattern operates on the axis: reliability-procedure-named <-> reliability-assumed.
+    Irreducible: the rigour of deductive coding is carried by how disagreements were handled, not by the coding scheme alone; an unstated procedure cannot be credited by a reviewer.
+
+  + HOWEVER:
+    Real costs: stating the procedure exposes its limits (e.g. no formal kappa, adjudication by discussion rather than statistic).  Disclosing a lightweight procedure honestly is stronger than implying a heavier one; reviewers read silence as absence.
+    Active dynamic: authors often describe the coding *framework* in detail while leaving the *reliability process* implicit.  The two are different claims and both must be made.
+
+    + FAILURE-MODES:
+      - Reliability-silent: the framework and codes are described, but who coded and how disagreements were resolved is never stated.
+      - Single-coder-unmarked: one person coded everything and the text does not say so, leaving the reader to assume a team process that did not happen.
+      - Adjudication-vague: "the team discussed discrepancies" without saying who decided or on what basis.
+
+  + THEN: Name the procedure as a discrete methods claim.
+    + COMPOSITIONS:
+      (1) Independent-coders-plus-adjudicator.
+          Schema: {:coders <n> :independence <fully | partial> :adjudicator <role> :basis <discussion | statistic>}
+          Effect: makes the rigour procedure auditable.
+      (2) Disagreement-handling.
+          Schema: {:disagreement-rate <described?> :resolution <consensus | third-reviewer | re-coding>}
+          Effect: shows that disagreements were surfaced and resolved, not papered over.
+
+    + CHECK:
+      Engaged when a reviewer can state how many people coded, independently or not, and how disagreements were resolved, from the Methods text alone.  Failing when coding reliability must be assumed.

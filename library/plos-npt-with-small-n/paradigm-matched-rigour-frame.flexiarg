@@ -1,0 +1,40 @@
+@flexiarg plos-npt-with-small-n/paradigm-matched-rigour-frame
+@title Use a Rigour Frame Matched to the Study's Paradigm, Not a Default Checklist
+@keywords rigour, trustworthiness, reflexivity, Yin, case-study, reflexive-thematic-analysis, COREQ, positionality
+@audience paper authors, qualitative researchers, PLOS ONE drafters
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0215873 10.1371/journal.pone.0312943]
+@references [plos-npt-with-small-n/coding-reliability-stated plos-npt-with-small-n/coreq-checklist-adherence]
+
+! conclusion: State the study's rigour warrant using a frame that fits its paradigm and design, rather than defaulting to inter-coder reliability or a single checklist that may not apply.  A multiple-case study can warrant rigour through Yin's case-study criteria; a reflexive thematic analysis warrants it through reflexivity, positionality, and an audit trail — and should explicitly say why the positivist reliability apparatus does not apply.
+
+  + context: Not every credible qualitative paper reports COREQ or double-coding with a kappa.  The case-study exemplar imports Yin's quality quartet (construct/internal/external validity, reliability) and maps its moves to each.  The reflexive-thematic-analysis exemplar rejects coding-accuracy/saturation/member-checking as paradigm-inappropriate and substitutes audit trail, peer debriefing, memos, and an author-positionality roster.  Either is a complete rigour account; a mismatched one invites a reviewer note.
+
+  + IF:
+    The pattern operates on the axis: rigour-by-default-checklist <-> rigour-by-paradigm-appropriate-frame.
+    Irreducible: a rigour apparatus only warrants trust if it matches the epistemology of the analysis; reporting inter-coder reliability for a reflexive analysis (or omitting any frame for a case study) signals a paradigm mismatch, not rigour.
+
+  + HOWEVER:
+    Real costs: naming a non-default frame requires defending the choice and may meet reviewers who expect COREQ reflexively.  The discipline is to name the chosen frame, cite its source, and briefly say why the default does not fit — pre-empting rather than ignoring the expectation.
+    Active dynamic: authors reach for the most familiar checklist regardless of design.  The stronger move is to select the frame the paradigm actually licenses and make the selection explicit.
+
+    + FAILURE-MODES:
+      - Mismatched-apparatus: reflexive analysis reports inter-coder reliability, or a case study reports none of Yin's criteria.
+      - Frame-unnamed: rigour moves are present but no named frame ties them together, so they read as ad hoc.
+      - Positionality-absent: a reflexive analysis omits the author-positionality disclosure that is load-bearing for its rigour.
+
+  + THEN: Name the paradigm-matched frame and map the study's moves to it.
+    + COMPOSITIONS:
+      (1) Case-study quartet.
+          Schema: {:frame "Yin" :construct-validity <move> :internal-validity <move> :external-validity <replication-logic> :reliability <protocol/db>}
+          Effect: warrants a multiple-case design on its own terms.
+      (2) Reflexive-rigour apparatus.
+          Schema: {:audit-trail true :peer-debriefing true :memos true :member-checking-rejected-why <reason> :consensus <team>}
+          Effect: warrants a reflexive analysis without misapplying reliability.
+      (3) Positionality roster.
+          Schema: {:per-author <profession, training, identity, qual-expertise>}
+          Effect: discloses the interpretive standpoint the themes were constructed from.
+
+    + CHECK:
+      Engaged when the named rigour frame matches the study's paradigm and each rigour move is tied to it.  Failing when the apparatus is borrowed from a different paradigm, or no frame is named at all.

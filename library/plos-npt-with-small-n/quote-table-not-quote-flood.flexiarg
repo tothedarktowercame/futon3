@@ -1,0 +1,41 @@
+@flexiarg plos-npt-with-small-n/quote-table-not-quote-flood
+@title Use Extract Tables When Themes Are Parallel
+@keywords quotations, extract-table, thematic-analysis, results, training, qualitative
+@audience paper authors, qualitative researchers, education researchers
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0312943 10.1371/journal.pone.0192224 10.1371/journal.pone.0239181]
+@references [writing-coherence/one-paragraph-per-typed-claim plos-npt-with-small-n/site-case-data-display]
+
+! conclusion: When a Results section presents several parallel themes, use illustrative extract tables to carry representative participant voice and keep the prose available for interpretation.  The table should not be a quote dump; each row should align theme, subtheme or claim, participant/source, and what the extract demonstrates.
+
+  + context: The training/education PLOS exemplar uses one table of illustrative data extracts per theme, while other qualitative exemplars use participant and theme tables to prevent prose from becoming a long chain of quotations.  This is especially useful when the findings are role features, barriers, or implementation factors rather than a narrative case.
+
+  + IF:
+    The pattern operates on the axis: quotation as evidence display <-> quotation as prose interruption.
+    Irreducible: qualitative claims need participant voice, but too many long quotes inside prose can hide the analytic claim they are meant to support.
+
+  + HOWEVER:
+    Real costs: tables can make qualitative findings feel schematic, and moving quotes out of prose can reduce narrative texture.  Keep decisive or surprising quotes in prose; move parallel confirmatory extracts to tables.
+    Active dynamic: authors often add quotes whenever a claim feels under-supported.  Past a point, each quote adds length but not clarity.
+
+    + FAILURE-MODES:
+      - Quote-flood: each theme paragraph becomes claim, quote, quote, quote, with little analytic synthesis.
+      - Anonymous-evidence: extract tables omit participant role or case context needed to interpret the quote.
+      - Decorative-extract: the quote illustrates the topic but not the specific analytic claim.
+      - Table-without-prose: the table carries all evidence, while Results prose merely restates theme names.
+
+  + THEN: Separate interpretation from parallel evidence display.
+    + COMPOSITIONS:
+      (1) Theme-extract table.
+          Columns: theme, analytic claim, participant/source, extract, interpretive note.
+          Effect: lets the prose state and compare findings.
+      (2) Role-balanced extracts.
+          Columns: theme, role/group, extract, contrast.
+          Effect: useful when professional role or participant type matters.
+      (3) One-prose-quote-per-turning-point.
+          Schema: {:theme <x> :kept-in-prose <quote that changes interpretation> :moved-to-table <parallel support>}
+          Effect: preserves qualitative texture without flooding paragraphs.
+
+    + CHECK:
+      Engaged when quotes are easy to inspect and the prose still performs analysis.  Failing when the Results section becomes a transcript collage or when extract tables lack analytic labels.

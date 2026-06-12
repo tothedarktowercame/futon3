@@ -1,0 +1,37 @@
+@flexiarg plos-npt-with-small-n/coreq-checklist-adherence
+@title Adhere to a Named Qualitative Reporting Checklist (COREQ)
+@keywords COREQ, SRQR, reporting-standards, checklist, qualitative, supplementary, completeness
+@audience paper authors, qualitative researchers, PLOS ONE drafters
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0255564 10.1371/journal.pone.0334692]
+@references [plos-npt-with-small-n/coding-reliability-stated plos-npt-with-small-n/site-case-data-display]
+
+! conclusion: A qualitative PLOS ONE paper should report against a named reporting standard — COREQ for interview/focus-group studies, or SRQR — cite it, and supply the completed checklist as supplementary information.  This is cheap insurance against a "reporting standards" reviewer note and matches the venue's habit for qualitative work; it resolves a reporting-completeness force that generic methods prose does not.
+
+  + context: Reviewers and some editors of qualitative work expect adherence to an established reporting checklist, and several papers in the qualitative-health corpus report per COREQ and append the checklist.  The checklist enumerates items (research team, reflexivity, study design, analysis, reporting) that a free-form methods section can silently omit.
+
+  + IF:
+    The pattern operates on the axis: reporting-against-a-named-standard <-> reporting-by-author-judgement.
+    Irreducible: a named checklist makes completeness checkable item-by-item; without one, omissions are invisible until a reviewer notices them.
+
+  + HOWEVER:
+    Real costs: a checklist can encourage box-ticking and bloat the methods section.  The discipline is to let the checklist surface genuine omissions (reflexivity, sampling rationale, saturation/stopping basis) while keeping the main-text methods readable and putting the full grid in supplementary information.
+    Active dynamic: authors familiar with their own process underestimate which items a reader cannot reconstruct; the checklist is precisely the external view they lack.
+
+    + FAILURE-MODES:
+      - Checklist-absent: no named reporting standard is cited, inviting a "which reporting guideline did you follow?" note.
+      - Cited-not-supplied: COREQ is named but the completed checklist is not provided as SI.
+      - Items-orphaned: the checklist is appended but several items it requires (e.g. reflexivity, stopping rule) are not actually addressed anywhere in the paper.
+
+  + THEN: Report against the standard and supply the grid.
+    + COMPOSITIONS:
+      (1) Named-standard-statement.
+          Schema: {:standard :COREQ | :SRQR :cited <yes> :si-checklist <attached>}
+          Effect: pre-empts the reporting-standards reviewer note.
+      (2) Item-coverage-pass.
+          Schema: {:reflexivity <addressed?> :sampling-rationale <addressed?> :stopping-basis <addressed?>}
+          Effect: uses the checklist to find and close real omissions before submission.
+
+    + CHECK:
+      Engaged when the paper names its reporting standard, cites it, supplies the completed checklist, and actually addresses each required item.  Failing when reporting completeness rests on author judgement alone or the checklist is decorative.

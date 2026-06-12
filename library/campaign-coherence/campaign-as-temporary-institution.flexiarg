@@ -1,0 +1,31 @@
+@flexiarg campaign-coherence/campaign-as-temporary-institution
+@title The Campaign Is a Temporary Autonomous Institution
+@sigils [⛺/會]
+@keywords campaign, temporary-autonomous-institution, mission-cluster, shared-standard, charter, dissolution, tier-above-mission, TAZ
+@audience futonic campaign authors, mission coordinators, anyone with multi-mission work sharing one dependency
+@references [campaign-coherence/shared-standard-has-no-single-owner campaign-coherence/cross-mission-escrow structure/what-problem-is-this-actually-solving]
+@references-extra ["Lifecycle: ~/code/futon4/holes/campaign-lifecycle.md (CHARTER→CONSTITUTION→ESCROW→STANDARD-ARGUE→STANDARD-VERIFY→RUN/DELIVER→DISSOLUTION)" "Origin: M-action-cost-modelling §3.5 (Joe, 2026-05-26) + E-campaign-spec-grounding T10; grounded on Campaign-substrate-completion (war-bulletin-10 WR-21), 2026-05-31" "Bey's Temporary Autonomous Zone is the namesake; the Campaign is its institutional, goal-bounded sibling"]
+@tone declarative
+@style pattern
+
+! conclusion: When several Missions depend on one shared knowledge structure that no single Mission can own, run them through a **Campaign** — a Temporary Autonomous Institution one tier above Mission that charters a joint goal, delivers and verifies the shared standard, and then **dissolves**, leaving the constituent Missions as the durable residue.
+
+  + context: Some work decomposes into a cluster of Missions that all build towards the *same* standard (a metric, schema, contract, substrate). The cluster has coordination needs — ordering, a shared deliverable, a joint completion criterion — that sit above any one Mission.
+
+  + IF:
+    You have multi-Mission work whose members share one dependency, and the joint goal is real but owned by no single Mission.
+
+  + HOWEVER:
+    Mission-shape mis-fits this two ways (see [[campaign-coherence/shared-standard-has-no-single-owner]]): a Mission that grows to hold the cluster loses Mission discipline; a tangle of Missions with no organising frame lets each look successful while the joint goal slips. And a *standing* institution over-fits: it persists past its purpose, accreting coordination overhead with no end.
+
+  + THEN:
+    Charter a **Temporary Autonomous Institution** with the 7-phase Campaign spine: CHARTER (joint goal, often from a War Bulletin) → CONSTITUTION (survey dependents + governance) → ESCROW (register held dependencies) → STANDARD-ARGUE → STANDARD-VERIFY (the shared standard, fit for all) → RUN/DELIVER (keystone ships it) → DISSOLUTION. Constituent Missions run their **own** lifecycles; the Campaign coordinates, never re-runs their phases. Built to end: when the joint completion criterion fires, the Campaign dissolves and the Missions remain.
+
+  + BECAUSE:
+    Temporariness is the point. The cluster needs an institution *for a while* — to own the shared standard's cross-mission adequacy and the escrow that holds dependent work — but a permanent one would outlive its goal and become overhead. Autonomy (self-governance for the duration) + temporariness (dissolution on joint-criterion) is exactly what a bounded cross-mission effort wants. The War Room persists and narrates; the Campaign ends and delivers.
+
+  + NEXT-STEPS:
+    - Distinguish keystone Mission (builds the standard) from paired/dependent Missions (consumers) in CHARTER membership.
+    - Make the joint completion criterion genuinely *cross-mission* ("standard verified AND ≥1 dependent requirement released-and-consumed"), never "all members done."
+    - At DISSOLUTION, hand any unsatisfied escrow entries back as ordinary dependencies / follow-on missions — named, never dropped.
+    - First instance: `Campaign-substrate-completion` (keystone M-substrate-metric; paired M-aif2 + M-differentiable-code).

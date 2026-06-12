@@ -1,0 +1,41 @@
+@flexiarg plos-npt-with-small-n/small-n-is-a-design-feature
+@title Defend Small n by Design Transparency
+@keywords small-n, qualitative, sample-size, saturation, information-power, rigour, limitations
+@audience paper authors, qualitative researchers, reviewers
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0198606 10.1371/journal.pone.0255564 10.1371/journal.pone.0215873 10.1371/journal.pone.0312943]
+@references [plos-npt-with-small-n/transferability-not-generalisability writing-coherence/citation-density-load-bearing-claim]
+
+! conclusion: A small-n paper should defend n through design transparency, not through apology.  The paper must say how participants or cases were selected, what analytic job the sample performs, how the team judged adequacy, and what kinds of claims remain outside scope.  Saturation literature can support this, but it cannot replace the local account of why this sample was enough for this question.
+
+  + context: The PLOS sample-size ammunition paper treats saturation as related to question design, domain size, salience, and response structure rather than a universal magic number.  The small-n implementation exemplars likewise make n credible by showing case boundaries, sites, data streams, topic guides, coding or framework procedures, and limits on transferability.
+
+  + IF:
+    The pattern operates on the axis: n-as-count <-> n-as-designed-warrant.
+    Irreducible: the same n can be weak or strong depending on sampling logic, data richness, analytic scope, and triangulation.  A bare number has no warrant by itself.
+
+  + HOWEVER:
+    Real costs: transparent n-defence takes Methods space and may expose imperfections in recruitment, site access, or data completeness.  Hiding those imperfections is worse; reviewers will infer them anyway.
+    Active dynamic: small-n authors often over-hedge in the Discussion while under-specifying design in Methods.  The stronger move is the reverse: be exact in Methods and proportionate in the Discussion.
+
+    + FAILURE-MODES:
+      - Magic-saturation: "saturation was reached" with no account of what saturated, how it was assessed, or what remained unsaturated.
+      - Apology-paragraph: limitations say only that n was small, without explaining why the sample was still fit for the claim.
+      - NPT-cover: a framework is used to imply adequacy without showing sampling, coding, or deviant-case handling.
+      - Count-confusion: n is given but the reader cannot tell whether it is participants, interviews, focus groups, sites, cases, observations, or documents.
+
+  + THEN: Make n legible as part of design.
+    + COMPOSITIONS:
+      (1) Sampling logic paragraph.
+          Schema: {:population <who> :selection <purposive/case/role/site> :inclusion <criteria> :analytic-job <why these cases matter>}
+          Effect: n becomes interpretable before findings are presented.
+      (2) Adequacy statement.
+          Schema: {:adequacy-basis <saturation | information-power | case-depth | triangulation> :what-was-adequate-for <claim-type> :what-not-for <scope-limit>}
+          Effect: prevents a small-n thematic account from overreaching.
+      (3) Data richness table.
+          Schema: {:rows <case/site/role> :columns <interviews/focus-groups/observations/documents/notes>}
+          Effect: lets the reader see that n is not the only evidence dimension.
+
+    + CHECK:
+      Engaged when the reader can explain why n was enough for the paper's claim without accepting a generic saturation sentence.  Failing when small n is hidden until limitations, or defended only by citing saturation literature.

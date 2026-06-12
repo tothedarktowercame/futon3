@@ -1,0 +1,32 @@
+@flexiarg correspondence-coherence/mission-unlocks-eoi
+@title A Mission Can Warm an Outward EoI That Is Cold on the Recipient's Side
+@sigils [✉/鍵]
+@keywords eoi, outward-correspondence, cold-contact, warm-on-my-side, mission-as-precondition, deferred-eoi, artefact-gate, credibility-asymmetry, interest-network-connector, mission-eoi-edge
+@audience futonic mission authors, EoI / strawman writers, anyone gating outreach on a deliverable
+@references [eoi-engine/tension-cv-shape eoi-engine/tension-foreclosure mission-coherence/logic-model-before-code]
+@references-extra ["Instance of origin: M-explore-aiqa DERIVE 2026-06-04 — the Gavranović + Fernando strawmen were gated on 'when M-differentiable-code is far enough to show something concrete'; the observation 'cold contact to a senior researcher needs a concrete artefact' was generalised by Joe into a data type: a Mission that unlocks an EoI." "Sibling relation: the eoi-engine strawman holds the hook + predicted tensions (the WHAT); this pattern holds the temporal gate (the WHEN) — the edge from the mission that produces the artefact to the EoI it unlocks." "Connects to the interest-network 'connector node' notion: a connector-node mission (e.g. M-explore-aiqa) can unlock EoIs that point THROUGH it at downstream nodes."]
+@tone declarative
+@style pattern
+
+! conclusion: An outward EoI can be cold on the recipient's side yet warm on yours when a Mission is its unlock-precondition. Model the (Mission → EoI) relation as a first-class edge, gate the EoI on the mission producing a showable artefact, and the asymmetry — cold-for-them, warm-for-you — becomes precisely what makes the eventual contact non-arbitrary instead of a fan note or a bare ask.
+
+  + context: A strawman names an outward contact whose honest hook is a *convergence* between your work and theirs (not "I used your theory" but "a system built for other reasons landed on your structure"). For a peer this is sendable now; for a senior or cold recipient the convergence isn't yet legible — there is no artefact that makes it visible in thirty seconds. The temptation is to send on enthusiasm or to defer indefinitely; both waste the lead.
+
+  + IF:
+    You hold a strawman for an outward EoI where (a) the hook is a real convergence with the recipient's work, and (b) the recipient is cold or senior enough that the convergence must be *shown*, not asserted — and (c) some mission of yours, run for its own reasons, would produce exactly the artefact that makes the convergence legible.
+
+  + HOWEVER:
+    Sending while the convergence is invisible burns a one-shot first impression and reads as fan-mail or an ask; indefinitely deferring loses the lead and lets the territory move. Treating "cold" as a single property hides the real structure: the contact is cold on *their* side (they don't know you) but can be made warm on *yours* (you have something worth showing) — and the bridge between the two is a specific mission's deliverable.
+
+  + THEN:
+    Record the EoI as DEFERRED with an explicit gate that names the mission and its done-condition — the (Mission → EoI) edge as a first-class object. The mission is the warming precondition: when it yields the showable artefact, the contact becomes warm-on-your-side (legible convergence, concrete thing to show) even though it stays cold on theirs, and *that* asymmetry is the EoI's justification. The strawman carries the hook and the predicted tensions; the edge carries the WHEN. Do not collapse the gate into a vague "later."
+
+  + BECAUSE:
+    The quality of a cold outward contact is set by what you can make legible at first glance, not by your enthusiasm. Naming the unlocking mission converts an open-ended "someday" into a checkable trigger, keeps the lead alive without spending it prematurely, and makes the eventual EoI self-justifying ("I built X for other reasons; here it is; it converges with your Y"). It also turns a connector-node mission into a generator of well-timed EoIs that point through it at downstream nodes, rather than terminating in a verdict.
+
+  + NEXT-STEPS:
+    - In the strawman frontmatter, set `status: DEFERRED` and a `gate:` field naming the unlocking mission + its done-condition (the showable artefact).
+    - Record the (Mission → EoI) edge where the interest-network / buckets can see it, so the EoI surfaces automatically when the mission's artefact lands — don't rely on remembering.
+    - Keep the strawman's hook and predicted-tensions current; the gate changes WHEN, not WHAT.
+    - Distinguish the two failure modes the gate prevents: premature-send (cold on both sides, nothing to show) and lead-decay (deferred with no trigger, so it never fires).
+    - Honest scope: the mission warms the contact on YOUR side only. The recipient is still cold; the EoI's discipline (concision, one striking hook, no overclaim) still applies in full.

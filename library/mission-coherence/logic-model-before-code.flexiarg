@@ -1,0 +1,32 @@
+@flexiarg mission-coherence/logic-model-before-code
+@title Verify the Logic Model Before Writing the Code
+@sigils [⊢/驗]
+@keywords core.logic, pldb, design-verification, invariants, adversarial-trace, abstract-trace, mission-VERIFY, offline-model, self-validating-fixture
+@audience futonic mission authors, AIF implementers, anyone entering a VERIFY phase before INSTANTIATE
+@references [futon-theory/structural-tension-as-observation aif/niche-construction social/tension-before-code]
+@references-extra ["Instance of origin: futon3c/src/futon3c/logic/outing_invariants.clj + M-war-machine-first-outing.md §10.6 (operator directive 2026-05-30: 'check the logic model before we write the code')" "House idiom: futon3c agency/logic.clj + portfolio/logic.clj — snapshot→build-db→goals→query-violations over clojure.core.logic + pldb" "Reused by M-aif2 VERIFY 2026-05-31 for the extensible-registry invariants"]
+@tone declarative
+@style pattern
+
+! conclusion: When a mission's correctness is carried by INVARIANTS over a process (gates, admissibility, conservation rules), verify the DESIGN as a clojure.core.logic + pldb model over an abstract trace BEFORE writing the harness — a design is verified iff a witnessed conforming trace yields zero violations AND one adversarial trace per invariant is caught.
+
+  + context: A futonic mission reaches VERIFY with a set of invariants (INV-*, gates, R-criteria) the eventual implementation must enforce. Building the implementation is expensive and, once built, entangles design-correctness with coding-correctness. (Distinct from the sibling `social/tension-before-code`, which says *write the checks before the code that satisfies them*: this pattern goes one step earlier — verify the DESIGN as an executable logic model over adversarial traces, establishing that the invariants are mutually satisfiable and each enforceable, before either the code OR its tests exist.)
+
+  + IF:
+    The mission's guarantees are expressible as relations over a process trace (a run = a vector of step/cycle records), and you want to know whether the invariants are mutually satisfiable AND each is enforceable — independently of, and prior to, the live harness.
+
+  + HOWEVER:
+    If you only verify by building the system and testing it, a design flaw (an invariant that can't be enforced, or two invariants that can't both hold) is discovered late, mixed with implementation bugs, and expensive to unwind. And green tests on the built system can mask a design that is merely consistent with the cases you happened to write — not one that rejects the cases it must.
+
+  + THEN:
+    Express the invariants as goal-queries (query-violations) over a pldb fact-database built from an ABSTRACT trace (snapshot → build-db → goals → query-violations, the house idiom of agency/logic.clj + portfolio/logic.clj). Verify with a self-validating fixture: (a) a witnessed CONFORMING trace must yield ZERO violations, and (b) for EACH invariant, a synthetic ADVERSARIAL trace violating exactly it must be CAUGHT. The model is offline-only for VERIFY; it may later register as live probe families during INSTANTIATE.
+
+  + BECAUSE:
+    core.logic over an abstract trace lets you enumerate the adversarial cases the design must reject, not just the happy paths you remember to test. Verifying the design separately from the code (i) catches mutually-unsatisfiable or unenforceable invariants before any implementation cost, (ii) separates design-correctness from coding-correctness so each can be debugged alone, and (iii) yields a reusable oracle — the same query-violations can later run live as probe families. Loading the model into the running JVM via Drawbridge (no new JVM) keeps it cheap and I-0-safe.
+
+  + NEXT-STEPS:
+    - Name the invariants as pldb relations over step-records; write build-db (trace → fact database).
+    - Author ONE conforming witness trace; assert zero violations.
+    - Author ONE adversarial trace PER invariant (violating exactly that one); assert each is caught. This per-invariant count IS the coverage contract — not a sampled subset.
+    - State the HONEST SCOPE explicitly: this verifies the DESIGN (invariants mutually satisfiable + each enforceable), NOT that the eventual code implements it. The code still needs its own tests (e.g. a frozen-baseline / golden-fixture test for behavioural equivalence).
+    - Carve out the empirical residue: any guarantee that depends on a real reader over a real substrate CANNOT be settled by the logic model. The model's value is partly that it tells you EXACTLY which guarantees still require a code spike — shrinking the spike to its irreducible core.

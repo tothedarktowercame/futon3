@@ -1,0 +1,41 @@
+@flexiarg plos-npt-with-small-n/transferability-not-generalisability
+@title Claim Transferability, Not Population Generalisability
+@keywords limitations, transferability, generalisability, qualitative, small-n, PLOS
+@audience paper authors, reviewers, qualitative researchers
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0255564 10.1371/journal.pone.0192224 10.1371/journal.pone.0215873 10.1371/journal.pone.0334692]
+@references [plos-npt-with-small-n/small-n-is-a-design-feature writing-coherence/hedged-lift]
+
+! conclusion: A small-n PLOS paper should end with bounded transferability rather than weak generalisability.  The limitation is not simply "small sample"; it is which setting, roles, recruitment conditions, data-access limits, or topic-specific features bound the claim, and which mechanisms or design lessons may travel to similar settings.
+
+  + context: The exemplars often acknowledge locality, case selection, participant composition, and qualitative-data access constraints while still arguing that implementation mechanisms, framework refinements, or practice implications matter beyond the immediate site.  The strongest language names the basis of transfer: similar workflows, intervention type, professional roles, or implementation conditions.
+
+  + IF:
+    The pattern operates on the axis: bounded transfer <-> statistical generalisation.
+    Irreducible: qualitative small-n findings travel by mechanism, analogy, and context fit, not by sample representativeness.
+
+  + HOWEVER:
+    Real costs: transferability language is less rhetorically strong than broad generalisation.  It requires naming the conditions under which the finding might fail.  That cost is the price of credibility.
+    Active dynamic: authors compensate for small n either by over-hedging everything or by overstating implications.  Transferability is the middle discipline.
+
+    + FAILURE-MODES:
+      - Small-n-apology-only: limitations say the sample was small and stop there.
+      - Universal-implication: the Discussion says the findings apply to healthcare, HCI, education, or open science broadly without naming matching conditions.
+      - Hedge-cloud: every implication is softened with "may", "might", and "could" but no scope conditions are specified.
+      - Locality-hidden: the Results depend on a particular local system, but the Discussion abstracts it away.
+
+  + THEN: State transfer conditions explicitly.
+    + COMPOSITIONS:
+      (1) Scope-condition sentence.
+          Schema: "These findings are most transferable to <settings> where <matching condition>."
+          Effect: turns limitation into usable boundary.
+      (2) Mechanism-travels paragraph.
+          Schema: {:local-finding <x> :mechanism <why it matters> :transfer-condition <where it should matter>}
+          Effect: preserves analytic contribution without pretending representativeness.
+      (3) Non-transfer list.
+          Schema: {:not-claimed <population prevalence/effect size/all settings> :claimed <process/mechanism/implementation lesson>}
+          Effect: prevents reviewers from reading the paper as underpowered quantitative work.
+
+    + CHECK:
+      Engaged when the Discussion tells readers where the finding may travel and why.  Failing when limitations either apologize for n generically or imply generality without conditions.

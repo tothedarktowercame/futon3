@@ -1,0 +1,40 @@
+@flexiarg plos-npt-with-small-n/disconfirmation-not-just-triangulation
+@title Use the Second Data Stream to Disconfirm, Not Only to Corroborate
+@keywords triangulation, disconfirmation, deviant-case, counterpoint, validity, multi-source
+@audience paper authors, qualitative researchers, PLOS ONE drafters
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0239181 10.1371/journal.pone.0282612 10.1371/journal.pone.0192224]
+@references [plos-npt-with-small-n/multi-method-triangulation-ladder plos-npt-with-small-n/framework-spine-with-empirical-ribs]
+
+! conclusion: Where a study has more than one data stream or participant group, show that the additional stream was used to TEST and where necessary DISCONFIRM the first — and treat the divergence between sources as a finding in its own right.  Asserting convergence is the weak use of triangulation; demonstrating that contradiction was sought, found, and interpreted is the credible one.
+
+  + context: The multi-source NPT exemplars do more than stack sources for breadth.  The strongest cases explicitly sought non-confirmatory data, staged patient accounts against professional accounts on the same construct, or named intra-subject contradiction as an analytic object.  This converts the perennial "you cherry-picked confirming quotes" objection into a demonstration that disconfirming evidence was handled.
+
+  + IF:
+    The pattern operates on the axis: triangulation-as-convergence-claim <-> triangulation-as-disconfirmation-test.
+    Irreducible: convergence alone is consistent with cherry-picking; only the visible search for and treatment of disconfirming or divergent data shows the analysis could have been wrong and wasn't forced.
+
+  + HOWEVER:
+    Real costs: surfacing contradictions complicates a clean narrative and can read as an unresolved result.  The discipline is to make the divergence itself the point (e.g. staff devalue X while patients value X), not to smooth it away.
+    Active dynamic: authors reach for triangulation to claim robustness, and stop at "the sources agreed."  The stronger move is to report where they disagreed and what that disagreement means.
+
+    + FAILURE-MODES:
+      - Convergence-only: "data were triangulated" with no instance of contradiction reported, so robustness is asserted not shown.
+      - Deviant-case-silent: no statement that non-confirmatory data were sought or weighed.
+      - Divergence-smoothed: contradictory accounts are averaged into a bland consensus instead of being analysed as a finding.
+
+  + THEN: Stage the streams against each other and report the divergence.
+    + COMPOSITIONS:
+      (1) Disconfirming-case clause.
+          Schema: {:sought-nonconfirmatory true :resolution <how weighed> :claim-restraint "avoid unwarranted patterns"}
+          Effect: shows the analysis was falsifiable in practice.
+      (2) Counterpoint pairing.
+          Schema: {:source-A <group> :source-B <group> :same-construct <X> :divergence <what differs> :as-finding true}
+          Effect: turns A-vs-B disagreement into a substantive result, not noise.
+      (3) Stream-as-validity-check.
+          Schema: {:stream-1 "what actors thought happened" :stream-2 "what recipients experienced" :use "test stream-1"}
+          Effect: positions the second stream as a check on self-report, not mere corroboration.
+
+    + CHECK:
+      Engaged when the paper reports at least one place where sources diverged and says what the divergence means.  Failing when triangulation is invoked but every source is said to agree.

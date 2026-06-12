@@ -1,0 +1,40 @@
+@flexiarg plos-npt-with-small-n/research-questions-stated-early
+@title State the Research Questions Explicitly and Early
+@keywords research-questions, scope, desk-decision, PLOS, abstract, introduction
+@audience paper authors, qualitative researchers, PLOS ONE drafters
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0297969 10.1371/journal.pone.0334692]
+@references [plos-npt-with-small-n/abstract-n-method-frame plos-npt-with-small-n/framework-spine-with-empirical-ribs]
+
+! conclusion: A small-n PLOS ONE paper should enumerate its research questions explicitly and early — in the Introduction, and in the unstructured-abstract lane, in the abstract itself.  The handling editor makes a scope-fit decision before reading the body; numbered questions let that decision be made in seconds and on the author's terms rather than by inference.
+
+  + context: PLOS ONE decides on soundness and scope-fit, not significance.  In the social-science / research-culture exemplars (e.g. the open-research-data study), two or three numbered questions appear up front, sometimes inside the abstract, signalling exactly what the paper will and will not answer.  This is the move that converts a vague topic into a legible object the desk editor can place.
+
+  + IF:
+    The pattern operates on the axis: scope-legible-at-the-gate <-> scope-inferred-from-the-body.
+    Irreducible: an editor cannot grant scope-fit to a paper whose questions they must reconstruct; the cost of leaving questions implicit is paid at the desk-decision, the cheapest place to be rejected.
+
+  + HOWEVER:
+    Real costs: explicit RQs can read as mechanical, and poorly differentiated questions advertise their own overlap (a process question and a barriers question that restate each other).  The discipline is to make each question carry a distinct analytic job.
+    Active dynamic: authors often prefer to open on importance or on the strongest finding.  At a soundness venue the stronger first move is to make the scope decidable.
+
+    + FAILURE-MODES:
+      - Implicit-scope: the topic is described richly but no question is ever stated, leaving the editor to infer the contribution.
+      - Overlapping-questions: RQ1 and RQ2 cover the same ground unless an explicit distinction (process vs condition vs normalisation) is drawn.
+      - Abstract-silent: in the unstructured-abstract lane, the questions appear only deep in the Introduction, too late for the desk decision.
+
+  + THEN: Put the questions where the scope decision is made.
+    + COMPOSITIONS:
+      (1) Numbered-questions-in-intro.
+          Schema: {:rq1 <process-facing> :rq2 <condition-facing> :rq3 <normalisation-facing>}
+          Effect: each question names a distinct analytic facing, so overlap is visible and avoidable.
+      (2) Abstract-surfaced-questions.
+          Schema: {:abstract-questions <1-2 numbered> :register :unstructured}
+          Effect: signals scope to the desk editor before the Methods paragraph.
+      (3) Questions-plus-objective.
+          Schema: {:questions <2> :analytic-objective <1>}
+          Effect: collapses an over-stuffed three-question set into two questions and one stated objective.
+
+    + CHECK:
+      Engaged when a desk editor can state the paper's scope from the questions alone, without reading Results.  Failing when the scope must be inferred, or when two questions cannot be told apart.

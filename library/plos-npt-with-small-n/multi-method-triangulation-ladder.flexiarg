@@ -1,0 +1,41 @@
+@flexiarg plos-npt-with-small-n/multi-method-triangulation-ladder
+@title Turn Extra Data Streams Into a Triangulation Ladder
+@keywords mixed-methods, triangulation, observations, interviews, focus-groups, documents, workshops
+@audience qualitative researchers, implementation researchers, process-evaluation authors
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0255564 10.1371/journal.pone.0239181 10.1371/journal.pone.0297969 10.1371/journal.pone.0282612]
+@references [plos-npt-with-small-n/site-case-data-display plos-npt-with-small-n/small-n-is-a-design-feature]
+
+! conclusion: When a small-n paper has interviews plus observations, case-note review, focus groups, systematic review, workshops, or documents, the Methods and Results should present those streams as a triangulation ladder: each stream has a distinct analytic job, and higher-level claims say which streams support them.  Do not leave the extra data as an inventory.
+
+  + context: The PLOS exemplars often pair small interview counts with other evidence: observations in glaucoma pathway work, clinical notes and focus groups in AMBER, phased literature-review/interview/workshop design in open research data sharing, or focus groups plus patient interviews in stroke rehabilitation.  The presentation becomes stronger when the paper explains how these streams corroborate, contextualize, prioritize, or challenge each other.
+
+  + IF:
+    The pattern operates on the axis: data-source inventory <-> data-source function.
+    Irreducible: multiple data streams strengthen a claim only when the reader can see what each stream contributed.  Counting more streams is not triangulation by itself.
+
+  + HOWEVER:
+    Real costs: explicitly assigning functions to streams may reveal unevenness: some sites have fewer observations, some workshops only validate rather than discover, some documents are contextual.  That unevenness is useful if it bounds claims honestly.
+    Active dynamic: Methods sections like to list data collection chronologically; Results sections like to synthesize.  The ladder bridges chronology to synthesis.
+
+    + FAILURE-MODES:
+      - Inventory-only-methods: data streams are listed, but no stream has an analytic role.
+      - All-streams-all-claims: every finding is implied to be supported by all data, even when only interviews actually carry it.
+      - Triangulation-as-buzzword: the word appears without showing convergence, complementarity, or disconfirmation.
+      - Phase-confusion: a phased design has review, interviews, and workshop, but the Results do not separate discovery, prioritization, and generalizability.
+
+  + THEN: Assign and display the analytic job of each stream.
+    + COMPOSITIONS:
+      (1) Data-stream function table.
+          Columns: stream, count, source, analytic job, claims it can support, claims it cannot support.
+          Effect: readers can calibrate synthesis claims.
+      (2) Phased-results scaffold.
+          Schema: {:phase-1 <mapping/discovery> :phase-2 <prioritization/depth> :phase-3 <validation/generalizability>}
+          Effect: useful for open-science or mixed-methods articles.
+      (3) Claim support tags.
+          Schema: {:finding <x> :supported-by [interviews observations documents workshop] :role <convergent | contextual | discrepant>}
+          Effect: keeps Results prose honest without overburdening every paragraph.
+
+    + CHECK:
+      Engaged when a reader can say which data stream did which analytic work for each major claim.  Failing when interviews, observations, notes, and workshops appear as a Methods pile but vanish into undifferentiated Results.

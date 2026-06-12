@@ -1,0 +1,40 @@
+@flexiarg plos-npt-with-small-n/absence-as-evidence
+@title Turn a Null, a Dropout, or a Thin Cell into the Headline Finding
+@keywords null-result, small-n, non-recruitment, convergence, replication-logic, headline, design-feature
+@audience paper authors, qualitative researchers, PLOS ONE drafters
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0215873 10.1371/journal.pone.0192224]
+@references [plos-npt-with-small-n/small-n-is-a-design-feature plos-npt-with-small-n/transferability-not-generalisability]
+
+! conclusion: When the data contain an apparent weakness — a cross-case null, a failed recruitment, a thin sub-sample — make that absence the affirmative finding rather than burying it in limitations.  A null framed as "we found no difference across models" becomes the thesis "the service works in all models"; a recruitment failure becomes "the tool is not appropriate for this setting."  Reframing absence as evidence pre-empts the reading that small n or missing data is underpowered failure.
+
+  + context: The multiple-case exemplar makes a cross-case null ("no differences in delivery across the three models") its headline claim — "primary care is primary care" — and borrows experimental replication logic so three cases read as a replication design, not a thin sample.  The medication-safety exemplar turns its inability to recruit primary-care users into the central substantive result that the tool does not fit community settings.  In both, the absence is mined, not excused.
+
+  + IF:
+    The pattern operates on the axis: absence-as-limitation <-> absence-as-finding.
+    Irreducible: a null or a gap is information about the world; left in the limitations it reads as the study's failure, foregrounded as a result it reads as the study's contribution — the same datum, opposite valence.
+
+  + HOWEVER:
+    Real costs: reframing absence as evidence risks over-claiming from too little (a null from an underpowered study is not the same as a demonstrated equivalence).  The discipline is to claim only what the absence licenses — a process/transferability claim, not a statistical equivalence — and to pair it with a design warrant (replication logic, maximum-variation sampling) so the null is interpretable rather than merely empty.
+    Active dynamic: authors instinctively apologise for nulls and dropouts in the limitations.  The stronger move is to ask what the absence demonstrates and lead with that.
+
+    + FAILURE-MODES:
+      - Apology-burial: the null/dropout appears only as a limitation, forfeiting the finding.
+      - Over-claimed-equivalence: a null from a small sample is presented as proven equivalence rather than as a bounded, process-level claim.
+      - Naked-null: the absence is foregrounded with no design warrant, so it reads as underpowered rather than informative.
+
+  + THEN: Foreground the absence and warrant it.
+    + COMPOSITIONS:
+      (1) Null-as-thesis.
+          Schema: {:observed-absence <no difference / no effect> :reframed-claim <what the convergence means> :scope <process | transferability, not equivalence>}
+          Effect: converts a null into a contribution without over-claiming.
+      (2) Replication-logic warrant.
+          Schema: {:cases <n> :logic "replication, not sampling" :what-replicates <finding across cases>}
+          Effect: makes a small case count read as a design, not a thin sample.
+      (3) Non-recruitment-as-finding.
+          Schema: {:could-not-recruit <group/setting> :reframed "not appropriate for that setting" :evidence <why>}
+          Effect: turns a recruitment gap into a substantive claim about fit.
+
+    + CHECK:
+      Engaged when an apparent weakness is presented as a result with an explicit warrant for the claim it supports.  Failing when nulls or gaps appear only as apologies, or when absence is over-read as proven equivalence.

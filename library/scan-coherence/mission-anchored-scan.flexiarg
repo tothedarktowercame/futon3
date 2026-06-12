@@ -1,0 +1,32 @@
+@flexiarg scan-coherence/mission-anchored-scan
+@title Anchor the Scan to a Live Mission's Question; Split Audience-Probing from Concept-Research
+@sigils [錨/掃]
+@keywords daily-scan, mission-anchored, hypothesis-tested-probe, audience-first, concept-research-sweep, instrument-split, confirming-negative, both-outcomes-informative, frame-006
+@audience daily-scan operators (M-daily-scan / run-daily-scan.md), anyone running landscape probes
+@references [mission-coherence/logic-model-before-code eoi-engine/tension-foreclosure]
+@references-extra ["Instance of origin: frame-daily-scan-006 (2026-06-04) — the M-explore-aiqa outward-MAP scan over the categorical-AI-verification crowd. Joe: 'the latest daily-scan frame is again quite good.'" "Lineage: extends the frame-005 hypothesis-tested-probe discipline (named hypothesis + success/failure criteria BEFORE running) and the audience-first lesson (person/org targets work; topic-phrased decays to noise)." "Algorithm host: ~/code/algorithms/run-daily-scan.md (this pattern is its quality criterion for a good scan day)."]
+@tone declarative
+@style pattern
+
+! conclusion: A landscape scan is sharpest when it is (1) anchored to a live mission's named question, (2) split into two instruments — audience-first probing (person/org queries) and concept-research (web) — each used only where its noise profile is low, and (3) read so that even a confirming-negative is a result. The good scan answers a mission's question; it does not forage in general.
+
+  + context: The daily-scan apparatus produces "something" every run, which makes "something" look like progress even when no real question was asked (the frame-005 discipline-drift diagnosis). A scan day is good not because it found impressive repos but because it moved a specific decision. frame-006 was good on all three axes at once, which is why it is worth encoding.
+
+  + IF:
+    You are about to run a scan and can either (a) forage the general landscape, or (b) anchor the scan to a live mission's named gap-question with a defined success AND failure criterion — and you have both audience-shaped targets (named people/orgs) and concept-shaped questions (topics/ideas) you'd like to investigate.
+
+  + HOWEVER:
+    Un-anchored foraging returns output that looks like progress but feeds no decision. And running everything through one instrument fails twice over: a topic-phrased query in a GitHub-probe scan ("learning-efficiency") decays to keyword noise, while a named-person query is precisely where the probe shines. Mixing them buries the signal of the good instrument in the noise of the misused one.
+
+  + THEN:
+    Anchor the scan to one mission's question, stated as a hypothesis whose YES and NO are both informative ("do the GLAIVE roster's recent repos show learning-efficiency work?"). Split instruments: run AUDIENCE-FIRST probes (`user:X` / `org:X`) in the scan; route CONCEPT questions (Baldwin effects, learning-efficiency, learnable tactics) to a separate web/research sweep where topic-phrasing belongs. Read a confirming-negative as a finding: "nobody here owns it" validated the mission's gap as the operator's own. Then fold the result straight into the mission's MAP.
+
+  + BECAUSE:
+    Mission-anchoring supplies the named hypothesis the frame-005 discipline demands, externally and for free, and guarantees the result lands somewhere (a mission's MAP) rather than as orphaned "something." The instrument-split keeps each tool in its low-noise regime, so the audience-first signal isn't drowned by topic-noise. And treating the confirming-negative as a result is what lets a scan *validate a gap* — often more valuable than yet another lead, because it tells the operator the territory is theirs.
+
+  + NEXT-STEPS:
+    - Before probing, write the mission's question as a hypothesis with both outcomes named; if you can't, the scan isn't ready (it would forage).
+    - Sort intended targets into audience-shaped (→ scan probes) and concept-shaped (→ research sweep); never put a topic query in the GitHub scan.
+    - File the frame against the main sequence even when it served one mission (per frame-006: "not a new series or it gets confusing"); keep the custom probe set as reusable without registering a standing subseries.
+    - Carry the confirming-negative into the mission's MAP explicitly; a negative that isn't folded back is a wasted scan.
+    - Watch the known blindspot: the `commercial-*` render is a license/homepage heuristic, not a verdict — drill READMEs before judging substance.

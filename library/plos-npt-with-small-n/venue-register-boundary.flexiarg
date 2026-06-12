@@ -1,0 +1,41 @@
+@flexiarg plos-npt-with-small-n/venue-register-boundary
+@title Use Content Cousins for Positioning, Not Venue Register
+@keywords venue-register, literature-positioning, PLOS, BMC, content-cousin, model-paper
+@audience paper authors, literature-reviewers, drafters
+@tone technical
+@style pattern
+@source-dois [10.1186/s12913-019-4398-1 10.1186/s12913-021-06977-1 10.1371/journal.pone.0239181 10.1371/journal.pone.0195890]
+@references [plos-npt-with-small-n/framework-spine-with-empirical-ribs plos-npt-with-small-n/training-role-feature-register]
+
+! conclusion: Papers outside PLOS ONE can be content cousins without being register models.  Use BMC train-the-trainer or implementation studies to position the literature, vocabulary, and intervention family; use PLOS ONE papers to model abstract structure, Methods granularity, tables, headings, and claim scope.
+
+  + context: The BMC STORM and DEALTS2 papers are close content cousins for cascade training, train-the-trainer design, implementation barriers, and NPT-informed analysis.  They are useful for literature positioning.  But the requested library is about PLOS-with-small-n presentation, so the venue register should be drawn primarily from PLOS ONE exemplars.
+
+  + IF:
+    The pattern operates on the axis: topical similarity <-> venue-style suitability.
+    Irreducible: a paper can be substantively close but rhetorically mismatched.  Content evidence and venue emulation are different jobs.
+
+  + HOWEVER:
+    Real costs: separating content cousins from register models means extra discipline in drafting: a useful article may be cited heavily while not being copied structurally.  This can feel artificial when the cousin is the closest intervention match.
+    Active dynamic: authors naturally imitate the paper that feels closest to their topic.  Reviewers, however, respond to the target venue's presentation norms.
+
+    + FAILURE-MODES:
+      - Cousin-as-template: a non-PLOS article supplies the section shape, table density, or discussion style for a PLOS submission.
+      - Venue-register-blindness: all cited papers are treated as equally useful models.
+      - Literature-gap-overfit: the Introduction positions against the closest cousin but ignores PLOS exemplars that establish acceptable small-n presentation.
+      - Methods-style-import: another venue's looser or denser Methods conventions are imported without checking PLOS fit.
+
+  + THEN: Assign each exemplar a job.
+    + COMPOSITIONS:
+      (1) Source-role table.
+          Columns: paper, venue, content role, register role, use in draft.
+          Effect: prevents accidental imitation of the wrong model.
+      (2) PLOS-primary structure pass.
+          Schema: {:abstract <PLOS model> :methods <PLOS model> :results <PLOS model> :lit-positioning <content cousins>}
+          Effect: preserves target-venue fit.
+      (3) Cousin citation boundary.
+          Schema: "We cite <cousin> for <intervention/literature point>, not as a structural precedent."
+          Effect: makes the drafting discipline explicit.
+
+    + CHECK:
+      Engaged when each exemplar has a declared role: register model, methods ammunition, content cousin, or positioning source.  Failing when the draft borrows structure from the closest topical paper regardless of venue.

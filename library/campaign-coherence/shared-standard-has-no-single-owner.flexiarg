@@ -1,0 +1,31 @@
+@flexiarg campaign-coherence/shared-standard-has-no-single-owner
+@title A Shared Standard Has No Single-Mission Owner — That's Why the Campaign Exists
+@sigils [📐/共]
+@keywords shared-standard, cross-mission-adequacy, campaign-grounding, proxy-problem, fork, standard-verify, no-single-owner
+@audience futonic campaign authors, mission coordinators, anyone tempted to absorb a shared dependency into one mission
+@references [campaign-coherence/campaign-as-temporary-institution campaign-coherence/cross-mission-escrow structure/what-problem-is-this-actually-solving mission-coherence/logic-model-before-code]
+@references-extra ["Lifecycle: ~/code/futon4/holes/campaign-lifecycle.md §STANDARD-ARGUE + §STANDARD-VERIFY (the Campaign's reason to exist)" "Grounds the E-campaign-spec-grounding T10 gate per structure/what-problem-is-this-actually-solving" "Worked failure: war-bulletin-10 WR-21 — the thin scalar field forked into three thin shadows (aif2 ΔT tie-breaker / differentiable-code continuity / live-geometric-stack T)"]
+@tone declarative
+@style pattern
+
+! conclusion: A shared standard that several Missions must build towards needs an ARGUE + VERIFY of its **cross-mission adequacy** that no constituent Mission can own; that ownerless adequacy-check is precisely why Campaign-shape exists, and it is the Campaign's load-bearing phase (STANDARD-VERIFY).
+
+  + context: Several Missions depend on one shared knowledge structure (a metric, schema, contract, substrate). Each Mission knows what *it* needs from the standard; none can see whether the standard fits *all* of them.
+
+  + IF:
+    A standard must be the same across multiple Missions, and "is this standard adequate for everyone who depends on it?" is a question with an answer.
+
+  + HOWEVER:
+    No single Mission can answer it. Absorb the standard into one Mission and it gets built to that Mission's needs — the others inherit a mis-fit and each *looks* successful while the joint goal silently slips (proxy-problem substitution). Leave it implicit and each Mission builds its own version — it **forks** into per-Mission shadows that don't compose.
+
+  + THEN:
+    Make the standard's **cross-mission adequacy** a first-class deliverable owned by a Campaign. STANDARD-ARGUE argues *why this standard, fit for all consumers*; STANDARD-VERIFY verifies it **as a design, before any Mission builds to it** (logic-model-before-code at Campaign tier: conforming witness ⇒ 0 violations; one adversarial trace per consumer-requirement ⇒ caught). A requirement the standard can't meet is a Campaign blocker, not a Mission's problem. On VERIFY-pass the contract freezes — *that* is "the shared standard to build towards."
+
+  + BECAUSE:
+    The adequacy check is structurally ownerless: it ranges over requirements that live in *different* Missions, so it can only be performed one tier up. This is the `structure/what-problem-is-this-actually-solving` answer to "why not just a Mission?" — without the Campaign, the shared standard is either captured (mis-fit for the others) or forked (no shared standard at all). Verifying it before anyone commits is what stops the Missions building toward a moving or mis-fit target.
+
+  + NEXT-STEPS:
+    - In STANDARD-ARGUE, show per-consumer that the standard satisfies each escrowed requirement; surface any it can't (revise the standard or re-scope the member).
+    - In STANDARD-VERIFY, plant one adversarial trace per consumer-requirement; the coverage contract is per-requirement, not sampled.
+    - Keep this distinct from the keystone Mission's *own* VERIFY: the Campaign verifies "fit for all consumers" (the contract); the Mission verifies "this build is sound" (the implementation).
+    - Worked failure to cite: war-bulletin-10 WR-21's three-way fork of the thin scalar field — the evidence that a single Mission could not have owned the substrate-2 metric.

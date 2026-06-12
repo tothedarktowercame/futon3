@@ -1,0 +1,41 @@
+@flexiarg plos-npt-with-small-n/open-science-phase-register
+@title Present Open-Science Studies as Practices, Barriers, Incentives, and Instruments
+@keywords open-science, HCI, data-sharing, mixed-methods, recommendations, framework, phases
+@audience open-science authors, HCI researchers, science-studies authors
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0334692 10.1371/journal.pone.0297969]
+@references [plos-npt-with-small-n/multi-method-triangulation-ladder plos-npt-with-small-n/barrier-enabler-strategy-display]
+
+! conclusion: PLOS open-science papers should present findings in an operational register: practices, barriers, benefits, incentives, instruments, and recommendations.  The reader should be able to distinguish what participants currently do, what blocks them, what would motivate change, and what institutional or infrastructural instruments could change the field.
+
+  + context: The HCI open-science paper structures findings around knowledge of practices, peer review, benefits, barriers, incentives, and recommendations.  The epidemiology data-sharing paper uses phases to move from literature-derived instruments to interview prioritization and workshop generalizability.  Both models turn attitudes into an actionable map.
+
+  + IF:
+    The pattern operates on the axis: opinion themes <-> change architecture.
+    Irreducible: open-science findings are useful only if they separate descriptive practice from barriers and intervention levers.
+
+  + HOWEVER:
+    Real costs: operational categories can make participant experience feel managerial.  Preserve nuance in theme prose, but let tables and figures carry the action architecture.
+    Active dynamic: open-science topics invite normative argument.  The PLOS register works better when the normative point is earned through mapped practices and constraints.
+
+    + FAILURE-MODES:
+      - Attitude-only-findings: results describe support or skepticism without identifying levers for change.
+      - Barrier-benefit-mix: benefits, barriers, incentives, and recommendations are blended in one theme, making action unclear.
+      - Normative-overwrite: the paper argues for open science before showing what participants actually understand or need.
+      - Phase-collapse: review, interview, and workshop outputs are combined without preserving what each phase contributed.
+
+  + THEN: Use an operational open-science scaffold.
+    + COMPOSITIONS:
+      (1) Practices-barriers-incentives-results.
+          Section order: current practices, benefits, barriers, incentives, recommendations.
+          Effect: suitable for interview-heavy HCI-style articles.
+      (2) Instruments-by-phase framework.
+          Section order: instruments identified, instruments prioritized, framework refined, generalizability assessed.
+          Effect: suitable for mixed-methods data-sharing work.
+      (3) Recommendation table with actor and scope.
+          Columns: recommendation, target actor, addressed barrier, scope condition, evidence source.
+          Effect: avoids generic advocacy.
+
+    + CHECK:
+      Engaged when the open-science article yields a map of possible change, not only a list of sentiments.  Failing when findings cannot tell a policymaker, editor, educator, or researcher what lever is implicated.

@@ -1,0 +1,37 @@
+@flexiarg plos-npt-with-small-n/data-availability-and-prereg
+@title Foreground Data Availability and Preregistration
+@keywords data-availability, preregistration, OSF, submission-gate, compliance, PLOS
+@audience paper authors, qualitative researchers, PLOS ONE drafters
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0255564 10.1371/journal.pone.0297969]
+@references [plos-npt-with-small-n/abstract-n-method-frame plos-npt-with-small-n/coding-reliability-stated]
+
+! conclusion: A PLOS ONE submission should foreground its data-availability statement and any preregistration prominently and in the venue-required form — not buried in a declarations block.  Data availability is a non-negotiable publication gate at PLOS; preregistration is a soundness signal the venue actively rewards.  These are compliance constraints checked at submission, distinct from anything that calibrates the reader's interpretation.
+
+  + context: PLOS requires a data-availability statement as a condition of publication, in a specified form, and treats it as a hard gate rather than a courtesy.  Preregistration (e.g. an OSF registration link) is not required but is read as a positive soundness signal.  The exemplars that clear the gate cleanly state both up front and in the expected format.
+
+  + IF:
+    The pattern operates on the axis: compliance-satisfied-in-required-form <-> compliance-implied-or-deferred.
+    Irreducible: a hard submission gate is binary — the statement is either present in the required form or the submission stalls; no amount of analytic quality substitutes for it.
+
+  + HOWEVER:
+    Real costs: qualitative data raises genuine availability tensions (anonymised transcripts, ethics constraints on sharing).  The resolution is to state the deposit plan and access conditions explicitly (e.g. repository, DMP reference, "available on reasonable request"), not to omit the statement.
+    Active dynamic: authors often treat these as boilerplate to add at the very end.  Because they gate the submission, drafting them early avoids a last-minute stall.
+
+    + FAILURE-MODES:
+      - Statement-wrong-form: data availability is mentioned in prose but not in the PLOS-required statement form, so the submission system rejects it.
+      - Availability-vague: "data available on request" with no repository, DMP, or access-condition detail.
+      - Prereg-unlinked: a preregistration exists but no registration link is given, forfeiting the soundness signal.
+
+  + THEN: Treat the statements as gating artefacts, drafted in venue form.
+    + COMPOSITIONS:
+      (1) Data-availability-statement.
+          Schema: {:repository <name> :dmp-ref <link> :access-conditions <open | on-request | restricted-why> :form :plos-required}
+          Effect: satisfies the hard gate in the expected format.
+      (2) Preregistration-link.
+          Schema: {:registry <OSF | other> :link <url> :scope <what was preregistered>}
+          Effect: banks the soundness signal and lets reviewers check prereg against reported analysis.
+
+    + CHECK:
+      Engaged when the data-availability statement is present in the PLOS-required form and any preregistration is linked, before submission.  Failing when either is implied, deferred, or in the wrong form.

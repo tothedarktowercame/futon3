@@ -1,0 +1,41 @@
+@flexiarg plos-npt-with-small-n/abstract-n-method-frame
+@title Put n, Setting, Method, and Frame in the Abstract
+@keywords abstract, small-n, PLOS, method, setting, framework, transferability
+@audience paper authors, qualitative researchers, PLOS ONE drafters
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0255564 10.1371/journal.pone.0192224 10.1371/journal.pone.0282612 10.1371/journal.pone.0239181 10.1371/journal.pone.0215873 10.1371/journal.pone.0312943 10.1371/journal.pone.0334692]
+@references [plos-npt-with-small-n/small-n-is-a-design-feature plos-npt-with-small-n/framework-spine-with-empirical-ribs]
+
+! conclusion: A small-n PLOS ONE abstract should disclose the empirical shape before asking the reader to trust the interpretation: setting, participant/data count, qualitative or mixed-method design, analytic framework, and the kind of claim being made.  The abstract does not need to apologize for n; it needs to show what kind of evidence n is, what it was used for, and how far the paper will carry it.
+
+  + context: The closest PLOS exemplars make their sample visible early: interviews, focus groups, observations, sites, cases, or workshops appear in the Methods paragraph before the Results paragraph moves to themes or implementation mechanisms.  This presentation lets a reader calibrate the claim as feasibility, acceptability, process evaluation, implementation explanation, or thematic account rather than mistaking it for prevalence estimation.
+
+  + IF:
+    The pattern operates on the axis: evidence-shape disclosed early <-> interpretation-first abstract.
+    Irreducible: when n is small, the reader must know what n denotes before judging the result.  Participant count, site count, and data-source count are different warrants.
+
+  + HOWEVER:
+    Real costs: naming n, setting, framework, and design consumes abstract space that could otherwise hold findings.  Overloading the abstract with methods can make it read defensively.  The discipline is to put only the calibration facts needed for the reader to interpret the result.
+    Active dynamic: authors often want to lead with the importance of the topic or with the strongest finding.  PLOS qualitative abstracts read better when the evidence container is established first.
+
+    + FAILURE-MODES:
+      - Result-before-design: the abstract states themes or implications before saying what data produced them.
+      - Hidden-n: the full article eventually gives participant counts, but the abstract leaves the reader guessing whether n means interviews, sites, cases, or observations.
+      - Framework-name-only: the abstract names NPT, reflexive thematic analysis, or mixed methods without saying how it shaped data collection or analysis.
+      - Prevalence-leak: small-n qualitative findings are phrased like population frequencies rather than analytic findings.
+
+  + THEN: Make the abstract's Methods paragraph carry the calibration load.
+    + COMPOSITIONS:
+      (1) Setting-count-design-frame.
+          Schema: {:setting <where> :data-counts <participants/sites/sources> :design <qualitative | mixed-method | case-study> :analysis-frame <NPT | reflexive thematic analysis | framework synthesis>}
+          Effect: the Results paragraph can then present analytic claims without defensive hedging.
+      (2) Multi-source split count.
+          Schema: {:interviews <n> :focus-groups <n> :observations <n> :documents <n> :sites <n>}
+          Effect: useful when the small interview n is supported by additional data streams.
+      (3) Claim-type tag.
+          Schema: {:claim-type :feasibility | :acceptability | :implementation-process | :thematic-account | :framework-refinement}
+          Effect: prevents qualitative n from being misread as prevalence n.
+
+    + CHECK:
+      Engaged when the abstract lets a skeptical reader answer, before the Results paragraph, "what data, from whom, where, analysed how, and for what kind of claim?"  Failing when the abstract announces implications while hiding the empirical container until the Methods section.

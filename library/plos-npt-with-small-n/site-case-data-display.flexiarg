@@ -1,0 +1,41 @@
+@flexiarg plos-npt-with-small-n/site-case-data-display
+@title Display Sites, Cases, Roles, and Data Before Findings
+@keywords table, cases, sites, participants, data-sources, qualitative-methods
+@audience paper authors, implementation researchers, case-study authors
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0255564 10.1371/journal.pone.0239181 10.1371/journal.pone.0215873 10.1371/journal.pone.0282612 10.1371/journal.pone.0297969]
+@references [plos-npt-with-small-n/small-n-is-a-design-feature plos-npt-with-small-n/multi-method-triangulation-ladder]
+
+! conclusion: Before a small-n Results section makes comparative claims, the paper should give the reader a compact display of the empirical terrain: sites or cases, participant roles, data sources, and relevant contextual differences.  This table is not clerical; it is the map that makes later variation claims inspectable.
+
+  + context: The PLOS exemplars repeatedly include site-characteristic, participant-characteristic, case-summary, data-collection-by-case, and phase-overview tables before or near the Results.  These displays make it possible to read claims about site variation, professional roles, implementation barriers, or framework constructs without losing track of where the evidence came from.
+
+  + IF:
+    The pattern operates on the axis: reader-held study map <-> buried methods inventory.
+    Irreducible: variation claims require visible dimensions of variation.  If the prose says sites, roles, or cases differed, the reader needs a table that names the dimensions along which they differed.
+
+  + HOWEVER:
+    Real costs: tables can feel dull and may repeat Methods prose.  Over-detailed tables can overwhelm a short qualitative article.  The discipline is to display only variables that later carry analytic weight.
+    Active dynamic: authors know their cases too well and underestimate how quickly readers lose the site/role map once results begin.
+
+    + FAILURE-MODES:
+      - Context-after-claim: site differences are invoked in Results before the site characteristics have been made visible.
+      - Participant-table-as-appendix-only: the table needed to read the findings is moved to supporting information.
+      - Decorative-demographics: a table lists demographics that never matter analytically while omitting role, site, implementation exposure, or data-source differences that do matter.
+      - Mixed-n-blur: interviews, focus groups, observations, and documents are counted in prose but never aligned by site or case.
+
+  + THEN: Add a study-map display before findings.
+    + COMPOSITIONS:
+      (1) Site-characteristics table.
+          Columns: site/case, setting type, intervention exposure, relevant staffing or workflow feature, data collected.
+          Effect: supports later cross-site interpretation.
+      (2) Data-by-case table.
+          Columns: case, interviews, observations, documents, surveys, notes, analytic relevance.
+          Effect: makes triangulation and uneven coverage visible.
+      (3) Participant-role table.
+          Columns: role, count, setting, relation to intervention, relevant experience.
+          Effect: lets role-based findings avoid floating above the sample.
+
+    + CHECK:
+      Engaged when every later claim about site, case, role, or phase variation can point back to a compact display.  Failing when the reader must reconstruct the study map from scattered Methods sentences.

@@ -1,0 +1,31 @@
+@flexiarg campaign-coherence/cross-mission-escrow
+@title Cross-Mission Escrow — Hold Dependent Work in Two Release Steps
+@sigils [🔒/託]
+@keywords escrow, held-requirement, cross-mission-dependency, two-step-release, contract-released, HEAD-as-escrow, build-to-verified-spec
+@audience futonic campaign authors, mission coordinators managing dependencies on a shared standard
+@references [campaign-coherence/campaign-as-temporary-institution campaign-coherence/shared-standard-has-no-single-owner futon-theory/mission-dependency futon-theory/mission-interface-signature]
+@references-extra ["Lifecycle: ~/code/futon4/holes/campaign-lifecycle.md §ESCROW + the Escrow Ledger" "Generalises HEAD-as-escrow (mission-level, war-bulletin-9 WR-15) to the cross-mission case" "First ledger: Campaign-substrate-completion — M-aif2 + M-differentiable-code hold requirements on M-substrate-metric"]
+@tone declarative
+@style pattern
+
+! conclusion: Register each cross-Mission dependency on a shared standard as a **held requirement** that releases in two steps — `held → contract-released` (on STANDARD-VERIFY) `→ satisfied` (on delivery) — so dependent work is *named but not built on sand*, and the requirement neither blocks the cluster nor silently disappears.
+
+  + context: In a Campaign, paired (dependent) Missions need things from the shared standard the keystone Mission delivers. They must not build the dependent slices before the standard exists — but those requirements must not be forgotten either.
+
+  + IF:
+    A Mission has work that depends on a shared standard another Mission (or the Campaign) is still establishing.
+
+  + HOWEVER:
+    Two naive options both fail. Build the dependent slice now → you build on sand (the standard may change or mis-fit). Drop the requirement until "later" → it goes silent and the dependent Mission quietly diverges or the joint goal slips. And a single release point ("wait until the standard ships") blocks the dependent Mission longer than necessary — it could be *designing to the spec* well before the live delivery exists.
+
+  + THEN:
+    Put every dependency in an **escrow ledger** entry: `{:from-mission, :on <standard|keystone>, :requirement, :status}`. Mark the dependent slice `:held` (named, not built). Release in **two steps**: STANDARD-VERIFY freezes the contract → flip to `:contract-released` (the Mission may now build *to the verified spec*, unblocked but not on sand); RUN/DELIVER ships the live standard → flip to `:satisfied` (the Mission consumes it). At DISSOLUTION, any entry not `:satisfied` becomes an ordinary dependency / follow-on mission — named, never dropped.
+
+  + BECAUSE:
+    The two-step release separates *contract certainty* from *delivery*: a verified contract is enough to build against (decoupling the dependent Mission's progress from the keystone's delivery latency), while live delivery is what completes consumption. Naming the requirement in a ledger makes "we're holding off building this" a first-class, auditable state rather than an implicit gap. This is HEAD-as-escrow (a mission HEAD that crystallises intent without committing to schema) lifted to the cross-mission case: the requirement is escrowed *across* the Campaign's membership.
+
+  + NEXT-STEPS:
+    - One ledger entry per dependency; status is one of `:held | :contract-released | :satisfied`.
+    - Name what triggers each release: STANDARD-VERIFY → contract-released; RUN/DELIVER → satisfied.
+    - Treat `:held` count + oldest-held age as Campaign-health telemetry (a long-held requirement is a stall signal).
+    - First ledger: Campaign-substrate-completion — `M-aif2` holds "curvature as tension-signal", `M-differentiable-code` holds "continuous embedding for code-graph gradients", both `:on M-substrate-metric`.

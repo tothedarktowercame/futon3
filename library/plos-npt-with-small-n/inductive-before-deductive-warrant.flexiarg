@@ -1,0 +1,40 @@
+@flexiarg plos-npt-with-small-n/inductive-before-deductive-warrant
+@title Sequence Inductive Coding Before the Deductive Framework, and Say So
+@keywords coding, inductive, deductive, NPT, framework, forcing, rigour, two-stage
+@audience paper authors, qualitative researchers, PLOS ONE drafters
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0192224 10.1371/journal.pone.0282612 10.1371/journal.pone.0239181]
+@references [plos-npt-with-small-n/framework-spine-with-empirical-ribs plos-npt-with-small-n/coding-reliability-stated]
+
+! conclusion: When a named framework (NPT, COM-B, a conceptual model) is used to organise qualitative findings, state explicitly that the analysis coded inductively FIRST and mapped onto the framework SECOND — and that this ordering was chosen to keep interpretation data-driven.  The sequence, made visible, is the warrant that answers the standard reviewer suspicion that a theory-led paper merely confirms its own theory.
+
+  + context: Across the NPT exemplars, the credible papers describe a two-stage analysis: an inductive/thematic first pass (often Braun & Clarke or constant comparison, in NVivo), then a deductive mapping of those themes onto the framework's constructs.  The weaker move is to present the framework as if it generated the findings.  Naming the order, and naming its purpose, converts a methodological choice into a rigour claim.
+
+  + IF:
+    The pattern operates on the axis: framework-as-confirmed-by-itself <-> framework-as-lens-applied-after-the-data-spoke.
+    Irreducible: a deductive framework can always be accused of forcing data into its categories; only the visible inductive-first sequence rebuts that, because it shows the categories were tested against emergent themes rather than imposed.
+
+  + HOWEVER:
+    Real costs: the two-stage account takes Methods space and exposes that the framework was retrofitted rather than pre-registered as the analytic plan.  Disclosing the retrofit honestly is stronger than implying the framework was primary; reviewers infer retrofitting anyway when results map too neatly.
+    Active dynamic: authors who love their framework tend to lead with it.  The discipline is to lead the Methods with the inductive pass and present the framework as the second, organising move.
+
+    + FAILURE-MODES:
+      - Framework-first-silently: results are presented under construct headings with no account of how themes were derived, reading as circular.
+      - Order-unstated: both passes happened but the text never says which came first, forfeiting the warrant.
+      - Forcing-unaddressed: no sentence claims the sequence guarded against forcing, so the reader supplies the suspicion.
+
+  + THEN: Make the sequence and its purpose an explicit Methods claim.
+    + COMPOSITIONS:
+      (1) Two-stage statement.
+          Schema: {:stage-1 <inductive/thematic, tool> :stage-2 <deductive map onto framework> :order-stated true :purpose "avoid forcing"}
+          Effect: the framework reads as a lens applied to data, not a mould.
+      (2) Iterative-revisit clause.
+          Schema: {:movement "back-and-forth between inductive and deductive" :revisits <n or "multiple">}
+          Effect: shows the mapping was checked against the data, not one-directional.
+      (3) Pre-committed construct question-battery (inverse form).
+          Schema: {:construct->questions <table of operational questions per construct, established as the a-priori analytic frame in Methods>}
+          Effect: when the framework IS primary, makes the deductive lens auditable instead of post-hoc.
+
+    + CHECK:
+      Engaged when a reader can state which analysis came first and why the order matters, from the Methods alone.  Failing when findings appear under framework headings with no derivation account, or when the order is left for the reader to guess.

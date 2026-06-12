@@ -1,0 +1,41 @@
+@flexiarg plos-npt-with-small-n/coherence-first-when-using-npt
+@title Let Coherence Do Early Results Work
+@keywords NPT, coherence, sense-making, implementation, results-order, qualitative
+@audience implementation researchers, NPT authors, paper drafters
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0195890 10.1371/journal.pone.0239181 10.1371/journal.pone.0282612 10.1371/journal.pone.0215873]
+@references [plos-npt-with-small-n/framework-spine-with-empirical-ribs]
+
+! conclusion: In NPT papers, "coherence" should usually be more than the first construct in a list; it should establish the implementation problem the rest of the Results explain.  If participants did not share what the intervention was for, how it differed from prior practice, or what counted as success, that sense-making work should become the opening empirical result.
+
+  + context: Several NPT exemplars begin the Results with coherence or sense-making before moving into commitment, workability, appraisal, or relationships between constructs.  This ordering works because later implementation labour is easier to interpret once the reader understands what actors thought they were implementing.
+
+  + IF:
+    The pattern operates on the axis: sense-making as setup <-> sense-making as one equal bucket.
+    Irreducible: implementation work depends on what actors understand the intervention to be.  If coherence is unstable, later constructs inherit that instability.
+
+  + HOWEVER:
+    Real costs: leading with coherence can make the Results feel theory-led and may delay more concrete barriers.  The solution is not to skip coherence, but to state it concretely: what was unclear, contested, persuasive, or newly understood.
+    Active dynamic: NPT construct order can become rote.  The pattern is engaged only when coherence actually structures the empirical story.
+
+    + FAILURE-MODES:
+      - Rote-construct-order: coherence appears first only because NPT lists it first.
+      - Abstract-sense-making: the section says participants "made sense" without naming the specific distinction, value, or purpose they made sense of.
+      - Barrier-before-meaning: logistical barriers are presented before the reader knows what staff, patients, or trainees understood the intervention to be.
+      - Coherence-without-consequence: the section does not show how sense-making shaped participation, work, or appraisal.
+
+  + THEN: Make coherence an explanatory entry point.
+    + COMPOSITIONS:
+      (1) Difference-from-usual-care opener.
+          Schema: {:old-practice <baseline> :new-practice <intervention> :actor-understanding <what changed>}
+          Effect: grounds coherence in a concrete contrast.
+      (2) Purpose-contestation opener.
+          Schema: {:intended-purpose <design intent> :participant-reading <local interpretation> :implementation-effect <consequence>}
+          Effect: turns coherence into a mechanism.
+      (3) Coherence-to-next-construct bridge.
+          Schema: {:coherence-finding <x> :downstream-construct <cognitive-participation | collective-action | reflexive-monitoring> :bridge <how x shaped y>}
+          Effect: prevents construct sections from reading as parallel lists.
+
+    + CHECK:
+      Engaged when the coherence section tells the reader what the intervention meant locally and why that meaning shaped subsequent implementation.  Failing when coherence is just a heading over generic approval or confusion quotes.

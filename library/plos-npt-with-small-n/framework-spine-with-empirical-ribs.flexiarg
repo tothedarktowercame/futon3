@@ -1,0 +1,41 @@
+@flexiarg plos-npt-with-small-n/framework-spine-with-empirical-ribs
+@title Use the Framework as Spine, Not as Substitute
+@keywords NPT, implementation, results, headings, constructs, themes, framework-analysis
+@audience paper authors, implementation researchers, qualitative analysts
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0195890 10.1371/journal.pone.0282612 10.1371/journal.pone.0239181 10.1371/journal.pone.0215873 10.1186/s12913-019-4398-1]
+@references [writing-coherence/floating-formalism plos-npt-with-small-n/coherence-first-when-using-npt]
+
+! conclusion: A theory framework can organize the Results section, but each framework heading must carry an empirical rib: a local theme, concrete mechanism, or participant problem that makes the construct earn its place.  "Coherence", "cognitive participation", "collective action", and "reflexive monitoring" work as section architecture only when the prose immediately names what those constructs looked like in this intervention, site, or professional group.
+
+  + context: The NPT exemplars repeatedly use constructs as visible results headings, often expanding them with local subtitles: making sense of ERAS, commitment and engagement with AMBER, professional values in stroke rehabilitation, or making primary care for transgender patients workable.  The strongest register is not "we coded data to NPT"; it is "this NPT construct exposed this particular implementation work."
+
+  + IF:
+    The pattern operates on the axis: framework-as-navigation <-> framework-as-finding.
+    Irreducible: a construct heading is not itself an empirical result.  The result is the local work, tension, barrier, or enabling condition the construct makes visible.
+
+  + HOWEVER:
+    Real costs: adding local subtitles creates longer headings and sometimes uneven section lengths.  Pure construct headings are cleaner.  But clean construct headings can make the article look like a worked example of a theory rather than a study with findings.
+    Active dynamic: theory-driven analysis pulls prose toward taxonomic display; PLOS register rewards taxonomic clarity only when joined to empirical specificity.
+
+    + FAILURE-MODES:
+      - Construct-only-results: every result is just an NPT construct with quotes underneath.
+      - Framework-overclaim: the discussion claims the framework explains implementation without showing which local observations carried the explanation.
+      - Quote-as-rib: a participant extract is expected to supply empirical specificity that the surrounding prose never states.
+      - Local-theme-erasure: inductive themes are flattened into framework buckets and lose the local story.
+
+  + THEN: Pair every framework section with a local claim.
+    + COMPOSITIONS:
+      (1) Construct-colon-local-work.
+          Heading schema: "<construct> - <local mechanism or work>"
+          Effect: keeps framework navigation while foregrounding the empirical finding.
+      (2) Framework table before results.
+          Schema: {:construct <name> :definition <brief> :local-operationalization <what counts in this study>}
+          Effect: frees the Results prose to discuss findings rather than define theory.
+      (3) Relationship figure after construct sections.
+          Schema: {:constructs <nodes> :local-tensions <edges> :variation <by site/group>}
+          Effect: shows how the constructs interacted instead of leaving them as parallel bins.
+
+    + CHECK:
+      Engaged when each framework heading can be paraphrased as "in this setting, this construct meant X".  Failing when removing the framework terminology would leave no clear empirical claim behind.

@@ -1,0 +1,40 @@
+@flexiarg plos-npt-with-small-n/scope-shield-via-companion-paper
+@title Defend a Narrow Scope by Naming the Companion Paper
+@keywords scope, companion-paper, salami-slicing, phasing, contribution, division-of-labour, QRP
+@audience paper authors, qualitative researchers, PLOS ONE drafters
+@tone technical
+@style pattern
+@source-dois [10.1371/journal.pone.0195890 10.1186/s12913-021-06977-1]
+@references [plos-npt-with-small-n/open-science-phase-register plos-npt-with-small-n/venue-register-boundary]
+
+! conclusion: When a paper deliberately reports only part of a larger study — one construct, one phase, one method — defend that narrowing explicitly by naming the companion paper that carries the rest, and stating the division of labour.  An unexplained narrow scope reads as a gap (or as salami-slicing); a named hand-off reads as deliberate design.
+
+  + context: The ERAS exemplar narrows its whole analysis to the single NPT construct of Coherence and routes the barriers/facilitators analysis to a sibling publication ("more fully explored elsewhere [25]").  The DEALTS2 train-the-trainer study splits qualitative and quantitative reporting across a companion pair.  In both, the narrowing is announced, not left for the reader to notice — which is the difference between division of labour and questionable-research-practice slicing.
+
+  + IF:
+    The pattern operates on the axis: narrow-scope-unexplained <-> narrow-scope-announced-with-companion.
+    Irreducible: a reviewer cannot tell deliberate scoping from incomplete work unless the paper names what is reserved and where it goes; the hand-off statement is what converts a gap into a design.
+
+  + HOWEVER:
+    Real costs: naming the companion exposes that the dataset is being published in pieces, inviting the salami-slicing question directly.  The defence is that the split is along a principled seam (a distinct construct, phase, or method — not the same analysis cut in half) and that each piece makes a contribution that stands alone.  A split along a mechanism seam mid-analysis is the move this pattern does NOT license.
+    Active dynamic: authors fear admitting a companion paper and so leave the scope unexplained, which reads worse.  The stronger move is to name it and justify the seam.
+
+    + FAILURE-MODES:
+      - Unexplained-narrowness: the paper covers one slice with no statement of what was left out or why, reading as thin.
+      - Mechanism-seam-slicing: the split cuts a single coherent analysis into minimal-publishable-units along no principled boundary (the QRP failure).
+      - Companion-unnamed: a sibling paper exists but is not cited, so the reader cannot place the contribution.
+
+  + THEN: Announce the seam and the hand-off.
+    + COMPOSITIONS:
+      (1) Scope-and-handoff statement.
+          Schema: {:this-paper <slice> :reserved <remainder> :companion <citation or "forthcoming"> :seam <construct | phase | method>}
+          Effect: makes the narrowing legible as design.
+      (2) Standalone-contribution claim.
+          Schema: {:contribution-of-this-slice <what it alone establishes>}
+          Effect: shows the piece is not a fragment dependent on the companion.
+      (3) Seam-justification.
+          Schema: {:why-this-seam <principled boundary> :not "the same analysis halved"}
+          Effect: distinguishes deliberate scoping from salami-slicing.
+
+    + CHECK:
+      Engaged when the paper states what it reserves, names where that goes, and justifies the seam as principled.  Failing when the scope is narrow but unexplained, or the seam cuts a single analysis into minimal units.

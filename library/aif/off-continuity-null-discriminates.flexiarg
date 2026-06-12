@@ -1,0 +1,49 @@
+@flexiarg aif/off-continuity-null-discriminates
+@title An Off-Continuity Null Discriminates (No Move Needed When the Models Disagree at the Begin)
+@sigils [∅/≠]
+@keywords null measurement, model discrimination, calibration, continuity point, off-continuity, dual prediction, state-sensitive vs state-blind, forward model, clean-target wall, no-move prediction, settled window
+@audience anyone calibrating competing forward models against realised outcomes when moving the system is scarce
+@tone practical
+@style pattern
+
+! conclusion: A null — the system did not move — is usually written off as uninformative for model selection. It is the opposite when the begin sits OFF the continuity point where the competing models agree. There, a state-sensitive model predicts the no-move while a state-blind (constant) model predicts a move that never happens, so a clean null separates them by the full off-continuity gap. When a clean-target wall has exhausted the counter-moving cases, an off-continuity null is the cheapest discriminating evidence you can buy: discrimination comes from the models DISAGREEING at the begin, not from the field MOVING.
+
+  + context: You calibrate a forward model by recording predicted/realised pairs, logging a DUAL
+    prediction — a state-sensitive estimate (scaled by the target's live state) beside a state-blind
+    constant. The "continuity point" is the state where the two coincide (e.g. an open-hole-count of 3
+    where scaled == constant). A "null" pair is one where the system does not move (no counter-moving
+    hole was available; the act was an honest content-advance that changed no counted quantity).
+
+  + IF:
+      You want a pair that DISCRIMINATES the two forward models, but the only pairs you can fly are
+      nulls — the clean-target wall has run out of targets whose counted quantity you can actually move.
+
+  + HOWEVER:
+      Conventional reading says a null carries no signal — no Δ to compare. And a null AT the
+      continuity point genuinely is model-indifferent: both models predict the same value, so matching
+      reality distinguishes nothing. (Witness live-957a4836: a clean dynamics pair, a real MOVE, yet
+      scaled == constant at the continuity point — 0x discrimination from a clean move.)
+
+  + THEN:
+      Pick an OFF-continuity begin — a below-cap target where the two models predict DIFFERENT values
+      at the current state. Fly a tight null there (a content-advance moving no counted hole; settled
+      window, two scans agreeing within ε). The realised lands on the state-sensitive prediction and
+      misses the constant by exactly the off-continuity gap. The null IS the discriminating
+      measurement; the state-blind model's error is the state it cannot see.
+
+  + BECAUSE:
+      A move tests a magnitude prediction; a no-move tests a no-move prediction. Both are predictions
+      and both can be wrong. Discrimination is a property of the models disagreeing at the begin, not
+      of the field changing — so a null off the continuity point is fully informative, while a clean
+      move on the continuity point is not. (Caught live: live-df706c45, an open-hole-count-4
+      off-continuity null — scaled error 7.65e-5 vs constant error 0.0396, ~517x discrimination from a
+      NULL, where the continuity-point witness got 0x from a clean MOVE. The two are the canonical
+      contrast cases.)
+
+  + how-to-apply: When the wall exhausts counter-moving holes, do not conclude "no measurable pairs
+    remain." Find a below-cap target where the candidate models disagree now (off the continuity
+    point), fly a tight settled null on it, and read the dual prediction — the state-blind model's
+    error is the discrimination you needed. Mask-in still requires the null be CLEAN: settled, two
+    distinct-as-of scans agreeing within ε ([[measurement-window-hygiene]]); a confounded null
+    discriminates nothing. This is the L1 dynamics layer earning its keep — discriminating models
+    without ever weighing the action against value ([[two-layer-calibration]]).

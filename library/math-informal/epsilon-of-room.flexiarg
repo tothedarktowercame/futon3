@@ -1,0 +1,41 @@
+@flexiarg math-informal/epsilon-of-room
+@title Give Yourself an Epsilon of Room
+@sigils [🤏/微]
+@keywords epsilon, arbitrary, limit, slack, relax, room, sharp, vanishing, approximate, for-all-epsilon, take-the-limit
+@audience mathematicians, researchers
+@tone heuristic
+@factor Endurance (khanti)
+
+! conclusion:
+  To prove a sharp statement, prove the relaxed version with an epsilon of slack for every
+  epsilon > 0, then let the slack shrink to recover the sharp claim.
+
+  + context: You must establish an exact statement — a vanishing (X = 0), a sharp inequality
+    (X ≤ Y), an equality, or a limit — and a head-on proof of the exact claim is awkward.
+
+  + IF:
+      The exact target is hard, but the *relaxed* target — `X ≤ ε`, or `X ≤ Y + ε`, or "within
+      ε of the limit" — is reachable for each fixed ε > 0 (typically because some definition
+      hands you an ε–δ budget: continuity, absolute continuity, measure zero, convergence).
+
+  + HOWEVER:
+      The relaxed bound must hold for *all* ε > 0 with the slack genuinely controlled by ε
+      (the bound's right side must tend to the target as ε → 0), and the quantity must live
+      where "≤ ε for every ε > 0 ⇒ ≤ 0" is valid. Watch that any δ, cover, or index chosen to
+      meet one ε does not secretly depend on the thing you are bounding.
+
+  + THEN:
+      Fix an arbitrary ε > 0. Cash in the ε–δ budget from the relevant definition to prove the
+      slack statement. Since ε was arbitrary, take ε → 0 (or inf over ε) to collapse the slack
+      and conclude the sharp statement.
+
+  + BECAUSE:
+      Weakening an exact goal to an approximate one you can actually hit — then letting the
+      approximation tighten — is the central manoeuvre of analysis: ε–δ continuity, "measure
+      ≤ ε hence null," `|a−b| < ε ∀ε ⇒ a = b`, Tao's "epsilon of room." The universal
+      quantifier over ε does the work the direct exact argument could not.
+
+  + NEXT-STEPS:
+    next[State the sharp target and its relaxed, ε-slack version.]
+    next[For a fixed arbitrary ε, spend the ε–δ budget from a definition to prove the slack bound.]
+    next[Let ε → 0 to collapse the slack; check nothing chosen depended on the bounded quantity.]

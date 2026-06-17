@@ -1,0 +1,41 @@
+@flexiarg math-informal/count-over-a-decomposition
+@title Count over a Decomposition
+@sigils [🧮/数]
+@keywords counting, class-equation, orbit, Burnside, divisibility, congruence, partition, remainder, fixed-points, pigeonhole, double-counting
+@audience mathematicians, researchers
+@tone heuristic
+@factor Discernment (paññā)
+
+! conclusion:
+  Split a quantity over a decomposition, pin down every part but one with a shared constraint,
+  and read off the remaining part.
+
+  + context: You want to determine (or bound, or prove nonzero) a quantity — a cardinality, a
+    sum, a measure, a dimension — that is hard to compute directly.
+
+  + IF:
+      The quantity decomposes additively over a partition (orbits, conjugacy classes, cosets,
+      cases, a cover), and you control all-but-one of the parts via a uniform property — each
+      shares a divisibility, a congruence, a bound, or simply vanishes — so the distinguished
+      part is forced.
+
+  + HOWEVER:
+      The decomposition must be **exhaustive and disjoint** (no part double-counted, none missed),
+      and the shared constraint must genuinely hold on *every* part you are not solving for — one
+      uncounted orbit or one exception breaks the conclusion.
+
+  + THEN:
+      Choose the decomposition that isolates the term you want (the center as the singleton
+      classes; the fixed points as the size-1 orbits). Establish the uniform constraint on the
+      other parts. Subtract / take congruences to force the distinguished term.
+
+  + BECAUSE:
+      This is the counting principle behind the class equation, Burnside's lemma, Cauchy's and
+      the Sylow theorems, inclusion–exclusion remainders, and pigeonhole: when the parts you can
+      control cover all but a little, the little is determined by what is left over. The art is
+      choosing the decomposition so the thing you want lands in the residual term.
+
+  + NEXT-STEPS:
+    next[Find the decomposition whose residual term is the quantity you want.]
+    next[Check the decomposition is exhaustive and disjoint.]
+    next[Establish the shared constraint on every other part, then isolate the residual.]

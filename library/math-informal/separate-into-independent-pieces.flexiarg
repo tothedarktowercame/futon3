@@ -1,0 +1,43 @@
+@flexiarg math-informal/separate-into-independent-pieces
+@title Separate into Independent Pieces
+@sigils [✂️/分]
+@keywords disjoint, independent, orthogonal, support, non-interference, separate, partition, cross-terms, well-separated, isolate
+@audience mathematicians, researchers
+@tone heuristic
+@factor Discernment (paññā)
+
+! conclusion:
+  When you must control an aggregate of many pieces, engineer the pieces so their supports are
+  disjoint (or independent) — then the cross-terms vanish and the global property collapses to a
+  per-piece one.
+
+  + context: You are building or analysing a sum, union, product, or family of objects, and the
+    difficulty is that the pieces could interact (overlap, interfere, correlate).
+
+  + IF:
+      You have freedom in how to construct the pieces (you are exhibiting a witness, or you may
+      choose the decomposition), and a hard global property (uniform convergence, a norm bound, a
+      probability, an independence) would become trivial if the pieces did not overlap or correlate.
+
+  + HOWEVER:
+      Independence must be *earned*, not assumed. You must verify the supports really are disjoint
+      (or the events really are independent), and that disjointness actually delivers the aggregate
+      property you need — e.g. that at most one piece is active at each point, so the aggregate
+      reduces to a supremum/sum over single pieces with no cross-terms.
+
+  + THEN:
+      Arrange the construction so the pieces occupy disjoint regions (separated intervals, orthogonal
+      subspaces, independent coordinates, disjoint cycles). Reduce the global quantity to a per-piece
+      quantity using disjointness, then bound or compute piece by piece.
+
+  + BECAUSE:
+      This is the constructive dual of local-to-global: rather than patch overlapping pieces and pay
+      for the overlaps, you design the overlaps away so no patching is needed. It recurs everywhere —
+      disjointly-supported bump functions, orthogonal vectors, independent random variables, disjoint
+      cycles in a permutation, almost-disjoint families — because non-interference turns an aggregate
+      problem into a pointwise one.
+
+  + NEXT-STEPS:
+    next[Identify the freedom you have in choosing the pieces.]
+    next[Make the supports disjoint (or the components independent) by construction.]
+    next[Verify the disjointness, and that it reduces the global property to a per-piece one.]

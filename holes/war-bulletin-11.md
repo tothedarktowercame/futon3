@@ -84,12 +84,19 @@ held under live multi-agent load.
 | O3/D1 — durable lineage (agent↔session↔mission), reconstitution | claude-4 | ✅ delivered, re-keyed canonical |
 | O1/D4 — mined-move arrows (the keystone) | claude-2 | ✅ landed, 177 arrows, composing |
 | O4 — upward clusters | claude-10 | ✅ landed, 12 clusters, 171-node O1×O4 compose |
+| O5 — honest holes | claude-4 | ✅ landed — `capability-layer-not-canonical` (202 composing hole-targets). The dry-run found the cascade HEALTHY (0 truly-missing nodes) and **refused ~237 false holes** — the honesty discipline working |
 | O7 — fold → 0-sorry CT wiring | claude-10 | ✅ L2 rung-1; rungs 2–3 deferred enrichment |
 | O2 — canonical mine | claude-1 | ✅ pinned + read-composed (dossier); substrate ingest deferred by design |
-| **O5 — honest holes** | claude-3 | ⏳ in flight (formalizes O4's 35 unresolved + capability gaps) |
-| **E-futon1a-archivist** — canonical-id write gate | claude-8 (Joe WIP) | ⏳ live but mid-hardening (twin-migration done; cutover-sequencing flagged) |
-| **Clause 1** — five standards over live data | — | ✅ 4/5; standard 4 on O5 |
-| **Clause 2** — this bulletin | claude-4 | 🟡 drafted; closes when O5 + the archivist settle and the strategic read is ratified |
+| **`pipeline-pattern-cascade.html` — the namesake artifact** | claude-4 | ✅ shows **REAL live data** (top panel fetches `/api/alpha/cascade-real`: dimensions, composition, holes, standards — warts and all) |
+| **Clause 1** — five standards over live data | — | ✅ **MET (5/5)** — composes at scale, evidence-rich, reconstitutable, honest-holed |
+| E-futon1a-archivist — canonical-id write gate (missions) | claude-8 (Joe WIP) | ✅ live; mid-hardening (twin-migration done; cutover-sequencing flagged) |
+| **capability-layer canonicalization** — the archivist's *next* layer | claude-2 scheme → pool build → claude-8 review | ⏳ **OPEN** — O5's hole named it; same drift one layer down; claude-2 scheme-bell pending (usage-limited), non-urgent |
+| other honest holes | — | ⏳ **OPEN, by design** — the cascade now *surfaces its own next work*; this row never empties, it's the point |
+| **Clause 2** — this bulletin + Joe's strategic ratification | claude-4 + Joe | 🟡 drafted; **awaiting Joe's ratification** of the strategic read |
+
+*This is a checklist, not a victory lap: Clause 1 (the data ask) is met, but the **honest holes are
+ongoing work** — capability canonicalization is queued, and the cascade is built to keep surfacing
+the next gap. "Done" here means the self-model is real and composing, not that the system is finished.*
 
 ## What this refactors about the strategy
 1. **Identity governance is foundational, not housekeeping.** Every future
@@ -101,8 +108,16 @@ held under live multi-agent load.
 3. **The self-model is now queryable, so the next questions are answerable.**
    "Who's on what, with what open moves, in which cluster, with which holes" is
    one composed query away — which is exactly the input the WM/AIF loop was
-   starved of in bulletin-10.
+   starved of in bulletin-10. And it's *visible*: `pipeline-pattern-cascade.html`
+   now renders the live composition (`/api/alpha/cascade-real`) — the sketch
+   became the thing it sketched.
+4. **The cascade surfaces its own next work.** O5's one honest hole isn't a
+   loose end — it *named* the next task (canonicalize the capability layer, the
+   same fix one level down). A self-model that points at its own gaps is the
+   payoff; the "honest holes" row of the checklist is meant to stay populated.
 
-*Bulletin 11 closes (Clause 2 satisfied) when O5 lands, the archivist gate
-finishes hardening, and Joe ratifies the strategic read above. Until then it is
-the campaign's live narrative checklist — read off the cascade it describes.*
+*Bulletin 11 closes (Clause 2 satisfied) when Joe ratifies the strategic read
+above. Clause 1 is met and O5 has landed; the remaining motion (capability
+canonicalization, archivist hardening) is honest ongoing work, not a blocker on
+the bulletin. Until ratified it is the campaign's live narrative checklist —
+read off the cascade it describes.*

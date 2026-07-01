@@ -77,6 +77,36 @@ the live `verify-live` gate + the lineage re-key + reviews). Every car was autho
 by one agent and **independently verified by another** — the separation of powers
 held under live multi-agent load.
 
+### Finding 5 — The generative signal is *partially* mechanical — measured, not asserted (Q-B)
+The campaign's sharpest self-test: is the cascade's *generative* signal — the
+have→want magnet that condenses a cascade — mechanically real, or hand-curated?
+Dispatched to close E1/E2, claude-10 **tested before shipping** and found the
+mined-move arrows are mission→head *self-loops* that *regress* the cascade
+(F −0.028 → −0.948); the F=+0.90 that had made it look solved was a **hand-curated**
+keyword string, not derivable from the data. It refused to ship a regression to
+fake a green line. Rather than defer the question and close (Joe: *that would be a
+contradiction*), a fresh-context probe (claude-6) **ran** the magnet-quality test
+(Q-B) over 319 items. **Verdict: partially mechanical.** A real, mechanically-
+derivable magnet — want-side stored natural-language text — *does* lift F
+(mean ΔF +0.093; 58.9% improve; hand-verified on-topic where the text is rich,
+e.g. `f0-f2-interface-agent-perception` +0.02→+2.48), **but** only ~30% clear F>0,
+the lift is conditional on that text existing, and eyeballing caught F-gaming
+(F alone ≠ good cascade). The point is not the number; it is that **the cascade
+was made to measure its own generative realness and report a bounded, honest
+answer** — the deepest form of "make it real."
+
+### Finding 6 — DISSOLUTION: the escrow dissolves into feature checklists; the body isn't live yet
+Closing is not a rubber stamp. The DISSOLUTION phase (claude-5 + Joe) re-reads the
+per-mission escrow (E1–E6) from the **client side** as two feature checklists (the
+R16 fold interface; the pipeline-cascade reconstruction), and the honest headline
+is that **most features are buildable now from data that already exists** (patterns
+4635+6299, held-items 109, lineage, O6 runner) — the escrow read "blocked" only
+because it was framed as held cross-mission dependencies. But the same reading
+surfaces the load-bearing gap: **the cascade artifact's *body* is still the static
+hand-built SVG sketch — only the top panel is live.** "Make it real" is not fully
+discharged until the body regenerates from the endpoint. That is real remaining
+work, correctly owned as follow-on missions, not hand-waved at close.
+
 ## Campaign Standings (the checklist)
 
 | dimension / piece | owner | state |
@@ -117,7 +147,13 @@ the next gap. "Done" here means the self-model is real and composing, not that t
    payoff; the "honest holes" row of the checklist is meant to stay populated.
 
 *Bulletin 11 closes (Clause 2 satisfied) when Joe ratifies the strategic read
-above. Clause 1 is met and O5 has landed; the remaining motion (capability
-canonicalization, archivist hardening) is honest ongoing work, not a blocker on
-the bulletin. Until ratified it is the campaign's live narrative checklist —
-read off the cascade it describes.*
+above. Clause 1 is met, O5 has landed, and the generative question has been
+**measured** (Q-B), not deferred. But DISSOLUTION is honest that **Exit criterion 1
+— the cascade regenerates from live queries with zero hand-typed rows — is not yet
+met**: the artifact's body is still a hand-built sketch. So the honest close is not
+"everything green"; it is: the compositional core is real and the generative signal
+is measured-bounded, with the **body-reconstruction** (the 🔨 buildable-now rows)
+and two held slices (Q-B magnet coverage; capability canonicalization) carried
+forward as named, owned follow-on missions. Whether to build the body before close
+or spin it into a follow-on is Joe's ratification call. Until then this is the
+campaign's live narrative checklist — read off the cascade it describes.*

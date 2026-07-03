@@ -1,0 +1,30 @@
+@flexiarg aif/currency-before-merge
+@title Currency Before Merge
+@keywords valuation, units, commensurability, exchange-rate, multi-objective, score
+@audience aif implementers, scorer designers, futon developers
+@tone technical
+@style pattern
+@references [aif/declare-the-conditioning aif/placeholder-is-load-bearing]
+
+! conclusion: Never sum value-signals from different lanes without an explicit exchange rate; a constant standing in for a missing exchange rate IS the smell.
+
+  + context: A system accumulates valuation lanes over time (an EFE blend, a wholeness score, a rollout ΔG, heuristic bonuses), and selection wants one number to rank by.
+
+  + IF:
+    You need candidates valued by different subsystems to compete in one arena.
+
+  + HOWEVER:
+    The lanes are in incommensurate units, and the cheap move — projecting everything into one linear sum at hand-set weights, or gluing unscored rows in with a constant — hides the incommensurability instead of resolving it. The weights silently absorb the units problem; the constants silently become behaviour.
+
+  + THEN:
+    Before any cross-lane merge, either establish a real exchange rate (a shared unit like nats, a fitted calibration with stated evidence) or keep the lanes separate and declare the selection rule over the tuple. Audit every constant in the arena: ask what it beats and what beats it.
+
+  + BECAUSE:
+    A merged score with no exchange rate optimizes an accident of scale, not a judgment; behaviour is then dominated by whichever lane happens to have the largest dispersion.
+
+    + evidence: M-evaluate-policies (futon2, 2026-07-03): the WM blend flattened C/E/Π-slot terms into one sum — measured result: the epistemic pole had 0% decision influence over 674 ticks while high-dispersion analogical terms steered (47.9%/44.5% flip-rates); cascade rows entered at a 0.0 constant and never won (293/293). E4: every naive renormalisation just moved winners without warrant (11.4%–93.8%).
+
+  + NEXT-STEPS:
+    - Inventory each lane's unit and dispersion (within-decision dispersion, not corpus-wide).
+    - Name the exchange rate or refuse the merge; record the decision as IF/HOWEVER/THEN/BECAUSE.
+    - Add an invariant: every summand entering the merged score is persisted with it (no silent steering).

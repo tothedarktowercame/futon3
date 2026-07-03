@@ -1,0 +1,29 @@
+@flexiarg aif/valuation-reads-the-paperwork
+@title Valuation Reads the Paperwork
+@keywords psi, provenance, drift, living-documents, conditioning, hash
+@audience aif implementers, mission authors, futon developers
+@tone technical
+@style pattern
+@references [aif/declare-the-conditioning]
+
+! conclusion: When a valuation's inputs are living documents, values drift with prose edits; date-stamp or content-hash the input at scoring time — the sensitivity is correct, the missing changelog is the defect.
+
+  + context: Scores are computed from ψ/spec inputs assembled out of documents that humans and agents keep editing (titles, status lines, READMEs).
+
+  + IF:
+    You want valuations that respond to the real state of the work (a superseded mission SHOULD lose value).
+
+  + HOWEVER:
+    The same coupling means a one-line prose edit silently re-values everything downstream, with no record of which text produced which number — later readers see "drift" and distrust the scores, or worse, trust two incomparable numbers as one series.
+
+  + THEN:
+    Persist, next to every score, the identity of the text it conditioned on (content hash or verbatim snapshot + date). Treat cross-edit comparisons as cross-version comparisons. Do not "fix" the sensitivity by freezing the inputs — fix the bookkeeping.
+
+  + BECAUSE:
+    Value IS conditional on the situation; a living document is a situation proxy. Correct conditionality with no changelog is indistinguishable from noise.
+
+    + evidence: M-evaluate-policies §9.1/§9.7 (futon2, 2026-07-03): recomputed cascade wholeness for one mission fell 4.141 → 0.792 because its Status line changed to SUPERSEDED — the production ψ recipe (title+status) fed lifecycle state back into valuation. First read as drift-hazard, correctly re-read as fit-scoring on a thin proxy. E5: enriching the ψ with live observation rebuilt cascades wholesale (Jaccard 0.128, 11/13 top-pattern flips).
+
+  + NEXT-STEPS:
+    - Add the ψ-hash field to cascade/valuation records at scoring time.
+    - When plotting value series, split on input-hash changes.

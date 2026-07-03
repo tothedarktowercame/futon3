@@ -1,0 +1,29 @@
+@flexiarg aif/declare-the-conditioning
+@title Declare the Conditioning (Score the Fit, Not the Form)
+@keywords conditioning, situation, context, fit, EFE, curried, referent
+@audience aif implementers, pattern authors, futon developers
+@tone technical
+@style pattern
+@references [aif/currency-before-merge aif/valuation-reads-the-paperwork]
+
+! conclusion: Every valuation surface must declare what slice of the situation it consumed; G(candidate) is a lambda — only G(candidate | situation) is a value.
+
+  + context: A stack grows multiple valuation surfaces (blend terms, wholeness, ΔG legs, field diagrams), each labelled with the same vocabulary ("EFE", "value", "score").
+
+  + IF:
+    You want valuations to be comparable, auditable, and honestly labelled.
+
+  + HOWEVER:
+    Different surfaces silently consume different slices of the world — one eats the live observation vector, another a 160-char prose scrap, a third nothing at all — so identical labels name incomparable objects, and cross-surface comparisons are apples-to-oranges without anyone having lied.
+
+  + THEN:
+    Give every valuation surface a three-axis declaration: SENSE (which formal object it claims), SELECTION-SEMANTICS (extremum / amortized sample / bound — over what menu), and CONDITIONING (what situation-slice it consumed). Render the declaration where the number is rendered. In pattern terms: Context → (Problem → Solution) — application is modus ponens; the world supplies the antecedent; score the fit, never the form alone.
+
+  + BECAUSE:
+    Canonical expected free energy is G(π; Q(s), C) — conditioned on beliefs and preferences by definition; a policy has no value in vacuo, and Alexander says the same of form and context. Surfaces that skip the declaration re-invent the mislabeling one level up.
+
+    + evidence: M-evaluate-policies §9.6–9.7 + exhibit "conditions on" column (futon2, 2026-07-03): the atomic-action lane conditioned on the live observation vector while the cascade lane ate a title+status scrap and two native components consumed no situation at all — one arena, incomparable conditioning. E5 measured the conditioning channel: situation-enriched ψ rebuilt 11/13 cascades. The fold contract already typed circumstance as an argument; the plumbing had starved it.
+
+  + NEXT-STEPS:
+    - Add the sense × selection-semantics × conditioning triple to each EFE-labelled surface's declaration (extends the efe-referent-declaration shape).
+    - Route all lanes toward ONE situation source (the structured observation vector) where feasible.

@@ -1,0 +1,29 @@
+@flexiarg aif/placeholder-is-load-bearing
+@title Placeholder Is Load-Bearing
+@keywords placeholder, constant, deletion, invariant, glue, argmin
+@audience aif implementers, refactorers, futon developers
+@tone technical
+@style pattern
+@references [aif/currency-before-merge invariant-coherence/state-snapshot-witness]
+
+! conclusion: A constant introduced as inert glue becomes a behavioural dependency; before deleting an "inert" term, ask what the constant beats.
+
+  + context: A scorer or ranker contains terms that measurement shows have no decision influence, and placeholder values (0.0, defaults) that were added "just so the shapes line up."
+
+  + IF:
+    You want to simplify — delete measured-inert terms, remove placeholder rows, clean up.
+
+  + HOWEVER:
+    Inertness is measured RELATIVE to the current arena. A term can be inert among peers yet load-bearing against a placeholder: removing a large uniform bonus shifts every real candidate past the glue constant, handing wins to rows that were never scored at all.
+
+  + THEN:
+    Before deleting, replay the deletion against the arena including its placeholders and defaults; sequence deletions after placeholder handling; mark every placeholder self-describing (provenance field), never bare.
+
+  + BECAUSE:
+    The counterfactual that licenses deletion ("nothing changes without this term") must be evaluated against everything in the arena — including the values nobody thinks of as scores.
+
+    + evidence: M-evaluate-policies IHTB-2 (futon2, 2026-07-03): G-info measured 0% flip-rate, yet deleting it would shift ordinary totals +5.6 past the cascade rows' 0.0 placeholder — unscored cascades would start WINNING. Found only because a flip-analysis artifact (21.8% = exactly the placeholder tick-share) was chased down. Sibling: the designed false-floor in WM G-ties.
+
+  + NEXT-STEPS:
+    - Grep the arena for bare constants; give each a :provenance marker.
+    - Add the replay-deletion check to the pre-merge gate for any term removal.

@@ -1,0 +1,45 @@
+@flexiarg process-coherence/stuck-means-signal
+@title Stuck Means Signal: Futile Repetition Is an Alert, Not a Strategy
+@sigils [∞/🔔]
+@keywords stuck, repetition, futility, escalation, alert, unstick, retry loop, 0-for-N, ask for help, self-monitoring
+@audience any process that can retry — agents, loops, lanes, the War Machine itself
+@tone corrective
+@style pattern
+
+! conclusion: If you keep trying the same thing over and over and nothing is accomplished, STOP treating the retry as progress and ALERT someone who might be able to help you get unstuck — a reviewer, the operator lane, any process with a different vantage. Repetition-without-accomplishment is the cheapest detectable signature of being outside your own competence; the correct output of detecting it is a SIGNAL, not another attempt.
+
+  + context: Every layer of an agentic system can retry: a model re-emits a tool call, a driver
+    re-runs a step, a selector re-picks a mission, an arena re-evaluates a lane. Each layer tends
+    to assume some OTHER layer is watching for futility. Usually none is — the human is the only
+    alarm, and only if they happen to be looking.
+
+  + IF:
+      You keep trying the same thing over and over — same action, same target, same evaluation —
+      at any grain, from a single turn's tool loop to the portfolio selector's tick.
+
+  + HOWEVER:
+      Nothing is accomplished: the result is the same failure, the same abstention, the same
+      unchanged count. Your own next attempt has no new information in it.
+
+  + THEN:
+      Alert someone who might be able to help you get unstuck — bell your reviewer, raise the
+      operator lane, surface a loud marker in your record — stating WHAT you repeated, HOW many
+      times, and what stayed unchanged. Then stop repeating. (If no alert channel exists at your
+      layer, that absence is itself the finding to surface.)
+
+  + BECAUSE:
+      Detecting futile repetition needs no intelligence — a counter and an unchanged-outcome check
+      suffice — which is exactly why failing to detect it is damning: a system that cannot notice
+      0-for-N cannot be trusted with any harder noticing. Escalation converts wasted energy into
+      a different vantage; kin at other grains: `[[realtime/loop-failure-signals]]` (transport),
+      the learned-precision thesis (policy: a channel that never pays should lose γ), and
+      `[[process-coherence/is-this-even-a-problem]]` (the pre-check that often prevents the loop).
+
+  + canonical-instance:
+      One night, three grains, 2026-07-04: the WM arena evaluated cascades 674 ticks for zero wins
+      with no escalation anywhere; a zai pilot emitted five identical parameter-less write calls
+      ("I keep producing an empty invoke") with the OPERATOR as the only alarm; and — done right —
+      the same pilot earlier detected a protocol impasse and alerted with the exact unblock
+      ("a one-line confirmation will unblock me immediately"). The counter-example proves the
+      move is available; the pattern makes it an obligation. (E-live-loop-1; Flight 1 transcript
+      + analysis, p4ng/flights/.)

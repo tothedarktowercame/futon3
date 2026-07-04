@@ -1,0 +1,42 @@
+@flexiarg process-coherence/status-refresh-before-work
+@title Refresh the Status Against Reality Before Working the Mission
+@sigils [⟳/§]
+@keywords stale status, mission banner, arming condition, dependency-following, resume, in-progress, starting point, re-derive
+@audience any agent (or selector) taking up a mission that has history
+@tone procedural
+@style pattern
+
+! conclusion: When taking on a mission in progress, do not trust its status banner: re-derive the true status from the document BODY and its cross-referenced dependencies, then UPDATE the status line so work begins at a sensible point in the process. The banner is a cache; the body and the neighbors are the truth.
+
+  + context: Missions accumulate in-body rulings, revised arming conditions, and cross-referenced
+    work that lands elsewhere. The status line is written once and goes stale silently while the
+    context evolves around it.
+
+  + IF:
+      You are taking on a mission in progress (as driver, reviewer, or portfolio-level selector).
+
+  + HOWEVER:
+      Its status is out of date relative to the evolving context — arming conditions were revised
+      deeper in the body; prerequisites named there have since been satisfied by work in other
+      missions; the banner still gates on a condition that no longer exists.
+
+  + THEN:
+      Before any other work: read the body past the banner; chase each dependency the current
+      phase names to its own current state; re-derive what phase the mission is REALLY at; and
+      update the status line to match, citing what you checked. Begin work from the re-derived
+      point, not the cached one.
+
+  + BECAUSE:
+      A stale banner misdirects everyone downstream of it — agents start at the wrong step, and
+      selectors re-choose the mission forever without discovering its next move is already
+      unblocked. Minutes of reading beat any amount of machinery pointed at a cached state.
+      (Operational kin of `[[futon-theory/honest-map-over-flattering-counter]]` — the banner is a
+      map that must be made to match the territory before navigating by it.)
+
+  + canonical-instance:
+      M-first-flights, 2026-07-04: banner said Phase B "armed when the rollout engine lands" —
+      stale; a ground-control ruling in the body had revised the condition to "terms constructed +
+      metric understood", and BOTH had since been satisfied elsewhere (E-mission-mining's 81
+      triples; M-substrate-metric's R2 verdict). The WM re-selected this mission across hundreds
+      of ticks without discovering Phase B was armed; a direct read found it in minutes
+      (E-live-loop-1 origin; distilled same night).

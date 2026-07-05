@@ -1,0 +1,47 @@
+@flexiarg proof-search/typed-hole-as-frontier
+@title The Frontier Is Enumerable: Represent Incompleteness as Typed Holes
+@sigils [◻/⊢]
+@keywords typed hole, sorry, want-signature, frontier, incompleteness, proof obligation, interface, dispatchable
+@audience anyone managing incomplete formal work (proofs, specs, ports)
+@tone procedural
+@style pattern
+
+! conclusion: Never let "incomplete" be a vibe. Represent every incompleteness as a TYPED HOLE — a sorry with an explicit interface: what is wanted (the signature/codomain), what is in hand (the endpoints), and what would discharge it. A typed frontier is enumerable, rankable, and dispatchable; untyped TODO-prose is folklore that must be rediscovered by every reader.
+
+  + context: Incomplete formal work accumulates in proofs, specs, and
+    ports. The default representations — TODO comments, "mostly done"
+    status lines, prose apologies — carry none of the structure the
+    incompleteness actually has.
+
+  + IF:
+      A piece of formal work is incomplete and must be recorded, handed
+      off, or prioritized.
+
+  + HOWEVER:
+      "Incomplete" as prose is unqueryable: nobody can list the gaps,
+      rank them, cluster them, or hand one to an agent — the knowledge of
+      what's missing lives in heads and scrollback.
+
+  + THEN:
+      Write the hole with its type: WANT (the signature or codomain of
+      what's missing — what would have to be true/constructed), HAVE (the
+      endpoints in hand), and the discharge condition. Store holes where
+      they can be enumerated (a ledger, a corpus of sorry records), so
+      the frontier is a queryable set, not an impression.
+
+  + BECAUSE:
+      A typed hole is a proof obligation with an interface — it can be
+      matched against candidate fillers mechanically (does this lemma's
+      conclusion unify with the WANT?), clustered with its kin, and
+      dispatched to whoever/whatever can fill it. The type is what makes
+      effort allocation computable.
+      (This is [[sorry-is-proof-hole]] doctrine at the corpus grain; kin:
+      [[proof-search/sorry-boundary-clustering]].)
+
+  + canonical-instance:
+      The A-next EMPIRICAL corpus (futon2/holes/labs/): 10 gold-standard
+      sorries recovered with :want-signature, :hungry-for, and typed
+      endpoints — the sealed test data whose very shape (want/hungry-
+      for/have) became the ψ recipe that fixed the cascade lane's
+      starvation (E-live-loop-1 S1). Authored as a proof-search seed
+      2026-07-05.

@@ -1,0 +1,44 @@
+@flexiarg proof-search/extend-library-not-proof
+@title When a Proof Stalls, Ask Whether the Library Is What's Missing
+@sigils [📚/⇧]
+@keywords stalled proof, missing lemma, mathlib, library extension, cross-problem impact, expected information gain, effort allocation
+@audience anyone deciding where formalization effort goes next
+@tone corrective
+@style pattern
+
+! conclusion: When a proof stalls at a missing piece, resist the instinct to grind that proof forward by local workarounds. First classify the blocker: is it PROOF-LOCAL (this argument needs a cleverer step) or a LIBRARY GAP (the ecosystem lacks a lemma/instance/tactic that many arguments need)? Library gaps are closed once and pay everywhere; local grinding pays once and teaches the library nothing.
+
+  + context: Formalization effort is scarce and proofs stall constantly.
+    The visible unit of progress is "my proof compiles," which biases
+    effort toward local workarounds.
+
+  + IF:
+      A proof stalls at a missing lemma, instance, or tactic.
+
+  + HOWEVER:
+      Grinding the single proof forward IS possible — an inline lemma, a
+      20-line workaround, a weaker statement — and feels like progress,
+      while the same gap silently stalls other proofs in the corpus.
+
+  + THEN:
+      Check the gap against the corpus (the sorry-boundary atlas, or a
+      search over other partials): if the missing piece would unblock
+      more than this proof, promote it — state it at library generality,
+      close it there, and let every blocked proof consume it. Only
+      workaround locally when the gap is genuinely proof-local.
+
+  + BECAUSE:
+      Effort should flow to the highest cross-problem impact: the value
+      of a library extension is the expected number of unblocked
+      arguments (EIG over the corpus), while a local workaround's value
+      is bounded by one. The library is the generative model; local
+      workarounds are unshared observations.
+      (Kin: [[proof-search/sorry-boundary-clustering]].)
+
+  + canonical-instance:
+      The M-diagramprover thesis in one line: rank Mathlib extensions by
+      expected impact over the 489-problem prelim corpus rather than
+      completing proofs one at a time — the readiness numbers (39
+      partials, ~76 of ≥200 problems attempted) exist precisely to make
+      this allocation computable. Authored as a proof-search seed
+      2026-07-05.

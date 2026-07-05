@@ -1,0 +1,45 @@
+@flexiarg proof-search/sorry-boundary-clustering
+@title Cluster Sorry Boundaries; Extend Where the Clusters Point
+@sigils [∴/🗺]
+@keywords sorry, proof hole, blocker, cluster, boundary atlas, mathlib extension, cross-problem, formalization, lean
+@audience anyone driving a formalization corpus with many partial proofs
+@tone procedural
+@style pattern
+
+! conclusion: When a proof corpus has many partial proofs, do not treat each sorry as a private blocker: CLUSTER the sorry boundaries by type across the corpus, and direct effort at the clusters — one targeted library extension (lemma, tactic, instance) closes many problems at once. The atlas of failures, read as intensities, is the intervention map.
+
+  + context: A corpus of formalization attempts (proofs, exercises, ports)
+    accumulates partial proofs, each stopped at one or more sorries. Effort
+    naturally flows to grinding individual proofs forward.
+
+  + IF:
+      You have many partial proofs, each blocked at a sorry (a typed hole
+      the proof needs filled).
+
+  + HOWEVER:
+      The blockers REPEAT: the same missing lemma family, the same absent
+      instance, the same tactic gap appears across otherwise-unrelated
+      problems — but nobody sees the repetition because each sorry is
+      examined only inside its own proof.
+
+  + THEN:
+      Build the sorry-boundary atlas: extract every sorry's interface (what
+      it wants, in what context), cluster by type/shape across the whole
+      corpus, and rank clusters by how many problems each would unblock.
+      Spend effort on the top cluster's LIBRARY extension, not on the
+      hardest single proof.
+
+  + BECAUSE:
+      Sorry boundaries are not independent — they are samples from the
+      library's gap distribution. A targeted extension at a dense cluster
+      pays across the corpus (expected information gain over the corpus,
+      not the instance); grinding one proof pays once.
+
+  + canonical-instance:
+      M-diagramprover (futon3c): 39 partial Lean proofs over the 489-problem
+      prelim corpus, ~30 with diagnosed sorry boundaries, 12 recurring
+      formalization patterns identified — the readiness condition for the
+      Bayesian model that ranks Mathlib extensions by expected impact.
+      Authored as a proof-search seed 2026-07-05 (the library-gap finding:
+      a well-formed diagramprover ψ drew a size-1 cascade because no
+      proof-search vocabulary existed here).

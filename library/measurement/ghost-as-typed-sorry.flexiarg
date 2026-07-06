@@ -1,0 +1,49 @@
+@flexiarg measurement/ghost-as-typed-sorry
+@title Null Conflates Many Absences — Type Your Ghosts
+@sigils [👻/⊢]
+@keywords ghost, null, absent measurement, typed hole, sorry, proposal-mode, not-yet, excluded confound, absence discipline
+@audience anyone whose records contain absent values that downstream readers must interpret
+@tone procedural
+@style pattern
+
+! conclusion: An absent measurement is not one thing. "Null" conflates absences that license OPPOSITE inferences — not-measured-yet, deliberately-excluded-confound, proposal-mode (would-be-measured-under-enactment), measurement-impossible-here. Type every ghost: the absence carries a kind, and the kind is part of the record's meaning.
+
+  + context: Real measurement loops are full of holes — values that do
+    not exist yet, cannot exist, or exist only counterfactually. The
+    default representation for all of them is the same null.
+
+  + IF:
+      A record has fields that are legitimately absent (the loop ran in
+      preview mode; a confound was excluded; the reading comes later).
+
+  + HOWEVER:
+      All absences render identically, so a reader (human, model, or
+      gate) cannot distinguish "we chose not to act, so the outcome is
+      counterfactual" from "we haven't measured yet" from "this can
+      never be measured" — and every inference drawn from the record
+      silently assumes one of these.
+
+  + THEN:
+      Give the ghost a type from a small fixed vocabulary (e.g.
+      :proposal-mode / :not-yet / :excluded-confound /
+      :absent-unless-supplied), stored in the record itself. Enforce
+      absence discipline at the schema (a typed-hole :kind field), so
+      an untyped null is a validation error, not a shrug.
+
+  + BECAUSE:
+      A typed absence is a typed hole — a sorry with an interface that
+      says what would discharge it — and typed holes are enumerable,
+      rankable, and dispatchable, while nulls are folklore. Distinct
+      absences license distinct inferences; the type is what makes the
+      difference checkable. (This is [[proof-search/typed-hole-as-frontier]]
+      applied to measurement; kin:
+      [[measurement/error-needs-structure-to-teach]].)
+
+  + canonical-instance:
+      M-first-flights (futon3c): the flight-record ghost table —
+      velocity present with its typed target, counterfactual and
+      begin-state as ghosts — with the absent-unless-supplied whitelist
+      already enforcing ghost discipline at the projector, and
+      sorrys.edn schema v2's :kind as the typed-hole vocabulary the
+      ghosts adopt. The prediction organ "holds the typed ghost" for
+      Phase B by design.

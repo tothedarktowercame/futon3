@@ -1,0 +1,47 @@
+@flexiarg measurement/error-needs-structure-to-teach
+@title A Bare Error Number Teaches Nothing — Record the Derivation With the Judgment
+@sigils [Δ/🧾]
+@keywords error, prediction, realised, derivation, learning signal, flight record, measurement, discharge judgment, propagate
+@audience anyone recording predicted-vs-realised measurements a learner is supposed to eat
+@tone corrective
+@style pattern
+
+! conclusion: When a record says predicted X, realised Y, error Z, the number Z alone is not a learning signal. Record the DERIVATION with the judgment — what the prediction was computed FROM, what the realisation actually measured, and the interpretation of their difference — so the error has structure to propagate. A measurement is a discharge judgment, not a number.
+
+  + context: Loops that predict and then measure accumulate flight
+    records. The cheap format — three floats and a timestamp — feels
+    complete because the arithmetic checks out.
+
+  + IF:
+      You are recording a predicted value, a realised value, and their
+      error, for a model or operator to learn from later.
+
+  + HOWEVER:
+      The error is a bare number: nothing says what the prediction was
+      derived from, what the realisation measured, or what a zero (or a
+      large) difference MEANS here — so identical errors from different
+      causes are indistinguishable, and the learner has nothing to
+      update on but magnitude.
+
+  + THEN:
+      Store the derivation alongside the judgment: the inputs and rule
+      the prediction came from, the provenance of the realised reading,
+      and an interpretation field (what this error licenses: model
+      wrong / world moved / measurement broken / nothing-learned).
+      The record is complete when a stranger can recompute the
+      prediction and dispute the interpretation.
+
+  + BECAUSE:
+      Learning propagates through structure, not magnitude: a 0.0000
+      error on a prediction derived from the answer teaches exactly
+      nothing, and without the derivation nobody can see that this is
+      what happened. (Kin: [[measurement/warrant-travels-with-the-number]],
+      [[measurement/ghost-as-typed-sorry]].)
+
+  + canonical-instance:
+      M-first-flights (futon3c): the flight record prediction −4.9225 /
+      realised −4.9225 / error 0.0000 that taught the model nothing —
+      the loop anatomy existed but derivations were computed at the
+      judgment site and thrown away (the mission's own diagnosis:
+      "records are judgments without derivations"). The mission is
+      satisfied exactly when records carry their derivations.

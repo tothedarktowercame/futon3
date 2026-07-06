@@ -1,0 +1,46 @@
+@flexiarg measurement/warrant-travels-with-the-number
+@title A Number Without Its Warrant Is an Assertion — Make Disputes Checkable
+@sigils [⚖/🔗]
+@keywords warrant, velocity, metric, provenance, dispute, escalation, checkable, evidence, derivation basis
+@audience anyone publishing a computed metric that someone may later dispute
+@tone procedural
+@style pattern
+
+! conclusion: Every computed number that feeds a decision (a velocity, a score, a rate) must carry its WARRANT — the basis, rule, and inputs it was derived from — in the record itself, so a later dispute is settled by checking, not by remembering. A number whose warrant lives in someone's head is an assertion wearing a measurement's clothes.
+
+  + context: Metrics get computed, recorded, and consumed by decisions
+    (escalations, gates, rankings). The computation's basis is obvious
+    to whoever wrote it, on the day they wrote it.
+
+  + IF:
+      You record a computed metric that a decision will consume — or
+      that a person may later contest.
+
+  + HOWEVER:
+      The record carries only the value: the choice of rule, the input
+      window, and the exclusions live in code history and heads — so
+      when the number is disputed (and load-bearing numbers always
+      eventually are), the dispute becomes archaeology or authority
+      instead of arithmetic.
+
+  + THEN:
+      Attach the warrant to the number where it is stored: the rule
+      (or its id/sha), the inputs (or pointers to them), and the
+      exclusions/assumptions. The test: a skeptical reader can
+      recompute the number from the record alone, or point at exactly
+      which warranted step they reject.
+
+  + BECAUSE:
+      Checkable disputes converge; unchecked ones escalate. A warrant
+      makes the number falsifiable at the step grain — which is what
+      separates evidence from assertion (kin: the evidence-over-
+      assertion discipline; [[measurement/error-needs-structure-to-teach]]
+      is this pattern applied to error records specifically).
+
+  + canonical-instance:
+      M-first-flights (futon3c): the cycle-5 escalation dispute — the
+      mission requires "the warrant for each velocity recorded so the
+      cycle-5 escalation dispute is checkable"; velocity records carry
+      typed targets ({:type :address-sorry, :target "sorry/..."}) and
+      the WANT is that every such number can be re-derived from its
+      stored basis by a stranger.

@@ -16,6 +16,16 @@
     theory constrains pattern development just as patterns constrain code.
     This recursive structure is what makes the framework self-applicable.
 
+  + IF:
+    You are developing domain-specific patterns (storage, network, simulation)
+    across the futon stack and want them to share the same foundational
+    guarantees while still developing their own domain-specific structure.
+
+  + HOWEVER:
+    Without theory-as-exotype, each domain reinvents its constraints ad-hoc, so
+    the stack loses coherence: a domain pattern that violates the theory's
+    axioms and invariants doesn't "type check" and won't fit the exotype shape.
+
   + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
     + FUTON-THEORY-AS-EXOTYPE:
       The theory patterns define allowable shapes for domain patterns:

@@ -30,6 +30,11 @@
       - Read operations that don't influence changes
       - Internal system state transitions
 
+  + HOWEVER:
+    Event logging has overhead. Too few events lose the audit trail; too many
+    create noise and performance drag. Logging every keystroke buys surveillance,
+    not defensibility, while logging too little leaves the proof path incomplete.
+
   + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
     + AXIOM-STATEMENT:
       A5: Log the minimum events required for full auditability.

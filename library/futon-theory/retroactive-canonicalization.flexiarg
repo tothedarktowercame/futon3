@@ -23,6 +23,16 @@
     emerges from practice through a specific, identifiable, auditable process
     that this pattern describes.
 
+  + IF:
+    You need to explain where a futon theory specification comes from — how
+    invariants and constraints are derived rather than merely asserted.
+
+  + HOWEVER:
+    Neither obvious answer works: treating the specification as an a priori
+    axiom system that existed before the code cannot explain how it was
+    derived, while treating it as code-first leaves you with no theory at
+    all.
+
   + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
     + COMPRESSION-RULES:
       When is canonicalization warranted? A pattern is a candidate when:

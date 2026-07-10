@@ -1,0 +1,37 @@
+@flexiarg data-mining/constrain-extraction-to-the-downstream-vocabulary
+@title Constrain an Extracted Field to the Downstream Vocabulary; Default to the Common Case
+@keywords mining, extraction, vocabulary, over-firing, label, default, allowlist, discourse-act
+@audience data-mining pipeline authors
+@tone technical
+@style pattern
+@references [data-mining/golden-is-curated-not-raw data-mining/gates-as-code]
+
+! conclusion: When you extract a field that a downstream system consumes (a move-class, a relation type, a category), constrain it to that system's vocabulary and forbid the surface/discourse paraphrase. And when a label is "interesting" (a new pattern, a correction, an anomaly), the model will OVER-FIRE it — so make the instruction DEFAULT to the common/empty case, give an explicit frequency anchor, and show labeled negatives. An unconstrained extraction drifts to describing the text rather than naming the operation the consumer needs.
+
+  + context: A meme miner's `op` field is meant to be a War-Machine move-class (build/dispatch/deploy/find). Left to free choice the model emitted discourse acts (elaborate/contrast/request/compare) — labeling what the turn DID conversationally, not the operation. Separately, the "new pattern" and "correction" labels fired on 75-95% of items.
+
+  + IF:
+    You ask a model to emit a field that (a) feeds a downstream component with a fixed vocabulary, or (b) is a salient/rare label the model finds tempting to apply.
+
+  + HOWEVER:
+    Faced with conversational/messy input, the model labels the SURFACE act ("this turn elaborates") instead of the operational target ("build X"); and it reaches for the interesting label far more often than the data warrants, because nothing tells it the common case is boring/empty.
+
+    + FAILURE-MODES:
+      - Discourse drift: ~half the `op` values are rhetorical verbs (elaborate/contrast) the downstream cannot act on.
+      - Label over-firing: "new pattern" on 95% of asks; "correction" on 88% — the signal drowns in false positives.
+      - Off-spec creep: even after blocking discourse verbs, arbitrary near-synonyms slip in (resume/pair/draft/continue) — a blocklist is not an allowlist.
+
+    + THEN:
+    (1) Give the field an ALLOWLIST — the downstream vocabulary — and instruct: pick the closest member, or a sentinel ("none") if none applies; do NOT invent a paraphrase. (2) For a rare label, make the DEFAULT the common case (reach/[]), state a frequency anchor ("fewer than 1 in 5"), and require BOTH sides be nameable before firing (what was proposed AND what is wanted instead). (3) Reinforce with few-shot NEGATIVES ([[data-mining/golden-is-curated-not-raw]]). (4) GATE it with an allowlist check, not just a blocklist ([[data-mining/gates-as-code]]).
+
+  + BECAUSE:
+    The downstream can only use a value in its own vocabulary; a discourse verb is downstream-dead. And an over-fired label has near-zero precision — useless as a signal. Instruction tightening does the heavy lifting; few-shot negatives move the boundary the rest of the way. Both are needed.
+
+    + EVIDENCE (2026-06-25, futon6):
+      - `op` drift: ~50% discourse verbs pre-fix; constraining `op` to the move-class vocabulary + "op=none for purely conversational turns" -> 0 discourse verbs in the smoke.
+      - new_patterns over-firing: 95% -> 27% (rate-anchored INSTR, "almost always []") -> 8% (INSTR + golden negatives). correction: 88% over-fired; default-to-reach + "agreement-plus-detail is NOT a correction" + negatives.
+      - Off-spec creep caught by the allowlist warn (resume/pair/draft/continue) that the discourse blocklist missed.
+
+  + NEXT-STEPS:
+    - evidence: per-field, measure in-vocabulary share + rare-label precision against a hand-labeled sample.
+    - evidence-shape: {:field :keyword, :in-vocab/share :float, :label/fire-rate :float, :label/precision :float}

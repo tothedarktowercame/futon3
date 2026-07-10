@@ -1,0 +1,39 @@
+@flexiarg data-mining/seed-the-run-for-a-fair-ablation
+@title Seed Every Source of Randomness — An Unseeded Ablation Measures Noise, Not the Arm
+@keywords mining, training, gpu, ablation, seed, determinism, reproducibility, variance, experiment
+@audience data-mining and model-training pipeline authors
+@tone technical
+@style pattern
+@references [data-mining/gates-as-code data-mining/smoke-before-the-paid-run data-mining/the-first-checkpoint-is-a-quality-probe]
+
+! conclusion: When the paid GPU run is an EXPERIMENT — an ablation whose whole value is attributing a metric delta to one changed arm (text vs struct vs hybrid, feature-A vs feature-B, model-X vs model-Y) — every floating source of randomness (weight init, random features, data-shuffle order, negative sampling, dropout) injects run-to-run variance that can swamp the arm effect. Fix a seed (and seed torch, numpy, AND python's `random` — they are independent), so the ONLY thing that differs between arms is the arm. Better still, run each arm over K seeds and report mean±sd, so a reported win is a real effect and not one lucky initialization. An unseeded ablation is not a cheaper experiment; it is a non-experiment wearing an experiment's costume.
+
+  + context: A fold-embedding run compares text-only / struct-only / hybrid node embeddings on endpoint-recovery. The struct arm's node features are `torch.randn(N, 384)` (pure noise seeded only by the global RNG), the train pairs are `random.shuffle`d each epoch, and the network is default-initialized — none of it seeded. Two runs of "struct" would score differently; a headline like "hybrid beats text by 0.03 recall" could be entirely init noise. The ablation would look done while proving nothing.
+
+  + IF:
+    Your metered/GPU run is a comparison — multiple arms (feature sets, architectures, hyperparameters) judged against each other or against baselines by a metric — and you intend to draw a conclusion from the difference between arms.
+
+  + HOWEVER:
+    Stochastic training has several INDEPENDENT randomness sources — weight initialization, randomly-initialized features, per-epoch shuffle order, negative/minibatch sampling, dropout masks. Left unseeded, each arm draws a different roll, so the measured gap conflates "the arm changed the outcome" with "the dice landed differently." Seeding only torch misses numpy and python `random`; seeding once at import misses re-seedings inside libraries. And a single seed still gives a point estimate with no error bar — a 0.02 "win" inside a ±0.05 seed band is not a win.
+
+    + FAILURE-MODES:
+      - Noise-as-signal: an arm difference smaller than the cross-seed variance is reported as a result; it does not replicate.
+      - Partial seeding: `torch.manual_seed` set but `numpy`/`random` left free → the shuffle and any numpy sampling still float, so "deterministic" runs still diverge.
+      - Confounded arms: the struct arm changes BOTH the features AND (via a different RNG draw) the init/shuffle — you cannot attribute the delta to features.
+      - Point-estimate overclaim: one seed per arm, no variance reported → a lucky/unlucky init is mistaken for the arm's effect; the ablation is un-reproducible.
+      - Non-determinism ignored: even seeded, some CUDA kernels are nondeterministic; for a tight comparison set `torch.use_deterministic_algorithms(True)` or accept (and report) the residual jitter.
+
+  + THEN:
+    Seed ALL sources at run start from one `--seed`: `random.seed(s); np.random.seed(s); torch.manual_seed(s); torch.cuda.manual_seed_all(s)`. Hold the seed FIXED across arms so the init, shuffle, and sampling are identical and only the arm varies. Where the budget allows, sweep K seeds per arm (K≈3-5) and report mean±sd, or at minimum state the single seed used so the number is reproducible. Record the seed(s) in the scorecard/manifest. Have the output gate ([[data-mining/gates-as-code]]) treat a between-arm gap smaller than the cross-seed sd as "no measured difference," not a win.
+
+  + BECAUSE:
+    An ablation's entire epistemic value is the counterfactual "the metric changed BECAUSE the arm changed." That counterfactual only holds if everything else is held constant — which for a stochastic pipeline means a fixed, fully-propagated seed. Reproducibility is not a nicety here; it is the precondition for the conclusion. The cost is a few lines at startup; the payoff is that the box-hours buy a defensible verdict instead of an anecdote. This is the training-run sibling of gate-the-output: seeds make the comparison legible, the gate reads it honestly.
+
+    + EVIDENCE (2026-07-01, design-time — E-fold-embed-pipeline, pre-run):
+      - `train_fold_embed.py`: struct features `torch.randn(N,384)*0.1` (unseeded), `random.shuffle(tr)` per epoch (unseeded), default net init, no `manual_seed`/`np.random.seed` anywhere → three independent floating RNG sources feeding a 3-arm ablation.
+      - Projected (not yet measured; the run is separately blocked on the empty-cascade dataset bug): without seeding, re-running "struct" yields a different recall@20; a small text-vs-struct delta is not distinguishable from init noise. A fixed seed + optional K-seed sweep makes the reported delta attributable.
+      - Cross-reference: this is why the OUTPUT gate's "structure adds over text" band must compare against a variance floor, not zero.
+
+  + NEXT-STEPS:
+    - evidence: run each arm over K∈{1,3,5} seeds; report per-arm mean±sd recall@20/MRR; confirm the winner's lead exceeds the cross-seed sd.
+    - evidence-shape: {:arm :keyword, :seeds [:int], :recall/mean :float, :recall/sd :float, :lead-over-runner-up :float, :exceeds-seed-sd? :bool}

@@ -19,6 +19,15 @@
     the minimal sequence of operations that moves from intent to verified
     outcome while maintaining auditability.
 
+  + IF:
+    You want to move from a well-defined intent to a verified claim, and to
+    do so along the shortest defensible path that stays fully auditable.
+
+  + HOWEVER:
+    Real sessions deviate from the geodesic through exploration and false
+    starts, and every extra step is a potential failure point, debugging
+    surface, and thing to maintain, so complexity accrues as cost.
+
   + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
     + APPLICATION:
       - Pattern selection: Choose patterns that shorten the geodesic

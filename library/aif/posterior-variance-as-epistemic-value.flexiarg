@@ -1,0 +1,29 @@
+@flexiarg aif/posterior-variance-as-epistemic-value
+@title Posterior Variance as Epistemic Value (EIG), Not Ambiguity — the reducible-uncertainty term of structure learning
+@sigils [🧭/益]
+@audience fulab agents, aif implementers, designers of EFE term implementations
+@tone technical
+@style pattern
+
+! conclusion: The standard deviation of the structure-learning (BMR) posterior over concepts is EPISTEMIC VALUE (expected information gain, EIG) — *reducible* model/structure uncertainty — which is SUBTRACTED in Expected Free Energy (`G = risk − λ·EIG`) and therefore SOUGHT. It is NOT ambiguity (irreducible observation noise, which is added and minimized). Composing it as "+ambiguity" is a category error that makes the agent flee uncertainty instead of resolving it.
+
+  + context: Canonical EFE has TWO distinct uncertainty terms. **Ambiguity** = `E_q[H[p(o|s)]]` — the entropy of the likelihood, i.e. irreducible observation noise given the state; it is ADDED (+) and minimised (prefer states whose outcomes are unambiguous). **Epistemic value / EIG** = `E_q[H[q(s)] − H[q(s|o)]]` — the expected *reduction* in uncertainty about the hidden state / model / parameters; it is SUBTRACTED (−) and maximised (seek what resolves your ignorance). BMR posterior spread is uncertainty about the MODEL (which capability a mission needs) and it is *reducible* — more data resolves it — so it is the EIG type, not the ambiguity type.
+
+  + IF:
+    You want the structure-learning posterior spread to drive the agent to RESOLVE its model uncertainty — to explore candidates where it does not yet know the structure (which capability a mission needs), because resolving that is information gain. This is the exploratory job of the slush / candidate proposer and the tie-breaker for a stuck ranker.
+
+  + HOWEVER:
+    Composing reducible model-uncertainty as "+ambiguity" (a cost) inverts the drive: the agent then AVOIDS uncertain concepts — exploit-toward-certainty, the opposite of an epistemic imperative. This is a category error (conflating EIG with observation-ambiguity), and it is silent — the code runs, the term differentiates candidates, but it pushes the wrong way. **Evidenced:** the synthetic slush demo (2026-07-08) composed `EFE = risk + λ·ambiguity`, `reward = exp(−EFE)`, and measured epistemic pull **−0.006** — the sampler drifted *toward* LOW-stddev candidates. The "+" sign was preferring certainty as an end.
+
+  + THEN:
+    Apply the BMR posterior stddev as an EIG term, SUBTRACTED: `G = risk − λ·EIG`, where `EIG` = the aggregated per-concept posterior stddev (endpoint-count; `{concept → stddev}` the source, absent-concept → 0). High-stddev candidates then rank BETTER (lower G), which is the explore drive and which breaks a G-ties floor by epistemic value. Keep the sign fixed (−) and tune the MAGNITUDE λ for explore-vs-exploit — **do NOT use a signed or tunable-sign λ** (it lets the category error re-enter silently, and someone flips it later). If irreducible observation-ambiguity is ever computed, it rides its own distinct `+` leg — do not collapse the two.
+
+  + BECAUSE:
+    Active inference never prefers ignorance for its own sake. A `+` on reducible model-uncertainty means "prefer certainty as an end," which is aversion, not active inference. Epistemic value is the expected *resolution* of uncertainty and is always sought. Explore-vs-exploit is set by the weight (λ) and the precision (γ) — how much you prioritise the goal over learning — not by the sign of the EIG term. Keeping the term canonical and fixed is also what breaks the R13 tie-floor honestly: candidates tied on risk separate by how much model-uncertainty each would resolve.
+
+  + NEXT-STEPS:
+    - SUPERSEDES the earlier `posterior-variance-as-ambiguity` framing — a category error corrected 2026-07-08 after the slush demo surfaced the −0.006 pull-toward-certainty. Same quantity (BMR posterior stddev), reclassified from ambiguity-cost (+) to epistemic-value (−).
+    - Seam-2 (A4a→A1) amended: the lock's `risk + λ·ambiguity` becomes `risk − λ·EIG`. `{concept → stddev}` still the source, absent→0, endpoint-count; A1 union/dedup/purity unchanged. Evidence: futon2/holes/M-a4a-structure-node.md.
+    - γ-variance use (R14) is UNAFFECTED: there the stddev is a magnitude feeding precision, sign-agnostic. The sign only bites in forward-ranking selection (3a / R13).
+    - Relation to `predictive-entropy-as-ambiguity`: THAT pattern is the genuine ambiguity (+) term (forward observation-distribution entropy, an irreducible-noise cost). THIS is the EIG (−) term (reducible model uncertainty). Distinct quantities, distinct signs — never collapse them into one leg.
+    - Anti-patterns to name: `epistemic-value-as-cost` (the +sign category error), `collapse-EIG-into-ambiguity` (one leg for two quantities), `signed-tunable-lambda` (lets the sign error re-enter).

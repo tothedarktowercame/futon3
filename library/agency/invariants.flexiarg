@@ -12,6 +12,17 @@
 
   + context: Agency is the messaging and coordination backbone for all futon agents (human and AI). It routes bells (async), whistles (sync), manages agent registration, and bridges to IRC/MUSN/forum. An audit revealed: 20+ silent error catches, three independent routing tiers with no consistency, unbounded state atoms, no delivery guarantees, and no specification. Features built on Agency (standup, PAR sessions, pair programming) inherit all of these deficiencies.
 
+  + IF: You are building features (standup, PAR sessions, pair programming) on Agency,
+    the messaging and coordination backbone that routes bells and whistles, manages agent
+    registration, and bridges to IRC/MUSN/forum — and those features must inherit
+    guarantees of delivery, identity, atomicity, error hierarchy, debugging, and bounded
+    resources.
+
+  + HOWEVER: An audit revealed 20+ silent error catches, three independent routing tiers
+    with no consistency, unbounded state atoms, no delivery guarantees, and no
+    specification. Features built on Agency inherit all of these deficiencies, so without
+    explicit invariants they are built on sand.
+
   + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
     + INVARIANT-SET:
 

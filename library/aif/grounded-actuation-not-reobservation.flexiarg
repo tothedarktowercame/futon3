@@ -1,0 +1,31 @@
+@flexiarg aif/grounded-actuation-not-reobservation
+@title Grounded Actuation, Not Re-Observation (the loop closes outside the model)
+@sigils [🐜/专]
+@audience fulab agents, aif implementers
+@tone technical
+@style pattern
+
+! conclusion: A closed action–perception loop (R16) requires the act to write an ungameable witness to a substrate OUTSIDE the generative model, and that witness to feed the next decision. Re-running your own constructor and scoring how faithfully it reproduced its own diagram is a mirror, not an act.
+
+  + context: R16 asks the loop to close — action feeds back, changes the world, and the changed world changes the next belief/decision ("act → world → observe → act"). The enactment seam is where a deliberating agent becomes an acting one.
+
+  + IF:
+    You want a genuinely closed action–perception loop: the agent selects a policy, acts on it, and the world it observes on the next tick is materially different because it acted.
+
+  + HOWEVER:
+    This is seductively easy to fake. An "enactor" that re-runs the fold/construction engine and measures coverage-ΔG over how faithfully the builder reproduced the diagram produces a perfectly honest number over a quantity that CANNOT MOVE — the mission's open-hole-count never changes, so the recommendation repeats forever and the loop reports green. Honesty about a quantity that cannot move is still inertia. The tell: `:realized-G` is computed by re-observing the construction the executor itself just built (the anti-tautology cross-check can be present and the loop still be causally sealed from the world).
+
+  + THEN:
+    Close the loop only when BOTH hold. (1) The act writes a TYPED, UNGAMEABLE witness to a substrate outside the model: the sorry's endpoints proven inhabited by a query DERIVED FROM the authored bindings, not from builder claims (you cannot `touch` a typed `:capability/*` hyperedge over real `:capability`×`:mission/doc` nodes into existence — producing the structure IS the work); AND the built structure matching its CLean wiring spec box-for-box (build-match: every box's `:produces` inhabited, not just the terminal boundary). (2) That witness feeds the next decision — the deliberator re-ranks on the substrate dial. Gate "closed = ✓" on a real dial move (1/2 → 2/2), NEVER on the enactor merely firing.
+
+  + BECAUSE:
+    The entire point of a perception–action loop is that action changes the world and the changed world changes the next belief. If "realized" is coverage-over-reproduction, the world never changes and the belief never updates — you have built a machine that dreams it acted. The witness must be (a) outside the model (so the model cannot author its own success) and (b) ungameable (so a builder cannot claim it), or the closure is a reflection.
+
+  + NEXT-STEPS:
+    - DONE (2026-07-07, c9e1dbc): provable substrate witness — the sorry's endpoints proven inhabited via authed Drawbridge `xtdb.api/q`, derived from authored `:endpoint-bindings`, ungameable. Verified: a written `:capability/*` hyperedge is matched, an absent one is not. Evidence: futon2/src/futon2/aif/actuator_a3.clj.
+    - DONE (2026-07-08, 8bdff65 / 4ecf5eb): the fold emits a `clean_argcheck`-gated CLean; the structure spec becomes contractual at deposit time — a fold cannot deposit a malformed CANALIZE. Evidence: futon2/aif/fold_escrow.clj.
+    - DONE (2026-07-08, fdbc527): build-match — every box's `:produces` checked against the CLean, not just the terminal. The discriminating case (terminal inhabited, an interior box missing) is caught. Evidence: box-match-snapshot / build-match.
+    - DONE (2026-07-08): build-match on the DONE mission autoclock-in reads 2/3 and surfaces genuine drift — the clock hyperedge exists but its agent endpoints are raw strings, not typed `:person` entities. The structure check found a real substrate-schema gap, not an invented one. Evidence: futon2/holes/bindings-autoclock-in-grounding.md.
+    - OPEN (the second half): the deliberator does not yet re-rank on the substrate dial — the witness lands but does not change the next decision. Needs R12 (accumulated learning) + R13 (policy discrimination; the G-ties false-floor). This is the deferred long-term-memory gap; until it lands, R16 is grounded-actuation (◐), not a closed loop.
+    - OPEN: the live durable discharge — the act firing end-to-end (builder writes the endpoint, executor proves the dial moved 1/2 → 2/2), operator-gated.
+    - Anti-pattern to name explicitly: `re-observe-your-own-construction` — measuring realized outcome by re-running the constructor. If `:realized` is a function of the executor's own output, the loop is a mirror.

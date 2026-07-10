@@ -16,6 +16,11 @@
     no longer exist. The counter-ratchet maintains baselines for critical
     counts and alerts when they decrease without explanation.
 
+  + IF:
+    You maintain critical counts (entities, relations, penholders, events)
+    whose decrease would signify data loss, and you want to catch such
+    regressions rather than let them pass as silent noise.
+
   + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
     + FAILURE-MODES:
       Silent data loss -> Detected by count drop

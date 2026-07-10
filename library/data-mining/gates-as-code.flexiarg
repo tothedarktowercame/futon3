@@ -1,0 +1,38 @@
+@flexiarg data-mining/gates-as-code
+@title Make the Quality Bands a Runnable Checker — Author ≠ Reviewer
+@keywords mining, gate, validator, quality, separation-of-powers, golden, review
+@audience data-mining pipeline authors
+@tone technical
+@style pattern
+@references [data-mining/golden-is-curated-not-raw data-mining/smoke-before-the-paid-run]
+
+! conclusion: Encode the go/no-go quality bands as a runnable checker, separate from whatever produces the data. The same checker then independently reviews the mined output AND the curated golden/few-shot set. Prose bands drift and get rubber-stamped; a checker that exits nonzero does not. Because the checker is authored independently of the producer, it is a real reviewer — and a hand-verified-good input that the gate REJECTS is itself a finding: the gate is too strict.
+
+  + context: A meme-mining review produced prose bands ("op should be operational", "corrections should be a minority"). Turning them into `check_meme_mine_gates.py` / `check_goals_holes_gates.py` let the same tool gate the smoke output, the full run, and the golden set — and the gate caught defects the prose missed (an empty evidence span = a fabricated record; a malformed `mission(ARGUE)` ref).
+
+  + IF:
+    Your pipeline has acceptance criteria for mined records (a label distribution, a vocabulary, a provenance rule, an evidence requirement).
+
+  + HOWEVER:
+    Criteria kept as prose are re-judged by hand each run, inconsistently, and tend toward rubber-stamping. And if the same agent both produces the data and judges it, there is no separation of powers — the producer's blind spots are the judge's blind spots.
+
+    + FAILURE-MODES:
+      - Rubber-stamp: "looks fine" passes output that a counted check would fail (e.g. 95% over-firing reads as "patterns are firing well").
+      - Silent divergence: two consumers re-implement the band differently; one passes what the other fails.
+      - Unaudited golden: the few-shot set is assumed good because a human wrote it; nobody runs it through the gate.
+
+  + THEN:
+    Write one checker that takes a file of records, prints PASS/FAIL per band with the numbers, and exits nonzero on any hard-gate fail. Run it on (a) the smoke output, (b) the full run, and (c) the GOLDEN set's ideal-outputs. Keep producer and checker authored independently. Make the checker SHAPE-TOLERANT — it must judge the raw-model-output shape and the stored-artifact shape identically (read the field from `provenance` OR `evidence`, etc.), or it will spuriously fail the curator's natural format. Treat a good-input-that-fails as a signal to widen the gate, not to discard the input.
+
+  + BECAUSE:
+    A counted, independent gate is the difference between "we reviewed it" and "we checked it." Cross-checking the golden against the gate is mutual validation: a golden that fails is mis-curated (it would teach the model the error — see [[data-mining/golden-is-curated-not-raw]]); a hand-verified-good golden that fails reveals the gate's blind spot. Either way you learn something a single artifact could not tell you.
+
+    + EVIDENCE (2026-06-25, futon6):
+      - `check_meme_mine_gates.py` (forward) + `check_goals_holes_gates.py` (backward): per-band PASS/FAIL, exit-coded; validated by correctly FAILing the known-bad smoke (new_patterns 75%, correction 88%) and PASSing the fixed op band.
+      - The backward gate's I1-evidence band caught fabricated reaches (empty `assistant_span`) that the prose never named — 1 in the smoke, 6 in the 400-sample.
+      - The precision gate REJECTED the curator's own blessed correction ("before we do that, can we scope a Codex handoff") — a too-strict-gate finding that widened the pivot proxy to cover precedence redirects.
+      - Shape bug: the gate read only the stored `provenance` shape and spuriously failed goldens written in the raw `evidence` shape, until made shape-tolerant.
+
+  + NEXT-STEPS:
+    - evidence: count gate disagreements with a human spot-check (false-pass + false-fail rates) to calibrate thresholds.
+    - evidence-shape: {:gate/name :keyword, :gate/threshold :float, :records/n :int, :gate/value :float, :verdict :keyword}

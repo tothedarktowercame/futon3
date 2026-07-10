@@ -18,6 +18,11 @@
     problem. Stop-the-line halts destructive operations while keeping
     diagnostic operations available.
 
+  + IF:
+    An invariant check fails, indicating system corruption or logic errors,
+    and you must decide whether to keep applying changes or halt. You want to
+    contain the damage while still being able to diagnose and fix the issue.
+
   + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
     + ANTI-PATTERNS:
       - Force-pushing changes despite violations

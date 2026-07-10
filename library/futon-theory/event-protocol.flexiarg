@@ -23,6 +23,11 @@
       - Quick fix: CLOCK_IN -> OBSERVE -> APPLY -> VERIFY -> COMMIT -> CLOCK_OUT
       The protocol is the maximum; subsets are valid for simpler operations.
 
+  + HOWEVER:
+    Unstructured change is unauditable change. Without a canonical sequence,
+    every mutation follows its own path from intent to durable proof, and
+    when something breaks there is no traceable story of how we got here.
+
   + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
     + BRANCHING:
       - On VERIFY failure: Return to OBSERVE, spawn correction path

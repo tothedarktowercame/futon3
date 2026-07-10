@@ -1,0 +1,29 @@
+@flexiarg aif/scheduled-observer-entrypoint
+@title Scheduled Observer Entrypoint (and the No-Op Trap)
+@sigils [🐜/专]
+@audience fulab agents, aif implementers
+@tone technical
+@style pattern
+
+! conclusion: An AIF agent achieves "live operation" (R10) only when a scheduler drives ticks that change observable state. A scheduled no-op is not live operation — it is a disabled loop with a green light.
+
+  + context: R10 requires the agent to operate without operator intervention — a cron/scheduler fires ticks (observe → decide → act) on a timer, not only when hand-run. "Live" is meant to distinguish a running organism from a batch simulation.
+
+  + IF:
+    You want the agent to run live — to observe, deliberate, and act on a schedule, accumulating trace (R8) and precision (R7/R14) over real time without a human pressing the button.
+
+  + HOWEVER:
+    A scheduler that fires ticks which cache or no-op — because nothing downstream can change (the loop is sealed, R16 unclosed) — satisfies the LETTER of "live operation" while the organism is dead. Worse: every firing writes a green "it ran" row, so the trace manufactures the appearance of operation and hides the inertia. Scheduled-execution-*ready* is mistaken for scheduled-execution-*doing*.
+
+  + THEN:
+    Install the scheduled entrypoint, BUT gate "R10 = ✓" on evidence that a tick changed observable substrate state (a dial moved, a hole closed) — not merely that the entrypoint fired. When the loop can only no-op, DISABLE the cron rather than let it paint green; re-enable it precisely when a tick can do real work (i.e. when R16's grounded actuation can move a dial). Add a liveness assertion: N consecutive scheduled runs with zero state-delta FLAGS, it does not PASS.
+
+  + BECAUSE:
+    Liveness is a property of state change, not of the scheduler firing. A cron over a sealed loop is a clock ticking in an empty room. The honest signal of "live" is a substrate delta attributable to a scheduled tick; absent that, a green cadence is the most convincing possible disguise for a dead loop.
+
+  + NEXT-STEPS:
+    - DONE: the scheduled entrypoint exists (`futon2 -M:wm-scheduled`, hourly). The apparatus is real.
+    - DONE (2026-07-06): DISABLED the hourly cron — cached no-op runs sufficed; re-enable when the loop does real work. Evidence: futon2/holes/aif-wiring-actuator.html status panel.
+    - Couple R10 to R16: a scheduled tick counts as "live" only if it can (and does) move the substrate dial via grounded actuation.
+    - Add the liveness assertion to the tick harness: `zero-delta-over-N` → flag, with the run count surfaced (never silently green).
+    - Distinguish in the trace schema: `:tick/fired?` (the scheduler ran) vs `:tick/moved-substrate?` (a dial changed). R10 reads the second, not the first.

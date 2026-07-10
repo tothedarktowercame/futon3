@@ -19,6 +19,12 @@
     first approach until it either works or exhausts your patience — but this
     ignores structural information that a quick survey would reveal.
 
+  + IF: A proof obligation admits two or more candidate approaches (different machinery,
+    constructions, or reduction targets), at least one approach has non-trivial obstacles
+    (unverified hypotheses, unfavorable parameter regimes, missing intermediate results),
+    and the obligation is significant enough that choosing the wrong approach wastes
+    substantial effort.
+
   + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
     + FAILURE-MODES:
         - All approaches are blocked. This is a legitimate outcome — the pattern

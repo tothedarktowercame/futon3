@@ -1,0 +1,37 @@
+@flexiarg data-mining/golden-is-curated-not-raw
+@title A Golden Set Is Hand-Verified Positives PLUS Labeled Negatives — Never Raw Output
+@keywords mining, golden, few-shot, priming, negatives, curation, balance
+@audience data-mining pipeline authors
+@tone technical
+@style pattern
+@references [data-mining/gates-as-code data-mining/constrain-extraction-to-the-downstream-vocabulary]
+
+! conclusion: A golden / few-shot set must be HAND-VERIFIED — curated positives plus a few LABELED NEGATIVES (the model's own mistakes, shown with the corrected answer). Never paste raw model output as "golden": if the output is half-wrong, the golden teaches the model the error. The negatives are the high-value part — they are what kill an over-firing label that the positives and the instruction alone do not. And the set must be BALANCED across the classes you care about, or it skews the prior.
+
+  + context: A backward miner over-classified "correction" (a flood of false positives). Building a golden naively from its smoke output would have canonized the over-firing. The fix was a curated set: clear positives + the exact misreads relabeled (agreement -> reach, recap -> []), balanced across reach and correction.
+
+  + IF:
+    You are priming a model with few-shot exemplars (or building a golden for evaluation/fine-tuning) drawn from a pipeline that already over- or mis-fires.
+
+  + HOWEVER:
+    The raw output of a mis-firing pipeline is ~50% wrong by assumption — feeding it back as exemplars reinforces the very failure you are trying to fix. And a sample pulled from one stretch of corpus is class-skewed (e.g. a continuation-heavy stretch yields all-negatives, no positive examples of the rare class).
+
+    + FAILURE-MODES:
+      - Error canonization: raw smoke (95% over-fired) becomes the few-shot prior -> the model over-fires harder.
+      - Positives-only: exemplars show only what TO emit; the model never learns what to suppress, so it keeps over-firing.
+      - Skew: all exemplars from one topic/stretch -> the set is rich in one class, blind to another.
+
+  + THEN:
+    Curate by hand: (1) verified POSITIVES, one per class, drawn from real items; (2) a few NEGATIVES — the tempting-but-wrong cases — each shown with its CORRECTED ideal output and a one-line lesson ("agreement-plus-detail is reach, NOT correction"); (3) BALANCE across the classes (pull positive examples of the rare class from other stretches if this one lacks them). Prefer exemplars with the clearest discriminating cue. Then run the golden's ideal-outputs through the independent gate ([[data-mining/gates-as-code]]) before priming with it.
+
+  + BECAUSE:
+    Few-shot exemplars set the model's prior; negatives are how you move the decision boundary, not just the output format. In an A/B, a tightened instruction took an over-firing label most of the way but the curated golden (positives + negatives) is what cleared the gate — and it also fixed output-format robustness as a side effect.
+
+    + EVIDENCE (2026-06-25, futon6):
+      - Raw smoke would have taught: forward new_patterns 95% firing, backward correction 88% firing.
+      - `data/c-vector/golden-backward.json`: 9 exemplars — 3 reach+ / 3 correction+ (explicit pivots) / 2 agreement->reach / 1 recap->[]; balanced 5 reach vs 3 correction; its ideal-outputs PASS the backward gate.
+      - A/B (held-out asks 13-24): tightened INSTR alone new_patterns 27% (still failing); INSTR + golden priming 8% (passing). The negatives + positives in the few-shot were the marginal lever.
+
+  + NEXT-STEPS:
+    - evidence: ablate positives-only vs positives+negatives few-shot; measure the boundary shift on the rare class.
+    - evidence-shape: {:golden/n :int, :golden/positives :int, :golden/negatives :int, :class/balance {:keyword :int}, :gate/passed? :bool}

@@ -29,6 +29,19 @@
     timescale and has its own observation-inference-action structure. The
     question is: what does this second process observe?
 
+  + IF:
+    You are treating the coordination system as an AIF wiring diagram and
+    need to account not only for task execution but also for how the pattern
+    library evolves over time — a second, glacial process with its own
+    observation-inference-action structure.
+
+  + HOWEVER:
+    The futon3-coordination.edn diagram satisfies the six invariants only at
+    the task execution timescale. The glacial library-evolution loop has no
+    specified observation vector: it is unclear what this second process
+    observes, so the AIF framework risks staying a metaphor rather than a
+    direct structural specification.
+
   + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
     + FREE-ENERGY-AND-CANONICALIZATION:
       In AIF, free energy is the divergence between the agent's model and

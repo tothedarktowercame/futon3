@@ -1,0 +1,29 @@
+@flexiarg aif/temporal-depth-beyond-greedy
+@title Temporal Depth Beyond the Greedy Step
+@sigils [🐜/专]
+@audience fulab agents, aif implementers
+@tone technical
+@style pattern
+
+! conclusion: Genuine planning (R15) requires evaluating policies G(π) over a horizon and separating timescales; a single rollout step demonstrates the machinery, not the depth. Depth-1 is reactive control wearing planning's clothes.
+
+  + context: R15 asks for hierarchical / temporal depth — the agent evaluates policies over a horizon of several ticks (not just the next action), and represents goals that span many ticks via a slow loop that sets priors for a fast loop.
+
+  + IF:
+    You want the agent to plan — to prefer an action whose payoff is two or three ticks out over a greedy one-step win, and to pursue goals (like accumulating capability) that no single tick can achieve.
+
+  + HOWEVER:
+    A rollout that looks ONE step ahead — even one that passes a "2-step-beats-greedy" witness — demonstrates the MACHINERY (multi-step G(π) is computable) but not DEPTH. The horizon is still shallow, and without a temporal HIERARCHY (a slow loop shaping a fast one) the agent cannot represent a goal whose satisfaction is spread across many ticks. It reacts one step at a time and calls it planning.
+
+  + THEN:
+    Extend G(π) evaluation to a horizon H > 1 with a temporal discount, AND introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them. The slow loop is where accumulated learning (R12) and prior-preferences (R19) live; the fast loop is the per-tick act-gate. Couple the two so the fast loop's realized outcomes update the slow loop's priors.
+
+  + BECAUSE:
+    Active inference plans by minimizing expected free energy over a POLICY (a temporally-extended sequence), not over the next action alone. A depth-1 evaluation cannot distinguish a locally-optimal dead-end from a step toward a distant goal. Temporal hierarchy is also the natural home for the capability curriculum ("work descends into capability") — a payoff that only a slow loop can score.
+
+  + NEXT-STEPS:
+    - DONE: rollout apparatus + the 2-step-beats-greedy witness (`futon2.aif.rollout`). Evidence: futon2/docs/futon-aif-completeness.md R13.
+    - Extend rollout to a configurable horizon H with a temporal discount; report G(π) per horizon, not just the winning first action.
+    - Introduce fast/slow timescale separation: the WM's strategic tick as the slow loop; a faster inner act-gate as the fast loop.
+    - Wire the slow loop to R12 (dual-loop hyperparameter inference) and R19 (prior preferences): realized outcomes over a horizon update the priors the fast loop scores against.
+    - Guard: report the horizon actually evaluated. A depth-1 evaluation labelled "planning" is the R15 anti-pattern (sibling to R16's re-observe-your-own-construction).

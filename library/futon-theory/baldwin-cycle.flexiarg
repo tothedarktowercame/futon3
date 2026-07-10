@@ -18,6 +18,11 @@
     adaptation becomes compile-time structure. This is how systems accumulate
     capability without losing auditability.
 
+  + IF:
+    You want a system to accumulate capability without losing auditability:
+    what starts as runtime adaptation should become compile-time structure,
+    so that goals once reached through search are eventually reached structurally.
+
   + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
     + ANTI-PATTERNS:
       - Learning without assimilating (ghost capabilities, unreplayable)

@@ -1,0 +1,40 @@
+@flexiarg data-mining/fan-out-independent-runs-across-devices
+@title Fan Out Independent Runs Across the Idle Devices — Right-Size the Box, Then Saturate It
+@keywords training, gpu, multi-gpu, ablation, parallelism, throughput, cost, utilization, right-sizing
+@audience data-mining and model-training pipeline authors
+@tone technical
+@style pattern
+@references [data-mining/saturate-the-accelerator-with-concurrency data-mining/checkpoint-the-long-run data-mining/smoke-before-the-paid-run]
+
+! conclusion: When a rented multi-GPU box runs a job that fits on ONE device, and the run is really several INDEPENDENT sub-runs (ablation arms, seeds, hyperparameter points), do not run them sequentially on GPU 0 while GPUs 1..k sit idle. Pin each independent run to its own device (`CUDA_VISIBLE_DEVICES=i`) and launch them concurrently — the box finishes all arms in roughly one arm's wall-clock instead of the sum. And ask the prior question first: if the model only needs one GPU, a 4-GPU box is only worth renting BECAUSE you will fan the arms across it — otherwise right-size down to a 1-GPU box. This is the training-run sibling of saturate-the-accelerator-with-concurrency: there the unit of parallelism is concurrent requests on one card; here it is concurrent independent runs across cards.
+
+  + context: A fold-embedding ablation (text / struct / hybrid) is provisioned on a `g2-gpu-rtx4000a4-s` — RTX4000 Ada x4. The GNN is a 2-layer SAGE over ~63k nodes / ~168k edges: it fits comfortably on one card and leaves the SM mostly idle. The runner loops the three arms one after another, so for the whole run three of the four rented GPUs do nothing, and the wall-clock is arm1+arm2+arm3 — paying 4-GPU prices for 1-GPU-at-a-time work.
+
+  + IF:
+    You have provisioned a multi-accelerator box (or a multi-GPU node) and your workload is either (a) a single-device-sized model run several times over independent configurations, or (b) any batch of runs with no data dependency between them.
+
+  + HOWEVER:
+    The natural script — `for arm in arms: train(arm)` — serializes the arms onto whichever device the framework grabs first (usually GPU 0), so utilization is 1/k of the box for the entire run and wall-clock is the sum of the arms. It LOOKS busy (one GPU is hot) but the box is (k-1)/k idle. The opposite error is also common: renting the big box out of habit for a model that never needed more than one card, then never using the extra devices at all.
+
+    + FAILURE-MODES:
+      - Idle-siblings: `nvidia-smi` shows one GPU at load and the rest at 0% for the whole run — the multi-GPU tell for independent-run serialization (the analogue of `Running: 1 reqs`).
+      - Wrong-size box: a one-GPU job on a k-GPU box with no fan-out — pay k times over for nothing; right-size to a 1-GPU box instead.
+      - Contention from naive fan-out: launching all arms with no device pinning → they all land on GPU 0 and OOM/thrash, while 1..k-1 stay idle. Pin explicitly.
+      - Log interleaving / lost failures: backgrounded arms write to the same stream; a crashed arm is missed. Give each its own logfile and `wait`, then check every exit code.
+      - Shared-output clobber: arms writing the same artifact path race. Namespace outputs per arm (scorecard-<arm>, embeddings-<arm>).
+
+  + THEN:
+    Size the box to the model first: if one device suffices and you have exactly one config, rent one GPU. If you have k independent configs, rent k devices (or use the k you have) and fan out — one process per arm, each pinned `CUDA_VISIBLE_DEVICES=i`, launched in the background, each to its own logfile and its own output namespace; then `wait` and check every exit code before summarizing. Keep a cheap PROBE arm first if you also want an early quality gate ([[data-mining/the-first-checkpoint-is-a-quality-probe]]): run the cheapest arm alone, gate it, then fan the rest across the remaining devices. Confirm the win with `nvidia-smi` showing all k devices under load.
+
+  + BECAUSE:
+    Independent runs are embarrassingly parallel at the run level, and a rented box bills for ALL its devices whether or not you use them — so the only way a k-GPU box is cheaper-per-result than a 1-GPU box is if k results compute at once. Fanning independent arms across the devices converts idle silicon into a k-fold wall-clock (hence cost) reduction on the same rental, for the price of a device-pinning loop. The discipline pairs with right-sizing: decide how many devices the work actually needs, then keep every one of them busy.
+
+    + EVIDENCE (2026-07-01, design-time — E-fold-embed-pipeline, pre-run):
+      - Box `g2-gpu-rtx4000a4-s` = RTX4000 Ada x4; model = 2-layer SAGE over 62,967 nodes / ~168k undirected edges — one-GPU-sized, low SM utilization.
+      - `linode-fold-embed.sh` loops MODES="text struct hybrid" sequentially → 3 of 4 GPUs idle for the whole run; wall-clock = sum of three arms.
+      - Projected: pin arms to `CUDA_VISIBLE_DEVICES` 0/1/2 and launch concurrently → ~3x wall-clock reduction on the same rental; or run a cheap text-arm probe first (gate), then fan struct+hybrid across two cards.
+      - Not yet measured (the run is separately blocked on the empty-cascade dataset bug); the utilization gap is a static fact of the current script + box, the speedup is the projected payoff.
+
+  + NEXT-STEPS:
+    - evidence: record per-device utilization (`nvidia-smi`) and total wall-clock, sequential vs fanned-out, to quantify the speedup and confirm no cross-arm contention.
+    - evidence-shape: {:devices :int, :arms :int, :util/per-device [:float], :wallclock/sequential-s :float, :wallclock/fanned-s :float, :speedup :float}

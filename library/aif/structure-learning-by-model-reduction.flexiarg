@@ -1,0 +1,33 @@
+@flexiarg aif/structure-learning-by-model-reduction
+@title Structure Learning by Bayesian Model Reduction (the third optimisation level)
+@sigils [✂️/简]
+@audience fulab agents, aif implementers, designers of concept-formation
+@tone technical
+@style pattern
+
+! conclusion: Structure Learning (R17) is the third optimisation level, beyond inference and parametric (Hebbian) learning: OFFLINE, it prunes and merges redundant model structure by Bayesian Model Reduction (BMR) over accumulated Dirichlet counts — accepting a reduced model when ΔF ≤ −3 (Bayes factor ≈ 20). Parametric learning only sharpens existing structure; only model reduction reorganises it.
+
+  + context: The Active Inference Framework has three optimisation levels (Neacsu 2024, after Friston, Parr et al. 2018). (Active) Inference minimises variational free energy over states and policies (online, moment-to-moment). Parametric Learning accumulates Dirichlet concentration counts — mathematically Hebbian plasticity (online, gradual). Structure Learning selects among model *structures* by model evidence (offline, between periods of engagement). The first two cannot reorganise the model; they only sharpen what is already there. Concept formation, generalisation, and "these two contexts are the same" collapse require the third.
+
+  + IF:
+    You want the agent to form concepts and reorganise its generative model — merge look-alike states, prune redundant likelihood connections, generalise across contexts — using accumulated experience but NO new data, offline (the sleep/consolidation regime).
+
+  + HOWEVER:
+    Parametric (Hebbian) accumulation alone cannot do this. Adding more Dirichlet counts only sharpens existing state–outcome mappings; it never removes a connection or ties two states together. An agent that only accumulates will represent every context as distinct forever (no generalisation), keep every redundant parameter (no complexity control), and never form the "these two rooms are the same" concept. Model *comparison* is a different operation from parameter *estimation*, and you cannot make a static count-accumulator do a model-selection loop's job.
+
+  + THEN:
+    Implement Structure Learning as Bayesian Model Reduction over the Dirichlet concentration parameters. Given a full (parent) model with prior `a` and accumulated posterior `A`, and a reduced/alternative model with prior `a'`, compute analytically:
+      reduced posterior  `A' = A + a' − a`
+      free-energy change `ΔF = ln B(A) + ln B(a') − ln B(a) − ln B(A')`   (`B` = multivariate beta)
+      accept the reduction (prune/merge) when `ΔF ≤ −3` (Bayes factor ≈ 20; the reduced model is ~20× more likely).
+    Construct the alternative models to reflect the LEARNT associations (data-informed alternatives, as the thesis does): e.g. a "merge states i,j" hypothesis whose reduced prior ties j's profile to i's (a pooled row). Run offline, in a quiet window (BMR is heavy), triggered by accumulated new evidence — NOT per-tick. The surviving reduced structure IS the concept.
+
+  + BECAUSE:
+    Model evidence — not more data — is what reorganises concepts. BMR is the analytic, closed-form, biologically-plausible (synaptic regression / pruning during sleep) operator that scores a reduced model against its parent using only the accumulated posteriors and the priors, with no reinversion. It is the AIF-canonical mechanism for the third optimisation level, and it grants the rapid, insight-like learning that gradual Hebbian accumulation cannot: Neacsu 2024 Ch.4 shows BMR-endowed agents accumulate more reward AND higher information gain than accumulation-only agents.
+
+  + NEXT-STEPS:
+    - DONE (2026-07-08, 4064533): pure BMR kernel — closed-form ΔF over Dirichlet params + Dirichlet moments. Reviewed as a real gate: the sign is pinned by redundant-vs-informative tests (ΔF ≈ −5.5 accept / +8.2 reject), log-gamma verified against known values. Evidence: futon2/src/futon2/aif/bmr.clj.
+    - DONE (2026-07-08, 8200f08): concept-formation pipeline — corpus→concentration→pairwise merge-hypotheses→equivalence-class concepts→capability-star docs. Neacsu-faithful (pooled-from-data reduced prior) and evidence-conservative: a merge needs accumulated repeated co-occurrence to cross −3 (A–B ΔF −2.12 at +1 count → no merge; −4.33 at +20 → merge). Evidence: futon2/src/futon2/aif/a4a.clj.
+    - OPEN / demo-validated (the honest status for the R-map): on the current demo corpus — 0 `:capability/*` edges, 3 discharges over 35 capabilities — NO merges fire (~6× below the threshold). The mechanism is validated synthetically; real concept-formation awaits the `:capability/*` production write. Evidence: futon2/holes/M-a4a-structure-node.md.
+    - Anti-pattern to name explicitly: `accumulate-without-reduce` — believing that Hebbian count accumulation IS structure learning. It sharpens; it never reorganises. Structure Learning is a distinct, offline, model-comparison step (BMR / BME / BMS), not a limit of parametric learning.
+    - Respect `currency-before-merge`: a merge that collapses two concepts is a STRUCTURAL edit, not merely a count sum — it must honour any accumulation-currency invariants downstream.

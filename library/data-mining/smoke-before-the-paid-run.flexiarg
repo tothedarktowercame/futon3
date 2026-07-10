@@ -1,0 +1,37 @@
+@flexiarg data-mining/smoke-before-the-paid-run
+@title Smoke-Test the Prompt on a Held-Out Sample Before the Paid Full Run
+@keywords mining, llm, gpu, smoke-test, cost, prompt, sample, held-out
+@audience data-mining pipeline authors
+@tone technical
+@style pattern
+@references [data-mining/gates-as-code data-mining/constrain-extraction-to-the-downstream-vocabulary]
+
+! conclusion: Before running a paid LLM/GPU pass over a large corpus, run a small `--limit` pass through the REAL backend and check the quality ratios against pre-declared bands. Stub/plumbing mode does not exercise the prompt, so plumbing-green never implies output-good. A 50%-bad output should cost cents to discover at n≈12, not the price of the whole corpus to discover after.
+
+  + context: A futon meme-mining run made a full Linode GPU pass over ~1.3k turns; only on post-run review did ~50% of the `op` field turn out useless and `new_patterns` fire on 95% of asks. A 12-ask real-backend smoke would have surfaced both immediately.
+
+  + IF:
+    You are about to send a large corpus through a metered model (per-token API, or a rented GPU box) using a prompt/extraction schema that has not itself been validated on that backend.
+
+  + HOWEVER:
+    The prompt's failure modes (over-firing a label, drifting a field to the wrong vocabulary, mis-formatting JSON) are invisible until the real model runs — and a stub/dry-run exercises only the plumbing, not the model's judgement. Discovering them after the full run means paying for a corpus of mostly-bad output.
+
+    + FAILURE-MODES:
+      - Pay-then-discover: full GPU pass completes; review finds half the output unusable; the spend is sunk.
+      - Stub false-confidence: stub run is green (schema validates, no crash) → scale → the model's actual output is garbage.
+      - Leakage: smoke drawn from the same items used to build the few-shot/golden → inflated quality estimate.
+
+  + THEN:
+    Run `--limit ~12 --backend <real>` first, on a HELD-OUT slice (disjoint from any golden/few-shot set). Eyeball the cheap ratios against bands you wrote down in advance (the preregistration / runner spec): e.g. label-firing rate, field-vocabulary share, endpoint-grounding split. Scale to the full corpus ONLY when the smoke is in band. If a band fails, fix the prompt and re-smoke — each cycle is cents. When two levers change at once (prompt + priming), A/B them on the SAME held-out slice to attribute the gain.
+
+  + BECAUSE:
+    The cost asymmetry is enormous: a smoke is ~1% of the run but catches the failures that would otherwise contaminate 100% of it. This is the substance-gate ([[data-mining/gates-as-code]]) applied BEFORE spending rather than after.
+
+    + EVIDENCE (2026-06-25, futon6 meme/goals-holes mining):
+      - Forward run shipped ~50% discourse-not-operation `op` + `new_patterns` on 95% of asks, found only post-run.
+      - The fix's A/B on a held-out batch (asks 13-24): new_patterns 75% (old) -> 27% (tightened INSTR) -> 8% (INSTR + golden priming). The 27% would have FAILED the gate; only the smoke revealed priming was needed.
+      - `holes/meme-mine-runner-spec.md` now carries a "smoke-test gate" section with explicit bands.
+
+  + NEXT-STEPS:
+    - evidence: record the per-band smoke ratios vs the full-run ratios; quantify how much the smoke predicted.
+    - evidence-shape: {:run/limit :int, :band/name :keyword, :band/threshold :float, :smoke/value :float, :full/value :float, :passed? :bool}

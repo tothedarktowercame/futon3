@@ -17,6 +17,15 @@
     and programs are proofs. Futon theory operationalizes this: specifications
     are claims about future state, and proof paths demonstrate those claims.
 
+  + IF:
+    You want to move from an intended future state to one that is actually
+    achieved, and to treat each operation as a claim about that state.
+
+  + HOWEVER:
+    Without the Curry-Howard correspondence, code is arbitrary text and specs
+    are wishful thinking, so there is nothing that demonstrates the intended
+    state is achievable rather than merely asserted.
+
   + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
     + IMPLICATIONS:
       - Untyped code = claims without proof (risky)

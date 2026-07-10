@@ -1,0 +1,38 @@
+@flexiarg data-mining/checkpoint-the-long-run
+@title Checkpoint the Long Run — A Crash Must Not Cost the Whole Pass
+@keywords mining, llm, gpu, checkpoint, durability, crash, resume, cost, robustness
+@audience data-mining pipeline authors
+@tone technical
+@style pattern
+@references [data-mining/saturate-the-accelerator-with-concurrency data-mining/smoke-before-the-paid-run]
+
+! conclusion: A multi-hour mining run that accumulates results in memory and writes once at the end can lose everything to a single bad record, a killed process, or a dropped connection. Make the run durable: normalize nullable model fields before use, build each output record INSIDE the per-item try (so one malformed item is skipped, not fatal), and flush a checkpoint every N records. The end-of-loop write is not a safety net — the run must never reach it to have produced value.
+
+  + context: A futon meme-mining run made all-but-the-last of ~1400 GPU calls, then died in the post-loop summary on one record whose `new_patterns` field was JSON `null` (`len(None)`). Because results were held in memory and written only after the loop, ~400 asks of completed GPU work were lost — nothing on disk but a stale earlier file. A second bug (`KeyError` on a missing endpoint) and a tunnel drop both threatened the same total loss.
+
+  + IF:
+    You are running a model over a large corpus where each item costs real time/money (metered GPU or API) and the run takes long enough that a crash, kill, OOM, spot-reclaim, or network drop partway through is plausible.
+
+  + HOWEVER:
+    The natural shape — append to a list in the loop, `json.dump` after the loop — means any failure before the final line discards 100% of the work. And model output is adversarial to that shape: an LLM emits `null` for "empty" list fields and omits keys entirely, so a single record can raise mid-loop and abort `main()` before the write. Holding everything in memory makes the blast radius of any late failure the entire run.
+
+    + FAILURE-MODES:
+      - Late-crash-total-loss: results live only in memory; a kill/exception/OOM after hour 3 leaves zero on disk.
+      - Null-field abort: `len(r["field"])` / `r["field"][i]` on a field the model returned as `null` or omitted → one record kills the run. (`r.get("field", [])` does NOT save you when the key is present-but-null — use `r.get("field") or []`.)
+      - Aggregation-outside-the-try: only the model CALL is wrapped in try/except, but the record-build/aggregation is not → a malformed response escapes the per-item guard and aborts the loop.
+      - Modulo-boundary skip ("Y2C"): `if len(out) % N == 0` can be stepped over when an item appends more than one record (199 → 201 skips the ==200 test) → checkpoint silently never fires. Use a since-last counter: `if len(out) - last_ckpt >= N`.
+
+  + THEN:
+    (1) Normalize every nullable model field to its empty form before any `len`/iterate (`r["x"] = r.get("x") or []`). (2) Build the output record INSIDE the per-item try, so a bad record hits the existing "skip and continue" path, never `main()`. (3) Flush a checkpoint to the output file every `>= N` new records using a since-last counter, not a modulo. (4) Make the final write idempotent with the checkpoints (same path). For added robustness, support resume-from-checkpoint and bound per-request loss with a client timeout + retry rather than one long blocking attempt.
+
+  + BECAUSE:
+    The expensive, irreplaceable thing is the GPU/API work already done; everything else is cheap. Durability turns any failure into "lose the last N items" instead of "lose the whole pass," which is the difference between re-running a few minutes and re-buying hours of compute. Checkpoints also make the in-progress output inspectable — enabling early quality gating ([[data-mining/smoke-before-the-paid-run]]) without waiting for completion.
+
+    + EVIDENCE (2026-06-25/26, futon6 meme & goals-holes mining):
+      - `new_patterns: null` → `len(None)` aborted `main()` after ~1400 GPU calls, before the end-of-loop write → ~400 asks lost (total, in-memory-only).
+      - Fix: null-normalize + build-record-in-try + checkpoint-every-200 (since-last counter). Re-runs then survived a `KeyError`-class bug and a mid-run stop with only bounded loss.
+      - The modulo form was caught live: a backward run appending reach+correction per pair stepped 199→201 and wrote its first chunk at 400, not 200 — confirming the since-last counter is the correct form.
+
+  + NEXT-STEPS:
+    - evidence: log each checkpoint (record count + path); on any abort, confirm the on-disk count equals the last checkpoint, not zero.
+    - evidence-shape: {:checkpoint/every :int, :records/at-crash :int, :records/on-disk :int, :loss/bounded? :bool, :nullable-fields/normalized :int}

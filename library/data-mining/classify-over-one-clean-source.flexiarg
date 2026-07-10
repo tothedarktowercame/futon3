@@ -1,0 +1,37 @@
+@flexiarg data-mining/classify-over-one-clean-source
+@title One Shared Provenance Classifier, Not Per-Consumer Filters That Drift
+@keywords mining, provenance, corpus, classifier, leak, operator, agent, harness, source
+@audience data-mining pipeline authors
+@tone technical
+@style pattern
+@references [data-mining/gates-as-code data-mining/smoke-before-the-paid-run]
+
+! conclusion: When a shared corpus commingles records of different provenance (e.g. operator vs inter-agent vs harness turns), do NOT let each consumer re-derive "is this the source I want?" with its own filter. Lift the test into ONE shared classifier every consumer calls. A leak that lives in the shared source reappears in every consumer that forgets the filter or implements it differently — and two will always disagree. Filter on AUTHORSHIP, not on surface tokens.
+
+  + context: The transcript Evidence Landscape delivers operator messages, inter-agent bells, and harness injects all as ordinary `user` turns. Two miners filtered "operator-only" differently; a bell phrased as a request slipped the forward filter, so ~7% of the forward "asks" were not the operator at all.
+
+  + IF:
+    Multiple consumers read the same corpus and each needs a subset defined by provenance (origin, author, role, channel) that is not a clean field but must be inferred.
+
+  + HOWEVER:
+    Provenance signals are non-uniform (a metadata field exists for new records, absent for legacy ones) and each consumer re-implements the inference independently. The filters drift; a record that one consumer excludes, another admits. Surface-token filters confuse MENTIONING an entity with BEING it.
+
+    + FAILURE-MODES:
+      - Drift: miner A keys on a metadata field, miner B on a keyword regex; a record passes B and fails A.
+      - Mention != authorship: "agent-3 is idle, whistle it" (the operator, third person) gets dropped as if it were an agent; "agent-1 -> agent-2: do X" (a real bell) gets kept as if it were the operator.
+      - Silent contamination: the leaked records are a minority, so the output looks fine but a slice is mis-sourced.
+
+  + THEN:
+    Extract ONE classifier — `classify(record) -> {source-A | source-B | harness | unknown}` — with an explicit precedence (trust the provenance metadata first; fall back to body heuristics only for legacy records lacking it). Route every consumer through it. Quantify the leak with an audit that replays each consumer's OLD acceptance test and reports how many admitted records the shared classifier now rejects. Where the corpus itself can be tagged at ingestion, do it once at the source so consumers filter on a field instead of re-deriving — and note that fixing the CODE does not fix already-produced DATA (re-run or post-filter the artifact).
+
+  + BECAUSE:
+    The leak is a property of the shared source, not of any one reader. N per-consumer filters are N chances to drift; one classifier is one place to audit and raise the standard. Authorship is the invariant; surface tokens are not.
+
+    + EVIDENCE (2026-06-25, futon6; holes/E-patch-agent-evidence-leaks.md):
+      - `scripts/transcript_provenance.py` `classify`/`is_operator`, seeded by the validated backward miner's `promptSource` logic; both miners (`read_pairs`, the previously-unaudited `read_asks`) routed through it.
+      - Forward leak measured (`audit_transcript_provenance.py`): 106/1480 ask-candidates (7.2%) were non-operator (24 agent + 59 harness); the old filter missed `promptSource` sdk/system bells entirely.
+      - The CODE fix did not clean the existing artifact — `postfilter_meme_mine_leak.py` dropped 78/1330 leaked records from the already-mined output (re-derived provenance by indexing the live corpus).
+
+  + NEXT-STEPS:
+    - evidence: tag provenance at ingestion (sidecar or durable field); re-point consumers to the tag; measure remaining re-derivations.
+    - evidence-shape: {:source/operator :int, :source/agent :int, :source/harness :int, :leak/old-accepted :int, :leak/now-rejected :int}

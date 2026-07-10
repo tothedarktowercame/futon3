@@ -34,6 +34,15 @@
         `structure/mana-allostasis`) is an operator-attestable act,
         not an agent action.
 
+  + IF: You are discussing budget / license / mana around agents, or reading
+    the mana-allostasis frame and wondering where the unit of accounting came
+    from — the p4ng-era reading that treats agents as the natural unit.
+
+  + HOWEVER: The agent-as-unit framing did not survive contact with operational
+    reality: one operator's session routes through multiple agents in tight
+    sequence, the felt cost of allostatic load is borne by the operator not any
+    agent, and block-closure is an operator-attestable act, not an agent action.
+
   + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
     + DIAGNOSTIC:
       Whenever discussing budget/license/mana around agents, check the
@@ -76,3 +85,14 @@
         3. *Per-agent metabolic state* — that "this agent is tired"
            is meaningful. It isn't. The operator is the one who tires;
            agents are stateless across calls.
+
+  + BECAUSE: An agent has no metabolism, continuity, or attestation beyond
+    its turn — its continuity lives in the session that hosts it, and only the
+    operator can attest work-completion — so mana attaches to sessions, not
+    agents. The precursor was right about the shape (some notion of
+    budget/credit/dana is needed) but wrong about the unit.
+
+  + NEXT-STEPS:
+      - Whenever budget/license/mana is discussed around agents, check the unit; if "agent X is over budget" loses meaning when restated about the session containing X, restore the session-unit framing.
+      - Keep the budget concept and reattach it to sessions, per structure/mana-allostasis and nonstarter_mana.clj's --session parameter.
+      - Carry the corrected unit into the family-level candidate invariant budgeted-action-selection/mana-gated-work.

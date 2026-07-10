@@ -20,3 +20,11 @@
 
   + THEN:
     Name the direct levers, the indirect levers, and the out-of-scope conditions explicitly, and keep the out-of-scope ones visible in later verification.
+
+  + BECAUSE:
+    Not every institutional condition is equally movable by a network service, so a design that types its own levers is more honest, more governable, and easier to evaluate than one that implies uniform control.
+
+  + NEXT-STEPS:
+    - Name the direct levers UKRN Services can move by contract or routine.
+    - Name the indirect levers it can influence only through evidence and pressure.
+    - Name the out-of-scope conditions that remain prior constraints, and keep them visible in later verification.

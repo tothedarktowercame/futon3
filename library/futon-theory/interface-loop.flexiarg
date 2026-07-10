@@ -18,6 +18,16 @@
     training phase, Baldwin cycles run at each interface, accumulating
     improvements incrementally.
 
+  + IF:
+    You are working in a layered futon architecture (L0 → L1 → L2 → ...) and
+    want cumulative functional gain, treating each layer boundary as an
+    opportunity for local learning.
+
+  + HOWEVER:
+    Relying on one global training phase is expensive and opaque; without local
+    loops at each interface, boundaries are not converted into learning and
+    accumulation opportunities.
+
   + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
     + COMPOSABILITY:
       Same InterfaceLoop structure works at:
@@ -82,3 +92,8 @@
       Interface gain = (cost_before_canalization - cost_after) / exploration_cost
       Positive gain: Canalization paid off
       Negative gain: Exploration wasn't worth it (learn from this)
+
+  + NEXT-STEPS:
+    - Define concrete interface loops at each named boundary (L0↔L1 storage/identity, L1↔L2 identity/integrity, L2↔L3 integrity/auth) in the mission docs.
+    - Instrument the gain metric per loop and record it in LOOP_END (interface, final exotype hash, gain).
+    - Emit the evidence package (exploration, adaptation, fixation, compression) for each loop so canalization is auditable.

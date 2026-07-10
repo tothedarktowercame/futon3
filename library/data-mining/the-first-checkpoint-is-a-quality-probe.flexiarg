@@ -1,0 +1,38 @@
+@flexiarg data-mining/the-first-checkpoint-is-a-quality-probe
+@title The First Checkpoint Is a Quality Probe — Gate Early, Then Let It Ride
+@keywords mining, llm, gpu, quality, gate, early-stop, checkpoint, cost, monitoring
+@audience data-mining pipeline authors
+@tone technical
+@style pattern
+@references [data-mining/gates-as-code data-mining/checkpoint-the-long-run data-mining/smoke-before-the-paid-run]
+
+! conclusion: Once a run is fast and checkpointed, you do not have to choose a corpus size up front or wait for the whole pass to learn whether the output is good. Run the FULL corpus, but gate-check the first durable checkpoint (a few hundred records) and bail there if quality fails. The early checkpoint is a free, larger, in-distribution quality sample — better than the pre-run smoke and available within minutes. This dissolves the "cap it to be safe vs. process everything" dilemma.
+
+  + context: A backward belly-mining run had been capped at 1500 of 3682 pairs to bound cost when it ran slowly. After concurrency made it fast (~2 h for all 3682), the cap lost its rationale. The operator's insight: "we'll know after 200-400 entries if quality is good" — so the right move was to launch the full corpus and gate the first checkpoint, riding to completion only if it passed, rather than pre-committing to a partial run.
+
+  + IF:
+    Your mining run is fast enough that the full corpus is affordable (e.g. concurrency-batched) AND it checkpoints to disk periodically AND you have a runnable quality gate ([[data-mining/gates-as-code]]).
+
+  + HOWEVER:
+    Two stale habits fight this. (1) Capping the corpus "to be safe" — a hedge against a slow/expensive run that no longer applies once the run is fast, and that needs awkward offset/merge plumbing to extend later. (2) Waiting for the full run to finish before judging quality — which wastes the whole spend if the prompt regressed, exactly the failure the pre-run smoke guards against but at full scale.
+
+    + FAILURE-MODES:
+      - Premature cap: pick LIMIT=1500 to be safe, get good output, then need 1500-3682 anyway → re-run or build offset/resume to "do the rest."
+      - Pay-to-the-end-then-judge: let all 3682 run, discover at the end the label over-fires → full spend wasted (the smoke lesson, un-applied to the live run).
+      - Gate-on-the-smoke-only: an n=12 pre-run smoke can miss a failure mode that a 300-record checkpoint surfaces; treating the smoke as the only gate forgoes the bigger free sample.
+      - Auto-continue without reporting: ride to completion on a borderline early gate without surfacing the numbers to the owner.
+
+  + THEN:
+    Launch the full corpus (LIMIT=0) with checkpointing on. When the first checkpoint lands (~200-400 records), run the gate on it and read the ratios. If it PASSES, let the run ride to completion — one clean pass, no offset/merge. If it FAILS, that is the bail point: stop the run, keep the cheap partial, and fix-and-retry — you have spent minutes, not the whole corpus. Surface the early numbers to the owner either way; auto-continue only on a clear pass.
+
+  + BECAUSE:
+    A checkpoint is already on disk for durability ([[data-mining/checkpoint-the-long-run]]); reusing it as a quality probe is free. A few-hundred-record sample is a far stronger quality estimate than an n=12 smoke and arrives within minutes of a fast run, so the marginal cost of "find out you were wrong" drops to near zero — which is exactly what lets you safely point the run at the entire corpus instead of a hedged subset.
+
+    + EVIDENCE (2026-06-26, futon6 goals-and-holes mining):
+      - Concurrency cut the 3682-pair run from ~12-15 h (capped at 1500) to ~2 h (full), removing the cost rationale for the cap.
+      - n=12 pre-run smoke gate-PASSED but contained 0 genuine corrections (continuation-heavy slice) — it could prove "no false-firing" but not exercise correction precision; a 200+ record checkpoint samples both far better.
+      - Plan adopted: run LIMIT=0, gate the first checkpoint, ride to 3682 on pass / bail on fail.
+
+  + NEXT-STEPS:
+    - evidence: compare the early-checkpoint gate ratios to the final full-run ratios; quantify how predictive the first checkpoint was.
+    - evidence-shape: {:checkpoint/records :int, :gate/passed? :bool, :early/correction-share :float, :final/correction-share :float, :decision :keyword}

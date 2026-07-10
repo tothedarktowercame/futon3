@@ -15,6 +15,11 @@
   + context: The proof path is the core unit of work in futon theory. It embodies
     the Curry-Howard correspondence: programs are proofs of their specifications.
 
+  + IF:
+    You are making a change to the FUTON stack and need it to be auditable
+    and defensible: every bug should be traceable from symptom to cause, with
+    intent, operation, change, and verification linked as durable evidence.
+
   + HOWEVER: The structural tension above manifests in the following concrete shapes (see substructure).
     + CONCURRENCY-AND-PARTIAL-FAILURE:
       This protocol assumes a single-writer linear chain. Open constraints:
@@ -57,3 +62,8 @@
     Without proof paths, changes are unauditable. With them, any bug can be
     traced from symptom to cause through the evidence chain. The spec mediates
     future state into present; the proof path is how we get there defensibly.
+
+  + NEXT-STEPS:
+    - Author a concurrency-protocol pattern for multi-writer proof paths (conflict detection at APPLY_CHANGE or serialization at PROOF_COMMIT).
+    - Specify partial-apply handling: VERIFY detects, and the path either completes rollback or spawns a repair path.
+    - Ground each phase in domain patterns (storage/durability-first for PROOF_COMMIT; session lifecycle for CLOCK_IN/CLOCK_OUT; the verification DSL for VERIFY).

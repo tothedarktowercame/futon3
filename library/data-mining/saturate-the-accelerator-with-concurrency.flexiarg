@@ -1,0 +1,38 @@
+@flexiarg data-mining/saturate-the-accelerator-with-concurrency
+@title Saturate the Accelerator — Fan Out Concurrent Requests, Don't Mine One-at-a-Time
+@keywords mining, llm, gpu, concurrency, batching, throughput, vllm, latency, cost
+@audience data-mining pipeline authors
+@tone technical
+@style pattern
+@references [data-mining/smoke-before-the-paid-run data-mining/checkpoint-the-long-run]
+
+! conclusion: A mining client that sends ONE request at a time leaves the accelerator mostly idle — the throughput you measure is a single request's worth, not the card's capacity. Modern inference servers (vLLM, TGI, most hosted APIs) continuous-batch concurrent requests, so fan out N in-flight requests (a thread pool or async) and the server overlaps them on the same GPU. The win is large (often ~5-10x), free (no extra hardware), and it is usually the single biggest throughput lever in a corpus-mining run.
+
+  + context: A futon goals-and-holes backward run mined ~3.7k turns through a rented 4-GPU box, sequentially — one HTTP request, wait for the full generation, then the next. It crawled at ~3-5 req/min and projected to 12-15 h; it was aborted. The bottleneck was diagnosed as the client serializing, not the GPU: vLLM reported `Running: 1 reqs` — the card was waiting for the client between every generation. Re-run with an 8-way thread pool, the same box showed `Running: 8 reqs` and finished the same work in ~2 h.
+
+  + IF:
+    You are running a model over a large corpus to extract structured records, one record per item, against an inference server (rented GPU with vLLM/TGI, or a hosted API) that supports concurrent requests.
+
+  + HOWEVER:
+    The obvious loop — `for item in corpus: r = call(item)` — issues exactly one request at a time and blocks on each full generation (tens of seconds for a long output). The accelerator sits idle during the client's parse/retrieve/dispatch gap and is never given more than one request's worth of work, so measured throughput reflects per-request latency, not the server's batch capacity. It LOOKS GPU-bound; it is actually client-serialized.
+
+    + FAILURE-MODES:
+      - Idle-accelerator: server shows `Running: 1 reqs` (or low GPU SM utilization) the whole run — the tell that you are latency-bound, not throughput-bound.
+      - Latency-mistaken-for-speed-limit: "it's just a slow quantized 70B" — but per-request latency is irrelevant to corpus throughput when requests can overlap.
+      - Unbounded fan-out: submitting all N items at once with no cap → server queue blows up / OOM. Cap concurrency to what the KV cache allows.
+      - Shared-state races: workers touching a non-thread-safe cache/accumulator. Warm caches once before the pool; checkpoint/aggregate on the main thread.
+
+  + THEN:
+    Wrap the per-item call in a bounded pool — a `ThreadPoolExecutor(max_workers=N)` is enough because the work is I/O-bound (the HTTP wait releases the GIL), or use async. Start N≈8 and confirm the server reports `Running: ~N reqs` (proof of batching); raise N while KV-cache headroom and latency allow. Keep retrieval/normalization in the worker, but do checkpointing and running-stats on the ONE consumer thread (no locks). Warm any shared prompt-prefix / few-shot cache once before fanning out so the server prefix-caches it across all workers. Expose N as a knob (`--concurrency` / env) so it is tunable per box and reversible to 1.
+
+  + BECAUSE:
+    Corpus mining is embarrassingly parallel at the item level and inference servers are built to batch — the GPU's peak tokens/s is reached with many concurrent sequences, not one. Overlapping the client's gaps and the server's batching converts per-request latency from a throughput ceiling into a non-issue. The cost of the change is a few lines; the payoff is a multi-hour run becoming a sub-hour one on the SAME rented hardware (directly lowering metered spend).
+
+    + EVIDENCE (2026-06-25/26, futon6 goals-and-holes mining):
+      - Sequential: ~3-5 req/min, `Running: 1 reqs`, 3682 pairs → ~12-15 h ETA (aborted). Diagnosis: client-serialized, GPU idle between requests.
+      - 8-way ThreadPool: `Running: 8 reqs` confirmed; 12-pair smoke in 33 s (~22/min incl. startup); full run steady ~30/min; per-request latency med ~16 s / p95 ~32 s (unchanged — concurrency cut wall-clock, not per-call time).
+      - Result: the same corpus that was non-viable overnight became a ~2 h run; closer region (Frankfurt vs Chicago) helped tunnel reliability but throughput was the concurrency win, not the latency one.
+
+  + NEXT-STEPS:
+    - evidence: record `Running: N reqs` (or GPU SM%) at steady state, plus req/min at concurrency 1 vs N, to quantify the speedup and find the KV-cache ceiling.
+    - evidence-shape: {:concurrency :int, :server/running-reqs :int, :throughput/req-per-min :float, :latency/p50-s :float, :latency/p95-s :float, :kv-cache/util :float}

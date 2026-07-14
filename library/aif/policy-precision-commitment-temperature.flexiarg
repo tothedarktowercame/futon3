@@ -1,11 +1,11 @@
 @flexiarg aif/policy-precision-commitment-temperature
-@title Policy Precision as Commitment Temperature
+@title Selection Temperature as Commitment Control
 @sigils [🍲/由]
 @audience fulab agents, aif implementers
 @tone technical
 @style pattern
 
-! conclusion: Maintain a commitment temperature that modulates how strongly the policy commits to low-G choices.
+! conclusion: Maintain a commitment temperature that modulates how strongly the policy commits to low controller-score choices.
 
   + context: Even with identical scores, the agent sometimes should explore alternatives and other times should commit.
 
@@ -16,7 +16,7 @@
     Without an explicit (tau), the agent either thrashes or tunnels with no controllable dial.
 
   + THEN:
-    Maintain (tau) as a commitment temperature that modulates softmax over (-G/tau), coupled to diagnostic signals (recent regressions, uncertainty in (mu), contradiction rate, time pressure, repeated test failures).
+    Maintain (tau) as an engineering commitment temperature that modulates softmax over (-controller-score/tau), coupled to diagnostic signals (recent regressions, model uncertainty, contradiction rate, time pressure, repeated test failures). This is not variational policy precision.
 
   + BECAUSE:
     A single commitment dial allows systematic control of stochasticity without changing the scoring model.

@@ -4,13 +4,13 @@
 > *Happily the peaceful live, discarding both victory and defeat.*
 > — Dhammapada 201 (trans. Buddharakkhita)
 
-> *Hatred is never appeased by hatred in this world.*
-> *By non-hatred alone is hatred appeased. This is a law eternal.*
-> — Dhammapada 5 (trans. Buddharakkhita)
-
 > *Happy indeed we live, friendly amidst the hostile.*
 > *Among those who hate, we dwell free from hatred.*
 > — Dhammapada 197 (trans. Buddharakkhita)
+
+> *Hatred is never appeased by hatred in this world.*
+> *By non-hatred alone is hatred appeased. This is a law eternal.*
+> — Dhammapada 5 (trans. Buddharakkhita)
 
 > *War is a crime against humanity.*
 > *I am therefore determined not to support any kind of war,*

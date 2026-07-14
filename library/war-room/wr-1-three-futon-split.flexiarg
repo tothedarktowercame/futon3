@@ -1,0 +1,24 @@
+@flexiarg war-room/wr-1-three-futon-split
+@title WR-1: Three-Futon Split
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+
+! conclusion: Split a monolith whose concerns run at different timescales into separate, independently deployable loops.
+
+  + context: War Room decision WR-1 (2026-02-09). Operator: Joe. The founding split of futon3.
+
+  + IF:
+    futon3 handles pattern search, gate pipelines, library evolution, agent dispatch, forum coordination, and peripheral management.
+
+  + HOWEVER:
+    These operate at fundamentally different timescales and have different change rates.
+
+  + THEN:
+    Split into futon3a for search, futon3b for development, and futon3c for realtime coordination.
+
+  + BECAUSE:
+    Each loop should be independently deployable, testable, and evolvable. The Active Inference framework, invariant I3 timescale separation, demands that loops at different timescales be structurally separated.
+
+    + evidence: The futon3b mission for the coordination rewrite is complete and coherent without any reference to Agency, Forum, or peripherals. The futon3c realtime patterns are disjoint from the futon3b coordination patterns. futon3a already existed as a separate concern.

@@ -1,0 +1,22 @@
+@flexiarg war-room/wr-2-pattern-library-stays-canonical
+@title WR-2: Pattern Library Stays Canonical
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+
+! conclusion: Keep the shared pattern library in one canonical location so fast loops cannot silently modify their own constraints.
+
+  + context: War Room decision WR-2 (2026-02-09). Operator: Joe.
+
+  + IF:
+    All three futons read from the pattern library.
+
+  + HOWEVER:
+    The library should have one authoritative location.
+
+  + THEN:
+    The futon3 library remains the canonical source. futon3b and futon3c may keep local copies for testing but should not diverge from the canonical source.
+
+  + BECAUSE:
+    The library is the shared slow variable, invariant I3. Multiple copies with independent evolution would violate invariant I4, preference exogeneity: fast loops would be able to modify their own constraints.

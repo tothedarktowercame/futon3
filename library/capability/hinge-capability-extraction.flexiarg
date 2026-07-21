@@ -1,7 +1,38 @@
-# Capability vocabulary v0 — grounded in M-trip-journal hinge-log evidence
+@flexiarg capability/hinge-capability-extraction
+@title Hinge-level capability extraction with voice attribution
+@sigils [🔬/抽]
+@keywords capability, hinge, extraction, voice-attribution, agent-view, operator-turn, b/a-pair, mining, tagger, no-shift
+@audience the capability-mining pipeline tagger; agents proposing capability tags at hinges; reviewers checking tag evidence
+@tone declarative
+@factor Investigation (dhammavicaya)
+@references [capability/capability-vocabulary-v0 capability/capability-signature-vector structure/hinge-point]
+@references-extra ["Mission of origin: ~/code/futon5a/holes/missions/M-learning-loop.md (§1 completion criterion 2, §5 INSTANTIATE voice-boundary result)" "Producer: ~/code/futon5a/scripts/capability_mining.clj (tag-hinge, tag-text, parse-hinge-log)" "Voice-boundary result: 14 entities from real corpus; old whole-block miner inflated cross-mission intersection from 1 to 3 dimensions"]
 
-**IF:** a hinge-log entry records the operator crossing a structural cleavage in mission work.
-**HOWEVER:** the capability is only visible at the hinge if it was articulated — silent competence is invisible (M-learning-loop checkpoint-1, articulation-floor noise).
-**THEN:** tag the hinge with the capability dimension(s) it evidences, at the confidence the evidence supports.
-**BECAUSE:** the mining loop's output vocabulary must be constrained to what a downstream navigable hypergraph consumes — unconstrained discourse paraphrase is the over-firing failure mode (the meme miner over-fired "new pattern" at 95%).
-**NEXT-STEPS:** default to "no-capability-shift" (the common case); anchor rare labels (new-capability, capability-stalled) with frequency expectations so the tagger does not over-fire them.
+! conclusion:
+  At a hinge, extract capability tags per attributed voice (agent-view
+  vs operator-turn), not per block. Agent commentary and operator
+  turns are different evidence types: an agent noting "we designed a
+  pipeline" is not the same as an operator articulating "I learned to
+  cut scope." Without voice separation, agent prose contaminates every
+  operator reading.
+
+  + context: The mining pipeline splits each hinge into agent-view and
+    operator-turn entities (parse-hinge-log). Tags carry :voice so
+    procedural evidence from an agent-only hinge remains distinguishable
+    from an operator capability shift. A block with no attributed voices
+    is a surfaced parse error, not a silent no-shift.
+
+  + contrast: The pre-attribution miner tagged whole blocks. It
+    assigned four capabilities to all 5 M-daily-scan hinges and six to
+    all 9 M-trip-journal hinges because shared hinge prose and agent
+    commentary triggered every keyword. The attributed pass found only
+    two active dimensions in M-daily-scan and six variably-occurring
+    dimensions in M-trip-journal. This is the articulation-floor filter
+    working, not a tuned result.
+
+  + discipline: The tagger is deliberately narrow. Only match when the
+    keyword appears in a capability-claim context (near a capability
+    verb: develop, learn, recognise, surface, cut, name), not just
+    anywhere in the hinge text. Weak tags require the keyword near a
+    capability verb; strong tags require the compound phrase. Default
+    to no-shift when no contextual match fires.

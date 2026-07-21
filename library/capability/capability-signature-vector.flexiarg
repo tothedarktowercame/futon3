@@ -1,7 +1,28 @@
-# Capability signature as typed observation vector
+@flexiarg capability/capability-signature-vector
+@title Capability signature as typed observation vector
+@sigils [📐/相]
+@keywords capability, signature, typed-observation, feature-map, cross-mission, mining, normalisation, articulation-floor, confidence
+@audience the capability-mining pipeline (capability_mining.clj); downstream consumers scoring or comparing missions by capability; operators reviewing the capability matrix
+@tone declarative
+@factor Investigation (dhammavicaya)
+@references [capability/capability-vocabulary-v0 capability/hinge-capability-extraction aif/structured-observation-vector]
+@references-extra ["Mission of origin: ~/code/futon5a/holes/missions/M-learning-loop.md (§1 completion criterion 3, §5 INSTANTIATE capability-matrix)" "Producer: ~/code/futon5a/scripts/capability_matrix.clj" "Mining: ~/code/futon5a/scripts/capability_mining.clj (mission-signature function)"]
 
-**IF:** a mission has hinge-log evidence across multiple hinges.
-**HOWEVER:** raw tag-activation counts measure recording cadence, not capability development — normalise by baseline frequency (M-learning-loop checkpoint-1, articulation-floor noise).
-**THEN:** produce a typed feature map: {capability-dimension × {channel × confidence}} per mission, so cross-mission scoring is comparable without collapsing into prose interpretation.
-**BECAUSE:** the structured-observation-vector pattern applied at the cross-mission mining scale — a capability signature is a typed observation, not a narrative description.
-**NEXT-STEPS:** the four channels (pattern / vocabulary / connection / question) tag each capability dimension; confidence is per-tag (strong/weak/baseline) so weak-tag activations are distinguishable from strong ones.
+! conclusion:
+  A mission's capability signature is a typed feature map —
+  {capability-dimension × {channel × confidence}} — not a narrative
+  description. Cross-mission scoring is comparable because the
+  dimensions and confidence levels are shared across missions, while
+  the specific combination is unique to each mission's hinge evidence.
+
+  + context: Raw tag-activation counts measure recording cadence, not
+    capability development. Normalise by baseline frequency: the no-shift
+    dimension sets the denominator. Strong and weak tags are
+    distinguishable; a mission with 3 strong pattern-articulation tags
+    and 20 no-shift tags has a different profile from one with 3 strong
+    and 5 no-shift, even though both have "3 pattern-articulation."
+
+  + contrast: The meme miner assigned tags without confidence levels
+    and without a baseline. Every input produced a tag. The typed-
+    observation discipline says: if you cannot distinguish signal from
+    baseline, your observation is noise.

@@ -1,0 +1,27 @@
+@flexiarg nomad/self-certifying-artifact
+@title Produce Outputs That Carry Their Own Validity
+@sigils [🧭/勢]
+@audience operator, nomad agents
+@tone strategic
+@style pattern
+
+! conclusion: Where gatekeepers judge by subjective proxies, produce artifacts whose validity is machine- or institution-checked — a merged pull request, a verified proof, a passing benchmark — so no judgement intervenes.
+
+  + context: Gatekeepers cannot afford real judgement, so they proxy it: pedigree, venue, endorsement chains. The proxies encode disciplinary claims you may not satisfy.
+
+  + IF:
+    Your work is strong but its evaluation is being routed through proxies that discount you.
+
+  + HOWEVER:
+    Arguing with a proxy is arguing with an economy — judgement is expensive and the proxy exists to avoid it; no amount of explanation makes an evaluator spend what they proxied away.
+
+  + THEN:
+    Shift effort toward artifact classes that certify themselves: merged into the upstream repo, checked by the proof kernel, reproduced by the published harness, adopted by the named user. Present the certificate, not the argument. Inventory existing work for artifacts one step short of self-certification and close that step first.
+
+  + BECAUSE:
+    A self-certifying artifact substitutes a cheap mechanical check for an expensive social one, and mechanical checks do not read CVs.
+
+  + NEXT-STEPS:
+    - evidence: inventory of current artifacts with their certification status and the gap to self-certifying.
+    - evidence: one artifact pushed over the line; track whether it moves conversations that arguments did not.
+    - evidence-shape: {:artifact :string, :certifier :keyword, :certified? :boolean, :gap :string, :closed/date :string, :effect :string}

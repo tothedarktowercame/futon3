@@ -1,0 +1,27 @@
+@flexiarg nomad/owner-of-the-problem
+@title Route to the Person Holding the Problem, Not the Posting
+@sigils [🧭/勢]
+@audience operator, nomad agents
+@tone strategic
+@style pattern
+
+! conclusion: When your value is compositional and no advertisement describes it, route to the individual who owns the problem; the instrument is a proposal, not an application.
+
+  + context: Hiring and funding calls are specifications of pre-funded slots, written for legible single-discipline profiles.
+
+  + IF:
+    Your value comes from an unusual composition of capabilities that no posting will ever specify, and applications keep converting that composition into a weak match on someone else's template.
+
+  + HOWEVER:
+    Problems that need compositional value live with specific individuals holding discretion — a lab head, a programme director, a founder — and those individuals are reachable, but not through the application channel, and their attention is guarded (see nomad/licensed-ground for the venue guard).
+
+  + THEN:
+    Identify the person for whom the problem is alive. Write them a proposal: their problem, your composition applied to it, the artifact you would deliver, the smallest first step. Never send a CV where a proposal can go.
+
+  + BECAUSE:
+    Postings allocate pre-committed budgets to pre-imagined shapes; discretion-holders can fund shapes they had not imagined, but only when the shape arrives already fitted to their problem.
+
+  + NEXT-STEPS:
+    - evidence: for each target, name the person, their live problem, and the discretion they hold.
+    - evidence: proposals sent vs applications sent; compare substantive-reply rates.
+    - evidence-shape: {:target/person :string, :problem/live :string, :discretion :string, :instrument :keyword, :reply :keyword, :reply/substantive? :boolean}

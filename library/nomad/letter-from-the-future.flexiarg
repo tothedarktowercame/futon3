@@ -1,0 +1,27 @@
+@flexiarg nomad/letter-from-the-future
+@title Write the Letter You Want to Send in Two Months
+@sigils [🧭/勢]
+@audience operator, nomad agents
+@tone strategic
+@style pattern
+
+! conclusion: When you do not know what to build, write the letter you want to be able to send in two months; every clause that is not yet true is a work item. Write it to three addressees: invariant sentences are the highest-value build, divergent ones are named bets.
+
+  + context: Building is expensive, specifying is cheap, and buyers are only discoverable by addressing them concretely.
+
+  + IF:
+    The portfolio could grow in several directions and you lack a principled way to choose.
+
+  + HOWEVER:
+    Plans decay into abstraction because nothing forces address to a real reader; roadmaps without an addressee optimise for internal coherence rather than external demand.
+
+  + THEN:
+    Draft the future letter in full, addressed to a specific party, dated two months out, claiming only what you could then demonstrate. Diff it against the present: each false clause is a work item with a deadline. Then write it twice more to different addressees; sentences that survive all three unchanged are the invariant core (build these first); sentences that diverge are bets (name them, size them).
+
+  + BECAUSE:
+    Addressing forces concreteness; triangulating addressees separates what is valuable in itself from what is valuable only to someone — and the diff between future and present letters is a work-list with its own acceptance test (the letter becomes sendable).
+
+  + NEXT-STEPS:
+    - evidence: three letters drafted; clause-level diff table (true today / work item / bet).
+    - evidence: at horizon, which clauses became true; was a letter actually sent, and answered.
+    - evidence-shape: {:letter/addressee :string, :letter/date :string, :clause :string, :status :keyword, :invariant? :boolean, :bet/named :string, :sent? :boolean, :answered? :boolean}

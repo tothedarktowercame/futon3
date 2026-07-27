@@ -1,0 +1,28 @@
+@flexiarg nomad/choose-the-grid
+@title Stop Optimising the Score; Change Which Scoring Function Applies
+@sigils [🧭/勢]
+@audience operator, nomad agents
+@tone strategic
+@style pattern
+
+! conclusion: When you are being scored and losing, do not optimise the score — move to a venue whose scoring function you already satisfy.
+
+  + context: A professional landscape scores candidates per-venue: titles, medals, affiliations, citation counts, funding history.
+
+  + IF:
+    You are being evaluated on a grid of signals you cannot acquire at acceptable cost, and repeated attempts confirm you lose on it.
+
+  + HOWEVER:
+    Scoring functions are fixed per-venue but cheap to change by changing venue; effort spent climbing an unwinnable grid compounds nothing, while the habit of competing hides the exit.
+
+  + THEN:
+    Enumerate the venues where your existing portfolio already scores; move the engagement there. Treat the old grid's signals as non-goals, explicitly. Pair with nomad/live-yardstick before acting: a grid nobody holds is not a venue.
+
+  + BECAUSE:
+    The score is a property of the venue, not of you; changing the function applied is strictly cheaper than changing the inputs it reads.
+
+  + NEXT-STEPS:
+    - evidence: list the current grid's signals and mark each acquirable/not at 12-month horizon.
+    - evidence: for each alternative venue, name who holds the grid and what they measure.
+    - evidence: one engagement moved to a new grid; compare response rate to the old grid's.
+    - evidence-shape: {:grid/venue :string, :grid/signals [:string], :grid/winnable? :boolean, :grid/holder :string, :move/date :string, :move/response :keyword}

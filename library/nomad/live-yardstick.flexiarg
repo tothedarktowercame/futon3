@@ -1,0 +1,27 @@
+@flexiarg nomad/live-yardstick
+@title Only Fit Grids That Someone Is Already Measuring With Money
+@sigils [🧭/勢]
+@audience operator, nomad agents
+@tone strategic
+@style pattern
+
+! conclusion: A grid you win on means nothing unless an audience is already measuring it, with money and a problem; verify the yardstick is live before moving to it.
+
+  + context: Guard on nomad/choose-the-grid. Changing venue is cheap, which makes it cheap to arrive somewhere empty.
+
+  + IF:
+    You have identified a grid your portfolio wins on and are about to reposition toward it.
+
+  + HOWEVER:
+    The most winnable grids are often winnable precisely because nobody holds them; a bespoke excellence with no buyer is indistinguishable, from the outside, from irrelevance.
+
+  + THEN:
+    Before moving, demand three concrete witnesses: (1) a named party currently measuring this dimension, (2) budget already allocated against it, (3) a problem they hold that the measurement serves. Absent all three, the grid is a mirage; absent some, the move is a bet and must be sized as one.
+
+  + BECAUSE:
+    Fit is a two-place relation; optimising your half without evidence of the other half converts strategy into wishful thinking.
+
+  + NEXT-STEPS:
+    - evidence: for the target grid, name the measuring party, the budget line, and the problem.
+    - evidence: record bets explicitly when witnesses are partial (which are missing, why proceed).
+    - evidence-shape: {:yardstick/dimension :string, :measurer :string, :budget/witness :string, :problem/held :string, :witnesses/count :int, :bet? :boolean}

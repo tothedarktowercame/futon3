@@ -1,0 +1,28 @@
+@flexiarg nomad/author-the-yardstick
+@title When the Bottleneck Has No Measure, the Measure Is the Position
+@sigils [🧭/勢]
+@audience operator, nomad agents
+@tone strategic
+@style pattern
+
+! conclusion: The strong form of grid-choosing: when a field's admitted bottleneck has no accepted measure, build the measure — the yardstick's author holds a position no vendor can take.
+
+  + context: Fields in rapid growth routinely name a bottleneck (quality, trust, reproducibility, comprehension) that everyone concedes and nobody can score.
+
+  + IF:
+    You can name a bottleneck the field itself admits, and no benchmark, metric, or evaluation standard exists for it.
+
+  + HOWEVER:
+    Vendors are structurally disqualified from building the measure — a seller scoring their own product is not a yardstick — and academics often lack the operational corpus; the position sits open precisely because the obvious occupants cannot take it.
+
+  + THEN:
+    Build the measure as a public, checkable artifact: the benchmark, the readiness scale, the typed failure taxonomy. Run it on real systems including your own, publish honest negatives. The measure then routes the field's attention through its author.
+
+  + BECAUSE:
+    Whoever defines how a bottleneck is scored defines what counts as progress on it; that is a grid you author rather than climb — subject, as always, to nomad/live-yardstick: someone must need the score.
+
+  + NEXT-STEPS:
+    - evidence: the field's admitted-bottleneck statements, quoted and dated.
+    - evidence: absence check — enumerate nearest existing measures and their gaps.
+    - evidence: the measure applied to N real systems with honest negatives published.
+    - evidence-shape: {:bottleneck :string, :admitted-by [:string], :nearest-measure :string, :gap :string, :artifact :string, :systems-scored :int, :negatives-published? :boolean}

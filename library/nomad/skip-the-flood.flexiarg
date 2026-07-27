@@ -1,0 +1,28 @@
+@flexiarg nomad/skip-the-flood
+@title Occupy the Layers Capital Is Skipping
+@sigils [🧭/勢]
+@audience operator, nomad agents
+@tone strategic
+@style pattern
+
+! conclusion: When your field is suddenly capitalised, do not swim with the flood — occupy the adjacent layers it vacates (orchestration, digestion, evaluation), which also survive the flood's next release.
+
+  + context: A research field receives sudden concentrated investment; hiring and valuations spike on one layer of the stack.
+
+  + IF:
+    Capital has converged on the layer with the nearest enterprise exit, and you are deciding where to stand.
+
+  + HOWEVER:
+    The funded layer is instantly crowded with better-capitalised competitors, while the layers the flood skips — orchestrating the funded tools, digesting their outputs, evaluating their claims — are left vacant despite being load-bearing; and each new release from the funded layer INCREASES demand for the skipped layers.
+
+  + THEN:
+    Map the stack; mark where the money landed; occupy a skipped layer you can hold. Verify vacancy empirically (job postings, shipped artifacts), not by intuition — some adjacent layers turn out crowded on inspection.
+
+  + BECAUSE:
+    Floods reprice one layer and starve its complements; complements to an exploding layer appreciate without competition, and survive the flood's own churn.
+
+  + NEXT-STEPS:
+    - evidence: stack map with capital placement per layer, dated.
+    - evidence: vacancy check per skipped layer (postings fetched, artifacts enumerated).
+    - evidence: track whether releases in the funded layer increase demand signals in yours.
+    - evidence-shape: {:stack/layer :string, :capital/present? :boolean, :vacancy/checked :string, :vacancy/vacant? :boolean, :complement-of :string, :demand/signal :string}

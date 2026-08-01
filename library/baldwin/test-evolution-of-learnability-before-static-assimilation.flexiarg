@@ -1,0 +1,60 @@
+@flexiarg baldwin/test-evolution-of-learnability-before-static-assimilation
+@title Test Evolution of Learnability Before Complete Assimilation
+@sigils [🎑/力]
+@keywords metaca, learnability, lifetime-learning, early-performance, ablation, preregistration
+@audience MetaCA experiment designers, evolutionary-computation researchers
+@tone prospective
+@style pattern
+@childof baldwin/mechanism
+@references [baldwin/two-claims-not-one baldwin/plasticity-builds-a-selective-neighbourhood baldwin/stationarity-decides-what-can-be-fixed]
+@references-extra ["Gupta et al. (2021), doi:10.1038/s41586-021-03522-2" "Wong et al. (2023), arXiv:2312.03243"]
+
+! conclusion:
+  The next MetaCA Baldwin experiment should first ask whether lifetime rewriting causes
+  evolution of inherited structures that learn faster or generalize better; complete
+  static assimilation should remain a stronger secondary endpoint.
+
+  + context:
+    Modern computational demonstrations often evolve morphology, initialization, or
+    hyperparameters that facilitate subsequent learning. Gupta et al. report evolved
+    morphologies that learn control earlier and more efficiently; Wong et al. evolve
+    inherited PINN structure over a task distribution while task-specific output
+    learning remains within lifetime.
+
+  + IF:
+    MetaCA supplies heritable initial rule fields and rewrite parameters, a lifetime
+    trajectory, and reproducible task distributions.
+
+  + HOWEVER:
+    Selecting only final reach favors strong rewriting but does not distinguish a genome
+    that learns quickly from one rescued late. Charging a symbolic `gamma * not-held`
+    proxy can suppress plasticity without proving that evolution has internalized any
+    function.
+
+  + THEN:
+    Cross lifetime rewriting enabled versus disabled during evolution while keeping
+    genetic randomness and evaluation tasks paired. Score raw function together with
+    time-to-threshold, cumulative realized rewrites, and held-out-task performance.
+    After evolution, evaluate ancestral and evolved genotypes under truncated learning
+    budgets and no-learning ablation. Register guidance if evolved inherited structure
+    shifts the learning curve relative to the no-learning evolutionary control; register
+    assimilation only if dependence also falls without functional loss.
+
+    + CHECK:
+      Use multiple preregistered evolution seeds; fixed training and held-out task sets;
+      aligned draw schedules; treatment-separation checks; mutation-only nulls; and a
+      positive control reproducing the Hinton--Nowlan selective-neighbourhood mechanism.
+
+  + BECAUSE:
+    Learning-guided evolution predicts a change in inherited preparedness. Learning
+    curves and ablations observe preparedness directly, whereas final reach and hold
+    count confound it with the amount of plastic work performed.
+
+    + COUNTERFACTUAL:
+      If evolved and ancestral genotypes have indistinguishable learning curves under
+      paired tasks, high final reach is ordinary plastic competence rather than evidence
+      that learning guided evolution.
+
+  + NEXT-STEPS:
+    - Encode the guidance outcome and its falsifier in ExperimentPreregistration.
+    - Run the positive control and response-curve preflight before provisioning.

@@ -1,0 +1,50 @@
+@flexiarg baldwin/stationarity-decides-what-can-be-fixed
+@title Environmental Stationarity Decides What Should Be Fixed
+@sigils [👓/生]
+@keywords environment, fixed-target, task-distribution, plasticity, generalization, p0
+@audience experiment designers, MetaCA researchers
+@tone conditional
+@style pattern
+@childof baldwin/mechanism
+@references [baldwin/two-claims-not-one baldwin/test-evolution-of-learnability-before-static-assimilation]
+@references-extra ["Scheiner et al. (2017), Genetic assimilation, the Baldwin effect, and evolutionary rescue, Ecology and Evolution 7:8788-8803" "Aguilar, Bennati and Helbing (2019), How learning can change the course of evolution, PLOS ONE 14:e0219502"]
+
+! conclusion:
+  Fix only structure that is invariant over the environment being selected. A single
+  stable target can favor genetic assimilation; a predictable task distribution can
+  favor inherited learning biases; a rapidly moving or poorly predictable target can
+  rationally preserve plasticity.
+
+  + context:
+    Hinton and Nowlan use one fixed twenty-bit target. MetaCA evaluations can vary the
+    initial phenotype, damage site, and random seed. Fixing `p0` removes one source of
+    variation, but it changes the scientific question from robust adaptation over a
+    distribution to assimilation of one instance.
+
+  + IF:
+    Plasticity responds to environmental or evaluation-specific variation.
+
+  + HOWEVER:
+    Calling variable environments "noise" may erase the very reason plasticity is
+    adaptive. Conversely, changing the target independently for every evaluation may
+    make a static target impossible and render an assimilation test structurally unfair.
+
+  + THEN:
+    Declare the target level before running: one fixed environment for Hinton--Nowlan
+    replication, a training distribution for evolution of learnability, and a disjoint
+    held-out distribution for generalization. Measure which features remain invariant
+    across that distribution and permit assimilation claims only about those features.
+
+  + BECAUSE:
+    The value of plasticity is conditional on environmental predictability. Stable
+    regularities reward inherited specialization; residual variation rewards adaptive
+    response. Selection should divide labour between genotype and lifetime adaptation
+    rather than drive every degree of freedom to one side.
+
+    + COUNTERFACTUAL:
+      If fixed `p0` enables static replacement but held-out performance collapses, the
+      run demonstrates instance-specific canalization, not general MetaCA assimilation.
+
+  + NEXT-STEPS:
+    - Keep fixed-p0 and distributional-task experiments as different registered claims.
+    - Include held-out environments whenever the claim concerns evolved learnability.

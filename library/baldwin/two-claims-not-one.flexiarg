@@ -1,0 +1,53 @@
+@flexiarg baldwin/two-claims-not-one
+@title Separate Evolutionary Guidance from Genetic Assimilation
+@sigils [🌏/分]
+@keywords baldwin-effect, genetic-assimilation, plasticity, learnability, claim-boundary
+@audience experiment designers, evolutionary theorists
+@tone discriminating
+@style pattern
+@childof baldwin/mechanism
+@references [futon-theory/baldwin-cycle baldwin/test-evolution-of-learnability-before-static-assimilation]
+@references-extra ["Crispo (2007), doi:10.1111/j.1558-5646.2007.00203.x"]
+
+! conclusion:
+  Report evolutionary guidance and genetic assimilation as distinct claims:
+  guidance means that lifetime adaptation changes selection on inherited traits;
+  assimilation means that inherited causes replace an environmentally or
+  developmentally induced contribution and plastic dependence decreases.
+
+  + context:
+    The literature uses "Baldwin effect" both broadly for learning-guided evolution
+    and narrowly for a rise-and-fall of learning. Crispo distinguishes Baldwinian
+    organic selection and genetic accommodation from genetic assimilation, noting
+    that Baldwinian evolution can maintain or increase plasticity.
+
+  + IF:
+    An experiment contains an evolutionary outer loop and a plastic inner loop.
+
+  + HOWEVER:
+    A definition that demands a fully static endpoint will classify evolution of
+    faster learning as failure, while a definition that merely observes high fitness
+    after learning will classify ordinary learning as evolutionary guidance.
+
+  + THEN:
+    Require a between-generation counterfactual for guidance: comparable evolution
+    with versus without lifetime adaptation. Require an additional dependence decline
+    and inherited-function test for assimilation. Label complete static replacement as
+    strong assimilation rather than silently making it the only Baldwin criterion.
+
+  + BECAUSE:
+    Selection can favor an inherited morphology, initialization, prior, or learning
+    rule because it makes adaptation faster without ever making adaptation dispensable.
+    The causal influence of learning on evolution is already present; loss of
+    plasticity is a separate evolutionary response to its costs and environmental
+    predictability.
+
+    + COUNTERFACTUAL:
+      If the evolved population learns no faster and performs no better than an
+      evolution-only control, continued plastic success is not evidence of Baldwinian
+      guidance. If guidance occurs but disabling learning destroys performance, the
+      guidance claim may pass while assimilation fails.
+
+  + NEXT-STEPS:
+    - Add separate `GuidanceWitness` and `AssimilationWitness` outcomes to the Lean model.
+    - Preserve `BaldwinDesign.BaldwinWitness` as the strong complete-assimilation witness.

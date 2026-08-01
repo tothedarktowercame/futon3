@@ -1,0 +1,54 @@
+@flexiarg baldwin/assimilable-traits-need-heritable-shadows
+@title An Assimilable Plastic Trait Needs a Heritable Shadow
+@sigils [🌀/刀]
+@keywords genotype-phenotype-map, expression, hold, fixation, mutation, metaca
+@audience MetaCA designers, evolutionary-computation researchers
+@tone mechanistic
+@style pattern
+@childof baldwin/mechanism
+@references [baldwin/assimilation-requires-a-resolved-path exotic/hybrid-execution-semantics]
+
+! conclusion:
+  A plastic contribution is assimilable only when an inherited alternative for the
+  same functional contribution is expressed enough for selection to prepare it before
+  plasticity is removed. A dormant random allele revealed only by a hold mutation is
+  not such an alternative.
+
+  + context:
+    A MetaCA plastic locus rewrites its rule from contextual phenotype information. A
+    held locus instead retains its inherited initial rule. In the tested genome, the
+    inherited rule can remain phenotypically hidden while rewriting is active; flipping
+    `hold` therefore both removes the learned mechanism and exposes an unprepared byte.
+
+  + IF:
+    The experiment proposes that plastic-to-held mutations will assimilate a useful
+    within-lifetime rewrite.
+
+  + HOWEVER:
+    The learned terminal rule may depend on time and context rather than correspond to
+    one fixed byte. Independent rule and hold mutations require a coordinated event;
+    coupling hold to a uniformly random byte raises proposal supply but does not copy
+    the functional relationship learned during life.
+
+  + THEN:
+    Represent an inherited shadow that affects phenotype before full fixation. Options
+    include a default rule mixed with the rewritten rule by per-locus penetrance, a
+    heritable initialization that changes learning speed, or a lower-dimensional
+    developmental bias shared across contexts. Test whether shadow variants are
+    selected while plasticity is still present, then reduce their plastic complement.
+
+  + BECAUSE:
+    Selection can refine only expressed inherited variation. Hinton and Nowlan's fixed
+    allele is immediately expressed and a correct replacement reduces the remaining
+    search dimension. In contrast, holding an arbitrary MetaCA initial byte is an
+    ablation plus random replacement, so selection against holding is expected even
+    when a different representation could assimilate the function.
+
+    + COUNTERFACTUAL:
+      If prepared shadow alleles remain selectable when partially expressed but random
+      held bytes do not, the previous negative diagnoses genotype-phenotype mismatch,
+      not load-bearing plasticity in principle.
+
+  + NEXT-STEPS:
+    - Formalize expression-before-fixation as an ExperimentalDesign obligation.
+    - Compare random coupled replacement with prepared-shadow mutation without direct inheritance of learned states.

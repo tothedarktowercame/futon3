@@ -1,0 +1,92 @@
+@flexiarg baldwin/mechanism
+@title The Baldwin Effect Needs a Selective Bridge
+@sigils [🌱/化]
+@keywords baldwin, learning, evolution, plasticity, genetic-assimilation, canalization, metaca, mechanism
+@audience evolutionary-computation researchers, MetaCA experiment designers, futon theorists
+@tone analytic-mechanistic
+@style argument
+@hasa [baldwin/two-claims-not-one baldwin/plasticity-builds-a-selective-neighbourhood baldwin/assimilable-traits-need-heritable-shadows baldwin/assimilation-requires-a-resolved-path baldwin/stationarity-decides-what-can-be-fixed baldwin/metaca-negative-evidence-localizes-the-bottleneck baldwin/test-evolution-of-learnability-before-static-assimilation]
+@references [futon-theory/baldwin-cycle eight-gates/press-mechanism exotic/hybrid-execution-semantics]
+@references-extra ["Hinton and Nowlan (1987), How Learning Can Guide Evolution, Complex Systems 1:495-502" "Crispo (2007), The Baldwin Effect and Genetic Assimilation, Evolution 61:2469-2479" "Aguilar, Bennati and Helbing (2019), How learning can change the course of evolution, PLOS ONE 14:e0219502" "Gupta et al. (2021), Embodied Intelligence via Learning and Evolution, Nature 592:545-552" "Wong et al. (2023), Evolutionary Optimization of Physics-Informed Neural Networks, arXiv:2312.03243"]
+
+! conclusion:
+  Lifetime plasticity can guide evolution when it makes inherited differences
+  predictably visible to selection, but genetic assimilation is a further result,
+  not the definition of the Baldwin effect. Assimilation additionally requires a
+  stable target, inherited variables that are expressed while plasticity remains,
+  reachable substitutions that preserve function, and fitness resolution strong
+  enough to retain those substitutions. A negative at any one gate localizes the
+  missing bridge; it does not refute Baldwin effects in general.
+
+  + context:
+    `futon-theory/baldwin-cycle` names the desired engineering progression from
+    exploration to assimilation to canalization. Hinton and Nowlan establish a
+    particular causal construction: fixed correct alleles reduce the number of
+    lifetime guesses needed to reach one invariant target. The MetaCA experiments
+    instead ask whether an initially random rule can be held while a contextual
+    rewriting process remains functional. These are not automatically the same
+    evolutionary geometry.
+
+  + IF:
+    A system has inherited variables, within-lifetime adaptation, differential
+    reproductive success, and a proposed measure of reduced plastic dependence.
+
+  + HOWEVER:
+    Learning may guide inherited biases while remaining permanently useful; a good
+    static endpoint may exist but be unreachable; a mutation may remove plasticity
+    before installing a useful inherited substitute; a changing task may select for
+    plasticity; and a cost proxy may be too coarse or too noisy to create selection.
+
+    + FAILURE-MODES:
+      - Calling every reduction in plasticity a Baldwin effect.
+      - Requiring complete loss of learning before recognizing evolution of learnability.
+      - Treating existence of rule 90 as evidence of a path from the evolved plastic lineage.
+      - Treating failure of random hold mutations as failure of genetic assimilation.
+      - Changing representation, cost, target, and mutation operator together and losing diagnosis.
+
+  + THEN:
+    Separate two claims and test them in order. First test guidance: does lifetime
+    rewriting create selection for inherited fields or update biases that improve
+    learning speed, early performance, or held-out post-learning performance relative
+    to evolution without rewriting? Only then test strong assimilation: can function
+    be retained along an accessible path whose realized learning work declines and
+    whose endpoint works without rewriting?
+
+    + CHECK:
+      Require a no-learning evolutionary comparison for guidance; a mutation-only
+      lifecycle null for hold frequencies; an explicit accessible path to a functional
+      inherited endpoint; treatment-separated rankings; aligned random tapes; and
+      evaluation on preregistered training and held-out task distributions.
+
+  + BECAUSE:
+    Plasticity changes evolution only through selection on inherited variation. It
+    helps when inherited changes alter the probability, speed, reliability, or cost of
+    reaching a useful phenotype. Assimilation occurs only when selection can replace
+    some of that adaptive work with an inherited cause without crossing a fitness
+    valley larger than the saving.
+
+    + MECHANISM:
+      phenotype search -> differential fitness among inherited starting points or
+      learning biases -> accumulation of variants that reach useful phenotypes more
+      cheaply -> optional reduction of plastic work when inherited substitutes become
+      sufficient.
+
+    + COUNTERFACTUAL:
+      If inherited variation does not affect post-learning success, if fixation exposes
+      dormant random alleles, or if every local reduction of rewriting destroys
+      function, plasticity may remain load-bearing indefinitely even though Baldwinian
+      guidance is possible in other representations.
+
+    + EVIDENCE:
+      Hinton and Nowlan's `?` alleles create a high-fitness neighbourhood around one
+      target. Recent morphological and neural work likewise evolves bodies,
+      initializations, or learning biases that make lifetime learning faster; it does
+      not generally require learning to vanish. The MetaCA pilot retained reach
+      12.44--13.00 while dependence stayed 0.961--0.984 and produced no registered
+      static witness, identifying the strong-assimilation bridge as absent in the
+      tested representation and search budget.
+
+  + NEXT-STEPS:
+    - Use the child patterns as the causal argument attached to future Lean registrations.
+    - Preregister a guidance experiment before another complete-assimilation search.
+    - Keep the existing strict `BaldwinWitness` as the certificate for the stronger claim.

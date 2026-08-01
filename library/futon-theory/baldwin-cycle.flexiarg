@@ -5,7 +5,7 @@
 @audience futon developers, pattern theorists, stack architects
 @tone analytic-foundational
 @factor Keen investigation (dhammavicaya)
-@references [futon-theory/four-types futon-theory/interface-loop futon-theory/proof-path futon-theory/retrospective-stability]
+@references [futon-theory/four-types futon-theory/interface-loop futon-theory/proof-path futon-theory/retrospective-stability baldwin/mechanism]
 @references-extra ["Baldwin exploration maps to: OBSERVE → PROPOSE_CLAIM" "Baldwin assimilation maps to: APPLY_CHANGE → VERIFY → PROOF_COMMIT" "Baldwin canalization maps to: Strengthen invariants, tighten exotype"]
 
 ! conclusion: 
@@ -17,6 +17,11 @@
     can become genetically fixed. In engineering: what starts as runtime
     adaptation becomes compile-time structure. This is how systems accumulate
     capability without losing auditability.
+
+    This pattern names a desired engineering lifecycle, not an automatic
+    evolutionary law. `baldwin/mechanism` supplies the causal gates that decide
+    whether learning guides inherited change and whether assimilation is actually
+    reachable; when those gates fail, retaining plasticity may be the correct result.
 
   + IF:
     You want a system to accumulate capability without losing auditability:
@@ -30,31 +35,31 @@
       - Canalizing prematurely (lock-in before exploration complete)
 
   + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
-    + CYCLE-OUTCOME:
+    Cycle outcome:
       Before: System reaches goal through search
       After: System reaches goal structurally (no search needed)
       Evidence: Captured in genotype + invariants + proof trail
 
-    + FUNCTIONAL-GAIN:
+    Functional gain:
       1. Local learning reduces global search cost (divide and conquer)
       2. Assimilation converts exploration into structural capability (cumulative)
       3. Canalization makes repeated success automatic (efficiency)
 
-    + PHASE 1: EXPLORATION (Learning)
+    Phase 1 — exploration (learning):
       Within fixed exotype constraints, allow phenotype plasticity.
       - Search, adapt, try variants
       - Measure outcomes against success criteria
       - Preserve evidence of what was tried
       Operations: OBSERVE, PROPOSE_CLAIM, experimental APPLY_CHANGE
 
-    + PHASE 2: ASSIMILATION (固化 / Fixation)
+    Phase 2 — assimilation (固化 / fixation):
       Compress successful learned behavior back into genotype.
       - Make replayable, auditable internal representation
       - Generate pattern, update rule table, extract replayable patch
       - Attach evidence chain (what worked, why, proof)
       Operations: VERIFY, PROOF_COMMIT (packaging success as artifact)
 
-    + PHASE 3: CANALIZATION (壓縮 / Compression)
+    Phase 3 — canalization (壓縮 / compression):
       Remove unnecessary degrees of freedom.
       - Tighten invariants around success region
       - Make success cheaper and more reliable

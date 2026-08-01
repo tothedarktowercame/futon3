@@ -1,0 +1,51 @@
+@flexiarg baldwin/plasticity-builds-a-selective-neighbourhood
+@title Plasticity Must Expose Inherited Differences to Selection
+@sigils [🎑/门]
+@keywords fitness-landscape, learning, selection, hinton-nowlan, neighbourhood, gradient
+@audience evolutionary-computation researchers, fitness designers
+@tone causal
+@style pattern
+@childof baldwin/mechanism
+@references [baldwin/assimilation-requires-a-resolved-path]
+@references-extra ["Hinton and Nowlan (1987), https://www.cs.toronto.edu/~hinton/absps/evolution.htm" "Paenke, Kawecki and Sendhoff (2009), The influence of learning on evolution"]
+
+! conclusion:
+  Lifetime plasticity guides evolution only if post-learning fitness varies
+  systematically with inherited proximity to, or bias toward, useful phenotypes.
+  Plasticity must create a selective neighbourhood, not merely rescue every genotype
+  to the same score.
+
+  + context:
+    In Hinton and Nowlan, a correct fixed allele removes a guess, an incorrect fixed
+    allele prevents success, and `?` leaves a binary trial to learning. Genotypes with
+    more correct fixed decisions therefore succeed more often or sooner. The learning
+    process converts an isolated target into graded heritable evidence.
+
+  + IF:
+    Learning can reach high function from multiple inherited starting points.
+
+  + HOWEVER:
+    If learning erases the effect of initial genotype, all successful learners are
+    selectively equivalent. If fitness records only final band membership, faster or
+    cheaper learners may also be indistinguishable. Plasticity then shields genetic
+    variation rather than guiding it.
+
+  + THEN:
+    Measure fitness as a vector containing raw function, probability of reaching the
+    target, time or rewrites to target, and generalization across tasks. Before a paid
+    run, verify that controlled inherited perturbations induce correctly ordered
+    post-learning fitness differences.
+
+  + BECAUSE:
+    Evolution cannot read the learned state directly. It can only retain inherited
+    causes correlated with reproductive success. Learning supplies guidance by making
+    that correlation smoother or denser than the unlearned landscape.
+
+    + COUNTERFACTUAL:
+      If two inherited fields produce the same post-learning fitness distribution
+      despite different learning work, no selection operator can infer which one is
+      closer to the useful developmental trajectory.
+
+  + NEXT-STEPS:
+    - Add a preregistered inherited-perturbation response curve to MetaCA preflight.
+    - Replace the band-only scalar with lexicographic or Pareto-preserving function and effort measurements.

@@ -1,0 +1,53 @@
+@flexiarg baldwin/assimilation-requires-a-resolved-path
+@title Assimilation Requires a Reachable and Resolved Path
+@sigils [🐜/力]
+@keywords accessibility, selection, mutation, path, endpoint, noise, fitness
+@audience experiment preregistrars, evolutionary-computation researchers
+@tone exacting
+@style pattern
+@childof baldwin/mechanism
+@references [baldwin/assimilable-traits-need-heritable-shadows agent/hypothetical-proof-architecture]
+
+! conclusion:
+  A high-function static endpoint is insufficient: the actual genetic operators must
+  connect the plastic population to it through steps whose functional loss does not
+  exceed their realized learning-cost saving, and evaluation must resolve that margin.
+
+  + context:
+    `BaldwinDesign.SelectableAssimilationPath` formalizes the local inequality. In the
+    hold-only battery a greedy probe found one selectable extra hold, moving from one to
+    two held loci while reach changed from 14.3667 to 14.3333, then stopped because no
+    second selectable step existed. Static search ended near reach 1.18 despite known
+    static rules with useful dynamics in related protocols.
+
+  + IF:
+    A static solution exists somewhere in genome space and plastic genomes achieve high
+    function.
+
+  + HOWEVER:
+    Endpoint existence says nothing about accessibility from the current lineage.
+    Epistasis may require coordinated changes, an early step may cross a valley, a
+    coarse band score may erase incremental benefits, and the cost saving per locus may
+    lie below evaluation variance.
+
+  + THEN:
+    Before evolution, map one-step and short joint rule-plus-hold neighbourhoods around
+    representative plastic genomes. Record raw performance loss, realized learning
+    saving, uncertainty, and operator probability. Do not launch an assimilation claim
+    unless at least one path prefix is accessible, selectable, and statistically
+    resolved under the production evaluator.
+
+  + BECAUSE:
+    Selection is locally myopic. It cannot choose a distant static rule merely because
+    investigators know that rule exists. A step is retainable only when the selected
+    fitness difference has the right sign and exceeds stochastic ranking uncertainty.
+
+    + COUNTERFACTUAL:
+      If an oracle finds a score-preserving path that the production operator never
+      proposes, the bottleneck is mutation supply. If the operator proposes it but
+      evaluation cannot rank it, the bottleneck is resolution. If no path exists even
+      under joint changes, the representation or target must change.
+
+  + NEXT-STEPS:
+    - Use path existence as a gate, not as a post hoc explanation.
+    - Report endpoint, accessibility, selectability, and resolution as four separate facts.

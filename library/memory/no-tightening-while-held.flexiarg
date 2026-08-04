@@ -1,0 +1,35 @@
+@flexiarg memory/no-tightening-while-held
+@title Do Not Tighten a Schema While Agents Hold State Under the Old One
+@sigils [⏳/держ]
+@keywords schema, migration, in-flight-state, validation, regression, live-system
+@audience futon developers
+@tone analytic-foundational
+@style pattern
+@references [memory/surface-the-closed-set memory/verify-in-the-serving-process]
+
+! conclusion: A write-time schema tightening retroactively invalidates state that agents already hold and that is RE-VALIDATED later in a pipeline. Tighten only with a migration for held state, never mid-session on a running system.
+
+  + context: Measured 2026-08-04 in futon3b. `:psr/candidates` was `[:vector map?]` — validating nothing — so a runner's `{:pattern/id ...}` was accepted while the system's own writer used `{:pattern-id ...}`. Tightening the schema to name the key was correct in substance: it made the error self-documenting and would have caught the divergence. But a runner had ALREADY selected a PSR under the permissive schema. That PSR sits in the discipline-state atom, and `pur_update` replays it into the proof path as the `:g3` gate record, where it is validated AGAIN. Under the tightened schema it failed, so three PUR attempts died on a defect introduced between the runner's select and its update. Reverted the same hour.
+
+  + IF:
+    You are narrowing a schema — adding a required key, closing a map, restricting a type — in a system with live agents.
+
+  + HOWEVER:
+    Write-time validation looks like a boundary crossed once. It is not. Records are frequently persisted into a pipeline, replayed, folded, or re-validated as part of a larger structure downstream. A record that passed at write time under schema v1 may be validated again under v2 minutes later, by a different tool, in a context its author never sees.
+
+    + ANTI-PATTERNS:
+      - tightening a shape and testing only the WRITE path, when the record is also re-validated downstream
+      - assuming persisted-and-accepted means permanently valid
+      - reasoning that "no caller sends that shape" from a survey of callers, when the offending shape is held in an in-memory atom
+      - treating a revert as a defeat; unbreaking a live system outranks landing the improvement today
+
+  + THEN:
+    1. Before narrowing, grep for every site that VALIDATES the shape, not every site that writes it. Downstream re-validation is the hazard.
+    2. Identify held state — discipline atoms, session caches, queued jobs — that contains records validated under the old schema.
+    3. Land the tightening with a migration or an accept-both-spellings window, or land it when no agent holds state.
+    4. If a tightening breaks a live runner, REVERT FIRST and re-land it considered. Record why in the schema comment, so the next person does not repeat the reasoning without the timing.
+
+    + ENFORCEMENT:
+      - a schema-narrowing diff must list the re-validation sites it was checked against
+      - after any shape change, resolve and exercise the affected path in the SERVING process before declaring it done
+      - serves capability-proof-memory-system node M6; the governance node's strength is that gates are mechanical, which is exactly why changing one is a live-system operation

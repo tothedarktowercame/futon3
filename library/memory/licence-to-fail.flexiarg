@@ -1,0 +1,37 @@
+@flexiarg memory/licence-to-fail
+@title A Probe Must Permit "I Could Not Determine the Fix"
+@sigils [🚧/未]
+@keywords probe, testing, diagnostics, honest-report, failure-path, evidence
+@audience futon developers, experiment designers
+@tone analytic-foundational
+@style pattern
+@references [agency/loud-failure memory/surface-the-closed-set memory/verify-in-the-serving-process]
+
+! conclusion: A probe that measures whether a diagnostic is actionable MUST give the runner explicit permission to answer "I could not determine the fix from the error", and must say that this answer is preferred to a guess that happens to work. Without that licence the probe measures only the cases where guessing succeeded, and a lucky guess conceals the defect entirely.
+
+  + context: Measured 2026-08-04 in futon3c. Every finding of that day came from this licence. A runner given a deliberately malformed `psr_select` reported bare "Invalid evidence shape" and STOPPED rather than guessing — which revealed that a diagnostics fix had been committed to git and never hot-swapped into the serving JVM, invisible from both sides for hours. Re-run after the reload, the same runner fixed the call but reported precisely what the error had and had not given it: the shape, not the key. That distinction became the next repair. A runner that had guessed the key correctly would have produced a green result and hidden both defects.
+
+  + IF:
+    You are testing whether an error message, schema, or affordance is sufficient for its consumer to act on.
+
+  + HOWEVER:
+    Probes are habitually written as success tests. The brief asks the runner to complete the task, so the runner completes the task — using knowledge from earlier in its own session, from the repo, or from a plausible guess. The report says "succeeded" and the surface is scored as usable. What was actually measured is the runner's resourcefulness, not the affordance.
+
+    + ANTI-PATTERNS:
+      - a brief with no failure branch — "do X and report the result"
+      - probing only the happy path; a successful write proves nothing about the error path, because nothing malformed was ever sent
+      - letting the runner consult the source; the question is whether the ERROR suffices
+      - reusing a runner that has already seen a success payload for that surface — it is no longer cold, and will supply from memory what the error did not give it
+
+  + THEN:
+    1. State the licence in the brief, in words: "I could not determine the fix" is a valid and more useful answer than a guess that happened to work.
+    2. Forbid consulting source, schema files, or asking the dispatcher.
+    3. Ask the runner to separate what the error TOLD it from what it supplied from prior knowledge. This is the measurement.
+    4. Probe the FAILURE path deliberately — send a malformed payload of a shape a real caller would plausibly produce, not an absurd one.
+    5. Use a FRESH runner for the cold-start claim; a runner that has seen the surface succeed is a different instrument.
+    6. Prefer a before/after on ONE runner with one variable changed: same tool, same malformed payload, one thing different.
+
+    + ENFORCEMENT:
+      - a probe report claiming a diagnostic is sufficient, from a run where nothing failed, is inadmissible as evidence for that claim
+      - record whether the runner was cold; a warm runner's success is not a cold-start certificate
+      - serves capability-proof-memory-system nodes M1 and M4 — several of that day's recorded `recall-empty` and refused writes were affordance defects, not retrieval failures

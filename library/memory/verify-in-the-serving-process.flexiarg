@@ -1,0 +1,35 @@
+@flexiarg memory/verify-in-the-serving-process
+@title Committed Is Not Deployed
+@sigils [🔌/活]
+@keywords hot-swap, drift, deploy, verification, jvm, staleness
+@audience futon developers, operators
+@tone analytic-foundational
+@style pattern
+@references [agency/loud-failure memory/licence-to-fail]
+
+! conclusion: A fix is verified only when the change is resolved in the PROCESS THAT SERVES IT. Verification that spawns a fresh process passes regardless of what the live system holds, and is structurally incapable of detecting the most common deployment failure: committed but never hot-swapped.
+
+  + context: Measured 2026-08-04 in futon3c. A field-level diagnostics fix was committed, verified by loading the namespace in a fresh `clojure -M -e` JVM, and never reloaded into the serving JVM. For several hours the corrected source sat on disk while every agent received the stale bare error. The gap was found only because a test runner, given licence to fail, reported that the error was unchanged — and correctly hypothesised "committed but not hot-swapped" as one of three causes. `(resolve 'ns/fn)` in the serving process returned false before the reload and true after. Nothing anywhere reported that loaded namespaces differed from their source.
+
+  + IF:
+    You have changed code that a long-lived process has already loaded — a serving JVM, a REPL-backed service, any hot-reloadable runtime.
+
+  + HOWEVER:
+    The habitual verification is to run the tests, or load the namespace, in a NEW process. That new process reads from disk and therefore always sees the fix. It passes. The serving process still holds the old code, and no signal distinguishes the two states. Both sides look healthy: the source is correct, the tests are green, and the running system is stale.
+
+    + ANTI-PATTERNS:
+      - `clojure -M -e '(require ...)'` as the verification step — a separate JVM, always passes
+      - "the tests pass" as evidence that live behaviour changed
+      - restarting the serving JVM to force the issue — forbidden here, and it discards in-flight state
+      - assuming a reload of one namespace reloads its dependents or dependencies
+
+  + THEN:
+    1. Hot-swap explicitly, through the documented channel (Drawbridge `/eval` with `:reload`), never by restart.
+    2. Verify by RESOLVING the changed var in the serving process and reading back a value that only the new code produces — not merely that the reload returned ok.
+    3. Reload every namespace you edited. Editing `real_backend` and reloading `zai_api` leaves the fix undeployed.
+    4. When a runner reports behaviour inconsistent with the source, check deployment BEFORE re-diagnosing the code. It is the cheapest hypothesis and it was the correct one.
+
+    + ENFORCEMENT:
+      - a verification step whose command spawns a new process does not count as deployment evidence
+      - the check must be of the form `(boolean (resolve 'the.ns/the-new-fn))` evaluated in the serving process
+      - candidate instrument (specified 2026-08-04, unbuilt): a `:namespace-drift` key in `boot-context` comparing on-disk source mtimes against the baseline captured at load, restricted to `futon*` namespaces — surfacing drift, never auto-reloading

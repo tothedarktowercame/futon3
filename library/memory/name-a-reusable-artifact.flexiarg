@@ -1,0 +1,34 @@
+@flexiarg memory/name-a-reusable-artifact
+@title Prefer Memories That Can Witness Their Own Use
+@sigils [🧱/築]
+@keywords memory, substitutive, regulative, witness, attribution, amortization
+@audience scribes, memory-system designers
+@tone analytic-foundational
+@style pattern
+@references [memory/surface-the-closed-set memory/stratify-before-you-contrast]
+
+! conclusion: A memory that NAMES a reusable artifact converts, at the moment of use, into a mechanical dependency — an import, a citation, a compile-time edge. A memory that offers advice cannot. Prefer the former where a choice exists, because only a substitutive memory can witness its own contribution; a regulative one is structurally unwitnessable.
+
+  + context: Measured 2026-08-04 against the apm-lean corpus. Fifteen problems import a `ConstructionTargets` submodule and in FIFTEEN of fifteen the imported declaration is actually referenced in the proof body — use that is checkable by grep and enforced by the compiler. Six such lemmas are reused across two or three problems each. By contrast the memory store's own use record is testimony: a `USED`/`IGNORED` line supplied by the runner. Of the six most-reused declarations, only TWO are named by any memory at all — so the cross-problem amortization that did happen, happened without the store.
+
+  + IF:
+    A scribe is distilling a completed session, and the lesson could be recorded either as a named artifact or as guidance.
+
+  + HOWEVER:
+    Guidance is easier to write and feels more general. "Try Abel regularization here" is quick; locating the lemma that closes the step, checking it is reusable, and naming it is work. But the guidance leaves no trace when followed. Nothing downstream can distinguish a memory that changed the proof from one that was read and discarded — which is why `:memory-use/kind` stood at zero across 559 memories.
+
+    + ANTI-PATTERNS:
+      - a memory whose body is a technique with no artifact reference
+      - naming an artifact by a moving reference (`HEAD`, a branch) rather than a stable one — the subject becomes unresolvable at read time, and a bitemporal store makes that worse
+      - recording the lesson and NOT promoting the reusable object it depends on, so the memory points at something that lives inside one problem's file
+
+  + THEN:
+    1. When a session proves a general helper, promote it to the shared library AND record a memory naming it. The two halves are one act; either alone is a blip.
+    2. State the memory's subject as a stable identifier — a sha, a declaration name, a pattern id.
+    3. Where the lesson is genuinely regulative, record it as such and accept that its contribution will not be mechanically witnessed. Do not manufacture a false artifact reference to obtain a witness.
+    4. Expect the witness to be MEDIATED and design for it: a memory baked into a shared lemma that N problems import has MORE leverage than one used once, but its trace sits one hop from any single problem. A per-problem check for direct use scores it absent.
+
+    + ENFORCEMENT:
+      - for each declaration reused by 2+ problems, assert a memory names it; the gap is a recording defect, not a retrieval one
+      - a sweeper reconciling artifact citations against use-receipts must follow exactly ONE hop of transitivity — closing proof to imported lemma to memory. Two hops is unfalsifiable in practice
+      - serves capability-proof-memory-system nodes M1 and M5; M5's refusal splits by memory kind rather than applying globally

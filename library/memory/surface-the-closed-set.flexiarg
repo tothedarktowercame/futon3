@@ -1,0 +1,37 @@
+@flexiarg memory/surface-the-closed-set
+@title A Validator That Knows the Answer Must Publish It
+@sigils [🔑/鍵]
+@keywords schema, enum, validation, tool-spec, silent-omission, affordance
+@audience futon developers, tool-surface maintainers
+@tone analytic-foundational
+@style pattern
+@references [agency/loud-failure memory/licence-to-fail]
+
+! conclusion: Wherever a server validates a caller's field against a closed set or a format, the caller-facing schema MUST publish that set. A constraint held only by the validator is unanswerable, and an unanswerable required field is omitted rather than guessed — producing a refused write, not an error the caller can act on.
+
+  + context: Measured 2026-08-04 in futon3c. Four instances in one day. `memory_record`'s `ref/type` was `{:type "string"}` while `shapes.clj` validated it against a 21-value ArtifactRefType; runners omitted `subjects` entirely and their distilled content was lost. `ref/id` carried a resolvability requirement stated nowhere, and a runner wrote `HEAD` — unresolvable in a bitemporal store. `memory_search`'s `:type` shipped the examples `observation|claim`, neither of which is an EvidenceType, so a runner following the documentation filtered on values that match nothing. `psr/candidates` was `[:vector map?]`, which validates nothing at all, and accumulated two incompatible key spellings.
+
+  + IF:
+    A tool parameter is validated server-side against an enum, a closed vocabulary, a format, or a shape.
+
+  + HOWEVER:
+    The schema shown to the caller says only `{:type "string"}`, or names a handful of examples, or names the wrong ones. The model does not know the vocabulary. It omits the field, or supplies a plausible value that matches nothing. Both failures are SILENT: an omitted required field returns a refusal the caller cannot diagnose, and a bad filter returns an empty result set with no error at all — indistinguishable from "there is nothing there".
+
+    + ANTI-PATTERNS:
+      - `{:type "string"}` beside a sibling field that carries `:enum` — the asymmetry is the tell
+      - examples drawn from the wrong vocabulary (a ClaimType offered as an EvidenceType)
+      - `[:vector map?]` or bare `map?` — validates map-ness and nothing else, so every key spelling passes and the field silently accumulates incompatible shapes
+      - a required field whose description does not say what a legal value looks like
+
+  + THEN:
+    Derive the caller-facing enum FROM the server-side definition, so the two cannot drift:
+    1. If the server validates against a closed set, put that exact set in the schema's `:enum`.
+    2. If the constraint is a format rather than a set (must resolve later, must be a sha not a branch), state it in the description with a worked example.
+    3. If a value outside the set fails SILENTLY — an empty result rather than an error — say so explicitly in the description. Silence is the dangerous case.
+    4. Verify by reading the shipped spec back out of the SERVING process and comparing it set-wise to the server's own definition.
+
+    + ENFORCEMENT:
+      - for each tool spec field typed `{:type "string"}`, grep the handler for a matching enum/validation; a hit with no `:enum` in the spec is a defect
+      - assert set-equality between shipped `:enum` and the server-side source of truth, so drift is a test failure rather than a silent divergence
+      - grep for `map?` and `[:vector map?]` in shape definitions — each is a gate that checks nothing
+      - serves capability-proof-memory-system node M1 (recording gap): the store did not fail to retrieve these memories, it never received them

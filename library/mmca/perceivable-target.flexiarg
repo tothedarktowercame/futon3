@@ -1,0 +1,36 @@
+@flexiarg mmca/perceivable-target
+@title A Loop Closes Only on a Target the System Can Perceive
+@keywords closed-loop, intrinsic-measure, twin-run, counterfactual, observability, self-tuning, sensor
+@audience designers of self-regulating systems, AIF engine authors
+@references [mmca/screen-the-knob-before-the-controller mmca/persistence-over-appearance]
+@tone declarative
+@style pattern
+
+! conclusion: A quantity computed by forking the run — perturbing a twin and comparing — is available to the EXPERIMENTER and never to the system. If your objective is of that kind, no controller inside the system can regulate on it, however good a measure it is. Separate "is this a good measure?" from "can the system compute it?", and answer the second first.
+
+  + context: A system intended to steer itself toward a regime, where the regime is currently identified by an externally-measured quantity.
+
+  + IF:
+    The target quantity is a counterfactual: damage reach, sensitivity to perturbation, Lyapunov-style divergence, any measure defined by comparing a run against a variant of itself.
+
+  + HOWEVER:
+    The system has exactly one trajectory. It cannot fork itself, so it cannot evaluate the measure that defines its own target. This is not a difficulty of implementation; it is a property of the measure. A controller written against it must in fact be reading something else, and what it is reading is then unexamined.
+
+  + THEN:
+    Split the question in two and gate the second on the first. (a) Does any RUNTIME-COMPUTABLE quantity track the target across the parameter sweep? Test it as a regression with held-out data, not a correlation on the fit. (b) Only if some quantity passes, ask whether a loop on it converges and holds. If nothing passes (a), the loop cannot be closed from inside — which is a real result and should be reported as one, not as a failed experiment.
+
+  + BECAUSE:
+    The distinction is empirically sharp, not philosophical. In the MetaCA study the same class of internal observables predicted an INTRINSIC objective at held-out R-squared +0.726 and an external twin-run objective at +0.016. Same system, same observables, same form of test; the only difference was whether the target is something the system can perceive. The controllers that failed did not fail because the system cannot be steered — they failed because they were steering by an instrument not connected to anything the system does.
+
+  + NEXT-STEPS:
+    - Smoke-test the regression estimator on synthetic signal and synthetic noise BEFORE running it on real data, so a pass is attributable to the system rather than to the analysis.
+    - Match the measurement windows of predictors and target; a mismatch biases toward failure and makes a pass a lower bound rather than an estimate.
+    - Check the observable space for DEGENERACY: if two dynamically different configurations collide in the observables, the loop is blind there even with a valid target.
+    - evidence: held-out R-squared for internal -> intrinsic target and internal -> external target, side by side.
+    - evidence-shape: {:predictors [:keyword], :target :keyword, :intrinsic? :bool, :r2-heldout :float, :r2-insample :float}
+
+  + DOES-NOT-APPLY:
+    Externally-supervised systems, where an experimenter or environment legitimately supplies the signal and no claim of self-regulation is made.
+
+  + INSTANCES:
+    - MetaCA Supplement 5 (futon5): damage reach is measured on a twin run; a controller on the selected knob could not use the sensor that made the knob attractive. The loop proved closable on an intrinsic target and not on damage reach.

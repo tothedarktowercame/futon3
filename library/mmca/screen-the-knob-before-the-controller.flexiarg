@@ -1,0 +1,36 @@
+@flexiarg mmca/screen-the-knob-before-the-controller
+@title Screen the Knob Before You Build the Controller
+@keywords control, leverage, reachability, sensor, closed-loop, fixed-point, flat-plant, self-tuning
+@audience anyone building a closed loop on a system parameter, AIF controller authors
+@references [mmca/perceivable-target mmca/persistence-over-appearance aif/admissibility]
+@tone declarative
+@style pattern
+
+! conclusion: Before building a controller on a knob u with sensor y, run four cheap checks: LEVERAGE (does u move y on-policy by more than seed noise), REACHABILITY (does the target lie inside y's attainable range), VALIDITY (does y track the objective, or is it merely movable), STABILITY (does the closed loop have a fixed point rather than a repeller). A controller that fails any of these could not have worked, and every failure is establishable BEFORE the controller exists.
+
+  + context: A self-tuning system with several candidate parameters, where one is chosen as the control and a target value is set for some measured quantity.
+
+  + IF:
+    A closed loop is proposed on (u, y) because u seems conceptually related to y.
+
+  + HOWEVER:
+    Conceptual relatedness is not leverage. In the MetaCA study a conatus weight lambda swept across its ENTIRE range moved its sensor by 0.005, against a seed-level spread an order of magnitude larger. A closed-loop sweep over ten targets then found every target settling at a boundary, with a bifurcation between 0.160 and 0.170: below it the knob ran to one, above it to zero, nothing rested between. The critical target was not an attractor but the mean realised sensor value, separating "positive error forever" from "negative error forever". A sign controller on a flat plant has no interior fixed point — and none of this required building the controller to discover.
+
+  + THEN:
+    Run the four checks in order and stop at the first failure. Leverage: sweep u open-loop, compare the induced range of y against between-seed spread at fixed u. Reachability: check the target against y's measured attainable range, remembering that the CLOSED-loop attainable range can differ from the open-loop response curve. Validity: correlate y against the actual objective across the sweep. Stability: examine the sign of the error around the intended fixed point.
+
+  + BECAUSE:
+    A controller is an expensive way to discover that a knob does nothing. The screen costs one open-loop sweep, which you need anyway to interpret any closed-loop result. And an aspirational target set below the achievable range does not express a preference — it converts the loop into a monotone gradient, which then LOOKS like successful control right up until you check where it settled.
+
+  + NEXT-STEPS:
+    - A positive control is mandatory when reporting a null: with a deliberately unreachable target the knob must ramp to a boundary, reproducing the known failure mode, so a null elsewhere is interpretable rather than indistinguishable from a broken harness.
+    - In restoration tests, include a no-kick arm: a knob already pinned at a boundary returns toward it after any kick, which mimics restoration exactly and is invisible without the control.
+    - Record which condition failed. "The controller did not work" is not a finding; "the knob has no leverage on its sensor" is.
+    - evidence: open-loop range of y over u; between-seed spread of y at fixed u; their ratio.
+    - evidence-shape: {:knob :keyword, :sensor :keyword, :open-loop-range :float, :seed-spread :float, :conditions-passed [:keyword]}
+
+  + DOES-NOT-APPLY:
+    Loops where the plant is known analytically and leverage is provable rather than measurable.
+
+  + INSTANCES:
+    - MetaCA Supplement 5 (futon5): lambda/hunger fails leverage, fails reachability twice over, fails stability; validity was never reached. Applied to the remaining knobs the screen selected policy precision, which had not been treated as a control at all.

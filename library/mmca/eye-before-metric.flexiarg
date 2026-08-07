@@ -1,0 +1,36 @@
+@flexiarg mmca/eye-before-metric
+@title Build the Labelled Set Before the Metric
+@keywords measurement-design, artifact, labelled-set, visual-criterion, operationalisation, ground-truth
+@audience anyone operationalising a criterion someone can recognise but has not defined
+@references [mmca/threshold-shaped-events mmca/instrument-horizon-must-match-system]
+@tone declarative
+@style pattern
+
+! conclusion: When someone can point at examples of a phenomenon but has not defined it, do NOT go straight to a metric. Have them label a set first, then require any candidate measure to recover those labels. Metrics written from a verbal description of a visual criterion tend to find a different artifact each time, and each one looks like a discovery.
+
+  + context: A collaborator identifies instances of a phenomenon by eye — "these cells are alive", "this one is invading" — and a quantitative criterion is wanted.
+
+  + IF:
+    The criterion is currently a verbal gloss on something recognised visually.
+
+  + HOWEVER:
+    A verbal gloss underdetermines the measure. In the MetaCA study three automated measures were written for one visual criterion ("live regions overrunning dead ones") in a single afternoon, and each found a DIFFERENT artifact: interface flicker, one-step lulls, and domain mergers. All three produced plausible rankings. None matched the collaborator's picks. The collaborator's four unaided picks turned out to be three of the four most extreme cells on the eventually-correct statistic, so the eye was right and the metrics were wrong.
+
+  + THEN:
+    Ask for the labels first, as a sampler sheet: every candidate rendered identically, the collaborator marking instances. Then screen candidate measures by whether they recover the labelling. Report agreement with the labelled set, not the measure's internal plausibility.
+
+  + BECAUSE:
+    An artifact that correlates with something will always be available, and a measure written without ground truth has no way to reject one. The labelled set is the only thing that distinguishes "this measure finds the phenomenon" from "this measure finds something". It also costs less than the metrics do.
+
+  + NEXT-STEPS:
+    - Render the sampler at identical scale and treatment; differences in rendering become differences in labelling.
+    - When a measure disagrees with the labels, look at the disagreeing cases directly before adjusting the measure — the disagreement often names the artifact.
+    - Keep the labelled set; it is reusable, and it dates the claim.
+    - evidence: labelled set; per-measure agreement with it; the artifact each rejected measure was found to be tracking.
+    - evidence-shape: {:labelled-cells [:keyword], :measure :keyword, :agreement :float, :artifact-found :string}
+
+  + DOES-NOT-APPLY:
+    Criteria that already have an accepted formal definition, where the labelled set adds nothing.
+
+  + INSTANCES:
+    - MetaCA Part III (futon5): three measures, three artifacts, one afternoon; the sampler sheet built afterwards is what identified the correct statistic.

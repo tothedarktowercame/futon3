@@ -1,0 +1,36 @@
+@flexiarg mmca/persistence-over-appearance
+@title Persistence Over Appearance — Ask Whether It Survives, Not Whether It Looks Complex
+@keywords criticality, edge-of-chaos, absorbing-state, objective, complexity-measure, class-IV, aliveness
+@audience designers of criticality objectives, artificial-life researchers, anyone scoring "interestingness"
+@references [mmca/instrument-horizon-must-match-system mmca/realization-variance-is-not-a-regime aif/currency-before-merge]
+@tone declarative
+@style pattern
+
+! conclusion: When scoring a dynamical system for criticality or aliveness, make the primary criterion whether the system REACHES AN ABSORBING STATE over a long horizon — not how structured its output looks. Appearance-based objectives can rank dying configurations above living ones, and cannot detect that they have.
+
+  + context: Searching a parameter space for "edge of chaos" behaviour, with an objective that scores a spacetime sheet (compressibility, entropy, activity, damage reach, mid-range statistics).
+
+  + IF:
+    The objective reads a fixed-length window of output and returns a scalar for "how interesting this looks."
+
+  + HOWEVER:
+    Structure and survival are different properties, and near a phase boundary they can be ANTI-correlated. In the MetaCA study the highest-scoring configurations were the ones that froze permanently: a local-compressibility objective ranked a configuration that stops changing at t=1046 at 0.625, above a configuration still changing at t=10000 at 0.422. Across seven configurations at two seeds the separation was perfect and inverted — every configuration that died scored higher than every configuration that lived. A graded compression distribution is exactly what a partially-frozen sheet produces, so the measure rewarded the frozen phase that PRECEDES permanent freezing.
+
+  + THEN:
+    Define the criterion on a single trajectory: a run is absorbing if it reaches a configuration it never leaves. Report the absorption time, or its absence, at a horizon several times the longest transient you have observed. Use appearance measures as descriptors of surviving configurations, never as the ranking.
+
+  + BECAUSE:
+    Survival cannot be faked by an artifact. Every appearance measure is a statistic over a window and can be satisfied by something that merely resembles structure — a detection-threshold crossing, a padding regularity, a boundary effect. "The sheet never stops changing" is not a statistic; it is a fact about the run, checkable by comparing consecutive rows for equality. An objective that can be gamed by an artifact WILL be, because the search optimises against it.
+
+  + NEXT-STEPS:
+    - State the horizon with every persistence claim: "did not absorb within N", never "does not absorb".
+    - Absorption TIME is far noisier than the absorption VERDICT: in this study it varied more than 2x between seeds at fixed parameters while the alive/dead verdict was 14/14 consistent. Use the verdict to locate boundaries; do not read trends into the timing without many seeds.
+    - Pairs with instrument-horizon-must-match-system: an appearance measure validated on short reference systems is measuring a transient.
+    - evidence: absorption time per configuration per seed; the objective's ranking beside it.
+    - evidence-shape: {:config/absorbs-at (:int | nil), :config/objective :float, :horizon :int, :seeds :int}
+
+  + DOES-NOT-APPLY:
+    Systems with no absorbing states reachable at all (every trajectory is recurrent), where the criterion is vacuous. Also inapplicable when the research question genuinely IS about appearance — e.g. reproducing a specific visual morphology — provided the claim is stated that way.
+
+  + INSTANCES:
+    - MetaCA Part III (futon5): the local-compressibility objective's two maxima were a living regime and a dying one, and it ranked the dying one highest. The configuration a criticality search would have been built to find scored eighth of thirty-five.

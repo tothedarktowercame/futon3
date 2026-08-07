@@ -1,0 +1,35 @@
+@flexiarg mmca/realization-variance-is-not-a-regime
+@title When Seeds Disagree, Report a Region — Not a Regime
+@keywords criticality, seed-variance, phase-transition, regime, replication, critical-point
+@audience anyone characterising parameter regions in stochastic dynamical systems
+@references [mmca/persistence-over-appearance mmca/instrument-horizon-must-match-system]
+@tone declarative
+@style pattern
+
+! conclusion: If two seeds at the same parameter point reach OPPOSITE outcomes, you have not found a regime with an intermediate character — you have found a region where the parameters do not determine the outcome. Report it as that. It is a stronger and more honest claim than a critical point, and it is what a critical region actually looks like.
+
+  + context: Sweeping a parameter between two known attractors and finding points that do neither.
+
+  + IF:
+    A parameter point produces behaviour intermediate between the two attractors on the seed you ran.
+
+  + HOWEVER:
+    Intermediate behaviour on one realisation is consistent with three different things: a genuine intermediate regime, a slow approach to one attractor that the horizon truncates, and a region where fluctuations decide the outcome. Only replication separates them. In the MetaCA study one configuration sustained an intermediate state across 10000 steps while its sibling seed lost it entirely by t=4000; at the neighbouring parameter point the two seeds went to OPPOSITE attractors, one shedding its frozen phase and the other freezing completely at t=6346.
+
+  + THEN:
+    Run at least two seeds at every candidate point before naming it. If they agree, extend the horizon before claiming an intermediate regime. If they disagree, report "the parameters do not determine which outcome obtains in this region", give both trajectories, and decline the critical-point claim explicitly.
+
+  + BECAUSE:
+    Realisation-to-realisation variance dominating a parameter's effect IS the signature of a critical region — correlation lengths grow and finite systems become fluctuation-dominated. Reporting it as a regime with an intermediate character claims a property of the parameters that the data contradicts. The honest version is also the more interesting one.
+
+  + NEXT-STEPS:
+    - Do not change two things at once when chasing this: extending the horizon AND widening the lattice in the same run makes the result unattributable.
+    - Absorption times are far noisier than absorption verdicts; do not read a trend in timing as critical slowing down without many seeds per point.
+    - evidence: outcome per (parameter, seed); explicit statement of which points had disagreeing seeds.
+    - evidence-shape: {:point {:params :map, :seed :long, :outcome :keyword}, :disagreeing-points [:map]}
+
+  + DOES-NOT-APPLY:
+    Deterministic systems with no seed, and systems where the initial condition is itself the object of study.
+
+  + INSTANCES:
+    - MetaCA Part III (futon5): the section reports a region in which the parameters do not determine the winner, and explicitly declines a critical point, because two seeds disagree at both tested points.

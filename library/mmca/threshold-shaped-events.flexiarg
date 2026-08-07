@@ -1,0 +1,35 @@
+@flexiarg mmca/threshold-shaped-events
+@title Check the Episode Length Against the Detection Threshold
+@keywords artifact, threshold, event-counting, turnover, flicker, hysteresis, detector
+@audience anyone counting events defined by a threshold crossing
+@references [mmca/eye-before-metric mmca/persistence-over-appearance]
+@tone declarative
+@style pattern
+
+! conclusion: When events are defined by a detector with a threshold — "frozen" means unchanged for W steps, "active" means above level L — plot the distribution of episode DURATIONS before reporting any count. If the median episode length equals the threshold, you are counting detector crossings rather than phenomena, and the count can be inflated by an order of magnitude.
+
+  + context: Measuring turnover, switching, or event rates in a system where the event is defined by a state persisting past some detection threshold.
+
+  + IF:
+    Events are counted as transitions of a thresholded indicator.
+
+  + HOWEVER:
+    A threshold detector fires on the phenomenon AND on noise that momentarily satisfies it, and the two are indistinguishable in the count. In the MetaCA study "frozen" was defined as unchanged for 4 steps, and the measured turnover was 73 thaws per column. The median frozen episode was 4.0 steps — exactly the threshold — so most counted episodes were threshold crossings. Raising the threshold to 15 steps gave 14.2 per column: the original figure was inflated thirteenfold, and the visual impression of structure survived at the higher threshold only in part.
+
+  + THEN:
+    Compute the duration distribution of episodes, and compare its median and its lower quantiles against the threshold W. If median ~ W, raise the threshold until the distribution's mass sits clearly above it, and report the threshold with every derived number. Prefer reporting the tail (episodes > kW) over the raw count.
+
+  + BECAUSE:
+    The threshold is a free parameter of the measurement, and any quantity that changes by 13x under a defensible change of it is not a property of the system. Reporting the count without the threshold hides a choice that dominates the result. Duration distributions expose it in one plot.
+
+  + NEXT-STEPS:
+    - The same check applies to spatial thresholds (minimum region size) and to hysteresis bands.
+    - When the threshold is raised, re-derive EVERY dependent statistic; region counts, mean widths, and turnover all move together.
+    - evidence: episode duration median, p90, fraction exceeding 5x threshold, at two thresholds.
+    - evidence-shape: {:threshold :int, :episodes :int, :median-duration :float, :p90 :float, :frac-above-5w :float}
+
+  + DOES-NOT-APPLY:
+    Detectors whose threshold is physically given rather than chosen (a hardware trigger level, a defined quorum).
+
+  + INSTANCES:
+    - MetaCA Part III (futon5): turnover reported as 73.2 thaws/column at W=4 and 14.2 at W=15; the published figure states its threshold in the caption and gives the reason.

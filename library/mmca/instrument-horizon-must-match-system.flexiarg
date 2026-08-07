@@ -1,0 +1,35 @@
+@flexiarg mmca/instrument-horizon-must-match-system
+@title The Instrument's Horizon Must Match the System's Transients
+@keywords validation, calibration, horizon, transient, reference-system, window, measurement
+@audience anyone calibrating a measure against reference systems before applying it
+@references [mmca/persistence-over-appearance mmca/eye-before-metric]
+@tone declarative
+@style pattern
+
+! conclusion: A measure validated on reference systems that settle in N steps tells you nothing about a system whose transients run to 10N. Before trusting a calibrated instrument, compare the settling time of the references against the settling time of the system under study — and if they differ by an order of magnitude, the calibration does not transfer.
+
+  + context: Validating a complexity or regime measure against systems of undisputed classification (elementary cellular automata, known-chaotic maps, reference rules) and then applying it to a novel system.
+
+  + IF:
+    The instrument passes validation cleanly on the references and separates them in the intended direction.
+
+  + HOWEVER:
+    Passing validation constrains the instrument's behaviour ONLY over the window in which validation ran. Elementary CA rules reach their asymptotic character within a few hundred steps; a rule-rewriting automaton with a selection layer can take thousands. A measure computed over 250 steps on such a system is characterising its transient, and the transient can be the opposite of the asymptote. In the MetaCA study the behaviour that separated the interesting configurations — absorption at t=1046, turnover sustained past t=9500 — occurred ENTIRELY outside the window in which the objective was computed.
+
+  + THEN:
+    Measure the settling time of the system under study first, at a few parameter points, using a cheap criterion (row-equality, autocorrelation decay, frozen fraction stabilising). Set the instrument's window from that, not from the references'. If the window is unaffordable, say explicitly that the measure characterises the transient.
+
+  + BECAUSE:
+    Calibration transfers a mapping from output to class. It does not transfer the assumption that the output at time N is representative — and that assumption is invisible, because it is embedded in the choice of N rather than stated. The reference systems silently supply it.
+
+  + NEXT-STEPS:
+    - Report the validation window and the system's observed transient length side by side; their ratio is the credibility of the transfer.
+    - Beware the same defect in reverse: an instrument whose numeric band is set by the stopping time (damage reach grows ~5x between t=50 and t=400 for some rules) is horizon-defined, and its "bands" are not portable across horizons.
+    - evidence: settling time per configuration; validation window; ratio.
+    - evidence-shape: {:validation/window :int, :system/settling-time :int, :ratio :float}
+
+  + DOES-NOT-APPLY:
+    Instruments whose value is defined ON the window by construction (e.g. "activity in the first 100 steps"), where no asymptotic claim is being made.
+
+  + INSTANCES:
+    - MetaCA Part III (futon5): objective validated on ECAs 54/110/204/90/30 over 250 steps, applied to a system whose transients run past t=1000. Every configuration later shown to be interesting was scored in that 250-step window and looked unremarkable.

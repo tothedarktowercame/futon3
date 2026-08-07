@@ -1,0 +1,37 @@
+@flexiarg mmca/verified-but-idle-link
+@title A Verified Fact That Does No Work Is Decoration
+@keywords argument-map, scope, cross-reference, load-bearing, deductive, claim-discipline
+@audience paper authors, argument-map builders, reviewers of multi-part work
+@references [mmca/persistence-over-appearance futon-theory/structural-tension-as-observation]
+@tone declarative
+@style pattern
+
+! conclusion: A cross-part connection can be exactly true, computationally verified, and still do NOTHING for the argument. Before promoting such a fact to a structural claim — a "deductive link" in an argument map, a reason two parts belong together — ask what breaks if it is false. If nothing does, it is decoration and should be demoted to a remark.
+
+  + context: A multi-part work where an early part proves something about a family of objects, and a later part uses members of that family.
+
+  + IF:
+    A theorem from the early part demonstrably predicts a property of every object the later part instantiates.
+
+  + HOWEVER:
+    Predicting a property is not the same as that property doing work. The later part's results may turn on something else entirely, in which case the prediction is a coincidence of shared vocabulary rather than a load-bearing connection. The test is counterfactual: if the theorem were false, would any conclusion of the later part change? In the MetaCA paper, Part I's count theorem predicts the number of genotypes each exotype cannot alter, verified for all fourteen implemented propagators — but Part III's findings turn on persistence, and no measurement connects immunity to absorption. The link is real and idle.
+
+  + THEN:
+    State it as a remark where it belongs, and reserve the structural claim for connections whose failure would propagate. If you believe the connection SHOULD be load-bearing, name the measurement that would make it so and mark it as unrun.
+
+  + BECAUSE:
+    An argument map that draws a heavy edge for a decorative fact misrepresents where the work's weight sits, and it does so in the most visible place. Readers use the map to decide what to check. A prominent edge that carries nothing directs attention away from what actually holds the argument up — and if a reviewer tests it and finds nothing depends on it, every other edge becomes suspect.
+
+  + NEXT-STEPS:
+    - The counterfactual test is cheap: for each edge, write the sentence that would have to change if the source were false. An edge with no such sentence is decoration.
+    - Awkward layout is a symptom worth heeding: an edge that will not route cleanly is often one the argument does not need.
+    - The honest fix may be to RUN the measurement that would make the link load-bearing, rather than to demote it.
+    - evidence: per-edge, the conclusion that fails if the source fails.
+    - evidence-shape: {:edge [:from :to], :dependent-claim (:string | nil), :load-bearing? :bool}
+
+  + DOES-NOT-APPLY:
+    Connections that are themselves the contribution — where "these two things are related" is the result being claimed.
+
+  + INSTANCES:
+    - MetaCA Figure 1 (futon5): the "2^k predicts the immune bytes" edge was drawn as the map's only deductive link, then found to have no dependent conclusion in Part III. Caught by the author noticing the label read awkwardly and overlapped its own edge.
+    - The repair was NOT deletion. The map did need an edge there, but at a different level: the operator family defined at the top of the map re-enters at the bottom as per-cell state the system modifies while it runs. The idle edge was a detail-level fact standing in for a structural one, and the structural one is what the argument actually uses. Look for the right edge before removing the wrong one.

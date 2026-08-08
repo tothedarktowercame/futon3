@@ -20,6 +20,14 @@
 > *Those who love peace must learn to organize as effectively as those who love war.*
 > — Martin Luther King Jr.
 
+> *As we know, the revolutionary problem today is to find some unity*
+> *in our various struggles without falling back on the despotic and*
+> *bureaucratic organization of the party or State apparatus: we want a*
+> *war-machine that would not recreate a State apparatus, a nomadic unity*
+> *in relation with the Outside, that would not recreate the despotic*
+> *internal unity.*
+> — Gilles Deleuze, "Desert Islands and Other Texts: 1953-1974"
+
 This document sits one level above mission control. Individual missions
 (M-coordination-rewrite, M-drawbridge-multi-agent, etc.) operate within
 a single futon. The War Room coordinates across futons and across missions.
@@ -53,6 +61,9 @@ summarises; the bulletins provide evidence and argument.
 | [10](war-bulletin-10.md) | 2026-05-31 | The War Machine Works — and Reaches for a Real Manifold | M-war-machine-first-outing CLOSED (queue cleared, zero fake-finishes); starvation traced to 3 nested gaps (tension ranks-not-generates / inventory is fixed code / boundary invisible to agent); M-aif2 extensible-registry + meta-meta-learning driven IDENTIFY→VERIFY; niche-construction principle corrected (AIF meta-level IS in the framework); logic-model-before-code captured as a verify-discipline pattern; **crossing point — a ground metric on substrate-2 (Ollivier–Ricci/Wasserstein + latent Fisher–Rao) underlies aif2 / M-differentiable-code / M-live-geometric-stack / E-codebase-manifold**; WR-18–WR-22 |
 | [11](war-bulletin-11.md) | 2026-06-30 | The Stack Can See Itself — One Cascade, Not Seven Pictures | Operational self-model made REAL — five dimensions (lineage, mined moves, mine, upward clusters, fold-wiring) compose on ONE canonical identity (171 shared mission nodes, 0 conflicts); the blocker was IDENTITY not data, the fix is GOVERNANCE (E-futon1a-archivist canonical-id write gate reviving the Charon discipline); `pipeline-pattern-cascade.html` renders live `/api/alpha/cascade-real`; honest holes (O5 capability canonicalization) surface the next work by design |
 | [12](war-bulletin-12.md) | 2026-07-14 | Fabled Sessions — Two Arcs, One Reconstruction | Reconstruction across a model handoff (Fable's promotional window). **Arc I** (Emacs peripherals): Smart Emacs Cursor proven-but-dormant; Mission Mode (`mission-mode.el`) live + maintained. **Arc II**: XTDB 2 port durable (futon1b, `:7074`); text-index companion under live soak (futon1bi, XTDB #5637, recall 1.0); zai/zaif harness through ZU-4 (status oracle, replay calibration, CI bug-queue); 40-flight assessment CLOSED (S2 retired, reward = binding constraint); reward-learning honest negative (futon3a); p4ng sequel preregistered + zaif PoC; backlog-cascade forward model; tunnel-free federation (futon3c). **Three stranded flags:** APM Zai cron UN-ARMED, futon5 sci-reproduction complete-but-off-branch, Smart Cursor dormant |
+| [13](war-bulletin-13.md) | 2026-07-17 | The Stack Keeps a Notebook — Upstreams as Extended Mind | Upstream dependencies read as constitutive faculties (XTDB = memory, babashka = hands, FTS5 pod = recall, A-Frame/troika = senses); their trackers are therefore stack maintenance surfaces (WR-23); standing×liveness scan yields ~10 walkable rungs in 3 tiers (go-sqlite3#41, troika#341, xtdb#5169, aframe#5396 lead); #5637 send discovered already-walked (2026-07-16, response window open); intervention lane mapped onto M-cold-chain as second counter (n_intervention, one/week proposed); identity question (holtzermann17 vs tothedarktowercame) flagged load-bearing; merges = cheap xeno-evaluation (mh7) |
+| [15](war-bulletin-15.md) | 2026-08-06 | The Ants Are Epistemic — One Instrument, Three Customers | Both machines probed full (bare metal CPU-pegged with ~190GiB RAM idle; binding constraint = operator attention); Henderson call converted to a collaboration path (#3663 first, #5637 benchmark on the arXiv corpus — benchmark and service are the same build); one evaluation methodology (prelim batteries + ArSE) identified behind three blocked doors (superpod go-live, WM overnight restart, consulting offer); APM × Arxiv.CT service architecture with **demand-paged mining** (hunger channel as the memory↔corpus seam); WR-24's gain parameter recurs in a third substrate (demand-coupling gain); WM re-arm condition proposed (WR-26 flag); sabbatical feasibility: yes iff August converts QA from operator-activity to harness |
+| [14](war-bulletin-14.md) | 2026-07-30 | The Gate Was Never the Money — Three Yardsticks Arrive as the Constraint Lifts | Four fronts all in a *reporting* phase (WM documented in `p4ng/main-2026.tex`; retrieval whitepaper as defensive publication; closer loop measured behaviourally; ALife Part III with pre-fixed criteria); **M-cold-chain rung 3 FIRED** — Henderson/XTDB reply 2026-07-28, first of any campaign, chat Wed 2026-08-05; Part III's live-vs-frozen gate is the *falsification instrument* for the memory system's evidence-updated operator (shared risk, NOT borrowed support); the cascade's dated scarcity (sinecure ~Aug, runway) lifted from outside the model — so the cash gate, which was only ever a proxy for external validity, is demoted and **witnessed external verdict** named in its place (compiler / maintainer / peer review = `mh7` fillable three ways); identity now *diverging* across three names; cron disabled without a re-arm condition; Invoice 202505 (£1,406.25) drafted 13 days and unsent; WR-24–WR-26 |
 
 ## The Three-Futon Refactoring
 
@@ -299,6 +310,239 @@ compression algorithm becomes a peripheral instead of a document.
   candidate moves
 - Live endpoint serves it; tile renders it; Show↔Hide button drives the
   conflict detail box
+
+### WR-23: Upstream trackers are stack surfaces (2026-07-17)
+
+**IF:** The stack's core faculties are constituted by upstream software
+(XTDB = memory, babashka = hands, the FTS5 pod = recall, A-Frame/troika =
+the public sensorium via VSAT) — Otto's-notebook style: reliably available,
+automatically endorsed, easily accessible — and the operator wants a cold
+outbound lane (M-cold-chain) that reliably produces sends
+**HOWEVER:** Cold outreach to strangers decays (topic-phrased audiences
+fail; unanswered emails evaporate), while the stack's genuine deployment
+experience sits unused as evidence on live upstream design questions the
+maintainers themselves have posed
+**THEN:** Treat upstream issue trackers as *stack surfaces*: informed
+interventions (deployment-evidence comments, maintainer-blessed small PRs)
+are self-maintenance of the stack's own faculties with a public byproduct.
+Run them as a second counter (n_intervention) on the M-cold-chain ladder —
+same constitution: staged in the outbox, sent only by the operator, every
+rung's movement recorded whichever way the world answers. Candidates come
+from a repeatable standing × liveness scan over the dependency manifests,
+with the honest-standing drop rule: no candidate survives unless "what we
+specifically add" can be filled truthfully.
+**BECAUSE:** The lane has strictly better geometry than cold email
+(audience-first by construction; non-response still deposits a public,
+compounding artifact; GitHub types the evidence for free), it passes WR-4's
+test trivially (the surface made more inhabitable is the stack's own memory
+substrate), and maintainer merges are the cheapest genuine xeno-evaluation
+events available (mh7: a yardstick someone else holds — a merge cannot be
+laundered).
+
+**Evidence:**
+- [Bulletin 13](war-bulletin-13.md): the 2026-07-17 scan (two read-only
+  sweeps) yielded ~10 walkable rungs in 3 tiers; Tier 1 alone
+  (go-sqlite3#41, troika#341, xtdb#5169, aframe#5396) funds a month at
+  one send/week
+- xtdb#5637 walked 2026-07-16 (rung 2: deployment-evidence comment sent,
+  operator's hand; rung 3 response window open) — the exemplar preceded
+  the decision
+- Bulletin 12 Finding 4 + refactoring point 2: the futon1b → futon1bi →
+  #5637 spine was already identified as "the one with an external
+  addressee"
+
+**Test:** Before staging an intervention, ask: "does our deployment
+experience answer a question the maintainer actually asked (or would
+recognize as theirs)?" If the honest answer is "we'd be +1ing," drop it —
+a +1 spends standing; evidence builds it.
+
+**Outcome (2026-07-30, bulletin 14):** rung 3 FIRED on this lane — James
+Henderson (XTDB) replied 2026-07-28 accepting a chat (Wed 2026-08-05
+10:00 +01:00), `:receipt/first-of-campaign true`, the first reply across
+*either* the warm or the cold chain. The lane predicted to answer first
+did. Cadence did not hold (one send in 13 days, not one/week); quality
+did.
+
+### WR-24: A removed constraint does not remove the discipline it supplied (2026-07-30)
+
+**IF:** A gate was installed as a proxy for something else — the
+forward-model cash gate was installed because "the only reason things get
+built is 'Joe finds this fun'," i.e. as the cheapest available proxy for
+*external validity* — and the underlying scarcity is then lifted
+(inheritance removes the runway floor; a geographic constraint lifts)
+**HOWEVER:** Removing the pressure removes the gate silently, and nothing
+announces the loss: the cascade's wave order loses its arbiter, `t1`'s
+"kept absolute" preemption hedge loses its trigger, and the failure mode
+that arrives is `pi-hermit` (build alone, never deposit) by the *pleasant*
+route rather than the unpleasant one — indistinguishable from progress
+from the inside
+**THEN:** Name the replacement gate in the same act as the retirement. The
+cash gate is demoted from master gate to one instrument; the master gate
+becomes **witnessed external verdict** — weekly: *who that is not Joe has
+judged this work, and what did they say?* Three instruments now serve it:
+the **compiler** (daily, mechanical), the **maintainer** (weekly if the
+WR-23 lane is walked), **peer review** (per submission). Money is a fourth,
+not the first.
+**BECAUSE:** This is `mh7` — "a yardstick someone else holds;
+xeno-evaluation cannot be self-supplied" — the hole the merged cascade
+ranked at the top of its ladder and could not fill. It is now fillable
+three ways, and a gate the stack can actually pass beats a gate that was
+only ever a stand-in.
+
+**Evidence:**
+- [Bulletin 14](war-bulletin-14.md) Finding 4 + refactoring point 1
+- Compiler: `lean-clean` 63→64 of 491, 172 executable sorries, queue
+  16/68 resolved, two independently-written counters agreeing
+- Maintainer: the WR-23 outcome above
+- Peer review: futon5 Part III — criteria fixed in advance
+  (`TN-part-III-b-baldwin-recovery`), a null result, reproduced from a
+  clean clone on independent hardware in 73 minutes (`6ba8283`)
+
+**Test:** At each week's close, can you name an external verdict with an
+artifact? If the only answer is "the work got better," the gate is
+unstaffed.
+
+**REVISION (2026-07-30, same day, Joe): the test above is the wrong SHAPE,
+and Part III measures why.** `futon5` `TN-coupling-gain.md` §1 finds the
+order parameter of the whole family is **the gain of the loop from
+phenotype back to genotype** — reach is graded and monotone in it, while
+eight other coordinates (λ, propagator fraction, rule diversity, blend,
+mutation, refuge probability, niche width, mobility) are silent. Its own
+gloss: *"architecture is normally a property a model has or lacks rather
+than a quantity."* Two consequences that hit this rule directly:
+
+1. **`switch(judged?, proceed, hold)` is the impoverished predicate.** A
+   weekly yes/no "has anyone external judged this?" is a one-bit phenotype
+   read. `TN-exotype-placement.md` measures exactly that shape —
+   `switch(bored?, propagator, no-op)` — and returns preregistered outcome
+   **(c): indistinguishable from its own `explore` constituent**. A boolean
+   gate on an impoverished predicate buys nothing over just doing the work.
+2. **Therefore the gate is a GAIN, not a boolean:** *how much of the
+   content of external verdicts is read into the next decision*, graded and
+   continuous. Not "did a verdict arrive" but "what fraction of what came
+   back changed what got built."
+
+**And this redefines `pi-hermit` more usefully than war-room:137 does.**
+§4's decisive control is **mobility-matched but blind**: identical rate of
+rule movement, gate replaced by a constant probability of equal rate,
+histogram invariant, dynamics still bijective — differing *only* in whether
+the genotype can see the phenotype. It never leaves the ordered band
+(`ungated transport 1.00` → reach 4.05, below rule 90's 8.00). So
+pi-hermit is **not** inactivity or failure to deposit. It is **outward
+mobility without coupling** — sending, publishing and shipping at any rate
+you like while the content of what comes back does not change what gets
+built. That is the failure mode available to a *comfortable* operator, and
+it is invisible from the inside precisely because the activity level looks
+right.
+
+**Open, and not to be leaned on:** the *expressive* half of "suitably
+expressive and selective substrate" is measured (gain governs; boolean is
+silent). The *selective* half is not — `TN-part-III-b-baldwin-recovery.md`
+is a PLAN with criteria fixed in advance and **nothing measured**. So the
+claim "a population under selection will find the coupling" is a live
+experiment in the CA and equally unproven in the stack. Do not cite it as
+support for a strategy that assumes the ascent selects for its own
+coupling.
+
+### WR-25: Good news gets the same evidence discipline as bad (2026-07-30)
+
+**IF:** The forward model's invariant 3 (manifest-willingness, not proxy)
+says posteriors move only on inbound clicks carrying a real evidence anchor
+— a reply, a payment in `ledger.edn`
+**HOWEVER:** That rule was written to stop *optimism* inflating `p-buyer`,
+so a genuinely good operator-reported fact (an inheritance, a verbal
+commitment, a lane "that might have work in it") slips past it unchallenged
+and silently rewrites every £ figure downstream
+**THEN:** Apply the rule symmetrically. Operator-reported facts act
+*immediately* on **ordering** (which lane preempts, which tension becomes
+decidable) and *not at all* on **numbers** (runway, `p`, marginals) until
+an artifact anchors them. State the asymmetry explicitly wherever the
+distillation reports one.
+**BECAUSE:** A model that filters bad news and admits good news is not
+conservative, it is biased; and the £-figures are the part other people
+(clients, employers, institutions) will eventually check.
+
+**Evidence:** [Bulletin 14](war-bulletin-14.md) Finding 4 — the two
+operator-supplied constraint releases recorded as ordering-effective and
+number-inert; §8.4 invariant 3 of `M-futon-forward-model.md`
+
+### WR-26: A capability switched off carries its re-arm condition, in writing, at the switch (2026-07-30)
+
+**IF:** An autonomous capability is deliberately turned off for a good
+reason — the codex sorry cron disabled 2026-07-30 so hand-dispatched durée
+runs can confirm the loop behaves as the rewritten packet claims
+**HOWEVER:** The reason outlives its own memory. All three of bulletin 12's
+"stranded flags" were this shape: switched off soundly, never re-armed,
+rediscovered as a surprise months later
+**THEN:** Write the re-arm condition at the switch itself (the crontab
+restore note, not a mission doc): a *countable* criterion — e.g. *n durée
+runs whose B1–B5 behavioural checklist passes with no operator amendment*.
+Commenting-out-with-a-note is necessary and not sufficient; the note must
+say what ends the pause.
+**BECAUSE:** "Until the behaviour is confirmed" is not a condition, it is a
+mood. A stranded flag costs more than the throughput the pause saved.
+
+**Evidence:** [Bulletin 14](war-bulletin-14.md) Finding 5; `futon3c`
+`cffa28b9`; bulletin 12's three stranded flags (APM Zai cron UN-ARMED,
+futon5 sci-reproduction off-branch, Smart Cursor dormant)
+
+**Outcome (2026-08-08, via bulletin 15):** the WM overnight pause — flagged
+in [bulletin 15](war-bulletin-15.md) as this rule's live violation — has
+discharged its debt. The re-arm condition is written at the switch
+(`futon3c/holes/WM-OVERNIGHT-RUNBOOK.md`, header note): re-arm on the first
+fleet capability measurement (one qualified cohort scored end-to-end with
+zero operator-adjudication events). The pause's reason turned out to be
+*very* specific (Joe, 2026-08-08): the engineering phase is complete and the
+WM works; the "so what" phase has not started because no instrumentation
+exists that could begin to answer it. The note points at the "so what" paper
+(`p4ng/science-2026.tex`) and at the reference implementation for pairing an
+AIF-driven process with an evaluation harness
+(`futon5/holes/tech-notes/paper/supplement5.tex` — the MetaCA miner, whose
+honest negative is stated as the point). A pause with a written, countable
+end is WR-26 satisfied — whether or not the condition fires soon.
+
+### WR-27: A loop is born instrumented for its gain (2026-08-06)
+
+**IF:** The order parameter that governs the CA family (`TN-coupling-gain.md`
+§1: reach is graded and monotone in the phenotype→genotype gain, while eight
+other coordinates are silent) has now recurred in three substrates — the CA
+coupling itself, the strategy layer's verdict gate (WR-24 revision: a gain,
+not a boolean), and the epistemic economy (bulletin 15: **demand-coupling
+gain** — the fraction of consumption-side signals (hungry queries,
+load-bearing verdicts) that changes what gets acquired (mined, remembered,
+indexed))
+**HOWEVER:** Every instance so far was discovered *retroactively*, by
+diagnosis after the loop was built: the CA needed a dedicated technote, the
+strategy layer needed a same-day revision to a freshly minted rule, and the
+redefined `pi-hermit` (outward mobility without coupling) shows the failure
+mode is invisible from inside precisely because the activity level looks
+right
+**THEN:** Any new loop that couples a consumption side to an acquisition side
+(mining, retrieval, outreach, review) ships with its gain instrumented from
+day one: the loop's own record-keeping logs what fraction of what came back
+changed what gets done next. For demand-paged mining specifically: every
+mining batch records which hunger signals shaped it, and the ratio
+(hunger-shaped acquisitions / total acquisitions) is the loop's gain reading.
+**BECAUSE:** The measured-negative evidence (repaired E5/E7 ablation:
+feedback-OFF predicted *better*, −0.149 bits/bit) shows raw coupling is not
+automatically good — a gain must be observable before it can be shaped; and a
+loop without a gain reading can only be diagnosed as hermit-mode
+retroactively, at technote cost. Instrumenting at birth converts a diagnosis
+into a dashboard.
+
+**Evidence:**
+- `futon5` `TN-coupling-gain.md` §1 (the CA order parameter) and §4 (the
+  mobility-matched-but-blind control that never leaves the ordered band)
+- WR-24 revision (2026-07-30): the verdict gate re-shaped from boolean to
+  gain
+- [Bulletin 15](war-bulletin-15.md) Finding 5: the third substrate, plus the
+  claim ladder bounding what is proven (hunger audit works — E10 closed
+  exactly) vs measured-negative (E5/E7) vs open (the running CA control
+  experiment) vs conjecture (transfer of the shaping)
+
+**Test:** Before a new loop's first production run, can you point to where
+its gain will be read off? If the answer is "we'll see it in the outcomes,"
+the loop is uninstrumented.
 
 ## Coordination Protocol
 

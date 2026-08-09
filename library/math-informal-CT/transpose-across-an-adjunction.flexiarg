@@ -1,0 +1,56 @@
+@flexiarg math-informal-CT/transpose-across-an-adjunction
+@title Transpose Across an Adjunction
+@sigils [⊣/交]
+@keywords adjoint, adjunction, adjunct, transpose, mate, unit, counit, left-adjoint, right-adjoint, Kleisli, Eilenberg-Moore, free-forgetful, hom-set-bijection
+@audience mathematicians, category-theorists
+@tone heuristic
+@factor Skilful means (upāya)
+@family math-strategy/structural-relation-result
+@references [math-informal/transport-across-isomorphism math-informal/dualise-the-problem math-informal-CT/compare-universal-properties]
+
+! conclusion:
+  When a statement is hard on one side of an adjunction, transpose it and prove
+  the adjunct instead.
+
+  + context: You must prove something about a map out of a free object, into a
+    limit, or between categories linked by a free–forgetful pair — and the
+    structure obstructing you lives on only one side.
+
+  + IF:
+      You have an adjunction F ⊣ G, and the claim concerns a morphism
+      F(A) → B (or A → G(B)). The hom-set bijection Hom(F A, B) ≅ Hom(A, G B) is
+      natural in both variables, so the two formulations carry exactly the same
+      information — but rarely the same difficulty. The same move transposes a
+      *diagram* rather than a map: a square commutes if and only if its mate
+      under the adjunction does.
+
+  + HOWEVER:
+      Transposing is only faithful if the naturality you rely on is the
+      naturality you have. Three ways this goes wrong: the bijection is natural
+      in one variable but you used it in the other; the adjunction is only a
+      *lax* or *relative* one, so the unit and counit are not isomorphisms and
+      the transpose is weaker than the original; or the mate correspondence
+      reverses 2-cells, turning a lax morphism into a colax one, so a condition
+      that looked preserved has silently dualised. Check which of unit and
+      counit you actually invoked — a proof that needs both is usually asserting
+      an equivalence, not an adjunction.
+
+  + THEN:
+      Name the adjunction and its unit η and counit ε explicitly. Transpose the
+      statement, prove it on the easier side, and transport the conclusion back
+      through the same bijection. For a diagram, take mates throughout and
+      verify the transposed diagram instead. Where the argument passes through
+      Kleisli or Eilenberg–Moore categories, say which, since the two present
+      the same monad with different morphisms.
+
+  + BECAUSE:
+      Adjunctions are the principal way category theory moves a problem to where
+      it is easy without losing information. The hom-set bijection is an
+      isomorphism, so nothing is given up; what changes is which structure is
+      free and therefore which side admits a construction by generators.
+
+  + NEXT-STEPS:
+    next[Name the adjunction, its unit, and its counit.]
+    next[State the transposed claim and check the naturality you rely on holds in the variable you used.]
+    next[Prove the transposed claim, then transport the conclusion back.]
+    next[If the adjunction is lax or relative, say what the transpose loses.]

@@ -1,0 +1,54 @@
+@flexiarg math-informal-CT/compare-universal-properties
+@title Identify Two Constructions by Comparing Their Universal Properties
+@sigils [≐/齊]
+@keywords coincide, corepresentable, weighted-limit, Kan-extension, up-to-unique-isomorphism, characterises
+@audience mathematicians, category-theorists
+@tone analytic
+@factor Wisdom (paññā)
+@family math-strategy/characterization-result
+@references [math-informal/verify-universal-property math-informal/structural-equivalence math-informal-CT/transpose-across-an-adjunction]
+
+! conclusion:
+  To show two constructions agree, show they solve the same universal problem —
+  do not compare them term by term.
+
+  + context: Two constructions built by different routes (a homotopy limit and a
+    weighted limit, a Kan extension and a coend, a Kleisli category and a
+    category of free algebras) are claimed to coincide.
+
+  + IF:
+      Each construction is characterised by a universal property, and the two
+      properties can be shown to be the same problem — the same representing
+      functor, or the same weight after a change of shape. Then the objects are
+      canonically isomorphic, and the isomorphism is unique compatibly with the
+      structure maps, which is more than a bare isomorphism gives you.
+
+  + HOWEVER:
+      Two universal properties can be stated in nearly identical language and
+      characterise different things. Watch the variance (a limit weighted by W is
+      not the limit weighted by W's opposite); the *shape* of the indexing
+      diagram, which a change-of-base along a functor silently alters; and
+      whether the property is required to hold up to isomorphism, up to *unique*
+      isomorphism, or strictly — the three give different objects, and only the
+      middle one gives canonicity. Conversely two properties may look different
+      and coincide, so a failure to match the words is not a proof that the
+      constructions differ. If you cannot exhibit the comparison map, you have
+      matched sentences rather than objects.
+
+  + THEN:
+      State both universal properties in the same form — as representations of
+      the same functor where possible. Exhibit the comparison morphism the
+      properties induce, and show it is invertible by giving the inverse from the
+      other property. Record what the identification preserves: canonicity, the
+      structure maps, and any 2-cells.
+
+  + BECAUSE:
+      A universal property determines its object up to unique isomorphism, so an
+      identification made this way carries the structure with it, where an
+      ad-hoc isomorphism has to be checked compatible with everything separately.
+
+  + NEXT-STEPS:
+    next[Write both universal properties as representations of one functor.]
+    next[Check variance and diagram shape agree before comparing.]
+    next[Exhibit the induced comparison map and its inverse.]
+    next[Say whether the identification is up to unique isomorphism or merely isomorphism.]

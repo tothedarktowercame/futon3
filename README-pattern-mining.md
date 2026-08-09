@@ -61,8 +61,17 @@ describe a shape its leaves specialise.
     pattern  okipona  truth  rationale  hotwords
     math-informal/argue-by-contradiction  li  今  Argue by Contradiction -> …  contradiction, absurd, suppose, …
 
-The `hotwords` column is the only mechanically load-bearing field. Everything
-else documents; hotwords are what makes the pattern *findable*.
+Retrieval hotwords come from **three** places, which is worth knowing before
+writing either: the index `hotwords` column, the `@keywords` line in the
+`.flexiarg` itself, and the **pattern's own name**, tokenised. The last is a trap.
+`induction-and-well-ordering` contributes `and`, which no other pattern claims,
+so it takes full weight and fires on 89% of a math corpus; `chase-the-diagram`
+contributes `diagram` and `compare-universal-properties` contributes `universal`
+and `properties` — all ubiquitous in category theory, none of them naming the
+move. A pattern named after the *object* it manipulates inherits that object as a
+hotword; one named after the *move* does not. `transpose-across-an-adjunction`
+calibrates within 10% of a hand-written regex for the same idiom precisely
+because every token in its name is move-vocabulary.
 
 **Recognise**: the deterministic retriever (Tier 0 in `futon6/scripts/cas_select.py`)
 tokenises a passage and scores each pattern by overlap with `hotwords ∪ title`.

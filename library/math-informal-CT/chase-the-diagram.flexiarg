@@ -1,0 +1,55 @@
+@flexiarg math-informal-CT/chase-the-diagram
+@title Chase the Diagram
+@sigils [⇄/追]
+@keywords chase, chasing, pasting, snake-lemma, five-lemma, diagrammatically
+@audience mathematicians, category-theorists, homological-algebraists
+@tone heuristic
+@factor Diligence (viriya)
+@family math-strategy/structural-relation-result
+@references [math-informal/unfold-the-definition math-informal-CT/transpose-across-an-adjunction math-informal/construct-auxiliary-object]
+
+! conclusion:
+  Prove the identity by following arrows around a diagram until the two routes
+  meet, rather than by computing with the objects.
+
+  + context: You must show two composites agree — a naturality square, a
+    universal map's uniqueness, or a lemma of five-lemma type — and the objects
+    themselves are opaque or have no elements to compute with.
+
+  + IF:
+      The claim is an equation between composites, every square you need is
+      already known to commute or is a hypothesis, and the diagram can be pasted
+      from those known-commuting pieces. Then the equation follows from the
+      pasting alone, with no information about the objects required.
+
+  + HOWEVER:
+      "By a diagram chase" is the most-abused phrase in the subject, and it hides
+      three distinct failures. The pasting may not be *determined*: if two faces
+      are filled by different 2-cells, the outer boundary depends on which, and
+      the chase silently picks one. The diagram may not commute where you assumed
+      it did — naturality in one variable is routinely used as naturality in
+      both. And an element-style chase (`take x ∈ A, push it around`) needs an
+      ambient abelian or concrete setting; in a general category there are no
+      elements to take, and the same words no longer denote an argument. A chase
+      whose steps cannot be written as a pasting of named commuting cells is not
+      a proof, it is a picture.
+
+  + THEN:
+      Name every cell you paste and say why each commutes — hypothesis,
+      naturality, a previous lemma, or a universal property. Give the two routes
+      around the boundary explicitly. If the argument is element-style, state the
+      setting that licenses elements. If it is genuinely mechanical, say so and
+      cite the general result (Kelly's doctrinal adjunction, the mates
+      correspondence) rather than re-deriving it.
+
+  + BECAUSE:
+      Diagrammatic reasoning is sound exactly when the conclusion is forced by
+      the pasting, which is a finite and checkable condition. Its reputation for
+      tedium comes from proofs that are genuinely mechanical; its reputation for
+      error comes from proofs that only look it.
+
+  + NEXT-STEPS:
+    next[List the cells being pasted and the reason each commutes.]
+    next[Write the two boundary routes explicitly.]
+    next[Check no face admits two different fillers.]
+    next[If elements are used, name the setting that provides them.]

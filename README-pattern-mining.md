@@ -162,6 +162,40 @@ mismatch is exact:
 | never matched once in 478 verified matches | `estimate-by-bounding`, `induction-and-well-ordering`, `separate-into-independent-pieces` |
 | most frequent matches | `transport-across-isomorphism` (64), `find-the-right-abstraction` (50), `verify-universal-property` (43) |
 
+### A bias in this measurement — read before trusting a zero
+
+A pattern scoring zero can mean two different things, and the table above does
+not distinguish them.
+
+The recogniser does not run on proof prose. It runs on **IATC-extracted step
+texts** — terse restatements of mathematical content like *"morphism μ_k:
+Σ^{-(k+1)}S^{m_{k+1}} → M_k"* — produced by an earlier stage that keeps the
+mathematics and discards the argumentative connective tissue. Measured on the
+same corpus:
+
+| | contains `contradict*` |
+|---|---|
+| source prose (1,523 candidate passages) | 15 (1.0%) |
+| extracted step texts (818) | **0** |
+
+So `argue-by-contradiction` scores zero on math.CT not because category theorists
+do not argue by contradiction — they do, at about 1% of passages, and 545
+passages carry argumentative connectives — but because **the word never reaches
+the recogniser.** Its zero is an artifact of the stage the measurement is taken
+at.
+
+This biases the whole table in a specific direction: patterns whose trigger
+vocabulary is *argumentative* (`argue-by-contradiction`, `exhaustion-as-theorem`,
+`split-into-cases`) are systematically invisible, while patterns whose trigger
+vocabulary is *mathematical* (`verify-universal-property`,
+`transport-across-isomorphism`) pass through extraction intact. A zero in the
+first group is evidence about the pipeline; a zero in the second is evidence
+about the corpus.
+
+**Any survey of pattern coverage across areas must therefore run on prose**, not
+on extracted steps, or it will rediscover this artifact in every area at once and
+mistake it for a finding about mathematics.
+
 Round 3's three analysis-mined patterns score **0, 1 and 1** on math.CT —
 `separate-into-independent-pieces` never fires, `count-over-a-decomposition` and
 `epsilon-of-room` fire once each. **Two matches from a whole round**, against 478
@@ -184,11 +218,12 @@ about — is the only step that can catch it, and it is the step that was missin
 
 ## 6. Running a round for a new domain
 
-1. **Measure first.** Run the recogniser over the target corpus and collect two
-   numbers: which existing patterns never fire, and which passages retrieve *no*
-   candidate at all. The second set is the worklist. (For math.CT: 52 of 818
-   steps offered no candidate.) Earlier rounds had to find their gaps by reading;
-   a measured gap list is strictly better input.
+1. **Measure first — on prose.** Run the recogniser over the target corpus and
+   collect two numbers: which existing patterns never fire, and which passages
+   retrieve *no* candidate at all. The second set is the worklist. (For math.CT:
+   52 of 818 steps offered no candidate.) Earlier rounds had to find their gaps
+   by reading; a measured gap list is strictly better input — provided it is
+   taken on source passages, not on extracted steps, for the reason in §5.
 2. **Pick sources deliberately, and write down why.** Round 1 used a reference
    corpus (PlanetMath); Rounds 2–3 used primary sources. A reference corpus gives
    breadth and canonical vocabulary; primary sources give the moves people
@@ -200,6 +235,41 @@ about — is the only step that can catch it, and it is the step that was missin
    retrieve on the passages that motivated them — otherwise you have documented
    a move rather than made it findable.
 6. **Re-measure.** The no-candidate rate is the score.
+
+### Deciding what is "core" by measurement rather than intuition
+
+The core/topic boundary is a judgement, and judgements about one's own library
+are exactly what §5 shows going wrong. It can be measured instead. Survey every
+area — arXiv's `math.*` taxonomy gives 32 of them, already stamped on every paper
+— and count, lexically, in how many areas each pattern is detectable. Then set
+thresholds:
+
+    core        detectable in ≥ 50% of areas
+    mid-tier    ≥ 25%
+    area-local  below that, and it belongs to the area it fires in
+
+The proportions fall off roughly Zipf-like, so each level down is half the
+previous. This makes "core" a *measured property of the corpus* rather than a
+claim about mathematics, and it has a useful consequence: a pattern like
+`argue-by-contradiction`, which fires everywhere but weakly, is core precisely
+*because* it is thin and ubiquitous — the opposite of the conclusion a
+single-area match count would reach.
+
+Two cautions. The survey must run on **prose** (§5), or the argumentative
+patterns will read as absent in all 32 areas simultaneously. And detectability is
+not usage: a lexical hit says the vocabulary is present, not that the move was
+made. It is a good enough proxy for placing a file in a directory, and not good
+enough for a claim about how mathematicians reason.
+
+### Hierarchy
+
+Areas will themselves subdivide — CT has groupoids, operads, higher categories,
+each with idioms the others do not use. The family naming is a flat prefix
+(`math-informal`, `math-informal-CT`, `math-informal-CT-groupoids`), and the
+loader matches by prefix, so depth costs nothing mechanically: a new level is a
+new directory. What does *not* come free is the threshold ladder above, which is
+stated for one level and would need a per-parent denominator to nest — "core
+within CT" means ≥50% of CT's subareas, not ≥50% of all mathematics.
 
 ---
 

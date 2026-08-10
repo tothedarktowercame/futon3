@@ -1,0 +1,52 @@
+@flexiarg math-informal-CT/strictify-via-coherence
+@title Strictify via Coherence
+@sigils [≃/整]
+@keywords strictify, strictification, coherence, pentagon, associator, unitor, biequivalent, up-to-isomorphism, pseudofunctor, bicategory
+@audience mathematicians, category-theorists, higher-category-theorists
+@tone analytic
+@factor Equanimity (upekkhā)
+@family math-strategy/structural-relation-result
+@references [math-informal/quotient-by-irrelevance math-informal-CT/chase-the-diagram math-informal/structural-equivalence]
+
+! conclusion:
+  Replace a structure that holds only up to coherent isomorphism with an
+  equivalent strict one, and do the work there.
+
+  + context: The associativity or unit laws you need hold only up to specified
+    isomorphism, and carrying those isomorphisms through the argument would bury
+    it in bookkeeping.
+
+  + IF:
+      A coherence theorem applies — every diagram built from the structural
+      isomorphisms commutes — and the strictification is an equivalence, not
+      merely a comparison. Then any statement invariant under that equivalence
+      may be proved in the strict setting and transported back.
+
+  + HOWEVER:
+      Coherence is not a licence to ignore the isomorphisms; it is a theorem that
+      they compose predictably, and it has hypotheses. Three failures recur.
+      Not every weak structure strictifies: tricategories are not triequivalent
+      to strict 3-categories, and the analogous hope fails higher up. The
+      property you transport must be invariant under the equivalence — a claim
+      about *strict* limits or about equality of objects is not, and will be
+      false or meaningless after transport. And coherence for the structure does
+      not extend to the *morphisms* between such structures: pseudo, lax and
+      colax maps have their own coherence questions, and a strictification of
+      objects can leave the 1-cells weak.
+
+  + THEN:
+      Name the coherence theorem and check its hypotheses. Say what strictifies
+      — objects, 1-cells, or both. State the property being transported and why
+      it is invariant under the equivalence. Then argue strictly, and note at the
+      end what the weak statement is.
+
+  + BECAUSE:
+      The content of a weak structure is almost never in its structural
+      isomorphisms; it is in what the structure does. Coherence is the theorem
+      that lets you say so rigorously instead of by apology.
+
+  + NEXT-STEPS:
+    next[Name the coherence/strictification theorem and check its hypotheses.]
+    next[Say whether objects, 1-cells, or both are strictified.]
+    next[Check the transported property is invariant under the equivalence.]
+    next[State the weak form of the conclusion at the end.]

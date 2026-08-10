@@ -1,0 +1,53 @@
+@flexiarg math-informal-CT/factor-and-lift
+@title Factor the Map, Then Lift Against It
+@sigils [⧄/析]
+@keywords factorization, factorisation, right-lifting, left-lifting, anodyne, awfs
+@audience mathematicians, category-theorists, homotopy-theorists
+@tone heuristic
+@factor Diligence (viriya)
+@family math-strategy/structural-relation-result
+@references [math-informal/split-into-cases math-informal-CT/check-it-on-generators math-informal/construct-auxiliary-object]
+
+! conclusion:
+  Split the morphism into its two halves and argue about each, using the lifting
+  property that relates them.
+
+  + context: A single map is too coarse to argue about, but the ambient category
+    has a factorization system whose two classes have complementary behaviour.
+
+  + IF:
+      Every map factors as one from the left class followed by one from the right
+      class, and the classes are orthogonal — every left map lifts against every
+      right map, uniquely or not. Then a property that holds for both halves and
+      is closed under composition holds for the map, and a lifting problem posed
+      against the map can be solved half at a time.
+
+  + HOWEVER:
+      Orthogonal and weak factorization systems differ exactly where it matters:
+      in the orthogonal case the lift is *unique*, in the weak case it merely
+      exists, and an argument that silently uses uniqueness in a weak system is
+      wrong. Factorizations may or may not be functorial, and an argument that
+      factors inside a colimit needs functoriality it should state. The two
+      classes determine each other by lifting, so "the left class" is not a free
+      choice — check that the class you named is the one orthogonality gives you,
+      not a convenient subclass. And the retract argument that recovers a map
+      from its factorization needs the class to be retract-closed, which is a
+      hypothesis rather than a formality.
+
+  + THEN:
+      Name the factorization system and whether it is orthogonal or weak. Factor
+      the map explicitly and say which half carries the difficulty. Pose the
+      lifting problem, solve it against the appropriate class, and if you need
+      uniqueness say where it comes from. Where functoriality is used, cite it.
+
+  + BECAUSE:
+      A factorization system is the categorical form of "surjective part and
+      injective part" — it turns one intractable map into two tractable ones
+      whose interaction is governed by a single lifting condition rather than by
+      ad-hoc analysis.
+
+  + NEXT-STEPS:
+    next[Name the system and say whether it is orthogonal or weak.]
+    next[Factor the map and identify which half is hard.]
+    next[Pose the lifting problem and solve it against the right class.]
+    next[If uniqueness or functoriality is used, cite where it comes from.]

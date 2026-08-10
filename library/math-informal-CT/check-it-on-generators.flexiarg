@@ -1,0 +1,54 @@
+@flexiarg math-informal-CT/check-it-on-generators
+@title Check It on Generators
+@sigils [⊂/生]
+@keywords suffices, enough, generators, generating, dense, densely, subcategory, representables, objectwise, reduce-to-the-case
+@audience mathematicians, category-theorists
+@tone heuristic
+@factor Skilful means (upāya)
+@family math-strategy/structural-relation-result
+@references [math-informal/try-a-simpler-case math-informal-CT/transpose-across-an-adjunction math-informal/reduce-to-known-result]
+
+! conclusion:
+  Reduce a claim about every object to a claim about a generating or dense
+  subclass, then extend by the construction that recovers the rest.
+
+  + context: You must verify something for all objects of a category, and the
+    category is large or its objects are not concretely described — but every
+    object is built from a small family by colimits.
+
+  + IF:
+      There is a dense (or strongly generating) subcategory, the property in
+      question is stable under the colimits that rebuild arbitrary objects from
+      it, and each generator can be checked directly. Then checking the
+      generators checks everything, and the reduction is not an approximation —
+      it is exact.
+
+  + HOWEVER:
+      The reduction is only valid for properties the rebuilding colimits
+      preserve, and this is where it fails silently. A functor that preserves
+      colimits transports the property; one that merely preserves the *objects*
+      does not. "Suffices to check" is often written when the author means
+      "suffices to check, given a preservation lemma proved three sections
+      earlier" — and sometimes when no such lemma exists. Beware also the
+      generator that is dense in the wrong sense: dense, strongly generating,
+      and separating are different conditions, and only density licenses the
+      colimit reconstruction. If you cannot name the colimit that rebuilds a
+      general object, you have not made a reduction, you have made a wish.
+
+  + THEN:
+      Name the generating family and the sense in which it generates. State the
+      colimit that reconstructs an arbitrary object from it, and the lemma saying
+      the property survives that colimit. Check the generators. Then extend, and
+      say explicitly where the extension step is justified.
+
+  + BECAUSE:
+      Categories are usually presented by generators and relations even when the
+      presentation is not written down; a dense subcategory is that presentation.
+      Working there replaces a quantifier over a proper class with a check on a
+      set.
+
+  + NEXT-STEPS:
+    next[Name the generating family and whether it is dense, strongly generating, or separating.]
+    next[State the colimit that rebuilds a general object from it.]
+    next[Cite or prove that the property is preserved by that colimit.]
+    next[Check the generators, then extend.]

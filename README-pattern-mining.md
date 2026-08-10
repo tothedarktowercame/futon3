@@ -264,6 +264,34 @@ claim about mathematics, and it has a useful consequence: a pattern like
 *because* it is thin and ubiquitous — the opposite of the conclusion a
 single-area match count would reach.
 
+**The survey supplies its own stoplist.** A term that is equally frequent in
+every area carries no information about area — so uniformity across areas *is*
+the discriminator, and there is no preprocessing step to argue about. Do not
+strip LaTeX boilerplate before comparing: if `\begin{document}` looks equally
+dense in all 32 areas, that is the measurement telling you it is uninformative,
+which is a result rather than a nuisance. A hand-maintained stoplist would be
+strictly worse — it catches only what someone thought to list, and it misses the
+*mathematical* universals (`theorem`, `proof`, `let`, `suppose`, `hence`) that no
+amount of LaTeX-stripping removes. This is the same principle
+`build_term_prior.py` already runs on one level down: document-frequency IS the
+promotion criterion, so no curated list is needed.
+
+That gives a definition where there was an intuition. If a term's
+domain-informativeness is the variance of its document-frequency across areas,
+then a field's **conceptual machinery is the mass of terms with high df in it and
+low elsewhere** — high-variance vocabulary. "Category theory carries more
+conceptual machinery than most mathematical fields" stops being a claim and
+becomes a quantity, comparable against AG, AP or LO. It is TF-IDF with *areas*
+as the documents, and `data/term-prior-<msc>.json` is already exactly the
+per-area frequency table it consumes. The catch is that only `ct` has ever been
+built, and variance needs two: the second area converts a 3.6M-term table from a
+description of category theory into a discriminator.
+
+The same logic governs the ladder above. A pattern detectable in every area is
+either genuinely core *or* built from vocabulary too generic to discriminate, and
+only the cross-area spread distinguishes them — a pattern that fires everywhere
+because its hotwords are `proof` and `category` is not core, it is unmeasured.
+
 Two cautions. The survey must run on **prose** (§5), or the argumentative
 patterns will read as absent in all 32 areas simultaneously. And detectability is
 not usage: a lexical hit says the vocabulary is present, not that the move was

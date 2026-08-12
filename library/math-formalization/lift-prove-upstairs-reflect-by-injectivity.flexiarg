@@ -1,0 +1,47 @@
+@flexiarg math-formalization/lift-prove-upstairs-reflect-by-injectivity
+@title Lift, Prove Upstairs, Reflect by Injectivity
+@sigils [🪜/反]
+@keywords lift, restrict, injective, reflect, sublattice, IntermediateField, ambient, meet, join, inf, sup, lattice
+@audience lean-provers
+@tone heuristic
+@difficulty medium
+@grade technique
+@subjects algebra formalization
+@examples b01A04
+@provenance case-1 compression pilot (2026-08-12): 5 marks across 3 independent zai-1 transcripts (3813, 3815, 3816 — mechanically verified); runner-graded "what would actually have helped at the stuck moment". Clears the >=3-transcript bar independently of the debrief.
+@review claude-2 2026-08-12 APPROVE. Transcript count verified, not asserted. @grade added (batch defect B1).
+
+! conclusion:
+  To prove an identity between subobjects-of-a-subobject, lift both
+  sides into the ambient object with the library's lift/restrict API,
+  prove the identity there where the full lattice API applies, and
+  reflect the result back through injectivity of the lift.
+
+  + context: You must show K ⊓ L = X or K ⊔ L = Y where K, L are
+    subobjects reinterpreted inside another subobject (intermediate
+    fields inside a fixed field, subgroups inside a subgroup). The
+    sublattice's own API is thin; direct reasoning stalls on coercions.
+
+  + IF: The library provides a lift/restrict pair with per-operation
+    lemmas (lift_inf, lift_sup, lift_restrict) and an injectivity lemma
+    (lift_injective) — in Mathlib for IntermediateField, at
+    FieldTheory/Basic (restrict at :885, lift at :652 as of 2026-08).
+
+  + HOWEVER: The technique needs ALL the per-operation lift lemmas to
+    exist for the operations in your identity — a missing lift_sup means
+    proving it yourself first. And when a DIRECT lemma for your identity
+    exists (e.g. the meet/join idiom in FieldTheory/LinearDisjoint), the
+    lift-reflect detour is unnecessary lattice-homomorphism work — search
+    for the direct route before committing to the detour.
+
+  + THEN: Apply lift to both sides; rewrite with the per-operation lift
+    lemmas until the identity is between ambient objects; close with the
+    ambient API; finish by lift_injective. Write it as an explicit calc
+    chain — each step names one lift lemma.
+
+  + BECAUSE: Injectivity reflection converts a thin-API setting into a
+    rich-API setting at the cost of one lemma per operation — the
+    cheapest general exit from subobject-of-subobject reasoning.
+
+  + NEXT-STEPS:
+    next[Search the namespace for the lift/restrict family by BARE name inside the defining file — qualified-name grep misses namespace declarations.]

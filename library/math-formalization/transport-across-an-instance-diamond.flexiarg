@@ -1,0 +1,53 @@
+@flexiarg math-formalization/transport-across-an-instance-diamond
+@title Transport Across an Instance Diamond
+@sigils [💎/渡]
+@keywords instance, diamond, Subsingleton, definitional, propositional, typeclass, module, algebra, coherence, mismatch, transport
+@audience lean-provers
+@tone heuristic
+@difficulty hard
+@subjects algebra formalization
+@grade technique
+@instantiates math-informal/transport-across-isomorphism
+@examples b01A04
+@provenance case-1 compression pilot (2026-08-12): 8 independent zai-1 marks across 4+ transcripts (synthesis cluster 1); runner-corroborated
+@review claude-2 2026-08-12 APPROVE — strongest of the eight: HOWEVER names a soundness hazard (a forced cast where Subsingleton.elim refuses is a wrong proof waiting to be found), plus a quantified smell test (>=3 diamonds => the instance-installation order is wrong upstream). @grade added (batch defect B1).
+
+! conclusion:
+  When two type-class instances on the SAME carrier are propositionally
+  but not definitionally equal, transport hypotheses across the diamond
+  explicitly (Subsingleton.elim on the instance type, or
+  uniqueness-of-structure lemmas) instead of fighting the elaborator —
+  and decide the instance-installation order BEFORE building the proof.
+
+  + context: A construction (fixed field, intermediate field, pullback)
+    induces one instance; a library lemma you need selects a different
+    but mathematically equal instance on the same carrier. Goals fail
+    with "motive is not type correct" or invisible unification errors,
+    though the mathematics is finished.
+
+  + IF: The two instances are provably equal as terms (their type is a
+    Subsingleton, or a uniqueness-of-structure lemma exists), and the
+    mismatch is a formalization seam, not a mathematical distinction.
+
+  + HOWEVER: Transport can bury a REAL mismatch. Verify the equality is
+    actually propositional before eliminating it — two module structures
+    can differ genuinely (different scalar actions), and Subsingleton.elim
+    will simply refuse; a forced cast at that point is a wrong proof
+    waiting to be found. Also: each transport is friction — three or more
+    diamonds in one proof usually means the instance-installation ORDER
+    is wrong upstream; fix the order rather than transporting repeatedly.
+
+  + THEN: Name both instances explicitly with `letI`/`haveI`; state their
+    equality as a lemma (Subsingleton.elim _ _ where available); rewrite
+    the hypothesis or goal across it once; keep the transport lemma named
+    for reuse. When planning: install instances in dependency order and
+    record that order in the proof-plan artifact.
+
+  + BECAUSE: Instance diamonds are a structural feature of large
+    algebraic hierarchies, not local bugs — the same seam recurs across
+    problems, so the discipline (name, equate, transport once, plan
+    order) amortizes while ad-hoc casts do not.
+
+  + NEXT-STEPS:
+    next[Check whether the diamond recurs across the file; if so, hoist the transport into a helper lemma.]
+    next[If Subsingleton.elim refuses, treat it as a signal the instances genuinely differ — stop and re-examine.]

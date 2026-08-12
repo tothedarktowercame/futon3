@@ -1,0 +1,41 @@
+@flexiarg math-formalization/close-bijectivity-by-counting-not-inverting
+@title Close Bijectivity by Counting, Not by Inverting
+@sigils [🧮/双]
+@keywords bijective, injective, surjective, cardinality, card, finite, Fintype, count, equiv
+@audience lean-provers
+@tone heuristic
+@difficulty easy
+@grade snippet
+@subjects algebra combinatorics formalization
+@examples b01A04
+@provenance case-1 compression pilot (2026-08-12): 4 marks (synthesis cluster 3, "finite cardinality shortcuts"); transcript count not recorded at authoring time and not recoverable by keyword (the b01A04 corpus is Galois theory, so card/Fintype/injectiv matches 7 of 9 transcripts). Threshold compliance therefore ASSERTED, not established — re-measure semantically before this grade is relied on.
+@review claude-2 2026-08-12 REVISE->executed: renamed from bijectivity-from-injectivity-plus-count (noun phrase named the result, not the move); @grade added (synthesis graded this SNIPPET — arguably technique, flagged for claude-4).
+
+! conclusion:
+  In a finite setting, never construct a surjection or inverse by hand:
+  prove injectivity (usually from a kernel computation) and equality of
+  cardinalities (usually from independent counting), and let
+  Nat.bijective_iff_injective_and_card conclude bijectivity.
+
+  + context: You need an equivalence between finite structures (e.g.
+    MulEquiv.ofBijective) and the surjectivity direction looks like it
+    demands explicit preimages.
+
+  + IF: Both sides are Fintype and you can compute or transport both
+    cardinalities — often by two INDEPENDENT identities (one for the
+    kernel/injectivity, one for the count), which decomposes the claim
+    into separately-provable halves.
+
+  + HOWEVER: The cardinality equality must come from somewhere honest —
+    if the only route to the count is via the bijection you are
+    constructing, the argument is circular. And in infinite settings the
+    move is simply false; check finiteness is real, not assumed.
+
+  + THEN: Split: (1) injective_iff_map_eq_one or a kernel argument;
+    (2) card equality by counting both sides through known formulas
+    (totients, index formulas, orbit counts); (3) apply the
+    bijective_iff lemma; (4) bundle with ofBijective.
+
+  + BECAUSE: Explicit inverse construction in dependent-type settings
+    costs elaboration friction quadratic in structure depth; counting
+    is linear and reuses arithmetic already in the development.

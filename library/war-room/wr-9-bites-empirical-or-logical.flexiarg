@@ -1,0 +1,24 @@
+@flexiarg war-room/wr-9-bites-empirical-or-logical
+@title WR-9: Bites Must Be Empirically Tested Or Marked Logical
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+
+! conclusion: Render self-model conflict claims as empirical only when session evidence supports them, and as logical otherwise, so the inhabitation gap stares back from the demo.
+
+  + context: War Room decision WR-9 (2026-04-24). Operator: Joe.
+
+  + IF:
+    Conflict bites in the typed self-model assert that a given conflict damages a given part of the stack.
+
+  + HOWEVER:
+    Such claims are formal until session evidence supports them: the cached weight on a conflict is a hypothesis, not a measurement.
+
+  + THEN:
+    The empirical join walks session steps to repos to devmap leaves to spine ids, and renders conflict-to-spine bite edges as solid red, scaled by hit count, when the bitten spine has empirical activity in the visible window, and as dashed grey when the bite is still purely logical. Conflicts whose bites remain grey across multiple windows are candidates for weight reduction or removal.
+
+  + BECAUSE:
+    Invariant I1, evidence supersedes assertion, applies inside the self-model itself. A conflict whose damage cannot be observed is not yet a conflict, only a worry. The visual distinction makes the inhabitation gap measurable without the operator querying anything.
+
+    + evidence: One conflict bites three spines in the cached model; in a fourteen-day window only one is empirically observed, one-third coverage, and the grey edges are the inhabitation gap made visible. Seventeen end-to-end tests gate the empirical-bite plumbing.

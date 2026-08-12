@@ -1,0 +1,24 @@
+@flexiarg forward-model/price-your-own-moves
+@title Price Your Own Moves
+@sigils [⟡/?]
+@audience futon stack operators, agents, forward-model authors
+@tone conjectural
+@style pattern
+
+! conclusion: A self-model that recommends its own next move must rank moves by realized value, uptake, reward, market, not only by its internally-argued expected value.
+
+  + context: Forward-model hypothesis, not yet attested. Extends the attested ruling that the next-move surface is the recursive closure.
+
+  + IF:
+    The stack has a live next-move surface that ranks candidate moves by the self-model's own expected-free-energy or internal argument.
+
+  + HOWEVER:
+    An internally-argued ranking can be self-confirming: the model rewards the moves it already believes in, with no outside signal that a move actually paid.
+
+  + THEN:
+    Bind each recommended move to a realized-value signal from outside the model, operator uptake, learned reward, or market outcome, and let that signal reprice the ranking. A move's expected value stays provisional until an external outcome confirms it.
+
+  + BECAUSE:
+    Self-representation without a price becomes the hermit failure, arguing beautifully for moves nobody needed. Pricing moves by realized value is the economic completion of the recursive closure: the loop closes on the world, not just on itself.
+
+    + evidence: Bridge target, not yet attested. Would connect the next-move surface to the interim-director livelihood model and the mission-conditional reward line in the backlog cascade.

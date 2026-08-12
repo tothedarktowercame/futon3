@@ -1,0 +1,24 @@
+@flexiarg war-room/wr-10-next-move-surface-is-recursive-closure
+@title WR-10: The Next-Move Surface Is The Recursive Closure
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+
+! conclusion: Make the next-move recommendation a live surface read off the canonical self-model, so the compression algorithm becomes a peripheral instead of a document that drifts.
+
+  + context: War Room decision WR-10 (2026-04-24). Operator: Joe.
+
+  + IF:
+    Joe asked for a hierarchical compression algorithm that names what has been built, names the next thing to work on, and collapses repeated structure.
+
+  + HOWEVER:
+    A one-off prose document that does this collapses back into drift the moment the stack moves.
+
+  + THEN:
+    The Recommended Next Move tile reads the next-move field directly off the live endpoint. As long as the typed argument files are kept current, drift detector plus re-render plus the WR-8 discipline, the tile always recommends the move the stack itself argues is highest expected value, with full provenance and a click-through to the conflict it discharges.
+
+  + BECAUSE:
+    The tool that picks next-moves is the next-move. Stepping the Portfolio Inference loop converts this from a hand-crafted recommender into a continuously running expected-free-energy ranker. When the recommendation changes it will be because the stack's own evidence said so. This is the recursive closure: the compression algorithm becomes a peripheral instead of a document.
+
+    + evidence: The stack self-model file encodes a three-criterion ranking, direct leverage, unlock cascade, and self-referential closure, that produced the winning move over sixteen candidate moves. The live endpoint serves it and the tile renders it.

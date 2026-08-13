@@ -1,0 +1,58 @@
+@flexiarg pattern-mining/probe-the-claimed-property-not-the-acceptance-proxy
+@title Probe the Claimed Property, Not the Acceptance Proxy
+@keywords gate, acceptance, proxy, trust, dependency-closure, vacuity, axioms, transitive, validation
+@audience pipeline authors, proof engineers, artifact reviewers
+@tone corrective
+@style pattern
+@grade technique
+@provenance slice-1 compression mining (2026-08-12): 22 marks, 17 read transcripts, 7 distinct problems (b97A02 b98A03 b97J01 b95J01 b00J02 b96J01 b01J02) — but slice-1 reads were NOT blind (all shared one accumulating zai invoke-fn context; runbook slice-2 root-cause correction), so those counts are inflated and are NOT what this candidate rests on. LOAD-BEARING EVIDENCE: slice 3 — the first clean-context run — independently re-surfaced this cluster ("probe the transitive axiom/trust closure") from 5 distinct math problems across 9 transcripts.
+@review claude-2 2026-08-12 APPROVE, on the slice-3 corroboration rather than the slice-1 counts. HOWEVER is self-aware in the way that matters ("calling an incomplete probe complete merely creates a new proxy"). Dedupe spot-checked by reading both claimed neighbours: agent/evidence-over-assertion is about grounding claims at all; war-machine/operational-not-decorative requires validation — neither names the proxy-vs-property error. Genuine gap.
+@class process
+@domain process
+@family-note Moved to pattern-mining/ 2026-08-13 on Joe's instruction, from process-coherence/ (and earlier mislabelled "agency"). It is a PROCESS pattern — about acceptance gates in the pipeline we ourselves run — and must NOT enter the mathematics experiment's retrieval pool. Rationale is measurement, not tidiness: the V3 programme's P2 falsifier turns on the ratio of regulative to substitutive fingerprinted uses, so a math runner surfacing this pattern would be a regulative hit caused by pool composition rather than load-bearingness, and P2 would miscount it. See futon3c/docs/pattern-retrieval-architecture.md section 9.
+@status registered into pattern-mining/, review-approved by claude-2 2026-08-12. NOT assayed — and the stage-3 teachability assay as defined (re-run a SOLVED math problem on zai-1 with and without the deposit) is INAPPLICABLE to a process pattern. The pattern-mining family's admission standard is an OPEN QUESTION for Joe; see the family README. It is out of the math experiment by construction, so the assay gate's purpose — protecting the experiment from unvalidated supply — is met regardless.
+
+! conclusion:
+  Before accepting an artifact, translate the promised quality into a direct
+  probe and run that probe over the whole scope on which the promise depends;
+  do not accept a convenient local proxy as evidence for a transitive or
+  semantic property.
+
+  + context:
+    A pipeline has a cheap success signal: a file compiles, a source contains
+    zero placeholders, a hash matches, a row says approved, or a declaration
+    was not skipped.  The actual promise is stronger: the proof is axiom-clean,
+    the statement is non-vacuous, dependencies are clean, or the approved
+    declaration is still the one under review.
+
+  + IF:
+    The acceptance signal checks a representation of the property rather than
+    the property itself, especially when imports, definitions, historical
+    state, or human verdicts contribute to the claim.
+
+  + HOWEVER:
+    Direct probes can be expensive, and some properties have no complete
+    decision procedure.  A dependency-closure audit may require building
+    previously unbuilt artifacts; a semantic vacuity check remains heuristic.
+    Calling an incomplete probe complete merely creates a new proxy.  State the
+    probe's coverage, retain explicit unknown/skipped outcomes, and reserve
+    acceptance for the portion actually checked.
+
+  + THEN:
+    Write the promised property as a checkable question; identify its trust
+    closure; run the strongest available direct probe on every member of that
+    closure; test the probe against known-good, known-bad, and multi-defect
+    fixtures; and make uncovered or skipped members visible non-success states.
+    Keep cheap proxies only as triage filters before this gate.
+
+  + BECAUSE:
+    Local success and global trust coincide only when the property is local.
+    A compiler run cannot by itself establish axiom cleanliness, source grep
+    cannot see imported placeholders, and a matching top-level hash cannot see
+    unhashed meaning changes.  Probing the promised property prevents the gate
+    from certifying a different, easier claim.
+
+  + NEXT-STEPS:
+    next[Write down the exact property each current acceptance signal claims to certify.]
+    next[For each non-local property, enumerate the dependency closure and explicit unknown states.]
+    next[Seed the direct probe with one known-good, one known-bad, and one multi-defect fixture.]

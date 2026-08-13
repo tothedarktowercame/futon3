@@ -91,6 +91,40 @@ required five — steps that would strengthen the pattern, written as bullets or
 **A pattern missing one of the five is incomplete.** An importer meeting one
 should report it as a finding, not drop it and not fail silently.
 
+## 3a. When the components collapse into one
+
+Sometimes the five will not genuinely differ: `context`, `IF` and `HOWEVER`
+come out as three paraphrases of a single description. **That is
+informative, not a failure**, and there are exactly two cases, which must be
+told apart:
+
+- **(a) The content is genuinely single-axis.** Its contribution is one
+  observation — a clarification, a definition extension, a survey. A pattern
+  can legitimately be this. It must then be **declared** as such, with the
+  reason stated, rather than passing a completeness check silently.
+- **(b) The extraction failed.** Whoever (or whatever) drafted the pattern
+  could not differentiate the slots. That is a producer bug, and the fix is
+  to redraft, not to accept the collapse.
+
+**Do not lump (a) and (b) together.** A declared single-axis pattern with a
+stated reason is a valid mark of single-axis content; a collapse with no
+reason should be treated as a producer bug to fix. Conflating them hides
+both signals — one a fact about the material, the other a fact about the
+pipeline.
+
+A workable test: if the pairwise semantic overlap between the slots is very
+high (~80%+), you have a collapse and owe a ruling on which case it is.
+
+*Provenance: this section is the surviving content of the former
+`math-strategy/clarification-meta.flexiarg`, which was titled "Clarification
+(Meta-Tag, not a Pattern)" and said of itself that it was not a pattern. It
+described what to do when the `(context, tension, move)` triple cannot be
+decomposed. That is a statement about the FORMAT, so it belongs here; Joe
+ruled 2026-08-13 that it move into this specification and out of the pattern
+library. The original also carried exemplar paper ids and a routing rule to
+M-superpod-mark3's slot-distinctness enforcement, which stay with*
+`library/math-strategy/PAPER-SHAPES-INDEX.md` *§5.*
+
 ## 4. Sub-components: open vocabulary, strictly nested
 
 Below the five, the vocabulary is **open**. Any `+ label:` is legal as a child

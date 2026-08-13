@@ -164,8 +164,12 @@ less than that nothing tells you when they differ.
 
 ---
 
-*Open question, flagged rather than assumed: this document reads `NEXT-STEPS`
-as a recognised-but-optional top-level component, on the basis that Joe's
-ruling names five required components and the elisp header lists NEXT-STEPS
-separately from them. If it is meant to be a sixth required component, say so
-and this section is a one-line change.*
+## 9. Rulings
+
+- **2026-08-13, Joe:** `! conclusion` plus five required components; below them,
+  sub-components are an open vocabulary; a sub-component must never be imported
+  alongside the five.
+- **2026-08-13, Joe:** `NEXT-STEPS` is **recognised but optional** — a
+  top-level component, not one of the required five. An importer must accept a
+  pattern that has no `NEXT-STEPS`, and must not treat its absence as an
+  incompleteness finding under §3.

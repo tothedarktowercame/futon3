@@ -24,7 +24,12 @@
          '[babashka.http-client :as http]
          '[cheshire.core :as json])
 
-(def FUTON1A   (or (System/getenv "FUTON1A_URL") "http://localhost:7071"))
+;; Substrate URL resolution, same precedence as futon3c.watcher.multi.  Default
+;; follows the 2026-07-12 futon1a(:7071) -> futon1b(:7073) switchover; the old
+;; :7071 default made the weekly systemd timer a connection-refused every run.
+(def FUTON1A   (or (System/getenv "FUTON_SUBSTRATE_URL")
+                   (System/getenv "FUTON1A_URL")
+                   "http://127.0.0.1:7073"))
 (def PENHOLDER (or (System/getenv "FUTON1A_PENHOLDER") "api"))
 
 ;; ---------- HTTP write ----------
@@ -54,16 +59,46 @@
     (when (= 200 (:status resp))
       (edn/read-string (:body resp)))))
 
+;; PORT GUARD (2026-08-02) — futon1a served an unbounded /hyperedges?type=,
+;; futon1b does not: it applies default-result-limit=100 when no limit is given
+;; and rejects any limit above max-result-limit=5000, while reporting the true
+;; population in :count.  code/v05/var alone is 34,480 rows, so no single query
+;; can retrieve it, the server-side ?repo= push-down returns 0 against
+;; :hx/props :repo, and futon1b exposes no offset/cursor.
+;;
+;; This script WRITES satisficing signatures.  Computing them from a truncated
+;; window would emit plausible-looking but wrong hyperedges, which is strictly
+;; worse than the connection-refused it replaced.  So every fetch asserts it saw
+;; the whole population and aborts loudly otherwise.  Removing this guard
+;; requires a real port (pagination, or a fixed repo push-down) — not a
+;; configuration change.
+(def MAX-RESULT-LIMIT 5000)
+
+(defn- fetch-complete!
+  "GET all hyperedges of `hx-type`, or abort if futon1b truncated the window."
+  [hx-type]
+  (let [url (str FUTON1A "/api/alpha/hyperedges?type="
+                 (java.net.URLEncoder/encode hx-type "UTF-8")
+                 "&limit=" MAX-RESULT-LIMIT)
+        r (http-get-edn url)
+        rows (or (:hyperedges r) [])
+        total (:count r)]
+    (when (nil? r)
+      (println "FATAL: no 200 from" url)
+      (System/exit 3))
+    (when (and (number? total) (> total (count rows)))
+      (println (format (str "FATAL: %s has %d hyperedges but the query returned "
+                            "%d (futon1b caps at %d and offers no cursor). "
+                            "Refusing to emit signatures from a truncated graph.")
+                       hx-type total (count rows) MAX-RESULT-LIMIT))
+      (System/exit 4))
+    rows))
+
 (defn fetch-of-type [hx-type label]
-  (let [r (http-get-edn (str FUTON1A "/api/alpha/hyperedges?type="
-                             (java.net.URLEncoder/encode hx-type "UTF-8")))
-        all (or (:hyperedges r) [])]
-    (filter #(= label (get-in % [:hx/props :repo])) all)))
+  (filter #(= label (get-in % [:hx/props :repo])) (fetch-complete! hx-type)))
 
 (defn fetch-all [hx-type]
-  (let [r (http-get-edn (str FUTON1A "/api/alpha/hyperedges?type="
-                             (java.net.URLEncoder/encode hx-type "UTF-8")))]
-    (or (:hyperedges r) [])))
+  (fetch-complete! hx-type))
 
 ;; ---------- helpers ----------
 

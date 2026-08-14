@@ -364,7 +364,7 @@ META is an alist. ROOT-NODES is a list of flexiarg-node."
             (pcase-let* ((`(,indent ,node) (flexiarg--parse-node-line line)))
               ;; unwind stack to find parent
               (while (and stack
-                          (>= indent (caar stack))
+                          (<= indent (caar stack))
                           ;; if same indent, pop last so siblings attach to same parent level
                           )
                 (setq stack (cdr stack)))

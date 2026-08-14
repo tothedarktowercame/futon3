@@ -23,8 +23,8 @@
 (defun futon3-test--node-tree (node)
   "Return NODE's language-neutral name/children conformance shape."
   `((name . ,(downcase (flexiarg-node-relation-raw node)))
-    (children . ,(mapcar #'futon3-test--node-tree
-                         (flexiarg-node-children node)))))
+    (children . ,(vconcat (mapcar #'futon3-test--node-tree
+                                  (flexiarg-node-children node))))))
 
 (ert-deftest flexiarg-shared-conformance-corpus ()
   "The authoritative parser agrees with the shared JSON tree corpus."
@@ -32,14 +32,14 @@
                        "test/fixtures/flexiarg-conformance.json"
                        futon3--test-root))
          (corpus (json-read-file corpus-file)))
-    (dolist (case (alist-get 'cases corpus))
+    (dolist (case (append (alist-get 'cases corpus) nil))
       (let ((source (expand-file-name (alist-get 'source case)
                                       futon3--test-root)))
         (with-temp-buffer
           (insert-file-contents source)
           (pcase-let ((`(,_meta ,roots) (flexiarg--parse-buffer)))
             (should (equal (alist-get 'tree case)
-                           (mapcar #'futon3-test--node-tree roots)))))))))
+                           (vconcat (mapcar #'futon3-test--node-tree roots))))))))))
 
 (ert-deftest flexiarg-highlights-facet-name-and-content ()
   "Facet highlighting should apply to both name and content."

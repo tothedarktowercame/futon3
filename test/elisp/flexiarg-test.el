@@ -2,6 +2,7 @@
 
 (require 'cl-lib)
 (require 'ert)
+(require 'json)
 (require 'subr-x)
 
 (defconst futon3--test-root
@@ -18,6 +19,27 @@
    ((null face) nil)
    ((listp face) (memq target face))
    (t (eq face target))))
+
+(defun futon3-test--node-tree (node)
+  "Return NODE's language-neutral name/children conformance shape."
+  `((name . ,(downcase (flexiarg-node-relation-raw node)))
+    (children . ,(mapcar #'futon3-test--node-tree
+                         (flexiarg-node-children node)))))
+
+(ert-deftest flexiarg-shared-conformance-corpus ()
+  "The authoritative parser agrees with the shared JSON tree corpus."
+  (let* ((corpus-file (expand-file-name
+                       "test/fixtures/flexiarg-conformance.json"
+                       futon3--test-root))
+         (corpus (json-read-file corpus-file)))
+    (dolist (case (alist-get 'cases corpus))
+      (let ((source (expand-file-name (alist-get 'source case)
+                                      futon3--test-root)))
+        (with-temp-buffer
+          (insert-file-contents source)
+          (pcase-let ((`(,_meta ,roots) (flexiarg--parse-buffer)))
+            (should (equal (alist-get 'tree case)
+                           (mapcar #'futon3-test--node-tree roots)))))))))
 
 (ert-deftest flexiarg-highlights-facet-name-and-content ()
   "Facet highlighting should apply to both name and content."

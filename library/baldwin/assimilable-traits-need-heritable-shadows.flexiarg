@@ -6,7 +6,7 @@
 @tone mechanistic
 @style pattern
 @childof baldwin/mechanism
-@references [baldwin/assimilation-requires-a-resolved-path exotic/hybrid-execution-semantics]
+@references [baldwin/assimilation-requires-a-resolved-path baldwin/charge-for-realized-work-not-for-capacity exotic/hybrid-execution-semantics]
 
 ! conclusion:
   A plastic contribution is assimilable only when an inherited alternative for the
@@ -44,6 +44,17 @@
     ablation plus random replacement, so selection against holding is expected even
     when a different representation could assimilate the function.
 
+    + EXPRESSION-IS-NOT-SELECTABILITY:
+      A shadow variable is necessary and not sufficient, and the MetaCA case shows why.
+      The inherited field *is* expressed — it is the initial condition of the rewriting
+      — yet it is still not selectable, because sixty steps of rewriting wash out its
+      contribution to the scored outcome and the cost term reads only the plasticity
+      machinery. So there are two distinct gates: the inherited alternative must affect
+      the phenotype, and some fitness component must differ between genomes that differ
+      only in that alternative. Adding a latent allele to a fitness function that is
+      flat in genome content would leave it as unprepared as the byte it replaces. See
+      `baldwin/charge-for-realized-work-not-for-capacity` for the second gate.
+
     + COUNTERFACTUAL:
       If prepared shadow alleles remain selectable when partially expressed but random
       held bytes do not, the previous negative diagnoses genotype-phenotype mismatch,
@@ -52,3 +63,4 @@
   + NEXT-STEPS:
     - Formalize expression-before-fixation as an ExperimentalDesign obligation.
     - Compare random coupled replacement with prepared-shadow mutation without direct inheritance of learned states.
+    - Pair any latent-allele proposal with a fitness component that reads inherited content; neither gate passes alone.

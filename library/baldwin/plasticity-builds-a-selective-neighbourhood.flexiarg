@@ -41,11 +41,23 @@
     causes correlated with reproductive success. Learning supplies guidance by making
     that correlation smoother or denser than the unlearned landscape.
 
+    + EVIDENCE:
+      Both prescriptions below were stated before the pilots and neither was
+      implemented, which is why this pattern's `HOWEVER` clause describes the result
+      rather than anticipating it. MetaCA preflight checks that `:field` *mutates*
+      (I4 reachability, `(> (count (distinct (mapcat :field walk))) 1)`) and that the
+      **gamma** axis is navigable (I6, probed as band score against gamma). Nothing
+      checks that varying `:field` moves post-learning fitness at all — and the field
+      axis is the one that has to carry assimilation. The band-only scalar was likewise
+      retained: `fitness` is `band-score(reach) - c * plasticDependence`, and guidance
+      preparedness is `:population-mean-band-score`.
+
     + COUNTERFACTUAL:
       If two inherited fields produce the same post-learning fitness distribution
       despite different learning work, no selection operator can infer which one is
       closer to the useful developmental trajectory.
 
   + NEXT-STEPS:
-    - Add a preregistered inherited-perturbation response curve to MetaCA preflight.
-    - Replace the band-only scalar with lexicographic or Pareto-preserving function and effort measurements.
+    - OUTSTANDING: add a preregistered inherited-perturbation response curve to MetaCA preflight, over the FIELD axis and not only over gamma.
+    - OUTSTANDING: replace the band-only scalar with lexicographic or Pareto-preserving function and effort measurements.
+    - Treat an unimplemented preflight prescription as a launch blocker, not as a note.

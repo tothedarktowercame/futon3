@@ -28,12 +28,22 @@
     Calling variable environments "noise" may erase the very reason plasticity is
     adaptive. Conversely, changing the target independently for every evaluation may
     make a static target impossible and render an assimilation test structurally unfair.
+    And stationarity has more than one axis: fixing the environment does not make the
+    target stationary if the adaptation operator is itself stochastic across lifetimes.
 
   + THEN:
     Declare the target level before running: one fixed environment for Hinton--Nowlan
     replication, a training distribution for evolution of learnability, and a disjoint
     held-out distribution for generalization. Measure which features remain invariant
     across that distribution and permit assimilation claims only about those features.
+    Enumerate every source of cross-lifetime variation and say which the design holds
+    fixed, rather than fixing the most visible one and inferring stationarity.
+
+    + CHECK:
+      Measure it rather than declaring it: for a fixed genome, how reproducible is the
+      adapted state across evaluations? Against chance, and against the inherited
+      starting point. A design that cannot answer this has not established that its
+      learning has a target to assimilate.
 
   + BECAUSE:
     The value of plasticity is conditional on environmental predictability. Stable
@@ -41,10 +51,28 @@
     response. Selection should divide labour between genotype and lifetime adaptation
     rather than drive every degree of freedom to one side.
 
+    + EVIDENCE:
+      MetaCA now has the measurement rather than the assumption. Per-cell agreement
+      between live and frozen reads, taken with the genotype held fixed and only `p0`
+      varying, is unimodal (mean `0.290`, sd `0.089`) with zero cells above `0.6`,
+      spatially coherent within a run (lag-1 `+0.422`) and uncorrelated across seeds
+      (`-0.010`, `-0.060`, `+0.111`). The adaptive answer is structured but indexed by
+      environment, so a per-cell genome cannot carry it.
+
+      The fixed-`p0` arms then failed to lower dependence (`0.9844` and `0.9609`, held
+      fractions `0.0156` and `0.0391` against a mutation-only expectation of `0.1858`),
+      and the second stationarity axis is the candidate reason: the rewrite draws a
+      random source bit per cell per step from a stream seeded per evaluation, so two
+      lifetimes of the same genome on the same fixed `p0` still diverge. Fixing the
+      environment was necessary and not sufficient.
+
     + COUNTERFACTUAL:
       If fixed `p0` enables static replacement but held-out performance collapses, the
       run demonstrates instance-specific canalization, not general MetaCA assimilation.
+      If holding both the environment and the operator tape fixed still yields an
+      unreproducible adapted state, there is no target at any level of stationarity.
 
   + NEXT-STEPS:
     - Keep fixed-p0 and distributional-task experiments as different registered claims.
     - Include held-out environments whenever the claim concerns evolved learnability.
+    - Enumerate stationarity axes in the registration; environment and operator randomness are separate treatments.

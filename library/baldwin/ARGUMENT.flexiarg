@@ -5,7 +5,7 @@
 @audience evolutionary-computation researchers, MetaCA experiment designers, futon theorists
 @tone analytic-mechanistic
 @style argument
-@hasa [baldwin/two-claims-not-one baldwin/plasticity-builds-a-selective-neighbourhood baldwin/assimilable-traits-need-heritable-shadows baldwin/assimilation-requires-a-resolved-path baldwin/stationarity-decides-what-can-be-fixed baldwin/metaca-negative-evidence-localizes-the-bottleneck baldwin/test-evolution-of-learnability-before-static-assimilation]
+@hasa [baldwin/two-claims-not-one baldwin/plasticity-builds-a-selective-neighbourhood baldwin/charge-for-realized-work-not-for-capacity baldwin/assimilable-traits-need-heritable-shadows baldwin/assimilation-requires-a-resolved-path baldwin/stationarity-decides-what-can-be-fixed baldwin/choose-the-heritable-unit-where-invariance-lives baldwin/ablation-axes-must-not-disable-the-instrument baldwin/metaca-negative-evidence-localizes-the-bottleneck baldwin/test-evolution-of-learnability-before-static-assimilation]
 @references [futon-theory/baldwin-cycle eight-gates/press-mechanism exotic/hybrid-execution-semantics]
 @references-extra ["Hinton and Nowlan (1987), How Learning Can Guide Evolution, Complex Systems 1:495-502" "Crispo (2007), The Baldwin Effect and Genetic Assimilation, Evolution 61:2469-2479" "Aguilar, Bennati and Helbing (2019), How learning can change the course of evolution, PLOS ONE 14:e0219502" "Gupta et al. (2021), Embodied Intelligence via Learning and Evolution, Nature 592:545-552" "Wong et al. (2023), Evolutionary Optimization of Physics-Informed Neural Networks, arXiv:2312.03243"]
 
@@ -14,9 +14,11 @@
   predictably visible to selection, but genetic assimilation is a further result,
   not the definition of the Baldwin effect. Assimilation additionally requires a
   stable target, inherited variables that are expressed while plasticity remains,
-  reachable substitutions that preserve function, and fitness resolution strong
-  enough to retain those substitutions. A negative at any one gate localizes the
-  missing bridge; it does not refute Baldwin effects in general.
+  a fitness component that actually reads those variables, a heritable unit matched
+  to where the invariance lives, reachable substitutions that preserve function, and
+  fitness resolution strong enough to retain those substitutions. A negative at any
+  one gate localizes the missing bridge; it does not refute Baldwin effects in
+  general — and a gate that was never instrumented has not returned a negative at all.
 
   + context:
     `futon-theory/baldwin-cycle` names the desired engineering progression from
@@ -43,6 +45,10 @@
       - Treating existence of rule 90 as evidence of a path from the evolved plastic lineage.
       - Treating failure of random hold mutations as failure of genetic assimilation.
       - Changing representation, cost, target, and mutation operator together and losing diagnosis.
+      - Charging for the capacity to adapt rather than for adaptation performed, so no fitness term reads inherited content.
+      - Ablating the studied mechanism along an axis that also disables the measurement, then reading the result as a dose-response.
+      - Concluding that no assimilable structure exists when only the chosen heritable unit has been searched.
+      - Leaving a stated prescription as prose, so a registration can satisfy the pattern in name while omitting its load-bearing clause.
 
   + THEN:
     Separate two claims and test them in order. First test guidance: does lifetime
@@ -57,6 +63,22 @@
       lifecycle null for hold frequencies; an explicit accessible path to a functional
       inherited endpoint; treatment-separated rankings; aligned random tapes; and
       evaluation on preregistered training and held-out task distributions.
+
+      Four further obligations, each of which the 2026 pilots would have failed before
+      spending compute. State them as registration fields that fail closed, not as
+      prose, since prose is what the pilots satisfied in name.
+
+      - **Content response.** Show that varying inherited material alone moves
+        post-learning fitness, above evaluation noise, before a paid run. Gene
+        reachability is not this check, and navigability of a plasticity axis is not
+        this check.
+      - **Effort measured.** Name the fitness or readout component that is a function of
+        realized adaptation — rewrites used, time to threshold — and register it.
+      - **Axis disjointness.** Name the interval each ablation applies to and predict the
+        value of its zero endpoint.
+      - **Target reproducibility.** Show that the adapted state is reproducible across
+        lifetimes of the same genome, against chance and against the inherited starting
+        point, before claiming anything can be assimilated.
 
   + BECAUSE:
     Plasticity changes evolution only through selection on inherited variation. It
@@ -79,14 +101,23 @@
 
     + EVIDENCE:
       Hinton and Nowlan's `?` alleles create a high-fitness neighbourhood around one
-      target. Recent morphological and neural work likewise evolves bodies,
-      initializations, or learning biases that make lifetime learning faster; it does
-      not generally require learning to vanish. The MetaCA pilot retained reach
-      12.44--13.00 while dependence stayed 0.961--0.984 and produced no registered
-      static witness, identifying the strong-assimilation bridge as absent in the
-      tested representation and search budget.
+      target — and notably with no explicit plasticity cost, because their fitness is
+      already a smooth function of genome content. Recent morphological and neural work
+      likewise evolves bodies, initializations, or learning biases that make lifetime
+      learning faster; it does not generally require learning to vanish. The MetaCA
+      pilot retained reach 12.44--13.00 while dependence stayed 0.961--0.984 and
+      produced no registered static witness, identifying the strong-assimilation bridge
+      as absent in the tested representation and search budget.
+
+      The 2026-08-01 review sharpens what that null licenses. Two of the four
+      obligations above were stated in this library before the pilots and neither was
+      implemented; the guidance run additionally charged nothing for plasticity and
+      ablated learning along an axis that disabled its own instrument. So the tested
+      representation is constrained, the search budget is constrained, and the gradient
+      gate was never instrumented at all.
 
   + NEXT-STEPS:
     - Use the child patterns as the causal argument attached to future Lean registrations.
     - Preregister a guidance experiment before another complete-assimilation search.
     - Keep the existing strict `BaldwinWitness` as the certificate for the stronger claim.
+    - Instrument the content-response and target-reproducibility gates before spending the registered confirmation seeds.

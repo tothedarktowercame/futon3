@@ -6,7 +6,7 @@
 @tone evidence-calibrated
 @style pattern
 @childof baldwin/mechanism
-@references [baldwin/assimilable-traits-need-heritable-shadows baldwin/assimilation-requires-a-resolved-path baldwin/stationarity-decides-what-can-be-fixed]
+@references [baldwin/assimilable-traits-need-heritable-shadows baldwin/assimilation-requires-a-resolved-path baldwin/stationarity-decides-what-can-be-fixed baldwin/charge-for-realized-work-not-for-capacity baldwin/choose-the-heritable-unit-where-invariance-lives baldwin/ablation-axes-must-not-disable-the-instrument]
 
 ! conclusion:
   Read the existing MetaCA runs as evidence that the tested hold representation and
@@ -43,18 +43,51 @@
     holding are neither prepared substitutes nor connected to the distant static
     solutions by a resolved local gradient.
 
+    + THREE-GATES:
+      The diagnosis now resolves into three separable gates, which is what makes it a
+      localization rather than a mood. Each has its own falsifier and its own pattern.
+
+      1. **No gradient on inherited content.** Fitness is
+         `band-score(reach) - c * plasticDependence`; the charge reads only the
+         plasticity machinery and the band score is taken after a full lifetime of
+         rewriting. Neither term differs between genomes that differ only in their
+         inherited field, so that field is close to a neutral trait while plasticity is
+         on. This subsumes the coupled-mutation null: extra proposal supply on a flat
+         landscape cannot help.
+      2. **A non-stationary target, on two axes.** The adaptive answer is indexed by
+         initial condition rather than by cell, and the rewrite operator is itself
+         stochastic across lifetimes, so fixing `p0` left the target moving.
+      3. **A heritable unit that does not match the invariance.** Three different
+         operators over the same per-cell unit returned the same answer, which is the
+         signature of a wrong unit rather than an insufficient search.
+
+      Gate 1 was testable before any paid run and was not tested: preflight checks
+      gene reachability on `:field` and navigability on the *gamma* axis, never the
+      response of post-learning fitness to inherited perturbation.
+
     + EVIDENCE:
       The search pilot's four selected arms end at mean reach 12.4389--12.9972,
       dependence 0.9609--0.9844, and held fraction 0.0156--0.0391, with outcome
       `:no-tested-repair`. The hold-only static-search arm ends at reach 1.1778. The
       greedy path records one selected step and then `:no-selectable-step`.
 
+      Added since: the corrected indifference map gives per-cell live-versus-frozen
+      agreement as unimodal (mean `0.290`, sd `0.089`), zero cells above `0.6`, lag-1
+      `+0.422` within a run and `-0.010`, `-0.060`, `+0.111` across seeds. The guidance
+      pilot returned `:neither-certified`, but its low-budget arms are not
+      interpretable as learning (see
+      `baldwin/ablation-axes-must-not-disable-the-instrument`), so it constrains gate 1
+      only weakly and must not be counted as a second independent negative.
+
     + COUNTERFACTUAL:
       A prepared, partially expressed inherited shadow that becomes enriched before
       holding would contradict the representation diagnosis. Faster early learning
       under evolved inherited fields would establish Baldwinian guidance even if the
-      strict static witness continued to fail.
+      strict static witness continued to fail. A single measurement — the response of
+      post-learning fitness to a one-locus inherited perturbation, against evaluation
+      noise — would decide gate 1 on its own.
 
   + NEXT-STEPS:
     - Attach future results to the precise gate they test.
     - Do not aggregate corrected and invalidated historical arms into one effect size.
+    - Do not count the guidance pilot as evidence about assimilation; its axis did not measure learning.

@@ -1,0 +1,68 @@
+@flexiarg baldwin/choose-the-heritable-unit-where-invariance-lives
+@title Put the Heritable Unit Where the Invariance Is
+@sigils [🌰/本]
+@keywords representation, locus, context, coordinates, invariance, assimilation, metaca, indifference
+@audience MetaCA designers, evolutionary-computation researchers, representation designers
+@tone constructive
+@style pattern
+@childof baldwin/mechanism
+@references [baldwin/stationarity-decides-what-can-be-fixed baldwin/assimilable-traits-need-heritable-shadows baldwin/metaca-negative-evidence-localizes-the-bottleneck]
+
+! conclusion:
+  "No assimilable structure exists" and "no assimilable structure exists in the
+  coordinates I chose" are different findings, and only the second has been earned by
+  the MetaCA measurements. Before concluding that a substrate cannot assimilate, look
+  for the coordinate system in which the adaptive answer is invariant across lifetimes,
+  and make *that* the heritable unit.
+
+  + context:
+    MetaCA's heritable unit is the lattice cell: a per-cell rule field and a per-cell
+    hold mask. The corrected indifference measurement shows that per-cell agreement
+    between live and frozen reads is unimodal (mean `0.290`, sd `0.089`) with no cell
+    above `0.6`, spatially coherent within a run (lag-1 `+0.422`), and uncorrelated
+    across initial conditions (`-0.010`, `-0.060`, `+0.111`). Structure exists; it is
+    simply not indexed by cell.
+
+  + IF:
+    A per-unit assimilation scheme fails and the per-unit invariance measurement is flat
+    or unstable across evaluations.
+
+  + HOWEVER:
+    Changing coordinates is also the easiest way to lose a diagnosis, and a
+    representation search that changes the unit, the cost, the target and the operator
+    together explains nothing. A new unit must be adopted as a registered hypothesis
+    with its own invariance measurement, not as a hopeful redesign.
+
+  + THEN:
+    Re-index the invariance measurement you already have before building anything. Take
+    the same live-versus-frozen agreement statistic and compute it per candidate unit —
+    for MetaCA, the four-bit context quadruple the rewrite already conditions on, which
+    has sixteen classes and recurs across initial conditions even when cells do not. If
+    agreement is bimodal and cross-seed stable in the new index where it was unimodal
+    and unstable in the old, the heritable unit has been located and the genome becomes
+    a small evolvable table over that index.
+
+  + BECAUSE:
+    Selection can only fix what is the same in every lifetime the genome meets. A unit
+    whose correct value is redrawn each evaluation is unfixable by construction, however
+    good the operator, the cost, or the search budget. Conversely, an adaptive process
+    that responds to recurring conditions has *some* invariant description; the design
+    question is whether the genome is written in those terms.
+
+    + EVIDENCE:
+      Per-cell holding was selected against by six- to fourteen-fold relative to the
+      mutation-only expectation of `0.1858`, horizontal transfer of contiguous cell
+      segments moved dependence within noise, and coupled hold-plus-allele mutation did
+      not differ qualitatively from independent mutation. Three operators over the same
+      unit gave the same answer, which is what a wrong unit looks like rather than what
+      an insufficient search looks like.
+
+    + COUNTERFACTUAL:
+      If context-indexed agreement is also unimodal and cross-seed unstable, the
+      substrate has no invariant the genome could carry at any granularity, and the
+      negative generalizes from the cell to the representation.
+
+  + NEXT-STEPS:
+    - Re-index an existing invariance measurement before proposing a new genome.
+    - Register the candidate unit and its invariance prediction as one claim.
+    - Report the unit alongside every assimilation result, since the claim is relative to it.

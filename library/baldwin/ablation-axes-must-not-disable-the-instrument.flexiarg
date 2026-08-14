@@ -1,0 +1,66 @@
+@flexiarg baldwin/ablation-axes-must-not-disable-the-instrument
+@title An Ablation Axis Must Not Also Switch Off the Measurement
+@sigils [🔦/双]
+@keywords ablation, learning-budget, construct-validity, measurement, confound, learning-curve, metaca
+@audience experiment preregistrars, MetaCA experiment designers
+@tone exacting
+@style pattern
+@childof baldwin/mechanism
+@references [baldwin/test-evolution-of-learnability-before-static-assimilation baldwin/plasticity-builds-a-selective-neighbourhood]
+
+! conclusion:
+  When the mechanism under study is also the mechanism the instrument depends on, an
+  ablation of that mechanism does not produce a dose-response curve — it produces a
+  curve of how much instrument remains. Check that the ablation axis and the
+  measurement window are disjoint before reading anything off the curve.
+
+  + context:
+    The MetaCA guidance pilot varied a learning budget over `[0, 4, 16, 64, 120]` and
+    read a learning curve from it. The budget gates rewriting by absolute timestep,
+    while causal reach perturbs at `t* = 60` and measures divergence at `t* + 59`. So
+    budgets 0, 4 and 16 switch rewriting off entirely before the perturbation, and
+    budget 64 leaves four of fifty-nine live steps. The low-budget points measure the
+    static-field condition, not a partially trained one.
+
+  + IF:
+    A learning-curve, dose-response, or truncated-budget design ablates the same
+    process that the outcome measure reads.
+
+  + HOWEVER:
+    The defect is invisible in the summary statistic and survives every apparatus check
+    that asks whether arms were separated, tapes aligned, or configurations valid. Those
+    checks confirm the axis was applied; none of them asks whether the axis means what
+    the registration says it means. Replacing a censored readout with a continuous one
+    leaves the confound untouched.
+
+  + THEN:
+    Separate the two intervals explicitly. Vary the adaptation budget over a training
+    interval that ends before the measurement window opens, and hold the mechanism
+    identical across arms inside the measurement window; or adopt a readout that does
+    not require the ablated mechanism to be live. Register the intervals, not only the
+    budget levels, and state the predicted value of the zero-budget arm in advance.
+
+  + BECAUSE:
+    A dose-response reading assumes the treatment changes the system and the instrument
+    reports on it. If the treatment changes the instrument, the curve is a mixture whose
+    two components cannot be separated after the fact, and the arms are not comparable
+    even though they are correctly randomized and correctly separated.
+
+    + EVIDENCE:
+      The zero-budget arm reproduced the all-held static reach (`1.18`--`1.41` against
+      `1.1778`), which identifies it as the static-field condition rather than an
+      untrained learner. Mean reach was also non-monotone — budgets 4 and 16 fell below
+      budget 0 in all four population-by-partition cells — as expected when a few steps
+      of rewriting scramble the inherited field and then freeze the result. The
+      preregistered diagnosis attributed the null to a zero-inflated preparedness
+      statistic, which is true but downstream of this.
+
+    + COUNTERFACTUAL:
+      If the zero-budget arm had been predicted in advance and had matched the static
+      control, the identity of the axis would have been caught before the run rather
+      than in review.
+
+  + NEXT-STEPS:
+    - Add a registration field naming the interval each ablation applies to.
+    - Require a predicted value for every ablation endpoint, checked at smoke time.
+    - Treat "the curve is flat at low dose" as a construct-validity alarm before it is a power problem.

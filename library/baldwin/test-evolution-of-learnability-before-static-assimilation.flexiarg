@@ -6,7 +6,7 @@
 @tone prospective
 @style pattern
 @childof baldwin/mechanism
-@references [baldwin/two-claims-not-one baldwin/plasticity-builds-a-selective-neighbourhood baldwin/stationarity-decides-what-can-be-fixed]
+@references [baldwin/two-claims-not-one baldwin/plasticity-builds-a-selective-neighbourhood baldwin/stationarity-decides-what-can-be-fixed baldwin/ablation-axes-must-not-disable-the-instrument baldwin/charge-for-realized-work-not-for-capacity]
 @references-extra ["Gupta et al. (2021), doi:10.1038/s41586-021-03522-2" "Wong et al. (2023), arXiv:2312.03243"]
 
 ! conclusion:
@@ -50,6 +50,22 @@
     curves and ablations observe preparedness directly, whereas final reach and hold
     count confound it with the amount of plastic work performed.
 
+    + DIVERGENCE:
+      The guidance pilot implemented the shape of this pattern and dropped its
+      substance, and the drop was not detected by any apparatus check. Of the three
+      effort measures prescribed above — time-to-threshold, cumulative realized
+      rewrites, held-out performance — only the third was registered. The
+      preregistration set `plasticityCost := 0` and scored preparedness as
+      `:population-mean-band-score`, the band-only scalar that
+      `baldwin/plasticity-builds-a-selective-neighbourhood` had already asked to
+      replace. The truncated-budget ablation then also disabled the measurement window,
+      for which see `baldwin/ablation-axes-must-not-disable-the-instrument`.
+
+      The general lesson is about this library, not only about that run: a prescription
+      stated as prose in a pattern can be satisfied in name by a registration that omits
+      its load-bearing clause. Prescriptions that matter must appear as registration
+      fields or preflight obligations that fail closed.
+
     + COUNTERFACTUAL:
       If evolved and ancestral genotypes have indistinguishable learning curves under
       paired tasks, high final reach is ordinary plastic competence rather than evidence
@@ -58,3 +74,4 @@
   + NEXT-STEPS:
     - Encode the guidance outcome and its falsifier in ExperimentPreregistration.
     - Run the positive control and response-curve preflight before provisioning.
+    - Register each prescribed effort measure as a named field, so omission is a validation failure rather than an editorial choice.

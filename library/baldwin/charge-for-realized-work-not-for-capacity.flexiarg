@@ -1,0 +1,73 @@
+@flexiarg baldwin/charge-for-realized-work-not-for-capacity
+@title Charge for Realized Learning Work, Not for the Capacity to Learn
+@sigils [💰/工]
+@keywords cost, fitness, plasticity, hinton-nowlan, gradient, capacity, usage, metaca
+@audience fitness designers, MetaCA experiment designers, evolutionary-computation researchers
+@tone corrective
+@style pattern
+@childof baldwin/mechanism
+@references [baldwin/plasticity-builds-a-selective-neighbourhood baldwin/assimilable-traits-need-heritable-shadows]
+@references-extra ["Hinton and Nowlan (1987), How Learning Can Guide Evolution, Complex Systems 1:495-502" "Paenke, Kawecki and Sendhoff (2009), The influence of learning on evolution"]
+
+! conclusion:
+  A cost on plasticity drives assimilation only if it is a function of the inherited
+  material. Charging for the *capacity* to adapt — a gain, an update probability, a
+  fraction of unheld loci — is flat in genome content and creates no gradient on the
+  thing that has to become prepared. Charge instead for the adaptation actually
+  performed, so that a better inherited starting point is cheaper.
+
+  + context:
+    Requiring that plasticity cost something is correct but underdetermined, and the
+    MetaCA design resolved it the wrong way. `fitness` scores
+    `band-score(reach) - c * plasticDependence`, where
+    `plasticDependence = update-prob * gamma * fraction(unheld and unmasked)`. Neither
+    term reads the inherited rule field: the cost sees only the machinery, and the
+    band score is measured after a full lifetime of rewriting, which is precisely the
+    operation that washes the inherited field out.
+
+  + IF:
+    An experiment charges for plasticity in order to select for its reduction.
+
+  + HOWEVER:
+    A capacity charge is minimized by removing the mechanism, not by improving the
+    inherited substitute, so it selects for ablation rather than for preparation. It
+    also cannot express partial assimilation when the function term is thresholded:
+    surrendering capacity forfeits the whole score while saving a fraction of the
+    charge.
+
+  + THEN:
+    Make at least one fitness component a function of inherited content evaluated under
+    active plasticity. Candidates: realized rewrite events per lifetime; the distance
+    between the inherited field and the field the rewriting settles on; time or trials
+    to a functional threshold. Verify before a paid run that this component orders
+    controlled inherited perturbations correctly, which is the response curve required
+    by `baldwin/plasticity-builds-a-selective-neighbourhood`.
+
+  + BECAUSE:
+    Selection acts on inherited variation, so a Baldwin effect needs fitness to differ
+    between genomes that differ only in what they inherit. Learning that rescues every
+    starting point to the same score shields genetic variation instead of exposing it.
+    A usage charge restores the exposure because the amount of adaptation required is
+    itself a readout of how well prepared the genome already is.
+
+    + EVIDENCE:
+      The repository's own planted positive control assimilates with **no plasticity
+      cost term at all**: `expected-learning-score` is `2^(-plastic-count)` when the
+      fixed alleles are compatible and `0` otherwise, so every correctly fixed locus
+      doubles fitness and every incorrectly fixed locus is lethal. Fitness there is a
+      smooth monotone function of genome content, and that — not an explicit charge —
+      is what supplies the gradient. The MetaCA guidance preregistration meanwhile
+      fixed `plasticityCost := 0` and scored `:population-mean-band-score`, so neither
+      a capacity nor a usage charge was in force and no effort measure was recorded.
+
+    + COUNTERFACTUAL:
+      If a usage charge is introduced and agreement between the inherited field and the
+      converged field rises under selection while dependence stays high, the earlier
+      negatives diagnose a missing gradient rather than load-bearing plasticity. If that
+      agreement stays flat, the inherited field is genuinely unselectable under active
+      rewriting and the representation must change.
+
+  + NEXT-STEPS:
+    - State which fitness component is a function of inherited content, in the registration.
+    - Report capacity and usage charges as different treatments, never as one "cost" axis.
+    - Prefer a smooth effort term when the function term is a thresholded band.

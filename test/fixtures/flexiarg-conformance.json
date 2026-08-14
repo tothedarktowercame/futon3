@@ -10,5 +10,19 @@
     {"name": "ct-transpose-across-an-adjunction", "source": "library/math-informal-CT/transpose-across-an-adjunction.flexiarg", "tree": [{"name": "conclusion", "children": [{"name": "context", "children": []}, {"name": "if", "children": []}, {"name": "however", "children": []}, {"name": "then", "children": []}, {"name": "because", "children": []}, {"name": "next-steps", "children": []}]}]},
     {"name": "ct-verify-universal-property", "source": "library/math-informal-CT/verify-universal-property.flexiarg", "tree": [{"name": "conclusion", "children": [{"name": "context", "children": []}, {"name": "if", "children": []}, {"name": "however", "children": []}, {"name": "then", "children": []}, {"name": "because", "children": []}, {"name": "next-steps", "children": []}]}]},
     {"name": "nested-open-vocabulary", "source": "library/pattern-discipline/pattern-to-code-receipts.flexiarg", "tree": [{"name": "conclusion", "children": [{"name": "context", "children": []}, {"name": "if", "children": []}, {"name": "however", "children": []}, {"name": "then", "children": [{"name": "evidence", "children": []}, {"name": "mechanism", "children": []}, {"name": "counterfactual", "children": []}]}, {"name": "because", "children": []}, {"name": "next-steps", "children": []}]}]}
+  ],
+  "nested-cases": [
+    {"source": "library/baldwin/ARGUMENT.flexiarg", "parent": "because", "children": ["mechanism", "counterfactual", "evidence"]},
+    {"source": "library/baldwin/ablation-axes-must-not-disable-the-instrument.flexiarg", "parent": "because", "children": ["evidence", "counterfactual"]},
+    {"source": "library/baldwin/assimilable-traits-need-heritable-shadows.flexiarg", "parent": "because", "children": ["expression-is-not-selectability", "counterfactual"]},
+    {"source": "library/baldwin/assimilation-requires-a-resolved-path.flexiarg", "parent": "because", "children": ["counterfactual"]},
+    {"source": "library/baldwin/charge-for-realized-work-not-for-capacity.flexiarg", "parent": "because", "children": ["evidence", "counterfactual"]},
+    {"source": "library/baldwin/choose-the-heritable-unit-where-invariance-lives.flexiarg", "parent": "because", "children": ["evidence", "counterfactual"]},
+    {"source": "library/baldwin/metaca-negative-evidence-localizes-the-bottleneck.flexiarg", "parent": "because", "children": ["three-gates", "evidence", "counterfactual"]},
+    {"source": "library/baldwin/plasticity-builds-a-selective-neighbourhood.flexiarg", "parent": "because", "children": ["evidence", "counterfactual"]},
+    {"source": "library/baldwin/stationarity-decides-what-can-be-fixed.flexiarg", "parent": "because", "children": ["evidence", "counterfactual"]},
+    {"source": "library/baldwin/test-evolution-of-learnability-before-static-assimilation.flexiarg", "parent": "because", "children": ["divergence", "counterfactual"]},
+    {"source": "library/baldwin/two-claims-not-one.flexiarg", "parent": "because", "children": ["counterfactual"]},
+    {"source": "library/pattern-discipline/pattern-to-code-receipts.flexiarg", "parent": "then", "children": ["evidence", "mechanism", "counterfactual"]}
   ]
 }

@@ -3,6 +3,7 @@
 (require 'cl-lib)
 (require 'ert)
 (require 'json)
+(require 'seq)
 (require 'subr-x)
 
 (defconst futon3--test-root
@@ -39,7 +40,25 @@
           (insert-file-contents source)
           (pcase-let ((`(,_meta ,roots) (flexiarg--parse-buffer)))
             (should (equal (alist-get 'tree case)
-                           (vconcat (mapcar #'futon3-test--node-tree roots))))))))))
+                           (vconcat (mapcar #'futon3-test--node-tree roots))))))))
+    (dolist (case (append (alist-get 'nested-cases corpus) nil))
+      (with-temp-buffer
+        (insert-file-contents
+         (expand-file-name (alist-get 'source case) futon3--test-root))
+        (pcase-let ((`(,_meta ,roots) (flexiarg--parse-buffer)))
+          (let* ((root (car roots))
+                 (parent (seq-find
+                          (lambda (node)
+                            (equal (downcase (flexiarg-node-relation-raw node))
+                                   (alist-get 'parent case)))
+                          (flexiarg-node-children root))))
+            (should parent)
+            (should
+             (equal (alist-get 'children case)
+                    (vconcat
+                     (mapcar (lambda (node)
+                               (downcase (flexiarg-node-relation-raw node)))
+                             (flexiarg-node-children parent)))))))))))
 
 (ert-deftest flexiarg-highlights-facet-name-and-content ()
   "Facet highlighting should apply to both name and content."

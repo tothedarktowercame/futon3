@@ -544,6 +544,46 @@ into a dashboard.
 its gain will be read off? If the answer is "we'll see it in the outcomes,"
 the loop is uninstrumented.
 
+### WR-28: Bulletins carry proof-state deltas (2026-08-08)
+
+**IF:** The War Room and its bulletins have been serving as a *scratchwork
+capability proof of the futon stack* — compressed across fifteen narratives
+so the whole can fit in the operator's head — and the capability-proof-*
+series (apm, arxiv, war-machine, diagramprover) now supplies the structured
+form: nodes with contracts, graded warrants, certificates, typed refusals
+**HOWEVER:** Narrative re-argues globally while a proof re-certifies
+locally; the text-based War Room is running out of road, and WR-number
+items accumulate as prose with nothing structural to *do*
+**THEN:** From bulletin 16 onward, every bulletin includes a
+**proof-state delta** section: which nodes' warrants moved, which
+certificates attached, which refusals were typed — landing in the client
+proofs and in `capability-proof-futon` (form decided same day, WR-8 route:
+canonical EDN at
+`futon3c/holes/labs/M-diagramprover/capability-proof-futon.edn`, rendered
+one-page projection at `holes/capability-proof-futon.md` beside this file,
+regenerated via `render_capability_proof_futon.bb`; editing the projection
+in place is a defect). WR items map into the proof as the invariant/contract
+layer (the constitution); bulletins remain the narrative certificate
+archive — the story stays, per the Morning-Bulletin bar. A bulletin that
+moves no warrant says "no proof-state change" explicitly rather than
+implying progress.
+**BECAUSE:** A warrant upgrades only by certificate; making bulletins the
+delta carrier converts narrative accretion into local rewriting and keeps
+the in-head representation a dozen nodes plus warrant states. It also gives
+cross-cutting throughlines a formal home: **a shared certificate is a lemma
+cited from two nodes** — the Zone mining pilot generating the benchmark
+corpus for XTDB #3663/#5637 being the exemplar of two "unrelated" subtrees
+joined by one artifact.
+
+**Evidence:** Bulletin 15 + addenda; the four capability-proof notes; the
+independent convergence of the prover-registry grounding taxonomy
+(☑ verified / ☑ substrate / ⊗ external-witness / ◇ frontier) on warrant
+classes.
+
+**Test:** Does the next bulletin's delta section name at least one warrant
+change *with its certificate*? Can a WR item be pointed at in the proof
+structure (as invariant or contract) rather than only in this file?
+
 ## Coordination Protocol
 
 When a decision affects multiple futons:

@@ -62,7 +62,6 @@ summarises; the bulletins provide evidence and argument.
 | [11](war-bulletin-11.md) | 2026-06-30 | The Stack Can See Itself — One Cascade, Not Seven Pictures | Operational self-model made REAL — five dimensions (lineage, mined moves, mine, upward clusters, fold-wiring) compose on ONE canonical identity (171 shared mission nodes, 0 conflicts); the blocker was IDENTITY not data, the fix is GOVERNANCE (E-futon1a-archivist canonical-id write gate reviving the Charon discipline); `pipeline-pattern-cascade.html` renders live `/api/alpha/cascade-real`; honest holes (O5 capability canonicalization) surface the next work by design |
 | [12](war-bulletin-12.md) | 2026-07-14 | Fabled Sessions — Two Arcs, One Reconstruction | Reconstruction across a model handoff (Fable's promotional window). **Arc I** (Emacs peripherals): Smart Emacs Cursor proven-but-dormant; Mission Mode (`mission-mode.el`) live + maintained. **Arc II**: XTDB 2 port durable (futon1b, `:7074`); text-index companion under live soak (futon1bi, XTDB #5637, recall 1.0); zai/zaif harness through ZU-4 (status oracle, replay calibration, CI bug-queue); 40-flight assessment CLOSED (S2 retired, reward = binding constraint); reward-learning honest negative (futon3a); p4ng sequel preregistered + zaif PoC; backlog-cascade forward model; tunnel-free federation (futon3c). **Three stranded flags:** APM Zai cron UN-ARMED, futon5 sci-reproduction complete-but-off-branch, Smart Cursor dormant |
 | [13](war-bulletin-13.md) | 2026-07-17 | The Stack Keeps a Notebook — Upstreams as Extended Mind | Upstream dependencies read as constitutive faculties (XTDB = memory, babashka = hands, FTS5 pod = recall, A-Frame/troika = senses); their trackers are therefore stack maintenance surfaces (WR-23); standing×liveness scan yields ~10 walkable rungs in 3 tiers (go-sqlite3#41, troika#341, xtdb#5169, aframe#5396 lead); #5637 send discovered already-walked (2026-07-16, response window open); intervention lane mapped onto M-cold-chain as second counter (n_intervention, one/week proposed); identity question (holtzermann17 vs tothedarktowercame) flagged load-bearing; merges = cheap xeno-evaluation (mh7) |
-| [15](war-bulletin-15.md) | 2026-08-06 | The Ants Are Epistemic — One Instrument, Three Customers | Both machines probed full (bare metal CPU-pegged with ~190GiB RAM idle; binding constraint = operator attention); Henderson call converted to a collaboration path (#3663 first, #5637 benchmark on the arXiv corpus — benchmark and service are the same build); one evaluation methodology (prelim batteries + ArSE) identified behind three blocked doors (superpod go-live, WM overnight restart, consulting offer); APM × Arxiv.CT service architecture with **demand-paged mining** (hunger channel as the memory↔corpus seam); WR-24's gain parameter recurs in a third substrate (demand-coupling gain); WM re-arm condition proposed (WR-26 flag); sabbatical feasibility: yes iff August converts QA from operator-activity to harness |
 | [14](war-bulletin-14.md) | 2026-07-30 | The Gate Was Never the Money — Three Yardsticks Arrive as the Constraint Lifts | Four fronts all in a *reporting* phase (WM documented in `p4ng/main-2026.tex`; retrieval whitepaper as defensive publication; closer loop measured behaviourally; ALife Part III with pre-fixed criteria); **M-cold-chain rung 3 FIRED** — Henderson/XTDB reply 2026-07-28, first of any campaign, chat Wed 2026-08-05; Part III's live-vs-frozen gate is the *falsification instrument* for the memory system's evidence-updated operator (shared risk, NOT borrowed support); the cascade's dated scarcity (sinecure ~Aug, runway) lifted from outside the model — so the cash gate, which was only ever a proxy for external validity, is demoted and **witnessed external verdict** named in its place (compiler / maintainer / peer review = `mh7` fillable three ways); identity now *diverging* across three names; cron disabled without a re-arm condition; Invoice 202505 (£1,406.25) drafted 13 days and unsent; WR-24–WR-26 |
 
 ## The Three-Futon Refactoring
@@ -486,6 +485,7 @@ mood. A stranded flag costs more than the throughput the pause saved.
 `cffa28b9`; bulletin 12's three stranded flags (APM Zai cron UN-ARMED,
 futon5 sci-reproduction off-branch, Smart Cursor dormant)
 
+<<<<<<< Updated upstream
 **Outcome (2026-08-08, via bulletin 15):** the WM overnight pause — flagged
 in [bulletin 15](war-bulletin-15.md) as this rule's live violation — has
 discharged its debt. The re-arm condition is written at the switch
@@ -584,6 +584,8 @@ classes.
 change *with its certificate*? Can a WR item be pointed at in the proof
 structure (as invariant or contract) rather than only in this file?
 
+=======
+>>>>>>> Stashed changes
 ## Coordination Protocol
 
 When a decision affects multiple futons:

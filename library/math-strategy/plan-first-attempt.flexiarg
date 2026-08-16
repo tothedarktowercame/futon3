@@ -1,0 +1,29 @@
+@flexiarg math-strategy/plan-first-attempt
+@title Plan the Attempt Before Proving
+@keywords plan, lemmas, proof-process, revision, guidance, execution
+@audience mathematicians, proof-writers, proof agents
+@tone strategic
+@provenance retro-promotion pass (2026-08-16), source memory e-02552934-b755-4e40-9cbd-ba81b29a6ffe
+
+! conclusion:
+  Before proving, write a numbered plan whose steps state the required lemmas;
+  execute against it and revise the plan explicitly when the proof makes contact.
+
+  + context: A difficult proof has enough moving parts that local hints can pull
+    the attempt from one obligation to another without preserving an architecture.
+
+  + HOWEVER: A plan is a working hypothesis, not a contract. Preserve revisions
+    in the artifact, and do not defend a step after its assumptions fail.
+
+  + THEN: State the lemma-sized steps first, record their dependencies, prove in
+    that order, and update the written plan whenever compilation or mathematics
+    exposes a missing or false step. Guidance should address the process and the
+    plan's gaps rather than silently supplying mathematical content.
+
+  + BECAUSE: A visible, revisable plan makes progress and failed assumptions
+    inspectable while preventing guidance from replacing the solver's architecture.
+
+  + NEXT-STEPS:
+    next[Write the numbered lemma plan.]
+    next[Mark dependencies and the first executable step.]
+    next[Revise the plan in place when an assumption fails.]

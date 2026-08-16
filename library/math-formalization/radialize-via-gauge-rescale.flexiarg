@@ -1,0 +1,29 @@
+@flexiarg math-formalization/radialize-via-gauge-rescale
+@title Radialize via Gauge Rescale
+@keywords Lean, gauge, convex, frontier, sphere, homeomorph, ray, rescale
+@audience lean-provers
+@tone heuristic
+@instantiates math-informal/transport-across-isomorphism
+@provenance retro-promotion pass (2026-08-16), source memory e-aa0f8c68-d249-4d86-a542-d63815302709
+
+! conclusion:
+  Transport a frontier problem for a compact convex region containing zero in its
+  interior to a norm sphere with `gaugeRescaleHomeomorph`.
+
+  + context: The argument is radial, but the original region has a complicated
+    frontier while a chosen norm sphere has an explicit chart.
+
+  + HOWEVER: Discharge the compactness, convexity, and interior hypotheses, and
+    check that the target norm is the one used by the downstream chart.
+
+  + THEN: Apply the GaugeRescale homeomorphism, use its frontier-to-sphere result,
+    and transport ray-dependent statements through its compatibility with
+    nonnegative scalar multiplication.
+
+  + BECAUSE: Gauge rescaling preserves radial structure while replacing an
+    arbitrary convex frontier with a standardized sphere.
+
+  + NEXT-STEPS:
+    next[Prove the region hypotheses required by GaugeRescale.]
+    next[Transport the frontier statement to the sphere.]
+    next[Use preservation of nonnegative rays explicitly.]

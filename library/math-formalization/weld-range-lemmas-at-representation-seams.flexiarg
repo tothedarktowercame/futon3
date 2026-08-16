@@ -1,0 +1,27 @@
+@flexiarg math-formalization/weld-range-lemmas-at-representation-seams
+@title Weld Range Lemmas at Representation Seams
+@keywords Lean, seam, endpoint, periodic, quotient, range, strict, decoding
+@audience lean-provers
+@tone heuristic
+@provenance retro-promotion pass (2026-08-16), source memory e-54ea43ad-bdcf-4c0f-8bf6-2654e14a6ba3
+
+! conclusion:
+  At a periodic or quotient representation seam, prove the range statement before
+  the endpoint strictly, then prove the endpoint directly from its decoded value.
+
+  + context: A coordinate represents the same geometric point by two boundary
+    values, so a closed-endpoint range lemma fails exactly at the wraparound.
+
+  + HOWEVER: First verify the failure is representational. A genuine discontinuity
+    or wrong endpoint value cannot be repaired by splitting the proof.
+
+  + THEN: Establish the desired range on the strict pre-end interval; isolate the
+    seam point; unfold or simplify its decoder/closed value; combine the two cases.
+
+  + BECAUSE: The strict interval avoids the noncanonical representative while the
+    direct endpoint calculation states the quotient identification explicitly.
+
+  + NEXT-STEPS:
+    next[Locate the exact seam value.]
+    next[Prove the strict pre-end range.]
+    next[Compute the decoded endpoint directly.]

@@ -1,0 +1,28 @@
+@flexiarg math-formalization/stamp-siblings-from-one-compiled-branch
+@title Stamp Symmetric Branches from One Compiled Branch
+@keywords Lean, cases, symmetry, branch, template, compile, repetition
+@audience lean-provers
+@tone heuristic
+@provenance retro-promotion pass (2026-08-16), source memory e-19ae2af6-d067-4ab2-b401-d8c52cf10018
+
+! conclusion:
+  In a finite symmetric case split, make one branch compile end-to-end before
+  reproducing its structure in the sibling branches.
+
+  + context: Several cases share the same proof shape up to a small rotation,
+    permutation, or renamed boundary condition.
+
+  + HOWEVER: Confirm the symmetry really preserves every hypothesis. Do not copy
+    a branch whose endpoint convention, sign, or type-class instance differs.
+
+  + THEN: Choose a representative branch, resolve all API and elaboration issues
+    there, extract its stable proof skeleton, and stamp the siblings with only the
+    symmetry-specific data changed. Compile each stamped branch immediately.
+
+  + BECAUSE: The first complete branch pays the API-discovery cost once; later
+    branches become controlled mechanical variations instead of parallel experiments.
+
+  + NEXT-STEPS:
+    next[Choose the representative branch.]
+    next[Compile it end-to-end.]
+    next[Identify and verify every symmetry-specific substitution.]

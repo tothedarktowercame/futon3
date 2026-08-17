@@ -152,10 +152,69 @@ distinction.
 `@name value` lines, before the argument body. `@flexiarg <family>/<name>` is
 the pattern's qualified id and is what everything else keys on. Others in
 current use include `@title`, `@style`, `@grade`, `@keywords`, `@audience`,
-`@tone`, `@sigils`, `@subjects`, `@examples`, `@difficulty`, `@instantiates`,
-`@provenance`.
+`@tone`, `@sigils`, `@examples`, `@difficulty`, `@provenance`.
 
 `@grade` takes `principle | technique | snippet`.
+
+## 5a. Structural directives — the map between patterns
+
+*(Standard revised 2026-08-17, Joe's direction. Before this, structure was
+carried by three fields with overlapping meanings — `@family`, `@references`,
+`@instantiates` — plus, in one case, a comment, because no field fit.)*
+
+Patterns relate to other patterns. Two relations are declared, and **they are
+not inverses of each other**:
+
+| directive | direction | meaning | who writes it |
+|---|---|---|---|
+| `@why <id> [<id> …]` | toward the general | the authority this pattern rests on — the strategy it is an instance of | the pattern's own author |
+| `@how <id> [<id> …]` | toward the specific | the named methods by which this pattern is carried out | an editor, later |
+| `@see-also <id> [<id> …]` | sideways | a peer technique; no claim of authority in either direction | either |
+
+**Why they are not inverses.** `@why` is *total and structural*: a specific
+pattern rests on something, and its author knows what. `@how` is *partial and
+curatorial*: only some patterns acquire methods worth naming, and the judgement
+of which ones is editorial. Inverting `@why` mechanically would give every
+general pattern a list of everything that ever instantiated it — unbounded,
+ever-growing, and useless for reading. `math-formalization/layer-cake-crossover-split`
+`@why math-informal/estimate-by-bounding` is true; the reverse is not, because
+layer-cake is one instance among many and not *the* method.
+
+`@how` targets may be patterns OR reviewed memories. A memory attached to a
+pattern is already a refinement of it, recorded by the attachment economy —
+so do not restate an attachment as an `@how`.
+
+**Deprecated spellings**, to be migrated, not used in new work:
+
+- `@instantiates` → `@why` (same meaning, 19 files at the time of writing).
+- `@references` → split. It conflated authority with peerage; roughly half its
+  edges point across families (authority, → `@why`) and half within one
+  (peers, → `@see-also`). The split is a judgement per edge, not a rename.
+- `@subjects` → `@cross-list` (see §5b), with a controlled vocabulary.
+- `@family` is a *kind* classification (e.g. `math-strategy/characterization-result`),
+  not a parent. It is unaffected by this revision and should not be read as
+  structure.
+
+## 5b. Subject categories — primary and cross-list
+
+*(Standard set 2026-08-17, Joe's direction: follow arXiv.)*
+
+- **The primary category is the directory.** `library/<kind>-<CODE>/<name>` —
+  e.g. `math-informal-CT/check-it-on-generators`, already conforming. `<CODE>`
+  is the arXiv subject code without its `math.` prefix: `AT` algebraic topology,
+  `GN` general topology, `GT` geometric topology, `CA` classical analysis, `FA`
+  functional analysis, `CT` category theory, and so on. Exactly one primary
+  category, because a file lives in exactly one directory.
+- **Cross-listing is a field.** `@cross-list [FA PR]` — the other categories the
+  pattern genuinely belongs to. Optional, plural, no ordering.
+
+The primary category is not restated in a field: the directory is the single
+spelling of that fact. An importer reads the primary from the path.
+
+The directory therefore carries two axes at once — kind (`informal`,
+`formalization`, `strategy`) and subject code — which is what `math-informal-CT`
+already did before the convention was written down. The motivation is
+filesystem manageability at library scale, not taxonomy for its own sake.
 
 ## 6. Identity
 
@@ -207,3 +266,26 @@ less than that nothing tells you when they differ.
   top-level component, not one of the required five. An importer must accept a
   pattern that has no `NEXT-STEPS`, and must not treat its absence as an
   incompleteness finding under §3.
+
+- **2026-08-17, Joe:** pattern-to-pattern structure is declared by `@why`
+  (authority, toward the general) and `@how` (refinement, toward the specific),
+  which are **not inverses** — `@why` is total and authored, `@how` is partial
+  and editorial. Peers get `@see-also`. `@instantiates` and `@references` are
+  the deprecated spellings (§5a). Rationale: at the time of the ruling the
+  library carried 80 authored pattern-to-pattern edges, **every one of them
+  pointing up or sideways and not one pointing down** — authors write authority
+  unprompted and never write refinement, which is the evidence that the two
+  relations differ in kind rather than in sign.
+
+- **2026-08-17, Joe:** subject categories follow arXiv — **primary category is
+  the directory**, cross-listing is the `@cross-list` field (§5b). The primary
+  is never restated in a field. Motivation: a single directory holding
+  thousands of patterns is unmanageable; `math-informal-CT` was already the
+  worked example of the convention.
+
+- **2026-08-17, Joe:** the map is not the route. The declared edges are terrain;
+  a *cascade* is a reading of that terrain assembled for a task, and is not
+  declared in the files. The War Machine's `:cascade` argument — a vector of
+  pattern-ids with the order discarded downstream — is a **selection**, not a
+  cascade, and the terminology should not be confused. Nothing in §5a fixes a
+  cascade in advance.

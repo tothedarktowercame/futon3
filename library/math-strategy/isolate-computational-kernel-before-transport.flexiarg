@@ -1,0 +1,31 @@
+;; Upstreams: math-informal/separate-into-independent-pieces,
+;; math-formalization/coercion-bridge, math-strategy/plan-first-attempt.
+;; The upstream-cascade semantics remain open (M-apm-demonstration W.70).
+@flexiarg math-strategy/isolate-computational-kernel-before-transport
+@title Isolate the Computational Kernel Before Transport
+@keywords scalar-kernel, transport, measure-theory, ENNReal, Bochner, modularize, proof-architecture, time-burn
+@audience lean-provers, analysts
+@tone strategic
+@difficulty advanced
+@subjects analysis, formalization
+
+! conclusion:
+  When a theorem mixes a scalar calculation with measure-theoretic and coercion transport, prove the scalar estimate as a separate abstract lemma before returning to the original function and measure space.
+
+  + context:
+      A layer-cake, norm, probability, or distribution-function argument has reduced the mathematical heart to an explicit one-variable integral, but the final theorem also asks for measurability, integrability, restricted-measure, and codomain-transport facts.
+
+  + HOWEVER:
+      Working directly in the final theorem interleaves the scalar calculation with section measurability, `toReal` finiteness, restricted-measure a.e. congruences, and Bochner transport. Each local API uncertainty multiplies the number of open proof obligations and obscures which part is actually mathematical.
+
+  + THEN:
+      State an abstract scalar lemma whose input is only the pointwise majorant needed by the calculation. Prove its endpoint cases, split and evaluate its integrals, and finish its algebra independently. In the final theorem, instantiate that lemma after the measure-theoretic reduction, then use one directed coercion bridge to obtain integrability and the displayed real inequality.
+
+  + BECAUSE:
+      The scalar kernel has fewer types and dependencies, so its failures are local and its result is reusable. Transport obligations become a short wrapper rather than being duplicated throughout the calculation.
+
+  + NEXT-STEPS:
+    next[Identify the smallest pointwise hypothesis sufficient for the scalar estimate.]
+    next[Separate zero and infinite endpoint cases before defining ratios.]
+    next[Prove the scalar lemma without mentioning the original function or space.]
+    next[Instantiate once, then transport finiteness and inequalities back to the target codomain.]

@@ -1,0 +1,42 @@
+@flexiarg cascades/on-the-fly-cascade
+@title On-the-Fly Cascade
+@sigils [🌊/流]
+@keywords cascade, derived, dynamic, query, context, slice, retrieval, Moran, AA, problem-state
+@audience knowledge-base designers, agent-system builders
+@tone design
+@factor Energy (viriya)
+@provenance M-apm-demonstration W.70; Moran 1971 (the wall-chart failure; AA as dynamic query)
+
+! conclusion:
+  Derive cascade edges per query, against the current problem state — the cascade a seat needs
+  is the cascade FOR THIS PROBLEM, and most such relations cannot be pre-declared.
+
+  + context: A seat faces a specific problem and needs to know which patterns apply and in what
+    enablement order; the pattern set is large enough that a static diagram fails (Moran 1971:
+    "a cascade of a thousand patterns would be useless" as a navigation device).
+
+  + IF:
+      The relevance of pattern relations depends on the problem at hand — the same two patterns
+      may be tightly coupled for one problem and unrelated for another.
+
+  + HOWEVER:
+      An unwitnessed derivation is silent machinery: a cascade that existed only inside one
+      query cannot be audited, reproduced, or learned from. Ephemeral derivation is acceptable
+      ONLY when paired with use-receipts (see cascades/edges-earn-permanence); a derivation that
+      feeds a dispatch must enter the dispatch receipt.
+
+  + THEN:
+      Compute the cascade slice at query time (lexical, structural, or model-judged relation
+      candidates over declared skeleton plus context), hand the seat the slice with provenance,
+      and receipt whatever the seat actually uses.
+
+  + BECAUSE:
+      Contextual relevance defeats static matching in practice (push recall's lexical anchors
+      missed every technique memory relevant to a problem stated in different vocabulary); and
+      deriving keeps the declared layer sparse and honest instead of bloated with speculative
+      edges nobody will defend.
+
+  + NEXT-STEPS:
+    next[Define the slice query: problem state in, edge candidates out, provenance attached.]
+    next[Receipt used edges into the dispatch record.]
+    next[Never let a derived-only edge become load-bearing without promotion.]

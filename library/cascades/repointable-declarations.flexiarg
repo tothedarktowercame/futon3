@@ -1,0 +1,39 @@
+@flexiarg cascades/repointable-declarations
+@title Repointable Declarations
+@sigils [🧭/改]
+@keywords cascade, repoint, revision, tombstone, staleness, filesystem, source-of-truth, edit
+@audience knowledge-base designers, agent-system builders
+@tone design
+@factor Discipline (sīla)
+@provenance M-apm-demonstration W.70; Moran 1971 ("transparent beats correct"); the projection-gap lesson (W.43)
+
+! conclusion:
+  Repointing a declared edge is a first-class, receipted operation: edit the pattern file's
+  upstreams (a reviewed editorial act), let the watcher sync, and have the store repoint —
+  retiring the old edge with a tombstone that references the edit, never silently dropping it.
+
+  + context: Declared upstreams go stale — patterns split, merge, or the declared relation
+    turns out wrong — and a declaration that cannot be revised will be routed around.
+
+  + IF:
+      The filesystem is the source of truth for pattern content and the store mirrors it.
+
+  + HOWEVER:
+      If repointing turns out to be FREQUENT (upstreams churning per cycle), the
+      file-as-source-of-truth assumption itself is wrong for edges, and edges belong in the
+      store natively with files as documentation — watch the repoint rate as a falsifier.
+
+  + THEN:
+      Treat upstream edits exactly like pattern authoring: reviewed, committed, ingested;
+      the store's sync replaces rather than duplicates, and the retired edge leaves a
+      tombstone naming the commit that retired it.
+
+  + BECAUSE:
+      Knowledge quality is a property of the revision process, not of any frozen snapshot
+      (Moran's best-aged sentence). Silently missing edges poison every measurement downstream
+      — the projection gap taught that a graph layer that drops edges unannounced caps what any
+      other machinery can see; a graph layer that RETIRES edges announced stays measurable.
+
+  + NEXT-STEPS:
+    next[Make watcher sync repoint-aware: replace, tombstone, never duplicate or silently drop.]
+    next[Track the repoint rate; frequent churn falsifies file-as-source-of-truth for edges.]

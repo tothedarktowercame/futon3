@@ -340,6 +340,18 @@ less than that nothing tells you when they differ.
   thousands of patterns is unmanageable; `math-informal-CT` was already the
   worked example of the convention.
 
+- **2026-08-17, Joe:** `@family` and `@childof` are the same shape as `@up` —
+  document parents, not authority. `baldwin/mechanism` parents 10 of the 11
+  files in its family; that is a section hub. They migrate to `@up`.
+
+- **2026-08-17, Joe:** workflow state (`@status`, `@verdict`, `@confidence`,
+  `@review`) does not belong in the pattern text at all, even as metadata.
+  Handled by the Arxana ledger subsystems instead; queued as
+  `E-arxana-workflow-management`.
+
+- **2026-08-17, Joe:** content that looks like metadata belongs in the pattern
+  body as a sub-block (`+governance:` under `+THEN:`), not in a directive.
+
 - **2026-08-17, Joe:** the map is not the route. The declared edges are terrain;
   a *cascade* is a reading of that terrain assembled for a task, and is not
   declared in the files. The War Machine's `:cascade` argument — a vector of

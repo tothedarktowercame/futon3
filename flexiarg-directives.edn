@@ -20,6 +20,8 @@
     :not-an-edge   looks structural, is not -- do not admit to the pattern graph
     :candidate     real usage, semantics NOT yet ruled; read before standardising
     :family-scoped bespoke payload for one family; never global
+    :excursion-queued  workflow state; leaves the pattern text entirely --
+                     futon4/holes/excursions/E-arxana-workflow-management.md
     :unreviewed    counted, not yet read
 
   RELATION AXES. Three kinds of structure coexist and must not be merged:
@@ -64,8 +66,8 @@
                            :means "a variant spelling of @flexiarg. projection.clj:213 already tries arg, flexiarg, multiarg in that order. 34 files use it and ALL 34 are structurally patterns (every one has ! conclusion) -- a spelling difference, not a second document type"}
   :allow-new-claims       {:status :generation-config  :value :boolean                 :uses    76 :scope "8 families"
                            :means "GENERATOR GUARDRAIL, not pattern semantics: instructs a writing agent. Belongs in generator config, not the pattern graph"}
-  :status                 {:status :candidate          :value :structured              :uses    65 :scope "10 families"
-                           :means "WORKFLOW STATE, and it carries an edge: [status[blocked] blocked-by[vsatlas/funder-brief]]. Mutable state in a versioned artifact is a smell, but blocked-by is a real relation. UNRULED"}
+  :status                 {:status :excursion-queued   :value :structured              :uses    65 :scope "10 families"
+                           :means "WORKFLOW STATE -- not for the pattern text at all (Joe, 2026-08-17). Queued: futon4/holes/excursions/E-arxana-workflow-management.md. NOTE: blocked-by[vsatlas/funder-brief] is a real pattern edge hiding inside a state field and must not be lost in the move"}
   :binary                 {:status :family-scoped      :value :unknown                 :uses    64 :scope "iching"}
   :trigrams               {:status :family-scoped      :value :unknown                 :uses    64 :scope "iching"}
   :ct-interpretation      {:status :family-scoped      :value :unknown                 :uses    64 :scope "iching"}
@@ -86,8 +88,8 @@
                            :means "DOCUMENT / collection: the containing work, e.g. \"Open Research Training\""}
   :ancestors              {:status :not-an-edge        :value :citation-list           :uses    35 :scope "2 families"
                            :means "free-text sources: papers, transcripts, corpus themes. Aligns with @provenance"}
-  :verdict                {:status :candidate          :value :scalar                  :uses    26 :scope "ukrns"
-                           :means "WORKFLOW STATE: stale | early. UNRULED"}
+  :verdict                {:status :excursion-queued   :value :scalar                  :uses    26 :scope "ukrns"
+                           :means "WORKFLOW STATE (stale | early). Queued: E-arxana-workflow-management"}
   :illustrates            {:status :not-an-edge        :value :claim-list              :uses    23 :scope "repository-transition"
                            :means "free-text illustrative claims. Aligns with @examples"}
   :tier                   {:status :candidate          :value :scalar                  :uses    22 :scope "2 families"
@@ -104,46 +106,46 @@
   :provenance             {:status :standard           :value :citation-list           :uses    16 :scope "4 families"
                            :means "where this pattern came from"}
   :path                   {:status :family-scoped      :value :unknown                 :uses    16 :scope "liberation"}
-  :governance             {:status :candidate          :value :list                    :uses    15 :scope "2 families"
-                           :means "practice/metric pairs -- content, not metadata. UNRULED"}
+  :governance             {:status :not-an-edge        :value :list                    :uses    15 :scope "2 families"
+                           :means "CONTENT, not metadata: practice/metric pairs. Migrate INTO the pattern text as a sub-block, e.g. +governance: under +THEN: (README-flexiarg §4 -- sub-components are an open vocabulary). Joe, 2026-08-17"}
   :theory-grounding       {:status :family-scoped      :value :unknown                 :uses    12 :scope "coordination"}
-  :family                 {:status :candidate          :value :pattern-id              :uses    11 :scope "2 families"
-                           :means "a KIND classification, not a parent. Do not read as structure"}
+  :family                 {:status :variant-of         :value :pattern-id              :uses    11 :scope "2 families"
+                           :means "DOCUMENT / parent -- same shape as @up (Joe, 2026-08-17). Points at a hub kind (math-strategy/structural-relation-result). Migrate to @up; do not read as semantic structure"}
   :paper-source           {:status :family-scoped      :value :unknown                 :uses    10 :scope "equity"}
   :summary                {:status :not-an-edge        :value :prose                   :uses    10 :scope "5 families"
                            :means "prose summary; overlaps @title and the conclusion"}
-  :childof                {:status :candidate          :value :pattern-id              :uses    10 :scope "baldwin"
-                           :means "refinement-direction; candidate @how"}
-  :instantiated-by        {:status :candidate          :value :pattern-id-list         :uses    10 :scope "repository-transition"
-                           :means "refinement-direction; candidate @how"}
+  :childof                {:status :variant-of         :value :pattern-id              :uses    10 :scope "baldwin"
+                           :means "DOCUMENT / parent -- same shape as @up (Joe, 2026-08-17). baldwin/mechanism is the parent of 10 of the 11 files in its family: a section hub, not an authority. Migrate to @up"}
+  :instantiated-by        {:status :not-an-edge        :value :claim-list              :uses    10 :scope "repository-transition"
+                           :means "free-text slide quotes ('(Slide 1) We ARE {Depositors, Downloaders, Governors...}'), NOT pattern ids. I had guessed 'candidate @how' from the name; reading the values disproved it. Migrate into the pattern text as a sub-block"}
   :ban                    {:status :generation-config  :value :word-list               :uses     9 :scope "2 families"
                            :means "GENERATOR GUARDRAIL: banned phrases (\"cutting-edge, state-of-the-art, leveraging synergies...\")"}
   :max-iterations         {:status :generation-config  :value :integer                 :uses     9 :scope "2 families"
                            :means "GENERATOR GUARDRAIL: generation loop bound"}
   :energy                 {:status :standard           :value :scalar                  :uses     8 :scope "eight-gates"
                            :means "energy axis"}
-  :confidence             {:status :candidate          :value :scalar                  :uses     6 :scope "t3"
-                           :means "WORKFLOW STATE. UNRULED"}
+  :confidence             {:status :excursion-queued   :value :scalar                  :uses     6 :scope "t3"
+                           :means "WORKFLOW STATE. Queued: E-arxana-workflow-management"}
   :morphisms-to-other-hexagrams {:status :family-scoped      :value :unknown                 :uses     6 :scope "iching"}
   :tokipona               {:status :family-scoped      :value :unknown                 :uses     6 :scope "futon-theory"}
   :truth                  {:status :family-scoped      :value :unknown                 :uses     6 :scope "futon-theory"}
-  :related                {:status :candidate          :value :pattern-id-list         :uses     6 :scope "futon-theory"
-                           :means "candidate @see-also"}
-  :variant-of             {:status :candidate          :value :pattern-id              :uses     5 :scope "equity"
-                           :means "sibling variant; candidate @see-also"}
+  :related                {:status :variant-of         :value :pattern-id-list         :uses     6 :scope "futon-theory"
+                           :means "superseded by @see-also -- comma-separated pattern ids, no authority claim"}
+  :variant-of             {:status :standard           :value :pattern-id              :uses     5 :scope "equity"
+                           :means "VERSIONING: this pattern is a version of that one. Confirmed by the targets -- equity/ holds confident-adaptation, -merged and -as-published as three versions of one pattern. Distinct from @see-also, which relates different patterns"}
   :divergence             {:status :family-scoped      :value :unknown                 :uses     5 :scope "equity"}
   :merged-from            {:status :family-scoped      :value :unknown                 :uses     5 :scope "equity"}
   :merge-policy           {:status :family-scoped      :value :unknown                 :uses     5 :scope "equity"}
   :npt-domain             {:status :family-scoped      :value :unknown                 :uses     5 :scope "t3"}
   :grade                  {:status :standard           :value :scalar                  :uses     5 :scope "3 families"
                            :means "principle | technique | snippet"}
-  :review                 {:status :candidate          :value :review-record           :uses     5 :scope "3 families"
-                           :means "REVIEW TRAIL (\"claude-2 2026-08-12 APPROVE, on the slice-3 corroboration...\"). Judgment provenance in math-formalization/math-strategy; may duplicate the substrate review-history. UNRULED"}
+  :review                 {:status :excursion-queued   :value :review-record           :uses     5 :scope "3 families"
+                           :means "WORKFLOW STATE / judgment trail. Queued: E-arxana-workflow-management -- check first whether it duplicates the substrate's own review-history on attachments, in which case the migration is a deletion"}
   :layer-position         {:status :family-scoped      :value :unknown                 :uses     5 :scope "futon-theory"}
   :aif-delta              {:status :family-scoped      :value :unknown                 :uses     5 :scope "ants"}
   :source                 {:status :family-scoped      :value :unknown                 :uses     3 :scope "workflow-coherence"}
-  :specifies              {:status :candidate          :value :pattern-id-list         :uses     3 :scope "repository-transition"
-                           :means "refinement-direction; candidate @how"}
+  :specifies              {:status :not-an-edge        :value :claim-list              :uses     3 :scope "repository-transition"
+                           :means "free text ('OBU values -> motivation, culture, purpose'), NOT pattern ids. Same name-based guess, same correction. Migrate into the pattern text as a sub-block"}
   :definition             {:status :family-scoped      :value :unknown                 :uses     2 :scope "futon-theory"}
   :exotype-ratchet        {:status :family-scoped      :value :unknown                 :uses     1 :scope "iiching"}
   :experimental-predictions {:status :family-scoped      :value :unknown                 :uses     1 :scope "iching"}

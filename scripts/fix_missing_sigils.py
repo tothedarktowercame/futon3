@@ -68,7 +68,7 @@ def sigils_valid(block: Optional[str]) -> bool:
 
 
 def load_or_sigils() -> Dict[str, str]:
-    path = Path("library/or/or.flexiarg")
+    path = Path("library/or/or.multiarg")
     if not path.exists():
         return {}
     lines = path.read_text().splitlines()

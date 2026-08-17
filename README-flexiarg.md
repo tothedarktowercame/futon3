@@ -251,6 +251,28 @@ not:
 Name similarity is not semantic similarity, and only reading the values tells
 you which is which. This is the concrete reason the gate stays.
 
+**Three axes, not one.** Reading the directives showed structure of three
+different kinds, which must not be merged:
+
+| axis | directives | what it records |
+|---|---|---|
+| **semantic** | `@why` `@how` `@see-also` | pattern to pattern by *meaning* |
+| **document** | `@part` `@up` `@next` | where a pattern sits in the prose it was extracted from |
+| **neither** | `@references-extra` `@ancestors` `@illustrates` | citations and claims wearing structural-looking names |
+
+`@up` is the case that decides it. `t3/architectural-pair` declares
+`@up t3/transformation-space` — and `transformation-space` is the **section it
+lives in**, not the strategy it instantiates. Its targets are section hubs
+(`t4r/main-case` with 8 children, `or/foundations-openness` 8), and it appears
+only in document-shaped families beside `@part` and `@next`. Document position
+is provenance, not authority, and folding it into `@why` would put a table of
+contents into the semantic graph.
+
+**Generation config is not pattern data.** `@allow-new-claims`, `@ban`
+(*"cutting-edge, state-of-the-art, leveraging synergies…"*), `@max-iterations`
+and `@length` instruct a writing agent. They describe how the text was to be
+produced, not what the pattern means, and belong in generator config.
+
 ## 6. Identity
 
 The qualified id is `<family>/<name>`, where family is the directory under

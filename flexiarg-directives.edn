@@ -139,6 +139,14 @@
   :npt-domain             {:status :family-scoped      :value :unknown                 :uses     5 :scope "t3"}
   :grade                  {:status :standard           :value :scalar                  :uses     5 :scope "3 families"
                            :means "principle | technique | snippet"}
+  :why                    {:status :standard           :value :pattern-id-list         :uses     0 :scope "declared in README §5a"
+                           :means "semantic authority: the general patterns this pattern rests on"}
+  :how                    {:status :standard           :value :pattern-id-list         :uses     0 :scope "declared in README §5a"
+                           :means "semantic refinement: named methods carrying this pattern out"}
+  :see-also               {:status :standard           :value :pattern-id-list         :uses     0 :scope "declared in README §5a"
+                           :means "peer patterns with no authority claim in either direction"}
+  :cross-list             {:status :standard           :value :subject-code-list       :uses     0 :scope "declared in README §5b"
+                           :means "optional arXiv subject codes beyond the primary category encoded by the directory"}
   :review                 {:status :excursion-queued   :value :review-record           :uses     5 :scope "3 families"
                            :means "WORKFLOW STATE / judgment trail. Queued: E-arxana-workflow-management -- check first whether it duplicates the substrate's own review-history on attachments, in which case the migration is a deletion"}
   :layer-position         {:status :family-scoped      :value :unknown                 :uses     5 :scope "futon-theory"}

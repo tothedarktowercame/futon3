@@ -1,0 +1,54 @@
+@flexiarg math-formalization/binder-expression-mismatch
+@title Let the Elaborator Identify Binders Instead of Rewriting Them
+@keywords binder, integral, congruence, motive, elaboration, rewrite, definitional-equality
+@audience lean-provers, formalizers
+@tone procedural
+@difficulty intermediate
+@why math-formalization/tactic-algebra-interference
+@see-also math-formalization/notation-semantics-traps math-formalization-CA/measure-integration-api
+
+! conclusion:
+  When two expressions differ only in how a bound variable is written, let the
+  elaborator identify them rather than rewriting under the binder by hand.
+
+  + context: A goal and a library lemma that state the same integral — or the
+    same sum, or the same `∀` — but whose bodies are written with differently
+    shaped binders, so the rewrite does not fire.
+
+  + IF:
+      The two forms are definitionally equal up to the binder's presentation,
+      then the elaborator will accept one where the other is expected, and the
+      apparent mismatch costs nothing. Applying the lemma directly, or stating
+      the intermediate equality and letting unification close it, is the whole
+      repair.
+
+  + HOWEVER:
+      The instinct is to rewrite under the binder to force the shapes to match,
+      and that is where the cost appears. Rewriting under a binder needs a
+      motive, and the motive that a tactic infers is frequently not the one that
+      typechecks — the resulting motive error is opaque and describes the
+      elaborator's difficulty rather than the mathematical mismatch. The
+      hand-written congruence lemma that follows is real work in service of a
+      difference that was never mathematical.
+
+  + THEN:
+      Try applying the lemma to the goal as it stands before adjusting either
+      side. If an intermediate step is needed, state the equality of the two
+      whole expressions and let elaboration discharge the binder difference,
+      rather than rewriting inside the body.
+
+      Reserve explicit congruence for cases where the bodies genuinely differ,
+      not where their binders are merely written differently.
+
+  + BECAUSE:
+      Binder presentation is syntax, and syntax differences are what the
+      elaborator exists to absorb. Treating them as mathematical differences
+      converts a no-op into a motive problem — and the motive problem's error
+      message points at the tactic, not at the syntax, so the time is spent in
+      the wrong place entirely.
+
+  + NEXT-STEPS:
+    next[Apply the lemma to the goal unchanged before adjusting either side.]
+    next[State the equality of whole expressions rather than rewriting inside a binder.]
+    next[Read a motive error as a signal that the rewrite was under a binder, not as a mathematical obstruction.]
+    next[Reserve explicit congruence for genuinely different bodies.]

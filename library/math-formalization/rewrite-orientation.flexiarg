@@ -1,0 +1,48 @@
+@flexiarg math-formalization/rewrite-orientation
+@title Orient the Rewrite Toward the Goal's Shape
+@keywords rewrite, orientation, direction, normal-form, tactic, simp
+@audience lean-provers, formalizers
+@tone procedural
+@difficulty beginner
+@see-also math-formalization/binder-expression-mismatch math-formalization/tactic-algebra-interference
+
+! conclusion:
+  An equation can be rewritten in either direction; choose the one that moves the
+  goal toward the shape the next lemma expects, not the one that reads more
+  naturally.
+
+  + context: A proof step where an available equality could be applied left-to-
+    right or right-to-left, and the rewrite either fails to fire or fires and
+    leaves the goal further from what follows.
+
+  + IF:
+      The next step's expected shape is known, then the orientation is
+      determined: rewrite in whichever direction produces that shape. Deciding
+      the target form first turns an experiment into a choice.
+
+  + HOWEVER:
+      Equations are usually stated in the direction that reads as a definition or
+      a simplification, and that direction is often the wrong one for the goal at
+      hand. Applying it in the natural reading can move the goal away from the
+      lemma that was going to close it, and the resulting state looks like
+      progress — the rewrite succeeded — while the proof is further from
+      finishing than before.
+
+      Repeatedly rewriting back and forth between two forms is the visible
+      symptom, and it is a sign that the target normal form was never chosen.
+
+  + THEN:
+      Name the shape the next lemma needs, then orient the rewrite to produce it.
+      When both directions are used in one proof, say which normal form each part
+      of the argument works in.
+
+  + BECAUSE:
+      A rewrite is a step toward a normal form, and a normal form that is not
+      chosen in advance is chosen by accident at each step. The cost is not a
+      failed tactic — it is a proof that oscillates between representations, in
+      which no individual step looks wrong.
+
+  + NEXT-STEPS:
+    next[Name the shape the next lemma expects before rewriting.]
+    next[Orient the rewrite to produce that shape, not the equation's natural reading.]
+    next[If the proof rewrites back and forth, choose one normal form and say which.]

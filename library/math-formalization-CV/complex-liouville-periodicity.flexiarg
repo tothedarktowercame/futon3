@@ -1,0 +1,54 @@
+@flexiarg math-formalization-CV/complex-liouville-periodicity
+@title Reduce a Lattice-Periodic Entire Function to Its Fundamental Domain
+@keywords Liouville, periodicity, lattice, fundamental-domain, compactness, entire, boundedness
+@audience lean-provers, formalizers, complex-analysts
+@tone procedural
+@difficulty intermediate
+@cross-list [CA]
+@why math-formalization-CV/entire-and-singularity-api
+@see-also math-informal/quotient-by-irrelevance
+
+! conclusion:
+  An entire function periodic under a lattice is constant, and the formal proof
+  is the reduction: restrict to a compact fundamental domain, get boundedness
+  from continuity there, and hand the bound to Liouville.
+
+  + context: An entire function invariant under a lattice of translations, where
+    the classical conclusion — that it is constant — is immediate and the formal
+    obligation is to produce the boundedness hypothesis Liouville wants.
+
+  + IF:
+      The periods generate a lattice, then the function's whole range is already
+      attained on one fundamental domain, and a fundamental domain can be taken
+      compact. Continuity on a compact set gives a bound, periodicity transports
+      that bound to the plane, and `Liouville` in its bounded-entire-implies-
+      constant form closes the goal.
+
+  + HOWEVER:
+      The reduction is the content, and it is easy to state as if it were free.
+      Two obligations have to be discharged explicitly: that every point of the
+      plane is a lattice translate of a point of the chosen domain, and that the
+      chosen domain is compact. Neither follows from writing down a
+      parallelogram; both are ordinary but real work, and the transport of the
+      bound is a separate step from the bound itself.
+
+  + THEN:
+      Choose the fundamental domain and prove it compact. Prove that every point
+      is a lattice translate of one of its points. Bound the function on the
+      domain by continuity, transport the bound by periodicity, then apply the
+      bounded-entire-implies-constant API.
+
+  + BECAUSE:
+      Liouville is stated as an implication whose hypothesis is global
+      boundedness, and periodicity is a hypothesis about symmetry — the whole
+      proof is the bridge between them. Writing that bridge as a compactness
+      argument on a named domain turns "obviously bounded" into three checkable
+      steps, which is exactly where a formal proof of this shape either closes or
+      reveals that the domain was never shown to cover the plane.
+
+  + NEXT-STEPS:
+    next[Choose a fundamental domain and prove it compact.]
+    next[Prove every point of the plane is a lattice translate of a point in it.]
+    next[Bound the function on the domain by continuity on a compact set.]
+    next[Transport the bound to the plane by periodicity, as its own step.]
+    next[Apply the bounded-entire-implies-constant form of Liouville.]

@@ -1,0 +1,72 @@
+@flexiarg math-formalization-CV/derivative-bounds-api
+@title Bound the Derivative, Then Integrate Back to the Function
+@keywords derivative-bound, Schwarz, Cauchy-estimate, radial-integration, Lipschitz, domination, injectivity
+@audience lean-provers, formalizers, complex-analysts
+@tone procedural
+@difficulty advanced
+@cross-list [CA]
+@why math-strategy/isolate-computational-kernel-before-transport
+@see-also math-formalization-CV/holomorphic-disk-api math-formalization-CV/entire-and-singularity-api
+
+! conclusion:
+  When a bound on a function is out of reach, apply the standard rigidity to its
+  derivative instead and integrate back — and check first whether a plain
+  Lipschitz estimate settles the question without any of the machinery.
+
+  + context: A quantitative complex-analysis goal — a sharper Schwarz-type bound,
+    a constancy result, an injectivity claim — where the direct estimate on the
+    function does not follow from the hypotheses in hand.
+
+  + IF:
+      The hypotheses vanish to higher order than the standard theorem assumes,
+      then the standard theorem applies to the derivative. A holomorphic function
+      whose value and first derivative both vanish at the origin gets its
+      second-order bound by applying first-order Schwarz rigidity to the
+      derivative and recovering the function bound by radial integration. The
+      same move converts sublinear polynomial growth, where bounded Liouville is
+      unavailable, into Cauchy's derivative estimate at an expanding radius.
+
+  + HOWEVER:
+      The machinery is often unnecessary, and reaching for it first costs the most
+      when it succeeds — because then nobody checks. For `az + h z` on a convex
+      domain, injectivity follows from a Lipschitz constant for `h` strictly
+      below `|a|`; testing that takes a line, while the argument principle or
+      Rouché takes a page and yields the same conclusion under a stronger
+      hypothesis than the problem needed.
+
+      Integrating back is not free either. The radial integration that recovers
+      the function bound from the derivative bound has to be set up over an
+      explicit path with an explicit parameterization, and the sharpness of the
+      final constant depends on that setup. A bound obtained by an unstated
+      integration is a bound nobody can check for sharpness.
+
+  + THEN:
+      Before invoking global machinery, test the elementary domination: is there
+      a Lipschitz constant, a linear term that dominates, a direct comparison?
+      Record the test even when it fails, so the machinery is justified rather
+      than assumed.
+
+      When the function-level bound is unavailable, state the derivative-level
+      theorem you intend to apply, apply it, and write the integration back to
+      the function as an explicit step with its path and parameterization.
+
+      Match the estimate to the growth: bounded to Liouville, sublinear to
+      Cauchy's derivative estimate at an expanding radius, higher-order vanishing
+      to Schwarz on the derivative.
+
+  + BECAUSE:
+      Derivative bounds are the currency of this subject because the library's
+      rigidity theorems are stated at first order, while problems are routinely
+      posed at second order or under growth conditions no first-order theorem
+      accepts. Moving down to the derivative and integrating back is the standard
+      adapter between the two, and it is cheap. What is expensive is skipping the
+      elementary test on the way — the machinery will close the goal from a
+      hypothesis stronger than the problem gave you, and the resulting proof is
+      correct, opaque, and unnecessarily strong.
+
+  + NEXT-STEPS:
+    next[Test the elementary Lipschitz or domination bound first, and record the test.]
+    next[If the function bound is unavailable, name the first-order theorem that applies to the derivative.]
+    next[Write the radial integration back to the function as an explicit step with its parameterization.]
+    next[Match the instrument to the growth: bounded, sublinear, or higher-order vanishing.]
+    next[Check the resulting constant for sharpness against the integration you actually performed.]

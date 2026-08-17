@@ -1,0 +1,61 @@
+@flexiarg math-strategy/construction-before-estimates
+@title Finish Defining the Object Before Estimating It
+@keywords construction, definition, piecewise, well-definedness, estimates, ordering, totality
+@audience lean-provers, formalizers, analysts
+@tone strategic
+@difficulty intermediate
+@why math-strategy/proof-architecture
+@see-also math-informal/construct-an-explicit-witness math-strategy/isolate-computational-kernel-before-transport
+
+! conclusion:
+  When a proof needs an object assembled from infinitely many pieces, define the
+  whole object — and prove it well defined — before proving anything about its
+  size.
+
+  + context: A construction given by cases over an infinite family: a piecewise
+    function on a countable decomposition, a series of bumps, a limit of
+    successive approximations, whose purpose is to satisfy an estimate.
+
+  + IF:
+      The object exists as a total, well-defined thing before any estimate is
+      attempted, then the estimate is a statement about a fixed object and can be
+      proved by ordinary means — the cases are already reconciled, the overlaps
+      already settled, and the estimate quantifies over something that does not
+      move.
+
+  + HOWEVER:
+      The tempting order is the opposite one, because the estimate is what the
+      construction is *for*: define the first few pieces, check the bound, and
+      let the remaining pieces be whatever makes the bound work. That leaves the
+      definition depending on the estimate and the estimate depending on the
+      definition, and every subsequent adjustment to one invalidates the other.
+
+      It also hides the real obligations. An infinite piecewise object needs its
+      overlaps reconciled and its totality established, and those obligations are
+      easy to leave implicit while attention is on the bound. In a formal
+      setting they cannot be left implicit at all — a partially specified object
+      is not an object — so the interleaved order stalls at a definition that
+      will not elaborate, at a point where the estimate is also incomplete and
+      neither can be worked on independently.
+
+  + THEN:
+      Write down the whole construction first, including the behaviour on every
+      case and at the boundaries between them. Prove it well defined. Only then
+      state and prove the estimate, treating the object as fixed.
+
+      If the estimate then fails, change the construction deliberately and
+      re-establish well-definedness — rather than patching the definition inside
+      the estimate's proof.
+
+  + BECAUSE:
+      An estimate is a statement about an object, so it has no content until the
+      object exists. Interleaving the two produces an argument in which neither
+      half can be checked alone, and the failure mode is not a wrong bound but an
+      unfalsifiable one: whatever the estimate needs, the definition can be made
+      to supply, and nothing in the proof records that this happened.
+
+  + NEXT-STEPS:
+    next[Write the construction for every case, including boundaries and overlaps.]
+    next[Prove it is well defined and total before stating any estimate.]
+    next[State the estimate about the fixed object.]
+    next[If the estimate fails, change the construction deliberately and re-prove well-definedness.]

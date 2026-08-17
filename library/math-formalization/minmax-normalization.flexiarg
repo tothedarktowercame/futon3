@@ -1,0 +1,50 @@
+@flexiarg math-formalization/minmax-normalization
+@title Remove min and max Before Calling Linear Arithmetic
+@keywords min, max, linarith, case-split, normalization, linear-arithmetic, tactic
+@audience lean-provers, formalizers
+@tone procedural
+@difficulty beginner
+@why math-formalization/tactic-algebra-interference
+@see-also math-formalization/cast-normalization math-formalization-CA/measure-restrict-simplify
+
+! conclusion:
+  Linear arithmetic cannot see inside `min` and `max`: split the cases or rewrite
+  them away first, and only then call the tactic.
+
+  + context: An inequality goal in which a threshold, a truncation, or a
+    `δ = min ε b / 2` choice has introduced `min` or `max`, and linear arithmetic
+    is the intended finisher.
+
+  + IF:
+      The `min`/`max` are eliminated first — by case split on which branch is
+      active, or by rewriting to the branch the hypotheses already determine —
+      then what remains is a linear problem and the tactic closes it immediately.
+
+  + HOWEVER:
+      Called on the goal as it stands, the tactic treats `min a b` as an opaque
+      atom about which it knows nothing, so a goal that is arithmetically
+      trivial in each branch is unprovable as stated. The failure carries no
+      indication that the obstacle is the `min`, which invites strengthening the
+      hypotheses or hunting for a missing lemma.
+
+      Splitting is cheap and the branches are usually near-identical, so the
+      instinct to avoid a case split here is a false economy.
+
+  + THEN:
+      Case-split on the `min`/`max`, or rewrite it to the branch the hypotheses
+      already force, before invoking linear arithmetic. Where the same threshold
+      appears repeatedly, do the normalization once as a named step rather than
+      inside each goal.
+
+  + BECAUSE:
+      Linear arithmetic is complete for linear real arithmetic and blind to
+      everything else, so anything that is not a linear atom is an opaque
+      constant to it. `min` and `max` are the most common such term in analysis
+      goals precisely because threshold choices produce them — which makes this
+      the failure most likely to be misread as a mathematical gap rather than a
+      normalization that was skipped.
+
+  + NEXT-STEPS:
+    next[Identify every min/max in the goal before calling linear arithmetic.]
+    next[Case-split, or rewrite to the branch the hypotheses already determine.]
+    next[Normalize a repeated threshold once as a named step rather than per goal.]

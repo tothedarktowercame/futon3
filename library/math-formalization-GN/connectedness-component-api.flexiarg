@@ -1,0 +1,73 @@
+@flexiarg math-formalization-GN/connectedness-component-api
+@title Expose Component Openness Before Reasoning About Frontiers
+@keywords connected-component, locally-connected, openness, interior, frontier, counting, unbounded-exterior
+@audience lean-provers, formalizers, topologists
+@tone procedural
+@difficulty intermediate
+@cross-list [CV]
+@why math-informal/local-to-global
+@see-also math-formalization-GN/connected-union-via-common-point math-formalization-CV/holomorphic-disk-api
+
+! conclusion:
+  Reasoning about the components of an open set runs through their openness:
+  establish it first, convert membership to interior membership, and only then
+  relate component frontiers to the ambient one.
+
+  + context: A topological obligation about `connectedComponentIn U x` for an
+    open `U` in a locally connected space — counting components, locating their
+    frontiers, or separating bounded from unbounded ones.
+
+  + IF:
+      The space is locally connected and `U` is open, then components of `U` are
+      themselves open, and that single fact is what makes the rest mechanical:
+      `interior_eq` converts component membership into exactly the form frontier
+      reasoning consumes, and the frontier of a component can then be placed
+      inside the ambient frontier of `U`.
+
+  + HOWEVER:
+      The openness step is the one the classical argument omits, because
+      classically it is obvious. Skipped, every subsequent frontier manipulation
+      is off by the difference between a set and its interior, and the failure
+      surfaces several lemmas later as an unprovable membership rather than as a
+      missing hypothesis.
+
+      Counting components needs a separation the topology does not supply on its
+      own. The complement of a compact set has one unbounded component and
+      finitely many bounded ones, and these are counted by different means:
+      inject the bounded interior components into algebraic witnesses — roots, in
+      the lemniscate case — and reserve a single marker for the common unbounded
+      exterior. Counting them uniformly produces an off-by-one that is easy to
+      misattribute to the injection.
+
+      Do not expect the general statement to be present under the name you would
+      give it. This corner of the library is thin enough that an anchor from a
+      community discussion may be the best available evidence about what exists,
+      and it should be recorded as such rather than treated as an API reference.
+
+  + THEN:
+      Prove component openness first, as its own step, and use `interior_eq` to
+      move membership into the frontier-ready form.
+
+      Relate the component's frontier to the ambient frontier of `U` explicitly,
+      rather than reasoning about closures ad hoc.
+
+      When counting, separate the bounded interior components from the single
+      unbounded exterior one, inject the bounded family into whatever algebraic
+      witnesses the problem supplies, and add the exterior back as a marker.
+
+  + BECAUSE:
+      Local connectedness is the hypothesis that makes components behave like
+      pieces rather than like arbitrary closed subsets, and openness is the form
+      in which the library exposes that. Almost every difficulty in this area is
+      the consequence of using a component as if it were open without having
+      said so — which is free in prose and unavailable to a proof assistant. The
+      classical picture also silently distinguishes the unbounded exterior from
+      the bounded pieces; making that distinction explicit is what turns a
+      component count into an injection plus a constant.
+
+  + NEXT-STEPS:
+    next[Prove that components of the open set are open before anything else.]
+    next[Use interior_eq to turn component membership into the frontier-ready form.]
+    next[State the containment of the component frontier in the ambient frontier as its own lemma.]
+    next[Separate the bounded components from the single unbounded exterior when counting.]
+    next[Inject bounded components into the problem's algebraic witnesses and add the exterior as a marker.]

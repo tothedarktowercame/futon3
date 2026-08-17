@@ -1,0 +1,73 @@
+@flexiarg math-formalization-FA/inner-product-space-api
+@title Get Uniform Boundedness First, Then Extend From a Dense Span
+@keywords inner-product, Banach-Steinhaus, uniform-boundedness, dense-span, weak-convergence, cobounded, projection
+@audience lean-provers, formalizers, analysts
+@tone procedural
+@difficulty advanced
+@cross-list [CA]
+@why math-informal/local-to-global
+@see-also math-formalization-FA/weak-convergence-hilbert math-formalization-CA/hilbert-projection-properties
+
+! conclusion:
+  Weak-convergence arguments in an inner-product space rest on a uniform norm
+  bound: obtain it from Banach–Steinhaus first, then extend convergence from a
+  dense span, and let the bound also discharge the `liminf` side conditions.
+
+  + context: A Hilbert-space obligation about a weakly convergent sequence —
+    lower semicontinuity of the norm, convergence tested against every vector, a
+    uniform constant claimed from pairwise estimates.
+
+  + IF:
+      A uniform norm bound is available, then the argument decomposes cleanly:
+      prove convergence on the generators, close under finite linear
+      combinations, extend to the closed span using the uniform bound, and remove
+      the orthogonal complement by projection. Each stage is small, and the
+      uniform bound is what licenses the passage from the span to its closure.
+
+  + HOWEVER:
+      The uniform bound is also what the `liminf` machinery quietly needs, and
+      the two requirements are easily confused into a circle. `le_liminf_of_le`
+      demands an `IsCoboundedUnder` premise; deriving that premise from the
+      conclusion being proved is circular, and deriving it from Banach–Steinhaus
+      is not. Prove actual uniform norm boundedness by uniform boundedness first,
+      and the side condition follows without the circle.
+
+      A real-valued sequence that may be unbounded above needs its own treatment:
+      `c ≤ liminf u atTop` from an eventual lower bound is a different lemma from
+      the bounded case, and picking the wrong one leaves a side condition that
+      cannot be discharged.
+
+      Uniform-constant claims derived from pairwise bounds deserve a refutation
+      attempt before a proof attempt. Build a triangular family whose support
+      grows with the index and compare the pairwise scale against the
+      square-summed aggregate scale — pairwise smallness does not survive
+      aggregation, and finding this out by attempting the proof is the expensive
+      route.
+
+  + THEN:
+      Establish the uniform norm bound by Banach–Steinhaus as the first step, and
+      use it for both the extension and the `liminf` side conditions.
+
+      Extend in the stated order: generators, finite linear combinations, closed
+      span by the uniform bound, orthogonal complement by projection.
+
+      Select the `liminf` variant that matches whether the real sequence may be
+      unbounded above, and say which one you chose.
+
+      Before proving a uniform constant from pairwise bounds, try to refute it
+      with a growing-support triangular family.
+
+  + BECAUSE:
+      Weak convergence is a statement about every test vector, and no argument
+      can check every test vector — so every proof in this area is an extension
+      argument from a small set, and every extension argument needs the uniform
+      bound that makes the closure step legal. That the same bound discharges the
+      filter-level side conditions is not a coincidence but the same fact used
+      twice, and seeing it as one fact is what keeps the proof out of a circle.
+
+  + NEXT-STEPS:
+    next[Prove the uniform norm bound by Banach–Steinhaus before anything else.]
+    next[Extend convergence: generators, finite combinations, closed span, orthogonal complement.]
+    next[Discharge IsCoboundedUnder from the uniform bound, never from the conclusion.]
+    next[Pick the liminf variant that matches unbounded-above versus bounded real sequences.]
+    next[Try to refute a pairwise-derived uniform constant with a growing-support triangular family.]

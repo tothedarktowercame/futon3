@@ -1,0 +1,75 @@
+@flexiarg math-formalization-CA/series-evaluation-api
+@title Evaluate a Series Through Ordered Partial Sums and a Boundary Limit
+@keywords series, tsum, conditional-convergence, partial-sums, Abel, index-shift, uniform-continuity, boundary-limit
+@audience lean-provers, formalizers, analysts
+@tone procedural
+@difficulty intermediate
+@cross-list [NT]
+@why math-strategy/proof-architecture
+@see-also math-formalization-CA/measure-integration-api math-formalization-CA/rpow-exponent-limit
+
+! conclusion:
+  Evaluating a classical series formally means choosing the right notion of sum
+  first — ordered partial sums for anything conditionally convergent — and then
+  separating convergence, transport to the boundary, and evaluation into three
+  independent obligations.
+
+  + context: A named series to be evaluated in closed form — a zeta value, a
+    Leibniz-type alternating sum, a boundary value of a power series — where the
+    textbook derivation is a few lines of manipulation.
+
+  + IF:
+      The series converges absolutely, then the library's unordered sum is the
+      right object and the manipulations are direct: index shifts, term
+      regrouping, and interchange all have API and none of them need an ordering
+      argument.
+
+  + HOWEVER:
+      Unordered summation is not what a conditionally convergent series has. A
+      classical alternating series is *not* summable in the unordered sense, so
+      stating it with `∑'` either fails to elaborate or, worse, states something
+      other than what was meant. Conditionally convergent series must be
+      expressed as a limit of ordered partial sums, and every later step has to
+      respect that ordering.
+
+      The three jobs in a boundary evaluation are genuinely independent and get
+      conflated. Establishing that the series converges at the boundary does not
+      require knowing its value; Abel's theorem moves the unknown sum to a radial
+      limit; evaluating that radial limit is an interior computation with a
+      closed form. Attempting them together produces an argument that is circular
+      in exactly one place and hard to see.
+
+      Small mechanical steps have their own API and are worth locating rather
+      than reproving: an index shift for a two-index zeta rearrangement,
+      `integral_comp_add_right` for translating an interval integral, a uniform
+      continuity statement for a series of functions. Each is a one-line lookup
+      and a half-page reconstruction.
+
+  + THEN:
+      Decide the notion of sum before writing the statement, and use ordered
+      partial sums whenever convergence is conditional.
+
+      Split a boundary evaluation into three named lemmas — convergence at the
+      boundary, Abel transport to a radial limit, evaluation of the interior
+      closed form — and prove them separately.
+
+      Look up the mechanical steps (index shift, integral translation, uniform
+      series continuity) instead of rebuilding them, and reuse a template that
+      already worked for a series of the same shape.
+
+  + BECAUSE:
+      The gap between the classical and the formal treatment of series is almost
+      entirely about which sum is meant. Classical notation leaves the ordering
+      implicit and lets rearrangement pass unremarked, while the library's
+      default is the unordered sum precisely because it is the one that is
+      rearrangement-invariant. A conditionally convergent series formalized with
+      the default is not a harder proof of the same theorem — it is a different
+      statement, and the divergence is silent until something will not close.
+
+  + NEXT-STEPS:
+    next[Decide absolute vs conditional convergence before writing the statement.]
+    next[Use ordered partial sums for conditional convergence and keep the ordering through every step.]
+    next[Prove boundary convergence without reference to the value.]
+    next[Move the unknown sum to a radial limit by Abel, as its own lemma.]
+    next[Evaluate the interior closed form separately.]
+    next[Look up index shifts, integral translations and uniform series continuity rather than reproving them.]

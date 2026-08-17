@@ -1,0 +1,65 @@
+@flexiarg math-formalization-CA/riemann-darboux-api
+@title Bridge Darboux Sums to the Lebesgue Integral by Telescoping the Cells
+@keywords Darboux, Riemann, Lebesgue, partition, cells, telescoping, bridge, bounded-measurable
+@audience lean-provers, formalizers, analysts
+@tone procedural
+@difficulty advanced
+@why math-formalization-CA/measure-integration-api
+@see-also math-formalization-CA/ae-integral-zero math-strategy/convention-bridge
+
+! conclusion:
+  The comparison between Darboux sums and the Lebesgue integral is not in the
+  library as a single theorem: prove it cell by cell and telescope, keeping the
+  lower and upper halves as separate statements.
+
+  + context: A bounded measurable function on a closed interval where the target
+    relates the classical Riemann–Darboux integral to the Lebesgue integral —
+    typically that the lower Darboux integral is at most the Lebesgue integral,
+    which is at most the upper one.
+
+  + IF:
+      The comparison is made on a single partition cell, then it is elementary:
+      on each cell the infimum bounds the function pointwise from below and the
+      supremum from above, and the Lebesgue integral over that cell is between
+      the two products with the cell's measure. Summing over the partition
+      telescopes to the required inequality.
+
+  + HOWEVER:
+      The two halves are not one argument. The lower bound and the upper bound
+      have different witnesses on each cell, and attempting them together
+      produces a proof in which the direction of each inequality has to be
+      tracked through the sum — which is where the sign errors are. Keep them as
+      two statements.
+
+      The cells themselves need attention rather than assumption. Their measures
+      must sum to the interval's measure, and shared endpoints must be shown to
+      be almost-everywhere disjoint rather than genuinely disjoint — closed cells
+      overlap at endpoints, and a proof that assumes strict disjointness is
+      proving something about a partition it does not have.
+
+      Do not expect a packaged bridge. This is the seam between two definitions
+      of integral, and libraries generally develop each side thoroughly and leave
+      the comparison to the user.
+
+  + THEN:
+      State the lower and the upper comparison separately. Prove each on a single
+      cell first, then sum, showing that the cell measures add up and that
+      endpoint overlaps are null.
+
+      Keep the bounded-measurable hypotheses explicit at the cell level, where
+      they are used, rather than carrying them as ambient assumptions.
+
+  + BECAUSE:
+      This comparison is a convention bridge rather than a theorem about
+      functions — it reconciles two constructions of the same quantity — and
+      bridges of that kind are exactly what a library omits, because neither side
+      needs it internally. Recognizing it as a bridge sets the right expectation:
+      no search will find it, the work is elementary, and the only difficulty is
+      the bookkeeping that the classical statement suppresses.
+
+  + NEXT-STEPS:
+    next[State the lower and upper comparisons as two separate lemmas.]
+    next[Prove each on one partition cell before summing.]
+    next[Show the cell measures sum to the interval's measure.]
+    next[Show shared endpoints are almost-everywhere disjoint rather than assuming strict disjointness.]
+    next[Keep the boundedness and measurability hypotheses where they are used.]

@@ -1,0 +1,50 @@
+@flexiarg math-formalization-CA/uniform-continuity-boundedness
+@title Bound the Image Before Controlling the Quotient
+@keywords uniform-continuity, boundedness, image, quotient, denominator, api-chain
+@audience lean-provers, formalizers, analysts
+@tone procedural
+@difficulty intermediate
+@why math-informal/estimate-by-bounding
+@see-also math-formalization-CA/metric-cauchy-convergence math-strategy/proof-architecture
+
+! conclusion:
+  When an estimate involves a quotient of uniformly continuous functions, get the
+  boundedness of the image first as its own lemma; the quotient control depends
+  on it and cannot be obtained alongside it.
+
+  + context: An analysis obligation where a uniformly continuous function's
+    values appear in a denominator or in a ratio, and the target estimate mixes
+    the continuity modulus with the size of the values.
+
+  + IF:
+      The domain is bounded — or totally bounded — then uniform continuity gives
+      a bounded image through a short chain of library steps, and that bound is
+      the constant every subsequent quotient estimate needs.
+
+  + HOWEVER:
+      Attempting the quotient bound directly entangles two independent facts: how
+      fast the function varies, and how large it gets. The modulus of continuity
+      says nothing about the latter, so an argument that needs both and has
+      proved neither separately will stall at a point where it is unclear which
+      is missing. The order matters more than the difficulty: the boundedness
+      step is short, and having it in hand makes the quotient step routine.
+
+  + THEN:
+      State and prove the boundedness of the image as its own lemma, via the
+      uniform-continuity-to-bounded-image chain.
+
+      Only then estimate the quotient, using that bound for the denominator and
+      the modulus for the variation, keeping the two roles visibly distinct.
+
+  + BECAUSE:
+      Uniform continuity is a hypothesis about differences and boundedness is a
+      conclusion about values, and the step between them is exactly where the
+      domain's boundedness enters. Proving them in one motion hides that entry
+      point, so a proof that fails gives no signal about whether the domain
+      hypothesis was too weak or the estimate was arranged badly. Separated, the
+      failure names itself.
+
+  + NEXT-STEPS:
+    next[Prove the image is bounded as a standalone lemma from uniform continuity.]
+    next[Identify where the domain's boundedness enters and state it explicitly.]
+    next[Estimate the quotient using the value bound for the denominator and the modulus for the variation.]

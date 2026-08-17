@@ -1,0 +1,49 @@
+@flexiarg math-formalization/cast-normalization
+@title Normalize Casts Before Taking Projections
+@keywords cast, coercion, push_cast, norm_cast, projection, real-part, integer, complex
+@audience lean-provers, formalizers
+@tone procedural
+@difficulty beginner
+@why math-formalization/coercion-bridge
+@see-also math-formalization/tactic-algebra-interference math-formalization/binder-expression-mismatch
+
+! conclusion:
+  Push casts to the leaves before applying a projection: a real or imaginary part
+  taken through an un-normalized coercion tower will not simplify.
+
+  + context: An expression mixing integer or natural literals with complex
+    values, where the goal is about the real or imaginary part of the result.
+
+  + IF:
+      The casts are normalized first — pushed inward to the leaves so that each
+      coercion sits on an atom — then the projection lemmas apply directly: the
+      real part of a cast integer is the cast integer, its imaginary part is
+      zero, and the arithmetic simplifies without further help.
+
+  + HOWEVER:
+      Applied to a term whose coercions still sit around compound
+      subexpressions, the projection lemmas do not fire, because the shape they
+      match is a cast of an atom and what is present is a cast of a sum or a
+      product. The goal then looks like a mathematical obstruction — the
+      projection "does not simplify" — when it is a normalization that has not
+      been run.
+
+      The order is not symmetric. Normalizing after projecting leaves the
+      projection stuck around a compound cast, and the usual recovery is to undo
+      the projection step.
+
+  + THEN:
+      Normalize the casts first, pushing them to the leaves, and only then take
+      real or imaginary parts and finish the arithmetic.
+
+  + BECAUSE:
+      Cast normalization is a syntactic prerequisite of the projection lemmas
+      rather than a cleanup step, so doing it late means doing it twice. The
+      failure it causes is also mislabelled — nothing reports "the cast is in the
+      wrong place", only that a simp set made no progress — which is why the
+      ordering is worth stating rather than rediscovering.
+
+  + NEXT-STEPS:
+    next[Push casts to the leaves before applying any projection.]
+    next[Check that each coercion sits on an atom, not on a sum or product.]
+    next[Then take real/imaginary parts and finish the arithmetic.]

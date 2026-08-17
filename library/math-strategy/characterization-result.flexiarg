@@ -5,7 +5,7 @@
 @audience mathematicians, paper-writers, pattern-classifiers
 @tone classification / heuristic
 @factor Discernment (paññā)
-@references [math-informal/exhaustion-as-theorem math-informal/structural-obstruction-as-theorem math-informal/split-into-cases math-strategy/hypothesis-category-check]
+@references [math-strategy/exhaustion-as-theorem math-strategy/structural-obstruction-as-theorem math-informal/split-into-cases math-strategy/hypothesis-category-check]
 
 ! conclusion: 
   Your paper describes what some object or class of objects *is* — not whether
@@ -46,12 +46,12 @@
         exemplar[arxiv-math/0603593v1] # AFD outer-actions classification
 
     + MEMBER-PATTERNS:
-        member[math-informal/exhaustion-as-theorem]                 # full / classification
-        member[math-informal/structural-obstruction-as-theorem]     # failure-mode
+        member[math-strategy/exhaustion-as-theorem]                 # full / classification
+        member[math-strategy/structural-obstruction-as-theorem]     # failure-mode
         member[math-informal/split-into-cases]                      # dichotomy / classification
         member[math-informal/structural-characterization]           # full description (new leaf)
         member[math-informal/failure-mode-characterization]         # failure-regime (new leaf)
-        member[math-informal/complexity-classification]             # specific subtype (new leaf)
+        member[math-informal-LO/complexity-classification]             # specific subtype (new leaf)
 
   + BECAUSE:
       Characterization papers do "describing-work" rather than "proving-X-exists"

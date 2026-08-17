@@ -4,7 +4,6 @@
 @audience futon5 uplift authors, futon2 logisticians, futon3 librarians
 @tone investigative
 @style pattern
-@allow-new-claims true
 @references [futon2/src/ants/aif/policy.clj futon2/doc/trace/single_tick.edn futon2/test/resources/goldens/policy_harness.edn]
 @aif-delta {
   :modes {:cargo-high 0.55}       ;; lower threshold to trigger homebound

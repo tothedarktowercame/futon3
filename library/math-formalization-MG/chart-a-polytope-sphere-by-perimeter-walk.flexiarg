@@ -1,0 +1,28 @@
+@flexiarg math-formalization-MG/chart-a-polytope-sphere-by-perimeter-walk
+@title Chart a Polytope Sphere by a Perimeter Walk
+@keywords Lean, polytope, norm-sphere, chart, perimeter, affine, puncture
+@audience lean-provers
+@tone heuristic
+@provenance retro-promotion pass (2026-08-16), source memory e-84690e27-6853-402d-bdbb-aa48c5f56825
+
+! conclusion:
+  For a polyhedral norm sphere, use an explicit piecewise-affine perimeter walk
+  when inner-product sphere charts are unavailable.
+
+  + context: The unit sphere is the boundary of a finite polytope, but standard
+    stereographic APIs require an InnerProductSpace instance the norm lacks.
+
+  + HOWEVER: Prove edge coverage, seam agreement, and injectivity on the chosen
+    half-open parameter interval; a geometric picture does not discharge these.
+
+  + THEN: Enumerate oriented faces or edges, parameterize each affinely, weld the
+    endpoints, and rotate the parameter cut when a miss-a-point argument requires
+    the excluded point to lie at the seam.
+
+  + BECAUSE: The explicit walk matches the actual norm geometry and reduces the
+    chart to affine calculations without importing false Euclidean structure.
+
+  + NEXT-STEPS:
+    next[Enumerate the boundary pieces in cyclic order.]
+    next[Define and verify the piecewise-affine walk.]
+    next[Move the cut to the excluded point when needed.]

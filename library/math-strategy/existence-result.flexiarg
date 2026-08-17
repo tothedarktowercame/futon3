@@ -5,7 +5,7 @@
 @audience mathematicians, paper-writers, pattern-classifiers
 @tone classification / heuristic
 @factor Generosity (dāna)
-@references [math-informal/construct-an-explicit-witness math-informal/construct-auxiliary-object math-informal/use-probabilistic-method math-informal/numerical-scout]
+@references [math-informal/construct-an-explicit-witness math-informal/construct-auxiliary-object math-informal-CO/use-probabilistic-method math-informal-NA/numerical-scout]
 
 ! conclusion: 
   Your paper shows that an object of a desired class exists.
@@ -45,8 +45,8 @@
     + MEMBER-PATTERNS:
         member[math-informal/construct-an-explicit-witness]      # constructive
         member[math-informal/construct-auxiliary-object]         # constructive (indirect)
-        member[math-informal/use-probabilistic-method]           # pure-classical / non-constructive
-        member[math-informal/numerical-scout]                    # with-error-bounds (hint of construction)
+        member[math-informal-CO/use-probabilistic-method]           # pure-classical / non-constructive
+        member[math-informal-NA/numerical-scout]                    # with-error-bounds (hint of construction)
 
   + BECAUSE:
       Existence claims are the load-bearing skeleton of much of mathematical

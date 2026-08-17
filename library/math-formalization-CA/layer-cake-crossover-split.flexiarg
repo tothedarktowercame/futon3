@@ -1,0 +1,36 @@
+@flexiarg math-formalization-CA/layer-cake-crossover-split
+@title Layer-Cake Bound by a Crossover Split
+@sigils [⚖️/比]
+@keywords layer-cake, distribution-function, weak-type, Lorentz, rpow, lintegral, crossover, min-majorant, ENNReal
+@audience lean-provers, analysts
+@tone heuristic
+@difficulty advanced
+@subjects analysis, measure-theory
+@instantiates math-informal-CA/estimate-by-bounding
+
+! conclusion:
+  Turn a weak-type distribution bound into a local subcritical power-integral bound by integrating the minimum of the finite-volume and tail estimates on opposite sides of their crossover.
+
+  + IF:
+      A layer-cake identity reduces the goal to an integral of a level measure D(t), and available estimates give D(t) ≤ min(V, C/t).
+
+  + HOWEVER:
+      Either arm alone is non-integrable at one endpoint, and direct ENNReal algebra obscures the scalar improper-integral calculation.
+
+  + THEN:
+      Split the positive axis at A = C/V. Use D(t) ≤ V below A and D(t) ≤ C/t above A, convert each nonnegative finite piece from lintegral/ofReal to a real integral, evaluate the two rpow integrals, combine their scalar values, and only then transport the finite ENNReal bound back to integrability and a Bochner integral inequality.
+      + LEAN:
+        api[MeasureTheory.lintegral_rpow_eq_lintegral_meas_lt_mul]
+        api[MeasureTheory.lintegral_union]
+        api[MeasureTheory.ofReal_integral_eq_lintegral_ofReal]
+        api[integral_rpow]
+        api[integral_Ioi_rpow_of_lt]
+        api[MeasureTheory.lintegral_ofReal_ne_top_iff_integrable]
+
+  + BECAUSE:
+      The crossover is where the two majorants agree; assigning each arm only to the endpoint where it is integrable preserves the sharp subcritical constant and isolates ENNReal transport from real-variable algebra.
+
+  + NEXT-STEPS:
+    next[Separate zero-volume and zero-tail cases before defining C/V.]
+    next[Extract C/t from the weak-type supremum and combine it with restriction monotonicity.]
+    next[Prove the scalar crossover lemma independently of the original function and measure space.]

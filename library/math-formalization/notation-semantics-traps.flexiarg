@@ -1,0 +1,63 @@
+@flexiarg math-formalization/notation-semantics-traps
+@title Notation-Semantics Traps
+@sigils [⊤/誤]
+@keywords notation, semantics, elaboration, typeclass, binder, ContDiff, coercion, preflight, informal-reading, statement-fidelity
+@audience lean-provers, formalizers
+@tone cautionary
+@difficulty intermediate
+@why math-informal/unfold-the-definition
+
+! conclusion:
+  A formal statement's notation can mean something other than its informal
+  reading, and nothing tells you until the elaborator does — so audit what the
+  symbols actually denote before proving anything about them.
+
+  + context: You are formalizing from prose, or reading a statement someone else
+    formalized, and the symbols look like the mathematics you intend. The gap
+    between the intended theorem and the written one is invisible at the level
+    of reading.
+
+  + IF:
+      A statement's surface notation admits a reading you did not intend — a
+      smoothness index, a binder's inferred type, an unstated typeclass
+      precondition, a domain guard the prose assumes but the hypotheses do not
+      impose — then the theorem you prove is not the theorem you meant, and it
+      will still compile, still be axiom-clean, and still be wrong.
+
+  + HOWEVER:
+      The trap is not carelessness and cannot be avoided by care alone. It is
+      structural: the informal reading and the elaborated meaning are two
+      different functions of the same characters, and only one of them is
+      mechanically checkable. `ContDiff ℝ ⊤ f` reads as "all derivatives exist"
+      and means *analytic*; `∞` is what smooth requires. A theorem's prose can
+      state a finite or regular regime while its formal hypotheses still admit a
+      zero or a top witness. Type compatibility between two components is not a
+      claim that they are about the same thing — enumerated data and a derived
+      count can typecheck against each other with no invariant linking them.
+      Nor does a clean axiom audit help: it certifies the proof, not the
+      statement.
+
+  + THEN:
+      Elaborate the exact target under its real build BEFORE measuring holes or
+      dispatching work — a dependency failure and a statement failure are
+      different findings and must not be read as one. Inspect the index or
+      binder rather than its informal gloss. Audit the typeclass preconditions
+      the engine inferred rather than the ones you assume. Require an explicit
+      invariant wherever the informal argument makes a semantic transition. And
+      when the statement turns out to be false, the cheapest reviewable artifact
+      is a machine-checked counterexample paired with a machine-checked repaired
+      sibling, with the original preserved as an explicit unresolved defect
+      rather than quietly amended.
+
+  + BECAUSE:
+      Every gate downstream — the build, the sorry count, the axiom audit —
+      measures the statement as written. None of them can see the statement you
+      meant. The fidelity of formal to informal is the one link in the chain
+      that no machine checks, so it has to be checked deliberately or not at all.
+
+  + NEXT-STEPS:
+    next[Elaborate the target under its real project build before any measurement.]
+    next[Read every index, binder and coercion for its elaborated meaning, not its gloss.]
+    next[Name the typeclass preconditions the engine inferred but the prose never stated.]
+    next[Require an invariant for each semantic transition the informal argument makes.]
+    next[On a false statement: checked counterexample + checked repair, original preserved as a defect.]

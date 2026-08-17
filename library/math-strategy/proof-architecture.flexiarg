@@ -1,0 +1,67 @@
+@flexiarg math-strategy/proof-architecture
+@title Decide the Proof's Architecture Before Proving Any of It
+@keywords architecture, layers, reduction, decomposition, bridge, convention, problem-faithful, proof-shape, api-location
+@audience lean-provers, formalizers, analysts
+@tone strategic
+@difficulty advanced
+@cross-list [CA FA]
+@why math-informal/separate-into-independent-pieces
+
+! conclusion:
+  Before proving anything, name the layers the proof will have and the reduction
+  between each pair — including the layer that reconciles the problem's own
+  statement with the library's conventions.
+
+  + context: A theorem that mixes several kinds of work — a decomposition, an
+    estimate, a transport between two notions, a library API whose definitions
+    differ from the problem's — and where it is tempting to start at the first
+    line and see where it goes.
+
+  + IF:
+      The proof decomposes into layers each of which can be stated and closed
+      independently — regularity inside a disk and singular behaviour on its
+      boundary; a strictly monotone subsequence extracted before an almost-
+      everywhere argument; a contraction reduced to an inequality the library
+      already has — then naming the layers first turns one intractable proof
+      into several tractable ones, and the reductions between them become the
+      things to look up rather than to invent.
+
+  + HOWEVER:
+      The layer that gets skipped is the one nobody counts as mathematics: the
+      bridge between the problem's statement and the library's. A problem
+      phrased with strict bad sets `{x | ε < |fₙ x - g x|}` meets an API phrased
+      with closed ones `{x | ε ≤ dist (fₙ x) (g x)}`, and the cheap move is to
+      silently replace `>` by `≤` and carry on. That is not a reduction, it is a
+      change of theorem. The same applies to tail conventions (`N₀ < n` versus
+      `N₀ + 1 ≤ n`) and to threshold choices that look like bookkeeping. Skipping
+      the bridge does not remove the work; it relocates it to a place where no
+      gate will look at it.
+
+      The opposite failure is building machinery before checking whether the
+      general case needs it. Verify the degenerate or equality case first: it is
+      cheap, and it sometimes closes the problem or shows the heavy route is the
+      wrong one.
+
+  + THEN:
+      Write the layers down as named statements before proving any. For each
+      adjacent pair, say which reduction connects them and whether it exists in
+      the library or must be proved. Keep a problem-faithful statement of the
+      goal alongside the library-shaped one and make the translation an explicit
+      lemma with its own proof — including the threshold arithmetic
+      (`δ = min ε b.toReal / 2` and the `b = ⊤` case) rather than eliding it.
+      Check the degenerate case before building for the general one.
+
+  + BECAUSE:
+      A proof's difficulty is rarely uniform across its layers, and the layer
+      that fails is seldom the one that looked hard. Naming the layers first
+      makes the hard one visible while it is still cheap to change route, and
+      makes the translation layer — the one that silently changes what is being
+      proved — an object with a name, a statement and a proof instead of a step
+      nobody wrote down.
+
+  + NEXT-STEPS:
+    next[List the layers as named statements before proving any of them.]
+    next[For each adjacent pair, name the reduction and say whether the library has it.]
+    next[State the problem-faithful goal and the library-shaped goal separately; prove the bridge.]
+    next[Do the threshold arithmetic explicitly, including the infinite/degenerate cases.]
+    next[Check the degenerate or equality case before building general machinery.]

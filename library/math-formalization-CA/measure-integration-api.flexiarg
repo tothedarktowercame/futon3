@@ -1,0 +1,96 @@
+@flexiarg math-formalization-CA/measure-integration-api
+@title Find the Library's Measure-Theoretic Statement Before Rebuilding It
+@keywords measure, integration, Bochner, lintegral, Haar, normalization, junk-value, instance-diamond, adapter, specialization
+@audience lean-provers, formalizers, analysts
+@tone procedural
+@difficulty advanced
+@cross-list [FA PR]
+@why math-strategy/missing-dependency-protocol
+@see-also math-formalization-CA/measure-restrict-simplify math-formalization-CA/lp-norm-comparison math-formalization/transport-across-an-instance-diamond
+
+! conclusion:
+  Measure-theoretic results usually exist in the library under a more general
+  statement, a different normalization, or a restricted variant — so treat the
+  work as locating and adapting that statement, and audit the totalized
+  integral's premises before believing the result.
+
+  + context: A formalization whose remaining obligation is measure-theoretic —
+    an integrability side condition, a convergence theorem, a change of
+    coordinates, a norm comparison — and where writing the classical proof
+    directly into the problem file looks like the shortest route.
+
+  + IF:
+      The library already contains the mathematical content, then the residual
+      work is an adapter and should be named as one: specialize the general
+      statement to the case at hand, compose with an explicit scaling to move
+      between conventions, or select the restricted variant that matches the set
+      being integrated over. A Fourier limit theorem under another phase
+      convention becomes the target composed with a nonzero frequency scaling
+      plus a separate character identity; a one-dimensional statement that looks
+      absent is often the fixed-dimensional or Jacobian formulation at `n = 1`;
+      the radial coefficient in dimension three is the general Haar coefficient
+      normalized to `4π`.
+
+  + HOWEVER:
+      Three things make this harder than a search.
+
+      The library's generality is where the instances hide. Chaining a
+      specialization can expose a measurable-space diamond; the repair is to
+      return to the general theorem and instantiate its measure and function
+      explicitly at the use site rather than to fight the chain. Elaboration will
+      also decline to synthesize witnesses that look obvious — a constant on
+      `Icc` may need its finite-measure witness supplied by hand.
+
+      Restricted and unrestricted variants are not interchangeable. When the
+      comparison holds only on the set being integrated over, the `_on`
+      monotonicity theorem is the correct one; strengthening a local bound into
+      a global one to fit the unrestricted statement proves something you do not
+      have. The same discrimination applies at the Bochner/`lintegral` seam and
+      at the compact-support/full-support interface: concentration and tail
+      decay do not discharge a compact-support hypothesis, and an approximate-
+      identity instantiation that ignores the kernel-support interface is
+      unsound rather than merely stuck.
+
+      Most dangerous, the integral is *totalized*. A non-integrable integrand
+      does not fail — it returns a junk value, and a missing integrability
+      premise becomes a theorem that is false but elaborates. Jensen applied to
+      `log ∘ g` without integrability of the transformed function is the standard
+      instance; a transform theorem that omits measurability is another, and may
+      genuinely need an integrable/non-integrable split rather than an inferred
+      hypothesis.
+
+  + THEN:
+      Search the general form first — fixed-dimensional, Jacobian, Haar, another
+      normalization — and specialize, before building the named classical proof.
+      When you do adapt, isolate the adaptation: the scaling, the character
+      identity, the parity-specific identity, each as its own lemma.
+
+      Instantiate at the use site when a specialization chain produces a
+      diamond, and supply concrete measure witnesses rather than waiting for
+      elaboration to find them.
+
+      Choose the restricted variant when the hypothesis is restricted, and check
+      the support interface before instantiating anything that assumes compact
+      support.
+
+      Audit every integrability premise explicitly. Before applying a theorem
+      through a totalized integral, state what must be integrable and prove it —
+      a junk value will not tell you it was missing.
+
+  + BECAUSE:
+      Measure theory is the part of a formalization where the library is deepest
+      and the local proof is longest, so the ratio between finding and rebuilding
+      is at its most extreme here; and it is simultaneously the part where the
+      type system's totality is most willing to accept a statement that means
+      nothing. Both failures are invisible at the point of writing — the
+      rebuilt proof looks like progress, and the junk-valued theorem looks like
+      a result. Naming the adapter and auditing the premises is what makes them
+      visible while they are still cheap.
+
+  + NEXT-STEPS:
+    next[Search the general/fixed-dimensional/Haar form and specialize before building.]
+    next[Name the adapter — scaling, normalization, character identity — as its own lemma.]
+    next[Instantiate the general theorem at the use site when a chain exposes an instance diamond.]
+    next[Pick the restricted (`_on`) variant when the hypothesis is restricted.]
+    next[Check the kernel-support interface before instantiating a compact-support theorem.]
+    next[State and prove every integrability premise; the totalized integral will not.]

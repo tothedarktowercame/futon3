@@ -1,0 +1,94 @@
+@flexiarg math-strategy/missing-dependency-protocol
+@title Localize a Missing Dependency, Don't Rebuild Around It
+@keywords dependency, gap, sorry, absence-claim, search-scope, adapter, terrain-gap, proof-hole, curriculum-signal
+@audience lean-provers, formalizers, analysts
+@tone procedural
+@difficulty advanced
+@why math-informal/reduce-to-known-result
+@see-also math-strategy/route-exploration-and-pivot math-strategy/technique-landscape-map
+
+! conclusion:
+  When a proof stalls because the library appears to lack a theorem, first
+  establish that the gap is real, then localize it at exactly one `sorry` and
+  write beside it what you searched and what is left to build.
+
+  + context: Formalizing against a large library, where the argument is
+    substantially complete and one bridge is missing — and where the cheap moves
+    are to rebuild the missing piece, to spread `sorry`s across the file, or to
+    declare "not in Mathlib" on the strength of one failed search.
+
+  + IF:
+      The gap is real and bounded — the surrounding argument closes and only one
+      named bridge is absent — then the missing dependency is a *deliverable*
+      rather than a defeat. It can be written as a signature, searched for once
+      more with the library's own vocabulary, and either imported from work
+      already in flight or built as its own piece of work with its own gate.
+
+  + HOWEVER:
+      An absence claim is only as strong as the index actually searched. A
+      promoted-store fetch plus a single-lane grep cannot establish absence
+      across unpromoted drafts in other lanes, and a `-- not in Mathlib` comment
+      is a revision-scoped search claim someone once made, not a fact about the
+      library. Scope every absence claim to what was searched.
+
+      An empty recall is more often a malformed query than a gap in the terrain.
+      Diagnose the query — vocabulary, namespace, the installed source rather
+      than the index — before concluding the theorem does not exist. Repeatedly
+      the theorem was present under a different interface, and the work needed
+      was an adapter, not a construction. Bound that heuristic too: some gaps
+      really are construction, and treating every one as an adapter search is the
+      mirror failure.
+
+      Once stalled, the tempting work is the easy leaves. Polish spent on leaves
+      that depend on a missing assembler is wasted twice — once in the doing, and
+      again when the assembler forces the shape to change. Probe the high-risk
+      assembly dependency first, and inventory what the assembly needs before
+      descending into any leaf.
+
+      A lexical `sorry` count is not a proof-hole count, and a file that does not
+      elaborate cannot be measured at all. Relocating a `sorry` to make a file
+      read cleaner is honest only when what remains is an axiom-clean partial.
+
+      The cheapest wrong outcome is a theorem that discharges the claim without
+      proving it. Placeholder definitions and vacuous hypotheses make hard
+      results look inexpensive. When a proof closes far more cheaply than its
+      prose, its cited dependencies, or the known library frontier suggest,
+      inspect the definitions and the binding structure before believing it.
+
+  + THEN:
+      Search once more against the installed source with the library's naming
+      conventions, and look for an adapter to an existing theorem before
+      building. Scope whatever absence you then claim to the index you searched.
+
+      State the missing theorem as a signature. Put exactly one `sorry` at the
+      observed gap — not spread, not relocated — and preflight the file's
+      elaboration under its real build before counting holes at all, separating
+      dependency-build failures from source-statement failures.
+
+      Beside that `sorry`, leave the consultation trail: the bridge that is
+      needed, the nearest existing API, the searches that came back empty, and
+      the routes still open. Name the residual explicitly so the completed half
+      is not rebuilt — "the circle identity is done; what remains is the measure-
+      theoretic bridge from circle averages to disk area."
+
+      Record repeated empty recalls as curriculum signal rather than as private
+      frustration, record surfaced-but-unrelated memories as honest non-use, and
+      stop researching once the misses repeat.
+
+  + BECAUSE:
+      A missing dependency is the one kind of blocker that is cheap to describe
+      and expensive to guess at, so the whole value of the stall is the
+      information it carries: precisely which theorem the library lacks, in a
+      form someone else can act on. That information survives only if the gap is
+      localized and written down where the next reader will stand. A proof spread
+      over five `sorry`s under a "not in Mathlib" comment records nothing — the
+      next agent repeats the same search, reaches the same wall, and adds a sixth.
+
+  + NEXT-STEPS:
+    next[Diagnose the query before declaring the terrain: vocabulary, namespace, installed source.]
+    next[Look for an adapter to an existing theorem before building a new one.]
+    next[State the missing theorem as a signature.]
+    next[Put exactly one sorry at the observed gap; preflight elaboration before counting holes.]
+    next[Leave the bridge, the nearest API, the empty searches and the open routes beside it.]
+    next[Scope every absence claim to the index actually searched.]
+    next[Record repeated empty recalls as curriculum signal, and stop after the misses repeat.]

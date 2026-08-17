@@ -1,0 +1,96 @@
+@flexiarg math-formalization-CV/holomorphic-disk-api
+@title Assemble Disk Theorems From the Library's Interfaces, Not From Their Names
+@keywords disk, holomorphic, Schwarz, Rouche, Hurwitz, circle-average, DiffContOnCl, divisor, branch-cut, radius
+@audience lean-provers, formalizers, complex-analysts
+@tone procedural
+@difficulty advanced
+@cross-list [CA]
+@why math-strategy/missing-dependency-protocol
+@see-also math-formalization-CA/measure-integration-api math-formalization-CV/complex-polynomial-bound
+
+! conclusion:
+  A classical disk theorem is rarely in the library under its classical name.
+  Decompose it into the interfaces the library does offer, adapt the hypotheses
+  to their exact shape, and carry branch and radius information as explicit
+  invariants rather than as understood context.
+
+  + context: Complex analysis on a disk or closed ball — Schwarz, Rouché,
+    Hurwitz, the argument principle, zero counting, conformal images — being
+    formalized against a library that packages this material by interface rather
+    than by theorem name.
+
+  + IF:
+      The named theorem decomposes into available pieces, then naming those
+      pieces is the whole job. Hurwitz zero persistence is a compact boundary
+      margin plus quantitative open mapping, and searching for a monolithic
+      Hurwitz wastes the search. A disk zero count is the existing meromorphic-
+      divisor API. Local non-injectivity is `analyticOrderAt ≥ 2`. The equality
+      case of Schwarz is affine `dslope` equality specialized at the center. Once
+      the decomposition is named, each piece is ordinary work.
+
+  + HOWEVER:
+      The hypotheses will not be in the shape the library wants. A closed-ball
+      differentiability hypothesis has to be separated into its three interfaces
+      — differentiability on the open ball, continuity on the closure, a
+      sphere-local bound — before a `DiffContOnCl`-shaped theorem will accept it.
+      When a construction is blocked on a deep invariance theorem, package every
+      elementary hypothesis in that theorem's intended quantifier shape first, or
+      the frontier stays entangled with routine boundary estimates and you cannot
+      tell which part is actually missing.
+
+      Radius and parameter are where the proof is bought. A weak disk-map bound
+      becomes strict Rouché domination only after choosing `t < r < 1`; strict
+      radial-contraction fixed points reach `t = 1` only through compact
+      subsequences; a hypothesis local on disks globalizes only one smaller
+      concentric disk at a time.
+
+      Branch information does not survive being left implicit. A pointwise
+      zero-product identity is not a globally coherent branch choice — use
+      continuity of the nonzero factor to get an open zero set, then analytic
+      connectedness to propagate it. Through a composition of elementary
+      conformal maps, prove image control stage by stage and carry the branch cut
+      as its own invariant. To exclude an interval from a principal-root image,
+      push membership back through the exact power identity; real and imaginary
+      projections expose the contradiction more cleanly than argument
+      inequalities.
+
+      Finally, check whether the heavy machinery is needed at all. For `az + h z`
+      on a convex domain, a Lipschitz constant for `h` strictly below `|a|`
+      settles injectivity without the argument principle.
+
+  + THEN:
+      Write the target as a composition of library interfaces before searching
+      for it by name, and state each interface as its own lemma with its own
+      hypotheses.
+
+      Adapt hypotheses explicitly — split a closed-ball assumption into open-ball
+      differentiability, boundary continuity and a sphere bound; package
+      homotopy slices in the intended quantifier shape.
+
+      Route through the circle-average identity where one exists: rewrite by the
+      identity and then apply the norm-of-integral bound, rather than proving the
+      inequality directly. It often removes global geometric hypotheses outright.
+
+      Choose the radius deliberately and say why, keep the branch cut as a named
+      invariant through every stage, and test the elementary bound before
+      reaching for Rouché.
+
+  + BECAUSE:
+      Disk theory is old enough that its classical statements have been
+      refactored several times on the way into a formal library, and the
+      refactoring is by interface — divisors, orders, `dslope`, `DiffContOnCl`,
+      open mapping — not by the names in a textbook chapter. Searching by name
+      therefore under-reports what is present, and rebuilding by hand reproduces
+      material that exists in a shape you did not recognize. The information the
+      classical statement suppresses — which radius, which branch, which
+      quantifier order — is exactly the information the formal proof needs, so
+      the decomposition is not overhead: it is the content.
+
+  + NEXT-STEPS:
+    next[Write the classical theorem as a composition of library interfaces before searching by name.]
+    next[Separate a closed-ball hypothesis into open-ball differentiability, boundary continuity, sphere bound.]
+    next[Package elementary hypotheses in the deep theorem's quantifier shape before attacking the frontier.]
+    next[Rewrite by the circle-average identity before proving a norm inequality directly.]
+    next[Choose the radius explicitly and record why that choice makes the bound strict.]
+    next[Carry the branch cut as a named invariant through every stage of a composition.]
+    next[Test the elementary Lipschitz bound before invoking Rouché or the argument principle.]

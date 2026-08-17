@@ -1,0 +1,84 @@
+@flexiarg math-formalization-CV/entire-and-singularity-api
+@title Manufacture the Entire Function Whose Decay Contradicts
+@keywords Liouville, entire, removable-singularity, puncture, reciprocal, Cauchy-estimate, growth, branch-locus, pole-classification
+@audience lean-provers, formalizers, complex-analysts
+@tone procedural
+@difficulty advanced
+@cross-list [CA]
+@why math-informal/argue-by-contradiction
+@see-also math-formalization-CV/holomorphic-disk-api math-formalization-CV/complex-polynomial-bound
+
+! conclusion:
+  Liouville is not a lemma you look up but a shape you build toward: construct
+  the entire function whose growth is contradictory — by inverting, zero-filling,
+  dividing out, or removing singularities — and handle exceptional sets by filter
+  algebra rather than induction.
+
+  + context: A complex-analysis obligation about global behaviour — an entire
+    function's rigidity, a singularity's removability, the non-existence of an
+    entire extension — where the classical proof is a sentence and the formal
+    proof is a construction.
+
+  + IF:
+      The growth hypothesis can be turned into decay of some derived entire
+      function, then the argument closes by Liouville. The derivations are few and
+      reusable: invert an omitted-value translate and zero-fill the reciprocal;
+      divide by the escaping coordinate when eventual agreement at infinity is
+      the hypothesis; take a removable quotient to manufacture the entire function
+      the estimate applies to.
+
+  + HOWEVER:
+      Bounded Liouville is often the wrong instrument. For sublinear polynomial
+      growth it does not apply at all, and the right tool is Cauchy's derivative
+      estimate at an expanding radius — the derivative, not the function, is what
+      the growth kills.
+
+      Exceptional sets invite induction, and induction is the expensive route. A
+      finite set of punctures is excluded all at once by taking the complement of
+      `F.erase z` and intersecting with the punctured neighbourhood filter
+      `𝓝[≠] z`; the induction that the classical proof implies is avoidable set
+      algebra.
+
+      Branch loci break uniform treatment. Descending an even analytic function
+      through the squaring map is one proof away from the branch locus and a
+      different proof on it: reindex the invariant Taylor germ where the
+      derivative vanishes, and use the analytic inverse-function theorem
+      everywhere else.
+
+      Pole geometry decides which theorem applies. For a rational integral over
+      the unit circle, classify each pole as interior or exterior *before* doing
+      algebra — the split determines whether Cauchy's formula or Cauchy–Goursat
+      supplies that term, and algebra performed first hides the classification.
+
+  + THEN:
+      Say explicitly which entire function you are building and what its decay
+      will be, then build it: zero-fill the reciprocal and remove the
+      singularities, or divide by the escaping coordinate and take the induced
+      decay, finishing by uniqueness of limits.
+
+      Match the instrument to the growth: bounded → Liouville, sublinear →
+      Cauchy's estimate at expanding radius, two-pole normalized ML bound →
+      arrange a zero second pole so the bound reads `M/(R - ‖a‖)`.
+
+      Exclude finite exceptional sets by filter algebra, split at branch loci, and
+      classify poles before manipulating the integrand. Reuse a compiled
+      partial-fraction / Cauchy-kernel contour skeleton rather than rebuilding it.
+
+  + BECAUSE:
+      The classical statements in this area — "bounded entire functions are
+      constant", "isolated singularities of bounded functions are removable" —
+      are conclusions about functions that do not appear in the problem. The
+      entire work of the formal proof is producing the function they apply to,
+      and that production is where the choices live: which translate, which
+      quotient, which coordinate to divide by. Writing the target function down
+      first turns an appeal to a famous theorem into a construction with a
+      checkable shape, and makes the growth bookkeeping — sublinear versus
+      bounded, at which radius — an explicit decision rather than a hope.
+
+  + NEXT-STEPS:
+    next[Name the entire function you are constructing and the decay it must have.]
+    next[Zero-fill a reciprocal or divide by the escaping coordinate to produce it.]
+    next[Match the instrument to the growth: bounded Liouville vs Cauchy estimate at expanding radius.]
+    next[Exclude finite punctures with F.erase and 𝓝[≠] z rather than by induction.]
+    next[Split the proof at the branch locus when descending through a branched map.]
+    next[Classify poles as interior or exterior before doing any algebra on the integrand.]

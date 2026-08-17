@@ -1,0 +1,87 @@
+@flexiarg math-strategy/corpus-trust-protocol
+@title Trust the Corpus Per Artifact, and Record What You Consulted
+@keywords corpus, trust, vacuity, domain-guard, stale-label, attribution, consultation, non-use, invariant, provenance
+@audience lean-provers, formalizers, analysts, reviewers
+@tone procedural
+@difficulty intermediate
+@why math-strategy/non-circularity-check
+@see-also math-strategy/missing-dependency-protocol math-formalization/notation-semantics-traps
+
+! conclusion:
+  A statement, a label, or a prior result is trustworthy only as far as it has
+  been checked — so audit the artifact you are about to build on, and record
+  what you consulted and what you did with it, including what you discarded.
+
+  + context: Work that stands on a corpus someone else produced — problem
+    statements, compiled neighbours, "blocked" labels, surfaced memories, prior
+    agents' claims about what they used — where the corpus is large enough that
+    re-deriving everything is impossible and taking it on faith is how false
+    results propagate.
+
+  + IF:
+      The artifact has been checked at the level you are relying on it, then it
+      is a foundation and re-deriving it is waste. Compiled neighbours are the
+      cheapest source of formal machinery, and searching them before rebuilding
+      is almost always the shorter route.
+
+  + HOWEVER:
+      A formal statement can be false or vacuous while its prose is correct. The
+      prose states the intended finite or regular regime; the formal hypotheses
+      still admit a zero or top witness, and the theorem then proves nothing at
+      the cost of looking proved. Audit operation domains and inferred binder
+      types before attempting the advertised analysis.
+
+      Type compatibility is not semantic connection. Over a bundled problem
+      structure, enumerated data and derived counts can typecheck against each
+      other with no invariant linking them, and axiom-clean helper proofs will
+      not supply one. Every semantic transition in the informal argument needs a
+      formal invariant, or the theorem is about two unrelated fields that happen
+      to fit.
+
+      Labels decay. A "blocked" marker records the library as it was at some
+      revision; verify it against the current library before treating it as a
+      fact about the present. The same applies to `-- not in Mathlib` comments
+      and to any hole accounting taken from a file that has not been elaborated
+      under its real build.
+
+      Attribution decays fastest of all, because nothing forces it. An agent that
+      reports its work without per-memory USED/IGNORED verdicts leaves no way to
+      tell a memory that helped from one that merely surfaced — and the repeated
+      correction of exactly this omission is what this pattern is largely made of.
+
+  + THEN:
+      Audit before building: check domain guards and inferred binder types, and
+      look for the invariant that links each pair of fields the informal argument
+      moves between.
+
+      When a statement is false, do not silently fix it. Pair a machine-checked
+      counterexample with a machine-checked repaired sibling and preserve the
+      original target as an explicit unresolved defect — that triple is the
+      cheapest artifact a reviewer can act on.
+
+      Search solved neighbours before building machinery, and repeat bounded
+      reconnaissance after selecting a route, this time with the obstacle
+      vocabulary the route exposed.
+
+      Record every consultation with its outcome and its reason: what the
+      resource returned, and why it was used or discarded. Give per-memory
+      USED/IGNORED verdicts. Reasoned non-use is a first-class result; an
+      unrecorded consultation is indistinguishable from one that never happened.
+
+  + BECAUSE:
+      A corpus is only worth building on if its claims degrade gracefully, and
+      claims degrade gracefully only when their basis is recorded. A vacuous
+      theorem, a stale label, and an unattributed use all fail the same way: they
+      look like evidence, they cost nothing to produce, and the next reader
+      cannot distinguish them from the real thing without redoing the work. The
+      protocol is cheap precisely where the failure is expensive — at the moment
+      of consultation, when you still know what you looked at and why.
+
+  + NEXT-STEPS:
+    next[Audit domain guards and binder types before relying on a formal statement.]
+    next[Find the invariant linking each pair of fields the informal argument moves between.]
+    next[For a false statement, ship counterexample + repaired sibling + the original as an open defect.]
+    next[Verify stale blocked/absent labels against the current library.]
+    next[Search compiled neighbours before rebuilding machinery.]
+    next[Repeat reconnaissance after route selection, with the obstacle vocabulary.]
+    next[Record each consultation's outcome and reason; give per-memory USED/IGNORED verdicts.]

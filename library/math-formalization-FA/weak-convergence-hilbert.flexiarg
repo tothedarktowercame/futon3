@@ -1,0 +1,74 @@
+@flexiarg math-formalization-FA/weak-convergence-hilbert
+@title Weak Plus Norm Convergence Is an API Chain With Side Conditions
+@keywords weak-convergence, Hilbert, Kadec-Klee, Radon-Riesz, liminf, cobounded, Fatou, side-condition
+@audience lean-provers, formalizers, analysts
+@tone procedural
+@difficulty advanced
+@cross-list [CA]
+@why math-strategy/missing-dependency-protocol
+@see-also math-formalization-CA/lp-norm-comparison math-formalization-CA/hilbert-projection-properties
+
+! conclusion:
+  Upgrading weak convergence to strong convergence is a chain of library steps
+  through `‖xₙ - x‖²`, and the classical proof suppresses exactly the side
+  conditions — coboundedness of the `liminf` — that the chain will demand.
+
+  + context: A Hilbert- or `Lᵖ`-space obligation of Kadec–Klee / Radon–Riesz
+    shape: weak convergence plus convergence of norms implies norm convergence,
+    or a `liminf` inequality obtained from Fatou has to be turned into a limit.
+
+  + IF:
+      The route is taken through the squared norm, then each step is already in
+      the library and the proof is assembly: expand `‖xₙ - x‖²` into norms and
+      inner products, pass the inner-product term to its weak limit, cancel
+      against the norm hypothesis, and take the square root at the end. The
+      analogous `Lᵖ` route runs through Fatou to an a.e. limit and then along the
+      same chain.
+
+  + HOWEVER:
+      The `liminf` steps carry hypotheses the classical argument never states. A
+      `liminf` bound in Mathlib is conditional on the sequence being cobounded
+      under the relevant filter — the theorem is false without it, because an
+      unbounded-above gap makes `liminf` degenerate — and these side conditions
+      surface only when the rewrite fails, at which point they look like a tooling
+      obstruction rather than the mathematics they are.
+
+      They also do not all discharge the same way. An eventual lower bound, a
+      `liminf ≤` from a `≤ 0` bound, and a `le_liminf` under an unbounded-above
+      gap each want a different witness, so a single "handle the side conditions"
+      step is not a plan.
+
+      The square root is not free either: the chain proves a statement about
+      `‖xₙ - x‖²`, and the target is about `‖xₙ - x‖`. Keep the two apart and make
+      the passage explicit rather than letting a norm power drift through the
+      argument. Where norm powers were used only to establish scalar facts,
+      return to the original functions before applying the final convergence
+      theorem.
+
+  + THEN:
+      Write the chain out as named steps before proving any of them —
+      `norm_sub_sq` expansion, weak limit of the inner product, cancellation,
+      square root — and treat each side condition as its own obligation with its
+      own witness.
+
+      Establish coboundedness where the `liminf` step needs it, and say which
+      variant of the `liminf` API you are using and why that one.
+
+      Use norm powers only for the scalar facts, and return to the original
+      objects before the last step.
+
+  + BECAUSE:
+      This is the standard case of a proof whose informal difficulty and formal
+      difficulty sit in different places. Informally the content is the expansion
+      of the squared norm; formally that step is a rewrite and the work is in the
+      filter hypotheses that make the limit manipulations legal. An agent that
+      plans from the informal proof will budget for the wrong half and read the
+      side conditions as friction — so naming them in advance is what turns a
+      stalled rewrite into a list of small, closable obligations.
+
+  + NEXT-STEPS:
+    next[Write the chain as named steps: expand, pass to the weak limit, cancel, take the root.]
+    next[List each liminf/limsup step's side condition as its own obligation.]
+    next[Establish coboundedness explicitly rather than treating its absence as a tooling problem.]
+    next[Say which liminf API variant is being used and why that one fits the bound in hand.]
+    next[Return from norm powers to the original objects before the final convergence step.]

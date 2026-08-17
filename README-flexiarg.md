@@ -216,6 +216,41 @@ The directory therefore carries two axes at once — kind (`informal`,
 already did before the convention was written down. The motivation is
 filesystem manageability at library scale, not taxonomy for its own sake.
 
+## 5c. The directive ontology, and why the whitelist stays
+
+*(Ruling 2026-08-17, Joe.)*
+
+`flexiarg-directives.edn`, beside this file, is the machine-readable half of
+§5/§5a/§5b **and the ingest whitelist**. A directive reaches the store only if
+it is `:standard` there.
+
+**The whitelist is not a defect to be removed — it is the semantic gate.** An
+unknown label cannot be assigned semantics, so it must not propagate. What was
+wrong was only the *silence*: unknown directives were dropped without report,
+against §8. Both halves are now required — gate AND report.
+
+Standardising a directive is an editorial act in that one file, reviewable in a
+single diff. It is deliberately not automatic and not a code change.
+
+**The census that motivated it** (all 1151 library files, 2026-08-17): 80
+distinct directives; 11 parsed; 69 dropped in silence. 77% of the dropped mass
+is bespoke single-family payload (`@bits`, `@hex`, `@trigrams`, `@exotype-*` —
+257 uses each in one family) which should never have reached the store.
+
+**And a trap the census caught.** Several directives look structural and are
+not:
+
+- `@references-extra` (60 uses) is **not** an extension of `@references`. It
+  holds free-text citations and origin notes — *"Lewontin (1983)…"*, *"Instance
+  of origin: frame-daily-scan-006…"*. Admitting it as a pattern edge would have
+  injected sixty citation blobs into the pattern graph.
+- `@ancestors` (35) is likewise sources, not patterns.
+- `@illustrates` (23) is free-text claims.
+- `@next` (45) and `@part` (38) are document reading-order and section names.
+
+Name similarity is not semantic similarity, and only reading the values tells
+you which is which. This is the concrete reason the gate stays.
+
 ## 6. Identity
 
 The qualified id is `<family>/<name>`, where family is the directory under

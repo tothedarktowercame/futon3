@@ -1,0 +1,135 @@
+{:schema 1
+ :name "flexiarg directive ontology"
+ :purpose
+ "The machine-readable half of README-flexiarg.md, and the ingest whitelist.
+
+  A directive reaches the store ONLY if it is :standard here. Anything else is
+  REPORTED as an anomaly and not ingested -- unknown labels cannot be assigned
+  semantics, and a parser that guesses is how a library stops meaning what its
+  authors wrote (README-flexiarg §8).
+
+  Standardising a directive is an editorial act in THIS FILE, reviewable in one
+  diff. It is not a code change, and it is not automatic.
+
+  Founded 2026-08-17 by claude-2 at Joe's direction, from a census of all 1151
+  library files: 80 distinct directives, 11 parsed, 69 dropped in silence.
+  Statuses:
+    :standard      ingested; semantics agreed and written in README-flexiarg
+    :variant-of    a spelling of a standard directive; migrate, do not ingest
+    :split         conflates two standard relations; migrate PER EDGE
+    :not-an-edge   looks structural, is not -- do not admit to the pattern graph
+    :candidate     real usage, semantics NOT yet ruled; read before standardising
+    :family-scoped bespoke payload for one family; never global
+    :unreviewed    counted, not yet read"
+ :directives
+ {
+  :title                  {:status :standard        :value :scalar                  :uses  1197 :scope "89 families"
+                           :means "human-readable title"}
+  :flexiarg               {:status :standard        :value :id                      :uses  1117 :scope "81 families"
+                           :means "the qualified pattern id; everything keys on it"}
+  :audience               {:status :standard        :value :word-list               :uses  1112 :scope "78 families"
+                           :means "who the pattern is written for"}
+  :tone                   {:status :standard        :value :scalar                  :uses  1112 :scope "78 families"
+                           :means "register"}
+  :sigils                 {:status :standard        :value :list                    :uses   981 :scope "73 families"
+                           :means "sigil pair"}
+  :style                  {:status :standard        :value :scalar                  :uses   878 :scope "63 families"
+                           :means "presentation style"}
+  :keywords               {:status :standard        :value :word-list               :uses   497 :scope "56 families"
+                           :means "retrieval hotwords"}
+  :references             {:status :split           :value :mixed                   :uses   481 :scope "53 families"
+                           :means "CONFLATED: cross-family uses are @why, within-family uses are @see-also; migrate per edge, never by rename"}
+  :number                 {:status :family-scoped   :value :unknown              :uses   321 :scope "2 families"}
+  :bits                   {:status :family-scoped   :value :unknown              :uses   257 :scope "iiching"}
+  :hex                    {:status :family-scoped   :value :unknown              :uses   257 :scope "iiching"}
+  :hamming-weight         {:status :family-scoped   :value :unknown              :uses   257 :scope "iiching"}
+  :futon5-ref             {:status :family-scoped   :value :unknown              :uses   257 :scope "iiching"}
+  :futon5-manifest-path   {:status :family-scoped   :value :unknown              :uses   257 :scope "iiching"}
+  :futon5-lift-path       {:status :family-scoped   :value :unknown              :uses   257 :scope "iiching"}
+  :exotype-encoding       {:status :family-scoped   :value :unknown              :uses   257 :scope "iiching"}
+  :exotype-program        {:status :family-scoped   :value :unknown              :uses   257 :scope "iiching"}
+  :exotype-lift           {:status :family-scoped   :value :unknown              :uses   257 :scope "iiching"}
+  :exotype-params         {:status :family-scoped   :value :unknown              :uses   257 :scope "iiching"}
+  :factor                 {:status :standard        :value :scalar                  :uses   196 :scope "24 families"
+                           :means "the paramita/factor axis"}
+  :arg                    {:status :unreviewed      :value :unknown              :uses    80 :scope "11 families"}
+  :allow-new-claims       {:status :unreviewed      :value :unknown              :uses    76 :scope "8 families"}
+  :status                 {:status :unreviewed      :value :unknown              :uses    65 :scope "10 families"}
+  :binary                 {:status :family-scoped   :value :unknown              :uses    64 :scope "iching"}
+  :trigrams               {:status :family-scoped   :value :unknown              :uses    64 :scope "iching"}
+  :ct-interpretation      {:status :family-scoped   :value :unknown              :uses    64 :scope "iching"}
+  :ant-interpretation     {:status :family-scoped   :value :unknown              :uses    64 :scope "iching"}
+  :mmca-interpretation    {:status :family-scoped   :value :unknown              :uses    64 :scope "iching"}
+  :domain-transfer-notes  {:status :family-scoped   :value :unknown              :uses    64 :scope "iching"}
+  :references-extra       {:status :not-an-edge     :value :citation-list           :uses    60 :scope "14 families"
+                           :means "MISLEADING NAME: free-text citations and origin notes, NOT pattern ids. Do not admit as a pattern edge. Aligns with @provenance"}
+  :see                    {:status :variant-of      :value :pattern-id-list         :uses    55 :scope "3 families"
+                           :means "superseded by @see-also -- read: comma-separated pattern ids, no authority claim"}
+  :length                 {:status :family-scoped   :value :unknown              :uses    47 :scope "4 families"}
+  :up                     {:status :candidate       :value :pattern-id              :uses    46 :scope "4 families"
+                           :means "containment/parent within a document-shaped family; is it @why or a distinct part-of? UNRULED"}
+  :next                   {:status :not-an-edge     :value :pattern-id              :uses    45 :scope "4 families"
+                           :means "READING ORDER within a document-shaped family, not a semantic relation"}
+  :part                   {:status :not-an-edge     :value :scalar                  :uses    38 :scope "2 families"
+                           :means "collection/section name"}
+  :ancestors              {:status :not-an-edge     :value :citation-list           :uses    35 :scope "2 families"
+                           :means "free-text sources (papers, transcripts, corpus themes). Aligns with @provenance"}
+  :verdict                {:status :unreviewed      :value :unknown              :uses    26 :scope "ukrns"}
+  :illustrates            {:status :not-an-edge     :value :claim-list              :uses    23 :scope "repository-transition"
+                           :means "free-text illustrative claims. Aligns with @examples"}
+  :tier                   {:status :unreviewed      :value :unknown              :uses    22 :scope "2 families"}
+  :source-dois            {:status :family-scoped   :value :unknown              :uses    22 :scope "plos-npt-with-small-n"}
+  :difficulty             {:status :standard        :value :scalar                  :uses    21 :scope "2 families"
+                           :means "difficulty band"}
+  :subjects               {:status :variant-of      :value :subject-list            :uses    21 :scope "2 families"
+                           :means "superseded by @cross-list; free text today (analysis, topology...) needs arXiv codes"}
+  :instantiates           {:status :variant-of      :value :pattern-id-list         :uses    19 :scope "2 families"
+                           :means "superseded by @why -- same meaning"}
+  :examples               {:status :standard        :value :list                    :uses    19 :scope "2 families"
+                           :means "worked examples"}
+  :provenance             {:status :standard        :value :citation-list           :uses    16 :scope "4 families"
+                           :means "where this pattern came from"}
+  :path                   {:status :unreviewed      :value :unknown              :uses    16 :scope "liberation"}
+  :governance             {:status :unreviewed      :value :unknown              :uses    15 :scope "2 families"}
+  :theory-grounding       {:status :unreviewed      :value :unknown              :uses    12 :scope "coordination"}
+  :family                 {:status :candidate       :value :pattern-id              :uses    11 :scope "2 families"
+                           :means "a KIND classification, not a parent. Do not read as structure"}
+  :paper-source           {:status :family-scoped   :value :unknown              :uses    10 :scope "equity"}
+  :summary                {:status :unreviewed      :value :unknown              :uses    10 :scope "5 families"}
+  :childof                {:status :candidate       :value :pattern-id              :uses    10 :scope "baldwin"
+                           :means "refinement-direction; candidate @how"}
+  :instantiated-by        {:status :candidate       :value :pattern-id-list         :uses    10 :scope "repository-transition"
+                           :means "refinement-direction; candidate @how"}
+  :ban                    {:status :unreviewed      :value :unknown              :uses     9 :scope "2 families"}
+  :max-iterations         {:status :unreviewed      :value :unknown              :uses     9 :scope "2 families"}
+  :energy                 {:status :standard        :value :scalar                  :uses     8 :scope "eight-gates"
+                           :means "energy axis"}
+  :confidence             {:status :unreviewed      :value :unknown              :uses     6 :scope "t3"}
+  :morphisms-to-other-hexagrams {:status :family-scoped   :value :unknown              :uses     6 :scope "iching"}
+  :tokipona               {:status :family-scoped   :value :unknown              :uses     6 :scope "futon-theory"}
+  :truth                  {:status :family-scoped   :value :unknown              :uses     6 :scope "futon-theory"}
+  :related                {:status :candidate       :value :pattern-id-list         :uses     6 :scope "futon-theory"
+                           :means "candidate @see-also"}
+  :variant-of             {:status :candidate       :value :pattern-id              :uses     5 :scope "equity"
+                           :means "sibling variant; candidate @see-also"}
+  :divergence             {:status :unreviewed      :value :unknown              :uses     5 :scope "equity"}
+  :merged-from            {:status :unreviewed      :value :unknown              :uses     5 :scope "equity"}
+  :merge-policy           {:status :unreviewed      :value :unknown              :uses     5 :scope "equity"}
+  :npt-domain             {:status :family-scoped   :value :unknown              :uses     5 :scope "t3"}
+  :grade                  {:status :standard        :value :scalar                  :uses     5 :scope "3 families"
+                           :means "principle | technique | snippet"}
+  :review                 {:status :unreviewed      :value :unknown              :uses     5 :scope "3 families"}
+  :layer-position         {:status :unreviewed      :value :unknown              :uses     5 :scope "futon-theory"}
+  :aif-delta              {:status :unreviewed      :value :unknown              :uses     5 :scope "ants"}
+  :source                 {:status :unreviewed      :value :unknown              :uses     3 :scope "workflow-coherence"}
+  :specifies              {:status :candidate       :value :pattern-id-list         :uses     3 :scope "repository-transition"
+                           :means "refinement-direction; candidate @how"}
+  :definition             {:status :unreviewed      :value :unknown              :uses     2 :scope "futon-theory"}
+  :exotype-ratchet        {:status :family-scoped   :value :unknown              :uses     1 :scope "iiching"}
+  :experimental-predictions {:status :unreviewed      :value :unknown              :uses     1 :scope "iching"}
+  :class                  {:status :unreviewed      :value :unknown              :uses     1 :scope "pattern-mining"}
+  :domain                 {:status :unreviewed      :value :unknown              :uses     1 :scope "pattern-mining"}
+  :family-note            {:status :unreviewed      :value :unknown              :uses     1 :scope "pattern-mining"}
+  :hasa                   {:status :unreviewed      :value :unknown              :uses     1 :scope "baldwin"}
+  :essay-source           {:status :family-scoped   :value :unknown              :uses     1 :scope "futon-theory"}
+ }}

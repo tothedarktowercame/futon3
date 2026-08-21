@@ -1,0 +1,39 @@
+[{:record/type :inbox-zero/session-seat
+  :seat/id "seat:codex-11:session-1"
+  :agent/id "codex-11"
+  :session/id "session-1"
+  :surface :emacs-repl
+  :repl/buffer "*codex-11*"
+  :host/id "dionysus"
+  :workspace/root "/home/joe/code"
+  :observed-at #inst "2026-08-21T10:00:00.000-00:00"
+  :registry-witness
+  {:endpoint "/api/alpha/agents/codex-11"
+   :session/id "session-1"
+   :observed-at #inst "2026-08-21T10:00:00.000-00:00"}}
+
+ {:record/type :inbox-zero/file-observation
+  :observation/id "file-observation:1"
+  :repo/id "futon0"
+  :repo/root "/home/joe/code/futon0"
+  :worktree/id "worktree:futon0-main"
+  :path "README-inbox-zero.md"
+  :git/status :modified
+  :content/hash "sha256:fixture"
+  :head/sha "22cb5c5"
+  :index/hash nil
+  :observed-at #inst "2026-08-21T10:01:00.000-00:00"
+  :source :multi-watcher}
+
+ {:record/type :inbox-zero/session-file-claim
+  :claim/id "claim:1"
+  :seat/id "seat:codex-11:session-1"
+  :repo/id "futon0"
+  :worktree/id "worktree:futon0-main"
+  :path "README-inbox-zero.md"
+  :relation :edited-by
+  :witness/type :tool-edit
+  :witness/id "tool-call:1"
+  :first-observed-at #inst "2026-08-21T10:01:00.000-00:00"
+  :last-observed-at #inst "2026-08-21T10:01:00.000-00:00"
+  :state :active}]

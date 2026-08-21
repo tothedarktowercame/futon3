@@ -1,0 +1,25 @@
+@flexiarg war-room/wr-20-action-class-inventory-becomes-data
+@title WR-20: The Action-Class Inventory Becomes Data, Governed By One Self-Similar Primitive
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+@verdict incomplete
+
+;; INCOMPLETE: WR-20 states the ruling, its mechanism, and its recursion-safety gate, but not the tension that forced them. A complete pattern needs the originating friction or failure observation that made registry-as-data necessary; it cannot be supplied by decomposing the ruling alone.
+
+! conclusion: Move action-class support and the proposer set from code into extensible registries governed at every stratum by the same register, credit, and admissibility primitive.
+
+  + context: War Room decision WR-20 (2026-05-31). Operator: Joe. The ruling covers self-extension at the target, action-class, and proposer strata while preserving basic aif as the frozen reduced and reference model.
+
+  + IF:
+    Targets, action classes, and proposers are to be governed by one self-similar mechanism at three strata.
+
+  + HOWEVER:
+    WR-20 does not state the tension that forced this ruling; the source supplies no supported friction to place here.
+
+  + THEN:
+    Represent support and the proposer set as data in an extensible registry, and apply the same register, credit, and admissibility machinery at every stratum.
+
+  + BECAUSE:
+    Recursion occurs in data rather than through new code, while per-entry admissibility acts as the recursion-safety gate that prevents self-modification from running away.

@@ -1,0 +1,25 @@
+@flexiarg war-room/wr-22-logic-model-before-code-is-a-sanctioned-verify-method
+@title WR-22: Logic-Model-Before-Code Is A Sanctioned VERIFY Method
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@references [mission-coherence/logic-model-before-code social/tension-before-code]
+@tone foundational
+@style pattern
+
+! conclusion: Sanction executable logic models over adversarial traces as a VERIFY method for design invariants before implementation code or its tests exist.
+
+  + context: War Room decision WR-22 (2026-05-31). Operator: Joe. The method is distinct from the sibling tension-before-code discipline, which is tests-first.
+
+  + IF:
+    A mission must verify that its design invariants are mutually satisfiable and enforceable before building the implementation or its tests.
+
+  + HOWEVER:
+    A logic model cannot settle empirical or substrate-dependent guarantees, while a tests-first method cannot verify the design before the code and its tests exist.
+
+  + THEN:
+    Execute the design as a logic model over abstract adversarial traces, and carve out every empirical or substrate-dependent guarantee into a separate spike.
+
+  + BECAUSE:
+    The model identifies exactly which invariants can be checked structurally and exactly which residue still requires contact with the real substrate.
+
+    + evidence: The first reuse in M-aif2 VERIFY Stage A returned verified true for four of four invariants, shrank the Stage B empirical spike to its irreducible core, and surfaced the tension-polarity finding cleanly.

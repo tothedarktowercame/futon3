@@ -1,0 +1,24 @@
+@flexiarg war-room/wr-18-war-machine-is-demonstrated-not-hypothesised
+@title WR-18: The War Machine Is Demonstrated, Not Hypothesised
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+
+! conclusion: Treat the War Machine as demonstrated infrastructure and build future work on it, not toward proving that it is real.
+
+  + context: War Room decision WR-18 (2026-05-31). Operator: Joe. The first War Machine outing tested whether the infrastructure could drive real work rather than merely display it.
+
+  + IF:
+    A working system has driven a full mission lifecycle on a real queue under its own ranking.
+
+  + HOWEVER:
+    Before the first outing, the WB-7/8 arc still left the "is it real" question open: the War Machine might have been a dashboard rather than infrastructure that actually drives work.
+
+  + THEN:
+    Record the question as answered and make subsequent work build on the demonstrated War Machine rather than toward another hypothetical version of it.
+
+  + BECAUSE:
+    Demonstration changes the status of the claim: the first outing cleared the queue unattended across turns under the War Machine's own ranking while earned-closure discipline remained intact.
+
+    + evidence: M-war-machine-first-outing closed on 2026-05-30 at futon3c commit 24df6fc after four discharges, one honest decomposition, and one honest partial, with zero fake-finishes and zero hard-halts.

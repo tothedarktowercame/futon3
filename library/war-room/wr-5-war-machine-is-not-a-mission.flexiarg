@@ -1,0 +1,24 @@
+@flexiarg war-room/wr-5-war-machine-is-not-a-mission
+@title WR-5: The War Machine Is Not a Mission
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+
+! conclusion: Treat the War Machine as continuously running infrastructure rather than as a project that ends when its construction mission closes.
+
+  + context: War Room decision WR-5 (2026-04-13). Operator: Joe.
+
+  + IF:
+    The M-war-machine construction mission is complete.
+
+  + HOWEVER:
+    The War Machine continues to observe continuously after that mission ends.
+
+  + THEN:
+    Classify the War Machine as infrastructure, not a mission. Treat future additions such as new scans, channels, or modes as maintenance rather than new missions.
+
+  + BECAUSE:
+    Continuous observation belongs to the same operational class as the pocketwatch and evidence store: completing the project that established it does not terminate the capability.
+
+    + evidence: War Bulletin 7 records M-war-machine as COMPLETE while the War Machine continues to run, and explicitly classifies future scans, channels, and modes as maintenance.

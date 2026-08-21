@@ -1,0 +1,24 @@
+@flexiarg war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
+@title WR-26: A Capability Switched Off Carries Its Re-Arm Condition, in Writing
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+
+! conclusion: Write a countable re-arm condition at the switch whenever an autonomous capability is turned off.
+
+  + context: War Room decision WR-26 (2026-07-30). Operator: Joe.
+
+  + IF:
+    An autonomous capability is deliberately turned off for a sound reason, such as disabling a scheduled loop while hand-dispatched runs confirm its behavior.
+
+  + HOWEVER:
+    The reason outlives its own memory: soundly disabled capabilities become stranded flags, are never re-armed, and return months later as surprises.
+
+  + THEN:
+    Put the re-arm condition at the switch itself rather than only in a mission document. Make it countable, such as a specified number of runs whose behavioral checklist passes without operator amendment; the note must state what ends the pause.
+
+  + BECAUSE:
+    "Until the behavior is confirmed" is a mood rather than a condition, and a stranded flag costs more than the throughput saved by the pause.
+
+    + evidence: War Bulletin 14 Finding 5 connects this rule to three stranded flags from Bulletin 12 and the disabled codex cron. War Bulletin 15 records a live violation and proposes re-arming after one qualified cohort is scored end-to-end without operator adjudication.

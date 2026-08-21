@@ -1,0 +1,24 @@
+@flexiarg war-room/wr-6-daily-scan-is-depositing-heartbeat
+@title WR-6: Daily Scan Is the Depositing Heartbeat
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+
+! conclusion: Use the daily scan as a time-bounded depositing heartbeat whose external response tests the consulting-time hypothesis.
+
+  + context: War Room decision WR-6 (2026-04-13). Operator: Joe. The test window is the twenty days of M-daily-scan.
+
+  + IF:
+    The stack needs its first structured depositing activity and a test of the twenty-hours-per-month consulting hypothesis.
+
+  + HOWEVER:
+    The hypothesis has no supporting external response merely because scanning activity occurs.
+
+  + THEN:
+    Run the twenty-day M-daily-scan test and use at least one consulting conversation by day twenty as its success condition. If none occurs, revise the approach. Monitor the test through the War Machine's frame-derivative pipeline.
+
+  + BECAUSE:
+    A countable external conversation distinguishes a depositing heartbeat from activity that never reaches another party.
+
+    + evidence: War Bulletin 7 defines the twenty-day M-daily-scan as the first structured depositing activity, sets one consulting conversation by day twenty as the evidential threshold, and assigns monitoring to the frame-derivative pipeline.

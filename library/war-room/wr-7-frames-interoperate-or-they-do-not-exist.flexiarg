@@ -1,0 +1,24 @@
+@flexiarg war-room/wr-7-frames-interoperate-or-they-do-not-exist
+@title WR-7: Frames Interoperate or They Don't Exist
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+
+! conclusion: Let unresolved cross-model ports expose missing models as sorrys, and build a model only when an exercised port demands it.
+
+  + context: War Room decision WR-7 (2026-04-13). Operator: Joe.
+
+  + IF:
+    A frame schema declares cross-model ports to other parts of the stack.
+
+  + HOWEVER:
+    Some dependencies named by those ports may not exist or may not yet be operational, including the futon7 business model, mana accounting, and the pocketwatch.
+
+  + THEN:
+    Treat each missing model as a sorry. Use computation of the frame and discovery of an unresolved port as the detection mechanism; do not build the model before a port demands it.
+
+  + BECAUSE:
+    A frame that cannot interoperate through its declared ports does not yet exist as an operational frame, while exercised ports reveal the actual dependency rather than an anticipated one.
+
+    + evidence: War Bulletin 7 names the three possibly missing model dependencies, classifies missing models as sorrys, and rules that computing a frame is the mechanism that detects an unresolved port.

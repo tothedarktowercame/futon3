@@ -1,0 +1,25 @@
+@flexiarg war-room/wr-15-head-as-escrow-is-a-sanctioned-pattern
+@title WR-15: HEAD-As-Escrow Is A Sanctioned Pattern
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+@references [mission-coherence/HEAD-as-escrow mission-coherence/eoi-engine-flash-as-HEAD-engine mission-coherence/completeness-not-closure-as-3-vector]
+
+! conclusion: Use HEAD as escrow to crystallise a mission's intentions while deferring commitment to the data shape of an unfinished predecessor.
+
+  + context: War Room decision WR-15 (2026-05-17). Operator: Joe. Candidate for promotion to `library/mission-coherence/`.
+
+  + IF:
+    A mission can state its intended work before a predecessor has committed the schema that will determine the mission's final data shape.
+
+  + HOWEVER:
+    HEAD-authoring and predecessor schema commitment occur at different times, so committing prematurely to the data shape would couple the mission to pieces that do not yet exist.
+
+  + THEN:
+    Let the mission HEAD hold the intentions in escrow and name every not-yet-committed piece explicitly as a tension.
+
+  + BECAUSE:
+    Explicit tensions preserve the dependency honestly while allowing mission authoring to proceed without pretending that the predecessor's schema is settled.
+
+    + evidence: Bulletin 9 identifies M-interim-director's design phase as HEAD-as-escrow until M-interest-network-coupling step (b) lands, and names this flexiarg as pending under `mission-coherence/`.

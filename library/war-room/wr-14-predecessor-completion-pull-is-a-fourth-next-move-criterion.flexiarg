@@ -1,0 +1,24 @@
+@flexiarg war-room/wr-14-predecessor-completion-pull-is-a-fourth-next-move-criterion
+@title WR-14: Predecessor-Completion Pull Is A Fourth Next-Move Criterion
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+
+! conclusion: Add predecessor-completion pull as a fourth next-move criterion alongside the three criteria cached in the stack's self-model.
+
+  + context: War Room decision WR-14 (2026-05-17). Operator: Joe. Renamed from draft 1's “operator override.”
+
+  + IF:
+    The operator executes a move that diverges from the stack's three-criterion recommendation and the divergence produces an artefact required by the recommended move.
+
+  + HOWEVER:
+    Reading the divergence as an override treats the pivot as defection, even when the stack has discovered that its recommended move has an unauthored predecessor.
+
+  + THEN:
+    Ingest the operator-executed divergence and any predecessor artefact it produced as a fourth signal class, predecessor-completion pull, when Portfolio Inference is stepped.
+
+  + BECAUSE:
+    Completing a prerequisite can be the correct way to advance the recommended move even though it is absent from the existing ranked menu.
+
+    + evidence: The twenty-three-day pivot to npt produced the outward exemplar that M-interim-director names as the predecessor to port inward; bulletin 9 explicitly distinguishes this from overriding the stack's recommendation.

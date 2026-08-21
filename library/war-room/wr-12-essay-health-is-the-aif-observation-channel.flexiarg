@@ -1,0 +1,25 @@
+;; Incomplete: bulletin 9 states the channel and projection but does not state
+;; a tension. A source showing what fails when essay health is not projected
+;; through this channel is required for an honest HOWEVER clause.
+@flexiarg war-room/wr-12-essay-health-is-the-aif-observation-channel
+@title WR-12: Essay Health Is The AIF Observation Channel For Cross-Mission Posterior Updates
+@verdict incomplete
+@sigils [⚖/令]
+@audience futon stack operators, agents, mission authors
+@tone foundational
+@style pattern
+
+! conclusion: Treat essay health as the projected belief state of the typed annotation and interest-network event channel, and let the AIF machinery consume that channel directly for cross-mission posterior updates.
+
+  + context: War Room decision WR-12 (2026-05-17). Operator: Joe.
+
+  + IF:
+    Typed events target essay, section, annotation, institution-object, basin, and composite-arrow entities and carry evidence references and operator rationale.
+
+  + THEN:
+    Use the annotation hypergraph and M-interest-network-coupling event vocabulary as the observation channel read directly by `library/aif/*`, with essay health as its projected belief state.
+
+  + BECAUSE:
+    Together the two typed structures supply the observations from which cross-mission posterior updates can be computed.
+
+    + evidence: Bulletin 9 names the `annotations-v12.edn` schema, the M-interest-network-coupling event vocabulary, `:evidence/refs`, and `:operator/rationale` as the components of this channel.

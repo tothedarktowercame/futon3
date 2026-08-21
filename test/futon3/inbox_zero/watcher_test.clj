@@ -137,3 +137,36 @@
         (is (= "session-1" (get-in @posted [1 :session])))
         (is (= "inbox-zero" (get-in @posted [1 :type])))
         (is (= 200 (:status (first result))))))))
+
+(deftest witness-through-git-threshold-produces-exact-http-enqueue
+  (let [repo (init-repo)
+        root {:path (.getPath repo) :label "fixture"}
+        worktree (watcher/worktree-id (.getPath repo))
+        state-path (.getPath (io/file repo ".git" "inbox-zero-e2e.edn"))
+        witness-path (.getPath (io/file repo ".git" "inbox-zero-e2e-witnesses"))
+        posted (atom nil)]
+    (watcher/write-witness! witness-path (seat-record))
+    (doseq [n (range 5)
+            :let [path (str "dirty-" n ".clj")]]
+      (spit (io/file repo path) (str n "\n"))
+      (watcher/write-witness!
+       witness-path
+       (assoc (claim-record worktree path)
+              :claim/id (str "claim:tool-call-" n)
+              :witness/id (str "tool-call:" n))))
+    (let [cycle (watcher/run-cycle!
+                 {:state-path state-path :witness-path witness-path
+                  :roots [root] :now (java.util.Date. 2000)})]
+      (is (= 5 (:observations-written cycle)))
+      (is (= 5 (get-in cycle [:projection :dirty-sets 0 :count])))
+      (with-redefs [http/post (fn [url request]
+                                (reset! posted [url (json/parse-string (:body request) true)])
+                                {:status 200 :body "{\"ok\":true}"})]
+        (is (= 1 (count (watcher/send-eligible-followups!
+                         {:url "http://agency/api/alpha/followups"
+                          :store (:state cycle) :projection (:projection cycle)
+                          :now (java.util.Date. 2000)}))))
+        (is (= ["codex-11" "session-1" "inbox-zero"]
+               [(get-in @posted [1 :agent])
+                (get-in @posted [1 :session])
+                (get-in @posted [1 :type])]))))))

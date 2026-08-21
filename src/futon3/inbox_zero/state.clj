@@ -3,21 +3,18 @@
 
   The store is deliberately independent of watcher policy. It validates and
   persists witnessed facts; thresholding and delivery consume these facts in
-  later layers. Writes serialize across processes on a sibling lock file and
-  replace the EDN snapshot atomically."
+  later layers. The watcher is the single snapshot writer; producers write the
+  separate witness intake. Snapshot replacement is atomic."
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str])
-  (:import [java.nio.channels FileChannel]
-           [java.nio.file AtomicMoveNotSupportedException Files
-            StandardCopyOption StandardOpenOption]
+  (:import [java.nio.file Files StandardCopyOption]
            [java.nio.file.attribute FileAttribute]))
 
 (def schema-version 0)
 
-;; File locks coordinate separate watcher processes. The monitor prevents two
-;; threads in this JVM from raising OverlappingFileLockException before either
-;; can wait on the OS lock.
+;; One watcher process owns a state path. The monitor protects accidental
+;; concurrent calls inside that process; external producers never write state.
 (def ^:private write-monitor (Object.))
 
 (def record-id-key
@@ -186,15 +183,10 @@
     (let [tmp (Files/createTempFile parent ".inbox-zero-" ".edn" attrs)]
       (try
         (spit (.toFile tmp) (str (pr-str value) "\n"))
-        (try
-          (Files/move tmp target
-                      (into-array StandardCopyOption
-                                  [StandardCopyOption/ATOMIC_MOVE
-                                   StandardCopyOption/REPLACE_EXISTING]))
-          (catch AtomicMoveNotSupportedException _
-            (Files/move tmp target
-                        (into-array StandardCopyOption
-                                    [StandardCopyOption/REPLACE_EXISTING]))))
+        (Files/move tmp target
+                    (into-array StandardCopyOption
+                                [StandardCopyOption/ATOMIC_MOVE
+                                 StandardCopyOption/REPLACE_EXISTING]))
         (finally
           (Files/deleteIfExists tmp))))))
 
@@ -202,15 +194,19 @@
   "Serialize, validate, and durably apply RECORD to the snapshot at PATH.
   Returns the resulting state."
   [path record]
-  (let [lock-path (str path ".lock")
-        lock-file (io/file lock-path)]
-    (io/make-parents lock-file)
-    (locking write-monitor
-      (with-open [channel (FileChannel/open (.toPath lock-file)
-                                            (into-array StandardOpenOption
-                                                        [StandardOpenOption/CREATE
-                                                         StandardOpenOption/WRITE]))
-                  _lock (.lock channel)]
-        (let [next-state (apply-record (load-state path) record)]
-          (atomic-write! path next-state)
-          next-state)))))
+  (locking write-monitor
+    (let [current-state (load-state path)
+          next-state (apply-record current-state record)]
+      (when-not (= current-state next-state)
+        (atomic-write! path next-state))
+      next-state)))
+
+(defn append-records!
+  "Atomically validate and apply RECORDS as one state transition."
+  [path records]
+  (locking write-monitor
+    (let [current-state (load-state path)
+          next-state (reduce apply-record current-state records)]
+      (when-not (= current-state next-state)
+        (atomic-write! path next-state))
+      next-state)))

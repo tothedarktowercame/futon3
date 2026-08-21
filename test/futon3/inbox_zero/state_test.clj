@@ -55,8 +55,7 @@
     (let [before (state/load-state path)
           after (state/append-record! path claim)]
       (is (= before after))
-      (is (= 3 (count (:records after))))
-      (is (.exists (io/file (str path ".lock")))))))
+      (is (= 3 (count (:records after)))))))
 
 (deftest corrupt-store-fails-closed
   (let [path (temp-state-path)]

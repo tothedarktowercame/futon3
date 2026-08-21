@@ -4,6 +4,7 @@
 ;; Usage:
 ;;   bb multi_watcher.clj [--root <repo>=<label>]... [--vocab path]...
 ;;       [--interval-ms 2000] [--max-events N] [--no-cold-scan]
+;;       [--inbox-zero-state path [--inbox-zero-witnesses directory]]
 ;;
 ;; Each --root is <repo-path>=<label>; e.g.
 ;;   --root /home/joe/code/futon2=futon2-d
@@ -25,11 +26,20 @@
 ;;   L1 — heartbeat IDs include (root, run-id, cycle-n) for uniqueness.
 ;;   L0 — heartbeat POST must succeed for cycle to count.
 
+;; This script is launched directly by Babashka, whose default classpath does
+;; not include src/. Load the feature namespaces relative to this file so the
+;; optional inbox-zero path works in the real launcher as well as under clj.
+(let [repo-root (.getParentFile (.getParentFile (java.io.File. *file*)))]
+  (load-file (str repo-root "/src/futon3/inbox_zero/state.clj"))
+  (load-file (str repo-root "/src/futon3/inbox_zero/projection.clj"))
+  (load-file (str repo-root "/src/futon3/inbox_zero/watcher.clj")))
+
 (require '[clojure.string :as str]
          '[clojure.edn :as edn]
          '[clojure.java.io :as io]
          '[clojure.java.shell :refer [sh]]
          '[clojure.set]
+         '[futon3.inbox-zero.watcher :as inbox-zero]
          '[babashka.fs :as fs]
          '[babashka.http-client :as http]
          '[cheshire.core :as json])
@@ -765,7 +775,8 @@
 (defn parse-args [argv]
   (loop [a argv opts {:roots [] :interval-ms 2000 :cold-scan? true
                       :watch-mode "poll" :debounce-ms 250
-                      :max-events nil :max-cycles nil}]
+                      :max-events nil :max-cycles nil
+                      :inbox-zero-state nil :inbox-zero-witnesses nil}]
     (cond
       (empty? a) opts
       (= "--root" (first a))
@@ -780,11 +791,16 @@
       (= "--debounce-ms" (first a)) (recur (drop 2 a) (assoc opts :debounce-ms (parse-long (second a))))
       (= "--max-events" (first a))  (recur (drop 2 a) (assoc opts :max-events (parse-long (second a))))
       (= "--max-cycles" (first a))  (recur (drop 2 a) (assoc opts :max-cycles (parse-long (second a))))
+      (= "--inbox-zero-state" (first a))
+      (recur (drop 2 a) (assoc opts :inbox-zero-state (second a)))
+      (= "--inbox-zero-witnesses" (first a))
+      (recur (drop 2 a) (assoc opts :inbox-zero-witnesses (second a)))
       (= "--no-cold-scan" (first a)) (recur (rest a) (assoc opts :cold-scan? false))
       :else (recur (rest a) opts))))
 
 (defn -main [& argv]
-  (let [{:keys [roots interval-ms cold-scan? watch-mode debounce-ms max-events max-cycles]} (parse-args argv)
+  (let [{:keys [roots interval-ms cold-scan? watch-mode debounce-ms max-events max-cycles
+                inbox-zero-state inbox-zero-witnesses]} (parse-args argv)
         run-id (System/currentTimeMillis)
         event-n (atom 0)
         cycle-n (atom 0)
@@ -798,6 +814,10 @@
              " cold-scan?:" cold-scan?)
     (when max-events (println "  max-events:" max-events "(test mode)"))
     (when max-cycles (println "  max-cycles:" max-cycles "(test mode)"))
+    (when inbox-zero-state
+      (println "  inbox-zero-state:" inbox-zero-state)
+      (when inbox-zero-witnesses
+        (println "  inbox-zero-witnesses:" inbox-zero-witnesses)))
     (doseq [{:keys [path label]} roots]
       (println (format "  watch %s  →  label=%s" path label)))
     (println)
@@ -812,6 +832,17 @@
                          :event-n event-n
                          :cycle-n cycle-n
                          :dirty-roots dirty-roots})
+            (when inbox-zero-state
+              (let [{:keys [observations-written projection]}
+                    (inbox-zero/run-cycle!
+                     {:state-path inbox-zero-state
+                      :witness-path inbox-zero-witnesses
+                      :roots roots})]
+                (println (format "[inbox-zero] observations=%d dirty-sets=%d ambiguous=%d unattributed=%d"
+                                 observations-written
+                                 (count (:dirty-sets projection))
+                                 (count (:ambiguous projection))
+                                 (count (:unattributed projection))))))
             (when (and max-cycles (>= @cycle-n max-cycles))
               (println "[multi_watcher] reached --max-cycles; exiting")
               (System/exit 0)))]

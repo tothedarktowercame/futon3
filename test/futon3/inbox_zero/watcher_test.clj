@@ -2,6 +2,8 @@
   (:require [clojure.java.io :as io]
             [clojure.java.shell :refer [sh]]
             [clojure.test :refer [deftest is]]
+            [babashka.http-client :as http]
+            [cheshire.core :as json]
             [futon3.inbox-zero.state :as state]
             [futon3.inbox-zero.watcher :as watcher]))
 
@@ -110,3 +112,28 @@
                   {:state-path state-path :witness-path (.getPath witness-path)
                    :roots [{:path (.getPath repo) :label "fixture"}]})))
     (is (not (.exists (io/file state-path))))))
+
+(deftest sender-posts-only-eligible-set-with-exact-seat
+  (let [seat (seat-record)
+        worktree "worktree:test"
+        members (mapv (fn [n] {:path (str n ".clj")
+                               :observation/id (str "o:" n)
+                               :claim/id (str "c:" n)
+                               :dirty-since (java.util.Date. 1000)}) (range 5))
+        dirty-set {:seat/id (:seat/id seat) :repo/id "fixture"
+                   :worktree/id worktree :members members :count 5
+                   :oldest-dirty-at (java.util.Date. 1000)}
+        posted (atom nil)]
+    (with-redefs [http/post (fn [url request]
+                              (reset! posted [url (json/parse-string (:body request) true)])
+                              {:status 200 :body "{\"ok\":true}"})]
+      (let [result (watcher/send-eligible-followups!
+                    {:url "http://agency/api/alpha/followups"
+                     :store (state/apply-record (state/empty-state) seat)
+                     :projection {:dirty-sets [dirty-set]}
+                     :now (java.util.Date. 2000)})]
+        (is (= 1 (count result)))
+        (is (= "codex-11" (get-in @posted [1 :agent])))
+        (is (= "session-1" (get-in @posted [1 :session])))
+        (is (= "inbox-zero" (get-in @posted [1 :type])))
+        (is (= 200 (:status (first result))))))))

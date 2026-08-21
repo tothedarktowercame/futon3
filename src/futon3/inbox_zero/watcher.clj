@@ -8,6 +8,8 @@
             [clojure.java.io :as io]
             [clojure.java.shell :refer [sh]]
             [clojure.string :as str]
+            [babashka.http-client :as http]
+            [cheshire.core :as json]
             [futon3.inbox-zero.projection :as projection]
             [futon3.inbox-zero.state :as state])
   (:import [java.nio.charset StandardCharsets]
@@ -187,3 +189,25 @@
     {:state stored
      :observations-written (count observations)
      :projection (projection/project-dirty-sets stored now)}))
+
+(defn send-eligible-followups!
+  "POST eligible dirty sets as typed followups. Agency performs exact-session
+  validation and durable dedupe; failures are returned, never treated as sent."
+  [{:keys [url store projection now] :or {now (Date.)}}]
+  (vec
+   (for [dirty-set (:dirty-sets projection)
+         :let [eligible (projection/eligibility dirty-set now)]
+         :when eligible
+         :let [seat (get-in store [:records (:seat/id dirty-set)])
+               body {:agent (:agent/id seat) :session (:session/id seat)
+                     :type "inbox-zero" :dedupe-key (:dedupe/key eligible)
+                     :prompt (format "Inbox zero: %s has %d uncommitted files associated with this session. Review, commit, or explicitly release them."
+                                     (:repo/id dirty-set) (:count dirty-set))
+                     :metadata {:trigger (:trigger eligible)
+                                :repo-id (:repo/id dirty-set)
+                                :worktree-id (:worktree/id dirty-set)}}
+               response (http/post url {:headers {"Content-Type" "application/json"}
+                                        :body (json/generate-string body)
+                                        :throw false})]]
+     {:seat/id (:seat/id dirty-set) :status (:status response)
+      :ok? (= 200 (:status response)) :body (:body response)})))

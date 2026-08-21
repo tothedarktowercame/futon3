@@ -4,7 +4,8 @@
 ;; Usage:
 ;;   bb multi_watcher.clj [--root <repo>=<label>]... [--vocab path]...
 ;;       [--interval-ms 2000] [--max-events N] [--no-cold-scan]
-;;       [--inbox-zero-state path [--inbox-zero-witnesses directory]]
+;;       [--inbox-zero-state path [--inbox-zero-witnesses directory]
+;;        [--inbox-zero-followup-url URL]]
 ;;
 ;; Each --root is <repo-path>=<label>; e.g.
 ;;   --root /home/joe/code/futon2=futon2-d
@@ -776,7 +777,8 @@
   (loop [a argv opts {:roots [] :interval-ms 2000 :cold-scan? true
                       :watch-mode "poll" :debounce-ms 250
                       :max-events nil :max-cycles nil
-                      :inbox-zero-state nil :inbox-zero-witnesses nil}]
+                      :inbox-zero-state nil :inbox-zero-witnesses nil
+                      :inbox-zero-followup-url nil}]
     (cond
       (empty? a) opts
       (= "--root" (first a))
@@ -795,12 +797,14 @@
       (recur (drop 2 a) (assoc opts :inbox-zero-state (second a)))
       (= "--inbox-zero-witnesses" (first a))
       (recur (drop 2 a) (assoc opts :inbox-zero-witnesses (second a)))
+      (= "--inbox-zero-followup-url" (first a))
+      (recur (drop 2 a) (assoc opts :inbox-zero-followup-url (second a)))
       (= "--no-cold-scan" (first a)) (recur (rest a) (assoc opts :cold-scan? false))
       :else (recur (rest a) opts))))
 
 (defn -main [& argv]
   (let [{:keys [roots interval-ms cold-scan? watch-mode debounce-ms max-events max-cycles
-                inbox-zero-state inbox-zero-witnesses]} (parse-args argv)
+                inbox-zero-state inbox-zero-witnesses inbox-zero-followup-url]} (parse-args argv)
         run-id (System/currentTimeMillis)
         event-n (atom 0)
         cycle-n (atom 0)
@@ -833,7 +837,7 @@
                          :cycle-n cycle-n
                          :dirty-roots dirty-roots})
             (when inbox-zero-state
-              (let [{:keys [observations-written projection]}
+              (let [{:keys [observations-written projection state]}
                     (inbox-zero/run-cycle!
                      {:state-path inbox-zero-state
                       :witness-path inbox-zero-witnesses
@@ -842,7 +846,13 @@
                                  observations-written
                                  (count (:dirty-sets projection))
                                  (count (:ambiguous projection))
-                                 (count (:unattributed projection))))))
+                                 (count (:unattributed projection))))
+                (when inbox-zero-followup-url
+                  (let [results (inbox-zero/send-eligible-followups!
+                                 {:url inbox-zero-followup-url :store state
+                                  :projection projection})]
+                    (when (seq results)
+                      (println "[inbox-zero] followups" (pr-str results)))))))
             (when (and max-cycles (>= @cycle-n max-cycles))
               (println "[multi_watcher] reached --max-cycles; exiting")
               (System/exit 0)))]

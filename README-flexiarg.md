@@ -180,6 +180,21 @@ ever-growing, and useless for reading. `math-formalization/layer-cake-crossover-
 `@why math-informal/estimate-by-bounding` is true; the reverse is not, because
 layer-cake is one instance among many and not *the* method.
 
+**Coverage is a third axis, and is not `@how`.** A pattern may also be recorded
+as holding, or failing to hold, at a node of an external map — for the war-room
+namespace, the AIF control map's R-nodes:
+
+| directive | meaning |
+|---|---|
+| `@holds-at <node> [<node> …]` | the nodes where this pattern supplies a mechanism |
+| `@holds-open <node> [<node> …]` | the nodes where it is hollow — a **red ring** |
+
+These point *out of the library*, at map nodes, not at patterns or memories, so
+they are a different relation from `@how` and must not reuse its name. (They
+were briefly written as `@how`/`@how-open` in `war-room/*` before this section
+was read; renamed 2026-08-22, no consumers existed.) Emptiness at a node is a
+claim about the world and is what the pattern cascade draws as a hole.
+
 `@how` targets may be patterns OR reviewed memories. A memory attached to a
 pattern is already a refinement of it, recorded by the attachment economy —
 so do not restate an attachment as an `@how`.

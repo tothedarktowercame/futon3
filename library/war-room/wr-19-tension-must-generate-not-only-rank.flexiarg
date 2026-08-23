@@ -17,6 +17,14 @@
 
   + HOWEVER:
     The current wiring, ΔT as a sorry-only tie-breaker, cannot generate a move; it only ranks an existing menu, so a manifold full of tension still yields nothing when the proposer registries are dry.
+    + EXAMPLE: On its first outing the War Machine exhausted its
+      proposer-fed queue into `learn-action-class` before any outward
+      open-mission surfaced. Tracing the judge showed why: structural
+      pressure was applied only after four fixed proposers had supplied
+      candidates, and only to address-sorry candidates. The manifold was full
+      of tension and the machine had nothing to do, because a tie-breaker
+      cannot put an option on a menu it only reorders.
+
 
   + THEN:
     Add a tension-proposer: an S1 source that emits candidate actions at high-tension regions of the manifold, so the field drives the head. Make this the proximate fix to starvation and the first aif2 build slice.

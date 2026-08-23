@@ -15,6 +15,14 @@
 
   + HOWEVER:
     Such claims are formal until session evidence supports them: the cached weight on a conflict is a hypothesis, not a measurement.
+    + EXAMPLE: One conflict in the cached model claimed to damage three
+      spines. Over a fourteen-day window only one of the three showed any
+      empirical activity — one-third coverage. The other two bites were not
+      wrong so much as unwitnessed: weights that had been carried as
+      measurements since they were first written down. Rendering them as
+      dashed grey rather than solid red put the inhabitation gap on the demo
+      where it could be seen without anyone running a query.
+
 
   + THEN:
     The empirical join walks session steps to repos to devmap leaves to spine ids, and renders conflict-to-spine bite edges as solid red, scaled by hit count, when the bitten spine has empirical activity in the visible window, and as dashed grey when the bite is still purely logical. Conflicts whose bites remain grey across multiple windows are candidates for weight reduction or removal.

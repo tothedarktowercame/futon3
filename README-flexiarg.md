@@ -180,6 +180,26 @@ ever-growing, and useless for reading. `math-formalization/layer-cake-crossover-
 `@why math-informal/estimate-by-bounding` is true; the reverse is not, because
 layer-cake is one instance among many and not *the* method.
 
+**A post-hoc `@why` is a trace, not a cause.** (Joe, 2026-08-23.) The war-room
+rulings were written to *make sense* of a situation that felt overwhelming —
+the 1940s RAF precedent the namespace is named for — not to direct a build.
+So when an implementation pattern is given `@why war-room/wr-N` after the fact,
+the edge does NOT assert that the ruling caused the pattern to be written; no
+such trace exists in the build, and looking for one will find nothing.
+
+What it asserts is weaker and more useful: that the ruling *makes sense of*
+the pattern retrospectively, and that this sense-making may have explanatory
+power worth testing. Such an edge is a hypothesis in exactly the register
+`forward-model/graduate-strategy-by-outcome` describes, and it should earn
+attestation the same way rather than being assumed. Mark post-hoc edges inline
+so a later reader can tell them from an author's own `@why`, which IS a causal
+claim about their own work.
+
+Corollary, measured 2026-08-23: across 42 missions citing 151 patterns in their
+ARGUE sections, **zero** cite a war-room ruling. Missions record the how; the
+why lives in a register the mission format has no slot for. The rationale layer
+can therefore only ever be authored, never harvested.
+
 **Coverage is a third axis, and is not `@how`.** A pattern may also be recorded
 as holding, or failing to hold, at a node of an external map — for the war-room
 namespace, the AIF control map's R-nodes:

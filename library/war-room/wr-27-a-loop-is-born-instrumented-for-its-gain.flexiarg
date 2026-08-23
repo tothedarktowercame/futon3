@@ -18,6 +18,13 @@
   + HOWEVER:
     Every instance was discovered retroactively after construction, and outward activity without coupling is invisible from inside because its activity level looks correct.
 
+    + EXAMPLE: The demand-paged mining loop was specified without any measure
+      of what fraction of hunger signals changed the next mining batch, so
+      nothing in it could report whether the demand paging was earning its
+      keep. The same shape recurs wherever a signal is logged but never routed:
+      a judge/formalizer disagreement log that never alters the formalization
+      pipeline is the uninstrumented-loop smell (War Bulletin 15).
+
   + THEN:
     Instrument every new mining, retrieval, outreach, or review loop from day one with the fraction of returned signals that change subsequent acquisition or action. For demand-paged mining, record which hunger signals shaped each batch and report hunger-shaped acquisitions divided by total acquisitions.
 

@@ -1,6 +1,9 @@
 # TN — mission→pattern correspondence: where the survey lives, and why an ARGUE-scoped count reads low
 
-**Status: measurement, 2026-08-23 (claude-13, laptop).** Written in response to an
+**Status: measurement, 2026-08-23 (claude-13, laptop). Revised same day** — the
+first version claimed the survey was readable only in the migration snapshot. It is
+not: 991 `scope/pattern` entities are live on (L). Only the *edge* layer is missing.
+§3a is new and corrects the "Zone is a stale replica" reading. Written in response to an
 agent on Zone reporting **"151 patterns cited across 42 ARGUE sections"** and asking
 whether that is surprisingly small. Short answer: the ARGUE-scoped number is small
 for a structural reason (patterns are not cited *in* ARGUE), the corpus-wide survey
@@ -29,8 +32,9 @@ Environments, kept explicit because they disagree:
 - **(L)** laptop — `futon1b-server --store-dir migration-store-21 --port 7073`, live.
 - **(Z)** Zone (`zone-joe`, ams) — same server, same store *name*, **diverged contents**.
 - **(X)** `futon1b/migration-export-full/graph-snapshot.edn` — the 2026-07-12
-  futon1a export, 91,809 docs. This is the only surface on which the full survey
-  is currently readable; see §3.
+  futon1a export, 91,809 docs. Both (L) and (Z) were seeded from this file —
+  it is byte-identical on the two machines (sha256
+  `3e7e2db6…f8ce5bf`), which is what makes §3a's argument possible.
 - **(D)** the mission corpus on disk — `futon*/holes/missions/*.md`, 423 files.
 
 ---
@@ -51,12 +55,19 @@ Two distinct artifacts come out of that run, and they have had different fates:
 
 | artifact | type | fate |
 |---|---|---|
-| scope entities | `:scope/pattern` | **survived** the migration — 934 docs in (X) |
+| scope entities | `:scope/pattern` | **survived** — 934 in (X), **991 live on (L)** |
 | mission→pattern edges | `mission-scope/pattern` hyperedges | **did not survive** — see §3 |
 
 Counting the surviving scope entities in (X):
 
-| | |
+Live census on (L), 2026-08-23: `GET /api/alpha/census?entity-type=scope/pattern`
+returns **991** — *more* than the snapshot, because ingest has continued since
+2026-07-12. The correspondence is therefore readable live; it is only the **edge**
+layer that is missing (§3). The breakdown below is computed over (X) because the
+snapshot is the surface on which the per-document props can be scanned offline,
+not because the live store lacks the data.
+
+| (X), 2026-07-12 | |
 |---|---|
 | `:scope/pattern` docs | **934** |
 | distinct `:entity/external-id` | 934 |
@@ -207,8 +218,62 @@ The 112 edges now on (L) are a later partial re-ingest, not migrated data. The
 1780 of those relations (`futon1b/TN-pattern-duplication-findings.md` §5).
 
 Consequence: **any consumer that reads `mission-scope/pattern` off the current
-store undercounts the correspondence by roughly 5×.** The 934 scope entities are
-intact, so the edges are re-derivable without re-running detection — see §5.
+store undercounts the correspondence by roughly 5×.** The scope entities are
+intact (991 live on (L)), so the edges are re-derivable without re-running
+detection — see §5.
+
+---
+
+## 3a. (Z) is not a stale replica — it is an independent divergent line
+
+The natural reading of §3 is "the migration was incomplete, therefore Zone is a
+replica of an incomplete database." The first clause is true; the inference is not.
+There is **no replication between (L) and (Z) at all**, and (Z) is not behind.
+
+What is actually shared is the *seed*. `migration-export-full/graph-snapshot.edn` is
+byte-identical on both machines:
+
+```
+3e7e2db639136ca2bc763b70523e309ba80bfa2b8b5a56a4b30825e20f8ce5bf   (L)
+3e7e2db639136ca2bc763b70523e309ba80bfa2b8b5a56a4b30825e20f8ce5bf   (Z)
+```
+
+Both were built from that one 2026-07-12 export and have been written to
+independently ever since. So the incomplete-hyperedge defect is **common to both** —
+it is not a thing (Z) suffers and (L) escapes. Re-syncing (Z) from (L) would not
+fix it; both need the same re-derivation (§5.2).
+
+Meanwhile (Z) has diverged *upward*, not downward. Store inventory, 2026-08-23:
+
+| | (L) Dionysus | (Z) zone-joe |
+|---|---|---|
+| `migration-store` | 1.5 G | 1.5 G |
+| `migration-store-21` | **26 G** | **32 G** |
+| `migration-store-21.merged-2026-08-17` | absent | **24 G** |
+| `ams-store.retired-20260810` | absent | 400 M |
+| futon1b server listening | :7073 up | **nothing on :7073** |
+
+(Z) carries a merged store from 2026-08-17 that has no counterpart here, and its
+`migration-store-21` is 6 G larger. This matches the row counts in
+`futon1b/TN-pattern-duplication-findings.md` §1 — 5876 `pattern/library` rows on (Z)
+against 4655 on (L), for the same 821 deduped names, i.e. roughly one extra ingest
+pass on (Z) that gained no new patterns.
+
+Three consequences worth stating plainly:
+
+1. **"Usable replica" is the wrong model.** Nothing replicates. Two stores were
+   forked from a common seed six weeks ago and have drifted under independent
+   writes. Any plan that assumes one is a copy of the other will lose data in
+   whichever direction it is applied.
+2. **The direction of the fix is not obvious.** (Z) is not simply stale — it holds
+   the `.merged-2026-08-17` work and 6 G more data. Overwriting (Z) from (L) would
+   discard that; overwriting (L) from (Z) would discard whatever (L) has gained.
+   Reconciliation needs a discovery pass on both before any copy is made.
+3. **(Z)'s futon1b server is not running.** The 5876 figure was measured on
+   2026-08-13 when it was up. Nothing on (Z) is currently serving :7073, so any
+   Zone-side tool that reads the substrate over HTTP is either failing or reading
+   something else — which is one more candidate explanation for the `151 / 42`
+   discrepancy in §2 that should be checked before the others.
 
 ---
 
@@ -260,16 +325,20 @@ Most-cited patterns, by number of distinct missions citing them (snapshot):
 
 1. **Name the Zone-side scan** that produced `151 / 42`, and its mission checkout.
    Until then §2's discrepancy hypotheses stay hypotheses.
-2. **Re-derive `mission-scope/pattern` edges from the 934 surviving scope
-   entities** into (L) and (Z). No re-detection needed — the scopes carry
+2. **Re-derive `mission-scope/pattern` edges from the surviving scope
+   entities** (991 on (L)) into (L) and (Z). No re-detection needed — the scopes carry
    `:mission` and `:pattern/ident` in props. The binder's swap-not-add path is
    idempotent. This also relieves step 2 of `TN-pattern-duplication-findings.md` §6.
-3. **Reconcile (L) and (Z).** They disagree by 1221 `pattern/library` rows on the
-   same 821-name library, and nothing surfaces that. A store-divergence check is
-   the missing instrument.
-4. **Separate the coverage gap from the detector ceiling** (§4) before anyone
+3. **Reconcile (L) and (Z) — as two divergent lines, not as replica-and-master**
+   (§3a). Discovery pass on both first: what does `.merged-2026-08-17` contain,
+   and what has each store gained since the common 2026-07-12 seed? No copy in
+   either direction until that is answered. Deadline pressure: (L) is Dionysus,
+   returned 2026-08-28.
+4. **Bring (Z)'s futon1b server back up on :7073** and re-measure — nothing is
+   serving it as of 2026-08-23.
+5. **Separate the coverage gap from the detector ceiling** (§4) before anyone
    quotes a pattern-reuse percentage.
-5. **Fix the `:entity/name` footgun** (§1) or document it at the query surface —
+6. **Fix the `:entity/name` footgun** (§1) or document it at the query surface —
    it is a silent 934→376 undercount waiting to happen.
 
 ---
@@ -306,6 +375,16 @@ cat futon1b/migration-export-full/export-summary.edn
 # :entity/external-id, :pattern/ident, :mission, :anchor/passage, :anchor/state
 # out of each. Group by (:mission, :pattern/ident) -- NOT by :entity/name.
 #    -> 934 docs, 934 pairs, 176 missions, 297 patterns, 934/934 :anchored
+
+# --- (L)/(Z) divergence: common seed, independent drift (§3a) ---
+sha256sum ~/code/futon1b/migration-export-full/graph-snapshot.edn
+ssh zone-joe 'sha256sum ~/code/futon1b/migration-export-full/graph-snapshot.edn'
+du -sh ~/code/futon1b/*store*
+ssh zone-joe 'du -sh ~/code/futon1b/*store*; ss -ltnp | grep -E "70[0-9][0-9]"'
+
+# --- live scope layer (§1) ---
+curl -s "http://127.0.0.1:7073/api/alpha/census?entity-type=scope/pattern"
+#    -> {:type "scope/pattern", :kind :entity, :count 991}
 
 # --- library sizes (§4) ---
 wc -l futon3/resources/sigils/patterns-index.tsv

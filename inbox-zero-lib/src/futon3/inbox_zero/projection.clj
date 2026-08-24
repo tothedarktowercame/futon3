@@ -42,6 +42,73 @@
                     (assoc result key (latest-by :last-observed-at claims)))
                   {})))
 
+(defn current-commit-cursors
+  "Return the unique immutable cursor-chain head keyed by worktree id.
+
+  Timestamps are not ordering evidence. Two unreferenced heads for one
+  worktree are a corrupt fork and fail closed."
+  [store]
+  (->> (state/records-of-type store :inbox-zero/commit-scan-cursor)
+       (group-by :worktree/id)
+       (reduce-kv
+        (fn [result worktree cursors]
+          (let [referenced (into #{} (keep :prior/cursor-id) cursors)
+                heads (vec (remove #(referenced (:cursor/id %)) cursors))]
+            (when-not (= 1 (count heads))
+              (throw (ex-info "Commit cursor chain has multiple or no heads"
+                              {:error/type :inbox-zero/cursor-chain-corrupt
+                               :worktree/id worktree
+                               :head/ids (mapv :cursor/id heads)})))
+            (assoc result worktree (first heads))))
+        {})))
+
+(declare sha-256)
+
+(defn derive-session-commit-links
+  "Derive immutable links for COMMIT-OBSERVATIONS from current active claims.
+
+  Attribution is exclusively path-claim intersection. A link is complete only
+  when every changed path has exactly one active claim and all those claims
+  belong to the same seat; a multi-seat commit therefore yields partial links."
+  [store commit-observations linked-at]
+  (let [active-by-path (->> (current-claims store)
+                            vals
+                            (filter #(= :active (:state %)))
+                            (group-by (juxt :worktree/id :path)))]
+    (->> commit-observations
+         (mapcat
+          (fn [observation]
+            (let [claims-per-path
+                  (mapv (fn [path]
+                          [path (vec (get active-by-path
+                                          [(:worktree/id observation) path] []))])
+                        (:paths observation))
+                  unambiguous (for [[path claims] claims-per-path
+                                    :when (= 1 (count claims))]
+                                [path (first claims)])
+                  by-seat (group-by (comp :seat/id second) unambiguous)
+                  complete? (and (= (count (:paths observation))
+                                    (count unambiguous))
+                                 (= 1 (count by-seat)))]
+              (for [[seat-id path-claims] by-seat
+                    :let [paths (->> path-claims
+                                     (map (fn [[path claim]]
+                                            {:path path :claim/id (:claim/id claim)}))
+                                     (sort-by :path)
+                                     vec)
+                          identity [(:commit-observation/id observation)
+                                    seat-id paths]]]
+                {:record/type :inbox-zero/session-commit-link
+                 :link/id (str "session-commit-link:" (sha-256 identity))
+                 :seat/id seat-id
+                 :commit-observation/id (:commit-observation/id observation)
+                 :paths paths
+                 :coverage (if complete? :complete :partial)
+                 :basis :path-claim-intersection
+                 :linked-at linked-at}))))
+         (sort-by (juxt :commit-observation/id :seat/id))
+         vec)))
+
 (defn- dirty-since
   [observations current]
   (let [current-ms (epoch-ms (:observed-at current))

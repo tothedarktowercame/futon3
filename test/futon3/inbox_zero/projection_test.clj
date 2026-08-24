@@ -54,6 +54,19 @@
 (defn store [& records]
   (state/replay (concat [seat-a seat-b] records)))
 
+(defn commit-observation [n paths]
+  {:record/type :inbox-zero/commit-observation
+   :commit-observation/id (str "commit-observation:" n)
+   :repo/id "futon0"
+   :worktree/id "worktree:futon0-main"
+   :commit/sha (str "sha-" n)
+   :change/id nil
+   :parents ["parent-sha"]
+   :paths paths
+   :authored-at (instant 4000)
+   :observed-at (instant 5000)
+   :source :git})
+
 (deftest projects-distinct-current-dirty-paths
   (let [stored (store (observation 1 "a.clj" :modified 1000)
                       (observation 2 "a.clj" :modified 2000)
@@ -153,3 +166,60 @@
                 (instant 2000))]
     (is (= ["orphan.clj"] (mapv :path (:unattributed result))))
     (is (empty? (:dirty-sets result)))))
+
+(deftest commit-across-two-seats-produces-two-partial-links
+  (let [commit (commit-observation 1 ["a.clj" "b.clj"])
+        stored (store (claim 1 (:seat/id seat-a) "a.clj" :active 1000)
+                      (claim 2 (:seat/id seat-b) "b.clj" :active 1000)
+                      commit)
+        links (projection/derive-session-commit-links stored [commit] (instant 6000))]
+    (is (= [(:seat/id seat-a) (:seat/id seat-b)] (mapv :seat/id links)))
+    (is (= [:partial :partial] (mapv :coverage links)))
+    (is (= [["a.clj"] ["b.clj"]]
+           (mapv #(mapv :path (:paths %)) links)))))
+
+(deftest wholly-claimed-commit-produces-one-complete-link
+  (let [commit (commit-observation 2 ["a.clj" "b.clj"])
+        claim-a (claim 3 (:seat/id seat-a) "a.clj" :active 1000)
+        claim-b (claim 4 (:seat/id seat-a) "b.clj" :active 1000)
+        stored (store claim-a claim-b commit)
+        links (projection/derive-session-commit-links stored [commit] (instant 6000))]
+    (is (= 1 (count links)))
+    (is (= :complete (:coverage (first links))))
+    (is (= [(:claim/id claim-a) (:claim/id claim-b)]
+           (mapv :claim/id (:paths (first links)))))))
+
+(deftest unclaimed-commit-is-retained-without-links
+  (let [commit (commit-observation 3 ["orphan.clj"])
+        stored (store commit)]
+    (is (= [commit]
+           (state/records-of-type stored :inbox-zero/commit-observation)))
+    (is (empty? (projection/derive-session-commit-links
+                 stored [commit] (instant 6000))))))
+
+(deftest linked-claim-history-remains-queryable
+  (let [commit (commit-observation 4 ["a.clj"])
+        active (claim 5 (:seat/id seat-a) "a.clj" :active 1000)
+        stored-before-link (store active commit)
+        link (first (projection/derive-session-commit-links
+                     stored-before-link [commit] (instant 6000)))
+        stored (state/apply-record stored-before-link link)]
+    (is (= active (get-in stored [:records (:claim/id active)])))
+    (is (= (:claim/id active) (-> link :paths first :claim/id)))
+    (is (= [active]
+           (state/records-of-type stored :inbox-zero/session-file-claim)))))
+
+(deftest forked-commit-cursor-chain-fails-closed
+  (let [baseline {:record/type :inbox-zero/commit-scan-cursor
+                  :cursor/id "cursor:base" :worktree/id "worktree:futon0-main"
+                  :cursor/sha "sha-0" :cursor/reason :baseline
+                  :prior/cursor-id nil :observed-at (instant 0)}
+        advance (fn [id sha]
+                  {:record/type :inbox-zero/commit-scan-cursor
+                   :cursor/id id :worktree/id "worktree:futon0-main"
+                   :cursor/sha sha :cursor/reason :advance
+                   :prior/cursor-id "cursor:base" :observed-at (instant 1000)})
+        records [baseline (advance "cursor:left" "sha-1")
+                 (advance "cursor:right" "sha-2")]]
+    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"would fork"
+                          (apply store records)))))

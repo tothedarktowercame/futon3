@@ -20,7 +20,10 @@
 (def record-id-key
   {:inbox-zero/session-seat :seat/id
    :inbox-zero/file-observation :observation/id
-   :inbox-zero/session-file-claim :claim/id})
+   :inbox-zero/session-file-claim :claim/id
+   :inbox-zero/commit-scan-cursor :cursor/id
+   :inbox-zero/commit-observation :commit-observation/id
+   :inbox-zero/session-commit-link :link/id})
 
 (def required-keys
   {:inbox-zero/session-seat
@@ -33,10 +36,24 @@
 
    :inbox-zero/session-file-claim
    [:claim/id :seat/id :repo/id :worktree/id :path :relation :witness/type
-    :witness/id :first-observed-at :last-observed-at :state]})
+    :witness/id :first-observed-at :last-observed-at :state]
+
+   :inbox-zero/commit-scan-cursor
+   [:cursor/id :worktree/id :cursor/sha :cursor/reason :prior/cursor-id
+    :observed-at]
+
+   :inbox-zero/commit-observation
+   [:commit-observation/id :repo/id :worktree/id :commit/sha :change/id
+    :parents :paths :authored-at :observed-at :source]
+
+   :inbox-zero/session-commit-link
+   [:link/id :seat/id :commit-observation/id :paths :coverage :basis
+    :linked-at]})
 
 (def git-statuses #{:untracked :modified :deleted :renamed :clean :ignored})
 (def claim-states #{:active :superseded :released})
+(def cursor-reasons #{:baseline :advance :rebaseline-rewrite})
+(def link-coverages #{:partial :complete})
 
 (defn empty-state []
   {:schema/version schema-version
@@ -100,6 +117,55 @@
                    {:key k :value (get record k)})))
         (when-not (claim-states (:state record))
           (fail! "Unknown claim state" {:state (:state record)})))
+
+      :inbox-zero/commit-scan-cursor
+      (do
+        (doseq [k [:worktree/id :cursor/sha]]
+          (when-not (non-blank-string? (get record k))
+            (fail! "Commit cursor identity fields must be non-blank strings"
+                   {:key k :value (get record k)})))
+        (when-not (cursor-reasons (:cursor/reason record))
+          (fail! "Unknown commit cursor reason" {:cursor/reason (:cursor/reason record)}))
+        (if (= :baseline (:cursor/reason record))
+          (when (some? (:prior/cursor-id record))
+            (fail! "A baseline cursor cannot name a prior cursor"
+                   {:prior/cursor-id (:prior/cursor-id record)}))
+          (when-not (non-blank-string? (:prior/cursor-id record))
+            (fail! "A moved cursor must name its prior cursor"
+                   {:cursor/reason (:cursor/reason record)}))))
+
+      :inbox-zero/commit-observation
+      (do
+        (doseq [k [:repo/id :worktree/id :commit/sha]]
+          (when-not (non-blank-string? (get record k))
+            (fail! "Commit-observation identity fields must be non-blank strings"
+                   {:key k :value (get record k)})))
+        (when-not (and (vector? (:parents record))
+                       (every? non-blank-string? (:parents record))
+                       (vector? (:paths record))
+                       (every? non-blank-string? (:paths record)))
+          (fail! "Commit parents and paths must be vectors of non-blank strings"
+                 {:parents (:parents record) :paths (:paths record)}))
+        (when-not (= :git (:source record))
+          (fail! "Commit observation source must be :git" {:source (:source record)})))
+
+      :inbox-zero/session-commit-link
+      (do
+        (doseq [k [:seat/id :commit-observation/id]]
+          (when-not (non-blank-string? (get record k))
+            (fail! "Session-commit link identity fields must be non-blank strings"
+                   {:key k :value (get record k)})))
+        (when-not (and (vector? (:paths record))
+                       (every? #(and (non-blank-string? (:path %))
+                                     (non-blank-string? (:claim/id %)))
+                               (:paths record)))
+          (fail! "Session-commit link paths must name paths and claims"
+                 {:paths (:paths record)}))
+        (when-not (link-coverages (:coverage record))
+          (fail! "Unknown session-commit coverage" {:coverage (:coverage record)}))
+        (when-not (= :path-claim-intersection (:basis record))
+          (fail! "Session-commit links require path-claim-intersection evidence"
+                 {:basis (:basis record)})))
       nil)
     record))
 
@@ -133,6 +199,65 @@
                       {:error/type :inbox-zero/unknown-seat
                        :claim/id id :seat/id (:seat/id record)}))
 
+      (and (= :inbox-zero/commit-scan-cursor (:record/type record))
+           (:prior/cursor-id record)
+           (not= :inbox-zero/commit-scan-cursor
+                 (get-in state [:records (:prior/cursor-id record) :record/type])))
+      (throw (ex-info "Commit cursor references an unknown prior cursor"
+                      {:error/type :inbox-zero/unknown-prior-cursor
+                       :cursor/id id :prior/cursor-id (:prior/cursor-id record)}))
+
+      (and (= :inbox-zero/commit-scan-cursor (:record/type record))
+           (:prior/cursor-id record)
+           (not= (:worktree/id record)
+                 (get-in state [:records (:prior/cursor-id record) :worktree/id])))
+      (throw (ex-info "Commit cursor crosses worktrees"
+                      {:error/type :inbox-zero/cursor-worktree-mismatch
+                       :cursor/id id :prior/cursor-id (:prior/cursor-id record)}))
+
+      (and (= :inbox-zero/commit-scan-cursor (:record/type record))
+           (or (and (nil? (:prior/cursor-id record))
+                    (some #(and (= :inbox-zero/commit-scan-cursor (:record/type %))
+                                (= (:worktree/id record) (:worktree/id %)))
+                          (vals (:records state))))
+               (and (:prior/cursor-id record)
+                    (some #(= (:prior/cursor-id record) (:prior/cursor-id %))
+                          (filter (comp #{:inbox-zero/commit-scan-cursor} :record/type)
+                                  (vals (:records state)))))))
+      (throw (ex-info "Commit cursor chain would fork"
+                      {:error/type :inbox-zero/cursor-chain-corrupt
+                       :cursor/id id :prior/cursor-id (:prior/cursor-id record)}))
+
+      (and (= :inbox-zero/session-commit-link (:record/type record))
+           (not= :inbox-zero/session-seat
+                 (get-in state [:records (:seat/id record) :record/type])))
+      (throw (ex-info "Session-commit link references an unknown seat"
+                      {:error/type :inbox-zero/unknown-seat
+                       :link/id id :seat/id (:seat/id record)}))
+
+      (and (= :inbox-zero/session-commit-link (:record/type record))
+           (not= :inbox-zero/commit-observation
+                 (get-in state [:records (:commit-observation/id record) :record/type])))
+      (throw (ex-info "Session-commit link references an unknown observation"
+                      {:error/type :inbox-zero/unknown-commit-observation
+                       :link/id id
+                       :commit-observation/id (:commit-observation/id record)}))
+
+      (and (= :inbox-zero/session-commit-link (:record/type record))
+           (some (fn [path-claim]
+                   (let [path (:path path-claim)
+                         claim (get-in state [:records (:claim/id path-claim)])
+                         observation (get-in state
+                                             [:records (:commit-observation/id record)])]
+                     (not (and (= :inbox-zero/session-file-claim (:record/type claim))
+                               (= (:seat/id record) (:seat/id claim))
+                               (= (:worktree/id observation) (:worktree/id claim))
+                               (= path (:path claim))
+                               (some #{path} (:paths observation))))))
+                 (:paths record)))
+      (throw (ex-info "Session-commit link path references an inconsistent claim"
+                      {:error/type :inbox-zero/invalid-link-claim :link/id id}))
+
       :else (assoc-in state [:records id] record))))
 
 (defn replay [records]
@@ -165,10 +290,34 @@
         ;; become inconsistent through manual edits.
         (let [type-order {:inbox-zero/session-seat 0
                           :inbox-zero/file-observation 1
-                          :inbox-zero/session-file-claim 2}
-              replayed (replay (sort-by (juxt #(get type-order (:record/type %) 99)
-                                              record-id)
-                                        (vals (:records state))))]
+                          :inbox-zero/session-file-claim 2
+                          :inbox-zero/commit-scan-cursor 3
+                          :inbox-zero/commit-observation 4
+                          :inbox-zero/session-commit-link 5}
+              records (:records state)
+              cursor-depth
+              (fn cursor-depth [cursor seen]
+                (let [id (:cursor/id cursor)]
+                  (when (seen id)
+                    (throw (ex-info "Commit cursor chain contains a cycle"
+                                    {:error/type :inbox-zero/cursor-chain-corrupt
+                                     :cursor/id id})))
+                  (if-let [prior-id (:prior/cursor-id cursor)]
+                    (let [prior (get records prior-id)]
+                      (when-not (= :inbox-zero/commit-scan-cursor
+                                   (:record/type prior))
+                        (throw (ex-info "Commit cursor references an unknown prior cursor"
+                                        {:error/type :inbox-zero/unknown-prior-cursor
+                                         :cursor/id id :prior/cursor-id prior-id})))
+                      (inc (cursor-depth prior (conj seen id))))
+                    0)))
+              order-key (fn [record]
+                          [(get type-order (:record/type record) 99)
+                           (if (= :inbox-zero/commit-scan-cursor (:record/type record))
+                             (cursor-depth record #{})
+                             0)
+                           (record-id record)])
+              replayed (replay (sort-by order-key (vals records)))]
           (when-not (= state replayed)
             (throw (ex-info "Inbox-zero state is not canonical"
                             {:error/type :inbox-zero/noncanonical-state

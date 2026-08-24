@@ -16,6 +16,7 @@
            [java.nio.file Files StandardCopyOption]
            [java.nio.file.attribute FileAttribute]
            [java.security MessageDigest]
+           [java.time OffsetDateTime]
            [java.util Date]))
 
 (defn- sha-256-bytes [bytes]
@@ -39,6 +40,98 @@
 (defn worktree-id [repo-root]
   (let [canonical (.getCanonicalPath (io/file repo-root))]
     (str "worktree:" (subs (sha-256-value canonical) 7 23))))
+
+(defn- cursor-id [worktree sha reason prior-id]
+  (str "commit-scan-cursor:"
+       (subs (sha-256-value [worktree sha reason prior-id]) 7)))
+
+(defn- cursor-record [worktree sha reason prior-id observed-at]
+  {:record/type :inbox-zero/commit-scan-cursor
+   :cursor/id (cursor-id worktree sha reason prior-id)
+   :worktree/id worktree
+   :cursor/sha sha
+   :cursor/reason reason
+   :prior/cursor-id prior-id
+   :observed-at observed-at})
+
+(defn- git-lines [repo-root & args]
+  (->> (apply git! repo-root args)
+       str/split-lines
+       (remove str/blank?)
+       vec))
+
+(defn- reachable? [repo-root ancestor descendant]
+  (zero? (:exit (sh "git" "-C" repo-root "merge-base" "--is-ancestor"
+                    ancestor descendant))))
+
+(defn- first-run-baseline [repo-root head lookback]
+  (let [history (git-lines repo-root "rev-list" "--reverse" head)
+        index (max 0 (- (count history) 1 lookback))]
+    (nth history index)))
+
+(defn- commit-observation [repo-root repo-id worktree sha observed-at]
+  (let [[commit parents authored]
+        (str/split (str/trim (git! repo-root "show" "-s"
+                                  "--format=%H%x00%P%x00%aI" sha)) #"\u0000" -1)
+        paths (->> (git-lines repo-root "diff-tree" "--root" "--no-commit-id"
+                              "--name-only" "-r" sha)
+                   sort vec)]
+    {:record/type :inbox-zero/commit-observation
+     :commit-observation/id
+     (str "commit-observation:" (subs (sha-256-value [worktree commit]) 7))
+     :repo/id repo-id
+     :worktree/id worktree
+     :commit/sha commit
+     :change/id nil
+     :parents (if (str/blank? parents) [] (vec (str/split parents #" ")))
+     :paths paths
+     :authored-at (Date/from (.toInstant (OffsetDateTime/parse authored)))
+     :observed-at observed-at
+     :source :git}))
+
+(defn observe-commits
+  "Return immutable cursor and commit records for one repository.
+
+  The live scanner is forward-only because commit observations link witnessed
+  claims, and claims cannot predate producer activation. On first run it
+  records HEAD as a baseline and emits no observations. `commit-lookback'
+  explicitly opts into a bounded backfill by baselining at HEAD~N (clamped at
+  the root); retroactive mission claiming remains a separate pass. History
+  rewrites produce a loud :rebaseline-rewrite cursor and no guessed links."
+  [store {:keys [path label commit-lookback] :or {commit-lookback 0}} observed-at]
+  (when-not (and (integer? commit-lookback) (not (neg? commit-lookback)))
+    (throw (ex-info "Commit lookback must be a non-negative integer"
+                    {:error/type :inbox-zero/invalid-commit-lookback
+                     :commit-lookback commit-lookback})))
+  (let [repo-root (.getCanonicalPath (io/file path))
+        worktree (worktree-id repo-root)
+        head (str/trim (git! repo-root "rev-parse" "HEAD"))
+        current (get (projection/current-commit-cursors store) worktree)]
+    (cond
+      (nil? current)
+      (let [baseline (first-run-baseline repo-root head commit-lookback)
+            first-cursor (cursor-record worktree baseline :baseline nil observed-at)
+            shas (git-lines repo-root "rev-list" "--reverse"
+                            (str baseline ".." head))
+            observations (mapv #(commit-observation repo-root label worktree % observed-at)
+                               shas)]
+        (cond-> [first-cursor]
+          (seq shas) (into observations)
+          (seq shas) (conj (cursor-record worktree head :advance
+                                          (:cursor/id first-cursor) observed-at))))
+
+      (not (reachable? repo-root (:cursor/sha current) head))
+      [(cursor-record worktree head :rebaseline-rewrite
+                      (:cursor/id current) observed-at)]
+
+      (= (:cursor/sha current) head) []
+
+      :else
+      (let [shas (git-lines repo-root "rev-list" "--reverse"
+                            (str (:cursor/sha current) ".." head))]
+        (into (mapv #(commit-observation repo-root label worktree % observed-at) shas)
+              [(cursor-record worktree head :advance
+                              (:cursor/id current) observed-at)])))))
 
 (defn- porcelain-status [xy]
   (cond
@@ -178,16 +271,36 @@
 (defn run-cycle!
   "Ingest explicit witnesses, observe all configured repos, and persist once.
   Returns the resulting state and pure projection."
-  [{:keys [state-path witness-path roots now]
+  [{:keys [state-path witness-path roots now commit-lookback]
     :or {now (Date.)}}]
   (when-not (and (string? state-path) (not (str/blank? state-path)))
     (throw (ex-info "Inbox-zero state path is required"
                     {:error/type :inbox-zero/state-path-required})))
   (let [with-witnesses (state/append-records! state-path (read-witnesses witness-path))
-        observations (mapcat #(observe-repo with-witnesses % now) roots)
+        commit-records
+        (loop [stored with-witnesses roots roots records []]
+          (if-let [root (first roots)]
+            (let [batch (observe-commits stored
+                                         (cond-> root
+                                           (some? commit-lookback)
+                                           (assoc :commit-lookback commit-lookback))
+                                         now)]
+              (recur (reduce state/apply-record stored batch)
+                     (next roots) (into records batch)))
+            records))
+        with-commits (reduce state/apply-record with-witnesses commit-records)
+        commit-observations (filterv #(= :inbox-zero/commit-observation
+                                         (:record/type %))
+                                     commit-records)
+        links (projection/derive-session-commit-links
+               with-commits commit-observations now)
+        with-links (state/append-records! state-path (into (vec commit-records) links))
+        observations (mapcat #(observe-repo with-links % now) roots)
         stored (state/append-records! state-path observations)]
     {:state stored
      :observations-written (count observations)
+     :commit-observations-written (count commit-observations)
+     :session-commit-links-written (count links)
      :projection (projection/project-dirty-sets stored now)}))
 
 (defn send-eligible-followups!

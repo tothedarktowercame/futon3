@@ -41,6 +41,29 @@
   (let [canonical (.getCanonicalPath (io/file repo-root))]
     (str "worktree:" (subs (sha-256-value canonical) 7 23))))
 
+(defn git-repository?
+  "True when REPO-ROOT exists and is inside a git worktree."
+  [repo-root]
+  (let [dir (io/file (str repo-root))]
+    (and (.isDirectory dir)
+         (zero? (:exit (sh "git" "-C" (str repo-root)
+                           "rev-parse" "--git-dir"))))))
+
+(defn- root-skip
+  "A skipped-root entry: why REASON stopped observation of ROOT this cycle.
+  Carries the failing command's ex-data (bounded) so the fault names itself —
+  a swallowed root error presenting as 'no data' is how one unrepo'd
+  directory silently disabled fleet-wide observation (2026-08-24)."
+  [root reason error]
+  (cond-> {:root (:path root) :label (:label root) :reason reason}
+    error (assoc :detail
+                 (let [data (ex-data error)]
+                   (cond-> {:message (.getMessage ^Throwable error)}
+                     data (merge (select-keys data [:error/type :args :exit]))
+                     (:stderr data)
+                     (assoc :stderr (let [s (str (:stderr data))]
+                                      (subs s 0 (min 500 (count s))))))))))
+
 (defn- cursor-id [worktree sha reason prior-id]
   (str "commit-scan-cursor:"
        (subs (sha-256-value [worktree sha reason prior-id]) 7)))
@@ -277,17 +300,30 @@
     (throw (ex-info "Inbox-zero state path is required"
                     {:error/type :inbox-zero/state-path-required})))
   (let [with-witnesses (state/append-records! state-path (read-witnesses witness-path))
-        commit-records
-        (loop [stored with-witnesses roots roots records []]
-          (if-let [root (first roots)]
-            (let [batch (observe-commits stored
-                                         (cond-> root
-                                           (some? commit-lookback)
-                                           (assoc :commit-lookback commit-lookback))
-                                         now)]
-              (recur (reduce state/apply-record stored batch)
-                     (next roots) (into records batch)))
-            records))
+        ;; A root that is not a git repository, or whose git commands fail,
+        ;; is skipped WITH A REASON for this cycle — never fatal to the other
+        ;; roots. One bad root must not disable fleet-wide observation.
+        {usable true not-repos false} (group-by (comp boolean git-repository? :path)
+                                                roots)
+        pre-skips (mapv #(root-skip % :not-a-git-repository nil) not-repos)
+        [commit-records commit-skips]
+        (loop [stored with-witnesses rs usable records [] skips []]
+          (if-let [root (first rs)]
+            (let [{:keys [batch skip]}
+                  (try
+                    {:batch (observe-commits stored
+                                             (cond-> root
+                                               (some? commit-lookback)
+                                               (assoc :commit-lookback commit-lookback))
+                                             now)}
+                    (catch Exception error
+                      {:skip (root-skip root :git-error error)}))]
+              (if skip
+                (recur stored (next rs) records (conj skips skip))
+                (recur (reduce state/apply-record stored batch)
+                       (next rs) (into records batch) skips)))
+            [records skips]))
+        failed-paths (into #{} (map :root) commit-skips)
         with-commits (reduce state/apply-record with-witnesses commit-records)
         commit-observations (filterv #(= :inbox-zero/commit-observation
                                          (:record/type %))
@@ -295,12 +331,22 @@
         links (projection/derive-session-commit-links
                with-commits commit-observations now)
         with-links (state/append-records! state-path (into (vec commit-records) links))
-        observations (mapcat #(observe-repo with-links % now) roots)
+        [observations observe-skips]
+        (reduce (fn [[obs skips] root]
+                  (if (failed-paths (:path root))
+                    [obs skips]
+                    (try
+                      [(into obs (observe-repo with-links root now)) skips]
+                      (catch Exception error
+                        [obs (conj skips (root-skip root :git-error error))]))))
+                [[] []]
+                usable)
         stored (state/append-records! state-path observations)]
     {:state stored
      :observations-written (count observations)
      :commit-observations-written (count commit-observations)
      :session-commit-links-written (count links)
+     :skipped-roots (vec (concat pre-skips commit-skips observe-skips))
      :projection (projection/project-dirty-sets stored now)}))
 
 (defn send-eligible-followups!

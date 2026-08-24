@@ -280,3 +280,42 @@
         (is (= old-head (:prior/cursor-id (first records))))
         (is (empty? (filter #(= :inbox-zero/commit-observation (:record/type %))
                             records)))))))
+
+(deftest non-repo-root-is-skipped-with-reason-and-cycle-completes
+  (let [repo (init-repo)
+        plain (temp-dir "inbox-zero-not-a-repo")
+        state-file (io/file (temp-dir "inbox-zero-state") "state.edn")]
+    (spit (io/file repo "untracked.txt") "dirt\n")
+    (spit (io/file plain "orphan.txt") "content outside git\n")
+    (let [result (watcher/run-cycle!
+                  {:state-path (.getPath state-file)
+                   :roots [{:path (.getPath plain) :label "unrepo"}
+                           {:path (.getPath repo) :label "fixture"}]})]
+      (is (= [{:root (.getPath plain) :label "unrepo"
+               :reason :not-a-git-repository}]
+             (:skipped-roots result))
+          "the non-repo root is skipped loudly, without detail noise")
+      (is (.exists state-file) "state is persisted despite the bad root")
+      (is (some #(= "untracked.txt" (:path %))
+                (vals (projection/current-observations (:state result))))
+          "the healthy root is still observed"))))
+
+(deftest git-error-in-one-root-is-isolated-and-names-itself
+  (let [repo (init-repo)
+        empty-repo (temp-dir "inbox-zero-empty-repo")
+        state-file (io/file (temp-dir "inbox-zero-state") "state.edn")]
+    (git! empty-repo "init" "-q")
+    (spit (io/file repo "untracked.txt") "dirt\n")
+    (let [result (watcher/run-cycle!
+                  {:state-path (.getPath state-file)
+                   :roots [{:path (.getPath empty-repo) :label "no-commits"}
+                           {:path (.getPath repo) :label "fixture"}]})
+          [skip :as skips] (:skipped-roots result)]
+      (is (= 1 (count skips)))
+      (is (= [:git-error (.getPath empty-repo)]
+             [(:reason skip) (:root skip)]))
+      (is (string? (get-in skip [:detail :message]))
+          "the skip carries the failing command's story")
+      (is (some #(= "untracked.txt" (:path %))
+                (vals (projection/current-observations (:state result))))
+          "the healthy root is still observed"))))

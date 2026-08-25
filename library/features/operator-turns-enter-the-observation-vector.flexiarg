@@ -74,6 +74,37 @@
     on it rather than beside it: over 30 hours its tier 1 fired zero times.
     See FAILURE-MODES.
 
+  + joined: What the 2026-08-25 session established, by reading the running
+    system rather than the pattern. Five edges exist and nothing joins them;
+    the join key is the session id, the same string in all of them.
+
+      turn -> pattern   context-retrieval evidence (dev.clj context-retrieval!)
+                        per turn, (agent-id, session-id, turn-n) -> ranked
+                        pattern ids with cosine scores. RUNNING, including on
+                        operator turns: the live ring buffer holds queries
+                        beginning "Surface: emacs-repl / From: joe".
+      turn -> file      :inbox-zero/session-file-claim, :witness/id = tool-use id
+      turn -> commit    :inbox-zero/session-commit-link, :basis typed
+      turn -> mission   the seat clock, stamped as a `Mission:` commit trailer
+      pattern -> mission  the library's @why links (static)
+
+    The structure those nodes want is a CASCADE, and the consumer already
+    exists: futon3c.peripheral.strategic-cascade builds a reason-bearing
+    frontier over {:shown [ids] :semilattice {:descent [[a b]]} :policy-holes}
+    and live-wm-selection consumes it. Its edge schema already carries
+    :status #{:proposed :witnessed :challenged :retracted} and refuses an edge
+    without provenance, for the stated reason that "an embedding suggestion can
+    never become an unattributed graph fact" (futon2 mission_control_graph).
+    So the promotion economy of cascades/edges-earn-permanence is in code, not
+    only in the library.
+
+    One namespace gap, measured: valid-control-pattern-id? requires a `p4ng/`
+    prefix; 58 of the 1400 rows in futon3/resources/sigils/patterns-index.tsv
+    are p4ng/*, and per-turn retrieval returns shelf ids like
+    devmap-coherence/*, fulab/*, iching/*. The consumer cannot currently eat
+    what the producer makes. That bridge is the smallest thing standing between
+    this feature and a live consumer.
+
   + IF:
     Operator turns are captured, typed, and text-searchable.
 
@@ -190,3 +221,11 @@
          first is much cheaper.]
     next[Before either, make the seat-id join hold -- a sessionless seat id is
          being produced at turn end today and joins to nothing.]
+    next[Measure top-3 embedding retrieval precision before building on it. A
+         sampled turn returned iching/hexagram-39-jian at rank 2 (0.4744)
+         against rank 1's 0.4809; nothing in the stack knows whether that is a
+         hit. A cascade inherits every error in its nodes and compounds them
+         into edges, and an operator-facing cascade spends the one resource
+         this design is short of.]
+    next[Bridge the 58 p4ng/* control patterns to shelf retrieval, or state
+         that the WM consumer is out of scope for the first cut.]

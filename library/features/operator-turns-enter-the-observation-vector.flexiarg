@@ -6,6 +6,7 @@
 @builds-from problems/operator-turns-become-inference-observations
 @audience whoever picks up C-R2
 @tone plain-operational
+@adjacent-to [futon0/README-inbox-zero.md futon0/holes/excursions/E-inbox-zero-implementation.md]
 @references [problems/operator-turns-become-inference-observations
              features/emit-per-tick-mismatch
              war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch]
@@ -37,6 +38,41 @@
         Nothing in that vector is a function of anything Joe did.
     So this is not "build a turn parser". It is "connect two things that were
     built years apart and never wired to each other".
+
+  + adjacent: Most of that wire is built already, in a project that was not
+    aiming at R2. futon0/README-inbox-zero and E-inbox-zero-implementation
+    (slices 1-11, merged 2026-08-21..24) supply, and are RUNNING on zone as of
+    2026-08-25 18:27:
+      - a turn-level producer with an explicit witness. dev.clj's
+        record-inbox-zero-tool-results! mints a session-file claim only from a
+        tool_result that is not an error -- intent is not authorship -- carrying
+        {:seat/id "seat:<agent>:<session>", :witness/type :tool-edit,
+        :witness/id "toolu_..."}. 54 claims on disk, 3,621 file observations,
+        115 commit observations. A turn, typed, durable, keyed to the act.
+      - basis-typed edges. futon3.inbox-zero.infer ranks evidence
+        :direct / :corroborated / :weak, fails closed, and gates :weak behind an
+        explicit flag. This channel needs exactly that: a value carrying how it
+        was come by, the way :selection-source does.
+      - CONFIRMATION MINTS; INFERENCE ONLY PROPOSES. The confirmation keystroke
+        converts inference-strength into witness-strength. That is the
+        :acknowledged? producer generalised -- an operator act that changes the
+        epistemic status of a record -- and it is the smallest complete instance
+        of what this feature claims. The cost of skipping it is measured:
+        autoclock mission-linkage, inferred and written without confirmation,
+        "present on 65% of turns and substantially wrong" (M-futon-problems D8).
+      - a delivery lane with an acknowledgement lifecycle. The slice-4 followup
+        queue is exact-seat, deduped and busy-gated, and carries
+        :queued/:delivered/:acked/:cancelled/:expired with timestamps. An
+        acknowledgement is already a durable record there. The operator lane has
+        no such record anywhere.
+      - the same ladder one level up. README-inbox-zero's escalation tiers
+        (0 nobody / 1 responsible seat / 2 sweeper / 3 Joe) are silent/brief/nag
+        under other names, and its rule -- "volume is never by itself a tier-3
+        signal" -- is what the nag gate is trying to say.
+
+    And it currently fails the same way, which is the sharpest reason to build
+    on it rather than beside it: over 30 hours its tier 1 fired zero times.
+    See FAILURE-MODES.
 
   + IF:
     Operator turns are captured, typed, and text-searchable.
@@ -73,7 +109,14 @@
        first cut being recent-correction-or-approval pressure, so that ✘ and ✓
        are distinguishable and neither is confused with silence. State its
        provenance the way `:selection-source` distinguishes an operator pick
-       from the selector's.
+       from the selector's -- and prefer inbox-zero's three-class basis ranking
+       (:direct / :corroborated / :weak) to inventing a second vocabulary for
+       the same distinction.
+       The cheapest honest version reuses the followup queue rather than the
+       mark corpus: an :acked followup IS an operator turn -- durable,
+       exact-seat, already timestamped. Building the channel on acknowledgement
+       first gets a real operator act into the vector on rails that exist; the
+       mark corpus is the richer second source, not a prerequisite.
     2. Show it is read. Run one window of >= 111 classifications with the
        channel live, and the same window with it held at a constant, and record
        both inference results.
@@ -111,6 +154,23 @@
       and `FUTON3C_SELF_MARKS=false` each silence part of the input. WR-26: the
       pilot records which switches were in which state, or its zero means
       nothing.
+    - Inheriting a ladder whose top rung has no producer. Verified on zone,
+      2026-08-25: storage/inbox-zero/escalation-ledger.edn holds 3,263
+      promotion plans from 08-24T12:11 to 08-25T17:55, ALL :verdict :held,
+      :held/reason :nothing-promotable, :route/tier 2, recipient
+      "street-sweeper". :include is empty in all 3,263; the 37,195 path
+      exclusions are 35,714 :unattributed and 1,481 :other-seat. The cause is
+      upstream of attribution and is an identity join, not a threshold: dev.clj
+      calls `turn-promotion/launch-at-turn-end!` with the invoke path's session
+      id, which is sometimes nil, and `promote-at-turn-end!` builds
+      `(str "seat:" agent-id ":" session-id)` with no guard -- so a plan's seat
+      reads `seat:f35-guide:` while every claim that same agent minted reads
+      `seat:f35-guide:83f524b5-...`. promotion.clj includes a path only when
+      `(= seat-id (:seat/id (first claims)))`, so a sessionless plan can never
+      include anything. All six seats in the ledger are sessionless. Every step
+      is fail-closed and correct, and the system produces nothing. A channel
+      built on this substrate inherits that: check the seat ids join before
+      reading any zero as an operator being quiet.
     - Laundering. `:acknowledged?` and the mark channel are DESCRIPTIVE. INV-5
       forbids a predicted-importance signal reaching the lane classifier, and a
       channel derived from Joe's turns is exactly the thing someone will be
@@ -125,3 +185,8 @@
     next[Pick the >= 111-item window and record it before running, so the live
          and frozen runs are the same window.]
     next[Tighten the R2 promotion test so step 0 alone cannot satisfy it.]
+    next[Decide the source: acknowledged followups (rails exist, thin signal)
+         or the mark corpus (rich, needs the fts join). Not exclusive, and the
+         first is much cheaper.]
+    next[Before either, make the seat-id join hold -- a sessionless seat id is
+         being produced at turn end today and joins to nothing.]

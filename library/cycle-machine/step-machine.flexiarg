@@ -1,0 +1,39 @@
+@flexiarg cycle-machine/step-machine
+@title Step Machine: Intents, Pre-State Digests, Postconditions
+@keywords durable, coordinator, intent, resume, pre-state, postcondition, idempotent, reload
+@audience cycle-machine builders, APM maintainers
+@tone formal-analytic
+@grade principle
+@why futon-theory/durability-first coordination/session-durability-check
+@see-also cycle-machine/job-port
+@how cycle-machine/runtime-restoration cycle-machine/disruption-soak   ;; editorial, same author same pass, 2026-08-23: the two methods by which the durability claim is carried out
+@theory-grounding [A1(Auditability) I1(Boundary) A4(Degradation-detectable)]
+
+! conclusion:
+  If you want "solve them in order" to survive JVM reloads, job-cap kills, and operator restarts, then drive the cycle as a durable step machine whose every step is a persisted intent bound to a pre-state digest, reconciled by exactly one port call, and checked against a declared postcondition before the state advances.
+
+  + context: Each phase of the cycle is long-running and external. A driver that "runs a phase" blocks across a boundary it cannot hold (the JVM may reload; the job may be killed at the Agency cap). The only durable unit is one step: decide → persist intent → call a port → reconcile → advance.
+
+  + IF:
+    the cycle must be resumable from its state file alone, by a different process than the one that started it
+
+  + HOWEVER:
+    a step function mistaken for a phase function reports "awaiting" as "done"; an intent reconciled against a state that moved underneath it applies the wrong phase's step; a resume that re-registers a fresh coordinator instead of recovering the existing one fragments the ledger (retry-v1/-v2/-v3) and hides the attempt count from the machine itself
+
+  + THEN:
+    keep the durable_coordinator shape that landed 2026-08-23: decide-fn emits an intent {:dispatch/id :dispatch/action :dispatch/parameters :pre-state/version :pre-state/digest :expected/postcondition}; persist it before acting; reconcile-fn makes one port call and refuses if the intent's parameters disagree with current state (phase-intent-drift); postcondition-satisfied? gates the state update; and add two things the cluster has not yet: (a) one coordinator per problem with :retry/count and :retry/reason on the state, so a retry is a state transition rather than a new registration, and (b) a soak test that starts a coordinator on a fixture, injects each known disruption mid-step (namespace reload, job killed at cap, process restart, corpus revision moved), and asserts the machine resumes to the same phase with the same pending-intent digest
+
+    + VALIDATION:
+      - [ ] Every intent persisted carries :dispatch/parameters, :pre-state/digest and :expected/postcondition; intent-findings rejects any missing.
+      - [ ] reconcile-fn makes exactly one port call per intent (assert via recording ports in tests).
+      - [ ] The registry holds one coordinator per problem; retries are :retry/count increments on that entry, and a test asserts that registering a second coordinator for a problem already registered is refused.
+      - [ ] A retry beyond the configured maximum yields a typed :retry-exhausted ruling, not a fresh registration.
+      - [ ] disruption-soak passes for every listed disruption (see cycle-machine/disruption-soak).
+
+  + BECAUSE:
+    an intent with a pre-state digest is the only thing that makes "the world moved while I was away" detectable rather than silent; a retry counter on one coordinator is what lets the machine refuse the fourth attempt; and the disruption soak turns the next five incidents into one test file
+
+    + evidence: 225f9eda (drive! returns :awaiting-terminal after one step; callers treated as phase done), fe0f89a0, 1f7dc5a0, cc8439cf, 57f6e4f5 (postcondition-satisfied?, :library-lane-phase-intent-drift) — this cluster is converging; pattern records the shape that worked. Counter-evidence: jit-m94A03-retry-v1/-v2/-v3 registered as three coordinators for one problem
+
+    + RESULT:
+      phase drivers become thin; all blocking lives in the port's await-terminal! under a budget; the coordinator registry holds one entry per problem whose history is legible to the whitepaper

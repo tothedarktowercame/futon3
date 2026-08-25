@@ -1,0 +1,40 @@
+@flexiarg cycle-machine/authority-port
+@title Authority Port: One Resolver for Roots and Revisions
+@keywords checkout, control-root, campaign-root, workspace, worktree, revision, path-resolution, silent-failure
+@audience cycle-machine builders, APM maintainers
+@tone formal-analytic
+@grade technique
+@why cycle-machine/single-producer futon-theory/single-source-of-truth
+@see-also coordination/artifact-registration
+@theory-grounding [I1(Boundary) A1(Auditability) A4(Degradation-detectable)]
+
+! conclusion:
+  If you want paths and revisions handed to agents to mean what the controller thinks they mean, then resolve every path through one authority-port that takes a named root kind and a path kind, returns an absolute path, and refuses a dispatch whose resolved inputs do not exist.
+
+  + context: A cycle run touches at least four roots: the control checkout (futon3c master, the running JVM's classpath), the campaign root (data/apm-campaigns/<queue>), the qualification worktree (pinned revision of the corpus), and the solver's workspace (an apm-lean worktree with no futon3c files at all). A relative path is meaningless without saying which.
+
+  + IF:
+    any phase builds a path or picks a git revision to hand to an agent, a script, or a persisted state file
+
+  + HOWEVER:
+    if each site concatenates its own root, the wrong root is chosen silently; some wrong roots stall (file not found, ruled :blocked) but the dangerous ones degrade (the agent proceeds without the contract it was supposed to read, and the run "succeeds" with poisoned evidence)
+
+  + THEN:
+    implement one function
+      (resolve authority root-kind path-kind) -> absolute Path
+    where authority = {:control-root :campaign-root :qualification-root :workspace}, root-kind ∈ those keys, path-kind is an enumerated set (:role-card :contract :manifest :coordinator-state :problem-file :ledger …) with a fixed root per kind; pin revisions the same way ((resolve-revision authority :corpus) -> sha, qualified against master); grep src/futon3c/apm for (str root "/, io/file, fs/path and route them through it; and before every dispatch, Files/exists each resolved path that will be handed to an agent — refuse with a typed finding if any is missing
+
+    + VALIDATION:
+      - [ ] One function resolves (authority root-kind path-kind) → Path; a path-kind → root table is data, not code scattered across sites.
+      - [ ] grep src/futon3c/apm for (str .*root, io/file, Paths/get: every hit is inside the port or a test.
+      - [ ] Revision pinning goes through the same port (resolve-revision) and is qualified against master.
+      - [ ] Before every dispatch, every path handed to an agent is existence-checked; a missing path yields a typed refusal {:error/code :authority-path-missing :path-kind …}, never a dispatch.
+      - [ ] A test constructs the four roots in a temp dir, resolves every path-kind, and asserts each lands under the expected root; a second test asserts the refusal on a missing role card (the b95dff66 case).
+
+  + BECAUSE:
+    a path-kind → root table is one place to be wrong and one place to test; the existence check converts the silent mode (agent runs without its card) into a loud one (dispatch refused), and for evidence-gathering a loud failure is worth far more than a stall — it cannot poison a run
+
+    + evidence: cc753705, 7d9af67f, c899f291, a640348a, 6ef41088, b7b36218, b95dff66, 30995c8e, 11a2f940 — nine wrong-root repairs in 30 h; b95dff66: solver told to read its role card at a control-repo-relative path, workspace had no holes/, solver proceeded silently without its contract
+
+    + RESULT:
+      the "which checkout?" question is answered once; the one-JVM-per-repo policy (2026-08-23) becomes checkable at the port rather than by reading commit messages

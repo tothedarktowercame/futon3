@@ -1,0 +1,43 @@
+@flexiarg cycle-machine/job-port
+@title Job Port: One Producer of Dispatch Observations
+@keywords agency, announce, invoke, job-lifecycle, drainer, terminal, poll
+@audience cycle-machine builders, APM maintainers
+@tone formal-analytic
+@grade technique
+@why cycle-machine/single-producer
+@see-also coordination/bounded-execution coordination/session-durability-check
+@theory-grounding [I1(Boundary) A4(Degradation-detectable)]
+
+! conclusion:
+  If you want the cycle to dispatch external work reliably, then expose Agency through a single job-port whose operations are announce, activate, observe, and await-terminal, whose only output is a DispatchObservation, and whose semantics are fixed by a contract test against the real transport handler.
+
+  + context: Agency's announce reserves a ledger row and runs nothing; a follow-up /invoke carrying the same job-id runs it; /invoke/jobs/<id> reports state. This is recorded in memory ("announce reserves, /invoke runs") and was re-derived wrongly by each driver file in turn.
+
+  + IF:
+    any phase of the cycle needs an agent to do work (preflight, solve, verify, promote, student)
+
+  + HOWEVER:
+    if each phase driver calls the routes itself, it encodes its own belief about which route runs the job, what 202 means, and whether a timeout is failure; beliefs diverge across files and across branches (the /activate route existed on a branch and not on the master the :7070 JVM runs); the observable symptom is a job that sits queued while the driver reports success or waits on nothing
+
+  + THEN:
+    implement one namespace (candidate: futon3c.apm.live-preflight-runtime, which already holds 5 of the sites) with
+      announce!   -> {:job-id}                      ; reserve only
+      activate!   -> {:job-id :accepted?}           ; /invoke with the same job-id
+      observe     -> {:state :terminal? :exit ...}  ; GET /invoke/jobs/<id>
+      await-terminal! -> DispatchObservation       ; polls observe under a budget; never treats client timeout as success
+    make DispatchObservation constructible only from await-terminal!; route every other call site through it; and write one test that runs these four against the real futon3c.transport.http handler with an in-process agent, asserting: after announce! the state is queued and nothing runs; after activate! it runs; observe reports the state sequence; await-terminal! on a client timeout yields timeoutTreatedAsSuccess = false
+
+    + VALIDATION:
+      - [ ] One namespace exports announce!, activate!, observe, await-terminal!; nothing else in src/futon3c/apm contains the strings "/invoke/announce", "/invoke/jobs", or "/invoke/activate".
+      - [ ] DispatchObservation is constructed only inside await-terminal!.
+      - [ ] job_port_contract_test runs against futon3c.transport.http's handler function (not a mock, not a live :7070) with an in-process agent and asserts: queued-after-announce, runs-after-activate, state sequence observed, client-timeout ⇒ timeoutTreatedAsSuccess=false.
+      - [ ] await-terminal! takes a budget and returns a typed :budget-exhausted result; it never blocks unbounded.
+      - [ ] The five driver families (proof, learning, promotion, preflight, library) each import the port namespace and no route strings.
+
+  + BECAUSE:
+    the Lean predicate validDispatch (activatedJobId = announcedJobId ∧ activationAccepted ∧ terminalJobId = announcedJobId ∧ ¬timeoutTreatedAsSuccess) is only meaningful if one function is responsible for making those fields agree; and a contract test against the real handler is the only thing that catches a route that exists on one branch and not on master
+
+    + evidence: 67010bc7 ("activate doesn't exist, drainer adopts"), f981f441 ("drainer does not adopt; queued forever"), d915cce0 + revert cbb431dd, c04b5773, f17976fa, 5d8769cd — five theories in 25 h; codex-8 job orphaned 45+ min; 8 files / 21 direct route calls; 4 tests all mock announce
+
+    + RESULT:
+      a route change in transport.http breaks one test, not N drivers at run time; "orphaned job" incidents become a failing contract test rather than a 45-minute wait

@@ -1,0 +1,37 @@
+@flexiarg cycle-machine/single-producer
+@title Single Producer per Verified Structure
+@keywords producer, observation, contract-test, boundary, verified-model
+@audience cycle-machine builders, APM maintainers, Lean spec authors
+@tone formal-analytic
+@grade principle
+@why futon-theory/single-source-of-truth war-room/wr-22-logic-model-before-code-is-a-sanctioned-verify-method   ;; authored, claude/fable 2026-08-23: WR-22 read after the first draft; its HOWEVER names exactly the residue these ports carve out
+@see-also coordination/session-durability-check futon-theory/proof-path
+@theory-grounding [I1(Boundary) A1(Auditability) I2(Observation-action-asymmetry)]
+
+! conclusion:
+  If you want a verified process model to protect a running system, then every structure the model consumes must have exactly one producer, and that producer must have a contract test against the real counterpart it observes.
+
+  + context: A verified model is an adjudicator over observations. Verification says nothing about whether the observations are true. The shell that produces them is the trust boundary, and it is unverified by construction.
+
+  + IF:
+    you have a Lean (or other) model whose inputs are structures like DispatchObservation, PreflightAuthorityObservation, or a sorry baseline, and a Clojure shell that fills them from Agency, git, and a toolchain
+
+  + HOWEVER:
+    when several files each fill the structure from their own reading of the counterpart's semantics, each file encodes a theory; the theories diverge; the model faithfully adjudicates false observations; and each incident is repaired by adding a guard at the site that happened to fail — which does not converge, because the next site still holds its own theory
+
+  + THEN:
+    for each consumed structure, name one producer function; route every other call site through it; write one test that exercises the producer against the real counterpart (the real HTTP handler, a real git worktree, the real lake invocation on a fixture), not a mock; and treat any second producer as a lint failure
+
+    + VALIDATION:
+      - [ ] For each structure the Lean model consumes (DispatchObservation, PreflightAuthorityObservation, sorry baseline, RoleTerminalOutput, …) name its producer function in a table in this directory's INDEX.md.
+      - [ ] grep src/futon3c/apm for constructors of each structure: exactly one site.
+      - [ ] Each producer has a test whose name contains "contract" and which does not mock the counterpart.
+      - [ ] A lint (clj-kondo hook or test) fails when a second constructor appears.
+
+  + BECAUSE:
+    a single producer turns "which guard is missing?" into "which port lied?", which is answerable by one test run and closes a whole class of incidents rather than one instance; and the model's theorems become load-bearing only when their premises are obtained the same way every time
+
+    + evidence: futon3c 2026-08-17..23: DispatchObservation had 8 producer files and 0 contract tests; ~150 repair commits followed
+
+    + RESULT:
+      incident theorems (f25_reused_student_session_refused, stale_base_cannot_substitute_for_terminal_head, …) stop accumulating in the model; the model stays a model of the process rather than a ledger of its past failures

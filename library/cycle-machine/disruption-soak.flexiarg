@@ -1,0 +1,48 @@
+@flexiarg cycle-machine/disruption-soak
+@title Disruption Soak: Inject Every Known Disruption, Assert Same Phase and Same Intent
+@keywords soak, chaos, resume, reload, job-cap, restart, revision-moved, regression, fixture
+@audience cycle-machine builders, APM maintainers, reviewers
+@tone formal-analytic
+@grade technique
+@why cycle-machine/step-machine war-room/wr-27-a-loop-is-born-instrumented-for-its-gain
+@see-also coordination/cross-validation-protocol
+@theory-grounding [A4(Degradation-detectable) A1(Auditability)]
+
+! conclusion:
+  If you want the list of cycle disruptions to stop growing one incident at a time, then maintain one soak test that starts a step machine on a fixture, injects each known disruption mid-step, and asserts the machine resumes to the same phase with the same pending-intent digest — and require that every new incident be added to the soak as a disruption before its guard is merged.
+
+  + context: The step machine claims durability. A claim of durability is tested by disrupting, not by running. The known disruptions are finite and enumerable; the unknown ones become known exactly once each, at which point they belong in the list.
+
+  + IF:
+    a step machine is relied on to complete multi-phase runs unattended
+
+  + HOWEVER:
+    a guard added after an incident proves only that the specific failing site now handles the specific failing case; it does not prove the machine resumes, and it is silent about the other sites; the next incident is a different site with the same disruption
+
+  + THEN:
+    write test/futon3c/apm/disruption_soak_test.clj with a fixture coordinator (fake ports that record calls and can be told to fail) and one test per disruption, each of the form:
+      start → tick to phase P with pending intent I → DISRUPT → restore → tick → assert phase = P, pending-intent digest = digest(I), no duplicate port call, no second coordinator registered.
+    The initial disruption set:
+      :namespace-reload      — re-require the coordinator ns between ticks
+      :job-killed-at-cap     — job-port returns terminal {:state :killed} mid-await
+      :process-restart       — drop all in-memory state; rebuild coordinator from registry + state file only
+      :revision-moved        — corpus HEAD advances between decide and reconcile; expect :pre-state-digest mismatch, not a wrong-phase step
+      :state-file-partial    — truncated state file (simulates crash mid-persist); expect refusal with a typed finding, not a silent restart from :preflight
+      :duplicate-activation  — same intent reconciled twice; expect idempotence
+      :memory-store-down     — student/share port unavailable; expect :awaiting, not :closed
+    Each case is a fixture pair (state.edn + intent.edn) under test/resources/disruptions/<name>/ so an incident can be reproduced by dropping its captured state there.
+
+    + VALIDATION:
+      - [ ] disruption_soak_test.clj exists and runs in the fast test split.
+      - [ ] Every disruption in the initial set above has a test; none are skipped.
+      - [ ] Each test asserts phase, pending-intent digest, port-call count, and registry entry count — all four.
+      - [ ] A captured-state fixture directory exists and the test loads from it.
+      - [ ] Any commit whose message names an incident adds a disruption or a fixture, or says why not.
+
+  + BECAUSE:
+    "resumes to the same phase with the same intent" is the entire durability claim stated as one assertion; a test that makes it for every disruption is the only artefact that converts the week's incident log into a finite list with a known remaining size
+
+    + evidence: the week's ~150 APM repairs arrived one incident at a time; each disruption source (JVM reload, job killed at Agency cap, futon1b OOM, corpus revision moved under a launch, process restart) was discovered live, once, and guarded at the site that failed. No test injects any of them.
+
+    + RESULT:
+      a reviewer can answer "is this converging?" by diffing the disruption list against the incident ledger: a new incident that is not a new disruption means a guard is masking a cause

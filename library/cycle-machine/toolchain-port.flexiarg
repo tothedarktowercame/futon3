@@ -1,0 +1,40 @@
+@flexiarg cycle-machine/toolchain-port
+@title Toolchain Port: Corpus-Derived Baseline, Not Fixture-Derived
+@keywords lean, lake, preflight, sorry, warnings, linter, baseline, corpus
+@audience cycle-machine builders, APM maintainers, Lean spec authors
+@tone formal-analytic
+@grade technique
+@why cycle-machine/single-producer
+@see-also cycle-machine/authority-port
+@theory-grounding [A4(Degradation-detectable) I2(Observation-action-asymmetry)]
+
+! conclusion:
+  If you want preflight rulings that are about the problem rather than about the fixture, then obtain the Lean observation through one toolchain-port that returns a typed elaboration summary, and derive the accepted baseline from the distribution over the whole corpus before the first run, not from the next problem that fails.
+
+  + context: The Lean model has validPreflightSorryBaseline (warnings sorryWarnings errors : Nat) — a predicate over three numbers with no theory of how a toolchain produces them. The shell decided, per incident, what counts.
+
+  + IF:
+    a phase needs to know whether a problem file elaborates, how many sorries remain, and whether anything else is wrong
+
+  + HOWEVER:
+    if the accepted tuple is written from one hand-built example, every real corpus file with a linter hint, a deprecation, or a multi-sorry statement is ruled :blocked for a non-reason, and the validator is widened one incident at a time — there will always be a next shape
+
+  + THEN:
+    implement one function
+      (elaborate authority problem-id) -> {:exit n :errors n :sorry-warnings n :other-warnings [{:kind :linter|:deprecation|... :msg}]}
+    that runs lake env lean via the authority-port's resolved paths and classifies every diagnostic by kind; run it once over every problems/*/lean/Main.lean in the corpus and persist the distribution (data/apm-validation/corpus-baseline-<rev>.edn); define the accepted baseline as: exit 0 ∧ errors 0 ∧ sorry-warnings ≥ 1 ∧ other-warnings contain no :error-class kinds — a set derived from the distribution, with the excluded kinds listed explicitly; and have the Lean predicate consume (errors, sorryWarnings, blockingWarnings) rather than a raw warnings count
+
+    + VALIDATION:
+      - [ ] One function elaborate returns {:exit :errors :sorry-warnings :other-warnings [{:kind :msg}]}; no other site parses lean output.
+      - [ ] data/apm-validation/corpus-baseline-<rev>.edn exists, covers every problems/*/lean/Main.lean, and records the diagnostic-kind distribution.
+      - [ ] The acceptance rule lists excluded diagnostic kinds explicitly and is derived from (not contradicted by) that file.
+      - [ ] The Lean predicate takes (errors sorryWarnings blockingWarnings), not a raw warnings count; the emitted contract JSON and the Clojure validator agree (the existing cmp gate in apm-qualification-v1.edn still passes).
+      - [ ] A test feeds a fixture with one sorry + one linter hint and asserts ruling ≠ :blocked.
+
+  + BECAUSE:
+    a style lint is not an obstruction, and the only way to know which diagnostic kinds occur in the corpus is to look at the corpus; a baseline persisted per corpus revision is also evidence the whitepaper can cite
+
+    + evidence: 2cabe328, 204c7cdf, 58085cfd, 1e4aba80 — validator demanded exactly {:exit 0 :warnings 1 :sorry-warnings 1 :errors 0} because the hand-built countdown fixture produced that; t00J02 has one sorry plus a simpa linter hint → warnings 2 → ruled :blocked by a style lint; each commit widened acceptance for the next real problem
+
+    + RESULT:
+      the fifth widening commit never happens; the distinction "Lean warning vs. sorry validity" (204c7cdf) lives in the port's classifier, once

@@ -1,0 +1,46 @@
+@flexiarg cycle-machine/runtime-restoration
+@title Runtime Restoration: Reload the Shared JVM from Its Own Checkout, Whole
+@keywords shared-jvm, reload, load-file, worktree, classpath, restore, master, stale-namespace
+@audience cycle-machine builders, APM maintainers, operators
+@tone formal-analytic
+@grade technique
+@why cycle-machine/step-machine
+@see-also coordination/session-durability-check
+@theory-grounding [I1(Boundary) A4(Degradation-detectable)]
+
+! conclusion:
+  If you want a durable step machine to survive the one disruption it cannot detect from its state file — a stale or foreign namespace in the process that runs it — then provide one restoration command that reloads every cycle namespace from the canonical checkout, verifies each against the checkout's git HEAD, and re-adopts the registered coordinators, and make that command the only sanctioned way to recover the runtime.
+
+  + context: The step machine's pre-state digest detects a state that moved. It cannot detect code that moved: a namespace loaded from another worktree, or a namespace that was never reloaded after master advanced. Both present as "the system has a bug" and were diagnosed as such, twice in one morning.
+
+  + IF:
+    a cycle is driven by a long-lived shared JVM that is hot-loaded from several places by several agents
+
+  + HOWEVER:
+    a partial restore (one namespace) leaves the others stale; a restore that does not verify leaves no way to tell a restored runtime from a broken one; and a restore that does not re-adopt the coordinators leaves registered-but-unsupervised machines (enabled? true, nobody ticking)
+
+  + THEN:
+    implement scripts/restore-apm-runtime.sh (or extend restore-http-routes.sh) to:
+      1. refuse to run unless the control checkout is on master and clean for the namespaces it will load;
+      2. (require 'ns :reload) every namespace under futon3c.apm.* plus futon3c.transport.http, in dependency order, from the classpath — never load-file;
+      3. for each reloaded namespace, compare a digest of the loaded source (the JVM can report the file it loaded) to the checkout's blob; report any mismatch as a finding;
+      4. probe one master-only route and one coordinator status;
+      5. re-adopt every registry entry with :coordinator/enabled? true into the supervisor, and report which were orphaned before;
+      6. print a one-line receipt {:restored [...] :mismatched [...] :readopted [...]} and persist it under data/apm-runtime/restorations/.
+    Any other recovery path (load-file of a worktree, starting a second JVM, leaving a fork alive) is a violation per the 2026-08-23 policy, not an alternative.
+
+    + VALIDATION:
+      - [ ] A script exists that reloads ALL futon3c.apm.* namespaces, not just transport.http.
+      - [ ] It refuses when the checkout is not master or has uncommitted changes to the namespaces it loads.
+      - [ ] It uses require :reload through the classpath; grep shows no load-file.
+      - [ ] It re-adopts enabled registry entries and reports orphaned ones.
+      - [ ] It emits and persists a receipt naming restored / mismatched / readopted.
+      - [ ] Running it twice in a row produces an identical second receipt (idempotent).
+
+  + BECAUSE:
+    code staleness is invisible to the state machine by construction, so it needs its own detector; one command with a receipt turns "is the JVM healthy?" from a question only Joe can answer by restarting it into a check any agent can run and any reviewer can audit
+
+    + evidence: 2026-08-22/23: load-file of a 56-commits-behind worktree replaced transport.http in the :7070 JVM; every master-only route answered Unknown endpoint twice in one morning. 16058df7 "Recover library coordinator in the shared JVM": a stale futon3c.apm.* namespace was still live after restore-http-routes.sh, which reloads only transport.http
+
+    + RESULT:
+      the step-machine's disruption list gains a fourth entry (namespace reload) with a sanctioned remedy; cycle-machine/disruption-soak can inject it

@@ -133,3 +133,60 @@
       (is (empty? (:gate-results result)))
       (is (not (.exists marker)))
       (is (= before after)))))
+
+(deftest path-aware-gates-append-filter-and-preserve-order
+  (let [repo (init-repo)]
+    (doseq [path ["a.CLJ" "b.py" "c.md"]]
+      (spit (io/file repo path) path))
+    (let [result
+          (execute repo
+                   (plan [{:path "a.CLJ" :git/status :untracked}
+                          {:path "b.py" :git/status :untracked}
+                          {:path "c.md" :git/status :untracked}])
+                   {:gates [{:gate/name :clojure-paths
+                             :cmd ["sh" "-c" "printf '%s|' \"$@\"" "argv0"]
+                             :gate/paths? true
+                             :gate/extensions #{"clj"}}]})]
+      (is (= :committed (:verdict result)))
+      (is (= "a.CLJ|" (-> result :gate-results first :output))))))
+
+(deftest filtered-empty-gate-skips-and-plan-commits
+  (let [repo (init-repo)]
+    (spit (io/file repo "b.py") "python")
+    (let [result
+          (execute repo (plan [{:path "b.py" :git/status :untracked}])
+                   {:gates [{:gate/name :clojure-paths
+                             :cmd ["sh" "-c" "exit 99"]
+                             :gate/paths? true
+                             :gate/extensions #{"clj" "cljc"}}]})]
+      (is (= :committed (:verdict result)))
+      (is (= {:gate/name :clojure-paths :exit 0 :skipped? true
+              :output "no matching paths"}
+             (first (:gate-results result)))))))
+
+(deftest legacy-gate-receives-no-plan-paths
+  (let [repo (init-repo)]
+    (spit (io/file repo "a.clj") "clojure")
+    (let [result
+          (execute repo (plan [{:path "a.clj" :git/status :untracked}])
+                   {:gates [{:gate/name :legacy
+                             :cmd ["sh" "-c" "printf '%s|' \"$@\"" "argv0"]}]})]
+      (is (= :committed (:verdict result)))
+      (is (= "|" (-> result :gate-results first :output))))))
+
+(deftest malformed-path-aware-gates-fail-before-git
+  (doseq [gate [{:gate/name :extensions-only :cmd ["true"]
+                 :gate/extensions #{"clj"}}
+                {:gate/name :non-boolean :cmd ["true"] :gate/paths? :yes}
+                {:gate/name :non-set :cmd ["true"] :gate/paths? true
+                 :gate/extensions ["clj"]}
+                {:gate/name :non-string :cmd ["true"] :gate/paths? true
+                 :gate/extensions #{:clj}}]]
+    (let [error (try
+                  (promote-exec/execute-plan!
+                   (plan [{:path "a.clj" :git/status :untracked}])
+                   {:repo-root "/definitely/not/a/repository"
+                    :message "message" :gates [gate]})
+                  nil
+                  (catch clojure.lang.ExceptionInfo error error))]
+      (is (= :inbox-zero/invalid-gate (:error/type (ex-data error)))))))

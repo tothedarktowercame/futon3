@@ -5,14 +5,11 @@
   status classes, runs caller-supplied gates, stages exactly the planned paths,
   verifies the complete cached path set, and commits without pushing."
   (:require [clojure.java.shell :as shell]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [futon3.inbox-zero.gates :as gates])
   (:import [java.util Date]))
 
-(def output-limit 4096)
 (def index-path-limit 100)
-
-(defn- bounded [text]
-  (subs (str text) 0 (min output-limit (count (str text)))))
 
 (defn- command-result [repo-root command]
   (apply shell/sh (concat command [:dir repo-root])))
@@ -60,37 +57,11 @@
           :executed-at (Date.)}
          extra))
 
-(defn- run-gates [repo-root gates]
-  (loop [remaining gates results []]
-    (if-let [{:gate/keys [name] :keys [cmd]} (first remaining)]
-      (let [{:keys [exit out err]}
-            (try
-              (command-result repo-root cmd)
-              (catch Exception error
-                {:exit -1 :out "" :err (.getMessage error)}))
-            gate-result {:gate/name name
-                         :exit exit
-                         :output (bounded (str out err))}
-            results* (conj results gate-result)]
-        (if (zero? exit)
-          (recur (next remaining) results*)
-          {:passed? false :results results*}))
-      {:passed? true :results results})))
-
 (defn- validate-input! [plan gates message]
   (when-not (and (string? message) (not (str/blank? message)))
     (throw (ex-info "Promotion commit message must be non-blank"
                     {:error/type :inbox-zero/invalid-message})))
-  (when-not (vector? gates)
-    (throw (ex-info "Promotion gates must be a vector"
-                    {:error/type :inbox-zero/invalid-gates})))
-  (doseq [gate gates]
-    (when-not (and (keyword? (:gate/name gate))
-                   (vector? (:cmd gate))
-                   (seq (:cmd gate))
-                   (every? string? (:cmd gate)))
-      (throw (ex-info "Promotion gate is malformed"
-                      {:error/type :inbox-zero/invalid-gate :gate gate}))))
+  (gates/validate-gates! gates)
   (let [paths (mapv :path (:include plan))]
     (when-not (and (seq paths)
                    (every? #(and (string? %) (not (str/blank? %))) paths)
@@ -122,7 +93,9 @@
           (result plan :held :stale-plan [])
 
           :else
-          (let [{:keys [passed? results]} (run-gates repo-root gates)]
+          (let [paths (mapv :path (:include plan))
+                {:keys [passed? results]}
+                (gates/run-gates repo-root gates paths)]
             (if-not passed?
               (result plan :held :gate-failed results)
               (let [paths (mapv :path (:include plan))

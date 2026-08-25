@@ -131,3 +131,16 @@
                  :now executed-at})]
     (is (= :nothing-to-commit (:verdict result)))
     (is (empty? @calls))))
+
+(deftest path-aware-gate-filters-amnesty-baseline
+  (let [repo (init-repo)]
+    (spit (io/file repo "one.txt") "changed one\n")
+    (spit (io/file repo "rule.CLJ") "new rule\n")
+    (let [result
+          (execute repo (plan ["one.txt" "rule.CLJ"])
+                   {:gates [{:gate/name :clojure-paths
+                             :cmd ["sh" "-c" "printf '%s|' \"$@\"" "argv0"]
+                             :gate/paths? true
+                             :gate/extensions #{"clj"}}]})]
+      (is (= :committed (:verdict result)))
+      (is (= "rule.CLJ|" (-> result :gate-results first :output))))))

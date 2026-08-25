@@ -5,7 +5,8 @@
   only the plan's baseline paths, verifies the complete staged path set, and
   never pushes."
   (:require [clojure.java.shell :as shell]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [futon3.inbox-zero.gates :as gates])
   (:import [java.time Instant]
            [java.util Date]))
 
@@ -42,34 +43,8 @@
           :executed-at now}
          extra))
 
-(defn- run-gates [repo-root gates]
-  (loop [remaining gates results []]
-    (if-let [{:gate/keys [name] :keys [cmd]} (first remaining)]
-      (let [{:keys [exit out err]}
-            (try
-              (apply shell/sh (concat cmd [:dir repo-root]))
-              (catch Exception error
-                {:exit -1 :out "" :err (.getMessage error)}))
-            gate-result {:gate/name name
-                         :exit exit
-                         :output (bounded (str out err))}
-            results* (conj results gate-result)]
-        (if (zero? exit)
-          (recur (next remaining) results*)
-          {:passed? false :results results*}))
-      {:passed? true :results results})))
-
 (defn- validate-input! [plan gates]
-  (when-not (vector? gates)
-    (throw (ex-info "Amnesty gates must be a vector"
-                    {:error/type :inbox-zero/invalid-gates})))
-  (doseq [gate gates]
-    (when-not (and (keyword? (:gate/name gate))
-                   (vector? (:cmd gate))
-                   (seq (:cmd gate))
-                   (every? string? (:cmd gate)))
-      (throw (ex-info "Amnesty gate is malformed"
-                      {:error/type :inbox-zero/invalid-gate :gate gate}))))
+  (gates/validate-gates! gates)
   (let [paths (:baseline plan)]
     (when-not (and (vector? paths)
                    (every? #(and (string? %) (not (str/blank? %))) paths)
@@ -117,7 +92,8 @@
           (if (seq occupied)
             (result plan now :held :index-not-empty []
                     {:index/paths (vec (take index-path-limit occupied))})
-            (let [{:keys [passed? results]} (run-gates repo-root gates)]
+            (let [{:keys [passed? results]}
+                  (gates/run-gates repo-root gates (:baseline plan))]
               (if-not passed?
                 (result plan now :held :gate-failed results)
                 (let [paths (:baseline plan)

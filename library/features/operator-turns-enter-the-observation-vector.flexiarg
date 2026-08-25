@@ -1,0 +1,127 @@
+@flexiarg features/operator-turns-enter-the-observation-vector
+@title Read the Operator's Turns, Not His Absence
+@style implementation-pattern
+@why war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels
+@holds-at R2
+@builds-from problems/operator-turns-become-inference-observations
+@audience whoever picks up C-R2
+@tone plain-operational
+@references [problems/operator-turns-become-inference-observations
+             features/emit-per-tick-mismatch
+             war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch]
+@status [status[specified] blocked-by[none]]
+
+! conclusion:
+  Add one channel to the mission observation vector that reads a typed
+  operator TURN, source it from the mark vocabulary that already types those
+  turns, and prove it is read by showing an inference result that moves with
+  the channel and not without it.
+
+  + context: The build behind C-R2. The problem statement is
+    problems/operator-turns-become-inference-observations and the promotion
+    test is p4ng/empirics-futon/promotion-tests.edn. Joe held this card back
+    on 2026-08-25 pending "other work on modelling operator turns"; this
+    specification is that work, written before any code moves.
+
+    Two halves of the job are in different states, and the pattern's own
+    framing ("these are opaque to automation") is now only half true:
+      - Turn -> structure EXISTS. futon3c.marks types operator chat-turns
+        against a mark vocabulary -- core tier ✘ correction / ✓ approval /
+        💡 idea, plus a second-string tier minted from Joe's own clustering-probe
+        names -- and keeps agent self-talk out of the gold channel by
+        construction (author-invariance). Marks are queryable as evidence tags
+        precisely because the text index strips the glyphs, and the evidence
+        bodies are searchable through the futon1b fts5 sidecar.
+      - Structure -> inference DOES NOT. futon3c.aif.observe/channel-keys is
+        ten channels wide and every one of them is a function of mission state.
+        Nothing in that vector is a function of anything Joe did.
+    So this is not "build a turn parser". It is "connect two things that were
+    built years apart and never wired to each other".
+
+  + IF:
+    Operator turns are captured, typed, and text-searchable.
+
+  + HOWEVER:
+    The observation vector cannot see them, and the one place the apparatus
+    does claim to represent Joe is unwired.
+
+    `operator-lane/nag?` is a conjunction of four terms and the fourth is
+    `:acknowledged?`. Nothing sets it. `operator-lane-adapter` assembles nine
+    descriptive keys onto every item and that is not among them;
+    `operator-bulletin/newly-acknowledged` computes the acknowledged set as a
+    pure function and has no caller outside its own test, its docstring
+    deferring persistence to "the forward-model adapter" that does not do it;
+    the one path that bypasses the classifier with a pre-set lane reads
+    `data/wm/needs-you.edn`, which is `[]`. So nag 0 of 111 on the live
+    bulletin is not a threshold that wants tuning. The gate cannot open,
+    because the term that would open it has no producer -- and that term is
+    definitionally an operator turn: it means Joe LOOKED.
+
+  + THEN:
+    Three steps, and only the third one closes the ring. Keep them separately
+    reviewable, because the first is cheap and reads like progress.
+
+    0. Wire acknowledgement. Persist `newly-acknowledged` at bulletin pull and
+       feed `:acknowledged?` back through the adapter. This makes nag reachable
+       and is worth doing -- but it is a repair to a dangling seam, NOT this
+       feature. Report it as such. (See FAILURE-MODES: it is separately
+       sufficient to satisfy the promotion test as first drafted, which is a
+       defect in that test rather than a licence to claim the ring.)
+    1. Emit an operator-turn observation. One channel appended to
+       `channel-keys`, normalised to [0,1] like its neighbours, whose value is
+       a function of the marks on turns addressed to the item -- the obvious
+       first cut being recent-correction-or-approval pressure, so that ✘ and ✓
+       are distinguishable and neither is confused with silence. State its
+       provenance the way `:selection-source` distinguishes an operator pick
+       from the selector's.
+    2. Show it is read. Run one window of >= 111 classifications with the
+       channel live, and the same window with it held at a constant, and record
+       both inference results.
+
+  + BECAUSE:
+    WR-16 rules that an operationalised loop the operator actually runs is a
+    first-class observation channel, and the mark vocabulary is that loop: Joe
+    already types his own turns, in a vocabulary he partly named. What the
+    apparatus does with them today is measure how long it has been since he
+    appeared. The per-class credit collapse to 0.009 is what a missing variable
+    looks like from inside the model -- "he considered this and declined" and
+    "he was elsewhere" arrive at the estimator as the same event, so the
+    estimator learns that the operator is noise.
+
+  + FAILURE-MODES:
+    - The acknowledgement fix wearing the ring's clothes. Step 0 alone makes
+      nag fire, which satisfies the promotion test's STATEMENT while no
+      operator turn has entered the observation vector at all. The null control
+      catches it (disable the turn channel, nag still fires, so the channel is
+      not what moved it) -- but a statement that a different repair can satisfy
+      is a weak statement, and the test should be tightened before it is run,
+      not after it passes.
+    - Reading the operator's presence again in a new shape. A channel whose
+      value rises with turn COUNT is days-since-last-activity with the sign
+      flipped. The channel has to separate turn TYPES or it has added nothing.
+    - Grading ourselves on our own transcript. R9 and WR-0: run against our own
+      history this measures our observation channel on data our observation
+      channel produced. The external fixture in promotion-tests.edn (SWE-bench,
+      dated, outcome known) is what makes the verdict issuable.
+    - Reading a stale index and calling it a quiet operator. The sidecar keeps
+      two watermarks and `ev_fts` / `ev_attr` can disagree; futon1b/README-fts.md
+      §"can disagree -- check both" is explicit that a body missing from one is
+      not evidence of a missing turn. Check both before concluding zero.
+    - Running under an unrecorded switch state. `FUTON3C_MARK_RECOGNIZER=false`
+      and `FUTON3C_SELF_MARKS=false` each silence part of the input. WR-26: the
+      pilot records which switches were in which state, or its zero means
+      nothing.
+    - Laundering. `:acknowledged?` and the mark channel are DESCRIPTIVE. INV-5
+      forbids a predicted-importance signal reaching the lane classifier, and a
+      channel derived from Joe's turns is exactly the thing someone will be
+      tempted to feed back in as predicted importance.
+
+  + NEXT-STEPS:
+    next[Name the channel and its normalisation -- one entry appended to
+         channel-keys, with the [0,1] meaning stated in the docstring the way
+         the other ten state theirs.]
+    next[Decide what the null control HOLDS the channel at, and why that value:
+         a constant chosen to make the difference show is not a control.]
+    next[Pick the >= 111-item window and record it before running, so the live
+         and frozen runs are the same window.]
+    next[Tighten the R2 promotion test so step 0 alone cannot satisfy it.]

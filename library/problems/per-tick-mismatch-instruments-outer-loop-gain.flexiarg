@@ -1,0 +1,32 @@
+@flexiarg problems/per-tick-mismatch-instruments-outer-loop-gain
+@title Per-Tick Mismatch Instruments Outer-Loop Gain
+@style pattern
+@why war-room/wr-27-a-loop-is-born-instrumented-for-its-gain
+@holds-at R8
+
+! conclusion: Use per-tick mismatch as the gain reading for the mission-conditional-reward outer loop and surface whether returned reward changes its next action.
+
+  + context: Red ring at R8, ruling WR-27, established 2026-08-22 in
+    p4ng/empirics-futon/wr-overlay.edn. Supplied by M-mission-conditional-reward,
+    which owns the reward path whose outer loop should consume the mismatch.
+    + salience: 香, by duration. The outer loop has been dead since 2026-07-14.
+      Persistence is itself the perception — the futonic-logic instance of 香 is
+      "this gap-PSR has appeared 3 times", a recurrence noticed before it is
+      named — and a loop that has not updated in six weeks is that signal at
+      its plainest. Nothing external reports it; it is visible only to whoever
+      reads the per-tick mismatch, which is the defect restating itself.
+    + whose problem: the apparatus's, and latently the operator's, since a
+      learning loop that is not learning spends his time without repaying it.
+
+  + IF:
+    The reward path produces a per-tick mismatch that can measure what the outer loop should change next.
+
+  + HOWEVER:
+    The per-tick mismatch is the gain reading, and the outer loop has been dead since 2026-07-14.
+
+  + THEN:
+    Record the mismatch at every tick, route it into the outer-loop update, and report whether it changes the subsequent reward action.
+
+  + BECAUSE:
+    A loop is instrumented for its gain only when the returned mismatch is both observable and connected to what the loop does next.
+    ?evidence(required): No source row demonstrates a live outer-loop update after 2026-07-14 driven by the per-tick mismatch.

@@ -1,0 +1,44 @@
+@flexiarg problems/operator-turns-become-inference-observations
+@title Operator Turns Become Inference Observations
+@style pattern
+@why war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels
+@holds-at R2
+
+! conclusion: Process captured operator turns into structures that inference can consume, using the turn-to-pattern association as grounded enrichment.
+
+  + context: Red ring at R2, ruling WR-16, established 2026-08-25 in
+    p4ng/empirics-futon/wr-overlay.edn. Operator: Joe — the IF, HOWEVER, THEN,
+    BECAUSE and NEXT-STEPS below are his wording. No cascade mission supplies
+    the mechanism, so this pattern has no supplier on its WIP card.
+    + salience: 香. futon3c/src/futon3c/aif/observe.clj builds the observation
+      vector from ten named channels; all ten read mission state and none reads
+      an operator turn. The nearest, days-since-last-activity, measures the
+      operator's ABSENCE. Downstream the cost is measured: the operator lane
+      classifies every item into nag/brief/silent and on the live bulletin read
+      nag 0 / brief 60 / silent 51 of 111 — the strongest representation the
+      loop has of the operator fired zero times in a hundred and eleven
+      opportunities. The per-class credit collapsed to 0.009, roughly a
+      sixteenth of where an action starts, because a model with no
+      representation of the operator's alternatives cannot tell "he considered
+      this and declined" from "he was doing something else" and records both as
+      non-follow-through. That collapse is not a measurement of the action
+      class; it is the shape of a missing variable.
+    + whose problem: the operator's, and the learning loop's. Unlike the other
+      four rings this one straddles the blanket: the turns exist, are
+      persisted, and are the one channel the apparatus cannot fabricate.
+
+  + IF:
+    we are capturing operator turns
+
+  + HOWEVER:
+    these are opaque to automation
+
+  + THEN:
+    process them into structures that can be used by inference
+
+  + BECAUSE:
+    we know that works for design patterns, and the turn→pattern association will provide enriched material that is grounded in immediate practical considerations
+    ?evidence(required): A pilot has not yet shown that processed operator turns enter the inference vector and change an inference result.
+
+  + NEXT-STEPS:
+    since we have full text search via an XTDB sidecar, this can now be piloted

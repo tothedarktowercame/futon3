@@ -1,0 +1,40 @@
+@flexiarg problems/tension-proposes-candidates
+@title Tension Proposes Candidates
+@style pattern
+@why war-room/wr-19-tension-must-generate-not-only-rank
+@holds-at R6
+
+! conclusion: Add a tension proposer that creates candidate actions from tension instead of only reordering candidates supplied elsewhere.
+
+  + context: Red ring at R6, ruling WR-19, established 2026-08-22 in
+    p4ng/empirics-futon/wr-overlay.edn. No cascade mission supplies the
+    mechanism, so this pattern has no supplier on its WIP card.
+    + salience: 香. Observed, dated, and internal. WR-19's own record: on its
+      first outing the War Machine exhausted its proposer-fed queue into
+      learn-action-class before any outward open-mission surfaced — a system
+      full of unresolved tension with nothing to do, because a tie-breaker
+      cannot put an option on a menu it only reorders. Starvation is the felt
+      signal; it was perceived before it was named.
+    + caveat: the framing may be superseded. Earlier work on a metric over
+      substrate-2 concluded that "morphogenesis" is a more useful way of
+      thinking about where work needs to happen than "tension" (Joe,
+      2026-08-25), and futon3/library/futon-theory/reverse-morphogenesis
+      carries that method. This pattern is written in the vocabulary of the
+      ruling it closes; whether the ruling itself wants restating is a separate
+      question and is NOT settled here.
+    + whose problem: the War Machine's own. The cost is borne inside the
+      apparatus — a starved queue — and no outside party is worse off while it
+      stands.
+
+  + IF:
+    The field contains tension that should generate a possible next action.
+
+  + HOWEVER:
+    The candidate space is ranked, not proposed, and the tension proposer is unbuilt.
+
+  + THEN:
+    Build a candidate source that reads the tension field and emits bounded candidate actions before ranking begins.
+
+  + BECAUSE:
+    Tension cannot generate action while it is only a weight over an already-existing menu.
+    ?evidence(required): No source row demonstrates the unbuilt proposer emitting a candidate into the live candidate space.

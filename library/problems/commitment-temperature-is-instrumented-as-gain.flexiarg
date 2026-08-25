@@ -1,0 +1,35 @@
+@flexiarg problems/commitment-temperature-is-instrumented-as-gain
+@title Commitment Temperature Is Instrumented as Gain
+@style pattern
+@why war-room/wr-27-a-loop-is-born-instrumented-for-its-gain
+@holds-at R14
+
+! conclusion: Instrument commitment temperature as a gain when the actuator loop is born, so its effect on subsequent action can be measured directly.
+
+  + context: Red ring at R14, ruling WR-27, established 2026-08-22 in
+    p4ng/empirics-futon/wr-overlay.edn. Supplied by actuator-specs and
+    M-peradam-mechanization, whose scope line reads R14-R18 actuator flips live
+    on label supply.
+    ?salience(required): No source row supplies a 香 instance for commitment
+      temperature specifically. The nearest is the spine block's WR-27 entry,
+      "three uninstrumented loops found" (2026-08-21), which is generic to the
+      ruling and is carried by R8's dead outer loop rather than by this node.
+      No dated observation records commitment temperature being wrong, costly,
+      or noticed. Recorded as an unfilled hole rather than argued from the
+      mechanism: hallucinating content into the interval produces false
+      salience (futon-theory/futonic-logic).
+    + whose problem: unknown, and that is the finding. Of the five rings this
+      is the one for which no party has yet been shown to bear a cost.
+
+  + IF:
+    An actuator loop uses commitment temperature to govern a live label-supplied flip.
+
+  + HOWEVER:
+    Commitment temperature is explicitly a gain, but without birth-time instrumentation it can only be diagnosed retroactively.
+
+  + THEN:
+    Record commitment temperature at the flip, link it to the resulting actuator transition, and measure how it changes the next selected action.
+
+  + BECAUSE:
+    A declared gain is operational only when the loop records enough before-and-after evidence to shape it rather than reconstruct it later.
+    ?evidence(required): No source row demonstrates birth-time commitment-temperature instrumentation across an actuator transition.

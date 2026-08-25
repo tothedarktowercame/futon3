@@ -1,0 +1,31 @@
+@flexiarg math-formalization-CA/complex-arg-of-cpow-root
+@title Principal Argument of a Complex Power Root
+@sigils [🌀/角]
+@keywords arg, cpow, slitPlane, argument, principal-root, wedge, MapsTo
+@audience lean-provers, complex-analysis
+@tone heuristic
+@difficulty moderate
+@subjects complex-analysis
+@instantiates math-informal-CA/estimate-by-bounding
+@examples a01A12
+
+! conclusion:
+  Control arg of a principal n-th root by proving arg divides by n, built from
+  arg_mul_cos_add_sin_mul_I rather than searched for as a Mathlib lemma.
+
+  + IF: Goal needs |(x ^ (1/n : ℂ)).arg| < bound, or x ^ (1/n : ℂ) ∈ slitPlane.
+
+  + HOWEVER: Mathlib has no direct `arg_cpow` division lemma as of this writing.
+
+  + THEN: Rewrite (1/n : ℂ) = ((1/n : ℝ) : ℂ) by norm_num, apply Complex.cpow_ofReal,
+    then convert Complex.arg_mul_cos_add_sin_mul_I (rpow positivity) with
+    x.arg / n ∈ Set.Ioc (-Real.pi) Real.pi from Complex.neg_pi_lt_arg and
+    Complex.arg_le_pi plus linarith. Pair with Complex.arg_lt_pi_iff /
+    Complex.arg_eq_zero_iff for slitPlane / real-axis exclusion.
+    + LEAN:
+      api[Complex.cpow_ofReal] api[Complex.arg_mul_cos_add_sin_mul_I]
+      api[Complex.arg_lt_pi_iff] api[Complex.arg_eq_zero_iff]
+      tactic[norm_num → linarith → convert]
+
+  + BECAUSE: The polar form lemma already fixes the argument once the exponent
+    is manifestly real and the half-open angle interval is supplied.

@@ -1,0 +1,43 @@
+@flexiarg math-formalization/compact-thickening-upgrades-pointwise-analyticity
+@title Upgrade Pointwise Analyticity on a Compact to Holomorphy on a Uniformly Larger Ball
+@sigils [🫧/厚]
+@keywords isOpen_analyticAt, IsCompact.exists_thickening_subset_open, thickening, closedBall, ball, uniform radius, analytic continuation, compactness
+@audience lean-provers, complex-analysis
+@tone procedural
+@difficulty intermediate
+@subjects complex-analysis
+@instantiates math-informal/local-to-global
+@see-also math-formalization/normalize-meromorphic-point-values-before-continuation
+@examples a95J04
+
+! conclusion:
+  To pass from `AnalyticAt ℂ g z` at every point of a closed ball to
+  `DifferentiableOn ℂ g (ball 0 R)` for one `R` strictly larger than the
+  ball's radius, use that the analyticity locus is open and thicken the
+  compact ball inside it; there is no packaged Mathlib lemma for the
+  "uniform step" and none is needed.
+
+  + IF: You have per-point analyticity on `closedBall 0 1` (typically from
+    nonnegative meromorphic order after normalization) and need a single
+    larger concentric disk on which `g` is holomorphic.
+
+  + HOWEVER: Per-point analyticity gives per-point radii, and searching for
+    a lemma that directly produces a uniform radius from meromorphy fails;
+    the compactness argument must be assembled by hand.
+
+  + THEN: `let U := {z | AnalyticAt ℂ g z}`, `hUopen := isOpen_analyticAt ℂ g`,
+    show `closedBall 0 1 ⊆ U`, and take
+    `obtain ⟨δ, hδ, hthick⟩ := (isCompact_closedBall (0:ℂ) 1).exists_thickening_subset_open hUopen hsub`.
+    Return `R := 1 + δ`. The one hand lemma is
+    `ball 0 (1 + δ) ⊆ thickening δ (closedBall 0 1)`: inside the closed ball
+    use `Metric.ball_subset_thickening`; outside, witness
+    `w := (‖z‖:ℂ)⁻¹ * z` in `Metric.mem_thickening_iff` with
+    `‖z - w‖ = ‖z‖ - 1`. Then `hzU.differentiableAt.differentiableWithinAt`.
+    + LEAN:
+      api[isOpen_analyticAt] api[IsCompact.exists_thickening_subset_open]
+      api[Metric.ball_subset_thickening] api[Metric.mem_thickening_iff]
+      api[AnalyticAt.differentiableAt] tactic[linarith]
+
+  + BECAUSE: An open set containing a compact contains a uniform
+    thickening of it; converting the thickening into a concentric ball is
+    the only geometric computation, and it is a one-witness estimate.

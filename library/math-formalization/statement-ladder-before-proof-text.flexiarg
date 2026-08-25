@@ -1,0 +1,39 @@
+@flexiarg math-formalization/statement-ladder-before-proof-text
+@title Write the Statement Ladder with Sorries Before Any Proof Text
+@sigils [🪜/階]
+@keywords statement, ladder, skeleton, sorry, intermediate lemma, dependency order, route, memory, compile skeleton
+@audience lean-provers, formalizers
+@tone procedural
+@difficulty beginner
+@instantiates math-informal/construct-auxiliary-object
+@see-also math-formalization/bank-cheap-obligations-before-the-hard-bridge
+@examples a95J03
+
+! conclusion:
+  When a route is known (from a memory, a paper, or a sibling artifact)
+  but its Lean is not, first write every intermediate lemma AS A STATEMENT
+  with `sorry`, in dependency order, and compile the skeleton; fill the
+  bodies afterwards, leaves first.
+
+  + IF: A retrieved memory or note describes a multi-lemma route in prose
+    ("prove the pointwise identity, then integrate it, then identify the
+    divisor with the root multiplicity …") and the target file has one
+    big `sorry` where the route must land.
+
+  + HOWEVER: Trying to write the route top-down as one proof, or spending
+    the session confirming API names before writing anything, leaves no
+    compiled trace; the statements themselves are where most elaboration
+    errors (coercions, binder shapes, implicit arguments) surface, and
+    they are cheap to fix in isolation.
+
+  + THEN: Transcribe the route into 5–8 `lemma stepK … : … := by sorry`
+    declarations whose statements are exact Lean, wire the big `sorry` to
+    them so the file compiles with only the stepK sorries open, commit,
+    then fill from the leaves (the ones needing only Mathlib) upward.
+    + LEAN:
+      tactic[sorry] api[exact?] tactic[refine ⟨_, ?_, ?_⟩]
+
+  + BECAUSE: A compiling skeleton converts a prose route into typed
+    obligations that a successor (or the same session after a wall) can
+    pick up one at a time; unfilled statements are measurable progress
+    and localize every spelling question to one small goal.

@@ -1,0 +1,50 @@
+@flexiarg math-formalization/pointwise-hassum-to-taylor-coefficients-via-fps-uniqueness
+@title Identify Pointwise HasSum Coefficients With Taylor Coefficients by Power-Series Uniqueness
+@sigils [🪞/一]
+@keywords HasSum, FormalMultilinearSeries.ofScalars, hasFPowerSeriesAt_iff, HasFPowerSeriesAt.eq_formalMultilinearSeries, iteratedDeriv, Taylor coefficients, coefficient uniqueness, power series
+@audience lean-provers, complex-analysis
+@tone procedural
+@difficulty intermediate
+@subjects complex-analysis
+@instantiates math-informal/reduce-to-known-result
+@see-also math-formalization/compact-thickening-upgrades-pointwise-analyticity
+@examples a95J04
+
+! conclusion:
+  When a coefficient sequence is pinned to a function only by a pointwise
+  family `∀ z ∈ ball 0 r, HasSum (fun n ↦ a n * z ^ n) (f z)` and you need
+  `a n = (n.factorial)⁻¹ * iteratedDeriv n f 0`, package `a` as a formal
+  multilinear series and use uniqueness of power-series expansions at the
+  centre; do not build an elementary coefficient-extraction argument.
+
+  + IF: The hypothesis is a pointwise `HasSum` on an open disk about 0,
+    `f` is `DifferentiableOn` (hence `AnalyticAt`) there, and the goal
+    names the canonical Taylor coefficients `iteratedDeriv n f 0 / n!`.
+
+  + HOWEVER: The tempting route — subtract `Complex.hasSum_taylorSeries_on_ball`,
+    bound coefficients exponentially, isolate the k-th coefficient by a
+    small-radius estimate and induct — is sound but drowns in `HasSum` /
+    `Tendsto` / `Summable.congr` orientation traps and does not finish in
+    a time-boxed session.
+
+  + THEN: `let p := FormalMultilinearSeries.ofScalars ℂ a`; prove
+    `HasFPowerSeriesAt f p 0` by `rw [hasFPowerSeriesAt_iff]`,
+    `filter_upwards [ball_mem_nhds 0 zero_lt_one]`, and
+    `simpa [FormalMultilinearSeries.coeff_ofScalars, mul_comm] using hseries z hz`;
+    take `ht := (hf.analyticAt _).hasFPowerSeriesAt`; then
+    `hp.eq_formalMultilinearSeries ht` gives series equality, and
+    `congrArg (fun q ↦ q.coeff n)` plus `simpa [coeff_ofScalars, div_eq_inv_mul]`
+    reads off each coefficient. The same packaging, with `exchange_radius`
+    and `summable_norm_apply`, gives absolute convergence at every radius
+    below a larger holomorphic disk.
+    + LEAN:
+      api[FormalMultilinearSeries.ofScalars] api[hasFPowerSeriesAt_iff]
+      api[FormalMultilinearSeries.coeff_ofScalars]
+      api[HasFPowerSeriesAt.eq_formalMultilinearSeries]
+      api[AnalyticAt.hasFPowerSeriesAt] api[HasFPowerSeriesAt.exchange_radius]
+      api[FormalMultilinearSeries.summable_norm_apply]
+
+  + BECAUSE: `hasFPowerSeriesAt_iff` is literally the filter-upwards form
+    of the pointwise sum hypothesis, and uniqueness of expansions at a point
+    collapses any two such expansions into coefficient equalities, so the
+    whole identification is a dozen lines with no limit computation.

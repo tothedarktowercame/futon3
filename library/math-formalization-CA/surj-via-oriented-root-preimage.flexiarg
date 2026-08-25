@@ -1,0 +1,33 @@
+@flexiarg math-formalization-CA/surj-via-oriented-root-preimage
+@title Surjectivity from an Explicitly Oriented Root Preimage
+@sigils [🌀/映]
+@keywords SurjOn, cpow, preimage, orientation, pow_cpow_nat_inv, bijection, slit
+@audience lean-provers, complex-analysis
+@tone heuristic
+@difficulty hard
+@subjects complex-analysis
+@instantiates math-informal-CA/conjugate-reduce-to-model-case
+@examples a01A12
+
+! conclusion:
+  Prove SurjOn of a principal-power map by exhibiting the preimage as another
+  cpow and discharging sign/orientation bookkeeping as a contradiction.
+
+  + IF: Goal is Set.SurjOn f U V where f z = (polynomial z) ^ (1/n : ℂ).
+
+  + HOWEVER: Direct construction of the inverse point needs branch consistency
+    between the forward power and the recovering root.
+
+  + THEN: Take the preimage as z := (1 - w ^ n') ^ (1/m : ℂ) using
+    Complex.cpow_nat_inv_pow for the exact power identity; assume z.im = 0 and
+    derive that w lies on the excluded set (arg_eq_zero_iff + arg arithmetic);
+    orient the sign of a nonreal root into the domain with lt_or_gt_of_ne on
+    z.im; recover the exact value of w with
+    Complex.pow_cpow_nat_inv (x := w) (n := 4) supplied the sharp angle
+    bounds -π/4 < w.arg and w.arg ≤ π/4 (note the ≤, from abs_lt .2.le).
+    + LEAN:
+      api[Complex.cpow_nat_inv_pow] api[Complex.pow_cpow_nat_inv]
+      api[Complex.arg_eq_zero_iff] tactic[by_contra → nlinarith → rcases]
+
+  + BECAUSE: pow_cpow_nat_inv is the only lemma that returns the ORIGINAL point
+    from its principal root, closing the round trip exactly.

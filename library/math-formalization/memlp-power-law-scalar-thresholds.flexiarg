@@ -1,0 +1,55 @@
+@flexiarg math-formalization/memlp-power-law-scalar-thresholds
+@title Reduce Concrete MemLp Goals to Scalar Power-Law Summability
+@keywords MemLp, Lp, integrable_norm_rpow_iff, summable_nat_rpow, integrableOn_Ioi_rpow_iff, counting measure, power law, counterexample, exponent threshold
+@audience lean-provers, analysts
+@tone procedural
+@difficulty advanced
+@see-also math-formalization-CA/measure-integration-api math-formalization-CA/lp-norm-comparison math-formalization/coercion-bridge
+
+! conclusion:
+  To prove or refute `MemLp f p μ` for a concrete power-law f (on ℕ with
+  counting measure, or on ℝ with volume), do not reason about `eLpNorm`
+  directly: rewrite with `integrable_norm_rpow_iff`, normalize the exponent
+  with `(by fun_prop)` measurability and `ofReal`-positivity side goals, push
+  the goal to the scalar library (`Real.summable_nat_rpow` on ℕ,
+  `integrableOn_Ioi_rpow_iff` on ℝ), and settle the pure-real inequality on
+  the exponent.
+
+  + context:
+      f is an explicit sequence like (n+1)^(-s) or an indicator-supported
+      tail |x|^(a · χ_{|x|≥1}); the goal says ‖f‖_p < ∞ but ‖f‖_q = ∞ (or
+      vice versa) for two exponents on either side of the critical threshold.
+
+  + IF:
+      The function is nonnegative and explicitly given, so measurability is
+      `fun_prop` / `Measurable.ite` from continuity away from one point, and
+      the norm power collapses to the same power law with exponent scaled by
+      p or q.
+
+  + THEN:
+      (a) `rw [← integrable_norm_rpow_iff hmeas (by ... ofReal ≠ 0) (by simp)]`.
+      (b) Discharge `(ENNReal.ofReal p).toReal = p` via `simp [hp.le]` with
+          `hp : 0 < p` extracted first (`linarith`).
+      (c) Restate the integrand by `funext` + `Real.rpow_mul` so the goal is
+          exactly the library's n ↦ n^(-s) (or x ↦ x^a on Ioi 1) shape.
+      (d) On ℕ, shift the successor index with `summable_nat_add_iff` and a
+          `simpa only [Nat.cast_add, Nat.cast_one]` iff-transfer before
+          `Real.summable_nat_rpow`; on ℝ, restrict to `Ioi 1` and use
+          `integrableOn_Ioi_rpow_iff` (or `..._of_lt` for the positive half),
+          composing with `.comp_neg` for the negative half.
+      (e) The final goal is `s < -1 ↔ ¬(-1 ≤ s)` — pure algebra, proved once
+          and reused for both exponents and both conjuncts.
+
+  + BECAUSE:
+      The mathematical content is entirely in the scalar threshold; everything
+      between the `MemLp` goal and the scalar library is coercion
+      (`ofReal`/`toReal`), index shift, and indicator bookkeeping. Naming the
+      reduction keeps each counterexample's proof to a discharge of steps
+      (a)-(e), and the same exponent lemma closes both the sequence and the
+      real-line case.
+
+  + NEXT-STEPS:
+    next[Extract 0 < p, 0 < q by linarith before touching ENNReal.]
+    next[Rewrite MemLp with integrable_norm_rpow_iff; prove measurability separately if f is defined by cases.]
+    next[Shift/split the domain to hit the library statement exactly.]
+    next[Prove the exponent inequality once and reuse for both conjuncts.]

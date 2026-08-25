@@ -1,0 +1,37 @@
+@flexiarg math-formalization-CA/schwarz-disk-automorphism-formula
+@title Disk Automorphism Classification via Schwarz Rigidity
+@sigils [🌀/円]
+@keywords Schwarz, automorphism, disk, Cayley, mobius, upper-half-plane, norm_deriv_le_one
+@audience lean-provers, complex-analysis
+@tone heuristic
+@difficulty hard
+@subjects complex-analysis
+@instantiates math-informal-CA/conjugate-reduce-to-model-case
+@examples a01A12
+
+! conclusion:
+  Classify conformal automorphisms of the disk by chaining the two Mathlib
+  Schwarz lemmas, then transport to the upper half-plane by Cayley conjugation.
+
+  + IF: Goal classifies ConformalBijOn self-maps of a disk or half-plane as a
+    Möbius family (Mathlib exposes only the SL(2,ℝ) action, no converse).
+
+  + HOWEVER: No Mathlib theorem states the converse automorphism classification.
+
+  + THEN: (1) For k fixing 0, apply Complex.norm_deriv_le_one_of_mapsTo_ball to
+  both k and its set-theoretic inverse j (DifferentiableOn via inverse-function
+  seam, j 0 = 0 via InvOn); deriv (k ∘ j) 0 = 1 gives ‖deriv k 0‖ = 1 by
+  nlinarith. (2) Feed ‖dslope k 0 0‖ = 1/1 into
+  Complex.affine_of_mapsTo_ball_of_norm_dslope_eq_div to get k z = c • z.
+  (3) Conjugate a half-plane automorphism h by Cayley z ↦ (z - I)/(z + I)
+  (nonvanishing denominators proved separately), extract unit sqrt s with
+  s ^ 2 = c, and read real Möbius coefficients A = s.re + (a * conj s).re,
+  B = s.im - (a * conj s).im, C = -s.im - (a * conj s).im, D = s.re -
+  (a * conj s).re; determinant positivity follows from ‖a‖ < 1, ‖s‖ = 1.
+    + LEAN:
+      api[Complex.norm_deriv_le_one_of_mapsTo_ball]
+      api[Complex.affine_of_mapsTo_ball_of_norm_dslope_eq_div]
+      tactic[deriv_comp → Filter.EventuallyEq.deriv_eq → nlinarith]
+
+  + BECAUSE: The pair of ball lemmas is the entire rigidity engine; everything
+    else is conjugation bookkeeping and real-coefficient algebra.

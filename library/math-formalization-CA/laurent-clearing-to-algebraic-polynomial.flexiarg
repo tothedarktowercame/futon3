@@ -1,0 +1,38 @@
+@flexiarg math-formalization-CA/laurent-clearing-to-algebraic-polynomial
+@title Clear Laurent Negative Powers to Reach an Algebraic Polynomial
+@sigils [🌀/映]
+@keywords Laurent, unit circle, trigonometric polynomial, Polynomial, roots, argument principle, winding
+@audience lean-provers, complex-analysis
+@tone heuristic
+@difficulty hard
+@subjects complex-analysis
+@instantiates math-informal/reduce-to-known-result
+@examples a95J03
+
+! conclusion:
+  When the object is a finite Laurent sum over Icc (-N) N evaluated on the
+  unit circle, multiply through by w ^ N to clear the negative powers and
+  work with an ordinary Polynomial of degree at most 2N, where the whole
+  root-multiplicity API (roots, rootMultiplicity, card_roots) applies.
+
+  + IF: The goal speaks about a trigonometric/Laurent expression
+    sum over Icc (-N) N of a n * w ^ n with w on Metric.sphere 0 1, and
+    Mathlib has no direct integer-valued winding/index API for it.
+
+  + HOWEVER: Polynomial lemmas (degree bounds, root counts, divisor sums)
+    do not apply to Laurent monomials with negative exponents.
+
+  + THEN: Define the cleared polynomial sum over Finset.range (2 * N + 1)
+    with coefficients a (k - N); prove eval w = w ^ N * Laurent-sum via
+    Finset.sum_bij (k ↦ k - N) between range (2N+1) and Icc (-N) N,
+    using zpow_natCast / zpow_add₀ to relate natural and integer powers at
+    w ≠ 0. Nonvanishing of the Laurent sum - z on the circle transfers
+    exactly to nonvanishing of the cleared polynomial on the sphere, since
+    w ^ N never vanishes there.
+    + LEAN:
+      api[Finset.sum_bij] api[zpow_add₀] api[zpow_natCast]
+      api[Polynomial.card_roots'] api[Polynomial.natDegree_sum_le_of_forall_le]
+
+  + BECAUSE: The factor w ^ N is a unit on the unit circle, so zeros,
+    logarithmic derivatives, and winding contributions shift only by the
+    explicit constant N, which the caller can subtract by hand.

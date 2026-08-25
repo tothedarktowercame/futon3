@@ -1,0 +1,42 @@
+@flexiarg math-formalization/bank-cheap-obligations-before-the-hard-bridge
+@title Bank the Cheap Obligations Before Attacking the Hard Bridge
+@sigils [🏦/積]
+@keywords sorry, budget, commit, dependency order, bridge, boundary, progress, cold start, time-boxed
+@audience lean-provers, formalizers
+@tone procedural
+@difficulty beginner
+@instantiates math-informal/separate-into-independent-pieces
+@see-also math-formalization/statement-ladder-before-proof-text math-formalization/construction-cost-asymmetry
+@examples a95J03
+
+! conclusion:
+  In a time-boxed cold-start session on a file with several `sorry`s, close
+  and commit every obligation that does not depend on the hard bridge
+  FIRST — typically the counting/arithmetic leaves and the final assembly
+  from the bridge statements — and only then open the hard bridge.
+
+  + IF: The file has k > 1 sorries and at least one of them (a degree
+    bound, an omega arithmetic step, the final theorem assembled from the
+    bridge lemmas' statements) is closeable in a handful of lines from
+    what is already compiled.
+
+  + HOWEVER: The hard bridge is where the mathematics is, so it attracts
+    the whole budget; an attempt that spends its time verifying API
+    spellings for the bridge and ends with zero lines compiled has
+    produced no measurable progress, even though the cheap leaves were
+    available the whole time.
+
+  + THEN: (1) List the sorries with their dependencies. (2) Close the
+    ones that need only compiled lemmas plus `omega` / `push_cast` /
+    `ring` / a two-lemma `trans` chain; the final theorem can be assembled
+    from the bridge lemmas AS STATEMENTS, before the bridges are proved.
+    (3) Compile and commit. (4) Only now write the statement ladder for
+    the hard bridge and start filling it.
+    + LEAN:
+      tactic[push_cast → omega] api[Multiset.card_le_card]
+      api[Multiset.filter_le] api[Polynomial.card_roots']
+
+  + BECAUSE: A committed partial artifact is the unit of measurable
+    progress; assembling the top-level theorem from the bridge statements
+    costs nothing later and proves the decomposition is sound now, and a
+    cold-start successor inherits compiled lines, not a plan.

@@ -1,0 +1,44 @@
+@flexiarg math-formalization/normalize-meromorphic-point-values-before-continuation
+@title Normalize Meromorphic Point Values Before Any Continuation Argument
+@sigils [🧽/正]
+@keywords toMeromorphicNFOn, MeromorphicNFAt, meromorphicOrderAt_toMeromorphicNFOn, meromorphicOrderAt_nonneg_iff_analyticAt, toMeromorphicNFAt_eq_self, removable singularity, statement repair, EqOn
+@audience lean-provers, complex-analysis
+@tone heuristic
+@difficulty intermediate
+@subjects complex-analysis
+@instantiates math-informal/construct-auxiliary-object
+@see-also math-formalization/compact-thickening-upgrades-pointwise-analyticity math-formalization/additive-principal-parts-from-order-germs
+@examples a95J04
+
+! conclusion:
+  A function that is `MeromorphicOn f D` may take arbitrary values at its
+  removable points, so `AnalyticAt ℂ f z` — and any lemma asserting
+  holomorphy of the raw `f` past a boundary — is false as stated. Pass to
+  the normal form `toMeromorphicNFOn f D` first, transfer orders, and carry
+  an `EqOn` with `f` on the region where `f` was already analytic.
+
+  + IF: A bridge statement asks for `DifferentiableOn ℂ f (ball 0 R)` or
+    `f z = g z + …` beyond the original holomorphic disk, with `f` known
+    only as `MeromorphicOn` there.
+
+  + HOWEVER: The statement cannot be proved for the raw `f`; attempts to
+    derive `AnalyticAt` from nonnegative order stall because order controls
+    a germ off the point, not the value at it.
+
+  + THEN: Restate for `g := toMeromorphicNFOn f D` (the pinned top-level
+    theorem is unchanged; bridge lemmas are scaffolding). Use
+    `meromorphicNFOn_toMeromorphicNFOn f D hzD : MeromorphicNFAt g z`,
+    `hnf.meromorphicOrderAt_nonneg_iff_analyticAt`, and
+    `meromorphicOrderAt_toMeromorphicNFOn hmero hzD` to turn order facts
+    about `f` into analyticity of `g`; prove
+    `Set.EqOn g f (ball 0 1)` by `simp [toMeromorphicNFOn, hmero, hzD,
+    toMeromorphicNFAt_eq_self.2 han.meromorphicNFAt]`, and feed the
+    top-level theorem with `g` plus the `EqOn`.
+    + LEAN:
+      api[toMeromorphicNFOn] api[meromorphicNFOn_toMeromorphicNFOn]
+      api[MeromorphicNFAt.meromorphicOrderAt_nonneg_iff_analyticAt]
+      api[meromorphicOrderAt_toMeromorphicNFOn] api[toMeromorphicNFAt_eq_self]
+
+  + BECAUSE: The normal form repairs exactly the point-value defect and
+    nothing else, so every order-based statement transfers verbatim and
+    every downstream use on the original disk is recovered by the `EqOn`.

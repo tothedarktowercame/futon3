@@ -1,0 +1,54 @@
+@flexiarg math-formalization-CA/ode-gronwall-api
+@title Prove ODE Flow Stability Through Mathlib's Grönwall APIs
+@keywords Lean, Mathlib, ODE, Gronwall, flow, stability, Lipschitz, exponential-bound, reversed-time
+@audience lean-provers, formalizers, analysts
+@tone procedural
+@difficulty intermediate
+@cross-list [CA ODE]
+@why math-informal/reduce-to-known-result
+@see-also math-informal/local-to-global math-strategy/convention-bridge
+
+! conclusion:
+  For exponential stability of two ODE trajectories, first search Mathlib's
+  Grönwall layer for a theorem matching either the norm of their difference or
+  their distance; then isolate negative time by applying the same theorem to a
+  reversed field and reversed trajectories.
+
+  + context: A Lean goal asks for a bound of the form
+    `|phi t a - phi t b| <= exp (L * |t|) * |a - b|` from a state-Lipschitz
+    vector field and a flow or trajectory predicate.
+
+  + IF:
+      The goal is already expressed as distance between two trajectories, use
+      `dist_le_of_trajectories_ODE`. If it is expressed as the norm of their
+      difference and derivative bounds are readily available, use
+      `norm_le_gronwallBound_of_norm_deriv_right_le` and simplify the resulting
+      zero-error bound with `gronwallBound_ε0`.
+
+  + HOWEVER:
+      These theorems are naturally forward-time statements. Applying them
+      directly when `t < 0` creates endpoint-order and sign obligations that
+      obscure the estimate. Rewriting absolute values alone does not turn a
+      backward trajectory into the forward trajectory expected by the API.
+
+  + THEN:
+      Split on the sign of `t`. For nonnegative time, apply the matching
+      Grönwall theorem to `s ↦ phi s a - phi s b`, or directly to the pair of
+      trajectories. For negative time define the reversed field
+      `(s,y) ↦ -f (-s) y` and reversed trajectories `s ↦ phi (-s) a` and
+      `s ↦ phi (-s) b`; prove the same Lipschitz and derivative hypotheses, and
+      apply the forward theorem at `-t`. Normalize distance, norm and absolute
+      value only after the analytic estimate is obtained.
+
+  + BECAUSE:
+      Mathlib already contains both a trajectory-distance Grönwall theorem and
+      a norm-of-function theorem. Choosing the interface closest to the local
+      hypotheses removes most proof plumbing. Time reversal converts the other
+      half-line into the same forward theorem instead of requiring a second
+      inequality argument.
+
+  + NEXT-STEPS:
+    next[Choose the distance API or norm-difference API according to the goal's current representation.]
+    next[Prove the forward estimate before normalizing norm, distance and absolute value.]
+    next[Handle negative time with the reversed field and trajectories.]
+    next[Simplify the zero-error Grönwall bound with gronwallBound_ε0.]

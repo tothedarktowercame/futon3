@@ -1,0 +1,48 @@
+@flexiarg math-formalization/additive-principal-parts-from-order-germs
+@title Build Additive Principal Parts Locally From Order Germs
+@sigils [🧩/分]
+@keywords meromorphicOrderAt_eq_int_iff, AnalyticAt.exists_eq_sum_add_pow_mul, principal part, partial fractions, meromorphicOrderAt_add, meromorphicOrderAt_congr, Finset.analyticAt_fun_sum, simple pole, one_div_sub_hasFPowerSeriesOnBall_zero
+@audience lean-provers, complex-analysis
+@tone procedural
+@difficulty hard
+@subjects complex-analysis
+@instantiates math-informal/construct-auxiliary-object
+@see-also math-formalization/normalize-meromorphic-point-values-before-continuation math-formalization/compact-thickening-upgrades-pointwise-analyticity
+@examples a95J04
+
+! conclusion:
+  When you must subtract finitely many simple principal parts from a
+  meromorphic function and Mathlib's divisor machinery only factorizes,
+  build each principal part locally from the order germ and prove the
+  remainder has nonnegative order; no global additive decomposition
+  theorem is needed.
+
+  + IF: Every boundary pole has order exactly `-1`, the pole set is
+    finite, and the goal is `f = g + ∑ ζ ∈ P, c ζ / (z - ζ)` with `g`
+    holomorphic on a larger disk (e.g. to bound Taylor coefficients).
+
+  + HOWEVER: Searches of `CanonicalDecomposition`, `FactorizedRational`,
+    and `MeromorphicOn.extract_zeros_poles` find only multiplicative
+    factorizations; the additive form is absent from the library.
+
+  + THEN: (1) At a pole, `(meromorphicOrderAt_eq_int_iff hF).1 horder`
+    gives `q` analytic with `q ζ ≠ 0` and `F =ᶠ (z - ζ)^(-1) • q`; shift
+    with `comp_sub` and apply `AnalyticAt.exists_eq_sum_add_pow_mul 1` to
+    write `q z = q ζ + (z - ζ) * H z`, so `F =ᶠ[𝓝[≠] ζ] H + q ζ / (z - ζ)`.
+    (2) `choose c hc` over all poles. (3) The finite sum `S` of principal
+    parts is `AnalyticAt` off `P` (`Finset.analyticAt_fun_sum`,
+    `AnalyticAt.div`), so at `z ∉ P` use `meromorphicOrderAt_add` and at
+    `z ∈ P` use `meromorphicOrderAt_congr` with `Finset.sum_erase_add`
+    to see `F - S` has nonnegative order. (4) Normalize and thicken the
+    remainder. (5) Coefficients of `c / (z - ζ)` for `‖ζ‖ = 1` come from
+    `Complex.one_div_sub_hasFPowerSeriesOnBall_zero` and all have norm `‖c‖`.
+    + LEAN:
+      api[meromorphicOrderAt_eq_int_iff] api[AnalyticAt.exists_eq_sum_add_pow_mul]
+      api[meromorphicOrderAt_add] api[meromorphicOrderAt_congr]
+      api[Finset.analyticAt_fun_sum] api[Finset.sum_erase_add]
+      api[Complex.one_div_sub_hasFPowerSeriesOnBall_zero]
+
+  + BECAUSE: A local germ of order `-1` carries exactly the data of its
+    Laurent tail, so the classical partial-fractions construction is a
+    one-line consequence of the order characterization plus a truncated
+    germ Taylor expansion, and order additivity does the bookkeeping.

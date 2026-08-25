@@ -1,0 +1,41 @@
+@flexiarg math-formalization-CA/pointwise-logderiv-bridge-interval-to-contour
+@title Bridge Interval Integrals to Contour Integrals by a Pointwise logDeriv Identity
+@sigils [⚡/衝]
+@keywords circleIntegral, logDeriv, circleMap, intervalIntegral, winding, contour integral
+@audience lean-provers, complex-analysis
+@tone heuristic
+@difficulty hard
+@subjects complex-analysis
+@instantiates math-informal/local-to-global
+@examples a95J03
+
+! conclusion:
+  To convert a contour integral ∮ in C(0, 1) of logDeriv into a real
+  interval integral of a parametrized curve's derivative quotient, prove
+  ONE pointwise identity along circleMap and then integrate it; do not
+  search for a packaged conversion theorem that may not exist.
+
+  + IF: The goal holds a normalized contour integral of logDeriv of an
+    analytic function (e.g. a polynomial evaluation) and the other side is
+    an interval integral ∫ t in 0..2π of fderiv γ t 1 / (γ t - z).
+
+  + HOWEVER: The library may have no compiled rule converting between the
+    two representations for your particular γ; rewriting the contour
+    integral via circleIntegral only yields deriv (circleMap) • logDeriv
+    (circleMap), still in the wrong terms.
+
+  + THEN: Prove deriv (circleMap 0 1) t * logDeriv f (circleMap 0 1 t) =
+    γ' t / (γ t - z) + c * I pointwise (the clearing factor contributes a
+    constant c * I term), by matching HasDerivAt statements for the
+    composite polynomial evaluation and the factored curve, then
+    integral_congr + integral_add + integral_const to split off the
+    constant. Finish the arithmetic with field_simp, push_cast and
+    linear_combination on the assembled equation.
+    + LEAN:
+      api[circleIntegral] api[Polynomial.hasDerivAt] api[hasDerivAt_circleMap]
+      api[intervalIntegral.integral_congr] tactic[field_simp → linear_combination]
+
+  + BECAUSE: Contour-versus-interval is exactly a parametrization
+    statement: one pointwise identity carries the whole conversion, and
+    the constant term from any monomial factor integrates to an explicit
+    multiple of 2πI that cancels in the normalized winding integral.

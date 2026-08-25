@@ -1,0 +1,68 @@
+@flexiarg math-formalization-CV/entire-affine-by-divided-difference
+@title Prove an Entire Function Is Affine by Making a Divided Difference Constant
+@keywords Liouville, entire, affine, divided-difference, dslope, slope, cocompact, limit-at-infinity, one-point-compactification
+@audience lean-provers, formalizers, complex-analysts
+@tone procedural
+@difficulty advanced
+@cross-list [CA]
+@why math-formalization-CV/entire-and-singularity-api
+@see-also math-formalization-CV/complex-liouville-periodicity
+
+! conclusion:
+  To prove an entire function equals `a₀ + a₁ * z`, do not classify the function:
+  show the divided difference `(f z - f 0) / z` is entire (after filling z = 0)
+  and tends to a finite limit as z → ∞, then apply the cocompact-limit form of
+  Liouville to make the divided difference constant.
+
+  + context: A rigidity goal stating that an entire function is affine —
+    typically reached after a singularity-at-infinity normal form `f(z) - a`
+    behaves like the reciprocal of a polynomial in `1/z` of degree exactly one —
+    where the classical proof passes through polynomial classification or
+    Picard-class theorems the library may lack.
+
+  + IF:
+      The behaviour at infinity can be stated as `Filter.Tendsto` along
+      `cocompact ℂ` of the divided difference `dslope f 0` (Mathlib's
+      `Complex.dslope`, i.e. `slope f 0` with the removable value at 0 filled),
+      then the goal factors into two library-shaped obligations:
+      differentiability of `dslope f 0` on all of ℂ via
+      `Complex.differentiableOn_dslope`, and constancy via
+      `Differentiable.apply_eq_of_tendsto_cocompact`, the Liouville form that
+      only needs a finite limit at infinity — one point of the
+      one-point compactification, not a global bound.
+
+  + HOWEVER:
+      `apply_eq_of_tendsto_cocompact` is easy to miss because Liouville is
+      usually reached through its bounded-entire form; search for
+      `tendsto_cocompact` rather than `Liouville` to find it. The limit along
+      `cocompact ℂ` must be transported from a punctured-germ eventual
+      equality at 0: compose with `tendsto_inv₀_cobounded'` (inversion maps
+      cocompact ℂ into the punctured germ at 0) and rewrite
+      `Metric.cobounded_eq_cocompact` to change filter vocabulary. Recovering
+      `f z = f 0 + a₁ * z` from a constant divided difference needs an
+      explicit `z ≠ 0` case split and multiplication by `z`; `dslope_of_ne`
+      unfolds the filled value away from 0.
+
+  + THEN:
+      Establish the normal form at infinity (degree-one reciprocal pole of the
+      inverted translate). Derive `Tendsto (dslope f 0) (cocompact ℂ) (𝓝 L)`
+      from it by filter algebra: inverse along cocompact, continuity at the
+      germ, `Tendsto.congr'` for the eventual-equality correction term
+      `(a - f 0) * z⁻¹ → 0`. Prove `Differentiable ℂ (dslope f 0)` from
+      entireness of `f`. Apply `apply_eq_of_tendsto_cocompact` pointwise to get
+      `dslope f 0 = L` everywhere, split on `z = 0`, and multiply out.
+
+  + BECAUSE:
+      The divided difference converts a two-coefficient existential into a
+      constancy statement, which is the shape Liouville-type lemmas discharge;
+      every other route (polynomial classification, Picard, coefficient
+      killing by Cauchy estimates) needs growth hypotheses or missing
+      theorems, while this route needs only a first-order normal form at
+      infinity that the earlier singularity work already provides.
+
+  + NEXT-STEPS:
+    next[State the goal as constancy of the divided difference, not as a coefficient existential.]
+    next[Get differentiability of the filled divided difference from Complex.differentiableOn_dslope.]
+    next[Transport the limit along cocompact ℂ from the punctured germ via tendsto_inv₀_cobounded'.]
+    next[Apply Differentiable.apply_eq_of_tendsto_cocompact pointwise.]
+    next[Split on z = 0 and multiply the constant slope equation by z to finish.]

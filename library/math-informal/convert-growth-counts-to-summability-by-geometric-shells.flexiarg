@@ -1,0 +1,43 @@
+@flexiarg math-informal/convert-growth-counts-to-summability-by-geometric-shells
+@title Convert Growth Counts to Summability by Geometric Shells
+@sigils [🐜/予]
+@keywords counting function, growth bound, summability, geometric shells, dyadic shells, exponential shells, inverse powers, weighted count, radius dilation, geometric series
+@audience mathematicians, analysts, proof-writers
+@tone heuristic
+@factor Persistence (viriya)
+
+! conclusion:
+  Turn a polynomial growth bound for points in balls into convergence of a decaying sum by partitioning the points into geometric shells.
+
+  + context:
+      You need to prove that a sum of decreasing radial weights converges, but
+      your available quantitative information controls only the number of
+      points in balls (or a weighted counting function).
+
+  + IF:
+      The counting function satisfies N(R) <= C * R^d for large R, and the
+      summand is bounded by a negative power comparable to R^(-alpha).
+
+  + HOWEVER:
+      A ball count does not directly bound the whole infinite sum, and a
+      logarithmically weighted count may not give an ordinary count at the
+      same radius.
+
+  + THEN:
+      First convert any weighted count to an ordinary count by enlarging the
+      radius by a fixed factor so every point in the smaller ball has weight
+      bounded below by a positive constant. Partition the indices into shells
+      b^j <= radius < b^(j+1), with b > 1. Bound the cardinality of shell j by
+      N(b^(j+1)) and each summand there by b^(-alpha*j). The shell total is
+      therefore bounded by a constant times (b^(d-alpha))^j, so comparison
+      with a geometric series proves convergence when alpha > d.
+
+  + BECAUSE:
+      Geometric shells put the growth of the number of terms and the decay of
+      each term on the same exponential scale. Their exponents subtract, and
+      the convergence threshold becomes the transparent inequality alpha > d.
+
+  + NEXT-STEPS:
+    next[Prove a usable ordinary ball-count bound, dilating the radius if the available count is weighted.]
+    next[Define geometric shells and prove they form a unique partition of the indices.]
+    next[Bound each finite shell total and compare the outer sum with a geometric series.]

@@ -1,0 +1,41 @@
+@flexiarg math-formalization/separate-proof-transfer-from-artifact-replay
+@title Separate Proof Transfer from Artifact Replay
+@sigils [🧱/门]
+@keywords proof transfer, artifact replay, benchmark leakage, commit pointer, shared object store, independent derivation, recompile, evaluation validity, provenance
+@audience formalizers, benchmark designers, proof reviewers
+@tone protocol
+@factor Discernment (paññā)
+
+! conclusion:
+  Classify reuse of an already-proved diff as artifact replay, not as evidence that a proof strategy was independently understood or reconstructed.
+
+  + context:
+      A solver memory names both a proof route and a reachable commit or patch,
+      and a later formalizer closes the same target after retrieving it.
+
+  + IF:
+      The later artifact is content-identical to the earlier proof, or the
+      transcript shows that the earlier diff was applied wholesale.
+
+  + HOWEVER:
+      Recompiling and auditing the replayed artifact is genuine verification:
+      it establishes that the proof still typechecks, preserves the statement,
+      and meets the axiom and scope gates. It does not establish that the route
+      description alone was sufficient for independent derivation.
+
+  + THEN:
+      Record two separate outcomes. Credit artifact transfer and independent
+      verification as successful. Mark strategy-learning or independent-solve
+      conclusions as unmeasured. If the evaluation aims to test proof transfer,
+      withhold direct commit or patch locators, isolate object stores, or score
+      reconstruction separately from replay.
+
+  + BECAUSE:
+      A reachable proof object collapses a search-and-formalization task into a
+      patch-application task. Both can be useful, but they measure different
+      capabilities and costs.
+
+  + NEXT-STEPS:
+    next[Compare the resulting tree or target file against the source proof artifact.]
+    next[Inspect the transcript for wholesale diff, cherry-pick, or commit-pointer use.]
+    next[Report verification success separately from independent derivation evidence.]

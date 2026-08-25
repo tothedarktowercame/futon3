@@ -1,0 +1,50 @@
+@flexiarg math-formalization-CA/divisor-sum-to-root-count-without-monic
+@title Identify a Polynomial's Analytic Divisor Sum with a Filtered Root Count Without Monicity
+@sigils [⚖/數]
+@keywords divisor, rootMultiplicity, roots, finsum, argument principle, zero count, closedBall, non-monic, MeromorphicOn
+@audience lean-provers, complex-analysis
+@tone procedural
+@difficulty hard
+@subjects complex-analysis
+@instantiates math-informal/unfold-the-definition
+@see-also math-formalization-CA/pointwise-logderiv-bridge-interval-to-contour math-formalization-CA/laurent-clearing-to-algebraic-polynomial
+@examples a95J03
+
+! conclusion:
+  When the argument principle hands you ∑ᶠ w, divisor (fun u ↦ p.eval u)
+  (closedBall c R) w for a polynomial p that is NOT monic, do not look for a
+  packaged zero-count-equals-card lemma (the ones in sibling files require
+  q.Monic); prove divisor = rootMultiplicity pointwise and convert the
+  finsum to a multiset count by hand.
+
+  + IF: The goal identifies an analytic divisor finsum over a closed disk
+    with (p.roots.filter (fun w ↦ ‖w - c‖ < R)).card, and p carries a
+    leading coefficient you cannot normalise away (e.g. a cleared Laurent
+    polynomial with arbitrary top coefficient).
+
+  + HOWEVER: The only compiled bridges from zeroCountInClosedBall to a root
+    count assume q.Monic, and there is no Mathlib lemma stating the divisor
+    of a polynomial evaluation equals its root multiplicity.
+
+  + THEN: (a) Pointwise, for p ≠ 0 and w ∈ U: factor p with
+    exists_eq_pow_rootMultiplicity_mul_and_not_dvd, unfold with
+    MeromorphicOn.divisor_apply, and certify the order with
+    meromorphicOrderAt_eq_int_iff using the cofactor as the analytic unit.
+    (b) Globally, rewrite the finsum with finsum_eq_sum_of_support_subset
+    over (p.roots.filter …).toFinset, convert each summand with
+    Polynomial.count_roots and Multiset.count_filter_of_pos, and close with
+    Multiset.toFinset_sum_count_eq. Boundary nonvanishing upgrades ‖w‖ ≤ R
+    on the support to ‖w‖ < R. (c) Cast ℤ → ℂ through
+    (Int.castAddHom ℂ).map_finsum with the divisor's finiteSupport on the
+    compact disk.
+    + LEAN:
+      api[Polynomial.exists_eq_pow_rootMultiplicity_mul_and_not_dvd]
+      api[MeromorphicOn.divisor_apply] api[meromorphicOrderAt_eq_int_iff]
+      api[finsum_eq_sum_of_support_subset] api[Polynomial.count_roots]
+      api[Multiset.count_filter_of_pos] api[Multiset.toFinset_sum_count_eq]
+      api[Function.locallyFinsuppWithin.apply_eq_zero_of_notMem]
+
+  + BECAUSE: The divisor is defined through the meromorphic order, and the
+    order of a polynomial evaluation at w is exactly its root multiplicity
+    regardless of the leading coefficient; monicity only ever entered
+    through the packaged lemma's proof, not through the mathematics.

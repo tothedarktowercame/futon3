@@ -1,0 +1,71 @@
+@flexiarg features/emit-per-tick-mismatch
+@title Emit the Per-Tick Mismatch, and Replay Without It
+@style implementation-pattern
+@why war-room/wr-27-a-loop-is-born-instrumented-for-its-gain
+@holds-at R8
+@builds-from problems/per-tick-mismatch-instruments-outer-loop-gain
+@audience whoever picks up C-R8
+@tone plain-operational
+@references [problems/per-tick-mismatch-instruments-outer-loop-gain aif/present-fit-mismatch]
+@status [status[specified] blocked-by[none]]
+
+! conclusion:
+  Write the per-tick mismatch into the attempt record as a checkpoint field,
+  route it into the outer-loop update, and prove it is READ by replaying the
+  same ticks with the value frozen.
+
+  + context: The mission-conditional-reward outer loop is supposed to consume
+    returned reward. Nothing records the quantity it would consume. This is the
+    build behind C-R8; the problem statement is
+    problems/per-tick-mismatch-instruments-outer-loop-gain and the promotion
+    test is p4ng/empirics-futon/promotion-tests.edn.
+
+  + IF:
+    A loop returns reward and an update consumes it.
+
+  + HOWEVER:
+    The mismatch is not in the record. 62 archived attempts across
+    wm-outer-loop-40-v1 through -46-v1 carry seven checkpoints each --
+    time-step, selection, construction, dispatch, build, adjudication, closed --
+    and no gain reading in any of them. The only gain-shaped token in the whole
+    archive is `:tau-mode :selection-gain-only`, which is a configuration flag
+    and not a value. So the loop cannot be shown to read a quantity that was
+    never written, and the ring restates itself: the defect is visible only to
+    whoever reads the per-tick mismatch.
+
+  + THEN:
+    Emit the mismatch as a field on the attempt's own checkpoints, carrying its
+    provenance the way `:selection-source` already distinguishes an operator
+    pick from the selector's (full_loop_runner.clj). Route it into the
+    outer-loop update. Then run the same tick sequence twice, once live and
+    once with the mismatch held at a constant, and record both action
+    sequences.
+
+  + BECAUSE:
+    WR-27 asks that a loop be born instrumented for its gain, and a value that
+    is recorded but not read is the current state wearing an instrument. The
+    replay is what separates those two, and it is the only part of this that
+    cannot be satisfied by writing more fields.
+
+  + FAILURE-MODES:
+    - Instrument theatre: the mismatch is emitted, nothing consumes it, and the
+      board reports the ring closed because a field appeared.
+    - Replay without a control: one run is recorded and the difference is
+      argued from the mechanism. The frozen-value run is the whole test.
+    - Cohort contamination: wm-outer-loop-40-v1's next eligible opportunity is
+      `attempt-002`, held open for a defect repair that is independently
+      reviewed, canaried and marked with a new semantic epoch
+      (archives/stop-line-2026-07-15/README.md). A hand-driven run under that
+      id consumes a pre-registered slot without meeting its conditions. Use a
+      new cohort id.
+    - Ghost arming: `GET /api/alpha/war-machine` starts the in-process
+      scheduler as a side effect of being read, at a 300s period, so ticks can
+      arrive that nobody asked for. A measurement run must know which ticks are
+      its own.
+
+  + NEXT-STEPS:
+    next[Name the field and where it is written -- one checkpoint, not five.]
+    next[State the constant the null control freezes the mismatch AT, and why
+         that value rather than another; a frozen value is a choice and an
+         unexamined one can make the control pass.]
+    next[Pick the tick run to replay and record its cohort id before running.]

@@ -123,18 +123,37 @@
                               reverse)]
     (:observed-at (first after-last-clean))))
 
+(defn- cleaned-after?
+  "True when OBSERVATIONS (all for the claim's worktree/path) include a clean
+  observation later than the claim: the dirt the claim witnessed has since
+  been committed, so the claim says nothing about dirt that appears after.
+
+  Live case, 2026-08-26: a seat's tool-edit claim from 08-24 survived the
+  08-25 commit that cleaned the file, and a different agent's shell edit on
+  08-26 was then attributed to the first seat."
+  [observations claim]
+  (let [claimed-ms (epoch-ms (:last-observed-at claim))]
+    (boolean (some #(and (not (dirty-statuses (:git/status %)))
+                         (> (epoch-ms (:observed-at %)) claimed-ms))
+                   observations))))
+
 (defn project-dirty-sets
   "Project unambiguous per-seat/per-repo dirty sets from STORE.
 
   Returns `:dirty-sets`, plus explicit `:ambiguous` and `:unattributed` paths.
-  A path is attributed only when exactly one seat has a current active claim."
+  A path is attributed only when exactly one seat has a current active claim
+  that has not been cleaned since (see `cleaned-after?`)."
   [store computed-at]
   (let [observations (state/records-of-type store :inbox-zero/file-observation)
+        observations-by-path (group-by (juxt :worktree/id :path) observations)
         current-observations* (current-observations store)
         active-claims-by-path
         (->> (current-claims store)
              vals
              (filter #(= :active (:state %)))
+             (remove #(cleaned-after? (get observations-by-path
+                                           [(:worktree/id %) (:path %)])
+                                      %))
              (group-by (juxt :worktree/id :path)))
         result
         (reduce-kv

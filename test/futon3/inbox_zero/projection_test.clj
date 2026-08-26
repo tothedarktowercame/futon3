@@ -89,6 +89,29 @@
     (is (empty? (:ambiguous result)))
     (is (empty? (:unattributed result)))))
 
+(deftest claim-cleaned-by-a-commit-does-not-attribute-later-dirt
+  ;; Seat A's claim at t=1000; the path is observed clean at t=2000 (committed);
+  ;; someone else dirties it at t=3000 with no claim of their own. The old
+  ;; claim must not attribute the new dirt: it is :unattributed.
+  (let [stored (store (observation 1 "a.clj" :modified 1000)
+                      (observation 2 "a.clj" :clean 2000)
+                      (observation 3 "a.clj" :modified 3000)
+                      (claim 1 (:seat/id seat-a) "a.clj" :active 1000))
+        result (projection/project-dirty-sets stored (instant 4000))]
+    (is (empty? (:dirty-sets result)))
+    (is (= ["a.clj"] (mapv :path (:unattributed result))))))
+
+(deftest fresh-claim-after-the-clean-observation-still-attributes
+  (let [stored (store (observation 1 "a.clj" :modified 1000)
+                      (observation 2 "a.clj" :clean 2000)
+                      (observation 3 "a.clj" :modified 3000)
+                      (claim 1 (:seat/id seat-a) "a.clj" :active 1000)
+                      (claim 2 (:seat/id seat-a) "a.clj" :active 2500))
+        result (projection/project-dirty-sets stored (instant 4000))]
+    (is (= ["a.clj"] (mapv :path (:members (first (:dirty-sets result))))))
+    (is (= "claim:2" (-> result :dirty-sets first :members first :claim/id)))
+    (is (empty? (:unattributed result)))))
+
 (deftest competing-current-claims-are-ambiguous
   (let [stored (store (observation 1 "shared.clj" :modified 1000)
                       (claim 1 (:seat/id seat-a) "shared.clj" :active 1000)

@@ -59,10 +59,15 @@
 
 (defn- corroborated-evidence [path-fact bundle seat-id]
   (let [windows (windows-for bundle seat-id (:worktree/id path-fact))
+        ;; Only ATTESTED mentions corroborate: the seat issued something whose
+        ;; effect was to write the path (a tool input). A path that merely
+        ;; appears in turn text or a tool result is context, not evidence —
+        ;; a seat printing a projection got itself proposed that way
+        ;; (2026-08-25). Adapters set :attested? explicitly; absent = false.
         eligible-mentions (filter #(and (= seat-id (:seat/id %))
                                         (same-path? path-fact %)
                                         (true? (:candidate-authored? %))
-                                        (true? (:names-modification? %)))
+                                        (true? (:attested? %)))
                                   (:substrate-mentions bundle))
         eligible-mtimes (filter (partial same-path? path-fact) (:mtimes bundle))
         corroborating-windows

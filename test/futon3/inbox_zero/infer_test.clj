@@ -14,7 +14,7 @@
    [{:seat/id seat :repo/id "futon3c" :worktree/id (:worktree/id tracer)
      :path (:path tracer) :at #inst "2026-08-24T08:21:54.580Z"
      :source/id "emacs-6427" :candidate-authored? true
-     :names-modification? true}]
+     :attested? true}]
    :mtimes
    [{:repo/id "wrong-on-purpose" :worktree/id (:worktree/id tracer)
      :path (:path tracer) :at #inst "2026-08-24T08:21:27.874Z"
@@ -36,6 +36,18 @@
     (is (= 1 (:rank candidate)))
     (is (= :corroborated (:confidence candidate)))
     (is (every? ids ["emacs-6427" "stat:session-cost" "claim:781b"]))))
+
+(deftest unattested-mention-never-corroborates
+  ;; The same tracer evidence, but the mention is turn text / a tool result
+  ;; rather than a write the seat issued: it drops to :weak, which is visible
+  ;; but insufficient unless the caller opts in.
+  (let [evidence (assoc-in tracer-evidence [:substrate-mentions 0 :attested?] false)
+        result (infer/infer-attribution tracer evidence)
+        candidate (first (:candidates result))]
+    (is (= :insufficient (:verdict result)))
+    (is (= :weak (:confidence candidate)))
+    (is (not-any? #(= "emacs-6427" (:source/id %)) (:evidence candidate)))
+    (is (= :propose (:verdict (infer/infer-attribution tracer evidence {:allow-weak? true}))))))
 
 (deftest structured-write-is-direct
   (let [result (infer/infer-attribution

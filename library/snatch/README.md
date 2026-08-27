@@ -180,3 +180,70 @@ Under G4 the coverage gaps went 4 → 0, but P1's behaviour did not change:
 because π is grim trigger and does not consult the collection. Situations being
 covered and a policy following the patterns that cover them are two different
 measurements, and only the first is what "0 gaps" reports.
+
+## A policy that consults the collection (2026-08-27)
+
+The playout's original P1 was **grim trigger** — the repeated-games strategy of
+offering until the counterpart defects once, then abstaining forever with no way
+back. It is three lines and hardcoded, so patterns could fire all they liked and
+P1 did the same thing regardless. `checks/playout_snatch.clj` now carries a
+second policy alongside it, `pi-patterns`, whose action **is** the THEN of the
+highest-precedence pattern that fires. Editing a pattern changes what P1 does.
+
+Closing the production-rule loop needed three things:
+
+- **A THEN as data.** Play-grain entries carry `:then`, a function from
+  situation to action, and `:precedence`, the conflict-resolution order. Four
+  entries have no `:then`: the ask size, the talk channel and the free mark are
+  real game features this model does not represent, so they stay advisory rather
+  than being given an invented action.
+- **Denouncing as an action.** `revert-then-invert` records that G4's AutoJudge
+  reverts *and then* inverts, and that **denouncing is optional**. So
+  `consult-the-remedy-before-exiting` now emits `:denounce`, and
+  `:repair-observed?` is set by that event rather than by a judge merely
+  existing. A judge being available is not a repair having happened; the earlier
+  version conflated them.
+- **A score.** P1's payoff from the recorded rule (own tokens 1, the other's 2):
+  a completed exchange of n nets +n, a snatched offer −n, and a denunciation +3n
+  — n restored plus 2n transferred at P2's expense.
+
+### What the two policies score
+
+| scenario | grim | patterns | difference |
+|---|---|---|---|
+| G1 snatcher | −1 | **−5** | −4 |
+| G1 sharer | +5 | **+15** | +10 |
+| G1 cautious | 0 | 0 | 0 |
+| G4 snatcher | −1 | **+3** | +4 |
+| G2 snatcher | −10 | −10 | 0 |
+| G5 sharer | +5 | **+15** | +10 |
+
+**G4 is the case the collection was written for.** Grim trigger takes one loss
+and leaves; the pattern policy denounces, gets the transfer inverted, re-enters
+on the observed repair, and ends +3 where grim ends −1. Two patterns produce the
+whole difference, and the hardcoded policy could not reach either.
+
+**G1 against a snatcher is where the collection is wrong.** The pattern policy
+loses five where grim loses one, because after the first snatch nothing tells it
+to stop: `consult-the-remedy-before-exiting` requires a remedy to exist, and G1
+has none, so `exchange-when-both-sides-gain` keeps firing and P1 keeps offering
+into a player who takes. **The collection has no pattern for exiting an
+arrangement that offers no recourse.** That is a seventh gap, and unlike the six
+assessed by reading, this one was produced by the machinery — the score is what
+distinguishes a collection that plays well from one that reads well.
+
+Under G1 against a cautious counterpart the two policies tie at zero, but they
+do not behave alike: grim offers into a refusal five times, while
+`an-unmodelled-response-stops-the-line` fires in round 2 and the pattern policy
+stops. Refusal is free in this model, so stopping earns nothing here — the
+difference is real and the score cannot see it.
+
+### A correction to the coverage numbers
+
+G1's four reported gaps were an artefact. Three guards were conditioned on
+`:offer-made?` — whether P1 had *already decided* to offer this round — so after
+grim trigger abstained, patterns that describe the situation could not fire. A
+pattern advises a decision; conditioning its IF on that decision inverts the
+exercise. No guard now mentions the action taken this round, and the G1 gaps go
+to zero: an exchange was available in those rounds all along, which is exactly
+why the policy needed a pattern telling it not to take one.

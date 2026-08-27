@@ -1,0 +1,32 @@
+@flexiarg snatch/probe-before-committing
+@title Probe Before Committing
+@audience players, policy authors
+@tone practical
+@style pattern
+@why snatch/protect-the-unprotected-move
+
+! conclusion: Make the first offer the smallest one that still discriminates, and read it as information rather than as trade.
+
+  + context: **Play grain** — the antecedent is a game state, not a design
+    question. Snatch or Share, any treatment, first encounter with a counterpart
+    whose disposition is unknown.
+
+  + IF:
+    You face a counterpart whose disposition you do not know, and an offer of any
+    size is available to you.
+
+  + HOWEVER:
+    A large first offer is unrecoverable if they snatch, and a zero offer buys
+    nothing — you end the round knowing exactly what you knew at its start.
+
+  + THEN:
+    Offer the smallest amount whose acceptance and whose seizure would look
+    different to you, and treat the response as the thing you bought.
+
+  + BECAUSE:
+    The first exchange with an unknown counterpart is priced as information, not
+    as trade. One token buys a clean read; ten tokens buy the same read and cost
+    nine more.
+    + evidence: item `S-001` (`futon3/checks/item-s001.edn`) states this policy's
+      predicted distribution in advance and collapses a two-point spread to zero
+      on either accept or snatch.

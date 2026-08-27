@@ -98,6 +98,33 @@ guard true in every situation carries no information**: a dimension with no
 singularity on it, inside the very artefact written to study them. The zero was
 an artefact of the guard, not a property of the collection.
 
+### Play-grain patterns added (2026-08-27), and what the re-run shows
+
+Five written from the findings above: `probe-before-committing`,
+`escalate-only-as-far-as-you-can-lose`, `consult-the-remedy-before-exiting`,
+`a-free-mark-is-always-worth-assigning`, `an-unmodelled-response-stops-the-line`.
+Two of the five were written **from the playout itself** — the last from the
+falsifier firing, the third from remedies going unused.
+
+    treatment / disposition      coverage gaps (of 5 rounds)
+    G1 snatcher                  4   ← correct: see below
+    G1 sharer                    0
+    G1 cautious                  0
+    G4 snatcher                  0
+
+**The surviving gap is right, not a hole.** In G1 after a snatch there *is* no
+remedy to consult, no acceptance to escalate on, and the disposition is known —
+so the collection honestly has nothing to say. A state of nature offers a player
+who has been robbed no move but the one the design layer already named. **A
+collection that produced advice here would be inventing it.**
+
+**And the trace shows a policy ignoring an applicable pattern.** In G4 rounds
+2–5, `consult-the-remedy-before-exiting` and `a-free-mark-is-always-worth-assigning`
+are applicable in every round, and the grim-trigger policy abstains anyway. That
+is the pattern's own `HOWEVER` — *"a policy written for the state of nature exits
+on the first defection"* — **exhibited by the playout that motivated writing it**.
+Availability is not use, at play grain.
+
 **Finding 3 — the falsifier fires.** Item `S-001` predicts `{O2 0.5, O4 0.5}`
 with `O3` at zero mass. A *cautious* P2 refuses, producing `O3`, and **the
 two-disposition model is refuted** — a stated prediction failing, which is the

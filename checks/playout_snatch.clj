@@ -30,7 +30,25 @@
     :if (fn [s] (and (= :design (:grain s)) (not (:judge-available? s))))}
    {:id :institutions-vary-by-position-and-force :grain :design
     :if-text "You must design, compare, or extend a family of institutional arrangements."
-    :if (fn [s] (= :design (:grain s)))}])
+    :if (fn [s] (= :design (:grain s)))}
+
+   ;; --- PLAY grain: antecedents over game states -------------------------
+   {:id :probe-before-committing :grain :play
+    :if-text "A counterpart whose disposition you do not know."
+    :if (fn [s] (and (= :play (:grain s)) (nil? (:disposition-known s))))}
+   {:id :escalate-only-as-far-as-you-can-lose :grain :play
+    :if-text "A counterpart has accepted an offer."
+    :if (fn [s] (and (= :play (:grain s)) (= :accepted (:last s))))}
+   {:id :consult-the-remedy-before-exiting :grain :play
+    :if-text "You were defected against and the arrangement provides a response."
+    :if (fn [s] (and (= :play (:grain s)) (:snatched? s)
+                     (or (:shame-available? s) (:judge-available? s))))}
+   {:id :a-free-mark-is-always-worth-assigning :grain :play
+    :if-text "A mark may be attached and changes no payoff this round."
+    :if (fn [s] (and (= :play (:grain s)) (:snatched? s) (:shame-available? s)))}
+   {:id :an-unmodelled-response-stops-the-line :grain :play
+    :if-text "An outcome to which your model assigned no probability."
+    :if (fn [s] (and (= :play (:grain s)) (:unmodelled? s)))}])
 
 (defn applicable [s] (mapv :id (filter #((:if %) s) collection)))
 
@@ -46,6 +64,8 @@
 ;; ---- pi: probe one token, grim trigger ----------------------------------
 (defn p1-action [s] (if (:snatched? s) :abstain :offer))
 
+(def ^:private modelled #{:O1 :O2 :O4})   ; S-001's support; O3 carries zero mass
+
 (defn play
   "A PLAY-grain trajectory. Every situation carries :grain :play."
   [treatment disposition rounds]
@@ -55,7 +75,10 @@
       (let [pats (applicable s)
             act  (p1-action s)
             out  (if (= act :abstain) :O1 (p2-response disposition))
-            s'   (cond-> (assoc s :round (inc r))
+            s'   (cond-> (assoc s :round (inc r)
+                                 :last (case out :O2 :accepted :O3 :refused :O4 :snatched :none)
+                                 :disposition-known (or (:disposition-known s) (when (#{:O2 :O4} out) true))
+                                 :unmodelled? (not (contains? modelled out)))
                    (= out :O4) (-> (assoc :snatched? true) (update :tokens dec)
                                    (update :shame #(if (:shame-available? s) (inc %) %)))
                    (= out :O2) (update :tokens inc))]

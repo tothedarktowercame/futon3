@@ -1,0 +1,36 @@
+@flexiarg snatch/an-unmodelled-response-stops-the-line
+@title An Unmodelled Response Stops the Line
+@audience players, model authors
+@tone cautionary
+@style pattern
+@why snatch/protect-the-unprotected-move
+
+! conclusion: When the counterpart does something your model assigned no probability, stop and re-pose the model rather than play on.
+
+  + context: **Play grain.** Written 2026-08-27 from a playout that produced
+    exactly this: item `S-001` predicts accept or snatch, a *cautious* counterpart
+    refused, and the outcome carried zero predicted mass.
+
+  + IF:
+    The counterpart produces an outcome to which your model assigned no
+    probability.
+
+  + HOWEVER:
+    Play continues whether or not you notice, and the cheapest next move is
+    always to repeat the policy that just met a surprise — which is trying harder
+    inside a model you now know is wrong.
+
+  + THEN:
+    Stop. Name the disposition that would explain the response, add it, and
+    re-derive the prediction before the next round.
+
+  + BECAUSE:
+    An outcome with zero predicted mass is not a bad draw, it is a refutation. A
+    model that cannot be surprised has no falsifier; one that is surprised and
+    plays on has wasted its only informative event.
+    + evidence: `futon3/checks/playout_snatch.clj` — a cautious P2 fires `S-001`'s
+      falsifier `O3` in round 1 of G1.
+
+  + NEXT-STEPS:
+    - Where a prediction is stated, name in advance which observation would
+      refute it; where none would, the prediction is not one.

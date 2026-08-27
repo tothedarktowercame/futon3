@@ -254,3 +254,60 @@ pattern advises a decision; conditioning its IF on that decision inverts the
 exercise. No guard now mentions the action taken this round, and the G1 gaps go
 to zero: an exchange was available in those rounds all along, which is exactly
 why the policy needed a pattern telling it not to take one.
+
+## The antecedent is IF *and* HOWEVER (2026-08-27)
+
+Compiling only the IF makes a pattern fire wherever its situation obtains. But a
+pattern exists to overcome a counter-force, and where that force is not live the
+THEN would happen anyway — so **IF ∧ HOWEVER is the antecedent**, and both
+conjuncts now have to hold.
+
+Five of the seven acting patterns gained a real second conjunct:
+
+| pattern | HOWEVER, as a guard |
+|---|---|
+| `an-unmodelled-response-stops-the-line` | *"play continues"* — false in the final round, where a stop protects nothing |
+| `consult-the-remedy-before-exiting` | exiting must be possible at all; under G2 it is not |
+| `re-enter-after-observed-repair` | the remedy is spent, so exit is the only alternative left |
+| `forced-play-needs-a-loss-floor` | you hold more than the floor, or there is no large offer to be tempted by |
+| `probe-before-committing` | both sizing errors are reachable |
+| `exchange-when-both-sides-gain` | seizure is salient — it happened, or the counterpart is unread |
+
+**Two HOWEVERs do not discriminate.** `escalate-only-as-far-as-you-can-lose`
+warns that one acceptance is weak evidence and a snatch is always possible —
+true in every state where its IF holds. That is a permanent condition of the
+game, not a tension in the situation, and it is recorded as such rather than
+given a guard that cannot fail. The same test that catches a fake IF catches a
+HOWEVER that names the weather.
+
+The tightening changed behaviour where it should: against a known sharer with no
+seizure on record, `exchange-when-both-sides-gain` stops firing, because an
+exchange with a counterpart who has accepted four times needs no argument. It
+also removed one witness for the re-wiring experiment — `exchange-first` and
+`patterns` now agree on G1 sharer, because the pattern being promoted no longer
+fires there. G4 still separates them.
+
+## The cascade is the `@why` sub-graph, and it is not a tree
+
+The acting chain is linear because one pattern acts per round. The **cascade** is
+not that chain: it is the sub-graph of `@why` that the acting patterns stand on,
+read from the flexiargs at run time. `checks/playout_snatch.clj` computes the
+up-closure and reports its shape.
+
+    G4 snatcher   3 acting → 7 nodes, 10 edges — NOT A TREE
+                  consult-the-remedy-before-exiting, re-enter-after-observed-repair,
+                  mark-without-force, revert-then-invert each stand on two authorities
+    G1 sharer     2 acting → 4 nodes, 3 edges — a tree
+    G1 snatcher   2 acting → 4 nodes, 2 edges — a tree
+
+`re-enter-after-observed-repair` cites both `consult-the-remedy-before-exiting`
+and `revert-then-invert`, and `consult-the-remedy-before-exiting` cites
+`revert-then-invert` as well — so `revert-then-invert` is reached by two distinct
+paths. That diamond is what makes the G4 cascade a semilattice rather than a
+tree, in the sense of *A City Is Not a Tree*, and it comes from edges that were
+already in the library rather than from anything the harness adds.
+
+The G1 runs are trees, and honestly so: they never engage the remedy structure,
+so there is nothing to overlap. **Shape is a property of the run, not of the
+collection** — the same twelve patterns produce a tree against a sharer and a
+semilattice under a remedy.

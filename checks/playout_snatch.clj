@@ -7,7 +7,9 @@
      3. Q         — how does item S-001's prediction fare?
 
    Deterministic and reproducible: P2's disposition is fixed per run, so the
-   trace can be read rather than sampled.")
+   trace can be read rather than sampled."
+  (:require [clojure.string :as str]
+            [clojure.set :as set]))
 
 ;; ---- the collection, as (IF-guard, THEN) pairs -------------------------
 ;; Each guard is a predicate on the situation. This IS the pattern's IF clause,
@@ -41,14 +43,27 @@
    ;;
    ;; No guard may mention the action P1 took this round.  A pattern advises a
    ;; decision; conditioning its IF on the decision inverts the exercise.
+   ;;
+   ;; The ANTECEDENT is :if AND :however.  IF names the situation; HOWEVER names
+   ;; the counter-force the THEN exists to overcome.  Where the force is not
+   ;; live the THEN would happen anyway and the pattern has nothing to add, so
+   ;; both conjuncts must hold for a pattern to fire.
    {:id :an-unmodelled-response-stops-the-line :grain :play :precedence 1
     :if-text "An outcome to which your model assigned no probability."
     :if (fn [s] (and (= :play (:grain s)) (:unmodelled? s)))
+    ;; "Play continues whether or not you notice" — in the final round it does
+    ;; not, so there is nothing left for a stop to protect.
+    :however-text "Play continues, and repeating the policy is the cheapest move."
+    :however (fn [s] (not (:last-round? s)))
     :then (fn [_] {:act :stop})}
    {:id :consult-the-remedy-before-exiting :grain :play :precedence 2
     :if-text "You were defected against and the arrangement provides a response."
     :if (fn [s] (and (= :play (:grain s)) (:snatched? s)
                      (or (:shame-available? s) (:judge-available? s))))
+    ;; "a policy written for the state of nature exits on the first defection" —
+    ;; the temptation requires that exiting be possible at all.
+    :however-text "Exiting looks the same whether or not a remedy existed."
+    :however (fn [s] (contains? (:p1-actions s) :abstain))
     ;; "check what the arrangement entitles you to and use it" — denounce while
     ;; the remedy is unspent, and say nothing once it is spent.  Denouncing is
     ;; optional in G4, so it is an action, not an automatic consequence.
@@ -60,23 +75,46 @@
     :if-text "A prior loss has been observably repaired and a bounded probe is available."
     :if (fn [s] (and (= :play (:grain s)) (:snatched? s)
                      (:repair-observed? s) (pos? (:tokens s))))
+    ;; "permanent exit discards any improvement" — live once the remedy is spent
+    ;; and exit is the only remaining alternative to re-entry.
+    :however-text "Permanent exit discards the improvement; re-entry on a promise repeats the exposure."
+    :however (fn [s] (zero? (:seized s)))
     :then (fn [s] (when (pos? (:tokens s)) {:act :offer :size 1}))}
    {:id :forced-play-needs-a-loss-floor :grain :play :precedence 4
     :if-text "Abstention is unavailable after seizure has become a live risk."
     :if (fn [s] (and (= :play (:grain s)) (:forced-offer? s) (:snatched? s)))
+    ;; "compulsion does not make a large exposed offer safer" — there is no
+    ;; large offer to be tempted by when the floor is all you hold.
+    :however-text "Compulsion does not make a large exposed offer safer."
+    :however (fn [s] (> (:tokens s) 1))
     :then (fn [s] (when (pos? (:tokens s)) {:act :offer :size 1}))}
    {:id :escalate-only-as-far-as-you-can-lose :grain :play :precedence 5
     :if-text "A counterpart has accepted an offer."
     :if (fn [s] (and (= :play (:grain s)) (= :accepted (:last s))))
+    ;; NON-DISCRIMINATING.  "One acceptance is weak evidence" and a snatch is
+    ;; always possible, so this force is live in every state where the IF holds.
+    ;; It names a permanent condition of the game rather than a tension in the
+    ;; situation, and is recorded as such instead of being given a guard.
+    :however-text "One acceptance is weak evidence, and belief-sized offers are unrecoverable."
+    :however (fn [_] true)
     :then (fn [s] (when (pos? (:tokens s))
                     {:act :offer :size (min (inc (:last-size s)) (:tokens s))}))}
    {:id :probe-before-committing :grain :play :precedence 6
     :if-text "A counterpart whose disposition you do not know."
     :if (fn [s] (and (= :play (:grain s)) (nil? (:disposition-known s))))
+    ;; "a large first offer is unrecoverable ... a zero offer buys nothing" —
+    ;; both errors need to be reachable for the sizing advice to bite.
+    :however-text "A large first offer is unrecoverable; a zero offer buys nothing."
+    :however (fn [s] (> (:tokens s) 1))
     :then (fn [s] (when (pos? (:tokens s)) {:act :offer :size 1}))}
    {:id :exchange-when-both-sides-gain :grain :play :precedence 7
     :if-text "Both players hold tokens and an exchange remains available."
     :if (fn [s] (and (= :play (:grain s)) (pos? (:tokens s))))
+    ;; "attention to seizure risk can make abstention look like the objective" —
+    ;; live only where seizure is salient: it has happened, or the counterpart
+    ;; is still unread.  Against a known sharer the exchange needs no argument.
+    :however-text "Attention to seizure risk makes abstention look like the objective."
+    :however (fn [s] (or (:snatched? s) (nil? (:disposition-known s))))
     :then (fn [s] (when (pos? (:tokens s)) {:act :offer :size 1}))}
 
    ;; Advisory in this harness — real game features the model does not carry.
@@ -99,8 +137,14 @@
     :if (fn [s] (and (= :play (:grain s)) (:offer-received? s)))}])
 
 ;; P1's set only: a pattern whose actor is P2 is not decidable by this harness.
-(defn applicable [s]
-  (mapv :id (filter #(and (not= :p2 (:actor %)) ((:if %) s)) collection)))
+;; A pattern fires when its ANTECEDENT holds: IF and HOWEVER together.  A
+;; pattern with no stated :however fires on its IF alone.
+(defn fires? [pat s]
+  (and (not= :p2 (:actor pat))
+       ((:if pat) s)
+       (if-let [however (:however pat)] (however s) true)))
+
+(defn applicable [s] (mapv :id (filter #(fires? % s) collection)))
 
 ;; ---- treatments, from the flowcharts -----------------------------------
 (def treatments
@@ -203,6 +247,52 @@
                    (conj trace {:round r :patterns pats :action act :outcome out
                                 :size size :score (:score s') :by by}))))))))
 
+;; ---- the @why graph, read from the library ------------------------------
+;; The cascade a run produces is not the chain of acting patterns.  It is the
+;; sub-graph of @why that those patterns stand on — and @why is a semilattice
+;; rather than a tree, which is Alexander's own Figure 1 shape.
+(def ^:private library-dir "library/snatch")
+
+(defn- parse-why [file]
+  (let [lines (str/split-lines (slurp file))
+        id (some #(second (re-matches #"@flexiarg snatch/(\S+)" %)) lines)
+        why (some #(second (re-matches #"@why (.*)" %)) lines)]
+    (when id
+      [(keyword id)
+       (into #{} (map #(keyword (str/replace % "snatch/" "")))
+             (remove str/blank? (str/split (or why "") #"\s+")))])))
+
+(def why-graph
+  (into {} (keep parse-why)
+        (->> (file-seq (java.io.File. library-dir))
+             (filter #(str/ends-with? (.getName ^java.io.File %) ".flexiarg")))))
+
+(defn- up-closure
+  "Every pattern the given ones stand on, transitively."
+  [ids]
+  (loop [seen #{} frontier (set ids)]
+    (if (empty? frontier)
+      seen
+      (let [seen' (into seen frontier)]
+        (recur seen'
+               (set/difference (into #{} (mapcat #(get why-graph % #{})) frontier)
+                               seen'))))))
+
+(defn- induced-edges [nodes]
+  (for [n nodes, parent (get why-graph n #{}) :when (nodes parent)] [n parent]))
+
+(defn- cascade-report [acting]
+  (let [nodes (up-closure acting)
+        edges (induced-edges nodes)
+        parents-of (reduce (fn [m [c p]] (update m c (fnil conj #{}) p)) {} edges)
+        shared (sort (map name (keys (filter #(> (count (val %)) 1) parents-of))))]
+    (println (format "  cascade: %d acting, %d nodes in the @why closure, %d edges"
+                     (count acting) (count nodes) (count edges)))
+    (if (seq shared)
+      (println (format "  NOT A TREE — standing on two or more authorities: %s"
+                       (str/join ", " shared)))
+      (println "  tree — every node in the closure has at most one authority"))))
+
 (def ^:private scenarios
   [[:g1 :snatcher 5] [:g1 :sharer 5] [:g1 :cautious 5]
    [:g4 :snatcher 5] [:g2 :snatcher 12] [:g5 :sharer 5]])
@@ -219,7 +309,11 @@
                        (if (:by t) (str "[" (name (:by t)) "]") ""))))
     (println (format "  coverage gaps: %d    final score: %+d"
                      (count (filter #(empty? (:patterns %)) trace))
-                     (:score (last trace))))))
+                     (:score (last trace))))
+    (println (format "  acting chain: %s"
+                     (str/join " → " (map #(name (:by %))
+                                          (filter :by trace)))))
+    (cascade-report (into #{} (keep :by) trace))))
 
 (defn- compare-policies []
   (println "\n── G(π): the same six scenarios under three policies ──")

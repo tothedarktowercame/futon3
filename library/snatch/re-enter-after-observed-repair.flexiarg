@@ -1,0 +1,27 @@
+@flexiarg snatch/re-enter-after-observed-repair
+@title Re-enter After Observed Repair
+@audience players
+@tone practical
+@style pattern
+@why snatch/consult-the-remedy-before-exiting snatch/revert-then-invert
+
+! conclusion: Re-enter after exit only when the prior loss was repaired and the next probe is bounded.
+
+  + context: **Play grain.** P1 previously stopped offering after a snatch, and
+    the institution has since produced an observable remedy.
+
+  + IF:
+    The seized tokens were restored or compensated, the remedy is recorded, and
+    a small new offer can test whether play changed.
+
+  + HOWEVER:
+    Permanent exit discards any improvement the institution achieved, while
+    re-entry on a promise alone repeats the original exposure.
+
+  + THEN:
+    Re-enter with the smallest discriminating give-and-ask pair and expand only
+    after an accepted exchange.
+
+  + BECAUSE:
+    Observed repair supplies evidence that the loss path has changed; the bounded
+    probe tests whether the counterpart's response changed without assuming it.

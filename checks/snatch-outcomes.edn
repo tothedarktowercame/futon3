@@ -1,0 +1,27 @@
+;; The Snatch or Share outcome space, read off the terminal nodes of the game's
+;; own flowcharts (g1..g5 *.mmd). NOT invented, NOT harmonised from elsewhere:
+;; every entry is a labelled leaf of a state machine the implementation follows.
+{:outcomes
+ {:O1  {:label "sin cambios — no offer made"      :cause :p1-abstained}
+  :O2  {:label "intercambiar tokens — exchange"   :cause :p2-accepted}
+  :O3  {:label "sin cambios en tokens — refused"  :cause :p2-refused}
+  :O4  {:label "robo — P2 takes the offer unpaid" :cause :p2-snatched}
+  :O4a {:label "shame token assigned"             :cause :p2-snatched :refines :O4}
+  :O4b {:label "sin penalización"                 :cause :p2-snatched :refines :O4}
+  :O5  {:label "sanción aplicada — revert+invert" :cause :p2-snatched :refines :O4}}
+
+ ;; The institution acts on the SPACE, not only on the weights.
+ :per-treatment
+ {:g1 #{:O1 :O2 :O3 :O4}
+  :g2 #{:O2 :O3 :O4}              ; O1 unreachable: "No ofrecer" disabled
+  :g3 #{:O1 :O2 :O3 :O4a :O4b}    ; O4 REFINED into assigned / not
+  :g4 #{:O1 :O2 :O3 :O4 :O5}      ; O4 REFINED into unpunished / sanctioned
+  :g5 #{:O1 :O2 :O3 :O4}}
+
+ :note
+ "G2 REMOVES an outcome; G3 and G4 each SPLIT one. So an institution refines or
+  coarsens the outcome space itself, and does not merely reweight it. This is the
+  parent/refinement structure of the event-type vocabulary, visible in a state
+  machine: O4a and O4b are separate leaves because they lead to different
+  accumulations, which is the membership test 'a distinction earns a type iff it
+  leads somewhere different'."}

@@ -67,3 +67,65 @@ teaching incentive — someone else's `C`.
 - `p4ng/empirics-futon/NOTE-snatchgame-as-inspiration.md` — the first reading.
 - `p4ng/empirics-futon/NOTE-cascades-are-policies.md` — the syllogism.
 - `futon0/analysis/business-models/NOTE-event-type-vocabulary.md` — structure vs entries.
+
+
+---
+
+## Not yet a complete theory of play (assessed 2026-08-27, at Joe's challenge)
+
+Eleven patterns: six design-grain, five play-grain. Six gaps, the first
+structural and the rest missing entries.
+
+### 1 · Nothing states the gain — every pattern is defensive
+
+Read the eleven conclusions together and **ten are about exposure, sanction,
+exit, or bounded risk.** Only `non-binding-talk-still-moves-play` is about
+producing something rather than limiting a loss, and even it is framed as
+reaching cooperation without enforcement.
+
+**No pattern says why exchange is worth doing.** Own tokens score 1 and the
+other's score 2, so a completed exchange is **strictly positive-sum for both
+sides** — each gives 1-point tokens and receives 2-point ones. That is the whole
+reason the game exists, and the collection is silent on it.
+
+This is the same shape as the plop-2026 catalogue finding: there, *an agent that
+only ever acts*; here, **a player who only ever protects**. It is a missing
+dimension rather than a missing entry, which is why it is listed first.
+
+### 2 · P2 has no patterns at all
+
+Every one of the eleven is written for the offerer. The accept / refuse / snatch
+decision — **half the game, and the decision the whole design turns on** — has no
+coverage. What an offer's *size* signals, when a mark deters, whether
+denunciation risk changes the calculus under G4: none of it.
+
+### 3 · The ask is unaddressed
+
+An offer is *(give X, ask A)*. Every pattern discusses what to **give**; none
+discusses what to **ask**. Half of every offer is outside the language.
+
+### 4 · G2 and G5 have no play patterns
+
+**G2** removes abstention — so `consult-the-remedy-before-exiting` and any
+grim-trigger policy assume an exit that does not exist there. **G5** adds a
+pre-round channel with its own decision (what to say, whether to believe), and
+the collection's only cheap-talk pattern is design-grain.
+
+### 5 · The horizon is ignored
+
+Five rounds, known in advance. In the last round a mark deters nothing and a
+future does not exist, so the reasoning inverts. **Nothing says the last round is
+different.**
+
+### 6 · No re-entry condition
+
+`consult-the-remedy-before-exiting` gestures at it; nothing states when re-entry
+after an exit is warranted, or on what evidence.
+
+### What this says beyond Snatch
+
+Gaps 2–6 are entries someone can write. **Gap 1 is the one worth carrying**: a
+collection assembled from incidents will be defensive, because incidents are what
+went wrong. Nothing in the authoring process asks *what is this for*, so the
+value proposition never gets a pattern — and the same reading applies to the
+War Machine catalogue and to the war-room rulings.

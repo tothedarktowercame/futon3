@@ -1,0 +1,83 @@
+{:scenarios
+ [{:treatment :g1,
+   :disposition :snatcher,
+   :rounds 5,
+   :acting [:probe-before-committing :exchange-when-both-sides-gain],
+   :closure
+   [:exchange-when-both-sides-gain
+    :institutions-vary-by-position-and-force
+    :probe-before-committing
+    :protect-the-unprotected-move],
+   :score -5,
+   :grim-score -1}
+  {:treatment :g1,
+   :disposition :sharer,
+   :rounds 5,
+   :acting
+   [:probe-before-committing :escalate-only-as-far-as-you-can-lose],
+   :closure
+   [:escalate-only-as-far-as-you-can-lose
+    :institutions-vary-by-position-and-force
+    :probe-before-committing
+    :protect-the-unprotected-move],
+   :score 15,
+   :grim-score 5}
+  {:treatment :g1,
+   :disposition :cautious,
+   :rounds 5,
+   :acting
+   [:probe-before-committing :an-unmodelled-response-stops-the-line],
+   :closure
+   [:an-unmodelled-response-stops-the-line
+    :institutions-vary-by-position-and-force
+    :probe-before-committing
+    :protect-the-unprotected-move],
+   :score 0,
+   :grim-score 0}
+  {:treatment :g4,
+   :disposition :snatcher,
+   :rounds 5,
+   :acting
+   [:probe-before-committing
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair],
+   :closure
+   [:consult-the-remedy-before-exiting
+    :institutions-vary-by-position-and-force
+    :mark-without-force
+    :probe-before-committing
+    :protect-the-unprotected-move
+    :re-enter-after-observed-repair
+    :revert-then-invert],
+   :score 3,
+   :grim-score -1}
+  {:treatment :g2,
+   :disposition :snatcher,
+   :rounds 12,
+   :acting
+   [:probe-before-committing
+    :forced-play-needs-a-loss-floor
+    :exchange-when-both-sides-gain
+    :no-pattern],
+   :closure
+   [:exchange-when-both-sides-gain
+    :forced-play-needs-a-loss-floor
+    :institutions-vary-by-position-and-force
+    :no-pattern
+    :preserve-the-right-to-abstain
+    :probe-before-committing
+    :protect-the-unprotected-move],
+   :score -10,
+   :grim-score -10}
+  {:treatment :g5,
+   :disposition :sharer,
+   :rounds 5,
+   :acting
+   [:probe-before-committing :escalate-only-as-far-as-you-can-lose],
+   :closure
+   [:escalate-only-as-far-as-you-can-lose
+    :institutions-vary-by-position-and-force
+    :probe-before-committing
+    :protect-the-unprotected-move],
+   :score 15,
+   :grim-score 5}]}

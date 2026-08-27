@@ -9,7 +9,8 @@
    Deterministic and reproducible: P2's disposition is fixed per run, so the
    trace can be read rather than sampled."
   (:require [clojure.string :as str]
-            [clojure.set :as set]))
+            [clojure.set :as set]
+            [clojure.pprint]))
 
 ;; ---- the collection, as (IF-guard, THEN) pairs -------------------------
 ;; Each guard is a predicate on the situation. This IS the pattern's IF clause,
@@ -315,6 +316,21 @@
                                           (filter :by trace)))))
     (cascade-report (into #{} (keep :by) trace))))
 
+;; The figure is drawn from this, so it cannot drift from the run that
+;; produced it: bb p4ng/empirics-futon/gen_snatch_cascade.bb
+(defn- emit-cascade-edn []
+  (let [out "checks/snatch-cascade.edn"
+        rows (for [[t d n] scenarios
+                   :let [trace (play pi-patterns t d n)
+                         acting (into [] (distinct) (keep :by trace))]]
+               {:treatment t :disposition d :rounds n
+                :acting acting
+                :closure (vec (sort (up-closure (set acting))))
+                :score (:score (last trace))
+                :grim-score (:score (last (play pi-grim t d n)))})]
+    (spit out (with-out-str (clojure.pprint/pprint {:scenarios (vec rows)})))
+    (println (format "\nwrote %s" out))))
+
 (defn- compare-policies []
   (println "\n── G(π): the same six scenarios under three policies ──")
   (println "  scenario              grim   patterns   exchange-first")
@@ -334,6 +350,7 @@
     (println (format "  %-36s -> %s" label (pr-str (applicable s)))))
   (doseq [[t d n] scenarios] (show pi-patterns "patterns" t d n))
   (compare-policies)
+  (emit-cascade-edn)
   (println "\n── item S-001 (pi = probe-one-token, G1, round 1) ──")
   (println "  Q = {O1 0.0, O2 0.5, O3 0.0, O4 0.5}; falsifier O3")
   (doseq [d [:sharer :snatcher :cautious]]

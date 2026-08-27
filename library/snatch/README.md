@@ -223,6 +223,13 @@ and leaves; the pattern policy denounces, gets the transfer inverted, re-enters
 on the observed repair, and ends +3 where grim ends −1. Two patterns produce the
 whole difference, and the hardcoded policy could not reach either.
 
+**The wiring carries the score, not just the membership.** `pattern-policy`
+takes a precedence override map, so the same twelve patterns can be consulted in
+a different order without editing any of them. `pi-exchange-first` moves the gain
+pattern above the remedy and the stop: G4 goes +3 → −5 and G1 sharer +15 → +5.
+That is `futon2.aif.cascade-prior`'s claim — same patterns, different wiring,
+different policy — run rather than asserted.
+
 **G1 against a snatcher is where the collection is wrong.** The pattern policy
 loses five where grim loses one, because after the first snatch nothing tells it
 to stop: `consult-the-remedy-before-exiting` requires a remedy to exist, and G1

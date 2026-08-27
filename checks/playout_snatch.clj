@@ -124,13 +124,24 @@
 
 ;; PATTERN-DRIVEN: the action is whatever the highest-precedence firing
 ;; pattern's THEN says.  Editing a pattern changes what P1 does.
-(defn pi-patterns [s pats]
-  (let [fired (set pats)]
-    (or (some (fn [pat] (when-let [a ((:then pat) s)] (assoc a :by (:id pat))))
-              (->> collection
-                   (filter #(and (:then %) (fired (:id %))))
-                   (sort-by :precedence)))
-        {:act :abstain :by :no-pattern})))
+;; `overrides` re-wires the precedence order without touching a pattern.  Same
+;; collection, different wiring, different policy — which is what
+;; futon2.aif.cascade-prior claims of cascades, made testable here.
+(defn pattern-policy [overrides]
+  (fn [s pats]
+    (let [fired (set pats)
+          order #(get overrides (:id %) (:precedence %))]
+      (or (some (fn [pat] (when-let [a ((:then pat) s)] (assoc a :by (:id pat))))
+                (->> collection
+                     (filter #(and (:then %) (fired (:id %))))
+                     (sort-by order)))
+          {:act :abstain :by :no-pattern}))))
+
+(def pi-patterns (pattern-policy {}))
+
+;; One re-wiring: put the gain pattern above the remedy and the stop.  Nothing
+;; about any pattern changes; only the order in which they are consulted.
+(def pi-exchange-first (pattern-policy {:exchange-when-both-sides-gain 0}))
 
 (def ^:private modelled #{:O1 :O2 :O4})   ; S-001's support; O3 carries zero mass
 
@@ -211,12 +222,13 @@
                      (:score (last trace))))))
 
 (defn- compare-policies []
-  (println "\n── G(π): the same six scenarios under both policies ──")
-  (println "  scenario              grim   patterns   difference")
+  (println "\n── G(π): the same six scenarios under three policies ──")
+  (println "  scenario              grim   patterns   exchange-first")
   (doseq [[t d n] scenarios]
     (let [g (:score (last (play pi-grim t d n)))
-          p (:score (last (play pi-patterns t d n)))]
-      (println (format "  %-6s %-10s %6d %10d %11d" (name t) (name d) g p (- p g))))))
+          p (:score (last (play pi-patterns t d n)))
+          x (:score (last (play pi-exchange-first t d n)))]
+      (println (format "  %-6s %-10s %6d %10d %15d" (name t) (name d) g p x)))))
 
 (defn -main [& _]
   (println "PATTERN-THEORETIC PLAYOUT — Snatch or Share")

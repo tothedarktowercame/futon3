@@ -282,17 +282,50 @@
 (defn- induced-edges [nodes]
   (for [n nodes, parent (get why-graph n #{}) :when (nodes parent)] [n parent]))
 
-(defn- cascade-report [acting]
+;; Alexander's contrast is tree vs semilattice, but a rooted tree IS a meet
+;; semilattice — every two nodes have a greatest common ancestor.  So the
+;; contrast that carries information is tree vs NOT-a-tree, i.e. whether overlap
+;; is present, and the semilattice property has to be checked separately rather
+;; than inferred from the overlap.
+(defn- authorities-of
+  "The down-set: a pattern together with everything it transitively stands on."
+  [id]
+  (up-closure #{id}))
+
+(defn- meet
+  "The greatest common authority of two patterns, if there is exactly one."
+  [nodes a b]
+  (let [common (set/intersection (authorities-of a) (authorities-of b) nodes)
+        maxima (filter (fn [g] (every? #(contains? (authorities-of g) %) common))
+                       common)]
+    (when (= 1 (count maxima)) (first maxima))))
+
+(defn- shape [acting]
   (let [nodes (up-closure acting)
         edges (induced-edges nodes)
         parents-of (reduce (fn [m [c p]] (update m c (fnil conj #{}) p)) {} edges)
-        shared (sort (map name (keys (filter #(> (count (val %)) 1) parents-of))))]
+        shared (sort (map name (keys (filter #(> (count (val %)) 1) parents-of))))
+        pairs (for [a nodes, b nodes :when (neg? (compare (str a) (str b)))] [a b])
+        without (remove (fn [[a b]] (meet nodes a b)) pairs)]
+    {:nodes (count nodes) :edges (count edges) :shared shared
+     :tree? (empty? shared)
+     :meet-semilattice? (empty? without)
+     :pairs-without-meet (count without)}))
+
+(defn- cascade-report [acting]
+  (let [{:keys [nodes edges shared tree? meet-semilattice? pairs-without-meet]}
+        (shape acting)]
     (println (format "  cascade: %d acting, %d nodes in the @why closure, %d edges"
-                     (count acting) (count nodes) (count edges)))
-    (if (seq shared)
+                     (count acting) nodes edges))
+    (if tree?
+      (println "  TREE — every node in the closure has at most one authority")
       (println (format "  NOT A TREE — standing on two or more authorities: %s"
-                       (str/join ", " shared)))
-      (println "  tree — every node in the closure has at most one authority"))))
+                       (str/join ", " shared))))
+    (println (format "  meet-semilattice: %s%s"
+                     (if meet-semilattice? "yes" "NO")
+                     (if meet-semilattice? ""
+                         (format " (%d pair(s) with no greatest common authority)"
+                                 pairs-without-meet))))))
 
 (def ^:private scenarios
   [[:g1 :snatcher 5] [:g1 :sharer 5] [:g1 :cautious 5]
@@ -340,6 +373,21 @@
           x (:score (last (play pi-exchange-first t d n)))]
       (println (format "  %-6s %-10s %6d %10d %15d" (name t) (name d) g p x)))))
 
+(defn- compare-shapes []
+  (println "\n── the same collection, one policy, six situations ──")
+  (println "  scenario           acting  nodes  edges  overlap  tree?  meet-slat?  G-grade?")
+  (doseq [[t d n] scenarios]
+    (let [trace (play pi-patterns t d n)
+          acting (into #{} (keep :by) trace)
+          {:keys [nodes edges shared tree? meet-semilattice?]} (shape acting)
+          moved? (not= (:score (last trace))
+                       (:score (last (play pi-exchange-first t d n))))]
+      (println (format "  %-6s %-10s %5d %6d %6d %8d  %-5s  %-9s  %s"
+                       (name t) (name d) (count acting) nodes edges
+                       (count shared) (if tree? "yes" "no")
+                       (if meet-semilattice? "yes" "NO")
+                       (if moved? "earns" "refused"))))))
+
 (defn -main [& _]
   (println "PATTERN-THEORETIC PLAYOUT — Snatch or Share")
   (println "\nDESIGN-grain situations (choosing an institution):")
@@ -350,6 +398,7 @@
     (println (format "  %-36s -> %s" label (pr-str (applicable s)))))
   (doseq [[t d n] scenarios] (show pi-patterns "patterns" t d n))
   (compare-policies)
+  (compare-shapes)
   (emit-cascade-edn)
   (println "\n── item S-001 (pi = probe-one-token, G1, round 1) ──")
   (println "  Q = {O1 0.0, O2 0.5, O3 0.0, O4 0.5}; falsifier O3")

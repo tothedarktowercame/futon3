@@ -1,0 +1,46 @@
+;; ITEM S-001 — the first "good item": a Q, a falsifier, and a derived check,
+;; stated BEFORE the outcome is known. Nothing here is fitted to past data.
+;;
+;; The 82 WM flights are not this. They carry an outcome and no prediction, so
+;; there is nothing they could have refuted. (Joe, 2026-08-27.)
+{:item/id        :s001
+ :item/domain    :snatch
+ :item/treatment :g1                       ; no property rights
+ :item/stated-at "2026-08-27"
+ :item/status    :open                     ; no outcome yet — this is the point
+
+ ;; π — a rule from history to action, not an action.
+ :policy {:id      :probe-one-token
+          :actor   :p1
+          :rule    "offer 1 turkey, ask 1 corn; on a snatch, never offer again"
+          :grain   :round-1-of-5
+          :why     "low pragmatic value, high epistemic value: it buys a clean
+                    read on P2's disposition for the price of one token"}
+
+ ;; s — the hidden state, and the prior over it.
+ :hidden-state {:variable :p2-disposition
+                :support  [:sharer :snatcher]
+                :prior    {:sharer 0.5 :snatcher 0.5}
+                :prior/justification "Beta(1,1) — DECLARED stipulation (S-G3),
+                                      no prior play observed for this pairing"}
+
+ ;; Q(o|π) — the predicted distribution over the outcome space, which is the
+ ;; leaf set of the G1 flowchart (see snatch-outcomes.edn).
+ :Q {:O1 0.0     ; no offer — excluded by π, which offers
+     :O2 0.5     ; accepted   — predicted iff P2 is a sharer
+     :O3 0.0     ; refused    — predicted by NEITHER disposition
+     :O4 0.5}    ; snatched   — predicted iff P2 is a snatcher
+
+ :Q/entropy-nats 0.6931                    ; log 2 — maximal for a 2-point spread
+
+ ;; THE FALSIFIER, and it is the point of the item.
+ :falsifier
+ {:outcome :O3
+  :why "O3 is IN the outcome space and carries ZERO predicted mass. Observing a
+        refusal refutes the two-disposition model outright — a sharer accepts and
+        a snatcher snatches; neither refuses. A Q that put mass on every outcome
+        could not be refuted by any outcome, which is the mirror discipline in
+        distribution form."}
+
+ ;; What the receipt must carry when the item closes.
+ :receipt/required [:realised-outcome :posterior :refuted?]}

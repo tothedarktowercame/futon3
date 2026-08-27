@@ -129,3 +129,54 @@ collection assembled from incidents will be defensive, because incidents are wha
 went wrong. Nothing in the authoring process asks *what is this for*, so the
 value proposition never gets a pattern — and the same reading applies to the
 War Machine catalogue and to the war-room rulings.
+
+## The gaps filled, and reviewed (2026-08-27)
+
+codex-22 wrote seven play-grain patterns against the six gaps above
+(`550d4786`); claude-13 reviewed the diff, re-ran the playout, and made the
+fixes recorded below. Eighteen patterns now: six design-grain, twelve
+play-grain.
+
+**Gap 1 is closed.** `exchange-when-both-sides-gain` states the thing no pattern
+stated — *"each transferred token replaces one point for its giver with two
+points for its receiver; a completed bilateral exchange therefore creates value
+for both sides"* — and grounds it in the recorded payoff rule rather than in an
+incident. `ask-for-surplus-not-surrender` and
+`accept-an-offer-that-beats-holding` follow from it by `@why`. On a recount the
+defensive-to-gain balance moved from one gain conclusion in eleven to at least
+three in eighteen, with two more (`price-the-final-round-as-final`,
+`re-enter-after-observed-repair`) reading either way. Counting is a judgement
+call, but the sentence that was missing is now written.
+
+### Three fixes made in review
+
+1. **`accept-an-offer-that-beats-holding` is a P2 pattern**, and this harness's
+   P2 is a fixed disposition rather than a chooser. It had been given a
+   P1-shaped guard identical to `ask-for-surplus-not-surrender`'s, so it fired
+   whenever P1 offered — coverage credited to a decision the harness never
+   makes. It now carries `:actor :p2` and is excluded from P1's applicability
+   set. Making P2 pattern-driven is the natural next step and would let it back
+   in.
+2. **`:offer-size` and `:ask-size` were both `(if (= act :offer) 1 0)`**, so
+   `(pos? …)` on either was exactly `:offer-made?`. The game does name a give
+   and an ask separately; this policy does not, so the guard now says only that
+   an offer is being composed, and the pattern's advice about ask *size* is
+   openly untested rather than tested by a tautology.
+3. **`:counterpart-tokens` was initialised and never updated** — a constant
+   dressed as state, so `(pos? …)` on it could not fail. Dropped. `(pos?
+   (:tokens s))` is real and now has a witness: the new twelve-round G2 run
+   drives P1's stock to zero by round 11, and `exchange-when-both-sides-gain`
+   stops firing there.
+
+G2 and G5 treatments had also been added without any scenario playing them, so
+`forced-play-needs-a-loss-floor` and `use-talk-to-make-a-testable-offer` were
+written for gap 4 but never exercised. `(show :g2 :snatcher 12)` and
+`(show :g5 :sharer)` now play them.
+
+### What the G4 run shows
+
+Under G4 the coverage gaps went 4 → 0, but P1's behaviour did not change:
+`re-enter-after-observed-repair` fires in rounds 2–5 and π abstains anyway,
+because π is grim trigger and does not consult the collection. Situations being
+covered and a policy following the patterns that cover them are two different
+measurements, and only the first is what "0 gaps" reports.

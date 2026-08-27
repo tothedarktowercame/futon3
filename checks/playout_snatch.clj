@@ -51,16 +51,18 @@
     :if (fn [s] (and (= :play (:grain s)) (:unmodelled? s)))}
    {:id :exchange-when-both-sides-gain :grain :play
     :if-text "Both players hold tokens and a positive exchange is available."
-    :if (fn [s] (and (= :play (:grain s)) (:offer-made? s)
-                     (pos? (:tokens s)) (pos? (:counterpart-tokens s))))}
+    :if (fn [s] (and (= :play (:grain s)) (:offer-made? s) (pos? (:tokens s))))}
+   ;; The ask SIZE is not modelled: this policy's offer is one token with a
+   ;; one-token ask, always. The guard is therefore the honest one — an offer is
+   ;; being composed — and the pattern's advice about ask size is untested here.
    {:id :ask-for-surplus-not-surrender :grain :play
-    :if-text "A positive offer is being composed and its ask remains part of the choice."
-    :if (fn [s] (and (= :play (:grain s)) (:offer-made? s)
-                     (pos? (:offer-size s)) (pos? (:ask-size s))))}
-   {:id :accept-an-offer-that-beats-holding :grain :play
+    :if-text "A positive offer is being composed."
+    :if (fn [s] (and (= :play (:grain s)) (:offer-made? s)))}
+   ;; A P2 pattern. P2 here is a fixed disposition, not a chooser, so this is
+   ;; excluded from P1's set rather than given a P1-shaped guard.
+   {:id :accept-an-offer-that-beats-holding :grain :play :actor :p2
     :if-text "P2 receives a positive give-and-ask offer that benefits both sides."
-    :if (fn [s] (and (= :play (:grain s)) (:offer-made? s)
-                     (pos? (:offer-size s)) (pos? (:ask-size s))))}
+    :if (fn [s] (and (= :play (:grain s)) (:offer-made? s)))}
    {:id :forced-play-needs-a-loss-floor :grain :play
     :if-text "Abstention is unavailable after seizure has become a live risk."
     :if (fn [s] (and (= :play (:grain s)) (:forced-offer? s) (:snatched? s)))}
@@ -77,7 +79,9 @@
     :if (fn [s] (and (= :play (:grain s)) (:snatched? s)
                      (:repair-observed? s) (pos? (:tokens s))))}])
 
-(defn applicable [s] (mapv :id (filter #((:if %) s) collection)))
+;; P1's set only: a pattern whose actor is P2 is not decidable by this harness.
+(defn applicable [s]
+  (mapv :id (filter #(and (not= :p2 (:actor %)) ((:if %) s)) collection)))
 
 ;; ---- treatments, from the flowcharts -----------------------------------
 (def treatments
@@ -102,15 +106,13 @@
   (loop [r 1, s (merge (treatments treatment)
                         {:grain :play :treatment treatment :round 1
                          :snatched? false :repair-observed? false
-                         :tokens 10 :counterpart-tokens 10 :shame 0}), trace []]
+                         :tokens 10 :shame 0}), trace []]
     (if (> r rounds)
       trace
       (let [act  (p1-action s)
             situation (assoc s
                              :last-round? (= r rounds)
-                             :offer-made? (= act :offer)
-                             :offer-size (if (= act :offer) 1 0)
-                             :ask-size (if (= act :offer) 1 0))
+                             :offer-made? (= act :offer))
             pats (applicable situation)
             out  (if (= act :abstain) :O1 (p2-response disposition))
             s'   (cond-> (assoc s :round (inc r)
@@ -124,13 +126,17 @@
         (recur (inc r) s' (conj trace {:round r :patterns pats :action act :outcome out
                                        :tokens (:tokens s) :shame (:shame s)}))))))
 
-(defn- show [treatment disposition]
-  (println (format "\n── %s, P2 is a %s ──" (name treatment) (name disposition)))
-  (doseq [t (play treatment disposition 5)]
+(defn- show
+  ([treatment disposition] (show treatment disposition 5))
+  ([treatment disposition rounds]
+  (println (format "\n── %s, P2 is a %s, %d rounds ──"
+                   (name treatment) (name disposition) rounds))
+  (doseq [t (play treatment disposition rounds)]
     (println (format "  r%d  patterns %-58s -> %s %s"
                      (:round t) (pr-str (:patterns t)) (name (:action t)) (name (:outcome t)))))
-  (let [gaps (count (filter #(empty? (:patterns %)) (play treatment disposition 5)))]
-    (println (format "  coverage gaps (rounds matching NO pattern): %d" gaps))))
+  (let [gaps (count (filter #(empty? (:patterns %))
+                            (play treatment disposition rounds)))]
+    (println (format "  coverage gaps (rounds matching NO pattern): %d" gaps)))))
 
 (defn -main [& _]
   (println "PATTERN-THEORETIC PLAYOUT — Snatch or Share")
@@ -142,6 +148,10 @@
     (println (format "  %-36s -> %s" label (pr-str (applicable s)))))
   (show :g1 :snatcher) (show :g1 :sharer) (show :g1 :cautious)
   (show :g4 :snatcher)
+  ;; G2 removes abstention: P1 must keep offering into a snatcher, so its stock
+  ;; runs out. That is where (pos? tokens) is finally false.
+  (show :g2 :snatcher 12)
+  (show :g5 :sharer)
   (println "\n── item S-001 (pi = probe-one-token, G1, round 1) ──")
   (println "  Q = {O1 0.0, O2 0.5, O3 0.0, O4 0.5}; falsifier O3")
   (doseq [d [:sharer :snatcher :cautious]]

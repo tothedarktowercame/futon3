@@ -69,3 +69,36 @@ taught nothing, whatever it scored.
 By that test the 82 War Machine flights are not items: they carry an outcome and
 no prediction, so there was never anything they could have refuted. They remain
 useful for **fixture design** — which shapes are real — and for nothing else.
+
+---
+
+## The playout, and what it found about the collection
+
+`playout_snatch.clj` — five rounds, three P2 dispositions, two treatments.
+
+    clojure -Sdeps '{:paths ["checks"]}' -M -m playout-snatch
+
+**Finding 1 — the collection is a *design* language, not a *play* language.**
+Encoded from the flexiargs' own `IF` clauses, **all six patterns are
+design-grain**: *"a rule is proposed…"*, *"you want a defection to have
+consequences…"*, *"you must design, compare, or extend a family…"*. None has a
+game state as its antecedent. So a playout matches **zero patterns in every
+round** — total coverage failure at play grain, and full coverage at design
+grain.
+
+That is not a defect in the patterns; it is a fact about what they are for. But
+it means **a pattern collection cannot guide play unless someone writes
+play-grain patterns**, and it says concretely what R6's "candidate proposer"
+would need at library grain: antecedents over states, not over design questions.
+
+**Finding 2 — a first encoding hid this.** The initial run reported *zero*
+coverage gaps, because `preserve-the-right-to-abstain` was encoded as
+`(contains? p1-actions :abstain)` — true in every round of every treatment. **A
+guard true in every situation carries no information**: a dimension with no
+singularity on it, inside the very artefact written to study them. The zero was
+an artefact of the guard, not a property of the collection.
+
+**Finding 3 — the falsifier fires.** Item `S-001` predicts `{O2 0.5, O4 0.5}`
+with `O3` at zero mass. A *cautious* P2 refuses, producing `O3`, and **the
+two-disposition model is refuted** — a stated prediction failing, which is the
+whole reason for stating it.

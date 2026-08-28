@@ -1,0 +1,40 @@
+@flexiarg math-formalization-CV/frontier-bound-from-arc-hypotheses
+@title Close a Frontier Bound From Arc Hypotheses by a Continuity Limit at the Missing Points
+@keywords frontier, sphere, arc, semicircle, boundary, continuity, dense, limit, le_of_tendsto, maximum modulus
+@audience lean-provers, formalizers, complex-analysts
+@tone procedural
+@difficulty advanced
+@cross-list [CA]
+@why math-formalization-CV/holomorphic-disk-api
+@see-also math-formalization-CV/holomorphic-disk-api
+
+! conclusion:
+  When a maximum-modulus or Phragmén-type argument needs a norm bound on the
+  whole frontier but the hypotheses only cover it on arcs (an open condition
+  like strict sign of the imaginary part), the uncovered frontier points are
+  closed by continuity: approach each missing point by a sequence inside a
+  covered arc and transfer the bound with `le_of_tendsto`.
+
+  + context: Boundary estimates on the unit circle or the frontier of a ball,
+    where hypotheses are stated per-arc rather than per-frontier, and the
+    target theorem consumes the bound uniformly over the frontier.
+
+  + IF:
+      The covered set is dense in the frontier minus finitely many points —
+      e.g. upper and lower open semicircles leaving only the equator points
+      where the sign condition degenerates — then case-split the frontier by
+      trichotomy on the sign, dispose of the covered arcs directly, and for
+      each leftover point z₀ build an explicit sequence uₙ on the circle with
+      uₙ → z₀ and uₙ in the covered arc: `Complex.exp (θₙ * I)` with θₙ = 1/(n+1)
+      for approach angles, its imaginary part handled by
+      `Complex.exp_ofReal_mul_I_im` and `Real.sin_pos_of_pos_of_lt_pi`, its
+      unit-norm membership by `Complex.norm_exp`. Compose the continuous-on
+      hypothesis with `tendsto_nhdsWithin_iff` to keep the sequence in the
+      closed ball, take norms, and conclude `‖g z₀‖ ≤ M` by `le_of_tendsto`.
+
+  + HOWEVER:
+      Do not try to strengthen the hypothesis to the whole frontier or search
+      for a theorem that accepts semicircle bounds — the continuity transfer
+      is short, elementary, and exactly what the boundary regularity is for.
+      The sequence must stay inside the covered arc for every n, not merely
+      tend into it, or the per-point bound has nothing to attach to.

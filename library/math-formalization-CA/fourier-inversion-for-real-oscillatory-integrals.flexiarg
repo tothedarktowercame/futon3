@@ -1,0 +1,67 @@
+@flexiarg math-formalization-CA/fourier-inversion-for-real-oscillatory-integrals
+@title Close Real Oscillatory Integrals by Fourier Inversion, Not Residues
+@keywords fourier, inversion, oscillatory-integral, residue, contour, cosine-transform, poisson-kernel, exp-decay, transform-pair
+@audience lean-provers, formalizers, analysts
+@tone procedural
+@difficulty advanced
+@cross-list [FA]
+@why math-strategy/proof-architecture
+@see-also math-formalization-CA/measure-integration-api math-informal/dualise-the-problem math-informal/failure-mode-characterization
+
+! conclusion:
+  When a real oscillatory integral (cosine/sine transform of a rational or
+  exponentially decaying kernel) would classically be evaluated by residues and
+  the library has no residue or contour-deformation machinery, dualise: compute
+  the Fourier transform of the *symmetric decaying* kernel directly from the
+  library's one-sided exponential lemmas, then apply Fourier inversion and take
+  the real part.
+
+  + context: A target like ∫ cos(tx)/(x² + a²) dx over ℝ or a half-line, where
+    the informal proof is a semicircle contour and the residue theorem, and
+    searches for `residue`, `circleIntegral`-based deformation, or a packaged
+    transform of 1/(x²+a²) come back empty.
+
+  + IF:
+      The kernel is even and absolutely integrable, then the transform pair
+      runs through elementary API: 𝓕(e^{-c|x|}) is two one-sided complex
+      exponential integrals (upper half-line for Re a < 0, lower for
+      Re b > 0, stitched with `intervalIntegral.integral_Iic_add_Ioi`),
+      and inversion `hf.fourierInv_fourier_eq` at the frequency of interest
+      recovers the kernel value. The cosine integral is the real part of the
+      inversion integral; the half-line integral folds out of the full-line
+      one by evenness (`integral_comp_abs`).
+
+  + HOWEVER:
+      The seam is convention-heavy: Mathlib's Fourier transform is 2π-normalized
+      (`Real.fourier_real_eq_integral_exp_smul`, `Real.fourierInv_eq'`), so the
+      frequency must be rescaled (s / (2π)) and the phase identity verified at
+      each point — plan a `field_simp`-heavy closing block. Inversion also
+      demands integrability of the *transform* as an explicit hypothesis, and a
+      continuity hypothesis at the evaluation point; both must be discharged by
+      hand. Do not expect the ODE route as a cheaper alternative: the second
+      derivative of the cosine kernel produces a ∫cos(tx) term that has no
+      Bochner-integral meaning, so the ODE argument is structurally unavailable,
+      not merely long.
+
+  + THEN:
+      Split the closure into named lemmas: (1) integrability of the kernel;
+      (2) the explicit transform of the decaying kernel; (3) inversion to the
+      full-line cosine integral; (4) the evenness fold to the half-line and a
+      scaling lemma to move from the problem's kernel to the standard one.
+      Each is independently checkable and reusable by sibling problems with the
+      same bridge.
+
+  + BECAUSE:
+      The library's Fourier folder is deep enough to carry the whole argument,
+      while its complex-analysis folder has no residue theorem at all; the
+      honest cost comparison is "adapt Fourier API and conventions" versus
+      "build contour integration from scratch", and it is not close. The
+      informal route's difficulty is a property of pen-and-paper infrastructure,
+      not of the statement.
+
+  + NEXT-STEPS:
+    next[State the full-line integral first; the half-line is a corollary by evenness.]
+    next[Compute 𝓕 of the symmetric decaying kernel from one-sided exp lemmas before touching inversion.]
+    next[Rescale the frequency by 1/(2π) and verify the phase identity pointwise.]
+    next[Discharge integrability of 𝓕 f and continuity at the point explicitly; inversion needs both.]
+    next[Take real parts at the end, after the complex inversion equality is established.]

@@ -11,7 +11,12 @@
 ;; inferred from a run.
 (def priors
   {:default  {:sharer 0.5 :snatcher 0.5 :cautious 0.0}
-   :cautious {:sharer 0.45 :snatcher 0.45 :cautious 0.10}})
+   :cautious {:sharer 0.45 :snatcher 0.45 :cautious 0.10}
+   ;; Review probe (claude-15, 2026-08-30, S-G3 declared): under 50/50 the
+   ;; information-gathering act (offer) is also the best pragmatic act, so the
+   ;; ablation cannot move. A snatcher-heavy prior is where offering costs
+   ;; expected payoff while still buying the same information.
+   :snatcher-heavy {:sharer 0.20 :snatcher 0.80 :cautious 0.00}})
 
 (def policies
   {:grim snatch/pi-grim

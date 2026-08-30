@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:29:40.920488260Z",
+ :turn 9,
+ :pattern "structure/two-projections-of-one-quantity",
+ :gate
+ "/home/joe/code/futon3/./library/structure/.spider/gates/turn-009.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "structure/two-projections-of-one-quantity",
+    :note
+    "Rung 1: the runner-supplied exact-occurrence hits that are clean (:listing/:self-text/:co-mention/:reflection all false — e-d497a0a8, e-c1b9f7a1, e-9b20f0cb, e-64fc0672, arse-a-ask-1781553303-89, e-9b20f0cb mirror e-187616d2) are all minting-provenance records: they attest that the pattern was cited-before-minted, minted at futon3 c1c0325, and discharged sorry/pattern-two-projections-of-one-quantity, but none names a second existing library/<target>.flexiarg, so none warrants an edge. The only multi-pattern-id hits (e-pull-offer-18662b56, e-codexroll-019f8b63-t009, e-1c00313c, e-340558b3) are flagged :co-mention true or :listing true, and co-mention alone does not state a relation. Rung 2: bounded GETs I actually ran — q='two projections one underlying quantity structural-relation-result', q='two projections of one aliveness quantity mana anamnesis', q='mana allostasis projections of one aliveness quantity', q='structural relation result two projections latent quantity covary', q='dualise the problem duality projections shared source', q='aliveness quantity EOI AIF surprise anamnesis Salingaros projections' (limit=5, hydrate=true) — returned only this spider programme's own prompt text (self-text) and the same minting-provenance records (e-187616d2, e-8473ab51, e-d497a0a8, e-c13e05cd re Salingaros/EFE, which names no library pattern id). No record asserts a relation between structure/two-projections-of-one-quantity and any other existing library pattern, so neither rung warrants an edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

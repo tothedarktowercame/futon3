@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:51:05.393081450Z",
+ :turn 10,
+ :pattern "or2/two-joes-one-mandate",
+ :gate
+ "/home/joe/code/futon3/./library/or2/.spider/gates/turn-010.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or2/two-joes-one-mandate",
+    :note
+    "Rung 1: every runner-supplied exact-occurrence hit is an embeddings context-retrieval ranking (:listing true, most also :co-mention true), and a listing ranking is not by itself a warrant for an edge, so no clean rung-1 hit exists. Rung 2: bounded text-search queries actually run against 127.0.0.1:7073 were Two Joes One Mandate PVC ORPM dual center, Center Brief mandate topology UKRN, shared futures beyond atomised incentives, and split center authority coherence partnership PVC. The only records returned for the first two were this spider session's own turn records (self-text), and the non-self records from the latter two (e-14ff6f6a-d1dd-4e04-84c0-dd1884099635 claude-1, e-ea22c341-3d3c-4326-a6b4-ef05efa20992 claude-8) are context-retrieval events whose bodies contain pattern ids only as scored embeddings results — listings again, and neither even contains the source pattern id alongside a target. No external record states or uses or2/two-joes-one-mandate in relation to an existing library target (candidates that verifiably exist: or2/topology-dungeon-crawl, or2/ukrn-horizon-bridge, or2/shared-futures-beyond-atomised-incentives, or2/steward-emporium). Both rungs fail to warrant an edge; the source file carries no existing directives to duplicate.",
+    :read
+    ["or2/two-joes-one-mandate"
+     "or2/topology-dungeon-crawl"
+     "or2/ukrn-horizon-bridge"
+     "or2/shared-futures-beyond-atomised-incentives"
+     "or2/steward-emporium"],
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

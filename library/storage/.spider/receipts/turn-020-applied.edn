@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:35:40.209563544Z",
+ :turn 20,
+ :pattern "storage/reproducible-mirroring",
+ :gate
+ "/home/joe/code/futon3/./library/storage/.spider/gates/turn-020.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "storage/reproducible-mirroring",
+    :note
+    "Rung 1: every runner-supplied hit carried :listing true and :co-mention true — embeddings context-retrieval rankings co-listing the pattern with storage/persistence-speed-mirroring (which itself lists storage/reproducible-mirroring as an @reference, and conversely persistence-speed-mirroring's @references include reproducible-mirroring, so cross-directives between the pair are already recorded on that side), storage/durability-first, storage/durability-throughput-gate, storage/canonical-interface, storage/identity-uniqueness, storage/postcommit-materialization-gate, fulab/changelog-trail, enrichment/layer-as-evidence, and unrelated iching/vsat patterns. The one non-listing hit, emacs-4e85a07693e7cd0727e4dfcc02d8706e, was :co-mention true — an operator-display note that reproducible-mirroring belongs to a class of patterns only operator turns cite, which does not state a directional relation. A listing is not a warrant and co-mention does not state a relation; no clean hit existed. Rung 2: ran GET text-search with 'reproducible mirroring Datascript XTDB alignment same world state restarts' (limit 5, hydrate true); the top-ranked returned record was this programme's own current-turn prompt reflection, and no external record asserted a method or peer relation between reproducible-mirroring and any existing library target. No @how or @see-also edge is externally warranted this round.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

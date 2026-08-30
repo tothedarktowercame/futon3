@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:33:25.806092793Z",
+ :turn 12,
+ :pattern "ukrns/distinguish-delivery-from-practice-change",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788125578304-5059-eba4b171",
+  :response
+  "[{:edge {:from \"ukrns/distinguish-delivery-from-practice-change\" :to \"ukrns/calibrate-impact-promises-to-current-indicator-capacity\" :kind :how} :by \"zai-2\" :at \"2026-08-30\" :read [\"ukrns/distinguish-delivery-from-practice-change\" \"ukrns/calibrate-impact-promises-to-current-indicator-capacity\"] :cited \"Use delivery counts to claim delivery, and reserve impact claims for downstream evidence that actually tracks changed practice.\" :evidence [{:id \"e-3e8f1734-53b8-4fbb-a18d-70fbf0b5a7c2\" :via :text :query \"2,816 trainees delivery impact changed practice\" :excerpt \"Direct evidence on whether trainees changed their practice afterwards (the ORP 2027 survey round will address institution-level change; the planned T1 wave will address trainee-level)\"}] :rung 2 :state :proposed}]",
+  :agent-id "zai-2",
+  :session-id "zai-c0363e06-90a1-4232-a99d-c80c454318c5"},
+ :response
+ "[{:edge {:from \"ukrns/distinguish-delivery-from-practice-change\" :to \"ukrns/calibrate-impact-promises-to-current-indicator-capacity\" :kind :how} :by \"zai-2\" :at \"2026-08-30\" :read [\"ukrns/distinguish-delivery-from-practice-change\" \"ukrns/calibrate-impact-promises-to-current-indicator-capacity\"] :cited \"Use delivery counts to claim delivery, and reserve impact claims for downstream evidence that actually tracks changed practice.\" :evidence [{:id \"e-3e8f1734-53b8-4fbb-a18d-70fbf0b5a7c2\" :via :text :query \"2,816 trainees delivery impact changed practice\" :excerpt \"Direct evidence on whether trainees changed their practice afterwards (the ORP 2027 survey round will address institution-level change; the planned T1 wave will address trainee-level)\"}] :rung 2 :state :proposed}]"}

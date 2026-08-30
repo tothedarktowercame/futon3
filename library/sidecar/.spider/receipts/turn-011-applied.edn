@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:24:09.173469926Z",
+ :turn 11,
+ :pattern "sidecar/tri-store-separation",
+ :gate
+ "/home/joe/code/futon3/./library/sidecar/.spider/gates/turn-011.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "sidecar/tri-store-separation",
+    :note
+    "Rung 1: no supplied hit is clean — every hit has :listing true, :self-text true (with :reflection true), or :co-mention true; the non-listing candidates (e-68ed559e-c591-42fd-a237-06f2c18dd77e, e-aec3f325-2d67-4a71-963a-96bac48bb08d, e-fbe9200f-3ff1-40e1-ba14-339a80b455c2, e-9ff0bb75-81ea-4a55-bd7b-e1b7b30ecde2, emacs-774921ad88d714cd81702357041766dc) are all :co-mention true, and co-mention alone does not state a relation. Rung 2 (GET /api/alpha/evidence/text-search with queries 'tri-store separation facts memes notions XTDB SQLite ANN trust' and 'fuzzy output becomes fact explicit promotion facts store boundary', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts and turn-round reads of the pattern file itself — self-text/reflection — so neither rung warrants an edge from sidecar/tri-store-separation to any other existing library/<target>.flexiarg.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

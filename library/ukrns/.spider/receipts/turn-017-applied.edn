@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:38:35.878777136Z",
+ :turn 17,
+ :pattern "ukrns/model-recompute-schedule",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-017.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "ukrns/model-recompute-schedule",
+    :note
+    "Rung 1: the only clean hit, e-c4ec0e55-4563-4b2e-8e63-a31cb74af498 (all flags false), externally confirms the pattern id ('added `ukrns/model-recompute-schedule`, which is exactly the cadence/recompute clue') but names no second pattern, so it warrants no edge. All other supplied hits (e-e7aca350, e-ef31fa0b, e-8aba9b10, e-abf45f74) are :listing embeddings rankings; e-780fb5c5 is a :co-mention pattern-review list. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'recompute schedule event-driven cadence-driven notebook rerun', 'model recompute timestamp evidence revision log', 'self-application notebook rerun assumptions recompute population model', 'design-state lineage recompute version traceability'. These returned only zai spider-fleet transcript records (e-8f063c56 and four sibling turn-starts, self-reflections) — no external record relating this pattern to another existing pattern. Its natural targets (ukrns/self-application, ukrns/computation-as-exploration, ukrns/design-as-function-of-evidence, ukrns/measure-where-least-sure) are already in @references; a :how edge to ukrns/design-state-lineage would fit the pattern's own NEXT-STEPS, but no external evidence warrant was found for it.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

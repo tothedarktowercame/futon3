@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:53:39.446475350Z",
+ :turn 10,
+ :pattern "war-machine/spatial-over-tabular",
+ :gate
+ "/home/joe/code/futon3/./library/war-machine/.spider/gates/turn-010.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "war-machine/spatial-over-tabular",
+    :note
+    "Rung 1: every supplied hit is :listing true (embeddings ranking) and/or :co-mention true — no clean hit where :listing, :self-text, :co-mention, and :reflection are all false; no record states a relation between this pattern and another existing pattern id. Rung 2: GET text-search?q=spatial%20over%20tabular%20state%20as%20shape%20and%20colour%20inhabitation and q=war-machine%2Fspatial-over-tabular%20war-machine%2Finhabitation-threshold (limit=5, hydrate=true) returned only this spider fleet's own turn-start prompt echo and embeddings-listing coordination records; no external record warrants an edge to any existing target. Neither rung warrants an edge, so absence is returned naming both.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

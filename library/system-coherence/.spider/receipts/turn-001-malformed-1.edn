@@ -1,0 +1,25 @@
+{:response
+ "[{:edge {:from \"system-coherence/argue-empirically-not-persuasively\" :to \"system-coherence/single-seed-results-need-multi-seed-validation\" :kind :see-also} :cited \"In ARGUE-phase missions and in bootstrap-stage system descriptions, speculative claims pile up because the writer is working at the edge of what the system has done so far, and the speculation is filling space that empirical claim cannot yet fill.\" :evidence [{:id \"e-7a50b862-15c9-49c2-ba50-26dfa377803c\" :via :tag :query \"exact live occurrence: system-coherence/argue-empirically-not-persuasively\" :excerpt \"Standard flexiarg shape, references `aif/term-to-channel-traceability` (composes with it), `system-coherence/argue-empirically-not-persuasively` (the temporal-discipline sibling), and `turn-design-into-checks` (variance reporting *is* a check).\"}] :rung 1 :read [\"system-coherence/argue-empirically-not-persuasively\" \"system-coherence/single-seed-results-need-multi-seed-validation\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788119144061-4562-106337b1",
+  :response
+  "[{:edge {:from \"system-coherence/argue-empirically-not-persuasively\" :to \"system-coherence/single-seed-results-need-multi-seed-validation\" :kind :see-also} :cited \"In ARGUE-phase missions and in bootstrap-stage system descriptions, speculative claims pile up because the writer is working at the edge of what the system has done so far, and the speculation is filling space that empirical claim cannot yet fill.\" :evidence [{:id \"e-7a50b862-15c9-49c2-ba50-26dfa377803c\" :via :tag :query \"exact live occurrence: system-coherence/argue-empirically-not-persuasively\" :excerpt \"Standard flexiarg shape, references `aif/term-to-channel-traceability` (composes with it), `system-coherence/argue-empirically-not-persuasively` (the temporal-discipline sibling), and `turn-design-into-checks` (variance reporting *is* a check).\"}] :rung 1 :read [\"system-coherence/argue-empirically-not-persuasively\" \"system-coherence/single-seed-results-need-multi-seed-validation\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message
+  "rung-1 evidence has no non-listing hit; retrieval listings are context only",
+  :data
+  {:item
+   {:from "system-coherence/argue-empirically-not-persuasively",
+    :to
+    "system-coherence/single-seed-results-need-multi-seed-validation",
+    :kind :see-also},
+   :reason :listing-only-rung-one}},
+ :turn 1,
+ :event :seat-output-invalid,
+ :at "2026-08-30T19:46:59.351065225Z",
+ :attempt 1,
+ :pattern "system-coherence/argue-empirically-not-persuasively"}

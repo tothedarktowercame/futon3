@@ -1,0 +1,182 @@
+[{:pattern "or2/bioliteracy-open-value",
+  :note
+  "Rung 1 (exact live occurrence 'or2/bioliteracy-open-value') was exhausted: every hit is either :listing true (embeddings retrieval rankings, which are not warrants by themselves) or memory pull-offer records with :co-mention true (multiple pattern ids co-occurring in a tool-call index with no stated relation; one also :reflection true). No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'bioliteracy open value BMS teaching fit-for-use stars' returned only e-6e28ccb5-bc31-4349-9bb1-e1a2e82d8acf, this session's own dispatch prompt (self-text, not external use). The pattern's named candidate targets (Fit-for-Use Stars, Quality-by-Design Crowd, Citizen Co-Learning) appear in the pattern body itself or in retrieval listings only — no external record ties this pattern to an existing library/<target>.flexiarg with a stated relation. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or2/data-intensive-infrastructure-gap",
+  :note
+  "Rung 1 (exact live occurrence) was exhausted: every supplied hit is :listing true (embeddings retrieval rankings, not warrants) — including the two with :co-mention false (e-c2fe2c3a, e-630d27e6, e-c1a40f3c), which are still retrieval rankings over queries unrelated to any target. No hit has a clean stated relation to a library/<target>.flexiarg. Rung 2 text-search 'data-intensive-infrastructure-gap seam office-centred ECM bridge' returned only e-0a08890e-f0bd-4d85-b1a9-ef2848c86480, this session's own dispatch prompt (self-text). The pattern's named instruments (Bridge-Before-Portal, Identifier Garden) and section siblings (or2/topology-dungeon-crawl, or2/ukrn-horizon-bridge) appear only inside retrieval rankings or as .multiarg corpus entries, not .flexiarg patterns with a stated relation. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or2/open-practice-beyond-hypothesis",
+  :note
+  "Rung 1 (exact live occurrence 'or2/open-practice-beyond-hypothesis') was exhausted: every supplied hit is :listing true (embeddings retrieval rankings — including the or/overlay-bridges, or/license-laddering, ai4ci/process-vs-exposition, and plos-npt/research-questions-stated-early pairings — rankings with no stated relation); even the hits with :co-mention false are still retrieval rankings. No hit has all four flags false. Rung 2 text-search 'open-practice-beyond-hypothesis method documentary split story doi practice' returned only e-0696f823-ccd7-49c8-b75f-6f569c14f585, this session's own dispatch prompt (self-text). The pattern's named instruments (License-as-Story, Story DOI, Method/Documentary Split) are domain artefacts, not library/<target>.flexiarg patterns, and appear nowhere with a stated relation. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or2/progress-cylinder-assurance",
+  :note
+  "Rung 1 (exact live occurrence 'or2/progress-cylinder-assurance') was exhausted: every supplied hit is :listing true (embeddings retrieval rankings — the or2/spread-effort-assurance and pacspine/frictionless-next pairings are rankings with no stated relation); even the hits with :co-mention false are still retrieval rankings. No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'progress-cylinder-assurance early effort marker deadline' returned only e-d3eb2124-3e83-47e9-a7ac-634bc1e4cff0, this session's own dispatch prompt (self-text). The pattern's named sibling (or2/spread-effort-assurance) appears only inside retrieval rankings, never in a record stating a relation. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or2/steward-emporium",
+  :note
+  "Rung 1: every runner-supplied exact-occurrence hit is an embeddings context-retrieval ranking (:listing true; most also :co-mention true), and a listing ranking is not by itself a warrant for an edge, so no clean rung-1 hit exists. Rung 2: bounded text-search queries actually run against 127.0.0.1:7073 were steward-of-the-open-research-emporium, Story DOIs Emporium, narrative Emporium page live projects, library stewardship invisible labour workloads, Open Research Emporium, identifier garden deposits licences, stewardship Emporium page, story emporium, stewardship layer, shared stewardship compact. Every non-self record returned (e-752083c6-c0b0-4c06-9bbf-9cc3a606ac0f, e-8aa58f68-eda6-4dfd-aad1-92ffe3a43319, e-267ca167-b4ae-4cf6-af77-50109fdb2c32, e-dedec434-c808-4708-bfbd-283a840aa9ab, e-f51e9b3d-ad77-4cc8-9b27-f508d17d11b3) is itself a context-retrieval event whose body only scores pattern ids as retrieval results, i.e. listings again, not external use stating a relation. Candidate targets verified to exist (vsatlas/story-emporium, vsatlas/stewardship-layer, vsatlas/shared-stewardship-compact, repository-transition/counterstrawman) never co-occur with the source pattern in a non-listing record. Both rungs fail; the pattern file carries no existing directives to duplicate.",
+  :read
+  ["or2/steward-emporium"
+   "vsatlas/story-emporium"
+   "vsatlas/stewardship-layer"
+   "repository-transition/counterstrawman"],
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or2/topology-dungeon-crawl",
+  :note
+  "Rung 1: every runner-supplied exact-occurrence hit is an embeddings context-retrieval ranking (:listing true, nearly all :co-mention true as well), and a listing ranking is not by itself a warrant for an edge, so no clean rung-1 hit exists. Rung 2: bounded text-search queries actually run against 127.0.0.1:7073 were dungeon crawl topology xiangqi, topology map UP UKRN CENTER Two Joes DOWN Library, and Two Joes One Mandate split center. The non-self records these returned were fetched and inspected: e-269c8a5d-b699-4d48-9f28-ae18f02f2efc (claude-7), e-0b997417-99d9-4548-ab50-55b897679986 (claude-6), e-cb367d0a-9636-4cc4-bc71-8240fa7232cf (claude-1). Each is a context-retrieval event whose body contains the source pattern id only as a scored embeddings result (often alongside or2/xiangqi-decorators and or2/two-joes-one-mandate) — these are listings again, not external records stating a relation. Although the pattern text itself names candidate targets that verifiably exist (or2/xiangqi-decorators, or2/two-joes-one-mandate, or2/ukrn-horizon-bridge, or2/steward-emporium), the rules require external evidence beyond the pattern text and beyond retrieval rankings, and none was found. Both rungs therefore fail to warrant an edge; the source file also carries no existing directives to duplicate.",
+  :read
+  ["or2/topology-dungeon-crawl"
+   "or2/xiangqi-decorators"
+   "or2/two-joes-one-mandate"
+   "or2/ukrn-horizon-bridge"
+   "or2/steward-emporium"],
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or2/two-joes-one-mandate",
+  :note
+  "Rung 1: every runner-supplied exact-occurrence hit is an embeddings context-retrieval ranking (:listing true, most also :co-mention true), and a listing ranking is not by itself a warrant for an edge, so no clean rung-1 hit exists. Rung 2: bounded text-search queries actually run against 127.0.0.1:7073 were Two Joes One Mandate PVC ORPM dual center, Center Brief mandate topology UKRN, shared futures beyond atomised incentives, and split center authority coherence partnership PVC. The only records returned for the first two were this spider session's own turn records (self-text), and the non-self records from the latter two (e-14ff6f6a-d1dd-4e04-84c0-dd1884099635 claude-1, e-ea22c341-3d3c-4326-a6b4-ef05efa20992 claude-8) are context-retrieval events whose bodies contain pattern ids only as scored embeddings results — listings again, and neither even contains the source pattern id alongside a target. No external record states or uses or2/two-joes-one-mandate in relation to an existing library target (candidates that verifiably exist: or2/topology-dungeon-crawl, or2/ukrn-horizon-bridge, or2/shared-futures-beyond-atomised-incentives, or2/steward-emporium). Both rungs fail to warrant an edge; the source file carries no existing directives to duplicate.",
+  :read
+  ["or2/two-joes-one-mandate"
+   "or2/topology-dungeon-crawl"
+   "or2/ukrn-horizon-bridge"
+   "or2/shared-futures-beyond-atomised-incentives"
+   "or2/steward-emporium"],
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or2/ukrn-horizon-bridge",
+  :note
+  "Rung 1: the only non-listing runner-supplied hit (e-f2a87cbe-794e-4f83-b465-600c988887f4) is flagged :self-text true and :reflection true, and every other hit is an embeddings context-retrieval ranking (:listing true, most :co-mention true); a listing ranking is not by itself a warrant, so no clean rung-1 hit exists. Rung 2: bounded text-search queries actually run against 127.0.0.1:7073 were UKRN Horizon Bridge altitude calls PVC ORPM, quarterly altitude call bridge memo Schools, horizon bridge Story DOIs licence narratives shared templates, and translate sector expectations lightweight bridge-before-portal. Every record returned by all four queries is this spider session's own turn-start record (e-5badd829-62db-491e-be32-d71ad0b10865, author zai-2), i.e. self-text of the spider prompt, not external use. No external record states or uses or2/ukrn-horizon-bridge in relation to an existing library target (candidates that verifiably exist in library: or2/two-joes-one-mandate, or2/steward-emporium, or2/xiangqi-decorators; p4ng/identifier-garden and p4ng/overlay-bridges appear only inside ranking listings). Both rungs fail to warrant an edge; the source file carries no existing directives to duplicate.",
+  :read
+  ["or2/ukrn-horizon-bridge"
+   "or2/two-joes-one-mandate"
+   "or2/steward-emporium"
+   "or2/xiangqi-decorators"],
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or2/xiangqi-decorators",
+  :note
+  "Rung 1: every runner-supplied hit is either an embeddings context-retrieval ranking (:listing true, nearly all :co-mention true), a spider-fleet reflection (e-cc8c1511-a1e7-49fd-8a54-731fe68b1982, :reflection true), or a co-mention without a stated relation. The closest-to-clean hit e-fd52b392-4b4b-47bc-95b6-d230ae15f7b0 (:listing false, :self-text false, :reflection false) is still :co-mention true, and on inspection (fetched via GET) it is an operator log quoting a harness line, claude-10 retrieved: or2/xiangqi-decorators, war-machine/operational-not-decorative, iching/hexagram-50-ding, about XTDB timeout debugging — the pattern ids occur only as a retrieval list inside a log excerpt, stating no relation. A rung-1 edge requires all four flags false; none supplied is clean. Rung 2: bounded text-search queries actually run against 127.0.0.1:7073 were Xiangqi-Inspired Decorators and Cannon UKRN General Advisor Elephant Library Chariots Schools. The non-self records returned (e-e87838e7-0b88-4683-bf98-28266c807b43 codex-2, e-81b442a1-351b-4d21-9edc-3d481a1850ae / e-ccb6fa65-97b8-48bb-8caa-aba26f5fd5a2 / e-f0b3208c-40e3-48af-83c3-927a3e242a47 claude-3) are all context-retrieval embeddings rankings containing the pattern id only as a scored result — listings again, not external use stating a relation to a target. Candidate targets verified to exist (or2/topology-dungeon-crawl, or2/ukrn-horizon-bridge, or2/steward-emporium, or2/two-joes-one-mandate) never co-occur with the source pattern in a non-listing, non-co-mention-only record. Both rungs fail to warrant an edge; the source file carries no existing directives to duplicate.",
+  :read
+  ["or2/xiangqi-decorators"
+   "or2/topology-dungeon-crawl"
+   "or2/ukrn-horizon-bridge"
+   "or2/steward-emporium"
+   "or2/two-joes-one-mandate"],
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or2/shared-futures-beyond-atomised-incentives",
+  :note
+  "Rung 1: every runner-supplied hit is disqualified — the two emacs-aeb406085b0c40862f8dc5c2e0454b87 hits are :co-mention true (co-mention alone states no relation) and every other hit is :listing true (embeddings retrieval ranking, explicitly not a warrant). No rung-1 hit has :listing/:self-text/:co-mention/:reflection all false, so no clean rung-1 warrant exists. Rung 2: ran bounded text-search queries actually issued — 'Shared Futures Beyond Atomised Incentives', 'Five-P rhythm citizen co-learning peripheral pathways', 'network work unpaid invisible workload narratives stewardship' (limit=5, hydrate=true) — and the top records returned were all prior spider-fleet dispatch envelopes for this same pattern (e-cd76a23f-…, e-46bff444-…, e-25fba036-…, e-076f6080-… each containing 'You are the spider for library/or2'), i.e. self-reflection, not external use. No external record was returned asserting a relation from this pattern to any existing library target, so no @how or @see-also edge is warranted.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or2/spread-effort-assurance",
+  :note
+  "Rung 1: no clean hit supplied — one hit (e-f2a87cbe-…) is :self-text true and :reflection true (spider fleet reflecting its own dispatch); one hit (e-pull-offer-1726f09b-…) is :co-mention true only, and co-mention alone states no relation; every remaining hit is :listing true (embeddings retrieval ranking, explicitly not a warrant). No hit has :listing/:self-text/:co-mention/:reflection all false, so no rung-1 warrant exists. Rung 2: ran bounded text-search queries actually issued — 'Spread Effort Assurance' and 'spread effort two distinct days review pass' (limit=5, hydrate=true) — and every returned record (e-b38d9800-…, e-67712ce1-…, e-1a032657-…, e-f336cf0a-…, e-d3eb2124-…) is a prior zai spider dispatch envelope containing 'You are the spider for library/or2' for this same pattern, i.e. fleet reflection, not external use. No external record asserting a relation from this pattern to any existing library target was returned, so no @how or @see-also edge is warranted.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}]

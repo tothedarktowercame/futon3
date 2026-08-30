@@ -1,0 +1,18 @@
+{:response
+ "[{\"edge\" {\"from\" \"ukrns/distinguish-delivery-from-practice-change\", \"to\" \"ukrns/calibrate-impact-promises-to-current-indicator-capacity\", \"kind\" \":how\"}, \"cited\" \"Use delivery counts to claim delivery, and reserve impact claims for downstream evidence that actually tracks changed practice.\", \"evidence\" [{\"id\" \"e-3e8f1734-53b8-4fbb-a18d-70fbf0b5a7c2\", \"query\" \"2,816 trainees delivery impact changed practice\", \"excerpt\" \"Direct evidence on whether trainees changed their practice afterwards (the ORP 2027 survey round will address institution-level change; the planned T1 wave will address trainee-level)\", \"via\" \":text\"}], \"read\" [\"ukrns/distinguish-delivery-from-practice-change\" \"ukrns/calibrate-impact-promises-to-current-indicator-capacity\"], \"rung\" 2}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788125533035-5055-182db76a",
+  :response
+  "[{\"edge\" {\"from\" \"ukrns/distinguish-delivery-from-practice-change\", \"to\" \"ukrns/calibrate-impact-promises-to-current-indicator-capacity\", \"kind\" \":how\"}, \"cited\" \"Use delivery counts to claim delivery, and reserve impact claims for downstream evidence that actually tracks changed practice.\", \"evidence\" [{\"id\" \"e-3e8f1734-53b8-4fbb-a18d-70fbf0b5a7c2\", \"query\" \"2,816 trainees delivery impact changed practice\", \"excerpt\" \"Direct evidence on whether trainees changed their practice afterwards (the ORP 2027 survey round will address institution-level change; the planned T1 wave will address trainee-level)\", \"via\" \":text\"}], \"read\" [\"ukrns/distinguish-delivery-from-practice-change\" \"ukrns/calibrate-impact-promises-to-current-indicator-capacity\"], \"rung\" 2}]",
+  :agent-id "zai-2",
+  :session-id "zai-c0363e06-90a1-4232-a99d-c80c454318c5"},
+ :failure
+ {:message "each output item must have exactly one recognized key",
+  :data {}},
+ :turn 12,
+ :event :seat-output-invalid,
+ :at "2026-08-30T21:32:58.254600898Z",
+ :attempt 1,
+ :pattern "ukrns/distinguish-delivery-from-practice-change"}

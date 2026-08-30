@@ -1,0 +1,27 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:23:49.191630453Z",
+ :turn 17,
+ :pattern
+ "system-coherence/verified-rewrite-from-diagnostic-annotation",
+ :gate
+ "/home/joe/code/futon3/./library/system-coherence/.spider/gates/turn-017.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "system-coherence/verified-rewrite-from-diagnostic-annotation",
+    :note
+    "Rung 1: no clean hit. Every supplied hit is ':listing true' (futon3a embeddings rankings co-ranking this pattern with futon-theory/stop-the-line, writing-coherence/stale-reference-after-restructure, vsatelier/annotation-as-commitment, memory/verify-in-the-serving-process, futon-theory/proof-path, etc. — explicitly not warrants), ':self-text'/'reflection true' spider transcripts, or ':co-mention true' only. A prior reflection (e-b6f427ba-9248-4ae1-a8ab-05dad4181825) already recorded that the single ':listing false' candidate, e-3be2f6be, is a software-annex rewrite table co-applying this pattern alongside others doing different jobs on different annotations — co-application warranting no directed edge. Rung 2 was not needed to repeat that finding: the recurring semantically adjacent patterns (stop-the-line, stale-reference-after-restructure, annotation-as-commitment, verify-in-the-serving-process) appear solely in embeddings rankings, and embedding co-retrieval cannot alone support a typed edge. The pattern's @references already record argument-as-coverage-checklist-vs-system-specification, turn-design-into-checks, bind-open-questions-to-closure-mechanisms, and plan-as-enumeration, so edges to those would repeat existing directives. No warranted edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

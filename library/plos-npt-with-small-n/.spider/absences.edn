@@ -1,0 +1,268 @@
+[{:pattern "plos-npt-with-small-n/absence-as-evidence",
+  :note
+  "Rung 1 (exact live occurrence) was exhausted: every supplied hit is :listing true (an embeddings retrieval ranking, which the rules exclude as a warrant by itself) with :co-mention true; none has all four flags false. Rung 2 text-search 'absence-as-evidence null dropout thin cell headline finding' returned e-9c872232 (a context-retrieval listing pairing the source with iching/hexagram-33-dun and or/snapshot-with-story-doi — a retrieval ranking, not a stated relation), e-1e306352 / e-238d70c1 / e-de8ce6ad (all embeddings retrieval listings), and e-ad66c14e (this session's own dispatch prompt, self-text). The pattern's natural peers (small-n-is-a-design-feature, transferability-not-generalisability) are already @references, and every other candidate appears only inside retrieval rankings or self-text. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/abstract-n-method-frame",
+  :note
+  "Rung 1 (exact live occurrence) was exhausted: every supplied hit is either :listing true (embeddings retrieval rankings, not warrants) or e-df4afbcf, a non-listing record with :co-mention true — a completing-read UI screenshot showing the pattern's claim greyed-out beside its name alongside an unrelated writing-coherence pattern, co-mention without a stated relation. No hit has all four flags false. Rung 2 text-search 'abstract-n-method-frame setting participant count design abstract' returned only e-f1cea946-a6ef-4b84-92d6-c94962e8e89a, this session's own dispatch prompt (self-text). The pattern's two natural peers are already @references (small-n-is-a-design-feature, framework-spine-with-empirical-ribs); all other candidate targets appear only inside retrieval rankings. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/barrier-enabler-strategy-display",
+  :note
+  "Rung 1 (exact live occurrence) was exhausted: every supplied hit is :listing true (embeddings retrieval rankings — or/adaptive-delivery-spine, or/peripheral-to-core-pathways, dsc/traversal-first-chaptering, dsc/evidence-situated-log, structure/backwards-induction pairings are rankings with no stated relation); even the one with :co-mention false (e-8beab22d) is still a retrieval ranking. No hit has all four flags false. Rung 2 text-search 'barrier-enabler-strategy-display implementation recommendations figure' returned only e-db87e240-e748-4ac4-b487-152fea34bdcc, this session's own dispatch prompt (self-text). The pattern's two natural peers are already @references (framework-spine-with-empirical-ribs, open-science-phase-register); every other candidate appears only inside retrieval rankings. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/coding-reliability-stated",
+  :note
+  "Rung 1 (exact live occurrence 'plos-npt-with-small-n/coding-reliability-stated') was exhausted: every supplied hit is :listing true (embeddings retrieval rankings — the scope-shield-via-companion-paper, disconfirmation-not-just-triangulation, pattern-discipline/conclusion-required, pacspine/crisp-success pairings are rankings with no stated relation). No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'coding-reliability-stated inter-coder adjudication disagreements' returned only e-39a73a9e-4f1c-46d9-83bb-a70db17e5d53, this session's own dispatch prompt (self-text). The pattern's two natural peers are already @references (framework-spine-with-empirical-ribs, small-n-is-a-design-feature); every other candidate appears only inside retrieval rankings. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/data-availability-and-prereg",
+  :note
+  "Rung 1: every runner-supplied exact-occurrence hit carries :listing true (an embeddings retrieval ranking; most also :co-mention true), so none is a clean warrant, and no record states a relation to any candidate target. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=data%20availability%20DOI%20at%20submission%20preregistration&limit=5&hydrate=true, ?q=open%20science%20phase%20register%20preregistration%20data%20sharing%20statement, ?q=preregistered%20OSF%20data%20deposited%20controlled%20access%20repository%20qualitative, and ?q=open%20science%20phase%20register%20data%20availability. The results were either this spider programme's own prompt (self-text/reflection: the zai turn-start echoes) or one genuine external record, e-05b51e4a-f5b2-4bcf-9abd-9988932b54ad (claude-4, 2026-06-23), which documents live application of the data-availability/prereg pattern itself (placeholder DOI at submission, controlled-access deposit at data.bris, OSF preregistration https://osf.io/c6srk) but names no other library pattern. The sibling that embeddings rankings recurrently pair it with, or/snapshot-with-story-doi, does not exist as library/or/snapshot-with-story-doi.flexiarg (library/or/ contains no .flexiarg files), and storage/postcommit-materialization-gate appears only via co-mention listings, which state no relation. In-section peer plos-npt-with-small-n/open-science-phase-register was read and is topically distinct (presenting open-science findings, not compliance statements), with no external record connecting them.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern
+  "plos-npt-with-small-n/disconfirmation-not-just-triangulation",
+  :note
+  "Rung 1: no clean hit. e-02e67ede and e-922fc5d4 carry :reflection/:self-text true (spider-fleet reflections on an earlier citation-density rung-1 report), and every other runner-supplied hit (e-1222b47c, e-6fdbb59d, e-ee8ad515, e-d78ae4ef, e-1f0966f4, e-6471416b, e-42b4301f) is :listing true — a futon3a embeddings retrieval ranking co-ranking this pattern with unrelated siblings (or/attribution-forward-review, dsc/evidence-situated-log, writing-coherence/plain-language-thesis, pacspine/frictionless-next, etc.) — explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=disconfirm%20deviant%20case%20triangulation%20divergence%20qualitative&limit=5&hydrate=true, ?q=counterpoint%20staff%20patients%20disagreement%20finding%20NPT, and ?q=negative%20case%20analysis%20falsifiable%20qualitative%20analysis. The first two returned only this spider programme's own current prompt (e-a2ded49e, self-text/reflection — not external use); the third returned zero results. No external record demonstrates use of this pattern alongside any existing library target, so no warranted :how or :see-also edge was found.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/framework-spine-with-empirical-ribs",
+  :note
+  "Rung 1: all runner-supplied hits (e-f1543c5f, e-86b79361, e-736ef0f7, e-ad9abc21, e-f50670a0) carry :listing true — futon3a embeddings rankings co-ranking this pattern with unrelated siblings (equity/contribution-pathways-merged, math-strategy/structural-relation-result, pattern-coherence/scope-boundaries, research-questions-stated-early) — which is explicitly not a warrant, and the :co-mention records state no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=NPT%20construct%20headings%20local%20themes%20results%20section&limit=5&hydrate=true (1 hit: e-c27a37f3, this spider programme's own current prompt — self-text/reflection, not external), ?q=normalization%20process%20theory%20results%20headings%20framework%20quotes (0 hits), and ?q=floating%20formalism%20framework%20headings%20empirical%20claims (2 hits: e-c27a37f3 again plus e-c3fcea85, which I fetched and confirmed is another spider-fleet prompt for library/system-coherence — reflection). No external record demonstrates use of this pattern alongside any existing library target; its @references already name writing-coherence/floating-formalism and coherence-first-when-using-npt, and no evidence warrants adding another directive.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/inductive-before-deductive-warrant",
+  :note
+  "Rung 1: no clean hit — e-fd637e02 is :self-text/:reflection true (a spider-fleet reflection), and every other runner-supplied hit (e-2101885f, e-e56f9a07, e-6109d731, e-c4fac688, e-12791ad2) is :listing true, i.e. a futon3a embeddings ranking co-ranking this pattern with unrelated siblings (writing-coherence/first-mention-undischarged, control/agential-pattern-hygiene, campaign-coherence/shared-s...) — explicitly not a warrant, and the :co-mention records state no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=inductive%20coding%20before%20deductive%20framework%20two-stage%20analysis&limit=5&hydrate=true, ?q=thematic%20analysis%20Braun%20Clarke%20NVivo%20then%20framework%20mapping%20methods, and ?q=two-stage%20inductive%20deductive%20coding%20methods%20statement — each returned exactly one hit, e-e937f444, which is this spider programme's own current prompt (self-text/reflection, not external use). No external record demonstrates use of this pattern alongside any existing library target; its @references already name framework-spine-with-empirical-ribs and coding-reliability-stated, and no evidence warrants adding another directive.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/multi-method-triangulation-ladder",
+  :note
+  "Rung 1: all runner-supplied hits (e-706c63ba, e-22d5a84a, e-c241326d, e-5d02fe92, e-b9adf9e5, e-8ac44afd, e-92ce8bb1, e-1b88e3d2, e-e2f81506, e-c8e42c4d) carry :listing true — futon3a embeddings rankings co-ranking this pattern with unrelated siblings (library-coherence/llm-argument-scan, sidecar/tri-store-separation, paramitas/discernment, fulab/session-resume, repository-transition/counterstrawman, or/snapshot-with-story-doi, etc.) — explicitly not a warrant; the co-ranking with in-section peers (quote-table-not-quote-flood, training-role-feature-register) is co-mention in a retrieval listing, which states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=triangulation%20ladder%20interviews%20observations%20focus%20groups%20analytic%20job&limit=5&hydrate=true (2 hits: e-30d27982, this spider's own current prompt, and e-f1cea946, another spider-fleet prompt for abstract-n-method-frame, fetched and confirmed — both self-text/reflection), ?q=mixed%20methods%20each%20data%20stream%20analytic%20role%20methods%20results (2 hits: the same two spider prompts), and ?q=data%20streams%20corroborate%20contextualise%20prioritise%20findings (0 hits). No external record demonstrates use of this pattern alongside any existing library target; its @references already name site-case-data-display and small-n-is-a-design-feature, and no evidence warrants adding another directive.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/open-science-phase-register",
+  :note
+  "Rung 1: all three runner-supplied hits (e-1fdf4be0, e-ab475231, e-9ee45cbf) carry :listing true — futon3a embeddings rankings co-ranking this pattern with unrelated siblings (devmap-coherence/ifr-f7-upa-upekkha, equity/protected-...) — explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=open%20science%20practices%20barriers%20incentives%20instruments%20findings&limit=5&hydrate=true (1 hit: e-a9558694, this spider's own current prompt — self-text/reflection), ?q=keywords%20submission%20PLOS%20open%20science (5 hits: e-ab475231 and e-9ee45cbf, both already-known claude-4 context-retrieval listings; e-a9558694 self-prompt; e-d20e51d6 and e-344d481d and e-978b5ad8, which I fetched and confirmed are zai spider-fleet turn records — reflection/self-text), and ?q=phased%20review%20interview%20workshop%20generalizability%20data%20sharing (2 hits: the same self-prompt and e-30d27982, another spider prompt). No clean external record states or demonstrates a relation between this pattern and any existing library target; its @references already name multi-method-triangulation-ladder and barrier-enabler-strategy-display, and no evidence warrants adding another directive.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/paradigm-matched-rigour-frame",
+  :note
+  "Rung 1: all runner-supplied hits (e-fbae47a8, e-ee2eb1c6, e-aa62752a, e-ee8ad515, e-98667208, e-2cb90163, e-084ddf4c, e-6dbd54e1) carry :listing true — futon3a embeddings rankings co-ranking this pattern with unrelated siblings (orchestration/recorded-handoff, stack-coherence/maturity-evidence-audit, pacspine/indicators-checker, library-coherence items, p4ng/attribution-..., enrichment/ARGUMENT) — explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=Yin%20case%20study%20construct%20validity%20rigour%20criteria&limit=5&hydrate=true, ?q=reflexive%20thematic%20analysis%20positionality%20audit%20trail%20trustworthiness, and ?q=member%20checking%20rejected%20paradigm%20rigour%20qualitative — each returned exactly one hit, e-f58fc591, which is this spider programme's own current prompt (self-text/reflection, not external use). No external record demonstrates use of this pattern alongside any existing library target; its @references already name coding-reliability-stated and coreq-checklist-adherence, and no evidence warrants adding another directive.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/quote-table-not-quote-flood",
+  :note
+  "Rung 1: no clean hit. e-150340ec, e-d30f95e5, e-3887944f-as-reflected, e-0fac21b7, e-b6f427ba are :self-text/:reflection true (earlier spider-fleet rung-1 reports and export listings; e-0fac21b7 even notes that quote-table-not-quote-flood already links in from the writing-coherence side). Every other runner-supplied hit (e-db3322b9, e-349f3058, e-04f0449e, e-22d5a84a, e-1d6ef595, e-a518c710, e-12f03875, e-92ce8bb1, e-b1412b65, e-e2f81506, e-15e3e48b, e-6198138c) is :listing true — futon3a embeddings rankings co-ranking this pattern with unrelated siblings (system-coherence/present-graph-topology-not-adjacency-lists, writing-coherence/plain-language-thesis, p4ng/snapshot-with-story, war-machine/spatial-over-tabular, vsatlas/isolarion-drift, meta/layering-design-into-argument, t4r/dtp-fit, etc.) — explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=illustrative%20extract%20table%20themes%20quotes%20results%20qualitative&limit=5&hydrate=true, ?q=extract%20tables%20participant%20voice%20prose%20interpretation, and ?q=quote%20table%20theme%20subtheme%20participant%20extract%20demonstrates — each returned exactly one hit, e-dbf39347, which is this spider programme's own current prompt (self-text/reflection, not external use). No external record demonstrates use of this pattern alongside any existing library target not already referenced; its @references already name writing-coherence/one-paragraph-per-typed-claim and site-case-data-display, and no evidence warrants adding another directive.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/research-questions-stated-early",
+  :note
+  "Rung 1: all runner-supplied hits (e-f30567e3, e-223c7e26, e-b7aaa019, e-d56d05c8, e-d29e066f, e-940e717c, e-0304b07b, e-a055a124, e-f25143cb, e-b882e2ce, e-ab475231, e-61f8f463, e-a57608e0, e-31d582af, e-e974a4a3, e-3e62c76c, e-6ebffb07, e-2f94aa5f, e-57bf427a, e-f50670a0) carry :listing true — futon3a embeddings retrieval rankings co-ranking this pattern with unrelated siblings (eoi-engine/tension-free-solo-rule, system-coherence/is-this-even-a-problem, structure/backwards-induction, ukrns/reader-as-participant, pattern-coherence/scope-boundaries, etc.) — explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=moving%20research%20questions%20into%20the%20abstract%20PLOS&limit=5&hydrate=true, ?q=numbered%20research%20questions%20introduction%20abstract%20desk%20editor, and ?q=research%20questions%20stated%20explicitly%20early%20paper. Hits were either this spider programme's own prompts (e-e79a6498, e-5e5c7e7e, e-fb2d5af1, e-7a6b598a — self-text/reflection, confirmed by fetching each) or claude-4/claude-13 context-retrieval listings (e-f50670a0, e-940e717c, e-e409c85d, e-53579de7, e-d4c59e02) which are again embeddings rankings containing no stated relation to another existing library target. No clean external record warrants a :how or :see-also edge; the pattern's @references already name abstract-n-method-frame and framework-spine-with-empirical-ribs.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/scope-shield-via-companion-paper",
+  :note
+  "Rung 1: no clean hit. e-150340ec, e-4d40dff5, e-83e15101 are :self-text/:reflection true (spider-fleet reports and export listings); every other runner-supplied hit (e-6a519227, e-7d2f1ced, e-78018a8f, e-03cec2c1, e-a4ff0e14, e-d32574fe, e-4018f600, e-ee60eec7, e-7cfdcd09, e-33f33fee, e-1f0966f4, e-6471416b, e-9d2d98ad, e-1ea12f78, e-e8db322a) is :listing true — futon3a embeddings rankings co-ranking this pattern with unrelated siblings (p4ng/harvest-before-close, invariant-coherence/reachable-from-boot, war-machine/ideal-actual-gap, eight-gates/lie-split, writing-coherence/plain-language-thesis, t4r/supplement, structure/backwards-induction, etc.) — explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=companion%20paper%20more%20fully%20explored%20elsewhere%20scope&limit=5&hydrate=true, ?q=narrow%20scope%20defended%20companion%20paper%20salami%20slicing (0 hits), and ?q=reserved%20for%20companion%20publication%20seam%20construct (1 hit: the current spider prompt). The first query returned one genuine external record, e-6ff2c10a-7929-4149-a929-34e111d559a0 (a claude chat-turn on the pattern-coding corpus, which I fetched): it documents live reasoning with this pattern (ERAS narrowed to a single NPT construct, 'more fully explored elsewhere [25]', the deliberate-scope vs salami-slicing line) but names no other library pattern as a target — the co-proposed clusters (inductive-before-deductive-warrant, disconfirmation-not-just-triangulation, paradigm-matched-rigour-frame, absence-as-evidence, theory-as-heuristic-not-law) are co-mentions only. No record states or demonstrates a relation to an unlinked existing library target; the pattern's @references already name open-science-phase-register and venue-register-boundary.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/site-case-data-display",
+  :note
+  "Rung 1: no clean hit. e-150340ec and the e-96d664fa export fragment are :self-text/:reflection true (spider-fleet export listings); the remaining runner-supplied hits (e-4ed807a3, e-57bc0897, e-4018f600) are :listing true — futon3a embeddings rankings co-ranking this pattern with unrelated siblings (sidecar/chain-builder-softness-accounting, meta/layering-design-into-argument, writing-coherence/plain-language-thesis) — explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=site%20characteristics%20table%20participants%20data%20sources%20before%20results&limit=5&hydrate=true (1 hit: e-014a9997, this spider's own current prompt), ?q=case%20summary%20data%20collection%20by%20case%20table (3 hits: the same self-prompt, e-30d27982 another spider prompt, and e-82e7ef6b, which I fetched — a claude chat-turn about section numbering and cross-references in a document cut-down, unrelated to study-map displays), and ?q=table%20of%20sites%20roles%20data%20before%20findings%20small-n (2 hits: the same self-prompt and e-dbf39347, another earlier spider prompt). No clean external record states or demonstrates a relation between this pattern and any existing library target not already referenced; its @references already name small-n-is-a-design-feature and multi-method-triangulation-ladder.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/theory-as-heuristic-not-law",
+  :note
+  "Rung 1: all three runner-supplied hits (e-d56d05c8, e-218a11ea, e-788653e7) carry :listing true — futon3a embeddings retrieval rankings co-ranking this pattern with unrelated siblings (abstract-n-method-frame, eight-gates/lean-commit, eight-gates/press-mechanism) — explicitly not a warrant, and the :co-mention records state no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=NPT%20heuristic%20device%20not%20causal%20explanation%20framework%20limits&limit=5&hydrate=true (0 hits), ?q=theory%20heuristic%20lens%20limitation%20remedy%20design (1 hit: e-a6622bb5, this spider programme's own current prompt — self-text/reflection, not external use), and ?q=framework%20as%20heuristic%20interconnected%20constructs%20finding (0 hits). No external record demonstrates use of this pattern alongside any existing library target not already referenced; its @references already name framework-spine-with-empirical-ribs and coherence-first-when-using-npt.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern
+  "plos-npt-with-small-n/transferability-not-generalisability",
+  :note
+  "Rung 1: the single runner-supplied hit (e-30aa30d3) carries :listing true - a futon3a embeddings retrieval ranking co-ranking this pattern with plos-npt-with-small-n/absence-as-evidence and small-n-is-a-design-feature - explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=transferability%20not%20generalisability%20limitations%20qualitative%20findings%20travel&limit=5&hydrate=true, ?q=findings%20transferable%20to%20similar%20settings%20conditions%20discussion, and ?q=bounded%20transferability%20mechanism%20analogy%20context%20qualitative%20paper - each returned exactly one hit, e-d6bffdb0, which is this spider programme's own current prompt (self-text/reflection, not external use). No external record demonstrates use of this pattern alongside any existing library target not already referenced; its @references already name small-n-is-a-design-feature and writing-coherence/hedged-lift.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/venue-register-boundary",
+  :note
+  "Rung 1: no clean hit. e-8058344a and e-fd637e02 are :self-text/:reflection true (spider-fleet rung-1 reports and export listings); every other runner-supplied hit (e-8da8f082, e-dda41f86, e-36543314, e-b1166921, e-cc462cb7, e-fa68093e, e-e72b0968, e-f25143cb, e-780aab9c, e-1709bd6f, e-adb46a5f, e-7e57eec7, e-7f41ffe2, e-6a13d72c, e-c3ba5976, e-aa733662, e-ab475231, e-736ef0f7, e-f3f537ab, e-d92076b8, e-4a730381, e-0957a57d, e-6109d731, e-c4039793, e-31d582af, e-3e62c76c, e-0a8b6593, e-4b7ca784, e-7f276322, e-a18d2a85, e-ca18464c, e-92ce8bb1, e-57bf427a, e-15e3e48b, e-f3edf039) is :listing true - futon3a embeddings rankings co-ranking this pattern with dozens of unrelated siblings - explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=content%20cousins%20positioning%20not%20venue%20register%20BMC%20PLOS&limit=5&hydrate=true, ?q=STORM%20DEALTS2%20train%20the%20trainer%20positioning%20literature, and ?q=PLOS%20ONE%20model%20paper%20register%20structure%20BMC%20cousin. Results were spider prompts (e-cb3e1d03, e-922773b6, e-5584b56c, e-badbdd8d, e-db87e240 - self-text/reflection) plus one external user dispatch e-2e88c81c (the original library-creation request citing writing-coherence as the exemplar library), which names no specific pattern target or relation. No clean external record warrants an edge to any unlinked existing target; the pattern's @references already name framework-spine-with-empirical-ribs and training-role-feature-register.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "plos-npt-with-small-n/coherence-first-when-using-npt",
+  :note
+  "Rung 1 supplied no hits (empty list). Rung 2 queries run: 'NPT coherence sense-making implementation', 'coherence normalization process theory', and 'ERAS coherence results sense-making' via GET /api/alpha/evidence/text-search on 127.0.0.1:7073. All top results were either this spider fleet's own prompts/outputs (self-text/reflection: e-ad3af114-d299-48e5-87d5-bca755928d22, e-2a5d27cb-b782-4ea8-9018-4859fb3a9005 and similar) or unrelated records (e.g. a categorical-quantum paper discussion). No clean external record mentions the source pattern id or any candidate target pattern id in a way that states a relation, so no rung-1 or rung-2 edge is warranted.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}]

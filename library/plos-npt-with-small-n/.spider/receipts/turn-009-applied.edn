@@ -1,0 +1,27 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:59:17.661950554Z",
+ :turn 9,
+ :pattern
+ "plos-npt-with-small-n/disconfirmation-not-just-triangulation",
+ :gate
+ "/home/joe/code/futon3/./library/plos-npt-with-small-n/.spider/gates/turn-009.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "plos-npt-with-small-n/disconfirmation-not-just-triangulation",
+    :note
+    "Rung 1: no clean hit. e-02e67ede and e-922fc5d4 carry :reflection/:self-text true (spider-fleet reflections on an earlier citation-density rung-1 report), and every other runner-supplied hit (e-1222b47c, e-6fdbb59d, e-ee8ad515, e-d78ae4ef, e-1f0966f4, e-6471416b, e-42b4301f) is :listing true — a futon3a embeddings retrieval ranking co-ranking this pattern with unrelated siblings (or/attribution-forward-review, dsc/evidence-situated-log, writing-coherence/plain-language-thesis, pacspine/frictionless-next, etc.) — explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=disconfirm%20deviant%20case%20triangulation%20divergence%20qualitative&limit=5&hydrate=true, ?q=counterpoint%20staff%20patients%20disagreement%20finding%20NPT, and ?q=negative%20case%20analysis%20falsifiable%20qualitative%20analysis. The first two returned only this spider programme's own current prompt (e-a2ded49e, self-text/reflection — not external use); the third returned zero results. No external record demonstrates use of this pattern alongside any existing library target, so no warranted :how or :see-also edge was found.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

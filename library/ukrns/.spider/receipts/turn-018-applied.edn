@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:39:16.475083926Z",
+ :turn 18,
+ :pattern "ukrns/open-the-triangle",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-018.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "ukrns/open-the-triangle",
+    :note
+    "Rung 1 supplied no clean hit: e-6c0eace9 is flagged :reflection true (a prior spider's own output quoting @references of other patterns), e-748029ec and e-1648b9de are :listing embeddings rankings, and e-780fb5c5 is a :co-mention pattern-review list — none states a relation between this pattern and a specific target. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'local success shareable evidence governance cost network' and 'evidence deposit shareable across institutions funder recognition'. These returned only e-959cf373 (this spider's own turn-start prompt, self-text) and e-6e9e5b0c (this session's own turn-round record reflecting those very queries) — both self-reflections of this fleet, not external use. The pattern's natural targets (equity/visible-impact, equity/shared-maintenance, ukrns/measure-where-least-sure, ukrns/design-as-function-of-evidence) are already declared in @references; no external evidence warrants a new edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

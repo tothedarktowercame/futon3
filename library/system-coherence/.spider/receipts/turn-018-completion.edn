@@ -1,0 +1,16 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T22:44:01.799010825Z",
+ :turn 18,
+ :pattern
+ "system-coherence/correct-effect-claims-with-relevant-denominators",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788129811774-5371-09af3a98",
+  :response
+  "[{:absence {:pattern \"system-coherence/correct-effect-claims-with-relevant-denominators\" :note \"Rung 1: no clean hit supplied — every non-reflection hit was :listing true (embeddings rankings, not warrants) and :co-mention true (co-mention does not state a relation); the two :reflection true hits are this spider fleet's own prior absences. Rung 2: ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=denominator%20reach%20effect%20claim%20numerator&limit=5&hydrate=true and GET .../text-search?q=Correct%20Effect%20Claims%20with%20Relevant%20Denominators&limit=5&hydrate=true; both returned only this turn's own prompt (self-text), no external record tying the pattern to an unlinked existing library target. No warranted edge; no duplicate-free directive supported.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-1e549351-c428-4171-b284-c7dd78c9c8d4"},
+ :response
+ "[{:absence {:pattern \"system-coherence/correct-effect-claims-with-relevant-denominators\" :note \"Rung 1: no clean hit supplied — every non-reflection hit was :listing true (embeddings rankings, not warrants) and :co-mention true (co-mention does not state a relation); the two :reflection true hits are this spider fleet's own prior absences. Rung 2: ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=denominator%20reach%20effect%20claim%20numerator&limit=5&hydrate=true and GET .../text-search?q=Correct%20Effect%20Claims%20with%20Relevant%20Denominators&limit=5&hydrate=true; both returned only this turn's own prompt (self-text), no external record tying the pattern to an unlinked existing library target. No warranted edge; no duplicate-free directive supported.\"}}]"}

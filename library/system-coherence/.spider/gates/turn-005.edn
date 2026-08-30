@@ -1,0 +1,19 @@
+{:checks
+ [{:file
+   "/home/joe/code/futon3/./library/system-coherence/facet-before-aggregating.flexiarg",
+   :line nil,
+   :edge nil,
+   :reason :seat-output-invalid,
+   :detail
+   {:type "class clojure.lang.ExceptionInfo",
+    :message "seat returned malformed output",
+    :data
+    {:seat-failure true,
+     :retries 2,
+     :last-error
+     {:message "agency whistle failed",
+      :data
+      {:exit 1,
+       :stderr
+       "Traceback (most recent call last):\n  File \"/home/joe/code/futon3c/scripts/agency_send.py\", line 189, in <module>\n    bell_raw, bell_json = post_json(f\"{a.base}/api/alpha/{a.kind}\", body)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/joe/code/futon3c/scripts/agency_send.py\", line 146, in post_json\n    raw = urllib.request.urlopen(req).read().decode()\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/urllib/request.py\", line 215, in urlopen\n    return opener.open(url, data, timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/urllib/request.py\", line 521, in open\n    response = meth(req, response)\n               ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/urllib/request.py\", line 630, in http_response\n    response = self.parent.error(\n               ^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/urllib/request.py\", line 559, in error\n    return self._call_chain(*args)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/urllib/request.py\", line 492, in _call_chain\n    result = func(*args)\n             ^^^^^^^^^^^\n  File \"/usr/lib/python3.12/urllib/request.py\", line 639, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 502: Bad Gateway\n"}}}}}],
+ :summary {:pass? false, :failures 1}}

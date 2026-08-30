@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"structure/mana-allostasis\" :to \"budgeted-action-selection/mana-gated-work\" :kind :how} :cited \"THEN: Track the per-channel drain rate. Surface to the operator when a channel approaches hinge-cadence overdue. Award mana at block-closure-at-recognised-hinge (only with the passion phase completed).\" :evidence [{:id \"e-7be9a3a2-bff9-47f2-b869-933aea8b657d\" :via :tag :query \"exact live occurrence: structure/mana-allostasis\" :excerpt \" (was absent): check the unit whenever budget/mana is discussed around agents and restore session-unit framing when the agent claim loses meaning; keep the budget concept and reattach it to sessions (structure/mana-allostasis, nonstarter_mana.clj --session); carry the corrected unit into budgeted-action-selection/mana-gated-work.\"} {:id \"e-d4cfd091-9de5-4cfd-98e4-64582c552eb3\" :via :tag :query \"exact live occurrence: structure/mana-allostasis\" :excerpt \"`structure/mana-allostasis` (\\\"block-closures award mana; allostatic-load symptoms drain it\\\") is a beautiful match for the Mana/Anamnesis distinction we just landed — codex found a pre-existing pattern that ALREADY names the sa\"}] :rung 1 :read [\"structure/mana-allostasis\" \"budgeted-action-selection/mana-gated-work\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788129741183-5365-c13ca878",
+  :response
+  "[{:edge {:from \"structure/mana-allostasis\" :to \"budgeted-action-selection/mana-gated-work\" :kind :how} :cited \"THEN: Track the per-channel drain rate. Surface to the operator when a channel approaches hinge-cadence overdue. Award mana at block-closure-at-recognised-hinge (only with the passion phase completed).\" :evidence [{:id \"e-7be9a3a2-bff9-47f2-b869-933aea8b657d\" :via :tag :query \"exact live occurrence: structure/mana-allostasis\" :excerpt \" (was absent): check the unit whenever budget/mana is discussed around agents and restore session-unit framing when the agent claim loses meaning; keep the budget concept and reattach it to sessions (structure/mana-allostasis, nonstarter_mana.clj --session); carry the corrected unit into budgeted-action-selection/mana-gated-work.\"} {:id \"e-d4cfd091-9de5-4cfd-98e4-64582c552eb3\" :via :tag :query \"exact live occurrence: structure/mana-allostasis\" :excerpt \"`structure/mana-allostasis` (\\\"block-closures award mana; allostatic-load symptoms drain it\\\") is a beautiful match for the Mana/Anamnesis distinction we just landed — codex found a pre-existing pattern that ALREADY names the sa\"}] :rung 1 :read [\"structure/mana-allostasis\" \"budgeted-action-selection/mana-gated-work\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-e4ff0ef0-c187-440e-b191-cca2cd7158f0"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "structure/mana-allostasis",
+    :to "budgeted-action-selection/mana-gated-work",
+    :kind :how}}},
+ :turn 13,
+ :event :seat-output-invalid,
+ :at "2026-08-30T22:43:05.291824476Z",
+ :attempt 1,
+ :pattern "structure/mana-allostasis"}

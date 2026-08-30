@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:56:09.659088559Z",
+ :turn 3,
+ :pattern "or2/open-practice-beyond-hypothesis",
+ :gate
+ "/home/joe/code/futon3/./library/or2/.spider/gates/turn-003.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or2/open-practice-beyond-hypothesis",
+    :note
+    "Rung 1 (exact live occurrence 'or2/open-practice-beyond-hypothesis') was exhausted: every supplied hit is :listing true (embeddings retrieval rankings — including the or/overlay-bridges, or/license-laddering, ai4ci/process-vs-exposition, and plos-npt/research-questions-stated-early pairings — rankings with no stated relation); even the hits with :co-mention false are still retrieval rankings. No hit has all four flags false. Rung 2 text-search 'open-practice-beyond-hypothesis method documentary split story doi practice' returned only e-0696f823-ccd7-49c8-b75f-6f569c14f585, this session's own dispatch prompt (self-text). The pattern's named instruments (License-as-Story, Story DOI, Method/Documentary Split) are domain artefacts, not library/<target>.flexiarg patterns, and appear nowhere with a stated relation. No warranted non-duplicate edge from either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

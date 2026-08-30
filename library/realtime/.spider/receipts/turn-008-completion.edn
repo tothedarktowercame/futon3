@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:21:47.394841368Z",
+ :turn 8,
+ :pattern "realtime/loop-recovery-actions",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788124875960-4992-eb7aeff4",
+  :response
+  "[{:absence {:pattern \"realtime/loop-recovery-actions\" :note \"Rung 1: every supplied hit is either :listing true (embeddings retrieval rankings, not a warrant), :co-mention true (co-mention alone states no relation), or :reflection true (e-697f7308, spider-fleet output); no clean hit with all four flags false, so no rung-1 edge is warranted. Rung 2: ran GET /api/alpha/evidence/text-search?q=loop%20recovery%20overload%20max_wait%20batch%20thresholds&limit=5&hydrate=true and GET ...q=Realtime%20Loop%20Recovery%20Actions%20controlled%20degradation&limit=5&hydrate=true; the top hydrated results were this spider programme's own prompt/turn-start records (self-text), and no other external record asserting a relation between realtime/loop-recovery-actions and another library pattern was returned, so no rung-2 edge is warranted either.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-38512e23-d29d-46ad-b714-4ceeb2b3c02e"},
+ :response
+ "[{:absence {:pattern \"realtime/loop-recovery-actions\" :note \"Rung 1: every supplied hit is either :listing true (embeddings retrieval rankings, not a warrant), :co-mention true (co-mention alone states no relation), or :reflection true (e-697f7308, spider-fleet output); no clean hit with all four flags false, so no rung-1 edge is warranted. Rung 2: ran GET /api/alpha/evidence/text-search?q=loop%20recovery%20overload%20max_wait%20batch%20thresholds&limit=5&hydrate=true and GET ...q=Realtime%20Loop%20Recovery%20Actions%20controlled%20degradation&limit=5&hydrate=true; the top hydrated results were this spider programme's own prompt/turn-start records (self-text), and no other external record asserting a relation between realtime/loop-recovery-actions and another library pattern was returned, so no rung-2 edge is warranted either.\"}}]"}

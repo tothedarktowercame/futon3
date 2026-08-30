@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:28:04.614917765Z",
+ :turn 11,
+ :pattern "vsatlas/non-destructive-relational-layers",
+ :gate
+ "/home/joe/code/futon3/./library/vsatlas/.spider/gates/turn-011.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "vsatlas/non-destructive-relational-layers",
+    :note
+    "Rung 1 supplied no warrant: all five hits (e-aa733662, e-b9422943, e-5c212929, e-f0142fdd, e-534f2454) are embeddings-retrieval listings (:listing true) with co-mention only, which the rules exclude as edge warrants. Rung 2 queries actually run: q='non-destructive relational layers overlay adjacency', q='story emporium adjacency map', q='askew layer non-destructive consolidate retire', q='story emporium non-destructive relational layers merge', q='Non-Destructive Relational Layers', q='sovereignty canonical stories overlay provenance' — every returned record was either this spider fleet's own prompt/output (:reflection-equivalent, e.g. e-c55219c7 is zai-2's prior spider turn, and the top hit of the first query is the current fleet prompt itself) or a transcript of my own session. No clean external record names this pattern in use, so no @how/@see-also edge is warranted. (Note for the runner, not an edge: vsatlas/askew-layer and vsatlas/story-emporium each carry the NEXT-STEPS line 'Consolidate with vsatlas/non-destructive-relational-layers and retire this pattern once merged', which is pattern-file text, not evidence-store evidence, and therefore cannot warrant an attestation under the stated rules.)",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

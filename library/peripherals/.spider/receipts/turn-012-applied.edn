@@ -1,0 +1,47 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:44:03.245092243Z",
+ :turn 12,
+ :pattern "peripherals/surface-earns-inhabitation",
+ :gate
+ "/home/joe/code/futon3/./library/peripherals/.spider/gates/turn-012.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "peripherals/surface-earns-inhabitation",
+     :to "peripherals/inhabitation-feeds-evolution",
+     :kind :see-also},
+    :rung 1,
+    :read
+    ["peripherals/surface-earns-inhabitation"
+     "peripherals/inhabitation-feeds-evolution"],
+    :evidence
+    [{:id "e-9c46eafa-d56e-480f-9398-3d10f62f0732",
+      :via :tag,
+      :query
+      "exact live occurrence: peripherals/surface-earns-inhabitation",
+      :excerpt
+      "The one thing I would add to the plain language argument is that \"in the process we need to do an audit of real and projected invariants to make sure they are the right ones\".  This is backed by peripherals/surface-earns-inhabitation"}
+     {:id "e-1b5c9273-154b-4680-a395-d01acccc525f",
+      :via :tag,
+      :query
+      "exact live occurrence: peripherals/surface-earns-inhabitation",
+      :excerpt
+      "That fits `peripherals/surface-earns-inhabitation`: if the surface is meant to be inhabited, the invariants it exposes have to be trustworthy enough to survive use."}],
+    :state :proposed,
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}},
+    :cited "Uninhabited infrastructure is dead infrastructure.",
+    :at "2026-08-30",
+    :by "zai-1"}],
+  :proposals [],
+  :absences []}}

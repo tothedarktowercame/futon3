@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:02:08.805936125Z",
+ :turn 14,
+ :pattern "plos-npt-with-small-n/paradigm-matched-rigour-frame",
+ :gate
+ "/home/joe/code/futon3/./library/plos-npt-with-small-n/.spider/gates/turn-014.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "plos-npt-with-small-n/paradigm-matched-rigour-frame",
+    :note
+    "Rung 1: all runner-supplied hits (e-fbae47a8, e-ee2eb1c6, e-aa62752a, e-ee8ad515, e-98667208, e-2cb90163, e-084ddf4c, e-6dbd54e1) carry :listing true — futon3a embeddings rankings co-ranking this pattern with unrelated siblings (orchestration/recorded-handoff, stack-coherence/maturity-evidence-audit, pacspine/indicators-checker, library-coherence items, p4ng/attribution-..., enrichment/ARGUMENT) — explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=Yin%20case%20study%20construct%20validity%20rigour%20criteria&limit=5&hydrate=true, ?q=reflexive%20thematic%20analysis%20positionality%20audit%20trail%20trustworthiness, and ?q=member%20checking%20rejected%20paradigm%20rigour%20qualitative — each returned exactly one hit, e-f58fc591, which is this spider programme's own current prompt (self-text/reflection, not external use). No external record demonstrates use of this pattern alongside any existing library target; its @references already name coding-reliability-stated and coreq-checklist-adherence, and no evidence warrants adding another directive.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

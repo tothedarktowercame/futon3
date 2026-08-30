@@ -1,14 +1,25 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T14:58:39.416466957Z",
+ :at "2026-08-30T22:04:38.813913728Z",
  :turn 24,
- :pattern "war-room/wr-5-war-machine-is-not-a-mission",
+ :pattern "war-room/wr-4-inhabit-before-building",
  :gate
  "/home/joe/code/futon3/./library/war-room/.spider/gates/turn-024.edn",
  :changes
  {:attestations [],
   :proposals [],
   :absences
-  [{:pattern "war-room/wr-5-war-machine-is-not-a-mission",
+  [{:pattern "war-room/wr-4-inhabit-before-building",
     :note
-    "Rung 1: the runner supplied zero exact-occurrence hits for this pattern id, so no rung-1 warrant exists. Rung 2: query 'WR-5 war machine not a mission infrastructure maintenance' returned zero results. No textual evidence record documents the WR-5 ruling, its 2026-04-13 provenance, War Bulletin 7's classification of the completed M-war-machine, or a tie from this pattern to another library pattern; the artifacts it cites (War Bulletin 7, the M-war-machine mission) are bulletin and mission documents, not library/<target>.flexiarg patterns. The pattern carries no @references, @why, @how, or @see-also directives, so nothing is recorded to duplicate but equally nothing is externally evidenced to add; the kinship its BECAUSE clause gestures at (the same operational class as the pocketwatch and evidence store — WR-18's demonstrated-infrastructure framing is the later echo) is a thematic resonance inside pattern bodies, not an export-verified record tying the ids, and the earlier wr-18 pass found no record naming both. No rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg."}]}}
+    "Rung 1: no clean warrant — every full-id hit is an embeddings listing or spider-fleet reflection (e-3e6731c0 records this fleet's prior WR-4 absence); the short-form WR-4 hits are prose-title discussions (emacs-27475af7 'cites three of the top four', corrected by emacs-ee4432ad and emacs-0c788ccd — the rulings invoke patterns by title, not by id), status notes (emacs-67ec76bc: no @how asserted; emacs-9a34eceab lists inhabit-supplies-labels as extending WR-4 from the forward-model side), and paper-rendering bookkeeping (emacs-751e79be, emacs-a807189c, emacs-bb850ee8, emacs-e3ae9df7, emacs-74aaf203). Rung 2: query 'WR-4 baldwin-cycle anchored inhabitation feeds evolution eigenvalue' returned GET-verified claude-13 record emacs-89091221d30a8ef0ae2fa6b30e256302, which states WR-4's BECAUSE clause is anchored on futon-theory/baldwin-cycle — but the runner rejected that @see-also edge as an invalid-or-duplicate item, consistent with the relation being a prose invocation inside WR-4's own body (the BECAUSE clause's 'without inhabitation the Baldwin loop starves') rather than an unrecorded directive, the same treatment given every reciprocal kinship this pass. WR-4's header already declares @why war-room/wr-0-organise-without-apparatus; no warranted non-duplicate edge exists.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

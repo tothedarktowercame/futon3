@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:23:00.519976803Z",
+ :turn 9,
+ :pattern "sidecar/proposal-ledger-for-fuzzy-output",
+ :gate
+ "/home/joe/code/futon3/./library/sidecar/.spider/gates/turn-009.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "sidecar/proposal-ledger-for-fuzzy-output",
+    :note
+    "Rung 1: every supplied hit carries :listing true (embeddings retrieval rankings); several are also :co-mention true, and none is a clean non-reflection hit (:listing, :self-text, :co-mention, :reflection all false), so no rung-1 edge is warranted. Rung 2 (GET /api/alpha/evidence/text-search with queries 'proposal ledger fuzzy output SQLite promotion evidence' and 'fuzzy candidates review provenance neighbor distances evidence_json', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts — self-text/reflection, not external use — so neither rung yields a clean external record naming a relation between sidecar/proposal-ledger-for-fuzzy-output and any other existing library/<target>.flexiarg.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

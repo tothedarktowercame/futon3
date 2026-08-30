@@ -1,0 +1,196 @@
+[{:pattern "musn/aif-live-scores",
+  :note
+  "Rung 1 (exact live occurrence 'musn/aif-live-scores') was exhausted: every hit is either :listing true (an embeddings retrieval ranking, not a warrant), :self-text/:reflection true (this spider fleet's own prompts/outputs), or a non-listing hit with :co-mention true — including the warrant-basin report e-4648f77b, which aggregates counts ('musn/aif-live-scores ×5') without stating a relation, and the reflection hit e-953fa61e whose own text records the aif/expected-free-energy-scorecard edge being rejected as a duplicate elsewhere. No hit has all four flags false. Rung 2 text-search 'aif-live-scores G tau payload action responses' returned only e-0dd21e60-67ba-44dc-94f8-a846edca8cc3, this session's own dispatch prompt (self-text). The pattern's sibling candidates (musn/read-aif-plus-one, musn/plan-before-tool, features/operator-turns-enter-the-observation-vector) appear only in retrieval listings. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/declare-scope",
+  :note
+  "Rung 1 (exact live occurrence 'musn/declare-scope') was exhausted: every non-reflection hit is :listing true (embeddings retrieval rankings — including the agent/scope-before-action pairings, which are rankings over scope-semantics queries with no stated relation), and the two non-listing hits (e-6e323c36, e-f2a87cbe) are :self-text/:reflection true (this spider fleet's own earlier prompts quoting retrieval listings). No hit has all four flags false with a stated relation to a library/<target>.flexiarg. Rung 2 text-search 'declare-scope exit condition out-of-bounds scope line' returned only e-7a9b6f40-e546-4c0e-a7bc-c456cc4ce4bb, this session's own dispatch prompt (self-text). The strongest conceptual sibling (agent/scope-before-action) appears only inside retrieval rankings; per the rules those are context, not warrants. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/pattern-action-helper-command",
+  :note
+  "Rung 1 supplied only :listing true embeddings-ranking hits (e.g. e-cb1f9e6a, e-08a6bbbd pair helper-command with musn/pattern-action-rpc only as retrieval neighbors — co-mention in listings, not a stated relation). Rung 2 queries actually run — 'pattern-action helper command RPC log', 'scripts/pattern-action implement note', 'use the pattern-action command to log read implement update', 'pattern action helper ensures consistent RPC payloads' — returned only embeddings-listing coordination records or this spider fleet's own turn-start prompt reflections (e-3d3f5b2b, e-35519932, e-e52cf3a7, e-efa3c123, e-84556bae), so no clean external record states a relation to musn/pattern-action-rpc or any other existing target.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/pattern-action-justification",
+  :note
+  "Rung 1 supplied no clean hit: e-cc8c1511 and e-84556bae are :reflection true (spider-fleet exports), and the remainder (e-265a2dff, e-ee53731c, e-df9286ef, e-36efede7, e-65d8dbb6) are all :listing true embeddings rankings where the pattern appears as a retrieval neighbor — co-mention in listings, not a stated relation. Rung 2 queries actually run — 'pattern action implement update note justification rationale' and 'justify implement update actions pattern-driven edits auditable' — returned only this spider fleet's own turn-start prompt reflections (e-78f9413b, e-35519932, e-e52cf3a7, e-efa3c123), so no clean external record warrants an edge to musn/pattern-action-helper-command, musn/use-requires-evidence, or any other existing target.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/pattern-action-rpc",
+  :note
+  "Rung 1 supplied only :listing true embeddings-ranking hits (e-cb1f9e6a, e-08a6bbbd, e-5f746b45 place musn/pattern-action-rpc next to musn/pattern-action-helper-command only as retrieval neighbors — co-mention in listings, not a stated relation). Rung 2 queries actually run — 'pattern actions structured log PSR PUR', 'musn pattern-action rpc read implement update events', 'pattern action RPC log supports PSR PUR checks' — returned spider-fleet turn-start reflections (e-123d3240, e-35519932, e-e52cf3a7, e-efa3c123, e-a2affff3) and one genuine external record, e-190e6fad, which discusses PSR/PUR grammar over flexiarg citations but names neither musn/pattern-action-rpc nor any relation from it to a target pattern. No warranted edge.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/pause-backtrace",
+  :note
+  "Rung 1 supplied no clean hit: nearly all entries are :listing true embeddings rankings (placing the pattern next to agent/pause-is-not-failure, fulab/session-resume, fulab/clock-out, musn/plan-before-tool etc. as retrieval neighbors — co-mention in listings, not stated relations); the two :reflection true entries (e-c116e1d4, e-8b03f889) are spider-fleet output. The single non-listing, non-reflection record, emacs-b2ae8bd8f9a495e40d7cc5f044af1666, derives pattern→MISSION pairs ('codex-10-turn-340 M-apm-demonstration <- stack-coherence/futon1-determinism, musn/pause-backtrace') — :co-mention true and a mission linkage, not a stated relation to another library pattern. Rung 2 query actually run — 'pause backtrace resume hint moves trail stats' — returned only this spider fleet's own turn-start reflection (e-4075e9a5). No warranted edge.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/plan-before-tool",
+  :note
+  "Rung 1 supplied no clean warrant: nearly all hits are :listing true embeddings rankings (placing the pattern next to musn/pause-backtrace, musn/off-trail-budget, musn/tool-name-hygiene, orchestration/recorded-handoff etc. as retrieval neighbors — co-mention in listings, not stated relations). The two :reflection true entries (e-c116e1d4, e-ff2e4e40, e-478de59d) are spider-fleet export echoes. The remaining non-listing, non-reflection records fail as warrants: e-pull-offer-7dc93e91 is a memory-pull-offer listing several pattern ids (:co-mention true), emacs-ee9d5a1864ece739874c130a7532ea9d is a usage-coverage report counting retrievals ('musn/plan-before-tool (57)') with :co-mention true, e-636e1c8a ranks candidates by gain (co-mention), and e-da592603/e-afb49519 are flair-debugging sessions that name only this pattern with no second pattern or stated relation. Rung 2 query actually run — 'plan before tool use plan line gate turn drift' — returned only this spider fleet's own turn-start prompt reflections (e-0dd21e60, e-45090c6b, e-96aaf0e3, e-eb143a3b, e-f0a5feef). No external record states a relation from musn/plan-before-tool to any other existing pattern.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/psr-pur-real-actions",
+  :note
+  "Rung 1 supplied no clean hit: every entry is :listing true (embeddings rankings placing the pattern next to coordination/mandatory-pur, musn/selection-before-write, musn/use-requires-evidence, realtime/structured-events-only etc. as retrieval neighbors — co-mention in listings, not stated relations); the two :co-mention false entries (e-23f2d390, e-e719d516) are still listings. Rung 2 query actually run — 'PSR PUR reflect real actions anchors not placeholders' — returned only this spider fleet's own turn-start prompt reflection (e-c264aa48). No external record states a relation from musn/psr-pur-real-actions to any other existing pattern.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/read-aif-plus-one",
+  :note
+  "Rung 1 supplied no clean warrant: every entry is :listing true (embeddings rankings placing the pattern next to musn/aif-live-scores, gauntlet/aif-as-environment-not-instruction, aif/no-self-certification etc. as retrieval neighbors — co-mention in listings, not stated relations); the entries with :co-mention false (e-24a6960e, e-ce13d374, e-a8d23ac8, e-54d130b2) are still listings, and e-75ef042f/e-f6dcee30 are :reflection true spider-fleet export echoes. Rung 2 query actually run — 'read AIF suggested pattern plus one candidate before acting' — returned only this spider fleet's own turn-start prompt reflection (e-50950863). No external record states a relation from musn/read-aif-plus-one to any other existing pattern.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/selection-before-write",
+  :note
+  "Rung 1 supplied one clean hit, e-0075cc76-902f-4bde-8fa2-8482e3e2c54b (:listing/:self-text/:co-mention/:reflection all false — a feature-review card whose cascade names only this pattern), but it names no second pattern id and states no relation, so it cannot warrant an edge. All other rung-1 entries are :listing true embeddings rankings (placing the pattern next to musn/plan-before-tool, musn/use-requires-evidence, musn/psr-pur-real-actions, orchestration/pattern-warranted-choice-point etc. as retrieval neighbors — co-mention in listings, not stated relations). Rung 2 query actually run — 'pattern selection PSR must precede implement update' — returned only this spider fleet's own turn-start prompt reflection (e-6ba630e4). No external record states a relation from musn/selection-before-write to any other existing pattern.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/tool-name-hygiene",
+  :note
+  "Rung 1 supplied no clean hit: nearly every entry is :listing true embeddings rankings (placing the pattern next to musn/plan-before-tool, code-coherence/dead-code-hygiene, coordination/capability-gate, orchestration/recorded-handoff etc. as retrieval neighbors — co-mention in listings, not stated relations); the two entries with :co-mention false (e-84da051c, e-391a3c10) are still listings. The single non-listing record, e-pull-offer-a75acf78-ffe8-4b48-9acc-67a89e3904dd, is a memory-pull-offer listing several pattern ids (:co-mention true), which states no relation. Rung 2 query actually run — 'tool name hygiene do not guess documented helpers' — returned only this spider fleet's own turn-start prompt reflection (e-f63036b0). No external record states a relation from musn/tool-name-hygiene to any other existing pattern.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/use-requires-evidence",
+  :note
+  "Rung 1 supplied no clean warrant: nearly all entries are :listing true embeddings rankings (placing the pattern next to musn/pause-backtrace, musn/plan-before-tool, musn/pattern-action-justification, agent/evidence-over-assertion, aif/evidence-precision-registry etc. as retrieval neighbors — co-mention in listings, not stated relations); the two :co-mention false entries (e-3249ccd0, e-830bce8c) are still listings; the non-listing entries (e-ef0d409c, e-ecb53b26, e-3eea4e89, e-a04f4830) are :reflection true spider-fleet output/turns, and e-pull-offer-7117ffd1 is a memory-pull-offer that merely co-lists several pattern ids with no stated relation. Rung 2 query actually run — 'use mode selection must produce PUR and evidence record before turn end' — returned compression-pilot job prompts and a CLean substrate discussion that name no pattern relation involving this pattern (e-035b324f, e-cc5e15dc, e-a07dbc6d), plus this fleet's own prompt reflection (e-db55bb7a). No external record states a relation from musn/use-requires-evidence to any other existing pattern.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/fulab-report-block",
+  :note
+  "Rung-1: all supplied hits carry :listing true (embeddings rankings), which per rules is not an edge warrant, and most are :co-mention true besides. Rung 2: ran GET /api/alpha/evidence/text-search?q=%22FULAB-REPORT%22%20%22applied%22&limit=5&hydrate=true, then q=%5BFULAB-REPORT%5D%20applied%20patterns, q=FULAB-REPORT%20%3Aapplied%20%3Aaction%20%3Anotes, q=FULAB-REPORT%20%3Aapplied%20musn%2F, and q=report%20block%20pattern%20use%20evidence%20musn%20parses. Every returned record (e.g. e-3987c043-0120-453b-8d7f-61bf31cda32d, e-55a79423-7d98-4033-a598-788a85d2bb4f, e-b4b546b5-11bc-461a-9360-06be72a1b18f, e-78f9413b-8720-4923-8f61-234f32f87335, e-0dd21e60-67ba-44dc-94f8-a846edca8cc3) contains the FULAB-REPORT text only as this spider fleet's own prompt echoes (Selected pattern text / YOUR PREVIOUS OUTPUT WAS MALFORMED envelopes), i.e. reflection/self-text, not external use. No record shows an agent actually emitting a FULAB-REPORT block applying another pattern, so no @how or @see-also edge to an existing library/<dir>/<name> target is warranted. Both rungs named: rung 1 (runner-supplied listing hits) and rung 2 (five text-search queries, all reflection-only).",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "musn/intent-restatement",
+  :note
+  "Rung 1: every supplied hit is :listing true (embeddings retrieval ranking, most also :co-mention true), which per the rules is not a warrant for an edge. Rung 2: ran GET /api/alpha/evidence/text-search?q=%22Intent%3A%20%22%20restatement&limit=5&hydrate=true and q=intent%20restatement%20one-line%20intent%20line&limit=5&hydrate=true. The returned records are either this spider fleet's own prompt echoes (e-ce932d5d-943b-4105-876d-fce6e641f205, e-f20f1589-4051-494a-9a4b-7941df3405d6, e-aba782ab-77e3-4852-81cd-2c9165e3e36f — reflection/self-text) or futon3a context-retrieval embeddings listings (e-6176a22d-cfd2-47c5-b2e9-b11b764b2c4b, e-939104ae-78a1-46ff-afce-f66fc9c6729e). No record shows an agent actually emitting an 'Intent:' restatement line, and none states a relation between musn/intent-restatement and another existing library pattern that would warrant an @how or @see-also edge. Both rungs named: rung 1 (listing/co-mention hits only) and rung 2 (two keyword queries, all reflection or listing).",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}]

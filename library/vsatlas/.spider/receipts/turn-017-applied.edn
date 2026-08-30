@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:31:14.828332278Z",
+ :turn 17,
+ :pattern "vsatlas/proof-of-concept-scope",
+ :gate
+ "/home/joe/code/futon3/./library/vsatlas/.spider/gates/turn-017.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "vsatlas/proof-of-concept-scope",
+    :note
+    "Rung 1 supplied no warrant: every hit (e-294f991e, e-0c2c9e05, e-2b5d0f0f, e-bd604745, e-90cb3be7, e-18730c61, e-b36eb3d9, e-ebbf2148, e-252e6a97, e-0929ccfa, e-beb705c4, e-33517b56, e-3f98714b) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside vsatlas/minimal-linking-pilot, agent/evidence-over-assertion, meta/layering-design-into-argument), excluded as edge warrants. Rung 2 queries actually run: q='Precise Concept to Test' and q='proof-of-concept minimal story linking group insight cohorts' (limit=5, hydrate=true); the second returned only my own transcript (e-88c61eb0, zai-1, self-text), and the first returned that same record plus the rung-1 listing records and one further listing e-e3932145 (claude-2), verified by GET: its body is only a context-retrieval event ranking vsatlas/interpretation-offering first and vsatlas/proof-of-concept-scope second, with no text relating them. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation — so no @how or @see-also edge is warranted under either rung. (The pattern also already carries @references [vsatlas/current-strength-gap vsatlas/value-flow-constellation], which could not be repeated.)",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

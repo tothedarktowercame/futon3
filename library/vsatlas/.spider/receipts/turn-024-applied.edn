@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:35:04.717545995Z",
+ :turn 24,
+ :pattern "vsatlas/upful-learning-trajectory",
+ :gate
+ "/home/joe/code/futon3/./library/vsatlas/.spider/gates/turn-024.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "vsatlas/upful-learning-trajectory",
+    :note
+    "Rung 1 supplied no warrant. Nearly all hits (e-b5888891, e-0c53400f, e-c99ac832, e-65c3a1d6, e-6fc938d3, e-1d0b131b, e-8067b135, e-981111ab, e-5fd7b3d9, e-725f5be8, e-a1259ff0) are :listing true context-retrieval rankings (ranked alongside peeragogy/stewardship-succession, or2/shared-futures-beyond-atomised-incentives, vsatlas/offer-ladder, etc.) with at most co-mention. The one non-listing hit e-c78770f3 is :co-mention true: it is a retrieval-diagnostics table contrasting what the 'M-learning-loop banner' feeds the retriever ('vsatlas/upful-learning-trajectory', size 1) against the mission's actual sorry prose (14 patterns) — an analysis of retrieval starvation that names the pattern id alongside others without stating any relation between patterns. Rung 2 queries actually run: q='Upful Learning Trajectory' and q='authors collective members FLOSS contributors maintainers scaffolds progression' (limit=5, hydrate=true). The second returned only my own session transcript (e-631bc17b, zai-1, self-text); the first returned that plus the same rung-1 claude-3/5/8 context-retrieval listings. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking, a co-mention diagnostic, or fleet reflection — so no @how or @see-also edge is warranted under either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

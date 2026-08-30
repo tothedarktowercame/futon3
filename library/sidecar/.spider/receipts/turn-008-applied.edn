@@ -1,0 +1,26 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:22:26.902483860Z",
+ :turn 8,
+ :pattern "sidecar/per-id-audit-timeline-linkage",
+ :gate
+ "/home/joe/code/futon3/./library/sidecar/.spider/gates/turn-008.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "sidecar/per-id-audit-timeline-linkage",
+    :note
+    "Rung 1: every supplied hit except e-0e94706d-cc8b-4e50-b0c0-83e696fe758d is an embeddings listing/co-mention, which is not a warrant; the one clean hit (:listing false, :self-text false, :co-mention false, :reflection false) only maps the pattern id to the field key ':per-id-timeline-linkage' and names no other library pattern, so it warrants no edge. Rung 2 (GET /api/alpha/evidence/text-search with queries 'sidecar per-id timeline proposal promotion fact', 'per-id-timeline-linkage', 'latest active state sidecar inspect per-id view', and 'contiguous narrative append-only logs inspectable histories chain steps', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts and turn-round tool transcripts — self-text/reflection, not external use — so neither rung warrants an edge to any existing library/<target>.flexiarg.",
+    :evidence nil,
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:41:32.940872471Z",
+ :turn 9,
+ :pattern "peripherals/read-existing-seam-before-implementing",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788126066077-5093-557e0145",
+  :response
+  "[{:edge {:from \"peripherals/read-existing-seam-before-implementing\", :to \"peripherals/canonical-typed-event-vs-side-channel\", :kind :see-also}, :cited \"Are there existing frame shapes that cover (or partially cover) what this peripheral emits/consumes? If yes, extend the taxonomy as first-class events, not as out-of-band messages. (See: peripherals/canonical-typed-event-vs-side-channel.)\", :evidence [{:id \"e-5e72730c-08fa-42f7-b832-633e9c1be30a\", :via :tag, :query \"exact live occurrence: peripherals/read-existing-seam-before-implementing\", :excerpt \"shown: • peripherals/read-existing-seam-before-implementing  (rel 0.494)\"}], :rung 1, :read [\"peripherals/read-existing-seam-before-implementing\" \"peripherals/canonical-typed-event-vs-side-channel\"]}]",
+  :agent-id "zai-1",
+  :session-id "zai-cc8dafbc-3b8e-43ad-afb4-d9e34a941e43"},
+ :response
+ "[{:edge {:from \"peripherals/read-existing-seam-before-implementing\", :to \"peripherals/canonical-typed-event-vs-side-channel\", :kind :see-also}, :cited \"Are there existing frame shapes that cover (or partially cover) what this peripheral emits/consumes? If yes, extend the taxonomy as first-class events, not as out-of-band messages. (See: peripherals/canonical-typed-event-vs-side-channel.)\", :evidence [{:id \"e-5e72730c-08fa-42f7-b832-633e9c1be30a\", :via :tag, :query \"exact live occurrence: peripherals/read-existing-seam-before-implementing\", :excerpt \"shown: • peripherals/read-existing-seam-before-implementing  (rel 0.494)\"}], :rung 1, :read [\"peripherals/read-existing-seam-before-implementing\" \"peripherals/canonical-typed-event-vs-side-channel\"]}]"}

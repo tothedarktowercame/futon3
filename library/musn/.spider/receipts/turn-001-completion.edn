@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T19:48:17.442989371Z",
+ :turn 1,
+ :pattern "musn/aif-live-scores",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788119189438-4566-5d8d8477",
+  :response
+  "[{:absence {:pattern \"musn/aif-live-scores\" :note \"Rung 1 (exact live occurrence 'musn/aif-live-scores') was exhausted: every hit is either :listing true (an embeddings retrieval ranking, not a warrant), :self-text/:reflection true (this spider fleet's own prompts/outputs), or a non-listing hit with :co-mention true — including the warrant-basin report e-4648f77b, which aggregates counts ('musn/aif-live-scores ×5') without stating a relation, and the reflection hit e-953fa61e whose own text records the aif/expected-free-energy-scorecard edge being rejected as a duplicate elsewhere. No hit has all four flags false. Rung 2 text-search 'aif-live-scores G tau payload action responses' returned only e-0dd21e60-67ba-44dc-94f8-a846edca8cc3, this session's own dispatch prompt (self-text). The pattern's sibling candidates (musn/read-aif-plus-one, musn/plan-before-tool, features/operator-turns-enter-the-observation-vector) appear only in retrieval listings. No warranted non-duplicate edge from either rung.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:absence {:pattern \"musn/aif-live-scores\" :note \"Rung 1 (exact live occurrence 'musn/aif-live-scores') was exhausted: every hit is either :listing true (an embeddings retrieval ranking, not a warrant), :self-text/:reflection true (this spider fleet's own prompts/outputs), or a non-listing hit with :co-mention true — including the warrant-basin report e-4648f77b, which aggregates counts ('musn/aif-live-scores ×5') without stating a relation, and the reflection hit e-953fa61e whose own text records the aif/expected-free-energy-scorecard edge being rejected as a duplicate elsewhere. No hit has all four flags false. Rung 2 text-search 'aif-live-scores G tau payload action responses' returned only e-0dd21e60-67ba-44dc-94f8-a846edca8cc3, this session's own dispatch prompt (self-text). The pattern's sibling candidates (musn/read-aif-plus-one, musn/plan-before-tool, features/operator-turns-enter-the-observation-vector) appear only in retrieval listings. No warranted non-duplicate edge from either rung.\"}}]"}

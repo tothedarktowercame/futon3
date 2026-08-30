@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:51:46.973612761Z",
+ :turn 11,
+ :pattern "or2/ukrn-horizon-bridge",
+ :gate
+ "/home/joe/code/futon3/./library/or2/.spider/gates/turn-011.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or2/ukrn-horizon-bridge",
+    :note
+    "Rung 1: the only non-listing runner-supplied hit (e-f2a87cbe-794e-4f83-b465-600c988887f4) is flagged :self-text true and :reflection true, and every other hit is an embeddings context-retrieval ranking (:listing true, most :co-mention true); a listing ranking is not by itself a warrant, so no clean rung-1 hit exists. Rung 2: bounded text-search queries actually run against 127.0.0.1:7073 were UKRN Horizon Bridge altitude calls PVC ORPM, quarterly altitude call bridge memo Schools, horizon bridge Story DOIs licence narratives shared templates, and translate sector expectations lightweight bridge-before-portal. Every record returned by all four queries is this spider session's own turn-start record (e-5badd829-62db-491e-be32-d71ad0b10865, author zai-2), i.e. self-text of the spider prompt, not external use. No external record states or uses or2/ukrn-horizon-bridge in relation to an existing library target (candidates that verifiably exist in library: or2/two-joes-one-mandate, or2/steward-emporium, or2/xiangqi-decorators; p4ng/identifier-garden and p4ng/overlay-bridges appear only inside ranking listings). Both rungs fail to warrant an edge; the source file carries no existing directives to duplicate.",
+    :read
+    ["or2/ukrn-horizon-bridge"
+     "or2/two-joes-one-mandate"
+     "or2/steward-emporium"
+     "or2/xiangqi-decorators"],
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

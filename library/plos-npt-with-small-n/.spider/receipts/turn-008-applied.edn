@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:58:34.302350714Z",
+ :turn 8,
+ :pattern "plos-npt-with-small-n/data-availability-and-prereg",
+ :gate
+ "/home/joe/code/futon3/./library/plos-npt-with-small-n/.spider/gates/turn-008.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "plos-npt-with-small-n/data-availability-and-prereg",
+    :note
+    "Rung 1: every runner-supplied exact-occurrence hit carries :listing true (an embeddings retrieval ranking; most also :co-mention true), so none is a clean warrant, and no record states a relation to any candidate target. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=data%20availability%20DOI%20at%20submission%20preregistration&limit=5&hydrate=true, ?q=open%20science%20phase%20register%20preregistration%20data%20sharing%20statement, ?q=preregistered%20OSF%20data%20deposited%20controlled%20access%20repository%20qualitative, and ?q=open%20science%20phase%20register%20data%20availability. The results were either this spider programme's own prompt (self-text/reflection: the zai turn-start echoes) or one genuine external record, e-05b51e4a-f5b2-4bcf-9abd-9988932b54ad (claude-4, 2026-06-23), which documents live application of the data-availability/prereg pattern itself (placeholder DOI at submission, controlled-access deposit at data.bris, OSF preregistration https://osf.io/c6srk) but names no other library pattern. The sibling that embeddings rankings recurrently pair it with, or/snapshot-with-story-doi, does not exist as library/or/snapshot-with-story-doi.flexiarg (library/or/ contains no .flexiarg files), and storage/postcommit-materialization-gate appears only via co-mention listings, which state no relation. In-section peer plos-npt-with-small-n/open-science-phase-register was read and is topically distinct (presenting open-science findings, not compliance statements), with no external record connecting them.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

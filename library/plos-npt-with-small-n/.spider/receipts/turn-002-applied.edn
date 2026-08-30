@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:50:01.532164982Z",
+ :turn 2,
+ :pattern "plos-npt-with-small-n/abstract-n-method-frame",
+ :gate
+ "/home/joe/code/futon3/./library/plos-npt-with-small-n/.spider/gates/turn-002.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "plos-npt-with-small-n/abstract-n-method-frame",
+    :note
+    "Rung 1 (exact live occurrence) was exhausted: every supplied hit is either :listing true (embeddings retrieval rankings, not warrants) or e-df4afbcf, a non-listing record with :co-mention true — a completing-read UI screenshot showing the pattern's claim greyed-out beside its name alongside an unrelated writing-coherence pattern, co-mention without a stated relation. No hit has all four flags false. Rung 2 text-search 'abstract-n-method-frame setting participant count design abstract' returned only e-f1cea946-a6ef-4b84-92d6-c94962e8e89a, this session's own dispatch prompt (self-text). The pattern's two natural peers are already @references (small-n-is-a-design-feature, framework-spine-with-empirical-ribs); all other candidate targets appear only inside retrieval rankings. No warranted non-duplicate edge from either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

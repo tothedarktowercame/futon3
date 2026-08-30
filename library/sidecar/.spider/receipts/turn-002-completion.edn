@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T19:48:56.555636615Z",
+ :turn 2,
+ :pattern "sidecar/artifact-entity-mention-grounding",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788119229165-4571-9f0cb4ae",
+  :response
+  "[{:absence {:pattern \"sidecar/artifact-entity-mention-grounding\" :note \"Rung 1 (exact live occurrence 'sidecar/artifact-entity-mention-grounding') was exhausted: every supplied hit is either :listing true (embeddings retrieval rankings, not warrants) or non-listing records with :co-mention true — mission-brief used-lists (e-68ed559e: a :used vector listing the source among eight patterns with no stated relation), file-read transcripts (e-72a12183), and a find-command loop over a directory listing (e-fbe9200f) — co-mention alone does not state a relation per the rules. No hit has all four flags false. Rung 2 text-search 'artifact-entity-mention-grounding deterministic anchors alias span ingestion' returned only e-9478ffec-f4c5-4c6a-8a1f-162b4c002daf, this session's own dispatch prompt (self-text). The natural sibling candidates (sidecar/tri-store-separation, sidecar/explicit-promotion-to-facts, exotic/tri-store-lineage) appear only inside mission used-lists and retrieval rankings. No warranted non-duplicate edge from either rung.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:absence {:pattern \"sidecar/artifact-entity-mention-grounding\" :note \"Rung 1 (exact live occurrence 'sidecar/artifact-entity-mention-grounding') was exhausted: every supplied hit is either :listing true (embeddings retrieval rankings, not warrants) or non-listing records with :co-mention true — mission-brief used-lists (e-68ed559e: a :used vector listing the source among eight patterns with no stated relation), file-read transcripts (e-72a12183), and a find-command loop over a directory listing (e-fbe9200f) — co-mention alone does not state a relation per the rules. No hit has all four flags false. Rung 2 text-search 'artifact-entity-mention-grounding deterministic anchors alias span ingestion' returned only e-9478ffec-f4c5-4c6a-8a1f-162b4c002daf, this session's own dispatch prompt (self-text). The natural sibling candidates (sidecar/tri-store-separation, sidecar/explicit-promotion-to-facts, exotic/tri-store-lineage) appear only inside mission used-lists and retrieval rankings. No warranted non-duplicate edge from either rung.\"}}]"}

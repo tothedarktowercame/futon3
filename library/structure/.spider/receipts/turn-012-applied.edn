@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:32:11.666339268Z",
+ :turn 12,
+ :pattern "structure/whose-question-is-this",
+ :gate
+ "/home/joe/code/futon3/./library/structure/.spider/gates/turn-012.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "structure/whose-question-is-this",
+    :note
+    "Rung 1: the only clean hits (all flags false) are e-4d90dee2, emacs-35d3193507e9e9c7f5527cf58ecda2ca, and e-e77d83ba. e-4d90dee2 and emacs-35d3193507e9e9c7f5527cf58ecda2ca record a library-wide sweep finding exactly one dangling directive — 'structure/whose-question-is-this -> agent/inhabited-mode' where 'agent/inhabited-mode has never existed in this repo' — i.e. the one directed relation evidenced is to a NON-existent target, and edges must point at existing library/<target>.flexiarg (agent/ contains no inhabited-mode.flexiarg, verified by ls). e-e77d83ba ('satisfying structure/whose-question-is-this at mission level') names no second library pattern. All other hits are disqualified: e-4d40dff5 and e-83e15101 are :self-text/:reflection true and their co-application checklist explicitly warrants no single directed edge; e-99ee36e5, e-c3cfeab1, e-ace099a6, e-23cea763, e-1e7cef34, e-226b3ce8, e-267a7028, e-cb043556, e-76dd003a, e-07d9619e, e-7f02ddd4 are :listing true; e-1939b465 is :co-mention true. Its existing @references [structure/cook-ting structure/hinge-point agent/inhabited-mode gauntlet/aif-as-environment-not-instruction] may not be repeated. Rung 2: bounded GETs actually run — q='inhabited mode operator voice first person question' and q='whose question is this inhabited voice hinge pool' (limit=5, hydrate=true) — returned e-ed06e315, e-9a8931d4, and e-435e79a0, which resolve via GET /api/alpha/evidence/<id> to this spider fleet's own prompt texts (self-text), not external use. Neither rung warrants an edge to an existing library pattern.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

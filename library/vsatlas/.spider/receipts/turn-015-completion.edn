@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T22:30:13.495126071Z",
+ :turn 15,
+ :pattern "vsatlas/pilot-offers",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788128985295-5315-1dc96b1c",
+  :response
+  "[{:absence {:pattern \"vsatlas/pilot-offers\" :note \"Rung 1 supplied no warrant: every hit (e-a149cb79, e-14a807f5, e-e4a0cd53, e-62ab2bfa, e-03bce05f, e-055e5fd6, e-a74d86e4, e-90687f86, e-0bf008e7, e-d80b4cd4, e-cb693a48, e-eb658260, e-48e0956c, e-d788887d, e-baf68488, e-ee48e512, e-01c3c71a, e-73217c47, e-67fc987d, e-645474fa, e-fb26573f, e-0adfff14) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside vsatlas/proof-through-pilots, vsatlas/minimal-linking-pilot, vsatlas/festival-model), excluded as edge warrants. Rung 2 queries actually run: q='Turn Pilot Results into Offers' and q='connected community story lab linked stories module offer sheet pilot' (limit=5, hydrate=true); the second returned no records and the first returned my own session transcript (e-30c2e270, zai-1, self-text) plus the same claude-3/5/11 context-retrieval listing records already supplied at rung 1. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation. Note also the pattern already carries @references [vsatlas/minimal-linking-pilot vsatlas/offer-ladder], so those targets could not be repeated anyway; no additional target is warranted under either rung.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-a6c624a5-49eb-40f8-82e3-95fa53eccd2f"},
+ :response
+ "[{:absence {:pattern \"vsatlas/pilot-offers\" :note \"Rung 1 supplied no warrant: every hit (e-a149cb79, e-14a807f5, e-e4a0cd53, e-62ab2bfa, e-03bce05f, e-055e5fd6, e-a74d86e4, e-90687f86, e-0bf008e7, e-d80b4cd4, e-cb693a48, e-eb658260, e-48e0956c, e-d788887d, e-baf68488, e-ee48e512, e-01c3c71a, e-73217c47, e-67fc987d, e-645474fa, e-fb26573f, e-0adfff14) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside vsatlas/proof-through-pilots, vsatlas/minimal-linking-pilot, vsatlas/festival-model), excluded as edge warrants. Rung 2 queries actually run: q='Turn Pilot Results into Offers' and q='connected community story lab linked stories module offer sheet pilot' (limit=5, hydrate=true); the second returned no records and the first returned my own session transcript (e-30c2e270, zai-1, self-text) plus the same claude-3/5/11 context-retrieval listing records already supplied at rung 1. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation. Note also the pattern already carries @references [vsatlas/minimal-linking-pilot vsatlas/offer-ladder], so those targets could not be repeated anyway; no additional target is warranted under either rung.\"}}]"}

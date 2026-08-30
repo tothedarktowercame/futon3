@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:13:24.688340625Z",
+ :turn 11,
+ :pattern "musn/pattern-action-rpc",
+ :gate
+ "/home/joe/code/futon3/./library/musn/.spider/gates/turn-011.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "musn/pattern-action-rpc",
+    :note
+    "Rung 1 supplied only :listing true embeddings-ranking hits (e-cb1f9e6a, e-08a6bbbd, e-5f746b45 place musn/pattern-action-rpc next to musn/pattern-action-helper-command only as retrieval neighbors — co-mention in listings, not a stated relation). Rung 2 queries actually run — 'pattern actions structured log PSR PUR', 'musn pattern-action rpc read implement update events', 'pattern action RPC log supports PSR PUR checks' — returned spider-fleet turn-start reflections (e-123d3240, e-35519932, e-e52cf3a7, e-efa3c123, e-a2affff3) and one genuine external record, e-190e6fad, which discusses PSR/PUR grammar over flexiarg citations but names neither musn/pattern-action-rpc nor any relation from it to a target pattern. No warranted edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

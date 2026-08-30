@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:18:04.170858081Z",
+ :turn 18,
+ :pattern "musn/use-requires-evidence",
+ :gate
+ "/home/joe/code/futon3/./library/musn/.spider/gates/turn-018.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "musn/use-requires-evidence",
+    :note
+    "Rung 1 supplied no clean warrant: nearly all entries are :listing true embeddings rankings (placing the pattern next to musn/pause-backtrace, musn/plan-before-tool, musn/pattern-action-justification, agent/evidence-over-assertion, aif/evidence-precision-registry etc. as retrieval neighbors — co-mention in listings, not stated relations); the two :co-mention false entries (e-3249ccd0, e-830bce8c) are still listings; the non-listing entries (e-ef0d409c, e-ecb53b26, e-3eea4e89, e-a04f4830) are :reflection true spider-fleet output/turns, and e-pull-offer-7117ffd1 is a memory-pull-offer that merely co-lists several pattern ids with no stated relation. Rung 2 query actually run — 'use mode selection must produce PUR and evidence record before turn end' — returned compression-pilot job prompts and a CLean substrate discussion that name no pattern relation involving this pattern (e-035b324f, e-cc5e15dc, e-a07dbc6d), plus this fleet's own prompt reflection (e-db55bb7a). No external record states a relation from musn/use-requires-evidence to any other existing pattern.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

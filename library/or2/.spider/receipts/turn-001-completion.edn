@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T19:47:38.933591458Z",
+ :turn 1,
+ :pattern "or2/bioliteracy-open-value",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788119144554-4563-f15bd275",
+  :response
+  "[{:absence {:pattern \"or2/bioliteracy-open-value\" :note \"Rung 1 (exact live occurrence 'or2/bioliteracy-open-value') was exhausted: every hit is either :listing true (embeddings retrieval rankings, which are not warrants by themselves) or memory pull-offer records with :co-mention true (multiple pattern ids co-occurring in a tool-call index with no stated relation; one also :reflection true). No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'bioliteracy open value BMS teaching fit-for-use stars' returned only e-6e28ccb5-bc31-4349-9bb1-e1a2e82d8acf, this session's own dispatch prompt (self-text, not external use). The pattern's named candidate targets (Fit-for-Use Stars, Quality-by-Design Crowd, Citizen Co-Learning) appear in the pattern body itself or in retrieval listings only — no external record ties this pattern to an existing library/<target>.flexiarg with a stated relation. No warranted non-duplicate edge from either rung.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:absence {:pattern \"or2/bioliteracy-open-value\" :note \"Rung 1 (exact live occurrence 'or2/bioliteracy-open-value') was exhausted: every hit is either :listing true (embeddings retrieval rankings, which are not warrants by themselves) or memory pull-offer records with :co-mention true (multiple pattern ids co-occurring in a tool-call index with no stated relation; one also :reflection true). No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'bioliteracy open value BMS teaching fit-for-use stars' returned only e-6e28ccb5-bc31-4349-9bb1-e1a2e82d8acf, this session's own dispatch prompt (self-text, not external use). The pattern's named candidate targets (Fit-for-Use Stars, Quality-by-Design Crowd, Citizen Co-Learning) appear in the pattern body itself or in retrieval listings only — no external record ties this pattern to an existing library/<target>.flexiarg with a stated relation. No warranted non-duplicate edge from either rung.\"}}]"}

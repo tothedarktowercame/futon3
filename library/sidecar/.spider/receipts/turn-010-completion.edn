@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:23:33.651445025Z",
+ :turn 10,
+ :pattern "sidecar/sense-shift-gate",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788124981732-5002-3eb02d06",
+  :response
+  "[{:absence {:pattern \"sidecar/sense-shift-gate\" :note \"Rung 1: all supplied hits carry :listing true (embeddings retrieval rankings), most also :co-mention true; there is no clean hit with :listing, :self-text, :co-mention, and :reflection all false, so no rung-1 edge is warranted. Rung 2 (GET /api/alpha/evidence/text-search with queries 'sense shift gate typed arrows bridge triples semantic drift' and 'sense-shift-issue shift-annotation chain builder broaden narrow', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts — self-text/reflection — with no external record naming a relation between sidecar/sense-shift-gate and any other existing library/<target>.flexiarg, so neither rung warrants an edge.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-52a0589e-83a2-453f-9070-ca1cc779fc73"},
+ :response
+ "[{:absence {:pattern \"sidecar/sense-shift-gate\" :note \"Rung 1: all supplied hits carry :listing true (embeddings retrieval rankings), most also :co-mention true; there is no clean hit with :listing, :self-text, :co-mention, and :reflection all false, so no rung-1 edge is warranted. Rung 2 (GET /api/alpha/evidence/text-search with queries 'sense shift gate typed arrows bridge triples semantic drift' and 'sense-shift-issue shift-annotation chain builder broaden narrow', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts — self-text/reflection — with no external record naming a relation between sidecar/sense-shift-gate and any other existing library/<target>.flexiarg, so neither rung warrants an edge.\"}}]"}

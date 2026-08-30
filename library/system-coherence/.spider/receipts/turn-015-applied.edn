@@ -1,0 +1,27 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:22:45.554973873Z",
+ :turn 15,
+ :pattern
+ "system-coherence/treat-content-refresh-as-second-order-when-conditions-bind",
+ :gate
+ "/home/joe/code/futon3/./library/system-coherence/.spider/gates/turn-015.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "system-coherence/treat-content-refresh-as-second-order-when-conditions-bind",
+    :note
+    "Rung 1: no clean hit. Only two hits supplied: e-5d17322f is ':listing true' (a futon3a embeddings co-ranking with vsatelier/return-loop — explicitly not a warrant) and e-80b902b7 is the pattern's own authoring proposal (codex REPL 2026-05-07) introducing it as one of a sibling set mapped onto argument_v9.sexp weak joints — ':co-mention true', a set listing with no stated relation to any individual sibling. Rung 2: ran GET /api/alpha/evidence/text-search?q=content%20refresh%20second-order%20binding%20constraint%20institutional%20conditions&limit=5&hydrate=true; top result is this spider's own turn-start prompt (self-text/reflection), no external record. The pattern's @references already record argue-empirically-not-persuasively, correct-effect-claims-with-relevant-denominators, and writing-coherence/hedged-lift, so edges to those would repeat existing directives. No evidence ties this pattern to a not-yet-linked existing library/<target>.flexiarg. No warranted edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

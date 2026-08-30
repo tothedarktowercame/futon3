@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:47:39.131576193Z",
+ :turn 1,
+ :pattern "or2/bioliteracy-open-value",
+ :gate
+ "/home/joe/code/futon3/./library/or2/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or2/bioliteracy-open-value",
+    :note
+    "Rung 1 (exact live occurrence 'or2/bioliteracy-open-value') was exhausted: every hit is either :listing true (embeddings retrieval rankings, which are not warrants by themselves) or memory pull-offer records with :co-mention true (multiple pattern ids co-occurring in a tool-call index with no stated relation; one also :reflection true). No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'bioliteracy open value BMS teaching fit-for-use stars' returned only e-6e28ccb5-bc31-4349-9bb1-e1a2e82d8acf, this session's own dispatch prompt (self-text, not external use). The pattern's named candidate targets (Fit-for-Use Stars, Quality-by-Design Crowd, Citizen Co-Learning) appear in the pattern body itself or in retrieval listings only — no external record ties this pattern to an existing library/<target>.flexiarg with a stated relation. No warranted non-duplicate edge from either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

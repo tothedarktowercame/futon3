@@ -1,0 +1,17 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:49:22.868498017Z",
+ :turn 2,
+ :pattern "vsatlas/askew-layer",
+ :gate
+ "/home/joe/code/futon3/./library/vsatlas/.spider/gates/turn-002.edn",
+ :changes
+ {:attestations [],
+  :proposals
+  [{:kind :merge,
+    :pattern "vsatlas/askew-layer",
+    :reason
+    "The pattern's own NEXT-STEPS direct it: 'Consolidate with vsatlas/non-destructive-relational-layers and retire this pattern once merged.' The two patterns state the same ruling — an interpretive overlay layer that adds relations without modifying originals (askew: 'propose arcs, passages, and conceptual bridges without modifying originals'; non-destructive-relational-layers: relational layers that leave the base intact) — and co-occur as adjacent retrievals (e-5c212929: non-destructive-relational-layers rank 2, askew-layer rank 3, scores 0.4846/0.4788). Keeping both leaves a near-duplicate pair in the section.",
+    :evidence
+    "Pattern NEXT-STEPS: 'Consolidate with vsatlas/non-destructive-relational-layers and retire this pattern once merged.' External co-retrieval e-5c212929-4bee-4cdf-9ffc-177991d95588 ranks the two patterns adjacently (0.4846 vs 0.4788) on a single embeddings query, indicating semantic overlap."}],
+  :absences []}}

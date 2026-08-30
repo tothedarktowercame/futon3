@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:56:04.478283629Z",
+ :turn 4,
+ :pattern "storage/deterministic-ingest-pipeline",
+ :gate
+ "/home/joe/code/futon3/./library/storage/.spider/gates/turn-004.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "storage/deterministic-ingest-pipeline",
+    :note
+    "Rung 1: no clean hit (all flags false) was supplied. The two non-listing records carry :co-mention true and are excluded: e-3e0c79b1-f9c5-4972-be21-dabcec5166cb is a cascade rendering listing this pattern among six members (with agent/ patterns, futon-theory/mission-interface-signature, and storage/open-world-continuity) — cascade membership is set structure, not a directed relation; e-293d76dd-b841-4b04-a917-0c4864b5015b is a failed psr-select envelope (candidates [aif/shared-kernel-predictive-forward-model, storage/deterministic-ingest-pipeline], 'psr-select failed: Invalid evidence shape') — a tool failure, not external use. The remaining ~15 hits are :listing true futon3a embeddings co-rankings (stack-coherence/stack-blocker-detection recurring, coordination/ARGUMENT, realtime/branch-parallelism, devmap-coherence patterns, enrichment/rational-reconstruction and layered-ingestion, invariant-coherence/shape-first-identify, futon-theory/structural-tension-as-observation, p4ng/snapshot-with-story, and others) — explicitly not warrants. The pattern's one recorded directive is @references [stack-coherence/evidence-ledger], and its evidence base is the devmap file cited in @status (holes/features/futon1.devmap#L40 and #L89) — a repository document, not an evidence-store record tying this pattern to another library pattern. The section README's Purpose Patterns grouping is index taxonomy, not a pattern-level directive. Rung 2 was not run beyond these because the rung-1 set surfaces no candidate target outside the recorded reference. No clean rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

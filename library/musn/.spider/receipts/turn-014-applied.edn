@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:15:34.513010025Z",
+ :turn 14,
+ :pattern "musn/psr-pur-real-actions",
+ :gate
+ "/home/joe/code/futon3/./library/musn/.spider/gates/turn-014.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "musn/psr-pur-real-actions",
+    :note
+    "Rung 1 supplied no clean hit: every entry is :listing true (embeddings rankings placing the pattern next to coordination/mandatory-pur, musn/selection-before-write, musn/use-requires-evidence, realtime/structured-events-only etc. as retrieval neighbors — co-mention in listings, not stated relations); the two :co-mention false entries (e-23f2d390, e-e719d516) are still listings. Rung 2 query actually run — 'PSR PUR reflect real actions anchors not placeholders' — returned only this spider fleet's own turn-start prompt reflection (e-c264aa48). No external record states a relation from musn/psr-pur-real-actions to any other existing pattern.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

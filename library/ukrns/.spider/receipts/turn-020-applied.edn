@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:40:41.367907480Z",
+ :turn 20,
+ :pattern "ukrns/publication-cadence",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-020.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "ukrns/publication-cadence",
+    :note
+    "Rung 1 supplied no clean hit: nearly all supplied hits (e-57b89fc4, e-49508bd4, e-1993de89, e-07a238ee, e-aca3e13e, e-c39246ec, e-bd8b4de9, e-76c04931, e-0ffe350d, e-aece9227, e-eac67400, e-b9d03d83, e-8ee1e3b6, e-8aba9b10, e-43adff35, e-e797c1a5, e-ee6bf1b8, e-a0a9e6ac, e-22ed7c67, e-7d63fa7d) are :listing embeddings rankings with :co-mention; e-02e67ede and e-922fc5d4 are flagged :reflection true (prior spider output); e-780fb5c5 is a :co-mention pattern-review list naming the pattern as 'not evidenced yet' with no target relation. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'living document snapshot DOI citable canonical version paper', 'snapshot compute-date evidence revision citation ambiguity', 'cite snapshot DOI readers version working paper living', 'publication cadence versioned snapshots design state'. Every query returned only this spider's own prompt record (e-e6e7ae3d, a zai turn-start self-reflection). The pattern's natural targets (ukrns/self-application, ukrns/design-state-lineage, ukrns/cycle-position-publication) are already named in @references or @ancestors, so a new edge to them would repeat an existing directive; no external evidence warrants any other edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

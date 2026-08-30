@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:35:01.628561500Z",
+ :turn 19,
+ :pattern "storage/rapid-debugging",
+ :gate
+ "/home/joe/code/futon3/./library/storage/.spider/gates/turn-019.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "storage/rapid-debugging",
+    :note
+    "Rung 1: every non-listing hit was either :co-mention true (embeddings context-retrieval listings beside storage/durability-first, memory/verify-in-the-serving-process, memory/licence-to-fail, futon-theory/rapid-debugging, and other siblings) or otherwise unqualified; e-4d97b3eb-8abc-4457-8056-ca1d825d8f20 (the claude-1 observation that futon-theory/rapid-debugging and storage/rapid-debugging are two distinct patterns sharing a short name) is :co-mention true and hence not a clean rung-1 warrant. Rung 2: previously submitted a see-also edge to futon-theory/rapid-debugging on evidence e-4d97b3eb-8abc-4457-8056-ca1d825d8f20 (text-search query 'rapid debugging two genuinely different patterns share a short name collection prefix'), but the runner rejected it twice as an 'invalid or duplicate edge item', indicating that directive is already recorded or disallowed; repeating it is barred. No other target has clean external evidence of a relation, so no further edge is warranted this round.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

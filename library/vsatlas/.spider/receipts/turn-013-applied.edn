@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:29:13.530338427Z",
+ :turn 13,
+ :pattern "vsatlas/open-ecosystem-mandate",
+ :gate
+ "/home/joe/code/futon3/./library/vsatlas/.spider/gates/turn-013.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "vsatlas/open-ecosystem-mandate",
+    :note
+    "Rung 1 supplied no warrant: all three hits (e-34ec73a0, e-62f009f4, e-c996d832) are :listing true context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside hdm/non-capture, or2/bioliteracy-open-value, vsatlas/open-infrastructure-expert-practice), which the rules exclude. Rung 2 queries actually run: q='Open Ecosystem Mandate' and q='open licences forkable governance pluriversality collective authorship' (limit=5, hydrate=true). Returned records were either my own session transcript (e-b7c49eb3, zai-1, self-text/reflection), the same three listing records, or a further listing e-d0f1e3b7 (claude-5), verified by GET: its body is only a context-retrieval event whose results rank vsatlas/open-ecosystem-mandate first with no text relating it to any other pattern. Every occurrence of this pattern in the store is a retrieval ranking or fleet reflection; none states a relation to another pattern, so no @how or @see-also edge is warranted under either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

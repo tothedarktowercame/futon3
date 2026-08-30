@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:24:38.772254715Z",
+ :turn 11,
+ :pattern "realtime/rendezvous-handshake",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788125037933-5008-905b70a9",
+  :response
+  "[{:absence {:pattern \"realtime/rendezvous-handshake\" :note \"Rung 1: every supplied hit is a :listing true embeddings retrieval ranking (retrieval-log context-retrieval events); no clean hit with :listing, :self-text, :co-mention, and :reflection all false, so no rung-1 edge is warranted. Rung 2: ran GET /api/alpha/evidence/text-search?q=rendezvous%20handshake%20hello%20ack%20coherent%20reception&limit=5&hydrate=true; the top hydrated results were this spider programme's own turn-start prompt (self-text) and further retrieval-log records that merely rank the pattern id among embeddings results — none states a relation between realtime/rendezvous-handshake and another existing library pattern, so no rung-2 edge is warranted either.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-38512e23-d29d-46ad-b714-4ceeb2b3c02e"},
+ :response
+ "[{:absence {:pattern \"realtime/rendezvous-handshake\" :note \"Rung 1: every supplied hit is a :listing true embeddings retrieval ranking (retrieval-log context-retrieval events); no clean hit with :listing, :self-text, :co-mention, and :reflection all false, so no rung-1 edge is warranted. Rung 2: ran GET /api/alpha/evidence/text-search?q=rendezvous%20handshake%20hello%20ack%20coherent%20reception&limit=5&hydrate=true; the top hydrated results were this spider programme's own turn-start prompt (self-text) and further retrieval-log records that merely rank the pattern id among embeddings results — none states a relation between realtime/rendezvous-handshake and another existing library pattern, so no rung-2 edge is warranted either.\"}}]"}

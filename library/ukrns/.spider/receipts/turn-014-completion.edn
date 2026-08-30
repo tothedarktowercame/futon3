@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:36:07.614631638Z",
+ :turn 14,
+ :pattern "ukrns/exercise-response-capture",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788125722334-5071-00203a85",
+  :response
+  "[{:absence {:pattern \"ukrns/exercise-response-capture\", :note \"Rung 1 supplied no clean hit: all supplied hits (e-77c8ead9, e-ecf6b779, e-5c19b281, e-f384c537, e-52bf483f, e-db717687, e-521b5414, e-39ca546a, e-d82578c8, e-e724a533, e-c37b3263) are :listing embeddings rankings and/or :co-mention — none states a relation to a target pattern. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'reader exercises capture consent aggregated responses paper', 'readers pick positions exercises captured feedback', 'exercise responses tickbox survey participants positions', 'reader-as-participant invitation reader diagnosis exercise', 'working paper interactive exercises readers submit positions'. Each returned only the spider's own prompt record (e-a0130c0e, a zai turn-start self-reflection). The pattern's natural targets (ukrns/reader-as-participant, ukrns/assumptions-commons) are already declared in @references, so a new edge would repeat an existing directive; no external evidence warrants any other edge.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-c0363e06-90a1-4232-a99d-c80c454318c5"},
+ :response
+ "[{:absence {:pattern \"ukrns/exercise-response-capture\", :note \"Rung 1 supplied no clean hit: all supplied hits (e-77c8ead9, e-ecf6b779, e-5c19b281, e-f384c537, e-52bf483f, e-db717687, e-521b5414, e-39ca546a, e-d82578c8, e-e724a533, e-c37b3263) are :listing embeddings rankings and/or :co-mention — none states a relation to a target pattern. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'reader exercises capture consent aggregated responses paper', 'readers pick positions exercises captured feedback', 'exercise responses tickbox survey participants positions', 'reader-as-participant invitation reader diagnosis exercise', 'working paper interactive exercises readers submit positions'. Each returned only the spider's own prompt record (e-a0130c0e, a zai turn-start self-reflection). The pattern's natural targets (ukrns/reader-as-participant, ukrns/assumptions-commons) are already declared in @references, so a new edge would repeat an existing directive; no external evidence warrants any other edge.\"}}]"}

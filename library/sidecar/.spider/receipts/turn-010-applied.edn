@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:23:33.865168282Z",
+ :turn 10,
+ :pattern "sidecar/sense-shift-gate",
+ :gate
+ "/home/joe/code/futon3/./library/sidecar/.spider/gates/turn-010.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "sidecar/sense-shift-gate",
+    :note
+    "Rung 1: all supplied hits carry :listing true (embeddings retrieval rankings), most also :co-mention true; there is no clean hit with :listing, :self-text, :co-mention, and :reflection all false, so no rung-1 edge is warranted. Rung 2 (GET /api/alpha/evidence/text-search with queries 'sense shift gate typed arrows bridge triples semantic drift' and 'sense-shift-issue shift-annotation chain builder broaden narrow', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts — self-text/reflection — with no external record naming a relation between sidecar/sense-shift-gate and any other existing library/<target>.flexiarg, so neither rung warrants an edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

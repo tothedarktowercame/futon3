@@ -1,0 +1,280 @@
+[{:pattern "vsatlas/accountable-poc",
+  :note
+  "Rung 1 (exact live occurrence 'vsatlas/accountable-poc') was exhausted: every supplied hit is :listing true (an embeddings retrieval ranking, which is not a warrant by itself); the one hit with :co-mention false (e-ef77760e) is still :listing true. No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'accountable-poc proof-of-concept funds linking pilots' returned only e-fa9eaadf-d58a-4d4c-9304-b38c0791e0e4, which is this session's own dispatch prompt (self-text, not external use). The natural candidate targets (vsatlas/proof-through-pilots, vsatlas/offer-ladder, vsatlas/pilot-offers, ai4ci/funding-justification) appear only inside embeddings result listings or as existing @references (vsatlas/proof-of-concept-scope), which the rules exclude as warrants. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/audience-shift",
+  :note
+  "Rung 1 (exact live occurrence 'vsatlas/audience-shift') was exhausted: all three supplied hits are :listing true (embeddings retrieval rankings — the isolarion-drift, vsat/360-story-container, and or/five-p-rhythm-for-impact pairings are rankings with no stated relation); even the one with :co-mention false is still a retrieval ranking. No hit has all four flags false. Rung 2 text-search 'audience-shift peer-to-peer reciprocal storytelling spectators participants' returned only e-2f15606d-2aa3-457a-8960-ab2552d7547a, this session's own dispatch prompt (self-text). The pattern's section siblings (vsatlas/isolarion-drift, vsatlas/story-emporium) appear only inside retrieval rankings. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/current-strength-gap",
+  :note
+  "Rung 1 (exact live occurrence 'vsatlas/current-strength-gap') was exhausted: every supplied hit is :listing true (embeddings retrieval rankings — the value-flow-constellation, non-destructive-relational-layers, minimal-linking-pilot, and askew-layer pairings are rankings with no stated relation); even the hit with :co-mention false (e-c834df16) is still a retrieval ranking. No hit has all four flags false. Rung 2 text-search 'current-strength-gap cohort stories collective linking gap' returned only e-c93601d4-36ec-4ee3-8824-2bd171dc359f, this session's own dispatch prompt (self-text). The pattern's two natural peers are already @references (peeragogical-infrastructures, value-flow-constellation); every other candidate appears only inside retrieval rankings. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/non-destructive-relational-layers",
+  :note
+  "Rung 1 supplied no warrant: all five hits (e-aa733662, e-b9422943, e-5c212929, e-f0142fdd, e-534f2454) are embeddings-retrieval listings (:listing true) with co-mention only, which the rules exclude as edge warrants. Rung 2 queries actually run: q='non-destructive relational layers overlay adjacency', q='story emporium adjacency map', q='askew layer non-destructive consolidate retire', q='story emporium non-destructive relational layers merge', q='Non-Destructive Relational Layers', q='sovereignty canonical stories overlay provenance' — every returned record was either this spider fleet's own prompt/output (:reflection-equivalent, e.g. e-c55219c7 is zai-2's prior spider turn, and the top hit of the first query is the current fleet prompt itself) or a transcript of my own session. No clean external record names this pattern in use, so no @how/@see-also edge is warranted. (Note for the runner, not an edge: vsatlas/askew-layer and vsatlas/story-emporium each carry the NEXT-STEPS line 'Consolidate with vsatlas/non-destructive-relational-layers and retire this pattern once merged', which is pattern-file text, not evidence-store evidence, and therefore cannot warrant an attestation under the stated rules.)",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/offer-ladder",
+  :note
+  "Rung 1 supplied no warrant: every hit (e-d3fe8fef, e-6faf7beb, e-1358da84, e-ca73f65c, e-ef036016, e-1dbfd9a8, e-2f26b2ee, e-88573eb3, e-e9a6da2a, e-9dcabba3, e-91bbde3d, e-c5e1636b, e-9978381f, e-534f2454, e-98131a7b, e-7bc3f994, e-c6aa3820, e-a11d6735, e-a1259ff0, e-9be219c8, e-e0bf2d3a, e-28d213e7, e-fc1a2e51) carries :listing true — they are context-retrieval embeddings rankings with at most co-mention, excluded as warrants. Rung 2 queries actually run: q='Offer Ladder' and q='offer ladder intro workshop multi-session pilot annual programme price band' (limit=5, hydrate=true). The records returned are either my own turn-start prompt (e-266cd4d9, self-text/reflection) or further context-retrieval listings by claude-3/4/5/8 (e.g. e-a1259ff0 and e-e0bf2d3a verified by GET: their bodies are only {event context-retrieval, query, results [{:id vsatlas/offer-ladder :score ...} ...]} with no text relating offer-ladder to any other pattern). Co-occurrence in a retrieval ranking does not state a relation, so no @how or @see-also edge is warranted under either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/open-ecosystem-mandate",
+  :note
+  "Rung 1 supplied no warrant: all three hits (e-34ec73a0, e-62f009f4, e-c996d832) are :listing true context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside hdm/non-capture, or2/bioliteracy-open-value, vsatlas/open-infrastructure-expert-practice), which the rules exclude. Rung 2 queries actually run: q='Open Ecosystem Mandate' and q='open licences forkable governance pluriversality collective authorship' (limit=5, hydrate=true). Returned records were either my own session transcript (e-b7c49eb3, zai-1, self-text/reflection), the same three listing records, or a further listing e-d0f1e3b7 (claude-5), verified by GET: its body is only a context-retrieval event whose results rank vsatlas/open-ecosystem-mandate first with no text relating it to any other pattern. Every occurrence of this pattern in the store is a retrieval ranking or fleet reflection; none states a relation to another pattern, so no @how or @see-also edge is warranted under either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/peeragogical-infrastructures",
+  :note
+  "Rung 1 supplied no warrant: every hit (e-f1ace7b4, e-ff8d955d, e-68062dbb, e-647987df, e-6e969602, e-03f2991d, e-d80b4cd4, e-e56bc0a7, e-a4421d9f, e-b30a4009, e-d543b8b8, e-4ad04143, e-a4731b05, e-383447bb, e-eae29305, e-933a947b, e-8afd4cfd, e-1ac77851, e-c99d6cbe, e-1500c630, e-05f3d171, e-f95c955b, e-96f8b441) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside vsatlas/pluriversal-infrastructure, vsatlas/shared-stewardship-compact, or/snapshot-with-story-doi), excluded as edge warrants. Rung 2 queries actually run: q='Peeragogical Infrastructures' and q='co-authorship negotiation of meaning stewardship joint decision-making scaffolds' (limit=5, hydrate=true). The records returned were my own session transcript (e-25621242, zai-1, self-text) plus the same claude-2/3/8 context-retrieval listing records already supplied at rung 1. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation — so no @how or @see-also edge is warranted under either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/pilot-offers",
+  :note
+  "Rung 1 supplied no warrant: every hit (e-a149cb79, e-14a807f5, e-e4a0cd53, e-62ab2bfa, e-03bce05f, e-055e5fd6, e-a74d86e4, e-90687f86, e-0bf008e7, e-d80b4cd4, e-cb693a48, e-eb658260, e-48e0956c, e-d788887d, e-baf68488, e-ee48e512, e-01c3c71a, e-73217c47, e-67fc987d, e-645474fa, e-fb26573f, e-0adfff14) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside vsatlas/proof-through-pilots, vsatlas/minimal-linking-pilot, vsatlas/festival-model), excluded as edge warrants. Rung 2 queries actually run: q='Turn Pilot Results into Offers' and q='connected community story lab linked stories module offer sheet pilot' (limit=5, hydrate=true); the second returned no records and the first returned my own session transcript (e-30c2e270, zai-1, self-text) plus the same claude-3/5/11 context-retrieval listing records already supplied at rung 1. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation. Note also the pattern already carries @references [vsatlas/minimal-linking-pilot vsatlas/offer-ladder], so those targets could not be repeated anyway; no additional target is warranted under either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/pluriversal-infrastructure",
+  :note
+  "Rung 1 supplied no warrant: every hit (e-74d4541b, e-c58635a8, e-c248333b, e-229f9dc4, e-61d10c40, e-1a212510, e-ff6980e2, e-aec3608f, e-2dc78642, e-37ee68a2, e-1500c630) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside vsatlas/peeragogical-infrastructures, vsatlas/interpretation-offering, p4ng/license-as-story), excluded as edge warrants. Rung 2 queries actually run: q='Pluriversal Infrastructure' and q='pluriversal design nothing about us without us community-authored stories' (limit=5, hydrate=true). Returned records were my own session transcript (e-aa77b28c, zai-1, self-text) plus the same context-retrieval listing records by claude-3/5/8 and codex-10 already supplied or equivalent at rung 1. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation — so no @how or @see-also edge is warranted under either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/proof-of-concept-scope",
+  :note
+  "Rung 1 supplied no warrant: every hit (e-294f991e, e-0c2c9e05, e-2b5d0f0f, e-bd604745, e-90cb3be7, e-18730c61, e-b36eb3d9, e-ebbf2148, e-252e6a97, e-0929ccfa, e-beb705c4, e-33517b56, e-3f98714b) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside vsatlas/minimal-linking-pilot, agent/evidence-over-assertion, meta/layering-design-into-argument), excluded as edge warrants. Rung 2 queries actually run: q='Precise Concept to Test' and q='proof-of-concept minimal story linking group insight cohorts' (limit=5, hydrate=true); the second returned only my own transcript (e-88c61eb0, zai-1, self-text), and the first returned that same record plus the rung-1 listing records and one further listing e-e3932145 (claude-2), verified by GET: its body is only a context-retrieval event ranking vsatlas/interpretation-offering first and vsatlas/proof-of-concept-scope second, with no text relating them. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation — so no @how or @see-also edge is warranted under either rung. (The pattern also already carries @references [vsatlas/current-strength-gap vsatlas/value-flow-constellation], which could not be repeated.)",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/proof-through-pilots",
+  :note
+  "Rung 1 supplied no clean warrant. The bulk of hits (e-9b4264d5 twice, e-54f12fe6, e-db0851a0, e-684a7d12, e-a315e429, e-ae92a2c9, e-15ec1cb1, e-32c2bec3, e-3b4e209f, e-25396f86, e-7eafd2d6, e-0755b7c4, e-70e29a7c, e-62b18db7, e-125bf25e, e-9fceb39f, e-2254dab9, e-055e5fd6, e-d4964e04, e-90edb802, e-6566fc96, e-7c1ac46b, e-4d1f9e47, e-3db40fe8, e-68fc6155, e-f57470e8, e-9f3366bb, e-a146827c, e-d68ae6f2, e-9978381f, e-6e652ff7, e-d93275c8, e-89c6151b, e-2258f731, e-de61caf0, e-96877f1e, e-52eb0e98, e-2bda06b2, e-eec8a1fb, e-9c2da702, e-1fbff21a, e-f9d48d24) are :listing true context-retrieval rankings. The two non-listing hits are both :co-mention true: e-60e14062 shows the pattern id inside a cascade :pattern-ids triple for a deposit, and e-8f2a249b (verified by GET: codex-2 chat-turn adding 'vsatlas/proof-through-pilots' and 'vsatlas/value-flow-constellation' among eight supporting warrants for the M-demonstration-foundry argument) lists the pattern alongside others without stating any relation between patterns. Co-mention does not state a relation, so rung 1 warrants nothing. Rung 2 queries actually run: q='Proof Through Pilots constellation interpretive report' and q='Precise Concept to Test'-adjacent title search (limit=5, hydrate=true); the former returned only my own session transcript (e-88ffd71d, zai-1, self-text) and no new external record. Neither rung yields a record stating a relation between this pattern and another pattern, so no @how or @see-also edge is warranted; the genuine external use in e-8f2a249b is a warrant list, not a directed edge.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/reasons-to-causes",
+  :note
+  "Rung 1 supplied no warrant: the non-listing hits are either :co-mention true pull-offer tag traces (e-pull-offer-7fbd2d7d twice, listing pattern ids among psr_search results with no relation stated) or :reflection true (e-pull-offer-c5c7b877, a zai-1 memory pull-offer); the rest (e-20a59a45 x3, e-c43630c1, e-68136cd6, e-f8982e37, e-c67dcd02, e-eab6702a) are :listing true context-retrieval rankings (ranked alongside pattern-coherence/causal-clarity, vsatlas/economic-resonance-layer, etc.), excluded as warrants. Rung 2 queries actually run: q='Reasons-to-Causes Gear Train' and q='cross-story arcs testimony collective action shared sensemaking' (limit=5, hydrate=true). The second returned only my own session transcript (e-5bc02624, zai-1, self-text); the first returned that plus one new record e-0f9a03f8 (claude-13), verified by GET: its body is only a context-retrieval event ranking p4ng/norm-seed first and vsatlas/reasons-to-causes third, with no text relating them. Every occurrence of this pattern in the store is a retrieval ranking, a tag/pull-offer trace, a fleet reflection, or my own transcript; none states a relation to another pattern, so no @how or @see-also edge is warranted under either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/shared-stewardship-compact",
+  :note
+  "Rung 1 supplied no warrant: every hit (e-8cb9dbac, e-25eb2d09 repeatedly, e-f0534bbd repeatedly, e-3b9508d9 repeatedly, e-2bcadc7e, e-1c039281, e-85b86f9d, e-37862d4b, e-c1d0731b, e-cdf0cb77, e-ce9db223, e-03f2991d, e-494826be, e-08cf4428) carries :listing true — context-retrieval embeddings rankings (often the same math-informal/pass-to-a-subsequence ranking surfaced by '/compact' queries, with at most co-mention of p4ng/shared-memory-architecture or vsatlas/peeragogical-infrastructures), excluded as edge warrants. Rung 2 queries actually run: q='Shared Stewardship Compact' and q='stewardship compact commons services governance partners co-ownership' (limit=5, hydrate=true). Both returned only my own session transcript (e-c01ceece, zai-1, self-text) plus the same rung-1 context-retrieval listing records by claude-13/14/16 and claude-compact-cold-1542. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation — so no @how or @see-also edge is warranted under either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/stewardship-layer",
+  :note
+  "Rung 1 supplied no warrant: every hit (e-28a0d2b4, e-f1d6aa05, e-22ba2d41, e-5cfbc304, e-39b7dc4a, e-e88826de, e-dbaf091b, e-3d948288, e-dddefbed, e-9cc104c9, e-091d7571, e-f51e9b3d, e-d3b9f341, e-dcb2faf3, e-ea9c1388, e-dedec434) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside or/overlay-bridges, vsatlas/facilitation-scaffolds, equity/protected-interaction-merged), excluded as edge warrants. Rung 2 queries actually run: q='Stewardship Layer' and q='steward approve edit retire arcs clear criteria contribution noise' (limit=5, hydrate=true). Returned records were my own session transcript (e-0d6740ac, zai-1, self-text), a fellow spider's reflection output (e-97cfa594, zai-2, whose body is another spider absence report — :reflection), and the same rung-1 context-retrieval listing records by claude-5/8 and codex-14. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation — so no @how or @see-also edge is warranted under either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/story-emporium",
+  :note
+  "Rung 1 supplied no warrant: every hit (e-cd3f03db, e-3a0fed2a, e-8e5cebdf, e-267ca167, e-a1607be3, e-412f3272, e-aad40429, e-8952fa34, e-9c7d5818, e-8aa58f68) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside vsatlas/festival-model, vsatlas/non-destructive-relational-layers neighbours such as vsat/360-story-container), excluded as edge warrants. Rung 2 queries actually run: q='Story Emporium' and q='emporium adjacency sovereign stories proximity cross-pollination' (limit=5, hydrate=true). The second returned only my own transcript (e-d9c3063a, zai-1, self-text); the first returned that, zai-2 spider-fleet reflection outputs (e-97cfa594, e-e29e9059, e-d828d995 — :reflection), and the rung-1 codex-6 listing record e-8aa58f68. No record states a relation between this pattern and another pattern, so no @how or @see-also edge is warranted under either rung; the consolidation direction is instead recorded as the merge proposal above, grounded in the pattern's own directive.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/sustainable-trajectory",
+  :note
+  "Rung 1 supplied no warrant: the only non-listing hit (e-f2a87cbe) is :self-text true and :reflection true — this spider fleet's own output quoting a prior retrieval trace — and every other hit (e-5af8c24a, e-0714d5c4, e-53fc6ac4, e-7b81a8b8, e-242f0eda, e-32740c3f, e-30685fbc, e-bf3d4993, e-f66b5ce8, e-dafae7fd, e-e87838e7, e-9e03a934, e-5c23c6f6) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside equity/contribution-pathways-merged, vsatlas/economic-resonance-layer, t4r/support), excluded as edge warrants. Rung 2 queries actually run: q='Sustainable Trajectory' and q='cost recovery self-sustaining adoption narrative financial proof' (limit=5, hydrate=true). The second returned only my own session transcript (e-61294a51, zai-1, self-text); the first returned that plus the same rung-1 context-retrieval listing records by claude-3/5 and codex-2. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation — so no @how or @see-also edge is warranted under either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/upful-learning-trajectory",
+  :note
+  "Rung 1 supplied no warrant. Nearly all hits (e-b5888891, e-0c53400f, e-c99ac832, e-65c3a1d6, e-6fc938d3, e-1d0b131b, e-8067b135, e-981111ab, e-5fd7b3d9, e-725f5be8, e-a1259ff0) are :listing true context-retrieval rankings (ranked alongside peeragogy/stewardship-succession, or2/shared-futures-beyond-atomised-incentives, vsatlas/offer-ladder, etc.) with at most co-mention. The one non-listing hit e-c78770f3 is :co-mention true: it is a retrieval-diagnostics table contrasting what the 'M-learning-loop banner' feeds the retriever ('vsatlas/upful-learning-trajectory', size 1) against the mission's actual sorry prose (14 patterns) — an analysis of retrieval starvation that names the pattern id alongside others without stating any relation between patterns. Rung 2 queries actually run: q='Upful Learning Trajectory' and q='authors collective members FLOSS contributors maintainers scaffolds progression' (limit=5, hydrate=true). The second returned only my own session transcript (e-631bc17b, zai-1, self-text); the first returned that plus the same rung-1 claude-3/5/8 context-retrieval listings. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking, a co-mention diagnostic, or fleet reflection — so no @how or @see-also edge is warranted under either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/value-flow-constellation",
+  :note
+  "Rung 1 supplied no warrant. The only non-listing hit, e-8f2a249b, is :co-mention true (verified by GET in a prior pass this session: codex-2's chat-turn adding 'vsatlas/value-flow-constellation' and 'vsatlas/proof-through-pilots' among eight supporting warrants for the M-demonstration-foundry plain-language argument) — an external use, but a warrant list that states no relation between patterns, and co-mention alone is excluded. Every other hit (e-d16bcab3, e-b4776c96, e-69368ff1, e-2abf3365, e-a0c670ce, e-6209208b, e-fb5fdd97, e-567a81f3, e-df2778e0, e-1141114b, e-7c4e2fcf, e-19e6396c, e-96bcf334, e-d807569a, e-c0c49aea, e-28d213e7) carries :listing true — context-retrieval embeddings rankings with at most co-mention (ranked alongside vsatlas/interpretation-offering, vsatlas/economic-resonance-layer, vsatlas/current-strength-gap, vsatlas/connected-story-world), excluded as warrants. Rung 2 queries actually run: q='Value-Flow Constellation' and q='joint story space autonomy collective map overlaps dependencies visible' (limit=5, hydrate=true). The second returned only my own session transcript (e-64c685c8, zai-1, self-text); the first returned that plus the same rung-1 claude-3/4/8 context-retrieval listings. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking, a warrant-list co-mention, or fleet reflection — so no @how or @see-also edge is warranted under either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/economic-resonance-layer",
+  :note
+  "Rung-1 hits were all :listing true embeddings rankings (and co-mentions of other pattern ids in retrieval records), which per the rules are not warrants; no clean non-reflection rung-1 hit was supplied. Rung-2 queries actually run via GET /api/alpha/evidence/text-search?q=...&limit=5&hydrate=true: 'economic resonance layer mutual aid', 'value-flow constellation', 'mutual aid microcredit resource maps', 'economic resonance narrative mutuality regenerative extractive', 'shared stewardship compact contributions', 'community media org pilot linking peers feasibility', 'resource map schema shared contributions', 'economic mutuality narrative resonance regenerative manifold'. Every returned record was either this spider fleet's own prompts/turn rounds quoting the pattern text (self-text/reflection, verified by fetching e-d4454eba..., e-369e8453..., e-10976ac0..., e-cccef8b1... which are zai-turn-d0ec6355 turn records) or the same claude context-retrieval embeddings listings as rung 1 (e-ec24f063..., e-7c4e2fcf..., etc.), which only co-mention pattern ids without stating a relation. No external evidence record discusses how/see-also relations between vsatlas/economic-resonance-layer and any existing library/<target>.flexiarg, so no edge is warranted by either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "vsatlas/festival-model",
+  :note
+  "Rung-1 hits were all :listing true embeddings retrieval rankings (with at most co-mentions of other pattern ids), which are not warrants; no clean non-reflection rung-1 hit was supplied. Rung-2 queries actually run via GET /api/alpha/evidence/text-search?q=...&limit=5&hydrate=true: 'festival model manifold co-create shared worlds stewards', 'festival recurring ritual newcomers stewardship roles graduate season', 'festivals generate cultures not commodities'. Every returned record was either this spider fleet's own prompt envelopes (verified by fetching e-4934cef3-bd84-4b9c-a20f-1f3d932e73a3 and e-08747f83-e049-4271-a4f4-0950b6292549, both turn-start spider prompts for zai-1/zai-2) or the same claude/codex context-retrieval embeddings listings as rung 1 (e-8d2c0fae..., e-03bce05f..., e-c4e856aa..., e-ae8e319b..., e-8952fa34..., e-12f85cf7...), which rank pattern ids without stating any relation. No external evidence record discusses a how/see-also relation between vsatlas/festival-model and any existing library/<target>.flexiarg, so neither rung warrants an edge.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}]

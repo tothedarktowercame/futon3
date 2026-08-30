@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T19:46:30.746165324Z",
+ :turn 1,
+ :pattern "plos-npt-with-small-n/absence-as-evidence",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788119102457-4559-7b63ce8b",
+  :response
+  "[{:absence {:pattern \"plos-npt-with-small-n/absence-as-evidence\" :note \"Rung 1 (exact live occurrence) was exhausted: every supplied hit is :listing true (an embeddings retrieval ranking, which the rules exclude as a warrant by itself) with :co-mention true; none has all four flags false. Rung 2 text-search 'absence-as-evidence null dropout thin cell headline finding' returned e-9c872232 (a context-retrieval listing pairing the source with iching/hexagram-33-dun and or/snapshot-with-story-doi — a retrieval ranking, not a stated relation), e-1e306352 / e-238d70c1 / e-de8ce6ad (all embeddings retrieval listings), and e-ad66c14e (this session's own dispatch prompt, self-text). The pattern's natural peers (small-n-is-a-design-feature, transferability-not-generalisability) are already @references, and every other candidate appears only inside retrieval rankings or self-text. No warranted non-duplicate edge from either rung.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:absence {:pattern \"plos-npt-with-small-n/absence-as-evidence\" :note \"Rung 1 (exact live occurrence) was exhausted: every supplied hit is :listing true (an embeddings retrieval ranking, which the rules exclude as a warrant by itself) with :co-mention true; none has all four flags false. Rung 2 text-search 'absence-as-evidence null dropout thin cell headline finding' returned e-9c872232 (a context-retrieval listing pairing the source with iching/hexagram-33-dun and or/snapshot-with-story-doi — a retrieval ranking, not a stated relation), e-1e306352 / e-238d70c1 / e-de8ce6ad (all embeddings retrieval listings), and e-ad66c14e (this session's own dispatch prompt, self-text). The pattern's natural peers (small-n-is-a-design-feature, transferability-not-generalisability) are already @references, and every other candidate appears only inside retrieval rankings or self-text. No warranted non-duplicate edge from either rung.\"}}]"}

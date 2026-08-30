@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:26:16.923657490Z",
+ :turn 13,
+ :pattern "realtime/structured-events-only",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788125149535-5020-1792aa7e",
+  :response
+  "[{:absence {:pattern \"realtime/structured-events-only\" :note \"Rung 1: all supplied hits are :listing true embeddings rankings or :co-mention true records (e-b8b32513 is a co-mention-flagged external observation); no clean hit with :listing, :self-text, :co-mention, :reflection all false, so no rung-1 edge is warranted. Rung 2: ran GET /api/alpha/evidence/text-search?q=structured-events-only%20loop-success-signals%20carried%20whistle%20bell%20traffic&limit=5&hydrate=true returning e-b8b32513; the resulting see-also edge to realtime/loop-success-signals was proposed in the prior pass and the runner rejected it as an invalid or duplicate edge item — the directive is already recorded on this pattern (or symmetrically attested from loop-success-signals), so re-proposing would repeat an existing directive. No other rung-2 record states a further relation between realtime/structured-events-only and another existing library pattern.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-38512e23-d29d-46ad-b714-4ceeb2b3c02e"},
+ :response
+ "[{:absence {:pattern \"realtime/structured-events-only\" :note \"Rung 1: all supplied hits are :listing true embeddings rankings or :co-mention true records (e-b8b32513 is a co-mention-flagged external observation); no clean hit with :listing, :self-text, :co-mention, :reflection all false, so no rung-1 edge is warranted. Rung 2: ran GET /api/alpha/evidence/text-search?q=structured-events-only%20loop-success-signals%20carried%20whistle%20bell%20traffic&limit=5&hydrate=true returning e-b8b32513; the resulting see-also edge to realtime/loop-success-signals was proposed in the prior pass and the runner rejected it as an invalid or duplicate edge item — the directive is already recorded on this pattern (or symmetrically attested from loop-success-signals), so re-proposing would repeat an existing directive. No other rung-2 record states a further relation between realtime/structured-events-only and another existing library pattern.\"}}]"}

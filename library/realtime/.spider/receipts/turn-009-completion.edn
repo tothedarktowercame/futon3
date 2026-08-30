@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:22:50.943012665Z",
+ :turn 9,
+ :pattern "realtime/loop-success-signals",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788124944444-4997-842aa232",
+  :response
+  "[{:absence {:pattern \"realtime/loop-success-signals\" :note \"Rung 1: all supplied hits are :listing true embeddings rankings or :co-mention true co-occurrences; no clean hit with :listing, :self-text, :co-mention, and :reflection all false, so no rung-1 edge is warranted. Rung 2: GET /api/alpha/evidence/text-search?q=loop-success-signals%20structured-events-only%20carried%20whistle%20bell%20traffic&limit=5&hydrate=true returned e-b8b32513 (claude-2 observation pairing loop-success-signals with structured-events-only), which was proposed as a :see-also edge in the prior pass but the runner reported the item as an invalid or duplicate edge — the @see-also realtime/structured-events-only directive is already recorded, so re-proposing it would repeat an existing directive. No further warranted edge remains: no other rung-2 record states a relation between this pattern and another library pattern.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-38512e23-d29d-46ad-b714-4ceeb2b3c02e"},
+ :response
+ "[{:absence {:pattern \"realtime/loop-success-signals\" :note \"Rung 1: all supplied hits are :listing true embeddings rankings or :co-mention true co-occurrences; no clean hit with :listing, :self-text, :co-mention, and :reflection all false, so no rung-1 edge is warranted. Rung 2: GET /api/alpha/evidence/text-search?q=loop-success-signals%20structured-events-only%20carried%20whistle%20bell%20traffic&limit=5&hydrate=true returned e-b8b32513 (claude-2 observation pairing loop-success-signals with structured-events-only), which was proposed as a :see-also edge in the prior pass but the runner reported the item as an invalid or duplicate edge — the @see-also realtime/structured-events-only directive is already recorded, so re-proposing it would repeat an existing directive. No further warranted edge remains: no other rung-2 record states a relation between this pattern and another library pattern.\"}}]"}

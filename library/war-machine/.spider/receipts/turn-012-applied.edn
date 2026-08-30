@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:46:10.948037838Z",
+ :turn 12,
+ :pattern "war-machine/inhabitation-threshold",
+ :gate
+ "/home/joe/code/futon3/./library/war-machine/.spider/gates/turn-012.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "war-machine/inhabitation-threshold",
+    :note
+    "Rung 1: the runner-supplied hits for war-machine/inhabitation-threshold are all :listing true, :co-mention true (embeddings rankings where the pattern appears alongside unrelated top-ranked ids like storage/all-or-nothing-startup, iching hexagrams, eight-gates/lean-commit), and co-mention alone states no relation; the single clean hit e-6d64e2c8 (all flags false) mentions only this pattern in a log-correlation investigation about context-retrieval timing, naming no target pattern. Rung 2: I ran 'inhabitation threshold entry friction' and 'surface earns inhabitation' and 'entry friction severity-critical inhabitation metric' against http://127.0.0.1:7073/api/alpha/evidence/text-search; the top results were this spider fleet's own prompts and a prior zai-1 turn (e-6169b97c, e-e17cd0e9) proposing a see-also to peripherals/surface-earns-inhabitation on the strength of e-38296a19 — which is itself an embeddings listing/co-mention record, i.e. not a warrant under the stated rules — so I decline to repeat that edge. No clean external record ties this pattern to any specific library target; no warranted edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

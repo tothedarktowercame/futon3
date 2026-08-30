@@ -1,0 +1,30 @@
+[{:edge
+  {:from "ukrns/distinguish-delivery-from-practice-change",
+   :to "ukrns/calibrate-impact-promises-to-current-indicator-capacity",
+   :kind :how},
+  :rung 2,
+  :read
+  ["ukrns/distinguish-delivery-from-practice-change"
+   "ukrns/calibrate-impact-promises-to-current-indicator-capacity"],
+  :evidence
+  [{:id "e-3e8f1734-53b8-4fbb-a18d-70fbf0b5a7c2",
+    :via :text,
+    :query "2,816 trainees delivery impact changed practice",
+    :excerpt
+    "Direct evidence on whether trainees changed their practice afterwards (the ORP 2027 survey round will address institution-level change; the planned T1 wave will address trainee-level)"}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited
+  "Use delivery counts to claim delivery, and reserve impact claims for downstream evidence that actually tracks changed practice.",
+  :at "2026-08-30",
+  :by "zai-2"}]

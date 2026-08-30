@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:32:51.759592194Z",
+ :turn 20,
+ :pattern "vsatlas/shared-stewardship-compact",
+ :gate
+ "/home/joe/code/futon3/./library/vsatlas/.spider/gates/turn-020.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "vsatlas/shared-stewardship-compact",
+    :note
+    "Rung 1 supplied no warrant: every hit (e-8cb9dbac, e-25eb2d09 repeatedly, e-f0534bbd repeatedly, e-3b9508d9 repeatedly, e-2bcadc7e, e-1c039281, e-85b86f9d, e-37862d4b, e-c1d0731b, e-cdf0cb77, e-ce9db223, e-03f2991d, e-494826be, e-08cf4428) carries :listing true — context-retrieval embeddings rankings (often the same math-informal/pass-to-a-subsequence ranking surfaced by '/compact' queries, with at most co-mention of p4ng/shared-memory-architecture or vsatlas/peeragogical-infrastructures), excluded as edge warrants. Rung 2 queries actually run: q='Shared Stewardship Compact' and q='stewardship compact commons services governance partners co-ownership' (limit=5, hydrate=true). Both returned only my own session transcript (e-c01ceece, zai-1, self-text) plus the same rung-1 context-retrieval listing records by claude-13/14/16 and claude-compact-cold-1542. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation — so no @how or @see-also edge is warranted under either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

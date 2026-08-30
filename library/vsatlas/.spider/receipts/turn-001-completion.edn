@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T19:45:44.766114665Z",
+ :turn 1,
+ :pattern "vsatlas/accountable-poc",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788119101602-4558-929a4a0a",
+  :response
+  "[{:absence {:pattern \"vsatlas/accountable-poc\" :note \"Rung 1 (exact live occurrence 'vsatlas/accountable-poc') was exhausted: every supplied hit is :listing true (an embeddings retrieval ranking, which is not a warrant by itself); the one hit with :co-mention false (e-ef77760e) is still :listing true. No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'accountable-poc proof-of-concept funds linking pilots' returned only e-fa9eaadf-d58a-4d4c-9304-b38c0791e0e4, which is this session's own dispatch prompt (self-text, not external use). The natural candidate targets (vsatlas/proof-through-pilots, vsatlas/offer-ladder, vsatlas/pilot-offers, ai4ci/funding-justification) appear only inside embeddings result listings or as existing @references (vsatlas/proof-of-concept-scope), which the rules exclude as warrants. No warranted non-duplicate edge from either rung.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:absence {:pattern \"vsatlas/accountable-poc\" :note \"Rung 1 (exact live occurrence 'vsatlas/accountable-poc') was exhausted: every supplied hit is :listing true (an embeddings retrieval ranking, which is not a warrant by itself); the one hit with :co-mention false (e-ef77760e) is still :listing true. No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'accountable-poc proof-of-concept funds linking pilots' returned only e-fa9eaadf-d58a-4d4c-9304-b38c0791e0e4, which is this session's own dispatch prompt (self-text, not external use). The natural candidate targets (vsatlas/proof-through-pilots, vsatlas/offer-ladder, vsatlas/pilot-offers, ai4ci/funding-justification) appear only inside embeddings result listings or as existing @references (vsatlas/proof-of-concept-scope), which the rules exclude as warrants. No warranted non-duplicate edge from either rung.\"}}]"}

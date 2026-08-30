@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:50:17.535804930Z",
+ :turn 9,
+ :pattern "or2/topology-dungeon-crawl",
+ :gate
+ "/home/joe/code/futon3/./library/or2/.spider/gates/turn-009.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or2/topology-dungeon-crawl",
+    :note
+    "Rung 1: every runner-supplied exact-occurrence hit is an embeddings context-retrieval ranking (:listing true, nearly all :co-mention true as well), and a listing ranking is not by itself a warrant for an edge, so no clean rung-1 hit exists. Rung 2: bounded text-search queries actually run against 127.0.0.1:7073 were dungeon crawl topology xiangqi, topology map UP UKRN CENTER Two Joes DOWN Library, and Two Joes One Mandate split center. The non-self records these returned were fetched and inspected: e-269c8a5d-b699-4d48-9f28-ae18f02f2efc (claude-7), e-0b997417-99d9-4548-ab50-55b897679986 (claude-6), e-cb367d0a-9636-4cc4-bc71-8240fa7232cf (claude-1). Each is a context-retrieval event whose body contains the source pattern id only as a scored embeddings result (often alongside or2/xiangqi-decorators and or2/two-joes-one-mandate) — these are listings again, not external records stating a relation. Although the pattern text itself names candidate targets that verifiably exist (or2/xiangqi-decorators, or2/two-joes-one-mandate, or2/ukrn-horizon-bridge, or2/steward-emporium), the rules require external evidence beyond the pattern text and beyond retrieval rankings, and none was found. Both rungs therefore fail to warrant an edge; the source file also carries no existing directives to duplicate.",
+    :read
+    ["or2/topology-dungeon-crawl"
+     "or2/xiangqi-decorators"
+     "or2/two-joes-one-mandate"
+     "or2/ukrn-horizon-bridge"
+     "or2/steward-emporium"],
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:26:53.196038839Z",
+ :turn 14,
+ :pattern "realtime/transport-pivot",
+ :gate
+ "/home/joe/code/futon3/./library/realtime/.spider/gates/turn-014.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "realtime/transport-pivot",
+    :note
+    "Rung 1: every supplied hit is a :listing true embeddings retrieval ranking in a retrieval-log record (:co-mention true); no clean hit with :listing, :self-text, :co-mention, and :reflection all false, so no rung-1 edge is warranted. Note the pattern text already contains an inline cross-reference to realtime/authoritative-transcript, so an @how or @see-also to it would repeat an existing directive. Rung 2: ran GET /api/alpha/evidence/text-search?q=transport%20pivot%20switch%20IRC%20WebSocket%20authoritative%20channel%20cutover&limit=5&hydrate=true; the top hydrated result was this spider programme's own turn-start prompt (self-text) and the remainder were retrieval-log rankings — no external record states a further relation between realtime/transport-pivot and another existing library pattern, so no rung-2 edge is warranted either.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

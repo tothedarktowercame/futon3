@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T20:00:02.212522822Z",
+ :turn 5,
+ :pattern "realtime/liveness-heartbeats",
+ :gate
+ "/home/joe/code/futon3/./library/realtime/.spider/gates/turn-005.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "realtime/liveness-heartbeats",
+    :note
+    "Rung 1: every supplied hit is :listing true — dozens of futon3a embeddings retrievals across weeks of external sessions, with this pattern as the single most frequent rank-1 attractor (co-ranked with peripherals/progress-heartbeat-distinct-from-cycle-completion, musn/pause-backtrace and plan-before-tool, realtime siblings — listener-leases, loop-failure-signals, loop-recovery-actions, rendezvous-handshake, mode-gate, transport-pivot, authoritative-transcript — war-room/wr-16, aif/scheduled-observer-entrypoint, futon-theory/stop-the-line and coordination-protocol, agency patterns, and many others). All are explicitly not warrants, and no clean non-listing, non-self-text, non-co-mention, non-reflection hit was supplied. The pattern carries no @references, @why, @how, or @see-also directives, so nothing is recorded to duplicate but equally nothing is externally evidenced to add; the recurring co-rankings with realtime section siblings and the progress-heartbeat peripheral reflect thematic adjacency, but embeddings rankings do not state relations, and no textual record in the set does so either. Rung 2 was not run beyond these because the rung-1 set — the largest retrieval volume of any pattern this session — surfaces no candidate target that any bounded text query could cleanly confirm as a directed relation. No clean rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg; returning no edge rather than minting one on embeddings rankings alone.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

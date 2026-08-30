@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:53:05.841330833Z",
+ :turn 9,
+ :pattern "war-machine/operational-not-decorative",
+ :gate
+ "/home/joe/code/futon3/./library/war-machine/.spider/gates/turn-009.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "war-machine/operational-not-decorative",
+    :note
+    "Rung 1: every supplied hit is either :listing true (embeddings ranking, not a warrant), :co-mention true, or :reflection true; the two clean non-listing hits (e-32b6f3ea-ad57-4df4-b614-0fc1e358ace2, e-c787a2af-3687-4474-b576-0873b8e9d703) show an external code comment 'Pattern: war-machine/operational-not-decorative' in a futon2/aif source snippet but name no other pattern, so no target is evidenced. Rung 2: GET text-search?q=war-machine%2Foperational-not-decorative%20inhabitation-threshold and q=operational%20not%20decorative%20validator%20gate%20checked%20diagram (limit=5, hydrate=true) returned only embeddings-listing coordination records and spider-fleet reflection prompts; no record states a relation between this pattern and any other existing pattern id. No clean external evidence warrants an edge, so none is proposed.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

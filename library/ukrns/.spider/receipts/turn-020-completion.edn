@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:40:41.061515638Z",
+ :turn 20,
+ :pattern "ukrns/publication-cadence",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788126003041-5089-e9a73e91",
+  :response
+  "[{:absence {:pattern \"ukrns/publication-cadence\", :note \"Rung 1 supplied no clean hit: nearly all supplied hits (e-57b89fc4, e-49508bd4, e-1993de89, e-07a238ee, e-aca3e13e, e-c39246ec, e-bd8b4de9, e-76c04931, e-0ffe350d, e-aece9227, e-eac67400, e-b9d03d83, e-8ee1e3b6, e-8aba9b10, e-43adff35, e-e797c1a5, e-ee6bf1b8, e-a0a9e6ac, e-22ed7c67, e-7d63fa7d) are :listing embeddings rankings with :co-mention; e-02e67ede and e-922fc5d4 are flagged :reflection true (prior spider output); e-780fb5c5 is a :co-mention pattern-review list naming the pattern as 'not evidenced yet' with no target relation. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'living document snapshot DOI citable canonical version paper', 'snapshot compute-date evidence revision citation ambiguity', 'cite snapshot DOI readers version working paper living', 'publication cadence versioned snapshots design state'. Every query returned only this spider's own prompt record (e-e6e7ae3d, a zai turn-start self-reflection). The pattern's natural targets (ukrns/self-application, ukrns/design-state-lineage, ukrns/cycle-position-publication) are already named in @references or @ancestors, so a new edge to them would repeat an existing directive; no external evidence warrants any other edge.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-c0363e06-90a1-4232-a99d-c80c454318c5"},
+ :response
+ "[{:absence {:pattern \"ukrns/publication-cadence\", :note \"Rung 1 supplied no clean hit: nearly all supplied hits (e-57b89fc4, e-49508bd4, e-1993de89, e-07a238ee, e-aca3e13e, e-c39246ec, e-bd8b4de9, e-76c04931, e-0ffe350d, e-aece9227, e-eac67400, e-b9d03d83, e-8ee1e3b6, e-8aba9b10, e-43adff35, e-e797c1a5, e-ee6bf1b8, e-a0a9e6ac, e-22ed7c67, e-7d63fa7d) are :listing embeddings rankings with :co-mention; e-02e67ede and e-922fc5d4 are flagged :reflection true (prior spider output); e-780fb5c5 is a :co-mention pattern-review list naming the pattern as 'not evidenced yet' with no target relation. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'living document snapshot DOI citable canonical version paper', 'snapshot compute-date evidence revision citation ambiguity', 'cite snapshot DOI readers version working paper living', 'publication cadence versioned snapshots design state'. Every query returned only this spider's own prompt record (e-e6e7ae3d, a zai turn-start self-reflection). The pattern's natural targets (ukrns/self-application, ukrns/design-state-lineage, ukrns/cycle-position-publication) are already named in @references or @ancestors, so a new edge to them would repeat an existing directive; no external evidence warrants any other edge.\"}}]"}

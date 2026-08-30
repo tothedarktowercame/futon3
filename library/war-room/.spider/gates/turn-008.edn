@@ -1,1 +1,40 @@
-{:checks [], :summary {:edge-counting :path-shaped-targets, :patterns-in-why-graph 97, :section {:section "war-room", :patterns 28, :edges-by-kind {:why 9, :how 0, :see-also 0}, :patterns-with-outgoing-why 9, :fraction-organised 0.32142857142857145}, :edges-by-kind {:why 86, :how 20, :see-also 104}, :unresolved-targets 0, :files 1241, :pass? true, :failures 0, :baseline-note "This snapshot counts each path-shaped target as one edge. The current files contain 73 @why directive lines (83 tokens, one non-path terminal `root`) = 82 edges; 3 @how lines = 10 edges; and 46 @see-also lines = 77 edges. The problem record's 77/10/46 mixes target counts for @how with line counts for @see-also; its 77 @why does not match either current lines or current path-shaped targets. | 2026-08-30 addendum (claude-15): aif/hierarchical-and-temporal-depth and aif/interoceptive-tripwires added as AUTHOR-written patterns (R15, R20, from sec-catalog.tex) on Joe direction; their digests and 4 @see-also edges join the exempt baseline. @holds-at lines added to 16 aif/ patterns the same day are directives outside the body digest and are not edge kinds.", :why-cycles 0}}
+{:checks
+ [{:file
+   "/home/joe/code/futon3/./library/war-room/wr-14-predecessor-completion-pull-is-a-fourth-next-move-criterion.flexiarg",
+   :line nil,
+   :edge nil,
+   :reason :seat-output-invalid,
+   :detail
+   {:type "class clojure.lang.ExceptionInfo",
+    :message "seat returned malformed output",
+    :data
+    {:seat-failure true,
+     :retries 2,
+     :last-error
+     {:message "invalid or duplicate edge item",
+      :data
+      {:item
+       {:rung 2,
+        :read
+        ["war-room/wr-14-predecessor-completion-pull-is-a-fourth-next-move-criterion"
+         "war-room/wr-19-tension-must-generate-not-only-rank"],
+        :evidence
+        [{:id "emacs-294f14298e3ec107f9f894bf5d9c7274",
+          :via :text,
+          :query
+          "this is literally the box that ranks WR-14 adds a fourth criterion inside it",
+          :excerpt
+          "| Action Selection | **WR-19** (tension must GENERATE, not only rank) — this is literally the box that ranks; WR-14 adds a fourth criterion inside it |"}],
+        :state :proposed,
+        :cited
+        "Add predecessor-completion pull as a fourth next-move criterion alongside the three criteria cached in the stack's self-model.",
+        :reason
+        "Rung 1 supplied no clean warrant: every full-id hit is an embeddings listing, the WR-14 short-form hits are co-mentions, and the only clean-flagged hit, e-5f37762b-dc30-4804-9b6d-733a92fc21f2, names no other library pattern. Rung 2 GET-verified claude-13 record emacs-294f14298e3ec107f9f894bf5d9c7274 states WR-14's fourth criterion lives inside the same action-selection box WR-19 governs — a stated peer relation within one ranking mechanism, written as :see-also since @why is author-only.",
+        :from
+        "war-room/wr-14-predecessor-completion-pull-is-a-fourth-next-move-criterion",
+        :kind :see-also,
+        :at "2026-08-30",
+        :by "zai-1",
+        :to
+        "war-room/wr-19-tension-must-generate-not-only-rank"}}}}}}],
+ :summary {:pass? false, :failures 1}}

@@ -1,0 +1,43 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:51:08.707713597Z",
+ :turn 1,
+ :pattern "system-coherence/argue-empirically-not-persuasively",
+ :gate
+ "/home/joe/code/futon3/./library/system-coherence/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "system-coherence/argue-empirically-not-persuasively",
+     :to
+     "system-coherence/single-seed-results-need-multi-seed-validation",
+     :kind :see-also},
+    :rung 2,
+    :read
+    ["system-coherence/argue-empirically-not-persuasively"
+     "system-coherence/single-seed-results-need-multi-seed-validation"],
+    :evidence
+    [{:id "e-7a50b862-15c9-49c2-ba50-26dfa377803c",
+      :via :text,
+      :query
+      "single-seed multi-seed validation temporal-discipline sibling turn-design-into-checks",
+      :excerpt
+      "Standard flexiarg shape, references `aif/term-to-channel-traceability` (composes with it), `system-coherence/argue-empirically-not-persuasively` (the temporal-discipline sibling), and `turn-design-into-checks` (variance reporting *is* a check)."}],
+    :state :proposed,
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}},
+    :cited
+    "In ARGUE-phase missions and in bootstrap-stage system descriptions, speculative claims pile up because the writer is working at the edge of what the system has done so far, and the speculation is filling space that empirical claim cannot yet fill.",
+    :at "2026-08-30",
+    :by "zai-2"}],
+  :proposals [],
+  :absences []}}

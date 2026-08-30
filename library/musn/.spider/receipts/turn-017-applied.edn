@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:17:22.189794701Z",
+ :turn 17,
+ :pattern "musn/tool-name-hygiene",
+ :gate
+ "/home/joe/code/futon3/./library/musn/.spider/gates/turn-017.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "musn/tool-name-hygiene",
+    :note
+    "Rung 1 supplied no clean hit: nearly every entry is :listing true embeddings rankings (placing the pattern next to musn/plan-before-tool, code-coherence/dead-code-hygiene, coordination/capability-gate, orchestration/recorded-handoff etc. as retrieval neighbors — co-mention in listings, not stated relations); the two entries with :co-mention false (e-84da051c, e-391a3c10) are still listings. The single non-listing record, e-pull-offer-a75acf78-ffe8-4b48-9acc-67a89e3904dd, is a memory-pull-offer listing several pattern ids (:co-mention true), which states no relation. Rung 2 query actually run — 'tool name hygiene do not guess documented helpers' — returned only this spider fleet's own turn-start prompt reflection (e-f63036b0). No external record states a relation from musn/tool-name-hygiene to any other existing pattern.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

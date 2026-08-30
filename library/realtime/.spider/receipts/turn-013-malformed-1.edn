@@ -1,0 +1,37 @@
+{:response
+ "[{:edge {:from \"realtime/structured-events-only\" :to \"realtime/loop-success-signals\" :kind :see-also :cited \"Structured PSR/PUR events parse reliably; free-text does not.\" :evidence [{:id \"e-b8b32513-84e8-4eb7-a620-11f37b9966b1\" :via :text :query \"structured-events-only loop-success-signals carried whistle bell traffic\" :excerpt \"- `realtime/loop-success-signals` + `realtime/structured-events-only` carried the whistle/bell traffic\"}] :rung 2 :read [\"realtime/structured-events-only\" \"realtime/loop-success-signals\"] :reason \"An external coordination observation (claude-2, session 66e16ba5) explicitly states the two patterns jointly carried whistle/bell traffic — a peer-technique pairing warranting see-also. All rung-1 hits were :listing embeddings rankings or :co-mention records with no clean flag-false hit, so the edge rests on the rung-2 text-search hit fetched and verified by id. This is the reverse direction of the earlier loop-success-signals attestation and is a distinct directive on this pattern's own file.\"}}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788125108722-5016-ec632695",
+  :response
+  "[{:edge {:from \"realtime/structured-events-only\" :to \"realtime/loop-success-signals\" :kind :see-also :cited \"Structured PSR/PUR events parse reliably; free-text does not.\" :evidence [{:id \"e-b8b32513-84e8-4eb7-a620-11f37b9966b1\" :via :text :query \"structured-events-only loop-success-signals carried whistle bell traffic\" :excerpt \"- `realtime/loop-success-signals` + `realtime/structured-events-only` carried the whistle/bell traffic\"}] :rung 2 :read [\"realtime/structured-events-only\" \"realtime/loop-success-signals\"] :reason \"An external coordination observation (claude-2, session 66e16ba5) explicitly states the two patterns jointly carried whistle/bell traffic — a peer-technique pairing warranting see-also. All rung-1 hits were :listing embeddings rankings or :co-mention records with no clean flag-false hit, so the edge rests on the rung-2 text-search hit fetched and verified by id. This is the reverse direction of the earlier loop-success-signals attestation and is a distinct directive on this pattern's own file.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-38512e23-d29d-46ad-b714-4ceeb2b3c02e"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "realtime/structured-events-only",
+    :to "realtime/loop-success-signals",
+    :kind :see-also,
+    :cited
+    "Structured PSR/PUR events parse reliably; free-text does not.",
+    :evidence
+    [{:id "e-b8b32513-84e8-4eb7-a620-11f37b9966b1",
+      :via :text,
+      :query
+      "structured-events-only loop-success-signals carried whistle bell traffic",
+      :excerpt
+      "- `realtime/loop-success-signals` + `realtime/structured-events-only` carried the whistle/bell traffic"}],
+    :rung 2,
+    :read
+    ["realtime/structured-events-only"
+     "realtime/loop-success-signals"],
+    :reason
+    "An external coordination observation (claude-2, session 66e16ba5) explicitly states the two patterns jointly carried whistle/bell traffic — a peer-technique pairing warranting see-also. All rung-1 hits were :listing embeddings rankings or :co-mention records with no clean flag-false hit, so the edge rests on the rung-2 text-search hit fetched and verified by id. This is the reverse direction of the earlier loop-success-signals attestation and is a distinct directive on this pattern's own file."}}},
+ :turn 13,
+ :event :seat-output-invalid,
+ :at "2026-08-30T21:25:49.479993098Z",
+ :attempt 1,
+ :pattern "realtime/structured-events-only"}

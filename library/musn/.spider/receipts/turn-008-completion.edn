@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T22:11:28.523209253Z",
+ :turn 8,
+ :pattern "musn/off-trail-budget",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788127860661-5253-9ab083cb",
+  :response
+  "[{:edge {:from \"musn/off-trail-budget\" :to \"musn/off-trail-brief-log\" :kind :see-also} :cited \"Track off-trail moves and pause when the budget is exceeded.\" :evidence [{:id \"e-30e99623-20d0-4d57-9928-c41b705e66d9\" :via :text :query \"autonomous-with-bounded-disclosure off-trail\" :excerpt \"`musn/off-trail-brief-log` + `musn/off-trail-budget` — autonomous-with-bounded-disclosure (relevant for pilot's autonomous-but-mediated stance)\"}] :rung 2 :read [\"musn/off-trail-budget\" \"musn/off-trail-brief-log\"]}]",
+  :agent-id "zai-1",
+  :session-id "zai-62381b45-97d4-47c8-bf7e-951e9df8fad6"},
+ :response
+ "[{:edge {:from \"musn/off-trail-budget\" :to \"musn/off-trail-brief-log\" :kind :see-also} :cited \"Track off-trail moves and pause when the budget is exceeded.\" :evidence [{:id \"e-30e99623-20d0-4d57-9928-c41b705e66d9\" :via :text :query \"autonomous-with-bounded-disclosure off-trail\" :excerpt \"`musn/off-trail-brief-log` + `musn/off-trail-budget` — autonomous-with-bounded-disclosure (relevant for pilot's autonomous-but-mediated stance)\"}] :rung 2 :read [\"musn/off-trail-budget\" \"musn/off-trail-brief-log\"]}]"}

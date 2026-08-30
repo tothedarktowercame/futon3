@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:35:20.564680548Z",
+ :turn 13,
+ :pattern "ukrns/distributed-coverage",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-013.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "ukrns/distributed-coverage",
+    :note
+    "Rung 1 supplied no clean hit: e-50a11684-7e49-4446-a80d-1a0a85a53df1 is an embeddings :listing and e-780fb5c5-7095-458e-81ee-05ceed54150c is a :co-mention (a pattern-review list) — neither states a relation to another pattern. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'coverage map declared delivery profiles breadth overload network', 'coverage as a network property trainer institution', 'impostor syndrome breadth open research topics trainer expected to cover', 'protected interaction delivery profiles institutional coverage commitment', 'coverage profile modules owned trainers aggregate map', 'open research trainer breadth impostor T2A', 'network-level coverage map gaps institutions modules', 'curriculum triage institution subset deliver coverage', 'uniform coverage every trainer full curriculum absorbed', 'coverage of open research topics across the network'. Every query returned only the spider's own prompt record (e-08f0bff9, a zai turn-start self-reflection) or nothing; no external record discussing this pattern's relation to another existing pattern was found.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

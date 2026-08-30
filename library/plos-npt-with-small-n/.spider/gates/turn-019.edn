@@ -1,0 +1,14 @@
+{:checks
+ [{:file
+   "/home/joe/code/futon3/./library/plos-npt-with-small-n/small-n-is-a-design-feature.flexiarg",
+   :line nil,
+   :edge nil,
+   :reason :seat-output-invalid,
+   :detail
+   {:type "class clojure.lang.ExceptionInfo",
+    :message "seat returned malformed output",
+    :data
+    {:seat-failure true,
+     :retries 2,
+     :last-error {:message "Unmatched delimiter: ]", :data nil}}}}],
+ :summary {:pass? false, :failures 1}}

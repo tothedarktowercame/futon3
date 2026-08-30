@@ -1,0 +1,27 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:55:32.063272471Z",
+ :turn 2,
+ :pattern
+ "system-coherence/argument-as-coverage-checklist-vs-system-specification",
+ :gate
+ "/home/joe/code/futon3/./library/system-coherence/.spider/gates/turn-002.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "system-coherence/argument-as-coverage-checklist-vs-system-specification",
+    :note
+    "Rung 1 (exact live occurrence) was exhausted: every non-listing hit is :self-text/:reflection true — this spider fleet's own earlier drafting passes and their rejection notes (e-ce2ae161, e-f3916df5 record the writing-coherence/floating-formalism and balanced-pair-padding :see-also edges being rejected as duplicates, i.e. already recorded); the only non-reflection hits are :listing true (embeddings rankings). No hit has all four flags false with a stated relation to an unlinked target. Rung 2 text-search 'coverage matrix closure-paths inward argument spec enumeration' surfaced e-d00447a9-29d5-4801-8208-7a5a05c0ae41, the genuine external drafting record (claude-12 chat-turn, 2026-05-14) — but the siblings it names (plan-as-enumeration, name-the-decision-before-the-framework) are already @references of the pattern, and no other library/<target>.flexiarg is tied to the source by any queried record. No warranted non-duplicate edge from either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

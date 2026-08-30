@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:37:48.721637591Z",
+ :turn 16,
+ :pattern "ukrns/measure-where-least-sure",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-016.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "ukrns/measure-where-least-sure",
+    :note
+    "Rung 1 supplied one hit, e-780fb5c5-7095-458e-81ee-05ceed54150c, flagged :co-mention true — it is a pattern-review pass over many ukrns pattern ids and states no relation between this pattern and a specific target pattern ('measure selectively, don't promise more than current evidence and indicators can support' gestures at indicator capacity but names no target id), so it is not a clean warrant. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'value of information measure where uncertainty is highest evaluation wave', 'measurement selection uncertainty stakeholder attention evaluation wave funder', 'where uncertainty lives where attention lives VoI saliency', 'uncertainty reduction evaluation measure selectively indicators can support'. Every query returned only the spider's own prompt record (e-59658ce8, a zai turn-start self-reflection) or nothing. The pattern's natural targets (ukrns/open-the-triangle, ukrns/design-as-function-of-evidence, equity/visible-impact) are already declared in @references, so a new edge would repeat an existing directive; no external evidence warrants any other edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

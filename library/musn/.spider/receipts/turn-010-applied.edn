@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:12:45.934580092Z",
+ :turn 10,
+ :pattern "musn/pattern-action-justification",
+ :gate
+ "/home/joe/code/futon3/./library/musn/.spider/gates/turn-010.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "musn/pattern-action-justification",
+    :note
+    "Rung 1 supplied no clean hit: e-cc8c1511 and e-84556bae are :reflection true (spider-fleet exports), and the remainder (e-265a2dff, e-ee53731c, e-df9286ef, e-36efede7, e-65d8dbb6) are all :listing true embeddings rankings where the pattern appears as a retrieval neighbor — co-mention in listings, not a stated relation. Rung 2 queries actually run — 'pattern action implement update note justification rationale' and 'justify implement update actions pattern-driven edits auditable' — returned only this spider fleet's own turn-start prompt reflections (e-78f9413b, e-35519932, e-e52cf3a7, e-efa3c123), so no clean external record warrants an edge to musn/pattern-action-helper-command, musn/use-requires-evidence, or any other existing target.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

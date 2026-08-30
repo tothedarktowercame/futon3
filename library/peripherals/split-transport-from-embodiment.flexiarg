@@ -7,6 +7,7 @@
 @keywords transport, embodiment, separation-of-concerns, layering, WS, presence, cursor, editor, multiplexing, peripheral-design
 @references [peripherals/constrained-execution-envelope peripherals/surface-earns-inhabitation peripherals/read-existing-seam-before-implementing peripherals/canonical-typed-event-vs-side-channel]
 
+@how peripherals/read-existing-seam-before-implementing
 ! conclusion: A peripheral has two distinct concerns — how it moves bytes (transport) and how it manifests as presence (embodiment). Conflating them produces peripherals that cannot be re-transported, re-embodied, or composed.
 
   + context: You are designing a peripheral that has a perceptible surface:

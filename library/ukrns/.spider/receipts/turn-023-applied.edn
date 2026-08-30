@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:43:24.943451097Z",
+ :turn 23,
+ :pattern "ukrns/scale-register",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-023.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:note
+    "Rung 1: every supplied hit is a :listing embeddings ranking, a :co-mention record, or a prior-spider :reflection (e-1429bb79, e-091eaab7, e-9b69efb4, e-6c0eace9) — none clean. Rung 2 queries run on 127.0.0.1:7073 (limit 5): 'capability register scale choice rationale contest institutions' and 'central register capability trade-off table scale decisions'; these returned only this fleet's own prompt records (e-ab884c18, e-b342eff1) and one unrelated claude-4 turn about AIF margin ablations (emacs-8d1c80f4), which does not mention this pattern or any target. The pattern's natural target ukrns/provision-at-network-scale is already in @references, so a new edge to it would repeat a directive; no external evidence warrants any other edge.",
+    :pattern "ukrns/scale-register",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

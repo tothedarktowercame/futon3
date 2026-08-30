@@ -1,0 +1,42 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:42:57.247592014Z",
+ :turn 10,
+ :pattern "peripherals/read-only-first-then-extend",
+ :gate
+ "/home/joe/code/futon3/./library/peripherals/.spider/gates/turn-010.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "peripherals/read-only-first-then-extend",
+     :to "peripherals/inhabitation-feeds-evolution",
+     :kind :see-also},
+    :rung 1,
+    :read
+    ["peripherals/read-only-first-then-extend"
+     "peripherals/inhabitation-feeds-evolution"],
+    :evidence
+    [{:id "e-58778618-3712-403f-af3b-b2feec161760",
+      :via :tag,
+      :query
+      "exact live occurrence: peripherals/read-only-first-then-extend",
+      :excerpt
+      "Stage-naming validation (v0=Pair-not-Observer per `peripherals/read-only-first-then-extend"}],
+    :state :proposed,
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}},
+    :cited
+    "Read-only as permanent: the converse failure — building the observer and never extending it, so the peripheral never closes its loop and never feeds the Baldwin cycle. Read-only is a first step, not a terminal state.",
+    :at "2026-08-30",
+    :by "zai-1"}],
+  :proposals [],
+  :absences []}}

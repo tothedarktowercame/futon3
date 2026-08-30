@@ -1,6 +1,6 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T14:38:09.607145611Z",
+ :at "2026-08-30T20:00:54.043221185Z",
  :turn 5,
  :pattern "war-room/wr-12-essay-health-is-the-aif-observation-channel",
  :gate
@@ -12,4 +12,15 @@
   [{:pattern
     "war-room/wr-12-essay-health-is-the-aif-observation-channel",
     :note
-    "Rung 1: the runner supplied zero exact-occurrence hits for this pattern id, so no rung-1 warrant exists. Rung 2: queries 'essay health annotation channel belief state posterior update' (zero results) and 'WR-12 essay health AIF observation channel'. Non-self findings and rejections: (1) e-a0e743d0-a935-4c2e-b966-b68a25b98129 (codex-11, 2026-08-21) is the batch-creation record — 'Implemented and committed WR-11 through WR-17... Files added under futon3/library/war-room/' — evidencing the file's creation and no pattern-to-pattern tie. (2) emacs-3451c448bef989c78fbf86258375617a is the promotion checklist ('for at least 4 patterns, verify the +HOWEVER clause is quotable from the source bulletin -- a fabricated tension is a FALSE PROBLEM') — relevant to this pattern's own @verdict incomplete banner (its header already declares the HOWEVER tension missing from bulletin 9), but that is a recorded self-assessment, not a tie to another library pattern, and the appropriate remedy (a source showing what fails without the channel) is stated in the banner itself. (3) e-cc1202cd is a futon3a embeddings co-retrieval with cascades/on-the-fly-cascade — a listing-style ranking, explicitly not a warrant. (4) e-4194ccad and e-7370f547 are this spider session's own transcripts. The pattern carries no @references, @why, @how, or @see-also directives, but nothing evidenced qualifies to add. No rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg."}]}}
+    "Rung 1: no clean hit (all flags false) was supplied — the non-listing, non-reflection records all carry :co-mention true: emacs-326b382/emacs-1286a2e place WR-12 in paper-analysis tables (channel-cell, none-material axes); emacs-4949ce0/e-3e927f33 list it among the three non-invertible 'architectural assertions' (with WR-17, WR-20) under Filter 1; emacs-95df25d9 notes 'Same possibility for WR-12 against the aif/ observation-channel patterns' — a suggestion that @why edges to aif observation-channel patterns could repair the incomplete root, which is a candidate signal for a future librarian, but it names no specific pattern id and co-mention does not state a relation; emacs-2cbdf95/emacs-27475a/emacs-3451c4/emacs-48332c document the @verdict incomplete status and its promotion-precedent treatment. The remaining hits are this spider fleet's self-text/reflection echoes. The pattern carries no @references, @why, @how, or @see-also directives, and its incompleteness banner names a missing HOWEVER tension source rather than a pattern kinship — an @why edge to a specific aif observation-channel pattern would be the natural repair if a clean record naming one surfaces, but none is supplied or found. Rung 2 was not run beyond these because the rung-1 set surfaces no candidate target. No clean rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,14 +1,25 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T15:01:40.089079548Z",
+ :at "2026-08-30T22:07:02.509378623Z",
  :turn 28,
- :pattern "war-room/wr-9-bites-empirical-or-logical",
+ :pattern "war-room/wr-8-typed-files-are-sources-of-truth",
  :gate
  "/home/joe/code/futon3/./library/war-room/.spider/gates/turn-028.edn",
  :changes
  {:attestations [],
   :proposals [],
   :absences
-  [{:pattern "war-room/wr-9-bites-empirical-or-logical",
+  [{:pattern "war-room/wr-8-typed-files-are-sources-of-truth",
     :note
-    "Rung 1: eight non-listing hits supplied, all use instances or already-recorded kinships. e-0fce070b, e-e85f9071, e-df39e0ea, e-6e2b8778, and e-9dada65a are the AIF+ full-method audit records measuring the bite-tagging gap (0/29, 0/25, 7/36 across files) and co-citing WR-8/WR-9 as one paired data-shape check — the wr-8↔wr-9 pairing they evidence is now recorded (the see-also edge from wr-8-typed-files-are-sources-of-truth was accepted in the immediately preceding pass, and wr-9's own header already declares @why war-room/wr-8), so any edge between the two would be a duplicate. e-16ebc320 and e-867d3729 apply WR-9's logical/empirical tagging inside the 'Sorry Dave' challenge runner ('the push is sourced from an actual attack node, tagged logical or empirical (WR-9), not vibes') — use instances naming no other library pattern. e-f6191d27 places WR-9's running-posterior inside the AIF+ validation stack description — again no pattern-to-pattern tie beyond those recorded. e-5f37762b is the bulletin inventory ('WR-9 bite re-measurement skipped'). The pattern's remaining kinship, @why wr-24 pointing at it from wr-24's header, is likewise recorded. No rung-1 non-listing hit ties this pattern to an unlinked library/<target>.flexiarg."}]}}
+    "Rung 1: no new clean warrant — the full-id hits are embeddings listings or spider-fleet reflections; the fleet's own gate records (e-d29efde4, e-ffaa705c, e-46eea33d) show the WR-8 → WR-9 :see-also edge was already recorded and a repeat was rejected as a duplicate, so the wr-8/wr-9 pairing evidenced by e-0fce070b, e-e85f9071, and e-df39e0ea (AIF+ full-method audit records co-citing WR-8/WR-9 as paired data-shape checks — co-mentions, and now already-recorded) cannot be re-written. The remaining non-listing external hits are applications of WR-8 to artifacts (emacs-05115ca1, emacs-d3ff3a86, emacs-1176b8bf, emacs-751e79be, emacs-b96e454f, emacs-2491b830, emacs-294f14298e3ec107f9f894bf5d9c7274, emacs-50f994f0, emacs-deafd3aa, emacs-f40ba131, emacs-4379434b, emacs-c63a554b) or status notes (emacs-67ec76bc: no @how asserted for WR-8; emacs-9a34eceab lists flow-toward-controlled-vocabulary extending WR-8 from the forward-model side) — none states a new relation to a library/<target>.flexiarg from WR-8's side. Rung 2 was not run further because the pattern's header already declares @why war-room/wr-0-organise-without-apparatus, the only stated pattern kinship (wr-9) is recorded, and the prior fleet pass (e-46eea33d) already established no additional warranted target exists at the current basis; re-querying would only return the same application records and session reflections.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

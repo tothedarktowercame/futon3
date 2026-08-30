@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:36:08.313825027Z",
+ :turn 14,
+ :pattern "ukrns/exercise-response-capture",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-014.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "ukrns/exercise-response-capture",
+    :note
+    "Rung 1 supplied no clean hit: all supplied hits (e-77c8ead9, e-ecf6b779, e-5c19b281, e-f384c537, e-52bf483f, e-db717687, e-521b5414, e-39ca546a, e-d82578c8, e-e724a533, e-c37b3263) are :listing embeddings rankings and/or :co-mention — none states a relation to a target pattern. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'reader exercises capture consent aggregated responses paper', 'readers pick positions exercises captured feedback', 'exercise responses tickbox survey participants positions', 'reader-as-participant invitation reader diagnosis exercise', 'working paper interactive exercises readers submit positions'. Each returned only the spider's own prompt record (e-a0130c0e, a zai turn-start self-reflection). The pattern's natural targets (ukrns/reader-as-participant, ukrns/assumptions-commons) are already declared in @references, so a new edge would repeat an existing directive; no external evidence warrants any other edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

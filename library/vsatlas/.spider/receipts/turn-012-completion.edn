@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T22:28:42.989754865Z",
+ :turn 12,
+ :pattern "vsatlas/offer-ladder",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788128885768-5309-1a72eaa0",
+  :response
+  "[{:absence {:pattern \"vsatlas/offer-ladder\" :note \"Rung 1 supplied no warrant: every hit (e-d3fe8fef, e-6faf7beb, e-1358da84, e-ca73f65c, e-ef036016, e-1dbfd9a8, e-2f26b2ee, e-88573eb3, e-e9a6da2a, e-9dcabba3, e-91bbde3d, e-c5e1636b, e-9978381f, e-534f2454, e-98131a7b, e-7bc3f994, e-c6aa3820, e-a11d6735, e-a1259ff0, e-9be219c8, e-e0bf2d3a, e-28d213e7, e-fc1a2e51) carries :listing true — they are context-retrieval embeddings rankings with at most co-mention, excluded as warrants. Rung 2 queries actually run: q='Offer Ladder' and q='offer ladder intro workshop multi-session pilot annual programme price band' (limit=5, hydrate=true). The records returned are either my own turn-start prompt (e-266cd4d9, self-text/reflection) or further context-retrieval listings by claude-3/4/5/8 (e.g. e-a1259ff0 and e-e0bf2d3a verified by GET: their bodies are only {event context-retrieval, query, results [{:id vsatlas/offer-ladder :score ...} ...]} with no text relating offer-ladder to any other pattern). Co-occurrence in a retrieval ranking does not state a relation, so no @how or @see-also edge is warranted under either rung.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-a6c624a5-49eb-40f8-82e3-95fa53eccd2f"},
+ :response
+ "[{:absence {:pattern \"vsatlas/offer-ladder\" :note \"Rung 1 supplied no warrant: every hit (e-d3fe8fef, e-6faf7beb, e-1358da84, e-ca73f65c, e-ef036016, e-1dbfd9a8, e-2f26b2ee, e-88573eb3, e-e9a6da2a, e-9dcabba3, e-91bbde3d, e-c5e1636b, e-9978381f, e-534f2454, e-98131a7b, e-7bc3f994, e-c6aa3820, e-a11d6735, e-a1259ff0, e-9be219c8, e-e0bf2d3a, e-28d213e7, e-fc1a2e51) carries :listing true — they are context-retrieval embeddings rankings with at most co-mention, excluded as warrants. Rung 2 queries actually run: q='Offer Ladder' and q='offer ladder intro workshop multi-session pilot annual programme price band' (limit=5, hydrate=true). The records returned are either my own turn-start prompt (e-266cd4d9, self-text/reflection) or further context-retrieval listings by claude-3/4/5/8 (e.g. e-a1259ff0 and e-e0bf2d3a verified by GET: their bodies are only {event context-retrieval, query, results [{:id vsatlas/offer-ladder :score ...} ...]} with no text relating offer-ladder to any other pattern). Co-occurrence in a retrieval ranking does not state a relation, so no @how or @see-also edge is warranted under either rung.\"}}]"}

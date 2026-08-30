@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:26:17.154435606Z",
+ :turn 13,
+ :pattern "realtime/structured-events-only",
+ :gate
+ "/home/joe/code/futon3/./library/realtime/.spider/gates/turn-013.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "realtime/structured-events-only",
+    :note
+    "Rung 1: all supplied hits are :listing true embeddings rankings or :co-mention true records (e-b8b32513 is a co-mention-flagged external observation); no clean hit with :listing, :self-text, :co-mention, :reflection all false, so no rung-1 edge is warranted. Rung 2: ran GET /api/alpha/evidence/text-search?q=structured-events-only%20loop-success-signals%20carried%20whistle%20bell%20traffic&limit=5&hydrate=true returning e-b8b32513; the resulting see-also edge to realtime/loop-success-signals was proposed in the prior pass and the runner rejected it as an invalid or duplicate edge item — the directive is already recorded on this pattern (or symmetrically attested from loop-success-signals), so re-proposing would repeat an existing directive. No other rung-2 record states a further relation between realtime/structured-events-only and another existing library pattern.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

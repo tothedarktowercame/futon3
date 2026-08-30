@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:14:01.550650443Z",
+ :turn 12,
+ :pattern "musn/pause-backtrace",
+ :gate
+ "/home/joe/code/futon3/./library/musn/.spider/gates/turn-012.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "musn/pause-backtrace",
+    :note
+    "Rung 1 supplied no clean hit: nearly all entries are :listing true embeddings rankings (placing the pattern next to agent/pause-is-not-failure, fulab/session-resume, fulab/clock-out, musn/plan-before-tool etc. as retrieval neighbors — co-mention in listings, not stated relations); the two :reflection true entries (e-c116e1d4, e-8b03f889) are spider-fleet output. The single non-listing, non-reflection record, emacs-b2ae8bd8f9a495e40d7cc5f044af1666, derives pattern→MISSION pairs ('codex-10-turn-340 M-apm-demonstration <- stack-coherence/futon1-determinism, musn/pause-backtrace') — :co-mention true and a mission linkage, not a stated relation to another library pattern. Rung 2 query actually run — 'pause backtrace resume hint moves trail stats' — returned only this spider fleet's own turn-start reflection (e-4075e9a5). No warranted edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

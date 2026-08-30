@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T19:45:02.675484314Z",
+ :turn 1,
+ :pattern "sidecar/append-only-semantic-audit",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788119024895-4552-bf2295f5",
+  :response
+  "[{:absence {:pattern \"sidecar/append-only-semantic-audit\" :note \"Rung 1 (exact live occurrence) was exhausted: every supplied hit is either :listing true (an embeddings retrieval ranking, not a warrant), :self-text/:reflection true (this spider programme's own prompt/output), or a co-mention without a stated relation; none has all of :listing/:self-text/:co-mention/:reflection false, so no clean rung-1 warrant exists. Rung 2 text-search 'append-only-semantic-audit provenance store boundary duplicate ids' returned only e-6d663878-ee4e-4907-ba47-5202f0b5028e, which is this session's own dispatch prompt (self-text, not external use). No warranted non-duplicate edge from either rung; the adjacent section patterns (sidecar/fact-lifecycle-event-types, sidecar/per-id-audit-timeline-linkage) appear only as co-mentions in embeddings listings and in the pattern's own NEXT-STEPS, which is a self-citation, not external evidence.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:absence {:pattern \"sidecar/append-only-semantic-audit\" :note \"Rung 1 (exact live occurrence) was exhausted: every supplied hit is either :listing true (an embeddings retrieval ranking, not a warrant), :self-text/:reflection true (this spider programme's own prompt/output), or a co-mention without a stated relation; none has all of :listing/:self-text/:co-mention/:reflection false, so no clean rung-1 warrant exists. Rung 2 text-search 'append-only-semantic-audit provenance store boundary duplicate ids' returned only e-6d663878-ee4e-4907-ba47-5202f0b5028e, which is this session's own dispatch prompt (self-text, not external use). No warranted non-duplicate edge from either rung; the adjacent section patterns (sidecar/fact-lifecycle-event-types, sidecar/per-id-audit-timeline-linkage) appear only as co-mentions in embeddings listings and in the pattern's own NEXT-STEPS, which is a self-citation, not external evidence.\"}}]"}

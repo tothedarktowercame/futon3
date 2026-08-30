@@ -1,0 +1,39 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:11:28.946895376Z",
+ :turn 8,
+ :pattern "musn/off-trail-budget",
+ :gate
+ "/home/joe/code/futon3/./library/musn/.spider/gates/turn-008.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "musn/off-trail-budget",
+     :to "musn/off-trail-brief-log",
+     :kind :see-also},
+    :rung 2,
+    :read ["musn/off-trail-budget" "musn/off-trail-brief-log"],
+    :evidence
+    [{:id "e-30e99623-20d0-4d57-9928-c41b705e66d9",
+      :via :text,
+      :query "autonomous-with-bounded-disclosure off-trail",
+      :excerpt
+      "`musn/off-trail-brief-log` + `musn/off-trail-budget` — autonomous-with-bounded-disclosure (relevant for pilot's autonomous-but-mediated stance)"}],
+    :state :proposed,
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}},
+    :cited
+    "Track off-trail moves and pause when the budget is exceeded.",
+    :at "2026-08-30",
+    :by "zai-1"}],
+  :proposals [],
+  :absences []}}

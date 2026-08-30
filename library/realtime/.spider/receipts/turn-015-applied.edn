@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:42:46.139572394Z",
+ :turn 15,
+ :pattern "realtime/loop-failure-signals",
+ :gate
+ "/home/joe/code/futon3/./library/realtime/.spider/gates/turn-015.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "realtime/loop-failure-signals",
+    :note
+    "Rung-1 hits are almost entirely :listing true (embeddings retrieval rankings, not warrants) or :reflection/:self-text (this spider fleet's own prompts and outputs, e.g. the earlier see-also attestation from aif/measurement-window-hygiene). The single clean rung-1 hit e-5430286f-c359-4f3f-92c2-d3506d4b7b0e mentions realtime/loop-failure-signals only as an existing piece alongside the learned-γ thesis and the operator-lane alert channel; it names no other existing library pattern as related, so it warrants no edge. Rung-2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search ('loop unhealthy failure signals recovery actions' and 'overload true consecutive batches dropped_lines JSONL backpressure', limit=5, hydrate=true) returned only this session's own spider-prompt turn-start records — self-text/reflection, not external evidence. Neither rung warrants an edge; no proposal is warranted either.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

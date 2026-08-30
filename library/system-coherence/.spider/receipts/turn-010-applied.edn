@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:20:10.588766930Z",
+ :turn 10,
+ :pattern "system-coherence/plan-as-enumeration",
+ :gate
+ "/home/joe/code/futon3/./library/system-coherence/.spider/gates/turn-010.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "system-coherence/plan-as-enumeration",
+    :note
+    "Rung 1: one clean hit, e-db435efa-9ae5-442c-990d-65311ba947d6 (all of :listing/:self-text/:co-mention/:reflection false), which records external application of this pattern to a working-paper §5.1 rewrite ('**§5.1 quarterly milestones rewrite** — closing `hx:wp:v12:s5-1-quarterly-milestones-as-enumeration`... **Pattern**: `system-coherence/plan-as-enumeration`'). However the record names no other library pattern id as a relation target — the specimen tag hx:wp:... is not a flexiarg — so it evidences use, not an edge. All other rung-1 hits are :listing true (embeddings rankings) or :reflection true. Rung 2 was not needed for target discovery but the candidate relations the pattern text itself gestures at — writing-coherence/triad-inflation, writing-coherence/structural-style-inconsistency, system-coherence/bind-open-questions-to-closure-mechanisms, system-coherence/name-the-decision-before-the-framework, system-coherence/turn-design-into-checks — are all already recorded in this pattern's @references, so any such edge would repeat an existing directive. No warranted new edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

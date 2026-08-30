@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:58:42.639311548Z",
+ :turn 4,
+ :pattern "plos-npt-with-small-n/coding-reliability-stated",
+ :gate
+ "/home/joe/code/futon3/./library/plos-npt-with-small-n/.spider/gates/turn-004.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "plos-npt-with-small-n/coding-reliability-stated",
+    :note
+    "Rung 1 (exact live occurrence 'plos-npt-with-small-n/coding-reliability-stated') was exhausted: every supplied hit is :listing true (embeddings retrieval rankings — the scope-shield-via-companion-paper, disconfirmation-not-just-triangulation, pattern-discipline/conclusion-required, pacspine/crisp-success pairings are rankings with no stated relation). No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'coding-reliability-stated inter-coder adjudication disagreements' returned only e-39a73a9e-4f1c-46d9-83bb-a70db17e5d53, this session's own dispatch prompt (self-text). The pattern's two natural peers are already @references (framework-spine-with-empirical-ribs, small-n-is-a-design-feature); every other candidate appears only inside retrieval rankings. No warranted non-duplicate edge from either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

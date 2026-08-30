@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:34:01.736978563Z",
+ :turn 22,
+ :pattern "vsatlas/story-emporium",
+ :gate
+ "/home/joe/code/futon3/./library/vsatlas/.spider/gates/turn-022.edn",
+ :changes
+ {:attestations [],
+  :proposals
+  [{:kind :merge,
+    :pattern "vsatlas/story-emporium",
+    :reason
+    "The pattern's own NEXT-STEPS direct it: 'Consolidate with vsatlas/non-destructive-relational-layers and retire this pattern once merged.' The two patterns state the same ruling — an opt-in relational/adjacency layer beside sovereign stories (emporium: 'sovereign stories gain new meaning through adjacency and optional relations'; non-destructive-relational-layers: overlays and adjacency maps 'sit beside canonical stories and can be accepted, revised, or retired without changing originals'). Keeping both leaves a near-duplicate pair in the section; the emporium framing adds only a metaphor, already carried by the sibling's 'emporium adjacency map' next-step.",
+    :evidence
+    "Pattern-file NEXT-STEPS (vsatlas/story-emporium.flexiarg): 'Consolidate with vsatlas/non-destructive-relational-layers and retire this pattern once merged.' External co-retrieval context: e-cd3f03db and e-8952fa34 are embeddings rankings where the two vsatlas patterns co-occur (co-mention only, not a warrant). Note the sibling pattern vsatlas/askew-layer carries the identical retire-once-merged directive, so this merge completes a directed consolidation."}],
+  :absences
+  [{:pattern "vsatlas/story-emporium",
+    :note
+    "Rung 1 supplied no warrant: every hit (e-cd3f03db, e-3a0fed2a, e-8e5cebdf, e-267ca167, e-a1607be3, e-412f3272, e-aad40429, e-8952fa34, e-9c7d5818, e-8aa58f68) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside vsatlas/festival-model, vsatlas/non-destructive-relational-layers neighbours such as vsat/360-story-container), excluded as edge warrants. Rung 2 queries actually run: q='Story Emporium' and q='emporium adjacency sovereign stories proximity cross-pollination' (limit=5, hydrate=true). The second returned only my own transcript (e-d9c3063a, zai-1, self-text); the first returned that, zai-2 spider-fleet reflection outputs (e-97cfa594, e-e29e9059, e-d828d995 — :reflection), and the rung-1 codex-6 listing record e-8aa58f68. No record states a relation between this pattern and another pattern, so no @how or @see-also edge is warranted under either rung; the consolidation direction is instead recorded as the merge proposal above, grounded in the pattern's own directive.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

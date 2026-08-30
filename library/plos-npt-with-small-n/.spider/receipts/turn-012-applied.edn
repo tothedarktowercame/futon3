@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:00:59.593595465Z",
+ :turn 12,
+ :pattern "plos-npt-with-small-n/multi-method-triangulation-ladder",
+ :gate
+ "/home/joe/code/futon3/./library/plos-npt-with-small-n/.spider/gates/turn-012.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "plos-npt-with-small-n/multi-method-triangulation-ladder",
+    :note
+    "Rung 1: all runner-supplied hits (e-706c63ba, e-22d5a84a, e-c241326d, e-5d02fe92, e-b9adf9e5, e-8ac44afd, e-92ce8bb1, e-1b88e3d2, e-e2f81506, e-c8e42c4d) carry :listing true — futon3a embeddings rankings co-ranking this pattern with unrelated siblings (library-coherence/llm-argument-scan, sidecar/tri-store-separation, paramitas/discernment, fulab/session-resume, repository-transition/counterstrawman, or/snapshot-with-story-doi, etc.) — explicitly not a warrant; the co-ranking with in-section peers (quote-table-not-quote-flood, training-role-feature-register) is co-mention in a retrieval listing, which states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=triangulation%20ladder%20interviews%20observations%20focus%20groups%20analytic%20job&limit=5&hydrate=true (2 hits: e-30d27982, this spider's own current prompt, and e-f1cea946, another spider-fleet prompt for abstract-n-method-frame, fetched and confirmed — both self-text/reflection), ?q=mixed%20methods%20each%20data%20stream%20analytic%20role%20methods%20results (2 hits: the same two spider prompts), and ?q=data%20streams%20corroborate%20contextualise%20prioritise%20findings (0 hits). No external record demonstrates use of this pattern alongside any existing library target; its @references already name site-case-data-display and small-n-is-a-design-feature, and no evidence warrants adding another directive.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

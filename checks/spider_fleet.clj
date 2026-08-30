@@ -21,6 +21,7 @@
 (defn read-edn [path fallback]
   (if (fs/exists? path) (edn/read-string (slurp (str path))) fallback))
 (def evidence-cache (atom nil))
+(def reset-count (atom 0))
 
 (defn pattern-id [file]
   (-> (str (fs/relativize (fs/path root "library") file))
@@ -77,23 +78,49 @@
                              (vals sections)))
           report {:fleet/schema 1 :at (.toString (java.time.Instant/now))
                   :evidence-basis (:basis @evidence-cache)
+                  :session-resets @reset-count
                   :sections sections :total totals
                   :acyclicity-gate :serialised-by-library-lock}]
       (spit fleet-path (with-out-str (pprint/pprint report)))
       report)))
 
+(defn reset-seat! [seat]
+  (let [result (process/shell {:continue true :out :string :err :string}
+                              "curl" "-sS" "-X" "POST"
+                              (str "http://127.0.0.1:7070/api/alpha/agents/"
+                                   seat "/reset-session"))]
+    (when-not (and (zero? (:exit result))
+                   (str/includes? (:out result) "\"ok\":true"))
+      (throw (ex-info "seat session reset failed"
+                      {:seat seat :exit (:exit result)
+                       :out (:out result) :err (:err result)})))
+    (swap! reset-count inc)
+    result))
+
 (defn run-section! [assignments section seat budget evidence-cache-path]
   (loop [remaining budget]
     (let [status (:status (section-status section))]
       (when (and (pos? remaining) (= :running status))
-        (process/shell {:continue true :out :string :err :string
-                        :extra-env {"SPIDER_EVIDENCE_CACHE" evidence-cache-path}}
-                       "bb" "-cp" root runner "--section" section "--seat" seat "--budget" "1")
+        (let [result (process/shell
+                      {:continue true :out :string :err :string
+                       :extra-env {"SPIDER_EVIDENCE_CACHE" evidence-cache-path}}
+                      "bb" "-cp" root runner "--section" section
+                      "--seat" seat "--budget" "1")]
+          (when-not (zero? (:exit result))
+            (throw (ex-info "section runner failed"
+                            {:section section :seat seat :exit (:exit result)
+                             :out (:out result) :err (:err result)}))))
         (refresh! assignments)
         (recur (dec remaining))))))
 
+(defn run-seat-lane! [assignments seat sections budget evidence-cache-path]
+  (doseq [[index section] (map-indexed vector sections)]
+    (when (pos? index) (reset-seat! seat))
+    (run-section! assignments section seat budget evidence-cache-path)))
+
 (defn -main [& args]
-  (let [{:keys [sections seats budget]} (parse-args args)
+  (let [{:keys [sections seats budget] :as options} (parse-args args)
+        evidence-cache-path (:evidence-cache options)
         sections (csv sections)
         seats (csv seats)
         budget (parse-long budget)]
@@ -104,18 +131,29 @@
                                               [section (nth seats (mod i (count seats)))])
                                             sections))
           ;; Build or load one basis-pinned live index before parallel workers start.
-          cache (lint/ensure-live-evidence-index!
-                 (str (fs/path root "library")) (set seats) spider-agent)
+          cache (if evidence-cache-path
+                  (assoc (read-edn evidence-cache-path nil)
+                         :cache-path evidence-cache-path)
+                  (lint/ensure-live-evidence-index!
+                   (str (fs/path root "library")) (set seats) spider-agent))
+          _ (when-not cache
+              (throw (ex-info "pinned evidence cache is unreadable"
+                              {:path evidence-cache-path})))
           _ (reset! evidence-cache cache)
           cache-path (or (:cache-path cache)
                          (lint/evidence-cache-path (:basis cache) (set seats) spider-agent))]
       (refresh! assignments)
-      ;; mapv twice: create EVERY future before awaiting any. A lazy map/deref
-      ;; pair created one future, blocked on it, then created the next — the
-      ;; fleet ran one section at a time (found by codex-20 at wave-1 launch).
-      (run! deref (mapv (fn [[section seat]]
-                          (future (run-section! assignments section seat budget cache-path)))
-                        assignments))
+      ;; One future per seat: sections on a seat run sequentially, while the
+      ;; two seat lanes remain parallel. Reset between sections because worker
+      ;; prompts are self-contained and session history only consumes context.
+      (let [by-seat (group-by val assignments)]
+        (run! deref
+              (mapv (fn [seat]
+                      (future
+                        (run-seat-lane! assignments seat
+                                        (mapv key (get by-seat seat))
+                                        budget cache-path)))
+                    seats)))
       (print-coverage-table! (refresh! assignments)))))
 
 (when (= *file* (System/getProperty "babashka.file"))

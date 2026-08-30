@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T22:38:27.707151962Z",
+ :turn 14,
+ :pattern "or2/spread-effort-assurance",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788129467602-5345-1c6c26a9",
+  :response
+  "[{:absence {:pattern \"or2/spread-effort-assurance\" :note \"Rung 1: no clean hit supplied — one hit (e-f2a87cbe-…) is :self-text true and :reflection true (spider fleet reflecting its own dispatch); one hit (e-pull-offer-1726f09b-…) is :co-mention true only, and co-mention alone states no relation; every remaining hit is :listing true (embeddings retrieval ranking, explicitly not a warrant). No hit has :listing/:self-text/:co-mention/:reflection all false, so no rung-1 warrant exists. Rung 2: ran bounded text-search queries actually issued — 'Spread Effort Assurance' and 'spread effort two distinct days review pass' (limit=5, hydrate=true) — and every returned record (e-b38d9800-…, e-67712ce1-…, e-1a032657-…, e-f336cf0a-…, e-d3eb2124-…) is a prior zai spider dispatch envelope containing 'You are the spider for library/or2' for this same pattern, i.e. fleet reflection, not external use. No external record asserting a relation from this pattern to any existing library target was returned, so no @how or @see-also edge is warranted.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-d637e82d-af79-40c8-80bd-b3e66939e89f"},
+ :response
+ "[{:absence {:pattern \"or2/spread-effort-assurance\" :note \"Rung 1: no clean hit supplied — one hit (e-f2a87cbe-…) is :self-text true and :reflection true (spider fleet reflecting its own dispatch); one hit (e-pull-offer-1726f09b-…) is :co-mention true only, and co-mention alone states no relation; every remaining hit is :listing true (embeddings retrieval ranking, explicitly not a warrant). No hit has :listing/:self-text/:co-mention/:reflection all false, so no rung-1 warrant exists. Rung 2: ran bounded text-search queries actually issued — 'Spread Effort Assurance' and 'spread effort two distinct days review pass' (limit=5, hydrate=true) — and every returned record (e-b38d9800-…, e-67712ce1-…, e-1a032657-…, e-f336cf0a-…, e-d3eb2124-…) is a prior zai spider dispatch envelope containing 'You are the spider for library/or2' for this same pattern, i.e. fleet reflection, not external use. No external record asserting a relation from this pattern to any existing library target was returned, so no @how or @see-also edge is warranted.\"}}]"}

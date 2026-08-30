@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:44:53.563293949Z",
+ :turn 13,
+ :pattern "structure/mana-allostasis",
+ :gate
+ "/home/joe/code/futon3/./library/structure/.spider/gates/turn-013.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "structure/mana-allostasis",
+    :note
+    "Rung 1: the only fully clean non-reflection hit naming an external target is e-7be9a3a2-bff9-47f2-b869-933aea8b657d, whose sole target (budgeted-action-selection/mana-gated-work, :how) was submitted and refused as duplicate, as was the rung-2 edge to aif/expected-free-energy-scorecard (reverse :see-also already attested at aif/attestations.edn:793). All other rung-1 hits are :self-text/:reflection/:listing or mere co-mentions. Rung 2: ran text-search queries 'Mana Anamnesis distinction codex found a pre-existing pattern', 'mana budget session unit nonstarter', 'hierarchical budget-aware action selection mana-allostasis', and 'mana-allostasis block-closures award mana'; every returned record is authored by zai-2 (this fleet's own reflection) or lacks both the source pattern id and any new library target, so no further warranted edge exists beyond the two already-attested/refused ones.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

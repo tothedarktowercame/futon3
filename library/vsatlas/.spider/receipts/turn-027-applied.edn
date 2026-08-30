@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:46:40.109927063Z",
+ :turn 27,
+ :pattern "vsatlas/festival-model",
+ :gate
+ "/home/joe/code/futon3/./library/vsatlas/.spider/gates/turn-027.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "vsatlas/festival-model",
+    :note
+    "Rung-1 hits were all :listing true embeddings retrieval rankings (with at most co-mentions of other pattern ids), which are not warrants; no clean non-reflection rung-1 hit was supplied. Rung-2 queries actually run via GET /api/alpha/evidence/text-search?q=...&limit=5&hydrate=true: 'festival model manifold co-create shared worlds stewards', 'festival recurring ritual newcomers stewardship roles graduate season', 'festivals generate cultures not commodities'. Every returned record was either this spider fleet's own prompt envelopes (verified by fetching e-4934cef3-bd84-4b9c-a20f-1f3d932e73a3 and e-08747f83-e049-4271-a4f4-0950b6292549, both turn-start spider prompts for zai-1/zai-2) or the same claude/codex context-retrieval embeddings listings as rung 1 (e-8d2c0fae..., e-03bce05f..., e-c4e856aa..., e-ae8e319b..., e-8952fa34..., e-12f85cf7...), which rank pattern ids without stating any relation. No external evidence record discusses a how/see-also relation between vsatlas/festival-model and any existing library/<target>.flexiarg, so neither rung warrants an edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,27 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:19:43.715462474Z",
+ :turn 9,
+ :pattern
+ "system-coherence/place-capabilities-at-the-scale-of-their-absence",
+ :gate
+ "/home/joe/code/futon3/./library/system-coherence/.spider/gates/turn-009.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "system-coherence/place-capabilities-at-the-scale-of-their-absence",
+    :note
+    "Rung 1: no clean hit. e-e28ca50b is :reflection true; e-pull-offer-a75acf78 is a memory-pull-offer co-mention list (co-mention alone, no stated relation); e-beaabf2d is :listing true (embeddings ranking, not a warrant); e-5634e07b and e-80b902b7 are co-mention-only records (a pattern list and the authoring proposal naming siblings as a set). Rung 2: ran GET /api/alpha/evidence/text-search?q=place%20capabilities%20at%20the%20scale%20of%20their%20absence&limit=5&hydrate=true and ...q=capability%20placement%20network-scale%20bearer%20local%20absence&limit=5&hydrate=true; the top results are this spider fleet's own turn-start prompts (self-text/reflection), not external use. Existing @references already cover name-the-decision-before-the-framework, argue-empirically-not-persuasively, and writing-coherence/unearned-essentially; no evidence ties this pattern to a not-yet-linked existing target. No warranted edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

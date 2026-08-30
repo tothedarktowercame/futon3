@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T22:37:33.712518430Z",
+ :turn 19,
+ :pattern "musn/fulab-report-block",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788129378042-5339-cec9f775",
+  :response
+  "[{:absence {:pattern \"musn/fulab-report-block\" :note \"Rung-1: all supplied hits carry :listing true (embeddings rankings), which per rules is not an edge warrant, and most are :co-mention true besides. Rung 2: ran GET /api/alpha/evidence/text-search?q=%22FULAB-REPORT%22%20%22applied%22&limit=5&hydrate=true, then q=%5BFULAB-REPORT%5D%20applied%20patterns, q=FULAB-REPORT%20%3Aapplied%20%3Aaction%20%3Anotes, q=FULAB-REPORT%20%3Aapplied%20musn%2F, and q=report%20block%20pattern%20use%20evidence%20musn%20parses. Every returned record (e.g. e-3987c043-0120-453b-8d7f-61bf31cda32d, e-55a79423-7d98-4033-a598-788a85d2bb4f, e-b4b546b5-11bc-461a-9360-06be72a1b18f, e-78f9413b-8720-4923-8f61-234f32f87335, e-0dd21e60-67ba-44dc-94f8-a846edca8cc3) contains the FULAB-REPORT text only as this spider fleet's own prompt echoes (Selected pattern text / YOUR PREVIOUS OUTPUT WAS MALFORMED envelopes), i.e. reflection/self-text, not external use. No record shows an agent actually emitting a FULAB-REPORT block applying another pattern, so no @how or @see-also edge to an existing library/<dir>/<name> target is warranted. Both rungs named: rung 1 (runner-supplied listing hits) and rung 2 (five text-search queries, all reflection-only).\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-78b9fbcf-87b5-4075-a6ec-55d7fdfa1564"},
+ :response
+ "[{:absence {:pattern \"musn/fulab-report-block\" :note \"Rung-1: all supplied hits carry :listing true (embeddings rankings), which per rules is not an edge warrant, and most are :co-mention true besides. Rung 2: ran GET /api/alpha/evidence/text-search?q=%22FULAB-REPORT%22%20%22applied%22&limit=5&hydrate=true, then q=%5BFULAB-REPORT%5D%20applied%20patterns, q=FULAB-REPORT%20%3Aapplied%20%3Aaction%20%3Anotes, q=FULAB-REPORT%20%3Aapplied%20musn%2F, and q=report%20block%20pattern%20use%20evidence%20musn%20parses. Every returned record (e.g. e-3987c043-0120-453b-8d7f-61bf31cda32d, e-55a79423-7d98-4033-a598-788a85d2bb4f, e-b4b546b5-11bc-461a-9360-06be72a1b18f, e-78f9413b-8720-4923-8f61-234f32f87335, e-0dd21e60-67ba-44dc-94f8-a846edca8cc3) contains the FULAB-REPORT text only as this spider fleet's own prompt echoes (Selected pattern text / YOUR PREVIOUS OUTPUT WAS MALFORMED envelopes), i.e. reflection/self-text, not external use. No record shows an agent actually emitting a FULAB-REPORT block applying another pattern, so no @how or @see-also edge to an existing library/<dir>/<name> target is warranted. Both rungs named: rung 1 (runner-supplied listing hits) and rung 2 (five text-search queries, all reflection-only).\"}}]"}

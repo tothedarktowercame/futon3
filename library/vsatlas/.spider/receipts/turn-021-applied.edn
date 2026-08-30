@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:33:22.962738113Z",
+ :turn 21,
+ :pattern "vsatlas/stewardship-layer",
+ :gate
+ "/home/joe/code/futon3/./library/vsatlas/.spider/gates/turn-021.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "vsatlas/stewardship-layer",
+    :note
+    "Rung 1 supplied no warrant: every hit (e-28a0d2b4, e-f1d6aa05, e-22ba2d41, e-5cfbc304, e-39b7dc4a, e-e88826de, e-dbaf091b, e-3d948288, e-dddefbed, e-9cc104c9, e-091d7571, e-f51e9b3d, e-d3b9f341, e-dcb2faf3, e-ea9c1388, e-dedec434) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside or/overlay-bridges, vsatlas/facilitation-scaffolds, equity/protected-interaction-merged), excluded as edge warrants. Rung 2 queries actually run: q='Stewardship Layer' and q='steward approve edit retire arcs clear criteria contribution noise' (limit=5, hydrate=true). Returned records were my own session transcript (e-0d6740ac, zai-1, self-text), a fellow spider's reflection output (e-97cfa594, zai-2, whose body is another spider absence report — :reflection), and the same rung-1 context-retrieval listing records by claude-5/8 and codex-14. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation — so no @how or @see-also edge is warranted under either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

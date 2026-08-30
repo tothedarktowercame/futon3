@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T22:38:16.889802258Z",
+ :turn 20,
+ :pattern "musn/intent-restatement",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788129454399-5343-48e7a544",
+  :response
+  "[{:absence {:pattern \"musn/intent-restatement\" :note \"Rung 1: every supplied hit is :listing true (embeddings retrieval ranking, most also :co-mention true), which per the rules is not a warrant for an edge. Rung 2: ran GET /api/alpha/evidence/text-search?q=%22Intent%3A%20%22%20restatement&limit=5&hydrate=true and q=intent%20restatement%20one-line%20intent%20line&limit=5&hydrate=true. The returned records are either this spider fleet's own prompt echoes (e-ce932d5d-943b-4105-876d-fce6e641f205, e-f20f1589-4051-494a-9a4b-7941df3405d6, e-aba782ab-77e3-4852-81cd-2c9165e3e36f — reflection/self-text) or futon3a context-retrieval embeddings listings (e-6176a22d-cfd2-47c5-b2e9-b11b764b2c4b, e-939104ae-78a1-46ff-afce-f66fc9c6729e). No record shows an agent actually emitting an 'Intent:' restatement line, and none states a relation between musn/intent-restatement and another existing library pattern that would warrant an @how or @see-also edge. Both rungs named: rung 1 (listing/co-mention hits only) and rung 2 (two keyword queries, all reflection or listing).\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-78b9fbcf-87b5-4075-a6ec-55d7fdfa1564"},
+ :response
+ "[{:absence {:pattern \"musn/intent-restatement\" :note \"Rung 1: every supplied hit is :listing true (embeddings retrieval ranking, most also :co-mention true), which per the rules is not a warrant for an edge. Rung 2: ran GET /api/alpha/evidence/text-search?q=%22Intent%3A%20%22%20restatement&limit=5&hydrate=true and q=intent%20restatement%20one-line%20intent%20line&limit=5&hydrate=true. The returned records are either this spider fleet's own prompt echoes (e-ce932d5d-943b-4105-876d-fce6e641f205, e-f20f1589-4051-494a-9a4b-7941df3405d6, e-aba782ab-77e3-4852-81cd-2c9165e3e36f — reflection/self-text) or futon3a context-retrieval embeddings listings (e-6176a22d-cfd2-47c5-b2e9-b11b764b2c4b, e-939104ae-78a1-46ff-afce-f66fc9c6729e). No record shows an agent actually emitting an 'Intent:' restatement line, and none states a relation between musn/intent-restatement and another existing library pattern that would warrant an @how or @see-also edge. Both rungs named: rung 1 (listing/co-mention hits only) and rung 2 (two keyword queries, all reflection or listing).\"}}]"}

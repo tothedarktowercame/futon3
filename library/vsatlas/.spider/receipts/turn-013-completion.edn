@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T22:29:13.228668355Z",
+ :turn 13,
+ :pattern "vsatlas/open-ecosystem-mandate",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788128924418-5311-66fd9d8e",
+  :response
+  "[{:absence {:pattern \"vsatlas/open-ecosystem-mandate\" :note \"Rung 1 supplied no warrant: all three hits (e-34ec73a0, e-62f009f4, e-c996d832) are :listing true context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside hdm/non-capture, or2/bioliteracy-open-value, vsatlas/open-infrastructure-expert-practice), which the rules exclude. Rung 2 queries actually run: q='Open Ecosystem Mandate' and q='open licences forkable governance pluriversality collective authorship' (limit=5, hydrate=true). Returned records were either my own session transcript (e-b7c49eb3, zai-1, self-text/reflection), the same three listing records, or a further listing e-d0f1e3b7 (claude-5), verified by GET: its body is only a context-retrieval event whose results rank vsatlas/open-ecosystem-mandate first with no text relating it to any other pattern. Every occurrence of this pattern in the store is a retrieval ranking or fleet reflection; none states a relation to another pattern, so no @how or @see-also edge is warranted under either rung.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-a6c624a5-49eb-40f8-82e3-95fa53eccd2f"},
+ :response
+ "[{:absence {:pattern \"vsatlas/open-ecosystem-mandate\" :note \"Rung 1 supplied no warrant: all three hits (e-34ec73a0, e-62f009f4, e-c996d832) are :listing true context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside hdm/non-capture, or2/bioliteracy-open-value, vsatlas/open-infrastructure-expert-practice), which the rules exclude. Rung 2 queries actually run: q='Open Ecosystem Mandate' and q='open licences forkable governance pluriversality collective authorship' (limit=5, hydrate=true). Returned records were either my own session transcript (e-b7c49eb3, zai-1, self-text/reflection), the same three listing records, or a further listing e-d0f1e3b7 (claude-5), verified by GET: its body is only a context-retrieval event whose results rank vsatlas/open-ecosystem-mandate first with no text relating it to any other pattern. Every occurrence of this pattern in the store is a retrieval ranking or fleet reflection; none states a relation to another pattern, so no @how or @see-also edge is warranted under either rung.\"}}]"}

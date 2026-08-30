@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:28:43.255883331Z",
+ :turn 10,
+ :pattern "storage/graph-memory-contract",
+ :gate
+ "/home/joe/code/futon3/./library/storage/.spider/gates/turn-010.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "storage/graph-memory-contract",
+    :note
+    "Rung 1: every non-reflection hit carried :listing true and :co-mention true — embeddings context-retrieval rankings in which the pattern id appeared alongside storage/deterministic-substrate, storage/schema-evolution-stability, storage/open-world-continuity, devmap-coherence/ifr-f1-dhammavicaya, system-coherence/present-graph-topology-not-adjacency-lists, orchestration/state-in-substrate-deltas-in-messages, and unrelated math/iching patterns; the single non-listing hit was :reflection true (a prior spider turn's own output edge). No clean hit states a directional relation. Rung 2: ran GET text-search with 'graph-memory schema salience contract entity relation' and 'graph memory contract documented schema downstream tools depend' (limit 5, hydrate true); the top-scoring returned records were this programme's own current-turn prompt reflections (self-text), with no external record asserting that any sibling pattern is a method or peer of graph-memory-contract. Co-mention alone does not state a relation, so no @how or @see-also edge is externally warranted this round.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

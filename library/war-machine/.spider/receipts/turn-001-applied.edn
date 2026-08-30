@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:45:44.451462502Z",
+ :turn 1,
+ :pattern "war-machine/advanceability",
+ :gate
+ "/home/joe/code/futon3/./library/war-machine/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "war-machine/advanceability",
+    :note
+    "Rung 1: of the supplied hits, only five are clean (:listing/:self-text/:co-mention/:reflection all false): e-0bcbb737 and e-e9e546d0 are sessions reading or searching for the pattern file itself — no relation stated; e-b022638a is a psr_search result batch listing five pattern ids including this one — a retrieval output, not a relation. The remaining substantive hits (e-91cfaa2d, e-007f3285, e-218edc69, e-f5a7638c, e-51005eff — the NAG-wiring records: 'every NAG class cites a real flexiarg (aif/niche-construction, orchestration/consent-gate, aif/admissibility, war-machine/advanceability, orchestration/pattern-warranted-choice-point)' and the live 7-NAG run mapping six open missions to this pattern's warrant) all carry :co-mention true — sibling warrant-classes in one mechanism, which the rules state does not by itself warrant an edge; and the two kinships those records do state relationally (aif/admissibility, orchestration/pattern-warranted-choice-point) are already this pattern's own @references, so edges there would be duplicates. The reflection/self-text hits (aif/admissibility → advanceability attestation receipts) likewise record an already-accepted directive from the other side. Rung 2: query 'advanceability open hole single-cycle leaf gate NAG' returned e-218edc69 and e-91cfaa2d (already classified, co-mention) plus this session's own turn-start (e-f6a2a03b, GET-verified). No clean rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

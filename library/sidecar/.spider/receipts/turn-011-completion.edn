@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:24:08.965658413Z",
+ :turn 11,
+ :pattern "sidecar/tri-store-separation",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788125015077-5006-54396611",
+  :response
+  "[{:absence {:pattern \"sidecar/tri-store-separation\" :note \"Rung 1: no supplied hit is clean — every hit has :listing true, :self-text true (with :reflection true), or :co-mention true; the non-listing candidates (e-68ed559e-c591-42fd-a237-06f2c18dd77e, e-aec3f325-2d67-4a71-963a-96bac48bb08d, e-fbe9200f-3ff1-40e1-ba14-339a80b455c2, e-9ff0bb75-81ea-4a55-bd7b-e1b7b30ecde2, emacs-774921ad88d714cd81702357041766dc) are all :co-mention true, and co-mention alone does not state a relation. Rung 2 (GET /api/alpha/evidence/text-search with queries 'tri-store separation facts memes notions XTDB SQLite ANN trust' and 'fuzzy output becomes fact explicit promotion facts store boundary', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts and turn-round reads of the pattern file itself — self-text/reflection — so neither rung warrants an edge from sidecar/tri-store-separation to any other existing library/<target>.flexiarg.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-52a0589e-83a2-453f-9070-ca1cc779fc73"},
+ :response
+ "[{:absence {:pattern \"sidecar/tri-store-separation\" :note \"Rung 1: no supplied hit is clean — every hit has :listing true, :self-text true (with :reflection true), or :co-mention true; the non-listing candidates (e-68ed559e-c591-42fd-a237-06f2c18dd77e, e-aec3f325-2d67-4a71-963a-96bac48bb08d, e-fbe9200f-3ff1-40e1-ba14-339a80b455c2, e-9ff0bb75-81ea-4a55-bd7b-e1b7b30ecde2, emacs-774921ad88d714cd81702357041766dc) are all :co-mention true, and co-mention alone does not state a relation. Rung 2 (GET /api/alpha/evidence/text-search with queries 'tri-store separation facts memes notions XTDB SQLite ANN trust' and 'fuzzy output becomes fact explicit promotion facts store boundary', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts and turn-round reads of the pattern file itself — self-text/reflection — so neither rung warrants an edge from sidecar/tri-store-separation to any other existing library/<target>.flexiarg.\"}}]"}

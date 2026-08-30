@@ -1,14 +1,25 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T15:01:08.539821748Z",
+ :at "2026-08-30T22:06:28.722465750Z",
  :turn 27,
- :pattern "war-room/wr-8-typed-files-are-sources-of-truth",
+ :pattern "war-room/wr-7-frames-interoperate-or-they-do-not-exist",
  :gate
  "/home/joe/code/futon3/./library/war-room/.spider/gates/turn-027.edn",
  :changes
  {:attestations [],
   :proposals [],
   :absences
-  [{:pattern "war-room/wr-8-typed-files-are-sources-of-truth",
+  [{:pattern "war-room/wr-7-frames-interoperate-or-they-do-not-exist",
     :note
-    "This dispatch repeats the immediately preceding WR-8 pass, whose see-also edge to war-room/wr-9-bites-empirical-or-logical (rung 1, evidence e-0fce070b and e-e85f9071, both non-listing AIF+ audit records co-citing 'WR-8/WR-9' as one paired data-shape discipline) was accepted and recorded — the gate has just rejected its resubmission as a duplicate. The remaining rung-1 non-listing hits warrant nothing further: e-3fbdc0de quotes bulletin 8's WR-8 heading (the ruling's own source), and e-df39e0ea applies the render-script pattern to §8.4 prose while flagging a WR-9 discipline gap — corroborating the now-recorded pairing rather than a new target. The pattern's other kinships are recorded directives: @why war-room/wr-0-organise-without-apparatus in its header, wr-0's back-reference, and wr-26's @why pointing at it. No non-duplicate edge remains warranted."}]}}
+    "Rung 1: no clean warrant — the full-id hits are two embeddings listings (e-b3b2778a, e-5077bd16), a psr_search pull-offer list (e-pull-offer-2d47ff92), and spider-fleet reflections (e-bb31c6ea records this fleet's prior WR-7 absence; the e-8a3bc3b2-family are session prompt co-mention lists). The non-listing external hits are batch-promotion provenance (emacs-3451c448, e-7e691c50: 'WR-5,6,7' batch, commit 66e3150) and the 9-cell grid co-mention (emacs-1286a2ef) — none states a relation to another library pattern. Rung 2: query 'WR-7 frames interoperate missing models sorry exercised port' returned e-c7b10ee8 — GET-verified as this session's own turn-start prompt (self-text/reflection) — and e-f2bb72f2 (reflection), both excluded. The pattern's cited dependencies (the futon7 business model, mana accounting, the pocketwatch) are stack components, not library/<target>.flexiarg patterns; the pattern carries no @references, @why, @how, or @see-also directives, so nothing is duplicated but no external record warrants an edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

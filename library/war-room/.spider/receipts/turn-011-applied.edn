@@ -1,9 +1,8 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T14:44:44.851203636Z",
+ :at "2026-08-30T21:51:45.831477104Z",
  :turn 11,
- :pattern
- "war-room/wr-18-war-machine-is-demonstrated-not-hypothesised",
+ :pattern "war-room/wr-17-futon0-as-cyborg-futon7-as-markov-blanket",
  :gate
  "/home/joe/code/futon3/./library/war-room/.spider/gates/turn-011.edn",
  :changes
@@ -11,6 +10,17 @@
   :proposals [],
   :absences
   [{:pattern
-    "war-room/wr-18-war-machine-is-demonstrated-not-hypothesised",
+    "war-room/wr-17-futon0-as-cyborg-futon7-as-markov-blanket",
     :note
-    "Rung 1: the single non-listing hit, e-49fbb5f0-e55a-4cef-963f-310c2c571394, is the bulletin-10 record enumerating the WR-18→WR-22 batch ('with WR-21 the load-bearing one: build the ground metric before wiring the tension-proposer... and that geometrization likely deserves its own mission') — a batch inventory that ranges over WR decisions as a set without tying WR-18 to any single other library pattern; the missions and methods it names (geometrization mission, logic-model-before-code reuse) belong to WR-21/WR-22's own records. Rung 2: query 'WR-18 war machine demonstrated not hypothesised first outing' returned only this spider session's own turn-start transcript (e-60ece5c9, GET-verified). The pattern carries no @references, @why, @how, or @see-also directives, and no export-verified evidence record ties it to another library/<target>.flexiarg pattern; the mission it cites (M-war-machine-first-outing) is a mission, not a library pattern. No warranted non-duplicate edge found."}]}}
+    "Rung 1: no clean warrant — all full-id hits are embeddings listings or spider-fleet reflections; the two all-flags-false hits cite only the short form 'WR-17' (e-ad6b05b2 WB-9 bookkeeping; e-b79d88ec 'New observe function in futon7 (the outward-facing Markov blanket — WR-17)' — both name futon7 components and missions, no library/<target>.flexiarg id, and the full pattern id does not occur, so rung 1 fails on its own terms). Co-mention hits (emacs-2cbdf95e, emacs-4949ce0284b47af8e48a85a7401bd9d2, e-3e927f33, emacs-27475af7, emacs-48332c7f) all characterise WR-17 as a non-invertible architectural assertion and tie it to no other library pattern. Rung 2: query 'futon0 cyborg futon7 Markov blanket WR-17 architectural axis' returned two records — e-40d82ce7 (no library pattern ids) and e-51cd455c, which is this spider session's own turn-start prompt (self-text/reflection), excluded by the rules. No external record states a relation between WR-17 and any existing library pattern; the pattern itself is marked @verdict incomplete with no @references, @why, @how, or @see-also directives, so no duplicate constraint applies — there is simply no warranted edge to write.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

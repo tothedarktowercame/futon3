@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:45:31.243858915Z",
+ :turn 29,
+ :pattern "ukrns/design-as-function-of-evidence",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-029.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "ukrns/design-as-function-of-evidence",
+    :note
+    "Rung 1: every supplied hit was disqualified — all :listing true (embeddings rankings, not warrants) except e-780fb5c5 (clean-ish but only :co-mention of a revision-plan note) and e-6c0eace9 (:reflection true, a grep of the library files by this fleet's tooling). No hit with :listing, :self-text, :co-mention, :reflection all false. Rung 2: ran text-search on 'Treat Design as a Function of Evidence' and on 'quarterly checks annual stakeholder walks stand-down'. Best rung-2 record e-d71346a6-d104-4b63-b9be-2f41257ea90e (codex turn, external, non-listing) only co-mentions the pattern alongside ukrns/diagnose-before-prescribing, ukrns/measure-where-least-sure, ukrns/open-the-triangle, ukrns/provision-at-network-scale in a metadata-revision report; the pattern's own @references already covers open-the-triangle and measure-where-least-sure, and the record states no how/see-also relation, so no non-repeating edge was warranted.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

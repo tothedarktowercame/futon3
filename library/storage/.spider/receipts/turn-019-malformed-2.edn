@@ -1,0 +1,35 @@
+{:response
+ "[{:edge {:from \"storage/rapid-debugging\" :to \"futon-theory/rapid-debugging\" :kind :see-also :cited \"futon1 repeatedly needed diagnostics and tests to keep storage behavior legible.\" :evidence [{:id \"e-4d97b3eb-8abc-4457-8056-ca1d825d8f20\" :via :text :query \"rapid debugging two genuinely different patterns share a short name collection prefix\" :excerpt \"Not a bug — it's **two genuinely different patterns** that share a short name: `futon-theory/rapid-debugging` (示 lukin) and `storage/rapid-debugging` (口 kalama).\"}] :rung 2 :read [\"storage/rapid-debugging\" \"futon-theory/rapid-debugging\"] :reason \"External observation (claude-1, non-reflection) explicitly identifies storage/rapid-debugging and futon-theory/rapid-debugging as two distinct near-duplicate patterns sharing a short name, and notes the library has 'near-duplicate rapid-debugging patterns across two collections'. A see-also disambiguates the peer without claiming either is the authority for the other.\"}}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788125636780-5065-8082ebb7",
+  :response
+  "[{:edge {:from \"storage/rapid-debugging\" :to \"futon-theory/rapid-debugging\" :kind :see-also :cited \"futon1 repeatedly needed diagnostics and tests to keep storage behavior legible.\" :evidence [{:id \"e-4d97b3eb-8abc-4457-8056-ca1d825d8f20\" :via :text :query \"rapid debugging two genuinely different patterns share a short name collection prefix\" :excerpt \"Not a bug — it's **two genuinely different patterns** that share a short name: `futon-theory/rapid-debugging` (示 lukin) and `storage/rapid-debugging` (口 kalama).\"}] :rung 2 :read [\"storage/rapid-debugging\" \"futon-theory/rapid-debugging\"] :reason \"External observation (claude-1, non-reflection) explicitly identifies storage/rapid-debugging and futon-theory/rapid-debugging as two distinct near-duplicate patterns sharing a short name, and notes the library has 'near-duplicate rapid-debugging patterns across two collections'. A see-also disambiguates the peer without claiming either is the authority for the other.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-fd277c6a-021a-4d42-996d-f4be9f056689"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "storage/rapid-debugging",
+    :to "futon-theory/rapid-debugging",
+    :kind :see-also,
+    :cited
+    "futon1 repeatedly needed diagnostics and tests to keep storage behavior legible.",
+    :evidence
+    [{:id "e-4d97b3eb-8abc-4457-8056-ca1d825d8f20",
+      :via :text,
+      :query
+      "rapid debugging two genuinely different patterns share a short name collection prefix",
+      :excerpt
+      "Not a bug — it's **two genuinely different patterns** that share a short name: `futon-theory/rapid-debugging` (示 lukin) and `storage/rapid-debugging` (口 kalama)."}],
+    :rung 2,
+    :read ["storage/rapid-debugging" "futon-theory/rapid-debugging"],
+    :reason
+    "External observation (claude-1, non-reflection) explicitly identifies storage/rapid-debugging and futon-theory/rapid-debugging as two distinct near-duplicate patterns sharing a short name, and notes the library has 'near-duplicate rapid-debugging patterns across two collections'. A see-also disambiguates the peer without claiming either is the authority for the other."}}},
+ :turn 19,
+ :event :seat-output-invalid,
+ :at "2026-08-30T21:34:27.449791869Z",
+ :attempt 2,
+ :pattern "storage/rapid-debugging"}

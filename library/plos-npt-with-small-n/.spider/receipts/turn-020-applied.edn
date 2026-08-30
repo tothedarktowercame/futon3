@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:09:52.732821684Z",
+ :turn 20,
+ :pattern "plos-npt-with-small-n/theory-as-heuristic-not-law",
+ :gate
+ "/home/joe/code/futon3/./library/plos-npt-with-small-n/.spider/gates/turn-020.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "plos-npt-with-small-n/theory-as-heuristic-not-law",
+    :note
+    "Rung 1: all three runner-supplied hits (e-d56d05c8, e-218a11ea, e-788653e7) carry :listing true — futon3a embeddings retrieval rankings co-ranking this pattern with unrelated siblings (abstract-n-method-frame, eight-gates/lean-commit, eight-gates/press-mechanism) — explicitly not a warrant, and the :co-mention records state no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=NPT%20heuristic%20device%20not%20causal%20explanation%20framework%20limits&limit=5&hydrate=true (0 hits), ?q=theory%20heuristic%20lens%20limitation%20remedy%20design (1 hit: e-a6622bb5, this spider programme's own current prompt — self-text/reflection, not external use), and ?q=framework%20as%20heuristic%20interconnected%20constructs%20finding (0 hits). No external record demonstrates use of this pattern alongside any existing library target not already referenced; its @references already name framework-spine-with-empirical-ribs and coherence-first-when-using-npt.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

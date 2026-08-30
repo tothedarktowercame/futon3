@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:22:18.137799656Z",
+ :turn 14,
+ :pattern "system-coherence/tag-evidence-by-timescale",
+ :gate
+ "/home/joe/code/futon3/./library/system-coherence/.spider/gates/turn-014.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "system-coherence/tag-evidence-by-timescale",
+    :note
+    "Rung 1: no clean hit. e-cc1e9fb1 is ':reflection true' (a prior spider absence recording that all its hits were ':listing true' embeddings co-rankings). All other hits except one are ':listing true' futon3a embeddings rankings (co-rankings with library-coherence/library-evidence-ledger, writing-coherence/section-bridge-missing, system-coherence/plan-as-enumeration, etc.) — explicitly not warrants. The one non-listing external record, e-daad6f89-e5da-41df-b5d3-008a6336c957 (a rewrite-planning note scheduling this pattern's authorship: '**1. `system-coherence/tag-evidence-by-timescale`** — for s2-1's I3 violation'), is ':co-mention true': it names match-region-weight-to-load only as a separate sibling authorship item for a different annotation — co-mention in one planning batch, no stated relation. Rung 2: ran GET /api/alpha/evidence/text-search?q=tag%20evidence%20by%20timescale%20synthesis%20I3&limit=5&hydrate=true; top result is this spider's own prompt (self-text/reflection), nothing new. The pattern's @references already record argument-as-coverage-checklist-vs-system-specification, argue-empirically-not-persuasively, and writing-coherence/meta-lede, so those would repeat directives. No evidence ties this pattern to a not-yet-linked existing library/<target>.flexiarg. No warranted edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:46:07.086621283Z",
+ :turn 27,
+ :pattern "ukrns/treat-funder-cycles-as-operational-rhythm",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-027.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:note
+    "Rung 1: all supplied hits are :listing embeddings rankings with :co-mention, except e-06df1277 which is :self-text AND :reflection (prior spider output quoting an export) — none clean and none states a relation to a target pattern. Rung 2 queries run on 127.0.0.1:7073 (limit 5): 'ringfenced funding cycle sector scale collaborative research culture', 'funder cycles operational rhythm planning without funding periods', 'ringfenced funding decisive enabling condition institutional movement'. Each returned only this spider's own prompt record (e-4e7523ed, a zai turn-start self-reflection). The pattern's authorities are already declared in @references (system-coherence/treat-content-refresh-as-second-order-when-conditions-bind, writing-coherence/meet-the-reader-where-they-are); no external evidence warrants a new edge.",
+    :pattern "ukrns/treat-funder-cycles-as-operational-rhythm",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

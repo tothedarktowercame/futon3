@@ -1,0 +1,205 @@
+[{:edge
+  {:from
+   "peripherals/progress-heartbeat-distinct-from-cycle-completion",
+   :to "peripherals/canonical-typed-event-vs-side-channel",
+   :kind :how},
+  :rung 1,
+  :read
+  ["peripherals/progress-heartbeat-distinct-from-cycle-completion"
+   "peripherals/canonical-typed-event-vs-side-channel"],
+  :evidence
+  [{:id "e-9a0fcda2-2be1-4409-b52b-1ee089b510b2",
+    :via :tag,
+    :query
+    "exact live occurrence: peripherals/progress-heartbeat-distinct-from-cycle-completion",
+    :excerpt
+    "**#4 bounded — progress-heartbeat tool.** Per `peripherals/progress-heartbeat-distinct-from-cycle-completion`. v0: manual invocation; cycle.clj integration (auto-firing on long-running tools) deferred since cycle.clj is shared."}
+   {:id "e-fcf1c377-56fc-47b3-9330-fdcff63546d6",
+    :via :tag,
+    :query
+    "exact live occurrence: peripherals/progress-heartbeat-distinct-from-cycle-completion",
+    :excerpt
+    "Progress-heartbeat per `peripherals/progress-heartbeat-distinct-from-cycle-completion` → Phase 3.5 (not needed for no-op demo)"}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited
+  "Cross-link: peripherals/canonical-typed-event-vs-side-channel — the heartbeat should be a first-class event in the transport taxonomy, not a parallel ping channel.",
+  :at "2026-08-30",
+  :by "zai-1"}
+ {:edge
+  {:from
+   "peripherals/progress-heartbeat-distinct-from-cycle-completion",
+   :to "realtime/liveness-heartbeats",
+   :kind :see-also},
+  :rung 1,
+  :read
+  ["peripherals/progress-heartbeat-distinct-from-cycle-completion"
+   "realtime/liveness-heartbeats"],
+  :evidence
+  [{:id "e-fcf1c377-56fc-47b3-9330-fdcff63546d6",
+    :via :tag,
+    :query
+    "exact live occurrence: peripherals/progress-heartbeat-distinct-from-cycle-completion",
+    :excerpt
+    "Progress-heartbeat per `peripherals/progress-heartbeat-distinct-from-cycle-completion` → Phase 3.5 (not needed for no-op demo)"}
+   {:id "e-9a0fcda2-2be1-4409-b52b-1ee089b510b2",
+    :via :tag,
+    :query
+    "exact live occurrence: peripherals/progress-heartbeat-distinct-from-cycle-completion",
+    :excerpt
+    "**#4 bounded — progress-heartbeat tool.** Per `peripherals/progress-heartbeat-distinct-from-cycle-completion`. v0: manual invocation; cycle.clj integration (auto-firing on long-running tools) deferred since cycle.clj is shared."}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited
+  "realtime/liveness-heartbeats (futon3 pattern library): the realtime patterns already articulate the distinction at the transport layer. This pattern lifts the distinction into the peripheral-design layer and makes it a design-time decision, not a runtime emergent.",
+  :at "2026-08-30",
+  :by "zai-1"}
+ {:edge
+  {:from "peripherals/read-existing-seam-before-implementing",
+   :to "peripherals/canonical-typed-event-vs-side-channel",
+   :kind :see-also},
+  :rung 1,
+  :read
+  ["peripherals/read-existing-seam-before-implementing"
+   "peripherals/canonical-typed-event-vs-side-channel"],
+  :evidence
+  [{:id "e-5e72730c-08fa-42f7-b832-633e9c1be30a",
+    :via :tag,
+    :query
+    "exact live occurrence: peripherals/read-existing-seam-before-implementing",
+    :excerpt
+    "shown: • peripherals/read-existing-seam-before-implementing  (rel 0.494)"}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited
+  "Are there existing frame shapes that cover (or partially cover) what this peripheral emits/consumes? If yes, extend the taxonomy as first-class events, not as out-of-band messages. (See: peripherals/canonical-typed-event-vs-side-channel.)",
+  :at "2026-08-30",
+  :by "zai-1"}
+ {:edge
+  {:from "peripherals/read-only-first-then-extend",
+   :to "peripherals/inhabitation-feeds-evolution",
+   :kind :see-also},
+  :rung 1,
+  :read
+  ["peripherals/read-only-first-then-extend"
+   "peripherals/inhabitation-feeds-evolution"],
+  :evidence
+  [{:id "e-58778618-3712-403f-af3b-b2feec161760",
+    :via :tag,
+    :query
+    "exact live occurrence: peripherals/read-only-first-then-extend",
+    :excerpt
+    "Stage-naming validation (v0=Pair-not-Observer per `peripherals/read-only-first-then-extend"}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited
+  "Read-only as permanent: the converse failure — building the observer and never extending it, so the peripheral never closes its loop and never feeds the Baldwin cycle. Read-only is a first step, not a terminal state.",
+  :at "2026-08-30",
+  :by "zai-1"}
+ {:edge
+  {:from "peripherals/split-transport-from-embodiment",
+   :to "peripherals/read-existing-seam-before-implementing",
+   :kind :how},
+  :rung 1,
+  :read
+  ["peripherals/split-transport-from-embodiment"
+   "peripherals/read-existing-seam-before-implementing"],
+  :evidence
+  [{:id "e-8ce2581e-2e03-4aa4-b5c8-dcdf50507468",
+    :via :tag,
+    :query
+    "exact live occurrence: peripherals/split-transport-from-embodiment",
+    :excerpt
+    "the load-bearing one being `peripherals/split-transport-from-embodiment`: \"two distinct concerns conflated into one thing can't compose.\" A stored arrow has two — its typed-gap lifecycle and its similarity — so the layered split is that pattern one level up."}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited
+  "For each layer, do an independent seam-read (see: peripherals/read-existing-seam-before-implementing).",
+  :at "2026-08-30",
+  :by "zai-1"}
+ {:edge
+  {:from "peripherals/surface-earns-inhabitation",
+   :to "peripherals/inhabitation-feeds-evolution",
+   :kind :see-also},
+  :rung 1,
+  :read
+  ["peripherals/surface-earns-inhabitation"
+   "peripherals/inhabitation-feeds-evolution"],
+  :evidence
+  [{:id "e-9c46eafa-d56e-480f-9398-3d10f62f0732",
+    :via :tag,
+    :query
+    "exact live occurrence: peripherals/surface-earns-inhabitation",
+    :excerpt
+    "The one thing I would add to the plain language argument is that \"in the process we need to do an audit of real and projected invariants to make sure they are the right ones\".  This is backed by peripherals/surface-earns-inhabitation"}
+   {:id "e-1b5c9273-154b-4680-a395-d01acccc525f",
+    :via :tag,
+    :query
+    "exact live occurrence: peripherals/surface-earns-inhabitation",
+    :excerpt
+    "That fits `peripherals/surface-earns-inhabitation`: if the surface is meant to be inhabited, the invariants it exposes have to be trustworthy enough to survive use."}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited "Uninhabited infrastructure is dead infrastructure.",
+  :at "2026-08-30",
+  :by "zai-1"}]

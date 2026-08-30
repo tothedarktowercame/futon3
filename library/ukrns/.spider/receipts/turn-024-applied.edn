@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:44:03.482820110Z",
+ :turn 24,
+ :pattern "ukrns/self-application",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-024.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:note
+    "Rung 1: every supplied hit is a :listing embeddings ranking, a :co-mention record, or a prior-spider :reflection (e-1429bb79, e-9b69efb4, e-6c0eace9) — none clean. Rung 2 queries run on 127.0.0.1:7073 (limit 5): 'notebook paper rerun evidence file recompute argument shifts', 'artefact instantiates its claim re-computable notebook', 'self-application static frozen PDF undermines its own claim working paper notebook'. Each returned only this fleet's own prompt records (e-fa76ca54, e-e6e7ae3d — zai turn-start self-reflections). The pattern's natural targets (ukrns/design-as-function-of-evidence, ukrns/open-the-triangle, ukrns/computation-as-exploration) are already in @references, so a new edge to them would repeat a directive; no external evidence warrants any other edge.",
+    :pattern "ukrns/self-application",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"peripherals/read-only-first-then-extend\", :to \"peripherals/constrained-execution-envelope\", :kind :how}, :cited \"**Collaborate stage (envelope-bounded write)** — the peripheral writes autonomously within a documented envelope (specific targets, specific event types, specific time windows).\", :evidence [{:id \"e-c4169690-aacb-4b13-9676-667ead9f0f37\", :via :tag, :query \"exact live occurrence: peripherals/read-only-first-then-extend\", :excerpt \"Implements `:anchors-read` against the live `wm-ui-anchors.edn`; delegates everything else. Per `peripherals/read-only-first-then-extend`: no write tools yet, structurally enforced (WM-I1 holds because the envelope can't physically write).\"} {:id \"pur-ab85aefe-2427-4972-87e2-18c35b894dea\", :via :tag, :query \"exact live occurrence: peripherals/read-only-first-then-extend\", :excerpt \"peripherals/read-only-first-then-extend outcome actions expected actual prediction-error notes success Inhabited :war-machine-pilot envelope (DERIVE Choice 4). Ran observe-then-pair cycle: PSR → consent-gate-emit → :coherence-row-author →\"}], :rung 1, :read [\"peripherals/read-only-first-then-extend\" \"peripherals/constrained-execution-envelope\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788126097068-5098-11f808ab",
+  :response
+  "[{:edge {:from \"peripherals/read-only-first-then-extend\", :to \"peripherals/constrained-execution-envelope\", :kind :how}, :cited \"**Collaborate stage (envelope-bounded write)** — the peripheral writes autonomously within a documented envelope (specific targets, specific event types, specific time windows).\", :evidence [{:id \"e-c4169690-aacb-4b13-9676-667ead9f0f37\", :via :tag, :query \"exact live occurrence: peripherals/read-only-first-then-extend\", :excerpt \"Implements `:anchors-read` against the live `wm-ui-anchors.edn`; delegates everything else. Per `peripherals/read-only-first-then-extend`: no write tools yet, structurally enforced (WM-I1 holds because the envelope can't physically write).\"} {:id \"pur-ab85aefe-2427-4972-87e2-18c35b894dea\", :via :tag, :query \"exact live occurrence: peripherals/read-only-first-then-extend\", :excerpt \"peripherals/read-only-first-then-extend outcome actions expected actual prediction-error notes success Inhabited :war-machine-pilot envelope (DERIVE Choice 4). Ran observe-then-pair cycle: PSR → consent-gate-emit → :coherence-row-author →\"}], :rung 1, :read [\"peripherals/read-only-first-then-extend\" \"peripherals/constrained-execution-envelope\"]}]",
+  :agent-id "zai-1",
+  :session-id "zai-cc8dafbc-3b8e-43ad-afb4-d9e34a941e43"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "peripherals/read-only-first-then-extend",
+    :to "peripherals/constrained-execution-envelope",
+    :kind :how}}},
+ :turn 10,
+ :event :seat-output-invalid,
+ :at "2026-08-30T21:42:05.412462100Z",
+ :attempt 1,
+ :pattern "peripherals/read-only-first-then-extend"}

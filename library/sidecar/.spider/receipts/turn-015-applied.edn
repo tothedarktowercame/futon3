@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:42:19.629734870Z",
+ :turn 15,
+ :pattern "sidecar/fact-lifecycle-event-types",
+ :gate
+ "/home/joe/code/futon3/./library/sidecar/.spider/gates/turn-015.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "sidecar/fact-lifecycle-event-types",
+    :note
+    "Rung 1: all supplied hits (e-12fc6af3-1f49-4fda-8e32-7da45d73544f, e-07a33679-4e81-4f57-891f-240ddca8b74f, e-85803b15-f39e-4e10-b93e-5ecda094cfe2, e-c7269bf1-dc57-4133-b47b-085bcf7fc142, e-5247cb8c-6428-4622-a8d6-59b9318b1131) are embeddings-retrieval rankings with :listing true and :co-mention true; no clean hit exists. Rung 2 queries actually run: 'promotion lifecycle event types' and 'lifecycle event types fact warrant retired append-only' (both GET /api/alpha/evidence/text-search, limit=5, hydrate=true) returned only records whose bodies are this spider fleet's own prompts/turn-start envelopes — self-text/reflection, not external use. No clean external occurrence warrants an edge to any existing pattern.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

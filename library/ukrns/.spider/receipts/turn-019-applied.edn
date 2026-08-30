@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:40:01.568616416Z",
+ :turn 19,
+ :pattern "ukrns/provision-at-network-scale",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-019.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "ukrns/provision-at-network-scale",
+    :note
+    "Rung 1 supplied no clean hit: e-6ce2399a, e-c98f50e5, e-61aacb83, and e-1648b9de are :listing embeddings rankings (with :co-mention), and e-780fb5c5 is a :co-mention pattern-review pass that reaffirms the pattern's substance but states no relation to a specific target pattern. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'provision at network scale selectively local fit leverage roles', 'five roles evaluator convener institutional leads cross-institution capability placement', 'cross-institution comparison capability above institution level centralise', 'role compression absorbed mode single person roles codebook'. Every query returned only this spider's own prompt record (e-b342eff1, a zai turn-start self-reflection) or nothing. Its natural targets (equity/protected-interaction, equity/contribution-pathways, equity/visible-impact, ukrns/diagnose-before-prescribing) are already declared in @references, so a new edge to them would repeat an existing directive; no external evidence warrants any other edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

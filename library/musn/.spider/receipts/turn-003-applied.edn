@@ -1,0 +1,40 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:56:47.215942191Z",
+ :turn 3,
+ :pattern "musn/expensive-move-consent",
+ :gate
+ "/home/joe/code/futon3/./library/musn/.spider/gates/turn-003.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "musn/expensive-move-consent",
+     :to "aif/niche-construction",
+     :kind :see-also},
+    :rung 2,
+    :read ["musn/expensive-move-consent" "aif/niche-construction"],
+    :evidence
+    [{:id "e-e1980870-c223-4ec8-a1a8-cc06762698c3",
+      :via :text,
+      :query
+      "expensive-move-consent niche-construction INV-G parliament",
+      :excerpt
+      "Strong matches already — `ants/baseline-cyber-ant` (the parliament line literally), the `aif/` free-energy patterns, `aif/niche-construction` + `musn/expensive-move-consent` (INV-G), `f6/negative-space-duality`, and several graph patterns."}],
+    :state :proposed,
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}},
+    :cited
+    "Wide scans and human-contact moves require explicit consent and cost accounting.",
+    :at "2026-08-30",
+    :by "zai-2"}],
+  :proposals [],
+  :absences []}}

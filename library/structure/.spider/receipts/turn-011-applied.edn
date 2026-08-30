@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:31:19.743697273Z",
+ :turn 11,
+ :pattern "structure/what-problem-is-this-actually-solving",
+ :gate
+ "/home/joe/code/futon3/./library/structure/.spider/gates/turn-011.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "structure/what-problem-is-this-actually-solving",
+    :note
+    "Rung 1: no clean hit warrants an edge. The only flag-clean hits are e-b435dbc0 and e-c31005d6: e-b435dbc0 is a memory-attachment-review record listing only this one pattern-id (no second library target named), and e-c31005d6 (T10 planning) likewise mentions only the source pattern. All other hits are disqualified: e-585f83b0/e-4329b911/e-bdc775e9/e-e15941b6/e-ed298f83/e-0ec73e7a/e-674c3d35/e-2771c3cc/e-91f2e302 are :self-text/:reflection true; e-edf5b947, e-31a6515b, e-223c7e26, e-ace099a6, e-048d18a5, e-c98be2c7, e-4d2ad783, e-d244fe59, e-59611b36, e-3a7d3549, e-74bdc34d, e-a8603ec3, e-24ec0acb, e-a6b8cbf3 are :listing true (embeddings rankings, not warrants); e-a86f6979, e-af0d640e, emacs-acf873c8, emacs-0ef7461d, e-pull-offer-0ea67661, e-b2ff8c73, e-03b5a03b, e-d4cfd091 are :co-mention true without stating a relation (co-mention alone does not state a relation). Its obvious relations are already directives in its own @references [structure/cook-ting structure/hinge-point structure/whose-question-is-this], which may not be repeated. Rung 2: bounded GETs I actually ran — q='proxy problem substitution drift mission real problem' and q='what problem is this actually solving whose question hinge' (limit=5, hydrate=true). The returned ids (e-db2292ee, e-aaa293d3, e-c57ab4f5, e-d5710cfe, plus e-0bc41970/e-9a8931d4) resolved via GET /api/alpha/evidence/<id> to: this spider's own prompt/reflection records (self-text), an unrelated M-fold-ansatz mission report naming no library pattern, and a prior spider absence answer — none is external use asserting a relation from this pattern to an existing library/<target>.flexiarg. Neither rung warrants an edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

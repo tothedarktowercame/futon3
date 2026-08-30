@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:29:19.784569468Z",
+ :turn 11,
+ :pattern "storage/guardrails-vs-tooling",
+ :gate
+ "/home/joe/code/futon3/./library/storage/.spider/gates/turn-011.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "storage/guardrails-vs-tooling",
+    :note
+    "Rung 1: every runner-supplied hit carried :listing true (embeddings retrieval rankings) and, except e-195826d3-6d40-4701-8608-8b489ce2dd54 (:co-mention false), :co-mention true — records in which the pattern id merely appeared in a futon3a context-retrieval result list alongside storage/canonical-interface, storage/error-layer-hierarchy (already an @reference in the pattern text, so a repeat directive is also barred), hdm/non-capture, musn/tool-name-hygiene, and unrelated eoi/pacspine/vsat patterns. A listing is not a warrant, and co-mention does not state a relation; no clean non-listing, non-co-mention, non-reflection hit existed. Rung 2: ran GET text-search with 'guardrails internal tooling penholder authorization checks internal writers' (limit 5, hydrate true); the top-ranked returned record was this programme's own current-turn prompt reflection, and no external record asserted a directional relation between guardrails-vs-tooling and any existing library target. No @how or @see-also edge is externally warranted this round.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

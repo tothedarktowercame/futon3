@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:55:18.978956886Z",
+ :turn 4,
+ :pattern "war-machine/dynamic-over-static",
+ :gate
+ "/home/joe/code/futon3/./library/war-machine/.spider/gates/turn-004.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "war-machine/dynamic-over-static",
+    :note
+    "Rung 1: the single supplied hit is :listing true — a futon3a embeddings co-ranking with vsatlatarium/embodied-browsing — explicitly not a warrant, and no clean non-listing, non-self-text, non-co-mention, non-reflection hit was supplied. Rung 2: query 'dynamic over static animation momentum trajectory replay' returned only this spider session's own turn-start transcript (e-81b63c50, GET-verified). The pattern carries no @references, @why, @how, or @see-also directives, so nothing is recorded to duplicate but equally nothing is externally evidenced to add; its THEN clause names the table-as-drill-down renderer as a component of its own composition rather than citing another library pattern, and the spatial-over-tabular section sibling is a thematic neighbour without any export-verified record tying the ids. No clean rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg; returning no edge rather than minting one on an embeddings ranking alone.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T22:41:30.673875220Z",
+ :turn 14,
+ :pattern "sidecar/explicit-promotion-to-facts",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788129641588-5359-f8359648",
+  :response
+  "[{:edge {:from \"sidecar/explicit-promotion-to-facts\" :to \"sidecar/validation-enforcement-gate\" :kind :how} :cited \"Require a promote action that passes the validation gate and appends a promotion record.\" :evidence [{:id \"e-8931a4eb-6509-428a-9d11-db2aa4ef552f\" :via :tag :query \"exact live occurrence: sidecar/explicit-promotion-to-facts\" :excerpt \"memory-retrieval promotion-gate experimental-isolation lifecycle challenge\"}] :rung 1 :read [\"sidecar/explicit-promotion-to-facts\" \"sidecar/fact-lifecycle-event-types\"]}\n{:edge {:from \"sidecar/explicit-promotion-to-facts\" :to \"sidecar/fact-lifecycle-event-types\" :kind :see-also} :cited \"Define promotion log records with rationale and decided_by.\" :evidence [{:id \"e-8931a4eb-6509-428a-9d11-db2aa4ef552f\" :via :tag :query \"exact live occurrence: sidecar/explicit-promotion-to-facts\" :excerpt \"memory-retrieval promotion-gate experimental-isolation lifecycle challenge\"}] :rung 1 :read [\"sidecar/explicit-promotion-to-facts\" \"sidecar/fact-lifecycle-event-types\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-131a0ae3-8863-4783-a618-ecf91e6b8bb3"},
+ :response
+ "[{:edge {:from \"sidecar/explicit-promotion-to-facts\" :to \"sidecar/validation-enforcement-gate\" :kind :how} :cited \"Require a promote action that passes the validation gate and appends a promotion record.\" :evidence [{:id \"e-8931a4eb-6509-428a-9d11-db2aa4ef552f\" :via :tag :query \"exact live occurrence: sidecar/explicit-promotion-to-facts\" :excerpt \"memory-retrieval promotion-gate experimental-isolation lifecycle challenge\"}] :rung 1 :read [\"sidecar/explicit-promotion-to-facts\" \"sidecar/fact-lifecycle-event-types\"]}\n{:edge {:from \"sidecar/explicit-promotion-to-facts\" :to \"sidecar/fact-lifecycle-event-types\" :kind :see-also} :cited \"Define promotion log records with rationale and decided_by.\" :evidence [{:id \"e-8931a4eb-6509-428a-9d11-db2aa4ef552f\" :via :tag :query \"exact live occurrence: sidecar/explicit-promotion-to-facts\" :excerpt \"memory-retrieval promotion-gate experimental-isolation lifecycle challenge\"}] :rung 1 :read [\"sidecar/explicit-promotion-to-facts\" \"sidecar/fact-lifecycle-event-types\"]}]"}

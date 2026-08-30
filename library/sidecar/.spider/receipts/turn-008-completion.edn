@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:22:26.698972836Z",
+ :turn 8,
+ :pattern "sidecar/per-id-audit-timeline-linkage",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788124875828-4991-42b5540c",
+  :response
+  "[{:absence {:pattern \"sidecar/per-id-audit-timeline-linkage\" :note \"Rung 1: every supplied hit except e-0e94706d-cc8b-4e50-b0c0-83e696fe758d is an embeddings listing/co-mention, which is not a warrant; the one clean hit (:listing false, :self-text false, :co-mention false, :reflection false) only maps the pattern id to the field key ':per-id-timeline-linkage' and names no other library pattern, so it warrants no edge. Rung 2 (GET /api/alpha/evidence/text-search with queries 'sidecar per-id timeline proposal promotion fact', 'per-id-timeline-linkage', 'latest active state sidecar inspect per-id view', and 'contiguous narrative append-only logs inspectable histories chain steps', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts and turn-round tool transcripts — self-text/reflection, not external use — so neither rung warrants an edge to any existing library/<target>.flexiarg.\" :evidence nil}}]",
+  :agent-id "zai-2",
+  :session-id "zai-52a0589e-83a2-453f-9070-ca1cc779fc73"},
+ :response
+ "[{:absence {:pattern \"sidecar/per-id-audit-timeline-linkage\" :note \"Rung 1: every supplied hit except e-0e94706d-cc8b-4e50-b0c0-83e696fe758d is an embeddings listing/co-mention, which is not a warrant; the one clean hit (:listing false, :self-text false, :co-mention false, :reflection false) only maps the pattern id to the field key ':per-id-timeline-linkage' and names no other library pattern, so it warrants no edge. Rung 2 (GET /api/alpha/evidence/text-search with queries 'sidecar per-id timeline proposal promotion fact', 'per-id-timeline-linkage', 'latest active state sidecar inspect per-id view', and 'contiguous narrative append-only logs inspectable histories chain steps', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts and turn-round tool transcripts — self-text/reflection, not external use — so neither rung warrants an edge to any existing library/<target>.flexiarg.\" :evidence nil}}]"}

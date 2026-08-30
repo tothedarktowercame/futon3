@@ -1,0 +1,155 @@
+[{:pattern "sidecar/append-only-semantic-audit",
+  :note
+  "Rung 1 (exact live occurrence) was exhausted: every supplied hit is either :listing true (an embeddings retrieval ranking, not a warrant), :self-text/:reflection true (this spider programme's own prompt/output), or a co-mention without a stated relation; none has all of :listing/:self-text/:co-mention/:reflection false, so no clean rung-1 warrant exists. Rung 2 text-search 'append-only-semantic-audit provenance store boundary duplicate ids' returned only e-6d663878-ee4e-4907-ba47-5202f0b5028e, which is this session's own dispatch prompt (self-text, not external use). No warranted non-duplicate edge from either rung; the adjacent section patterns (sidecar/fact-lifecycle-event-types, sidecar/per-id-audit-timeline-linkage) appear only as co-mentions in embeddings listings and in the pattern's own NEXT-STEPS, which is a self-citation, not external evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "sidecar/artifact-entity-mention-grounding",
+  :note
+  "Rung 1 (exact live occurrence 'sidecar/artifact-entity-mention-grounding') was exhausted: every supplied hit is either :listing true (embeddings retrieval rankings, not warrants) or non-listing records with :co-mention true — mission-brief used-lists (e-68ed559e: a :used vector listing the source among eight patterns with no stated relation), file-read transcripts (e-72a12183), and a find-command loop over a directory listing (e-fbe9200f) — co-mention alone does not state a relation per the rules. No hit has all four flags false. Rung 2 text-search 'artifact-entity-mention-grounding deterministic anchors alias span ingestion' returned only e-9478ffec-f4c5-4c6a-8a1f-162b4c002daf, this session's own dispatch prompt (self-text). The natural sibling candidates (sidecar/tri-store-separation, sidecar/explicit-promotion-to-facts, exotic/tri-store-lineage) appear only inside mission used-lists and retrieval rankings. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "sidecar/bridge-triple-escalator",
+  :note
+  "Rung 1 (exact live occurrence) was exhausted: every external hit is :listing true (embeddings retrieval rankings — including the chain-builder-softness-accounting and tri-store-separation pairings — context only per the rules); the two non-listing hits are :self-text/:reflection true (this spider fleet's own earlier prompts/outputs, one quoting a co-ranking list and one a prior absence note). The one interesting non-listing, non-self-text record (emacs-551eb56e, a scoring dump showing bridge-triple-escalator at 0.4160 alongside agent/escalation-cost-vs-risk and agency/single-routing-authority) carries :co-mention true — co-occurring similarity scores with no stated relation. No hit has all four flags false with a stated relation to a library/<target>.flexiarg. Rung 2 text-search 'bridge-triple-escalator curated bridge triples justify hops' returned only e-417ac65e-d84e-44cf-81bf-212933ade324, this session's own dispatch prompt (self-text). No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "sidecar/chain-builder-softness-accounting",
+  :note
+  "Rung 1 (exact live occurrence 'sidecar/chain-builder-softness-accounting') was exhausted: every supplied hit is :listing true (embeddings retrieval rankings over queries unrelated to any single target — bridge-triple-escalator, tri-store-separation, aif/experimental-comparison-of-EFE-variants appear only as ranking neighbours with no stated relation). No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'chain-builder-softness-accounting softness per hop chain recovery' returned e-463a56f2 (this session's own dispatch prompt, self-text) and e-417ac65e (this session's own earlier dispatch prompt, self-text). No external record ties this pattern to a library/<target>.flexiarg with a stated relation. No warranted non-duplicate edge from either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "sidecar/per-id-audit-timeline-linkage",
+  :note
+  "Rung 1: every supplied hit except e-0e94706d-cc8b-4e50-b0c0-83e696fe758d is an embeddings listing/co-mention, which is not a warrant; the one clean hit (:listing false, :self-text false, :co-mention false, :reflection false) only maps the pattern id to the field key ':per-id-timeline-linkage' and names no other library pattern, so it warrants no edge. Rung 2 (GET /api/alpha/evidence/text-search with queries 'sidecar per-id timeline proposal promotion fact', 'per-id-timeline-linkage', 'latest active state sidecar inspect per-id view', and 'contiguous narrative append-only logs inspectable histories chain steps', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts and turn-round tool transcripts — self-text/reflection, not external use — so neither rung warrants an edge to any existing library/<target>.flexiarg.",
+  :evidence nil,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "sidecar/proposal-ledger-for-fuzzy-output",
+  :note
+  "Rung 1: every supplied hit carries :listing true (embeddings retrieval rankings); several are also :co-mention true, and none is a clean non-reflection hit (:listing, :self-text, :co-mention, :reflection all false), so no rung-1 edge is warranted. Rung 2 (GET /api/alpha/evidence/text-search with queries 'proposal ledger fuzzy output SQLite promotion evidence' and 'fuzzy candidates review provenance neighbor distances evidence_json', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts — self-text/reflection, not external use — so neither rung yields a clean external record naming a relation between sidecar/proposal-ledger-for-fuzzy-output and any other existing library/<target>.flexiarg.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "sidecar/sense-shift-gate",
+  :note
+  "Rung 1: all supplied hits carry :listing true (embeddings retrieval rankings), most also :co-mention true; there is no clean hit with :listing, :self-text, :co-mention, and :reflection all false, so no rung-1 edge is warranted. Rung 2 (GET /api/alpha/evidence/text-search with queries 'sense shift gate typed arrows bridge triples semantic drift' and 'sense-shift-issue shift-annotation chain builder broaden narrow', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts — self-text/reflection — with no external record naming a relation between sidecar/sense-shift-gate and any other existing library/<target>.flexiarg, so neither rung warrants an edge.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "sidecar/tri-store-separation",
+  :note
+  "Rung 1: no supplied hit is clean — every hit has :listing true, :self-text true (with :reflection true), or :co-mention true; the non-listing candidates (e-68ed559e-c591-42fd-a237-06f2c18dd77e, e-aec3f325-2d67-4a71-963a-96bac48bb08d, e-fbe9200f-3ff1-40e1-ba14-339a80b455c2, e-9ff0bb75-81ea-4a55-bd7b-e1b7b30ecde2, emacs-774921ad88d714cd81702357041766dc) are all :co-mention true, and co-mention alone does not state a relation. Rung 2 (GET /api/alpha/evidence/text-search with queries 'tri-store separation facts memes notions XTDB SQLite ANN trust' and 'fuzzy output becomes fact explicit promotion facts store boundary', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts and turn-round reads of the pattern file itself — self-text/reflection — so neither rung warrants an edge from sidecar/tri-store-separation to any other existing library/<target>.flexiarg.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "sidecar/typed-kolmogorov-arrows",
+  :note
+  "Rung 1: the only clean hit (e-cf047cbf-76f0-484d-92a5-d32d40b162f7) states the pattern 'directly bridges the Kolmogorov/BHK framing to the cascade' but names no other library pattern id as target; all other hits are :listing true embeddings rankings or :co-mention true. Rung 2 (GET /api/alpha/evidence/text-search with queries 'typed kolmogorov arrows with tri-store separation' and 'typed arrows mode confidence status chain steps inspectable', each limit=5&hydrate=true) yielded one warranted joint-use record — the PSR-2 pairing with sidecar/tri-store-separation — but the runner rejected that edge as a duplicate, meaning the directive was already recorded this cycle; the remaining rung-2 results were only this spider fleet's own turn-start prompts (self-text/reflection). No additional warranted edge to a not-yet-linked existing library/<target>.flexiarg was found in either rung.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "sidecar/validation-enforcement-gate",
+  :note
+  "Rung 1: no clean hit exists — the non-listing hits (e-061b1363-3429-4c15-93e0-76a67aa1ab51, e-af78efff-4295-4417-afd0-82a0f8b439cc, e-d35d1851-5151-40fd-aeef-de438022e311, e-pull-offer-16c6285c-2ab9-4c0f-9694-d40fcc48e512) all carry :reflection true (they are this spider fleet's own prior psr_select/attestation traffic) and most also :co-mention true; the rest are :listing true embeddings rankings, which are not warrants. Rung 2 (GET /api/alpha/evidence/text-search with queries 'validation enforcement gate write-time invariants reject promotion pathway' and 'sidecar validation clj append-only writes proposals promotions schema', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts — self-text/reflection — with no external record naming a relation between sidecar/validation-enforcement-gate and any other existing library/<target>.flexiarg, so neither rung warrants an edge.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "sidecar/fact-lifecycle-event-types",
+  :note
+  "Rung 1: all supplied hits (e-12fc6af3-1f49-4fda-8e32-7da45d73544f, e-07a33679-4e81-4f57-891f-240ddca8b74f, e-85803b15-f39e-4e10-b93e-5ecda094cfe2, e-c7269bf1-dc57-4133-b47b-085bcf7fc142, e-5247cb8c-6428-4622-a8d6-59b9318b1131) are embeddings-retrieval rankings with :listing true and :co-mention true; no clean hit exists. Rung 2 queries actually run: 'promotion lifecycle event types' and 'lifecycle event types fact warrant retired append-only' (both GET /api/alpha/evidence/text-search, limit=5, hydrate=true) returned only records whose bodies are this spider fleet's own prompts/turn-start envelopes — self-text/reflection, not external use. No clean external occurrence warrants an edge to any existing pattern.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}]

@@ -1,0 +1,37 @@
+{:response
+ "[{:edge {:from \"realtime/loop-success-signals\" :to \"realtime/structured-events-only\" :kind :see-also :cited \"Treat the loop as healthy when batches stay small, latency stays low, and JSONL output is continuous.\" :evidence [{:id \"e-b8b32513-84e8-4eb7-a620-11f37b9966b1\" :via :text :query \"loop-success-signals structured-events-only carried whistle bell traffic\" :excerpt \"- `realtime/loop-success-signals` + `realtime/structured-events-only` carried the whistle/bell traffic\"}] :rung 2 :read [\"realtime/loop-success-signals\" \"realtime/structured-events-only\"] :reason \"An external coordination observation (claude-2, session 66e16ba5) states the two patterns jointly carried whistle/bell traffic — a peer-technique pairing, warranting see-also, not how/why. Rung-1 hits were all :listing or :co-mention retrieval rankings with no clean flag-false record, so the edge rests on the rung-2 text-search hit fetched and verified by id.\"}}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788124908830-4994-34428bae",
+  :response
+  "[{:edge {:from \"realtime/loop-success-signals\" :to \"realtime/structured-events-only\" :kind :see-also :cited \"Treat the loop as healthy when batches stay small, latency stays low, and JSONL output is continuous.\" :evidence [{:id \"e-b8b32513-84e8-4eb7-a620-11f37b9966b1\" :via :text :query \"loop-success-signals structured-events-only carried whistle bell traffic\" :excerpt \"- `realtime/loop-success-signals` + `realtime/structured-events-only` carried the whistle/bell traffic\"}] :rung 2 :read [\"realtime/loop-success-signals\" \"realtime/structured-events-only\"] :reason \"An external coordination observation (claude-2, session 66e16ba5) states the two patterns jointly carried whistle/bell traffic — a peer-technique pairing, warranting see-also, not how/why. Rung-1 hits were all :listing or :co-mention retrieval rankings with no clean flag-false record, so the edge rests on the rung-2 text-search hit fetched and verified by id.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-38512e23-d29d-46ad-b714-4ceeb2b3c02e"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "realtime/loop-success-signals",
+    :to "realtime/structured-events-only",
+    :kind :see-also,
+    :cited
+    "Treat the loop as healthy when batches stay small, latency stays low, and JSONL output is continuous.",
+    :evidence
+    [{:id "e-b8b32513-84e8-4eb7-a620-11f37b9966b1",
+      :via :text,
+      :query
+      "loop-success-signals structured-events-only carried whistle bell traffic",
+      :excerpt
+      "- `realtime/loop-success-signals` + `realtime/structured-events-only` carried the whistle/bell traffic"}],
+    :rung 2,
+    :read
+    ["realtime/loop-success-signals"
+     "realtime/structured-events-only"],
+    :reason
+    "An external coordination observation (claude-2, session 66e16ba5) states the two patterns jointly carried whistle/bell traffic — a peer-technique pairing, warranting see-also, not how/why. Rung-1 hits were all :listing or :co-mention retrieval rankings with no clean flag-false record, so the edge rests on the rung-2 text-search hit fetched and verified by id."}}},
+ :turn 9,
+ :event :seat-output-invalid,
+ :at "2026-08-30T21:22:24.335395419Z",
+ :attempt 1,
+ :pattern "realtime/loop-success-signals"}

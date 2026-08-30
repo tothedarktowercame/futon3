@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:23:56.366987787Z",
+ :turn 10,
+ :pattern "realtime/mode-gate",
+ :seat "zai-1",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788125004905-5004-ef1863f8",
+  :response
+  "[{:absence {:pattern \"realtime/mode-gate\" :note \"Rung 1: all supplied hits are :listing true embeddings rankings or :co-mention true records (no clean hit with :listing, :self-text, :co-mention, :reflection all false), so no rung-1 edge is warranted. Rung 2: ran GET /api/alpha/evidence/text-search?q=mode-gate%20dead-code-hygiene%20carried%20the%20auto-class%20discipline&limit=5&hydrate=true, which returned e-b8b32513 (claude-2 observation: `code-coherence/dead-code-hygiene` + `realtime/mode-gate` carried the auto-class discipline). That edge was proposed in the prior pass and the runner rejected it as an invalid or duplicate edge item — the target does not resolve in this section's existing pattern set (section ids are realtime/* only) or the directive is already recorded — so re-proposing would repeat an invalid directive. No other rung-2 record states a relation between realtime/mode-gate and another existing library pattern.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-38512e23-d29d-46ad-b714-4ceeb2b3c02e"},
+ :response
+ "[{:absence {:pattern \"realtime/mode-gate\" :note \"Rung 1: all supplied hits are :listing true embeddings rankings or :co-mention true records (no clean hit with :listing, :self-text, :co-mention, :reflection all false), so no rung-1 edge is warranted. Rung 2: ran GET /api/alpha/evidence/text-search?q=mode-gate%20dead-code-hygiene%20carried%20the%20auto-class%20discipline&limit=5&hydrate=true, which returned e-b8b32513 (claude-2 observation: `code-coherence/dead-code-hygiene` + `realtime/mode-gate` carried the auto-class discipline). That edge was proposed in the prior pass and the runner rejected it as an invalid or duplicate edge item — the target does not resolve in this section's existing pattern set (section ids are realtime/* only) or the directive is already recorded — so re-proposing would repeat an invalid directive. No other rung-2 record states a relation between realtime/mode-gate and another existing library pattern.\"}}]"}

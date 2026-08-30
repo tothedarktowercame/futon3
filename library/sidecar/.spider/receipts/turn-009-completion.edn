@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T21:23:00.308460487Z",
+ :turn 9,
+ :pattern "sidecar/proposal-ledger-for-fuzzy-output",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788124948200-4998-522a0606",
+  :response
+  "[{:absence {:pattern \"sidecar/proposal-ledger-for-fuzzy-output\" :note \"Rung 1: every supplied hit carries :listing true (embeddings retrieval rankings); several are also :co-mention true, and none is a clean non-reflection hit (:listing, :self-text, :co-mention, :reflection all false), so no rung-1 edge is warranted. Rung 2 (GET /api/alpha/evidence/text-search with queries 'proposal ledger fuzzy output SQLite promotion evidence' and 'fuzzy candidates review provenance neighbor distances evidence_json', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts — self-text/reflection, not external use — so neither rung yields a clean external record naming a relation between sidecar/proposal-ledger-for-fuzzy-output and any other existing library/<target>.flexiarg.\"}}]",
+  :agent-id "zai-2",
+  :session-id "zai-52a0589e-83a2-453f-9070-ca1cc779fc73"},
+ :response
+ "[{:absence {:pattern \"sidecar/proposal-ledger-for-fuzzy-output\" :note \"Rung 1: every supplied hit carries :listing true (embeddings retrieval rankings); several are also :co-mention true, and none is a clean non-reflection hit (:listing, :self-text, :co-mention, :reflection all false), so no rung-1 edge is warranted. Rung 2 (GET /api/alpha/evidence/text-search with queries 'proposal ledger fuzzy output SQLite promotion evidence' and 'fuzzy candidates review provenance neighbor distances evidence_json', each limit=5&hydrate=true) returned only this spider fleet's own turn-start prompts — self-text/reflection, not external use — so neither rung yields a clean external record naming a relation between sidecar/proposal-ledger-for-fuzzy-output and any other existing library/<target>.flexiarg.\"}}]"}

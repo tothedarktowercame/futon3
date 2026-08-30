@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:57:22.061636546Z",
+ :turn 4,
+ :pattern "sidecar/chain-builder-softness-accounting",
+ :gate
+ "/home/joe/code/futon3/./library/sidecar/.spider/gates/turn-004.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "sidecar/chain-builder-softness-accounting",
+    :note
+    "Rung 1 (exact live occurrence 'sidecar/chain-builder-softness-accounting') was exhausted: every supplied hit is :listing true (embeddings retrieval rankings over queries unrelated to any single target — bridge-triple-escalator, tri-store-separation, aif/experimental-comparison-of-EFE-variants appear only as ranking neighbours with no stated relation). No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'chain-builder-softness-accounting softness per hop chain recovery' returned e-463a56f2 (this session's own dispatch prompt, self-text) and e-417ac65e (this session's own earlier dispatch prompt, self-text). No external record ties this pattern to a library/<target>.flexiarg with a stated relation. No warranted non-duplicate edge from either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:30:31.593102889Z",
+ :turn 10,
+ :pattern "structure/unresolved-tensions-at-closure",
+ :gate
+ "/home/joe/code/futon3/./library/structure/.spider/gates/turn-010.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "structure/unresolved-tensions-at-closure",
+    :note
+    "Rung 1: every runner-supplied exact-occurrence hit is disqualified — e-4d40dff5 and e-83e15101 are :self-text/:reflection true; e-1939b465 and e-4d40dff5 are :co-mention true (co-mention of a five-pattern co-application checklist that itself says it warrants 'no single directed edge'); all remaining hits (e-fb944245, e-84480265, e-ff9c5b61, e-7199a5ea, e-458dd963, e-a2cfe201, e-0e3728da, e-3507757d, e-ccf390be, e-aa34d5a5, e-83b19b1c, e-8111ca66, e-5c39b7fb, e-c7d3d007, e-cf049622, e-5805de39, e-5c525265, e-ce15a870, e-7749ba53, e-116e7b00, e-ddcbb50d, e-7bf9dd73, e-c715a414, e-2ab44c7c, e-c3b56a02, e-63b6ea9c, e-e37907ef, e-6972827c, e-aaf12ba5, e-00b8a13d, e-e640818f, e-8100182a, e-50df83d1) are :listing true — embeddings rankings, explicitly not a warrant. No clean rung-1 hit exists. The pattern's obvious relations are already directives in its own file (@references [structure/cook-ting structure/hinge-point structure/what-problem-is-this-actually-solving futon-theory/sorry-preservation]), and repeating those is forbidden. Rung 2: bounded GETs I actually ran — q='sorry-preservation unresolved tensions closure mission', q='bind open questions to closure mechanisms tensions hinge', q='structural tension as observation preserved void closure' (limit=5, hydrate=true). The top-scoring returned records (e-465360a4, e-0bc41970, e-9a8931d4, and the sorry-preservation query's results) resolved, via GET /api/alpha/evidence/<id>, to this spider fleet's own prompt texts (self-text), not external use; the remaining results were the same embeddings-listing records already disqualified. No record states a relation from this pattern to any existing library/<target>.flexiarg not already referenced, so neither rung warrants an edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

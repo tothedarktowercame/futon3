@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:33:18.685852732Z",
+ :turn 18,
+ :pattern "storage/postcommit-materialization-gate",
+ :gate
+ "/home/joe/code/futon3/./library/storage/.spider/gates/turn-018.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "storage/postcommit-materialization-gate",
+    :note
+    "Rung 1: every runner-supplied hit carried :listing true and :co-mention true — embeddings context-retrieval rankings co-listing the pattern with storage/durability-first, storage/durability-throughput-gate, storage/canonical-interface (all three already @references, so repeat directives are barred), plus storage/reproducible-mirroring, agency/loud-failure, realtime/authoritative-transcript, memory/no-tightening-while-held, or/snapshot-with-story-doi, and unrelated pacspine/vsat patterns. A listing is not a warrant and co-mention does not state a relation; no clean non-listing, non-co-mention, non-reflection hit existed. Rung 2: ran GET text-search with 'postcommit materialization gate read-your-write durably committed queryable' (limit 5, hydrate true); the top-ranked returned record was this programme's own current-turn prompt reflection, and no external record asserted a directional relation between postcommit-materialization-gate and any existing library target not already referenced. No new @how or @see-also edge is externally warranted this round.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

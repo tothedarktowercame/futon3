@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:16:44.396456347Z",
+ :turn 16,
+ :pattern "musn/selection-before-write",
+ :gate
+ "/home/joe/code/futon3/./library/musn/.spider/gates/turn-016.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "musn/selection-before-write",
+    :note
+    "Rung 1 supplied one clean hit, e-0075cc76-902f-4bde-8fa2-8482e3e2c54b (:listing/:self-text/:co-mention/:reflection all false — a feature-review card whose cascade names only this pattern), but it names no second pattern id and states no relation, so it cannot warrant an edge. All other rung-1 entries are :listing true embeddings rankings (placing the pattern next to musn/plan-before-tool, musn/use-requires-evidence, musn/psr-pur-real-actions, orchestration/pattern-warranted-choice-point etc. as retrieval neighbors — co-mention in listings, not stated relations). Rung 2 query actually run — 'pattern selection PSR must precede implement update' — returned only this spider fleet's own turn-start prompt reflection (e-6ba630e4). No external record states a relation from musn/selection-before-write to any other existing pattern.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

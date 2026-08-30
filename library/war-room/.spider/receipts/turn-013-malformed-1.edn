@@ -1,0 +1,40 @@
+{:response
+ "[{:edge {:from \"war-room/wr-19-tension-must-generate-not-only-rank\" :to \"aif/candidate-pattern-action-space\" :kind :how :by \"zai-1\" :at \"2026-08-30\" :read [\"war-room/wr-19-tension-must-generate-not-only-rank\" \"aif/candidate-pattern-action-space\"] :cited \"Wire structural tension as a candidate source that generates actions, not merely as a weight that ranks candidates generated elsewhere.\" :evidence [{:id \"emacs-100713403c64ff6b4f792a1237477ef0\" :via :text :query \"candidate-pattern-action-space WR-19 tension must generate not only rank rationale\" :excerpt \"| `aif/candidate-pattern-action-space` | WR-19 tension must generate, not only rank |\"}] :rung 2 :state :proposed :reason \"Rung 1 supplies no clean warrant: every full-id hit is an embeddings listing or spider-fleet reflection; the all-flags-false WR-19 hits discuss the ruling's status (red rings, holes) without naming another library pattern id as a relation. Rung 2: query 'candidate-pattern-action-space WR-19 tension must generate not only rank rationale' returned GET-verified claude-13 record emacs-100713403c64ff6b4f792a1237477ef0, whose pilot table explicitly pairs aif/candidate-pattern-action-space (the how) with WR-19 (the rationale) — a stated implementation-of relation, target verified at futon3/library/aif/candidate-pattern-action-space.flexiarg. Written as @how (the named method by which the ruling is carried out), the direction README §5a assigns to an editor.\"}}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788126752896-5158-5f9a3297",
+  :response
+  "[{:edge {:from \"war-room/wr-19-tension-must-generate-not-only-rank\" :to \"aif/candidate-pattern-action-space\" :kind :how :by \"zai-1\" :at \"2026-08-30\" :read [\"war-room/wr-19-tension-must-generate-not-only-rank\" \"aif/candidate-pattern-action-space\"] :cited \"Wire structural tension as a candidate source that generates actions, not merely as a weight that ranks candidates generated elsewhere.\" :evidence [{:id \"emacs-100713403c64ff6b4f792a1237477ef0\" :via :text :query \"candidate-pattern-action-space WR-19 tension must generate not only rank rationale\" :excerpt \"| `aif/candidate-pattern-action-space` | WR-19 tension must generate, not only rank |\"}] :rung 2 :state :proposed :reason \"Rung 1 supplies no clean warrant: every full-id hit is an embeddings listing or spider-fleet reflection; the all-flags-false WR-19 hits discuss the ruling's status (red rings, holes) without naming another library pattern id as a relation. Rung 2: query 'candidate-pattern-action-space WR-19 tension must generate not only rank rationale' returned GET-verified claude-13 record emacs-100713403c64ff6b4f792a1237477ef0, whose pilot table explicitly pairs aif/candidate-pattern-action-space (the how) with WR-19 (the rationale) — a stated implementation-of relation, target verified at futon3/library/aif/candidate-pattern-action-space.flexiarg. Written as @how (the named method by which the ruling is carried out), the direction README §5a assigns to an editor.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-1ee92099-c284-4120-b047-066f85df5d15"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:rung 2,
+    :read
+    ["war-room/wr-19-tension-must-generate-not-only-rank"
+     "aif/candidate-pattern-action-space"],
+    :evidence
+    [{:id "emacs-100713403c64ff6b4f792a1237477ef0",
+      :via :text,
+      :query
+      "candidate-pattern-action-space WR-19 tension must generate not only rank rationale",
+      :excerpt
+      "| `aif/candidate-pattern-action-space` | WR-19 tension must generate, not only rank |"}],
+    :state :proposed,
+    :cited
+    "Wire structural tension as a candidate source that generates actions, not merely as a weight that ranks candidates generated elsewhere.",
+    :reason
+    "Rung 1 supplies no clean warrant: every full-id hit is an embeddings listing or spider-fleet reflection; the all-flags-false WR-19 hits discuss the ruling's status (red rings, holes) without naming another library pattern id as a relation. Rung 2: query 'candidate-pattern-action-space WR-19 tension must generate not only rank rationale' returned GET-verified claude-13 record emacs-100713403c64ff6b4f792a1237477ef0, whose pilot table explicitly pairs aif/candidate-pattern-action-space (the how) with WR-19 (the rationale) — a stated implementation-of relation, target verified at futon3/library/aif/candidate-pattern-action-space.flexiarg. Written as @how (the named method by which the ruling is carried out), the direction README §5a assigns to an editor.",
+    :from "war-room/wr-19-tension-must-generate-not-only-rank",
+    :kind :how,
+    :at "2026-08-30",
+    :by "zai-1",
+    :to "aif/candidate-pattern-action-space"}}},
+ :turn 13,
+ :event :seat-output-invalid,
+ :at "2026-08-30T21:54:57.448535818Z",
+ :attempt 1,
+ :pattern "war-room/wr-19-tension-must-generate-not-only-rank"}

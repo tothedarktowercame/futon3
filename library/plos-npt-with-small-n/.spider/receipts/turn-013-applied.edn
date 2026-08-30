@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:01:33.863862509Z",
+ :turn 13,
+ :pattern "plos-npt-with-small-n/open-science-phase-register",
+ :gate
+ "/home/joe/code/futon3/./library/plos-npt-with-small-n/.spider/gates/turn-013.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "plos-npt-with-small-n/open-science-phase-register",
+    :note
+    "Rung 1: all three runner-supplied hits (e-1fdf4be0, e-ab475231, e-9ee45cbf) carry :listing true — futon3a embeddings rankings co-ranking this pattern with unrelated siblings (devmap-coherence/ifr-f7-upa-upekkha, equity/protected-...) — explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=open%20science%20practices%20barriers%20incentives%20instruments%20findings&limit=5&hydrate=true (1 hit: e-a9558694, this spider's own current prompt — self-text/reflection), ?q=keywords%20submission%20PLOS%20open%20science (5 hits: e-ab475231 and e-9ee45cbf, both already-known claude-4 context-retrieval listings; e-a9558694 self-prompt; e-d20e51d6 and e-344d481d and e-978b5ad8, which I fetched and confirmed are zai spider-fleet turn records — reflection/self-text), and ?q=phased%20review%20interview%20workshop%20generalizability%20data%20sharing (2 hits: the same self-prompt and e-30d27982, another spider prompt). No clean external record states or demonstrates a relation between this pattern and any existing library target; its @references already name multi-method-triangulation-ladder and barrier-enabler-strategy-display, and no evidence warrants adding another directive.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

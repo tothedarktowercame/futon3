@@ -1,14 +1,25 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T14:57:18.471263362Z",
+ :at "2026-08-30T22:02:39.770015516Z",
  :turn 22,
- :pattern "war-room/wr-3-social-exotype-before-implementation",
+ :pattern "war-room/wr-27-a-loop-is-born-instrumented-for-its-gain",
  :gate
  "/home/joe/code/futon3/./library/war-room/.spider/gates/turn-022.edn",
  :changes
  {:attestations [],
   :proposals [],
   :absences
-  [{:pattern "war-room/wr-3-social-exotype-before-implementation",
+  [{:pattern "war-room/wr-27-a-loop-is-born-instrumented-for-its-gain",
     :note
-    "Rung 1: the runner supplied zero exact-occurrence hits for this pattern id, so no rung-1 warrant exists. Rung 2: query 'WR-3 social exotype before implementation Agency Forum' returned only this spider session's own turn-start transcripts (e-1bbbc249 — this turn's whistle — and e-d0ac4421, an earlier wr-10 turn-start, both GET-verified). No textual evidence record documents the WR-3 ruling, its 2026-02-09 provenance, the three failed social-layer attempts (Agency across three generations, abandoned Forum, fix-cycle bridge), or a tie from this pattern to another library pattern. The artifacts its body cites (the social ARGUMENT flexiarg, futon3b's exotype-first success, futon5 mana-gated missions) are flexiarg arguments and missions referenced as evidence for the ruling, not library/<target>.flexiarg patterns named as kin; a social/ARGUMENT flexiarg exists in the library, but the ruling cites it as its own evidence clause rather than as a pattern-to-pattern directive, and no export-verified record ties the two by id. The pattern carries no @references, @why, @how, or @see-also directives, so nothing is recorded to duplicate but equally nothing is externally evidenced to add. No rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg."}]}}
+    "Rung 1: no clean warrant — every full-id hit is an embeddings listing, a spider-fleet reflection (e-43204e88 records this fleet's prior WR-27 absence; e-26a70b6e records its accepted application with no directive added; e-585f83b0/e-4329b911/e-81f8ddc4/e-2ebbbbef are spider prompts quoting patterns that already declare @why wr-27), or a psr_search pull-offer list. The non-listing external WR-27 hits apply or assess the ruling without warranting a new edge from WR-27's side: emacs-5e9d902d and emacs-67ec76bc record WR-27 holds-open at R8/R14 and its @why to WR-16; emacs-48332c7f confirms the reciprocal wr-24 ↔ wr-27 @references (already declared in this pattern's header); emacs-100713403c64ff6b4f792a1237477ef0 pairs 'aif/expected-free-energy-scorecard | WR-27' in the claude-13 pilot table whose reciprocal @how edges this runner has rejected three times this session as duplicates (aif/expected-free-energy-scorecard's own header carries the @why wr-27 editorial directive); the problems/* gain patterns (per-tick-mismatch-instruments-outer-loop-gain, commitment-temperature-is-instrumented-as-gain) likewise declare @why wr-27 in their own files, so a reverse edge repeats an existing directive. Rung 2: query 'WR-27 loop born instrumented for its gain demand-paged mining' returned only fleet reflections and session turn-starts (e-43204e88, e-26f81c68, e-cb7a3164, e-dfb8f0d8, e-f72cb006 — GET-verified as this turn's own prompt). The pattern's header already declares @why war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels, @holds-open R8 R14, and @references [war-room/wr-24-...]; every stated kinship in the evidence is already recorded in the opposite direction, so no warranted non-duplicate edge exists.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

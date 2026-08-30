@@ -1,14 +1,27 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T14:52:00.058839690Z",
+ :at "2026-08-30T21:58:54.532987475Z",
  :turn 17,
- :pattern "war-room/wr-23-upstream-trackers-are-stack-surfaces",
+ :pattern
+ "war-room/wr-22-logic-model-before-code-is-a-sanctioned-verify-method",
  :gate
  "/home/joe/code/futon3/./library/war-room/.spider/gates/turn-017.edn",
  :changes
  {:attestations [],
   :proposals [],
   :absences
-  [{:pattern "war-room/wr-23-upstream-trackers-are-stack-surfaces",
+  [{:pattern
+    "war-room/wr-22-logic-model-before-code-is-a-sanctioned-verify-method",
     :note
-    "Rung 1: the runner supplied zero exact-occurrence hits for this pattern id, so no rung-1 warrant exists. Rung 2: query 'WR-23 upstream trackers stack surfaces deployment evidence' returned only this spider session's own turn-start transcript (e-379c3543, GET-verified). No textual evidence record documents the WR-23 ruling, its 2026-07-17 provenance, the War Bulletin 13/14 evidence (XTDB issue 5637, the maintainer reply of 2026-07-28), or a tie from this pattern to another library pattern; the artifacts it cites (war bulletins, the M-cold-chain ladder, upstream tracker issues) are bulletins, missions, and external issues, not library/<target>.flexiarg patterns. The pattern carries no @references, @why, @how, or @see-also directives, so nothing is recorded to duplicate but equally nothing is externally evidenced to add. No rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg; returning no edge rather than minting one unevidenced."}]}}
+    "Rung 1: no clean warrant — all full-id hits are embeddings listings or spider-fleet reflections (e-e902f77d records this fleet's earlier WR-22 absence; e-0259bacf its accepted completion with no directive). The non-listing external hits are provenance only: e-49fbb5f0 (bulletin-10) evidences the method's first reuse ('Finding 6: the logic-model-before-code method captured and proven on its first reuse') and enumerates the WR-18→WR-22 batch without a directed tie; emacs-3de65852, emacs-ca1240b4, emacs-9dddcd87, e-6e27119a are 'Add War Room patterns WR-18 through WR-22' commit records; emacs-3451c448 is the promotion checklist; emacs-1286a2ef places WR-22 in the 9-cell grid as a co-mention. None names another library pattern in stated relation to WR-22. Rung 2: query 'WR-22 logic model before code sanctioned verify method adversarial traces' returned e-279b79e9 — GET-verified as this session's own turn-start prompt (self-text/reflection) — and e-9b976a3c (reflection), both excluded. The pattern's own header already declares @references [mission-coherence/logic-model-before-code social/tension-before-code], and its context clause explicitly distinguishes it from the tests-first sibling, so any edge to those targets would repeat existing directives; no new existing target is warranted by external evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

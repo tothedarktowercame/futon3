@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:06:06.730911762Z",
+ :turn 15,
+ :pattern "plos-npt-with-small-n/quote-table-not-quote-flood",
+ :gate
+ "/home/joe/code/futon3/./library/plos-npt-with-small-n/.spider/gates/turn-015.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "plos-npt-with-small-n/quote-table-not-quote-flood",
+    :note
+    "Rung 1: no clean hit. e-150340ec, e-d30f95e5, e-3887944f-as-reflected, e-0fac21b7, e-b6f427ba are :self-text/:reflection true (earlier spider-fleet rung-1 reports and export listings; e-0fac21b7 even notes that quote-table-not-quote-flood already links in from the writing-coherence side). Every other runner-supplied hit (e-db3322b9, e-349f3058, e-04f0449e, e-22d5a84a, e-1d6ef595, e-a518c710, e-12f03875, e-92ce8bb1, e-b1412b65, e-e2f81506, e-15e3e48b, e-6198138c) is :listing true — futon3a embeddings rankings co-ranking this pattern with unrelated siblings (system-coherence/present-graph-topology-not-adjacency-lists, writing-coherence/plain-language-thesis, p4ng/snapshot-with-story, war-machine/spatial-over-tabular, vsatlas/isolarion-drift, meta/layering-design-into-argument, t4r/dtp-fit, etc.) — explicitly not a warrant, and co-mention states no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=illustrative%20extract%20table%20themes%20quotes%20results%20qualitative&limit=5&hydrate=true, ?q=extract%20tables%20participant%20voice%20prose%20interpretation, and ?q=quote%20table%20theme%20subtheme%20participant%20extract%20demonstrates — each returned exactly one hit, e-dbf39347, which is this spider programme's own current prompt (self-text/reflection, not external use). No external record demonstrates use of this pattern alongside any existing library target not already referenced; its @references already name writing-coherence/one-paragraph-per-typed-claim and site-case-data-display, and no evidence warrants adding another directive.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:30:43.021178708Z",
+ :turn 16,
+ :pattern "vsatlas/pluriversal-infrastructure",
+ :gate
+ "/home/joe/code/futon3/./library/vsatlas/.spider/gates/turn-016.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "vsatlas/pluriversal-infrastructure",
+    :note
+    "Rung 1 supplied no warrant: every hit (e-74d4541b, e-c58635a8, e-c248333b, e-229f9dc4, e-61d10c40, e-1a212510, e-ff6980e2, e-aec3608f, e-2dc78642, e-37ee68a2, e-1500c630) carries :listing true — context-retrieval embeddings rankings with at most co-mention (e.g. ranked alongside vsatlas/peeragogical-infrastructures, vsatlas/interpretation-offering, p4ng/license-as-story), excluded as edge warrants. Rung 2 queries actually run: q='Pluriversal Infrastructure' and q='pluriversal design nothing about us without us community-authored stories' (limit=5, hydrate=true). Returned records were my own session transcript (e-aa77b28c, zai-1, self-text) plus the same context-retrieval listing records by claude-3/5/8 and codex-10 already supplied or equivalent at rung 1. No record contains substantive external text relating this pattern to another pattern — every occurrence is a retrieval ranking or fleet reflection, and co-mention in a ranking does not state a relation — so no @how or @see-also edge is warranted under either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

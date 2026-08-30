@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:46:46.594041734Z",
+ :turn 28,
+ :pattern "ukrns/worked-contrast",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-028.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:note
+    "Rung 1: all supplied hits are :listing embeddings rankings with :co-mention, or (e-780fb5c5) a :co-mention pattern-review list — none states a relation to a target pattern. Rung 2 queries run on 127.0.0.1:7073 (limit 5): 'worked example FG2A-P1 FG3-A contrast delivery-gated multiply-constrained' and 'paired worked cases contrast model biting differently'. The first returned only this spider's own prompt record (e-136f94e2, zai self-reflection); the second returned e-44cf6a1f, e-95088d41, e-2afeb199, e-5982c3ef — all futon3a :invoke/:dev/:context-retrieval embeddings-retrieval logs that merely rank this pattern alongside unrelated patterns (fulab/clock-out, heading-convention patterns), i.e. listings, not external textual use. The pattern's natural targets (ukrns/diagnose-before-prescribing, ukrns/computation-as-exploration) are already in @references; no external evidence warrants a new edge.",
+    :pattern "ukrns/worked-contrast",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

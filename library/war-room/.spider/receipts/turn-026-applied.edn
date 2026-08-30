@@ -1,14 +1,25 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T15:00:02.848768824Z",
+ :at "2026-08-30T22:05:54.044249323Z",
  :turn 26,
- :pattern "war-room/wr-7-frames-interoperate-or-they-do-not-exist",
+ :pattern "war-room/wr-6-daily-scan-is-depositing-heartbeat",
  :gate
  "/home/joe/code/futon3/./library/war-room/.spider/gates/turn-026.edn",
  :changes
  {:attestations [],
   :proposals [],
   :absences
-  [{:pattern "war-room/wr-7-frames-interoperate-or-they-do-not-exist",
+  [{:pattern "war-room/wr-6-daily-scan-is-depositing-heartbeat",
     :note
-    "Rung 1: the runner supplied zero exact-occurrence hits for this pattern id, so no rung-1 warrant exists. Rung 2: query 'WR-7 frames interoperate unresolved port sorry missing model' returned only this spider session's own turn-start transcript (e-f2bb72f2, GET-verified). No textual evidence record documents the WR-7 ruling, its 2026-04-13 provenance, War Bulletin 7's classification of missing models as sorrys, or a tie from this pattern to another library pattern; the artifacts it cites (War Bulletin 7, the futon7 business model, mana accounting, the pocketwatch) are bulletin and stack-component references, not library/<target>.flexiarg patterns. The pattern carries no @references, @why, @how, or @see-also directives, so nothing is recorded to duplicate but equally nothing is externally evidenced to add; the sorry-typing kinship with measurement/ghost-as-typed-sorry-style patterns is thematic, not an export-verified record tying ids. No rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg."}]}}
+    "Rung 1: no clean warrant — the only full-id hits are one embeddings listing (e-9272baf8) and spider-fleet reflections (e-68003dec records this fleet's prior WR-6 absence; the e-8a3bc3b2-family are session prompt co-mention lists). The non-listing external WR-6 hits are spine-selection and invertibility discussions (emacs-d3b86418: WR-6 held out of the spine; emacs-4949ce0284b47af8e48a85a7401bd9d2: WR-6 vs WR-16 as observation channels, tension needed reconstruction) and batch-promotion provenance (emacs-3451c448, emacs-48332c7f, e-7e691c50: 'WR-5,6,7' batch, commit 66e3150) — none states a relation to another library pattern, and the WR-6/WR-16 pairing is a similarity observation inside a selection call, not a directed tie. Rung 2: query 'WR-6 daily scan depositing heartbeat consulting conversation twenty days' returned e-d3167734 — GET-verified as this session's own turn-start prompt (self-text/reflection) — and e-a21b6277 (reflection), both excluded. The pattern's cited kinships are the M-daily-scan test and the frame-derivative pipeline (missions and components, not library patterns); it carries no @references, @why, @how, or @see-also directives, so nothing is duplicated but nothing is warranted either.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

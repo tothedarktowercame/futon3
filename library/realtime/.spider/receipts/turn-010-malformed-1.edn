@@ -1,0 +1,35 @@
+{:response
+ "[{:edge {:from \"realtime/mode-gate\" :to \"code-coherence/dead-code-hygiene\" :kind :see-also :cited \"Separate chat from work by requiring an explicit mode switch before code-changing actions.\" :evidence [{:id \"e-b8b32513-84e8-4eb7-a620-11f37b9966b1\" :via :text :query \"mode-gate dead-code-hygiene carried the auto-class discipline\" :excerpt \"- `code-coherence/dead-code-hygiene` + `realtime/mode-gate` carried the auto-class discipline\"}] :rung 2 :read [\"realtime/mode-gate\" \"code-coherence/dead-code-hygiene\"] :reason \"An external coordination observation (claude-2, session 66e16ba5) explicitly states the two patterns jointly carried the auto-class discipline — a peer-technique pairing warranting see-also, not how/why. All rung-1 hits were :listing embeddings rankings or :co-mention records with no clean flag-false hit, so the edge rests on the rung-2 text-search hit fetched and verified by id.\"}}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788124972357-5000-1c2da8f7",
+  :response
+  "[{:edge {:from \"realtime/mode-gate\" :to \"code-coherence/dead-code-hygiene\" :kind :see-also :cited \"Separate chat from work by requiring an explicit mode switch before code-changing actions.\" :evidence [{:id \"e-b8b32513-84e8-4eb7-a620-11f37b9966b1\" :via :text :query \"mode-gate dead-code-hygiene carried the auto-class discipline\" :excerpt \"- `code-coherence/dead-code-hygiene` + `realtime/mode-gate` carried the auto-class discipline\"}] :rung 2 :read [\"realtime/mode-gate\" \"code-coherence/dead-code-hygiene\"] :reason \"An external coordination observation (claude-2, session 66e16ba5) explicitly states the two patterns jointly carried the auto-class discipline — a peer-technique pairing warranting see-also, not how/why. All rung-1 hits were :listing embeddings rankings or :co-mention records with no clean flag-false hit, so the edge rests on the rung-2 text-search hit fetched and verified by id.\"}}]",
+  :agent-id "zai-1",
+  :session-id "zai-38512e23-d29d-46ad-b714-4ceeb2b3c02e"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "realtime/mode-gate",
+    :to "code-coherence/dead-code-hygiene",
+    :kind :see-also,
+    :cited
+    "Separate chat from work by requiring an explicit mode switch before code-changing actions.",
+    :evidence
+    [{:id "e-b8b32513-84e8-4eb7-a620-11f37b9966b1",
+      :via :text,
+      :query
+      "mode-gate dead-code-hygiene carried the auto-class discipline",
+      :excerpt
+      "- `code-coherence/dead-code-hygiene` + `realtime/mode-gate` carried the auto-class discipline"}],
+    :rung 2,
+    :read ["realtime/mode-gate" "code-coherence/dead-code-hygiene"],
+    :reason
+    "An external coordination observation (claude-2, session 66e16ba5) explicitly states the two patterns jointly carried the auto-class discipline — a peer-technique pairing warranting see-also, not how/why. All rung-1 hits were :listing embeddings rankings or :co-mention records with no clean flag-false hit, so the edge rests on the rung-2 text-search hit fetched and verified by id."}}},
+ :turn 10,
+ :event :seat-output-invalid,
+ :at "2026-08-30T21:23:24.855464639Z",
+ :attempt 1,
+ :pattern "realtime/mode-gate"}

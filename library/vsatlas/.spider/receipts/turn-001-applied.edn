@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:45:44.987137086Z",
+ :turn 1,
+ :pattern "vsatlas/accountable-poc",
+ :gate
+ "/home/joe/code/futon3/./library/vsatlas/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "vsatlas/accountable-poc",
+    :note
+    "Rung 1 (exact live occurrence 'vsatlas/accountable-poc') was exhausted: every supplied hit is :listing true (an embeddings retrieval ranking, which is not a warrant by itself); the one hit with :co-mention false (e-ef77760e) is still :listing true. No hit has all four flags false, so no clean rung-1 warrant exists. Rung 2 text-search 'accountable-poc proof-of-concept funds linking pilots' returned only e-fa9eaadf-d58a-4d4c-9304-b38c0791e0e4, which is this session's own dispatch prompt (self-text, not external use). The natural candidate targets (vsatlas/proof-through-pilots, vsatlas/offer-ladder, vsatlas/pilot-offers, ai4ci/funding-justification) appear only inside embeddings result listings or as existing @references (vsatlas/proof-of-concept-scope), which the rules exclude as warrants. No warranted non-duplicate edge from either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

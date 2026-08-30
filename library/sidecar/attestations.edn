@@ -1,0 +1,61 @@
+[{:edge
+  {:from "sidecar/explicit-promotion-to-facts",
+   :to "sidecar/validation-enforcement-gate",
+   :kind :how},
+  :rung 1,
+  :read
+  ["sidecar/explicit-promotion-to-facts"
+   "sidecar/fact-lifecycle-event-types"],
+  :evidence
+  [{:id "e-8931a4eb-6509-428a-9d11-db2aa4ef552f",
+    :via :tag,
+    :query
+    "exact live occurrence: sidecar/explicit-promotion-to-facts",
+    :excerpt
+    "memory-retrieval promotion-gate experimental-isolation lifecycle challenge"}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited
+  "Require a promote action that passes the validation gate and appends a promotion record.",
+  :at "2026-08-30",
+  :by "zai-2"}
+ {:edge
+  {:from "sidecar/explicit-promotion-to-facts",
+   :to "sidecar/fact-lifecycle-event-types",
+   :kind :see-also},
+  :rung 1,
+  :read
+  ["sidecar/explicit-promotion-to-facts"
+   "sidecar/fact-lifecycle-event-types"],
+  :evidence
+  [{:id "e-8931a4eb-6509-428a-9d11-db2aa4ef552f",
+    :via :tag,
+    :query
+    "exact live occurrence: sidecar/explicit-promotion-to-facts",
+    :excerpt
+    "memory-retrieval promotion-gate experimental-isolation lifecycle challenge"}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats ["zai-1" "zai-2"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited "Define promotion log records with rationale and decided_by.",
+  :at "2026-08-30",
+  :by "zai-2"}]

@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:52:17.891387778Z",
+ :turn 2,
+ :pattern "musn/declare-scope",
+ :gate
+ "/home/joe/code/futon3/./library/musn/.spider/gates/turn-002.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "musn/declare-scope",
+    :note
+    "Rung 1 (exact live occurrence 'musn/declare-scope') was exhausted: every non-reflection hit is :listing true (embeddings retrieval rankings — including the agent/scope-before-action pairings, which are rankings over scope-semantics queries with no stated relation), and the two non-listing hits (e-6e323c36, e-f2a87cbe) are :self-text/:reflection true (this spider fleet's own earlier prompts quoting retrieval listings). No hit has all four flags false with a stated relation to a library/<target>.flexiarg. Rung 2 text-search 'declare-scope exit condition out-of-bounds scope line' returned only e-7a9b6f40-e546-4c0e-a7bc-c456cc4ce4bb, this session's own dispatch prompt (self-text). The strongest conceptual sibling (agent/scope-before-action) appears only inside retrieval rankings; per the rules those are context, not warrants. No warranted non-duplicate edge from either rung.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

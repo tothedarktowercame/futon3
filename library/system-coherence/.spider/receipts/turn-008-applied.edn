@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:19:11.422773622Z",
+ :turn 8,
+ :pattern "system-coherence/name-the-decision-before-the-framework",
+ :gate
+ "/home/joe/code/futon3/./library/system-coherence/.spider/gates/turn-008.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "system-coherence/name-the-decision-before-the-framework",
+    :note
+    "Rung 1: no clean hit. e-84556bae and e-6a029897 are :self-text/:reflection true; the remaining hits are either :listing true (embeddings rankings — not warrants) or :co-mention true only (e-5634e07b is a bare pattern list; e-80b902b7 is the pattern-set authoring proposal by its own author, naming siblings as a set, which states no typed relation). Rung 2: ran GET /api/alpha/evidence/text-search?q=name%20the%20decision%20before%20the%20framework&limit=5&hydrate=true and ...q=decision-first%20framework%20warrant%20operational%20choice&limit=5&hydrate=true. The best external record (e-80b902b7-9a54-416b-abd2-173c7e67823d, codex REPL 2026-05-07) is the same authoring proposal that introduces this pattern alongside its siblings mapped one-to-one onto argument_v9.sexp weak joints; it is co-mention of a sibling set, not a stated relation to a not-yet-linked target. Every relation it does state (to the paper's thesis section) is not a library pattern. An edge to any listed sibling would be co-mention only, and to writing-coherence/meta-title or throat-clearing-close would repeat existing @references directives. No warranted edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

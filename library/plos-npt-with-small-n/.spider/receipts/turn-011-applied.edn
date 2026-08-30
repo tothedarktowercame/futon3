@@ -1,0 +1,26 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:00:22.085232726Z",
+ :turn 11,
+ :pattern "plos-npt-with-small-n/inductive-before-deductive-warrant",
+ :gate
+ "/home/joe/code/futon3/./library/plos-npt-with-small-n/.spider/gates/turn-011.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "plos-npt-with-small-n/inductive-before-deductive-warrant",
+    :note
+    "Rung 1: no clean hit — e-fd637e02 is :self-text/:reflection true (a spider-fleet reflection), and every other runner-supplied hit (e-2101885f, e-e56f9a07, e-6109d731, e-c4fac688, e-12791ad2) is :listing true, i.e. a futon3a embeddings ranking co-ranking this pattern with unrelated siblings (writing-coherence/first-mention-undischarged, control/agential-pattern-hygiene, campaign-coherence/shared-s...) — explicitly not a warrant, and the :co-mention records state no relation. Rung 2: I ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=inductive%20coding%20before%20deductive%20framework%20two-stage%20analysis&limit=5&hydrate=true, ?q=thematic%20analysis%20Braun%20Clarke%20NVivo%20then%20framework%20mapping%20methods, and ?q=two-stage%20inductive%20deductive%20coding%20methods%20statement — each returned exactly one hit, e-e937f444, which is this spider programme's own current prompt (self-text/reflection, not external use). No external record demonstrates use of this pattern alongside any existing library target; its @references already name framework-spine-with-empirical-ribs and coding-reliability-stated, and no evidence warrants adding another directive.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

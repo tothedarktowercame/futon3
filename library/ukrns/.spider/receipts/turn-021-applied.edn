@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:41:17.369097369Z",
+ :turn 21,
+ :pattern "ukrns/reader-as-participant",
+ :gate
+ "/home/joe/code/futon3/./library/ukrns/.spider/gates/turn-021.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "ukrns/reader-as-participant",
+    :note
+    "Rung 1 supplied no clean hit: the bulk of supplied hits (e-585f83b0, e-4329b911, e-bdc775e9, e-e15941b6, e-ed298f83, e-0ec73e7a, e-674c3d35, e-2771c3cc, e-91f2e302) are :self-text AND :reflection true (prior spider output quoting the same export); the rest (e-a90cc85d, e-5811d6cf, e-1cabd4b4, e-fb9dc136, e-38feeac3, e-4ed807a3, e-f3934579, e-b9b7fbca, e-6f529f62, e-1ad24850, e-ac11d299, e-261b0936, e-da40cf4c, e-4d56b7e2, e-c58635a8, e-c3ba5976, e-23c521c0, e-1028950c, e-38f45402, e-e974a4a3, e-3e62c76c, e-bfa33776, e-61b3cfb9, e-cd14a607, e-f25fcd7f, e-cf32e947, e-8d129c50, e-b0f507e9, e-c0d0ae53, e-eb8edbe2, e-780fb5c5) are :listing embeddings rankings or :co-mention records — none states a relation between this pattern and a specific target pattern. Rung 2 queries run against 127.0.0.1:7073 text-search (limit 5): 'reader exercises pick a position participation working paper pattern-reading' and 'reader as participant invitation unranked compositions teaching'. Both returned only this fleet's own prompt records (e-f060e316, e-a0130c0e — zai turn-start self-reflections). The pattern's natural targets (ukrns/diagnose-before-prescribing, ukrns/measure-where-least-sure, ukrns/open-the-triangle, ukrns/computation-as-exploration) are already declared in @references; no external evidence warrants a new edge.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

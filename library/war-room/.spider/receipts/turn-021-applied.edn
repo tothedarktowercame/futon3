@@ -1,14 +1,27 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T14:56:14.350308297Z",
+ :at "2026-08-30T22:01:55.147017819Z",
  :turn 21,
- :pattern "war-room/wr-27-a-loop-is-born-instrumented-for-its-gain",
+ :pattern
+ "war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch",
  :gate
  "/home/joe/code/futon3/./library/war-room/.spider/gates/turn-021.edn",
  :changes
  {:attestations [],
   :proposals [],
   :absences
-  [{:pattern "war-room/wr-27-a-loop-is-born-instrumented-for-its-gain",
+  [{:pattern
+    "war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch",
     :note
-    "Rung 1: the runner supplied zero exact-occurrence hits for this pattern id, so no rung-1 warrant exists. Rung 2: query 'WR-27 loop born instrumented for its gain demand-paged mining' returned only this spider session's own turn-start transcript (e-cb7a3164, GET-verified). The pattern's kinships are already recorded in both directions: its header declares @why war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels and @references [war-room/wr-24-a-removed-constraint-does-not-remove-the-discipline-it-supplied] (its context clause names WR-24 as the same-day ruling it generalizes, and WR-24's own @references list WR-27 back); and features/emit-per-tick-mismatch declares @why war-room/wr-27 in its header, recording the one pattern that rests on this ruling. An edge to any of these would repeat an existing directive. The artifacts its body cites (War Bulletin 15 Finding 5, TN-coupling-gain, the repaired E5/E7 ablation, the demand-paged mining loop) are bulletins, measurements, and code, not library/<target>.flexiarg patterns. No rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg."}]}}
+    "Rung 1: no clean warrant — every full-id hit is an embeddings listing, a spider-fleet reflection (e-07a13500 records this fleet's prior WR-26 absence; e-330cb629 and e-fca30b48 are session prompts), or a psr_search pull-offer list (e-pull-offer-833723f8). The non-listing external WR-26 hits apply or assess the ruling without tying any second library pattern: emacs-4f0ba3d (a live violation — the switch re-arms itself on a read), emacs-54556c90 (WR-26 satisfied by a deliberate stop with a written re-arm), emacs-d23b341b (satisfied at the switch by a docstring ruling), emacs-416715795 (built-and-switched-off as 'the WR-26 shape'), emacs-756980ff (claude-13 reading WR-26's limits — GET-verified again this pass, names no library/<target>.flexiarg), emacs-5e9d902d (holds at R20), emacs-e9e26f43/emacs-b2c833ff (retro-trip acceptance bar), emacs-0e032144 (declines to assert an edge — the catalogue entry is a trap, not a discipline), emacs-1286a2ef (grid placement), emacs-2491b830 (badge predicate), emacs-ee15bc99/emacs-05115ca1 (bulletin indexing). Rung 2: query 'WR-26 capability switched off re-arm condition written at the switch' returned only fleet turn-starts (e-2d1ba83e, e-37bd3f8f, e-330cb629, e-fca30b48) and emacs-756980ff, already accounted. The pattern's header already declares @why war-room/wr-8-typed-files-are-sources-of-truth and @holds-at R20; no external evidence record states a relation to any new existing library pattern.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

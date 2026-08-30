@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T19:57:06.311679051Z",
+ :turn 4,
+ :pattern "peripherals/inhabitation-feeds-evolution",
+ :gate
+ "/home/joe/code/futon3/./library/peripherals/.spider/gates/turn-004.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "peripherals/inhabitation-feeds-evolution",
+    :note
+    "Rung 1: the one clean hit (all flags false), e-2a355cb7-71e4-47d6-8340-25bd209c37a3, is a WM-pilot finding record validating this pattern ('explicit note that this is the FIRST anchor surfaced from inhabitation rather than UI-only viewing, validating peripherals/inhabitation-feeds-evolution at WM-pilot scale') — a use/validation instance naming no other library pattern, so it warrants no target. The remaining non-listing hits carry :co-mention true: emacs-27475af7/emacs-8909122/e-c39de613 are citation-frequency and mission-cluster tables listing this pattern among the most-cited (co-membership, not relations); emacs-35d3193/emacs-2145c23 are library-migration checks listing it among external referrers of math-informal patterns — the named math targets are the referrer's directives, not relations of this pattern; e-1e679b74 lists it in an argument's pattern set. The three :listing true hits (gauntlet/umwelt-not-architecture, or2/topology-dungeon-crawl co-rankings) are explicitly not warrants. The pattern's directive set is already the richest in its section: @references [peripherals/surface-earns-inhabitation, peripherals/constrained-execution-envelope, aif/structured-observation-vector, futon-theory/mission-lifecycle, meta/baldwin-ratchet-defeats-darkroom, futon-theory/baldwin-cycle, ants/baseline-cyber-ant, gauntlet/aif-as-environment-not-instruction, math-informal/transport-across-isomorphism] — nine recorded directives covering every authority and analogue its body declares. Rung 2 was not run beyond these because the rung-1 set surfaces no candidate target outside the recorded references. No clean rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

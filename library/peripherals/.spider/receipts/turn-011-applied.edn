@@ -1,0 +1,42 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T21:43:29.463456570Z",
+ :turn 11,
+ :pattern "peripherals/split-transport-from-embodiment",
+ :gate
+ "/home/joe/code/futon3/./library/peripherals/.spider/gates/turn-011.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "peripherals/split-transport-from-embodiment",
+     :to "peripherals/read-existing-seam-before-implementing",
+     :kind :how},
+    :rung 1,
+    :read
+    ["peripherals/split-transport-from-embodiment"
+     "peripherals/read-existing-seam-before-implementing"],
+    :evidence
+    [{:id "e-8ce2581e-2e03-4aa4-b5c8-dcdf50507468",
+      :via :tag,
+      :query
+      "exact live occurrence: peripherals/split-transport-from-embodiment",
+      :excerpt
+      "the load-bearing one being `peripherals/split-transport-from-embodiment`: \"two distinct concerns conflated into one thing can't compose.\" A stored arrow has two — its typed-gap lifecycle and its similarity — so the layered split is that pattern one level up."}],
+    :state :proposed,
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}},
+    :cited
+    "For each layer, do an independent seam-read (see: peripherals/read-existing-seam-before-implementing).",
+    :at "2026-08-30",
+    :by "zai-1"}],
+  :proposals [],
+  :absences []}}

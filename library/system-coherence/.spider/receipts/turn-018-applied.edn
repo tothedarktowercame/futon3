@@ -1,0 +1,27 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:44:02.117727614Z",
+ :turn 18,
+ :pattern
+ "system-coherence/correct-effect-claims-with-relevant-denominators",
+ :gate
+ "/home/joe/code/futon3/./library/system-coherence/.spider/gates/turn-018.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "system-coherence/correct-effect-claims-with-relevant-denominators",
+    :note
+    "Rung 1: no clean hit supplied — every non-reflection hit was :listing true (embeddings rankings, not warrants) and :co-mention true (co-mention does not state a relation); the two :reflection true hits are this spider fleet's own prior absences. Rung 2: ran GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=denominator%20reach%20effect%20claim%20numerator&limit=5&hydrate=true and GET .../text-search?q=Correct%20Effect%20Claims%20with%20Relevant%20Denominators&limit=5&hydrate=true; both returned only this turn's own prompt (self-text), no external record tying the pattern to an unlinked existing library target. No warranted edge; no duplicate-free directive supported.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

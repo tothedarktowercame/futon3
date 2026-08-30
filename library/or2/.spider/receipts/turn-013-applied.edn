@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T22:37:47.263631173Z",
+ :turn 13,
+ :pattern "or2/shared-futures-beyond-atomised-incentives",
+ :gate
+ "/home/joe/code/futon3/./library/or2/.spider/gates/turn-013.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or2/shared-futures-beyond-atomised-incentives",
+    :note
+    "Rung 1: every runner-supplied hit is disqualified — the two emacs-aeb406085b0c40862f8dc5c2e0454b87 hits are :co-mention true (co-mention alone states no relation) and every other hit is :listing true (embeddings retrieval ranking, explicitly not a warrant). No rung-1 hit has :listing/:self-text/:co-mention/:reflection all false, so no clean rung-1 warrant exists. Rung 2: ran bounded text-search queries actually issued — 'Shared Futures Beyond Atomised Incentives', 'Five-P rhythm citizen co-learning peripheral pathways', 'network work unpaid invisible workload narratives stewardship' (limit=5, hydrate=true) — and the top records returned were all prior spider-fleet dispatch envelopes for this same pattern (e-cd76a23f-…, e-46bff444-…, e-25fba036-…, e-076f6080-… each containing 'You are the spider for library/or2'), i.e. self-reflection, not external use. No external record was returned asserting a relation from this pattern to any existing library target, so no @how or @see-also edge is warranted.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats ["zai-1" "zai-2"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

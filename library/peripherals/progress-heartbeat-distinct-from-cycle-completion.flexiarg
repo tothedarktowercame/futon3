@@ -7,6 +7,8 @@
 @keywords heartbeat, watchdog, progress, cycle, silence, liveness, FM-regulator, tickle, multi-watcher, false-positive, false-negative
 @references [peripherals/constrained-execution-envelope peripherals/inhabitation-feeds-evolution peripherals/canonical-typed-event-vs-side-channel realtime/liveness-heartbeats realtime/loop-failure-signals]
 
+@how peripherals/canonical-typed-event-vs-side-channel
+@see-also realtime/liveness-heartbeats
 ! conclusion: A peripheral's "is it alive?" signal must be a progress heartbeat distinct from its cycle completion event. Conflating the two produces watchdogs that fire on healthy long-running cycles (false positives) and watchdogs that fail to fire on wedged cycles still inside their nominal duration (false negatives).
 
   + context: A peripheral has a cycle — a unit of work it opens, processes,

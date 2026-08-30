@@ -99,8 +99,11 @@
           grain [:round-1 :terminal]]
       (derive-cell prior-id prior policy-id policy treatment grain)))})
 
+;; Review fix (claude-15, 2026-08-30): the acceptance target is READ from the item,
+;; not restated here — otherwise the check compares the derivation to a copy of
+;; itself rather than to S-001 as stated.
 (def expected-s001-q
-  (into (sorted-map) {:O1 0.0 :O2 0.5 :O3 0.0 :O4 0.5}))
+  (into (sorted-map) (:Q stated-s001)))
 
 (defn result-for [report prior policy treatment grain]
   (some #(when (= [prior policy treatment grain]

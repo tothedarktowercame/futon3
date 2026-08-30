@@ -1,42 +1,61 @@
-{:ledger/schema 2
- :at "2026-08-30"
- :evidence-source "/home/joe/code/futon1b/migration-export/evidence.edn"
+{:ledger/schema 2,
+ :at "2026-08-30",
+ :evidence-source
+ "/home/joe/code/futon1b/migration-export/evidence.edn",
  :sections
- [{:section "aif"
-   :seat "zai-2"
-   :before {:patterns 31
-            :edges-by-kind {:why 4 :how 0 :see-also 0}
-            :patterns-with-outgoing-why 4
-            :fraction-organised 0.12903225806451613}
-   :after {:patterns 33
-           :pilot-patterns-processed 31
-           :edges-by-kind {:why 6 :how 11 :see-also 19}
-           :patterns-with-outgoing-why 6
-           :fraction-organised 0.18181818181818182
-           :new-attestations 28
-           :new-edges-by-kind {:why 2 :how 11 :see-also 15}
-           :rung-split {1 28 2 0}
-           :attestation-states {:proposed 28 :attested 0 :refused 0}
-           :absences 7
-           :proposals {}}
-   :evidence-tag-coverage 27
+ [{:section "aif",
+   :seat "zai-2",
+   :before
+   {:patterns 31,
+    :edges-by-kind {:why 4, :how 0, :see-also 0},
+    :patterns-with-outgoing-why 4,
+    :fraction-organised 0.12903225806451613},
+   :after
+   {:absences 7,
+    :rung-split {1 28, 2 0},
+    :new-attestations 28,
+    :new-edges-by-kind {:why 2, :how 11, :see-also 15},
+    :patterns-with-outgoing-why 6,
+    :patterns 33,
+    :edges-by-kind {:why 6, :how 11, :see-also 19},
+    :attestation-states
+    {:proposed 20, :attested 7, :refused 1, :sent-back 2},
+    :fraction-organised 0.18181818181818182,
+    :proposals {},
+    :pilot-patterns-processed 31},
+   :evidence-tag-coverage 27,
    :concurrent-author-change
-   "Two author-written AIF patterns and four exempt @see-also edges entered the reviewed baseline while the pilot ran; after counts include them, while pilot-patterns-processed remains the original 31."}
-  {:section "writing-coherence"
-   :seat "zai-1"
-   :before {:patterns 23
-            :edges-by-kind {:why 0 :how 0 :see-also 0}
-            :patterns-with-outgoing-why 0
-            :fraction-organised 0.0}
-   :after {:patterns 23
-           :pilot-patterns-processed 23
-           :edges-by-kind {:why 2 :how 0 :see-also 1}
-           :patterns-with-outgoing-why 2
-           :fraction-organised 0.08695652173913043
-           :new-attestations 3
-           :new-edges-by-kind {:why 2 :how 0 :see-also 1}
-           :rung-split {1 0 2 3}
-           :attestation-states {:proposed 3 :attested 0 :refused 0}
-           :absences 20
-           :proposals {}}
-   :evidence-tag-coverage 22}]}
+   "Two author-written AIF patterns and four exempt @see-also edges entered the reviewed baseline while the pilot ran; after counts include them, while pilot-patterns-processed remains the original 31.",
+   :review
+   {:by "claude-15",
+    :at "2026-08-30",
+    :sample 10,
+    :method
+    "cited text and evidence excerpt re-verified mechanically with whitespace-normalised, EDN-parsed matching (all 31 pass); kinds judged against README-flexiarg §5a"}}
+  {:section "writing-coherence",
+   :seat "zai-1",
+   :before
+   {:patterns 23,
+    :edges-by-kind {:why 0, :how 0, :see-also 0},
+    :patterns-with-outgoing-why 0,
+    :fraction-organised 0.0},
+   :after
+   {:absences 20,
+    :rung-split {1 0, 2 3},
+    :new-attestations 3,
+    :new-edges-by-kind {:why 2, :how 0, :see-also 1},
+    :patterns-with-outgoing-why 2,
+    :patterns 23,
+    :edges-by-kind {:why 2, :how 0, :see-also 1},
+    :attestation-states
+    {:proposed 1, :attested 2, :refused 0, :sent-back 1},
+    :fraction-organised 0.08695652173913043,
+    :proposals {},
+    :pilot-patterns-processed 23},
+   :evidence-tag-coverage 22,
+   :review
+   {:by "claude-15",
+    :at "2026-08-30",
+    :sample 3,
+    :method
+    "cited text and evidence excerpt re-verified mechanically with whitespace-normalised, EDN-parsed matching (all 31 pass); kinds judged against README-flexiarg §5a"}}]}

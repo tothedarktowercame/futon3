@@ -39,12 +39,9 @@
   {:from "aif/declare-the-conditioning",
    :to "aif/structured-observation-vector",
    :kind :how},
-  :by "zai-2",
-  :at "2026-08-30",
+  :rung 1,
   :read
   ["aif/declare-the-conditioning" "aif/structured-observation-vector"],
-  :cited
-  "Route all lanes toward ONE situation source (the structured observation vector) where feasible.",
   :evidence
   [{:id "e-2f1b9326-6095-4f1a-b5a1-df5b2e4fad52",
     :via :text,
@@ -52,19 +49,24 @@
     "declare-the-conditioning structured observation vector situation source",
     :excerpt
     "Route all lanes toward ONE situation source (the structured observation vector) where feasible."}],
-  :rung 1,
-  :state :proposed}
+  :state [:attested-by "claude-15"],
+  :cited
+  "Route all lanes toward ONE situation source (the structured observation vector) where feasible.",
+  :review
+  {:by "claude-15",
+   :at "2026-08-30",
+   :note
+   "@how warranted: the cited THEN routes the pattern through the observation vector"},
+  :at "2026-08-30",
+  :by "zai-2"}
  {:edge
   {:from "aif/decomposed-prediction-noise",
    :to "aif/shared-kernel-predictive-forward-model",
    :kind :how},
-  :by "zai-2",
-  :at "2026-08-30",
+  :rung 1,
   :read
   ["aif/decomposed-prediction-noise"
    "aif/shared-kernel-predictive-forward-model"],
-  :cited
-  "The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions.",
   :evidence
   [{:id "e-2bbdd876-f824-4f62-84af-8f2d173863ff",
     :via :text,
@@ -72,8 +74,13 @@
     "decomposed-prediction-noise forward model kernel variance ambiguity",
     :excerpt
     "The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions."}],
-  :rung 1,
-  :state :proposed}
+  :state :proposed,
+  :cited
+  "The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions.",
+  :reason
+  "send-back (claude-15 2026-08-30): kind: the kernel is what this pattern stands on (a precondition, @why), not a method that carries it out (@how)",
+  :at "2026-08-30",
+  :by "zai-2"}
  {:edge
   {:from "aif/free-energy-as-tick-scalar",
    :to "aif/evidence-precision-registry",
@@ -97,32 +104,31 @@
   {:from "aif/free-energy-as-tick-scalar",
    :to "aif/predictive-coding-belief-update",
    :kind :how},
-  :by "zai-2",
-  :at "2026-08-30",
+  :rung 1,
   :read
   ["aif/free-energy-as-tick-scalar"
    "aif/predictive-coding-belief-update"],
-  :cited
-  "Implement free-energy as a pure function in the same namespace as the belief update (canonical pairing: same module owns both rules).",
   :evidence
   [{:id "e-5d08fb0f-ff27-4c99-9602-05a745e35e6c",
     :via :text,
     :query "aif/free-energy-as-tick-scalar",
     :excerpt
     ":query \"aif/no-self-certification aif/two-layer-calibration aif/predictive-entropy-as-ambiguity aif/predictive-coding-belief-update\""}],
-  :rung 1,
-  :state :proposed}
+  :state :proposed,
+  :cited
+  "Implement free-energy as a pure function in the same namespace as the belief update (canonical pairing: same module owns both rules).",
+  :reason
+  "send-back (claude-15 2026-08-30): kind: co-location in one namespace is @see-also at most, not @how; and the evidence is a query-log line mentioning the ids, not usage",
+  :at "2026-08-30",
+  :by "zai-2"}
  {:edge
   {:from "aif/grounded-actuation-not-reobservation",
    :to "aif/no-self-certification",
    :kind :why},
-  :by "zai-2",
-  :at "2026-08-30",
+  :rung 1,
   :read
   ["aif/grounded-actuation-not-reobservation"
    "aif/no-self-certification"],
-  :cited
-  "The witness must be (a) outside the model (so the model cannot author its own success) and (b) ungameable (so a builder cannot claim it), or the closure is a reflection.",
   :evidence
   [{:id "e-daa3dd3e-0408-4e28-aa71-fb0c0cdfd238",
     :via :text,
@@ -130,8 +136,16 @@
     "grounded-actuation no-self-certification witness outside the model",
     :excerpt
     "The witness must be (a) outside the model (so the model cannot author its own success) and (b) ungameable (so a builder cannot claim it), or the closure is a reflection."}],
-  :rung 1,
-  :state :proposed}
+  :state [:attested-by "claude-15"],
+  :cited
+  "The witness must be (a) outside the model (so the model cannot author its own success) and (b) ungameable (so a builder cannot claim it), or the closure is a reflection.",
+  :review
+  {:by "claude-15",
+   :at "2026-08-30",
+   :note
+   "@why warranted: grounded actuation rests on the no-self-certification requirement; evidence reproduces the sentence"},
+  :at "2026-08-30",
+  :by "zai-2"}
  {:edge
   {:from "aif/hierarchical-budget-aware-action-selection",
    :to "aif/free-energy-as-tick-scalar",
@@ -194,11 +208,8 @@
   {:from "aif/no-self-certification",
    :to "aif/measurement-window-hygiene",
    :kind :how},
-  :by "zai-2",
-  :at "2026-08-30",
+  :rung 1,
   :read ["aif/no-self-certification" "aif/measurement-window-hygiene"],
-  :cited
-  "Tag every evidence record at birth with the properties the apparatus cannot fake — `:independent?` (was there an out-of-band witness?), source (`:measured` vs `:target-absent-fallback`), settledness (`:settled` vs `:transient`) — and have the verdict count ONLY the records whose tags clear.",
   :evidence
   [{:id "e-f76959b0-2792-4d80-88c4-05248d45c91e",
     :via :text,
@@ -206,8 +217,16 @@
     "no-self-certification settled transient measurement window tag",
     :excerpt
     "settledness (`:settled` vs `:transient`) — and have the verdict count ONLY the records whose tags clear."}],
-  :rung 1,
-  :state :proposed}
+  :state [:attested-by "claude-15"],
+  :cited
+  "Tag every evidence record at birth with the properties the apparatus cannot fake — `:independent?` (was there an out-of-band witness?), source (`:measured` vs `:target-absent-fallback`), settledness (`:settled` vs `:transient`) — and have the verdict count ONLY the records whose tags clear.",
+  :review
+  {:by "claude-15",
+   :at "2026-08-30",
+   :note
+   "@how warranted: settled/transient tagging is carried out by window hygiene"},
+  :at "2026-08-30",
+  :by "zai-2"}
  {:edge
   {:from "aif/off-continuity-null-discriminates",
    :to "aif/experimental-comparison-of-EFE-variants",
@@ -272,13 +291,10 @@
   {:from "aif/posterior-variance-as-epistemic-value",
    :to "aif/structure-learning-by-model-reduction",
    :kind :why},
-  :by "zai-2",
-  :at "2026-08-30",
+  :rung 1,
   :read
   ["aif/posterior-variance-as-epistemic-value"
    "aif/structure-learning-by-model-reduction"],
-  :cited
-  "The standard deviation of the structure-learning (BMR) posterior over concepts is EPISTEMIC VALUE (expected information gain, EIG)",
   :evidence
   [{:id "e-2abd87f5-f217-4cfa-946b-ff0c53a3c6b1",
     :via :text,
@@ -286,8 +302,16 @@
     "posterior-variance-as-epistemic-value EIG risk lambda sign category error",
     :excerpt
     "BMR posterior spread is uncertainty about the MODEL (which capability a mission needs) and it is *reducible* — more data resolves it — so it is the EIG type, not the ambiguity type."}],
-  :rung 1,
-  :state :proposed}
+  :state [:attested-by "claude-15"],
+  :cited
+  "The standard deviation of the structure-learning (BMR) posterior over concepts is EPISTEMIC VALUE (expected information gain, EIG)",
+  :review
+  {:by "claude-15",
+   :at "2026-08-30",
+   :note
+   "@why warranted: the epistemic-value reading rests on the BMR posterior"},
+  :at "2026-08-30",
+  :by "zai-2"}
  {:edge
   {:from "aif/posterior-variance-as-epistemic-value",
    :to "aif/belief-aware-risk-term",
@@ -372,13 +396,10 @@
   {:from "aif/scheduled-observer-entrypoint",
    :to "aif/grounded-actuation-not-reobservation",
    :kind :how},
-  :by "zai-2",
-  :at "2026-08-30",
+  :rung 1,
   :read
   ["aif/scheduled-observer-entrypoint"
    "aif/grounded-actuation-not-reobservation"],
-  :cited
-  "Couple R10 to R16: a scheduled tick counts as \"live\" only if it can (and does) move the substrate dial via grounded actuation.",
   :evidence
   [{:id "e-284653d1-ed6a-4cb9-bd13-c0c5ac1c19a4",
     :via :text,
@@ -386,8 +407,16 @@
     "scheduled-observer-entrypoint no-op trap liveness grounded actuation R16",
     :excerpt
     "Couple R10 to R16: a scheduled tick counts as \"live\" only if it can (and does) move the substrate dial via grounded actuation."}],
-  :rung 1,
-  :state :proposed}
+  :state [:attested-by "claude-15"],
+  :cited
+  "Couple R10 to R16: a scheduled tick counts as \"live\" only if it can (and does) move the substrate dial via grounded actuation.",
+  :review
+  {:by "claude-15",
+   :at "2026-08-30",
+   :note
+   "@how warranted: liveness is carried out by grounded actuation (R10 coupled to R16)"},
+  :at "2026-08-30",
+  :by "zai-2"}
  {:edge
   {:from "aif/shared-kernel-predictive-forward-model",
    :to "aif/expected-free-energy-scorecard",
@@ -412,13 +441,10 @@
   {:from "aif/status-gated-belief-update",
    :to "aif/predictive-coding-belief-update",
    :kind :how},
-  :by "zai-2",
-  :at "2026-08-30",
+  :rung 1,
   :read
   ["aif/status-gated-belief-update"
    "aif/predictive-coding-belief-update"],
-  :cited
-  "Implement the gate as a case-dispatch in the per-tick post-processing step, *not* inside update-mu itself. update-mu stays a pure function over (μ, observation, opts); the gate decides whether to call it.",
   :evidence
   [{:id "e-eded2ea1-6fac-457e-b858-63becbc6a08f",
     :via :text,
@@ -426,27 +452,38 @@
     "status-gated belief update multi-instance paused truncated observation",
     :excerpt
     "update-mu stays a pure function over (μ, observation, opts); the gate decides whether to call it."}],
-  :rung 1,
-  :state :proposed}
+  :state [:attested-by "claude-15"],
+  :cited
+  "Implement the gate as a case-dispatch in the per-tick post-processing step, *not* inside update-mu itself. update-mu stays a pure function over (μ, observation, opts); the gate decides whether to call it.",
+  :review
+  {:by "claude-15",
+   :at "2026-08-30",
+   :note
+   "@how warranted: the gate is carried out by calling update-mu"},
+  :at "2026-08-30",
+  :by "zai-2"}
  {:edge
   {:from "aif/structure-learning-by-model-reduction",
    :to "aif/posterior-variance-as-epistemic-value",
    :kind :how},
-  :by "zai-2",
-  :at "2026-08-30",
+  :rung 1,
   :read
   ["aif/structure-learning-by-model-reduction"
    "aif/posterior-variance-as-epistemic-value"],
-  :cited
-  "Implement Structure Learning as Bayesian Model Reduction over the Dirichlet concentration parameters.",
   :evidence
   [{:id "e-332ec78e-f6b8-4b77-a6e0-bb9f3b787ed2",
     :via :text,
     :query
     "structure-learning-by-model-reduction BMR Dirichlet Bayes factor prune merge",
     :excerpt "The surviving reduced structure IS the concept."}],
-  :rung 1,
-  :state :proposed}
+  :state :refused,
+  :cited
+  "Implement Structure Learning as Bayesian Model Reduction over the Dirichlet concentration parameters.",
+  :reason
+  "the cited text (implement BMR over Dirichlet parameters) does not mention the target; the edge reverses #14, which already records that posterior-variance rests on BMR",
+  :review {:by "claude-15", :at "2026-08-30"},
+  :at "2026-08-30",
+  :by "zai-2"}
  {:edge
   {:from "aif/structured-observation-vector",
    :to "aif/predictive-coding-belief-update",
@@ -511,13 +548,10 @@
   {:from "aif/two-layer-calibration",
    :to "aif/off-continuity-null-discriminates",
    :kind :how},
-  :by "zai-2",
-  :at "2026-08-30",
+  :rung 1,
   :read
   ["aif/two-layer-calibration"
    "aif/off-continuity-null-discriminates"],
-  :cited
-  "**L1 = G-vs-G dynamics**: cheap, every cycle, labelled never-value-evidence; it earns its keep as a consistency/sanity layer.",
   :evidence
   [{:id "e-382a8293-8bbd-449f-886d-8317aa0d5d00",
     :via :text,
@@ -525,8 +559,16 @@
     "two-layer-calibration dynamics-consistency witnessed outcome L1 L2",
     :excerpt
     "L1 dynamics live — the state-sensitive model is 2.55× better than the constant counterfactual at predicting no-move"}],
-  :rung 1,
-  :state :proposed}
+  :state [:attested-by "claude-15"],
+  :cited
+  "**L1 = G-vs-G dynamics**: cheap, every cycle, labelled never-value-evidence; it earns its keep as a consistency/sanity layer.",
+  :review
+  {:by "claude-15",
+   :at "2026-08-30",
+   :note
+   "@how warranted: the null-discriminates check is how L1 earns its keep; evidence records the 2.55x live result"},
+  :at "2026-08-30",
+  :by "zai-2"}
  {:edge
   {:from "aif/valuation-reads-the-paperwork",
    :to "aif/term-to-channel-traceability",

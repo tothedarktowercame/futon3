@@ -686,7 +686,7 @@
     :excerpt
     "Compose the pragmatic (risk) EFE term as bias² (squared deviation of predicted mean from preference prior) + variance (predictive uncertainty contribution). Both terms in the same units; both pulling the agent toward predictable closeness to preference."}],
   :rung 2,
-  :state :proposed}
+  :state [:attested-by "codex-22"]}
  {:edge
   {:from "aif/candidate-pattern-action-space",
    :to "aif/evidence-precision-registry",
@@ -725,7 +725,9 @@
     :excerpt
     "A system accumulates valuation lanes over time (an EFE blend, a wholeness score, a rollout ΔG, heuristic bonuses), and selection wants one number to rank by."}],
   :rung 2,
-  :state :proposed}
+  :state :proposed,
+  :reason
+  "send-back (codex-22 2026-08-30): evidence is the FROM pattern's own text and mentions only an EFE blend, not the target pattern or a specific relation to its scorecard; @see-also is plausible but F3 needs a stated relation"}
  {:edge
   {:from "aif/declare-the-conditioning",
    :to "aif/term-to-channel-traceability",
@@ -764,7 +766,9 @@
     :excerpt
     "Consumers (validation harness, UI panels, EFE term computations) can read whichever component they need."}],
   :rung 2,
-  :state :proposed}
+  :state :proposed,
+  :reason
+  "send-back (codex-22 2026-08-30): evidence is the FROM pattern's own text and names generic EFE consumers, not belief-aware-risk-term; co-applicability is not yet a stated peer relation (F3)"}
  {:edge
   {:from "aif/evidence-precision-registry",
    :to "aif/candidate-pattern-action-space",
@@ -802,7 +806,9 @@
     :excerpt
     "- a pattern cross-reference table tying the v0 design to `structure/hinge-point`, `structure/cook-ting`, `peripherals/canonical-typed-event-vs-side-channel`, `aif/expected-free-energy-scorecard`, and `structure/mana-allostasis`"}],
   :rung 1,
-  :state :proposed}
+  :state :refused,
+  :reason
+  "refused (codex-22 2026-08-30): evidence merely co-mentions both ids in a cross-reference table and states no relation; the patterns' IF/HOWEVER/THEN clauses do not supply a peer relation either"}
  {:edge
   {:from "aif/experimental-comparison-of-EFE-variants",
    :to "aif/predictive-entropy-as-ambiguity",
@@ -844,7 +850,7 @@
     :excerpt
     "And G-per-candidate is not a substitute: G is about the future; F is about the present."}],
   :rung 2,
-  :state :proposed}
+  :state [:attested-by "codex-22"]}
  {:edge
   {:from "aif/grounded-actuation-not-reobservation",
    :to "aif/scheduled-observer-entrypoint",
@@ -885,7 +891,7 @@
     :excerpt
     "the commitment dial doing duty as a temporal discount, a tactical outcome read as if it were strategic evidence — collapses the levels back into one"}],
   :rung 2,
-  :state :proposed}
+  :state [:attested-by "codex-22"]}
  {:edge
   {:from "aif/hierarchical-budget-aware-action-selection",
    :to "budgeted-action-selection/mana-gated-work",
@@ -925,7 +931,9 @@
     :excerpt
     "The loop's observation channel is task-level only: it observes the world it acts on (job outcomes, verdicts, witnesses, QA), while its own machinery is a hidden state with no likelihood mapping."}],
   :rung 2,
-  :state :proposed}
+  :state :proposed,
+  :reason
+  "send-back (codex-22 2026-08-30): evidence is interoceptive-tripwires' own text about the task-only observation channel; it does not name structured-observation-vector or state a relation to that pattern (F3)"}
  {:edge
   {:from "aif/niche-construction",
    :to "ants/baseline-cyber-ant",
@@ -962,7 +970,9 @@
     :excerpt
     "Enforce this STRUCTURALLY — with tags the apparatus cannot fake (independence, measured-vs-fallback, settled-vs-transient) and a verdict that counts only those tags — not by vigilance."}],
   :rung 2,
-  :state :proposed}
+  :state :proposed,
+  :reason
+  "send-back (codex-22 2026-08-30): evidence is no-self-certification's own text and does not mention interoceptive-tripwires; shared concern with structural tags is not itself a stated relation (F3)"}
  {:edge
   {:from "aif/off-continuity-null-discriminates",
    :to "aif/measurement-window-hygiene",
@@ -1001,7 +1011,9 @@
     :excerpt
     "mark every placeholder self-describing (provenance field), never bare."}],
   :rung 2,
-  :state :proposed}
+  :state :proposed,
+  :reason
+  "send-back (codex-22 2026-08-30): evidence is placeholder-is-load-bearing's own provenance sentence and does not name term-to-channel-traceability; similarity between provenance disciplines is not a stated edge (F3)"}
  {:edge
   {:from "aif/policy-precision-commitment-temperature",
    :to "aif/expected-free-energy-scorecard",
@@ -1043,7 +1055,7 @@
     :excerpt
     "Distinct quantities, distinct signs — never collapse them into one leg."}],
   :rung 2,
-  :state :proposed}
+  :state [:attested-by "codex-22"]}
  {:edge
   {:from "aif/predictive-coding-belief-update",
    :to "futon-theory/four-types",

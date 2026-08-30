@@ -9,7 +9,7 @@
 (def target-pattern #"[A-Za-z0-9_.-]+/[A-Za-z0-9_./'-]+")
 (def evidence-export "/home/joe/code/futon1b/migration-export/evidence.edn")
 (def evidence-cache
-  (str (fs/path "/tmp" (str "futon3-spider-evidence-occurrences-"
+  (str (fs/path "/tmp" (str "futon3-spider-evidence-occurrences-v2-"
                              (.toMillis (fs/last-modified-time evidence-export)) ".edn"))))
 
 (defn sha256 [s]

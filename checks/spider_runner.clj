@@ -128,10 +128,19 @@
         end (min (count text) (+ at (count token) 200))]
     (subs text start end)))
 
+(defn context-retrieval-listing? [record]
+  (let [body (:evidence/body record)]
+    (if (map? body)
+      (= "context-retrieval" (some-> (or (:event body) (get body "event")) name))
+      (boolean
+       (and (string? body)
+            (re-find #"(?i)(?:\"event\"|:event)\s*(?:[:=]\s*)?(?:\"context-retrieval\"|:context-retrieval)"
+                     body))))))
+
 (def evidence-export-mtime
   (.toMillis (fs/last-modified-time evidence-export)))
 (def evidence-index-cache
-  (str (fs/path "/tmp" (str "futon3-spider-evidence-occurrences-"
+  (str (fs/path "/tmp" (str "futon3-spider-evidence-occurrences-v2-"
                              evidence-export-mtime ".edn"))))
 
 (defn build-evidence-index []
@@ -143,6 +152,7 @@
        (fn [index record]
          (let [text (str/join " " (string-leaves record))
                record-id (or (:evidence/id record) (:xt/id record))
+               listing (context-retrieval-listing? record)
                path-hits (filter ids (re-seq #"[A-Za-z0-9_.-]+/[A-Za-z0-9_./'-]+" text))
                alias-hits (keep wr-aliases (re-seq #"WR-[0-9]+" text))]
            (reduce (fn [m pattern]
@@ -153,6 +163,7 @@
                        (if (and record-id token)
                          (update m pattern (fnil conj [])
                                  {:id record-id :via :tag
+                                  :listing listing
                                   :query (str "exact export occurrence: " token)
                                   :excerpt (occurrence-excerpt text token)})
                          m)))
@@ -195,9 +206,11 @@
      "\nRules: :from must equal the selected pattern. Targets must already exist as library/<target>.flexiarg. "
      "Do not repeat an existing directive. Prefer a small number of strong edges; [] is invalid, use an absence. "
      "Every edge needs a nonblank citation and real external evidence. Rung 1 means the runner found the exact pattern id in the export; "
+     "a hit with :listing true is an embeddings retrieval ranking and is NOT a warrant for an edge by itself. "
+     "A rung-1 edge must cite at least one :listing false hit; listing hits may appear only as additional context. "
      "rung 2 is a bounded GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=<encoded title or conclusion keywords>&limit=5&hydrate=true. "
      "Never request the unfiltered evidence list. Only use IDs and excerpts returned by a query you actually ran. "
-     "The runner verifies every :id by GET /api/alpha/evidence/<id> and requires the normalized :excerpt to occur verbatim in that record; "
+     "The runner verifies rung-1 IDs against the export and rung-2 IDs by GET /api/alpha/evidence/<id>, and requires the normalized :excerpt to occur in that record; "
      "pattern IDs are not evidence IDs, summaries and ellipses are rejected, and rung 1 also requires the source pattern id to occur in the record. "
      "If the supplied rung-1 hits do not warrant an edge, run rung 2. If neither warrants an edge, return Absence naming both. "
      "You are an editor: you may write @how and @see-also. An @why item is a PROPOSAL only; the runner records its attestation but does not write its directive.\n\n"
@@ -228,14 +241,23 @@
 (defn normalized [s]
   (-> (str s) str/lower-case (str/replace #"\s+" " ") str/trim))
 
+(defn matching-rung-one-hit [rung-one {:keys [id excerpt]}]
+  (some (fn [hit]
+          (when (and (= id (:id hit))
+                     (str/includes? (normalized (:excerpt hit)) (normalized excerpt)))
+            hit))
+        rung-one))
+
+(defn rung-one-warrant? [evidence rung-one]
+  (boolean (some #(when-let [hit (matching-rung-one-hit rung-one %)]
+                    (false? (:listing hit)))
+                 evidence)))
+
 (defn evidence-valid? [rung rung-one {:keys [id excerpt]}]
   (when (and (string? id) (re-matches #"e-[A-Za-z0-9-]+" id)
              (string? excerpt) (>= (count (normalized excerpt)) 20))
     (if (= rung 1)
-      (some (fn [hit]
-              (and (= id (:id hit))
-                   (str/includes? (normalized (:excerpt hit)) (normalized excerpt))))
-            rung-one)
+      (boolean (matching-rung-one-hit rung-one {:id id :excerpt excerpt}))
       (try
         (let [record (edn/read-string
                       (slurp (str "http://127.0.0.1:7073/api/alpha/evidence/" id)))
@@ -257,6 +279,9 @@
     (when (and (empty? edge-items) (empty? proposal-items) (empty? absence-items))
       (throw (ex-info "seat returned neither edge, proposal, nor absence" {})))
     (doseq [{:keys [edge cited evidence rung read]} edge-items]
+      (when (and (= rung 1) (not (rung-one-warrant? evidence rung-one)))
+        (throw (ex-info "rung-1 evidence has no non-listing hit; retrieval listings are context only"
+                        {:item edge :reason :listing-only-rung-one})))
       (when-not (and (= pattern (:from edge)) (string? (:to edge))
                      (edge-kinds (:kind edge))
                      (fs/exists? (fs/path library (str (:to edge) ".flexiarg")))
@@ -268,7 +293,8 @@
                      (vector? evidence) (seq evidence)
                      (if (= rung 1)
                        (and (some #(= :tag (:via %)) evidence)
-                            (every? (set (map :id rung-one)) (map :id evidence)))
+                            (every? (set (map :id rung-one)) (map :id evidence))
+                            (rung-one-warrant? evidence rung-one))
                        (not-any? #(= :tag (:via %)) evidence))
                      (every? #(and (string? (:id %)) (#{:tag :text} (:via %))
                                    (not (str/blank? (str (:query %))))
@@ -516,12 +542,21 @@
         (recur (record-malformed-absence! section seat paths state) (dec remaining))
         :else (recur (process-turn! section seat paths state) (dec remaining))))))
 
+(defn section-rung-one-coverage [section]
+  (let [patterns (map #(lint/pattern-id library %)
+                      (fs/glob (fs/path library section) "*.flexiarg"))
+        hits (map rung-one-hits patterns)]
+    {:patterns (count patterns)
+     :with-any-hit (count (filter seq hits))
+     :with-non-listing-hit (count (filter #(some (comp false? :listing) %) hits))}))
+
 (defn -main [& args]
   (let [{:keys [section seat budget patterns]} (parse-args args)]
     (when-not (and section seat budget)
       (throw (ex-info "usage: spider_runner.clj --section NAME --seat ZAI-ID --budget N" {})))
-    (println (pr-str (run-spider! section seat (parse-long budget)
-                                  (when patterns (str/split patterns #",")))))))
+    (println (pr-str (assoc (run-spider! section seat (parse-long budget)
+                                         (when patterns (str/split patterns #",")))
+                            :rung-one-coverage (section-rung-one-coverage section))))))
 
 (when (= *file* (System/getProperty "babashka.file"))
   (apply -main *command-line-args*))

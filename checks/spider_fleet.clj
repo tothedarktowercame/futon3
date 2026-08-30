@@ -10,6 +10,10 @@
 (def runner (str (fs/path root "checks/spider_runner.clj")))
 (def fleet-path (str (fs/path root "library/.spider"
                               (str "fleet-" (java.time.LocalDate/now) ".edn"))))
+(def evidence-export "/home/joe/code/futon1b/migration-export/evidence.edn")
+(def evidence-cache
+  (str (fs/path "/tmp" (str "futon3-spider-evidence-occurrences-v2-"
+                             (.toMillis (fs/last-modified-time evidence-export)) ".edn"))))
 
 (defn parse-args [args]
   (when (odd? (count args)) (throw (ex-info "arguments must be --key value pairs" {})))
@@ -18,6 +22,18 @@
 (defn csv [s] (vec (remove str/blank? (str/split (or s "") #","))))
 (defn read-edn [path fallback]
   (if (fs/exists? path) (edn/read-string (slurp (str path))) fallback))
+(def evidence-index (delay (read-edn evidence-cache {})))
+
+(defn pattern-id [file]
+  (-> (str (fs/relativize (fs/path root "library") file))
+      (str/replace #"\\" "/") (str/replace #"\.flexiarg$" "")))
+
+(defn rung-one-coverage [section]
+  (let [patterns (map pattern-id (fs/glob (fs/path root "library" section) "*.flexiarg"))
+        hits (map #(get @evidence-index % []) patterns)]
+    {:patterns (count patterns)
+     :with-any-hit (count (filter seq hits))
+     :with-non-listing-hit (count (filter #(some (comp false? :listing) %) hits))}))
 
 (defn section-status [section]
   (let [dir (fs/path root "library" section)
@@ -33,6 +49,7 @@
      :attestations (count section-atts)
      :absences (count absences)
      :seat-failures (count failures)
+     :rung-one-coverage (rung-one-coverage section)
      :organised-attested (count (filter #(and (vector? (:state %))
                                               (= :attested-by (first (:state %)))) section-atts))
      :organised-proposed (count (filter #(= :proposed (:state %)) section-atts))}))
@@ -69,7 +86,7 @@
         sections (csv sections)
         seats (csv seats)
         budget (parse-long budget)]
-    (when-not (and (seq sections) (seq seats) (pos-int? budget)
+    (when-not (and (seq sections) (seq seats) (nat-int? budget)
                    (every? #(re-matches #"zai-[0-9]+" %) seats))
       (throw (ex-info "usage: spider_fleet.clj --sections a,b --seats zai-1,zai-2 --budget N (generic zai seats only)" {})))
     (let [assignments (into {} (map-indexed (fn [i section]

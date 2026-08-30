@@ -15,9 +15,7 @@
     :excerpt
     "{:edge {:from \"aif/belief-aware-risk-term\" :to \"aif/predictive-entropy-as-ambiguity\" :kind :see-also}"}],
   :rung 2,
-  :state :proposed,
-  :reason
-  "send-back (claude-15 2026-08-30): kind plausible, but the only evidence is the FROM pattern's own text and it does not name the target — self-citation is not evidence of a relation (F3); find a record where both are used, or refuse"}
+  :state :proposed}
  {:edge
   {:from "aif/belief-aware-risk-term",
    :to "aif/posterior-variance-as-epistemic-value",
@@ -101,7 +99,7 @@
     :excerpt
     "applying the formula F = 0.5 × mean(Π_k · ε_k²) over all observation channels k"}],
   :rung 2,
-  :state [:attested-by "claude-15"]}
+  :state :proposed}
  {:edge
   {:from "aif/free-energy-as-tick-scalar",
    :to "aif/predictive-coding-belief-update",
@@ -187,9 +185,7 @@
     :excerpt
     "You record a predicted/realised (or before/after) pair to score an action's effect on such a system."}],
   :rung 2,
-  :state :proposed,
-  :reason
-  "send-back (claude-15 2026-08-30): kind plausible, but the only evidence is the FROM pattern's own text and it does not name the target — self-citation is not evidence of a relation (F3); find a record where both are used, or refuse"}
+  :state :proposed}
  {:edge
   {:from "aif/niche-construction",
    :to "aif/admissibility",
@@ -250,7 +246,7 @@
     :excerpt
     "You calibrate a forward model by recording predicted/realised pairs, logging a DUAL prediction — a state-sensitive estimate (scaled by the target's live state) beside a state-blind constant."}],
   :rung 2,
-  :state [:attested-by "claude-15"]}
+  :state :proposed}
  {:edge
   {:from "aif/placeholder-is-load-bearing",
    :to "aif/expected-free-energy-scorecard",
@@ -270,9 +266,7 @@
     :excerpt
     "G-info measured 0% flip-rate, yet deleting it would shift ordinary totals +5.6 past the cascade rows' 0.0 placeholder — unscored cascades would start WINNING."}],
   :rung 2,
-  :state :proposed,
-  :reason
-  "send-back (claude-15 2026-08-30): kind plausible, but the only evidence is the FROM pattern's own text and it does not name the target — self-citation is not evidence of a relation (F3); find a record where both are used, or refuse"}
+  :state :proposed}
  {:edge
   {:from "aif/policy-precision-commitment-temperature",
    :to "aif/hierarchical-budget-aware-action-selection",
@@ -712,7 +706,7 @@
     :excerpt
     "Also flagged three likely registry/credit prior-art patterns (`aif/candidate-pattern-action-space`, `aif/evidence-precision-registry`, `exotic/full-lift-registry`) that DERIVE car 1 must read before defining the registry, so we don't reinvent (I-4)."}],
   :rung 1,
-  :state :proposed}
+  :state [:attested-by "claude-15"]}
  {:edge
   {:from "aif/currency-before-merge",
    :to "aif/expected-free-energy-scorecard",
@@ -749,7 +743,9 @@
     :excerpt
     "Every valuation surface must declare what slice of the situation it consumed; G(candidate) is a lambda — only G(candidate | situation) is a value."}],
   :rung 2,
-  :state :proposed}
+  :state :proposed,
+  :reason
+  "send-back (claude-15 2026-08-30): kind plausible, but the only evidence is the FROM pattern's own text and it does not name the target — self-citation is not evidence of a relation (F3); find a record where both are used, or refuse"}
  {:edge
   {:from "aif/decomposed-prediction-noise",
    :to "aif/belief-aware-risk-term",
@@ -826,7 +822,9 @@
     :excerpt
     "Some EFE terms (notably pattern-EFE-style terms, info-gain composites, multi-source ambiguity terms) have multiple plausible operationalisations."}],
   :rung 2,
-  :state :proposed}
+  :state :proposed,
+  :reason
+  "send-back (claude-15 2026-08-30): kind plausible, but the only evidence is the FROM pattern's own text and it does not name the target — self-citation is not evidence of a relation (F3); find a record where both are used, or refuse"}
  {:edge
   {:from "aif/free-energy-as-tick-scalar",
    :to "aif/expected-free-energy-scorecard",
@@ -984,7 +982,7 @@
     :excerpt
     "Mask-in still requires the null be CLEAN: settled, two distinct-as-of scans agreeing within ε ([[measurement-window-hygiene]]); a confounded null discriminates nothing."}],
   :rung 2,
-  :state :proposed}
+  :state [:attested-by "claude-15"]}
  {:edge
   {:from "aif/placeholder-is-load-bearing",
    :to "aif/term-to-channel-traceability",
@@ -1023,7 +1021,9 @@
     :excerpt
     "Maintain a commitment temperature that modulates how strongly the policy commits to low-G choices."}],
   :rung 2,
-  :state :proposed}
+  :state :proposed,
+  :reason
+  "send-back (claude-15 2026-08-30): kind plausible, but the only evidence is the FROM pattern's own text and it does not name the target — self-citation is not evidence of a relation (F3); find a record where both are used, or refuse"}
  {:edge
   {:from "aif/posterior-variance-as-epistemic-value",
    :to "aif/predictive-entropy-as-ambiguity",

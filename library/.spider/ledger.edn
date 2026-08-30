@@ -2,6 +2,25 @@
  :at "2026-08-30",
  :evidence-source
  "/home/joe/code/futon1b/migration-export/evidence.edn",
+ :evidence-source-mtime "2026-07-10T09:42:18.900311087Z",
+ :packet-3
+ {:at "2026-08-30",
+  :rung-1-source :migration-export-exact-occurrence,
+  :writing-coherence-rung-1-recall {:before 0, :after 22, :patterns 23},
+  :aif-rerun
+  {:patterns
+   ["aif/admissibility"
+    "aif/belief-state-operational-hypotheses"
+    "aif/evidence-precision-registry"
+    "aif/expected-free-energy-scorecard"],
+   :outcome {:edges 3, :genuine-absences 1},
+   :historical-seat-failure-receipts 7},
+  :fleet-dry-run
+  {:sections
+   {"aif" {:organised-attested 7, :organised-proposed 23}
+    "writing-coherence" {:organised-attested 2, :organised-proposed 1}},
+   :total {:organised-attested 9, :organised-proposed 24},
+   :acyclicity-gate :serialised-by-library-lock}},
  :sections
  [{:section "aif",
    :seat "zai-2",
@@ -12,7 +31,7 @@
     :fraction-organised 0.12903225806451613},
    :after
    {:absences 7,
-    :rung-split {1 28, 2 0},
+    :rung-split {1 0, 2 28},
     :new-attestations 28,
     :new-edges-by-kind {:why 2, :how 11, :see-also 15},
     :patterns-with-outgoing-why 6,

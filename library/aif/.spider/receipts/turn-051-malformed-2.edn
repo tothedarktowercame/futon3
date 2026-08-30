@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/expected-free-energy-scorecard\" :to \"futon-theory/futonic-logic\" :kind :see-also} :cited \"Compute G(a) as a weighted sum of named terms (risk, ambiguity, information gain, constraint violation, cost, coordination pressure), and store the term breakdown for each candidate.\" :evidence [{:id \"e-763498c1-f6c2-4558-8fe2-f7d529d98efc\" :via :tag :query \"exact export occurrence: aif/expected-free-energy-scorecard\" :excerpt \"futon-theory/futonic-logic Futonic Logic: Vocabulary, Composition, and the Recogn\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"futon-theory/futonic-logic\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788098190733-3990-70a5c2be",
+  :response
+  "[{:edge {:from \"aif/expected-free-energy-scorecard\" :to \"futon-theory/futonic-logic\" :kind :see-also} :cited \"Compute G(a) as a weighted sum of named terms (risk, ambiguity, information gain, constraint violation, cost, coordination pressure), and store the term breakdown for each candidate.\" :evidence [{:id \"e-763498c1-f6c2-4558-8fe2-f7d529d98efc\" :via :tag :query \"exact export occurrence: aif/expected-free-energy-scorecard\" :excerpt \"futon-theory/futonic-logic Futonic Logic: Vocabulary, Composition, and the Recogn\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"futon-theory/futonic-logic\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/expected-free-energy-scorecard",
+    :to "futon-theory/futonic-logic",
+    :kind :see-also}}},
+ :turn 51,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:56:56.650284635Z",
+ :attempt 2,
+ :pattern "aif/expected-free-energy-scorecard"}

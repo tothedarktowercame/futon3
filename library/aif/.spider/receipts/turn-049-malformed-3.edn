@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/belief-state-operational-hypotheses\" :to \"devmap-coherence/next-steps-to-done\" :kind :see-also} :cited \"The agent needs an internal state about what it is doing and why, beyond the raw trace.\" :evidence [{:id \"e-97c360d6-8609-4c5d-83db-d764d0abb4f3\" :via :tag :query \"exact export occurrence: aif/belief-state-operational-hypotheses\" :excerpt \"id title score fulab/pattern-dep Pattern Dependency Declaration id title score devmap-coherence/next-steps-to-done Next Steps to Done id title score aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses\"}] :rung 1 :read [\"aif/belief-state-operational-hypotheses\" \"devmap-coherence/next-steps-to-done\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788098020331-3978-ee997ccd",
+  :response
+  "[{:edge {:from \"aif/belief-state-operational-hypotheses\" :to \"devmap-coherence/next-steps-to-done\" :kind :see-also} :cited \"The agent needs an internal state about what it is doing and why, beyond the raw trace.\" :evidence [{:id \"e-97c360d6-8609-4c5d-83db-d764d0abb4f3\" :via :tag :query \"exact export occurrence: aif/belief-state-operational-hypotheses\" :excerpt \"id title score fulab/pattern-dep Pattern Dependency Declaration id title score devmap-coherence/next-steps-to-done Next Steps to Done id title score aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses\"}] :rung 1 :read [\"aif/belief-state-operational-hypotheses\" \"devmap-coherence/next-steps-to-done\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/belief-state-operational-hypotheses",
+    :to "devmap-coherence/next-steps-to-done",
+    :kind :see-also}}},
+ :turn 49,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:54:25.435006632Z",
+ :attempt 3,
+ :pattern "aif/belief-state-operational-hypotheses"}

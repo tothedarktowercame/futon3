@@ -18,17 +18,20 @@
   (let [root (fs/create-temp-dir {:prefix "library-graph-lint-"})
         baseline (fs/path root "baseline.edn")
         attestations (fs/path root "attestations.edn")
+        evidence-records (fs/path root "evidence-records.edn")
         report-path (fs/path root "report.edn")]
     (try
       (let [{:keys [base]} (setup root)]
         (spit (str baseline) (pr-str base))
         (when-not (fs/exists? attestations) (spit (str attestations) "[]"))
+        (when-not (fs/exists? evidence-records) (spit (str evidence-records) "{}"))
         (let [proc (process/shell
                     {:continue true :out :string :err :string}
                     "bb" "checks/library_graph_lint.clj"
                     "--library" (str root) "--section" "s"
                     "--baseline" (str baseline)
                     "--attestations" (str attestations)
+                    "--evidence-records" (str evidence-records)
                     "--report" (str report-path))]
           (assoc (edn/read-string (slurp (str report-path)))
                  :test/exit (:exit proc))))
@@ -76,7 +79,26 @@
                         (spit (str (fs/path root "attestations.edn"))
                               "[{:edge {:from \"s/a\"}}]")
                         {:base (baseline! root)}))
-                     :malformed-attestation))))
+                     :malformed-attestation)))
+  (testing "rung and evidence semantics"
+    (is (failed-for? (run-fixture
+                      (fn [root]
+                        (write-pattern! root "s/a" "" "source warrant sentence")
+                        (write-pattern! root "s/b" "" "target")
+                        (let [base (baseline! root)]
+                          (write-pattern! root "s/a" "@how s/b" "source warrant sentence")
+                          (spit (str (fs/path root "evidence-records.edn"))
+                                (pr-str {"e-test" {:evidence/id "e-test"
+                                                   :evidence/body "an excerpt that really occurs"}}))
+                          (spit (str (fs/path root "attestations.edn"))
+                                (pr-str [{:edge {:from "s/a" :to "s/b" :kind :how}
+                                          :by "zai-test" :at "2026-08-30"
+                                          :read ["s/a" "s/b"] :cited "source warrant sentence"
+                                          :evidence [{:id "e-test" :via :text :query "q"
+                                                      :excerpt "an excerpt that really occurs"}]
+                                          :rung 1 :state :proposed}]))
+                          {:base base})))
+                     :rung-via-mismatch))))
 
 (deftest live-library-passes
   (let [report (lint/lint
@@ -84,8 +106,8 @@
                  :baseline "library/.spider/baseline-edges.edn"
                  :attestations "library/aif/attestations.edn"})]
     (is (true? (get-in report [:summary :pass?])))
-    (is (= 1239 (get-in report [:summary :files])))
-    (is (= {:why 82 :how 10 :see-also 77}
+    (is (= 1241 (get-in report [:summary :files])))
+    (is (= {:why 86 :how 20 :see-also 100}
            (get-in report [:summary :edges-by-kind])))))
 
 (let [{:keys [fail error]} (run-tests)]

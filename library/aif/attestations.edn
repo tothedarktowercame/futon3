@@ -14,7 +14,7 @@
     :query "aif/belief-aware-risk-term ambiguity epistemic variance",
     :excerpt
     "{:edge {:from \"aif/belief-aware-risk-term\" :to \"aif/predictive-entropy-as-ambiguity\" :kind :see-also}"}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/belief-aware-risk-term",
@@ -33,13 +33,13 @@
     :query "aif/belief-aware-risk-term ambiguity epistemic variance",
     :excerpt
     "{:edge {:from \"aif/belief-aware-risk-term\" :to \"aif/posterior-variance-as-epistemic-value\" :kind :see-also}"}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/declare-the-conditioning",
    :to "aif/structured-observation-vector",
    :kind :how},
-  :rung 1,
+  :rung 2,
   :read
   ["aif/declare-the-conditioning" "aif/structured-observation-vector"],
   :evidence
@@ -63,7 +63,7 @@
   {:from "aif/decomposed-prediction-noise",
    :to "aif/shared-kernel-predictive-forward-model",
    :kind :how},
-  :rung 1,
+  :rung 2,
   :read
   ["aif/decomposed-prediction-noise"
    "aif/shared-kernel-predictive-forward-model"],
@@ -98,13 +98,13 @@
     "free-energy-as-tick-scalar evidence-precision-registry variational",
     :excerpt
     "applying the formula F = 0.5 × mean(Π_k · ε_k²) over all observation channels k"}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/free-energy-as-tick-scalar",
    :to "aif/predictive-coding-belief-update",
    :kind :how},
-  :rung 1,
+  :rung 2,
   :read
   ["aif/free-energy-as-tick-scalar"
    "aif/predictive-coding-belief-update"],
@@ -125,7 +125,7 @@
   {:from "aif/grounded-actuation-not-reobservation",
    :to "aif/no-self-certification",
    :kind :why},
-  :rung 1,
+  :rung 2,
   :read
   ["aif/grounded-actuation-not-reobservation"
    "aif/no-self-certification"],
@@ -164,7 +164,7 @@
     "hierarchical-budget-aware-action-selection feasibility penalty scorecard",
     :excerpt
     "Both layers produce trace fields. The trace fields land in the per-tick record (R8) so the agent's reasoning about resource constraints is auditable."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/measurement-window-hygiene",
@@ -184,7 +184,7 @@
     "aif/measurement-window-hygiene no-self-certification sibling",
     :excerpt
     "You record a predicted/realised (or before/after) pair to score an action's effect on such a system."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/niche-construction",
@@ -202,13 +202,13 @@
     "niche-construction false-floor typed-edge inventory admissibility aif2",
     :excerpt
     "The futon realisation is the **aif2** direction: a boundary-tier set of criteria (mechanising AIF+ I1 boundary-integrity + I3 timescale-separation) over whether and how the WM may re-author its own typed-edge support — distinct from the inference-tier R1-R12."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/no-self-certification",
    :to "aif/measurement-window-hygiene",
    :kind :how},
-  :rung 1,
+  :rung 2,
   :read ["aif/no-self-certification" "aif/measurement-window-hygiene"],
   :evidence
   [{:id "e-f76959b0-2792-4d80-88c4-05248d45c91e",
@@ -245,7 +245,7 @@
     "off-continuity-null-discriminates forward model dual prediction state-blind",
     :excerpt
     "You calibrate a forward model by recording predicted/realised pairs, logging a DUAL prediction — a state-sensitive estimate (scaled by the target's live state) beside a state-blind constant."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/placeholder-is-load-bearing",
@@ -265,7 +265,7 @@
     "placeholder-is-load-bearing inert term deletion arena flip-analysis",
     :excerpt
     "G-info measured 0% flip-rate, yet deleting it would shift ordinary totals +5.6 past the cascade rows' 0.0 placeholder — unscored cascades would start WINNING."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/policy-precision-commitment-temperature",
@@ -285,13 +285,13 @@
     "policy-precision-commitment-temperature tau softmax abstain discriminability",
     :excerpt
     "Maintain (tau) as a commitment temperature that modulates softmax over (-G/tau), coupled to diagnostic signals (recent regressions, uncertainty in (mu), contradiction rate, time pressure, repeated test failures)."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/posterior-variance-as-epistemic-value",
    :to "aif/structure-learning-by-model-reduction",
    :kind :why},
-  :rung 1,
+  :rung 2,
   :read
   ["aif/posterior-variance-as-epistemic-value"
    "aif/structure-learning-by-model-reduction"],
@@ -330,7 +330,7 @@
     "posterior-variance-as-epistemic-value EIG risk lambda sign category error",
     :excerpt
     "Apply the BMR posterior stddev as an EIG term, SUBTRACTED: `G = risk − λ·EIG`, where `EIG` = the aggregated per-concept posterior stddev (endpoint-count; `{concept → stddev}` the source, absent-concept → 0)."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/predictive-coding-belief-update",
@@ -350,7 +350,7 @@
     "predictive-coding-belief-update variance floor predictive-entropy ambiguity EFE",
     :excerpt
     "the variance rule keeps belief uncertainty in a meaningful regime where ambiguity terms in EFE stay informative."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/predictive-coding-belief-update",
@@ -370,7 +370,7 @@
     "predictive-coding-belief-update variance floor predictive-entropy ambiguity EFE",
     :excerpt
     "Mean: μ ← μ + α · Π · ε, where ε = observation − μ, Π is per-channel precision, α is learning rate."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/predictive-entropy-as-ambiguity",
@@ -390,13 +390,13 @@
     "predictive-entropy-as-ambiguity diagonal Gaussian variance per channel forward model",
     :excerpt
     "For diagonal-covariance (independent channels), `det(Σ) = Π_k σ²_k`."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/scheduled-observer-entrypoint",
    :to "aif/grounded-actuation-not-reobservation",
    :kind :how},
-  :rung 1,
+  :rung 2,
   :read
   ["aif/scheduled-observer-entrypoint"
    "aif/grounded-actuation-not-reobservation"],
@@ -435,13 +435,13 @@
     "shared-kernel-predictive-forward-model deterministic core wrapper bit-equivalence drift",
     :excerpt
     "Separation makes the call surface for downstream EFE consumers clear."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/status-gated-belief-update",
    :to "aif/predictive-coding-belief-update",
    :kind :how},
-  :rung 1,
+  :rung 2,
   :read
   ["aif/status-gated-belief-update"
    "aif/predictive-coding-belief-update"],
@@ -466,7 +466,7 @@
   {:from "aif/structure-learning-by-model-reduction",
    :to "aif/posterior-variance-as-epistemic-value",
    :kind :how},
-  :rung 1,
+  :rung 2,
   :read
   ["aif/structure-learning-by-model-reduction"
    "aif/posterior-variance-as-epistemic-value"],
@@ -502,7 +502,7 @@
     "structured-observation-vector typed normalized feature map session state",
     :excerpt
     "Maintain an explicit (o) as a typed, normalized feature map derived from session state (for example: test status, compile status, diff size, failing spec count, user-stated constraints, time since last anchor, contradiction flags)."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/temporal-depth-beyond-greedy",
@@ -522,7 +522,7 @@
     "temporal-depth-beyond-greedy horizon slow loop fast loop hierarchy",
     :excerpt
     "introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them"}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/term-to-channel-traceability",
@@ -542,13 +542,13 @@
     "term-to-channel-traceability declare observation keys precision channels provenance",
     :excerpt
     "Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score."}],
-  :rung 1,
+  :rung 2,
   :state :proposed}
  {:edge
   {:from "aif/two-layer-calibration",
    :to "aif/off-continuity-null-discriminates",
    :kind :how},
-  :rung 1,
+  :rung 2,
   :read
   ["aif/two-layer-calibration"
    "aif/off-continuity-null-discriminates"],
@@ -587,5 +587,62 @@
     "valuation-reads-the-paperwork content hash living documents drift prose",
     :excerpt
     "Treat cross-edit comparisons as cross-version comparisons."}],
+  :rung 2,
+  :state :proposed}
+ {:edge
+  {:from "aif/belief-state-operational-hypotheses",
+   :to "writing-coherence/plain-language-thesis",
+   :kind :see-also},
+  :by "zai-2",
+  :at "2026-08-30",
+  :read
+  ["aif/belief-state-operational-hypotheses"
+   "writing-coherence/plain-language-thesis"],
+  :cited
+  "If the belief state is just the conversation, the agent cannot cleanly update, compare, or falsify its own assumptions.",
+  :evidence
+  [{:id "e-6d22077c-fdec-4524-8c81-2e63efb2b8db",
+    :via :tag,
+    :query
+    "exact export occurrence: aif/belief-state-operational-hypotheses",
+    :excerpt
+    "aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses futon3a embeddings id title score rank retrieval-source retrieval-method writing-coherence/plain-language-thesis State Top-Level Claims in Plain Language"}],
+  :rung 1,
+  :state :proposed}
+ {:edge
+  {:from "aif/evidence-precision-registry",
+   :to "exotic/full-lift-registry",
+   :kind :see-also},
+  :by "zai-2",
+  :at "2026-08-30",
+  :read
+  ["aif/evidence-precision-registry" "exotic/full-lift-registry"],
+  :cited
+  "Represent (Pi_o) as a per-channel precision registry keyed to observation features (and/or evidence sources), and apply it wherever prediction error, scoring, or gating occurs.",
+  :evidence
+  [{:id "e-ec575c01-804f-4b54-84d1-f5dbf042c03b",
+    :via :tag,
+    :query "exact export occurrence: aif/evidence-precision-registry",
+    :excerpt
+    "Also flagged three likely registry/credit prior-art patterns (`aif/candidate-pattern-action-space`, `aif/evidence-precision-registry`, `exotic/full-lift-registry`) that DERIVE car 1 must read before defining the registry, so we don't reinvent (I-4)."}],
+  :rung 1,
+  :state :proposed}
+ {:edge
+  {:from "aif/expected-free-energy-scorecard",
+   :to "ants/baseline-cyber-ant",
+   :kind :see-also},
+  :by "zai-2",
+  :at "2026-08-30",
+  :read
+  ["aif/expected-free-energy-scorecard" "ants/baseline-cyber-ant"],
+  :cited
+  "A single opaque score encourages post-hoc rationalization and makes tuning indistinguishable from storytelling.",
+  :evidence
+  [{:id "e-e6c950cc-0c79-496c-ae05-f58762631037",
+    :via :tag,
+    :query
+    "exact export occurrence: aif/expected-free-energy-scorecard",
+    :excerpt
+    "id title score aif/expected-free-energy-scorecard Expected Free Energy as Multi-Term Scorecard id title score ants/baseline-cyber-ant Baseline Cyber-AIF Ant"}],
   :rung 1,
   :state :proposed}]

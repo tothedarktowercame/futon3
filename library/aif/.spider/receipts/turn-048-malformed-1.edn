@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/admissibility\" :to \"f6/self-play-loop\" :kind :see-also} :cited \"Without a principled gate, self-modifying actions compose into runaway recursion: the agent expands its own powers, which expands what it can propose, unboundedly (\\\"ants starting parliaments\\\").\" :evidence [{:id \"e-9f042566-e7de-4e31-b144-510ef7296db3\" :via :tag :query \"exact export occurrence: aif/admissibility\" :excerpt \"aif/admissibility Admissibility as Recursion-Safety — Gate the Action CLASS Before You Rank futon3a embeddings id title score rank retrieval-source retrieval-method f6/self-play-loop Self-Play Loop\"}] :rung 1 :read [\"aif/admissibility\" \"f6/self-play-loop\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788097855886-3968-6288171a",
+  :response
+  "[{:edge {:from \"aif/admissibility\" :to \"f6/self-play-loop\" :kind :see-also} :cited \"Without a principled gate, self-modifying actions compose into runaway recursion: the agent expands its own powers, which expands what it can propose, unboundedly (\\\"ants starting parliaments\\\").\" :evidence [{:id \"e-9f042566-e7de-4e31-b144-510ef7296db3\" :via :tag :query \"exact export occurrence: aif/admissibility\" :excerpt \"aif/admissibility Admissibility as Recursion-Safety — Gate the Action CLASS Before You Rank futon3a embeddings id title score rank retrieval-source retrieval-method f6/self-play-loop Self-Play Loop\"}] :rung 1 :read [\"aif/admissibility\" \"f6/self-play-loop\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/admissibility",
+    :to "f6/self-play-loop",
+    :kind :see-also}}},
+ :turn 48,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:51:25.399553847Z",
+ :attempt 1,
+ :pattern "aif/admissibility"}

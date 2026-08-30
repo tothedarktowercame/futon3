@@ -1,11 +1,16 @@
 #!/usr/bin/env bb
 (ns checks.library-graph-lint
   (:require [babashka.fs :as fs]
+            [babashka.process :as process]
             [clojure.edn :as edn]
             [clojure.string :as str]))
 
 (def edge-kinds #{:why :how :see-also})
 (def target-pattern #"[A-Za-z0-9_.-]+/[A-Za-z0-9_./'-]+")
+(def evidence-export "/home/joe/code/futon1b/migration-export/evidence.edn")
+(def evidence-cache
+  (str (fs/path "/tmp" (str "futon3-spider-evidence-occurrences-"
+                             (.toMillis (fs/last-modified-time evidence-export)) ".edn"))))
 
 (defn sha256 [s]
   (let [digest (java.security.MessageDigest/getInstance "SHA-256")]
@@ -106,6 +111,45 @@
        (or (not (contains? x :reason)) (nonblank-string? (:reason x)))
        (or (not= :refused (:state x)) (nonblank-string? (:reason x)))))
 
+(defn string-leaves [x]
+  (cond (map? x) (mapcat string-leaves (concat (keys x) (vals x)))
+        (sequential? x) (mapcat string-leaves x)
+        (string? x) [x]
+        (keyword? x) [(subs (str x) 1)]
+        :else []))
+
+(defn normalized [x]
+  (-> (str x) str/lower-case (str/replace #"\s+" " ") str/trim))
+
+(defn evidence-record [records id]
+  (if records
+    (get records id)
+    (try (edn/read-string (slurp (str "http://127.0.0.1:7073/api/alpha/evidence/" id)))
+         (catch Exception _ nil))))
+
+(defn rung-one-record [index pattern id]
+  (some #(when (= id (:id %)) {:evidence/body (:excerpt %)}) (get index pattern)))
+
+(defn attestation-semantic-failures [records export-index i att]
+  (when (valid-attestation? att)
+    (let [evidence (:evidence att)
+          rung (:rung att)
+          vias (set (map :via evidence))
+          base {:check :attestation-semantics :line (inc i) :edge (:edge att)}]
+      (concat
+       (when (and (= rung 1) (not (contains? vias :tag)))
+         [(assoc base :reason :rung-via-mismatch :detail :rung-1-requires-tag)])
+       (when (and (= rung 2) (contains? vias :tag))
+         [(assoc base :reason :rung-via-mismatch :detail :rung-2-forbids-tag)])
+       (for [{:keys [id excerpt via]} evidence
+             :let [record (if (= via :tag)
+                            (if records (evidence-record records id)
+                                (rung-one-record export-index (get-in att [:edge :from]) id))
+                            (evidence-record records id))
+                   haystack (normalized (str/join " " (string-leaves record)))]
+             :when (or (nil? record) (not (str/includes? haystack (normalized excerpt))))]
+         (assoc base :reason :evidence-excerpt-mismatch :evidence-id id))))))
+
 (defn read-edn-or [path fallback]
   (if (and path (fs/exists? path)) (edn/read-string (slurp path)) fallback))
 
@@ -120,11 +164,24 @@
      :patterns-with-outgoing-why (count why-from)
      :fraction-organised (if (zero? n) 0.0 (/ (double (count why-from)) n))}))
 
-(defn lint [{:keys [library section baseline attestations]}]
+(defn lint [{:keys [library section baseline attestations evidence-records]}]
   (let [scan (scan-library library)
         base (read-edn-or baseline {:edges [] :body-digests {}})
         atts (read-edn-or attestations [])
         att-rows (if (vector? atts) atts [])
+        records (when evidence-records (read-edn-or evidence-records {}))
+        _ (when (and (nil? records)
+                     (some #(some (fn [e] (= :tag (:via e))) (:evidence %)) att-rows)
+                     (not (fs/exists? evidence-cache)))
+            (let [repo (str (fs/parent (fs/absolutize library)))
+                  result (process/shell {:continue true :out :string :err :string}
+                                        "bb" "-cp" repo "-e"
+                                        "(require 'checks.spider-runner) (force checks.spider-runner/evidence-index)")]
+              (when-not (zero? (:exit result))
+                (throw (ex-info "could not build exact-occurrence evidence index"
+                                {:stderr (:err result)})))))
+        export-index (when (and (nil? records) (fs/exists? evidence-cache))
+                       (read-edn-or evidence-cache {}))
         baseline-edges (set (map edge-key (:edges base)))
         attested-edges (set (keep #(when (valid-attestation? %) (edge-key (:edge %))) att-rows))
         refused-edges (set (keep #(when (and (valid-attestation? %)
@@ -158,6 +215,8 @@
                                        :line (inc i) :edge (:edge att)
                                        :reason :malformed-attestation}))
                                   att-rows))
+        semantic (mapcat #(attestation-semantic-failures records export-index %1 %2)
+                         (range) att-rows)
         body-failures (for [{:keys [file body-line body-digest]} (:patterns scan)
                             :when (str/starts-with? file prefix)
                             :let [old (get (:body-digests base) file)]
@@ -166,7 +225,7 @@
                          :reason (if old :argument-body-changed :argument-body-not-in-baseline)
                          :expected old :actual body-digest})
         failures (mapv #(merge {:file nil :line nil :edge nil} %)
-                       (concat dangling cycles missing-atts refused-present malformed body-failures))
+                       (concat dangling cycles missing-atts refused-present malformed semantic body-failures))
         kind-counts (merge {:why 0 :how 0 :see-also 0}
                            (frequencies (map :kind (:edges scan))))
         why-nodes (set (mapcat (juxt :from :to) (filter #(= :why (:kind %)) (:edges scan))))]

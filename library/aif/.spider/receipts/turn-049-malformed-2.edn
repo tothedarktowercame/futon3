@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/belief-state-operational-hypotheses\" :to \"ai4ci/project-summary-core\" :kind :see-also} :cited \"You want decisions to depend on tractable hypotheses (progress, blockers, pattern fit, uncertainty) rather than raw conversation history.\" :evidence [{:id \"e-fb7deeab-1aee-4a93-8601-c6ab540b513d\" :via :tag :query \"exact export occurrence: aif/belief-state-operational-hypotheses\" :excerpt \"aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses futon3a embeddings id title score rank retrieval-source retrieval-method ai4ci/project-summary-core AI4CI — Mid-Level Reasoning Pilot\"}] :rung 1 :read [\"aif/belief-state-operational-hypotheses\" \"ai4ci/project-summary-core\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788097982738-3976-908c473d",
+  :response
+  "[{:edge {:from \"aif/belief-state-operational-hypotheses\" :to \"ai4ci/project-summary-core\" :kind :see-also} :cited \"You want decisions to depend on tractable hypotheses (progress, blockers, pattern fit, uncertainty) rather than raw conversation history.\" :evidence [{:id \"e-fb7deeab-1aee-4a93-8601-c6ab540b513d\" :via :tag :query \"exact export occurrence: aif/belief-state-operational-hypotheses\" :excerpt \"aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses futon3a embeddings id title score rank retrieval-source retrieval-method ai4ci/project-summary-core AI4CI — Mid-Level Reasoning Pilot\"}] :rung 1 :read [\"aif/belief-state-operational-hypotheses\" \"ai4ci/project-summary-core\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/belief-state-operational-hypotheses",
+    :to "ai4ci/project-summary-core",
+    :kind :see-also}}},
+ :turn 49,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:53:40.255231561Z",
+ :attempt 2,
+ :pattern "aif/belief-state-operational-hypotheses"}

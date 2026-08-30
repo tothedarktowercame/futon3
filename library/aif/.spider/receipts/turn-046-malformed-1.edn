@@ -1,0 +1,13 @@
+{:schema 1,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:47:50.827585646Z",
+ :turn 46,
+ :pattern "aif/evidence-precision-registry",
+ :attempt 1,
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/evidence-precision-registry",
+    :to "musn/use-requires-evidence",
+    :kind :see-also}}}}

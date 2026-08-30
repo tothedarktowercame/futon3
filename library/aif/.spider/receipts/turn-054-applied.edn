@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:00:01.749926156Z",
+ :turn 54,
+ :pattern "aif/expected-free-energy-scorecard",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-054.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/expected-free-energy-scorecard",
+     :to "ants/baseline-cyber-ant",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/expected-free-energy-scorecard" "ants/baseline-cyber-ant"],
+    :cited
+    "A single opaque score encourages post-hoc rationalization and makes tuning indistinguishable from storytelling.",
+    :evidence
+    [{:id "e-e6c950cc-0c79-496c-ae05-f58762631037",
+      :via :tag,
+      :query
+      "exact export occurrence: aif/expected-free-energy-scorecard",
+      :excerpt
+      "id title score aif/expected-free-energy-scorecard Expected Free Energy as Multi-Term Scorecard id title score ants/baseline-cyber-ant Baseline Cyber-AIF Ant"}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

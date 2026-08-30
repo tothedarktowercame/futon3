@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/expected-free-energy-scorecard\" :to \"agent/budget-bounds-exploration\" :kind :see-also} :cited \"You want pattern selection to balance delivery risk, ambiguity, information value, and cost in a way you can tune and audit.\" :evidence [{:id \"e-ea6c872e-d83d-42a2-9aaf-6f5ca47a19d4\" :via :tag :query \"exact export occurrence: aif/expected-free-energy-scorecard\" :excerpt \"id title score agent/budget-bounds-exploration Budget Bounds Exploration id title score musn/off-trail-budget Off-Trail Budget id title score aif/expected-free-energy-scorecard Expected Free Energy as Multi-Term Scorecard\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"agent/budget-bounds-exploration\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788098158008-3988-f8b8385d",
+  :response
+  "[{:edge {:from \"aif/expected-free-energy-scorecard\" :to \"agent/budget-bounds-exploration\" :kind :see-also} :cited \"You want pattern selection to balance delivery risk, ambiguity, information value, and cost in a way you can tune and audit.\" :evidence [{:id \"e-ea6c872e-d83d-42a2-9aaf-6f5ca47a19d4\" :via :tag :query \"exact export occurrence: aif/expected-free-energy-scorecard\" :excerpt \"id title score agent/budget-bounds-exploration Budget Bounds Exploration id title score musn/off-trail-budget Off-Trail Budget id title score aif/expected-free-energy-scorecard Expected Free Energy as Multi-Term Scorecard\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"agent/budget-bounds-exploration\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/expected-free-energy-scorecard",
+    :to "agent/budget-bounds-exploration",
+    :kind :see-also}}},
+ :turn 51,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:56:30.681569219Z",
+ :attempt 1,
+ :pattern "aif/expected-free-energy-scorecard"}

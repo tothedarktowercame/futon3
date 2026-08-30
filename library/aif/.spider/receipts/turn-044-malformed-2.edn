@@ -1,0 +1,13 @@
+{:schema 1,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:45:15.116750618Z",
+ :turn 44,
+ :pattern "aif/admissibility",
+ :attempt 2,
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/admissibility",
+    :to "war-machine/advanceability",
+    :kind :see-also}}}}

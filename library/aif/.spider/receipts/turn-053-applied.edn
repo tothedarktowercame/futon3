@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T13:59:25.154054069Z",
+ :turn 53,
+ :pattern "aif/evidence-precision-registry",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-053.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/evidence-precision-registry",
+     :to "exotic/full-lift-registry",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/evidence-precision-registry" "exotic/full-lift-registry"],
+    :cited
+    "Represent (Pi_o) as a per-channel precision registry keyed to observation features (and/or evidence sources), and apply it wherever prediction error, scoring, or gating occurs.",
+    :evidence
+    [{:id "e-ec575c01-804f-4b54-84d1-f5dbf042c03b",
+      :via :tag,
+      :query
+      "exact export occurrence: aif/evidence-precision-registry",
+      :excerpt
+      "Also flagged three likely registry/credit prior-art patterns (`aif/candidate-pattern-action-space`, `aif/evidence-precision-registry`, `exotic/full-lift-registry`) that DERIVE car 1 must read before defining the registry, so we don't reinvent (I-4)."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

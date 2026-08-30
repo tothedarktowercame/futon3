@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/evidence-precision-registry\" :to \"agent/pause-is-not-failure\" :kind :see-also} :cited \"You want the agent to discount low-trust evidence without discarding it, and to become stricter when outcomes are volatile.\" :evidence [{:id \"e-140189eb-fa40-4632-9918-522fed347c84\" :via :tag :query \"exact export occurrence: aif/evidence-precision-registry\" :excerpt \"id title score aif/evidence-precision-registry Evidence Precision Registry id title score agent/pause-is-not-failure Pause Is Not Failure id title score musn/use-requires-evidence Use Requires Evidence\"}] :rung 1 :read [\"aif/evidence-precision-registry\" \"agent/pause-is-not-failure\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788098104975-3982-28ac1c07",
+  :response
+  "[{:edge {:from \"aif/evidence-precision-registry\" :to \"agent/pause-is-not-failure\" :kind :see-also} :cited \"You want the agent to discount low-trust evidence without discarding it, and to become stricter when outcomes are volatile.\" :evidence [{:id \"e-140189eb-fa40-4632-9918-522fed347c84\" :via :tag :query \"exact export occurrence: aif/evidence-precision-registry\" :excerpt \"id title score aif/evidence-precision-registry Evidence Precision Registry id title score agent/pause-is-not-failure Pause Is Not Failure id title score musn/use-requires-evidence Use Requires Evidence\"}] :rung 1 :read [\"aif/evidence-precision-registry\" \"agent/pause-is-not-failure\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/evidence-precision-registry",
+    :to "agent/pause-is-not-failure",
+    :kind :see-also}}},
+ :turn 50,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:55:31.414930673Z",
+ :attempt 2,
+ :pattern "aif/evidence-precision-registry"}

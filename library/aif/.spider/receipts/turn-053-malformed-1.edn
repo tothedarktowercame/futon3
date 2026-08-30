@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/evidence-precision-registry\" :to \"ai4ci/process-vs-exposition\" :kind :see-also} :cited \"The agent must treat some inputs as more reliable than others (tests vs narrative claims, trace anchors vs inferred intent).\" :evidence [{:id \"e-7b3c467a-7fb2-4570-9359-39d40d2cbe40\" :via :tag :query \"exact export occurrence: aif/evidence-precision-registry\" :excerpt \"id title score ai4ci/process-vs-exposition Process and Exposition as Complementary Evidence id title score ai4ci/collective-intelligence-framing Collective Intelligence — Communication Framing id title score aif/evidence-precision-registry Evidence Precision Registry\"}] :rung 1 :read [\"aif/evidence-precision-registry\" \"ai4ci/process-vs-exposition\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788098294258-3996-4ed30d6c",
+  :response
+  "[{:edge {:from \"aif/evidence-precision-registry\" :to \"ai4ci/process-vs-exposition\" :kind :see-also} :cited \"The agent must treat some inputs as more reliable than others (tests vs narrative claims, trace anchors vs inferred intent).\" :evidence [{:id \"e-7b3c467a-7fb2-4570-9359-39d40d2cbe40\" :via :tag :query \"exact export occurrence: aif/evidence-precision-registry\" :excerpt \"id title score ai4ci/process-vs-exposition Process and Exposition as Complementary Evidence id title score ai4ci/collective-intelligence-framing Collective Intelligence — Communication Framing id title score aif/evidence-precision-registry Evidence Precision Registry\"}] :rung 1 :read [\"aif/evidence-precision-registry\" \"ai4ci/process-vs-exposition\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/evidence-precision-registry",
+    :to "ai4ci/process-vs-exposition",
+    :kind :see-also}}},
+ :turn 53,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:58:48.218875910Z",
+ :attempt 1,
+ :pattern "aif/evidence-precision-registry"}

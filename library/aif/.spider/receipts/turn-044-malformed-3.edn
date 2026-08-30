@@ -1,0 +1,13 @@
+{:schema 1,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:45:46.212549471Z",
+ :turn 44,
+ :pattern "aif/admissibility",
+ :attempt 3,
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/admissibility",
+    :to "data-mining/gates-as-code",
+    :kind :see-also}}}}

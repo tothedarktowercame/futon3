@@ -14,6 +14,8 @@
 (def linter (str (fs/path root "checks/library_graph_lint.clj")))
 (def agency-send "/home/joe/code/futon3c/scripts/agency_send.py")
 (def schema-path (str (fs/path library ".spider/attestation-schema.edn")))
+(def evidence-export "/home/joe/code/futon1b/migration-export/evidence.edn")
+(def lint-lock (str (fs/path library ".spider/lint.lock")))
 (def edge-kinds #{:why :how :see-also})
 (def proposal-kinds #{:retire :specialise :merge :split})
 
@@ -56,6 +58,7 @@
      :receipts (str (fs/path run-dir "receipts"))
      :checkpoints (str (fs/path run-dir "checkpoints"))
      :absences (str (fs/path run-dir "absences.edn"))
+     :seat-failures (str (fs/path run-dir "seat-failures.edn"))
      :attestations (str (fs/path section-dir "attestations.edn"))
      :proposals (str (fs/path section-dir "proposals.edn"))}))
 
@@ -89,17 +92,90 @@
     state))
 
 (defn run-linter! [section paths turn]
-  (let [report (gate-path paths turn)
-        result (process/shell {:continue true :out :string :err :string}
-                              "bb" linter "--library" library "--section" section
-                              "--baseline" baseline "--attestations" (:attestations paths)
-                              "--report" report)]
-    {:exit (:exit result) :report report
-     :data (read-edn report {:checks [{:reason :missing-gate-report}]
-                            :summary {:pass? false}})
-     :stdout (:out result) :stderr (:err result)}))
+  (let [report (gate-path paths turn)]
+    (fs/create-dirs (fs/parent lint-lock))
+    (let [result (process/shell {:continue true :out :string :err :string}
+                                "flock" lint-lock
+                                "bb" linter "--library" library "--section" section
+                                "--baseline" baseline "--attestations" (:attestations paths)
+                                "--report" report)]
+      {:exit (:exit result) :report report
+       :data (read-edn report {:checks [{:reason :missing-gate-report}]
+                              :summary {:pass? false}})
+       :stdout (:out result) :stderr (:err result)})))
 
-(defn response-prompt [section pattern file paths state]
+(defn string-leaves [x]
+  (cond (map? x) (mapcat string-leaves (concat (keys x) (vals x)))
+        (sequential? x) (mapcat string-leaves x)
+        (string? x) [x]
+        (keyword? x) [(subs (str x) 1)]
+        :else []))
+
+(def evidence-records
+  (delay (edn/read-string (slurp evidence-export))))
+
+(def library-pattern-ids
+  (delay (set (map #(lint/pattern-id library %) (fs/glob library "**.flexiarg")))))
+
+(defn exact-occurrence? [text token]
+  (boolean (re-find (re-pattern (str "(?<![A-Za-z0-9_./'-])"
+                                     (java.util.regex.Pattern/quote token)
+                                     "(?![A-Za-z0-9_./'-])")) text)))
+
+(defn occurrence-excerpt [text token]
+  (let [at (.indexOf text token)
+        start (max 0 (- at 200))
+        end (min (count text) (+ at (count token) 200))]
+    (subs text start end)))
+
+(def evidence-export-mtime
+  (.toMillis (fs/last-modified-time evidence-export)))
+(def evidence-index-cache
+  (str (fs/path "/tmp" (str "futon3-spider-evidence-occurrences-"
+                             evidence-export-mtime ".edn"))))
+
+(defn build-evidence-index []
+  (let [ids @library-pattern-ids
+        wr-aliases (into {} (keep (fn [id]
+                                    (when-let [[_ n] (re-matches #"war-room/wr-([0-9]+)-.*" id)]
+                                      [(str "WR-" n) id]))) ids)]
+    (reduce
+       (fn [index record]
+         (let [text (str/join " " (string-leaves record))
+               record-id (or (:evidence/id record) (:xt/id record))
+               path-hits (filter ids (re-seq #"[A-Za-z0-9_.-]+/[A-Za-z0-9_./'-]+" text))
+               alias-hits (keep wr-aliases (re-seq #"WR-[0-9]+" text))]
+           (reduce (fn [m pattern]
+                     (let [token (if (exact-occurrence? text pattern)
+                                   pattern
+                                   (first (filter #(= pattern (get wr-aliases %))
+                                                  (re-seq #"WR-[0-9]+" text))))]
+                       (if (and record-id token)
+                         (update m pattern (fnil conj [])
+                                 {:id record-id :via :tag
+                                  :query (str "exact export occurrence: " token)
+                                  :excerpt (occurrence-excerpt text token)})
+                         m)))
+                   index (distinct (concat path-hits alias-hits)))))
+       {} @evidence-records)))
+
+(def evidence-index
+  (delay
+    (if (fs/exists? evidence-index-cache)
+      (read-edn evidence-index-cache {})
+      ;; Fleet startup primes this cache before workers fork. A standalone runner
+      ;; builds it atomically; the mtime in the filename prevents stale reuse.
+      (let [index (build-evidence-index)]
+        (write-edn! evidence-index-cache index)
+        index))))
+
+(defn rung-one-hits [pattern]
+  (vec (get @evidence-index pattern [])))
+
+(def directive-table
+  "| directive | direction | meaning | who writes it |\n|---|---|---|---|\n| `@why <id> [<id> …]` | toward the general | the authority this pattern rests on — the strategy it is an instance of | the pattern's own author |\n| `@how <id> [<id> …]` | toward the specific | the named methods by which this pattern is carried out | an editor, later |\n| `@see-also <id> [<id> …]` | sideways | a peer technique; no claim of authority in either direction | either |")
+
+(defn response-prompt [section pattern file paths state rung-one]
   (let [readme (first (filter fs/exists? [(fs/path (:section-dir paths) "README.md")
                                           (fs/path (:section-dir paths) "README-flexiarg.md")]))
         previous-failure (:failure-fingerprint state)
@@ -118,13 +194,16 @@
        "{:checkpoint-restatement \"one paragraph stating what this section is about\"}\n")
      "\nRules: :from must equal the selected pattern. Targets must already exist as library/<target>.flexiarg. "
      "Do not repeat an existing directive. Prefer a small number of strong edges; [] is invalid, use an absence. "
-     "Every edge needs a nonblank citation and real external evidence. Rung 1 means the pattern id was found as a pattern tag/result id; "
+     "Every edge needs a nonblank citation and real external evidence. Rung 1 means the runner found the exact pattern id in the export; "
      "rung 2 is a bounded GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=<encoded title or conclusion keywords>&limit=5&hydrate=true. "
      "Never request the unfiltered evidence list. Only use IDs and excerpts returned by a query you actually ran. "
      "The runner verifies every :id by GET /api/alpha/evidence/<id> and requires the normalized :excerpt to occur verbatim in that record; "
      "pattern IDs are not evidence IDs, summaries and ellipses are rejected, and rung 1 also requires the source pattern id to occur in the record. "
-     "If tag and text queries find nothing, return Absence naming both queries. @why means what this pattern stands on; "
-     "@how means a pattern carrying it out; @see-also is non-dependency relevance.\n"
+     "If the supplied rung-1 hits do not warrant an edge, run rung 2. If neither warrants an edge, return Absence naming both. "
+     "You are an editor: you may write @how and @see-also. An @why item is a PROPOSAL only; the runner records its attestation but does not write its directive.\n\n"
+     "README-flexiarg.md §5a (verbatim):\n" directive-table "\n"
+     "Runner-supplied rung-1 exact-occurrence hits (cite these verbatim; do not invent others):\n"
+     (pr-str rung-one) "\n"
      (when previous-failure (str "Previous gate/output failure to correct: " (pr-str previous-failure) "\n"))
      "\nAttestation schema:\n" (slurp schema-path) "\n"
      "Section README:\n" (if readme (slurp (str readme)) "(No section README exists.)") "\n"
@@ -146,28 +225,26 @@
   (let [scan (lint/scan-library library)]
     (set (map #(select-keys % [:from :to :kind]) (:edges scan)))))
 
-(defn string-leaves [x]
-  (cond (map? x) (mapcat string-leaves (concat (keys x) (vals x)))
-        (sequential? x) (mapcat string-leaves x)
-        (string? x) [x]
-        :else []))
-
 (defn normalized [s]
   (-> (str s) str/lower-case (str/replace #"\s+" " ") str/trim))
 
-(defn evidence-valid? [pattern rung {:keys [id excerpt]}]
+(defn evidence-valid? [rung rung-one {:keys [id excerpt]}]
   (when (and (string? id) (re-matches #"e-[A-Za-z0-9-]+" id)
              (string? excerpt) (>= (count (normalized excerpt)) 20))
-    (try
-      (let [record (edn/read-string
-                    (slurp (str "http://127.0.0.1:7073/api/alpha/evidence/" id)))
-            haystack (normalized (str/join " " (string-leaves record)))
-            needle (normalized excerpt)]
-        (and (str/includes? haystack needle)
-             (or (= rung 2) (str/includes? haystack (normalized pattern)))))
-      (catch Exception _ false))))
+    (if (= rung 1)
+      (some (fn [hit]
+              (and (= id (:id hit))
+                   (str/includes? (normalized (:excerpt hit)) (normalized excerpt))))
+            rung-one)
+      (try
+        (let [record (edn/read-string
+                      (slurp (str "http://127.0.0.1:7073/api/alpha/evidence/" id)))
+              haystack (normalized (str/join " " (string-leaves record)))
+              needle (normalized excerpt)]
+          (str/includes? haystack needle))
+        (catch Exception _ false)))))
 
-(defn validate-output [value pattern checkpoint?]
+(defn validate-output [value pattern checkpoint? rung-one]
   (when-not (vector? value) (throw (ex-info "seat output root must be a vector" {})))
   (let [edge-items (filter :edge value)
         proposal-items (filter :proposal value)
@@ -189,10 +266,14 @@
                       (normalized (slurp (str (fs/path library (str pattern ".flexiarg")))))
                       (normalized cited))
                      (vector? evidence) (seq evidence)
+                     (if (= rung 1)
+                       (and (some #(= :tag (:via %)) evidence)
+                            (every? (set (map :id rung-one)) (map :id evidence)))
+                       (not-any? #(= :tag (:via %)) evidence))
                      (every? #(and (string? (:id %)) (#{:tag :text} (:via %))
                                    (not (str/blank? (str (:query %))))
                                    (not (str/blank? (str (:excerpt %))))
-                                   (evidence-valid? pattern rung %)) evidence)
+                                   (evidence-valid? rung rung-one %)) evidence)
                      (#{1 2} rung) (vector? read) (seq read))
         (throw (ex-info "invalid or duplicate edge item" {:item edge}))))
     (doseq [{:keys [proposal]} proposal-items]
@@ -232,7 +313,9 @@
                              {:edge edge :by seat :at (date) :read read :cited cited
                               :evidence evidence :rung rung :state :proposed}) (:edges parsed))]
     (when (seq (:edges parsed))
-      (atomic-spit! file (insert-directives (slurp (str file)) (:edges parsed)))
+      (let [editorial (remove #(= :why (get-in % [:edge :kind])) (:edges parsed))]
+        (when (seq editorial)
+          (atomic-spit! file (insert-directives (slurp (str file)) editorial))))
       (append-records! (:attestations paths) attestations))
     (when (seq (:proposals parsed)) (append-records! (:proposals paths) (:proposals parsed)))
     (when (seq (:absences parsed)) (append-records! (:absences paths) (:absences parsed)))
@@ -248,6 +331,35 @@
     (write-edn! (str (fs/path (:checkpoints paths) (format "checkpoint-%03d.edn" n))) receipt)
     {:number n :unchanged? (= restatement (:restatement previous))}))
 
+(defn invoke-valid! [seat prompt paths turn pattern checkpoint? rung-one]
+  (loop [attempt 0 prompt prompt]
+    (let [response (try (invoke-seat! seat prompt)
+                        (catch Exception e
+                          {:invoke-error {:message (.getMessage e) :data (ex-data e)}}))
+          result (if (:invoke-error response)
+                   {:error (:invoke-error response)}
+                   (try {:response response
+                         :parsed (validate-output (:value response) pattern checkpoint? rung-one)}
+                        (catch Exception e
+                          {:error {:message (.getMessage e) :data (ex-data e)}
+                           :raw (:raw response) :wire (:wire response)})))]
+      (if-not (:error result)
+        result
+        (do
+          (write-edn! (receipt-path paths turn (format "malformed-%d" (inc attempt)))
+                      {:schema 1 :event :seat-output-invalid :at (now) :turn turn
+                       :pattern pattern :attempt (inc attempt) :failure (:error result)
+                       :wire (:wire result) :response (:raw result)})
+          (if (< attempt 2)
+            (recur (inc attempt)
+                   (str prompt "\n\nYOUR PREVIOUS OUTPUT WAS MALFORMED:\n"
+                        (pr-str (:error result))
+                        "\nYour malformed output was:\n" (:raw result)
+                        "\nReturn one EDN vector matching this schema exactly:\n"
+                        (slurp schema-path)))
+            (throw (ex-info "seat returned malformed output"
+                            {:seat-failure true :retries 2 :last-error (:error result)}))))))))
+
 (defn process-turn! [section seat paths state]
   (let [pattern (first (remove (set (:completed state)) (:patterns state)))
         file (fs/path library (str pattern ".flexiarg"))
@@ -257,19 +369,21 @@
                   :attestations (when (fs/exists? (:attestations paths)) (slurp (:attestations paths)))
                   :proposals (when (fs/exists? (:proposals paths)) (slurp (:proposals paths)))
                   :absences (when (fs/exists? (:absences paths)) (slurp (:absences paths)))}
+        rung-one (rung-one-hits pattern)
         running (assoc state :phase :turn-running :turn turn :current-pattern pattern)]
     (write-edn! (:state paths) running)
     (write-edn! (receipt-path paths turn "intent")
                 {:schema 1 :event :dispatch-intent :at (now) :turn turn
                  :pattern pattern :seat seat :transport :agency-whistle})
     (try
-        (let [prompt (response-prompt section pattern file paths running)
-            response (invoke-seat! seat prompt)
+        (let [prompt (response-prompt section pattern file paths running rung-one)
+            valid (invoke-valid! seat prompt paths turn pattern checkpoint? rung-one)
+            response (:response valid)
             _ (write-edn! (receipt-path paths turn "completion")
                           {:schema 1 :event :dispatch-completion :at (now) :turn turn
                            :pattern pattern :seat seat :wire (:wire response)
                            :response (:raw response)})
-            parsed (validate-output (:value response) pattern checkpoint?)
+            parsed (:parsed valid)
             applied (apply-output! paths seat file parsed)
             gating (assoc running :phase :gating)]
         (write-edn! (:state paths) gating)
@@ -311,11 +425,19 @@
               next))))
       (catch Exception e
         (let [failure {:type (str (type e)) :message (.getMessage e) :data (ex-data e)}
+              seat-failure? (true? (:seat-failure (ex-data e)))
               failures (if (= pattern (:current-pattern state))
                          (inc (:consecutive-same-failures state)) 1)
-              ;; No writes occur before validation; malformed output is safe to retry.
-              next (assoc running :phase (if (>= failures 2) :turn-ready :turn-ready)
-                          :failure-fingerprint failure :consecutive-same-failures failures)]
+              next (if seat-failure?
+                     (do (append-records! (:seat-failures paths)
+                                          [{:pattern pattern :note "seat returned malformed output"
+                                            :retries 2 :at (now)}])
+                         (assoc running :phase :turn-ready
+                                :completed (conj (:completed state) pattern)
+                                :current-pattern nil :failure-fingerprint nil
+                                :consecutive-same-failures 0))
+                     (assoc running :phase :turn-ready
+                            :failure-fingerprint failure :consecutive-same-failures failures))]
           (write-edn! (gate-path paths turn)
                       {:checks [{:file (str file) :line nil :edge nil
                                  :reason :seat-output-invalid :detail failure}]
@@ -343,10 +465,10 @@
 
 (defn record-malformed-absence! [section seat paths state]
   (let [pattern (:current-pattern state)
-        absence {:pattern pattern :note "seat returned malformed output after two attempts"}
+        failure {:pattern pattern :note "seat returned malformed output" :retries 2 :at (now)}
         completed (conj (:completed state) pattern)
         checkpoint? (zero? (mod (count completed) 20))]
-    (append-records! (:absences paths) [absence])
+    (append-records! (:seat-failures paths) [failure])
     (try
       (let [_ (when checkpoint?
                 (write-edn! (:state paths) (assoc state :phase :checkpoint-ready
@@ -366,16 +488,23 @@
                             :checkpoint-error (.getMessage e))]
           (write-edn! (:state paths) paused) paused)))))
 
-(defn run-spider! [section seat budget]
+(defn run-spider! [section seat budget rerun-patterns]
   (let [paths (state-paths section)]
     (doseq [k [:run-dir :gates :receipts :checkpoints]] (fs/create-dirs (get paths k)))
     (when-not (fs/exists? (:attestations paths)) (write-edn! (:attestations paths) []))
     (when-not (fs/exists? (:proposals paths)) (write-edn! (:proposals paths) []))
     (when-not (fs/exists? (:absences paths)) (write-edn! (:absences paths) []))
+    (when-not (fs/exists? (:seat-failures paths)) (write-edn! (:seat-failures paths) []))
     (let [preflight (run-linter! section paths 0)]
       (when-not (zero? (:exit preflight))
         (throw (ex-info "preflight linter failed" {:report (:report preflight)}))))
-    (loop [state (reconcile! paths (read-edn (:state paths) (initial-state section seat)))
+    (loop [state (let [prior (reconcile! paths (read-edn (:state paths) (initial-state section seat)))]
+                   (if (seq rerun-patterns)
+                     (assoc prior :phase :turn-ready :patterns (vec rerun-patterns)
+                            :completed [] :current-pattern nil :paused-reason nil
+                            :failure-fingerprint nil :consecutive-same-failures 0
+                            :rerun-started-at (now))
+                     prior))
            remaining budget]
       (cond
         (= :paused (:phase state)) state
@@ -388,10 +517,11 @@
         :else (recur (process-turn! section seat paths state) (dec remaining))))))
 
 (defn -main [& args]
-  (let [{:keys [section seat budget]} (parse-args args)]
+  (let [{:keys [section seat budget patterns]} (parse-args args)]
     (when-not (and section seat budget)
       (throw (ex-info "usage: spider_runner.clj --section NAME --seat ZAI-ID --budget N" {})))
-    (println (pr-str (run-spider! section seat (parse-long budget))))))
+    (println (pr-str (run-spider! section seat (parse-long budget)
+                                  (when patterns (str/split patterns #",")))))))
 
 (when (= *file* (System/getProperty "babashka.file"))
   (apply -main *command-line-args*))

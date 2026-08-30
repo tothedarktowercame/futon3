@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/belief-state-operational-hypotheses\" :to \"ants/baseline-cyber-ant\" :kind :see-also} :cited \"A compact belief state makes predict -> observe -> update implementable and testable.\" :evidence [{:id \"e-404ad8a7-1094-4a44-89f5-3992baa6e0b4\" :via :tag :query \"exact export occurrence: aif/belief-state-operational-hypotheses\" :excerpt \"aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses futon3a embeddings id title score rank retrieval-source retrieval-method ants/baseline-cyber-ant Baseline Cyber-AIF Ant\"}] :rung 1 :read [\"aif/belief-state-operational-hypotheses\" \"ants/baseline-cyber-ant\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788097950490-3974-a229e07c",
+  :response
+  "[{:edge {:from \"aif/belief-state-operational-hypotheses\" :to \"ants/baseline-cyber-ant\" :kind :see-also} :cited \"A compact belief state makes predict -> observe -> update implementable and testable.\" :evidence [{:id \"e-404ad8a7-1094-4a44-89f5-3992baa6e0b4\" :via :tag :query \"exact export occurrence: aif/belief-state-operational-hypotheses\" :excerpt \"aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses futon3a embeddings id title score rank retrieval-source retrieval-method ants/baseline-cyber-ant Baseline Cyber-AIF Ant\"}] :rung 1 :read [\"aif/belief-state-operational-hypotheses\" \"ants/baseline-cyber-ant\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/belief-state-operational-hypotheses",
+    :to "ants/baseline-cyber-ant",
+    :kind :see-also}}},
+ :turn 49,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:53:02.682805885Z",
+ :attempt 1,
+ :pattern "aif/belief-state-operational-hypotheses"}

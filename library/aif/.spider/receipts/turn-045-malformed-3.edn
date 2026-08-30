@@ -1,0 +1,13 @@
+{:schema 1,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:47:18.751860884Z",
+ :turn 45,
+ :pattern "aif/belief-state-operational-hypotheses",
+ :attempt 3,
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/belief-state-operational-hypotheses",
+    :to "software-design/observer-pattern",
+    :kind :see-also}}}}

@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/expected-free-energy-scorecard\" :to \"budgeted-action-selection/mana-gated-work\" :kind :see-also} :cited \"You want pattern selection to balance delivery risk, ambiguity, information value, and cost in a way you can tune and audit.\" :evidence [{:id \"e-df2ba2b8-a21a-40bb-8cc8-d4dab2a51b76\" :via :tag :query \"exact export occurrence: aif/expected-free-energy-scorecard\" :excerpt \"budgeted-action-selection/mana-gated-work Mana-Gated Work: action selection bounded by available budget futon3a embeddings id title score rank retrieval-source retrieval-method aif/expected-free-energy-scorecard Expected Free Energy as Multi-Term Scorecard\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"budgeted-action-selection/mana-gated-work\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788098216698-3992-7d2ee018",
+  :response
+  "[{:edge {:from \"aif/expected-free-energy-scorecard\" :to \"budgeted-action-selection/mana-gated-work\" :kind :see-also} :cited \"You want pattern selection to balance delivery risk, ambiguity, information value, and cost in a way you can tune and audit.\" :evidence [{:id \"e-df2ba2b8-a21a-40bb-8cc8-d4dab2a51b76\" :via :tag :query \"exact export occurrence: aif/expected-free-energy-scorecard\" :excerpt \"budgeted-action-selection/mana-gated-work Mana-Gated Work: action selection bounded by available budget futon3a embeddings id title score rank retrieval-source retrieval-method aif/expected-free-energy-scorecard Expected Free Energy as Multi-Term Scorecard\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"budgeted-action-selection/mana-gated-work\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/expected-free-energy-scorecard",
+    :to "budgeted-action-selection/mana-gated-work",
+    :kind :see-also}}},
+ :turn 51,
+ :event :seat-output-invalid,
+ :at "2026-08-30T13:57:29.839208566Z",
+ :attempt 3,
+ :pattern "aif/expected-free-energy-scorecard"}

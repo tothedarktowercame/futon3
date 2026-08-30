@@ -1,0 +1,20 @@
+{:checks
+ [{:file
+   "/home/joe/code/futon3/./library/aif/expected-free-energy-scorecard.flexiarg",
+   :line nil,
+   :edge nil,
+   :reason :seat-output-invalid,
+   :detail
+   {:type "class clojure.lang.ExceptionInfo",
+    :message "seat returned malformed output",
+    :data
+    {:seat-failure true,
+     :retries 2,
+     :last-error
+     {:message "invalid or duplicate edge item",
+      :data
+      {:item
+       {:from "aif/expected-free-energy-scorecard",
+        :to "budgeted-action-selection/mana-gated-work",
+        :kind :see-also}}}}}}],
+ :summary {:pass? false, :failures 1}}

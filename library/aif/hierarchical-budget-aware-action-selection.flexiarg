@@ -4,6 +4,7 @@
 @audience fulab agents, aif implementers, multi-agent-AIF designers, simulation-of-collective-action designers
 @tone technical
 @style pattern
+@holds-at R11   ;; pegged 2026-08-30 (claude-15): the catalogue paragraph numbered R11 in p4ng/sec-catalog.tex; see PREREG-war-machine §1b
 
 ! conclusion: When multiple agents operating over shared state can independently choose actions that share consumable resources, resolve conflicts at multiple budget hierarchy levels: aggregate setup-budget conservation across all agents per tick; per-instance forward projection of each action's downstream resource consumption to detect instances that would predictively exhaust.
 

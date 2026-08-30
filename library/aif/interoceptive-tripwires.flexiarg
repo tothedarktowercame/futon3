@@ -1,0 +1,58 @@
+@flexiarg aif/interoceptive-tripwires
+@title Interoceptive Tripwires (Freeze, Record, Park, Summon)
+@keywords tripwire, interoception, invariant, phase boundary, retro-trip, blind-spot map, stop-line, wedge, livelock, precision evidence
+@audience anyone running a control loop live whose failures have so far been found by post-hoc archaeology
+@tone technical
+@style pattern
+@provenance written 2026-08-30 (claude-15) from the catalogue paragraph numbered R20 in p4ng/sec-catalog.tex (PLoP 2026), so that every R-node on Figure 4 has a library pattern; wording follows the paragraph, which is the standard. The implementation on record (futon2/src/futon2/aif/tripwire.clj, 13 wires, 2026-07-16) watches the coding-cohort runner, not the AIF loop — see futon4/holes/delivery-lifecycle.v1.md §0
+@see-also aif/no-self-certification aif/evidence-precision-registry
+@holds-at R20   ;; pegged 2026-08-30 (claude-15): the catalogue paragraph numbered R20; see PREREG-war-machine §1b
+
+! conclusion: Weave a supplementary harness of invariant tripwires around the live run at its phase boundaries — each wire a near-infinite-precision prior over machine trajectories — so that a violation is noticed at the moment it happens, with the state still warm; a trip is surprisal that belief updating cannot explain away, and the mandated action is freeze, record, park, summon, on a ladder that degrades only toward recording.
+
+  + context: A loop whose constructed core (R1–R16) has been hardened and which now runs live,
+    where every pathology so far — wedges, livelocks, mixed code images, silently lost wakes — was
+    discovered afterwards, on a completed broken run.
+
+  + IF:
+      You have hardened the loop's constructed core and want the machinery itself to be observable
+      while it runs live.
+
+  + HOWEVER:
+      The loop's observation channel is task-level only: it observes the world it acts on (job
+      outcomes, verdicts, witnesses, QA), while its own machinery is a hidden state with no
+      likelihood mapping. And simulation tests of the known invariants pass by construction the
+      moment the known bugs are fixed, so neither channel can notice the failure modes nobody has
+      imagined yet.
+
+  + THEN:
+      Weave a supplementary harness of invariant tripwires around the live run at its phase
+      boundaries. Each wire is a near-infinite-precision prior over machine trajectories — turn
+      conservation, ledger closure, review-commit provenance binding, append-only repair stores and
+      their status lattice, wedge and livelock detectors, wall-clock overrides, loaded-code/file-code
+      coherence, and an environment-alphabet wire on which any unknown job state trips rather than
+      defaulting. A trip is surprisal that belief updating cannot explain away, and the mandated
+      epistemic action is freeze, record, park, summon: write the frozen state as a durable report,
+      open a typed stop-line through the loop's own repair machinery, park an investigation join and
+      summon the outer reviewer, on a fail-safe ladder that only ever degrades toward recording,
+      never toward blocking the run. Calibrate before arming: the wires must retro-trip on the known
+      incident corpus (a wire that does not fire on the known past is a dud laser), and every closed
+      incident thereafter must deposit either a new wire or an entry on an explicit blind-spot map.
+
+  + BECAUSE:
+      This is interoception, not vision. Like any sensorium it admits no completeness theorem — it
+      gets identifiability checks, a measured coverage number, and a blind-spot map instead. An
+      organism with only a hand (R16) and a preference model (C) learns of poison from the stomach
+      ache, and each hotfix repairs one meal; an organism with interoceptive nerves notices at the
+      moment of violation and every incident leaves it permanently more observant. The trip stream
+      is also precision evidence about the machine itself (R7): a wire whose trips keep being
+      blessed as model revisions demotes itself, and a genuine trip should lower the system's
+      confidence in its own machinery until the finding is discharged.
+      + evidence: the operational witness of 2026-07-16: eleven wires specified from the loop's own
+        fix-ledgers, retro-tripping 4/4 on the reconstructed incident corpus; first live catch about
+        itself (fifteen shadow-mode trips from a baseline captured mid-load); 43 trips 07-16..07-27,
+        all but one :record.
+      + COUNTERFACTUAL: a blind-spot map with one entry that does not name the loop the harness was
+        built for is the failure this pattern must refuse — recorded against the July harness, which
+        watched the coding runner while the AIF loop it was meant to observe had already gone
+        quiet (futon4/holes/delivery-lifecycle.v1.md §0).

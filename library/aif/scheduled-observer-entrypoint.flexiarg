@@ -4,6 +4,7 @@
 @audience fulab agents, aif implementers
 @tone technical
 @style pattern
+@holds-at R10   ;; pegged 2026-08-30 (claude-15): the catalogue paragraph numbered R10 in p4ng/sec-catalog.tex; see PREREG-war-machine §1b
 
 ! conclusion: An AIF agent achieves "live operation" (R10) only when a scheduler drives ticks that change observable state. A scheduled no-op is not live operation — it is a disabled loop with a green light.
 

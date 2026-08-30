@@ -4,6 +4,7 @@
 @audience fulab agents, aif implementers, simulation-based-AIF designers
 @tone technical
 @style pattern
+@holds-at R4   ;; pegged 2026-08-30 (claude-15): the catalogue paragraph numbered R4 in p4ng/sec-catalog.tex; see PREREG-war-machine §1b
 
 ! conclusion: Extract the deterministic dynamics core into a pure shared kernel; have both the live step and the predictive forward model call into it. One implementation, two callers.
 

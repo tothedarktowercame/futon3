@@ -1,0 +1,49 @@
+@flexiarg aif/hierarchical-and-temporal-depth
+@title Hierarchical and Temporal Depth (Each Level Has Its Own Quantities)
+@keywords hierarchy, timescale, strategic loop, tactical loop, temporal discount, calibration state, two-tick campaign, Beta update
+@audience aif implementers; anyone coupling a fast loop inside a slow one
+@tone technical
+@style pattern
+@provenance written 2026-08-30 (claude-15) from the catalogue paragraph numbered R15 in p4ng/sec-catalog.tex (PLoP 2026), so that every R-node on Figure 4 has a library pattern; wording follows the paragraph, which is the standard
+@see-also aif/temporal-depth-beyond-greedy aif/hierarchical-budget-aware-action-selection
+@holds-at R15   ;; pegged 2026-08-30 (claude-15): the catalogue paragraph numbered R15; see PREREG-war-machine §1b
+
+! conclusion: When a fast tactical loop acts inside a slower strategic loop, make the coupling explicit and give each level its own quantities — strategic selection fixes the tactical target, witnessed tactical outcomes update the next strategic calibration state, and longer policies carry a named temporal discount of their own — so that no quantity does duty at two levels at once.
+
+  + context: An AIF harness with two grains of decision: a strategic loop that chooses which task
+    to work on and updates priors and preferences slowly, and a tactical loop that constructs and
+    executes a cascade against the chosen target quickly. (R13 names the two loops; R11 is the
+    orthogonal resource hierarchy over a shared budget. This pattern is the coupling between the
+    two timescales.)
+
+  + IF:
+      A fast tactical loop acts inside a slower strategic loop.
+
+  + HOWEVER:
+      Merely giving both levels a scalar score does not create a hierarchy. A second use of the
+      same score — the commitment dial doing duty as a temporal discount, a tactical outcome read
+      as if it were strategic evidence — collapses the levels back into one, and nothing in the
+      record can then say which level learned what.
+
+  + THEN:
+      Make the coupling explicit, in three named seams: (1) strategic selection fixes the tactical
+      target — the tactical loop does not choose what to work on; (2) witnessed tactical outcomes
+      update the next strategic calibration state — an outcome enters the slow level only through
+      a witness the fast level did not manufacture; (3) longer policies use a named temporal
+      discount of their own, rather than overloading the commitment dial (R14) to stand in for
+      time preference.
+
+  + BECAUSE:
+      Hierarchy is a relationship between levels and timescales, not a second use of the same
+      score. Each level has its own quantities; the invariant to preserve is that no quantity does
+      duty at two levels at once.
+      + evidence: the opt-in two-tick campaign records both levels separately, rejects unwitnessed
+        learning, folds a grounded fast outcome into a Beta update of the slow state, and uses that
+        state to parameterise the next fast rollout. Campaign S (2026-08-21): Tick A's independently
+        approved and grounded outcome advanced the slow posterior from Beta(1,1) to Beta(2,1),
+        changed the slow mode from exploration to consolidation, and parameterised Tick B under
+        that state. This is evidence for the explicit coupling, not for a general nested
+        generative model.
+      + COUNTERFACTUAL: a run in which a tactical outcome changed the strategic state without a
+        witness, or in which the commitment dial and the temporal discount are one number, would
+        show the coupling is not explicit.

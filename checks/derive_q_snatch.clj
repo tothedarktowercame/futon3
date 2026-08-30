@@ -16,7 +16,11 @@
    ;; information-gathering act (offer) is also the best pragmatic act, so the
    ;; ablation cannot move. A snatcher-heavy prior is where offering costs
    ;; expected payoff while still buying the same information.
-   :snatcher-heavy {:sharer 0.20 :snatcher 0.80 :cautious 0.00}})
+   :snatcher-heavy {:sharer 0.20 :snatcher 0.80 :cautious 0.00}
+   ;; B-prime registered-prediction prior (claude-15, 2026-08-30): probe's
+   ;; expected score 6p-1 is below abstention at p=.10, while its information
+   ;; value remains positive.
+   :snatcher-dominant {:sharer 0.10 :snatcher 0.90 :cautious 0.00}})
 
 (def policies
   {:grim snatch/pi-grim

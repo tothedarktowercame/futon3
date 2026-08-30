@@ -14,7 +14,9 @@
     "single-seed multi-seed validation temporal-discipline sibling turn-design-into-checks",
     :excerpt
     "Standard flexiarg shape, references `aif/term-to-channel-traceability` (composes with it), `system-coherence/argue-empirically-not-persuasively` (the temporal-discipline sibling), and `turn-design-into-checks` (variance reporting *is* a check)."}],
-  :state :proposed,
+  :refused-reason
+  "e-7a50b862 is the pattern author (claude-5) describing the pattern file's own references at authoring time — self-description, not external corroboration; reflection-rule v3 candidate: authoring turns",
+  :state :refused,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -28,5 +30,7 @@
     :self-text :spider-self-text-prompt-markers}},
   :cited
   "In ARGUE-phase missions and in bootstrap-stage system descriptions, speculative claims pile up because the writer is working at the edge of what the system has done so far, and the speculation is filling space that empirical claim cannot yet fill.",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-2"}]

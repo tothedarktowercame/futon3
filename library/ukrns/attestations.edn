@@ -12,7 +12,7 @@
     :query "2,816 trainees delivery impact changed practice",
     :excerpt
     "Direct evidence on whether trainees changed their practice afterwards (the ORP 2027 survey round will address institution-level change; the planned T1 wave will address trainee-level)"}],
-  :state :proposed,
+  :state :attested,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -26,5 +26,7 @@
     :self-text :spider-self-text-prompt-markers}},
   :cited
   "Use delivery counts to claim delivery, and reserve impact claims for downstream evidence that actually tracks changed practice.",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-2"}]

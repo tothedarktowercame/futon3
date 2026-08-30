@@ -1,0 +1,136 @@
+{:wave 2,
+ :basis 191738,
+ :reviewer "claude-15",
+ :at "2026-08-31",
+ :decisions
+ [{:section "musn",
+   :edge
+   {:from "musn/expensive-move-consent",
+    :to "aif/niche-construction",
+    :kind :see-also},
+   :rung 2,
+   :evidence ["e-e1980870-c223-4ec8-a1a8-cc06762698c3"],
+   :decision :attested,
+   :why nil}
+  {:section "musn",
+   :edge
+   {:from "musn/off-trail-brief-log",
+    :to "musn/off-trail-budget",
+    :kind :see-also},
+   :rung 2,
+   :evidence ["e-30e99623-20d0-4d57-9928-c41b705e66d9"],
+   :decision :attested,
+   :why nil}
+  {:section "musn",
+   :edge
+   {:from "musn/off-trail-budget",
+    :to "musn/off-trail-brief-log",
+    :kind :see-also},
+   :rung 2,
+   :evidence ["e-30e99623-20d0-4d57-9928-c41b705e66d9"],
+   :decision :attested,
+   :why nil}
+  {:section "peripherals",
+   :edge
+   {:from
+    "peripherals/progress-heartbeat-distinct-from-cycle-completion",
+    :to "peripherals/canonical-typed-event-vs-side-channel",
+    :kind :how},
+   :rung 1,
+   :evidence
+   ["e-9a0fcda2-2be1-4409-b52b-1ee089b510b2"
+    "e-fcf1c377-56fc-47b3-9330-fdcff63546d6"],
+   :decision :attested,
+   :why nil}
+  {:section "peripherals",
+   :edge
+   {:from
+    "peripherals/progress-heartbeat-distinct-from-cycle-completion",
+    :to "realtime/liveness-heartbeats",
+    :kind :see-also},
+   :rung 1,
+   :evidence
+   ["e-fcf1c377-56fc-47b3-9330-fdcff63546d6"
+    "e-9a0fcda2-2be1-4409-b52b-1ee089b510b2"],
+   :decision :attested,
+   :why nil}
+  {:section "peripherals",
+   :edge
+   {:from "peripherals/read-existing-seam-before-implementing",
+    :to "peripherals/canonical-typed-event-vs-side-channel",
+    :kind :see-also},
+   :rung 1,
+   :evidence ["e-5e72730c-08fa-42f7-b832-633e9c1be30a"],
+   :decision :attested,
+   :why nil}
+  {:section "peripherals",
+   :edge
+   {:from "peripherals/read-only-first-then-extend",
+    :to "peripherals/inhabitation-feeds-evolution",
+    :kind :see-also},
+   :rung 1,
+   :evidence ["e-58778618-3712-403f-af3b-b2feec161760"],
+   :decision :attested,
+   :why nil}
+  {:section "peripherals",
+   :edge
+   {:from "peripherals/split-transport-from-embodiment",
+    :to "peripherals/read-existing-seam-before-implementing",
+    :kind :how},
+   :rung 1,
+   :evidence ["e-8ce2581e-2e03-4aa4-b5c8-dcdf50507468"],
+   :decision :attested,
+   :why nil}
+  {:section "peripherals",
+   :edge
+   {:from "peripherals/surface-earns-inhabitation",
+    :to "peripherals/inhabitation-feeds-evolution",
+    :kind :see-also},
+   :rung 1,
+   :evidence
+   ["e-9c46eafa-d56e-480f-9398-3d10f62f0732"
+    "e-1b5c9273-154b-4680-a395-d01acccc525f"],
+   :decision :attested,
+   :why nil}
+  {:section "sidecar",
+   :edge
+   {:from "sidecar/explicit-promotion-to-facts",
+    :to "sidecar/validation-enforcement-gate",
+    :kind :how},
+   :rung 1,
+   :evidence ["e-8931a4eb-6509-428a-9d11-db2aa4ef552f"],
+   :decision :held-second-read,
+   :why
+   "warrant is a tag-list mention (f11-scribe memory record); needs a reader to say whether a tag co-occurrence states use"}
+  {:section "sidecar",
+   :edge
+   {:from "sidecar/explicit-promotion-to-facts",
+    :to "sidecar/fact-lifecycle-event-types",
+    :kind :see-also},
+   :rung 1,
+   :evidence ["e-8931a4eb-6509-428a-9d11-db2aa4ef552f"],
+   :decision :held-second-read,
+   :why
+   "warrant is a tag-list mention (f11-scribe memory record); needs a reader to say whether a tag co-occurrence states use"}
+  {:section "system-coherence",
+   :edge
+   {:from "system-coherence/argue-empirically-not-persuasively",
+    :to
+    "system-coherence/single-seed-results-need-multi-seed-validation",
+    :kind :see-also},
+   :rung 2,
+   :evidence ["e-7a50b862-15c9-49c2-ba50-26dfa377803c"],
+   :decision :refused,
+   :why
+   "e-7a50b862 is the pattern author (claude-5) describing the pattern file's own references at authoring time — self-description, not external corroboration; reflection-rule v3 candidate: authoring turns"}
+  {:section "ukrns",
+   :edge
+   {:from "ukrns/distinguish-delivery-from-practice-change",
+    :to
+    "ukrns/calibrate-impact-promises-to-current-indicator-capacity",
+    :kind :how},
+   :rung 2,
+   :evidence ["e-3e8f1734-53b8-4fbb-a18d-70fbf0b5a7c2"],
+   :decision :attested,
+   :why nil}],
+ :summary {:attested 10, :held-second-read 2, :refused 1}}

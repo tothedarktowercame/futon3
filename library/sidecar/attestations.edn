@@ -13,7 +13,9 @@
     "exact live occurrence: sidecar/explicit-promotion-to-facts",
     :excerpt
     "memory-retrieval promotion-gate experimental-isolation lifecycle challenge"}],
-  :state :proposed,
+  :refused-reason
+  "warrant is a tag-list mention (f11-scribe memory record); needs a reader to say whether a tag co-occurrence states use",
+  :state :held-second-read,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -27,7 +29,9 @@
     :self-text :spider-self-text-prompt-markers}},
   :cited
   "Require a promote action that passes the validation gate and appends a promotion record.",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-2"}
  {:edge
   {:from "sidecar/explicit-promotion-to-facts",
@@ -44,7 +48,9 @@
     "exact live occurrence: sidecar/explicit-promotion-to-facts",
     :excerpt
     "memory-retrieval promotion-gate experimental-isolation lifecycle challenge"}],
-  :state :proposed,
+  :refused-reason
+  "warrant is a tag-list mention (f11-scribe memory record); needs a reader to say whether a tag co-occurrence states use",
+  :state :held-second-read,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -57,5 +63,7 @@
     :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
     :self-text :spider-self-text-prompt-markers}},
   :cited "Define promotion log records with rationale and decided_by.",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-2"}]

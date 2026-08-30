@@ -11,7 +11,7 @@
     "expensive-move-consent niche-construction INV-G parliament",
     :excerpt
     "Strong matches already — `ants/baseline-cyber-ant` (the parliament line literally), the `aif/` free-energy patterns, `aif/niche-construction` + `musn/expensive-move-consent` (INV-G), `f6/negative-space-duality`, and several graph patterns."}],
-  :state :proposed,
+  :state :attested,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -25,7 +25,9 @@
     :self-text :spider-self-text-prompt-markers}},
   :cited
   "Wide scans and human-contact moves require explicit consent and cost accounting.",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-2"}
  {:edge
   {:from "musn/off-trail-brief-log",
@@ -39,7 +41,7 @@
     :query "autonomous-with-bounded-disclosure pilot stance",
     :excerpt
     "`musn/off-trail-brief-log` + `musn/off-trail-budget` — autonomous-with-bounded-disclosure (relevant for pilot's autonomous-but-mediated stance)"}],
-  :state :proposed,
+  :state :attested,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -52,7 +54,9 @@
     :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
     :self-text :spider-self-text-prompt-markers}},
   :cited "Off-trail actions are allowed but must be explainable.",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-1"}
  {:edge
   {:from "musn/off-trail-budget",
@@ -66,7 +70,7 @@
     :query "autonomous-with-bounded-disclosure off-trail",
     :excerpt
     "`musn/off-trail-brief-log` + `musn/off-trail-budget` — autonomous-with-bounded-disclosure (relevant for pilot's autonomous-but-mediated stance)"}],
-  :state :proposed,
+  :state :attested,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -80,5 +84,7 @@
     :self-text :spider-self-text-prompt-markers}},
   :cited
   "Track off-trail moves and pause when the budget is exceeded.",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-1"}]

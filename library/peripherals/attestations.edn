@@ -20,7 +20,7 @@
     "exact live occurrence: peripherals/progress-heartbeat-distinct-from-cycle-completion",
     :excerpt
     "Progress-heartbeat per `peripherals/progress-heartbeat-distinct-from-cycle-completion` → Phase 3.5 (not needed for no-op demo)"}],
-  :state :proposed,
+  :state :attested,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -34,7 +34,9 @@
     :self-text :spider-self-text-prompt-markers}},
   :cited
   "Cross-link: peripherals/canonical-typed-event-vs-side-channel — the heartbeat should be a first-class event in the transport taxonomy, not a parallel ping channel.",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-1"}
  {:edge
   {:from
@@ -58,7 +60,7 @@
     "exact live occurrence: peripherals/progress-heartbeat-distinct-from-cycle-completion",
     :excerpt
     "**#4 bounded — progress-heartbeat tool.** Per `peripherals/progress-heartbeat-distinct-from-cycle-completion`. v0: manual invocation; cycle.clj integration (auto-firing on long-running tools) deferred since cycle.clj is shared."}],
-  :state :proposed,
+  :state :attested,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -72,7 +74,9 @@
     :self-text :spider-self-text-prompt-markers}},
   :cited
   "realtime/liveness-heartbeats (futon3 pattern library): the realtime patterns already articulate the distinction at the transport layer. This pattern lifts the distinction into the peripheral-design layer and makes it a design-time decision, not a runtime emergent.",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-1"}
  {:edge
   {:from "peripherals/read-existing-seam-before-implementing",
@@ -89,7 +93,7 @@
     "exact live occurrence: peripherals/read-existing-seam-before-implementing",
     :excerpt
     "shown: • peripherals/read-existing-seam-before-implementing  (rel 0.494)"}],
-  :state :proposed,
+  :state :attested,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -103,7 +107,9 @@
     :self-text :spider-self-text-prompt-markers}},
   :cited
   "Are there existing frame shapes that cover (or partially cover) what this peripheral emits/consumes? If yes, extend the taxonomy as first-class events, not as out-of-band messages. (See: peripherals/canonical-typed-event-vs-side-channel.)",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-1"}
  {:edge
   {:from "peripherals/read-only-first-then-extend",
@@ -120,7 +126,7 @@
     "exact live occurrence: peripherals/read-only-first-then-extend",
     :excerpt
     "Stage-naming validation (v0=Pair-not-Observer per `peripherals/read-only-first-then-extend"}],
-  :state :proposed,
+  :state :attested,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -134,7 +140,9 @@
     :self-text :spider-self-text-prompt-markers}},
   :cited
   "Read-only as permanent: the converse failure — building the observer and never extending it, so the peripheral never closes its loop and never feeds the Baldwin cycle. Read-only is a first step, not a terminal state.",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-1"}
  {:edge
   {:from "peripherals/split-transport-from-embodiment",
@@ -151,7 +159,7 @@
     "exact live occurrence: peripherals/split-transport-from-embodiment",
     :excerpt
     "the load-bearing one being `peripherals/split-transport-from-embodiment`: \"two distinct concerns conflated into one thing can't compose.\" A stored arrow has two — its typed-gap lifecycle and its similarity — so the layered split is that pattern one level up."}],
-  :state :proposed,
+  :state :attested,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -165,7 +173,9 @@
     :self-text :spider-self-text-prompt-markers}},
   :cited
   "For each layer, do an independent seam-read (see: peripherals/read-existing-seam-before-implementing).",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-1"}
  {:edge
   {:from "peripherals/surface-earns-inhabitation",
@@ -188,7 +198,7 @@
     "exact live occurrence: peripherals/surface-earns-inhabitation",
     :excerpt
     "That fits `peripherals/surface-earns-inhabitation`: if the surface is meant to be inhabited, the invariants it exposes have to be trustworthy enough to survive use."}],
-  :state :proposed,
+  :state :attested,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -201,5 +211,7 @@
     :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
     :self-text :spider-self-text-prompt-markers}},
   :cited "Uninhabited infrastructure is dead infrastructure.",
+  :reviewed-by "claude-15",
   :at "2026-08-30",
+  :reviewed-at "2026-08-31",
   :by "zai-1"}]

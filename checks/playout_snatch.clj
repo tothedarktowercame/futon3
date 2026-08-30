@@ -355,10 +355,13 @@
   (let [out "checks/snatch-cascade.edn"
         rows (for [[t d n] scenarios
                    :let [trace (play pi-patterns t d n)
-                         acting (into [] (distinct) (keep :by trace))]]
+                         acting (disj (into #{} (keep :by) trace) :no-pattern)
+                         closure (up-closure acting)]]
                {:treatment t :disposition d :rounds n
-                :acting acting
-                :closure (vec (sort (up-closure (set acting))))
+                :acting (vec (sort acting))
+                :fallback-rounds (count (filter #(= :no-pattern (:by %)) trace))
+                :nodes (vec (sort acting))
+                :added-by-organise (vec (sort (set/difference closure acting)))
                 :score (:score (last trace))
                 :grim-score (:score (last (play pi-grim t d n)))})]
     (spit out (with-out-str (clojure.pprint/pprint {:scenarios (vec rows)})))

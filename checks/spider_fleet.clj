@@ -97,9 +97,12 @@
                      "bb" "-cp" root "-e"
                      "(require 'checks.spider-runner) (force checks.spider-runner/evidence-index)")
       (refresh! assignments)
-      (doall (map deref (map (fn [[section seat]]
-                               (future (run-section! assignments section seat budget)))
-                             assignments)))
+      ;; mapv twice: create EVERY future before awaiting any. A lazy map/deref
+      ;; pair created one future, blocked on it, then created the next — the
+      ;; fleet ran one section at a time (found by codex-20 at wave-1 launch).
+      (run! deref (mapv (fn [[section seat]]
+                          (future (run-section! assignments section seat budget)))
+                        assignments))
       (println (pr-str (refresh! assignments))))))
 
 (when (= *file* (System/getProperty "babashka.file"))

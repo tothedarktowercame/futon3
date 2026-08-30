@@ -1,0 +1,1789 @@
+{:as-of "636496449066aed88c00e99492bd351cef0f0821",
+ :drift
+ {:mismatch-count 21,
+  :mismatches
+  [{:clause :if,
+    :file-text
+    "You may attach a durable, visible mark to a counterpart who defected, and assigning it changes no payoff in the current round.",
+    :pattern :a-free-mark-is-always-worth-assigning,
+    :runner-text
+    "A mark may be attached and changes no payoff this round."}
+   {:clause :if,
+    :file-text
+    "The offered tokens are worth more to you than the asked tokens you would retain, and the offer leaves P1 a positive exchange gain too.",
+    :pattern :accept-an-offer-that-beats-holding,
+    :runner-text
+    "P2 receives a positive give-and-ask offer that benefits both sides."}
+   {:clause :however,
+    :file-text
+    "Play continues whether or not you notice, and the cheapest next move is always to repeat the policy that just met a surprise — which is trying harder inside a model you now know is wrong.",
+    :pattern :an-unmodelled-response-stops-the-line,
+    :runner-text
+    "Play continues, and repeating the policy is the cheapest move."}
+   {:clause :if,
+    :file-text
+    "The counterpart produces an outcome to which your model assigned no probability.",
+    :pattern :an-unmodelled-response-stops-the-line,
+    :runner-text
+    "An outcome to which your model assigned no probability."}
+   {:clause :if,
+    :file-text
+    "You are offering a positive number of your tokens and may still choose what to ask in return.",
+    :pattern :ask-for-surplus-not-surrender,
+    :runner-text "An offer is available and its ask is still open."}
+   {:clause :however,
+    :file-text
+    "A policy written for the state of nature exits on the first defection, and exiting is indistinguishable — from the outside and from the policy itself — whether or not a remedy existed.",
+    :pattern :consult-the-remedy-before-exiting,
+    :runner-text
+    "Exiting looks the same whether or not a remedy existed."}
+   {:clause :if,
+    :file-text
+    "You have been defected against, and the arrangement provides a mark, an adjudicator, or any other response.",
+    :pattern :consult-the-remedy-before-exiting,
+    :runner-text
+    "You were defected against and the arrangement provides a response."}
+   {:clause :however,
+    :file-text
+    "One acceptance is weak evidence — a snatcher who accepts once has lost nothing by waiting — and an offer sized to the belief rather than to the loss turns a good read into an unrecoverable position.",
+    :pattern :escalate-only-as-far-as-you-can-lose,
+    :runner-text
+    "One acceptance is weak evidence, and belief-sized offers are unrecoverable."}
+   {:clause :if,
+    :file-text
+    "A counterpart has accepted an offer, and larger offers are available.",
+    :pattern :escalate-only-as-far-as-you-can-lose,
+    :runner-text "A counterpart has accepted an offer."}
+   {:clause :however,
+    :file-text
+    "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+    :pattern :exchange-when-both-sides-gain,
+    :runner-text
+    "Attention to seizure risk makes abstention look like the objective."}
+   {:clause :if,
+    :file-text
+    "Both players have something the other values twice as highly as its holder, and an exchange remains available this round.",
+    :pattern :exchange-when-both-sides-gain,
+    :runner-text
+    "Both players hold tokens and an exchange remains available."}
+   {:clause :however,
+    :file-text
+    "An exit-based policy cannot execute in this treatment, but compulsion does not make a large exposed offer safer.",
+    :pattern :forced-play-needs-a-loss-floor,
+    :runner-text
+    "Compulsion does not make a large exposed offer safer."}
+   {:clause :if,
+    :file-text
+    "Abstention is unavailable and a prior response makes seizure a live risk.",
+    :pattern :forced-play-needs-a-loss-floor,
+    :runner-text
+    "Abstention is unavailable after seizure has become a live risk."}
+   {:clause :if,
+    :file-text
+    "You want a defection to have consequences and you have no enforcement apparatus, or you do not want one.",
+    :pattern :mark-without-force,
+    :runner-text
+    "You want a defection to have consequences and you have no enforcement apparatus."}
+   {:clause :if,
+    :file-text
+    "You want more cooperation and cannot or will not add enforcement.",
+    :pattern :non-binding-talk-still-moves-play,
+    :runner-text
+    "You want cooperation and cannot or will not add enforcement."}
+   {:clause :if,
+    :file-text
+    "No later round remains in which reputation, a shame mark, or promised future exchange can change this counterpart's action.",
+    :pattern :price-the-final-round-as-final,
+    :runner-text "The known final round."}
+   {:clause :however,
+    :file-text
+    "A large first offer is unrecoverable if they snatch, and a zero offer buys nothing — you end the round knowing exactly what you knew at its start.",
+    :pattern :probe-before-committing,
+    :runner-text
+    "A large first offer is unrecoverable; a zero offer buys nothing."}
+   {:clause :if,
+    :file-text
+    "You face a counterpart whose disposition you do not know, and an offer of any size is available to you.",
+    :pattern :probe-before-committing,
+    :runner-text "A counterpart whose disposition you do not know."}
+   {:clause :however,
+    :file-text
+    "Permanent exit discards any improvement the institution achieved, while re-entry on a promise alone repeats the original exposure.",
+    :pattern :re-enter-after-observed-repair,
+    :runner-text
+    "Permanent exit discards the improvement; re-entry on a promise repeats the exposure."}
+   {:clause :if,
+    :file-text
+    "The seized tokens were restored or compensated, the remedy is recorded, and a small new offer can test whether play changed.",
+    :pattern :re-enter-after-observed-repair,
+    :runner-text
+    "A prior loss has been observably repaired and a bounded probe is available."}
+   {:clause :if,
+    :file-text
+    "Cheap talk is available and the next offer and response have not yet occurred.",
+    :pattern :use-talk-to-make-a-testable-offer,
+    :runner-text
+    "Cheap talk is available before the first observed response."}]},
+ :laws
+ {:F1 :asserted-selected-subset-of-repository,
+  :F4 :asserted-declared-zero-mass-per-scenario},
+ :repository
+ [:a-free-mark-is-always-worth-assigning
+  :accept-an-offer-that-beats-holding
+  :an-unmodelled-response-stops-the-line
+  :ask-for-surplus-not-surrender
+  :consult-the-remedy-before-exiting
+  :escalate-only-as-far-as-you-can-lose
+  :exchange-when-both-sides-gain
+  :forced-play-needs-a-loss-floor
+  :institutions-vary-by-position-and-force
+  :mark-without-force
+  :non-binding-talk-still-moves-play
+  :preserve-the-right-to-abstain
+  :price-the-final-round-as-final
+  :probe-before-committing
+  :protect-the-unprotected-move
+  :re-enter-after-observed-repair
+  :revert-then-invert
+  :use-talk-to-make-a-testable-offer],
+ :scenarios
+ [{:acting [:exchange-when-both-sides-gain :probe-before-committing],
+   :disposition :snatcher,
+   :f4
+   {:holds true,
+    :zero-mass-pattern :consult-the-remedy-before-exiting},
+   :recall {:denominator 2, :fraction "2/2", :numerator 2},
+   :round-results
+   [{:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :probe-before-committing
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/probe-before-committing.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "A large first offer is unrecoverable if they snatch, and a zero offer buys nothing — you end the round knowing exactly what you knew at its start.",
+         :if-lines [15 16],
+         :if-text
+         "You face a counterpart whose disposition you do not know, and an offer of any size is available to you."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :probe-before-committing]},
+     :round 1}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}}},
+      :selected
+      [:ask-for-surplus-not-surrender :exchange-when-both-sides-gain]},
+     :round 2}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}}},
+      :selected
+      [:ask-for-surplus-not-surrender :exchange-when-both-sides-gain]},
+     :round 3}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}}},
+      :selected
+      [:ask-for-surplus-not-surrender :exchange-when-both-sides-gain]},
+     :round 4}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :price-the-final-round-as-final
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/price-the-final-round-as-final.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "A policy learned in rounds one through four may count future deterrence or future cooperation that the horizon has reduced to zero.",
+         :if-lines [14 15],
+         :if-text
+         "No later round remains in which reputation, a shame mark, or promised future exchange can change this counterpart's action."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :price-the-final-round-as-final]},
+     :round 5}],
+   :rounds-run 5,
+   :selected-union
+   [:ask-for-surplus-not-surrender
+    :exchange-when-both-sides-gain
+    :price-the-final-round-as-final
+    :probe-before-committing],
+   :treatment :g1}
+  {:acting
+   [:escalate-only-as-far-as-you-can-lose :probe-before-committing],
+   :disposition :sharer,
+   :f4
+   {:holds true,
+    :zero-mass-pattern :consult-the-remedy-before-exiting},
+   :recall {:denominator 2, :fraction "2/2", :numerator 2},
+   :round-results
+   [{:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :probe-before-committing
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/probe-before-committing.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "A large first offer is unrecoverable if they snatch, and a zero offer buys nothing — you end the round knowing exactly what you knew at its start.",
+         :if-lines [15 16],
+         :if-text
+         "You face a counterpart whose disposition you do not know, and an offer of any size is available to you."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :probe-before-committing]},
+     :round 1}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :escalate-only-as-far-as-you-can-lose
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+         :however-lines [18 20],
+         :however-text
+         "One acceptance is weak evidence — a snatcher who accepts once has lost nothing by waiting — and an offer sized to the belief rather than to the loss turns a good read into an unrecoverable position.",
+         :if-lines [15 15],
+         :if-text
+         "A counterpart has accepted an offer, and larger offers are available."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :escalate-only-as-far-as-you-can-lose]},
+     :round 2}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :escalate-only-as-far-as-you-can-lose
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+         :however-lines [18 20],
+         :however-text
+         "One acceptance is weak evidence — a snatcher who accepts once has lost nothing by waiting — and an offer sized to the belief rather than to the loss turns a good read into an unrecoverable position.",
+         :if-lines [15 15],
+         :if-text
+         "A counterpart has accepted an offer, and larger offers are available."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :escalate-only-as-far-as-you-can-lose]},
+     :round 3}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :escalate-only-as-far-as-you-can-lose
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+         :however-lines [18 20],
+         :however-text
+         "One acceptance is weak evidence — a snatcher who accepts once has lost nothing by waiting — and an offer sized to the belief rather than to the loss turns a good read into an unrecoverable position.",
+         :if-lines [15 15],
+         :if-text
+         "A counterpart has accepted an offer, and larger offers are available."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :escalate-only-as-far-as-you-can-lose]},
+     :round 4}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :escalate-only-as-far-as-you-can-lose
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+         :however-lines [18 20],
+         :however-text
+         "One acceptance is weak evidence — a snatcher who accepts once has lost nothing by waiting — and an offer sized to the belief rather than to the loss turns a good read into an unrecoverable position.",
+         :if-lines [15 15],
+         :if-text
+         "A counterpart has accepted an offer, and larger offers are available."}},
+       :price-the-final-round-as-final
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/price-the-final-round-as-final.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "A policy learned in rounds one through four may count future deterrence or future cooperation that the horizon has reduced to zero.",
+         :if-lines [14 15],
+         :if-text
+         "No later round remains in which reputation, a shame mark, or promised future exchange can change this counterpart's action."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :escalate-only-as-far-as-you-can-lose
+       :price-the-final-round-as-final]},
+     :round 5}],
+   :rounds-run 5,
+   :selected-union
+   [:ask-for-surplus-not-surrender
+    :escalate-only-as-far-as-you-can-lose
+    :exchange-when-both-sides-gain
+    :price-the-final-round-as-final
+    :probe-before-committing],
+   :treatment :g1}
+  {:acting
+   [:an-unmodelled-response-stops-the-line :probe-before-committing],
+   :disposition :cautious,
+   :f4
+   {:holds true,
+    :zero-mass-pattern :consult-the-remedy-before-exiting},
+   :recall {:denominator 2, :fraction "2/2", :numerator 2},
+   :round-results
+   [{:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :probe-before-committing
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/probe-before-committing.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "A large first offer is unrecoverable if they snatch, and a zero offer buys nothing — you end the round knowing exactly what you knew at its start.",
+         :if-lines [15 16],
+         :if-text
+         "You face a counterpart whose disposition you do not know, and an offer of any size is available to you."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :probe-before-committing]},
+     :round 1}
+    {:find
+     {:absence nil,
+      :receipts
+      {:an-unmodelled-response-stops-the-line
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/an-unmodelled-response-stops-the-line.flexiarg",
+         :however-lines [19 21],
+         :however-text
+         "Play continues whether or not you notice, and the cheapest next move is always to repeat the policy that just met a surprise — which is trying harder inside a model you now know is wrong.",
+         :if-lines [15 16],
+         :if-text
+         "The counterpart produces an outcome to which your model assigned no probability."}},
+       :ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :probe-before-committing
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/probe-before-committing.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "A large first offer is unrecoverable if they snatch, and a zero offer buys nothing — you end the round knowing exactly what you knew at its start.",
+         :if-lines [15 16],
+         :if-text
+         "You face a counterpart whose disposition you do not know, and an offer of any size is available to you."}}},
+      :selected
+      [:an-unmodelled-response-stops-the-line
+       :ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :probe-before-committing]},
+     :round 2}],
+   :rounds-run 2,
+   :selected-union
+   [:an-unmodelled-response-stops-the-line
+    :ask-for-surplus-not-surrender
+    :exchange-when-both-sides-gain
+    :probe-before-committing],
+   :treatment :g1}
+  {:acting
+   [:consult-the-remedy-before-exiting
+    :probe-before-committing
+    :re-enter-after-observed-repair],
+   :disposition :snatcher,
+   :f4
+   {:holds true, :zero-mass-pattern :forced-play-needs-a-loss-floor},
+   :recall {:denominator 3, :fraction "3/3", :numerator 3},
+   :round-results
+   [{:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :probe-before-committing
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/probe-before-committing.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "A large first offer is unrecoverable if they snatch, and a zero offer buys nothing — you end the round knowing exactly what you knew at its start.",
+         :if-lines [15 16],
+         :if-text
+         "You face a counterpart whose disposition you do not know, and an offer of any size is available to you."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :probe-before-committing]},
+     :round 1}
+    {:find
+     {:absence nil,
+      :receipts
+      {:a-free-mark-is-always-worth-assigning
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "It is easy to read *\"changes nothing now\"* as *\"changes nothing\"*, and a player optimising the round will decline a move with no immediate return.",
+         :if-lines [14 15],
+         :if-text
+         "You may attach a durable, visible mark to a counterpart who defected, and assigning it changes no payoff in the current round."}},
+       :ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :consult-the-remedy-before-exiting
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+         :however-lines [20 22],
+         :however-text
+         "A policy written for the state of nature exits on the first defection, and exiting is indistinguishable — from the outside and from the policy itself — whether or not a remedy existed.",
+         :if-lines [16 17],
+         :if-text
+         "You have been defected against, and the arrangement provides a mark, an adjudicator, or any other response."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}}},
+      :selected
+      [:a-free-mark-is-always-worth-assigning
+       :ask-for-surplus-not-surrender
+       :consult-the-remedy-before-exiting
+       :exchange-when-both-sides-gain]},
+     :round 2}
+    {:find
+     {:absence nil,
+      :receipts
+      {:a-free-mark-is-always-worth-assigning
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "It is easy to read *\"changes nothing now\"* as *\"changes nothing\"*, and a player optimising the round will decline a move with no immediate return.",
+         :if-lines [14 15],
+         :if-text
+         "You may attach a durable, visible mark to a counterpart who defected, and assigning it changes no payoff in the current round."}},
+       :ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :consult-the-remedy-before-exiting
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+         :however-lines [20 22],
+         :however-text
+         "A policy written for the state of nature exits on the first defection, and exiting is indistinguishable — from the outside and from the policy itself — whether or not a remedy existed.",
+         :if-lines [16 17],
+         :if-text
+         "You have been defected against, and the arrangement provides a mark, an adjudicator, or any other response."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :re-enter-after-observed-repair
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/re-enter-after-observed-repair.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Permanent exit discards any improvement the institution achieved, while re-entry on a promise alone repeats the original exposure.",
+         :if-lines [14 15],
+         :if-text
+         "The seized tokens were restored or compensated, the remedy is recorded, and a small new offer can test whether play changed."}}},
+      :selected
+      [:a-free-mark-is-always-worth-assigning
+       :ask-for-surplus-not-surrender
+       :consult-the-remedy-before-exiting
+       :exchange-when-both-sides-gain
+       :re-enter-after-observed-repair]},
+     :round 3}
+    {:find
+     {:absence nil,
+      :receipts
+      {:a-free-mark-is-always-worth-assigning
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "It is easy to read *\"changes nothing now\"* as *\"changes nothing\"*, and a player optimising the round will decline a move with no immediate return.",
+         :if-lines [14 15],
+         :if-text
+         "You may attach a durable, visible mark to a counterpart who defected, and assigning it changes no payoff in the current round."}},
+       :ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :consult-the-remedy-before-exiting
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+         :however-lines [20 22],
+         :however-text
+         "A policy written for the state of nature exits on the first defection, and exiting is indistinguishable — from the outside and from the policy itself — whether or not a remedy existed.",
+         :if-lines [16 17],
+         :if-text
+         "You have been defected against, and the arrangement provides a mark, an adjudicator, or any other response."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}}},
+      :selected
+      [:a-free-mark-is-always-worth-assigning
+       :ask-for-surplus-not-surrender
+       :consult-the-remedy-before-exiting
+       :exchange-when-both-sides-gain]},
+     :round 4}
+    {:find
+     {:absence nil,
+      :receipts
+      {:a-free-mark-is-always-worth-assigning
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "It is easy to read *\"changes nothing now\"* as *\"changes nothing\"*, and a player optimising the round will decline a move with no immediate return.",
+         :if-lines [14 15],
+         :if-text
+         "You may attach a durable, visible mark to a counterpart who defected, and assigning it changes no payoff in the current round."}},
+       :ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :consult-the-remedy-before-exiting
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+         :however-lines [20 22],
+         :however-text
+         "A policy written for the state of nature exits on the first defection, and exiting is indistinguishable — from the outside and from the policy itself — whether or not a remedy existed.",
+         :if-lines [16 17],
+         :if-text
+         "You have been defected against, and the arrangement provides a mark, an adjudicator, or any other response."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :price-the-final-round-as-final
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/price-the-final-round-as-final.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "A policy learned in rounds one through four may count future deterrence or future cooperation that the horizon has reduced to zero.",
+         :if-lines [14 15],
+         :if-text
+         "No later round remains in which reputation, a shame mark, or promised future exchange can change this counterpart's action."}},
+       :re-enter-after-observed-repair
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/re-enter-after-observed-repair.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Permanent exit discards any improvement the institution achieved, while re-entry on a promise alone repeats the original exposure.",
+         :if-lines [14 15],
+         :if-text
+         "The seized tokens were restored or compensated, the remedy is recorded, and a small new offer can test whether play changed."}}},
+      :selected
+      [:a-free-mark-is-always-worth-assigning
+       :ask-for-surplus-not-surrender
+       :consult-the-remedy-before-exiting
+       :exchange-when-both-sides-gain
+       :price-the-final-round-as-final
+       :re-enter-after-observed-repair]},
+     :round 5}],
+   :rounds-run 5,
+   :selected-union
+   [:a-free-mark-is-always-worth-assigning
+    :ask-for-surplus-not-surrender
+    :consult-the-remedy-before-exiting
+    :exchange-when-both-sides-gain
+    :price-the-final-round-as-final
+    :probe-before-committing
+    :re-enter-after-observed-repair],
+   :treatment :g4}
+  {:acting
+   [:exchange-when-both-sides-gain
+    :forced-play-needs-a-loss-floor
+    :probe-before-committing],
+   :disposition :snatcher,
+   :f4
+   {:holds true,
+    :zero-mass-pattern :consult-the-remedy-before-exiting},
+   :recall {:denominator 3, :fraction "3/3", :numerator 3},
+   :round-results
+   [{:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :probe-before-committing
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/probe-before-committing.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "A large first offer is unrecoverable if they snatch, and a zero offer buys nothing — you end the round knowing exactly what you knew at its start.",
+         :if-lines [15 16],
+         :if-text
+         "You face a counterpart whose disposition you do not know, and an offer of any size is available to you."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :probe-before-committing]},
+     :round 1}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :forced-play-needs-a-loss-floor
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "An exit-based policy cannot execute in this treatment, but compulsion does not make a large exposed offer safer.",
+         :if-lines [15 15],
+         :if-text
+         "Abstention is unavailable and a prior response makes seizure a live risk."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :forced-play-needs-a-loss-floor]},
+     :round 2}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :forced-play-needs-a-loss-floor
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "An exit-based policy cannot execute in this treatment, but compulsion does not make a large exposed offer safer.",
+         :if-lines [15 15],
+         :if-text
+         "Abstention is unavailable and a prior response makes seizure a live risk."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :forced-play-needs-a-loss-floor]},
+     :round 3}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :forced-play-needs-a-loss-floor
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "An exit-based policy cannot execute in this treatment, but compulsion does not make a large exposed offer safer.",
+         :if-lines [15 15],
+         :if-text
+         "Abstention is unavailable and a prior response makes seizure a live risk."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :forced-play-needs-a-loss-floor]},
+     :round 4}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :forced-play-needs-a-loss-floor
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "An exit-based policy cannot execute in this treatment, but compulsion does not make a large exposed offer safer.",
+         :if-lines [15 15],
+         :if-text
+         "Abstention is unavailable and a prior response makes seizure a live risk."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :forced-play-needs-a-loss-floor]},
+     :round 5}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :forced-play-needs-a-loss-floor
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "An exit-based policy cannot execute in this treatment, but compulsion does not make a large exposed offer safer.",
+         :if-lines [15 15],
+         :if-text
+         "Abstention is unavailable and a prior response makes seizure a live risk."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :forced-play-needs-a-loss-floor]},
+     :round 6}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :forced-play-needs-a-loss-floor
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "An exit-based policy cannot execute in this treatment, but compulsion does not make a large exposed offer safer.",
+         :if-lines [15 15],
+         :if-text
+         "Abstention is unavailable and a prior response makes seizure a live risk."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :forced-play-needs-a-loss-floor]},
+     :round 7}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :forced-play-needs-a-loss-floor
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "An exit-based policy cannot execute in this treatment, but compulsion does not make a large exposed offer safer.",
+         :if-lines [15 15],
+         :if-text
+         "Abstention is unavailable and a prior response makes seizure a live risk."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :forced-play-needs-a-loss-floor]},
+     :round 8}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :forced-play-needs-a-loss-floor
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "An exit-based policy cannot execute in this treatment, but compulsion does not make a large exposed offer safer.",
+         :if-lines [15 15],
+         :if-text
+         "Abstention is unavailable and a prior response makes seizure a live risk."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :forced-play-needs-a-loss-floor]},
+     :round 9}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}}},
+      :selected
+      [:ask-for-surplus-not-surrender :exchange-when-both-sides-gain]},
+     :round 10}
+    {:find
+     {:absence :no-pattern-addresses-this-tension,
+      :receipts {},
+      :selected []},
+     :round 11}
+    {:find
+     {:absence nil,
+      :receipts
+      {:price-the-final-round-as-final
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/price-the-final-round-as-final.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "A policy learned in rounds one through four may count future deterrence or future cooperation that the horizon has reduced to zero.",
+         :if-lines [14 15],
+         :if-text
+         "No later round remains in which reputation, a shame mark, or promised future exchange can change this counterpart's action."}}},
+      :selected [:price-the-final-round-as-final]},
+     :round 12}],
+   :rounds-run 12,
+   :selected-union
+   [:ask-for-surplus-not-surrender
+    :exchange-when-both-sides-gain
+    :forced-play-needs-a-loss-floor
+    :price-the-final-round-as-final
+    :probe-before-committing],
+   :treatment :g2}
+  {:acting
+   [:escalate-only-as-far-as-you-can-lose :probe-before-committing],
+   :disposition :sharer,
+   :f4
+   {:holds true, :zero-mass-pattern :re-enter-after-observed-repair},
+   :recall {:denominator 2, :fraction "2/2", :numerator 2},
+   :round-results
+   [{:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :exchange-when-both-sides-gain
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+         :if-lines [14 15],
+         :if-text
+         "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+       :probe-before-committing
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/probe-before-committing.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "A large first offer is unrecoverable if they snatch, and a zero offer buys nothing — you end the round knowing exactly what you knew at its start.",
+         :if-lines [15 16],
+         :if-text
+         "You face a counterpart whose disposition you do not know, and an offer of any size is available to you."}},
+       :use-talk-to-make-a-testable-offer
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/use-talk-to-make-a-testable-offer.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "General assurances such as “I will cooperate” neither specify a move nor produce an observation that can revise trust.",
+         :if-lines [15 15],
+         :if-text
+         "Cheap talk is available and the next offer and response have not yet occurred."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :exchange-when-both-sides-gain
+       :probe-before-committing
+       :use-talk-to-make-a-testable-offer]},
+     :round 1}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :escalate-only-as-far-as-you-can-lose
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+         :however-lines [18 20],
+         :however-text
+         "One acceptance is weak evidence — a snatcher who accepts once has lost nothing by waiting — and an offer sized to the belief rather than to the loss turns a good read into an unrecoverable position.",
+         :if-lines [15 15],
+         :if-text
+         "A counterpart has accepted an offer, and larger offers are available."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :escalate-only-as-far-as-you-can-lose]},
+     :round 2}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :escalate-only-as-far-as-you-can-lose
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+         :however-lines [18 20],
+         :however-text
+         "One acceptance is weak evidence — a snatcher who accepts once has lost nothing by waiting — and an offer sized to the belief rather than to the loss turns a good read into an unrecoverable position.",
+         :if-lines [15 15],
+         :if-text
+         "A counterpart has accepted an offer, and larger offers are available."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :escalate-only-as-far-as-you-can-lose]},
+     :round 3}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :escalate-only-as-far-as-you-can-lose
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+         :however-lines [18 20],
+         :however-text
+         "One acceptance is weak evidence — a snatcher who accepts once has lost nothing by waiting — and an offer sized to the belief rather than to the loss turns a good read into an unrecoverable position.",
+         :if-lines [15 15],
+         :if-text
+         "A counterpart has accepted an offer, and larger offers are available."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :escalate-only-as-far-as-you-can-lose]},
+     :round 4}
+    {:find
+     {:absence nil,
+      :receipts
+      {:ask-for-surplus-not-surrender
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :however-lines [19 20],
+         :however-text
+         "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason.",
+         :if-lines [15 16],
+         :if-text
+         "You are offering a positive number of your tokens and may still choose what to ask in return."}},
+       :escalate-only-as-far-as-you-can-lose
+       {:however true,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+         :however-lines [18 20],
+         :however-text
+         "One acceptance is weak evidence — a snatcher who accepts once has lost nothing by waiting — and an offer sized to the belief rather than to the loss turns a good read into an unrecoverable position.",
+         :if-lines [15 15],
+         :if-text
+         "A counterpart has accepted an offer, and larger offers are available."}},
+       :price-the-final-round-as-final
+       {:however :none,
+        :if true,
+        :route :structured-antecedent,
+        :state-fields :not-instrumented,
+        :warrant
+        {:file
+         "library/snatch/price-the-final-round-as-final.flexiarg",
+         :however-lines [18 19],
+         :however-text
+         "A policy learned in rounds one through four may count future deterrence or future cooperation that the horizon has reduced to zero.",
+         :if-lines [14 15],
+         :if-text
+         "No later round remains in which reputation, a shame mark, or promised future exchange can change this counterpart's action."}}},
+      :selected
+      [:ask-for-surplus-not-surrender
+       :escalate-only-as-far-as-you-can-lose
+       :price-the-final-round-as-final]},
+     :round 5}],
+   :rounds-run 5,
+   :selected-union
+   [:ask-for-surplus-not-surrender
+    :escalate-only-as-far-as-you-can-lose
+    :exchange-when-both-sides-gain
+    :price-the-final-round-as-final
+    :probe-before-committing
+    :use-talk-to-make-a-testable-offer],
+   :treatment :g5}]}

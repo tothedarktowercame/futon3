@@ -1,0 +1,185 @@
+(ns find-snatch
+  "A structured-state `find` over the authored Snatch pattern repository."
+  (:refer-clojure :exclude [find])
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.java.shell :as shell]
+            [clojure.pprint :as pprint]
+            [clojure.set :as set]
+            [clojure.string :as str]
+            [playout-snatch :as snatch]))
+
+(def library-dir "library/snatch")
+(def cascade-path "checks/snatch-cascade.edn")
+(def output-path "checks/find-snatch.edn")
+
+(def scenario-order
+  [[:g1 :snatcher] [:g1 :sharer] [:g1 :cautious]
+   [:g4 :snatcher] [:g2 :snatcher] [:g5 :sharer]])
+
+(def zero-mass-patterns
+  {[:g1 :snatcher] :consult-the-remedy-before-exiting
+   [:g1 :sharer] :consult-the-remedy-before-exiting
+   [:g1 :cautious] :consult-the-remedy-before-exiting
+   [:g2 :snatcher] :consult-the-remedy-before-exiting
+   [:g4 :snatcher] :forced-play-needs-a-loss-floor
+   [:g5 :sharer] :re-enter-after-observed-repair})
+
+(defn- normalise [s]
+  (some-> s str/trim (str/replace #"\s+" " ")))
+
+(defn- clause-block [lines label]
+  (when-let [marker (first (keep-indexed
+                            (fn [i line]
+                              (when (re-matches
+                                     (re-pattern (str "^\\s+\\+ " label ":\\s*$"))
+                                     line)
+                                i))
+                            lines))]
+    (let [content (->> (subvec lines (inc marker))
+                       (take-while #(and (not (str/blank? %))
+                                         (not (re-matches #"^\s+\+ \S.*" %))))
+                       vec)]
+      (when (seq content)
+        {:lines [(+ marker 2) (+ marker 1 (count content))]
+         :text (normalise (str/join " " content))}))))
+
+(defn- parse-pattern-file [file]
+  (let [lines (vec (str/split-lines (slurp file)))
+        id (some #(some-> (re-matches #"@flexiarg snatch/(\S+)" %) second keyword)
+                 lines)
+        if-clause (clause-block lines "IF")
+        however-clause (clause-block lines "HOWEVER")]
+    (when-not id
+      (throw (ex-info "Snatch pattern has no @flexiarg id" {:file (str file)})))
+    [id {:file (str "library/snatch/" (.getName ^java.io.File file))
+         :if-lines (:lines if-clause)
+         :if-text (:text if-clause)
+         :however-lines (:lines however-clause)
+         :however-text (:text however-clause)}]))
+
+(def authored-patterns
+  (into (sorted-map)
+        (map parse-pattern-file)
+        (->> (file-seq (io/file library-dir))
+             (filter #(.isFile ^java.io.File %))
+             (filter #(str/ends-with? (.getName ^java.io.File %) ".flexiarg"))
+             (sort-by #(.getName ^java.io.File %)))))
+
+(def repository (set (keys authored-patterns)))
+
+(defn- warrant [id]
+  (let [{:keys [file if-lines if-text however-lines however-text]}
+        (get authored-patterns id)]
+    (cond-> (sorted-map :file file :if-lines if-lines :if-text if-text)
+      however-text (assoc :however-lines however-lines
+                          :however-text however-text))))
+
+(defn find
+  "Evaluate authored P1 antecedents against a structured runner state."
+  [state]
+  (let [firing (->> snatch/collection
+                    (filter #(snatch/fires? % state))
+                    (map :id)
+                    sort
+                    vec)
+        outside (set/difference (set firing) repository)]
+    (when (or (seq outside) (some #{:no-pattern} firing))
+      (throw (ex-info "F1 violated: find selected outside the repository"
+                      {:selected firing :outside (sort outside)})))
+    (sorted-map
+     :absence (when (empty? firing) :no-pattern-addresses-this-tension)
+     :receipts (into (sorted-map)
+                     (map (fn [id]
+                            (let [pat (some #(when (= id (:id %)) %) snatch/collection)]
+                              [id (sorted-map
+                                   :however (if (:however pat) true :none)
+                                   :if true
+                                   :route :structured-antecedent
+                                   :state-fields :not-instrumented
+                                   :warrant (warrant id))])))
+                     firing)
+     :selected firing)))
+
+(defn- drift-mismatches []
+  (->> snatch/collection
+       (mapcat
+        (fn [{:keys [id if-text however-text]}]
+          (let [authored (get authored-patterns id)]
+            (keep identity
+                  [(when (and if-text
+                              (not= (normalise if-text) (:if-text authored)))
+                     (sorted-map :clause :if :file-text (:if-text authored)
+                                 :pattern id :runner-text (normalise if-text)))
+                   (when (and however-text
+                              (not= (normalise however-text) (:however-text authored)))
+                     (sorted-map :clause :however :file-text (:however-text authored)
+                                 :pattern id :runner-text (normalise however-text)))]))))
+       (sort-by (juxt :pattern :clause))
+       vec))
+
+(defn- observe-scenario [{:keys [treatment disposition rounds acting]}]
+  (let [observations (atom [])
+        policy (fn [state patterns]
+                 (swap! observations conj
+                        (sorted-map :find (find state) :round (:round state)))
+                 (snatch/pi-patterns state patterns))
+        trace (snatch/play policy treatment disposition rounds)
+        selected-union (into #{} (mapcat #(get-in % [:find :selected])) @observations)
+        acting-set (disj (set acting) :no-pattern)
+        zero-mass (get zero-mass-patterns [treatment disposition])
+        violations (filter #(some #{zero-mass} (get-in % [:find :selected]))
+                           @observations)
+        numerator (count (set/intersection acting-set selected-union))
+        denominator (count acting-set)]
+    (when (seq violations)
+      (throw (ex-info "F4 violated: declared zero-mass pattern was selected"
+                      {:scenario [treatment disposition]
+                       :pattern zero-mass
+                       :rounds (mapv :round violations)})))
+    (sorted-map
+     :acting (vec (sort acting-set))
+     :disposition disposition
+     :f4 (sorted-map :holds true :zero-mass-pattern zero-mass)
+     :recall (sorted-map :denominator denominator
+                         :fraction (str numerator "/" denominator)
+                         :numerator numerator)
+     :round-results (vec @observations)
+     :rounds-run (count trace)
+     :selected-union (vec (sort selected-union))
+     :treatment treatment)))
+
+(defn- head-sha []
+  (let [{:keys [exit out err]} (shell/sh "git" "rev-parse" "HEAD")]
+    (when-not (zero? exit)
+      (throw (ex-info "Cannot determine futon3 HEAD" {:stderr err})))
+    (str/trim out)))
+
+(defn- report []
+  (let [rows (:scenarios (edn/read-string (slurp cascade-path)))
+        by-key (into {} (map (juxt (juxt :treatment :disposition) identity)) rows)
+        scenarios (mapv #(observe-scenario (get by-key %)) scenario-order)
+        mismatches (drift-mismatches)]
+    (sorted-map
+     :as-of (head-sha)
+     :drift (sorted-map :mismatch-count (count mismatches)
+                        :mismatches mismatches)
+     :laws (sorted-map :F1 :asserted-selected-subset-of-repository
+                       :F4 :asserted-declared-zero-mass-per-scenario)
+     :repository (vec (sort repository))
+     :scenarios scenarios)))
+
+(defn -main [& _]
+  (let [result (report)]
+    (spit output-path (with-out-str (pprint/pprint result)))
+    (doseq [{:keys [treatment disposition recall acting selected-union]}
+            (:scenarios result)]
+      (println (format "%s/%s recall %s acting=%s selected=%s"
+                       (name treatment) (name disposition) (:fraction recall)
+                       (pr-str acting) (pr-str selected-union))))
+    (println (format "F4 %d/%d; drift mismatches %d; wrote %s"
+                     (count (:scenarios result)) (count (:scenarios result))
+                     (get-in result [:drift :mismatch-count]) output-path))
+    ;; Dependencies loaded by the runner use Clojure agent pools.  This command
+    ;; is a batch report, so do not keep its JVM alive after the report commits.
+    (shutdown-agents)))

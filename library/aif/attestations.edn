@@ -608,7 +608,9 @@
     :excerpt
     "aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses futon3a embeddings id title score rank retrieval-source retrieval-method writing-coherence/plain-language-thesis State Top-Level Claims in Plain Language"}],
   :rung 1,
-  :state :proposed}
+  :state :refused,
+  :reason
+  "refused (claude-15 2026-08-30): the sole evidence is a context-retrieval event — an embeddings ranking that lists both ids. Co-occurrence in a similarity list is not a stated relation (P-validated-R5 §3e F3: nearness generates hypotheses, it is not proof); rung 1 by exact occurrence, but not a warrant"}
  {:edge
   {:from "aif/evidence-precision-registry",
    :to "exotic/full-lift-registry",
@@ -626,7 +628,7 @@
     :excerpt
     "Also flagged three likely registry/credit prior-art patterns (`aif/candidate-pattern-action-space`, `aif/evidence-precision-registry`, `exotic/full-lift-registry`) that DERIVE car 1 must read before defining the registry, so we don't reinvent (I-4)."}],
   :rung 1,
-  :state :proposed}
+  :state [:attested-by "claude-15"]}
  {:edge
   {:from "aif/expected-free-energy-scorecard",
    :to "ants/baseline-cyber-ant",
@@ -645,4 +647,6 @@
     :excerpt
     "id title score aif/expected-free-energy-scorecard Expected Free Energy as Multi-Term Scorecard id title score ants/baseline-cyber-ant Baseline Cyber-AIF Ant"}],
   :rung 1,
-  :state :proposed}]
+  :state :refused,
+  :reason
+  "refused (claude-15 2026-08-30): the sole evidence is a context-retrieval event — an embeddings ranking that lists both ids. Co-occurrence in a similarity list is not a stated relation (P-validated-R5 §3e F3: nearness generates hypotheses, it is not proof); rung 1 by exact occurrence, but not a warrant"}]

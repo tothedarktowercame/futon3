@@ -2,7 +2,7 @@
  [{:added-by-organise
    [:institutions-vary-by-position-and-force
     :protect-the-unprotected-move],
-   :acting [:exchange-when-both-sides-gain :probe-before-committing],
+   :acting [:probe-before-committing :exchange-when-both-sides-gain],
    :treatment :g1,
    :disposition :snatcher,
    :fallback-rounds 0,
@@ -14,7 +14,7 @@
    [:institutions-vary-by-position-and-force
     :protect-the-unprotected-move],
    :acting
-   [:escalate-only-as-far-as-you-can-lose :probe-before-committing],
+   [:probe-before-committing :escalate-only-as-far-as-you-can-lose],
    :treatment :g1,
    :disposition :sharer,
    :fallback-rounds 0,
@@ -27,7 +27,7 @@
    [:institutions-vary-by-position-and-force
     :protect-the-unprotected-move],
    :acting
-   [:an-unmodelled-response-stops-the-line :probe-before-committing],
+   [:probe-before-committing :an-unmodelled-response-stops-the-line],
    :treatment :g1,
    :disposition :cautious,
    :fallback-rounds 0,
@@ -42,8 +42,8 @@
     :protect-the-unprotected-move
     :revert-then-invert],
    :acting
-   [:consult-the-remedy-before-exiting
-    :probe-before-committing
+   [:probe-before-committing
+    :consult-the-remedy-before-exiting
     :re-enter-after-observed-repair],
    :treatment :g4,
    :disposition :snatcher,
@@ -60,9 +60,9 @@
     :preserve-the-right-to-abstain
     :protect-the-unprotected-move],
    :acting
-   [:exchange-when-both-sides-gain
+   [:probe-before-committing
     :forced-play-needs-a-loss-floor
-    :probe-before-committing],
+    :exchange-when-both-sides-gain],
    :treatment :g2,
    :disposition :snatcher,
    :fallback-rounds 2,
@@ -77,7 +77,7 @@
    [:institutions-vary-by-position-and-force
     :protect-the-unprotected-move],
    :acting
-   [:escalate-only-as-far-as-you-can-lose :probe-before-committing],
+   [:probe-before-committing :escalate-only-as-far-as-you-can-lose],
    :treatment :g5,
    :disposition :sharer,
    :fallback-rounds 0,

@@ -355,10 +355,11 @@
   (let [out "checks/snatch-cascade.edn"
         rows (for [[t d n] scenarios
                    :let [trace (play pi-patterns t d n)
-                         acting (disj (into #{} (keep :by) trace) :no-pattern)
+                         acting-order (into [] (comp (keep :by) (remove #{:no-pattern}) (distinct)) trace)
+                         acting (set acting-order)
                          closure (up-closure acting)]]
                {:treatment t :disposition d :rounds n
-                :acting (vec (sort acting))
+                :acting acting-order            ; play order (first firing), :no-pattern removed
                 :fallback-rounds (count (filter #(= :no-pattern (:by %)) trace))
                 :nodes (vec (sort acting))
                 :added-by-organise (vec (sort (set/difference closure acting)))

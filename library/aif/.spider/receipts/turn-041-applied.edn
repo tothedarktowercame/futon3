@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T13:01:56.015133634Z",
+ :turn 41,
+ :pattern "aif/term-to-channel-traceability",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-041.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/term-to-channel-traceability",
+     :to "aif/evidence-precision-registry",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/term-to-channel-traceability"
+     "aif/evidence-precision-registry"],
+    :cited
+    "Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score.",
+    :evidence
+    [{:id "e-451eb212-766f-4d11-b39b-c2374b3aeeea",
+      :via :text,
+      :query
+      "term-to-channel-traceability declare observation keys precision channels provenance",
+      :excerpt
+      "Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

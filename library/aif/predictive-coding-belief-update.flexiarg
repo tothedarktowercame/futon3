@@ -6,6 +6,8 @@
 @style pattern
 @holds-at R3   ;; pegged 2026-08-30 (claude-15): the catalogue paragraph numbered R3 in p4ng/sec-catalog.tex; see PREREG-war-machine §1b
 
+@see-also aif/predictive-entropy-as-ambiguity
+@see-also aif/evidence-precision-registry
 ! conclusion: Update beliefs via predictive-coding (μ ← μ + α·Π·ε) and evolve variance with a sensor-variance floor so uncertainty stays meaningful.
 
   + context: The agent receives an observation each tick and must integrate it into its belief state. The integration rule determines both mean trajectory and uncertainty trajectory.

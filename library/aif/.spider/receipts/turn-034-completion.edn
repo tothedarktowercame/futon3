@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T12:57:28.254112358Z",
+ :turn 34,
+ :pattern "aif/predictive-entropy-as-ambiguity",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788094615699-3908-c32949ac",
+  :response
+  "[{:edge {:from \"aif/predictive-entropy-as-ambiguity\" :to \"aif/decomposed-prediction-noise\" :kind :how} :cited \"Verify your forward model returns predicted variance per observation channel. If not, the entropy isn't computable.\" :evidence [{:id \"e-cae646c4-2fda-4f7c-a6c3-95919793718c\" :via :text :query \"predictive-entropy-as-ambiguity diagonal Gaussian variance per channel forward model\" :excerpt \"For diagonal-covariance (independent channels), `det(Σ) = Π_k σ²_k`.\"}] :rung 1 :read [\"aif/predictive-entropy-as-ambiguity\" \"aif/decomposed-prediction-noise\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/predictive-entropy-as-ambiguity\" :to \"aif/decomposed-prediction-noise\" :kind :how} :cited \"Verify your forward model returns predicted variance per observation channel. If not, the entropy isn't computable.\" :evidence [{:id \"e-cae646c4-2fda-4f7c-a6c3-95919793718c\" :via :text :query \"predictive-entropy-as-ambiguity diagonal Gaussian variance per channel forward model\" :excerpt \"For diagonal-covariance (independent channels), `det(Σ) = Π_k σ²_k`.\"}] :rung 1 :read [\"aif/predictive-entropy-as-ambiguity\" \"aif/decomposed-prediction-noise\"]}]"}

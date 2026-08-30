@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:50:40.423802531Z",
+ :turn 27,
+ :pattern "writing-coherence/stale-reference-after-restructure",
+ :gate
+ "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-027.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "writing-coherence/stale-reference-after-restructure",
+     :to "system-coherence/argue-empirically-not-persuasively",
+     :kind :why},
+    :by "zai-1",
+    :at "2026-08-30",
+    :read
+    ["writing-coherence/stale-reference-after-restructure"
+     "writing-coherence/cross-section-claim-drift"
+     "system-coherence/argue-empirically-not-persuasively"],
+    :cited
+    "Confirming the analogue requires concrete cases of system restructure and dependency-staleness; without those, the analogue is conjectural and should not be promoted to `system-coherence` on speculation (per `system-coherence/argue-empirically-not-persuasively`: a pattern must follow from a use-case, not be speculated forward).",
+    :evidence
+    [{:id "e-44625962-5c64-4e1c-8470-504426373fda",
+      :via :text,
+      :query "meet-the-reader-where-they-are pattern landed R01 R09",
+      :excerpt
+      "with the new one self-applying its own restraint clause (NEXT-STEPS gates the system-coherence analogue on a documented use-case, citing `argue-empirically-not-persuasively` as the reason not to promote on speculation)"}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

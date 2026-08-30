@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T13:00:52.326018875Z",
+ :turn 39,
+ :pattern "aif/structured-observation-vector",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788094819899-3919-04ead33f",
+  :response
+  "[{:edge {:from \"aif/structured-observation-vector\" :to \"aif/predictive-coding-belief-update\" :kind :how} :cited \"A stable observation vector is the prerequisite for meaningful precision control and policy scoring.\" :evidence [{:id \"e-70024776-1c31-4a14-9466-2ecbe1bbf2cd\" :via :text :query \"structured-observation-vector typed normalized feature map session state\" :excerpt \"Maintain an explicit (o) as a typed, normalized feature map derived from session state (for example: test status, compile status, diff size, failing spec count, user-stated constraints, time since last anchor, contradiction flags).\"}] :rung 1 :read [\"aif/structured-observation-vector\" \"aif/predictive-coding-belief-update\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/structured-observation-vector\" :to \"aif/predictive-coding-belief-update\" :kind :how} :cited \"A stable observation vector is the prerequisite for meaningful precision control and policy scoring.\" :evidence [{:id \"e-70024776-1c31-4a14-9466-2ecbe1bbf2cd\" :via :text :query \"structured-observation-vector typed normalized feature map session state\" :excerpt \"Maintain an explicit (o) as a typed, normalized feature map derived from session state (for example: test status, compile status, diff size, failing spec count, user-stated constraints, time since last anchor, contradiction flags).\"}] :rung 1 :read [\"aif/structured-observation-vector\" \"aif/predictive-coding-belief-update\"]}]"}

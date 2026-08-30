@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T13:00:52.788530911Z",
+ :turn 39,
+ :pattern "aif/structured-observation-vector",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-039.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/structured-observation-vector",
+     :to "aif/predictive-coding-belief-update",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/structured-observation-vector"
+     "aif/predictive-coding-belief-update"],
+    :cited
+    "A stable observation vector is the prerequisite for meaningful precision control and policy scoring.",
+    :evidence
+    [{:id "e-70024776-1c31-4a14-9466-2ecbe1bbf2cd",
+      :via :text,
+      :query
+      "structured-observation-vector typed normalized feature map session state",
+      :excerpt
+      "Maintain an explicit (o) as a typed, normalized feature map derived from session state (for example: test status, compile status, diff size, failing spec count, user-stated constraints, time since last anchor, contradiction flags)."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

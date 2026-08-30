@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:59:45.409705082Z",
+ :turn 37,
+ :pattern "aif/status-gated-belief-update",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-037.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/status-gated-belief-update",
+     :to "aif/predictive-coding-belief-update",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/status-gated-belief-update"
+     "aif/predictive-coding-belief-update"],
+    :cited
+    "Implement the gate as a case-dispatch in the per-tick post-processing step, *not* inside update-mu itself. update-mu stays a pure function over (μ, observation, opts); the gate decides whether to call it.",
+    :evidence
+    [{:id "e-eded2ea1-6fac-457e-b858-63becbc6a08f",
+      :via :text,
+      :query
+      "status-gated belief update multi-instance paused truncated observation",
+      :excerpt
+      "update-mu stays a pure function over (μ, observation, opts); the gate decides whether to call it."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

@@ -5,6 +5,7 @@
 @tone technical
 @style pattern
 
+@how aif/shared-kernel-predictive-forward-model
 ! conclusion: Compose predictive-noise variance from named, domain-meaningful contributing sources, not from a single opaque σ². Each source maps to a structural feature of the candidate action.
 
   + context: The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions. A single hardcoded σ² is operationally inflexible and analytically opaque — there's no way to ask *why* this candidate has high predictive uncertainty.

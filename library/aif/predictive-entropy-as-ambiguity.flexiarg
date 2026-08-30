@@ -5,6 +5,7 @@
 @tone technical
 @style pattern
 
+@how aif/decomposed-prediction-noise
 ! conclusion: Compute the epistemic (ambiguity) EFE term as the entropy of the predictive observation distribution under each candidate. For a diagonal-covariance Gaussian, this simplifies to `0.5 × log(σ²_D × σ²_A)` (dropping additive constants that don't affect candidate ranking).
 
   + context: The epistemic value term in Expected Free Energy is supposed to favour information-gaining actions — candidates that produce *less ambiguous* observations, so the agent can refine its beliefs efficiently. A naïve implementation uses heuristic proxies (capability-portfolio breadth, count of available action branches, action-class diversity). These approximate but don't actually compute the AIF quantity.

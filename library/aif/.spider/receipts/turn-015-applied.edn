@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:45:06.338060924Z",
+ :turn 15,
+ :pattern "aif/declare-the-conditioning",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-015.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/declare-the-conditioning",
+     :to "aif/structured-observation-vector",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/declare-the-conditioning"
+     "aif/structured-observation-vector"],
+    :cited
+    "Route all lanes toward ONE situation source (the structured observation vector) where feasible.",
+    :evidence
+    [{:id "e-2f1b9326-6095-4f1a-b5a1-df5b2e4fad52",
+      :via :text,
+      :query
+      "declare-the-conditioning structured observation vector situation source",
+      :excerpt
+      "Route all lanes toward ONE situation source (the structured observation vector) where feasible."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

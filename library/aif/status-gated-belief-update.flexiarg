@@ -5,6 +5,7 @@
 @tone technical
 @style pattern
 
+@how aif/predictive-coding-belief-update
 ! conclusion: Update beliefs only for instances the agent is actually observing this tick. Paused, truncated, dropped, or otherwise out-of-loop instances retain their prior belief unchanged.
 
   + context: When an AIF agent operates over multiple instances (institutions, sessions, processes, conversation threads), each instance has an engagement status that determines whether the agent receives meaningful observations from it. The naive update-everything-every-tick policy is operationally wrong when some instances are not contributing fresh information.

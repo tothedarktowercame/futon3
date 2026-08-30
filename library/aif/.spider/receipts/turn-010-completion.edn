@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T12:41:44.750924451Z",
+ :turn 10,
+ :pattern "aif/candidate-pattern-action-space",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788093650836-3811-b3120a6b",
+  :response
+  "[{:edge {:from \"aif/candidate-pattern-action-space\" :to \"aif/admissibility\" :kind :see-also} :cited \"Define (a) as a constructed candidate set of pattern IDs produced by retrieval plus gating rules, with bounded size and explicit reasons for inclusion and exclusion.\" :evidence [{:id \"e-fe9ffa95-7694-44d0-a12d-711bdb5f5986\" :via :text :query \"candidate-pattern-action-space scorecard ranking\" :excerpt \"{:id \\\"aif/candidate-pattern-action-space\\\", :title \\\"Candidate Pattern Action Space\\\", :score 0.4354, :rank 1} {:id \\\"aif/admissibility\\\", :title \\\"Admissibility as Recursion-Safety — Gate the Action CLASS Before You Rank\\\", :score 0.3917, :rank 2}\"}] :rung 1 :read [\"aif/candidate-pattern-action-space\" \"aif/admissibility\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/candidate-pattern-action-space\" :to \"aif/admissibility\" :kind :see-also} :cited \"Define (a) as a constructed candidate set of pattern IDs produced by retrieval plus gating rules, with bounded size and explicit reasons for inclusion and exclusion.\" :evidence [{:id \"e-fe9ffa95-7694-44d0-a12d-711bdb5f5986\" :via :text :query \"candidate-pattern-action-space scorecard ranking\" :excerpt \"{:id \\\"aif/candidate-pattern-action-space\\\", :title \\\"Candidate Pattern Action Space\\\", :score 0.4354, :rank 1} {:id \\\"aif/admissibility\\\", :title \\\"Admissibility as Recursion-Safety — Gate the Action CLASS Before You Rank\\\", :score 0.3917, :rank 2}\"}] :rung 1 :read [\"aif/candidate-pattern-action-space\" \"aif/admissibility\"]}]"}

@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T13:02:42.696710532Z",
+ :turn 42,
+ :pattern "aif/two-layer-calibration",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-042.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/two-layer-calibration",
+     :to "aif/off-continuity-null-discriminates",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/two-layer-calibration"
+     "aif/off-continuity-null-discriminates"],
+    :cited
+    "**L1 = G-vs-G dynamics**: cheap, every cycle, labelled never-value-evidence; it earns its keep as a consistency/sanity layer.",
+    :evidence
+    [{:id "e-382a8293-8bbd-449f-886d-8317aa0d5d00",
+      :via :text,
+      :query
+      "two-layer-calibration dynamics-consistency witnessed outcome L1 L2",
+      :excerpt
+      "L1 dynamics live — the state-sensitive model is 2.55× better than the constant counterfactual at predicting no-move"}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

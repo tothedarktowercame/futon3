@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T12:59:44.911509974Z",
+ :turn 37,
+ :pattern "aif/status-gated-belief-update",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788094715565-3914-349b0e26",
+  :response
+  "[{:edge {:from \"aif/status-gated-belief-update\" :to \"aif/predictive-coding-belief-update\" :kind :how} :cited \"Implement the gate as a case-dispatch in the per-tick post-processing step, *not* inside update-mu itself. update-mu stays a pure function over (μ, observation, opts); the gate decides whether to call it.\" :evidence [{:id \"e-eded2ea1-6fac-457e-b858-63becbc6a08f\" :via :text :query \"status-gated belief update multi-instance paused truncated observation\" :excerpt \"update-mu stays a pure function over (μ, observation, opts); the gate decides whether to call it.\"}] :rung 1 :read [\"aif/status-gated-belief-update\" \"aif/predictive-coding-belief-update\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/status-gated-belief-update\" :to \"aif/predictive-coding-belief-update\" :kind :how} :cited \"Implement the gate as a case-dispatch in the per-tick post-processing step, *not* inside update-mu itself. update-mu stays a pure function over (μ, observation, opts); the gate decides whether to call it.\" :evidence [{:id \"e-eded2ea1-6fac-457e-b858-63becbc6a08f\" :via :text :query \"status-gated belief update multi-instance paused truncated observation\" :excerpt \"update-mu stays a pure function over (μ, observation, opts); the gate decides whether to call it.\"}] :rung 1 :read [\"aif/status-gated-belief-update\" \"aif/predictive-coding-belief-update\"]}]"}

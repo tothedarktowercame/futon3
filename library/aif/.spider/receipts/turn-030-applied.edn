@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:55:07.934976860Z",
+ :turn 30,
+ :pattern "aif/policy-precision-commitment-temperature",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-030.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/policy-precision-commitment-temperature",
+     :to "aif/hierarchical-budget-aware-action-selection",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/policy-precision-commitment-temperature"
+     "aif/hierarchical-budget-aware-action-selection"],
+    :cited
+    "You want exploration versus exploitation to depend on operational pressure (deadlines, repeated failures, user impatience, instability), not on randomness alone.",
+    :evidence
+    [{:id "e-269d2423-8447-4e43-ae64-2d2591de827b",
+      :via :text,
+      :query
+      "policy-precision-commitment-temperature tau softmax abstain discriminability",
+      :excerpt
+      "Maintain (tau) as a commitment temperature that modulates softmax over (-G/tau), coupled to diagnostic signals (recent regressions, uncertainty in (mu), contradiction rate, time pressure, repeated test failures)."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

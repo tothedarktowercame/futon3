@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:52:11.759713597Z",
+ :turn 25,
+ :pattern "aif/measurement-window-hygiene",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-025.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/measurement-window-hygiene",
+     :to "aif/term-to-channel-traceability",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/measurement-window-hygiene"
+     "aif/term-to-channel-traceability"],
+    :cited
+    "You record a predicted/realised (or before/after) pair to score an action's effect on such a system.",
+    :evidence
+    [{:id "e-9d2506af-b503-4f49-a6f3-f194af214804",
+      :via :text,
+      :query
+      "aif/measurement-window-hygiene no-self-certification sibling",
+      :excerpt
+      "You record a predicted/realised (or before/after) pair to score an action's effect on such a system."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

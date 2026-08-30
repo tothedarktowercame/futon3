@@ -1,0 +1,15 @@
+{:checks
+ [{:file
+   "/home/joe/code/futon3/./library/aif/declare-the-conditioning.flexiarg",
+   :line nil,
+   :edge nil,
+   :reason :seat-output-invalid,
+   :detail
+   {:type "class clojure.lang.ExceptionInfo",
+    :message "invalid or duplicate edge item",
+    :data
+    {:item
+     {:from "aif/declare-the-conditioning",
+      :to "aif/experimental-comparison-of-EFE-variants",
+      :kind :see-also}}}}],
+ :summary {:pass? false, :failures 1}}

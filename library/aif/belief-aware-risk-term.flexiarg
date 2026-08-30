@@ -5,6 +5,8 @@
 @tone technical
 @style pattern
 
+@see-also aif/predictive-entropy-as-ambiguity
+@see-also aif/posterior-variance-as-epistemic-value
 ! conclusion: Compose the pragmatic (risk) EFE term as bias² (squared deviation of predicted mean from preference prior) + variance (predictive uncertainty contribution). Both terms in the same units; both pulling the agent toward predictable closeness to preference.
 
   + context: The pragmatic value term in Expected Free Energy is supposed to penalise candidates whose predicted outcomes are far from the agent's preferences. A naïve implementation reads only the predicted mean — but AIF is Bayesian, so the *uncertainty* about whether the predicted mean is right also matters.

@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T13:01:23.872413530Z",
+ :turn 40,
+ :pattern "aif/temporal-depth-beyond-greedy",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-040.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/temporal-depth-beyond-greedy",
+     :to "aif/hierarchical-budget-aware-action-selection",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/temporal-depth-beyond-greedy"
+     "aif/hierarchical-budget-aware-action-selection"],
+    :cited
+    "Extend G(π) evaluation to a horizon H > 1 with a temporal discount, AND introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them.",
+    :evidence
+    [{:id "e-23c2c9a2-f889-432c-a88d-95484148ad25",
+      :via :text,
+      :query
+      "temporal-depth-beyond-greedy horizon slow loop fast loop hierarchy",
+      :excerpt
+      "introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them"}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

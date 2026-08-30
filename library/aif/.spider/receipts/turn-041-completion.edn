@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T13:01:55.432723349Z",
+ :turn 41,
+ :pattern "aif/term-to-channel-traceability",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788094883921-3923-887c11c3",
+  :response
+  "[{:edge {:from \"aif/term-to-channel-traceability\" :to \"aif/evidence-precision-registry\" :kind :see-also} :cited \"Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score.\" :evidence [{:id \"e-451eb212-766f-4d11-b39b-c2374b3aeeea\" :via :text :query \"term-to-channel-traceability declare observation keys precision channels provenance\" :excerpt \"Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score.\"}] :rung 1 :read [\"aif/term-to-channel-traceability\" \"aif/evidence-precision-registry\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/term-to-channel-traceability\" :to \"aif/evidence-precision-registry\" :kind :see-also} :cited \"Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score.\" :evidence [{:id \"e-451eb212-766f-4d11-b39b-c2374b3aeeea\" :via :text :query \"term-to-channel-traceability declare observation keys precision channels provenance\" :excerpt \"Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score.\"}] :rung 1 :read [\"aif/term-to-channel-traceability\" \"aif/evidence-precision-registry\"]}]"}

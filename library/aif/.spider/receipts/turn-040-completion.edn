@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T13:01:23.423327475Z",
+ :turn 40,
+ :pattern "aif/temporal-depth-beyond-greedy",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788094852837-3921-b61f7253",
+  :response
+  "[{:edge {:from \"aif/temporal-depth-beyond-greedy\" :to \"aif/hierarchical-budget-aware-action-selection\" :kind :see-also} :cited \"Extend G(π) evaluation to a horizon H > 1 with a temporal discount, AND introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them.\" :evidence [{:id \"e-23c2c9a2-f889-432c-a88d-95484148ad25\" :via :text :query \"temporal-depth-beyond-greedy horizon slow loop fast loop hierarchy\" :excerpt \"introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them\"}] :rung 1 :read [\"aif/temporal-depth-beyond-greedy\" \"aif/hierarchical-budget-aware-action-selection\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/temporal-depth-beyond-greedy\" :to \"aif/hierarchical-budget-aware-action-selection\" :kind :see-also} :cited \"Extend G(π) evaluation to a horizon H > 1 with a temporal discount, AND introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them.\" :evidence [{:id \"e-23c2c9a2-f889-432c-a88d-95484148ad25\" :via :text :query \"temporal-depth-beyond-greedy horizon slow loop fast loop hierarchy\" :excerpt \"introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them\"}] :rung 1 :read [\"aif/temporal-depth-beyond-greedy\" \"aif/hierarchical-budget-aware-action-selection\"]}]"}

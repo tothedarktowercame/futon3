@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T12:56:55.144886122Z",
+ :turn 33,
+ :pattern "aif/predictive-coding-belief-update",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788094580552-3906-67aedb7c",
+  :response
+  "[{:edge {:from \"aif/predictive-coding-belief-update\" :to \"aif/predictive-entropy-as-ambiguity\" :kind :see-also} :cited \"Variance with no sensor-variance floor decays toward zero under any informative-observation history, killing the predictive-entropy term in EFE for later ticks.\" :evidence [{:id \"e-e46c043f-0199-4e89-938b-55881814cb07\" :via :text :query \"predictive-coding-belief-update variance floor predictive-entropy ambiguity EFE\" :excerpt \"the variance rule keeps belief uncertainty in a meaningful regime where ambiguity terms in EFE stay informative.\"}] :rung 1 :read [\"aif/predictive-coding-belief-update\" \"aif/predictive-entropy-as-ambiguity\"]} {:edge {:from \"aif/predictive-coding-belief-update\" :to \"aif/evidence-precision-registry\" :kind :see-also} :cited \"Mean: μ ← μ + α · Π · ε, where ε = observation − μ, Π is per-channel precision, α is learning rate.\" :evidence [{:id \"e-e46c043f-0199-4e89-938b-55881814cb07\" :via :text :query \"predictive-coding-belief-update variance floor predictive-entropy ambiguity EFE\" :excerpt \"Mean: μ ← μ + α · Π · ε, where ε = observation − μ, Π is per-channel precision, α is learning rate.\"}] :rung 1 :read [\"aif/predictive-coding-belief-update\" \"aif/evidence-precision-registry\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/predictive-coding-belief-update\" :to \"aif/predictive-entropy-as-ambiguity\" :kind :see-also} :cited \"Variance with no sensor-variance floor decays toward zero under any informative-observation history, killing the predictive-entropy term in EFE for later ticks.\" :evidence [{:id \"e-e46c043f-0199-4e89-938b-55881814cb07\" :via :text :query \"predictive-coding-belief-update variance floor predictive-entropy ambiguity EFE\" :excerpt \"the variance rule keeps belief uncertainty in a meaningful regime where ambiguity terms in EFE stay informative.\"}] :rung 1 :read [\"aif/predictive-coding-belief-update\" \"aif/predictive-entropy-as-ambiguity\"]} {:edge {:from \"aif/predictive-coding-belief-update\" :to \"aif/evidence-precision-registry\" :kind :see-also} :cited \"Mean: μ ← μ + α · Π · ε, where ε = observation − μ, Π is per-channel precision, α is learning rate.\" :evidence [{:id \"e-e46c043f-0199-4e89-938b-55881814cb07\" :via :text :query \"predictive-coding-belief-update variance floor predictive-entropy ambiguity EFE\" :excerpt \"Mean: μ ← μ + α · Π · ε, where ε = observation − μ, Π is per-channel precision, α is learning rate.\"}] :rung 1 :read [\"aif/predictive-coding-belief-update\" \"aif/evidence-precision-registry\"]}]"}

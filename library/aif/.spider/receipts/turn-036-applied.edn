@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:58:35.495195556Z",
+ :turn 36,
+ :pattern "aif/shared-kernel-predictive-forward-model",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-036.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/shared-kernel-predictive-forward-model",
+     :to "aif/expected-free-energy-scorecard",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/shared-kernel-predictive-forward-model"
+     "aif/expected-free-energy-scorecard"],
+    :cited
+    "An AIF agent that scores candidate actions via Expected Free Energy needs a predictive forward model — a function that takes a candidate action and returns the predicted next-state distribution.",
+    :evidence
+    [{:id "e-f44b210f-1946-4293-97f0-8c3e87478a11",
+      :via :text,
+      :query
+      "shared-kernel-predictive-forward-model deterministic core wrapper bit-equivalence drift",
+      :excerpt
+      "Separation makes the call surface for downstream EFE consumers clear."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

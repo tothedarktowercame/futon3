@@ -6,6 +6,7 @@
 @tone practical
 @style pattern
 
+@see-also aif/term-to-channel-traceability
 ! conclusion: To measure an action's effect on a system that drifts and settles over time, capture the BASELINE tight — right before the action, not before the preparatory work — and read the EFFECT settled — after the state stabilizes (≥2 consecutive reads agree within ε) — and EXCLUDE any pair where drift or transience confounds the window. A before/after number is only as good as the window it brackets.
 
   + context: You measure `effect = after − before` around an action, in a system whose state

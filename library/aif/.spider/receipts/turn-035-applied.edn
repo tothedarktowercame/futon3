@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:57:58.514960452Z",
+ :turn 35,
+ :pattern "aif/scheduled-observer-entrypoint",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-035.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/scheduled-observer-entrypoint",
+     :to "aif/grounded-actuation-not-reobservation",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/scheduled-observer-entrypoint"
+     "aif/grounded-actuation-not-reobservation"],
+    :cited
+    "Couple R10 to R16: a scheduled tick counts as \"live\" only if it can (and does) move the substrate dial via grounded actuation.",
+    :evidence
+    [{:id "e-284653d1-ed6a-4cb9-bd13-c0c5ac1c19a4",
+      :via :text,
+      :query
+      "scheduled-observer-entrypoint no-op trap liveness grounded actuation R16",
+      :excerpt
+      "Couple R10 to R16: a scheduled tick counts as \"live\" only if it can (and does) move the substrate dial via grounded actuation."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

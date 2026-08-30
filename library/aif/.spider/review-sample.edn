@@ -1,0 +1,201 @@
+{:schema 1,
+ :section "aif",
+ :reviewer "claude-15",
+ :requested 10,
+ :available 28,
+ :sample
+ [{:edge
+   {:from "aif/belief-aware-risk-term",
+    :to "aif/predictive-entropy-as-ambiguity",
+    :kind :see-also},
+   :by "zai-2",
+   :at "2026-08-30",
+   :read
+   ["aif/belief-aware-risk-term"
+    "aif/predictive-entropy-as-ambiguity"],
+   :cited
+   "Compose the pragmatic (risk) EFE term as bias² (squared deviation of predicted mean from preference prior) + variance (predictive uncertainty contribution).",
+   :evidence
+   [{:id "e-d8d9a914-dd0c-4e9e-813b-91a4f260e471",
+     :via :text,
+     :query "aif/belief-aware-risk-term ambiguity epistemic variance",
+     :excerpt
+     "{:edge {:from \"aif/belief-aware-risk-term\" :to \"aif/predictive-entropy-as-ambiguity\" :kind :see-also}"}],
+   :rung 1,
+   :state :proposed}
+  {:edge
+   {:from "aif/belief-aware-risk-term",
+    :to "aif/posterior-variance-as-epistemic-value",
+    :kind :see-also},
+   :by "zai-2",
+   :at "2026-08-30",
+   :read
+   ["aif/belief-aware-risk-term"
+    "aif/posterior-variance-as-epistemic-value"],
+   :cited
+   "Two candidates with identical means but different variances rank equal under bias-only risk — which is wrong: the high-variance candidate carries higher operational risk of missing preference even though it has the same expected outcome.",
+   :evidence
+   [{:id "e-d8d9a914-dd0c-4e9e-813b-91a4f260e471",
+     :via :text,
+     :query "aif/belief-aware-risk-term ambiguity epistemic variance",
+     :excerpt
+     "{:edge {:from \"aif/belief-aware-risk-term\" :to \"aif/posterior-variance-as-epistemic-value\" :kind :see-also}"}],
+   :rung 1,
+   :state :proposed}
+  {:edge
+   {:from "aif/declare-the-conditioning",
+    :to "aif/structured-observation-vector",
+    :kind :how},
+   :by "zai-2",
+   :at "2026-08-30",
+   :read
+   ["aif/declare-the-conditioning"
+    "aif/structured-observation-vector"],
+   :cited
+   "Route all lanes toward ONE situation source (the structured observation vector) where feasible.",
+   :evidence
+   [{:id "e-2f1b9326-6095-4f1a-b5a1-df5b2e4fad52",
+     :via :text,
+     :query
+     "declare-the-conditioning structured observation vector situation source",
+     :excerpt
+     "Route all lanes toward ONE situation source (the structured observation vector) where feasible."}],
+   :rung 1,
+   :state :proposed}
+  {:edge
+   {:from "aif/decomposed-prediction-noise",
+    :to "aif/shared-kernel-predictive-forward-model",
+    :kind :how},
+   :by "zai-2",
+   :at "2026-08-30",
+   :read
+   ["aif/decomposed-prediction-noise"
+    "aif/shared-kernel-predictive-forward-model"],
+   :cited
+   "The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions.",
+   :evidence
+   [{:id "e-2bbdd876-f824-4f62-84af-8f2d173863ff",
+     :via :text,
+     :query
+     "decomposed-prediction-noise forward model kernel variance ambiguity",
+     :excerpt
+     "The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions."}],
+   :rung 1,
+   :state :proposed}
+  {:edge
+   {:from "aif/free-energy-as-tick-scalar",
+    :to "aif/evidence-precision-registry",
+    :kind :see-also},
+   :by "zai-2",
+   :at "2026-08-30",
+   :read
+   ["aif/free-energy-as-tick-scalar"
+    "aif/evidence-precision-registry"],
+   :cited
+   "Implement F as a pure function (mu, observation, precision-opts) → non-negative scalar, applying the formula F = 0.5 × mean(Π_k · ε_k²) over all observation channels k.",
+   :evidence
+   [{:id "e-e9c000da-7ebf-4a67-9d7b-f35db6d3443c",
+     :via :text,
+     :query
+     "free-energy-as-tick-scalar evidence-precision-registry variational",
+     :excerpt
+     "applying the formula F = 0.5 × mean(Π_k · ε_k²) over all observation channels k"}],
+   :rung 1,
+   :state :proposed}
+  {:edge
+   {:from "aif/free-energy-as-tick-scalar",
+    :to "aif/predictive-coding-belief-update",
+    :kind :how},
+   :by "zai-2",
+   :at "2026-08-30",
+   :read
+   ["aif/free-energy-as-tick-scalar"
+    "aif/predictive-coding-belief-update"],
+   :cited
+   "Implement free-energy as a pure function in the same namespace as the belief update (canonical pairing: same module owns both rules).",
+   :evidence
+   [{:id "e-5d08fb0f-ff27-4c99-9602-05a745e35e6c",
+     :via :text,
+     :query "aif/free-energy-as-tick-scalar",
+     :excerpt
+     ":query \"aif/no-self-certification aif/two-layer-calibration aif/predictive-entropy-as-ambiguity aif/predictive-coding-belief-update\""}],
+   :rung 1,
+   :state :proposed}
+  {:edge
+   {:from "aif/grounded-actuation-not-reobservation",
+    :to "aif/no-self-certification",
+    :kind :why},
+   :by "zai-2",
+   :at "2026-08-30",
+   :read
+   ["aif/grounded-actuation-not-reobservation"
+    "aif/no-self-certification"],
+   :cited
+   "The witness must be (a) outside the model (so the model cannot author its own success) and (b) ungameable (so a builder cannot claim it), or the closure is a reflection.",
+   :evidence
+   [{:id "e-daa3dd3e-0408-4e28-aa71-fb0c0cdfd238",
+     :via :text,
+     :query
+     "grounded-actuation no-self-certification witness outside the model",
+     :excerpt
+     "The witness must be (a) outside the model (so the model cannot author its own success) and (b) ungameable (so a builder cannot claim it), or the closure is a reflection."}],
+   :rung 1,
+   :state :proposed}
+  {:edge
+   {:from "aif/hierarchical-budget-aware-action-selection",
+    :to "aif/free-energy-as-tick-scalar",
+    :kind :see-also},
+   :by "zai-2",
+   :at "2026-08-30",
+   :read
+   ["aif/hierarchical-budget-aware-action-selection"
+    "aif/free-energy-as-tick-scalar"],
+   :cited
+   "Both layers produce trace fields. The trace fields land in the per-tick record (R8) so the agent's reasoning about resource constraints is auditable.",
+   :evidence
+   [{:id "e-43eac539-7f4c-4743-9d25-4c4b6807f5c5",
+     :via :text,
+     :query
+     "hierarchical-budget-aware-action-selection feasibility penalty scorecard",
+     :excerpt
+     "Both layers produce trace fields. The trace fields land in the per-tick record (R8) so the agent's reasoning about resource constraints is auditable."}],
+   :rung 1,
+   :state :proposed}
+  {:edge
+   {:from "aif/measurement-window-hygiene",
+    :to "aif/term-to-channel-traceability",
+    :kind :see-also},
+   :by "zai-2",
+   :at "2026-08-30",
+   :read
+   ["aif/measurement-window-hygiene"
+    "aif/term-to-channel-traceability"],
+   :cited
+   "You record a predicted/realised (or before/after) pair to score an action's effect on such a system.",
+   :evidence
+   [{:id "e-9d2506af-b503-4f49-a6f3-f194af214804",
+     :via :text,
+     :query
+     "aif/measurement-window-hygiene no-self-certification sibling",
+     :excerpt
+     "You record a predicted/realised (or before/after) pair to score an action's effect on such a system."}],
+   :rung 1,
+   :state :proposed}
+  {:edge
+   {:from "aif/niche-construction",
+    :to "aif/admissibility",
+    :kind :how},
+   :by "zai-2",
+   :at "2026-08-30",
+   :read ["aif/niche-construction" "aif/admissibility"],
+   :cited
+   "The futon realisation is the **aif2** direction: a boundary-tier set of criteria (mechanising AIF+ I1 boundary-integrity + I3 timescale-separation) over whether and how the WM may re-author its own typed-edge support — distinct from the inference-tier R1-R12.",
+   :evidence
+   [{:id "e-8a8e352d-269f-497a-9e45-791bb4eb9911",
+     :via :text,
+     :query
+     "niche-construction false-floor typed-edge inventory admissibility aif2",
+     :excerpt
+     "The futon realisation is the **aif2** direction: a boundary-tier set of criteria (mechanising AIF+ I1 boundary-integrity + I3 timescale-separation) over whether and how the WM may re-author its own typed-edge support — distinct from the inference-tier R1-R12."}],
+   :rung 1,
+   :state :proposed}]}

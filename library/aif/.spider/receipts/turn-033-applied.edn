@@ -1,0 +1,51 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:56:55.650159163Z",
+ :turn 33,
+ :pattern "aif/predictive-coding-belief-update",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-033.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/predictive-coding-belief-update",
+     :to "aif/predictive-entropy-as-ambiguity",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/predictive-coding-belief-update"
+     "aif/predictive-entropy-as-ambiguity"],
+    :cited
+    "Variance with no sensor-variance floor decays toward zero under any informative-observation history, killing the predictive-entropy term in EFE for later ticks.",
+    :evidence
+    [{:id "e-e46c043f-0199-4e89-938b-55881814cb07",
+      :via :text,
+      :query
+      "predictive-coding-belief-update variance floor predictive-entropy ambiguity EFE",
+      :excerpt
+      "the variance rule keeps belief uncertainty in a meaningful regime where ambiguity terms in EFE stay informative."}],
+    :rung 1,
+    :state :proposed}
+   {:edge
+    {:from "aif/predictive-coding-belief-update",
+     :to "aif/evidence-precision-registry",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/predictive-coding-belief-update"
+     "aif/evidence-precision-registry"],
+    :cited
+    "Mean: μ ← μ + α · Π · ε, where ε = observation − μ, Π is per-channel precision, α is learning rate.",
+    :evidence
+    [{:id "e-e46c043f-0199-4e89-938b-55881814cb07",
+      :via :text,
+      :query
+      "predictive-coding-belief-update variance floor predictive-entropy ambiguity EFE",
+      :excerpt
+      "Mean: μ ← μ + α · Π · ε, where ε = observation − μ, Π is per-channel precision, α is learning rate."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

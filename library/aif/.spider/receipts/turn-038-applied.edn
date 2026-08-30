@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T13:00:19.845212648Z",
+ :turn 38,
+ :pattern "aif/structure-learning-by-model-reduction",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-038.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/structure-learning-by-model-reduction",
+     :to "aif/posterior-variance-as-epistemic-value",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/structure-learning-by-model-reduction"
+     "aif/posterior-variance-as-epistemic-value"],
+    :cited
+    "Implement Structure Learning as Bayesian Model Reduction over the Dirichlet concentration parameters.",
+    :evidence
+    [{:id "e-332ec78e-f6b8-4b77-a6e0-bb9f3b787ed2",
+      :via :text,
+      :query
+      "structure-learning-by-model-reduction BMR Dirichlet Bayes factor prune merge",
+      :excerpt "The surviving reduced structure IS the concept."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

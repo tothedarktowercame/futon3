@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T12:46:05.515370957Z",
+ :turn 16,
+ :pattern "aif/decomposed-prediction-noise",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788093906430-3836-5f231f13",
+  :response
+  "[{:edge {:from \"aif/decomposed-prediction-noise\" :to \"aif/shared-kernel-predictive-forward-model\" :kind :how} :cited \"The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions.\" :evidence [{:id \"e-2bbdd876-f824-4f62-84af-8f2d173863ff\" :via :text :query \"decomposed-prediction-noise forward model kernel variance ambiguity\" :excerpt \"The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions.\"}] :rung 1 :read [\"aif/decomposed-prediction-noise\" \"aif/shared-kernel-predictive-forward-model\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/decomposed-prediction-noise\" :to \"aif/shared-kernel-predictive-forward-model\" :kind :how} :cited \"The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions.\" :evidence [{:id \"e-2bbdd876-f824-4f62-84af-8f2d173863ff\" :via :text :query \"decomposed-prediction-noise forward model kernel variance ambiguity\" :excerpt \"The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions.\"}] :rung 1 :read [\"aif/decomposed-prediction-noise\" \"aif/shared-kernel-predictive-forward-model\"]}]"}

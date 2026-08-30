@@ -1,0 +1,14 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:51:24.529335985Z",
+ :turn 28,
+ :pattern "writing-coherence/structural-style-inconsistency",
+ :gate
+ "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-028.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "writing-coherence/structural-style-inconsistency",
+    :note
+    "Text queries run (rung 2, port 7073 text-search, limit 5, hydrate): 'heading style inconsistency capitalisation drift same depth', 'run-in bold versus hashes subheading format' (0 hits). Findings and rejections: (1) e-e3074d07-7cca-42e4-8a3a-14c0dc54e6a9 (excerpt verified verbatim by GET /api/alpha/evidence/e-e3074d07) is the candidate-gloss cross-reference record: its entry for this pattern only glosses it and distinguishes it from subheading-without-paragraph — the one kinship it names is exactly the pattern's own existing @reference, so an edge would repeat an existing directive; no other pattern tie appears in the record. (2) Incoming references from one-paragraph-per-typed-claim, system-coherence/plan-as-enumeration, and system-coherence/present-graph-topology-not-adjacency-lists already record those linkages from their side; reverse edges would repeat. (3) Remaining hits were self-referential transcripts of this spider session (e-219ae8da, e-72d350c2). No rung-1 tag evidence tied this pattern to an unlinked flexiarg target; no warranted non-duplicate edge found."}]}}

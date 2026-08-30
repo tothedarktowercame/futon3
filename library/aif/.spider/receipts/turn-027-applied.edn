@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:53:26.713920634Z",
+ :turn 27,
+ :pattern "aif/no-self-certification",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-027.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/no-self-certification",
+     :to "aif/measurement-window-hygiene",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/no-self-certification" "aif/measurement-window-hygiene"],
+    :cited
+    "Tag every evidence record at birth with the properties the apparatus cannot fake — `:independent?` (was there an out-of-band witness?), source (`:measured` vs `:target-absent-fallback`), settledness (`:settled` vs `:transient`) — and have the verdict count ONLY the records whose tags clear.",
+    :evidence
+    [{:id "e-f76959b0-2792-4d80-88c4-05248d45c91e",
+      :via :text,
+      :query
+      "no-self-certification settled transient measurement window tag",
+      :excerpt
+      "settledness (`:settled` vs `:transient`) — and have the verdict count ONLY the records whose tags clear."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

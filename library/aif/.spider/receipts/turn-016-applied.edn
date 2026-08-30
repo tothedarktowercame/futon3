@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:46:05.938747424Z",
+ :turn 16,
+ :pattern "aif/decomposed-prediction-noise",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-016.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/decomposed-prediction-noise",
+     :to "aif/shared-kernel-predictive-forward-model",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/decomposed-prediction-noise"
+     "aif/shared-kernel-predictive-forward-model"],
+    :cited
+    "The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions.",
+    :evidence
+    [{:id "e-2bbdd876-f824-4f62-84af-8f2d173863ff",
+      :via :text,
+      :query
+      "decomposed-prediction-noise forward model kernel variance ambiguity",
+      :excerpt
+      "The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

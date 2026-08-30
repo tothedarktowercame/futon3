@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:57:28.686366047Z",
+ :turn 34,
+ :pattern "aif/predictive-entropy-as-ambiguity",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-034.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/predictive-entropy-as-ambiguity",
+     :to "aif/decomposed-prediction-noise",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/predictive-entropy-as-ambiguity"
+     "aif/decomposed-prediction-noise"],
+    :cited
+    "Verify your forward model returns predicted variance per observation channel. If not, the entropy isn't computable.",
+    :evidence
+    [{:id "e-cae646c4-2fda-4f7c-a6c3-95919793718c",
+      :via :text,
+      :query
+      "predictive-entropy-as-ambiguity diagonal Gaussian variance per channel forward model",
+      :excerpt
+      "For diagonal-covariance (independent channels), `det(Σ) = Π_k σ²_k`."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

@@ -1,0 +1,15 @@
+{:checks
+ [{:file
+   "/home/joe/code/futon3/./library/aif/evidence-precision-registry.flexiarg",
+   :line nil,
+   :edge nil,
+   :reason :seat-output-invalid,
+   :detail
+   {:type "class clojure.lang.ExceptionInfo",
+    :message "invalid or duplicate edge item",
+    :data
+    {:item
+     {:from "aif/evidence-precision-registry",
+      :to "aif/policy-precision-commitment-temperature",
+      :kind :see-also}}}}],
+ :summary {:pass? false, :failures 1}}

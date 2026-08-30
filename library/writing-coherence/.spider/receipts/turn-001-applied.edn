@@ -1,0 +1,32 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:28:03.834215760Z",
+ :turn 1,
+ :pattern "writing-coherence/balanced-pair-padding",
+ :gate
+ "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "writing-coherence/balanced-pair-padding",
+     :to
+     "system-coherence/argument-as-coverage-checklist-vs-system-specification",
+     :kind :see-also},
+    :by "zai-1",
+    :at "2026-08-30",
+    :read
+    ["writing-coherence/balanced-pair-padding"
+     "writing-coherence/triad-inflation"
+     "system-coherence/argument-as-coverage-checklist-vs-system-specification"],
+    :cited
+    "The construction \"not X, but also not Y; rather Z\" frequently hides the fact that Z is doing all the argumentative work while X and Y are strawmen no reader would actually have proposed.",
+    :evidence
+    [{:id "e-073e7599-e2cc-46f8-b7c7-465eeec22267",
+      :via :text,
+      :query "triad inflation prose",
+      :excerpt
+      "Drafted at `~/code/futon3/library/system-coherence/argument-as-coverage-checklist-vs-system-specification.flexiarg`. Key moves:  - The conclusion leads with the positive (specify as a system) and names the antipattern as what it isn't, per your request."}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

@@ -6,6 +6,8 @@
 @style pattern
 @holds-at R8   ;; pegged 2026-08-30 (claude-15): the catalogue paragraph numbered R8 in p4ng/sec-catalog.tex; see PREREG-war-machine §1b
 
+@see-also aif/evidence-precision-registry
+@how aif/predictive-coding-belief-update
 ! conclusion: Compute and emit variational free energy F = 0.5 × mean(Π · ε²) per tick as a canonical scalar that summarises agent surprise.
 
   + context: AIF computes two distinct quantities. **G** (Expected Free Energy) is per-candidate-action, drives policy. **F** (Variational Free Energy) is per-tick, summarises how surprised the agent currently is by its observations. They are different objects; conflating them is a common documentation hazard.

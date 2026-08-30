@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T12:58:34.948512145Z",
+ :turn 36,
+ :pattern "aif/shared-kernel-predictive-forward-model",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788094678563-3912-702c3d19",
+  :response
+  "[{:edge {:from \"aif/shared-kernel-predictive-forward-model\" :to \"aif/expected-free-energy-scorecard\" :kind :see-also} :cited \"An AIF agent that scores candidate actions via Expected Free Energy needs a predictive forward model — a function that takes a candidate action and returns the predicted next-state distribution.\" :evidence [{:id \"e-f44b210f-1946-4293-97f0-8c3e87478a11\" :via :text :query \"shared-kernel-predictive-forward-model deterministic core wrapper bit-equivalence drift\" :excerpt \"Separation makes the call surface for downstream EFE consumers clear.\"}] :rung 1 :read [\"aif/shared-kernel-predictive-forward-model\" \"aif/expected-free-energy-scorecard\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/shared-kernel-predictive-forward-model\" :to \"aif/expected-free-energy-scorecard\" :kind :see-also} :cited \"An AIF agent that scores candidate actions via Expected Free Energy needs a predictive forward model — a function that takes a candidate action and returns the predicted next-state distribution.\" :evidence [{:id \"e-f44b210f-1946-4293-97f0-8c3e87478a11\" :via :text :query \"shared-kernel-predictive-forward-model deterministic core wrapper bit-equivalence drift\" :excerpt \"Separation makes the call surface for downstream EFE consumers clear.\"}] :rung 1 :read [\"aif/shared-kernel-predictive-forward-model\" \"aif/expected-free-energy-scorecard\"]}]"}

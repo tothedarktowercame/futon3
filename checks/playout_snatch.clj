@@ -182,11 +182,13 @@
                      (sort-by order)))
           {:act :abstain :by :no-pattern}))))
 
-(def pi-patterns (pattern-policy {}))
+(def patterns-overrides {})
+(def pi-patterns (pattern-policy patterns-overrides))
 
 ;; One re-wiring: put the gain pattern above the remedy and the stop.  Nothing
 ;; about any pattern changes; only the order in which they are consulted.
-(def pi-exchange-first (pattern-policy {:exchange-when-both-sides-gain 0}))
+(def exchange-first-overrides {:exchange-when-both-sides-gain 0})
+(def pi-exchange-first (pattern-policy exchange-first-overrides))
 
 (def ^:private modelled #{:O1 :O2 :O4})   ; S-001's support; O3 carries zero mass
 
@@ -353,19 +355,48 @@
 ;; produced it: bb p4ng/empirics-futon/gen_snatch_cascade.bb
 (defn- emit-cascade-edn []
   (let [out "checks/snatch-cascade.edn"
-        rows (for [[t d n] scenarios
-                   :let [trace (play pi-patterns t d n)
+        policies [[:patterns pi-patterns patterns-overrides]
+                  [:exchange-first pi-exchange-first exchange-first-overrides]]
+        precedence (fn [overrides]
+                     (->> collection
+                          (filter :then)
+                          (sort-by #(get overrides (:id %) (:precedence %)))
+                          (mapv :id)))
+        rows (for [[policy-name policy overrides] policies
+                   [t d n] scenarios
+                   :let [trace (play policy t d n)
                          acting-order (into [] (comp (keep :by) (remove #{:no-pattern}) (distinct)) trace)
                          acting (set acting-order)
                          closure (up-closure acting)]]
                {:treatment t :disposition d :rounds n
+                :policy policy-name
+                :precedence (precedence overrides)
                 :acting acting-order            ; play order (first firing), :no-pattern removed
                 :fallback-rounds (count (filter #(= :no-pattern (:by %)) trace))
                 :nodes (vec (sort acting))
                 :added-by-organise (vec (sort (set/difference closure acting)))
                 :score (:score (last trace))
-                :grim-score (:score (last (play pi-grim t d n)))})]
-    (spit out (with-out-str (clojure.pprint/pprint {:scenarios (vec rows)})))
+                :grim-score (:score (last (play pi-grim t d n)))})
+        by-key (group-by (juxt :treatment :disposition) rows)
+        s-g4 (mapv (fn [[t d _]]
+                     (let [pair (get by-key [t d])
+                           patterns (some #(when (= :patterns (:policy %)) %) pair)
+                           exchange-first (some #(when (= :exchange-first (:policy %)) %) pair)]
+                       {:treatment t
+                        :disposition d
+                        :nodes-equal? (= (:nodes patterns) (:nodes exchange-first))
+                        :score-patterns (:score patterns)
+                        :score-exchange-first (:score exchange-first)
+                        :precedence-differs? (not= (:precedence patterns)
+                                                   (:precedence exchange-first))}))
+                   scenarios)
+        holds? (boolean (some #(and (:precedence-differs? %)
+                                    (not= (:score-patterns %) (:score-exchange-first %)))
+                              s-g4))]
+    (spit out (with-out-str
+                (clojure.pprint/pprint {:scenarios (vec rows)
+                                        :s-g4 {:scenarios s-g4
+                                               :verdict (if holds? :holds :does-not-hold)}})))
     (println (format "\nwrote %s" out))))
 
 (defn- compare-policies []

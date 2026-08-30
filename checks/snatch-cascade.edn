@@ -5,10 +5,19 @@
    :acting [:probe-before-committing :exchange-when-both-sides-gain],
    :treatment :g1,
    :disposition :snatcher,
+   :policy :patterns,
    :fallback-rounds 0,
    :grim-score -1,
    :nodes [:exchange-when-both-sides-gain :probe-before-committing],
    :score -5,
+   :precedence
+   [:an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing
+    :exchange-when-both-sides-gain],
    :rounds 5}
   {:added-by-organise
    [:institutions-vary-by-position-and-force
@@ -17,11 +26,20 @@
    [:probe-before-committing :escalate-only-as-far-as-you-can-lose],
    :treatment :g1,
    :disposition :sharer,
+   :policy :patterns,
    :fallback-rounds 0,
    :grim-score 5,
    :nodes
    [:escalate-only-as-far-as-you-can-lose :probe-before-committing],
    :score 15,
+   :precedence
+   [:an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing
+    :exchange-when-both-sides-gain],
    :rounds 5}
   {:added-by-organise
    [:institutions-vary-by-position-and-force
@@ -30,11 +48,20 @@
    [:probe-before-committing :an-unmodelled-response-stops-the-line],
    :treatment :g1,
    :disposition :cautious,
+   :policy :patterns,
    :fallback-rounds 0,
    :grim-score 0,
    :nodes
    [:an-unmodelled-response-stops-the-line :probe-before-committing],
    :score 0,
+   :precedence
+   [:an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing
+    :exchange-when-both-sides-gain],
    :rounds 5}
   {:added-by-organise
    [:institutions-vary-by-position-and-force
@@ -47,6 +74,7 @@
     :re-enter-after-observed-repair],
    :treatment :g4,
    :disposition :snatcher,
+   :policy :patterns,
    :fallback-rounds 0,
    :grim-score -1,
    :nodes
@@ -54,6 +82,14 @@
     :probe-before-committing
     :re-enter-after-observed-repair],
    :score 3,
+   :precedence
+   [:an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing
+    :exchange-when-both-sides-gain],
    :rounds 5}
   {:added-by-organise
    [:institutions-vary-by-position-and-force
@@ -65,6 +101,7 @@
     :exchange-when-both-sides-gain],
    :treatment :g2,
    :disposition :snatcher,
+   :policy :patterns,
    :fallback-rounds 2,
    :grim-score -10,
    :nodes
@@ -72,6 +109,14 @@
     :forced-play-needs-a-loss-floor
     :probe-before-committing],
    :score -10,
+   :precedence
+   [:an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing
+    :exchange-when-both-sides-gain],
    :rounds 12}
   {:added-by-organise
    [:institutions-vary-by-position-and-force
@@ -80,9 +125,177 @@
    [:probe-before-committing :escalate-only-as-far-as-you-can-lose],
    :treatment :g5,
    :disposition :sharer,
+   :policy :patterns,
    :fallback-rounds 0,
    :grim-score 5,
    :nodes
    [:escalate-only-as-far-as-you-can-lose :probe-before-committing],
    :score 15,
-   :rounds 5}]}
+   :precedence
+   [:an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing
+    :exchange-when-both-sides-gain],
+   :rounds 5}
+  {:added-by-organise [],
+   :acting [:exchange-when-both-sides-gain],
+   :treatment :g1,
+   :disposition :snatcher,
+   :policy :exchange-first,
+   :fallback-rounds 0,
+   :grim-score -1,
+   :nodes [:exchange-when-both-sides-gain],
+   :score -5,
+   :precedence
+   [:exchange-when-both-sides-gain
+    :an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing],
+   :rounds 5}
+  {:added-by-organise
+   [:institutions-vary-by-position-and-force
+    :protect-the-unprotected-move],
+   :acting
+   [:exchange-when-both-sides-gain
+    :escalate-only-as-far-as-you-can-lose],
+   :treatment :g1,
+   :disposition :sharer,
+   :policy :exchange-first,
+   :fallback-rounds 0,
+   :grim-score 5,
+   :nodes
+   [:escalate-only-as-far-as-you-can-lose
+    :exchange-when-both-sides-gain],
+   :score 15,
+   :precedence
+   [:exchange-when-both-sides-gain
+    :an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing],
+   :rounds 5}
+  {:added-by-organise [],
+   :acting [:exchange-when-both-sides-gain],
+   :treatment :g1,
+   :disposition :cautious,
+   :policy :exchange-first,
+   :fallback-rounds 0,
+   :grim-score 0,
+   :nodes [:exchange-when-both-sides-gain],
+   :score 0,
+   :precedence
+   [:exchange-when-both-sides-gain
+    :an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing],
+   :rounds 5}
+  {:added-by-organise [],
+   :acting [:exchange-when-both-sides-gain],
+   :treatment :g4,
+   :disposition :snatcher,
+   :policy :exchange-first,
+   :fallback-rounds 0,
+   :grim-score -1,
+   :nodes [:exchange-when-both-sides-gain],
+   :score -5,
+   :precedence
+   [:exchange-when-both-sides-gain
+    :an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing],
+   :rounds 5}
+  {:added-by-organise [],
+   :acting [:exchange-when-both-sides-gain],
+   :treatment :g2,
+   :disposition :snatcher,
+   :policy :exchange-first,
+   :fallback-rounds 2,
+   :grim-score -10,
+   :nodes [:exchange-when-both-sides-gain],
+   :score -10,
+   :precedence
+   [:exchange-when-both-sides-gain
+    :an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing],
+   :rounds 12}
+  {:added-by-organise
+   [:institutions-vary-by-position-and-force
+    :protect-the-unprotected-move],
+   :acting
+   [:exchange-when-both-sides-gain
+    :escalate-only-as-far-as-you-can-lose],
+   :treatment :g5,
+   :disposition :sharer,
+   :policy :exchange-first,
+   :fallback-rounds 0,
+   :grim-score 5,
+   :nodes
+   [:escalate-only-as-far-as-you-can-lose
+    :exchange-when-both-sides-gain],
+   :score 15,
+   :precedence
+   [:exchange-when-both-sides-gain
+    :an-unmodelled-response-stops-the-line
+    :consult-the-remedy-before-exiting
+    :re-enter-after-observed-repair
+    :forced-play-needs-a-loss-floor
+    :escalate-only-as-far-as-you-can-lose
+    :probe-before-committing],
+   :rounds 5}],
+ :s-g4
+ {:scenarios
+  [{:treatment :g1,
+    :disposition :snatcher,
+    :nodes-equal? false,
+    :score-patterns -5,
+    :score-exchange-first -5,
+    :precedence-differs? true}
+   {:treatment :g1,
+    :disposition :sharer,
+    :nodes-equal? false,
+    :score-patterns 15,
+    :score-exchange-first 15,
+    :precedence-differs? true}
+   {:treatment :g1,
+    :disposition :cautious,
+    :nodes-equal? false,
+    :score-patterns 0,
+    :score-exchange-first 0,
+    :precedence-differs? true}
+   {:treatment :g4,
+    :disposition :snatcher,
+    :nodes-equal? false,
+    :score-patterns 3,
+    :score-exchange-first -5,
+    :precedence-differs? true}
+   {:treatment :g2,
+    :disposition :snatcher,
+    :nodes-equal? false,
+    :score-patterns -10,
+    :score-exchange-first -10,
+    :precedence-differs? true}
+   {:treatment :g5,
+    :disposition :sharer,
+    :nodes-equal? false,
+    :score-patterns 15,
+    :score-exchange-first 15,
+    :precedence-differs? true}],
+  :verdict :holds}}

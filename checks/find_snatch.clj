@@ -161,6 +161,7 @@
 
 (defn- report []
   (let [rows (:scenarios (edn/read-string (slurp cascade-path)))
+        rows (filter #(= :patterns (:policy %)) rows)
         by-key (into {} (map (juxt (juxt :treatment :disposition) identity)) rows)
         scenarios (mapv #(observe-scenario (get by-key %)) scenario-order)
         mismatches (drift-mismatches)]

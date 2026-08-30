@@ -674,8 +674,6 @@
   :rung 1,
   :state :proposed,
   :reason
-  "send-back (claude-15 2026-08-30): evidence is a "strong matches" list in a chat turn — an agent's similarity judgement, a hypothesis generator not a warrant (F3)",
-  :reason
   "send-back (claude-15 2026-08-30): evidence is a co-citation list of five ids in a chat turn, not a stated relation; the relation is real (advanceability is an admissibility predicate for missions) and looks like @why, which is the author's to write"}
  {:edge
   {:from "aif/belief-aware-risk-term",
@@ -946,7 +944,9 @@
     :excerpt
     "Strong matches already — `ants/baseline-cyber-ant` (the parliament line literally), the `aif/` free-energy patterns, `aif/niche-construction` + `musn/expensive-move-consent` (INV-G)"}],
   :rung 1,
-  :state :proposed}
+  :state :proposed,
+  :reason
+  "send-back (claude-15 2026-08-30): evidence is a \"strong matches\" list in a chat turn — an agent's similarity judgement, a hypothesis generator not a warrant (F3)"}
  {:edge
   {:from "aif/no-self-certification",
    :to "aif/interoceptive-tripwires",

@@ -111,17 +111,19 @@
         :else []))
 
 (def context-retrieval-listing? lint/context-retrieval-listing?)
+(def worker-seats (atom #{}))
+(def spider-agent "codex-20")
 
 (def evidence-cache
   (delay
     (if-let [path (System/getenv "SPIDER_EVIDENCE_CACHE")]
       (or (lint/read-index-cache path)
           (throw (ex-info "pinned live evidence cache is missing" {:path path})))
-      (lint/ensure-live-evidence-index! library))))
+      (lint/ensure-live-evidence-index! library @worker-seats spider-agent))))
 (def evidence-index (delay (:index @evidence-cache)))
 
 (defn corpus []
-  (select-keys @evidence-cache [:store :basis]))
+  (select-keys @evidence-cache [:store :basis :reflection-rule]))
 
 (defn rung-one-hits [pattern]
   (vec (get @evidence-index pattern [])))
@@ -152,7 +154,8 @@
      "a hit with :listing true is an embeddings retrieval ranking and is NOT a warrant for an edge by itself. "
      "A hit with :self-text true is this spider programme reflecting its own prompt/output and is not an external warrant. "
      "A :co-mention flag says multiple pattern ids occur in the record; co-mention alone does not state a relation. "
-     "A rung-1 edge must cite at least one hit with both :listing false and :self-text false; other hits may appear only as additional context. "
+     "A hit with :reflection true was produced by this spider fleet or its Agency job envelope and is not external use. "
+     "A rung-1 edge must cite at least one clean non-reflection hit: :listing, :self-text, :co-mention, and :reflection must all be false. Other hits may appear only as additional context. "
      "rung 2 is a bounded GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=<encoded title or conclusion keywords>&limit=5&hydrate=true. "
      "Never request the unfiltered evidence list. Only use IDs and excerpts returned by a query you actually ran. "
      "The runner verifies rung-1 IDs against that live index and rung-2 IDs by GET /api/alpha/evidence/<id>, and requires the normalized :excerpt to occur in that record; "
@@ -195,7 +198,7 @@
 
 (defn rung-one-warrant? [evidence rung-one]
   (boolean (some #(when-let [hit (matching-rung-one-hit rung-one %)]
-                    (and (false? (:listing hit)) (false? (:self-text hit))))
+                    (lint/clean-non-reflection-hit? hit))
                  evidence)))
 
 (defn evidence-valid? [rung rung-one {:keys [id excerpt]}]
@@ -494,14 +497,16 @@
                       (fs/glob (fs/path library section) "*.flexiarg"))
         hits (map rung-one-hits patterns)]
     {:patterns (count patterns)
-     :with-any-hit (count (filter seq hits))
-     :with-non-listing-hit (count (filter #(some (comp false? :listing) %) hits))
+     :any (count (filter seq hits))
+     :clean (count (filter #(some lint/clean-hit? %) hits))
+     :clean-non-reflection (count (filter #(some lint/clean-non-reflection-hit? %) hits))
      :basis (:basis @evidence-cache)}))
 
 (defn -main [& args]
   (let [{:keys [section seat budget patterns]} (parse-args args)]
     (when-not (and section seat budget)
       (throw (ex-info "usage: spider_runner.clj --section NAME --seat ZAI-ID --budget N" {})))
+    (reset! worker-seats #{seat})
     (println (pr-str (assoc (run-spider! section seat (parse-long budget)
                                          (when patterns (str/split patterns #",")))
                             :rung-one-coverage (section-rung-one-coverage section))))))

@@ -25,10 +25,13 @@
 (deftest listing-only-rung-one-is-not-a-warrant
   (let [evidence [{:id "e-listing" :via :tag :query "exact" :excerpt "source and target"}]
         listing [{:id "e-listing" :via :tag :listing true
-                  :self-text false :query "exact" :excerpt "source and target in ranking"}]
+                  :self-text false :co-mention false :reflection false
+                  :query "exact" :excerpt "source and target in ranking"}]
         stated [{:id "e-listing" :via :tag :listing false
-                 :self-text false :query "exact" :excerpt "source and target in statement"}]
+                 :self-text false :co-mention false :reflection false
+                 :query "exact" :excerpt "source and target in statement"}]
         reflected [{:id "e-listing" :via :tag :listing false :self-text true
+                    :co-mention false :reflection true
                     :query "exact" :excerpt "source and target in spider output"}]]
     (is (false? (runner/rung-one-warrant? evidence listing)))
     (is (false? (runner/rung-one-warrant? evidence reflected)))
@@ -37,6 +40,29 @@
                 {:evidence/body {:event "context-retrieval"}})))
     (is (true? (runner/context-retrieval-listing?
                 {:evidence/body "{\"event\" \"context-retrieval\", \"results\" []}"})))))
+
+(deftest reflection-is-provenance-based
+  (let [workers #{"zai-1" "zai-2"}
+        worker-turn {:evidence/author "zai-1"
+                     :evidence/type :coordination
+                     :evidence/claim-type :step
+                     :evidence/body {:turn-id "zai-turn-test"
+                                     :cost/source :zai
+                                     :calls [{:tool "run_shell"
+                                              :args "curl text-search?q=war-room/wr-5-war-machine-is-not-a-mission"}]}}
+        paper-turn {:evidence/author "claude-13"
+                    :evidence/type :coordination
+                    :evidence/claim-type :step
+                    :evidence/body {:event :turn-round
+                                    :text "war-room/wr-9-bites-empirical-or-logical"}}
+        paper-index (lint/add-record-occurrences
+                     {} #{"war-room/wr-9-bites-empirical-or-logical"}
+                     {"WR-9" "war-room/wr-9-bites-empirical-or-logical"}
+                     workers "codex-20" (assoc paper-turn :evidence/id "e-paper"))
+        paper-hit (first (get paper-index "war-room/wr-9-bites-empirical-or-logical"))]
+    (is (true? (lint/reflection-record? worker-turn workers "codex-20")))
+    (is (false? (lint/reflection-record? paper-turn workers "codex-20")))
+    (is (true? (lint/clean-non-reflection-hit? paper-hit)))))
 
 (let [{:keys [fail error]} (run-tests)]
   (System/exit (if (zero? (+ fail error)) 0 1)))

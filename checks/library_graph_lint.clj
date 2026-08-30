@@ -9,6 +9,7 @@
 (def target-pattern #"[A-Za-z0-9_.-]+/[A-Za-z0-9_./'-]+")
 (def evidence-store "http://127.0.0.1:7073")
 (def evidence-page-limit 1000)
+(def reflection-rule-version 2)
 
 (defn sha256 [s]
   (let [digest (java.security.MessageDigest/getInstance "SHA-256")]
@@ -67,10 +68,16 @@
     {:count (:count count-response)
      :max-at (get-in newest [:entries 0 :evidence/at])}))
 
-(defn evidence-cache-path [basis]
+(defn evidence-cache-path
+  ([basis] (evidence-cache-path basis #{} nil))
+  ([basis worker-seats] (evidence-cache-path basis worker-seats nil))
+  ([basis worker-seats spider-agent]
   (str (fs/path "/tmp"
                 (str "futon3-spider-evidence-occurrences-v3-"
-                     (:count basis) "-" (subs (sha256 (pr-str basis)) 0 16) ".edn"))))
+                     (:count basis) "-"
+                     (subs (sha256 (pr-str [basis (sort worker-seats) spider-agent
+                                            reflection-rule-version])) 0 16)
+                     ".edn")))))
 
 (defn pattern-id [library file]
   (-> (str (fs/relativize library file))
@@ -198,13 +205,61 @@
   (let [text (str/join " " (string-leaves (:evidence/body record)))]
     (boolean (or (str/includes? text "You are the spider for library/")
                  (str/includes? text "Runner-supplied rung-1 exact-occurrence hits")
-                 (str/includes? text "exact live occurrence:")))))
+                 (str/includes? text "exact live occurrence:")
+                 (str/includes? text "spider-self-text?")))))
 
-(defn add-record-occurrences [index ids wr-aliases record]
+(defn record-event [record]
+  (let [body (:evidence/body record)]
+    (cond
+      (map? body) (some-> (or (:event body) (get body "event")) name)
+      (and (string? body)
+           (re-find #"(?i)(?:\"event\"|:event)\s*(?:[:=]\s*)?(?:\"invoke-complete\"|:invoke-complete)"
+                    body)) "invoke-complete"
+      :else nil)))
+
+(defn agency-job-envelope? [record]
+  (let [text (str/join " " (string-leaves (:evidence/body record)))]
+    (or (= "invoke-complete" (record-event record))
+        (and (re-find #"(?i)\b(?:job-id|job_id|invoke-job|invoke_id)\b" text)
+             (re-find #"(?i)\b(?:agent-id|agent_id|seat|target|to)\b" text)))))
+
+(defn worker-seat-mentioned? [record worker-seats]
+  (let [text (str/join " " (string-leaves (:evidence/body record)))]
+    (boolean (some #(exact-occurrence? text %) worker-seats))))
+
+(defn reflection-record? [record worker-seats spider-agent]
+  (let [raw-author (:evidence/author record)
+        author (if (keyword? raw-author) (name raw-author) (str raw-author))]
+    (boolean
+     (or (contains? worker-seats author)
+         (and (agency-job-envelope? record)
+              (or (worker-seat-mentioned? record worker-seats)
+                  (and spider-agent
+                       (worker-seat-mentioned? record #{spider-agent}))))
+         (spider-self-text? record)))))
+
+(defn reflection-rule [worker-seats spider-agent]
+  {:version reflection-rule-version
+   :worker-seats (vec (sort worker-seats))
+   :worker-author :evidence-author-in-worker-seats
+   :spider-agent spider-agent
+   :agency-job :invoke-complete-or-job-envelope-naming-worker-or-spider-agent
+   :self-text :spider-self-text-prompt-markers})
+
+(defn clean-hit? [hit]
+  (and (false? (:listing hit))
+       (false? (:self-text hit))
+       (false? (:co-mention hit))))
+
+(defn clean-non-reflection-hit? [hit]
+  (and (clean-hit? hit) (false? (:reflection hit))))
+
+(defn add-record-occurrences [index ids wr-aliases worker-seats spider-agent record]
   (let [text (str/join " " (string-leaves record))
         record-id (or (:evidence/id record) (:xt/id record))
         listing (context-retrieval-listing? record)
         self-text (spider-self-text? record)
+        reflection (reflection-record? record worker-seats spider-agent)
         path-hits (filter ids (re-seq target-pattern text))
         alias-tokens (re-seq #"WR-[0-9]+" text)
         alias-hits (keep wr-aliases alias-tokens)
@@ -218,15 +273,17 @@
                   (update m pattern (fnil conj [])
                           {:id record-id :via :tag :listing listing
                            :self-text self-text :co-mention co-mention
+                           :reflection reflection
                            :query (str "exact live occurrence: " token)
                            :excerpt (occurrence-excerpt text token)})
                   m))) index patterns)))
 
 (defn build-evidence-index
   ([ids] (build-evidence-index ids {}))
-  ([ids {:keys [fetch-page since page-observer]
+  ([ids {:keys [fetch-page since page-observer worker-seats spider-agent]
          :or {fetch-page fetch-evidence-page page-observer (fn [_ _] nil)}}]
-   (let [wr-aliases (into {} (keep (fn [id]
+   (let [worker-seats (set worker-seats)
+         wr-aliases (into {} (keep (fn [id]
                                      (when-let [[_ n] (re-matches #"war-room/wr-([0-9]+)-.*" id)]
                                        [(str "WR-" n) id]))) ids)
          index (atom {})]
@@ -235,7 +292,8 @@
                      :collect? false
                      :on-page (fn [n page]
                                 (doseq [record (:entries page)]
-                                  (swap! index add-record-occurrences ids wr-aliases record))
+                                  (swap! index add-record-occurrences ids wr-aliases
+                                         worker-seats spider-agent record))
                                 (page-observer n page))})
      @index)))
 
@@ -252,23 +310,28 @@
   before its keyset scan. The store does not expose a transaction-snapshot
   token on this route, so the start basis is recorded rather than inventing
   quiescence while live writers continue."
-  [library]
+  ([library] (ensure-live-evidence-index! library #{} nil))
+  ([library worker-seats] (ensure-live-evidence-index! library worker-seats nil))
+  ([library worker-seats spider-agent]
   (let [ids (set (map #(pattern-id library %) (fs/glob library "**.flexiarg")))
+        worker-seats (set worker-seats)
         basis (live-evidence-basis)
-        path (evidence-cache-path basis)]
+        path (evidence-cache-path basis worker-seats spider-agent)]
     (or (read-index-cache path)
         (let [index (build-evidence-index
-                     ids {:page-observer
+                     ids {:worker-seats worker-seats :spider-agent spider-agent
+                          :page-observer
                           (fn [n _]
                             (when (zero? (mod (inc n) 25))
                               (binding [*out* *err*]
                                 (println "live evidence index pages:" (inc n)))) )})
               cache {:schema 3 :store evidence-store :basis basis
                      :cache-path path
+                     :reflection-rule (reflection-rule worker-seats spider-agent)
                      :built-at (now) :projection :full-record-with-body
                      :index index}]
           (write-index-cache! path cache)
-          cache))))
+          cache)))))
 
 (defn normalized [x]
   (-> (str x) str/lower-case (str/replace #"\s+" " ") str/trim))
@@ -328,9 +391,14 @@
         atts (read-edn-or attestations [])
         att-rows (if (vector? atts) atts [])
         records (when evidence-records (read-edn-or evidence-records {}))
-        corpus-basis (some :basis (keep :corpus (reverse att-rows)))
+        corpus (some identity (keep :corpus (reverse att-rows)))
+        corpus-basis (:basis corpus)
+        corpus-worker-seats (set (get-in corpus [:reflection-rule :worker-seats]))
+        corpus-spider-agent (get-in corpus [:reflection-rule :spider-agent])
         pinned-cache-path (or (System/getenv "SPIDER_EVIDENCE_CACHE")
-                              (when corpus-basis (evidence-cache-path corpus-basis)))
+                              (when corpus-basis
+                                (evidence-cache-path corpus-basis corpus-worker-seats
+                                                     corpus-spider-agent)))
         live-cache (when (and (nil? records)
                               (some #(some (fn [e] (= :tag (:via e))) (:evidence %)) att-rows))
                      (or (when pinned-cache-path (read-index-cache pinned-cache-path))

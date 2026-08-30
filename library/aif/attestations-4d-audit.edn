@@ -1,0 +1,18 @@
+{:audit :wave-1-rung-1-reflection
+ :at "2026-08-30"
+ :corpus
+ {:store "http://127.0.0.1:7073"
+  :basis {:count 191579
+          :max-at "2026-08-30T19:11:37.234845640Z"}
+  :built-at "2026-08-30T19:18:45.296854300Z"}
+ :reflection-rule
+ {:version 2
+  :worker-seats ["zai-1" "zai-2"]
+  :worker-author :evidence-author-in-worker-seats
+  :spider-agent "codex-20"
+  :agency-job :invoke-complete-or-job-envelope-naming-worker-or-spider-agent
+  :self-text :spider-self-text-prompt-markers}
+ :selection
+ "Wave-1 aif attestations with :rung 1 whose cited clean hits are all :reflection true and which have no cited clean-non-reflection hit."
+ :records []
+ :count 0}

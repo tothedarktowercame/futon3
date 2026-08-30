@@ -11,6 +11,7 @@
 (def runner (str (fs/path root "checks/spider_runner.clj")))
 (def fleet-path (str (fs/path root "library/.spider"
                               (str "fleet-" (java.time.LocalDate/now) ".edn"))))
+(def spider-agent "codex-20")
 
 (defn parse-args [args]
   (when (odd? (count args)) (throw (ex-info "arguments must be --key value pairs" {})))
@@ -19,9 +20,7 @@
 (defn csv [s] (vec (remove str/blank? (str/split (or s "") #","))))
 (defn read-edn [path fallback]
   (if (fs/exists? path) (edn/read-string (slurp (str path))) fallback))
-(def evidence-cache
-  (delay (lint/ensure-live-evidence-index! (str (fs/path root "library")))))
-(def evidence-index (delay (:index @evidence-cache)))
+(def evidence-cache (atom nil))
 
 (defn pattern-id [file]
   (-> (str (fs/relativize (fs/path root "library") file))
@@ -29,11 +28,21 @@
 
 (defn rung-one-coverage [section]
   (let [patterns (map pattern-id (fs/glob (fs/path root "library" section) "*.flexiarg"))
-        hits (map #(get @evidence-index % []) patterns)]
+        cache @evidence-cache
+        hits (map #(get (:index cache) % []) patterns)]
     {:patterns (count patterns)
-     :with-any-hit (count (filter seq hits))
-     :with-non-listing-hit (count (filter #(some (comp false? :listing) %) hits))
-     :basis (:basis @evidence-cache)}))
+     :any (count (filter seq hits))
+     :clean (count (filter #(some lint/clean-hit? %) hits))
+     :clean-non-reflection (count (filter #(some lint/clean-non-reflection-hit? %) hits))}))
+
+(defn print-coverage-table! [report]
+  (println "basis" (pr-str (:evidence-basis report)))
+  (println "| section | patterns | any | clean | clean-non-reflection |")
+  (println "|---|---:|---:|---:|---:|")
+  (doseq [[section data] (:sections report)]
+    (let [{:keys [patterns any clean clean-non-reflection]} (:rung-one-coverage data)]
+      (println (format "| %s | %d | %d | %d | %d |"
+                       section patterns any clean clean-non-reflection)))))
 
 (defn section-status [section]
   (let [dir (fs/path root "library" section)
@@ -67,6 +76,7 @@
                                               :organised-proposed])
                              (vals sections)))
           report {:fleet/schema 1 :at (.toString (java.time.Instant/now))
+                  :evidence-basis (:basis @evidence-cache)
                   :sections sections :total totals
                   :acyclicity-gate :serialised-by-library-lock}]
       (spit fleet-path (with-out-str (pprint/pprint report)))
@@ -94,9 +104,11 @@
                                               [section (nth seats (mod i (count seats)))])
                                             sections))
           ;; Build or load one basis-pinned live index before parallel workers start.
-          cache @evidence-cache
+          cache (lint/ensure-live-evidence-index!
+                 (str (fs/path root "library")) (set seats) spider-agent)
+          _ (reset! evidence-cache cache)
           cache-path (or (:cache-path cache)
-                         (lint/evidence-cache-path (:basis cache)))]
+                         (lint/evidence-cache-path (:basis cache) (set seats) spider-agent))]
       (refresh! assignments)
       ;; mapv twice: create EVERY future before awaiting any. A lazy map/deref
       ;; pair created one future, blocked on it, then created the next — the
@@ -104,7 +116,7 @@
       (run! deref (mapv (fn [[section seat]]
                           (future (run-section! assignments section seat budget cache-path)))
                         assignments))
-      (println (pr-str (refresh! assignments))))))
+      (print-coverage-table! (refresh! assignments)))))
 
 (when (= *file* (System/getProperty "babashka.file"))
   (apply -main *command-line-args*))

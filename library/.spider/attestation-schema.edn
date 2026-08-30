@@ -1,0 +1,14 @@
+{:edge {:from :pattern-id
+        :to :pattern-id
+        :kind #{:why :how :see-also}}
+ :by :agent-id
+ :at :date
+ :read [:pattern-id]
+ :cited :nonblank-string
+ :evidence [{:id :evidence-id
+             :via #{:tag :text}
+             :query :nonblank-string
+             :excerpt :nonblank-string}]
+ :rung #{1 2}
+ :state #{:proposed [:attested-by :agent-id] :refused}
+ :reason :optional-nonblank-string}

@@ -149,10 +149,14 @@
      :selected-union (vec (sort selected-union))
      :treatment treatment)))
 
-(defn- head-sha []
-  (let [{:keys [exit out err]} (shell/sh "git" "rev-parse" "HEAD")]
+(defn- library-sha
+  "The last commit that touched library/snatch — the repository the receipts
+   cite. (HEAD would change with the commit that contains this report, so a
+   re-run could never match the committed artefact.)"
+  []
+  (let [{:keys [exit out err]} (shell/sh "git" "log" "-1" "--format=%H" "--" library-dir)]
     (when-not (zero? exit)
-      (throw (ex-info "Cannot determine futon3 HEAD" {:stderr err})))
+      (throw (ex-info "Cannot determine library/snatch commit" {:stderr err})))
     (str/trim out)))
 
 (defn- report []
@@ -161,7 +165,7 @@
         scenarios (mapv #(observe-scenario (get by-key %)) scenario-order)
         mismatches (drift-mismatches)]
     (sorted-map
-     :as-of (head-sha)
+     :as-of (library-sha)
      :drift (sorted-map :mismatch-count (count mismatches)
                         :mismatches mismatches)
      :laws (sorted-map :F1 :asserted-selected-subset-of-repository

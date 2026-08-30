@@ -15,7 +15,7 @@
     "memory-retrieval promotion-gate experimental-isolation lifecycle challenge"}],
   :refused-reason
   "warrant is a tag-list mention (f11-scribe memory record); needs a reader to say whether a tag co-occurrence states use",
-  :state :held-second-read,
+  :state :proposed,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -32,7 +32,9 @@
   :reviewed-by "claude-15",
   :at "2026-08-30",
   :reviewed-at "2026-08-31",
-  :by "zai-2"}
+  :by "zai-2",
+  :review-note
+  "held for second read (claude-13): warrant is a tag-list mention"}
  {:edge
   {:from "sidecar/explicit-promotion-to-facts",
    :to "sidecar/fact-lifecycle-event-types",
@@ -50,7 +52,7 @@
     "memory-retrieval promotion-gate experimental-isolation lifecycle challenge"}],
   :refused-reason
   "warrant is a tag-list mention (f11-scribe memory record); needs a reader to say whether a tag co-occurrence states use",
-  :state :held-second-read,
+  :state :proposed,
   :corpus
   {:store "http://127.0.0.1:7073",
    :basis {:count 191738, :max-at "2026-08-30T19:35:18.668154294Z"},
@@ -66,4 +68,6 @@
   :reviewed-by "claude-15",
   :at "2026-08-30",
   :reviewed-at "2026-08-31",
-  :by "zai-2"}]
+  :by "zai-2",
+  :review-note
+  "held for second read (claude-13): warrant is a tag-list mention"}]

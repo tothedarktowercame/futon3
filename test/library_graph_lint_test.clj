@@ -107,7 +107,7 @@
                  :attestations "library/aif/attestations.edn"})]
     (is (true? (get-in report [:summary :pass?])))
     (is (= 1241 (get-in report [:summary :files])))
-    (is (= {:why 86 :how 20 :see-also 98}
+    (is (= {:why 86 :how 23 :see-also 125}
            (get-in report [:summary :edges-by-kind])))))
 
 (let [{:keys [fail error]} (run-tests)]

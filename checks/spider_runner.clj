@@ -14,7 +14,6 @@
 (def linter (str (fs/path root "checks/library_graph_lint.clj")))
 (def agency-send "/home/joe/code/futon3c/scripts/agency_send.py")
 (def schema-path (str (fs/path library ".spider/attestation-schema.edn")))
-(def evidence-export "/home/joe/code/futon1b/migration-export/evidence.edn")
 (def lint-lock (str (fs/path library ".spider/lint.lock")))
 (def edge-kinds #{:why :how :see-also})
 (def proposal-kinds #{:retire :specialise :merge :split})
@@ -111,74 +110,18 @@
         (keyword? x) [(subs (str x) 1)]
         :else []))
 
-(def evidence-records
-  (delay (edn/read-string (slurp evidence-export))))
+(def context-retrieval-listing? lint/context-retrieval-listing?)
 
-(def library-pattern-ids
-  (delay (set (map #(lint/pattern-id library %) (fs/glob library "**.flexiarg")))))
-
-(defn exact-occurrence? [text token]
-  (boolean (re-find (re-pattern (str "(?<![A-Za-z0-9_./'-])"
-                                     (java.util.regex.Pattern/quote token)
-                                     "(?![A-Za-z0-9_./'-])")) text)))
-
-(defn occurrence-excerpt [text token]
-  (let [at (.indexOf text token)
-        start (max 0 (- at 200))
-        end (min (count text) (+ at (count token) 200))]
-    (subs text start end)))
-
-(defn context-retrieval-listing? [record]
-  (let [body (:evidence/body record)]
-    (if (map? body)
-      (= "context-retrieval" (some-> (or (:event body) (get body "event")) name))
-      (boolean
-       (and (string? body)
-            (re-find #"(?i)(?:\"event\"|:event)\s*(?:[:=]\s*)?(?:\"context-retrieval\"|:context-retrieval)"
-                     body))))))
-
-(def evidence-export-mtime
-  (.toMillis (fs/last-modified-time evidence-export)))
-(def evidence-index-cache
-  (str (fs/path "/tmp" (str "futon3-spider-evidence-occurrences-v2-"
-                             evidence-export-mtime ".edn"))))
-
-(defn build-evidence-index []
-  (let [ids @library-pattern-ids
-        wr-aliases (into {} (keep (fn [id]
-                                    (when-let [[_ n] (re-matches #"war-room/wr-([0-9]+)-.*" id)]
-                                      [(str "WR-" n) id]))) ids)]
-    (reduce
-       (fn [index record]
-         (let [text (str/join " " (string-leaves record))
-               record-id (or (:evidence/id record) (:xt/id record))
-               listing (context-retrieval-listing? record)
-               path-hits (filter ids (re-seq #"[A-Za-z0-9_.-]+/[A-Za-z0-9_./'-]+" text))
-               alias-hits (keep wr-aliases (re-seq #"WR-[0-9]+" text))]
-           (reduce (fn [m pattern]
-                     (let [token (if (exact-occurrence? text pattern)
-                                   pattern
-                                   (first (filter #(= pattern (get wr-aliases %))
-                                                  (re-seq #"WR-[0-9]+" text))))]
-                       (if (and record-id token)
-                         (update m pattern (fnil conj [])
-                                 {:id record-id :via :tag
-                                  :listing listing
-                                  :query (str "exact export occurrence: " token)
-                                  :excerpt (occurrence-excerpt text token)})
-                         m)))
-                   index (distinct (concat path-hits alias-hits)))))
-       {} @evidence-records)))
-
-(def evidence-index
+(def evidence-cache
   (delay
-    (if (fs/exists? evidence-index-cache)
-      (read-edn evidence-index-cache {})
-      ;; Fleet startup primes this cache before workers fork. A standalone runner
-      ;; builds it atomically; the mtime in the filename prevents stale reuse.
-      (let [index (build-evidence-index)]
-        (write-edn! evidence-index-cache index)
-        index))))
+    (if-let [path (System/getenv "SPIDER_EVIDENCE_CACHE")]
+      (or (lint/read-index-cache path)
+          (throw (ex-info "pinned live evidence cache is missing" {:path path})))
+      (lint/ensure-live-evidence-index! library))))
+(def evidence-index (delay (:index @evidence-cache)))
+
+(defn corpus []
+  (select-keys @evidence-cache [:store :basis]))
 
 (defn rung-one-hits [pattern]
   (vec (get @evidence-index pattern [])))
@@ -205,12 +148,14 @@
        "{:checkpoint-restatement \"one paragraph stating what this section is about\"}\n")
      "\nRules: :from must equal the selected pattern. Targets must already exist as library/<target>.flexiarg. "
      "Do not repeat an existing directive. Prefer a small number of strong edges; [] is invalid, use an absence. "
-     "Every edge needs a nonblank citation and real external evidence. Rung 1 means the runner found the exact pattern id in the export; "
+     "Every edge needs a nonblank citation and real external evidence. Rung 1 means the runner found the exact pattern id in the basis-pinned live evidence store; "
      "a hit with :listing true is an embeddings retrieval ranking and is NOT a warrant for an edge by itself. "
-     "A rung-1 edge must cite at least one :listing false hit; listing hits may appear only as additional context. "
+     "A hit with :self-text true is this spider programme reflecting its own prompt/output and is not an external warrant. "
+     "A :co-mention flag says multiple pattern ids occur in the record; co-mention alone does not state a relation. "
+     "A rung-1 edge must cite at least one hit with both :listing false and :self-text false; other hits may appear only as additional context. "
      "rung 2 is a bounded GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=<encoded title or conclusion keywords>&limit=5&hydrate=true. "
      "Never request the unfiltered evidence list. Only use IDs and excerpts returned by a query you actually ran. "
-     "The runner verifies rung-1 IDs against the export and rung-2 IDs by GET /api/alpha/evidence/<id>, and requires the normalized :excerpt to occur in that record; "
+     "The runner verifies rung-1 IDs against that live index and rung-2 IDs by GET /api/alpha/evidence/<id>, and requires the normalized :excerpt to occur in that record; "
      "pattern IDs are not evidence IDs, summaries and ellipses are rejected, and rung 1 also requires the source pattern id to occur in the record. "
      "If the supplied rung-1 hits do not warrant an edge, run rung 2. If neither warrants an edge, return Absence naming both. "
      "You are an editor: you may write @how and @see-also. An @why item is a PROPOSAL only; the runner records its attestation but does not write its directive.\n\n"
@@ -250,7 +195,7 @@
 
 (defn rung-one-warrant? [evidence rung-one]
   (boolean (some #(when-let [hit (matching-rung-one-hit rung-one %)]
-                    (false? (:listing hit)))
+                    (and (false? (:listing hit)) (false? (:self-text hit))))
                  evidence)))
 
 (defn evidence-valid? [rung rung-one {:keys [id excerpt]}]
@@ -337,15 +282,17 @@
 (defn apply-output! [paths seat file parsed]
   (let [attestations (mapv (fn [{:keys [edge cited evidence rung read]}]
                              {:edge edge :by seat :at (date) :read read :cited cited
-                              :evidence evidence :rung rung :state :proposed}) (:edges parsed))]
+                              :evidence evidence :rung rung :state :proposed
+                              :corpus (corpus)}) (:edges parsed))
+        absences (mapv #(assoc % :corpus (corpus)) (:absences parsed))]
     (when (seq (:edges parsed))
       (let [editorial (remove #(= :why (get-in % [:edge :kind])) (:edges parsed))]
         (when (seq editorial)
           (atomic-spit! file (insert-directives (slurp (str file)) editorial))))
       (append-records! (:attestations paths) attestations))
     (when (seq (:proposals parsed)) (append-records! (:proposals paths) (:proposals parsed)))
-    (when (seq (:absences parsed)) (append-records! (:absences paths) (:absences parsed)))
-    {:attestations attestations :proposals (:proposals parsed) :absences (:absences parsed)}))
+    (when (seq absences) (append-records! (:absences paths) absences))
+    {:attestations attestations :proposals (:proposals parsed) :absences absences}))
 
 (defn checkpoint! [paths state restatement gate-summary]
   (let [n (inc (:checkpoint state))
@@ -548,7 +495,8 @@
         hits (map rung-one-hits patterns)]
     {:patterns (count patterns)
      :with-any-hit (count (filter seq hits))
-     :with-non-listing-hit (count (filter #(some (comp false? :listing) %) hits))}))
+     :with-non-listing-hit (count (filter #(some (comp false? :listing) %) hits))
+     :basis (:basis @evidence-cache)}))
 
 (defn -main [& args]
   (let [{:keys [section seat budget patterns]} (parse-args args)]

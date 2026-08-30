@@ -2,6 +2,7 @@
 (ns checks.spider-fleet
   (:require [babashka.fs :as fs]
             [babashka.process :as process]
+            [checks.library-graph-lint :as lint]
             [clojure.edn :as edn]
             [clojure.pprint :as pprint]
             [clojure.string :as str]))
@@ -10,10 +11,6 @@
 (def runner (str (fs/path root "checks/spider_runner.clj")))
 (def fleet-path (str (fs/path root "library/.spider"
                               (str "fleet-" (java.time.LocalDate/now) ".edn"))))
-(def evidence-export "/home/joe/code/futon1b/migration-export/evidence.edn")
-(def evidence-cache
-  (str (fs/path "/tmp" (str "futon3-spider-evidence-occurrences-v2-"
-                             (.toMillis (fs/last-modified-time evidence-export)) ".edn"))))
 
 (defn parse-args [args]
   (when (odd? (count args)) (throw (ex-info "arguments must be --key value pairs" {})))
@@ -22,7 +19,9 @@
 (defn csv [s] (vec (remove str/blank? (str/split (or s "") #","))))
 (defn read-edn [path fallback]
   (if (fs/exists? path) (edn/read-string (slurp (str path))) fallback))
-(def evidence-index (delay (read-edn evidence-cache {})))
+(def evidence-cache
+  (delay (lint/ensure-live-evidence-index! (str (fs/path root "library")))))
+(def evidence-index (delay (:index @evidence-cache)))
 
 (defn pattern-id [file]
   (-> (str (fs/relativize (fs/path root "library") file))
@@ -33,7 +32,8 @@
         hits (map #(get @evidence-index % []) patterns)]
     {:patterns (count patterns)
      :with-any-hit (count (filter seq hits))
-     :with-non-listing-hit (count (filter #(some (comp false? :listing) %) hits))}))
+     :with-non-listing-hit (count (filter #(some (comp false? :listing) %) hits))
+     :basis (:basis @evidence-cache)}))
 
 (defn section-status [section]
   (let [dir (fs/path root "library" section)
@@ -72,11 +72,12 @@
       (spit fleet-path (with-out-str (pprint/pprint report)))
       report)))
 
-(defn run-section! [assignments section seat budget]
+(defn run-section! [assignments section seat budget evidence-cache-path]
   (loop [remaining budget]
     (let [status (:status (section-status section))]
       (when (and (pos? remaining) (= :running status))
-        (process/shell {:continue true :out :string :err :string}
+        (process/shell {:continue true :out :string :err :string
+                        :extra-env {"SPIDER_EVIDENCE_CACHE" evidence-cache-path}}
                        "bb" "-cp" root runner "--section" section "--seat" seat "--budget" "1")
         (refresh! assignments)
         (recur (dec remaining))))))
@@ -91,17 +92,17 @@
       (throw (ex-info "usage: spider_fleet.clj --sections a,b --seats zai-1,zai-2 --budget N (generic zai seats only)" {})))
     (let [assignments (into {} (map-indexed (fn [i section]
                                               [section (nth seats (mod i (count seats)))])
-                                            sections))]
-      ;; Build or load the mtime-keyed export index before parallel workers start.
-      (process/shell {:out :string :err :string}
-                     "bb" "-cp" root "-e"
-                     "(require 'checks.spider-runner) (force checks.spider-runner/evidence-index)")
+                                            sections))
+          ;; Build or load one basis-pinned live index before parallel workers start.
+          cache @evidence-cache
+          cache-path (or (:cache-path cache)
+                         (lint/evidence-cache-path (:basis cache)))]
       (refresh! assignments)
       ;; mapv twice: create EVERY future before awaiting any. A lazy map/deref
       ;; pair created one future, blocked on it, then created the next — the
       ;; fleet ran one section at a time (found by codex-20 at wave-1 launch).
       (run! deref (mapv (fn [[section seat]]
-                          (future (run-section! assignments section seat budget)))
+                          (future (run-section! assignments section seat budget cache-path)))
                         assignments))
       (println (pr-str (refresh! assignments))))))
 

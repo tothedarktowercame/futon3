@@ -1,20 +1,76 @@
 #!/usr/bin/env bb
 (ns checks.library-graph-lint
   (:require [babashka.fs :as fs]
-            [babashka.process :as process]
             [clojure.edn :as edn]
+            [clojure.pprint :as pprint]
             [clojure.string :as str]))
 
 (def edge-kinds #{:why :how :see-also})
 (def target-pattern #"[A-Za-z0-9_.-]+/[A-Za-z0-9_./'-]+")
-(def evidence-export "/home/joe/code/futon1b/migration-export/evidence.edn")
-(def evidence-cache
-  (str (fs/path "/tmp" (str "futon3-spider-evidence-occurrences-v2-"
-                             (.toMillis (fs/last-modified-time evidence-export)) ".edn"))))
+(def evidence-store "http://127.0.0.1:7073")
+(def evidence-page-limit 1000)
 
 (defn sha256 [s]
   (let [digest (java.security.MessageDigest/getInstance "SHA-256")]
     (format "%064x" (java.math.BigInteger. 1 (.digest digest (.getBytes s "UTF-8"))))))
+
+(defn now [] (.toString (java.time.Instant/now)))
+
+(defn read-http-edn [url]
+  (loop [attempt 0]
+    (let [result (try {:value (edn/read-string (slurp url))}
+                      (catch Exception e {:error e}))]
+      (if-let [error (:error result)]
+        (if (< attempt 5)
+          (do (Thread/sleep (* 1000 (inc attempt))) (recur (inc attempt)))
+          (throw (ex-info "live evidence request failed"
+                          {:url url :attempts (inc attempt)} error)))
+        (:value result)))))
+
+(defn encode-query [x]
+  (java.net.URLEncoder/encode (str x) "UTF-8"))
+
+(defn evidence-page-url [{:keys [limit since cursor]}]
+  (str evidence-store "/api/alpha/evidence?limit=" (or limit evidence-page-limit)
+       (when since (str "&since=" (encode-query since)))
+       (when cursor
+         (str "&cursor-at=" (encode-query (:at cursor))
+              "&cursor-id=" (encode-query (:id cursor))))))
+
+(defn fetch-evidence-page [request]
+  (read-http-edn (evidence-page-url request)))
+
+(defn page-evidence
+  "Read every keyset page. The empty terminal page remains visible in :pages."
+  ([fetch-page] (page-evidence fetch-page {}))
+  ([fetch-page {:keys [limit since on-page collect?]
+                :or {limit evidence-page-limit on-page (fn [_ _] nil) collect? true}}]
+   (loop [cursor nil page-number 0 entries [] pages [] seen-cursors #{}]
+     (let [page (fetch-page {:limit limit :since since :cursor cursor})
+           page-entries (vec (:entries page))
+           next-cursor (:next-cursor page)]
+       (when (and next-cursor (contains? seen-cursors next-cursor))
+         (throw (ex-info "live evidence paging repeated a cursor"
+                         {:page page-number :cursor next-cursor})))
+       (on-page page-number page)
+       (if next-cursor
+         (recur next-cursor (inc page-number)
+                (if collect? (into entries page-entries) entries)
+                (conj pages (select-keys page [:count :scanned :incomplete :next-cursor]))
+                (conj seen-cursors next-cursor))
+         {:entries (if collect? (into entries page-entries) entries)
+          :pages (conj pages (select-keys page [:count :scanned :incomplete :next-cursor]))})))))
+
+(defn live-evidence-basis []
+  (let [count-response (read-http-edn (str evidence-store "/api/alpha/evidence/count"))
+        newest (fetch-evidence-page {:limit 1})]
+    {:count (:count count-response)
+     :max-at (get-in newest [:entries 0 :evidence/at])}))
+
+(defn evidence-cache-path [basis]
+  (str (fs/path "/tmp"
+                (str "futon3-spider-evidence-occurrences-v3-"
+                     (:count basis) "-" (subs (sha256 (pr-str basis)) 0 16) ".edn"))))
 
 (defn pattern-id [library file]
   (-> (str (fs/relativize library file))
@@ -118,6 +174,102 @@
         (keyword? x) [(subs (str x) 1)]
         :else []))
 
+(defn exact-occurrence? [text token]
+  (boolean (re-find (re-pattern (str "(?<![A-Za-z0-9_./'-])"
+                                     (java.util.regex.Pattern/quote token)
+                                     "(?![A-Za-z0-9_./'-])")) text)))
+
+(defn occurrence-excerpt [text token]
+  (let [at (.indexOf text token)
+        start (max 0 (- at 200))
+        end (min (count text) (+ at (count token) 200))]
+    (subs text start end)))
+
+(defn context-retrieval-listing? [record]
+  (let [body (:evidence/body record)]
+    (if (map? body)
+      (= "context-retrieval" (some-> (or (:event body) (get body "event")) name))
+      (boolean
+       (and (string? body)
+            (re-find #"(?i)(?:\"event\"|:event)\s*(?:[:=]\s*)?(?:\"context-retrieval\"|:context-retrieval)"
+                     body))))))
+
+(defn spider-self-text? [record]
+  (let [text (str/join " " (string-leaves (:evidence/body record)))]
+    (boolean (or (str/includes? text "You are the spider for library/")
+                 (str/includes? text "Runner-supplied rung-1 exact-occurrence hits")
+                 (str/includes? text "exact live occurrence:")))))
+
+(defn add-record-occurrences [index ids wr-aliases record]
+  (let [text (str/join " " (string-leaves record))
+        record-id (or (:evidence/id record) (:xt/id record))
+        listing (context-retrieval-listing? record)
+        self-text (spider-self-text? record)
+        path-hits (filter ids (re-seq target-pattern text))
+        alias-tokens (re-seq #"WR-[0-9]+" text)
+        alias-hits (keep wr-aliases alias-tokens)
+        patterns (distinct (concat path-hits alias-hits))
+        co-mention (> (count patterns) 1)]
+    (reduce (fn [m pattern]
+              (let [token (if (exact-occurrence? text pattern)
+                            pattern
+                            (first (filter #(= pattern (get wr-aliases %)) alias-tokens)))]
+                (if (and record-id token)
+                  (update m pattern (fnil conj [])
+                          {:id record-id :via :tag :listing listing
+                           :self-text self-text :co-mention co-mention
+                           :query (str "exact live occurrence: " token)
+                           :excerpt (occurrence-excerpt text token)})
+                  m))) index patterns)))
+
+(defn build-evidence-index
+  ([ids] (build-evidence-index ids {}))
+  ([ids {:keys [fetch-page since page-observer]
+         :or {fetch-page fetch-evidence-page page-observer (fn [_ _] nil)}}]
+   (let [wr-aliases (into {} (keep (fn [id]
+                                     (when-let [[_ n] (re-matches #"war-room/wr-([0-9]+)-.*" id)]
+                                       [(str "WR-" n) id]))) ids)
+         index (atom {})]
+     (page-evidence fetch-page
+                    {:since since
+                     :collect? false
+                     :on-page (fn [n page]
+                                (doseq [record (:entries page)]
+                                  (swap! index add-record-occurrences ids wr-aliases record))
+                                (page-observer n page))})
+     @index)))
+
+(defn read-index-cache [path]
+  (when (fs/exists? path) (edn/read-string (slurp (str path)))))
+
+(defn write-index-cache! [path value]
+  (let [tmp (str path ".tmp")]
+    (spit tmp (with-out-str (pprint/pprint value)))
+    (fs/move tmp path {:replace-existing true :atomic-move true})))
+
+(defn ensure-live-evidence-index!
+  "Return a live index named by the count/max-at basis observed immediately
+  before its keyset scan. The store does not expose a transaction-snapshot
+  token on this route, so the start basis is recorded rather than inventing
+  quiescence while live writers continue."
+  [library]
+  (let [ids (set (map #(pattern-id library %) (fs/glob library "**.flexiarg")))
+        basis (live-evidence-basis)
+        path (evidence-cache-path basis)]
+    (or (read-index-cache path)
+        (let [index (build-evidence-index
+                     ids {:page-observer
+                          (fn [n _]
+                            (when (zero? (mod (inc n) 25))
+                              (binding [*out* *err*]
+                                (println "live evidence index pages:" (inc n)))) )})
+              cache {:schema 3 :store evidence-store :basis basis
+                     :cache-path path
+                     :built-at (now) :projection :full-record-with-body
+                     :index index}]
+          (write-index-cache! path cache)
+          cache))))
+
 (defn normalized [x]
   (-> (str x) str/lower-case (str/replace #"\s+" " ") str/trim))
 
@@ -128,9 +280,10 @@
          (catch Exception _ nil))))
 
 (defn rung-one-record [index pattern id]
-  (some #(when (= id (:id %)) {:evidence/body (:excerpt %)}) (get index pattern)))
+  (when (some #(= id (:id %)) (get index pattern))
+    (evidence-record nil id)))
 
-(defn attestation-semantic-failures [records export-index i att]
+(defn attestation-semantic-failures [records live-index i att]
   (when (valid-attestation? att)
     (let [evidence (:evidence att)
           rung (:rung att)
@@ -144,10 +297,15 @@
        (for [{:keys [id excerpt via]} evidence
              :let [record (if (= via :tag)
                             (if records (evidence-record records id)
-                                (rung-one-record export-index (get-in att [:edge :from]) id))
+                                (rung-one-record live-index (get-in att [:edge :from]) id))
                             (evidence-record records id))
                    haystack (normalized (str/join " " (string-leaves record)))]
-             :when (or (nil? record) (not (str/includes? haystack (normalized excerpt))))]
+             ;; Refused rows are retained negative audit records, not evidence
+             ;; that can authorize a directive. Accepted/proposed rows remain
+             ;; fail-closed under live excerpt verification.
+             :when (and (not= :refused (:state att))
+                        (or (nil? record)
+                            (not (str/includes? haystack (normalized excerpt)))))]
          (assoc base :reason :evidence-excerpt-mismatch :evidence-id id))))))
 
 (defn read-edn-or [path fallback]
@@ -170,18 +328,14 @@
         atts (read-edn-or attestations [])
         att-rows (if (vector? atts) atts [])
         records (when evidence-records (read-edn-or evidence-records {}))
-        _ (when (and (nil? records)
-                     (some #(some (fn [e] (= :tag (:via e))) (:evidence %)) att-rows)
-                     (not (fs/exists? evidence-cache)))
-            (let [repo (str (fs/parent (fs/absolutize library)))
-                  result (process/shell {:continue true :out :string :err :string}
-                                        "bb" "-cp" repo "-e"
-                                        "(require 'checks.spider-runner) (force checks.spider-runner/evidence-index)")]
-              (when-not (zero? (:exit result))
-                (throw (ex-info "could not build exact-occurrence evidence index"
-                                {:stderr (:err result)})))))
-        export-index (when (and (nil? records) (fs/exists? evidence-cache))
-                       (read-edn-or evidence-cache {}))
+        corpus-basis (some :basis (keep :corpus (reverse att-rows)))
+        pinned-cache-path (or (System/getenv "SPIDER_EVIDENCE_CACHE")
+                              (when corpus-basis (evidence-cache-path corpus-basis)))
+        live-cache (when (and (nil? records)
+                              (some #(some (fn [e] (= :tag (:via e))) (:evidence %)) att-rows))
+                     (or (when pinned-cache-path (read-index-cache pinned-cache-path))
+                         (ensure-live-evidence-index! library)))
+        live-index (:index live-cache)
         baseline-edges (set (map edge-key (:edges base)))
         attested-edges (set (keep #(when (valid-attestation? %) (edge-key (:edge %))) att-rows))
         refused-edges (set (keep #(when (and (valid-attestation? %)
@@ -215,7 +369,7 @@
                                        :line (inc i) :edge (:edge att)
                                        :reason :malformed-attestation}))
                                   att-rows))
-        semantic (mapcat #(attestation-semantic-failures records export-index %1 %2)
+        semantic (mapcat #(attestation-semantic-failures records live-index %1 %2)
                          (range) att-rows)
         body-failures (for [{:keys [file body-line body-digest]} (:patterns scan)
                             :when (str/starts-with? file prefix)

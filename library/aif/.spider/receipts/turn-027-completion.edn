@@ -1,15 +1,15 @@
 {:schema 1,
  :event :dispatch-completion,
- :at "2026-08-30T12:53:26.186321785Z",
+ :at "2026-08-30T15:05:33.855421938Z",
  :turn 27,
- :pattern "aif/no-self-certification",
+ :pattern "aif/status-gated-belief-update",
  :seat "zai-2",
  :wire
  {:ok true,
-  :job-id "invoke-1788094377136-3885-8ed2e654",
+  :job-id "invoke-1788102292982-4263-e1b15486",
   :response
-  "[{:edge {:from \"aif/no-self-certification\" :to \"aif/measurement-window-hygiene\" :kind :how} :cited \"Tag every evidence record at birth with the properties the apparatus cannot fake — `:independent?` (was there an out-of-band witness?), source (`:measured` vs `:target-absent-fallback`), settledness (`:settled` vs `:transient`) — and have the verdict count ONLY the records whose tags clear.\" :evidence [{:id \"e-f76959b0-2792-4d80-88c4-05248d45c91e\" :via :text :query \"no-self-certification settled transient measurement window tag\" :excerpt \"settledness (`:settled` vs `:transient`) — and have the verdict count ONLY the records whose tags clear.\"}] :rung 1 :read [\"aif/no-self-certification\" \"aif/measurement-window-hygiene\"]}]",
+  "[{:edge {:from \"aif/status-gated-belief-update\" :to \"aif/free-energy-as-tick-scalar\" :kind :see-also} :cited \"The trace record emits :mu for all instances every tick.\" :evidence [{:id \"e-6e323c36-fabd-44ea-84b4-4c0f83a485f9\" :via :text :query \"status-gated-belief-update engagement status observation availability truncated freezes\" :excerpt \"The trace record emits :mu for all instances every tick.\"}] :rung 2 :read [\"aif/status-gated-belief-update\" \"aif/free-energy-as-tick-scalar\"]}]",
   :agent-id "zai-2",
   :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
  :response
- "[{:edge {:from \"aif/no-self-certification\" :to \"aif/measurement-window-hygiene\" :kind :how} :cited \"Tag every evidence record at birth with the properties the apparatus cannot fake — `:independent?` (was there an out-of-band witness?), source (`:measured` vs `:target-absent-fallback`), settledness (`:settled` vs `:transient`) — and have the verdict count ONLY the records whose tags clear.\" :evidence [{:id \"e-f76959b0-2792-4d80-88c4-05248d45c91e\" :via :text :query \"no-self-certification settled transient measurement window tag\" :excerpt \"settledness (`:settled` vs `:transient`) — and have the verdict count ONLY the records whose tags clear.\"}] :rung 1 :read [\"aif/no-self-certification\" \"aif/measurement-window-hygiene\"]}]"}
+ "[{:edge {:from \"aif/status-gated-belief-update\" :to \"aif/free-energy-as-tick-scalar\" :kind :see-also} :cited \"The trace record emits :mu for all instances every tick.\" :evidence [{:id \"e-6e323c36-fabd-44ea-84b4-4c0f83a485f9\" :via :text :query \"status-gated-belief-update engagement status observation availability truncated freezes\" :excerpt \"The trace record emits :mu for all instances every tick.\"}] :rung 2 :read [\"aif/status-gated-belief-update\" \"aif/free-energy-as-tick-scalar\"]}]"}

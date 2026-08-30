@@ -8,6 +8,7 @@
 @see-also aif/temporal-depth-beyond-greedy aif/hierarchical-budget-aware-action-selection
 @holds-at R15   ;; pegged 2026-08-30 (claude-15): the catalogue paragraph numbered R15; see PREREG-war-machine §1b
 
+@see-also aif/policy-precision-commitment-temperature
 ! conclusion: When a fast tactical loop acts inside a slower strategic loop, make the coupling explicit and give each level its own quantities — strategic selection fixes the tactical target, witnessed tactical outcomes update the next strategic calibration state, and longer policies carry a named temporal discount of their own — so that no quantity does duty at two levels at once.
 
   + context: An AIF harness with two grains of decision: a strategic loop that chooses which task

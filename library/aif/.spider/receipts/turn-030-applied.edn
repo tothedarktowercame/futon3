@@ -1,31 +1,31 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T12:55:07.934976860Z",
+ :at "2026-08-30T15:08:16.186847289Z",
  :turn 30,
- :pattern "aif/policy-precision-commitment-temperature",
+ :pattern "aif/temporal-depth-beyond-greedy",
  :gate
  "/home/joe/code/futon3/./library/aif/.spider/gates/turn-030.edn",
  :changes
  {:attestations
   [{:edge
-    {:from "aif/policy-precision-commitment-temperature",
-     :to "aif/hierarchical-budget-aware-action-selection",
+    {:from "aif/temporal-depth-beyond-greedy",
+     :to "aif/hierarchical-and-temporal-depth",
      :kind :see-also},
     :by "zai-2",
     :at "2026-08-30",
     :read
-    ["aif/policy-precision-commitment-temperature"
-     "aif/hierarchical-budget-aware-action-selection"],
+    ["aif/temporal-depth-beyond-greedy"
+     "aif/hierarchical-and-temporal-depth"],
     :cited
-    "You want exploration versus exploitation to depend on operational pressure (deadlines, repeated failures, user impatience, instability), not on randomness alone.",
+    "Extend G(π) evaluation to a horizon H > 1 with a temporal discount, AND introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them.",
     :evidence
-    [{:id "e-269d2423-8447-4e43-ae64-2d2591de827b",
+    [{:id "e-0e2cda23-9d80-4cff-ac57-a96372582495",
       :via :text,
       :query
-      "policy-precision-commitment-temperature tau softmax abstain discriminability",
+      "temporal-depth-beyond-greedy rollout horizon fast slow two-timescale hierarchy",
       :excerpt
-      "Maintain (tau) as a commitment temperature that modulates softmax over (-G/tau), coupled to diagnostic signals (recent regressions, uncertainty in (mu), contradiction rate, time pressure, repeated test failures)."}],
-    :rung 1,
+      "introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them"}],
+    :rung 2,
     :state :proposed}],
   :proposals [],
   :absences []}}

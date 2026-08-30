@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:45:03.781690738Z",
+ :turn 5,
+ :pattern "problems/tension-proposes-candidates",
+ :gate
+ "/home/joe/code/futon3/./library/problems/.spider/gates/turn-005.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "problems/tension-proposes-candidates",
+     :to "futon-theory/reverse-morphogenesis",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["problems/tension-proposes-candidates"
+     "futon-theory/reverse-morphogenesis"],
+    :cited
+    "Earlier work on a metric over substrate-2 concluded that \"morphogenesis\" is a more useful way of thinking about where work needs to happen than \"tension\" (Joe, 2026-08-25), and futon3/library/futon-theory/reverse-morphogenesis carries that method.",
+    :evidence
+    [{:id "e-8982be47-a022-47c7-8e6b-75322e801d60",
+      :via :text,
+      :query
+      "tension proposer reverse-morphogenesis candidate source bounded",
+      :excerpt
+      "\"morphogenesis\" is a more useful way of thinking about where work needs to happen than \"tension\" (Joe, 2026-08-25), and futon3/library/futon-theory/reverse-morphogenesis carries that method"}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

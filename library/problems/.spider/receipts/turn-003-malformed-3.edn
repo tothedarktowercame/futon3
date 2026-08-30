@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"problems/per-tick-mismatch-instruments-outer-loop-gain\" :to \"cascades/repointable-declarations\" :kind :see-also} :cited \"A loop is instrumented for its gain only when the returned mismatch is both observable and connected to what the loop does next.\" :evidence [{:id \"e-f39addb6-ee33-4483-a9e1-941d4eb0800f\" :via :text :query \"per-tick-mismatch-instruments-outer-loop-gain\" :excerpt \"{:id \\\"cascades/repointable-declarations\\\", :title \\\"Repointable Declarations\\\", :score 0.3995, :rank 1} {:id \\\"problems/per-tick-mismatch-instruments-outer-loop-gain\\\", :title \\\"Per-Tick Mismatch Instruments Outer-Loop Gain\\\", :score 0.3646, :rank 2}\"}] :rung 2 :read [\"problems/per-tick-mismatch-instruments-outer-loop-gain\" \"cascades/repointable-declarations\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788100846278-4112-acb7eaa0",
+  :response
+  "[{:edge {:from \"problems/per-tick-mismatch-instruments-outer-loop-gain\" :to \"cascades/repointable-declarations\" :kind :see-also} :cited \"A loop is instrumented for its gain only when the returned mismatch is both observable and connected to what the loop does next.\" :evidence [{:id \"e-f39addb6-ee33-4483-a9e1-941d4eb0800f\" :via :text :query \"per-tick-mismatch-instruments-outer-loop-gain\" :excerpt \"{:id \\\"cascades/repointable-declarations\\\", :title \\\"Repointable Declarations\\\", :score 0.3995, :rank 1} {:id \\\"problems/per-tick-mismatch-instruments-outer-loop-gain\\\", :title \\\"Per-Tick Mismatch Instruments Outer-Loop Gain\\\", :score 0.3646, :rank 2}\"}] :rung 2 :read [\"problems/per-tick-mismatch-instruments-outer-loop-gain\" \"cascades/repointable-declarations\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "problems/per-tick-mismatch-instruments-outer-loop-gain",
+    :to "cascades/repointable-declarations",
+    :kind :see-also}}},
+ :turn 3,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:41:57.251980058Z",
+ :attempt 3,
+ :pattern "problems/per-tick-mismatch-instruments-outer-loop-gain"}

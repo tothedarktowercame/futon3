@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T12:48:01.491939901Z",
+ :turn 19,
+ :pattern "aif/expected-free-energy-scorecard",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788094046478-3848-4bc300c0",
+  :response
+  "[{:edge {:from \"aif/expected-free-energy-scorecard\" :to \"aif/term-to-channel-traceability\" :kind :see-also} :cited \"Compute G(a) as a weighted sum of named terms (risk, ambiguity, information gain, constraint violation, cost, coordination pressure), and store the term breakdown for each candidate.\" :evidence [{:id \"e-d54725c9-46a0-410b-a0b6-10ab42082b54\" :via :text :query \"expected-free-energy-scorecard term to channel traceability multi-seed reporting\" :excerpt \"| `term-to-channel-traceability` | Multi-seed reporting | Each claim declares seed range, configuration, time window, facet subset |\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"aif/term-to-channel-traceability\"]} {:edge {:from \"aif/expected-free-energy-scorecard\" :to \"aif/policy-precision-commitment-temperature\" :kind :see-also} :cited \"A decomposed G makes disagreements concrete (which term dominated) and enables targeted adjustment.\" :evidence [{:id \"e-d54725c9-46a0-410b-a0b6-10ab42082b54\" :via :text :query \"expected-free-energy-scorecard term to channel traceability multi-seed reporting\" :excerpt \"| `policy-precision-commitment-temperature` | Path-integral willingness-to-pay | The gating *is* a precision modulator; τ becomes state-dependent on gate outcome |\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"aif/policy-precision-commitment-temperature\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/expected-free-energy-scorecard\" :to \"aif/term-to-channel-traceability\" :kind :see-also} :cited \"Compute G(a) as a weighted sum of named terms (risk, ambiguity, information gain, constraint violation, cost, coordination pressure), and store the term breakdown for each candidate.\" :evidence [{:id \"e-d54725c9-46a0-410b-a0b6-10ab42082b54\" :via :text :query \"expected-free-energy-scorecard term to channel traceability multi-seed reporting\" :excerpt \"| `term-to-channel-traceability` | Multi-seed reporting | Each claim declares seed range, configuration, time window, facet subset |\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"aif/term-to-channel-traceability\"]} {:edge {:from \"aif/expected-free-energy-scorecard\" :to \"aif/policy-precision-commitment-temperature\" :kind :see-also} :cited \"A decomposed G makes disagreements concrete (which term dominated) and enables targeted adjustment.\" :evidence [{:id \"e-d54725c9-46a0-410b-a0b6-10ab42082b54\" :via :text :query \"expected-free-energy-scorecard term to channel traceability multi-seed reporting\" :excerpt \"| `policy-precision-commitment-temperature` | Path-integral willingness-to-pay | The gating *is* a precision modulator; τ becomes state-dependent on gate outcome |\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"aif/policy-precision-commitment-temperature\"]}]"}

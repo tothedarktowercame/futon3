@@ -1,31 +1,31 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T12:52:11.759713597Z",
+ :at "2026-08-30T15:03:52.912544898Z",
  :turn 25,
- :pattern "aif/measurement-window-hygiene",
+ :pattern "aif/scheduled-observer-entrypoint",
  :gate
  "/home/joe/code/futon3/./library/aif/.spider/gates/turn-025.edn",
  :changes
  {:attestations
   [{:edge
-    {:from "aif/measurement-window-hygiene",
-     :to "aif/term-to-channel-traceability",
+    {:from "aif/scheduled-observer-entrypoint",
+     :to "aif/interoceptive-tripwires",
      :kind :see-also},
     :by "zai-2",
     :at "2026-08-30",
     :read
-    ["aif/measurement-window-hygiene"
-     "aif/term-to-channel-traceability"],
+    ["aif/scheduled-observer-entrypoint"
+     "aif/interoceptive-tripwires"],
     :cited
-    "You record a predicted/realised (or before/after) pair to score an action's effect on such a system.",
+    "Add the liveness assertion to the tick harness: `zero-delta-over-N` → flag, with the run count surfaced (never silently green).",
     :evidence
-    [{:id "e-9d2506af-b503-4f49-a6f3-f194af214804",
+    [{:id "e-4c79ce10-17fa-42de-923d-416814201f32",
       :via :text,
       :query
-      "aif/measurement-window-hygiene no-self-certification sibling",
+      "scheduled-observer-entrypoint liveness assertion zero-delta-over-N no-op trap",
       :excerpt
-      "You record a predicted/realised (or before/after) pair to score an action's effect on such a system."}],
-    :rung 1,
+      "Add the liveness assertion to the tick harness: `zero-delta-over-N` → flag, with the run count surfaced (never silently green)."}],
+    :rung 2,
     :state :proposed}],
   :proposals [],
   :absences []}}

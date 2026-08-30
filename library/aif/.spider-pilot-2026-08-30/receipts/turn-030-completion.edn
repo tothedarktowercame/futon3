@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T12:55:07.508020784Z",
+ :turn 30,
+ :pattern "aif/policy-precision-commitment-temperature",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788094470428-3897-377fbeeb",
+  :response
+  "[{:edge {:from \"aif/policy-precision-commitment-temperature\" :to \"aif/hierarchical-budget-aware-action-selection\" :kind :see-also} :cited \"You want exploration versus exploitation to depend on operational pressure (deadlines, repeated failures, user impatience, instability), not on randomness alone.\" :evidence [{:id \"e-269d2423-8447-4e43-ae64-2d2591de827b\" :via :text :query \"policy-precision-commitment-temperature tau softmax abstain discriminability\" :excerpt \"Maintain (tau) as a commitment temperature that modulates softmax over (-G/tau), coupled to diagnostic signals (recent regressions, uncertainty in (mu), contradiction rate, time pressure, repeated test failures).\"}] :rung 1 :read [\"aif/policy-precision-commitment-temperature\" \"aif/hierarchical-budget-aware-action-selection\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/policy-precision-commitment-temperature\" :to \"aif/hierarchical-budget-aware-action-selection\" :kind :see-also} :cited \"You want exploration versus exploitation to depend on operational pressure (deadlines, repeated failures, user impatience, instability), not on randomness alone.\" :evidence [{:id \"e-269d2423-8447-4e43-ae64-2d2591de827b\" :via :text :query \"policy-precision-commitment-temperature tau softmax abstain discriminability\" :excerpt \"Maintain (tau) as a commitment temperature that modulates softmax over (-G/tau), coupled to diagnostic signals (recent regressions, uncertainty in (mu), contradiction rate, time pressure, repeated test failures).\"}] :rung 1 :read [\"aif/policy-precision-commitment-temperature\" \"aif/hierarchical-budget-aware-action-selection\"]}]"}

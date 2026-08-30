@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"war-room/wr-8-typed-files-are-sources-of-truth\" :to \"war-room/wr-9-bites-empirical-or-logical\" :kind :see-also} :cited \"The typed argument format carries structure, claims, supports, attacks, falsifiability, and conflicts, that prose flattens.\" :evidence [{:id \"e-0fce070b-0f77-401e-9eeb-e4a7d8b80b9a\" :via :tag :query \"exact export occurrence: WR-8\" :excerpt \"Three AIF+-specific data-shape checks from WR-8/WR-9 not in `ct.mission`: every claim has ≥1 support-or-attack; every bite tagged `:logical` or `:empirical`; every spine node carries `:origin` provenance.\"} {:id \"e-e85f9071-bf20-42b8-b1fe-3a89da586fd1\" :via :tag :query \"exact export occurrence: WR-8\" :excerpt \"Plus 3 AIF+-data-shape checks from WR-8/WR-9 (claim has supports-or-attacks; bites tagged logical/empirical; spine nodes carry origin)\"}] :rung 1 :read [\"war-room/wr-8-typed-files-are-sources-of-truth\" \"war-room/wr-9-bites-empirical-or-logical\"] :reason \"Both rung-1 non-listing records (AIF+ full-method audit passes, 2026-05-28) repeatedly co-cite WR-8/WR-9 as one paired data-shape discipline — the typed-files rule supplies the canonical structure and the bites rule supplies the tag check that makes its claims auditable (every bite tagged logical/empirical is exactly WR-9's ruling, applied here as a check on WR-8's files). Peer relation, not authority: neither ruling grounds the other — they are same-era War Room rulings applied jointly as one validation layer. No existing directive links the two (wr-8's header records @why wr-0; wr-9's header records @why from wr-24 and wr-25's @why points at it from their side — the wr-8↔wr-9 pair itself is unrecorded). e-3fbdc0de and e-df39e0ea, the other two non-listing hits, corroborate the pairing ('the render-script pattern (WR-8) is the right shape... WR-9 bite-tagging discipline gap').\"}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788102003698-4241-6b0eb3a0",
+  :response
+  "[{:edge {:from \"war-room/wr-8-typed-files-are-sources-of-truth\" :to \"war-room/wr-9-bites-empirical-or-logical\" :kind :see-also} :cited \"The typed argument format carries structure, claims, supports, attacks, falsifiability, and conflicts, that prose flattens.\" :evidence [{:id \"e-0fce070b-0f77-401e-9eeb-e4a7d8b80b9a\" :via :tag :query \"exact export occurrence: WR-8\" :excerpt \"Three AIF+-specific data-shape checks from WR-8/WR-9 not in `ct.mission`: every claim has ≥1 support-or-attack; every bite tagged `:logical` or `:empirical`; every spine node carries `:origin` provenance.\"} {:id \"e-e85f9071-bf20-42b8-b1fe-3a89da586fd1\" :via :tag :query \"exact export occurrence: WR-8\" :excerpt \"Plus 3 AIF+-data-shape checks from WR-8/WR-9 (claim has supports-or-attacks; bites tagged logical/empirical; spine nodes carry origin)\"}] :rung 1 :read [\"war-room/wr-8-typed-files-are-sources-of-truth\" \"war-room/wr-9-bites-empirical-or-logical\"] :reason \"Both rung-1 non-listing records (AIF+ full-method audit passes, 2026-05-28) repeatedly co-cite WR-8/WR-9 as one paired data-shape discipline — the typed-files rule supplies the canonical structure and the bites rule supplies the tag check that makes its claims auditable (every bite tagged logical/empirical is exactly WR-9's ruling, applied here as a check on WR-8's files). Peer relation, not authority: neither ruling grounds the other — they are same-era War Room rulings applied jointly as one validation layer. No existing directive links the two (wr-8's header records @why wr-0; wr-9's header records @why from wr-24 and wr-25's @why points at it from their side — the wr-8↔wr-9 pair itself is unrecorded). e-3fbdc0de and e-df39e0ea, the other two non-listing hits, corroborate the pairing ('the render-script pattern (WR-8) is the right shape... WR-9 bite-tagging discipline gap').\"}]",
+  :agent-id "zai-1",
+  :session-id "zai-dfef012c-51a4-4cf8-b033-965bdb71c25e"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "war-room/wr-8-typed-files-are-sources-of-truth",
+    :to "war-room/wr-9-bites-empirical-or-logical",
+    :kind :see-also}}},
+ :turn 27,
+ :event :seat-output-invalid,
+ :at "2026-08-30T15:00:36.260824075Z",
+ :attempt 1,
+ :pattern "war-room/wr-8-typed-files-are-sources-of-truth"}

@@ -1,30 +1,30 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T12:53:26.713920634Z",
+ :at "2026-08-30T15:05:39.272067911Z",
  :turn 27,
- :pattern "aif/no-self-certification",
+ :pattern "aif/status-gated-belief-update",
  :gate
  "/home/joe/code/futon3/./library/aif/.spider/gates/turn-027.edn",
  :changes
  {:attestations
   [{:edge
-    {:from "aif/no-self-certification",
-     :to "aif/measurement-window-hygiene",
-     :kind :how},
+    {:from "aif/status-gated-belief-update",
+     :to "aif/free-energy-as-tick-scalar",
+     :kind :see-also},
     :by "zai-2",
     :at "2026-08-30",
     :read
-    ["aif/no-self-certification" "aif/measurement-window-hygiene"],
-    :cited
-    "Tag every evidence record at birth with the properties the apparatus cannot fake — `:independent?` (was there an out-of-band witness?), source (`:measured` vs `:target-absent-fallback`), settledness (`:settled` vs `:transient`) — and have the verdict count ONLY the records whose tags clear.",
+    ["aif/status-gated-belief-update"
+     "aif/free-energy-as-tick-scalar"],
+    :cited "The trace record emits :mu for all instances every tick.",
     :evidence
-    [{:id "e-f76959b0-2792-4d80-88c4-05248d45c91e",
+    [{:id "e-6e323c36-fabd-44ea-84b4-4c0f83a485f9",
       :via :text,
       :query
-      "no-self-certification settled transient measurement window tag",
+      "status-gated-belief-update engagement status observation availability truncated freezes",
       :excerpt
-      "settledness (`:settled` vs `:transient`) — and have the verdict count ONLY the records whose tags clear."}],
-    :rung 1,
+      "The trace record emits :mu for all instances every tick."}],
+    :rung 2,
     :state :proposed}],
   :proposals [],
   :absences []}}

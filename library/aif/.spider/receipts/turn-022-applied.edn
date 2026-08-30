@@ -1,50 +1,31 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T12:50:11.154221195Z",
+ :at "2026-08-30T15:01:25.754629002Z",
  :turn 22,
- :pattern "aif/free-energy-as-tick-scalar",
+ :pattern "aif/posterior-variance-as-epistemic-value",
  :gate
  "/home/joe/code/futon3/./library/aif/.spider/gates/turn-022.edn",
  :changes
  {:attestations
   [{:edge
-    {:from "aif/free-energy-as-tick-scalar",
-     :to "aif/evidence-precision-registry",
+    {:from "aif/posterior-variance-as-epistemic-value",
+     :to "aif/predictive-entropy-as-ambiguity",
      :kind :see-also},
     :by "zai-2",
     :at "2026-08-30",
     :read
-    ["aif/free-energy-as-tick-scalar"
-     "aif/evidence-precision-registry"],
+    ["aif/posterior-variance-as-epistemic-value"
+     "aif/predictive-entropy-as-ambiguity"],
     :cited
-    "Implement F as a pure function (mu, observation, precision-opts) → non-negative scalar, applying the formula F = 0.5 × mean(Π_k · ε_k²) over all observation channels k.",
+    "Relation to `predictive-entropy-as-ambiguity`: THAT pattern is the genuine ambiguity (+) term (forward observation-distribution entropy, an irreducible-noise cost). THIS is the EIG (−) term (reducible model uncertainty). Distinct quantities, distinct signs — never collapse them into one leg.",
     :evidence
-    [{:id "e-e9c000da-7ebf-4a67-9d7b-f35db6d3443c",
+    [{:id "e-a4e4674e-d764-417a-a432-f93f2e2f86c2",
       :via :text,
       :query
-      "free-energy-as-tick-scalar evidence-precision-registry variational",
+      "posterior-variance-as-epistemic-value predictive-entropy-as-ambiguity distinct signs collapse",
       :excerpt
-      "applying the formula F = 0.5 × mean(Π_k · ε_k²) over all observation channels k"}],
-    :rung 1,
-    :state :proposed}
-   {:edge
-    {:from "aif/free-energy-as-tick-scalar",
-     :to "aif/predictive-coding-belief-update",
-     :kind :how},
-    :by "zai-2",
-    :at "2026-08-30",
-    :read
-    ["aif/free-energy-as-tick-scalar"
-     "aif/predictive-coding-belief-update"],
-    :cited
-    "Implement free-energy as a pure function in the same namespace as the belief update (canonical pairing: same module owns both rules).",
-    :evidence
-    [{:id "e-5d08fb0f-ff27-4c99-9602-05a745e35e6c",
-      :via :text,
-      :query "aif/free-energy-as-tick-scalar",
-      :excerpt
-      ":query \"aif/no-self-certification aif/two-layer-calibration aif/predictive-entropy-as-ambiguity aif/predictive-coding-belief-update\""}],
-    :rung 1,
+      "Distinct quantities, distinct signs — never collapse them into one leg."}],
+    :rung 2,
     :state :proposed}],
   :proposals [],
   :absences []}}

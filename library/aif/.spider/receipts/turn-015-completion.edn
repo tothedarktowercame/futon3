@@ -1,15 +1,15 @@
 {:schema 1,
  :event :dispatch-completion,
- :at "2026-08-30T12:45:05.544736001Z",
+ :at "2026-08-30T14:53:12.809341159Z",
  :turn 15,
- :pattern "aif/declare-the-conditioning",
+ :pattern "aif/interoceptive-tripwires",
  :seat "zai-2",
  :wire
  {:ok true,
-  :job-id "invoke-1788093870883-3833-a9a7fdc7",
+  :job-id "invoke-1788101546387-4188-164b5360",
   :response
-  "[{:edge {:from \"aif/declare-the-conditioning\" :to \"aif/structured-observation-vector\" :kind :how} :cited \"Route all lanes toward ONE situation source (the structured observation vector) where feasible.\" :evidence [{:id \"e-2f1b9326-6095-4f1a-b5a1-df5b2e4fad52\" :via :text :query \"declare-the-conditioning structured observation vector situation source\" :excerpt \"Route all lanes toward ONE situation source (the structured observation vector) where feasible.\"}] :rung 1 :read [\"aif/declare-the-conditioning\" \"aif/structured-observation-vector\"]}]",
+  "[{:edge {:from \"aif/interoceptive-tripwires\" :to \"aif/structured-observation-vector\" :kind :see-also} :cited \"The loop's observation channel is task-level only: it observes the world it acts on (job outcomes, verdicts, witnesses, QA), while its own machinery is a hidden state with no likelihood mapping.\" :evidence [{:id \"e-ef28b7b2-cb6d-4a1c-8c08-12b36a08a796\" :via :text :query \"interoceptive-tripwires freeze record park summon\" :excerpt \"The loop's observation channel is task-level only: it observes the world it acts on (job outcomes, verdicts, witnesses, QA), while its own machinery is a hidden state with no likelihood mapping.\"}] :rung 2 :read [\"aif/interoceptive-tripwires\" \"aif/structured-observation-vector\"]}]",
   :agent-id "zai-2",
   :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
  :response
- "[{:edge {:from \"aif/declare-the-conditioning\" :to \"aif/structured-observation-vector\" :kind :how} :cited \"Route all lanes toward ONE situation source (the structured observation vector) where feasible.\" :evidence [{:id \"e-2f1b9326-6095-4f1a-b5a1-df5b2e4fad52\" :via :text :query \"declare-the-conditioning structured observation vector situation source\" :excerpt \"Route all lanes toward ONE situation source (the structured observation vector) where feasible.\"}] :rung 1 :read [\"aif/declare-the-conditioning\" \"aif/structured-observation-vector\"]}]"}
+ "[{:edge {:from \"aif/interoceptive-tripwires\" :to \"aif/structured-observation-vector\" :kind :see-also} :cited \"The loop's observation channel is task-level only: it observes the world it acts on (job outcomes, verdicts, witnesses, QA), while its own machinery is a hidden state with no likelihood mapping.\" :evidence [{:id \"e-ef28b7b2-cb6d-4a1c-8c08-12b36a08a796\" :via :text :query \"interoceptive-tripwires freeze record park summon\" :excerpt \"The loop's observation channel is task-level only: it observes the world it acts on (job outcomes, verdicts, witnesses, QA), while its own machinery is a hidden state with no likelihood mapping.\"}] :rung 2 :read [\"aif/interoceptive-tripwires\" \"aif/structured-observation-vector\"]}]"}

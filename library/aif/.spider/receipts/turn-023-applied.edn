@@ -1,30 +1,29 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T12:50:55.155927628Z",
+ :at "2026-08-30T15:02:08.364306202Z",
  :turn 23,
- :pattern "aif/grounded-actuation-not-reobservation",
+ :pattern "aif/predictive-coding-belief-update",
  :gate
  "/home/joe/code/futon3/./library/aif/.spider/gates/turn-023.edn",
  :changes
  {:attestations
   [{:edge
-    {:from "aif/grounded-actuation-not-reobservation",
-     :to "aif/no-self-certification",
-     :kind :why},
+    {:from "aif/predictive-coding-belief-update",
+     :to "futon-theory/four-types",
+     :kind :see-also},
     :by "zai-2",
     :at "2026-08-30",
     :read
-    ["aif/grounded-actuation-not-reobservation"
-     "aif/no-self-certification"],
+    ["aif/predictive-coding-belief-update" "futon-theory/four-types"],
     :cited
-    "The witness must be (a) outside the model (so the model cannot author its own success) and (b) ungameable (so a builder cannot claim it), or the closure is a reflection.",
+    "The mean rule realises predictive coding (Friston et al.); the variance rule keeps belief uncertainty in a meaningful regime where ambiguity terms in EFE stay informative.",
     :evidence
-    [{:id "e-daa3dd3e-0408-4e28-aa71-fb0c0cdfd238",
-      :via :text,
+    [{:id "e-03b5a03b-e30b-4d78-89f8-1fd726fcb6d1",
+      :via :tag,
       :query
-      "grounded-actuation no-self-certification witness outside the model",
+      "exact export occurrence: aif/predictive-coding-belief-update",
       :excerpt
-      "The witness must be (a) outside the model (so the model cannot author its own success) and (b) ungameable (so a builder cannot claim it), or the closure is a reflection."}],
+      "| 3 | `aif/predictive-coding-belief-update` | The four turns | R/E/P/L maps onto predictive-coding belief-update mechanics |\n| 4 | `futon-theory/four-types` | Four-types cycle | Canonical pheno / geno / exo / xeno from which the bit-shift evo"}],
     :rung 1,
     :state :proposed}],
   :proposals [],

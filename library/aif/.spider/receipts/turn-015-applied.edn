@@ -1,31 +1,30 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T12:45:06.338060924Z",
+ :at "2026-08-30T14:53:19.227961098Z",
  :turn 15,
- :pattern "aif/declare-the-conditioning",
+ :pattern "aif/interoceptive-tripwires",
  :gate
  "/home/joe/code/futon3/./library/aif/.spider/gates/turn-015.edn",
  :changes
  {:attestations
   [{:edge
-    {:from "aif/declare-the-conditioning",
+    {:from "aif/interoceptive-tripwires",
      :to "aif/structured-observation-vector",
-     :kind :how},
+     :kind :see-also},
     :by "zai-2",
     :at "2026-08-30",
     :read
-    ["aif/declare-the-conditioning"
+    ["aif/interoceptive-tripwires"
      "aif/structured-observation-vector"],
     :cited
-    "Route all lanes toward ONE situation source (the structured observation vector) where feasible.",
+    "The loop's observation channel is task-level only: it observes the world it acts on (job outcomes, verdicts, witnesses, QA), while its own machinery is a hidden state with no likelihood mapping.",
     :evidence
-    [{:id "e-2f1b9326-6095-4f1a-b5a1-df5b2e4fad52",
+    [{:id "e-ef28b7b2-cb6d-4a1c-8c08-12b36a08a796",
       :via :text,
-      :query
-      "declare-the-conditioning structured observation vector situation source",
+      :query "interoceptive-tripwires freeze record park summon",
       :excerpt
-      "Route all lanes toward ONE situation source (the structured observation vector) where feasible."}],
-    :rung 1,
+      "The loop's observation channel is task-level only: it observes the world it acts on (job outcomes, verdicts, witnesses, QA), while its own machinery is a hidden state with no likelihood mapping."}],
+    :rung 2,
     :state :proposed}],
   :proposals [],
   :absences []}}

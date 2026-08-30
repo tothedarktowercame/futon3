@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/expected-free-energy-scorecard\" :to \"aif/predictive-coding-belief-update\" :kind :see-also} :cited \"It carries beliefs about the stack, observes what's happening, and computes the gap between observation and preference as expected free energy (`aif/predictive-coding-belief-update`, `aif/expected-free-energy-scorecard`).\" :evidence [{:id \"e-bd2dcd01-2b5b-416a-a92c-3ea756d25e6a\" :via :tag :query \"exact export occurrence: aif/expected-free-energy-scorecard\" :excerpt \"computes the gap between observation and preference as expected free energy (`aif/predictive-coding-belief-update`, `aif/expected-free-energy-scorecard`)\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"aif/predictive-coding-belief-update\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788100971251-4127-2d6cf251",
+  :response
+  "[{:edge {:from \"aif/expected-free-energy-scorecard\" :to \"aif/predictive-coding-belief-update\" :kind :see-also} :cited \"It carries beliefs about the stack, observes what's happening, and computes the gap between observation and preference as expected free energy (`aif/predictive-coding-belief-update`, `aif/expected-free-energy-scorecard`).\" :evidence [{:id \"e-bd2dcd01-2b5b-416a-a92c-3ea756d25e6a\" :via :tag :query \"exact export occurrence: aif/expected-free-energy-scorecard\" :excerpt \"computes the gap between observation and preference as expected free energy (`aif/predictive-coding-belief-update`, `aif/expected-free-energy-scorecard`)\"}] :rung 1 :read [\"aif/expected-free-energy-scorecard\" \"aif/predictive-coding-belief-update\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/expected-free-energy-scorecard",
+    :to "aif/predictive-coding-belief-update",
+    :kind :see-also}}},
+ :turn 9,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:44:03.004017339Z",
+ :attempt 1,
+ :pattern "aif/expected-free-energy-scorecard"}

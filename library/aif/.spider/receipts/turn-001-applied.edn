@@ -1,0 +1,28 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:29:35.635182821Z",
+ :turn 1,
+ :pattern "aif/admissibility",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/admissibility",
+     :to "war-machine/advanceability",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read ["aif/admissibility" "war-machine/advanceability"],
+    :cited
+    "Un-registered `:pursue`, goal-extending `:decompose`, and unagreed operator-exit advances are **inadmissible** — refused (or NAG'd), never scored.",
+    :evidence
+    [{:id "e-f5a7638c-40f0-4ca2-8ac5-f91c077ed117",
+      :via :tag,
+      :query "exact export occurrence: aif/admissibility",
+      :excerpt
+      "(`aif/niche-construction`, `orchestration/consent-gate`, `aif/admissibility`, `war-machine/advanceability`, `orchestration/pattern-warranted-choice-point`)"}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

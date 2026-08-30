@@ -1,15 +1,15 @@
 {:schema 1,
  :event :dispatch-completion,
- :at "2026-08-30T12:43:48.332160555Z",
+ :at "2026-08-30T14:51:06.276808029Z",
  :turn 13,
- :pattern "aif/currency-before-merge",
+ :pattern "aif/hierarchical-and-temporal-depth",
  :seat "zai-2",
  :wire
  {:ok true,
-  :job-id "invoke-1788093805467-3826-c5d9d131",
+  :job-id "invoke-1788101380204-4168-1b03e2f5",
   :response
-  "[{:absence {:pattern \"aif/currency-before-merge\" :note \"Queries run: text-search 'aif/currency-before-merge exchange rate valuation'; text-search 'currency-before-merge valuation reads the paperwork commensurable' (0 results); text-search 'currency-before-merge'; psr_search 'currency before merge exchange rate lanes incommensurate valuation sum'. The one new warranted edge found (to system-coherence/facet-before-aggregating, evidenced by e-e994b817-42d0-4310-b438-dfb965d38fbd, co-retrieved rank 2/rank 3 by claude-6) was rejected by the gate as a duplicate of an already-recorded attestation. The remaining candidates from the queries were either already existing @references (aif/declare-the-conditioning, aif/placeholder-is-load-bearing) or topically coincidental co-retrievals (sidecar/validation-enforcement-gate via e-b3b98bc0-0e71-48ef-bb4b-33bd73ff5784; stack-coherence/commit-intent-alignment and math-formalization/measure-restrict-simplify via e-b4ea91a2-4cb9-4461-be8f-a0813eb441bf) with no sentence in the source pattern warranting them, so no further edge is warranted.\"}}]",
+  "[{:edge {:from \"aif/hierarchical-and-temporal-depth\" :to \"aif/policy-precision-commitment-temperature\" :kind :see-also} :cited \"(3) longer policies use a named temporal discount of their own, rather than overloading the commitment dial (R14) to stand in for time preference.\" :evidence [{:id \"e-537dec82-822e-44a0-857d-40694bbf02e8\" :via :text :query \"overloading the commitment dial R14 temporal discount\" :excerpt \"the commitment dial doing duty as a temporal discount, a tactical outcome read as if it were strategic evidence — collapses the levels back into one\"}] :rung 2 :read [\"aif/hierarchical-and-temporal-depth\" \"aif/policy-precision-commitment-temperature\"]}]",
   :agent-id "zai-2",
   :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
  :response
- "[{:absence {:pattern \"aif/currency-before-merge\" :note \"Queries run: text-search 'aif/currency-before-merge exchange rate valuation'; text-search 'currency-before-merge valuation reads the paperwork commensurable' (0 results); text-search 'currency-before-merge'; psr_search 'currency before merge exchange rate lanes incommensurate valuation sum'. The one new warranted edge found (to system-coherence/facet-before-aggregating, evidenced by e-e994b817-42d0-4310-b438-dfb965d38fbd, co-retrieved rank 2/rank 3 by claude-6) was rejected by the gate as a duplicate of an already-recorded attestation. The remaining candidates from the queries were either already existing @references (aif/declare-the-conditioning, aif/placeholder-is-load-bearing) or topically coincidental co-retrievals (sidecar/validation-enforcement-gate via e-b3b98bc0-0e71-48ef-bb4b-33bd73ff5784; stack-coherence/commit-intent-alignment and math-formalization/measure-restrict-simplify via e-b4ea91a2-4cb9-4461-be8f-a0813eb441bf) with no sentence in the source pattern warranting them, so no further edge is warranted.\"}}]"}
+ "[{:edge {:from \"aif/hierarchical-and-temporal-depth\" :to \"aif/policy-precision-commitment-temperature\" :kind :see-also} :cited \"(3) longer policies use a named temporal discount of their own, rather than overloading the commitment dial (R14) to stand in for time preference.\" :evidence [{:id \"e-537dec82-822e-44a0-857d-40694bbf02e8\" :via :text :query \"overloading the commitment dial R14 temporal discount\" :excerpt \"the commitment dial doing duty as a temporal discount, a tactical outcome read as if it were strategic evidence — collapses the levels back into one\"}] :rung 2 :read [\"aif/hierarchical-and-temporal-depth\" \"aif/policy-precision-commitment-temperature\"]}]"}

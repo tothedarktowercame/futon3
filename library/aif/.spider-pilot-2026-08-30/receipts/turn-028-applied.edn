@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:54:00.537089390Z",
+ :turn 28,
+ :pattern "aif/off-continuity-null-discriminates",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-028.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/off-continuity-null-discriminates",
+     :to "aif/experimental-comparison-of-EFE-variants",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/off-continuity-null-discriminates"
+     "aif/experimental-comparison-of-EFE-variants"],
+    :cited
+    "You calibrate a forward model by recording predicted/realised pairs, logging a DUAL prediction — a state-sensitive estimate (scaled by the target's live state) beside a state-blind constant.",
+    :evidence
+    [{:id "e-3a66043b-638b-4317-9de0-594c0377249e",
+      :via :text,
+      :query
+      "off-continuity-null-discriminates forward model dual prediction state-blind",
+      :excerpt
+      "You calibrate a forward model by recording predicted/realised pairs, logging a DUAL prediction — a state-sensitive estimate (scaled by the target's live state) beside a state-blind constant."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

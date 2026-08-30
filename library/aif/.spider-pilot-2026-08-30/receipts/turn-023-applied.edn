@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:50:55.155927628Z",
+ :turn 23,
+ :pattern "aif/grounded-actuation-not-reobservation",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-023.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/grounded-actuation-not-reobservation",
+     :to "aif/no-self-certification",
+     :kind :why},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/grounded-actuation-not-reobservation"
+     "aif/no-self-certification"],
+    :cited
+    "The witness must be (a) outside the model (so the model cannot author its own success) and (b) ungameable (so a builder cannot claim it), or the closure is a reflection.",
+    :evidence
+    [{:id "e-daa3dd3e-0408-4e28-aa71-fb0c0cdfd238",
+      :via :text,
+      :query
+      "grounded-actuation no-self-certification witness outside the model",
+      :excerpt
+      "The witness must be (a) outside the model (so the model cannot author its own success) and (b) ungameable (so a builder cannot claim it), or the closure is a reflection."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

@@ -1,15 +1,15 @@
 {:schema 1,
  :event :dispatch-completion,
- :at "2026-08-30T12:55:07.508020784Z",
+ :at "2026-08-30T15:08:10.770154759Z",
  :turn 30,
- :pattern "aif/policy-precision-commitment-temperature",
+ :pattern "aif/temporal-depth-beyond-greedy",
  :seat "zai-2",
  :wire
  {:ok true,
-  :job-id "invoke-1788094470428-3897-377fbeeb",
+  :job-id "invoke-1788102454550-4271-a67f0fe5",
   :response
-  "[{:edge {:from \"aif/policy-precision-commitment-temperature\" :to \"aif/hierarchical-budget-aware-action-selection\" :kind :see-also} :cited \"You want exploration versus exploitation to depend on operational pressure (deadlines, repeated failures, user impatience, instability), not on randomness alone.\" :evidence [{:id \"e-269d2423-8447-4e43-ae64-2d2591de827b\" :via :text :query \"policy-precision-commitment-temperature tau softmax abstain discriminability\" :excerpt \"Maintain (tau) as a commitment temperature that modulates softmax over (-G/tau), coupled to diagnostic signals (recent regressions, uncertainty in (mu), contradiction rate, time pressure, repeated test failures).\"}] :rung 1 :read [\"aif/policy-precision-commitment-temperature\" \"aif/hierarchical-budget-aware-action-selection\"]}]",
+  "[{:edge {:from \"aif/temporal-depth-beyond-greedy\" :to \"aif/hierarchical-and-temporal-depth\" :kind :see-also} :cited \"Extend G(π) evaluation to a horizon H > 1 with a temporal discount, AND introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them.\" :evidence [{:id \"e-0e2cda23-9d80-4cff-ac57-a96372582495\" :via :text :query \"temporal-depth-beyond-greedy rollout horizon fast slow two-timescale hierarchy\" :excerpt \"introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them\"}] :rung 2 :read [\"aif/temporal-depth-beyond-greedy\" \"aif/hierarchical-and-temporal-depth\"]}]",
   :agent-id "zai-2",
   :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
  :response
- "[{:edge {:from \"aif/policy-precision-commitment-temperature\" :to \"aif/hierarchical-budget-aware-action-selection\" :kind :see-also} :cited \"You want exploration versus exploitation to depend on operational pressure (deadlines, repeated failures, user impatience, instability), not on randomness alone.\" :evidence [{:id \"e-269d2423-8447-4e43-ae64-2d2591de827b\" :via :text :query \"policy-precision-commitment-temperature tau softmax abstain discriminability\" :excerpt \"Maintain (tau) as a commitment temperature that modulates softmax over (-G/tau), coupled to diagnostic signals (recent regressions, uncertainty in (mu), contradiction rate, time pressure, repeated test failures).\"}] :rung 1 :read [\"aif/policy-precision-commitment-temperature\" \"aif/hierarchical-budget-aware-action-selection\"]}]"}
+ "[{:edge {:from \"aif/temporal-depth-beyond-greedy\" :to \"aif/hierarchical-and-temporal-depth\" :kind :see-also} :cited \"Extend G(π) evaluation to a horizon H > 1 with a temporal discount, AND introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them.\" :evidence [{:id \"e-0e2cda23-9d80-4cff-ac57-a96372582495\" :via :text :query \"temporal-depth-beyond-greedy rollout horizon fast slow two-timescale hierarchy\" :excerpt \"introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them\"}] :rung 2 :read [\"aif/temporal-depth-beyond-greedy\" \"aif/hierarchical-and-temporal-depth\"]}]"}

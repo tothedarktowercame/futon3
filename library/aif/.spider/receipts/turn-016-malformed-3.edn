@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/measurement-window-hygiene\" :to \"realtime/loop-failure-signals\" :kind :see-also} :cited \"You measure `effect = after − before` around an action, in a system whose state propagates asynchronously (scans, caches, eventual consistency, a live field other agents touch).\" :evidence [{:id \"e-2cd220e9-8913-40d0-aab5-33c611f96eef\" :via :text :query \"measurement-window-hygiene tight baseline settled readback confounded drop\" :excerpt \"aif/measurement-window-hygiene Measurement-Window Hygiene (Tight Baseline, Settled Readback, Drop the Confounded) futon3a embeddings id title score rank retrieval-source retrieval-method realtime/loop-failure-signals Realtime Loop\"}] :rung 2 :read [\"aif/measurement-window-hygiene\" \"realtime/loop-failure-signals\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788101695242-4207-89101d08",
+  :response
+  "[{:edge {:from \"aif/measurement-window-hygiene\" :to \"realtime/loop-failure-signals\" :kind :see-also} :cited \"You measure `effect = after − before` around an action, in a system whose state propagates asynchronously (scans, caches, eventual consistency, a live field other agents touch).\" :evidence [{:id \"e-2cd220e9-8913-40d0-aab5-33c611f96eef\" :via :text :query \"measurement-window-hygiene tight baseline settled readback confounded drop\" :excerpt \"aif/measurement-window-hygiene Measurement-Window Hygiene (Tight Baseline, Settled Readback, Drop the Confounded) futon3a embeddings id title score rank retrieval-source retrieval-method realtime/loop-failure-signals Realtime Loop\"}] :rung 2 :read [\"aif/measurement-window-hygiene\" \"realtime/loop-failure-signals\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/measurement-window-hygiene",
+    :to "realtime/loop-failure-signals",
+    :kind :see-also}}},
+ :turn 16,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:55:35.470347820Z",
+ :attempt 3,
+ :pattern "aif/measurement-window-hygiene"}

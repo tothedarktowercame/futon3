@@ -1,32 +1,14 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T12:28:03.834215760Z",
+ :at "2026-08-30T14:24:45.259295588Z",
  :turn 1,
  :pattern "writing-coherence/balanced-pair-padding",
  :gate
  "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-001.edn",
  :changes
- {:attestations
-  [{:edge
-    {:from "writing-coherence/balanced-pair-padding",
-     :to
-     "system-coherence/argument-as-coverage-checklist-vs-system-specification",
-     :kind :see-also},
-    :by "zai-1",
-    :at "2026-08-30",
-    :read
-    ["writing-coherence/balanced-pair-padding"
-     "writing-coherence/triad-inflation"
-     "system-coherence/argument-as-coverage-checklist-vs-system-specification"],
-    :cited
-    "The construction \"not X, but also not Y; rather Z\" frequently hides the fact that Z is doing all the argumentative work while X and Y are strawmen no reader would actually have proposed.",
-    :evidence
-    [{:id "e-073e7599-e2cc-46f8-b7c7-465eeec22267",
-      :via :text,
-      :query "triad inflation prose",
-      :excerpt
-      "Drafted at `~/code/futon3/library/system-coherence/argument-as-coverage-checklist-vs-system-specification.flexiarg`. Key moves:  - The conclusion leads with the positive (specify as a system) and names the antipattern as what it isn't, per your request."}],
-    :rung 2,
-    :state :proposed}],
+ {:attestations [],
   :proposals [],
-  :absences []}}
+  :absences
+  [{:pattern "writing-coherence/balanced-pair-padding",
+    :note
+    "Rung 1: all four runner-supplied exact-occurrence hits (e-bc71ee3a, e-46ae2958, e-deb32931, e-660a51eb) carry :listing true — they are futon3a embeddings retrievals ranking this pattern alongside unrelated targets (iching hexagrams, war-machine/advanceability, library-coherence/from-argument-to-pilot) and are explicitly not warrants for an edge. Rung 2: query 'balanced pair not X but Y strawman lead with the claim' returned only this spider session's own transcripts (e-a43f3730, e-2644de49, e-04a55568, e-af8d5cfc). The one substantively evidenced kinship from this spider's earlier verified passes — the :see-also to system-coherence/argument-as-coverage-checklist-vs-system-specification (drafting record e-9dc4bc53-a74c-47e5-b6d8-e9b1f1f6e7e2, excerpt verified verbatim by GET) — is now recorded in the pattern's own file (@see-also directive visible in the current pattern text), so resubmitting it would be a duplicate. The pattern's remaining @references (triad-inflation, and its back-reference from triad-inflation) are likewise recorded directives. No rung-1 non-listing hit and no rung-2 record ties this pattern to a further unlinked library/<target>.flexiarg."}]}}

@@ -1,0 +1,29 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:57:28.777142775Z",
+ :turn 18,
+ :pattern "aif/no-self-certification",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-018.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/no-self-certification",
+     :to "aif/interoceptive-tripwires",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read ["aif/no-self-certification" "aif/interoceptive-tripwires"],
+    :cited
+    "The only thing that breaks it is a referent the maker had no hand in: an external witness, a settled re-read of a world it does not control, a tag it cannot forge.",
+    :evidence
+    [{:id "e-75ef042f-5000-4e48-aec1-f70fd23e12a1",
+      :via :text,
+      :query
+      "no-self-certification untagged never counts verdict manufactured",
+      :excerpt
+      "Enforce this STRUCTURALLY — with tags the apparatus cannot fake (independence, measured-vs-fallback, settled-vs-transient) and a verdict that counts only those tags — not by vigilance."}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

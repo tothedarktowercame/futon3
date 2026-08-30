@@ -1,0 +1,713 @@
+{:schema 1,
+ :at "2026-08-30",
+ :evidence-cache
+ "/tmp/futon3-spider-evidence-occurrences-v2-1783676538900.edn",
+ :verification-source :five-green-live-section-lints,
+ :sections
+ {"aif"
+  {:attestation-count 62,
+   :summary
+   {:verified 62, :failed 0, :listing-only 2, :cited-in-source 62},
+   :records
+   [{:edge
+     {:from "aif/belief-aware-risk-term",
+      :to "aif/predictive-entropy-as-ambiguity",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/belief-aware-risk-term",
+      :to "aif/posterior-variance-as-epistemic-value",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/declare-the-conditioning",
+      :to "aif/structured-observation-vector",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state [:attested-by "claude-15"],
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/decomposed-prediction-noise",
+      :to "aif/shared-kernel-predictive-forward-model",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/free-energy-as-tick-scalar",
+      :to "aif/evidence-precision-registry",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/free-energy-as-tick-scalar",
+      :to "aif/predictive-coding-belief-update",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/grounded-actuation-not-reobservation",
+      :to "aif/no-self-certification",
+      :kind :why},
+     :rung 2,
+     :via [:text],
+     :state [:attested-by "claude-15"],
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/hierarchical-budget-aware-action-selection",
+      :to "aif/free-energy-as-tick-scalar",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/measurement-window-hygiene",
+      :to "aif/term-to-channel-traceability",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/niche-construction",
+      :to "aif/admissibility",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/no-self-certification",
+      :to "aif/measurement-window-hygiene",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state [:attested-by "claude-15"],
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/off-continuity-null-discriminates",
+      :to "aif/experimental-comparison-of-EFE-variants",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/placeholder-is-load-bearing",
+      :to "aif/expected-free-energy-scorecard",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/policy-precision-commitment-temperature",
+      :to "aif/hierarchical-budget-aware-action-selection",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/posterior-variance-as-epistemic-value",
+      :to "aif/structure-learning-by-model-reduction",
+      :kind :why},
+     :rung 2,
+     :via [:text],
+     :state [:attested-by "claude-15"],
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/posterior-variance-as-epistemic-value",
+      :to "aif/belief-aware-risk-term",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/predictive-coding-belief-update",
+      :to "aif/predictive-entropy-as-ambiguity",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/predictive-coding-belief-update",
+      :to "aif/evidence-precision-registry",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/predictive-entropy-as-ambiguity",
+      :to "aif/decomposed-prediction-noise",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/scheduled-observer-entrypoint",
+      :to "aif/grounded-actuation-not-reobservation",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state [:attested-by "claude-15"],
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/shared-kernel-predictive-forward-model",
+      :to "aif/expected-free-energy-scorecard",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/status-gated-belief-update",
+      :to "aif/predictive-coding-belief-update",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state [:attested-by "claude-15"],
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/structure-learning-by-model-reduction",
+      :to "aif/posterior-variance-as-epistemic-value",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state :refused,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/structured-observation-vector",
+      :to "aif/predictive-coding-belief-update",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/temporal-depth-beyond-greedy",
+      :to "aif/hierarchical-budget-aware-action-selection",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/term-to-channel-traceability",
+      :to "aif/evidence-precision-registry",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/two-layer-calibration",
+      :to "aif/off-continuity-null-discriminates",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state [:attested-by "claude-15"],
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/valuation-reads-the-paperwork",
+      :to "aif/term-to-channel-traceability",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/belief-state-operational-hypotheses",
+      :to "writing-coherence/plain-language-thesis",
+      :kind :see-also},
+     :rung 1,
+     :via [:tag],
+     :state :refused,
+     :evidence-verified? true,
+     :listing-only? true,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/evidence-precision-registry",
+      :to "exotic/full-lift-registry",
+      :kind :see-also},
+     :rung 1,
+     :via [:tag],
+     :state [:attested-by "claude-15"],
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/expected-free-energy-scorecard",
+      :to "ants/baseline-cyber-ant",
+      :kind :see-also},
+     :rung 1,
+     :via [:tag],
+     :state :refused,
+     :evidence-verified? true,
+     :listing-only? true,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/admissibility",
+      :to "war-machine/advanceability",
+      :kind :see-also},
+     :rung 1,
+     :via [:tag],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/belief-aware-risk-term",
+      :to "aif/expected-free-energy-scorecard",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/candidate-pattern-action-space",
+      :to "aif/evidence-precision-registry",
+      :kind :see-also},
+     :rung 1,
+     :via [:tag],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/currency-before-merge",
+      :to "aif/expected-free-energy-scorecard",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/declare-the-conditioning",
+      :to "aif/term-to-channel-traceability",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/decomposed-prediction-noise",
+      :to "aif/belief-aware-risk-term",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/evidence-precision-registry",
+      :to "aif/candidate-pattern-action-space",
+      :kind :see-also},
+     :rung 1,
+     :via [:tag],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/expected-free-energy-scorecard",
+      :to "structure/mana-allostasis",
+      :kind :see-also},
+     :rung 1,
+     :via [:tag],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/experimental-comparison-of-EFE-variants",
+      :to "aif/predictive-entropy-as-ambiguity",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/free-energy-as-tick-scalar",
+      :to "aif/expected-free-energy-scorecard",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/grounded-actuation-not-reobservation",
+      :to "aif/scheduled-observer-entrypoint",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/hierarchical-and-temporal-depth",
+      :to "aif/policy-precision-commitment-temperature",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/hierarchical-budget-aware-action-selection",
+      :to "budgeted-action-selection/mana-gated-work",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/interoceptive-tripwires",
+      :to "aif/structured-observation-vector",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/niche-construction",
+      :to "ants/baseline-cyber-ant",
+      :kind :see-also},
+     :rung 1,
+     :via [:tag],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/no-self-certification",
+      :to "aif/interoceptive-tripwires",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/off-continuity-null-discriminates",
+      :to "aif/measurement-window-hygiene",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/placeholder-is-load-bearing",
+      :to "aif/term-to-channel-traceability",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/policy-precision-commitment-temperature",
+      :to "aif/expected-free-energy-scorecard",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/posterior-variance-as-epistemic-value",
+      :to "aif/predictive-entropy-as-ambiguity",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/predictive-coding-belief-update",
+      :to "futon-theory/four-types",
+      :kind :see-also},
+     :rung 1,
+     :via [:tag],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/predictive-entropy-as-ambiguity",
+      :to "aif/shared-kernel-predictive-forward-model",
+      :kind :why},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/scheduled-observer-entrypoint",
+      :to "aif/interoceptive-tripwires",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/shared-kernel-predictive-forward-model",
+      :to "aif/temporal-depth-beyond-greedy",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/status-gated-belief-update",
+      :to "aif/free-energy-as-tick-scalar",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/structure-learning-by-model-reduction",
+      :to "aif/currency-before-merge",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/structured-observation-vector",
+      :to "aif/evidence-precision-registry",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/temporal-depth-beyond-greedy",
+      :to "aif/hierarchical-and-temporal-depth",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/term-to-channel-traceability",
+      :to "aif/expected-free-energy-scorecard",
+      :kind :how},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/two-layer-calibration",
+      :to "aif/no-self-certification",
+      :kind :why},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "aif/valuation-reads-the-paperwork",
+      :to "aif/evidence-precision-registry",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}]},
+  "features"
+  {:attestation-count 0,
+   :summary
+   {:verified 0, :failed 0, :listing-only 0, :cited-in-source 0},
+   :records []},
+  "problems"
+  {:attestation-count 2,
+   :summary
+   {:verified 2, :failed 0, :listing-only 0, :cited-in-source 2},
+   :records
+   [{:edge
+     {:from "problems/satisfied-rungs-are-counted-and-surfaced",
+      :to "futon-theory/futonic-logic",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "problems/tension-proposes-candidates",
+      :to "futon-theory/reverse-morphogenesis",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}]},
+  "war-room"
+  {:attestation-count 0,
+   :summary
+   {:verified 0, :failed 0, :listing-only 0, :cited-in-source 0},
+   :records []},
+  "writing-coherence"
+  {:attestation-count 4,
+   :summary
+   {:verified 4, :failed 0, :listing-only 0, :cited-in-source 4},
+   :records
+   [{:edge
+     {:from "writing-coherence/balanced-pair-padding",
+      :to
+      "system-coherence/argument-as-coverage-checklist-vs-system-specification",
+      :kind :see-also},
+     :rung 2,
+     :via [:text],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "writing-coherence/meet-the-reader-where-they-are",
+      :to "system-coherence/argue-empirically-not-persuasively",
+      :kind :why},
+     :rung 2,
+     :via [:text],
+     :state [:attested-by "claude-15"],
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "writing-coherence/stale-reference-after-restructure",
+      :to "system-coherence/argue-empirically-not-persuasively",
+      :kind :why},
+     :rung 2,
+     :via [:text],
+     :state [:attested-by "claude-15"],
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}
+    {:edge
+     {:from "writing-coherence/meta-lede",
+      :to "peeragogy/pattern-language",
+      :kind :see-also},
+     :rung 1,
+     :via [:tag],
+     :state :proposed,
+     :evidence-verified? true,
+     :listing-only? false,
+     :cited-in-source? true}]}},
+ :total-attestations 68}

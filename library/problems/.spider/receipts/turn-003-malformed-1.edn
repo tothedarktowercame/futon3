@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"problems/per-tick-mismatch-instruments-outer-loop-gain\" :to \"futon-theory/interface-loop\" :kind :see-also} :cited \"Use per-tick mismatch as the gain reading for the mission-conditional-reward outer loop and surface whether returned reward changes its next action.\" :evidence [{:id \"e-9525e9ac-5a89-478a-88c7-0117f0e4bb3d\" :via :text :query \"per-tick-mismatch-instruments-outer-loop-gain\" :excerpt \"{:id \\\"futon-theory/interface-loop\\\", :title \\\"Interface Loop\\\", :score 0.3483, :rank 2} {:id \\\"problems/per-tick-mismatch-instruments-outer-loop-gain\\\", :title \\\"Per-Tick Mismatch Instruments Outer-Loop Gain\\\", :score 0.3454, :rank 3}\"}] :rung 2 :read [\"problems/per-tick-mismatch-instruments-outer-loop-gain\" \"futon-theory/interface-loop\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788100665971-4091-5f6c0d3c",
+  :response
+  "[{:edge {:from \"problems/per-tick-mismatch-instruments-outer-loop-gain\" :to \"futon-theory/interface-loop\" :kind :see-also} :cited \"Use per-tick mismatch as the gain reading for the mission-conditional-reward outer loop and surface whether returned reward changes its next action.\" :evidence [{:id \"e-9525e9ac-5a89-478a-88c7-0117f0e4bb3d\" :via :text :query \"per-tick-mismatch-instruments-outer-loop-gain\" :excerpt \"{:id \\\"futon-theory/interface-loop\\\", :title \\\"Interface Loop\\\", :score 0.3483, :rank 2} {:id \\\"problems/per-tick-mismatch-instruments-outer-loop-gain\\\", :title \\\"Per-Tick Mismatch Instruments Outer-Loop Gain\\\", :score 0.3454, :rank 3}\"}] :rung 2 :read [\"problems/per-tick-mismatch-instruments-outer-loop-gain\" \"futon-theory/interface-loop\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "problems/per-tick-mismatch-instruments-outer-loop-gain",
+    :to "futon-theory/interface-loop",
+    :kind :see-also}}},
+ :turn 3,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:39:36.563544580Z",
+ :attempt 1,
+ :pattern "problems/per-tick-mismatch-instruments-outer-loop-gain"}

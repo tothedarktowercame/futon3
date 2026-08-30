@@ -1,0 +1,14 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:39:19.524578572Z",
+ :turn 6,
+ :pattern "war-room/wr-13-futonic-debt-is-paid-in-order",
+ :gate
+ "/home/joe/code/futon3/./library/war-room/.spider/gates/turn-006.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "war-room/wr-13-futonic-debt-is-paid-in-order",
+    :note
+    "Rung 1: the runner supplied zero exact-occurrence hits for this pattern id, so no rung-1 warrant exists. Rung 2: query 'WR-13 futonic debt paid in order predecessor library hygiene' returned four futon3a embeddings context-retrievals (e-705bae04 with t4r/support, e-1a49f773 and e-86b3c287 with orchestration/recorded-handoff, e-5638c5cb with futon-theory/mission-lifecycle and cycle-machine/runtime-restoration) plus this spider session's own turn-start transcript (e-5aece4c5) — the embeddings rankings are explicitly not warrants, and none of the underlying operator queries concerned the WR-13 ruling itself. No textual evidence record documents the 2026-05-17 decision, bulletin 9's ordered sequence, or a tie from this pattern to another library pattern. The pattern carries no @references, @why, @how, or @see-also directives, and the missions it orders (M-interest-network-coupling, M-interim-director) are missions, not library/<target>.flexiarg patterns. No warranted non-duplicate edge found."}]}}

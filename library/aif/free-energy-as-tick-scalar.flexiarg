@@ -8,6 +8,7 @@
 
 @see-also aif/evidence-precision-registry
 @how aif/predictive-coding-belief-update
+@see-also aif/expected-free-energy-scorecard
 ! conclusion: Compute and emit variational free energy F = 0.5 × mean(Π · ε²) per tick as a canonical scalar that summarises agent surprise.
 
   + context: AIF computes two distinct quantities. **G** (Expected Free Energy) is per-candidate-action, drives policy. **F** (Variational Free Energy) is per-tick, summarises how surprised the agent currently is by its observations. They are different objects; conflating them is a common documentation hazard.

@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T12:50:10.522647341Z",
+ :turn 22,
+ :pattern "aif/free-energy-as-tick-scalar",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788094157912-3860-6434863e",
+  :response
+  "[{:edge {:from \"aif/free-energy-as-tick-scalar\" :to \"aif/evidence-precision-registry\" :kind :see-also} :cited \"Implement F as a pure function (mu, observation, precision-opts) → non-negative scalar, applying the formula F = 0.5 × mean(Π_k · ε_k²) over all observation channels k.\" :evidence [{:id \"e-e9c000da-7ebf-4a67-9d7b-f35db6d3443c\" :via :text :query \"free-energy-as-tick-scalar evidence-precision-registry variational\" :excerpt \"applying the formula F = 0.5 × mean(Π_k · ε_k²) over all observation channels k\"}] :rung 1 :read [\"aif/free-energy-as-tick-scalar\" \"aif/evidence-precision-registry\"]} {:edge {:from \"aif/free-energy-as-tick-scalar\" :to \"aif/predictive-coding-belief-update\" :kind :how} :cited \"Implement free-energy as a pure function in the same namespace as the belief update (canonical pairing: same module owns both rules).\" :evidence [{:id \"e-5d08fb0f-ff27-4c99-9602-05a745e35e6c\" :via :text :query \"aif/free-energy-as-tick-scalar\" :excerpt \":query \\\"aif/no-self-certification aif/two-layer-calibration aif/predictive-entropy-as-ambiguity aif/predictive-coding-belief-update\\\"\"}] :rung 1 :read [\"aif/free-energy-as-tick-scalar\" \"aif/predictive-coding-belief-update\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/free-energy-as-tick-scalar\" :to \"aif/evidence-precision-registry\" :kind :see-also} :cited \"Implement F as a pure function (mu, observation, precision-opts) → non-negative scalar, applying the formula F = 0.5 × mean(Π_k · ε_k²) over all observation channels k.\" :evidence [{:id \"e-e9c000da-7ebf-4a67-9d7b-f35db6d3443c\" :via :text :query \"free-energy-as-tick-scalar evidence-precision-registry variational\" :excerpt \"applying the formula F = 0.5 × mean(Π_k · ε_k²) over all observation channels k\"}] :rung 1 :read [\"aif/free-energy-as-tick-scalar\" \"aif/evidence-precision-registry\"]} {:edge {:from \"aif/free-energy-as-tick-scalar\" :to \"aif/predictive-coding-belief-update\" :kind :how} :cited \"Implement free-energy as a pure function in the same namespace as the belief update (canonical pairing: same module owns both rules).\" :evidence [{:id \"e-5d08fb0f-ff27-4c99-9602-05a745e35e6c\" :via :text :query \"aif/free-energy-as-tick-scalar\" :excerpt \":query \\\"aif/no-self-certification aif/two-layer-calibration aif/predictive-entropy-as-ambiguity aif/predictive-coding-belief-update\\\"\"}] :rung 1 :read [\"aif/free-energy-as-tick-scalar\" \"aif/predictive-coding-belief-update\"]}]"}

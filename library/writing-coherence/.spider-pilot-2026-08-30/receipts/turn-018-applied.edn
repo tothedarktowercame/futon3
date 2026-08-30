@@ -1,0 +1,14 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:43:49.105585957Z",
+ :turn 18,
+ :pattern "writing-coherence/meta-title",
+ :gate
+ "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-018.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "writing-coherence/meta-title",
+    :note
+    "Text queries run (rung 2, port 7073 text-search, limit 5, hydrate): 'meta-lede' corpus from the prior turn, 'meta-title title describes topic claim', 'section heading claim not label'. No warranted non-duplicate edge: (1) The pattern's own @references already record meta-lede, subheading-without-paragraph, and plain-language-thesis — all three kinships, including the meta-lede generalisation story (e-9998b3e7-e368-4290-bfef-7d4f62864048, excerpt verified verbatim by GET in the prior turn), are recorded directives. (2) Incoming references from system-coherence/name-the-decision-before-the-framework, system-coherence/argument-as-coverage-checklist-vs-system-specification, and ukrns/separate-evidence-gaps-from-implementation-decisions already link those patterns to meta-title from their own files; reverse edges would repeat existing directives, and none of the queried evidence records (e-2c5db197, emacs-e277fe83, e-82e7ef6b) tie meta-title to any further pattern — they are working-paper drafting and cross-reference repair logs. (3) Remaining hits were self-referential spider transcripts (e-c3974d68, e-0be188b3). No rung-1 tag evidence tied this pattern to an unlinked target."}]}}

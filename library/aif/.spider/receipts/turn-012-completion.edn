@@ -1,15 +1,15 @@
 {:schema 1,
  :event :dispatch-completion,
- :at "2026-08-30T12:43:25.222593675Z",
+ :at "2026-08-30T14:49:30.726698635Z",
  :turn 12,
- :pattern "aif/currency-before-merge",
+ :pattern "aif/grounded-actuation-not-reobservation",
  :seat "zai-2",
  :wire
  {:ok true,
-  :job-id "invoke-1788093744963-3820-25f48651",
+  :job-id "invoke-1788101304323-4159-f2e75b5d",
   :response
-  "[{:edge {:from \"aif/currency-before-merge\" :to \"system-coherence/facet-before-aggregating\" :kind :see-also} :cited \"Before any cross-lane merge, either establish a real exchange rate (a shared unit like nats, a fitted calibration with stated evidence) or keep the lanes separate and declare the selection rule over the tuple.\" :evidence [{:id \"e-e994b817-42d0-4310-b438-dfb965d38fbd\" :via :text :query \"currency-before-merge\" :excerpt \"{:id \\\"system-coherence/facet-before-aggregating\\\", :title \\\"Facet Before Aggregating\\\", :score 0.3273, :rank 2} {:id \\\"aif/currency-before-merge\\\", :title \\\"Currency Before Merge\\\", :score 0.3248, :rank 3}\"}] :rung 1 :read [\"aif/currency-before-merge\" \"system-coherence/facet-before-aggregating\"]}]",
+  "[{:edge {:from \"aif/grounded-actuation-not-reobservation\" :to \"aif/scheduled-observer-entrypoint\" :kind :see-also} :cited \"That witness feeds the next decision — the deliberator re-ranks on the substrate dial. Gate \\\"closed = ✓\\\" on a real dial move (1/2 → 2/2), NEVER on the enactor merely firing.\" :evidence [{:id \"e-d0b7eb83-bbbd-4bfb-ade4-71b5d370e28d\" :via :text :query \"grounded-actuation re-observe-your-own-construction mirror not an act\" :excerpt \"Gate \\\"closed = ✓\\\" on a real dial move (1/2 → 2/2), NEVER on the enactor merely firing.\"}] :rung 2 :read [\"aif/grounded-actuation-not-reobservation\" \"aif/scheduled-observer-entrypoint\"]}]",
   :agent-id "zai-2",
   :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
  :response
- "[{:edge {:from \"aif/currency-before-merge\" :to \"system-coherence/facet-before-aggregating\" :kind :see-also} :cited \"Before any cross-lane merge, either establish a real exchange rate (a shared unit like nats, a fitted calibration with stated evidence) or keep the lanes separate and declare the selection rule over the tuple.\" :evidence [{:id \"e-e994b817-42d0-4310-b438-dfb965d38fbd\" :via :text :query \"currency-before-merge\" :excerpt \"{:id \\\"system-coherence/facet-before-aggregating\\\", :title \\\"Facet Before Aggregating\\\", :score 0.3273, :rank 2} {:id \\\"aif/currency-before-merge\\\", :title \\\"Currency Before Merge\\\", :score 0.3248, :rank 3}\"}] :rung 1 :read [\"aif/currency-before-merge\" \"system-coherence/facet-before-aggregating\"]}]"}
+ "[{:edge {:from \"aif/grounded-actuation-not-reobservation\" :to \"aif/scheduled-observer-entrypoint\" :kind :see-also} :cited \"That witness feeds the next decision — the deliberator re-ranks on the substrate dial. Gate \\\"closed = ✓\\\" on a real dial move (1/2 → 2/2), NEVER on the enactor merely firing.\" :evidence [{:id \"e-d0b7eb83-bbbd-4bfb-ade4-71b5d370e28d\" :via :text :query \"grounded-actuation re-observe-your-own-construction mirror not an act\" :excerpt \"Gate \\\"closed = ✓\\\" on a real dial move (1/2 → 2/2), NEVER on the enactor merely firing.\"}] :rung 2 :read [\"aif/grounded-actuation-not-reobservation\" \"aif/scheduled-observer-entrypoint\"]}]"}

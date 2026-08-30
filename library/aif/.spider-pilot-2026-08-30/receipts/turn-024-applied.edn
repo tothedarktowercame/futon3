@@ -1,0 +1,50 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:51:32.618267268Z",
+ :turn 24,
+ :pattern "aif/hierarchical-budget-aware-action-selection",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-024.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/hierarchical-budget-aware-action-selection",
+     :to "aif/expected-free-energy-scorecard",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/hierarchical-budget-aware-action-selection"
+     "aif/expected-free-energy-scorecard"],
+    :cited "Per-instance level: a `feasibility-penalty` EFE subterm.",
+    :evidence
+    [{:id "e-43eac539-7f4c-4743-9d25-4c4b6807f5c5",
+      :via :text,
+      :query
+      "hierarchical-budget-aware-action-selection feasibility penalty scorecard",
+      :excerpt
+      "**Per-instance level**: a `feasibility-penalty` EFE subterm."}],
+    :rung 1,
+    :state :proposed}
+   {:edge
+    {:from "aif/hierarchical-budget-aware-action-selection",
+     :to "aif/free-energy-as-tick-scalar",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/hierarchical-budget-aware-action-selection"
+     "aif/free-energy-as-tick-scalar"],
+    :cited
+    "Both layers produce trace fields. The trace fields land in the per-tick record (R8) so the agent's reasoning about resource constraints is auditable.",
+    :evidence
+    [{:id "e-43eac539-7f4c-4743-9d25-4c4b6807f5c5",
+      :via :text,
+      :query
+      "hierarchical-budget-aware-action-selection feasibility penalty scorecard",
+      :excerpt
+      "Both layers produce trace fields. The trace fields land in the per-tick record (R8) so the agent's reasoning about resource constraints is auditable."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

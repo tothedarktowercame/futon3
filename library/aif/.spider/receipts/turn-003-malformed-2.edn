@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/belief-state-operational-hypotheses\" :to \"ai4ci/pilot-feasibility\" :kind :see-also} :cited \"You want decisions to depend on tractable hypotheses (progress, blockers, pattern fit, uncertainty) rather than raw conversation history.\" :evidence [{:id \"e-6d22077c-fdec-4524-8c81-2e63efb2b8db\" :via :text :query \"aif/belief-state-operational-hypotheses belief update\" :excerpt \"ai4ci/pilot-feasibility Feasibility — Six-Month Pilot Discipline futon3a embeddings id title score rank retrieval-source retrieval-method aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses\"}] :rung 2 :read [\"aif/belief-state-operational-hypotheses\" \"ai4ci/pilot-feasibility\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788100359138-4062-e501578a",
+  :response
+  "[{:edge {:from \"aif/belief-state-operational-hypotheses\" :to \"ai4ci/pilot-feasibility\" :kind :see-also} :cited \"You want decisions to depend on tractable hypotheses (progress, blockers, pattern fit, uncertainty) rather than raw conversation history.\" :evidence [{:id \"e-6d22077c-fdec-4524-8c81-2e63efb2b8db\" :via :text :query \"aif/belief-state-operational-hypotheses belief update\" :excerpt \"ai4ci/pilot-feasibility Feasibility — Six-Month Pilot Discipline futon3a embeddings id title score rank retrieval-source retrieval-method aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses\"}] :rung 2 :read [\"aif/belief-state-operational-hypotheses\" \"ai4ci/pilot-feasibility\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/belief-state-operational-hypotheses",
+    :to "ai4ci/pilot-feasibility",
+    :kind :see-also}}},
+ :turn 3,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:34:12.534305312Z",
+ :attempt 2,
+ :pattern "aif/belief-state-operational-hypotheses"}

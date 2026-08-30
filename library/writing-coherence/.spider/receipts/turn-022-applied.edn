@@ -1,14 +1,14 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T12:46:58.000516611Z",
+ :at "2026-08-30T14:52:20.784262372Z",
  :turn 22,
- :pattern "writing-coherence/paraphrase-drift",
+ :pattern "writing-coherence/throat-clearing-close",
  :gate
  "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-022.edn",
  :changes
  {:attestations [],
   :proposals [],
   :absences
-  [{:pattern "writing-coherence/paraphrase-drift",
+  [{:pattern "writing-coherence/throat-clearing-close",
     :note
-    "Text queries run (rung 2, port 7073 text-search, limit 5, hydrate): 'paraphrase drift restatement development sentence advance', 'metaphor stack one claim three images', 'every sentence must advance paragraph', 'restatement feels sophisticated AI prose'. Findings and rejections: (1) The only non-self hits are futon3a embeddings context-retrievals (e-0a380598, e-db48a661, e-73cd9c9f) co-ranking this pattern with one-paragraph-per-typed-claim, meta-lede, cross-section-claim-drift, relationship-coherence/resonance-weaving, and plos-npt-with-small-n kin — under the proposal-is-not-evidence invariant, embedding co-retrieval cannot support a typed edge. (2) Every topically adjacent linkage is already a recorded directive: the pattern's own @references name triad-inflation, throat-clearing-close, and meta-lede; incoming @references come from cross-section-claim-drift (which explicitly distinguishes the two scopes in its context), stale-reference-after-restructure (which explicitly distinguishes them), and missing-mechanism. (3) All remaining hits were self-referential transcripts of this spider session (e-e3708a51, e-c810c3b1, e-6a0f3bf3). No rung-1 tag evidence tied this pattern to an unlinked flexiarg target."}]}}
+    "Rung 1: one non-listing hit supplied — e-3be2f6be-2ba8-460c-ae6a-297e9e1d9f8a, the software-annex rewrite table applying this pattern ('drop the defensive construction' on 'The Bayesian framing this earns is what supports...') in the same batch as one-paragraph-per-typed-claim, meta-lede, citation-density, and a 'cross-section consistency' row naming no pattern — co-application in one batch with each pattern doing different work on different sentences, warranting no directed edge, and every named kin is already recorded (meta-lede via paraphrase-drift's references; citation-density's own header; one-paragraph-per-typed-claim's own header). The three :listing true hits (co-rankings with plain-language-thesis/section-bridge-missing, paramitas/non-transactional-intensity, eoi-engine/tension-free-solo-rule) are explicitly not warrants. Rung 2: the exhaustive pass earlier in this run ('closing paragraph aim hope attitude claim', 'end on the claim not the attitude softener') returned only this spider session's own transcripts. The pattern's linkage graph is fully recorded: its own @references name hedged-lift and scope-mush, and incoming @references come from paraphrase-drift, section-bridge-missing (which explicitly distinguishes its transition diagnostic), and system-coherence/name-the-decision-before-the-framework. No rung-1 non-listing hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg."}]}}

@@ -1,0 +1,16 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:49:35.757184105Z",
+ :turn 15,
+ :pattern
+ "war-room/wr-21-geometrization-is-a-shared-cross-mission-dependency",
+ :gate
+ "/home/joe/code/futon3/./library/war-room/.spider/gates/turn-015.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "war-room/wr-21-geometrization-is-a-shared-cross-mission-dependency",
+    :note
+    "Rung 1: eight non-listing hits supplied, all campaign/bulletin provenance records rather than new pattern ties. e-3dd36834, e-0e1f58d1, e-ba37b2dd, e-79ecf81b, e-87c1c976, e-14746eb9, and e-848ea9ae document the C-substrate-completion campaign being chartered from WR-21 ('the charter text is essentially WR-21 in operational form', 'CHARTER ≈ HEAD+IDENTIFY... extracted from war-bulletin-10 (WR-21 is the charter text)') and its later staleness — the campaign file (futon3c/holes/campaigns/C-substrate-completion.md) is a campaign document, not a library/<target>.flexiarg pattern, and the pattern's @references-extra already records it as charter source and downstream evidence. e-49fbb5f0 is the bulletin-10 batch record ('WR-18 → WR-22, with WR-21 the load-bearing one: build the ground metric before wiring the tension-proposer') — a batch-range statement tying WR-21 to the WR-18..22 set and to wr-19's tension-proposer by mechanism, not a directed evidence-backed edge to a single target; no record names WR-21 and another war-room pattern id together as a pair. The pattern's own @references record campaign-coherence/shared-standard-has-no-single-owner — the one library-pattern kinship these records imply ('3 campaign-coherence/ patterns' in e-3dd36834 is a count, not an identification). No rung-1 non-listing hit ties this pattern to an unlinked library/<target>.flexiarg; rung 2 was not required beyond these because the rung-1 records surface no further candidate target. No warranted non-duplicate edge found."}]}}

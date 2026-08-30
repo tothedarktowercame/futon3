@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:49:35.238341334Z",
+ :turn 12,
+ :pattern "aif/grounded-actuation-not-reobservation",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-012.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/grounded-actuation-not-reobservation",
+     :to "aif/scheduled-observer-entrypoint",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/grounded-actuation-not-reobservation"
+     "aif/scheduled-observer-entrypoint"],
+    :cited
+    "That witness feeds the next decision — the deliberator re-ranks on the substrate dial. Gate \"closed = ✓\" on a real dial move (1/2 → 2/2), NEVER on the enactor merely firing.",
+    :evidence
+    [{:id "e-d0b7eb83-bbbd-4bfb-ade4-71b5d370e28d",
+      :via :text,
+      :query
+      "grounded-actuation re-observe-your-own-construction mirror not an act",
+      :excerpt
+      "Gate \"closed = ✓\" on a real dial move (1/2 → 2/2), NEVER on the enactor merely firing."}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

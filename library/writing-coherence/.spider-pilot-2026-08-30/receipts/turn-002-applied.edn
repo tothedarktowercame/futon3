@@ -1,0 +1,37 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:29:51.259028664Z",
+ :turn 2,
+ :pattern "writing-coherence/citation-density-load-bearing-claim",
+ :gate
+ "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-002.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "writing-coherence/citation-density-load-bearing-claim",
+     :to "system-coherence/bind-open-questions-to-closure-mechanisms",
+     :kind :see-also},
+    :by "zai-1",
+    :at "2026-08-30",
+    :read
+    ["writing-coherence/citation-density-load-bearing-claim"
+     "system-coherence/bind-open-questions-to-closure-mechanisms"],
+    :cited
+    "Cash the citation, soften the claim, or reposition the load — but do not run a bolded comparative claim on a sixteen-word reference.",
+    :evidence
+    [{:id "e-59c1f3f8-b1ba-45e7-9609-ae7fc4b0ba92",
+      :via :text,
+      :query
+      "thinly-evidenced central thesis annotations invariant-audit",
+      :excerpt
+      "**§1 ¶2 — the central thesis is the most thinly-evidenced sentence in the paper.** \"The institutional setting matters more than available training content\" is bolded; the supporting evidence on-page is sixteen words (\"small-group interviews with ORP-affiliated trainers, analysed using NPT\"). No sample-size honesty, no inter-coder agreement, no statement of how \"matters more than\" was inferred from trainer-only data (which would normally need both sides measured)."}
+     {:id "e-59c1f3f8-b1ba-45e7-9609-ae7fc4b0ba92",
+      :via :text,
+      :query
+      "thinly-evidenced central thesis annotations invariant-audit",
+      :excerpt
+      "**§1.1 — two of three questions are parked, not closed.** Q2 (Cross-institution learning) names the question, gives reasons it's hard, and stops — no closure mechanism, no owner, no evidence event. Q3 (Local self-evaluation) closes on \"remains to be seen\" — textbook future-work-haze."}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

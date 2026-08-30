@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/measurement-window-hygiene\" :to \"devmap-coherence/baseline-freeze\" :kind :see-also} :cited \"BEFORE: capture the baseline immediately prior to the field-visible action — do the preparatory work first, *then* baseline, *then* commit.\" :evidence [{:id \"e-34894569-bd66-4313-81e6-c4759fdf226a\" :via :text :query \"measurement-window-hygiene tight baseline settled readback confounded drop\" :excerpt \"{:id \\\"aif/measurement-window-hygiene\\\", :title \\\"Measurement-Window Hygiene (Tight Baseline, Settled Readback, Drop the Confounded)\\\", :score 0.4208, :rank 1} {:id \\\"devmap-coherence/baseline-freeze\\\", :title \\\"Baseline Freeze & Audit Hooks\\\", :score 0.412, :rank 2}\"}] :rung 2 :read [\"aif/measurement-window-hygiene\" \"devmap-coherence/baseline-freeze\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788101605979-4195-676ea4a9",
+  :response
+  "[{:edge {:from \"aif/measurement-window-hygiene\" :to \"devmap-coherence/baseline-freeze\" :kind :see-also} :cited \"BEFORE: capture the baseline immediately prior to the field-visible action — do the preparatory work first, *then* baseline, *then* commit.\" :evidence [{:id \"e-34894569-bd66-4313-81e6-c4759fdf226a\" :via :text :query \"measurement-window-hygiene tight baseline settled readback confounded drop\" :excerpt \"{:id \\\"aif/measurement-window-hygiene\\\", :title \\\"Measurement-Window Hygiene (Tight Baseline, Settled Readback, Drop the Confounded)\\\", :score 0.4208, :rank 1} {:id \\\"devmap-coherence/baseline-freeze\\\", :title \\\"Baseline Freeze & Audit Hooks\\\", :score 0.412, :rank 2}\"}] :rung 2 :read [\"aif/measurement-window-hygiene\" \"devmap-coherence/baseline-freeze\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/measurement-window-hygiene",
+    :to "devmap-coherence/baseline-freeze",
+    :kind :see-also}}},
+ :turn 16,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:54:18.837726476Z",
+ :attempt 1,
+ :pattern "aif/measurement-window-hygiene"}

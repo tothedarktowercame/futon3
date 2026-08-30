@@ -1,0 +1,14 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:31:22.709031485Z",
+ :turn 1,
+ :pattern "features/emit-per-tick-mismatch",
+ :gate
+ "/home/joe/code/futon3/./library/features/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "features/emit-per-tick-mismatch",
+    :note
+    "Rung 1: the runner supplied zero exact-occurrence hits for this pattern id, so no rung-1 warrant exists. Rung 2: query 'per-tick mismatch outer loop gain attempt record replay frozen' returned two substantive external records and two self-transcripts. emacs-a3ae618224b850054e3001d20c3b6764 documents the pattern's own creation — 'the first entry in a new features/ register' — and names exactly two ties: problems/per-tick-mismatch-instruments-outer-loop-gain and features/emit-per-tick-mismatch resolving each other, both already recorded directives (@builds-from and @references). emacs-aa8b721e6c376e91d07a27c9be38f5f0 traces R8 to 'Present-Fit Mismatch as a Per-Tick Scalar' at PERCEIVE and the promotion test — the aif/present-fit-mismatch tie, also already in @references. The @why directive to war-room/wr-27-a-loop-is-born-instrumented-for-its-gain is recorded in the pattern header. The section's only other pattern, features/operator-turns-enter-the-observation-vector, appears in no queried record alongside this one. Remaining hits were this spider session's own transcripts (e-75a33876, e-aac01da2). No rung-1 hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg."}]}}

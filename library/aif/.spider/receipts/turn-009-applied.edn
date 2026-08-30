@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:45:43.562813516Z",
+ :turn 9,
+ :pattern "aif/expected-free-energy-scorecard",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-009.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/expected-free-energy-scorecard",
+     :to "structure/mana-allostasis",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/expected-free-energy-scorecard" "structure/mana-allostasis"],
+    :cited
+    "Compute G(a) as a weighted sum of named terms (risk, ambiguity, information gain, constraint violation, cost, coordination pressure), and store the term breakdown for each candidate.",
+    :evidence
+    [{:id "e-991c1415-3a8b-4889-a268-5586ba5525f4",
+      :via :tag,
+      :query
+      "exact export occurrence: aif/expected-free-energy-scorecard",
+      :excerpt
+      "- a pattern cross-reference table tying the v0 design to `structure/hinge-point`, `structure/cook-ting`, `peripherals/canonical-typed-event-vs-side-channel`, `aif/expected-free-energy-scorecard`, and `structure/mana-allostasis`"}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

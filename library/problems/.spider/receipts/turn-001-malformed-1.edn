@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"problems/commitment-temperature-is-instrumented-as-gain\" :to \"budgeted-action-selection/mana-gated-work\" :kind :see-also} :cited \"Record commitment temperature at the flip, link it to the resulting actuator transition, and measure how it changes the next selected action.\" :evidence [{:id \"e-4b7d5295-210b-46e1-b935-240333839ab0\" :via :text :query \"commitment-temperature-is-instrumented-as-gain\" :excerpt \"{:id \\\"budgeted-action-selection/mana-gated-work\\\", :title \\\"Mana-Gated Work: action selection bounded by available budget\\\", :score 0.4631, :rank 2}\"}] :rung 2 :read [\"problems/commitment-temperature-is-instrumented-as-gain\" \"budgeted-action-selection/mana-gated-work\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788100136353-4036-6f1220bc",
+  :response
+  "[{:edge {:from \"problems/commitment-temperature-is-instrumented-as-gain\" :to \"budgeted-action-selection/mana-gated-work\" :kind :see-also} :cited \"Record commitment temperature at the flip, link it to the resulting actuator transition, and measure how it changes the next selected action.\" :evidence [{:id \"e-4b7d5295-210b-46e1-b935-240333839ab0\" :via :text :query \"commitment-temperature-is-instrumented-as-gain\" :excerpt \"{:id \\\"budgeted-action-selection/mana-gated-work\\\", :title \\\"Mana-Gated Work: action selection bounded by available budget\\\", :score 0.4631, :rank 2}\"}] :rung 2 :read [\"problems/commitment-temperature-is-instrumented-as-gain\" \"budgeted-action-selection/mana-gated-work\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "problems/commitment-temperature-is-instrumented-as-gain",
+    :to "budgeted-action-selection/mana-gated-work",
+    :kind :see-also}}},
+ :turn 1,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:30:40.869616273Z",
+ :attempt 1,
+ :pattern "problems/commitment-temperature-is-instrumented-as-gain"}

@@ -1,0 +1,29 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:52:57.089163598Z",
+ :turn 26,
+ :pattern "aif/niche-construction",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-026.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/niche-construction",
+     :to "aif/admissibility",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read ["aif/niche-construction" "aif/admissibility"],
+    :cited
+    "The futon realisation is the **aif2** direction: a boundary-tier set of criteria (mechanising AIF+ I1 boundary-integrity + I3 timescale-separation) over whether and how the WM may re-author its own typed-edge support — distinct from the inference-tier R1-R12.",
+    :evidence
+    [{:id "e-8a8e352d-269f-497a-9e45-791bb4eb9911",
+      :via :text,
+      :query
+      "niche-construction false-floor typed-edge inventory admissibility aif2",
+      :excerpt
+      "The futon realisation is the **aif2** direction: a boundary-tier set of criteria (mechanising AIF+ I1 boundary-integrity + I3 timescale-separation) over whether and how the WM may re-author its own typed-edge support — distinct from the inference-tier R1-R12."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

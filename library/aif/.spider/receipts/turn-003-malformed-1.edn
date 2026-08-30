@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/belief-state-operational-hypotheses\" :to \"agent/commitment-varies-with-confidence\" :kind :see-also} :cited \"Represent (mu) as a belief map of operational hypotheses (for example: :goal, :subgoals, :current-hypothesis, :blockers, :pattern-fit, :expected-next-observation, :uncertainty), updated at each step using observation and outcomes.\" :evidence [{:id \"e-83e10648-7a15-4e69-9eaf-c6e280aa1ea3\" :via :text :query \"aif/belief-state-operational-hypotheses belief update\" :excerpt \"id title score aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses id title score agent/commitment-varies-with-confidence Commitment Varies With Confidence id title score agent/state-is-hypothesis State Is Hypothesis\"}] :rung 2 :read [\"aif/belief-state-operational-hypotheses\" \"agent/commitment-varies-with-confidence\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788100313401-4055-964f4d06",
+  :response
+  "[{:edge {:from \"aif/belief-state-operational-hypotheses\" :to \"agent/commitment-varies-with-confidence\" :kind :see-also} :cited \"Represent (mu) as a belief map of operational hypotheses (for example: :goal, :subgoals, :current-hypothesis, :blockers, :pattern-fit, :expected-next-observation, :uncertainty), updated at each step using observation and outcomes.\" :evidence [{:id \"e-83e10648-7a15-4e69-9eaf-c6e280aa1ea3\" :via :text :query \"aif/belief-state-operational-hypotheses belief update\" :excerpt \"id title score aif/belief-state-operational-hypotheses Belief State as Operational Hypotheses id title score agent/commitment-varies-with-confidence Commitment Varies With Confidence id title score agent/state-is-hypothesis State Is Hypothesis\"}] :rung 2 :read [\"aif/belief-state-operational-hypotheses\" \"agent/commitment-varies-with-confidence\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/belief-state-operational-hypotheses",
+    :to "agent/commitment-varies-with-confidence",
+    :kind :see-also}}},
+ :turn 3,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:32:39.002699190Z",
+ :attempt 1,
+ :pattern "aif/belief-state-operational-hypotheses"}

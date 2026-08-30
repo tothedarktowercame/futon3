@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"aif/measurement-window-hygiene\" :to \"futon-theory/progress-signal\" :kind :see-also} :cited \"A before/after number is only as good as the window it brackets.\" :evidence [{:id \"e-d7468ac0-2b6d-4d17-a823-9d019352bcde\" :via :text :query \"measurement-window-hygiene tight baseline settled readback confounded drop\" :excerpt \"aif/measurement-window-hygiene Measurement-Window Hygiene (Tight Baseline, Settled Readback, Drop the Confounded) futon3a embeddings id title score rank retrieval-source retrieval-method futon-theory/progress-signal Progress Signa\"}] :rung 2 :read [\"aif/measurement-window-hygiene\" \"futon-theory/progress-signal\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788101658904-4202-6f80c24d",
+  :response
+  "[{:edge {:from \"aif/measurement-window-hygiene\" :to \"futon-theory/progress-signal\" :kind :see-also} :cited \"A before/after number is only as good as the window it brackets.\" :evidence [{:id \"e-d7468ac0-2b6d-4d17-a823-9d019352bcde\" :via :text :query \"measurement-window-hygiene tight baseline settled readback confounded drop\" :excerpt \"aif/measurement-window-hygiene Measurement-Window Hygiene (Tight Baseline, Settled Readback, Drop the Confounded) futon3a embeddings id title score rank retrieval-source retrieval-method futon-theory/progress-signal Progress Signa\"}] :rung 2 :read [\"aif/measurement-window-hygiene\" \"futon-theory/progress-signal\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "aif/measurement-window-hygiene",
+    :to "futon-theory/progress-signal",
+    :kind :see-also}}},
+ :turn 16,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:54:55.178902507Z",
+ :attempt 2,
+ :pattern "aif/measurement-window-hygiene"}

@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"problems/commitment-temperature-is-instrumented-as-gain\" :to \"aif/scheduled-observer-entrypoint\" :kind :see-also} :cited \"A declared gain is operational only when the loop records enough before-and-after evidence to shape it rather than reconstruct it later.\" :evidence [{:id \"e-06519a6b-9ec2-41fd-9e48-8c00fabd8301\" :via :text :query \"commitment-temperature-is-instrumented-as-gain\" :excerpt \"{:id \\\"aif/scheduled-observer-entrypoint\\\", :title \\\"Scheduled Observer Entrypoint (and the No-Op Trap)\\\", :score 0.3398, :rank 3}\"}] :rung 2 :read [\"problems/commitment-temperature-is-instrumented-as-gain\" \"aif/scheduled-observer-entrypoint\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788100329989-4059-6cb7a6f4",
+  :response
+  "[{:edge {:from \"problems/commitment-temperature-is-instrumented-as-gain\" :to \"aif/scheduled-observer-entrypoint\" :kind :see-also} :cited \"A declared gain is operational only when the loop records enough before-and-after evidence to shape it rather than reconstruct it later.\" :evidence [{:id \"e-06519a6b-9ec2-41fd-9e48-8c00fabd8301\" :via :text :query \"commitment-temperature-is-instrumented-as-gain\" :excerpt \"{:id \\\"aif/scheduled-observer-entrypoint\\\", :title \\\"Scheduled Observer Entrypoint (and the No-Op Trap)\\\", :score 0.3398, :rank 3}\"}] :rung 2 :read [\"problems/commitment-temperature-is-instrumented-as-gain\" \"aif/scheduled-observer-entrypoint\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "problems/commitment-temperature-is-instrumented-as-gain",
+    :to "aif/scheduled-observer-entrypoint",
+    :kind :see-also}}},
+ :turn 1,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:33:38.953602886Z",
+ :attempt 3,
+ :pattern "problems/commitment-temperature-is-instrumented-as-gain"}

@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"problems/operator-turns-become-inference-observations\" :to \"software-design/facade-pattern\" :kind :see-also} :cited \"Process captured operator turns into structures that inference can consume, using the turn-to-pattern association as grounded enrichment.\" :evidence [{:id \"e-21c4c5d5-a81c-41cb-b741-ba17b206af72\" :via :text :query \"operator-turns-become-inference-observations\" :excerpt \"{:id \\\"problems/operator-turns-become-inference-observations\\\", :title \\\"Operator Turns Become Inference Observations\\\", :score 0.3975, :rank 1} {:id \\\"software-design/facade-pattern\\\", :title \\\"Facade Pattern\\\", :score 0.393, :rank 2}\"}] :rung 2 :read [\"problems/operator-turns-become-inference-observations\" \"software-design/facade-pattern\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788100577869-4082-aed9e9cc",
+  :response
+  "[{:edge {:from \"problems/operator-turns-become-inference-observations\" :to \"software-design/facade-pattern\" :kind :see-also} :cited \"Process captured operator turns into structures that inference can consume, using the turn-to-pattern association as grounded enrichment.\" :evidence [{:id \"e-21c4c5d5-a81c-41cb-b741-ba17b206af72\" :via :text :query \"operator-turns-become-inference-observations\" :excerpt \"{:id \\\"problems/operator-turns-become-inference-observations\\\", :title \\\"Operator Turns Become Inference Observations\\\", :score 0.3975, :rank 1} {:id \\\"software-design/facade-pattern\\\", :title \\\"Facade Pattern\\\", :score 0.393, :rank 2}\"}] :rung 2 :read [\"problems/operator-turns-become-inference-observations\" \"software-design/facade-pattern\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "problems/operator-turns-become-inference-observations",
+    :to "software-design/facade-pattern",
+    :kind :see-also}}},
+ :turn 2,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:37:43.411020694Z",
+ :attempt 3,
+ :pattern "problems/operator-turns-become-inference-observations"}

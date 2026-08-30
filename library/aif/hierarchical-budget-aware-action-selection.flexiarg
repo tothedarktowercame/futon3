@@ -7,6 +7,7 @@
 @holds-at R11   ;; pegged 2026-08-30 (claude-15): the catalogue paragraph numbered R11 in p4ng/sec-catalog.tex; see PREREG-war-machine §1b
 
 @see-also aif/free-energy-as-tick-scalar
+@see-also budgeted-action-selection/mana-gated-work
 ! conclusion: When multiple agents operating over shared state can independently choose actions that share consumable resources, resolve conflicts at multiple budget hierarchy levels: aggregate setup-budget conservation across all agents per tick; per-instance forward projection of each action's downstream resource consumption to detect instances that would predictively exhaust.
 
   + context: A multi-agent (or multi-band, or hierarchical) AIF setup gives each agent or sub-agent local autonomy: each scores candidate actions and selects via softmax. But the candidates often consume shared resources — setup budget for capability activation, engagement-budget for per-instance participation, attention budget across the agent's responsibility area. A naive *union* of independent selections will violate resource constraints whenever multiple agents simultaneously prefer expensive candidates.

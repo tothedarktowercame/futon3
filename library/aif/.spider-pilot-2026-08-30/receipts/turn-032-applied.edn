@@ -1,0 +1,51 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:56:20.497459968Z",
+ :turn 32,
+ :pattern "aif/posterior-variance-as-epistemic-value",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-032.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/posterior-variance-as-epistemic-value",
+     :to "aif/structure-learning-by-model-reduction",
+     :kind :why},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/posterior-variance-as-epistemic-value"
+     "aif/structure-learning-by-model-reduction"],
+    :cited
+    "The standard deviation of the structure-learning (BMR) posterior over concepts is EPISTEMIC VALUE (expected information gain, EIG)",
+    :evidence
+    [{:id "e-2abd87f5-f217-4cfa-946b-ff0c53a3c6b1",
+      :via :text,
+      :query
+      "posterior-variance-as-epistemic-value EIG risk lambda sign category error",
+      :excerpt
+      "BMR posterior spread is uncertainty about the MODEL (which capability a mission needs) and it is *reducible* — more data resolves it — so it is the EIG type, not the ambiguity type."}],
+    :rung 1,
+    :state :proposed}
+   {:edge
+    {:from "aif/posterior-variance-as-epistemic-value",
+     :to "aif/belief-aware-risk-term",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/posterior-variance-as-epistemic-value"
+     "aif/belief-aware-risk-term"],
+    :cited
+    "Apply the BMR posterior stddev as an EIG term, SUBTRACTED: `G = risk − λ·EIG`",
+    :evidence
+    [{:id "e-2abd87f5-f217-4cfa-946b-ff0c53a3c6b1",
+      :via :text,
+      :query
+      "posterior-variance-as-epistemic-value EIG risk lambda sign category error",
+      :excerpt
+      "Apply the BMR posterior stddev as an EIG term, SUBTRACTED: `G = risk − λ·EIG`, where `EIG` = the aggregated per-concept posterior stddev (endpoint-count; `{concept → stddev}` the source, absent-concept → 0)."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

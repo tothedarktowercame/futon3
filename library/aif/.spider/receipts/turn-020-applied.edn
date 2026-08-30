@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:59:38.668758174Z",
+ :turn 20,
+ :pattern "aif/placeholder-is-load-bearing",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-020.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/placeholder-is-load-bearing",
+     :to "aif/term-to-channel-traceability",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/placeholder-is-load-bearing"
+     "aif/term-to-channel-traceability"],
+    :cited
+    "Before deleting, replay the deletion against the arena including its placeholders and defaults; sequence deletions after placeholder handling; mark every placeholder self-describing (provenance field), never bare.",
+    :evidence
+    [{:id "e-9ed973f1-edbe-4073-a7c4-25aabbec4a60",
+      :via :text,
+      :query
+      "placeholder-is-load-bearing honest map flattering counter",
+      :excerpt
+      "mark every placeholder self-describing (provenance field), never bare."}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

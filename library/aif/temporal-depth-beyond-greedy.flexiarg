@@ -7,6 +7,7 @@
 @holds-at R13   ;; pegged 2026-08-30 (claude-15): the catalogue paragraph numbered R13 in p4ng/sec-catalog.tex; see PREREG-war-machine §1b
 
 @see-also aif/hierarchical-budget-aware-action-selection
+@see-also aif/hierarchical-and-temporal-depth
 ! conclusion: Genuine planning (R15) requires evaluating policies G(π) over a horizon and separating timescales; a single rollout step demonstrates the machinery, not the depth. Depth-1 is reactive control wearing planning's clothes.
 
   + context: R15 asks for hierarchical / temporal depth — the agent evaluates policies over a horizon of several ticks (not just the next action), and represents goals that span many ticks via a slow loop that sets priors for a fast loop.

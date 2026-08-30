@@ -6,6 +6,7 @@
 @style pattern
 @holds-at R17   ;; pegged 2026-08-30 (claude-15): the catalogue paragraph numbered R17 in p4ng/sec-catalog.tex; see PREREG-war-machine §1b
 
+@see-also aif/currency-before-merge
 ! conclusion: Structure Learning (R17) is the third optimisation level, beyond inference and parametric (Hebbian) learning: OFFLINE, it prunes and merges redundant model structure by Bayesian Model Reduction (BMR) over accumulated Dirichlet counts — accepting a reduced model when ΔF ≤ −3 (Bayes factor ≈ 20). Parametric learning only sharpens existing structure; only model reduction reorganises it.
 
   + context: The Active Inference Framework has three optimisation levels (Neacsu 2024, after Friston, Parr et al. 2018). (Active) Inference minimises variational free energy over states and policies (online, moment-to-moment). Parametric Learning accumulates Dirichlet concentration counts — mathematically Hebbian plasticity (online, gradual). Structure Learning selects among model *structures* by model evidence (offline, between periods of engagement). The first two cannot reorganise the model; they only sharpen what is already there. Concept formation, generalisation, and "these two contexts are the same" collapse require the third.

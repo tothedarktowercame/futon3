@@ -1,0 +1,28 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:56:13.847462342Z",
+ :turn 17,
+ :pattern "aif/niche-construction",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-017.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/niche-construction",
+     :to "ants/baseline-cyber-ant",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read ["aif/niche-construction" "ants/baseline-cyber-ant"],
+    :cited
+    "An active-inference agent (e.g. the futon War Machine) reads a substrate of typed vertices and edges, computes T / ∇T / ΔT or analogues, and ranks actions.",
+    :evidence
+    [{:id "e-e1980870-c223-4ec8-a1a8-cc06762698c3",
+      :via :tag,
+      :query "exact export occurrence: aif/niche-construction",
+      :excerpt
+      "Strong matches already — `ants/baseline-cyber-ant` (the parliament line literally), the `aif/` free-energy patterns, `aif/niche-construction` + `musn/expensive-move-consent` (INV-G)"}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

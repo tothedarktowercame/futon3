@@ -1,31 +1,31 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T12:54:30.369397898Z",
+ :at "2026-08-30T15:07:29.316303776Z",
  :turn 29,
- :pattern "aif/placeholder-is-load-bearing",
+ :pattern "aif/structured-observation-vector",
  :gate
  "/home/joe/code/futon3/./library/aif/.spider/gates/turn-029.edn",
  :changes
  {:attestations
   [{:edge
-    {:from "aif/placeholder-is-load-bearing",
-     :to "aif/expected-free-energy-scorecard",
+    {:from "aif/structured-observation-vector",
+     :to "aif/evidence-precision-registry",
      :kind :see-also},
     :by "zai-2",
     :at "2026-08-30",
     :read
-    ["aif/placeholder-is-load-bearing"
-     "aif/expected-free-energy-scorecard"],
+    ["aif/structured-observation-vector"
+     "aif/evidence-precision-registry"],
     :cited
-    "Before deleting, replay the deletion against the arena including its placeholders and defaults; sequence deletions after placeholder handling; mark every placeholder self-describing (provenance field), never bare.",
+    "A stable observation vector is the prerequisite for meaningful precision control and policy scoring.",
     :evidence
-    [{:id "e-564e1f5a-70fb-49c0-85fc-b5c5a6188785",
+    [{:id "e-264d1c43-e694-4488-b475-dd46f542aab1",
       :via :text,
       :query
-      "placeholder-is-load-bearing inert term deletion arena flip-analysis",
+      "structured-observation-vector typed normalized feature map precision control policy scoring",
       :excerpt
-      "G-info measured 0% flip-rate, yet deleting it would shift ordinary totals +5.6 past the cascade rows' 0.0 placeholder — unscored cascades would start WINNING."}],
-    :rung 1,
+      "A stable observation vector is the prerequisite for meaningful precision control and policy scoring."}],
+    :rung 2,
     :state :proposed}],
   :proposals [],
   :absences []}}

@@ -1,0 +1,35 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:42:31.830464478Z",
+ :turn 16,
+ :pattern "writing-coherence/meet-the-reader-where-they-are",
+ :gate
+ "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-016.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "writing-coherence/meet-the-reader-where-they-are",
+     :to "system-coherence/argue-empirically-not-persuasively",
+     :kind :why},
+    :by "zai-1",
+    :at "2026-08-30",
+    :read
+    ["writing-coherence/meet-the-reader-where-they-are"
+     "system-coherence/argue-empirically-not-persuasively"],
+    :cited
+    "The diagnostic shows up when an operational reviewer reports that the document \"doesn't tell me what to do\" while a theoretical reviewer reports that the same document is \"appropriately principled\".",
+    :evidence
+    [{:id "e-a621c377-4906-4844-8f12-57403924bfd3",
+      :via :text,
+      :query "meet-the-reader-where-they-are pattern landed R01 R09",
+      :excerpt
+      "Pattern landed via Sokoban; R01 now warranted.  **Summary of this turn:**  1. **New pattern drafted:** `writing-coherence/meet-the-reader-where-they-are.flexiarg` — body covers the register-mismatch axis (principled abstraction ↔ reader's operational frame)"}
+     {:id "e-44625962-5c64-4e1c-8470-504426373fda",
+      :via :text,
+      :query "meet-the-reader-where-they-are pattern landed R01 R09",
+      :excerpt
+      "with the new one self-applying its own restraint clause (NEXT-STEPS gates the system-coherence analogue on a documented use-case, citing `argue-empirically-not-persuasively` as the reason not to promote on speculation)"}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

@@ -1,0 +1,15 @@
+{:checks
+ [{:file
+   "/home/joe/code/futon3/./library/aif/belief-aware-risk-term.flexiarg",
+   :line nil,
+   :edge nil,
+   :reason :seat-output-invalid,
+   :detail
+   {:type "class clojure.lang.ExceptionInfo",
+    :message "invalid or duplicate edge item",
+    :data
+    {:item
+     {:from "aif/belief-aware-risk-term",
+      :to "aif/shared-kernel-predictive-forward-model",
+      :kind :why}}}}],
+ :summary {:pass? false, :failures 1}}

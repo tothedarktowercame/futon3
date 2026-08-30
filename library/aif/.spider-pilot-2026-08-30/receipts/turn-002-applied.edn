@@ -1,0 +1,48 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:34:37.423735815Z",
+ :turn 2,
+ :pattern "aif/admissibility",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-002.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/admissibility",
+     :to "war-room/wr-20-action-class-inventory-becomes-data",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/admissibility"
+     "war-room/wr-20-action-class-inventory-becomes-data"],
+    :cited
+    "The per-class predicate IS the recursion-safety; no separate runaway guard is needed, because the unsafe classes never enter the policy at all.",
+    :evidence
+    [{:id "aif/admissibility",
+      :via :tag,
+      :query
+      "admissibility gate action class before ranking recursion safety self-modification",
+      :excerpt
+      "WR-20: The Action-Class Inventory Becomes Data, Governed By One Self-Similar Primitive -> Recursion occurs in data rather than through new code, while per-entry admissibility acts as the recursion-safety gate that prevents self-modification from running away."}],
+    :rung 1,
+    :state :proposed}
+   {:edge
+    {:from "aif/admissibility",
+     :to "coordination/capability-gate",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read ["aif/admissibility" "coordination/capability-gate"],
+    :cited "Only admissible classes reach the ranker.",
+    :evidence
+    [{:id "e-a6e1e86d-86cc-47a2-9f69-facc2252d648",
+      :via :tag,
+      :query
+      "admissibility gate action class before ranking recursion safety self-modification",
+      :excerpt
+      "{:id \"aif/admissibility\", :title \"Admissibility as Recursion-Safety — Gate the Action CLASS Before You Rank\", :score 0.4476, :rank 2} ... {:id \"coordination/capability-gate\", :title \"Capability Gate (G4)\", :score 0.4409, :rank 3}"}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

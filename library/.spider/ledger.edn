@@ -6,7 +6,8 @@
  :packet-3
  {:at "2026-08-30",
   :rung-1-source :migration-export-exact-occurrence,
-  :writing-coherence-rung-1-recall {:before 0, :after 22, :patterns 23},
+  :writing-coherence-rung-1-recall
+  {:before 0, :after 22, :patterns 23},
   :aif-rerun
   {:patterns
    ["aif/admissibility"
@@ -17,8 +18,9 @@
    :historical-seat-failure-receipts 7},
   :fleet-dry-run
   {:sections
-   {"aif" {:organised-attested 7, :organised-proposed 23}
-    "writing-coherence" {:organised-attested 2, :organised-proposed 1}},
+   {"aif" {:organised-attested 7, :organised-proposed 23},
+    "writing-coherence"
+    {:organised-attested 2, :organised-proposed 1}},
    :total {:organised-attested 9, :organised-proposed 24},
    :acyclicity-gate :serialised-by-library-lock}},
  :sections
@@ -77,4 +79,110 @@
     :at "2026-08-30",
     :sample 3,
     :method
-    "cited text and evidence excerpt re-verified mechanically with whitespace-normalised, EDN-parsed matching (all 31 pass); kinds judged against README-flexiarg §5a"}}]}
+    "cited text and evidence excerpt re-verified mechanically with whitespace-normalised, EDN-parsed matching (all 31 pass); kinds judged against README-flexiarg §5a"}}
+  {:wave 1,
+   :section "writing-coherence",
+   :at "2026-08-30",
+   :before
+   {:patterns 23,
+    :edges-by-kind {:why 2, :how 0, :see-also 1},
+    :patterns-with-outgoing-why 2,
+    :fraction-organised 0.08695652173913043},
+   :after
+   {:absences 22,
+    :seat-failures 0,
+    :organised-attested 2,
+    :rung-one-coverage
+    {:patterns 23, :with-any-hit 22, :with-non-listing-hit 16},
+    :patterns-with-outgoing-why 2,
+    :patterns 23,
+    :edges-by-kind {:why 2, :how 0, :see-also 2},
+    :attestation-states
+    {:proposed 2, :attested 2, :refused 0, :sent-back 0},
+    :fraction-organised 0.08695652173913043,
+    :organised-proposed 2}}
+  {:wave 1,
+   :section "aif",
+   :at "2026-08-30",
+   :before
+   {:patterns 33,
+    :edges-by-kind {:why 6, :how 10, :see-also 20},
+    :patterns-with-outgoing-why 6,
+    :fraction-organised 0.18181818181818182},
+   :after
+   {:absences 0,
+    :seat-failures 2,
+    :organised-attested 8,
+    :rung-one-coverage
+    {:patterns 33, :with-any-hit 26, :with-non-listing-hit 8},
+    :patterns-with-outgoing-why 6,
+    :patterns 33,
+    :edges-by-kind {:why 6, :how 13, :see-also 46},
+    :attestation-states
+    {:proposed 51, :attested 8, :refused 3, :sent-back 0},
+    :fraction-organised 0.18181818181818182,
+    :organised-proposed 51}}
+  {:wave 1,
+   :section "war-room",
+   :at "2026-08-30",
+   :before
+   {:patterns 28,
+    :edges-by-kind {:why 9, :how 0, :see-also 0},
+    :patterns-with-outgoing-why 9,
+    :fraction-organised 0.32142857142857145},
+   :after
+   {:absences 28,
+    :seat-failures 0,
+    :organised-attested 0,
+    :rung-one-coverage
+    {:patterns 28, :with-any-hit 10, :with-non-listing-hit 10},
+    :patterns-with-outgoing-why 9,
+    :patterns 28,
+    :edges-by-kind {:why 9, :how 0, :see-also 0},
+    :attestation-states
+    {:proposed 0, :attested 0, :refused 0, :sent-back 0},
+    :fraction-organised 0.32142857142857145,
+    :organised-proposed 0}}
+  {:wave 1,
+   :section "problems",
+   :at "2026-08-30",
+   :before
+   {:patterns 5,
+    :edges-by-kind {:why 5, :how 0, :see-also 0},
+    :patterns-with-outgoing-why 5,
+    :fraction-organised 1.0},
+   :after
+   {:absences 0,
+    :seat-failures 3,
+    :organised-attested 0,
+    :rung-one-coverage
+    {:patterns 5, :with-any-hit 0, :with-non-listing-hit 0},
+    :patterns-with-outgoing-why 5,
+    :patterns 5,
+    :edges-by-kind {:why 5, :how 0, :see-also 2},
+    :attestation-states
+    {:proposed 2, :attested 0, :refused 0, :sent-back 0},
+    :fraction-organised 1.0,
+    :organised-proposed 2}}
+  {:wave 1,
+   :section "features",
+   :at "2026-08-30",
+   :before
+   {:patterns 2,
+    :edges-by-kind {:why 2, :how 0, :see-also 0},
+    :patterns-with-outgoing-why 2,
+    :fraction-organised 1.0},
+   :after
+   {:absences 2,
+    :seat-failures 0,
+    :organised-attested 0,
+    :rung-one-coverage
+    {:patterns 2, :with-any-hit 0, :with-non-listing-hit 0},
+    :patterns-with-outgoing-why 2,
+    :patterns 2,
+    :edges-by-kind {:why 2, :how 0, :see-also 0},
+    :attestation-states
+    {:proposed 0, :attested 0, :refused 0, :sent-back 0},
+    :fraction-organised 1.0,
+    :organised-proposed 0}}],
+ :wave-1 {:organised-attested 10, :organised-proposed 55}}

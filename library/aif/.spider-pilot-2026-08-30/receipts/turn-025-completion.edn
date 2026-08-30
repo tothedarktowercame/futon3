@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-08-30T12:52:11.269728842Z",
+ :turn 25,
+ :pattern "aif/measurement-window-hygiene",
+ :seat "zai-2",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788094292691-3876-40d88fbb",
+  :response
+  "[{:edge {:from \"aif/measurement-window-hygiene\" :to \"aif/term-to-channel-traceability\" :kind :see-also} :cited \"You record a predicted/realised (or before/after) pair to score an action's effect on such a system.\" :evidence [{:id \"e-9d2506af-b503-4f49-a6f3-f194af214804\" :via :text :query \"aif/measurement-window-hygiene no-self-certification sibling\" :excerpt \"You record a predicted/realised (or before/after) pair to score an action's effect on such a system.\"}] :rung 1 :read [\"aif/measurement-window-hygiene\" \"aif/term-to-channel-traceability\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :response
+ "[{:edge {:from \"aif/measurement-window-hygiene\" :to \"aif/term-to-channel-traceability\" :kind :see-also} :cited \"You record a predicted/realised (or before/after) pair to score an action's effect on such a system.\" :evidence [{:id \"e-9d2506af-b503-4f49-a6f3-f194af214804\" :via :text :query \"aif/measurement-window-hygiene no-self-certification sibling\" :excerpt \"You record a predicted/realised (or before/after) pair to score an action's effect on such a system.\"}] :rung 1 :read [\"aif/measurement-window-hygiene\" \"aif/term-to-channel-traceability\"]}]"}

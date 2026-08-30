@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"problems/commitment-temperature-is-instrumented-as-gain\" :to \"stack-coherence/commit-intent-alignment\" :kind :see-also} :cited \"A declared gain is operational only when the loop records enough before-and-after evidence to shape it rather than reconstruct it later.\" :evidence [{:id \"e-4b7d5295-210b-46e1-b935-240333839ab0\" :via :text :query \"commitment-temperature-is-instrumented-as-gain\" :excerpt \"{:id \\\"stack-coherence/commit-intent-alignment\\\", :title \\\"Commit Intent Alignment\\\", :score 0.446, :rank 3}\"}] :rung 2 :read [\"problems/commitment-temperature-is-instrumented-as-gain\" \"stack-coherence/commit-intent-alignment\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788100240947-4047-42c05024",
+  :response
+  "[{:edge {:from \"problems/commitment-temperature-is-instrumented-as-gain\" :to \"stack-coherence/commit-intent-alignment\" :kind :see-also} :cited \"A declared gain is operational only when the loop records enough before-and-after evidence to shape it rather than reconstruct it later.\" :evidence [{:id \"e-4b7d5295-210b-46e1-b935-240333839ab0\" :via :text :query \"commitment-temperature-is-instrumented-as-gain\" :excerpt \"{:id \\\"stack-coherence/commit-intent-alignment\\\", :title \\\"Commit Intent Alignment\\\", :score 0.446, :rank 3}\"}] :rung 2 :read [\"problems/commitment-temperature-is-instrumented-as-gain\" \"stack-coherence/commit-intent-alignment\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "problems/commitment-temperature-is-instrumented-as-gain",
+    :to "stack-coherence/commit-intent-alignment",
+    :kind :see-also}}},
+ :turn 1,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:32:09.898763668Z",
+ :attempt 2,
+ :pattern "problems/commitment-temperature-is-instrumented-as-gain"}

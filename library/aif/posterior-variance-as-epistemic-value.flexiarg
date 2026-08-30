@@ -7,6 +7,7 @@
 
 @why aif/structure-learning-by-model-reduction
 @see-also aif/belief-aware-risk-term
+@see-also aif/predictive-entropy-as-ambiguity
 ! conclusion: The standard deviation of the structure-learning (BMR) posterior over concepts is EPISTEMIC VALUE (expected information gain, EIG) — *reducible* model/structure uncertainty — which is SUBTRACTED in Expected Free Energy (`G = risk − λ·EIG`) and therefore SOUGHT. It is NOT ambiguity (irreducible observation noise, which is added and minimized). Composing it as "+ambiguity" is a category error that makes the agent flee uncertainty instead of resolving it.
 
   + context: Canonical EFE has TWO distinct uncertainty terms. **Ambiguity** = `E_q[H[p(o|s)]]` — the entropy of the likelihood, i.e. irreducible observation noise given the state; it is ADDED (+) and minimised (prefer states whose outcomes are unambiguous). **Epistemic value / EIG** = `E_q[H[q(s)] − H[q(s|o)]]` — the expected *reduction* in uncertainty about the hidden state / model / parameters; it is SUBTRACTED (−) and maximised (seek what resolves your ignorance). BMR posterior spread is uncertainty about the MODEL (which capability a mission needs) and it is *reducible* — more data resolves it — so it is the EIG type, not the ambiguity type.

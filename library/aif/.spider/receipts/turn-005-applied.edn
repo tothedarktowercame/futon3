@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:39:00.763224549Z",
+ :turn 5,
+ :pattern "aif/currency-before-merge",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-005.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/currency-before-merge",
+     :to "aif/expected-free-energy-scorecard",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/currency-before-merge" "aif/expected-free-energy-scorecard"],
+    :cited
+    "A system accumulates valuation lanes over time (an EFE blend, a wholeness score, a rollout ΔG, heuristic bonuses), and selection wants one number to rank by.",
+    :evidence
+    [{:id "e-3fb820aa-3e22-4a67-a514-7ce2478ce63e",
+      :via :text,
+      :query
+      "currency-before-merge exchange rate lanes expected-free-energy-scorecard weights",
+      :excerpt
+      "A system accumulates valuation lanes over time (an EFE blend, a wholeness score, a rollout ΔG, heuristic bonuses), and selection wants one number to rank by."}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

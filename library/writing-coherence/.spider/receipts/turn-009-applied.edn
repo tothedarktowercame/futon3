@@ -1,0 +1,28 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:34:36.737175666Z",
+ :turn 9,
+ :pattern "writing-coherence/meta-lede",
+ :gate
+ "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-009.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "writing-coherence/meta-lede",
+     :to "peeragogy/pattern-language",
+     :kind :see-also},
+    :by "zai-1",
+    :at "2026-08-30",
+    :read ["writing-coherence/meta-lede" "peeragogy/pattern-language"],
+    :cited
+    "The sentence reads as considered and schematic, but it adds no claim the reader could disagree with.",
+    :evidence
+    [{:id "e-9fe29a1b-85c2-4836-8e19-9d5131bebf11",
+      :via :tag,
+      :query "exact export occurrence: writing-coherence/meta-lede",
+      :excerpt
+      "Format adaptation.** I followed the `writing-coherence/meta-lede` shape (conclusion / context / TENSION / COMPOSITIONS / CHECK) but renamed the closing block from `FAILURE-MODES` to `ABSENCE-SIGNALS`, since these are positive process patterns and the closing block"}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

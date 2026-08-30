@@ -1,14 +1,14 @@
 {:schema 1,
  :event :turn-applied,
- :at "2026-08-30T12:46:09.327258871Z",
+ :at "2026-08-30T14:51:25.451570699Z",
  :turn 21,
- :pattern "writing-coherence/one-paragraph-per-typed-claim",
+ :pattern "writing-coherence/subheading-without-paragraph",
  :gate
  "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-021.edn",
  :changes
  {:attestations [],
   :proposals [],
   :absences
-  [{:pattern "writing-coherence/one-paragraph-per-typed-claim",
+  [{:pattern "writing-coherence/subheading-without-paragraph",
     :note
-    "Text queries run (rung 2, port 7073 text-search, limit 5, hydrate): 'one paragraph per typed claim fused paragraph', 'two scenarios fused into one paragraph figure panels'. Findings and rejections: (1) e-8a278d1c-e1fc-4ce0-a3c8-954d9bd7f0c7 documents the pattern's own creation and namesake application (annotation s4-2-fused-scenarios, comp-1 split, 'Now §4.2 prose has 4 paragraphs matching F[igure 2]') — a use instance, not a tie to another pattern. (2) e-3be2f6be-2ba8-460c-ae6a-297e9e1d9f8a shows co-application with meta-lede and citation-density-load-bearing-claim in one rewrite batch — co-application without a single warranted target. (3) e-59c1f3f8-b1ba-45e7-9609-ae7fc4b0ba92 (verified earlier this session) is the originating audit finding ('§4.2 — two scenarios fused into one paragraph... Figure 2 has four panels; the prose collapses two of them') — again a use instance. (4) The pattern's own @references already record subheading-without-paragraph, structural-style-inconsistency, and system-coherence/present-graph-topology-not-adjacency-lists; plos-npt-with-small-n/quote-table-not-quote-flood already links in from its side. Remaining hits were self-referential spider transcripts (e-4dc0a591, e-cd507a68). No rung-1 tag evidence tied this pattern to an unlinked flexiarg target."}]}}
+    "Rung 1: one non-listing hit supplied — e-0ff86c20-fa63-462b-94e4-babc8b8ff65e, a rewrite-batch table applying this pattern comp-3 (rename) to annotation s3-2-thin-after-cut ('Existing pattern found via vocabulary search; clean fit') in the same batch where system-coherence/present-graph-topology-not-adjacency-lists was created — co-application in one batch with the patterns doing different jobs on different annotations, warranting no directed edge, and present-graph-topology's link to this section is already recorded on one-paragraph-per-typed-claim's file. The two :listing true hits (co-rankings with plain-language-thesis/match-region-weight-to-load and invariant-coherence/bounded-disposition) are explicitly not warrants. Rung 2: the exhaustive passes earlier in this run ('subheading promise paragraph discharge concept-drop', 'two-sentence stub under subheading claim') returned only this spider session's own transcripts — this pattern has the thinnest evidence footprint in the section. Its linkage graph is fully recorded: its own @references name unearned-essentially, and incoming @references come from meta-lede, meta-title, structural-style-inconsistency, one-paragraph-per-typed-claim, and unearned-essentially — five recorded directives covering every topologically adjacent pattern. No rung-1 non-listing hit and no rung-2 record ties this pattern to an unlinked library/<target>.flexiarg."}]}}

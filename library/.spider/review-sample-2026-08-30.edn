@@ -1,0 +1,836 @@
+{:schema 1,
+ :at "2026-08-30",
+ :method :sort-by-edge-then-alternate,
+ :new-proposal-counts {:aif 31, :writing-coherence 1, :problems 2},
+ :claude-15
+ [{:attestation
+   {:edge
+    {:from "aif/admissibility",
+     :to "war-machine/advanceability",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read ["aif/admissibility" "war-machine/advanceability"],
+    :cited
+    "Un-registered `:pursue`, goal-extending `:decompose`, and unagreed operator-exit advances are **inadmissible** — refused (or NAG'd), never scored.",
+    :evidence
+    [{:id "e-f5a7638c-40f0-4ca2-8ac5-f91c077ed117",
+      :via :tag,
+      :query "exact export occurrence: aif/admissibility",
+      :excerpt
+      "(`aif/niche-construction`, `orchestration/consent-gate`, `aif/admissibility`, `war-machine/advanceability`, `orchestration/pattern-warranted-choice-point`)"}],
+    :rung 1,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/admissibility.flexiarg"
+    "library/war-machine/advanceability.flexiarg"],
+   :evidence-ids ["e-f5a7638c-40f0-4ca2-8ac5-f91c077ed117"]}
+  {:attestation
+   {:edge
+    {:from "aif/candidate-pattern-action-space",
+     :to "aif/evidence-precision-registry",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/candidate-pattern-action-space"
+     "aif/evidence-precision-registry"],
+    :cited
+    "Define (a) as a constructed candidate set of pattern IDs produced by retrieval plus gating rules, with bounded size and explicit reasons for inclusion and exclusion.",
+    :evidence
+    [{:id "e-ec575c01-804f-4b54-84d1-f5dbf042c03b",
+      :via :tag,
+      :query
+      "exact export occurrence: aif/candidate-pattern-action-space",
+      :excerpt
+      "Also flagged three likely registry/credit prior-art patterns (`aif/candidate-pattern-action-space`, `aif/evidence-precision-registry`, `exotic/full-lift-registry`) that DERIVE car 1 must read before defining the registry, so we don't reinvent (I-4)."}],
+    :rung 1,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/candidate-pattern-action-space.flexiarg"
+    "library/aif/evidence-precision-registry.flexiarg"],
+   :evidence-ids ["e-ec575c01-804f-4b54-84d1-f5dbf042c03b"]}
+  {:attestation
+   {:edge
+    {:from "aif/declare-the-conditioning",
+     :to "aif/term-to-channel-traceability",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/declare-the-conditioning"
+     "aif/term-to-channel-traceability"],
+    :cited
+    "Give every valuation surface a three-axis declaration: SENSE (which formal object it claims), SELECTION-SEMANTICS (extremum / amortized sample / bound — over what menu), and CONDITIONING (what situation-slice it consumed).",
+    :evidence
+    [{:id "e-83b1f41f-204f-4274-b45d-5d2503c39e63",
+      :via :text,
+      :query
+      "aif/declare-the-conditioning term-to-channel traceability",
+      :excerpt
+      "Every valuation surface must declare what slice of the situation it consumed; G(candidate) is a lambda — only G(candidate | situation) is a value."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/declare-the-conditioning.flexiarg"
+    "library/aif/term-to-channel-traceability.flexiarg"],
+   :evidence-ids ["e-83b1f41f-204f-4274-b45d-5d2503c39e63"]}
+  {:attestation
+   {:edge
+    {:from "aif/evidence-precision-registry",
+     :to "aif/candidate-pattern-action-space",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/evidence-precision-registry"
+     "aif/candidate-pattern-action-space"],
+    :cited
+    "Represent (Pi_o) as a per-channel precision registry keyed to observation features (and/or evidence sources), and apply it wherever prediction error, scoring, or gating occurs.",
+    :evidence
+    [{:id "e-ec575c01-804f-4b54-84d1-f5dbf042c03b",
+      :via :tag,
+      :query
+      "exact export occurrence: aif/evidence-precision-registry",
+      :excerpt
+      "Also flagged three likely registry/credit prior-art patterns (`aif/candidate-pattern-action-space`, `aif/evidence-precision-registry`, `exotic/full-lift-registry`) that DERIVE car 1 must read before defining the registry, so we don't reinvent (I-4)."}],
+    :rung 1,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/evidence-precision-registry.flexiarg"
+    "library/aif/candidate-pattern-action-space.flexiarg"],
+   :evidence-ids ["e-ec575c01-804f-4b54-84d1-f5dbf042c03b"]}
+  {:attestation
+   {:edge
+    {:from "aif/experimental-comparison-of-EFE-variants",
+     :to "aif/predictive-entropy-as-ambiguity",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/experimental-comparison-of-EFE-variants"
+     "aif/predictive-entropy-as-ambiguity"],
+    :cited
+    "Some EFE terms (notably pattern-EFE-style terms, info-gain composites, multi-source ambiguity terms) have multiple plausible operationalisations.",
+    :evidence
+    [{:id "e-bc58f837-0de6-4d09-9e64-cbf931592556",
+      :via :text,
+      :query
+      "experimental-comparison-of-EFE-variants term variant ambiguity predictive entropy",
+      :excerpt
+      "Some EFE terms (notably pattern-EFE-style terms, info-gain composites, multi-source ambiguity terms) have multiple plausible operationalisations."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/experimental-comparison-of-EFE-variants.flexiarg"
+    "library/aif/predictive-entropy-as-ambiguity.flexiarg"],
+   :evidence-ids ["e-bc58f837-0de6-4d09-9e64-cbf931592556"]}
+  {:attestation
+   {:edge
+    {:from "aif/grounded-actuation-not-reobservation",
+     :to "aif/scheduled-observer-entrypoint",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/grounded-actuation-not-reobservation"
+     "aif/scheduled-observer-entrypoint"],
+    :cited
+    "That witness feeds the next decision — the deliberator re-ranks on the substrate dial. Gate \"closed = ✓\" on a real dial move (1/2 → 2/2), NEVER on the enactor merely firing.",
+    :evidence
+    [{:id "e-d0b7eb83-bbbd-4bfb-ade4-71b5d370e28d",
+      :via :text,
+      :query
+      "grounded-actuation re-observe-your-own-construction mirror not an act",
+      :excerpt
+      "Gate \"closed = ✓\" on a real dial move (1/2 → 2/2), NEVER on the enactor merely firing."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/grounded-actuation-not-reobservation.flexiarg"
+    "library/aif/scheduled-observer-entrypoint.flexiarg"],
+   :evidence-ids ["e-d0b7eb83-bbbd-4bfb-ade4-71b5d370e28d"]}
+  {:attestation
+   {:edge
+    {:from "aif/hierarchical-budget-aware-action-selection",
+     :to "budgeted-action-selection/mana-gated-work",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/hierarchical-budget-aware-action-selection"
+     "budgeted-action-selection/mana-gated-work"],
+    :cited
+    "A multi-agent (or multi-band, or hierarchical) AIF setup gives each agent or sub-agent local autonomy: each scores candidate actions and selects via softmax. But the candidates often consume shared resources — setup budget for capability activation, engagement-budget for per-instance participation, attention budget across the agent's responsibility area.",
+    :evidence
+    [{:id "e-06df1277-45cc-45be-98c6-6d20b2d640d1",
+      :via :text,
+      :query
+      "hierarchical-budget resolve-conflicts feasibility-penalty band priority",
+      :excerpt
+      "each scores candidate actions and selects via softmax. But the candidates often consume shared resources — setup budget for capability activation, engagement-budget for per-instance participation, attention budget across the agent's responsibility area."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/hierarchical-budget-aware-action-selection.flexiarg"
+    "library/budgeted-action-selection/mana-gated-work.flexiarg"],
+   :evidence-ids ["e-06df1277-45cc-45be-98c6-6d20b2d640d1"]}
+  {:attestation
+   {:edge
+    {:from "aif/niche-construction",
+     :to "ants/baseline-cyber-ant",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read ["aif/niche-construction" "ants/baseline-cyber-ant"],
+    :cited
+    "An active-inference agent (e.g. the futon War Machine) reads a substrate of typed vertices and edges, computes T / ∇T / ΔT or analogues, and ranks actions.",
+    :evidence
+    [{:id "e-e1980870-c223-4ec8-a1a8-cc06762698c3",
+      :via :tag,
+      :query "exact export occurrence: aif/niche-construction",
+      :excerpt
+      "Strong matches already — `ants/baseline-cyber-ant` (the parliament line literally), the `aif/` free-energy patterns, `aif/niche-construction` + `musn/expensive-move-consent` (INV-G)"}],
+    :rung 1,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/niche-construction.flexiarg"
+    "library/ants/baseline-cyber-ant.flexiarg"],
+   :evidence-ids ["e-e1980870-c223-4ec8-a1a8-cc06762698c3"]}
+  {:attestation
+   {:edge
+    {:from "aif/off-continuity-null-discriminates",
+     :to "aif/measurement-window-hygiene",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/off-continuity-null-discriminates"
+     "aif/measurement-window-hygiene"],
+    :cited
+    "Mask-in still requires the null be CLEAN: settled, two distinct-as-of scans agreeing within ε ([[measurement-window-hygiene]]); a confounded null discriminates nothing.",
+    :evidence
+    [{:id "e-24708ed2-3074-4253-b9a5-17ac92c33989",
+      :via :text,
+      :query
+      "off-continuity null discriminates clean-target wall dual prediction",
+      :excerpt
+      "Mask-in still requires the null be CLEAN: settled, two distinct-as-of scans agreeing within ε ([[measurement-window-hygiene]]); a confounded null discriminates nothing."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/off-continuity-null-discriminates.flexiarg"
+    "library/aif/measurement-window-hygiene.flexiarg"],
+   :evidence-ids ["e-24708ed2-3074-4253-b9a5-17ac92c33989"]}
+  {:attestation
+   {:edge
+    {:from "aif/policy-precision-commitment-temperature",
+     :to "aif/expected-free-energy-scorecard",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/policy-precision-commitment-temperature"
+     "aif/expected-free-energy-scorecard"],
+    :cited
+    "Maintain (tau) as a commitment temperature that modulates softmax over (-G/tau), coupled to diagnostic signals (recent regressions, uncertainty in (mu), contradiction rate, time pressure, repeated test failures).",
+    :evidence
+    [{:id "e-f2a87cbe-794e-4f83-b465-600c988887f4",
+      :via :text,
+      :query
+      "policy-precision-commitment-temperature softmax abstain discriminability G-spread",
+      :excerpt
+      "Maintain a commitment temperature that modulates how strongly the policy commits to low-G choices."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/policy-precision-commitment-temperature.flexiarg"
+    "library/aif/expected-free-energy-scorecard.flexiarg"],
+   :evidence-ids ["e-f2a87cbe-794e-4f83-b465-600c988887f4"]}
+  {:attestation
+   {:edge
+    {:from "writing-coherence/meta-lede",
+     :to "peeragogy/pattern-language",
+     :kind :see-also},
+    :by "zai-1",
+    :at "2026-08-30",
+    :read ["writing-coherence/meta-lede" "peeragogy/pattern-language"],
+    :cited
+    "The sentence reads as considered and schematic, but it adds no claim the reader could disagree with.",
+    :evidence
+    [{:id "e-9fe29a1b-85c2-4836-8e19-9d5131bebf11",
+      :via :tag,
+      :query "exact export occurrence: writing-coherence/meta-lede",
+      :excerpt
+      "Format adaptation.** I followed the `writing-coherence/meta-lede` shape (conclusion / context / TENSION / COMPOSITIONS / CHECK) but renamed the closing block from `FAILURE-MODES` to `ABSENCE-SIGNALS`, since these are positive process patterns and the closing block"}],
+    :rung 1,
+    :state :proposed},
+   :pattern-files
+   ["library/writing-coherence/meta-lede.flexiarg"
+    "library/peeragogy/pattern-language.flexiarg"],
+   :evidence-ids ["e-9fe29a1b-85c2-4836-8e19-9d5131bebf11"]}
+  {:attestation
+   {:edge
+    {:from "problems/satisfied-rungs-are-counted-and-surfaced",
+     :to "futon-theory/futonic-logic",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["problems/satisfied-rungs-are-counted-and-surfaced"
+     "futon-theory/futonic-logic"],
+    :cited
+    "It is that the one verdict the apparatus cannot issue to itself was received and not perceived, so nothing downstream could compose with it (futon-theory/futonic-logic, A7: without salience, generativity remains inert).",
+    :evidence
+    [{:id "e-c6407e77-bdea-483b-9a67-09660b16b13c",
+      :via :text,
+      :query "satisfied rung warm-customer-pays counted surfaced",
+      :excerpt
+      "It is that the one verdict the apparatus cannot issue to itself was received and not perceived, so nothing downstream could compose with it (futon-theory/futonic-logic, A7: without salience, generativity remains inert)."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/problems/satisfied-rungs-are-counted-and-surfaced.flexiarg"
+    "library/futon-theory/futonic-logic.flexiarg"],
+   :evidence-ids ["e-c6407e77-bdea-483b-9a67-09660b16b13c"]}],
+ :codex-22
+ [{:attestation
+   {:edge
+    {:from "aif/belief-aware-risk-term",
+     :to "aif/expected-free-energy-scorecard",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/belief-aware-risk-term"
+     "aif/expected-free-energy-scorecard"],
+    :cited
+    "Compose the pragmatic (risk) EFE term as bias² (squared deviation of predicted mean from preference prior) + variance (predictive uncertainty contribution). Both terms in the same units; both pulling the agent toward predictable closeness to preference.",
+    :evidence
+    [{:id "e-e96402c5-0bb5-4a2a-83bc-8b259e608806",
+      :via :text,
+      :query "aif/belief-aware-risk-term hunger precision coupling",
+      :excerpt
+      "Compose the pragmatic (risk) EFE term as bias² (squared deviation of predicted mean from preference prior) + variance (predictive uncertainty contribution). Both terms in the same units; both pulling the agent toward predictable closeness to preference."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/belief-aware-risk-term.flexiarg"
+    "library/aif/expected-free-energy-scorecard.flexiarg"],
+   :evidence-ids ["e-e96402c5-0bb5-4a2a-83bc-8b259e608806"]}
+  {:attestation
+   {:edge
+    {:from "aif/currency-before-merge",
+     :to "aif/expected-free-energy-scorecard",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/currency-before-merge" "aif/expected-free-energy-scorecard"],
+    :cited
+    "A system accumulates valuation lanes over time (an EFE blend, a wholeness score, a rollout ΔG, heuristic bonuses), and selection wants one number to rank by.",
+    :evidence
+    [{:id "e-3fb820aa-3e22-4a67-a514-7ce2478ce63e",
+      :via :text,
+      :query
+      "currency-before-merge exchange rate lanes expected-free-energy-scorecard weights",
+      :excerpt
+      "A system accumulates valuation lanes over time (an EFE blend, a wholeness score, a rollout ΔG, heuristic bonuses), and selection wants one number to rank by."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/currency-before-merge.flexiarg"
+    "library/aif/expected-free-energy-scorecard.flexiarg"],
+   :evidence-ids ["e-3fb820aa-3e22-4a67-a514-7ce2478ce63e"]}
+  {:attestation
+   {:edge
+    {:from "aif/decomposed-prediction-noise",
+     :to "aif/belief-aware-risk-term",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/decomposed-prediction-noise" "aif/belief-aware-risk-term"],
+    :cited
+    "Practice: emit the decomposition keys alongside the total variance in the trace record. Consumers (validation harness, UI panels, EFE term computations) can read whichever component they need.",
+    :evidence
+    [{:id "e-c6ac0857-5a23-4c22-866c-2775fb358c6e",
+      :via :text,
+      :query
+      "Decomposed Prediction Noise as Named Variance Contributions k_coverage",
+      :excerpt
+      "Consumers (validation harness, UI panels, EFE term computations) can read whichever component they need."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/decomposed-prediction-noise.flexiarg"
+    "library/aif/belief-aware-risk-term.flexiarg"],
+   :evidence-ids ["e-c6ac0857-5a23-4c22-866c-2775fb358c6e"]}
+  {:attestation
+   {:edge
+    {:from "aif/expected-free-energy-scorecard",
+     :to "structure/mana-allostasis",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/expected-free-energy-scorecard" "structure/mana-allostasis"],
+    :cited
+    "Compute G(a) as a weighted sum of named terms (risk, ambiguity, information gain, constraint violation, cost, coordination pressure), and store the term breakdown for each candidate.",
+    :evidence
+    [{:id "e-991c1415-3a8b-4889-a268-5586ba5525f4",
+      :via :tag,
+      :query
+      "exact export occurrence: aif/expected-free-energy-scorecard",
+      :excerpt
+      "- a pattern cross-reference table tying the v0 design to `structure/hinge-point`, `structure/cook-ting`, `peripherals/canonical-typed-event-vs-side-channel`, `aif/expected-free-energy-scorecard`, and `structure/mana-allostasis`"}],
+    :rung 1,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/expected-free-energy-scorecard.flexiarg"
+    "library/structure/mana-allostasis.flexiarg"],
+   :evidence-ids ["e-991c1415-3a8b-4889-a268-5586ba5525f4"]}
+  {:attestation
+   {:edge
+    {:from "aif/free-energy-as-tick-scalar",
+     :to "aif/expected-free-energy-scorecard",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/free-energy-as-tick-scalar"
+     "aif/expected-free-energy-scorecard"],
+    :cited
+    "AIF computes two distinct quantities. **G** (Expected Free Energy) is per-candidate-action, drives policy. **F** (Variational Free Energy) is per-tick, summarises how surprised the agent currently is by its observations.",
+    :evidence
+    [{:id "e-e9c000da-7ebf-4a67-9d7b-f35db6d3443c",
+      :via :text,
+      :query
+      "free-energy-as-tick-scalar G-per-candidate is not a substitute",
+      :excerpt
+      "And G-per-candidate is not a substitute: G is about the future; F is about the present."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/free-energy-as-tick-scalar.flexiarg"
+    "library/aif/expected-free-energy-scorecard.flexiarg"],
+   :evidence-ids ["e-e9c000da-7ebf-4a67-9d7b-f35db6d3443c"]}
+  {:attestation
+   {:edge
+    {:from "aif/hierarchical-and-temporal-depth",
+     :to "aif/policy-precision-commitment-temperature",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/hierarchical-and-temporal-depth"
+     "aif/policy-precision-commitment-temperature"],
+    :cited
+    "(3) longer policies use a named temporal discount of their own, rather than overloading the commitment dial (R14) to stand in for time preference.",
+    :evidence
+    [{:id "e-537dec82-822e-44a0-857d-40694bbf02e8",
+      :via :text,
+      :query "overloading the commitment dial R14 temporal discount",
+      :excerpt
+      "the commitment dial doing duty as a temporal discount, a tactical outcome read as if it were strategic evidence — collapses the levels back into one"}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/hierarchical-and-temporal-depth.flexiarg"
+    "library/aif/policy-precision-commitment-temperature.flexiarg"],
+   :evidence-ids ["e-537dec82-822e-44a0-857d-40694bbf02e8"]}
+  {:attestation
+   {:edge
+    {:from "aif/interoceptive-tripwires",
+     :to "aif/structured-observation-vector",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/interoceptive-tripwires"
+     "aif/structured-observation-vector"],
+    :cited
+    "The loop's observation channel is task-level only: it observes the world it acts on (job outcomes, verdicts, witnesses, QA), while its own machinery is a hidden state with no likelihood mapping.",
+    :evidence
+    [{:id "e-ef28b7b2-cb6d-4a1c-8c08-12b36a08a796",
+      :via :text,
+      :query "interoceptive-tripwires freeze record park summon",
+      :excerpt
+      "The loop's observation channel is task-level only: it observes the world it acts on (job outcomes, verdicts, witnesses, QA), while its own machinery is a hidden state with no likelihood mapping."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/interoceptive-tripwires.flexiarg"
+    "library/aif/structured-observation-vector.flexiarg"],
+   :evidence-ids ["e-ef28b7b2-cb6d-4a1c-8c08-12b36a08a796"]}
+  {:attestation
+   {:edge
+    {:from "aif/no-self-certification",
+     :to "aif/interoceptive-tripwires",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read ["aif/no-self-certification" "aif/interoceptive-tripwires"],
+    :cited
+    "The only thing that breaks it is a referent the maker had no hand in: an external witness, a settled re-read of a world it does not control, a tag it cannot forge.",
+    :evidence
+    [{:id "e-75ef042f-5000-4e48-aec1-f70fd23e12a1",
+      :via :text,
+      :query
+      "no-self-certification untagged never counts verdict manufactured",
+      :excerpt
+      "Enforce this STRUCTURALLY — with tags the apparatus cannot fake (independence, measured-vs-fallback, settled-vs-transient) and a verdict that counts only those tags — not by vigilance."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/no-self-certification.flexiarg"
+    "library/aif/interoceptive-tripwires.flexiarg"],
+   :evidence-ids ["e-75ef042f-5000-4e48-aec1-f70fd23e12a1"]}
+  {:attestation
+   {:edge
+    {:from "aif/placeholder-is-load-bearing",
+     :to "aif/term-to-channel-traceability",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/placeholder-is-load-bearing"
+     "aif/term-to-channel-traceability"],
+    :cited
+    "Before deleting, replay the deletion against the arena including its placeholders and defaults; sequence deletions after placeholder handling; mark every placeholder self-describing (provenance field), never bare.",
+    :evidence
+    [{:id "e-9ed973f1-edbe-4073-a7c4-25aabbec4a60",
+      :via :text,
+      :query
+      "placeholder-is-load-bearing honest map flattering counter",
+      :excerpt
+      "mark every placeholder self-describing (provenance field), never bare."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/placeholder-is-load-bearing.flexiarg"
+    "library/aif/term-to-channel-traceability.flexiarg"],
+   :evidence-ids ["e-9ed973f1-edbe-4073-a7c4-25aabbec4a60"]}
+  {:attestation
+   {:edge
+    {:from "aif/posterior-variance-as-epistemic-value",
+     :to "aif/predictive-entropy-as-ambiguity",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/posterior-variance-as-epistemic-value"
+     "aif/predictive-entropy-as-ambiguity"],
+    :cited
+    "Relation to `predictive-entropy-as-ambiguity`: THAT pattern is the genuine ambiguity (+) term (forward observation-distribution entropy, an irreducible-noise cost). THIS is the EIG (−) term (reducible model uncertainty). Distinct quantities, distinct signs — never collapse them into one leg.",
+    :evidence
+    [{:id "e-a4e4674e-d764-417a-a432-f93f2e2f86c2",
+      :via :text,
+      :query
+      "posterior-variance-as-epistemic-value predictive-entropy-as-ambiguity distinct signs collapse",
+      :excerpt
+      "Distinct quantities, distinct signs — never collapse them into one leg."}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/aif/posterior-variance-as-epistemic-value.flexiarg"
+    "library/aif/predictive-entropy-as-ambiguity.flexiarg"],
+   :evidence-ids ["e-a4e4674e-d764-417a-a432-f93f2e2f86c2"]}
+  {:attestation
+   {:edge
+    {:from "problems/tension-proposes-candidates",
+     :to "futon-theory/reverse-morphogenesis",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["problems/tension-proposes-candidates"
+     "futon-theory/reverse-morphogenesis"],
+    :cited
+    "Earlier work on a metric over substrate-2 concluded that \"morphogenesis\" is a more useful way of thinking about where work needs to happen than \"tension\" (Joe, 2026-08-25), and futon3/library/futon-theory/reverse-morphogenesis carries that method.",
+    :evidence
+    [{:id "e-8982be47-a022-47c7-8e6b-75322e801d60",
+      :via :text,
+      :query
+      "tension proposer reverse-morphogenesis candidate source bounded",
+      :excerpt
+      "\"morphogenesis\" is a more useful way of thinking about where work needs to happen than \"tension\" (Joe, 2026-08-25), and futon3/library/futon-theory/reverse-morphogenesis carries that method"}],
+    :rung 2,
+    :state :proposed},
+   :pattern-files
+   ["library/problems/tension-proposes-candidates.flexiarg"
+    "library/futon-theory/reverse-morphogenesis.flexiarg"],
+   :evidence-ids ["e-8982be47-a022-47c7-8e6b-75322e801d60"]}],
+ :unsampled
+ {:aif
+  [{:attestation
+    {:edge
+     {:from "aif/predictive-coding-belief-update",
+      :to "futon-theory/four-types",
+      :kind :see-also},
+     :by "zai-2",
+     :at "2026-08-30",
+     :read
+     ["aif/predictive-coding-belief-update" "futon-theory/four-types"],
+     :cited
+     "The mean rule realises predictive coding (Friston et al.); the variance rule keeps belief uncertainty in a meaningful regime where ambiguity terms in EFE stay informative.",
+     :evidence
+     [{:id "e-03b5a03b-e30b-4d78-89f8-1fd726fcb6d1",
+       :via :tag,
+       :query
+       "exact export occurrence: aif/predictive-coding-belief-update",
+       :excerpt
+       "| 3 | `aif/predictive-coding-belief-update` | The four turns | R/E/P/L maps onto predictive-coding belief-update mechanics |\n| 4 | `futon-theory/four-types` | Four-types cycle | Canonical pheno / geno / exo / xeno from which the bit-shift evo"}],
+     :rung 1,
+     :state :proposed},
+    :pattern-files
+    ["library/aif/predictive-coding-belief-update.flexiarg"
+     "library/futon-theory/four-types.flexiarg"],
+    :evidence-ids ["e-03b5a03b-e30b-4d78-89f8-1fd726fcb6d1"]}
+   {:attestation
+    {:edge
+     {:from "aif/predictive-entropy-as-ambiguity",
+      :to "aif/shared-kernel-predictive-forward-model",
+      :kind :why},
+     :by "zai-2",
+     :at "2026-08-30",
+     :read
+     ["aif/predictive-entropy-as-ambiguity"
+      "aif/shared-kernel-predictive-forward-model"],
+     :cited
+     "Verify your forward model returns predicted variance per observation channel. If not, the entropy isn't computable.",
+     :evidence
+     [{:id "e-d9ee0a42-9a13-4eae-aab4-53947b4cb33f",
+       :via :text,
+       :query
+       "predictive-entropy-as-ambiguity forward model predicted variance per channel entropy computable",
+       :excerpt
+       "Verify your forward model returns predicted variance per observation channel. If not, the entropy isn't computable."}],
+     :rung 2,
+     :state :proposed},
+    :pattern-files
+    ["library/aif/predictive-entropy-as-ambiguity.flexiarg"
+     "library/aif/shared-kernel-predictive-forward-model.flexiarg"],
+    :evidence-ids ["e-d9ee0a42-9a13-4eae-aab4-53947b4cb33f"]}
+   {:attestation
+    {:edge
+     {:from "aif/scheduled-observer-entrypoint",
+      :to "aif/interoceptive-tripwires",
+      :kind :see-also},
+     :by "zai-2",
+     :at "2026-08-30",
+     :read
+     ["aif/scheduled-observer-entrypoint"
+      "aif/interoceptive-tripwires"],
+     :cited
+     "Add the liveness assertion to the tick harness: `zero-delta-over-N` → flag, with the run count surfaced (never silently green).",
+     :evidence
+     [{:id "e-4c79ce10-17fa-42de-923d-416814201f32",
+       :via :text,
+       :query
+       "scheduled-observer-entrypoint liveness assertion zero-delta-over-N no-op trap",
+       :excerpt
+       "Add the liveness assertion to the tick harness: `zero-delta-over-N` → flag, with the run count surfaced (never silently green)."}],
+     :rung 2,
+     :state :proposed},
+    :pattern-files
+    ["library/aif/scheduled-observer-entrypoint.flexiarg"
+     "library/aif/interoceptive-tripwires.flexiarg"],
+    :evidence-ids ["e-4c79ce10-17fa-42de-923d-416814201f32"]}
+   {:attestation
+    {:edge
+     {:from "aif/shared-kernel-predictive-forward-model",
+      :to "aif/temporal-depth-beyond-greedy",
+      :kind :how},
+     :by "zai-2",
+     :at "2026-08-30",
+     :read
+     ["aif/shared-kernel-predictive-forward-model"
+      "aif/temporal-depth-beyond-greedy"],
+     :cited
+     "Add a second arity for the forward-model seam: `(kernel state ext seed opts candidate-actions)` — supplied actions skip live action selection.",
+     :evidence
+     [{:id "e-0e34f09f-6619-4899-80d3-44efd4527c66",
+       :via :text,
+       :query
+       "shared-kernel bit-equivalence kernel wrapper pure deterministic second arity",
+       :excerpt
+       "The predictive forward model then becomes a thin probabilistic wrapper around the same kernel: call kernel with candidate, add Gaussian noise (or other principled uncertainty representation), produce next-state distribution."}],
+     :rung 2,
+     :state :proposed},
+    :pattern-files
+    ["library/aif/shared-kernel-predictive-forward-model.flexiarg"
+     "library/aif/temporal-depth-beyond-greedy.flexiarg"],
+    :evidence-ids ["e-0e34f09f-6619-4899-80d3-44efd4527c66"]}
+   {:attestation
+    {:edge
+     {:from "aif/status-gated-belief-update",
+      :to "aif/free-energy-as-tick-scalar",
+      :kind :see-also},
+     :by "zai-2",
+     :at "2026-08-30",
+     :read
+     ["aif/status-gated-belief-update"
+      "aif/free-energy-as-tick-scalar"],
+     :cited "The trace record emits :mu for all instances every tick.",
+     :evidence
+     [{:id "e-6e323c36-fabd-44ea-84b4-4c0f83a485f9",
+       :via :text,
+       :query
+       "status-gated-belief-update engagement status observation availability truncated freezes",
+       :excerpt
+       "The trace record emits :mu for all instances every tick."}],
+     :rung 2,
+     :state :proposed},
+    :pattern-files
+    ["library/aif/status-gated-belief-update.flexiarg"
+     "library/aif/free-energy-as-tick-scalar.flexiarg"],
+    :evidence-ids ["e-6e323c36-fabd-44ea-84b4-4c0f83a485f9"]}
+   {:attestation
+    {:edge
+     {:from "aif/structure-learning-by-model-reduction",
+      :to "aif/currency-before-merge",
+      :kind :see-also},
+     :by "zai-2",
+     :at "2026-08-30",
+     :read
+     ["aif/structure-learning-by-model-reduction"
+      "aif/currency-before-merge"],
+     :cited
+     "Respect `currency-before-merge`: a merge that collapses two concepts is a STRUCTURAL edit, not merely a count sum — it must honour any accumulation-currency invariants downstream.",
+     :evidence
+     [{:id "e-5cd76000-beac-4607-ae73-a5b2a4a0a085",
+       :via :text,
+       :query
+       "structure-learning-by-model-reduction Bayesian model reduction Dirichlet Bayes factor",
+       :excerpt
+       "Respect `currency-before-merge`: a merge that collapses two concepts is a STRUCTURAL edit, not merely a count sum — it must honour any accumulation-currency invariants downstream."}],
+     :rung 2,
+     :state :proposed},
+    :pattern-files
+    ["library/aif/structure-learning-by-model-reduction.flexiarg"
+     "library/aif/currency-before-merge.flexiarg"],
+    :evidence-ids ["e-5cd76000-beac-4607-ae73-a5b2a4a0a085"]}
+   {:attestation
+    {:edge
+     {:from "aif/structured-observation-vector",
+      :to "aif/evidence-precision-registry",
+      :kind :see-also},
+     :by "zai-2",
+     :at "2026-08-30",
+     :read
+     ["aif/structured-observation-vector"
+      "aif/evidence-precision-registry"],
+     :cited
+     "A stable observation vector is the prerequisite for meaningful precision control and policy scoring.",
+     :evidence
+     [{:id "e-264d1c43-e694-4488-b475-dd46f542aab1",
+       :via :text,
+       :query
+       "structured-observation-vector typed normalized feature map precision control policy scoring",
+       :excerpt
+       "A stable observation vector is the prerequisite for meaningful precision control and policy scoring."}],
+     :rung 2,
+     :state :proposed},
+    :pattern-files
+    ["library/aif/structured-observation-vector.flexiarg"
+     "library/aif/evidence-precision-registry.flexiarg"],
+    :evidence-ids ["e-264d1c43-e694-4488-b475-dd46f542aab1"]}
+   {:attestation
+    {:edge
+     {:from "aif/temporal-depth-beyond-greedy",
+      :to "aif/hierarchical-and-temporal-depth",
+      :kind :see-also},
+     :by "zai-2",
+     :at "2026-08-30",
+     :read
+     ["aif/temporal-depth-beyond-greedy"
+      "aif/hierarchical-and-temporal-depth"],
+     :cited
+     "Extend G(π) evaluation to a horizon H > 1 with a temporal discount, AND introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them.",
+     :evidence
+     [{:id "e-0e2cda23-9d80-4cff-ac57-a96372582495",
+       :via :text,
+       :query
+       "temporal-depth-beyond-greedy rollout horizon fast slow two-timescale hierarchy",
+       :excerpt
+       "introduce a two-timescale hierarchy: a slow (strategic) loop that updates priors/preferences and a fast (tactical) loop that acts against them"}],
+     :rung 2,
+     :state :proposed},
+    :pattern-files
+    ["library/aif/temporal-depth-beyond-greedy.flexiarg"
+     "library/aif/hierarchical-and-temporal-depth.flexiarg"],
+    :evidence-ids ["e-0e2cda23-9d80-4cff-ac57-a96372582495"]}
+   {:attestation
+    {:edge
+     {:from "aif/term-to-channel-traceability",
+      :to "aif/expected-free-energy-scorecard",
+      :kind :how},
+     :by "zai-2",
+     :at "2026-08-30",
+     :read
+     ["aif/term-to-channel-traceability"
+      "aif/expected-free-energy-scorecard"],
+     :cited
+     "Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score.",
+     :evidence
+     [{:id "e-e8e638c6-f673-4c56-b0e1-ae0f267464bc",
+       :via :text,
+       :query
+       "term-to-channel-traceability dominant-channels provenance term-id final-contribution",
+       :excerpt
+       "Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score."}],
+     :rung 2,
+     :state :proposed},
+    :pattern-files
+    ["library/aif/term-to-channel-traceability.flexiarg"
+     "library/aif/expected-free-energy-scorecard.flexiarg"],
+    :evidence-ids ["e-e8e638c6-f673-4c56-b0e1-ae0f267464bc"]}
+   {:attestation
+    {:edge
+     {:from "aif/two-layer-calibration",
+      :to "aif/no-self-certification",
+      :kind :why},
+     :by "zai-2",
+     :at "2026-08-30",
+     :read ["aif/two-layer-calibration" "aif/no-self-certification"],
+     :cited
+     "The split was forced by discovering the calibration was self-certifying (`[[aif/no-self-certification]]`).",
+     :evidence
+     [{:id "e-09e5d48a-26a4-4d7c-84cf-9a36482afe1c",
+       :via :text,
+       :query
+       "two-layer-calibration L1 G-vs-G dynamics L2 witnessed outcome prior equals value",
+       :excerpt
+       "The split was forced by discovering the calibration was self-certifying (`[[aif/no-self-certification]]`)."}],
+     :rung 2,
+     :state :proposed},
+    :pattern-files
+    ["library/aif/two-layer-calibration.flexiarg"
+     "library/aif/no-self-certification.flexiarg"],
+    :evidence-ids ["e-09e5d48a-26a4-4d7c-84cf-9a36482afe1c"]}
+   {:attestation
+    {:edge
+     {:from "aif/valuation-reads-the-paperwork",
+      :to "aif/evidence-precision-registry",
+      :kind :see-also},
+     :by "zai-2",
+     :at "2026-08-30",
+     :read
+     ["aif/valuation-reads-the-paperwork"
+      "aif/evidence-precision-registry"],
+     :cited
+     "Persist, next to every score, the identity of the text it conditioned on (content hash or verbatim snapshot + date).",
+     :evidence
+     [{:id "e-e44ee550-b236-4497-b765-e3b74aed4540",
+       :via :text,
+       :query
+       "valuation-reads-the-paperwork content hash or verbatim snapshot date scoring",
+       :excerpt
+       "Persist, next to every score, the identity of the text it conditioned on (content hash or verbatim snapshot + date)."}],
+     :rung 2,
+     :state :proposed},
+    :pattern-files
+    ["library/aif/valuation-reads-the-paperwork.flexiarg"
+     "library/aif/evidence-precision-registry.flexiarg"],
+    :evidence-ids ["e-e44ee550-b236-4497-b765-e3b74aed4540"]}]}}

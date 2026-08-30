@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:58:18.798936287Z",
+ :turn 19,
+ :pattern "aif/off-continuity-null-discriminates",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-019.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/off-continuity-null-discriminates",
+     :to "aif/measurement-window-hygiene",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/off-continuity-null-discriminates"
+     "aif/measurement-window-hygiene"],
+    :cited
+    "Mask-in still requires the null be CLEAN: settled, two distinct-as-of scans agreeing within ε ([[measurement-window-hygiene]]); a confounded null discriminates nothing.",
+    :evidence
+    [{:id "e-24708ed2-3074-4253-b9a5-17ac92c33989",
+      :via :text,
+      :query
+      "off-continuity null discriminates clean-target wall dual prediction",
+      :excerpt
+      "Mask-in still requires the null be CLEAN: settled, two distinct-as-of scans agreeing within ε ([[measurement-window-hygiene]]); a confounded null discriminates nothing."}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

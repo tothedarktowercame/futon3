@@ -1,0 +1,14 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:47:44.596052825Z",
+ :turn 23,
+ :pattern "writing-coherence/plain-language-thesis",
+ :gate
+ "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-023.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "writing-coherence/plain-language-thesis",
+    :note
+    "Text queries run (rung 2, port 7073 text-search, limit 5, hydrate): 'plain language thesis standalone reader jargon', 'evidence apex readable standalone top-level claim', 'State Top-Level Claims in Plain Language', 'standalone-reader test paste the sentence alone'. Findings and rejections: (1) Every non-self hit is a futon3a embeddings context-retrieval (e-2756f962, e-18b48747, e-6d22077c, e-5111f1af) co-ranking this pattern with varied targets (stack-coherence/evidence-ledger, meta/layering-design-into-argument, ai4ci/pilot-feasibility, orchestration patterns) — under the proposal-is-not-evidence invariant, embedding co-retrieval cannot support a typed edge, and the co-retrieved items are topically unrelated to standalone-claim readability. (2) All topically adjacent linkages are already recorded directives: the pattern's own @references name meta-lede, missing-mechanism, and unearned-essentially; incoming @references come from meta-title, first-mention-undischarged, meet-the-reader-where-they-are (each explicitly distinguishing itself from this pattern), and ukrns/distinguish-delivery-from-practice-change and ukrns/separate-direct-indirect-and-out-of-scope-levers. (3) Remaining hits were self-referential transcripts of this spider session (e-3289ec4e, e-7db65ab8). No rung-1 tag evidence tied this pattern to an unlinked flexiarg target."}]}}

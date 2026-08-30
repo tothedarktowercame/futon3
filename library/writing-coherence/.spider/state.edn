@@ -1,7 +1,8 @@
 {:schema 1,
  :paused-reason nil,
+ :recovered-at "2026-08-30T14:28:51.605408498Z",
  :checkpoint 1,
- :started-at "2026-08-30T12:26:24.911848173Z",
+ :started-at "2026-08-30T14:23:54.038849053Z",
  :patterns
  ["writing-coherence/balanced-pair-padding"
   "writing-coherence/citation-density-load-bearing-claim"
@@ -50,15 +51,14 @@
   "writing-coherence/throat-clearing-close"
   "writing-coherence/triad-inflation"
   "writing-coherence/unearned-essentially"],
- :evidence-validation-restart-at "2026-08-30T12:36:08.296437613Z",
  :section "writing-coherence",
  :phase :complete,
  :current-pattern nil,
  :failure-fingerprint nil,
- :turn 33,
- :checkpoint-repaired-after-malformed-absence true,
+ :turn 24,
  :last-green-gate
- "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-033.edn",
+ "/home/joe/code/futon3/./library/writing-coherence/.spider/gates/turn-024.edn",
  :consecutive-same-failures 0,
- :finished-at "2026-08-30T12:54:32.004460445Z",
+ :recovery :interrupted-turn-no-completion,
+ :finished-at "2026-08-30T14:54:21.893174714Z",
  :seat "zai-1"}

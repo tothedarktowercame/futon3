@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T15:09:07.533222977Z",
+ :turn 31,
+ :pattern "aif/term-to-channel-traceability",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-031.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/term-to-channel-traceability",
+     :to "aif/expected-free-energy-scorecard",
+     :kind :how},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/term-to-channel-traceability"
+     "aif/expected-free-energy-scorecard"],
+    :cited
+    "Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score.",
+    :evidence
+    [{:id "e-e8e638c6-f673-4c56-b0e1-ae0f267464bc",
+      :via :text,
+      :query
+      "term-to-channel-traceability dominant-channels provenance term-id final-contribution",
+      :excerpt
+      "Require every G term contribution to declare the observation keys it consumed, the precision channels applied, and the intermediate values used to compute that term, and persist this mapping alongside the score."}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

@@ -1,15 +1,15 @@
 {:schema 1,
  :event :dispatch-completion,
- :at "2026-08-30T12:49:17.445778395Z",
+ :at "2026-08-30T15:00:22.421432272Z",
  :turn 21,
- :pattern "aif/experimental-comparison-of-EFE-variants",
+ :pattern "aif/policy-precision-commitment-temperature",
  :seat "zai-2",
  :wire
  {:ok true,
-  :job-id "invoke-1788094101956-3855-4e8b55a9",
+  :job-id "invoke-1788101983631-4239-bc2948b0",
   :response
-  "[{:edge {:from \"aif/experimental-comparison-of-EFE-variants\" :to \"aif/expected-free-energy-scorecard\" :kind :see-also} :cited \"Term-set parity: when comparing variants of one term within a larger EFE that has *other* terms (or other patterns the term aggregates over), preserve the larger term set across variants.\" :evidence [{:id \"e-6bc65997-38b4-44b4-913b-a5a67c0d4f72\" :via :text :query \"experimental-comparison-of-EFE-variants expected-free-energy-scorecard term variant\" :excerpt \"**Term-set parity**: when comparing variants of one term within a larger EFE that has *other* terms (or other patterns the term aggregates over), preserve the larger term set across variants.\"}] :rung 1 :read [\"aif/experimental-comparison-of-EFE-variants\" \"aif/expected-free-energy-scorecard\"]}]",
+  "[{:edge {:from \"aif/policy-precision-commitment-temperature\" :to \"aif/expected-free-energy-scorecard\" :kind :see-also} :cited \"Maintain (tau) as a commitment temperature that modulates softmax over (-G/tau), coupled to diagnostic signals (recent regressions, uncertainty in (mu), contradiction rate, time pressure, repeated test failures).\" :evidence [{:id \"e-f2a87cbe-794e-4f83-b465-600c988887f4\" :via :text :query \"policy-precision-commitment-temperature softmax abstain discriminability G-spread\" :excerpt \"Maintain a commitment temperature that modulates how strongly the policy commits to low-G choices.\"}] :rung 2 :read [\"aif/policy-precision-commitment-temperature\" \"aif/expected-free-energy-scorecard\"]}]",
   :agent-id "zai-2",
   :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
  :response
- "[{:edge {:from \"aif/experimental-comparison-of-EFE-variants\" :to \"aif/expected-free-energy-scorecard\" :kind :see-also} :cited \"Term-set parity: when comparing variants of one term within a larger EFE that has *other* terms (or other patterns the term aggregates over), preserve the larger term set across variants.\" :evidence [{:id \"e-6bc65997-38b4-44b4-913b-a5a67c0d4f72\" :via :text :query \"experimental-comparison-of-EFE-variants expected-free-energy-scorecard term variant\" :excerpt \"**Term-set parity**: when comparing variants of one term within a larger EFE that has *other* terms (or other patterns the term aggregates over), preserve the larger term set across variants.\"}] :rung 1 :read [\"aif/experimental-comparison-of-EFE-variants\" \"aif/expected-free-energy-scorecard\"]}]"}
+ "[{:edge {:from \"aif/policy-precision-commitment-temperature\" :to \"aif/expected-free-energy-scorecard\" :kind :see-also} :cited \"Maintain (tau) as a commitment temperature that modulates softmax over (-G/tau), coupled to diagnostic signals (recent regressions, uncertainty in (mu), contradiction rate, time pressure, repeated test failures).\" :evidence [{:id \"e-f2a87cbe-794e-4f83-b465-600c988887f4\" :via :text :query \"policy-precision-commitment-temperature softmax abstain discriminability G-spread\" :excerpt \"Maintain a commitment temperature that modulates how strongly the policy commits to low-G choices.\"}] :rung 2 :read [\"aif/policy-precision-commitment-temperature\" \"aif/expected-free-energy-scorecard\"]}]"}

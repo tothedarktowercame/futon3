@@ -1,0 +1,22 @@
+{:response
+ "[{:edge {:from \"problems/per-tick-mismatch-instruments-outer-loop-gain\" :to \"coordination/ARGUMENT\" :kind :see-also} :cited \"Record the mismatch at every tick, route it into the outer-loop update, and report whether it changes the subsequent reward action.\" :evidence [{:id \"e-9525e9ac-5a89-478a-88c7-0117f0e4bb3d\" :via :text :query \"per-tick-mismatch-instruments-outer-loop-gain\" :excerpt \"{:id \\\"coordination/ARGUMENT\\\", :title \\\"Coordination Argument (Gate Pipeline)\\\", :score 0.35, :rank 1}\"}] :rung 2 :read [\"problems/per-tick-mismatch-instruments-outer-loop-gain\" \"coordination/ARGUMENT\"]}]",
+ :schema 1,
+ :wire
+ {:ok true,
+  :job-id "invoke-1788100776613-4104-2f114549",
+  :response
+  "[{:edge {:from \"problems/per-tick-mismatch-instruments-outer-loop-gain\" :to \"coordination/ARGUMENT\" :kind :see-also} :cited \"Record the mismatch at every tick, route it into the outer-loop update, and report whether it changes the subsequent reward action.\" :evidence [{:id \"e-9525e9ac-5a89-478a-88c7-0117f0e4bb3d\" :via :text :query \"per-tick-mismatch-instruments-outer-loop-gain\" :excerpt \"{:id \\\"coordination/ARGUMENT\\\", :title \\\"Coordination Argument (Gate Pipeline)\\\", :score 0.35, :rank 1}\"}] :rung 2 :read [\"problems/per-tick-mismatch-instruments-outer-loop-gain\" \"coordination/ARGUMENT\"]}]",
+  :agent-id "zai-2",
+  :session-id "zai-69f7bc24-29cc-4b50-a77d-a4f3b7f7f493"},
+ :failure
+ {:message "invalid or duplicate edge item",
+  :data
+  {:item
+   {:from "problems/per-tick-mismatch-instruments-outer-loop-gain",
+    :to "coordination/ARGUMENT",
+    :kind :see-also}}},
+ :turn 3,
+ :event :seat-output-invalid,
+ :at "2026-08-30T14:40:46.190166052Z",
+ :attempt 2,
+ :pattern "problems/per-tick-mismatch-instruments-outer-loop-gain"}

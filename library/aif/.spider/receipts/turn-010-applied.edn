@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:47:28.524804078Z",
+ :turn 10,
+ :pattern "aif/experimental-comparison-of-EFE-variants",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-010.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/experimental-comparison-of-EFE-variants",
+     :to "aif/predictive-entropy-as-ambiguity",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/experimental-comparison-of-EFE-variants"
+     "aif/predictive-entropy-as-ambiguity"],
+    :cited
+    "Some EFE terms (notably pattern-EFE-style terms, info-gain composites, multi-source ambiguity terms) have multiple plausible operationalisations.",
+    :evidence
+    [{:id "e-bc58f837-0de6-4d09-9e64-cbf931592556",
+      :via :text,
+      :query
+      "experimental-comparison-of-EFE-variants term variant ambiguity predictive entropy",
+      :excerpt
+      "Some EFE terms (notably pattern-EFE-style terms, info-gain composites, multi-source ambiguity terms) have multiple plausible operationalisations."}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

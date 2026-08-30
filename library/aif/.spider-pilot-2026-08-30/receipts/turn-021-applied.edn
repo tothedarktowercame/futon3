@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T12:49:17.862657433Z",
+ :turn 21,
+ :pattern "aif/experimental-comparison-of-EFE-variants",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-021.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/experimental-comparison-of-EFE-variants",
+     :to "aif/expected-free-energy-scorecard",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/experimental-comparison-of-EFE-variants"
+     "aif/expected-free-energy-scorecard"],
+    :cited
+    "Term-set parity: when comparing variants of one term within a larger EFE that has *other* terms (or other patterns the term aggregates over), preserve the larger term set across variants.",
+    :evidence
+    [{:id "e-6bc65997-38b4-44b4-913b-a5a67c0d4f72",
+      :via :text,
+      :query
+      "experimental-comparison-of-EFE-variants expected-free-energy-scorecard term variant",
+      :excerpt
+      "**Term-set parity**: when comparing variants of one term within a larger EFE that has *other* terms (or other patterns the term aggregates over), preserve the larger term set across variants."}],
+    :rung 1,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

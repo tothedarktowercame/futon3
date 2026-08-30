@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-08-30T14:52:19.810638004Z",
+ :turn 14,
+ :pattern "aif/hierarchical-budget-aware-action-selection",
+ :gate
+ "/home/joe/code/futon3/./library/aif/.spider/gates/turn-014.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "aif/hierarchical-budget-aware-action-selection",
+     :to "budgeted-action-selection/mana-gated-work",
+     :kind :see-also},
+    :by "zai-2",
+    :at "2026-08-30",
+    :read
+    ["aif/hierarchical-budget-aware-action-selection"
+     "budgeted-action-selection/mana-gated-work"],
+    :cited
+    "A multi-agent (or multi-band, or hierarchical) AIF setup gives each agent or sub-agent local autonomy: each scores candidate actions and selects via softmax. But the candidates often consume shared resources — setup budget for capability activation, engagement-budget for per-instance participation, attention budget across the agent's responsibility area.",
+    :evidence
+    [{:id "e-06df1277-45cc-45be-98c6-6d20b2d640d1",
+      :via :text,
+      :query
+      "hierarchical-budget resolve-conflicts feasibility-penalty band priority",
+      :excerpt
+      "each scores candidate actions and selects via softmax. But the candidates often consume shared resources — setup budget for capability activation, engagement-budget for per-instance participation, attention budget across the agent's responsibility area."}],
+    :rung 2,
+    :state :proposed}],
+  :proposals [],
+  :absences []}}

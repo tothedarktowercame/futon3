@@ -42,6 +42,8 @@
   (and (pos? (:test/exit report)) (contains? (reasons report) reason)))
 
 (def snapshot-path "test/fixtures/library-graph/snapshot.edn")
+(def evidence-records-path "test/fixtures/library-graph/evidence-records.edn")
+(def evidence-pin-path "test/fixtures/library-graph/evidence-records.pin.edn")
 
 (defn valid-snapshot? [snapshot]
   (let [census (:census snapshot)
@@ -128,13 +130,23 @@
   (let [report (lint/lint
                 {:library "library" :section "aif"
                  :baseline "library/.spider/baseline-edges.edn"
-                 :attestations "library/aif/attestations.edn"})]
-    (println "live library graph evidence"
+                 :attestations "library/aif/attestations.edn"
+                 :evidence-records evidence-records-path})]
+    (println "pinned library graph evidence"
              (pr-str (select-keys (:summary report) [:files :edges-by-kind])))
     (is (true? (get-in report [:summary :pass?])))
     (is (= lint/edge-kinds (set (keys (get-in report [:summary :edges-by-kind])))))
     (is (zero? (get-in report [:summary :unresolved-targets])))
     (is (zero? (get-in report [:summary :why-cycles])))))
+
+(deftest pinned-evidence-records-have-content-pin-and-falsifier
+  (let [serialized (slurp evidence-records-path)
+        records (edn/read-string serialized)
+        pin (edn/read-string (slurp evidence-pin-path))]
+    (is (= 56 (:record-count pin) (count records)))
+    (is (= (:content-sha256 pin) (lint/sha256 serialized)))
+    (is (not= (:content-sha256 pin) (lint/sha256 (str serialized "\nmutation")))
+        "an incoherent/mutated fixture must not satisfy its content pin")))
 
 (when (= *file* (System/getProperty "babashka.file"))
   (let [{:keys [fail error]} (run-tests)]

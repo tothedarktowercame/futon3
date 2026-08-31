@@ -174,17 +174,51 @@
      :repository (vec (sort repository))
      :scenarios scenarios)))
 
-(defn -main [& _]
-  (let [result (report)]
-    (spit output-path (with-out-str (pprint/pprint result)))
-    (doseq [{:keys [treatment disposition recall acting selected-union]}
-            (:scenarios result)]
-      (println (format "%s/%s recall %s acting=%s selected=%s"
-                       (name treatment) (name disposition) (:fraction recall)
-                       (pr-str acting) (pr-str selected-union))))
-    (println (format "F4 %d/%d; drift mismatches %d; wrote %s"
-                     (count (:scenarios result)) (count (:scenarios result))
-                     (get-in result [:drift :mismatch-count]) output-path))
-    ;; Dependencies loaded by the runner use Clojure agent pools.  This command
-    ;; is a batch report, so do not keep its JVM alive after the report commits.
-    (shutdown-agents)))
+(defn require-zero-drift! [drift]
+  (when (pos? (:mismatch-count drift 0))
+    (throw (ex-info "find-snatch antecedent drift"
+                    {:finding :antecedent-drift
+                     :mismatch-count (:mismatch-count drift)
+                     :mismatches (:mismatches drift)})))
+  drift)
+
+(defn -main [& args]
+  (let [negative? (some #{"--negative"} args)]
+    (if negative?
+      ;; Synthetic clean baseline plus one mutation: the control does not rely
+      ;; on today's already-dirty live population to demonstrate rejection.
+      (try
+        (require-zero-drift!
+         {:mismatch-count 1
+          :mismatches [{:pattern :negative-control :clause :if
+                        :file-text "authored" :runner-text "mutated"}]})
+        (println "find-snatch: FAIL negative drift mutation slipped exit-convention=0-pass/1-fail")
+        (shutdown-agents)
+        (System/exit 2)
+        (catch clojure.lang.ExceptionInfo e
+          (println (str "find-snatch: PASS negative drift mutation rejected"
+                        " finding=" (name (:finding (ex-data e)))
+                        " exit-convention=0-pass/1-fail"))
+          (shutdown-agents)
+          (System/exit 0)))
+      (let [result (report)]
+        (spit output-path (with-out-str (pprint/pprint result)))
+        (doseq [{:keys [treatment disposition recall acting selected-union]}
+                (:scenarios result)]
+          (println (format "%s/%s recall %s acting=%s selected=%s"
+                           (name treatment) (name disposition) (:fraction recall)
+                           (pr-str acting) (pr-str selected-union))))
+        (println (format "F4 %d/%d; drift mismatches %d; wrote %s"
+                         (count (:scenarios result)) (count (:scenarios result))
+                         (get-in result [:drift :mismatch-count]) output-path))
+        (try
+          (require-zero-drift! (:drift result))
+          (println "find-snatch: PASS exit-convention=0-pass/1-fail")
+          (shutdown-agents)
+          (System/exit 0)
+          (catch clojure.lang.ExceptionInfo e
+            (println (str "find-snatch: FAIL finding=" (name (:finding (ex-data e)))
+                          " mismatches=" (:mismatch-count (ex-data e))
+                          " exit-convention=0-pass/1-fail"))
+            (shutdown-agents)
+            (System/exit 1)))))))

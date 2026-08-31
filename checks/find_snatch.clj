@@ -184,8 +184,40 @@
                      :mismatches (:mismatches drift)})))
   drift)
 
+(defn require-find-laws! [result]
+  (doseq [round (mapcat :round-results (:scenarios result))]
+    (let [{:keys [selected receipts absence]} (:find round)
+          outside (set/difference (set selected) repository)]
+      (when (or (seq outside)
+                (and (empty? selected)
+                     (not= :no-pattern-addresses-this-tension absence)))
+        (throw (ex-info "F1 containment/absence failed" {:finding :f1})))
+      (when-not (every? #(contains? receipts %) selected)
+        (throw (ex-info "F2 selected pattern lacks receipt" {:finding :f2})))
+      (when-not (every? (fn [id]
+                          (let [receipt (get receipts id)]
+                            (and (not= :score-alone (:route receipt))
+                                 (string? (get-in receipt [:warrant :file])))))
+                        selected)
+        (throw (ex-info "F3 receipt is self-certifying" {:finding :f3})))))
+  result)
+
+(defn mutate-law [result kind]
+  (let [path [:scenarios 0 :round-results 0 :find]
+        selected (get-in result (conj path :selected))
+        id (first selected)]
+    (case kind
+      :f1 (update-in result (conj path :selected) conj :outside-repository)
+      :f2 (update-in result (conj path :receipts) dissoc id)
+      :f3 (assoc-in result (conj path :receipts id)
+                    {:route :score-alone :score 1.0})
+      result)))
+
 (defn -main [& args]
-  (let [negative? (some #{"--negative"} args)]
+  (let [negative-kind (cond (some #{"--negative-f1"} args) :f1
+                            (some #{"--negative-f2"} args) :f2
+                            (some #{"--negative-f3"} args) :f3)
+        negative? (some #{"--negative"} args)]
     (if negative?
       ;; Inject the forbidden second textual representation.  This is the
       ;; exact defect the positive path now excludes, not malformed EDN.
@@ -207,7 +239,15 @@
                         " exit-convention=0-pass/1-fail"))
           (shutdown-agents)
           (System/exit 0)))
-      (let [result (report)]
+      (let [base (report)
+            result (if negative-kind (mutate-law base negative-kind) base)]
+        (try
+          (require-zero-drift! (:drift result))
+          (require-find-laws! result)
+          (when negative-kind
+            (println "find-snatch: FAIL law mutation slipped exit-convention=0-pass/1-fail/2-mutation-slipped")
+            (shutdown-agents)
+            (System/exit 2))
         (spit output-path (with-out-str (pprint/pprint result)))
         (doseq [{:keys [treatment disposition recall acting selected-union]}
                 (:scenarios result)]
@@ -217,14 +257,13 @@
         (println (format "F4 %d/%d; drift mismatches %d; wrote %s"
                          (count (:scenarios result)) (count (:scenarios result))
                          (get-in result [:drift :mismatch-count]) output-path))
-        (try
-          (require-zero-drift! (:drift result))
           (println "find-snatch: PASS exit-convention=0-pass/1-fail")
           (shutdown-agents)
           (System/exit 0)
           (catch clojure.lang.ExceptionInfo e
-            (println (str "find-snatch: FAIL finding=" (name (:finding (ex-data e)))
+            (println (str "find-snatch: " (if negative-kind "PASS negative-control rejected " "FAIL finding=")
+                          (name (:finding (ex-data e)))
                           " mismatches=" (:mismatch-count (ex-data e))
                           " exit-convention=0-pass/1-fail"))
             (shutdown-agents)
-            (System/exit 1)))))))
+            (System/exit (if negative-kind 0 1))))))))

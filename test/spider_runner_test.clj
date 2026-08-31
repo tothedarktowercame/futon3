@@ -64,5 +64,6 @@
     (is (false? (lint/reflection-record? paper-turn workers "codex-20")))
     (is (true? (lint/clean-non-reflection-hit? paper-hit)))))
 
-(let [{:keys [fail error]} (run-tests)]
-  (System/exit (if (zero? (+ fail error)) 0 1)))
+(when (= *file* (System/getProperty "babashka.file"))
+  (let [{:keys [fail error]} (run-tests)]
+    (System/exit (if (zero? (+ fail error)) 0 1))))

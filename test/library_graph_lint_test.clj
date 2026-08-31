@@ -110,5 +110,6 @@
     (is (= {:why 86 :how 23 :see-also 125}
            (get-in report [:summary :edges-by-kind])))))
 
-(let [{:keys [fail error]} (run-tests)]
-  (System/exit (if (zero? (+ fail error)) 0 1)))
+(when (= *file* (System/getProperty "babashka.file"))
+  (let [{:keys [fail error]} (run-tests)]
+    (System/exit (if (zero? (+ fail error)) 0 1))))

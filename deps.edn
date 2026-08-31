@@ -32,7 +32,8 @@
            :test
            {:extra-paths ["test"]
             :extra-deps  {io.github.cognitect-labs/test-runner
-                          {:git/tag "v0.5.1" :git/sha "5e91ee0989d93115cfb5e15b6f242f5ec7ab762e"}}
+                          {:git/tag "v0.5.1" :git/sha "5e91ee0989d93115cfb5e15b6f242f5ec7ab762e"}
+                          babashka/process {:mvn/version "0.5.22"}}
             :exec-fn    cognitect.test-runner.api/test
             :exec-args  {:dirs ["test"]              ;; only this dir
                          ;; optional: only certain ns

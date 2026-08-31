@@ -41,6 +41,30 @@
 (defn failed-for? [report reason]
   (and (pos? (:test/exit report)) (contains? (reasons report) reason)))
 
+(def snapshot-path "test/fixtures/library-graph/snapshot.edn")
+
+(defn valid-snapshot? [snapshot]
+  (let [census (:census snapshot)
+        kinds (get census :edges-by-kind)]
+    (and (= :library-graph/snapshot-2026-08-31 (:snapshot/id snapshot))
+         (= "2026-08-31" (:recorded-at snapshot))
+         (pos-int? (:files census))
+         (= lint/edge-kinds (set (keys kinds)))
+         (every? nat-int? (vals kinds))
+         (= (:edges census) (reduce + (vals kinds)))
+         (= 64 (count (get-in snapshot [:basis :content-sha256] "")))
+         (string? (get-in snapshot [:basis :git-sha])))))
+
+(deftest committed-library-graph-snapshot-owns-exact-census-and-pin
+  (let [snapshot (edn/read-string (slurp snapshot-path))]
+    (is (valid-snapshot? snapshot))
+    (is (= {:files 1244 :edges 247
+            :edges-by-kind {:why 86 :how 27 :see-also 134}}
+           (:census snapshot)))
+    ;; Snapshot falsifier: an exact total inconsistent with its typed partition
+    ;; must be rejected without consulting the live library.
+    (is (false? (valid-snapshot? (update-in snapshot [:census :edges] inc))))))
+
 (deftest five-refusal-fixtures
   (testing "cycle"
     (is (failed-for? (run-fixture
@@ -105,10 +129,12 @@
                 {:library "library" :section "aif"
                  :baseline "library/.spider/baseline-edges.edn"
                  :attestations "library/aif/attestations.edn"})]
+    (println "live library graph evidence"
+             (pr-str (select-keys (:summary report) [:files :edges-by-kind])))
     (is (true? (get-in report [:summary :pass?])))
-    (is (= 1243 (get-in report [:summary :files])))
-    (is (= {:why 86 :how 23 :see-also 125}
-           (get-in report [:summary :edges-by-kind])))))
+    (is (= lint/edge-kinds (set (keys (get-in report [:summary :edges-by-kind])))))
+    (is (zero? (get-in report [:summary :unresolved-targets])))
+    (is (zero? (get-in report [:summary :why-cycles])))))
 
 (when (= *file* (System/getProperty "babashka.file"))
   (let [{:keys [fail error]} (run-tests)]

@@ -17,22 +17,16 @@
 ;; encoded — the point of the exercise is that some situations match nothing.
 (def collection
   [{:id :protect-the-unprotected-move :grain :design
-    :if-text "An exchange requires one party to part with something before receiving anything."
     :if (fn [s] (= :design (:grain s)))}
    {:id :preserve-the-right-to-abstain :grain :design
-    :if-text "A rule is proposed that increases participation in an exchange."
     :if (fn [s] (and (= :design (:grain s)) (:rule-proposed? s)))}
    {:id :mark-without-force :grain :design
-    :if-text "You want a defection to have consequences and you have no enforcement apparatus."
     :if (fn [s] (and (= :design (:grain s)) (:want-sanction? s)))}
    {:id :revert-then-invert :grain :design
-    :if-text "A defection can be detected, denounced, and adjudicated."
     :if (fn [s] (and (= :design (:grain s)) (:judge-available? s)))}
    {:id :non-binding-talk-still-moves-play :grain :design
-    :if-text "You want cooperation and cannot or will not add enforcement."
     :if (fn [s] (and (= :design (:grain s)) (not (:judge-available? s))))}
    {:id :institutions-vary-by-position-and-force :grain :design
-    :if-text "You must design, compare, or extend a family of institutional arrangements."
     :if (fn [s] (= :design (:grain s)))}
 
    ;; --- PLAY grain: antecedents over game states -------------------------
@@ -50,20 +44,16 @@
    ;; live the THEN would happen anyway and the pattern has nothing to add, so
    ;; both conjuncts must hold for a pattern to fire.
    {:id :an-unmodelled-response-stops-the-line :grain :play :precedence 1
-    :if-text "An outcome to which your model assigned no probability."
     :if (fn [s] (and (= :play (:grain s)) (:unmodelled? s)))
     ;; "Play continues whether or not you notice" — in the final round it does
     ;; not, so there is nothing left for a stop to protect.
-    :however-text "Play continues, and repeating the policy is the cheapest move."
     :however (fn [s] (not (:last-round? s)))
     :then (fn [_] {:act :stop})}
    {:id :consult-the-remedy-before-exiting :grain :play :precedence 2
-    :if-text "You were defected against and the arrangement provides a response."
     :if (fn [s] (and (= :play (:grain s)) (:snatched? s)
                      (or (:shame-available? s) (:judge-available? s))))
     ;; "a policy written for the state of nature exits on the first defection" —
     ;; the temptation requires that exiting be possible at all.
-    :however-text "Exiting looks the same whether or not a remedy existed."
     :however (fn [s] (contains? (:p1-actions s) :abstain))
     ;; "check what the arrangement entitles you to and use it" — denounce while
     ;; the remedy is unspent, and say nothing once it is spent.  Denouncing is
@@ -73,68 +63,53 @@
                     ;; the size of a denunciation is the size of the seizure
                     {:act :denounce :size (:seized s)}))}
    {:id :re-enter-after-observed-repair :grain :play :precedence 3
-    :if-text "A prior loss has been observably repaired and a bounded probe is available."
     :if (fn [s] (and (= :play (:grain s)) (:snatched? s)
                      (:repair-observed? s) (pos? (:tokens s))))
     ;; "permanent exit discards any improvement" — live once the remedy is spent
     ;; and exit is the only remaining alternative to re-entry.
-    :however-text "Permanent exit discards the improvement; re-entry on a promise repeats the exposure."
     :however (fn [s] (zero? (:seized s)))
     :then (fn [s] (when (pos? (:tokens s)) {:act :offer :size 1}))}
    {:id :forced-play-needs-a-loss-floor :grain :play :precedence 4
-    :if-text "Abstention is unavailable after seizure has become a live risk."
     :if (fn [s] (and (= :play (:grain s)) (:forced-offer? s) (:snatched? s)))
     ;; "compulsion does not make a large exposed offer safer" — there is no
     ;; large offer to be tempted by when the floor is all you hold.
-    :however-text "Compulsion does not make a large exposed offer safer."
     :however (fn [s] (> (:tokens s) 1))
     :then (fn [s] (when (pos? (:tokens s)) {:act :offer :size 1}))}
    {:id :escalate-only-as-far-as-you-can-lose :grain :play :precedence 5
-    :if-text "A counterpart has accepted an offer."
     :if (fn [s] (and (= :play (:grain s)) (= :accepted (:last s))))
     ;; NON-DISCRIMINATING.  "One acceptance is weak evidence" and a snatch is
     ;; always possible, so this force is live in every state where the IF holds.
     ;; It names a permanent condition of the game rather than a tension in the
     ;; situation, and is recorded as such instead of being given a guard.
-    :however-text "One acceptance is weak evidence, and belief-sized offers are unrecoverable."
     :however (fn [_] true)
     :then (fn [s] (when (pos? (:tokens s))
                     {:act :offer :size (min (inc (:last-size s)) (:tokens s))}))}
    {:id :probe-before-committing :grain :play :precedence 6
-    :if-text "A counterpart whose disposition you do not know."
     :if (fn [s] (and (= :play (:grain s)) (nil? (:disposition-known s))))
     ;; "a large first offer is unrecoverable ... a zero offer buys nothing" —
     ;; both errors need to be reachable for the sizing advice to bite.
-    :however-text "A large first offer is unrecoverable; a zero offer buys nothing."
     :however (fn [s] (> (:tokens s) 1))
     :then (fn [s] (when (pos? (:tokens s)) {:act :offer :size 1}))}
    {:id :exchange-when-both-sides-gain :grain :play :precedence 7
-    :if-text "Both players hold tokens and an exchange remains available."
     :if (fn [s] (and (= :play (:grain s)) (pos? (:tokens s))))
     ;; "attention to seizure risk can make abstention look like the objective" —
     ;; live only where seizure is salient: it has happened, or the counterpart
     ;; is still unread.  Against a known sharer the exchange needs no argument.
-    :however-text "Attention to seizure risk makes abstention look like the objective."
     :however (fn [s] (or (:snatched? s) (nil? (:disposition-known s))))
     :then (fn [s] (when (pos? (:tokens s)) {:act :offer :size 1}))}
 
    ;; Advisory in this harness — real game features the model does not carry.
    {:id :ask-for-surplus-not-surrender :grain :play
-    :if-text "An offer is available and its ask is still open."
     :if (fn [s] (and (= :play (:grain s)) (pos? (:tokens s))))}
    {:id :a-free-mark-is-always-worth-assigning :grain :play
-    :if-text "A mark may be attached and changes no payoff this round."
     :if (fn [s] (and (= :play (:grain s)) (:snatched? s) (:shame-available? s)))}
    {:id :use-talk-to-make-a-testable-offer :grain :play
-    :if-text "Cheap talk is available before the first observed response."
     :if (fn [s] (and (= :play (:grain s)) (:chat-available? s) (nil? (:last s))))}
    {:id :price-the-final-round-as-final :grain :play
-    :if-text "The known final round."
     :if (fn [s] (and (= :play (:grain s)) (:last-round? s)))}
    ;; A P2 pattern.  P2 here is a fixed disposition, not a chooser, so it is
    ;; excluded from P1's set; :offer-received? is P2's view and is never set.
    {:id :accept-an-offer-that-beats-holding :grain :play :actor :p2
-    :if-text "P2 receives a positive give-and-ask offer that benefits both sides."
     :if (fn [s] (and (= :play (:grain s)) (:offer-received? s)))}])
 
 ;; P1's set only: a pattern whose actor is P2 is not decidable by this harness.

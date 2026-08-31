@@ -101,22 +101,23 @@
                      firing)
      :selected firing)))
 
-(defn- drift-mismatches []
-  (->> snatch/collection
-       (mapcat
-        (fn [{:keys [id if-text however-text]}]
-          (let [authored (get authored-patterns id)]
-            (keep identity
-                  [(when (and if-text
-                              (not= (normalise if-text) (:if-text authored)))
-                     (sorted-map :clause :if :file-text (:if-text authored)
-                                 :pattern id :runner-text (normalise if-text)))
-                   (when (and however-text
-                              (not= (normalise however-text) (:however-text authored)))
-                     (sorted-map :clause :however :file-text (:however-text authored)
-                                 :pattern id :runner-text (normalise however-text)))]))))
-       (sort-by (juxt :pattern :clause))
-       vec))
+(defn- representation-mismatches
+  "Reject a second maintained antecedent representation.  The authored file is
+   the sole text; runner entries carry only executable interpretations keyed by
+   the same pattern id."
+  ([] (representation-mismatches snatch/collection))
+  ([patterns]
+  (->> patterns
+       (mapcat (fn [{:keys [id] :as pattern}]
+                 (keep identity
+                       [(when-not (contains? authored-patterns id)
+                          (sorted-map :finding :runner-id-not-authored :pattern id))
+                        (when (or (contains? pattern :if-text)
+                                  (contains? pattern :however-text))
+                          (sorted-map :finding :duplicate-antecedent-text
+                                      :pattern id))])))
+       (sort-by (juxt :pattern :finding))
+       vec)))
 
 (defn- observe-scenario [{:keys [treatment disposition rounds acting]}]
   (let [observations (atom [])
@@ -164,10 +165,11 @@
         rows (filter #(= :patterns (:policy %)) rows)
         by-key (into {} (map (juxt (juxt :treatment :disposition) identity)) rows)
         scenarios (mapv #(observe-scenario (get by-key %)) scenario-order)
-        mismatches (drift-mismatches)]
+        mismatches (representation-mismatches)]
     (sorted-map
      :as-of (library-sha)
-     :drift (sorted-map :mismatch-count (count mismatches)
+     :drift (sorted-map :basis :authored-text-with-executable-interpretation
+                        :mismatch-count (count mismatches)
                         :mismatches mismatches)
      :laws (sorted-map :F1 :asserted-selected-subset-of-repository
                        :F4 :asserted-declared-zero-mass-per-scenario)
@@ -185,13 +187,17 @@
 (defn -main [& args]
   (let [negative? (some #{"--negative"} args)]
     (if negative?
-      ;; Synthetic clean baseline plus one mutation: the control does not rely
-      ;; on today's already-dirty live population to demonstrate rejection.
+      ;; Inject the forbidden second textual representation.  This is the
+      ;; exact defect the positive path now excludes, not malformed EDN.
       (try
         (require-zero-drift!
-         {:mismatch-count 1
-          :mismatches [{:pattern :negative-control :clause :if
-                        :file-text "authored" :runner-text "mutated"}]})
+         (let [mutated (assoc (first snatch/collection)
+                              :if-text "a second hand-maintained antecedent")
+               mismatches (representation-mismatches
+                           (assoc (vec snatch/collection) 0 mutated))]
+           {:basis :authored-text-with-executable-interpretation
+            :mismatch-count (count mismatches)
+            :mismatches mismatches}))
         (println "find-snatch: FAIL negative drift mutation slipped exit-convention=0-pass/1-fail")
         (shutdown-agents)
         (System/exit 2)

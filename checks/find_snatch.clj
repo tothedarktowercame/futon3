@@ -200,6 +200,12 @@
                                  (string? (get-in receipt [:warrant :file])))))
                         selected)
         (throw (ex-info "F3 receipt is self-certifying" {:finding :f3})))))
+  (doseq [{:keys [treatment disposition selected-union f4]} (:scenarios result)]
+    (let [zero-mass (:zero-mass-pattern f4)]
+      (when-not (and (contains? (set (:repository result)) zero-mass)
+                     (not (contains? (set selected-union) zero-mass)))
+        (throw (ex-info "F4 recorded omitted member failed"
+                        {:finding :f4 :scenario [treatment disposition]})))))
   result)
 
 (defn mutate-law [result kind]
@@ -211,12 +217,17 @@
       :f2 (update-in result (conj path :receipts) dissoc id)
       :f3 (assoc-in result (conj path :receipts id)
                     {:route :score-alone :score 1.0})
+      :f4 (update result :repository
+                  (fn [xs]
+                    (vec (remove #{(get-in result [:scenarios 0 :f4 :zero-mass-pattern])}
+                                 xs))))
       result)))
 
 (defn -main [& args]
   (let [negative-kind (cond (some #{"--negative-f1"} args) :f1
                             (some #{"--negative-f2"} args) :f2
-                            (some #{"--negative-f3"} args) :f3)
+                            (some #{"--negative-f3"} args) :f3
+                            (some #{"--negative-f4"} args) :f4)
         negative? (some #{"--negative"} args)]
     (if negative?
       ;; Inject the forbidden second textual representation.  This is the

@@ -1,0 +1,38 @@
+@flexiarg math-formalization/bound-sylow-order-from-faithful-prime-action
+@title Bound a Sylow Subgroup by Embedding a Prime-Degree Action into a Symmetric Group
+@keywords Sylow, faithful action, permutation representation, factorial, factorization, p-adic multiplicity, card_perm
+@audience lean-provers, finite-group-theory
+@tone procedural
+@difficulty hard
+@subjects group-theory number-theory formalization
+
+! conclusion:
+  For a faithful action of a finite group on exactly `p` points, where
+  `p` is prime and divides the group order, prove every Sylow
+  `p`-subgroup has cardinality `p` by bounding the group order through
+  the permutation representation and comparing prime factorizations.
+
+  + IF: `MulAction.toPermHom G X` is injective, `Nat.card X = p`, and a
+    transitive action or another argument supplies `p ∣ Nat.card G`.
+
+  + HOWEVER: A direct orbit analysis of the Sylow subgroup may require
+    fixed-point congruences and nontriviality arguments that are not
+    already packaged in the needed cardinality form.
+
+  + THEN: Use `Subgroup.card_dvd_of_injective` on
+    `MulAction.toPermHom G X` to obtain `Nat.card G ∣ p.factorial` after
+    rewriting with `Nat.card_perm`. Convert divisibility to an inequality
+    of `Nat.factorization` values. The prime's multiplicity in `p!` is one,
+    via `Nat.factorization_factorial`; divisibility of `Nat.card G` by `p`
+    gives the reverse lower bound. Rewrite a Sylow subgroup's cardinality
+    with `Sylow.card_eq_multiplicity` and simplify the resulting
+    factorization value.
+    + LEAN:
+      api[Subgroup.card_dvd_of_injective] api[Nat.card_perm]
+      api[Nat.factorization_le_factorization_of_dvd_right]
+      api[Nat.factorization_factorial] api[Prime.dvd_iff_one_le_factorization]
+      api[Sylow.card_eq_multiplicity]
+
+  + BECAUSE: Faithfulness embeds the group into the symmetric group, and
+    the prime `p` occurs exactly once in `p!`; once existence supplies one
+    factor of `p`, the Sylow multiplicity is forced to be exactly one.

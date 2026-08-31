@@ -1,0 +1,44 @@
+@flexiarg math-formalization/collapse-self-normalizing-sylow-via-faithful-prime-action
+@title Collapse a Self-Normalizing Sylow Subgroup Through a Faithful Prime-Degree Action
+@keywords Sylow, normalizer, Burnside transfer, primitive action, faithful action, prime degree, MulAction.IsPreprimitive, transferSylow
+@audience lean-provers, finite-group-theory
+@tone procedural
+@difficulty hard
+@subjects group-theory formalization
+
+! conclusion:
+  When a finite group acts faithfully and transitively on a prime number
+  of points and a Sylow subgroup of that prime order is self-normalizing,
+  use Burnside transfer and primitivity to show the Sylow subgroup is the
+  whole group; do not count order-prime elements across all Sylow subgroups.
+
+  + IF: `G` acts faithfully and pretransitively on finite `X`,
+    `Nat.card X = p` for prime `p`, a Sylow `p`-subgroup `P` has
+    `Nat.card P = p`, and `normalizer (P : Subgroup G) = P`.
+
+  + HOWEVER: Partitioning elements of order `p` among Sylow subgroups
+    requires an explicit uniqueness and disjoint-union argument that is
+    not packaged by the local Sylow API and does not directly exploit the
+    prime-degree action.
+
+  + THEN: Give `P` its cyclic structure from its prime cardinality. The
+    self-normalizer equality makes `normalizer P ≤ centralizer P`; apply
+    `MonoidHom.transferSylow` and let `N` be its kernel. The transfer
+    theorem gives `N.IsComplement' P` and normality of `N`. Prime
+    cardinality upgrades the ambient transitive action to primitive. If
+    `N ≠ ⊥`, faithfulness rules out all points being fixed by `N`, while
+    quasi-primitivity makes the normal subgroup action transitive. The
+    stabilizer-index formula then forces `p ∣ Nat.card N`, contradicting
+    `MonoidHom.not_dvd_card_ker_transferSylow`. Hence `N = ⊥`, and the
+    complement's `sup_eq_top` reduces to `P = ⊤`.
+    + LEAN:
+      api[MonoidHom.transferSylow] api[MonoidHom.ker_transferSylow_isComplement']
+      api[MulAction.IsPreprimitive.of_prime_card]
+      api[MulAction.IsQuasiPreprimitive.isPretransitive_of_normal]
+      api[MulAction.index_stabilizer_of_transitive]
+      api[MonoidHom.not_dvd_card_ker_transferSylow]
+
+  + BECAUSE: Transfer converts the self-normalizer hypothesis into a
+    normal complement, and a faithful primitive action of prime degree
+    leaves no room for a nontrivial normal complement whose cardinality is
+    prime to `p`.

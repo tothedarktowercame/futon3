@@ -1,0 +1,32 @@
+@flexiarg math-formalization/assemble-a-basis-from-an-independent-supremum
+@title Assemble a Basis from an Independent Supremum of Submodules
+@keywords Lean, Module.Basis, iSupIndep, DFinsupp, direct sum, linearEquiv, reindex, eigenspace
+@audience lean-provers
+@tone procedural
+@difficulty advanced
+@subjects linear-algebra
+
+! conclusion:
+  When submodules are independent and their supremum is top, build a basis of the
+  ambient module by choosing a basis in every summand, using the finitely supported
+  dependent-function basis on their external direct sum, and transporting it across
+  the linear equivalence supplied by independence and spanning.
+
+  + IF: You have `h_indep : iSupIndep p` and `h_top : ⨆ i, p i = ⊤`, but no
+    packaged theorem directly turns this decomposition into the indexed ambient
+    basis required by the goal.
+
+  + THEN: Let `bp i := Module.Free.chooseBasis K (p i)` and use
+    `DFinsupp.basis bp` for a basis of `Π₀ i, p i`. Map that basis through
+    `h_indep.linearEquiv h_top`. If the goal fixes another finite basis index type,
+    obtain an equivalence of index types by comparing `Module.Basis.mk_eq_rank''`
+    and finish with `Module.Basis.reindex`.
+
+  + BECAUSE: `iSupIndep` supplies injectivity of the sum map and the top-supremum
+    hypothesis supplies surjectivity; `linearEquiv` packages both, while
+    `DFinsupp.basis` performs the otherwise missing basis concatenation.
+
+  + NEXT-STEPS:
+    next[Choose bases of the individual submodules.]
+    next[Map the DFinsupp basis through the decomposition equivalence.]
+    next[Reindex only after the ambient basis has been constructed.]

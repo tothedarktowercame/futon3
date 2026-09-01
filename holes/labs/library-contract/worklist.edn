@@ -279,7 +279,11 @@
      "/tmp/L5s8/ca-{before,after,after2,after3}.edn -- the four byte-identical section lint reports"]},
    :acceptance
    "Per slice: run the spider for ONE listed section against the pinned evidence basis (C88 pin discipline), gate with library_graph_lint, record the section's before/after edges-by-kind and attestation states in library/.spider/ledger.edn, commit. Append the section and sha to :progress. The row is done when all eight sections have a wave-3 ledger entry. No @why authored by the spider: propose only (LD0).",
-   :status :done-unreviewed,
+   :status :done,
+   :reviewed-by "codex",
+   :reviewed-at "2026-09-01T23:13:15Z",
+   :review
+   "Read all eight evidence diffs (8436467, 4542fa1, 7c97a6a, ced9838, c4bb49f, bee7d0b, 5899f62, 346dbaf; 9,640 diff lines) and confirmed they are authored by Joseph Corneli, not the reviewer. Reproduced library_graph_lint_test exit 0 (10 tests, 59 assertions; C88 pin 1247 files and library-wide edges :why 86, :why-posthoc 0, :how 27, :see-also 141), spider_runner_test exit 0 (6 tests, 33 assertions), and all eight C88-pinned wave-section lint runs exit 0 with 0 failures, 0 unresolved targets, 0 why cycles, 0 warrant refusals, and 0 edge refusals. Section edge counts reproduced as or3 0/0/0/0, nomad 0/0/0/5, mmca 0/0/0/0, memory 0/0/0/0, math-formalization-CA 6/0/0/16, math-formalization-CV 6/0/0/9, math-informal-CT 0/0/0/0, math-informal-CA 0/0/0/0 in :why/:why-posthoc/:how/:see-also order. The evidence diffs add exactly five directives, all nomad @see-also backed by proposed rung-2 attestations; they add no @why, @why-posthoc, or similarity-inferred edge. Confirmed the ledger has all eight wave-3 sections and records 76 absences. worklist_check exits 0.",
    :id :L5,
    :class :W,
    :covers-key :none,

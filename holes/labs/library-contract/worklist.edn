@@ -253,9 +253,33 @@
   {:statement
    "Wave 3: the 0%-tagged families -- or3, nomad, mmca, memory, math-formalization-CA, math-formalization-CV, math-informal-CT, math-informal-CA -- rung 2 only, per P-organise-the-library's wave plan. One section per invocation.",
    :loop-mode :one-slice-per-invocation,
+   :evidence
+   {:sha "346dbaf",
+    :wave-3-complete
+    "library/.spider/ledger.edn -- 8 entries with :wave 3: or3 (8436467), nomad (4542fa1), mmca (7c97a6a), memory (ced9838), math-formalization-CA (c4bb49f), math-formalization-CV (bee7d0b), math-informal-CT (5899f62), math-informal-CA (346dbaf)",
+    :edges
+    "5 edges written across the whole wave, all @see-also in nomad (slice 2, 4542fa1); 0 @why proposed or authored by the spider in any slice, per LD0",
+    :absences
+    "76 typed absences, each carrying its :corpus pin: 17 or3, 3 nomad, 8 mmca, 5 memory, 23 math-formalization-CA, 7 math-formalization-CV, 7 math-informal-CT, 6 math-informal-CA",
+    :library-wide-edges
+    "unchanged from slice 2 onward at :edges-by-kind {:why 86 :how 27 :see-also 141}; the wave's only movement was @see-also 136 -> 141 in nomad",
+    :open-defects-for-their-own-rows
+    ["checks/spider_runner.clj:280-283 -- an absence is validated only for a matching :pattern and a non-blank :note. Four symptoms across slices 5-8: a false factual ground, five unshown searches, nine unresolvable citations, then 22 of 31 plus a garbled id."
+     "checks/library_graph_lint.clj:8 -- edge-kinds omits @instantiates (31 lines) and @references (550 lines), so neither is counted nor target-resolved; two @instantiates targets do not resolve and the lint still reports :unresolved-targets 0."
+     "checks/library_graph_lint.clj:388-392 -- :co-mention is computed against the CURRENT pattern-id set, so records about retiring (slice 7) or renaming (slice 8) patterns read clean."
+     "checks/library_graph_lint.clj:382-402 -- no dedupe by record id; 6.8% of hit entries are duplicates, so wave-3 'hits' figures are entry counts."
+     "checks/library_graph_lint.clj:107 -- evidence-cache-path hardcodes the literal \"-v3-\", so a cache filename is not a version claim."
+     "checks/spider_fleet.clj:139 -- a :pinned-evidence-cache-is-unreadable throw that can never fire."
+     "checks/spider_runner.clj:184 -- a parse failure loses the seat's text while a validation failure keeps it."
+     "The @references / @instantiates vocabulary question itself: out of scope by design, a kind the lint counts separately, or a source of candidates for attested @see-also."],
+    :reviewer-entry-points
+    ["git show 346dbaf -- the run artifacts and the ledger entry"
+     "library/.spider/ledger.edn, 15th :sections element -- the slice's findings with their file:line pointers"
+     "/tmp/L5s8/*.exit -- the twelve-plus captured gate exit codes"
+     "/tmp/L5s8/ca-{before,after,after2,after3}.edn -- the four byte-identical section lint reports"]},
    :acceptance
    "Per slice: run the spider for ONE listed section against the pinned evidence basis (C88 pin discipline), gate with library_graph_lint, record the section's before/after edges-by-kind and attestation states in library/.spider/ledger.edn, commit. Append the section and sha to :progress. The row is done when all eight sections have a wave-3 ledger entry. No @why authored by the spider: propose only (LD0).",
-   :status :open,
+   :status :done-unreviewed,
    :id :L5,
    :class :W,
    :covers-key :none,
@@ -600,6 +624,68 @@
      :ledger-entry
      "library/.spider/ledger.edn -- {:wave 3 :section \"math-informal-CT\"}, the 14th element of :sections. The append was checked in-process before writing: (vec (:sections old)) equals (vec (butlast (:sections new))), (dissoc old :sections) equals (dissoc new :sections), the appended entry equals (last (:sections new)), and the file was re-read and compared to the value written. check-parens passes on the result.",
      :sha "5899f62",
+     :seat "zai-3"}
+    {:phantom-target-finding
+     "Slice 5 recorded that math-informal-CA/conjugate-reduce-to-model-case, the @instantiates target of math-formalization-CA/schwarz-disk-automorphism-formula:9 and surj-via-oriented-root-preimage:9, names no file in library/. Stronger: it has never existed in this repository. git log --all --diff-filter=A -- '*conjugate-reduce-to-model-case*' is empty, and git ls-tree -r --name-only over 400 commits of git rev-list --all finds no path matching /conjugate/. The section lint still reports :unresolved-targets 0, because @instantiates is absent from checks/library_graph_lint.clj:8, so it is neither counted nor target-resolved. Respelled @why -- the migration README-flexiarg.md:224 records as 'same meaning' -- the linter would fail both as :dangling-target. 2 of the library's 31 @instantiates targets do not resolve; the other 29 do, checked one by one. The uncounted vocabulary is not merely uncounted, it is unchecked. Wants its own row alongside slices 5 and 6: the respelling is an authorship decision, but target-resolving @instantiates in the linter is not.",
+     :not-touched
+     ["No .flexiarg file changed (the section produced no edge), so this slice authors no @why, no @why-posthoc, and no similarity-inferred edge (P-validated-R5 law O2)."
+      "The @instantiates and @references directives on other sections' files are counted and reported only. Respelling one as @why -- README-flexiarg.md:224's stated migration -- is an authorship decision the spider/editor lane may not make (decisions.edn :spider-editorial-standing), and the two phantom-target lines are left for the row that takes the migration."
+      "The two seat record defects are corrected in the ledger, not edited in the absence records (L1 'recorded not revised')."
+      "checks/library_graph_lint.clj:8, :107, :382-402 and :388-392, checks/spider_runner.clj:184 and :280-283, and checks/spider_fleet.clj:139 are all reported and none fixed: no Clojure is in this row's acceptance and each defect deserves its own row."
+      "The other dirty paths in this shared checkout are not this slice's: holes/labs/library-contract/runs/build-loop.log, resources/sigils/patterns-index.tsv, and the three untracked library/math-formalization/*.flexiarg files. 31 explicit paths staged; no commit -a."],
+     :duplicate-index-hits-confirmed
+     "Slice 7's :duplicate-index-hits-finding reproduces at the smallest scale that shows it cleanly: math-informal-CA/estimate-by-bounding has 4 hit entries over 2 distinct ids, with e-c112f339-ad0e-4745-8821-0f6152b21711 appearing three times and emacs-e7c4dec7afcd98a1791d0014bf53be4f once. The seat noticed and wrote 'e-c112f339 (supplied three times)'. The other five patterns have no duplicates. Mechanism as slice 7 diagnosed (checks/library_graph_lint.clj:382-402 conj's unconditionally). No effect on this slice's verdicts: e-c112f339 carries :co-mention true whether counted once or three times.",
+     :slice-7-count-correction
+     "A correction to slice 7's :vocabulary-finding, measured on an unchanged tree (no .flexiarg has been modified since 5899f62). Slice 7 records '550 of 1247 files carry an @references line'. 550 is the count of @references LINES: grep -rh '^@references' library --include='*.flexiarg' | wc -l gives 550, grep -rl gives 494, and exactly 56 files carry two such lines (56 x 1 extra = the difference). The correct statement is 494 of 1247 files, 550 lines. Slice 7's other figures reproduce closely but not exactly under my parse -- 489 bracketed lines (slice 7: 488), 1650 targets (1649), 1233 resolving / 379 distinct (1218 / 377), 417 not resolving (431); those depend on how the bracket body is tokenised, so they are recorded as a second measurement, not a correction. Only the files-vs-lines conflation is a definite mis-statement, and it does not change slice 7's conclusion, which rests on the ratio of uncounted references to counted edges.",
+     :gates
+     {:exit-codes
+      "captured to /tmp/L5s8/{before,after,after2,after3,run,kondo,parens,parens-records,parens-ledger2,lintest,spidertest,append,lintdiff,lintdiff2,lintdiff3}.exit and tested by a shell loop that reads each file; all are 0. No gate status read through a pipe.",
+      :section-lint
+      "checks/library_graph_lint.clj over math-informal-CA, run before the spider (exit 0), after it (exit 0), after the ledger append (exit 0) and after the ledger correction (exit 0). All four pass? true, 0 failures, 1247 files, 0 unresolved-targets, 0 why-cycles, 0 warrant-refusals, 0 edge-refusals, library-wide :edges-by-kind {:why 86 :how 27 :see-also 141}, section {:why 0 :how 0 :see-also 0} fraction-organised 0.0. All four reports byte-identical to the before report (diff exit 0, empty output). Reports at /tmp/L5s8/ca-{before,after,after2,after3}.edn",
+      :runner
+      "exit 0 (/tmp/L5s8/run.exit); state.edn :phase :complete, :turn 6, 6 of 6 completed",
+      :clj-kondo
+      "exit 0, 0 errors 0 warnings over checks/library_graph_lint.clj, checks/spider_runner.clj, test/library_graph_lint_test.clj, test/spider_runner_test.clj. No Clojure was touched by this slice. The one :info at library_graph_lint.clj:266 is the pre-existing spider-self-text? coercion L2 recorded.",
+      :check-parens
+      "exit 0, OK -- emacs -Q --batch -l /home/joe/code/futon4/dev/check-parens.el --eval (arxana-check-parens-cli) -- over the four gated Clojure files, over the section's EDN records (attestations, proposals, absences, seat-failures, state), and over library/.spider/ledger.edn after the append and again after the correction. The -- separator is required, per L2's note.",
+      :library-graph-lint-test
+      "exit 0, 7 tests / 36 assertions / 0 failures, under the C88 pin (1247 files; :why 86 :how 27 :see-also 141)",
+      :spider-runner-test
+      "exit 0, 6 tests / 33 assertions / 0 failures"},
+     :section "math-informal-CA",
+     :clean-hit-finding
+     "The section's one clean rung-1 hit (:clean 1, :clean-non-reflection 1 of 6, from estimate-by-bounding's emacs-e7c4dec7afcd98a1791d0014bf53be4f; matches the runner's :rung-one-coverage {:patterns 6 :any 3 :clean 1 :clean-non-reflection 1}) is clean because the record names ONE pattern twice. It is a claude-2 emacs-claude-repl turn on the store failing to ingest the math split (/tmp/L5s8/clean-record.json), printing 'math-informal/estimate-by-bounding in store: True <- stale' beside 'math-informal-CA/estimate-by-bounding in store: False <- never ingested' -- the same file before and after its rename in 0678457. :co-mention is (> (count patterns) 1) over (filter ids ...) with ids the CURRENT pattern-id set (checks/library_graph_lint.clj:388-392), and library/math-informal/estimate-by-bounding.flexiarg no longer exists, so only one id counts. Slice 7 found the retirement case; this is the rename case, which cannot warrant an edge even in principle, since both ids denote one pattern. The seat refused it on the right substantive ground.",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :records
+     ["library/math-informal-CA/.spider/absences.edn -- 6 records, each with its :corpus pin"
+      "library/math-informal-CA/attestations.edn -- [] (no edge was warranted)"
+      "library/math-informal-CA/proposals.edn -- []"
+      "library/math-informal-CA/.spider/seat-failures.edn -- []"
+      "library/math-informal-CA/.spider/state.edn -- :phase :complete, :turn 6, :finished-at 2026-09-01T22:49:18Z, 6 of 6 :completed"
+      "library/math-informal-CA/.spider/gates/turn-000.edn .. turn-006.edn -- the per-turn linter reports"
+      "library/math-informal-CA/.spider/receipts/ -- 18 receipts (intent/completion/applied for 6 turns); 0 malformed-* receipts"
+      "No checkpoint directory: checkpoint! fires at turn 20 and this section is 6 patterns long"
+      "No .flexiarg file changed"],
+     :unresolvable-citation-finding
+     "Slice 7's finding at a higher rate and in a new shape. 31 distinct e-*/emacs-* ids are cited across the six notes (/tmp/L5s8/ids.txt); GET /api/alpha/evidence/<id> returns 200 for 9 and 404 for 22 (/tmp/L5s8/idcheck.txt) -- 71% against slice 7's 53%. None invented: 9 are prefixes of full ids in the pinned cache, 12 resolve by prefix against the live store (/tmp/L5s8/idprefix.txt), and the 22nd is a shape slice 7 did not see -- e-cdb08ff7-bd43-4a31-aa15-838aa8563 is full-UUID-shaped with a 9-hex final group where the real record's (e-cdb08ff7-bd43-4a31-aa15-381275aa8563) is 12, so it is a garbled group and not a truncation from the right. That distinction bears on the fix: slice 7's proposed check (extract the tokens and require each to RESOLVE) catches it; a looser prefix-match check would not. The seat reports the defect from its own side -- pass-to-a-subsequence's note says 'two further query-2 ids did not resolve via GET and could not be verified'. Root cause unchanged: checks/spider_runner.clj:280-283 validates an absence only for a matching :pattern and a non-blank :note, while an edge's evidence must fetch and contain the excerpt (:222-238). Fourth symptom, one missing check.",
+     :result
+     "6 of 6 patterns processed in 6 turns, 0 seat failures, 0 retries, 0 malformed-output receipts, 5m42s (22:43:36Z -> 22:49:18Z). Every turn ended in a typed absence: 6 absences, 0 edges, 0 proposals, 0 attestations. Section before/after unchanged at :edges-by-kind {:why 0 :how 0 :see-also 0}, fraction-organised 0.0; library-wide unchanged at {:why 86 :how 27 :see-also 141}; the before and after lint reports are byte-identical. This is the last of the row's eight sections.",
+     :slice 8,
+     :at "2026-09-01",
+     :row-complete
+     "This closes the row: all eight sections named in :statement now have a wave-3 ledger entry (or3, nomad, mmca, memory, math-formalization-CA, math-formalization-CV, math-informal-CT, math-informal-CA), verified by filtering library/.spider/ledger.edn :sections on :wave 3. Across the wave the spider wrote 5 edges in total -- all @see-also, all in nomad (slice 2) -- against 76 typed absences, and proposed no @why (LD0 honoured throughout).",
+     :absence-ids-checked
+     "All six notes name the rung-2 queries they ran against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true), two each, with the query strings quoted -- so neither slice 6's unshown-search defect (5 of 7 there, 1 of 7 in slice 7) nor slice 5's stale-directive defect recurs here. Every rung-1 hit count is right against the pinned cache except pass-to-a-subsequence's (see :record-defects): epsilon-of-room 'the single ... hit' = 1; estimate-by-bounding 'supplied three times' = 3 of 4 entries; monotone-approximation, optimise-a-free-parameter, show-both-inequalities 'empty ([])' = 0. All six independently observe that the pattern 'carries only a @factor directive, which cannot be repeated' -- the seat reached this slice's finding from the file side.",
+     :finding
+     "The finding of this slice, and it splits a term the wave plan uses as one. math-informal-CT (slice 7) reads fraction-organised 0.0 because its relations are spelled @references, uncounted. math-informal-CA reads 0.0 because its patterns state no relation in ANY spelling: all six carry exactly @flexiarg @title @sigils @keywords @audience @tone @factor and nothing else (grep -ho '^@[a-z-]*' library/math-informal-CA/*.flexiarg | sort | uniq -c gives 6 of each and no other line). The split did not strip them -- git show 0678457^:library/math-informal/<id>.flexiarg for all six shows the same seven directives. Library-wide the bare shape is the majority: 133 of 1247 files carry an edge kind, 494 carry @references, 12 carry @family, 640 carry none. Per wave-3 section, bare/total: or3 17/17, math-formalization-CA 16/23, math-informal-CA 6/6, nomad 3/8, math-informal-CT 1/7, math-formalization-CV 1/7, mmca 0/8, memory 0/5. Ledger entry :no-outgoing-directive-finding.",
+     :inbound-degree-finding
+     "The corollary that makes the 0.0 misleading the other way. fraction-organised counts OUTGOING @why only (checks/library_graph_lint.clj:505-511), and a section's :edges-by-kind filters on (str/starts-with? (:from %) prefix) at :505. Measured inbound, 11 directive lines on other files name a math-informal-CA id, in three vocabularies: 1 @why (math-formalization-CA/uniform-continuity-boundedness:7 -> estimate-by-bounding, which the linter DOES count on the source side), 7 @instantiates (math-formalization-CA/{lp-norm-comparison,layer-cake-crossover-split,complex-arg-of-cpow-root,metric-cauchy-convergence}:9 and math-formalization-CV/complex-polynomial-bound:9 to estimate-by-bounding, plus 2 to a phantom), 3 @references (math-strategy/property-of-object-result:8, math-informal-NA/hybrid-certification:8, math-informal/structural-inclusion:9). estimate-by-bounding takes 8 of the 11 and is the library's most-named @instantiates target; epsilon-of-room, optimise-a-free-parameter and show-both-inequalities have zero inbound of any kind. Recorded, not acted on: reversing an inbound directive onto a CA file would be authoring a relation (decisions.edn :spider-editorial-standing, P-validated-R5 law O2).",
+     :ledger-entry
+     "library/.spider/ledger.edn -- {:wave 3 :section \"math-informal-CA\"}, the 15th element of :sections and the 8th wave-3 entry. The append was checked in-process before writing (/tmp/L5s8/append.bb): (vec (:sections old)) equals (vec (butlast (:sections new))), (dissoc old :sections) equals (dissoc new :sections), the appended entry equals (last (:sections new)), and the file was re-read and compared to the value written. check-parens passes on the result. One number in that entry was then corrected before the commit was amended: the wave-3 absence total read 78 and is 76 (17+3+8+5+23+7+7+6, summed from the eight entries' :after :absences), so the entry now carries the per-section breakdown and the summation source.",
+     :record-defects
+     ["pass-to-a-subsequence's note opens 'none of the four supplied hits' and names three (e-e21c0351, e-717bff58, e-901ed4e2). The pinned index holds 3 entries over 3 distinct ids for that pattern, so 'four' is wrong. Verdict unaffected: all three carry :listing true and :co-mention true. Recorded, not revised in place (L1 practice)."
+      "estimate-by-bounding's note attributes its inbound-sibling list to 'earlier surveys of this same fleet' rather than the pinned evidence, and it is wrong on both edges: uniform-continuity-boundedness:7 spells its relation @why, not @instantiates, and is therefore the one inbound edge the linter already counts; and the list omits math-formalization-CV/complex-polynomial-bound:9, which slice 6 recorded. The conclusion survives -- each relation does already sit on the sibling's own file -- but the ground is recalled, not measured. Recorded, not revised."],
+     :sha "346dbaf",
      :seat "zai-3"}],
    :owner :any}
   {:id :LD1,

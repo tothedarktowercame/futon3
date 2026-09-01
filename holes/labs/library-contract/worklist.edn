@@ -29,8 +29,36 @@
             :section-lint "aif pass? true, :edge-refusals 4; writing-coherence 4 failures and sidecar 2 failures are :evidence-excerpt-mismatch from the pinned fixture holding aif's 56 records only -- identical counts measured on the pre-change linter, so not a regression"}}
    :statement "Vocabulary gap found at the wave-2 gate: the lint's :refused means the EDGE leaves the pattern file; refusing a WARRANT is a different act (:proposed plus a review note). One word for two acts (P-organise-the-library.md, WAVE 2 GATED 12:10Z)."
    :acceptance "checks/library_graph_lint.clj and the attestation schema distinguish edge-refusal (edge leaves the file) from warrant-refusal (edge stays :proposed, warrant recorded as rejected with a note). A test exercises both acts on planted records. Existing 5 :refused records re-classified with pointers, or shown to all be true edge-refusals. clj-kondo, check-parens, and test/library_graph_lint_test.clj green."}
-  {:id :L2 :class :C :status :open :owner :any
+  {:id :L2 :class :C :status :done-unreviewed :owner :any
    :covers-key :none
+   :evidence
+   {:sha "299f47b"
+    :rule ["checks/library_graph_lint.clj:12 reflection-rule-version 3"
+           "checks/library_graph_lint.clj:278 authoring-turn? -- an authoring verb within 120 chars of a *.flexiarg path"
+           "checks/library_graph_lint.clj:300 reflection-record? adds the class"
+           "checks/library_graph_lint.clj:312 reflection-rule -- :authoring-turn and :authoring-verb-window ride in the cache header beside :basis, where v2's clauses live"]
+    :rung-2-gate ["checks/spider_runner.clj:210 rung-two-warrant? -- rung 2 had no reflection check at all, which is how the rejected record reached the owner; at least one cited record must be non-reflection"
+                  "checks/spider_runner.clj:252 the throw (:reflection-only-rung-two) in validate-output"
+                  "checks/spider_runner.clj:160 the seat prompt states the rule"]
+    :fixtures ["test/fixtures/library-graph/reflection-v3-fixtures.edn :authoring-turn -- the wave-2 rejected case (system-coherence e-7a50b862, claude-5 announcing the file it had just written and listing its references)"
+               "test/fixtures/library-graph/reflection-v3-fixtures.edn :external-description -- the counter-fixture, abridged from wave-1 aif record e-f5a7638c: says \"flexiarg\" and \"authored\", names five patterns, announces no pattern file"]
+    :tests ["test/spider_runner_test.clj:81 authoring-turn-is-reflection-under-v3-and-not-under-v2 -- asserts all three v2 clauses are false on the rejected record and v3 is true, and that v3 leaves the counter-fixture alone"
+            "test/spider_runner_test.clj:97 rung-two-warrant-refuses-an-authoring-turn (stubbed fetch, no live store)"
+            "test/library_graph_lint_test.clj:238 wave-1-attestations-re-audited-under-reflection-rule-v3 -- recomputes the audit file's numbers from the C88-pinned fixture"]
+    :wave-1-re-audit
+    {:record "library/aif/attestations-v3-reflection-audit.edn"
+     :basis "C88 pin -- test/fixtures/library-graph/evidence-records.edn, 56 records, sha 15effe91…"
+     :records-audited 56 :attestations-audited 62
+     :reflection-under-v2 49 :authoring-turns 1 :reflection-under-v3 49
+     :newly-reflection 0 :changed-verdicts 0
+     :note "the one authoring turn (e-e8e638c6) is a zai-2 spider turn quoting the same claude-5 announcement, already reflection under v2 by its author; the expected 0 holds"}
+    :cache-pin "evidence-cache-path now takes the rule version from the corpus pin, not the constant, so bumping to v3 does not orphan a v2-pinned index: system-coherence's basis 191738 still resolves to /tmp/futon3-spider-evidence-occurrences-v3-191738-d8f61810a34eb73a.edn and lints pass? true"
+    :not-touched "library/system-coherence/attestations.edn -- the wave-2 record's :review-note still says \"v3 candidate\"; rewording it is a wave-2 record edit no acceptance asked for"
+    :gates {:clj-kondo "exit 0, errors 0 warnings 0 over the four touched files (the one :info at library_graph_lint.clj:247 spider-self-text? pre-dates this change -- reproduced on HEAD's copy)"
+            :check-parens "exit 0, OK (emacs -Q --batch -l futon4/dev/check-parens.el, arxana-check-parens-cli)"
+            :library-graph-lint-test "exit 0, 7 tests / 35 assertions / 0 failures"
+            :spider-runner-test "exit 0, 5 tests / 23 assertions / 0 failures"
+            :section-lint "system-coherence pass? true, 0 failures, under the v2-pinned cache (no live rebuild)"}}
    :statement "Reflection-class rule v2 misses an author describing their own references at authoring time: wave 2 rejected one warrant on exactly this (the pattern's author describing its own references). A v3 candidate is named in the record but not written."
    :acceptance "Rule v3 stated in the cache header beside the basis (where v2 lives), with the wave-2 rejected case as a fixture that v3 catches and v2 misses; a counter-fixture v3 must NOT catch (a genuine external description). Test in the spider/lint suite. Wave-1 attestations re-audited under v3 with the count of changed verdicts reported (expected 0 per the wave-1 audit; state the number)."}
   {:id :L3 :class :V :status :open :owner :any

@@ -15,8 +15,16 @@
   :spider-agent "codex-20"
   :agency-job :invoke-complete-or-job-envelope-naming-worker-or-spider-agent
   :self-text :spider-self-text-prompt-markers
-  :authoring-turn :authoring-verb-within-window-of-a-flexiarg-path
+  :authoring-turn :author-attributed-authoring-verb-within-window-of-a-flexiarg-path
+  :authoring-attribution :impersonal-first-person-or-subject-is-the-record-author
   :authoring-verb-window 120}
+ :correction
+ {:at "2026-09-01"
+  :finding "L2 review, worklist.edn: the predicate found an authoring verb within the window of a *.flexiarg path and asked nothing about who did the authoring, so a record REPORTING somebody else's authoring read as the record author's own self-description. Reproducer in the review: `Alice wrote library/aif/example.flexiarg; I independently reviewed how it uses the cited pattern.`"
+  :change "checks/library_graph_lint.clj authoring-verb-attributed-to-author? -- a verb counts only when its clause is impersonal, first-person, or has the record's author as subject; an active clause naming another agent does not."
+  :counter-fixture "test/fixtures/library-graph/reflection-v3-fixtures.edn :third-party-authoring -- emacs-7c6ac3768ecf9d2149cd9909e6224870, joe relaying what codex-15 and invoke-1787649777853-1018-f0693af4 wrote. True under the pre-fix predicate, false under the fixed one (test/spider_runner_test.clj:121 an-authoring-turn-is-the-record-authors-own-authoring)."
+  :recomputed "Every count below recomputed under the fixed predicate over the same C88-pinned 56 records; all unchanged. The only wave-1 record carrying a path (e-e8e638c6) states the announcement impersonally -- `Pattern authored at <path>` -- so attribution does not reach it."
+  :stale-caches "Occurrence caches written before this commit are keyed v3 but carry the pre-fix flags. The fix only ever drops verbs from consideration, so a pre-fix cache marks a superset as reflection: it can refuse a warrant it should have allowed, never admit one it should have refused. The rule version is unchanged because no corpus was pinned against the pre-fix predicate outside this ledger item."}
  :selection
  "Every evidence record cited by a wave-1 aif attestation, classified under v2 (worker author, Agency job envelope, spider self-text) and under v3 (those three plus the authoring-turn class). A verdict changes when every record an attestation cites is reflection under v3 and not every one was reflection under v2 -- the warrant becomes reflection-only where it was not."
  :records-audited 56

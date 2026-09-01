@@ -3,6 +3,7 @@
   (:require [checks.library-graph-lint :as lint]
             [checks.spider-runner :as runner]
             [clojure.edn :as edn]
+            [clojure.string :as str]
             [clojure.test :refer [deftest is run-tests]]))
 
 (deftest cursor-paging-follows-an-empty-terminal-page
@@ -78,6 +79,29 @@
   \"authored\" without announcing a pattern file."
   (:external-description v3-fixtures))
 
+(def third-party-authoring
+  "The attribution counter-fixture: an operator turn relaying what codex-15 and
+  an invoke job wrote, with real .flexiarg paths beside the authoring verbs."
+  (:third-party-authoring v3-fixtures))
+
+(defn authoring-turn-by-proximity?
+  "The predicate as first written for L2: an authoring verb within the window of
+  a *.flexiarg path, with nothing said about who did the authoring. Kept here so
+  the counter-fixture is testable as a case the rule used to get wrong."
+  [record]
+  (let [text (str/join " " (lint/string-leaves (:evidence/body record)))
+        paths (lint/regex-spans lint/pattern-file-path text)
+        verbs (lint/regex-spans lint/authoring-verb text)]
+    (boolean
+     (some (fn [[path-start path-end]]
+             (some (fn [[verb-start verb-end]]
+                     (or (and (<= verb-end path-start)
+                              (<= (- path-start verb-end) lint/authoring-verb-window))
+                         (and (<= path-end verb-start)
+                              (<= (- verb-start path-end) lint/authoring-verb-window))))
+                   verbs))
+           paths))))
+
 (deftest authoring-turn-is-reflection-under-v3-and-not-under-v2
   (let [workers #{"zai-1" "zai-2"}]
     ;; v2 was exactly these three clauses; all three are false on the record,
@@ -91,14 +115,46 @@
     (is (false? (lint/authoring-turn? external-description)))
     (is (false? (lint/reflection-record? external-description workers "codex-20")))
     (is (= 3 lint/reflection-rule-version))
-    (is (= :authoring-verb-within-window-of-a-flexiarg-path
+    (is (= :author-attributed-authoring-verb-within-window-of-a-flexiarg-path
            (:authoring-turn (lint/reflection-rule workers "codex-20"))))))
+
+(deftest an-authoring-turn-is-the-record-authors-own-authoring
+  (let [workers #{"zai-1" "zai-2"}]
+    ;; Proximity alone calls this operator turn an authoring turn, which would
+    ;; discard joe's report of what codex-15 built as the fleet's own record.
+    (is (true? (authoring-turn-by-proximity? third-party-authoring)))
+    (is (false? (lint/authoring-turn? third-party-authoring)))
+    (is (false? (lint/reflection-record? third-party-authoring workers "codex-20")))
+    ;; The wave-2 case is impersonal ("Pattern authored at <path>"), so the
+    ;; attribution test must not cost it: both predicates still take it.
+    (is (true? (authoring-turn-by-proximity? authoring-turn)))
+    (is (true? (lint/authoring-turn? authoring-turn)))
+    ;; A named third party in an active clause is a report, not an announcement.
+    (is (false? (lint/authoring-turn?
+                 {:evidence/author "claude-1"
+                  :evidence/body {:text (str "Alice wrote library/aif/example.flexiarg; "
+                                             "I independently reviewed how it uses "
+                                             "the cited pattern.")}})))
+    ;; First person and self-naming stay authoring turns.
+    (is (true? (lint/authoring-turn?
+                {:evidence/author "claude-1"
+                 :evidence/body {:text (str "I wrote library/aif/example.flexiarg "
+                                            "this afternoon and listed its references.")}})))
+    (is (true? (lint/authoring-turn?
+                {:evidence/author "codex-15"
+                 :evidence/body {:text (str "codex-15 wrote library/aif/example.flexiarg "
+                                            "with three references.")}})))
+    (is (= :impersonal-first-person-or-subject-is-the-record-author
+           (:authoring-attribution (lint/reflection-rule workers "codex-20"))))))
 
 (deftest rung-two-warrant-refuses-an-authoring-turn
   (let [records {"e-authoring" authoring-turn "e-external" external-description}
+        records (assoc records "e-third-party" third-party-authoring)
         fetch records]
     (reset! runner/worker-seats #{"zai-1" "zai-2"})
     (is (false? (runner/rung-two-warrant? [{:id "e-authoring" :via :text}] fetch)))
+    ;; A record about somebody else's authoring warrants rung 2 on its own.
+    (is (true? (runner/rung-two-warrant? [{:id "e-third-party" :via :text}] fetch)))
     (is (true? (runner/rung-two-warrant? [{:id "e-authoring" :via :text}
                                           {:id "e-external" :via :text}] fetch)))
     ;; An id the store does not return warrants nothing.

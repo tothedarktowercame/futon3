@@ -157,7 +157,7 @@
      "A hit with :reflection true was produced by this spider fleet or its Agency job envelope and is not external use. "
      "A rung-1 edge must cite at least one clean non-reflection hit: :listing, :self-text, :co-mention, and :reflection must all be false. Other hits may appear only as additional context. "
      "rung 2 is a bounded GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=<encoded title or conclusion keywords>&limit=5&hydrate=true. "
-     "A rung-2 record that announces the authoring of a pattern file (\"Pattern authored at .../<id>.flexiarg\" followed by its reference list) is that pattern's own author restating the references they just wrote, not external use; at least one cited rung-2 record must be something else. "
+     "A rung-2 record in which the record's OWN author announces authoring a pattern file (\"Pattern authored at .../<id>.flexiarg\" followed by its reference list) is that pattern's author restating the references they just wrote, not external use; at least one cited rung-2 record must be something else. A record reporting somebody ELSE's authoring (\"codex-15 wrote five @how patterns ...\") is external use and does warrant. "
      "Never request the unfiltered evidence list. Only use IDs and excerpts returned by a query you actually ran. "
      "The runner verifies rung-1 IDs against that live index and rung-2 IDs by GET /api/alpha/evidence/<id>, and requires the normalized :excerpt to occur in that record; "
      "pattern IDs are not evidence IDs, summaries and ellipses are rejected, and rung 1 also requires the source pattern id to occur in the record. "

@@ -13,10 +13,29 @@
 ;; v3 adds the authoring-turn class: v2 knew only who ran the spider, so a
 ;; pattern's own author listing the references they had just written into the
 ;; file read as external corroboration (wave 2, system-coherence, e-7a50b862).
+;; The class is the record author's OWN authoring act. A record that reports
+;; somebody else's -- an operator relaying what codex-15 wrote -- is external
+;; use and stays non-reflection; see authoring-verb-attributed-to-author?.
 (def authoring-verb-window 120)
 (def pattern-file-path #"[A-Za-z0-9_./'-]+\.flexiarg")
 (def authoring-verb
   #"(?i)\b(?:authored|authoring|wrote|written|writing|created|creating|drafted|drafting|added|adding)\b")
+;; An authoring verb near a path says a pattern file was authored; it does not
+;; say the record's author is who authored it. These three read the clause
+;; around the verb to settle that.
+(def authoring-subject-tail
+  "The token immediately before an authoring verb, adverbs and quoting skipped."
+  #"(?i)[`\"'(\[]?([A-Za-z][A-Za-z0-9_.'-]*)[`\"')\]:;,]*\s+(?:(?:just|already|then|later|recently|independently|subsequently|also|finally|first|initially|earlier|since)\s+)*$")
+(def first-person-subject #"(?i)i|we|us|my|our|i've|we've|i'd|we'd")
+(def named-agent-subject
+  "A subject that names somebody: a proper name, an agent id, or a job id --
+  capitalised, hyphenated, or carrying a digit."
+  #"[A-Z][A-Za-z]*|[A-Za-z][A-Za-z0-9_.']*(?:-[A-Za-z0-9_.']+)+|[A-Za-z][A-Za-z0-9_.'-]*\d[A-Za-z0-9_.'-]*")
+(def authoring-complement
+  "A preposition right after the verb: the clause says where the file was
+  authored and names no agent at all (`Pattern authored at <path>`)."
+  #"(?i)^[\s`\"'(]*(?:at|in|into|to|under|as|onto|within|beside|alongside|here|there)\b")
+(def authoring-complement-window 24)
 
 (defn sha256 [s]
   (let [digest (java.security.MessageDigest/getInstance "SHA-256")]
@@ -275,18 +294,51 @@
         (recur (conj spans [(.start matcher) (.end matcher)]))
         spans))))
 
+(defn record-author [record]
+  (let [raw (:evidence/author record)]
+    (if (keyword? raw) (name raw) (str raw))))
+
+(defn authoring-verb-attributed-to-author?
+  "Whether this authoring verb states an act by the record's own author. Three
+  clause shapes say it does: no subject at all; an impersonal clause, where a
+  preposition follows the verb and no agent is named (`Pattern authored at
+  <path>`); and a first-person subject or one naming the record's author. An
+  active clause whose subject names someone else -- `codex-15 wrote five @how
+  patterns`, `invoke-1787649777853-1018-f0693af4: Created the five uncommitted
+  files` in a record joe wrote -- reports another agent's authoring, which is
+  the external use the rule exists to keep, not reflection.
+
+  A subject this cannot read (a lowercase common noun, an ellipsis, a bullet)
+  falls through to true: the verb keeps counting, so an unreadable clause
+  refuses a warrant rather than admitting one."
+  [text author [verb-start verb-end]]
+  (let [subject (second (re-find authoring-subject-tail (subs text 0 verb-start)))
+        after (subs text verb-end (min (count text) (+ verb-end authoring-complement-window)))]
+    (cond
+      (nil? subject) true
+      (re-matches first-person-subject subject) true
+      (.equalsIgnoreCase ^String subject (str author)) true
+      (re-find authoring-complement after) true
+      (re-matches named-agent-subject subject) false
+      :else true)))
+
 (defn authoring-turn?
-  "Reflection rule v3. True when the record announces the authoring of a
-  library pattern FILE -- an authoring verb within `authoring-verb-window`
-  characters of a *.flexiarg path. Such a turn is the pattern's own author
-  describing the references they have just written into it, so a relation it
-  states between that pattern and another comes from the authoring act and not
-  from anyone using the two together. `library/<target>.flexiarg` in the
-  spider's own prompt is not a path match: the placeholder brackets break it."
+  "Reflection rule v3. True when the record announces the record author's OWN
+  authoring of a library pattern FILE -- an authoring verb they are the agent
+  of, within `authoring-verb-window` characters of a *.flexiarg path. Such a
+  turn is the pattern's own author describing the references they have just
+  written into it, so a relation it states between that pattern and another
+  comes from the authoring act and not from anyone using the two together. A
+  verb some other agent is the subject of does not count, or an operator's
+  report of what a seat wrote would be discarded as the fleet's own record.
+  `library/<target>.flexiarg` in the spider's own prompt is not a path match:
+  the placeholder brackets break it."
   [record]
   (let [text (str/join " " (string-leaves (:evidence/body record)))
+        author (record-author record)
         paths (regex-spans pattern-file-path text)
-        verbs (regex-spans authoring-verb text)]
+        verbs (filter #(authoring-verb-attributed-to-author? text author %)
+                      (regex-spans authoring-verb text))]
     (boolean
      (some (fn [[path-start path-end]]
              (some (fn [[verb-start verb-end]]
@@ -298,8 +350,7 @@
            paths))))
 
 (defn reflection-record? [record worker-seats spider-agent]
-  (let [raw-author (:evidence/author record)
-        author (if (keyword? raw-author) (name raw-author) (str raw-author))]
+  (let [author (record-author record)]
     (boolean
      (or (contains? worker-seats author)
          (and (agency-job-envelope? record)
@@ -316,7 +367,8 @@
    :spider-agent spider-agent
    :agency-job :invoke-complete-or-job-envelope-naming-worker-or-spider-agent
    :self-text :spider-self-text-prompt-markers
-   :authoring-turn :authoring-verb-within-window-of-a-flexiarg-path
+   :authoring-turn :author-attributed-authoring-verb-within-window-of-a-flexiarg-path
+   :authoring-attribution :impersonal-first-person-or-subject-is-the-record-author
    :authoring-verb-window authoring-verb-window})
 
 (defn clean-hit? [hit]

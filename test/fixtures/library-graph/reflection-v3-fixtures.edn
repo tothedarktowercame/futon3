@@ -1,10 +1,20 @@
-;; Two records for reflection rule v3 (ledger item L2), read by
+;; Three records for reflection rule v3 (ledger item L2), read by
 ;; spider-runner-test and library-graph-lint-test.
 ;;
 ;; :authoring-turn is the record wave 2 rejected a warrant on
 ;; (system-coherence, e-7a50b862, 2026-05-07): claude-5 announcing the pattern
 ;; file it had just written and listing that file's own references. Text
 ;; abridged; the announcement, the path and the reference sentence are verbatim.
+;;
+;; :third-party-authoring is the attribution counter-fixture (review finding on
+;; L2, 2026-09-01): emacs-7c6ac3768ecf9d2149cd9909e6224870, an operator turn
+;; joe wrote on 2026-08-25 relaying what codex-15 and an invoke job had built.
+;; It carries authoring verbs beside real .flexiarg paths, so a rule keyed on
+;; proximity alone calls it an authoring turn and the fleet discards an
+;; operator's report of somebody else's work as its own reflection. Both
+;; authoring verbs have a subject naming an agent other than the record's
+;; author. Text abridged; ` ... ` marks the elision, the WAKE line, the invoke
+;; line and the path list are verbatim.
 ;;
 ;; :external-description is the counter-fixture, abridged from e-f5a7638c, a
 ;; wave-1 aif record: claude-1 reviewing what codex-1 built and naming the
@@ -33,4 +43,15 @@
    :transport "emacs-claude-repl"
    :role "assistant"
    :text
-   "codex-1 wrapped the NAG-warrant wiring. Does each warrant cite a real flexiarg, and is it additive? Every warrant cites a real flexiarg -- `aif/niche-construction`, `orchestration/consent-gate`, `aif/admissibility`, `war-machine/advanceability`, `orchestration/pattern-warranted-choice-point` -- all the ones we just authored. forbidden-path is a hard refuse, correctly."}}}
+   "codex-1 wrapped the NAG-warrant wiring. Does each warrant cite a real flexiarg, and is it additive? Every warrant cites a real flexiarg -- `aif/niche-construction`, `orchestration/consent-gate`, `aif/admissibility`, `war-machine/advanceability`, `orchestration/pattern-warranted-choice-point` -- all the ones we just authored. forbidden-path is a hard refuse, correctly."}}
+ :third-party-authoring
+ {:evidence/id "emacs-7c6ac3768ecf9d2149cd9909e6224870"
+  :evidence/author "joe"
+  :evidence/type :coordination
+  :evidence/claim-type :question
+  :evidence/body
+  {:event "chat-turn"
+   :transport "emacs-claude-repl"
+   :role "user"
+   :text
+   "WAKE: codex-15 wrote five @how patterns in futon3/library/problems/. CHECKLIST: (1) ls the dir, confirm 5 .flexiarg files, one per node R2/R5/R6/R8/R14;  ... (8) report to Joe with what I checked.\n\n--- resumed: parked dependencies complete (1) ---\n• invoke-1787649777853-1018-f0693af4: Created the five uncommitted files:\n\n- `futon3/library/problems/operator-turns-become-inference-observations.flexiarg`\n- `futon3/library/problems/satisfied-rungs-are-counted-and-surfaced.flexiarg`\n- `futon3/library/problems/tension-proposes-candidates.flexiarg`\n\nEach has `@style pattern`, the verified war-room `@why`, its requested `@holds-at`, and `conclusion + context/IF/HOWEVER/THEN/BECAUSE`."}}}

@@ -262,9 +262,14 @@
     (is (= (:changed-verdicts audit) (count changed)))
     ;; Falsifier: the audit is only worth reading if the same computation over a
     ;; record that IS an authoring turn and is not a fleet record would move it.
-    (let [rejected (:authoring-turn (edn/read-string (slurp v3-fixtures-path)))]
+    (let [fixtures (edn/read-string (slurp v3-fixtures-path))
+          rejected (:authoring-turn fixtures)]
       (is (true? (lint/authoring-turn? rejected)))
-      (is (false? (reflection-v2? rejected workers spider))))))
+      (is (false? (reflection-v2? rejected workers spider)))
+      ;; And the audit counts the author's own authoring only: a record about
+      ;; somebody else's is not an authoring turn, so it cannot inflate the
+      ;; count or move a verdict.
+      (is (false? (lint/authoring-turn? (:third-party-authoring fixtures)))))))
 
 (when (= *file* (System/getProperty "babashka.file"))
   (let [{:keys [fail error]} (run-tests)]

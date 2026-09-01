@@ -694,9 +694,13 @@
    :owner :any}
   {:id :LD1,
    :class :D,
-   :status :done-unreviewed,
+   :status :done,
    :owner :any,
    :covers-key :none,
+   :reviewed-by "codex",
+   :reviewed-at "2026-09-01T23:24:32Z",
+   :review
+   "Read e0689e0 in full and confirmed it is authored by Joseph Corneli, not the reviewer. Reproduced clj-kondo exit 0 (0 errors, 0 warnings), check-parens exit 0 (OK), library_graph_lint_test exit 0 (10 tests, 59 assertions; C88 pin 1247 files and library-wide edges :why 86, :why-posthoc 0, :how 27, :see-also 141), spider_runner_test exit 0 (6 tests, 33 assertions), and worklist_check exit 0. Confirmed @why-posthoc is parsed and counted separately, must resolve and earn attestation when new, does not enter the authored-authority cycle law or organised fraction, remains invisible to checks/playout_snatch.clj until opt-in, and is standard in the directive whitelist. The evidence commit changes no .flexiarg file and leaves checks/spider_runner.clj's permitted directives unchanged, so it authors no spider @why, @why-posthoc edge, or similarity-inferred edge. No wave-section lint applies to decision row LD1.",
    :evidence
    {:sha "e0689e0",
     :decision

@@ -5,8 +5,25 @@
  :classes #{:C :V :E :W :D :J}
  :statuses #{:open :blocked :done-unreviewed :done :needs-joe}
  :items
- [{:id :L1 :class :C :status :open :owner :any
+ [{:id :L1 :class :C :status :done-unreviewed :owner :any
    :covers-key :none
+   :evidence
+   {:sha "a3bff43"
+    :schema "library/.spider/attestation-schema.edn -- :warrant-refused {:by :at :note} beside :state :proposed; :state :refused unchanged"
+    :lint ["checks/library_graph_lint.clj:169 valid-warrant-refusal?"
+           "checks/library_graph_lint.clj:195 refusal-act-failures (:warrant-refusal-requires-proposed-state)"
+           "checks/library_graph_lint.clj:180 non-keyword attestation key is malformed"
+           "summary counts :edge-refusals and :warrant-refusals separately"]
+    :tests ["test/library_graph_lint_test.clj:159 edge-refusal-and-warrant-refusal-are-different-acts (4 planted cases: warrant-refusal keeps the directive and passes; edge-refusal with the directive still present fails :refused-edge-still-present and without it passes; both acts on one record fails; a warrant-refusal without a note is malformed)"
+            "test/library_graph_lint_test.clj:185 non-keyword-attestation-key-is-malformed"]
+    :reclassification "library/.spider/refusal-reclassification-2026-09-01.edn -- all 5 prior :refused records are edge-refusals by act (no surviving directive in any of the 5 source patterns); grounds quoted per record; aif rows at :607 and :646 give a warrant-shaped ground, recorded not revised"
+    :repair "library/writing-coherence/attestations.edn:95 row :reason held unescaped quotes around \"meta-lede\", which split the EDN string and left `meta-lede` as a symbol key; escaped, and the linter now rejects the class"
+    :not-touched "library/sidecar/attestations.edn rows 0 and 1 (:refused-reason, :state :proposed) left for L3's second read"
+    :gates {:clj-kondo "exit 0, errors 0 warnings 0 (the one :info at library_graph_lint.clj:234 pre-dates this change)"
+            :check-parens "exit 0, OK"
+            :library-graph-lint-test "exit 0, 6 tests / 26 assertions / 0 failures"
+            :spider-runner-test "exit 0, 3 tests / 11 assertions / 0 failures"
+            :section-lint "aif pass? true, :edge-refusals 4; writing-coherence 4 failures and sidecar 2 failures are :evidence-excerpt-mismatch from the pinned fixture holding aif's 56 records only -- identical counts measured on the pre-change linter, so not a regression"}}
    :statement "Vocabulary gap found at the wave-2 gate: the lint's :refused means the EDGE leaves the pattern file; refusing a WARRANT is a different act (:proposed plus a review note). One word for two acts (P-organise-the-library.md, WAVE 2 GATED 12:10Z)."
    :acceptance "checks/library_graph_lint.clj and the attestation schema distinguish edge-refusal (edge leaves the file) from warrant-refusal (edge stays :proposed, warrant recorded as rejected with a note). A test exercises both acts on planted records. Existing 5 :refused records re-classified with pointers, or shown to all be true edge-refusals. clj-kondo, check-parens, and test/library_graph_lint_test.clj green."}
   {:id :L2 :class :C :status :open :owner :any

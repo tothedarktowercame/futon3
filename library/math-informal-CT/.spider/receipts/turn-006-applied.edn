@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:33:15.666676882Z",
+ :turn 6,
+ :pattern "math-informal-CT/transpose-across-an-adjunction",
+ :gate
+ "/home/joe/code/futon3/./library/math-informal-CT/.spider/gates/turn-006.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-informal-CT/transpose-across-an-adjunction",
+    :note
+    "Rung 1: none of the ~14 supplied hits warrants an edge — the majority are embeddings retrieval listings with :listing true and :co-mention true (rankings beside problems/operator-turns-become-inference-observations, lift-prove-upstairs-reflect-by-injectivity, structural-equivalence, vsatlatarium/dome-projection, iching hexagrams 46-sheng and 22-bi, software-design/adapter-pattern in unrelated codex-12/codex-3/harness queries — rankings state no relation); four carry :self-text true and :reflection true (fleet reflections of other spiders' outputs); and the psr pull-offer e-pull-offer-f92bfe41 has :co-mention true (retrieval surfacing beside unrelated holomorphic-disk-api, elbow-immediate, weld-range-lemmas, durability-first ids for a SurjOn/cpow query — co-mention states no relation). No clean hit with :listing/:self-text/:co-mention/:reflection all false exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'transpose-across-an-adjunction', 'transpose across an adjunction mate adjunct'. Every rung-2 hit was either this spider's own prompt echoed in e-e112fd4f-d78a-4503-a525-8f0464ad0d7f or the same rung-1 listing/pull-offer records. The pattern's existing @references (math-informal/transport-across-isomorphism, math-informal/dualise-the-problem, math-informal-CT/compare-universal-properties), @factor and @family directives cannot be repeated, and no clean external record names any new target; the structural-equivalence co-occurrence in one listing is a ranking beside — not a stated relation — and that sibling is already cross-referenced from compare-universal-properties' own @references. No external non-reflection record demonstrates a relation between math-informal-CT/transpose-across-an-adjunction and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

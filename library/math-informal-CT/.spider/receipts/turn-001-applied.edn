@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:28:37.513957019Z",
+ :turn 1,
+ :pattern "math-informal-CT/chase-the-diagram",
+ :gate
+ "/home/joe/code/futon3/./library/math-informal-CT/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-informal-CT/chase-the-diagram",
+    :note
+    "Rung 1: both runner-supplied hits are embeddings retrieval listings with :listing true and :co-mention true — context-retrievals ranking the pattern beside unrelated ids (schwarz-disk-automorphism-formula, mission-interface-signature, iiching/exotype-083) in unrelated codex-18 auto-bellback and claude-13 queries — rankings/co-mentions state no relation. A rung-1 edge requires at least one hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'chase-the-diagram', 'chase the diagram pasting commuting'. Every rung-2 hit was another embeddings context-retrieval listing (e-1f16c36b beside connected-union-via-common-point and iching hexagram-12-pi in a claude-10 review query; e-f6f5f636 and e-d242b661 beside derive-exits-on-a-minted-sorry and devmap-contribution-protocol in unrelated claude queries; plus the rung-1 listing ids) — rankings state no relation and are not warrants. The pattern's existing @references (math-informal/unfold-the-definition, math-informal-CT/transpose-across-an-adjunction, math-informal/construct-an-auxiliary-object), @factor and @family directives cannot be repeated, and no clean external record names any new target. No external non-reflection record demonstrates a relation between math-informal-CT/chase-the-diagram and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

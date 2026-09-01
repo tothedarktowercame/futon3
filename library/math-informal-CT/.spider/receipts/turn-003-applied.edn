@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:30:27.714772417Z",
+ :turn 3,
+ :pattern "math-informal-CT/compare-universal-properties",
+ :gate
+ "/home/joe/code/futon3/./library/math-informal-CT/.spider/gates/turn-003.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-informal-CT/compare-universal-properties",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'compare-universal-properties', 'identify two constructions by comparing their universal properties'. Every rung-2 hit was one of: this spider's own prompt echoed in e-e9f3d9bf-81d6-4e3c-8ab2-68fc6ce44bad; an unrelated compression-pilot mining bell e-3cfb6507; unhydrated emacs-* ids with no retrievable body; or e-75c13c35-5dce-4afd-8f68-3fa79b43e405 — a fleet claude-2 invoke-complete recording a library reorganisation in which the inbound @references citation in compare-universal-properties pointing to verify-universal-property was updated after moving that file to math-informal-CT. That record restates the pattern's OWN existing @references directive (a fleet maintenance act, not external use, and re-proposing verify-universal-property would repeat an existing directive). The pattern's existing @references (math-informal-CT/verify-universal-property, math-informal/structural-equivalence, math-informal-CT/transpose-across-an-adjunction), @factor and @family directives cannot be repeated, and no clean external record names any new target. No external non-reflection record demonstrates a relation between math-informal-CT/compare-universal-properties and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

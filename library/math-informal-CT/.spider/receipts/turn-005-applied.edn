@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:32:21.869281533Z",
+ :turn 5,
+ :pattern "math-informal-CT/strictify-via-coherence",
+ :gate
+ "/home/joe/code/futon3/./library/math-informal-CT/.spider/gates/turn-005.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-informal-CT/strictify-via-coherence",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'strictify-via-coherence', 'strictify via coherence bicategory pseudofunctor'. Every hit was either this spider's own prompt echoed in e-388328c6-1cb6-4148-83bf-34b14e1d697b and e-e9f3d9bf-81d6-4e3c-8ab2-68fc6ce44bad, or unhydrated emacs-* ids with no retrievable body. The pattern's existing @references (math-informal/quotient-by-irrelevance, math-informal-CT/chase-the-diagram, math-informal/structural-equivalence), @factor and @family directives cannot be repeated, and no clean external record names any new target. No external non-reflection record demonstrates a relation between math-informal-CT/strictify-via-coherence and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

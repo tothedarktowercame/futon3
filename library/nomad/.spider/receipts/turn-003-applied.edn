@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:04:50.194056889Z",
+ :turn 3,
+ :pattern "nomad/letter-from-the-future",
+ :gate
+ "/home/joe/code/futon3/./library/nomad/.spider/gates/turn-003.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "nomad/letter-from-the-future",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'letter from the future', 'write the letter you want to send in two months', 'future letter addressee work item bets invariant'. Every hit was one of: an embeddings retrieval listing e-2367c58b-9431-4ac0-af57-eaed6ae7d251 (claude-2 context-retrieval ranking the pattern first alongside unrelated t4r/or ids in an email-drafting query) — a ranking, not a warrant; self-text — this spider's own prompt echoed in e-d0aca357-fb7d-4b02-89f8-ac37e15ad49d; or external emacs chat-turns (e-ed2743e1, e-f5ec9d13) that show real letter-drafting practice with addressees and clause-level asks but name no pattern id and state no relation to any other library/<id>.flexiarg target. No external non-reflection record demonstrates a relation between nomad/letter-from-the-future and any other existing pattern, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

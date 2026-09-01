@@ -1,0 +1,44 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:09:47.581505406Z",
+ :turn 8,
+ :pattern "nomad/skip-the-flood",
+ :gate
+ "/home/joe/code/futon3/./library/nomad/.spider/gates/turn-008.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "nomad/skip-the-flood",
+     :to "nomad/choose-the-grid",
+     :kind :see-also},
+    :rung 2,
+    :read ["nomad/skip-the-flood"],
+    :evidence
+    [{:id "e-05d08802-4523-4ec2-ba96-5eaa41c18b35",
+      :via :text,
+      :query "held-out control choose-the-grid skip-the-flood",
+      :excerpt
+      "spot-checks trace to their TN sections with sensible pattern attributions (principled-abstention → author-the-yardstick + live-yardstick; the held-out control → choose-the-grid + skip-the-flood)"}],
+    :state :proposed,
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}},
+    :cited
+    "When your field is suddenly capitalised, do not swim with the flood — occupy the adjacent layers it vacates (orchestration, digestion, evaluation), which also survive the flood's next release.",
+    :at "2026-09-01",
+    :by "zai-3"}],
+  :proposals [],
+  :absences []}}

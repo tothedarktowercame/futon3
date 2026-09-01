@@ -1,0 +1,51 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:06:46.136464490Z",
+ :turn 5,
+ :pattern "nomad/live-yardstick",
+ :gate
+ "/home/joe/code/futon3/./library/nomad/.spider/gates/turn-005.edn",
+ :changes
+ {:attestations
+  [{:edge
+    {:from "nomad/live-yardstick",
+     :to "nomad/author-the-yardstick",
+     :kind :see-also},
+    :rung 2,
+    :read ["nomad/live-yardstick"],
+    :evidence
+    [{:id "e-05d08802-4523-4ec2-ba96-5eaa41c18b35",
+      :via :text,
+      :query
+      "principled-abstention author-the-yardstick live-yardstick",
+      :excerpt
+      "spot-checks trace to their TN sections with sensible pattern attributions (principled-abstention → author-the-yardstick + live-yardstick; the held-out control → choose-the-grid + skip-the-flood)"}
+     {:id "e-3d5c18cc-3d05-4a3c-b395-1c361b62a805",
+      :via :text,
+      :query
+      "fast-money patterns Live-Yardstick Author-The-Yardstick accrual",
+      :excerpt
+      "the fast-money patterns are Owner-Of-The-Problem and Live-Yardstick (pre-allocated budgets, named holders), not Author-The-Yardstick (accrual)"}],
+    :state :proposed,
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}},
+    :cited
+    "A grid you win on means nothing unless an audience is already measuring it, with money and a problem; verify the yardstick is live before moving to it.",
+    :at "2026-09-01",
+    :by "zai-3"}],
+  :proposals [],
+  :absences []}}

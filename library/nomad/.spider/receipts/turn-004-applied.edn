@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:05:44.521459333Z",
+ :turn 4,
+ :pattern "nomad/licensed-ground",
+ :gate
+ "/home/joe/code/futon3/./library/nomad/.spider/gates/turn-004.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "nomad/licensed-ground",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'licensed ground', 'engage where the convening licenses the conversation', 'convening contribution invitation conversation organizers'. Every hit was one of: embeddings retrieval listings (e-f311c8e0, e-9fb582a9, e-760d88fa, e-2053ec82 — claude context-retrievals ranking nomad/licensed-ground among unrelated ids in trivial queries like 'just say hi Hi Joe!' and 'cold warm two cold warm two') — rankings are not warrants; or self-text — this spider's own prompt echoed in e-e7893ff8-527a-4ad4-ba26-ba521612edaa. The in-body references to nomad/owner-of-the-problem ('Guard on nomad/owner-of-the-problem') and nomad/self-certifying-artifact / nomad/author-the-yardstick are the pattern author's own text with no corresponding directive lines and no external corroboration. No external non-reflection record demonstrates a relation between nomad/licensed-ground and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,15 @@
+{:schema 1,
+ :event :dispatch-completion,
+ :at "2026-09-01T21:08:47.589650454Z",
+ :turn 7,
+ :pattern "nomad/self-certifying-artifact",
+ :seat "zai-3",
+ :wire
+ {:ok true,
+  :job-id "invoke-1788296869078-7181-b2813cd4",
+  :response
+  "[{:absence {:pattern \"nomad/self-certifying-artifact\" :note \"Rung 1: all seven runner-supplied hits are embeddings retrieval listings with :listing true and :co-mention true (claude context-retrievals repeatedly ranking the pattern alongside unrelated ids such as coordination/artifact-registration, orchestration/recorded-handoff, features/operator-turns-enter-the-observation-vector). A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists, and rankings state no relation. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'self-certifying-artifact', 'produce outputs that carry their own validity', 'self-certifying artifact merged pull request verified proof benchmark'. Every rung-2 hit was either the same listings (e-e1beaf0b, e-79225c65 and the rung-1 listing ids), this spider's own prompt echoed in e-30d0854d-11eb-4453-a053-fa474ed1147d, or another listing e-188831d4/e-9825cb6d/e-c8ddd462. The recurring co-ranking with coordination/artifact-registration is embeddings proximity only — co-mention/listing, never a stated relation. No external non-reflection record demonstrates a relation between nomad/self-certifying-artifact and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.\"}}]",
+  :agent-id "zai-3",
+  :session-id "zai-local-20260831T093153-935092"},
+ :response
+ "[{:absence {:pattern \"nomad/self-certifying-artifact\" :note \"Rung 1: all seven runner-supplied hits are embeddings retrieval listings with :listing true and :co-mention true (claude context-retrievals repeatedly ranking the pattern alongside unrelated ids such as coordination/artifact-registration, orchestration/recorded-handoff, features/operator-turns-enter-the-observation-vector). A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists, and rankings state no relation. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'self-certifying-artifact', 'produce outputs that carry their own validity', 'self-certifying artifact merged pull request verified proof benchmark'. Every rung-2 hit was either the same listings (e-e1beaf0b, e-79225c65 and the rung-1 listing ids), this spider's own prompt echoed in e-30d0854d-11eb-4453-a053-fa474ed1147d, or another listing e-188831d4/e-9825cb6d/e-c8ddd462. The recurring co-ranking with coordination/artifact-registration is embeddings proximity only — co-mention/listing, never a stated relation. No external non-reflection record demonstrates a relation between nomad/self-certifying-artifact and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.\"}}]"}

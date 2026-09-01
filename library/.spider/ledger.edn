@@ -185,40 +185,131 @@
     {:proposed 0, :attested 0, :refused 0, :sent-back 0},
     :fraction-organised 1.0,
     :organised-proposed 0}}
-  {:wave 3,
-   :section "or3",
-   :at "2026-09-01",
-   :seat "zai-3",
-   :runner "checks/spider_runner.clj --section or3 --seat zai-3 --budget 34",
-   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
-   :evidence-cache
+  {:evidence-cache
    "/tmp/futon3-spider-evidence-occurrences-v3-197217-e9a6a032afcb3b23.edn",
+   :rung-one-coverage
+   {:patterns 17, :any 5, :clean 0, :clean-non-reflection 0},
+   :section "or3",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :outcome
+   "17 of 17 patterns processed in 17 turns, no retries, no seat failures; 17 typed absences and zero edges. Not a section the spider skipped: every absence record (library/or3/.spider/absences.edn) names the rung-2 text-search queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search and why each hit failed.",
+   :after
+   {:absences 17,
+    :seat-failures 0,
+    :turns 17,
+    :new-attestations 0,
+    :organised-attested 0,
+    :patterns-with-outgoing-why 0,
+    :patterns 17,
+    :edges-by-kind {:why 0, :how 0, :see-also 0},
+    :attestation-states
+    {:proposed 0, :attested 0, :refused 0, :sent-back 0},
+    :fraction-organised 0.0,
+    :proposals 0,
+    :organised-proposed 0,
+    :patterns-processed 17},
+   :at "2026-09-01",
+   :gate
+   {:library-graph-lint
+    "exit 0 before and after (/tmp/L5gates/or3-{before,after}.edn); pass? true, 0 failures, 1247 files, library edges :why 86 :how 27 :see-also 136, 0 unresolved targets, 0 why-cycles -- unchanged, which is what a zero-edge section should look like"},
+   :runner
+   "checks/spider_runner.clj --section or3 --seat zai-3 --budget 34",
    :before
    {:patterns 17,
     :edges-by-kind {:why 0, :how 0, :see-also 0},
     :patterns-with-outgoing-why 0,
     :fraction-organised 0.0},
-   :after
-   {:patterns 17,
-    :patterns-processed 17,
-    :turns 17,
-    :edges-by-kind {:why 0, :how 0, :see-also 0},
-    :patterns-with-outgoing-why 0,
-    :fraction-organised 0.0,
-    :new-attestations 0,
-    :attestation-states {:proposed 0, :attested 0, :refused 0, :sent-back 0},
-    :absences 17,
-    :proposals 0,
-    :seat-failures 0,
-    :organised-attested 0,
-    :organised-proposed 0},
-   :rung-one-coverage {:patterns 17, :any 5, :clean 0, :clean-non-reflection 0},
-   :outcome
-   "17 of 17 patterns processed in 17 turns, no retries, no seat failures; 17 typed absences and zero edges. Not a section the spider skipped: every absence record (library/or3/.spider/absences.edn) names the rung-2 text-search queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search and why each hit failed.",
-   :rung-one-finding
-   "No rung-1 warrant is available anywhere in this section, before any seat reads anything. 5 of 17 patterns have any exact-occurrence hit (co-design-the-call 3, count-every-card-back 2, plural-value-accounting 5, reproducibility-as-a-teaching-habit 1, teach-the-process-not-the-facility 1) and ALL of them are :listing true -- context-retrieval result lists ranked by futon3a embeddings. clean = 0 and clean-non-reflection = 0 for all 17. P-validated-R5 law O2 refuses an embedding-ranked co-occurrence as a relation, and the runner refuses it as a warrant, so this section could only ever have produced rung-2 edges or absences.",
    :pin-note
    "The pinned cache was built under :reflection-rule {:version 2, :worker-seats [], :spider-agent nil} -- before rule v3 (futon3 299f47b, ccf2bf8) and without naming the seat, so its cached :reflection flags are v2 flags and do not mark zai-3 or codex-20 authorship. That weakens rung-1 warrant checking in general. It cannot have admitted an edge here: :clean tests :listing/:self-text/:co-mention and ignores :reflection entirely, and :clean is 0 for all 17 patterns, so a stricter rule can only demote further. Rung 2 is unaffected -- rung-two-warrant? calls lint/reflection-record? against the live record under the current rule, not against the cache. The next wave-3 slice should rebuild the cache naming its seat and under v3.",
+   :wave 3,
+   :seat "zai-3",
+   :rung-one-finding
+   "No rung-1 warrant is available anywhere in this section, before any seat reads anything. 5 of 17 patterns have any exact-occurrence hit (co-design-the-call 3, count-every-card-back 2, plural-value-accounting 5, reproducibility-as-a-teaching-habit 1, teach-the-process-not-the-facility 1) and ALL of them are :listing true -- context-retrieval result lists ranked by futon3a embeddings. clean = 0 and clean-non-reflection = 0 for all 17. P-validated-R5 law O2 refuses an embedding-ranked co-occurrence as a relation, and the runner refuses it as a warrant, so this section could only ever have produced rung-2 edges or absences."}
+  {:evidence-cache
+   "/tmp/futon3-spider-evidence-occurrences-v3-206483-70eeae7145d2c7a6.edn",
+   :rung-one-coverage
+   {:patterns 8, :any 5, :clean 0, :clean-non-reflection 0},
+   :section "nomad",
+   :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+   :outcome
+   "8 of 8 patterns processed in 8 turns, no retries, no malformed-output receipts, no seat failures. 5 @see-also edges written and attested :proposed, 3 typed absences, 0 proposals. Section edges go {:why 0 :how 0 :see-also 0} -> {:why 0 :how 0 :see-also 5}; library-wide @see-also 136 -> 141. fraction-organised stays 0.0 because it counts outgoing @why only, and the spider may not author @why (decisions.edn :spider-editorial-standing) -- this section gained peer links, not authority links.",
+   :edges-written
+   [{:edge
+     {:from "nomad/author-the-yardstick",
+      :to "nomad/live-yardstick",
+      :kind :see-also},
+     :evidence
+     ["e-05d08802-4523-4ec2-ba96-5eaa41c18b35"
+      "e-3d5c18cc-3d05-4a3c-b395-1c361b62a805"],
+     :warrant :stated-contrast}
+    {:edge
+     {:from "nomad/live-yardstick",
+      :to "nomad/author-the-yardstick",
+      :kind :see-also},
+     :evidence
+     ["e-05d08802-4523-4ec2-ba96-5eaa41c18b35"
+      "e-3d5c18cc-3d05-4a3c-b395-1c361b62a805"],
+     :warrant :stated-contrast}
+    {:edge
+     {:from "nomad/owner-of-the-problem",
+      :to "nomad/live-yardstick",
+      :kind :see-also},
+     :evidence ["e-3d5c18cc-3d05-4a3c-b395-1c361b62a805"],
+     :warrant :stated-grouping}
+    {:edge
+     {:from "nomad/choose-the-grid",
+      :to "nomad/skip-the-flood",
+      :kind :see-also},
+     :evidence ["e-05d08802-4523-4ec2-ba96-5eaa41c18b35"],
+     :warrant :co-attribution-only}
+    {:edge
+     {:from "nomad/skip-the-flood",
+      :to "nomad/choose-the-grid",
+      :kind :see-also},
+     :evidence ["e-05d08802-4523-4ec2-ba96-5eaa41c18b35"],
+     :warrant :co-attribution-only}],
+   :after
+   {:absences 3,
+    :seat-failures 0,
+    :turns 8,
+    :new-attestations 5,
+    :organised-attested 0,
+    :patterns-with-outgoing-why 0,
+    :patterns 8,
+    :edges-by-kind {:why 0, :how 0, :see-also 5},
+    :attestation-states
+    {:proposed 5, :attested 0, :refused 0, :sent-back 0},
+    :fraction-organised 0.0,
+    :proposals 0,
+    :organised-proposed 0,
+    :patterns-processed 8},
+   :warrant-note
+   "Both cited records are claude-4 invoke-complete envelopes from session 8b297865 on 2026-07-27, five weeks before the spider programme existed, so neither is reflection under rule v3 (author not in worker-seats; the job envelope names neither zai-3 nor codex-20; no spider prompt markers; no .flexiarg path for the authoring-turn test). They are not equally strong. e-3d5c18cc STATES a relation -- 'the fast-money patterns are Owner-Of-The-Problem and Live-Yardstick (pre-allocated budgets, named holders), not Author-The-Yardstick (accrual)' groups two patterns by a shared property and contrasts a third, which is what @see-also means. e-05d08802 only reports CO-ATTRIBUTION -- 'the held-out control -> choose-the-grid + skip-the-flood' says one spot-check was attributed to both patterns, not that the patterns stand in a relation. choose-the-grid <-> skip-the-flood rest on that record alone and are the two an owner review should look at first. This is not a law O2 violation (co-attribution in an agent-written report is not embedding similarity), and it is why all five sit at :proposed rather than :attested.",
+   :at "2026-09-01",
    :gate
-   {:library-graph-lint "exit 0 before and after (/tmp/L5gates/or3-{before,after}.edn); pass? true, 0 failures, 1247 files, library edges :why 86 :how 27 :see-also 136, 0 unresolved targets, 0 why-cycles -- unchanged, which is what a zero-edge section should look like"}}],
+   {:library-graph-lint
+    "exit 0 before and after (/tmp/L5s2/nomad-{before,after}.edn), exit codes captured to /tmp/L5s2/{before,after}.exit and tested by string comparison, never read through a pipe. Both pass? true, 0 failures, 1247 files, 0 unresolved-targets, 0 why-cycles, 0 warrant-refusals, 0 edge-refusals. Sole delta: section :see-also 0 -> 5 and library-wide :see-also 136 -> 141; :why 86 and :how 27 unchanged.",
+    :clj-kondo
+    "exit 0, 0 errors 0 warnings over checks/library_graph_lint.clj, checks/spider_runner.clj, test/library_graph_lint_test.clj, test/spider_runner_test.clj. No Clojure was touched by this slice. The one :info at library_graph_lint.clj:266 is the pre-existing spider-self-text? coercion L2 recorded.",
+    :check-parens
+    "exit 0, OK -- emacs -Q --batch -l futon4/dev/check-parens.el --eval '(arxana-check-parens-cli)' -- library/.spider/ledger.edn library/nomad/attestations.edn library/nomad/proposals.edn library/nomad/.spider/{state,absences,seat-failures}.edn",
+    :library-graph-lint-test
+    "exit 0, 7 tests / 36 assertions / 0 failures, under the C88 pin",
+    :spider-runner-test
+    "exit 0, 6 tests / 33 assertions / 0 failures"},
+   :runner
+   "SPIDER_EVIDENCE_CACHE=/tmp/futon3-spider-evidence-occurrences-v3-206483-70eeae7145d2c7a6.edn bb -cp . checks/spider_runner.clj --section nomad --seat zai-3 --budget 16",
+   :before
+   {:patterns 8,
+    :edges-by-kind {:why 0, :how 0, :see-also 0},
+    :patterns-with-outgoing-why 0,
+    :fraction-organised 0.0},
+   :pin-note
+   "This slice ACTS ON the pin defect or3 recorded. or3 ran against a cache built under :reflection-rule {:version 2 :worker-seats [] :spider-agent nil}; this slice built a fresh index (lint/ensure-live-evidence-index! with worker-seats #{\"zai-3\"} and spider-agent \"codex-20\") whose :reflection-rule is {:version 3 :worker-seats [\"zai-3\"] :spider-agent \"codex-20\"}, so the cached :reflection flags now implement rule v3 and name this run's seat. The v3 crawl read 206,483 records in ~20 minutes at 1000/page and indexed 1092 patterns. The naming defect or3 reported is NOT fixed and still holds: library_graph_lint.clj:107 hardcodes the literal \"-v3-\" in evidence-cache-path and carries the rule version only inside the sha, so the filename cannot be read as a version claim. That wants its own row.",
+   :wave 3,
+   :absence-note
+   "The three absences are letter-from-the-future, licensed-ground, self-certifying-artifact, each naming the rung-2 text-search queries actually run. licensed-ground is the instructive one: its own body says 'Guard on nomad/owner-of-the-problem' and also names self-certifying-artifact and author-the-yardstick, and the spider still recorded an absence -- a pattern asserting its own relation is the author's text, not external corroboration, so it does not warrant a directive line.",
+   :seat "zai-3",
+   :rung-one-finding
+   "As in or3, no rung-1 warrant exists anywhere in nomad, independent of what the seat did. 5 of 8 patterns have any exact-occurrence hit (author-the-yardstick 4, choose-the-grid 7, live-yardstick 1, owner-of-the-problem 7, self-certifying-artifact 7); every hit on every one of them carries :co-mention true, so clean-hit? fails for all of them and clean = clean-non-reflection = 0 for all 8. 3 patterns (letter-from-the-future, licensed-ground, skip-the-flood) have no index entry at all. Table at /tmp/L5s2/nomad-coverage.txt, computed with lint/clean-hit? and lint/clean-non-reflection-hit? against the pinned cache, and matching the runner's own :rung-one-coverage. So 'rung 2 only' in the wave-3 plan is again a fact about the corpus, not a policy choice."}],
  :wave-1 {:organised-attested 10, :organised-proposed 55}}

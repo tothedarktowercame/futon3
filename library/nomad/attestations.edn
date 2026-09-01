@@ -1,0 +1,175 @@
+[{:edge
+  {:from "nomad/author-the-yardstick",
+   :to "nomad/live-yardstick",
+   :kind :see-also},
+  :rung 2,
+  :read ["nomad/author-the-yardstick"],
+  :evidence
+  [{:id "e-05d08802-4523-4ec2-ba96-5eaa41c18b35",
+    :via :text,
+    :query "author the yardstick",
+    :excerpt
+    "spot-checks trace to their TN sections with sensible pattern attributions (principled-abstention → author-the-yardstick + live-yardstick; the held-out control → choose-the-grid + skip-the-flood)"}
+   {:id "e-3d5c18cc-3d05-4a3c-b395-1c361b62a805",
+    :via :text,
+    :query "author the yardstick",
+    :excerpt
+    "the fast-money patterns are Owner-Of-The-Problem and Live-Yardstick (pre-allocated budgets, named holders), not Author-The-Yardstick (accrual)"}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+   :reflection-rule
+   {:authoring-attribution
+    :impersonal-first-person-or-subject-is-the-record-author,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :authoring-turn
+    :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+    :authoring-verb-window 120,
+    :worker-seats ["zai-3"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :version 3,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited
+  "subject, as always, to nomad/live-yardstick: someone must need the score.",
+  :at "2026-09-01",
+  :by "zai-3"}
+ {:edge
+  {:from "nomad/choose-the-grid",
+   :to "nomad/skip-the-flood",
+   :kind :see-also},
+  :rung 2,
+  :read ["nomad/choose-the-grid"],
+  :evidence
+  [{:id "e-05d08802-4523-4ec2-ba96-5eaa41c18b35",
+    :via :text,
+    :query "held-out control choose-the-grid skip-the-flood",
+    :excerpt
+    "spot-checks trace to their TN sections with sensible pattern attributions (principled-abstention → author-the-yardstick + live-yardstick; the held-out control → choose-the-grid + skip-the-flood)"}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+   :reflection-rule
+   {:authoring-attribution
+    :impersonal-first-person-or-subject-is-the-record-author,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :authoring-turn
+    :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+    :authoring-verb-window 120,
+    :worker-seats ["zai-3"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :version 3,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited "Treat the old grid's signals as non-goals, explicitly.",
+  :at "2026-09-01",
+  :by "zai-3"}
+ {:edge
+  {:from "nomad/live-yardstick",
+   :to "nomad/author-the-yardstick",
+   :kind :see-also},
+  :rung 2,
+  :read ["nomad/live-yardstick"],
+  :evidence
+  [{:id "e-05d08802-4523-4ec2-ba96-5eaa41c18b35",
+    :via :text,
+    :query "principled-abstention author-the-yardstick live-yardstick",
+    :excerpt
+    "spot-checks trace to their TN sections with sensible pattern attributions (principled-abstention → author-the-yardstick + live-yardstick; the held-out control → choose-the-grid + skip-the-flood)"}
+   {:id "e-3d5c18cc-3d05-4a3c-b395-1c361b62a805",
+    :via :text,
+    :query
+    "fast-money patterns Live-Yardstick Author-The-Yardstick accrual",
+    :excerpt
+    "the fast-money patterns are Owner-Of-The-Problem and Live-Yardstick (pre-allocated budgets, named holders), not Author-The-Yardstick (accrual)"}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+   :reflection-rule
+   {:authoring-attribution
+    :impersonal-first-person-or-subject-is-the-record-author,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :authoring-turn
+    :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+    :authoring-verb-window 120,
+    :worker-seats ["zai-3"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :version 3,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited
+  "A grid you win on means nothing unless an audience is already measuring it, with money and a problem; verify the yardstick is live before moving to it.",
+  :at "2026-09-01",
+  :by "zai-3"}
+ {:edge
+  {:from "nomad/owner-of-the-problem",
+   :to "nomad/live-yardstick",
+   :kind :see-also},
+  :rung 2,
+  :read ["nomad/owner-of-the-problem"],
+  :evidence
+  [{:id "e-3d5c18cc-3d05-4a3c-b395-1c361b62a805",
+    :via :text,
+    :query "fast-money Owner-Of-The-Problem Live-Yardstick",
+    :excerpt
+    "the fast-money patterns are Owner-Of-The-Problem and Live-Yardstick (pre-allocated budgets, named holders), not Author-The-Yardstick (accrual)"}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+   :reflection-rule
+   {:authoring-attribution
+    :impersonal-first-person-or-subject-is-the-record-author,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :authoring-turn
+    :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+    :authoring-verb-window 120,
+    :worker-seats ["zai-3"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :version 3,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited
+  "Postings allocate pre-committed budgets to pre-imagined shapes; discretion-holders can fund shapes they had not imagined, but only when the shape arrives already fitted to their problem.",
+  :at "2026-09-01",
+  :by "zai-3"}
+ {:edge
+  {:from "nomad/skip-the-flood",
+   :to "nomad/choose-the-grid",
+   :kind :see-also},
+  :rung 2,
+  :read ["nomad/skip-the-flood"],
+  :evidence
+  [{:id "e-05d08802-4523-4ec2-ba96-5eaa41c18b35",
+    :via :text,
+    :query "held-out control choose-the-grid skip-the-flood",
+    :excerpt
+    "spot-checks trace to their TN sections with sensible pattern attributions (principled-abstention → author-the-yardstick + live-yardstick; the held-out control → choose-the-grid + skip-the-flood)"}],
+  :state :proposed,
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+   :reflection-rule
+   {:authoring-attribution
+    :impersonal-first-person-or-subject-is-the-record-author,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :authoring-turn
+    :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+    :authoring-verb-window 120,
+    :worker-seats ["zai-3"],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent "codex-20",
+    :version 3,
+    :self-text :spider-self-text-prompt-markers}},
+  :cited
+  "When your field is suddenly capitalised, do not swim with the flood — occupy the adjacent layers it vacates (orchestration, digestion, evaluation), which also survive the flood's next release.",
+  :at "2026-09-01",
+  :by "zai-3"}]

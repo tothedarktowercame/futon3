@@ -1,0 +1,22 @@
+{:schema :library-contract/decisions-v1
+ :decisions
+ [{:id :spider-editorial-standing
+   :status :interim-adopted
+   :at "2026-09-01"
+   :question "Gate 0 of P-organise-the-library.md: what is the spider's editorial standing under README-flexiarg §5a?"
+   :grounds "P-organise-the-library.md §2 already defines it consistently with §5a's who-writes column: the spider is an EDITOR, so it may write @how and @see-also, and may only PROPOSE @why (the author-written, causal directive). Not an arm choice: any stronger standing would contradict §5a's table; any weaker would make the fleet pointless. Recorded so Joe can veto rather than pre-approve (rule of 2026-09-01)."
+   :veto "Joe may narrow (propose-only for all kinds) or void; wave-3 output is all :proposed/:attested through review, so a veto costs re-labelling, not re-work."}
+  {:id :posthoc-why-syntax
+   :status :interim-adopted
+   :at "2026-09-01"
+   :question "README-flexiarg §5a (2026-08-23) asks that a post-hoc @why be marked inline so a reader can tell a trace-hypothesis from an author's causal claim, and does not fix the syntax."
+   :arms
+   [{:arm :bang-suffix :form "@why! <id>"
+     :cost "Every existing @why consumer that matches the literal directive (checks/playout_snatch.clj:228-260 parse-why, graph lint kind table, grep habits) must learn the variant or silently drop the edge; one character is easy to miss in review."}
+    {:arm :inline-annotation :form "@why <id> [post-hoc]"
+     :cost "Target-list parsers must strip the annotation or mis-read it as an id; the mark is per-line, not per-edge, so mixed lists are ambiguous."}
+    {:arm :distinct-directive :form "@why-posthoc <id>"
+     :cost "A fourth pattern-to-pattern directive in the §5a table; consumers that should treat it as @why-for-cascade-purposes must opt in explicitly."}]
+   :interim :distinct-directive
+   :why-interim "Invisible to every existing consumer until it opts in (fails safe: a post-hoc edge cannot masquerade as authored), trivially greppable, and the opt-in is exactly the point -- §5a says the edge should EARN attestation before it counts. LD1 lands it in the standard and the lint."
+   :changes-it "If wave-3 attestation shows post-hoc edges graduating at a rate where the two-directive split costs more churn than it prevents, revisit toward :bang-suffix with a parser update."}]}

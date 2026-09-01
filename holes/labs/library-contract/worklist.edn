@@ -1,0 +1,44 @@
+{:schema :wm/worklist-v1
+ :title "library-contract: populate the pattern library's rationale layer so cascades can be formed from it"
+ :ledger-of "futon2/holes/problems/P-organise-the-library.md and P-validated-R5.md; standard futon3/README-flexiarg.md §5a"
+ :method "futon2/holes/TN-validation-method.md -- same discipline as wm-contract: one row per invocation, author != reviewer, decisions recorded with arms and run where runnable"
+ :classes #{:C :V :E :W :D :J}
+ :statuses #{:open :blocked :done-unreviewed :done :needs-joe}
+ :items
+ [{:id :L1 :class :C :status :open :owner :any
+   :covers-key :none
+   :statement "Vocabulary gap found at the wave-2 gate: the lint's :refused means the EDGE leaves the pattern file; refusing a WARRANT is a different act (:proposed plus a review note). One word for two acts (P-organise-the-library.md, WAVE 2 GATED 12:10Z)."
+   :acceptance "checks/library_graph_lint.clj and the attestation schema distinguish edge-refusal (edge leaves the file) from warrant-refusal (edge stays :proposed, warrant recorded as rejected with a note). A test exercises both acts on planted records. Existing 5 :refused records re-classified with pointers, or shown to all be true edge-refusals. clj-kondo, check-parens, and test/library_graph_lint_test.clj green."}
+  {:id :L2 :class :C :status :open :owner :any
+   :covers-key :none
+   :statement "Reflection-class rule v2 misses an author describing their own references at authoring time: wave 2 rejected one warrant on exactly this (the pattern's author describing its own references). A v3 candidate is named in the record but not written."
+   :acceptance "Rule v3 stated in the cache header beside the basis (where v2 lives), with the wave-2 rejected case as a fixture that v3 catches and v2 misses; a counter-fixture v3 must NOT catch (a genuine external description). Test in the spider/lint suite. Wave-1 attestations re-audited under v3 with the count of changed verdicts reported (expected 0 per the wave-1 audit; state the number)."}
+  {:id :L3 :class :V :status :open :owner :any
+   :covers-key :none
+   :statement "Two sidecar attestation holds from wave 2 (a tag-list warrant) are queued for a second read and nobody has read them."
+   :acceptance "Each hold read against its evidence excerpt and either attested, sent back with a note, or warrant-refused (using L1's vocabulary if landed, a review note otherwise). The read recorded in the section's attestations.edn with reader and date. Pointers to both records."}
+  {:id :L4 :class :E :status :open :owner :any
+   :covers-key :none
+   :statement "The one-edge price test, the stated next step of NOTE-the-chain-layer-exists-and-is-empty.md:105-112: nothing yet says whether a derived check over an @how edge is cheap or expensive, and that price decides whether Q(o|pi) is reachable by populating and deriving."
+   :acceptance "Take ONE attested @how edge. Write the check (core.logic rule or unit test) that says whether the named method actually carries out the pattern. Record what it cost: wall time, lines, and what had to be invented that the edge did not supply. Verdict stated as cheap or expensive WITH the numbers, in a note beside the NOTE. No generalisation beyond the one edge."}
+  {:id :L5 :class :W :status :open :owner :any
+   :covers-key :none
+   :loop-mode :one-slice-per-invocation
+   :statement "Wave 3: the 0%-tagged families -- or3, nomad, mmca, memory, math-formalization-CA, math-formalization-CV, math-informal-CT, math-informal-CA -- rung 2 only, per P-organise-the-library's wave plan. One section per invocation."
+   :progress []
+   :acceptance "Per slice: run the spider for ONE listed section against the pinned evidence basis (C88 pin discipline), gate with library_graph_lint, record the section's before/after edges-by-kind and attestation states in library/.spider/ledger.edn, commit. Append the section and sha to :progress. The row is done when all eight sections have a wave-3 ledger entry. No @why authored by the spider: propose only (LD0)."}
+  {:id :LD1 :class :D :status :open :owner :any
+   :covers-key :none
+   :statement "README-flexiarg §5a asks for an inline mark distinguishing a post-hoc @why (a trace, a hypothesis) from an author's own @why (a causal claim) and does not fix the syntax. Not determined by theory: a decision with arms, recorded in decisions.edn (interim arm :why-posthoc adopted so work can proceed; Joe can veto)."
+   :acceptance "decisions.edn entry :posthoc-why-syntax carries the three arms with costs (parser impact, greppability, collision with existing @why consumers such as checks/playout_snatch.clj parse-why), the interim choice, and what evidence would change it. README-flexiarg §5a gains the interim form with a pointer to the decision. The lint recognises the interim form and counts it separately from authored @why. Tests."}
+  {:id :LJ1 :class :J :status :needs-joe :owner :joe
+   :covers-key :none
+   :bar {:why-not-runnable "Confirm-vs-rewrite of a problem statement has no machine-behaviour difference: the statement is the criterion runs are judged against, so no recorded field separates the arms."
+         :a "The S1 problem field of P-validated-R5.md is marked [Joe: confirm/rewrite] by its own author; no source, code, or prior ruling determines what the operator means his problem statement to be."
+         :b "No experiment can decide a problem statement: it is the criterion runs are judged against, so the arms (confirm vs rewrite) have no machine-behaviour difference a recorded field could separate."}
+   :statement "P-validated-R5 §1 confirm/rewrite. The gate before any §5 packet is dispatched: Joe confirms the S1 problem statement (G computed over single actions from a channel-range C; 'policy' a borrowed name for a cascade; a cascade in code a bag of pattern ids; nothing states what G over a cascade IS)."
+   :acceptance "Joe says 'confirmed' or supplies the rewrite; the confirmation or new text lands in P-validated-R5.md §1 with a date; L6 unblocks."}
+  {:id :L6 :class :C :status :blocked :owner :any :depends-on [:LJ1]
+   :covers-key :none
+   :statement "Kernel + compose on library/snatch first (P-validated-R5 §5 step 3, owner codex-22 by that record): the generic find/organise path, currently sorry in DarkTower/WarMachine/Holes.lean:264,308 and hardcoded to library/snatch in checks/playout_snatch.clj:228-260 and find_snatch.clj."
+   :acceptance "As P-validated-R5 §5 step 3 states it, against the pinned find-snatch.edn fixture; laws F1-F4/O1-O4 as narrowed by the 2026-08-31 scope amendment. Not started before LJ1."}]}

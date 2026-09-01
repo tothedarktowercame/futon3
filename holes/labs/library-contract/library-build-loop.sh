@@ -56,7 +56,7 @@ while [ $i -lt "$MAX_ITER" ]; do
   if [ -n "$(bb "$HERE/build_step.bb" unblock)" ]; then (cd "$HOME/code/futon3" && git add holes/labs/library-contract/worklist.edn && git commit -q -m "worklist: library-build-loop unblocked rows whose :depends-on are done"); fi
   next="$(bb "$HERE/build_step.bb" next-open)"; unrev="$(bb "$HERE/build_step.bb" unreviewed)"
   log "iteration $i: next-open=$next unreviewed=[$unrev] counts=$(bb "$HERE/build_step.bb" counts)"
-  [ -z "$unrev" ] && stall_check "$next"
+  [ -z "$unrev" ] && stall_check "$(bb "$HERE/build_step.bb" stall-key)"
   if [ "$next" = "NONE" ] && [ -z "$unrev" ]; then log "nothing open or unreviewed; done"; publish; notify "DONE: nothing open or unreviewed"; break; fi
   if [ "$next" != "NONE" ]; then
     # The loop chose the row (build_step.bb priorities); the prompt must say so,

@@ -13,6 +13,14 @@
        (not (:loop-skip i))))
 (def cmd (first *command-line-args*))
 (case cmd
+  ;; stall-key: id + status + progress content of the next-open row, so a
+  ;; one-slice-per-invocation row that is COMMITTING slices does not read as
+  ;; stalled (library loop false-stalled on L5 after 3 healthy slices,
+  ;; 2026-09-01 20:34).
+  "stall-key" (println (or (some->> (first (filter loopable? items))
+                                    ((fn [i] (str (name (:id i)) ":" (name (:status i)) ":"
+                                                  (hash (select-keys i [:progress :slice-b2a :slice-b2b]))))))
+                           "NONE"))
   "next-open" (println (or (some-> (first (filter loopable? items)) :id name) "NONE"))
   "unreviewed" (println (str/join " " (map (comp name :id) (filter #(= :done-unreviewed (:status %)) items))))
   "registry-held" (println (if (some #(and (= :done-unreviewed (:status %))

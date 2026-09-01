@@ -489,7 +489,62 @@
      :ledger-entry
      "library/.spider/ledger.edn -- {:wave 3 :section \"math-formalization-CA\"}, the 12th element of :sections. The append was checked in-process before writing: (vec (:sections old)) equals (vec (butlast (:sections new))), (dissoc old :sections) equals (dissoc new :sections), and the file was re-read and compared to the value written, so pprint rewrapping changed nothing else.",
      :sha "c4bb49f",
-     :seat "zai-3"}],
+     :seat "zai-3"}
+    {:not-touched
+     ["No .flexiarg file changed (the section produced no edge), so this slice authors no @why, no @why-posthoc, and no similarity-inferred edge (P-validated-R5 law O2)."
+      "The doubled @why/@see-also on frontier-bound-from-arc-hypotheses is left exactly as its author wrote it; only recorded."
+      "The one @instantiates line is left as written; proposing the §5a migration is recorded, not performed."
+      "checks/library_graph_lint.clj:107 still hardcodes the literal \"-v3-\" in evidence-cache-path, so a cache filename is not a version claim. Reported by or3; this slice again read the rule out of the cache body, not its name."
+      "checks/spider_fleet.clj:139 -- the :pinned-evidence-cache-is-unreadable throw that can never fire, reported by every wave-3 slice so far, still unfixed. This slice used spider_runner.clj, whose delay does throw (checks/spider_runner.clj:120-122)."
+      "checks/spider_runner.clj:184 -- a parse failure loses the seat's text while a validation failure keeps it (slice 5's :apparatus-defect). Not exercised here: 0 malformed-output receipts."
+      "The other dirty paths in this shared checkout are not this slice's: holes/labs/library-contract/runs/build-loop.log, resources/sigils/patterns-index.tsv, and the three untracked library/math-formalization/*.flexiarg files belong to other work. Staged 35 explicit paths only; no commit -a."],
+     :gates
+     {:exit-codes
+      "captured to /tmp/L5s6/{before,after,after2,run,kondo,parens,parens-records,parens-ledger,lintest,spidertest,append}.exit and tested by a shell loop that reads each file and exits 1 on any non-zero; no gate status read through a pipe. All eleven are 0.",
+      :section-lint
+      "checks/library_graph_lint.clj over math-formalization-CV, run before the spider (exit 0), after it (exit 0), and again after the ledger append (exit 0). All three pass? true, 0 failures, 1247 files, 0 unresolved-targets, 0 why-cycles, 0 warrant-refusals, 0 edge-refusals, library-wide :edges-by-kind {:why 86 :how 27 :see-also 141}. All three reports are byte-identical (diff exit 0, empty output), which is what a zero-edge section should produce. Reports at /tmp/L5s6/cv-{before,after,after2}.edn",
+      :runner
+      "exit 0 (/tmp/L5s6/run.exit); state.edn :phase :complete, :turn 7, 7 of 7 completed",
+      :clj-kondo
+      "exit 0, 0 errors 0 warnings over checks/library_graph_lint.clj, checks/spider_runner.clj, test/library_graph_lint_test.clj, test/spider_runner_test.clj. No Clojure was touched by this slice. The one :info at library_graph_lint.clj:266 is the pre-existing spider-self-text? coercion L2 recorded.",
+      :check-parens
+      "exit 0, OK -- emacs -Q --batch -l /home/joe/code/futon4/dev/check-parens.el --eval (arxana-check-parens-cli) -- over the four gated Clojure files, over the section's EDN records (attestations, proposals, state, absences, seat-failures), and again over library/.spider/ledger.edn after the append. The -- separator is required, per L2's note.",
+      :library-graph-lint-test
+      "exit 0, 7 tests / 36 assertions / 0 failures, under the C88 pin (1247 files; :why 86 :how 27 :see-also 141)",
+      :spider-runner-test
+      "exit 0, 6 tests / 33 assertions / 0 failures"},
+     :section "math-formalization-CV",
+     :instantiates-note
+     "Follow-up to slice 5's finding on a section small enough to state exactly. math-formalization-CV carries 1 of the library's 31 @instantiates lines (complex-polynomial-bound:9 -> math-informal-CA/estimate-by-bounding) and that pattern is the section's only one with no @why, which is exactly why fraction-organised reads 6/7 = 0.857 rather than 1.0. Unlike math-formalization-CA's two dangling @instantiates targets, this one resolves: library/math-informal-CA/estimate-by-bounding.flexiarg exists. So the §5a migration would be a pure one-line respelling here with no target to repair. Recorded, not performed -- respelling an author's causal directive is an authorship decision.",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :records
+     ["library/math-formalization-CV/.spider/absences.edn -- 7 records, each with its :corpus pin"
+      "library/math-formalization-CV/attestations.edn -- [] (no edge was warranted, so no attestation record exists)"
+      "library/math-formalization-CV/proposals.edn -- []"
+      "library/math-formalization-CV/.spider/seat-failures.edn -- []"
+      "library/math-formalization-CV/.spider/state.edn -- :phase :complete, :turn 7, :finished-at 2026-09-01T22:18:06Z, 7 of 7 :completed"
+      "library/math-formalization-CV/.spider/gates/turn-000.edn .. turn-007.edn -- the per-turn linter reports"
+      "library/math-formalization-CV/.spider/receipts/ -- 21 receipts (intent/completion/applied for 7 turns); 0 malformed-* receipts"
+      "No checkpoint directory: checkpoint! fires at turn 20 and this section is 7 patterns long"
+      "No .flexiarg file changed"],
+     :result
+     "7 of 7 patterns processed in 7 turns, 0 seat failures, 0 retries, 0 malformed-output receipts, 5m26s (22:12:40Z -> 22:18:06Z). Every turn ended in a typed absence: 7 absences, 0 edges, 0 proposals, 0 attestations. Section before/after unchanged at :edges-by-kind {:why 6 :how 0 :see-also 9}, fraction-organised 0.8571; library-wide unchanged at {:why 86 :how 27 :see-also 141}; the before and after lint reports are byte-identical. The fastest and cleanest wave-3 run so far by every apparatus measure, and the one whose absence notes are least well grounded.",
+     :slice 6,
+     :at "2026-09-01",
+     :rung-two-is-not-pinned-finding
+     "The general defect behind that, and the thing a reviewer should weigh hardest. C88 pins rung 1 and does not pin rung 2. rung-one-hits reads the frozen cache (basis :max-at 2026-09-01T20:35:40Z, before this run's 22:12:40Z start, so nothing this run wrote is in it); rung 2 is a live GET against futon1b, into which this run's own :turn-start envelopes are written as it proceeds, so the turn-1 prompt is searchable by turn 2. Measured over the 15 reconstructed queries (/tmp/L5s6/selfpollution.txt, script /tmp/L5s6/selfpoll.clj): 62 results returned, 16 authored by zai-3 with :evidence/at inside the run window [22:12:40Z, 22:18:06Z]; two queries returned exactly one result and it was one of those. At limit=5 that is recall spent on the searcher's own text, worsening as the run goes on. This is NOT a hole in the warrant rule -- rung-two-warrant? (checks/spider_runner.clj:210-221) applies lint/reflection-record? and would refuse such an edge at :252-254. It is a hole in recall. Fix direction, for its own row: filter rung-2 results by the pinned basis :max-at, or apply reflection-record? at retrieval rather than only at validation.",
+     :absence-ids-checked
+     "Every directive claim the seven notes make about a current pattern file was checked against the file and all are TRUE (lines 8-9 of each pattern; 9-10 for complex-polynomial-bound's @instantiates/@examples). So this slice reproduces none of slice 5's stale-directive defect -- the notes are accurate about the library and unsupported about the search.",
+     :finding
+     "Five of the seven absence notes record no rung-2 search. Turns 1 and 2 name the three queries each ran against the text-search endpoint, as every wave-3 slice before this one did; turns 3 through 7 replace that with 'Rung 2: no bounded keyword query could surface a warrant the supplied evidence structure excludes' and the claim that the only library targets visible anywhere in the evidence are that pattern's existing directives. The claim is false as written: reconstructing the queries by the recipe turns 1-2 used and running them (/tmp/L5s6/rung2probe.sh, output /tmp/L5s6/rung2-probe.txt) surfaces records naming 29, 10, 20, 13 and 32 distinct ids that resolve to real library/<id>.flexiarg files, most not directives on that pattern. The seat's CONCLUSION survives -- the records those ids come from are this run's own turn-start prompts and 190 KB fleet transcripts that enumerate ids without stating a relation, so none is a warrant -- so this is a right conclusion on a false ground, the same shape as slice 5's stale-evidence finding from a different cause: not stale evidence, but an absence reporting a search it does not show having run. checks/spider_runner.clj:280-283 validates an absence only for a matching :pattern and a non-blank :note, so nothing catches it.",
+     :ledger-entry
+     "library/.spider/ledger.edn -- {:wave 3 :section \"math-formalization-CV\"}, the 13th element of :sections. The append was checked in-process before writing: (vec (:sections old)) equals (vec (butlast (:sections new))), (dissoc old :sections) equals (dissoc new :sections), and the file was re-read and compared to the value written. One count in the entry prose (holomorphic-disk-api resolving ids) was corrected 31 -> 32 after re-counting the probe output; the ledger re-reads as EDN and check-parens passes on it.",
+     :sha "bee7d0b",
+     :duplicate-kind-finding
+     "library/math-formalization-CV/frontier-bound-from-arc-hypotheses.flexiarg names the same target under two directive kinds -- line 8 '@why math-formalization-CV/holomorphic-disk-api' and line 9 '@see-also math-formalization-CV/holomorphic-disk-api'. Under README-flexiarg §5a those say incompatible things about one target: @why claims it as the authority this pattern rests on, @see-also is 'a peer technique; no claim of authority in either direction'. Scanned all 1247 .flexiarg files for a target under two of @why/@how/@see-also (/tmp/L5s6/dupkind.clj, output /tmp/L5s6/dupkind.txt): this is the only instance in the library. checks/library_graph_lint.clj does not check for it and counts both, so the section's :see-also 9 includes the redundant one and the lint still reports 0 failures. The seat noticed the pair and correctly declined to act on it. Recorded, not acted on: both lines are author-written and removing either is an authorship decision over an @why (decisions.edn :spider-editorial-standing). Wants its own row, with the lint check that would have caught it.",
+     :seat "zai-3",
+     :rung-one-finding
+     "Second wave-3 section where rung-1 warrant exists, and the first where EVERY pattern has an index entry: :any 7 of 7, against 21 of 23 for math-formalization-CA, 5 of 17 for or3, 5 of 8 for nomad. :clean 4 and :clean-non-reflection 4 of 7 (derivative-bounds-api 10 hits / 3 clean, entire-affine-by-divided-difference 8/3, entire-and-singularity-api 70/8, holomorphic-disk-api 97/19; the other three have hits but none clean). So for the second time in wave 3 the seat could have written a rung-1 edge and wrote none, for the reason slice 5 recorded: :co-mention is (> (count patterns) 1) at checks/library_graph_lint.clj:392, so a hit is clean exactly when the record names no second library pattern, and such a record states no relation to one. Table at /tmp/L5s6/cv-coverage.txt; matches the runner's :rung-one-coverage {:patterns 7 :any 7 :clean 4 :clean-non-reflection 4}. Also the first wave-3 section where the v3 reflection rule moves a CLEAN count rather than only flagging already-excluded hits: entire-and-singularity-api is clean 8 but clean-non-reflection 7, holomorphic-disk-api 19 but 18. In mmca the flag fired and changed nothing because :clean was 0."}],
    :owner :any}
   {:id :LD1,
    :class :D,

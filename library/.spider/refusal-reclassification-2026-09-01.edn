@@ -1,0 +1,78 @@
+;; Worklist item L1. The wave-2 gate (P-organise-the-library.md:636-638) noticed
+;; that `:refused` was doing two jobs: refusing the EDGE (the directive line
+;; leaves the pattern file) and refusing the WARRANT (the evidence is thin; the
+;; edge stays proposed). The schema now separates them -- :state :refused for the
+;; first, :state :proposed + :warrant-refused for the second
+;; (library/.spider/attestation-schema.edn).
+;;
+;; This file classifies the five records that already carried :state :refused,
+;; written before the distinction existed. Read by hand on 2026-09-01, no
+;; verdict re-authored: the ACT each reviewer performed is read off what they did
+;; to the pattern file, and the GROUND is quoted from their own :reason.
+{:schema :library-contract/refusal-reclassification-v1
+ :at "2026-09-01"
+ :by "claude (library-build-loop work seat)"
+ :item :L1
+ :method
+ "For each record: (1) locate its :state :refused row by file:line; (2) grep the
+  source pattern's .flexiarg for a directive naming the target; (3) read the
+  reviewer's own :reason for the ground they gave. Absent directive = the edge
+  left the file = an edge-refusal was carried out."
+ :finding
+ "All five are true edge-refusals by act: no directive naming the target survives
+  in any of the five source patterns. Two of them (aif rows 28 and 30) give a
+  ground that is about the WARRANT, not the relation -- 'rung 1 by exact
+  occurrence, but not a warrant'. Under the new vocabulary a reviewer with that
+  ground could have chosen either act. Both reviewers chose to remove the
+  directive, and that choice stands; it is recorded here, not revised, because
+  the act was theirs and this pass is not a re-review."
+ :records
+ [{:record "library/aif/attestations.edn:479"
+   :edge {:from "aif/structure-learning-by-model-reduction"
+          :to "aif/posterior-variance-as-epistemic-value" :kind :how}
+   :directive-in-file "not found (library/aif/structure-learning-by-model-reduction.flexiarg)"
+   :act :edge-refusal
+   :ground :relation-does-not-hold
+   :ground-quote "the cited text ... does not mention the target; the edge reverses #14"}
+  {:record "library/aif/attestations.edn:607"
+   :edge {:from "aif/belief-state-operational-hypotheses"
+          :to "writing-coherence/plain-language-thesis" :kind :see-also}
+   :directive-in-file "not found (library/aif/belief-state-operational-hypotheses.flexiarg)"
+   :act :edge-refusal
+   :ground :warrant-insufficient
+   :ground-quote "rung 1 by exact occurrence, but not a warrant"
+   :note "Ground is warrant-shaped; the act carried out was edge-refusal. Under the
+          new vocabulary this is the case a reviewer must now choose between."}
+  {:record "library/aif/attestations.edn:646"
+   :edge {:from "aif/expected-free-energy-scorecard"
+          :to "ants/baseline-cyber-ant" :kind :see-also}
+   :directive-in-file "not found (library/aif/expected-free-energy-scorecard.flexiarg)"
+   :act :edge-refusal
+   :ground :warrant-insufficient
+   :ground-quote "rung 1 by exact occurrence, but not a warrant"
+   :note "Same shape as the row at :607."}
+  {:record "library/aif/attestations.edn:809"
+   :edge {:from "aif/expected-free-energy-scorecard"
+          :to "structure/mana-allostasis" :kind :see-also}
+   :directive-in-file "not found (library/aif/expected-free-energy-scorecard.flexiarg)"
+   :act :edge-refusal
+   :ground :relation-does-not-hold
+   :ground-quote "the patterns' IF/HOWEVER/THEN clauses do not supply a peer relation either"}
+  {:record "library/writing-coherence/attestations.edn:95"
+   :edge {:from "writing-coherence/meta-lede" :to "peeragogy/pattern-language" :kind :see-also}
+   :directive-in-file "not found (library/writing-coherence/meta-lede.flexiarg)"
+   :act :edge-refusal
+   :ground :relation-does-not-hold
+   :ground-quote "never relates it to pattern-language; the two conclusions share nothing"
+   :repair "This record's :reason contained unescaped double quotes around
+            \"meta-lede\", which split the EDN string and left `meta-lede` as a
+            symbol key on the attestation map. Escaped on 2026-09-01; the linter
+            now rejects a non-keyword attestation key so the class cannot recur
+            silently."}]
+ :not-touched
+ [{:record "library/sidecar/attestations.edn:16 and :53"
+   :why "The two sidecar holds carry an ad-hoc :refused-reason key with
+         :state :proposed -- the warrant-refusal act written before it had a
+         name. They are queued for a second read as worklist item L3, whose
+         acceptance says to use this vocabulary; converting them here would
+         pre-empt the reader's verdict."}]}

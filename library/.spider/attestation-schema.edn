@@ -1,3 +1,19 @@
+;; Two acts a reviewer can take against a proposed edge, kept apart since
+;; 2026-09-01 (worklist item L1; the wave-2 gate wrote both as :refused):
+;;
+;;   edge-refusal    :state :refused          the relation does not hold.
+;;                                            The directive line LEAVES the
+;;                                            pattern file; the record stays as
+;;                                            the negative audit trail.
+;;                                            Requires :reason.
+;;
+;;   warrant-refusal :state :proposed         the EVIDENCE offered does not
+;;                   + :warrant-refused       establish the edge. The directive
+;;                                            line STAYS, still unwarranted,
+;;                                            until another reading carries it.
+;;
+;; The two are exclusive on one record: :warrant-refused with any state other
+;; than :proposed is :warrant-refusal-requires-proposed-state in the linter.
 {:edge {:from :pattern-id
         :to :pattern-id
         :kind #{:why :how :see-also}}
@@ -11,4 +27,8 @@
              :excerpt :nonblank-string}]
  :rung #{1 2}
  :state #{:proposed [:attested-by :agent-id] :refused}
- :reason :optional-nonblank-string}
+ :reason :optional-nonblank-string
+ :warrant-refused {:optional true
+                   :by :agent-id
+                   :at :date
+                   :note :nonblank-string}}

@@ -159,9 +159,25 @@
       (and (vector? x) (= 2 (count x)) (= :attested-by (first x))
            (nonblank-string? (second x)))))
 
+;; Two refusals, two acts. `:state :refused` refuses the EDGE: the reviewer says
+;; the relation does not hold, and the directive line leaves the pattern file
+;; (:refused-edge-removed below fails if it is still there). `:warrant-refused`
+;; refuses the WARRANT: the evidence offered does not establish the edge, so the
+;; record keeps :state :proposed and the directive line stays, unwarranted,
+;; until some other reading carries it. Before 2026-09-01 both acts were written
+;; as `:refused` and the difference lived only in prose.
+(defn valid-warrant-refusal? [x]
+  (and (map? x)
+       (every? #(contains? x %) [:by :at :note])
+       (every? nonblank-string? ((juxt :by :at :note) x))))
+
 (defn valid-attestation? [x]
   (and (map? x)
        (every? #(contains? x %) [:edge :by :at :read :cited :evidence :rung :state])
+       ;; A non-keyword key is EDN corruption, not an extension: an unescaped
+       ;; quote inside :reason splits the string and leaves the tail as a
+       ;; symbol key (library/writing-coherence/attestations.edn carried one).
+       (every? keyword? (keys x))
        (let [edge (:edge x)]
          (and (map? edge) (every? #(contains? edge %) [:from :to :kind])
               (nonblank-string? (:from edge)) (nonblank-string? (:to edge))
@@ -172,7 +188,19 @@
        (vector? (:evidence x)) (seq (:evidence x)) (every? valid-evidence? (:evidence x))
        (#{1 2} (:rung x)) (valid-state? (:state x))
        (or (not (contains? x :reason)) (nonblank-string? (:reason x)))
-       (or (not= :refused (:state x)) (nonblank-string? (:reason x)))))
+       (or (not= :refused (:state x)) (nonblank-string? (:reason x)))
+       (or (not (contains? x :warrant-refused))
+           (valid-warrant-refusal? (:warrant-refused x)))))
+
+(defn refusal-act-failures
+  "The two acts are exclusive on one record. Refusing the warrant leaves the
+  edge :proposed; refusing the edge is :state :refused. A record carrying
+  :warrant-refused with any other state claims both happened at once."
+  [i att]
+  (when (and (map? att) (contains? att :warrant-refused)
+             (not= :proposed (:state att)))
+    [{:check :refusal-acts-distinct :line (inc i) :edge (:edge att)
+      :reason :warrant-refusal-requires-proposed-state :detail (:state att)}]))
 
 (defn string-leaves [x]
   (cond (map? x) (mapcat string-leaves (concat (keys x) (vals x)))
@@ -439,6 +467,7 @@
                                   att-rows))
         semantic (mapcat #(attestation-semantic-failures records live-index %1 %2)
                          (range) att-rows)
+        refusal-acts (mapcat refusal-act-failures (range) att-rows)
         body-failures (for [{:keys [file body-line body-digest]} (:patterns scan)
                             :when (str/starts-with? file prefix)
                             :let [old (get (:body-digests base) file)]
@@ -447,7 +476,8 @@
                          :reason (if old :argument-body-changed :argument-body-not-in-baseline)
                          :expected old :actual body-digest})
         failures (mapv #(merge {:file nil :line nil :edge nil} %)
-                       (concat dangling cycles missing-atts refused-present malformed semantic body-failures))
+                       (concat dangling cycles missing-atts refused-present malformed
+                               refusal-acts semantic body-failures))
         kind-counts (merge {:why 0 :how 0 :see-also 0}
                            (frequencies (map :kind (:edges scan))))
         why-nodes (set (mapcat (juxt :from :to) (filter #(= :why (:kind %)) (:edges scan))))]
@@ -457,6 +487,11 @@
                       :edges-by-kind kind-counts
                       :patterns-in-why-graph (count why-nodes)
                       :unresolved-targets (count dangling)
+                      :edge-refusals (count (filter #(and (valid-attestation? %)
+                                                          (= :refused (:state %))) att-rows))
+                      :warrant-refusals (count (filter #(and (valid-attestation? %)
+                                                             (contains? % :warrant-refused))
+                                                       att-rows))
                       :why-cycles (count cycles)
                       :failures (count failures)
                       :edge-counting :path-shaped-targets

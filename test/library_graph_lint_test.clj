@@ -126,6 +126,78 @@
                           {:base base})))
                      :rung-via-mismatch))))
 
+(def warrant-evidence
+  {"e-warrant" {:evidence/id "e-warrant"
+                :evidence/body "the runner calls s/b to carry out s/a"}})
+
+(defn attestation
+  "A rung-2 record for s/a -> s/b whose excerpt occurs in warrant-evidence."
+  [extra]
+  (merge {:edge {:from "s/a" :to "s/b" :kind :how}
+          :by "zai-test" :at "2026-09-01"
+          :read ["s/a" "s/b"] :cited "the runner calls s/b to carry out s/a"
+          :evidence [{:id "e-warrant" :via :text :query "q"
+                      :excerpt "the runner calls s/b to carry out s/a"}]
+          :rung 2 :state :proposed}
+         extra))
+
+(defn plant-refusal
+  "Plant one attestation in a two-pattern section. When keep-directive? the
+  @how line stays in s/a, which is what a warrant-refusal leaves behind and an
+  edge-refusal must not."
+  [keep-directive? extra]
+  (run-fixture
+   (fn [root]
+     (write-pattern! root "s/a" "" "a")
+     (write-pattern! root "s/b" "" "b")
+     (let [base (baseline! root)]
+       (when keep-directive? (write-pattern! root "s/a" "@how s/b" "a"))
+       (spit (str (fs/path root "evidence-records.edn")) (pr-str warrant-evidence))
+       (spit (str (fs/path root "attestations.edn")) (pr-str [(attestation extra)]))
+       {:base base}))))
+
+(deftest edge-refusal-and-warrant-refusal-are-different-acts
+  (testing "warrant-refusal: the edge stays :proposed and the directive line stays"
+    (let [report (plant-refusal true {:warrant-refused
+                                      {:by "claude-13" :at "2026-09-01"
+                                       :note "a tag-list co-occurrence states no relation"}})]
+      (is (zero? (:test/exit report)))
+      (is (= 0 (get-in report [:summary :edge-refusals])))
+      (is (= 1 (get-in report [:summary :warrant-refusals])))))
+  (testing "edge-refusal: the directive line must leave the file"
+    (let [refused {:state :refused :reason "the cited text does not mention the target"}]
+      (is (failed-for? (plant-refusal true refused) :refused-edge-still-present))
+      (let [report (plant-refusal false refused)]
+        (is (zero? (:test/exit report)))
+        (is (= 1 (get-in report [:summary :edge-refusals])))
+        (is (= 0 (get-in report [:summary :warrant-refusals]))))))
+  (testing "one record cannot perform both acts"
+    (is (failed-for? (plant-refusal false
+                                    {:state :refused
+                                     :reason "the cited text does not mention the target"
+                                     :warrant-refused {:by "claude-13" :at "2026-09-01"
+                                                       :note "and the warrant is thin"}})
+                     :warrant-refusal-requires-proposed-state)))
+  (testing "a warrant-refusal without a note is not a refusal anyone can audit"
+    (is (failed-for? (plant-refusal true {:warrant-refused {:by "claude-13" :at "2026-09-01"}})
+                     :malformed-attestation))))
+
+(deftest non-keyword-attestation-key-is-malformed
+  ;; An unescaped quote inside :reason splits the string and leaves the tail as
+  ;; a symbol key; library/writing-coherence/attestations.edn carried one and
+  ;; every schema check passed over it.
+  (is (failed-for? (run-fixture
+                    (fn [root]
+                      (write-pattern! root "s/a" "" "a")
+                      (spit (str (fs/path root "attestations.edn"))
+                            (str "[{:edge {:from \"s/a\" :to \"s/b\" :kind :how}"
+                                 " :by \"zai-test\" :at \"2026-09-01\" :read [\"s/a\"]"
+                                 " :cited \"c\" :evidence [{:id \"e\" :via :text :query \"q\""
+                                 " :excerpt \"x\"}] :rung 2 :state :proposed"
+                                 " :reason \"the turn uses \" meta-lede \" as a name\"}]"))
+                      {:base (baseline! root)}))
+                   :malformed-attestation)))
+
 (deftest live-library-passes
   (let [report (lint/lint
                 {:library "library" :section "aif"

@@ -85,7 +85,10 @@
             :section-lint "system-coherence pass? true, 0 failures, under the v2-pinned cache (no live rebuild)"}}
    :statement "Reflection-class rule v2 misses an author describing their own references at authoring time: wave 2 rejected one warrant on exactly this (the pattern's author describing its own references). A v3 candidate is named in the record but not written."
    :acceptance "Rule v3 stated in the cache header beside the basis (where v2 lives), with the wave-2 rejected case as a fixture that v3 catches and v2 misses; a counter-fixture v3 must NOT catch (a genuine external description). Test in the spider/lint suite. Wave-1 attestations re-audited under v3 with the count of changed verdicts reported (expected 0 per the wave-1 audit; state the number)."}
-  {:id :L3 :class :V :status :done-unreviewed :owner :any
+  {:id :L3 :class :V :status :done :owner :any
+   :reviewed-by "codex"
+   :reviewed-at "2026-09-01T19:54:42Z"
+   :review "Read 076f69d in full and confirmed it is authored by Joseph Corneli, not the reviewer. Fetched and read the complete e-8931a4eb record: its subject is sidecar/explicit-promotion-to-facts and its body names neither target, so it supports the source but cannot warrant either relation. Confirmed the source file still carries both directives and that the notes distinguish the query-time eligibility predicate from the write-time validation gate and the memory-proposal lifecycle from fact/warrant/retired events. Reproduced clj-kondo exit 0 (0 errors, 0 warnings), check-parens exit 0 (OK), library_graph_lint_test exit 0 (7 tests, 36 assertions), spider_runner_test exit 0 (6 tests, 33 assertions), and corpus-pinned sidecar section lint exit 0 (1247 files; section edges :why 0, :how 1, :see-also 1; 2 warrant-refusals, 0 edge-refusals, 0 failures). The evidence commit changes no .flexiarg file, so it adds no spider-authored @why, @why-posthoc edge, or similarity-inferred edge."
    :covers-key :none
    :evidence
    {:sha "076f69d"

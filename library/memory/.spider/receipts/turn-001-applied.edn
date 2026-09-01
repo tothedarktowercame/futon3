@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:30:23.149754392Z",
+ :turn 1,
+ :pattern "memory/licence-to-fail",
+ :gate
+ "/home/joe/code/futon3/./library/memory/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "memory/licence-to-fail",
+    :note
+    "Rung 1: every runner-supplied hit is disqualified — the large majority are embeddings retrieval listings with :listing true and :co-mention true (context-retrieval rankings co-surfacing the pattern beside memory/verify-in-the-serving-process, memory/no-tightening-while-held, musn/plan-before-tool, iching hexagrams and dozens of other unrelated ids); several have :self-text true and :reflection true (this spider fleet's own psr_search pull-offers and prior spider outputs); and the few with flags false but :co-mention true (e-b9cff292, e-a56e913d, e-92b32180) are co-mentions only, which state no relation. A rung-1 edge requires at least one hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'licence-to-fail', 'a probe must permit I could not determine the fix', 'probe licence honest report guess conceals defect'. Every rung-2 hit was either this spider's own prompt echoed in e-e91e36bd-5314-435b-9016-62b04c7fcb99, more embeddings listings (e-22c1b8f9 ranking it first with memory/no-tightening-while-held and memory/surface-the-closed-set in an unrelated probe-row query; e-b03e635c similar), or fleet reflections. The pattern's own @references to agency/loud-failure, memory/surface-the-closed-set and memory/verify-in-the-serving-process are already-present author directives and cannot be repeated. No external non-reflection record demonstrates a NEW relation between memory/licence-to-fail and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:32:16.775233761Z",
+ :turn 3,
+ :pattern "memory/no-tightening-while-held",
+ :gate
+ "/home/joe/code/futon3/./library/memory/.spider/gates/turn-003.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "memory/no-tightening-while-held",
+    :note
+    "Rung 1: every runner-supplied hit is disqualified — the overwhelming majority are embeddings retrieval listings with :listing true and :co-mention true (context-retrievals ranking the pattern beside unrelated ids such as realtime/authoritative-transcript, musn/plan-before-tool, agency/state-atomicity, fulab/clock-out, iching hexagrams 24-fu and 49-ge); several have :self-text true and :reflection true (this spider fleet's own reflections, e.g. e-ce932d5ca, e-bc96ec70, e-957fdc3b). A rung-1 edge requires at least one hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'no-tightening-while-held', 'do not tighten a schema while agents hold state', 'schema tightening held state migration re-validation revert'. Every rung-2 hit was either this spider's own prompt echoed in e-dbb2f86a-e7eb-47ff-add6-ad3b764fe9f8 or more embeddings listings (e-e4a97aee ranking it second behind memory/licence-to-fail in an unrelated runner-defect query; e-5802349f behind agency/state-atomicity; e-f288494b behind social/explicit-exit-over-abandonment). Rankings and co-mentions state no relation. The pattern's own @references to memory/surface-the-closed-set and memory/verify-in-the-serving-process are already-present author directives and cannot be repeated. No external non-reflection record demonstrates a NEW relation between memory/no-tightening-while-held and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

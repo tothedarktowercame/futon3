@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:33:15.571686125Z",
+ :turn 4,
+ :pattern "memory/surface-the-closed-set",
+ :gate
+ "/home/joe/code/futon3/./library/memory/.spider/gates/turn-004.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "memory/surface-the-closed-set",
+    :note
+    "Rung 1: every runner-supplied hit is disqualified — the vast majority are embeddings retrieval listings with :listing true and :co-mention true (context-retrievals ranking the pattern beside unrelated ids such as features/operator-turns-enter-the-observation-vector, orchestration/recorded-handoff, cycle-machine/toolchain-port, library-coherence/library-evidence-ledger, memory/licence-to-fail, memory/no-tightening-while-held); the remainder have :self-text true and :reflection true (this spider fleet's own reflections, e.g. e-957fdc3b, e-ee6c7225, e-db55bb7a). A rung-1 edge requires at least one hit with :listing/:self-text/:co-mention/:reflection all false; none exists, and co-mention of sibling memory patterns states no NEW relation beyond what the pattern's own @references already encode. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'surface-the-closed-set', 'a validator that knows the answer must publish it', 'validator publish enum closed set caller schema silent'. Every rung-2 hit was either this spider's own prompt echoed in e-d417d084-1a07-4614-adaa-f76d98f90eaf or more embeddings listings (e-213a6c88 behind musn/use-requires-evidence; e-6b56ae58 behind memory/no-tightening-while-held and coordination/task-shape-validation; e-532647d0 and e-49f0d359 beside memory/licence-to-fail and memory/verify-in-the-serving-process). Rankings and co-mentions state no relation. The pattern's own @references to agency/loud-failure and memory/licence-to-fail are already-present author directives and cannot be repeated. No external non-reflection record demonstrates a NEW relation between memory/surface-the-closed-set and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

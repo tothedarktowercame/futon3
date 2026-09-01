@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:49:18.319185823Z",
+ :turn 6,
+ :pattern "math-informal-CA/show-both-inequalities",
+ :gate
+ "/home/joe/code/futon3/./library/math-informal-CA/.spider/gates/turn-006.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-informal-CA/show-both-inequalities",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'show-both-inequalities', 'show both inequalities equality sandwich'. Every retrievable hit was fleet-internal: fleet PSR/psr_select turn-rounds selecting this pattern for APM tasks (e-cdb08ff7-bd43-4a31-aa15-838aa8563 for a01A01 with math-informal/split-into-cases only as an unselected candidate — not a stated relation; e-79af3163 a repeat selection with no second candidate); a fleet retro-promotion memory-attachment-review receipt e-599eb068-9efe-4a80-b26f-d848300f6b01 approving an attachment to THIS pattern alone; and psr pull-offer records (e-pull-offer-1ee90da2, e-pull-offer-d356072e) that retrieval-surface this pattern among unrelated ids for Lean queries — co-mention states no relation. The pattern carries only a @factor directive, which cannot be repeated, and no clean external record names any target. No external non-reflection record demonstrates a relation between math-informal-CA/show-both-inequalities and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

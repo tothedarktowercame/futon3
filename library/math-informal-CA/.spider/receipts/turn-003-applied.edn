@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:46:23.639283156Z",
+ :turn 3,
+ :pattern "math-informal-CA/monotone-approximation",
+ :gate
+ "/home/joe/code/futon3/./library/math-informal-CA/.spider/gates/turn-003.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-informal-CA/monotone-approximation",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'monotone-approximation', 'monotone approximation simple functions convergence'. Every hit was one of: this spider's own prompt echoed in e-07a1badb-b040-4a59-9c63-ea29ed056bb8; fleet PSR/psr_select turn-rounds selecting this pattern for APM tasks (e-1ef6a34f for a03J01 with count-over-a-decomposition as the rejected candidate, e-5b1f2ccb for a03J04 with no second candidate) — fleet-internal use in which any other pattern id appears only as an unselected candidate, not a stated relation; embeddings context-retrieval listings under the older math-informal/ prefix (e-a5d8e366 beside iching/hexagram-60-jie and measure-restrict-simplify in a claude-9/codex-7 bell query; e-81c66d11 beside unfold-the-definition in another; e-2b207503/e-484d5a72 beside measure-integration-api and weak-convergence ids in query-2 results) — rankings state no relation and are not warrants; and fleet turn-round notes about unrelated Taylor-coefficient problems (e-ce8cbde4). The pattern carries only a @factor directive, which cannot be repeated, and no clean external record names any target. No external non-reflection record demonstrates a relation between math-informal-CA/monotone-approximation and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

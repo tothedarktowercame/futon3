@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:44:34.059667727Z",
+ :turn 1,
+ :pattern "math-informal-CA/epsilon-of-room",
+ :gate
+ "/home/joe/code/futon3/./library/math-informal-CA/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-informal-CA/epsilon-of-room",
+    :note
+    "Rung 1: the single runner-supplied hit (emacs-effaa9b28a4159a87c9a4ee50f5dd435) has :co-mention true — a claude emacs transcript diagnosing a namespaced-vs-bare keying defect in a fleet library-maintenance index ('epsilon-of-room → math-informal-CA/epsilon-of-room'); it is fleet infrastructure bookkeeping naming no second library pattern as a mathematical relation, and co-mention states no relation. No clean hit with :listing/:self-text/:co-mention/:reflection all false exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'epsilon-of-room', 'give yourself an epsilon of room'. Every rung-2 hit was an embeddings context-retrieval listing under the older math-informal/ prefix (e-60f644e3 beside musn/plan-before-tool and musn/use-requires-evidence in a claude-9/codex-6 bell query; e-90a83a39 and e-c03278e2 beside math-informal/exhaustion-as-theorem and unrelated ids in sorry-loop bell queries; e-2575ae1e beside complex-polynomial-bound and agent ids; e-71b1a8ad beside exhaustion-as-theorem and invariant-coherence/bounded-disposition) — rankings state no relation and are not warrants, and the recurring exhaustion-as-theorem adjacency is embeddings proximity, not a stated relation; exhaustion-as-theorem also lives in math-strategy, a different library, with no directive linkage to this pattern. The pattern carries only a @factor directive, which cannot be repeated, and no clean external record names any target. No external non-reflection record demonstrates a relation between math-informal-CA/epsilon-of-room and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

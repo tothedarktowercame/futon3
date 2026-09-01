@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:48:26.021763889Z",
+ :turn 5,
+ :pattern "math-informal-CA/pass-to-a-subsequence",
+ :gate
+ "/home/joe/code/futon3/./library/math-informal-CA/.spider/gates/turn-005.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-informal-CA/pass-to-a-subsequence",
+    :note
+    "Rung 1: none of the four supplied hits warrants an edge — e-e21c0351, e-717bff58 and e-901ed4e2 are all embeddings retrieval listings with :listing true and :co-mention true (rankings beside agency/loud-failure, realtime/mode-gate, structure/unresolved-tensions-at-closure, WR-26, p4ng/call-a-synthesizer in unrelated claude/codex queries) — rankings/co-mentions state no relation. A rung-1 edge requires at least one hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'pass-to-a-subsequence', 'pass to a subsequence or subnet Bolzano-Weierstrass'. Every retrievable rung-2 hit was a fleet PSR turn-round selecting this pattern for APM task a92J02 (e-b93401a8-c321-4c8d-ab37-d61271c62fbe, e-d6582ea7-a490-4ea8-a03d-ca1a15e55428 — fleet-internal use that names Mathlib's TendstoInMeasure.exists_seq_tendsto_ae, a Mathlib lemma, not another library pattern as a relation); two further query-2 ids did not resolve via GET and could not be verified. The pattern carries only a @factor directive, which cannot be repeated, and no clean external record names any target. No external non-reflection record demonstrates a relation between math-informal-CA/pass-to-a-subsequence and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

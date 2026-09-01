@@ -690,9 +690,42 @@
    :owner :any}
   {:id :LD1,
    :class :D,
-   :status :open,
+   :status :done-unreviewed,
    :owner :any,
    :covers-key :none,
+   :evidence
+   {:sha "e0689e0",
+    :decision
+    "holes/labs/library-contract/decisions.edn :posthoc-why-syntax -- three arms, each now carrying :parser-impact, :greppability and :cost separately, plus :interim, :why-interim, :changes-it and a :landed map of what this item put where. Two cost claims were measured, not asserted: playout_snatch.clj:237 (`re-matches #\"@why (.*)\"`) returns nil on `@why-posthoc war-room/wr-3` and \"war-room/wr-3\" on the authored line; and `grep '@why'` and `grep '@why\\b'` both match a @why-posthoc line (2 hits over a 2-line file) while `grep '@why '` matches 1 -- recorded as the adopted arm's own cost, a bare-@why grep over-counts.",
+    :standard
+    "README-flexiarg.md:198-216 -- the interim form `@why-posthoc <id> [<id> …]` in §5a with a pointer to decisions.edn :posthoc-why-syntax, the invisible-until-opt-in property, and what the lint does with it. Added as a marked paragraph after the 2026-08-23 post-hoc ruling, not as a fourth row of the §5a table, which is introduced as declaring two relations.",
+    :whitelist
+    "flexiarg-directives.edn :why-posthoc, :status :standard, :value :pattern-id-list -- §5c: a directive reaches the store only if it is :standard here, so the interim form had to be admitted to be ingestable and attestable. Its SYNTAX is what is interim.",
+    :lint
+    ["checks/library_graph_lint.clj:8-21 -- edge-kinds unchanged (the three §5a relations); new posthoc-why-kind and counted-edge-kinds"
+     "checks/library_graph_lint.clj:148 -- the kind alternation now reads @why-posthoc first; before this it matched nothing and the directive was dropped in silence"
+     "checks/library_graph_lint.clj:237 -- valid-attestation? admits :why-posthoc, so a post-hoc edge can earn the attestation §5a asks of it; without this the new-edge rule would make one an unfixable failure"
+     "checks/library_graph_lint.clj:528-538 -- section :edges-by-kind reports :why-posthoc as its own key and adds :patterns-with-outgoing-why-posthoc; :fraction-organised and :patterns-with-outgoing-why still filter on :why alone"
+     "checks/library_graph_lint.clj:608 -- library-wide :edges-by-kind likewise; :patterns-in-why-graph (line 610) stays authored-only"
+     "checks/library_graph_lint.clj:174-182 -- cycle-failures documents why it does NOT admit post-hoc edges: acyclicity is a law about authority"],
+    :tests
+    ["test/library_graph_lint_test.clj:235 posthoc-why-is-parsed-and-counted-apart-from-authored-why -- the form is recognised (1 :why-posthoc edge, exit 0) and never summed into :why; a matched authored-@why fixture reaches :fraction-organised 0.5 where the post-hoc one stays 0.0"
+     "test/library_graph_lint_test.clj:260 posthoc-why-earns-the-evidence-checks-but-not-the-authority-law -- dangling target and new-edge-without-attestation both fire on a post-hoc edge; a post-hoc/authored mixed loop passes with :why-cycles 0 while the all-authored loop still fails :why-cycle"
+     "test/library_graph_lint_test.clj:297 posthoc-why-is-invisible-to-consumers-that-have-not-opted-in -- the playout_snatch @why regex reads zero post-hoc lines, and the whitelist carries :why-posthoc as :standard"
+     "test/library_graph_lint_test.clj:210 -- the live-report partition assertion moved from edge-kinds to counted-edge-kinds and asserts the key is present at zero. The 2026-08-31 snapshot fixture is untouched: its census keys are still checked against edge-kinds, so the pinned measurement is not rewritten"],
+   :gates
+    {:clj-kondo
+     "exit 0, errors 0 warnings 0 over checks/library_graph_lint.clj and test/library_graph_lint_test.clj. The one :info is the pre-existing spider-self-text? boolean coercion, now reported at library_graph_lint.clj:287 because this change adds 21 lines above it (recorded at :266 by earlier slices, :234 by L1); it is outside every hunk of this diff",
+     :check-parens "exit 0, OK (emacs -Q --batch, arxana-check-parens-cli, --no-defaults over both files)",
+     :library-graph-lint-test
+     "exit 0, 10 tests / 59 assertions / 0 failures (was 7 / 36) under `bb -cp .` -- the invocation C88-pinned-library-evidence-index.md documents; futon3 has no bb.edn, so a bare `bb <file>` fails at the require",
+     :spider-runner-test "exit 0, 6 tests / 33 assertions / 0 failures",
+     :section-lint
+     "aif section under the C88 pin: exit 0, pass? true, 1247 files, 0 failures, 0 unresolved targets, 4 edge-refusals, 0 warrant-refusals. Counts :why 86, :why-posthoc 0, :how 27, :see-also 141; section aif :why 6, :how 13, :see-also 45, :fraction-organised 0.1818. Not asserted from memory: the same lint built from `git show HEAD:checks/library_graph_lint.clj` and run as its own script gives a byte-identical report except for the two new zero-valued keys, so the authored counts are unchanged by this item and :see-also 141 (vs 136 in earlier records) is pre-existing library drift"},
+    :not-in-scope
+    "checks/spider_runner.clj:18 edge-kinds is unchanged, so the spider lane still may not propose a @why-posthoc edge -- widening the fleet's vocabulary is a separate decision under :spider-editorial-standing, and this item's acceptance names the lint only. checks/playout_snatch.clj is unchanged by design: it is the opt-in that has not been taken, and its silence is the property the adopted arm was chosen for. No .flexiarg file was touched, so this item authors no @why, no @why-posthoc and no similarity-inferred edge (P-validated-R5 law O2); the library carries zero post-hoc directives, and the key is reported at 0.",
+    :proposes-nothing-to-joe
+    "The interim adoption stands under the 2026-09-01 record-so-Joe-can-veto rule. A veto costs the four pointers above, not re-work: no edge anywhere is spelled @why-posthoc yet."},
    :statement
    "README-flexiarg §5a asks for an inline mark distinguishing a post-hoc @why (a trace, a hypothesis) from an author's own @why (a causal claim) and does not fix the syntax. Not determined by theory: a decision with arms, recorded in decisions.edn (interim arm :why-posthoc adopted so work can proceed; Joe can veto).",
    :acceptance

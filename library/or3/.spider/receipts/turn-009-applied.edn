@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T20:22:42.024227989Z",
+ :turn 9,
+ :pattern "or3/design-around-the-red-line",
+ :gate
+ "/home/joe/code/futon3/./library/or3/.spider/gates/turn-009.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or3/design-around-the-red-line",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'design around the red line', 'the control arm nobody would accept', 'stepped-wedge control arm refusal natural experiment'. Every hit was self-text/reflection of this spider fleet: this spider's own prompt echoed in e-2f9d9d30-ddc9-4539-935e-5a9c3f46e2f2, my own prior turn-round/tool-call records e-ffc8fe1c and e-4a182c7e, and earlier or3 spider prompt echoes e-6c546b67, e-8ed26a8c, e-9d1f552a, e-35e44ae3. No external non-reflection record contains the source pattern id or demonstrates its relation to any other existing library/<id>.flexiarg target (the @see target or3/co-design-is-not-consultation occurs only in these self-text echoes), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats [],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent nil,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

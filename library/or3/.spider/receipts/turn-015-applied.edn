@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T20:30:07.746246191Z",
+ :turn 15,
+ :pattern "or3/student-project-as-collaboration",
+ :gate
+ "/home/joe/code/futon3/./library/or3/.spider/gates/turn-015.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or3/student-project-as-collaboration",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'student project as a real collaboration', 'the dissertation nobody opened again', 'co-design student dissertation joint publication supervisor'. Every hit was self-text/reflection of this spider fleet: this spider's own prompt echoed in e-90358098-1878-4c60-b984-829bbb3219d6 and the earlier or3 spider prompt echoes e-3cb33b29, e-6c546b67, e-70348b4d, e-8ed26a8c, e-4a182c7e, e-714f545b, e-9d1f552a, e-2f9d9d30. No external non-reflection record contains the source pattern id or demonstrates its relation to any other existing library/<id>.flexiarg target (the @see targets or3/authorship-for-first-time-contributors and or3/teach-the-process-not-the-facility occur only in these self-text echoes or in unrelated embeddings listings for other patterns), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats [],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent nil,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -184,5 +184,41 @@
     :attestation-states
     {:proposed 0, :attested 0, :refused 0, :sent-back 0},
     :fraction-organised 1.0,
-    :organised-proposed 0}}],
+    :organised-proposed 0}}
+  {:wave 3,
+   :section "or3",
+   :at "2026-09-01",
+   :seat "zai-3",
+   :runner "checks/spider_runner.clj --section or3 --seat zai-3 --budget 34",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :evidence-cache
+   "/tmp/futon3-spider-evidence-occurrences-v3-197217-e9a6a032afcb3b23.edn",
+   :before
+   {:patterns 17,
+    :edges-by-kind {:why 0, :how 0, :see-also 0},
+    :patterns-with-outgoing-why 0,
+    :fraction-organised 0.0},
+   :after
+   {:patterns 17,
+    :patterns-processed 17,
+    :turns 17,
+    :edges-by-kind {:why 0, :how 0, :see-also 0},
+    :patterns-with-outgoing-why 0,
+    :fraction-organised 0.0,
+    :new-attestations 0,
+    :attestation-states {:proposed 0, :attested 0, :refused 0, :sent-back 0},
+    :absences 17,
+    :proposals 0,
+    :seat-failures 0,
+    :organised-attested 0,
+    :organised-proposed 0},
+   :rung-one-coverage {:patterns 17, :any 5, :clean 0, :clean-non-reflection 0},
+   :outcome
+   "17 of 17 patterns processed in 17 turns, no retries, no seat failures; 17 typed absences and zero edges. Not a section the spider skipped: every absence record (library/or3/.spider/absences.edn) names the rung-2 text-search queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search and why each hit failed.",
+   :rung-one-finding
+   "No rung-1 warrant is available anywhere in this section, before any seat reads anything. 5 of 17 patterns have any exact-occurrence hit (co-design-the-call 3, count-every-card-back 2, plural-value-accounting 5, reproducibility-as-a-teaching-habit 1, teach-the-process-not-the-facility 1) and ALL of them are :listing true -- context-retrieval result lists ranked by futon3a embeddings. clean = 0 and clean-non-reflection = 0 for all 17. P-validated-R5 law O2 refuses an embedding-ranked co-occurrence as a relation, and the runner refuses it as a warrant, so this section could only ever have produced rung-2 edges or absences.",
+   :pin-note
+   "The pinned cache was built under :reflection-rule {:version 2, :worker-seats [], :spider-agent nil} -- before rule v3 (futon3 299f47b, ccf2bf8) and without naming the seat, so its cached :reflection flags are v2 flags and do not mark zai-3 or codex-20 authorship. That weakens rung-1 warrant checking in general. It cannot have admitted an edge here: :clean tests :listing/:self-text/:co-mention and ignores :reflection entirely, and :clean is 0 for all 17 patterns, so a stricter rule can only demote further. Rung 2 is unaffected -- rung-two-warrant? calls lint/reflection-record? against the live record under the current rule, not against the cache. The next wave-3 slice should rebuild the cache naming its seat and under v3.",
+   :gate
+   {:library-graph-lint "exit 0 before and after (/tmp/L5gates/or3-{before,after}.edn); pass? true, 0 failures, 1247 files, library edges :why 86 :how 27 :see-also 136, 0 unresolved targets, 0 why-cycles -- unchanged, which is what a zero-edge section should look like"}}],
  :wave-1 {:organised-attested 10, :organised-proposed 55}}

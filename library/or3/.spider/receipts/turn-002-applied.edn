@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T20:16:28.529859254Z",
+ :turn 2,
+ :pattern "or3/authorship-for-first-time-contributors",
+ :gate
+ "/home/joe/code/futon3/./library/or3/.spider/gates/turn-002.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or3/authorship-for-first-time-contributors",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'authorship for first-time contributors', 'the actor who was never an author', 'CRediT contribution taxonomy authorship', 'attribution-forward-review', 'acknowledged helper citable record', 'named author standing in the next project'. Every hit was one of: (a) self-text/reflection — this spider's own prompt echoed in e-3cb33b29-b826-4bb6-ab46-c4bb56648749, and other spider-fleet prompts for unrelated libraries (plos-npt-with-small-n, sidecar, features, ukrns) in e-ad3af114, e-162aee26, e-d054f53c, e-7dda83cc, e-1bc566d5; (b) embeddings retrieval listings in codex-14 and claude-5 context-retrieval records e-e9af30d1-91fe-4c35-8bf4-e060283e27ca and e-466b0600-b822-42f9-9437-3ed8de5e6871 that rank or/attribution-forward-review among results without mentioning or3/authorship-for-first-time-contributors or stating any relation — rankings are not warrants; (c) an unrelated compression-pilot bell e-197a6469. No external non-reflection record contains the source pattern id or demonstrates its relation to any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats [],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent nil,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,238 @@
+[{:pattern "or3/ask-first-then-bring-the-expert",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'ask first then bring the expert', 'seminar the sceptics skipped', 'needs assessment before booking any speaker', 'wrote @how patterns', 'Pattern authored at', 'or3/', 'openness-without-exposure', 'coordinator-in-your-school', 'open research coordinator seminar sceptics'. Every hit was one of: (a) self-text/reflection — this spider prompt echoed in e-50b6a804-47c5-440d-ac8f-22b773e6dbf6 and my own turn-round records e-8917cd0b-d62e-422e-8cb5-b96416abde4b / e-2eca9ed2-3f0a-438b-86f3-ccfefdb0b6b0; (b) embeddings retrieval listings of unrelated or3 patterns (plural-value-accounting, teach-the-process-not-the-facility) in claude-13/claude-6/claude-3 context-retrieval records e-2f14a65a, e-055e1c54, e-2d3029ff — rankings, not warrants, and none contains the source pattern id; (c) psr_search pull-offer e-pull-offer-66b32582 which merely co-surfaces or3/coordinator-in-your-school among unrelated ids; (d) records about other libraries (problems/, math-*) such as e-55b1cf23. No external non-reflection record states or demonstrates any relation between or3/ask-first-then-bring-the-expert and another existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/authorship-for-first-time-contributors",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'authorship for first-time contributors', 'the actor who was never an author', 'CRediT contribution taxonomy authorship', 'attribution-forward-review', 'acknowledged helper citable record', 'named author standing in the next project'. Every hit was one of: (a) self-text/reflection — this spider's own prompt echoed in e-3cb33b29-b826-4bb6-ab46-c4bb56648749, and other spider-fleet prompts for unrelated libraries (plos-npt-with-small-n, sidecar, features, ukrns) in e-ad3af114, e-162aee26, e-d054f53c, e-7dda83cc, e-1bc566d5; (b) embeddings retrieval listings in codex-14 and claude-5 context-retrieval records e-e9af30d1-91fe-4c35-8bf4-e060283e27ca and e-466b0600-b822-42f9-9437-3ed8de5e6871 that rank or/attribution-forward-review among results without mentioning or3/authorship-for-first-time-contributors or stating any relation — rankings are not warrants; (c) an unrelated compression-pilot bell e-197a6469. No external non-reflection record contains the source pattern id or demonstrates its relation to any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/borrow-a-training-network",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'borrow a training network', 'good materials no budget', 'training network open licence DOI materials template', 'reproducibility as a teaching habit'. Every hit was one of: (a) self-text/reflection — this spider's own prompt echoed in e-67f4f3e7-2987-438d-81d7-433fa3282b83, earlier or3 spider prompts e-3cb33b29 and e-50b6a804, and my own prior turn-round record e-5538d098-5d15-4e9c-82d2-c528792443c5 which merely names the query 'borrow a training network' in a fleet reflection; (b) one embeddings retrieval listing e-b057c91c-c1b9-4e50-9f3c-bf4c65128278 (claude-6 context-retrieval, unrelated doctoral-training query) whose results contain no or3 pattern id — a ranking, not a warrant. No external non-reflection record contains the source pattern id or demonstrates its relation to any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/co-design-is-not-consultation",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'co-design is not consultation', 'consulted, not co-designing', 'involvement-in-direction co-creation separate strands', 'co-ownership-engine'. Every hit was one of: (a) self-text/reflection — this spider's own prompt echoed in e-6c546b67-c579-4270-8928-3eb05982c2c0 and earlier or3 spider prompts e-3cb33b29, e-67f4f3e7, e-50b6a804; (b) an external emacs chat-turn e-6f5bff16-9c4e-45e6-bb5b-92a91501df50 about UKRN-S schema topics which mentions 'Research Co-production' tagging but never names or3/co-design-is-not-consultation or any other pattern id, so it cannot warrant a specific edge; (c) embeddings retrieval listings (claude-4 e-36fb593d, claude-2 e-8c0962aa, claude-1 e-65503c79, claude-11 e-03b128b2) that rank or/co-ownership-engine or t3/co-ownership-engine among unrelated results in unrelated queries — rankings are not warrants and none contains the source pattern id. No external non-reflection record demonstrates a relation between or3/co-design-is-not-consultation and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/co-design-the-call",
+  :note
+  "Rung 1: the runner supplied three hit entries but ALL are embeddings retrieval listings with :listing true and :co-mention true (e-f9e8a3d8-56eb-4667-8a23-35e71c26cdde and e-f9cb4c75-eb21-4f0d-b7a5-8a2663bc5058, the latter supplied twice) — claude context-retrieval rankings that co-surface or3/co-design-the-call alongside unrelated ids (math-strategy/plan-first-attempt, p4ng/call-a-synthesizer, agent/budget-bounds-exploration). A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists, and co-mention of unrelated patterns states no relation. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'co-design the call not just the project', 'who decides what gets studied', 'topic bank structured participatory selection briefs'. Every rung-2 hit was either the same two listings above or self-text/reflection — this spider's own prompt echoed in e-8ed26a8c-7e72-4fc7-a830-ea5481010b24 and earlier or3 spider prompts e-3cb33b29, e-50b6a804, e-6c546b67, e-67f4f3e7. No external non-reflection record demonstrates a relation between or3/co-design-the-call and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/consent-bounded-analysis",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'consent-bounded analysis', 'the transcripts and the chatbot', 'consent covers your project not an external service'. Every hit was self-text/reflection: this spider's own prompt echoed in e-9d1f552a-b8d3-4a0e-8e00-9dcfe207f333 and the earlier or3 spider prompts e-8ed26a8c, e-3cb33b29, e-67f4f3e7, e-6c546b67, e-50b6a804 (the same fleet's turn-start echoes for ask-first-then-bring-the-expert, authorship-for-first-time-contributors, borrow-a-training-network, co-design-is-not-consultation, co-design-the-call). No external non-reflection record contains the source pattern id or demonstrates its relation to any other existing library/<id>.flexiarg target (the @see targets or3/count-every-card-back and or3/openness-without-exposure appear only inside these self-text echoes), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/coordinator-in-your-school",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'coordinator in your school', \"open research is somebody else's job\", 'named coordinator role diagnosis rather than delivery'. Every hit was one of: (a) self-text/reflection — this spider's own prompt echoed in e-4a182c7e-4f8d-4ff9-bc4e-9026515c215b plus my own earlier turn outputs and tool-call records e-29cbc9ff, e-e452af73, e-8917cd0b, and the prior or3 spider prompt echoes e-6c546b67, e-67f4f3e7, e-50b6a804, e-9d1f552a; (b) a psr_search memory-pull-offer e-pull-offer-66b32582-209e-4df1-9a9f-f43fd2406c5b (Mathlib Lean query) that retrieval-ranked or3/coordinator-in-your-school among unrelated math pattern ids — a retrieval listing, not a stated relation; (c) embeddings retrieval listings of unrelated ids. The @see targets or3/ask-first-then-bring-the-expert and or2/two-joes-one-mandate occur only in self-text echoes and in one unrelated embeddings ranking (e-36fb593d, an sftp query ranking or2/two-joes-one-mandate third) — co-mention/listing, not a warrant. No external non-reflection record demonstrates a relation between or3/coordinator-in-your-school and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/count-every-card-back",
+  :note
+  "Rung 1: the runner supplied two hits but both are embeddings retrieval listings with :listing true and :co-mention true (e-5d4ffc35-f96e-49fe-ba5f-f2603db3270c, ranking the pattern third behind ukrns/assumptions-commons in an unrelated retrieval; e-b9b7fbca-9d69-484b-a525-ac6a6bebdeb4, a claude-7 context-retrieval ranking it first alongside peeragogy/roles for an unrelated role-card query). A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists, and co-mention of unrelated patterns states no relation. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'count every card back', 'whose idea was that', 'trace from every item back to its origin attribution'. Every rung-2 hit was one of: self-text — this spider's own prompt echoed in e-35e44ae3-e44d-4ac3-84a9-210686fa3ee7; the same two listings above; my own prior turn record e-4f047def; or wholly unrelated Lean/APM records (e-apm-promotion-560ffab07e2d22a8c6b8d43e8e0315dc Sylow memory, e-a1557f1b winding-number guidance). No external non-reflection record demonstrates a relation between or3/count-every-card-back and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/design-around-the-red-line",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'design around the red line', 'the control arm nobody would accept', 'stepped-wedge control arm refusal natural experiment'. Every hit was self-text/reflection of this spider fleet: this spider's own prompt echoed in e-2f9d9d30-ddc9-4539-935e-5a9c3f46e2f2, my own prior turn-round/tool-call records e-ffc8fe1c and e-4a182c7e, and earlier or3 spider prompt echoes e-6c546b67, e-8ed26a8c, e-9d1f552a, e-35e44ae3. No external non-reflection record contains the source pattern id or demonstrates its relation to any other existing library/<id>.flexiarg target (the @see target or3/co-design-is-not-consultation occurs only in these self-text echoes), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/openness-without-exposure",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'openness without exposure', \"we can't publish our transcripts\", 'qualitative pre-registration reflexivity transcripts re-identify' (the last returned zero hits). Every hit was self-text/reflection of this spider fleet: this spider's own prompt echoed in e-425a1cfe-2614-4ec2-816f-2b22682afc4c, my own prior turn outputs/tool-call records e-144dad66, e-e452af73, e-29cbc9ff, and earlier or3 spider prompt echoes e-50b6a804, e-67f4f3e7, e-9d1f552a, e-3cb33b29, e-2f9d9d30. No external non-reflection record contains the source pattern id or demonstrates its relation to any other existing library/<id>.flexiarg target (the @see targets or3/consent-bounded-analysis and or3/ask-first-then-bring-the-expert occur only in these self-text echoes), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/plural-value-accounting",
+  :note
+  "Rung 1: the runner supplied five hits but none is clean — e-ab884c18-92b7-4be1-99d7-f6e33b420a63 has :self-text true and :reflection true (this fleet's own prompt echo), and e-2d3029ff, e-dcd72e4c, e-705bae04, e-2f14a65a are all embeddings retrieval listings with :listing true (claude context-retrieval rankings that co-surface the pattern alongside unrelated ids such as ukrns/scale-register, aif/valuation-reads-the-paperwork, vsatlas/interpretation-offering). A rung-1 edge requires at least one hit with :listing/:self-text/:co-mention/:reflection all false; none exists, and rankings state no relation. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'plural value accounting', 'the costs the price does not show', 'incommensurable value composite metric cost per beneficiary'. Every rung-2 hit was either the same listings above, this spider's own prompt echoed in e-467b25f8-392d-4f90-8cf1-998e59a20092, an earlier or3 spider echo e-3cb33b29/e-50b6a804, or another spider's prompt for an unrelated library (e-136f94e2, ukrns/worked-contrast fleet reflection). No external non-reflection record demonstrates a relation between or3/plural-value-accounting and any other existing library/<id>.flexiarg target (the @see targets or3/skills-that-travel-onward and or2/bioliteracy-open-value appear in no hit at all), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/reproducibility-as-a-teaching-habit",
+  :note
+  "Rung 1: the runner supplied one hit, e-b057c91c-c1b9-4e50-9f3c-bf4c65128278, but it is an embeddings retrieval listing with :listing true and :co-mention true (a claude-6 context-retrieval ranking that co-surfaces the pattern third behind t4r/dtp-fit and collaboration-coherence/messy-with-lurkers in an unrelated query). A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists, and rankings state no relation. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'reproducibility as a teaching habit pattern', 'the analysis that could not be re-run', 'literate programming teaching habit form first'. Every rung-2 hit was one of: self-text/reflection — this spider's own prompt echoed in e-70348b4d-af18-43c1-9bfc-fbea46782a9f, my prior turn output e-62af2277, and earlier or3 spider echoes e-67f4f3e7, e-3cb33b29, e-2f9d9d30, e-9d1f552a; or an external emacs chat-turn e-b845e328-3b75-4944-a9ee-456a73949bdf about UKRN/ORP trainee-measurement bullets that names no pattern id and states no relation. No external non-reflection record demonstrates a relation between or3/reproducibility-as-a-teaching-habit and any other existing library/<id>.flexiarg target (the @see targets or3/borrow-a-training-network, or/living-materials-stewardship, or/snapshot-with-story-doi appear only in self-text echoes or not at all), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/scenarios-from-lived-experience",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'scenarios from lived experience', 'the mannequin that taught nothing', 'co-design scenarios trained actors lived experience'. Every hit was self-text/reflection of this spider fleet: this spider's own prompt echoed in e-89f72491-d42a-4e33-a307-dbc32aa76b5d, and the earlier or3 spider prompt echoes e-4a182c7e, e-67f4f3e7, e-2f9d9d30, e-3cb33b29, e-9d1f552a. No external non-reflection record contains the source pattern id or demonstrates its relation to any other existing library/<id>.flexiarg target (the @see targets or3/teach-the-process-not-the-facility and or3/authorship-for-first-time-contributors occur only in these self-text echoes or in unrelated embeddings listings for other patterns), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/skills-that-travel-onward",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'skills that travel onward', 'after the funding ends', 'onward transmission re-taught low-tech portable'. Every hit was one of: self-text/reflection — this spider's own prompt echoed in e-714f545b-d89c-422d-9b4d-2b118c3d1c4a, my own prior turn outputs e-f75efe71, e-467b25f8, e-70348b4d, e-89172491, e-8ed26a8c; or external emacs chat-turns (e-e423a4a4-59a5-43d9-9494-27dca885c77e, e-d7903f00-30bb-46fc-9a7b-a0a22ed32d00) that match only incidental phrases about funding/missions and name no pattern id and state no relation. No external non-reflection record demonstrates a relation between or3/skills-that-travel-onward and any other existing library/<id>.flexiarg target (the @see targets or3/teach-the-process-not-the-facility, or/citizen-co-learning-track, or3/consent-bounded-analysis appear in no returned record), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/student-project-as-collaboration",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'student project as a real collaboration', 'the dissertation nobody opened again', 'co-design student dissertation joint publication supervisor'. Every hit was self-text/reflection of this spider fleet: this spider's own prompt echoed in e-90358098-1878-4c60-b984-829bbb3219d6 and the earlier or3 spider prompt echoes e-3cb33b29, e-6c546b67, e-70348b4d, e-8ed26a8c, e-4a182c7e, e-714f545b, e-9d1f552a, e-2f9d9d30. No external non-reflection record contains the source pattern id or demonstrates its relation to any other existing library/<id>.flexiarg target (the @see targets or3/authorship-for-first-time-contributors and or3/teach-the-process-not-the-facility occur only in these self-text echoes or in unrelated embeddings listings for other patterns), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/sustainability-without-enclosure",
+  :note
+  "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'sustainability without enclosure', \"sustain it, but don't close it\", 'licence fixed sell services not code revenue'. Every hit was one of: self-text/reflection — this spider's own prompt echoed in e-2c1dc967-a08f-44f1-bdb0-7702da4e143c and the earlier or3 spider prompt echoes e-714f545b, e-425a1cfe, e-9d1f552a, e-50b6a804, e-4a182c7e, e-3cb33b29; or an external emacs chat-turn e-e7b6cc25-63e6-4179-adfe-b58190ac9781 about peradam/Mount Analogue that matched the word 'sustain' incidentally and names no pattern id. No external non-reflection record demonstrates a relation between or3/sustainability-without-enclosure and any other existing library/<id>.flexiarg target (the @see targets or/license-laddering, or/maintainer-care, or3/borrow-a-training-network appear only in self-text echoes), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}
+ {:pattern "or3/teach-the-process-not-the-facility",
+  :note
+  "Rung 1: the runner supplied one hit, e-055e1c54-1496-401f-94a3-5a39f8867db0, but it is an embeddings retrieval listing with :listing true and :co-mention true (a claude-6 context-retrieval ranking that co-surfaces the pattern third behind equity/shared-maintenance-merged and t3/intervention-triad in an unrelated query about emailing referees). A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists, and rankings state no relation. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'teach the process, not the facility', 'everyone wants a turn in the suite', 'faculty-training debrief inquiry-based simulation method'. Every rung-2 hit was self-text/reflection of this spider fleet: this spider's own prompt echoed in e-1256b8be-1a22-4b71-8e3a-d9dfa5eb20a4 and my own prior absence-report turn outputs e-b3fd47e6, e-f343cf9b, e-d503fd00, plus earlier or3 spider prompt echoes e-3cb33b29, e-50b6a804, e-714f545b, e-89f72491. No external non-reflection record demonstrates a relation between or3/teach-the-process-not-the-facility and any other existing library/<id>.flexiarg target (the @see targets or3/scenarios-from-lived-experience and or/living-materials-stewardship occur only in self-text echoes or unrelated listings), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+  :corpus
+  {:store "http://127.0.0.1:7073",
+   :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+   :reflection-rule
+   {:version 2,
+    :worker-seats [],
+    :worker-author :evidence-author-in-worker-seats,
+    :spider-agent nil,
+    :agency-job
+    :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+    :self-text :spider-self-text-prompt-markers}}}]

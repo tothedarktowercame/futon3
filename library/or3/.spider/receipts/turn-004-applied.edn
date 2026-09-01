@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T20:18:34.790390848Z",
+ :turn 4,
+ :pattern "or3/co-design-is-not-consultation",
+ :gate
+ "/home/joe/code/futon3/./library/or3/.spider/gates/turn-004.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or3/co-design-is-not-consultation",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'co-design is not consultation', 'consulted, not co-designing', 'involvement-in-direction co-creation separate strands', 'co-ownership-engine'. Every hit was one of: (a) self-text/reflection — this spider's own prompt echoed in e-6c546b67-c579-4270-8928-3eb05982c2c0 and earlier or3 spider prompts e-3cb33b29, e-67f4f3e7, e-50b6a804; (b) an external emacs chat-turn e-6f5bff16-9c4e-45e6-bb5b-92a91501df50 about UKRN-S schema topics which mentions 'Research Co-production' tagging but never names or3/co-design-is-not-consultation or any other pattern id, so it cannot warrant a specific edge; (c) embeddings retrieval listings (claude-4 e-36fb593d, claude-2 e-8c0962aa, claude-1 e-65503c79, claude-11 e-03b128b2) that rank or/co-ownership-engine or t3/co-ownership-engine among unrelated results in unrelated queries — rankings are not warrants and none contains the source pattern id. No external non-reflection record demonstrates a relation between or3/co-design-is-not-consultation and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats [],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent nil,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

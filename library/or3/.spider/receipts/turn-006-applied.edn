@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T20:20:13.163893315Z",
+ :turn 6,
+ :pattern "or3/consent-bounded-analysis",
+ :gate
+ "/home/joe/code/futon3/./library/or3/.spider/gates/turn-006.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or3/consent-bounded-analysis",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'consent-bounded analysis', 'the transcripts and the chatbot', 'consent covers your project not an external service'. Every hit was self-text/reflection: this spider's own prompt echoed in e-9d1f552a-b8d3-4a0e-8e00-9dcfe207f333 and the earlier or3 spider prompts e-8ed26a8c, e-3cb33b29, e-67f4f3e7, e-6c546b67, e-50b6a804 (the same fleet's turn-start echoes for ask-first-then-bring-the-expert, authorship-for-first-time-contributors, borrow-a-training-network, co-design-is-not-consultation, co-design-the-call). No external non-reflection record contains the source pattern id or demonstrates its relation to any other existing library/<id>.flexiarg target (the @see targets or3/count-every-card-back and or3/openness-without-exposure appear only inside these self-text echoes), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats [],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent nil,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T20:15:21.741460131Z",
+ :turn 1,
+ :pattern "or3/ask-first-then-bring-the-expert",
+ :gate
+ "/home/joe/code/futon3/./library/or3/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or3/ask-first-then-bring-the-expert",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'ask first then bring the expert', 'seminar the sceptics skipped', 'needs assessment before booking any speaker', 'wrote @how patterns', 'Pattern authored at', 'or3/', 'openness-without-exposure', 'coordinator-in-your-school', 'open research coordinator seminar sceptics'. Every hit was one of: (a) self-text/reflection — this spider prompt echoed in e-50b6a804-47c5-440d-ac8f-22b773e6dbf6 and my own turn-round records e-8917cd0b-d62e-422e-8cb5-b96416abde4b / e-2eca9ed2-3f0a-438b-86f3-ccfefdb0b6b0; (b) embeddings retrieval listings of unrelated or3 patterns (plural-value-accounting, teach-the-process-not-the-facility) in claude-13/claude-6/claude-3 context-retrieval records e-2f14a65a, e-055e1c54, e-2d3029ff — rankings, not warrants, and none contains the source pattern id; (c) psr_search pull-offer e-pull-offer-66b32582 which merely co-surfaces or3/coordinator-in-your-school among unrelated ids; (d) records about other libraries (problems/, math-*) such as e-55b1cf23. No external non-reflection record states or demonstrates any relation between or3/ask-first-then-bring-the-expert and another existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats [],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent nil,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

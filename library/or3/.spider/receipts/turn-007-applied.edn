@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T20:21:05.595599979Z",
+ :turn 7,
+ :pattern "or3/coordinator-in-your-school",
+ :gate
+ "/home/joe/code/futon3/./library/or3/.spider/gates/turn-007.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or3/coordinator-in-your-school",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'coordinator in your school', \"open research is somebody else's job\", 'named coordinator role diagnosis rather than delivery'. Every hit was one of: (a) self-text/reflection — this spider's own prompt echoed in e-4a182c7e-4f8d-4ff9-bc4e-9026515c215b plus my own earlier turn outputs and tool-call records e-29cbc9ff, e-e452af73, e-8917cd0b, and the prior or3 spider prompt echoes e-6c546b67, e-67f4f3e7, e-50b6a804, e-9d1f552a; (b) a psr_search memory-pull-offer e-pull-offer-66b32582-209e-4df1-9a9f-f43fd2406c5b (Mathlib Lean query) that retrieval-ranked or3/coordinator-in-your-school among unrelated math pattern ids — a retrieval listing, not a stated relation; (c) embeddings retrieval listings of unrelated ids. The @see targets or3/ask-first-then-bring-the-expert and or2/two-joes-one-mandate occur only in self-text echoes and in one unrelated embeddings ranking (e-36fb593d, an sftp query ranking or2/two-joes-one-mandate third) — co-mention/listing, not a warrant. No external non-reflection record demonstrates a relation between or3/coordinator-in-your-school and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats [],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent nil,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

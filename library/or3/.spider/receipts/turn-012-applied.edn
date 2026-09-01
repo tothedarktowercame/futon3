@@ -1,0 +1,25 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T20:25:00.998140370Z",
+ :turn 12,
+ :pattern "or3/reproducibility-as-a-teaching-habit",
+ :gate
+ "/home/joe/code/futon3/./library/or3/.spider/gates/turn-012.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "or3/reproducibility-as-a-teaching-habit",
+    :note
+    "Rung 1: the runner supplied one hit, e-b057c91c-c1b9-4e50-9f3c-bf4c65128278, but it is an embeddings retrieval listing with :listing true and :co-mention true (a claude-6 context-retrieval ranking that co-surfaces the pattern third behind t4r/dtp-fit and collaboration-coherence/messy-with-lurkers in an unrelated query). A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists, and rankings state no relation. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'reproducibility as a teaching habit pattern', 'the analysis that could not be re-run', 'literate programming teaching habit form first'. Every rung-2 hit was one of: self-text/reflection — this spider's own prompt echoed in e-70348b4d-af18-43c1-9bfc-fbea46782a9f, my prior turn output e-62af2277, and earlier or3 spider echoes e-67f4f3e7, e-3cb33b29, e-2f9d9d30, e-9d1f552a; or an external emacs chat-turn e-b845e328-3b75-4944-a9ee-456a73949bdf about UKRN/ORP trainee-measurement bullets that names no pattern id and states no relation. No external non-reflection record demonstrates a relation between or3/reproducibility-as-a-teaching-habit and any other existing library/<id>.flexiarg target (the @see targets or3/borrow-a-training-network, or/living-materials-stewardship, or/snapshot-with-story-doi appear only in self-text echoes or not at all), so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 197217, :max-at "2026-08-31T16:39:25.560756552Z"},
+     :reflection-rule
+     {:version 2,
+      :worker-seats [],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent nil,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :self-text :spider-self-text-prompt-markers}}}]}}

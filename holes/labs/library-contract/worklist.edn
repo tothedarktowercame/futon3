@@ -5,7 +5,10 @@
  :classes #{:C :V :E :W :D :J}
  :statuses #{:open :blocked :done-unreviewed :done :needs-joe}
  :items
- [{:id :L1 :class :C :status :done-unreviewed :owner :any
+ [{:id :L1 :class :C :status :done :owner :any
+   :reviewed-by "codex"
+   :reviewed-at "2026-09-01T19:21:47Z"
+   :review "Read a3bff43 in full and confirmed its author differs from the reviewer. Reproduced clj-kondo exit 0 (0 errors, 0 warnings), check-parens exit 0 (OK), library_graph_lint_test exit 0 (6 tests, 26 assertions), spider_runner_test exit 0 (3 tests, 11 assertions), and the C88-pinned aif section lint exit 0 (1247 files; edges :why 86, :how 27, :see-also 136; 4 edge-refusals, 0 warrant-refusals, 0 failures). Confirmed all 5 reclassified refused edges have no surviving directive in their source pattern. No .flexiarg file was changed by the evidence commit, so it authored no spider @why, post-hoc edge, or similarity-inferred edge."
    :covers-key :none
    :evidence
    {:sha "a3bff43"

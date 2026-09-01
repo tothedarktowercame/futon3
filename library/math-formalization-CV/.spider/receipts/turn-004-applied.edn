@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:15:56.091775120Z",
+ :turn 4,
+ :pattern "math-formalization-CV/entire-affine-by-divided-difference",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CV/.spider/gates/turn-004.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "math-formalization-CV/entire-affine-by-divided-difference",
+    :note
+    "Rung 1: none of the eight supplied hits warrants an edge — the flag-clean records are all components of this pattern's OWN fleet authoring/deposit pipeline (e-8d8027ae is the zai write_file turn that authored the flexiarg; e-bae0a1e3 is its deposit candidates record naming only this pattern; e-12bac435 and e-817789f6 are fleet plumbing notes about where pattern ids live and JSON key keywordization, naming no second library pattern as a relation); e-94c4521 has :reflection true; the :co-mention true records (e-72c57cb5, e-11b0eff2, e-70c86771) are search-receipt accounting co-listing derivative-bounds-api, entire-and-singularity-api and unrelated ids for Casorati-Weierstrass queries — co-mention states no relation, and entire-and-singularity-api is ALREADY the @why and complex-liouville-periodicity ALREADY the @see-also on this pattern, so re-proposing them would repeat existing directives. Rung 2: no bounded keyword query could surface a warrant the supplied evidence structure excludes — the only library targets visible anywhere in the evidence are this pattern's already-recorded @why math-formalization-CV/entire-and-singularity-api and @see-also math-formalization-CV/complex-liouville-periodicity, plus fleet plumbing ids with no mathematical relation stated. No external non-reflection record demonstrates a NEW relation between math-formalization-CV/entire-affine-by-divided-difference and any other existing library/<id>.flexiarg target, so no additional :how/:see-also edge is warranted and no new :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

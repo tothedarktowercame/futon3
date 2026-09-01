@@ -1,0 +1,31 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:17:22.746024535Z",
+ :turn 6,
+ :pattern "math-formalization-CV/frontier-bound-from-arc-hypotheses",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CV/.spider/gates/turn-006.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "math-formalization-CV/frontier-bound-from-arc-hypotheses",
+    :note
+    "Rung 1: none of the six supplied hits warrants an edge — four are embeddings listings with :listing true and :co-mention true (rankings beside ode-gronwall-api, iching hexagrams 12-pi, schwarz-disk-automorphism-formula and unrelated ids in codex-18 auto-bellback queries — rankings state no relation); e-5e43f478 (:co-mention true) is the fleet deposit record for this pattern's own memories, naming only this pattern in pattern-ids; e-1fb68283 (:co-mention true) is the fleet write_file turn that authored the flexiarg itself. No clean hit with :listing/:self-text/:co-mention/:reflection all false exists. Rung 2: no bounded keyword query could surface a warrant the supplied evidence structure excludes — the only library target visible anywhere in the evidence is holomorphic-disk-api, which is ALREADY both the @why and @see-also directive on this pattern, so re-proposing it would repeat an existing directive; every other co-mentioned id (ode-gronwall-api, schwarz-disk-automorphism-formula) appears only inside embeddings rankings or fleet authoring context with no mathematical relation stated. No external non-reflection record demonstrates a NEW relation between math-formalization-CV/frontier-bound-from-arc-hypotheses and any other existing library/<id>.flexiarg target, so no additional :how/:see-also edge is warranted and no new :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

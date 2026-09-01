@@ -195,6 +195,26 @@ attestation the same way rather than being assumed. Mark post-hoc edges inline
 so a later reader can tell them from an author's own `@why`, which IS a causal
 claim about their own work.
 
+**The interim mark is a separate directive:** `@why-posthoc <id> [<id> …]`.
+The syntax was left open by the 2026-08-23 ruling above; three spellings were
+weighed (`@why!`, `@why <id> [post-hoc]`, `@why-posthoc`) and the third adopted
+on an interim basis — see `holes/labs/library-contract/decisions.edn`,
+`:posthoc-why-syntax`, for the costs and for what evidence would reopen it.
+It reads as a fourth pattern-to-pattern directive, and it is deliberately
+invisible to anything that matches the literal `@why `: a consumer sees post-hoc
+edges only by asking for them by name, so a trace can never be miscounted as an
+author's claim. `checks/playout_snatch.clj`'s `parse-why`, which builds the
+cascade `@why` graph, therefore reads zero of them and is unchanged.
+
+What `checks/library_graph_lint.clj` does with the form: it parses `@why-posthoc`
+and reports it as its own key in `:edges-by-kind`, beside `:why`, never summed
+into it; a section's `:fraction-organised` still counts only patterns with an
+authored `@why`, and gains `:patterns-with-outgoing-why-posthoc` alongside. A
+post-hoc edge may be attested like any other, and must resolve to a real pattern
+and carry an attestation when new — the checks that are about evidence apply
+unchanged. The acyclicity check does not admit it: that law is about authority,
+and a post-hoc edge claims none.
+
 Corollary, measured 2026-08-23: across 42 missions citing 151 patterns in their
 ARGUE sections, **zero** cite a war-room ruling. Missions record the how; the
 why lives in a register the mission format has no slot for. The rationale layer

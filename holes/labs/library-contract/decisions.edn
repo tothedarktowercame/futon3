@@ -12,11 +12,24 @@
    :question "README-flexiarg §5a (2026-08-23) asks that a post-hoc @why be marked inline so a reader can tell a trace-hypothesis from an author's causal claim, and does not fix the syntax."
    :arms
    [{:arm :bang-suffix :form "@why! <id>"
-     :cost "Every existing @why consumer that matches the literal directive (checks/playout_snatch.clj:228-260 parse-why, graph lint kind table, grep habits) must learn the variant or silently drop the edge; one character is easy to miss in review."}
+     :parser-impact "Every existing @why consumer that matches the literal directive must learn the variant or silently drop the edge: checks/playout_snatch.clj:237 (`re-matches #\"@why (.*)\"`, full-line, so it reads zero) and checks/library_graph_lint.clj:148 (the kind alternation)."
+     :greppability "`grep '@why '` misses it entirely -- the mark sits where the space was -- so the habitual search silently under-counts."
+     :cost "Silent under-count in both code and grep, and one character is easy to miss in review."}
     {:arm :inline-annotation :form "@why <id> [post-hoc]"
-     :cost "Target-list parsers must strip the annotation or mis-read it as an id; the mark is per-line, not per-edge, so mixed lists are ambiguous."}
+     :parser-impact "Worst of the three: playout_snatch.clj:237 and library_graph_lint.clj:148 both MATCH the line and then read `[post-hoc]` as part of the target list. The lint drops it (it fails target-pattern) but playout_snatch keyword-ises it into the cascade @why graph. A post-hoc edge is counted as authored unless every target-list parser is changed first."
+     :greppability "Greppable as @why, which is the problem: the mark is per-line, not per-edge, so a mixed list `@why a/b c/d [post-hoc]` cannot say which target the mark covers."
+     :cost "Fails OPEN -- silence looks like an authored edge -- and mixed lists are ambiguous."}
     {:arm :distinct-directive :form "@why-posthoc <id>"
-     :cost "A fourth pattern-to-pattern directive in the §5a table; consumers that should treat it as @why-for-cascade-purposes must opt in explicitly."}]
+     :parser-impact "Invisible to both existing consumers without any change: verified 2026-09-01 that playout_snatch.clj:237 returns nil on `@why-posthoc war-room/wr-3` and that the pre-LD1 lint alternation `@(why|how|see-also)` did not match it either. Consumers that should treat it as @why-for-cascade-purposes must opt in by name."
+     :greppability "`grep '@why-posthoc'` is exact, but the cost runs the other way: `grep '@why'` and `grep '@why\\b'` BOTH match the post-hoc line (verified: 2 hits over a 2-line file, vs 1 for `grep '@why '`), so a habitual bare-@why search over-counts. The reliable authored-only search is `grep '@why '` with the trailing space."
+     :cost "A fourth pattern-to-pattern directive alongside a §5a table introduced as declaring two relations, so the standard has to carry the asymmetry in prose; and bare-@why greps over-count."}]
    :interim :distinct-directive
-   :why-interim "Invisible to every existing consumer until it opts in (fails safe: a post-hoc edge cannot masquerade as authored), trivially greppable, and the opt-in is exactly the point -- §5a says the edge should EARN attestation before it counts. LD1 lands it in the standard and the lint."
-   :changes-it "If wave-3 attestation shows post-hoc edges graduating at a rate where the two-directive split costs more churn than it prevents, revisit toward :bang-suffix with a parser update."}]}
+   :why-interim "It fails SAFE where :inline-annotation fails open: a post-hoc edge cannot masquerade as authored in any consumer that has not opted in, and the opt-in is exactly the point -- §5a says the edge should EARN attestation before it counts. :bang-suffix also fails safe but does so by being unfindable to the ordinary grep; the distinct directive is at least exactly searchable. LD1 lands it in the standard and the lint."
+   :changes-it "If wave-3 attestation shows post-hoc edges graduating at a rate where the two-directive split costs more churn than it prevents, revisit toward :bang-suffix with a parser update. A bare-@why over-count reaching a recorded number would also reopen it -- that is the arm's own cost showing up as a measurement error, not a style complaint."
+   :landed
+   {:by :LD1 :at "2026-09-01"
+    :standard "README-flexiarg.md §5a -- the interim form, the invisible-until-opt-in property, and what the lint does with it, pointing back here."
+    :whitelist "flexiarg-directives.edn :why-posthoc, :status :standard (ingestable and attestable; the SYNTAX is what is interim, not its standing)."
+    :lint "checks/library_graph_lint.clj -- edge-kinds still names the three §5a relations; posthoc-why-kind and counted-edge-kinds are new. Parsed at :148, counted as its own key in :edges-by-kind (never summed into :why), reported per section as :patterns-with-outgoing-why-posthoc, and admitted to valid-attestation? so a post-hoc edge can earn its attestation."
+    :counted-separately "The authored measures are untouched: :fraction-organised, :patterns-with-outgoing-why and :patterns-in-why-graph all still filter on :why alone, so no section can raise its organised fraction by adding traces."
+    :not-in-scope "cycle-failures does NOT admit post-hoc edges -- acyclicity is a law about authority and a post-hoc edge claims none. checks/spider_runner.clj:18 is unchanged, so the spider lane may not propose a @why-posthoc edge; widening the fleet's vocabulary is a separate decision under :spider-editorial-standing. checks/playout_snatch.clj is unchanged by design (it is the opt-in that has not been taken)."}}]}

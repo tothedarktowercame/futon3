@@ -5,7 +5,20 @@
             [clojure.pprint :as pprint]
             [clojure.string :as str]))
 
-(def edge-kinds #{:why :how :see-also})
+(def edge-kinds
+  "The three relations declared in README-flexiarg §5a. Each is a claim someone
+  makes in their own voice: @why by the pattern's author, @how and @see-also by
+  an editor."
+  #{:why :how :see-also})
+
+;; A post-hoc @why is a trace, not a cause (README-flexiarg §5a, Joe 2026-08-23),
+;; and the standard asks that it be marked inline. The interim spelling is its
+;; own directive -- holes/labs/library-contract/decisions.edn :posthoc-why-syntax,
+;; arm :distinct-directive -- so that every consumer that matches the literal
+;; `@why ` keeps reading zero of them until it opts in. What the lint counts
+;; separately, and what it counts together, is written at each use below.
+(def posthoc-why-kind :why-posthoc)
+(def counted-edge-kinds (conj edge-kinds posthoc-why-kind))
 (def target-pattern #"[A-Za-z0-9_.-]+/[A-Za-z0-9_./'-]+")
 (def evidence-store "http://127.0.0.1:7073")
 (def evidence-page-limit 1000)
@@ -132,7 +145,7 @@
         edges (mapcat
                (fn [[i line]]
                  (let [code (first (str/split line #";;" 2))]
-                   (if-let [[_ kind tail] (re-matches #"\s*@(why|how|see-also)\s+(.+?)\s*" code)]
+                   (if-let [[_ kind tail] (re-matches #"\s*@(why-posthoc|why|how|see-also)\s+(.+?)\s*" code)]
                      (for [token (str/split tail #"\s+")
                            :when (re-matches target-pattern token)]
                        {:from from :to token :kind (keyword kind)
@@ -158,7 +171,15 @@
 
 (defn edge-key [edge] (select-keys edge [:from :to :kind]))
 
-(defn cycle-failures [edges]
+(defn cycle-failures
+  "Acyclicity is a law about AUTHORITY: a pattern cannot rest on something that
+  rests on it. @why-posthoc asserts no authority -- it says a later reading makes
+  sense of the pattern -- so a post-hoc edge is not admitted here, and a
+  post-hoc edge closing a loop with an authored one is not a cycle failure. The
+  other checks make no such distinction: dangling targets and the
+  new-edge-attested rule apply to post-hoc edges exactly as to authored ones,
+  because resolving a target and earning an attestation are not authority claims."
+  [edges]
   (let [adj (reduce (fn [m {:keys [from kind] :as edge}]
                       (if (= kind :why) (update m from (fnil conj []) edge) m)) {} edges)
         colour (atom {})
@@ -213,7 +234,7 @@
        (let [edge (:edge x)]
          (and (map? edge) (every? #(contains? edge %) [:from :to :kind])
               (nonblank-string? (:from edge)) (nonblank-string? (:to edge))
-              (edge-kinds (:kind edge))))
+              (counted-edge-kinds (:kind edge))))
        (nonblank-string? (:by x)) (nonblank-string? (:at x))
        (vector? (:read x)) (seq (:read x)) (every? nonblank-string? (:read x))
        (nonblank-string? (:cited x))
@@ -504,10 +525,17 @@
         patterns (filter #(str/starts-with? (:id %) prefix) (:patterns scan))
         edges (filter #(str/starts-with? (:from %) prefix) (:edges scan))
         why-from (set (map :from (filter #(= :why (:kind %)) edges)))
+        posthoc-from (set (map :from (filter #(= posthoc-why-kind (:kind %)) edges)))
         n (count patterns)]
     {:section section :patterns n
-     :edges-by-kind (merge {:why 0 :how 0 :see-also 0} (frequencies (map :kind edges)))
+     :edges-by-kind (merge (zipmap counted-edge-kinds (repeat 0))
+                           (frequencies (map :kind edges)))
      :patterns-with-outgoing-why (count why-from)
+     ;; Reported beside the authored count, never folded into it.
+     ;; :fraction-organised stays the fraction with an AUTHORED @why: §5a says a
+     ;; post-hoc edge should earn attestation before it counts, so a section
+     ;; cannot raise its organised fraction by adding traces.
+     :patterns-with-outgoing-why-posthoc (count posthoc-from)
      :fraction-organised (if (zero? n) 0.0 (/ (double (count why-from)) n))}))
 
 (defn lint [{:keys [library section baseline attestations evidence-records]}]
@@ -577,7 +605,7 @@
         failures (mapv #(merge {:file nil :line nil :edge nil} %)
                        (concat dangling cycles missing-atts refused-present malformed
                                refusal-acts semantic body-failures))
-        kind-counts (merge {:why 0 :how 0 :see-also 0}
+        kind-counts (merge (zipmap counted-edge-kinds (repeat 0))
                            (frequencies (map :kind (:edges scan))))
         why-nodes (set (mapcat (juxt :from :to) (filter #(= :why (:kind %)) (:edges scan))))]
     {:checks failures

@@ -141,6 +141,8 @@
                            :means "principle | technique | snippet"}
   :why                    {:status :standard           :value :pattern-id-list         :uses     0 :scope "declared in README §5a"
                            :means "semantic authority: the general patterns this pattern rests on"}
+  :why-posthoc            {:status :standard           :value :pattern-id-list         :uses     0 :scope "declared in README §5a, interim form"
+                           :means "INTERIM (decisions.edn :posthoc-why-syntax, arm :distinct-directive): a post-hoc @why -- the target makes sense of this pattern retrospectively. A trace, not a causal claim, so it is NOT @why and consumers of @why must opt in by name to see it. Standard so it can be ingested and attested; the syntax itself is revisitable"}
   :how                    {:status :standard           :value :pattern-id-list         :uses     0 :scope "declared in README §5a"
                            :means "semantic refinement: named methods carrying this pattern out"}
   :see-also               {:status :standard           :value :pattern-id-list         :uses     0 :scope "declared in README §5a"

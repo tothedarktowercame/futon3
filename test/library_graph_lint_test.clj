@@ -207,9 +207,102 @@
     (println "pinned library graph evidence"
              (pr-str (select-keys (:summary report) [:files :edges-by-kind])))
     (is (true? (get-in report [:summary :pass?])))
-    (is (= lint/edge-kinds (set (keys (get-in report [:summary :edges-by-kind])))))
+    (is (= lint/counted-edge-kinds (set (keys (get-in report [:summary :edges-by-kind])))))
+    ;; The live library carries no post-hoc edge yet; the key is reported at
+    ;; zero rather than absent, so a reader can see the count is measured.
+    (is (zero? (get-in report [:summary :edges-by-kind lint/posthoc-why-kind])))
     (is (zero? (get-in report [:summary :unresolved-targets])))
     (is (zero? (get-in report [:summary :why-cycles])))))
+
+(defn posthoc-fixture
+  "s/a -> s/b spelled with the interim post-hoc directive, attested so the
+  new-edge rule is satisfied and only the counting is under test."
+  [root]
+  (write-pattern! root "s/a" "" "source warrant sentence")
+  (write-pattern! root "s/b" "" "target")
+  (let [base (baseline! root)]
+    (write-pattern! root "s/a" "@why-posthoc s/b" "source warrant sentence")
+    (spit (str (fs/path root "evidence-records.edn")) (pr-str warrant-evidence))
+    (spit (str (fs/path root "attestations.edn"))
+          (pr-str [{:edge {:from "s/a" :to "s/b" :kind :why-posthoc}
+                    :by "zai-test" :at "2026-09-01"
+                    :read ["s/a" "s/b"] :cited "source warrant sentence"
+                    :evidence [{:id "e-warrant" :via :text :query "q"
+                                :excerpt "the runner calls s/b to carry out s/a"}]
+                    :rung 2 :state :proposed}]))
+    {:base base}))
+
+(deftest posthoc-why-is-parsed-and-counted-apart-from-authored-why
+  (let [report (run-fixture posthoc-fixture)
+        summary (:summary report)
+        section (:section summary)]
+    (testing "the interim form is recognised, not dropped"
+      (is (zero? (:test/exit report)) (pr-str (:checks report)))
+      (is (= 1 (get-in summary [:edges-by-kind :why-posthoc]))))
+    (testing "it is never summed into the authored @why"
+      (is (zero? (get-in summary [:edges-by-kind :why])))
+      (is (zero? (:patterns-in-why-graph summary)))
+      (is (zero? (get-in section [:edges-by-kind :why])))
+      (is (zero? (:patterns-with-outgoing-why section)))
+      (is (= 1 (:patterns-with-outgoing-why-posthoc section)))
+      ;; The measure the wave plan reads: a trace cannot raise it.
+      (is (zero? (:fraction-organised section))))
+    (testing "an authored @why on the same edge does raise it"
+      (let [authored (:summary (run-fixture
+                                (fn [root]
+                                  (write-pattern! root "s/b" "" "target")
+                                  (write-pattern! root "s/a" "@why s/b" "a")
+                                  {:base (baseline! root)})))]
+        (is (= 1 (get-in authored [:edges-by-kind :why])))
+        (is (= 1 (:patterns-with-outgoing-why (:section authored))))
+        (is (= 0.5 (:fraction-organised (:section authored))))))))
+
+(deftest posthoc-why-earns-the-evidence-checks-but-not-the-authority-law
+  (testing "a post-hoc edge must resolve to a real pattern"
+    (is (failed-for? (run-fixture
+                      (fn [root]
+                        (write-pattern! root "s/a" "@why-posthoc absent/b" "a")
+                        {:base (baseline! root)}))
+                     :dangling-target)))
+  (testing "a new post-hoc edge must earn an attestation like any other"
+    (is (failed-for? (run-fixture
+                      (fn [root]
+                        (write-pattern! root "s/a" "" "a")
+                        (write-pattern! root "s/b" "" "b")
+                        (let [base (baseline! root)]
+                          (write-pattern! root "s/a" "@why-posthoc s/b" "a")
+                          {:base base})))
+                     :new-edge-without-attestation)))
+  (testing "acyclicity is about authority, so a post-hoc back-edge is not a cycle"
+    ;; s/a --@why-posthoc--> s/b and s/b --@why--> s/a close a loop only if the
+    ;; two kinds are merged. cycle-failures admits :why alone, so this passes;
+    ;; the same shape with both edges spelled @why is the failing case below.
+    (let [report (run-fixture
+                  (fn [root]
+                    (write-pattern! root "s/a" "@why-posthoc s/b" "a")
+                    (write-pattern! root "s/b" "@why s/a" "b")
+                    {:base (baseline! root)}))]
+      (is (zero? (get-in report [:summary :why-cycles])))
+      (is (= 1 (get-in report [:summary :edges-by-kind :why-posthoc])))
+      (is (= 1 (get-in report [:summary :edges-by-kind :why])))
+      (is (zero? (:test/exit report)) (pr-str (:checks report)))))
+  (testing "an authored cycle still fails"
+    (is (failed-for? (run-fixture
+                      (fn [root]
+                        (write-pattern! root "s/a" "@why s/b" "a")
+                        (write-pattern! root "s/b" "@why s/a" "b")
+                        {:base (baseline! root)}))
+                     :why-cycle))))
+
+(deftest posthoc-why-is-invisible-to-consumers-that-have-not-opted-in
+  (testing "the cascade @why graph reader (checks/playout_snatch.clj:237) reads zero"
+    (let [parse-why-line #(second (re-matches #"@why (.*)" %))]
+      (is (nil? (parse-why-line "@why-posthoc war-room/wr-3")))
+      (is (= "war-room/wr-3" (parse-why-line "@why war-room/wr-3")))))
+  (testing "the interim form is on the ingest whitelist, so it is not an anomaly"
+    (let [directives (:directives (edn/read-string (slurp "flexiarg-directives.edn")))]
+      (is (= :standard (get-in directives [:why-posthoc :status])))
+      (is (= :standard (get-in directives [:why :status]))))))
 
 (deftest pinned-evidence-records-have-content-pin-and-falsifier
   (let [serialized (slurp evidence-records-path)

@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:22:43.645935877Z",
+ :turn 8,
+ :pattern "mmca/verified-but-idle-link",
+ :gate
+ "/home/joe/code/futon3/./library/mmca/.spider/gates/turn-008.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "mmca/verified-but-idle-link",
+    :note
+    "Rung 1: all five runner-supplied hits are flagged — e-299454c4, e-278d6ae0, e-3f705183, e-badbbb6d are embeddings retrieval listings with :listing true and :co-mention true (claude context-retrievals ranking the pattern among unrelated ids such as math-formalization/coercion-bridge, peripherals/hot-reload-as-default-fix-path, devmap-coherence/ifr-f5-samadhi), and e-20880cb9 has :self-text true and :reflection true. A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'verified-but-idle-link', 'a verified fact that does no work is decoration', 'load-bearing edge argument map counterfactual decorative demote'. Every rung-2 hit was one of: the same listings plus e-8af01ebf (claude-13 ranking it second behind ukrns/computation-as-exploration in an unrelated predictions query) and e-70442956 (claude-13 ranking it first with writing-coherence/triad-inflation in an unrelated build-level query) — rankings/co-mentions state no relation; or self-text — this spider's own prompt echoed in e-263f1a14-6637-4754-9250-3f487a82b799. The pattern's own @references to mmca/persistence-over-appearance and futon-theory/structural-tension-as-observation are already-present author directives and cannot be repeated. No external non-reflection record demonstrates a NEW relation between mmca/verified-but-idle-link and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

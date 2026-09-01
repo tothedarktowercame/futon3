@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:20:51.813013059Z",
+ :turn 6,
+ :pattern "mmca/screen-the-knob-before-the-controller",
+ :gate
+ "/home/joe/code/futon3/./library/mmca/.spider/gates/turn-006.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "mmca/screen-the-knob-before-the-controller",
+    :note
+    "Rung 1: all seven runner-supplied hits are flagged — e-2d1ba83e, e-c7b10ee8, e-6f255f7b, e-a4fcb4ac, e-a8e8878d have :self-text true and :reflection true (this fleet's own psr_search pull-offer echoes); e-57c2646b is an embeddings listing with :listing true and :co-mention true (ranking the pattern second behind problems/commitment-temperature-is-instrumented-as-gain in an unrelated retrieval); e-pull-offer-2d47ff92 is a memory-pull-offer co-mention (a Mathlib Lean psr_search that retrieval-surfaced the pattern among unrelated war-room ids) with :co-mention true. A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists, and pull-offer co-mention states no relation. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'screen-the-knob-before-the-controller', 'screen the knob before you build the controller', 'leverage reachability validity stability closed loop open-loop sweep'. Every rung-2 hit was one of the flagged records above, this spider's own prompt echoed in e-0e0db1f0-fbac-44eb-b682-0042b260395b, or my prior turn outputs e-9ac15170, e-e7e32827, e-fd819084. The pattern's own @references to mmca/perceivable-target, mmca/persistence-over-appearance and aif/admissibility are already-present author directives and cannot be repeated. No external non-reflection record demonstrates a NEW relation between mmca/screen-the-knob-before-the-controller and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

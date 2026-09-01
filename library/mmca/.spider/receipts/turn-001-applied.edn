@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:16:33.719723854Z",
+ :turn 1,
+ :pattern "mmca/eye-before-metric",
+ :gate
+ "/home/joe/code/futon3/./library/mmca/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "mmca/eye-before-metric",
+    :note
+    "Rung 1: both runner-supplied hits (e-77f79956-2d9c-4cc3-81bb-bca3d21c4829, e-e746c8f5-18e0-4040-ba79-4c7282fe01a7) are embeddings retrieval listings with :listing true and :co-mention true — context-retrieval rankings in wm-nouns and claude-13 queries. A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'eye-before-metric', 'build the labelled set before the metric', 'labelled set ground truth measure artifact collaborator'. Every rung-2 hit was either an embeddings retrieval listing (e-1658d361, e-874a0ec5 — which ranks mmca/eye-before-metric first with mmca/persistence-over-appearance third in an unrelated live-surface query, e-ccfcb4b5, plus the rung-1 listings) — rankings state no relation even when another mmca pattern co-occurs — or this spider's own prompt echoed in e-fd819084-90fc-4a92-a3bc-76d7760e106c. The pattern's own @references to mmca/threshold-shaped-events and mmca/instrument-horizon-must-match-system are the author's directives already present and cannot be repeated. No external non-reflection record demonstrates a NEW relation between mmca/eye-before-metric and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

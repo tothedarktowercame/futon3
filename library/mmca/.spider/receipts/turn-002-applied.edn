@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:17:22.799535776Z",
+ :turn 2,
+ :pattern "mmca/instrument-horizon-must-match-system",
+ :gate
+ "/home/joe/code/futon3/./library/mmca/.spider/gates/turn-002.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "mmca/instrument-horizon-must-match-system",
+    :note
+    "Rung 1: both runner-supplied hits (e-06f6374b-9a41-4807-94f7-36c317518a7d, e-5aaf3967-b192-4e7a-b749-1a119f9a4d02) are embeddings retrieval listings with :listing true and :co-mention true. A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'instrument-horizon-must-match-system', \"instrument's horizon must match the system's transients\", 'validation window settling time transient calibration reference systems'. Every rung-2 hit was either an embeddings retrieval listing (e-b915076a, e-6b773a30 — the latter ranks the pattern first with aif/measurement-window-hygiene second in an unrelated operator query — plus the rung-1 listings) or this spider's own prompt echoed in e-5ac1e7ab-4821-4192-9d57-d9de81191c44. The recurring co-ranking with aif/measurement-window-hygiene is embeddings proximity/co-mention only, never a stated relation. The pattern's own @references to mmca/persistence-over-appearance and mmca/eye-before-metric are already-present author directives and cannot be repeated. No external non-reflection record demonstrates a NEW relation between mmca/instrument-horizon-must-match-system and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

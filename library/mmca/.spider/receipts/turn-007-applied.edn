@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:21:41.141590239Z",
+ :turn 7,
+ :pattern "mmca/threshold-shaped-events",
+ :gate
+ "/home/joe/code/futon3/./library/mmca/.spider/gates/turn-007.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "mmca/threshold-shaped-events",
+    :note
+    "Rung 1: the single runner-supplied hit (e-pull-offer-bddb9f53-8bd3-46a6-8d3c-3462941e72a5) is a psr_search memory-pull-offer with :co-mention true — a Mathlib-formalization Lean query that retrieval-surfaced the pattern among unrelated math-formalization ids. Pull-offer co-mention states no relation, and a rung-1 edge requires a clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'threshold-shaped-events', 'check the episode length against the detection threshold', 'episode duration median threshold turnover detector frozen'. Every rung-2 hit was one of: an embeddings retrieval listing e-56b532c3 (claude-7 context-retrieval ranking the pattern third behind aif/measurement-window-hygiene and baldwin/ablation-axes-must-not-disable-the-instrument in an unrelated frame-confidence query) — a ranking, not a stated relation; the same pull-offer record above; this spider's own prompt echoed in e-371fe8a3 and my prior turn output e-53ad33cb; or unhydrated emacs-* ids with no retrievable body. The pattern's own @references to mmca/eye-before-metric and mmca/persistence-over-appearance are already-present author directives and cannot be repeated. No external non-reflection record demonstrates a NEW relation between mmca/threshold-shaped-events and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

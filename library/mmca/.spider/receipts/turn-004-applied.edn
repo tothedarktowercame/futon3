@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:19:07.802342798Z",
+ :turn 4,
+ :pattern "mmca/persistence-over-appearance",
+ :gate
+ "/home/joe/code/futon3/./library/mmca/.spider/gates/turn-004.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "mmca/persistence-over-appearance",
+    :note
+    "Rung 1: the single runner-supplied hit (e-6f816e5d-11fe-4f1b-b445-13177909ada0) is an embeddings retrieval listing with :listing true and :co-mention true. A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'persistence-over-appearance', 'ask whether it survives, not whether it looks complex', 'absorbing state horizon appearance measure frozen compression objective'. Every rung-2 hit was one of: embeddings retrieval listings (e-48276288 — a claude-5 context-retrieval ranking the pattern first with baldwin/choose-the-heritable-unit-where-invariance-lives and mmca/realization-variance-is-not-a-regime in an unrelated query; e-874a0ec5 ranking it third behind mmca/eye-before-metric) — rankings/co-mentions state no relation; self-text/reflection — this spider's own prompt echoed in e-e4afdbf7 and my prior turn output e-9ac15170. The pattern's own @references to mmca/instrument-horizon-must-match-system, mmca/realization-variance-is-not-a-regime and aif/currency-before-merge are already-present author directives and cannot be repeated. No external non-reflection record demonstrates a NEW relation between mmca/persistence-over-appearance and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

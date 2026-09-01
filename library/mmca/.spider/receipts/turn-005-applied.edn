@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:19:59.495782874Z",
+ :turn 5,
+ :pattern "mmca/realization-variance-is-not-a-regime",
+ :gate
+ "/home/joe/code/futon3/./library/mmca/.spider/gates/turn-005.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "mmca/realization-variance-is-not-a-regime",
+    :note
+    "Rung 1: all three runner-supplied hits (e-07e544d0-d8d4-46eb-a979-fb2ba060b15b, e-e3fbe929-3560-4d58-b93c-9c6a69462667, e-0a70f18e-4581-4a15-bd4a-fb7973a7766c) are embeddings retrieval listings with :listing true and :co-mention true — context-retrieval rankings in unrelated claude/codex queries. A rung-1 edge requires at least one clean hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'realization-variance-is-not-a-regime', 'when seeds disagree, report a region not a regime', 'seeds disagree opposite outcomes critical region replication'. Every rung-2 hit was one of: embeddings retrieval listings (e-34abf258, e-d5083e47, e-d3680f40 — rankings in unrelated Lean-review, figure-contents, and bifurcation queries that co-surface the pattern with unrelated ids such as futon-theory/mission-lifecycle, iching/hexagram-64-weiji, ants/cargo-return-discipline) — rankings/co-mentions state no relation; or self-text/reflection — this spider's own prompt echoed in e-30147be4 and my prior turn output e-6c2493bc. The pattern's own @references to mmca/persistence-over-appearance and mmca/instrument-horizon-must-match-system are already-present author directives and cannot be repeated. No external non-reflection record demonstrates a NEW relation between mmca/realization-variance-is-not-a-regime and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

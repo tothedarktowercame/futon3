@@ -311,5 +311,54 @@
    "The three absences are letter-from-the-future, licensed-ground, self-certifying-artifact, each naming the rung-2 text-search queries actually run. licensed-ground is the instructive one: its own body says 'Guard on nomad/owner-of-the-problem' and also names self-certifying-artifact and author-the-yardstick, and the spider still recorded an absence -- a pattern asserting its own relation is the author's text, not external corroboration, so it does not warrant a directive line.",
    :seat "zai-3",
    :rung-one-finding
-   "As in or3, no rung-1 warrant exists anywhere in nomad, independent of what the seat did. 5 of 8 patterns have any exact-occurrence hit (author-the-yardstick 4, choose-the-grid 7, live-yardstick 1, owner-of-the-problem 7, self-certifying-artifact 7); every hit on every one of them carries :co-mention true, so clean-hit? fails for all of them and clean = clean-non-reflection = 0 for all 8. 3 patterns (letter-from-the-future, licensed-ground, skip-the-flood) have no index entry at all. Table at /tmp/L5s2/nomad-coverage.txt, computed with lint/clean-hit? and lint/clean-non-reflection-hit? against the pinned cache, and matching the runner's own :rung-one-coverage. So 'rung 2 only' in the wave-3 plan is again a fact about the corpus, not a policy choice."}],
+   "As in or3, no rung-1 warrant exists anywhere in nomad, independent of what the seat did. 5 of 8 patterns have any exact-occurrence hit (author-the-yardstick 4, choose-the-grid 7, live-yardstick 1, owner-of-the-problem 7, self-certifying-artifact 7); every hit on every one of them carries :co-mention true, so clean-hit? fails for all of them and clean = clean-non-reflection = 0 for all 8. 3 patterns (letter-from-the-future, licensed-ground, skip-the-flood) have no index entry at all. Table at /tmp/L5s2/nomad-coverage.txt, computed with lint/clean-hit? and lint/clean-non-reflection-hit? against the pinned cache, and matching the runner's own :rung-one-coverage. So 'rung 2 only' in the wave-3 plan is again a fact about the corpus, not a policy choice."}
+  {:not-touched
+   ["No .flexiarg file changed -- the section produced no edge -- so this slice authors no @why, no @why-posthoc, and no similarity-inferred edge (P-validated-R5 law O2)."
+    "checks/library_graph_lint.clj:107 still hardcodes the literal \"-v3-\" in evidence-cache-path, so a cache filename is not a version claim. Reported by or3, worked around by nomad and again here (the rule was read out of the cache body, not its name). Still wants its own row."
+    "checks/spider_fleet.clj:139 -- the :pinned-evidence-cache-is-unreadable throw that can never fire, reported by or3 and nomad, still unfixed. This slice used spider_runner.clj directly, whose delay does throw (checks/spider_runner.clj:120-122)."],
+   :section "mmca",
+   :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+   :command
+   "SPIDER_EVIDENCE_CACHE=/tmp/futon3-spider-evidence-occurrences-v3-206483-70eeae7145d2c7a6.edn bb --classpath . checks/spider_runner.clj --section mmca --seat zai-3 --budget 12",
+   :outcome
+   "8 of 8 patterns processed in 8 turns, no retries, no malformed-output receipts, no seat failures, in 7m06s (started 2026-09-01T21:15:37Z, finished 21:22:43Z). Every turn ended in a typed absence: 8 absences, 0 edges, 0 proposals, 0 attestations. Section unchanged at :edges-by-kind {:why 0 :how 0 :see-also 0}, fraction-organised 0.0; library-wide totals unchanged at {:why 86 :how 27 :see-also 141}. Like or3 and unlike nomad, mmca produced no edge at all.",
+   :edges-written [],
+   :after
+   {:absences 8,
+    :seat-failures 0,
+    :turns 8,
+    :new-attestations 0,
+    :new-edges-by-kind {:why 0, :how 0, :see-also 0},
+    :organised-attested 0,
+    :patterns-with-outgoing-why 0,
+    :patterns 8,
+    :edges-by-kind {:why 0, :how 0, :see-also 0},
+    :attestation-states
+    {:proposed 0, :attested 0, :refused 0, :sent-back 0},
+    :fraction-organised 0.0,
+    :proposals 0,
+    :malformed-output-receipts 0,
+    :organised-proposed 0,
+    :patterns-processed 8},
+   :at "2026-09-01",
+   :gate
+   {:library-graph-lint
+    "exit 0 before and after (/tmp/L5s3/mmca-{before,after}.edn), exit codes captured to /tmp/L5s3/{before,after}.exit and tested by reading the file, never through a pipe. Both pass? true, 0 failures, 1247 files, 0 unresolved-targets, 0 why-cycles, 0 warrant-refusals, 0 edge-refusals. Before and after are IDENTICAL on every counted field, including library-wide {:why 86 :how 27 :see-also 141} -- the expected result for a section that produced no edge. Nine per-turn gate reports at library/mmca/.spider/gates/turn-000.edn .. turn-008.edn.",
+    :runner-exit
+    "exit 0, captured to /tmp/L5s3/run.exit; state.edn :phase :complete, :turn 8, 8 of 8 completed."},
+   :record-defect
+   "The absence note for mmca/verified-but-idle-link says 'all five runner-supplied hits are flagged' and lists e-299454c4, e-278d6ae0, e-3f705183, e-badbbb6d, e-20880cb9. The runner supplied FOUR: e-299454c4-3903-4177-a796-55eed4f27cf7, e-3f705183-d8d9-4162-9ef0-149e41052d32, e-badbbb6d-eb27-4ee9-a3f9-099a98d124cb (all :listing true :co-mention true) and e-20880cb9-1c87-4c7b-947b-aa517cad2bbf (:self-text true :reflection true), verified by reading the pinned index directly. e-278d6ae0-ecd3-418f-bac2-aa05227c6f10 is a real record but is indexed under peripherals/hot-reload-as-default-fix-path, memory/licence-to-fail and memory/verify-in-the-serving-process -- not under this pattern. The seat appears to have folded a co-ranked id it read INSIDE one of its four hits into the runner-supplied set; its own note names peripherals/hot-reload-as-default-fix-path in the same sentence. The record is left as the seat wrote it and corrected here rather than revised, following L1's practice for the reclassified refusals. The absence itself stands either way: the extra id is also a :listing true retrieval ranking, so it warrants nothing, and the four real hits give clean = 0. The general defect this exposes: checks/spider_runner.clj:280-283 validates an absence only for (= pattern (:pattern absence)) and a non-blank :note, so evidence ids asserted in an absence note are never checked against the rung-1 set or the live store the way an EDGE's evidence ids are (checks/spider_runner.clj:262-278). An absence is free text the runner takes on trust. Wants its own row.",
+   :before
+   {:patterns 8,
+    :edges-by-kind {:why 0, :how 0, :see-also 0},
+    :patterns-with-outgoing-why 0,
+    :fraction-organised 0.0},
+   :pin-note
+   "Reused the v3 cache slice 2 (nomad) built rather than crawling again: /tmp/futon3-spider-evidence-occurrences-v3-206483-70eeae7145d2c7a6.edn, :reflection-rule {:version 3 :worker-seats [\"zai-3\"] :spider-agent \"codex-20\"}, basis {:count 206483 :max-at 2026-09-01T20:35:40.731036691Z}, built-at 2026-09-01T20:58:38Z. Same seat and same rule as this run, so the cached :reflection flags are the ones this run needs, and pinning two slices to one basis is what C88 pin discipline asks for. It also keeps slice 2's own whistle envelopes out of the index, since the basis predates them. Cost avoided: the ~20-minute 206k-record crawl, against a futon1b JVM sitting at 3122/4096 MB heap with 0 of 2 permits free when this slice started. The v3 rule is doing visible work here: 6 hits across screen-the-knob-before-the-controller and verified-but-idle-link carry :self-text true :reflection true, which a v2 cache like or3's would have left unflagged. It changes no verdict in this section -- clean-hit? ignores :reflection and :clean is 0 for all 8 patterns anyway -- but it is the first wave-3 section where the flag fires.",
+   :wave 3,
+   :absence-note
+   "All 8 absences name the rung-2 text-search queries actually run (three per pattern against http://127.0.0.1:7073/api/alpha/evidence/text-search, limit=5, hydrate=true) and say why each returned record failed. The recurring reason is that mmca's neighbours surface only through retrieval: e-874a0ec5 ranks eye-before-metric first and persistence-over-appearance third, e-6b773a30 ranks instrument-horizon-must-match-system first with aif/measurement-window-hygiene second, e-48276288 ranks persistence-over-appearance with baldwin/choose-the-heritable-unit-where-invariance-lives and mmca/realization-variance-is-not-a-regime. Those are exactly the pairs an embeddings-similarity spider would have written as edges, and law O2 refuses all of them. perceivable-target is the cleanest case: no index entry, and its only non-self-text rung-2 hit (e-a07dbc6d, an emacs chat turn about CLean typed-composition witnesses) matched on the incidental words 'perceive' and 'target' and names no pattern id.",
+   :seat "zai-3",
+   :rung-one-finding
+   "As in or3 and nomad, no rung-1 warrant exists anywhere in mmca, independent of what the seat did. 7 of 8 patterns have at least one exact-occurrence hit (eye-before-metric 2, instrument-horizon-must-match-system 2, persistence-over-appearance 1, realization-variance-is-not-a-regime 3, screen-the-knob-before-the-controller 7, threshold-shaped-events 1, verified-but-idle-link 4); perceivable-target has no index entry at all. EVERY hit on every pattern carries :co-mention true, so clean-hit? fails throughout: clean = 0 and clean-non-reflection = 0 for all 8. Most are :listing true as well (embeddings retrieval rankings, refused as relations by P-validated-R5 law O2); the exceptions are 6 :self-text/:reflection records from this fleet and 2 psr_search memory-pull-offers (e-pull-offer-2d47ff92 on screen-the-knob, e-pull-offer-bddb9f53 on threshold-shaped-events), which are co-mentions in a Lean/Mathlib retrieval and state no relation either. Table at /tmp/L5s3/mmca-coverage.txt, computed with lint/clean-hit? and lint/clean-non-reflection-hit? against the pinned cache; matches the runner's :rung-one-coverage {:patterns 8 :any 7 :clean 0 :clean-non-reflection 0}. Three sections in, 'rung 2 only' has not once been a policy choice."}],
  :wave-1 {:organised-attested 10, :organised-proposed 55}}

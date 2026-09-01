@@ -150,7 +150,30 @@
    :covers-key :none
    :loop-mode :one-slice-per-invocation
    :statement "Wave 3: the 0%-tagged families -- or3, nomad, mmca, memory, math-formalization-CA, math-formalization-CV, math-informal-CT, math-informal-CA -- rung 2 only, per P-organise-the-library's wave plan. One section per invocation."
-   :progress []
+   :progress
+   [{:slice 1
+     :section "or3"
+     :at "2026-09-01"
+     :seat "zai-3"
+     :sha "8436467"
+     :basis {:count 197217 :max-at "2026-08-31T16:39:25.560756552Z"}
+     :result "17 of 17 patterns processed in 17 turns, 0 seat failures; 17 typed absences, 0 edges, 0 proposals. Section before/after unchanged at :edges-by-kind {:why 0 :how 0 :see-also 0}, fraction-organised 0.0."
+     :ledger-entry "library/.spider/ledger.edn:188 -- {:wave 3 :section \"or3\"}, the 8th element of :sections"
+     :records ["library/or3/.spider/absences.edn -- 17 records, each with its :corpus pin and the rung-2 queries actually run"
+               "library/or3/attestations.edn -- [] (no edge was warranted, so no attestation record exists)"
+               "library/or3/proposals.edn -- []"
+               "library/or3/.spider/state.edn -- :phase :complete, :turn 17, :finished-at 2026-09-01T20:31:44Z"
+               "library/or3/.spider/gates/turn-000.edn .. turn-017.edn -- the per-turn linter reports"]
+     :finding "No rung-1 warrant exists anywhere in or3, independent of what any seat did. 5 of 17 patterns have an exact-occurrence hit (co-design-the-call 3, count-every-card-back 2, plural-value-accounting 5, reproducibility-as-a-teaching-habit 1, teach-the-process-not-the-facility 1) and every one is :listing true -- a futon3a embeddings retrieval ranking, which P-validated-R5 law O2 refuses as a relation and checks/library_graph_lint.clj clean-hit? refuses as a warrant. clean = 0 and clean-non-reflection = 0 for all 17. Measured from the pinned cache with lint/clean-hit? and lint/clean-non-reflection-hit?; table at /tmp/L5gates/or3-coverage.txt and in the runner state's :rung-one-coverage {:patterns 17 :any 5 :clean 0 :clean-non-reflection 0}. So the wave plan's \"rung 2 only\" is not a policy choice for this section, it is the only rung available."
+     :pin-defect "The cache this slice was pinned to was built under :reflection-rule {:version 2 :worker-seats [] :spider-agent nil} -- before rule v3 (299f47b, ccf2bf8) and naming no seat, so its cached :reflection flags neither implement v3 nor mark zai-3/codex-20 authorship. Note the filename is not the tell: checks/library_graph_lint.clj:107 hardcodes the literal \"-v3-\" in evidence-cache-path and carries the rule version only inside the sha, so a v2 cache is named v3. The defect could not have admitted an edge in or3 -- clean-hit? tests :listing/:self-text/:co-mention and ignores :reflection entirely, and :clean is 0 for all 17, and a stricter rule can only demote hits further. Rung 2 is unaffected: spider_runner.clj:222 rung-two-warrant? calls lint/reflection-record? against the live record under the current code. The next slice should build its cache with the seat named and under v3."
+     :not-touched ["No .flexiarg file changed (the section produced no edge), so this slice authors no @why, no @why-posthoc, and no similarity-inferred edge (P-validated-R5 law O2)."
+                   "checks/spider_fleet.clj:139 is left as it is: clj-kondo reports `Condition always true` there, and it is right -- (assoc (read-edn path nil) :cache-path p) is a map even when the pinned cache file is absent, so the :pinned-evidence-cache-is-unreadable throw below it can never fire and a missing pin would run the fleet on an empty index. This slice used spider_runner.clj directly, whose delay does throw (checks/spider_runner.clj:120), so the defect did not touch this run. Reported, not fixed: it is not in this row's acceptance and deserves its own row."]
+     :gates {:exit-codes "captured to /tmp/L5gates/{before,after,kondo,parens,lintest,spidertest}.exit and tested with a string comparison; no gate status read through a pipe"
+             :section-lint "checks/library_graph_lint.clj over or3, run TWICE -- once before the run finished writing (exit 0) and once after (exit 0). Both pass? true, 0 failures, 1247 files, :edges-by-kind {:why 86 :how 27 :see-also 136}, 0 unresolved-targets, 0 why-cycles, 0 warrant-refusals, 0 edge-refusals. Reports at /tmp/L5gates/or3-{before,after}.edn"
+             :clj-kondo "exit 0, 0 errors 0 warnings over checks/library_graph_lint.clj, checks/spider_runner.clj, test/library_graph_lint_test.clj, test/spider_runner_test.clj. No Clojure was touched by this slice; the run establishes the gate is still green. The one :info at library_graph_lint.clj:266 is the same pre-existing spider-self-text? coercion L2 recorded"
+             :check-parens "exit 0, OK -- emacs -Q --batch -l /home/joe/code/futon4/dev/check-parens.el --eval (arxana-check-parens-cli) -- library/.spider/ledger.edn library/or3/attestations.edn library/or3/proposals.edn library/or3/.spider/{state,absences,seat-failures}.edn. The -- separator is required, per L2's note"
+             :library-graph-lint-test "exit 0, 7 tests / 36 assertions / 0 failures, under the C88 pin"
+             :spider-runner-test "exit 0, 6 tests / 33 assertions / 0 failures"}}]
    :acceptance "Per slice: run the spider for ONE listed section against the pinned evidence basis (C88 pin discipline), gate with library_graph_lint, record the section's before/after edges-by-kind and attestation states in library/.spider/ledger.edn, commit. Append the section and sha to :progress. The row is done when all eight sections have a wave-3 ledger entry. No @why authored by the spider: propose only (LD0)."}
   {:id :LD1 :class :D :status :open :owner :any
    :covers-key :none

@@ -1,0 +1,8 @@
+;; core.logic's binding forms bind like `fn`: `(fresh [a b] goals)`,
+;; `(run* [q] goals)`, `(project [vars] goals)`. Without this, every logic
+;; variable in checks/how_witness_*.clj reads as an unresolved symbol and the
+;; gate cannot distinguish a real defect from core.logic syntax.
+;; Added 2026-09-01 for worklist item :L4.
+{:lint-as {clojure.core.logic/fresh   clojure.core/fn
+           clojure.core.logic/run*    clojure.core/fn
+           clojure.core.logic/project clojure.core/fn}}

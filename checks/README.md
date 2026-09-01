@@ -10,6 +10,13 @@ Run:
     clojure -Sdeps '{:paths ["checks"] :deps {org.clojure/core.logic {:mvn/version "1.0.1"}}}' \
       -M -m how-witness-snatch
 
+Same invocation with `-m how-witness-heartbeat` for the peripherals edge.
+
+`.clj-kondo/config.edn` teaches clj-kondo that core.logic's `fresh`, `run*` and
+`project` bind like `fn`; without it every logic variable in these files reads
+as an unresolved symbol and the gate cannot tell a defect from core.logic
+syntax. Added 2026-09-01 with worklist item `:L4`.
+
 **Every witness must ship with a mirror** — the same relation asked of a case
 where it must *not* hold. A witness that cannot fail is not a witness.
 
@@ -17,6 +24,7 @@ where it must *not* hold. A witness that cannot fail is not a witness.
 |---|---|---|
 | `how_witness_snatch.clj` | the edge as a **relation** — does it hold? | **ATTESTED**; mirror silent |
 | `how_kernel_snatch.clj` | the same edge as a **kernel** — with what spread? | entropy 1.3863 → 1.3121 nats under attestation; mirror zero mass |
+| `how_witness_heartbeat.clj` | the **price test** (worklist `:L4`) — the same relational shape over an *attested* edge in `library/peripherals/`, run against futon3c source rather than a game diagram | **NOT ATTESTED** — 0 of 5 obligations carried out by the method; positive control finds 3; mirror silent. Cost written up at `p4ng/empirics-futon/NOTE-the-one-edge-price.md` |
 
 ## Why both
 

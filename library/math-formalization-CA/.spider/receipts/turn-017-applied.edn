@@ -1,0 +1,33 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:59:24.370630741Z",
+ :turn 17,
+ :pattern "math-formalization-CA/rpow-exponent-limit",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CA/.spider/gates/turn-017.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-formalization-CA/rpow-exponent-limit",
+    :note
+    "Rung 1: both runner-supplied hits have :co-mention true — e-714e9413 is a rationale map from a fleet search-repair payload listing this pattern's rationale alongside unrelated pattern-family commentary, and e-7bdbd239 is a fleet-authored memory candidate whose :pattern-ids list [",
+    measure-integration-api " ",
+    rpow-exponent-limit
+    "] as attachment tags — co-mention within the same fleet's deposit tooling states no relation, and neither record is a clean external warrant. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'rpow-exponent-limit', 'limit of t^{1/n} → 1 via continuity', 'continuousAt_const_rpow tendsto composition'. Every rung-2 hit was either this spider's own prompt echoed in e-4b4c008d-cf80-405b-8fd3-833558d6c980 or embeddings context-retrieval listings under the older math-formalization/ prefix (e-f66e6335 behind agent/reduction-to-kernel and math-informal/numerical-scout; e-0aeb7f34 behind iching hexagrams 60-jie and 35-jin; e-248f4a3b behind math-informal/the-diagonal-argument and connected-union-via-common-point — all in apm-harvest or unrelated operator queries) — rankings state no relation and are not warrants. The pattern's own @instantiates math-informal/reduce-to-known-result and @examples a00J01 are already present and cannot be repeated. No external non-reflection record demonstrates a relation between math-formalization-CA/rpow-exponent-limit and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

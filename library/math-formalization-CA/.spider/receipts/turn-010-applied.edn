@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:52:40.863027040Z",
+ :turn 10,
+ :pattern "math-formalization-CA/measure-integration-api",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CA/.spider/gates/turn-010.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-formalization-CA/measure-integration-api",
+    :note
+    "Rung 1: none of the ~70 supplied hits is clean — the memory-cascade and promotion-review records carry :co-mention true, and every record that explicitly names a second pattern id (e.g. the claude-2 emacs analyses emacs-8088b05af210c2eb6b1c285b7eb50596, emacs-85871a6cd8972feb60207f03aa35aa00, emacs-741bf66440ca4e673b3e31d97c98520d verifying 'recall surfaced math-formalization-CA/measure-integration-api whose flexiarg line 8 is @why math-strategy/missing-dependency-protocol') states a relation to a target that the flexiarg ALREADY carries as an authored directive — re-proposing it would repeat an existing directive, which is barred. These records are also :co-mention true, so no rung-1-clean warrant exists for any NEW target. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'measure-integration-api why missing-dependency-protocol', 'flexiarg measure-integration-api @why'. Every rung-2 hit was either this spider's own prompt echoed in e-f73e34a5-e0a4-4363-b98f-4021d7ce7dc2, emacs chat-turns (e.g. emacs-f55fd7f241f278d2889400543b56de2b, a claude-19 review that reassigns memories TO measure-integration-api rather than relating it onward to another library pattern), or more of the same fleet-authored records above. The pattern already carries @why math-informal/reduce-to-known-result, @see-also math-formalization-CA/measure-restrict-simplify, math-formalization-CA/lp-norm-comparison and math-formalization/transport-across-an-instance-diamond — and external evidence additionally attributes an authored @why to math-strategy/missing-dependency-protocol, so all evidenced targets are already-recorded directives. No external non-reflection record demonstrates a NEW relation between math-formalization-CA/measure-integration-api and any other existing library/<id>.flexiarg target beyond its existing directives, so no additional :how/:see-also edge is warranted and no new :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

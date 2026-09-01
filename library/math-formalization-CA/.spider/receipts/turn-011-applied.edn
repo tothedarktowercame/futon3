@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:53:36.971804228Z",
+ :turn 11,
+ :pattern "math-formalization-CA/measure-restrict-simplify",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CA/.spider/gates/turn-011.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-formalization-CA/measure-restrict-simplify",
+    :note
+    "Rung 1: runner-supplied exact-occurrence hits were empty ([]). Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'measure-restrict-simplify', 'simplify restricted measure on [0,1]', 'volume.restrict Icc 0 1 one_rpow collapse'. Every rung-2 hit was one of: this spider's own prompt echoed in e-2f366118-0e4a-4c53-85af-09cbc2abb79a; a psr_search memory-pull-offer (e-pull-offer-da41b3ab, previously observed retrieval-surfacing this pattern among unrelated ids for a Mathlib query); or embeddings context-retrieval listings under the older math-formalization/ prefix (e-d4055635 and e-89ab5b62 beside storage/durability-first, musn/off-trail-budget and musn/use-requires-evidence in claude-9/codex-6 bell queries; e-868277aa beside exotic/graded-naturality and hdm/bootstrap-kernel; e-a5d8e366 beside math-informal/monotone-approximation and iching/hexagram-60-jie) — rankings state no relation and are not warrants. The reverse-direction relations that do exist externally (measure-integration-api's @see-also lists measure-restrict-simplify; lp-norm-comparison's THEN cites it in prose) live in other patterns' files and are not a warrant for a directive on THIS pattern, and the symmetric edge would still require external use evidence, which is only the non-warrant listings above. The pattern's own @instantiates math-informal/reduce-to-known-result and @examples a00J01 are already present and cannot be repeated. No external non-reflection record demonstrates a relation between math-formalization-CA/measure-restrict-simplify and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

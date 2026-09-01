@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:54:33.535046563Z",
+ :turn 12,
+ :pattern "math-formalization-CA/metric-cauchy-convergence",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CA/.spider/gates/turn-012.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-formalization-CA/metric-cauchy-convergence",
+    :note
+    "Rung 1: the single runner-supplied hit (e-pull-offer-cac8af56-4925-47d2-b122-1ad05dc951e3, supplied twice) is a psr_search memory-pull-offer with :co-mention true — a retrieval result listing this pattern alongside unrelated ids (devmap-coherence/ifr-state-convergence, riemann-darboux-api, inner-product-space-api, weak-convergence-hilbert) for an oscillatory-density query; co-mention states no relation and no clean flag-false hit exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'metric-cauchy-convergence', 'cauchy sequence convergence in metric spaces', 'cauchySeq_iff triangle inequality tendsto'. Every rung-2 hit was one of: this spider's own prompt echoed in e-07063f43-7ce8-4de7-9f7e-04281848d302; another psr pull-offer (e-pull-offer-bfda80b2); or embeddings context-retrieval listings under the older math-formalization/ prefix (e-fc8892b8 and e-385037dd ranking it beside math-formalization/separation-function-from-distance and rpow-exponent-limit; e-ef7d8dab and e-74423418 beside exhaustion-as-theorem in apm-harvest and claude-3 bell queries) — rankings state no relation and are not warrants. The pattern's own @instantiates math-informal-CA/estimate-by-bounding and @examples a97A04 are already present and cannot be repeated. No external non-reflection record demonstrates a relation between math-formalization-CA/metric-cauchy-convergence and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

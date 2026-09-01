@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:43:12.041666500Z",
+ :turn 1,
+ :pattern "math-formalization-CA/ae-integral-zero",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CA/.spider/gates/turn-001.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-formalization-CA/ae-integral-zero",
+    :note
+    "Rung 1: every runner-supplied hit is disqualified — eight are embeddings retrieval listings with :listing true and :co-mention true (context-retrievals ranking the pattern beside unrelated ids such as agent/provisional-claims-ledger, iching/hexagram-44-gou, eoi-engine/tension-cv-shape); one is a psr_search memory-pull-offer with :co-mention true (e-pull-offer-6cab189d, an APM Lean query that retrieval-surfaced the pattern among unrelated ids). A rung-1 edge requires at least one hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'ae-integral-zero', 'integral vanishes from a.e. zero integrand', 'integral_eq_zero_of_ae ae_restrict_mem filter_upwards'. Every rung-2 hit was one of: this spider's own prompt echoed in e-afbc6ea8-b23e-4800-a410-9eb8bfcca29f; more embeddings listings (e-2118c3f3, e-e1d1b96f — rankings for the older math-formalization/ae-integral-zero id beside unrelated software-design/proxy-pattern and futon-theory/interface-loop); psr pull-offer co-mentions; or an infra invoke-complete e-98b04055 about retraction batching that names no other library pattern and states no relation. The pattern's own @instantiates math-informal/unfold-the-definition and its @examples a02J04 are already present and cannot be repeated as directives. No external non-reflection record demonstrates a NEW relation between math-formalization-CA/ae-integral-zero and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

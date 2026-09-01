@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:57:39.825185093Z",
+ :turn 15,
+ :pattern "math-formalization-CA/radialize-via-gauge-rescale",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CA/.spider/gates/turn-015.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-formalization-CA/radialize-via-gauge-rescale",
+    :note
+    "Rung 1: every supplied hit is disqualified — e-5badd829 has :self-text true and :reflection true; the remaining ten are embeddings retrieval listings with :listing true and :co-mention true (context-retrievals ranking the pattern beside unrelated ids such as war-room/wr-17, iching hexagrams, or2/ukrn-horizon-bridge, enrichment/ARGUMENT, and sibling CA patterns in unrelated codex-18/codex-10 auto-bellback and bell queries) — rankings/co-mentions state no relation. A rung-1 edge requires at least one hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'radialize-via-gauge-rescale', 'radialize via gauge rescale gaugeRescaleHomeomorph', 'gaugeRescaleHomeomorph convex sphere frontier transport'. Every rung-2 hit was either this spider's own prompt echoed in e-fd030a4e-9c0d-44c5-871b-170ebefaa8cc or more embeddings listings (e-982be639 ranking it second behind iching/hexagram-50-ding in an unrelated bell query, plus the rung-1 listing ids e-e1c0f71d, e-ef7444c8, e-1353295f). The pattern's own @instantiates math-informal/transport-across-isomorphism, @provenance memory e-aa0f8c68, and its retro-promotion provenance record cannot be repeated. No external non-reflection record demonstrates a relation between math-formalization-CA/radialize-via-gauge-rescale and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

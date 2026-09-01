@@ -1,0 +1,30 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:01:04.820540074Z",
+ :turn 19,
+ :pattern "math-formalization-CA/separation-function-from-distance",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CA/.spider/gates/turn-019.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern "math-formalization-CA/separation-function-from-distance",
+    :note
+    "Rung 1: every supplied hit is disqualified — five are psr_search memory-pull-offers with :co-mention true (retrieval surfacing this pattern beside unrelated ids such as finite-group-classification, coercion-bridge, iching hexagrams, series-evaluation-api for Lean tactic and finite-group queries — co-mention states no relation), and two carry :self-text true and :reflection true (fleet reflections of other spiders' outputs). No clean hit with :listing/:self-text/:co-mention/:reflection all false exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'separation-function-from-distance', 'continuous separation function from distance', 'infDist Urysohn separation closed sets'. Every rung-2 hit was either this spider's own prompt echoed in e-ac626da1-07db-40d9-803b-c38b4baeecbd or embeddings context-retrieval listings under the older math-formalization/ prefix (e-57627ea3 and e-51938d05 ranking it beside math-strategy/constraint-tension-resolution and relationship-coherence/absence-as-spaciousness in unrelated claude-2 queries; e-82a3dd4a and e-b0caf41f beside connected-union-via-common-point and ifr-f6-upekkha in claude-9/codex-7 bell queries) — rankings state no relation and are not warrants. The pattern's own @instantiates math-informal/construct-an-explicit-witness and @examples t94A02 are already present and cannot be repeated. No external non-reflection record demonstrates a relation between math-formalization-CA/separation-function-from-distance and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

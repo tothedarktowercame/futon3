@@ -1,0 +1,32 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T22:03:59.514083543Z",
+ :turn 22,
+ :pattern
+ "math-formalization-CA/transfer-derivatives-via-eventuallyeq",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CA/.spider/gates/turn-022.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "math-formalization-CA/transfer-derivatives-via-eventuallyeq",
+    :note
+    "Rung 1: every runner-supplied hit is an embeddings retrieval listing with :listing true and :co-mention true — context-retrievals ranking the pattern beside unrelated ids such as futon-theory/mission-interface-signature, war-room/wr-17, iching hexagrams 22-bi and 50-ding, radialize-via-gauge-rescale, ode-gronwall-api, ae-integral-zero and normalize-meromorphic-point-values in unrelated codex-18/codex-8 auto-bellback and bell queries — rankings/co-mentions state no relation. A rung-1 edge requires at least one hit with :listing/:self-text/:co-mention/:reflection all false; none exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'transfer-derivatives-via-eventuallyeq', 'transfer derivatives via EventuallyEq', 'EventuallyEq.deriv_eq local equality filter'. Every rung-2 hit was either this spider's own prompt echoed in e-2077c531-6d03-4bc3-b757-846311c3b2b1 or more embeddings listings (e-d1287b74 and e-146c23b7 ranking it first beside schwarz-disk-automorphism-formula and continuous-linear-map-composition in unrelated codex-18 queries, plus the rung-1 listing ids e-301c3727, e-32f343df, e-93f7b9ce). The pattern carries no existing @why/@see-also/@instantiates directives, and its @provenance retro-promotion memory e-d26b2e5b-b6b6-4d20-b797-13e3d17e925b is not a repeatable library directive; no candidate target was named by any clean record. No external non-reflection record demonstrates a relation between math-formalization-CA/transfer-derivatives-via-eventuallyeq and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

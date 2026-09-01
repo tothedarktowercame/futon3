@@ -1,0 +1,32 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:48:58.390381006Z",
+ :turn 7,
+ :pattern
+ "math-formalization-CA/laurent-clearing-to-algebraic-polynomial",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CA/.spider/gates/turn-007.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "math-formalization-CA/laurent-clearing-to-algebraic-polynomial",
+    :note
+    "Rung 1: every runner-supplied hit is disqualified — e-a731dab2 is an embeddings listing with :listing true; the flag-clean remainder are all components of this pattern's OWN f34 authoring/promotion pipeline by this fleet: e-c87d3fd1 and e-e4521e1c are f34-scribe memory/assert deposits naming only this pattern, e-cd8e14ad is the zai write_file turn that authored the pattern file, e-88c46ddc/e-fb0231a4/e-a3814853 are the same-pass promotion/deposit tooling whose only other pattern id (math-informal/reduce-to-known-result) restates the pattern's existing @instantiates directive — the author's own reference list at authoring time, which the rules exclude as external use; co-mention states no NEW relation. No clean hit demonstrating external use exists. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'laurent-clearing-to-algebraic-polynomial', 'clear laurent negative powers to reach an algebraic polynomial', 'Laurent sum unit circle clear w^N polynomial roots'. Every rung-2 hit was one of: this spider's own prompt echoed in e-df00ad32-2444-4e39-8b0c-286ab0824ca6; a process-watchdog infrastructure alert e-086fed09 whose only mention is the flexiarg file path during file-ingest; another embeddings listing e-c0e0709c ranking it behind surj-via-oriented-root-preimage in an unrelated operator query; or the same fleet authoring/deposit/build-receipt records above (e-9a364a3c is the fleet's /tmp build-receipt turn). The pattern's own @instantiates math-informal/reduce-to-known-result and @examples a95J03 are already present and cannot be repeated. No external non-reflection record demonstrates a NEW relation between math-formalization-CA/laurent-clearing-to-algebraic-polynomial and any other existing library/<id>.flexiarg target, so no :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

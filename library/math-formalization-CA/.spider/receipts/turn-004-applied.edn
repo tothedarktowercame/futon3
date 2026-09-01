@@ -1,0 +1,32 @@
+{:schema 1,
+ :event :turn-applied,
+ :at "2026-09-01T21:46:08.070630689Z",
+ :turn 4,
+ :pattern
+ "math-formalization-CA/divisor-sum-to-root-count-without-monic",
+ :gate
+ "/home/joe/code/futon3/./library/math-formalization-CA/.spider/gates/turn-004.edn",
+ :changes
+ {:attestations [],
+  :proposals [],
+  :absences
+  [{:pattern
+    "math-formalization-CA/divisor-sum-to-root-count-without-monic",
+    :note
+    "Rung 1: all three runner-supplied hits have all flags false but state no relation — e-92f87a39 and e-968db142 are memory-cascade substrate-error reports (503 expensive-read-busy) naming only this pattern as the failed hyperedge endpoint; e-review-f34-10323bb7 is a promotion-proctor receipt approving this single pattern's memory with no second pattern id. A clean hit must also state a relation between two library patterns; none does. Rung 2 queries actually run against http://127.0.0.1:7073/api/alpha/evidence/text-search (limit=5, hydrate=true): 'divisor-sum-to-root-count-without-monic', \"identify a polynomial's analytic divisor sum with a filtered root count\", 'rootMultiplicity divisor finsum argument principle non-monic'. Every rung-2 hit was one of: this spider's own prompt echoed in e-cc90d38a-8ad7-4889-b14f-ffb3989fe166; an embeddings listing (e-c0568d7b ranking it third behind futon-theory/mission-interface-signature and war-room/wr-21 in an unrelated operator query); a process-watchdog infrastructure alert e-dd60b858 whose only mention is the file path /home/joe/code/futon3/library/math-formalization-CA/divisor-sum-to-root-count-without-monic.flexiarg during file-ingest; this pattern's own deposit/promotion pipeline records (e-10323bb7 is the backing memory whose name is divisor-sum-to-filtered-root-count-for-non-monic-polynomial, and e-bbdc7a0e is the f34-scribe deposit turn) — the pattern's own authoring/promotion records naming no other library pattern. The pattern's existing @see-also directives to math-formalization-CA/pointwise-logderiv-bridge-interval-to-contour and math-formalization-CA/laurent-clearing-to-algebraic-polynomial, plus @instantiates math-informal/unfold-the-definition and @examples a95J03, are already present and cannot be repeated. No external non-reflection record demonstrates a NEW relation between math-formalization-CA/divisor-sum-to-root-count-without-monic and any other existing library/<id>.flexiarg target, so no additional :how/:see-also edge is warranted and no :why attestation can be proposed on evidence.",
+    :corpus
+    {:store "http://127.0.0.1:7073",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :reflection-rule
+     {:authoring-attribution
+      :impersonal-first-person-or-subject-is-the-record-author,
+      :agency-job
+      :invoke-complete-or-job-envelope-naming-worker-or-spider-agent,
+      :authoring-turn
+      :author-attributed-authoring-verb-within-window-of-a-flexiarg-path,
+      :authoring-verb-window 120,
+      :worker-seats ["zai-3"],
+      :worker-author :evidence-author-in-worker-seats,
+      :spider-agent "codex-20",
+      :version 3,
+      :self-text :spider-self-text-prompt-markers}}}]}}

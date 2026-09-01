@@ -385,6 +385,58 @@
      :ledger-entry
      "library/.spider/ledger.edn -- {:wave 3 :section \"mmca\"}, the 10th element of :sections. The append was checked in-process before writing: (vec (:sections old)) equals (vec (butlast (:sections new))) and (dissoc old :sections) equals (dissoc new :sections), so pprint rewrapping the file changed nothing else.",
      :sha "7c97a6a",
+     :seat "zai-3"}
+    {:not-touched
+     ["No .flexiarg file changed (the section produced no edge), so this slice authors no @why, no @why-posthoc, and no similarity-inferred edge (P-validated-R5 law O2)."
+      "checks/library_graph_lint.clj:107 still hardcodes the literal \"-v3-\" in evidence-cache-path, so a cache filename is not a version claim. Reported by or3; read the rule out of the cache body again here."
+      "checks/spider_fleet.clj:139 -- the :pinned-evidence-cache-is-unreadable throw that can never fire, reported by or3, nomad and mmca, still unfixed. This slice used spider_runner.clj, whose delay does throw (checks/spider_runner.clj:120-122)."
+      "The other dirty paths in this shared checkout are not this slice's: resources/sigils/patterns-index.tsv, the three untracked library/math-formalization/*.flexiarg files, and holes/labs/library-contract/runs/build-loop.log belong to other work. Staged explicit paths only; no commit -a."],
+     :apparatus-defect
+     "Extends slice 3's. futon3 has no bb.edn, so nothing that (:require [checks.library-graph-lint]) runs as a bare `bb <file>`. Slice 3 recorded this for checks/spider_runner.clj; this slice found the TEST suites fail the same way -- `bb test/library_graph_lint_test.clj` and `bb test/spider_runner_test.clj` both exit 1 with FileNotFoundException at line 3. Both pass under `bb --classpath .`. Reported, not fixed: adding a bb.edn is a repo-wide change outside this row's acceptance.",
+     :gates
+     {:exit-codes
+      "captured to /tmp/L5s4/{before,after,after2,run,kondo,parens,parens2,lintest,spidertest}.exit and tested by a shell loop that reads each file and flags any non-zero; no gate status read through a pipe. All nine are 0.",
+      :section-lint
+      "checks/library_graph_lint.clj over memory, run before the spider and again after -- both exit 0, both pass? true, 0 failures, 1247 files, 0 unresolved-targets, 0 why-cycles, 0 warrant-refusals, 0 edge-refusals. The two reports are byte-identical (diff empty), the expected result for a zero-edge section; library-wide {:why 86 :how 27 :see-also 141} unchanged. A third run after the ledger append also exit 0. Reports at /tmp/L5s4/memory-{before,after,after2}.edn",
+      :runner
+      "exit 0 (/tmp/L5s4/run.exit); state.edn :phase :complete, :turn 5, 5 of 5 completed",
+      :clj-kondo
+      "exit 0, 0 errors 0 warnings over checks/library_graph_lint.clj, checks/spider_runner.clj, test/library_graph_lint_test.clj, test/spider_runner_test.clj. No Clojure was touched by this slice; the run establishes the gate is still green. The one :info at library_graph_lint.clj:266 is the pre-existing spider-self-text? coercion L2 recorded",
+      :check-parens
+      "exit 0, OK -- emacs -Q --batch -l /home/joe/code/futon4/dev/check-parens.el --eval (arxana-check-parens-cli) -- library/.spider/ledger.edn library/memory/attestations.edn library/memory/proposals.edn library/memory/.spider/{state,absences,seat-failures}.edn; re-run on the ledger after the append, also exit 0. The -- separator is required, per L2's note",
+      :library-graph-lint-test
+      "exit 0, 7 tests / 36 assertions / 0 failures, under the C88 pin",
+      :spider-runner-test
+      "exit 0, 6 tests / 33 assertions / 0 failures"},
+     :section "memory",
+     :pin-choice
+     "Third slice on the v3 cache slice 2 built (/tmp/futon3-spider-evidence-occurrences-v3-206483-70eeae7145d2c7a6.edn, :reflection-rule {:version 3 :worker-seats [\"zai-3\"] :spider-agent \"codex-20\"}), for slice 3's reasons: same seat, same rule, one basis across slices is what C88 pin discipline asks, and the basis predates slices 2 and 3 so their own whistle envelopes stay out of the index. No crawl this slice.",
+     :basis {:count 206483, :max-at "2026-09-01T20:35:40.731036691Z"},
+     :records
+     ["library/memory/.spider/absences.edn -- 5 records, each with its :corpus pin and the three rung-2 text-search queries actually run for that pattern"
+      "library/memory/attestations.edn -- [] (no edge was warranted, so no attestation record exists)"
+      "library/memory/proposals.edn -- []"
+      "library/memory/.spider/seat-failures.edn -- []"
+      "library/memory/.spider/state.edn -- :phase :complete, :turn 5, :finished-at 2026-09-01T21:34:18Z, 5 of 5 :completed"
+      "library/memory/.spider/gates/turn-000.edn .. turn-005.edn -- the per-turn linter reports"
+      "library/memory/.spider/receipts/ -- 15 receipts (intent/completion/applied for 5 turns); 0 malformed-* receipts, which is the evidence of 0 retries"
+      "No .flexiarg file changed"],
+     :result
+     "5 of 5 patterns processed in 5 turns, 0 retries, 0 malformed-output receipts, 0 seat failures, 4m51s wall (21:29:27Z -> 21:34:18Z). Every turn ended in a typed absence: 5 absences, 0 edges, 0 proposals, 0 attestations. Section before/after unchanged at :edges-by-kind {:why 0 :how 0 :see-also 0}, fraction-organised 0.0; library-wide unchanged at {:why 86 :how 27 :see-also 141}. Like or3 and mmca, and unlike nomad, memory produced no edge.",
+     :slice 4,
+     :at "2026-09-01",
+     :references-finding
+     "The most substantive thing this slice turned up, and it is not about memory. All 5 absences give a SECOND ground beside the warrant test: \"the pattern's own @references to X and Y are already-present author directives and cannot be repeated\". That ground does not hold. @references is not one of README-flexiarg §5a's three pattern-to-pattern edge kinds; checks/library_graph_lint.clj never parses it (the string occurs in that file only in two comments, :14 and :329); it contributes nothing to :edges-by-kind or to fraction-organised. The proof it is unchecked is in this section: library/memory/name-a-reusable-artifact.flexiarg:8 references memory/stratify-before-you-contrast, which exists nowhere under library/ (`find library -name stratify-before-you-contrast.flexiarg` is empty), and the lint still reports :unresolved-targets 0. 494 of the 1247 pattern files carry an @references line, so this is library-wide. It does NOT move this section's outcome -- each absence also rests on the warrant test (clean = 0, no rung-2 record stated a relation), which is independent and sufficient -- but an editor declining to write @see-also because @references already names the neighbour is deferring to a line the graph cannot see. Wants its own row: either @references enters the §5a table and the linter, or the spider prompt stops treating it as an author directive. NOT opened here: adding a row is outside this row's acceptance.",
+     :finding
+     "memory is the first wave-3 section that is heavily indexed, and the extra traffic buys nothing. All 5 of 5 patterns have exact-occurrence hits, at two orders of magnitude above the previous three sections: licence-to-fail 367, name-a-reusable-artifact 39, no-tightening-while-held 503, surface-the-closed-set 74, verify-in-the-serving-process 492 -- against or3's 1-5, nomad's 1-7 and mmca's 1-7. clean = 0 and clean-non-reflection = 0 for every one: every hit carries at least one of :listing, :self-text, :co-mention. Most are embeddings retrieval rankings (:listing true :co-mention true), which P-validated-R5 law O2 refuses as a relation; the flag-false remainder are bare co-mentions, which state no relation either. So the section with by far the most corpus traffic in wave 3 has exactly as much rung-1 warrant as the sections with almost none. Measured with lint/clean-hit? and lint/clean-non-reflection-hit? against the pinned cache; table at /tmp/L5s4/memory-coverage.txt, matching the runner's :rung-one-coverage {:patterns 5 :any 5 :clean 0 :clean-non-reflection 0}. Four sections in, \"rung 2 only\" has not once been a policy choice.",
+     :ledger-entry
+     "library/.spider/ledger.edn -- {:wave 3 :section \"memory\"}, the 11th element of :sections. The append was checked in-process before writing: (vec (:sections old)) equals (vec (butlast (:sections new))) and (dissoc old :sections) equals (dissoc new :sections), and the file was re-read and compared to the value written, so pprint rewrapping changed nothing else.",
+     :record-defects
+     ["library/memory/.spider/absences.edn, no-tightening-while-held: the note cites e-ce932d5ca as one of \"this spider fleet's own reflections\". No record with that prefix is in the pinned index under ANY pattern; GET http://127.0.0.1:7073/api/alpha/evidence/e-ce932d5ca returns {:error \"not found\"}; a text-search for ce932d5c returns 0 results. The id names nothing. The other two in the same list, e-bc96ec70 and e-957fdc3b, are real and are :self-text true :reflection true as described."
+      "library/memory/.spider/absences.edn, verify-in-the-serving-process: the note lists e-1f276035 among that pattern's flag-false rung-1 hits. e-1f276035-c12f-4851-9106-383f293cbb17 is a real record, but it is indexed under memory/surface-the-closed-set and 8 other patterns and NOT under verify-in-the-serving-process -- the same fold-in of a co-ranked sibling id slice 3 found for mmca/verified-but-idle-link."
+      "library/memory/.spider/absences.edn, verify-in-the-serving-process: the same sentence calls e-db21ad13, e-92b32180, e-df3d942f and e-671ceccc \"this-fleet reflections\". All four carry :reflection false under rule v3 in the pinned cache. They are disqualified anyway, by :co-mention true."
+      "Verdict unaffected in all three: clean = 0 across all 5 patterns whatever these ids are, so the absences stand. Left as the seat wrote them and corrected in the ledger rather than revised, following L1's practice for the reclassified refusals and slice 3's for mmca. Cross-check script at /tmp/L5s4/check-ids.clj, output /tmp/L5s4/id-crosscheck.txt. Second slice in a row to hit the general defect at checks/spider_runner.clj:280-283: an absence is validated only for a matching :pattern and a non-blank :note, so evidence ids asserted in an absence note are never checked against the rung-1 set or the live store, unlike an edge's ids at checks/spider_runner.clj:262-278."],
+     :sha "ced9838",
      :seat "zai-3"}],
    :owner :any}
   {:id :LD1,

@@ -157,6 +157,7 @@
      "A hit with :reflection true was produced by this spider fleet or its Agency job envelope and is not external use. "
      "A rung-1 edge must cite at least one clean non-reflection hit: :listing, :self-text, :co-mention, and :reflection must all be false. Other hits may appear only as additional context. "
      "rung 2 is a bounded GET http://127.0.0.1:7073/api/alpha/evidence/text-search?q=<encoded title or conclusion keywords>&limit=5&hydrate=true. "
+     "A rung-2 record that announces the authoring of a pattern file (\"Pattern authored at .../<id>.flexiarg\" followed by its reference list) is that pattern's own author restating the references they just wrote, not external use; at least one cited rung-2 record must be something else. "
      "Never request the unfiltered evidence list. Only use IDs and excerpts returned by a query you actually ran. "
      "The runner verifies rung-1 IDs against that live index and rung-2 IDs by GET /api/alpha/evidence/<id>, and requires the normalized :excerpt to occur in that record; "
      "pattern IDs are not evidence IDs, summaries and ellipses are rejected, and rung 1 also requires the source pattern id to occur in the record. "
@@ -201,6 +202,24 @@
                     (lint/clean-non-reflection-hit? hit))
                  evidence)))
 
+(defn fetch-evidence-record [id]
+  (try (edn/read-string
+        (slurp (str "http://127.0.0.1:7073/api/alpha/evidence/" id)))
+       (catch Exception _ nil)))
+
+(defn rung-two-warrant?
+  "Rung 1 refuses a warrant made only of the fleet's own records; rung 2 had no
+  such check, which is how an authoring turn reached the owner's desk in wave 2
+  (system-coherence, e-7a50b862: the pattern's author listing the references
+  they had just written). At least one cited record must be non-reflection
+  under the current rule."
+  ([evidence] (rung-two-warrant? evidence fetch-evidence-record))
+  ([evidence fetch]
+   (boolean (some (fn [{:keys [id]}]
+                    (when-let [record (fetch id)]
+                      (not (lint/reflection-record? record @worker-seats spider-agent))))
+                  evidence))))
+
 (defn evidence-valid? [rung rung-one {:keys [id excerpt]}]
   (when (and (string? id) (re-matches #"e-[A-Za-z0-9-]+" id)
              (string? excerpt) (>= (count (normalized excerpt)) 20))
@@ -230,6 +249,9 @@
       (when (and (= rung 1) (not (rung-one-warrant? evidence rung-one)))
         (throw (ex-info "rung-1 evidence has no non-listing hit; retrieval listings are context only"
                         {:item edge :reason :listing-only-rung-one})))
+      (when (and (= rung 2) (not (rung-two-warrant? evidence)))
+        (throw (ex-info "rung-2 evidence is reflection only; an authoring turn states the author's own references, not external use"
+                        {:item edge :reason :reflection-only-rung-two})))
       (when-not (and (= pattern (:from edge)) (string? (:to edge))
                      (edge-kinds (:kind edge))
                      (fs/exists? (fs/path library (str (:to edge) ".flexiarg")))

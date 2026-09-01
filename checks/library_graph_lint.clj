@@ -9,7 +9,14 @@
 (def target-pattern #"[A-Za-z0-9_.-]+/[A-Za-z0-9_./'-]+")
 (def evidence-store "http://127.0.0.1:7073")
 (def evidence-page-limit 1000)
-(def reflection-rule-version 2)
+(def reflection-rule-version 3)
+;; v3 adds the authoring-turn class: v2 knew only who ran the spider, so a
+;; pattern's own author listing the references they had just written into the
+;; file read as external corroboration (wave 2, system-coherence, e-7a50b862).
+(def authoring-verb-window 120)
+(def pattern-file-path #"[A-Za-z0-9_./'-]+\.flexiarg")
+(def authoring-verb
+  #"(?i)\b(?:authored|authoring|wrote|written|writing|created|creating|drafted|drafting|added|adding)\b")
 
 (defn sha256 [s]
   (let [digest (java.security.MessageDigest/getInstance "SHA-256")]
@@ -69,15 +76,21 @@
      :max-at (get-in newest [:entries 0 :evidence/at])}))
 
 (defn evidence-cache-path
-  ([basis] (evidence-cache-path basis #{} nil))
-  ([basis worker-seats] (evidence-cache-path basis worker-seats nil))
+  "The rule version is part of the name because the cached hits carry their
+  :reflection flag. A corpus pin names the version it was built under, so a
+  record written under an older rule keeps resolving to the index that
+  classified it rather than silently missing and rebuilding from the live store."
+  ([basis] (evidence-cache-path basis #{} nil reflection-rule-version))
+  ([basis worker-seats] (evidence-cache-path basis worker-seats nil reflection-rule-version))
   ([basis worker-seats spider-agent]
-  (str (fs/path "/tmp"
-                (str "futon3-spider-evidence-occurrences-v3-"
-                     (:count basis) "-"
-                     (subs (sha256 (pr-str [basis (sort worker-seats) spider-agent
-                                            reflection-rule-version])) 0 16)
-                     ".edn")))))
+   (evidence-cache-path basis worker-seats spider-agent reflection-rule-version))
+  ([basis worker-seats spider-agent rule-version]
+   (str (fs/path "/tmp"
+                 (str "futon3-spider-evidence-occurrences-v3-"
+                      (:count basis) "-"
+                      (subs (sha256 (pr-str [basis (sort worker-seats) spider-agent
+                                             rule-version])) 0 16)
+                      ".edn")))))
 
 (defn pattern-id [library file]
   (-> (str (fs/relativize library file))
@@ -255,6 +268,35 @@
   (let [text (str/join " " (string-leaves (:evidence/body record)))]
     (boolean (some #(exact-occurrence? text %) worker-seats))))
 
+(defn regex-spans [re text]
+  (let [matcher (re-matcher re text)]
+    (loop [spans []]
+      (if (.find matcher)
+        (recur (conj spans [(.start matcher) (.end matcher)]))
+        spans))))
+
+(defn authoring-turn?
+  "Reflection rule v3. True when the record announces the authoring of a
+  library pattern FILE -- an authoring verb within `authoring-verb-window`
+  characters of a *.flexiarg path. Such a turn is the pattern's own author
+  describing the references they have just written into it, so a relation it
+  states between that pattern and another comes from the authoring act and not
+  from anyone using the two together. `library/<target>.flexiarg` in the
+  spider's own prompt is not a path match: the placeholder brackets break it."
+  [record]
+  (let [text (str/join " " (string-leaves (:evidence/body record)))
+        paths (regex-spans pattern-file-path text)
+        verbs (regex-spans authoring-verb text)]
+    (boolean
+     (some (fn [[path-start path-end]]
+             (some (fn [[verb-start verb-end]]
+                     (or (and (<= verb-end path-start)
+                              (<= (- path-start verb-end) authoring-verb-window))
+                         (and (<= path-end verb-start)
+                              (<= (- verb-start path-end) authoring-verb-window))))
+                   verbs))
+           paths))))
+
 (defn reflection-record? [record worker-seats spider-agent]
   (let [raw-author (:evidence/author record)
         author (if (keyword? raw-author) (name raw-author) (str raw-author))]
@@ -264,7 +306,8 @@
               (or (worker-seat-mentioned? record worker-seats)
                   (and spider-agent
                        (worker-seat-mentioned? record #{spider-agent}))))
-         (spider-self-text? record)))))
+         (spider-self-text? record)
+         (authoring-turn? record)))))
 
 (defn reflection-rule [worker-seats spider-agent]
   {:version reflection-rule-version
@@ -272,7 +315,9 @@
    :worker-author :evidence-author-in-worker-seats
    :spider-agent spider-agent
    :agency-job :invoke-complete-or-job-envelope-naming-worker-or-spider-agent
-   :self-text :spider-self-text-prompt-markers})
+   :self-text :spider-self-text-prompt-markers
+   :authoring-turn :authoring-verb-within-window-of-a-flexiarg-path
+   :authoring-verb-window authoring-verb-window})
 
 (defn clean-hit? [hit]
   (and (false? (:listing hit))
@@ -426,7 +471,9 @@
         pinned-cache-path (or (System/getenv "SPIDER_EVIDENCE_CACHE")
                               (when corpus-basis
                                 (evidence-cache-path corpus-basis corpus-worker-seats
-                                                     corpus-spider-agent)))
+                                                     corpus-spider-agent
+                                                     (or (get-in corpus [:reflection-rule :version])
+                                                         reflection-rule-version))))
         live-cache (when (and (nil? records)
                               (some #(some (fn [e] (= :tag (:via e))) (:evidence %)) att-rows))
                      (or (when pinned-cache-path (read-index-cache pinned-cache-path))

@@ -2,6 +2,7 @@
 (ns spider-runner-test
   (:require [checks.library-graph-lint :as lint]
             [checks.spider-runner :as runner]
+            [clojure.edn :as edn]
             [clojure.test :refer [deftest is run-tests]]))
 
 (deftest cursor-paging-follows-an-empty-terminal-page
@@ -63,6 +64,45 @@
     (is (true? (lint/reflection-record? worker-turn workers "codex-20")))
     (is (false? (lint/reflection-record? paper-turn workers "codex-20")))
     (is (true? (lint/clean-non-reflection-hit? paper-hit)))))
+
+(def v3-fixtures
+  (edn/read-string (slurp "test/fixtures/library-graph/reflection-v3-fixtures.edn")))
+
+(def authoring-turn
+  "The record wave 2 rejected a warrant on: the pattern's own author announcing
+  the file and listing its references. See the fixture file's header."
+  (:authoring-turn v3-fixtures))
+
+(def external-description
+  "The counter-fixture: a third party reporting a use, saying \"flexiarg\" and
+  \"authored\" without announcing a pattern file."
+  (:external-description v3-fixtures))
+
+(deftest authoring-turn-is-reflection-under-v3-and-not-under-v2
+  (let [workers #{"zai-1" "zai-2"}]
+    ;; v2 was exactly these three clauses; all three are false on the record,
+    ;; which is why the fleet handed it up as external corroboration.
+    (is (false? (contains? workers (:evidence/author authoring-turn))))
+    (is (not (lint/agency-job-envelope? authoring-turn)))
+    (is (false? (lint/spider-self-text? authoring-turn)))
+    (is (true? (lint/authoring-turn? authoring-turn)))
+    (is (true? (lint/reflection-record? authoring-turn workers "codex-20")))
+    ;; The counter-fixture must survive v3: a genuine external description.
+    (is (false? (lint/authoring-turn? external-description)))
+    (is (false? (lint/reflection-record? external-description workers "codex-20")))
+    (is (= 3 lint/reflection-rule-version))
+    (is (= :authoring-verb-within-window-of-a-flexiarg-path
+           (:authoring-turn (lint/reflection-rule workers "codex-20"))))))
+
+(deftest rung-two-warrant-refuses-an-authoring-turn
+  (let [records {"e-authoring" authoring-turn "e-external" external-description}
+        fetch records]
+    (reset! runner/worker-seats #{"zai-1" "zai-2"})
+    (is (false? (runner/rung-two-warrant? [{:id "e-authoring" :via :text}] fetch)))
+    (is (true? (runner/rung-two-warrant? [{:id "e-authoring" :via :text}
+                                          {:id "e-external" :via :text}] fetch)))
+    ;; An id the store does not return warrants nothing.
+    (is (false? (runner/rung-two-warrant? [{:id "e-missing" :via :text}] fetch)))))
 
 (when (= *file* (System/getProperty "babashka.file"))
   (let [{:keys [fail error]} (run-tests)]

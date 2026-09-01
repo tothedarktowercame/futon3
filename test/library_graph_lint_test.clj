@@ -220,6 +220,52 @@
     (is (not= (:content-sha256 pin) (lint/sha256 (str serialized "\nmutation")))
         "an incoherent/mutated fixture must not satisfy its content pin")))
 
+(def v3-audit-path "library/aif/attestations-v3-reflection-audit.edn")
+(def v3-fixtures-path "test/fixtures/library-graph/reflection-v3-fixtures.edn")
+
+(defn reflection-v2?
+  "Rule v2 verbatim: worker-seat author, Agency job envelope naming a worker or
+  the spider agent, or spider self-text. v3 keeps all three and adds the
+  authoring turn, so v2 is what remains when that clause is removed."
+  [record worker-seats spider-agent]
+  (let [author (str (:evidence/author record))]
+    (boolean (or (contains? worker-seats author)
+                 (and (lint/agency-job-envelope? record)
+                      (or (lint/worker-seat-mentioned? record worker-seats)
+                          (lint/worker-seat-mentioned? record #{spider-agent})))
+                 (lint/spider-self-text? record)))))
+
+(deftest wave-1-attestations-re-audited-under-reflection-rule-v3
+  (let [audit (edn/read-string (slurp v3-audit-path))
+        workers (set (get-in audit [:reflection-rule :worker-seats]))
+        spider (get-in audit [:reflection-rule :spider-agent])
+        records (edn/read-string (slurp evidence-records-path))
+        attestations (edn/read-string (slurp "library/aif/attestations.edn"))
+        v2 (set (keep (fn [[id record]]
+                        (when (reflection-v2? record workers spider) id)) records))
+        v3 (set (keep (fn [[id record]]
+                        (when (lint/reflection-record? record workers spider) id)) records))
+        authoring (set (keep (fn [[id record]]
+                               (when (lint/authoring-turn? record) id)) records))
+        cited (fn [att] (map :id (:evidence att)))
+        changed (filter (fn [att]
+                          (and (every? v3 (cited att))
+                               (not (every? v2 (cited att)))))
+                        attestations)]
+    (is (= (:records-audited audit) (count records)))
+    (is (= (:attestations-audited audit) (count attestations)))
+    (is (= (:reflection-under-v2 audit) (count v2)))
+    (is (= (:reflection-under-v3 audit) (count v3)))
+    (is (= (:authoring-turns-under-v3 audit) (count authoring)))
+    (is (= (set (:newly-reflection-under-v3 audit))
+           (set (remove v2 authoring))))
+    (is (= (:changed-verdicts audit) (count changed)))
+    ;; Falsifier: the audit is only worth reading if the same computation over a
+    ;; record that IS an authoring turn and is not a fleet record would move it.
+    (let [rejected (:authoring-turn (edn/read-string (slurp v3-fixtures-path)))]
+      (is (true? (lint/authoring-turn? rejected)))
+      (is (false? (reflection-v2? rejected workers spider))))))
+
 (when (= *file* (System/getProperty "babashka.file"))
   (let [{:keys [fail error]} (run-tests)]
     (System/exit (if (zero? (+ fail error)) 0 1))))

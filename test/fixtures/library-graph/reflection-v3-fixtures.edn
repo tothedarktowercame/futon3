@@ -1,0 +1,36 @@
+;; Two records for reflection rule v3 (ledger item L2), read by
+;; spider-runner-test and library-graph-lint-test.
+;;
+;; :authoring-turn is the record wave 2 rejected a warrant on
+;; (system-coherence, e-7a50b862, 2026-05-07): claude-5 announcing the pattern
+;; file it had just written and listing that file's own references. Text
+;; abridged; the announcement, the path and the reference sentence are verbatim.
+;;
+;; :external-description is the counter-fixture, abridged from e-f5a7638c, a
+;; wave-1 aif record: claude-1 reviewing what codex-1 built and naming the
+;; patterns that code cites. It says "flexiarg" and "authored", so a rule keyed
+;; on those words alone would take it -- but it announces no pattern file, and
+;; it is someone other than the author reporting a use.
+{:authoring-turn
+ {:evidence/id "e-7a50b862-15c9-49c2-ba50-26dfa377803c"
+  :evidence/author "claude-5"
+  :evidence/type :coordination
+  :evidence/claim-type :observation
+  :evidence/body
+  {:event "chat-turn"
+   :transport "emacs-claude-repl"
+   :role "assistant"
+   :text
+   "Pattern authored at `/home/joe/code/futon3/library/system-coherence/single-seed-results-need-multi-seed-validation.flexiarg`. Standard flexiarg shape, references `aif/term-to-channel-traceability` (composes with it), `system-coherence/argue-empirically-not-persuasively` (the temporal-discipline sibling), and `turn-design-into-checks` (variance reporting *is* a check)."}}
+
+ :external-description
+ {:evidence/id "e-external"
+  :evidence/author "claude-1"
+  :evidence/type :coordination
+  :evidence/claim-type :step
+  :evidence/body
+  {:event "chat-turn"
+   :transport "emacs-claude-repl"
+   :role "assistant"
+   :text
+   "codex-1 wrapped the NAG-warrant wiring. Does each warrant cite a real flexiarg, and is it additive? Every warrant cites a real flexiarg -- `aif/niche-construction`, `orchestration/consent-gate`, `aif/admissibility`, `war-machine/advanceability`, `orchestration/pattern-warranted-choice-point` -- all the ones we just authored. forbidden-path is a hard refuse, correctly."}}}

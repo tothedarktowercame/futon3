@@ -1,0 +1,33 @@
+{:audit :wave-1-reflection-rule-v3
+ :at "2026-09-01"
+ :ledger-item :L2
+ :basis
+ {:evidence-records "test/fixtures/library-graph/evidence-records.edn"
+  :pin "test/fixtures/library-graph/evidence-records.pin.edn"
+  :content-sha256
+  "15effe915e59958443e53ce2769723aa6c12edc5b8054386fa26800829a42b81"
+  :live-basis {:count 197455 :max-at "2026-08-31T17:11:16.764732649Z"}
+  :attestations "library/aif/attestations.edn"}
+ :reflection-rule
+ {:version 3
+  :worker-seats ["zai-1" "zai-2"]
+  :worker-author :evidence-author-in-worker-seats
+  :spider-agent "codex-20"
+  :agency-job :invoke-complete-or-job-envelope-naming-worker-or-spider-agent
+  :self-text :spider-self-text-prompt-markers
+  :authoring-turn :authoring-verb-within-window-of-a-flexiarg-path
+  :authoring-verb-window 120}
+ :selection
+ "Every evidence record cited by a wave-1 aif attestation, classified under v2 (worker author, Agency job envelope, spider self-text) and under v3 (those three plus the authoring-turn class). A verdict changes when every record an attestation cites is reflection under v3 and not every one was reflection under v2 -- the warrant becomes reflection-only where it was not."
+ :records-audited 56
+ :attestations-audited 62
+ :reflection-under-v2 49
+ :authoring-turns-under-v3 1
+ :reflection-under-v3 49
+ :newly-reflection-under-v3 []
+ :changed-verdicts 0
+ :records []
+ :note
+ "The one authoring turn in the wave-1 corpus is e-e8e638c6-f673-4c56-b0e1-ae0f267464bc, a zai-2 spider turn that quotes the same claude-5 announcement the wave-2 rejection was about (e-7a50b862). It was already reflection under v2 by its worker-seat author, so v3 adds no record and no wave-1 verdict moves. The count 0 matches the wave-1 expectation recorded in attestations-4d-audit.edn."
+ :recomputed-by
+ "library-graph-lint-test/wave-1-attestations-re-audited-under-reflection-rule-v3"}

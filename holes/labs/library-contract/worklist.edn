@@ -692,8 +692,26 @@
      :sha "346dbaf",
      :seat "zai-3"}],
    :owner :any}
-  {:id :L7 :class :C :status :open :owner :any
+  {:id :L7 :class :C :status :done-unreviewed :owner :any
    :covers-key :none
+   :evidence
+   {:sha "0b9a1a4"
+    :defect-reproduced
+    "Mutation run (the fixed file with only -main's guard reverted to the old assoc-then-nil-test): checks/spider_fleet.clj -main with --evidence-cache pointing at a nonexistent path did NOT throw; it printed `basis nil` and the coverage row `| aif | 33 | 0 | 0 | 0 |` and wrote library/.spider/fleet-2026-09-02.edn with :evidence-basis nil and :rung-one-coverage {:patterns 33 :any 0 :clean 0 :clean-non-reflection 0}. That report is saved at /tmp/L7gates/mutant-empty-index-report.edn and was deleted from the repo; it is the row's claim shown happening, not inferred. Output /tmp/L7gates/mutant2.out, exit 1 in /tmp/L7gates/mutant2.exit, 2 failures both in the new test."
+    :fix
+    ["checks/spider_fleet.clj:24-45 load-pinned-cache -- refuses BEFORE :cache-path is attached, which is where the old code could not: it separates :missing (fs/exists? false), :unparseable (edn/read-string throws, message carried in :read-error) and :no-index (parses but (:index cache) is not a map, the shape that would have handed every worker a nil index). The docstring states why a post-assoc nil test cannot fire."
+     "checks/spider_fleet.clj:156-159 -- -main calls load-pinned-cache; the `_ (when-not cache (throw ...))` binding that clj-kondo flagged is deleted, not moved. The live branch (lint/ensure-live-evidence-index!) always returns a map, so the guard was dead on both arms."]
+    :tests
+    ["test/spider_runner_test.clj:161 the-fleet-refuses-a-missing-pin-before-it-starts-a-fleet -- drives fleet/-main itself (the fleet path the acceptance names, not just the helper) with a nonexistent pin and asserts the throw carries \"pinned evidence cache is missing\"; asserts the fleet report file is untouched across the call, so the refusal is proven to precede refresh! and the seat futures; and records the defect witness inline, (map? (assoc (fleet/read-edn missing nil) :cache-path missing)) => true. Budget 0 so that a future regression reports the failure instead of shelling out to a real seat."
+     "test/spider_runner_test.clj:186 a-pin-that-carries-no-index-is-refused-and-a-readable-one-passes -- truncated EDN throws with :reason :unparseable, an index-less map throws with :reason :no-index, and the CONTROL (a readable pin written to a temp file) loads, keeps its :index, and reports :cache-path = the pin, so (or (:cache-path cache) (recompute)) still resolves to the pin the operator named."]
+    :gates
+    {:clj-kondo "exit 0, 0 errors 0 warnings over checks/spider_fleet.clj, checks/spider_runner.clj, checks/library_graph_lint.clj, test/spider_runner_test.clj, test/library_graph_lint_test.clj. The :139 Condition-always-true warning this row is about is gone (baseline before the fix: 1 warning at 139:23). The one remaining :info is the pre-existing spider-self-text? boolean coercion at library_graph_lint.clj:287, outside this diff. /tmp/L7gates/kondo.{out,exit}"
+     :check-parens "exit 0, OK (emacs -Q --batch -l futon4/dev/check-parens.el --eval (arxana-check-parens-cli) -- --no-defaults, over both touched files; the args must follow a bare -- or the CLI reports \"No target files\" and exits 2). /tmp/L7gates/parens.{out,exit}"
+     :spider-runner-test "exit 0, 8 tests / 43 assertions / 0 failures (was 6 / 33). /tmp/L7gates/spidertest.{out,exit}"
+     :library-graph-lint-test "exit 0, 10 tests / 59 assertions / 0 failures, unchanged. Library census identical to LD1's record: 1247 files, :edges-by-kind {:why 86 :why-posthoc 0 :how 27 :see-also 141}. /tmp/L7gates/lintest.{out,exit}"
+     :exit-codes "Every gate wrote $? to /tmp/L7gates/<gate>.exit immediately after the command and each file was compared as a string; no gate status was read through a pipe."}
+    :not-in-scope
+    "No .flexiarg file and no attestation record was touched, so this item authors no @why, @why-posthoc, @how, @see-also or similarity-inferred edge (P-validated-R5 law O2, decisions.edn :spider-editorial-standing). No section lint is recorded because no library section changed: this is a class C code row, not a wave slice. checks/spider_runner.clj:120's own throw is unchanged -- it was already correct, as the row states; the fleet failing earlier means the runner's throw is now a second line of defence rather than the only one."}
    :statement "spider_fleet.clj:139: clj-kondo's `Condition always true` is right -- (assoc (read-edn path nil) :cache-path p) is a map even when the pinned cache file is absent, so the :pinned-evidence-cache-is-unreadable throw can never fire and a missing pin would run a fleet on an empty index. Recorded by L5 slice 1; spider_runner.clj:120's own throw works."
    :acceptance "The fleet path refuses a missing or unreadable pinned cache loudly (test proves it: point it at a nonexistent pin and assert the throw). A control proves a readable pin still passes. clj-kondo 0/0, check-parens, spider tests green."}
   {:id :L8 :class :C :status :open :owner :any

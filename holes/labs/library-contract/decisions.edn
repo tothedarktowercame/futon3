@@ -283,4 +283,36 @@
    :interim :most-precedent-member-under-its-cyber-alias
    :why-interim "It is the only arm on which the acceptance's lambda sweep measures anything, and the alternative that looks most faithful -- carry the library id -- fails SILENTLY, which is worse than failing narrowly. The limitation is recorded on the gate's own preconditions (`:channel-2-sees`) and printed on every run, so a reader of the report is told which member stood in rather than having to work it out from two `case` tables."
    :changes-it "A channel 2 that takes a cascade -- a pattern-efe whose risk and info-gain terms are defined over a composed policy rather than over one of five hard-coded ids. That is the repair cascade-ants.edn:148 asks for, and it would retire this decision rather than adjust it."
-   :veto "Joe's. The undo is one `get` in futon2/src/ants/cyber.clj `attach-cascade-config`."}]}
+   :veto "Joe's. The undo is one `get` in futon2/src/ants/cyber.clj `attach-cascade-config`."}
+
+  {:id :cue-licence
+   :status :adopted
+   :at "2026-09-02"
+   :raised-by :LA5
+   :raised-by-whom "the PRE-RUN REVIEWER (codex-17), not the constructor -- which is the row's own acceptance working."
+   :question "A Tension's clauses carry authored literal CUES, and nothing checked that a cue is a word the cited record actually uses. What licenses a cue?"
+   :grounds "The first LA5 cue set had 18 of 27 cues that occur nowhere in the prompt span their own clause cites. `scope` -- the author's paraphrase of a clause about frozen theorem statements -- put library/plos-npt-with-small-n/scope-shield-via-companion-paper, a pattern about narrowing an academic paper, into the seed. `cap` and `reuse` occur nowhere in the prompt at all. Nothing in :LA3 or :LA4 would have caught this: their cue sets were never checked against their own sources either, and both are smaller domains where a reader can hold the whole candidate set in view."
+   :decision "A cue must OCCUR, case-insensitively, IN ITS OWN CLAUSE'S CITED SPAN of the source record, re-read from disk on every run. checks/construct_zaif_cascade.clj `cue-licence` checks it and an unlicensed cue is a hard failure, not a warning."
+   :it-is-a-removal-rule-only "The licence strikes cues; it never suggests one. A cue added after a run is tuning whatever it is called, and no cue was added to LA5's tension after its first run. This asymmetry is the whole discipline: a rule that could also add would let an author widen the seed by widening the clause."
+   :effect "seed 38 -> 11, candidates 457 -> 343, sections 25 -> 8. The reviewer-named falsifier is no longer selected. The budget temperament stopped being degenerate as a side effect (seed 11 < budget 20, so it admits 9 rather than halting at step 0)."
+   :what-it-does-not-reach "budgeted-action-selection/mana-gated-work and ai4ci/funding-justification are still selected, both on the licensed cue `budget`, which IS the task's own word. A literal-cue matcher cannot tell a seat's tool-round budget from a grant budget. That is a limit of the matcher and it is reported rather than repaired."
+   :not-applied-retroactively ":LA3's and :LA4's tensions are unchanged and their artefacts regenerate byte-identically. Applying the licence to them would change two delivered and reviewed rows on the strength of a rule adopted afterwards; the honest order is to state the bound on any reading of their seeds and to apply the licence from here."
+   :changes-it "A tension whose source record is not a text with line spans -- a ledger row, a live query -- has no span for a cue to occur in, and the licence as stated would refuse every cue. That case needs a second form of licence and this entry does not supply one."
+   :veto "Joe's. The undo is deleting `cue-licence` and its require-pass! clause and restoring the wider cue vectors, both in checks/construct_zaif_cascade.clj."}
+
+  {:id :cascade-override-not-alternative
+   :status :adopted
+   :at "2026-09-02"
+   :raised-by :LA5
+   :raised-by-whom "the second PRE-RUN REVIEW (codex-17)."
+   :question "`fire` returns an Option: a play-grain cascade may emit nothing on a round. What arm does the round then get, and what may the comparison be called?"
+   :arms [{:arm :the-round-has-no-arm
+           :cost "Honest about the cascade and useless as a comparison: the two arms are then defined on different round sets, and no paired statement can be made about a turn."}
+          {:arm :defer-to-v0-and-call-it-the-cascade
+           :cost "What the first LA5 gate did. The treatment contains v0's answer on every deferred round -- 48 of 49 -- so `the cascade agrees with the oracle on 14/29` is a fact about v0. The sham control is then tautological rather than independent, which the review said plainly."}
+          {:arm :defer-to-v0-and-call-it-an-override
+           :cost "Nothing is hidden and the estimand is narrower than the row's sentence suggests. The row says `the comparison is against the v0 arm chooser on the same task`; what is measured is v0-with-override against unmodified v0, and the only numbers about the cascade are the fired-round ones."}]
+   :decision :defer-to-v0-and-call-it-an-override
+   :why "The deferral is the right semantics -- a carried program that intervenes where it has something to say is the ChipWits reading, and `firstSome` is what makes it possible -- but `firstSome` licenses the SILENCE, not the composition with v0. The composition is a separate authored choice and it is now named as one: the arm is `:v0-with-cascade-override`, the sham records `:tautological? true` with the reviewer's reasoning, and fired-round agreement is reported apart from whole-turn agreement."
+   :changes-it "An arm set with an explicit no-op, or a runner that can be told `this round is unhandled`. Then the cascade's silence is itself an act and the two arms are comparable without composing them."
+   :veto "Joe's. The undo is renaming one key and deleting the :on-fired-rounds-only row in futon3c/scripts/zaif_cascade_gate.clj."}]}

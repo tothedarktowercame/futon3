@@ -1,0 +1,22 @@
+@flexiarg math-formalization-GR/alternating-generation-via-preprimitive-three-cycle
+@title Alternating Generation via a Preprimitive Action and a Three-Cycle
+@sigils [🏷️/群]
+@keywords alternating-group, subgroup-closure, primitive-action, three-cycle, generation
+@audience lean-provers, algebra-students
+@tone heuristic
+@difficulty advanced
+@subjects algebra
+@instantiates math-informal/reduce-to-structural-criterion
+
+! conclusion:
+  Prove that explicit permutations generate an alternating group by establishing preprimitivity of their generated subgroup and exhibiting a three-cycle in it.
+
+  + IF: A goal says that the subgroup closure of explicit even permutations is the whole alternating group, while direct computation of closure membership is unavailable.
+
+  + HOWEVER: Finiteness of the ambient permutation group does not make `Subgroup.closure` computationally decidable, so `decide` or `native_decide` cannot evaluate the generation equality directly.
+
+  + THEN: Map the closure into the full permutation group; prove its action pretransitive, upgrade to preprimitive when the degree is prime, prove that a generator is a three-cycle, and apply `Equiv.Perm.alternatingGroup_le_of_isPreprimitive_of_isThreeCycle_mem`. Pull the resulting inclusion back through the subtype map and finish with `top_unique`.
+    + LEAN:
+      api[MulAction.isPretransitive_iff_base] api[MulAction.IsPreprimitive.of_prime_card] api[Equiv.Perm.isThreeCycle_swap_mul_swap_same] api[Equiv.Perm.alternatingGroup_le_of_isPreprimitive_of_isThreeCycle_mem] api[Subgroup.map]
+
+  + BECAUSE: Primitivity plus one three-cycle is a structural generation certificate, replacing an intractable computation on subgroup closure with finite orbit checks and a packaged theorem.

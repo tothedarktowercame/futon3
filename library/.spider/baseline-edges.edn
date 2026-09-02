@@ -1018,6 +1018,18 @@
    :to "cascades/on-the-fly-cascade",
    :kind :see-also,
    :file "snatch/widen-the-cascade-only-on-evidence.flexiarg",
+   :line 7}
+  {:from "math-formalization/probe-constant-name-and-signature",
+   :to "math-formalization/notation-semantics-traps",
+   :kind :see-also,
+   :file
+   "math-formalization/probe-constant-name-and-signature.flexiarg",
+   :line 7}
+  {:from "math-formalization/probe-constant-name-and-signature",
+   :to "math-formalization/rewrite-orientation",
+   :kind :see-also,
+   :file
+   "math-formalization/probe-constant-name-and-signature.flexiarg",
    :line 7}],
  :body-digests
  {"agency/bounded-lifecycle.flexiarg"
@@ -2402,16 +2414,24 @@
   "9328d5219374c25125c6bb19d4a6151b23fc5526428bc72049c027d6f3faefee",
   "math-formalization/additive-principal-parts-from-order-germs.flexiarg"
   "9562bfbf03c1d8e7fdfa583e822de1687cd0c4325a1bdb0c7619781707d5b72a",
+  "math-formalization/assemble-a-basis-from-an-independent-supremum.flexiarg"
+  "7d663dd7d66b9aa5582e0d7d68e60487775c3078b9123e88bbf791b6e1ebe382",
   "math-formalization/bank-cheap-obligations-before-the-hard-bridge.flexiarg"
   "5853938a0ad5ff8aa0223816e460786b13a1983b579801a22bb495ac5be7b2ae",
   "math-formalization/binder-expression-mismatch.flexiarg"
   "36cb5c2769d61418798abd97ea87d786d437ef35bf8d899ddd769ffcf1c4521a",
+  "math-formalization/bound-sylow-order-from-faithful-prime-action.flexiarg"
+  "1d7affcc5d02449ddd44ff0eeba041199499f3f493bdf249f6817673b35c3c74",
   "math-formalization/cast-normalization.flexiarg"
   "254f2aa7339a6eb5ef435ec5cbae306d7769b5352b9d5e7c80b1c83e4fb91302",
+  "math-formalization/classify-square-zero-actions-by-adapted-complements.flexiarg"
+  "2972375432baa6978d4735f8bec85b480f5970b94dbbe0c1b3923da3bc13bd75",
   "math-formalization/close-bijectivity-by-counting-not-inverting.flexiarg"
   "84a6cd8d47905c3ac651fb4a8609f31af7e8906bdb59e1b23e9bda6bb0895f2b",
   "math-formalization/coercion-bridge.flexiarg"
   "6b0417cef1930ae66891cc83486816164df7d19a0a73cd809f00b6b0005ebe19",
+  "math-formalization/collapse-self-normalizing-sylow-via-faithful-prime-action.flexiarg"
+  "c034c907b95e419c07104456a1095edeb97cc62c2a4c1fae7dd5973fef8889a7",
   "math-formalization/compact-thickening-upgrades-pointwise-analyticity.flexiarg"
   "7c9893a58e4613d4ea1b9f6f8d8117bc65f571c0f1004026ddf03ccf3d730ee8",
   "math-formalization/construction-cost-asymmetry.flexiarg"
@@ -2430,6 +2450,12 @@
   "a735fd6d45a44482a5429537cd224d17a090dd72c8bb489f835cf48bcebeed9e",
   "math-formalization/pointwise-hassum-to-taylor-coefficients-via-fps-uniqueness.flexiarg"
   "9a7f3832f37c837df3707abc06fbc6441aab6a36b950dac17d085d2512452826",
+  "math-formalization/probe-constant-name-and-signature.flexiarg"
+  "b90c683f435b310b56f88eece53ba958b4d53460345ee6dac6a28582643a5b66",
+  "math-formalization/recover-radical-generators-from-a-reciprocal-polynomial-root.flexiarg"
+  "9785fc51dd9b0d13ba622a50a32959e3370f78668632e4373beffa8c519a933b",
+  "math-formalization/replace-orbit-combinatorics-by-a-cyclic-module-quotient.flexiarg"
+  "6ab69c3e8c4c59a07715bb6f2b12170df012b0993b4258916ec4c57dede808a5",
   "math-formalization/rewrite-orientation.flexiarg"
   "2b887397f6e1232762e2357f50764f146e5fe09d1ced4c672fbd71f7352e8ad2",
   "math-formalization/separate-proof-transfer-from-artifact-replay.flexiarg"
@@ -3515,6 +3541,6 @@
   "xed-roads/live-recording-bridge.flexiarg"
   "091f9a3394d625aa7d688a3a8692260eb681a09b2564888082667c74bd6ace94"},
  :measurement-note
- "This snapshot counts each path-shaped target as one edge. The current files contain 73 @why directive lines (83 tokens, one non-path terminal `root`) = 82 edges; 3 @how lines = 10 edges; and 46 @see-also lines = 77 edges. The problem record's 77/10/46 mixes target counts for @how with line counts for @see-also; its 77 @why does not match either current lines or current path-shaped targets. | 2026-08-30 addendum (claude-15): aif/hierarchical-and-temporal-depth and aif/interoceptive-tripwires added as AUTHOR-written patterns (R15, R20, from sec-catalog.tex) on Joe direction; their digests and 4 @see-also edges join the exempt baseline. @holds-at lines added to 16 aif/ patterns the same day are directives outside the body digest and are not edge kinds. | 2026-09-02 addendum (claude-owner, worklist LA1 slice (b)): six AUTHOR-written snatch/ temperament patterns -- have-a-temperament and the five it names by @how -- join the exempt baseline: their 6 body digests and their 17 edges (6 @why, 5 @how, 6 @see-also). Same path as the 2026-08-30 addendum above, and for the same reason: the attestation machinery admits store-harvested evidence only (library_graph_lint.clj :338 valid-attestation? requires non-empty :evidence, :313 evidence-admissible? takes :via :tag/:text, and :pattern-text is reachable only on a @why-posthoc edge), so an author's own edge has no attestation it could honestly carry. Recorded as decision :authored-edge-attestation-path in holes/labs/library-contract/decisions.edn.",
+ "This snapshot counts each path-shaped target as one edge. The current files contain 73 @why directive lines (83 tokens, one non-path terminal `root`) = 82 edges; 3 @how lines = 10 edges; and 46 @see-also lines = 77 edges. The problem record's 77/10/46 mixes target counts for @how with line counts for @see-also; its 77 @why does not match either current lines or current path-shaped targets. | 2026-08-30 addendum (claude-15): aif/hierarchical-and-temporal-depth and aif/interoceptive-tripwires added as AUTHOR-written patterns (R15, R20, from sec-catalog.tex) on Joe direction; their digests and 4 @see-also edges join the exempt baseline. @holds-at lines added to 16 aif/ patterns the same day are directives outside the body digest and are not edge kinds. | 2026-09-02 addendum (claude-owner, worklist LA1 slice (b)): six AUTHOR-written snatch/ temperament patterns -- have-a-temperament and the five it names by @how -- join the exempt baseline: their 6 body digests and their 17 edges (6 @why, 5 @how, 6 @see-also). Same path as the 2026-08-30 addendum above, and for the same reason: the attestation machinery admits store-harvested evidence only (library_graph_lint.clj :338 valid-attestation? requires non-empty :evidence, :313 evidence-admissible? takes :via :tag/:text, and :pattern-text is reachable only on a @why-posthoc edge), so an author's own edge has no attestation it could honestly carry. Recorded as decision :authored-edge-attestation-path in holes/labs/library-contract/decisions.edn. | 2026-09-02 addendum (claude-owner, worklist LB1): seven math-formalization/*.flexiarg files that were in the library and not in this baseline join the exempt set -- 7 body digests and the 2 @see-also edges on probe-constant-name-and-signature (line 7, to notation-semantics-traps and rewrite-orientation); the other six carry no edge directive. Three were committed at 83f92b3 (2026-08-31); three were untracked working-tree files, committed by this item; the seventh (classify-square-zero-actions-by-adapted-complements) was written at 09:45:12Z WHILE this item ran and is committed by this item too, so no digest here names a file the repository lacks. All seven are scribe-authored, so the reason given in the two addenda above applies unchanged: the attestation machinery admits store-harvested evidence only. Added by NAME, not by re-snapshot, so no drift elsewhere in the library is absorbed. What this does NOT fix: library/math-formalization receives files from a live scribe with no baseline-update step of its own, so a section-lint pass here carries a timestamp rather than being a standing property -- see decision :math-formalization-untracked-flexiargs in holes/labs/library-contract/decisions.edn.",
  :generated-at "2026-08-30",
  :library "library"}

@@ -1,0 +1,22 @@
+@flexiarg math-formalization/classify-square-zero-actions-by-adapted-complements
+@title Classify Square-Zero Actions by Adapted Complements
+@sigils [²₀/⊕]
+@keywords LinearMap, square-zero, range, kernel, IsCompl, rank, conjugacy, Module.compHom
+@audience lean-provers, algebraists
+@tone heuristic
+@difficulty advanced
+@subjects applied
+
+! conclusion:
+  Replace a missing packaged Jordan-form theorem for a square-zero endomorphism with complementary-submodule coordinates, then classify the action by its range rank.
+
+  + IF: A finite-dimensional module is controlled by an endomorphism T with T.comp T = 0, and the library does not expose a directly usable square-zero Jordan decomposition.
+
+  + HOWEVER: Searching for a canonical Jordan basis can obscure the elementary invariant and introduce unnecessary matrix machinery.
+
+  + THEN: Obtain range T ≤ ker T from LinearMap.range_le_ker_iff; choose one complement of range T inside ker T and another complement of ker T inside the whole space with Submodule.exists_isCompl. Use Submodule.prodEquivOfIsCompl and Submodule.comapSubtypeEquivOfLe to form adapted coordinates. The restriction of T to the outer complement is equivalent to range T, so equal ambient dimension and equal range finrank give conjugate square-zero actions.
+
+  + BECAUSE: In adapted coordinates the only nonzero block maps the complement of the kernel isomorphically onto the range. Its rank therefore determines the block count without a packaged Jordan theorem.
+
+  + LEAN:
+    api[LinearMap.range_le_ker_iff, Submodule.exists_isCompl, Submodule.prodEquivOfIsCompl, Submodule.comapSubtypeEquivOfLe, LinearEquiv.ofBijective, LinearMap.finrank_range_add_finrank_ker]

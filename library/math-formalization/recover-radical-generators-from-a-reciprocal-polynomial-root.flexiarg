@@ -1,0 +1,34 @@
+@flexiarg math-formalization/recover-radical-generators-from-a-reciprocal-polynomial-root
+@title Recover Radical Generators from a Reciprocal Polynomial Root
+@keywords Lean, splitting field, reciprocal polynomial, radicals, inverse, quartic, ring_nf, linear_combination
+@audience lean-provers
+@tone procedural
+@difficulty advanced
+@subjects field-theory, polynomial-algebra
+
+! conclusion:
+  A splitting field of a reciprocal polynomial can expose hidden quadratic
+  generators directly from any nonzero root: first rewrite the inverse as a
+  polynomial in the root, then test symmetric and antisymmetric combinations
+  of the root and its inverse.
+
+  + IF: An abstract `IsSplittingField` instance gives roots of a reciprocal
+    polynomial, while the desired description asks for square-root generators
+    and no library theorem constructs those generators in the arbitrary model.
+
+  + THEN: Use `IsSplittingField.splits` and `Splits.exists_eval_eq_zero` to
+    choose a root `x`. Prove `x != 0` from the constant coefficient. Rearrange
+    the root equation into an identity for `x⁻¹`; for a reciprocal quartic
+    this is typically a cubic polynomial in `x`. Define candidate generators
+    from `(x - x⁻¹) / 2` and `(x + x⁻¹) / 2`, clear denominators, and
+    discharge their square equations with `ring_nf` and `linear_combination`
+    from the original root equation and a polynomial multiple of it.
+
+  + BECAUSE: Reciprocal symmetry pairs a root with its inverse. Their sum and
+    difference separate the quadratic quantities hidden in the polynomial, so
+    the required radicals are internal expressions in one root rather than
+    objects that must be transported from a concrete splitting field.
+
+  + NEXT-STEPS:
+    next[Use the recovered generators to factor the polynomial into signed roots.]
+    next[Apply `IsSplittingField.adjoin_rootSet` to prove the generators span the field.]

@@ -1,0 +1,53 @@
+@flexiarg math-formalization/probe-constant-name-and-signature
+@title Probe the Constant's Name and Signature Before Using It
+@keywords signature, explicit, implicit, #check, name, namespace, spelling, grep, api
+@audience lean-provers, formalizers
+@tone procedural
+@difficulty beginner
+@see-also math-formalization/notation-semantics-traps math-formalization/rewrite-orientation
+
+! conclusion:
+  Before applying a remembered or guessed lemma name, probe the exact constant
+  and its argument structure with `#check @name` or a grep of the source tree;
+  a remembered name that is slightly wrong or a remembered argument list that
+  has one extra explicit hypothesis produces errors that look like mathematical
+  failure.
+
+  + context: You reach for a library lemma by name — from memory, from a
+    surfaced memory's leaf list, or by translating the CamelCase prose — and
+    apply it in a proof step.
+
+  + IF:
+      The name is plausible but not probed (wrong namespace casing, a
+      near-synonym spelling, an argument that is actually an instance implicit
+      rather than explicit), the failure surfaces downstream as "unknown
+      identifier", "Function expected", or a motive/type mismatch that invites
+      a rewrite of the mathematics instead of the citation.
+
+  + HOWEVER:
+      The instinct after such an error is to adapt the proof. But the error is
+      almost never about the mathematics: namespaces change casing between
+      files, near-synonym constants coexist (`card_subgroup_dvd` vs
+      `card_dvd_of_le`), and instance-implicit hypotheses are invisible in the
+      statement you remembered. Each unprobed guess costs a compile cycle and
+      a misattributed failure account.
+
+  + THEN:
+      Probe first: `#check @Full.Name` for the signature (which arguments are
+      explicit, what the conclusion actually says), and when the name itself is
+      uncertain, grep the library for the *object* (`grep -rln <object>`) and
+      read the file's exports rather than guessing theorem names — the file
+      often exports exactly the witnesses you need. Cite the probed name, not
+      the remembered one.
+
+  + BECAUSE:
+      A library citation is data, not reasoning; verifying it is cheap and
+      deterministic, while reasoning around a bad citation is expensive and
+      produces a wrong diagnosis that then leaks into the failure account and
+      into memory.
+
+  + NEXT-STEPS:
+    next[Probe `#check @name` for signature and argument structure before first use.]
+    next[On "unknown identifier", grep the source for the object and read the file's exports.]
+    next[Read "Function expected" as "the argument list is wrong", not as a mathematical failure.]
+    next[Cite the probed constant name in notes and memories, never the guessed one.]

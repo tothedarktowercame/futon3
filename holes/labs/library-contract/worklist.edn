@@ -1441,7 +1441,11 @@
    "LA1's restated §1 is put before Joe; his confirmation (or correction) lands in P-validated-R5.md with a date; L6 unblocks. Input so far recorded at P-validated-R5.md §1b (futon2 fdff3ba)."}
   {:id :L6,
    :class :C,
-   :status :done-unreviewed,
+   :status :done,
+   :reviewed-by "codex",
+   :reviewed-at "2026-09-02T11:55:29Z",
+   :review
+   "Read futon3 4e1c410 and mathlib4 bd7b260535 in full and confirmed both are authored by Joseph Corneli, not the reviewer. Confirmed the generic repository/find/organise path replaces both Snatch-local implementations, the three-argument Lean type carries the temperament while preserving the deliberate implementation refusal, and no .flexiarg or attestation file changed, so the work authors no spider @why, @why-posthoc, or similarity-inferred edge. Reproduced clj-kondo exit 0 (0 errors, 0 warnings), check-parens exit 0 (OK), C88-pinned library_graph_lint_test exit 0 (14 tests / 167 assertions / 0 failures / 0 errors; 1254 files and edges {:why 92 :why-posthoc 7 :how 32 :see-also 147}), spider_runner_test exit 0 (8 tests / 43 assertions / 0 failures / 0 errors), find-organise exit 0 (F1-F4 over 40 rows, O1-O4 over 6 diffs, all 6 reproduced, 42-edge reader agreement, cycle-machine 7/5/0 bridges, war-room 28/9/4, ants 5/0/0), all 8 negative controls exit 0 with none slipped, playout-snatch exit 0 with snatch-cascade.edn byte-identical, and find-snatch exit 0 with F4 6/6 and 0 drift mismatches; its known stale-fixture rewrite was captured and restored. Lake build DarkTower.WarMachine.Holes exit 0 (2704 jobs, the same 10 sorry warnings). worklist_check exit 0. No finding.",
    :owner :any,
    :depends-on [:LA1 :LJ1],
    :covers-key :none,

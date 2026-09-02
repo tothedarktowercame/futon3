@@ -112,7 +112,7 @@
   [id]
   (keyword (name id)))
 
-(defn- parse-pattern-file [section file]
+(defn- parse-pattern-file [library-root section file]
   (let [lines (vec (str/split-lines (slurp file)))
         path-id (qualified section (str/replace (.getName ^java.io.File file)
                                                 #"\.flexiarg$" ""))
@@ -132,7 +132,15 @@
                     lines)]
     [path-id (cond-> {:id path-id
                       :directive-id directive-id
-                      :file (str "library/" (name section) "/" (.getName ^java.io.File file))
+                      ;; Derived from `library-root`, not the literal "library":
+                      ;; `citations-verified` (construct_cascade.clj:465) SLURPS this
+                      ;; path, so a repository read from another checkout -- worklist
+                      ;; row :LA6 reads futon3c/library/alfworld in place rather than
+                      ;; importing it -- must cite where the file actually is.  For
+                      ;; `library-root` "library" the string is unchanged, which is
+                      ;; what the byte-identical regeneration of the four existing
+                      ;; cascade artefacts checks.
+                      :file (str library-root "/" (name section) "/" (.getName ^java.io.File file))
                       :edges edges}
                if-clause (assoc :if-lines (:lines if-clause) :if-text (:text if-clause))
                however-clause (assoc :however-lines (:lines however-clause)
@@ -173,7 +181,7 @@
   ([library-root sections {:keys [kinds] :or {kinds #{:why}}}]
    (let [entries (into (sorted-map)
                        (mapcat (fn [section]
-                                 (map #(parse-pattern-file section %)
+                                 (map #(parse-pattern-file library-root section %)
                                       (section-files library-root section))))
                        sections)
          patterns (set (keys entries))

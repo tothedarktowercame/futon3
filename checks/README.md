@@ -484,3 +484,92 @@ authored from the same task whose transcript is the oracle.
   102 and never reported.
 - **O4 is not exercised**: one member carries a rule, so there is no pair to
   exchange.
+
+---
+
+## ALFWorld — the external benchmark, and the constructor's reach on a library it did not shape (`:LA6`)
+
+`construct_alfworld_cascade.clj` — worklist `:LA6`, P-validated-R5.md:685-694.
+The fourth domain, and the first whose library was **not written inside this
+line of work**: `futon3c/library/alfworld` is ten patterns committed on
+2026-02-20 (futon3c 27136615, Joseph Corneli) by an agent playing ALFWorld games
+under `futon3c/holes/missions/M-alfworld-pattern-discovery.md`, months before the
+constructor existed. Nothing in them was shaped to be selectable.
+
+    clojure -Sdeps '{:paths ["checks" "."] :deps {babashka/fs {:mvn/version "0.5.25"}}}' \
+      -M -m construct-alfworld-cascade   # writes checks/alfworld-cascade.edn
+
+**The repository is read in place, across a repo boundary.** `library-root` is
+`../futon3c/library`, not a copy imported into futon3 — importing would make this
+lane the apparent source of files it did not write.
+`find_organise.clj:115-137` now derives an entry's `:file` from `library-root`
+rather than from the literal string `"library/"`, because `citations-verified`
+(`construct_cascade.clj:465`) *slurps* that path and a citation from another
+checkout could not otherwise read back. For `library-root` `"library"` the
+derived string is unchanged, and `construct-cascade.edn` (`fa644053…`),
+`ants-cascade.edn` (`faccd884…`) and `zaif-cascade.edn` (`6827433a…`) all
+regenerate byte-identically, which is what checks that.
+
+### What this run does NOT deliver
+
+It does **not** test the architecture on a repository that has a `standsOn`
+relation. All ten patterns carry zero `@why`, zero `@how` and zero `@see-also`,
+so the degree term is identically zero here exactly as over `library/ants`, and
+`:distinguishable-from-uniform?` is `false`. `decisions.edn
+:alfworld-standson-has-no-licensed-author` records why this lane may not repair
+that: a `@why` is the author's causal claim, README-flexiarg §5a confines this
+lane to `@how`/`@see-also` and to *proposing* `@why`, and law O2 forbids deriving
+the edges from similarity. The repository half of the external benchmark is
+open, and it is open on a governance question, not a labour one. ALFWorld itself
+is also not installed in this checkout (no `.venv-alfworld`, no ALFWORLD_DATA),
+so nothing is played and O4 is unexercised.
+
+### What it does deliver: LA5's bound, replicated where it can be attributed
+
+`:LA5` found that the constructor's reach is bounded by how antecedents are
+**written** — `antecedent-holds?` needs the IF *and* the HOWEVER each to
+acknowledge a clause, and two zaif patterns that answered the tension were passed
+over because their IFs were general. Whether that was a property of the
+**constructor** or of how this project happens to write patterns could not be
+told apart there: all three libraries were written by the same hand inside the
+same project. Here they were not, so the reach expectation is **pre-registered**
+(`expected-to-fire`, six of the ten, named in the source before the run) and
+reported as a confusion matrix.
+
+- **3 of the pre-registered 6 fired.** `object-location-priors`,
+  `single-carry-economy`, `systematic-search-fallback`.
+- **0 fired that were not expected.** No false positives.
+- **2 of the 3 misses were on the IF alone** — `search-dominates-execution` and
+  `admissible-commands-are-ground-truth` each have a HOWEVER that acknowledges a
+  clause and an IF that acknowledges none. `search-dominates-execution`'s IF is
+  *"You try to optimize ALFWorld performance by refining execution"* — it is
+  written about the reader's mistaken strategy, while the situation the tension
+  names sits in its HOWEVER (*"The variable is the number of failed searches"*).
+  This is LA5's failure mode exactly, on a library written by someone with no
+  knowledge of the constructor, so the bound is a property of
+  `antecedent-holds?` and not of this project's house style.
+- The third miss, `remember-what-you-see`, acknowledges nothing in either block
+  and is a genuine non-answer under these cues, not a writing artefact.
+- **The anti-tuning guards held.** The F4 falsifier
+  `alfworld/closed-containers-need-opening`, named before the run, was not
+  selected; and the fourth clause — *when search stalls there is nobody to ask*,
+  sourced to the mission's own fifth pattern class
+  (`M-alfworld-pattern-discovery.md:47`, "Coordination triggers (when to bell for
+  help)"), which the library never delivered — scored **0 hits**, as a clause a
+  cue set tuned to the patterns would not have carried. `require-pass!` throws if
+  that clause is ever acknowledged: the guard is only a guard while it hits
+  nothing.
+- **`organise` recovers two of the three misses, by score rather than by
+  antecedent.** Under `widen-to-a-budget` the cascade reaches 6 members and
+  admits `search-dominates-execution` and `admissible-commands-are-ground-truth`
+  as candidates, plus `verb-to-appliance-mapping`, which no reader expected.
+  Under `widen-to-the-marginal-gain-floor` it halts at the 3 that fired. So the
+  `find` bound and the `organise` bound are different bounds, and the artefact
+  carries both.
+
+`require-pass!` deliberately does **not** assert the size of the reach agreement.
+Whether the pre-registered six fired is the measurement, not the acceptance bar;
+asserting it would turn a pre-registration into a target. It also does not treat
+an empty cascade as an error, for the reason `:LA4` records. What it does throw
+on is a law violation, a control failure, a citation that does not read back, F4,
+and an acknowledged null clause.

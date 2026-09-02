@@ -1,0 +1,309 @@
+{:antecedent-reach
+ {:rows
+  #:alfworld{:admissible-commands-are-ground-truth
+             {:expected-to-fire? true,
+              :fires? false,
+              :however-clauses
+              #{:a-step-is-lost-when-the-command-is-not-admitted},
+              :if-clauses #{},
+              :match 1},
+             :closed-containers-need-opening
+             {:expected-to-fire? false,
+              :fires? false,
+              :however-clauses #{},
+              :if-clauses #{},
+              :match 0},
+             :object-location-priors
+             {:expected-to-fire? true,
+              :fires? true,
+              :however-clauses
+              #{:every-location-check-costs-a-step
+                :the-room-offers-too-many-places-to-look},
+              :if-clauses #{:the-room-offers-too-many-places-to-look},
+              :match 2},
+             :plan-then-execute
+             {:expected-to-fire? false,
+              :fires? false,
+              :however-clauses #{},
+              :if-clauses #{},
+              :match 0},
+             :remember-what-you-see
+             {:expected-to-fire? true,
+              :fires? false,
+              :however-clauses #{},
+              :if-clauses #{},
+              :match 0},
+             :room-type-from-receptacles
+             {:expected-to-fire? false,
+              :fires? false,
+              :however-clauses #{},
+              :if-clauses #{},
+              :match 0},
+             :search-dominates-execution
+             {:expected-to-fire? true,
+              :fires? false,
+              :however-clauses #{:every-location-check-costs-a-step},
+              :if-clauses #{},
+              :match 1},
+             :single-carry-economy
+             {:expected-to-fire? true,
+              :fires? true,
+              :however-clauses #{:every-location-check-costs-a-step},
+              :if-clauses #{:every-location-check-costs-a-step},
+              :match 1},
+             :systematic-search-fallback
+             {:expected-to-fire? true,
+              :fires? true,
+              :however-clauses
+              #{:the-room-offers-too-many-places-to-look},
+              :if-clauses #{:the-room-offers-too-many-places-to-look},
+              :match 1},
+             :verb-to-appliance-mapping
+             {:expected-to-fire? false,
+              :fires? false,
+              :however-clauses #{:every-location-check-costs-a-step},
+              :if-clauses #{},
+              :match 1}},
+  :summary
+  {:agreed
+   #{:alfworld/object-location-priors
+     :alfworld/single-carry-economy
+     :alfworld/systematic-search-fallback},
+   :expected-but-did-not-fire
+   #{:alfworld/admissible-commands-are-ground-truth
+     :alfworld/remember-what-you-see
+     :alfworld/search-dominates-execution},
+   :expected-to-fire
+   #{:alfworld/admissible-commands-are-ground-truth
+     :alfworld/object-location-priors
+     :alfworld/remember-what-you-see
+     :alfworld/search-dominates-execution
+     :alfworld/single-carry-economy
+     :alfworld/systematic-search-fallback},
+   :fired
+   #{:alfworld/object-location-priors
+     :alfworld/single-carry-economy
+     :alfworld/systematic-search-fallback},
+   :fired-but-not-expected #{},
+   :missed-acknowledging-nothing #{:alfworld/remember-what-you-see},
+   :missed-on-the-however-alone #{},
+   :missed-on-the-if-alone
+   #{:alfworld/admissible-commands-are-ground-truth
+     :alfworld/search-dominates-execution}}},
+ :as-of
+ {:authored-see-also-edges 0,
+  :authored-why-edges 0,
+  :authored-why-how-edges 0,
+  :dangling-edges 0,
+  :library-root "../futon3c/library",
+  :patterns 10,
+  :provenance
+  "futon3c 27136615, 2026-02-20, Joseph Corneli -- written by an agent playing ALFWorld games, months before this constructor existed and with no knowledge of it.",
+  :read-digest
+  "9c5db4ebee661b317974540c5a45e5371899d9e13369e4324e45fe95b7a077e7",
+  :read-in-place-not-imported? true,
+  :sections [:alfworld],
+  :why-acyclic? true},
+ :cascades-differ? true,
+ :controls
+ {:citations 17,
+  :citations-resolve-across-the-repo-boundary? true,
+  :citations-that-do-not-read-back [],
+  :determinism-failures [],
+  :grain-separation [],
+  :library-correspondence
+  [{:encodes "the `a budget` disjunct of the stopping rule",
+    :in-repository? true,
+    :pattern :snatch/widen-the-cascade-only-on-evidence,
+    :rule :halt-on-budget,
+    :source-line-is-a-then? true,
+    :then-source
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}
+   {:encodes
+    "the `a marginal-gain floor` disjunct of the stopping rule",
+    :in-repository? true,
+    :pattern :snatch/widen-the-cascade-only-on-evidence,
+    :rule :halt-at-the-marginal-gain-floor,
+    :source-line-is-a-then? true,
+    :then-source
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}
+   {:encodes
+    "the `admit patterns one at a time, ordered by what the previous admission bought` clause",
+    :in-repository? true,
+    :pattern :snatch/widen-the-cascade-only-on-evidence,
+    :rule :widen-the-cascade-only-on-evidence,
+    :source-line-is-a-then? true,
+    :then-source
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}],
+  :negative-controls
+  [{:caught? true,
+    :control :O1-unrecorded-node,
+    :detail
+    "a node in neither selected, addedByOrganise nor admittedBy",
+    :exercised? true}
+   {:caught? true,
+    :control :citation-cue-not-in-the-cited-span,
+    :detail
+    "\"../futon3c/library/alfworld/admissible-commands-are-ground-truth.flexiarg\"",
+    :exercised? true}
+   {:caught? true,
+    :control :citation-span-off-the-end-of-the-file,
+    :detail
+    "\"../futon3c/library/alfworld/admissible-commands-are-ground-truth.flexiarg\"",
+    :exercised? true}],
+  :negative-controls-declared
+  [:O1-unrecorded-node
+   :citation-cue-not-in-the-cited-span
+   :citation-span-off-the-end-of-the-file],
+  :negative-controls-not-available-here
+  {:O2-invented-edge :no-authored-edge-in-library-alfworld,
+   :O3-dropped-edge :no-authored-edge-in-library-alfworld}},
+ :degree-term
+ {:authored-edges-in-this-repository 0,
+  :candidates-scored 3,
+  :candidates-with-degree-above-zero 0,
+  :degree-distribution {0 3},
+  :distinguishable-from-uniform? false,
+  :zero-by-construction-not-by-luck? true},
+ :find
+ {:candidates 3,
+  :laws {:F1 true, :F2 true, :F3 true, :F4 true},
+  :seed-size 3,
+  :selected
+  [:alfworld/object-location-priors
+   :alfworld/single-carry-economy
+   :alfworld/systematic-search-fallback],
+  :zero-mass-pattern :alfworld/closed-containers-need-opening,
+  :zero-mass-selected? false},
+ :o4 :not-exercised-no-authority-gate-and-alfworld-is-not-installed,
+ :runs
+ {:widen-to-a-budget
+  {:admitted
+   [:alfworld/admissible-commands-are-ground-truth
+    :alfworld/search-dominates-execution
+    :alfworld/verb-to-appliance-mapping],
+   :cascade
+   {:authored-order
+    [:alfworld/object-location-priors
+     :alfworld/single-carry-economy
+     :alfworld/systematic-search-fallback
+     :alfworld/admissible-commands-are-ground-truth
+     :alfworld/search-dominates-execution
+     :alfworld/verb-to-appliance-mapping],
+    :id :widen-to-a-budget,
+    :members
+    [:alfworld/admissible-commands-are-ground-truth
+     :alfworld/object-location-priors
+     :alfworld/search-dominates-execution
+     :alfworld/single-carry-economy
+     :alfworld/systematic-search-fallback
+     :alfworld/verb-to-appliance-mapping],
+    :ordered
+    [:alfworld/object-location-priors
+     :alfworld/single-carry-economy
+     :alfworld/systematic-search-fallback
+     :alfworld/admissible-commands-are-ground-truth
+     :alfworld/search-dominates-execution
+     :alfworld/verb-to-appliance-mapping],
+    :precedence
+    #:alfworld{:admissible-commands-are-ground-truth 4,
+               :object-location-priors 1,
+               :search-dominates-execution 5,
+               :single-carry-economy 2,
+               :systematic-search-fallback 3,
+               :verb-to-appliance-mapping 6},
+    :provenance
+    #:alfworld{:admissible-commands-are-ground-truth
+               [:admitted-by :widen-the-cascade-only-on-evidence],
+               :object-location-priors :found,
+               :search-dominates-execution
+               [:admitted-by :widen-the-cascade-only-on-evidence],
+               :single-carry-economy :found,
+               :systematic-search-fallback :found,
+               :verb-to-appliance-mapping
+               [:admitted-by :widen-the-cascade-only-on-evidence]},
+    :steps 3,
+    :stop [:saturation]},
+   :cascade-edges 0,
+   :cascade-nodes 6,
+   :laws {:O1 true, :O2 true, :O3 true},
+   :members 6,
+   :record
+   [{:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :alfworld/admissible-commands-are-ground-truth,
+     :reason nil,
+     :step 0}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :alfworld/search-dominates-execution,
+     :reason nil,
+     :step 1}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :alfworld/verb-to-appliance-mapping,
+     :reason nil,
+     :step 2}],
+   :steps 3,
+   :stop [:saturation]},
+  :widen-to-the-marginal-gain-floor
+  {:admitted [],
+   :cascade
+   {:authored-order
+    [:alfworld/object-location-priors
+     :alfworld/single-carry-economy
+     :alfworld/systematic-search-fallback],
+    :id :widen-to-the-marginal-gain-floor,
+    :members
+    [:alfworld/object-location-priors
+     :alfworld/single-carry-economy
+     :alfworld/systematic-search-fallback],
+    :ordered
+    [:alfworld/object-location-priors
+     :alfworld/single-carry-economy
+     :alfworld/systematic-search-fallback],
+    :precedence
+    #:alfworld{:object-location-priors 1,
+               :single-carry-economy 2,
+               :systematic-search-fallback 3},
+    :provenance
+    #:alfworld{:object-location-priors :found,
+               :single-carry-economy :found,
+               :systematic-search-fallback :found},
+    :steps 1,
+    :stop [:halted [:marginal-gain-floor 1.0]]},
+   :cascade-edges 0,
+   :cascade-nodes 3,
+   :laws {:O1 true, :O2 true, :O3 true},
+   :members 3,
+   :record
+   [{:by :halt-at-the-marginal-gain-floor,
+     :edit :halt,
+     :pattern nil,
+     :reason [:marginal-gain-floor 1.0],
+     :step 0}],
+   :steps 1,
+   :stop [:halted [:marginal-gain-floor 1.0]]}},
+ :scores-at-step-0
+ [[:alfworld/admissible-commands-are-ground-truth 0.3 1 0]
+  [:alfworld/search-dominates-execution 0.3 1 0]
+  [:alfworld/verb-to-appliance-mapping 0.3 1 0]],
+ :temperaments
+ {:holds? true,
+  :same-shared-nodes? true,
+  :same-shared-precedence? true,
+  :same-shared-rules? true,
+  :shared-nodes [:widen-the-cascade-only-on-evidence],
+  :stops [[:halt-on-budget] [:halt-at-the-marginal-gain-floor]],
+  :stops-differ? true},
+ :tension
+ {:clause-hits
+  {:a-step-is-lost-when-the-command-is-not-admitted 1,
+   :every-location-check-costs-a-step 4,
+   :the-room-offers-too-many-places-to-look 2,
+   :when-search-stalls-there-is-nobody-to-ask 0},
+  :id :the-step-budget-is-spent-finding-not-doing,
+  :match-distribution {1 5, 2 1},
+  :null-clause-scored-zero? true,
+  :source
+  "futon3c/holes/missions/M-alfworld-pattern-discovery.md:1-47; futon3c/library/alfworld/search-dominates-execution.flexiarg:14; single-carry-economy.flexiarg:14; object-location-priors.flexiarg:12; plan-then-execute.flexiarg:46"}}

@@ -1,6 +1,8 @@
 #!/usr/bin/env bb
 (ns spider-runner-test
-  (:require [checks.library-graph-lint :as lint]
+  (:require [babashka.fs :as fs]
+            [checks.library-graph-lint :as lint]
+            [checks.spider-fleet :as fleet]
             [checks.spider-runner :as runner]
             [clojure.edn :as edn]
             [clojure.string :as str]
@@ -159,6 +161,51 @@
                                           {:id "e-external" :via :text}] fetch)))
     ;; An id the store does not return warrants nothing.
     (is (false? (runner/rung-two-warrant? [{:id "e-missing" :via :text}] fetch)))))
+
+(defn- tmp-pin [suffix contents]
+  (let [path (str (fs/path (fs/temp-dir)
+                           (str "L7-pin-" (System/nanoTime) "-" suffix)))]
+    (when contents (spit path contents))
+    path))
+
+(deftest the-fleet-refuses-a-missing-pin-before-it-starts-a-fleet
+  (let [missing (tmp-pin "missing.edn" nil)
+        report (str (fs/path fleet/root "library/.spider"
+                             (str "fleet-" (java.time.LocalDate/now) ".edn")))
+        report-before (when (fs/exists? report) (str (fs/last-modified-time report)))]
+    (is (false? (fs/exists? missing)))
+    ;; The witness for the defect this row names: the old guard tested the
+    ;; value AFTER :cache-path was assoc'd on, and assoc on nil yields a map,
+    ;; so `(when-not cache (throw ...))` could not fire for any absent pin.
+    (is (map? (assoc (fleet/read-edn missing nil) :cache-path missing)))
+    ;; Budget 0 so that if this refusal ever regresses the test reports it
+    ;; rather than shelling out to a seat: run-section! only spawns a runner
+    ;; while the budget is positive.
+    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"pinned evidence cache is missing"
+                          (fleet/-main "--sections" "aif" "--seats" "zai-1"
+                                       "--budget" "0" "--evidence-cache" missing)))
+    ;; Refused before any worker ran and before the fleet report was rewritten.
+    (is (= report-before
+           (when (fs/exists? report) (str (fs/last-modified-time report)))))))
+
+(deftest a-pin-that-carries-no-index-is-refused-and-a-readable-one-passes
+  (let [truncated (tmp-pin "truncated.edn" "{:schema 3 :index {\"aif/x\" []}")
+        indexless (tmp-pin "indexless.edn" (pr-str {:schema 3 :basis {:count 7}}))
+        readable (tmp-pin "readable.edn"
+                          (pr-str {:schema 3 :basis {:count 7 :max-at "2026-09-02T00:00:00Z"}
+                                   :index {"aif/x" [{:id "e-1" :via :text}]}}))]
+    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"pinned evidence cache is unreadable"
+                          (fleet/load-pinned-cache truncated)))
+    (is (= :unparseable (:reason (ex-data (try (fleet/load-pinned-cache truncated)
+                                               (catch clojure.lang.ExceptionInfo e e))))))
+    (is (= :no-index (:reason (ex-data (try (fleet/load-pinned-cache indexless)
+                                            (catch clojure.lang.ExceptionInfo e e))))))
+    ;; Control: a readable pin loads, keeps its index, and names itself, so the
+    ;; cache-path the workers inherit is the pin and not a recomputed name.
+    (let [cache (fleet/load-pinned-cache readable)]
+      (is (= {"aif/x" [{:id "e-1" :via :text}]} (:index cache)))
+      (is (= readable (:cache-path cache)))
+      (is (= readable (or (:cache-path cache) :recomputed))))))
 
 (when (= *file* (System/getProperty "babashka.file"))
   (let [{:keys [fail error]} (run-tests)]

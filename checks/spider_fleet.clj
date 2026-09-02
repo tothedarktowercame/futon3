@@ -20,6 +20,28 @@
 (defn csv [s] (vec (remove str/blank? (str/split (or s "") #","))))
 (defn read-edn [path fallback]
   (if (fs/exists? path) (edn/read-string (slurp (str path))) fallback))
+
+(defn load-pinned-cache
+  "Read the evidence cache pinned at `path`, refusing here rather than letting
+  the fleet start on an empty index. The refusal has to happen before the
+  `:cache-path` is attached: `read-edn` answers nil for an absent file, and
+  `(assoc nil :cache-path path)` is a one-key map, so a nil test placed after
+  the assoc is always false and every worker would inherit `(:index nil)`."
+  [path]
+  (when-not (fs/exists? path)
+    (throw (ex-info "pinned evidence cache is missing"
+                    {:path (str path) :reason :missing})))
+  (let [cache (try (edn/read-string (slurp (str path)))
+                   (catch Exception e
+                     (throw (ex-info "pinned evidence cache is unreadable"
+                                     {:path (str path) :reason :unparseable
+                                      :read-error (.getMessage e)}))))]
+    (when-not (map? (:index cache))
+      (throw (ex-info "pinned evidence cache is unreadable"
+                      {:path (str path) :reason :no-index
+                       :keys (when (map? cache) (vec (sort (keys cache))))})))
+    (assoc cache :cache-path (str path))))
+
 (def evidence-cache (atom nil))
 (def reset-count (atom 0))
 
@@ -132,13 +154,9 @@
                                             sections))
           ;; Build or load one basis-pinned live index before parallel workers start.
           cache (if evidence-cache-path
-                  (assoc (read-edn evidence-cache-path nil)
-                         :cache-path evidence-cache-path)
+                  (load-pinned-cache evidence-cache-path)
                   (lint/ensure-live-evidence-index!
                    (str (fs/path root "library")) (set seats) spider-agent))
-          _ (when-not cache
-              (throw (ex-info "pinned evidence cache is unreadable"
-                              {:path evidence-cache-path})))
           _ (reset! evidence-cache cache)
           cache-path (or (:cache-path cache)
                          (lint/evidence-cache-path (:basis cache) (set seats) spider-agent))]

@@ -1497,7 +1497,11 @@
    :acceptance
    "O5 stated and checkable: a weight store separate from the edge store, with a test that the edge set is byte-identical before and after a learning pass. A learned high weight is routed to find and to the spider as a proposal for an author to write an edge -- never to organise. O5 is PROPOSED, not adopted: adopting it is Joe's, and this row's first delivery may be the argument that it should not be."}
 
-  {:id :LB1 :class :C :status :done-unreviewed :owner :any :covers-key :none
+  {:id :LB1 :class :C :status :done :owner :any :covers-key :none
+   :reviewed-by "codex"
+   :reviewed-at "2026-09-02T10:34:31Z"
+   :review
+   "Read dabd77d in full and confirmed it is authored by Joseph Corneli, not the reviewer. Reproduced the surgical baseline comparison against dabd77d^: 7 digests added (1247 -> 1254), 0 removed, 0 existing digest changed; 2 edges appended (190 -> 192), 0 removed, with the old edge vector an unchanged prefix, all other keys equal, and the measurement note extended only by a suffix. Re-ran the C88-pinned gates with direct exit-code capture: library_graph_lint_test exit 0 (14 tests / 167 assertions / 0 failures / 0 errors; pin 1254 files and edges {:why 92 :why-posthoc 7 :how 32 :see-also 147}); spider_runner_test exit 0 (8 / 43 / 0 / 0); math-formalization section lint exit 0, pass true, 29 patterns, section edges {:why 4 :why-posthoc 0 :how 0 :see-also 22}, 0 failures, 0 unresolved targets and 0 why cycles. The evidence diff adds one directive line, the two-target @see-also written in probe-constant-name-and-signature; it adds no @why, no @why-posthoc and no similarity-inferred edge. No finding."
    :statement
    "Found by LA1 slice (b) and recorded at decisions.edn :authored-edge-attestation-path :also-found: library/.spider/baseline-edges.edn held 1241 digests against 1247 library files BEFORE slice (b). Six library/math-formalization/*.flexiarg are in the library and not in the baseline -- three committed at 83f92b3 (2026-08-31) and three untracked in the working tree at the time. They will fail :argument-body-not-in-baseline the first time that section is linted. Not blocked on anything; independent of the LA1 architecture project."
    :acceptance

@@ -315,4 +315,28 @@
    :decision :defer-to-v0-and-call-it-an-override
    :why "The deferral is the right semantics -- a carried program that intervenes where it has something to say is the ChipWits reading, and `firstSome` is what makes it possible -- but `firstSome` licenses the SILENCE, not the composition with v0. The composition is a separate authored choice and it is now named as one: the arm is `:v0-with-cascade-override`, the sham records `:tautological? true` with the reviewer's reasoning, and fired-round agreement is reported apart from whole-turn agreement."
    :changes-it "An arm set with an explicit no-op, or a runner that can be told `this round is unhandled`. Then the cascade's silence is itself an act and the two arms are comparable without composing them."
-   :veto "Joe's. The undo is renaming one key and deleting the :on-fired-rounds-only row in futon3c/scripts/zaif_cascade_gate.clj."}]}
+   :veto "Joe's. The undo is renaming one key and deleting the :on-fired-rounds-only row in futon3c/scripts/zaif_cascade_gate.clj."}
+
+  {:id :alfworld-standson-has-no-licensed-author
+   :status :proposed
+   :at "2026-09-02"
+   :raised-by :LA6
+   :question "LA6 says the expensive half is authoring a pattern repository for ALFWorld. Measured, the patterns already exist -- futon3c/library/alfworld/, 10 .flexiarg at futon3c 27136615 (2026-02-20, Joseph Corneli) -- and what is missing is the standsOn relation over them: zero @why, zero @how, zero @see-also across all 10. Who is licensed to write it?"
+   :finding "Nobody currently in the loop is. decisions.edn :spider-editorial-standing and README-flexiarg §5a confine the spider/editor lane to @how and @see-also and to PROPOSING @why; a @why is the author's causal claim and this lane did not write these patterns. P-validated-R5 law O2 forbids deriving the edges from embedding similarity. So the relation LA6 needs cannot be supplied by the seat that would run LA6."
+   :this-is-a-harder-case-than-the-one-already-recorded
+   "decisions.edn :authored-edge-attestation-path :changes-it already names the gap -- author-written edges that a REVIEWER attests, with nothing in the schema to record a reviewer's judgement of an authored edge, only of a harvested one. LA6 is the sharper instance and is not covered by the arm that decision adopted. In LA1 the seat doing the work WAS the author of the new patterns, so :baseline-exempt-set could let its own edges through. Here the author (Joe, February 2026) is not the seat, and the seat is barred from authoring @why at all, so exempting a digest does not help: there is no edge to exempt because none may be written. The adopted arm does not reach this case."
+   :arms
+   [{:arm :joe-authors-the-why
+     :form "Joe writes the @why relation over the 10 ALFWorld patterns, as their author"
+     :cost "It is the only arm that needs no schema change and no relaxation of §5a, and it is the one that blocks on a person. LA6 cannot be scheduled against it."}
+    {:arm :reviewer-attested-authored-edges
+     :form "build the third lane :authored-edge-attestation-path already named -- a schema row for a reviewer's judgement of an author-written edge"
+     :cost "Real work in checks/library_graph_lint.clj (valid-attestation? at :338 and evidence-admissible? at :313 both resolve to a futon1b evidence-store record), and it is a change to the discipline rather than to this row. It would unblock more than LA6."}
+    {:arm :posthoc-why-over-someone-elses-patterns
+     :form "this lane writes @why-posthoc edges, the interim form of :posthoc-why-syntax, over patterns it did not write"
+     :cost "NOT PROPOSED, recorded so it is refused explicitly rather than by omission. @why-posthoc marks a trace-hypothesis about how a pattern was actually used; the ALFWorld EVIDENCE blocks record games this lane did not play. Writing it here would put an unearned causal claim behind a mark whose whole purpose is to say the claim is weaker than an author's."}
+    {:arm :drop-the-repository-requirement-for-external-domains
+     :form "let LA6 run over an edge-less library and report what a constructor does with no standsOn relation"
+     :cost "Honest and cheap, and it measures less than the row wants. LA4 already ran over a zero-edge repository -- construct_ants_cascade.clj:33-38 records that library/ants has five patterns and zero authored @why/@how, so the degree term is identically zero there by construction. An edge-less ALFWorld run would repeat that condition on a new domain rather than test the architecture on a repository that has a standsOn relation, which is the thing an external benchmark was supposed to check."}]
+   :recommendation "Not this lane's to take. The arms differ in who does the work and in what LA6 would end up measuring, and the second arm is a change to the discipline that outlives this row."
+   :changes-it "Any of: Joe authoring the edges; the third attestation lane being built; or a decision that external-benchmark rows may run on edge-less repositories, which should be taken knowingly rather than by finding the library empty at run time."}]}

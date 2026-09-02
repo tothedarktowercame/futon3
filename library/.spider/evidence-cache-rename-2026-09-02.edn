@@ -1,0 +1,111 @@
+;; L8 -- the evidence-cache filename tag said v3 while the content said
+;; :reflection-rule {:version 2}. checks/library_graph_lint.clj:121 held the
+;; literal "futon3-spider-evidence-occurrences-v3-" and passed rule-version only
+;; into the sha, so the number a reader sees in the name was fixed at 3 from
+;; cad5034 onward while the rule behind the hits moved 2 -> 3 at 299f47b.
+;;
+;; The tag is now computed from rule-version and read-index-cache refuses a
+;; file whose tag and recorded version disagree. That refusal would have
+;; orphaned the caches the corpus pins resolve to, so the eight files whose
+;; content states :version 2 were RENAMED to the name the fixed function
+;; computes for them, not regenerated: regenerating would need a fresh walk of
+;; the live store, which produces a different :basis and so would not be the
+;; index those attestations were judged against.
+;;
+;; The sha changes because one line changed inside each file as well as the
+;; name: the header's own :cache-path string. checks/spider_fleet.clj:161 reads
+;; (or (:cache-path cache) (recompute)) and hands that path to every worker, so
+;; a renamed file carrying its old name would have sent the fleet to a path that
+;; no longer exists. Nothing else in any file was touched.
+
+{:item :L8
+ :at "2026-09-02"
+ :by "claude-cli"
+ :fix "checks/library_graph_lint.clj evidence-cache-path / cache-version-failure / read-index-cache"
+ :not-renamed
+ [{:file "/tmp/futon3-spider-evidence-occurrences-v3-191328-4e8ce12609b54c4d.edn"
+   :reason :records-no-reflection-rule
+   :note "predates the :reflection-rule header; a version number cannot be assigned to it without inventing the claim, so it keeps its name and is refused on read as :cache-declares-no-rule-version. No corpus pin resolves to it."}
+  {:file "/tmp/futon3-spider-evidence-occurrences-v3-191348-a6e2189414251fb4.edn"
+   :reason :records-no-reflection-rule}
+  {:file "/tmp/futon3-spider-evidence-occurrences-v3-191356-29449004d068f90a.edn"
+   :reason :records-no-reflection-rule}
+  {:file "/tmp/futon3-spider-evidence-occurrences-v3-191457-20ec06dc3140fd7d.edn"
+   :reason :reflection-rule-without-version
+   :note "has a :reflection-rule map but no :version key -- built between the rule header landing and 299f47b."}
+  {:file "/tmp/futon3-spider-evidence-occurrences-v3-191517-b9011188a16bc5e8.edn"
+   :reason :reflection-rule-without-version}
+  {:file "/tmp/futon3-spider-evidence-occurrences-v3-206483-70eeae7145d2c7a6.edn"
+   :reason :name-already-matches-content
+   :note "tag 3, :reflection-rule {:version 3}. This is the pin library/nomad/attestations.edn:21 resolves to; it was built after 299f47b under the v3 rule and is the only cache whose name was true."}
+  {:file "/tmp/futon3-spider-evidence-occurrences-v2-1783676538900.edn"
+   :reason :older-cache-format
+   :note "a bare index map with no :schema wrapper -- the v2 in this name is the FORMAT tag cad5034 replaced, not a rule version. Refused on read as :cache-schema-mismatch."}]
+ :renamed
+ [
+  {:from "/tmp/futon3-spider-evidence-occurrences-v3-191579-d42f46b94c87e27b.edn"
+   :to "/tmp/futon3-spider-evidence-occurrences-v2-191579-d42f46b94c87e27b.edn"
+   :content-rule-version 2
+   :schema 3
+   :sha256-before "19c4546d64870004c56f1785f976c53bd40cb23c3b3a78dec52ccd559afd0d46"
+   :sha256-after "7d66e7f02896cca9f6f2d80126045ad3915b58067df586b46904cf061fcde06c"
+   :bytes-changed :header-cache-path-string-only}
+  {:from "/tmp/futon3-spider-evidence-occurrences-v3-191681-5011405c8a723ed4.edn"
+   :to "/tmp/futon3-spider-evidence-occurrences-v2-191681-5011405c8a723ed4.edn"
+   :content-rule-version 2
+   :schema 3
+   :sha256-before "f415f043fe54e62e1a121228b43eacef4adce1e90156547acc76fe5e84ec0c20"
+   :sha256-after "68ae38c1e6789843c944cb563fac9c8a566210da64f0a1fe35b42fcf2b7b3807"
+   :bytes-changed :header-cache-path-string-only}
+  {:from "/tmp/futon3-spider-evidence-occurrences-v3-191738-d8f61810a34eb73a.edn"
+   :to "/tmp/futon3-spider-evidence-occurrences-v2-191738-d8f61810a34eb73a.edn"
+   :content-rule-version 2
+   :schema 3
+   :sha256-before "ca724bdfbcd39970007fd275a1f914425ad46bfccf8f1156aa72fc1b27f1fc5e"
+   :sha256-after "498ecbe7fe87a111c2f81bbc090215968affb879c68c83bcc4e6d6ed72db85fb"
+   :bytes-changed :header-cache-path-string-only}
+  {:from "/tmp/futon3-spider-evidence-occurrences-v3-196853-62388563e7f8ba00.edn"
+   :to "/tmp/futon3-spider-evidence-occurrences-v2-196853-62388563e7f8ba00.edn"
+   :content-rule-version 2
+   :schema 3
+   :sha256-before "e4beca74512b040c40a7a5737e9390c67049d21c3903800c72b125721c10d0b7"
+   :sha256-after "639ea48be02b472e8dcca2384acfef3fd9484a7116275ce87e7db42d3a6e3665"
+   :bytes-changed :header-cache-path-string-only}
+  {:from "/tmp/futon3-spider-evidence-occurrences-v3-196889-69566636bfe4d704.edn"
+   :to "/tmp/futon3-spider-evidence-occurrences-v2-196889-69566636bfe4d704.edn"
+   :content-rule-version 2
+   :schema 3
+   :sha256-before "b3774daa37965062b7cb346491467c8badbb14af24f959999c0563b2f3377160"
+   :sha256-after "589a065975c2b7fbebc9796917fd1b8c033432f1dd378f5d095a7da5ac8b32f9"
+   :bytes-changed :header-cache-path-string-only}
+  {:from "/tmp/futon3-spider-evidence-occurrences-v3-196961-094e5d594d8ad5bd.edn"
+   :to "/tmp/futon3-spider-evidence-occurrences-v2-196961-094e5d594d8ad5bd.edn"
+   :content-rule-version 2
+   :schema 3
+   :sha256-before "d1901737c2d74b9da2bcd5295e35eabb550f5a7c7a90cce8a73aad97ec963426"
+   :sha256-after "f8b6c5f243ce3e58f4b0aba1dd722510faaf0c255f2328677ec5e68a6a26bfe5"
+   :bytes-changed :header-cache-path-string-only}
+  {:from "/tmp/futon3-spider-evidence-occurrences-v3-197150-6179e2de3cd23fb1.edn"
+   :to "/tmp/futon3-spider-evidence-occurrences-v2-197150-6179e2de3cd23fb1.edn"
+   :content-rule-version 2
+   :schema 3
+   :sha256-before "c26172fd3846083021c5ecf4ce102355dc01350aea968f514616c6d8bae3faac"
+   :sha256-after "174fe82f4c748651415a10c756e4e1b2d4c31baff8882ce1bba09493b0df40e3"
+   :bytes-changed :header-cache-path-string-only}
+  {:from "/tmp/futon3-spider-evidence-occurrences-v3-197217-e9a6a032afcb3b23.edn"
+   :to "/tmp/futon3-spider-evidence-occurrences-v2-197217-e9a6a032afcb3b23.edn"
+   :content-rule-version 2
+   :schema 3
+   :sha256-before "5d4a730e407e6670719a4378df208747552578d1e0c470a84a01a9b383ccb2fb"
+   :sha256-after "3e517c5c1c97f3a59a899d5aba20f62d67fbfd8509ae65c6c05c60b8cfbc5920"
+   :bytes-changed :header-cache-path-string-only}
+ ]
+ :pins-affected
+  [{:pin "library/system-coherence/attestations.edn:18 and 12 sibling rows, :basis {:count 191738}, :reflection-rule {:version 2}"
+    :resolved-before "/tmp/futon3-spider-evidence-occurrences-v3-191738-d8f61810a34eb73a.edn"
+    :resolves-now "/tmp/futon3-spider-evidence-occurrences-v2-191738-d8f61810a34eb73a.edn"
+    :note "the sha component d8f61810a34eb73a is unchanged -- it already hashed rule-version 2; only the visible tag moved."}
+   {:pin "library/nomad/attestations.edn:21 and 4 sibling rows, :basis {:count 206483}, :reflection-rule {:version 3}"
+    :resolved-before "/tmp/futon3-spider-evidence-occurrences-v3-206483-70eeae7145d2c7a6.edn"
+    :resolves-now "/tmp/futon3-spider-evidence-occurrences-v3-206483-70eeae7145d2c7a6.edn"
+    :note "unchanged."}]}

@@ -107,22 +107,70 @@
     {:count (:count count-response)
      :max-at (get-in newest [:entries 0 :evidence/at])}))
 
+(def evidence-cache-name-prefix "futon3-spider-evidence-occurrences-v")
+
+(def evidence-cache-schema
+  "The cache FORMAT version, written as :schema in every cache file and checked
+  on read. Until 2026-09-02 this was what the filename tag `-v3-` meant: cad5034
+  bumped the tag from v2 to v3 when a cache stopped being a bare index map and
+  became a wrapper carrying :basis, :reflection-rule and :index. The tag now
+  carries the reflection-rule version instead (see evidence-cache-path), so the
+  format is established from the content alone."
+  3)
+
 (defn evidence-cache-path
-  "The rule version is part of the name because the cached hits carry their
-  :reflection flag. A corpus pin names the version it was built under, so a
-  record written under an older rule keeps resolving to the index that
-  classified it rather than silently missing and rebuilding from the live store."
+  "Name a cache after the reflection rule that filtered its hits. 299f47b gave
+  the rule its own version but left the tag as the literal `-v3-`, so the rule
+  version reached the name only inside the sha, where no reader can see it:
+  every cache built between then and 2026-09-02 is named v3 and records
+  :reflection-rule {:version 2} (worklist L8). The tag is computed from
+  rule-version here, and read-index-cache refuses a file whose tag and content
+  disagree.
+
+  A corpus pin names the version it was built under, so a record written under
+  an older rule keeps resolving to the index that classified it rather than
+  silently missing and rebuilding from the live store."
   ([basis] (evidence-cache-path basis #{} nil reflection-rule-version))
   ([basis worker-seats] (evidence-cache-path basis worker-seats nil reflection-rule-version))
   ([basis worker-seats spider-agent]
    (evidence-cache-path basis worker-seats spider-agent reflection-rule-version))
   ([basis worker-seats spider-agent rule-version]
    (str (fs/path "/tmp"
-                 (str "futon3-spider-evidence-occurrences-v3-"
+                 (str evidence-cache-name-prefix rule-version "-"
                       (:count basis) "-"
                       (subs (sha256 (pr-str [basis (sort worker-seats) spider-agent
                                              rule-version])) 0 16)
                       ".edn")))))
+
+(defn cache-path-rule-version
+  "The reflection-rule version a cache FILENAME claims, or nil when the path was
+  not named by evidence-cache-path. SPIDER_EVIDENCE_CACHE may point anywhere,
+  and a file this namespace did not name states no version to contradict."
+  [path]
+  (some-> (re-find (re-pattern (str evidence-cache-name-prefix "(\\d+)-")) (str path))
+          second
+          parse-long))
+
+(defn cache-version-failure
+  "Why a cache must be refused, or nil. The content decides: :schema is the
+  format the file was written in and :reflection-rule :version is the rule that
+  actually classified the hits. The filename tag is only a claim about the
+  latter, and a tag that disagrees with the content is worse than no tag,
+  because the name is what an operator reads when choosing a pin."
+  [path cache]
+  (let [tag (cache-path-rule-version path)
+        content-version (get-in cache [:reflection-rule :version])]
+    (cond
+      (not= evidence-cache-schema (:schema cache))
+      {:reason :cache-schema-mismatch :path (str path)
+       :expected-schema evidence-cache-schema :found-schema (:schema cache)}
+
+      (nil? content-version)
+      {:reason :cache-declares-no-rule-version :path (str path) :filename-tag tag}
+
+      (and tag (not= tag content-version))
+      {:reason :cache-version-tag-mismatch :path (str path)
+       :filename-tag tag :content-version content-version})))
 
 (defn pattern-id [library file]
   (-> (str (fs/relativize library file))
@@ -443,8 +491,16 @@
                                 (page-observer n page))})
      @index)))
 
-(defn read-index-cache [path]
-  (when (fs/exists? path) (edn/read-string (slurp (str path)))))
+(defn read-index-cache
+  "Refuse loudly rather than hand back hits filtered by a rule the caller did not
+  ask for: a name/content disagreement throws here, where the pin is resolved,
+  instead of surfacing downstream as a reflection count nobody can account for."
+  [path]
+  (when (fs/exists? path)
+    (let [cache (edn/read-string (slurp (str path)))]
+      (if-let [failure (cache-version-failure path cache)]
+        (throw (ex-info "evidence cache refused" failure))
+        cache))))
 
 (defn write-index-cache! [path value]
   (let [tmp (str path ".tmp")]
@@ -471,7 +527,7 @@
                             (when (zero? (mod (inc n) 25))
                               (binding [*out* *err*]
                                 (println "live evidence index pages:" (inc n)))) )})
-              cache {:schema 3 :store evidence-store :basis basis
+              cache {:schema evidence-cache-schema :store evidence-store :basis basis
                      :cache-path path
                      :reflection-rule (reflection-rule worker-seats spider-agent)
                      :built-at (now) :projection :full-record-with-body
@@ -638,8 +694,13 @@
       (System/exit 2))
     (let [report (try (lint opts)
                       (catch Exception e
+                        ;; ex-data or the reader cannot tell WHICH cache was
+                        ;; refused, or which two version numbers disagreed --
+                        ;; the message alone repeats the defect this check is
+                        ;; here to catch (worklist L8).
                         {:checks [{:check :linter :file nil :line nil :edge nil
-                                   :reason :linter-error :message (.getMessage e)}]
+                                   :reason :linter-error :message (.getMessage e)
+                                   :detail (ex-data e)}]
                          :summary {:pass? false :failures 1}}))]
       (fs/create-dirs (fs/parent report-path))
       (spit report-path (str (pr-str report) "\n"))

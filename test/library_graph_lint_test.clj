@@ -4,6 +4,7 @@
             [babashka.process :as process]
             [checks.library-graph-lint :as lint]
             [clojure.edn :as edn]
+            [clojure.string :as str]
             [clojure.test :refer [deftest is run-tests testing]]))
 
 (defn write-pattern! [root id directives body]
@@ -363,6 +364,87 @@
       ;; somebody else's is not an authoring turn, so it cannot inflate the
       ;; count or move a verdict.
       (is (false? (lint/authoring-turn? (:third-party-authoring fixtures)))))))
+
+(defn cache-header
+  "The header shape ensure-live-evidence-index! writes, with an empty index --
+  only the three keys read-index-cache decides on are under test here."
+  [rule]
+  {:schema 3 :store "http://127.0.0.1:7073"
+   :basis {:count 191738 :max-at "2026-08-30T19:35:18.668154294Z"}
+   :reflection-rule rule :index {}})
+
+(deftest a-cache-name-that-contradicts-its-recorded-rule-is-refused
+  ;; L8. Every cache built between 299f47b and 2026-09-02 is named -v3- and
+  ;; records :reflection-rule {:version 2}, because the tag was the literal 3
+  ;; and rule-version reached the name only inside the sha. A reader choosing a
+  ;; pin reads the name.
+  (let [dir (fs/create-temp-dir {:prefix "evidence-cache-tag-"})
+        basis {:count 191738 :max-at "2026-08-30T19:35:18.668154294Z"}
+        seats #{"zai-1" "zai-2"}
+        v2-name (str (fs/file-name (lint/evidence-cache-path basis seats "codex-20" 2)))
+        v3-name (str (fs/file-name (lint/evidence-cache-path basis seats "codex-20" 3)))
+        rule-2 {:version 2 :worker-seats ["zai-1" "zai-2"]}
+        write! (fn [name value]
+                 (let [path (str (fs/path dir name))]
+                   (spit path (pr-str value))
+                   path))]
+    (try
+      (testing "the tag is computed from the rule version, not a literal"
+        (is (str/includes? v2-name "-v2-"))
+        (is (str/includes? v3-name "-v3-"))
+        (is (= 2 (lint/cache-path-rule-version v2-name)))
+        (is (= 3 (lint/cache-path-rule-version v3-name))))
+      (testing "the defect shape -- v3 in the name, version 2 inside -- is refused"
+        (let [path (write! v3-name (cache-header rule-2))]
+          (is (= {:reason :cache-version-tag-mismatch :path path
+                  :filename-tag 3 :content-version 2}
+                 (lint/cache-version-failure path (edn/read-string (slurp path)))))
+          (is (thrown-with-msg? Exception #"evidence cache refused"
+                                (lint/read-index-cache path)))))
+      (testing "control: the same content under the name the fix computes loads"
+        (let [path (write! v2-name (cache-header rule-2))]
+          (is (nil? (lint/cache-version-failure path (edn/read-string (slurp path)))))
+          (is (= {} (:index (lint/read-index-cache path))))))
+      (testing "a cache that records no rule version is refused, not guessed at"
+        (let [path (write! v3-name (cache-header {:worker-seats []}))]
+          (is (= :cache-declares-no-rule-version
+                 (:reason (lint/cache-version-failure path (edn/read-string (slurp path))))))
+          (is (thrown-with-msg? Exception #"evidence cache refused"
+                                (lint/read-index-cache path)))))
+      (testing "an older cache format is refused before any version is read"
+        ;; A pre-cad5034 cache is a bare index map: no :schema, no header at all.
+        (let [path (write! v3-name {"s/a" []})]
+          (is (= :cache-schema-mismatch
+                 (:reason (lint/cache-version-failure path (edn/read-string (slurp path))))))))
+      (testing "a path this namespace did not name states no version to contradict"
+        (let [path (write! "operator-chosen-pin.edn" (cache-header rule-2))]
+          (is (nil? (lint/cache-path-rule-version path)))
+          (is (nil? (lint/cache-version-failure path (edn/read-string (slurp path)))))))
+      (finally (fs/delete-tree dir)))))
+
+(deftest the-corpus-pins-in-the-library-resolve-to-a-cache-name-that-matches
+  ;; The rename record is only worth keeping if the names in it are the names
+  ;; the fixed function computes from the pins that are actually in the library.
+  (let [record (edn/read-string (slurp "library/.spider/evidence-cache-rename-2026-09-02.edn"))
+        pins (for [file (fs/glob "library" "*/attestations.edn")
+                   att (edn/read-string (slurp (str file)))
+                   :let [corpus (:corpus att)]
+                   :when corpus]
+               corpus)]
+    (is (seq pins))
+    (doseq [{:keys [basis reflection-rule]} pins]
+      (let [version (:version reflection-rule)
+            path (lint/evidence-cache-path basis (set (:worker-seats reflection-rule))
+                                           (:spider-agent reflection-rule) version)]
+        (is (some? version)
+            (str "a corpus pin must name the rule it was built under: " (pr-str basis)))
+        (is (= version (lint/cache-path-rule-version path))
+            (str "pin " (pr-str basis) " resolves to " path))))
+    (doseq [{:keys [to content-rule-version]} (:renamed record)]
+      (is (= content-rule-version (lint/cache-path-rule-version to))))
+    (doseq [{:keys [from]} (:renamed record)]
+      (is (= 3 (lint/cache-path-rule-version from))
+          "every renamed file was named v3 before the fix"))))
 
 (when (= *file* (System/getProperty "babashka.file"))
   (let [{:keys [fail error]} (run-tests)]

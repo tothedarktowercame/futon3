@@ -1315,8 +1315,11 @@
    "README-flexiarg §5a asks for an inline mark distinguishing a post-hoc @why (a trace, a hypothesis) from an author's own @why (a causal claim) and does not fix the syntax. Not determined by theory: a decision with arms, recorded in decisions.edn (interim arm :why-posthoc adopted so work can proceed; Joe can veto).",
    :acceptance
    "decisions.edn entry :posthoc-why-syntax carries the three arms with costs (parser impact, greppability, collision with existing @why consumers such as checks/playout_snatch.clj parse-why), the interim choice, and what evidence would change it. README-flexiarg §5a gains the interim form with a pointer to the decision. The lint recognises the interim form and counts it separately from authored @why. Tests."}
-  {:id :LA1 :class :D :status :done-unreviewed :owner :any
+  {:id :LA1 :class :D :status :done :owner :any
    :covers-key :none
+   :reviewed-by "codex"
+   :reviewed-at "2026-09-02T10:31:45Z"
+   :review "Read all three evidence diffs 747e2cd, 1020330 and e44c6a3 and checked the discovery pointers, six-pattern temperament family, unified types, constructor/stopping rule, domain instances, law changes, L6 consequence and named future rows against the acceptance. Structurally compared slice (b)'s baseline before/after: exactly 6 snatch body digests and 17 edges added (6 @why, 5 @how, 6 @see-also), with 0 removed edges, 0 removed digests and 0 changed existing digests. The six authored files contain no @why-posthoc; their @why/@how directives are author-written baseline entries, cross-grain references are @see-also, and the documents explicitly refuse similarity-inferred edges. Re-ran gates with exit codes captured separately: current C88-pinned library_graph_lint_test exit 0, 14 tests/167 assertions/0 failures/0 errors, 1254 files and {:why 92 :why-posthoc 7 :how 32 :see-also 147}; spider_runner_test exit 0, 8/43/0/0; Snatch section lint exit 0 under the named evidence fixture, pass true, 24 patterns, 27 why, 0 why-posthoc, 13 how, 17 see-also, fraction-organised 0.875, 0 failures/refusals/unresolved and 0 why cycles; worklist_check exit 0. The file-count increase from slice (c)'s recorded 1253 to 1254 is subsequent LB1 work; graph and Snatch counts are unchanged. No finding."
    :loop-mode :one-slice-per-invocation
    :evidence
    {:sha "e44c6a3"

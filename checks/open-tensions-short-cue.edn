@@ -1,0 +1,76 @@
+{:schema :la8/open-tensions-v1
+ :authored-by "codex-22"
+ :arm :short-cue
+ :tensions
+ {:wm/RUN4
+  {:clauses
+   [{:id :fresh-evidence
+     :text "Evidence for the holes, from the fresh records: wmRunConformsToWiring closes by record or is refuted"
+     :cues ["Evidence" "records" "refuted"]}
+    {:id :choice-branches
+     :text "the choice-point branches run on these fields -- carried against fixed beta (V6), and pi_0 with and without ln E once the habit prior is live"
+     :cues ["branches" "beta" "prior"]}]
+   :zero-mass-pattern :agent/pause-is-not-failure
+   :zero-mass-reason "The record asks for empirical comparison, not a pause caused by missing authority or information."
+   :expected-to-fire #{:forward-model/seal-the-graduation-criteria}
+   :must-not-help-with :ticket/cx-new-blocks-emacs
+   :must-not-reason "Evidence about policy quantities must not be mistaken for work on an interactive editor delay."}
+
+  :wm/I4
+  {:clauses
+   [{:id :ordering-ruling
+     :text "Joe ordering ruling of 2026-08-30, recorded as :r6-r14-order with :grounds :ruling -- select the target first, then construct the cascade to match"
+     :cues ["ruling" "target" "cascade"]}
+    {:id :unrealised-order
+     :text "The S1 run records the machine still running R5 before R6, which is exactly what an unrealised ruling looks like"
+     :cues ["records" "running" "ruling"]}]
+   :zero-mass-pattern :orchestration/consent-gate
+   :zero-mass-reason "Changing an internal computation order is not an outward or irreversible action requiring operator consent."
+   :expected-to-fire #{:war-room/wr-20-action-class-inventory-becomes-data}
+   :must-not-help-with :wm/RUN4
+   :must-not-reason "A cascade-order implementation must not substitute for measuring the distinct policy-quantity branches."
+   }
+
+  :ticket/cx-new-blocks-emacs
+  {:clauses
+   [{:id :blocking-editor
+     :text "cx at HEAD still runs the synchronous wait_for_agency poll (up to 30 s) and blocking emacsclient evals; no async conversion exists"
+     :cues ["synchronous" "wait_for_agency" "blocking"]}
+    {:id :deferred-authority
+     :text "needs Joe's go-ahead plus a timing repro separating the wait from the first turn"
+     :cues ["go-ahead" "timing" "wait"]}]
+   :zero-mass-pattern :realtime/loop-recovery-actions
+   :zero-mass-reason "The symptom is a synchronous client path, not persistent loop overload or batch latency."
+   :expected-to-fire #{}
+   :must-not-help-with :ticket/fail-invoke-error
+   :must-not-reason "An editor-blocking timing investigation must not be offered as exception-payload classification."
+   }
+
+  :ticket/fail-invoke-error
+  {:clauses
+   [{:id :failure-class
+     :text "2 -> 111 at review (latest 09-01T03:06); now the second-heaviest class"
+     :cues ["review" "second-heaviest" "class"]}
+    {:id :triage-needed
+     :text "Needs exception-payload triage before a close criterion can be stated"
+     :cues ["exception-payload" "triage" "criterion"]}]
+   :zero-mass-pattern :musn/tool-name-hygiene
+   :zero-mass-reason "The recorded failure class is not evidence that an agent invented a nonexistent tool name."
+   :expected-to-fire #{}
+   :must-not-help-with :ticket/jvm-provenance-before-multi-jvm
+   :must-not-reason "Classifying invoke exception payloads must not stand in for identifying the code loaded by a JVM."
+   }
+
+  :ticket/jvm-provenance-before-multi-jvm
+  {:clauses
+   [{:id :resource-premise
+     :text "The resource premise of the one-JVM rule is void; the identifiability premise is not, and this ticket is the precondition"
+     :cues ["one-JVM" "identifiability" "precondition"]}
+    {:id :missing-identity
+     :text "No checkout path, no branch, no commit sha, anywhere"
+     :cues ["checkout" "branch" "sha"]}]
+   :zero-mass-pattern :storage/identity-uniqueness
+   :zero-mass-reason "Entity UUID uniqueness does not establish which checkout and commit a running JVM loaded."
+   :expected-to-fire #{}
+   :must-not-help-with :wm/I4
+   :must-not-reason "Runtime provenance must not be mistaken for the War Machine's order of target selection and cascade construction."}}}

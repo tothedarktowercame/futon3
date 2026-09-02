@@ -104,31 +104,79 @@
 
 (defn read-packet [] (edn/read-string (slurp packet-path)))
 
+(def ^:dynamic *licence-scope*
+  "THE ARM, added in review and run rather than sent as a question (Joe's rule of
+   2026-09-01, encoded verbatim at worklist_check.bb:44-45: a choice the theory
+   does not settle gets BRANCHES BUILT AND RUN).
+
+   `:statement` is what this file shipped: a cue is licensed by occurring
+   anywhere in its item's whole statement.  `:clause` is the arm: a cue must
+   occur in the text of THE CLAUSE IT BELONGS TO.
+
+   The arm exists because the shipped scope is strictly WEAKER than the rule it
+   is the second form of.  `decisions.edn :cue-licence` licenses a cue by its own
+   CLAUSE'S cited span, and nothing about a ledger row forced the widening --
+   every clause here carries a `:text` that is a quotation from the statement, so
+   the per-clause address was available and was not used.
+
+   This is a REMOVAL rule and needs no cue to be authored, which is why the
+   reviewer may run it: striking a cue is not writing one, and the reviewer has
+   read the resolutions and so may not write one.  It writes its own artefact and
+   leaves the primary one byte-identical."
+  :statement)
+
+(defn licence-text
+  "The span a cue must occur in, under the scope in force."
+  [row clause]
+  (case *licence-scope*
+    :statement (:statement row)
+    :clause (:text clause)))
+
 (defn cue-licence
-  "Verify statement digests and remove no ambiguity by consulting anything
-   beyond the statement packet.  Every cue is licensed by a case-insensitive
-   occurrence in its own item's statement; any miss is a hard failure."
+  "Verify statement digests and license every cue.  A cue is licensed by a
+   case-insensitive occurrence in the span `licence-text` names for it; any miss
+   is a hard failure, and the licence never adds a cue."
   [packet]
   (let [rows (into {} (map (juxt :item identity)) (:items packet))]
     (vec
      (for [[id spec] authored
            :let [row (get rows id)
-                 actual (some-> row :statement sha256)]
+                 actual (some-> row :statement sha256)
+                 unlicensed (when row
+                              (vec (for [clause (:clauses spec)
+                                         cue (:cues clause)
+                                         :when (not (str/includes?
+                                                     (str/lower-case (licence-text row clause))
+                                                     (str/lower-case cue)))]
+                                     {:clause (:id clause) :cue cue})))]
            :when (or (nil? row)
                      (not= actual (:statement-sha256 row))
-                     (some (fn [cue]
-                             (not (str/includes? (str/lower-case (:statement row))
-                                                 (str/lower-case cue))))
-                           (mapcat :cues (:clauses spec))))]
+                     (seq unlicensed))]
        {:item id :finding (cond (nil? row) :packet-item-missing
                                 (not= actual (:statement-sha256 row)) :statement-sha-mismatch
-                                :else :cue-not-in-own-statement)
+                                :else :cue-not-in-its-licensed-span)
+        :unlicensed unlicensed
         :expected-sha (:statement-sha256 row) :actual-sha actual}))))
+
+(defn strike-unlicensed
+  "Apply the licence as a REMOVAL: drop every cue that its span does not carry,
+   and drop a clause left with no cue.  Under `:statement` this is the identity
+   on the authored set, which is why the primary artefact does not move."
+  [row spec]
+  (->> (:clauses spec)
+       (map (fn [c] (update c :cues
+                            (fn [cs] (filterv #(str/includes?
+                                                (str/lower-case (licence-text row c))
+                                                (str/lower-case %))
+                                              cs)))))
+       (filterv (comp seq :cues))
+       vec))
 
 (defn tension-for [row]
   (let [spec (get authored (:item row))]
     {:id (:item row) :statement (:statement row) :source (:statement-address row)
-     :clauses (mapv #(assoc % :source (:statement-address row)) (:clauses spec))}))
+     :clauses (mapv #(assoc % :source (:statement-address row))
+                    (strike-unlicensed row spec))}))
 
 (defn cascade-data [final seed repo]
   (let [c (cc/cascade-of final seed repo)]
@@ -233,7 +281,12 @@
          :acks acks :ctx ctx}))))
 
 (defn report []
-  (let [packet (read-packet) unlicensed (cue-licence packet)]
+  (let [packet (read-packet)
+        ;; Under the :clause arm the licence STRIKES rather than throws -- that
+        ;; is the whole arm.  Under :statement nothing is struck and an
+        ;; unlicensed cue is still a hard failure, unchanged.
+        struck (when (= :clause *licence-scope*) (cue-licence packet))
+        unlicensed (if (= :clause *licence-scope*) [] (cue-licence packet))]
     (when (seq unlicensed) (throw (ex-info "retrodiction packet or cue licence failed" {:failures unlicensed})))
     (let [sections (cc/library-sections cc/library-root)
           why-repo (fo/read-repository cc/library-root sections {:kinds #{:why}})
@@ -268,8 +321,11 @@
                                                      :reason (:must-not-reason s)}]))
        :items (into (sorted-map) (for [[id x] items] [id (dissoc x :acks :ctx)]))
        :degree-term (into (sorted-map) (for [[id x] items] [id (:degree-term x)]))
-       :controls (sorted-map :cue-licence :ledger-row-statement-occurrence
+       :controls (sorted-map :cue-licence (case *licence-scope*
+                                            :statement :ledger-row-statement-occurrence
+                                            :clause :ledger-row-clause-occurrence)
                              :unlicensed-cues unlicensed
+                             :struck-by-the-clause-arm (vec struck)
                              :determinism (into (sorted-map) (for [[id x] items] [id (cc/determinism (:ctx x))]))
                              :library-correspondence (cc/library-correspondence why-repo)
                              :grain-separation (vec (mapcat #(cc/grain-separation (:ctx %)) (vals items)))
@@ -294,10 +350,18 @@
     (when (seq failures) (throw (ex-info "construct-retrodiction-cascade failed" {:failures (vec failures)})))
     r))
 
-(defn -main [& _]
+(def per-clause-report-path "checks/retrodiction-cascade-per-clause.edn")
+
+(defn -main [& args]
   (try
-    (let [r (require-pass! (report))]
-      (spit report-path (with-out-str (pprint/pprint r)))
+    (let [clause-arm? (some #{"--per-clause"} args)
+          [scope path] (if clause-arm? [:clause per-clause-report-path]
+                           [:statement report-path])
+          r (binding [*licence-scope* scope] (require-pass! (report)))]
+      (println "cue licence scope:" scope "->" path)
+      (doseq [f (get-in r [:controls :struck-by-the-clause-arm])]
+        (println "  struck" (:item f) (pr-str (:unlicensed f))))
+      (spit path (with-out-str (pprint/pprint r)))
       (doseq [[id x] (:items r)]
         (println id "seed" (get-in x [:find :seed-size]) "candidates" (get-in x [:find :candidates])
                  "F4" (get-in x [:find :zero-mass-selected?])

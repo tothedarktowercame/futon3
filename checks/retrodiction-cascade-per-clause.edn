@@ -117,9 +117,9 @@
    :wm/D0
    "9c733262bb92063ee5e57d14768e2fbee810d404e63d68c12edc7ea3268c40d7"}},
  :controls
- {:citation-count 253,
+ {:citation-count 243,
   :citations-verified [],
-  :cue-licence :ledger-row-statement-occurrence,
+  :cue-licence :ledger-row-clause-occurrence,
   :determinism
   {:ticket/agency-desktop-save [],
    :ticket/kangaroo-v1-pouch [],
@@ -159,7 +159,16 @@
    {:control :citation-span-off-the-end-of-the-file,
     :exercised? true,
     :caught? true}],
-  :struck-by-the-clause-arm [],
+  :struck-by-the-clause-arm
+  [{:item :wm/C23,
+    :finding :cue-not-in-its-licensed-span,
+    :unlicensed
+    [{:clause :false-claim-withdrawn, :cue "withdrawn"}
+     {:clause :live-path-measurement, :cue "measurement"}],
+    :expected-sha
+    "6b973ec9275c8e3687238182a53caa7746de4721d0fbac67084645d084672f08",
+    :actual-sha
+    "6b973ec9275c8e3687238182a53caa7746de4721d0fbac67084645d084672f08"}],
   :unlicensed-cues []},
  :degree-term
  {:ticket/agency-desktop-save
@@ -178,9 +187,9 @@
    :degree-distribution {0 73, 1 8},
    :distinguishable-from-uniform? true},
   :wm/C23
-  {:candidates-scored 16,
+  {:candidates-scored 8,
    :candidates-with-degree-above-zero 0,
-   :degree-distribution {0 16},
+   :degree-distribution {0 8},
    :distinguishable-from-uniform? false},
   :wm/D0
   {:candidates-scored 32,
@@ -21001,14 +21010,13 @@
     "6b973ec9275c8e3687238182a53caa7746de4721d0fbac67084645d084672f08",
     :clause-hits
     {:arms-separated-not-adjudicated 8,
-     :false-claim-withdrawn 1,
-     :live-path-measurement 8},
-    :match-distribution {1 17}},
+     :false-claim-withdrawn 0,
+     :live-path-measurement 0},
+    :match-distribution {1 8}},
    :find
-   {:selected
-    [:baldwin/choose-the-heritable-unit-where-invariance-lives],
-    :seed-size 1,
-    :candidates 16,
+   {:selected [],
+    :seed-size 0,
+    :candidates 8,
     :laws {:F1 true, :F2 true, :F3 true, :F4 true},
     :zero-mass-pattern :social/explicit-exit-over-abandonment,
     :zero-mass-reason
@@ -21422,9 +21430,9 @@
       :fires? false,
       :expected-to-fire? false},
      :baldwin/choose-the-heritable-unit-where-invariance-lives
-     {:if-clauses #{:live-path-measurement},
-      :however-clauses #{:live-path-measurement},
-      :fires? true,
+     {:if-clauses #{},
+      :however-clauses #{},
+      :fires? false,
       :expected-to-fire? false},
      :baldwin/metaca-negative-evidence-localizes-the-bottleneck
      {:if-clauses #{},
@@ -21513,7 +21521,7 @@
       :expected-to-fire? false},
      :cascades/the-slice-is-the-unit-of-use
      {:if-clauses #{},
-      :however-clauses #{:live-path-measurement},
+      :however-clauses #{},
       :fires? false,
       :expected-to-fire? false},
      :code-coherence/dead-code-hygiene
@@ -21578,7 +21586,7 @@
       :expected-to-fire? false},
      :control/agential-efficiency-measurement
      {:if-clauses #{},
-      :however-clauses #{:live-path-measurement},
+      :however-clauses #{},
       :fires? false,
       :expected-to-fire? false},
      :control/agential-oss-infrastructure
@@ -22282,7 +22290,7 @@
       :fires? false,
       :expected-to-fire? false},
      :futon-theory/crime-relocates-to-a-scarcer-witness
-     {:if-clauses #{:live-path-measurement},
+     {:if-clauses #{},
       :however-clauses #{},
       :fires? false,
       :expected-to-fire? false},
@@ -24968,7 +24976,7 @@
       :expected-to-fire? false},
      :mmca/verified-but-idle-link
      {:if-clauses #{},
-      :however-clauses #{:live-path-measurement},
+      :however-clauses #{},
       :fires? false,
       :expected-to-fire? false},
      :musn/aif-live-scores
@@ -25862,7 +25870,7 @@
       :fires? false,
       :expected-to-fire? false},
      :relationship-coherence/rupture-repair
-     {:if-clauses #{:false-claim-withdrawn},
+     {:if-clauses #{},
       :however-clauses #{},
       :fires? false,
       :expected-to-fire? false},
@@ -26573,7 +26581,7 @@
       :expected-to-fire? false},
      :ukrns/calibrate-impact-promises-to-current-indicator-capacity
      {:if-clauses #{},
-      :however-clauses #{:live-path-measurement},
+      :however-clauses #{},
       :fires? false,
       :expected-to-fire? false},
      :ukrns/coding-provenance
@@ -26633,7 +26641,7 @@
       :expected-to-fire? false},
      :ukrns/model-recompute-schedule
      {:if-clauses #{},
-      :however-clauses #{:live-path-measurement},
+      :however-clauses #{},
       :fires? false,
       :expected-to-fire? false},
      :ukrns/open-the-triangle
@@ -27068,7 +27076,7 @@
       :expected-to-fire? false},
      :war-room/wr-9-bites-empirical-or-logical
      {:if-clauses #{},
-      :however-clauses #{:live-path-measurement},
+      :however-clauses #{},
       :fires? false,
       :expected-to-fire? false},
      :workday/clock-hygiene
@@ -27220,13 +27228,11 @@
     {:expected
      #{:baldwin/ablation-axes-must-not-disable-the-instrument
        :math-informal/check-the-extreme-cases},
-     :fired
-     #{:baldwin/choose-the-heritable-unit-where-invariance-lives},
+     :fired #{},
      :expected-but-did-not-fire
      #{:baldwin/ablation-axes-must-not-disable-the-instrument
        :math-informal/check-the-extreme-cases},
-     :fired-but-not-expected
-     #{:baldwin/choose-the-heritable-unit-where-invariance-lives}}},
+     :fired-but-not-expected #{}}},
    :temperaments
    {:holds? true,
     :same-shared-nodes? true,
@@ -27237,177 +27243,96 @@
     :stops-differ? true},
    :runs
    {:widen-to-a-budget
-    {:member-count 17,
+    {:member-count 8,
      :nothing-was-admitted? false,
      :cascade
      {:added-by-organise [],
       :admitted-by
       [:baldwin/ablation-axes-must-not-disable-the-instrument
-       :cascades/the-slice-is-the-unit-of-use
-       :control/agential-efficiency-measurement
        :data-mining/fan-out-independent-runs-across-devices
        :data-mining/seed-the-run-for-a-fair-ablation
        :eight-gates/an-push
-       :futon-theory/crime-relocates-to-a-scarcer-witness
        :math-formalization-CV/holomorphic-disk-api
        :mmca/instrument-horizon-must-match-system
-       :mmca/verified-but-idle-link
        :relationship-coherence/absence-as-spaciousness
-       :relationship-coherence/rupture-repair
-       :snatch/revert-then-invert
-       :ukrns/calibrate-impact-promises-to-current-indicator-capacity
-       :ukrns/model-recompute-schedule
-       :war-room/wr-9-bites-empirical-or-logical],
+       :snatch/revert-then-invert],
       :authored-order
-      [:baldwin/choose-the-heritable-unit-where-invariance-lives
-       :baldwin/ablation-axes-must-not-disable-the-instrument
-       :cascades/the-slice-is-the-unit-of-use
-       :control/agential-efficiency-measurement
+      [:baldwin/ablation-axes-must-not-disable-the-instrument
        :data-mining/fan-out-independent-runs-across-devices
        :data-mining/seed-the-run-for-a-fair-ablation
        :eight-gates/an-push
-       :futon-theory/crime-relocates-to-a-scarcer-witness
        :math-formalization-CV/holomorphic-disk-api
        :mmca/instrument-horizon-must-match-system
-       :mmca/verified-but-idle-link
        :relationship-coherence/absence-as-spaciousness
-       :relationship-coherence/rupture-repair
-       :snatch/revert-then-invert
-       :ukrns/calibrate-impact-promises-to-current-indicator-capacity
-       :ukrns/model-recompute-schedule
-       :war-room/wr-9-bites-empirical-or-logical],
+       :snatch/revert-then-invert],
       :edges [],
       :members
       [:baldwin/ablation-axes-must-not-disable-the-instrument
-       :baldwin/choose-the-heritable-unit-where-invariance-lives
-       :cascades/the-slice-is-the-unit-of-use
-       :control/agential-efficiency-measurement
        :data-mining/fan-out-independent-runs-across-devices
        :data-mining/seed-the-run-for-a-fair-ablation
        :eight-gates/an-push
-       :futon-theory/crime-relocates-to-a-scarcer-witness
        :math-formalization-CV/holomorphic-disk-api
        :mmca/instrument-horizon-must-match-system
-       :mmca/verified-but-idle-link
        :relationship-coherence/absence-as-spaciousness
-       :relationship-coherence/rupture-repair
-       :snatch/revert-then-invert
-       :ukrns/calibrate-impact-promises-to-current-indicator-capacity
-       :ukrns/model-recompute-schedule
-       :war-room/wr-9-bites-empirical-or-logical],
+       :snatch/revert-then-invert],
       :nodes
       [:baldwin/ablation-axes-must-not-disable-the-instrument
-       :baldwin/choose-the-heritable-unit-where-invariance-lives
-       :cascades/the-slice-is-the-unit-of-use
-       :control/agential-efficiency-measurement
        :data-mining/fan-out-independent-runs-across-devices
        :data-mining/seed-the-run-for-a-fair-ablation
        :eight-gates/an-push
-       :futon-theory/crime-relocates-to-a-scarcer-witness
        :math-formalization-CV/holomorphic-disk-api
        :mmca/instrument-horizon-must-match-system
-       :mmca/verified-but-idle-link
        :relationship-coherence/absence-as-spaciousness
-       :relationship-coherence/rupture-repair
-       :snatch/revert-then-invert
-       :ukrns/calibrate-impact-promises-to-current-indicator-capacity
-       :ukrns/model-recompute-schedule
-       :war-room/wr-9-bites-empirical-or-logical],
+       :snatch/revert-then-invert],
       :ordered
-      [:baldwin/choose-the-heritable-unit-where-invariance-lives
-       :baldwin/ablation-axes-must-not-disable-the-instrument
-       :cascades/the-slice-is-the-unit-of-use
-       :control/agential-efficiency-measurement
+      [:baldwin/ablation-axes-must-not-disable-the-instrument
        :data-mining/fan-out-independent-runs-across-devices
        :data-mining/seed-the-run-for-a-fair-ablation
        :eight-gates/an-push
-       :futon-theory/crime-relocates-to-a-scarcer-witness
        :math-formalization-CV/holomorphic-disk-api
        :mmca/instrument-horizon-must-match-system
-       :mmca/verified-but-idle-link
        :relationship-coherence/absence-as-spaciousness
-       :relationship-coherence/rupture-repair
-       :snatch/revert-then-invert
-       :ukrns/calibrate-impact-promises-to-current-indicator-capacity
-       :ukrns/model-recompute-schedule
-       :war-room/wr-9-bites-empirical-or-logical],
+       :snatch/revert-then-invert],
       :precedence
-      {:baldwin/ablation-axes-must-not-disable-the-instrument 2,
-       :baldwin/choose-the-heritable-unit-where-invariance-lives 1,
-       :cascades/the-slice-is-the-unit-of-use 3,
-       :control/agential-efficiency-measurement 4,
-       :data-mining/fan-out-independent-runs-across-devices 5,
-       :data-mining/seed-the-run-for-a-fair-ablation 6,
-       :eight-gates/an-push 7,
-       :futon-theory/crime-relocates-to-a-scarcer-witness 8,
-       :math-formalization-CV/holomorphic-disk-api 9,
-       :mmca/instrument-horizon-must-match-system 10,
-       :mmca/verified-but-idle-link 11,
-       :relationship-coherence/absence-as-spaciousness 12,
-       :relationship-coherence/rupture-repair 13,
-       :snatch/revert-then-invert 14,
-       :ukrns/calibrate-impact-promises-to-current-indicator-capacity
-       15,
-       :ukrns/model-recompute-schedule 16,
-       :war-room/wr-9-bites-empirical-or-logical 17},
+      {:baldwin/ablation-axes-must-not-disable-the-instrument 1,
+       :data-mining/fan-out-independent-runs-across-devices 2,
+       :data-mining/seed-the-run-for-a-fair-ablation 3,
+       :eight-gates/an-push 4,
+       :math-formalization-CV/holomorphic-disk-api 5,
+       :mmca/instrument-horizon-must-match-system 6,
+       :relationship-coherence/absence-as-spaciousness 7,
+       :snatch/revert-then-invert 8},
       :provenance
       {:baldwin/ablation-axes-must-not-disable-the-instrument
        [:admitted-by :widen-the-cascade-only-on-evidence],
-       :baldwin/choose-the-heritable-unit-where-invariance-lives
-       :found,
-       :cascades/the-slice-is-the-unit-of-use
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :control/agential-efficiency-measurement
-       [:admitted-by :widen-the-cascade-only-on-evidence],
        :data-mining/fan-out-independent-runs-across-devices
        [:admitted-by :widen-the-cascade-only-on-evidence],
        :data-mining/seed-the-run-for-a-fair-ablation
        [:admitted-by :widen-the-cascade-only-on-evidence],
        :eight-gates/an-push
        [:admitted-by :widen-the-cascade-only-on-evidence],
-       :futon-theory/crime-relocates-to-a-scarcer-witness
-       [:admitted-by :widen-the-cascade-only-on-evidence],
        :math-formalization-CV/holomorphic-disk-api
        [:admitted-by :widen-the-cascade-only-on-evidence],
        :mmca/instrument-horizon-must-match-system
        [:admitted-by :widen-the-cascade-only-on-evidence],
-       :mmca/verified-but-idle-link
-       [:admitted-by :widen-the-cascade-only-on-evidence],
        :relationship-coherence/absence-as-spaciousness
        [:admitted-by :widen-the-cascade-only-on-evidence],
-       :relationship-coherence/rupture-repair
-       [:admitted-by :widen-the-cascade-only-on-evidence],
        :snatch/revert-then-invert
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :ukrns/calibrate-impact-promises-to-current-indicator-capacity
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :ukrns/model-recompute-schedule
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :war-room/wr-9-bites-empirical-or-logical
        [:admitted-by :widen-the-cascade-only-on-evidence]},
-      :selected
-      [:baldwin/choose-the-heritable-unit-where-invariance-lives],
-      :steps 16,
+      :selected [],
+      :steps 8,
       :stop [:saturation]},
      :admitted
      [:baldwin/ablation-axes-must-not-disable-the-instrument
-      :cascades/the-slice-is-the-unit-of-use
-      :control/agential-efficiency-measurement
       :data-mining/fan-out-independent-runs-across-devices
       :data-mining/seed-the-run-for-a-fair-ablation
       :eight-gates/an-push
-      :futon-theory/crime-relocates-to-a-scarcer-witness
       :math-formalization-CV/holomorphic-disk-api
       :mmca/instrument-horizon-must-match-system
-      :mmca/verified-but-idle-link
       :relationship-coherence/absence-as-spaciousness
-      :relationship-coherence/rupture-repair
-      :snatch/revert-then-invert
-      :ukrns/calibrate-impact-promises-to-current-indicator-capacity
-      :ukrns/model-recompute-schedule
-      :war-room/wr-9-bites-empirical-or-logical],
-     :admitted-count 16,
-     :seed-size 1,
+      :snatch/revert-then-invert],
+     :admitted-count 8,
+     :seed-size 0,
      :seed-at-or-over-budget? false,
      :stop [:saturation],
      :laws {:O1 true, :O2 true, :O3 true},
@@ -27417,93 +27342,52 @@
        :by :widen-the-cascade-only-on-evidence,
        :step 0}
       {:edit :admit,
-       :pattern :cascades/the-slice-is-the-unit-of-use,
+       :pattern :data-mining/fan-out-independent-runs-across-devices,
        :by :widen-the-cascade-only-on-evidence,
        :step 1}
       {:edit :admit,
-       :pattern :control/agential-efficiency-measurement,
+       :pattern :data-mining/seed-the-run-for-a-fair-ablation,
        :by :widen-the-cascade-only-on-evidence,
        :step 2}
       {:edit :admit,
-       :pattern :data-mining/fan-out-independent-runs-across-devices,
+       :pattern :eight-gates/an-push,
        :by :widen-the-cascade-only-on-evidence,
        :step 3}
       {:edit :admit,
-       :pattern :data-mining/seed-the-run-for-a-fair-ablation,
+       :pattern :math-formalization-CV/holomorphic-disk-api,
        :by :widen-the-cascade-only-on-evidence,
        :step 4}
       {:edit :admit,
-       :pattern :eight-gates/an-push,
+       :pattern :mmca/instrument-horizon-must-match-system,
        :by :widen-the-cascade-only-on-evidence,
        :step 5}
       {:edit :admit,
-       :pattern :futon-theory/crime-relocates-to-a-scarcer-witness,
+       :pattern :relationship-coherence/absence-as-spaciousness,
        :by :widen-the-cascade-only-on-evidence,
        :step 6}
       {:edit :admit,
-       :pattern :math-formalization-CV/holomorphic-disk-api,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 7}
-      {:edit :admit,
-       :pattern :mmca/instrument-horizon-must-match-system,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 8}
-      {:edit :admit,
-       :pattern :mmca/verified-but-idle-link,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 9}
-      {:edit :admit,
-       :pattern :relationship-coherence/absence-as-spaciousness,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 10}
-      {:edit :admit,
-       :pattern :relationship-coherence/rupture-repair,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 11}
-      {:edit :admit,
        :pattern :snatch/revert-then-invert,
        :by :widen-the-cascade-only-on-evidence,
-       :step 12}
-      {:edit :admit,
-       :pattern
-       :ukrns/calibrate-impact-promises-to-current-indicator-capacity,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 13}
-      {:edit :admit,
-       :pattern :ukrns/model-recompute-schedule,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 14}
-      {:edit :admit,
-       :pattern :war-room/wr-9-bites-empirical-or-logical,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 15}]},
+       :step 7}]},
     :widen-to-the-marginal-gain-floor
-    {:member-count 1,
+    {:member-count 0,
      :nothing-was-admitted? true,
      :cascade
      {:added-by-organise [],
       :admitted-by [],
-      :authored-order
-      [:baldwin/choose-the-heritable-unit-where-invariance-lives],
+      :authored-order [],
       :edges [],
-      :members
-      [:baldwin/choose-the-heritable-unit-where-invariance-lives],
-      :nodes
-      [:baldwin/choose-the-heritable-unit-where-invariance-lives],
-      :ordered
-      [:baldwin/choose-the-heritable-unit-where-invariance-lives],
-      :precedence
-      #:baldwin{:choose-the-heritable-unit-where-invariance-lives 1},
-      :provenance
-      #:baldwin{:choose-the-heritable-unit-where-invariance-lives
-                :found},
-      :selected
-      [:baldwin/choose-the-heritable-unit-where-invariance-lives],
+      :members [],
+      :nodes [],
+      :ordered [],
+      :precedence {},
+      :provenance {},
+      :selected [],
       :steps 1,
       :stop [:halted [:marginal-gain-floor 1.0]]},
      :admitted [],
      :admitted-count 0,
-     :seed-size 1,
+     :seed-size 0,
      :seed-at-or-over-budget? false,
      :stop [:halted [:marginal-gain-floor 1.0]],
      :laws {:O1 true, :O2 true, :O3 true},
@@ -27513,9 +27397,9 @@
        :by :halt-at-the-marginal-gain-floor,
        :step 0}]}},
    :degree-term
-   {:candidates-scored 16,
+   {:candidates-scored 8,
     :candidates-with-degree-above-zero 0,
-    :degree-distribution {0 16},
+    :degree-distribution {0 8},
     :distinguishable-from-uniform? false}},
   :wm/D0
   {:tension

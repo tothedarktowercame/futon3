@@ -1441,14 +1441,56 @@
    "LA1's restated §1 is put before Joe; his confirmation (or correction) lands in P-validated-R5.md with a date; L6 unblocks. Input so far recorded at P-validated-R5.md §1b (futon2 fdff3ba)."}
   {:id :L6,
    :class :C,
-   :status :open,
+   :status :done-unreviewed,
    :owner :any,
    :depends-on [:LA1 :LJ1],
    :covers-key :none,
    :statement
    "Kernel + compose on library/snatch first (P-validated-R5 §5 step 3, owner codex-22 by that record): the generic find/organise path, currently sorry in DarkTower/WarMachine/Holes.lean:264,308 and hardcoded to library/snatch in checks/playout_snatch.clj:228-260 and find_snatch.clj.",
    :acceptance
-   "As P-validated-R5 §5 step 3 states it, against the pinned find-snatch.edn fixture; laws F1-F4/O1-O4 as narrowed by the 2026-08-31 scope amendment. Not started before LJ1. FORESIGHT from LA1 slice (c), free to take: define organise with the three-argument type (Cascade policy -> Set P -> Repository P -> Cascade P) and it will not need redefining when LA2 lands; the two-argument type at Holes.lean:308 will."}
+   "As P-validated-R5 §5 step 3 states it, against the pinned find-snatch.edn fixture; laws F1-F4/O1-O4 as narrowed by the 2026-08-31 scope amendment. Not started before LJ1. FORESIGHT from LA1 slice (c), free to take: define organise with the three-argument type (Cascade policy -> Set P -> Repository P -> Cascade P) and it will not need redefining when LA2 lands; the two-argument type at Holes.lean:308 will.",
+   :evidence
+   {:sha "futon3 4e1c410; mathlib4 bd7b260535",
+    :scope
+    "The find/organise half of §5 step 3. The support -> mass -> kernel -> readouts half was already delivered for the one witnessed @how edge (checks/how_kernel_snatch.clj:38-89, entropy 1.3863 -> 1.3121 nats under attestation, mirror zero mass; checks/derive_q_snatch.clj derives Q by playout). This row built what that half stands on and what the statement names: the generic path, off library/snatch.",
+    :new
+    ["checks/find_organise.clj -- read-repository (Holes.lean:121) over any set of library sections; find (Holes.lean:264) with the antecedent evaluator supplied by the tension, so the candidate set IS the repository and F1 containment is true by construction; up-closure, reach-outside and fast-forward (Holes.lean:297-305); organise (Holes.lean:308) at the three-argument type"
+     "checks/find-organise.edn -- the report, deterministic over two runs"
+     "checks/README.md:59-95 -- the check, its run command, the four sections it reads and their measures"],
+    :laws
+    "F1-F4 and O1-O4 as the narrowed row/diff predicates, not universals over a refused implementation: find_organise.clj:390-433 mirrors findF1Containment (Holes.lean:266), findF2Receipted (:271), findF3NonSelfCertifying (:274), findF4Falsifiable (:277), organiseO1NodesRecorded (:340), organiseO2AuthoredReachability (:347), organiseO3FastForward (:354), organiseO4PrecedenceGovernance (:361).",
+    :evidence-run
+    ["find: 40 recorded rows off the PINNED checks/find-snatch.edn (sha256 839897ef8fe44952403700bd237389449ae4735d3da7df8239b1b94dc7ef4dfa, the one the four findF* docstrings pin) -- one row per round plus one per scenario union; 0 failures. The check refuses to run if that sha has moved."
+     "organise: six CascadeDiffs built from checks/snatch-cascade.edn by organise ITSELF -- 6 of 6 reproduce the recorded :nodes and :added-by-organise, so this is the same path and not a second implementation beside it. O1-O4 hold on all six; the acting order differs in all six and the score also moves in [:g4 :snatcher] (3 -> -5), which is a wider S-G4 instance than the C59 fixture's single diff."
+     "The C59 fixture (Holes.lean:310-334) transcribed to Clojure (find_organise.clj:c59-repository) and organised under the selected-only temperament: edges [[:c59/probe :c59/remedy]], matching wmCascadeDiffFixture.organisedEdges."
+     "Off Snatch: cycle-machine 7 patterns / 5 edges / 0 bridges (temperaments agree -- its @why graph is depth 1); war-room 28 / 9 / 4 bridges (nine authored edges become five fast-forwarded, all landing on wr-0-organise-without-apparatus); ants 5 patterns / ZERO authored edges, the unorganised control P-validated-R5 §1b addendum 3 names. Laws hold on both temperaments in all three."
+     "Negative controls: 8, one per law, each mutating a real recorded row -- all 8 rejected end to end (--negative-f1 .. --negative-o4, exit 0 = rejected, 2 = slipped)."
+     "Reader agreement: the directive reader is re-run through checks/library_graph_lint.clj scan-library on every run over the four sections -- 42 edges, 0 on either side alone; disagreement is a hard failure."],
+    :three-argument-type
+    "mathlib4 DarkTower/WarMachine/Holes.lean:308 is now `organise {Policy P} : Cascade Policy -> Set P -> Repository P -> Cascade P`, taking the LA1c-restatement.md §10 foresight. The temperament argument is load-carrying rather than reserved: the library already records TWO organise policies the two-argument type cannot distinguish -- the up-closure of playout_snatch.clj (P-validated-R5 §2.1d) and the selected-only fast-forward of wmCascadeDiffFixture -- and O1's narrowed form admits both, so which one runs is data. Both arms take their edges from ONE fast-forward definition: an up-closure is closed under ancestors, ReachOutside has nothing to route around, and it collapses to the induced authored edges. STATUS unchanged (still DELIBERATE IMPLEMENTATION REFUSAL): LA1c §10 says the refusal may only be weakened by whoever can point at a running policy-grain rule, which is LA2.",
+    :hardcoding-removed
+    ["checks/playout_snatch.clj -- its own @why reader, up-closure and induced-edges (was :228-260) are gone; it calls find-organise/organise through one `cascade` helper and converts qualified ids at that boundary only"
+     "checks/find_snatch.clj -- its own flexiarg parser, repository, warrant and find are gone; what stays is what is Snatch's (which state the tension carries, which runner entry decides an antecedent holds, the six scenarios)"],
+    :artefacts-unchanged
+    "checks/snatch-cascade.edn regenerates BYTE-IDENTICAL (sha256 00397dbe6fea4b58f63a13594bd9e4f53dbfa17a2a2cf0e07844c726e2e69069). checks/find-snatch.edn regenerates to exactly what it regenerated to BEFORE the change (08a0c3e7...), so the refactor moved nothing -- and it is left at the pinned 839897ef... in the tree; see :findings.",
+    :behaviour-changed
+    "One, and it is a correction the laws force: the console cascade report in playout_snatch.clj `show` and `compare-shapes` counted the runner's :no-pattern sentinel as an acting pattern and as a node of the @why closure. It is not in the repository, so organise refuses it under F1/O1. g2/snatcher reads 3 acting / 6 nodes instead of 4 / 7, with the same 5 edges and the same meet-semilattice verdict; the other five scenarios are unchanged. emit-cascade-edn had always removed it, which is why no committed artefact moves.",
+    :findings
+    ["The pinned find-snatch.edn is STALE against library/snatch and this row did not re-pin it. Re-running find_snatch.clj today rewrites the file (as-of 2734ac57 -> 10203307, repository 18 -> 24 patterns) because LA1 slice (b) authored six policy-grain patterns after the pin was taken. The regenerated file still satisfies F1-F4. Re-pinning means editing the fixture-sha256 in four Holes.lean docstrings (:266,:270,:273,:276), and it would have to be done again after LA2 makes those six patterns execute, so it is a row and not a side effect of this one."
+     "checks/find_snatch.clj REWRITES its own pinned fixture on every run, so any gate run of that check dirties the Lean pin while library/snatch is ahead of it. The tree was restored after each run here. A --check mode that compares instead of writing would make the two facts independent; not built, not asked for."
+     "mathlib4 DarkTower/WarMachine/holes-contract.json is stale by five declarations (enactedActionEqualsSelected, enactedEqualsSelectedWhenRankOneGated, dirichletAccumulationImportAbsent, policyPrecisionIsGammaFromBeta, policyPosteriorImportsPolicyF -- the H1-H4 wm-organization holes of ad02eaed18..d22ddd1385, never re-emitted). Found by running scripts/emit-contract.sh as a gate; the regenerated file was RESTORED rather than committed, since it is outside this row. The `organise` row itself is byte-identical after re-emission, which is what this row needed to know."
+     "snatch-cascade.edn's :nodes key holds the SELECTED set (O1's prose reading, P-validated-R5:499), while the narrowed Lean O1 uses nodes = selected u addedByOrganise. Both are in the row, so cascade-diff-table recomputes the union rather than reading it; no artefact changed."],
+    :gates
+    {:exit-codes
+     "captured to /tmp/L6gates/{kondo,parens,lake,lintest,spidertest,findorganise,findsnatch,playout,neg-f1..neg-o4}.exit and tested by /tmp/L6gates/check_exits.sh, a numeric loop that exits 1 on any non-zero; ALL-GATES-EXIT=0; no gate status read through a pipe",
+     :clj-kondo "exit 0, errors 0 warnings 0 over checks/find_organise.clj, checks/find_snatch.clj, checks/playout_snatch.clj (one warning fixed: playout_snatch/library-dir became unused when the reader moved out, and was removed)",
+     :check-parens "exit 0, OK -- emacs -Q --batch -l /home/joe/code/futon4/dev/check-parens.el --eval (arxana-check-parens-cli) -- over the same three files",
+     :library-graph-lint-test "exit 0, 14 tests / 167 assertions / 0 failures, under the C88 pin (1254 files; :why 92, :why-posthoc 7, :how 32, :see-also 147)",
+     :spider-runner-test "exit 0, 8 tests / 43 assertions / 0 failures",
+     :lake-build "exit 0 -- lake build DarkTower.WarMachine.Holes, 2704 jobs, same ten `declaration uses sorry` warnings at the same lines (153, 264, 308, 6559, 6582, 6593, 6626, 6629, 6632, 6635), so the amendment changed a type and no hole count",
+     :emit-contract "exit 0 -- scripts/emit-contract.sh re-emitted; the `organise` declaration is byte-identical; the five-declaration staleness it exposed is in :findings and was not committed",
+     :check-runs "find-organise exit 0; the eight --negative-* runs exit 0 (rejected); playout-snatch exit 0; find-snatch exit 0",
+     :section-lint "not run: no .flexiarg and no attestations.edn changed, so no section moved"}}}
 
   ;; --- Rows named by LA1 slice (c) (LA1c-restatement.md §12). Every not-built
   ;; element of the restatement is a row here rather than something built inside

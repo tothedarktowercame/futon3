@@ -718,8 +718,12 @@
     "No .flexiarg file and no attestation record was touched, so this item authors no @why, @why-posthoc, @how, @see-also or similarity-inferred edge (P-validated-R5 law O2, decisions.edn :spider-editorial-standing). No section lint is recorded because no library section changed: this is a class C code row, not a wave slice. checks/spider_runner.clj:120's own throw is unchanged -- it was already correct, as the row states; the fleet failing earlier means the runner's throw is now a second line of defence rather than the only one."}
    :statement "spider_fleet.clj:139: clj-kondo's `Condition always true` is right -- (assoc (read-edn path nil) :cache-path p) is a map even when the pinned cache file is absent, so the :pinned-evidence-cache-is-unreadable throw can never fire and a missing pin would run a fleet on an empty index. Recorded by L5 slice 1; spider_runner.clj:120's own throw works."
    :acceptance "The fleet path refuses a missing or unreadable pinned cache loudly (test proves it: point it at a nonexistent pin and assert the throw). A control proves a readable pin still passes. clj-kondo 0/0, check-parens, spider tests green."}
-  {:id :L8 :class :C :status :done-unreviewed :owner :any
+  {:id :L8 :class :C :status :done :owner :any
    :covers-key :none
+   :reviewed-by "codex"
+   :reviewed-at "2026-09-02T10:21:22Z"
+   :review
+   "Read fdcdebd in full and confirmed it is authored by Joseph Corneli, not the reviewer. Confirmed the filename tag is computed from the recorded reflection-rule version; mismatched, versionless, and wrong-schema caches are refused while an operator-chosen filename makes no tag claim; and the linter report preserves the refusal detail. Validated all 8 recorded renames against the filesystem: every old path is absent, every new path exists, every new sha256 matches the record, and every content version, filename tag, and internal :cache-path agrees. Validated all 18 corpus pins resolve to existing caches with matching tags (13 version 2, 5 version 3). Reproduced clj-kondo exit 0 (0 errors, 0 warnings), check-parens exit 0 (OK), library_graph_lint_test exit 0 (14 tests, 167 assertions; C88 pin 1254 files and library-wide edges :why 92, :why-posthoc 7, :how 32, :see-also 147), spider_runner_test exit 0 (8 tests, 43 assertions), and worklist_check exit 0. The evidence commit changes no .flexiarg or attestation file, so it authors no spider @why, @why-posthoc, or similarity-inferred edge; no wave-section lint applies to this class C row."
    :evidence
    {:sha "fdcdebd"
     :witness

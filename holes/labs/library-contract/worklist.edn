@@ -926,7 +926,51 @@
       "No attestations.edn row changed. The edge keeps :state [:attested-by \"claude-15\"] at rung 1; the check's NOT ATTESTED is a separate question from the attestation, as L4 established."
       "Nothing in futon2, futon4 or futon3c was edited. Those repositories were read only, at the shas pinned above."]
      :for-the-row
-     "Seven edges remain: the six aif edges and the ukrns edge. The row's price table beside NOTE-the-chain-layer-exists-and-is-empty.md is written when they are done, not per slice."}]
+     "Seven edges remain: the six aif edges and the ukrns edge. The row's price table beside NOTE-the-chain-layer-exists-and-is-empty.md is written when they are done, not per slice."}
+    {:slice 2
+     :edge "aif/declare-the-conditioning @how aif/structured-observation-vector"
+     :attestation "library/aif/attestations.edn:2, rung 1, :state [:attested-by \"claude-15\"]"
+     :outcome :check-written
+     :sha "futon3 aeb30a2"
+     :check
+     ["checks/how_witness_declare_conditioning.clj -- 216 lines, the same witness shape (relation + positive control + mirror). 51 ns+docstring, 78 fact rows and pointers, 37 relation+controls, 50 -main"
+      "checks/how_witness_declare_conditioning.clj:53-71 source and method obligations off the two flexiargs; :76-119 the 13 site mechanisms, each a repo file:line; :121-133 the 5 discharge adjudications with the one no-row reason written out; :135-148 the conditioning-slice narrowing"
+      "checks/README.md -- run command widened and a fifth row in the witness table"]
+     :result
+     "NOT ATTESTED. Witness 0 of 5. Positive control 5 ([:s1 :four-senses-note] [:s1 :sense-labels-in-rows] [:s3 :conditions-on-column] [:s4 :conditions-on-column] [:s5 :psi-concat]) -- the widest positive control of the three priced edges. Mirror silent (futon3c's own typed observation vector, aif/observe.clj, discharges nothing here). Matches L4's 0 of 5 in count and differs from it in kind."
+     :site
+     "futon2 76bdcd0 holes/M-evaluate-policies.md:1037-1123, holes/E-evaluate-policies-spikes.md:22-30, scripts/exhibit_cascade_argue.py, scripts/e5_conditioned_probe.py, holes/labs/M-evaluate-policies/e5-conditioned-probe.json, src/futon2/aif/{observation,free_energy,preferences}.clj, scripts/futon2/report/war_machine.clj, data/wm-trace/wm-trace-2026-09-01.edn; mirror at futon3c 9128f5a8 src/futon3c/aif/{observe,mission_head}.clj. NOT :no-site-to-check-against, and unlike slice 1 the evidence paragraph IS a pointer: every artifact it names (M-evaluate-policies SS9.6-9.7, the exhibit's conditions-on column, the E5 probe) exists at the path it implies and was read."
+     :relocation-cost
+     "None. This is the first of the three priced edges whose evidence paragraph located its own site. The one pointer that had drifted is INSIDE the site rather than in the flexiarg: the exhibit's provenance cell cites war_machine.clj:3797 for `(or dG 0.0)`, which sits at :5090 at futon2 76bdcd0 -- findable, ~1290 lines off. Recorded because slice 1's cost was exactly this failure one level up."
+     :price
+     {:wall "5m10s (310s), measured start to gates-green, and INSTRUMENTED IN TWO PHASES this time (slice 1 reported a total only): 3m35s (215s) reading, 1m35s (95s) writing plus gates. L4's split was 3m12s / 2m35s; the reading half is stable across three edges, the writing half fell because the witness shape is now copied rather than designed."
+      :lines 216
+      :fact-rows "31: 5 source obligations, 4 method obligations, 13 site mechanisms, 5 discharges, 4 conditioning-slice rows"
+      :files-read "17, across three repositories (L4: 6 in one; slice 1: 9 in three)"
+      :invented
+      ["I1-I4 recur from L4 unchanged and are not restated in the check"
+       "I6 one line per THEN. Both flexiargs state their THEN as a single sentence, so every obligation row cites the same line (:22 in each) and is labelled by its clause. L4 and slice 1 had numbered steps to cite one line each"
+       "I7 supplying vs declaring. A typed feature map SUPPLIES a situation; the source pattern asks a surface to DECLARE which slice it consumed. The check rules that supplying can discharge declaring, but only where a surface consumes the typed object itself -- a surface that consumes a RENDERING of it has consumed a different slice, and saying so is exactly what the declaration is for. This is the invention the verdict turns on: admit renderings and the edge attests at 3 of 5"]}
+     :substantive-findings
+     ["A third failure mode, distinct from the first two. L4: the method is absent from the site. Slice 1: the site is real but not where the evidence says. Here the method's output is present, is READ at the site (e5_conditioned_probe.py:72 reads the tick's typed :per-channel map), and is then flattened to one English sentence truncated at 400 characters (:76-83) and string-concatenated onto a 160-char psi scrap for an embedding constructor (:132). De-typing at the boundary, not absence."
+      "The site says so about itself, before the result: e5-conditioned-probe.json :honesty-caveats :a-prose-conditioning reads \"Enriches the PROSE conditioning (situation-in-psi); NOT the full repair, which conditions the SCORE on the belief state directly.\" The flexiarg's evidence paragraph is accurate about this (it says \"situation-enriched psi\"); it is the ATTESTATION that cites an aspiration."
+      "\"Conditions on: the live observation vector\" -- the exhibit's own phrase -- names FOUR different slices, each measured not asserted: 14 channels declared (observation.clj:17-31); 13 reach the tick's :per-channel map, because free_energy.clj:94 iterates (pref/current-C) whose keyset is the 13 of preferences.clj:11-24, so :depositing-signal is observed (observation.clj:144) and silently never conditions anything; 6 carry a weight into g-pragmatic (preferences.clj:50-58); and a DIFFERENT 6 (largest out-of-range gaps) reach E5's prose summary. The nesting is what declare-the-conditioning exists to make visible, and no surface at its own evidence site declares it."
+      "Both exhibit rows that name the method name it in the subjunctive -- \"(would: live observation vector)\", exhibit_cascade_argue.py:229 and :231 -- and both are rows with no number to condition (blend controller-score is a self-describing placeholder at war_machine.clj:5090; canonical core G is not defined for cascades)."
+      "Third of three priced edges whose attestation :cited is a NEXT-STEPS line (here declare-the-conditioning.flexiarg:31), now across TWO sections. L4 recorded it as a fact about peripherals; it is not."]
+     :gates
+     {:exit-codes "each gate wrote $? to /tmp/L10s2/<gate>.exit on the line after the command; all five read back from the files and tested in a numeric loop that exits 1 on any non-zero (ANY-NONZERO=0). No gate status read through a pipe."
+      :clj-kondo "exit 0, 0 errors 0 warnings over how_witness_declare_conditioning.clj plus the three existing witnesses (/tmp/L10s2/kondo.exit)"
+      :check-parens "exit 0, OK -- emacs -Q --batch -l futon4/dev/check-parens.el --eval (arxana-check-parens-cli) -- --no-defaults checks/how_witness_declare_conditioning.clj (/tmp/L10s2/parens.exit)"
+      :library-graph-lint-test "exit 0, 13 tests / 151 assertions / 0 failures under `bb -cp .`, unchanged from slice 1. C88 pin: 1247 files, :edges-by-kind {:why 86 :why-posthoc 7 :how 27 :see-also 141} (/tmp/L10s2/lintest.exit)"
+      :spider-runner-test "exit 0, 8 tests / 43 assertions / 0 failures, unchanged (/tmp/L10s2/spidertest.exit)"
+      :witness-run "exit 0; not wired into a test suite, matching how the four existing witnesses ship -- registered in checks/README.md with its run command (/tmp/L10s2/run.exit)"
+      :section-lint "not run, and not applicable: no wave slice, and no .flexiarg or attestations.edn file was edited, so there is no section that could have moved. Same reasoning L4 and slice 1 recorded."}
+     :not-touched
+     ["No .flexiarg file changed, so this slice authors no @why, no @why-posthoc, no @how, no @see-also, and infers no edge from embedding similarity (P-validated-R5 law O2, decisions.edn :spider-editorial-standing)."
+      "No attestations.edn row changed. The edge keeps :state [:attested-by \"claude-15\"] at rung 1; NOT ATTESTED here is the derived behavioural question, not the attestation."
+      "Nothing in futon2 or futon3c was edited. Those repositories were read only, at the shas pinned above. The working tree of futon3 also held three uncommitted math-formalization flexiargs and a modified resources/sigils/patterns-index.tsv belonging to other work; only the two files of this slice were staged."]
+     :for-the-row
+     "Six edges remain: five aif edges (no-self-certification -> measurement-window-hygiene, scheduled-observer-entrypoint -> grounded-actuation-not-reobservation, status-gated-belief-update -> predictive-coding-belief-update, two-layer-calibration -> off-continuity-null-discriminates, off-continuity-null-discriminates -> measurement-window-hygiene) and the ukrns edge. Three of three priced so far are NOT ATTESTED and three of three cite a NEXT-STEPS line; if that holds through the aif set the row's note has a stronger claim to make than a price table."}]
    :acceptance "Per slice, ONE edge: either write the derived check (L4's witness pattern as template: check runs against the site the pattern's evidence names, positive control included) and record its cost like L4 did, or record :no-site-to-check-against with the evidence paragraph quoted. No invented sites (the L4 selection-cost lesson). Row done when all eight have a check or a recorded no-site finding, with the price table summarized in a note beside NOTE-the-chain-layer-exists-and-is-empty.md."}
   {:id :LD1,
    :class :D,

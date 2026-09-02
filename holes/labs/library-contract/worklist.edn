@@ -1420,7 +1420,12 @@
    :acceptance "Slice (a) DISCOVERY: reconstruct the two layers from the artifacts with pointers -- the 18 play-grain snatch patterns (all @audience players; consult-the-remedy-before-exiting already says players, policy authors), the hand-authored precedence order recorded as a limitation, grim as the named reactive rule, S-G4 wiring-sensitivity, how_witness_snatch.clj's third layer, and the M-formal-war-machine bottom-up passage (policy-over-policies). Name the type discipline that keeps the reflective step from being a type error. Slice (b) AUTHOR: the temperament pattern(s) into the library in proper flexiarg form (@audience policy authors), grim first since the record names it; each carries @why to what it rests on and states its operand grain in + context; section lint and attestation discipline as for any authored pattern. Slice (c) RESTATE: the unified types (InformationState including repo and tension; Policy : Cascade -> (History -> Option Pattern); run; Q(o|pi) derived; G(pi)) as a candidate restatement of §1, with what changes for the Lean find/organise obligations and L6 stated explicitly. Each slice reviewed; the restated §1 goes to Joe via LJ1 -- this row does NOT unblock §5 packets by itself. JOE'S CLARIFICATIONS 2026-09-02 (second exchange), binding on the slices: (1) FAMILY, not one pattern -- a general have-a-temperament pattern carrying @how edges to five specific temperament patterns (the §5a use of @how exactly: the named methods by which the general is carried out); each specific temperament = a policy for building a cascade = a style of play. (2) PRODUCTION-RULE DISCIPLINE is important: every pattern here keeps a production-rule interpretation -- a temperament is a production rule whose left side matches cascade/precedence state, not game state. (3) Cross-section pointers OUT of snatch are invited. (4) Some temperaments learn in a war-room-like way; outside patterns could set (hyper)parameters in the policy playout -- slice (a) must check the existing @aif-delta channel (cascade-ants.edn channel 1, attach-config -> :aif-config merge, recorded NEVER TESTED by the ants authority gate) as the candidate mechanism before inventing one. (5) Reactive play seems policy-grained to Joe, but where it currently sits in the 18 snatch patterns is a slice (a) discovery question (candidates: re-enter-after-observed-repair, revert-then-invert, escalate-only-as-far-as-you-can-lose) -- report, do not presume. THIRD EXCHANGE 2026-09-02: slice (c)'s restated types MUST include the constructor -- iterative, G-guided assembly with an explicit STOPPING RULE (temperament alone = too little, all patterns = too much; snatch's current up-closure takes the FULL @why closure, so the stopping problem is live even in the fixture); a preferential-attachment prior read off the how/why landscape (prior from landscape connectivity, updated by G improvement per attachment step); and the landscape as a substrate for learning over multiple runs. Slice (a) must inventory the constructor precedents: cascade_serve/cascade_construct's budget+epsilon greedy loop (right SHAPE, wrong substrate -- embeddings, which law O2 rejects), playout_snatch up-closure (the too-much end), phylogeny edge weights. Each not-built element is NAMED as a future row in slice (c), not built inside LA1. FOURTH EXCHANGE 2026-09-02: comparison domains are part of the architecture, not a later add-on. Slice (c) states the types over an abstract domain interface (Repository, Tension, playout oracle); Snatch AND Ants instantiated on paper (ants: library/ants 5 patterns, pattern_authority_gate.clj as the oracle, @aif-delta channel native there; its gate REFUSED every real pattern on held-out yield 2026-07-16, making it the confirmation-bias control); ALFWorld named as the external-benchmark stretch row. A constructor that runs on one domain only does not meet the restatement bar. FIFTH EXCHANGE 2026-09-02: after the three pilots, a GENERALISATION phase at the R5 node -- construction-only trials over real T/M/E work items (the T series is already triaged with reviewed verdicts, tickets-index.edn; live M/E indexes are the harvest named 2026-09-01). Two trial classes, named as future rows by slice (c): RETRODICTION on completed items (construct a policy from the item's statement as recorded, compare against the resolution the ledger actually records -- the completed wm-contract rows and closed tickets are ground truth that already exists) and CONSTRUCTION on open items (plausibility-reviewed only; nothing enacted). This is the dark-mode discipline applied to the constructor, and it is what validates R5 itself. SIXTH EXCHANGE 2026-09-02: the Zaif runners join the domain list (after the three pilots, alongside the R5 generalisation). zaif v0 (futon3c zaif_controller.clj) is a per-decision arm chooser with fixed constants -- the exact individual-action-ranking shape the restatement moves away from; the cascade version gives the runner a carried, bounded program (Joe: ChipWits -- finite chip board = the stopping rule made physical; chips = production rules; watch-then-rewire = learning over runs). Oracle: the seat's persisted transcripts (zai_api U1) and gates; existing zai transcripts are retrodiction material. Reviewability consequence to state in slice (c): a carried cascade can be REVIEWED BEFORE THE RUN -- author/reviewer separation applied to behaviour, which per-decision arm arithmetic cannot offer."}
   {:id :LJ1,
    :class :J,
-   :status :needs-joe,
+   :status :done,
+   :evidence "futon2 ea89ff2 (P-validated-R5.md section 1c)"
+   :reviewed-by "joe" :reviewed-at "2026-09-02"
+   :review "The row was Joe ruling on LA1c section 11; his dictated confirmation IS the review of that restatement. Recorded by claude-1; recorder != ruler."
+   :resolved-by "Joe, 2026-09-02, in session (dictated)"
+   :resolution "CONFIRMED with a unification gloss: pattern = policy at every grain; the policy grain is recursive. Recorded verbatim at P-validated-R5.md section 1c (futon2 ea89ff2). Section 5 packets ungated."
    :owner :joe,
    :covers-key :none,
    :bar
@@ -1436,7 +1441,7 @@
    "LA1's restated §1 is put before Joe; his confirmation (or correction) lands in P-validated-R5.md with a date; L6 unblocks. Input so far recorded at P-validated-R5.md §1b (futon2 fdff3ba)."}
   {:id :L6,
    :class :C,
-   :status :blocked,
+   :status :open,
    :owner :any,
    :depends-on [:LA1 :LJ1],
    :covers-key :none,
@@ -1449,49 +1454,49 @@
   ;; element of the restatement is a row here rather than something built inside
   ;; LA1. All are :blocked on LJ1 except LB1, which is independent housekeeping.
 
-  {:id :LA2 :class :C :status :blocked :owner :any :depends-on [:LA1 :LJ1] :covers-key :none
+  {:id :LA2 :class :C :status :open :owner :any :depends-on [:LA1 :LJ1] :covers-key :none
    :statement
    "Slice (b) authored six policy-grain patterns into library/snatch and NOTHING EXECUTES THEM: pattern-policy still takes `overrides` as a Clojure argument (checks/playout_snatch.clj:150), and the :policy conjunct that would stop a policy-grain rule firing in a game situation is unbuilt (decisions.edn :temperament-grain, cost stated there). LA1c §11 names this as the facade the restatement is most likely to become -- a reified runner: six new library files and the behaviour still in the Clojure."
    :acceptance
    "The :policy grain value added as a checked conjunct in the same shape as :design (playout_snatch.clj:20-30) and :play (:47-113); a CascadeEdit type (admit / drop / promote-above / setFlag / halt, LA1c §3.4); a runner that reads at least ONE of slice (b)'s six THENs and produces the same overrides map it replaces -- the acceptance test is that play-the-authored-order-first reproduces patterns-overrides {} (:160) and lead-with-the-exchange-rule reproduces exchange-first-overrides (:165), scored identically on all six scenarios in checks/snatch-cascade.edn. CascadeDiff (Holes.lean:294) gains the admittedBy field and organiseO1NodesRecorded (:340-344) is re-proved over the three-way union. Gates as for any Clojure row."}
 
-  {:id :LA3 :class :C :status :blocked :owner :any :depends-on [:LA1 :LJ1 :LA2] :covers-key :none
+  {:id :LA3 :class :C :status :open :owner :any :depends-on [:LA1 :LJ1 :LA2] :covers-key :none
    :statement
    "The constructor (LA1c §4): iterated fire-at-policy-grain with the stopping rule emitted as a `halt` CascadeEdit rather than tested in the runner. The loop exists (cascade_construct.py:222-232) and its substrate is refused by O2 and F3; the replacement is decisions.edn :constructor-relevance-substrate interim arm :authored-edge-degree."
    :acceptance
    "score(p | chosen, tension) = match(p,tension) * (alpha + degree(p,chosen)) with match the F2/F3 receipt cited from pattern text and degree the count of authored @why/@how edges (O3's ReachOutside restricted to chosen). Two temperaments that differ ONLY in their stopping rule produce different cascades on the same seed, and each cascade records its stop reason and step count. The measurement decisions.edn :constructor-relevance-substrate :changes-it asks for is part of this row: is the degree term distinguishable from uniform on a real tension at 8.3% coverage? If not, the finding is that L5/L9 coverage blocks the constructor, and that is the delivery."}
 
-  {:id :LA4 :class :E :status :blocked :owner :any :depends-on [:LA1 :LJ1 :LA3] :covers-key :none
+  {:id :LA4 :class :E :status :open :owner :any :depends-on [:LA1 :LJ1 :LA3] :covers-key :none
    :statement
    "Ants instantiated -- the CONTROL domain. Two gaps found by LA1c §6: attach-config (futon2/src/ants/cyber.clj:202-213) takes one pattern-key, so a cascade of @aif-delta patterns has no expression; and pattern_authority_gate.clj:52-68 sets the switches directly and never calls attach-config, so the 2026-07-16 AUTHORITY FAIL verdict (cascade-ants.edn:21-23) measured channel 2 only and yield under channel 1 has never been measured."
    :acceptance
    "attach-config extended to fold a cascade's deltas in PRECEDENCE order -- merge-deep is last-wins (cyber.clj:193-200), so the test that precedence decides a key collision is the acceptance test for O4 in this domain. Then the held-out yield sign test from pattern_authority_gate.clj run on a constructed cascade at lambda in {0.1,0.5,1.0} with the same controls (the sham must tie `off` exactly on every seed). STATED IN ADVANCE, per LA1c §6: the honest expected result is a REFUSAL. A refusal is a delivery. A success reported without the held-out sign test is the control discarded, not passed."}
 
-  {:id :LA5 :class :E :status :blocked :owner :any :depends-on [:LA1 :LJ1 :LA3] :covers-key :none
+  {:id :LA5 :class :E :status :open :owner :any :depends-on [:LA1 :LJ1 :LA3] :covers-key :none
    :statement
    "Zaif instantiated -- the only one of the four domains that exercises find, because its repository is the whole library and its tension varies per task. zaif v0 (futon3c/src/futon3c/agents/zaif_controller.clj, `decide` at :105 over fixed uncalibrated constants at :11-20) ranks individual actions; the cascade version hands the seat a carried, bounded program (Joe: ChipWits)."
    :acceptance
    "One seat given a constructed cascade for one task, REVIEWED BEFORE THE RUN by someone other than its constructor -- that review is the point of the row (LA1c §7: author != reviewer applied to behaviour, which per-decision arm arithmetic cannot offer). Oracle: zai_api.clj:803 U1 persisted transcripts plus gate receipts. The comparison is against the v0 arm chooser on the same task, and a null result is a delivery."}
 
-  {:id :LA6 :class :E :status :blocked :owner :any :depends-on [:LA1 :LJ1 :LA3] :covers-key :none
+  {:id :LA6 :class :E :status :open :owner :any :depends-on [:LA1 :LJ1 :LA3] :covers-key :none
    :statement
    "ALFWorld -- the external-benchmark stretch (P-validated-R5.md:693, Joe's fourth exchange). The abstract interface makes the cost one line: ALFWorld supplies Situation, Act, Obs and an oracle for free, and NO repo. There is no authored pattern library for it and no authored standsOn relation over one."
    :acceptance
    "Authoring a pattern repository for ALFWorld comes FIRST and is the expensive half; this row is not started until LA4 and LA5 have both reported, because a constructor that has not survived its own control domain has no business on an external benchmark. Recorded now so the cost is on the row's face rather than discovered later."}
 
-  {:id :LA7 :class :E :status :blocked :owner :any :depends-on [:LA1 :LJ1 :LA3] :covers-key :none
+  {:id :LA7 :class :E :status :open :owner :any :depends-on [:LA1 :LJ1 :LA3] :covers-key :none
    :statement
    "R5 generalisation, RETRODICTION class (Joe's fifth exchange, P-validated-R5.md:699-707): construct a policy from a COMPLETED work item's statement as recorded, and compare against the resolution the ledger actually records. Ground truth already exists and was not made for this purpose -- futon2/holes/labs/wm-contract/worklist.edn: 76 :done + 6 :done-unreviewed of 88; futon3c/holes/tickets/tickets-index.edn: 8 :done-in-fact + 1 :superseded of 34, triaged 2026-09-01 with reviewed verdicts."
    :acceptance
    "The item's statement is the Tension; the library is the Repository; the constructed cascade is compared against what the ledger records was done. Blind discipline: the constructor is given the statement ONLY, never the resolution, and the comparison is made by someone who did not run the constructor. A pre-registered falsifier: name in advance at least one completed item whose recorded resolution the constructor must NOT reproduce (F4 applied to retrodiction). Nothing is enacted."}
 
-  {:id :LA8 :class :E :status :blocked :owner :any :depends-on [:LA1 :LJ1 :LA7] :covers-key :none
+  {:id :LA8 :class :E :status :open :owner :any :depends-on [:LA1 :LJ1 :LA7] :covers-key :none
    :statement
    "R5 generalisation, CONSTRUCTION class: construct policies for OPEN work items, to see whether a policy could plausibly be built that would allow working on them -- not to work on them. Dark-mode discipline (construct, persist, judge; do not enact) applied to the constructor itself. Denominators: 4 :open + 2 :blocked in wm-contract; 7 :still-open + 3 :open in tickets-index.edn."
    :acceptance
    "Plausibility-reviewed only, by a reviewer who is not the constructor, with the judgement persisted beside the constructed cascade. NOTHING ENACTED -- no packet dispatched, no code written, no row moved on the strength of a constructed policy. Runs only after LA7 has reported, because a constructor that cannot retrodict has nothing to say about open work."}
 
-  {:id :LA9 :class :E :status :blocked :owner :any :depends-on [:LA1 :LJ1 :LA3] :covers-key :none
+  {:id :LA9 :class :E :status :open :owner :any :depends-on [:LA1 :LJ1 :LA3] :covers-key :none
    :statement
    "Learning over multiple runs on the how/why landscape (Joe's third exchange). The carrier exists and is nearly empty: futon6/data/pattern-phylogeny-learned.json holds 0 descent edges and 2 co-application edges, neither touching snatch/ or ants/. LA1c §4.3 proposes the one restriction that keeps it inside law O2, as PROPOSED law O5: learning may update the WEIGHTS on authored edges and may never ADD an edge."
    :acceptance

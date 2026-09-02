@@ -15,6 +15,14 @@
 (def agency-send "/home/joe/code/futon3c/scripts/agency_send.py")
 (def schema-path (str (fs/path library ".spider/attestation-schema.edn")))
 (def lint-lock (str (fs/path library ".spider/lint.lock")))
+;; Worklist row :LA9.  The learned-weight proposal channel: pairs of patterns
+;; that were attached to the same constructed cascade at the same step across the
+;; recorded runs, and that have NO authored edge between them.  A proposal is a
+;; hypothesis that an author might have an edge to write; it is not a warrant.
+;; The runner's own validation (validate-output / evidence-valid?) does not read
+;; this file, so nothing here can lower the evidence bar -- checks/learn_edge_weights.clj
+;; is where the store is written and where that separation is checked.
+(def edge-proposals (str (fs/path root "checks/edge-proposals.edn")))
 (def edge-kinds #{:why :how :see-also})
 (def proposal-kinds #{:retire :specialise :merge :split})
 
@@ -131,6 +139,16 @@
 (def directive-table
   "| directive | direction | meaning | who writes it |\n|---|---|---|---|\n| `@why <id> [<id> …]` | toward the general | the authority this pattern rests on — the strategy it is an instance of | the pattern's own author |\n| `@how <id> [<id> …]` | toward the specific | the named methods by which this pattern is carried out | an editor, later |\n| `@see-also <id> [<id> …]` | sideways | a peer technique; no claim of authority in either direction | either |")
 
+(defn learned-weight-proposals
+  "The learned-weight proposals whose source is THIS pattern, best first.  Empty
+   is the ordinary case and is not a problem: the store reaches 2105 pairs over a
+   library of 1240 patterns, so most patterns have none."
+  [section pattern]
+  (->> (get-in (read-edn edge-proposals {}) [:for-the-spider (keyword section)])
+       (filter #(= pattern (:from %)))
+       (take 5)
+       vec))
+
 (defn response-prompt [section pattern file paths state rung-one]
   (let [readme (first (filter fs/exists? [(fs/path (:section-dir paths) "README.md")
                                           (fs/path (:section-dir paths) "README-flexiarg.md")]))
@@ -166,6 +184,9 @@
      "README-flexiarg.md §5a (verbatim):\n" directive-table "\n"
      "Runner-supplied rung-1 exact-occurrence hits (cite these verbatim; do not invent others):\n"
      (pr-str rung-one) "\n"
+     "Learned-weight proposals for this pattern (checks/edge-proposals.edn, worklist :LA9). These pairs were attached to the same constructed cascade at the same step across recorded runs and have no authored edge between them. "
+     "They are HYPOTHESES about where an edge might be, nothing more: a proposal is not a citation and not evidence, the runner does not read this file when it validates your output, and an edge offered on a proposal alone will be rejected exactly as one offered on nothing. Ignore them freely.\n"
+     (pr-str (learned-weight-proposals section pattern)) "\n"
      (when previous-failure (str "Previous gate/output failure to correct: " (pr-str previous-failure) "\n"))
      "\nAttestation schema:\n" (slurp schema-path) "\n"
      "Section README:\n" (if readme (slurp (str readme)) "(No section README exists.)") "\n"

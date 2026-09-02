@@ -1,0 +1,344 @@
+{:as-of
+ {:authored-edges 271,
+  :authored-edges-by-kind {:how 32, :see-also 147, :why 92},
+  :dangling-directives 0,
+  :patterns 1240,
+  :read-digest
+  "aa65cb17fec45237ec8c945680eb7385bdc8a5a7ac1d4628b0560b472a1e853b",
+  :sections 98},
+ :co-occurrence-null
+ {:largest-disagreement 4,
+  :pairs-co-member-but-never-attached 1852,
+  :pairs-where-the-two-counts-disagree 50,
+  :same-top-ten? false,
+  :top-ten-by-attachment
+  [[:aif/admissibility :aif/grounded-actuation-not-reobservation]
+   [:aif/admissibility :aif/shared-kernel-predictive-forward-model]
+   [:aif/grounded-actuation-not-reobservation :aif/niche-construction]
+   [:aif/grounded-actuation-not-reobservation
+    :aif/predictive-entropy-as-ambiguity]
+   [:aif/grounded-actuation-not-reobservation
+    :aif/shared-kernel-predictive-forward-model]
+   [:aif/grounded-actuation-not-reobservation
+    :aif/temporal-depth-beyond-greedy]
+   [:aif/grounded-actuation-not-reobservation
+    :equity/protected-interaction]
+   [:aif/niche-construction
+    :aif/shared-kernel-predictive-forward-model]
+   [:aif/predictive-entropy-as-ambiguity
+    :aif/shared-kernel-predictive-forward-model]
+   [:aif/shared-kernel-predictive-forward-model
+    :equity/protected-interaction]],
+  :top-ten-by-co-membership
+  [[:agent/environment-over-optimization :coordination/capability-gate]
+   [:agent/environment-over-optimization
+    :futon-theory/coordination-protocol]
+   [:agent/environment-over-optimization
+    :gauntlet/aif-as-environment-not-instruction]
+   [:agent/environment-over-optimization
+    :gauntlet/co-presence-over-co-location]
+   [:agent/environment-over-optimization :gauntlet/placenta-transfer]
+   [:agent/environment-over-optimization
+    :gauntlet/umwelt-not-architecture]
+   [:agent/environment-over-optimization :gauntlet/world-is-hypergraph]
+   [:agent/environment-over-optimization
+    :memory/verify-in-the-serving-process]
+   [:agent/environment-over-optimization :social/idempotent-handoff]
+   [:aif/admissibility :aif/predictive-entropy-as-ambiguity]],
+  :unauthored-pairs-with-an-attachment 2105,
+  :unauthored-pairs-with-co-membership 3957},
+ :controls
+ {:determinism {:proposals-identical? true, :weights-identical? true},
+  :edge-store-untouched
+  {:bytes-identical? true,
+   :edge-count-after 271,
+   :edge-count-before 271,
+   :edge-set-identical? true,
+   :files-after 1256,
+   :files-appearing-during-the-pass [],
+   :files-before 1256},
+  :negative-controls
+  [{:caught? true,
+    :control :a-weight-on-an-unauthored-pair,
+    :detail
+    "[:aif/admissibility :aif/grounded-actuation-not-reobservation]",
+    :exercised? true}
+   {:caught? true,
+    :control :a-proposal-that-is-already-an-authored-edge,
+    :detail
+    "[:aif/candidate-pattern-action-space :why :war-room/wr-19-tension-must-generate-not-only-rank]",
+    :exercised? true}
+   {:caught? true,
+    :control :a-learned-pair-admitted-to-a-cascade-as-an-edge,
+    :detail
+    "[:aif/admissibility :aif/grounded-actuation-not-reobservation]",
+    :exercised? true}
+   {:caught? true,
+    :control :a-write-into-the-edge-store,
+    :detail "write! must refuse a path in the edge store",
+    :exercised? true}
+   {:caught? true,
+    :control :a-weight-that-moves-what-find-selected,
+    :detail ":agency/bounded-lifecycle",
+    :exercised? true}
+   {:caught? true,
+    :control :a-store-whose-edge-set-digest-is-stale,
+    :detail
+    "store-fresh? compares the digest the store was learned against",
+    :exercised? true}],
+  :negative-controls-declared
+  [:a-weight-on-an-unauthored-pair
+   :a-proposal-that-is-already-an-authored-edge
+   :a-learned-pair-admitted-to-a-cascade-as-an-edge
+   :a-write-into-the-edge-store
+   :a-weight-that-moves-what-find-selected
+   :a-store-whose-edge-set-digest-is-stale],
+  :proposal-domain
+  {:pairs 2105, :proposals-that-are-authored-edges []},
+  :store-freshness {:proposals-fresh? true, :weights-fresh? true},
+  :the-pass-wrote-something
+  {:non-vacuous? true, :proposals 2105, :weights 41},
+  :weight-domain {:keys 41, :keys-that-are-not-authored-edges []},
+  :write-ledger
+  {:all-allowed? true,
+   :allowed
+   ["checks/edge-proposals.edn"
+    "checks/edge-weights.edn"
+    "checks/learn-edge-weights.edn"],
+   :none-in-the-edge-store? true,
+   :paths ["checks/edge-proposals.edn" "checks/edge-weights.edn"]}},
+ :corpus
+ {:admissions 228,
+  :artefacts
+  [{:path "checks/construct-cascade.edn",
+    :domain :the-library,
+    :row :LA3}
+   {:path "checks/ants-cascade.edn", :domain :ants, :row :LA4}
+   {:path "checks/alfworld-cascade.edn", :domain :alfworld, :row :LA6}
+   {:path "checks/zaif-cascade.edn", :domain :zaif, :row :LA5}
+   {:path "checks/retrodiction-cascade.edn",
+    :domain :retrodiction,
+    :row :LA7}
+   {:path "checks/retrodiction-cascade-per-clause.edn",
+    :domain :retrodiction-per-clause,
+    :row :LA7}
+   {:path "checks/open-cascade.edn", :domain :open-items, :row :LA8}
+   {:path "checks/open-cascade-short-cue.edn",
+    :domain :open-items-short-cue,
+    :row :LA8}],
+  :attachment-steps 3801,
+  :attachment-steps-credited 3789,
+  :attachment-steps-dropped 12,
+  :dropped-because-a-pattern-is-not-in-this-repository {:alfworld 12},
+  :runs 48,
+  :runs-by-domain
+  {:alfworld 2,
+   :ants 2,
+   :open-items 10,
+   :open-items-short-cue 10,
+   :retrodiction 10,
+   :retrodiction-per-clause 10,
+   :the-library 2,
+   :zaif 2},
+  :runs-with-no-admission 20},
+ :g-improvement-availability
+ {:admission-entries 228,
+  :admission-entries-with-a-reason 0,
+  :per-step-score-available? false,
+  :run-rows-with-a-score-field 0,
+  :runs 48},
+ :o5a
+ {:attachments-under-a-floor-stop 65,
+  :by-kind {:how 14, :see-also 9, :why 18},
+  :edges-in-the-repository 271,
+  :edges-with-a-weight 41,
+  :max-weight 6.0,
+  :sections-supplying-a-weight
+  #{:aif
+    :cascades
+    :coordination
+    :cycle-machine
+    :forward-model
+    :math-formalization
+    :math-formalization-CA
+    :math-formalization-CV
+    :problems
+    :snatch
+    :system-coherence
+    :war-room
+    :writing-coherence},
+  :share-of-the-edge-set-the-corpus-reaches 0.1512915129151292,
+  :store "checks/edge-weights.edn",
+  :weight-distribution {1.0 5, 2.0 25, 3.0 1, 4.0 8, 5.0 1, 6.0 1}},
+ :o5b
+ {:concentration
+  {:median 2.0,
+   :pairs 2105,
+   :pairs-at-the-median-or-below 1947,
+   :top 6.0},
+  :max-weight 6.0,
+  :pairs 2105,
+  :sections-in-the-spider-channel
+  [:agency
+   :agent
+   :ai4ci
+   :aif
+   :ants
+   :baldwin
+   :budgeted-action-selection
+   :campaign-coherence
+   :cascades
+   :code-coherence
+   :collaboration-coherence
+   :contributing
+   :control
+   :coordination
+   :cycle-machine
+   :data-mining
+   :depositing
+   :devmap-coherence
+   :eight-gates
+   :eoi-engine
+   :equity
+   :f6
+   :features
+   :forward-model
+   :futon-theory
+   :gauntlet
+   :iching
+   :iiching
+   :invariant-coherence
+   :math-formalization
+   :math-formalization-CA
+   :math-formalization-CV
+   :math-formalization-FA
+   :math-informal
+   :math-informal-CA
+   :math-informal-CO
+   :math-informal-CT
+   :math-informal-LO
+   :math-strategy
+   :memory
+   :meta
+   :mmca
+   :musn
+   :or2
+   :or3
+   :orchestration
+   :paramitas
+   :pattern-coherence
+   :peeragogy
+   :peripherals
+   :plos-npt-with-small-n
+   :problems
+   :process-coherence
+   :realtime
+   :relationship-coherence
+   :scan-coherence
+   :sidecar
+   :snatch
+   :social
+   :system-coherence
+   :ukrns
+   :vsatelier
+   :war-machine
+   :war-room
+   :writing-coherence],
+  :store "checks/edge-proposals.edn",
+  :top-ten
+  [[[:aif/admissibility :aif/grounded-actuation-not-reobservation] 6.0]
+   [[:aif/admissibility :aif/shared-kernel-predictive-forward-model]
+    6.0]
+   [[:aif/grounded-actuation-not-reobservation :aif/niche-construction]
+    6.0]
+   [[:aif/grounded-actuation-not-reobservation
+     :aif/predictive-entropy-as-ambiguity]
+    6.0]
+   [[:aif/grounded-actuation-not-reobservation
+     :aif/shared-kernel-predictive-forward-model]
+    6.0]
+   [[:aif/grounded-actuation-not-reobservation
+     :aif/temporal-depth-beyond-greedy]
+    6.0]
+   [[:aif/grounded-actuation-not-reobservation
+     :equity/protected-interaction]
+    6.0]
+   [[:aif/niche-construction
+     :aif/shared-kernel-predictive-forward-model]
+    6.0]
+   [[:aif/predictive-entropy-as-ambiguity
+     :aif/shared-kernel-predictive-forward-model]
+    6.0]
+   [[:aif/shared-kernel-predictive-forward-model
+     :equity/protected-interaction]
+    6.0]],
+  :weight-distribution {1.0 831, 2.0 1116, 3.0 9, 4.0 139, 6.0 10}},
+ :routing
+ {:to-find
+  {:distinct-weights-over-the-selection 3,
+   :inverted-arm-does-not-move-the-order true,
+   :learned-order
+   [:snatch/have-a-temperament
+    :snatch/widen-the-cascade-only-on-evidence
+    :coordination/pattern-search-protocol
+    :devmap-coherence/prototype-alignment-embedding
+    :futon-theory/derive-exits-on-a-minted-sorry
+    :or2/two-joes-one-mandate
+    :plos-npt-with-small-n/venue-register-boundary
+    :sidecar/artifact-entity-mention-grounding
+    :writing-coherence/citation-density-load-bearing-claim],
+   :order-moves-against-the-unlearned-arm? true,
+   :receipts-unmoved? true,
+   :selected-patterns-carrying-any-learned-weight 2,
+   :selected-unmoved? true,
+   :unlearned-order
+   [:coordination/pattern-search-protocol
+    :devmap-coherence/prototype-alignment-embedding
+    :futon-theory/derive-exits-on-a-minted-sorry
+    :or2/two-joes-one-mandate
+    :plos-npt-with-small-n/venue-register-boundary
+    :sidecar/artifact-entity-mention-grounding
+    :snatch/have-a-temperament
+    :snatch/widen-the-cascade-only-on-evidence
+    :writing-coherence/citation-density-load-bearing-claim]},
+  :to-organise
+  {:holds? true,
+   :method :static-text-scan-plus-the-O2-mutation,
+   :not-claimed "a same-process rerun would be vacuous and is not run",
+   :organise-side-files-naming-a-store {},
+   :spider-reads-the-proposals? true,
+   :store-readers
+   {"checks/learn_edge_weights.clj"
+    ["checks/edge-weights.edn" "checks/edge-proposals.edn"],
+    "checks/spider_runner.clj" ["checks/edge-proposals.edn"]}},
+  :to-the-spider
+  {:file "checks/spider_runner.clj",
+   :pairs-under-half-the-corpus 286,
+   :ranking-moves-when-half-the-corpus-is-taken-away? true,
+   :reads-the-proposal-store? true,
+   :sections-offered 65,
+   :the-bar-is-unchanged
+   "the runner's validate-output/evidence-valid? path does not read this store, so a proposal cannot warrant an edge"}},
+ :the-argument
+ {:five-there-is-almost-nothing-to-learn-on-yet
+  "41 of 271 authored edges (15.1%) are reached by the whole recorded\n      corpus at all, and the weights they carry run {1.0 5, 2.0 25, 3.0 1, 4.0 8, 5.0 1, 6.0 1}. The proposal side is\n      flatter still: 2105 pairs, top weight 6.0, median 2.0. A law adopted now\n      would be legislating for machinery with two orders of magnitude less data\n      than it needs to discriminate anything. This is the same bound\n      :constructor-degree-term-measured records one level down -- the constructor\n      is bounded by how much of the library is organised, and so is anything\n      learned from running it.",
+  :four-the-proposal-channel-is-a-filter-not-a-ranking
+  "Against the co-occurrence null: 2105 unauthored pairs carry an\n      attachment and 3957 are merely co-members, so the attachment record EXCLUDES\n      1852 pairs that co-occurrence would admit -- those whose two patterns were\n      both in the seed and so were never attached to each other. That is a real\n      difference. But on the pairs it does admit the two counts agree on 2055 of\n      2105; the ordering is co-membership. So the record's contribution is the\n      filter, not the ranking, and any claim that a HIGH weight means more than a\n      NONZERO one is not supported here.",
+  :o5-as-written
+  "LA1c-restatement.md §4.3 and the §9 law table: `learning updates WEIGHTS on\n      authored edges and never adds an edge (§4.3). A learned weight is input to\n      find and to authorship, never to organise.`",
+  :one-the-two-clauses-need-different-domains
+  "The domain clause puts w on the authored edge set. The routing clause says a\n      learned high weight is a hypothesis that an author SHOULD WRITE an edge. On\n      the domain clause's domain that hypothesis has no referent: the edge is\n      already written, so a weight on it proposes nothing. For the routing clause\n      to have content the learner must score PAIRS, of which authored edges are a\n      subset -- which is what this file does, in two stores that are separate for\n      exactly this reason. As one sentence O5 is not adoptable; as two laws it is.",
+  :recommendation
+  "DO NOT ADOPT O5 as written. Three things are on offer instead, in the order\n      they should be taken. (a) Adopt nothing and keep the machinery: the stores,\n      the routing separation and the byte-identity control are worth having\n      whether or not a law is written over them, and they cost nothing to leave\n      running. (b) If a law is wanted now, adopt the ROUTING law -- no path from a\n      repository to a cascade reads a learned quantity -- which is what actually\n      does the work, is checkable today, and does not depend on the domain\n      question. (c) Leave the DOMAIN question (weights on edges only, versus\n      weights on pairs with the proposals routed out) open until the corpus can\n      discriminate: it cannot now, and adopting either domain today fixes an\n      answer on 41 weighted edges.\n      Adopting is Joe's either way; this row's delivery is the argument and the\n      apparatus, not the decision.",
+  :six-the-route-to-find-barely-exists-on-the-only-real-tension
+  "2 of the 9 patterns find selects for :organise-the-library carry\n      any learned weight at all, and no two of the nine are joined by an authored\n      edge, which is why the within-the-selection arm of the route is the identity\n      (decisions.edn :learned-weight-route-to-find). The route is live -- the\n      order differs from the unlearned arm -- and it is live on two patterns.",
+  :three-the-update-rule-is-not-implementable-from-the-record
+  "§4.3 says the weight is updated by G-improvement per attachment step.\n      No recorded run carries one: 228 admission entries across 48 runs, 0 with a\n      reason, 0 run rows with a score field. What is implemented instead is an\n      attachment COUNT. Recording the admission's score would move\n      checks/construct-cascade.edn, which is LA3's byte-identical reference\n      artefact and LA4's regeneration check, so it is a later row's change and not\n      this one's.",
+  :two-what-keeps-a-pair-weight-inside-O2-is-the-routing-not-the-domain
+  "Once the domain is pairs, the domain restriction is no longer what keeps\n      learning legal. What does is that no path from a repository to a cascade\n      reads either store, which is checkable and is checked: ten organise-side\n      files scanned, none names a store; and a proposal turned into an edge is\n      rejected by O2 (negative control :a-learned-pair-admitted-to-a-cascade-as-an-edge).\n      That is a stronger law than the one §4.3 proposes, because it survives the\n      domain widening that the routing clause forces.",
+  :what-this-row-does-not-claim
+  ["No proposal here has been written as an edge, and none should be on the\n       strength of a weight. The spider prompt says so and the runner's evidence\n       path does not read the store."
+   "The attachment count is not a probability, not a confidence and not a\n       G-improvement. It is a count of attachment steps."
+   "48 runs over 8 artefacts is one corpus, four of whose domains are the same\n       constructor over different item sets. Nothing here supports a rate."],
+  :what-would-change-this
+  "Any one of: (1) a constructor that records the admission's score, so the\n      weight can be the G-improvement §4.3 asks for rather than a count -- that is\n      one field on the record and a re-run of every artefact, and it moves LA3's\n      pinned sha, so it is its own row; (2) the L5/L9 wave raising authored-edge\n      coverage far enough that a corpus this size reaches more than 15% of the\n      edge set; (3) a single proposal from this store that an author actually\n      writes as an edge, which would be the first evidence that the channel\n      carries anything, and which nothing here has yet."}}

@@ -14,6 +14,34 @@ cue to occur in that same statement. The packet contains no resolutions, so a
 resolution-derived cue cannot pass the licence. The artefact is for a different
 agent to compare with completed outcomes; this constructor enacts nothing.
 
+## LA9 learning over runs — the weight store and the proposal channel
+
+`learn_edge_weights.clj` is the learning pass of `LA1c-restatement.md` §4.3, the
+one proposed law (`O5`) that would let learning touch the how/why landscape. Run
+it from `futon3` with:
+
+    clojure -Sdeps '{:paths ["checks" "."] :deps {babashka/fs {:mvn/version "0.5.25"}}}' \
+      -M -m learn-edge-weights
+
+It reads the eight recorded construction artefacts (`LA3`–`LA8`, 48 runs) and
+writes three files and no others: `edge-weights.edn` (weights on authored edges),
+`edge-proposals.edn` (weighted pairs with **no** edge, for an author and for the
+spider) and `learn-edge-weights.edn` (the report). Every write goes through one
+function that refuses a path in the edge store, and the acceptance test — the
+`.flexiarg` bytes and the parsed edge set, before and against after, over all
+1,256 files — runs on every `-main`.
+
+The three artefacts regenerate byte-identically; the stores carry the edge-set
+digest they were learned against and not a digest of the working tree, because
+another lane rewrites a harvest timestamp into `library/problems/` and the stores
+should not churn on that.
+
+`O5` is **not adopted**, and the report's `:the-argument` says why in the numbers
+of the run that prints it: the domain clause and the routing clause of the
+proposed law need different domains, and what actually keeps learning inside `O2`
+is the routing — no path from a repository to a cascade reads either store, which
+`organise-blindness` checks by reading the ten files on that path.
+
 A flexiarg is **abstract** — a production rule at specification grain. Whether a
 `@how` edge actually holds is **derived**, not stored: a relation run forward
 against stated facts, in the third verification layer of

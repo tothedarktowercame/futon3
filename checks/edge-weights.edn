@@ -1,0 +1,494 @@
+{:corpus
+ [{:path "checks/construct-cascade.edn",
+   :domain :the-library,
+   :row :LA3}
+  {:path "checks/ants-cascade.edn", :domain :ants, :row :LA4}
+  {:path "checks/alfworld-cascade.edn", :domain :alfworld, :row :LA6}
+  {:path "checks/zaif-cascade.edn", :domain :zaif, :row :LA5}
+  {:path "checks/retrodiction-cascade.edn",
+   :domain :retrodiction,
+   :row :LA7}
+  {:path "checks/retrodiction-cascade-per-clause.edn",
+   :domain :retrodiction-per-clause,
+   :row :LA7}
+  {:path "checks/open-cascade.edn", :domain :open-items, :row :LA8}
+  {:path "checks/open-cascade-short-cue.edn",
+   :domain :open-items-short-cue,
+   :row :LA8}],
+ :edge-store-digest
+ {:edge-set-sha256
+  "aa65cb17fec45237ec8c945680eb7385bdc8a5a7ac1d4628b0560b472a1e853b",
+  :edges 271,
+  :edges-by-kind {:how 32, :see-also 147, :why 92},
+  :patterns 1240},
+ :edges-in-the-repository 271,
+ :edges-with-a-weight 41,
+ :law
+ "O5a (PROPOSED, not adopted): a learning pass may update the weight on an\n         authored edge and may never add an edge.  Every key below is an authored\n         directive line read from a .flexiarg; this file is not the edge store and\n         nothing on the way to a cascade reads it.",
+ :store :library-contract/edge-weights-v1,
+ :update-rule
+ "weight := the number of attachment steps, across the recorded\n         corpus, at which one endpoint was admitted to a construction while the\n         other was already in it.  Rebuilt from the corpus on every pass, so a\n         re-run is idempotent.  NOT the G-improvement of LA1c §4.3: no recorded\n         run carries a per-step score (:g-improvement-availability in the report).",
+ :weights
+ {[:aif/candidate-pattern-action-space
+   :why
+   :war-room/wr-19-tension-must-generate-not-only-rank]
+  {:attachments 4,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction :wm/AC6 :widen-to-a-budget]
+    [:retrodiction :wm/AC6 :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause :wm/AC6 :widen-to-a-budget]
+    [:retrodiction-per-clause
+     :wm/AC6
+     :widen-to-the-marginal-gain-floor]],
+   :weight 4.0},
+  [:aif/decomposed-prediction-noise
+   :how
+   :aif/shared-kernel-predictive-forward-model]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:aif/free-energy-as-tick-scalar
+   :how
+   :aif/predictive-coding-belief-update]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:aif/grounded-actuation-not-reobservation
+   :see-also
+   :aif/scheduled-observer-entrypoint]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:aif/niche-construction :how :aif/admissibility]
+  {:attachments 5,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:open-items-short-cue
+     :ticket/fail-invoke-error
+     :widen-to-a-budget]
+    [:retrodiction :wm/AC6 :widen-to-a-budget]
+    [:retrodiction :wm/AC6 :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause :wm/AC6 :widen-to-a-budget]
+    [:retrodiction-per-clause
+     :wm/AC6
+     :widen-to-the-marginal-gain-floor]],
+   :weight 5.0},
+  [:aif/no-self-certification
+   :why
+   :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue :wm/RUN4 :widen-to-a-budget]
+    [:open-items-short-cue
+     :wm/RUN4
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:aif/predictive-coding-belief-update
+   :see-also
+   :aif/predictive-entropy-as-ambiguity]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:aif/predictive-entropy-as-ambiguity
+   :how
+   :aif/decomposed-prediction-noise]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:aif/scheduled-observer-entrypoint
+   :how
+   :aif/grounded-actuation-not-reobservation]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:aif/shared-kernel-predictive-forward-model
+   :how
+   :aif/temporal-depth-beyond-greedy]
+  {:attachments 6,
+   :attachments-under-a-floor-stop 4,
+   :runs
+   [[:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction :wm/AC6 :widen-to-a-budget]
+    [:retrodiction :wm/AC6 :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause :wm/AC6 :widen-to-a-budget]
+    [:retrodiction-per-clause
+     :wm/AC6
+     :widen-to-the-marginal-gain-floor]],
+   :weight 6.0},
+  [:aif/shared-kernel-predictive-forward-model
+   :see-also
+   :aif/expected-free-energy-scorecard]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/agency-desktop-save
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/agency-desktop-save
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:aif/status-gated-belief-update
+   :how
+   :aif/predictive-coding-belief-update]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:aif/structured-observation-vector
+   :how
+   :aif/predictive-coding-belief-update]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:aif/term-to-channel-traceability
+   :how
+   :aif/expected-free-energy-scorecard]
+  {:attachments 1,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue
+     :ticket/jvm-provenance-before-multi-jvm
+     :widen-to-the-marginal-gain-floor]],
+   :weight 1.0},
+  [:aif/term-to-channel-traceability
+   :see-also
+   :aif/evidence-precision-registry]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue :wm/RUN4 :widen-to-a-budget]
+    [:open-items-short-cue
+     :wm/RUN4
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:cycle-machine/runtime-restoration
+   :see-also
+   :coordination/session-durability-check]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/agency-desktop-save
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/agency-desktop-save
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:cycle-machine/runtime-restoration :why :cycle-machine/step-machine]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:cycle-machine/step-machine :how :cycle-machine/runtime-restoration]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:cycle-machine/step-machine :see-also :cycle-machine/job-port]
+  {:attachments 3,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:open-items-short-cue
+     :ticket/cx-new-blocks-emacs
+     :widen-to-a-budget]
+    [:retrodiction
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause
+     :ticket/kangaroo-v1-pouch
+     :widen-to-the-marginal-gain-floor]],
+   :weight 3.0},
+  [:forward-model/graduate-strategy-by-outcome
+   :why
+   :war-room/wr-9-bites-empirical-or-logical]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue :wm/RUN4 :widen-to-a-budget]
+    [:open-items-short-cue
+     :wm/RUN4
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:forward-model/inhabit-supplies-labels
+   :why
+   :war-room/wr-4-inhabit-before-building]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue :wm/RUN4 :widen-to-a-budget]
+    [:open-items-short-cue
+     :wm/RUN4
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:forward-model/reward-supersedes-evidence
+   :why
+   :war-room/wr-9-bites-empirical-or-logical]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue :wm/RUN4 :widen-to-a-budget]
+    [:open-items-short-cue
+     :wm/RUN4
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:forward-model/seal-the-graduation-criteria
+   :why
+   :forward-model/graduate-strategy-by-outcome]
+  {:attachments 1,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue
+     :wm/RUN4
+     :widen-to-the-marginal-gain-floor]],
+   :weight 1.0},
+  [:math-formalization/binder-expression-mismatch
+   :why
+   :math-formalization/tactic-algebra-interference]
+  {:attachments 1,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue
+     :ticket/jvm-provenance-before-multi-jvm
+     :widen-to-the-marginal-gain-floor]],
+   :weight 1.0},
+  [:math-formalization/minmax-normalization
+   :why
+   :math-formalization/tactic-algebra-interference]
+  {:attachments 1,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue
+     :ticket/jvm-provenance-before-multi-jvm
+     :widen-to-the-marginal-gain-floor]],
+   :weight 1.0},
+  [:math-formalization-CV/frontier-bound-from-arc-hypotheses
+   :see-also
+   :math-formalization-CV/holomorphic-disk-api]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:zaif :whole :widen-to-a-budget]
+    [:zaif :whole :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:math-formalization-CV/frontier-bound-from-arc-hypotheses
+   :why
+   :math-formalization-CV/holomorphic-disk-api]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:zaif :whole :widen-to-a-budget]
+    [:zaif :whole :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:math-formalization-CV/holomorphic-disk-api
+   :see-also
+   :math-formalization-CA/measure-integration-api]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:zaif :whole :widen-to-a-budget]
+    [:zaif :whole :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:problems/tension-proposes-candidates
+   :why
+   :war-room/wr-19-tension-must-generate-not-only-rank]
+  {:attachments 4,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction :wm/AC6 :widen-to-a-budget]
+    [:retrodiction :wm/AC6 :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause :wm/AC6 :widen-to-a-budget]
+    [:retrodiction-per-clause
+     :wm/AC6
+     :widen-to-the-marginal-gain-floor]],
+   :weight 4.0},
+  [:snatch/have-a-temperament :how :snatch/lead-with-the-exchange-rule]
+  {:attachments 4,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:open-items-short-cue :wm/I4 :widen-to-a-budget]
+    [:open-items-short-cue :wm/I4 :widen-to-the-marginal-gain-floor]
+    [:the-library :whole :widen-to-a-budget]
+    [:the-library :whole :widen-to-the-marginal-gain-floor]],
+   :weight 4.0},
+  [:snatch/have-a-temperament
+   :how
+   :snatch/play-the-authored-order-first]
+  {:attachments 4,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:open-items-short-cue :wm/I4 :widen-to-a-budget]
+    [:open-items-short-cue :wm/I4 :widen-to-the-marginal-gain-floor]
+    [:the-library :whole :widen-to-a-budget]
+    [:the-library :whole :widen-to-the-marginal-gain-floor]],
+   :weight 4.0},
+  [:snatch/have-a-temperament
+   :how
+   :snatch/promote-the-remedy-before-the-exit]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:the-library :whole :widen-to-a-budget]
+    [:the-library :whole :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:snatch/have-a-temperament
+   :how
+   :snatch/widen-the-cascade-only-on-evidence]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue :wm/I4 :widen-to-a-budget]
+    [:open-items-short-cue :wm/I4 :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:snatch/have-a-temperament :why :cascades/declared-skeleton]
+  {:attachments 4,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:open-items-short-cue :wm/I4 :widen-to-a-budget]
+    [:open-items-short-cue :wm/I4 :widen-to-the-marginal-gain-floor]
+    [:the-library :whole :widen-to-a-budget]
+    [:the-library :whole :widen-to-the-marginal-gain-floor]],
+   :weight 4.0},
+  [:snatch/lead-with-the-exchange-rule :why :snatch/have-a-temperament]
+  {:attachments 4,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:open-items-short-cue :wm/I4 :widen-to-a-budget]
+    [:open-items-short-cue :wm/I4 :widen-to-the-marginal-gain-floor]
+    [:the-library :whole :widen-to-a-budget]
+    [:the-library :whole :widen-to-the-marginal-gain-floor]],
+   :weight 4.0},
+  [:snatch/play-the-authored-order-first
+   :why
+   :snatch/have-a-temperament]
+  {:attachments 4,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:open-items-short-cue :wm/I4 :widen-to-a-budget]
+    [:open-items-short-cue :wm/I4 :widen-to-the-marginal-gain-floor]
+    [:the-library :whole :widen-to-a-budget]
+    [:the-library :whole :widen-to-the-marginal-gain-floor]],
+   :weight 4.0},
+  [:snatch/promote-the-remedy-before-the-exit
+   :why
+   :snatch/have-a-temperament]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:the-library :whole :widen-to-a-budget]
+    [:the-library :whole :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:snatch/widen-the-cascade-only-on-evidence
+   :see-also
+   :cascades/on-the-fly-cascade]
+  {:attachments 1,
+   :attachments-under-a-floor-stop 0,
+   :runs [[:the-library :whole :widen-to-a-budget]],
+   :weight 1.0},
+  [:snatch/widen-the-cascade-only-on-evidence
+   :why
+   :snatch/have-a-temperament]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue :wm/I4 :widen-to-a-budget]
+    [:open-items-short-cue :wm/I4 :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad
+   :why
+   :war-room/wr-9-bites-empirical-or-logical]
+  {:attachments 2,
+   :attachments-under-a-floor-stop 1,
+   :runs
+   [[:open-items-short-cue :wm/RUN4 :widen-to-a-budget]
+    [:open-items-short-cue
+     :wm/RUN4
+     :widen-to-the-marginal-gain-floor]],
+   :weight 2.0},
+  [:writing-coherence/meet-the-reader-where-they-are
+   :why
+   :system-coherence/argue-empirically-not-persuasively]
+  {:attachments 4,
+   :attachments-under-a-floor-stop 2,
+   :runs
+   [[:retrodiction :wm/AC6 :widen-to-a-budget]
+    [:retrodiction :wm/AC6 :widen-to-the-marginal-gain-floor]
+    [:retrodiction-per-clause :wm/AC6 :widen-to-a-budget]
+    [:retrodiction-per-clause
+     :wm/AC6
+     :widen-to-the-marginal-gain-floor]],
+   :weight 4.0}}}

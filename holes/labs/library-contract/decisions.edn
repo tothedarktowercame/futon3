@@ -413,4 +413,46 @@
     :the-honest-attribution-of-the-primary-NULL
     "PART OF IT IS THE PACKET'S FAULT, not the items'. The dispatch that produced the primary arm told the constructor to prefer multi-word cues, advice written from :LA7's over-matching failure and not tested before it was sent. So the primary arm measures what that advice does, and its null is evidence about cue granularity rather than about whether open work items can have policies built for them. The short-cue arm exists because the null was traced to its cause before it was reported, not after."}
    :changes-it "A word-boundary or stemmed matcher, run as its own row over checks/construct_cascade.clj with every earlier row's artefact regenerated and the movement reported. Until that happens, no seed size in :LA3 through :LA8 is a count of patterns that mention a cue -- it is a count of patterns whose antecedent text contains those characters."
-   :veto "Joe's. Nothing is adopted here: both arms are kept, the harness runs either, and the primary artefact is unchanged."}]}
+   :veto "Joe's. Nothing is adopted here: both arms are kept, the harness runs either, and the primary artefact is unchanged."}
+
+  {:id :o5-learning-over-runs
+   :status :not-adopted-implemented-and-measured
+   :at "2026-09-02"
+   :raised-by :LA9
+   :question "LA1c-restatement.md 4.3 and the 9 law table propose O5: `learning updates WEIGHTS on authored edges and never adds an edge. A learned weight is input to find and to authorship, never to organise.` LA9's acceptance asks for it stated and checkable, and says the row's first delivery may be the argument that it should NOT be adopted. Should it be adopted?"
+   :grounds "NOT AS WRITTEN, and the reason is structural rather than a matter of taste: the sentence carries two clauses with different domains. The DOMAIN clause puts w on the authored edge set. The ROUTING clause says a learned high weight is a hypothesis that an author should write an edge. On the domain clause's domain that hypothesis has no referent -- a weight on an authored edge is a weight on an edge that is already written, so it proposes nothing. For the routing clause to have content, the learner must score PAIRS, of which authored edges are a subset. Once the domain is pairs, the domain restriction is no longer what keeps learning inside law O2; what keeps it there is that no path from a repository to a cascade reads a learned quantity, and THAT is separately checkable. checks/learn_edge_weights.clj implements the split as two stores and checks it: checks/edge-weights.edn (authored edges) and checks/edge-proposals.edn (pairs with no edge, routed to find and to the spider)."
+   :arms
+   [{:arm :adopt-o5-as-written
+     :form "one law: weights on authored edges, never an added edge, routed to find and to authorship."
+     :cost "The routing clause is inert on the domain clause's domain, so half the law does nothing and a reader who acts on it will widen the domain silently -- which is the failure it was written to prevent."}
+    {:arm :adopt-the-routing-law-only
+     :form "O5-routing: no path from a repository to a cascade may read a learned quantity. Weights and proposals are find's and the spider's input and organise's never."
+     :cost "Says nothing about what may be learned or on what domain, so it permits a pair-weight learned by any means. That is the point -- a weight cannot become an edge under it -- but it is a weaker law than 4.3 sounds like."
+     :checkable-today "Yes, and it is checked on every -main: ten organise-side files scanned for either store path (0 name one), and a negative control that turns the top proposal into a cascade edge and requires O2 to reject it (exercised, caught)."}
+    {:arm :adopt-nothing-keep-the-apparatus
+     :form "no law; the two stores, the routing separation, the byte-identity control and the report stay and keep running."
+     :cost "Nothing is settled, so a later row could wire a weight into a constructor and only the control would object. Against that: the control WOULD object, which is most of what a law would buy here."}]
+   :interim :adopt-nothing-keep-the-apparatus
+   :why-interim "There is almost nothing to learn on. 41 of 271 authored edges (15.1%) are reached by the whole recorded corpus -- 48 runs across 8 artefacts -- and the weights they carry run {1.0 5, 2.0 25, 3.0 1, 4.0 8, 5.0 1, 6.0 1}. The proposal side is flatter: 2105 pairs, top weight 6.0, median 2.0. Adopting either domain today fixes an answer on 41 weighted edges. The apparatus costs nothing to leave running and the arm that IS worth adopting when a law is wanted is :adopt-the-routing-law-only, which does not depend on the domain question."
+   :also-measured "Against a co-occurrence null (the same pairs counted by co-MEMBERSHIP of a recorded cascade rather than by attachment step): 2105 unauthored pairs carry an attachment and 3957 are co-members, so the attachment record excludes 1852 pairs that co-occurrence would admit -- those whose two patterns were both in the seed and so were never attached to each other. On the pairs it does admit the two counts agree on 2055 of 2105. So the record's contribution is a FILTER, not a ranking, and a claim that a high weight means more than a nonzero one is not supported by this corpus."
+   :not-implementable-as-written "4.3 says the weight is updated by G-improvement per attachment step. No recorded run carries a per-step score: 228 admission entries across 48 runs, 0 with a reason, 0 run rows with a score field (checked by g-improvement-availability, not assumed). The pass implements an attachment COUNT instead, and says so in its own :update-rule. Recording the admission's score would move checks/construct-cascade.edn, which is LA3's byte-identical reference artefact and LA4's regeneration check, so it is a later row."
+   :changes-it "Any one of: a constructor that records the admission's score, so the weight can be the G-improvement 4.3 asks for; the L5/L9 wave raising authored-edge coverage far enough that a corpus this size reaches more than 15% of the edge set; or a single proposal from this store that an author actually writes as an edge, which would be the first evidence that the channel carries anything and which nothing here has yet."
+   :veto "Joe's, and adopting is his either way. The undo is three artefacts, one check file, one docstring block in checks/spider_runner.clj and this entry; nothing in the library moved and no edge was added."}
+
+  {:id :learned-weight-route-to-find
+   :status :interim-adopted
+   :at "2026-09-02"
+   :raised-by :LA9
+   :question "O5's routing clause says a learned weight is find's input. Input HOW? A weight cannot change what find selects (F2 requires a receipt for every selected pattern and F3 requires the receipt to cite the pattern's text, never a score), so it can only order or annotate. Over which edges?"
+   :arms
+   [{:arm :within-the-selection
+     :form "the weight of a selected pattern is the learned weight on authored edges whose BOTH endpoints find selected."
+     :cost "Empty on the only real tension this harness has. No two of the nine patterns find selects for :organise-the-library are joined by an authored edge, so every weight is 0.0 and the ordering is the identity. A route that cannot move is not a route. Built first, measured, and reported rather than quietly replaced."}
+    {:arm :incident-to-the-selected-pattern
+     :form "the weight of a selected pattern is the learned weight on the authored edges INCIDENT to it, whether or not the other endpoint was selected."
+     :cost "It is a property of the pattern's neighbourhood in the library rather than of the find result, so two different tensions selecting the same pattern order it the same way. And it is live on 2 of the 9 patterns, so on this tension it separates two patterns from seven rather than ranking nine."}]
+   :interim :incident-to-the-selected-pattern
+   :why-interim "It is the only arm that moves at all on the corpus that exists, and the control that says so is run rather than argued: the order under the learned store differs from the order under an UNLEARNED store (all weights removed). Note the trap that arm choice uncovered and that the file records -- an INVERTED store does not move the order either, because the quantity is a sum over incident edges and inverting every weight leaves a pattern with nine edges ahead of one with three. An inverted-store control here would report `no change` for a reason that has nothing to do with whether the route reads the store, which is why the control arm is the unlearned one."
+   :bounded "The annotation is carried in sibling keys (:learned-weight, :learned-order) that no law reads. The controls check that :selected and :receipts come out identical, and a negative control gives a pattern find did NOT select the largest weight in the store and requires it to stay outside the order (exercised, caught)."
+   :changes-it "A tension whose selection contains two patterns joined by an authored edge would make :within-the-selection non-empty and it is the better arm if it is not empty -- it is a property of the find result rather than of the library. That is a measurement any later row with a second real tension can make."
+   :veto "Joe's. The undo is one function in checks/learn_edge_weights.clj."}]}

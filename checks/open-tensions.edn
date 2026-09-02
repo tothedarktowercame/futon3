@@ -1,0 +1,76 @@
+{:schema :la8/open-tensions-v1
+ :authored-by "codex-21"
+ :tensions
+ {:wm/RUN4
+  {:clauses
+   [{:id :fresh-record-conformance
+     :text "Evidence for the holes, from the fresh records: wmRunConformsToWiring closes by record or is refuted"
+     :cues ["fresh records" "closes by record" "is refuted"]}
+    {:id :choice-point-arms
+     :text "the choice-point branches run on these fields -- carried against fixed beta (V6), and pi_0 with and without ln E once the habit prior is live"
+     :cues ["choice-point branches" "fixed beta" "habit prior"]}]
+   :zero-mass-pattern :aif/expected-free-energy-scorecard
+   :zero-mass-reason "The nearby scorecard pattern may describe policy scoring, but this tension asks for record-level conformance and explicit comparison of already named experimental arms."
+   :expected-to-fire #{:aif/policy-precision-commitment-temperature}
+   :must-not-help-with :wm/I4
+   :must-not-reason "Evidence that measured policy arms conform or fail must not be mistaken for changing the controller's target-before-cascade execution order."}
+
+  :wm/I4
+  {:clauses
+   [{:id :target-before-cascade
+     :text "select the target first, then construct the cascade to match"
+     :cues ["select the target first" "construct the cascade to match"]}
+    {:id :unrealised-order
+     :text "The S1 run records the machine still running R5 before R6, which is exactly what an unrealised ruling looks like"
+     :cues ["running R5 before R6" "unrealised ruling"]}]
+   :zero-mass-pattern :orchestration/pattern-warranted-choice-point
+   :zero-mass-reason "Choice-point warrants are adjacent controller governance, but they do not establish or implement the ruled R6/R14 ordering."
+   :expected-to-fire #{:futon-theory/task-as-arrow}
+   :must-not-help-with :wm/RUN4
+   :must-not-reason "Constructing the ruled target-first topology must not be presented as evidence that the RUN4 empirical arms have actually run or conformed."
+   }
+
+  :ticket/cx-new-blocks-emacs
+  {:clauses
+   [{:id :synchronous-blocking
+     :text "cx at HEAD still runs the synchronous wait_for_agency poll (up to 30 s) and blocking emacsclient evals; no async conversion exists"
+     :cues ["synchronous wait_for_agency poll" "blocking emacsclient evals" "async conversion"]}
+    {:id :timing-authority
+     :text "needs Joe's go-ahead plus a timing repro separating the wait from the first turn"
+     :cues ["Joe's go-ahead" "timing repro" "first turn"]}]
+   :zero-mass-pattern :orchestration/consent-gate
+   :zero-mass-reason "Operator approval is nearby because the ticket is explicitly deferred, but a consent gate does not diagnose which synchronous operation freezes Emacs."
+   :expected-to-fire #{:agent/environment-over-optimization}
+   :must-not-help-with :ticket/jvm-provenance-before-multi-jvm
+   :must-not-reason "Timing a synchronous Emacs command path must not be treated as establishing runtime checkout, branch, or commit provenance for multiple JVMs."}
+
+  :ticket/fail-invoke-error
+  {:clauses
+   [{:id :exception-triage
+     :text "Needs exception-payload triage before a close criterion can be stated"
+     :cues ["exception-payload triage" "close criterion"]}
+    {:id :typed-failure-queue
+     :text "Written by `scripts/failure-tickets.py` from the invoke-job ledger, so a typed failure lands in the queue without anyone noticing it first"
+     :cues ["invoke-job ledger" "typed failure" "lands in the queue"]}]
+   :zero-mass-pattern :agency/loud-failure
+   :zero-mass-reason "Loud failure is closely related to visibility, but this item requires discriminating the exception payloads within an already visible failure class."
+   :expected-to-fire #{:agent/evidence-over-assertion}
+   :must-not-help-with :ticket/cx-new-blocks-emacs
+   :must-not-reason "Invoke exception classification must not be allowed to stand in for a timing reproduction of synchronous Emacs blocking."}
+
+  :ticket/jvm-provenance-before-multi-jvm
+  {:clauses
+   [{:id :identifiability
+     :text "The resource premise of the one-JVM rule is void; the identifiability premise is not, and this ticket is the precondition"
+     :cues ["one-JVM rule" "identifiability premise" "ticket is the precondition"]}
+    {:id :runtime-code-answer
+     :text "Job 2 — make \"what code is running?\" have an answer"
+     :cues ["what code is running" "have an answer"]}
+    {:id :missing-provenance
+     :text "No checkout path, no branch, no commit sha, anywhere"
+     :cues ["checkout path" "commit sha" "anywhere"]}]
+   :zero-mass-pattern :memory/verify-in-the-serving-process
+   :zero-mass-reason "Serving-process verification is the nearest existing concern, but proving that new code is loaded is not the same as making every JVM identify its checkout, branch, and commit."
+   :expected-to-fire #{:futon-theory/single-source-of-truth}
+   :must-not-help-with :ticket/cx-new-blocks-emacs
+   :must-not-reason "Runtime provenance for multiple JVMs must not be presented as a remedy for synchronous polling and emacsclient latency."}}}

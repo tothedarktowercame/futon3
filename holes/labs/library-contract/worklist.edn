@@ -882,7 +882,51 @@
    :covers-key :none
    :loop-mode :one-slice-per-invocation
    :statement "Generalize L4's price test: nine attested @how edges exist (aif 6, peripherals 2, ukrns 1); L4 built the derived check for one at 5m47s. Eight remain. L4 also found most of the other eight name no concrete incident in their evidence paragraphs -- so the expected finding for several slices is :no-site-to-check-against, which is itself the measurement."
-   :progress []
+   :edge-inventory
+   "The nine attested @how edges, enumerated from the five attestations.edn files that carry a :kind :how record (18 such records; 9 :attested-by, 8 :proposed, 1 :refused). aif: declare-the-conditioning -> structured-observation-vector (attestations.edn:2), no-self-certification -> measurement-window-hygiene (:10), scheduled-observer-entrypoint -> grounded-actuation-not-reobservation (:19), status-gated-belief-update -> predictive-coding-belief-update (:21), two-layer-calibration -> off-continuity-null-discriminates (:26), off-continuity-null-discriminates -> measurement-window-hygiene (:47). peripherals: progress-heartbeat-distinct-from-cycle-completion -> canonical-typed-event-vs-side-channel (:0, DONE by L4), split-transport-from-embodiment -> read-existing-seam-before-implementing (:4, slice 1). ukrns: distinguish-delivery-from-practice-change -> calibrate-impact-promises-to-current-indicator-capacity (:0). Indices are record positions in the section's attestations.edn vector."
+   :progress
+   [{:slice 1
+     :edge "peripherals/split-transport-from-embodiment @how peripherals/read-existing-seam-before-implementing"
+     :attestation "library/peripherals/attestations.edn:4, rung 1, :state [:attested-by \"claude-15\"]"
+     :outcome :check-written
+     :sha "futon3 adb3fba; note in p4ng 4f064eb"
+     :check
+     ["checks/how_witness_split_transport.clj -- 196 lines, L4's witness shape (relation + positive control + mirror). 56 ns+docstring, 71 fact rows and pointers, 38 relation+controls, 30 -main"
+      "checks/how_witness_split_transport.clj:57-72 source and method obligations off the two flexiargs; :78-108 the 8 site mechanisms, each a repo file:line; :111-127 the 3 discharge adjudications with the three no-row reasons written out"
+      "checks/README.md -- run command widened and a fourth row in the witness table"]
+     :result
+     "NOT ATTESTED. Witness 1 of 5: only S1 (a transport describable without reference to any UI surface) is carried out by the method, via futon3c transport/http.clj:6918-6928, which is itself a recorded seam-read. Positive control 3 ([:s1 :wm-json-route] [:s2 :hex-web-ui] [:s3 :hex-web-ui]). Mirror silent. Differs from L4's 0 of 5."
+     :site
+     "futon2 f5d4d0a scripts/futon2/report/war_machine.clj + web/war-machine/, futon4 26d1b27 dev/arxana-vsatarcs-r-criteria-wm.el, futon3c e78ac336 src/futon3c/transport/http.clj:6918-6928. NOT :no-site-to-check-against -- the site exists, but not where the evidence paragraph says."
+     :relocation-cost
+     "The source pattern's evidence (flexiarg:107-112) names futon3c and the R-Criterion Status change. Three searches establish futon3c does not hold it: R-Criterion has 0 hits at HEAD and 0 under `git log --all -S`; the *War Machine* Emacs buffer appears only in a mission document; and M-war-machine-frontend-upgrade1, cited from war_machine.clj:3702 and api.cljs:18, exists as a file in NO repository of the stack (futon0..futon5 searched). A distinct cost from L4's selection cost: an evidence paragraph can be specific and still not be a pointer."
+     :price
+     {:wall "5m16s (316s) measured start to gates-green. The phase split L4 recorded (3m12s reading / 2m35s writing) was NOT instrumented this slice -- only the start was stamped -- so it is reported as a total and not decomposed."
+      :lines 196
+      :fact-rows "21: 5 source obligations, 5 method obligations, 8 site mechanisms, 3 discharges"
+      :files-read "9, across three repositories (L4: 6, in one)"
+      :invented
+      ["I1-I4 recur from L4 unchanged (obligations, grounding, a meaning for 'carries out', site adjudication) and are not restated in the check"
+       "I5 which embodiment -- the site has THREE renderings of the same R-criterion state and the evidence paragraph names two (the third, futon4's elisp chrome, re-parses the source document off-transport). Counting the third is a decision made in the check, and it is what moves S4 from satisfied to no-discharge-row."]}
+     :substantive-findings
+     ["The evidence paragraph's claim is true for a different reason than it states. Adding the R-Criterion section really did not touch the web UI -- because the web UI never renders :r-criteria at all; the key rides the JSON blob unconsumed. Independence by non-consumption, not by subscription."
+      "The composition rule S3 is INVERTED in the markdown direction: generate-war-machine calls render-war-machine and returns its output as :markdown (war_machine.clj:5612-5626), so the observation layer imports the embodiment. It holds toward the web and fails toward the markdown, at one site."
+      ":r-criteria had to be threaded into two hand-written maps in one function (war_machine.clj:5600 payload, :5621 renderer argument list), so a new field is not one edit."
+      "L4's second finding reproduced independently on a different edge: :cited here is the source pattern's NEXT-STEPS cross-link line (flexiarg:124-125), an aspiration, not an application. Two of two attested peripherals @how edges cite a NEXT-STEPS line."]
+     :gates
+     {:exit-codes "each gate wrote $? to /tmp/L10s1/<gate>.exit on the line after the command; all five read back from the files and tested in a numeric loop that exits 1 on any non-zero (ANY-NONZERO=0). No gate status read through a pipe."
+      :clj-kondo "exit 0, 0 errors 0 warnings over how_witness_split_transport.clj, how_witness_heartbeat.clj, how_witness_snatch.clj (/tmp/L10s1/kondo.exit)"
+      :check-parens "exit 0, OK -- emacs -Q --batch -l futon4/dev/check-parens.el --eval (arxana-check-parens-cli) -- --no-defaults checks/how_witness_split_transport.clj (/tmp/L10s1/parens.exit)"
+      :library-graph-lint-test "exit 0, 13 tests / 151 assertions / 0 failures under `bb -cp .`. C88 pin: 1247 files, :edges-by-kind {:why 86 :why-posthoc 7 :how 27 :see-also 141}. :why-posthoc moved 0 -> 7 since LD1 recorded it; that is pre-existing drift from a later item, not this slice, which touches no .flexiarg (/tmp/L10s1/lintest.exit)"
+      :spider-runner-test "exit 0, 8 tests / 43 assertions / 0 failures, unchanged from L8 (/tmp/L10s1/spidertest.exit)"
+      :witness-run "exit 0; not wired into a test suite, matching how the three existing witnesses ship -- registered in checks/README.md with its run command (/tmp/L10s1/run.exit)"
+      :section-lint "not run, and not applicable: no wave slice, and no .flexiarg or attestations.edn file was edited, so there is no section that could have moved. Same reasoning L4 recorded."}
+     :not-touched
+     ["No .flexiarg file changed, so this slice authors no @why, no @why-posthoc, no @how, no @see-also, and infers no edge from embedding similarity (P-validated-R5 law O2, decisions.edn :spider-editorial-standing)."
+      "No attestations.edn row changed. The edge keeps :state [:attested-by \"claude-15\"] at rung 1; the check's NOT ATTESTED is a separate question from the attestation, as L4 established."
+      "Nothing in futon2, futon4 or futon3c was edited. Those repositories were read only, at the shas pinned above."]
+     :for-the-row
+     "Seven edges remain: the six aif edges and the ukrns edge. The row's price table beside NOTE-the-chain-layer-exists-and-is-empty.md is written when they are done, not per slice."}]
    :acceptance "Per slice, ONE edge: either write the derived check (L4's witness pattern as template: check runs against the site the pattern's evidence names, positive control included) and record its cost like L4 did, or record :no-site-to-check-against with the evidence paragraph quoted. No invented sites (the L4 selection-cost lesson). Row done when all eight have a check or a recorded no-site finding, with the price table summarized in a note beside NOTE-the-chain-layer-exists-and-is-empty.md."}
   {:id :LD1,
    :class :D,

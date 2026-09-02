@@ -1,0 +1,411 @@
+{:schema :la8/open-plausibility-v1
+ :judged-by "codex-7"
+ :did-not-construct? true
+ :primary-temperament :widen-to-the-marginal-gain-floor
+ :matrix-order
+ [:wm/RUN4
+  :wm/I4
+  :ticket/cx-new-blocks-emacs
+  :ticket/fail-invoke-error
+  :ticket/jvm-provenance-before-multi-jvm]
+
+ :method
+ {:question
+  "Could someone holding the constructed cascade plausibly do the work named by the target item? This judges permission/capability to proceed, not correctness, priority, effort, or permission to enact."
+  :cue-matcher
+  "Raw case-insensitive substring matching, with no word boundary. Seed size is therefore weak evidence in the short-cue arm: e.g. sha matched 115 patterns but no occurrence of the word sha; live, action, review, wait, class, and prior also have many morphological false hits."
+  :cell-accounting
+  "For every non-empty cascade, :supports and :does-not-help partition the complete member vector. :unaccounted-members is consequently empty in every cell. Pattern source pointers below identify the THEN clause read for each member."
+  :empty-cascade
+  "An empty cascade cannot plausibly allow any of the five items. Empty rows retain all five cells, but do not invent pattern reasons."
+  :adds-rule
+  "True only where a diagonal cascade supplies a course of action not already stated in the addressed statement span."
+  :did-not-enact-anything true}
+
+ :arms
+ {:primary
+  {:source {:tensions "checks/open-tensions.edn"
+            :cascade "checks/open-cascade.edn"
+            :cue-granularity :multi-word-phrases}
+   :finding
+   "Twenty-seven of 29 cues hit no library pattern. Under the pre-selected marginal-gain-floor temperament all five cascades are empty; the arm contains no policy with which to begin any named work."
+   :frequencies
+   {:diagonal {:would-plausibly-allow-work 0
+               :would-partly-allow-work 0
+               :would-not-allow-work 5}
+    :off-diagonal {:would-plausibly-allow-work 0
+                   :would-partly-allow-work 0
+                   :would-not-allow-work 20}}
+   :cascades
+   [{:cascade :wm/RUN4
+     :cascade-empty true
+     :adds-beyond-the-statement? false
+     :cells
+     [{:work-item :wm/RUN4 :verdict :would-not-allow-work}
+      {:work-item :wm/I4 :verdict :would-not-allow-work}
+      {:work-item :ticket/cx-new-blocks-emacs :verdict :would-not-allow-work}
+      {:work-item :ticket/fail-invoke-error :verdict :would-not-allow-work}
+      {:work-item :ticket/jvm-provenance-before-multi-jvm :verdict :would-not-allow-work}]}
+    {:cascade :wm/I4
+     :cascade-empty true
+     :adds-beyond-the-statement? false
+     :cells
+     [{:work-item :wm/RUN4 :verdict :would-not-allow-work}
+      {:work-item :wm/I4 :verdict :would-not-allow-work}
+      {:work-item :ticket/cx-new-blocks-emacs :verdict :would-not-allow-work}
+      {:work-item :ticket/fail-invoke-error :verdict :would-not-allow-work}
+      {:work-item :ticket/jvm-provenance-before-multi-jvm :verdict :would-not-allow-work}]}
+    {:cascade :ticket/cx-new-blocks-emacs
+     :cascade-empty true
+     :adds-beyond-the-statement? false
+     :cells
+     [{:work-item :wm/RUN4 :verdict :would-not-allow-work}
+      {:work-item :wm/I4 :verdict :would-not-allow-work}
+      {:work-item :ticket/cx-new-blocks-emacs :verdict :would-not-allow-work}
+      {:work-item :ticket/fail-invoke-error :verdict :would-not-allow-work}
+      {:work-item :ticket/jvm-provenance-before-multi-jvm :verdict :would-not-allow-work}]}
+    {:cascade :ticket/fail-invoke-error
+     :cascade-empty true
+     :adds-beyond-the-statement? false
+     :cells
+     [{:work-item :wm/RUN4 :verdict :would-not-allow-work}
+      {:work-item :wm/I4 :verdict :would-not-allow-work}
+      {:work-item :ticket/cx-new-blocks-emacs :verdict :would-not-allow-work}
+      {:work-item :ticket/fail-invoke-error :verdict :would-not-allow-work}
+      {:work-item :ticket/jvm-provenance-before-multi-jvm :verdict :would-not-allow-work}]}
+    {:cascade :ticket/jvm-provenance-before-multi-jvm
+     :cascade-empty true
+     :adds-beyond-the-statement? false
+     :cells
+     [{:work-item :wm/RUN4 :verdict :would-not-allow-work}
+      {:work-item :wm/I4 :verdict :would-not-allow-work}
+      {:work-item :ticket/cx-new-blocks-emacs :verdict :would-not-allow-work}
+      {:work-item :ticket/fail-invoke-error :verdict :would-not-allow-work}
+      {:work-item :ticket/jvm-provenance-before-multi-jvm :verdict :would-not-allow-work}]}]
+   :must-not-help-with
+   [{:cascade :wm/RUN4 :work-item :wm/I4 :matrix-verdict :would-not-allow-work :result :pass}
+    {:cascade :wm/I4 :work-item :wm/RUN4 :matrix-verdict :would-not-allow-work :result :pass}
+    {:cascade :ticket/cx-new-blocks-emacs :work-item :ticket/jvm-provenance-before-multi-jvm :matrix-verdict :would-not-allow-work :result :pass}
+    {:cascade :ticket/fail-invoke-error :work-item :ticket/cx-new-blocks-emacs :matrix-verdict :would-not-allow-work :result :pass}
+    {:cascade :ticket/jvm-provenance-before-multi-jvm :work-item :ticket/cx-new-blocks-emacs :matrix-verdict :would-not-allow-work :result :pass}]
+   :must-not-help-frequency {:pass 5 :fail 0}
+   :diagonal-adds-beyond-the-statement {:true 0 :false 5}}
+
+  :short-cue
+  {:source {:tensions "checks/open-tensions-short-cue.edn"
+            :cascade "checks/open-cascade-short-cue.edn"
+            :cue-granularity :single-token}
+   :finding
+   "The arm contains three useful diagonal policies and one partial one, but the two RUN4 off-diagonal positives and the prevalence of visibly unrelated members show that broad substring incidence, not item specificity, supplied much of each cascade."
+   :frequencies
+   {:diagonal {:would-plausibly-allow-work 3
+               :would-partly-allow-work 1
+               :would-not-allow-work 1}
+    :off-diagonal {:would-plausibly-allow-work 0
+                   :would-partly-allow-work 2
+                   :would-not-allow-work 18}}
+   :cascades
+   [{:cascade :ticket/cx-new-blocks-emacs
+     :members []
+     :cascade-empty true
+     :seed-assessment :empty-because-no-pattern-fired
+     :adds-beyond-the-statement? false
+     :cells
+     [{:work-item :wm/RUN4 :verdict :would-not-allow-work}
+      {:work-item :wm/I4 :verdict :would-not-allow-work}
+      {:work-item :ticket/cx-new-blocks-emacs :verdict :would-not-allow-work}
+      {:work-item :ticket/fail-invoke-error :verdict :would-not-allow-work}
+      {:work-item :ticket/jvm-provenance-before-multi-jvm :verdict :would-not-allow-work}]}
+
+    {:cascade :ticket/fail-invoke-error
+     :members
+     [:invariant-coherence/bounded-disposition
+      :invariant-coherence/subsumption-witness
+      :math-informal-CT/factor-and-lift
+      :math-informal-LO/complexity-classification
+      :math-strategy/characterization-result
+      :mmca/eye-before-metric
+      :peeragogy/par
+      :plos-npt-with-small-n/coding-reliability-stated]
+     :pattern-sources
+     {:invariant-coherence/bounded-disposition "library/invariant-coherence/bounded-disposition.flexiarg:29"
+      :invariant-coherence/subsumption-witness "library/invariant-coherence/subsumption-witness.flexiarg:31"
+      :math-informal-CT/factor-and-lift "library/math-informal-CT/factor-and-lift.flexiarg:37"
+      :math-informal-LO/complexity-classification "library/math-informal-LO/complexity-classification.flexiarg:35"
+      :math-strategy/characterization-result "library/math-strategy/characterization-result.flexiarg:34"
+      :mmca/eye-before-metric "library/mmca/eye-before-metric.flexiarg:19"
+      :peeragogy/par "library/peeragogy/par.flexiarg:27"
+      :plos-npt-with-small-n/coding-reliability-stated "library/plos-npt-with-small-n/coding-reliability-stated.flexiarg:27"}
+     :seed-assessment
+     "Eight members came from short-token hits. The characterization and labelling moves have a reason to be here, but factorization, complexity reductions, archaeological lifecycle invariants, peer reflection and qualitative coding are substring accidents."
+     :adds-beyond-the-statement? true
+     :cells
+     [{:work-item :wm/RUN4
+       :verdict :would-not-allow-work
+       :reason "The THENs of factor-and-lift and complexity-classification prescribe categorical lifting and complexity reductions, not running the named policy arms against fresh records."
+       :supports []
+       :does-not-help [:invariant-coherence/bounded-disposition :invariant-coherence/subsumption-witness :math-informal-CT/factor-and-lift :math-informal-LO/complexity-classification :math-strategy/characterization-result :mmca/eye-before-metric :peeragogy/par :plos-npt-with-small-n/coding-reliability-stated]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :wm/I4
+       :verdict :would-not-allow-work
+       :reason "The THENs of bounded-disposition and characterization-result classify artifact populations or scholarly-result forms; neither implements target-before-cascade controller order."
+       :supports []
+       :does-not-help [:invariant-coherence/bounded-disposition :invariant-coherence/subsumption-witness :math-informal-CT/factor-and-lift :math-informal-LO/complexity-classification :math-strategy/characterization-result :mmca/eye-before-metric :peeragogy/par :plos-npt-with-small-n/coding-reliability-stated]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/cx-new-blocks-emacs
+       :verdict :would-not-allow-work
+       :reason "eye-before-metric asks for labels and measure screening, but its sampler-sheet procedure does not time or separate wait_for_agency from blocking emacsclient calls; the seven other THENs are still farther away."
+       :supports []
+       :does-not-help [:invariant-coherence/bounded-disposition :invariant-coherence/subsumption-witness :math-informal-CT/factor-and-lift :math-informal-LO/complexity-classification :math-strategy/characterization-result :mmca/eye-before-metric :peeragogy/par :plos-npt-with-small-n/coding-reliability-stated]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/fail-invoke-error
+       :verdict :would-partly-allow-work
+       :reason "eye-before-metric supplies label-first classification and testing candidate measures against those labels; characterization-result asks the reviewer to choose and witness a failure-description regime. Together they plausibly structure exception-payload triage, but neither tells how to extract or partition the invoke exception payloads."
+       :supports [:math-strategy/characterization-result :mmca/eye-before-metric]
+       :does-not-help [:invariant-coherence/bounded-disposition :invariant-coherence/subsumption-witness :math-informal-CT/factor-and-lift :math-informal-LO/complexity-classification :peeragogy/par :plos-npt-with-small-n/coding-reliability-stated]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/jvm-provenance-before-multi-jvm
+       :verdict :would-not-allow-work
+       :reason "subsumption-witness locates canonical records for latent artifacts, but it does not make a running JVM report checkout, branch, and commit; the remaining seven THENs do not address runtime identity either."
+       :supports []
+       :does-not-help [:invariant-coherence/bounded-disposition :invariant-coherence/subsumption-witness :math-informal-CT/factor-and-lift :math-informal-LO/complexity-classification :math-strategy/characterization-result :mmca/eye-before-metric :peeragogy/par :plos-npt-with-small-n/coding-reliability-stated]
+       :unaccounted-members [] :unaccounted-count 0}]}
+
+    {:cascade :ticket/jvm-provenance-before-multi-jvm
+     :members
+     [:aif/expected-free-energy-scorecard :aif/term-to-channel-traceability
+      :campaign-coherence/campaign-as-temporary-institution :cycle-machine/runtime-restoration
+      :eoi-engine/tension-cv-shape :equity/contribution-pathways
+      :equity/contribution-pathways-as-published :equity/contribution-pathways-merged
+      :features/emit-per-tick-mismatch :invariant-coherence/protocol-family-naming
+      :math-formalization/binder-expression-mismatch :math-formalization/minmax-normalization
+      :math-formalization/tactic-algebra-interference :math-informal-CO/count-over-a-decomposition
+      :math-informal-CT/compare-universal-properties :math-informal-LO/complexity-classification
+      :memory/surface-the-closed-set :peeragogy/heartbeat
+      :peripherals/read-only-first-then-extend :realtime/branch-parallelism
+      :relationship-coherence/co-created-project :ukrns/open-the-triangle
+      :war-room/wr-0-organise-without-apparatus :war-room/wr-15-head-as-escrow-is-a-sanctioned-pattern]
+     :pattern-sources
+     {:aif/expected-free-energy-scorecard "library/aif/expected-free-energy-scorecard.flexiarg:21"
+      :aif/term-to-channel-traceability "library/aif/term-to-channel-traceability.flexiarg:20"
+      :campaign-coherence/campaign-as-temporary-institution "library/campaign-coherence/campaign-as-temporary-institution.flexiarg:21"
+      :cycle-machine/runtime-restoration "library/cycle-machine/runtime-restoration.flexiarg:22"
+      :eoi-engine/tension-cv-shape "library/eoi-engine/tension-cv-shape.flexiarg:38"
+      :equity/contribution-pathways "library/equity/contribution-pathways.flexiarg:29"
+      :equity/contribution-pathways-as-published "library/equity/contribution-pathways-as-published.flexiarg:49"
+      :equity/contribution-pathways-merged "library/equity/contribution-pathways-merged.flexiarg:34"
+      :features/emit-per-tick-mismatch "library/features/emit-per-tick-mismatch.flexiarg:36"
+      :invariant-coherence/protocol-family-naming "library/invariant-coherence/protocol-family-naming.flexiarg:28"
+      :math-formalization/binder-expression-mismatch "library/math-formalization/binder-expression-mismatch.flexiarg:34"
+      :math-formalization/minmax-normalization "library/math-formalization/minmax-normalization.flexiarg:33"
+      :math-formalization/tactic-algebra-interference "library/math-formalization/tactic-algebra-interference.flexiarg:45"
+      :math-informal-CO/count-over-a-decomposition "library/math-informal-CO/count-over-a-decomposition.flexiarg:27"
+      :math-informal-CT/compare-universal-properties "library/math-informal-CT/compare-universal-properties.flexiarg:38"
+      :math-informal-LO/complexity-classification "library/math-informal-LO/complexity-classification.flexiarg:35"
+      :memory/surface-the-closed-set "library/memory/surface-the-closed-set.flexiarg:26"
+      :peeragogy/heartbeat "library/peeragogy/heartbeat.flexiarg:27"
+      :peripherals/read-only-first-then-extend "library/peripherals/read-only-first-then-extend.flexiarg:48"
+      :realtime/branch-parallelism "library/realtime/branch-parallelism.flexiarg:18"
+      :relationship-coherence/co-created-project "library/relationship-coherence/co-created-project.flexiarg:21"
+      :ukrns/open-the-triangle "library/ukrns/open-the-triangle.flexiarg:31"
+      :war-room/wr-0-organise-without-apparatus "library/war-room/wr-0-organise-without-apparatus.flexiarg:55"
+      :war-room/wr-15-head-as-escrow-is-a-sanctioned-pattern "library/war-room/wr-15-head-as-escrow-is-a-sanctioned-pattern.flexiarg:19"}
+     :seed-assessment
+     "The 18-member seed is badly inflated by sha and other substring matches. runtime-restoration, surface-the-closed-set, and branch-parallelism are reasoned matches; most mathematics, equity, CV, peeragogy, and war-room members are accidents."
+     :adds-beyond-the-statement? true
+     :cells
+     [{:work-item :wm/RUN4
+       :verdict :would-partly-allow-work
+       :reason "expected-free-energy-scorecard and term-to-channel-traceability prescribe named score terms and persisted channel/intermediate-value traces, while emit-per-tick-mismatch prescribes live-versus-held-constant paired runs. Those moves help the named beta/pi arms, but the cascade does not mention wmRunConformsToWiring or the exact record obligations."
+       :supports [:aif/expected-free-energy-scorecard :aif/term-to-channel-traceability :features/emit-per-tick-mismatch]
+       :does-not-help [:campaign-coherence/campaign-as-temporary-institution :cycle-machine/runtime-restoration :eoi-engine/tension-cv-shape :equity/contribution-pathways :equity/contribution-pathways-as-published :equity/contribution-pathways-merged :invariant-coherence/protocol-family-naming :math-formalization/binder-expression-mismatch :math-formalization/minmax-normalization :math-formalization/tactic-algebra-interference :math-informal-CO/count-over-a-decomposition :math-informal-CT/compare-universal-properties :math-informal-LO/complexity-classification :memory/surface-the-closed-set :peeragogy/heartbeat :peripherals/read-only-first-then-extend :realtime/branch-parallelism :relationship-coherence/co-created-project :ukrns/open-the-triangle :war-room/wr-0-organise-without-apparatus :war-room/wr-15-head-as-escrow-is-a-sanctioned-pattern]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :wm/I4
+       :verdict :would-not-allow-work
+       :reason "branch-parallelism prescribes named branches and review, and protocol-family-naming prescribes invariant namespaces; neither changes the controller from cascade-first to target-first, while the other 22 THENs address different work."
+       :supports []
+       :does-not-help [:aif/expected-free-energy-scorecard :aif/term-to-channel-traceability :campaign-coherence/campaign-as-temporary-institution :cycle-machine/runtime-restoration :eoi-engine/tension-cv-shape :equity/contribution-pathways :equity/contribution-pathways-as-published :equity/contribution-pathways-merged :features/emit-per-tick-mismatch :invariant-coherence/protocol-family-naming :math-formalization/binder-expression-mismatch :math-formalization/minmax-normalization :math-formalization/tactic-algebra-interference :math-informal-CO/count-over-a-decomposition :math-informal-CT/compare-universal-properties :math-informal-LO/complexity-classification :memory/surface-the-closed-set :peeragogy/heartbeat :peripherals/read-only-first-then-extend :realtime/branch-parallelism :relationship-coherence/co-created-project :ukrns/open-the-triangle :war-room/wr-0-organise-without-apparatus :war-room/wr-15-head-as-escrow-is-a-sanctioned-pattern]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/cx-new-blocks-emacs
+       :verdict :would-not-allow-work
+       :reason "runtime-restoration verifies loaded sources and branch-parallelism separates branches, but neither times the synchronous Emacs path or splits wait_for_agency from emacsclient; none of the other 22 THENs supplies that missing reproduction."
+       :supports []
+       :does-not-help [:aif/expected-free-energy-scorecard :aif/term-to-channel-traceability :campaign-coherence/campaign-as-temporary-institution :cycle-machine/runtime-restoration :eoi-engine/tension-cv-shape :equity/contribution-pathways :equity/contribution-pathways-as-published :equity/contribution-pathways-merged :features/emit-per-tick-mismatch :invariant-coherence/protocol-family-naming :math-formalization/binder-expression-mismatch :math-formalization/minmax-normalization :math-formalization/tactic-algebra-interference :math-informal-CO/count-over-a-decomposition :math-informal-CT/compare-universal-properties :math-informal-LO/complexity-classification :memory/surface-the-closed-set :peeragogy/heartbeat :peripherals/read-only-first-then-extend :realtime/branch-parallelism :relationship-coherence/co-created-project :ukrns/open-the-triangle :war-room/wr-0-organise-without-apparatus :war-room/wr-15-head-as-escrow-is-a-sanctioned-pattern]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/fail-invoke-error
+       :verdict :would-not-allow-work
+       :reason "term-to-channel-traceability persists score inputs, but the ticket requires classification of invoke exception payloads; this and the other 23 THENs supply no extraction or exception taxonomy."
+       :supports []
+       :does-not-help [:aif/expected-free-energy-scorecard :aif/term-to-channel-traceability :campaign-coherence/campaign-as-temporary-institution :cycle-machine/runtime-restoration :eoi-engine/tension-cv-shape :equity/contribution-pathways :equity/contribution-pathways-as-published :equity/contribution-pathways-merged :features/emit-per-tick-mismatch :invariant-coherence/protocol-family-naming :math-formalization/binder-expression-mismatch :math-formalization/minmax-normalization :math-formalization/tactic-algebra-interference :math-informal-CO/count-over-a-decomposition :math-informal-CT/compare-universal-properties :math-informal-LO/complexity-classification :memory/surface-the-closed-set :peeragogy/heartbeat :peripherals/read-only-first-then-extend :realtime/branch-parallelism :relationship-coherence/co-created-project :ukrns/open-the-triangle :war-room/wr-0-organise-without-apparatus :war-room/wr-15-head-as-escrow-is-a-sanctioned-pattern]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/jvm-provenance-before-multi-jvm
+       :verdict :would-plausibly-allow-work
+       :reason "runtime-restoration requires the JVM to report loaded files and compare their digests to checkout blobs; surface-the-closed-set requires caller-visible exact closed/format constraints; branch-parallelism supplies named isolated branches with review. Together they give a plausible route to explicit runtime checkout/commit provenance before multiplying JVMs."
+       :supports [:cycle-machine/runtime-restoration :memory/surface-the-closed-set :realtime/branch-parallelism]
+       :does-not-help [:aif/expected-free-energy-scorecard :aif/term-to-channel-traceability :campaign-coherence/campaign-as-temporary-institution :eoi-engine/tension-cv-shape :equity/contribution-pathways :equity/contribution-pathways-as-published :equity/contribution-pathways-merged :features/emit-per-tick-mismatch :invariant-coherence/protocol-family-naming :math-formalization/binder-expression-mismatch :math-formalization/minmax-normalization :math-formalization/tactic-algebra-interference :math-informal-CO/count-over-a-decomposition :math-informal-CT/compare-universal-properties :math-informal-LO/complexity-classification :peeragogy/heartbeat :peripherals/read-only-first-then-extend :relationship-coherence/co-created-project :ukrns/open-the-triangle :war-room/wr-0-organise-without-apparatus :war-room/wr-15-head-as-escrow-is-a-sanctioned-pattern]
+       :unaccounted-members [] :unaccounted-count 0}]}
+
+    {:cascade :wm/I4
+     :members
+     [:cascades/declared-skeleton :futon-theory/derive-exits-on-a-minted-sorry
+      :math-informal/the-diagonal-argument :math-informal-CA/epsilon-of-room
+      :math-strategy/non-circularity-check :mmca/perceivable-target
+      :scan-coherence/mission-anchored-scan :snatch/have-a-temperament
+      :snatch/lead-with-the-exchange-rule :snatch/play-the-authored-order-first
+      :snatch/widen-the-cascade-only-on-evidence :war-room/wr-20-action-class-inventory-becomes-data]
+     :pattern-sources
+     {:cascades/declared-skeleton "library/cascades/declared-skeleton.flexiarg:28"
+      :futon-theory/derive-exits-on-a-minted-sorry "library/futon-theory/derive-exits-on-a-minted-sorry.flexiarg:30"
+      :math-informal/the-diagonal-argument "library/math-informal/the-diagonal-argument.flexiarg:24"
+      :math-informal-CA/epsilon-of-room "library/math-informal-CA/epsilon-of-room.flexiarg:27"
+      :math-strategy/non-circularity-check "library/math-strategy/non-circularity-check.flexiarg:30"
+      :mmca/perceivable-target "library/mmca/perceivable-target.flexiarg:19"
+      :scan-coherence/mission-anchored-scan "library/scan-coherence/mission-anchored-scan.flexiarg:21"
+      :snatch/have-a-temperament "library/snatch/have-a-temperament.flexiarg:33"
+      :snatch/lead-with-the-exchange-rule "library/snatch/lead-with-the-exchange-rule.flexiarg:28"
+      :snatch/play-the-authored-order-first "library/snatch/play-the-authored-order-first.flexiarg:25"
+      :snatch/widen-the-cascade-only-on-evidence "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29"
+      :war-room/wr-20-action-class-inventory-becomes-data "library/war-room/wr-20-action-class-inventory-becomes-data.flexiarg:21"}
+     :seed-assessment
+     "Eight seed members arose from broad tokens. The five cascade-policy patterns and minted-sorry ordering are coherently related to I4; the two elementary mathematics patterns and mission-scan pattern are accidents."
+     :adds-beyond-the-statement? true
+     :cells
+     [{:work-item :wm/RUN4
+       :verdict :would-partly-allow-work
+       :reason "perceivable-target prescribes a held-out regression followed by a convergence-and-hold test, which could structure part of RUN4's empirical comparison, but it does not name the record conformance, H1b, beta, or pi_0 arms."
+       :supports [:mmca/perceivable-target]
+       :does-not-help [:cascades/declared-skeleton :futon-theory/derive-exits-on-a-minted-sorry :math-informal/the-diagonal-argument :math-informal-CA/epsilon-of-room :math-strategy/non-circularity-check :scan-coherence/mission-anchored-scan :snatch/have-a-temperament :snatch/lead-with-the-exchange-rule :snatch/play-the-authored-order-first :snatch/widen-the-cascade-only-on-evidence :war-room/wr-20-action-class-inventory-becomes-data]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :wm/I4
+       :verdict :would-plausibly-allow-work
+       :reason "derive-exits-on-a-minted-sorry explicitly puts the target arrow before ARGUE's cascade; have-a-temperament and widen-the-cascade-only-on-evidence specify a reviewable production rule and bounded iterative construction. These prescribe a plausible target-first controller shape rather than merely restating that ordering."
+       :supports [:futon-theory/derive-exits-on-a-minted-sorry :snatch/have-a-temperament :snatch/widen-the-cascade-only-on-evidence]
+       :does-not-help [:cascades/declared-skeleton :math-informal/the-diagonal-argument :math-informal-CA/epsilon-of-room :math-strategy/non-circularity-check :mmca/perceivable-target :scan-coherence/mission-anchored-scan :snatch/lead-with-the-exchange-rule :snatch/play-the-authored-order-first :war-room/wr-20-action-class-inventory-becomes-data]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/cx-new-blocks-emacs
+       :verdict :would-not-allow-work
+       :reason "non-circularity-check traces construction ingredients and mission-anchored-scan separates instruments, but neither times synchronous Emacs calls; none of the other ten THENs addresses wait_for_agency or emacsclient latency."
+       :supports []
+       :does-not-help [:cascades/declared-skeleton :futon-theory/derive-exits-on-a-minted-sorry :math-informal/the-diagonal-argument :math-informal-CA/epsilon-of-room :math-strategy/non-circularity-check :mmca/perceivable-target :scan-coherence/mission-anchored-scan :snatch/have-a-temperament :snatch/lead-with-the-exchange-rule :snatch/play-the-authored-order-first :snatch/widen-the-cascade-only-on-evidence :war-room/wr-20-action-class-inventory-becomes-data]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/fail-invoke-error
+       :verdict :would-not-allow-work
+       :reason "action-class-inventory represents proposer/action classes, not exception payload classes, and no other member's THEN supplies exception extraction, grouping, or a close criterion."
+       :supports []
+       :does-not-help [:cascades/declared-skeleton :futon-theory/derive-exits-on-a-minted-sorry :math-informal/the-diagonal-argument :math-informal-CA/epsilon-of-room :math-strategy/non-circularity-check :mmca/perceivable-target :scan-coherence/mission-anchored-scan :snatch/have-a-temperament :snatch/lead-with-the-exchange-rule :snatch/play-the-authored-order-first :snatch/widen-the-cascade-only-on-evidence :war-room/wr-20-action-class-inventory-becomes-data]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/jvm-provenance-before-multi-jvm
+       :verdict :would-not-allow-work
+       :reason "declared-skeleton persists reviewed authority edges, but it does not identify loaded checkout, branch, or commit; the remaining eleven THENs do not add runtime provenance."
+       :supports []
+       :does-not-help [:cascades/declared-skeleton :futon-theory/derive-exits-on-a-minted-sorry :math-informal/the-diagonal-argument :math-informal-CA/epsilon-of-room :math-strategy/non-circularity-check :mmca/perceivable-target :scan-coherence/mission-anchored-scan :snatch/have-a-temperament :snatch/lead-with-the-exchange-rule :snatch/play-the-authored-order-first :snatch/widen-the-cascade-only-on-evidence :war-room/wr-20-action-class-inventory-becomes-data]
+       :unaccounted-members [] :unaccounted-count 0}]}
+
+    {:cascade :wm/RUN4
+     :members
+     [:aif/evidence-precision-registry :aif/no-self-certification
+      :aif/status-gated-belief-update :aif/term-to-channel-traceability
+      :aif/two-layer-calibration :budgeted-action-selection/mana-gated-work
+      :control/agential-pattern-hygiene :equity/visible-impact-merged
+      :forward-model/graduate-strategy-by-outcome :forward-model/inhabit-supplies-labels
+      :forward-model/reward-supersedes-evidence :forward-model/seal-the-graduation-criteria
+      :pattern-coherence/evidence-alignment :plos-npt-with-small-n/abstract-n-method-frame
+      :system-coherence/tag-evidence-by-timescale :ukrns/design-state-lineage
+      :ukrns/model-recompute-schedule :ukrns/open-the-triangle
+      :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad
+      :war-room/wr-4-inhabit-before-building :war-room/wr-9-bites-empirical-or-logical]
+     :pattern-sources
+     {:aif/evidence-precision-registry "library/aif/evidence-precision-registry.flexiarg:21"
+      :aif/no-self-certification "library/aif/no-self-certification.flexiarg:31"
+      :aif/status-gated-belief-update "library/aif/status-gated-belief-update.flexiarg:23"
+      :aif/term-to-channel-traceability "library/aif/term-to-channel-traceability.flexiarg:20"
+      :aif/two-layer-calibration "library/aif/two-layer-calibration.flexiarg:28"
+      :budgeted-action-selection/mana-gated-work "library/budgeted-action-selection/mana-gated-work.flexiarg:70"
+      :control/agential-pattern-hygiene "library/control/agential-pattern-hygiene.flexiarg:17"
+      :equity/visible-impact-merged "library/equity/visible-impact-merged.flexiarg:35"
+      :forward-model/graduate-strategy-by-outcome "library/forward-model/graduate-strategy-by-outcome.flexiarg:19"
+      :forward-model/inhabit-supplies-labels "library/forward-model/inhabit-supplies-labels.flexiarg:19"
+      :forward-model/reward-supersedes-evidence "library/forward-model/reward-supersedes-evidence.flexiarg:19"
+      :forward-model/seal-the-graduation-criteria "library/forward-model/seal-the-graduation-criteria.flexiarg:19"
+      :pattern-coherence/evidence-alignment "library/pattern-coherence/evidence-alignment.flexiarg:19"
+      :plos-npt-with-small-n/abstract-n-method-frame "library/plos-npt-with-small-n/abstract-n-method-frame.flexiarg:28"
+      :system-coherence/tag-evidence-by-timescale "library/system-coherence/tag-evidence-by-timescale.flexiarg:29"
+      :ukrns/design-state-lineage "library/ukrns/design-state-lineage.flexiarg:31"
+      :ukrns/model-recompute-schedule "library/ukrns/model-recompute-schedule.flexiarg:30"
+      :ukrns/open-the-triangle "library/ukrns/open-the-triangle.flexiarg:31"
+      :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad "library/war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad.flexiarg:27"
+      :war-room/wr-4-inhabit-before-building "library/war-room/wr-4-inhabit-before-building.flexiarg:30"
+      :war-room/wr-9-bites-empirical-or-logical "library/war-room/wr-9-bites-empirical-or-logical.flexiarg:27"}
+     :seed-assessment
+     "The evidence/records/prior cues produced a coherent core of precision, traceability, calibration, fixed criteria, and evidence provenance. Abstract-writing, equity, action-budget, governance and UKRNS members are broad-token accidents."
+     :adds-beyond-the-statement? true
+     :cells
+     [{:work-item :wm/RUN4
+       :verdict :would-plausibly-allow-work
+       :reason "evidence-precision-registry and term-to-channel-traceability specify the per-channel quantities and persisted calculations; no-self-certification and two-layer-calibration distinguish witnessed outcomes from model-produced signals; seal-the-graduation-criteria and evidence-alignment precommit the tests. That is a plausible policy for running and judging the named record and policy arms."
+       :supports [:aif/evidence-precision-registry :aif/no-self-certification :aif/term-to-channel-traceability :aif/two-layer-calibration :forward-model/seal-the-graduation-criteria :pattern-coherence/evidence-alignment]
+       :does-not-help [:aif/status-gated-belief-update :budgeted-action-selection/mana-gated-work :control/agential-pattern-hygiene :equity/visible-impact-merged :forward-model/graduate-strategy-by-outcome :forward-model/inhabit-supplies-labels :forward-model/reward-supersedes-evidence :plos-npt-with-small-n/abstract-n-method-frame :system-coherence/tag-evidence-by-timescale :ukrns/design-state-lineage :ukrns/model-recompute-schedule :ukrns/open-the-triangle :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad :war-room/wr-4-inhabit-before-building :war-room/wr-9-bites-empirical-or-logical]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :wm/I4
+       :verdict :would-not-allow-work
+       :reason "status-gated-belief-update determines when beliefs update and design-state-lineage versions design changes, but neither changes target/cascade construction order; the other 19 THENs likewise operate after a target exists."
+       :supports []
+       :does-not-help [:aif/evidence-precision-registry :aif/no-self-certification :aif/status-gated-belief-update :aif/term-to-channel-traceability :aif/two-layer-calibration :budgeted-action-selection/mana-gated-work :control/agential-pattern-hygiene :equity/visible-impact-merged :forward-model/graduate-strategy-by-outcome :forward-model/inhabit-supplies-labels :forward-model/reward-supersedes-evidence :forward-model/seal-the-graduation-criteria :pattern-coherence/evidence-alignment :plos-npt-with-small-n/abstract-n-method-frame :system-coherence/tag-evidence-by-timescale :ukrns/design-state-lineage :ukrns/model-recompute-schedule :ukrns/open-the-triangle :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad :war-room/wr-4-inhabit-before-building :war-room/wr-9-bites-empirical-or-logical]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/cx-new-blocks-emacs
+       :verdict :would-not-allow-work
+       :reason "tag-evidence-by-timescale labels claim horizons, not synchronous call durations, and no other member's THEN times or separates wait_for_agency and emacsclient."
+       :supports []
+       :does-not-help [:aif/evidence-precision-registry :aif/no-self-certification :aif/status-gated-belief-update :aif/term-to-channel-traceability :aif/two-layer-calibration :budgeted-action-selection/mana-gated-work :control/agential-pattern-hygiene :equity/visible-impact-merged :forward-model/graduate-strategy-by-outcome :forward-model/inhabit-supplies-labels :forward-model/reward-supersedes-evidence :forward-model/seal-the-graduation-criteria :pattern-coherence/evidence-alignment :plos-npt-with-small-n/abstract-n-method-frame :system-coherence/tag-evidence-by-timescale :ukrns/design-state-lineage :ukrns/model-recompute-schedule :ukrns/open-the-triangle :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad :war-room/wr-4-inhabit-before-building :war-room/wr-9-bites-empirical-or-logical]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/fail-invoke-error
+       :verdict :would-not-allow-work
+       :reason "no-self-certification tags evidence provenance and evidence-alignment states confidence-changing observations, but neither classifies invoke exception payloads; all other THENs lack the required exception taxonomy too."
+       :supports []
+       :does-not-help [:aif/evidence-precision-registry :aif/no-self-certification :aif/status-gated-belief-update :aif/term-to-channel-traceability :aif/two-layer-calibration :budgeted-action-selection/mana-gated-work :control/agential-pattern-hygiene :equity/visible-impact-merged :forward-model/graduate-strategy-by-outcome :forward-model/inhabit-supplies-labels :forward-model/reward-supersedes-evidence :forward-model/seal-the-graduation-criteria :pattern-coherence/evidence-alignment :plos-npt-with-small-n/abstract-n-method-frame :system-coherence/tag-evidence-by-timescale :ukrns/design-state-lineage :ukrns/model-recompute-schedule :ukrns/open-the-triangle :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad :war-room/wr-4-inhabit-before-building :war-room/wr-9-bites-empirical-or-logical]
+       :unaccounted-members [] :unaccounted-count 0}
+      {:work-item :ticket/jvm-provenance-before-multi-jvm
+       :verdict :would-not-allow-work
+       :reason "design-state-lineage versions design updates and term-to-channel-traceability records score inputs, but neither exposes a JVM's checkout, branch, or commit; the remaining 19 THENs do not establish runtime identity."
+       :supports []
+       :does-not-help [:aif/evidence-precision-registry :aif/no-self-certification :aif/status-gated-belief-update :aif/term-to-channel-traceability :aif/two-layer-calibration :budgeted-action-selection/mana-gated-work :control/agential-pattern-hygiene :equity/visible-impact-merged :forward-model/graduate-strategy-by-outcome :forward-model/inhabit-supplies-labels :forward-model/reward-supersedes-evidence :forward-model/seal-the-graduation-criteria :pattern-coherence/evidence-alignment :plos-npt-with-small-n/abstract-n-method-frame :system-coherence/tag-evidence-by-timescale :ukrns/design-state-lineage :ukrns/model-recompute-schedule :ukrns/open-the-triangle :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad :war-room/wr-4-inhabit-before-building :war-room/wr-9-bites-empirical-or-logical]
+       :unaccounted-members [] :unaccounted-count 0}]}]
+
+   :must-not-help-with
+   [{:cascade :wm/RUN4 :work-item :ticket/cx-new-blocks-emacs :matrix-verdict :would-not-allow-work :result :pass}
+    {:cascade :wm/I4 :work-item :wm/RUN4 :matrix-verdict :would-partly-allow-work :result :fail}
+    {:cascade :ticket/cx-new-blocks-emacs :work-item :ticket/fail-invoke-error :matrix-verdict :would-not-allow-work :result :pass}
+    {:cascade :ticket/fail-invoke-error :work-item :ticket/jvm-provenance-before-multi-jvm :matrix-verdict :would-not-allow-work :result :pass}
+    {:cascade :ticket/jvm-provenance-before-multi-jvm :work-item :wm/I4 :matrix-verdict :would-not-allow-work :result :pass}]
+   :must-not-help-frequency {:pass 4 :fail 1}
+   :diagonal-adds-beyond-the-statement {:true 4 :false 1}}}
+
+ :artefact-audit
+ {:clause-quotation
+  {:checked-items [:wm/I4 :wm/RUN4]
+   :checked-arms [:primary :short-cue]
+   :clauses-checked 8
+   :exceptions []}
+  :membership-and-run-accounting
+  {:all-named-members-are-in-their-cascades? true
+   :member-seed-admission-count-exceptions []
+   :runs-with-seed-at-or-over-budget []
+   :entirely-admission-from-empty-seed
+   [{:arm :primary :item :ticket/cx-new-blocks-emacs :run :widen-to-a-budget :seed-size 0 :admitted-count 2 :member-count 2}
+    {:arm :primary :item :ticket/jvm-provenance-before-multi-jvm :run :widen-to-a-budget :seed-size 0 :admitted-count 1 :member-count 1}
+    {:arm :short-cue :item :ticket/cx-new-blocks-emacs :run :widen-to-a-budget :seed-size 0 :admitted-count 20 :member-count 20}]}
+  :findings
+  ["No structural inconsistency was found in member, seed, admission, or reported member counts."
+   "The primary arm is null under the registered primary temperament: all five marginal-floor cascades are empty."
+   "The short-cue arm's raw substring matcher admits many patterns for morphology rather than semantics; sha is the clearest failure, and its 115 substring hits include zero whole-word hits."
+   "The short-cue I4 cascade partly serves RUN4, failing its pre-registered negative control."
+   "Three budget runs are made entirely by admission from an empty seed; none of those outputs was used to rescue the primary marginal-floor judgement."]}
+
+ :unaccounted-member-count 0
+ :gates
+ {:edn-parse "Required; exit status written to /tmp/la8/gates/judge-parse.exit and tested numerically."
+  :clj-kondo :not-applicable-no-clojure-touched
+  :check-parens :not-applicable-no-clojure-or-lisp-touched
+  :content-check "Required: validate 25 cells per arm, frequency agreement, member partitions, source coverage, must-not-help scores, and diagonal adds counts from this parsed file."}
+ :verdict
+ "Yes, but only with a serious qualification: single-token cues produced policies that plausibly allow four of five items (three fully and one partly), while phrase cues produced none; the two RUN4 off-diagonal positives and widespread substring accidents show that the successful constructions are not reliably item-specific."}

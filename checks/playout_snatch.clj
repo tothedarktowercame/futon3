@@ -13,44 +13,6 @@
             [clojure.pprint]
             [find-organise :as fo]))
 
-;; ---- CascadeEdit — the policy grain's action type ------------------------
-;; LA1c-restatement.md §3.4.  A play-grain THEN returns an Act (a move); a
-;; design-grain THEN would return an InstitutionEdit; a POLICY-grain THEN returns
-;; one of these five and never a move.  They are the whole of what a temperament
-;; is allowed to say, which is what makes a temperament readable before the run.
-;;
-;; `halt` is an EDIT rather than a condition in the construction loop, so that
-;; two temperaments can differ in where they stop and the stop is recorded on
-;; the cascade with the run (LA1c §4.1; `snatch/widen-the-cascade-only-on-
-;; evidence`'s THEN asks for exactly that).
-(defn admit "Bring `pattern` into the cascade." [pattern]
-  {:edit :admit :pattern pattern})
-(defn drop-node "Take `pattern` out of the cascade." [pattern]
-  {:edit :drop :pattern pattern})
-(defn promote-above "Move `pattern` ahead of `above` in the precedence field." [pattern above]
-  {:edit :promote-above :pattern pattern :above above})
-(defn set-flag "Set a monotone flag on the cascade." [flag]
-  {:edit :set-flag :flag flag})
-(defn halt "Stop the construction, for a stated reason." [reason]
-  {:edit :halt :reason reason})
-
-(def cascade-edit-keys
-  "The required key of each constructor, so a malformed edit is rejected where it
-   is emitted rather than where it is applied."
-  {:admit [:pattern] :drop [:pattern] :promote-above [:pattern :above]
-   :set-flag [:flag] :halt [:reason]})
-
-(defn cascade-edit? [e]
-  (boolean (when-let [required (get cascade-edit-keys (:edit e))]
-             (every? #(contains? e %) required))))
-
-;; `ordered` reads only the cascade's own fields, so a policy-grain guard can
-;; call it: the precedence field as a list, least first.  Ties break by the
-;; authored order — `sort-by` is stable — which is the rule
-;; `exchange-first-overrides` was written under.
-(defn ordered [{:keys [members precedence authored-order]}]
-  (->> authored-order (filter members) (sort-by precedence) vec))
-
 ;; ---- the collection, as (IF-guard, THEN) pairs -------------------------
 ;; Each guard is a predicate on the situation. This IS the pattern's IF clause,
 ;; encoded — the point of the exercise is that some situations match nothing.
@@ -182,7 +144,7 @@
     ;; The identity temperament's edit is the empty one.  What it still has to
     ;; do is BE RECORDED, "exactly as a non-empty one would be" — which is what
     ;; a halt with a stated reason is.
-    :then (fn [_] (halt :authored-order-is-the-baseline))}
+    :then (fn [_] (fo/halt :authored-order-is-the-baseline))}
    {:id :lead-with-the-exchange-rule :grain :policy :precedence 1
     :then-source "library/snatch/lead-with-the-exchange-rule.flexiarg:28-31"
     ;; "You want a temperament that leads with gains from trade" — so the
@@ -193,29 +155,17 @@
     ;; is live only while the exchange rule is not already first: once it is,
     ;; promoting it again would change nothing and the pattern has nothing to
     ;; add.  This is also what terminates the construction.
-    :however (fn [s] (not= :exchange-when-both-sides-gain (first (ordered s))))
-    :then (fn [s] (promote-above :exchange-when-both-sides-gain (first (ordered s))))}])
+    :however (fn [s] (not= :exchange-when-both-sides-gain (first (fo/ordered s))))
+    :then (fn [s] (fo/promote-above :exchange-when-both-sides-gain (first (fo/ordered s))))}])
 
 ;; P1's set only: a pattern whose actor is P2 is not decidable by this harness.
-;; A pattern fires when its ANTECEDENT holds: IF and HOWEVER together.  A
-;; pattern with no stated :however fires on its IF alone.
+;; That exclusion is the GAME's, so it stays here; `fo/fires?` is the generic
+;; antecedent test (IF and HOWEVER together) -- worklist :LA3 moved it there --
+;; and it knows nothing about P2.
 (defn fires? [pat s]
-  (and (not= :p2 (:actor pat))
-       ((:if pat) s)
-       (if-let [however (:however pat)] (however s) true)))
+  (and (not= :p2 (:actor pat)) (fo/fires? pat s)))
 
 (defn applicable [s] (mapv :id (filter #(fires? % s) collection)))
-
-;; LA1c §3.3: ONE firing loop, with the grain left open.  Sort the rules by the
-;; precedence the cascade carries, keep the ones whose ANTECEDENT holds, take the
-;; first THEN that returns something.  `pattern-policy` is this at play grain and
-;; `construct` is this at policy grain; there is not a second loop for the second
-;; grain, which is the point of indexing rather than adding a layer.
-(defn fire
-  "Returns `[rule emitted]` for the first rule whose THEN yields a value, or nil."
-  [rules precedence-of s]
-  (some (fn [r] (when-let [emitted ((:then r) s)] [r emitted]))
-        (sort-by precedence-of (filter #(and (:then %) (fires? % s)) rules))))
 
 ;; ---- treatments, from the flowcharts -----------------------------------
 (def treatments
@@ -251,7 +201,7 @@
   (fn [s pats]
     (let [fired (set pats)
           order #(get overrides (:id %) (:precedence %))]
-      (if-let [[pat a] (fire (filter #(fired (:id %)) collection) order s)]
+      (if-let [[pat a] (fo/fire (filter #(fired (:id %)) collection) order s)]
         (assoc a :by (:id pat))
         {:act :abstain :by :no-pattern}))))
 
@@ -278,64 +228,15 @@
    :record []
    :halted nil})
 
-(defn apply-edit
-  "CascadeEdit applied to a CascadeState.  `:by` is the id of the policy-grain
-   rule that emitted it, and it is what an admitted node's provenance records —
-   O1's third origin, `admittedBy` (LA1c §3.2)."
-  [state {:keys [edit pattern above flag reason by] :as e}]
-  (when-not (cascade-edit? e)
-    (throw (ex-info "apply-edit: not a CascadeEdit" {:finding :not-a-cascade-edit :edit e})))
-  (case edit
-    :admit (-> state
-               (update :members conj pattern)
-               (assoc-in [:provenance pattern] [:admitted-by by])
-               (assoc-in [:precedence pattern]
-                         (inc (reduce max 0 (vals (:precedence state)))))
-               (update :authored-order #(if (some #{pattern} %) % (conj % pattern))))
-    :drop (-> state
-              (update :members disj pattern)
-              (update :provenance dissoc pattern))
-    :promote-above (assoc-in state [:precedence pattern]
-                             (dec (get-in state [:precedence above])))
-    :set-flag (update state :flags conj flag)
-    :halt (assoc state :halted reason)))
-
 (def ^:private rule-by-id (into {} (map (juxt :id identity)) collection))
 
-(def ^:private construct-step-limit
-  "A temperament whose rules never stop is a defect, not a long run.  The limit
-   is a hard failure rather than a silent truncation."
-  64)
-
 (defn construct
-  "LA1c §4.1, at policy grain: fire the temperament over the CascadeState, apply
-   the ONE edit it emits, repeat until no rule fires (saturation) or a `halt`
-   edit arrives.  Returns the final CascadeState with `:stop`, `:steps` and the
-   `:record` of every edit.
-
-   ΔG per attachment step is NOT evaluated here.  §4.1 puts it in the loop and
-   this row does not build it; a temperament that needed it would stop wrong,
-   and neither of the two encoded here consults it."
+  "`fo/construct` (LA1c §4.1) with this collection's nodes resolved.  The loop
+   itself is not here: `:LA3` moved it to `find_organise.clj` so that the
+   library constructor fires the same one."
   ([temperament] (construct temperament (initial-cascade-state)))
   ([temperament state]
-   (let [rules (mapv rule-by-id (:nodes temperament))
-         order #(get (:precedence temperament) (:id %) (:precedence %))]
-     (when (some nil? rules)
-       (throw (ex-info "construct: temperament names a rule that is not in the collection"
-                       {:finding :unknown-temperament-node
-                        :temperament (:id temperament) :nodes (:nodes temperament)})))
-     (loop [s state k 0]
-       (cond
-         (:halted s) (assoc s :stop [:halted (:halted s)] :steps k)
-         (> k construct-step-limit)
-         (throw (ex-info "construct: step limit reached; the temperament does not stop"
-                         {:finding :temperament-does-not-stop
-                          :temperament (:id temperament) :steps k}))
-         :else
-         (if-let [[rule edit] (fire rules order s)]
-           (let [edit (assoc edit :by (:id rule))]
-             (recur (apply-edit (update s :record conj (assoc edit :step k)) edit) (inc k)))
-           (assoc s :stop [:saturation] :steps k)))))))
+   (fo/construct temperament (mapv rule-by-id (:nodes temperament)) state)))
 
 (defn temperament-overrides
   "The `overrides` map `pattern-policy` takes, DERIVED: the entries of the
@@ -647,13 +548,16 @@
    :widen-the-cascade-only-on-evidence
    {:needs [:admit :halt]
     :because "one admission at a time, ordered by what the last one bought, with a
-              stated stopping rule. The ordering term is the open question LA1c
-              §4.2 records as :constructor-relevance-substrate, and the marginal
-              gain is the ΔG per attachment step `construct` does not evaluate."}
+              stated stopping rule. Executed by :LA3, but NOT HERE: the ordering
+              term needs a repository to read authored edges off, and this
+              harness's operand is a seven-rule cascade over one section.
+              `checks/construct_cascade.clj` fires it over the whole library, and
+              its two temperaments differ only in which of this THEN's stopping
+              rules they carry."}
    :grim-cuts-the-cascade-and-never-widens-it
    {:needs [:drop :set-flag]
     :because "drop what depends on the arrangement at the first breach and set the
-              monotone no-readmission flag. `apply-edit` implements both; nothing
+              monotone no-readmission flag. `fo/apply-edit` implements both; nothing
               carries a cascade between ROUNDS, so the flag would have nowhere to
               be monotone over — `play` rebuilds the acting set every round."}})
 
@@ -736,7 +640,7 @@
         (println (format "    step %d  %-14s %s"
                          (:step e) (name (:edit e))
                          (pr-str (dissoc e :step :edit :by)))))
-      (println (format "    order   %s" (pr-str (ordered final))))
+      (println (format "    order   %s" (pr-str (fo/ordered final))))
       (println (format "    overrides %s  %s recorded %s"
                        (pr-str derived) (if (= derived recorded) "==" "!=")
                        (pr-str recorded)))))

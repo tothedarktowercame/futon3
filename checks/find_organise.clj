@@ -17,6 +17,11 @@
      find              Tension -> Repository -> FindResult      -- Holes.lean:264
      organise          Cascade policy -> Set P -> Repository P -> Cascade P
                                                                 -- Holes.lean:308
+     fires?, fire      the one grain-polymorphic firing loop -- LA1c §3.3
+     CascadeEdit       admit / drop / promote-above / set-flag / halt, with
+     apply-edit,       `construct` the loop of LA1c §4.1.  Built by `:LA2` in
+     construct         `playout_snatch.clj`, moved here by `:LA3` when a second
+                       domain needed the same loop.
      F1..F4, O1..O4    the laws in the NARROWED, witnessed-instance form the
                        2026-08-31 scope amendment gave them: predicates on a
                        recorded row / a recorded CascadeDiff, not universals
@@ -26,10 +31,10 @@
    third is the temperament -- a cascade at policy grain -- and it is taken on
    the foresight LA1c-restatement.md §10 offers L6: a two-argument `organise`
    has to be redefined when LA2 lands, a three-argument one does not.  LA2 has
-   landed and the firing loop is `checks/playout_snatch.clj`'s (`fire`,
-   `construct`, `apply-edit`); it is not joined to this function yet, so the
-   temperament here is still READ rather than fired.  It is read for exactly two
-   fields, and both are law-bearing:
+   landed and `:LA3` moved the firing loop HERE (`fires?`, `fire`, `apply-edit`,
+   `construct`, below); `organise` itself still READS the temperament rather than
+   firing it, and `construct_cascade.clj` is the caller that fires one.  It is
+   read for exactly two fields, and both are law-bearing:
 
      :closure     which patterns enter the cascade -- and this is not decoration.
                   `playout_snatch.clj` takes the up-closure under standsOn
@@ -295,12 +300,13 @@
    `temperament` is a cascade at policy grain.  This function READS it (`:closure`,
    `:precedence`); it does not fire it.  Firing a policy-grain rule -- so that a
    temperament's THEN emits the edit rather than a keyword naming it -- landed in
-   `:LA2` and lives in `checks/playout_snatch.clj` (`fire`, `construct`,
-   `apply-edit`), against library/snatch's authored temperaments.  It is not
-   wired to this function: the two temperaments HERE declare a closure policy as
-   a keyword and emit no edits, so `:admitted-by` is empty on every cascade this
-   builds, and no node arrives that is neither selected nor stood-on.  Joining
-   the two is a further row, not a side effect of LA2."
+   `:LA2`, and `:LA3` moved it into this file (`fire`, `construct`,
+   `apply-edit`).  It is still not wired to THIS function: the two temperaments
+   here declare a closure policy as a keyword and emit no edits, so
+   `:admitted-by` is empty on every cascade `organise` builds, and no node
+   arrives that is neither selected nor stood-on.  `construct_cascade.clj`
+   (`:LA3`) is where a temperament emits `admit` edits, and the cascade it hands
+   back is the first with a non-empty `:admitted-by` term."
   [temperament selected repository]
   (when-not (set/subset? (set selected) (:patterns repository))
     (throw (ex-info "organise: selected escapes the repository"
@@ -325,6 +331,138 @@
      :edges (fast-forward nodes (:stands-on repository))
      :precedence (vec (:precedence temperament))
      :acyclic? (:acyclic? repository)}))
+
+;; ---------------------------------------------------------------------------
+;; the policy grain -- the CascadeEdit type and the ONE firing loop
+;; ---------------------------------------------------------------------------
+;; Moved here from `checks/playout_snatch.clj` by worklist row `:LA3`, where
+;; `:LA2` first built it against `library/snatch`.  It is unchanged except in two
+;; places: `fires?` no longer carries Snatch's `:actor :p2` exclusion (that is the
+;; game's, and stays in `playout_snatch.clj`'s `applicable`), and `construct`
+;; takes its rules already resolved instead of looking them up in one domain's
+;; collection.  The move is not tidying: `:LA3` builds a SECOND constructor, over
+;; the whole library, and LA1c-restatement.md §3.3 asks for one firing loop with
+;; the grain left open rather than one loop per domain.  A second copy here would
+;; be the facade §11 names, moved up from the library to the runner.
+
+;; LA1c-restatement.md §3.4.  A play-grain THEN returns an Act (a move); a
+;; design-grain THEN would return an InstitutionEdit; a POLICY-grain THEN returns
+;; one of these five and never a move.  They are the whole of what a temperament
+;; is allowed to say, which is what makes a temperament readable before the run.
+;;
+;; `halt` is an EDIT rather than a condition in the construction loop, so that
+;; two temperaments can differ in where they stop and the stop is recorded on
+;; the cascade with the run (LA1c §4.1; `snatch/widen-the-cascade-only-on-
+;; evidence`'s THEN asks for exactly that).
+(defn admit "Bring `pattern` into the cascade." [pattern]
+  {:edit :admit :pattern pattern})
+(defn drop-node "Take `pattern` out of the cascade." [pattern]
+  {:edit :drop :pattern pattern})
+(defn promote-above "Move `pattern` ahead of `above` in the precedence field." [pattern above]
+  {:edit :promote-above :pattern pattern :above above})
+(defn set-flag "Set a monotone flag on the cascade." [flag]
+  {:edit :set-flag :flag flag})
+(defn halt "Stop the construction, for a stated reason." [reason]
+  {:edit :halt :reason reason})
+
+(def cascade-edit-keys
+  "The required key of each constructor, so a malformed edit is rejected where it
+   is emitted rather than where it is applied."
+  {:admit [:pattern] :drop [:pattern] :promote-above [:pattern :above]
+   :set-flag [:flag] :halt [:reason]})
+
+(defn cascade-edit? [e]
+  (boolean (when-let [required (get cascade-edit-keys (:edit e))]
+             (every? #(contains? e %) required))))
+
+;; `ordered` reads only the cascade's own fields, so a policy-grain guard can
+;; call it: the precedence field as a list, least first.  Ties break by the
+;; authored order — `sort-by` is stable — which is the rule
+;; `exchange-first-overrides` was written under.
+(defn ordered [{:keys [members precedence authored-order]}]
+  (->> authored-order (filter members) (sort-by precedence) vec))
+
+;; A rule fires when its ANTECEDENT holds: IF and HOWEVER together.  A rule with
+;; no stated :however fires on its IF alone.  Whose rule it is -- Snatch's P1/P2
+;; split, say -- is the caller's filter, not this predicate's.
+(defn fires? [pat s]
+  (and ((:if pat) s)
+       (if-let [however (:however pat)] (however s) true)))
+
+;; LA1c §3.3: ONE firing loop, with the grain left open.  Sort the rules by the
+;; precedence the cascade carries, keep the ones whose ANTECEDENT holds, take the
+;; first THEN that returns something.  `playout_snatch.clj`'s `pattern-policy` is
+;; this at play grain, and `construct` below is this at policy grain; there is not
+;; a second loop for the second grain, which is the point of indexing rather than
+;; adding a layer.
+(defn fire
+  "Returns `[rule emitted]` for the first rule whose THEN yields a value, or nil."
+  [rules precedence-of s]
+  (some (fn [r] (when-let [emitted ((:then r) s)] [r emitted]))
+        (sort-by precedence-of (filter #(and (:then %) (fires? % s)) rules))))
+
+(defn apply-edit
+  "CascadeEdit applied to a CascadeState.  `:by` is the id of the policy-grain
+   rule that emitted it, and it is what an admitted node's provenance records —
+   O1's third origin, `admittedBy` (LA1c §3.2)."
+  [state {:keys [edit pattern above flag reason by] :as e}]
+  (when-not (cascade-edit? e)
+    (throw (ex-info "apply-edit: not a CascadeEdit" {:finding :not-a-cascade-edit :edit e})))
+  (case edit
+    :admit (-> state
+               (update :members conj pattern)
+               (assoc-in [:provenance pattern] [:admitted-by by])
+               (assoc-in [:precedence pattern]
+                         (inc (reduce max 0 (vals (:precedence state)))))
+               (update :authored-order #(if (some #{pattern} %) % (conj % pattern))))
+    :drop (-> state
+              (update :members disj pattern)
+              (update :provenance dissoc pattern))
+    :promote-above (assoc-in state [:precedence pattern]
+                             (dec (get-in state [:precedence above])))
+    :set-flag (update state :flags conj flag)
+    :halt (assoc state :halted reason)))
+
+(def construct-step-limit
+  "A temperament whose rules never stop is a defect, not a long run.  The limit
+   is a hard failure rather than a silent truncation."
+  64)
+
+(defn construct
+  "LA1c §4.1, at policy grain: fire the temperament over the CascadeState, apply
+   the ONE edit it emits, repeat until no rule fires (saturation) or a `halt`
+   edit arrives.  Returns the final CascadeState with `:stop`, `:steps` and the
+   `:record` of every edit.
+
+   `rules` is `(:nodes temperament)` ALREADY RESOLVED to rule maps, in that
+   order; a nil is an unresolved node and is a failure, not a skip.  Resolution
+   belongs to the caller because the collection a node names is the caller's --
+   `playout_snatch.clj` resolves against Snatch's collection, `construct_cascade.clj`
+   against the library constructor's.
+
+   DeltaG per attachment step is not evaluated by the LOOP.  §4.1 puts it there;
+   here a temperament that wants a marginal-gain floor states it as a `halt` rule
+   and reads the gain off the CascadeState it is handed, which is what `:LA3`'s
+   `halt-at-the-marginal-gain-floor` does.  The difference is that the stop stays
+   authored and recorded rather than becoming a condition in this function."
+  [temperament rules state]
+  (let [order #(get (:precedence temperament) (:id %) (:precedence %))]
+    (when (some nil? rules)
+      (throw (ex-info "construct: temperament names a rule that is not in the collection"
+                      {:finding :unknown-temperament-node
+                       :temperament (:id temperament) :nodes (:nodes temperament)})))
+    (loop [s state k 0]
+      (cond
+        (:halted s) (assoc s :stop [:halted (:halted s)] :steps k)
+        (> k construct-step-limit)
+        (throw (ex-info "construct: step limit reached; the temperament does not stop"
+                        {:finding :temperament-does-not-stop
+                         :temperament (:id temperament) :steps k}))
+        :else
+        (if-let [[rule edit] (fire rules order s)]
+          (let [edit (assoc edit :by (:id rule))]
+            (recur (apply-edit (update s :record conj (assoc edit :step k)) edit) (inc k)))
+          (assoc s :stop [:saturation] :steps k))))))
 
 ;; ---------------------------------------------------------------------------
 ;; the laws, in the narrowed form the 2026-08-31 scope amendment gave them

@@ -208,7 +208,7 @@ Six library files and the behaviour still in the Clojure is the facade
 |---|---|
 | `:policy`, a third value of the grain conjunct | the two entries at the end of `collection` |
 | `CascadeEdit` — `admit`, `drop-node`, `promote-above`, `set-flag`, `halt` | `admit` … `halt`, `cascade-edit?` |
-| the one grain-polymorphic firing loop | `fire`, called by `pattern-policy` (play) and `construct` (policy) |
+| the one grain-polymorphic firing loop | `fire`, called by `pattern-policy` (play) and `construct` (policy) — moved to `find_organise.clj` by `:LA3`, which fires the same loop over the library |
 | the construction loop of `LA1c` §4.1 | `construct`, over a `CascadeState` from `initial-cascade-state` |
 
 The two maps are now **derived**: `temperament-overrides` fires a temperament
@@ -241,5 +241,101 @@ four and the `CascadeEdit` each would need; between them every constructor of th
 type has a named claimant. What blocks the four is stated there and is not
 effort: nothing carries a cascade between rounds, so grim's monotone flag has
 nothing to be monotone over, and the term `widen-the-cascade-only-on-evidence`
-would order its admissions by is the ΔG per attachment step that `construct`
-does not evaluate (worklist `:LA3`).
+would order its admissions by needed a repository to read authored edges off,
+which this seven-rule harness does not have. `:LA3` supplies it: see *The
+constructor, over the whole library* below.
+
+---
+
+## The constructor, over the whole library (`:LA3`)
+
+`construct_cascade.clj` — worklist `:LA3`, LA1c-restatement.md §4. `:LA2` built
+the policy grain and ran it on a seven-rule cascade; what it could not build is
+§4.1's loop — *admit one pattern at a time, ordered by a score, and stop on a
+rule stated in advance* — because the score had no substrate the laws admit.
+
+    clojure -Sdeps '{:paths ["checks" "."] :deps {babashka/fs {:mvn/version "0.5.25"}}}' \
+      -M -m construct-cascade
+
+`decisions.edn :constructor-relevance-substrate` records the arm this row builds:
+keep `cascade_construct.py`'s functional form and swap both of its substrates.
+
+| term | refused substrate | what runs here |
+|---|---|---|
+| relevance | MiniLM cosine (`cascade_construct.py:48-58`) — F3 refuses a receipt that cites the finder's score | `match`: how many clauses of the tension the pattern's IF ∧ HOWEVER acknowledge, each acknowledgement citing a file and a line span |
+| connectivity | a phylogeny whose descent relation is substring containment (`pattern_phylogeny.py:22`) — O2 refuses it | `degree`: `ReachOutside` (`Holes.lean:297-300`) restricted to the chosen set, over the authored `@why`/`@how` directives |
+
+**`@why` ∪ `@how` is cyclic** — `@why` points at what a pattern stands on and
+`@how` at what carries it out, so as a directed relation the union runs both ways
+and fifteen patterns lie on a cycle (`:union-is-cyclic` in the report). It is
+therefore never used as a `standsOn`: the prior reads it *undirected*, which is
+what "an authored edge **between** p and q" means, and the constructed cascade's
+edges come from `fast-forward` over `@why` alone, exactly as `organise`'s do.
+`:prior-separation` in the report is the check that the two relations stay apart:
+over the budgeted cascade's twenty nodes the `@why` relation gives 5 edges and
+the prior's relation would give a different set.
+
+**Two temperaments that differ only in where they stop.** Both carry
+`widen-the-cascade-only-on-evidence`; one adds `halt-on-budget`, the other
+`halt-at-the-marginal-gain-floor`. All three rules encode one authored THEN,
+`library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33`, re-read from
+disk on every run. `differ-only-in-the-stop` checks that the node lists are equal
+once the stop rules are removed, and that they resolve to the same rule maps —
+otherwise "different stopping rules, different cascades" would be a claim about
+two different constructors.
+
+    widen-to-a-budget                 11 admissions, stop [:budget 20], 20 members
+    widen-to-the-marginal-gain-floor    4 admissions, stop [:marginal-gain-floor 1.0], 13 members
+
+This is also the first cascade in the repository with a non-empty `admittedBy`:
+`organise`'s two temperaments declare a closure policy and emit no edits, so
+O1's three-way union has always been checked with its third term empty.
+
+### The measurement — pre-registered, and it is the row's third clause
+
+*At 8.3% rationale-layer coverage, is the degree term distinguishable from
+uniform on a real tension?* The arm is the same construction with `degree` forced
+to zero, run on every `-main` so it cannot be dropped when inconvenient. If it
+came out negative, the delivery would be the finding that L5/L9 coverage blocks
+the constructor.
+
+**It came out positive, and thinly.** Under the budget temperament two of eleven
+admissions change when the degree term is removed; under the floor temperament
+the real arm admits four patterns and the uniform arm admits **none**, because
+with no authored edge no candidate clears ε. The budget arm settles it without
+the floor, which matters because ε is a threshold this file chose and the budget
+is one the operator ruled (`:distinguishable-without-the-floor?`).
+
+**But 4 of 50 scored candidates have any degree at all**, every one of them 1,
+and all four sit in `library/cascades` and `library/snatch` — the two sections a
+person organised by hand. So the term discriminates where the library is
+organised and is flat everywhere else, which is the cost
+`:constructor-relevance-substrate` states, now measured rather than predicted:
+the constructor does not become good by being written.
+
+### Controls, each failing the check rather than printing a note
+
+- **citations re-read** — every acknowledgement's cited line span is re-read from
+  disk and must contain the cited cue. Two mutations must be rejected: a cue that
+  occurs nowhere, and a span off the end of the file.
+- **library correspondence** — each rule's `:then-source` names a pattern the
+  repository holds and points at a line that still begins `+ THEN:`.
+- **grain separation and the conjunct forged** — the `:bare` forge (a plain play
+  situation with `:grain` set to `:policy`) leaves every rule silent, so at this
+  grain the separation would also hold on key-disjointness alone; the
+  `:enriched` forge hands the rules a situation carrying *both* kinds of field,
+  where the conjunct is the only thing left to tell them apart, and there the
+  rules fire. The control fails if every rule is silent under `:enriched`.
+- **O1–O3 on both constructed cascades**, with three mutations that must be
+  rejected: an edge the prior's relation carries and `@why` reachability does not
+  (O2), a dropped edge (O3), and a node in none of the three origins (O1).
+- **determinism** — two constructions of one temperament must agree edit for
+  edit, so the tie-break by pattern id is checked rather than documented.
+- **F1–F4 on the find that produces the seed**, with `ants/pheromone-trail-tuner`
+  named in advance as the pattern this tension must not select.
+
+`:as-of :read-digest` is a sha256 over exactly what the constructor reads.
+`library/math-formalization` takes files from a live scribe with no baseline step
+of its own (`decisions.edn :math-formalization-untracked-flexiargs`), so a report
+from this file is a timestamp and not a standing property, and the digest is what
+makes that visible.

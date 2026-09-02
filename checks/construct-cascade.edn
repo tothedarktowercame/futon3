@@ -1,0 +1,329 @@
+{:as-of
+ {:authored-why-edges 92,
+  :authored-why-how-edges 124,
+  :patterns 1239,
+  :patterns-touching-an-edge 104,
+  :read-digest
+  "6339933719779fb98455d5c6b859f30f4362330ec5a7af30cdddb9fdcea0c049",
+  :sections 98,
+  :union-is-cyclic
+  [:cycle-machine/disruption-soak
+   :cycle-machine/runtime-restoration
+   :cycle-machine/step-machine
+   :snatch/grim-cuts-the-cascade-and-never-widens-it
+   :snatch/have-a-temperament
+   :snatch/institutions-vary-by-position-and-force
+   :snatch/lead-with-the-exchange-rule
+   :snatch/mark-without-force
+   :snatch/non-binding-talk-still-moves-play
+   :snatch/play-the-authored-order-first
+   :snatch/preserve-the-right-to-abstain
+   :snatch/promote-the-remedy-before-the-exit
+   :snatch/protect-the-unprotected-move
+   :snatch/revert-then-invert
+   :snatch/widen-the-cascade-only-on-evidence],
+  :why-acyclic? true},
+ :cascades-differ? true,
+ :controls
+ {:citations 35,
+  :citations-that-do-not-read-back [],
+  :determinism-failures [],
+  :grain-conjunct-mutations
+  [{:bare :silent, :enriched :silent, :rule :halt-on-budget}
+   {:bare :silent,
+    :enriched :silent,
+    :rule :halt-at-the-marginal-gain-floor}
+   {:bare :silent,
+    :enriched :fires,
+    :rule :widen-the-cascade-only-on-evidence}],
+  :grain-separation [],
+  :library-correspondence
+  [{:encodes "the `a budget` disjunct of the stopping rule",
+    :in-repository? true,
+    :pattern :snatch/widen-the-cascade-only-on-evidence,
+    :rule :halt-on-budget,
+    :source-line-is-a-then? true,
+    :then-source
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}
+   {:encodes
+    "the `a marginal-gain floor` disjunct of the stopping rule",
+    :in-repository? true,
+    :pattern :snatch/widen-the-cascade-only-on-evidence,
+    :rule :halt-at-the-marginal-gain-floor,
+    :source-line-is-a-then? true,
+    :then-source
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}
+   {:encodes
+    "the `admit patterns one at a time, ordered by what the previous admission bought` clause",
+    :in-repository? true,
+    :pattern :snatch/widen-the-cascade-only-on-evidence,
+    :rule :widen-the-cascade-only-on-evidence,
+    :source-line-is-a-then? true,
+    :then-source
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}],
+  :negative-controls
+  [{:caught? true,
+    :control :O2-invented-edge,
+    :detail "[:cascades/declared-skeleton :snatch/have-a-temperament]",
+    :exercised? true}
+   {:caught? true,
+    :control :O3-dropped-edge,
+    :detail "[:snatch/have-a-temperament :cascades/declared-skeleton]",
+    :exercised? true}
+   {:caught? true,
+    :control :O1-unrecorded-node,
+    :detail
+    "a node in neither selected, addedByOrganise nor admittedBy",
+    :exercised? true}
+   {:caught? true,
+    :control :citation-cue-not-in-the-cited-span,
+    :detail "\"library/agent/student-dispatch.flexiarg\"",
+    :exercised? true}
+   {:caught? true,
+    :control :citation-span-off-the-end-of-the-file,
+    :detail "\"library/agent/student-dispatch.flexiarg\"",
+    :exercised? true}],
+  :negative-controls-declared
+  [:O2-invented-edge
+   :O3-dropped-edge
+   :O1-unrecorded-node
+   :citation-cue-not-in-the-cited-span
+   :citation-span-off-the-end-of-the-file]},
+ :find
+ {:candidates 50,
+  :laws {:F1 true, :F2 true, :F3 true, :F4 true},
+  :seed-size 9,
+  :selected
+  [:coordination/pattern-search-protocol
+   :devmap-coherence/prototype-alignment-embedding
+   :futon-theory/derive-exits-on-a-minted-sorry
+   :or2/two-joes-one-mandate
+   :plos-npt-with-small-n/venue-register-boundary
+   :sidecar/artifact-entity-mention-grounding
+   :snatch/have-a-temperament
+   :snatch/widen-the-cascade-only-on-evidence
+   :writing-coherence/citation-density-load-bearing-claim],
+  :zero-mass-pattern :ants/pheromone-trail-tuner},
+ :measurement
+ {:arms
+  [{:admitted
+    [:agent/student-dispatch
+     :ai4ci/ai-core-function
+     :cascades/declared-skeleton
+     :cascades/on-the-fly-cascade
+     :cascades/the-slice-is-the-unit-of-use
+     :cycle-machine/single-producer
+     :process-coherence/is-this-even-a-problem
+     :snatch/lead-with-the-exchange-rule
+     :snatch/play-the-authored-order-first
+     :snatch/promote-the-remedy-before-the-exit
+     :war-machine/ambient-pattern-retrieval],
+    :admitted-uniform
+    [:agent/student-dispatch
+     :ai4ci/ai-core-function
+     :cascades/declared-skeleton
+     :cascades/on-the-fly-cascade
+     :cascades/the-slice-is-the-unit-of-use
+     :cycle-machine/single-producer
+     :data-mining/gates-as-code
+     :data-mining/saturate-the-accelerator-with-concurrency
+     :process-coherence/is-this-even-a-problem
+     :snatch/lead-with-the-exchange-rule
+     :war-machine/ambient-pattern-retrieval],
+    :differs? true,
+    :steps 12,
+    :steps-uniform 12,
+    :stop [:halted [:budget 20]],
+    :stop-uniform [:halted [:budget 20]],
+    :temperament :widen-to-a-budget}
+   {:admitted
+    [:cascades/declared-skeleton
+     :snatch/lead-with-the-exchange-rule
+     :snatch/play-the-authored-order-first
+     :snatch/promote-the-remedy-before-the-exit],
+    :admitted-uniform [],
+    :differs? true,
+    :steps 5,
+    :steps-uniform 1,
+    :stop [:halted [:marginal-gain-floor 1.0]],
+    :stop-uniform [:halted [:marginal-gain-floor 1.0]],
+    :temperament :widen-to-the-marginal-gain-floor}],
+  :candidates-scored 50,
+  :candidates-with-degree-above-zero 4,
+  :coverage-of-the-rationale-layer
+  {:note
+   "the library-wide figure is in :as-of -- 104 of 1239 patterns touch an authored @why edge, the 8.3% the row names",
+   :patterns 59},
+  :degree-distribution {0 46, 1 4},
+  :degree-positive-candidates
+  {:cascades/declared-skeleton 1,
+   :snatch/lead-with-the-exchange-rule 1,
+   :snatch/play-the-authored-order-first 1,
+   :snatch/promote-the-remedy-before-the-exit 1},
+  :distinguishable-from-uniform? true,
+  :distinguishable-without-the-floor? true,
+  :epsilon-equivalence-holds? true,
+  :max-match 3,
+  :sections-supplying-the-degree-term #{:cascades :snatch},
+  :transplanted-epsilon-never-binds? true},
+ :runs
+ {:widen-to-a-budget
+  {:admitted
+   [:agent/student-dispatch
+    :ai4ci/ai-core-function
+    :cascades/declared-skeleton
+    :cascades/on-the-fly-cascade
+    :cascades/the-slice-is-the-unit-of-use
+    :cycle-machine/single-producer
+    :process-coherence/is-this-even-a-problem
+    :snatch/lead-with-the-exchange-rule
+    :snatch/play-the-authored-order-first
+    :snatch/promote-the-remedy-before-the-exit
+    :war-machine/ambient-pattern-retrieval],
+   :cascade-edges 5,
+   :cascade-nodes 20,
+   :laws {:O1 true, :O2 true, :O3 true},
+   :members 20,
+   :o4 :not-exercised-nothing-is-played,
+   :prior-separation
+   {:cascade-edges 5,
+    :cascade-edges-are-why-only? true,
+    :edges-if-the-prior-relation-were-used 12,
+    :relations-differ? true},
+   :record
+   [{:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :snatch/lead-with-the-exchange-rule,
+     :reason nil,
+     :step 0}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :cascades/declared-skeleton,
+     :reason nil,
+     :step 1}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :snatch/play-the-authored-order-first,
+     :reason nil,
+     :step 2}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :snatch/promote-the-remedy-before-the-exit,
+     :reason nil,
+     :step 3}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :process-coherence/is-this-even-a-problem,
+     :reason nil,
+     :step 4}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :war-machine/ambient-pattern-retrieval,
+     :reason nil,
+     :step 5}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :agent/student-dispatch,
+     :reason nil,
+     :step 6}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :ai4ci/ai-core-function,
+     :reason nil,
+     :step 7}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :cascades/on-the-fly-cascade,
+     :reason nil,
+     :step 8}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :cascades/the-slice-is-the-unit-of-use,
+     :reason nil,
+     :step 9}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :cycle-machine/single-producer,
+     :reason nil,
+     :step 10}
+    {:by :halt-on-budget,
+     :edit :halt,
+     :pattern nil,
+     :reason [:budget 20],
+     :step 11}],
+   :steps 12,
+   :stop [:halted [:budget 20]]},
+  :widen-to-the-marginal-gain-floor
+  {:admitted
+   [:cascades/declared-skeleton
+    :snatch/lead-with-the-exchange-rule
+    :snatch/play-the-authored-order-first
+    :snatch/promote-the-remedy-before-the-exit],
+   :cascade-edges 5,
+   :cascade-nodes 13,
+   :laws {:O1 true, :O2 true, :O3 true},
+   :members 13,
+   :o4 :not-exercised-nothing-is-played,
+   :prior-separation
+   {:cascade-edges 5,
+    :cascade-edges-are-why-only? true,
+    :edges-if-the-prior-relation-were-used 11,
+    :relations-differ? true},
+   :record
+   [{:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :snatch/lead-with-the-exchange-rule,
+     :reason nil,
+     :step 0}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :cascades/declared-skeleton,
+     :reason nil,
+     :step 1}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :snatch/play-the-authored-order-first,
+     :reason nil,
+     :step 2}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :snatch/promote-the-remedy-before-the-exit,
+     :reason nil,
+     :step 3}
+    {:by :halt-at-the-marginal-gain-floor,
+     :edit :halt,
+     :pattern nil,
+     :reason [:marginal-gain-floor 1.0],
+     :step 4}],
+   :steps 5,
+   :stop [:halted [:marginal-gain-floor 1.0]]}},
+ :scores-at-step-0
+ [[:snatch/lead-with-the-exchange-rule 2.6 2 1]
+  [:cascades/declared-skeleton 1.3 1 1]
+  [:snatch/play-the-authored-order-first 1.3 1 1]
+  [:snatch/promote-the-remedy-before-the-exit 1.3 1 1]
+  [:process-coherence/is-this-even-a-problem 0.6 2 0]
+  [:war-machine/ambient-pattern-retrieval 0.6 2 0]
+  [:agent/student-dispatch 0.3 1 0]
+  [:ai4ci/ai-core-function 0.3 1 0]
+  [:cascades/on-the-fly-cascade 0.3 1 0]
+  [:cascades/the-slice-is-the-unit-of-use 0.3 1 0]
+  [:cycle-machine/single-producer 0.3 1 0]
+  [:data-mining/gates-as-code 0.3 1 0]],
+ :temperaments
+ {:holds? true,
+  :same-shared-nodes? true,
+  :same-shared-precedence? true,
+  :same-shared-rules? true,
+  :shared-nodes [:widen-the-cascade-only-on-evidence],
+  :stops [[:halt-on-budget] [:halt-at-the-marginal-gain-floor]],
+  :stops-differ? true},
+ :tension
+ {:clause-hits
+  {:a-cascade-can-only-be-hand-authored 16,
+   :an-inferred-edge-is-a-facade 25,
+   :find-has-no-search-space 11,
+   :nothing-states-what-a-pattern-stands-on 13},
+  :id :organise-the-library,
+  :match-distribution {1 54, 2 4, 3 1},
+  :source "futon2/holes/problems/P-organise-the-library.md:33-36"}}

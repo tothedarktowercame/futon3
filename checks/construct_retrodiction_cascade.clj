@@ -139,8 +139,20 @@
                 :provenance (into (sorted-map) (:provenance final))
                 :stop (:stop final) :steps (:steps final)
                 :nodes (vec (sort (:nodes c))) :edges (vec (sort (:edges c)))
-                :addedByOrganise (vec (sort (:addedByOrganise c)))
-                :admittedBy (into (sorted-map) (:admittedBy c)))))
+                ;; CORRECTED IN REVIEW.  These read `:addedByOrganise` and
+                ;; `:admittedBy`, which `cc/cascade-of` does not return -- it
+                ;; returns `:added-by-organise` and `:admitted-by` -- so both
+                ;; fields were empty in every cascade of the first artefact
+                ;; (sha256 c18a2198) whatever the construction had done.  The
+                ;; LAWS were unaffected: `:laws` runs `fo/organise-laws` over
+                ;; `(:cascade f)`, the map itself, not over this rendering. What
+                ;; was wrong is what a reader of the artefact would have seen,
+                ;; and O1's union has `admitted-by` as its third term, so the
+                ;; term the report showed as empty is the one :LA3 recorded as
+                ;; newly populated.
+                :selected (vec (sort (:selected c)))
+                :added-by-organise (vec (sort (:added-by-organise c)))
+                :admitted-by (vec (sort (:admitted-by c))))))
 
 (defn one-item [row why-repo related]
   (let [id (:item row) spec (get authored id) tension (tension-for row)]
@@ -191,6 +203,23 @@
          :runs (into (sorted-map)
                      (for [[tid f] runs]
                        [tid {:stop (:stop f) :member-count (count (:members f))
+                             ;; ADDED IN REVIEW (the Claude owner, not the blind
+                             ;; constructor).  Member count alone hides the one
+                             ;; thing a reader of this artefact most needs: on two
+                             ;; items the seed is already at or over `budget` 20, so
+                             ;; :widen-to-a-budget halts at step 0 and ADMITS
+                             ;; NOTHING.  Its "cascade" is then `find`'s output
+                             ;; verbatim and no construction happened.  That is the
+                             ;; degeneracy :LA5's pre-run review found and the cue
+                             ;; licence removed there; here the cues are all
+                             ;; licensed and it is back.  Reported, not repaired --
+                             ;; re-authoring cues is the blind constructor's act and
+                             ;; the reviewer has read the resolutions.
+                             :seed-size (count seed)
+                             :admitted (vec (cc/admitted-of f))
+                             :admitted-count (count (cc/admitted-of f))
+                             :seed-at-or-over-budget? (>= (count seed) cc/budget)
+                             :nothing-was-admitted? (zero? (count (cc/admitted-of f)))
                              :laws (into (sorted-map) (for [[k law] (dissoc fo/organise-laws :O4)]
                                                        [k (boolean (law (:cascade f)))]))
                              :record (:record f) :cascade (cascade-data f seed why-repo)}]))
@@ -272,7 +301,11 @@
       (doseq [[id x] (:items r)]
         (println id "seed" (get-in x [:find :seed-size]) "candidates" (get-in x [:find :candidates])
                  "F4" (get-in x [:find :zero-mass-selected?])
-                 "stops" (into {} (for [[t v] (:runs x)] [t [(:stop v) (:member-count v)]]))))
+                 ;; members AND admissions: a temperament that admitted nothing
+                 ;; has a large cascade only because `find` handed it one.
+                 "stops" (into {} (for [[t v] (:runs x)]
+                                    [t [(:stop v) :members (:member-count v)
+                                        :admitted (:admitted-count v)]]))))
       (println "construct-retrodiction-cascade: PASS")
       (shutdown-agents))
     (catch Throwable e

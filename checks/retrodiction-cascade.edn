@@ -6501,17 +6501,11 @@
     :stops-differ? true},
    :runs
    {:widen-to-a-budget
-    {:stop [:halted [:budget 20]],
-     :member-count 24,
-     :laws {:O1 true, :O2 true, :O3 true},
-     :record
-     [{:edit :halt,
-       :reason [:budget 20],
-       :by :halt-on-budget,
-       :step 0}],
+    {:member-count 24,
+     :nothing-was-admitted? true,
      :cascade
-     {:addedByOrganise [],
-      :admittedBy {},
+     {:added-by-organise [],
+      :admitted-by [],
       :authored-order
       [:agent/environment-over-optimization
        :aif/scheduled-observer-entrypoint
@@ -6663,46 +6657,56 @@
        :peripherals/read-existing-seam-before-implementing :found,
        :social/idempotent-handoff :found,
        :ukrns/distinguish-delivery-from-practice-change :found},
+      :selected
+      [:agent/environment-over-optimization
+       :aif/scheduled-observer-entrypoint
+       :aif/shared-kernel-predictive-forward-model
+       :coordination/capability-gate
+       :cycle-machine/runtime-restoration
+       :equity/contribution-pathways
+       :equity/contribution-pathways-merged
+       :equity/protected-interaction-as-published
+       :equity/protected-interaction-merged
+       :equity/visible-impact
+       :futon-theory/coordination-protocol
+       :gauntlet/aif-as-environment-not-instruction
+       :gauntlet/co-presence-over-co-location
+       :gauntlet/placenta-transfer
+       :gauntlet/umwelt-not-architecture
+       :gauntlet/world-is-hypergraph
+       :invariant-coherence/reachable-from-boot
+       :memory/no-tightening-while-held
+       :memory/verify-in-the-serving-process
+       :paramitas/persistence
+       :peripherals/hot-reload-as-default-fix-path
+       :peripherals/read-existing-seam-before-implementing
+       :social/idempotent-handoff
+       :ukrns/distinguish-delivery-from-practice-change],
       :steps 1,
-      :stop [:halted [:budget 20]]}},
-    :widen-to-the-marginal-gain-floor
-    {:stop [:halted [:marginal-gain-floor 1.0]],
-     :member-count 30,
+      :stop [:halted [:budget 20]]},
+     :admitted [],
+     :admitted-count 0,
+     :seed-size 24,
+     :seed-at-or-over-budget? true,
+     :stop [:halted [:budget 20]],
      :laws {:O1 true, :O2 true, :O3 true},
      :record
-     [{:edit :admit,
-       :pattern :aif/expected-free-energy-scorecard,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 0}
-      {:edit :admit,
-       :pattern :aif/off-continuity-null-discriminates,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 1}
-      {:edit :admit,
-       :pattern :coordination/session-durability-check,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 2}
-      {:edit :admit,
-       :pattern :forward-model/seal-the-graduation-criteria,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 3}
-      {:edit :admit,
-       :pattern
-       :problems/commitment-temperature-is-instrumented-as-gain,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 4}
-      {:edit :admit,
-       :pattern
-       :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 5}
-      {:edit :halt,
-       :reason [:marginal-gain-floor 1.0],
-       :by :halt-at-the-marginal-gain-floor,
-       :step 6}],
+     [{:edit :halt,
+       :reason [:budget 20],
+       :by :halt-on-budget,
+       :step 0}]},
+    :widen-to-the-marginal-gain-floor
+    {:member-count 30,
+     :nothing-was-admitted? false,
      :cascade
-     {:addedByOrganise [],
-      :admittedBy {},
+     {:added-by-organise [],
+      :admitted-by
+      [:aif/expected-free-energy-scorecard
+       :aif/off-continuity-null-discriminates
+       :coordination/session-durability-check
+       :forward-model/seal-the-graduation-criteria
+       :problems/commitment-temperature-is-instrumented-as-gain
+       :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch],
       :authored-order
       [:agent/environment-over-optimization
        :aif/scheduled-observer-entrypoint
@@ -6899,8 +6903,76 @@
        :ukrns/distinguish-delivery-from-practice-change :found,
        :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
        [:admitted-by :widen-the-cascade-only-on-evidence]},
+      :selected
+      [:agent/environment-over-optimization
+       :aif/scheduled-observer-entrypoint
+       :aif/shared-kernel-predictive-forward-model
+       :coordination/capability-gate
+       :cycle-machine/runtime-restoration
+       :equity/contribution-pathways
+       :equity/contribution-pathways-merged
+       :equity/protected-interaction-as-published
+       :equity/protected-interaction-merged
+       :equity/visible-impact
+       :futon-theory/coordination-protocol
+       :gauntlet/aif-as-environment-not-instruction
+       :gauntlet/co-presence-over-co-location
+       :gauntlet/placenta-transfer
+       :gauntlet/umwelt-not-architecture
+       :gauntlet/world-is-hypergraph
+       :invariant-coherence/reachable-from-boot
+       :memory/no-tightening-while-held
+       :memory/verify-in-the-serving-process
+       :paramitas/persistence
+       :peripherals/hot-reload-as-default-fix-path
+       :peripherals/read-existing-seam-before-implementing
+       :social/idempotent-handoff
+       :ukrns/distinguish-delivery-from-practice-change],
       :steps 7,
-      :stop [:halted [:marginal-gain-floor 1.0]]}}},
+      :stop [:halted [:marginal-gain-floor 1.0]]},
+     :admitted
+     [:aif/expected-free-energy-scorecard
+      :aif/off-continuity-null-discriminates
+      :coordination/session-durability-check
+      :forward-model/seal-the-graduation-criteria
+      :problems/commitment-temperature-is-instrumented-as-gain
+      :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch],
+     :admitted-count 6,
+     :seed-size 24,
+     :seed-at-or-over-budget? true,
+     :stop [:halted [:marginal-gain-floor 1.0]],
+     :laws {:O1 true, :O2 true, :O3 true},
+     :record
+     [{:edit :admit,
+       :pattern :aif/expected-free-energy-scorecard,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 0}
+      {:edit :admit,
+       :pattern :aif/off-continuity-null-discriminates,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 1}
+      {:edit :admit,
+       :pattern :coordination/session-durability-check,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 2}
+      {:edit :admit,
+       :pattern :forward-model/seal-the-graduation-criteria,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 3}
+      {:edit :admit,
+       :pattern
+       :problems/commitment-temperature-is-instrumented-as-gain,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 4}
+      {:edit :admit,
+       :pattern
+       :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 5}
+      {:edit :halt,
+       :reason [:marginal-gain-floor 1.0],
+       :by :halt-at-the-marginal-gain-floor,
+       :step 6}]}},
    :degree-term
    {:candidates-scored 371,
     :candidates-with-degree-above-zero 6,
@@ -13298,17 +13370,11 @@
     :stops-differ? true},
    :runs
    {:widen-to-a-budget
-    {:stop [:halted [:budget 20]],
-     :member-count 50,
-     :laws {:O1 true, :O2 true, :O3 true},
-     :record
-     [{:edit :halt,
-       :reason [:budget 20],
-       :by :halt-on-budget,
-       :step 0}],
+    {:member-count 50,
+     :nothing-was-admitted? true,
      :cascade
-     {:addedByOrganise [],
-      :admittedBy {},
+     {:added-by-organise [],
+      :admitted-by [],
       :authored-order
       [:agency/delivery-receipt
        :agency/self-attribution
@@ -13618,60 +13684,86 @@
        :war-machine/coordination-bottleneck :found,
        :war-room/wr-4-inhabit-before-building :found,
        :writing-coherence/throat-clearing-close :found},
+      :selected
+      [:agency/delivery-receipt
+       :agency/self-attribution
+       :agency/single-routing-authority
+       :agency/state-atomicity
+       :agent/budget-bounds-exploration
+       :agent/environment-over-optimization
+       :agent/evidence-over-assertion
+       :agent/intent-handshake-is-binding
+       :agent/pause-is-not-failure
+       :agent/scope-before-action
+       :agent/state-is-hypothesis
+       :agent/trail-enables-return
+       :ai4ci/umbrella
+       :aif/admissibility
+       :aif/free-energy-as-tick-scalar
+       :aif/hierarchical-budget-aware-action-selection
+       :aif/niche-construction
+       :aif/posterior-variance-as-epistemic-value
+       :aif/predictive-entropy-as-ambiguity
+       :aif/status-gated-belief-update
+       :aif/structure-learning-by-model-reduction
+       :aif/temporal-depth-beyond-greedy
+       :ants/cargo-return-discipline
+       :control/agential-pattern-hygiene
+       :coordination/capability-gate
+       :cycle-machine/authority-port
+       :cycle-machine/job-port
+       :equity/confident-adaptation
+       :equity/protected-interaction
+       :f6/graph-enhanced-evaluation
+       :futon-theory/coordination-protocol
+       :gauntlet/aif-as-environment-not-instruction
+       :gauntlet/co-presence-over-co-location
+       :gauntlet/modeline-persists-across-worlds
+       :gauntlet/placenta-transfer
+       :gauntlet/teaching-inversion
+       :gauntlet/umwelt-not-architecture
+       :gauntlet/world-is-hypergraph
+       :memory/verify-in-the-serving-process
+       :meta/baldwin-ratchet-defeats-darkroom
+       :musn/tool-name-hygiene
+       :peripherals/constrained-execution-envelope
+       :peripherals/pilot-plus-ground-control
+       :peripherals/read-only-first-then-extend
+       :social/explicit-exit-over-abandonment
+       :social/idempotent-handoff
+       :social/scope-bounded-handoff
+       :war-machine/coordination-bottleneck
+       :war-room/wr-4-inhabit-before-building
+       :writing-coherence/throat-clearing-close],
       :steps 1,
-      :stop [:halted [:budget 20]]}},
-    :widen-to-the-marginal-gain-floor
-    {:stop [:halted [:marginal-gain-floor 1.0]],
-     :member-count 60,
+      :stop [:halted [:budget 20]]},
+     :admitted [],
+     :admitted-count 0,
+     :seed-size 50,
+     :seed-at-or-over-budget? true,
+     :stop [:halted [:budget 20]],
      :laws {:O1 true, :O2 true, :O3 true},
      :record
-     [{:edit :admit,
-       :pattern :aif/decomposed-prediction-noise,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 0}
-      {:edit :admit,
-       :pattern :aif/predictive-coding-belief-update,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 1}
-      {:edit :admit,
-       :pattern :aif/shared-kernel-predictive-forward-model,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 2}
-      {:edit :admit,
-       :pattern :aif/grounded-actuation-not-reobservation,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 3}
-      {:edit :admit,
-       :pattern :forward-model/seal-the-graduation-criteria,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 4}
-      {:edit :admit,
-       :pattern :problems/satisfied-rungs-are-counted-and-surfaced,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 5}
-      {:edit :admit,
-       :pattern :aif/scheduled-observer-entrypoint,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 6}
-      {:edit :admit,
-       :pattern :aif/structured-observation-vector,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 7}
-      {:edit :admit,
-       :pattern :cycle-machine/runtime-restoration,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 8}
-      {:edit :admit,
-       :pattern :cycle-machine/step-machine,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 9}
-      {:edit :halt,
-       :reason [:marginal-gain-floor 1.0],
-       :by :halt-at-the-marginal-gain-floor,
-       :step 10}],
+     [{:edit :halt,
+       :reason [:budget 20],
+       :by :halt-on-budget,
+       :step 0}]},
+    :widen-to-the-marginal-gain-floor
+    {:member-count 60,
+     :nothing-was-admitted? false,
      :cascade
-     {:addedByOrganise [],
-      :admittedBy {},
+     {:added-by-organise [],
+      :admitted-by
+      [:aif/decomposed-prediction-noise
+       :aif/grounded-actuation-not-reobservation
+       :aif/predictive-coding-belief-update
+       :aif/scheduled-observer-entrypoint
+       :aif/shared-kernel-predictive-forward-model
+       :aif/structured-observation-vector
+       :cycle-machine/runtime-restoration
+       :cycle-machine/step-machine
+       :forward-model/seal-the-graduation-criteria
+       :problems/satisfied-rungs-are-counted-and-surfaced],
       :authored-order
       [:agency/delivery-receipt
        :agency/self-attribution
@@ -14053,8 +14145,120 @@
        :war-machine/coordination-bottleneck :found,
        :war-room/wr-4-inhabit-before-building :found,
        :writing-coherence/throat-clearing-close :found},
+      :selected
+      [:agency/delivery-receipt
+       :agency/self-attribution
+       :agency/single-routing-authority
+       :agency/state-atomicity
+       :agent/budget-bounds-exploration
+       :agent/environment-over-optimization
+       :agent/evidence-over-assertion
+       :agent/intent-handshake-is-binding
+       :agent/pause-is-not-failure
+       :agent/scope-before-action
+       :agent/state-is-hypothesis
+       :agent/trail-enables-return
+       :ai4ci/umbrella
+       :aif/admissibility
+       :aif/free-energy-as-tick-scalar
+       :aif/hierarchical-budget-aware-action-selection
+       :aif/niche-construction
+       :aif/posterior-variance-as-epistemic-value
+       :aif/predictive-entropy-as-ambiguity
+       :aif/status-gated-belief-update
+       :aif/structure-learning-by-model-reduction
+       :aif/temporal-depth-beyond-greedy
+       :ants/cargo-return-discipline
+       :control/agential-pattern-hygiene
+       :coordination/capability-gate
+       :cycle-machine/authority-port
+       :cycle-machine/job-port
+       :equity/confident-adaptation
+       :equity/protected-interaction
+       :f6/graph-enhanced-evaluation
+       :futon-theory/coordination-protocol
+       :gauntlet/aif-as-environment-not-instruction
+       :gauntlet/co-presence-over-co-location
+       :gauntlet/modeline-persists-across-worlds
+       :gauntlet/placenta-transfer
+       :gauntlet/teaching-inversion
+       :gauntlet/umwelt-not-architecture
+       :gauntlet/world-is-hypergraph
+       :memory/verify-in-the-serving-process
+       :meta/baldwin-ratchet-defeats-darkroom
+       :musn/tool-name-hygiene
+       :peripherals/constrained-execution-envelope
+       :peripherals/pilot-plus-ground-control
+       :peripherals/read-only-first-then-extend
+       :social/explicit-exit-over-abandonment
+       :social/idempotent-handoff
+       :social/scope-bounded-handoff
+       :war-machine/coordination-bottleneck
+       :war-room/wr-4-inhabit-before-building
+       :writing-coherence/throat-clearing-close],
       :steps 11,
-      :stop [:halted [:marginal-gain-floor 1.0]]}}},
+      :stop [:halted [:marginal-gain-floor 1.0]]},
+     :admitted
+     [:aif/decomposed-prediction-noise
+      :aif/grounded-actuation-not-reobservation
+      :aif/predictive-coding-belief-update
+      :aif/scheduled-observer-entrypoint
+      :aif/shared-kernel-predictive-forward-model
+      :aif/structured-observation-vector
+      :cycle-machine/runtime-restoration
+      :cycle-machine/step-machine
+      :forward-model/seal-the-graduation-criteria
+      :problems/satisfied-rungs-are-counted-and-surfaced],
+     :admitted-count 10,
+     :seed-size 50,
+     :seed-at-or-over-budget? true,
+     :stop [:halted [:marginal-gain-floor 1.0]],
+     :laws {:O1 true, :O2 true, :O3 true},
+     :record
+     [{:edit :admit,
+       :pattern :aif/decomposed-prediction-noise,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 0}
+      {:edit :admit,
+       :pattern :aif/predictive-coding-belief-update,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 1}
+      {:edit :admit,
+       :pattern :aif/shared-kernel-predictive-forward-model,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 2}
+      {:edit :admit,
+       :pattern :aif/grounded-actuation-not-reobservation,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 3}
+      {:edit :admit,
+       :pattern :forward-model/seal-the-graduation-criteria,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 4}
+      {:edit :admit,
+       :pattern :problems/satisfied-rungs-are-counted-and-surfaced,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 5}
+      {:edit :admit,
+       :pattern :aif/scheduled-observer-entrypoint,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 6}
+      {:edit :admit,
+       :pattern :aif/structured-observation-vector,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 7}
+      {:edit :admit,
+       :pattern :cycle-machine/runtime-restoration,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 8}
+      {:edit :admit,
+       :pattern :cycle-machine/step-machine,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 9}
+      {:edit :halt,
+       :reason [:marginal-gain-floor 1.0],
+       :by :halt-at-the-marginal-gain-floor,
+       :step 10}]}},
    :degree-term
    {:candidates-scored 115,
     :candidates-with-degree-above-zero 10,
@@ -20338,8 +20542,188 @@
     :stops-differ? true},
    :runs
    {:widen-to-a-budget
-    {:stop [:halted [:budget 20]],
-     :member-count 20,
+    {:member-count 20,
+     :nothing-was-admitted? false,
+     :cascade
+     {:added-by-organise [],
+      :admitted-by
+      [:aif/candidate-pattern-action-space
+       :aif/grounded-actuation-not-reobservation
+       :aif/niche-construction
+       :aif/predictive-entropy-as-ambiguity
+       :aif/shared-kernel-predictive-forward-model
+       :problems/tension-proposes-candidates
+       :system-coherence/argue-empirically-not-persuasively
+       :war-room/wr-19-tension-must-generate-not-only-rank],
+      :authored-order
+      [:aif/admissibility
+       :aif/measurement-window-hygiene
+       :aif/temporal-depth-beyond-greedy
+       :budgeted-action-selection/mana-gated-work
+       :collaboration-coherence/navel-gazing
+       :equity/protected-interaction
+       :f6/learning-event-detection
+       :iching/hexagram-20-guan
+       :peeragogy/newcomer
+       :peripherals/inhabitation-feeds-evolution
+       :ukrns/worked-contrast
+       :writing-coherence/meet-the-reader-where-they-are
+       :aif/niche-construction
+       :aif/candidate-pattern-action-space
+       :aif/grounded-actuation-not-reobservation
+       :problems/tension-proposes-candidates
+       :war-room/wr-19-tension-must-generate-not-only-rank
+       :aif/predictive-entropy-as-ambiguity
+       :aif/shared-kernel-predictive-forward-model
+       :system-coherence/argue-empirically-not-persuasively],
+      :edges
+      [[:aif/candidate-pattern-action-space
+        :war-room/wr-19-tension-must-generate-not-only-rank]
+       [:problems/tension-proposes-candidates
+        :war-room/wr-19-tension-must-generate-not-only-rank]
+       [:writing-coherence/meet-the-reader-where-they-are
+        :system-coherence/argue-empirically-not-persuasively]],
+      :members
+      [:aif/admissibility
+       :aif/candidate-pattern-action-space
+       :aif/grounded-actuation-not-reobservation
+       :aif/measurement-window-hygiene
+       :aif/niche-construction
+       :aif/predictive-entropy-as-ambiguity
+       :aif/shared-kernel-predictive-forward-model
+       :aif/temporal-depth-beyond-greedy
+       :budgeted-action-selection/mana-gated-work
+       :collaboration-coherence/navel-gazing
+       :equity/protected-interaction
+       :f6/learning-event-detection
+       :iching/hexagram-20-guan
+       :peeragogy/newcomer
+       :peripherals/inhabitation-feeds-evolution
+       :problems/tension-proposes-candidates
+       :system-coherence/argue-empirically-not-persuasively
+       :ukrns/worked-contrast
+       :war-room/wr-19-tension-must-generate-not-only-rank
+       :writing-coherence/meet-the-reader-where-they-are],
+      :nodes
+      [:aif/admissibility
+       :aif/candidate-pattern-action-space
+       :aif/grounded-actuation-not-reobservation
+       :aif/measurement-window-hygiene
+       :aif/niche-construction
+       :aif/predictive-entropy-as-ambiguity
+       :aif/shared-kernel-predictive-forward-model
+       :aif/temporal-depth-beyond-greedy
+       :budgeted-action-selection/mana-gated-work
+       :collaboration-coherence/navel-gazing
+       :equity/protected-interaction
+       :f6/learning-event-detection
+       :iching/hexagram-20-guan
+       :peeragogy/newcomer
+       :peripherals/inhabitation-feeds-evolution
+       :problems/tension-proposes-candidates
+       :system-coherence/argue-empirically-not-persuasively
+       :ukrns/worked-contrast
+       :war-room/wr-19-tension-must-generate-not-only-rank
+       :writing-coherence/meet-the-reader-where-they-are],
+      :ordered
+      [:aif/admissibility
+       :aif/measurement-window-hygiene
+       :aif/temporal-depth-beyond-greedy
+       :budgeted-action-selection/mana-gated-work
+       :collaboration-coherence/navel-gazing
+       :equity/protected-interaction
+       :f6/learning-event-detection
+       :iching/hexagram-20-guan
+       :peeragogy/newcomer
+       :peripherals/inhabitation-feeds-evolution
+       :ukrns/worked-contrast
+       :writing-coherence/meet-the-reader-where-they-are
+       :aif/niche-construction
+       :aif/candidate-pattern-action-space
+       :aif/grounded-actuation-not-reobservation
+       :problems/tension-proposes-candidates
+       :war-room/wr-19-tension-must-generate-not-only-rank
+       :aif/predictive-entropy-as-ambiguity
+       :aif/shared-kernel-predictive-forward-model
+       :system-coherence/argue-empirically-not-persuasively],
+      :precedence
+      {:aif/admissibility 1,
+       :aif/candidate-pattern-action-space 14,
+       :aif/grounded-actuation-not-reobservation 15,
+       :aif/measurement-window-hygiene 2,
+       :aif/niche-construction 13,
+       :aif/predictive-entropy-as-ambiguity 18,
+       :aif/shared-kernel-predictive-forward-model 19,
+       :aif/temporal-depth-beyond-greedy 3,
+       :budgeted-action-selection/mana-gated-work 4,
+       :collaboration-coherence/navel-gazing 5,
+       :equity/protected-interaction 6,
+       :f6/learning-event-detection 7,
+       :iching/hexagram-20-guan 8,
+       :peeragogy/newcomer 9,
+       :peripherals/inhabitation-feeds-evolution 10,
+       :problems/tension-proposes-candidates 16,
+       :system-coherence/argue-empirically-not-persuasively 20,
+       :ukrns/worked-contrast 11,
+       :war-room/wr-19-tension-must-generate-not-only-rank 17,
+       :writing-coherence/meet-the-reader-where-they-are 12},
+      :provenance
+      {:aif/admissibility :found,
+       :aif/candidate-pattern-action-space
+       [:admitted-by :widen-the-cascade-only-on-evidence],
+       :aif/grounded-actuation-not-reobservation
+       [:admitted-by :widen-the-cascade-only-on-evidence],
+       :aif/measurement-window-hygiene :found,
+       :aif/niche-construction
+       [:admitted-by :widen-the-cascade-only-on-evidence],
+       :aif/predictive-entropy-as-ambiguity
+       [:admitted-by :widen-the-cascade-only-on-evidence],
+       :aif/shared-kernel-predictive-forward-model
+       [:admitted-by :widen-the-cascade-only-on-evidence],
+       :aif/temporal-depth-beyond-greedy :found,
+       :budgeted-action-selection/mana-gated-work :found,
+       :collaboration-coherence/navel-gazing :found,
+       :equity/protected-interaction :found,
+       :f6/learning-event-detection :found,
+       :iching/hexagram-20-guan :found,
+       :peeragogy/newcomer :found,
+       :peripherals/inhabitation-feeds-evolution :found,
+       :problems/tension-proposes-candidates
+       [:admitted-by :widen-the-cascade-only-on-evidence],
+       :system-coherence/argue-empirically-not-persuasively
+       [:admitted-by :widen-the-cascade-only-on-evidence],
+       :ukrns/worked-contrast :found,
+       :war-room/wr-19-tension-must-generate-not-only-rank
+       [:admitted-by :widen-the-cascade-only-on-evidence],
+       :writing-coherence/meet-the-reader-where-they-are :found},
+      :selected
+      [:aif/admissibility
+       :aif/measurement-window-hygiene
+       :aif/temporal-depth-beyond-greedy
+       :budgeted-action-selection/mana-gated-work
+       :collaboration-coherence/navel-gazing
+       :equity/protected-interaction
+       :f6/learning-event-detection
+       :iching/hexagram-20-guan
+       :peeragogy/newcomer
+       :peripherals/inhabitation-feeds-evolution
+       :ukrns/worked-contrast
+       :writing-coherence/meet-the-reader-where-they-are],
+      :steps 9,
+      :stop [:halted [:budget 20]]},
+     :admitted
+     [:aif/candidate-pattern-action-space
+      :aif/grounded-actuation-not-reobservation
+      :aif/niche-construction
+      :aif/predictive-entropy-as-ambiguity
+      :aif/shared-kernel-predictive-forward-model
+      :problems/tension-proposes-candidates
+      :system-coherence/argue-empirically-not-persuasively
+      :war-room/wr-19-tension-must-generate-not-only-rank],
+     :admitted-count 8,
+     :seed-size 12,
+     :seed-at-or-over-budget? false,
+     :stop [:halted [:budget 20]],
      :laws {:O1 true, :O2 true, :O3 true},
      :record
      [{:edit :admit,
@@ -20377,10 +20761,21 @@
       {:edit :halt,
        :reason [:budget 20],
        :by :halt-on-budget,
-       :step 8}],
+       :step 8}]},
+    :widen-to-the-marginal-gain-floor
+    {:member-count 20,
+     :nothing-was-admitted? false,
      :cascade
-     {:addedByOrganise [],
-      :admittedBy {},
+     {:added-by-organise [],
+      :admitted-by
+      [:aif/candidate-pattern-action-space
+       :aif/grounded-actuation-not-reobservation
+       :aif/niche-construction
+       :aif/predictive-entropy-as-ambiguity
+       :aif/shared-kernel-predictive-forward-model
+       :problems/tension-proposes-candidates
+       :system-coherence/argue-empirically-not-persuasively
+       :war-room/wr-19-tension-must-generate-not-only-rank],
       :authored-order
       [:aif/admissibility
        :aif/measurement-window-hygiene
@@ -20522,11 +20917,34 @@
        :war-room/wr-19-tension-must-generate-not-only-rank
        [:admitted-by :widen-the-cascade-only-on-evidence],
        :writing-coherence/meet-the-reader-where-they-are :found},
+      :selected
+      [:aif/admissibility
+       :aif/measurement-window-hygiene
+       :aif/temporal-depth-beyond-greedy
+       :budgeted-action-selection/mana-gated-work
+       :collaboration-coherence/navel-gazing
+       :equity/protected-interaction
+       :f6/learning-event-detection
+       :iching/hexagram-20-guan
+       :peeragogy/newcomer
+       :peripherals/inhabitation-feeds-evolution
+       :ukrns/worked-contrast
+       :writing-coherence/meet-the-reader-where-they-are],
       :steps 9,
-      :stop [:halted [:budget 20]]}},
-    :widen-to-the-marginal-gain-floor
-    {:stop [:halted [:marginal-gain-floor 1.0]],
-     :member-count 20,
+      :stop [:halted [:marginal-gain-floor 1.0]]},
+     :admitted
+     [:aif/candidate-pattern-action-space
+      :aif/grounded-actuation-not-reobservation
+      :aif/niche-construction
+      :aif/predictive-entropy-as-ambiguity
+      :aif/shared-kernel-predictive-forward-model
+      :problems/tension-proposes-candidates
+      :system-coherence/argue-empirically-not-persuasively
+      :war-room/wr-19-tension-must-generate-not-only-rank],
+     :admitted-count 8,
+     :seed-size 12,
+     :seed-at-or-over-budget? false,
+     :stop [:halted [:marginal-gain-floor 1.0]],
      :laws {:O1 true, :O2 true, :O3 true},
      :record
      [{:edit :admit,
@@ -20564,153 +20982,7 @@
       {:edit :halt,
        :reason [:marginal-gain-floor 1.0],
        :by :halt-at-the-marginal-gain-floor,
-       :step 8}],
-     :cascade
-     {:addedByOrganise [],
-      :admittedBy {},
-      :authored-order
-      [:aif/admissibility
-       :aif/measurement-window-hygiene
-       :aif/temporal-depth-beyond-greedy
-       :budgeted-action-selection/mana-gated-work
-       :collaboration-coherence/navel-gazing
-       :equity/protected-interaction
-       :f6/learning-event-detection
-       :iching/hexagram-20-guan
-       :peeragogy/newcomer
-       :peripherals/inhabitation-feeds-evolution
-       :ukrns/worked-contrast
-       :writing-coherence/meet-the-reader-where-they-are
-       :aif/niche-construction
-       :aif/candidate-pattern-action-space
-       :aif/grounded-actuation-not-reobservation
-       :problems/tension-proposes-candidates
-       :war-room/wr-19-tension-must-generate-not-only-rank
-       :aif/predictive-entropy-as-ambiguity
-       :aif/shared-kernel-predictive-forward-model
-       :system-coherence/argue-empirically-not-persuasively],
-      :edges
-      [[:aif/candidate-pattern-action-space
-        :war-room/wr-19-tension-must-generate-not-only-rank]
-       [:problems/tension-proposes-candidates
-        :war-room/wr-19-tension-must-generate-not-only-rank]
-       [:writing-coherence/meet-the-reader-where-they-are
-        :system-coherence/argue-empirically-not-persuasively]],
-      :members
-      [:aif/admissibility
-       :aif/candidate-pattern-action-space
-       :aif/grounded-actuation-not-reobservation
-       :aif/measurement-window-hygiene
-       :aif/niche-construction
-       :aif/predictive-entropy-as-ambiguity
-       :aif/shared-kernel-predictive-forward-model
-       :aif/temporal-depth-beyond-greedy
-       :budgeted-action-selection/mana-gated-work
-       :collaboration-coherence/navel-gazing
-       :equity/protected-interaction
-       :f6/learning-event-detection
-       :iching/hexagram-20-guan
-       :peeragogy/newcomer
-       :peripherals/inhabitation-feeds-evolution
-       :problems/tension-proposes-candidates
-       :system-coherence/argue-empirically-not-persuasively
-       :ukrns/worked-contrast
-       :war-room/wr-19-tension-must-generate-not-only-rank
-       :writing-coherence/meet-the-reader-where-they-are],
-      :nodes
-      [:aif/admissibility
-       :aif/candidate-pattern-action-space
-       :aif/grounded-actuation-not-reobservation
-       :aif/measurement-window-hygiene
-       :aif/niche-construction
-       :aif/predictive-entropy-as-ambiguity
-       :aif/shared-kernel-predictive-forward-model
-       :aif/temporal-depth-beyond-greedy
-       :budgeted-action-selection/mana-gated-work
-       :collaboration-coherence/navel-gazing
-       :equity/protected-interaction
-       :f6/learning-event-detection
-       :iching/hexagram-20-guan
-       :peeragogy/newcomer
-       :peripherals/inhabitation-feeds-evolution
-       :problems/tension-proposes-candidates
-       :system-coherence/argue-empirically-not-persuasively
-       :ukrns/worked-contrast
-       :war-room/wr-19-tension-must-generate-not-only-rank
-       :writing-coherence/meet-the-reader-where-they-are],
-      :ordered
-      [:aif/admissibility
-       :aif/measurement-window-hygiene
-       :aif/temporal-depth-beyond-greedy
-       :budgeted-action-selection/mana-gated-work
-       :collaboration-coherence/navel-gazing
-       :equity/protected-interaction
-       :f6/learning-event-detection
-       :iching/hexagram-20-guan
-       :peeragogy/newcomer
-       :peripherals/inhabitation-feeds-evolution
-       :ukrns/worked-contrast
-       :writing-coherence/meet-the-reader-where-they-are
-       :aif/niche-construction
-       :aif/candidate-pattern-action-space
-       :aif/grounded-actuation-not-reobservation
-       :problems/tension-proposes-candidates
-       :war-room/wr-19-tension-must-generate-not-only-rank
-       :aif/predictive-entropy-as-ambiguity
-       :aif/shared-kernel-predictive-forward-model
-       :system-coherence/argue-empirically-not-persuasively],
-      :precedence
-      {:aif/admissibility 1,
-       :aif/candidate-pattern-action-space 14,
-       :aif/grounded-actuation-not-reobservation 15,
-       :aif/measurement-window-hygiene 2,
-       :aif/niche-construction 13,
-       :aif/predictive-entropy-as-ambiguity 18,
-       :aif/shared-kernel-predictive-forward-model 19,
-       :aif/temporal-depth-beyond-greedy 3,
-       :budgeted-action-selection/mana-gated-work 4,
-       :collaboration-coherence/navel-gazing 5,
-       :equity/protected-interaction 6,
-       :f6/learning-event-detection 7,
-       :iching/hexagram-20-guan 8,
-       :peeragogy/newcomer 9,
-       :peripherals/inhabitation-feeds-evolution 10,
-       :problems/tension-proposes-candidates 16,
-       :system-coherence/argue-empirically-not-persuasively 20,
-       :ukrns/worked-contrast 11,
-       :war-room/wr-19-tension-must-generate-not-only-rank 17,
-       :writing-coherence/meet-the-reader-where-they-are 12},
-      :provenance
-      {:aif/admissibility :found,
-       :aif/candidate-pattern-action-space
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :aif/grounded-actuation-not-reobservation
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :aif/measurement-window-hygiene :found,
-       :aif/niche-construction
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :aif/predictive-entropy-as-ambiguity
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :aif/shared-kernel-predictive-forward-model
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :aif/temporal-depth-beyond-greedy :found,
-       :budgeted-action-selection/mana-gated-work :found,
-       :collaboration-coherence/navel-gazing :found,
-       :equity/protected-interaction :found,
-       :f6/learning-event-detection :found,
-       :iching/hexagram-20-guan :found,
-       :peeragogy/newcomer :found,
-       :peripherals/inhabitation-feeds-evolution :found,
-       :problems/tension-proposes-candidates
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :system-coherence/argue-empirically-not-persuasively
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :ukrns/worked-contrast :found,
-       :war-room/wr-19-tension-must-generate-not-only-rank
-       [:admitted-by :widen-the-cascade-only-on-evidence],
-       :writing-coherence/meet-the-reader-where-they-are :found},
-      :steps 9,
-      :stop [:halted [:marginal-gain-floor 1.0]]}}},
+       :step 8}]}},
    :degree-term
    {:candidates-scored 81,
     :candidates-with-degree-above-zero 8,
@@ -26964,78 +27236,27 @@
     :stops-differ? true},
    :runs
    {:widen-to-a-budget
-    {:stop [:saturation],
-     :member-count 17,
-     :laws {:O1 true, :O2 true, :O3 true},
-     :record
-     [{:edit :admit,
-       :pattern :baldwin/ablation-axes-must-not-disable-the-instrument,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 0}
-      {:edit :admit,
-       :pattern :cascades/the-slice-is-the-unit-of-use,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 1}
-      {:edit :admit,
-       :pattern :control/agential-efficiency-measurement,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 2}
-      {:edit :admit,
-       :pattern :data-mining/fan-out-independent-runs-across-devices,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 3}
-      {:edit :admit,
-       :pattern :data-mining/seed-the-run-for-a-fair-ablation,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 4}
-      {:edit :admit,
-       :pattern :eight-gates/an-push,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 5}
-      {:edit :admit,
-       :pattern :futon-theory/crime-relocates-to-a-scarcer-witness,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 6}
-      {:edit :admit,
-       :pattern :math-formalization-CV/holomorphic-disk-api,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 7}
-      {:edit :admit,
-       :pattern :mmca/instrument-horizon-must-match-system,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 8}
-      {:edit :admit,
-       :pattern :mmca/verified-but-idle-link,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 9}
-      {:edit :admit,
-       :pattern :relationship-coherence/absence-as-spaciousness,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 10}
-      {:edit :admit,
-       :pattern :relationship-coherence/rupture-repair,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 11}
-      {:edit :admit,
-       :pattern :snatch/revert-then-invert,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 12}
-      {:edit :admit,
-       :pattern
-       :ukrns/calibrate-impact-promises-to-current-indicator-capacity,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 13}
-      {:edit :admit,
-       :pattern :ukrns/model-recompute-schedule,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 14}
-      {:edit :admit,
-       :pattern :war-room/wr-9-bites-empirical-or-logical,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 15}],
+    {:member-count 17,
+     :nothing-was-admitted? false,
      :cascade
-     {:addedByOrganise [],
-      :admittedBy {},
+     {:added-by-organise [],
+      :admitted-by
+      [:baldwin/ablation-axes-must-not-disable-the-instrument
+       :cascades/the-slice-is-the-unit-of-use
+       :control/agential-efficiency-measurement
+       :data-mining/fan-out-independent-runs-across-devices
+       :data-mining/seed-the-run-for-a-fair-ablation
+       :eight-gates/an-push
+       :futon-theory/crime-relocates-to-a-scarcer-witness
+       :math-formalization-CV/holomorphic-disk-api
+       :mmca/instrument-horizon-must-match-system
+       :mmca/verified-but-idle-link
+       :relationship-coherence/absence-as-spaciousness
+       :relationship-coherence/rupture-repair
+       :snatch/revert-then-invert
+       :ukrns/calibrate-impact-promises-to-current-indicator-capacity
+       :ukrns/model-recompute-schedule
+       :war-room/wr-9-bites-empirical-or-logical],
       :authored-order
       [:baldwin/choose-the-heritable-unit-where-invariance-lives
        :baldwin/ablation-axes-must-not-disable-the-instrument
@@ -27163,20 +27384,104 @@
        [:admitted-by :widen-the-cascade-only-on-evidence],
        :war-room/wr-9-bites-empirical-or-logical
        [:admitted-by :widen-the-cascade-only-on-evidence]},
+      :selected
+      [:baldwin/choose-the-heritable-unit-where-invariance-lives],
       :steps 16,
-      :stop [:saturation]}},
-    :widen-to-the-marginal-gain-floor
-    {:stop [:halted [:marginal-gain-floor 1.0]],
-     :member-count 1,
+      :stop [:saturation]},
+     :admitted
+     [:baldwin/ablation-axes-must-not-disable-the-instrument
+      :cascades/the-slice-is-the-unit-of-use
+      :control/agential-efficiency-measurement
+      :data-mining/fan-out-independent-runs-across-devices
+      :data-mining/seed-the-run-for-a-fair-ablation
+      :eight-gates/an-push
+      :futon-theory/crime-relocates-to-a-scarcer-witness
+      :math-formalization-CV/holomorphic-disk-api
+      :mmca/instrument-horizon-must-match-system
+      :mmca/verified-but-idle-link
+      :relationship-coherence/absence-as-spaciousness
+      :relationship-coherence/rupture-repair
+      :snatch/revert-then-invert
+      :ukrns/calibrate-impact-promises-to-current-indicator-capacity
+      :ukrns/model-recompute-schedule
+      :war-room/wr-9-bites-empirical-or-logical],
+     :admitted-count 16,
+     :seed-size 1,
+     :seed-at-or-over-budget? false,
+     :stop [:saturation],
      :laws {:O1 true, :O2 true, :O3 true},
      :record
-     [{:edit :halt,
-       :reason [:marginal-gain-floor 1.0],
-       :by :halt-at-the-marginal-gain-floor,
-       :step 0}],
+     [{:edit :admit,
+       :pattern :baldwin/ablation-axes-must-not-disable-the-instrument,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 0}
+      {:edit :admit,
+       :pattern :cascades/the-slice-is-the-unit-of-use,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 1}
+      {:edit :admit,
+       :pattern :control/agential-efficiency-measurement,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 2}
+      {:edit :admit,
+       :pattern :data-mining/fan-out-independent-runs-across-devices,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 3}
+      {:edit :admit,
+       :pattern :data-mining/seed-the-run-for-a-fair-ablation,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 4}
+      {:edit :admit,
+       :pattern :eight-gates/an-push,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 5}
+      {:edit :admit,
+       :pattern :futon-theory/crime-relocates-to-a-scarcer-witness,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 6}
+      {:edit :admit,
+       :pattern :math-formalization-CV/holomorphic-disk-api,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 7}
+      {:edit :admit,
+       :pattern :mmca/instrument-horizon-must-match-system,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 8}
+      {:edit :admit,
+       :pattern :mmca/verified-but-idle-link,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 9}
+      {:edit :admit,
+       :pattern :relationship-coherence/absence-as-spaciousness,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 10}
+      {:edit :admit,
+       :pattern :relationship-coherence/rupture-repair,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 11}
+      {:edit :admit,
+       :pattern :snatch/revert-then-invert,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 12}
+      {:edit :admit,
+       :pattern
+       :ukrns/calibrate-impact-promises-to-current-indicator-capacity,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 13}
+      {:edit :admit,
+       :pattern :ukrns/model-recompute-schedule,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 14}
+      {:edit :admit,
+       :pattern :war-room/wr-9-bites-empirical-or-logical,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 15}]},
+    :widen-to-the-marginal-gain-floor
+    {:member-count 1,
+     :nothing-was-admitted? true,
      :cascade
-     {:addedByOrganise [],
-      :admittedBy {},
+     {:added-by-organise [],
+      :admitted-by [],
       :authored-order
       [:baldwin/choose-the-heritable-unit-where-invariance-lives],
       :edges [],
@@ -27191,8 +27496,21 @@
       :provenance
       #:baldwin{:choose-the-heritable-unit-where-invariance-lives
                 :found},
+      :selected
+      [:baldwin/choose-the-heritable-unit-where-invariance-lives],
       :steps 1,
-      :stop [:halted [:marginal-gain-floor 1.0]]}}},
+      :stop [:halted [:marginal-gain-floor 1.0]]},
+     :admitted [],
+     :admitted-count 0,
+     :seed-size 1,
+     :seed-at-or-over-budget? false,
+     :stop [:halted [:marginal-gain-floor 1.0]],
+     :laws {:O1 true, :O2 true, :O3 true},
+     :record
+     [{:edit :halt,
+       :reason [:marginal-gain-floor 1.0],
+       :by :halt-at-the-marginal-gain-floor,
+       :step 0}]}},
    :degree-term
    {:candidates-scored 16,
     :candidates-with-degree-above-zero 0,
@@ -33447,85 +33765,28 @@
     :stops-differ? true},
    :runs
    {:widen-to-a-budget
-    {:stop [:halted [:budget 20]],
-     :member-count 20,
-     :laws {:O1 true, :O2 true, :O3 true},
-     :record
-     [{:edit :admit,
-       :pattern :agent/handoff-preserves-context,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 0}
-      {:edit :admit,
-       :pattern :ai4ci/ai-core-function,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 1}
-      {:edit :admit,
-       :pattern :aif/belief-state-operational-hypotheses,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 2}
-      {:edit :admit,
-       :pattern :aif/term-to-channel-traceability,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 3}
-      {:edit :admit,
-       :pattern :control/effort-estimation,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 4}
-      {:edit :admit,
-       :pattern :coordination/assignment-binding,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 5}
-      {:edit :admit,
-       :pattern :gauntlet/placenta-transfer,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 6}
-      {:edit :admit,
-       :pattern :iiching/TEMPLATE,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 7}
-      {:edit :admit,
-       :pattern :invariant-coherence/state-snapshot-witness,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 8}
-      {:edit :admit,
-       :pattern :math-formalization-FA/inner-product-space-api,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 9}
-      {:edit :admit,
-       :pattern :math-informal/construct-auxiliary-object,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 10}
-      {:edit :admit,
-       :pattern :memory/name-a-reusable-artifact,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 11}
-      {:edit :admit,
-       :pattern :musn/plan-before-tool,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 12}
-      {:edit :admit,
-       :pattern :or3/plural-value-accounting,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 13}
-      {:edit :admit,
-       :pattern :orchestration/consent-gate,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 14}
-      {:edit :admit,
-       :pattern :peeragogy/check-in-rhythm,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 15}
-      {:edit :admit,
-       :pattern :peeragogy/polling-for-ideas,
-       :by :widen-the-cascade-only-on-evidence,
-       :step 16}
-      {:edit :halt,
-       :reason [:budget 20],
-       :by :halt-on-budget,
-       :step 17}],
+    {:member-count 20,
+     :nothing-was-admitted? false,
      :cascade
-     {:addedByOrganise [],
-      :admittedBy {},
+     {:added-by-organise [],
+      :admitted-by
+      [:agent/handoff-preserves-context
+       :ai4ci/ai-core-function
+       :aif/belief-state-operational-hypotheses
+       :aif/term-to-channel-traceability
+       :control/effort-estimation
+       :coordination/assignment-binding
+       :gauntlet/placenta-transfer
+       :iiching/TEMPLATE
+       :invariant-coherence/state-snapshot-witness
+       :math-formalization-FA/inner-product-space-api
+       :math-informal/construct-auxiliary-object
+       :memory/name-a-reusable-artifact
+       :musn/plan-before-tool
+       :or3/plural-value-accounting
+       :orchestration/consent-gate
+       :peeragogy/check-in-rhythm
+       :peeragogy/polling-for-ideas],
       :authored-order
       [:math-informal-CT/check-it-on-generators
        :system-coherence/plan-as-enumeration
@@ -33670,20 +33931,114 @@
        [:admitted-by :widen-the-cascade-only-on-evidence],
        :system-coherence/plan-as-enumeration :found,
        :vsatelier/session-as-rehearsal :found},
+      :selected
+      [:math-informal-CT/check-it-on-generators
+       :system-coherence/plan-as-enumeration
+       :vsatelier/session-as-rehearsal],
       :steps 18,
-      :stop [:halted [:budget 20]]}},
-    :widen-to-the-marginal-gain-floor
-    {:stop [:halted [:marginal-gain-floor 1.0]],
-     :member-count 3,
+      :stop [:halted [:budget 20]]},
+     :admitted
+     [:agent/handoff-preserves-context
+      :ai4ci/ai-core-function
+      :aif/belief-state-operational-hypotheses
+      :aif/term-to-channel-traceability
+      :control/effort-estimation
+      :coordination/assignment-binding
+      :gauntlet/placenta-transfer
+      :iiching/TEMPLATE
+      :invariant-coherence/state-snapshot-witness
+      :math-formalization-FA/inner-product-space-api
+      :math-informal/construct-auxiliary-object
+      :memory/name-a-reusable-artifact
+      :musn/plan-before-tool
+      :or3/plural-value-accounting
+      :orchestration/consent-gate
+      :peeragogy/check-in-rhythm
+      :peeragogy/polling-for-ideas],
+     :admitted-count 17,
+     :seed-size 3,
+     :seed-at-or-over-budget? false,
+     :stop [:halted [:budget 20]],
      :laws {:O1 true, :O2 true, :O3 true},
      :record
-     [{:edit :halt,
-       :reason [:marginal-gain-floor 1.0],
-       :by :halt-at-the-marginal-gain-floor,
-       :step 0}],
+     [{:edit :admit,
+       :pattern :agent/handoff-preserves-context,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 0}
+      {:edit :admit,
+       :pattern :ai4ci/ai-core-function,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 1}
+      {:edit :admit,
+       :pattern :aif/belief-state-operational-hypotheses,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 2}
+      {:edit :admit,
+       :pattern :aif/term-to-channel-traceability,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 3}
+      {:edit :admit,
+       :pattern :control/effort-estimation,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 4}
+      {:edit :admit,
+       :pattern :coordination/assignment-binding,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 5}
+      {:edit :admit,
+       :pattern :gauntlet/placenta-transfer,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 6}
+      {:edit :admit,
+       :pattern :iiching/TEMPLATE,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 7}
+      {:edit :admit,
+       :pattern :invariant-coherence/state-snapshot-witness,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 8}
+      {:edit :admit,
+       :pattern :math-formalization-FA/inner-product-space-api,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 9}
+      {:edit :admit,
+       :pattern :math-informal/construct-auxiliary-object,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 10}
+      {:edit :admit,
+       :pattern :memory/name-a-reusable-artifact,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 11}
+      {:edit :admit,
+       :pattern :musn/plan-before-tool,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 12}
+      {:edit :admit,
+       :pattern :or3/plural-value-accounting,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 13}
+      {:edit :admit,
+       :pattern :orchestration/consent-gate,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 14}
+      {:edit :admit,
+       :pattern :peeragogy/check-in-rhythm,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 15}
+      {:edit :admit,
+       :pattern :peeragogy/polling-for-ideas,
+       :by :widen-the-cascade-only-on-evidence,
+       :step 16}
+      {:edit :halt,
+       :reason [:budget 20],
+       :by :halt-on-budget,
+       :step 17}]},
+    :widen-to-the-marginal-gain-floor
+    {:member-count 3,
+     :nothing-was-admitted? true,
      :cascade
-     {:addedByOrganise [],
-      :admittedBy {},
+     {:added-by-organise [],
+      :admitted-by [],
       :authored-order
       [:math-informal-CT/check-it-on-generators
        :system-coherence/plan-as-enumeration
@@ -33709,8 +34064,23 @@
       {:math-informal-CT/check-it-on-generators :found,
        :system-coherence/plan-as-enumeration :found,
        :vsatelier/session-as-rehearsal :found},
+      :selected
+      [:math-informal-CT/check-it-on-generators
+       :system-coherence/plan-as-enumeration
+       :vsatelier/session-as-rehearsal],
       :steps 1,
-      :stop [:halted [:marginal-gain-floor 1.0]]}}},
+      :stop [:halted [:marginal-gain-floor 1.0]]},
+     :admitted [],
+     :admitted-count 0,
+     :seed-size 3,
+     :seed-at-or-over-budget? false,
+     :stop [:halted [:marginal-gain-floor 1.0]],
+     :laws {:O1 true, :O2 true, :O3 true},
+     :record
+     [{:edit :halt,
+       :reason [:marginal-gain-floor 1.0],
+       :by :halt-at-the-marginal-gain-floor,
+       :step 0}]}},
    :degree-term
    {:candidates-scored 32,
     :candidates-with-degree-above-zero 0,

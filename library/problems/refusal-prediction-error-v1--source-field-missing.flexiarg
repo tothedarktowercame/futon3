@@ -1,0 +1,51 @@
+@flexiarg problems/refusal-prediction-error-v1--source-field-missing
+@title Refusal: :prediction-error/v1 / :source-field-missing
+@style pattern
+@audience wm-organization
+@tone plain
+@draft wm-contract/harvest_refusals.bb
+
+;; QUARANTINE. This pattern was MINTED BY A SCRIPT from 3 refusal
+;; record(s), under Joe's 2026-09-02 ruling extension: a recurring refusal is
+;; recorded as a draft design pattern so the refusals become design knowledge
+;; instead of standing red. It is a DRAFT and is quarantined exactly as a
+;; @why-posthoc edge is -- counted separately by checks/library_graph_lint.clj,
+;; admitted to no authored-authority law, and outside the organised fraction.
+;; It carries no @why: a script has no rationale to claim. It earns standing the
+;; ordinary way -- a person removes @draft and writes the @why, and that edge
+;; then needs its attestation like any other.
+;; Regenerated on every sweep. Hand edits to the body will be overwritten;
+;; promote it out of draft instead.
+
+! conclusion: A recurring refusal at :prediction-error/v1 is unresolved design work, not a
+  standing red. Someone must decide whether the caller or the producer is wrong.
+
+  + context: 3 record(s) of `:source-field-missing` from `:prediction-error/v1`,
+    first seen 2026-09-02T13:47:22.082297526Z, last seen 2026-09-02T14:03:09.647517345Z. Harvested
+    2026-09-02T15:26:46.632435328Z by holes/labs/wm-contract/harvest_refusals.bb from the WM trace and
+    the C130 absence-coercion lint. Statuses: :absent.
+    + salience: the producer refuses REPEATEDLY and the refusal has no consumer.
+      That is the refuse-and-stop failure mode the ruling of 2026-09-02 names,
+      seen from the producer's side.
+    + whose problem: the caller's, until someone shows the producer is wrong to
+      refuse. The producer stated a reason; nothing downstream acts on it.
+
+  + IF:
+    :prediction-error/v1 is asked for a value it can only supply from an input that was
+    not observed or was malformed.
+
+  + HOWEVER:
+    It refuses with `:source-field-missing`, and has done so 3 time(s); no
+    caller repairs the input and no reader turns the refusal into work.
+
+  + THEN:
+    EMPTY. No resolution has been written. This half of the pattern is the
+    tension recorded before its resolution exists, which is what the ruling
+    extension asked for; it is NOT a claim that a resolution is known.
+
+  + BECAUSE:
+    A refusal that recurs is a statement about the design, not about the tick.
+    ?evidence(required): each line below is one harvested record.
+    ?evidence: /home/joe/code/futon2/data/wm-trace/wm-trace-2026-09-02.edn:1 @ 2026-09-02T13:47:22.082297526Z status :absent {:channel :sorry-count-norm, :absent-member :observed}
+    ?evidence: /home/joe/code/futon2/data/wm-trace/wm-trace-2026-09-02.edn:2 @ 2026-09-02T14:00:29.357627605Z status :absent {:channel :sorry-count-norm, :absent-member :observed}
+    ?evidence: /home/joe/code/futon2/data/wm-trace/wm-trace-2026-09-02.edn:3 @ 2026-09-02T14:03:09.647517345Z status :absent {:channel :sorry-count-norm, :absent-member :observed}

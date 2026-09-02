@@ -100,7 +100,13 @@
 ;; what the measurement needs: `match` is held constant across the two arms of
 ;; `:uniform`, so the comparison isolates `degree`.
 
-(def tension
+;; `tension` is DYNAMIC so a second domain can rebind it without a second copy
+;; of `acknowledgements` / `match` / `antecedent-holds?` / `seed-and-candidates`.
+;; Its root value is unchanged and `-main` runs at the root, so :LA3's report
+;; regenerates byte-identically; :LA4 (`construct_ants_cascade.clj`) binds it to
+;; the ants tension and calls the same five functions.  A second copy of them is
+;; the facade LA1c-restatement.md §11 names, one level down from the firing loop.
+(def ^:dynamic tension
   {:id :organise-the-library
    :statement "The pattern library is the repository `find` searches and `organise` builds cascades from, and it is 93% unconnected: nothing states what most patterns stand on or what carries them out, so a cascade can only be hand-authored."
    :source "futon2/holes/problems/P-organise-the-library.md:33-36"

@@ -243,4 +243,44 @@
    :does-not-redirect-to-L5-L9 "The :changes-it condition is NOT met, so the interim arm :authored-edge-degree stands and LA4-LA9 are not blocked on coverage. What the measurement does say is that a cascade constructed today is a cascade over the organised sections plus whatever the text matcher drags in, which is a bound to state on any LA4-LA9 result rather than a reason to stop."
    :what-would-change-this "A second tension whose seed does not touch library/snatch or library/cascades. If the degree term is 0 for every candidate there, the verdict is tension-specific and this entry overstates it. That is one -main away and is not run here: LA3's acceptance says one real tension."
    :confound-recorded "The tension is about organising the library, and the sections that supply the degree term are the sections whose subject IS cascades. The cue set was tightened once before the measurement -- the bare cue \"search\" was dropped from :find-has-no-search-space because it alone matched 286 IF clauses -- and that edit was made on cue breadth, before any degree number had been computed."
-   :veto "Joe's. Nothing rests on it that a re-run would not move; the undo is one -main and this entry."}]}
+   :veto "Joe's. Nothing rests on it that a re-run would not move; the undo is one -main and this entry."}
+
+  {:id :cascade-delta-fold-direction
+   :status :interim-adopted
+   :at "2026-09-02"
+   :raised-by :LA4
+   :question ":LA4's acceptance says \"attach-config extended to fold a cascade's deltas in PRECEDENCE order -- merge-deep is last-wins (cyber.clj:193-200), so the test that precedence decides a key collision is the acceptance test for O4 in this domain.\" It fixes THAT precedence decides the collision and does not fix WHICH member wins: the most precedent, or the least. The two readings disagree on a live number -- library/ants/pheromone-trail-tuner.flexiarg:11 writes :efe :lambda :info 0.5 and white-space-scout.flexiarg:13 writes 0.6, and the constructed cascade orders the tuner ahead of the scout."
+   :arms
+   [{:arm :most-precedent-wins
+     :form "fold the `ordered` list BACKWARDS: `(apply merge-deep (reverse (map delta ordered)))`, so the least precedent member writes first and the most precedent member is merge-deep's last writer."
+     :cost "The fold runs the precedence list in the opposite direction from the way the list is read, so the code has to say why in a docstring rather than being obvious from its shape. A reader who takes the acceptance's two clauses literally -- fold in precedence order, merge-deep is last-wins -- will expect the other answer and has to be told."}
+    {:arm :last-in-precedence-order-wins
+     :form "`(apply merge-deep (map delta ordered))` -- the literal reading of the acceptance sentence."
+     :cost "It makes `attach` and `fire` read one field two ways. checks/find_organise.clj:396 `fire` sorts the rules by the cascade's precedence and takes the FIRST whose THEN yields, so precedence 1 is the rule that decides; under this arm precedence 1 would be the delta that LOSES every collision it is in. P-validated-R5's own argument for O4 (p4ng/app-snatch.tex:117-126) is that an-unmodelled-response-stops-the-line must be CONSULTED FIRST -- consulted first is what precedence means there."}
+    {:arm :refuse-to-resolve
+     :form "throw on a contended key; require the cascade to carry an explicit per-key resolution before it can be attached."
+     :cost "futon2/holes/cascade-ants.edn:148 says composition needs a resolution rule and that last-write-wins is not one. This arm agrees and then supplies no rule, so NO cascade over library/ants can be attached at all, including the one the constructor built -- the row's second acceptance clause becomes unrunnable. It also puts the resolution somewhere other than the precedence field, which is what O4 says it must not be."}]
+   :interim :most-precedent-wins
+   :why-interim "It is the only arm under which `attach-cascade-config` and `fire` read `:precedence` the same way, and one field with two readings inside one system is the defect, not the inconvenience of an explanatory docstring. :refuse-to-resolve is not a resolution rule; it is the absence of one, restated as a guard. The direction is checked rather than documented: futon2/test/ants/cyber_test.clj `precedence-decides-a-key-collision` asserts 0.5 under one order and 0.6 under the other, with :members and :authored-order held fixed so precedence is the only difference, and `cascade-contentions` derives :won-by from the folded value rather than from position, so a wrong direction shows up as a mismatch instead of being restated as the intent."
+   :changes-it "An authored cascade whose own THEN states a resolution rule for a contended key. That would move the resolution from the precedence field to the pattern text, and O4's reading would have to be revisited with it (`decisions.edn :o4-under-a-temperament-then` is the neighbouring question). Also: any consumer other than `fire` that reads `:precedence` in the opposite sense -- that would mean the field already carries two meanings and the choice would be between them rather than for one."
+   :veto "Joe's. The undo is one `reverse` in futon2/src/ants/cyber.clj `cascade-delta` and the two flipped assertions in cyber_test.clj."}
+
+  {:id :cascade-identity-for-a-singular-channel
+   :status :interim-adopted
+   :at "2026-09-02"
+   :raised-by :LA4
+   :question "Channel 2 of the ants patterns dispatches on a SINGULAR `:cyber-pattern :id` (ants.aif.pattern-sense/constraint-satisfied?:78, ants.aif.pattern-efe/pattern-action-risk:117, both `case` over five `:cyber/*` keys). futon2/holes/cascade-ants.edn:148 records this as the open hole: \"`:pattern/active` is singular -- one pattern at a time. A cascade is by definition composed.\" A cascade has no single id. What is channel 2 shown when a cascade is attached?"
+   :arms
+   [{:arm :most-precedent-member-under-its-cyber-alias
+     :form "`:cyber-pattern :id` = the `:cyber/*` alias of the cascade's most precedent member (cyber.clj `library-key->pattern-key`, derived from `pattern-key->filename` rather than written out again); the library id kept beside it as `:library-id`, and the whole cascade under :cascade/:ordered/:delta."
+     :cost "Channel 2 is shown ONE member and is told nothing about the other three, so any channel-2 number from a cascade arm is a number about its head. That is a real limitation and it is not repaired here -- it is the hole cascade-ants.edn:148 names, and naming which member stands in does not close it."}
+    {:arm :the-library-id-of-the-most-precedent-member
+     :form "`:cyber-pattern :id` = `:ants/cargo-return-discipline` -- the id the cascade actually carries."
+     :cost "Both channel-2 consumers `case` on `:cyber/*` and fall through to 0.0 / `true` for anything else, so channel 2 would contribute EXACTLY ZERO at every lambda and the acceptance's lambda sweep would be a sweep over nothing -- silently. That is the shape of the tautology futon2/README-xeno-loop.md §0 exists to warn about: a control that permutes fields nothing reads, whose null refutes the apparatus rather than the hypothesis."}
+    {:arm :nil-no-pattern
+     :form "leave `:cyber-pattern` unset; measure channel 1 alone."
+     :cost "Honest, and it discards comparability with the 2026-07-16 gate, whose every arm carried an id. It would also make the lambda sweep the acceptance names meaningless rather than merely narrow."}]
+   :interim :most-precedent-member-under-its-cyber-alias
+   :why-interim "It is the only arm on which the acceptance's lambda sweep measures anything, and the alternative that looks most faithful -- carry the library id -- fails SILENTLY, which is worse than failing narrowly. The limitation is recorded on the gate's own preconditions (`:channel-2-sees`) and printed on every run, so a reader of the report is told which member stood in rather than having to work it out from two `case` tables."
+   :changes-it "A channel 2 that takes a cascade -- a pattern-efe whose risk and info-gain terms are defined over a composed policy rather than over one of five hard-coded ids. That is the repair cascade-ants.edn:148 asks for, and it would retire this decision rather than adjust it."
+   :veto "Joe's. The undo is one `get` in futon2/src/ants/cyber.clj `attach-cascade-config`."}]}

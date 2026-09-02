@@ -1,0 +1,217 @@
+{:as-of
+ {:authored-why-edges 0,
+  :authored-why-how-edges 0,
+  :dangling-edges 0,
+  :patterns 5,
+  :read-digest
+  "5cd9fd80c74361f3947372f34bde627102c9eacc63947f902a44cfb0665a2b29",
+  :sections [:ants],
+  :why-acyclic? true},
+ :cascades-differ? true,
+ :controls
+ {:citations 23,
+  :citations-that-do-not-read-back [],
+  :determinism-failures [],
+  :grain-separation [],
+  :library-correspondence
+  [{:encodes "the `a budget` disjunct of the stopping rule",
+    :in-repository? true,
+    :pattern :snatch/widen-the-cascade-only-on-evidence,
+    :rule :halt-on-budget,
+    :source-line-is-a-then? true,
+    :then-source
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}
+   {:encodes
+    "the `a marginal-gain floor` disjunct of the stopping rule",
+    :in-repository? true,
+    :pattern :snatch/widen-the-cascade-only-on-evidence,
+    :rule :halt-at-the-marginal-gain-floor,
+    :source-line-is-a-then? true,
+    :then-source
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}
+   {:encodes
+    "the `admit patterns one at a time, ordered by what the previous admission bought` clause",
+    :in-repository? true,
+    :pattern :snatch/widen-the-cascade-only-on-evidence,
+    :rule :widen-the-cascade-only-on-evidence,
+    :source-line-is-a-then? true,
+    :then-source
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}],
+  :negative-controls
+  [{:caught? true,
+    :control :O1-unrecorded-node,
+    :detail
+    "a node in neither selected, addedByOrganise nor admittedBy",
+    :exercised? true}
+   {:caught? true,
+    :control :citation-cue-not-in-the-cited-span,
+    :detail "\"library/ants/baseline-cyber-ant.flexiarg\"",
+    :exercised? true}
+   {:caught? true,
+    :control :citation-span-off-the-end-of-the-file,
+    :detail "\"library/ants/baseline-cyber-ant.flexiarg\"",
+    :exercised? true}],
+  :negative-controls-declared
+  [:O1-unrecorded-node
+   :citation-cue-not-in-the-cited-span
+   :citation-span-off-the-end-of-the-file],
+  :negative-controls-not-available-here
+  {:O2-invented-edge :no-authored-edge-in-library-ants,
+   :O3-dropped-edge :no-authored-edge-in-library-ants}},
+ :degree-term
+ {:authored-edges-in-this-repository 0,
+  :candidates-scored 1,
+  :candidates-with-degree-above-zero 0,
+  :degree-distribution {0 1},
+  :distinguishable-from-uniform? false,
+  :verdict-is-tension-specific? true},
+ :find
+ {:candidates 1,
+  :laws {:F1 true, :F2 true, :F3 true, :F4 true},
+  :seed-size 4,
+  :selected
+  [:ants/cargo-return-discipline
+   :ants/hunger-precision-coupling
+   :ants/pheromone-trail-tuner
+   :ants/white-space-scout],
+  :zero-mass-pattern :ants/baseline-cyber-ant,
+  :zero-mass-selected? false},
+ :o4
+ {:holds? true,
+  :precedence-changed? true,
+  :row
+  {:acting-order-after
+   [:ants/cargo-return-discipline
+    :ants/hunger-precision-coupling
+    :ants/white-space-scout
+    :ants/pheromone-trail-tuner],
+   :acting-order-before
+   [:ants/cargo-return-discipline
+    :ants/hunger-precision-coupling
+    :ants/pheromone-trail-tuner
+    :ants/white-space-scout],
+   :precedence-after
+   #:ants{:cargo-return-discipline 1,
+          :hunger-precision-coupling 2,
+          :pheromone-trail-tuner 4,
+          :white-space-scout 3},
+   :precedence-before
+   #:ants{:cargo-return-discipline 1,
+          :hunger-precision-coupling 2,
+          :pheromone-trail-tuner 3,
+          :white-space-scout 4},
+   :score-after 18.759999999999874,
+   :score-before 18.759999999999874},
+  :score-changed? false},
+ :runs
+ {:widen-to-a-budget
+  {:admitted [:ants/baseline-cyber-ant],
+   :cascade
+   {:authored-order
+    [:ants/cargo-return-discipline
+     :ants/hunger-precision-coupling
+     :ants/pheromone-trail-tuner
+     :ants/white-space-scout
+     :ants/baseline-cyber-ant],
+    :id :widen-to-a-budget,
+    :members
+    [:ants/baseline-cyber-ant
+     :ants/cargo-return-discipline
+     :ants/hunger-precision-coupling
+     :ants/pheromone-trail-tuner
+     :ants/white-space-scout],
+    :ordered
+    [:ants/cargo-return-discipline
+     :ants/hunger-precision-coupling
+     :ants/pheromone-trail-tuner
+     :ants/white-space-scout
+     :ants/baseline-cyber-ant],
+    :precedence
+    #:ants{:baseline-cyber-ant 5,
+           :cargo-return-discipline 1,
+           :hunger-precision-coupling 2,
+           :pheromone-trail-tuner 3,
+           :white-space-scout 4},
+    :provenance
+    #:ants{:baseline-cyber-ant
+           [:admitted-by :widen-the-cascade-only-on-evidence],
+           :cargo-return-discipline :found,
+           :hunger-precision-coupling :found,
+           :pheromone-trail-tuner :found,
+           :white-space-scout :found},
+    :steps 1,
+    :stop [:saturation]},
+   :cascade-edges 0,
+   :cascade-nodes 5,
+   :laws {:O1 true, :O2 true, :O3 true},
+   :members 5,
+   :record
+   [{:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :ants/baseline-cyber-ant,
+     :reason nil,
+     :step 0}],
+   :steps 1,
+   :stop [:saturation]},
+  :widen-to-the-marginal-gain-floor
+  {:admitted [],
+   :cascade
+   {:authored-order
+    [:ants/cargo-return-discipline
+     :ants/hunger-precision-coupling
+     :ants/pheromone-trail-tuner
+     :ants/white-space-scout],
+    :id :widen-to-the-marginal-gain-floor,
+    :members
+    [:ants/cargo-return-discipline
+     :ants/hunger-precision-coupling
+     :ants/pheromone-trail-tuner
+     :ants/white-space-scout],
+    :ordered
+    [:ants/cargo-return-discipline
+     :ants/hunger-precision-coupling
+     :ants/pheromone-trail-tuner
+     :ants/white-space-scout],
+    :precedence
+    #:ants{:cargo-return-discipline 1,
+           :hunger-precision-coupling 2,
+           :pheromone-trail-tuner 3,
+           :white-space-scout 4},
+    :provenance
+    #:ants{:cargo-return-discipline :found,
+           :hunger-precision-coupling :found,
+           :pheromone-trail-tuner :found,
+           :white-space-scout :found},
+    :steps 1,
+    :stop [:halted [:marginal-gain-floor 1.0]]},
+   :cascade-edges 0,
+   :cascade-nodes 4,
+   :laws {:O1 true, :O2 true, :O3 true},
+   :members 4,
+   :record
+   [{:by :halt-at-the-marginal-gain-floor,
+     :edit :halt,
+     :pattern nil,
+     :reason [:marginal-gain-floor 1.0],
+     :step 0}],
+   :steps 1,
+   :stop [:halted [:marginal-gain-floor 1.0]]}},
+ :scores-at-step-0 [[:ants/baseline-cyber-ant 0.3 1 0]],
+ :temperaments
+ {:holds? true,
+  :same-shared-nodes? true,
+  :same-shared-precedence? true,
+  :same-shared-rules? true,
+  :shared-nodes [:widen-the-cascade-only-on-evidence],
+  :stops [[:halt-on-budget] [:halt-at-the-marginal-gain-floor]],
+  :stops-differ? true},
+ :tension
+ {:clause-hits
+  {:hunger-does-not-sharpen-precision 5,
+   :only-one-pattern-can-be-attached 0,
+   :the-ant-thrashes-instead-of-depositing 3,
+   :ticks-burn-where-the-traces-are-low 3},
+  :id :the-colony-does-not-eat,
+  :match-distribution {1 1, 2 2, 3 2},
+  :source
+  "futon2/holes/problems/P-validated-R5.md:685-694; futon2/holes/cascade-ants.edn:5,21-38,107-110,120-126,144-148"}}

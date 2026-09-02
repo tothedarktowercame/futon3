@@ -339,3 +339,70 @@ the constructor does not become good by being written.
 of its own (`decisions.edn :math-formalization-untracked-flexiargs`), so a report
 from this file is a timestamp and not a standing property, and the digest is what
 makes that visible.
+
+---
+
+## Ants — the constructor's control domain (`:LA4`)
+
+`construct_ants_cascade.clj` — worklist `:LA4`, LA1c-restatement.md §6. The same
+constructor, on the second of the four domains the abstract interface names, and
+Ants is there because it is the **control**: its authority gate refused every
+real pattern on held-out yield in 2026-07-16 with sound controls
+(`futon2/holes/cascade-ants.edn:21-23`), so a constructor that only ever confirms
+is caught here. LA1c §6 states the expected result in advance — a refusal — and
+this pair of files does not soften it.
+
+    clojure -Sdeps '{:paths ["checks" "."] :deps {babashka/fs {:mvn/version "0.5.25"}}}' \
+      -M -m construct-ants-cascade      # writes checks/ants-cascade.edn
+    cd ../futon2 && clojure -M -m cascade-authority-gate 20 300
+    cd ../futon3 && clojure ... -M -m construct-ants-cascade   # second pass: folds in the O4 row
+
+Nothing tension-independent is copied: `acknowledgements`, `match`,
+`antecedent-holds?`, `score`, `ranked`, the three policy-grain rules, the two
+temperaments, `initial-state`, `run` and `cascade-of` all come from
+`construct_cascade.clj`, whose `tension` is `^:dynamic` for exactly this. A
+second copy would be the facade LA1c §11 names, one level below the firing loop
+`:LA3` moved into `find_organise.clj` for the same reason. `construct-cascade.edn`
+regenerates byte-identically after the change (sha256 `fa644053…`).
+
+**The split between the two files is the point.** `construct_ants_cascade.clj`
+writes the cascade as **data** — members, precedence, provenance, stop — and
+writes nothing about `@aif-delta`; `futon2/scripts/cascade_authority_gate.clj`
+reads that artefact and folds the deltas from the same flexiarg files. So the
+cascade can be reviewed *before* the run (LA1c §7) and the two sides never share
+a fold.
+
+### What the ants domain gives the constructor, and what it does not
+
+`library/ants` holds five patterns and **zero** authored `@why`/`@how`
+directives, so the degree term is identically zero before anything is scored.
+That is the second tension `decisions.edn :constructor-degree-term-measured
+:what-would-change-this` asked for, and it comes out as that entry predicted:
+*not* distinguishable from uniform here. The verdict recorded for `:LA3` is
+tension-specific, and this file records it as such rather than leaving the
+stronger reading standing.
+
+`find` selects four of the five; the F4 falsifier named before the run —
+`ants/baseline-cyber-ant`, whose `@aif-delta` is literally empty and which is also
+the gate's sham arm — is not selected. The two temperaments then differ as they
+should: the budget arm saturates at five members (it admits the sham), the floor
+arm halts at four. **Through channel 1 the two are indistinguishable**, because
+the member that separates them contributes `{}` — recorded on the gate as
+`:budget-cascade-folds-to-the-same-config?`.
+
+### The gate's result, in one line each
+
+- **Refusal on yield.** Mean paired Δ +0.315 on a base of 18.445, from *one* of
+  twenty seeds; the other nineteen tied exactly. `sign-p` 1.0. Controls sound:
+  the sham cascade tied `off` exactly on every seed at every λ including 0.
+- **Not a refusal on behaviour.** 16 of 20 seeds have a different action trace:
+  pheromone −12.1, forage +11.45, hold +1.0, return +0.45 per run. Channel 1 is a
+  live actuator on what the ant *does* and is not one on what the colony *eats*.
+- **Not a tautology.** The gate refuses to run an arm until the folded config is
+  shown to change the expected free energy (`efe-is-connected`) — the guard
+  `README-xeno-loop.md §0` exists to ask for.
+- **O4 holds, on its weaker disjunct.** Exchanging the precedence of the two
+  members that write `[:efe :lambda :info]` changes the acting order and changes
+  no observable: identical yields and identical traces at all four λ. The
+  contention `cascade-ants.edn:110` calls incoherent is real as semantics and
+  null on this oracle.

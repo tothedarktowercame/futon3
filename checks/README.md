@@ -406,3 +406,81 @@ the member that separates them contributes `{}` — recorded on the gate as
   no observable: identical yields and identical traces at all four λ. The
   contention `cascade-ants.edn:110` calls incoherent is real as semantics and
   null on this oracle.
+
+---
+
+## Zaif — the domain that exercises `find`, and the one the reviewer gated (`:LA5`)
+
+`construct_zaif_cascade.clj` — worklist `:LA5`, LA1c-restatement.md §7. The same
+constructor on the third domain, and Zaif is there because **its repository is
+the whole library**: 1,239 patterns across 98 sections, so this is the only one
+of the four where `find` searches at the library's real size against a tension
+that is not about the library.
+
+The Tension is one real seat task, not a description of one.
+`checks/zaif-task-a97J05.md` is a verbatim copy of a persisted `turn-start`
+prompt (evidence `e-cb139dba-b1db-4e85-9353-c9b8b1c8c62d`, agent `zai-4`,
+2026-08-06 — a PASS-1 Lean proving packet), and each of the five clauses cites a
+line span of it.
+
+    clojure -Sdeps '{:paths ["checks" "."] :deps {babashka/fs {:mvn/version "0.5.25"}}}' \
+      -M -m construct-zaif-cascade                      # writes checks/zaif-cascade.edn
+    cd ../futon3c
+    clojure -Sdeps '{:aliases {:la5 {:extra-paths ["scripts" "../futon3/checks"]}}}' \
+      -M:la5 -m zaif-cascade-gate coverage              # the rule table, no outcomes
+    clojure -Sdeps '{...same...}' -M:la5 -m zaif-cascade-gate                       # the run
+    clojure -Sdeps '{...same...}' -M:la5 -m zaif-cascade-gate holes/zaif-cohort-holdout.edn
+
+### The cue licence, and why it is here
+
+A cue must **occur in its own clause's cited span** of the task file, checked by
+`cue-licence` on every `-main`; an unlicensed cue is a hard failure. The rule was
+added after a pre-run review found that `"scope"`, `"cap"` and `"reuse"` occur
+nowhere in the prompt, and that `"scope"` had put a pattern about narrowing an
+academic paper into a seed about a frozen Lean theorem. Applying it struck **18
+of 27** cues; the seed fell from 38 to 11 and the candidate pool from 457 to 343.
+It is a removal rule and never an addition rule — a cue added once the seed is
+known is tuning whatever it is called.
+
+### Two pre-run reviews, and what each changed
+
+This is the row's point, not an aside: LA1c §7 claims a carried cascade can be
+reviewed *before* it runs, where per-decision arm arithmetic offers nothing to
+read until the decisions have happened. Both reviews (codex-17, 2026-09-02)
+returned **REVISE** and both found defects the constructor's own controls missed.
+
+- Review 1, on `checks/zaif-cascade.edn`: the unlicensed cues above; a harder
+  falsifier which was in fact selected; the budget arm halting before admitting
+  anything; and, decisively, that the mapping from a pattern's THEN to a round
+  decision did not exist yet, so the behaviour could not be gated at all.
+- Review 2, on the rule table: `missing-dependency-protocol` encoded as a
+  standing predicate true on 68 of 102 rounds rather than the THEN's sequence;
+  comparisons not restricted to rounds carrying both a transcript and a v0
+  decision; more than half the oracle labels author-assigned on `run_shell`-only
+  rounds; and the treatment described as "the cascade" when a deferred round
+  carries v0's own answer.
+
+### The result
+
+An **in-sample retrospective**, never predictive validation: the cues were
+authored from the same task whose transcript is the oracle.
+
+- v0 chose `:retrieve` on 29 of 29 primary rounds — and on 2,699 of 2,713
+  recorded decisions store-wide, with `:act` and `:yield` never chosen at all.
+- The 17-member cascade has **one** member that can act at a round decision. The
+  override differs from v0 on 1 of 49 paired rounds and **0 of 29 primary**. On a
+  held-out task (`zai-3`, a different problem, a turn that *did* report) it
+  differs on **0 of 37**.
+- Controls: v0 re-derives from its own recorded `:inputs-snapshot` through the
+  real `zaif-controller/decide` on 50/50 and 37/37 rounds, arms and all four G
+  terms exact; the sham ties v0 exactly on both cohorts.
+- **Where the null lives.** Not in the ranking and not in the actuator.
+  `agent/budget-bounds-exploration` and `agent/pause-is-not-failure` — whose
+  THENs answer this tension directly — are not selected, because
+  `antecedent-holds?` wants the IF *and* the HOWEVER each to acknowledge a
+  clause, and their IFs are written in general terms that name no clause of any
+  particular tension. Had they been selected the override would have differed on
+  46 of 49 rounds and would have said *stop* from round 25 of a turn that ran to
+  102 and never reported.
+- **O4 is not exercised**: one member carries a rule, so there is no pair to
+  exchange.

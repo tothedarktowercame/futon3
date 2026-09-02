@@ -195,4 +195,25 @@
    :interim :keep-and-add-a-sibling
    :why-interim "The cheaper arm, and the one that keeps the measured artefact describing the file it was measured from. The sibling states in its own + context: that it is the cascade-level sibling and points at the compiled-to-a-move line, so the relation is on the record rather than in a reviewer's head."
    :changes-it "If a runner ever executes policy-grain rules, the play-grain original becomes the redundant one and the arms swap costs."
-   :veto "Joe's."}]}
+   :veto "Joe's."}
+
+  {:id :constructor-relevance-substrate
+   :status :interim-adopted
+   :at "2026-09-02"
+   :raised-by :LA1
+   :question "Slice (a) open question 4, left open by slice (b): what replaces embedding relevance in the constructor loop? cascade_construct.py supplies the loop -- greedy by marginal coverage with a saturation stop (:222-232, test at :230), an inclusion prior (:127-155), a downstream budget (cascade_serve.py:21-27) -- and no part of a substrate the laws admit."
+   :grounds "Its score is m'(p) = rel(p|psi) * (alpha + connectivity(p, chosen)) (:206,236-241). BOTH factors are refused: rel is MiniLM cosine (:48-58,183-204) and connectivity comes from a phylogeny whose descent edges are substring containment (futon6/scripts/pattern_phylogeny.py:22, `if y in t`). Law O2 (P-validated-R5.md:500) refuses edges inferred from similarity, co-occurrence or prose; law F3 refuses a receipt that cites the finder's score alone. The functional FORM is not what the laws object to."
+   :arms
+   [{:arm :authored-edge-degree
+     :form "keep the form, swap both substrates: rel := the F2/F3 receipt (which clause of the tension the pattern's IF and HOWEVER acknowledge, cited from the pattern TEXT); connectivity := the count of authored @why/@how edges between the candidate and the chosen set, i.e. O3's ReachOutside (Holes.lean:284-287) restricted to chosen."
+     :cost "The degree term is ZERO for most candidates, because the library is mostly unorganised: 104 patterns in the authored @why graph out of 1253 files (8.3%) after LA1 slice (b), up from 85/1239 (6.9%) on 2026-08-30. Where degree is zero the prior is flat and the constructor chooses on the receipt alone. So the constructor's quality is bounded by the rationale layer's coverage -- it does not become good by being written, it becomes good as L5/L9's wave work lands."}
+    {:arm :embedding-relevance-authored-edges
+     :form "keep MiniLM cosine for relevance; take connectivity from authored edges only."
+     :cost "Refused by F3 before O2 is reached: F3 says a receipt cites the pattern's text or authored edges, NEVER the finder's score alone, and an embedding score is exactly that. Adopting it would require F3 restated, not merely O2 reread. Recorded because the distinction is easy to lose: O2 is about EDGES, F3 is about WARRANTS, and embedding relevance is refused by the second."}
+    {:arm :co-application-mass
+     :form "cascade_construct.py's base_rate_prior (:127-155) unchanged -- a per-pattern Bernoulli inclusion prior from co-application mass across missions (pattern_phylogeny.py:45)."
+     :cost "Co-occurrence, refused by O2 directly and without argument. Kept in the record because its ARGUMENT is worth preserving independently: :129-137 sets out why a categorical over patterns collapses the cascade to size 1, which any replacement prior must also avoid."}]
+   :interim :authored-edge-degree
+   :why-interim "It is the only arm the laws as recorded admit, and it changes exactly what the laws object to while keeping the loop that has actually been run. Its cost is a dependency rather than a defect, and naming it makes the dependency visible: the constructor is bounded by how much of the library is organised."
+   :changes-it "A measurement that the degree term is flat enough on a real tension to be indistinguishable from uniform. That would make rationale-layer coverage the blocking constraint rather than the constructor, and would redirect effort from LA3 to L5/L9. The measurement belongs to LA3."
+   :veto "Joe's. Nothing is built on it; the constructor is future row LA3."}]}

@@ -47,8 +47,17 @@
             [find-organise :as fo]))
 
 (def packet-path "checks/open-items.edn")
-(def tensions-path "checks/open-tensions.edn")
-(def report-path "checks/open-cascade.edn")
+
+(def ^:dynamic *tensions-path*
+  "The AUTHORED half.  Rebindable by `--tensions` so a second ARM can be authored
+   in its own file and run through the same harness, leaving the first artefact
+   byte-identical.  Cue granularity is a choice the design does not settle, so it
+   gets branches built and run (Joe, 2026-09-01, worklist_check.bb:44-45) -- and
+   an arm that shares the harness differs from its sibling in the authored cues
+   and in nothing else, which is what makes the two comparable."
+  "checks/open-tensions.edn")
+
+(def ^:dynamic *report-path* "checks/open-cascade.edn")
 
 (defn sha256 [s]
   (let [d (java.security.MessageDigest/getInstance "SHA-256")]
@@ -59,7 +68,7 @@
 (defn read-tensions
   "The authored half.  Read, never written here."
   []
-  (let [t (edn/read-string (slurp tensions-path))]
+  (let [t (edn/read-string (slurp *tensions-path*))]
     (when-not (= :la8/open-tensions-v1 (:schema t))
       (throw (ex-info "open-tensions.edn: wrong schema" {:schema (:schema t)})))
     t))
@@ -249,7 +258,7 @@
                                 (for [kind [:why :why-posthoc :how :see-also]]
                                   [kind (count (filter #(= kind (:kind %)) (:edges all-edge-repo)))]))
                           :packet-path packet-path
-                          :tensions-path tensions-path
+                          :tensions-path *tensions-path*
                           :statement-sha256 (into (sorted-map) (map (juxt :item :statement-sha256)) (:items packet)))
        :pre-registered (into (sorted-map)
                              (for [[id s] authored]
@@ -292,20 +301,25 @@
       (throw (ex-info "construct-open-cascade failed" {:failures (vec failures)})))
     r))
 
-(defn -main [& _]
+(defn- arg-after [args flag default]
+  (or (second (drop-while #(not= flag %) args)) default))
+
+(defn -main [& args]
   (try
-    (let [r (require-pass! (report))]
-      (spit report-path (with-out-str (pprint/pprint r)))
-      (println "cue licence:" (get-in r [:controls :cue-licence]) "->" report-path)
-      (doseq [[id x] (:items r)]
-        (println id "seed" (get-in x [:find :seed-size])
-                 "candidates" (get-in x [:find :candidates])
-                 "F4" (get-in x [:find :zero-mass-selected?])
-                 "stops" (into {} (for [[t v] (:runs x)]
-                                    [t [(:stop v) :members (:member-count v)
-                                        :admitted (:admitted-count v)]]))))
-      (println "construct-open-cascade: PASS")
-      (shutdown-agents))
+    (binding [*tensions-path* (arg-after args "--tensions" *tensions-path*)
+              *report-path* (arg-after args "--out" *report-path*)]
+      (let [r (require-pass! (report))]
+        (spit *report-path* (with-out-str (pprint/pprint r)))
+        (println "cue licence:" (get-in r [:controls :cue-licence]) "->" *report-path*)
+        (doseq [[id x] (:items r)]
+          (println id "seed" (get-in x [:find :seed-size])
+                   "candidates" (get-in x [:find :candidates])
+                   "F4" (get-in x [:find :zero-mass-selected?])
+                   "stops" (into {} (for [[t v] (:runs x)]
+                                      [t [(:stop v) :members (:member-count v)
+                                          :admitted (:admitted-count v)]]))))
+        (println "construct-open-cascade: PASS")
+        (shutdown-agents)))
     (catch Throwable e
       (binding [*out* *err*]
         (println "construct-open-cascade: FAIL" (.getMessage e))

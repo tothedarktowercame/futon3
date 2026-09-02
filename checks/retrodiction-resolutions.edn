@@ -1,0 +1,144 @@
+{:items
+ [{:acceptance-written-before-the-work
+   "gen_live_topology.bb applies every :decisions entry: :retires removes the edge from the drawn set (or draws it in a distinct 'retired' class with the entry id), :adds draws the edge with its :label/:condition; a negative control plants a :decisions entry whose edge is absent from the drawn set and must fail naming it; negative_controls.sh passes; sha here.",
+   :item :wm/D0,
+   :resolution
+   {:evidence
+    "p4ng c90a83c. gen_live_topology.bb applies every :decisions entry: :retires draws the edge in a distinct muted-red dash-dot class whose title names the deciding entry (drawn, not removed -- this figure is Figure 4 lifted to data, so silently dropping a drawn edge would misreport the paper; same reasoning as D1); :adds draws a new purple-dashed layer carrying the entry's :label and :condition. Vocabulary proved first: a :retires naming an undrawn edge exits 1 naming entry and pair; an :adds at an unplaced node exits 1 naming the node. Legend gains both classes; count line reads 'drawn 22 (5 retired by decision) - decision-added 5'. Joe's :r6-r14-order, inert since 2026-08-30, now applies. LT_EDGES added so a control can use a temp copy (negative_controls.sh never mutates shared registries). Controls 4g (planted [:R1 :R11] retirement must fail naming it) and 4h (real registry renders both classes) added; 4g mutation-tested -- neutering the guard makes it fail. Suite 10 negative, 4 positive, PASS. pointer_check 88 pointers in 3 files, 0 unresolved. Not regenerated: rows touching control-map-edges.edn are still :done-unreviewed (gate, TN 9a).",
+    :review
+    "Read c90a83c and the attribution fix in 9186f62: :retires drawn as a distinct class (kept, not removed -- right, since the figure is Figure 4 lifted to data), :adds drawn with label/condition, vocabulary guards fail naming the entry (retire of an undrawn edge; add at an unplaced node), attribution lists EVERY retiring decision in deterministic order (the (into {}) last-writer-wins defect the agent found in its own first cut would have dropped Joe's :r6-r14-order from R6->R13 silently). LT_EDGES isolates controls to a temp copy. Re-ran the suite (PASS 10/5) and rendered the figure: 7 retired, 5 added, legend and count line present, R6->R13 title names both decisions. Two findings, neither blocking: (1) Joe's ruling-grounded :adds (R11->R14, R14->R13, R13->R16) render in the same purple as code-backed adds -- two states, one rendering -- opened D0b; (2) R13->R14 retired and R14->R13 added share one vertical segment and are hard to tell apart -- folded into D0b.",
+    :reviewed-by "claude-1",
+    :taken-by "claude-cli (any-lane; owner row unchanged)"},
+   :row-id :D0,
+   :statement-resolution-overlap
+   {:distinctive-tokens {:in-statement 5, :shared 2, :fraction 0.4},
+    :verbatim-6-grams {:in-statement 26, :shared 0, :fraction 0.0}},
+   :status :done}
+  {:acceptance-written-before-the-work
+   "The false :values claim withdrawn in place with the withdrawn parameter kept visible beside the corrected one; :run-result carrying the three gammas, the field, the solver health, the reproduction and file:line pointers; :status still :open-branches and :interim :decision unchanged; :why-not-a-J-row audited, not rewritten. Second reader re-runs run7_beta_arms.clj against the committed trace, re-measures ln E on the S2 field rather than reading my number, and signs with :review-covers naming the sha they read. NOT CLAIMED BY THIS ROW: which arm is right. Also not claimed: that nothing downstream of the decision map consumes tau -- see I1 :slice-b2b (3b), where that absence is explicitly NOT established.",
+   :item :wm/C23,
+   :resolution
+   {:evidence
+    "futon2 352c145. runs/2026-09-01-s2/ARMS.txt:146-286 (the three arms; gamma-last at :169, :216, :263) and :2 (the src-vs-local solver control, delta 0.0); run7_beta_arms.clj:42-53 (pi and pi_0 built with ln E in either, both or neither) and :95 (ln E is :habit-prior-bias); policy.clj:283-285 and :306-307 (the chosen entry is the first non-no-op of the G-ordered list; :habit-prior-applied? false, :habit-authority :counterfactual-only); war_machine.clj:4829-4837 (the boundary the tick asks for). Gates before the commit: p4ng negative_controls PASS (16 negative, 10 positive), pointer_check 226 pointers 0 unresolved. No src/ change, so no clj-kondo, check-parens or test gate applies and none is claimed.",
+    :review
+    "Read 352c145 and re-ran run7_beta_arms.clj against the committed S2 trace: diff against all 308 lines of ARMS.txt was empty, including solver-control delta 0.0; gamma at tick 20 reproduced as 0.9667979197554702 (:none), 0.9040600731260442 (:pi-only), and 0.9712374387398894 (:both), with 20/20 converged and bracketed in every arm. Independently joined each record's F_pi envelope to ranked candidates and measured 20 usable fields: 143 candidates on tick 1 and 145 on ticks 2-20, exactly 3 distinct ln E values and spread 3.0445224377234226 on every tick, zero zero-valued ln E entries, :habit-prior-source :learned-frequency on every aligned candidate, while decision :habit-prior-applied? was false on 20/20 ticks. The false coincidence claim is visibly retained under :withdrawn-parameter/:withdrawal; :status remains :open-branches, the interim decision remains :habit-prior-in-both, and :grounds-audit records that the runnable limb was falsified without claiming adjudication. Gates: worklist_check 75 items OK; pointer_check 243 pointers, 0 unresolved; negative_controls PASS (16 negative, 10 positive); all exit 0.",
+    :reviewed-by "codex",
+    :taken-by nil},
+   :row-id :C23,
+   :statement-resolution-overlap
+   {:distinctive-tokens {:in-statement 28, :shared 14, :fraction 0.5},
+    :verbatim-6-grams
+    {:in-statement 276, :shared 1, :fraction 0.0036}},
+   :status :done}
+  {:acceptance-written-before-the-work
+   "Decided by Joe's 2026-09-02 ruling (DECISIONS-PENDING.md, futon2 2f34c26): typed absence, loud malformed, no fabricated values; every refusal/abstention/:unknown/:unscored emission persisted as a typed present-only record (the self-repair condition). Gates: clj-kondo, check-parens, tests incl. planted absent AND malformed cases; the C130 lint finding for the site goes green; p4ng defect-repair-tally row flips with evidence.",
+   :item :wm/AC6,
+   :resolution
+   {:evidence
+    "futon2 2be0b9e (code, tests, disposition, record holes/labs/wm-contract/C482-unscored-move-refuse-floor.md); p4ng e62df23 (tally row :rollout-unscored :open -> :repaired, 55/5/1 -> 56/4/1). THE SITE: move-cost read (or (:step-score-delta m) (- (double (or (:score m) 0.0)))), so FOUR things produced the identical 0.0 -- a truncated state, an already-satisfied capability, a move that genuinely scored zero, and a move nobody costed. AC5 stopped the RANKING leg reading (or (:score m) 0.0); the COST leg read the same field through its own default one step later. TYPED RECORD, producer move-cost-record rollout.clj:297-372: :present carries :value and a :basis naming WHICH of the four zeros it is (:truncated-state, :satisfied-capability, :step-score-delta, :negated-score) -- a SUPPLIED 0.0 in either field lands here; :uncosted means NEITHER field was supplied -- no :value key, and :absent names both fields with :key-present? each; :refused means a field is present but not finite, or the move is not a map, with :offending naming field and value. The map? check runs BEFORE the structural short-circuits so a malformed move is loud even in a truncated state, and a malformed delta is refused rather than falling through to a good :score (absence omits, malformation refuses). move-cost rollout.clj:451-466 is now the numeric projection and returns nil, never a fabricated zero. EXCLUDE-AND-CONTINUE (C130 6 option A) at rollout.clj:409-444: an uncostable candidate does not enter the candidate set, its record is marked :excluded-from-rollout?, and the surviving priors are rescaled (rollout.clj:382-392) so the node's branching weights still sum to 1 -- only when something was excluded, so an unexcluded population is left bit-for-bit alone. THE REFUSE FLOOR rollout.clj:608-643, the two conditions the ruling names. :candidate-set-emptied-by-exclusion -- a node's reachable set was NOT empty and validation (AC5's or AC6's) excluded all of it; that is exactly the boundary AC5 asserted and left open, where a node exhausted by exclusion returns the same shape a genuinely terminal node returns. :exclusion-under-authorizing-rollout -- the caller declared :authority :authorize and anything was excluded, since a reduced candidate set changes which action is chosen. MEASURED BOTH DIRECTIONS at each floor: two uncostable reachable moves refuse while a state with NOTHING reachable does not (it scores 0.0 as before, its candidate set was empty to begin with rather than emptied); and the SAME population stands under :diagnose and refuses under :authorize, while an :authorize rollout with nothing excluded stands. A refused rollout carries NO :policy-rollout-score and no :policy (score-policies rollout.clj:645-677), so cascade_lane/policy-rollout reads nil and the act gate abstains -- the shape it already uses for 'dG genuinely unavailable, not zero' (close_loop.clj:10 'Missing either leg abstains'). select-policy rollout.clj:709-733 returns {:decision :refuse} instead of sorting over a missing number; project-policy rollout.clj:487-539 refuses a caller-supplied policy containing an uncostable step, because a policy is an ORDERED PLAN and a step cannot be dropped with the rest kept. AUTHORITY IS DECLARED, NOT INFERRED (rollout-authority rollout.clj:591-606): :diagnose is the default and the refusal record carries :authority-declared? false when the caller did not say, so a default is never read as an audited claim; an unknown authority throws. AUDITED -- NO AUTHORIZING CALLER EXISTS TODAY: cascade_lane.clj:362-390 reads only the score, never the :policy, and now declares :authority :diagnose; arguing_worlds.clj:89-109 does select a policy but on a copied state with no live writes (arguing_worlds.clj:108), and its own lens-move arguing_worlds.clj:62-68 coerces both :score and :step-score-delta through (or % 0.0), so no uncostable move reaches the rollout there. Like AC7's fulab seam the floor is typed now so a later connection cannot silently run a choosing rollout on a reduced set. That lens-move coercion is NOT in the C12 census and is named, not repaired. SELF-REPAIR CONDITION: the records ride out present-only as :move-cost-events and :rollout/refusal on every rollout result; cascade_lane.clj:362-390 folds them into the SAME :policy-rollout-events channel the AC5 records use, each discriminated by its own :producer-contract (:rollout-move-score/v1, :rollout-move-cost/v1, :rollout-refusal/v1), which is why close_loop.clj:118-133, enact.clj:207-217 / :305-319 and trace.clj:591-592 needed no change. MEASURED ON BOTH REAL MOVE-SETS against the pre-AC5 namespace (dc3c0b2) in one process: diffsub-moves-stub.edn 19/19 and diffsub-moves.edn 55/55 cost :present with basis :negated-score -- :step-score-delta is absent on every real move, confirming AC5's claim -- score-policies returns equal collections, best-rollout equal maps (G = -7.317000000000001 and -0.0539219775 under both), and NO key is added. GATES: clj-kondo 0/0 on the three changed code files; check-parens OK on all three; clojure -M:test -d test/futon2 1017 tests / 6312 assertions / 0 failures / 0 errors (was 1007/6184 at AC5, +10 deftests +128 assertions). C130 lint: checks/absence-coercion-dispositions.edn row for the site flipped :blocked -> :fix-now with the control (:summary :fix-now 14 -> 15, :blocked 2 -> 1); bb checks/preemptive_absence_coercion_lint.clj findings 2 -> 1, this site's finding gone, the one remaining being AC7's. PRE-EXISTING RED, NOT MINE: pointer_check 595 pointers / 2 unresolved, both the same adapters fulab pointer (line 81) carried in AC7's row (src/futon2/aif/adapters/ is not on the checker's root allowlist); negative_controls.sh fails on that and nothing this row added -- identical before and after.",
+    :review
+    "Read futon2 2be0b9e and p4ng e62df23 in full; both were authored by Joseph Corneli. Verified move-cost-record separates supplied finite costs (including 0.0, with four distinct bases) from absent/nil :uncosted values and malformed/non-finite :refused values; uncostable candidates are excluded with survivor priors renormalized, while the rollout refuses if exclusion empties a non-empty reachable set or occurs under declared :authorize authority. Verified refusals carry no policy score/policy, select-policy returns control, and AC6 events join the persisted :policy-rollout-events channel. Re-ran futon2.aif.rollout-test: 25 tests, 236 assertions, 0 failures/errors, including planted absent, malformed, measured-zero, exclude-and-continue, both refuse-floor directions, direct-policy refusal, and unchanged-population cases. Scoped clj-kondo: 0 errors/0 warnings; check-parens: OK; absence lint: 0 findings; pointer_check: 646 pointers, 0 unresolved; negative_controls: PASS, 16 negative and 10 positive. Confirmed the p4ng tally changes :rollout-unscored :open -> :repaired. The absence-disposition and tally files are evidence ledgers rather than wm-contract registries, so :covers-key :none.",
+    :reviewed-by "codex",
+    :taken-by nil},
+   :row-id :AC6,
+   :statement-resolution-overlap
+   {:distinctive-tokens {:in-statement 3, :shared 1, :fraction 0.3333},
+    :verbatim-6-grams {:in-statement 30, :shared 0, :fraction 0.0}},
+   :status :done}
+  {:acceptance-written-before-the-work nil,
+   :item :ticket/agency-desktop-save,
+   :resolution
+   {:index-status-line "",
+    :status-line
+    "**Status (triaged 2026-09-01): DONE-IN-FACT.** roster_store.clj shipped whole (restore-payload, continuous persist watch, restore-on-boot! with detached marking and collision refusal), wired into bootstrap restore-before-watch, flag default TRUE since 2026-06-14, 12 tests. Close.",
+    :triaged-by
+    "zai-5 invoke-1788294737197-7158-827a121f, reviewed claude-1 2026-09-01"},
+   :row-id "T-agency-desktop-save.md",
+   :statement-resolution-overlap
+   {:distinctive-tokens {:in-statement 2, :shared 0, :fraction 0.0},
+    :verbatim-6-grams {:in-statement 64, :shared 0, :fraction 0.0}},
+   :status :done-in-fact}
+  {:acceptance-written-before-the-work nil,
+   :item :ticket/kangaroo-v1-pouch,
+   :resolution
+   {:index-status-line "",
+    :status-line
+    "**Status (triaged 2026-09-01): DONE-IN-FACT.** Warm reuse, locking, eviction, joey cap, snapshots, cold fallback all live (agent_pouch.clj; enabled in dev-laptop-env, source default off). One deliberate later change: an operator-interrupted warm turn does NOT fall back cold (dev.clj:4039+). Close.",
+    :triaged-by
+    "codex-6 invoke-1788294334077-7140-8e9f37aa, reviewed claude-1 2026-09-01"},
+   :row-id "T-kangaroo-v1-pouch.md",
+   :statement-resolution-overlap
+   {:distinctive-tokens {:in-statement 1, :shared 0, :fraction 0.0},
+    :verbatim-6-grams {:in-statement 73, :shared 0, :fraction 0.0}},
+   :status :done-in-fact}],
+ :produced-by "checks/retrodiction_items.clj --resolutions",
+ :schema :la7/retrodiction-resolutions-v1,
+ :selection
+ {:re-measured-not-carried-forward
+  "The row's own denominators are as of when it was written. Re-measured on this run: wm-contract 93 completed of 95 rows, 37 qualifying; tickets 9 completed of 34 rows, 4 qualifying.",
+  :rule
+  {:classes-excluded [:J],
+   :min-resolution-chars 500,
+   :min-statement-chars 200,
+   :spacing
+   "indices (quot (* i n) k) for i in 0..k-1, over the qualifying list in ledger order",
+   :ticket-completed-statuses #{:done-in-fact :superseded},
+   :tickets-take 2,
+   :wm-completed-statuses #{:done :done-unreviewed},
+   :wm-take 3},
+  :tickets
+  {:ledger "../futon3c/holes/tickets/tickets-index.edn",
+   :rows-in-ledger 34,
+   :completed 9,
+   :qualifying 4,
+   :qualifying-ids
+   ["T-agency-desktop-save.md"
+    "T-codex-auto-bellback.md"
+    "T-kangaroo-v1-pouch.md"
+    "T-mesh-qa-misrouting.md"],
+   :indices [0 2]},
+  :wm
+  {:ledger "../futon2/holes/labs/wm-contract/worklist.edn",
+   :rows-in-ledger 95,
+   :completed 93,
+   :qualifying 37,
+   :qualifying-ids
+   ["D0"
+    "D0b"
+    "D8"
+    "D9"
+    "D10"
+    "H1"
+    "H2"
+    "H3"
+    "H4"
+    "I1"
+    "H1b"
+    "C9"
+    "C23"
+    "C24"
+    "C25"
+    "RUN7"
+    "RUN8"
+    "RUN9"
+    "I5"
+    "AC1"
+    "AC2"
+    "AC3"
+    "AC4"
+    "AC5"
+    "AC6"
+    "AC7"
+    "AC8"
+    "D61a"
+    "D61b"
+    "RUN11"
+    "RUN12"
+    "U1"
+    "U2"
+    "U3"
+    "U4"
+    "U10"
+    "U6"],
+   :indices [0 12 24]}},
+ :written-after "the constructor's commit; see the ns docstring"}

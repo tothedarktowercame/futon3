@@ -250,6 +250,36 @@ so do not restate an attachment as an `@how`.
   not a parent. It is unaffected by this revision and should not be read as
   structure.
 
+**A minted pattern is marked `@draft`, and quarantined like a post-hoc edge.**
+(Joe, 2026-09-02, extending the C130 ruling; futon2 worklist row AC8.) The War
+Machine's typed refusal records are swept by
+`futon2/holes/labs/wm-contract/harvest_refusals.bb`, and a refusal class that
+recurs past the script's threshold is written out as a pattern in `problems/`.
+Such a pattern records only the *tension* — its `IF` and `HOWEVER` come from the
+refusal records, each cited as evidence, and its `THEN` is empty and says so,
+because nobody has resolved it. It is not a claim that a resolution is known,
+and its author is a script.
+
+`@draft <minting-mechanism>` marks it. The mechanism is named in the value so a
+reader can find the writer without grepping. What
+`checks/library_graph_lint.clj` does with it, in the same spirit as
+`@why-posthoc` above — a form that is admitted to the library so it can be read
+and attested, and admitted to none of the laws that are about an author's
+claims:
+
+| law | a draft |
+|---|---|
+| `:fraction-organised` | is in **neither** the numerator nor the denominator, so a harvest cannot move a section's measured organisation in either direction. Counted apart as `:patterns-draft` and `:patterns-authored`. |
+| acyclicity of `@why` | its outgoing edges are not admitted; a minted pattern claims no authority |
+| an authored `@why` **on** a draft | is a **failure** (`:draft-claims-authority`), not a silent exclusion — a script has no reasoning of its own to assert |
+| `:argument-bodies-unchanged` | exempt: the minter rewrites the body on every sweep as the evidence list grows. The digests are reported (`:draft-body-digests`) so a reviewer still sees them move |
+| dangling targets, new-edge-attested, refused-edge-removed | apply **unchanged**, exactly as for `@why-posthoc` |
+
+Promotion is an editorial act and is how a draft earns standing: a person
+deletes `@draft` and writes the `@why`. At that moment the file falls under the
+body-digest law and the new edge needs its attestation, like any other — so
+nothing a script wrote can enter the authored graph without a reader.
+
 ## 5b. Subject categories — primary and cross-list
 
 *(Standard set 2026-08-17, Joe's direction: follow arXiv.)*

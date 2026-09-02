@@ -437,6 +437,92 @@
     (is (= :store (lint/warrant-arm {:posthoc-warrant "store"})))
     (is (= :pattern-text (lint/warrant-arm {:posthoc-warrant "pattern-text"})))))
 
+(defn draft-flexiarg!
+  "A minted draft as futon2 holes/labs/wm-contract/harvest_refusals.bb writes
+  one: @draft naming the mechanism, no @why, and a body that will be rewritten
+  on the next sweep."
+  [root id extra-directives]
+  (let [file (fs/path root (str id ".flexiarg"))]
+    (fs/create-dirs (fs/parent file))
+    (spit (str file)
+          (str "@flexiarg " id "\n"
+               "@draft wm-contract/harvest_refusals.bb\n"
+               extra-directives "\n"
+               "! conclusion: a recurring refusal is unresolved design work.\n"))))
+
+(deftest a-minted-draft-is-counted-apart-and-claims-no-authority
+  (testing "a draft is counted, and is in neither half of the organised fraction"
+    (let [report (run-fixture (fn [root]
+                                (write-pattern! root "s/authored" "" "authored")
+                                (draft-flexiarg! root "s/minted" "")
+                                {:base (baseline! root)}))
+          section (get-in report [:summary :section])]
+      (is (zero? (:test/exit report)) (pr-str (:checks report)))
+      (is (= 2 (:patterns section)))
+      (is (= 1 (:patterns-draft section)))
+      (is (= 1 (:patterns-authored section)))
+      (is (= ["s/minted"] (:draft-ids section)))
+      ;; Neither numerator nor denominator: one authored pattern with no @why
+      ;; is 0/1, and the draft does not make it 0/2.
+      (is (zero? (:fraction-organised section)))
+      (is (= 1 (get-in report [:summary :patterns-draft])))))
+
+  (testing "and a draft cannot dilute an organised section either"
+    (let [section (get-in (run-fixture (fn [root]
+                                         (write-pattern! root "s/b" "" "target")
+                                         (write-pattern! root "s/a" "@why s/b" "a")
+                                         (draft-flexiarg! root "s/minted" "")
+                                         {:base (baseline! root)}))
+                          [:summary :section])]
+      ;; 1 of 2 AUTHORED patterns carries a @why. Counting the draft in the
+      ;; denominator would report 1/3 and make a harvest look like a regression.
+      (is (= 0.5 (:fraction-organised section)))
+      (is (= 1 (:patterns-draft section)))))
+
+  (testing "an authored @why on a draft is a failure, not a silent exclusion"
+    (let [report (run-fixture (fn [root]
+                                (write-pattern! root "s/b" "" "target")
+                                (draft-flexiarg! root "s/minted" "@why s/b")
+                                {:base (baseline! root)}))]
+      (is (failed-for? report :draft-claims-authority))
+      (is (= 1 (get-in report [:summary :draft-authority-claims])))))
+
+  (testing "a draft's body may move between sweeps without tripping the baseline"
+    ;; The evidence list grows every time the refusal recurs. An authored body
+    ;; that moved the same way IS a failure, and the second half checks that the
+    ;; exemption is about @draft and not about the file being new.
+    (let [report (run-fixture (fn [root]
+                                (draft-flexiarg! root "s/minted" "")
+                                (let [base (baseline! root)]
+                                  (spit (str (fs/path root "s/minted.flexiarg"))
+                                        (str "@flexiarg s/minted\n"
+                                             "@draft wm-contract/harvest_refusals.bb\n"
+                                             "! conclusion: three more records arrived.\n"))
+                                  {:base base})))]
+      (is (zero? (:test/exit report)) (pr-str (:checks report))))
+    (let [report (run-fixture (fn [root]
+                                (write-pattern! root "s/a" "" "first")
+                                (let [base (baseline! root)]
+                                  (write-pattern! root "s/a" "" "second")
+                                  {:base base})))]
+      (is (failed-for? report :argument-body-changed))))
+
+  (testing "a draft still has to resolve any target it does name"
+    (is (failed-for? (run-fixture (fn [root]
+                                    (draft-flexiarg! root "s/minted" "@see-also absent/b")
+                                    {:base (baseline! root)}))
+                     :dangling-target)))
+
+  (testing "acyclicity does not admit an edge out of a draft"
+    ;; s/minted --@see-also--> s/b is not a @why edge anyway; the case that
+    ;; matters is that removing @draft is what subjects the pattern to the law.
+    ;; A promoted draft with a @why back-edge IS a cycle.
+    (let [report (run-fixture (fn [root]
+                                (write-pattern! root "s/a" "@why s/b" "a")
+                                (write-pattern! root "s/b" "@why s/a" "b")
+                                {:base (baseline! root)}))]
+      (is (failed-for? report :why-cycle)))))
+
 (deftest posthoc-why-is-invisible-to-consumers-that-have-not-opted-in
   (testing "the cascade @why graph reader (checks/playout_snatch.clj:237) reads zero"
     (let [parse-why-line #(second (re-matches #"@why (.*)" %))]
@@ -445,7 +531,11 @@
   (testing "the interim form is on the ingest whitelist, so it is not an anomaly"
     (let [directives (:directives (edn/read-string (slurp "flexiarg-directives.edn")))]
       (is (= :standard (get-in directives [:why-posthoc :status])))
-      (is (= :standard (get-in directives [:why :status]))))))
+      (is (= :standard (get-in directives [:why :status])))
+      ;; AC8: the parser reads @draft, so the ontology has to admit it -- a
+      ;; directive the code honours and the whitelist drops is exactly the
+      ;; silent divergence §8 is about.
+      (is (= :standard (get-in directives [:draft :status]))))))
 
 (deftest pinned-evidence-records-have-content-pin-and-falsifier
   (let [serialized (slurp evidence-records-path)

@@ -177,10 +177,21 @@
       (str/replace #"\\" "/")
       (str/replace #"\.flexiarg$" "")))
 
+(def draft-directive-re #"\s*@draft\s+(\S.*?)\s*")
+
 (defn parse-pattern [library file]
   (let [text (slurp (str file))
         lines (str/split-lines text)
         from (pattern-id library file)
+        ;; AC8 quarantine. @draft <minting-mechanism> marks a pattern that was
+        ;; MINTED, not authored -- the wm-contract refusal harvester writes one
+        ;; per recurring refusal class, as the tension half of a pattern whose
+        ;; resolution does not exist yet (Joe's 2026-09-02 ruling extension).
+        ;; The value is the mechanism that minted it, so a reader can find the
+        ;; writer without grepping.
+        draft (some #(second (re-matches draft-directive-re
+                                         (first (str/split % #";;" 2))))
+                    lines)
         body-start (or (first (keep-indexed
                                (fn [i line]
                                  (when (and (not (str/blank? line))
@@ -200,15 +211,18 @@
                         :file (str (fs/relativize library file)) :line (inc i)})
                      [])))
                (map-indexed vector lines))]
-    {:id from :file (str (fs/relativize library file))
-     :body-line (when (< body-start (count lines)) (inc body-start))
-     :body-digest (sha256 body) :edges (vec edges)}))
+    (cond-> {:id from :file (str (fs/relativize library file))
+             :body-line (when (< body-start (count lines)) (inc body-start))
+             :body-digest (sha256 body) :edges (vec edges)}
+      draft (assoc :draft draft))))
 
 (defn scan-library [library]
   (let [files (sort (fs/glob library "**.flexiarg"))
         patterns (mapv #(parse-pattern library %) files)]
     {:patterns patterns
      :ids (set (map :id patterns))
+     ;; The three quarantine laws below all key on this set.
+     :draft-ids (set (map :id (filter :draft patterns)))
      :edges (vec (mapcat :edges patterns))
      :body-digests (into (sorted-map) (map (juxt :file :body-digest) patterns))}))
 
@@ -226,7 +240,10 @@
   post-hoc edge closing a loop with an authored one is not a cycle failure. The
   other checks make no such distinction: dangling targets and the
   new-edge-attested rule apply to post-hoc edges exactly as to authored ones,
-  because resolving a target and earning an attestation are not authority claims."
+  because resolving a target and earning an attestation are not authority claims.
+
+  Edges OUT OF a @draft pattern are filtered out by the caller for the same
+  reason (AC8): a minted draft claims no authority either."
   [edges]
   (let [adj (reduce (fn [m {:keys [from kind] :as edge}]
                       (if (= kind :why) (update m from (fnil conj []) edge) m)) {} edges)
@@ -671,10 +688,13 @@
 (defn section-summary [scan section]
   (let [prefix (str section "/")
         patterns (filter #(str/starts-with? (:id %) prefix) (:patterns scan))
+        drafts (filter :draft patterns)
+        authored (remove :draft patterns)
         edges (filter #(str/starts-with? (:from %) prefix) (:edges scan))
         why-from (set (map :from (filter #(= :why (:kind %)) edges)))
         posthoc-from (set (map :from (filter #(= posthoc-why-kind (:kind %)) edges)))
-        n (count patterns)]
+        n (count patterns)
+        n-authored (count authored)]
     {:section section :patterns n
      :edges-by-kind (merge (zipmap counted-edge-kinds (repeat 0))
                            (frequencies (map :kind edges)))
@@ -684,7 +704,20 @@
      ;; post-hoc edge should earn attestation before it counts, so a section
      ;; cannot raise its organised fraction by adding traces.
      :patterns-with-outgoing-why-posthoc (count posthoc-from)
-     :fraction-organised (if (zero? n) 0.0 (/ (double (count why-from)) n))}))
+     ;; AC8 quarantine, third law: a minted draft is counted here and NOWHERE
+     ;; in the organised fraction -- not in its numerator (a draft carries no
+     ;; @why, and one on a draft is a failure) and not in its denominator, so a
+     ;; harvester that mints ten drafts overnight cannot move a section's
+     ;; measured organisation in either direction. :patterns stays the honest
+     ;; file count; :patterns-authored is the fraction's base.
+     :patterns-draft (count drafts)
+     :patterns-authored n-authored
+     :draft-ids (vec (sort (map :id drafts)))
+     ;; The digests are reported, not enforced (see :argument-bodies-unchanged
+     ;; below): a reviewer can still see a draft's body move between runs.
+     :draft-body-digests (into (sorted-map) (map (juxt :file :body-digest) drafts))
+     :fraction-organised (if (zero? n-authored) 0.0
+                             (/ (double (count why-from)) n-authored))}))
 
 (defn lint* [{:keys [library section baseline attestations evidence-records]}]
   (let [scan (scan-library library)
@@ -717,7 +750,20 @@
         dangling (for [edge (:edges scan) :when (not (contains? (:ids scan) (:to edge)))]
                    (assoc (select-keys edge [:file :line :from :to :kind])
                           :check :targets-resolve :edge (edge-key edge) :reason :dangling-target))
-        cycles (cycle-failures (:edges scan))
+        draft-ids (:draft-ids scan)
+        cycles (cycle-failures (remove #(contains? draft-ids (:from %)) (:edges scan)))
+        ;; AC8 quarantine, first law: a @draft pattern may not carry an authored
+        ;; @why. @why is a claim about the author's own reasoning, and a script
+        ;; that mints a pattern out of refusal records has none to claim. This
+        ;; is what "enters no authored-authority law" is enforced BY -- without
+        ;; it the exclusions above would be silent permission rather than a rule.
+        draft-authority (for [edge (:edges scan)
+                              :when (and (contains? draft-ids (:from edge))
+                                         (= :why (:kind edge)))]
+                          (assoc (select-keys edge [:file :line :from :to])
+                                 :check :draft-claims-no-authority
+                                 :edge (edge-key edge)
+                                 :reason :draft-claims-authority))
         missing-atts (for [edge section-edges
                            :let [k (edge-key edge)]
                            :when (and (not (contains? baseline-edges k))
@@ -743,15 +789,24 @@
         semantic (mapcat #(attestation-semantic-failures library records live-index %1 %2)
                          (range) att-rows)
         refusal-acts (mapcat refusal-act-failures (range) att-rows)
-        body-failures (for [{:keys [file body-line body-digest]} (:patterns scan)
-                            :when (str/starts-with? file prefix)
+        ;; AC8 quarantine, second law: a draft's body is REGENERATED on every
+        ;; sweep (its evidence list grows as the refusal recurs), so freezing it
+        ;; against a signed baseline would fail on every harvest and say nothing.
+        ;; Drafts are therefore exempt here and reported instead, under
+        ;; :patterns-draft and :draft-body-digests. Promotion is what ends the
+        ;; exemption: remove @draft and the file falls under this law like any
+        ;; other, which is the point at which its digest has to join the
+        ;; baseline as an editorial act.
+        body-failures (for [{:keys [file body-line body-digest draft]} (:patterns scan)
+                            :when (and (str/starts-with? file prefix) (nil? draft))
                             :let [old (get (:body-digests base) file)]
                             :when (not= old body-digest)]
                         {:check :argument-bodies-unchanged :file file :line body-line :edge nil
                          :reason (if old :argument-body-changed :argument-body-not-in-baseline)
                          :expected old :actual body-digest})
         failures (mapv #(merge {:file nil :line nil :edge nil} %)
-                       (concat dangling cycles missing-atts refused-present malformed
+                       (concat dangling cycles draft-authority missing-atts
+                               refused-present malformed
                                refusal-acts semantic body-failures))
         kind-counts (merge (zipmap counted-edge-kinds (repeat 0))
                            (frequencies (map :kind (:edges scan))))
@@ -768,6 +823,8 @@
                                                              (contains? % :warrant-refused))
                                                        att-rows))
                       :why-cycles (count cycles)
+                      :patterns-draft (count draft-ids)
+                      :draft-authority-claims (count draft-authority)
                       :failures (count failures)
                       :edge-counting :path-shaped-targets
                       :baseline-note (:measurement-note base)}

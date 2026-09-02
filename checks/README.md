@@ -11,7 +11,8 @@ Run:
       -M -m how-witness-snatch
 
 Same invocation with `-m how-witness-heartbeat` or `-m how-witness-split-transport`
-for the two peripherals edges.
+for the two peripherals edges, and `-m how-witness-declare-conditioning` for the
+first `aif` one.
 
 `.clj-kondo/config.edn` teaches clj-kondo that core.logic's `fresh`, `run*` and
 `project` bind like `fn`; without it every logic variable in these files reads
@@ -27,6 +28,7 @@ where it must *not* hold. A witness that cannot fail is not a witness.
 | `how_kernel_snatch.clj` | the same edge as a **kernel** — with what spread? | entropy 1.3863 → 1.3121 nats under attestation; mirror zero mass |
 | `how_witness_heartbeat.clj` | the **price test** (worklist `:L4`) — the same relational shape over an *attested* edge in `library/peripherals/`, run against futon3c source rather than a game diagram | **NOT ATTESTED** — 0 of 5 obligations carried out by the method; positive control finds 3; mirror silent. Cost written up at `p4ng/empirics-futon/NOTE-the-one-edge-price.md` |
 | `how_witness_split_transport.clj` | the price test **generalised** (worklist `:L10` slice 1) — the second attested `@how` edge in `library/peripherals/`, run against the War Machine's markdown / hex-web / VSATARCS renderings | **NOT ATTESTED** — 1 of 5 obligations carried out by the method; positive control finds 3; mirror silent. Cost written up at `p4ng/empirics-futon/NOTE-the-one-edge-price.md` |
+| `how_witness_declare_conditioning.clj` | the price test in a **second section** (worklist `:L10` slice 2) — the first attested `@how` edge in `library/aif/`, run against futon2's `M-evaluate-policies` ARGUE exhibit and the E5 conditioned-cascade probe | **NOT ATTESTED** — 0 of 5; positive control finds 5; mirror (a real typed observation vector in futon3c) silent. The method's output *is* read at the site and is flattened to a 400-char sentence before any valuation consumes it — **de-typing at the boundary**, not absence |
 
 ## Why both
 

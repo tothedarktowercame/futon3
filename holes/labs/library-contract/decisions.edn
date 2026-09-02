@@ -377,4 +377,40 @@
     :what-it-did-not-reach "The seeds of 50 and 24. Both survive the per-clause scope untouched, because \"agent\", \"registry\", \"live\" and \"process\" each occur inside their own clause's quotation. Only :document-frequency-ceiling reaches those, and this row may not choose its threshold."}
    :not-adopted-retroactively "The primary :LA7 artefact keeps the statement scope, following :cue-licence :not-applied-retroactively: state the bound, apply the new rule from the next row. Changing the artefact the comparator judges, on a rule adopted after seeing what it strikes, is the tuning this whole design refuses."
    :changes-it "A row whose tension source is a live query rather than a text at all -- :cue-licence :changes-it names that case too and this entry does not reach it either: a query result has no stable address to re-read. And a principled document-frequency ceiling, chosen by someone who has not seen these numbers."
-   :veto "Joe's. The undo is deleting `*licence-scope*`, `licence-text` and `strike-unlicensed` from checks/construct_retrodiction_cascade.clj and the per-clause artefact; the primary artefact does not depend on any of them."}]}
+   :veto "Joe's. The undo is deleting `*licence-scope*`, `licence-text` and `strike-unlicensed` from checks/construct_retrodiction_cascade.clj and the per-clause artefact; the primary artefact does not depend on any of them."}
+
+  {:id :cue-granularity-in-a-construction-row
+   :status :measured-not-adopted
+   :at "2026-09-02"
+   :raised-by :LA8
+   :question "decisions.edn :cue-licence-for-a-ledger-row measured the licence's weakness from one side only -- 30 of :LA7's 35 cues were single words, `registry` reaching 262 of 1,240 patterns -- and its :document-frequency-ceiling arm was refused because a reviewer who had seen those numbers could not choose the threshold. It left the granularity of a cue open. :LA8 authors Tensions from five OPEN work items and has to choose one."
+   :what-was-measured
+   "BOTH ARMS WERE BUILT AND RUN through one harness (checks/construct_open_cascade.clj, --tensions/--out), by two agents who did not see each other's file, over the same five items and the same 1,240 patterns. They fail in opposite directions and neither is a middle.
+
+    PRIMARY ARM, quoted multi-word phrases (codex-21, checks/open-tensions.edn, futon3 743cba6): 27 of 29 cues match ZERO patterns. The two that match are \"first turn\" (2 patterns, IF only) and \"anywhere\" (1, HOWEVER only), never the same pattern -- and antecedent-holds? needs an IF-hit and a HOWEVER-hit on ONE pattern -- so nothing fired anywhere, every seed is 0, and under the primary temperament all five cascades are empty. The constituent words of those same phrases reach 305 (`record`), 124 (`rule`), 123 (`what`), 121 (`records`), 113 (`have`), 53 (`failure`).
+
+    SHORT-CUE ARM, single tokens (codex-22, checks/open-tensions-short-cue.edn, futon3 f62db82): seeds 14, 8, 0, 8, 18 and candidate pools 204, 158, 25, 65, 105. Four of five cascades are non-empty and the plausibility judge scores its diagonal 3 :would-plausibly-allow-work / 1 partly / 1 not, against an off-diagonal of 0 / 2 / 18."
+   :the-mechanism-underneath-both
+   "`cc/cue-hits` (checks/construct_cascade.clj:142-145) is a RAW case-insensitive `str/includes?` with NO WORD BOUNDARY, and that is what makes both arms unreliable rather than merely opposite. Measured over the 1,240 patterns' IF/HOWEVER text, substring count against word-boundary count: `sha` 115 / 0 -- every one of its 115 hits is `shared`, `sharper`, `shaped`, `shadows`, `indistinguishable`, and `sha` is a cue of :ticket/jvm-provenance-before-multi-jvm, whose seed of 18 is the arm's largest. Also `live` 82/34 (`delivered`, `delivery`), `action` 84/37 (`interaction`, `fraction`, `extraction`), `review` 40/12 (`reviewer`, `preview`), `wait` 18/4, `class` 28/11, `prior` 29/17. Some are genuine: `registry` 262/262, `records` 121/121. So :LA7's own :measured-weakness figures are inflated by morphology as well as by vocabulary overlap -- `live` and `action` are two of the six it names."
+   :arms
+   [{:arm :quoted-phrase-cues
+     :form "each cue is a multi-word phrase quoted from its clause's quotation of the statement"
+     :cost "Maximally specific and, on this corpus, empty: a phrase from a ledger row is not a phrase in a pattern's antecedent even when both are about the same machinery. It produces a null that says nothing about the items."}
+    {:arm :single-token-cues
+     :form "each cue is one word or one hyphenated/underscored identifier from its clause's quotation"
+     :cost "Produces cascades, and produces them partly for the wrong reason -- see :the-mechanism-underneath-both. Its successes are real enough to be judged and not specific enough to be trusted as item-specific policies."}
+    {:arm :word-boundary-matching
+     :form "make `cue-hits` require a word boundary, so `sha` stops matching `shared`"
+     :cost "The arm that would actually reach the defect, and the one :LA8 MAY NOT RUN: `cue-hits` is shared machinery under checks/construct_cascade.clj that :LA3, :LA4, :LA5, :LA6 and :LA7 all ran through, and changing it moves their published numbers and breaks :LA3's byte-identical reference artefact. Outside this row's acceptance. It is the next row's, taken knowingly."}
+    {:arm :document-frequency-ceiling
+     :form "strike a cue whose occurrence count over the repository's antecedents exceeds a stated fraction"
+     :cost "Still refused for :cue-licence-for-a-ledger-row's reason and now more strongly: after :LA8 the numbers have been seen twice, so a threshold chosen here would be tuned against two arms rather than one. It also treats `sha` at 115 as a frequent cue when the honest reading is that it is not a cue at all."}]
+   :ran
+   {:arms [:quoted-phrase-cues :single-token-cues]
+    :by :LA8 :at "2026-09-02"
+    :shas "futon3 743cba6 (primary, sha256 3eea34ca) and f62db82 (short-cue, sha256 34d41a3e); both reproduced byte-identically by the reviewer rather than taken on report"
+    :who "Two constructors who did not see each other's tensions file, and a third agent (codex-7, futon3 7ccefe6) who judged both and constructed neither."
+    :the-honest-attribution-of-the-primary-NULL
+    "PART OF IT IS THE PACKET'S FAULT, not the items'. The dispatch that produced the primary arm told the constructor to prefer multi-word cues, advice written from :LA7's over-matching failure and not tested before it was sent. So the primary arm measures what that advice does, and its null is evidence about cue granularity rather than about whether open work items can have policies built for them. The short-cue arm exists because the null was traced to its cause before it was reported, not after."}
+   :changes-it "A word-boundary or stemmed matcher, run as its own row over checks/construct_cascade.clj with every earlier row's artefact regenerated and the movement reported. Until that happens, no seed size in :LA3 through :LA8 is a count of patterns that mention a cue -- it is a count of patterns whose antecedent text contains those characters."
+   :veto "Joe's. Nothing is adopted here: both arms are kept, the harness runs either, and the primary artefact is unchanged."}]}

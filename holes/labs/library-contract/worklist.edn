@@ -692,6 +692,26 @@
      :sha "346dbaf",
      :seat "zai-3"}],
    :owner :any}
+  {:id :L7 :class :C :status :open :owner :any
+   :covers-key :none
+   :statement "spider_fleet.clj:139: clj-kondo's `Condition always true` is right -- (assoc (read-edn path nil) :cache-path p) is a map even when the pinned cache file is absent, so the :pinned-evidence-cache-is-unreadable throw can never fire and a missing pin would run a fleet on an empty index. Recorded by L5 slice 1; spider_runner.clj:120's own throw works."
+   :acceptance "The fleet path refuses a missing or unreadable pinned cache loudly (test proves it: point it at a nonexistent pin and assert the throw). A control proves a readable pin still passes. clj-kondo 0/0, check-parens, spider tests green."}
+  {:id :L8 :class :C :status :open :owner :any
+   :covers-key :none
+   :statement "The evidence-cache filename says v3 while its content says :reflection-rule {:version 2} -- library_graph_lint.clj:107 hardcodes the literal -v3- and carries the version only in the sha (L5 slice 1, reviewer-check item 2). A reader trusting the filename misreads which reflection rule filtered the cache."
+   :acceptance "The cache content carries the rule version authoritatively and the lint asserts filename tag == content version, failing loudly on mismatch. The existing v3-named/v2-content cache is either regenerated or renamed with the reason recorded. Tests cover the mismatch case."}
+  {:id :L9 :class :W :status :open :owner :any
+   :covers-key :none
+   :loop-mode :one-slice-per-invocation
+   :statement "Authoring stage for the rationale layer, using LD1's mechanism: wave 3 proved the 0%-families harvest nothing (76 absences, 0 edges), and README-flexiarg §5a's corollary says the rationale layer can only be authored. Pilot sections, one per invocation: war-room (the section §5a's own post-hoc discussion is about: rulings that make sense of patterns retrospectively; 28 patterns, 17 in live use, zero corroborated relations), then aif (33 patterns, best-attested section, feeds the WM candidate space). INTERIM CHOICES, Joe may redirect: pilot = these two sections; the attestation bar for a post-hoc edge is the same evidence-tag machinery spider edges use."
+   :progress []
+   :acceptance "Per slice: read each pattern in ONE section together with its evidence tags and the section's recorded absences; where a retrospective reading has a statable warrant, write the inline @why-posthoc edge AND a :proposed attestation record carrying the warrant text and its evidence pointer. No bare edges: an @why-posthoc without a warrant record is a lint failure. Never rewrite an author's own @why. Target quality over count; a section slice that finds nothing statable records that finding. Section lint before/after, spider tests, worklist_check. Row done when both pilot sections have a slice entry and the proposed edges are queued for attestation review."}
+  {:id :L10 :class :E :status :open :owner :any
+   :covers-key :none
+   :loop-mode :one-slice-per-invocation
+   :statement "Generalize L4's price test: nine attested @how edges exist (aif 6, peripherals 2, ukrns 1); L4 built the derived check for one at 5m47s. Eight remain. L4 also found most of the other eight name no concrete incident in their evidence paragraphs -- so the expected finding for several slices is :no-site-to-check-against, which is itself the measurement."
+   :progress []
+   :acceptance "Per slice, ONE edge: either write the derived check (L4's witness pattern as template: check runs against the site the pattern's evidence names, positive control included) and record its cost like L4 did, or record :no-site-to-check-against with the evidence paragraph quoted. No invented sites (the L4 selection-cost lesson). Row done when all eight have a check or a recorded no-site finding, with the price table summarized in a note beside NOTE-the-chain-layer-exists-and-is-empty.md."}
   {:id :LD1,
    :class :D,
    :status :done,

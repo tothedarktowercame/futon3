@@ -52,4 +52,31 @@
      :cost "Fails open: the acceptance's \"no bare edges\" clause is what makes an unwarranted trace visible, and this arm gives it up. It is also what slice 1 did as a HOLDING position, which is why the readings sit in library/war-room/posthoc-readings.edn with no directive written -- a queue, not a resting place."}]
    :recommends :pattern-text-warrant
    :veto "Joe's. :proposed rather than :interim-adopted because this changes what an attestation MEANS, not just how one is spelled: :posthoc-why-syntax was a syntax choice the lane could take back cheaply, and this is not. No code was changed and no directive was written on it. Slice 1 is complete without it -- five authored readings recorded with file:line warrants -- and slice 2 (aif) can be read the same way, but the row cannot close until the readings become edges."
-   :changes-it "If a war-room ruling ever does turn up cited as a relation in a record independent of the spider, the store bar becomes reachable for that edge and the arm choice is worth re-running. Slice 1 re-checked live and found only spider self-text; the finding record names the query set and the record ids."}]}
+   :changes-it "If a war-room ruling ever does turn up cited as a relation in a record independent of the spider, the store bar becomes reachable for that edge and the arm choice is worth re-running. Slice 1 re-checked live and found only spider self-text; the finding record names the query set and the record ids."}
+  {:id :editorial-why-mislabelled-as-authored
+   :status :proposed
+   :at "2026-09-02"
+   :raised-by :L9
+   :question "Four aif patterns carry a plain @why whose own trailing comment says it is retrospective sense-making and NOT a causal claim (claude-13, 2026-08-23). LD1 gave that thing its own spelling, @why-posthoc, on 2026-09-01. Do the four convert, and if so on what?"
+   :edges
+   ["library/aif/candidate-pattern-action-space.flexiarg:7 -> war-room/wr-19-tension-must-generate-not-only-rank"
+    "library/aif/expected-free-energy-scorecard.flexiarg:7 -> war-room/wr-27-a-loop-is-born-instrumented-for-its-gain"
+    "library/aif/no-self-certification.flexiarg:8 -> war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad"
+    "library/aif/off-continuity-null-discriminates.flexiarg:8 -> war-room/wr-9-bites-empirical-or-logical"]
+   :grounds "README-flexiarg.md 5a asks that a post-hoc @why be marked inline so a reader can tell a trace-hypothesis from an author's causal claim, and :posthoc-why-syntax fixed the spelling. These four predate the spelling and are marked only by a prose comment, which LD1's :landed :counted-separately clause cannot read. As plain @why they raise :fraction-organised, sit inside the authored-authority cycle law that LD1 explicitly keeps post-hoc edges out of, and are invisible to :patterns-with-outgoing-why-posthoc. A further defect makes the prose marking worse than nothing: all four comments end `WR-19 did not produce this pattern`, and only one of the four points at wr-19 -- three disclaim an edge they do not name."
+   :measured
+   "Not asserted. The conversion was run against a scratch copy of the library at /tmp/L9s2probe with the four directives rewritten and nothing else changed, using the same linter invocation the section gate uses. Section aif moves :edges-by-kind from {:why 6 :why-posthoc 0 :how 13 :see-also 45} to {:why 2 :why-posthoc 4 :how 13 :see-also 45}, :patterns-with-outgoing-why 6 -> 2, :patterns-with-outgoing-why-posthoc 0 -> 4, :fraction-organised 0.18181818181818182 -> 0.06060606060606061. Library-wide, :edges-by-kind moves {:why 86 :why-posthoc 0} -> {:why 82 :why-posthoc 4}, and :patterns-in-why-graph 97 -> 94. :why-cycles is 0 before and after, so no cycle result changes today; the cost is that LD1's exemption is not in force for these four, not that it is currently biting. The scratch run exits 1 with exactly four failures, all :new-edge-without-attestation -- the converted edges leave the baseline and have no attestation to re-enter on."
+   :arms
+   [{:arm :convert-now
+     :form "rewrite the four directives to @why-posthoc"
+     :cost "Exits 1 on four :new-edge-without-attestation until each has an attestation, and their warrant is claude-13's editorial reading -- an authored warrant, which is the thing :posthoc-warrant-evidence is about. So this arm cannot be taken before that one settles. Also moves numbers the C88 pin and test/library_graph_lint_test.clj assert."}
+    {:arm :convert-when-the-warrant-bar-settles
+     :form "same rewrite, plus four :proposed attestations carrying claude-13's reading, once a post-hoc warrant can be recorded"
+     :cost "One coordinated change touching four pattern files, four attestation records, the C88 pin and the lint test's expected counts. Larger than it looks, and it should be one item of its own rather than a slice of L9."}
+    {:arm :leave-and-mark
+     :form "leave the directives as @why and record the mislabelling in the readings file only"
+     :cost "Fails open in the direction 5a cares about: the library keeps reporting four traces as authored causal claims, and the fraction-organised number keeps counting them. It is what this slice did, as a HOLDING position, not a resting place."}]
+   :recommends :convert-when-the-warrant-bar-settles
+   :veto "Joe's. Left :proposed and no file was touched: the conversion moves recorded numbers, including ones a pinned test asserts, so it is not a formatting fix the lane may take back cheaply."
+   :blocked-by :posthoc-warrant-evidence
+   :changes-it "If Joe settles :posthoc-warrant-evidence toward :pattern-text-warrant, the four attestations become writable from claude-13's own comment and the arm choice collapses to scheduling. If he settles it toward :keep-the-store-bar, this decision has to choose between :leave-and-mark and dropping the four edges."}]}

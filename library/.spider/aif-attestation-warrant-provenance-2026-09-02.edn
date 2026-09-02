@@ -1,0 +1,80 @@
+;; L9 slice 2 (aif). What the best-attested section's attestation warrants are
+;; actually made of.
+;;
+;; Measured, not inferred: every one of the 56 distinct evidence records cited
+;; by library/aif/attestations.edn was fetched from the live store by
+;; GET /api/alpha/evidence/<id>, and every one of the 62 evidence entries was
+;; tested for whether its excerpt occurs in the source pattern file and in the
+;; target pattern file. No file in library/ was modified by this measurement.
+{:schema :library-contract/finding-v1
+ :item :L9 :slice 2 :section "aif" :by "claude-owner" :at "2026-09-02"
+
+ :claim
+ "In aif -- the section P-organise-the-library calls best-attested, and the only section whose @why edges have earned attestations -- the evidence those attestations cite is overwhelmingly the spider's own turn-start prompt, and the excerpt each one verifies against is a sentence copied out of the SOURCE pattern file. Zero excerpts, of 62, occur in the target pattern. So no cited excerpt states a relation; the warrant that decides these edges is pattern text, and the store citation is the route it took to become admissible."
+
+ :not-new
+ "That 49 of the 56 records are reflection under the rule is already recorded: library/aif/attestations-v3-reflection-audit.edn, :reflection-under-v2 49, :reflection-under-v3 49, :changed-verdicts 0. This slice reproduced that number independently (49 records authored by zai-2) and is not claiming it. What is new is the composition of those records, the excerpt direction, and what both mean for the rationale layer."
+
+ :measurements
+ [{:id :m1 :what "authorship of the cited records"
+   :method "GET /api/alpha/evidence/<id> for each of the 56 ids, :evidence/author read off each response"
+   :result {:zai-2 49 :claude-1 5 :claude-4 1 :claude-5 1}
+   :note "zai-2 is the wave-2 seat that harvested aif -- library/.spider/fleet-2026-08-30.edn, and library/aif/attestations-4d-audit.edn lists it among :worker-seats. Every attestation row in the file carries :by \"zai-2\"."}
+
+  {:id :m2 :what "what kind of record they are"
+   :method "the body's :event key, and whether the record contains the string `You are the spider for`"
+   :result {:turn-start 47 :chat-turn 4 :turn-round 2 :whistle-exchange 1 :no-event-key 2
+            :contains-spider-prompt 47}
+   :note "All 47 :event turn-start records are the spider's own turn-start prompt to zai-2 from codex-20, carrying the harvest instructions and the pattern file text. Two examples read in full: e-2f1b9326 (the record behind the attested @how from declare-the-conditioning to structured-observation-vector) and e-e9c000da. This is the same shape as slice 1's probe-2c, e-d667aa91 -- there a constructed facade, here the section's actual warrant."}
+
+  {:id :m3 :what "per-attestation: is the whole warrant the spider's own?"
+   :method "an attestation row counts if EVERY evidence entry it cites resolves to such a record"
+   :result {:rows 62
+            :entire-evidence-is-a-spider-turn-start-prompt 50
+            :entire-evidence-is-zai-2-authored 53
+            :rows-citing-at-least-one-other-record 9}
+   :by-state-of-the-53 {:proposed 40 :attested-by 12 :refused 1}
+   :note "The 9 rows citing something else are 8 @see-also and 1 refused row; 7 of the 9 point out of the section (ants, exotic, war-machine, futon-theory, writing-coherence, structure). Every intra-aif @how and @why row is in the 53."}
+
+  {:id :m4 :what "which way the excerpts point"
+   :method "for each of the 62 evidence entries, whitespace-normalized substring test of :excerpt against the source pattern file and against the target pattern file"
+   :result {:occurs-in-source-pattern-file 50 :occurs-in-target-pattern-file 0 :occurs-in-neither 12}
+   :note "The 12 in neither are cross-section rows plus two whose excerpt is the spider's own edge form -- {:edge {:from ... :to ... :kind :see-also} -- quoted back from its own proposal, both citing e-d8d9a914, a zai-2 turn-round record, on aif/belief-aware-risk-term. checks/library_graph_lint.clj:551 tests only that the excerpt occurs in the record it names, so an excerpt that says nothing about the target passes, exactly as slice 1's probe-2c showed."}
+
+  {:id :m5 :what "the rationale layer specifically"
+   :method "the four rows in library/aif/attestations.edn whose :edge :kind is :why, read in full with their evidence records"
+   :result
+   [{:edge "aif/grounded-actuation-not-reobservation -> aif/no-self-certification"
+     :state "attested-by claude-15, 2026-08-30" :rung 2
+     :evidence-record "e-daa3dd3e (zai-2, :event turn-start)"
+     :excerpt-is "library/aif/grounded-actuation-not-reobservation.flexiarg:25, its own BECAUSE"
+     :reviewer-note "@why warranted: grounded actuation rests on the no-self-certification requirement; evidence reproduces the sentence"}
+    {:edge "aif/posterior-variance-as-epistemic-value -> aif/structure-learning-by-model-reduction"
+     :state "attested-by claude-15, 2026-08-30" :rung 2
+     :evidence-record "e-2abd87f5 (zai-2, :event turn-start)"
+     :excerpt-is "library/aif/posterior-variance-as-epistemic-value.flexiarg:13, its own context paragraph"}
+    {:edge "aif/predictive-entropy-as-ambiguity -> aif/shared-kernel-predictive-forward-model"
+     :state "proposed" :rung 2
+     :evidence-record "e-d9ee0a42 (zai-2, :event turn-start)"
+     :excerpt-is "library/aif/predictive-entropy-as-ambiguity.flexiarg:30, its own NEXT-STEPS"}
+    {:edge "aif/two-layer-calibration -> aif/no-self-certification"
+     :state "proposed" :rung 2
+     :evidence-record "e-09e5d48a (zai-2, :event turn-start)"
+     :excerpt-is "library/aif/two-layer-calibration.flexiarg:43-44, its own canonical-instance"}]
+   :note "Four for four. The reviewer's note on the first states the mechanism without naming it: reproducing the sentence is what the check verifies, and reproducing the source pattern's own sentence is what makes the record not external."}]
+
+ :why-no-gate-catches-this
+ [{:at "checks/spider_runner.clj:210 rung-two-warrant?"
+   :detail "This is the check that would refuse a rung-2 warrant made only of the fleet's own records. Its own docstring says rung 2 had no such check before, which is how an authoring turn reached the owner's desk in wave 2. It landed at 299f47b on 2026-09-01 (ledger L2); the aif attestations were harvested 2026-08-30. It runs at harvest time in the runner and is never re-applied to records already in the file."}
+  {:at "checks/library_graph_lint.clj:551 attestation-semantic-failures"
+   :detail "The section gate resolves each :via :text id by direct GET and requires the normalized excerpt to occur in that record. It never asks who wrote the record. So the reflection rule, which exists in this same namespace at :421, is not applied by the check that decides whether a section passes."}
+  {:at "library/aif/attestations-v3-reflection-audit.edn :selection"
+   :detail "The v3 audit's selection rule counts a verdict as CHANGED only when every record an attestation cites is reflection under v3 AND not every one was reflection under v2. These were already all reflection under v2, so the audit correctly reports 0 changed verdicts. It measured movement between rule versions, not whether the bar is met at all. Nothing in it is wrong; it answers a different question."}]
+
+ :not-claimed
+ "This is not a claim that the aif edges are wrong. Most of them look right to a reader, and two of the four @why rows above are readings this slice arrived at independently -- library/aif/posthoc-readings.edn proposes the two-layer-calibration one on the same sentence the spider cited. The finding is about what the paperwork establishes, not about whether the edges are good."
+
+ :bears-on
+ "holes/labs/library-contract/decisions.edn :posthoc-warrant-evidence, arm :keep-the-store-bar. Slice 1 showed the store bar refuses an authored warrant and accepts a facade. This slice shows what the bar has been accepting in practice in the section that passes it: pattern text, routed through a record the spider wrote. Arm :pattern-text-warrant would carry the same warrant directly and verify it fail-closed against the library, where the pointer can be checked, instead of against a store record whose bearing on the edge nothing checks."
+
+ :cleanup "No scratch copy and no store writes. /tmp/L9s2gates holds the fetched metadata and the gate exit codes."}

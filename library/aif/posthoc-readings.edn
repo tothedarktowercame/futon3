@@ -1,0 +1,270 @@
+;; L9 slice 2 -- aif. The AUTHORING lane for the rationale layer, second pilot
+;; section.
+;;
+;; war-room (slice 1) is the section where the harvest found nothing: 27
+;; measured absences, zero corroborated relations. aif is the opposite case --
+;; 33 patterns, 62 attestations, no absence rows at all, the section
+;; P-organise-the-library calls best-attested. So this slice asks a question
+;; slice 1 could not: in the section where @why edges DID earn attestations,
+;; what is the warrant actually made of?
+;;
+;; The answer is in :warrant-provenance below and, at length, in
+;; library/.spider/aif-attestation-warrant-provenance-2026-09-02.edn. All four
+;; of aif's @why attestations -- including the two an owner attested -- cite as
+;; their external evidence a record that is the spider's own turn-start prompt,
+;; and the excerpt each one verifies against is a sentence copied out of the
+;; SOURCE PATTERN FILE. The warrant doing the work is pattern text; the store
+;; citation is the route it took to become admissible.
+;;
+;; NOTHING HERE IS AN EDGE YET, for the same reason as slice 1: an authored
+;; warrant cannot currently be recorded as an attestation. See
+;; library/.spider/posthoc-warrant-blocker-2026-09-02.edn and
+;; holes/labs/library-contract/decisions.edn :posthoc-warrant-evidence.
+{:schema :library-contract/posthoc-readings-v1
+ :section "aif"
+ :slice {:item :L9 :n 2 :by "claude-owner" :at "2026-09-02"
+         :read "all 33 library/aif/*.flexiarg; library/aif/attestations.edn (62 rows); library/aif/.spider/absences.edn (empty vector); library/aif/.spider/seat-failures.edn (2 rows); library/aif/.spider/state.edn; library/aif/.spider/harvest-lint.edn; library/aif/proposals.edn (empty); library/aif/attestations-4d-audit.edn; library/aif/attestations-v3-reflection-audit.edn; library/.spider/harvest-verify-2026-08-30.edn; library/.spider/fleet-2026-08-30.edn; and the 56 distinct evidence records those attestations cite, fetched from the live store"}
+
+ ;; Every one of the 33 patterns is placed in exactly one bucket below, by the
+ ;; pattern taken as the SOURCE of a possible reading.
+ :census {:patterns 33
+          :authored-why 2                  ; grounded-actuation, posterior-variance
+          :editorial-why-spelled-as-authored 4
+          :proposed-posthoc 2
+          :considered-not-proposed 7
+          :no-reading-found 18}
+ :census-note
+ "Sums to 33; verified mechanically, not by eye -- every aif/*.flexiarg appears
+  in exactly one bucket, with one bookkeeping exception stated here.
+  aif/off-continuity-null-discriminates is bucketed under
+  :editorial-why-spelled-as-authored, and a reading it is the SOURCE of also
+  appears in :considered-not-proposed. So that key holds eight entries over
+  seven patterns."
+
+ ;; ---------------------------------------------------------------------
+ ;; The rule this slice selected by, stated so a reviewer can check the
+ ;; selection and not only the readings.
+ ;;
+ ;; (1) NAMED, NOT RESEMBLING. A reading is proposed only where the source
+ ;;     pattern's own prose names the target -- by wikilink, by quoting the
+ ;;     target's own clause, or by using the target's claim as its premise.
+ ;;     Two patterns that merely share a shape do not make an edge: that is
+ ;;     inference from similarity, which P-validated-R5 law O2 refuses in the
+ ;;     harvested lane and which README-flexiarg 5a does not license in the
+ ;;     authored one either.
+ ;; (2) THE AUTHOR TYPED THE PAIR ALREADY. Where a directive of any kind
+ ;;     already joins the two patterns, in either direction, the author has
+ ;;     chosen a relation for that pair. A post-hoc @why over the same pair is
+ ;;     a re-typing, not a gap, and this lane does not have standing to
+ ;;     overrule it. Recorded in :considered-not-proposed, not silently
+ ;;     dropped.
+ ;; (3) DIRECTION TOWARD THE GENERAL, as 5a has it.
+ ;;
+ ;; Rule (2) does most of the work in this section, which is why the yield is
+ ;; 2 of 33 against slice 1's 5 of 28: wave 2 added 13 @how and 45 @see-also
+ ;; edges here, so most pairs a reader would want to relate are already typed.
+ :selection-rule-applied true
+
+ ;; ---------------------------------------------------------------------
+ ;; PROPOSED. A retrospective reading with a statable warrant, direction toward
+ ;; the general. Neither is a causal claim: this lane did not write either
+ ;; pattern.
+ ;; ---------------------------------------------------------------------
+ :proposed
+ [{:edge {:from "aif/two-layer-calibration"
+          :to "aif/no-self-certification"
+          :kind :why-posthoc}
+   :rating :strong
+   :warrant
+   "TWO-LAYER-CALIBRATION states the dependency in its own canonical-instance paragraph -- the L1/L2 split was forced by discovering the calibration was self-certifying -- and wikilinks aif/no-self-certification as it says so. Its BECAUSE then restates no-self-certification's thesis as its own premise: the only thing that escapes prior-equals-value is a referent the model had no hand in, which is no-self-certification's conclusion with the word verdict replaced by value. The pair carries no directive in either direction."
+   :warrant-pointers
+   [{:at "library/aif/two-layer-calibration.flexiarg:43-44"
+     :quote "The split was forced by discovering the calibration was self-certifying"}
+    {:at "library/aif/two-layer-calibration.flexiarg:35"
+     :quote "The only thing that escapes `prior == value` is a referent the model had no hand in."}
+    {:at "library/aif/no-self-certification.flexiarg:14"
+     :quote "A measurement / verdict apparatus must never be moveable by evidence it manufactured itself."}]
+   :converges-with
+   "library/aif/attestations.edn already carries this exact edge as a spider PROPOSAL: {:kind :why} by zai-2, 2026-08-30, :rung 2, :state :proposed -- correctly left a proposal, since checks/spider_runner.clj:165 gives the spider editor standing only. Its :cited clause is the same sentence quoted above. Two readers, one seat and one author, picked the same warrant independently; the disagreement is only about what the warrant may be called. The spider had to dress it as store evidence (e-09e5d48a, zai-2, its own turn-start prompt, whose text contains the sentence because the prompt quoted the pattern file); this lane would carry it as the pattern-file pointer it is."
+   :promotion-candidate
+   "As in slice 1's wr-10 case, the warrant here is the pattern's own prose stating its own causal history -- was FORCED BY discovering -- which is what 5a calls an author's claim. It is proposed as @why-posthoc because this lane did not write two-layer-calibration. A reviewer with author standing should consider a plain @why."}
+
+  {:edge {:from "aif/valuation-reads-the-paperwork"
+          :to "aif/declare-the-conditioning"
+          :kind :why-posthoc}
+   :rating :strong
+   :warrant
+   "VALUATION-READS-THE-PAPERWORK's BECAUSE is declare-the-conditioning's thesis used as a premise: value IS conditional on the situation, therefore a living document is a situation proxy, therefore record which text you conditioned on. Take the conditioning thesis away and the pattern has no argument left -- only an observation that prose edits move numbers, which is the thing it is explaining. It names declare-the-conditioning in its @references and declare-the-conditioning does not use its claim in return; the use is one-way where the reference is not. The pair carries no directive in either direction."
+   :warrant-pointers
+   [{:at "library/aif/valuation-reads-the-paperwork.flexiarg:25"
+     :quote "Value IS conditional on the situation; a living document is a situation proxy."}
+    {:at "library/aif/valuation-reads-the-paperwork.flexiarg:22"
+     :quote "Persist, next to every score, the identity of the text it conditioned on"}
+    {:at "library/aif/declare-the-conditioning.flexiarg:11"
+     :quote "G(candidate) is a lambda — only G(candidate | situation) is a value."}
+    {:at "library/aif/declare-the-conditioning.flexiarg:22"
+     :quote "CONDITIONING (what situation-slice it consumed)"}]
+   :note
+   "Counter-consideration, stated because it is the one a reviewer should press: the two are same-mission siblings. Both cite M-evaluate-policies, futon2, 2026-07-03, as their evidence paragraph, and slice 1 refused wr-12 to wr-16 on exactly that ground. The difference is that same-day sibling patterns there shared a subject; here one uses the other's conclusion as its premise, and premise-use is asymmetric where provenance is not."}]
+
+ ;; ---------------------------------------------------------------------
+ ;; CONSIDERED, WARRANT STATED, NOT PROPOSED. Each has a reading a reader would
+ ;; recognise; none is one this lane would defend at review. Recorded with the
+ ;; warrant so a later slice can promote one on new grounds rather than
+ ;; rediscover it.
+ ;; ---------------------------------------------------------------------
+ :considered-not-proposed
+ [{:edge {:from "aif/measurement-window-hygiene" :to "aif/no-self-certification" :kind :why-posthoc}
+   :reading "measurement-window-hygiene:45 wikilinks aif/no-self-certification directly, and its BECAUSE -- excluding a confounded pair keeps the dataset honest; recording it launders noise as signal -- is the no-self-certification discipline applied to a measurement window."
+   :why-not "The file names the relation and the name it gives is SIBLING. And the pair is already typed in the other direction: no-self-certification.flexiarg:12 carries @how aif/measurement-window-hygiene, attested by claude-15. Both the author's word and the author's directive say something other than grounds."}
+
+  {:edge {:from "aif/off-continuity-null-discriminates" :to "aif/two-layer-calibration" :kind :why-posthoc}
+   :reading "off-continuity:52 says of itself that it IS the L1 dynamics layer earning its keep, wikilinking two-layer-calibration. A pattern calling itself an instance of another names a dependency."
+   :why-not "Rule (2): two-layer-calibration.flexiarg:10 already carries @how aif/off-continuity-null-discriminates, attested by claude-15. The author typed this pair as method; a converse grounds edge would type it twice."}
+
+  {:edge {:from "aif/predictive-entropy-as-ambiguity" :to "aif/expected-free-energy-scorecard" :kind :why-posthoc}
+   :reading "expected-free-energy-scorecard:33 names predictive-entropy-as-ambiguity a term-form specification for the scorecard, and predictive-entropy:34 writes the scorecard's own weighted sum as its frame. The pair carries no directive, unusually for this section."
+   :why-not "Parity with the twin. Line 33 names TWO term-form specs, and the other one -- aif/belief-aware-risk-term -- carries an authored @see-also to the scorecard, attested by codex-22. The author's demonstrated choice of relation for a term-spec-to-scorecard pair is @see-also. Proposing @why-posthoc for the parallel pair would override, from outside, a choice the author made for its twin."}
+
+  {:edge {:from "aif/placeholder-is-load-bearing" :to "aif/currency-before-merge" :kind :why-posthoc}
+   :reading "placeholder-is-load-bearing's conclusion:11 -- before deleting an inert term, ask what the constant beats -- is a proper part of currency-before-merge's THEN:21, audit every constant in the arena, ask what it beats and what beats it. The narrower is the deletion-time case of the wider."
+   :why-not "The two @reference each other, so the reference picks no direction, and both draw their evidence paragraph from one incident, M-evaluate-policies 2026-07-03: the same 0.0 cascade placeholder appears in both. Neither uses the other's claim as a premise -- they state one instruction twice, at two scopes. A same-mission cohort produces peerage; @see-also is the honest relation and is out of this slice's scope."}
+
+  {:edge {:from "aif/currency-before-merge" :to "aif/declare-the-conditioning" :kind :why-posthoc}
+   :reading "Both are declare-what-your-number-means disciplines from the same mission, and declare-the-conditioning's three-axis declaration is the wider frame."
+   :why-not "Same cohort, mutual @references, and different axes: currency-before-merge is about UNITS across lanes, declare-the-conditioning about which SITUATION-SLICE a surface consumed. Neither argument needs the other to stand."}
+
+  {:edge {:from "aif/temporal-depth-beyond-greedy" :to "aif/grounded-actuation-not-reobservation" :kind :why-posthoc}
+   :reading "temporal-depth:32 names the depth-1-labelled-planning failure a sibling to R16's re-observe-your-own-construction, which is grounded-actuation's named anti-pattern."
+   :why-not "The file's own word is sibling, and the resemblance it draws is between the two ANTI-patterns, not a dependency between the patterns. An anti-pattern pair is a @see-also at most."}
+
+  {:edge {:from "aif/hierarchical-budget-aware-action-selection" :to "aif/expected-free-energy-scorecard" :kind :why-posthoc}
+   :reading "hierarchical-budget:24 introduces a feasibility-penalty EFE subterm, which fills the constraint-violation slot the scorecard:22 already names; :28 says outright that soft constraints belong in the EFE term."
+   :why-not "Only half the pattern rests there. The other half -- resolve-conflicts, aggregate budget conservation in priority order -- is an action-selector mechanism the scorecard does not reach, and :28 says so in the same sentence. A grounds edge would cover the soft half and mislabel the hard one."}
+
+  {:edge {:from "aif/scheduled-observer-entrypoint" :to "aif/no-self-certification" :kind :why-posthoc}
+   :reading "scheduled-observer:19 is a self-certification in the exact shape no-self-certification rules on: every firing writes a green row, so the trace manufactures the appearance of operation, and the verdict R10-equals-pass moves on evidence the apparatus made."
+   :why-not "The grounds already reach there. scheduled-observer:9 carries @how aif/grounded-actuation-not-reobservation, attested by claude-15, and grounded-actuation:9 carries an AUTHORED @why to no-self-certification. A direct edge adds a second path to the same place without adding a claim."}]
+
+ ;; ---------------------------------------------------------------------
+ ;; NO READING FOUND. Recorded as a finding, per the acceptance. Each names
+ ;; what was considered and why it fails.
+ ;; ---------------------------------------------------------------------
+ :no-reading-found
+ [{:pattern "aif/admissibility"
+   :note "Its BECAUSE states its grounds and they are cross-section: futon-theory/task-as-arrow and futon-theory/structural-tension-as-observation, both in @references. Within aif the only named neighbour is niche-construction, and niche-construction:11 already carries @how aif/admissibility. See :cross-section-candidates-not-read."}
+  {:pattern "aif/belief-aware-risk-term"
+   :note "expected-free-energy-scorecard was considered -- the risk term is one of the scorecard's named terms -- and the pair is already typed: @see-also at belief-aware-risk-term:10, attested by codex-22. Rule (2)."}
+  {:pattern "aif/belief-state-operational-hypotheses"
+   :note "Names no pattern. Its ground is that a compact belief map makes predict-observe-update implementable, which no other aif pattern states. structured-observation-vector was considered: that is the OBSERVATION side, a different variable of the same loop, and neither file argues from the other. Also one of the section's two seat failures -- see :record-defects."}
+  {:pattern "aif/declare-the-conditioning"
+   :note "Its own @why slot is empty and its two @references are the cohort peers handled above. currency-before-merge and valuation-reads-the-paperwork are the candidates and both fail on direction: this is the pattern the other two argue FROM."}
+  {:pattern "aif/decomposed-prediction-noise"
+   :note "term-to-channel-traceability was considered and is the closest miss in the section: opaque aggregate, named decomposition, diagnosable, in both. Rejected under rule (1) -- neither file names the other, and the shape is a resemblance this lane would be supplying. shared-kernel is already typed @how at :8."}
+  {:pattern "aif/evidence-precision-registry"
+   :note "A schema-and-defaults pattern that names no other pattern in its argument. Its two @see-also edges are already written and one, to aif/candidate-pattern-action-space, is attested in both directions."}
+  {:pattern "aif/experimental-comparison-of-EFE-variants"
+   :note "expected-free-energy-scorecard was considered: its HOWEVER -- picking by argument risks rationalising rather than measuring -- rhymes with the scorecard:19 line about a single opaque score encouraging post-hoc rationalization. Rejected under rule (1): the ground it states is about under-determined TERM CHOICE settled empirically, which is general beyond EFE, and neither file names the other."}
+  {:pattern "aif/free-energy-as-tick-scalar"
+   :note "predictive-coding-belief-update is where it says F belongs -- same module owns both rules -- and that pair is already typed @how at :10. Nothing else is named."}
+  {:pattern "aif/hierarchical-and-temporal-depth"
+   :note "Names R13 and R11 in its context paragraph and R14 in its THEN; all three pairs are already typed @see-also at :8 and :11, one attested by codex-22. Rule (2) on every candidate it offers."}
+  {:pattern "aif/interoceptive-tripwires"
+   :note "Names R7 and R16 in its BECAUSE; the R7 pair is already typed @see-also at :8. The R16 relation is an analogy in the prose -- an organism with only a hand learns of poison from the stomach ache -- and an analogy is not a dependency."}
+  {:pattern "aif/niche-construction"
+   :note "@references expected-free-energy-scorecard and structured-observation-vector as background for the substrate it reads, and uses neither as a premise: its argument runs on false-floor readings and the typed-edge inventory. admissibility is already typed @how at :11."}
+  {:pattern "aif/policy-precision-commitment-temperature"
+   :note "Names no pattern. Both its @see-also targets are already written. Its ground -- exploration versus exploitation should answer to operational pressure rather than randomness -- is stated nowhere else in the section."}
+  {:pattern "aif/predictive-coding-belief-update"
+   :note "The update rule pattern. Three @see-also edges already written; nothing in its argument leans on another pattern. structured-observation-vector and status-gated-belief-update both point AT it by @how, which is the direction the section already has right."}
+  {:pattern "aif/shared-kernel-predictive-forward-model"
+   :note "A factoring pattern whose argument is about maintaining one implementation rather than two; it names no other pattern as a ground. temporal-depth is already typed @how at :10. Note the spider proposed a @why from predictive-entropy-as-ambiguity to here, which this slice does not adopt -- see :spider-why-proposals-read."}
+  {:pattern "aif/status-gated-belief-update"
+   :note "predictive-coding-belief-update is its method and is already typed @how at :8, attested by claude-15. Its own ground -- belief is a record of what the agent learned from observation -- is not another pattern's claim."}
+  {:pattern "aif/structure-learning-by-model-reduction"
+   :note "Names currency-before-merge at :35 and RESPECTS it as a downstream invariant; the pair is already typed @see-also at :9. Rule (2). Its own grounds are the AIF literature, not the library."}
+  {:pattern "aif/structured-observation-vector"
+   :note "Names no pattern. predictive-coding-belief-update and evidence-precision-registry are already typed at :9 and :10."}
+  {:pattern "aif/term-to-channel-traceability"
+   :note "Both its directives are already written. decomposed-prediction-noise was considered from the other side and rejected on the same rule-(1) ground recorded there."}]
+
+ ;; ---------------------------------------------------------------------
+ ;; Not touched. 5a and the L9 hard rule: never rewrite an author's own @why.
+ ;; ---------------------------------------------------------------------
+ :authored-why-left-alone
+ [{:pattern "aif/grounded-actuation-not-reobservation"
+   :edge "@why aif/no-self-certification at :9"}
+  {:pattern "aif/posterior-variance-as-epistemic-value"
+   :edge "@why aif/structure-learning-by-model-reduction at :8"}]
+
+ ;; ---------------------------------------------------------------------
+ ;; Four @why edges that are post-hoc by their own comment and authored by
+ ;; spelling. Read, not touched; the decision is raised, not taken.
+ ;; ---------------------------------------------------------------------
+ :editorial-why-spelled-as-authored
+ [{:pattern "aif/candidate-pattern-action-space" :at "library/aif/candidate-pattern-action-space.flexiarg:7"
+   :edge "@why war-room/wr-19-tension-must-generate-not-only-rank"}
+  {:pattern "aif/expected-free-energy-scorecard" :at "library/aif/expected-free-energy-scorecard.flexiarg:7"
+   :edge "@why war-room/wr-27-a-loop-is-born-instrumented-for-its-gain"}
+  {:pattern "aif/no-self-certification" :at "library/aif/no-self-certification.flexiarg:8"
+   :edge "@why war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad"}
+  {:pattern "aif/off-continuity-null-discriminates" :at "library/aif/off-continuity-null-discriminates.flexiarg:8"
+   :edge "@why war-room/wr-9-bites-empirical-or-logical"}]
+ :editorial-why-note
+ "Each of the four carries the same trailing comment, written by claude-13 on 2026-08-23: editorial, retrospective sense-making, NOT a causal claim. That is the description of a @why-posthoc, and the form did not exist until LD1 on 2026-09-01. They are counted as authored @why today. Not converted this slice -- the conversion changes recorded numbers and lands on the same attestation bar as the readings above. Measured, and raised as holes/labs/library-contract/decisions.edn :editorial-why-mislabelled-as-authored."
+
+ ;; ---------------------------------------------------------------------
+ ;; The section's two spider @why PROPOSALS, read as this slice's business.
+ ;; ---------------------------------------------------------------------
+ :spider-why-proposals-read
+ [{:edge {:from "aif/two-layer-calibration" :to "aif/no-self-certification" :kind :why}
+   :verdict :agreed-as-posthoc
+   :note "Proposed above with the same warrant sentence the spider cited, carried as a pattern-file pointer rather than a store id."}
+  {:edge {:from "aif/predictive-entropy-as-ambiguity" :to "aif/shared-kernel-predictive-forward-model" :kind :why}
+   :verdict :not-adopted
+   :note "Its :cited clause is predictive-entropy:30, verify your forward model returns predicted variance per observation channel, if not the entropy isn't computable. That is a precondition on the forward model's OUTPUT, and the pattern that supplies predicted variance is decomposed-prediction-noise, which predictive-entropy:8 already types @how. shared-kernel is where the kernel lives, not where the variance comes from. A reading built on this clause points at the pattern already typed."}]
+
+ ;; ---------------------------------------------------------------------
+ ;; What the aif attestation warrants are made of. Measured this slice against
+ ;; the live store; full record in
+ ;; library/.spider/aif-attestation-warrant-provenance-2026-09-02.edn.
+ ;; ---------------------------------------------------------------------
+ :warrant-provenance
+ {:attestations 62 :distinct-records-cited 56
+  :records-authored-by-zai-2 49
+  :records-that-are-the-spiders-own-turn-start-prompt 47
+  :rows-whose-entire-evidence-is-a-spider-turn-start-prompt 50
+  :rows-whose-entire-evidence-is-zai-2-authored 53
+  :excerpts-occurring-in-the-SOURCE-pattern-file 50
+  :excerpts-occurring-in-the-TARGET-pattern-file 0
+  :why-attestations 4
+  :why-attestations-whose-evidence-is-a-spider-turn-start-prompt 4
+  :note
+  "The count 49 is not new -- library/aif/attestations-v3-reflection-audit.edn records :reflection-under-v2 49 and :reflection-under-v3 49, and this slice reproduced it independently. What is new is what those records ARE and what follows for the rationale layer. Zero excerpts bear on the target, so no cited excerpt states a relation; each states only that the source pattern says something, which the runner separately requires of :cited anyway."}
+
+ ;; ---------------------------------------------------------------------
+ ;; Defects found in the section's own records while reading them. Recorded,
+ ;; not repaired: repairing a wave-2 record is not this slice.
+ ;; ---------------------------------------------------------------------
+ :record-defects
+ [{:what :disclaimer-names-the-wrong-ruling
+   :where "library/aif/{expected-free-energy-scorecard,no-self-certification,off-continuity-null-discriminates}.flexiarg, the line after each @why"
+   :detail "All four editorial @why lines carry the identical two-line comment ending `WR-19 did not produce this pattern`. Only one of the four points at wr-19. expected-free-energy-scorecard:8 says it of an edge to wr-27, no-self-certification:9 of an edge to wr-25, off-continuity-null-discriminates:9 of an edge to wr-9. Three of four disclaimers name a ruling their own directive does not."
+   :consequence "The disclaimer is the only thing marking these as post-hoc, and in three of four cases it disclaims the wrong edge. A reader checking the claim against wr-19 finds no relation and cannot tell a copy-paste from a mistake."}
+  {:what :seat-failures-with-no-absence-row-and-no-flag
+   :where "library/aif/.spider/seat-failures.edn against library/aif/.spider/state.edn and absences.edn"
+   :detail "aif records 2 seat failures -- belief-state-operational-hypotheses at 2026-08-30T14:35:53Z and measurement-window-hygiene at 2026-08-30T14:55:35Z, each :retries 2. absences.edn is the empty vector and state.edn lists all 33 patterns as :completed. So unlike war-room, where slice 1 found a seat failure folded INTO the absence count, here the two failures are followed by completion and the section reports neither an absence nor a residue. Both patterns do carry attestations, so the retries appear to have succeeded."
+   :consequence "Recorded as the counterpart reading to slice 1's war-room defect rather than as a fault: it is what a clean retry looks like in these records, and it is only distinguishable from war-room's wr-14 case by cross-reading three files. Neither file says which."}]
+
+ ;; ---------------------------------------------------------------------
+ :cross-section-candidates-not-read
+ [{:from "aif/admissibility" :to "futon-theory/task-as-arrow"
+   :note "admissibility:25 names it as its ground, in its own BECAUSE. Not proposed: this slice read aif and did not read futon-theory, and a reading whose target file was not read is not a reading. Left for whichever slice takes that section."}]
+
+ ;; ---------------------------------------------------------------------
+ :harvest-recheck
+ {:what "The aif analogue of slice 1's live re-check. war-room's question was whether anything CAN be harvested; aif's is what the existing harvest actually cites."
+  :store "http://127.0.0.1:7073"
+  :method "Fetched all 56 distinct evidence records cited by library/aif/attestations.edn by GET /api/alpha/evidence/<id>, and read :evidence/author and the body's :event off each. Then, for every one of the 62 evidence entries, tested whether its normalized :excerpt occurs in the source pattern file and in the target pattern file."
+  :result "47 of 56 records are :event turn-start whose prompt begins `You are the spider for library/aif`; 49 of 56 are authored by zai-2, the seat that produced the attestations. 50 of 62 excerpts occur verbatim in the SOURCE pattern file and 0 in the target. The two records that carry an edge-form excerpt -- the spider's own proposal text quoted back as its own evidence -- are both zai-2 turn-round records, e-d8d9a914, cited by two :proposed @see-also rows on aif/belief-aware-risk-term."
+  :conclusion "Consistent with README-flexiarg 5a's corollary, reached from the other side. war-room shows the rationale layer cannot be harvested because nothing external mentions it; aif shows that where @why edges DID pass the store bar, the text that passed was the pattern's own, routed through a record the spider wrote. Both sections say the warrant is authored. Only the paperwork differs."}}

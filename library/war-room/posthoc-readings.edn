@@ -1,0 +1,203 @@
+;; L9 slice 1 -- war-room. The AUTHORING lane for the rationale layer.
+;;
+;; README-flexiarg.md §5a: "the rationale layer can therefore only ever be
+;; authored, never harvested." Wave 2 measured that for this section: war-room
+;; is the best-cited section for USE and yields zero corroborated relations.
+;; This file is what an author's reading of the 28 rulings produces instead.
+;;
+;; NOTHING HERE IS AN EDGE YET. No @why-posthoc directive was written into any
+;; .flexiarg this slice, because an authored warrant cannot currently be
+;; recorded as an attestation -- see
+;; library/.spider/posthoc-warrant-blocker-2026-09-02.edn for the demonstration
+;; and holes/labs/library-contract/decisions.edn :posthoc-warrant-evidence for
+;; the decision that would unblock it. The readings are recorded here so the
+;; blocker costs a conversion step, not the reading.
+{:schema :library-contract/posthoc-readings-v1
+ :section "war-room"
+ :slice {:item :L9 :n 1 :by "claude-owner" :at "2026-09-02"
+         :read "all 28 library/war-room/*.flexiarg, library/war-room/.spider/absences.edn (27 rows), library/war-room/.spider/seat-failures.edn (2 rows), library/.spider/war-room-harvest-finding-2026-08-30.edn"}
+
+ ;; Every one of the 28 patterns is placed in exactly one bucket below.
+ :census {:patterns 28
+          :authored-why 9        ; wr-4 wr-8 wr-9 wr-16 wr-19 wr-24 wr-25 wr-26 wr-27
+          :declared-root 1       ; wr-0
+          :proposed-posthoc 5
+          :considered-not-proposed 5
+          :no-reading-found 8}
+
+ ;; ---------------------------------------------------------------------
+ ;; PROPOSED. A retrospective reading with a statable warrant. Direction is
+ ;; §5a's: toward the general. None of these is a causal claim -- §5a is
+ ;; explicit that no build trace from a war-room ruling to a pattern exists,
+ ;; and none was looked for.
+ ;; ---------------------------------------------------------------------
+ :proposed
+ [{:edge {:from "war-room/wr-6-daily-scan-is-depositing-heartbeat"
+          :to "war-room/wr-0-organise-without-apparatus"
+          :kind :why-posthoc}
+   :rating :strong
+   :warrant
+   "WR-6 sets its success condition as at least one COUNTABLE EXTERNAL conversation and refuses the stack's own scanning activity as evidence for the hypothesis. That is WR-0's property (c) -- a verdict the apparatus cannot issue to itself -- applied to the depositing loop before (c) had been written down. WR-0's own context licenses the retrospective reading without a causal claim: it says it is the ruling the numbered ones were already operating under, and it was recorded 2026-08-22 against WR-6's 2026-04-13."
+   :warrant-pointers
+   [{:at "library/war-room/wr-6-daily-scan-is-depositing-heartbeat.flexiarg:16"
+     :quote "The hypothesis has no supporting external response merely because scanning activity occurs."}
+    {:at "library/war-room/wr-6-daily-scan-is-depositing-heartbeat.flexiarg:22"
+     :quote "A countable external conversation distinguishes a depositing heartbeat from activity that never reaches another party."}
+    {:at "library/war-room/wr-0-organise-without-apparatus.flexiarg:71"
+     :quote "(c) A VERDICT IT CANNOT ISSUE TO ITSELF. Every claim the apparatus makes"}
+    {:at "library/war-room/wr-0-organise-without-apparatus.flexiarg:19"
+     :quote "the file was created). This is the ruling the numbered ones were already"}]}
+
+  {:edge {:from "war-room/wr-23-upstream-trackers-are-stack-surfaces"
+          :to "war-room/wr-0-organise-without-apparatus"
+          :kind :why-posthoc}
+   :rating :strong
+   :warrant
+   "WR-23's BECAUSE gives four reasons for the upstream-tracker lane and one of them is WR-0 property (c) in almost the same words: maintainer merges are offered as external evaluation that CANNOT BE SELF-SUPPLIED. WR-0 (c) requires every claim about the apparatus's own success to be movable only by evidence it did not manufacture, and cites aif/no-self-certification for it. WR-23 is that requirement turned into a lane that produces such evidence."
+   :warrant-pointers
+   [{:at "library/war-room/wr-23-upstream-trackers-are-stack-surfaces.flexiarg:22"
+     :quote "offers maintainer merges as genuine external evaluation that cannot be self-supplied"}
+    {:at "library/war-room/wr-0-organise-without-apparatus.flexiarg:71"
+     :quote "(c) A VERDICT IT CANNOT ISSUE TO ITSELF. Every claim the apparatus makes"}]
+   :note
+   "WR-23 also reuses WR-4's word -- it says the lane makes the stack's own faculties more INHABITABLE (same line 22). A second post-hoc target war-room/wr-4-inhabit-before-building is defensible; one target is proposed rather than two because the self-supplied-verdict reading is the one that carries WR-23's THEN (send only by the operator, record every rung's movement), while inhabitability is a side benefit the ruling lists fourth."}
+
+  {:edge {:from "war-room/wr-18-war-machine-is-demonstrated-not-hypothesised"
+          :to "war-room/wr-9-bites-empirical-or-logical"
+          :kind :why-posthoc}
+   :rating :strong
+   :warrant
+   "WR-9 rules that a claim in the self-model is LOGICAL until session evidence supports it, and that invariant I1 (evidence supersedes assertion) applies inside the self-model itself. WR-18 performs exactly that transition for one claim: before the first outing the is-it-real question was open, and the outing is what changes the claim's status. WR-18 is WR-9's empirical/logical discipline applied to the War Machine's own status rather than to a conflict bite."
+   :warrant-pointers
+   [{:at "library/war-room/wr-9-bites-empirical-or-logical.flexiarg:17"
+     :quote "Such claims are formal until session evidence supports them: the cached weight on a conflict is a hypothesis, not a measurement."}
+    {:at "library/war-room/wr-9-bites-empirical-or-logical.flexiarg:31"
+     :quote "Invariant I1, evidence supersedes assertion, applies inside the self-model itself."}
+    {:at "library/war-room/wr-18-war-machine-is-demonstrated-not-hypothesised.flexiarg:16"
+     :quote "Before the first outing, the WB-7/8 arc still left the \"is it real\" question open"}
+    {:at "library/war-room/wr-18-war-machine-is-demonstrated-not-hypothesised.flexiarg:22"
+     :quote "Demonstration changes the status of the claim"}]
+   :note
+   "A reviewer should test the opposite reading before attesting: WR-18's evidence is the machine's own outing, which is internal, so WR-0 property (c) is in TENSION with WR-18 rather than beneath it. The proposed edge is to WR-9, not WR-0, for that reason."}
+
+  {:edge {:from "war-room/wr-14-predecessor-completion-pull-is-a-fourth-next-move-criterion"
+          :to "war-room/wr-10-next-move-surface-is-recursive-closure"
+          :kind :why-posthoc}
+   :rating :strong
+   :warrant
+   "WR-14 adds a FOURTH criterion to a three-criterion ranking and never says where the three came from. WR-10 is where they come from: it establishes the next-move surface as a live endpoint read off the self-model, and its evidence enumerates the three (direct leverage, unlock cascade, self-referential closure). WR-14 is unintelligible as a standalone ruling and exact as an extension of WR-10's surface."
+   :warrant-pointers
+   [{:at "library/war-room/wr-14-predecessor-completion-pull-is-a-fourth-next-move-criterion.flexiarg:13"
+     :quote "The operator executes a move that diverges from the stack's three-criterion recommendation"}
+    {:at "library/war-room/wr-10-next-move-surface-is-recursive-closure.flexiarg:24"
+     :quote "The stack self-model file encodes a three-criterion ranking, direct leverage, unlock cascade, and self-referential closure"}]
+   :note
+   "wr-14 is the one pattern in this section with NO absence row: it is a seat failure, not a measured absence -- see :record-defects below. So this reading is not contradicted by any harvest; it was never harvested."}
+
+  {:edge {:from "war-room/wr-10-next-move-surface-is-recursive-closure"
+          :to "war-room/wr-8-typed-files-are-sources-of-truth"
+          :kind :why-posthoc}
+   :rating :strong
+   :warrant
+   "WR-10's own THEN names the WR-8 discipline as one of the three things that keep the tile true (typed files current, drift detector plus re-render, and the WR-8 discipline). The dependency is stated by the pattern itself and was simply never written as a directive."
+   :warrant-pointers
+   [{:at "library/war-room/wr-10-next-move-surface-is-recursive-closure.flexiarg:19"
+     :quote "As long as the typed argument files are kept current, drift detector plus re-render plus the WR-8 discipline, the tile always recommends the move the stack itself argues is highest expected value"}
+    {:at "library/war-room/wr-8-typed-files-are-sources-of-truth.flexiarg:29"
+     :quote "The sixteen leaf-level and one stack-level typed argument files at the futon5a stories are the canonical self-model."}]
+   :promotion-candidate
+   "This is the one reading in the section that is arguably NOT post-hoc: the warrant is the pattern's own prose naming its own dependency, which is what §5a calls an author's causal claim. It is proposed as @why-posthoc anyway because the L9 lane did not write WR-10 and the standard reserves @why to the pattern's own author. A reviewer WITH author standing should consider promoting it to a plain @why rather than attesting it as a trace."}]
+
+ ;; ---------------------------------------------------------------------
+ ;; CONSIDERED, WARRANT STATED, NOT PROPOSED. Each of these has a reading a
+ ;; reader would recognise; none is strong enough that this lane would defend
+ ;; it at review. Recorded with the warrant so a later slice can promote one
+ ;; on new grounds rather than rediscover it.
+ ;; ---------------------------------------------------------------------
+ :considered-not-proposed
+ [{:edge {:from "war-room/wr-7-frames-interoperate-or-they-do-not-exist"
+          :to "war-room/wr-4-inhabit-before-building" :kind :why-posthoc}
+   :reading "Both refuse construction ahead of demand: WR-4 justifies new infrastructure only where it makes an existing surface more inhabitable (wr-4:31); WR-7 says do not build the model before a port demands it (wr-7:19)."
+   :why-not "WR-4's stated ground is usage -- uninhabited infrastructure is dead infrastructure -- while WR-7's is operational existence of a frame through its ports. The shared slogan is not a shared ground."}
+
+  {:edge {:from "war-room/wr-21-geometrization-is-a-shared-cross-mission-dependency"
+          :to "war-room/wr-2-pattern-library-stays-canonical" :kind :why-posthoc}
+   :reading "Both build one canonical shared thing rather than per-consumer copies: WR-2 keeps one library location (wr-2:22); WR-21 builds one ground metric to prevent divergence into incompatible local approximations (wr-21:24)."
+   :why-not "The mechanisms differ. WR-2 is about a fast loop modifying its own constraints (invariant I4). WR-21 is about no single mission owning cross-mission adequacy. Same remedy, different failure."}
+
+  {:edge {:from "war-room/wr-15-head-as-escrow-is-a-sanctioned-pattern"
+          :to "war-room/wr-7-frames-interoperate-or-they-do-not-exist" :kind :why-posthoc}
+   :reading "WR-7 records a missing dependency as a sorry (wr-7:19); WR-15 has the mission HEAD name every not-yet-committed piece explicitly as a tension (wr-15:20). Both refuse to paper over an unsettled dependency."
+   :why-not "WR-7's sorry is DETECTED by exercising a port; WR-15's tension is DECLARED at authoring time. The detection mechanism is what WR-7 rules on, and WR-15 has none."}
+
+  {:edge {:from "war-room/wr-13-futonic-debt-is-paid-in-order"
+          :to "war-room/wr-4-inhabit-before-building" :kind :why-posthoc}
+   :reading "WR-4 rules that stack work not serving mathematics or consulting is building alone and never delivering (wr-4:31); WR-13 defers library hygiene in favour of the predecessor task that unblocks the pilot (wr-13:22)."
+   :why-not "WR-13's ordering argument is dependency-order, which is a scheduling claim; WR-4's is about what justifies work at all. WR-13 would hold unchanged if WR-4 did not exist."}
+
+  {:edge {:from "war-room/wr-22-logic-model-before-code-is-a-sanctioned-verify-method"
+          :to "war-room/wr-9-bites-empirical-or-logical" :kind :why-posthoc}
+   :reading "WR-9 partitions claims into empirical and logical and refuses to let a logical one pass as measured (wr-9:17). WR-22 partitions invariants into those checkable structurally and a residue that requires contact with the real substrate (wr-22:23), and mandates a separate spike for the residue."
+   :why-not "The partition is the same shape but WR-22 is a ruling about a VERIFY METHOD's scope, not about the evidential status of a claim in the self-model. Peerage is the more honest relation, and @see-also is out of this slice's scope."}]
+
+ ;; ---------------------------------------------------------------------
+ ;; NO READING FOUND. Recorded as a finding, per the acceptance.
+ ;; ---------------------------------------------------------------------
+ :no-reading-found
+ [{:pattern "war-room/wr-1-three-futon-split"
+   :note "Ground is timescale separation (invariant I3), which no other war-room ruling states. WR-0 was considered and rejected: WR-1 is not about authority or apparatus."}
+  {:pattern "war-room/wr-2-pattern-library-stays-canonical"
+   :note "Ground is invariant I4, preference exogeneity. Same as WR-1: the authority axis WR-0 rules on is not the axis WR-2 turns on."}
+  {:pattern "war-room/wr-3-social-exotype-before-implementation"
+   :note "WR-22 was considered: both say verify the design before implementation exists. Rejected because WR-22 sanctions a specific method (an executable logic model over abstract adversarial traces) that WR-3 does not use -- WR-3's method is an exotype diagram plus composition validation. The shared discipline is peerage."}
+  {:pattern "war-room/wr-5-war-machine-is-not-a-mission"
+   :note "Ground is operational classification -- infrastructure versus mission -- and no war-room ruling states that classification. WR-4 was considered and rejected: WR-5 is not about inhabitation."}
+  {:pattern "war-room/wr-11-external-applications-carry-predecessor-exemplar-relationships"
+   :note "Shares the predecessor concept with WR-14 and the same bulletin-9 sitting, which makes them siblings rather than one resting on the other."}
+  {:pattern "war-room/wr-12-essay-health-is-the-aif-observation-channel"
+   :note "Carries @verdict incomplete and an in-file note that the source states no tension (wr-12:1). WR-16 was considered (both make an already-emitting typed structure an observation channel) and rejected: the two are same-day siblings, and a post-hoc @why would supply from outside exactly the tension the file records as missing. The honest repair is a source, not an edge."}
+  {:pattern "war-room/wr-17-futon0-as-cyborg-futon7-as-markov-blanket"
+   :note "@verdict incomplete, same in-file note (wr-17:1). WR-1 was considered and rejected: WR-1 cuts by timescale, WR-17 cuts by which way the work faces. Different axis."}
+  {:pattern "war-room/wr-20-action-class-inventory-becomes-data"
+   :note "@verdict incomplete with an explicit note that the originating friction cannot be supplied by decomposing the ruling (wr-20:9). WR-8 was considered (both move something implicit in code into declared data) and rejected: WR-8's claim is about DRIFT DETECTABILITY, WR-20's is about self-extension without new code."}]
+
+ ;; ---------------------------------------------------------------------
+ ;; Not touched. §5a and the L9 hard rule: never rewrite an author's own @why.
+ ;; ---------------------------------------------------------------------
+ :authored-why-left-alone
+ ["war-room/wr-4-inhabit-before-building"
+  "war-room/wr-8-typed-files-are-sources-of-truth"
+  "war-room/wr-9-bites-empirical-or-logical"
+  "war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels"
+  "war-room/wr-19-tension-must-generate-not-only-rank"
+  "war-room/wr-24-a-removed-constraint-does-not-remove-the-discipline-it-supplied"
+  "war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad"
+  "war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch"
+  "war-room/wr-27-a-loop-is-born-instrumented-for-its-gain"]
+ :declared-root
+ [{:pattern "war-room/wr-0-organise-without-apparatus"
+   :note "@why root at wr-0:7, explicit terminal by construction. No up-edge to mint."}]
+
+ ;; ---------------------------------------------------------------------
+ ;; Two defects found in the section's own harvest records while reading them.
+ ;; Recorded, not repaired: repairing a wave-2 record is not this slice.
+ ;; ---------------------------------------------------------------------
+ :record-defects
+ [{:what :seat-failure-counted-as-absence
+   :where "library/.spider/war-room-harvest-finding-2026-08-30.edn"
+   :detail "That file reports :absences 28. library/war-room/.spider/absences.edn holds 27 rows. The 28th pattern, wr-14-predecessor-completion-pull-is-a-fourth-next-move-criterion, has no absence row; it has a seat-failure row (\"seat returned malformed output\", :retries 2, 2026-08-30T21:46:02Z) in library/war-room/.spider/seat-failures.edn. wr-13 has a seat-failure row too but was re-run and does have an absence row (state.edn :completed [\"war-room/wr-13-futonic-debt-is-paid-in-order\"]). So war-room was harvested for 27 of its 28 patterns, and the summary folds the one un-harvested pattern into the absence total -- the exact confusion packet 3 was commissioned to end (P-organise-the-library.md status: \"seat-failures counted apart from absences with two retries\")."
+   :consequence "The section's zero-corroborated-relations result stands on 27 measured patterns, not 28. Nothing in the wave-2 conclusion changes; the denominator does."}
+  {:what :use-count-not-reproducible-from-these-records
+   :where "futon2/holes/problems/P-organise-the-library.md WAVE 2 GATED paragraph"
+   :detail "That paragraph calls war-room the best-cited section for USE at 17/28, and worklist.edn L9's :statement repeats 17. library/.spider/war-room-harvest-finding-2026-08-30.edn records :zero-hits 18 and :hits-but-no-pattern-tie 10 for the same section, i.e. 10 of 28 with any hit. The two numbers are not the same measurement and this slice did not find a record that reconciles them: not found. The 17 figure is not used anywhere in this file."}]
+
+ ;; ---------------------------------------------------------------------
+ :harvest-recheck
+ {:what "Bounded live re-check that the rationale layer is not harvestable here, rather than inheriting wave 2's result."
+  :store "http://127.0.0.1:7073"
+  :queries ["WR-18 WR-9"
+            "war-room/wr-18-war-machine-is-demonstrated-not-hypothesised"
+            "drift detector re-render WR-8 discipline next-move tile"
+            "Recommended Next Move tile reads the next-move field directly off the live endpoint"]
+  :result "Every top hit across all four queries is spider-run traffic from the wave seats -- authors zai-1, zai-2 and codex-20, :evidence/type :coordination, dated 2026-08-30. e-d667aa91-ed42-4a36-aa5f-7fc7cc814145 (zai-1, 2026-08-30T14:34:35Z) was fetched in full: its :evidence/body is {:event :turn-start ... :prompt \"You are the spider for library/war-room...\"} -- the spider's own prompt quoting the pattern file back. That is spider self-text, which the reflection rule excludes by construction. No record independent of the spider states a relation between two war-room rulings."
+  :conclusion "Consistent with §5a's corollary and with wave 2. The five proposals above are authored, and there is nothing to harvest that would corroborate them."}}

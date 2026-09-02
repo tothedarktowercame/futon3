@@ -1,0 +1,45 @@
+;; L9 slice 1 (war-room). Why no @why-posthoc directive was written.
+;;
+;; Shown happening, not inferred: three probes against a COPY of the library at
+;; /tmp/L9probe/library, using the same linter invocation the section gate uses.
+;; The repository's library/ was not modified by any probe (git status clean for
+;; library/war-room throughout).
+{:schema :library-contract/finding-v1
+ :item :L9 :slice 1 :section "war-room" :by "claude-owner" :at "2026-09-02"
+
+ :claim
+ "The attestation bar that L9's :statement adopts on an interim basis -- \"the attestation bar for a post-hoc edge is the same evidence-tag machinery spider edges use\" -- cannot be met by an AUTHORED post-hoc warrant, and can be met by a record that has no bearing on the edge. It rejects the honest form and accepts a facade."
+
+ :mechanism
+ [{:at "checks/library_graph_lint.clj:252 valid-evidence?"
+   :detail "requires (#{:tag :text} (:via x)). Both values name a route into the futon1b evidence store. There is no :via for a warrant whose source is a pattern file, so an authored warrant is malformed at the schema, before any semantics run."}
+  {:at "checks/library_graph_lint.clj:551 attestation-semantic-failures"
+   :detail "for every evidence entry, resolves :id through the store (rung 1 through the pinned index for that pattern; rung 2 through GET /api/alpha/evidence/<id>) and fails :evidence-excerpt-mismatch unless the normalized :excerpt occurs in that record. The check verifies that the excerpt is IN the record. It does not and cannot check that the record bears on the edge."}
+  {:at "checks/library_graph_lint.clj:629 missing-atts"
+   :detail "a section edge absent from the baseline and from attested-edges is :new-edge-without-attestation, and attested-edges only admits records that pass valid-attestation?. So a rejected record leaves the directive bare as well: one honest attempt produces two failures."}]
+
+ :probes
+ [{:id :probe-1 :what "a bare @why-posthoc edge, no attestation record"
+   :edit "/tmp/L9probe/library/war-room/wr-18-war-machine-is-demonstrated-not-hypothesised.flexiarg:7 -- @why-posthoc war-room/wr-9-bites-empirical-or-logical"
+   :exit 1 :exit-file "/tmp/L9gates/probe1.exit" :report "/tmp/L9gates/probe1.edn"
+   :result "one check: {:check :new-edge-attested :reason :new-edge-without-attestation :line 7}. Confirms the acceptance's \"no bare edges\" clause is enforced, not aspirational."
+   :also "the section summary reports :why-posthoc 1 with :patterns-with-outgoing-why 9 and :fraction-organised 0.32142857142857145 UNCHANGED from the pre-slice run -- LD1's separate-counting claim reproduced on a live section rather than a fixture."}
+
+  {:id :probe-2a :what "the honest form: warrant carried as an authored reading with a pattern-file pointer"
+   :record "{:edge {... :kind :why-posthoc} :cited \"WR-9: 'Such claims are formal until session evidence supports them'. WR-18: 'Demonstration changes the status of the claim'.\" :evidence [{:id \"war-room/wr-9-bites-empirical-or-logical.flexiarg:22\" :via :pattern-text :query \"authored retrospective reading of the two pattern files\" :excerpt \"Such claims are formal until session evidence supports them\"}] :rung 2 :state :proposed}"
+   :exit 1 :exit-file "/tmp/L9gates/probe2a.exit" :report "/tmp/L9gates/probe2a.edn"
+   :result "two checks: {:check :attestation-schema :reason :malformed-attestation} AND {:check :new-edge-attested :reason :new-edge-without-attestation}. The excerpt is a verbatim, correct quotation of the target pattern and the edge is one a reader can check in thirty seconds; the record is refused because :via :pattern-text is not in #{:tag :text}."}
+
+  {:id :probe-2c :what "the facade: a real store id and a real excerpt with no bearing on the edge"
+   :record "the same edge and the same :cited, but :evidence [{:id \"e-d667aa91-ed42-4a36-aa5f-7fc7cc814145\" :via :text :query \"war-room wr-18 wr-9\" :excerpt \"You are the spider for library/war-room\"}]"
+   :exit 0 :exit-file "/tmp/L9gates/probe2c.exit" :report "/tmp/L9gates/probe2c.edn"
+   :result ":checks [] and :pass? true. The cited excerpt is the spider's own turn-start PROMPT (e-d667aa91 is :evidence/author \"zai-1\", :evidence/type :coordination, 2026-08-30T14:34:35Z, body :event :turn-start). It says nothing about WR-18, WR-9 or any relation between them. It passes because it is a real substring of a real record, which is the whole of what the check tests."
+   :note "This is P-organise-the-library's own facade list read from the other side. That record lists \"harvested @why presented as authored\"; probe 2c is authored @why presented as harvested, and the gate that refuses the first waves the second through."}]
+
+ :not-claimed
+ "This is not a claim that the excerpt check is wrong for SPIDER edges. For a harvested edge the check is doing exactly its job: O2 of P-validated-R5 §3e requires a spider to cite text, and verifying the citation resolves is how that is enforced. The finding is narrower -- the check was built for a lane whose warrant is external, and the rationale layer has no external warrant by construction (README-flexiarg.md §5a: \"the rationale layer can therefore only ever be authored, never harvested\")."
+
+ :what-would-unblock
+ "holes/labs/library-contract/decisions.edn :posthoc-warrant-evidence. Proposed, not adopted, and no code was changed this slice."
+
+ :cleanup "/tmp/L9probe is a scratch copy and may be deleted. The five readings the probes were exercising are recorded in library/war-room/posthoc-readings.edn."}

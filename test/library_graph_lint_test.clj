@@ -15,7 +15,9 @@
 (defn baseline! [root]
   (lint/snapshot (lint/scan-library root)))
 
-(defn run-fixture [setup]
+(defn run-fixture
+  ([setup] (run-fixture setup []))
+  ([setup extra-args]
   (let [root (fs/create-temp-dir {:prefix "library-graph-lint-"})
         baseline (fs/path root "baseline.edn")
         attestations (fs/path root "attestations.edn")
@@ -26,17 +28,18 @@
         (spit (str baseline) (pr-str base))
         (when-not (fs/exists? attestations) (spit (str attestations) "[]"))
         (when-not (fs/exists? evidence-records) (spit (str evidence-records) "{}"))
-        (let [proc (process/shell
-                    {:continue true :out :string :err :string}
-                    "bb" "checks/library_graph_lint.clj"
-                    "--library" (str root) "--section" "s"
-                    "--baseline" (str baseline)
-                    "--attestations" (str attestations)
-                    "--evidence-records" (str evidence-records)
-                    "--report" (str report-path))]
+        (let [proc (apply process/shell
+                          {:continue true :out :string :err :string}
+                          "bb" "checks/library_graph_lint.clj"
+                          "--library" (str root) "--section" "s"
+                          "--baseline" (str baseline)
+                          "--attestations" (str attestations)
+                          "--evidence-records" (str evidence-records)
+                          "--report" (str report-path)
+                          extra-args)]
           (assoc (edn/read-string (slurp (str report-path)))
                  :test/exit (:exit proc))))
-      (finally (fs/delete-tree root)))))
+      (finally (fs/delete-tree root))))))
 
 (defn reasons [report] (set (map :reason (:checks report))))
 (defn failed-for? [report reason]
@@ -294,6 +297,122 @@
                         (write-pattern! root "s/b" "@why s/a" "b")
                         {:base (baseline! root)}))
                      :why-cycle))))
+
+(def authored-warrant-sentence
+  "The split was forced by discovering the calibration was self-certifying.")
+
+(defn write-warranted-pair!
+  "s/a and s/b with the warrant sentence at a line this test knows by
+  construction. Line 1 is the header, line 2 the directive slot (blank in the
+  baseline, the directive afterwards, so the body digest is the same either
+  way), line 3 the conclusion, line 4 the warrant, line 5 a decoy that must not
+  satisfy a pointer at line 4."
+  [root directive]
+  (doseq [id ["s/a" "s/b"]]
+    (let [file (fs/path root (str id ".flexiarg"))]
+      (fs/create-dirs (fs/parent file))
+      (spit (str file)
+            (str "@flexiarg " id "\n"
+                 (if (= id "s/a") directive "") "\n"
+                 "! conclusion: " id "\n"
+                 (if (= id "s/a") authored-warrant-sentence "target prose") "\n"
+                 "A decoy line that repeats no warrant.\n")))))
+
+(defn authored-warrant-fixture
+  "The shape L9's readings are actually in: the warrant is a sentence in the
+  source pattern, pointed at by file and line, with no store record anywhere."
+  ([] (authored-warrant-fixture {}))
+  ([{:keys [edge-kind evidence]
+     :or {edge-kind :why-posthoc}}]
+   (fn [root]
+     (write-warranted-pair! root "")
+     (let [base (baseline! root)]
+       (write-warranted-pair! root (str "@" (name edge-kind) " s/b"))
+       (spit (str (fs/path root "attestations.edn"))
+             (pr-str [{:edge {:from "s/a" :to "s/b" :kind edge-kind}
+                       :by "claude-owner" :at "2026-09-02"
+                       :read ["s/a" "s/b"] :cited authored-warrant-sentence
+                       :evidence [(or evidence
+                                      {:via :pattern-text :file "s/a.flexiarg" :line 4
+                                       :query "warrant sentence in the source pattern"
+                                       :excerpt authored-warrant-sentence})]
+                       :rung 2 :state :proposed}]))
+       {:base base}))))
+
+(def pattern-text-arm ["--posthoc-warrant" "pattern-text"])
+
+(deftest an-authored-warrant-is-refused-by-the-store-bar-and-verified-under-its-own-arm
+  ;; decisions.edn :posthoc-warrant-evidence. The arm is BUILT AND RUN here, not
+  ;; adopted: the default is still the store bar, and these are the numbers the
+  ;; choice between the arms is made on.
+  (testing "arm :store, the default, refuses it twice over -- the probe recorded in library/.spider/posthoc-warrant-blocker-2026-09-02.edn"
+    (let [report (run-fixture (authored-warrant-fixture))]
+      (is (pos? (:test/exit report)))
+      (is (contains? (reasons report) :malformed-attestation))
+      (is (contains? (reasons report) :new-edge-without-attestation))))
+  (testing "arm :pattern-text accepts the same record, verified against the library"
+    (let [report (run-fixture (authored-warrant-fixture) pattern-text-arm)]
+      (is (zero? (:test/exit report)) (pr-str (:checks report)))
+      (is (= [] (:checks report)))
+      (is (= 1 (get-in report [:summary :edges-by-kind :why-posthoc])))
+      ;; A verified trace is still a trace: it does not raise the organised
+      ;; fraction, so the arm cannot move the wave measure.
+      (is (zero? (get-in report [:summary :section :fraction-organised])))))
+  (testing "the pointer is checked, not just the quotation"
+    (doseq [[label evidence]
+            [["the excerpt is real but sits on another line"
+              {:via :pattern-text :file "s/a.flexiarg" :line 5 :query "q"
+               :excerpt authored-warrant-sentence}]
+             ["the excerpt is nowhere in the file"
+              {:via :pattern-text :file "s/a.flexiarg" :line 4 :query "q"
+               :excerpt "a sentence no pattern file contains"}]
+             ["the file does not exist"
+              {:via :pattern-text :file "s/absent.flexiarg" :line 4 :query "q"
+               :excerpt authored-warrant-sentence}]
+             ["the window runs past the end of the file"
+              {:via :pattern-text :file "s/a.flexiarg" :line 99 :query "q"
+               :excerpt authored-warrant-sentence}]]]
+      (is (failed-for? (run-fixture (authored-warrant-fixture {:evidence evidence})
+                                    pattern-text-arm)
+                       :pattern-text-excerpt-mismatch)
+          label)))
+  (testing "the arm widens nothing outside the post-hoc lane (P-validated-R5 law O2)"
+    (is (failed-for? (run-fixture (authored-warrant-fixture {:edge-kind :why})
+                                  pattern-text-arm)
+                     :malformed-attestation)
+        "an authored @why may not carry a pattern-text warrant even on this arm")
+    (is (failed-for? (run-fixture
+                      (authored-warrant-fixture
+                       {:evidence {:id "e-dressed-up" :via :pattern-text
+                                   :file "s/a.flexiarg" :line 4 :query "q"
+                                   :excerpt authored-warrant-sentence}})
+                      pattern-text-arm)
+                     :malformed-attestation)
+        "a store id on a pattern-text warrant is refused: the two corpora do not mix"))
+  (testing "the store bar is unchanged on the other arm"
+    ;; Same fixture, store evidence, run WITH the flag: a resolving excerpt
+    ;; passes and a non-resolving one fails exactly as before, so no recorded
+    ;; number from a :store run is comparable-only-by-luck to one taken here.
+    (let [store-ev {:id "e-warrant" :via :text :query "q"
+                    :excerpt "the runner calls s/b to carry out s/a"}
+          with-records (fn [ev]
+                         (fn [root]
+                           (let [f (authored-warrant-fixture {:evidence ev})
+                                 out (f root)]
+                             (spit (str (fs/path root "evidence-records.edn"))
+                                   (pr-str warrant-evidence))
+                             out)))]
+      (is (zero? (:test/exit (run-fixture (with-records store-ev) pattern-text-arm))))
+      (is (failed-for? (run-fixture
+                        (with-records (assoc store-ev :excerpt "text no record holds"))
+                        pattern-text-arm)
+                       :evidence-excerpt-mismatch))))
+  (testing "an unrecognised arm fails loudly instead of running the default"
+    (is (failed-for? (run-fixture (authored-warrant-fixture)
+                                  ["--posthoc-warrant" "nonsense"])
+                     :linter-error))
+    (is (= :store (lint/warrant-arm {})))
+    (is (= :pattern-text (lint/warrant-arm {:posthoc-warrant "pattern-text"})))))
 
 (deftest posthoc-why-is-invisible-to-consumers-that-have-not-opted-in
   (testing "the cascade @why graph reader (checks/playout_snatch.clj:237) reads zero"

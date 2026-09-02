@@ -255,6 +255,65 @@
        (some? (:id x)) (#{:tag :text} (:via x))
        (nonblank-string? (:query x)) (nonblank-string? (:excerpt x))))
 
+;; --- decisions.edn :posthoc-warrant-evidence, arm :pattern-text-warrant ------
+;; BUILT BEHIND THIS FLAG AND RUN, not adopted. Joe's rule of 2026-09-01 (quoted
+;; at holes/labs/library-contract/worklist_check.bb:16) is that a choice the
+;; theory does not settle gets its branches built and run so the decision is
+;; made on numbers; L9 slices 1 and 2 sent it up as an advance ruling instead.
+;; :store is the bar exactly as it stood before, so any run that does not ask
+;; for the other arm behaves identically -- that is what keeps the C88 pin and
+;; every recorded section number comparable across this change.
+(def warrant-arms #{:store :pattern-text})
+(def ^:dynamic *posthoc-warrant-arm* :store)
+
+(defn warrant-arm
+  "The arm this run is on: --posthoc-warrant, else LIBRARY_POSTHOC_WARRANT, else
+  :store. An unrecognised value throws rather than falling back, so a typo in
+  the flag cannot be read later as a run of the default arm."
+  [opts]
+  (let [raw (or (:posthoc-warrant opts) (System/getenv "LIBRARY_POSTHOC_WARRANT"))]
+    (if (nil? raw)
+      :store
+      (or (warrant-arms (keyword (str raw)))
+          (throw (ex-info (str "unknown --posthoc-warrant " (pr-str raw)
+                               "; arms are " (pr-str (sort warrant-arms)))
+                          {:posthoc-warrant raw}))))))
+
+(defn line-window
+  "The inclusive [start end] a pattern-text pointer names. An integer is one
+  line; a two-element vector is a range, because a sentence in a wrapped
+  pattern file can cross a line break. Nothing else is a window -- in
+  particular the window is never widened to go looking for the excerpt."
+  [line]
+  (cond
+    (and (int? line) (pos? line)) [line line]
+    (and (vector? line) (= 2 (count line)) (every? int? line)
+         (pos? (first line)) (<= (first line) (second line))) line))
+
+(defn valid-pattern-text-evidence?
+  "The authored-warrant shape. It carries no :id because there is no store
+  record to name: the warrant is the pattern's own prose, so the pointer is a
+  path under the library root and the line window the excerpt sits in.
+  Admissible only on a :why-posthoc edge and only under the :pattern-text arm --
+  see evidence-admissible? below; validity of the shape alone is decided here."
+  [x]
+  (and (map? x)
+       (= :pattern-text (:via x))
+       (every? #(contains? x %) [:via :file :line :query :excerpt])
+       (not (contains? x :id))
+       (nonblank-string? (:file x))
+       (some? (line-window (:line x)))
+       (nonblank-string? (:query x)) (nonblank-string? (:excerpt x))))
+
+(defn evidence-admissible?
+  "Store evidence is admissible on every edge. A pattern-text warrant is
+  admissible only on a post-hoc edge and only when this run is on that arm, so
+  the harvested lane's bar (P-validated-R5 law O2) is untouched by the flag."
+  [posthoc? x]
+  (or (valid-evidence? x)
+      (and posthoc? (= :pattern-text *posthoc-warrant-arm*)
+           (valid-pattern-text-evidence? x))))
+
 (defn valid-state? [x]
   (or (#{:proposed :refused} x)
       (and (vector? x) (= 2 (count x)) (= :attested-by (first x))
@@ -286,7 +345,10 @@
        (nonblank-string? (:by x)) (nonblank-string? (:at x))
        (vector? (:read x)) (seq (:read x)) (every? nonblank-string? (:read x))
        (nonblank-string? (:cited x))
-       (vector? (:evidence x)) (seq (:evidence x)) (every? valid-evidence? (:evidence x))
+       (vector? (:evidence x)) (seq (:evidence x))
+       (every? (partial evidence-admissible?
+                        (= posthoc-why-kind (get-in x [:edge :kind])))
+               (:evidence x))
        (#{1 2} (:rung x)) (valid-state? (:state x))
        (or (not (contains? x :reason)) (nonblank-string? (:reason x)))
        (or (not= :refused (:state x)) (nonblank-string? (:reason x)))
@@ -548,7 +610,20 @@
   (when (some #(= id (:id %)) (get index pattern))
     (evidence-record nil id)))
 
-(defn attestation-semantic-failures [records live-index i att]
+(defn pattern-text-window
+  "The text a pattern-text pointer names, or nil if the pointer does not land:
+  no library root, no such file, or a window that runs past the end. nil is a
+  failure everywhere it is used -- the same fail-closed shape as a store record
+  that does not resolve."
+  [library {:keys [file line]}]
+  (let [[start end] (line-window line)
+        path (when (and library start) (fs/path library file))]
+    (when (and path (fs/exists? path))
+      (let [lines (vec (str/split-lines (slurp (str path))))]
+        (when (<= end (count lines))
+          (str/join " " (subvec lines (dec start) end)))))))
+
+(defn attestation-semantic-failures [library records live-index i att]
   (when (valid-attestation? att)
     (let [evidence (:evidence att)
           rung (:rung att)
@@ -559,7 +634,20 @@
          [(assoc base :reason :rung-via-mismatch :detail :rung-1-requires-tag)])
        (when (and (= rung 2) (contains? vias :tag))
          [(assoc base :reason :rung-via-mismatch :detail :rung-2-forbids-tag)])
+       ;; The authored arm verifies against the library instead of the store,
+       ;; and against the ONE window the record names -- an excerpt that is
+       ;; elsewhere in the same file fails, so the pointer is checked, not just
+       ;; the quotation. Refused rows are exempt for the same reason as below.
+       (for [{:keys [via file line] :as ev} evidence
+             :when (and (= :pattern-text via) (not= :refused (:state att)))
+             :let [window (pattern-text-window library ev)]
+             :when (or (nil? window)
+                       (not (str/includes? (normalized window)
+                                           (normalized (:excerpt ev)))))]
+         (assoc base :reason :pattern-text-excerpt-mismatch
+                :evidence-file file :evidence-line line))
        (for [{:keys [id excerpt via]} evidence
+             :when (not= :pattern-text via)
              :let [record (if (= via :tag)
                             (if records (evidence-record records id)
                                 (rung-one-record live-index (get-in att [:edge :from]) id))
@@ -594,7 +682,7 @@
      :patterns-with-outgoing-why-posthoc (count posthoc-from)
      :fraction-organised (if (zero? n) 0.0 (/ (double (count why-from)) n))}))
 
-(defn lint [{:keys [library section baseline attestations evidence-records]}]
+(defn lint* [{:keys [library section baseline attestations evidence-records]}]
   (let [scan (scan-library library)
         base (read-edn-or baseline {:edges [] :body-digests {}})
         atts (read-edn-or attestations [])
@@ -648,7 +736,7 @@
                                        :line (inc i) :edge (:edge att)
                                        :reason :malformed-attestation}))
                                   att-rows))
-        semantic (mapcat #(attestation-semantic-failures records live-index %1 %2)
+        semantic (mapcat #(attestation-semantic-failures library records live-index %1 %2)
                          (range) att-rows)
         refusal-acts (mapcat refusal-act-failures (range) att-rows)
         body-failures (for [{:keys [file body-line body-digest]} (:patterns scan)
@@ -681,6 +769,14 @@
                       :baseline-note (:measurement-note base)}
                      {:section (section-summary scan section)})}))
 
+(defn lint
+  "Runs the check on the arm named by opts. Every call site keeps working
+  unchanged: with no :posthoc-warrant this binds :store, which is the bar as it
+  stood before the arm existed."
+  [opts]
+  (binding [*posthoc-warrant-arm* (warrant-arm opts)]
+    (lint* opts)))
+
 (defn parse-args [args]
   (when (odd? (count args)) (throw (ex-info "arguments must be --key value pairs" {})))
   (into {} (map (fn [[k v]] [(keyword (str/replace k #"^--" "")) v]) (partition 2 args))))
@@ -690,7 +786,8 @@
         report-path (:report opts)]
     (when-not (every? opts [:library :section :baseline :attestations :report])
       (binding [*out* *err*]
-        (println "usage: library_graph_lint.clj --library DIR --section NAME --baseline FILE --attestations FILE --report FILE"))
+        (println "usage: library_graph_lint.clj --library DIR --section NAME --baseline FILE --attestations FILE --report FILE")
+        (println "       [--posthoc-warrant store|pattern-text]  (default store; see decisions.edn :posthoc-warrant-evidence)"))
       (System/exit 2))
     (let [report (try (lint opts)
                       (catch Exception e

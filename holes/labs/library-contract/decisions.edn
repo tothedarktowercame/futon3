@@ -34,7 +34,18 @@
     :counted-separately "The authored measures are untouched: :fraction-organised, :patterns-with-outgoing-why and :patterns-in-why-graph all still filter on :why alone, so no section can raise its organised fraction by adding traces."
     :not-in-scope "cycle-failures does NOT admit post-hoc edges -- acyclicity is a law about authority and a post-hoc edge claims none. checks/spider_runner.clj:18 is unchanged, so the spider lane may not propose a @why-posthoc edge; widening the fleet's vocabulary is a separate decision under :spider-editorial-standing. checks/playout_snatch.clj is unchanged by design (it is the opt-in that has not been taken)."}}
   {:id :posthoc-warrant-evidence
-   :status :proposed
+   :status :measured
+   :status-note "Not :proposed any more and not :interim-adopted either. All three arms have now been BUILT BEHIND A FLAG AND RUN on the seven readings (L9 slice 3, library/.spider/posthoc-warrant-arms-run-2026-09-02.edn), which is what Joe's rule of 2026-09-01 asks for instead of an advance ruling. The default arm is still :store, so nothing in the library has moved and every number recorded by slices 1 and 2 is still comparable; adoption is the separate act of flipping that default, and it is left for the review."
+   :run {:at "2026-09-02"
+         :by "claude-owner"
+         :record "library/.spider/posthoc-warrant-arms-run-2026-09-02.edn"
+         :flag "checks/library_graph_lint.clj --posthoc-warrant store|pattern-text (default store)"
+         :results {:keep-the-store-bar "7 edges -> 14 failures (7 :malformed-attestation, 7 :new-edge-without-attestation); both sections exit 1"
+                   :warrant-outside-attestations "7 edges -> 7 :new-edge-without-attestation and ZERO warrant checks; the linter never reads a warrant on this arm, so a good one and a bare one are the same row to it"
+                   :pattern-text-warrant "7 edges, 21 warrant rows -> 0 failures; both sections exit 0"}
+         :key-number ":fraction-organised is unchanged to the last digit on the winning arm -- war-room 0.32142857142857145, aif 0.18181818181818182 -- and library-wide :why stays 86 with :patterns-in-why-graph 97, while :why-posthoc goes 0 -> 7. The arm cannot raise a section's organised fraction. That was the property the wave plan needed and it is now measured rather than argued."
+         :cost-found-by-running-it "A pattern-text pointer is invalidated by the act of writing the edge it warrants: inserting the directive shifts the source file's lines, and 12 of the 21 rows -- exactly the source-file ones -- went stale on the first run. Detected mechanically, repaired by taking the pointers after the directives are in (the re-pointed probe resolves all 21, 0 not found). It is a real cost the other two arms do not carry, and it is bounded."
+         :what-adoption-would-take "Flip the default arm to :pattern-text. Until then a committed @why-posthoc with an authored warrant fails the section gate checks/spider_runner.clj:93 runs, which passes no flag."}
    :at "2026-09-02"
    :raised-by :L9
    :question "L9's :statement adopts, on an interim basis, that \"the attestation bar for a post-hoc edge is the same evidence-tag machinery spider edges use.\" Slice 1 (war-room) shows that bar cannot be met by an authored warrant. What evidence may a @why-posthoc attestation carry?"

@@ -1,0 +1,131 @@
+{:schema :library-contract/decision-arms-run-v1
+ :decision :posthoc-warrant-evidence
+ :raised-by :L9
+ :slice 3
+ :by "claude-owner"
+ :at "2026-09-02"
+ :why-this-exists
+ "Slices 1 and 2 both ended by asking Joe for an advance ruling on which arm to
+  take. Joe's rule of 2026-09-01, quoted at
+  holes/labs/library-contract/worklist_check.bb:16-25, is that a choice the
+  theory does not settle gets its BRANCHES BUILT AND RUN so the decision is made
+  on numbers -- 'asking me to make an advanced ruling is just not a great way to
+  get good results because I have nothing to go on'. This record is the run."
+
+ :what-was-built
+ {:where "checks/library_graph_lint.clj"
+  :flag "--posthoc-warrant store|pattern-text, else LIBRARY_POSTHOC_WARRANT, default :store"
+  :default-unchanged
+  "The default arm is the bar exactly as it stood, so every previously recorded
+   number is still comparable. Confirmed: the C88 pin reads 1247 files and
+   {:why 86 :why-posthoc 0 :how 27 :see-also 141} before and after the change,
+   and war-room/aif :store runs on the untouched library are byte-identical to
+   slices 1 and 2 (/tmp/L9s3gates/before-*-store.edn)."
+  :fail-closed
+  "A pattern-text warrant resolves against the library, not the store: the
+   excerpt must occur in the ONE line window the record names. A window that
+   runs off the end, a missing file, or an excerpt that sits elsewhere in the
+   same file are all :pattern-text-excerpt-mismatch."
+  :lane-boundary
+  "Admissible only on a :why-posthoc edge and only on that arm. An authored @why
+   carrying a pattern-text warrant is :malformed-attestation even under the
+   flag, and a pattern-text row carrying a store :id is refused, so the
+   harvested lane's bar (P-validated-R5 law O2) is untouched by this change."
+  :tests "test/library_graph_lint_test.clj:302 an-authored-warrant-is-refused-by-the-store-bar-and-verified-under-its-own-arm -- 13 tests / 143 assertions overall, was 12 / 125"}
+
+ :inputs
+ {:edges 7
+  :from "library/war-room/posthoc-readings.edn :proposed (5), library/aif/posthoc-readings.edn :proposed (2)"
+  :warrant-rows 21
+  :probe-libraries
+  {:pre-insertion-pointers "/tmp/L9s3probe (built by /tmp/L9s3gates/probe.bb)"
+   :re-pointed "/tmp/L9s3probe2 (built by /tmp/L9s3gates/probe2.bb)"
+   :sidecar "/tmp/L9s3probe3"}
+  :note "Every run below is against a scratch copy. No file under library/ was modified by this slice except this record and the decision entry."}
+
+ :arms-run
+ [{:arm :keep-the-store-bar
+   :how "the default; the seven readings written as directives plus attestations carrying their authored warrants"
+   :result "war-room exit 1, {:new-edge-without-attestation 5 :malformed-attestation 5}; aif exit 1, {:new-edge-without-attestation 2 :malformed-attestation 2}"
+   :reports "/tmp/L9s3gates/p2-{war-room,aif}-store.{edn,exit}"
+   :reading "14 failures on 7 edges: the authored form is refused twice over, once for the record and once for the edge it fails to warrant. This reproduces library/.spider/posthoc-warrant-blocker-2026-09-02.edn at full scale."}
+  {:arm :warrant-outside-attestations
+   :how "the same seven directives with the warrants left in posthoc-readings.edn and no attestation written -- what slices 1 and 2 did as a holding position, run through to its end"
+   :result "war-room exit 1 {:new-edge-without-attestation 5}; aif exit 1 {:new-edge-without-attestation 2}"
+   :reports "/tmp/L9s3gates/p3-{war-room,aif}-sidecar.{edn,exit}"
+   :reading "Seven refusals and ZERO warrant checks: the linter never looks at a warrant, so the arm's cost is not that it fails, it is that its only signal is the bare-edge one. An unwarranted trace and a well-warranted one are the same row to it."}
+  {:arm :pattern-text-warrant
+   :how "the same seven directives plus attestations carrying :via :pattern-text with :file and :line, run with --posthoc-warrant pattern-text"
+   :result "war-room exit 0, 0 failures; aif exit 0, 0 failures"
+   :reports "/tmp/L9s3gates/p2-{war-room,aif}-pt.{edn,exit}"
+   :reading "All 21 warrant rows resolved against the library. The seven readings pass a mechanical check for the first time."}]
+
+ :numbers
+ {:library
+  {:before {:files 1247 :edges-by-kind {:why 86 :why-posthoc 0 :how 27 :see-also 141} :patterns-in-why-graph 97}
+   :after-pattern-text-arm {:files 1247 :edges-by-kind {:why 86 :why-posthoc 7 :how 27 :see-also 141} :patterns-in-why-graph 97}
+   :reading "The authored @why count does not move and neither does the @why graph: a verified trace is still a trace."}
+  :war-room
+  {:before {:patterns 28 :edges-by-kind {:why 9 :why-posthoc 0 :how 0 :see-also 0}
+            :patterns-with-outgoing-why 9 :patterns-with-outgoing-why-posthoc 0
+            :fraction-organised 0.32142857142857145}
+   :after {:patterns 28 :edges-by-kind {:why 9 :why-posthoc 5 :how 0 :see-also 0}
+           :patterns-with-outgoing-why 9 :patterns-with-outgoing-why-posthoc 5
+           :fraction-organised 0.32142857142857145}}
+  :aif
+  {:before {:patterns 33 :edges-by-kind {:why 6 :why-posthoc 0 :how 13 :see-also 45}
+            :patterns-with-outgoing-why 6 :patterns-with-outgoing-why-posthoc 0
+            :fraction-organised 0.18181818181818182}
+   :after {:patterns 33 :edges-by-kind {:why 6 :why-posthoc 2 :how 13 :see-also 45}
+           :patterns-with-outgoing-why 6 :patterns-with-outgoing-why-posthoc 2
+           :fraction-organised 0.18181818181818182}}
+  :fraction-organised-note
+  "Unchanged to the last digit in both sections under the winning arm. This is
+   the property the wave plan needs and it is now measured rather than argued:
+   the arm cannot be used to raise a section's organised fraction."}
+
+ :found-by-running-it
+ {:finding
+  "A pattern-text pointer is invalidated by the act of writing the edge it
+   warrants. Inserting `@why-posthoc <target>` above the body shifts every line
+   below it by one, so 12 of the 21 warrant rows -- exactly the ones pointing
+   into a SOURCE file, which is the file that receives the directive -- no
+   longer matched. The other 9 point into target files, which receive no
+   directive, and were unaffected. First run: war-room 8 and aif 4
+   :pattern-text-excerpt-mismatch on pointers that were correct when written
+   (/tmp/L9s3gates/after-{war-room,aif}-pt.edn)."
+  :example
+  "library/war-room/wr-6-daily-scan-is-depositing-heartbeat.flexiarg:16 holds
+   'The hypothesis has no supporting external response merely because scanning
+   activity occurs.' After the directive is inserted the same sentence is at :17."
+  :not-a-defect-in-the-check
+  "The check refused a stale pointer, which is what fail-closed means. The
+   defect is in the ORDER of the authoring act, and it is a standing hazard the
+   arm carries: any later edit that shifts lines in a warranting file breaks
+   its pointers, and the lint says so. That is the same discipline as
+   :argument-bodies-unchanged, not a new exposure."
+  :procedure-this-implies
+  "Insert every directive for the section FIRST, then take the pointers, then
+   write the attestations. /tmp/L9s3gates/probe2.bb does it in that order and
+   all 21 rows resolve: war-room 6 pointers unmoved / 8 moved, aif 3 unmoved /
+   4 moved, 0 not found anywhere in the file."
+  :bears-on-the-arms
+  "It is a cost on :pattern-text-warrant that the other two arms do not have,
+   and it is bounded: it is detected mechanically, it is repaired by re-reading
+   one file, and the alternative -- widening the window until the excerpt turns
+   up -- would give away the thing that makes the pointer worth checking."}
+
+ :what-adoption-would-take
+ "Flip the default arm to :pattern-text. Until then a committed @why-posthoc
+  with an authored warrant fails the section gate that checks/spider_runner.clj:93
+  runs, which passes no flag. That flip is the reviewable act and it is
+  deliberately NOT in this slice: the point of the flag is that Joe gets the
+  numbers with the library still standing where slices 1 and 2 left it."
+
+ :falsifier
+ "If a war-room or aif ruling is ever found cited as a relation in a store
+  record independent of the spider, :keep-the-store-bar becomes reachable for
+  that edge and this comparison is worth re-running. Slice 1 re-checked live and
+  found only spider self-text; slice 2 measured that 50 of 62 aif attestation
+  rows rest on the spider's own turn-start prompt
+  (library/.spider/aif-attestation-warrant-provenance-2026-09-02.edn)."}

@@ -13,9 +13,51 @@
             [clojure.pprint]
             [find-organise :as fo]))
 
+;; ---- CascadeEdit — the policy grain's action type ------------------------
+;; LA1c-restatement.md §3.4.  A play-grain THEN returns an Act (a move); a
+;; design-grain THEN would return an InstitutionEdit; a POLICY-grain THEN returns
+;; one of these five and never a move.  They are the whole of what a temperament
+;; is allowed to say, which is what makes a temperament readable before the run.
+;;
+;; `halt` is an EDIT rather than a condition in the construction loop, so that
+;; two temperaments can differ in where they stop and the stop is recorded on
+;; the cascade with the run (LA1c §4.1; `snatch/widen-the-cascade-only-on-
+;; evidence`'s THEN asks for exactly that).
+(defn admit "Bring `pattern` into the cascade." [pattern]
+  {:edit :admit :pattern pattern})
+(defn drop-node "Take `pattern` out of the cascade." [pattern]
+  {:edit :drop :pattern pattern})
+(defn promote-above "Move `pattern` ahead of `above` in the precedence field." [pattern above]
+  {:edit :promote-above :pattern pattern :above above})
+(defn set-flag "Set a monotone flag on the cascade." [flag]
+  {:edit :set-flag :flag flag})
+(defn halt "Stop the construction, for a stated reason." [reason]
+  {:edit :halt :reason reason})
+
+(def cascade-edit-keys
+  "The required key of each constructor, so a malformed edit is rejected where it
+   is emitted rather than where it is applied."
+  {:admit [:pattern] :drop [:pattern] :promote-above [:pattern :above]
+   :set-flag [:flag] :halt [:reason]})
+
+(defn cascade-edit? [e]
+  (boolean (when-let [required (get cascade-edit-keys (:edit e))]
+             (every? #(contains? e %) required))))
+
+;; `ordered` reads only the cascade's own fields, so a policy-grain guard can
+;; call it: the precedence field as a list, least first.  Ties break by the
+;; authored order — `sort-by` is stable — which is the rule
+;; `exchange-first-overrides` was written under.
+(defn ordered [{:keys [members precedence authored-order]}]
+  (->> authored-order (filter members) (sort-by precedence) vec))
+
 ;; ---- the collection, as (IF-guard, THEN) pairs -------------------------
 ;; Each guard is a predicate on the situation. This IS the pattern's IF clause,
 ;; encoded — the point of the exercise is that some situations match nothing.
+;;
+;; ONE flat collection, three grains.  Nothing separates the grains but the
+;; conjunct at the head of every guard, which is the claim LA1c §3.9 makes and
+;; `grain-separation` below is the control for.
 (def collection
   [{:id :protect-the-unprotected-move :grain :design
     :if (fn [s] (= :design (:grain s)))}
@@ -111,7 +153,48 @@
    ;; A P2 pattern.  P2 here is a fixed disposition, not a chooser, so it is
    ;; excluded from P1's set; :offer-received? is P2's view and is never set.
    {:id :accept-an-offer-that-beats-holding :grain :play :actor :p2
-    :if (fn [s] (and (= :play (:grain s)) (:offer-received? s)))}])
+    :if (fn [s] (and (= :play (:grain s)) (:offer-received? s)))}
+
+   ;; --- POLICY grain: antecedents over the CASCADE, not over game state ----
+   ;; LA1c-restatement.md §3.1: Sit policy = CascadeState, Act policy =
+   ;; CascadeEdit.  The operand is the cascade — its membership and its
+   ;; precedence field — so no guard here may read :tokens, :snatched? or any
+   ;; other field of a play situation, and none does.
+   ;;
+   ;; Two of the six policy-grain patterns LA1 slice (b) authored are encoded.
+   ;; `unexecuted-policy-patterns` below names the other four and the edit each
+   ;; would need, so the gap is a list rather than an impression.
+   ;;
+   ;; `:then-source` points at the authored THEN this encoding claims to be an
+   ;; encoding OF.  `library-correspondence` re-reads those lines on every run;
+   ;; without it the six files and these rules are two collections that merely
+   ;; look alike, which is the facade LA1c §11 names.
+   {:id :play-the-authored-order-first :grain :policy :precedence 1
+    :then-source "library/snatch/play-the-authored-order-first.flexiarg:25-28"
+    ;; "You have a cascade with an authored precedence and are considering a
+    ;; temperament that re-wires it."
+    :if (fn [s] (and (= :policy (:grain s)) (seq (:precedence s))))
+    ;; "An empty edit looks like no policy at all, so it goes unnamed" — the
+    ;; force is live exactly while nothing has been recorded on this
+    ;; construction.  Once the temperament is on the record it has been named,
+    ;; and the rule would be repeating itself.
+    :however (fn [s] (empty? (:record s)))
+    ;; The identity temperament's edit is the empty one.  What it still has to
+    ;; do is BE RECORDED, "exactly as a non-empty one would be" — which is what
+    ;; a halt with a stated reason is.
+    :then (fn [_] (halt :authored-order-is-the-baseline))}
+   {:id :lead-with-the-exchange-rule :grain :policy :precedence 1
+    :then-source "library/snatch/lead-with-the-exchange-rule.flexiarg:28-31"
+    ;; "You want a temperament that leads with gains from trade" — so the
+    ;; exchange rule has to be in the cascade to be led with.
+    :if (fn [s] (and (= :policy (:grain s))
+                     (contains? (:members s) :exchange-when-both-sides-gain)))
+    ;; The counter-force is the one-node cascade the promotion produces, and it
+    ;; is live only while the exchange rule is not already first: once it is,
+    ;; promoting it again would change nothing and the pattern has nothing to
+    ;; add.  This is also what terminates the construction.
+    :however (fn [s] (not= :exchange-when-both-sides-gain (first (ordered s))))
+    :then (fn [s] (promote-above :exchange-when-both-sides-gain (first (ordered s))))}])
 
 ;; P1's set only: a pattern whose actor is P2 is not decidable by this harness.
 ;; A pattern fires when its ANTECEDENT holds: IF and HOWEVER together.  A
@@ -122,6 +205,17 @@
        (if-let [however (:however pat)] (however s) true)))
 
 (defn applicable [s] (mapv :id (filter #(fires? % s) collection)))
+
+;; LA1c §3.3: ONE firing loop, with the grain left open.  Sort the rules by the
+;; precedence the cascade carries, keep the ones whose ANTECEDENT holds, take the
+;; first THEN that returns something.  `pattern-policy` is this at play grain and
+;; `construct` is this at policy grain; there is not a second loop for the second
+;; grain, which is the point of indexing rather than adding a layer.
+(defn fire
+  "Returns `[rule emitted]` for the first rule whose THEN yields a value, or nil."
+  [rules precedence-of s]
+  (some (fn [r] (when-let [emitted ((:then r) s)] [r emitted]))
+        (sort-by precedence-of (filter #(and (:then %) (fires? % s)) rules))))
 
 ;; ---- treatments, from the flowcharts -----------------------------------
 (def treatments
@@ -148,22 +242,155 @@
 ;; `overrides` re-wires the precedence order without touching a pattern.  Same
 ;; collection, different wiring, different policy — which is what
 ;; futon2.aif.cascade-prior claims of cascades, made testable here.
+;;
+;; `overrides` is no longer written here: `temperament-overrides` below derives
+;; it by firing a policy-grain rule (worklist :LA2).  This function keeps the
+;; argument because the argument is the interface between the two grains — what
+;; changed is who writes it.
 (defn pattern-policy [overrides]
   (fn [s pats]
     (let [fired (set pats)
           order #(get overrides (:id %) (:precedence %))]
-      (or (some (fn [pat] (when-let [a ((:then pat) s)] (assoc a :by (:id pat))))
-                (->> collection
-                     (filter #(and (:then %) (fired (:id %))))
-                     (sort-by order)))
-          {:act :abstain :by :no-pattern}))))
+      (if-let [[pat a] (fire (filter #(fired (:id %)) collection) order s)]
+        (assoc a :by (:id pat))
+        {:act :abstain :by :no-pattern}))))
 
-(def patterns-overrides {})
+;; ---- the cascade under construction, and the loop that edits it ---------
+;; What a temperament orders: the play-grain rules that carry a THEN.  A rule
+;; with no THEN is advisory in this harness and there is nothing to consult it
+;; for, so it is not in the seed.
+(def play-rules (filterv #(and (= :play (:grain %)) (:then %)) collection))
+
+(def authored-precedence (into {} (map (juxt :id :precedence)) play-rules))
+
+(defn initial-cascade-state
+  "C₀ of the construction loop (LA1c §4.1): the seed's patterns, provenance
+   `:found`, precedence the authored one, no flags and an empty record.
+   `:grain :policy` is the field every policy-grain guard checks — the same
+   mechanism that keeps a design rule out of a play situation."
+  []
+  {:grain :policy
+   :members (into #{} (map :id) play-rules)
+   :authored-order (mapv :id play-rules)
+   :precedence authored-precedence
+   :provenance (into {} (map (juxt :id (constantly :found))) play-rules)
+   :flags #{}
+   :record []
+   :halted nil})
+
+(defn apply-edit
+  "CascadeEdit applied to a CascadeState.  `:by` is the id of the policy-grain
+   rule that emitted it, and it is what an admitted node's provenance records —
+   O1's third origin, `admittedBy` (LA1c §3.2)."
+  [state {:keys [edit pattern above flag reason by] :as e}]
+  (when-not (cascade-edit? e)
+    (throw (ex-info "apply-edit: not a CascadeEdit" {:finding :not-a-cascade-edit :edit e})))
+  (case edit
+    :admit (-> state
+               (update :members conj pattern)
+               (assoc-in [:provenance pattern] [:admitted-by by])
+               (assoc-in [:precedence pattern]
+                         (inc (reduce max 0 (vals (:precedence state)))))
+               (update :authored-order #(if (some #{pattern} %) % (conj % pattern))))
+    :drop (-> state
+              (update :members disj pattern)
+              (update :provenance dissoc pattern))
+    :promote-above (assoc-in state [:precedence pattern]
+                             (dec (get-in state [:precedence above])))
+    :set-flag (update state :flags conj flag)
+    :halt (assoc state :halted reason)))
+
+(def ^:private rule-by-id (into {} (map (juxt :id identity)) collection))
+
+(def ^:private construct-step-limit
+  "A temperament whose rules never stop is a defect, not a long run.  The limit
+   is a hard failure rather than a silent truncation."
+  64)
+
+(defn construct
+  "LA1c §4.1, at policy grain: fire the temperament over the CascadeState, apply
+   the ONE edit it emits, repeat until no rule fires (saturation) or a `halt`
+   edit arrives.  Returns the final CascadeState with `:stop`, `:steps` and the
+   `:record` of every edit.
+
+   ΔG per attachment step is NOT evaluated here.  §4.1 puts it in the loop and
+   this row does not build it; a temperament that needed it would stop wrong,
+   and neither of the two encoded here consults it."
+  ([temperament] (construct temperament (initial-cascade-state)))
+  ([temperament state]
+   (let [rules (mapv rule-by-id (:nodes temperament))
+         order #(get (:precedence temperament) (:id %) (:precedence %))]
+     (when (some nil? rules)
+       (throw (ex-info "construct: temperament names a rule that is not in the collection"
+                       {:finding :unknown-temperament-node
+                        :temperament (:id temperament) :nodes (:nodes temperament)})))
+     (loop [s state k 0]
+       (cond
+         (:halted s) (assoc s :stop [:halted (:halted s)] :steps k)
+         (> k construct-step-limit)
+         (throw (ex-info "construct: step limit reached; the temperament does not stop"
+                         {:finding :temperament-does-not-stop
+                          :temperament (:id temperament) :steps k}))
+         :else
+         (if-let [[rule edit] (fire rules order s)]
+           (let [edit (assoc edit :by (:id rule))]
+             (recur (apply-edit (update s :record conj (assoc edit :step k)) edit) (inc k)))
+           (assoc s :stop [:saturation] :steps k)))))))
+
+(defn temperament-overrides
+  "The `overrides` map `pattern-policy` takes, DERIVED: the entries of the
+   constructed cascade's precedence field that differ from the authored one.
+
+   This is the argument worklist :LA2 exists to stop hand-writing.  Before it,
+   the two maps below were literals in this file and no authored pattern reached
+   them; now each is what a policy-grain THEN emitted."
+  [temperament]
+  (let [final (construct temperament)]
+    (into {} (remove (fn [[id n]] (= n (get authored-precedence id))))
+          (:precedence final))))
+
+;; The two temperaments, as CASCADES at policy grain — LA1c §3.5: a Policy is a
+;; cascade of policy-grain patterns, not a fourth kind of thing.  Each has one
+;; node here, so nothing about their own precedence is exercised; ordering
+;; temperaments against each other is the hand-authorship §3.8 says this design
+;; moves up a level rather than removes.
+(def identity-temperament
+  {:id :the-authored-order :grain :policy
+   :nodes [:play-the-authored-order-first]
+   :precedence {:play-the-authored-order-first 1}})
+
+(def trading-temperament
+  {:id :exchange-first :grain :policy
+   :nodes [:lead-with-the-exchange-rule]
+   :precedence {:lead-with-the-exchange-rule 1}})
+
+(def recorded-overrides
+  "What the two maps were as literals before :LA2 — verbatim from
+   `playout_snatch.clj:161,166` at futon3 4e1c410.  The acceptance test of the
+   row is that the derived maps equal these, so the record is kept here rather
+   than in the commit message."
+  {:the-authored-order {}
+   :exchange-first {:exchange-when-both-sides-gain 0}})
+
+(def patterns-overrides (temperament-overrides identity-temperament))
+(def exchange-first-overrides (temperament-overrides trading-temperament))
+
+;; Checked at load, not only in -main: `derive_q_snatch.clj`, `ablate_g_snatch.clj`
+;; and `find_snatch.clj` all take these two maps through `pi-patterns` /
+;; `pi-exchange-first`, and a derivation that drifted would move their artefacts
+;; without anyone running this file's report.
+(doseq [[temperament derived] [[:the-authored-order patterns-overrides]
+                               [:exchange-first exchange-first-overrides]]]
+  (when-not (= derived (get recorded-overrides temperament))
+    (throw (ex-info "the derived overrides differ from the recorded literals"
+                    {:finding :derived-overrides-drifted
+                     :temperament temperament :derived derived
+                     :recorded (get recorded-overrides temperament)}))))
+
 (def pi-patterns (pattern-policy patterns-overrides))
 
 ;; One re-wiring: put the gain pattern above the remedy and the stop.  Nothing
 ;; about any pattern changes; only the order in which they are consulted.
-(def exchange-first-overrides {:exchange-when-both-sides-gain 0})
 (def pi-exchange-first (pattern-policy exchange-first-overrides))
 
 (def ^:private modelled #{:O1 :O2 :O4})   ; S-001's support; O3 carries zero mass
@@ -332,9 +559,11 @@
   (let [out "checks/snatch-cascade.edn"
         policies [[:patterns pi-patterns patterns-overrides]
                   [:exchange-first pi-exchange-first exchange-first-overrides]]
+        ;; `play-rules`, not `collection`: a policy-grain rule also carries a
+        ;; THEN, and the precedence this artefact records is the play-grain one
+        ;; a temperament ORDERS — not the temperament's own.
         precedence (fn [overrides]
-                     (->> collection
-                          (filter :then)
+                     (->> play-rules
                           (sort-by #(get overrides (:id %) (:precedence %)))
                           (mapv :id)))
         rows (for [[policy-name policy overrides] policies
@@ -398,6 +627,150 @@
                        (if meet-semilattice? "yes" "NO")
                        (if moved? "earns" "refused"))))))
 
+;; ---- the policy grain, checked ------------------------------------------
+
+(def policy-rules (filterv #(= :policy (:grain %)) collection))
+
+(def unexecuted-policy-patterns
+  "The four of slice (b)'s six policy-grain patterns this row does NOT execute,
+   and the CascadeEdit each of their THENs would need.  Every constructor of the
+   type has a named claimant here or in `policy-rules`; none is speculative."
+  {:have-a-temperament
+   {:needs [] :because "the parent. Its THEN asks that temperaments be written as
+            patterns at all, which the other five satisfy; it emits no edit of its own."}
+   :promote-the-remedy-before-the-exit
+   {:needs [:promote-above :drop]
+    :because "its THEN promotes the applicable remedies WHILE A BREACH STANDS and
+              drops the edit when it no longer does. The guard reads breach state
+              off the run's record, which the CascadeState carries and no run has
+              yet fed it: :record is the construction here, not the play trace."}
+   :widen-the-cascade-only-on-evidence
+   {:needs [:admit :halt]
+    :because "one admission at a time, ordered by what the last one bought, with a
+              stated stopping rule. The ordering term is the open question LA1c
+              §4.2 records as :constructor-relevance-substrate, and the marginal
+              gain is the ΔG per attachment step `construct` does not evaluate."}
+   :grim-cuts-the-cascade-and-never-widens-it
+   {:needs [:drop :set-flag]
+    :because "drop what depends on the arrangement at the first breach and set the
+              monotone no-readmission flag. `apply-edit` implements both; nothing
+              carries a cascade between ROUNDS, so the flag would have nowhere to
+              be monotone over — `play` rebuilds the acting set every round."}})
+
+(defn grain-separation
+  "The `:policy` conjunct is CHECKED, not declared.  Both directions, because the
+   conjunct is one clause in each guard and a missing one on either side is the
+   same defect: a policy-grain rule offered a play situation must not fire, and a
+   play-grain rule offered a CascadeState must not fire.
+
+   The second direction is also why a play guard may read `:tokens` without a nil
+   check — `(= :play (:grain s))` short-circuits first."
+  []
+  (let [play-situation (merge (treatments :g1)
+                              {:grain :play :round 1 :snatched? false :seized 0
+                               :tokens 10 :last-size 1 :score 0 :shame 0})
+        policy-state (initial-cascade-state)]
+    {:policy-rules-firing-in-a-play-situation
+     (mapv :id (filter #(fires? % play-situation) policy-rules))
+     :play-rules-firing-in-a-cascade-state
+     (mapv :id (filter #(fires? % policy-state) play-rules))
+     :design-rules-firing-in-a-cascade-state
+     (mapv :id (filter #(fires? % policy-state)
+                       (filter #(= :design (:grain %)) collection)))}))
+
+(defn grain-conjunct-mutations
+  "`grain-separation` shows no rule fires outside its grain.  It does not show
+   the CONJUNCT is what stops them — a guard that read no field of the foreign
+   situation would pass it too.  So forge the grain: hand each rule a situation
+   of the wrong kind with `:grain` set to its own, which is the mutation that
+   deletes the conjunct without rewriting the closure, and record what the rest
+   of the guard then does.
+
+   A `:throws` or a `:fires` is the conjunct doing work.  A `:silent` is the
+   conjunct being redundant for that rule, which is worth knowing and is not a
+   failure — the control fails only if EVERY rule is silent, because then the
+   separation rests on nothing but which keys the two situation types happen to
+   use."
+  []
+  (let [play-situation (merge (treatments :g1)
+                              {:grain :play :round 1 :snatched? false :seized 0
+                               :tokens 10 :last-size 1 :score 0 :shame 0})
+        policy-state (initial-cascade-state)
+        probe (fn [rule s]
+                (try (if (fires? rule s) :fires :silent)
+                     (catch Exception _ :throws)))]
+    (vec (concat
+          (for [r policy-rules]
+            (sorted-map :rule (:id r) :grain :policy :forged-into :play
+                        :result (probe r (assoc play-situation :grain :policy))))
+          (for [r play-rules]
+            (sorted-map :rule (:id r) :grain :play :forged-into :policy
+                        :result (probe r (assoc policy-state :grain :play))))))))
+
+(defn library-correspondence
+  "Each policy-grain runner entry names a pattern the library actually holds, and
+   its `:then-source` points at that file's THEN.  Re-read on every run: the
+   facade LA1c §11 names is six library files and a runner that only looks like
+   it reads them, and an id that agreed by coincidence would be the same thing."
+  []
+  (mapv (fn [{:keys [id then-source]}]
+          (let [[path lines] (str/split then-source #":")
+                [from _to] (mapv parse-long (str/split lines #"-"))
+                text (vec (str/split-lines (slurp path)))
+                head (get text (dec from) "")]
+            (sorted-map :pattern id
+                        :then-source then-source
+                        :in-repository? (contains? (:patterns repository) (q id))
+                        :source-line-is-a-then? (boolean (re-find #"^\s*\+ THEN:" head)))))
+        policy-rules))
+
+(defn- policy-grain-report []
+  (println "\n── the policy grain: temperaments fired, not written down ──")
+  (doseq [t [identity-temperament trading-temperament]]
+    (let [final (construct t)
+          derived (temperament-overrides t)
+          recorded (get recorded-overrides (:id t))]
+      (println (format "  %-20s %d edit(s), stop %s"
+                       (name (:id t)) (count (:record final)) (pr-str (:stop final))))
+      (doseq [e (:record final)]
+        (println (format "    step %d  %-14s %s"
+                         (:step e) (name (:edit e))
+                         (pr-str (dissoc e :step :edit :by)))))
+      (println (format "    order   %s" (pr-str (ordered final))))
+      (println (format "    overrides %s  %s recorded %s"
+                       (pr-str derived) (if (= derived recorded) "==" "!=")
+                       (pr-str recorded)))))
+  (let [sep (grain-separation)
+        corr (library-correspondence)
+        bad-corr (remove #(and (:in-repository? %) (:source-line-is-a-then? %)) corr)
+        leaks (into [] (mapcat val) sep)
+        mutations (grain-conjunct-mutations)
+        load-bearing (filterv #(not= :silent (:result %)) mutations)]
+    (doseq [c corr]
+      (println (format "  %-32s authored: %-5s THEN at %s: %s"
+                       (name (:pattern c)) (:in-repository? c)
+                       (:then-source c) (:source-line-is-a-then? c))))
+    (println (format "  grain separation: %s"
+                     (if (empty? leaks) "no rule fires outside its grain"
+                         (str "LEAK " (pr-str sep)))))
+    (println (format "  grain conjunct deleted: %d of %d rules then fire or throw%s"
+                     (count load-bearing) (count mutations)
+                     (if (seq load-bearing)
+                       (str " — " (str/join ", " (map #(format "%s %s" (name (:rule %))
+                                                               (name (:result %)))
+                                                      load-bearing)))
+                       "")))
+    (println (format "  of slice (b)'s six policy-grain patterns: %d executed, %d not (%s)"
+                     (count policy-rules) (count unexecuted-policy-patterns)
+                     (str/join ", " (map name (sort (keys unexecuted-policy-patterns))))))
+    (when (or (seq leaks) (seq bad-corr) (empty? load-bearing))
+      (throw (ex-info "policy grain: control failed"
+                      {:finding (cond (seq leaks) :grain-leak
+                                      (seq bad-corr) :library-correspondence
+                                      :else :grain-conjunct-is-decoration)
+                       :leaks sep :correspondence (vec bad-corr)
+                       :mutations mutations})))))
+
 (defn -main [& _]
   (println "PATTERN-THEORETIC PLAYOUT — Snatch or Share")
   (println "\nDESIGN-grain situations (choosing an institution):")
@@ -406,6 +779,7 @@
                      ["we want sanctions, no judge" {:grain :design :want-sanction? true :judge-available? false}]
                      ["a judge is available" {:grain :design :judge-available? true}]]]
     (println (format "  %-36s -> %s" label (pr-str (applicable s)))))
+  (policy-grain-report)
   (doseq [[t d n] scenarios] (show pi-patterns "patterns" t d n))
   (compare-policies)
   (compare-shapes)

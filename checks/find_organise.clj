@@ -25,9 +25,11 @@
    `organise` takes three arguments, not the two `Holes.lean:308` declares.  The
    third is the temperament -- a cascade at policy grain -- and it is taken on
    the foresight LA1c-restatement.md §10 offers L6: a two-argument `organise`
-   has to be redefined when LA2 lands, a three-argument one does not.  Today the
-   temperament is not FIRED (nothing executes a policy-grain rule; that is LA2's
-   row).  It is read for exactly two fields, and both are law-bearing:
+   has to be redefined when LA2 lands, a three-argument one does not.  LA2 has
+   landed and the firing loop is `checks/playout_snatch.clj`'s (`fire`,
+   `construct`, `apply-edit`); it is not joined to this function yet, so the
+   temperament here is still READ rather than fired.  It is read for exactly two
+   fields, and both are law-bearing:
 
      :closure     which patterns enter the cascade -- and this is not decoration.
                   `playout_snatch.clj` takes the up-closure under standsOn
@@ -35,8 +37,9 @@
                   up-closure\"); `wmCascadeDiffFixture` (Holes.lean:319) keeps
                   nodes = selected and fast-forwards through the unselected
                   bridge.  Those are two organise policies over one repository,
-                  and O1's narrowed form (nodes = selected u addedByOrganise)
-                  admits both.  Which one runs is a policy-grain decision, so
+                  and O1's narrowed form (nodes = selected u addedByOrganise u
+                  admittedBy) admits both.  Which one runs is a policy-grain
+                  decision, so
                   the temperament is where it belongs.
      :precedence  O4 -- precedence is recorded on the cascade as a
                   collection-level field, not derived from the patterns.
@@ -291,9 +294,13 @@
 
    `temperament` is a cascade at policy grain.  This function READS it (`:closure`,
    `:precedence`); it does not fire it.  Firing a policy-grain rule -- so that a
-   temperament's THEN emits the edit rather than a keyword naming it -- is LA2,
-   and until LA2 lands an `:admit` edit cannot arise, so nothing here adds a node
-   that is neither selected nor stood-on."
+   temperament's THEN emits the edit rather than a keyword naming it -- landed in
+   `:LA2` and lives in `checks/playout_snatch.clj` (`fire`, `construct`,
+   `apply-edit`), against library/snatch's authored temperaments.  It is not
+   wired to this function: the two temperaments HERE declare a closure policy as
+   a keyword and emit no edits, so `:admitted-by` is empty on every cascade this
+   builds, and no node arrives that is neither selected nor stood-on.  Joining
+   the two is a further row, not a side effect of LA2."
   [temperament selected repository]
   (when-not (set/subset? (set selected) (:patterns repository))
     (throw (ex-info "organise: selected escapes the repository"
@@ -310,6 +317,10 @@
     {:temperament (:id temperament)
      :selected selected
      :added-by-organise added
+     ;; O1's third origin (Holes.lean CascadeDiff.admittedBy). Empty here, and
+     ;; carried rather than omitted so a cascade that DID admit could not be
+     ;; recorded as authored closure.
+     :admitted-by #{}
      :nodes nodes
      :edges (fast-forward nodes (:stands-on repository))
      :precedence (vec (:precedence temperament))
@@ -351,9 +362,13 @@
   {:F1 f1-containment :F2 f2-receipted :F3 f3-non-self-certifying :F4 f4-falsifiable})
 
 (defn o1-nodes-recorded
-  "organiseO1NodesRecorded (Holes.lean:340-344)."
-  [{:keys [nodes selected added-by-organise]}]
-  (= nodes (set/union selected added-by-organise)))
+  "organiseO1NodesRecorded (Holes.lean:353-360), the THREE-way union: a node is
+   in the cascade because `find` selected it, because organise closed over an
+   authored edge to it, or because a policy-grain THEN admitted it.  `:LA2` added
+   the third term; `organise` never writes it (see below), so it is empty on
+   every row this file builds and the law still has to hold with it there."
+  [{:keys [nodes selected added-by-organise admitted-by]}]
+  (= nodes (set/union selected added-by-organise (set admitted-by))))
 
 (defn o2-authored-reachability
   "organiseO2AuthoredReachability (Holes.lean:347-351): every organised edge is
@@ -507,6 +522,14 @@
     :F4 (update row :repository set/difference (:zero-mass row))
     row))
 
+(def extra-diff-controls
+  "One control per law CLAUSE that the per-law mutation above does not reach.
+   `:O1-orphan` is the one `:LA2` added: O1's content is that there is no fourth
+   way into the cascade, so a node with none of the three recorded origins must be
+   rejected.  The `:O1` mutation only removes a node, which tests the other
+   direction of the same equality and would pass a carrier that admitted anything."
+  {:O1-orphan [:O1 (fn [diff] (update diff :nodes conj :orphan/no-recorded-origin))]})
+
 (defn mutate-diff [diff law]
   (case law
     :O1 (update diff :nodes disj (first (sort (:nodes diff))))
@@ -535,7 +558,10 @@
         (sorted-map :control :find :law law :finding :mutation-slipped))
       (for [[law holds?] (sort-by key organise-laws)
             :when (holds? (mutate-diff diff law))]
-        (sorted-map :control :organise :law law :finding :mutation-slipped))))))
+        (sorted-map :control :organise :law law :finding :mutation-slipped))
+      (for [[control [law mutate]] (sort-by key extra-diff-controls)
+            :when ((get organise-laws law) (mutate diff))]
+        (sorted-map :control :organise :law control :finding :mutation-slipped))))))
 
 ;; ---------------------------------------------------------------------------
 ;; the reader-agreement control
@@ -752,8 +778,9 @@
                          (:temperaments-differ? s) (:laws-hold? s))))
       (println (format "reader agreement with library_graph_lint: %d edges both, 0 either side alone"
                        (get-in result [:reader-agreement :ours])))
-      (println (format "negative controls: %d laws mutated, %d slipped"
-                       (+ (count find-laws) (count organise-laws))
+      (println (format "negative controls: %d mutations, %d slipped"
+                       (+ (count find-laws) (count organise-laws)
+                          (count extra-diff-controls))
                        (count (:negative-controls result))))
       (println (format "wrote %s" report-path))
       (println "find-organise: PASS exit-convention=0-pass/1-fail")

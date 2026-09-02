@@ -195,3 +195,51 @@ Availability is not use, at play grain.
 with `O3` at zero mass. A *cautious* P2 refuses, producing `O3`, and **the
 two-disposition model is refuted** — a stated prediction failing, which is the
 whole reason for stating it.
+
+### The policy grain — the temperament fired, not written down (`:LA2`)
+
+Before this row `playout_snatch.clj` held its two temperaments as map literals —
+`patterns-overrides {}` and `exchange-first-overrides {:exchange-when-both-sides-gain 0}`
+— and `library/snatch` held six policy-grain patterns that nothing executed.
+Six library files and the behaviour still in the Clojure is the facade
+`LA1c-restatement.md` §11 named. What the row builds:
+
+| piece | where |
+|---|---|
+| `:policy`, a third value of the grain conjunct | the two entries at the end of `collection` |
+| `CascadeEdit` — `admit`, `drop-node`, `promote-above`, `set-flag`, `halt` | `admit` … `halt`, `cascade-edit?` |
+| the one grain-polymorphic firing loop | `fire`, called by `pattern-policy` (play) and `construct` (policy) |
+| the construction loop of `LA1c` §4.1 | `construct`, over a `CascadeState` from `initial-cascade-state` |
+
+The two maps are now **derived**: `temperament-overrides` fires a temperament
+and reports the entries of the resulting precedence field that differ from the
+authored one. `snatch/play-the-authored-order-first` emits `halt` and yields
+`{}`; `snatch/lead-with-the-exchange-rule` emits one `promote-above` and yields
+`{:exchange-when-both-sides-gain 0}`. The equality against the pre-row literals
+is checked when the namespace loads, because `derive_q_snatch.clj`,
+`ablate_g_snatch.clj` and `find_snatch.clj` all take those maps and a drift would
+move their artefacts without anyone running this report. `snatch-cascade.edn`
+regenerates byte-identical, so all six scenarios score exactly as before.
+
+Three controls run on every `-main`, and each fails the check rather than
+printing a note:
+
+- **grain separation** — no rule of one grain fires in a situation of another,
+  both directions.
+- **the conjunct deleted** — the grain is forged on a foreign situation, so the
+  rest of the guard runs without its conjunct. **2 of 9 rules then throw**
+  (`probe-before-committing`, `exchange-when-both-sides-gain`, both on `:tokens`
+  being nil); the other seven are silent because the two situation types happen
+  to use disjoint keys. So the conjunct carries the separation at play grain and
+  is currently redundant at policy grain — worth knowing, and the control fails
+  only if *every* rule is silent.
+- **library correspondence** — each policy-grain runner entry names a pattern
+  `library/snatch` holds, and its `:then-source` line still begins `+ THEN:`.
+
+**Two of the six are executed.** `unexecuted-policy-patterns` names the other
+four and the `CascadeEdit` each would need; between them every constructor of the
+type has a named claimant. What blocks the four is stated there and is not
+effort: nothing carries a cascade between rounds, so grim's monotone flag has
+nothing to be monotone over, and the term `widen-the-cascade-only-on-evidence`
+would order its admissions by is the ΔG per attachment step that `construct`
+does not evaluate (worklist `:LA3`).

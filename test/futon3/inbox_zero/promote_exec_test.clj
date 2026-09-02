@@ -41,6 +41,70 @@
    plan (merge {:repo-root (.getPath repo) :gates [] :message "promote planned paths"}
                options)))
 
+(defn- execute-with-refresh [repo plan & [options]]
+  (promote-exec/execute-plan-with-refresh!
+   plan (merge {:repo-root (.getPath repo) :gates [] :message "promote refreshed paths"}
+               options)))
+
+;; LIVE PIN (2026-09-02): the two status values below are quoted from
+;; file-observation:017082a18f9125779145e551a04c35683880c8de5184903e13e7a3f4c1b8475e
+;; (:git/status :untracked) and
+;; file-observation:83993370b0ace0045177a73ae5335ee0744042e3f8fe7ac7b7b5331a1c18d462
+;; (:git/status :modified). They reproduce the stale futon3c-d promotion plan.
+(def live-untracked-status :untracked)
+(def live-modified-status :modified)
+
+(deftest stale-plan-self-heals-when-planned-path-was-committed
+  (let [repo (init-repo)
+        promotion (plan [{:path "modified.txt" :git/status live-modified-status}])]
+    (spit (io/file repo "modified.txt") "already promoted\n")
+    (git! repo "add" "--" "modified.txt")
+    (git! repo "commit" "-q" "-m" "someone else promoted it")
+    (let [before (str/trim (:out (git! repo "rev-parse" "HEAD")))
+          result (execute-with-refresh repo promotion)
+          after (str/trim (:out (git! repo "rev-parse" "HEAD")))]
+      (is (= [:resolved :stale-plan-self-healed]
+             [(:verdict result) (:held/reason result)]))
+      (is (= ["modified.txt"] (:refresh/dropped result)))
+      (is (= before after) "self-healing does not create a commit"))))
+
+(deftest stale-plan-refresh-commits-only-the-still-dirty-path
+  (let [repo (init-repo)
+        already-promoted "already-promoted.txt"]
+    (spit (io/file repo already-promoted) "untracked observation\n")
+    (spit (io/file repo "modified.txt") "still dirty\n")
+    (let [promotion (plan [{:path already-promoted :git/status live-untracked-status}
+                           {:path "modified.txt" :git/status live-modified-status}])]
+      (git! repo "add" "--" already-promoted)
+      (git! repo "commit" "-q" "-m" "someone else promoted one path")
+      (let [result (execute-with-refresh repo promotion)
+            committed (str/split-lines
+                       (:out (git! repo "show" "--format=" "--name-only" "HEAD")))]
+        (is (= :committed (:verdict result)))
+        (is (= [already-promoted] (:refresh/dropped result)))
+        (is (true? (:refresh/retried result)))
+        (is (= ["modified.txt"] committed))))))
+
+(deftest stale-plan-refresh-does-not-loop-after-second-stale-result
+  (let [repo (init-repo)
+        already-promoted "already-promoted.txt"]
+    (spit (io/file repo already-promoted) "untracked observation\n")
+    (spit (io/file repo "modified.txt") "dirty before gate\n")
+    (let [promotion (plan [{:path already-promoted :git/status live-untracked-status}
+                           {:path "modified.txt" :git/status live-modified-status}])]
+      (git! repo "add" "--" already-promoted)
+      (git! repo "commit" "-q" "-m" "someone else promoted one path")
+      (let [result
+            (execute-with-refresh
+             repo promotion
+             {:gates [{:gate/name :tree-churn
+                       :cmd ["git" "checkout" "--" "modified.txt"]}]})]
+        (is (= [:held :stale-plan]
+               [(:verdict result) (:held/reason result)]))
+        (is (= [already-promoted] (:refresh/dropped result)))
+        (is (true? (:refresh/retried result)))
+        (is (str/blank? (:out (git! repo "diff" "--cached" "--name-only"))))))))
+
 (deftest modified-and-deleted-paths-commit-exactly
   (let [repo (init-repo)]
     (spit (io/file repo "modified.txt") "changed\n")

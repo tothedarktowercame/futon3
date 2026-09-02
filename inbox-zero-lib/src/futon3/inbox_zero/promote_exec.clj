@@ -127,3 +127,34 @@
                                            :cleanup cleanup-error}
                                           cleanup-error)))))
                     (throw error)))))))))))
+
+(defn execute-plan-with-refresh!
+  "Execute PLAN once, refreshing a stale plan against live Git status once.
+
+  Paths that have become clean are already committed/resolved and are dropped.
+  Remaining paths are retried with their live status class. A second stale
+  result is returned unchanged apart from refresh metadata; this function never
+  retries a third time."
+  [plan {:keys [repo-root] :as opts}]
+  (let [first-result (execute-plan! plan opts)]
+    (if-not (and (= :held (:verdict first-result))
+                 (= :stale-plan (:held/reason first-result)))
+      first-result
+      (let [observed (mapv (fn [{:keys [path] :as entry}]
+                             (assoc entry ::live-status
+                                    (status-class repo-root path)))
+                           (:include plan))
+            {dropped true kept false}
+            (group-by (comp nil? ::live-status) observed)
+            dropped-paths (mapv :path dropped)
+            refreshed-include (mapv (fn [entry]
+                                      (-> entry
+                                          (assoc :git/status (::live-status entry))
+                                          (dissoc ::live-status)))
+                                    kept)]
+        (if (empty? refreshed-include)
+          (result plan :resolved :stale-plan-self-healed []
+                  {:refresh/dropped dropped-paths})
+          (assoc (execute-plan! (assoc plan :include refreshed-include) opts)
+                 :refresh/dropped dropped-paths
+                 :refresh/retried true))))))

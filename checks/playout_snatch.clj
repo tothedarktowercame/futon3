@@ -10,7 +10,8 @@
    trace can be read rather than sampled."
   (:require [clojure.string :as str]
             [clojure.set :as set]
-            [clojure.pprint]))
+            [clojure.pprint]
+            [find-organise :as fo]))
 
 ;; ---- the collection, as (IF-guard, THEN) pairs -------------------------
 ;; Each guard is a predicate on the situation. This IS the pattern's IF clause,
@@ -229,35 +230,31 @@
 ;; The cascade a run produces is not the chain of acting patterns.  It is the
 ;; sub-graph of @why that those patterns stand on — and @why is a semilattice
 ;; rather than a tree, which is Alexander's own Figure 1 shape.
-(def ^:private library-dir "library/snatch")
+;;
+;; The reader, the up-closure and the induced edges used to live here, against a
+;; hardcoded `library/snatch`.  They are now `find-organise`'s, which reads any
+;; section and states the laws the closure has to satisfy (worklist :L6).  The
+;; ids there are section-qualified, so a cross-section `@why` resolves rather
+;; than colliding; this file's artefacts are keyed inside snatch, so `q` and
+;; `l` convert at the boundary and nowhere else.
+(def repository (fo/read-repository "library" [:snatch]))
 
-(defn- parse-why [file]
-  (let [lines (str/split-lines (slurp file))
-        id (some #(second (re-matches #"@flexiarg snatch/(\S+)" %)) lines)
-        why (some #(second (re-matches #"@why (.*)" %)) lines)]
-    (when id
-      [(keyword id)
-       (into #{} (map #(keyword (str/replace % "snatch/" "")))
-             (remove str/blank? (str/split (or why "") #"\s+")))])))
+(defn- q [id] (fo/qualified :snatch id))
+(defn- l [id] (fo/local id))
 
-(def why-graph
-  (into {} (keep parse-why)
-        (->> (file-seq (java.io.File. library-dir))
-             (filter #(str/ends-with? (.getName ^java.io.File %) ".flexiarg")))))
+(defn cascade
+  "The cascade of a run, under the temperament this file has always run: take
+   the up-closure (P-validated-R5 §2.1d).  Ids come back bare."
+  [acting]
+  (let [c (fo/organise fo/up-closure-temperament (into #{} (map q) acting) repository)]
+    {:nodes (into #{} (map l) (:nodes c))
+     :added-by-organise (into #{} (map l) (:added-by-organise c))
+     :edges (mapv (fn [[u v]] [(l u) (l v)]) (:edges c))}))
 
 (defn- up-closure
   "Every pattern the given ones stand on, transitively."
   [ids]
-  (loop [seen #{} frontier (set ids)]
-    (if (empty? frontier)
-      seen
-      (let [seen' (into seen frontier)]
-        (recur seen'
-               (set/difference (into #{} (mapcat #(get why-graph % #{})) frontier)
-                               seen'))))))
-
-(defn- induced-edges [nodes]
-  (for [n nodes, parent (get why-graph n #{}) :when (nodes parent)] [n parent]))
+  (:nodes (cascade ids)))
 
 ;; Alexander's contrast is tree vs semilattice, but a rooted tree IS a meet
 ;; semilattice — every two nodes have a greatest common ancestor.  So the
@@ -278,8 +275,7 @@
     (when (= 1 (count maxima)) (first maxima))))
 
 (defn- shape [acting]
-  (let [nodes (up-closure acting)
-        edges (induced-edges nodes)
+  (let [{:keys [nodes edges]} (cascade acting)
         parents-of (reduce (fn [m [c p]] (update m c (fnil conj #{}) p)) {} edges)
         shared (sort (map name (keys (filter #(> (count (val %)) 1) parents-of))))
         pairs (for [a nodes, b nodes :when (neg? (compare (str a) (str b)))] [a b])
@@ -324,7 +320,11 @@
     (println (format "  acting chain: %s"
                      (str/join " → " (map #(name (:by %))
                                           (filter :by trace)))))
-    (cascade-report (into #{} (keep :by) trace))))
+    ;; `:no-pattern` is the runner's "nothing fired" sentinel, not a pattern in
+    ;; the repository, so it is not a cascade node (F1/O1).  `emit-cascade-edn`
+    ;; below has always removed it; these two reports did not, and counted it as
+    ;; a node of the @why closure until :L6 put organise behind the laws.
+    (cascade-report (into #{} (comp (keep :by) (remove #{:no-pattern})) trace))))
 
 ;; The figure is drawn from this, so it cannot drift from the run that
 ;; produced it: bb p4ng/empirics-futon/gen_snatch_cascade.bb
@@ -342,14 +342,14 @@
                    :let [trace (play policy t d n)
                          acting-order (into [] (comp (keep :by) (remove #{:no-pattern}) (distinct)) trace)
                          acting (set acting-order)
-                         closure (up-closure acting)]]
+                         organised (cascade acting)]]
                {:treatment t :disposition d :rounds n
                 :policy policy-name
                 :precedence (precedence overrides)
                 :acting acting-order            ; play order (first firing), :no-pattern removed
                 :fallback-rounds (count (filter #(= :no-pattern (:by %)) trace))
                 :nodes (vec (sort acting))
-                :added-by-organise (vec (sort (set/difference closure acting)))
+                :added-by-organise (vec (sort (:added-by-organise organised)))
                 :score (:score (last trace))
                 :grim-score (:score (last (play pi-grim t d n)))})
         by-key (group-by (juxt :treatment :disposition) rows)
@@ -388,7 +388,7 @@
   (println "  scenario           acting  nodes  edges  overlap  tree?  meet-slat?  G-grade?")
   (doseq [[t d n] scenarios]
     (let [trace (play pi-patterns t d n)
-          acting (into #{} (keep :by) trace)
+          acting (into #{} (comp (keep :by) (remove #{:no-pattern})) trace)
           {:keys [nodes edges shared tree? meet-semilattice?]} (shape acting)
           moved? (not= (:score (last trace))
                        (:score (last (play pi-exchange-first t d n))))]

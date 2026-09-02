@@ -56,6 +56,50 @@ source rather than absorbed — per `S-G3` in
 
 ---
 
+## The generic `find` / `organise` path
+
+`find_organise.clj` — worklist `:L6`, P-validated-R5 §3e. The two functions the
+War Machine's Lean holes declare (`DarkTower/WarMachine/Holes.lean:264`, `:308`),
+over **any** library section rather than over `library/snatch`.
+
+    clojure -Sdeps '{:paths ["checks" "."] :deps {babashka/fs {:mvn/version "0.5.25"}}}' \
+      -M -m find-organise
+
+`--negative-f1` … `--negative-o4` mutate one law on a real recorded row and must
+be rejected; the exit convention is `0-pass / 1-fail / 2-mutation-slipped`.
+
+The laws are checked in the **narrowed** form the 2026-08-31 scope amendment gave
+them: each is a predicate on a recorded row, not a universal over an
+implementation that is deliberately refused. F1–F4 run over 40 rows of the pinned
+`find-snatch.edn` (the check refuses to proceed if that file's sha256 has moved
+off the one the four `findF*` declarations pin). O1–O4 run over six `CascadeDiff`s
+built from `snatch-cascade.edn` by `organise` itself, so a generic path that did
+not reproduce the recorded cascades would fail rather than sit beside them.
+
+`organise` takes **three** arguments, `Cascade policy → Set P → Repository P →
+Cascade P`. The third is the temperament, and it is not decoration: the library
+already records two organise policies that the two-argument type cannot tell
+apart — `playout_snatch.clj` takes the up-closure under `@why`, while
+`wmCascadeDiffFixture` keeps `nodes = selected` and fast-forwards through the
+unselected bridge. Both satisfy O1's narrowed form, so which one runs is data.
+Over `library/war-room` the difference is visible: dropping its four bridge
+patterns turns nine authored edges into five fast-forwarded ones, all of them
+landing on `wr-0-organise-without-apparatus` — Joe's *"fast-forward the edges
+that didn't fit our current problem"*, off Snatch.
+
+| what it reads | measure |
+|---|---|
+| `library/snatch` | 24 patterns, 26 authored `@why` edges, acyclic, 1 dangling cross-section target |
+| `library/cycle-machine` | 7 patterns, 5 edges, `@why` depth 1 — no bridges, so the two temperaments agree |
+| `library/war-room` | 28 patterns, 9 edges, 4 bridges — the temperaments differ |
+| `library/ants` | 5 patterns, **0** authored edges — the unorganised control (P-validated-R5 §1b addendum 3) |
+
+The reader is checked against `library_graph_lint.clj`'s own `scan-library` on
+every run and the check fails on any disagreement: two readers of one graph is
+the defect `find_snatch.clj`'s `representation-mismatches` refuses one level up.
+
+---
+
 ## Items — the unit of "one new good thing"
 
 Joe, 2026-08-27: *"the reason the 82 historical items were not good is that they

@@ -1,12 +1,17 @@
 (ns find-snatch
-  "A structured-state `find` over the authored Snatch pattern repository."
+  "A structured-state `find` over the authored Snatch pattern repository.
+
+   The repository reader, the receipt warrant and `find` itself are
+   `find-organise`'s, over any library section (worklist :L6).  What stays here
+   is what is Snatch's: which state the tension carries, which runner entry
+   decides that a pattern's antecedent holds, and the six scenarios."
   (:refer-clojure :exclude [find])
   (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
             [clojure.java.shell :as shell]
             [clojure.pprint :as pprint]
             [clojure.set :as set]
             [clojure.string :as str]
+            [find-organise :as fo]
             [playout-snatch :as snatch]))
 
 (def library-dir "library/snatch")
@@ -25,81 +30,45 @@
    [:g4 :snatcher] :forced-play-needs-a-loss-floor
    [:g5 :sharer] :re-enter-after-observed-repair})
 
-(defn- normalise [s]
-  (some-> s str/trim (str/replace #"\s+" " ")))
+(def snatch-repository (fo/read-repository "library" [:snatch]))
 
-(defn- clause-block [lines label]
-  (when-let [marker (first (keep-indexed
-                            (fn [i line]
-                              (when (re-matches
-                                     (re-pattern (str "^\\s+\\+ " label ":\\s*$"))
-                                     line)
-                                i))
-                            lines))]
-    (let [content (->> (subvec lines (inc marker))
-                       (take-while #(and (not (str/blank? %))
-                                         (not (re-matches #"^\s+\+ \S.*" %))))
-                       vec)]
-      (when (seq content)
-        {:lines [(+ marker 2) (+ marker 1 (count content))]
-         :text (normalise (str/join " " content))}))))
-
-(defn- parse-pattern-file [file]
-  (let [lines (vec (str/split-lines (slurp file)))
-        id (some #(some-> (re-matches #"@flexiarg snatch/(\S+)" %) second keyword)
-                 lines)
-        if-clause (clause-block lines "IF")
-        however-clause (clause-block lines "HOWEVER")]
-    (when-not id
-      (throw (ex-info "Snatch pattern has no @flexiarg id" {:file (str file)})))
-    [id {:file (str "library/snatch/" (.getName ^java.io.File file))
-         :if-lines (:lines if-clause)
-         :if-text (:text if-clause)
-         :however-lines (:lines however-clause)
-         :however-text (:text however-clause)}]))
-
+;; The artefact this file writes is keyed inside snatch, so the qualified ids
+;; `find-organise` works in are converted at the boundary and nowhere else.
 (def authored-patterns
   (into (sorted-map)
-        (map parse-pattern-file)
-        (->> (file-seq (io/file library-dir))
-             (filter #(.isFile ^java.io.File %))
-             (filter #(str/ends-with? (.getName ^java.io.File %) ".flexiarg"))
-             (sort-by #(.getName ^java.io.File %)))))
+        (map (fn [[qid entry]] [(fo/local qid) entry]))
+        (:entries snatch-repository)))
 
 (def repository (set (keys authored-patterns)))
 
-(defn- warrant [id]
-  (let [{:keys [file if-lines if-text however-lines however-text]}
-        (get authored-patterns id)]
-    (cond-> (sorted-map :file file :if-lines if-lines :if-text if-text)
-      however-text (assoc :however-lines however-lines
-                          :however-text however-text))))
+(def ^:private runner-entry
+  (into {} (map (juxt :id identity)) snatch/collection))
 
 (defn find
-  "Evaluate authored P1 antecedents against a structured runner state."
+  "Evaluate authored P1 antecedents against a structured runner state.
+
+   The candidate set is the REPOSITORY, not the runner collection, so F1
+   containment is true by construction rather than checked afterwards.  A runner
+   entry whose id is not authored is now unreachable instead of caught late;
+   `representation-mismatches` below still reports it, which is the direction
+   that carries information."
   [state]
-  (let [firing (->> snatch/collection
-                    (filter #(snatch/fires? % state))
-                    (map :id)
-                    sort
-                    vec)
-        outside (set/difference (set firing) repository)]
-    (when (or (seq outside) (some #{:no-pattern} firing))
-      (throw (ex-info "F1 violated: find selected outside the repository"
-                      {:selected firing :outside (sort outside)})))
+  (let [result (fo/find {:context state
+                         :route :structured-antecedent
+                         :fires? (fn [qid s]
+                                   (when-let [pat (runner-entry (fo/local qid))]
+                                     (snatch/fires? pat s)))
+                         :receipt (fn [qid]
+                                    (let [pat (runner-entry (fo/local qid))]
+                                      {:however (if (:however pat) true :none)
+                                       :state-fields :not-instrumented}))}
+                        snatch-repository)]
     (sorted-map
-     :absence (when (empty? firing) :no-pattern-addresses-this-tension)
+     :absence (:absence result)
      :receipts (into (sorted-map)
-                     (map (fn [id]
-                            (let [pat (some #(when (= id (:id %)) %) snatch/collection)]
-                              [id (sorted-map
-                                   :however (if (:however pat) true :none)
-                                   :if true
-                                   :route :structured-antecedent
-                                   :state-fields :not-instrumented
-                                   :warrant (warrant id))])))
-                     firing)
-     :selected firing)))
+                     (map (fn [[qid receipt]] [(fo/local qid) receipt]))
+                     (:receipts result))
+     :selected (mapv fo/local (:selected result)))))
 
 (defn- representation-mismatches
   "Reject a second maintained antecedent representation.  The authored file is

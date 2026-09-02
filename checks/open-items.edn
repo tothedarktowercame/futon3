@@ -1,0 +1,162 @@
+{:items
+ [{:item :wm/RUN4,
+   :ledger "../futon2/holes/labs/wm-contract/worklist.edn",
+   :remedy-language
+   {:in-the-addressed-span {:count 0, :markers-present []},
+    :in-the-whole-record {:count 0, :markers-present []},
+    :note
+    "A cascade that agrees with a remedy the statement already carries has proposed nothing. Reported per item; nothing is dropped for it."},
+   :row-id :RUN4,
+   :statement
+   "Evidence for the holes, from the fresh records: wmRunConformsToWiring closes by record or is refuted; H1b bound tested against records that carry both halves; and the choice-point branches run on these fields -- carried against fixed beta (V6), and pi_0 with and without ln E once the habit prior is live.",
+   :statement-address
+   {:file "../futon2/holes/labs/wm-contract/worklist.edn",
+    :key :statement,
+    :kind :edn-key-path,
+    :row-id :RUN4},
+   :statement-sha256
+   "6e28a6e0d3874d81f527d30f36f251a364e1cfaba34ffe4503f599b2cb9708d6",
+   :status :blocked}
+  {:item :wm/I4,
+   :ledger "../futon2/holes/labs/wm-contract/worklist.edn",
+   :remedy-language
+   {:in-the-addressed-span {:count 0, :markers-present []},
+    :in-the-whole-record {:count 0, :markers-present []},
+    :note
+    "A cascade that agrees with a remedy the statement already carries has proposed nothing. Reported per item; nothing is dropped for it."},
+   :row-id :I4,
+   :statement
+   "Joe ordering ruling of 2026-08-30, recorded as :r6-r14-order with :grounds :ruling -- select the target first, then construct the cascade to match -- retired R5->R6, R6->R13 and R11->R16 as design intent. NO CODE WAS CHANGED TO MATCH. The S1 run records the machine still running R5 before R6, which is exactly what an unrealised ruling looks like. This is the build item that realises it.",
+   :statement-address
+   {:file "../futon2/holes/labs/wm-contract/worklist.edn",
+    :key :statement,
+    :kind :edn-key-path,
+    :row-id :I4},
+   :statement-sha256
+   "af26e1c4683cb0cfe0ff528b5b2a6bacce6e4588e603a3a94ef261d019049b52",
+   :status :blocked}
+  {:item :ticket/cx-new-blocks-emacs,
+   :ledger "../futon3c/holes/tickets/tickets-index.edn",
+   :remedy-language
+   {:in-the-addressed-span
+    {:count 1, :markers-present ["**status (triaged"]},
+    :in-the-whole-record
+    {:count 2,
+     :markers-present ["**status (triaged" "## disposition"]},
+    :note
+    "A cascade that agrees with a remedy the statement already carries has proposed nothing. Reported per item; nothing is dropped for it."},
+   :row-id "T-cx-new-blocks-emacs.md",
+   :statement
+   "# T-cx-new-blocks-emacs — `cx new` blocks Emacs for a while (DEFERRED)\n\n**Status (triaged 2026-09-01): STILL-OPEN, deferred by design.** cx at HEAD still runs the synchronous wait_for_agency poll (up to 30 s) and blocking emacsclient evals; no async conversion exists. The ticket's own DO-NOT-PICK-UP note stands -- needs Joe's go-ahead plus a timing repro separating the wait from the first turn.\n\nObserved by Joe, 2026-06-10. Parking for \"another time\" — do NOT pick up without\nJoe's go-ahead.\n\n## Symptom\nRunning `cx new` (mint a fresh codex agent) blocks/freezes Joe's Emacs for a\nnoticeable stretch before returning.\n",
+   :statement-address
+   {:file "../futon3c/holes/tickets/T-cx-new-blocks-emacs.md",
+    :kind :line-span,
+    :lines [1 11]},
+   :statement-sha256
+   "fca4753c98cc40769ce6277a0404bd031574b9394c648ac809f592c7659dfed5",
+   :status :still-open}
+  {:item :ticket/fail-invoke-error,
+   :ledger "../futon3c/holes/tickets/tickets-index.edn",
+   :remedy-language
+   {:in-the-addressed-span
+    {:count 1, :markers-present ["**status (triaged"]},
+    :in-the-whole-record
+    {:count 2,
+     :markers-present
+     ["**status (triaged" "## what would close this"]},
+    :note
+    "A cascade that agrees with a remedy the statement already carries has proposed nothing. Reported per item; nothing is dropped for it."},
+   :row-id "T-fail-invoke-error.md",
+   :statement
+   "# T-fail-invoke-error -- invoke-error (2x)\n\n**Status (triaged 2026-09-01): STILL-OPEN.** 2 -> 111 at review (latest 09-01T03:06); now the second-heaviest class. Needs exception-payload triage before a close criterion can be stated.\n\n<!-- census:begin -->\n- **class**: `invoke-error`\n- **multiplicity**: 2\n- **window**: 2026-08-21T08:23 -> 2026-08-24T11:31\n- **most often**: `codex-10` <- `claude-cli`\n- **stage**: BELIEVE\n- **source**: `GET /api/alpha/invoke/jobs`, field `terminal-code`\n<!-- census:end -->\n\n## Why this file exists\n\nWritten by `scripts/failure-tickets.py` from the invoke-job ledger, so a typed\nfailure lands in the queue without anyone noticing it first. Everything above\nthe `census:end` marker is regenerated on each run; everything below it is\nyours and is never touched.\n\nEditing anything in this section is what moves the class back to BELIEVE: there\nis no status field, so a file that nobody has written in is a class that nobody\nhas responded to.\n",
+   :statement-address
+   {:file "../futon3c/holes/tickets/T-fail-invoke-error.md",
+    :kind :line-span,
+    :lines [1 24]},
+   :statement-sha256
+   "32236f2095b6c0940bae2b4e1bf8d6f62b8a62fc0bbc923874e60eea43100bd3",
+   :status :still-open}
+  {:item :ticket/jvm-provenance-before-multi-jvm,
+   :ledger "../futon3c/holes/tickets/tickets-index.edn",
+   :remedy-language
+   {:in-the-addressed-span {:count 0, :markers-present []},
+    :in-the-whole-record
+    {:count 2, :markers-present ["## the repair" "## acceptance"]},
+    :note
+    "A cascade that agrees with a remedy the statement already carries has proposed nothing. Reported per item; nothing is dropped for it."},
+   :row-id "T-jvm-provenance-before-multi-jvm.md",
+   :statement
+   "# T-jvm-provenance-before-multi-jvm — a JVM cannot currently say what code it is\n\n**Opened:** 2026-08-28 · claude-13, from Joe: *\"one JVM … that was primarily set\nup to accommodate my laptop. Now we have a much bigger and better bare metal\nserver. So I think we could afford to have multiple JVMs — we have /home/joe/ as\nwell as /home/dionysus/ and /home/apollo/ in case we wanted to use these for a\ndegree of isolation.\"*\n\n**Status:** open. The resource premise of the one-JVM rule is void; the\nidentifiability premise is not, and this ticket is the precondition.\n\n## The one-JVM rule was doing two jobs, and only one has expired\n\n**Job 1 — fit on a laptop. Void.** Measured 2026-08-28:\n\n    32 cores · 249 GiB RAM · 228 GiB available · 21 GiB in use\n    /home/dionysus  exists, owned by dionysus, empty\n    /home/apollo    exists, owned by apollo,   empty\n\nThis machine could carry dozens of JVMs. Two separate accounts are already\nprovisioned for isolation and unused.\n\n**Job 2 — make \"what code is running?\" have an answer.** With exactly one JVM\nper repo on `master`, the answer is implied by the rule itself. **With several,\nthere is no answer at all** — and the JVM cannot supply one:\n\n    GET /health              200 — uptime, queue gates, sessions, agents, started-at\n    GET /api/alpha/version   404\n    GET /api/alpha/health    404\n    GET /api/alpha/status    404\n\n**No checkout path, no branch, no commit sha, anywhere.** A running futon3c\ncannot tell you which working tree it was loaded from.\n",
+   :statement-address
+   {:file
+    "../futon3c/holes/tickets/T-jvm-provenance-before-multi-jvm.md",
+    :kind :line-span,
+    :lines [1 34]},
+   :statement-sha256
+   "e45c1c70f35f78a466d7660eae8cc9071db303759cb5b5eb21b90797443bdff7",
+   :status :open}],
+ :produced-by "checks/open_items.clj --open",
+ :schema :la8/open-items-v1,
+ :selection
+ {:re-measured-not-carried-forward
+  "Row :LA8 states \"4 :open + 2 :blocked in wm-contract; 7 :still-open + 3 :open in tickets-index.edn\" as of when it was written. Re-measured on this run: wm-contract 2 open-or-blocked of 95 rows (2 qualifying); tickets 10 open of 34 rows (10 qualifying).",
+  :rule
+  {:classes-excluded [:J],
+   :min-statement-chars 200,
+   :spacing
+   "indices (quot (* i n) k) for i in 0..k-1, over the qualifying list in ledger order",
+   :ticket-address
+   "title line through the last line before the SECOND `## ` heading; no heading is named",
+   :ticket-open-statuses #{:open :still-open},
+   :tickets-take 3,
+   :wm-open-statuses #{:blocked :open},
+   :wm-take 2},
+  :tickets
+  {:open 10,
+   :ledger "../futon3c/holes/tickets/tickets-index.edn",
+   :qualifying-ids
+   ["T-cx-new-blocks-emacs.md"
+    "T-fail-activation-authority-unavailable.md"
+    "T-fail-agent-not-found.md"
+    "T-fail-invoke-error.md"
+    "T-fail-invoke-interrupted.md"
+    "T-fail-operator-cancelled.md"
+    "T-jvm-provenance-before-multi-jvm.md"
+    "T-strategic-cascade-emits-disconnected-patterns.md"
+    "T-wm-turns-are-not-operator-turns.md"
+    "T-zai-chat-transient-timeout.md"],
+   :rows-in-ledger 34,
+   :open-ids
+   ["T-cx-new-blocks-emacs.md"
+    "T-fail-activation-authority-unavailable.md"
+    "T-fail-agent-not-found.md"
+    "T-fail-invoke-error.md"
+    "T-fail-invoke-interrupted.md"
+    "T-fail-operator-cancelled.md"
+    "T-jvm-provenance-before-multi-jvm.md"
+    "T-strategic-cascade-emits-disconnected-patterns.md"
+    "T-wm-turns-are-not-operator-turns.md"
+    "T-zai-chat-transient-timeout.md"],
+   :indices [0 3 6],
+   :qualifying 10,
+   :status-histogram
+   {:blocked 1,
+    :done-in-fact 8,
+    :open 3,
+    :parked 1,
+    :partial 9,
+    :scoped 2,
+    :still-open 7,
+    :superseded 1,
+    :watch 2}},
+  :wm
+  {:open 2,
+   :ledger "../futon2/holes/labs/wm-contract/worklist.edn",
+   :qualifying-ids ["RUN4" "I4"],
+   :rows-in-ledger 95,
+   :open-ids ["RUN4" "I4"],
+   :indices [0 1],
+   :qualifying 2,
+   :status-histogram {:blocked 2, :done 92, :done-unreviewed 1}}},
+ :there-is-no-withheld-half
+ "By construction, and this is the row's weakness rather than a saving. An open item records no resolution, so there is no blind/resolutions split to run and no git-history check on the constructor. What the acceptance substitutes is a plausibility judgement by someone who did not construct, persisted beside the cascade."}

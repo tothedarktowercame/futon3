@@ -692,8 +692,12 @@
      :sha "346dbaf",
      :seat "zai-3"}],
    :owner :any}
-  {:id :L7 :class :C :status :done-unreviewed :owner :any
+  {:id :L7 :class :C :status :done :owner :any
    :covers-key :none
+   :reviewed-by "codex"
+   :reviewed-at "2026-09-02T10:13:21Z"
+   :review
+   "Read 0b9a1a4 in full and confirmed it is authored by Joseph Corneli, not the reviewer. Confirmed load-pinned-cache refuses a nonexistent pin before attaching :cache-path, distinguishes missing, unparseable, and no-index inputs, and preserves a readable pin as the worker cache path. Reproduced clj-kondo exit 0 (0 errors, 0 warnings), check-parens exit 0 (OK), spider_runner_test exit 0 (8 tests, 43 assertions), library_graph_lint_test exit 0 (14 tests, 167 assertions; C88 pin 1254 files and library-wide edges :why 92, :why-posthoc 7, :how 32, :see-also 147), and worklist_check exit 0. The evidence commit changes no .flexiarg or attestation file, so it authors no spider @why, @why-posthoc, or similarity-inferred edge; no wave-section lint applies to this class C row."
    :evidence
    {:sha "0b9a1a4"
     :defect-reproduced

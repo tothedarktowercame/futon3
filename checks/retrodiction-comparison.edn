@@ -1,0 +1,935 @@
+{:schema :la7/retrodiction-comparison-v1,
+ :what-this-cannot-establish
+ "This five-item retrospective cannot establish causal usefulness, prospective task success, superiority to keyword retrieval, or safe enactment. It also cannot validate the budget temperament on the two over-budget ticket seeds, where no member was admitted.",
+ :temperament-note
+ "Primary is marginal-gain-floor. Budget admitted nothing for agency-desktop-save (seed 24) and kangaroo-v1-pouch (seed 50), so those budget outputs are seeds, not constructed policies. AC6 is unchanged (8 admissions). Budget would substantially change D0 (17 admissions versus 0) and C23 (16 versus 0), so their cells are not temperament-stable; that larger arm was not used to rescue either miss.",
+ :discrimination
+ {:diagonal
+  {:retrodicts 1,
+   :partly-retrodicts 1,
+   :does-not-retrodict 3,
+   :no-cascade 0},
+  :off-diagonal
+  {:retrodicts 0,
+   :partly-retrodicts 2,
+   :does-not-retrodict 18,
+   :no-cascade 0},
+  :judgement
+  "There is a numerical diagonal lift (2/5 positive versus 2/20 off-diagonal), but it is not convincing discrimination: one diagonal is generic and layer-misaligned, and both off-diagonal positives trigger pre-registered falsifier failures."},
+ :pre-registered-falsifiers
+ [{:cascade :wm/D0,
+   :resolution :ticket/agency-desktop-save,
+   :cell-verdict :does-not-retrodict,
+   :result :pass}
+  {:cascade :wm/C23,
+   :resolution :wm/AC6,
+   :cell-verdict :does-not-retrodict,
+   :result :pass}
+  {:cascade :wm/AC6,
+   :resolution :wm/C23,
+   :cell-verdict :partly-retrodicts,
+   :result :fail}
+  {:cascade :ticket/agency-desktop-save,
+   :resolution :ticket/kangaroo-v1-pouch,
+   :cell-verdict :does-not-retrodict,
+   :result :pass}
+  {:cascade :ticket/kangaroo-v1-pouch,
+   :resolution :ticket/agency-desktop-save,
+   :cell-verdict :partly-retrodicts,
+   :result :fail}],
+ :cue-validity
+ "All cues occur in their own statement, but 30/35 are single words. registry matches 262 library patterns, agent 116, action 84, live 82, agents 38, process 28; the broad ticket cascades therefore measure word incidence more than tension specificity.",
+ :matrix-order
+ [:wm/D0
+  :wm/C23
+  :wm/AC6
+  :ticket/agency-desktop-save
+  :ticket/kangaroo-v1-pouch],
+ :vacuity
+ [{:item :wm/AC6,
+   :judgement
+   "Yes, partly vacuous. The same argue-empirically member also partly retrodicts C23 off-diagonal, while the diagonal admissibility match lands at a different pipeline layer. The diagonal does not distinguish AC6-specific work from competent claim/refusal discipline."}
+  {:item :ticket/agency-desktop-save,
+   :judgement
+   "Not wholly vacuous, but weakly discriminating. Runtime restoration and durability verification directly fit its own restore-on-boot resolution; nevertheless the pouch cascade independently partly retrodicts the same resolution, so the match is not unique to the constructed tension."}],
+ :verdict
+ "Mostly no. A blind statement-conditioned construction recovered a meaningful part of two recorded resolutions, but missed three diagonals, one apparent diagonal is contaminated by a post-hoc statement, and two pre-registered off-diagonal falsifiers failed. The broad cue seeds and generic members can reproduce competent engineering moves without identifying the item-specific resolution.",
+ :contamination
+ [{:item :wm/D0,
+   :judgement :pre-work-ask,
+   :statement-quote
+   "No generator applies control-map-edges.edn :decisions ... Until it does ... Figure 5A does not change.",
+   :resolution-quote
+   "gen_live_topology.bb applies every :decisions entry",
+   :numeric-6gram-fraction 0.0,
+   :agreement-with-measure true}
+  {:item :wm/C23,
+   :judgement :post-hoc-narration,
+   :statement-quote
+   ":run-result added: gamma at tick 20 is 0.9667979 (:none), 0.9040601 (:pi only), 0.9712374 (:both), 20/20 converged",
+   :resolution-quote
+   "gamma at tick 20 reproduced as 0.9667979197554702 (:none), 0.9040600731260442 (:pi-only), and 0.9712374387398894 (:both)",
+   :numeric-6gram-fraction 0.0,
+   :agreement-with-measure false,
+   :note
+   "The weak 6-gram metric misses a semantic and numeric near-copy; this statement contains the completed result and cannot support blind diagonal retrodiction."}
+  {:item :wm/AC6,
+   :judgement :pre-work-ask,
+   :statement-quote
+   "Unscored moves: exclude-and-continue with a refuse floor",
+   :resolution-quote
+   "an uncostable candidate does not enter the candidate set",
+   :numeric-6gram-fraction 0.0,
+   :agreement-with-measure true}
+  {:item :ticket/agency-desktop-save,
+   :judgement :pre-work-ask,
+   :statement-quote
+   "Persist the agent registry roster to disk so a JVM shutdown + restart brings the SAME agents back registered",
+   :resolution-quote
+   "roster_store.clj shipped whole ... restore-on-boot!",
+   :numeric-6gram-fraction 0.0,
+   :agreement-with-measure true}
+  {:item :ticket/kangaroo-v1-pouch,
+   :judgement :pre-work-ask,
+   :statement-quote
+   "Serve each claude agent's turns from ONE persistent warm `claude --input-format stream-json` process.",
+   :resolution-quote
+   "Warm reuse, locking, eviction, joey cap, snapshots, cold fallback all live",
+   :numeric-6gram-fraction 0.0,
+   :agreement-with-measure true}],
+ :cells
+ [{:cascade :wm/D0,
+   :resolution :wm/D0,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:math-informal-CT/check-it-on-generators
+    :system-coherence/plan-as-enumeration
+    :vsatelier/session-as-rehearsal],
+   :what-was-done-that-no-member-prescribes
+   ["gen_live_topology.bb applies every :decisions entry: :retires draws the edge in a distinct muted-red dash-dot class ... :adds draws a new purple-dashed layer carrying the entry's :label and :condition."],
+   :note
+   "The three members concern categorical generators, decision-shaped prose, and rehearsal. None prescribes reading :decisions, rendering retired/added edge classes, or planting a failing topology control."}
+  {:cascade :wm/D0,
+   :resolution :wm/C23,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:math-informal-CT/check-it-on-generators
+    :system-coherence/plan-as-enumeration
+    :vsatelier/session-as-rehearsal],
+   :what-was-done-that-no-member-prescribes
+   ["run7_beta_arms.clj:42-53 (pi and pi_0 built with ln E in either, both or neither) ... gamma at tick 20 reproduced as 0.9667979 (:none), 0.9040601 (:pi-only), and 0.9712374 (:both)."],
+   :note
+   "No member's THEN prescribes the quoted work in the C23 resolution; any topical overlap is situation naming only."}
+  {:cascade :wm/D0,
+   :resolution :wm/AC6,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:math-informal-CT/check-it-on-generators
+    :system-coherence/plan-as-enumeration
+    :vsatelier/session-as-rehearsal],
+   :what-was-done-that-no-member-prescribes
+   ["move-cost-record ... :present carries :value and a :basis naming WHICH of the four zeros it is ... :uncosted means NEITHER field was supplied ... :refused means a field is present but not finite."],
+   :note
+   "No member's THEN prescribes the quoted work in the AC6 resolution; any topical overlap is situation naming only."}
+  {:cascade :wm/D0,
+   :resolution :ticket/agency-desktop-save,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:math-informal-CT/check-it-on-generators
+    :system-coherence/plan-as-enumeration
+    :vsatelier/session-as-rehearsal],
+   :what-was-done-that-no-member-prescribes
+   ["continuous persist watch ... detached marking and collision refusal"],
+   :note
+   "No member's THEN prescribes the quoted work in the agency-desktop-save resolution; any topical overlap is situation naming only."}
+  {:cascade :wm/D0,
+   :resolution :ticket/kangaroo-v1-pouch,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:math-informal-CT/check-it-on-generators
+    :system-coherence/plan-as-enumeration
+    :vsatelier/session-as-rehearsal],
+   :what-was-done-that-no-member-prescribes
+   ["Warm reuse, locking, eviction, joey cap, snapshots, cold fallback all live (agent_pouch.clj; enabled in dev-laptop-env, source default off)."],
+   :note
+   "No member's THEN prescribes the quoted work in the kangaroo-v1-pouch resolution; any topical overlap is situation naming only."}
+  {:cascade :wm/C23,
+   :resolution :wm/D0,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:baldwin/choose-the-heritable-unit-where-invariance-lives],
+   :what-was-done-that-no-member-prescribes
+   ["gen_live_topology.bb applies every :decisions entry: :retires draws the edge in a distinct muted-red dash-dot class ... :adds draws a new purple-dashed layer carrying the entry's :label and :condition."],
+   :note
+   "No member's THEN prescribes the quoted work in the D0 resolution; any topical overlap is situation naming only."}
+  {:cascade :wm/C23,
+   :resolution :wm/C23,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:baldwin/choose-the-heritable-unit-where-invariance-lives],
+   :what-was-done-that-no-member-prescribes
+   ["run7_beta_arms.clj:42-53 (pi and pi_0 built with ln E in either, both or neither) ... gamma at tick 20 reproduced as 0.9667979 (:none), 0.9040601 (:pi-only), and 0.9712374 (:both)."],
+   :note
+   "The only member says to re-index an invariance measurement; C23 instead constructed three beta arms, re-ran them, and withdrew one false claim. Similar measurement language does not prescribe the recorded work."}
+  {:cascade :wm/C23,
+   :resolution :wm/AC6,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:baldwin/choose-the-heritable-unit-where-invariance-lives],
+   :what-was-done-that-no-member-prescribes
+   ["move-cost-record ... :present carries :value and a :basis naming WHICH of the four zeros it is ... :uncosted means NEITHER field was supplied ... :refused means a field is present but not finite."],
+   :note
+   "No member's THEN prescribes the quoted work in the AC6 resolution; any topical overlap is situation naming only."}
+  {:cascade :wm/C23,
+   :resolution :ticket/agency-desktop-save,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:baldwin/choose-the-heritable-unit-where-invariance-lives],
+   :what-was-done-that-no-member-prescribes
+   ["roster_store.clj shipped whole (restore-payload, continuous persist watch, restore-on-boot! with detached marking and collision refusal)."],
+   :note
+   "No member's THEN prescribes the quoted work in the agency-desktop-save resolution; any topical overlap is situation naming only."}
+  {:cascade :wm/C23,
+   :resolution :ticket/kangaroo-v1-pouch,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:baldwin/choose-the-heritable-unit-where-invariance-lives],
+   :what-was-done-that-no-member-prescribes
+   ["Warm reuse, locking, eviction, joey cap, snapshots, cold fallback all live (agent_pouch.clj; enabled in dev-laptop-env, source default off)."],
+   :note
+   "No member's THEN prescribes the quoted work in the kangaroo-v1-pouch resolution; any topical overlap is situation naming only."}
+  {:cascade :wm/AC6,
+   :resolution :wm/D0,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:aif/admissibility
+    :aif/measurement-window-hygiene
+    :aif/temporal-depth-beyond-greedy
+    :budgeted-action-selection/mana-gated-work
+    :collaboration-coherence/navel-gazing
+    :equity/protected-interaction
+    :f6/learning-event-detection
+    :iching/hexagram-20-guan
+    :peeragogy/newcomer
+    :peripherals/inhabitation-feeds-evolution
+    :ukrns/worked-contrast
+    :writing-coherence/meet-the-reader-where-they-are
+    :aif/niche-construction
+    :aif/candidate-pattern-action-space
+    :aif/grounded-actuation-not-reobservation
+    :problems/tension-proposes-candidates
+    :war-room/wr-19-tension-must-generate-not-only-rank
+    :aif/predictive-entropy-as-ambiguity
+    :aif/shared-kernel-predictive-forward-model
+    :system-coherence/argue-empirically-not-persuasively],
+   :what-was-done-that-no-member-prescribes
+   ["gen_live_topology.bb applies every :decisions entry: :retires draws the edge in a distinct muted-red dash-dot class ... :adds draws a new purple-dashed layer carrying the entry's :label and :condition."],
+   :note
+   "No member's THEN prescribes the quoted work in the D0 resolution; any topical overlap is situation naming only."}
+  {:cascade :wm/AC6,
+   :resolution :wm/C23,
+   :verdict :partly-retrodicts,
+   :members-corresponding
+   [{:pattern :system-coherence/argue-empirically-not-persuasively,
+     :then
+     "Delete or restrict the claim; replace with what must follow; or demote to open question.",
+     :source
+     "library/system-coherence/argue-empirically-not-persuasively.flexiarg:29-34",
+     :resolution-quote
+     "The false coincidence claim is visibly retained under :withdrawn-parameter/:withdrawal",
+     :correspondence :prescribes-what-was-done}],
+   :members-not-corresponding
+   [:aif/admissibility
+    :aif/measurement-window-hygiene
+    :aif/temporal-depth-beyond-greedy
+    :budgeted-action-selection/mana-gated-work
+    :collaboration-coherence/navel-gazing
+    :equity/protected-interaction
+    :f6/learning-event-detection
+    :iching/hexagram-20-guan
+    :peeragogy/newcomer
+    :peripherals/inhabitation-feeds-evolution
+    :ukrns/worked-contrast
+    :writing-coherence/meet-the-reader-where-they-are
+    :aif/niche-construction
+    :aif/candidate-pattern-action-space
+    :aif/grounded-actuation-not-reobservation
+    :problems/tension-proposes-candidates
+    :war-room/wr-19-tension-must-generate-not-only-rank
+    :aif/predictive-entropy-as-ambiguity
+    :aif/shared-kernel-predictive-forward-model],
+   :what-was-done-that-no-member-prescribes
+   ["run7_beta_arms.clj:42-53 (pi and pi_0 built with ln E in either, both or neither) ... gamma at tick 20 reproduced as 0.9667979 (:none), 0.9040601 (:pi-only), and 0.9712374 (:both)."],
+   :note
+   "This off-diagonal match is direct: a generic claim-discipline member says to withdraw an unsupported claim, exactly what C23 records. It is evidence of generic engineering coverage, not AC6-specific retrodiction."}
+  {:cascade :wm/AC6,
+   :resolution :wm/AC6,
+   :verdict :partly-retrodicts,
+   :members-corresponding
+   [{:pattern :aif/admissibility,
+     :then
+     "Define a per-class admissibility predicate and apply it BEFORE expected-free-energy ranking. Un-registered ... actions are inadmissible — refused (or NAG'd), never scored. Only admissible classes reach the ranker.",
+     :source "library/aif/admissibility.flexiarg:21-22",
+     :resolution-quote
+     "an uncostable candidate does not enter the candidate set ... the rollout refuses if exclusion empties a non-empty reachable set or occurs under declared :authorize authority",
+     :correspondence :prescribes-what-was-done}],
+   :members-not-corresponding
+   [:aif/measurement-window-hygiene
+    :aif/temporal-depth-beyond-greedy
+    :budgeted-action-selection/mana-gated-work
+    :collaboration-coherence/navel-gazing
+    :equity/protected-interaction
+    :f6/learning-event-detection
+    :iching/hexagram-20-guan
+    :peeragogy/newcomer
+    :peripherals/inhabitation-feeds-evolution
+    :ukrns/worked-contrast
+    :writing-coherence/meet-the-reader-where-they-are
+    :aif/niche-construction
+    :aif/candidate-pattern-action-space
+    :aif/grounded-actuation-not-reobservation
+    :problems/tension-proposes-candidates
+    :war-room/wr-19-tension-must-generate-not-only-rank
+    :aif/predictive-entropy-as-ambiguity
+    :aif/shared-kernel-predictive-forward-model
+    :system-coherence/argue-empirically-not-persuasively],
+   :what-was-done-that-no-member-prescribes
+   ["move-cost-record ... :present carries :value and a :basis naming WHICH of the four zeros it is ... :uncosted means NEITHER field was supplied ... :refused means a field is present but not finite."],
+   :note
+   "The admissibility member predicts exclusion/refusal, but at a pre-ranking action-class gate; the resolution implements typed move-cost exclusion and two rollout refusal floors, so it recovers the policy shape but not the producer, typing, or placement."}
+  {:cascade :wm/AC6,
+   :resolution :ticket/agency-desktop-save,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:aif/admissibility
+    :aif/measurement-window-hygiene
+    :aif/temporal-depth-beyond-greedy
+    :budgeted-action-selection/mana-gated-work
+    :collaboration-coherence/navel-gazing
+    :equity/protected-interaction
+    :f6/learning-event-detection
+    :iching/hexagram-20-guan
+    :peeragogy/newcomer
+    :peripherals/inhabitation-feeds-evolution
+    :ukrns/worked-contrast
+    :writing-coherence/meet-the-reader-where-they-are
+    :aif/niche-construction
+    :aif/candidate-pattern-action-space
+    :aif/grounded-actuation-not-reobservation
+    :problems/tension-proposes-candidates
+    :war-room/wr-19-tension-must-generate-not-only-rank
+    :aif/predictive-entropy-as-ambiguity
+    :aif/shared-kernel-predictive-forward-model
+    :system-coherence/argue-empirically-not-persuasively],
+   :what-was-done-that-no-member-prescribes
+   ["roster_store.clj shipped whole (restore-payload, continuous persist watch, restore-on-boot! with detached marking and collision refusal)."],
+   :note
+   "No member's THEN prescribes the quoted work in the agency-desktop-save resolution; any topical overlap is situation naming only."}
+  {:cascade :wm/AC6,
+   :resolution :ticket/kangaroo-v1-pouch,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:aif/admissibility
+    :aif/measurement-window-hygiene
+    :aif/temporal-depth-beyond-greedy
+    :budgeted-action-selection/mana-gated-work
+    :collaboration-coherence/navel-gazing
+    :equity/protected-interaction
+    :f6/learning-event-detection
+    :iching/hexagram-20-guan
+    :peeragogy/newcomer
+    :peripherals/inhabitation-feeds-evolution
+    :ukrns/worked-contrast
+    :writing-coherence/meet-the-reader-where-they-are
+    :aif/niche-construction
+    :aif/candidate-pattern-action-space
+    :aif/grounded-actuation-not-reobservation
+    :problems/tension-proposes-candidates
+    :war-room/wr-19-tension-must-generate-not-only-rank
+    :aif/predictive-entropy-as-ambiguity
+    :aif/shared-kernel-predictive-forward-model
+    :system-coherence/argue-empirically-not-persuasively],
+   :what-was-done-that-no-member-prescribes
+   ["Warm reuse, locking, eviction, joey cap, snapshots, cold fallback all live (agent_pouch.clj; enabled in dev-laptop-env, source default off)."],
+   :note
+   "No member's THEN prescribes the quoted work in the kangaroo-v1-pouch resolution; any topical overlap is situation naming only."}
+  {:cascade :ticket/agency-desktop-save,
+   :resolution :wm/D0,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:agent/environment-over-optimization
+    :aif/scheduled-observer-entrypoint
+    :aif/shared-kernel-predictive-forward-model
+    :coordination/capability-gate
+    :cycle-machine/runtime-restoration
+    :equity/contribution-pathways
+    :equity/contribution-pathways-merged
+    :equity/protected-interaction-as-published
+    :equity/protected-interaction-merged
+    :equity/visible-impact
+    :futon-theory/coordination-protocol
+    :gauntlet/aif-as-environment-not-instruction
+    :gauntlet/co-presence-over-co-location
+    :gauntlet/placenta-transfer
+    :gauntlet/umwelt-not-architecture
+    :gauntlet/world-is-hypergraph
+    :invariant-coherence/reachable-from-boot
+    :memory/no-tightening-while-held
+    :memory/verify-in-the-serving-process
+    :paramitas/persistence
+    :peripherals/hot-reload-as-default-fix-path
+    :peripherals/read-existing-seam-before-implementing
+    :social/idempotent-handoff
+    :ukrns/distinguish-delivery-from-practice-change
+    :aif/expected-free-energy-scorecard
+    :aif/off-continuity-null-discriminates
+    :coordination/session-durability-check
+    :forward-model/seal-the-graduation-criteria
+    :problems/commitment-temperature-is-instrumented-as-gain
+    :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch],
+   :what-was-done-that-no-member-prescribes
+   ["gen_live_topology.bb applies every :decisions entry: :retires draws the edge in a distinct muted-red dash-dot class ... :adds draws a new purple-dashed layer carrying the entry's :label and :condition."],
+   :note
+   "No member's THEN prescribes the quoted work in the D0 resolution; any topical overlap is situation naming only."}
+  {:cascade :ticket/agency-desktop-save,
+   :resolution :wm/C23,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:agent/environment-over-optimization
+    :aif/scheduled-observer-entrypoint
+    :aif/shared-kernel-predictive-forward-model
+    :coordination/capability-gate
+    :cycle-machine/runtime-restoration
+    :equity/contribution-pathways
+    :equity/contribution-pathways-merged
+    :equity/protected-interaction-as-published
+    :equity/protected-interaction-merged
+    :equity/visible-impact
+    :futon-theory/coordination-protocol
+    :gauntlet/aif-as-environment-not-instruction
+    :gauntlet/co-presence-over-co-location
+    :gauntlet/placenta-transfer
+    :gauntlet/umwelt-not-architecture
+    :gauntlet/world-is-hypergraph
+    :invariant-coherence/reachable-from-boot
+    :memory/no-tightening-while-held
+    :memory/verify-in-the-serving-process
+    :paramitas/persistence
+    :peripherals/hot-reload-as-default-fix-path
+    :peripherals/read-existing-seam-before-implementing
+    :social/idempotent-handoff
+    :ukrns/distinguish-delivery-from-practice-change
+    :aif/expected-free-energy-scorecard
+    :aif/off-continuity-null-discriminates
+    :coordination/session-durability-check
+    :forward-model/seal-the-graduation-criteria
+    :problems/commitment-temperature-is-instrumented-as-gain
+    :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch],
+   :what-was-done-that-no-member-prescribes
+   ["run7_beta_arms.clj:42-53 (pi and pi_0 built with ln E in either, both or neither) ... gamma at tick 20 reproduced as 0.9667979 (:none), 0.9040601 (:pi-only), and 0.9712374 (:both)."],
+   :note
+   "No member's THEN prescribes the quoted work in the C23 resolution; any topical overlap is situation naming only."}
+  {:cascade :ticket/agency-desktop-save,
+   :resolution :wm/AC6,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:agent/environment-over-optimization
+    :aif/scheduled-observer-entrypoint
+    :aif/shared-kernel-predictive-forward-model
+    :coordination/capability-gate
+    :cycle-machine/runtime-restoration
+    :equity/contribution-pathways
+    :equity/contribution-pathways-merged
+    :equity/protected-interaction-as-published
+    :equity/protected-interaction-merged
+    :equity/visible-impact
+    :futon-theory/coordination-protocol
+    :gauntlet/aif-as-environment-not-instruction
+    :gauntlet/co-presence-over-co-location
+    :gauntlet/placenta-transfer
+    :gauntlet/umwelt-not-architecture
+    :gauntlet/world-is-hypergraph
+    :invariant-coherence/reachable-from-boot
+    :memory/no-tightening-while-held
+    :memory/verify-in-the-serving-process
+    :paramitas/persistence
+    :peripherals/hot-reload-as-default-fix-path
+    :peripherals/read-existing-seam-before-implementing
+    :social/idempotent-handoff
+    :ukrns/distinguish-delivery-from-practice-change
+    :aif/expected-free-energy-scorecard
+    :aif/off-continuity-null-discriminates
+    :coordination/session-durability-check
+    :forward-model/seal-the-graduation-criteria
+    :problems/commitment-temperature-is-instrumented-as-gain
+    :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch],
+   :what-was-done-that-no-member-prescribes
+   ["move-cost-record ... :present carries :value and a :basis naming WHICH of the four zeros it is ... :uncosted means NEITHER field was supplied ... :refused means a field is present but not finite."],
+   :note
+   "No member's THEN prescribes the quoted work in the AC6 resolution; any topical overlap is situation naming only."}
+  {:cascade :ticket/agency-desktop-save,
+   :resolution :ticket/agency-desktop-save,
+   :verdict :retrodicts,
+   :members-corresponding
+   [{:pattern :cycle-machine/runtime-restoration,
+     :then
+     "for each reloaded namespace ... re-adopt every registry entry with :coordinator/enabled? true into the supervisor, and report which were orphaned before",
+     :source
+     "library/cycle-machine/runtime-restoration.flexiarg:22-29",
+     :resolution-quote
+     "restore-payload, continuous persist watch, restore-on-boot! with detached marking and collision refusal, wired into bootstrap restore-before-watch",
+     :correspondence :prescribes-what-was-done}
+    {:pattern :coordination/session-durability-check,
+     :then
+     "verify durability at G0 and reject success when persistence fails",
+     :source
+     "library/coordination/session-durability-check.flexiarg:20-21",
+     :resolution-quote "flag default TRUE since 2026-06-14, 12 tests",
+     :correspondence :prescribes-what-was-done}],
+   :members-not-corresponding
+   [:agent/environment-over-optimization
+    :aif/scheduled-observer-entrypoint
+    :aif/shared-kernel-predictive-forward-model
+    :coordination/capability-gate
+    :equity/contribution-pathways
+    :equity/contribution-pathways-merged
+    :equity/protected-interaction-as-published
+    :equity/protected-interaction-merged
+    :equity/visible-impact
+    :futon-theory/coordination-protocol
+    :gauntlet/aif-as-environment-not-instruction
+    :gauntlet/co-presence-over-co-location
+    :gauntlet/placenta-transfer
+    :gauntlet/umwelt-not-architecture
+    :gauntlet/world-is-hypergraph
+    :invariant-coherence/reachable-from-boot
+    :memory/no-tightening-while-held
+    :memory/verify-in-the-serving-process
+    :paramitas/persistence
+    :peripherals/hot-reload-as-default-fix-path
+    :peripherals/read-existing-seam-before-implementing
+    :social/idempotent-handoff
+    :ukrns/distinguish-delivery-from-practice-change
+    :aif/expected-free-energy-scorecard
+    :aif/off-continuity-null-discriminates
+    :forward-model/seal-the-graduation-criteria
+    :problems/commitment-temperature-is-instrumented-as-gain
+    :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch],
+   :what-was-done-that-no-member-prescribes
+   ["continuous persist watch ... detached marking and collision refusal"],
+   :note
+   "Two members prescribe durable restoration and verification, corresponding to restore-on-boot and its tests. Most of the 30-member cascade is unrelated, reflecting the high-frequency registry/live cues."}
+  {:cascade :ticket/agency-desktop-save,
+   :resolution :ticket/kangaroo-v1-pouch,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:agent/environment-over-optimization
+    :aif/scheduled-observer-entrypoint
+    :aif/shared-kernel-predictive-forward-model
+    :coordination/capability-gate
+    :cycle-machine/runtime-restoration
+    :equity/contribution-pathways
+    :equity/contribution-pathways-merged
+    :equity/protected-interaction-as-published
+    :equity/protected-interaction-merged
+    :equity/visible-impact
+    :futon-theory/coordination-protocol
+    :gauntlet/aif-as-environment-not-instruction
+    :gauntlet/co-presence-over-co-location
+    :gauntlet/placenta-transfer
+    :gauntlet/umwelt-not-architecture
+    :gauntlet/world-is-hypergraph
+    :invariant-coherence/reachable-from-boot
+    :memory/no-tightening-while-held
+    :memory/verify-in-the-serving-process
+    :paramitas/persistence
+    :peripherals/hot-reload-as-default-fix-path
+    :peripherals/read-existing-seam-before-implementing
+    :social/idempotent-handoff
+    :ukrns/distinguish-delivery-from-practice-change
+    :aif/expected-free-energy-scorecard
+    :aif/off-continuity-null-discriminates
+    :coordination/session-durability-check
+    :forward-model/seal-the-graduation-criteria
+    :problems/commitment-temperature-is-instrumented-as-gain
+    :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch],
+   :what-was-done-that-no-member-prescribes
+   ["Warm reuse, locking, eviction, joey cap, snapshots, cold fallback all live (agent_pouch.clj; enabled in dev-laptop-env, source default off)."],
+   :note
+   "No member's THEN prescribes the quoted work in the kangaroo-v1-pouch resolution; any topical overlap is situation naming only."}
+  {:cascade :ticket/kangaroo-v1-pouch,
+   :resolution :wm/D0,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:agency/delivery-receipt
+    :agency/self-attribution
+    :agency/single-routing-authority
+    :agency/state-atomicity
+    :agent/budget-bounds-exploration
+    :agent/environment-over-optimization
+    :agent/evidence-over-assertion
+    :agent/intent-handshake-is-binding
+    :agent/pause-is-not-failure
+    :agent/scope-before-action
+    :agent/state-is-hypothesis
+    :agent/trail-enables-return
+    :ai4ci/umbrella
+    :aif/admissibility
+    :aif/free-energy-as-tick-scalar
+    :aif/hierarchical-budget-aware-action-selection
+    :aif/niche-construction
+    :aif/posterior-variance-as-epistemic-value
+    :aif/predictive-entropy-as-ambiguity
+    :aif/status-gated-belief-update
+    :aif/structure-learning-by-model-reduction
+    :aif/temporal-depth-beyond-greedy
+    :ants/cargo-return-discipline
+    :control/agential-pattern-hygiene
+    :coordination/capability-gate
+    :cycle-machine/authority-port
+    :cycle-machine/job-port
+    :equity/confident-adaptation
+    :equity/protected-interaction
+    :f6/graph-enhanced-evaluation
+    :futon-theory/coordination-protocol
+    :gauntlet/aif-as-environment-not-instruction
+    :gauntlet/co-presence-over-co-location
+    :gauntlet/modeline-persists-across-worlds
+    :gauntlet/placenta-transfer
+    :gauntlet/teaching-inversion
+    :gauntlet/umwelt-not-architecture
+    :gauntlet/world-is-hypergraph
+    :memory/verify-in-the-serving-process
+    :meta/baldwin-ratchet-defeats-darkroom
+    :musn/tool-name-hygiene
+    :peripherals/constrained-execution-envelope
+    :peripherals/pilot-plus-ground-control
+    :peripherals/read-only-first-then-extend
+    :social/explicit-exit-over-abandonment
+    :social/idempotent-handoff
+    :social/scope-bounded-handoff
+    :war-machine/coordination-bottleneck
+    :war-room/wr-4-inhabit-before-building
+    :writing-coherence/throat-clearing-close
+    :aif/decomposed-prediction-noise
+    :aif/predictive-coding-belief-update
+    :aif/shared-kernel-predictive-forward-model
+    :aif/grounded-actuation-not-reobservation
+    :forward-model/seal-the-graduation-criteria
+    :problems/satisfied-rungs-are-counted-and-surfaced
+    :aif/scheduled-observer-entrypoint
+    :aif/structured-observation-vector
+    :cycle-machine/runtime-restoration
+    :cycle-machine/step-machine],
+   :what-was-done-that-no-member-prescribes
+   ["gen_live_topology.bb applies every :decisions entry: :retires draws the edge in a distinct muted-red dash-dot class ... :adds draws a new purple-dashed layer carrying the entry's :label and :condition."],
+   :note
+   "No member's THEN prescribes the quoted work in the D0 resolution; any topical overlap is situation naming only."}
+  {:cascade :ticket/kangaroo-v1-pouch,
+   :resolution :wm/C23,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:agency/delivery-receipt
+    :agency/self-attribution
+    :agency/single-routing-authority
+    :agency/state-atomicity
+    :agent/budget-bounds-exploration
+    :agent/environment-over-optimization
+    :agent/evidence-over-assertion
+    :agent/intent-handshake-is-binding
+    :agent/pause-is-not-failure
+    :agent/scope-before-action
+    :agent/state-is-hypothesis
+    :agent/trail-enables-return
+    :ai4ci/umbrella
+    :aif/admissibility
+    :aif/free-energy-as-tick-scalar
+    :aif/hierarchical-budget-aware-action-selection
+    :aif/niche-construction
+    :aif/posterior-variance-as-epistemic-value
+    :aif/predictive-entropy-as-ambiguity
+    :aif/status-gated-belief-update
+    :aif/structure-learning-by-model-reduction
+    :aif/temporal-depth-beyond-greedy
+    :ants/cargo-return-discipline
+    :control/agential-pattern-hygiene
+    :coordination/capability-gate
+    :cycle-machine/authority-port
+    :cycle-machine/job-port
+    :equity/confident-adaptation
+    :equity/protected-interaction
+    :f6/graph-enhanced-evaluation
+    :futon-theory/coordination-protocol
+    :gauntlet/aif-as-environment-not-instruction
+    :gauntlet/co-presence-over-co-location
+    :gauntlet/modeline-persists-across-worlds
+    :gauntlet/placenta-transfer
+    :gauntlet/teaching-inversion
+    :gauntlet/umwelt-not-architecture
+    :gauntlet/world-is-hypergraph
+    :memory/verify-in-the-serving-process
+    :meta/baldwin-ratchet-defeats-darkroom
+    :musn/tool-name-hygiene
+    :peripherals/constrained-execution-envelope
+    :peripherals/pilot-plus-ground-control
+    :peripherals/read-only-first-then-extend
+    :social/explicit-exit-over-abandonment
+    :social/idempotent-handoff
+    :social/scope-bounded-handoff
+    :war-machine/coordination-bottleneck
+    :war-room/wr-4-inhabit-before-building
+    :writing-coherence/throat-clearing-close
+    :aif/decomposed-prediction-noise
+    :aif/predictive-coding-belief-update
+    :aif/shared-kernel-predictive-forward-model
+    :aif/grounded-actuation-not-reobservation
+    :forward-model/seal-the-graduation-criteria
+    :problems/satisfied-rungs-are-counted-and-surfaced
+    :aif/scheduled-observer-entrypoint
+    :aif/structured-observation-vector
+    :cycle-machine/runtime-restoration
+    :cycle-machine/step-machine],
+   :what-was-done-that-no-member-prescribes
+   ["run7_beta_arms.clj:42-53 (pi and pi_0 built with ln E in either, both or neither) ... gamma at tick 20 reproduced as 0.9667979 (:none), 0.9040601 (:pi-only), and 0.9712374 (:both)."],
+   :note
+   "No member's THEN prescribes the quoted work in the C23 resolution; any topical overlap is situation naming only."}
+  {:cascade :ticket/kangaroo-v1-pouch,
+   :resolution :wm/AC6,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:agency/delivery-receipt
+    :agency/self-attribution
+    :agency/single-routing-authority
+    :agency/state-atomicity
+    :agent/budget-bounds-exploration
+    :agent/environment-over-optimization
+    :agent/evidence-over-assertion
+    :agent/intent-handshake-is-binding
+    :agent/pause-is-not-failure
+    :agent/scope-before-action
+    :agent/state-is-hypothesis
+    :agent/trail-enables-return
+    :ai4ci/umbrella
+    :aif/admissibility
+    :aif/free-energy-as-tick-scalar
+    :aif/hierarchical-budget-aware-action-selection
+    :aif/niche-construction
+    :aif/posterior-variance-as-epistemic-value
+    :aif/predictive-entropy-as-ambiguity
+    :aif/status-gated-belief-update
+    :aif/structure-learning-by-model-reduction
+    :aif/temporal-depth-beyond-greedy
+    :ants/cargo-return-discipline
+    :control/agential-pattern-hygiene
+    :coordination/capability-gate
+    :cycle-machine/authority-port
+    :cycle-machine/job-port
+    :equity/confident-adaptation
+    :equity/protected-interaction
+    :f6/graph-enhanced-evaluation
+    :futon-theory/coordination-protocol
+    :gauntlet/aif-as-environment-not-instruction
+    :gauntlet/co-presence-over-co-location
+    :gauntlet/modeline-persists-across-worlds
+    :gauntlet/placenta-transfer
+    :gauntlet/teaching-inversion
+    :gauntlet/umwelt-not-architecture
+    :gauntlet/world-is-hypergraph
+    :memory/verify-in-the-serving-process
+    :meta/baldwin-ratchet-defeats-darkroom
+    :musn/tool-name-hygiene
+    :peripherals/constrained-execution-envelope
+    :peripherals/pilot-plus-ground-control
+    :peripherals/read-only-first-then-extend
+    :social/explicit-exit-over-abandonment
+    :social/idempotent-handoff
+    :social/scope-bounded-handoff
+    :war-machine/coordination-bottleneck
+    :war-room/wr-4-inhabit-before-building
+    :writing-coherence/throat-clearing-close
+    :aif/decomposed-prediction-noise
+    :aif/predictive-coding-belief-update
+    :aif/shared-kernel-predictive-forward-model
+    :aif/grounded-actuation-not-reobservation
+    :forward-model/seal-the-graduation-criteria
+    :problems/satisfied-rungs-are-counted-and-surfaced
+    :aif/scheduled-observer-entrypoint
+    :aif/structured-observation-vector
+    :cycle-machine/runtime-restoration
+    :cycle-machine/step-machine],
+   :what-was-done-that-no-member-prescribes
+   ["move-cost-record ... :present carries :value and a :basis naming WHICH of the four zeros it is ... :uncosted means NEITHER field was supplied ... :refused means a field is present but not finite."],
+   :note
+   "No member's THEN prescribes the quoted work in the AC6 resolution; any topical overlap is situation naming only."}
+  {:cascade :ticket/kangaroo-v1-pouch,
+   :resolution :ticket/agency-desktop-save,
+   :verdict :partly-retrodicts,
+   :members-corresponding
+   [{:pattern :agency/state-atomicity,
+     :then
+     "State persistence: write to temp file → fsync → rename to target ... State loading: validate structure on read ... Do not silently fall back to defaults.",
+     :source "library/agency/state-atomicity.flexiarg:30-36",
+     :resolution-quote
+     "roster_store.clj shipped whole (restore-payload, continuous persist watch, restore-on-boot! with detached marking and collision refusal)",
+     :correspondence :prescribes-what-was-done}
+    {:pattern :cycle-machine/runtime-restoration,
+     :then
+     "re-adopt every registry entry with :coordinator/enabled? true into the supervisor, and report which were orphaned before",
+     :source
+     "library/cycle-machine/runtime-restoration.flexiarg:22-29",
+     :resolution-quote "wired into bootstrap restore-before-watch",
+     :correspondence :prescribes-what-was-done}],
+   :members-not-corresponding
+   [:agency/delivery-receipt
+    :agency/self-attribution
+    :agency/single-routing-authority
+    :agent/budget-bounds-exploration
+    :agent/environment-over-optimization
+    :agent/evidence-over-assertion
+    :agent/intent-handshake-is-binding
+    :agent/pause-is-not-failure
+    :agent/scope-before-action
+    :agent/state-is-hypothesis
+    :agent/trail-enables-return
+    :ai4ci/umbrella
+    :aif/admissibility
+    :aif/free-energy-as-tick-scalar
+    :aif/hierarchical-budget-aware-action-selection
+    :aif/niche-construction
+    :aif/posterior-variance-as-epistemic-value
+    :aif/predictive-entropy-as-ambiguity
+    :aif/status-gated-belief-update
+    :aif/structure-learning-by-model-reduction
+    :aif/temporal-depth-beyond-greedy
+    :ants/cargo-return-discipline
+    :control/agential-pattern-hygiene
+    :coordination/capability-gate
+    :cycle-machine/authority-port
+    :cycle-machine/job-port
+    :equity/confident-adaptation
+    :equity/protected-interaction
+    :f6/graph-enhanced-evaluation
+    :futon-theory/coordination-protocol
+    :gauntlet/aif-as-environment-not-instruction
+    :gauntlet/co-presence-over-co-location
+    :gauntlet/modeline-persists-across-worlds
+    :gauntlet/placenta-transfer
+    :gauntlet/teaching-inversion
+    :gauntlet/umwelt-not-architecture
+    :gauntlet/world-is-hypergraph
+    :memory/verify-in-the-serving-process
+    :meta/baldwin-ratchet-defeats-darkroom
+    :musn/tool-name-hygiene
+    :peripherals/constrained-execution-envelope
+    :peripherals/pilot-plus-ground-control
+    :peripherals/read-only-first-then-extend
+    :social/explicit-exit-over-abandonment
+    :social/idempotent-handoff
+    :social/scope-bounded-handoff
+    :war-machine/coordination-bottleneck
+    :war-room/wr-4-inhabit-before-building
+    :writing-coherence/throat-clearing-close
+    :aif/decomposed-prediction-noise
+    :aif/predictive-coding-belief-update
+    :aif/shared-kernel-predictive-forward-model
+    :aif/grounded-actuation-not-reobservation
+    :forward-model/seal-the-graduation-criteria
+    :problems/satisfied-rungs-are-counted-and-surfaced
+    :aif/scheduled-observer-entrypoint
+    :aif/structured-observation-vector
+    :cycle-machine/step-machine],
+   :what-was-done-that-no-member-prescribes
+   ["roster_store.clj shipped whole (restore-payload, continuous persist watch, restore-on-boot! with detached marking and collision refusal)."],
+   :note
+   "The pouch cascade contains generic state persistence/loading and registry re-adoption rules that also fit roster restoration. This violates the pre-registered separation and follows from broad process/agent cues."}
+  {:cascade :ticket/kangaroo-v1-pouch,
+   :resolution :ticket/kangaroo-v1-pouch,
+   :verdict :does-not-retrodict,
+   :members-corresponding [],
+   :members-not-corresponding
+   [:agency/delivery-receipt
+    :agency/self-attribution
+    :agency/single-routing-authority
+    :agency/state-atomicity
+    :agent/budget-bounds-exploration
+    :agent/environment-over-optimization
+    :agent/evidence-over-assertion
+    :agent/intent-handshake-is-binding
+    :agent/pause-is-not-failure
+    :agent/scope-before-action
+    :agent/state-is-hypothesis
+    :agent/trail-enables-return
+    :ai4ci/umbrella
+    :aif/admissibility
+    :aif/free-energy-as-tick-scalar
+    :aif/hierarchical-budget-aware-action-selection
+    :aif/niche-construction
+    :aif/posterior-variance-as-epistemic-value
+    :aif/predictive-entropy-as-ambiguity
+    :aif/status-gated-belief-update
+    :aif/structure-learning-by-model-reduction
+    :aif/temporal-depth-beyond-greedy
+    :ants/cargo-return-discipline
+    :control/agential-pattern-hygiene
+    :coordination/capability-gate
+    :cycle-machine/authority-port
+    :cycle-machine/job-port
+    :equity/confident-adaptation
+    :equity/protected-interaction
+    :f6/graph-enhanced-evaluation
+    :futon-theory/coordination-protocol
+    :gauntlet/aif-as-environment-not-instruction
+    :gauntlet/co-presence-over-co-location
+    :gauntlet/modeline-persists-across-worlds
+    :gauntlet/placenta-transfer
+    :gauntlet/teaching-inversion
+    :gauntlet/umwelt-not-architecture
+    :gauntlet/world-is-hypergraph
+    :memory/verify-in-the-serving-process
+    :meta/baldwin-ratchet-defeats-darkroom
+    :musn/tool-name-hygiene
+    :peripherals/constrained-execution-envelope
+    :peripherals/pilot-plus-ground-control
+    :peripherals/read-only-first-then-extend
+    :social/explicit-exit-over-abandonment
+    :social/idempotent-handoff
+    :social/scope-bounded-handoff
+    :war-machine/coordination-bottleneck
+    :war-room/wr-4-inhabit-before-building
+    :writing-coherence/throat-clearing-close
+    :aif/decomposed-prediction-noise
+    :aif/predictive-coding-belief-update
+    :aif/shared-kernel-predictive-forward-model
+    :aif/grounded-actuation-not-reobservation
+    :forward-model/seal-the-graduation-criteria
+    :problems/satisfied-rungs-are-counted-and-surfaced
+    :aif/scheduled-observer-entrypoint
+    :aif/structured-observation-vector
+    :cycle-machine/runtime-restoration
+    :cycle-machine/step-machine],
+   :what-was-done-that-no-member-prescribes
+   ["Warm reuse, locking, eviction, joey cap, snapshots, cold fallback all live (agent_pouch.clj; enabled in dev-laptop-env, source default off)."],
+   :note
+   "No member prescribes one persistent claude stream-json process with locking, eviction, snapshots and cold fallback; shared words such as process and agent produced a broad 60-member policy instead."}],
+ :reviewer :codex-20,
+ :primary-temperament :widen-to-the-marginal-gain-floor}

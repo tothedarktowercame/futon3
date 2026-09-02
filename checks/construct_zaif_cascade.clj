@@ -196,17 +196,19 @@
    in the gate: the gate reports the six numbers, this file applies the predicate."
   [gate]
   (when-let [o4 (:o4 gate)]
-    (let [row {:precedence-before (:precedence-before o4)
-               :precedence-after (:precedence-after o4)
-               :acting-order-before (:acting-order-before o4)
-               :acting-order-after (:acting-order-after o4)
-               :score-before (:score-before o4)
-               :score-after (:score-after o4)}]
-      (sorted-map :row (into (sorted-map) row)
-                  :holds? (fo/o4-precedence-governance row)
-                  :precedence-changed? (not= (:precedence-before row) (:precedence-after row))
-                  :acting-order-changed? (not= (:acting-order-before row) (:acting-order-after row))
-                  :score-changed? (not= (:score-before row) (:score-after row))))))
+    (if (false? (:exercised? o4))
+      (:reading o4)
+      (let [row {:precedence-before (:precedence-before o4)
+                 :precedence-after (:precedence-after o4)
+                 :acting-order-before (:acting-order-before o4)
+                 :acting-order-after (:acting-order-after o4)
+                 :score-before (:score-before o4)
+                 :score-after (:score-after o4)}]
+        (sorted-map :row (into (sorted-map) row)
+                    :holds? (fo/o4-precedence-governance row)
+                    :precedence-changed? (not= (:precedence-before row) (:precedence-after row))
+                    :acting-order-changed? (not= (:acting-order-before row) (:acting-order-after row))
+                    :score-changed? (not= (:score-before row) (:score-after row)))))))
 
 (defn cue-licence
   "THE CUE LICENCE, checked rather than promised.  Every cue of every clause must

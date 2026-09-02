@@ -143,7 +143,7 @@
                            :means "semantic authority: the general patterns this pattern rests on"}
   :why-posthoc            {:status :standard           :value :pattern-id-list         :uses     0 :scope "declared in README §5a, interim form"
                            :means "INTERIM (decisions.edn :posthoc-why-syntax, arm :distinct-directive): a post-hoc @why -- the target makes sense of this pattern retrospectively. A trace, not a causal claim, so it is NOT @why and consumers of @why must opt in by name to see it. Standard so it can be ingested and attested; the syntax itself is revisitable"}
-  :draft                  {:status :standard           :value :scalar                  :uses     0 :scope "declared in README §5c; futon2 worklist row AC8"
+  :draft                  {:status :standard           :value :scalar                  :uses     0 :scope "declared in README §5a; futon2 worklist row AC8"
                            :means "QUARANTINE: this pattern was MINTED by the mechanism named in the value, not authored. It records the tension half of a pattern whose resolution does not exist yet (Joe's 2026-09-02 ruling extension on C130). checks/library_graph_lint.clj counts drafts apart, keeps them out of the organised fraction in BOTH directions, admits no edge out of them to the acyclicity law, FAILS a draft that carries an authored @why, and exempts their bodies from the baseline digest because the minter rewrites them each sweep. Promotion is editorial: delete @draft, write the @why, earn its attestation"}
   :how                    {:status :standard           :value :pattern-id-list         :uses     0 :scope "declared in README §5a"
                            :means "semantic refinement: named methods carrying this pattern out"}

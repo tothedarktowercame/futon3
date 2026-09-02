@@ -1,0 +1,52 @@
+@flexiarg snatch/grim-cuts-the-cascade-and-never-widens-it
+@title Grim Cuts the Cascade and Never Widens It
+@audience policy authors
+@tone practical
+@style pattern
+@why snatch/have-a-temperament
+@see-also snatch/consult-the-remedy-before-exiting snatch/re-enter-after-observed-repair
+
+! conclusion: Write grim as an explicit cascade edit — drop what depends on the arrangement at the first breach, and set the flag that forbids re-admission — because the irreversibility is the whole of the policy.
+
+  + context: **Policy grain.** Operand: cascade membership. Grim exists in
+    Snatch as `pi-grim` (`checks/playout_snatch.clj:139-143`) — *"offer one
+    token until snatched, then abstain for the rest of the game, with no way
+    back"* — and the comment above it says the collection cannot reach it
+    (`:137-138`).
+
+  + IF:
+    You are writing a temperament that answers a breach by narrowing what the
+    run will consult afterwards.
+
+  + HOWEVER:
+    Narrowing is easy to write and hard to see. A policy that has left looks,
+    from outside and from inside itself, exactly like a policy that never had a
+    remedy available — so the cost of the narrowing never appears as a cost.
+    Under G4 the remedies became applicable from round 2 onward and a
+    grim-trigger policy had already left the game, so they were applicable and
+    unused in every remaining round
+    (`snatch/consult-the-remedy-before-exiting.flexiarg:10-13`).
+
+  + THEN:
+    Emit the narrowing as a cascade edit: drop the patterns whose applicability
+    depends on the arrangement, and set a monotone flag on the cascade that
+    forbids their re-admission for the rest of the run. "Never widens again" is
+    then a field a reviewer can read, not the absence of a code path.
+
+  + BECAUSE:
+    Grim's guarantee is a floor, and the floor comes precisely from refusing
+    later information. That is a defensible policy and an indefensible accident,
+    and the two are indistinguishable until the refusal is written down. Written
+    as an edit it can be compared against a temperament that keeps the remedies;
+    left as control flow it can only be discovered by playing.
+    + evidence: `pi-grim` has no re-entry branch at all
+      (`checks/playout_snatch.clj:139-143`), and the library holds the missing
+      half separately as `snatch/re-enter-after-observed-repair`, whose context
+      begins *"P1 previously stopped offering after a snatch"*
+      (`:10-11`) — the state grim leaves you in, with no rule in grim for
+      leaving it.
+
+  + NEXT-STEPS:
+    - The monotone flag has no implementation: `up-closure`
+      (`checks/playout_snatch.clj:248-257`) recomputes membership from the
+      acting set each round and carries nothing forward between rounds.

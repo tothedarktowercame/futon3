@@ -1,0 +1,40 @@
+@flexiarg snatch/play-the-authored-order-first
+@title Play the Authored Order First
+@audience policy authors
+@tone practical
+@style pattern
+@why snatch/have-a-temperament
+
+! conclusion: Name the identity temperament — the empty edit — and report every other temperament's score as a difference from it.
+
+  + context: **Policy grain.** Operand: the precedence field, left unchanged.
+    The instance is `patterns-overrides {}` (`checks/playout_snatch.clj:160`),
+    the empty override map that `pattern-policy` falls through to the authored
+    `:precedence` of each pattern.
+
+  + IF:
+    You have a cascade with an authored precedence and are considering a
+    temperament that re-wires it.
+
+  + HOWEVER:
+    An empty edit looks like no policy at all, so it goes unnamed — and once it
+    is unnamed there is nothing for a re-wiring to be measured against. Every
+    claim that a temperament helps is a difference, and a difference needs two
+    terms.
+
+  + THEN:
+    Record the identity temperament as the run's temperament when it is the one
+    in force, exactly as a non-empty one would be recorded, and state every
+    other temperament's result as a delta against it on the same scenarios.
+
+  + BECAUSE:
+    S-G4 — that the score must depend on the wiring — is not satisfiable by one
+    wiring, which is a theorem and not a preference:
+    `mathlib4/DarkTower/WarMachine/PolicyGrade.lean:61`
+    `wiringSensitive_needs_two_wirings`, *"a score cannot be sensitive to a
+    choice of wiring that does not exist"* (`:59-60`). The identity is the
+    cheapest available second term and it is already in the harness.
+    + evidence: a second domain reached the same element independently —
+      `library/ants`'s `baseline-cyber-ant` carries an empty `@aif-delta`,
+      described in `futon2/holes/cascade-ants.edn:48` as *"the identity element
+      of the pattern algebra"*.

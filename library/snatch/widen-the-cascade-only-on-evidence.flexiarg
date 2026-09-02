@@ -1,0 +1,51 @@
+@flexiarg snatch/widen-the-cascade-only-on-evidence
+@title Widen the Cascade Only on Evidence
+@audience policy authors
+@tone practical
+@style pattern
+@why snatch/have-a-temperament
+@see-also cascades/on-the-fly-cascade
+
+! conclusion: The cautious temperament starts from the patterns that fire, admits one more only when the last admission paid, and states the rule that stops the widening.
+
+  + context: **Policy grain.** Operand: cascade membership. Snatch's `organise`
+    takes the **full** transitive `@why` closure of the acting set
+    (`checks/playout_snatch.clj:248-257`); a temperament that widens gradually
+    is the other end of the same axis, and neither end is chosen by anything
+    today.
+
+  + IF:
+    You are building a cascade rather than being handed one.
+
+  + HOWEVER:
+    Both ends fail, in opposite directions. The temperament alone is too little
+    to play from; the full closure is too much — in the g4/snatcher run three
+    patterns acted and four more were added by closure, so more than half the
+    cascade was present because it was stood on and never fired
+    (`checks/snatch-cascade.edn`). In an eighteen-pattern fixture that is
+    bounded. Over the eighty-five-pattern repository no bound is stated
+    anywhere.
+
+  + THEN:
+    Admit patterns one at a time, ordered by what the previous admission bought,
+    and stop on a rule stated in advance — a marginal-gain floor, a budget, or
+    saturation. Record the rule and where it stopped on the cascade with the
+    run.
+
+  + BECAUSE:
+    A cascade with no stopping rule has its size decided by the shape of the
+    authority graph rather than by the run. The stopping rule is what makes
+    "which patterns" a policy decision instead of a graph property, and it is
+    what lets two temperaments differ on the same repository.
+    + evidence: the loop already exists and the substrate does not.
+      `futon3a/holes/labs/M-memes-arrows/cascade_construct.py:222-232` is greedy
+      by marginal coverage with `if chosen and m < epsilon: break`, and
+      `cascade_serve.py:21-27` applies a budget ceiling downstream. Its
+      relevance term is embedding cosine (`cascade_construct.py:48-58`), which
+      law O2 refuses — edges are authored, *"never inferred from similarity,
+      co-occurrence or prose"* (`P-validated-R5.md:500`). So it supplies the
+      loop and the stop, and no part of what is being ordered.
+
+  + NEXT-STEPS:
+    - What replaces embedding relevance with a measure read off the authored
+      `@why`/`@how` landscape is open, and is not decided here.

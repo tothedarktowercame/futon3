@@ -1,0 +1,43 @@
+@flexiarg snatch/promote-the-remedy-before-the-exit
+@title Promote the Remedy Before the Exit
+@audience policy authors
+@tone practical
+@style pattern
+@why snatch/have-a-temperament
+@see-also snatch/consult-the-remedy-before-exiting snatch/revert-then-invert
+
+! conclusion: The remedy-first temperament raises the arrangement's remedies above the exit rule while a breach stands, instead of dropping them.
+
+  + context: **Policy grain.** Operand: the precedence field; membership is left
+    alone. This is the cascade-level sibling of
+    `snatch/consult-the-remedy-before-exiting`, which says something adjacent at
+    play grain and whose THEN is compiled down to a move in the harness —
+    `{:act :denounce :size (:seized s)}`, `checks/playout_snatch.clj:61-64`.
+
+  + IF:
+    A breach has been recorded and the arrangement supplies a response — a mark,
+    an adjudicator, a channel.
+
+  + HOWEVER:
+    Remedies sit low in a hand-authored order because they are rarely
+    applicable, and on the one round where they do become applicable "rarely" is
+    the wrong reason to be consulted late. Nothing inside a pattern can say when
+    that pattern should move: specificity fails here, because the pattern that
+    must be consulted first has the fewest conjuncts of any acting one
+    (`p4ng/app-snatch.tex:117-126`).
+
+  + THEN:
+    Emit a precedence edit that promotes the applicable remedy patterns above
+    the exit rule for as long as the breach stands, and drop the edit when it no
+    longer does. Record the edit on the cascade with the run.
+
+  + BECAUSE:
+    A temperament can say "consult the remedy first" once, as a fact about the
+    order, instead of every play-grain pattern carrying its own clause about
+    when it deserves to be reached. Availability is not use, and what makes the
+    remedy available in the ordering is exactly a precedence decision.
+    + evidence: the one re-wiring the harness records is a precedence edit of
+      this exact shape and of no other kind — `exchange-first-overrides` moves a
+      single id to 0 (`checks/playout_snatch.clj:165`) — so the runner already
+      implements the operation this temperament needs. What it has never been
+      asked to move is a remedy.

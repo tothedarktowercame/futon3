@@ -1,0 +1,21 @@
+;; snatch: no harvested edges yet.
+;;
+;; Created 2026-09-02 by worklist LA1 slice (b), which authored six patterns
+;; (snatch/have-a-temperament and the five temperaments it names by @how) and
+;; found that their edges cannot be recorded here. An attestation row needs a
+;; non-empty :evidence vector (checks/library_graph_lint.clj:338
+;; valid-attestation?) and every entry must be admissible: :via :tag or :text,
+;; both of which resolve to a futon1b evidence-store record (:313
+;; evidence-admissible?, :251 valid-evidence?). The one authored warrant shape,
+;; :via :pattern-text, is admissible ONLY on a @why-posthoc edge (:298-311).
+;; So an author's own @why/@how has no attestation it could honestly carry, and
+;; the six patterns' 17 edges take the author-written exempt path in
+;; library/.spider/baseline-edges.edn instead -- the same path claude-15 used
+;; for two aif patterns on 2026-08-30 (commit 2fbb58a), recorded as decision
+;; :authored-edge-attestation-path in
+;; holes/labs/library-contract/decisions.edn.
+;;
+;; This file is the slot the spider's harvested edges land in when the section
+;; is run. The empty vector is a real state, not a placeholder: the linter reads
+;; it, reports zero refusals of either act, and the section gate passes.
+[]

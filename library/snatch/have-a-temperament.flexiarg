@@ -1,0 +1,62 @@
+@flexiarg snatch/have-a-temperament
+@title Have a Temperament
+@audience policy authors
+@tone foundational
+@style pattern
+@why cascades/declared-skeleton
+@how snatch/grim-cuts-the-cascade-and-never-widens-it snatch/promote-the-remedy-before-the-exit snatch/play-the-authored-order-first snatch/lead-with-the-exchange-rule snatch/widen-the-cascade-only-on-evidence
+
+! conclusion: Write the policy that builds and orders your cascade as a pattern of its own, with a named temperament, rather than leaving it in the runner.
+
+  + context: **Policy grain.** The operand is the cascade — its membership and
+    its precedence field — not game state. Snatch runs two policy layers: the
+    cascade organises play (`checks/playout_snatch.clj:150-158` — filter to the
+    patterns whose antecedent holds, sort by precedence, take the first THEN
+    that returns an action), and something decides what is in the cascade and in
+    what order. Today that something is Clojure, not a pattern: `pi-grim`
+    (`:139-143`, whose comment at `:137-138` reads *"Hardcoded — the collection
+    cannot reach it"*) and the `overrides` map handed to `pattern-policy`
+    (`:160`, `:165`).
+
+  + IF:
+    You are choosing which patterns a run will play from, or the order in which
+    they are consulted.
+
+  + HOWEVER:
+    A policy left in the runner is invisible to the library the run claims to be
+    playing from: it cannot be read before the run, cited, refused, or set
+    beside another one. `p4ng/app-snatch.tex:231` records the order under
+    *Limits* as "authored by hand", and the harness's own re-wiring shows the
+    choice is not cosmetic — the same eighteen patterns score +3 or −5 against a
+    snatcher under G4 depending on nothing but it.
+
+  + THEN:
+    State the temperament as a production rule at policy grain: an IF and a
+    HOWEVER that read the cascade and the record of the run so far, and a THEN
+    that emits a **cascade edit** — promote, drop, admit — and never a move.
+    Name it, give it a `@why`, and let a reviewer read it before the run rather
+    than infer it from the score afterwards.
+
+  + BECAUSE:
+    Precedence is data on the cascade — `P-validated-R5.md:502` (law O4) states
+    it that way and already calls the conflict-resolution order *the
+    temperament* — and data that no pattern writes is data no one authored. A
+    temperament written as a pattern is reviewable by the discipline that
+    governs the patterns it orders. A temperament written as a map literal is
+    reviewable only by reading the runner, which is a different audience and a
+    different act.
+    + evidence: the two temperaments the harness has are `patterns-overrides {}`
+      (`checks/playout_snatch.clj:160`) and `exchange-first-overrides
+      {:exchange-when-both-sides-gain 0}` (`:165`). Both are one-line map
+      literals in the policy file; neither appears anywhere in `library/snatch/`,
+      and `checks/snatch-cascade.edn` records that the second costs eight points
+      against a snatcher under G4.
+
+  + NEXT-STEPS:
+    - The five methods below are the temperaments that exist in code or are
+      recorded as findings. A sixth — re-order precedence by what scored on the
+      last run — has no instance anywhere yet and is not written here.
+    - No runner reads a policy-grain rule today: `pattern-policy` takes
+      `overrides` as a Clojure argument (`:150`). Wiring these THENs into that
+      argument is unbuilt, and so is the `:policy` grain guard that would keep a
+      policy-grain rule from firing in a game situation.

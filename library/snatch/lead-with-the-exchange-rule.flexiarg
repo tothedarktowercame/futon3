@@ -1,0 +1,42 @@
+@flexiarg snatch/lead-with-the-exchange-rule
+@title Lead With the Exchange Rule
+@audience policy authors
+@tone practical
+@style pattern
+@why snatch/have-a-temperament
+@see-also snatch/exchange-when-both-sides-gain
+
+! conclusion: The trading temperament puts the exchange rule first; read the cascade the promotion produces before accepting it, because promoting a pattern with no authority takes the cascade down to that one node.
+
+  + context: **Policy grain.** Operand: the precedence field. The instance is
+    `exchange-first-overrides {:exchange-when-both-sides-gain 0}`
+    (`checks/playout_snatch.clj:165`) — the harness's one re-wiring, the same
+    eighteen patterns consulted in a different order.
+
+  + IF:
+    You want a temperament that leads with gains from trade rather than with the
+    stop rule or the remedy.
+
+  + HOWEVER:
+    The pattern this temperament promotes carries no `@why` at all — its only
+    structural directive is `@see-also`
+    (`snatch/exchange-when-both-sides-gain.flexiarg:6`) — so its upward closure
+    is itself. When the promotion makes it the only pattern that fires, the
+    cascade the run stands on has one node and no edges. The score moves with
+    it: +3 to −5 against a snatcher under G4.
+
+  + THEN:
+    Promote the exchange rule, then read the cascade that promotion produces
+    before accepting the temperament. If the promoted pattern has no authority
+    edge, either author one or expect a one-node cascade and say so.
+
+  + BECAUSE:
+    A temperament edits precedence; precedence decides which patterns fire;
+    which patterns fire decides the up-closure; and the up-closure is the
+    cascade (`checks/playout_snatch.clj:248-257`). So a precedence edit is
+    silently also a membership edit one layer down, and a temperament that
+    reasons only about order will not see the membership it changed.
+    + evidence: `checks/snatch-cascade.edn` — under `exchange-first`, four of
+      six scenarios collapse to one acting pattern and zero nodes added by
+      organise; under the authored order those same scenarios add two to four.
+      The single scenario where the score moves at all is g4/snatcher, +3 → −5.

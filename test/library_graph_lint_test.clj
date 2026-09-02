@@ -219,9 +219,15 @@
     ;; directive added or dropped without a ledger entry fails this test.
     (is (= 7 (get-in report [:summary :edges-by-kind lint/posthoc-why-kind])))
     ;; The authored measures did not move with them: a verified trace is still
-    ;; a trace, which is the property the arm was adopted for.
-    (is (= 86 (get-in report [:summary :edges-by-kind :why])))
-    (is (= 97 (get-in report [:summary :patterns-in-why-graph])))
+    ;; a trace, which is the property the arm was adopted for. They DID move on
+    ;; 2026-09-02 for a different reason -- worklist LA1 slice (b) authored six
+    ;; snatch/ temperament patterns (have-a-temperament and the five it names by
+    ;; @how), carrying 6 @why, 5 @how and 6 @see-also into the library: :why
+    ;; 86 -> 92 and :patterns-in-why-graph 97 -> 104. Their edges take the
+    ;; author-written exempt path in the baseline, not an attestation (decision
+    ;; :authored-edge-attestation-path), which is why the section still passes.
+    (is (= 92 (get-in report [:summary :edges-by-kind :why])))
+    (is (= 104 (get-in report [:summary :patterns-in-why-graph])))
     (is (zero? (get-in report [:summary :unresolved-targets])))
     (is (zero? (get-in report [:summary :why-cycles])))))
 

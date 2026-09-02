@@ -212,9 +212,16 @@
              (pr-str (select-keys (:summary report) [:files :edges-by-kind])))
     (is (true? (get-in report [:summary :pass?])))
     (is (= lint/counted-edge-kinds (set (keys (get-in report [:summary :edges-by-kind])))))
-    ;; The live library carries no post-hoc edge yet; the key is reported at
-    ;; zero rather than absent, so a reader can see the count is measured.
-    (is (zero? (get-in report [:summary :edges-by-kind lint/posthoc-why-kind])))
+    ;; L9 slice 4 wrote the first post-hoc edges into the library: five in
+    ;; war-room and two in aif, each carrying a :via :pattern-text warrant that
+    ;; resolves against the pattern file it names. The count was zero from LD1
+    ;; until 2026-09-02 and is pinned here rather than merely reported, so a
+    ;; directive added or dropped without a ledger entry fails this test.
+    (is (= 7 (get-in report [:summary :edges-by-kind lint/posthoc-why-kind])))
+    ;; The authored measures did not move with them: a verified trace is still
+    ;; a trace, which is the property the arm was adopted for.
+    (is (= 86 (get-in report [:summary :edges-by-kind :why])))
+    (is (= 97 (get-in report [:summary :patterns-in-why-graph])))
     (is (zero? (get-in report [:summary :unresolved-targets])))
     (is (zero? (get-in report [:summary :why-cycles])))))
 
@@ -340,16 +347,25 @@
        {:base base}))))
 
 (def pattern-text-arm ["--posthoc-warrant" "pattern-text"])
+(def store-arm ["--posthoc-warrant" "store"])
 
 (deftest an-authored-warrant-is-refused-by-the-store-bar-and-verified-under-its-own-arm
-  ;; decisions.edn :posthoc-warrant-evidence. The arm is BUILT AND RUN here, not
-  ;; adopted: the default is still the store bar, and these are the numbers the
-  ;; choice between the arms is made on.
-  (testing "arm :store, the default, refuses it twice over -- the probe recorded in library/.spider/posthoc-warrant-blocker-2026-09-02.edn"
-    (let [report (run-fixture (authored-warrant-fixture))]
+  ;; decisions.edn :posthoc-warrant-evidence, :interim-adopted 2026-09-02 on the
+  ;; numbers slice 3's run produced. :pattern-text is now the default; :store is
+  ;; still reachable by flag, which is how a section number recorded before that
+  ;; date is re-checked against the bar it was taken under.
+  (testing "arm :store refuses it twice over -- the probe recorded in library/.spider/posthoc-warrant-blocker-2026-09-02.edn"
+    (let [report (run-fixture (authored-warrant-fixture) store-arm)]
       (is (pos? (:test/exit report)))
       (is (contains? (reasons report) :malformed-attestation))
       (is (contains? (reasons report) :new-edge-without-attestation))))
+  (testing "the default arm is :pattern-text -- the same fixture with NO flag"
+    ;; This is what the section gate checks/spider_runner.clj:93 runs, which
+    ;; passes no flag: before the flip a committed @why-posthoc with an authored
+    ;; warrant failed there, and that is the whole content of adoption.
+    (let [report (run-fixture (authored-warrant-fixture))]
+      (is (zero? (:test/exit report)) (pr-str (:checks report)))
+      (is (= [] (:checks report)))))
   (testing "arm :pattern-text accepts the same record, verified against the library"
     (let [report (run-fixture (authored-warrant-fixture) pattern-text-arm)]
       (is (zero? (:test/exit report)) (pr-str (:checks report)))
@@ -411,7 +427,8 @@
     (is (failed-for? (run-fixture (authored-warrant-fixture)
                                   ["--posthoc-warrant" "nonsense"])
                      :linter-error))
-    (is (= :store (lint/warrant-arm {})))
+    (is (= :pattern-text (lint/warrant-arm {})))
+    (is (= :store (lint/warrant-arm {:posthoc-warrant "store"})))
     (is (= :pattern-text (lint/warrant-arm {:posthoc-warrant "pattern-text"})))))
 
 (deftest posthoc-why-is-invisible-to-consumers-that-have-not-opted-in
@@ -448,12 +465,27 @@
                           (lint/worker-seat-mentioned? record #{spider-agent})))
                  (lint/spider-self-text? record)))))
 
+(defn pattern-text-only?
+  "A row whose every evidence entry is an authored warrant, so it names no store
+  record for a reflection rule to have an opinion about."
+  [att]
+  (and (seq (:evidence att))
+       (every? #(= :pattern-text (:via %)) (:evidence att))))
+
 (deftest wave-1-attestations-re-audited-under-reflection-rule-v3
   (let [audit (edn/read-string (slurp v3-audit-path))
         workers (set (get-in audit [:reflection-rule :worker-seats]))
         spider (get-in audit [:reflection-rule :spider-agent])
         records (edn/read-string (slurp evidence-records-path))
         attestations (edn/read-string (slurp "library/aif/attestations.edn"))
+        ;; The audit (2026-09-01) measured which CITED RECORDS the reflection
+        ;; rule catches, so its scope is the rows that cite the store. L9 slice 4
+        ;; added two :via :pattern-text rows, which name no record and were never
+        ;; in that scope; counting them here would fail the pin for something the
+        ;; audit has nothing to say about. The remainder is asserted below to be
+        ;; pattern-text only, so a store-citing row cannot slip out of the count.
+        store-cited (remove pattern-text-only? attestations)
+        authored-warrant (filter pattern-text-only? attestations)
         v2 (set (keep (fn [[id record]]
                         (when (reflection-v2? record workers spider) id)) records))
         v3 (set (keep (fn [[id record]]
@@ -466,7 +498,11 @@
                                (not (every? v2 (cited att)))))
                         attestations)]
     (is (= (:records-audited audit) (count records)))
-    (is (= (:attestations-audited audit) (count attestations)))
+    (is (= (:attestations-audited audit) (count store-cited)))
+    (is (= (count attestations) (+ (count store-cited) (count authored-warrant))))
+    (is (= 2 (count authored-warrant)))
+    (is (every? #(= :why-posthoc (get-in % [:edge :kind])) authored-warrant)
+        "an authored warrant is admissible on no other edge kind")
     (is (= (:reflection-under-v2 audit) (count v2)))
     (is (= (:reflection-under-v3 audit) (count v3)))
     (is (= (:authoring-turns-under-v3 audit) (count authoring)))

@@ -16,10 +16,19 @@
 ;; SOURCE PATTERN FILE. The warrant doing the work is pattern text; the store
 ;; citation is the route it took to become admissible.
 ;;
-;; NOTHING HERE IS AN EDGE YET, for the same reason as slice 1: an authored
-;; warrant cannot currently be recorded as an attestation. See
+;; NOTHING HERE WAS AN EDGE WHEN THIS SLICE RAN, for the same reason as slice 1:
+;; an authored warrant could not then be recorded as an attestation. See
 ;; library/.spider/posthoc-warrant-blocker-2026-09-02.edn and
 ;; holes/labs/library-contract/decisions.edn :posthoc-warrant-evidence.
+;;
+;; SUPERSEDED FOR THE :proposed VECTOR, 2026-09-02 (L9 slice 4). Both readings
+;; in :proposed below are written as @why-posthoc directives in their source
+;; patterns, each with a :state :proposed attestation in
+;; library/aif/attestations.edn carrying its warrant as :via :pattern-text
+;; pointers, under the now-default arm :pattern-text-warrant. The pointers were
+;; re-taken after the directives went in, so the :at line numbers below are the
+;; pre-insertion ones and the attestation records hold the current ones. The
+;; other buckets are unchanged and remain findings, not queues.
 {:schema :library-contract/posthoc-readings-v1
  :section "aif"
  :slice {:item :L9 :n 2 :by "claude-owner" :at "2026-09-02"

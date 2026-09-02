@@ -5,13 +5,25 @@
 ;; is the best-cited section for USE and yields zero corroborated relations.
 ;; This file is what an author's reading of the 28 rulings produces instead.
 ;;
-;; NOTHING HERE IS AN EDGE YET. No @why-posthoc directive was written into any
-;; .flexiarg this slice, because an authored warrant cannot currently be
-;; recorded as an attestation -- see
+;; NOTHING HERE WAS AN EDGE WHEN THIS SLICE RAN. No @why-posthoc directive was
+;; written into any .flexiarg by slice 1, because an authored warrant could not
+;; then be recorded as an attestation -- see
 ;; library/.spider/posthoc-warrant-blocker-2026-09-02.edn for the demonstration
 ;; and holes/labs/library-contract/decisions.edn :posthoc-warrant-evidence for
-;; the decision that would unblock it. The readings are recorded here so the
-;; blocker costs a conversion step, not the reading.
+;; the decision that unblocked it. The readings were recorded here so the
+;; blocker cost a conversion step, not the reading.
+;;
+;; SUPERSEDED FOR THE :proposed VECTOR, 2026-09-02 (L9 slice 4). The arm
+;; :pattern-text-warrant is now the linter's default, and all five readings in
+;; :proposed below are written as @why-posthoc directives in their source
+;; patterns, each with a :state :proposed attestation in
+;; library/war-room/attestations.edn carrying its warrant as :via :pattern-text
+;; pointers. Those pointers were re-taken AFTER the directives went in (a
+;; directive shifts its own file's lines by one), so the :at line numbers in
+;; :warrant-pointers below are the pre-insertion ones and the attestation
+;; records hold the current ones. The other three buckets --
+;; :considered-not-proposed, :no-reading-found, :authored-why-left-alone -- are
+;; unchanged and remain findings, not queues.
 {:schema :library-contract/posthoc-readings-v1
  :section "war-room"
  :slice {:item :L9 :n 1 :by "claude-owner" :at "2026-09-02"

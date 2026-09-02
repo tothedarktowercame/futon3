@@ -256,24 +256,28 @@
        (nonblank-string? (:query x)) (nonblank-string? (:excerpt x))))
 
 ;; --- decisions.edn :posthoc-warrant-evidence, arm :pattern-text-warrant ------
-;; BUILT BEHIND THIS FLAG AND RUN, not adopted. Joe's rule of 2026-09-01 (quoted
-;; at holes/labs/library-contract/worklist_check.bb:16) is that a choice the
-;; theory does not settle gets its branches built and run so the decision is
-;; made on numbers; L9 slices 1 and 2 sent it up as an advance ruling instead.
-;; :store is the bar exactly as it stood before, so any run that does not ask
-;; for the other arm behaves identically -- that is what keeps the C88 pin and
-;; every recorded section number comparable across this change.
+;; ADOPTED as the default on 2026-09-02 (L9 slice 4), on the numbers slice 3's
+;; run produced: library/.spider/posthoc-warrant-arms-run-2026-09-02.edn, where
+;; :keep-the-store-bar gave 14 failures on 7 edges, :warrant-outside-attestations
+;; gave 7 bare-edge failures and read ZERO warrants, and this arm resolved all 21
+;; warrant rows against the library with 0 failures. Joe's rule of 2026-09-01
+;; (quoted at holes/labs/library-contract/worklist_check.bb:16) is that a choice
+;; the theory does not settle gets its branches built and run and is then decided
+;; on the numbers, with his veto after the fact rather than a ruling before it.
+;; The flag stays so a :store run is still reproducible on demand -- that is how
+;; every section number recorded before this date is re-checked against the bar
+;; it was taken under.
 (def warrant-arms #{:store :pattern-text})
-(def ^:dynamic *posthoc-warrant-arm* :store)
+(def ^:dynamic *posthoc-warrant-arm* :pattern-text)
 
 (defn warrant-arm
   "The arm this run is on: --posthoc-warrant, else LIBRARY_POSTHOC_WARRANT, else
-  :store. An unrecognised value throws rather than falling back, so a typo in
-  the flag cannot be read later as a run of the default arm."
+  :pattern-text. An unrecognised value throws rather than falling back, so a typo
+  in the flag cannot be read later as a run of the default arm."
   [opts]
   (let [raw (or (:posthoc-warrant opts) (System/getenv "LIBRARY_POSTHOC_WARRANT"))]
     (if (nil? raw)
-      :store
+      :pattern-text
       (or (warrant-arms (keyword (str raw)))
           (throw (ex-info (str "unknown --posthoc-warrant " (pr-str raw)
                                "; arms are " (pr-str (sort warrant-arms)))
@@ -770,9 +774,11 @@
                      {:section (section-summary scan section)})}))
 
 (defn lint
-  "Runs the check on the arm named by opts. Every call site keeps working
-  unchanged: with no :posthoc-warrant this binds :store, which is the bar as it
-  stood before the arm existed."
+  "Runs the check on the arm named by opts. With no :posthoc-warrant this binds
+  :pattern-text, the arm adopted on 2026-09-02; pass --posthoc-warrant store to
+  re-run a section against the bar as it stood before that date. The two arms
+  differ ONLY in what a :why-posthoc attestation may cite -- every other edge
+  kind is judged identically either way."
   [opts]
   (binding [*posthoc-warrant-arm* (warrant-arm opts)]
     (lint* opts)))
@@ -787,7 +793,7 @@
     (when-not (every? opts [:library :section :baseline :attestations :report])
       (binding [*out* *err*]
         (println "usage: library_graph_lint.clj --library DIR --section NAME --baseline FILE --attestations FILE --report FILE")
-        (println "       [--posthoc-warrant store|pattern-text]  (default store; see decisions.edn :posthoc-warrant-evidence)"))
+        (println "       [--posthoc-warrant store|pattern-text]  (default pattern-text; see decisions.edn :posthoc-warrant-evidence)"))
       (System/exit 2))
     (let [report (try (lint opts)
                       (catch Exception e

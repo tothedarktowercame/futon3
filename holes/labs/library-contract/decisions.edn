@@ -34,8 +34,26 @@
     :counted-separately "The authored measures are untouched: :fraction-organised, :patterns-with-outgoing-why and :patterns-in-why-graph all still filter on :why alone, so no section can raise its organised fraction by adding traces."
     :not-in-scope "cycle-failures does NOT admit post-hoc edges -- acyclicity is a law about authority and a post-hoc edge claims none. checks/spider_runner.clj:18 is unchanged, so the spider lane may not propose a @why-posthoc edge; widening the fleet's vocabulary is a separate decision under :spider-editorial-standing. checks/playout_snatch.clj is unchanged by design (it is the opt-in that has not been taken)."}}
   {:id :posthoc-warrant-evidence
-   :status :measured
-   :status-note "Not :proposed any more and not :interim-adopted either. All three arms have now been BUILT BEHIND A FLAG AND RUN on the seven readings (L9 slice 3, library/.spider/posthoc-warrant-arms-run-2026-09-02.edn), which is what Joe's rule of 2026-09-01 asks for instead of an advance ruling. The default arm is still :store, so nothing in the library has moved and every number recorded by slices 1 and 2 is still comparable; adoption is the separate act of flipping that default, and it is left for the review."
+   :status :interim-adopted
+   :status-note "Adopted on the numbers, not on a ruling asked for in advance. :measured on 2026-09-02 when L9 slice 3 built all three arms behind a flag and ran them on the seven readings (library/.spider/posthoc-warrant-arms-run-2026-09-02.edn); :interim-adopted the same day when L9 slice 4 flipped the default to :pattern-text and wrote the seven edges. Joe's veto is after the fact and is cheap to exercise: the flag stays, so `--posthoc-warrant store` re-runs any section against the old bar unchanged, and the undo is one constant plus seven directives plus seven attestation rows."
+   :adopted
+   {:at "2026-09-02"
+    :by "claude-owner"
+    :slice "L9 slice 4"
+    :arm :pattern-text-warrant
+    :what-changed
+    ["checks/library_graph_lint.clj:267 *posthoc-warrant-arm* :store -> :pattern-text, and warrant-arm's nil case with it. Nothing else in the check moved: the two arms differ ONLY in what a :why-posthoc attestation may cite."
+     "The seven readings are now directives: five in library/war-room (wr-6, wr-23, wr-18, wr-14, wr-10) and two in library/aif (two-layer-calibration, valuation-reads-the-paperwork), each with a :state :proposed attestation carrying its warrant as :via :pattern-text pointers."]
+    :negative-control
+    "The committed library run on the OLD arm now FAILS -- war-room exit 1 with 5 :new-edge-without-attestation and 5 :malformed-attestation, aif exit 1 with 2 and 2 (/tmp/L9s4gates/control-store-*.{edn,exit}). So the flip is what makes the sections pass, not something else that moved at the same time; and the old bar is still there to be run."
+    :falsifier-run
+    "One pointer in the committed war-room record shifted by a single line (wr-6, :line 17 -> 18) makes the section exit 1 with :pattern-text-excerpt-mismatch (/tmp/L9s4gates/mutant-stale-pointer.edn). The check is live on the real records, not only on fixtures."
+    :numbers
+    "As slice 3 measured, reproduced on the committed library: library-wide :why stays 86, :patterns-in-why-graph stays 97, :why-posthoc 0 -> 7; war-room :fraction-organised 0.32142857142857145 and aif 0.18181818181818182, both unchanged to the last digit. The arm cannot raise a section's organised fraction."
+    :test-couplings-repaired
+    ["test/library_graph_lint_test.clj:216 live-library-passes asserted the library carried ZERO post-hoc edges. That was a true measurement until today; it is now pinned at 7, with :why 86 and :patterns-in-why-graph 97 asserted beside it so the two numbers move only together."
+     "test/library_graph_lint_test.clj:430 asserted (= :store (warrant-arm {})); it now asserts :pattern-text, and a new case asserts :store is still reachable by flag."
+     "test/library_graph_lint_test.clj:485 wave-1-attestations-re-audited-under-reflection-rule-v3 compared the 2026-09-01 audit's :attestations-audited against the row count of library/aif/attestations.edn, which the two new rows broke. The audit measured which CITED STORE RECORDS the reflection rule catches, so its scope is the store-citing rows; the count is taken over those, and the remainder is asserted to be pattern-text-only and :why-posthoc-only, so a store-citing row cannot slip out of the audited count."]}
    :run {:at "2026-09-02"
          :by "claude-owner"
          :record "library/.spider/posthoc-warrant-arms-run-2026-09-02.edn"
@@ -62,7 +80,7 @@
      :form "post-hoc warrants live in a sidecar the linter does not read"
      :cost "Fails open: the acceptance's \"no bare edges\" clause is what makes an unwarranted trace visible, and this arm gives it up. It is also what slice 1 did as a HOLDING position, which is why the readings sit in library/war-room/posthoc-readings.edn with no directive written -- a queue, not a resting place."}]
    :recommends :pattern-text-warrant
-   :veto "Joe's. :proposed rather than :interim-adopted because this changes what an attestation MEANS, not just how one is spelled: :posthoc-why-syntax was a syntax choice the lane could take back cheaply, and this is not. No code was changed and no directive was written on it. Slice 1 is complete without it -- five authored readings recorded with file:line warrants -- and slice 2 (aif) can be read the same way, but the row cannot close until the readings become edges."
+   :veto "Joe's, after the fact. The earlier note here said :proposed rather than :interim-adopted because this changes what an attestation MEANS, not just how one is spelled -- that is still true, and it is why the arm was built and RUN before being taken rather than argued for. What makes the veto cheap is the flag and the negative control above: `--posthoc-warrant store` reproduces the old bar on demand, and the seven edges are the only thing in the library that depends on the new one."
    :changes-it "If a war-room ruling ever does turn up cited as a relation in a record independent of the spider, the store bar becomes reachable for that edge and the arm choice is worth re-running. Slice 1 re-checked live and found only spider self-text; the finding record names the query set and the record ids."}
   {:id :editorial-why-mislabelled-as-authored
    :status :proposed
@@ -90,4 +108,9 @@
    :recommends :convert-when-the-warrant-bar-settles
    :veto "Joe's. Left :proposed and no file was touched: the conversion moves recorded numbers, including ones a pinned test asserts, so it is not a formatting fix the lane may take back cheaply."
    :blocked-by :posthoc-warrant-evidence
-   :changes-it "If Joe settles :posthoc-warrant-evidence toward :pattern-text-warrant, the four attestations become writable from claude-13's own comment and the arm choice collapses to scheduling. If he settles it toward :keep-the-store-bar, this decision has to choose between :leave-and-mark and dropping the four edges."}]}
+   :unblocked
+   {:at "2026-09-02"
+    :by "L9 slice 4 adopting :posthoc-warrant-evidence arm :pattern-text-warrant"
+    :effect "The four attestations are now writable from claude-13's own comment, so the arm choice here has collapsed to scheduling exactly as :changes-it predicted. NOT DONE IN L9: this decision's own :convert-when-the-warrant-bar-settles arm says the conversion should be one item of its own, and it moves numbers L9 slice 4 has just re-pinned (library-wide :why 86 -> 82, :why-posthoc 7 -> 11, :patterns-in-why-graph 97 -> 94, aif :fraction-organised 0.18181818181818182 -> 0.06060606060606061). It needs a worklist row, not a slice."
+    :recommends "Open a class W row for the conversion: rewrite the four directives, write four :via :pattern-text attestations from the trailing comments, repair the three comments that disclaim an edge they do not name, and update the three counts in test/library_graph_lint_test.clj:216 in the same commit."}
+   :changes-it "If Joe vetoes :posthoc-warrant-evidence, this decision goes back to choosing between :leave-and-mark and dropping the four edges."}]}

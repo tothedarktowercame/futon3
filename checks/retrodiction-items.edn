@@ -1,0 +1,133 @@
+{:contains-no-resolution?
+ "TRUE BY CONSTRUCTION: the only ledger fields read into this file are :statement (wm) and the title plus ## Goal section (tickets). No :evidence, :review, :acceptance, :status, :pointers or triage line is copied here.",
+ :items
+ [{:item :wm/D0,
+   :ledger "../futon2/holes/labs/wm-contract/worklist.edn",
+   :row-id :D0,
+   :statement
+   "No generator applies control-map-edges.edn :decisions (found in D2's review: gen_live_topology.bb does not read :retires/:adds; only the tetrahedron counts them). Until it does, D2-D7 are recorded but Figure 5A does not change.",
+   :statement-address
+   {:file "../futon2/holes/labs/wm-contract/worklist.edn",
+    :key :statement,
+    :kind :edn-key-path,
+    :row-id :D0},
+   :statement-sha256
+   "9c733262bb92063ee5e57d14768e2fbee810d404e63d68c12edc7ea3268c40d7"}
+  {:item :wm/C23,
+   :ledger "../futon2/holes/labs/wm-contract/worklist.edn",
+   :row-id :C23,
+   :statement
+   "aif-equations.edn :choices :pi-zero-form corrected and given its numbers, from I1 slice (b2b). THE ENTRY CARRIED A FALSE CLAIM. Its :measurement said the two arms COINCIDE on the live path and no recorded field can separate them, on the ground that ln E is absent from selection (C3). C3 is true; the inference from it is not. The eq. 2.7 beta update never consumes the selection posterior -- it builds its OWN pi and pi_0 out of G, F_pi and each candidate's :habit-prior-bias (run7_beta_arms.clj:42-53,95) -- so the arms separate whenever ln E is non-uniform over the aligned field, whether or not selection ever reads it. Both things hold at once on our own S2 records: ln E takes 3 distinct values with a spread of 3.0445 nats and no zeros on every tick, :habit-prior-source :learned-frequency on 143-145 of 145 candidates, WHILE :habit-prior-applied? is false on 20/20 decisions (policy.clj:283-285, :306-307; boundary asked for at war_machine.clj:4829-4837). The claim is WITHDRAWN IN PLACE, with the wrong parameter kept beside the right one rather than edited away. :run-result added: gamma at tick 20 is 0.9667979 (:none), 0.9040601 (:pi only), 0.9712374 (:both), 20/20 converged and bracketed in every arm, from a re-run of run7_beta_arms.clj byte-identical to the committed ARMS.txt over all 308 lines. The SPM form's near-cancellation -- the argument the :interim was taken on -- is now a number rather than an argument: 0.004440 in gamma against 0.062738 for the alternative, 14.1x. :status stays :open-branches and :interim :decision is UNCHANGED: the arms are SEPARATED, not ADJUDICATED, because nothing measured here says which is better. :why-not-a-J-row gains a :grounds-audit naming the limb the run falsified -- this one cannot be run yet -- rather than being rewritten.",
+   :statement-address
+   {:file "../futon2/holes/labs/wm-contract/worklist.edn",
+    :key :statement,
+    :kind :edn-key-path,
+    :row-id :C23},
+   :statement-sha256
+   "6b973ec9275c8e3687238182a53caa7746de4721d0fbac67084645d084672f08"}
+  {:item :wm/AC6,
+   :ledger "../futon2/holes/labs/wm-contract/worklist.edn",
+   :row-id :AC6,
+   :statement
+   "C130 migration at rollout.clj:158, tally instance :rollout-unscored. Unscored moves: exclude-and-continue with a refuse floor -- refuse when exclusion empties the candidate set or when the rollout authorizes an action rather than diagnosing. Depends on AC5.",
+   :statement-address
+   {:file "../futon2/holes/labs/wm-contract/worklist.edn",
+    :key :statement,
+    :kind :edn-key-path,
+    :row-id :AC6},
+   :statement-sha256
+   "74952c15ce6d40cd0559a43e0fc5947058bc56ed21447ccef42af591266cee55"}
+  {:item :ticket/agency-desktop-save,
+   :ledger "../futon3c/holes/tickets/tickets-index.edn",
+   :row-id "T-agency-desktop-save.md",
+   :statement
+   "# T-agency-desktop-save — durable agent roster (W5), restart → same agents, warm\n\nPersist the agent registry roster to disk so a JVM shutdown + restart brings the\nSAME agents back registered — and (because restore rebuilds invoke-fns via the\nnow-kangaroo-gated factory) **warm**. Joe's flow becomes: wait for a pause →\nshut down the JVM → restart → everyone's back, in a Kangaroo. No live `dev.clj`\nreload, no hot-swap surgery.",
+   :statement-address
+   {:file "../futon3c/holes/tickets/T-agency-desktop-save.md",
+    :kind :title-plus-line-span,
+    :lines [10 16],
+    :title-line 1},
+   :statement-sha256
+   "c6158c65494beddd5234dbcb1e686ef7955112c06f7eac952e7f761194aded91"}
+  {:item :ticket/kangaroo-v1-pouch,
+   :ledger "../futon3c/holes/tickets/tickets-index.edn",
+   :row-id "T-kangaroo-v1-pouch.md",
+   :statement
+   "# T-kangaroo-v1-pouch — warm claude pouch (cr version, flag-gated)\n\nStop cold-resuming `claude -p --resume` per turn. Serve each claude agent's turns\nfrom ONE persistent warm `claude --input-format stream-json` process. Flag-gated,\nload-dark; warmth applies to agents minted after reload (cr new). Both the REPL\nbuffer and Agency bells already route through `invoke-agent!` → the agent's\ninvoke-fn, so warming the invoke-fn warms both surfaces (the durable queue\nalready serializes per-agent, so one pouch is fed one turn at a time).",
+   :statement-address
+   {:file "../futon3c/holes/tickets/T-kangaroo-v1-pouch.md",
+    :kind :title-plus-line-span,
+    :lines [10 17],
+    :title-line 1},
+   :statement-sha256
+   "71c500907d8b328487a55b07e1e0715e0e987fd08c3ceb85b11653689b430f52"}],
+ :produced-by "checks/retrodiction_items.clj --blind",
+ :schema :la7/retrodiction-items-v1,
+ :selection
+ {:re-measured-not-carried-forward
+  "The row's own denominators are as of when it was written. Re-measured on this run: wm-contract 93 completed of 95 rows, 37 qualifying; tickets 9 completed of 34 rows, 4 qualifying.",
+  :rule
+  {:classes-excluded [:J],
+   :min-resolution-chars 500,
+   :min-statement-chars 200,
+   :spacing
+   "indices (quot (* i n) k) for i in 0..k-1, over the qualifying list in ledger order",
+   :ticket-completed-statuses #{:done-in-fact :superseded},
+   :tickets-take 2,
+   :wm-completed-statuses #{:done :done-unreviewed},
+   :wm-take 3},
+  :tickets
+  {:ledger "../futon3c/holes/tickets/tickets-index.edn",
+   :rows-in-ledger 34,
+   :completed 9,
+   :qualifying 4,
+   :qualifying-ids
+   ["T-agency-desktop-save.md"
+    "T-codex-auto-bellback.md"
+    "T-kangaroo-v1-pouch.md"
+    "T-mesh-qa-misrouting.md"],
+   :indices [0 2]},
+  :wm
+  {:ledger "../futon2/holes/labs/wm-contract/worklist.edn",
+   :rows-in-ledger 95,
+   :completed 93,
+   :qualifying 37,
+   :qualifying-ids
+   ["D0"
+    "D0b"
+    "D8"
+    "D9"
+    "D10"
+    "H1"
+    "H2"
+    "H3"
+    "H4"
+    "I1"
+    "H1b"
+    "C9"
+    "C23"
+    "C24"
+    "C25"
+    "RUN7"
+    "RUN8"
+    "RUN9"
+    "I5"
+    "AC1"
+    "AC2"
+    "AC3"
+    "AC4"
+    "AC5"
+    "AC6"
+    "AC7"
+    "AC8"
+    "D61a"
+    "D61b"
+    "RUN11"
+    "RUN12"
+    "U1"
+    "U2"
+    "U3"
+    "U4"
+    "U10"
+    "U6"],
+   :indices [0 12 24]}}}

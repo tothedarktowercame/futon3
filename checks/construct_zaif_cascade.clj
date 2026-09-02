@@ -70,6 +70,21 @@
 ;; wrote for it.  Crude on purpose, because a literal occurrence is the weakest
 ;; thing that can still be CITED, and authored on purpose, because the
 ;; alternative is the embedding relevance F3 refuses.
+;;
+;; THE CUE LICENCE, added after the PRE-RUN REVIEW of futon3 37f7506 (codex-17,
+;; 2026-09-02, verdict REVISE).  A cue must OCCUR IN ITS OWN CLAUSE'S CITED SPAN
+;; of the task file.  The first cue set here did not meet that and nothing
+;; checked it: `"scope"`, `"cap"` and `"reuse"` appear in no span of the
+;; prompt, and the review found them by hand -- 18 of the 27 cues turned out to
+;; be the author's paraphrase of a clause rather than the clause's own words.
+;; `"scope"` alone put `plos-npt-with-small-n/scope-shield-via-companion-paper`
+;; -- a pattern about narrowing an academic paper -- into a seed about a frozen
+;; Lean theorem, which is the review's finding and is why that pattern is now a
+;; named falsifier below.
+;;
+;; The licence is a REMOVAL rule and never an addition rule: `cue-licence`
+;; strikes an unlicensed cue and no cue was added after the first run, because a
+;; cue added once the seed is known is tuning whatever it is called.
 
 (def tension
   {:id :the-seat-does-not-stop
@@ -79,23 +94,23 @@
    [{:id :consult-the-store-before-attempting
      :text "Consult `memory_search` and `psr_search` for routes (tags in your own vocabulary; the store holds routes from prior closed problems)."
      :source "checks/zaif-task-a97J05.md:48-49"
-     :cues ["retriev" "search" "look up" "recall" "prior" "reuse"]}
+     :cues ["search" "prior"]}
     {:id :cite-what-you-actually-used
      :text "Cite every memory whose content you actually use with `-- (Memory: e-<id>)` adjacent to the informed code, and every PATTERN whose content you use. The forms are machine-checked and distinct."
      :source "checks/zaif-task-a97J05.md:50-56"
-     :cues ["cite" "citation" "attribut" "provenance" "machine-check"]}
+     :cues ["cite" "machine-check"]}
     {:id :stopping-honestly-beats-a-forced-fake
      :text "SKIPPED: statement attempted < 10 minutes, blocker identified and stated. Skipping honestly is BETTER than a forced fake."
      :source "checks/zaif-task-a97J05.md:63-65"
-     :cues ["stop" "halt" "pause" "give up" "abandon" "blocker"]}
+     :cues ["blocker"]}
     {:id :the-statement-is-frozen-and-out-of-bounds
      :text "THE STATEMENTS ARE FROZEN. You may NOT change any statement, hypothesis, definition, or theorem name. If a statement seems wrong or unprovable as stated, SAY SO in your report and move on; do not repair it yourself."
      :source "checks/zaif-task-a97J05.md:38-43"
-     :cues ["out of scope" "out-of-bounds" "in-bounds" "scope" "frozen" "escalat"]}
+     :cues ["frozen"]}
     {:id :the-budget-is-stated-and-must-bind
      :text "Budget ~15-25 minutes per problem; move on when the budget is spent. Total set budget: do not exceed the job window."
      :source "checks/zaif-task-a97J05.md:68-69"
-     :cues ["budget" "exhaust" "spent" "run out" "ceiling" "cap"]}]})
+     :cues ["budget" "spent"]}]})
 
 (def zero-mass-pattern
   "F4's falsifier, named BEFORE the run and checked on every one.  Same pattern
@@ -105,6 +120,23 @@
    whether to keep reading Mathlib in a Lean proving turn has no clause about
    pheromone decay in an ant board simulation."
   :ants/pheromone-trail-tuner)
+
+(def review-named-falsifier
+  "A SECOND falsifier, named by the PRE-RUN REVIEWER rather than by the
+   constructor, and recorded with its provenance because that is the whole point
+   of the row.  Asked in the review packet to name a harder falsifier than
+   `ants/pheromone-trail-tuner`, codex-17 named this one and observed that it was
+   SELECTED under the first cue set -- `library/plos-npt-with-small-n/scope-shield-via-companion-paper.flexiarg:14-20`
+   is about narrowing an academic paper and naming its companion, not about
+   respecting a frozen theorem statement, and it entered the seed through the
+   unlicensed cue `\"scope\"`.
+
+   So this is not a falsifier chosen because it is safe.  It is one that FAILED
+   before the cue licence and is checked here to establish that the licence is
+   what removed it.  `:LA3`'s and `:LA4`'s single falsifiers tested gross
+   wandering; this one tests false positives, which the review is right that they
+   do not."
+  :plos-npt-with-small-n/scope-shield-via-companion-paper)
 
 (def watched-pattern
   "NOT a falsifier -- a WATCH, named before the run and reported either way.
@@ -175,6 +207,25 @@
                   :precedence-changed? (not= (:precedence-before row) (:precedence-after row))
                   :acting-order-changed? (not= (:acting-order-before row) (:acting-order-after row))
                   :score-changed? (not= (:score-before row) (:score-after row))))))
+
+(defn cue-licence
+  "THE CUE LICENCE, checked rather than promised.  Every cue of every clause must
+   occur, case-insensitively, in that clause's own cited span of the task file,
+   re-read from disk on every run.  An unlicensed cue is a hard failure: it is a
+   word the constructor's author chose, presented as a word the task uses, and it
+   is exactly how `\"scope\"` put a paper-scoping pattern into a seed about a
+   frozen theorem before the pre-run review caught it by hand."
+  []
+  (let [lines (vec (str/split-lines (slurp task-file)))]
+    (vec (for [{:keys [id source cues]} (:clauses tension)
+               :let [[_ span] (str/split source #":")
+                     [from to] (mapv parse-long (str/split span #"-"))
+                     text (when (and from to (<= to (count lines)))
+                            (str/lower-case (str/join " " (subvec lines (dec from) to))))]
+               cue cues
+               :when (not (and text (str/includes? text (str/lower-case cue))))]
+           (sorted-map :clause id :cue cue :source source
+                       :finding :cue-does-not-occur-in-its-own-cited-span)))))
 
 (defn task-file-correspondence
   "Every clause's `:source` is a line span of `task-file`, re-read from disk on
@@ -276,6 +327,12 @@
               :zero-mass-pattern zero-mass-pattern
               :zero-mass-in-repository? (contains? (:patterns why-repo) zero-mass-pattern)
               :zero-mass-selected? (contains? selected zero-mass-pattern)
+              :review-named-falsifier review-named-falsifier
+              :review-named-falsifier-in-repository?
+              (contains? (:patterns why-repo) review-named-falsifier)
+              :review-named-falsifier-selected? (contains? selected review-named-falsifier)
+              :review-named-falsifier-match (get matches review-named-falsifier 0)
+              :review-named-falsifier-was-selected-before-the-cue-licence? true
               :watched-pattern watched-pattern
               :watched-in-repository? (contains? (:patterns why-repo) watched-pattern)
               :watched-selected? (contains? selected watched-pattern)
@@ -336,6 +393,8 @@
                   :determinism-failures (cc/determinism ctx)
                   :library-correspondence (cc/library-correspondence why-repo)
                   :task-file-correspondence (task-file-correspondence)
+                  :unlicensed-cues (cue-licence)
+                  :cues-declared (reduce + (map (comp count :cues) (:clauses tension)))
                   :grain-separation (cc/grain-separation ctx)
                   :grain-conjunct-mutations (cc/grain-conjunct-mutations ctx)
                   :degree-relation-authors-no-edge
@@ -386,6 +445,14 @@
          (when (get-in result [:find :zero-mass-selected?])
            [{:where :find :finding :f4-falsifier-was-selected
              :pattern (get-in result [:find :zero-mass-pattern])}])
+         (when-not (get-in result [:find :review-named-falsifier-in-repository?])
+           [{:where :find :finding :review-named-falsifier-is-not-in-the-repository
+             :pattern (get-in result [:find :review-named-falsifier])}])
+         (when (get-in result [:find :review-named-falsifier-selected?])
+           [{:where :find :finding :review-named-falsifier-was-selected
+             :pattern (get-in result [:find :review-named-falsifier])}])
+         (for [c (get-in result [:controls :unlicensed-cues])]
+           {:where :controls :finding :unlicensed-cue :clause (:clause c) :cue (:cue c)})
          (when-not (get-in result [:temperaments :holds?])
            [{:where :temperaments :finding :temperaments-differ-in-more-than-the-stop}])
          (for [[id row] (:runs result)
@@ -443,12 +510,21 @@
                        (pr-str (get-in result [:tension :clause-hits]))
                        (pr-str (get-in result [:tension :clauses-that-hit-nothing]))))
       (println (format "  seed sections %s" (pr-str (get-in result [:find :sections-supplying-the-seed]))))
-      (println (format "F4 falsifier %s selected? %s | watched %s selected? %s (match %d)"
+      (println (format "F4 falsifier %s selected? %s"
                        (get-in result [:find :zero-mass-pattern])
-                       (get-in result [:find :zero-mass-selected?])
+                       (get-in result [:find :zero-mass-selected?])))
+      (println (format "review-named falsifier %s selected? %s (match %d) -- selected under the pre-licence cue set: %s"
+                       (get-in result [:find :review-named-falsifier])
+                       (get-in result [:find :review-named-falsifier-selected?])
+                       (get-in result [:find :review-named-falsifier-match])
+                       (get-in result [:find :review-named-falsifier-was-selected-before-the-cue-licence?])))
+      (println (format "watched %s selected? %s (match %d)"
                        (get-in result [:find :watched-pattern])
                        (get-in result [:find :watched-selected?])
                        (get-in result [:find :watched-match])))
+      (println (format "cue licence: %d cues declared, %d unlicensed"
+                       (get-in result [:controls :cues-declared])
+                       (count (get-in result [:controls :unlicensed-cues]))))
       (doseq [[id row] (:runs result)]
         (println (format "  %-34s stop %-40s members %d, O1-O3 %s"
                          (name id) (pr-str (:stop row)) (:members row) (pr-str (:laws row))))

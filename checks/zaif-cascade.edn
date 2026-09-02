@@ -10,16 +10,17 @@
   :why-acyclic? true},
  :cascades-differ? true,
  :controls
- {:citations 104,
+ {:citations 31,
   :citations-that-do-not-read-back [],
+  :cues-declared 8,
   :degree-relation-authors-no-edge
-  {:cascade-edges 0,
+  {:cascade-edges 1,
    :cascade-edges-are-why-only? true,
-   :edges-if-the-prior-relation-were-used 6,
+   :edges-if-the-prior-relation-were-used 28,
    :relations-differ? true},
   :determinism-failures [],
   :grain-conjunct-mutations
-  [{:bare :silent, :enriched :fires, :rule :halt-on-budget}
+  [{:bare :silent, :enriched :silent, :rule :halt-on-budget}
    {:bare :silent,
     :enriched :silent,
     :rule :halt-at-the-marginal-gain-floor}
@@ -54,8 +55,12 @@
   :negative-controls
   [{:caught? true,
     :control :O2-invented-edge,
+    :detail "[:aif/no-self-certification :aif/no-self-certification]",
+    :exercised? true}
+   {:caught? true,
+    :control :O3-dropped-edge,
     :detail
-    "[:aif/status-gated-belief-update :aif/status-gated-belief-update]",
+    "[:math-formalization-CV/frontier-bound-from-arc-hypotheses :math-formalization-CV/holomorphic-disk-api]",
     :exercised? true}
    {:caught? true,
     :control :O1-unrecorded-node,
@@ -64,11 +69,11 @@
     :exercised? true}
    {:caught? true,
     :control :citation-cue-not-in-the-cited-span,
-    :detail "\"library/ai4ci/funding-justification.flexiarg\"",
+    :detail "\"library/agent/handoff-preserves-context.flexiarg\"",
     :exercised? true}
    {:caught? true,
     :control :citation-span-off-the-end-of-the-file,
-    :detail "\"library/ai4ci/funding-justification.flexiarg\"",
+    :detail "\"library/agent/handoff-preserves-context.flexiarg\"",
     :exercised? true}],
   :negative-controls-declared
   [:O2-invented-edge
@@ -76,11 +81,7 @@
    :O1-unrecorded-node
    :citation-cue-not-in-the-cited-span
    :citation-span-off-the-end-of-the-file],
-  :negative-controls-not-available-here
-  {:O3-dropped-edge
-   :the-constructed-cascade-has-no-authored-edge-to-drop,
-   :authored-why-edges-in-the-library 92,
-   :cascade-edges 0},
+  :negative-controls-not-available-here {},
   :task-file-correspondence
   [{:clause :consult-the-store-before-attempting,
     :file-is-the-task-file? true,
@@ -111,90 +112,51 @@
     :probe-words 7,
     :probe-words-not-in-span [],
     :source "checks/zaif-task-a97J05.md:68-69",
-    :span-exists? true}]},
+    :span-exists? true}],
+  :unlicensed-cues []},
  :degree-term
  {:authored-edges-in-this-repository 124,
-  :candidates-scored 457,
-  :candidates-with-degree-above-zero 13,
-  :degree-distribution {0 444, 1 4, 2 9},
+  :candidates-scored 343,
+  :candidates-with-degree-above-zero 6,
+  :degree-distribution {0 337, 1 6},
   :distinguishable-from-uniform? true,
   :sections-supplying-the-degree-term
   [:aif
    :features
    :forward-model
    :math-formalization-CA
-   :math-formalization-CV
-   :problems
-   :war-room]},
+   :math-formalization-CV]},
  :find
- {:candidates 457,
+ {:candidates 343,
   :laws {:F1 true, :F2 true, :F3 true, :F4 true},
+  :review-named-falsifier
+  :plos-npt-with-small-n/scope-shield-via-companion-paper,
+  :review-named-falsifier-in-repository? true,
+  :review-named-falsifier-match 0,
+  :review-named-falsifier-selected? false,
+  :review-named-falsifier-was-selected-before-the-cue-licence? true,
   :sections-supplying-the-seed
   [:ai4ci
    :aif
    :budgeted-action-selection
-   :cascades
-   :collaboration-coherence
-   :control
-   :coordination
-   :data-mining
-   :eight-gates
    :equity
-   :f6
    :forward-model
-   :futon-theory
-   :hdm
-   :math-formalization
    :math-strategy
-   :nomad
    :or3
-   :peeragogy
-   :plos-npt-with-small-n
-   :system-coherence
-   :ukrns
-   :war-machine
-   :war-room
-   :writing-coherence],
-  :seed-size 38,
+   :ukrns],
+  :seed-size 11,
   :selected
   [:ai4ci/funding-justification
-   :ai4ci/pilot-feasibility
    :aif/hierarchical-budget-aware-action-selection
    :aif/status-gated-belief-update
    :budgeted-action-selection/mana-gated-work
-   :cascades/the-slice-is-the-unit-of-use
-   :collaboration-coherence/determined-fork-proto-psr
-   :control/effort-estimation
-   :coordination/pattern-search-protocol
-   :data-mining/classify-over-one-clean-source
-   :eight-gates/lean-commit
    :equity/confident-adaptation-as-published
    :equity/confident-adaptation-merged
-   :equity/contribution-pathways
-   :f6/scope-chain-tracking
    :forward-model/graduate-strategy-by-outcome
-   :futon-theory/the-woven-form
-   :hdm/hyperreal-capital
-   :hdm/non-capture
-   :math-formalization/probe-constant-name-and-signature
    :math-strategy/missing-dependency-protocol
-   :nomad/skip-the-flood
    :or3/ask-first-then-bring-the-expert
    :or3/openness-without-exposure
-   :or3/teach-the-process-not-the-facility
-   :peeragogy/use-or-make
-   :plos-npt-with-small-n/disconfirmation-not-just-triangulation
-   :plos-npt-with-small-n/research-questions-stated-early
-   :plos-npt-with-small-n/scope-shield-via-companion-paper
-   :system-coherence/place-capabilities-at-the-scale-of-their-absence
-   :ukrns/coding-provenance
-   :ukrns/exercise-response-capture
-   :ukrns/publication-cadence
-   :ukrns/scale-register
-   :ukrns/self-application
-   :war-machine/ambient-pattern-retrieval
-   :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
-   :writing-coherence/citation-density-load-bearing-claim],
+   :ukrns/publication-cadence],
   :watched-in-repository? true,
   :watched-match 1,
   :watched-pattern :budgeted-action-selection/mana-gated-work,
@@ -205,644 +167,384 @@
  :o4 :not-exercised-the-gate-has-not-run-yet,
  :runs
  {:widen-to-a-budget
-  {:admitted [],
-   :cascade
-   {:authored-order
-    [:ai4ci/funding-justification
-     :ai4ci/pilot-feasibility
-     :aif/hierarchical-budget-aware-action-selection
-     :aif/status-gated-belief-update
-     :budgeted-action-selection/mana-gated-work
-     :cascades/the-slice-is-the-unit-of-use
-     :collaboration-coherence/determined-fork-proto-psr
-     :control/effort-estimation
-     :coordination/pattern-search-protocol
-     :data-mining/classify-over-one-clean-source
-     :eight-gates/lean-commit
-     :equity/confident-adaptation-as-published
-     :equity/confident-adaptation-merged
-     :equity/contribution-pathways
-     :f6/scope-chain-tracking
-     :forward-model/graduate-strategy-by-outcome
-     :futon-theory/the-woven-form
-     :hdm/hyperreal-capital
-     :hdm/non-capture
-     :math-formalization/probe-constant-name-and-signature
-     :math-strategy/missing-dependency-protocol
-     :nomad/skip-the-flood
-     :or3/ask-first-then-bring-the-expert
-     :or3/openness-without-exposure
-     :or3/teach-the-process-not-the-facility
-     :peeragogy/use-or-make
-     :plos-npt-with-small-n/disconfirmation-not-just-triangulation
-     :plos-npt-with-small-n/research-questions-stated-early
-     :plos-npt-with-small-n/scope-shield-via-companion-paper
-     :system-coherence/place-capabilities-at-the-scale-of-their-absence
-     :ukrns/coding-provenance
-     :ukrns/exercise-response-capture
-     :ukrns/publication-cadence
-     :ukrns/scale-register
-     :ukrns/self-application
-     :war-machine/ambient-pattern-retrieval
-     :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
-     :writing-coherence/citation-density-load-bearing-claim],
-    :id :widen-to-a-budget,
-    :members
-    [:ai4ci/funding-justification
-     :ai4ci/pilot-feasibility
-     :aif/hierarchical-budget-aware-action-selection
-     :aif/status-gated-belief-update
-     :budgeted-action-selection/mana-gated-work
-     :cascades/the-slice-is-the-unit-of-use
-     :collaboration-coherence/determined-fork-proto-psr
-     :control/effort-estimation
-     :coordination/pattern-search-protocol
-     :data-mining/classify-over-one-clean-source
-     :eight-gates/lean-commit
-     :equity/confident-adaptation-as-published
-     :equity/confident-adaptation-merged
-     :equity/contribution-pathways
-     :f6/scope-chain-tracking
-     :forward-model/graduate-strategy-by-outcome
-     :futon-theory/the-woven-form
-     :hdm/hyperreal-capital
-     :hdm/non-capture
-     :math-formalization/probe-constant-name-and-signature
-     :math-strategy/missing-dependency-protocol
-     :nomad/skip-the-flood
-     :or3/ask-first-then-bring-the-expert
-     :or3/openness-without-exposure
-     :or3/teach-the-process-not-the-facility
-     :peeragogy/use-or-make
-     :plos-npt-with-small-n/disconfirmation-not-just-triangulation
-     :plos-npt-with-small-n/research-questions-stated-early
-     :plos-npt-with-small-n/scope-shield-via-companion-paper
-     :system-coherence/place-capabilities-at-the-scale-of-their-absence
-     :ukrns/coding-provenance
-     :ukrns/exercise-response-capture
-     :ukrns/publication-cadence
-     :ukrns/scale-register
-     :ukrns/self-application
-     :war-machine/ambient-pattern-retrieval
-     :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
-     :writing-coherence/citation-density-load-bearing-claim],
-    :ordered
-    [:ai4ci/funding-justification
-     :ai4ci/pilot-feasibility
-     :aif/hierarchical-budget-aware-action-selection
-     :aif/status-gated-belief-update
-     :budgeted-action-selection/mana-gated-work
-     :cascades/the-slice-is-the-unit-of-use
-     :collaboration-coherence/determined-fork-proto-psr
-     :control/effort-estimation
-     :coordination/pattern-search-protocol
-     :data-mining/classify-over-one-clean-source
-     :eight-gates/lean-commit
-     :equity/confident-adaptation-as-published
-     :equity/confident-adaptation-merged
-     :equity/contribution-pathways
-     :f6/scope-chain-tracking
-     :forward-model/graduate-strategy-by-outcome
-     :futon-theory/the-woven-form
-     :hdm/hyperreal-capital
-     :hdm/non-capture
-     :math-formalization/probe-constant-name-and-signature
-     :math-strategy/missing-dependency-protocol
-     :nomad/skip-the-flood
-     :or3/ask-first-then-bring-the-expert
-     :or3/openness-without-exposure
-     :or3/teach-the-process-not-the-facility
-     :peeragogy/use-or-make
-     :plos-npt-with-small-n/disconfirmation-not-just-triangulation
-     :plos-npt-with-small-n/research-questions-stated-early
-     :plos-npt-with-small-n/scope-shield-via-companion-paper
-     :system-coherence/place-capabilities-at-the-scale-of-their-absence
-     :ukrns/coding-provenance
-     :ukrns/exercise-response-capture
-     :ukrns/publication-cadence
-     :ukrns/scale-register
-     :ukrns/self-application
-     :war-machine/ambient-pattern-retrieval
-     :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
-     :writing-coherence/citation-density-load-bearing-claim],
-    :precedence
-    {:ai4ci/funding-justification 1,
-     :ai4ci/pilot-feasibility 2,
-     :aif/hierarchical-budget-aware-action-selection 3,
-     :aif/status-gated-belief-update 4,
-     :budgeted-action-selection/mana-gated-work 5,
-     :cascades/the-slice-is-the-unit-of-use 6,
-     :collaboration-coherence/determined-fork-proto-psr 7,
-     :control/effort-estimation 8,
-     :coordination/pattern-search-protocol 9,
-     :data-mining/classify-over-one-clean-source 10,
-     :eight-gates/lean-commit 11,
-     :equity/confident-adaptation-as-published 12,
-     :equity/confident-adaptation-merged 13,
-     :equity/contribution-pathways 14,
-     :f6/scope-chain-tracking 15,
-     :forward-model/graduate-strategy-by-outcome 16,
-     :futon-theory/the-woven-form 17,
-     :hdm/hyperreal-capital 18,
-     :hdm/non-capture 19,
-     :math-formalization/probe-constant-name-and-signature 20,
-     :math-strategy/missing-dependency-protocol 21,
-     :nomad/skip-the-flood 22,
-     :or3/ask-first-then-bring-the-expert 23,
-     :or3/openness-without-exposure 24,
-     :or3/teach-the-process-not-the-facility 25,
-     :peeragogy/use-or-make 26,
-     :plos-npt-with-small-n/disconfirmation-not-just-triangulation 27,
-     :plos-npt-with-small-n/research-questions-stated-early 28,
-     :plos-npt-with-small-n/scope-shield-via-companion-paper 29,
-     :system-coherence/place-capabilities-at-the-scale-of-their-absence
-     30,
-     :ukrns/coding-provenance 31,
-     :ukrns/exercise-response-capture 32,
-     :ukrns/publication-cadence 33,
-     :ukrns/scale-register 34,
-     :ukrns/self-application 35,
-     :war-machine/ambient-pattern-retrieval 36,
-     :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
-     37,
-     :writing-coherence/citation-density-load-bearing-claim 38},
-    :provenance
-    {:ai4ci/funding-justification :found,
-     :ai4ci/pilot-feasibility :found,
-     :aif/hierarchical-budget-aware-action-selection :found,
-     :aif/status-gated-belief-update :found,
-     :budgeted-action-selection/mana-gated-work :found,
-     :cascades/the-slice-is-the-unit-of-use :found,
-     :collaboration-coherence/determined-fork-proto-psr :found,
-     :control/effort-estimation :found,
-     :coordination/pattern-search-protocol :found,
-     :data-mining/classify-over-one-clean-source :found,
-     :eight-gates/lean-commit :found,
-     :equity/confident-adaptation-as-published :found,
-     :equity/confident-adaptation-merged :found,
-     :equity/contribution-pathways :found,
-     :f6/scope-chain-tracking :found,
-     :forward-model/graduate-strategy-by-outcome :found,
-     :futon-theory/the-woven-form :found,
-     :hdm/hyperreal-capital :found,
-     :hdm/non-capture :found,
-     :math-formalization/probe-constant-name-and-signature :found,
-     :math-strategy/missing-dependency-protocol :found,
-     :nomad/skip-the-flood :found,
-     :or3/ask-first-then-bring-the-expert :found,
-     :or3/openness-without-exposure :found,
-     :or3/teach-the-process-not-the-facility :found,
-     :peeragogy/use-or-make :found,
-     :plos-npt-with-small-n/disconfirmation-not-just-triangulation
-     :found,
-     :plos-npt-with-small-n/research-questions-stated-early :found,
-     :plos-npt-with-small-n/scope-shield-via-companion-paper :found,
-     :system-coherence/place-capabilities-at-the-scale-of-their-absence
-     :found,
-     :ukrns/coding-provenance :found,
-     :ukrns/exercise-response-capture :found,
-     :ukrns/publication-cadence :found,
-     :ukrns/scale-register :found,
-     :ukrns/self-application :found,
-     :war-machine/ambient-pattern-retrieval :found,
-     :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
-     :found,
-     :writing-coherence/citation-density-load-bearing-claim :found},
-    :steps 1,
-    :stop [:halted [:budget 20]]},
-   :cascade-edges 0,
-   :cascade-nodes 38,
-   :laws {:O1 true, :O2 true, :O3 true},
-   :members 38,
-   :record
-   [{:by :halt-on-budget,
-     :edit :halt,
-     :pattern nil,
-     :reason [:budget 20],
-     :step 0}],
-   :steps 1,
-   :stop [:halted [:budget 20]]},
-  :widen-to-the-marginal-gain-floor
   {:admitted
-   [:aif/measurement-window-hygiene
+   [:agent/handoff-preserves-context
+    :agent/trail-enables-return
+    :ai4ci/ai-core-function
     :aif/no-self-certification
-    :aif/off-continuity-null-discriminates
     :features/operator-turns-enter-the-observation-vector
     :forward-model/inhabit-supplies-labels
     :math-formalization-CA/measure-integration-api
-    :math-formalization-CA/riemann-darboux-api
     :math-formalization-CV/frontier-bound-from-arc-hypotheses
-    :math-formalization-CV/holomorphic-disk-api
-    :problems/operator-turns-become-inference-observations
-    :war-room/wr-0-organise-without-apparatus
-    :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad
-    :war-room/wr-4-inhabit-before-building],
+    :math-formalization-CV/holomorphic-disk-api],
    :cascade
    {:authored-order
     [:ai4ci/funding-justification
-     :ai4ci/pilot-feasibility
      :aif/hierarchical-budget-aware-action-selection
      :aif/status-gated-belief-update
      :budgeted-action-selection/mana-gated-work
-     :cascades/the-slice-is-the-unit-of-use
-     :collaboration-coherence/determined-fork-proto-psr
-     :control/effort-estimation
-     :coordination/pattern-search-protocol
-     :data-mining/classify-over-one-clean-source
-     :eight-gates/lean-commit
      :equity/confident-adaptation-as-published
      :equity/confident-adaptation-merged
-     :equity/contribution-pathways
-     :f6/scope-chain-tracking
      :forward-model/graduate-strategy-by-outcome
-     :futon-theory/the-woven-form
-     :hdm/hyperreal-capital
-     :hdm/non-capture
-     :math-formalization/probe-constant-name-and-signature
      :math-strategy/missing-dependency-protocol
-     :nomad/skip-the-flood
      :or3/ask-first-then-bring-the-expert
      :or3/openness-without-exposure
-     :or3/teach-the-process-not-the-facility
-     :peeragogy/use-or-make
-     :plos-npt-with-small-n/disconfirmation-not-just-triangulation
-     :plos-npt-with-small-n/research-questions-stated-early
-     :plos-npt-with-small-n/scope-shield-via-companion-paper
-     :system-coherence/place-capabilities-at-the-scale-of-their-absence
-     :ukrns/coding-provenance
-     :ukrns/exercise-response-capture
      :ukrns/publication-cadence
-     :ukrns/scale-register
-     :ukrns/self-application
-     :war-machine/ambient-pattern-retrieval
-     :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
-     :writing-coherence/citation-density-load-bearing-claim
-     :features/operator-turns-enter-the-observation-vector
-     :aif/measurement-window-hygiene
      :aif/no-self-certification
-     :aif/off-continuity-null-discriminates
+     :features/operator-turns-enter-the-observation-vector
      :forward-model/inhabit-supplies-labels
-     :problems/operator-turns-become-inference-observations
-     :war-room/wr-0-organise-without-apparatus
-     :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad
-     :war-room/wr-4-inhabit-before-building
      :math-formalization-CA/measure-integration-api
      :math-formalization-CV/frontier-bound-from-arc-hypotheses
      :math-formalization-CV/holomorphic-disk-api
-     :math-formalization-CA/riemann-darboux-api],
-    :id :widen-to-the-marginal-gain-floor,
+     :agent/handoff-preserves-context
+     :agent/trail-enables-return
+     :ai4ci/ai-core-function],
+    :id :widen-to-a-budget,
     :members
-    [:ai4ci/funding-justification
-     :ai4ci/pilot-feasibility
+    [:agent/handoff-preserves-context
+     :agent/trail-enables-return
+     :ai4ci/ai-core-function
+     :ai4ci/funding-justification
      :aif/hierarchical-budget-aware-action-selection
-     :aif/measurement-window-hygiene
      :aif/no-self-certification
-     :aif/off-continuity-null-discriminates
      :aif/status-gated-belief-update
      :budgeted-action-selection/mana-gated-work
-     :cascades/the-slice-is-the-unit-of-use
-     :collaboration-coherence/determined-fork-proto-psr
-     :control/effort-estimation
-     :coordination/pattern-search-protocol
-     :data-mining/classify-over-one-clean-source
-     :eight-gates/lean-commit
      :equity/confident-adaptation-as-published
      :equity/confident-adaptation-merged
-     :equity/contribution-pathways
-     :f6/scope-chain-tracking
      :features/operator-turns-enter-the-observation-vector
      :forward-model/graduate-strategy-by-outcome
      :forward-model/inhabit-supplies-labels
-     :futon-theory/the-woven-form
-     :hdm/hyperreal-capital
-     :hdm/non-capture
-     :math-formalization/probe-constant-name-and-signature
      :math-formalization-CA/measure-integration-api
-     :math-formalization-CA/riemann-darboux-api
      :math-formalization-CV/frontier-bound-from-arc-hypotheses
      :math-formalization-CV/holomorphic-disk-api
      :math-strategy/missing-dependency-protocol
-     :nomad/skip-the-flood
      :or3/ask-first-then-bring-the-expert
      :or3/openness-without-exposure
-     :or3/teach-the-process-not-the-facility
-     :peeragogy/use-or-make
-     :plos-npt-with-small-n/disconfirmation-not-just-triangulation
-     :plos-npt-with-small-n/research-questions-stated-early
-     :plos-npt-with-small-n/scope-shield-via-companion-paper
-     :problems/operator-turns-become-inference-observations
-     :system-coherence/place-capabilities-at-the-scale-of-their-absence
-     :ukrns/coding-provenance
-     :ukrns/exercise-response-capture
-     :ukrns/publication-cadence
-     :ukrns/scale-register
-     :ukrns/self-application
-     :war-machine/ambient-pattern-retrieval
-     :war-room/wr-0-organise-without-apparatus
-     :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad
-     :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
-     :war-room/wr-4-inhabit-before-building
-     :writing-coherence/citation-density-load-bearing-claim],
+     :ukrns/publication-cadence],
     :ordered
     [:ai4ci/funding-justification
-     :ai4ci/pilot-feasibility
      :aif/hierarchical-budget-aware-action-selection
      :aif/status-gated-belief-update
      :budgeted-action-selection/mana-gated-work
-     :cascades/the-slice-is-the-unit-of-use
-     :collaboration-coherence/determined-fork-proto-psr
-     :control/effort-estimation
-     :coordination/pattern-search-protocol
-     :data-mining/classify-over-one-clean-source
-     :eight-gates/lean-commit
      :equity/confident-adaptation-as-published
      :equity/confident-adaptation-merged
-     :equity/contribution-pathways
-     :f6/scope-chain-tracking
      :forward-model/graduate-strategy-by-outcome
-     :futon-theory/the-woven-form
-     :hdm/hyperreal-capital
-     :hdm/non-capture
-     :math-formalization/probe-constant-name-and-signature
      :math-strategy/missing-dependency-protocol
-     :nomad/skip-the-flood
      :or3/ask-first-then-bring-the-expert
      :or3/openness-without-exposure
-     :or3/teach-the-process-not-the-facility
-     :peeragogy/use-or-make
-     :plos-npt-with-small-n/disconfirmation-not-just-triangulation
-     :plos-npt-with-small-n/research-questions-stated-early
-     :plos-npt-with-small-n/scope-shield-via-companion-paper
-     :system-coherence/place-capabilities-at-the-scale-of-their-absence
-     :ukrns/coding-provenance
-     :ukrns/exercise-response-capture
      :ukrns/publication-cadence
-     :ukrns/scale-register
-     :ukrns/self-application
-     :war-machine/ambient-pattern-retrieval
-     :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
-     :writing-coherence/citation-density-load-bearing-claim
-     :features/operator-turns-enter-the-observation-vector
-     :aif/measurement-window-hygiene
      :aif/no-self-certification
-     :aif/off-continuity-null-discriminates
+     :features/operator-turns-enter-the-observation-vector
      :forward-model/inhabit-supplies-labels
-     :problems/operator-turns-become-inference-observations
-     :war-room/wr-0-organise-without-apparatus
-     :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad
-     :war-room/wr-4-inhabit-before-building
      :math-formalization-CA/measure-integration-api
      :math-formalization-CV/frontier-bound-from-arc-hypotheses
      :math-formalization-CV/holomorphic-disk-api
-     :math-formalization-CA/riemann-darboux-api],
+     :agent/handoff-preserves-context
+     :agent/trail-enables-return
+     :ai4ci/ai-core-function],
     :precedence
-    {:ai4ci/funding-justification 1,
-     :ai4ci/pilot-feasibility 2,
-     :aif/hierarchical-budget-aware-action-selection 3,
-     :aif/measurement-window-hygiene 40,
-     :aif/no-self-certification 41,
-     :aif/off-continuity-null-discriminates 42,
-     :aif/status-gated-belief-update 4,
-     :budgeted-action-selection/mana-gated-work 5,
-     :cascades/the-slice-is-the-unit-of-use 6,
-     :collaboration-coherence/determined-fork-proto-psr 7,
-     :control/effort-estimation 8,
-     :coordination/pattern-search-protocol 9,
-     :data-mining/classify-over-one-clean-source 10,
-     :eight-gates/lean-commit 11,
-     :equity/confident-adaptation-as-published 12,
-     :equity/confident-adaptation-merged 13,
-     :equity/contribution-pathways 14,
-     :f6/scope-chain-tracking 15,
-     :features/operator-turns-enter-the-observation-vector 39,
-     :forward-model/graduate-strategy-by-outcome 16,
-     :forward-model/inhabit-supplies-labels 43,
-     :futon-theory/the-woven-form 17,
-     :hdm/hyperreal-capital 18,
-     :hdm/non-capture 19,
-     :math-formalization/probe-constant-name-and-signature 20,
-     :math-formalization-CA/measure-integration-api 48,
-     :math-formalization-CA/riemann-darboux-api 51,
-     :math-formalization-CV/frontier-bound-from-arc-hypotheses 49,
-     :math-formalization-CV/holomorphic-disk-api 50,
-     :math-strategy/missing-dependency-protocol 21,
-     :nomad/skip-the-flood 22,
-     :or3/ask-first-then-bring-the-expert 23,
-     :or3/openness-without-exposure 24,
-     :or3/teach-the-process-not-the-facility 25,
-     :peeragogy/use-or-make 26,
-     :plos-npt-with-small-n/disconfirmation-not-just-triangulation 27,
-     :plos-npt-with-small-n/research-questions-stated-early 28,
-     :plos-npt-with-small-n/scope-shield-via-companion-paper 29,
-     :problems/operator-turns-become-inference-observations 44,
-     :system-coherence/place-capabilities-at-the-scale-of-their-absence
-     30,
-     :ukrns/coding-provenance 31,
-     :ukrns/exercise-response-capture 32,
-     :ukrns/publication-cadence 33,
-     :ukrns/scale-register 34,
-     :ukrns/self-application 35,
-     :war-machine/ambient-pattern-retrieval 36,
-     :war-room/wr-0-organise-without-apparatus 45,
-     :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad
-     46,
-     :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
-     37,
-     :war-room/wr-4-inhabit-before-building 47,
-     :writing-coherence/citation-density-load-bearing-claim 38},
+    {:agent/handoff-preserves-context 18,
+     :agent/trail-enables-return 19,
+     :ai4ci/ai-core-function 20,
+     :ai4ci/funding-justification 1,
+     :aif/hierarchical-budget-aware-action-selection 2,
+     :aif/no-self-certification 12,
+     :aif/status-gated-belief-update 3,
+     :budgeted-action-selection/mana-gated-work 4,
+     :equity/confident-adaptation-as-published 5,
+     :equity/confident-adaptation-merged 6,
+     :features/operator-turns-enter-the-observation-vector 13,
+     :forward-model/graduate-strategy-by-outcome 7,
+     :forward-model/inhabit-supplies-labels 14,
+     :math-formalization-CA/measure-integration-api 15,
+     :math-formalization-CV/frontier-bound-from-arc-hypotheses 16,
+     :math-formalization-CV/holomorphic-disk-api 17,
+     :math-strategy/missing-dependency-protocol 8,
+     :or3/ask-first-then-bring-the-expert 9,
+     :or3/openness-without-exposure 10,
+     :ukrns/publication-cadence 11},
     :provenance
-    {:ai4ci/funding-justification :found,
-     :ai4ci/pilot-feasibility :found,
+    {:agent/handoff-preserves-context
+     [:admitted-by :widen-the-cascade-only-on-evidence],
+     :agent/trail-enables-return
+     [:admitted-by :widen-the-cascade-only-on-evidence],
+     :ai4ci/ai-core-function
+     [:admitted-by :widen-the-cascade-only-on-evidence],
+     :ai4ci/funding-justification :found,
      :aif/hierarchical-budget-aware-action-selection :found,
-     :aif/measurement-window-hygiene
-     [:admitted-by :widen-the-cascade-only-on-evidence],
      :aif/no-self-certification
-     [:admitted-by :widen-the-cascade-only-on-evidence],
-     :aif/off-continuity-null-discriminates
      [:admitted-by :widen-the-cascade-only-on-evidence],
      :aif/status-gated-belief-update :found,
      :budgeted-action-selection/mana-gated-work :found,
-     :cascades/the-slice-is-the-unit-of-use :found,
-     :collaboration-coherence/determined-fork-proto-psr :found,
-     :control/effort-estimation :found,
-     :coordination/pattern-search-protocol :found,
-     :data-mining/classify-over-one-clean-source :found,
-     :eight-gates/lean-commit :found,
      :equity/confident-adaptation-as-published :found,
      :equity/confident-adaptation-merged :found,
-     :equity/contribution-pathways :found,
-     :f6/scope-chain-tracking :found,
      :features/operator-turns-enter-the-observation-vector
      [:admitted-by :widen-the-cascade-only-on-evidence],
      :forward-model/graduate-strategy-by-outcome :found,
      :forward-model/inhabit-supplies-labels
      [:admitted-by :widen-the-cascade-only-on-evidence],
-     :futon-theory/the-woven-form :found,
-     :hdm/hyperreal-capital :found,
-     :hdm/non-capture :found,
-     :math-formalization/probe-constant-name-and-signature :found,
      :math-formalization-CA/measure-integration-api
-     [:admitted-by :widen-the-cascade-only-on-evidence],
-     :math-formalization-CA/riemann-darboux-api
      [:admitted-by :widen-the-cascade-only-on-evidence],
      :math-formalization-CV/frontier-bound-from-arc-hypotheses
      [:admitted-by :widen-the-cascade-only-on-evidence],
      :math-formalization-CV/holomorphic-disk-api
      [:admitted-by :widen-the-cascade-only-on-evidence],
      :math-strategy/missing-dependency-protocol :found,
-     :nomad/skip-the-flood :found,
      :or3/ask-first-then-bring-the-expert :found,
      :or3/openness-without-exposure :found,
-     :or3/teach-the-process-not-the-facility :found,
-     :peeragogy/use-or-make :found,
-     :plos-npt-with-small-n/disconfirmation-not-just-triangulation
-     :found,
-     :plos-npt-with-small-n/research-questions-stated-early :found,
-     :plos-npt-with-small-n/scope-shield-via-companion-paper :found,
-     :problems/operator-turns-become-inference-observations
-     [:admitted-by :widen-the-cascade-only-on-evidence],
-     :system-coherence/place-capabilities-at-the-scale-of-their-absence
-     :found,
-     :ukrns/coding-provenance :found,
-     :ukrns/exercise-response-capture :found,
-     :ukrns/publication-cadence :found,
-     :ukrns/scale-register :found,
-     :ukrns/self-application :found,
-     :war-machine/ambient-pattern-retrieval :found,
-     :war-room/wr-0-organise-without-apparatus
-     [:admitted-by :widen-the-cascade-only-on-evidence],
-     :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad
-     [:admitted-by :widen-the-cascade-only-on-evidence],
-     :war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
-     :found,
-     :war-room/wr-4-inhabit-before-building
-     [:admitted-by :widen-the-cascade-only-on-evidence],
-     :writing-coherence/citation-density-load-bearing-claim :found},
-    :steps 14,
-    :stop [:halted [:marginal-gain-floor 1.0]]},
-   :cascade-edges 11,
-   :cascade-nodes 51,
+     :ukrns/publication-cadence :found},
+    :steps 10,
+    :stop [:halted [:budget 20]]},
+   :cascade-edges 1,
+   :cascade-nodes 20,
    :laws {:O1 true, :O2 true, :O3 true},
-   :members 51,
+   :members 20,
    :record
    [{:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
-     :pattern :features/operator-turns-enter-the-observation-vector,
+     :pattern :aif/no-self-certification,
      :reason nil,
      :step 0}
     {:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
-     :pattern :aif/measurement-window-hygiene,
+     :pattern :features/operator-turns-enter-the-observation-vector,
      :reason nil,
      :step 1}
     {:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
-     :pattern :aif/no-self-certification,
+     :pattern :forward-model/inhabit-supplies-labels,
      :reason nil,
      :step 2}
     {:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
-     :pattern :aif/off-continuity-null-discriminates,
-     :reason nil,
-     :step 3}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :forward-model/inhabit-supplies-labels,
-     :reason nil,
-     :step 4}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :problems/operator-turns-become-inference-observations,
-     :reason nil,
-     :step 5}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :war-room/wr-0-organise-without-apparatus,
-     :reason nil,
-     :step 6}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern
-     :war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad,
-     :reason nil,
-     :step 7}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :war-room/wr-4-inhabit-before-building,
-     :reason nil,
-     :step 8}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
      :pattern :math-formalization-CA/measure-integration-api,
      :reason nil,
-     :step 9}
+     :step 3}
     {:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
      :pattern
      :math-formalization-CV/frontier-bound-from-arc-hypotheses,
      :reason nil,
-     :step 10}
+     :step 4}
     {:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
      :pattern :math-formalization-CV/holomorphic-disk-api,
      :reason nil,
-     :step 11}
+     :step 5}
     {:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
-     :pattern :math-formalization-CA/riemann-darboux-api,
+     :pattern :agent/handoff-preserves-context,
      :reason nil,
-     :step 12}
+     :step 6}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :agent/trail-enables-return,
+     :reason nil,
+     :step 7}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :ai4ci/ai-core-function,
+     :reason nil,
+     :step 8}
+    {:by :halt-on-budget,
+     :edit :halt,
+     :pattern nil,
+     :reason [:budget 20],
+     :step 9}],
+   :steps 10,
+   :stop [:halted [:budget 20]]},
+  :widen-to-the-marginal-gain-floor
+  {:admitted
+   [:aif/no-self-certification
+    :features/operator-turns-enter-the-observation-vector
+    :forward-model/inhabit-supplies-labels
+    :math-formalization-CA/measure-integration-api
+    :math-formalization-CV/frontier-bound-from-arc-hypotheses
+    :math-formalization-CV/holomorphic-disk-api],
+   :cascade
+   {:authored-order
+    [:ai4ci/funding-justification
+     :aif/hierarchical-budget-aware-action-selection
+     :aif/status-gated-belief-update
+     :budgeted-action-selection/mana-gated-work
+     :equity/confident-adaptation-as-published
+     :equity/confident-adaptation-merged
+     :forward-model/graduate-strategy-by-outcome
+     :math-strategy/missing-dependency-protocol
+     :or3/ask-first-then-bring-the-expert
+     :or3/openness-without-exposure
+     :ukrns/publication-cadence
+     :aif/no-self-certification
+     :features/operator-turns-enter-the-observation-vector
+     :forward-model/inhabit-supplies-labels
+     :math-formalization-CA/measure-integration-api
+     :math-formalization-CV/frontier-bound-from-arc-hypotheses
+     :math-formalization-CV/holomorphic-disk-api],
+    :id :widen-to-the-marginal-gain-floor,
+    :members
+    [:ai4ci/funding-justification
+     :aif/hierarchical-budget-aware-action-selection
+     :aif/no-self-certification
+     :aif/status-gated-belief-update
+     :budgeted-action-selection/mana-gated-work
+     :equity/confident-adaptation-as-published
+     :equity/confident-adaptation-merged
+     :features/operator-turns-enter-the-observation-vector
+     :forward-model/graduate-strategy-by-outcome
+     :forward-model/inhabit-supplies-labels
+     :math-formalization-CA/measure-integration-api
+     :math-formalization-CV/frontier-bound-from-arc-hypotheses
+     :math-formalization-CV/holomorphic-disk-api
+     :math-strategy/missing-dependency-protocol
+     :or3/ask-first-then-bring-the-expert
+     :or3/openness-without-exposure
+     :ukrns/publication-cadence],
+    :ordered
+    [:ai4ci/funding-justification
+     :aif/hierarchical-budget-aware-action-selection
+     :aif/status-gated-belief-update
+     :budgeted-action-selection/mana-gated-work
+     :equity/confident-adaptation-as-published
+     :equity/confident-adaptation-merged
+     :forward-model/graduate-strategy-by-outcome
+     :math-strategy/missing-dependency-protocol
+     :or3/ask-first-then-bring-the-expert
+     :or3/openness-without-exposure
+     :ukrns/publication-cadence
+     :aif/no-self-certification
+     :features/operator-turns-enter-the-observation-vector
+     :forward-model/inhabit-supplies-labels
+     :math-formalization-CA/measure-integration-api
+     :math-formalization-CV/frontier-bound-from-arc-hypotheses
+     :math-formalization-CV/holomorphic-disk-api],
+    :precedence
+    {:ai4ci/funding-justification 1,
+     :aif/hierarchical-budget-aware-action-selection 2,
+     :aif/no-self-certification 12,
+     :aif/status-gated-belief-update 3,
+     :budgeted-action-selection/mana-gated-work 4,
+     :equity/confident-adaptation-as-published 5,
+     :equity/confident-adaptation-merged 6,
+     :features/operator-turns-enter-the-observation-vector 13,
+     :forward-model/graduate-strategy-by-outcome 7,
+     :forward-model/inhabit-supplies-labels 14,
+     :math-formalization-CA/measure-integration-api 15,
+     :math-formalization-CV/frontier-bound-from-arc-hypotheses 16,
+     :math-formalization-CV/holomorphic-disk-api 17,
+     :math-strategy/missing-dependency-protocol 8,
+     :or3/ask-first-then-bring-the-expert 9,
+     :or3/openness-without-exposure 10,
+     :ukrns/publication-cadence 11},
+    :provenance
+    {:ai4ci/funding-justification :found,
+     :aif/hierarchical-budget-aware-action-selection :found,
+     :aif/no-self-certification
+     [:admitted-by :widen-the-cascade-only-on-evidence],
+     :aif/status-gated-belief-update :found,
+     :budgeted-action-selection/mana-gated-work :found,
+     :equity/confident-adaptation-as-published :found,
+     :equity/confident-adaptation-merged :found,
+     :features/operator-turns-enter-the-observation-vector
+     [:admitted-by :widen-the-cascade-only-on-evidence],
+     :forward-model/graduate-strategy-by-outcome :found,
+     :forward-model/inhabit-supplies-labels
+     [:admitted-by :widen-the-cascade-only-on-evidence],
+     :math-formalization-CA/measure-integration-api
+     [:admitted-by :widen-the-cascade-only-on-evidence],
+     :math-formalization-CV/frontier-bound-from-arc-hypotheses
+     [:admitted-by :widen-the-cascade-only-on-evidence],
+     :math-formalization-CV/holomorphic-disk-api
+     [:admitted-by :widen-the-cascade-only-on-evidence],
+     :math-strategy/missing-dependency-protocol :found,
+     :or3/ask-first-then-bring-the-expert :found,
+     :or3/openness-without-exposure :found,
+     :ukrns/publication-cadence :found},
+    :steps 7,
+    :stop [:halted [:marginal-gain-floor 1.0]]},
+   :cascade-edges 1,
+   :cascade-nodes 17,
+   :laws {:O1 true, :O2 true, :O3 true},
+   :members 17,
+   :record
+   [{:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :aif/no-self-certification,
+     :reason nil,
+     :step 0}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :features/operator-turns-enter-the-observation-vector,
+     :reason nil,
+     :step 1}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :forward-model/inhabit-supplies-labels,
+     :reason nil,
+     :step 2}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :math-formalization-CA/measure-integration-api,
+     :reason nil,
+     :step 3}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern
+     :math-formalization-CV/frontier-bound-from-arc-hypotheses,
+     :reason nil,
+     :step 4}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :math-formalization-CV/holomorphic-disk-api,
+     :reason nil,
+     :step 5}
     {:by :halt-at-the-marginal-gain-floor,
      :edit :halt,
      :pattern nil,
      :reason [:marginal-gain-floor 1.0],
-     :step 13}],
-   :steps 14,
+     :step 6}],
+   :steps 7,
    :stop [:halted [:marginal-gain-floor 1.0]]}},
  :scores-at-step-0
- [[:features/operator-turns-enter-the-observation-vector 4.6 2 2]
-  [:aif/measurement-window-hygiene 2.3 1 2]
-  [:aif/no-self-certification 2.3 1 2]
-  [:aif/off-continuity-null-discriminates 2.3 1 2]
-  [:forward-model/inhabit-supplies-labels 2.3 1 2]
-  [:problems/operator-turns-become-inference-observations 2.3 1 2]
-  [:war-room/wr-0-organise-without-apparatus 2.3 1 2]
-  [:war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad
-   2.3
-   1
-   2]
-  [:war-room/wr-4-inhabit-before-building 2.3 1 2]
+ [[:aif/no-self-certification 1.3 1 1]
+  [:features/operator-turns-enter-the-observation-vector 1.3 1 1]
+  [:forward-model/inhabit-supplies-labels 1.3 1 1]
   [:math-formalization-CA/measure-integration-api 1.3 1 1]
-  [:math-formalization-CA/riemann-darboux-api 1.3 1 1]
   [:math-formalization-CV/frontier-bound-from-arc-hypotheses 1.3 1 1]
   [:math-formalization-CV/holomorphic-disk-api 1.3 1 1]
-  [:ai4ci/ai-core-function 0.6 2 0]
-  [:data-mining/saturate-the-accelerator-with-concurrency 0.6 2 0]
-  [:devmap-coherence/next-steps-to-done 0.6 2 0]
-  [:equity/contribution-pathways-merged 0.6 2 0]
-  [:equity/protected-interaction-as-published 0.6 2 0]
-  [:mmca/persistence-over-appearance 0.6 2 0]
-  [:musn/declare-scope 0.6 2 0]
-  [:or3/count-every-card-back 0.6 2 0]
-  [:peeragogy/par 0.6 2 0]
-  [:social/explicit-exit-over-abandonment 0.6 2 0]
-  [:social/scope-bounded-handoff 0.6 2 0]
-  [:system-coherence/match-region-weight-to-load 0.6 2 0]
-  [:agency/self-attribution 0.3 1 0]
-  [:agent/budget-bounds-exploration 0.3 1 0]
-  [:agent/coordination-has-cost 0.3 1 0]
-  [:agent/escalation-cost-vs-risk 0.3 1 0]
   [:agent/handoff-preserves-context 0.3 1 0]
-  [:agent/hypothetical-proof-architecture 0.3 1 0]
-  [:agent/pause-is-not-failure 0.3 1 0]
-  [:agent/scope-before-action 0.3 1 0]
-  [:agent/student-dispatch 0.3 1 0]
   [:agent/trail-enables-return 0.3 1 0]
-  [:ai4ci/project-summary-core 0.3 1 0]
+  [:ai4ci/ai-core-function 0.3 1 0]
+  [:ai4ci/pilot-feasibility 0.3 1 0]
   [:aif/belief-aware-risk-term 0.3 1 0]
   [:aif/belief-state-operational-hypotheses 0.3 1 0]
-  [:aif/decomposed-prediction-noise 0.3 1 0]
-  [:aif/posterior-variance-as-epistemic-value 0.3 1 0]],
+  [:baldwin/ablation-axes-must-not-disable-the-instrument 0.3 1 0]
+  [:baldwin/choose-the-heritable-unit-where-invariance-lives 0.3 1 0]
+  [:cascades/declared-skeleton 0.3 1 0]
+  [:control/effort-estimation 0.3 1 0]
+  [:devmap-coherence/next-steps-to-done 0.3 1 0]
+  [:eight-gates/lean-commit 0.3 1 0]
+  [:equity/contribution-pathways 0.3 1 0]
+  [:equity/contribution-pathways-merged 0.3 1 0]
+  [:equity/protected-interaction-as-published 0.3 1 0]
+  [:futon-theory/progress-signal 0.3 1 0]
+  [:gauntlet/modeline-persists-across-worlds 0.3 1 0]
+  [:gauntlet/teaching-inversion 0.3 1 0]
+  [:hdm/non-capture 0.3 1 0]
+  [:iiching/TEMPLATE 0.3 1 0]
+  [:iiching/exotype-000 0.3 1 0]
+  [:iiching/exotype-001 0.3 1 0]
+  [:iiching/exotype-002 0.3 1 0]
+  [:iiching/exotype-003 0.3 1 0]
+  [:iiching/exotype-004 0.3 1 0]
+  [:iiching/exotype-005 0.3 1 0]
+  [:iiching/exotype-006 0.3 1 0]
+  [:iiching/exotype-007 0.3 1 0]
+  [:iiching/exotype-008 0.3 1 0]
+  [:iiching/exotype-009 0.3 1 0]
+  [:iiching/exotype-010 0.3 1 0]
+  [:iiching/exotype-011 0.3 1 0]
+  [:iiching/exotype-012 0.3 1 0]
+  [:iiching/exotype-013 0.3 1 0]],
  :temperaments
  {:holds? true,
   :same-shared-nodes? true,
@@ -853,13 +555,13 @@
   :stops-differ? true},
  :tension
  {:clause-hits
-  {:cite-what-you-actually-used 26,
-   :consult-the-store-before-attempting 332,
-   :stopping-honestly-beats-a-forced-fake 40,
-   :the-budget-is-stated-and-must-bind 87,
-   :the-statement-is-frozen-and-out-of-bounds 41},
+  {:cite-what-you-actually-used 8,
+   :consult-the-store-before-attempting 320,
+   :stopping-honestly-beats-a-forced-fake 7,
+   :the-budget-is-stated-and-must-bind 14,
+   :the-statement-is-frozen-and-out-of-bounds 8},
   :clauses-that-hit-nothing [],
   :id :the-seat-does-not-stop,
-  :match-distribution {1 467, 2 25, 3 3},
+  :match-distribution {1 351, 2 3},
   :source
   "checks/zaif-task-a97J05.md:30-77 (verbatim copy of evidence e-cb139dba-b1db-4e85-9353-c9b8b1c8c62d, turn zai-turn-f1513520-b760-4b67-bbd1-b2941d3e0325, agent zai-4, 2026-08-06T15:26:42Z)"}}

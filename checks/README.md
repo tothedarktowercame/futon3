@@ -1,5 +1,19 @@
 # `checks/` — derived behavioural witnesses over library edges
 
+## LA7 blind retrodiction constructor
+
+`construct_retrodiction_cascade.clj` constructs five independent cascades over
+the whole library from the statement-only packet `retrodiction-items.edn` and
+writes `retrodiction-cascade.edn`. Run it from `futon3` with:
+
+    clojure -Sdeps '{:paths ["checks" "."] :deps {babashka/fs {:mvn/version "0.5.25"}}}' \
+      -M -m construct-retrodiction-cascade
+
+Its ledger-row cue licence recomputes each statement digest and requires every
+cue to occur in that same statement. The packet contains no resolutions, so a
+resolution-derived cue cannot pass the licence. The artefact is for a different
+agent to compare with completed outcomes; this constructor enacts nothing.
+
 A flexiarg is **abstract** — a production rule at specification grain. Whether a
 `@how` edge actually holds is **derived**, not stored: a relation run forward
 against stated facts, in the third verification layer of

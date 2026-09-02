@@ -107,7 +107,7 @@
 ;; ---------------------------------------------------------------------------
 
 (defn ordered-members
-  "`fo/ordered` over a finished CascadeState: the members in precedence order,
+  "`fo/ordered` (find_organise.clj:382) over a finished CascadeState: the members in precedence order,
    least precedence number FIRST.  This vector is what the actuator folds, and
    `futon2/src/ants/cyber.clj`'s `ordered-members` recomputes it from the same
    two fields rather than trusting this one -- the artefact carries both so a

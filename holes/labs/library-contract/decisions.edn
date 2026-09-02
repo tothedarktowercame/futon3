@@ -256,7 +256,7 @@
      :cost "The fold runs the precedence list in the opposite direction from the way the list is read, so the code has to say why in a docstring rather than being obvious from its shape. A reader who takes the acceptance's two clauses literally -- fold in precedence order, merge-deep is last-wins -- will expect the other answer and has to be told."}
     {:arm :last-in-precedence-order-wins
      :form "`(apply merge-deep (map delta ordered))` -- the literal reading of the acceptance sentence."
-     :cost "It makes `attach` and `fire` read one field two ways. checks/find_organise.clj:396 `fire` sorts the rules by the cascade's precedence and takes the FIRST whose THEN yields, so precedence 1 is the rule that decides; under this arm precedence 1 would be the delta that LOSES every collision it is in. P-validated-R5's own argument for O4 (p4ng/app-snatch.tex:117-126) is that an-unmodelled-response-stops-the-line must be CONSULTED FIRST -- consulted first is what precedence means there."}
+     :cost "It makes `attach` and `fire` read one field two ways. checks/find_organise.clj:398 `fire` sorts the rules by the cascade's precedence and takes the FIRST whose THEN yields, so precedence 1 is the rule that decides; under this arm precedence 1 would be the delta that LOSES every collision it is in. P-validated-R5's own argument for O4 (p4ng/app-snatch.tex:117-126) is that an-unmodelled-response-stops-the-line must be CONSULTED FIRST -- consulted first is what precedence means there."}
     {:arm :refuse-to-resolve
      :form "throw on a contended key; require the cascade to carry an explicit per-key resolution before it can be attached."
      :cost "futon2/holes/cascade-ants.edn:148 says composition needs a resolution rule and that last-write-wins is not one. This arm agrees and then supplies no rule, so NO cascade over library/ants can be attached at all, including the one the constructor built -- the row's second acceptance clause becomes unrunnable. It also puts the resolution somewhere other than the precedence field, which is what O4 says it must not be."}]
@@ -269,7 +269,7 @@
    :status :interim-adopted
    :at "2026-09-02"
    :raised-by :LA4
-   :question "Channel 2 of the ants patterns dispatches on a SINGULAR `:cyber-pattern :id` (ants.aif.pattern-sense/constraint-satisfied?:78, ants.aif.pattern-efe/pattern-action-risk:117, both `case` over five `:cyber/*` keys). futon2/holes/cascade-ants.edn:148 records this as the open hole: \"`:pattern/active` is singular -- one pattern at a time. A cascade is by definition composed.\" A cascade has no single id. What is channel 2 shown when a cascade is attached?"
+   :question "Channel 2 of the ants patterns dispatches on a SINGULAR `:cyber-pattern :id` (ants.aif.pattern-sense/constraint-satisfied?:75, ants.aif.pattern-efe/pattern-action-risk:113, both `case` over five `:cyber/*` keys). futon2/holes/cascade-ants.edn:148 records this as the open hole: \"`:pattern/active` is singular -- one pattern at a time. A cascade is by definition composed.\" A cascade has no single id. What is channel 2 shown when a cascade is attached?"
    :arms
    [{:arm :most-precedent-member-under-its-cyber-alias
      :form "`:cyber-pattern :id` = the `:cyber/*` alias of the cascade's most precedent member (cyber.clj `library-key->pattern-key`, derived from `pattern-key->filename` rather than written out again); the library id kept beside it as `:library-id`, and the whole cascade under :cascade/:ordered/:delta."

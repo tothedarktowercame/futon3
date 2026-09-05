@@ -1,0 +1,26 @@
+@flexiarg problems/r9-no-self-certification
+@title Problem node R9: No self-certification
+@keywords problem-node, R9, dossier, no-self-certification
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R9
+@why dossier authority: PROBLEMS-assurance-band-batch6.md, R9, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-assurance-band-batch6.md, R9)
+
+! conclusion: This is a problem-stating node for control-map node R9 (No self-certification): Control-stage R9 solves who may certify a result: the roster places **“No self-certification”** in ACT's assurance band (`p4ng/empirics-futon/control-stages.edn:43`; control-stage/catalogue numbering).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: Control-stage R9 solves who may certify a result: the roster places **“No self-certification”** in ACT's assurance band (`p4ng/empirics-futon/control-stages.edn:43`; control-stage/catalogue numbering). Catalogue R9 requires verdicts to move only on independently made, birth-tagged evidence, with untagged evidence counting as nothing (`p4ng/sec-catalog.tex:174-178`; catalogue R9). Contract R9 instead specifies four quantitative validation properties and records seven tests for them (`docs/futon-aif-completeness.md:243-258`; contract R9, a different node). The equation registry classifies control-stage R9 as plumbing and supplies no equation (`holes/labs/wm-contract/aif-equations.edn:472-473`; control-stage R9). The control-stage problem is therefore architectural independence: a claimant cannot manufacture the evidence or issue the check that closes its own claim. (source: futon2 holes labs wm-contract PROBLEMS-assurance-band-batch6.md, R9, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-assurance-band-batch6.md, section "## R9 — No self-certification", subsection "The problem it solves".

@@ -1,0 +1,26 @@
+@flexiarg problems/r4-forward-model
+@title Problem node R4: Forward model
+@keywords problem-node, R4, dossier, forward-model
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R4
+@why dossier authority: PROBLEMS-r4-r5-r6-pilot.md, R4, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-r4-r5-r6-pilot.md, R4)
+
+! conclusion: This is a problem-stating node for control-map node R4 (Forward model): R4 solves the problem of evaluating an action before enacting it: the control-stage roster places **“Forward model”** in EVALUATE (`p4ng/empirics-futon/control-stages.edn:21`; control-stage numbering), and the operational criterion requires a pure `(state, action) -> next-state-distribution` which **“the agent uses to score candidate actions before taking them”** (`docs/futon-aif-completeness.md:110-114`; contract R4).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: R4 solves the problem of evaluating an action before enacting it: the control-stage roster places **“Forward model”** in EVALUATE (`p4ng/empirics-futon/control-stages.edn:21`; control-stage numbering), and the operational criterion requires a pure `(state, action) -> next-state-distribution` which **“the agent uses to score candidate actions before taking them”** (`docs/futon-aif-completeness.md:110-114`; contract R4). The catalogue states the maintenance and fidelity problem more strongly: **“two implementations of the same dynamics is two places for bugs to hide”**, so both should call one pure deterministic dynamics kernel and the predictor alone should add uncertainty (`p4ng/sec-catalog.tex:204`; catalogue R4; the current paragraph has no `pat:r4` label). The equation registry gives the object that such evaluation must produce: **“Q(o|pi) := sum_s A(o|s) Q(s|pi)”**, with state rolled forward from `mu` through `B` over depth `T` (`holes/labs/wm-contract/aif-equations.edn:111-115`; control-stage R4). Thus the node's problem is not merely forecasting a channel delta: it is constructing a policy-conditioned outcome distribution from the current belief and the declared observation and transition models, while ensuring the live and predicted dynamics cannot silently become different programs. (source: futon2 holes labs wm-contract PROBLEMS-r4-r5-r6-pilot.md, R4, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-r4-r5-r6-pilot.md, section "## R4 — Forward model", subsection "The problem it solves".

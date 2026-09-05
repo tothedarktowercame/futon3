@@ -1,0 +1,26 @@
+@flexiarg problems/r8-present-fit-mismatch
+@title Problem node R8: Present-fit mismatch
+@keywords problem-node, R8, dossier, present-fit-mismatch
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R8
+@why dossier authority: PROBLEMS-r2-r8-r7-batch2.md, R8, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-r2-r8-r7-batch2.md, R8)
+
+! conclusion: This is a problem-stating node for control-map node R8 (Present-fit mismatch): R8 solves how the loop exposes whether its present belief explains the evidence: the roster places **“Present-fit mismatch”** in PERCEIVE (`p4ng/empirics-futon/control-stages.edn:16`; control-stage numbering).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: R8 solves how the loop exposes whether its present belief explains the evidence: the roster places **“Present-fit mismatch”** in PERCEIVE (`p4ng/empirics-futon/control-stages.edn:16`; control-stage numbering). The catalogue requires **“a single number, comparable across time”**, computed only from belief, observation, and precision, because action scores concern imagined futures rather than present fit (`p4ng/sec-catalog.tex:202`; catalogue R8). The operational contract locates that quantity in a reconstructable per-tick record containing pre-belief, observation, errors, post-belief, candidates, score terms, choice, temperature, and F (`docs/futon-aif-completeness.md:226-239`; contract R8). The registry separates the computations: `eps_k := o_k - mu_k`, and `F = 1/2 * mean_k (Pi_k eps_k^2)` (`holes/labs/wm-contract/aif-equations.edn:77-94`; control-stage R8). R8's problem is therefore to compute present mismatch independently of prospective policy value and surface enough provenance every tick for an observer to reconstruct it. (source: futon2 holes labs wm-contract PROBLEMS-r2-r8-r7-batch2.md, R8, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-r2-r8-r7-batch2.md, section "## R8 — Present-fit mismatch", subsection "The problem it solves".

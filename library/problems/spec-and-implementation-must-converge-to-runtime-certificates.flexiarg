@@ -1,0 +1,25 @@
+@flexiarg problems/spec-and-implementation-must-converge-to-runtime-certificates
+@title Problem node: spec and implementation must converge into runtime certificates
+@keywords problem-node, convergence, runtime-certificates, lean-completion, name-discipline, leading-leg
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@why ruling authority: futon2 holes labs wm-contract EPIC-run-era.md, The convergence ruling (Joe, 2026-09-05); no library pattern grounds this node
+@how no mechanism claimed at problem grain; the ruling's legs are Lean completion, name discipline, leading-leg readiness, runtime certificates
+
+! conclusion: This is a problem-stating node: the Lean material and the implementation must converge into a form where run-time certificates can show that the actual implementation's behaviour matches the intended one.
+
+  + context: Minted by library-loop row L5 from EPIC-run-era.md; it exists so @why edges from convergence/certificate patterns have a problem node to land on.
+
+  + IF:
+    The spec and the implementation each move, at different speeds, over the same theory.
+
+  + HOWEVER:
+    The problem, per the ruling (Joe, verbatim, 2026-09-05): "the first order of business as I see it is to get the lean material complete with regard to our implementation of the theory, keeping distinct variable names clearly distinct, and where necessary indexing the implementation by a readiness level (e.g. if cascades need work, we could have the implementation run ahead of the spec or the spec run ahead of the implementation, but both need to converge into a form where run-time certificates can be provided showing that the actual implementation's behaviour matches the intended one)". Without that convergence there is no artifact against which behaviour-matches-intent can ever be certified. (source: futon2 holes labs wm-contract EPIC-run-era.md, The convergence ruling, 2026-09-05)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer spec/implementation convergence; solving it is F8's job, not this node's.
+
+  + BECAUSE:
+    Two moving artifacts with distinct names drifting unchecked can each be individually correct and jointly uncertifiable.
+    + evidence: futon2 holes labs wm-contract EPIC-run-era.md, "## The convergence ruling (Joe, 2026-09-05) — F8 sharpened: Lean completion, name discipline, leading-leg readiness, runtime certificates".

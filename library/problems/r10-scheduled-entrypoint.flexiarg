@@ -1,0 +1,26 @@
+@flexiarg problems/r10-scheduled-entrypoint
+@title Problem node R10: Scheduled entrypoint
+@keywords problem-node, R10, dossier, scheduled-entrypoint
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R10
+@why dossier authority: PROBLEMS-assurance-band-batch6.md, R10, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-assurance-band-batch6.md, R10)
+
+! conclusion: This is a problem-stating node for control-map node R10 (Scheduled entrypoint): R10 solves unattended liveness: the roster places **“Scheduled entrypoint”** in PERCEIVE's assurance band (`control-stages.edn:39`; control-stage numbering).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: R10 solves unattended liveness: the roster places **“Scheduled entrypoint”** in PERCEIVE's assurance band (`control-stages.edn:39`; control-stage numbering). Contract R10 requires recurring execution without operator intervention plus a queryable trace (`docs/futon-aif-completeness.md:260-268`; contract R10). Catalogue R10 sharpens liveness to observable state change, not a scheduler firing or painting green no-op rows (`p4ng/sec-catalog.tex:156-158`; catalogue R10). The equation registry gives R10 no equation and classifies it as plumbing (`aif-equations.edn:472-473`; control-stage R10). R10 therefore solves repeatable entry into perception while refusing to confuse wakeups with useful work. (source: futon2 holes labs wm-contract PROBLEMS-assurance-band-batch6.md, R10, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-assurance-band-batch6.md, section "## R10 — Scheduled entrypoint", subsection "The problem it solves".

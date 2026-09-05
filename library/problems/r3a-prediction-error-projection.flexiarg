@@ -1,0 +1,26 @@
+@flexiarg problems/r3a-prediction-error-projection
+@title Problem node R3a: Prediction-error projection
+@keywords problem-node, R3a, dossier, prediction-error-projection
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R3a
+@why dossier authority: PROBLEMS-r1-r3-r3a-batch3.md, R3a, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-r1-r3-r3a-batch3.md, R3a)
+
+! conclusion: This is a problem-stating node for control-map node R3a (Prediction-error projection): R3a solves the join between an observation and the belief-derived prediction it can contradict: the roster places **“Prediction-error projection”** in BELIEVE and types it `:mediator` (`p4ng/empirics-futon/control-stages.edn:19`; control-stage numbering).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: R3a solves the join between an observation and the belief-derived prediction it can contradict: the roster places **“Prediction-error projection”** in BELIEVE and types it `:mediator` (`p4ng/empirics-futon/control-stages.edn:19`; control-stage numbering). Its placement basis says it **“reads the BELIEF and not only the world”**, is recomputed inside the R3 micro-step as belief moves, and has R7 precision update as its measured consumer (`p4ng/empirics-futon/control-stages.edn:19`; control-stage R3a basis). The R3 operational section names prediction error per channel as its first sub-property and reports four likelihood-backed channels (`docs/futon-aif-completeness.md:80-98`; contract R3 sub-property, not a standalone R3a criterion). The equation registry assigns `eps_k := o_k - mu_k` to R8 rather than R3a (`holes/labs/wm-contract/aif-equations.edn:77-80`; control-stage R8 equation ownership), so R3a is the runtime projection mediator and not a second owner of `eps`. There is no catalogue R3a paragraph or standalone contract R3a row; this dossier does not infer one from neighbouring patterns. (source: futon2 holes labs wm-contract PROBLEMS-r1-r3-r3a-batch3.md, R3a, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-r1-r3-r3a-batch3.md, section "## R3a — Prediction-error projection", subsection "The problem it solves".

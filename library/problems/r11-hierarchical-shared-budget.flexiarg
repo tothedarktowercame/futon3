@@ -1,0 +1,26 @@
+@flexiarg problems/r11-hierarchical-shared-budget
+@title Problem node R11: Hierarchical shared budget
+@keywords problem-node, R11, dossier, hierarchical-shared-budget
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R11
+@why dossier authority: PROBLEMS-r15-r11-r17-batch5.md, R11, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-r15-r11-r17-batch5.md, R11)
+
+! conclusion: This is a problem-stating node for control-map node R11 (Hierarchical shared budget): R11 solves how locally factored proposals share a finite resource without silently oversubscribing it: the roster places **“Hierarchical shared budget”** in SELECT (`p4ng/empirics-futon/control-stages.edn:27`; control-stage numbering).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: R11 solves how locally factored proposals share a finite resource without silently oversubscribing it: the roster places **“Hierarchical shared budget”** in SELECT (`p4ng/empirics-futon/control-stages.edn:27`; control-stage numbering). The operational criterion says that when multiple AIF agents act on shared state, a coordination layer must make their actions compose coherently (`docs/futon-aif-completeness.md:280-284`; contract R11). The catalogue makes the resource invariant concrete: local agents propose inside sub-budgets and a coordinator arbitrates the shared consumable budget at every level (`p4ng/sec-catalog.tex:243`; catalogue R11). The equation registry contains no R11 equation and classifies it as plumbing (`holes/labs/wm-contract/aif-equations.edn:472-473`; control-stage R11). R11 therefore solves globally feasible selection without erasing local factoring: compare cheap local and expensive strategic moves on one budget, refuse over-subscription, and record the arbitration boundary. (source: futon2 holes labs wm-contract PROBLEMS-r15-r11-r17-batch5.md, R11, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-r15-r11-r17-batch5.md, section "## R11 — Hierarchical shared budget", subsection "The problem it solves".

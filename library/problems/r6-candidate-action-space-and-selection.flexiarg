@@ -1,0 +1,26 @@
+@flexiarg problems/r6-candidate-action-space-and-selection
+@title Problem node R6: Candidate action space and selection
+@keywords problem-node, R6, dossier, candidate-action-space-and-selection
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R6
+@why dossier authority: PROBLEMS-r4-r5-r6-pilot.md, R6, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-r4-r5-r6-pilot.md, R6)
+
+! conclusion: This is a problem-stating node for control-map node R6 (Candidate action space and selection): Control-stage R6 occupies SELECT and is labelled **“Candidate action space”** (`p4ng/empirics-futon/control-stages.edn:23`; control-stage numbering), although the original contract R6 criterion is the adjacent operation: softmax selection with temperature and an abstain branch, where **“the agent declines to act”** under too much predictive uncertainty (`docs/futon-aif-completeness.md:147-157`; contract R6).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: Control-stage R6 occupies SELECT and is labelled **“Candidate action space”** (`p4ng/empirics-futon/control-stages.edn:23`; control-stage numbering), although the original contract R6 criterion is the adjacent operation: softmax selection with temperature and an abstain branch, where **“the agent declines to act”** under too much predictive uncertainty (`docs/futon-aif-completeness.md:147-157`; contract R6). Catalogue R6 states the domain problem: an unrestricted menu makes evaluation unstructured and **“selection is dominated by recency”**, so retrieval and gates must construct a bounded set of pattern IDs with explicit inclusion and exclusion reasons (`p4ng/sec-catalog.tex:239`; catalogue R6). The equation registry contains both halves: `pi` ranges over the candidate action space (`holes/labs/wm-contract/aif-equations.edn:143-145`; control-stage R6), and the posterior is `softmax(ln E(pi) - G(pi)/tau - F_pi(pi))` (`holes/labs/wm-contract/aif-equations.edn:152-157`; control-stage R6). The node therefore solves formation of a meaningful comparison set and selection from it, including the ability to decline when that set does not support a warranted choice; treating either half alone as the whole R6 problem hides the concordance mismatch. (source: futon2 holes labs wm-contract PROBLEMS-r4-r5-r6-pilot.md, R6, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-r4-r5-r6-pilot.md, section "## R6 — Candidate action space and selection", subsection "The problem it solves".

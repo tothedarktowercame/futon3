@@ -1,0 +1,26 @@
+@flexiarg problems/r16-grounded-actuation
+@title Problem node R16: Grounded actuation
+@keywords problem-node, R16, dossier, grounded-actuation
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R16
+@why dossier authority: PROBLEMS-r16-r13-r14-batch4.md, R16, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-r16-r13-r14-batch4.md, R16)
+
+! conclusion: This is a problem-stating node for control-map node R16 (Grounded actuation): R16 solves what makes a selected action an intervention rather than another internal calculation: the roster places **“Grounded actuation”** in ACT (`p4ng/empirics-futon/control-stages.edn:28-31`; control-stage numbering).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: R16 solves what makes a selected action an intervention rather than another internal calculation: the roster places **“Grounded actuation”** in ACT (`p4ng/empirics-futon/control-stages.edn:28-31`; control-stage numbering). The operational criterion requires the loop to **“act → observe”** such that the consequence feeds the next belief, with consent and act-gate recorded (`docs/futon-aif-completeness.md:441-460`; contract R16). The catalogue insists that closure requires a **“typed, ungameable witness to a substrate outside the model”**, because replaying the model's own construction is re-observation, not action (`p4ng/sec-catalog.tex:311`; catalogue R16). The equation registry gives the selected action as `u_t := argmax_u sum_pi delta(u, pi_t) Q(pi)` and notes that enactment is the first passing act gate, not merely the recorded selection (`holes/labs/wm-contract/aif-equations.edn:158-161`; control-stage R16). R16 therefore solves causal closure: a warranted choice must cross a recorded gate, change an external substrate, return independently checkable evidence, and alter what the next tick believes. (source: futon2 holes labs wm-contract PROBLEMS-r16-r13-r14-batch4.md, R16, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-r16-r13-r14-batch4.md, section "## R16 — Grounded actuation", subsection "The problem it solves".

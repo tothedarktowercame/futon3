@@ -1,0 +1,26 @@
+@flexiarg problems/r20-interoceptive-tripwires
+@title Problem node R20: Interoceptive tripwires
+@keywords problem-node, R20, dossier, interoceptive-tripwires
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R20
+@why dossier authority: PROBLEMS-assurance-band-batch6.md, R20, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-assurance-band-batch6.md, R20)
+
+! conclusion: This is a problem-stating node for control-map node R20 (Interoceptive tripwires): R20 solves observation of the machine's own failure trajectories: the roster places **“Interoceptive tripwires”** in EVALUATE's assurance band (`control-stages.edn:41`; control-stage/catalogue numbering).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: R20 solves observation of the machine's own failure trajectories: the roster places **“Interoceptive tripwires”** in EVALUATE's assurance band (`control-stages.edn:41`; control-stage/catalogue numbering). Catalogue R20 requires invariant tripwires around live phase boundaries because task-level observation cannot see wedges, livelocks, mixed code images, or lost wakes (`p4ng/sec-catalog.tex:369`; catalogue R20). The completeness contract has no R20 criterion; the concordance marks R20 native to the catalogue (`p4ng/R-concordance.md:41`; explicit missing contract source). The equation registry lists R20 as plumbing, not an equation-bearing AIF quantity (`aif-equations.edn:472-473`; control-stage R20). R20 therefore solves fail-closed self-observation: detect invalid machine trajectories, record the refusal, park, and surface the condition rather than narrating it forever. (source: futon2 holes labs wm-contract PROBLEMS-assurance-band-batch6.md, R20, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-assurance-band-batch6.md, section "## R20 — Interoceptive tripwires", subsection "The problem it solves".

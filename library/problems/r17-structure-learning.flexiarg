@@ -1,0 +1,26 @@
+@flexiarg problems/r17-structure-learning
+@title Problem node R17: Structure learning
+@keywords problem-node, R17, dossier, structure-learning
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R17
+@why dossier authority: PROBLEMS-r15-r11-r17-batch5.md, R17, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-r15-r11-r17-batch5.md, R17)
+
+! conclusion: This is a problem-stating node for control-map node R17 (Structure learning): R17 solves changing the model's structure rather than merely sharpening fixed parameters: the roster places **“Structure learning”** in SELECT's assurance band (`p4ng/empirics-futon/control-stages.edn:42`; control-stage numbering).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: R17 solves changing the model's structure rather than merely sharpening fixed parameters: the roster places **“Structure learning”** in SELECT's assurance band (`p4ng/empirics-futon/control-stages.edn:42`; control-stage numbering). The operational criterion requires a slow loop that proposes structural additions and accepts them by expected model-evidence gain, recording the result as a morphogenesis event (`docs/futon-aif-completeness.md:462-467`; contract R17). The catalogue's base R17 instead states Bayesian Model Reduction: accumulated counts are rescored under a simpler model, and a merge or prune is accepted only at a declared evidence threshold (`p4ng/sec-catalog.tex:340`; catalogue R17). The equation registry declares both Dirichlet accumulation `a-conc` and model-evidence change `Delta-F`, with offline BMR implementing the latter (`holes/labs/wm-contract/aif-equations.edn:162-173`; control-stage R17). R17 therefore solves evidence-governed structural change: proposals may generate candidate additions or reductions, but recorded model evidence—not likeness or the proposer itself—must decide acceptance. (source: futon2 holes labs wm-contract PROBLEMS-r15-r11-r17-batch5.md, R17, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-r15-r11-r17-batch5.md, section "## R17 — Structure learning", subsection "The problem it solves".

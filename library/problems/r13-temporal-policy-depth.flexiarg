@@ -1,0 +1,26 @@
+@flexiarg problems/r13-temporal-policy-depth
+@title Problem node R13: Temporal policy depth
+@keywords problem-node, R13, dossier, temporal-policy-depth
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R13
+@why dossier authority: PROBLEMS-r16-r13-r14-batch4.md, R13, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-r16-r13-r14-batch4.md, R13)
+
+! conclusion: This is a problem-stating node for control-map node R13 (Temporal policy depth): R13 solves how delayed consequences can outrank a greedy first move: the roster places **“Temporal policy depth”** in SELECT (`p4ng/empirics-futon/control-stages.edn:24`; control-stage numbering).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: R13 solves how delayed consequences can outrank a greedy first move: the roster places **“Temporal policy depth”** in SELECT (`p4ng/empirics-futon/control-stages.edn:24`; control-stage numbering). The operational criterion requires genuine multi-step `G(pi)` and a witness where a multi-step policy beats the one-step choice (`docs/futon-aif-completeness.md:302-312`; contract R13). The catalogue states the invariant plainly: **“the thing being scored is the cascade, not its first move”**, with later costs discounted over a horizon greater than one (`p4ng/sec-catalog.tex:256`; catalogue R13). The equation registry defines `T` as the temporal policy depth bounding the sums in `Q(o|pi)` and `G`, with runtime horizons supplied by the WM and rollout (`holes/labs/wm-contract/aif-equations.edn:146-148`; control-stage R13). R13 therefore solves policy adequacy across time: represent a trajectory, propagate predictions through it, accumulate discounted value, and demonstrate that depth can change the preferred choice. (source: futon2 holes labs wm-contract PROBLEMS-r16-r13-r14-batch4.md, R13, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-r16-r13-r14-batch4.md, section "## R13 — Temporal policy depth", subsection "The problem it solves".

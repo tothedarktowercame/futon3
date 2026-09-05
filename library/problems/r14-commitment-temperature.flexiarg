@@ -1,0 +1,26 @@
+@flexiarg problems/r14-commitment-temperature
+@title Problem node R14: Commitment temperature
+@keywords problem-node, R14, dossier, commitment-temperature
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R14
+@why dossier authority: PROBLEMS-r16-r13-r14-batch4.md, R14, The problem it solves (no library pattern grounds this node; its authority is the recorded dossier)
+@how no mechanism claimed at problem grain; what solving requires is the dossier's residual-problems list (source: futon2 holes labs wm-contract PROBLEMS-r16-r13-r14-batch4.md, R14)
+
+! conclusion: This is a problem-stating node for control-map node R14 (Commitment temperature): R14 solves how operational confidence controls commitment without changing the underlying value model: the roster places **“Commitment temperature”** in SELECT (`p4ng/empirics-futon/control-stages.edn:25`; control-stage numbering).
+
+  + context: Minted by library-loop row L5 from the twenty-node problem dossiers; it exists so @why edges from mechanism patterns have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it answers the problem this node states.
+
+  + HOWEVER:
+    The problem, verbatim from the dossier: R14 solves how operational confidence controls commitment without changing the underlying value model: the roster places **“Commitment temperature”** in SELECT (`p4ng/empirics-futon/control-stages.edn:25`; control-stage numbering). The operational criterion identifies canonical policy precision `gamma`, inferred from realized outcomes, and records the runtime relationship `tau_eff = tau_spread / gamma` (`docs/futon-aif-completeness.md:407-432`; contract R14). The catalogue requires an explicit dial coupled to pressure signals so the system neither thrashes nor tunnels, preserving the invariant that **“exploration is a dial, not a random number generator buried in the selector”** (`p4ng/sec-catalog.tex:241`; catalogue R14). The equation registry defines `tau` as commitment temperature, the inverse of policy-selection precision, and points to the effective-temperature runtime (`holes/labs/wm-contract/aif-equations.edn:149-151`; control-stage R14). R14 therefore solves calibrated decisiveness: outcome-derived confidence and current pressure should sharpen or relax selection through an explicit, inspectable quantity. (source: futon2 holes labs wm-contract PROBLEMS-r16-r13-r14-batch4.md, R14, The problem it solves)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer it; solving the problem itself is scoped by the dossier's residual-problems list, not by this node.
+
+  + BECAUSE:
+    The census (library-loop L1) found only six problem-stating nodes for 1256 patterns, so most @why edges had nothing to land on; minting the dossier problems as nodes is the recorded-corpus repair.
+    + evidence: futon2 holes labs wm-contract PROBLEMS-r16-r13-r14-batch4.md, section "## R14 — Commitment temperature", subsection "The problem it solves".

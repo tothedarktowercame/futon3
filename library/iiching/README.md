@@ -19,4 +19,6 @@ Workflow
   in `NEXT-STEPS`.
 
 Template
-- Use `TEMPLATE.flexiarg` for new entries.
+- Copy `TEMPLATE.flexiarg.txt` when creating a new `.flexiarg` entry. The
+  template keeps the `.txt` suffix so library censuses do not count it as a
+  pattern.

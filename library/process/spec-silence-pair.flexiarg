@@ -1,0 +1,28 @@
+@flexiarg process/spec-silence-pair
+@title T4: The Spec-Silence Pair (Drift into Silence; Inference from Absence)
+@keywords trap, T4, T4a, T4b, silence, absence-claim, search-trail
+@audience spec authors, agents commissioning deletions
+@tone plain
+@style pattern
+@why war-room/wr-9-bites-empirical-or-logical
+@problem P-assured-process.md S1: handoff machinery exists un-assured — conventions in prose, not typed objects any checker refuses on
+@how an absence claim carries its search: every not-found records the exact searches enumerated, and a grep never licenses a deletion
+
+! conclusion: Reading a specification's silence as content fails in both directions: unspecified behaviour accretes (T4a), and behaviour is deleted on the grounds that the spec does not mention it (T4b). The repair is binding: an absence claim carries its search, or it is a T4b violation — "not established" with the search trail is a finding; "absent" without a search is an inference.
+
+  + context: Specifications and the agents who act on them. Catalogued as T4 (T4a/T4b) in N-process-trap-recording-conventions section 1.
+
+  + IF:
+    An actor must decide what a specification permits, and the spec says nothing about the case at hand.
+
+  + HOWEVER:
+    Catching one half of the pair disposes people toward the other: those burned by drift read prohibitions into silence, those burned by over-deletion let silence accrete.
+    + VIOLATION (APM): claude-7 asserted "park is reachable from exactly one place" from a grep and commissioned deleting twelve code paths; codex-9 refused — the two park theorems are local to projectionRepairExhaustionSuccessor and prove nothing about other paths. A grep shows what a spec contains, never what it forbids.
+
+  + THEN:
+    Record every absence claim with the exact searches that failed (the U54 census form: cwd NOT FOUND with searches enumerated; the DRIFT account's not-established links with search trails); refuse deletions whose warrant is a containment search; treat unspecified behaviour as a spec finding to route to a decision, not a licence.
+    + REPAIR: the conventions note's binding rule, adopted verbatim from the WM side.
+
+  + BECAUSE:
+    Silence is a property of the spec's coverage, not of the world; acting on it converts an unknown into a false known.
+    + evidence: N-process-trap-recording-conventions.md section 1, T4, the codex-9 refusal receipt plus the two WM recording forms. Authority grounding: WR-9, bites empirical or logical — an absence claim without a search is neither.

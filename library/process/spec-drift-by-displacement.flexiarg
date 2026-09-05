@@ -1,0 +1,29 @@
+@flexiarg process/spec-drift-by-displacement
+@title T2: Spec or Plan Drift by Displacement, with No Decision
+@keywords trap, T2, drift, displacement, spec-drift, jurisdictional-gap
+@audience campaign operators, spec authors
+@tone plain
+@style pattern
+@why war-room/wr-8-typed-files-are-sources-of-truth
+@problem P-assured-process.md S1: the WM has no process spec at all yet, and the Lean spec precedent lost jurisdiction over failure paths by running only at close
+@how a decision record authored by an actor before an operative artifact is replaced; checker jurisdiction over failure paths, not only success
+
+! conclusion: When an operative artifact is replaced by another without any actor deciding to replace it, the plan has drifted by displacement. Repair is not archaeology but a refusing decision record: nothing replaces a typed source of truth without an author-authored decision, and the checker must hold jurisdiction over failure, where the hotfixes accumulate.
+
+  + context: Dependency-ordered plans, Lean specifications, and any operative artifact others build against. Catalogued as T2 in N-process-trap-recording-conventions section 1.
+
+  + IF:
+    A spec or commissioned plan exists, and work continues beside it under a different, newer artifact.
+
+  + HOWEVER:
+    Archaeology finds momentum, seat deaths, and parked gates — no decision. The typed source of truth stops being one while still being cited as one.
+    + VIOLATION (WM): the commissioned spine-first dependency-ordered build (2026-08-30) was displaced by an automatable closure ledger with no actor-authored decision performing the replacement. Receipt: futon2 holes DRIFT-2026-09-05-account.md:125, via N-process-trap-recording-conventions.md T2.
+    + VIOLATION (APM): the Lean spec defines PhaseFailureClass and PhaseFailureDisposition with evidence-to-delayedRetry proven invalid, but the implementation grew a park sink across thirteen apparatus fault classes; claude-7 then added a FOURTH vocabulary (fault_taxonomy.clj) without reading the spec that had two — displacement committed by a well-intentioned repair.
+    + SUB-MECHANISM (T2a, jurisdictional gap): drift goes where the checker is not — APM's checker had jurisdiction over success and none over failure. When diagnosing drift, first ask which region no instrument covers.
+
+  + THEN:
+    Require an author-authored decision record before any operative artifact is replaced, and give the checker jurisdiction over failure paths as well as success paths; when diagnosing drift, locate the uncovered region before asking who decided what.
+
+  + BECAUSE:
+    Displacement is usually committed by repair, not by sabotage; only a refusing boundary between "the spec changed" and "a file changed" can tell them apart.
+    + evidence: N-process-trap-recording-conventions.md section 1, T2 and T2a, three receipts. Authority grounding: WR-8, typed files are sources of truth — the violation is precisely a typed file ceasing to be the source of truth without decision.

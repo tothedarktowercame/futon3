@@ -1,0 +1,28 @@
+@flexiarg process/reflexivity-failure-in-a-gate
+@title T5: Reflexivity Failure in a Gate
+@keywords trap, T5, reflexivity, self-certification, gate, exemption
+@audience checker authors
+@tone plain
+@style pattern
+@why war-room/wr-18-war-machine-is-demonstrated-not-hypothesised
+@problem P-assured-process.md S1 solved-field: every such gate satisfies its own property or records an exemption — T5 reflexivity is part of the model property, checked before running
+@how P-on-itself check: the gate's own tests must instantiate the property the gate enforces, or an exemption is recorded with author, date and rationale
+
+! conclusion: An instrument enforcing property P that does not itself satisfy P certifies nothing, including itself. Every gate must carry a P-on-itself check, or record an exemption with author, date and rationale — visible, not fake.
+
+  + context: Gates, validators, registries — anything whose job is refusal. Catalogued as T5 in N-process-trap-recording-conventions section 1.
+
+  + IF:
+    A checker exists to enforce a property on other artifacts.
+
+  + HOWEVER:
+    The checker's own foundation can quietly violate the very property it enforces.
+    + VIOLATION (APM): the two theorems establishing the native_decide rejection gate were themselves proved by native_decide — the gate's correctness rested on the axiom it exists to forbid. Repaired to by decide, depending on no axioms (apm-lean 3f071199).
+    + VIOLATION (WM): the F6 readiness registry must itself be rung-bearing: its validator refuses advancement without evidence, and the validator's own tests are the P-on-itself check — open, contributed as a live instance to fix.
+
+  + THEN:
+    Apply the binding rule: a gate enforcing P must satisfy P, or record an exemption with author, date and rationale. The gate's validation of itself is part of the gate, not an optional test.
+
+  + BECAUSE:
+    A gate that exempts itself silently is exactly the fake-done it exists to refuse, one level up; the exemption-with-rationale keeps the failure visible instead of laundered.
+    + evidence: N-process-trap-recording-conventions.md section 1, T5, two receipts (apm-lean 3f071199; the open F6 registry instance) and the binding rule. Authority grounding: WR-18, the war machine is demonstrated not hypothesised — a gate is demonstrated on itself.

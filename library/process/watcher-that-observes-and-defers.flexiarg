@@ -1,0 +1,27 @@
+@flexiarg process/watcher-that-observes-and-defers
+@title T8: Watcher that Observes and Defers
+@keywords trap, T8, watcher, deferral, escalation, narration
+@audience machine builders, watchdog authors
+@tone plain
+@style pattern
+@why war-room/wr-19-tension-must-generate-not-only-rank
+@problem P-assured-process.md S1 now-field: T8 has no WM instances today and no checker that would refuse one
+@how escalation with a budget: a watcher that defers must carry a bounded deferral count and escalate on exhaustion — observing without generating is refuseable
+
+! conclusion: A watcher that detects correctly, defers once, and then narrates forever is worse than no watcher, because it looks like supervision. Detection must generate action: deferral is budgeted, and exhaustion escalates.
+
+  + context: Babysitters, watchdogs, notification cooldowns. Catalogued as T8 in N-process-trap-recording-conventions section 1.
+
+  + IF:
+    A watcher notices a standing fault and hands it to another component once.
+
+  + HOWEVER:
+    If the other component never acts, the watcher's narration substitutes for supervision.
+    + VIOLATION (APM): the campaign babysitter logged REGULATOR NOT RUNNING WITH ACTIVE FRAME f85: deferring notification to the frame watchdog every 20 seconds for fourteen hours — roughly 2,500 times — having belled once; its cooldown would have permitted 42 further bells.
+
+  + THEN:
+    Give every deferral a count and a deadline; when the budget is spent the watcher escalates on its own channel rather than re-narrating; a watcher with no escalation route is listed as non-supervision, not deployed as supervision.
+
+  + BECAUSE:
+    Narration converts a standing fault into background noise that everyone, including the machine, learns to ignore; only generation changes the situation the watcher is watching.
+    + evidence: N-process-trap-recording-conventions.md section 1, T8, one receipt (the fourteen-hour deferral log). Authority grounding: WR-19, tension must generate not only rank — a watcher that observes without generating is a ranker of a fault it could act on.

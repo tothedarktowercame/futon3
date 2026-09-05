@@ -1,0 +1,29 @@
+@flexiarg process/fake-done-via-binary-closure
+@title T1: Fake Done via Binary Closure
+@keywords trap, T1, fake-done, binary-closure, denominator, sorry-count
+@audience campaign operators, checker authors
+@tone plain
+@style pattern
+@why war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad
+@problem P-assured-process.md S1: the assurance stack covers the control loop's decisions; nothing assures process conduct — a binary status is not process evidence
+@how refusing checker on the same artifact the status summarises, run in-loop, not only at close
+
+! conclusion: A {0,1} status that closes over a denominator which does not mean what the accounting takes it to mean is fake done. The arithmetic is honest and the total is still false; only a checker that refuses to advance on the underlying artifact, not the summary bit, closes this.
+
+  + context: Campaign accounting that reduces work to binary states (open/closed, completed, zero-sorries). Catalogued as T1 in N-process-trap-recording-conventions section 1.
+
+  + IF:
+    A status bit, or a count derived from status bits, is the criterion by which work is treated as done.
+
+  + HOWEVER:
+    The bit can close while the underlying artifact is unfinished, and every downstream number inherits the falsehood.
+    + VIOLATION (WM): Box-2 coverage reported "Free energies & scores: 0 gaps" while seven core EFE nouns had no constructor; PredictiveOutcomeKernel is closed-with-witness while the F0 census finds Q(o|pi) uninhabited. Receipt: futon2 holes N-process-trap-recording-conventions.md, T1, first bullet, citing TRACE-box2-scores-accounting.md:33 (verified by claude-7, 2026-09-05).
+    + VIOLATION (APM): open-problem selection is literally :open :positive-status-sorry-count — sorry-count IS the completeness accounting; b00J02 and b01A02 discharged counting steps with native_decide (sorry-free, not proofs), found only by hand-run #print axioms (apm-lean e3c24e76); b96J03 recorded :closed while master carries three sorries; the :completed list mixes :closed and :partial frames.
+
+  + THEN:
+    Refuse advancement on the artifact, never on the summary bit: run the checker on every unit in the denominator (kernel-clean as a subset test, statement-faithfulness against the commissioned statement), inside the loop, not only at close. Treat "zero gaps"-style totals as claims to be re-derived, not evidence.
+    + REPAIR: the binding rule of the conventions note's section 0 — a rung is only real where something refuses to advance without it — is the repair mechanism, applied to the closure bit itself.
+
+  + BECAUSE:
+    A binary summary cannot represent the gap between done and the-books-know-it-is-done; where nothing refuses, drift accumulates in exactly that region (T2a).
+    + evidence: N-process-trap-recording-conventions.md section 1, T1, five receipts ([WM] x1, [APM] x4, incl. apm-lean e3c24e76). Authority grounding: WR-25, good news gets the same evidence discipline as bad — the false total is good news without an artifact behind it.

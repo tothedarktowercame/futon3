@@ -1,0 +1,27 @@
+@flexiarg process/detection-wired-to-single-catastrophic-response
+@title T7: Detection Wired to a Single Catastrophic Response
+@keywords trap, T7, catastrophic-response, regulator-failed, escalation, response-diversity
+@audience machine builders, regulator authors
+@tone plain
+@style pattern
+@why war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch
+@problem P-assured-process.md S1 now-field: T7 has no WM instances today and no checker that would refuse one
+@how a typed cause-to-response mapping with more than one response class, and any durable disable carrying its re-arm condition in writing at the switch
+
+! conclusion: Excellent detection with one response, where the response is maximal, converts every correct detection into a campaign stop. The response layer must be typed and graduated, and any durable disable must carry its re-arm condition in writing at the switch.
+
+  + context: Regulators, watchdogs, campaign stops. Catalogued as T7 in N-process-trap-recording-conventions section 1.
+
+  + IF:
+    A monitor detects a real fault and the only wired consequence is the maximal one.
+
+  + HOWEVER:
+    Each individual detection is correct; the wiring is the defect.
+    + VIOLATION (APM): all four campaign stops carrying a structured cause were :integrity; none :substrate. :regulator-failed was hardcoded as integrity, so any tick returning ok false durably disabled the campaign — which is why roughly 84 sessions of agents each fixed a real bug and none fixed the machine.
+
+  + THEN:
+    Map causes to responses as typed transitions (repair, retry, degrade, stop), with stop reserved for causes that justify it; a durable disable carries its re-arm condition in writing at the switch, so the machine can come back without archaeology.
+
+  + BECAUSE:
+    A single maximal response makes the cost of reporting a fault higher than the cost of hiding it, and the machine then trains its operators to silence it.
+    + evidence: N-process-trap-recording-conventions.md section 1, T7, one receipt (the four :integrity stops and the hardcoded :regulator-failed). Authority grounding: WR-26, a capability switched off carries its re-arm condition in writing at the switch — the durable disable with no re-arm is the catastrophe.

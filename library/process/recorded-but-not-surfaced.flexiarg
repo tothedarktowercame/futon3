@@ -1,0 +1,28 @@
+@flexiarg process/recorded-but-not-surfaced
+@title T6: Recorded but Not Surfaced
+@keywords trap, T6, surfacing, audit-trail, parked-frames, observation-channel
+@audience machine builders, operators
+@tone plain
+@style pattern
+@why war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels
+@problem P-assured-process.md S1: handoff machinery exists un-assured; surfaced is a separate lifecycle stage from checked because T1 and T6 bite at both grains
+@how surfacing as a checked stage of the lifecycle, on a discharge channel the operator reads — not a field others may opt out of with bell-required=false
+
+! conclusion: A decision recorded honestly in a field designed for it that reaches no one is drift with an audit trail. Recording is not surfacing: the record must be pushed through a channel the operator consumes, and the push itself is checked, not assumed.
+
+  + context: Parked frames, decision records, evidence-string cultures. Catalogued as T6 in N-process-trap-recording-conventions section 1.
+
+  + IF:
+    A machine records decisions in structured fields, and delivery to humans is a flag on the record.
+
+  + HOWEVER:
+    The flag can say quiet, and the honest record then travels nowhere.
+    + VIOLATION (APM): fourteen parked frames in jit-all-open-v2 carried complete, well-formed decision records, and every one had bell-required=false; Joe learned frames were being parked at all a week later, from claude-7, not from the machine. Nine were flagged decision/apparatus-repair-required with a written recommended-route; none were executed.
+    + VIOLATION (WM): the REPORTED-NOT-REPAIRED evidence-string culture records honestly and surfaces only through claude-1's narration.
+
+  + THEN:
+    Make surfaced its own lifecycle rung (the conventions grammar: RECORDED then wired then validated — surfacing is part of wiring), on a designated discharge channel; a record that must reach someone refuses to close until the channel has carried it.
+
+  + BECAUSE:
+    The gap between the books knowing and any person knowing is where campaigns lose work while remaining audit-clean; the trail documents the loss rather than preventing it.
+    + evidence: N-process-trap-recording-conventions.md section 1, T6, two receipts. Authority grounding: WR-16, operationalised exploit loops are first-class observation channels — a decision that reaches no one is not yet an observation.

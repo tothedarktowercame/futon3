@@ -7,6 +7,8 @@
 
 @how aif/shared-kernel-predictive-forward-model
 @see-also aif/belief-aware-risk-term
+@why no matching problem dossier node (@holds-at absent among the twenty dossier nodes R1-R17, R20, TRACE); rationale not invented (L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@how own mechanism: Compose predictive-noise variance from named, domain-meaningful contributing sources, not from a single opaque σ². Each source maps to a structural feature of the candidate action. (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 ! conclusion: Compose predictive-noise variance from named, domain-meaningful contributing sources, not from a single opaque σ². Each source maps to a structural feature of the candidate action.
 
   + context: The Gaussian noise wrapper around a deterministic forward-model kernel needs to assign variance to its predictions. A single hardcoded σ² is operationally inflexible and analytically opaque — there's no way to ask *why* this candidate has high predictive uncertainty.

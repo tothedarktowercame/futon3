@@ -9,6 +9,8 @@
 @see-also aif/term-to-channel-traceability
 @see-also aif/evidence-precision-registry
 @why-posthoc aif/declare-the-conditioning
+@why no matching problem dossier node (@holds-at absent among the twenty dossier nodes R1-R17, R20, TRACE); rationale not invented (L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@how own mechanism: When a valuation's inputs are living documents, values drift with prose edits; date-stamp or content-hash the input at scoring time — the sensitivity is correct, the missing changelog is the defect. (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 ! conclusion: When a valuation's inputs are living documents, values drift with prose edits; date-stamp or content-hash the input at scoring time — the sensitivity is correct, the missing changelog is the defect.
 
   + context: Scores are computed from ψ/spec inputs assembled out of documents that humans and agents keep editing (titles, status lines, READMEs).

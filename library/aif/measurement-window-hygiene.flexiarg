@@ -7,6 +7,8 @@
 @style pattern
 
 @see-also aif/term-to-channel-traceability
+@why no matching problem dossier node (@holds-at absent among the twenty dossier nodes R1-R17, R20, TRACE); rationale not invented (L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@how own mechanism: To measure an action's effect on a system that drifts and settles over time, capture the BASELINE tight — right before the action, not before the preparatory work — and read the EFFECT settled — after the state stabilizes (≥2 consecutive reads agree within ε) — and EXCLUDE any pair where drift or tr (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 ! conclusion: To measure an action's effect on a system that drifts and settles over time, capture the BASELINE tight — right before the action, not before the preparatory work — and read the EFFECT settled — after the state stabilizes (≥2 consecutive reads agree within ε) — and EXCLUDE any pair where drift or transience confounds the window. A before/after number is only as good as the window it brackets.
 
   + context: You measure `effect = after − before` around an action, in a system whose state

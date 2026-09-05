@@ -8,6 +8,8 @@
 @style pattern
 
 @see-also war-machine/advanceability
+@why no matching problem dossier node (@holds-at absent among the twenty dossier nodes R1-R17, R20, TRACE); rationale not invented (L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@how own mechanism: In a self-modifying inference loop, gate each action CLASS with a per-class admissibility predicate (`can-propose?` / `action-admissible?`) checked BEFORE ranking. That predicate — not an ad-hoc loop guard — is the cycle-stopper that keeps self-modification recursion-safe. (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 ! conclusion: In a self-modifying inference loop, gate each action CLASS with a per-class admissibility predicate (`can-propose?` / `action-admissible?`) checked BEFORE ranking. That predicate — not an ad-hoc loop guard — is the cycle-stopper that keeps self-modification recursion-safe.
 
   + context: An AIF agent that can propose actions which modify its own action space, inventory, or goal (self-reference): extend the typed-edge inventory, deform the goal-structure, pursue a capability not on its pre-registered ascent.

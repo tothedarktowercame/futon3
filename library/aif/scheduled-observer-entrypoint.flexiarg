@@ -8,6 +8,8 @@
 
 @how aif/grounded-actuation-not-reobservation
 @see-also aif/interoceptive-tripwires
+@why R10 dossier problem: R10 solves unattended liveness: the roster places **“Scheduled entrypoint”** in PERCEIVE's assurance band (`control-stages.edn:39`; control-stage numbering). (source: futon2 holes labs wm-contract PROBLEMS-assurance-band-batch6.md, R10, The problem it solves; L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@how own mechanism: An AIF agent achieves "live operation" (R10) only when a scheduler drives ticks that change observable state. A scheduled no-op is not live operation — it is a disabled loop with a green light. (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 ! conclusion: An AIF agent achieves "live operation" (R10) only when a scheduler drives ticks that change observable state. A scheduled no-op is not live operation — it is a disabled loop with a green light.
 
   + context: R10 requires the agent to operate without operator intervention — a cron/scheduler fires ticks (observe → decide → act) on a timer, not only when hand-run. "Live" is meant to distinguish a running organism from a batch simulation.

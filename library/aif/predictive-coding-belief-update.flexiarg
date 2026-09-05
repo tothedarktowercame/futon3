@@ -9,6 +9,8 @@
 @see-also aif/predictive-entropy-as-ambiguity
 @see-also aif/evidence-precision-registry
 @see-also futon-theory/four-types
+@why R3 dossier problem: R3 solves how observations change belief without either overwriting it or letting it become immovable: the roster places **“Belief update”** in BELIEVE (`p4ng/empirics-futon/control-stages.edn:18`; control-stage numbering). (source: futon2 holes labs wm-contract PROBLEMS-r1-r3-r3a-batch3.md, R3, The problem it solves; L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@how own mechanism: Update beliefs via predictive-coding (μ ← μ + α·Π·ε) and evolve variance with a sensor-variance floor so uncertainty stays meaningful. (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 ! conclusion: Update beliefs via predictive-coding (μ ← μ + α·Π·ε) and evolve variance with a sensor-variance floor so uncertainty stays meaningful.
 
   + context: The agent receives an observation each tick and must integrate it into its belief state. The integration rule determines both mean trajectory and uncertainty trajectory.

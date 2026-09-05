@@ -8,7 +8,7 @@
 
 @see-also aif/expected-free-energy-scorecard
 @how aif/temporal-depth-beyond-greedy
-@why R4 dossier problem: R4 solves the problem of evaluating an action before enacting it: the control-stage roster places **“Forward model”** in EVALUATE (`p4ng/empirics-futon/control-stages.edn:21`; control-stage numbering), and the operational criterion requires a pure `(state, action) -> next-state-distribution` which * (source: futon2 holes labs wm-contract PROBLEMS-r4-r5-r6-pilot.md, R4, The problem it solves; L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@why R4 dossier problem: R4 solves the problem of evaluating an action before enacting it: the control-stage roster places **“Forward model”** in EVALUATE (`p4ng/empirics-futon/control-stages.edn:21`; control-stage numbering), and the operational criterion requires a pure `(state, action) -> next-state-distribution` which **“the agent uses to score candidate actions before taking them”** (`docs/futon-aif-completeness.md:110-114`; contract R4). (source: futon2 holes labs wm-contract PROBLEMS-r4-r5-r6-pilot.md, R4, The problem it solves; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 @how own mechanism: Extract the deterministic dynamics core into a pure shared kernel; have both the live step and the predictive forward model call into it. One implementation, two callers. (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 ! conclusion: Extract the deterministic dynamics core into a pure shared kernel; have both the live step and the predictive forward model call into it. One implementation, two callers.
 

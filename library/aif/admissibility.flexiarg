@@ -8,7 +8,7 @@
 @style pattern
 
 @see-also war-machine/advanceability
-@why no matching problem dossier node (@holds-at absent among the twenty dossier nodes R1-R17, R20, TRACE); rationale not invented (L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@why no matching problem dossier node (@holds-at absent; not among the twenty dossier nodes R1-R17, R20, TRACE). Negative claim per the committed check futon2 holes labs library-loop runs l3_no_dossier_check.py, receipt runs L3-no-dossier-check.edn (enumerates every aif pattern's @holds-at against the dossier node set extracted from PROBLEMS-*.md headings). Rationale not invented (L3 rationale-backfill pilot, zai-1, 2026-09-05)
 @how own mechanism: In a self-modifying inference loop, gate each action CLASS with a per-class admissibility predicate (`can-propose?` / `action-admissible?`) checked BEFORE ranking. That predicate — not an ad-hoc loop guard — is the cycle-stopper that keeps self-modification recursion-safe. (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 ! conclusion: In a self-modifying inference loop, gate each action CLASS with a per-class admissibility predicate (`can-propose?` / `action-admissible?`) checked BEFORE ranking. That predicate — not an ad-hoc loop guard — is the cycle-stopper that keeps self-modification recursion-safe.
 

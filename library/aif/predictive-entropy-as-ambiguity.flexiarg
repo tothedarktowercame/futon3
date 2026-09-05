@@ -6,7 +6,7 @@
 @style pattern
 
 @how aif/decomposed-prediction-noise
-@why no matching problem dossier node (@holds-at absent among the twenty dossier nodes R1-R17, R20, TRACE); rationale not invented (L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@why no matching problem dossier node (@holds-at absent; not among the twenty dossier nodes R1-R17, R20, TRACE). Negative claim per the committed check futon2 holes labs library-loop runs l3_no_dossier_check.py, receipt runs L3-no-dossier-check.edn (enumerates every aif pattern's @holds-at against the dossier node set extracted from PROBLEMS-*.md headings). Rationale not invented (L3 rationale-backfill pilot, zai-1, 2026-09-05)
 @how own mechanism: Compute the epistemic (ambiguity) EFE term as the entropy of the predictive observation distribution under each candidate. For a diagonal-covariance Gaussian, this simplifies to `0.5 × log(σ²_D × σ²_A)` (dropping additive constants that don't affect candidate ranking). (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 ! conclusion: Compute the epistemic (ambiguity) EFE term as the entropy of the predictive observation distribution under each candidate. For a diagonal-covariance Gaussian, this simplifies to `0.5 × log(σ²_D × σ²_A)` (dropping additive constants that don't affect candidate ranking).
 

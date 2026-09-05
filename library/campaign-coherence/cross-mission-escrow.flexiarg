@@ -7,6 +7,8 @@
 @references-extra ["Lifecycle: ~/code/futon4/holes/campaign-lifecycle.md §ESCROW + the Escrow Ledger" "Generalises HEAD-as-escrow (mission-level, war-bulletin-9 WR-15) to the cross-mission case" "First ledger: Campaign-substrate-completion — M-aif2 + M-differentiable-code hold requirements on M-substrate-metric"]
 @tone declarative
 @style pattern
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/L9-no-source-check.edn. Rationale not invented (L9 rationale-backfill, zai-1, 2026-09-05)
+@how own mechanism: Register each cross-Mission dependency on a shared standard as a **held requirement** that releases in two steps — `held → contract-released` (on STANDARD-VERIFY) `→ satisfied` (on delivery) — so dependent work is *named but not built on sand*, and the requirement neither blocks the cluster nor silently disappears. (source: this pattern's ! conclusion line; L9 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion: Register each cross-Mission dependency on a shared standard as a **held requirement** that releases in two steps — `held → contract-released` (on STANDARD-VERIFY) `→ satisfied` (on delivery) — so dependent work is *named but not built on sand*, and the requirement neither blocks the cluster nor silently disappears.
 

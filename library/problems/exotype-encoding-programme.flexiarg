@@ -1,0 +1,25 @@
+@flexiarg problems/exotype-encoding-programme
+@title Problem node: the 256 exotypes need explicit, inspectable records
+@keywords problem-node, exotype, encoding, iiching, section-grain, inspectability
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@why section authority: library/iiching/README.md goal sentence (quoted below; no library pattern grounds this node -- its authority is the section's own recorded goal)
+@how no mechanism claimed at problem grain; the programme's mechanism is the encoding-field convention (@bits/@hex/@hamming-weight/@exotype-*) and the futon5 manifest/lift transcriptions named in the README's workflow
+
+! conclusion: This is a problem-stating node at section grain: the 256 8-bit exotypes exist as programme objects but had no explicit, searchable library records, so exotype knowledge was not concrete, inspectable, or comparable.
+
+  + context: Minted by library-loop row L15 per L11's reviewed recommendation (section-grain rationale for iiching, pattern-by-pattern deferred for iching). The section README states the goal: "This directory encodes the 256 8-bit exotypes (0-255) as explicit, named patterns. The goal is to make exotype knowledge concrete and inspectable, separate from the theory in `library/exotic`." (source: futon3 library/iiching/README.md, first paragraph)
+
+  + IF:
+    A programme defines 256 exotype objects and consumers need to find, compare, or lift them.
+
+  + HOWEVER:
+    Without one explicit record per exotype, the knowledge lives only in the manifest and lift registry (futon5 resources) -- present to the programme, invisible to the library; L11's triage found the 256 records share exactly this one rationale, with no per-record problem of their own.
+
+  + THEN:
+    This node is the landing point for the 256 shared @why edges from the exotype records (mechanical pass, row L15); per-record questions (lift rules, program semantics) route to the futon5 sources the README names, not to invention here.
+
+  + BECAUSE:
+    A section whose rationale is genuinely one sentence should carry one problem node, not 256 copies of it (L11's cost finding); this node makes that sentence a resolvable library id.
+    + evidence: futon3 library/iiching/README.md (goal sentence and workflow section); L11 triage runs/L11-iching-iiching-triage.md.

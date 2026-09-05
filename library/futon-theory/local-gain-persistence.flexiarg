@@ -7,6 +7,8 @@
 @factor Keen investigation (dhammavicaya)
 @references [futon-theory/interface-loop futon-theory/baldwin-cycle futon-theory/counter-ratchet futon-theory/stop-the-line]
 @references-extra ["Counter-ratchet: Key counts must not drop" "Local gain persistence: Capabilities must not silently appear/disappear" "Both prevent \"drift\" - unexplained changes in system state"]
+@why no problem-corpus source matched (@holds-at absent; no dossier, WR-ruling problem node, or L5 record node names this pattern's problem). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/L6-no-source-check.edn. Rationale not invented (L6 rationale-backfill, zai-1, 2026-09-05)
+@how own mechanism: LocalGainMustEitherPersistOrBeDeleted: For any interface loop that produces gain G: - Either G is assimilated (genotype updated, PROOF_COMMIT with evidence) - Or G is explicitly deleted (REMOVE_GAIN with reason) - Never: G exists only in runtime/phenotype (source: this pattern's ! conclusion line; L6 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion: LocalGainMustEitherPersistOrBeDeleted: For any interface loop that produces gain G: - Either G is assimilated (genotype updated, PROOF_COMMIT with evidence) - Or G is explicitly deleted (REMOVE_GAIN with reason) - Never: G exists only in runtime/phenotype
   Any functional gain introduced at an interface must either be assimilated

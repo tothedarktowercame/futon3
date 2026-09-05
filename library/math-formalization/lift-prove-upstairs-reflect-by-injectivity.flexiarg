@@ -10,7 +10,7 @@
 @examples b01A04
 @provenance case-1 compression pilot (2026-08-12): 5 marks across 3 independent zai-1 transcripts (3813, 3815, 3816 — mechanically verified); runner-graded "what would actually have helped at the stuck moment". Clears the >=3-transcript bar independently of the debrief.
 @review claude-2 2026-08-12 APPROVE. Transcript count verified, not asserted. @grade added (batch defect B1).
-@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems futon-theory] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/LL8-no-source-check.edn. Rationale not invented (L8 rationale-backfill, zai-1, 2026-09-05)
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems futon-theory] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/L8-no-source-check.edn. Rationale not invented (L8 rationale-backfill, zai-1, 2026-09-05)
 @how own mechanism: To prove an identity between subobjects-of-a-subobject, lift both sides into the ambient object with the library's lift/restrict API, prove the identity there where the full lattice API applies, and reflect the result back through injectivity of the lift. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:

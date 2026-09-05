@@ -5,7 +5,7 @@
 @tone procedural
 @difficulty advanced
 @see-also math-formalization-CA/measure-integration-api math-formalization-CA/lp-norm-comparison math-formalization/coercion-bridge
-@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems futon-theory] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/LL8-no-source-check.edn. Rationale not invented (L8 rationale-backfill, zai-1, 2026-09-05)
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems futon-theory] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/L8-no-source-check.edn. Rationale not invented (L8 rationale-backfill, zai-1, 2026-09-05)
 @how own mechanism: To prove or refute `MemLp f p μ` for a concrete power-law f (on ℕ with counting measure, or on ℝ with volume), do not reason about `eLpNorm` directly: rewrite with `integrable_norm_rpow_iff`, normalize the exponent with `(by fun_prop)` measurability and `ofReal`-positivity side goals, push the goal to the scalar library (`Real.summable_nat_rpow` on ℕ, `integrableOn_Ioi_rpow_iff` on ℝ), and settle the pure-real inequality on the exponent. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:

@@ -9,7 +9,7 @@
 @instantiates math-informal/construct-auxiliary-object
 @see-also math-formalization/compact-thickening-upgrades-pointwise-analyticity math-formalization/additive-principal-parts-from-order-germs
 @examples a95J04
-@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems futon-theory] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/LL8-no-source-check.edn. Rationale not invented (L8 rationale-backfill, zai-1, 2026-09-05)
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems futon-theory] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/L8-no-source-check.edn. Rationale not invented (L8 rationale-backfill, zai-1, 2026-09-05)
 @how own mechanism: A function that is `MeromorphicOn f D` may take arbitrary values at its removable points, so `AnalyticAt ℂ f z` — and any lemma asserting holomorphy of the raw `f` past a boundary — is false as stated. Pass to the normal form `toMeromorphicNFOn f D` first, transfer orders, and carry an `EqOn` with `f` on the region where `f` was already analytic. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:

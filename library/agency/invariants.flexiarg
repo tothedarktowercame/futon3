@@ -7,6 +7,8 @@
 @style pattern
 @references [futon-theory/agent-contract futon-theory/error-hierarchy storage/durability-first realtime/rendezvous-handshake realtime/liveness-heartbeats realtime/listener-leases p4ng/identifier-garden]
 @references-extra ["futon1a defines I0 (persistence), I1 (identity), I2 (integrity), I3 (hierarchy), I4 (debugging)." "Agency's A0-A5 are the inter-process analogue:" "I0 (persistence) maps to A0 (delivery) and A2 (atomicity): messages and state are durable." "I1 (identity) maps to A1 (identity): one agent, one routing path, self-attributed output." "I2 (integrity) maps to A2 (atomicity) and A5 (bounded): state transitions and resource lifetimes are consistent." "I3 (hierarchy) maps to A3 (hierarchy): errors surface at the correct layer." "I4 (debugging) maps to A4 (debugging): failures are diagnosable."]
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/L10-no-source-check.edn. Rationale not invented (L10 rationale-backfill, zai-1, 2026-09-05)
+@how own mechanism: Agency must uphold six invariants — delivery, identity, atomicity, error hierarchy, debugging, and bounded resources — analogous to the I0-I4 framework in futon1a; every feature built on Agency inherits these guarantees or is built on sand. (source: this pattern's ! conclusion line; L10 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion: Agency must uphold six invariants — delivery, identity, atomicity, error hierarchy, debugging, and bounded resources — analogous to the I0-I4 framework in futon1a; every feature built on Agency inherits these guarantees or is built on sand.
 

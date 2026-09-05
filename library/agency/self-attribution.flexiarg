@@ -6,6 +6,8 @@
 @tone foundational
 @style pattern
 @references [futon-theory/agent-contract agency/single-routing-authority]
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/L10-no-source-check.edn. Rationale not invented (L10 rationale-backfill, zai-1, 2026-09-05)
+@how own mechanism: An agent's output must be posted by the agent itself under its own identity; the server must never post on behalf of an agent.  A1-attribution: Every message posted to a shared channel under an agent's identity must originate from that agent's process. The server may not construct, transform, or relay agent output under the agent's identity. (source: this pattern's ! conclusion line; L10 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion: An agent's output must be posted by the agent itself under its own identity; the server must never post on behalf of an agent.  A1-attribution: Every message posted to a shared channel under an agent's identity must originate from that agent's process. The server may not construct, transform, or relay agent output under the agent's identity.
 

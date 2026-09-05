@@ -6,6 +6,8 @@
 @tone analytic-foundational
 @style pattern
 @references [storage/durability-first futon-theory/agent-contract]
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/L10-no-source-check.edn. Rationale not invented (L10 rationale-backfill, zai-1, 2026-09-05)
+@how own mechanism: Agent state transitions (registration, rollover, session update) must complete fully or fail without partial effects; corrupted or partial state must be detected and rejected, not silently accepted.  A2-atomicity: Every agent state transition either completes fully (all fields updated, persisted, and confirmed) or reverts to the prior state with an explicit error. No transition may leave state in a partially-updated condition. (source: this pattern's ! conclusion line; L10 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion: Agent state transitions (registration, rollover, session update) must complete fully or fail without partial effects; corrupted or partial state must be detected and rejected, not silently accepted.  A2-atomicity: Every agent state transition either completes fully (all fields updated, persisted, and confirmed) or reverts to the prior state with an explicit error. No transition may leave state in a partially-updated condition.
 

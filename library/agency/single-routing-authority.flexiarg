@@ -6,6 +6,8 @@
 @tone analytic-foundational
 @style pattern
 @references [futon-theory/agent-contract realtime/listener-leases]
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/L10-no-source-check.edn. Rationale not invented (L10 rationale-backfill, zai-1, 2026-09-05)
+@how own mechanism: Each agent-id must resolve to exactly one routing path at any given time; the routing authority must be a single source of truth, not a priority cascade across independent stores.  A1-identity: For any agent-id, at most one routing entry exists at any time. The entry specifies the authoritative transport, session-id, and connection handle. No other store may independently claim to route messages for that agent-id. (source: this pattern's ! conclusion line; L10 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion: Each agent-id must resolve to exactly one routing path at any given time; the routing authority must be a single source of truth, not a priority cascade across independent stores.  A1-identity: For any agent-id, at most one routing entry exists at any time. The entry specifies the authoritative transport, session-id, and connection handle. No other store may independently claim to route messages for that agent-id.
 

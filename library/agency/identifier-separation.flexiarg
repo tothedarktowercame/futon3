@@ -6,6 +6,8 @@
 @tone analytic-foundational
 @style pattern
 @references [p4ng/identifier-garden futon-theory/agent-contract agency/state-atomicity agency/single-routing-authority]
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/L10-no-source-check.edn. Rationale not invented (L10 rationale-backfill, zai-1, 2026-09-05)
+@how own mechanism: Never overload identifiers across layers; transport IDs (forum thread, MUSN session, WS connection) must not be stored or used as LLM resume/session IDs, and LLM session IDs must not be treated as transport addresses. (source: this pattern's ! conclusion line; L10 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion: Never overload identifiers across layers; transport IDs (forum thread, MUSN session, WS connection) must not be stored or used as LLM resume/session IDs, and LLM session IDs must not be treated as transport addresses.
 

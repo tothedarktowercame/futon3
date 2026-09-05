@@ -10,6 +10,7 @@
 @see-also aif/hierarchical-and-temporal-depth
 @why R13 dossier problem: R13 solves how delayed consequences can outrank a greedy first move: the roster places **“Temporal policy depth”** in SELECT (`p4ng/empirics-futon/control-stages.edn:24`; control-stage numbering). (source: futon2 holes labs wm-contract PROBLEMS-r16-r13-r14-batch4.md, R13, The problem it solves; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 @how own mechanism: Genuine planning (R15) requires evaluating policies G(π) over a horizon and separating timescales; a single rollout step demonstrates the machinery, not the depth. Depth-1 is reactive control wearing planning's clothes. (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@why problems/r13-temporal-policy-depth (L14 edge-resolution; basis: holds -- the problem node's own holds-at token covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
 ! conclusion: Genuine planning (R15) requires evaluating policies G(π) over a horizon and separating timescales; a single rollout step demonstrates the machinery, not the depth. Depth-1 is reactive control wearing planning's clothes.
 
   + context: R15 asks for hierarchical / temporal depth — the agent evaluates policies over a horizon of several ticks (not just the next action), and represents goals that span many ticks via a slow loop that sets priors for a fast loop.

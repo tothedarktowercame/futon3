@@ -11,6 +11,8 @@
 @see-also aif/evidence-precision-registry
 @why R6 dossier problem: Control-stage R6 occupies SELECT and is labelled **“Candidate action space”** (`p4ng/empirics-futon/control-stages.edn:23`; control-stage numbering), although the original contract R6 criterion is the adjacent operation: softmax selection with temperature and an abstain branch, where **“the agent declines to act”** under too much predictive uncertainty (`docs/futon-aif-completeness.md:147-157`; contract R6). (source: futon2 holes labs wm-contract PROBLEMS-r4-r5-r6-pilot.md, R6, The problem it solves; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 @how own mechanism: Treat action selection as choosing from a bounded candidate set of pattern IDs. (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@why problems/r6-candidate-action-space-and-selection (L14 edge-resolution; basis: holds -- the problem node's own holds-at token covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
+@why problems/tension-proposes-candidates (L14 edge-resolution; basis: holds -- the problem node's own holds-at token covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
 ! conclusion: Treat action selection as choosing from a bounded candidate set of pattern IDs.
 
   + context: Action selection in fulab often means selecting (and committing to) a pattern to apply next.

@@ -10,6 +10,8 @@
 @see-also aif/expected-free-energy-scorecard
 @why R14 dossier problem: R14 solves how operational confidence controls commitment without changing the underlying value model: the roster places **“Commitment temperature”** in SELECT (`p4ng/empirics-futon/control-stages.edn:25`; control-stage numbering). (source: futon2 holes labs wm-contract PROBLEMS-r16-r13-r14-batch4.md, R14, The problem it solves; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 @how own mechanism: Maintain a commitment temperature that modulates how strongly the policy commits to low-G choices. (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@why problems/commitment-temperature-is-instrumented-as-gain (L14 edge-resolution; basis: holds -- the problem node's own holds-at token covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
+@why problems/r14-commitment-temperature (L14 edge-resolution; basis: holds -- the problem node's own holds-at token covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
 ! conclusion: Maintain a commitment temperature that modulates how strongly the policy commits to low-G choices.
 
   + context: Even with identical scores, the agent sometimes should explore alternatives and other times should commit.

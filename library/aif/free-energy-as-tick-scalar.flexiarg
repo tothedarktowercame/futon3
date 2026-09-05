@@ -11,6 +11,8 @@
 @see-also aif/expected-free-energy-scorecard
 @why R8 dossier problem: R8 solves how the loop exposes whether its present belief explains the evidence: the roster places **“Present-fit mismatch”** in PERCEIVE (`p4ng/empirics-futon/control-stages.edn:16`; control-stage numbering). (source: futon2 holes labs wm-contract PROBLEMS-r2-r8-r7-batch2.md, R8, The problem it solves; L3 rationale-backfill pilot, zai-1, 2026-09-05)
 @how own mechanism: Compute and emit variational free energy F = 0.5 × mean(Π · ε²) per tick as a canonical scalar that summarises agent surprise. (source: this pattern's ! conclusion line; L3 rationale-backfill pilot, zai-1, 2026-09-05)
+@why problems/per-tick-mismatch-instruments-outer-loop-gain (L14 edge-resolution; basis: holds -- the problem node's own holds-at token covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
+@why problems/r8-present-fit-mismatch (L14 edge-resolution; basis: holds -- the problem node's own holds-at token covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
 ! conclusion: Compute and emit variational free energy F = 0.5 × mean(Π · ε²) per tick as a canonical scalar that summarises agent surprise.
 
   + context: AIF computes two distinct quantities. **G** (Expected Free Energy) is per-candidate-action, drives policy. **F** (Variational Free Energy) is per-tick, summarises how surprised the agent currently is by its observations. They are different objects; conflating them is a common documentation hazard.

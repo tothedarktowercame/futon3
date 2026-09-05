@@ -1,0 +1,27 @@
+@flexiarg problems/catalogue-r5-efe-label-auditability
+@title Problem node: every useful controller term being called EFE (catalogue R5)
+@keywords problem-node, R5, EFE, auditability, canonical-core, augmentation, catalogue
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@holds-at R5
+@why catalogue authority: p4ng/sec-catalog.tex paragraph R5 (pat:r5), IF/HOWEVER quoted verbatim with file:line; distinct from the dossier R5 node problems/r5-expected-free-energy-core, whose quoted problem is comparing policies by achievement and uncertainty -- this node is the catalogue's own tension, the auditability of the EFE label itself
+@how no mechanism claimed at problem grain; the catalogue's THEN names the mechanism (persist the canonical two-term core apart, admit engineering terms only as named augmentation reported beside it)
+
+! conclusion: This is a problem-stating node from the catalogue's own R5 paragraph: if every useful controller term is called EFE, tuning becomes indistinguishable from storytelling -- the canonical core must stay separable from engineering augmentations.
+
+  + context: Minted by library-loop row L16 from the sec-catalog pattern paragraphs. Duplicate check: the existing problems/r5-expected-free-energy-core quotes the dossier's problem (comparing predicted policies for what they achieve and leave uncertain); it does not state this node's problem (label auditability), so this node is not a duplicate.
+
+  + IF:
+    You want selection to balance canonical outcome risk and ambiguity with operational constraints.
+
+  + HOWEVER:
+    The catalogue's tension, verbatim: "If you want selection to balance canonical outcome risk and ambiguity with operational constraints. \textbf{However} calling every useful controller term ``EFE'' makes tuning indistinguishable from storytelling." (source: p4ng sec-catalog.tex:237, paragraph "Expected Free Energy Inside an Auditable Controller (R5)", label pat:r5)
+
+  + THEN:
+    This node is the landing point for @why edges from patterns that answer EFE-label auditability; the separating mechanism is the catalogue's THEN, not this node's to restate.
+
+  + BECAUSE:
+    A reader must be able to ask which part of a recommendation moved because of active-inference quantities and which because of an engineering control (the catalogue's Because clause, same paragraph).
+
+    + evidence: p4ng sec-catalog.tex:237 (pat:r5 paragraph, If/However/Then/Because); duplicate-check receipt runs/L16-duplicate-check.edn.

@@ -6,6 +6,7 @@
 @difficulty beginner
 @why math-formalization/coercion-bridge
 @see-also math-formalization/tactic-algebra-interference math-formalization/binder-expression-mismatch
+@how own mechanism: Push casts to the leaves before applying a projection: a real or imaginary part taken through an un-normalized coercion tower will not simplify. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:
   Push casts to the leaves before applying a projection: a real or imaginary part

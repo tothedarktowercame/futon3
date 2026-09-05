@@ -6,6 +6,7 @@
 @difficulty beginner
 @why math-formalization/tactic-algebra-interference
 @see-also math-formalization/cast-normalization math-formalization-CA/measure-restrict-simplify
+@how own mechanism: Linear arithmetic cannot see inside `min` and `max`: split the cases or rewrite them away first, and only then call the tactic. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:
   Linear arithmetic cannot see inside `min` and `max`: split the cases or rewrite

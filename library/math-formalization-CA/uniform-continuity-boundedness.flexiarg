@@ -6,6 +6,7 @@
 @difficulty intermediate
 @why math-informal-CA/estimate-by-bounding
 @see-also math-formalization-CA/metric-cauchy-convergence math-strategy/proof-architecture
+@how own mechanism: When an estimate involves a quotient of uniformly continuous functions, get the boundedness of the image first as its own lemma; the quotient control depends on it and cannot be obtained alongside it. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:
   When an estimate involves a quotient of uniformly continuous functions, get the

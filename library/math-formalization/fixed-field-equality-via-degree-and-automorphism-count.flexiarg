@@ -1,0 +1,41 @@
+@flexiarg math-formalization/fixed-field-equality-via-degree-and-automorphism-count
+@title Prove a Fixed-Field Equality by Matching Degree and Automorphism Count
+@sigils [🌀/映]
+@keywords IntermediateField, fixedField, IsGalois, Module.finrank, AlgEquiv, finite-group-action
+@audience lean-provers, field-theory
+@tone heuristic
+@difficulty hard
+@subjects field-theory, math-formalization
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems futon-theory] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/LL8-no-source-check.edn. Rationale not invented (L8 rationale-backfill, zai-1, 2026-09-05)
+@how own mechanism: When a finite family of automorphisms fixes a candidate intermediate field and direct membership in that field is difficult, compare the extension degree with the number of automorphisms and turn the comparison into a Galois fixed-field theorem. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
+
+! conclusion:
+  When a finite family of automorphisms fixes a candidate intermediate field
+  and direct membership in that field is difficult, compare the extension
+  degree with the number of automorphisms and turn the comparison into a
+  Galois fixed-field theorem.
+
+  + IF: You have proved that every automorphism in an explicit finite family
+    fixes an intermediate field K pointwise, and need to show that every
+    element fixed by the family lies in K.
+
+  + HOWEVER: The easy inclusion from K into the fixed elements does not
+    supply the reverse inclusion, and a direct normal-form proof for fixed
+    elements may be unavailable.
+
+  + THEN: Repackage the family as K-algebra automorphisms, prove that its
+    parameterization is bijective onto the full automorphism type, and compute
+    Module.finrank K L.  If Nat.card (L ≃ₐ[K] L) equals that finrank, use
+    IsGalois.of_card_aut_eq_finrank, put a fixed element in the fixed field of
+    the top automorphism subgroup via IntermediateField.mem_fixedField_iff,
+    and rewrite that field with IsGalois.fixedField_top.
+    + LEAN:
+      api[IsGalois.of_card_aut_eq_finrank]
+      api[IntermediateField.mem_fixedField_iff]
+      api[IsGalois.fixedField_top]
+      api[AlgEquiv.card_le]
+
+  + BECAUSE: Equality in the degree-versus-automorphism bound certifies that
+    the extension is Galois; the general Galois fixed-field theorem then
+    supplies the hard reverse inclusion without classifying arbitrary fixed
+    rational expressions.

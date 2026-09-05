@@ -9,6 +9,8 @@
 @instantiates math-informal/local-to-global
 @see-also math-formalization/normalize-meromorphic-point-values-before-continuation
 @examples a95J04
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems futon-theory] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/LL8-no-source-check.edn. Rationale not invented (L8 rationale-backfill, zai-1, 2026-09-05)
+@how own mechanism: To pass from `AnalyticAt ℂ g z` at every point of a closed ball to `DifferentiableOn ℂ g (ball 0 R)` for one `R` strictly larger than the ball's radius, use that the analyticity locus is open and thicken the compact ball inside it; there is no packaged Mathlib lemma for the "uniform step" and none is needed. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:
   To pass from `AnalyticAt ℂ g z` at every point of a closed ball to

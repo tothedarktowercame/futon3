@@ -10,6 +10,8 @@
 @examples b01A04
 @provenance case-1 compression pilot (2026-08-12): 4 marks (synthesis cluster 3, "finite cardinality shortcuts"); transcript count not recorded at authoring time and not recoverable by keyword (the b01A04 corpus is Galois theory, so card/Fintype/injectiv matches 7 of 9 transcripts). Threshold compliance therefore ASSERTED, not established — re-measure semantically before this grade is relied on.
 @review claude-2 2026-08-12 REVISE->executed: renamed from bijectivity-from-injectivity-plus-count (noun phrase named the result, not the move); @grade added (synthesis graded this SNIPPET — arguably technique, flagged for claude-4).
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems futon-theory] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/LL8-no-source-check.edn. Rationale not invented (L8 rationale-backfill, zai-1, 2026-09-05)
+@how own mechanism: In a finite setting, never construct a surjection or inverse by hand: prove injectivity (usually from a kernel computation) and equality of cardinalities (usually from independent counting), and let Nat.bijective_iff_injective_and_card conclude bijectivity. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:
   In a finite setting, never construct a surjection or inverse by hand:

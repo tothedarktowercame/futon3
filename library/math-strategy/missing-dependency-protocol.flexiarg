@@ -6,6 +6,7 @@
 @difficulty advanced
 @why math-informal/reduce-to-known-result
 @see-also math-strategy/route-exploration-and-pivot math-strategy/technique-landscape-map
+@how own mechanism: When a proof stalls because the library appears to lack a theorem, first establish that the gap is real, then localize it at exactly one `sorry` and write beside it what you searched and what is left to build. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:
   When a proof stalls because the library appears to lack a theorem, first

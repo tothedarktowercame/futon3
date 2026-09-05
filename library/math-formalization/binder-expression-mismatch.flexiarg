@@ -6,6 +6,7 @@
 @difficulty intermediate
 @why math-formalization/tactic-algebra-interference
 @see-also math-formalization/notation-semantics-traps math-formalization-CA/measure-integration-api
+@how own mechanism: When two expressions differ only in how a bound variable is written, let the elaborator identify them rather than rewriting under the binder by hand. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:
   When two expressions differ only in how a bound variable is written, let the

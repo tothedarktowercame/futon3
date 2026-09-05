@@ -7,6 +7,7 @@
 @cross-list [FA PR]
 @why math-informal/reduce-to-known-result
 @see-also math-formalization-CA/measure-restrict-simplify math-formalization-CA/lp-norm-comparison math-formalization/transport-across-an-instance-diamond
+@how own mechanism: Measure-theoretic results usually exist in the library under a more general statement, a different normalization, or a restricted variant — so treat the work as locating and adapting that statement, and audit the totalized integral's premises before believing the result. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:
   Measure-theoretic results usually exist in the library under a more general

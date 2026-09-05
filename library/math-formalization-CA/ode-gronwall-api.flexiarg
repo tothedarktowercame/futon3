@@ -7,6 +7,7 @@
 @cross-list [CA ODE]
 @why math-informal/reduce-to-known-result
 @see-also math-informal/local-to-global math-strategy/convention-bridge
+@how own mechanism: For exponential stability of two ODE trajectories, first search Mathlib's Grönwall layer for a theorem matching either the norm of their difference or their distance; then isolate negative time by applying the same theorem to a reversed field and reversed trajectories. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:
   For exponential stability of two ODE trajectories, first search Mathlib's

@@ -7,6 +7,7 @@
 @cross-list [FA]
 @why math-strategy/proof-architecture
 @see-also math-formalization-CA/measure-integration-api math-informal/dualise-the-problem math-informal/failure-mode-characterization
+@how own mechanism: When a real oscillatory integral (cosine/sine transform of a rational or exponentially decaying kernel) would classically be evaluated by residues and the library has no residue or contour-deformation machinery, dualise: compute the Fourier transform of the *symmetric decaying* kernel directly from the library's one-sided exponential lemmas, then apply Fourier inversion and take the real part. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:
   When a real oscillatory integral (cosine/sine transform of a rational or

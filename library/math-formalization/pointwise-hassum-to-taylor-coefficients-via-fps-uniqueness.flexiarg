@@ -9,6 +9,8 @@
 @instantiates math-informal/reduce-to-known-result
 @see-also math-formalization/compact-thickening-upgrades-pointwise-analyticity
 @examples a95J04
+@why no problem-corpus source matched (@holds-at absent; holds-token and id-text searches over every node in [problems futon-theory] found no match). Negative claim per the committed check futon2 holes labs library-loop runs l6_no_source_check.py, receipt runs/LL8-no-source-check.edn. Rationale not invented (L8 rationale-backfill, zai-1, 2026-09-05)
+@how own mechanism: When a coefficient sequence is pinned to a function only by a pointwise family `∀ z ∈ ball 0 r, HasSum (fun n ↦ a n * z ^ n) (f z)` and you need `a n = (n.factorial)⁻¹ * iteratedDeriv n f 0`, package `a` as a formal multilinear series and use uniqueness of power-series expansions at the centre; do not build an elementary coefficient-extraction argument. (source: this pattern's ! conclusion line; L8 rationale-backfill, zai-1, 2026-09-05)
 
 ! conclusion:
   When a coefficient sequence is pinned to a function only by a pointwise

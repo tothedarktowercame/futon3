@@ -8,6 +8,7 @@
 @see-also cycle-machine/job-port
 @how cycle-machine/runtime-restoration cycle-machine/disruption-soak   ;; editorial, same author same pass, 2026-08-23: the two methods by which the durability claim is carried out
 @theory-grounding [A1(Auditability) I1(Boundary) A4(Degradation-detectable)]
+@why problems/cycle-model-boundary-gaps (L18 v3 grounding; basis: the cycle-machine section documentation names this member and states the section problem; source: futon2 holes labs library-loop runs l18_complete_check.py receipt runs/L18-remainder.edn; zai-1, 2026-09-05)
 
 ! conclusion:
   If you want "solve them in order" to survive JVM reloads, job-cap kills, and operator restarts, then drive the cycle as a durable step machine whose every step is a persisted intent bound to a pre-state digest, reconciled by exactly one port call, and checked against a declared postcondition before the state advances.

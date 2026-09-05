@@ -1,0 +1,26 @@
+@flexiarg problems/cycle-model-boundary-gaps
+@title Problem node: Repairs cluster at boundaries the verified cycle model does not cover
+@keywords problem-node, section-grain, cycle-machine
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@why section-doc authority: futon3 library/cycle-machine/INDEX.md, opening paragraph (quoted below; no library pattern grounds this node)
+@how no mechanism claimed at problem grain; the section's own patterns are the mechanisms
+
+! conclusion: This is a problem-stating node at section grain for the cycle-machine section, from the section's own committed documentation: Derived from the F27 review.
+
+  + context: Minted by library-loop row L18 v3, grounding members of the fixed served-refused worklist that the section documentation names. Source: futon3 library/cycle-machine/INDEX.md, opening paragraph.
+
+  + IF:
+    Work happens in or consumes the cycle-machine section's patterns.
+
+  + HOWEVER:
+    The section's own documentation states the problem: "Derived from the F27 review (futon3c/holes/technotes/TN-fable-F27-review.md): one week of M-apm-demonstration repairs (~150 APM commits, 2026-08-17..23) fell into three clusters, each a boundary between the verified cycle model and the running apparatus" (source: futon3 library/cycle-machine/INDEX.md, opening paragraph)
+
+  + THEN:
+    This node is the landing point for @why edges from the cycle-machine worklist members (mechanical pass, row L18 v3); per-pattern questions route to the section documentation, not to invention here.
+
+  + BECAUSE:
+    A section whose documentation states one shared problem carries one problem node, not per-pattern copies (the L11/L15/L18 cost finding).
+
+    + evidence: futon3 library/cycle-machine/INDEX.md, opening paragraph; the L18 v3 complete search receipt runs/L18-remainder.edn.

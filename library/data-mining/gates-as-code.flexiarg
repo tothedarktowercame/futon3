@@ -5,6 +5,7 @@
 @tone technical
 @style pattern
 @references [data-mining/golden-is-curated-not-raw data-mining/smoke-before-the-paid-run]
+@why problems/llm-over-corpus-mining-lessons (L18 v3 grounding; basis: the data-mining section documentation names this member and states the section problem; source: futon2 holes labs library-loop runs l18_complete_check.py receipt runs/L18-remainder.edn; zai-1, 2026-09-05)
 
 ! conclusion: Encode the go/no-go quality bands as a runnable checker, separate from whatever produces the data. The same checker then independently reviews the mined output AND the curated golden/few-shot set. Prose bands drift and get rubber-stamped; a checker that exits nonzero does not. Because the checker is authored independently of the producer, it is a real reviewer — and a hand-verified-good input that the gate REJECTS is itself a finding: the gate is too strict.
 

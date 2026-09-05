@@ -5,6 +5,7 @@
 @tone technical
 @style pattern
 @references [data-mining/smoke-before-the-paid-run data-mining/checkpoint-the-long-run]
+@why problems/llm-over-corpus-mining-lessons (L18 v3 grounding; basis: the data-mining section documentation names this member and states the section problem; source: futon2 holes labs library-loop runs l18_complete_check.py receipt runs/L18-remainder.edn; zai-1, 2026-09-05)
 
 ! conclusion: A mining client that sends ONE request at a time leaves the accelerator mostly idle — the throughput you measure is a single request's worth, not the card's capacity. Modern inference servers (vLLM, TGI, most hosted APIs) continuous-batch concurrent requests, so fan out N in-flight requests (a thread pool or async) and the server overlaps them on the same GPU. The win is large (often ~5-10x), free (no extra hardware), and it is usually the single biggest throughput lever in a corpus-mining run.
 

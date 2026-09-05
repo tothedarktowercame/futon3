@@ -1,0 +1,26 @@
+@flexiarg problems/theory-general-enough-to-drive-the-stack
+@title Problem node: Futon theory must be general enough to drive the whole stack
+@keywords problem-node, section-grain, futon-theory
+@audience futon stack operators, library authors
+@tone plain
+@style pattern
+@why section-doc authority: futon3 library/futon-theory/INDEX.md, opening paragraph (quoted below; no library pattern grounds this node)
+@how no mechanism claimed at problem grain; the section's own patterns are the mechanisms
+
+! conclusion: This is a problem-stating node at section grain for the futon-theory section, from the section's own committed documentation: Design patterns that specify futon theory with sufficient generality to drive development of the entire FUTON stack.
+
+  + context: Minted by library-loop row L18 v3, grounding members of the fixed served-refused worklist that the section documentation names. Source: futon3 library/futon-theory/INDEX.md, opening paragraph.
+
+  + IF:
+    Work happens in or consumes the futon-theory section's patterns.
+
+  + HOWEVER:
+    The section's own documentation states the problem: "Design patterns that specify futon theory with sufficient generality to drive development of the entire FUTON stack" (source: futon3 library/futon-theory/INDEX.md, opening paragraph)
+
+  + THEN:
+    This node is the landing point for @why edges from the futon-theory worklist members (mechanical pass, row L18 v3); per-pattern questions route to the section documentation, not to invention here.
+
+  + BECAUSE:
+    A section whose documentation states one shared problem carries one problem node, not per-pattern copies (the L11/L15/L18 cost finding).
+
+    + evidence: futon3 library/futon-theory/INDEX.md, opening paragraph; the L18 v3 complete search receipt runs/L18-remainder.edn.

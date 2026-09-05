@@ -7,6 +7,7 @@
 @why cycle-machine/step-machine
 @see-also coordination/session-durability-check
 @theory-grounding [I1(Boundary) A4(Degradation-detectable)]
+@why problems/cycle-model-boundary-gaps (L18 v3 grounding; basis: the cycle-machine section documentation names this member and states the section problem; source: futon2 holes labs library-loop runs l18_complete_check.py receipt runs/L18-remainder.edn; zai-1, 2026-09-05)
 
 ! conclusion:
   If you want a durable step machine to survive the one disruption it cannot detect from its state file — a stale or foreign namespace in the process that runs it — then provide one restoration command that reloads every cycle namespace from the canonical checkout, verifies each against the checkout's git HEAD, and re-adopts the registered coordinators, and make that command the only sanctioned way to recover the runtime.

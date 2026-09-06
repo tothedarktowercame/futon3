@@ -5,6 +5,8 @@
 @tone investigative
 @style pattern
 @references [futon2/src/ants/aif/policy.clj futon2/doc/trace/single_tick.edn]
+@why problems/uncoupled-pheromone-becomes-noise
+@how own mechanism: Couple pheromone laying to trail gradients, hunger, novelty, and reserve pressure so trails remain useful signals. (source: this pattern's ! conclusion and THEN, lines 25-43; A4 problem-authoring, codex-18, 2026-09-06)
 @aif-delta {
   :precision {:pher-scale 1.3         ;; heightened pheromone sensitivity
               :trail-grad-scale 1.2}  ;; stronger gradient following

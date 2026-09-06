@@ -1,0 +1,20 @@
+@flexiarg problems/undeclared-publication-cadence-obscures-version
+@title Problem node: undeclared publication cadence obscures version
+@keywords problem-node, publication, version, citation, cadence
+@audience publication maintainers, library authors
+@tone plain
+@style pattern
+source-class: self-derived
+@why committed pattern authority: library/ukrns/publication-cadence.flexiarg:15
+@how no mechanism claimed at problem grain; the source pattern names living and snapshot publication
+
+! conclusion: This is a problem-stating node: without a declared publication cadence, readers cannot tell which version they are reading.
+  + context: Minted as a marked self-derived fallback after A5's external-first search found living-document history but no statement of this specific version ambiguity.
+  + IF:
+    A recomputable paper exists in changing and frozen forms.
+  + HOWEVER:
+    The problem, verbatim from the source pattern: “Without a declared cadence, "which version am I reading" becomes unanswerable.” (source: futon3 library/ukrns/publication-cadence.flexiarg:15)
+  + THEN:
+    Treat this node as the landing point for publication-cadence mechanisms.
+  + BECAUSE:
+    The source class makes the circular provenance mechanically visible.

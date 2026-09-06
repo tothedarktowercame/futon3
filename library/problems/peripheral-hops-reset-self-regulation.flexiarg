@@ -1,0 +1,20 @@
+@flexiarg problems/peripheral-hops-reset-self-regulation
+@title Problem node: peripheral hops reset self-regulation
+@keywords problem-node, peripheral, modeline, state, continuity
+@audience agent-system designers, library authors
+@tone plain
+@style pattern
+source-class: self-derived
+@why committed pattern authority: library/gauntlet/modeline-persists-across-worlds.flexiarg:19
+@how no mechanism claimed at problem grain; the source pattern names the persistent modeline
+
+! conclusion: This is a problem-stating node: peripheral changes can discard an agent's dynamic self-regulation state.
+  + context: Minted as a marked self-derived fallback after A5's external-first search found no project statement of this specific problem.
+  + IF:
+    An agent moves between peripheral modes.
+  + HOWEVER:
+    The problem, verbatim from the source pattern: “Each peripheral hop replaces the agent's world (P-1). Without a persistent surface, AIF state resets at each transition: the agent enters a new peripheral with no memory of how confident it was, how much budget remains, or what pattern it was carrying.” (source: futon3 library/gauntlet/modeline-persists-across-worlds.flexiarg:19)
+  + THEN:
+    Treat this node as the landing point for cross-peripheral state-continuity mechanisms.
+  + BECAUSE:
+    The source class makes the circular provenance mechanically visible.

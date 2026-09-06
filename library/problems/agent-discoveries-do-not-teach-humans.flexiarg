@@ -1,0 +1,20 @@
+@flexiarg problems/agent-discoveries-do-not-teach-humans
+@title Problem node: agent discoveries do not teach humans
+@keywords problem-node, agent, human, teaching, discovery
+@audience human-agent team designers, library authors
+@tone plain
+@style pattern
+source-class: self-derived
+@why committed pattern authority: library/gauntlet/teaching-inversion.flexiarg:19
+@how no mechanism claimed at problem grain; the source pattern names an insight-carrying channel
+
+! conclusion: This is a problem-stating node: agents can find material humans have not seen while lacking a mechanism to teach it back.
+  + context: Minted as a marked self-derived fallback after A5's external-first search found related peer-learning claims but no statement of this specific problem.
+  + IF:
+    Agents search and experiment faster than their human collaborators.
+  + HOWEVER:
+    The problem, verbatim from the source pattern: “The bottleneck inverts: the agent finds things the human hasn't seen, but has no mechanism to teach them back.” (source: futon3 library/gauntlet/teaching-inversion.flexiarg:19)
+  + THEN:
+    Treat this node as the landing point for agent-to-human teaching mechanisms.
+  + BECAUSE:
+    The source class makes the circular provenance mechanically visible.

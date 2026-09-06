@@ -1,0 +1,25 @@
+@flexiarg problems/undeclared-cascades-cannot-be-audited
+@title Problem node: undeclared cascades cannot be audited
+@keywords problem-node, cascade, declaration, audit, graph
+@audience knowledge-base designers, library authors
+@tone plain
+@style pattern
+@why committed pattern authority: library/cascades/declared-skeleton.flexiarg, BECAUSE, lines 35-39 (introduced at futon3 2a49684)
+@how no mechanism claimed at problem grain; the source pattern's THEN names the declaration mechanism
+
+! conclusion: This is a problem-stating node: an undeclared cascade cannot be measured, reviewed, or diffed, and structure held only in an agent's momentary judgment teaches the store nothing.
+
+  + context: Minted by library-loop problem-authoring batch A4 from committed pattern history; it exists so mechanisms that declare stable cascade structure have a problem node to land on.
+
+  + IF:
+    A pattern's rationale is that it makes stable inter-pattern structure inspectable and repeatable.
+
+  + HOWEVER:
+    The problem, verbatim from the committed source: “Declaration is what makes an edge witnessable, versionable, and refusable — an undeclared cascade cannot be measured, reviewed, or diffed. The store's fragmentation (nine patterns, zero shared structure) was only VISIBLE because attachments were declared; structure that exists nowhere but in an agent's momentary judgment teaches the store nothing.” (source: futon3 library/cascades/declared-skeleton.flexiarg:35-39; introduced by commit 2a49684)
+
+  + THEN:
+    Treat this node as the landing point for @why edges from patterns that answer the undeclared-cascade audit problem; solving it remains the mechanism pattern's work.
+
+  + BECAUSE:
+    A separate problem node makes the historical reason traversable without pretending that the problem node implements its repair.
+

@@ -8,6 +8,8 @@
 @style pattern
 @references [structure/mana-allostasis structure/block-as-futonic-revolution invariant-coherence/drain-channel-shape p4ng/agent-as-mana-unit-was-the-wrong-unit]
 @references-extra ["`structure/mana-allostasis` describes the *balance dynamic*" "(the integral of awards − drains over time). This pattern" "describes the *gate dynamic* (the live decision rule that" "consults the balance). Together they form the action-selection" "contract: select what you can afford to act on, and act in a" "way that closes the block before the next selection. Both" "voices, harmolodic."]
+@why problems/r11-hierarchical-shared-budget
+@how own mechanism: Gate action selection on the session's available mana balance and refuse candidates whose expected cost exceeds it. (source: this pattern's ! conclusion, lines 14-23, and THEN, lines 71-84; A3 rationale service, codex-18, 2026-09-06)
 
 ! conclusion: 
   Action selection should be constrained by available budget or

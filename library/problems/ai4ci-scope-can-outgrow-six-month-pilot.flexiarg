@@ -1,0 +1,20 @@
+@flexiarg problems/ai4ci-scope-can-outgrow-six-month-pilot
+@title Problem node: AI4CI scope can outgrow a six-month pilot
+@keywords problem-node, ai4ci, pilot, scope, schedule
+@audience research planners, library authors
+@tone plain
+@style pattern
+source-class: self-derived
+@why committed pattern authority: library/ai4ci/pilot-feasibility.flexiarg:25-27
+@how no mechanism claimed at problem grain; the source pattern names explicit scope fences
+
+! conclusion: This is a problem-stating node: an unfenced AI-and-explanation project can expand into platform and model development and make its schedule unrealistic.
+  + context: Minted as a marked self-derived fallback after A5's external-first search found no project statement of this specific problem.
+  + IF:
+    A six-month pilot evaluates AI-assisted explanation work.
+  + HOWEVER:
+    The problem, verbatim from the source pattern: “Without explicit scope fences, a project framed around “AI and explanation” can drift into trying to develop storage, user interfaces, or new models, making the schedule unrealistic.” (source: futon3 library/ai4ci/pilot-feasibility.flexiarg:25-27)
+  + THEN:
+    Treat this node as the landing point for pilot-scope mechanisms.
+  + BECAUSE:
+    The source class makes the circular provenance mechanically visible.

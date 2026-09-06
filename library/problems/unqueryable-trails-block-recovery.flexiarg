@@ -15,11 +15,10 @@
     An agent may revisit prior states, learn from dead ends, or undo an action.
 
   + HOWEVER:
-    The problem, verbatim from the committed source: “Without a trail, the agent cannot distinguish "unexplored" from "explored and rejected," leading to repeated mistakes or inability to recover.” (source: futon3 library/agent/trail-enables-return.flexiarg:17-18; introduced by commit 771c578)
+    The problem, verbatim from the committed source: “Without a trail, the agent cannot distinguish "unexplored" from "explored and rejected," leading to repeated mistakes or inability to recover.” (source: futon3 library/agent/trail-enables-return.flexiarg:18; introduced by commit 771c578)
 
   + THEN:
     Treat this node as the landing point for @why edges from patterns that answer the unqueryable-trail recovery problem; solving it remains the mechanism pattern's work.
 
   + BECAUSE:
     A separate problem node makes the recorded reason traversable while leaving trail design to mechanism patterns.
-

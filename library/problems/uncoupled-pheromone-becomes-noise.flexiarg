@@ -4,7 +4,7 @@
 @audience ant-system designers, library authors
 @tone plain
 @style pattern
-@why committed pattern authority: library/ants/pheromone-trail-tuner.flexiarg, conclusion and HOWEVER, lines 25-37 (introduced at futon3 521967f)
+@why committed pattern authority: library/ants/pheromone-trail-tuner.flexiarg, conclusion and HOWEVER, lines 28-39 (introduced at futon3 521967f)
 @how no mechanism claimed at problem grain; the source pattern's THEN names the adaptive trail-tuning mechanism
 
 ! conclusion: This is a problem-stating node: without adaptive scaling, pheromone laying either floods the board with entropy or fails to leave useful breadcrumbs.
@@ -15,11 +15,10 @@
     Pheromone trails are intended to communicate useful discoveries and corridor state.
 
   + HOWEVER:
-    The problem, verbatim from the committed source: “Without adaptive scaling, ants either flood the board with trails (entropy) or fail to leave breadcrumbs when scouts discover food deserts.” (source: futon3 library/ants/pheromone-trail-tuner.flexiarg:35-37; introduced by commit 521967f)
+    The problem, verbatim from the committed source: “Without adaptive scaling, ants either flood the board with trails (entropy) or fail to leave breadcrumbs when scouts discover food deserts.” (source: futon3 library/ants/pheromone-trail-tuner.flexiarg:38-39; introduced by commit 521967f)
 
   + THEN:
     Treat this node as the landing point for @why edges from patterns that answer the pheromone signal/noise problem; solving it remains the mechanism pattern's work.
 
   + BECAUSE:
     A separate problem node records why trail regulation is needed without claiming the regulator itself.
-

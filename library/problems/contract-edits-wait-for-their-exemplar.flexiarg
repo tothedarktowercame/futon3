@@ -1,0 +1,20 @@
+@flexiarg problems/contract-edits-wait-for-their-exemplar
+@title Pattern: contract edits wait for their exemplar
+@keywords pattern, refusal, deferral, build-sequencing, contract, staging, exemplar
+@audience specification authors, build-loop seats, ledger owners
+@tone plain
+@style pattern
+source-class: self-derived
+@why operator ruling authority: futon2 holes/labs/wm-contract/RULINGS-walkthrough-2026-09-07.md items 4-5 (Joe, 2026-09-07, dictated in session); this is the object-level instance problems/deliberate-refusals-allude-to-unwritten-patterns asks for
+@how the THEN clause is the sequencing mechanism itself: registry now, exemplar next, contract edit once
+
+! conclusion: This is a pattern-stating node: when a ruling selects a design whose validation still requires a build, encode the ruling in the registry the lanes consult immediately, keep the refusal marker in the contract artifact, and land the contract edit exactly once — after the exemplar has been looked at.
+  + context: Written at Joe's direction as the object-level companion to problems/deliberate-refusals-allude-to-unwritten-patterns: the item-5 ruling it describes is itself a deferral, and "we need to make sense of this choice we're making and how we sequence the build, as a design pattern."
+  + IF:
+    An operator ruling selects a design (here: organise's laws stated of a function at the CascadeDiff codomain, the sorry's destination an existence statement) whose justification depends on an exemplar that has not yet been built, and encoding the ruling fully means editing a contract-bearing artifact whose every change is expensive — the authority is derived from the file's own git history, a regeneration step follows, and a hole registry must be restated.
+  + HOWEVER:
+    The two obvious sequencings each fail one way. Editing the contract now ships an unvalidated choice into the authority file and risks paying the regeneration twice if the exemplar look sends the design back. Not encoding the ruling at all leaves it invisible to the lanes that consult the registry — and the registry's own precedent records where that leads: "a ruling not present in the registry the lanes consult is not a ruling for the lanes" (a settled question was re-opened by a seat correctly consulting a registry the ruling had never been written into). (source: futon2 holes/labs/wm-contract/aif-equations.edn :choices :policy-grain :statement; staging instance: futon2 holes/labs/wm-contract/RULINGS-walkthrough-2026-09-07.md item 5)
+  + THEN:
+    Split the encoding along the cost line. Transcribe the ruling — destination, staging, and grounds — into the registry the lanes consult, where writes are cheap and unsigned; leave the contract artifact's refusal marker standing, now pointing at a decided entry instead of an open question; build the exemplar to the ruled specification off to the side, in modules that touch no existing declaration; and land the contract edit as one change, after the exemplar is looked at, paying the regeneration once with evidence behind it.
+  + BECAUSE:
+    Every intermediate state stays honest: the refusal remains a true statement of the artifact for exactly as long as its replacement is unvalidated, the ruling binds the lanes from the moment it is transcribed, and the expensive edit is made from strength — the exemplar either confirms the design or sends it back before the authority file ever moved.

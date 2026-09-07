@@ -1,0 +1,20 @@
+@flexiarg problems/deliberate-refusals-allude-to-unwritten-patterns
+@title Problem node: deliberate refusals allude to unwritten patterns
+@keywords problem-node, refusal, sorry, underdetermination, design-pattern, provenance
+@audience specification authors, build-loop seats, library authors
+@tone plain
+@style pattern
+source-class: self-derived
+@why operator ruling authority: futon2 holes/labs/wm-contract/RULINGS-walkthrough-2026-09-07.md item 5 (Joe, 2026-09-07, dictated in session); witnessed instance: mathlib4/DarkTower/WarMachine/Holes.lean:861 and futon2 holes/labs/wm-contract/C558-F12-decision-sheet.md
+@how no mechanism claimed at problem grain; the THEN clause names the writing-down move itself
+
+! conclusion: This is a problem-stating node: a deliberate implementation refusal compresses a design pattern's worth of undecided content into one marker, and unless that pattern is written down, the refusal is indistinguishable from an omission and its content has to be excavated later at full price.
+  + context: Minted at Joe's direction during the 2026-09-07 fundamentals rulings walkthrough ("when we put in a refusal, what we're really doing is alluding to a new design pattern, and we should write that down, probably in our problems library"). Joe saw the logic and did not spell it out; the elaboration below is claude-1's, which the source-class marks.
+  + IF:
+    A specification's laws deliberately underdetermine an artifact, and the author marks the site with an explicit refusal — a sorry, a DELIBERATE IMPLEMENTATION REFUSAL docstring — rather than choosing silently.
+  + HOWEVER:
+    The refusal states its ground but not its structure: which choice points it compresses, whose choices they are, and what evidence would separate the arms all stay implicit. In the witnessed instance, the one-line refusal at organise (mathlib4/DarkTower/WarMachine/Holes.lean:861, "does not select one canonical implementation") took twenty-four build-loop slices to excavate into six registered choice points with every arm built and run — and the refusal's ground turned out to be a provable fact (two conformant implementations differ on the recorded inputs), meaning the refusal had been correct all along and nothing about it said so. (source: futon2 holes/labs/wm-contract/C558-F12-decision-sheet.md sections 1-2; ruling: futon2 holes/labs/wm-contract/RULINGS-walkthrough-2026-09-07.md item 5)
+  + THEN:
+    When writing a deliberate refusal, also write the pattern it alludes to: a problems-library node in this format naming the underdetermination, the pending choices, and who they belong to — so the refusal points at its own excavation instead of requiring one.
+  + BECAUSE:
+    A bare refusal and an omission look identical to every census that counts them; a refusal that cites its pattern is a recorded act of design restraint whose grounds can be reviewed, priced, and eventually ruled — which is what "closing the system over the operator" requires of the operator's own pending decisions.

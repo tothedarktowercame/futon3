@@ -1,0 +1,33 @@
+@flexiarg apparatus/repairs-name-defects-not-neighborhoods
+@title A Repair Citation Names The Defect, Not The Neighborhood
+@keywords repair, citation, adjudication, recurrence, hedge, defect-closure
+@audience apparatus builders, adjudicators, campaign stewards
+@tone technical
+@style pattern
+@status promoted (discovered during the 2026-09-08 field trial by claude-5, S5 slice 1; drafted claude-9, redlined claude-5; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
+@references [apparatus/new-failure-class-is-a-design-defect apparatus/done-is-observed-running]
+@see-also apparatus/pin-moves-with-the-population
+@why APM S5 slice 1 (2026-09-08): the wrapper-reconciliation fault fired twice, on f177 and f194. f177's park record credited commit f4ae8d5a — a real repair of a DIFFERENT fault in the same few lines — and hedged "watch f188+ for recurrence". The class recurred exactly once more while marked handled — at f194, where it discarded an authenticated submission. (An earlier count of seven was the drafter's own instrument error, caught because this pattern demands checkable claims; ledger b0c36489 records the correction.)
+@how own mechanism: an apparatus-repair citation names the checkable defect it closes (a violation signature made absent), never the commit or region it landed near; an adjudication carrying a forward-looking hedge is returned as unclosed.
+@violation-signature PRIMARY: the record hedges forward — "watch for recurrence" is the author recording that they know the citation does not close the defect, and filing anyway. Weak corroborating tell: proximity language ("same few lines", "that area was just fixed") standing where a defect statement should be.
+! conclusion: A repair citation names the checkable defect it closes — never the commit, file, or region it landed near — and a citation that hedges toward future recurrence is an admission, not a closure.
+
+  + context: An adjudicator (human or agent) disposes of a fault record and must say why it will not recur. A commit that touched the failing region recently is always available to cite, and citing it closes the ticket.
+
+  + IF:
+    You are recording why a fault is considered handled.
+
+  + HOWEVER:
+    "Commit X repaired this area" is cheap to write and usually partly true — X did repair something nearby — so the record reads as closure while the actual defect, never named, survives. The author often half-knows: the hedge ("watch for recurrence") is that knowledge leaking into the record.
+
+  + THEN:
+    Require the citation to name the defect as a checkable claim: which violation signature the cited change makes absent, verifiable against the change itself. If the adjudicator cannot state that, the correct disposition is "unclosed — defect not yet identified", which is honest and routes work, rather than a proximity citation, which is comfortable and loses it.
+
+  + BECAUSE:
+    A class marked handled stops being looked at — proximity closure converts an open defect into a hidden one wearing a fix's name, and the next occurrences are read as noise ("that's the f177 thing, it was fixed") rather than as evidence.
+
+    + evidence: Two independently adjudicated frames, one defect, class census unmoved at 44 — one adjudication cited a commit by proximity and hedged, and the class recurred exactly once more, discarding an authenticated submission: a clean causal story. f177's record carried both tells; only the hedge was diagnostic. The defect (a cancel counting only HTTP 200 as success, so a job finishing early read as failing) was one line, findable the day f177 parked, and closed in S5 slice 1 with the signature-absent test bf695656.
+
+  + NEXT-STEPS:
+    - Grep your adjudication records for forward hedges ("watch", "monitor for recurrence", "should be covered"); each is an unclosed defect filed as closed.
+    - Add to the adjudication template: "signature this repair makes absent:" — a field that cannot be filled with a commit sha.

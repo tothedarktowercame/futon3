@@ -4,7 +4,7 @@
 @audience apparatus builders, campaign stewards, futon developers
 @tone technical
 @style pattern
-@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/evidence-to-disposition-once apparatus/replayable-not-precious]
 @see-also apparatus/loudness-is-conserved
 @why APM jit-all-open-v3: ~40 park classes seen once or twice each, most born at a process boundary and each answered with its own catch-and-park layer. Joe's ruling (2026-09-07): "rather than finding 193 new special cases, we should focus on fixing downstream writes and any other cases of apparatus failure … finding other ways to handle the latch is kind of the wrong idea." WM same night: the loop's stall-key was widened three times, one key per incident, before the one-layer-down fix (hash the whole row, futon2 e84c114e).

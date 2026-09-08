@@ -4,7 +4,7 @@
 @audience apparatus builders, monitor authors, futon developers
 @tone technical
 @style pattern
-@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/loudness-is-conserved apparatus/done-is-observed-running]
 @see-also apparatus/new-failure-class-is-a-design-defect
 @why APM (durable_coordinator.clj:475, pre-fix): the stall watchdog built its cursor from the coordinator's regulator state, whose only populated field was the coordinator's own tick id — a value that changes every tick by construction — so the progress clock reset forever and the watchdog could never fire; f193 was dead 63 minutes at state: ok. The same error was made twice more independently (operator strip; suppression condition). WM (futon2 e84c114e): the inverse polarity — a detector over a four-key projection of the row false-stalled on a healthy frame writing a fifth key, the third such false stall.
@@ -21,7 +21,7 @@
     The machinery's state is always lively (ticks tick by construction), so a cursor built from it guarantees false progress; and a cursor built from a *projection* of the work object goes stale as the object grows fields, producing false stalls that get "fixed" by naming the last field that burned you.
 
   + THEN:
-    Read the cursor from the work object's own durable transitions, totally (hash the whole row, not named keys). Treat nil object-identity in the cursor as the alarm condition — in a monitor, absence of evidence IS the event. Commission in both directions: kill the watched thing and watch the alarm fire; drive a healthy transition and watch it stay silent. Only then trust it.
+    Read the cursor from the work object's own durable transitions, totally (hash the whole row, not named keys). Treat nil object-identity in the cursor as the alarm condition — in a monitor, absence of evidence IS the event. Commission in both directions: kill the watched thing and watch the alarm fire; drive a healthy transition and watch it stay silent. Only then trust it. Trial amendment (2026-09-08, S4): commission BY MUTATION — break the production code in the known ways and watch each direction discriminate. The worked example is the flicker mutation (a cursor that advances on every observation — the exact f193-night defect): it silences the alarm, so the stall-side test fails and catches it, while a frozen cursor is caught only from the healthy side. Each direction catches the mutation the other hides, which is why one direction is never commissioning.
 
   + BECAUSE:
     A detector is the one component whose failure is invisible in operation — it fails by not firing, or by firing wrongly, and both look like normal life until the night the operator finds the corpse.

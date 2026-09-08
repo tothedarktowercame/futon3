@@ -4,12 +4,12 @@
 @audience apparatus builders, protocol designers, futon developers
 @tone technical
 @style pattern
-@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/evidence-to-disposition-once]
 @see-also apparatus/every-wait-has-a-deadline
 @why futon3c/holes/T-typed-submission-wrapper-cancellation-evidence.md (987e8574): the wrapper cancels a job once an authenticated submission exists, so a DELIVERED role turn normally ends `cancelled` with a nil session id; 13 of 126 campaign parks descend from that one shape. Agency twin: `accepted` precedes and does not imply `running` — trusting it cost parked-forever seats.
 @how own mechanism: give the commonest good outcome a first-class success state in the primary record, so no consumer needs inference to tell delivery from fault.
-@violation-signature Consumers need cleverness to distinguish the happy path from a fault; error vocabulary (`cancelled`, nil ids, timeouts) appears in the record of a normal successful operation.
+@violation-signature Consumers need cleverness to distinguish the happy path from a fault; error vocabulary (`cancelled`, nil ids, timeouts) appears in the record of a normal successful operation. Second signature (trial amendment, 2026-09-08): a declared vocabulary member that no production path can produce — coverage resembling capability (`:visibility-lag` was handled in three places and emitted by nothing; `"succeeded"` recognized as terminal and written by nothing — kept deliberately, since deleting a terminal recognizer on grep evidence risks a duplicate execution: the signature can be present and correctly tolerated, with the reason stated).
 ! conclusion: The normal path may not produce fault-shaped evidence; the commonest good outcome gets a first-class success state in the primary record.
 
   + context: A wrapper, relay, or driver sits between the worker and the ledger, and its bookkeeping actions (cancelling a superseded job, rotating a session) are recorded in the same vocabulary as failures.

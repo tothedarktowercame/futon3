@@ -4,12 +4,12 @@
 @audience apparatus builders, reviewers, futon developers
 @tone technical
 @style pattern
-@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/one-authority-per-question apparatus/monitors-measure-the-work]
 @see-also apparatus/the-system-stops-on-schedule
 @why APM, four instances in one night (2026-09-07/08): reopen-posthoc-rejection — the intended apparatus-repair recovery — written and tested with no production caller anywhere; a substrate fix committed but never loaded; a display fix committed but never loaded; topology-supervisor.sh, written specifically so loop stoppages would not reach Joe, not running — which is why the stoppage reached Joe. Register A11/M7: commits reaching disk but not the serving JVM present as inexplicable intermittent failures. Generalizes Joe's I_data_current rule from instruments to mechanisms.
 @how own mechanism: every mechanism declares itself in a repo-owned manifest; one standing comparator, on a timer, diffs declared-should-run against live-is-running and loaded-vs-committed, and a mismatch is a first-class apparatus fault.
-@violation-signature A declaration with zero production callers; a fix that works in the repo and not in the process; a mechanism written to prevent X while X reaches the operator; compliance demonstrated by a one-off scan rather than a standing check.
+@violation-signature A declaration with zero production callers; a fix that works in the repo and not in the process; a mechanism written to prevent X while X reaches the operator; compliance demonstrated by a one-off scan rather than a standing check. Trial amendment (2026-09-08): the principle extends to FENCES — a conformance test or lint is a mechanism whose failure is silent, so a fence's acceptance is observation against LIVE data, never agreement with a declaration. The producer has two faces, what it declares and what it writes, and only the second is the world (the `"deduped"` state: written by the finalizer for 13 live jobs, declared in no literal, passed by a fence that compared declarations to declarations).
 ! conclusion: A mechanism exists when the live system shows it acting, not when the commit lands; the gap between declared, loaded, and running is closed by a standing comparator, not by discipline.
 
   + context: Fixes and safety mechanisms are produced faster than they are activated: namespaces need reloading, daemons need starting, recovery routes need callers.

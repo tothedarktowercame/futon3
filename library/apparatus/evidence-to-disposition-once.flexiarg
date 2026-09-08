@@ -4,7 +4,7 @@
 @audience apparatus builders, protocol designers, futon developers
 @tone technical
 @style pattern
-@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline — absorbs the earlier separate "carry the mechanism, judge blame once" principle; pending Joe's ruling)
+@status promoted (field trial 2026-09-08, APM repair program S1-S10; absorbs the earlier separate "carry the mechanism, judge blame once" principle; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/success-must-not-resemble-failure apparatus/default-to-the-cheap-error]
 @see-also apparatus/new-failure-class-is-a-design-defect
 @why futon3c/holes/T-apm-recurring-failure-end-to-end.md (790c0491): five code sites joined the Agency invoke ledger and the typed-submission store differently, four patched separately after their own incident; the ~40 singleton park classes are the signature of the missing constructor. codex-17 correctly refused to consolidate the ANSWERS — the sites ask genuinely different questions; what consolidates is the construction.

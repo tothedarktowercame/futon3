@@ -4,12 +4,12 @@
 @audience apparatus builders, futon developers
 @tone technical
 @style pattern
-@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/loudness-is-conserved apparatus/monitors-measure-the-work]
 @see-also apparatus/success-must-not-resemble-failure
 @why APM: `:awaiting-substrate` had no upper bound, so a wait was indistinguishable from a hang — T-apm-recurring-failure-end-to-end.md argues the quota fix and the f193 stall are the same defect seen a day apart. The park-deadline footgun (futon3c README-park.md) is the twin from the other side: a relative duration read as absolute epoch-ms fires instantly.
 @how own mechanism: every wait state carries a verifiably absolute expiry, and expiry routes to a decision (retry, escalate, alarm), never back into the same wait.
-@violation-signature A wait state with no expiry field; a deadline expressed in relative units where absolute is required (or vice versa); a component whose "waiting" and "hung" states produce identical observations.
+@violation-signature A wait state with no expiry field; a deadline expressed in relative units where absolute is required (or vice versa); a component whose "waiting" and "hung" states produce identical observations. Trial amendment (2026-09-08, S7): a deadline whose value the waiting party can set arbitrarily far ahead is NOT a bound — the APM queue's wait carried a deadline, but the watchdog read the mover's own `:not-before-ms` field AS that deadline, so a far-future wake could never be late. Bound the direction that hurts; the fix also showed the danger is asymmetric (a past wake merely retries immediately, and refusing overdue wakes after a long stop turns restart into a park storm).
 ! conclusion: A wait that cannot expire is indistinguishable from a hang; every wait carries a verifiably absolute deadline whose expiry routes to a decision.
 
   + context: An apparatus waits on things it does not control: a provider quota to lift, a substrate write to land, a reply to arrive.

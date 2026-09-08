@@ -4,7 +4,7 @@
 @audience apparatus builders, formalizers, futon developers
 @tone technical
 @style pattern
-@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/done-is-observed-running apparatus/one-authority-per-question]
 @see-also apparatus/monitors-measure-the-work
 @why APM register M8, known 2026-08-27, unfixed when it mattered: Lean emitter ↔ generated contract ↔ Clojure validator ↔ loaded namespace had no enforced coupling. The Lean contract perimeter stayed green throughout the campaign, and every registered defect landed OUTSIDE it — the register's own stated finding. APMCycleMachine.lean contains theorems named for incidents (f25ReusedStudentSession, f30CompiledButUnrecordedCandidate): the model trailed the incidents.

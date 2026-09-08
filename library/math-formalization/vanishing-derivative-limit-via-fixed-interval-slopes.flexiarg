@@ -1,0 +1,34 @@
+@flexiarg math-formalization/vanishing-derivative-limit-via-fixed-interval-slopes
+@title Force a Finite Derivative Limit to Vanish via Fixed-Interval Slopes
+@keywords Lean, Mathlib, Tendsto, deriv, exists_deriv_eq_slope, mean value theorem, atTop, asymptotic coefficients
+@audience lean-provers, real-analysis
+@tone procedural
+@difficulty intermediate
+@subjects real-analysis, asymptotics
+
+! conclusion:
+  When a differentiable real function converges at `atTop` and its derivative
+  also has a finite limit there, prove that the derivative limit is zero by
+  applying the mean value theorem on each interval `[x, x + 1]`.
+
+  + IF: You know `Tendsto f atTop (nhds L)`, `Differentiable ℝ f`, and
+    `Tendsto (deriv f) atTop (nhds d)`, and need to show `d = 0`.
+
+  + HOWEVER: An improper-integral argument introduces integrability hypotheses,
+    and filter-valued l'Hôpital may require awkward denominator and signed-limit
+    side conditions that are absent from the original assumptions.
+
+  + THEN: For every `x`, use `exists_deriv_eq_slope` on `[x, x + 1]` and choose
+    `c x ∈ (x, x + 1)` with `deriv f (c x) = f (x + 1) - f x`. Prove
+    `Tendsto c atTop atTop` from `x ≤ c x`, compose the derivative limit with
+    this cofinal choice, and compare it with the limit of the fixed-step
+    difference, which is zero because both `f (x + 1)` and `f x` tend to `L`.
+    Finish with `tendsto_nhds_unique`.
+    + LEAN:
+      api[exists_deriv_eq_slope] api[tendsto_atTop_mono']
+      api[tendsto_atTop_add_const_right] api[Tendsto.comp]
+      api[tendsto_nhds_unique]
+
+  + BECAUSE: A convergent function has vanishing slopes across every fixed
+    interval, while the mean value theorem samples the derivative at cofinal
+    points where its assumed limit must still be visible.

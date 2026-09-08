@@ -1,0 +1,46 @@
+@flexiarg math-formalization-FA/lf-map-continuity-via-fixed-support-stages
+@title Prove LF Test-Function Operator Continuity Stage by Stage
+@keywords TestFunction, LF-topology, continuous-linear-map, compact-support, seminorm, limitCLM
+@audience lean-provers, functional-analysts
+@tone procedural
+@difficulty advanced
+@subjects applied
+@how own mechanism: Replace a global LF-continuity obligation by compact-stage factorization, prove finite seminorm bounds on each Fréchet stage, and reassemble the global operator with the TestFunction final-topology API.
+
+! conclusion:
+  Prove continuity of an operator on compactly supported smooth test functions
+  by factoring its restriction to every fixed compact-support stage through a
+  controlled target stage, establishing seminorm bounds there, and invoking
+  the LF-space final-topology criterion.
+
+  + IF:
+      An algebraic linear operator on `TestFunction` is mathematically
+      continuous, but no packaged global continuous linear operator exists and
+      direct continuity on the LF topology is opaque.
+
+  + HOWEVER:
+      The input support varies globally, while the available derivative and
+      integral estimates have constants and output supports that depend on a
+      fixed input compact. A single global norm estimate is therefore the wrong
+      obligation.
+
+  + THEN:
+      For each compact `K`, choose a compact `K'` containing the output support
+      of every input supported in `K`. Define the induced linear map from
+      `ContDiffMapSupportedIn ... K` to `ContDiffMapSupportedIn ... K'`. Prove
+      its continuity with `WithSeminorms.continuous_of_isBounded`, supplying for
+      each target seminorm a finite set of source seminorms and a nonnegative
+      constant. Finally use `TestFunction.continuous_iff_continuous_comp` to
+      reduce global continuity to these stage maps and compose each with
+      `TestFunction.ofSupportedInCLM`.
+
+  + BECAUSE:
+      The test-function topology is an inductive-limit topology. Its continuity
+      API is designed to consume compatible continuous maps on fixed-support
+      Fréchet stages, exactly where support-dependent seminorm estimates are
+      meaningful.
+
+  + NEXT-STEPS:
+    next[Prove a uniform output-support bound for each fixed input compact.]
+    next[Separate the order-zero seminorm estimate from successor derivative estimates.]
+    next[Package each stage map continuously, then apply the TestFunction final-topology criterion.]

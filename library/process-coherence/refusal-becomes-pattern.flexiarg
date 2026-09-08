@@ -1,0 +1,68 @@
+@flexiarg process-coherence/refusal-becomes-pattern
+@title Turn an Underdetermined Implementation Refusal into a Pattern
+@keywords implementation refusal, underdetermination, evidence before ruling, warrant, next steps, operator gate
+@audience builders facing several conformant implementations when recorded evidence cannot yet distinguish them
+@references [orchestration/pattern-warranted-choice-point]
+@tone procedural
+@style pattern
+@provenance Joe ruling, 2026-09-08; futon2/holes/labs/wm-contract/RULINGS-walkthrough-2026-09-08.md:39-58
+
+! conclusion: When an interface has several conformant implementations and the available record cannot decide among them, replace the implementation refusal with a written pattern that warrants one evidence-producing implementation. Keep the unresolved choices explicit, and use the implementation's next-step evidence to support or revise the pattern before deciding them.
+
+  + context:
+      A required interface is specified, its laws and candidate implementations have been
+      exercised, and more than one implementation remains conformant. The F11 find interface
+      is the canonical instance: its refusal says that the recorded F1-F4 instances do not
+      select one canonical implementation
+      (futon2/holes/labs/wm-contract/aif-equations.edn:812-818).
+
+  + IF:
+      Progress is blocked on an operator-shaped choice, but the operator would be choosing
+      between implementations without the operational evidence that distinguishes their
+      consequences. For F11, the receipt-carrier and falsifiability-reading choices remain
+      observed-not-decided until implementation evidence arrives
+      (futon2/holes/labs/wm-contract/RULINGS-walkthrough-2026-09-08.md:52-55).
+
+  + HOWEVER:
+      Leaving the refusal in place prevents the runs that could produce the missing evidence;
+      asking the operator to decide first turns an evidence question into an unsupported
+      preference. The F11 ruling identifies this explicitly: waiting on the operator serialises
+      evidence gathering that can proceed under a written warrant
+      (futon2/holes/labs/wm-contract/RULINGS-walkthrough-2026-09-08.md:55-58).
+
+  + THEN:
+      Write down the refusal's grounds as a pattern. Use that pattern as the warrant for one
+      implementation that satisfies the stated interface and laws. Record the implementation's
+      consequences as NEXT STEPS against every unresolved choice; do not silently settle those
+      choices in the implementation. Support, amend, or refuse the pattern when that evidence
+      is available. In the F11 sequence, the pattern is written first, find is implemented
+      second, and evidence deciding the receipt carrier and F4 reading is gathered third
+      (futon2/holes/labs/wm-contract/worklist.edn:1401-1404).
+
+  + BECAUSE:
+      A refusal is useful when it prevents an unwarranted commitment, but it becomes circular
+      when it also prevents the observation needed to warrant any commitment. A written pattern
+      preserves the reason for caution while making the next experiment auditable: the builder
+      can point to the warrant, the unresolved choices stay visible, and the resulting evidence
+      can change the pattern instead of being mistaken for a prior ruling. Joe ruled this
+      disposition for F11 and stated that the experience would be more useful than a ruling
+      made before the implementation existed
+      (futon2/holes/labs/wm-contract/RULINGS-walkthrough-2026-09-08.md:41-47).
+
+    + evidence:
+        F11's ruling is recorded as :find-sorry :status :decided with the dependent choices
+        deliberately left observed-not-decided
+        (futon2/holes/labs/wm-contract/aif-equations.edn:812-818).
+
+    + COUNTERFACTUAL:
+        Refuse this pattern when the candidate implementations cannot satisfy the stated laws,
+        when the action is irreversible or outside the authority already granted, or when the
+        proposed run cannot distinguish any unresolved choice. In those cases an implementation
+        would generate no deciding evidence, so this warrant does not apply.
+
+  + NEXT-STEPS:
+      - Implement F11 find under this warrant without recording a receipt-carrier or F4 ruling.
+      - Record which implementation observations distinguish the open receipt-carrier arms.
+      - Record which implementation observations distinguish the open F4 readings.
+      - Revisit this pattern and the two choice entries with those records, preserving any
+        result that remains "not found" as such.

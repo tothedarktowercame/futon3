@@ -28,10 +28,39 @@
    :session/id session-id
    :candidates test-candidates
    :candidate-scores test-scores
+   ;; AC7: sampling requires a measured nonnegative outcome-size surplus.
+   ;; Zero is a real measurement (an outcome of minimum size), not the
+   ;; pre-AC7 fallback for an unread input.
+   :outcome-size-surplus 0.0
    :uncertainty (/ 1.0 (:tau/scale tau-config 1.0))
    :anchors []
    :forecast nil
    :chosen chosen})
+
+(deftest absent-outcome-size-surplus-refuses-sampling
+  (testing "AC7 records absence and does not invent a sample temperature"
+    (let [config {:tau/scale 1.0
+                  :tau/min 0.1
+                  :tau/max 2.0}
+          adapter (fulab/new-adapter config)
+          engine (aif-engine/new-engine adapter)
+          result (aif-engine/select-pattern
+                  engine (dissoc (make-context config)
+                                 :outcome-size-surplus))
+          [record :as events] (get-in result [:aif :temperature-events])]
+      (is (nil? (:chosen result)))
+      (is (true? (get-in result [:aif :refused?])))
+      (is (not (contains? (:aif result) :tau)))
+      (is (not (contains? (:aif result) :logits)))
+      (is (not (contains? (:aif result) :probs)))
+      (is (= 1 (count events)))
+      (is (= {:producer-contract :fulab-temperature/v1
+              :status :absent
+              :reason :outcome-size-surplus-not-supplied
+              :absent [{:field :outcome-size-surplus
+                        :key-present? false}]
+              :required? true}
+             record)))))
 
 ;; Tau sensitivity tests
 
